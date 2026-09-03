@@ -186,6 +186,24 @@ describe('actor animation manifest', () => {
         }
     });
 
+    test('classifies all Abyssal Well bosses as intentional regional boss rigs', () => {
+        const expectedSources = {
+            TiderendLeviathan: 'procedural Drowned Sanctum tide-rend rig',
+            DrownedChoir: 'procedural Drowned Sanctum many-voiced rig',
+            AbyssalGoliath: 'procedural Drowned Sanctum anchor-cairn rig',
+            MaelstromWarden: 'procedural Drowned Sanctum maelstrom-bulwark rig',
+            Thalorath: 'procedural Drowned Sanctum tide-king rig'
+        };
+        for (const [type, source] of Object.entries(expectedSources)) {
+            expect(ACTOR_ANIMATION_MANIFEST[type]).toEqual(expect.objectContaining({
+                category: 'enemy',
+                source,
+                states: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+            }));
+            expect(ACTOR_ANIMATION_MANIFEST[type].special).not.toBe('Attack clip plus class telegraph/VFX');
+        }
+    });
+
     test('no combat actor is classified without idle, movement, attack, and death presentation', () => {
         for (const actor of listActorAnimationEntries()) {
             if (actor.category === 'npc') continue;

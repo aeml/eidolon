@@ -54,13 +54,21 @@ const proceduralRegionalEnemyTypes = Object.freeze([
     ['Stormcallers', 'Shattered Aerie divided storm-oracle'],
     ['RocMatriarch', 'Shattered Aerie thunder-roc matriarch'],
     ['ThunderlordKaelix', 'Shattered Aerie storm-bell thunderlord'],
-    ['Zephyrion', 'Shattered Aerie eternal-gale sovereign']
+    ['Zephyrion', 'Shattered Aerie eternal-gale sovereign'],
+    ['TiderendLeviathan', 'Drowned Sanctum tide-rend leviathan'],
+    ['DrownedChoir', 'Drowned Sanctum many-voiced reliquary'],
+    ['AbyssalGoliath', 'Drowned Sanctum anchor-cairn goliath'],
+    ['MaelstromWarden', 'Drowned Sanctum maelstrom bulwark'],
+    ['Thalorath', 'Drowned Sanctum moonless tide-king']
 ]);
 const proceduralMoltenBossTypes = new Set([
     'Cindermaw', 'ScorchedTwins', 'ForgemasterPyrax', 'ObsidianGuardian', 'LordInfernax'
 ]);
 const proceduralTempestBossTypes = new Set([
     'Windshear', 'Stormcallers', 'RocMatriarch', 'ThunderlordKaelix', 'Zephyrion'
+]);
+const proceduralAbyssalBossTypes = new Set([
+    'TiderendLeviathan', 'DrownedChoir', 'AbyssalGoliath', 'MaelstromWarden', 'Thalorath'
 ]);
 
 test.use({ trace: 'off', video: 'off' });
@@ -335,6 +343,9 @@ test.describe('deterministic production animation gallery', () => {
             }
             if (proceduralTempestBossTypes.has(actorType)) {
                 expect(metrics.proceduralBossFamily).toBe('tempest-spire');
+            }
+            if (proceduralAbyssalBossTypes.has(actorType)) {
+                expect(metrics.proceduralBossFamily).toBe('abyssal-well');
             }
 
             for (const state of ['Idle', 'Walk', 'Run', 'Attack', 'Death']) {

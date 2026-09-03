@@ -170,15 +170,16 @@ describe('MeshFactory preload phases', () => {
 describe('MeshFactory catalog integration', () => {
     test('uses catalog-owned procedural enemy specs for compatibility', () => {
         expect(MeshFactory.PROCEDURAL_ENEMY_SPECS).toBe(MeshCatalog.getProceduralEnemySpecs());
-        expect(MeshFactory.PROCEDURAL_ENEMY_SPECS.TiderendLeviathan.shape).toBe('serpent');
+        expect(MeshFactory.PROCEDURAL_ENEMY_SPECS.SandstormDjinn.shape).toBe('wraith');
         expect(MeshFactory.PROCEDURAL_ENEMY_SPECS.Cindermaw).toBeUndefined();
         expect(MeshFactory.PROCEDURAL_ENEMY_SPECS.Windshear).toBeUndefined();
+        expect(MeshFactory.PROCEDURAL_ENEMY_SPECS.TiderendLeviathan).toBeUndefined();
     });
 
     test('procedural enemies ship explicit idle, movement, attack, and death clips', () => {
         const mesh = MeshFactory.createProceduralEnemy(
-            'TiderendLeviathan',
-            MeshFactory.PROCEDURAL_ENEMY_SPECS.TiderendLeviathan
+            'SandstormDjinn',
+            MeshFactory.PROCEDURAL_ENEMY_SPECS.SandstormDjinn
         );
         const clips = Object.fromEntries(mesh.userData.animations.map((clip) => [clip.name, clip]));
 
@@ -488,11 +489,43 @@ describe('MeshFactory catalog integration', () => {
     });
 
     test.each([
+        ['TiderendLeviathan', 'Drowned Sanctum tide-rend leviathan'],
+        ['DrownedChoir', 'Drowned Sanctum many-voiced reliquary'],
+        ['AbyssalGoliath', 'Drowned Sanctum anchor-cairn goliath'],
+        ['MaelstromWarden', 'Drowned Sanctum maelstrom bulwark'],
+        ['Thalorath', 'Drowned Sanctum moonless tide-king']
+    ])('%s uses its Abyssal Well boss rig without requesting a GLB', async (type, artStyle) => {
+        const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
+        MeshFactory.pool = {};
+
+        try {
+            const mesh = await MeshFactory.createMeshForType(type);
+            expect(mesh.userData).toEqual(expect.objectContaining({
+                proceduralEnemyFamily: true,
+                proceduralBossFamily: 'abyssal-well',
+                proceduralActorType: type,
+                artStyle,
+                region: 'Abyssal Well — The Drowned Sanctum',
+                combatRadius: 1.25,
+                sharedGeometry: true
+            }));
+            expect(mesh.userData.animations.map((entry) => entry.name))
+                .toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+            expect(loadSpy).not.toHaveBeenCalled();
+        } finally {
+            MeshFactory.pool = previousPool;
+            loadSpy.mockRestore();
+        }
+    });
+
+    test.each([
         'Skeleton', 'DemonOrc', 'Imp', 'Construct', 'InfernoTitan',
         'MountainTroll', 'AquaGolem', 'Siren', 'FrostGuardian',
         'RootboundWarden', 'BriarMatron', 'RustboundColossus', 'HollowSentinel',
         'Cindermaw', 'ScorchedTwins', 'ForgemasterPyrax', 'ObsidianGuardian', 'LordInfernax',
-        'Windshear', 'Stormcallers', 'RocMatriarch', 'ThunderlordKaelix', 'Zephyrion'
+        'Windshear', 'Stormcallers', 'RocMatriarch', 'ThunderlordKaelix', 'Zephyrion',
+        'TiderendLeviathan', 'DrownedChoir', 'AbyssalGoliath', 'MaelstromWarden', 'Thalorath'
     ])('a full %s pool never disposes shared generated resources', async (type) => {
         const previousPool = MeshFactory.pool;
         MeshFactory.pool = {};

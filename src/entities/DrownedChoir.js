@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { Actor } from './Actor.js';
 
 /**

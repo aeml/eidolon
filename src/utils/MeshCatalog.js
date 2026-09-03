@@ -144,6 +144,31 @@ export class MeshCatalog {
             source: 'procedural Shattered Aerie eternal-gale rig',
             animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
         },
+        TiderendLeviathan: {
+            type: 'enemy',
+            source: 'procedural Drowned Sanctum tide-rend rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        DrownedChoir: {
+            type: 'enemy',
+            source: 'procedural Drowned Sanctum many-voiced rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        AbyssalGoliath: {
+            type: 'enemy',
+            source: 'procedural Drowned Sanctum anchor-cairn rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        MaelstromWarden: {
+            type: 'enemy',
+            source: 'procedural Drowned Sanctum maelstrom-bulwark rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        Thalorath: {
+            type: 'enemy',
+            source: 'procedural Drowned Sanctum tide-king rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
         TradingHouse: {
             type: 'structure',
             source: 'procedural Lanternhold auction hall'
@@ -173,12 +198,6 @@ export class MeshCatalog {
         TempestGiant: { shape: 'titan', scale: 4.5, color: 0x483D8B, emissive: 0x00BFFF, emissiveI: 0.2 },
         CycloneAvatar: { shape: 'elemental', scale: 3.5, color: 0x00CED1, emissive: 0x00FFFF, emissiveI: 0.4 },
 
-        // Water dungeon bosses
-        TiderendLeviathan: { shape: 'serpent', scale: 4.0, color: 0x0AA0B8, emissive: 0x3DE7FF, emissiveI: 0.4 },
-        DrownedChoir: { shape: 'wraith', scale: 3.6, color: 0x1E6F9F, emissive: 0x6FD8FF, emissiveI: 0.3 },
-        AbyssalGoliath: { shape: 'golem', scale: 4.6, color: 0x0D3D5C, emissive: 0x2BB4CC, emissiveI: 0.2 },
-        MaelstromWarden: { shape: 'titan', scale: 5.2, color: 0x0A3A6B, emissive: 0x4DD2FF, emissiveI: 0.4 },
-        Thalorath: { shape: 'titan', scale: 6.2, color: 0x003B6F, emissive: 0x4EF2FF, emissiveI: 0.5 },
     };
 
     static getProceduralEnemySpecs() {

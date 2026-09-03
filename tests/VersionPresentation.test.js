@@ -16,18 +16,18 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.41.0.20 for the Tempest Spire boss procession', () => {
-        expect(indexHtml).toContain('Alpha 0.41.0.20');
-        expect(indexHtml).toContain('Patch 0.41.0.20');
-        expect(indexHtml).toContain('the sky remembers its teeth');
-        expect(indexHtml).toContain('The Shattered Aerie has claimed its five wardens');
-        expect(indexHtml).toContain('Windshear is a pressure front given a blade');
-        expect(indexHtml).toContain('Voltara and Zephyros speak through one storm');
-        expect(indexHtml).toContain('The Roc Matriarch owns the horizon');
-        expect(indexHtml).toContain('Kaelix has become the conductor throne');
-        expect(indexHtml).toContain('Zephyrion stands inside the Eternal Gale');
-        expect(indexHtml).toContain('The wide wings do not widen the rules');
-        expect(indexHtml).toContain('2026-09-03-20');
+    test('advances the login screen to alpha 0.41.0.21 for the Drowned Sanctum boss procession', () => {
+        expect(indexHtml).toContain('Alpha 0.41.0.21');
+        expect(indexHtml).toContain('Patch 0.41.0.21');
+        expect(indexHtml).toContain('the drowned crown rises');
+        expect(indexHtml).toContain('The Drowned Sanctum has raised its five sovereign horrors');
+        expect(indexHtml).toContain('Tiderend coils through a broken tide');
+        expect(indexHtml).toContain('The Drowned Choir is many voices but one encounter');
+        expect(indexHtml).toContain('The Goliath carries a graveyard on its back');
+        expect(indexHtml).toContain('The Maelstrom Warden locks the chamber');
+        expect(indexHtml).toContain('Thalorath finally sits beneath all tides');
+        expect(indexHtml).toContain('Idle bosses no longer drown in a missing reference');
+        expect(indexHtml).toContain('2026-09-03-21');
     });
 
     test('retains alpha 0.41.0.14 coherent edge delivery history', () => {
@@ -216,7 +216,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 0.41.0.20';
+        const expectedVersion = 'Alpha 0.41.0.21';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -320,8 +320,8 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Added client coverage for remote interpolation frame-spike handling and the 0.35.0 release state');
     });
 
-    test('marks 0.41.0.20 current and points the active line at 0.41', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.20`');
+    test('marks 0.41.0.21 current and points the active line at 0.41', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.21`');
         expect(alphaRoadmap).toContain('Active implementation line: `0.41`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');
@@ -1391,6 +1391,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.41.0.21');
         expect(indexHtml).toContain('Patch 0.41.0.20');
         expect(indexHtml).toContain('Patch 0.41.0.19');
         expect(indexHtml).toContain('Patch 0.41.0.18');

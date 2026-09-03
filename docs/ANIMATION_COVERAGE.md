@@ -121,6 +121,21 @@ Player classes declare Idle/Walk/Run/Attack/Death clips through either the share
 | BriarMatron | enemy | procedural Thorncrypt briar-crown rig | Idle, Walk, Run, Attack, Death | not-used | sepulchre petals, thorn halo, witch shards, briar sickle, and ritual collapse | local hardware gallery: High/Low |
 | RustboundColossus | enemy | procedural Thorncrypt rust-reliquary rig | Idle, Walk, Run, Attack, Death | not-used | procession slabs, funeral pipes, reliquary rivets, great hammer, and stone collapse | local hardware gallery: High/Low |
 | HollowSentinel | enemy | procedural Thorncrypt hollow-vigil rig | Idle, Walk, Run, Attack, Death | not-used | empty ribs, last witchlight, vigil tatters, crown, poleblade, and final collapse | local hardware gallery: High/Low |
+| Cindermaw | enemy | procedural Furnace Below cinder-hound rig | Idle, Walk, Run, Attack, Death | not-used | quadruped gait, rib kiln, chain tail, horned fire maw, and pouncing collapse | local hardware gallery: High/Low |
+| ScorchedTwins | enemy | procedural Furnace Below twin-flame rig | Idle, Walk, Run, Attack, Death | not-used | two oathbound upper bodies, divided masks, covenant brand, and split glaive | local hardware gallery: High/Low |
+| ForgemasterPyrax | enemy | procedural Furnace Below oath-anvil rig | Idle, Walk, Run, Attack, Death | not-used | white-hot furnace cage, chain apron, six chimneys, and oath-anvil hammer | local hardware gallery: High/Low |
+| ObsidianGuardian | enemy | procedural Furnace Below black-glass bulwark rig | Idle, Walk, Run, Attack, Death | not-used | layered obsidian crest, sealed core, branded bulwark, and monolithic collapse | local hardware gallery: High/Low |
+| LordInfernax | enemy | procedural Furnace Below furnace-lord rig | Idle, Walk, Run, Attack, Death | not-used | ashen throne mantle, eleven-spire crown, orbiting censers, and caldera scepter | local hardware gallery: High/Low |
+| Windshear | enemy | procedural Shattered Aerie wind-razor rig | Idle, Walk, Run, Attack, Death | not-used | floating gale tatters, vacuum rings, razor-vane halo, and pressure scythe | local hardware gallery: High/Low |
+| Stormcallers | enemy | procedural Shattered Aerie divided-oracle rig | Idle, Walk, Run, Attack, Death | not-used | Voltara and Zephyros masks, split storm halos, convergence sparks, and forked staff | local hardware gallery: High/Low |
+| RocMatriarch | enemy | procedural Shattered Aerie thunder-roc rig | Idle, Walk, Run, Attack, Death | not-used | twenty-two articulated storm feathers, silver talons, crown plumage, and dive collapse | local hardware gallery: High/Low |
+| ThunderlordKaelix | enemy | procedural Shattered Aerie storm-bell rig | Idle, Walk, Run, Attack, Death | not-used | conductor throne, captive storm, nine-spire crown, and thunder-bell maul | local hardware gallery: High/Low |
+| Zephyrion | enemy | procedural Shattered Aerie eternal-gale rig | Idle, Walk, Run, Attack, Death | not-used | nine vortex rings, thirteen-spire eye crown, horizon blades, and sky scepter | local hardware gallery: High/Low |
+| TiderendLeviathan | enemy | procedural Drowned Sanctum tide-rend rig | Idle, Walk, Run, Attack, Death | not-used | serpentine tide scales, broad fins, maw tendrils, pearl eyes, and coral crown | local hardware gallery: High/Low |
+| DrownedChoir | enemy | procedural Drowned Sanctum many-voiced rig | Idle, Walk, Run, Attack, Death | not-used | three crowned voices, exposed rib harp, orbiting voice pearls, and cantor chime | local hardware gallery: High/Low |
+| AbyssalGoliath | enemy | procedural Drowned Sanctum anchor-cairn rig | Idle, Walk, Run, Attack, Death | not-used | sunken cairn armor, anchor fists, drowned chain, grave-anchor, and captive souls | local hardware gallery: High/Low |
+| MaelstromWarden | enemy | procedural Drowned Sanctum maelstrom-bulwark rig | Idle, Walk, Run, Attack, Death | not-used | crossed tide rings, vigil shell mantle, moon-anchor poleblade, and pearl orbit | local hardware gallery: High/Low |
+| Thalorath | enemy | procedural Drowned Sanctum tide-king rig | Idle, Walk, Run, Attack, Death | not-used | thirteen-antler crown, black-tide rings, throne tentacles, pearls, and deep trident | local hardware gallery: High/Low |
 | AvengingSeraph | summon | procedural reliquary seraph rig | Idle, Walk, Run, Attack, Death | not-used | articulated broken-sun wings, oath-spear, censer, and collapse | local hardware gallery: High/Low |
 | DwarfSalesman | npc | procedural town actor rig | Idle | not-used | merchant hammer and ember coin language | local hardware gallery: High/Low |
 | QuestNPC | npc | procedural town actor rig | Idle | not-used | oath-scroll and broken-sun quest language | local hardware gallery: High/Low |
@@ -136,21 +151,6 @@ Player classes declare Idle/Walk/Run/Attack/Death clips through either the share
 | ThunderRoc | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
 | TempestGiant | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
 | CycloneAvatar | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| Cindermaw | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| ScorchedTwins | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| ForgemasterPyrax | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| ObsidianGuardian | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| LordInfernax | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| Windshear | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| Stormcallers | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| RocMatriarch | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| ThunderlordKaelix | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| Zephyrion | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| TiderendLeviathan | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| DrownedChoir | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| AbyssalGoliath | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| MaelstromWarden | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| Thalorath | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
 
 ## Persistent and crowd-control actor states (23)
 

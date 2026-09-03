@@ -87,6 +87,21 @@ export const ACTOR_ANIMATION_MANIFEST = Object.freeze({
     Zephyrion: entry('enemy', 'procedural Shattered Aerie eternal-gale rig', WALKING_ENEMY_CLIPS, {
         special: 'nine vortex rings, thirteen-spire eye crown, horizon blades, and sky scepter'
     }),
+    TiderendLeviathan: entry('enemy', 'procedural Drowned Sanctum tide-rend rig', WALKING_ENEMY_CLIPS, {
+        special: 'serpentine tide scales, broad fins, maw tendrils, pearl eyes, and coral crown'
+    }),
+    DrownedChoir: entry('enemy', 'procedural Drowned Sanctum many-voiced rig', WALKING_ENEMY_CLIPS, {
+        special: 'three crowned voices, exposed rib harp, orbiting voice pearls, and cantor chime'
+    }),
+    AbyssalGoliath: entry('enemy', 'procedural Drowned Sanctum anchor-cairn rig', WALKING_ENEMY_CLIPS, {
+        special: 'sunken cairn armor, anchor fists, drowned chain, grave-anchor, and captive souls'
+    }),
+    MaelstromWarden: entry('enemy', 'procedural Drowned Sanctum maelstrom-bulwark rig', WALKING_ENEMY_CLIPS, {
+        special: 'crossed tide rings, vigil shell mantle, moon-anchor poleblade, and pearl orbit'
+    }),
+    Thalorath: entry('enemy', 'procedural Drowned Sanctum tide-king rig', WALKING_ENEMY_CLIPS, {
+        special: 'thirteen-antler crown, black-tide rings, throne tentacles, pearls, and deep trident'
+    }),
 
     AvengingSeraph: entry('summon', 'procedural reliquary seraph rig', WALKING_ENEMY_CLIPS, {
         special: 'articulated broken-sun wings, oath-spear, censer, and collapse'

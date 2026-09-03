@@ -109,6 +109,24 @@ describe('MeshCatalog', () => {
         }
     });
 
+    test('Abyssal Well bosses have explicit procedural recipes instead of generic shape specs', () => {
+        const expectedSources = {
+            TiderendLeviathan: 'procedural Drowned Sanctum tide-rend rig',
+            DrownedChoir: 'procedural Drowned Sanctum many-voiced rig',
+            AbyssalGoliath: 'procedural Drowned Sanctum anchor-cairn rig',
+            MaelstromWarden: 'procedural Drowned Sanctum maelstrom-bulwark rig',
+            Thalorath: 'procedural Drowned Sanctum tide-king rig'
+        };
+        for (const [type, source] of Object.entries(expectedSources)) {
+            expect(MeshCatalog.recipes[type]).toEqual({
+                type: 'enemy',
+                source,
+                animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+            });
+            expect(MeshCatalog.getProceduralEnemySpecs()[type]).toBeUndefined();
+        }
+    });
+
     test('all Lanternhold services use explicit procedural actor recipes', () => {
         for (const type of ['DwarfSalesman', 'QuestNPC', 'DungeonNPC', 'RespecNPC']) {
             expect(MeshCatalog.recipes[type]).toEqual({
@@ -146,8 +164,8 @@ describe('MeshCatalog', () => {
 
         expect(specs.SandstormDjinn).toMatchObject({ shape: 'wraith', scale: 2.5, color: 0xD2B48C });
         expect(specs.MagmaGolem).toMatchObject({ shape: 'golem', emissive: 0xFF2200 });
-        expect(specs.TiderendLeviathan).toMatchObject({ shape: 'serpent', emissiveI: 0.4 });
-        expect(specs.Thalorath).toMatchObject({ shape: 'titan', color: 0x003B6F });
+        expect(specs.InfernalBehemoth).toMatchObject({ shape: 'titan', color: 0x8B0000 });
+        expect(specs.ThunderRoc).toMatchObject({ shape: 'bird', emissiveI: 0.3 });
     });
 
     test('catalogs every realm foliage family without authored plant preloads', () => {

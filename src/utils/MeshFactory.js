@@ -49,6 +49,13 @@ import {
     createProceduralWindshear,
     createProceduralZephyrion
 } from '../art/ProceduralTempestBosses.js';
+import {
+    createProceduralAbyssalGoliath,
+    createProceduralDrownedChoir,
+    createProceduralMaelstromWarden,
+    createProceduralThalorath,
+    createProceduralTiderendLeviathan
+} from '../art/ProceduralAbyssalBosses.js';
 import { createProceduralLanternholdStructure } from '../art/ProceduralLanternholdArchitecture.js';
 
 export class MeshFactory {
@@ -786,6 +793,16 @@ export class MeshFactory {
             return createProceduralThunderlordKaelix();
         } else if (type === 'Zephyrion') {
             return createProceduralZephyrion();
+        } else if (type === 'TiderendLeviathan') {
+            return createProceduralTiderendLeviathan();
+        } else if (type === 'DrownedChoir') {
+            return createProceduralDrownedChoir();
+        } else if (type === 'AbyssalGoliath') {
+            return createProceduralAbyssalGoliath();
+        } else if (type === 'MaelstromWarden') {
+            return createProceduralMaelstromWarden();
+        } else if (type === 'Thalorath') {
+            return createProceduralThalorath();
         } else if (type === 'Siren') {
             return createProceduralSiren();
         } else if (type === 'AquaGolem') {
