@@ -3,7 +3,13 @@ import { Actor } from './Actor.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
 import { Projectile } from './Projectile.js';
-import { createPersistentSceneMesh, disposeSceneMesh, spawnEffectSceneFallback } from './EffectSceneFallback.js';
+import { spawnEffectSceneFallback } from './EffectSceneFallback.js';
+import {
+    PROCEDURAL_PROJECTILE_VISUAL_DEFINITIONS,
+    createProceduralProjectileVisual,
+    releaseProceduralProjectileVisual,
+    updateProceduralProjectileVisual
+} from '../art/ProceduralProjectileEffects.js';
 
 export class Rogue extends Actor {
     constructor(id) {
@@ -50,6 +56,8 @@ export class Rogue extends Actor {
             const activeEntities = chunkManager.getActiveEntities();
             for (let i = this.traps.length - 1; i >= 0; i--) {
                 const trap = this.traps[i];
+                trap.elapsed = (trap.elapsed || 0) + Math.max(0, Number(dt) || 0);
+                updateProceduralProjectileVisual(trap.mesh, 'Tripwire', trap.elapsed, dt);
                 let triggered = false;
                 
                 for (const entity of activeEntities) {
@@ -75,9 +83,9 @@ export class Rogue extends Actor {
                         }
                     }
                 }
-                
+
                 if (triggered) {
-                    disposeSceneMesh(trap.mesh);
+                    releaseProceduralProjectileVisual(trap.mesh);
                     this.traps.splice(i, 1);
                 }
             }
@@ -431,19 +439,16 @@ export class Rogue extends Actor {
             
             // Visual
             const trapScene = gameEngine?.effectScene || gameEngine?.scene;
-            const mesh = createPersistentSceneMesh(trapScene, {
-                geometry: new THREE.CylinderGeometry(0.5, 0.5, 0.1, 8),
-                material: new THREE.MeshBasicMaterial({ color: 0x888888 }),
-                position: trapPos.clone().add(new THREE.Vector3(0, 0.05, 0))
-            });
-            if (!mesh) {
-                return;
-            }
-            
+            if (!trapScene) return;
+            const mesh = createProceduralProjectileVisual('Tripwire');
+            mesh.position.copy(trapPos);
+            trapScene.add(mesh);
+
             this.traps.push({
                 position: trapPos,
-                radius: 1.0,
-                mesh: mesh
+                radius: PROCEDURAL_PROJECTILE_VISUAL_DEFINITIONS.Tripwire.gameplayRadius,
+                mesh,
+                elapsed: 0
             });
             this._suppressLegacyCastVisualUntil = 0;
             
@@ -523,7 +528,7 @@ export class Rogue extends Actor {
         this.stealthTimer = 0;
         this.speedBoostTimer = 0;
         this.speedBoostFactor = 0;
-        this.traps.forEach((trap) => disposeSceneMesh(trap.mesh));
+        this.traps.forEach((trap) => releaseProceduralProjectileVisual(trap.mesh));
         this.traps.length = 0;
         this.mesh?.traverse?.((child) => {
             if (!child.isMesh || !child.material) return;

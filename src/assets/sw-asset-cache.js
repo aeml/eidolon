@@ -1,4 +1,4 @@
-const DEFAULT_ASSET_VERSION = '2026-09-03-22';
+const DEFAULT_ASSET_VERSION = '2026-09-03-23';
 const DEFAULT_CACHE_NAME = `eidolon-assets-${DEFAULT_ASSET_VERSION}`;
 
 self.addEventListener('install', () => {

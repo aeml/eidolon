@@ -285,7 +285,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.41.0.22</span>
+                <span class="start-version-row__label">Alpha 0.41.0.23</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -470,7 +470,7 @@
                                 </div>
                                 <div id="asset-pack-core-status" class="asset-cache-pack__status">Procedural core built in</div>
                                 <div id="asset-pack-core-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-22</div>
+                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-23</div>
                             </div>
                             <button id="btn-download-core-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -482,7 +482,7 @@
                                 </div>
                                 <div id="asset-pack-dungeon-status" class="asset-cache-pack__status">Procedural dungeon entrances built in</div>
                                 <div id="asset-pack-dungeon-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-22</div>
+                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-23</div>
                             </div>
                             <button id="btn-download-dungeon-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -587,6 +587,22 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.41.0.23">
+                    <h3 class="patch-note-entry__title">Patch 0.41.0.23 (spells carry their own relics)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Projectiles are no longer colored primitives:</strong> Fireball, Arcane Missile, Dragonfire Lance, Dagger, Flame Tornado, Meteor, and Phantom Arrow now travel as distinct multi-part dark-fantasy relics.</li>
+                        <li><strong>Every moving spell has a readable construction:</strong> ember cages, violet reliquary seals, dragon barbs, blacksteel guards, cinder helices, fault-crowned extinction stone, and void feathers separate the seven silhouettes at the gameplay camera.</li>
+                        <li><strong>Rogue traps now say what they do:</strong> Tripwire uses posts and three tension lines, Explosive Trap forms a cinder-tooth mine, and Snare Trap closes around paired venom jaws.</li>
+                        <li><strong>Persistent zones become ritual spaces:</strong> Inferno Cataclysm carries animated magma faults and cinders, Consecrated Ground uses reliquary rays and oath pearls, and the compatibility zone has its own crossed old-ward seal.</li>
+                        <li><strong>Zone edges remain combat truth:</strong> outer boundaries never pulse beyond their hit area, and server-encoded scale makes the persistent Inferno seal show its complete 12-unit radius rather than the old five-unit disc.</li>
+                        <li><strong>Offline and online Tripwire agree:</strong> the local trigger and visible tension field now use the server's 1.5-unit radius.</li>
+                        <li><strong>Reconnects reconstruct the same art:</strong> every authoritative projectile subtype routes through the same synchronous code-native factory for the caster, observers, and resumed state.</li>
+                        <li><strong>Effects reuse their bones:</strong> geometry and materials are cached across instances while every projectile, trap, and zone keeps independent motion and can be detached without destroying shared resources.</li>
+                        <li><strong>The audit fails on an unnamed projectile:</strong> tests derive all 12 server-created subtypes from the Go ability handlers and require an explicit production visual; the documented legacy zone is the only compatibility alias.</li>
+                        <li><strong>Hardware evidence now includes three dedicated effect plates:</strong> all seven projectiles, all three traps, and all three zones render with finite transforms alongside the full ability and cleanup matrix.</li>
+                        <li><strong>Clients cross a clean threshold:</strong> the built-in asset generation advances to 2026-09-03-23.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.41.0.22">
                     <h3 class="patch-note-entry__title">Patch 0.41.0.22 (no silhouette left unnamed)</h3>
                     <ul class="patch-note-entry__list">

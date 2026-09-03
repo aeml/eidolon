@@ -464,6 +464,53 @@ test.describe('deterministic production animation gallery', () => {
                 snapshot.attachedEffects + snapshot.spiritGuardians;
         }).toBe(0);
 
+        for (const expected of [
+            { className: 'Wizard', ability: 'Inferno Cataclysm', type: 'ZoneDamage', family: 'wizard', role: 'zone', radius: 12 },
+            { className: 'Cleric', ability: 'Consecrated Ground', type: 'ZoneHoly', family: 'cleric', role: 'zone', radius: 5 },
+            { className: 'Rogue', ability: 'Tripwire', type: 'Tripwire', family: 'rogue', role: 'trap', radius: 1.5 }
+        ]) {
+            await page.locator('#gallery-class').selectOption(expected.className);
+            await waitForActor(page, expected.className);
+            await page.locator('#gallery-ability').selectOption(expected.ability);
+            await page.locator('#gallery-persist').click();
+            await expect.poll(async () => {
+                const snapshot = await galleryMetrics(page);
+                return snapshot.proceduralProjectileVisuals?.[0] || null;
+            }).toEqual(expect.objectContaining({
+                type: expected.type,
+                family: expected.family,
+                role: expected.role,
+                gameplayRadius: expected.radius
+            }));
+        }
+
+        for (const [role, expectedCount] of [['projectile', 7], ['trap', 3], ['zone', 3]]) {
+            await page.evaluate((galleryRole) => {
+                window.__eidolonAnimationGalleryController.presentProjectileGallery(galleryRole);
+            }, role);
+            await expect.poll(async () => {
+                const snapshot = await galleryMetrics(page);
+                return snapshot.phase === `projectiles:${role}`
+                    ? snapshot.proceduralProjectileVisuals.length
+                    : -1;
+            }).toBe(expectedCount);
+            const projectileMetrics = await galleryMetrics(page);
+            expect(projectileMetrics.proceduralProjectileVisuals.every((entry) =>
+                entry.role === role && entry.artStyle.length > 8 && entry.gameplayRadius > 0
+            )).toBe(true);
+            expect(projectileMetrics.nonFiniteTransforms).toBe(0);
+            await page.locator('#animation-gallery').evaluate((panel) => {
+                panel.style.visibility = 'hidden';
+            });
+            await page.screenshot({
+                path: testInfo.outputPath(`procedural-${role}-gallery.png`),
+                animations: 'allow'
+            });
+            await page.locator('#animation-gallery').evaluate((panel) => {
+                panel.style.visibility = '';
+            });
+        }
+
         for (const quality of ['high', 'low']) {
             await page.locator('#gallery-quality').selectOption(quality);
             await page.locator('#gallery-run-all').click();

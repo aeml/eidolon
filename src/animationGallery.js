@@ -23,6 +23,8 @@ import {
     EQUIPMENT_RENDER_SLOTS,
     EQUIPMENT_VISUAL_DESCRIPTORS
 } from './art/ProceduralEquipment.js';
+import { getAbilityAoeRadius } from './skills/abilityRadii.js';
+import { PROCEDURAL_PROJECTILE_VISUAL_DEFINITIONS } from './art/ProceduralProjectileEffects.js';
 
 const PLAYER_TYPES = Object.freeze({ Fighter, Rogue, Wizard, Cleric });
 const PLAYER_TYPE_NAMES = Object.freeze(Object.keys(PLAYER_TYPES));
@@ -413,6 +415,8 @@ export class AnimationGallery {
 
     framePresentation(equipment = false) {
         const mode = equipment ? 'equipment' : 'presentation';
+        if (this.actor?.mesh) this.actor.mesh.visible = true;
+        if (this.remoteActor?.mesh) this.remoteActor.mesh.visible = true;
         if (this.targetActor?.mesh) this.targetActor.mesh.visible = !equipment;
         if (equipment) {
             const centerX = this.remoteActor ? 2.8 : 1.2;
@@ -430,6 +434,50 @@ export class AnimationGallery {
         }
         this.framingMode = mode;
         this.controls.update();
+    }
+
+    presentProjectileGallery(role = 'projectile') {
+        const entries = Object.entries(PROCEDURAL_PROJECTILE_VISUAL_DEFINITIONS)
+            .filter(([, definition]) => definition.role === role);
+        if (!this.actor || entries.length === 0) return false;
+        this.cleanupPresentation();
+        [this.actor, this.remoteActor, this.targetActor].forEach((actor) => {
+            if (actor?.mesh) actor.mesh.visible = false;
+        });
+
+        const engine = this.actor.gameEngine;
+        entries.forEach(([type], index) => {
+            const spacing = role === 'zone' ? 11 : (role === 'trap' ? 3.4 : 2.2);
+            const x = (index - (entries.length - 1) / 2) * spacing;
+            const y = role === 'projectile' ? 1.4 : 0;
+            const entity = new Projectile(
+                `gallery-${role}-${type}`,
+                this.actor,
+                type,
+                new THREE.Vector3(x, y, 3.8),
+                new THREE.Vector3(x, y, 5.8)
+            );
+            entity.velocity.set(0, 0, 0);
+            entity.speed = 0;
+            entity.lifeTime = Number.POSITIVE_INFINITY;
+            engine.addEntity(entity);
+        });
+
+        if (role === 'zone') {
+            this.controls.target.set(0, 0, 3.8);
+            this.renderSystem.camera.position.set(0, 25, 27);
+            this.renderSystem.setZoom(19);
+        } else {
+            this.controls.target.set(0, role === 'projectile' ? 1.3 : 0.25, 3.8);
+            this.renderSystem.camera.position.set(10, 9, 17);
+            this.renderSystem.setZoom(role === 'projectile' ? 10 : 9);
+        }
+        this.framingMode = `projectile-gallery:${role}`;
+        this.controls.update();
+        this.phase = `projectiles:${role}`;
+        this.setStatus(`${entries.length} procedural ${role} visuals`, 'playing');
+        this.updateMetrics();
+        return true;
     }
 
     frameActorState() {
@@ -604,9 +652,13 @@ export class AnimationGallery {
 
         const engine = actor.gameEngine;
         if (stateKey === 'inferno_cataclysm') {
-            engine.addEntity(new Projectile('gallery-inferno-zone', actor, 'ZoneDamage', TARGET_POSITION, TARGET_POSITION));
+            const zone = new Projectile('gallery-inferno-zone', actor, 'ZoneDamage', TARGET_POSITION, TARGET_POSITION);
+            zone.setScale((getAbilityAoeRadius('Wizard', 'Inferno Cataclysm', actor) || 12) / 5);
+            engine.addEntity(zone);
         } else if (stateKey === 'consecrated_ground') {
-            engine.addEntity(new Projectile('gallery-holy-zone', actor, 'ZoneHoly', TARGET_POSITION, TARGET_POSITION));
+            const zone = new Projectile('gallery-holy-zone', actor, 'ZoneHoly', TARGET_POSITION, TARGET_POSITION);
+            zone.setScale((getAbilityAoeRadius('Cleric', 'Consecrated Ground', actor) || 5) / 5);
+            engine.addEntity(zone);
         } else if (stateKey === 'tripwire') {
             engine.addEntity(new Projectile('gallery-tripwire', actor, 'Tripwire', TARGET_POSITION, TARGET_POSITION));
         } else if (stateKey === 'gravity_well' || stateKey === 'smoke_bomb') {
@@ -833,6 +885,15 @@ export class AnimationGallery {
                 targetMetrics.nonFiniteTransforms + effectMetrics.nonFiniteTransforms + persistentMetrics.nonFiniteTransforms,
             activeTransientEffects: this.effects.filter((effect) => effect.isActive).length,
             persistentEntities: this.persistentEntities.length,
+            proceduralProjectileVisuals: this.persistentEntities
+                .filter((entity) => entity.mesh?.userData?.proceduralProjectile)
+                .map((entity) => ({
+                    type: entity.mesh.userData.projectileType,
+                    family: entity.mesh.userData.projectileFamily,
+                    role: entity.mesh.userData.projectileRole,
+                    artStyle: entity.mesh.userData.artStyle,
+                    gameplayRadius: entity.mesh.userData.gameplayRadius
+                })),
             attachedEffects: (this.actor?.attachedStatusEffects?.size || 0) +
                 (this.remoteActor?.attachedStatusEffects?.size || 0) +
                 (this.targetActor?.attachedStatusEffects?.size || 0),
@@ -888,6 +949,7 @@ export class AnimationGallery {
 
     async initialize() {
         this.panel.hidden = false;
+        window.__eidolonAnimationGalleryController = this;
         await this.loadActors(this.currentActorType);
         await this.presentAbility('persistent');
         this.updateCoverageLabel();

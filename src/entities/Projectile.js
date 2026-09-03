@@ -1,44 +1,12 @@
 import * as THREE from 'three';
 import { Entity } from './Entity.js';
 import { spawnSceneFallbackBurst } from './EffectSceneFallback.js';
-
-// Shared Resources
-const FIREBALL_GEO = new THREE.SphereGeometry(0.5, 8, 8);
-const FIREBALL_MAT = new THREE.MeshStandardMaterial({ 
-    color: 0xff4500, 
-    emissive: 0xff0000,
-    emissiveIntensity: 2
-});
-
-const DAGGER_GEO = new THREE.ConeGeometry(0.2, 1.0, 8);
-DAGGER_GEO.rotateX(Math.PI / 2); // Point forward
-const DAGGER_MAT = new THREE.MeshStandardMaterial({ color: 0xcccccc, metalness: 0.8, roughness: 0.2 });
-
-// Shared Resources for other projectiles
-const ARCANE_GEO = new THREE.SphereGeometry(0.3, 8, 8);
-const ARCANE_MAT = new THREE.MeshStandardMaterial({ color: 0xaa00ff, emissive: 0x8800ff, emissiveIntensity: 2 });
-
-const LANCE_GEO = new THREE.CylinderGeometry(0.2, 0.4, 2.0, 8);
-LANCE_GEO.rotateX(-Math.PI / 2);
-const LANCE_MAT = new THREE.MeshStandardMaterial({ color: 0xff0000, emissive: 0xff4400, emissiveIntensity: 3 });
-
-const TORNADO_GEO = new THREE.CylinderGeometry(1.5, 0.5, 4.0, 8, 1, true);
-const TORNADO_MAT = new THREE.MeshStandardMaterial({ color: 0xff4500, emissive: 0xff0000, emissiveIntensity: 2, side: THREE.DoubleSide, transparent: true, opacity: 0.6 });
-
-const METEOR_GEO = new THREE.SphereGeometry(1.5, 16, 16);
-const METEOR_MAT = new THREE.MeshStandardMaterial({ color: 0x550000, emissive: 0xff4500, emissiveIntensity: 1, roughness: 0.9 });
-
-const PHANTOM_MAT = new THREE.MeshStandardMaterial({ color: 0x8800ff, metalness: 0.8, roughness: 0.2, emissive: 0x440088 });
-
-const TRAP_GEO = new THREE.CylinderGeometry(0.5, 0.5, 0.2, 8);
-const TRIPWIRE_MAT = new THREE.MeshBasicMaterial({ color: 0x888888 });
-const EXPLOSIVE_MAT = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-const SNARE_MAT = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-
-const ZONE_GEO = new THREE.CylinderGeometry(5.0, 5.0, 0.1, 32);
-const ZONE_DAMAGE_MAT = new THREE.MeshBasicMaterial({ color: 0xff4400, transparent: true, opacity: 0.25 });
-const ZONE_HOLY_MAT = new THREE.MeshBasicMaterial({ color: 0xffd700, transparent: true, opacity: 0.3 });
-const STATIONARY_VISUAL_TYPES = new Set(['Tripwire', 'ExplosiveTrap', 'SnareTrap', 'ZoneDamage', 'ZoneHoly', 'Zone']);
+import {
+    PROCEDURAL_PROJECTILE_VISUAL_DEFINITIONS,
+    applyProceduralProjectileScale,
+    createProceduralProjectileVisual,
+    updateProceduralProjectileVisual
+} from '../art/ProceduralProjectileEffects.js';
 
 // =====================================================
 // Particle Pool Manager - Centralized for performance
@@ -191,7 +159,8 @@ export class Projectile extends Entity {
         }
         
         this.damage = 0;
-        this.radius = type === 'Fireball' ? 2.0 : 1.5; // Increased hit radius
+        this.radius = PROCEDURAL_PROJECTILE_VISUAL_DEFINITIONS[type]?.gameplayRadius
+            ?? (type === 'Fireball' ? 2.0 : 1.5);
         this.lifeTime = 10.0; // Increased lifetime to allow long-range shots
         this.visualElapsed = 0;
         
@@ -208,93 +177,65 @@ export class Projectile extends Entity {
     }
 
     initMesh() {
-        let geometry, material;
-        
         if (this.type === 'Fireball') {
-            geometry = FIREBALL_GEO;
-            material = FIREBALL_MAT;
             this.damage = 20 + (this.owner.stats.intelligence * 2);
         } else if (this.type === 'ArcaneMissile') {
-            geometry = ARCANE_GEO;
-            material = ARCANE_MAT;
             this.damage = 10 + (this.owner.stats.intelligence * 1.0);
             this.speed = 25;
         } else if (this.type === 'DragonfireLance') {
-            geometry = LANCE_GEO;
-            material = LANCE_MAT;
             this.damage = 50 + (this.owner.stats.intelligence * 4.0);
             this.speed = 40;
         } else if (this.type === 'Dagger') {
-            geometry = DAGGER_GEO;
-            material = DAGGER_MAT;
             this.damage = 15 + (this.owner.stats.dexterity * 1.5);
         } else if (this.type === 'FlameTornado') {
-            geometry = TORNADO_GEO;
-            material = TORNADO_MAT;
             this.damage = 30 + (this.owner.stats.intelligence * 2.0);
-            this.speed = 10; 
+            this.speed = 10;
             this.isPiercingThrow = true;
         } else if (this.type === 'Meteor') {
-            geometry = METEOR_GEO;
-            material = METEOR_MAT;
             this.damage = 50 + (this.owner.stats.intelligence * 3);
         } else if (this.type === 'PhantomArrow') {
-            geometry = DAGGER_GEO;
-            material = PHANTOM_MAT;
             this.damage = 25 + (this.owner.stats.dexterity * 2.0);
             this.speed = 35;
         } else if (this.type === 'Tripwire') {
-            geometry = TRAP_GEO;
-            material = TRIPWIRE_MAT;
             this.damage = 20 + this.owner.stats.dexterity;
             this.speed = 0;
             this.velocity.set(0,0,0);
         } else if (this.type === 'ExplosiveTrap') {
-            geometry = TRAP_GEO;
-            material = EXPLOSIVE_MAT;
             this.damage = 50 + (this.owner.stats.dexterity * 3);
             this.speed = 0;
             this.velocity.set(0,0,0);
         } else if (this.type === 'SnareTrap') {
-            geometry = TRAP_GEO;
-            material = SNARE_MAT;
             this.damage = 10;
             this.speed = 0;
             this.velocity.set(0,0,0);
         } else if (this.type === 'ZoneDamage') {
-            geometry = ZONE_GEO;
-            material = ZONE_DAMAGE_MAT;
             this.damage = 30 + (this.owner.stats.intelligence * 1);
             this.speed = 0;
             this.velocity.set(0,0,0);
         } else if (this.type === 'ZoneHoly') {
-            geometry = ZONE_GEO;
-            material = ZONE_HOLY_MAT;
             this.damage = 20 + (this.owner.stats.wisdom * 1);
             this.speed = 0;
             this.velocity.set(0,0,0);
         } else if (this.type === 'Zone') {
             // Legacy fallback
-            geometry = ZONE_GEO;
-            material = ZONE_HOLY_MAT;
             this.damage = 20 + (this.owner.stats.wisdom * 1);
             this.speed = 0;
             this.velocity.set(0,0,0);
         }
 
-        this.mesh = new THREE.Mesh(geometry, material);
+        this.mesh = createProceduralProjectileVisual(this.type);
         this.mesh.position.copy(this.position);
         this.mesh.userData.entityId = this.id; // Ensure ID is set for raycasting/identification
         
         // Rotate to face direction
         const lookTarget = this.position.clone().add(this.velocity);
-        this.mesh.lookAt(lookTarget);
+        if (!this.mesh.userData.upright) this.mesh.lookAt(lookTarget);
         this.rotation.copy(this.mesh.quaternion);
-        
-        // Spin effect for Tornado
-        if (this.type === 'FlameTornado') {
-            this.mesh.rotation.z = Math.random() * Math.PI;
-        }
+    }
+
+    setScale(scale) {
+        super.setScale(scale);
+        applyProceduralProjectileScale(this.mesh, this.scale);
     }
 
     update(dt, collisionManager, player, chunkManager, floatingTextManager, gameEngine) {
@@ -307,10 +248,6 @@ export class Projectile extends Entity {
         // Meteor Trail - Using centralized particle pool for performance
         if (this.type === 'Meteor' && effectScene) {
             particlePool.spawn(effectScene, this.position, 0xffaa00);
-        }
-
-        if (this.type === 'FlameTornado' && this.mesh) {
-            this.mesh.rotation.x += 10.0 * dt; // Spin around local axis
         }
 
         // In multiplayer, position is authoritative from server, but we can interpolate
@@ -346,19 +283,7 @@ export class Projectile extends Entity {
         
         if (this.mesh) {
             this.mesh.position.copy(this.position);
-            if (STATIONARY_VISUAL_TYPES.has(this.type)) {
-                const baseScale = this.mesh.userData.projectileVisualBaseScale || this.mesh.scale.clone();
-                this.mesh.userData.projectileVisualBaseScale = baseScale;
-                const zone = this.type === 'ZoneDamage' || this.type === 'ZoneHoly' || this.type === 'Zone';
-                const pulse = 1 + Math.sin(this.visualElapsed * (zone ? 2.2 : 4.4)) * (zone ? 0.035 : 0.08);
-                this.mesh.scale.copy(baseScale);
-                if (zone) {
-                    this.mesh.scale.x *= pulse;
-                    this.mesh.scale.z *= pulse;
-                } else {
-                    this.mesh.scale.multiplyScalar(pulse);
-                }
-            }
+            updateProceduralProjectileVisual(this.mesh, this.type, this.visualElapsed, dt);
         }
 
         // Collision Detection (Client-side prediction / Singleplayer)

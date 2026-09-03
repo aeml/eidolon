@@ -26,6 +26,12 @@ describe('Rogue Tripwire effect routing', () => {
         expect(rogue.traps).toHaveLength(1);
         expect(rogue.traps[0].mesh.parent).toBe(effectScene);
         expect(effectScene.children).toContain(rogue.traps[0].mesh);
+        expect(rogue.traps[0].mesh.userData).toEqual(expect.objectContaining({
+            proceduralProjectile: true,
+            projectileType: 'Tripwire',
+            gameplayRadius: 1.5
+        }));
+        expect(rogue.traps[0].radius).toBe(1.5);
     });
 
     test('triggered Tripwire clears its persistent visual from effectScene, disposes it, and spawns smoke through transient effects', () => {
@@ -41,8 +47,9 @@ describe('Rogue Tripwire effect routing', () => {
 
         rogue.useAbility(new THREE.Vector3(4, 0, 6), gameEngine, 'Tripwire');
         const trapMesh = rogue.traps[0].mesh;
-        const geometryDispose = jest.spyOn(trapMesh.geometry, 'dispose');
-        const materialDispose = jest.spyOn(trapMesh.material, 'dispose');
+        const trapPart = trapMesh.getObjectByProperty('isMesh', true);
+        const geometryDispose = jest.spyOn(trapPart.geometry, 'dispose');
+        const materialDispose = jest.spyOn(trapPart.material, 'dispose');
         const enemy = Object.create(Actor.prototype);
         enemy.isActive = true;
         enemy.state = 'IDLE';
@@ -54,8 +61,9 @@ describe('Rogue Tripwire effect routing', () => {
 
         expect(rogue.traps).toHaveLength(0);
         expect(effectScene.children).toHaveLength(0);
-        expect(geometryDispose).toHaveBeenCalledTimes(1);
-        expect(materialDispose).toHaveBeenCalledTimes(1);
+        expect(trapMesh.children).toHaveLength(0);
+        expect(geometryDispose).not.toHaveBeenCalled();
+        expect(materialDispose).not.toHaveBeenCalled();
         expect(spawnTransientEffect).toHaveBeenCalledWith('smoke', expect.any(THREE.Vector3), 0xaaaaaa, { source: rogue });
     });
 
