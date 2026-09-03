@@ -16,18 +16,18 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.41.0.21 for the Drowned Sanctum boss procession', () => {
-        expect(indexHtml).toContain('Alpha 0.41.0.21');
-        expect(indexHtml).toContain('Patch 0.41.0.21');
-        expect(indexHtml).toContain('the drowned crown rises');
-        expect(indexHtml).toContain('The Drowned Sanctum has raised its five sovereign horrors');
-        expect(indexHtml).toContain('Tiderend coils through a broken tide');
-        expect(indexHtml).toContain('The Drowned Choir is many voices but one encounter');
-        expect(indexHtml).toContain('The Goliath carries a graveyard on its back');
-        expect(indexHtml).toContain('The Maelstrom Warden locks the chamber');
-        expect(indexHtml).toContain('Thalorath finally sits beneath all tides');
-        expect(indexHtml).toContain('Idle bosses no longer drown in a missing reference');
-        expect(indexHtml).toContain('2026-09-03-21');
+    test('advances the login screen to alpha 0.41.0.22 for the complete procedural bestiary', () => {
+        expect(indexHtml).toContain('Alpha 0.41.0.22');
+        expect(indexHtml).toContain('Patch 0.41.0.22');
+        expect(indexHtml).toContain('no silhouette left unnamed');
+        expect(indexHtml).toContain('The last generic overworld actors have found their forms');
+        expect(indexHtml).toContain('Cinder now has a complete hostile procession');
+        expect(indexHtml).toContain('Stormcrown owns more than one kind of storm');
+        expect(indexHtml).toContain('The sky creatures finally fly as silhouettes');
+        expect(indexHtml).toContain('The behemoth is no longer another tall humanoid');
+        expect(indexHtml).toContain('The generic production actor registry is now empty');
+        expect(indexHtml).toContain('all 47 actor archetypes');
+        expect(indexHtml).toContain('2026-09-03-22');
     });
 
     test('retains alpha 0.41.0.14 coherent edge delivery history', () => {
@@ -216,7 +216,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 0.41.0.21';
+        const expectedVersion = 'Alpha 0.41.0.22';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -320,8 +320,8 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Added client coverage for remote interpolation frame-spike handling and the 0.35.0 release state');
     });
 
-    test('marks 0.41.0.21 current and points the active line at 0.41', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.21`');
+    test('marks 0.41.0.22 current and points the active line at 0.41', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.22`');
         expect(alphaRoadmap).toContain('Active implementation line: `0.41`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');
@@ -1391,6 +1391,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.41.0.22');
         expect(indexHtml).toContain('Patch 0.41.0.21');
         expect(indexHtml).toContain('Patch 0.41.0.20');
         expect(indexHtml).toContain('Patch 0.41.0.19');

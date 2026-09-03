@@ -136,21 +136,21 @@ Player classes declare Idle/Walk/Run/Attack/Death clips through either the share
 | AbyssalGoliath | enemy | procedural Drowned Sanctum anchor-cairn rig | Idle, Walk, Run, Attack, Death | not-used | sunken cairn armor, anchor fists, drowned chain, grave-anchor, and captive souls | local hardware gallery: High/Low |
 | MaelstromWarden | enemy | procedural Drowned Sanctum maelstrom-bulwark rig | Idle, Walk, Run, Attack, Death | not-used | crossed tide rings, vigil shell mantle, moon-anchor poleblade, and pearl orbit | local hardware gallery: High/Low |
 | Thalorath | enemy | procedural Drowned Sanctum tide-king rig | Idle, Walk, Run, Attack, Death | not-used | thirteen-antler crown, black-tide rings, throne tentacles, pearls, and deep trident | local hardware gallery: High/Low |
+| SandstormDjinn | enemy | procedural Cinder Wastes ash-dune rig | Idle, Walk, Run, Attack, Death | not-used | floating glasswind veils, crossed sand rings, depth shards, crown, and glass scimitar | local hardware gallery: High/Low |
+| MagmaGolem | enemy | procedural Cinder Wastes fault-heart rig | Idle, Walk, Run, Attack, Death | not-used | eighteen basalt fault slabs, caged magma heart, burning fists, and fault hammer | local hardware gallery: High/Low |
+| ScorchedWraith | enemy | procedural Cinder Wastes cinder-shroud rig | Idle, Walk, Run, Attack, Death | not-used | burnt rib reliquary, crown, paired censers, ember orbit, and cinder scythe | local hardware gallery: High/Low |
+| InfernalBehemoth | enemy | procedural Cinder Wastes kiln-behemoth rig | Idle, Walk, Run, Attack, Death | not-used | quadruped kiln body, horned bull skull, cloven hooves, tusks, and caldera spine | local hardware gallery: High/Low |
+| PhoenixSentinel | enemy | procedural Cinder Wastes oathflame-phoenix rig | Idle, Walk, Run, Attack, Death | not-used | twenty-four oathflame wing feathers, ember keel, crown plumage, talons, and long fire tail | local hardware gallery: High/Low |
+| StormHarpy | enemy | procedural Stormcrown gale-talon rig | Idle, Walk, Run, Attack, Death | not-used | eighteen razor feathers, masked torso, crown, raptor talons, and lightning javelin | local hardware gallery: High/Low |
+| CloudElemental | enemy | procedural Stormcrown captive-cloud rig | Idle, Walk, Run, Attack, Death | not-used | twelve cloud cairns, eight pressure rings, storm core, orbit shards, and conductor crown | local hardware gallery: High/Low |
+| ThunderRoc | enemy | procedural Stormcrown conductor-roc rig | Idle, Walk, Run, Attack, Death | not-used | twenty-six conductor feathers, lightning breast keel, crown plumage, talons, and storm tail | local hardware gallery: High/Low |
+| TempestGiant | enemy | procedural Stormcrown thunder-cairn rig | Idle, Walk, Run, Attack, Death | not-used | sixteen storm slabs, ten conductor rods, captive heart, nine-spire crown, and thunder maul | local hardware gallery: High/Low |
+| CycloneAvatar | enemy | procedural Stormcrown hollow-cyclone rig | Idle, Walk, Run, Attack, Death | not-used | eleven crossed cyclone rings, sixteen horizon blades, hollow eye crown, and wind blade | local hardware gallery: High/Low |
 | AvengingSeraph | summon | procedural reliquary seraph rig | Idle, Walk, Run, Attack, Death | not-used | articulated broken-sun wings, oath-spear, censer, and collapse | local hardware gallery: High/Low |
 | DwarfSalesman | npc | procedural town actor rig | Idle | not-used | merchant hammer and ember coin language | local hardware gallery: High/Low |
 | QuestNPC | npc | procedural town actor rig | Idle | not-used | oath-scroll and broken-sun quest language | local hardware gallery: High/Low |
 | DungeonNPC | npc | procedural town actor rig | Idle | not-used | wayfinding lantern and key language | local hardware gallery: High/Low |
 | RespecNPC | npc | procedural town actor rig | Idle | not-used | memory reliquary and soul language | local hardware gallery: High/Low |
-| SandstormDjinn | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| MagmaGolem | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| ScorchedWraith | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| InfernalBehemoth | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| PhoenixSentinel | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| StormHarpy | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| CloudElemental | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| ThunderRoc | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| TempestGiant | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| CycloneAvatar | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
 
 ## Persistent and crowd-control actor states (23)
 

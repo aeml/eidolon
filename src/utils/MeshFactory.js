@@ -56,6 +56,10 @@ import {
     createProceduralThalorath,
     createProceduralTiderendLeviathan
 } from '../art/ProceduralAbyssalBosses.js';
+import {
+    PROCEDURAL_OVERWORLD_ENEMY_DEFINITIONS,
+    createProceduralOverworldEnemy
+} from '../art/ProceduralOverworldEnemies.js';
 import { createProceduralLanternholdStructure } from '../art/ProceduralLanternholdArchitecture.js';
 
 export class MeshFactory {
@@ -803,6 +807,8 @@ export class MeshFactory {
             return createProceduralMaelstromWarden();
         } else if (type === 'Thalorath') {
             return createProceduralThalorath();
+        } else if (PROCEDURAL_OVERWORLD_ENEMY_DEFINITIONS[type]) {
+            return createProceduralOverworldEnemy(type);
         } else if (type === 'Siren') {
             return createProceduralSiren();
         } else if (type === 'AquaGolem') {

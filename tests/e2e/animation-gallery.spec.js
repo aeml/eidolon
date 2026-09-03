@@ -59,7 +59,17 @@ const proceduralRegionalEnemyTypes = Object.freeze([
     ['DrownedChoir', 'Drowned Sanctum many-voiced reliquary'],
     ['AbyssalGoliath', 'Drowned Sanctum anchor-cairn goliath'],
     ['MaelstromWarden', 'Drowned Sanctum maelstrom bulwark'],
-    ['Thalorath', 'Drowned Sanctum moonless tide-king']
+    ['Thalorath', 'Drowned Sanctum moonless tide-king'],
+    ['SandstormDjinn', 'Cinder Wastes ash-dune djinn'],
+    ['MagmaGolem', 'Cinder Wastes fault-heart golem'],
+    ['ScorchedWraith', 'Cinder Wastes cinder-shroud wraith'],
+    ['InfernalBehemoth', 'Cinder Wastes horned kiln-behemoth'],
+    ['PhoenixSentinel', 'Cinder Wastes oathflame phoenix'],
+    ['StormHarpy', 'Stormcrown gale-talon harpy'],
+    ['CloudElemental', 'Stormcrown captive-cloud elemental'],
+    ['ThunderRoc', 'Stormcrown conductor roc'],
+    ['TempestGiant', 'Stormcrown thunder-cairn giant'],
+    ['CycloneAvatar', 'Stormcrown hollow-cyclone avatar']
 ]);
 const proceduralMoltenBossTypes = new Set([
     'Cindermaw', 'ScorchedTwins', 'ForgemasterPyrax', 'ObsidianGuardian', 'LordInfernax'
@@ -69,6 +79,12 @@ const proceduralTempestBossTypes = new Set([
 ]);
 const proceduralAbyssalBossTypes = new Set([
     'TiderendLeviathan', 'DrownedChoir', 'AbyssalGoliath', 'MaelstromWarden', 'Thalorath'
+]);
+const proceduralCinderEnemyTypes = new Set([
+    'SandstormDjinn', 'MagmaGolem', 'ScorchedWraith', 'InfernalBehemoth', 'PhoenixSentinel'
+]);
+const proceduralStormcrownEnemyTypes = new Set([
+    'StormHarpy', 'CloudElemental', 'ThunderRoc', 'TempestGiant', 'CycloneAvatar'
 ]);
 
 test.use({ trace: 'off', video: 'off' });
@@ -346,6 +362,12 @@ test.describe('deterministic production animation gallery', () => {
             }
             if (proceduralAbyssalBossTypes.has(actorType)) {
                 expect(metrics.proceduralBossFamily).toBe('abyssal-well');
+            }
+            if (proceduralCinderEnemyTypes.has(actorType)) {
+                expect(metrics.proceduralOverworldFamily).toBe('cinder-wastes');
+            }
+            if (proceduralStormcrownEnemyTypes.has(actorType)) {
+                expect(metrics.proceduralOverworldFamily).toBe('stormcrown-reach');
             }
 
             for (const state of ['Idle', 'Walk', 'Run', 'Attack', 'Death']) {

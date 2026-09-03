@@ -204,6 +204,29 @@ describe('actor animation manifest', () => {
         }
     });
 
+    test('classifies the final Cinder Wastes and Stormcrown enemies as intentional regional rigs', () => {
+        const expectedSources = {
+            SandstormDjinn: 'procedural Cinder Wastes ash-dune rig',
+            MagmaGolem: 'procedural Cinder Wastes fault-heart rig',
+            ScorchedWraith: 'procedural Cinder Wastes cinder-shroud rig',
+            InfernalBehemoth: 'procedural Cinder Wastes kiln-behemoth rig',
+            PhoenixSentinel: 'procedural Cinder Wastes oathflame-phoenix rig',
+            StormHarpy: 'procedural Stormcrown gale-talon rig',
+            CloudElemental: 'procedural Stormcrown captive-cloud rig',
+            ThunderRoc: 'procedural Stormcrown conductor-roc rig',
+            TempestGiant: 'procedural Stormcrown thunder-cairn rig',
+            CycloneAvatar: 'procedural Stormcrown hollow-cyclone rig'
+        };
+        for (const [type, source] of Object.entries(expectedSources)) {
+            expect(ACTOR_ANIMATION_MANIFEST[type]).toEqual(expect.objectContaining({
+                category: 'enemy',
+                source,
+                states: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+            }));
+            expect(ACTOR_ANIMATION_MANIFEST[type].special).not.toBe('Attack clip plus class telegraph/VFX');
+        }
+    });
+
     test('no combat actor is classified without idle, movement, attack, and death presentation', () => {
         for (const actor of listActorAnimationEntries()) {
             if (actor.category === 'npc') continue;

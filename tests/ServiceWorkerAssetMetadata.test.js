@@ -39,11 +39,11 @@ describe('asset service worker pack metadata', () => {
             data: {
                 type: 'warm-asset-pack',
                 payload: {
-                    cacheName: 'eidolon-assets-2026-09-03-21',
-                    metadataCacheName: 'eidolon-assets-2026-09-03-21-meta',
+                    cacheName: 'eidolon-assets-2026-09-03-22',
+                    metadataCacheName: 'eidolon-assets-2026-09-03-22-meta',
                     packName: 'core-models',
-                    version: '2026-09-03-21',
-                    assets: ['./assets/foo.glb?v=2026-09-03-21', './assets/bar.glb?v=2026-09-03-21']
+                    version: '2026-09-03-22',
+                    assets: ['./assets/foo.glb?v=2026-09-03-22', './assets/bar.glb?v=2026-09-03-22']
                 }
             },
             waitUntil: (promise) => {
@@ -64,7 +64,7 @@ describe('asset service worker pack metadata', () => {
             payload: expect.objectContaining({
                 packName: 'core-models',
                 percent: 100,
-                cachedVersion: '2026-09-03-21'
+                cachedVersion: '2026-09-03-22'
             })
         }));
     });

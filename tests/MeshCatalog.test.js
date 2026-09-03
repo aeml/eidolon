@@ -127,6 +127,29 @@ describe('MeshCatalog', () => {
         }
     });
 
+    test('Cinder Wastes and Stormcrown enemies have explicit regional recipes instead of generic shape specs', () => {
+        const expectedSources = {
+            SandstormDjinn: 'procedural Cinder Wastes ash-dune rig',
+            MagmaGolem: 'procedural Cinder Wastes fault-heart rig',
+            ScorchedWraith: 'procedural Cinder Wastes cinder-shroud rig',
+            InfernalBehemoth: 'procedural Cinder Wastes kiln-behemoth rig',
+            PhoenixSentinel: 'procedural Cinder Wastes oathflame-phoenix rig',
+            StormHarpy: 'procedural Stormcrown gale-talon rig',
+            CloudElemental: 'procedural Stormcrown captive-cloud rig',
+            ThunderRoc: 'procedural Stormcrown conductor-roc rig',
+            TempestGiant: 'procedural Stormcrown thunder-cairn rig',
+            CycloneAvatar: 'procedural Stormcrown hollow-cyclone rig'
+        };
+        for (const [type, source] of Object.entries(expectedSources)) {
+            expect(MeshCatalog.recipes[type]).toEqual({
+                type: 'enemy',
+                source,
+                animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+            });
+        }
+        expect(MeshCatalog.getProceduralEnemySpecs()).toEqual({});
+    });
+
     test('all Lanternhold services use explicit procedural actor recipes', () => {
         for (const type of ['DwarfSalesman', 'QuestNPC', 'DungeonNPC', 'RespecNPC']) {
             expect(MeshCatalog.recipes[type]).toEqual({
@@ -159,13 +182,8 @@ describe('MeshCatalog', () => {
         expect(MeshCatalog.recipes.Forge.source).toBe('procedural Lanternhold oathfire forge');
     });
 
-    test('catalogs procedural enemy silhouettes for realm and dungeon enemies', () => {
-        const specs = MeshCatalog.getProceduralEnemySpecs();
-
-        expect(specs.SandstormDjinn).toMatchObject({ shape: 'wraith', scale: 2.5, color: 0xD2B48C });
-        expect(specs.MagmaGolem).toMatchObject({ shape: 'golem', emissive: 0xFF2200 });
-        expect(specs.InfernalBehemoth).toMatchObject({ shape: 'titan', color: 0x8B0000 });
-        expect(specs.ThunderRoc).toMatchObject({ shape: 'bird', emissiveI: 0.3 });
+    test('retains no generic shape-and-scale enemy silhouette in the production catalog', () => {
+        expect(MeshCatalog.getProceduralEnemySpecs()).toEqual({});
     });
 
     test('catalogs every realm foliage family without authored plant preloads', () => {

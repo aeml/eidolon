@@ -168,18 +168,15 @@ describe('MeshFactory preload phases', () => {
 });
 
 describe('MeshFactory catalog integration', () => {
-    test('uses catalog-owned procedural enemy specs for compatibility', () => {
+    test('keeps the legacy procedural-spec registry empty after every actor gets an explicit rig', () => {
         expect(MeshFactory.PROCEDURAL_ENEMY_SPECS).toBe(MeshCatalog.getProceduralEnemySpecs());
-        expect(MeshFactory.PROCEDURAL_ENEMY_SPECS.SandstormDjinn.shape).toBe('wraith');
-        expect(MeshFactory.PROCEDURAL_ENEMY_SPECS.Cindermaw).toBeUndefined();
-        expect(MeshFactory.PROCEDURAL_ENEMY_SPECS.Windshear).toBeUndefined();
-        expect(MeshFactory.PROCEDURAL_ENEMY_SPECS.TiderendLeviathan).toBeUndefined();
+        expect(MeshFactory.PROCEDURAL_ENEMY_SPECS).toEqual({});
     });
 
-    test('procedural enemies ship explicit idle, movement, attack, and death clips', () => {
+    test('the compatibility procedural builder still ships explicit idle, movement, attack, and death clips', () => {
         const mesh = MeshFactory.createProceduralEnemy(
-            'SandstormDjinn',
-            MeshFactory.PROCEDURAL_ENEMY_SPECS.SandstormDjinn
+            'TestWraith',
+            { shape: 'wraith', scale: 2.5, color: 0xD2B48C, emissive: 0x332200, emissiveI: 0.15 }
         );
         const clips = Object.fromEntries(mesh.userData.animations.map((clip) => [clip.name, clip]));
 
@@ -520,12 +517,49 @@ describe('MeshFactory catalog integration', () => {
     });
 
     test.each([
+        ['SandstormDjinn', 'Cinder Wastes ash-dune djinn', 'cinder-wastes'],
+        ['MagmaGolem', 'Cinder Wastes fault-heart golem', 'cinder-wastes'],
+        ['ScorchedWraith', 'Cinder Wastes cinder-shroud wraith', 'cinder-wastes'],
+        ['InfernalBehemoth', 'Cinder Wastes horned kiln-behemoth', 'cinder-wastes'],
+        ['PhoenixSentinel', 'Cinder Wastes oathflame phoenix', 'cinder-wastes'],
+        ['StormHarpy', 'Stormcrown gale-talon harpy', 'stormcrown-reach'],
+        ['CloudElemental', 'Stormcrown captive-cloud elemental', 'stormcrown-reach'],
+        ['ThunderRoc', 'Stormcrown conductor roc', 'stormcrown-reach'],
+        ['TempestGiant', 'Stormcrown thunder-cairn giant', 'stormcrown-reach'],
+        ['CycloneAvatar', 'Stormcrown hollow-cyclone avatar', 'stormcrown-reach']
+    ])('%s uses its final overworld rig without requesting a GLB', async (type, artStyle, family) => {
+        const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
+        MeshFactory.pool = {};
+
+        try {
+            const mesh = await MeshFactory.createMeshForType(type);
+            expect(mesh.userData).toEqual(expect.objectContaining({
+                proceduralEnemyFamily: true,
+                proceduralOverworldFamily: family,
+                proceduralActorType: type,
+                artStyle,
+                combatRadius: 1.25,
+                sharedGeometry: true
+            }));
+            expect(mesh.userData.animations.map((entry) => entry.name))
+                .toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+            expect(loadSpy).not.toHaveBeenCalled();
+        } finally {
+            MeshFactory.pool = previousPool;
+            loadSpy.mockRestore();
+        }
+    });
+
+    test.each([
         'Skeleton', 'DemonOrc', 'Imp', 'Construct', 'InfernoTitan',
         'MountainTroll', 'AquaGolem', 'Siren', 'FrostGuardian',
         'RootboundWarden', 'BriarMatron', 'RustboundColossus', 'HollowSentinel',
         'Cindermaw', 'ScorchedTwins', 'ForgemasterPyrax', 'ObsidianGuardian', 'LordInfernax',
         'Windshear', 'Stormcallers', 'RocMatriarch', 'ThunderlordKaelix', 'Zephyrion',
-        'TiderendLeviathan', 'DrownedChoir', 'AbyssalGoliath', 'MaelstromWarden', 'Thalorath'
+        'TiderendLeviathan', 'DrownedChoir', 'AbyssalGoliath', 'MaelstromWarden', 'Thalorath',
+        'SandstormDjinn', 'MagmaGolem', 'ScorchedWraith', 'InfernalBehemoth', 'PhoenixSentinel',
+        'StormHarpy', 'CloudElemental', 'ThunderRoc', 'TempestGiant', 'CycloneAvatar'
     ])('a full %s pool never disposes shared generated resources', async (type) => {
         const previousPool = MeshFactory.pool;
         MeshFactory.pool = {};

@@ -169,6 +169,56 @@ export class MeshCatalog {
             source: 'procedural Drowned Sanctum tide-king rig',
             animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
         },
+        SandstormDjinn: {
+            type: 'enemy',
+            source: 'procedural Cinder Wastes ash-dune rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        MagmaGolem: {
+            type: 'enemy',
+            source: 'procedural Cinder Wastes fault-heart rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        ScorchedWraith: {
+            type: 'enemy',
+            source: 'procedural Cinder Wastes cinder-shroud rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        InfernalBehemoth: {
+            type: 'enemy',
+            source: 'procedural Cinder Wastes kiln-behemoth rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        PhoenixSentinel: {
+            type: 'enemy',
+            source: 'procedural Cinder Wastes oathflame-phoenix rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        StormHarpy: {
+            type: 'enemy',
+            source: 'procedural Stormcrown gale-talon rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        CloudElemental: {
+            type: 'enemy',
+            source: 'procedural Stormcrown captive-cloud rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        ThunderRoc: {
+            type: 'enemy',
+            source: 'procedural Stormcrown conductor-roc rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        TempestGiant: {
+            type: 'enemy',
+            source: 'procedural Stormcrown thunder-cairn rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        CycloneAvatar: {
+            type: 'enemy',
+            source: 'procedural Stormcrown hollow-cyclone rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
         TradingHouse: {
             type: 'structure',
             source: 'procedural Lanternhold auction hall'
@@ -183,22 +233,7 @@ export class MeshCatalog {
         }
     };
 
-    static proceduralEnemySpecs = {
-        // Fire realm overworld
-        SandstormDjinn: { shape: 'wraith', scale: 2.5, color: 0xD2B48C, emissive: 0x332200, emissiveI: 0.15 },
-        MagmaGolem: { shape: 'golem', scale: 3.0, color: 0xFF4500, emissive: 0xFF2200, emissiveI: 0.4 },
-        ScorchedWraith: { shape: 'wraith', scale: 2.5, color: 0xFF6600, emissive: 0xFF4400, emissiveI: 0.5 },
-        InfernalBehemoth: { shape: 'titan', scale: 4.0, color: 0x8B0000, emissive: 0xFF0000, emissiveI: 0.3 },
-        PhoenixSentinel: { shape: 'bird', scale: 3.0, color: 0xFFD700, emissive: 0xFF8C00, emissiveI: 0.6 },
-
-        // Air realm overworld
-        StormHarpy: { shape: 'bird', scale: 2.5, color: 0x87CEEB, emissive: 0x000000, emissiveI: 0 },
-        CloudElemental: { shape: 'elemental', scale: 2.8, color: 0xE0E0E0, emissive: 0xCCCCCC, emissiveI: 0.2 },
-        ThunderRoc: { shape: 'bird', scale: 3.0, color: 0x4169E1, emissive: 0xFFFF00, emissiveI: 0.3 },
-        TempestGiant: { shape: 'titan', scale: 4.5, color: 0x483D8B, emissive: 0x00BFFF, emissiveI: 0.2 },
-        CycloneAvatar: { shape: 'elemental', scale: 3.5, color: 0x00CED1, emissive: 0x00FFFF, emissiveI: 0.4 },
-
-    };
+    static proceduralEnemySpecs = {};
 
     static getProceduralEnemySpecs() {
         return this.proceduralEnemySpecs;

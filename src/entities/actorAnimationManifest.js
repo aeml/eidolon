@@ -102,6 +102,36 @@ export const ACTOR_ANIMATION_MANIFEST = Object.freeze({
     Thalorath: entry('enemy', 'procedural Drowned Sanctum tide-king rig', WALKING_ENEMY_CLIPS, {
         special: 'thirteen-antler crown, black-tide rings, throne tentacles, pearls, and deep trident'
     }),
+    SandstormDjinn: entry('enemy', 'procedural Cinder Wastes ash-dune rig', WALKING_ENEMY_CLIPS, {
+        special: 'floating glasswind veils, crossed sand rings, depth shards, crown, and glass scimitar'
+    }),
+    MagmaGolem: entry('enemy', 'procedural Cinder Wastes fault-heart rig', WALKING_ENEMY_CLIPS, {
+        special: 'eighteen basalt fault slabs, caged magma heart, burning fists, and fault hammer'
+    }),
+    ScorchedWraith: entry('enemy', 'procedural Cinder Wastes cinder-shroud rig', WALKING_ENEMY_CLIPS, {
+        special: 'burnt rib reliquary, crown, paired censers, ember orbit, and cinder scythe'
+    }),
+    InfernalBehemoth: entry('enemy', 'procedural Cinder Wastes kiln-behemoth rig', WALKING_ENEMY_CLIPS, {
+        special: 'quadruped kiln body, horned bull skull, cloven hooves, tusks, and caldera spine'
+    }),
+    PhoenixSentinel: entry('enemy', 'procedural Cinder Wastes oathflame-phoenix rig', WALKING_ENEMY_CLIPS, {
+        special: 'twenty-four oathflame wing feathers, ember keel, crown plumage, talons, and long fire tail'
+    }),
+    StormHarpy: entry('enemy', 'procedural Stormcrown gale-talon rig', WALKING_ENEMY_CLIPS, {
+        special: 'eighteen razor feathers, masked torso, crown, raptor talons, and lightning javelin'
+    }),
+    CloudElemental: entry('enemy', 'procedural Stormcrown captive-cloud rig', WALKING_ENEMY_CLIPS, {
+        special: 'twelve cloud cairns, eight pressure rings, storm core, orbit shards, and conductor crown'
+    }),
+    ThunderRoc: entry('enemy', 'procedural Stormcrown conductor-roc rig', WALKING_ENEMY_CLIPS, {
+        special: 'twenty-six conductor feathers, lightning breast keel, crown plumage, talons, and storm tail'
+    }),
+    TempestGiant: entry('enemy', 'procedural Stormcrown thunder-cairn rig', WALKING_ENEMY_CLIPS, {
+        special: 'sixteen storm slabs, ten conductor rods, captive heart, nine-spire crown, and thunder maul'
+    }),
+    CycloneAvatar: entry('enemy', 'procedural Stormcrown hollow-cyclone rig', WALKING_ENEMY_CLIPS, {
+        special: 'eleven crossed cyclone rings, sixteen horizon blades, hollow eye crown, and wind blade'
+    }),
 
     AvengingSeraph: entry('summon', 'procedural reliquary seraph rig', WALKING_ENEMY_CLIPS, {
         special: 'articulated broken-sun wings, oath-spear, censer, and collapse'
