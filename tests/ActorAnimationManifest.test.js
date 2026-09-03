@@ -150,6 +150,24 @@ describe('actor animation manifest', () => {
         }
     });
 
+    test('classifies all Molten Core bosses as intentional regional boss rigs', () => {
+        const expectedSources = {
+            Cindermaw: 'procedural Furnace Below cinder-hound rig',
+            ScorchedTwins: 'procedural Furnace Below twin-flame rig',
+            ForgemasterPyrax: 'procedural Furnace Below oath-anvil rig',
+            ObsidianGuardian: 'procedural Furnace Below black-glass bulwark rig',
+            LordInfernax: 'procedural Furnace Below furnace-lord rig'
+        };
+        for (const [type, source] of Object.entries(expectedSources)) {
+            expect(ACTOR_ANIMATION_MANIFEST[type]).toEqual(expect.objectContaining({
+                category: 'enemy',
+                source,
+                states: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+            }));
+            expect(ACTOR_ANIMATION_MANIFEST[type].special).not.toBe('Attack clip plus class telegraph/VFX');
+        }
+    });
+
     test('no combat actor is classified without idle, movement, attack, and death presentation', () => {
         for (const actor of listActorAnimationEntries()) {
             if (actor.category === 'npc') continue;

@@ -57,6 +57,21 @@ export const ACTOR_ANIMATION_MANIFEST = Object.freeze({
     HollowSentinel: entry('enemy', 'procedural Thorncrypt hollow-vigil rig', WALKING_ENEMY_CLIPS, {
         special: 'empty ribs, last witchlight, vigil tatters, crown, poleblade, and final collapse'
     }),
+    Cindermaw: entry('enemy', 'procedural Furnace Below cinder-hound rig', WALKING_ENEMY_CLIPS, {
+        special: 'quadruped gait, rib kiln, chain tail, horned fire maw, and pouncing collapse'
+    }),
+    ScorchedTwins: entry('enemy', 'procedural Furnace Below twin-flame rig', WALKING_ENEMY_CLIPS, {
+        special: 'two oathbound upper bodies, divided masks, covenant brand, and split glaive'
+    }),
+    ForgemasterPyrax: entry('enemy', 'procedural Furnace Below oath-anvil rig', WALKING_ENEMY_CLIPS, {
+        special: 'white-hot furnace cage, chain apron, six chimneys, and oath-anvil hammer'
+    }),
+    ObsidianGuardian: entry('enemy', 'procedural Furnace Below black-glass bulwark rig', WALKING_ENEMY_CLIPS, {
+        special: 'layered obsidian crest, sealed core, branded bulwark, and monolithic collapse'
+    }),
+    LordInfernax: entry('enemy', 'procedural Furnace Below furnace-lord rig', WALKING_ENEMY_CLIPS, {
+        special: 'ashen throne mantle, eleven-spire crown, orbiting censers, and caldera scepter'
+    }),
 
     AvengingSeraph: entry('summon', 'procedural reliquary seraph rig', WALKING_ENEMY_CLIPS, {
         special: 'articulated broken-sun wings, oath-spear, censer, and collapse'

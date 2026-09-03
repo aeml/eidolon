@@ -73,6 +73,24 @@ describe('MeshCatalog', () => {
         ))).toBe(false);
     });
 
+    test('Molten Core bosses have explicit procedural recipes instead of generic shape specs', () => {
+        const expectedSources = {
+            Cindermaw: 'procedural Furnace Below cinder-hound rig',
+            ScorchedTwins: 'procedural Furnace Below twin-flame rig',
+            ForgemasterPyrax: 'procedural Furnace Below oath-anvil rig',
+            ObsidianGuardian: 'procedural Furnace Below black-glass bulwark rig',
+            LordInfernax: 'procedural Furnace Below furnace-lord rig'
+        };
+        for (const [type, source] of Object.entries(expectedSources)) {
+            expect(MeshCatalog.recipes[type]).toEqual({
+                type: 'enemy',
+                source,
+                animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+            });
+            expect(MeshCatalog.getProceduralEnemySpecs()[type]).toBeUndefined();
+        }
+    });
+
     test('all Lanternhold services use explicit procedural actor recipes', () => {
         for (const type of ['DwarfSalesman', 'QuestNPC', 'DungeonNPC', 'RespecNPC']) {
             expect(MeshCatalog.recipes[type]).toEqual({
@@ -110,7 +128,7 @@ describe('MeshCatalog', () => {
 
         expect(specs.SandstormDjinn).toMatchObject({ shape: 'wraith', scale: 2.5, color: 0xD2B48C });
         expect(specs.MagmaGolem).toMatchObject({ shape: 'golem', emissive: 0xFF2200 });
-        expect(specs.Cindermaw).toMatchObject({ shape: 'beast', emissiveI: 0.6 });
+        expect(specs.Windshear).toMatchObject({ shape: 'elemental', emissiveI: 0.4 });
         expect(specs.Zephyrion).toMatchObject({ shape: 'elemental', scale: 6.5 });
         expect(specs.Thalorath).toMatchObject({ shape: 'titan', color: 0x003B6F });
     });

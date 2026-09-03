@@ -35,6 +35,13 @@ import {
     createProceduralRootboundWarden,
     createProceduralRustboundColossus
 } from '../art/ProceduralThorncryptBosses.js';
+import {
+    createProceduralCindermaw,
+    createProceduralForgemasterPyrax,
+    createProceduralLordInfernax,
+    createProceduralObsidianGuardian,
+    createProceduralScorchedTwins
+} from '../art/ProceduralMoltenBosses.js';
 import { createProceduralLanternholdStructure } from '../art/ProceduralLanternholdArchitecture.js';
 
 export class MeshFactory {
@@ -752,6 +759,16 @@ export class MeshFactory {
             return createProceduralRustboundColossus();
         } else if (type === 'HollowSentinel') {
             return createProceduralHollowSentinel();
+        } else if (type === 'Cindermaw') {
+            return createProceduralCindermaw();
+        } else if (type === 'ScorchedTwins') {
+            return createProceduralScorchedTwins();
+        } else if (type === 'ForgemasterPyrax') {
+            return createProceduralForgemasterPyrax();
+        } else if (type === 'ObsidianGuardian') {
+            return createProceduralObsidianGuardian();
+        } else if (type === 'LordInfernax') {
+            return createProceduralLordInfernax();
         } else if (type === 'Siren') {
             return createProceduralSiren();
         } else if (type === 'AquaGolem') {

@@ -44,7 +44,15 @@ const proceduralRegionalEnemyTypes = Object.freeze([
     ['RootboundWarden', 'Thorncrypt root-gate warden'],
     ['BriarMatron', 'Thorncrypt briar-crown matron'],
     ['RustboundColossus', 'Thorncrypt rust-reliquary colossus'],
-    ['HollowSentinel', 'Thorncrypt hollow-vigil sentinel']
+    ['HollowSentinel', 'Thorncrypt hollow-vigil sentinel'],
+    ['Cindermaw', 'Furnace Below cinder-hound'],
+    ['ScorchedTwins', 'Furnace Below twin-flame covenant'],
+    ['ForgemasterPyrax', 'Furnace Below oath-anvil forgemaster'],
+    ['ObsidianGuardian', 'Furnace Below black-glass bulwark'],
+    ['LordInfernax', 'Furnace Below crowned furnace-lord']
+]);
+const proceduralMoltenBossTypes = new Set([
+    'Cindermaw', 'ScorchedTwins', 'ForgemasterPyrax', 'ObsidianGuardian', 'LordInfernax'
 ]);
 
 test.use({ trace: 'off', video: 'off' });
@@ -314,6 +322,9 @@ test.describe('deterministic production animation gallery', () => {
             expect(metrics.proceduralActorType).toBe(actorType);
             expect(metrics.actorArtStyle).toBe(artStyle);
             expect(metrics.actorVisibleMeshes).toBeGreaterThanOrEqual(45);
+            if (proceduralMoltenBossTypes.has(actorType)) {
+                expect(metrics.proceduralBossFamily).toBe('molten-core');
+            }
 
             for (const state of ['Idle', 'Walk', 'Run', 'Attack', 'Death']) {
                 await page.locator('#gallery-state').selectOption(state);

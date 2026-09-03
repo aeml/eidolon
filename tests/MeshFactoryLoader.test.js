@@ -170,13 +170,14 @@ describe('MeshFactory preload phases', () => {
 describe('MeshFactory catalog integration', () => {
     test('uses catalog-owned procedural enemy specs for compatibility', () => {
         expect(MeshFactory.PROCEDURAL_ENEMY_SPECS).toBe(MeshCatalog.getProceduralEnemySpecs());
-        expect(MeshFactory.PROCEDURAL_ENEMY_SPECS.Cindermaw.shape).toBe('beast');
+        expect(MeshFactory.PROCEDURAL_ENEMY_SPECS.Windshear.shape).toBe('elemental');
+        expect(MeshFactory.PROCEDURAL_ENEMY_SPECS.Cindermaw).toBeUndefined();
     });
 
     test('procedural enemies ship explicit idle, movement, attack, and death clips', () => {
         const mesh = MeshFactory.createProceduralEnemy(
-            'Cindermaw',
-            MeshFactory.PROCEDURAL_ENEMY_SPECS.Cindermaw
+            'Windshear',
+            MeshFactory.PROCEDURAL_ENEMY_SPECS.Windshear
         );
         const clips = Object.fromEntries(mesh.userData.animations.map((clip) => [clip.name, clip]));
 
@@ -424,9 +425,41 @@ describe('MeshFactory catalog integration', () => {
     });
 
     test.each([
+        ['Cindermaw', 'Furnace Below cinder-hound'],
+        ['ScorchedTwins', 'Furnace Below twin-flame covenant'],
+        ['ForgemasterPyrax', 'Furnace Below oath-anvil forgemaster'],
+        ['ObsidianGuardian', 'Furnace Below black-glass bulwark'],
+        ['LordInfernax', 'Furnace Below crowned furnace-lord']
+    ])('%s uses its Molten Core boss rig without requesting a GLB', async (type, artStyle) => {
+        const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
+        MeshFactory.pool = {};
+
+        try {
+            const mesh = await MeshFactory.createMeshForType(type);
+            expect(mesh.userData).toEqual(expect.objectContaining({
+                proceduralEnemyFamily: true,
+                proceduralBossFamily: 'molten-core',
+                proceduralActorType: type,
+                artStyle,
+                region: 'Molten Core — The Furnace Below',
+                combatRadius: 1.25,
+                sharedGeometry: true
+            }));
+            expect(mesh.userData.animations.map((entry) => entry.name))
+                .toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+            expect(loadSpy).not.toHaveBeenCalled();
+        } finally {
+            MeshFactory.pool = previousPool;
+            loadSpy.mockRestore();
+        }
+    });
+
+    test.each([
         'Skeleton', 'DemonOrc', 'Imp', 'Construct', 'InfernoTitan',
         'MountainTroll', 'AquaGolem', 'Siren', 'FrostGuardian',
-        'RootboundWarden', 'BriarMatron', 'RustboundColossus', 'HollowSentinel'
+        'RootboundWarden', 'BriarMatron', 'RustboundColossus', 'HollowSentinel',
+        'Cindermaw', 'ScorchedTwins', 'ForgemasterPyrax', 'ObsidianGuardian', 'LordInfernax'
     ])('a full %s pool never disposes shared generated resources', async (type) => {
         const previousPool = MeshFactory.pool;
         MeshFactory.pool = {};

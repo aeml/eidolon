@@ -94,6 +94,31 @@ export class MeshCatalog {
             source: 'procedural Thorncrypt hollow-vigil rig',
             animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
         },
+        Cindermaw: {
+            type: 'enemy',
+            source: 'procedural Furnace Below cinder-hound rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        ScorchedTwins: {
+            type: 'enemy',
+            source: 'procedural Furnace Below twin-flame rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        ForgemasterPyrax: {
+            type: 'enemy',
+            source: 'procedural Furnace Below oath-anvil rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        ObsidianGuardian: {
+            type: 'enemy',
+            source: 'procedural Furnace Below black-glass bulwark rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        LordInfernax: {
+            type: 'enemy',
+            source: 'procedural Furnace Below furnace-lord rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
         TradingHouse: {
             type: 'structure',
             source: 'procedural Lanternhold auction hall'
@@ -122,13 +147,6 @@ export class MeshCatalog {
         ThunderRoc: { shape: 'bird', scale: 3.0, color: 0x4169E1, emissive: 0xFFFF00, emissiveI: 0.3 },
         TempestGiant: { shape: 'titan', scale: 4.5, color: 0x483D8B, emissive: 0x00BFFF, emissiveI: 0.2 },
         CycloneAvatar: { shape: 'elemental', scale: 3.5, color: 0x00CED1, emissive: 0x00FFFF, emissiveI: 0.4 },
-
-        // Fire dungeon bosses
-        Cindermaw: { shape: 'beast', scale: 4.0, color: 0xFF4500, emissive: 0xFF2200, emissiveI: 0.6 },
-        ScorchedTwins: { shape: 'humanoid', scale: 3.5, color: 0xFF6347, emissive: 0xFF4500, emissiveI: 0.5 },
-        ForgemasterPyrax: { shape: 'golem', scale: 4.5, color: 0xB22222, emissive: 0xFF4500, emissiveI: 0.4 },
-        ObsidianGuardian: { shape: 'titan', scale: 5.0, color: 0x1C1C1C, emissive: 0xFF0000, emissiveI: 0.2 },
-        LordInfernax: { shape: 'titan', scale: 6.0, color: 0x8B0000, emissive: 0xFF4500, emissiveI: 0.7 },
 
         // Air dungeon bosses
         Windshear: { shape: 'elemental', scale: 4.0, color: 0x87CEEB, emissive: 0x00BFFF, emissiveI: 0.4 },

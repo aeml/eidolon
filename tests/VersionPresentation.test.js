@@ -16,18 +16,18 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.41.0.18 for authoritative dungeon encounters', () => {
-        expect(indexHtml).toContain('Alpha 0.41.0.18');
-        expect(indexHtml).toContain('Patch 0.41.0.18');
-        expect(indexHtml).toContain('the last bell opens the way');
-        expect(indexHtml).toContain('The deep halls finally answer a cleared room');
-        expect(indexHtml).toContain('A fleeing monster cannot confuse the chamber');
-        expect(indexHtml).toContain('Treasure stays on the side of the threshold where it fell');
-        expect(indexHtml).toContain('Every chamber shows what the server knows');
-        expect(indexHtml).toContain('Four bosses break the floor in four tongues');
-        expect(indexHtml).toContain('Danger fields keep their exact promise');
-        expect(indexHtml).toContain('Warning names remain readable while they pulse');
-        expect(indexHtml).toContain('2026-09-03-18');
+    test('advances the login screen to alpha 0.41.0.19 for the Molten Core boss procession', () => {
+        expect(indexHtml).toContain('Alpha 0.41.0.19');
+        expect(indexHtml).toContain('Patch 0.41.0.19');
+        expect(indexHtml).toContain('five hearts beneath the anvil');
+        expect(indexHtml).toContain('The Furnace Below has found its monsters');
+        expect(indexHtml).toContain('Cindermaw runs like the beast it is');
+        expect(indexHtml).toContain('The Scorched Twins share one terrible oath');
+        expect(indexHtml).toContain('Pyrax brings the forge into battle');
+        expect(indexHtml).toContain('The Guardian is a wall of black glass');
+        expect(indexHtml).toContain('Infernax finally wears the Ashen Throne');
+        expect(indexHtml).toContain('Large bodies no longer enlarge the rules');
+        expect(indexHtml).toContain('2026-09-03-19');
     });
 
     test('retains alpha 0.41.0.14 coherent edge delivery history', () => {
@@ -216,7 +216,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 0.41.0.18';
+        const expectedVersion = 'Alpha 0.41.0.19';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -320,8 +320,8 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Added client coverage for remote interpolation frame-spike handling and the 0.35.0 release state');
     });
 
-    test('marks 0.41.0.18 current and points the active line at 0.41', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.18`');
+    test('marks 0.41.0.19 current and points the active line at 0.41', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.19`');
         expect(alphaRoadmap).toContain('Active implementation line: `0.41`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');
@@ -1391,6 +1391,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.41.0.19');
         expect(indexHtml).toContain('Patch 0.41.0.18');
         expect(indexHtml).toContain('Patch 0.41.0.17');
         expect(indexHtml).toContain('Patch 0.41.0.16');
