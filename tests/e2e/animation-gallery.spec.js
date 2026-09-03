@@ -17,6 +17,7 @@ import {
     DUNGEON_INTERIOR_IDS,
     DUNGEON_ROOM_IDENTITY_IDS
 } from '../../src/art/ProceduralDungeonInteriors.js';
+import { PROCEDURAL_STATUS_EFFECT_DEFINITIONS } from '../../src/art/ProceduralStatusEffects.js';
 
 const presentationCount = listPlayerAbilityPresentationVariants().length;
 const actorEntries = listActorAnimationEntries();
@@ -602,6 +603,101 @@ test.describe('deterministic production animation gallery', () => {
         await page.locator('#gallery-cleanup').click();
         metrics = await galleryMetrics(page);
         expect(metrics.nonFiniteTransforms).toBe(0);
+        expect(failures, failures.join('\n')).toEqual([]);
+        testInfo.annotations.push({
+            type: 'renderer',
+            description: `${renderer.vendor} · ${renderer.renderer}`
+        });
+    });
+
+    test('renders every attached buff and debuff relic on local and remote actors in hardware Chrome', async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        const response = await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });
+        expect(response?.status()).toBe(200);
+        await expect(page.locator('#animation-gallery')).toBeVisible();
+        await waitForActor(page, 'Cleric');
+        await page.locator('#gallery-remote').check();
+
+        const renderer = await hardwareRenderer(page);
+        expect(renderer).not.toBeNull();
+        expect(`${renderer.vendor} ${renderer.renderer}`).not.toMatch(/swiftshader|llvmpipe|software/i);
+
+        const classForFamily = {
+            fighter: 'Fighter',
+            rogue: 'Rogue',
+            wizard: 'Wizard',
+            cleric: 'Cleric',
+            relic: 'Fighter',
+            control: 'Fighter',
+            affliction: 'Fighter'
+        };
+        const statusEntries = Object.entries(PROCEDURAL_STATUS_EFFECT_DEFINITIONS)
+            .sort(([, left], [, right]) => left.family.localeCompare(right.family));
+        const seenMotifs = new Set();
+        const seenArtStyles = new Set();
+        const screenshotStatuses = new Set([
+            'iron_fortress', 'stealth', 'spell_focus', 'divine_intervention',
+            'swift', 'frozen', 'poisoned'
+        ]);
+        let currentClass = '';
+
+        for (const quality of ['high', 'low']) {
+            await page.locator('#gallery-quality').selectOption(quality);
+            for (const [statusKey, definition] of statusEntries) {
+                const className = classForFamily[definition.family];
+                if (className !== currentClass) {
+                    await page.locator('#gallery-class').selectOption(className);
+                    await waitForActor(page, className);
+                    currentClass = className;
+                }
+                const ownerRole = quality === 'high' ? 'local' : 'remote';
+                const presented = await page.evaluate(({ key, role }) =>
+                    window.__eidolonAnimationGalleryController.presentStatus(key, role),
+                { key: statusKey, role: ownerRole });
+                expect(presented, `${statusKey}/${quality} did not present`).toBe(true);
+                await expect.poll(async () => (await galleryMetrics(page)).phase)
+                    .toBe(`status:${statusKey}`);
+                const metrics = await galleryMetrics(page);
+                expect(metrics.attachedEffects, `${statusKey}/${quality} leaked another status`).toBe(1);
+                expect(metrics.proceduralStatusVisuals).toEqual([
+                    expect.objectContaining({
+                        statusKey,
+                        family: definition.family,
+                        polarity: definition.polarity,
+                        motif: definition.motif,
+                        artStyle: definition.artStyle,
+                        quality,
+                        visibleParts: expect.any(Number)
+                    })
+                ]);
+                expect(metrics.proceduralStatusVisuals[0].visibleParts)
+                    .toBeGreaterThanOrEqual(quality === 'high' ? 5 : 3);
+                expect(metrics.nonFiniteTransforms).toBe(0);
+                seenMotifs.add(metrics.proceduralStatusVisuals[0].motif);
+                seenArtStyles.add(metrics.proceduralStatusVisuals[0].artStyle);
+
+                if (quality === 'high' && screenshotStatuses.has(statusKey)) {
+                    await page.locator('#animation-gallery').evaluate((panel) => {
+                        panel.style.visibility = 'hidden';
+                    });
+                    await page.screenshot({
+                        path: testInfo.outputPath(`procedural-status-${statusKey}.png`),
+                        animations: 'allow'
+                    });
+                    await page.locator('#animation-gallery').evaluate((panel) => {
+                        panel.style.visibility = '';
+                    });
+                }
+            }
+        }
+
+        const metrics = await galleryMetrics(page);
+        expect(seenMotifs.size).toBe(statusEntries.length);
+        expect(seenArtStyles.size).toBe(statusEntries.length);
+        expect(metrics.proceduralStatusCache.geometries).toBeGreaterThan(8);
+        expect(metrics.proceduralStatusCache.materials).toBeGreaterThan(20);
+        await page.locator('#gallery-cleanup').click();
+        await expect.poll(async () => (await galleryMetrics(page)).attachedEffects).toBe(0);
         expect(failures, failures.join('\n')).toEqual([]);
         testInfo.annotations.push({
             type: 'renderer',

@@ -1080,28 +1080,11 @@ export class Actor extends Entity {
             }
         }
 
-        // Wizard Control Logic
+        // The attached frost-prison effect owns freeze readability. Procedural
+        // actor materials are pooled, so recoloring a mesh material here would
+        // tint every actor sharing that material rather than only this target.
         if (this.frozenTimer > 0) {
-            this.frozenTimer -= dt;
-            // Visual: Turn blue
-            if (this.mesh) {
-                this.mesh.traverse(child => {
-                    if (child.isMesh && child.material) {
-                        if (!child.userData.originalColor) child.userData.originalColor = child.material.color.getHex();
-                        child.material.color.setHex(0x00ffff);
-                    }
-                });
-            }
-            if (this.frozenTimer <= 0) {
-                // Restore color
-                if (this.mesh) {
-                    this.mesh.traverse(child => {
-                        if (child.isMesh && child.material && child.userData.originalColor !== undefined) {
-                            child.material.color.setHex(child.userData.originalColor);
-                        }
-                    });
-                }
-            }
+            this.frozenTimer = Math.max(0, this.frozenTimer - dt);
         }
         
         if (this.hasteTimer > 0) {

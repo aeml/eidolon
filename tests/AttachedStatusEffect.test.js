@@ -1,4 +1,7 @@
 import * as THREE from 'three';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { jest } from '@jest/globals';
 import { Actor } from '../src/entities/Actor.js';
 import { Fighter } from '../src/entities/Fighter.js';
@@ -8,6 +11,13 @@ import {
     AttachedStatusEffect,
     getStatusVisualDefinition
 } from '../src/entities/AttachedStatusEffect.js';
+import {
+    PROCEDURAL_STATUS_EFFECT_DEFINITIONS,
+    createProceduralStatusEffect,
+    getProceduralStatusEffectCacheMetrics,
+    releaseProceduralStatusEffect,
+    updateProceduralStatusEffect
+} from '../src/art/ProceduralStatusEffects.js';
 import { CONSTANTS } from '../src/core/Constants.js';
 import { GameEngine } from '../src/core/GameEngine.js';
 
@@ -20,15 +30,138 @@ function attachEngine(actor, quality = 'high') {
 }
 
 describe('attached status effect lifecycle', () => {
+    test('maps every authoritative replicated buff and debuff field to an intentional status visual', () => {
+        const protobufSource = fs.readFileSync(
+            path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'server', 'internal', 'proto', 'state.pb.go'),
+            'utf8'
+        );
+        const serverFields = {
+            iron_fortress: 'IronFortressActive',
+            guardian_roar: 'GuardianRoarActive',
+            berserker_edge: 'BerserkerModeActive',
+            last_stand: 'LastStandActive',
+            serrated_edges: 'SerratedEdgesActive',
+            poison_coating: 'PoisonCoatingActive',
+            stealth: 'StealthActive',
+            spell_focus: 'SpellFocusActive',
+            arcane_shield: 'ArcaneShieldActive',
+            time_warp: 'TimeWarpActive',
+            swift: 'SwiftActive',
+            guardian_embrace: 'GuardianEmbraceActive',
+            blessing_resolve: 'BlessingResolveActive',
+            divine_intervention: 'DivineInterventionActive',
+            blessing_zeal: 'ZealActive',
+            weak_point_mark: 'WeakPointMarked',
+            mark_weakness: 'MarkWeakness',
+            stunned: 'Stunned',
+            rooted: 'Rooted',
+            slowed: 'Slowed',
+            bleeding: 'Bleeding',
+            poisoned: 'Poisoned'
+        };
+
+        Object.entries(serverFields).forEach(([statusKey, field]) => {
+            expect(protobufSource).toContain(field);
+            expect(ACTOR_STATUS_VISUAL_STATES[statusKey]).toEqual(expect.any(Function));
+            expect(getStatusVisualDefinition(statusKey)?.motif).toEqual(expect.any(String));
+        });
+        // Frozen remains the explicit offline compatibility control state; the
+        // multiplayer server represents Frost Nova through root/slow fields.
+        expect(ACTOR_STATUS_VISUAL_STATES.frozen).toEqual(expect.any(Function));
+        expect(getStatusVisualDefinition('frozen')?.motif).toBe('frost-prison');
+    });
+
     test('every declared state has an explicit visual identity', () => {
+        expect(Object.keys(PROCEDURAL_STATUS_EFFECT_DEFINITIONS).sort())
+            .toEqual(Object.keys(ACTOR_STATUS_VISUAL_STATES).sort());
+        const motifs = new Set();
+        const artStyles = new Set();
         Object.keys(ACTOR_STATUS_VISUAL_STATES).forEach((statusKey) => {
-            expect(getStatusVisualDefinition(statusKey)).toEqual(expect.objectContaining({
-                style: expect.any(String),
-                color: expect.any(Number),
-                accent: expect.any(Number),
+            const visual = getStatusVisualDefinition(statusKey);
+            expect(visual).toEqual(expect.objectContaining({
+                family: expect.any(String),
+                polarity: expect.stringMatching(/^(buff|debuff)$/),
+                motif: expect.any(String),
+                artStyle: expect.any(String),
                 radius: expect.any(Number)
             }));
+            expect(visual.artStyle.length).toBeGreaterThan(12);
+            expect(visual.palette).toEqual(expect.objectContaining({
+                dark: expect.any(Number),
+                base: expect.any(Number),
+                accent: expect.any(Number),
+                pale: expect.any(Number)
+            }));
+            motifs.add(visual.motif);
+            artStyles.add(visual.artStyle);
         });
+        expect(motifs.size).toBe(Object.keys(ACTOR_STATUS_VISUAL_STATES).length);
+        expect(artStyles.size).toBe(Object.keys(ACTOR_STATUS_VISUAL_STATES).length);
+    });
+
+    test('every high and low quality status is multi-part, finite, and semantically tagged', () => {
+        Object.keys(ACTOR_STATUS_VISUAL_STATES).forEach((statusKey) => {
+            const high = createProceduralStatusEffect(statusKey, { quality: 'high' });
+            const low = createProceduralStatusEffect(statusKey, { quality: 'low' });
+            updateProceduralStatusEffect(high, 1.5, 0.016);
+            updateProceduralStatusEffect(low, 1.5, 0.016);
+            const highParts = [];
+            const lowParts = [];
+            high.traverse((part) => { if (part.isMesh && part.visible) highParts.push(part); });
+            low.traverse((part) => { if (part.isMesh && part.visible) lowParts.push(part); });
+
+            expect(high.userData).toEqual(expect.objectContaining({
+                proceduralStatusEffect: true,
+                statusKey,
+                motif: getStatusVisualDefinition(statusKey).motif,
+                artStyle: getStatusVisualDefinition(statusKey).artStyle,
+                sharedGeometry: true,
+                sharedMaterials: true
+            }));
+            expect(highParts.length).toBeGreaterThanOrEqual(5);
+            expect(lowParts.length).toBeGreaterThanOrEqual(3);
+            expect(lowParts.length).toBeLessThanOrEqual(highParts.length);
+            high.traverse((part) => {
+                expect([
+                    part.position.x, part.position.y, part.position.z,
+                    part.scale.x, part.scale.y, part.scale.z,
+                    part.quaternion.x, part.quaternion.y, part.quaternion.z, part.quaternion.w
+                ].every(Number.isFinite)).toBe(true);
+            });
+            releaseProceduralStatusEffect(high);
+            releaseProceduralStatusEffect(low);
+        });
+        expect(getProceduralStatusEffectCacheMetrics()).toEqual({
+            geometries: expect.any(Number),
+            materials: expect.any(Number)
+        });
+        expect(getProceduralStatusEffectCacheMetrics().geometries).toBeGreaterThan(8);
+        expect(getProceduralStatusEffectCacheMetrics().materials).toBeGreaterThan(20);
+    });
+
+    test('instances share immutable resources without sharing pose or disposing the cache', () => {
+        const first = createProceduralStatusEffect('arcane_shield');
+        const second = createProceduralStatusEffect('arcane_shield');
+        const firstSeal = first.getObjectByName('arcane_shield:OuterSeal');
+        const secondSeal = second.getObjectByName('arcane_shield:OuterSeal');
+        expect(firstSeal.geometry).toBe(secondSeal.geometry);
+        expect(firstSeal.material).toBe(secondSeal.material);
+        first.position.set(7, 2, -4);
+        expect(second.position.toArray()).toEqual([0, 0, 0]);
+
+        const disposeGeometry = jest.spyOn(firstSeal.geometry, 'dispose');
+        const disposeMaterial = jest.spyOn(firstSeal.material, 'dispose');
+        releaseProceduralStatusEffect(first);
+        expect(disposeGeometry).not.toHaveBeenCalled();
+        expect(disposeMaterial).not.toHaveBeenCalled();
+        expect(secondSeal.parent).not.toBeNull();
+        disposeGeometry.mockRestore();
+        disposeMaterial.mockRestore();
+        releaseProceduralStatusEffect(second);
+    });
+
+    test('unknown status identities fail closed', () => {
+        expect(() => createProceduralStatusEffect('generic_glow')).toThrow(/generic_glow/);
     });
 
     test('world-space effect follows an actor without inheriting model scale or facing', () => {
@@ -49,6 +182,23 @@ describe('attached status effect lifecycle', () => {
         effect.update(0.25);
         expect(effect.group.position.toArray()).toEqual([-4, 1.2, 9]);
         effect.dispose();
+    });
+
+    test('freeze readability never mutates a pooled actor material', () => {
+        const sharedMaterial = new THREE.MeshBasicMaterial({ color: 0x7b5a3a });
+        const actor = new Fighter('frozen-owner');
+        actor.mesh = new THREE.Group();
+        actor.mesh.add(new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), sharedMaterial));
+        attachEngine(actor);
+        actor.frozenTimer = 1;
+
+        actor.update(0.1, null, null, []);
+
+        expect(sharedMaterial.color.getHex()).toBe(0x7b5a3a);
+        expect(actor.frozenTimer).toBeCloseTo(0.9);
+        expect(actor.attachedStatusEffects.has('frozen')).toBe(true);
+        actor.dispose();
+        sharedMaterial.dispose();
     });
 
     test('actor sync creates once, reconstructs after scene clear, and expires once', () => {

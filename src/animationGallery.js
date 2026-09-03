@@ -25,6 +25,10 @@ import {
 } from './art/ProceduralEquipment.js';
 import { getAbilityAoeRadius } from './skills/abilityRadii.js';
 import { PROCEDURAL_PROJECTILE_VISUAL_DEFINITIONS } from './art/ProceduralProjectileEffects.js';
+import {
+    PROCEDURAL_STATUS_EFFECT_DEFINITIONS,
+    getProceduralStatusEffectCacheMetrics
+} from './art/ProceduralStatusEffects.js';
 
 const PLAYER_TYPES = Object.freeze({ Fighter, Rogue, Wizard, Cleric });
 const PLAYER_TYPE_NAMES = Object.freeze(Object.keys(PLAYER_TYPES));
@@ -89,6 +93,39 @@ const PERSISTENT_STATE_APPLIERS = Object.freeze({
     heavens_trumpet: (_actor, target) => { target.stunTimer = 5; target.markWeaknessTimer = 5; }
 });
 
+const STATUS_GALLERY_APPLIERS = Object.freeze({
+    iron_fortress: (actor) => { actor.ironFortressTimer = 8; },
+    guardian_roar: (actor) => { actor.guardianRoarTimer = 8; },
+    berserker_edge: (actor) => { actor.berserkerEdgeActive = true; actor.berserkerEdgeTimer = 8; },
+    last_stand: (actor) => { actor.lastStandTimer = 8; },
+    serrated_edges: (actor) => { actor.serratedEdgesActive = true; actor.serratedEdgesTimer = 8; },
+    poison_coating: (actor) => { actor.poisonCoatingActive = true; actor.poisonCoatingTimer = 8; },
+    stealth: (actor) => { actor.stealthTimer = 8; },
+    spell_focus: (actor) => { actor.spellFocusActive = true; actor.spellFocusTimer = 8; },
+    arcane_shield: (actor) => {
+        actor.arcaneShieldActive = true;
+        actor.arcaneShieldTimer = 8;
+        actor.shieldHP = 100;
+    },
+    time_warp: (actor) => { actor.hasteTimer = 8; actor.hasteFactor = 0.5; },
+    swift: (actor) => { actor.swiftBuffTimer = 8; },
+    guardian_embrace: (actor) => { actor.guardianEmbraceActive = true; actor.guardianEmbraceTimer = 8; },
+    blessing_resolve: (actor) => { actor.blessingResolveTimer = 8; },
+    divine_intervention: (actor) => {
+        actor.divineInterventionActive = true;
+        actor.divineInterventionTimer = 8;
+    },
+    blessing_zeal: (actor) => { actor.blessingZealTimer = 8; actor.blessingZealFactor = 0.35; },
+    weak_point_mark: (actor) => { actor.weakPointMarkTimer = 8; },
+    mark_weakness: (actor) => { actor.markWeaknessTimer = 8; actor.markWeaknessFactor = 0.25; },
+    stunned: (actor) => { actor.stunTimer = 8; },
+    rooted: (actor) => { actor.rootTimer = 8; },
+    slowed: (actor) => { actor.slowTimer = 8; actor.slowFactor = 0.4; },
+    frozen: (actor) => { actor.frozenTimer = 8; },
+    bleeding: (actor) => { actor.bleedTimer = 8; },
+    poisoned: (actor) => { actor.poisonTimer = 8; }
+});
+
 function countSceneMetrics(root) {
     let nodes = 0;
     let visibleMeshes = 0;
@@ -126,9 +163,12 @@ function makeActor(type, id) {
 function clearActorStatusState(actor) {
     if (!actor) return;
     actor.ironFortressTimer = 0;
+    actor.guardianRoarTimer = 0;
+    actor.guardianRoarReduction = 0;
     actor.berserkerEdgeActive = false;
     actor.berserkerEdgeTimer = 0;
     actor.lastStandTimer = 0;
+    actor.lastStandDamageBoost = 0;
     actor.weakPointMarkTimer = 0;
     actor.serratedEdgesActive = false;
     actor.serratedEdgesTimer = 0;
@@ -142,14 +182,25 @@ function clearActorStatusState(actor) {
     actor.shieldHP = 0;
     actor.hasteTimer = 0;
     actor.hasteFactor = 0;
+    actor.swiftBuffTimer = 0;
     actor.guardianEmbraceActive = false;
     actor.guardianEmbraceTimer = 0;
     actor.divineInterventionActive = false;
     actor.divineInterventionTimer = 0;
     actor.blessingResolveTimer = 0;
+    actor.blessingResolveReduction = 0;
     actor.blessingZealTimer = 0;
+    actor.blessingZealFactor = 0;
+    actor.zealTimer = 0;
     actor.markWeaknessTimer = 0;
+    actor.markWeaknessFactor = 0;
     actor.stunTimer = 0;
+    actor.rootTimer = 0;
+    actor.slowTimer = 0;
+    actor.slowFactor = 0;
+    actor.frozenTimer = 0;
+    actor.bleedTimer = 0;
+    actor.poisonTimer = 0;
     actor.spiritsActive = false;
     actor.spiritDuration = 0;
     actor.clearSpiritMeshes?.();
@@ -727,6 +778,26 @@ export class AnimationGallery {
         return true;
     }
 
+    presentStatus(statusKey, ownerRole = 'local') {
+        const applyStatus = STATUS_GALLERY_APPLIERS[statusKey];
+        if (!applyStatus || !PROCEDURAL_STATUS_EFFECT_DEFINITIONS[statusKey]) return false;
+        this.presentationSequence++;
+        this.clearEffects();
+        [this.actor, this.remoteActor, this.targetActor].forEach(clearActorStatusState);
+        const owner = ownerRole === 'remote'
+            ? this.remoteActor
+            : ownerRole === 'target'
+                ? this.targetActor
+                : this.actor;
+        if (!owner) return false;
+        applyStatus(owner);
+        owner.syncAttachedStatusEffects?.(0);
+        this.phase = `status:${statusKey}`;
+        this.setStatus(`${statusKey.replaceAll('_', ' ')} · ${ownerRole}`, 'playing');
+        this.updateMetrics();
+        return true;
+    }
+
     cleanupPresentation() {
         this.presentationSequence++;
         this.clearEffects();
@@ -863,6 +934,24 @@ export class AnimationGallery {
             total.nonFiniteTransforms += metrics.nonFiniteTransforms;
             return total;
         }, { nodes: 0, visibleMeshes: 0, nonFiniteTransforms: 0 });
+        const proceduralStatusVisuals = [this.actor, this.remoteActor, this.targetActor]
+            .filter(Boolean)
+            .flatMap((actor) => [...(actor.attachedStatusEffects?.values?.() || [])].map((effect) => {
+                let visibleParts = 0;
+                effect.group?.traverse?.((part) => {
+                    if (part.isMesh && part.visible) visibleParts++;
+                });
+                return {
+                    statusKey: effect.group?.userData?.statusKey,
+                    family: effect.group?.userData?.statusFamily,
+                    polarity: effect.group?.userData?.statusPolarity,
+                    motif: effect.group?.userData?.motif,
+                    artStyle: effect.group?.userData?.artStyle,
+                    quality: effect.group?.userData?.quality,
+                    ownerId: effect.group?.userData?.ownerId,
+                    visibleParts
+                };
+            }));
         const metrics = {
             ready: Boolean(this.actor?.mesh),
             className: this.currentClass,
@@ -925,6 +1014,8 @@ export class AnimationGallery {
             attachedEffects: (this.actor?.attachedStatusEffects?.size || 0) +
                 (this.remoteActor?.attachedStatusEffects?.size || 0) +
                 (this.targetActor?.attachedStatusEffects?.size || 0),
+            proceduralStatusVisuals,
+            proceduralStatusCache: getProceduralStatusEffectCacheMetrics(),
             spiritGuardians: (this.actor?.spiritEffect?.guardians?.length || 0) +
                 (this.remoteActor?.spiritEffect?.guardians?.length || 0),
             spiritVariants: [this.actor, this.remoteActor]
@@ -987,7 +1078,8 @@ export class AnimationGallery {
         const abilities = listPlayerAbilityPresentations().length;
         const variants = listPlayerAbilityPresentationVariants().length;
         const actors = listActorAnimationEntries().length;
-        this.coverage.textContent = `${abilities} abilities · ${variants} base/rune variants · ${actors} actor archetypes · ${EQUIPPABLE_BASE_ITEMS.length} equipment families`;
+        const statuses = Object.keys(PROCEDURAL_STATUS_EFFECT_DEFINITIONS).length;
+        this.coverage.textContent = `${abilities} abilities · ${variants} base/rune variants · ${actors} actor archetypes · ${EQUIPPABLE_BASE_ITEMS.length} equipment families · ${statuses} statuses`;
         this.runAllButton.textContent = `Audit all ${variants}`;
         this.runEquipmentButton.textContent = `Audit ${EQUIPPABLE_BASE_ITEMS.length} gear`;
     }

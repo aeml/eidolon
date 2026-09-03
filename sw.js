@@ -1,1 +1,1 @@
-importScripts('./src/assets/sw-asset-cache.js?v=2026-09-03-24');
+importScripts('./src/assets/sw-asset-cache.js?v=2026-09-03-25');
