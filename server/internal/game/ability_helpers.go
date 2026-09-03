@@ -64,6 +64,12 @@ func (w *World) fireAbilityEvent(sourceID, targetID, skillName string, targetX, 
 	}
 }
 
+func (w *World) fireProjectileImpactEvent(event ProjectileImpactEvent) {
+	if w.OnEvent != nil {
+		w.OnEvent("projectile_impact", event)
+	}
+}
+
 // fireDamageEvent emits a "damage" event if a listener is registered.
 func (w *World) fireDamageEvent(sourceID, targetID string, amount int) {
 	actualLifesteal := 0

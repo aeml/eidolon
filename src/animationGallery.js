@@ -31,6 +31,10 @@ import {
     getProceduralStatusEffectCacheMetrics
 } from './art/ProceduralStatusEffects.js';
 import { getProceduralAbilityCastCacheMetrics } from './art/ProceduralAbilityCasts.js';
+import {
+    PROCEDURAL_PROJECTILE_IMPACT_DEFINITIONS,
+    getProceduralProjectileImpactCacheMetrics
+} from './art/ProceduralProjectileImpacts.js';
 
 const PLAYER_TYPES = Object.freeze({ Fighter, Rogue, Wizard, Cleric });
 const PLAYER_TYPE_NAMES = Object.freeze(Object.keys(PLAYER_TYPES));
@@ -105,6 +109,39 @@ function collectProceduralAbilityCasts(effects) {
             gameplayArc: arc ?? null,
             boundaryParts: boundaries.length,
             hasExactBoundary,
+            visibleParts
+        }];
+    });
+}
+
+function collectProceduralProjectileImpacts(effects) {
+    return effects.flatMap((effect) => {
+        const root = effect.root || effect.meshes?.find((mesh) => mesh?.userData?.proceduralProjectileImpact);
+        if (!root?.userData?.proceduralProjectileImpact) return [];
+        let visibleParts = 0;
+        const boundaries = [];
+        root.traverse((part) => {
+            if (part.isMesh && part.visible) visibleParts++;
+            if (part.userData?.gameplayBoundary) {
+                boundaries.push({
+                    radius: part.userData.gameplayRadius,
+                    normalizedRadius: part.userData.normalizedGameplayRadius
+                });
+            }
+        });
+        const radius = root.userData.gameplayRadius;
+        return [{
+            projectileType: root.userData.projectileType,
+            family: root.userData.impactFamily,
+            motif: root.userData.motif,
+            artStyle: root.userData.artStyle,
+            quality: root.userData.quality,
+            gameplayRadius: radius ?? null,
+            terminal: root.userData.terminal,
+            boundaryParts: boundaries.length,
+            hasExactBoundary: radius == null || boundaries.some((boundary) =>
+                boundary.radius === radius && boundary.normalizedRadius === 1
+            ),
             visibleParts
         }];
     });
@@ -577,6 +614,47 @@ export class AnimationGallery {
         return true;
     }
 
+    presentProjectileImpactGallery(kind = 'direct') {
+        const entries = Object.entries(PROCEDURAL_PROJECTILE_IMPACT_DEFINITIONS)
+            .filter(([, definition]) => kind === 'aoe'
+                ? Number.isFinite(definition.gameplayRadius)
+                : !Number.isFinite(definition.gameplayRadius));
+        if (!this.actor || entries.length === 0) return false;
+        this.cleanupPresentation();
+        [this.actor, this.remoteActor, this.targetActor].forEach((actor) => {
+            if (actor?.mesh) actor.mesh.visible = false;
+        });
+
+        const engine = this.actor.gameEngine;
+        entries.forEach(([type, definition], index) => {
+            const spacing = kind === 'aoe' ? 42 : 4.2;
+            const x = (index - (entries.length - 1) / 2) * spacing;
+            engine.spawnTransientEffect('projectile_impact', new THREE.Vector3(x, 0.04, 4.5), 0xffffff, {
+                projectileType: type,
+                direction: new THREE.Vector3(0.3, 0, 1),
+                radius: definition.gameplayRadius,
+                targetId: `gallery-target-${type}`,
+                terminal: true
+            });
+        });
+
+        if (kind === 'aoe') {
+            this.controls.target.set(0, 0, 4.5);
+            this.renderSystem.camera.position.set(0, 100, 92);
+            this.renderSystem.setZoom(70);
+        } else {
+            this.controls.target.set(0, 1.1, 4.5);
+            this.renderSystem.camera.position.set(10, 10, 20);
+            this.renderSystem.setZoom(13);
+        }
+        this.framingMode = `projectile-impact-gallery:${kind}`;
+        this.controls.update();
+        this.phase = `projectile-impacts:${kind}`;
+        this.setStatus(`${entries.length} procedural ${kind} projectile impacts`, 'playing');
+        this.updateMetrics();
+        return true;
+    }
+
     frameActorState() {
         const mode = 'actor-state';
         const centerX = this.remoteActor ? 2.8 : 1.2;
@@ -1019,6 +1097,7 @@ export class AnimationGallery {
                 };
             }));
         const proceduralAbilityCasts = collectProceduralAbilityCasts(this.effects);
+        const proceduralProjectileImpacts = collectProceduralProjectileImpacts(this.effects);
         const metrics = {
             ready: Boolean(this.actor?.mesh),
             className: this.currentClass,
@@ -1086,6 +1165,8 @@ export class AnimationGallery {
             proceduralAbilityCasts,
             lastAbilityCastVisuals: this.lastAbilityCastVisuals.map((entry) => ({ ...entry })),
             proceduralAbilityCastCache: getProceduralAbilityCastCacheMetrics(),
+            proceduralProjectileImpacts,
+            proceduralProjectileImpactCache: getProceduralProjectileImpactCacheMetrics(),
             spiritGuardians: (this.actor?.spiritEffect?.guardians?.length || 0) +
                 (this.remoteActor?.spiritEffect?.guardians?.length || 0),
             spiritVariants: [this.actor, this.remoteActor]

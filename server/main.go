@@ -65,7 +65,7 @@ var qaUsernamesFlag = flag.String("qa-usernames", os.Getenv("EIDOLON_QA_USERNAME
 
 var (
 	buildCommit  = "development"
-	buildVersion = "Alpha 0.41.0.26"
+	buildVersion = "Alpha 0.41.0.27"
 	qaUsernames  = map[string]struct{}{}
 )
 
@@ -330,6 +330,7 @@ const (
 	MsgGetDungeonStatus  = "get_dungeon_status"
 	MsgResetDungeon      = "reset_dungeon"
 	MsgTelegraph         = "telegraph"
+	MsgProjectileImpact  = "projectile_impact"
 	MsgRewardSummary     = "reward_summary"
 	MsgRoomClearReward   = "room_clear_reward"
 	MsgDungeonRoomState  = "dungeon_room_state"
@@ -548,6 +549,22 @@ type DamagePayload struct {
 	TargetID string `json:"targetId"`
 	Amount   int    `json:"amount"`
 	SourceID string `json:"sourceId"`
+}
+
+type ProjectileImpactPayload struct {
+	ProjectileID   string  `json:"projectileId"`
+	ProjectileType string  `json:"projectileType"`
+	SourceID       string  `json:"sourceId"`
+	TargetID       string  `json:"targetId,omitempty"`
+	InstanceID     string  `json:"instanceId,omitempty"`
+	SkillName      string  `json:"skillName,omitempty"`
+	X              float64 `json:"x"`
+	Y              float64 `json:"y"`
+	Z              float64 `json:"z"`
+	DirectionX     float64 `json:"directionX"`
+	DirectionZ     float64 `json:"directionZ"`
+	Radius         float64 `json:"radius,omitempty"`
+	Terminal       bool    `json:"terminal"`
 }
 
 type ComboPayload struct {
@@ -1036,6 +1053,24 @@ func main() {
 
 			go func() {
 				broadcast <- BroadcastMessage{Type: MsgDamage, Data: dataBytes}
+			}()
+		case "projectile_impact":
+			evt, ok := data.(game.ProjectileImpactEvent)
+			if !ok {
+				return
+			}
+			payload := ProjectileImpactPayload{
+				ProjectileID: evt.ProjectileID, ProjectileType: evt.ProjectileType,
+				SourceID: evt.SourceID, TargetID: evt.TargetID, InstanceID: evt.InstanceID,
+				SkillName: evt.SkillName, X: evt.X, Y: evt.Y, Z: evt.Z,
+				DirectionX: evt.DirectionX, DirectionZ: evt.DirectionZ,
+				Radius: evt.Radius, Terminal: evt.Terminal,
+			}
+			b, _ := json.Marshal(payload)
+			outMsg := Message{Type: MsgProjectileImpact, Payload: b}
+			dataBytes, _ := json.Marshal(outMsg)
+			go func() {
+				broadcast <- BroadcastMessage{Type: MsgProjectileImpact, Data: dataBytes, InstanceID: evt.InstanceID}
 			}()
 		case "heal":
 			evt, ok := data.(game.HealEvent)

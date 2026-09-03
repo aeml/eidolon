@@ -602,6 +602,35 @@ test.describe('deterministic production animation gallery', () => {
             });
         }
 
+        for (const [kind, expectedCount] of [['direct', 7], ['aoe', 3]]) {
+            await page.evaluate((galleryKind) => {
+                window.__eidolonAnimationGalleryController.presentProjectileImpactGallery(galleryKind);
+            }, kind);
+            await expect.poll(async () => {
+                const snapshot = await galleryMetrics(page);
+                return snapshot.phase === `projectile-impacts:${kind}`
+                    ? snapshot.proceduralProjectileImpacts.length
+                    : -1;
+            }).toBe(expectedCount);
+            const impactMetrics = await galleryMetrics(page);
+            expect(impactMetrics.proceduralProjectileImpacts.every((entry) =>
+                entry.artStyle.length > 16 && entry.motif.length > 8 && entry.visibleParts >= 8 && entry.hasExactBoundary
+            )).toBe(true);
+            expect(impactMetrics.nonFiniteTransforms).toBe(0);
+            expect(impactMetrics.proceduralProjectileImpactCache.geometries).toBeGreaterThan(5);
+            expect(impactMetrics.proceduralProjectileImpactCache.materials).toBeGreaterThan(0);
+            await page.locator('#animation-gallery').evaluate((panel) => {
+                panel.style.visibility = 'hidden';
+            });
+            await page.screenshot({
+                path: testInfo.outputPath(`procedural-projectile-impact-${kind}-gallery.png`),
+                animations: 'allow'
+            });
+            await page.locator('#animation-gallery').evaluate((panel) => {
+                panel.style.visibility = '';
+            });
+        }
+
         for (const quality of ['high', 'low']) {
             await page.locator('#gallery-quality').selectOption(quality);
             await page.locator('#gallery-run-all').click();

@@ -103,6 +103,7 @@ export function isAoeBoundaryVisualType(type) {
  */
 export function getProjectileImpactRadius(projectileType, source = null, projectileScale = 1) {
     if (projectileType === 'Fireball') return 10;
+    if (projectileType === 'ExplosiveTrap') return 6;
     if (projectileType !== 'Meteor') return null;
 
     const runeId = source?.skillRunes?.['Meteor Drop'] || null;

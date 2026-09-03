@@ -285,7 +285,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.41.0.26</span>
+                <span class="start-version-row__label">Alpha 0.41.0.27</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -470,7 +470,7 @@
                                 </div>
                                 <div id="asset-pack-core-status" class="asset-cache-pack__status">Procedural core built in</div>
                                 <div id="asset-pack-core-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-26</div>
+                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-27</div>
                             </div>
                             <button id="btn-download-core-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -482,7 +482,7 @@
                                 </div>
                                 <div id="asset-pack-dungeon-status" class="asset-cache-pack__status">Procedural dungeon entrances built in</div>
                                 <div id="asset-pack-dungeon-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-26</div>
+                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-27</div>
                             </div>
                             <button id="btn-download-dungeon-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -587,6 +587,23 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.41.0.27">
+                    <h3 class="patch-note-entry__title">Patch 0.41.0.27 (every projectile lands with consequence)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Every collision-capable projectile and trap now leaves its own mark:</strong> Fireball, Arcane Missile, Dragonfire Lance, Dagger, Flame Tornado, Meteor, Phantom Arrow, Tripwire, Explosive Trap, and Snare Trap each resolve through an intentional code-generated dark-fantasy impact instead of a shared flash.</li>
+                        <li><strong>Impact timing now belongs to the server:</strong> multiplayer clients present collisions only from a new authoritative impact event, removing the duplicate bursts, early removals, and visual disagreement caused by client-side collision guesses.</li>
+                        <li><strong>Area impacts show their real reach:</strong> Fireball draws its ten-unit blast, Explosive Trap draws its six-unit detonation, and every Meteor rune draws the exact landing radius supplied by authoritative combat logic.</li>
+                        <li><strong>Boundaries stay honest while the magic moves:</strong> each area fill and outer edge remains fixed at gameplay size while crowns, seals, hearts, shards, and binding lines animate inside it; Low quality keeps the same combat footprint.</li>
+                        <li><strong>Piercing and bouncing attacks acknowledge every real victim:</strong> Dagger, Dragonfire Lance, and Flame Tornado can present each server-confirmed target impact without collapsing later contacts into the first hit.</li>
+                        <li><strong>Expired projectiles no longer pretend they struck something:</strong> ordinary lifetime cleanup is silent, while Meteor retains a deduplicated packet-loss fallback so a real landing cannot disappear or play twice.</li>
+                        <li><strong>Offline combat closes its old collision holes:</strong> Phantom Arrow and all three Rogue trap families now use the same typed impact route, and local Fireball, Explosive Trap, and Meteor splash checks use their authoritative footprints.</li>
+                        <li><strong>Dungeon and overworld traffic stays in its lane:</strong> impact events are filtered by instance and distant overworld events are ignored unless their source or projectile is relevant to the local client.</li>
+                        <li><strong>Impact art is fast and independently disposable:</strong> immutable geometry and materials are cached, every effect owns its transform and teardown, and removing one impact cannot invalidate another still on screen.</li>
+                        <li><strong>The browser audit watches every collision family:</strong> dedicated direct-hit and area galleries verify all ten types for unique identity, visible finite geometry, and exact AOE boundaries, while unit and server coverage prove High/Low construction, cleanup, payload truth, and duplicate suppression.</li>
+                        <li><strong>Combat balance is unchanged:</strong> damage, cooldowns, resource costs, target rules, and server-owned radii remain intact; stale offline splash checks and visuals were aligned to those existing authoritative values.</li>
+                        <li><strong>Clients cross a clean threshold:</strong> the built-in asset generation advances to 2026-09-03-27.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.41.0.26">
                     <h3 class="patch-note-entry__title">Patch 0.41.0.26 (every ability cast becomes a rite)</h3>
                     <ul class="patch-note-entry__list">

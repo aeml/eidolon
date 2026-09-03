@@ -31,7 +31,7 @@ describe('Projectile combat effect routing', () => {
         resetProjectileParticlePoolForTests();
     });
 
-    test('ArcaneMissile impact routes readability burst through transient effects without entity scene access', () => {
+    test('ArcaneMissile impact routes its typed procedural strike without entity scene access', () => {
         const owner = createOwner();
         const enemy = createEnemy(new THREE.Vector3(0.25, 0, 0));
         const projectile = new Projectile('arcane-1', owner, 'ArcaneMissile', new THREE.Vector3(0, 0, 0), new THREE.Vector3(1, 0, 0));
@@ -54,10 +54,16 @@ describe('Projectile combat effect routing', () => {
         expect(spawnTransientEffect).toHaveBeenCalledTimes(1);
 
         const [type, position, color, options] = spawnTransientEffect.mock.calls[0];
-        expect(type).toBe('impact');
-        expect(color).toBe(0xaa00ff);
+        expect(type).toBe('projectile_impact');
+        expect(color).toBe(0xffffff);
         expect(position).toBe(projectile.position);
-        expect(options).toEqual({ source: owner });
+        expect(options).toEqual(expect.objectContaining({
+            projectileType: 'ArcaneMissile',
+            source: owner,
+            targetId: enemy.id,
+            terminal: true
+        }));
+        expect(options.direction).toBeInstanceOf(THREE.Vector3);
     });
 
     test('projectiles ignore nearby world props without a damage contract', () => {
@@ -115,10 +121,16 @@ describe('Projectile combat effect routing', () => {
         expect(spawnTransientEffect).toHaveBeenCalledTimes(1);
 
         const [type, position, color, options] = spawnTransientEffect.mock.calls[0];
-        expect(type).toBe('sphere');
-        expect(color).toBe(0xff2200);
+        expect(type).toBe('projectile_impact');
+        expect(color).toBe(0xffffff);
         expect(position).toBe(projectile.position);
-        expect(options).toEqual({ source: owner, radius: 9, duration: 0.45 });
+        expect(options).toEqual(expect.objectContaining({
+            projectileType: 'Meteor',
+            source: owner,
+            radius: 9,
+            targetId: primaryEnemy.id,
+            terminal: true
+        }));
     });
 
     test('ArcaneMissile impact falls back to effectScene instead of entity scene when transient effects are unavailable', () => {
@@ -150,7 +162,7 @@ describe('Projectile combat effect routing', () => {
         expect(projectile.isActive).toBe(false);
         expect(effectScene.children).toHaveLength(1);
         expect(effectScene.children[0].position).toEqual(projectile.position);
-        expect(effectScene.children[0].material.color.getHex()).toBe(0xaa00ff);
+        expect(effectScene.children[0].material.color.getHex()).toBe(0xffffff);
     });
 
     test('Meteor explosion falls back to effectScene instead of entity scene when transient effects are unavailable', () => {
@@ -184,7 +196,7 @@ describe('Projectile combat effect routing', () => {
         expect(effectScene.children).toHaveLength(2);
         expect(effectScene.children[0].material.color.getHex()).toBe(0xffaa00);
         expect(effectScene.children[1].position).toEqual(projectile.position);
-        expect(effectScene.children[1].material.color.getHex()).toBe(0xff2200);
+        expect(effectScene.children[1].material.color.getHex()).toBe(0xffffff);
     });
 
     test('Meteor trail particles reparent to the current effectScene when the particle pool reuses an inactive mesh', () => {

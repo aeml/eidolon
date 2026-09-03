@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { createProceduralAbilityCastEffect } from '../art/ProceduralAbilityCasts.js';
+import { createProceduralProjectileImpactEffect } from '../art/ProceduralProjectileImpacts.js';
 
 class TransientEffect {
     constructor(scene, meshes, duration, updateFn = null) {
@@ -420,6 +421,9 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
     if (!scene || !position) return null;
     if (options.abilityName) {
         return createProceduralAbilityCastEffect(scene, type, position, color, options);
+    }
+    if (type === 'projectile_impact' && options.projectileType) {
+        return createProceduralProjectileImpactEffect(scene, position, options);
     }
     const effectScale = Number.isFinite(options.effectScale) ? options.effectScale : 1.0;
     const quality = options.quality || 'high';

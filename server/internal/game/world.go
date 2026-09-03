@@ -1748,6 +1748,25 @@ type AbilityEvent struct {
 	TargetZ   float64 `json:"targetZ"`
 }
 
+// ProjectileImpactEvent is emitted at the authoritative collision point. It
+// gives every observer the same impact identity and footprint instead of
+// asking clients to infer a hit from interpolation or entity disappearance.
+type ProjectileImpactEvent struct {
+	ProjectileID   string  `json:"projectileId"`
+	ProjectileType string  `json:"projectileType"`
+	SourceID       string  `json:"sourceId"`
+	TargetID       string  `json:"targetId,omitempty"`
+	InstanceID     string  `json:"instanceId,omitempty"`
+	SkillName      string  `json:"skillName,omitempty"`
+	X              float64 `json:"x"`
+	Y              float64 `json:"y"`
+	Z              float64 `json:"z"`
+	DirectionX     float64 `json:"directionX"`
+	DirectionZ     float64 `json:"directionZ"`
+	Radius         float64 `json:"radius,omitempty"`
+	Terminal       bool    `json:"terminal"`
+}
+
 func difficultyPacingTag(difficulty DungeonDifficulty) string {
 	switch difficulty {
 	case DifficultyHeroic:
@@ -4792,6 +4811,12 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				impactX, impactZ, impactInstanceID := e.X, e.Z, e.InstanceID
 
 				e.Mu.Unlock() // Unlock to query grid
+				w.fireProjectileImpactEvent(ProjectileImpactEvent{
+					ProjectileID: e.ID, ProjectileType: projectileSubType,
+					SourceID: ownerID, InstanceID: impactInstanceID, SkillName: impactName,
+					X: impactX, Y: 0, Z: impactZ,
+					Radius: visualAbilityRadius(impactName, radius), Terminal: true,
+				})
 
 				nearby := w.Grid.Nearby(impactX, impactZ, effectiveRadius, impactInstanceID)
 				for _, target := range nearby {
@@ -4918,7 +4943,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		w.Grid.Update(e, oldX, oldZ)
 
 		// Snapshot for collision check
-		projX, projZ, radius, damage, ownerID, subType := e.X, e.Z, e.Radius, e.Damage, e.OwnerID, e.SubType
+		projX, projY, projZ, radius, damage, ownerID, subType := e.X, e.Y, e.Z, e.Radius, e.Damage, e.OwnerID, e.SubType
+		projVelX, projVelZ, projSkillName := e.VelX, e.VelZ, e.ProjectileSkill
 		hitIDs := make(map[string]bool, len(e.HitList)+1)
 		for id, hit := range e.HitList {
 			if hit {
@@ -5251,6 +5277,20 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				if subType == "Fireball" && ownerFireballPierce {
 					shouldPierce = true
 				}
+
+				impactRadius := 0.0
+				if subType == "Fireball" {
+					impactRadius = 10.0
+				} else if subType == "ExplosiveTrap" {
+					impactRadius = 6.0
+				}
+				w.fireProjectileImpactEvent(ProjectileImpactEvent{
+					ProjectileID: e.ID, ProjectileType: subType,
+					SourceID: ownerID, TargetID: target.ID, InstanceID: projectileInstanceID,
+					SkillName: projSkillName, X: projX, Y: projY, Z: projZ,
+					DirectionX: projVelX, DirectionZ: projVelZ,
+					Radius: impactRadius, Terminal: !shouldPierce,
+				})
 
 				if !shouldPierce {
 					deferred.addRemoval(e.ID)

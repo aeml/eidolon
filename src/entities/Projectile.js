@@ -7,6 +7,7 @@ import {
     createProceduralProjectileVisual,
     updateProceduralProjectileVisual
 } from '../art/ProceduralProjectileEffects.js';
+import { getProjectileImpactRadius } from '../skills/abilityRadii.js';
 
 // =====================================================
 // Particle Pool Manager - Centralized for performance
@@ -140,6 +141,28 @@ function spawnTransientCombatEffect(gameEngine, type, position, color, options =
     return gameEngine.spawnTransientEffect(type, position, color, options);
 }
 
+function spawnProjectileImpact(gameEngine, projectile, position, options = {}) {
+    const direction = projectile.velocity?.clone?.().setY(0);
+    if (direction?.lengthSq?.() > 0) direction.normalize();
+    const effectOptions = {
+        projectileType: projectile.type,
+        source: projectile.owner,
+        direction,
+        radius: options.radius,
+        targetId: options.targetId || '',
+        terminal: Boolean(options.terminal)
+    };
+    projectile.hasResolvedImpact = true;
+    if (spawnTransientCombatEffect(gameEngine, 'projectile_impact', position, 0xffffff, effectOptions)) {
+        return true;
+    }
+    const effectScene = gameEngine?.effectScene || gameEngine?.scene;
+    return Boolean(spawnSceneFallbackBurst(effectScene, position, 0xffffff, {
+        radius: Number.isFinite(options.radius) ? Math.min(options.radius, 4) : 1,
+        color: 0xffffff
+    }));
+}
+
 export class Projectile extends Entity {
     constructor(id, owner, type, startPos, targetPos) {
         super(id);
@@ -166,6 +189,7 @@ export class Projectile extends Entity {
         
         this.hitEntities = new Set(); // Track entities hit by this projectile
         this.hasExploded = false;
+        this.hasResolvedImpact = false;
         
         // Modifiers
         this.bounces = 0;
@@ -287,7 +311,7 @@ export class Projectile extends Entity {
         }
 
         // Collision Detection (Client-side prediction / Singleplayer)
-        if (chunkManager) {
+        if (chunkManager && !this.serverAuthoritativeLifetime) {
             const activeEntities = chunkManager.getActiveEntities();
             const hitRadius = this.radius || 1.0; // Use projectile's radius
 
@@ -377,7 +401,12 @@ export class Projectile extends Entity {
                             }
                         }
 
-                    } else if (this.type === 'ArcaneMissile') {
+                        spawnProjectileImpact(gameEngine, this, this.position, {
+                            targetId: entity.id,
+                            terminal: false
+                        });
+
+                    } else if (this.type === 'ArcaneMissile' || this.type === 'PhantomArrow') {
                         // Single Hit Logic
                         this.isActive = false;
                         if (this.mesh) this.mesh.visible = false;
@@ -389,20 +418,22 @@ export class Projectile extends Entity {
                             }
                         }
                         
-                        // Visual Hit
-                        if (!spawnTransientCombatEffect(gameEngine, 'impact', this.position, 0xaa00ff, { source: this.owner })) {
-                            spawnSceneFallbackBurst(effectScene, this.position, 0xaa00ff, { color: 0xaa00ff });
-                        }
+                        spawnProjectileImpact(gameEngine, this, this.position, {
+                            targetId: entity.id,
+                            terminal: true
+                        });
                         break;
 
-                    } else if (this.type === 'Fireball' || this.type === 'Meteor') {
+                    } else if (this.type === 'Fireball' || this.type === 'Meteor' || this.type === 'ExplosiveTrap') {
                         // Explode Logic: Hit, Splash, Destroy
                         this.hasExploded = true;
                         this.isActive = false; // Destroy projectile
                         if (this.mesh) this.mesh.visible = false; // Hide immediately to prevent visual piercing
                         
                         // Splash Damage
-                        const splashRadius = this.explosionRadius || (this.type === 'Meteor' ? 16.0 : 4.0);
+                        const splashRadius = this.explosionRadius
+                            || getProjectileImpactRadius(this.type, this.owner, this.scale)
+                            || (this.type === 'Meteor' ? 26.4 : this.type === 'ExplosiveTrap' ? 6.0 : 10.0);
                         // Find all entities in splash radius
                         for (const splashTarget of activeEntities) {
                             if (splashTarget.state === 'DEAD' || !splashTarget.isActive) continue;
@@ -425,24 +456,25 @@ export class Projectile extends Entity {
                              this.owner.spawnBurningGround(this.position, gameEngine);
                         }
                         
-                        // Visual Explosion
-                        const explosionColor = this.type === 'Meteor' ? 0xff2200 : 0xff4500;
-                        if (!spawnTransientCombatEffect(gameEngine, 'sphere', this.position, explosionColor, {
-                            source: this.owner,
+                        spawnProjectileImpact(gameEngine, this, this.position, {
                             radius: splashRadius,
-                            duration: 0.45
-                        })) {
-                            spawnSceneFallbackBurst(effectScene, this.position, explosionColor, {
-                                radius: splashRadius,
-                                color: explosionColor,
-                                opacity: 0.5,
-                                scaleStep: 1.05,
-                                fadeStep: 0.05,
-                                segments: 16
-                            });
-                        }
-                        
+                            targetId: entity.id,
+                            terminal: true
+                        });
+
                         break; // Stop checking other entities since we exploded
+                    } else if (this.type === 'Tripwire' || this.type === 'SnareTrap') {
+                        this.isActive = false;
+                        if (this.mesh) this.mesh.visible = false;
+                        if (!this.owner.isMultiplayer && !this.owner.isRemote) {
+                            entity.takeDamage(this.damage);
+                            if (floatingTextManager) floatingTextManager.spawn(Math.floor(this.damage), entity.position, '#ffffff');
+                        }
+                        spawnProjectileImpact(gameEngine, this, this.position, {
+                            targetId: entity.id,
+                            terminal: true
+                        });
+                        break;
                     }
                 }
             }

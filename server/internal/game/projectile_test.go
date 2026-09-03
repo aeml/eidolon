@@ -1,6 +1,7 @@
 package game
 
 import (
+	"math"
 	"testing"
 	"time"
 )
@@ -212,5 +213,116 @@ func TestFireballChainRedirectsAndKeepsAdditionalHitsAtHalfDamage(t *testing.T) 
 	chained.Mu.RUnlock()
 	if bounces != 2 || damage != 10 || velX <= 0 {
 		t.Fatalf("unexpected first chain redirect: bounces=%d damage=%d velX=%v", bounces, damage, velX)
+	}
+}
+
+func TestProjectileCollisionEmitsAuthoritativeTypedImpact(t *testing.T) {
+	w := NewWorld(nil)
+	w.Entities = make(map[string]*Entity)
+	w.Grid = NewSpatialMap(50.0)
+	owner := newTestPlayer("impact-owner", "Rogue")
+	owner.InstanceID = "dungeon-impact"
+	target := &Entity{
+		ID: "impact-target", Type: TypeEnemy, InstanceID: "dungeon-impact",
+		X: 2, Z: 0, Health: 100, MaxHealth: 100, State: "IDLE", Scale: 1,
+	}
+	projectile := &Entity{
+		ID: "impact-dagger", Type: TypeProjectile, SubType: "Dagger", ProjectileSkill: "Piercing Throw",
+		InstanceID: "dungeon-impact", X: 0, Y: 1, Z: 0, VelX: 20, VelZ: 0,
+		Radius: 1, Damage: 20, OwnerID: owner.ID, CreatedAt: time.Now(),
+	}
+	w.AddEntity(owner)
+	w.AddEntity(target)
+	w.AddEntity(projectile)
+	var impacts []ProjectileImpactEvent
+	w.OnEvent = func(eventType string, data interface{}) {
+		if eventType == "projectile_impact" {
+			impacts = append(impacts, data.(ProjectileImpactEvent))
+		}
+	}
+
+	w.Update(0.1)
+
+	if len(impacts) != 1 {
+		t.Fatalf("expected one authoritative projectile impact, got %d", len(impacts))
+	}
+	impact := impacts[0]
+	if impact.ProjectileID != projectile.ID || impact.ProjectileType != "Dagger" || impact.SourceID != owner.ID || impact.TargetID != target.ID {
+		t.Fatalf("impact identity mismatch: %+v", impact)
+	}
+	if impact.InstanceID != "dungeon-impact" || impact.SkillName != "Piercing Throw" || impact.X != 2 || impact.Y != 1 || impact.Z != 0 {
+		t.Fatalf("impact spatial context mismatch: %+v", impact)
+	}
+	if impact.DirectionX != 20 || impact.DirectionZ != 0 || impact.Radius != 0 || impact.Terminal {
+		t.Fatalf("piercing impact contract mismatch: %+v", impact)
+	}
+}
+
+func TestExplosiveProjectileImpactCarriesExactFootprintAndTerminalState(t *testing.T) {
+	for _, test := range []struct {
+		name       string
+		subType    string
+		skill      string
+		radius     float64
+		wantRadius float64
+	}{
+		{name: "fireball", subType: "Fireball", skill: "Fireball", radius: 2, wantRadius: 10},
+		{name: "explosive trap", subType: "ExplosiveTrap", skill: "Explosive Trap", radius: 1, wantRadius: 6},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			w := NewWorld(nil)
+			w.Entities = make(map[string]*Entity)
+			w.Grid = NewSpatialMap(50.0)
+			owner := newTestPlayer("impact-owner", "Wizard")
+			target := &Entity{ID: "impact-target", Type: TypeEnemy, X: 2, Health: 1000, MaxHealth: 1000, State: "IDLE", Scale: 1}
+			projectile := &Entity{
+				ID: "impact-projectile", Type: TypeProjectile, SubType: test.subType, ProjectileSkill: test.skill,
+				X: 0, VelX: 20, Radius: test.radius, Damage: 20, OwnerID: owner.ID, CreatedAt: time.Now(),
+			}
+			w.AddEntity(owner)
+			w.AddEntity(target)
+			w.AddEntity(projectile)
+			var impact ProjectileImpactEvent
+			w.OnEvent = func(eventType string, data interface{}) {
+				if eventType == "projectile_impact" {
+					impact = data.(ProjectileImpactEvent)
+				}
+			}
+
+			w.Update(0.1)
+
+			if impact.ProjectileType != test.subType || impact.Radius != test.wantRadius || !impact.Terminal {
+				t.Fatalf("explosive impact contract mismatch: %+v", impact)
+			}
+		})
+	}
+}
+
+func TestMeteorImpactEventUsesTheSameExpandedVisualRadiusAsItsTelegraph(t *testing.T) {
+	w := NewWorld(nil)
+	w.Entities = make(map[string]*Entity)
+	w.Grid = NewSpatialMap(50.0)
+	owner := newTestPlayer("meteor-owner", "Wizard")
+	meteor := &Entity{
+		ID: "meteor-impact", Type: TypeProjectile, SubType: "Meteor", ProjectileSkill: "Meteor Drop",
+		X: 7, Y: 0, Z: -4, Radius: 24, Damage: 100, OwnerID: owner.ID,
+		CreatedAt: time.Now(), LastAttackTime: time.Now().Add(-time.Millisecond),
+	}
+	w.AddEntity(owner)
+	w.AddEntity(meteor)
+	var impact ProjectileImpactEvent
+	w.OnEvent = func(eventType string, data interface{}) {
+		if eventType == "projectile_impact" {
+			impact = data.(ProjectileImpactEvent)
+		}
+	}
+
+	w.Update(0.01)
+
+	if impact.ProjectileID != meteor.ID || impact.ProjectileType != "Meteor" || !impact.Terminal {
+		t.Fatalf("meteor impact identity mismatch: %+v", impact)
+	}
+	if impact.Radius != visualAbilityRadius("Meteor Drop", 24) || math.Abs(impact.Radius-39.6) > 0.000001 {
+		t.Fatalf("meteor impact radius=%v, want 39.6", impact.Radius)
 	}
 }

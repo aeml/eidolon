@@ -14,7 +14,7 @@ The deeper, audit-grounded implementation plan that backs every release line bel
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.41.0.26`
+- Current in-game displayed version: `Alpha 0.41.0.27`
 - Active implementation line: `0.41`
 - Release-confidence gate: self-hosted locked browser dependencies, real-browser QA, QA-command restrictions, and deploy SHA/readiness verification are live-verified through SHA `8b74226`
 - Closed for planned implementation work: `0.21` through `0.37`

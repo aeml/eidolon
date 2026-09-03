@@ -21,6 +21,7 @@ import {
     shortestAngleDelta
 } from './MovementSmoothing.js';
 import { getProjectileImpactRadius } from '../skills/abilityRadii.js';
+import { PROCEDURAL_PROJECTILE_IMPACT_DEFINITIONS } from '../art/ProceduralProjectileImpacts.js';
 
 const LOCAL_POSITION_CORRECTION_DISTANCE = 3.0;
 const POINTER_RAYCAST_INTERVAL = 0.05;
@@ -1564,6 +1565,70 @@ export class GameEngine {
         this.uiManager?.updateJournal?.(currentQuests);
     }
 
+    renderProjectileImpactFeedback(data = {}) {
+        const projectileType = data.projectileType;
+        if (!PROCEDURAL_PROJECTILE_IMPACT_DEFINITIONS[projectileType]) return false;
+
+        const eventInstance = data.instanceId || '';
+        const currentInstance = this.currentInstanceId || '';
+        if (eventInstance !== currentInstance) return false;
+
+        if (!this.projectileImpactCueKeys) this.projectileImpactCueKeys = new Map();
+        const now = Date.now();
+        for (const [key, createdAt] of this.projectileImpactCueKeys) {
+            if (now - createdAt > 5000) this.projectileImpactCueKeys.delete(key);
+        }
+        const positionKey = `${Math.round(Number(data.x) * 10)}:${Math.round(Number(data.z) * 10)}`;
+        const cueKey = data.terminal
+            ? `${data.projectileId || projectileType}:terminal`
+            : `${data.projectileId || projectileType}:${data.targetId || positionKey}`;
+        if (this.projectileImpactCueKeys.has(cueKey)) return false;
+
+        const position = new THREE.Vector3(
+            Number(data.x) || 0,
+            Math.max(0.04, Number(data.y) || 0.04),
+            Number(data.z) || 0
+        );
+        const direction = new THREE.Vector3(Number(data.directionX) || 0, 0, Number(data.directionZ) || 0);
+        if (direction.lengthSq() === 0) direction.set(0, 0, 1);
+        else direction.normalize();
+        const projectile = data.projectileId ? this.remotePlayers?.get?.(data.projectileId) : null;
+        const source = projectile?.owner
+            || this.remotePlayers?.get?.(data.sourceId)
+            || (data.sourceId === this.player?.id ? this.player : null);
+        // Overworld events use an empty instance id, so proximity is proven by
+        // a replicated projectile/source instead of making every connected
+        // overworld client animate distant combat it cannot see.
+        if (!eventInstance && !projectile && !source) return false;
+        const suppliedRadius = Number(data.radius);
+        const radius = Number.isFinite(suppliedRadius) && suppliedRadius > 0
+            ? suppliedRadius
+            : getProjectileImpactRadius(projectileType, source, projectile?.scale);
+        const spawned = this.spawnTransientEffect?.('projectile_impact', position, 0xffffff, {
+            projectileType,
+            source,
+            direction,
+            radius,
+            targetId: data.targetId || '',
+            terminal: Boolean(data.terminal),
+            skillName: data.skillName || ''
+        });
+        if (!spawned) return false;
+
+        this.projectileImpactCueKeys.set(cueKey, now);
+        if (projectile) projectile.hasResolvedImpact = true;
+        this.lastProjectileImpactPresentation = {
+            projectileId: data.projectileId || '',
+            projectileType,
+            targetId: data.targetId || '',
+            instanceId: eventInstance,
+            radius: radius ?? null,
+            terminal: Boolean(data.terminal),
+            position: position.toArray()
+        };
+        return true;
+    }
+
     handleServerMessage(msg) {
         if (!this.player) return; // Safety check
 
@@ -1678,6 +1743,8 @@ export class GameEngine {
             if (target && Number(healData.amount) > 0) {
                 this.floatingTextManager.spawn(`+${healData.amount}`, target.position, '#55ff9b');
             }
+        } else if (msg.type === 'projectile_impact') {
+            this.renderProjectileImpactFeedback(msg.payload || {});
         } else if (msg.type === 'damage') {
             const dmgData = msg.payload;
             
@@ -2776,17 +2843,20 @@ export class GameEngine {
         const entity = this.remotePlayers.get(id);
         if (!entity) return;
 
-        // Meteor damage is server-authoritative and can land without a client
-        // actor directly under its narrow falling mesh. Use authoritative
-        // removal as a final impact cue when collision prediction did not
-        // already render the blast.
+        // A typed server impact normally arrives before removal. Retain a
+        // deduplicated Meteor fallback for packet loss without guessing that
+        // ordinary projectile expiry was a hit.
         if (entity instanceof Projectile && entity.type === 'Meteor' && !entity.hasExploded) {
-            const impactPosition = entity.position.clone();
-            impactPosition.y = 0.1;
-            this.spawnTransientEffect?.('sphere', impactPosition, 0xff2200, {
-                source: entity.owner,
+            this.renderProjectileImpactFeedback({
+                projectileId: entity.id,
+                projectileType: entity.type,
+                sourceId: entity.owner?.id || '',
+                instanceId: this.currentInstanceId || '',
+                x: entity.position.x,
+                y: 0.1,
+                z: entity.position.z,
                 radius: entity.explosionRadius || 26.4,
-                duration: 0.45
+                terminal: true
             });
             entity.hasExploded = true;
         }
@@ -5345,7 +5415,12 @@ export class GameEngine {
                     const target = new THREE.Vector3(pData.x + (pData.velX || 1), y, pData.z + (pData.velZ || 0));
                     
                     const owner = this.remotePlayers.get(pData.ownerId) || (pData.ownerId === this.player.id ? this.player : null);
-                    const dummyOwner = { stats: { intelligence: 10, dexterity: 10 }, isRemote: true, isMultiplayer: true };
+                    const dummyOwner = {
+                        stats: { intelligence: 10, dexterity: 10, wisdom: 10 },
+                        skillRunes: {},
+                        isRemote: true,
+                        isMultiplayer: true
+                    };
                     
                     remoteEntity = new Projectile(pData.id, owner || dummyOwner, pData.subType, start, target);
                     const verticalVelocity = pData.subType === 'Meteor' ? -20 : 0;
