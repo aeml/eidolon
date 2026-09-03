@@ -65,7 +65,7 @@ var qaUsernamesFlag = flag.String("qa-usernames", os.Getenv("EIDOLON_QA_USERNAME
 
 var (
 	buildCommit  = "development"
-	buildVersion = "Alpha 0.41.0.28"
+	buildVersion = "Alpha 0.41.0.29"
 	qaUsernames  = map[string]struct{}{}
 )
 
@@ -1945,17 +1945,16 @@ func (c *Client) handleMessage(msg Message) {
 				name := dbItem.Name
 				if name == "Heart" {
 					name = "Eidolon Heart"
-					// Also update icon if needed
-					if dbItem.Icon == "" || dbItem.Icon == "assets/items/heart.png" {
-						dbItem.Icon = "assets/items/eidolon_heart/eidolon_heart.png"
-					}
+				}
+				if name == "Eidolon Heart" {
+					dbItem.Icon = "procedural:item:eidolon-heart"
 				}
 				// Migration: Rename "Shard" to "Eidolon Shard"
 				if name == "Shard" {
 					name = "Eidolon Shard"
-					if dbItem.Icon == "" || dbItem.Icon == "assets/items/shard.png" {
-						dbItem.Icon = "assets/items/eidolon_shard/eidolon_shard.png"
-					}
+				}
+				if name == "Eidolon Shard" {
+					dbItem.Icon = "procedural:item:eidolon-shard"
 				}
 
 				// Fix for old items (Missing Stack count)
@@ -2006,16 +2005,16 @@ func (c *Client) handleMessage(msg Message) {
 				name := dbItem.Name
 				if name == "Heart" {
 					name = "Eidolon Heart"
-					if dbItem.Icon == "" || dbItem.Icon == "assets/items/heart.png" {
-						dbItem.Icon = "assets/items/eidolon_heart/eidolon_heart.png"
-					}
+				}
+				if name == "Eidolon Heart" {
+					dbItem.Icon = "procedural:item:eidolon-heart"
 				}
 				// Migration: Rename "Shard" to "Eidolon Shard"
 				if name == "Shard" {
 					name = "Eidolon Shard"
-					if dbItem.Icon == "" || dbItem.Icon == "assets/items/shard.png" {
-						dbItem.Icon = "assets/items/eidolon_shard/eidolon_shard.png"
-					}
+				}
+				if name == "Eidolon Shard" {
+					dbItem.Icon = "procedural:item:eidolon-shard"
 				}
 
 				stack := dbItem.Stack
@@ -2065,16 +2064,16 @@ func (c *Client) handleMessage(msg Message) {
 				name := dbItem.Name
 				if name == "Heart" {
 					name = "Eidolon Heart"
-					if dbItem.Icon == "" || dbItem.Icon == "assets/items/heart.png" {
-						dbItem.Icon = "assets/items/eidolon_heart/eidolon_heart.png"
-					}
+				}
+				if name == "Eidolon Heart" {
+					dbItem.Icon = "procedural:item:eidolon-heart"
 				}
 				// Migration: Rename "Shard" to "Eidolon Shard"
 				if name == "Shard" {
 					name = "Eidolon Shard"
-					if dbItem.Icon == "" || dbItem.Icon == "assets/items/shard.png" {
-						dbItem.Icon = "assets/items/eidolon_shard/eidolon_shard.png"
-					}
+				}
+				if name == "Eidolon Shard" {
+					dbItem.Icon = "procedural:item:eidolon-shard"
 				}
 
 				stack := dbItem.Stack

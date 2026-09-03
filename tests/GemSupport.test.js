@@ -10,17 +10,16 @@ describe('gem client support', () => {
         expect(getGemStats('Ruby', 'Chipped')).toEqual(getGemStats('RUBY', 'CHIPPED'));
     });
 
-    test('gem icons resolve to quality-specific filenames', () => {
-        const iconPath = UIManager.prototype.getGemIconPath.call({
-            resolveAssetUrl: (path) => path
-        }, {
+    test('gem icons resolve to quality-specific procedural soulstones', () => {
+        const iconPath = UIManager.prototype.getGemIconPath.call({}, {
             type: 'GEM',
             gemType: 'Ruby',
             gemQuality: 'Flawed',
             name: 'Flawed Ruby'
         });
 
-        expect(iconPath).toBe('assets/icons/gems/flawed_ruby.svg');
+        expect(iconPath.startsWith('data:image/svg+xml;charset=UTF-8,')).toBe(true);
+        expect(decodeURIComponent(iconPath)).toContain('gem-flawed-ruby-soulstone');
     });
 
     test('actor stat recalculation applies socketed gem bonuses', () => {

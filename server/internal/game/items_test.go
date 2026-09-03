@@ -301,6 +301,9 @@ func TestCreateItemMaterial(t *testing.T) {
 	if item.MaxStack != 1000 {
 		t.Errorf("Expected MaxStack 1000, got %d", item.MaxStack)
 	}
+	if item.Icon != "procedural:item:eidolon-shard" {
+		t.Errorf("Expected procedural shard identity, got %q", item.Icon)
+	}
 }
 
 func TestCreateItemRelic(t *testing.T) {
@@ -312,6 +315,9 @@ func TestCreateItemRelic(t *testing.T) {
 	}
 	if item.Rarity != RarityEidolic {
 		t.Error("Relics should be upgraded to Eidolic rarity")
+	}
+	if item.Icon != "procedural:item:eidolon-heart" {
+		t.Errorf("Expected procedural heart identity, got %q", item.Icon)
 	}
 }
 

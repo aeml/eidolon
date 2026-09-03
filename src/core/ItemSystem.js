@@ -501,11 +501,11 @@ export class ItemGenerator {
             if (baseItem.name === "Eidolon Shard") {
                 desc = "What remains after purpose is broken.";
                 finalRarity = RARITY.EIDOLIC;
-                icon = "assets/items/eidolon_shard/eidolon_shard.png";
+                icon = "procedural:item:eidolon-shard";
             } else if (baseItem.name === "Eidolon Heart") {
                 desc = "Power that chose to endure.";
                 finalRarity = RARITY.EIDOLIC;
-                icon = "assets/items/eidolon_heart/eidolon_heart.png";
+                icon = "procedural:item:eidolon-heart";
             }
 
             const item = new Item({

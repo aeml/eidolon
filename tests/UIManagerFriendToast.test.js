@@ -10,6 +10,8 @@ jest.unstable_mockModule('../src/proto/state_pb.js', () => {
 
 jest.unstable_mockModule('../src/core/ItemSystem.js', () => ({
     BASE_ITEMS: {},
+    GEM_QUALITIES: {},
+    GEM_TYPES: {},
     RARITY: {},
 }));
 

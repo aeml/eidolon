@@ -18,6 +18,10 @@ import {
     DUNGEON_ROOM_IDENTITY_IDS
 } from '../../src/art/ProceduralDungeonInteriors.js';
 import { PROCEDURAL_STATUS_EFFECT_DEFINITIONS } from '../../src/art/ProceduralStatusEffects.js';
+import {
+    PROCEDURAL_ABILITY_ICON_DEFINITIONS,
+    PROCEDURAL_ITEM_ICON_DEFINITIONS
+} from '../../src/art/ProceduralIcons.js';
 
 const presentationCount = listPlayerAbilityPresentationVariants().length;
 const actorEntries = listActorAnimationEntries();
@@ -708,6 +712,54 @@ test.describe('deterministic production animation gallery', () => {
         await page.locator('#gallery-cleanup').click();
         metrics = await galleryMetrics(page);
         expect(metrics.nonFiniteTransforms).toBe(0);
+        expect(failures, failures.join('\n')).toEqual([]);
+        testInfo.annotations.push({
+            type: 'renderer',
+            description: `${renderer.vendor} · ${renderer.renderer}`
+        });
+    });
+
+    test('renders the complete procedural ability and item reliquary in hardware Chrome', async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        const response = await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });
+        expect(response?.status()).toBe(200);
+        await expect(page.locator('#animation-gallery')).toBeVisible();
+
+        const renderer = await hardwareRenderer(page);
+        expect(renderer).not.toBeNull();
+        expect(`${renderer.vendor} ${renderer.renderer}`).not.toMatch(/swiftshader|llvmpipe|software/i);
+
+        const iconGalleryCounts = {
+            abilities: Object.keys(PROCEDURAL_ABILITY_ICON_DEFINITIONS).length,
+            items: Object.keys(PROCEDURAL_ITEM_ICON_DEFINITIONS.equipment).length
+                + Object.keys(PROCEDURAL_ITEM_ICON_DEFINITIONS.currency).length,
+            gems: Object.keys(PROCEDURAL_ITEM_ICON_DEFINITIONS.gems).length
+        };
+        for (const [kind, expectedCount] of Object.entries(iconGalleryCounts)) {
+            await page.evaluate((galleryKind) => {
+                window.__eidolonAnimationGalleryController.presentProceduralIconGallery(galleryKind);
+            }, kind);
+            await expect.poll(async () => {
+                const snapshot = await galleryMetrics(page);
+                return snapshot.phase === `procedural-icons:${kind}`
+                    ? snapshot.proceduralIcons.length
+                    : -1;
+            }).toBe(expectedCount);
+            const iconMetrics = await galleryMetrics(page);
+            expect(iconMetrics.proceduralIcons.every((entry) => entry.procedural && entry.motif)).toBe(true);
+            expect(new Set(iconMetrics.proceduralIcons.map((entry) => entry.key)).size).toBe(expectedCount);
+            expect(iconMetrics.proceduralIconCache.icons).toBeGreaterThanOrEqual(expectedCount);
+            expect(iconMetrics.proceduralIconCache.items)
+                .toBeLessThanOrEqual(iconMetrics.proceduralIconCache.itemLimit);
+            await expect.poll(() => page.locator('#procedural-icon-gallery-overlay img').evaluateAll((images) =>
+                images.every((entry) => entry.complete && entry.naturalWidth > 0 && entry.naturalHeight > 0)
+            )).toBe(true);
+            await page.screenshot({
+                path: testInfo.outputPath(`procedural-${kind}-icon-gallery.png`),
+                animations: 'disabled'
+            });
+        }
+
         expect(failures, failures.join('\n')).toEqual([]);
         testInfo.annotations.push({
             type: 'renderer',

@@ -12,16 +12,16 @@ func TestGemFlatStatsUseSquishedScaleWhilePercentagesRemainStable(t *testing.T) 
 	}
 }
 
-func TestGenerateRandomGemByLevelSetsIcon(t *testing.T) {
+func TestGenerateRandomGemByLevelSetsProceduralIconIdentity(t *testing.T) {
 	gem := GenerateRandomGemByLevel(1, false)
 	if gem == nil {
 		t.Fatal("expected gem to be generated")
 	}
 	if gem.Icon == "" {
-		t.Fatal("expected generated gem to have an icon path")
+		t.Fatal("expected generated gem to have an icon identity")
 	}
-	if gem.Icon[:18] != "assets/icons/gems/" {
-		t.Fatalf("unexpected icon path %q", gem.Icon)
+	if len(gem.Icon) < len("procedural:gem:") || gem.Icon[:len("procedural:gem:")] != "procedural:gem:" {
+		t.Fatalf("unexpected icon identity %q", gem.Icon)
 	}
 }
 

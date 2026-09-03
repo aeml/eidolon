@@ -39,6 +39,13 @@ import {
     PROCEDURAL_COMBAT_FEEDBACK_DEFINITIONS,
     getProceduralCombatFeedbackCacheMetrics
 } from './art/ProceduralCombatFeedback.js';
+import {
+    PROCEDURAL_ABILITY_ICON_DEFINITIONS,
+    PROCEDURAL_ITEM_ICON_DEFINITIONS,
+    getProceduralAbilityIcon,
+    getProceduralIconCacheMetrics,
+    getProceduralItemIcon
+} from './art/ProceduralIcons.js';
 
 const PLAYER_TYPES = Object.freeze({ Fighter, Rogue, Wizard, Cleric });
 const PLAYER_TYPE_NAMES = Object.freeze(Object.keys(PLAYER_TYPES));
@@ -347,6 +354,8 @@ export class AnimationGallery {
         this.createdEffects = 0;
         this.disposedEffects = 0;
         this.lastAbilityCastVisuals = [];
+        this.iconGalleryOverlay = null;
+        this.iconGalleryEntries = [];
         this.bindElements();
         this.populateControls();
         this.bindEvents();
@@ -720,6 +729,125 @@ export class AnimationGallery {
         return true;
     }
 
+    presentProceduralIconGallery(kind = 'abilities') {
+        if (!this.actor) return false;
+        this.cleanupPresentation();
+        [this.actor, this.remoteActor, this.targetActor].forEach((actor) => {
+            if (actor?.mesh) actor.mesh.visible = false;
+        });
+
+        let entries = [];
+        if (kind === 'abilities') {
+            entries = Object.values(PROCEDURAL_ABILITY_ICON_DEFINITIONS).map((definition) => ({
+                key: `${definition.className}:${definition.abilityName}`,
+                label: definition.abilityName,
+                family: definition.className,
+                motif: definition.motif,
+                icon: getProceduralAbilityIcon(definition.className, definition.abilityName)
+            }));
+        } else if (kind === 'items') {
+            entries = Object.entries(PROCEDURAL_ITEM_ICON_DEFINITIONS.equipment).map(([baseName], index) => ({
+                key: baseName,
+                label: baseName,
+                family: 'equipment',
+                motif: PROCEDURAL_ITEM_ICON_DEFINITIONS.equipment[baseName].variant,
+                icon: getProceduralItemIcon({
+                    name: baseName,
+                    baseName,
+                    rarity: ['Common', 'Uncommon', 'Rare', 'Legendary', 'Eidolic'][index % 5],
+                    level: index + 1,
+                    potency: index % 7,
+                    sockets: index % 3
+                })
+            }));
+            entries.push(...Object.entries(PROCEDURAL_ITEM_ICON_DEFINITIONS.currency).map(([name, definition]) => ({
+                key: name,
+                label: name,
+                family: 'currency',
+                motif: definition.motif,
+                icon: getProceduralItemIcon({ name, type: name.includes('Heart') ? 'RELIC' : 'MATERIAL' })
+            })));
+        } else if (kind === 'gems') {
+            entries = Object.values(PROCEDURAL_ITEM_ICON_DEFINITIONS.gems).map((definition) => ({
+                key: `${definition.gemQuality}:${definition.gemType}`,
+                label: `${definition.gemQuality} ${definition.gemType}`,
+                family: 'gem',
+                motif: definition.motif,
+                icon: getProceduralItemIcon({
+                    name: `${definition.gemQuality} ${definition.gemType}`,
+                    type: 'GEM',
+                    slot: 'gem',
+                    gemType: definition.gemType,
+                    gemQuality: definition.gemQuality
+                })
+            }));
+        }
+        if (entries.length === 0 || entries.some((entry) => !entry.icon)) return false;
+
+        const overlay = document.createElement('section');
+        overlay.id = 'procedural-icon-gallery-overlay';
+        overlay.dataset.kind = kind;
+        Object.assign(overlay.style, {
+            position: 'fixed',
+            inset: '12px',
+            zIndex: '40',
+            display: 'grid',
+            gridTemplateColumns: kind === 'abilities' ? 'repeat(9, minmax(0, 1fr))' : 'repeat(8, minmax(0, 1fr))',
+            gap: '7px',
+            padding: '14px',
+            overflow: 'hidden',
+            background: 'radial-gradient(circle at 50% 35%, #24202a 0%, #100e14 58%, #07080b 100%)',
+            border: '2px solid #8d7650',
+            boxShadow: 'inset 0 0 50px #000, 0 0 30px #000'
+        });
+        entries.forEach((entry) => {
+            const card = document.createElement('article');
+            card.className = 'procedural-icon-gallery-card';
+            card.dataset.key = entry.key;
+            card.dataset.family = entry.family;
+            card.dataset.motif = entry.motif;
+            Object.assign(card.style, {
+                minWidth: '0',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '7px',
+                padding: '5px',
+                border: '1px solid #4b4234',
+                background: 'linear-gradient(145deg, rgba(44,39,48,.94), rgba(14,14,18,.96))',
+                color: '#ddd2bd',
+                font: '600 10px Georgia, serif',
+                letterSpacing: '.02em'
+            });
+            const img = document.createElement('img');
+            img.src = entry.icon;
+            img.alt = entry.label;
+            img.width = 48;
+            img.height = 48;
+            img.style.flex = '0 0 48px';
+            const label = document.createElement('span');
+            label.textContent = entry.label;
+            label.style.overflowWrap = 'anywhere';
+            card.append(img, label);
+            overlay.appendChild(card);
+        });
+        document.body.appendChild(overlay);
+        this.iconGalleryOverlay = overlay;
+        this.iconGalleryEntries = entries.map(({ icon, ...entry }) => ({
+            ...entry,
+            procedural: icon.startsWith('data:image/svg+xml')
+        }));
+        this.phase = `procedural-icons:${kind}`;
+        this.setStatus(`${entries.length} code-generated ${kind} sigils`, 'playing');
+        this.updateMetrics();
+        return true;
+    }
+
+    clearProceduralIconGallery() {
+        this.iconGalleryOverlay?.remove();
+        this.iconGalleryOverlay = null;
+        this.iconGalleryEntries = [];
+    }
+
     frameActorState() {
         const mode = 'actor-state';
         const centerX = this.remoteActor ? 2.8 : 1.2;
@@ -994,6 +1122,7 @@ export class AnimationGallery {
 
     cleanupPresentation() {
         this.presentationSequence++;
+        this.clearProceduralIconGallery();
         this.clearEffects();
         clearActorStatusState(this.actor);
         clearActorStatusState(this.remoteActor);
@@ -1235,6 +1364,8 @@ export class AnimationGallery {
             proceduralProjectileImpactCache: getProceduralProjectileImpactCacheMetrics(),
             proceduralCombatFeedback,
             proceduralCombatFeedbackCache: getProceduralCombatFeedbackCacheMetrics(),
+            proceduralIcons: this.iconGalleryEntries.map((entry) => ({ ...entry })),
+            proceduralIconCache: getProceduralIconCacheMetrics(),
             spiritGuardians: (this.actor?.spiritEffect?.guardians?.length || 0) +
                 (this.remoteActor?.spiritEffect?.guardians?.length || 0),
             spiritVariants: [this.actor, this.remoteActor]

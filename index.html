@@ -285,7 +285,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.41.0.28</span>
+                <span class="start-version-row__label">Alpha 0.41.0.29</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -470,7 +470,7 @@
                                 </div>
                                 <div id="asset-pack-core-status" class="asset-cache-pack__status">Procedural core built in</div>
                                 <div id="asset-pack-core-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-28</div>
+                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-29</div>
                             </div>
                             <button id="btn-download-core-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -482,7 +482,7 @@
                                 </div>
                                 <div id="asset-pack-dungeon-status" class="asset-cache-pack__status">Procedural dungeon entrances built in</div>
                                 <div id="asset-pack-dungeon-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-28</div>
+                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-29</div>
                             </div>
                             <button id="btn-download-dungeon-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -587,6 +587,22 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.41.0.29">
+                    <h3 class="patch-note-entry__title">Patch 0.41.0.29 (every menu sigil is codeborn)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Every ability now bears its own generated sigil:</strong> all 52 selectable class abilities plus the Frost Nova compatibility route receive a crisp dark-fantasy icon derived from the same class palette, relic family, and semantic identity as the spell itself.</li>
+                        <li><strong>The whole armory speaks one visual language:</strong> all 36 equipment families now use code-generated inventory art keyed to their real wearable descriptor, so weapons, armor, jewelry, offhands, and every slot remain visually connected to what appears on the character.</li>
+                        <li><strong>Item history remains visible at a glance:</strong> rarity, level, potency, sockets, socketed-gem colors, set allegiance, and unique effects add restrained marks without obscuring each item's core silhouette.</li>
+                        <li><strong>Soulstones have become a complete family:</strong> all seven gem types across all six qualities have distinct generated color, facet, and quality marks, while Eidolon Hearts and Shards receive their own enduring-soul and broken-prism relics.</li>
+                        <li><strong>Every item-facing window uses the same source of truth:</strong> inventory, character equipment, vendor, stash, buyback, forge, and trading routes now ask the procedural registry for art instead of trusting old persisted file paths.</li>
+                        <li><strong>Old saves stay safe:</strong> legacy icon strings may remain in historical player records, but clients deliberately ignore them; item identity, equipment, progression, stats, economy, and save compatibility are unchanged.</li>
+                        <li><strong>The old painted icon vault is gone:</strong> 137 superseded ability, equipment, and gem files plus both multi-megabyte currency bitmaps have left the production tree, removing roughly 165 MB without touching terrain or environmental imagery.</li>
+                        <li><strong>Missing art can no longer hide:</strong> coverage cross-checks the authoritative server loot catalog against client items and procedural descriptors, validates all 53 ability identities and 80 item/currency/gem identities, and fails closed on unknown content instead of drawing a generic placeholder.</li>
+                        <li><strong>The browser gallery now opens the reliquary:</strong> dedicated hardware-rendered ability, armory, and soulstone contact sheets verify unique keys, complete image decode, generated metadata, cache reuse, and clear readability at real UI scale.</li>
+                        <li><strong>Asset failures are visible again:</strong> because generated data icons make no network request, the browser gate no longer suppresses canceled legacy icon fetches; any new authored dependency will fail loudly.</li>
+                        <li><strong>Clients cross a clean threshold:</strong> the built-in asset generation advances to 2026-09-03-29.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.41.0.28">
                     <h3 class="patch-note-entry__title">Patch 0.41.0.28 (every wound answers with a relic)</h3>
                     <ul class="patch-note-entry__list">

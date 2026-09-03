@@ -16,8 +16,21 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.41.0.28 for typed combat consequence and recovery', () => {
-        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 0.41.0.28</span>');
+    test('advances the login screen to alpha 0.41.0.29 for a complete procedural icon reliquary', () => {
+        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 0.41.0.29</span>');
+        expect(indexHtml).toContain('Patch 0.41.0.29');
+        expect(indexHtml).toContain('every menu sigil is codeborn');
+        expect(indexHtml).toContain('Every ability now bears its own generated sigil');
+        expect(indexHtml).toContain('The whole armory speaks one visual language');
+        expect(indexHtml).toContain('Soulstones have become a complete family');
+        expect(indexHtml).toContain('Every item-facing window uses the same source of truth');
+        expect(indexHtml).toContain('The old painted icon vault is gone');
+        expect(indexHtml).toContain('Missing art can no longer hide');
+        expect(indexHtml).toContain('The browser gallery now opens the reliquary');
+        expect(indexHtml).toContain('2026-09-03-29');
+    });
+
+    test('retains alpha 0.41.0.28 typed combat consequence and recovery history', () => {
         expect(indexHtml).toContain('Patch 0.41.0.28');
         expect(indexHtml).toContain('every wound answers with a relic');
         expect(indexHtml).toContain('Every combat outcome now leaves an intentional mark');
@@ -297,7 +310,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 0.41.0.28';
+        const expectedVersion = 'Alpha 0.41.0.29';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -402,7 +415,7 @@ describe('version presentation', () => {
     });
 
     test('marks 0.41.0.28 current and points the active line at 0.41', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.28`');
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.29`');
         expect(alphaRoadmap).toContain('Active implementation line: `0.41`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');

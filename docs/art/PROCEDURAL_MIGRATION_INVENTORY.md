@@ -6,7 +6,7 @@ Migration baseline: `Alpha 0.40.0.1`
 
 First procedural-art release: `Alpha 0.41.0.0`
 
-Current migration release: `Alpha 0.41.0.28`
+Current migration release: `Alpha 0.41.0.29`
 
 This inventory is the migration ledger for the complete Eidolon dark-fantasy redesign. A category is only marked migrated after its production runtime reference, visual coverage, lifecycle behavior, and representative browser evidence pass. The legacy counts are maximums enforced by `tests/ProceduralArtMigrationGuard.test.js`; they may decrease but cannot increase.
 
@@ -18,8 +18,10 @@ This inventory is the migration ledger for the complete Eidolon dark-fantasy red
 | Authored GLB payload | 814,551,864 baseline; 0 bytes current | Must remain exactly zero bytes |
 | Runtime `.glb` tokens | 225 baseline; 1 current | Static MIME declaration only; no asset path may return |
 | Runtime files containing `.glb` | 1 | Static server MIME table only |
-| PNG images | 100 files | Audit and replace by use, not file extension alone |
-| SVG gem icons | 49 files | Existing generated vector family; retain or restyle intentionally |
+| PNG images | 100 baseline; 10 current | Remaining files are environmental imagery and the favicon; audit by use |
+| Authored ability/equipment icon files | 88 baseline; 0 current | Must remain exactly zero |
+| Generated-on-disk gem SVG files | 49 baseline; 0 current | Replaced by the runtime procedural soulstone family |
+| Authored currency bitmap files | 2 baseline; 0 current | Must remain exactly zero |
 
 No authored model path remains in production code, manifests, preload lists, service-worker payloads, or the asset tree. The only runtime `.glb` token is the static server's content-type declaration, which is not an asset dependency and remains solely so stale compatibility requests receive the correct MIME type.
 
@@ -28,15 +30,15 @@ No authored model path remains in production code, manifests, preload lists, ser
 | Surface | Current audited scope | Migration state |
 | --- | --- | --- |
 | Classes | Fighter, Rogue, Wizard, Cleric | All four are code-native: Fighter 0.41.0.1, Rogue 0.41.0.3, Wizard 0.41.0.4, Cleric 0.41.0.5; no player class retains an authored model dependency |
-| Class abilities | 52 canonical selectable abilities and 60 rune variants | Authoritative-radius audit complete; all 12 server-created projectile/trap/zone subtypes, one compatibility zone, all four local persistent-field routes, all 23 attached conditions, every canonical transient cast layer, all 10 collision-capable projectile/trap impacts, and all 16 current victim-side damage/healing reactions migrated through 0.41.0.28 |
-| Equipment | 36 base families across 14 rendered positions and 18 attachment regions | Descriptor, attachment, local/remote replication, and metadata persistence shipped in 0.41.0.2; proportion-specific fitting and galleries now cover Fighter, Rogue, Wizard, and Cleric |
-| Inventory-only types | material, relic, gem | Presentation audit pending; must not be treated as equipment |
+| Class abilities | 52 canonical selectable abilities and 60 rune variants | Authoritative-radius audit complete; all 12 server-created projectile/trap/zone subtypes, one compatibility zone, all four local persistent-field routes, all 23 attached conditions, every canonical transient cast layer, all 10 collision-capable projectile/trap impacts, all 16 current victim-side damage/healing reactions, and all 53 canonical/compatibility UI sigils migrated through 0.41.0.29 |
+| Equipment | 36 base families across 14 rendered positions and 18 attachment regions | Descriptor, attachment, local/remote replication, and metadata persistence shipped in 0.41.0.2; proportion-specific fitting and galleries cover all four classes, and generated UI sigils now derive from those same exact descriptors in 0.41.0.29 |
+| Inventory-only types | 2 currencies and 42 gem type-quality combinations | Complete runtime-generated presentation, UI routing, server semantic tokens, and gallery coverage shipped in 0.41.0.29; these remain intentionally separate from wearable equipment |
 | Active world hazards | 19 lava pools, 12 sandstorms, 15 lightning zones, 19 wind gusts | Exact-radius themed boundaries migrated in 0.41.0.0 |
 | Overworld areas | Gloamwood Marches, Lanternhold, Moonfrost Expanse, Cinder Wastes, Stormcrown Reach | Theme manifest, lighting/atmosphere foundation, nine-family realm foliage, and complete Lanternhold architecture migrated; realm terrain and remaining structures pending |
 | Dungeons | Thorncrypt, Furnace Below, Shattered Aerie, Drowned Sanctum | Generated shells/atmosphere migrated in 0.41.0.17; server-driven objective, reward-seal, clear-state, return-portal, and exact boss-danger presentation migrated in 0.41.0.18; Furnace Below bosses migrated in 0.41.0.19, Shattered Aerie bosses in 0.41.0.20, and Drowned Sanctum bosses in 0.41.0.21; any future dungeon hazard families remain pending |
 | Actors | players, remote players, NPCs, summons, every overworld enemy, and every dungeon boss | Every current actor route is a named code-native rig with explicit animation-manifest, factory, catalog, pool, interaction-bound, and hardware-gallery coverage; the generic shape-and-scale production registry is empty as of 0.41.0.22 |
 | World objects | trees, town buildings, camps, dungeon facades, services, chests, portals, blockers | Realm foliage, Lanternhold architecture/services, overworld dungeon thresholds, room-role reliquaries/shrines, reward-state seals, and generated interior return portals migrated; any future authoritative room blockers remain pending |
-| Networked effects | projectiles, traps, persistent zones, auras, statuses, combat feedback | Exact four-theme dungeon boss slam presentation migrated in 0.41.0.18; seven moving projectiles, three traps, three replicated zones, four local area fields, every current attached condition, all 52 canonical cast identities, all 10 collision-capable projectile/trap impacts, and all 16 current victim-side reactions migrated through 0.41.0.28; broader transition lifecycle galleries remain pending |
+| Networked effects | projectiles, traps, persistent zones, auras, statuses, combat feedback | Exact four-theme dungeon boss slam presentation migrated in 0.41.0.18; seven moving projectiles, three traps, three replicated zones, four local area fields, every current attached condition, all 52 canonical cast identities, all 10 collision-capable projectile/trap impacts, and all 16 current victim-side reactions migrated through 0.41.0.28; all ability UI identities join the shared language in 0.41.0.29, while broader transition lifecycle galleries remain pending |
 
 ## Region and hazard identity
 
@@ -261,3 +263,11 @@ The same pass closes offline-only drift. Phantom Arrow and all three trap famili
 The synchronization pass adds semantic `kind` and `instanceId` context to every server-authored damage and healing path: class abilities, basic attacks, moving projectiles, traps, persistent zones, ailments, reflection, kill effects, healing-over-time, guardian pulses, lifesteal, and death prevention. Instance-aware broadcasts keep dungeon outcomes inside their authoritative run. Existing overworld hazards remain intentionally global but identify their exact runtime family. The client ignores mismatched instances, unrelated distant fights, and ambient enemy-on-enemy noise, then throttles only matching target/kind reactions so distinct simultaneous outcomes remain visible.
 
 All 16 definitions declare a unique family, motif, art-style contract, palette, shape, motion, and restorative polarity. High and Low quality retain the same core seal and halo, with only optional relics removed. Immutable geometry and materials are cached while every effect owns its transform root and teardown. Unit and Go coverage audit every event initializer and class helper call, verify the wire payload and instance routing, construct both quality tiers, and prove shared-cache lifecycle safety. Hardware Chrome captures dedicated damage and restoration galleries, checks unique metadata and visible finite parts, and runs the complete production animation suite. Damage, healing, timing, cooldowns, costs, target rules, and gameplay footprints are unchanged.
+
+## Every menu sigil is codeborn
+
+`Alpha 0.41.0.29` replaces the remaining ability, equipment, currency, and gem image dependencies with a shared runtime procedural icon registry. All 52 selectable abilities and the Frost Nova compatibility identity resolve through their declared class palettes, relic families, motifs, and signatures. Every one of the 36 equippable bases derives its icon from the exact descriptor that builds its visible three-dimensional character attachment, then layers rarity, level, potency, sockets, socketed gems, set identity, and unique-effect identity as restrained frame marks. Eidolon Hearts and Shards receive enduring-soul and broken-prism constructions, while every combination of seven gem types and six qualities receives a distinct faceted soulstone.
+
+Inventory, character equipment, vendor, stash, buyback, forge, and trading surfaces all call the same generated item route. The client intentionally ignores persisted legacy icon paths, preserving old saves without retaining an asset dependency. The server emits semantic tokens for newly generated gems and currencies, while equipment identity continues to come from its authoritative name and metadata. Coverage parses the server's complete 38-entry base-item catalog and proves it equals the client catalog and the 36-equipment-plus-two-currency procedural manifest. Unknown items and abilities fail closed instead of receiving a generic placeholder.
+
+The cutover removes 88 authored ability/equipment icons, 49 superseded generated-on-disk gem SVGs, and both large currency bitmaps—roughly 165 MB—from the production tree. Browser request policy no longer suppresses canceled legacy icon loads because generated data URIs make no network request. Hardware Chrome opens separate 53-ability, 38-item, and 42-soulstone contact sheets, decodes every image, checks unique identity and cache reuse, and captures readable UI-scale evidence. Item values, equipment behavior, stats, combat logic, progression, and player data are unchanged. Ground-drop three-dimensional silhouettes remain the next explicit item-presentation gate rather than being hidden behind this UI cutover.

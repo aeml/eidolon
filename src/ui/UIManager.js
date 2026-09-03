@@ -1,4 +1,4 @@
-import { BASE_ITEMS, RARITY } from '../core/ItemSystem.js';
+import { RARITY } from '../core/ItemSystem.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { ForgeUI } from './ForgeUI.js';
 import { SkillTreeUI } from './SkillTreeUI.js';
@@ -11,6 +11,7 @@ import { AssetCacheManager } from '../assets/AssetCacheManager.js';
 import { DEFAULT_ASSET_VERSION, getAssetPackEstimateMb, getRecommendedAssetPackNames } from '../assets/assetManifest.js';
 import { DUNGEON_RUN_LEVEL_BANDS, availableDungeonRunLevelsForPlayer, isEndgameDifficultyUnlocked } from '../data/dungeonProgression.js';
 import { AudioManager, AUDIO_CUES } from '../audio/AudioManager.js';
+import { getProceduralAbilityIcon, getProceduralItemIcon } from '../art/ProceduralIcons.js';
 
 export class UIManager {
     constructor(isMobile = false, options = {}) {
@@ -1146,76 +1147,15 @@ export class UIManager {
 
     getSkillIconPath(skillName, classType) {
         if (!skillName || !classType) return null;
-        // Remove special characters like & and replace spaces with underscores
-        // Also remove apostrophes (both straight and curly)
-        const formattedName = skillName.toLowerCase()
-            .replace(/ & /g, '_')
-            .replace(/['’]/g, '')
-            .replace(/ /g, '_');
-        const formattedClass = classType.toLowerCase();
-        return this.resolveAssetUrl(`assets/icons/${formattedClass}/${formattedName}.png`);
+        return getProceduralAbilityIcon(classType, skillName);
     }
 
     getItemIconPath(item) {
-        if (!item) return null;
-        
-        if (item.icon) {
-            return this.resolveAssetUrl(item.icon);
-        }
-
-        const gemIconPath = this.getGemIconPath(item);
-        if (gemIconPath) {
-            return gemIconPath;
-        }
-
-        // Specific overrides for known items that might be missing icons
-        if (item.name === 'Shard' || item.name === 'Eidolon Shard') {
-            return this.resolveAssetUrl('assets/items/eidolon_shard/eidolon_shard.png');
-        }
-        if (item.name === 'Heart' || item.name === 'Eidolon Heart') {
-            return this.resolveAssetUrl('assets/items/eidolon_heart/eidolon_heart.png');
-        }
-        
-        let nameToUse = item.baseName;
-        
-        // Fallback: If baseName is missing (e.g. existing items), try to find it in BASE_ITEMS
-        if (!nameToUse) {
-            // Check if the item name contains any of the known base names
-            // Sort by length descending to match "Plate Mail" before "Plate" if that were a case
-            const sortedBaseItems = BASE_ITEMS.sort((a, b) => b.name.length - a.name.length);
-            
-            for (const baseItem of sortedBaseItems) {
-                if (item.name.includes(baseItem.name)) {
-                    nameToUse = baseItem.name;
-                    break;
-                }
-            }
-            
-            // If still not found, fallback to full name (might fail for prefixed items but best effort)
-            if (!nameToUse) nameToUse = item.name;
-        }
-
-        const formattedName = nameToUse.toLowerCase()
-            .replace(/['’]/g, '')
-            .replace(/ /g, '_');
-        return this.resolveAssetUrl(`assets/icons/equipment/${formattedName}.png`);
+        return getProceduralItemIcon(item);
     }
 
     getGemIconPath(item) {
-        if (!item) return null;
-
-        const gemType = item.gemType || (item.type === 'GEM' || item.type === 'Gem' ? item.name.split(' ').slice(-1)[0] : null);
-        const gemQuality = item.gemQuality || (item.type === 'GEM' || item.type === 'Gem' ? item.name.split(' ')[0] : null);
-        if (!gemType) return null;
-
-        const formattedGemType = gemType.toLowerCase().replace(/[^a-z]/g, '');
-        const formattedGemQuality = gemQuality ? gemQuality.toLowerCase().replace(/[^a-z]/g, '') : '';
-        if (!formattedGemType) return null;
-        if (formattedGemQuality) {
-            return this.resolveAssetUrl(`assets/icons/gems/${formattedGemQuality}_${formattedGemType}.svg`);
-        }
-
-        return this.resolveAssetUrl(`assets/icons/gems/${formattedGemType}.svg`);
+        return getProceduralItemIcon(item);
     }
 
     getRarityColor(rarity) {

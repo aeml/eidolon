@@ -23,9 +23,9 @@ describe('browser failure collection', () => {
         )).toBe(false);
     });
 
-    test('ignores only Chrome-cancelled icon replacements', () => {
+    test('does not suppress asset cancellations after the procedural icon cutover', () => {
         const iconURL = 'https://eidolon.mendola.tech/assets/icons/wizard/inferno_cataclysm.png';
-        expect(isBenignCanceledAssetRequest('image', 'net::ERR_ABORTED', iconURL)).toBe(true);
+        expect(isBenignCanceledAssetRequest('image', 'net::ERR_ABORTED', iconURL)).toBe(false);
         expect(isBenignCanceledAssetRequest('image', 'net::ERR_FAILED', iconURL)).toBe(false);
         expect(isBenignCanceledAssetRequest(
             'fetch',

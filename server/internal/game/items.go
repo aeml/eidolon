@@ -183,7 +183,7 @@ func GemStats(gemType GemType, quality GemQuality) map[string]int {
 func GenerateGem(gemType GemType, quality GemQuality) *Item {
 	name := fmt.Sprintf("%s %s", quality, gemType)
 	stats := GemStats(gemType, quality)
-	icon := fmt.Sprintf("assets/icons/gems/%s_%s.svg", strings.ToLower(string(quality)), strings.ToLower(string(gemType)))
+	icon := fmt.Sprintf("procedural:gem:%s:%s", strings.ToLower(string(quality)), strings.ToLower(string(gemType)))
 
 	value := 100
 	switch quality {
@@ -576,7 +576,7 @@ func GenerateShardLoot(isElite bool) []*Item {
 		for i := 0; i < shardCount; i++ {
 			item := createItem(baseShard, RarityEidolic, 1.0, 0, 1)
 			item.MaxStack = 1000
-			item.Icon = "assets/items/eidolon_shard/eidolon_shard.png"
+			item.Icon = "procedural:item:eidolon-shard"
 			items = append(items, item)
 		}
 	}
@@ -594,7 +594,7 @@ func GenerateShardLoot(isElite bool) []*Item {
 		baseHeart := BaseItem{Name: "Eidolon Heart", Type: ItemRelic, Slot: "relic"}
 		item := createItem(baseHeart, RarityEidolic, 1.0, 0, 1)
 		item.MaxStack = 1000
-		item.Icon = "assets/items/eidolon_heart/eidolon_heart.png"
+		item.Icon = "procedural:item:eidolon-heart"
 		items = append(items, item)
 	}
 
@@ -608,7 +608,7 @@ func GenerateBossHearts() []*Item {
 		baseHeart := BaseItem{Name: "Eidolon Heart", Type: ItemRelic, Slot: "relic"}
 		item := createItem(baseHeart, RarityEidolic, 1.0, 0, 1)
 		item.MaxStack = 1000
-		item.Icon = "assets/items/eidolon_heart/eidolon_heart.png"
+		item.Icon = "procedural:item:eidolon-heart"
 		items = append(items, item)
 	}
 	return items
@@ -622,11 +622,11 @@ func createItem(baseItem BaseItem, rarity ItemRarity, multiplier float64, statCo
 		if baseItem.Name == "Eidolon Shard" {
 			desc = "What remains after purpose is broken."
 			rarity = RarityEidolic
-			icon = "assets/items/eidolon_shard/eidolon_shard.png"
+			icon = "procedural:item:eidolon-shard"
 		} else if baseItem.Name == "Eidolon Heart" {
 			desc = "Power that chose to endure."
 			rarity = RarityEidolic
-			icon = "assets/items/eidolon_heart/eidolon_heart.png"
+			icon = "procedural:item:eidolon-heart"
 		}
 
 		return &Item{

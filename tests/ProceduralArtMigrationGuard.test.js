@@ -102,4 +102,20 @@ describe('procedural art migration guard', () => {
 
         retiredDirectories.forEach((directory) => expect(runtimeSource).not.toContain(directory));
     });
+
+    test('retired authored icon payload cannot return to assets or runtime paths', () => {
+        const retiredRoots = ['assets/icons', 'assets/items'];
+        retiredRoots.forEach((root) => expect(fs.existsSync(path.join(repoRoot, root))).toBe(false));
+
+        const runtimeSource = [
+            ...runtimeRoots.flatMap((root) => walkFiles(path.join(repoRoot, root))),
+            ...walkFiles(path.join(repoRoot, 'server')),
+            ...runtimeFiles.map((file) => path.join(repoRoot, file)).filter(fs.existsSync)
+        ].filter((filePath) => /\.(?:html|js|json|mjs|go)$/i.test(filePath))
+            .map((filePath) => fs.readFileSync(filePath, 'utf8'))
+            .join('\n');
+
+        expect(runtimeSource).not.toMatch(/assets\/icons\/(?:fighter|rogue|wizard|cleric|equipment|gems)\//);
+        expect(runtimeSource).not.toMatch(/assets\/items\/(?:eidolon_heart|eidolon_shard)\//);
+    });
 });
