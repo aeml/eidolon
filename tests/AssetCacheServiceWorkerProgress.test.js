@@ -36,6 +36,9 @@ describe('AssetCacheManager service worker progress and inspection', () => {
 
     test('forwards service worker progress events to warmPack listeners', async () => {
         const manager = new AssetCacheManager();
+        manager.manifest.packs['environment-textures'] = [
+            './synthetic/a.bin', './synthetic/b.bin', './synthetic/c.bin', './synthetic/d.bin'
+        ];
         const updates = [];
 
         const warmPromise = manager.warmPack('environment-textures', {
@@ -100,6 +103,9 @@ describe('AssetCacheManager service worker progress and inspection', () => {
         });
 
         const manager = new AssetCacheManager();
+        manager.manifest.packs['environment-textures'] = [
+            './synthetic/a.bin', './synthetic/b.bin', './synthetic/c.bin', './synthetic/d.bin'
+        ];
         const status = await manager.inspectPack('environment-textures');
 
         expect(status.packName).toBe('environment-textures');

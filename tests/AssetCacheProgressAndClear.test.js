@@ -24,6 +24,7 @@ describe('AssetCacheManager progress and clearing', () => {
         };
 
         const manager = new AssetCacheManager();
+        manager.manifest.packs['environment-textures'] = ['./synthetic/a.bin', './synthetic/b.bin'];
         const updates = [];
         const result = await manager.warmPack('environment-textures', {
             preferServiceWorker: false,

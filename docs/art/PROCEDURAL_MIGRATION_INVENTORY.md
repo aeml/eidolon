@@ -6,7 +6,7 @@ Migration baseline: `Alpha 0.40.0.1`
 
 First procedural-art release: `Alpha 0.41.0.0`
 
-Current migration release: `Alpha 0.41.0.30`
+Current migration release: `Alpha 0.41.0.31`
 
 This inventory is the migration ledger for the complete Eidolon dark-fantasy redesign. A category is only marked migrated after its production runtime reference, visual coverage, lifecycle behavior, and representative browser evidence pass. The legacy counts are maximums enforced by `tests/ProceduralArtMigrationGuard.test.js`; they may decrease but cannot increase.
 
@@ -18,7 +18,7 @@ This inventory is the migration ledger for the complete Eidolon dark-fantasy red
 | Authored GLB payload | 814,551,864 baseline; 0 bytes current | Must remain exactly zero bytes |
 | Runtime `.glb` tokens | 225 baseline; 1 current | Static MIME declaration only; no asset path may return |
 | Runtime files containing `.glb` | 1 | Static server MIME table only |
-| PNG images | 100 baseline; 10 current | Remaining files are environmental imagery and the favicon; audit by use |
+| Authored raster images | 100 PNG baseline; 0 current | Must remain exactly zero across PNG, JPEG, WebP, GIF, BMP, and TGA |
 | Authored ability/equipment icon files | 88 baseline; 0 current | Must remain exactly zero |
 | Generated-on-disk gem SVG files | 49 baseline; 0 current | Replaced by the runtime procedural soulstone family |
 | Authored currency bitmap files | 2 baseline; 0 current | Must remain exactly zero |
@@ -35,7 +35,7 @@ No authored model path remains in production code, manifests, preload lists, ser
 | Inventory-only types | 2 currencies and 42 gem type-quality combinations | Runtime-generated UI presentation and server semantic tokens shipped in 0.41.0.29; exact faceted world forms, quality tiers, Heart cage, and Shard-prism constructions shipped in 0.41.0.30 |
 | World loot | 36 equipment bases, 42 gem combinations, and 2 currencies | All 80 current identities have exact code-native ground forms, upright labels, fixed hitboxes, independent selection state, safe shared resources, and High/Low hardware-gallery coverage as of 0.41.0.30 |
 | Active world hazards | 19 lava pools, 12 sandstorms, 15 lightning zones, 19 wind gusts | Exact-radius themed boundaries migrated in 0.41.0.0 |
-| Overworld areas | Gloamwood Marches, Lanternhold, Moonfrost Expanse, Cinder Wastes, Stormcrown Reach | Theme manifest, lighting/atmosphere foundation, nine-family realm foliage, and complete Lanternhold architecture migrated; realm terrain and remaining structures pending |
+| Overworld areas | Gloamwood Marches, Lanternhold, Moonfrost Expanse, Cinder Wastes, Stormcrown Reach | Theme manifest, lighting/atmosphere, nine-family realm foliage, complete Lanternhold architecture, five exact-footprint realm surfaces, Eidolic blackwater, and the night vault migrated through 0.41.0.31; final density/mechanics and lifecycle audit remains open |
 | Dungeons | Thorncrypt, Furnace Below, Shattered Aerie, Drowned Sanctum | Generated shells/atmosphere migrated in 0.41.0.17; server-driven objective, reward-seal, clear-state, return-portal, and exact boss-danger presentation migrated in 0.41.0.18; Furnace Below bosses migrated in 0.41.0.19, Shattered Aerie bosses in 0.41.0.20, and Drowned Sanctum bosses in 0.41.0.21; any future dungeon hazard families remain pending |
 | Actors | players, remote players, NPCs, summons, every overworld enemy, and every dungeon boss | Every current actor route is a named code-native rig with explicit animation-manifest, factory, catalog, pool, interaction-bound, and hardware-gallery coverage; the generic shape-and-scale production registry is empty as of 0.41.0.22 |
 | World objects | trees, town buildings, camps, dungeon facades, services, chests, portals, blockers, dropped loot | Realm foliage, Lanternhold architecture/services, overworld dungeon thresholds, room-role reliquaries/shrines, reward-state seals, generated interior return portals, and all 80 dropped-item identities migrated; any future authoritative room blockers remain pending |
@@ -282,3 +282,13 @@ The seven soulstone families now appear as faceted ground relics across all six 
 The interaction pass separates the fixed three-unit pickup hitbox, upright label, and grounded plinth from the bobbing and rotating item form. Selection scale never changes the clickable volume. Pickup-range and targeted feedback toggle independent mesh visibility instead of mutating shared material opacity, closing a bug where targeting one cached-color orb could change unrelated drops. Label textures are now reference-counted and least-recently-used eviction only disposes idle entries; active sprites survive cache pressure and release their references during teardown. Geometry and materials remain immutable shared resources while each drop owns transforms, feedback state, sprite material, and scene removal.
 
 Automated coverage constructs all 80 exact identities, derives the 36-equipment manifest from the authoritative client catalog, checks finite normalized bounds, verifies High/Low identity, proves independent shared-material state, exercises fixed hitboxes, and forces more than 100 simultaneous labels through the lifecycle cache. A dedicated hardware-Chrome gallery renders and captures all 36 equipment drops and all 44 gem/currency drops at both quality tiers with exact identity, visible-part, hitbox, label, and cache assertions. Drop generation, probabilities, stats, economy, lifetime, interaction range, server-authoritative pickup confirmation, inventory behavior, and save compatibility are unchanged.
+
+## The five realms remember their skin
+
+`Alpha 0.41.0.31` replaces the last authored environment imagery with seven deterministic code-generated surface families. Gloamwood combines grave-loam, cairn chips, moss veins, and root scars. Lanternhold receives offset vigil cobbles, iron mortar, and restrained amber oath marks. Moonfrost layers drowned basalt under rime and branching ice fractures. The Cinder Wastes break into ash-dark blackglass plates and furnace faults. Stormcrown uses conductor-cut storm slate. The world perimeter becomes layered Eidolic blackwater, while a sparse cold-star vault and violet haze replace the painted sky.
+
+The four realm meshes retain the authoritative 2,000-by-1,600 regions with the existing fence inset, and Lanternhold gains a 198.5-by-198.5 overlay aligned to the established x -100..100 and z 100..300 town bounds. Fences, collision, navigation, portals, dungeon entrances, spawn coordinates, hazard locations and radii, quest targets, and combat stay unchanged. The generic dungeon fallback now uses generated Gloamwood and Lanternhold surfaces; town creation stops awaiting that fallback because it never consumes its materials.
+
+All textures are generated once as `DataTexture` sources and reused by their material and plane. Ground and water High use deterministic 256-square sources and Low use 128-square sources without losing motif or footprint; the screen-filling night vault uses 512 and 256 respectively so its sparse stars remain crisp instead of becoming oversized pixels. Repeated preload calls reuse surfaces and no longer duplicate the ambient particle system. Unit coverage verifies all seven unique signatures at both qualities, intentional motif metadata, exact material properties, exact runtime geometry, no `TextureLoader` use, and idempotency. A hardware-Chrome gallery captures all six ground families at High and Low and fails on any legacy environment or favicon request.
+
+The cutover removes the last ten PNGs—nine terrain/menu images and the favicon, roughly 23 MB—from the production asset tree. The menu backdrop is layered CSS atmosphere and the favicon is an inline generated SVG sigil. Every named asset pack is now payload-free and settings identify realm terrain as built in. Migration coverage requires authored raster count to remain exactly zero and rejects any returned environment-image path. The removed files remain recoverable through Git history.

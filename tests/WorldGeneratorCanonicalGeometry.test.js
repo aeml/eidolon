@@ -78,7 +78,7 @@ describe('WorldGenerator staged overworld startup', () => {
 
         await generator.createTownBase(0, 200, 100);
 
-        expect(generator.preloadTextures).toHaveBeenCalledTimes(1);
+        expect(generator.preloadTextures).not.toHaveBeenCalled();
         expect(generator.createRectangularFence).toHaveBeenCalledWith(0, 200, 200, 200);
         expect(generator.loadBuildings).not.toHaveBeenCalled();
         expect(generator.loadTrees).not.toHaveBeenCalled();

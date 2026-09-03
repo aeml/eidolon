@@ -4,6 +4,7 @@ import path from 'path';
 const repoRoot = path.resolve(process.cwd());
 const assetsRoot = path.join(repoRoot, 'assets');
 const legacyModelExtensions = new Set(['.dae', '.fbx', '.glb', '.gltf', '.obj']);
+const authoredRasterExtensions = new Set(['.png', '.jpg', '.jpeg', '.webp', '.gif', '.bmp', '.tga']);
 const runtimeRoots = ['src', 'scripts'];
 const runtimeFiles = ['index.html', 'sw.js'];
 const nonAuthoredMigrationBridges = new Set([
@@ -117,5 +118,24 @@ describe('procedural art migration guard', () => {
 
         expect(runtimeSource).not.toMatch(/assets\/icons\/(?:fighter|rogue|wizard|cleric|equipment|gems)\//);
         expect(runtimeSource).not.toMatch(/assets\/items\/(?:eidolon_heart|eidolon_shard)\//);
+    });
+
+    test('authored raster payload and runtime image routes cannot return', () => {
+        const rasterFiles = walkFiles(assetsRoot).filter((filePath) => (
+            authoredRasterExtensions.has(path.extname(filePath).toLowerCase())
+        ));
+        expect(rasterFiles).toEqual([]);
+
+        const runtimeSource = [
+            ...walkFiles(path.join(repoRoot, 'src')),
+            ...walkFiles(path.join(repoRoot, 'server')),
+            path.join(repoRoot, 'index.html'),
+            path.join(repoRoot, 'repro.html'),
+            path.join(repoRoot, 'sw.js')
+        ].filter((filePath) => /\.(?:css|go|html|js|json|mjs)$/i.test(filePath) && fs.existsSync(filePath))
+            .map((filePath) => fs.readFileSync(filePath, 'utf8'))
+            .join('\n');
+
+        expect(runtimeSource).not.toMatch(/assets\/(?:backgrounds\/[^?'"\s]+|favicon)\.(?:png|jpe?g|webp|gif|bmp|tga)\b/i);
     });
 });

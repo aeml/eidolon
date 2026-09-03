@@ -23,6 +23,7 @@ import {
     PROCEDURAL_ITEM_ICON_DEFINITIONS
 } from '../../src/art/ProceduralIcons.js';
 import { PROCEDURAL_LOOT_IDENTITIES } from '../../src/art/ProceduralLoot.js';
+import { PROCEDURAL_TERRAIN_DEFINITIONS } from '../../src/art/ProceduralRealmTerrain.js';
 
 const presentationCount = listPlayerAbilityPresentationVariants().length;
 const actorEntries = listActorAnimationEntries();
@@ -982,6 +983,55 @@ test.describe('deterministic production animation gallery', () => {
             fullPage: true
         });
         expect(failures, failures.join('\n')).toEqual([]);
+    });
+
+    test('renders every code-generated realm surface at High and Low quality without raster requests', async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        const authoredRasterRequests = [];
+        page.on('request', (request) => {
+            if (/\/assets\/(?:backgrounds\/[^?]+|favicon)\.png(?:\?|$)/i.test(request.url())) {
+                authoredRasterRequests.push(request.url());
+            }
+        });
+        const response = await page.goto('/repro.html?terrain=1&instances=1', { waitUntil: 'networkidle' });
+        expect(response?.status()).toBe(200);
+
+        await expect.poll(() => page.evaluate(() => window.__eidolonTerrainGallery?.ready || false)).toBe(true);
+        const renderer = await hardwareRenderer(page);
+        expect(renderer).not.toBeNull();
+        expect(`${renderer.vendor} ${renderer.renderer}`).not.toMatch(/swiftshader|llvmpipe|software/i);
+
+        const expectedKeys = ['earth', 'town', 'water', 'fire', 'air', 'ocean'];
+        for (const quality of ['high', 'low']) {
+            await page.evaluate((value) => window.__eidolonSetTerrainQuality(value), quality);
+            await expect.poll(() => page.evaluate(() => window.__eidolonTerrainGallery.quality)).toBe(quality);
+            const metrics = await page.evaluate(() => window.__eidolonTerrainGallery);
+            expect(metrics.terrain.map((entry) => entry.key)).toEqual(expectedKeys);
+            expect(new Set(metrics.terrain.map((entry) => entry.signature)).size).toBe(expectedKeys.length);
+            expect(metrics.terrain.every((entry) => (
+                entry.id === PROCEDURAL_TERRAIN_DEFINITIONS[entry.key].id
+                && entry.motif === PROCEDURAL_TERRAIN_DEFINITIONS[entry.key].motif
+                && entry.quality === quality
+                && entry.resolution === (quality === 'low' ? 128 : 256)
+                && entry.codeGenerated
+                && entry.visibleParts === 7
+                && entry.finite
+                && entry.material === 'MeshStandardMaterial'
+                && entry.dataTexture
+            ))).toBe(true);
+            await page.screenshot({
+                path: testInfo.outputPath(`procedural-realm-terrain-${quality}.png`),
+                animations: 'disabled',
+                fullPage: true
+            });
+        }
+
+        expect(authoredRasterRequests).toEqual([]);
+        expect(failures, failures.join('\n')).toEqual([]);
+        testInfo.annotations.push({
+            type: 'renderer',
+            description: `${renderer.vendor} · ${renderer.renderer}`
+        });
     });
 
     test('renders every collision-faithful Lanternhold structure at High and Low quality', async ({ page, baseURL }, testInfo) => {

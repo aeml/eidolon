@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
 import {
-    ASSET_PACKS,
     DEFAULT_ASSET_VERSION,
     getAssetPack,
     getAssetPackEntries,
@@ -26,15 +25,10 @@ describe('asset pack manifest', () => {
         expect(manifest.packs['core-models'].every((path) => path.includes('?v='))).toBe(true);
     });
 
-    test('external pack entries preserve original and versioned URLs while procedural packs stay payload-free', () => {
-        const entries = getAssetPackEntries('environment-textures');
-        expect(entries.length).toBeGreaterThan(0);
-        expect(entries[0]).toEqual(expect.objectContaining({
-            path: expect.stringMatching(/^\.\/assets\//),
-            versionedPath: expect.stringContaining('?v=')
-        }));
+    test('all procedural production packs stay payload-free', () => {
         expect(getAssetPackEntries('core-models')).toEqual([]);
         expect(getAssetPackEntries('dungeon-models')).toEqual([]);
+        expect(getAssetPackEntries('environment-textures')).toEqual([]);
     });
 });
 
@@ -65,19 +59,21 @@ describe('AssetCacheManager', () => {
         caches.open = jest.fn(async (name) => (name === `eidolon-assets-${DEFAULT_ASSET_VERSION}-meta` ? metadataCache : assetCache));
 
         const manager = new AssetCacheManager();
+        const syntheticAssets = ['./synthetic/terrain-a.bin?v=test', './synthetic/terrain-b.bin?v=test'];
+        manager.manifest.packs['environment-textures'] = syntheticAssets;
         await manager.warmPack('environment-textures', { preferServiceWorker: false });
 
         expect(caches.open).toHaveBeenCalledWith(`eidolon-assets-${DEFAULT_ASSET_VERSION}`);
         expect(caches.open).toHaveBeenCalledWith(`eidolon-assets-${DEFAULT_ASSET_VERSION}-meta`);
-        expect(assetCache.add).toHaveBeenCalledTimes(ASSET_PACKS['environment-textures'].length);
-        expect(assetCache.add.mock.calls[0][0]).toEqual(expect.stringContaining(ASSET_PACKS['environment-textures'][0].replace('./', '')));
+        expect(assetCache.add).toHaveBeenCalledTimes(syntheticAssets.length);
+        expect(assetCache.add).toHaveBeenNthCalledWith(1, syntheticAssets[0]);
         expect(metadataCache.put).toHaveBeenCalledWith(
             'eidolon-meta://packs/environment-textures',
             expect.objectContaining({ json: expect.any(Function) })
         );
     });
 
-    test.each(['core-models', 'dungeon-models'])('recognizes code-generated %s as built in without a cache payload', async (packName) => {
+    test.each(['core-models', 'dungeon-models', 'environment-textures'])('recognizes code-generated %s as built in without a cache payload', async (packName) => {
         const metadataCache = { put: jest.fn(async () => undefined) };
         caches.open = jest.fn(async () => metadataCache);
 
@@ -138,6 +134,8 @@ describe('AssetCacheManager', () => {
 
         const manager = new AssetCacheManager();
         const packName = 'environment-textures';
+        const syntheticAssets = ['./synthetic/service-worker-a.bin?v=test'];
+        manager.manifest.packs[packName] = syntheticAssets;
         const warmPromise = manager.warmPack(packName, { preferServiceWorker: true });
 
         expect(navigator.serviceWorker.controller.postMessage).toHaveBeenCalledWith({
@@ -147,7 +145,7 @@ describe('AssetCacheManager', () => {
                 metadataCacheName: `eidolon-assets-${DEFAULT_ASSET_VERSION}-meta`,
                 packName,
                 version: DEFAULT_ASSET_VERSION,
-                assets: getVersionedAssetManifest().packs[packName]
+                assets: syntheticAssets
             }
         });
 
@@ -156,8 +154,8 @@ describe('AssetCacheManager', () => {
                 type: 'asset-pack-progress',
                 payload: {
                     packName,
-                    completed: getVersionedAssetManifest().packs[packName].length,
-                    total: getVersionedAssetManifest().packs[packName].length,
+                    completed: syntheticAssets.length,
+                    total: syntheticAssets.length,
                     percent: 100,
                     cachedVersion: DEFAULT_ASSET_VERSION
                 }
@@ -167,7 +165,7 @@ describe('AssetCacheManager', () => {
         await expect(warmPromise).resolves.toEqual({
             mode: 'service-worker',
             cacheName: `eidolon-assets-${DEFAULT_ASSET_VERSION}`,
-            assets: getVersionedAssetManifest().packs[packName]
+            assets: syntheticAssets
         });
         expect(metadataCache.put).toHaveBeenCalledWith(
             `eidolon-meta://packs/${packName}`,

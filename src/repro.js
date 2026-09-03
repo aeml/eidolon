@@ -30,6 +30,11 @@ import {
     createProceduralDungeonInteriorKit
 } from './art/ProceduralDungeonInteriors.js';
 import { createTransientEffect } from './core/TransientEffects.js';
+import {
+    PROCEDURAL_TERRAIN_DEFINITIONS,
+    createProceduralTerrainMaterial,
+    getProceduralTerrainMetrics
+} from './art/ProceduralRealmTerrain.js';
 
 const urlParams = new URLSearchParams(window.location.search);
 const perfOverlayEnabled = urlParams.get('perf') === '1';
@@ -42,7 +47,8 @@ const architectureGalleryMode = urlParams.get('architecture') === '1';
 const entranceGalleryMode = urlParams.get('entrances') === '1';
 const interiorGalleryMode = urlParams.get('interiors') === '1';
 const encounterGalleryMode = urlParams.get('encounters') === '1';
-const specializedGalleryMode = galleryMode || hazardGalleryMode || foliageGalleryMode || architectureGalleryMode || entranceGalleryMode || interiorGalleryMode || encounterGalleryMode;
+const terrainGalleryMode = urlParams.get('terrain') === '1';
+const specializedGalleryMode = galleryMode || hazardGalleryMode || foliageGalleryMode || architectureGalleryMode || entranceGalleryMode || interiorGalleryMode || encounterGalleryMode || terrainGalleryMode;
 
 const perfOverlay = document.getElementById('perf-overlay');
 const readout = document.getElementById('repro-readout');
@@ -656,6 +662,110 @@ if (encounterGalleryMode) {
     setReadout('Dungeon encounter telegraph gallery\nFour authoritative boss danger fields: Root Quake, Furnace Rupture, Stormbreak, and Undertow Crush.');
 }
 
+const terrainGallery = new THREE.Group();
+terrainGallery.name = 'ProceduralRealmTerrainGallery';
+const terrainGalleryKeys = Object.freeze(['earth', 'town', 'water', 'fire', 'air', 'ocean']);
+let terrainGalleryQuality = 'high';
+
+function disposeTerrainGallery() {
+    terrainGallery.traverse((child) => {
+        child.geometry?.dispose?.();
+        if (Array.isArray(child.material)) {
+            child.material.forEach((material) => {
+                material.map?.dispose?.();
+                material.dispose?.();
+            });
+        } else {
+            child.material?.map?.dispose?.();
+            child.material?.dispose?.();
+        }
+    });
+    terrainGallery.clear();
+}
+
+function buildTerrainGallery(quality) {
+    disposeTerrainGallery();
+    terrainGalleryQuality = quality === 'low' ? 'low' : 'high';
+    terrainGalleryKeys.forEach((key, index) => {
+        const definition = PROCEDURAL_TERRAIN_DEFINITIONS[key];
+        const panel = new THREE.Group();
+        const column = index % 3;
+        const row = Math.floor(index / 3);
+        panel.name = `ProceduralTerrainPanel:${key}`;
+        panel.position.set((column - 1) * 29, 0, (row - 0.5) * 22);
+        panel.userData.proceduralTerrainPanel = true;
+        panel.userData.terrainKey = key;
+        panel.userData.label = definition.label;
+        panel.userData.motif = definition.motif;
+
+        const terrainMaterial = createProceduralTerrainMaterial(key, { quality: terrainGalleryQuality });
+        terrainMaterial.map.repeat.set(3.4, 2.3);
+        const surface = new THREE.Mesh(new THREE.BoxGeometry(24, 0.72, 16), terrainMaterial);
+        surface.name = `ProceduralTerrainSurface:${key}`;
+        surface.position.y = 0.34;
+        surface.receiveShadow = true;
+        surface.userData.proceduralTerrainSurface = true;
+        panel.userData.metrics = getProceduralTerrainMetrics(terrainMaterial.map);
+        panel.add(surface);
+
+        const theme = getRegionTheme(definition.region);
+        const frameMaterial = new THREE.MeshStandardMaterial({
+            color: theme.palette.shadow,
+            emissive: theme.palette.accent,
+            emissiveIntensity: 0.12,
+            roughness: 0.78,
+            metalness: 0.32,
+            flatShading: true
+        });
+        const railGeometry = new THREE.BoxGeometry(24.8, 0.52, 0.5);
+        for (const z of [-8.2, 8.2]) {
+            const rail = new THREE.Mesh(railGeometry, frameMaterial);
+            rail.position.set(0, 0.7, z);
+            rail.castShadow = true;
+            panel.add(rail);
+        }
+        const sideGeometry = new THREE.BoxGeometry(0.5, 0.52, 16.9);
+        for (const x of [-12.2, 12.2]) {
+            const rail = new THREE.Mesh(sideGeometry, frameMaterial);
+            rail.position.set(x, 0.7, 0);
+            rail.castShadow = true;
+            panel.add(rail);
+        }
+
+        const markerMaterial = new THREE.MeshStandardMaterial({
+            color: theme.palette.midtone,
+            emissive: theme.palette.accent,
+            emissiveIntensity: 0.34,
+            roughness: 0.52,
+            metalness: 0.28,
+            flatShading: true
+        });
+        for (const side of [-1, 1]) {
+            const marker = new THREE.Mesh(new THREE.ConeGeometry(0.7, 3.2, 5), markerMaterial);
+            marker.position.set(side * 10.8, 2.25, -6.7);
+            marker.rotation.y = side * 0.28;
+            marker.castShadow = true;
+            panel.add(marker);
+        }
+        terrainGallery.add(panel);
+    });
+}
+
+if (terrainGalleryMode) {
+    document.body.classList.add('terrain-gallery-mode');
+    renderSystem.staticEnvironmentGroup.visible = false;
+    gridHelper.visible = false;
+    buildTerrainGallery('high');
+    renderSystem.scene.add(terrainGallery);
+    renderSystem.applyLightingPreset('town', true);
+    renderSystem.setZoom(39);
+    renderSystem.camera.position.set(54, 66, 70);
+    controls.target.set(0, 0, 0);
+    controls.update();
+    window.__eidolonSetTerrainQuality = (quality) => buildTerrainGallery(quality);
+    setReadout('Codeborn realm terrain gallery\nSix distinct surfaces: Gloamwood loam, Lanternhold stone, Moonfrost ice, Cinder blackglass, Stormcrown slate, and Eidolic blackwater.');
+}
+
 window.addEventListener('keydown', (event) => {
     const key = event.key.toLowerCase();
     if (key === 'p') togglePerf();
@@ -823,6 +933,27 @@ const animate = () => {
                         const bounds = new THREE.Box3().setFromObject(mesh);
                         return [...bounds.min.toArray(), ...bounds.max.toArray()].every(Number.isFinite);
                     })
+                };
+            })
+        };
+    }
+
+    if (terrainGalleryMode) {
+        window.__eidolonTerrainGallery = {
+            ready: terrainGallery.children.length === terrainGalleryKeys.length,
+            quality: terrainGalleryQuality,
+            terrain: terrainGallery.children.map((panel) => {
+                const surface = panel.children.find((child) => child.userData?.proceduralTerrainSurface);
+                const bounds = new THREE.Box3().setFromObject(panel);
+                return {
+                    key: panel.userData.terrainKey,
+                    label: panel.userData.label,
+                    motif: panel.userData.motif,
+                    ...panel.userData.metrics,
+                    visibleParts: panel.children.length,
+                    finite: [...bounds.min.toArray(), ...bounds.max.toArray()].every(Number.isFinite),
+                    material: surface?.material?.type,
+                    dataTexture: surface?.material?.map?.isDataTexture === true
                 };
             })
         };

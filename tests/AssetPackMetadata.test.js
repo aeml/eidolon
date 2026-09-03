@@ -34,6 +34,7 @@ describe('AssetCacheManager pack metadata', () => {
         };
 
         const manager = new AssetCacheManager();
+        manager.manifest.packs['environment-textures'] = ['./synthetic/a.bin', './synthetic/b.bin'];
         const status = await manager.inspectPack('environment-textures');
 
         expect(status.cachedVersion).toBe('older-pack-version');

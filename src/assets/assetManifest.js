@@ -1,29 +1,22 @@
 import { MeshCatalog } from '../utils/MeshCatalog.js';
 
-const DEFAULT_ASSET_VERSION = '2026-09-03-30';
+const DEFAULT_ASSET_VERSION = '2026-09-03-31';
 
 const ASSET_VERSION_OVERRIDES = {};
 
 const ASSET_PACKS = {
     'core-models': MeshCatalog.getStartupPreloadModelPaths(),
     'dungeon-models': MeshCatalog.getBackgroundPreloadModelPaths(),
-    'environment-textures': [
-        './assets/backgrounds/underground.png',
-        './assets/backgrounds/water_texture.png',
-        './assets/backgrounds/ground_texture.png',
-        './assets/backgrounds/abyssal_well_floor.png',
-        './assets/backgrounds/cobblestone.png',
-        './assets/backgrounds/cobblestone_walls.png'
-    ]
+    'environment-textures': []
 };
 
 const ASSET_PACK_SIZE_ESTIMATES_MB = {
     'core-models': 0,
     'dungeon-models': 0,
-    'environment-textures': 9
+    'environment-textures': 0
 };
 
-const RECOMMENDED_ASSET_PACKS = ['environment-textures'];
+const RECOMMENDED_ASSET_PACKS = [];
 
 function shouldVersionAsset(path) {
     return typeof path === 'string' && /^\.\/assets\//.test(path);

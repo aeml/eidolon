@@ -6,12 +6,16 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { CONSTANTS } from './Constants.js';
-import { resolveAssetPath } from '../assets/assetManifest.js';
 import {
     DUNGEON_THEME_KEYS,
     createRegionLightingPresets,
     createRegionParticleConfigs
 } from '../art/darkFantasyTheme.js';
+import {
+    PROCEDURAL_TERRAIN_DEFINITIONS,
+    createProceduralTerrainMaterial,
+    createProceduralTerrainTexture
+} from '../art/ProceduralRealmTerrain.js';
 
 const DUNGEON_THEME_KEY_SET = new Set(DUNGEON_THEME_KEYS);
 
@@ -149,156 +153,72 @@ export class RenderSystem {
     }
 
     async preloadEnvironment(onProgress) {
-        const loader = new THREE.TextureLoader();
-
         const report = (p, text) => {
             if (onProgress) onProgress(p, text);
         };
-
-        report(0, 'Loading background...');
-        try {
-            const texture = await loader.loadAsync('./assets/backgrounds/underground.png');
-            this.scene.background = texture;
-        } catch {
-            this.scene.background = new THREE.Color(0x9eb4c9);
+        const quality = this.graphicsQuality === 'low' ? 'low' : 'high';
+        report(0, 'Forging the Eidolic night...');
+        if (!this.backgroundTexture) {
+            this.backgroundTexture = createProceduralTerrainTexture('sky', { quality });
+            this.scene.background = this.backgroundTexture;
         }
 
-        report(33, 'Loading water...');
-        try {
-            if (!this.waterTexture) {
-                const texture = await loader.loadAsync('./assets/backgrounds/water_texture.png');
-                texture.wrapS = THREE.RepeatWrapping;
-                texture.wrapT = THREE.RepeatWrapping;
-                texture.repeat.set(500, 500);
-                texture.colorSpace = THREE.SRGBColorSpace;
-                this.waterTexture = texture;
-            }
-
-            if (!this.waterPlane) {
-                const geo = new THREE.PlaneGeometry(10000, 10000);
-                const mat = this.createWaterMaterial(this.waterTexture);
-                this.waterPlane = new THREE.Mesh(geo, mat);
-                this.waterPlane.rotation.x = -Math.PI / 2;
-                this.waterPlane.position.y = -5;
-                this.waterPlane.renderOrder = -1; // Render water first (behind everything)
-            }
-
-            if (!this.waterPlane.parent) {
-                this.staticEnvironmentGroup.add(this.waterPlane);
-            }
-        } catch {
-            // Water is optional; skip on failure.
+        report(25, 'Stirring the blackwater...');
+        if (!this.waterTexture) {
+            this.waterTexture = createProceduralTerrainTexture('ocean', { quality });
+            this.setupTexture(this.waterTexture, 180, 180);
         }
+        if (!this.waterPlane) {
+            const geo = new THREE.PlaneGeometry(10000, 10000);
+            const mat = this.createWaterMaterial(this.waterTexture);
+            this.waterPlane = new THREE.Mesh(geo, mat);
+            this.waterPlane.name = 'ProceduralEidolicBlackwater';
+            this.waterPlane.userData.proceduralTerrain = true;
+            this.waterPlane.userData.terrainKey = 'ocean';
+            this.waterPlane.userData.motif = PROCEDURAL_TERRAIN_DEFINITIONS.ocean.motif;
+            this.waterPlane.rotation.x = -Math.PI / 2;
+            this.waterPlane.position.y = -5;
+            this.waterPlane.renderOrder = -1;
+        }
+        if (!this.waterPlane.parent) this.staticEnvironmentGroup.add(this.waterPlane);
 
-        report(66, 'Loading ground...');
-        if (!this._groundTextureUrl) {
-            this._groundTextureUrl = this.getVersionedEnvironmentTextureUrl('./assets/backgrounds/ground_texture.png');
-        }
-        if (!this._snowTextureUrl) {
-            this._snowTextureUrl = this.getVersionedEnvironmentTextureUrl('./assets/backgrounds/abyssal_well_floor.png');
-        }
-
-        if (!this.groundTexture) {
-            this.groundTexture = await loader.loadAsync(this._groundTextureUrl);
-            this.setupTexture(this.groundTexture, 80, 64);
-        }
-        if (!this.snowTexture) {
-            this.snowTexture = await loader.loadAsync(this._snowTextureUrl);
-            this.setupTexture(this.snowTexture, 80, 64);
-        }
-
+        report(50, 'Carving the five realms...');
         const fenceInset = 0.75; // Match fence thickness so water shows beyond bounds
         const realmWidth = 2000 - fenceInset * 2;
         const realmDepth = 1600 - fenceInset * 2;
+        this.terrainTextures ||= {};
+        const createRealmGround = (property, key, x, y, z, width = realmWidth, depth = realmDepth) => {
+            if (!this.terrainTextures[key]) {
+                this.terrainTextures[key] = createProceduralTerrainTexture(key, { quality });
+                this.setupTexture(this.terrainTextures[key], ...PROCEDURAL_TERRAIN_DEFINITIONS[key].surface.repeat);
+            }
+            if (!this[property]) {
+                const material = createProceduralTerrainMaterial(key, {
+                    quality,
+                    texture: this.terrainTextures[key]
+                });
+                const ground = new THREE.Mesh(new THREE.PlaneGeometry(width, depth), material);
+                ground.name = `ProceduralRealmTerrain:${key}`;
+                ground.userData.proceduralTerrain = true;
+                ground.userData.terrainKey = key;
+                ground.userData.terrainId = PROCEDURAL_TERRAIN_DEFINITIONS[key].id;
+                ground.userData.motif = PROCEDURAL_TERRAIN_DEFINITIONS[key].motif;
+                ground.rotation.x = -Math.PI / 2;
+                ground.position.set(x, y, z);
+                ground.receiveShadow = true;
+                this[property] = ground;
+            }
+            if (!this[property].parent) this.staticEnvironmentGroup.add(this[property]);
+        };
 
-        if (!this.groundEarth) {
-            const earthGeo = new THREE.PlaneGeometry(realmWidth, realmDepth);
-            const earthMat = new THREE.MeshStandardMaterial({
-                map: this.groundTexture,
-                color: 0xffffff,
-                roughness: 0.8,
-                metalness: 0.2
-            });
-            this.groundEarth = new THREE.Mesh(earthGeo, earthMat);
-            this.groundEarth.rotation.x = -Math.PI / 2;
-            this.groundEarth.position.set(0, 0, 200);
-            this.groundEarth.receiveShadow = true;
-        }
+        createRealmGround('groundEarth', 'earth', 0, 0, 200);
+        createRealmGround('groundSnow', 'water', 0, 0, -1400);
+        createRealmGround('groundFire', 'fire', -2000, 0, 200);
+        createRealmGround('groundAir', 'air', 2000, 0, 200);
+        createRealmGround('groundTown', 'town', 0, 0.025, 200, 198.5, 198.5);
 
-        if (!this.groundEarth.parent) {
-            this.staticEnvironmentGroup.add(this.groundEarth);
-        }
-
-        if (!this.groundSnow) {
-            const snowGeo = new THREE.PlaneGeometry(realmWidth, realmDepth);
-            const snowMat = new THREE.MeshStandardMaterial({
-                map: this.snowTexture,
-                color: 0xddeeff,       // slight blue-white for icy feel
-                roughness: 0.55,       // smoother (ice/frost reflections)
-                metalness: 0.35,       // reflective ice sheen
-                emissive: 0x0a1525,    // faint cold blue glow
-                emissiveIntensity: 0.3
-            });
-            this.groundSnow = new THREE.Mesh(snowGeo, snowMat);
-            this.groundSnow.rotation.x = -Math.PI / 2;
-            this.groundSnow.position.set(0, 0, -1400);
-            this.groundSnow.receiveShadow = true;
-        }
-
-        if (!this.groundSnow.parent) {
-            this.staticEnvironmentGroup.add(this.groundSnow);
-        }
-
-        // Fire Realm ground (West Zone: X -3000 to -1000, Z: -600 to 1000)
-        // Uses ground texture with red/orange tint
-        if (!this.groundFire) {
-            const fireGeo = new THREE.PlaneGeometry(realmWidth, realmDepth);
-            const fireMat = new THREE.MeshStandardMaterial({
-                map: this.groundTexture,
-                color: 0xD1542A,       // Orange-red tint for scorched earth
-                roughness: 0.95,       // very rough cracked/scorched surface
-                metalness: 0.05,
-                emissive: 0x330800,    // dark red heat glow from below
-                emissiveIntensity: 0.5
-            });
-            this.groundFire = new THREE.Mesh(fireGeo, fireMat);
-            this.groundFire.rotation.x = -Math.PI / 2;
-            // Center: X=-2000 (middle of -3000 to -1000), Z=200 (middle of -600 to 1000)
-            this.groundFire.position.set(-2000, 0, 200);
-            this.groundFire.receiveShadow = true;
-        }
-
-        if (!this.groundFire.parent) {
-            this.staticEnvironmentGroup.add(this.groundFire);
-        }
-
-        // Air Realm ground (East Zone: X 1000 to 3000, Z: -600 to 1000)
-        // Uses ground texture with blue/white tint
-        if (!this.groundAir) {
-            const airGeo = new THREE.PlaneGeometry(realmWidth, realmDepth);
-            const airMat = new THREE.MeshStandardMaterial({
-                map: this.groundTexture,
-                color: 0x99BBCC,       // Light blue tint for sky/cloud realm
-                roughness: 0.5,        // smooth, polished cloud-stone
-                metalness: 0.4,        // reflective sky sheen
-                emissive: 0x0c1520,    // subtle sky-light glow from below
-                emissiveIntensity: 0.25
-            });
-            this.groundAir = new THREE.Mesh(airGeo, airMat);
-            this.groundAir.rotation.x = -Math.PI / 2;
-            // Center: X=2000 (middle of 1000 to 3000), Z=200 (middle of -600 to 1000)
-            this.groundAir.position.set(2000, 0, 200);
-            this.groundAir.receiveShadow = true;
-        }
-
-        if (!this.groundAir.parent) {
-            this.staticEnvironmentGroup.add(this.groundAir);
-        }
-
-        report(100, 'Environment ready');
-
-        // Realm particles are loaded after the ground so they render above it.
-        this.initRealmParticles();
+        report(100, 'Five codeborn realms ready');
+        if (!this._pMesh) this.initRealmParticles();
     }
 
     /* ----------------------------------------------------------------
@@ -810,10 +730,6 @@ export class RenderSystem {
         texture.colorSpace = THREE.SRGBColorSpace;
     }
 
-    getVersionedEnvironmentTextureUrl(path) {
-        return resolveAssetPath(path);
-    }
-
     createWaterMaterial(texture) {
         const params = new URLSearchParams(window.location.search);
         if (params.get('waterShader') === '0') {
@@ -1118,13 +1034,17 @@ export class RenderSystem {
             this._pMesh = null;
         }
 
-        // Dispose loaded textures (material.dispose() does NOT release these)
-        if (this.waterTexture) { this.waterTexture.dispose(); this.waterTexture = null; }
-        if (this.groundTexture) { this.groundTexture.dispose(); this.groundTexture = null; }
-        if (this.snowTexture) { this.snowTexture.dispose(); this.snowTexture = null; }
-        if (this.scene.background && this.scene.background.isTexture) {
-            this.scene.background.dispose();
-        }
+        // Dispose generated textures (material.dispose() does NOT release these).
+        const ownedTextures = new Set([
+            this.waterTexture,
+            this.backgroundTexture,
+            ...Object.values(this.terrainTextures || {})
+        ].filter(Boolean));
+        ownedTextures.forEach((texture) => texture.dispose());
+        this.waterTexture = null;
+        this.backgroundTexture = null;
+        this.terrainTextures = {};
+        if (this.scene.background?.isTexture) this.scene.background = new THREE.Color(0x080b11);
 
         // Traverse scene BEFORE renderer.dispose() so GPU resources are freed while context exists
         this.scene.traverse((object) => {

@@ -21,6 +21,7 @@ import {
     applyDungeonRoomStatePresentation,
     createProceduralDungeonInteriorKit
 } from '../art/ProceduralDungeonInteriors.js';
+import { createProceduralTerrainTexture } from '../art/ProceduralRealmTerrain.js';
 
 // Shared temp objects to reduce allocations during instancing
 const TEMP_POS = new THREE.Vector3();
@@ -44,14 +45,11 @@ export class WorldGenerator {
 
     async preloadTextures() {
         if (this.floorTexture && this.wallTexture) return;
-        const loader = new THREE.TextureLoader();
-
-        const floor = await loader.loadAsync('./assets/backgrounds/cobblestone.png');
+        const floor = createProceduralTerrainTexture('earth');
         floor.wrapS = THREE.RepeatWrapping;
         floor.wrapT = THREE.RepeatWrapping;
         this.floorTexture = floor;
-
-        const wall = await loader.loadAsync('./assets/backgrounds/cobblestone_walls.png');
+        const wall = createProceduralTerrainTexture('town');
         wall.wrapS = THREE.RepeatWrapping;
         wall.wrapT = THREE.RepeatWrapping;
         this.wallTexture = wall;
@@ -67,8 +65,6 @@ export class WorldGenerator {
     async createTownBase(centerX, centerZ, size) {
         console.log(`Generating town base at ${centerX},${centerZ} size ${size}`);
 
-        await this.preloadTextures();
-        
         // Use the passed size as radius (should be 100)
         // const radius = size;
 

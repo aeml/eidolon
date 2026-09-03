@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Eidolon Online</title>
-    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23070a10'/%3E%3Cpath d='M32 7 49 18 45 45 32 57 19 45 15 18Z' fill='%2318202d' stroke='%23c6a15b' stroke-width='3'/%3E%3Cpath d='m22 21 10-7 10 7-7 11 8 13-11 7-11-7 8-13Z' fill='%235b456f' stroke='%23b8d5dc' stroke-width='2'/%3E%3Ccircle cx='32' cy='32' r='4' fill='%23f0b85c'/%3E%3C/svg%3E">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="src/styles/index.css">
     <script src="./vendor/protobuf/protobuf.min.js"></script>
@@ -285,7 +285,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.41.0.30</span>
+                <span class="start-version-row__label">Alpha 0.41.0.31</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -451,7 +451,7 @@
                     <div class="asset-cache-panel__header">
                         <div>
                             <div class="asset-cache-panel__title">Keep Assets on This Device</div>
-                            <div class="support-field__hint">Procedural art is built in; optional environment textures can be kept for offline-style reuse.</div>
+                            <div class="support-field__hint">The complete procedural art system is forged locally from code; only stale release caches need device storage.</div>
                         </div>
                         <div id="asset-download-status" class="asset-cache-panel__status">Not downloaded</div>
                     </div>
@@ -470,7 +470,7 @@
                                 </div>
                                 <div id="asset-pack-core-status" class="asset-cache-pack__status">Procedural core built in</div>
                                 <div id="asset-pack-core-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-30</div>
+                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-31</div>
                             </div>
                             <button id="btn-download-core-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -482,25 +482,25 @@
                                 </div>
                                 <div id="asset-pack-dungeon-status" class="asset-cache-pack__status">Procedural dungeon entrances built in</div>
                                 <div id="asset-pack-dungeon-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-30</div>
+                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-31</div>
                             </div>
                             <button id="btn-download-dungeon-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
                         <div class="asset-cache-pack">
                             <div>
                                 <div class="asset-cache-pack__heading">
-                                    <div class="asset-cache-pack__title">Environment Textures</div>
-                                    <div id="asset-pack-environment-badge" class="asset-cache-pack__badge">Not cached</div>
+                                    <div class="asset-cache-pack__title">Realm Terrain</div>
+                                    <div id="asset-pack-environment-badge" class="asset-cache-pack__badge">Current</div>
                                 </div>
-                                <div id="asset-pack-environment-status" class="asset-cache-pack__status">Environment textures not downloaded</div>
-                                <div id="asset-pack-environment-size" class="asset-cache-pack__meta">Estimated download: 9 MB</div>
-                                <div id="asset-pack-environment-version" class="asset-cache-pack__meta">Cached version: Not cached</div>
+                                <div id="asset-pack-environment-status" class="asset-cache-pack__status">Procedural realm terrain built in</div>
+                                <div id="asset-pack-environment-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
+                                <div id="asset-pack-environment-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-31</div>
                             </div>
-                            <button id="btn-download-environment-assets" class="menu-btn" type="button">Download Environment</button>
+                            <button id="btn-download-environment-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
                     </div>
                     <div class="asset-cache-panel__actions">
-                        <button id="btn-download-recommended-assets" class="menu-btn asset-cache-panel__button--recommended" type="button">Download Recommended Assets</button>
+                        <button id="btn-download-recommended-assets" class="menu-btn asset-cache-panel__button--recommended" type="button" disabled>All Art Built In</button>
                         <button id="btn-refresh-outdated-assets" class="menu-btn asset-cache-panel__button--refresh" type="button">Refresh Outdated Assets</button>
                         <button id="btn-update-cached-assets" class="menu-btn asset-cache-panel__button--update" type="button">Update Cached Assets</button>
                         <button id="btn-clear-cached-assets" class="menu-btn asset-cache-panel__button--clear" type="button">Clear Cached Assets</button>
@@ -587,6 +587,22 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.41.0.31">
+                    <h3 class="patch-note-entry__title">Patch 0.41.0.31 (the five realms remember their skin)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Every overworld realm now has its own codeborn ground:</strong> Gloamwood bears grave-loam, moss veins, cairn chips, and root scars; Lanternhold keeps offset vigil cobbles and amber oath marks; Moonfrost fractures into rimeglass; the Cinder Wastes burn through blackglass faults; and Stormcrown carries conductor-cut storm slate.</li>
+                        <li><strong>The world beyond the fences joins the same style:</strong> Eidolic blackwater and the restrained star-lit night vault are generated at runtime instead of loading painted image files.</li>
+                        <li><strong>Terrain follows the real world geometry:</strong> all four realm plates preserve their exact 2,000-by-1,600 gameplay regions, while Lanternhold receives a precisely inset town surface without changing fences, collision, navigation, portals, hazards, spawns, or combat.</li>
+                        <li><strong>High and Low remain intentional:</strong> deterministic 256- and 128-pixel surface sources retain the same motifs and boundaries, with cached textures and idempotent environment startup preventing duplicate particle systems or repeated network work.</li>
+                        <li><strong>Dungeons no longer carry a hidden texture escape hatch:</strong> legacy fallback floors and walls now use the generated Gloamwood and Lanternhold materials, and town startup no longer waits on textures it never consumes.</li>
+                        <li><strong>The last painted asset vault is gone:</strong> nine old terrain/menu images and the bitmap favicon—about 23 MB—have left the production tree and remain recoverable through Git history; automated guards require authored raster count to stay exactly zero.</li>
+                        <li><strong>Even the shell is codeborn:</strong> login/menu atmosphere uses layered CSS light and haze, while the browser tab carries an inline dark-fantasy SVG sigil with no image request.</li>
+                        <li><strong>Device storage now tells the truth:</strong> realm terrain is marked built in with no download, all production asset packs are payload-free, and only stale release caches remain clearable.</li>
+                        <li><strong>Every surface is inspectable:</strong> unit coverage verifies unique deterministic signatures, exact materials and realm footprints, loader-free startup, and idempotency; hardware Chrome captures all six ground families at High and Low while asserting zero authored raster requests.</li>
+                        <li><strong>Gameplay and player data are untouched:</strong> this is a visual and loading cutover only; stats, movement, quests, item values, abilities, damage volumes, progression, saves, and networking remain authoritative and unchanged.</li>
+                        <li><strong>Clients cross a clean threshold:</strong> the built-in asset generation advances to 2026-09-03-31.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.41.0.30">
                     <h3 class="patch-note-entry__title">Patch 0.41.0.30 (the fallen armory keeps its shape)</h3>
                     <ul class="patch-note-entry__list">

@@ -8,7 +8,7 @@ import { SocialUI } from './SocialUI.js';
 import { InventoryUI } from './InventoryUI.js';
 import { ChatUI } from './ChatUI.js';
 import { AssetCacheManager } from '../assets/AssetCacheManager.js';
-import { DEFAULT_ASSET_VERSION, getAssetPackEstimateMb, getRecommendedAssetPackNames } from '../assets/assetManifest.js';
+import { DEFAULT_ASSET_VERSION, getRecommendedAssetPackNames } from '../assets/assetManifest.js';
 import { DUNGEON_RUN_LEVEL_BANDS, availableDungeonRunLevelsForPlayer, isEndgameDifficultyUnlocked } from '../data/dungeonProgression.js';
 import { AudioManager, AUDIO_CUES } from '../audio/AudioManager.js';
 import { getProceduralAbilityIcon, getProceduralItemIcon } from '../art/ProceduralIcons.js';
@@ -193,7 +193,7 @@ export class UIManager {
         this.assetPackStatuses = {
             'core-models': 'cached',
             'dungeon-models': 'cached',
-            'environment-textures': localStorage.getItem('eidolon.assetPack.environment-textures') || 'not-downloaded'
+            'environment-textures': 'cached'
         };
         this.graphicsQuality = localStorage.getItem('eidolon.graphicsQuality') || 'high';
         if (this.graphicsQualitySelect) {
@@ -301,14 +301,12 @@ export class UIManager {
             this.btnDownloadDungeonAssets.textContent = 'Built In';
         }
         if (this.btnDownloadEnvironmentAssets) {
-            this.btnDownloadEnvironmentAssets.addEventListener('click', () => {
-                void this.requestAssetDownload('environment-textures');
-            });
+            this.btnDownloadEnvironmentAssets.disabled = true;
+            this.btnDownloadEnvironmentAssets.textContent = 'Built In';
         }
         if (this.btnDownloadRecommendedAssets) {
-            this.btnDownloadRecommendedAssets.addEventListener('click', () => {
-                void this.downloadRecommendedAssets();
-            });
+            this.btnDownloadRecommendedAssets.disabled = true;
+            this.btnDownloadRecommendedAssets.textContent = 'All Art Built In';
         }
         if (this.btnRefreshOutdatedAssets) {
             this.btnRefreshOutdatedAssets.addEventListener('click', () => {
@@ -2382,7 +2380,7 @@ export class UIManager {
 
     getAssetPackLabel(packName) {
         if (packName === 'dungeon-models') return 'Procedural dungeon entrances';
-        if (packName === 'environment-textures') return 'Environment textures';
+        if (packName === 'environment-textures') return 'Procedural realm terrain';
         return 'Procedural core';
     }
 
@@ -2394,14 +2392,14 @@ export class UIManager {
             this.assetPackDungeonSize.textContent = 'Code-generated locally · no download';
         }
         if (this.assetPackEnvironmentSize) {
-            this.assetPackEnvironmentSize.textContent = `Estimated download: ${getAssetPackEstimateMb('environment-textures')}`;
+            this.assetPackEnvironmentSize.textContent = 'Code-generated locally · no download';
         }
         this.renderAssetPackVersion('core-models', DEFAULT_ASSET_VERSION);
         this.renderAssetPackVersion('dungeon-models', DEFAULT_ASSET_VERSION);
-        this.renderAssetPackVersion('environment-textures');
+        this.renderAssetPackVersion('environment-textures', DEFAULT_ASSET_VERSION, true);
         this.renderAssetPackBadge('core-models', 'current');
         this.renderAssetPackBadge('dungeon-models', 'current');
-        this.renderAssetPackBadge('environment-textures', 'not-cached');
+        this.renderAssetPackBadge('environment-textures', 'current');
     }
 
     renderLastSyncedVersion() {
@@ -2433,12 +2431,12 @@ export class UIManager {
         return null;
     }
 
-    renderAssetPackVersion(packName, version = null) {
+    renderAssetPackVersion(packName, version = null, builtIn = packName === 'core-models' || packName === 'dungeon-models') {
         const element = this.getAssetPackVersionElement(packName);
         if (!element) {
             return;
         }
-        if (packName === 'core-models' || packName === 'dungeon-models') {
+        if (builtIn) {
             element.textContent = `Built-in version: ${version || DEFAULT_ASSET_VERSION}`;
             return;
         }
@@ -2557,7 +2555,7 @@ export class UIManager {
                 if (inspection.packName === 'environment-textures' && !inspection.cached && inspection.cachedCount > 0 && this.assetPackEnvironmentStatus) {
                     this.assetPackEnvironmentStatus.textContent = `${inspection.cachedCount}/${inspection.total} cached`;
                 }
-                this.renderAssetPackVersion(inspection.packName, inspection.cachedVersion || null);
+                this.renderAssetPackVersion(inspection.packName, inspection.cachedVersion || null, inspection.builtIn);
             }
 
             const staleCount = inspections.filter((inspection) => inspection.updateAvailable && inspection.cachedCount > 0).length;
@@ -2581,11 +2579,7 @@ export class UIManager {
             this.assetPackDungeonStatus.textContent = 'Procedural dungeon entrances built in';
         }
         if (this.assetPackEnvironmentStatus) {
-            this.assetPackEnvironmentStatus.textContent = this.assetPackStatuses['environment-textures'] === 'cached'
-                ? 'Environment textures cached'
-                : this.assetPackStatuses['environment-textures'] === 'downloading'
-                    ? 'Downloading environment textures...'
-                    : 'Environment textures not downloaded';
+            this.assetPackEnvironmentStatus.textContent = 'Procedural realm terrain built in';
         }
         if (this.assetDownloadStatus) {
             if (this.assetPackStatuses['core-models'] === 'downloading') {
@@ -2670,7 +2664,7 @@ export class UIManager {
         const result = await handler();
         this.setAssetPackStatus('core-models', 'cached');
         this.setAssetPackStatus('dungeon-models', 'cached');
-        this.setAssetPackStatus('environment-textures', 'not-downloaded');
+        this.setAssetPackStatus('environment-textures', 'cached');
         this.updateAssetDownloadProgress({ completed: 0, total: 0, percent: 0 });
         if (this.assetDownloadStatus) {
             this.assetDownloadStatus.textContent = result?.cleared > 0 ? 'Cache cleared' : 'Nothing to clear';

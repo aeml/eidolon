@@ -1,7 +1,6 @@
 import { jest } from '@jest/globals';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshFactory } from '../src/utils/MeshFactory.js';
-import { RenderSystem } from '../src/core/RenderSystem.js';
 import { ASSET_VERSION_OVERRIDES, DEFAULT_ASSET_VERSION, resolveAssetPath } from '../src/assets/assetManifest.js';
 
 describe('asset URL versioning', () => {
@@ -52,12 +51,5 @@ describe('asset URL versioning', () => {
         );
 
         loadSpy.mockRestore();
-    });
-
-    test('RenderSystem uses stable versioned texture URLs instead of runtime timestamps', () => {
-        const renderSystem = Object.create(RenderSystem.prototype);
-        expect(renderSystem.getVersionedEnvironmentTextureUrl('./assets/backgrounds/ground_texture.png')).toBe(
-            `./assets/backgrounds/ground_texture.png?v=${DEFAULT_ASSET_VERSION}`
-        );
     });
 });
