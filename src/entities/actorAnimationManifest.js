@@ -72,6 +72,21 @@ export const ACTOR_ANIMATION_MANIFEST = Object.freeze({
     LordInfernax: entry('enemy', 'procedural Furnace Below furnace-lord rig', WALKING_ENEMY_CLIPS, {
         special: 'ashen throne mantle, eleven-spire crown, orbiting censers, and caldera scepter'
     }),
+    Windshear: entry('enemy', 'procedural Shattered Aerie wind-razor rig', WALKING_ENEMY_CLIPS, {
+        special: 'floating gale tatters, vacuum rings, razor-vane halo, and pressure scythe'
+    }),
+    Stormcallers: entry('enemy', 'procedural Shattered Aerie divided-oracle rig', WALKING_ENEMY_CLIPS, {
+        special: 'Voltara and Zephyros masks, split storm halos, convergence sparks, and forked staff'
+    }),
+    RocMatriarch: entry('enemy', 'procedural Shattered Aerie thunder-roc rig', WALKING_ENEMY_CLIPS, {
+        special: 'twenty-two articulated storm feathers, silver talons, crown plumage, and dive collapse'
+    }),
+    ThunderlordKaelix: entry('enemy', 'procedural Shattered Aerie storm-bell rig', WALKING_ENEMY_CLIPS, {
+        special: 'conductor throne, captive storm, nine-spire crown, and thunder-bell maul'
+    }),
+    Zephyrion: entry('enemy', 'procedural Shattered Aerie eternal-gale rig', WALKING_ENEMY_CLIPS, {
+        special: 'nine vortex rings, thirteen-spire eye crown, horizon blades, and sky scepter'
+    }),
 
     AvengingSeraph: entry('summon', 'procedural reliquary seraph rig', WALKING_ENEMY_CLIPS, {
         special: 'articulated broken-sun wings, oath-spear, censer, and collapse'

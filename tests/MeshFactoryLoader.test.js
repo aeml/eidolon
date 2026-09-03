@@ -170,14 +170,15 @@ describe('MeshFactory preload phases', () => {
 describe('MeshFactory catalog integration', () => {
     test('uses catalog-owned procedural enemy specs for compatibility', () => {
         expect(MeshFactory.PROCEDURAL_ENEMY_SPECS).toBe(MeshCatalog.getProceduralEnemySpecs());
-        expect(MeshFactory.PROCEDURAL_ENEMY_SPECS.Windshear.shape).toBe('elemental');
+        expect(MeshFactory.PROCEDURAL_ENEMY_SPECS.TiderendLeviathan.shape).toBe('serpent');
         expect(MeshFactory.PROCEDURAL_ENEMY_SPECS.Cindermaw).toBeUndefined();
+        expect(MeshFactory.PROCEDURAL_ENEMY_SPECS.Windshear).toBeUndefined();
     });
 
     test('procedural enemies ship explicit idle, movement, attack, and death clips', () => {
         const mesh = MeshFactory.createProceduralEnemy(
-            'Windshear',
-            MeshFactory.PROCEDURAL_ENEMY_SPECS.Windshear
+            'TiderendLeviathan',
+            MeshFactory.PROCEDURAL_ENEMY_SPECS.TiderendLeviathan
         );
         const clips = Object.fromEntries(mesh.userData.animations.map((clip) => [clip.name, clip]));
 
@@ -456,10 +457,42 @@ describe('MeshFactory catalog integration', () => {
     });
 
     test.each([
+        ['Windshear', 'Shattered Aerie wind-razor revenant'],
+        ['Stormcallers', 'Shattered Aerie divided storm-oracle'],
+        ['RocMatriarch', 'Shattered Aerie thunder-roc matriarch'],
+        ['ThunderlordKaelix', 'Shattered Aerie storm-bell thunderlord'],
+        ['Zephyrion', 'Shattered Aerie eternal-gale sovereign']
+    ])('%s uses its Tempest Spire boss rig without requesting a GLB', async (type, artStyle) => {
+        const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
+        MeshFactory.pool = {};
+
+        try {
+            const mesh = await MeshFactory.createMeshForType(type);
+            expect(mesh.userData).toEqual(expect.objectContaining({
+                proceduralEnemyFamily: true,
+                proceduralBossFamily: 'tempest-spire',
+                proceduralActorType: type,
+                artStyle,
+                region: 'Tempest Spire — The Shattered Aerie',
+                combatRadius: 1.25,
+                sharedGeometry: true
+            }));
+            expect(mesh.userData.animations.map((entry) => entry.name))
+                .toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+            expect(loadSpy).not.toHaveBeenCalled();
+        } finally {
+            MeshFactory.pool = previousPool;
+            loadSpy.mockRestore();
+        }
+    });
+
+    test.each([
         'Skeleton', 'DemonOrc', 'Imp', 'Construct', 'InfernoTitan',
         'MountainTroll', 'AquaGolem', 'Siren', 'FrostGuardian',
         'RootboundWarden', 'BriarMatron', 'RustboundColossus', 'HollowSentinel',
-        'Cindermaw', 'ScorchedTwins', 'ForgemasterPyrax', 'ObsidianGuardian', 'LordInfernax'
+        'Cindermaw', 'ScorchedTwins', 'ForgemasterPyrax', 'ObsidianGuardian', 'LordInfernax',
+        'Windshear', 'Stormcallers', 'RocMatriarch', 'ThunderlordKaelix', 'Zephyrion'
     ])('a full %s pool never disposes shared generated resources', async (type) => {
         const previousPool = MeshFactory.pool;
         MeshFactory.pool = {};

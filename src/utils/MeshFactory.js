@@ -42,6 +42,13 @@ import {
     createProceduralObsidianGuardian,
     createProceduralScorchedTwins
 } from '../art/ProceduralMoltenBosses.js';
+import {
+    createProceduralRocMatriarch,
+    createProceduralStormcallers,
+    createProceduralThunderlordKaelix,
+    createProceduralWindshear,
+    createProceduralZephyrion
+} from '../art/ProceduralTempestBosses.js';
 import { createProceduralLanternholdStructure } from '../art/ProceduralLanternholdArchitecture.js';
 
 export class MeshFactory {
@@ -769,6 +776,16 @@ export class MeshFactory {
             return createProceduralObsidianGuardian();
         } else if (type === 'LordInfernax') {
             return createProceduralLordInfernax();
+        } else if (type === 'Windshear') {
+            return createProceduralWindshear();
+        } else if (type === 'Stormcallers') {
+            return createProceduralStormcallers();
+        } else if (type === 'RocMatriarch') {
+            return createProceduralRocMatriarch();
+        } else if (type === 'ThunderlordKaelix') {
+            return createProceduralThunderlordKaelix();
+        } else if (type === 'Zephyrion') {
+            return createProceduralZephyrion();
         } else if (type === 'Siren') {
             return createProceduralSiren();
         } else if (type === 'AquaGolem') {

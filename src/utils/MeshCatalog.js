@@ -119,6 +119,31 @@ export class MeshCatalog {
             source: 'procedural Furnace Below furnace-lord rig',
             animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
         },
+        Windshear: {
+            type: 'enemy',
+            source: 'procedural Shattered Aerie wind-razor rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        Stormcallers: {
+            type: 'enemy',
+            source: 'procedural Shattered Aerie divided-oracle rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        RocMatriarch: {
+            type: 'enemy',
+            source: 'procedural Shattered Aerie thunder-roc rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        ThunderlordKaelix: {
+            type: 'enemy',
+            source: 'procedural Shattered Aerie storm-bell rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        Zephyrion: {
+            type: 'enemy',
+            source: 'procedural Shattered Aerie eternal-gale rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
         TradingHouse: {
             type: 'structure',
             source: 'procedural Lanternhold auction hall'
@@ -147,13 +172,6 @@ export class MeshCatalog {
         ThunderRoc: { shape: 'bird', scale: 3.0, color: 0x4169E1, emissive: 0xFFFF00, emissiveI: 0.3 },
         TempestGiant: { shape: 'titan', scale: 4.5, color: 0x483D8B, emissive: 0x00BFFF, emissiveI: 0.2 },
         CycloneAvatar: { shape: 'elemental', scale: 3.5, color: 0x00CED1, emissive: 0x00FFFF, emissiveI: 0.4 },
-
-        // Air dungeon bosses
-        Windshear: { shape: 'elemental', scale: 4.0, color: 0x87CEEB, emissive: 0x00BFFF, emissiveI: 0.4 },
-        Stormcallers: { shape: 'humanoid', scale: 3.5, color: 0x9370DB, emissive: 0xFFFF00, emissiveI: 0.3 },
-        RocMatriarch: { shape: 'bird', scale: 4.5, color: 0x4682B4, emissive: 0x00CED1, emissiveI: 0.3 },
-        ThunderlordKaelix: { shape: 'titan', scale: 5.5, color: 0x483D8B, emissive: 0xFFFF00, emissiveI: 0.5 },
-        Zephyrion: { shape: 'elemental', scale: 6.5, color: 0x00CED1, emissive: 0x00FFFF, emissiveI: 0.6 },
 
         // Water dungeon bosses
         TiderendLeviathan: { shape: 'serpent', scale: 4.0, color: 0x0AA0B8, emissive: 0x3DE7FF, emissiveI: 0.4 },

@@ -91,6 +91,24 @@ describe('MeshCatalog', () => {
         }
     });
 
+    test('Tempest Spire bosses have explicit procedural recipes instead of generic shape specs', () => {
+        const expectedSources = {
+            Windshear: 'procedural Shattered Aerie wind-razor rig',
+            Stormcallers: 'procedural Shattered Aerie divided-oracle rig',
+            RocMatriarch: 'procedural Shattered Aerie thunder-roc rig',
+            ThunderlordKaelix: 'procedural Shattered Aerie storm-bell rig',
+            Zephyrion: 'procedural Shattered Aerie eternal-gale rig'
+        };
+        for (const [type, source] of Object.entries(expectedSources)) {
+            expect(MeshCatalog.recipes[type]).toEqual({
+                type: 'enemy',
+                source,
+                animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+            });
+            expect(MeshCatalog.getProceduralEnemySpecs()[type]).toBeUndefined();
+        }
+    });
+
     test('all Lanternhold services use explicit procedural actor recipes', () => {
         for (const type of ['DwarfSalesman', 'QuestNPC', 'DungeonNPC', 'RespecNPC']) {
             expect(MeshCatalog.recipes[type]).toEqual({
@@ -128,8 +146,7 @@ describe('MeshCatalog', () => {
 
         expect(specs.SandstormDjinn).toMatchObject({ shape: 'wraith', scale: 2.5, color: 0xD2B48C });
         expect(specs.MagmaGolem).toMatchObject({ shape: 'golem', emissive: 0xFF2200 });
-        expect(specs.Windshear).toMatchObject({ shape: 'elemental', emissiveI: 0.4 });
-        expect(specs.Zephyrion).toMatchObject({ shape: 'elemental', scale: 6.5 });
+        expect(specs.TiderendLeviathan).toMatchObject({ shape: 'serpent', emissiveI: 0.4 });
         expect(specs.Thalorath).toMatchObject({ shape: 'titan', color: 0x003B6F });
     });
 

@@ -168,6 +168,24 @@ describe('actor animation manifest', () => {
         }
     });
 
+    test('classifies all Tempest Spire bosses as intentional regional boss rigs', () => {
+        const expectedSources = {
+            Windshear: 'procedural Shattered Aerie wind-razor rig',
+            Stormcallers: 'procedural Shattered Aerie divided-oracle rig',
+            RocMatriarch: 'procedural Shattered Aerie thunder-roc rig',
+            ThunderlordKaelix: 'procedural Shattered Aerie storm-bell rig',
+            Zephyrion: 'procedural Shattered Aerie eternal-gale rig'
+        };
+        for (const [type, source] of Object.entries(expectedSources)) {
+            expect(ACTOR_ANIMATION_MANIFEST[type]).toEqual(expect.objectContaining({
+                category: 'enemy',
+                source,
+                states: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+            }));
+            expect(ACTOR_ANIMATION_MANIFEST[type].special).not.toBe('Attack clip plus class telegraph/VFX');
+        }
+    });
+
     test('no combat actor is classified without idle, movement, attack, and death presentation', () => {
         for (const actor of listActorAnimationEntries()) {
             if (actor.category === 'npc') continue;

@@ -49,10 +49,18 @@ const proceduralRegionalEnemyTypes = Object.freeze([
     ['ScorchedTwins', 'Furnace Below twin-flame covenant'],
     ['ForgemasterPyrax', 'Furnace Below oath-anvil forgemaster'],
     ['ObsidianGuardian', 'Furnace Below black-glass bulwark'],
-    ['LordInfernax', 'Furnace Below crowned furnace-lord']
+    ['LordInfernax', 'Furnace Below crowned furnace-lord'],
+    ['Windshear', 'Shattered Aerie wind-razor revenant'],
+    ['Stormcallers', 'Shattered Aerie divided storm-oracle'],
+    ['RocMatriarch', 'Shattered Aerie thunder-roc matriarch'],
+    ['ThunderlordKaelix', 'Shattered Aerie storm-bell thunderlord'],
+    ['Zephyrion', 'Shattered Aerie eternal-gale sovereign']
 ]);
 const proceduralMoltenBossTypes = new Set([
     'Cindermaw', 'ScorchedTwins', 'ForgemasterPyrax', 'ObsidianGuardian', 'LordInfernax'
+]);
+const proceduralTempestBossTypes = new Set([
+    'Windshear', 'Stormcallers', 'RocMatriarch', 'ThunderlordKaelix', 'Zephyrion'
 ]);
 
 test.use({ trace: 'off', video: 'off' });
@@ -324,6 +332,9 @@ test.describe('deterministic production animation gallery', () => {
             expect(metrics.actorVisibleMeshes).toBeGreaterThanOrEqual(45);
             if (proceduralMoltenBossTypes.has(actorType)) {
                 expect(metrics.proceduralBossFamily).toBe('molten-core');
+            }
+            if (proceduralTempestBossTypes.has(actorType)) {
+                expect(metrics.proceduralBossFamily).toBe('tempest-spire');
             }
 
             for (const state of ['Idle', 'Walk', 'Run', 'Attack', 'Death']) {
