@@ -22,6 +22,7 @@ import {
     PROCEDURAL_ABILITY_ICON_DEFINITIONS,
     PROCEDURAL_ITEM_ICON_DEFINITIONS
 } from '../../src/art/ProceduralIcons.js';
+import { PROCEDURAL_LOOT_IDENTITIES } from '../../src/art/ProceduralLoot.js';
 
 const presentationCount = listPlayerAbilityPresentationVariants().length;
 const actorEntries = listActorAnimationEntries();
@@ -758,6 +759,63 @@ test.describe('deterministic production animation gallery', () => {
                 path: testInfo.outputPath(`procedural-${kind}-icon-gallery.png`),
                 animations: 'disabled'
             });
+        }
+
+        expect(failures, failures.join('\n')).toEqual([]);
+        testInfo.annotations.push({
+            type: 'renderer',
+            description: `${renderer.vendor} · ${renderer.renderer}`
+        });
+    });
+
+    test('renders every exact procedural world-loot form at High and Low quality', async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        const response = await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });
+        expect(response?.status()).toBe(200);
+        await expect(page.locator('#animation-gallery')).toBeVisible();
+
+        const renderer = await hardwareRenderer(page);
+        expect(renderer).not.toBeNull();
+        expect(`${renderer.vendor} ${renderer.renderer}`).not.toMatch(/swiftshader|llvmpipe|software/i);
+
+        const expected = {
+            equipment: PROCEDURAL_LOOT_IDENTITIES.equipment,
+            relics: [...PROCEDURAL_LOOT_IDENTITIES.gems, ...PROCEDURAL_LOOT_IDENTITIES.currency]
+        };
+        for (const quality of ['high', 'low']) {
+            await page.locator('#gallery-quality').selectOption(quality);
+            await expect.poll(async () => (await galleryMetrics(page)).quality).toBe(quality);
+            for (const [kind, identities] of Object.entries(expected)) {
+                await page.evaluate((galleryKind) => {
+                    window.__eidolonAnimationGalleryController.presentProceduralLootGallery(galleryKind);
+                }, kind);
+                await expect.poll(async () => {
+                    const snapshot = await galleryMetrics(page);
+                    return snapshot.phase === `procedural-loot:${kind}`
+                        ? snapshot.proceduralLoot.length
+                        : -1;
+                }).toBe(identities.length);
+                const metrics = await galleryMetrics(page);
+                expect(metrics.proceduralLoot.map((entry) => entry.identity)).toEqual(identities);
+                expect(new Set(metrics.proceduralLoot.map((entry) => entry.identity)).size).toBe(identities.length);
+                expect(metrics.proceduralLoot.every((entry) =>
+                    entry.quality === quality && entry.family && entry.motif && entry.artStyle.length > 16
+                    && entry.visibleParts >= 5
+                    && entry.finite && entry.hasHitbox && entry.hasLabel
+                )).toBe(true);
+                expect(metrics.proceduralLootCache.geometries).toBeGreaterThanOrEqual(4);
+                expect(metrics.proceduralLootCache.materials).toBeGreaterThanOrEqual(7);
+                await page.locator('#animation-gallery').evaluate((panel) => {
+                    panel.style.visibility = 'hidden';
+                });
+                await page.screenshot({
+                    path: testInfo.outputPath(`procedural-world-loot-${kind}-${quality}.png`),
+                    animations: 'allow'
+                });
+                await page.locator('#animation-gallery').evaluate((panel) => {
+                    panel.style.visibility = '';
+                });
+            }
         }
 
         expect(failures, failures.join('\n')).toEqual([]);

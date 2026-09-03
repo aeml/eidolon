@@ -285,7 +285,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.41.0.29</span>
+                <span class="start-version-row__label">Alpha 0.41.0.30</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -470,7 +470,7 @@
                                 </div>
                                 <div id="asset-pack-core-status" class="asset-cache-pack__status">Procedural core built in</div>
                                 <div id="asset-pack-core-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-29</div>
+                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-30</div>
                             </div>
                             <button id="btn-download-core-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -482,7 +482,7 @@
                                 </div>
                                 <div id="asset-pack-dungeon-status" class="asset-cache-pack__status">Procedural dungeon entrances built in</div>
                                 <div id="asset-pack-dungeon-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-29</div>
+                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-30</div>
                             </div>
                             <button id="btn-download-dungeon-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -587,6 +587,22 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.41.0.30">
+                    <h3 class="patch-note-entry__title">Patch 0.41.0.30 (the fallen armory keeps its shape)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Loot is no longer a field of anonymous colored orbs:</strong> every dropped weapon, offhand, armor piece, accessory, gem, Heart, and Shard now appears as an intentional code-generated dark-fantasy object.</li>
+                        <li><strong>What falls is what you can wear:</strong> all 36 equippable bases reuse the exact silhouette builder used on local and remote characters, including rarity glow, tier, potency, sockets, socketed gems, set runes, and unique-effect marks.</li>
+                        <li><strong>Every soulstone can be read before pickup:</strong> all seven gem types preserve their own palette and all six qualities gain progressively richer facet crowns; Low quality removes only optional ornaments, never identity.</li>
+                        <li><strong>Rare materials have become relics:</strong> Eidolon Hearts float inside an iron soul cage, while Eidolon Shards appear as broken blue purpose-prisms with orbiting fragments.</li>
+                        <li><strong>Ground drops share a coherent reliquary:</strong> rarity-lit octagonal plinths anchor each item, selection and pickup-range rings remain clear against terrain, and item labels stay upright while the object turns.</li>
+                        <li><strong>Pickup feedback can no longer leak between drops:</strong> selection uses per-drop visibility and transforms instead of mutating cached shared material opacity, so targeting one item cannot brighten or fade another.</li>
+                        <li><strong>Clicking stays stable while art moves:</strong> the plinth, upright label, and generous pickup hitbox remain anchored while only the item form bobs and turns; selection scale cannot move the clickable volume or alter the authoritative pickup flow.</li>
+                        <li><strong>Long loot sessions no longer invalidate live labels:</strong> the text-texture cache is now reference-counted and evicts only idle least-recently-used entries; a texture still displayed in the world is never disposed under cache pressure.</li>
+                        <li><strong>The entire dropped-item catalog is gated:</strong> unit coverage constructs all 80 exact identities, audits finite bounds and cache lifecycle, and hardware Chrome captures every form at High and Low quality with labels and hitboxes intact.</li>
+                        <li><strong>Gameplay remains authoritative and unchanged:</strong> item generation, stats, economy, drop odds, ownership, lifetime, interaction radius, pickup confirmation, inventory behavior, and save data are untouched.</li>
+                        <li><strong>Clients cross a clean threshold:</strong> the built-in asset generation advances to 2026-09-03-30.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.41.0.29">
                     <h3 class="patch-note-entry__title">Patch 0.41.0.29 (every menu sigil is codeborn)</h3>
                     <ul class="patch-note-entry__list">

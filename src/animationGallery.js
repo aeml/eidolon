@@ -7,6 +7,7 @@ import { AvengingSeraph } from './entities/AvengingSeraph.js';
 import { Actor } from './entities/Actor.js';
 import { AreaOfEffect } from './entities/AreaOfEffect.js';
 import { Projectile } from './entities/Projectile.js';
+import { LootDrop } from './entities/LootDrop.js';
 import { createTransientEffect } from './core/TransientEffects.js';
 import { CONSTANTS } from './core/Constants.js';
 import { MeshFactory } from './utils/MeshFactory.js';
@@ -46,6 +47,10 @@ import {
     getProceduralIconCacheMetrics,
     getProceduralItemIcon
 } from './art/ProceduralIcons.js';
+import {
+    PROCEDURAL_LOOT_IDENTITIES,
+    getProceduralLootCacheMetrics
+} from './art/ProceduralLoot.js';
 
 const PLAYER_TYPES = Object.freeze({ Fighter, Rogue, Wizard, Cleric });
 const PLAYER_TYPE_NAMES = Object.freeze(Object.keys(PLAYER_TYPES));
@@ -356,6 +361,7 @@ export class AnimationGallery {
         this.lastAbilityCastVisuals = [];
         this.iconGalleryOverlay = null;
         this.iconGalleryEntries = [];
+        this.lootGalleryDrops = [];
         this.bindElements();
         this.populateControls();
         this.bindEvents();
@@ -848,6 +854,67 @@ export class AnimationGallery {
         this.iconGalleryEntries = [];
     }
 
+    clearProceduralLootGallery() {
+        this.lootGalleryDrops.forEach((drop) => drop.dispose());
+        this.lootGalleryDrops = [];
+    }
+
+    presentProceduralLootGallery(kind = 'equipment') {
+        if (!this.actor || !['equipment', 'relics'].includes(kind)) return false;
+        this.cleanupPresentation();
+        [this.actor, this.remoteActor, this.targetActor].forEach((actor) => {
+            if (actor?.mesh) actor.mesh.visible = false;
+        });
+        const quality = this.renderSystem.graphicsQuality === 'low' ? 'low' : 'high';
+        const items = kind === 'equipment'
+            ? EQUIPPABLE_BASE_ITEMS.map((baseItem, index) => {
+                const renderSlot = this.getRenderSlot(baseItem);
+                return this.createGalleryEquipmentItem(baseItem, renderSlot, index);
+            })
+            : [
+                ...PROCEDURAL_LOOT_IDENTITIES.gems.map((name) => {
+                    const [gemQuality, gemType] = name.split(' ');
+                    return {
+                        id: `gallery-loot-${name.toLowerCase().replaceAll(' ', '-')}`,
+                        name,
+                        type: 'GEM',
+                        slot: 'gem',
+                        gemType,
+                        gemQuality,
+                        rarity: 'Rare'
+                    };
+                }),
+                { id: 'gallery-loot-heart', name: 'Eidolon Heart', type: 'RELIC', slot: 'relic', rarity: 'Eidolic' },
+                { id: 'gallery-loot-shard', name: 'Eidolon Shard', type: 'MATERIAL', slot: 'material', rarity: 'Eidolic' }
+            ];
+        const columns = kind === 'equipment' ? 6 : 7;
+        const spacingX = kind === 'equipment' ? 4.2 : 3.6;
+        const spacingZ = 2.65;
+        const rows = Math.ceil(items.length / columns);
+        items.forEach((item, index) => {
+            const column = index % columns;
+            const row = Math.floor(index / columns);
+            const x = (column - (columns - 1) / 2) * spacingX;
+            const z = 4.5 + (row - (rows - 1) / 2) * spacingZ;
+            const drop = new LootDrop(item, x, z, `gallery-${kind}-${index}`, { quality });
+            drop.creationTime -= 1000;
+            drop.textDelay = 0;
+            drop.update(0);
+            if (drop.label) drop.label.scale.multiplyScalar(0.68);
+            this.group.add(drop.mesh);
+            this.lootGalleryDrops.push(drop);
+        });
+        this.controls.target.set(0, 0.5, 4.5);
+        this.renderSystem.camera.position.set(0, kind === 'equipment' ? 20 : 23, kind === 'equipment' ? 21 : 24);
+        this.renderSystem.setZoom(kind === 'equipment' ? 17 : 20);
+        this.framingMode = `procedural-loot-gallery:${kind}`;
+        this.controls.update();
+        this.phase = `procedural-loot:${kind}`;
+        this.setStatus(`${items.length} exact ${kind} ground forms · ${quality}`, 'playing');
+        this.updateMetrics();
+        return true;
+    }
+
     frameActorState() {
         const mode = 'actor-state';
         const centerX = this.remoteActor ? 2.8 : 1.2;
@@ -1123,6 +1190,7 @@ export class AnimationGallery {
     cleanupPresentation() {
         this.presentationSequence++;
         this.clearProceduralIconGallery();
+        this.clearProceduralLootGallery();
         this.clearEffects();
         clearActorStatusState(this.actor);
         clearActorStatusState(this.remoteActor);
@@ -1366,6 +1434,20 @@ export class AnimationGallery {
             proceduralCombatFeedbackCache: getProceduralCombatFeedbackCacheMetrics(),
             proceduralIcons: this.iconGalleryEntries.map((entry) => ({ ...entry })),
             proceduralIconCache: getProceduralIconCacheMetrics(),
+            proceduralLoot: this.lootGalleryDrops.map((drop) => ({
+                identity: drop.visualRoot?.userData?.identity,
+                kind: drop.visualRoot?.userData?.kind,
+                family: drop.visualRoot?.userData?.family,
+                motif: drop.visualRoot?.userData?.motif,
+                artStyle: drop.visualRoot?.userData?.artStyle,
+                quality: drop.visualRoot?.userData?.quality,
+                rarity: drop.visualRoot?.userData?.rarity,
+                visibleParts: drop.visualRoot?.userData?.visibleParts || 0,
+                finite: drop.mesh?.matrixWorld?.elements?.every(Number.isFinite) || false,
+                hasHitbox: Boolean(drop.mesh?.getObjectByName('LootHitbox')),
+                hasLabel: Boolean(drop.label)
+            })),
+            proceduralLootCache: getProceduralLootCacheMetrics(),
             spiritGuardians: (this.actor?.spiritEffect?.guardians?.length || 0) +
                 (this.remoteActor?.spiritEffect?.guardians?.length || 0),
             spiritVariants: [this.actor, this.remoteActor]
@@ -1394,6 +1476,7 @@ export class AnimationGallery {
             entity.update?.(dt, null, null, { getActiveEntities: () => [] }, null, entity.gameEngine);
             entity.render?.(1);
         });
+        this.lootGalleryDrops.forEach((drop) => drop.update(dt));
         [this.actor, this.remoteActor, this.targetActor].forEach((actor) => {
             if (!actor) return;
             actor.mixer?.update?.(dt);

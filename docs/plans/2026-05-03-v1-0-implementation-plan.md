@@ -1,7 +1,7 @@
 # Eidolon v1.0 Implementation Plan
 
 Date: May 3, 2026; current-state correction July 20, 2026
-Current version: `Alpha 0.41.0.29`
+Current version: `Alpha 0.41.0.30`
 Target: `Alpha 1.0` (last alpha before beta)
 
 This plan is grounded in a direct codebase audit, not in roadmap aspiration. It enumerates the concrete gaps blocking v1.0, the order to address them, the files involved, and the gating criteria. It supersedes any previous "suggested milestone slice" framing where evidence in the code disagrees.

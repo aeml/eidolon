@@ -572,13 +572,24 @@ function addIdentityDetails(group, item, visual) {
     }
 }
 
-function createEquipmentVisual(slot, item, anchor, fitScale = 1) {
+/**
+ * Builds one exact equipment form without attaching it to a character. Geometry
+ * and materials are immutable shared resources; transforms and userData belong
+ * to the returned group, so callers may safely pose it for characters or loot.
+ */
+export function createProceduralEquipmentVisual(item, {
+    slot = null,
+    side = -1,
+    fitScale = 1,
+    name = null
+} = {}) {
     const visual = resolveEquipmentVisualDescriptor(item);
     if (!visual) return null;
+    const resolvedSlot = slot || visual.slot;
     const group = new THREE.Group();
-    group.name = `EquippedVisual_${slot}`;
+    group.name = name || `EquippedVisual_${resolvedSlot}`;
     group.userData.equipmentVisual = true;
-    group.userData.slot = slot;
+    group.userData.slot = resolvedSlot;
     group.userData.itemId = item.id || '';
     group.userData.baseName = visual.baseName;
     group.userData.family = visual.family;
@@ -591,8 +602,7 @@ function createEquipmentVisual(slot, item, anchor, fitScale = 1) {
     group.userData.statScaleVersion = Math.max(0, Number(item.statScaleVersion) || 0);
     group.userData.fitScale = Math.max(0.5, Math.min(1.25, Number(fitScale) || 1));
     const mats = createMaterials(item, visual);
-    const side = anchor.name.includes('Left') ? 1 : -1;
-    BUILDERS[visual.family](group, visual, mats, side);
+    BUILDERS[visual.family](group, visual, mats, side >= 0 ? 1 : -1);
     addSocketDetails(group, item, visual, mats);
     addIdentityDetails(group, item, visual);
     const tierScale = (1 + group.userData.tier * 0.025) * group.userData.fitScale;
@@ -672,12 +682,11 @@ export function applyProceduralEquipment(root, equipment = {}, { force = false }
                 if (!child.userData?.equipmentAnchor && !child.userData?.equipmentVisual &&
                     !child.userData?.equipmentBodyBase) child.visible = false;
             });
-            const visual = createEquipmentVisual(
+            const visual = createProceduralEquipmentVisual(item, {
                 slot,
-                item,
-                anchor,
-                root.userData.equipmentScaleBySlot?.[slot] ?? 1
-            );
+                side: anchor.name.includes('Left') ? 1 : -1,
+                fitScale: root.userData.equipmentScaleBySlot?.[slot] ?? 1
+            });
             if (!visual) return;
             anchor.add(visual);
             visual.traverse((child) => {
