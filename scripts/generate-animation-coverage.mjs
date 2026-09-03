@@ -57,9 +57,21 @@ const actorRows = actors.map((actor) => [
     actor.browserEvidence
 ]);
 
+const formatColor = (value, statusKey) => {
+    if (!Number.isInteger(value) || value < 0 || value > 0xffffff) {
+        throw new Error(`Status visual ${statusKey} has no valid primary palette color`);
+    }
+    return `#${value.toString(16).padStart(6, '0')}`;
+};
+
 const statusRows = Object.keys(ACTOR_STATUS_VISUAL_STATES).map((statusKey) => {
     const visual = getStatusVisualDefinition(statusKey);
-    return [statusKey, visual.style, `#${visual.color.toString(16).padStart(6, '0')}`, visual.radius];
+    return [
+        statusKey,
+        visual.artStyle,
+        formatColor(visual.palette?.accent, statusKey),
+        visual.radius
+    ];
 });
 
 const content = `# Animation and Ability Visual Coverage
@@ -93,7 +105,7 @@ ${table(['Class', 'Alias', 'Canonical presentation'], aliasRows)}
 
 ## Actor animation inventory (${actors.length})
 
-Player classes declare Idle/Walk/Run/Attack/Death clips through either the shared procedural humanoid rig or a remaining imported rig. No player currently has a dedicated Jump clip, so Jump uses an intentional procedural arc/lean synchronized to the best locomotion clip. Procedural enemies and bosses receive deterministic generated Idle/Walk/Run/Attack/Death clips. NPCs that never move or fight are explicitly Idle-only.
+All player classes declare Idle/Walk/Run/Attack/Death clips through the shared procedural humanoid architecture and their class-specific generated rigs. No player currently has a dedicated Jump clip, so Jump uses an intentional procedural arc/lean synchronized to the best locomotion clip. Procedural enemies and bosses receive deterministic generated Idle/Walk/Run/Attack/Death clips. NPCs that never move or fight are explicitly Idle-only.
 
 ${table(['Actor', 'Category', 'Source', 'Declared clips', 'Jump', 'Special behavior', 'Browser evidence'], actorRows)}
 
@@ -101,7 +113,7 @@ ${table(['Actor', 'Category', 'Source', 'Declared clips', 'Jump', 'Special behav
 
 These effects are world-space groups: they follow actor position without inheriting imported model scale or facing. Server-replicated booleans and remaining durations reconstruct combat buffs/debuffs on local and remote actors after full state, delta state, reconnect, and join-in-progress. Spirit Guardians uses its dedicated orbit implementation and is therefore listed in the ability table rather than this shared attached-state table.
 
-${table(['State key', 'Visual composition', 'Primary color', 'Radius'], statusRows)}
+${table(['State key', 'Visual composition', 'Accent color', 'Radius'], statusRows)}
 
 ## Rendering and lifecycle expectations
 

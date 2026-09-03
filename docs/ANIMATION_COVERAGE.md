@@ -20,7 +20,7 @@ True passive talents do not create a cast action and are intentionally excluded 
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Fighter | Charge | movement | charge | wave@target | none | class-handler | explicit | Momentum (charge_momentum)<br>Shockwave (charge_shockwave)<br>Unstoppable (charge_unstoppable) |
 | Fighter | Whirlwind | area | spin | spin@source | none | class-handler | explicit | Extended (whirlwind_extended)<br>Bladestorm (whirlwind_bladestorm)<br>Bloodwhirl (whirlwind_bloodwhirl) |
-| Fighter | Shield Slam | melee | heavy | impact@target | none | class-handler | explicit | Concussion (shieldslam_concussion)<br>Reverberation (shieldslam_reverberation)<br>Fortify (shieldslam_fortify) |
+| Fighter | Shield Slam | melee | heavy | cone@source, impact@target | none | class-handler | explicit | Concussion (shieldslam_concussion)<br>Reverberation (shieldslam_reverberation)<br>Fortify (shieldslam_fortify) |
 | Fighter | Iron Fortress | buff | buff | sphere@source | iron_fortress | class-handler | explicit | Extended (ironfortress_extended)<br>Thorns (ironfortress_thorns)<br>Immovable (ironfortress_immovable) |
 | Fighter | Guardian Roar | buff | shout | ring@source | guardian_roar | class-handler | explicit | none |
 | Fighter | Sweeping Strike | melee | sweep | cone@source | none | class-handler | explicit | none |
@@ -100,7 +100,7 @@ Aliases reuse the canonical composition deliberately; they are tested so a serve
 
 ## Actor animation inventory (47)
 
-Player classes declare Idle/Walk/Run/Attack/Death clips through either the shared procedural humanoid rig or a remaining imported rig. No player currently has a dedicated Jump clip, so Jump uses an intentional procedural arc/lean synchronized to the best locomotion clip. Procedural enemies and bosses receive deterministic generated Idle/Walk/Run/Attack/Death clips. NPCs that never move or fight are explicitly Idle-only.
+All player classes declare Idle/Walk/Run/Attack/Death clips through the shared procedural humanoid architecture and their class-specific generated rigs. No player currently has a dedicated Jump clip, so Jump uses an intentional procedural arc/lean synchronized to the best locomotion clip. Procedural enemies and bosses receive deterministic generated Idle/Walk/Run/Attack/Death clips. NPCs that never move or fight are explicitly Idle-only.
 
 | Actor | Category | Source | Declared clips | Jump | Special behavior | Browser evidence |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -156,31 +156,31 @@ Player classes declare Idle/Walk/Run/Attack/Death clips through either the share
 
 These effects are world-space groups: they follow actor position without inheriting imported model scale or facing. Server-replicated booleans and remaining durations reconstruct combat buffs/debuffs on local and remote actors after full state, delta state, reconnect, and join-in-progress. Spirit Guardians uses its dedicated orbit implementation and is therefore listed in the ability table rather than this shared attached-state table.
 
-| State key | Visual composition | Primary color | Radius |
+| State key | Visual composition | Accent color | Radius |
 | --- | --- | --- | --- |
-| iron_fortress | barrier | #a8d8ff | 1.75 |
-| guardian_roar | shields | #54d6ff | 1.9 |
-| berserker_edge | rage | #ff3131 | 1.55 |
-| last_stand | rage | #ff1414 | 2.05 |
-| serrated_edges | blades | #cf2946 | 1.45 |
-| poison_coating | orbit | #42ff72 | 1.45 |
-| stealth | shadow | #34253f | 1.7 |
-| spell_focus | crystals | #a949ff | 1.65 |
-| arcane_shield | barrier | #3b9dff | 1.85 |
-| time_warp | clock | #ffd858 | 1.9 |
-| swift | haste | #64f3ff | 1.5 |
-| guardian_embrace | holy | #ffe56d | 2 |
-| blessing_resolve | shields | #68a9ff | 1.8 |
-| divine_intervention | holy | #ffcf4a | 1.75 |
-| blessing_zeal | rage | #ff7257 | 1.6 |
-| weak_point_mark | mark | #ff3c3c | 1.25 |
-| mark_weakness | mark | #a04cff | 1.35 |
-| stunned | stars | #ffdf4d | 1.3 |
-| rooted | roots | #69a83f | 1.35 |
-| slowed | slow | #72cfff | 1.35 |
-| frozen | crystals | #55e8ff | 1.5 |
-| bleeding | drops | #c71935 | 1.15 |
-| poisoned | orbit | #65cf36 | 1.25 |
+| iron_fortress | riveted oathsteel bastion cage | #a8d8ff | 1.75 |
+| guardian_roar | procession of sky-blue oath shields | #54d6ff | 1.9 |
+| berserker_edge | hooked bloodsteel fury halo | #ff3131 | 1.55 |
+| last_stand | broken war-crown of the final oath | #ff1414 | 2.05 |
+| serrated_edges | blackglass saw-vow blade circuit | #cf2946 | 1.45 |
+| poison_coating | viridian fang-and-vial weapon sacrament | #42ff72 | 1.45 |
+| stealth | faceted eclipse shroud with silent vanes | #684d78 | 1.7 |
+| spell_focus | violet astrolabe lens and captive crystals | #a949ff | 1.65 |
+| arcane_shield | sixfold sapphire reliquary shell | #3b9dff | 1.85 |
+| time_warp | gilded chronicle clock with contrary hands | #ffd858 | 1.9 |
+| swift | cyan wind-spur wake from the Swift relic | #64f3ff | 1.5 |
+| guardian_embrace | paired sunward reliquary arms | #ffe56d | 2 |
+| blessing_resolve | azure pilgrim-shield covenant | #68a9ff | 1.8 |
+| divine_intervention | winged gold rescue reliquary | #ffcf4a | 1.75 |
+| blessing_zeal | ember-gold sunblade benediction | #ff7257 | 1.6 |
+| weak_point_mark | scarlet execution reticle and descending knife | #ff3c3c | 1.25 |
+| mark_weakness | violet broken-vow seal with inward thorns | #a04cff | 1.35 |
+| stunned | shattered gold concussion crown | #ffdf4d | 1.3 |
+| rooted | seven grave-root claws locking the feet | #69a83f | 1.35 |
+| slowed | backward-turning winter chain | #72cfff | 1.35 |
+| frozen | six-spired rimeglass prison | #55e8ff | 1.5 |
+| bleeding | falling crimson tithe and hooked wound seal | #c71935 | 1.15 |
+| poisoned | sickly venom censer with orbiting fangs | #65cf36 | 1.25 |
 
 ## Rendering and lifecycle expectations
 

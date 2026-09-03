@@ -1019,6 +1019,122 @@ export async function useCombatQAWaypoint(page) {
     });
 }
 
+const LIVE_HAZARD_QA_ROUTES = Object.freeze([
+    Object.freeze({ destination: 'earth', id: 'hazard-sandstorm-0', type: 'sandstorm', x: -800, z: -450, radius: 10 }),
+    Object.freeze({ destination: 'water', id: 'hazard-lightning-0', type: 'lightning_zone', x: -50, z: -750, radius: 7 }),
+    Object.freeze({ destination: 'fire', id: 'hazard-lava-0', type: 'lava_pool', x: -1150, z: 100, radius: 6 }),
+    Object.freeze({ destination: 'air', id: 'hazard-wind-0', type: 'wind_gust', x: 1150, z: 100, radius: 6 })
+]);
+
+async function submitVisibleQACommand(page, command) {
+    const chatInput = page.locator('#chat-input');
+    if (!await chatInput.evaluate((element) => element === document.activeElement)) {
+        await page.keyboard.press('Enter');
+    }
+    await expect(chatInput).toBeFocused();
+    await chatInput.fill(command);
+    await chatInput.press('Enter');
+    if (await chatInput.evaluate((element) => element === document.activeElement)) {
+        await page.keyboard.press('Escape');
+    }
+    await expect(chatInput).not.toBeFocused();
+}
+
+async function readLiveHazardMetrics(page, route) {
+    return page.evaluate(({ id }) => {
+        const game = window.game;
+        const hazard = game?.hazards?.get?.(id);
+        if (!hazard) return { catalogSize: game?.hazards?.size ?? 0, found: false };
+        return {
+            catalogSize: game.hazards.size,
+            found: true,
+            type: hazard.hazardType,
+            radius: hazard.radius,
+            boundaryRadius: hazard.boundaryMesh?.geometry?.boundingSphere?.radius ?? null,
+            gameplayRadius: hazard.boundaryMesh?.userData?.gameplayRadius ?? null,
+            x: hazard.position?.x ?? null,
+            z: hazard.position?.z ?? null,
+            attachedMeshes: hazard.meshes.filter((mesh) => Boolean(mesh.parent)).length,
+            meshCount: hazard.meshes.length,
+            matchingIds: [...game.hazards.keys()].filter((hazardId) => hazardId === id).length
+        };
+    }, route);
+}
+
+export async function exerciseAreaHazards(page) {
+    await page.evaluate(() => {
+        const game = window.game;
+        window.__qaHazardDamageEvents = [];
+        if (!game || game.__qaHazardMessageWrapped) return;
+        const originalHandleServerMessage = game.handleServerMessage.bind(game);
+        game.handleServerMessage = (message) => {
+            if (message?.type === 'damage'
+                && message.payload?.targetId === game.player?.id
+                && String(message.payload?.sourceId || '').startsWith('hazard-')) {
+                window.__qaHazardDamageEvents.push({ ...message.payload });
+            }
+            return originalHandleServerMessage(message);
+        };
+        game.__qaHazardMessageWrapped = true;
+    });
+
+    for (const route of LIVE_HAZARD_QA_ROUTES) {
+        await page.evaluate(() => { window.__qaHazardDamageEvents = []; });
+        await submitVisibleQACommand(page, `/qa-hazard ${route.destination}`);
+
+        await expect.poll(async () => {
+            const state = await readPlayerState(page);
+            return Math.hypot(state.x - route.x, state.z - route.z);
+        }, {
+            message: `${route.destination} QA hazard waypoint must reach its canonical center`,
+            timeout: 30_000
+        }).toBeLessThan(0.1);
+
+        await expect.poll(async () => {
+            const metrics = await readLiveHazardMetrics(page, route);
+            return metrics.found;
+        }, {
+            message: `${route.destination} canonical hazard must finish loading in the interest-managed scene`,
+            timeout: 30_000
+        }).toBe(true);
+
+        const metrics = await readLiveHazardMetrics(page, route);
+        expect(metrics.catalogSize).toBeGreaterThan(0);
+        expect(metrics.type).toBe(route.type);
+        expect(metrics.radius).toBeCloseTo(route.radius, 5);
+        expect(metrics.boundaryRadius).toBeCloseTo(route.radius, 5);
+        expect(metrics.gameplayRadius).toBeCloseTo(route.radius, 5);
+        expect(metrics.x).toBeCloseTo(route.x, 5);
+        expect(metrics.z).toBeCloseTo(route.z, 5);
+        expect(metrics.attachedMeshes).toBe(metrics.meshCount);
+        expect(metrics.meshCount).toBeGreaterThan(1);
+        expect(metrics.matchingIds).toBe(1);
+
+        await expect.poll(() => page.evaluate(({ id, type }) => (
+            window.__qaHazardDamageEvents.some((event) => event.sourceId === id && event.kind === type && event.amount > 0)
+        ), route), {
+            message: `${route.destination} hazard must deal normal authoritative damage`,
+            timeout: 15_000
+        }).toBe(true);
+
+        const chatBox = page.locator('#chat-box');
+        if (await chatBox.isVisible()) await page.keyboard.press('Escape');
+        await expect(chatBox).toBeHidden();
+    }
+
+    await submitVisibleQACommand(page, '/qa-hazard town');
+    await expect.poll(async () => {
+        const state = await readPlayerState(page);
+        return Math.hypot(state.x + 1.25, state.z - 200);
+    }, { timeout: 30_000 }).toBeLessThan(0.1);
+    await page.evaluate(() => { window.__qaHazardDamageEvents = []; });
+    await page.waitForTimeout(1_250);
+    expect(await page.evaluate(() => window.__qaHazardDamageEvents)).toEqual([]);
+    const chatBox = page.locator('#chat-box');
+    if (await chatBox.isVisible()) await page.keyboard.press('Escape');
+    await expect(chatBox).toBeHidden();
+}
+
 export async function useEncounterQAWaypoint(page) {
     const chatInput = page.locator('#chat-input');
     let lastError = null;

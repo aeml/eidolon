@@ -236,3 +236,123 @@ func TestCanonicalHazardCatalogHasEveryRealmAnchorAndBroadcastEntity(t *testing.
 		}
 	}
 }
+
+func TestQAHazardPilgrimageUsesEveryCanonicalFamilyWithRealDamage(t *testing.T) {
+	w := NewWorld(nil)
+	player := &Entity{
+		ID:        "player-qa-hazard-pilgrimage",
+		Type:      TypePlayer,
+		SubType:   "Cleric",
+		X:         0,
+		Z:         200,
+		Health:    100,
+		MaxHealth: 100,
+		State:     "IDLE",
+		Cooldowns: make(map[string]time.Time),
+	}
+	w.AddEntity(player)
+
+	expected := map[string]struct {
+		id         string
+		hazardType HazardType
+	}{
+		"earth": {id: "hazard-sandstorm-0", hazardType: HazardSandstorm},
+		"water": {id: "hazard-lightning-0", hazardType: HazardLightning},
+		"fire":  {id: "hazard-lava-0", hazardType: HazardLavaPool},
+		"air":   {id: "hazard-wind-0", hazardType: HazardWindGust},
+	}
+
+	for _, destination := range []string{"earth", "water", "fire", "air"} {
+		t.Run(destination, func(t *testing.T) {
+			moved, hazard, ok := w.MovePlayerToQAHazard(player.ID, destination)
+			if !ok || moved != player || hazard == nil {
+				t.Fatalf("QA hazard destination %s was unavailable", destination)
+			}
+			want := expected[destination]
+			if hazard.ID != want.id || hazard.HazardType != want.hazardType {
+				t.Fatalf("QA hazard destination %s selected %+v", destination, hazard)
+			}
+			if player.X != hazard.X || player.Z != hazard.Z {
+				t.Fatalf("player missed %s center: player=(%v,%v), hazard=(%v,%v)", destination, player.X, player.Z, hazard.X, hazard.Z)
+			}
+			now := time.Now()
+			if !player.QAWaypointProtectionEndTime.After(now) || !player.QAHazardInspectionEndTime.After(now) {
+				t.Fatal("QA hazard inspection did not retain both bounded clocks")
+			}
+			if player.Health != player.MaxHealth {
+				t.Fatal("QA hazard inspection did not begin from full health")
+			}
+
+			w.processHazardDamage(hazard.TickInterval, []*Entity{player})
+			if player.Health >= player.MaxHealth {
+				t.Fatalf("%s inspection protection incorrectly blocked real hazard damage", destination)
+			}
+		})
+	}
+
+	moved, hazard, ok := w.MovePlayerToQAHazard(player.ID, "town")
+	if !ok || moved != player || hazard != nil {
+		t.Fatal("QA hazard pilgrimage could not return to town")
+	}
+	if player.X != -1.25 || player.Z != 200 || !player.QAHazardInspectionEndTime.IsZero() {
+		t.Fatalf("invalid town return state: (%v,%v), inspection=%v", player.X, player.Z, player.QAHazardInspectionEndTime)
+	}
+	if _, exists := w.PlayerHazardTicks[player.ID]; exists {
+		t.Fatal("town return retained QA hazard exposure")
+	}
+}
+
+func TestQAHazardInspectionFailsClosedAndCannotWeakenOrdinaryWaypointProtection(t *testing.T) {
+	w := NewWorld(nil)
+	hazard := w.Hazards["hazard-sandstorm-0"]
+	player := &Entity{
+		ID:        "player-qa-hazard-fail-closed",
+		Type:      TypePlayer,
+		SubType:   "Fighter",
+		X:         0,
+		Z:         200,
+		Health:    100,
+		MaxHealth: 100,
+		State:     "IDLE",
+		Cooldowns: make(map[string]time.Time),
+	}
+	w.AddEntity(player)
+	if _, _, ok := w.MovePlayerToQAHazard(player.ID, "arbitrary"); ok {
+		t.Fatal("arbitrary QA hazard destination was accepted")
+	}
+
+	if _, _, ok := w.MovePlayerToQAHazard(player.ID, "earth"); !ok {
+		t.Fatal("expected canonical QA hazard destination")
+	}
+	player.QAHazardInspectionEndTime = time.Now().Add(-time.Second)
+	player.Health = player.MaxHealth
+	w.processHazardDamage(hazard.TickInterval, []*Entity{player})
+	if player.Health != player.MaxHealth {
+		t.Fatal("expired hazard-inspection clock bypassed ordinary QA protection")
+	}
+
+	if _, _, ok := w.MovePlayerToQAHazard(player.ID, "earth"); !ok {
+		t.Fatal("expected canonical QA hazard destination before waypoint cleanup")
+	}
+	if _, ok := w.MovePlayerToQAWaypoint(player.ID, "combat"); !ok {
+		t.Fatal("expected ordinary QA waypoint")
+	}
+	if !player.QAHazardInspectionEndTime.IsZero() {
+		t.Fatal("ordinary protected waypoint retained hazard-inspection bypass")
+	}
+	if !player.QAHealthRegenPausedUntil.IsZero() {
+		t.Fatal("ordinary protected waypoint retained hazard-inspection regeneration pause")
+	}
+
+	player.X, player.Z = hazard.X, hazard.Z
+	player.Health = player.MaxHealth
+	w.processHazardDamage(hazard.TickInterval, []*Entity{player})
+	if player.Health != player.MaxHealth {
+		t.Fatal("ordinary QA waypoint protection was weakened by earlier hazard inspection")
+	}
+
+	player.InstanceID = "dungeon_qa_hazard"
+	if _, _, ok := w.MovePlayerToQAHazard(player.ID, "earth"); ok {
+		t.Fatal("dungeon player was allowed to start an overworld hazard inspection")
+	}
+}

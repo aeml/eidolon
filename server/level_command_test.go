@@ -289,6 +289,85 @@ func TestHandleMessageQAWaypointRejectsInvalidDestination(t *testing.T) {
 	t.Fatalf("expected waypoint usage error, got %+v", msgs)
 }
 
+func TestHandleMessageQAHazardStartsCanonicalInspectionAndReturnsToTown(t *testing.T) {
+	allowLevelCommandTestUser(t)
+	originalWorld := world
+	defer func() { world = originalWorld }()
+	world = game.NewWorld(nil)
+
+	client := newLevelCommandClient()
+	player := newLevelCommandPlayer(client.playerID)
+	player.X = 100
+	player.Z = 100
+	player.Health = 1
+	world.AddEntity(player)
+
+	payload, _ := json.Marshal(ChatPayload{Message: "/qa-hazard fire", Sender: client.username})
+	client.handleMessage(Message{Type: MsgChat, Payload: payload})
+
+	updated := world.GetEntity(client.playerID)
+	if updated.X != -1150 || updated.Z != 100 || updated.Health != updated.MaxHealth {
+		t.Fatalf("expected canonical full-health fire inspection, got (%v,%v) health=%d/%d", updated.X, updated.Z, updated.Health, updated.MaxHealth)
+	}
+	if !updated.QAWaypointProtectionEndTime.After(time.Now()) || !updated.QAHazardInspectionEndTime.After(time.Now()) {
+		t.Fatal("expected bounded hostile protection and hazard inspection clocks")
+	}
+
+	foundInspection := false
+	for _, msg := range drainSentMessages(client.send) {
+		if msg.Type == MsgChat && strings.Contains(messagePayloadChat(t, msg).Message, "lava_pool at exact radius 6") {
+			foundInspection = true
+		}
+	}
+	if !foundInspection {
+		t.Fatal("expected canonical hazard inspection confirmation")
+	}
+
+	payload, _ = json.Marshal(ChatPayload{Message: "/qa-hazard town", Sender: client.username})
+	client.handleMessage(Message{Type: MsgChat, Payload: payload})
+	if updated.X != -1.25 || updated.Z != 200 || !updated.QAHazardInspectionEndTime.IsZero() {
+		t.Fatalf("expected clean Lanternhold return, got (%v,%v), inspection=%v", updated.X, updated.Z, updated.QAHazardInspectionEndTime)
+	}
+	for _, msg := range drainSentMessages(client.send) {
+		if msg.Type == MsgChat && strings.Contains(messagePayloadChat(t, msg).Message, "returned to Lanternhold safety") {
+			return
+		}
+	}
+	t.Fatal("expected Lanternhold return confirmation")
+}
+
+func TestHandleMessageQAHazardRejectsInvalidOrUnauthorizedUse(t *testing.T) {
+	originalWorld := world
+	originalQAUsernames := qaUsernames
+	defer func() {
+		world = originalWorld
+		qaUsernames = originalQAUsernames
+	}()
+	world = game.NewWorld(nil)
+
+	client := newLevelCommandClient()
+	player := newLevelCommandPlayer(client.playerID)
+	world.AddEntity(player)
+
+	qaUsernames = parseQAUsernames(client.username)
+	payload, _ := json.Marshal(ChatPayload{Message: "/qa-hazard void", Sender: client.username})
+	client.handleMessage(Message{Type: MsgChat, Payload: payload})
+	msgs := drainSentMessages(client.send)
+	if len(msgs) == 0 || msgs[0].Type != MsgError ||
+		!strings.Contains(messagePayloadString(t, msgs[0]), "Usage: /qa-hazard <earth|water|fire|air|town>") {
+		t.Fatalf("expected fail-closed hazard usage error, got %+v", msgs)
+	}
+
+	qaUsernames = parseQAUsernames("someone_else")
+	payload, _ = json.Marshal(ChatPayload{Message: "/qa-hazard earth", Sender: client.username})
+	client.handleMessage(Message{Type: MsgChat, Payload: payload})
+	msgs = drainSentMessages(client.send)
+	if len(msgs) == 0 || msgs[0].Type != MsgError ||
+		!strings.Contains(messagePayloadString(t, msgs[0]), "QA command unavailable") {
+		t.Fatalf("expected QA authorization error, got %+v", msgs)
+	}
+}
+
 func TestHandleMessageQAWaypointMovesAllowlistedPlayerNearLiveEncounter(t *testing.T) {
 	allowLevelCommandTestUser(t)
 	originalWorld := world

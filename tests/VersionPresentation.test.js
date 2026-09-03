@@ -5,6 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 const alphaRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md'), 'utf8');
 const engineeringRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/ROADMAP.md'), 'utf8');
+const finalCutoverAudit = fs.readFileSync(path.join(repoRoot, 'docs/art/FINAL_PROCEDURAL_CUTOVER_AUDIT.md'), 'utf8');
+const migrationInventory = fs.readFileSync(path.join(repoRoot, 'docs/art/PROCEDURAL_MIGRATION_INVENTORY.md'), 'utf8');
 const releaseManifest = JSON.parse(fs.readFileSync(path.join(repoRoot, 'release.json'), 'utf8'));
 const versionedRuntimeFiles = [
     '.github/workflows/ci.yml',
@@ -16,8 +18,25 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.41.0.32 for exact hazard lifecycle boundaries', () => {
-        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 0.41.0.32</span>');
+    test('advances the login screen to alpha 0.41.0.33 for the final procedural cutover', () => {
+        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 0.41.0.33</span>');
+        expect(indexHtml).toContain('Patch 0.41.0.33');
+        expect(indexHtml).toContain('the last lantern knows every road');
+        expect(indexHtml).toContain('The codeborn redesign is whole');
+        expect(indexHtml).toContain('All four heroes carry their own silhouette');
+        expect(indexHtml).toContain('Every relic keeps its identity');
+        expect(indexHtml).toContain('No foe wears a borrowed mask');
+        expect(indexHtml).toContain('Nine domains remember their names');
+        expect(indexHtml).toContain('Every rite tells the gameplay truth');
+        expect(indexHtml).toContain('The black pilgrimage is now a production gate');
+        expect(indexHtml).toContain('Thresholds remain synchronized');
+        expect(indexHtml).toContain('No old painted world waits underneath');
+        expect(indexHtml).toContain('High and Low are both intentional');
+        expect(indexHtml).toContain('The living game remains intact');
+        expect(indexHtml).toContain('2026-09-03-33');
+    });
+
+    test('retains alpha 0.41.0.32 exact hazard lifecycle history', () => {
         expect(indexHtml).toContain('Patch 0.41.0.32');
         expect(indexHtml).toContain('no wound crosses a forgotten threshold');
         expect(indexHtml).toContain('Hazards no longer multiply behind the veil');
@@ -348,12 +367,25 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 0.41.0.32';
+        const expectedVersion = 'Alpha 0.41.0.33';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
             expect(contents).toContain(expectedVersion);
         });
+    });
+
+    test('records the final cutover scope and hard production closure rule', () => {
+        expect(finalCutoverAudit).toContain('Cutover release: `Alpha 0.41.0.33`');
+        expect(finalCutoverAudit).toContain('36 equippable base families');
+        expect(finalCutoverAudit).toContain('47 current player, service, summon, overworld-enemy, and dungeon-boss archetypes');
+        expect(finalCutoverAudit).toContain('52 selectable abilities, 60 rune variants');
+        expect(finalCutoverAudit).toContain('12 sandstorms, 15 lightning zones, 19 lava pools, and 19 wind gusts');
+        expect(finalCutoverAudit).toContain('Unknown actor types and malformed procedural shapes fail closed');
+        expect(finalCutoverAudit).toContain('Frontend manifest, frontend runtime query, and backend health identity agreement');
+        expect(finalCutoverAudit).toContain('Live anonymous, persistent-character, quest, menus, movement, combat/loot, four-realm hazard pilgrimage');
+        expect(migrationInventory).toContain('Current migration release: `Alpha 0.41.0.33`');
+        expect(migrationInventory).toContain('## The last lantern knows every road');
     });
 
     test('retains the 0.40.0 entity extraction entry in patch history', () => {
@@ -452,8 +484,8 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Added client coverage for remote interpolation frame-spike handling and the 0.35.0 release state');
     });
 
-    test('marks 0.41.0.32 current and points the active line at 0.41', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.32`');
+    test('marks 0.41.0.33 current and points the active line at 0.41', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.33`');
         expect(alphaRoadmap).toContain('Active implementation line: `0.41`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');

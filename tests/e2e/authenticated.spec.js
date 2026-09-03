@@ -4,6 +4,7 @@ import {
     credentialsFromEnvironment,
     ensureDungeonReadyLevel,
     enterAndExitDungeon,
+    exerciseAreaHazards,
     exerciseCombatAndLoot,
     exerciseMenus,
     exerciseMovement,
@@ -72,6 +73,7 @@ test.describe('dedicated QA character', () => {
         const failures = collectBrowserFailures(page, baseURL);
         await loginAndEnterWorld(page, credentials);
         await ensureDungeonReadyLevel(page);
+        await exerciseAreaHazards(page);
         const inventoryCount = await exerciseCombatAndLoot(page);
         await enterAndExitDungeon(page);
         await exerciseReconnect(page);

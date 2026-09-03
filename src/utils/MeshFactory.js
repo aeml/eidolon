@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshCatalog } from './MeshCatalog.js';
-import { CONSTANTS } from '../core/Constants.js';
 import { resolveAssetPath } from '../assets/assetManifest.js';
 import {
     createProceduralFighter,
@@ -224,17 +223,6 @@ export class MeshFactory {
         seraph: new THREE.CylinderGeometry(0.5, 0.5, 2, 8)
     };
 
-    /**
-     * Last-resort visual for an unexpected procedural-enemy construction
-     * failure. Keep it code-native so removing the old Skeleton files cannot
-     * make an unrelated enemy disappear while the remaining families migrate.
-     */
-    static async loadSkeletonWithTint() {
-        const mesh = createProceduralSkeleton();
-        mesh.userData.assetFallback = 'procedural Gloamwood gravebound';
-        return mesh;
-    }
-
     // ====================================================================
     // Procedural enemy mesh specs
     // ====================================================================
@@ -433,7 +421,6 @@ export class MeshFactory {
      * Uses cached geometries (shared per shape) and cached materials (shared per type)
      * to avoid redundant GPU allocations. Each instance gets its own Group with shared
      * geometry/material references — no cloning needed since they're read-only.
-     * Falls back to loadSkeletonWithTint if anything goes wrong.
      * @param {string} type - Enemy type name
      * @param {Object} spec - Entry from PROCEDURAL_ENEMY_SPECS
      * @returns {THREE.Object3D}
@@ -461,17 +448,7 @@ export class MeshFactory {
                 group.add(mesh);
             });
         } else {
-            // Unknown shape — create a visible placeholder so it's debuggable
-            console.warn(`MeshFactory.createProceduralEnemy: unknown shape "${shape}" for type "${type}"`);
-            const placeholder = new THREE.Mesh(
-                new THREE.BoxGeometry(0.6, 1.2, 0.6),
-                new THREE.MeshStandardMaterial({ color: 0xff00ff, wireframe: true })
-            );
-            placeholder.name = 'ProceduralPart0';
-            placeholder.position.y = 0.6;
-            placeholder.castShadow = true;
-            placeholder.receiveShadow = true;
-            group.add(placeholder);
+            throw new Error(`Unknown procedural shape "${shape}" for actor "${type}"`);
         }
 
         group.userData.proceduralShape = shape;
@@ -721,7 +698,7 @@ export class MeshFactory {
         const pooled = this.getPooledMesh(type);
         if (pooled) return pooled;
 
-        let geometry, material, mesh;
+        let mesh;
         
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 800;
 
@@ -834,49 +811,13 @@ export class MeshFactory {
         } else if (type === 'Forge') {
             return createProceduralLanternholdStructure('forge', { optimized: true });
         }
-        // ========================================================================
-        // PROCEDURAL ENEMIES (Fire / Air / Water realms + dungeon bosses)
-        // Each type uses a distinct procedural silhouette from PROCEDURAL_ENEMY_SPECS.
-        // Falls back to tinted skeleton if procedural build fails.
-        // TODO: Replace with proper GLB models when assets are available.
-        // ========================================================================
+        // Historical compatibility construction. The production registry is
+        // intentionally empty and guarded by coverage now that every actor has
+        // a named rig. If it ever returns, construction fails closed rather than
+        // hiding an incomplete visual behind a generic actor.
         else if (this.PROCEDURAL_ENEMY_SPECS[type]) {
-            try {
-                return this.createProceduralEnemy(type, this.PROCEDURAL_ENEMY_SPECS[type]);
-            } catch (e) {
-                console.warn(`MeshFactory: Procedural mesh failed for ${type}, falling back to skeleton.`, e);
-                const spec = this.PROCEDURAL_ENEMY_SPECS[type];
-                // TODO: Replace this skeleton fallback with a proper GLB model for ${type}
-                return await this.loadSkeletonWithTint(spec.color, spec.scale, spec.emissive, spec.emissiveI);
-            }
+            return this.createProceduralEnemy(type, this.PROCEDURAL_ENEMY_SPECS[type]);
         }
-
-        switch (type) {
-            case 'Fighter':
-                geometry = this.geometryCache.fighter;
-                material = new THREE.MeshStandardMaterial({ color: CONSTANTS.ENTITIES.FIGHTER.COLOR });
-                break;
-            case 'Rogue':
-                geometry = this.geometryCache.rogue;
-                material = new THREE.MeshStandardMaterial({ color: CONSTANTS.ENTITIES.ROGUE.COLOR });
-                break;
-            case 'Wizard':
-                geometry = this.geometryCache.wizard;
-                material = new THREE.MeshStandardMaterial({ color: CONSTANTS.ENTITIES.WIZARD.COLOR });
-                break;
-            case 'Cleric':
-                geometry = this.geometryCache.cleric;
-                material = new THREE.MeshStandardMaterial({ color: CONSTANTS.ENTITIES.CLERIC.COLOR });
-                break;
-            default:
-                geometry = this.geometryCache.default;
-                material = new THREE.MeshStandardMaterial({ color: 0xffffff });
-        }
-
-        mesh = new THREE.Mesh(geometry, material);
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
-        mesh.position.y = 0.5; 
-        return mesh;
+        throw new Error(`Unknown procedural mesh type: ${type}`);
     }
 }

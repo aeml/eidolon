@@ -173,6 +173,18 @@ describe('MeshFactory catalog integration', () => {
         expect(MeshFactory.PROCEDURAL_ENEMY_SPECS).toEqual({});
     });
 
+    test('fails closed instead of hiding a missing actor or shape behind a generic visual', async () => {
+        await expect(MeshFactory.createMeshForType('UncataloguedActor'))
+            .rejects.toThrow('Unknown procedural mesh type: UncataloguedActor');
+        expect(() => MeshFactory.createProceduralEnemy('BrokenActor', {
+            shape: 'uncatalogued-shape',
+            scale: 1,
+            color: 0xffffff,
+            emissive: 0x000000,
+            emissiveI: 0
+        })).toThrow('Unknown procedural shape "uncatalogued-shape" for actor "BrokenActor"');
+    });
+
     test('the compatibility procedural builder still ships explicit idle, movement, attack, and death clips', () => {
         const mesh = MeshFactory.createProceduralEnemy(
             'TestWraith',

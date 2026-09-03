@@ -65,7 +65,7 @@ var qaUsernamesFlag = flag.String("qa-usernames", os.Getenv("EIDOLON_QA_USERNAME
 
 var (
 	buildCommit  = "development"
-	buildVersion = "Alpha 0.41.0.32"
+	buildVersion = "Alpha 0.41.0.33"
 	qaUsernames  = map[string]struct{}{}
 )
 
@@ -3468,6 +3468,37 @@ func (c *Client) handleChatCommand(raw string) bool {
 			c.sendSystemChat("QA waypoint set near a live overworld encounter; protection active for 5 minutes.")
 		} else {
 			c.sendSystemChat("QA waypoint set near Verdant Bastion; protection active for 5 minutes.")
+		}
+		return true
+	case "/qa-hazard":
+		if !isQAUsername(c.username) {
+			c.sendError("QA command unavailable for this account.")
+			return true
+		}
+		if len(fields) != 2 || (!strings.EqualFold(fields[1], "earth") &&
+			!strings.EqualFold(fields[1], "water") && !strings.EqualFold(fields[1], "fire") &&
+			!strings.EqualFold(fields[1], "air") && !strings.EqualFold(fields[1], "town")) {
+			c.sendError("Usage: /qa-hazard <earth|water|fire|air|town>")
+			return true
+		}
+		if c.playerID == "" || world == nil {
+			c.sendError("No active overworld character for QA hazard inspection.")
+			return true
+		}
+
+		_, hazard, ok := world.MovePlayerToQAHazard(c.playerID, fields[1])
+		if !ok {
+			c.sendError("No active overworld character for QA hazard inspection.")
+			return true
+		}
+		if hazard == nil {
+			c.sendSystemChat("QA hazard pilgrimage returned to Lanternhold safety.")
+		} else {
+			c.sendSystemChat(fmt.Sprintf(
+				"QA hazard inspection active: %s at exact radius %.0f; hostile protection remains bounded.",
+				hazard.HazardType,
+				hazard.Radius,
+			))
 		}
 		return true
 	case "/qa-loot-next":

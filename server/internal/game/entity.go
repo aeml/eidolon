@@ -273,6 +273,7 @@ type Entity struct {
 	ArcaneShieldAbsorbed        int       `json:"-"` // Track absorbed damage for explosive rune
 	InvulnerableEndTime         time.Time `json:"-"` // For teleport phase rune
 	QAWaypointProtectionEndTime time.Time `json:"-"` // Isolated allowlisted release-QA protection
+	QAHazardInspectionEndTime   time.Time `json:"-"` // Lets QA hazard damage through while hostile protection remains active
 	TeleportCharges             int       `json:"-"`
 	TeleportChargeReadyAt       time.Time `json:"-"`
 	CloakNextAttackBonus        float64   `json:"-"` // For cloak prepared ambush rune

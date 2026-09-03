@@ -194,12 +194,14 @@ Notes:
 - Client identity: `https://eidolon.mendola.tech/release.json`
 - Server readiness and identity: `https://eserver.mendola.tech/healthz`
 - Both endpoints report the deployed Git commit. The deployment workflow polls until they match the pushed SHA, then runs the live Playwright suite.
-- `/level`, `/qa-waypoint <combat|encounter|verdant>`, `/qa-loot-next`, `/qa-disconnect`, `/qa-animation-ready [low-health|persistent]`, and `/qa-protection off` are release-QA commands. They are disabled unless the authenticated username appears in the server's `EIDOLON_QA_USERNAMES` allowlist. The encounter waypoint chooses the live overworld enemy nearest the fixed combat anchor and places only the QA character eight metres toward that anchor; it neither spawns nor mutates the enemy and accepts no coordinates. Animation readiness restores bounded resources/cooldowns; `low-health` permits the Last Stand input path, and `persistent` extends only the next Spirit Guardians activation/boost long enough to prove late-join reconstruction. Protection can only be turned off after a bounded QA waypoint so death/respawn remains real server-authoritative gameplay.
+- Procedural cutover scope and closure gates: [docs/art/FINAL_PROCEDURAL_CUTOVER_AUDIT.md](docs/art/FINAL_PROCEDURAL_CUTOVER_AUDIT.md)
+- Complete migration ledger: [docs/art/PROCEDURAL_MIGRATION_INVENTORY.md](docs/art/PROCEDURAL_MIGRATION_INVENTORY.md)
+- `/level`, `/qa-waypoint <combat|encounter|verdant>`, `/qa-hazard <earth|water|fire|air|town>`, `/qa-loot-next`, `/qa-disconnect`, `/qa-animation-ready [low-health|persistent]`, and `/qa-protection off` are release-QA commands. They are disabled unless the authenticated username appears in the server's `EIDOLON_QA_USERNAMES` allowlist. The encounter waypoint chooses the live overworld enemy nearest the fixed combat anchor and places only the QA character eight metres toward that anchor; it neither spawns nor mutates the enemy and accepts no coordinates. The hazard pilgrimage accepts only four fixed canonical hazard centers plus Lanternhold, preserves hostile protection, and permits normal environmental damage for 45 seconds. Animation readiness restores bounded resources/cooldowns; `low-health` permits the Last Stand input path, and `persistent` extends only the next Spirit Guardians activation/boost long enough to prove late-join reconstruction. Protection can only be turned off after a bounded QA waypoint so death/respawn remains real server-authoritative gameplay.
 
 ## Project Status
 
-- Current in-game displayed version: `Alpha 0.41.0.32`
-- Active implementation line: `0.41` procedural dark-fantasy art migration
+- Current in-game displayed version: `Alpha 0.41.0.33`
+- Active implementation line: `0.41` procedural dark-fantasy art migration (final cutover complete)
 - Current shipped foundation: four classes, four realms, four dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, social statuses, friends/presence, reconnect/session resume, asset caching, audio foundation, and substantial UX polish
 - Current engineering emphasis: reducing monolith hotspots in `server/internal/game/world.go`, `server/main.go`, `src/core/GameEngine.js`, and `src/ui/UIManager.js`
 - Next backend-facing hardening themes in the roadmap: persistence, protocol safety, performance, multi-client coverage, and soak validation

@@ -568,6 +568,7 @@ func (w *World) SetPlayerLevel(playerID string, level int) (*Entity, bool) {
 
 // QAWaypointProtectionDuration bounds protection after a fixed QA teleport.
 const QAWaypointProtectionDuration = 5 * time.Minute
+const QAHazardInspectionDuration = 45 * time.Second
 
 // QAWaypointMovementLockDuration lets the authoritative teleport reach the
 // browser before a movement packet queued at the old position can overwrite
@@ -646,10 +647,74 @@ func (w *World) MovePlayerToQAWaypoint(playerID, waypoint string) (*Entity, bool
 	player.State = "IDLE"
 	player.MoveLockUntil = time.Now().Add(QAWaypointMovementLockDuration)
 	player.QAWaypointProtectionEndTime = time.Now().Add(QAWaypointProtectionDuration)
+	player.QAHazardInspectionEndTime = time.Time{}
+	player.QAHealthRegenPausedUntil = time.Time{}
 	delete(w.PlayerHazardTicks, playerID)
 	w.Grid.Update(player, oldX, oldZ)
 
 	return player, true
+}
+
+// MovePlayerToQAHazard places an allowlisted release-QA character at one exact
+// canonical overworld hazard anchor, or returns it to Lanternhold. The regular
+// waypoint protection continues to block unrelated hostile attacks while the
+// separate bounded inspection clock lets only authoritative hazard damage
+// through. No arbitrary coordinates or gameplay values are accepted.
+func (w *World) MovePlayerToQAHazard(playerID, destination string) (*Entity, *Hazard, bool) {
+	normalizedDestination := strings.ToLower(strings.TrimSpace(destination))
+	type target struct {
+		x, z     float64
+		hazardID string
+	}
+	targets := map[string]target{
+		"earth": {x: -800, z: -450, hazardID: "hazard-sandstorm-0"},
+		"water": {x: -50, z: -750, hazardID: "hazard-lightning-0"},
+		"fire":  {x: -1150, z: 100, hazardID: "hazard-lava-0"},
+		"air":   {x: 1150, z: 100, hazardID: "hazard-wind-0"},
+		"town":  {x: -1.25, z: 200},
+	}
+	destinationTarget, ok := targets[normalizedDestination]
+	if !ok {
+		return nil, nil, false
+	}
+
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+	player, ok := w.Entities[playerID]
+	if !ok || player.Type != TypePlayer || player.InstanceID != "" || player.State == "DEAD" {
+		return nil, nil, false
+	}
+
+	var hazard *Hazard
+	if destinationTarget.hazardID != "" {
+		hazard = w.Hazards[destinationTarget.hazardID]
+		if hazard == nil || math.Hypot(hazard.X-destinationTarget.x, hazard.Z-destinationTarget.z) > 0.000001 {
+			return nil, nil, false
+		}
+	}
+
+	now := time.Now()
+	oldX, oldZ := player.X, player.Z
+	player.X = destinationTarget.x
+	player.Y = 0
+	player.Z = destinationTarget.z
+	player.TargetX = destinationTarget.x
+	player.TargetZ = destinationTarget.z
+	player.TargetID = ""
+	player.State = "IDLE"
+	player.Health = player.MaxHealth
+	player.MoveLockUntil = now.Add(QAWaypointMovementLockDuration)
+	player.QAWaypointProtectionEndTime = now.Add(QAWaypointProtectionDuration)
+	player.QAHealthRegenPausedUntil = now.Add(QAHazardInspectionDuration)
+	if hazard == nil {
+		player.QAHazardInspectionEndTime = time.Time{}
+		player.QAHealthRegenPausedUntil = time.Time{}
+	} else {
+		player.QAHazardInspectionEndTime = now.Add(QAHazardInspectionDuration)
+	}
+	delete(w.PlayerHazardTicks, playerID)
+	w.Grid.Update(player, oldX, oldZ)
+	return player, hazard, true
 }
 
 // ArmPlayerQAGuaranteedLoot makes one subsequent enemy encounter deterministic:
@@ -722,6 +787,7 @@ func (w *World) PreparePlayerForAnimationQA(playerID string, lowHealth, persiste
 	player.Mana = player.MaxMana
 	player.Health = player.MaxHealth
 	player.QAHealthRegenPausedUntil = time.Time{}
+	player.QAHazardInspectionEndTime = time.Time{}
 	if nearDeath {
 		// The death check follows a complete ability/rune pass. End any movement,
 		// absorb, lethal-prevention, mitigation, or healing state that could
@@ -784,6 +850,7 @@ func (w *World) DisablePlayerQAProtection(playerID string) bool {
 	}
 	player.Mu.Lock()
 	player.QAWaypointProtectionEndTime = time.Time{}
+	player.QAHazardInspectionEndTime = time.Time{}
 	playerX, playerZ, playerInstanceID := player.X, player.Z, player.InstanceID
 	player.Mu.Unlock()
 
@@ -3175,6 +3242,8 @@ func (w *World) SetEntityDisconnected(id string, at time.Time) bool {
 	e.State = "IDLE"
 	e.TargetX = e.X
 	e.TargetZ = e.Z
+	e.QAHazardInspectionEndTime = time.Time{}
+	e.QAHealthRegenPausedUntil = time.Time{}
 	// A resume starts a fresh exposure window. It must not complete a damage
 	// tick accumulated before the socket went away.
 	delete(w.PlayerHazardTicks, id)
@@ -4565,6 +4634,7 @@ func (w *World) PerformRespawn(playerID string) {
 	player.LastRespawnTime = time.Now()
 	player.Health = player.MaxHealth
 	player.QAHealthRegenPausedUntil = time.Time{}
+	player.QAHazardInspectionEndTime = time.Time{}
 	delete(w.PlayerHazardTicks, playerID)
 
 	// Remove from current grid location (which might be in an instance)
@@ -4591,6 +4661,8 @@ func (w *World) PerformRecall(playerID string) {
 
 	// Teleport to town
 	player.State = "IDLE"
+	player.QAHazardInspectionEndTime = time.Time{}
+	player.QAHealthRegenPausedUntil = time.Time{}
 	delete(w.PlayerHazardTicks, playerID)
 
 	w.Grid.Remove(player)
@@ -5623,6 +5695,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			if now.After(e.QAWaypointProtectionEndTime) && !e.QAWaypointProtectionEndTime.IsZero() {
 				e.QAWaypointProtectionEndTime = time.Time{}
 			}
+			if now.After(e.QAHazardInspectionEndTime) && !e.QAHazardInspectionEndTime.IsZero() {
+				e.QAHazardInspectionEndTime = time.Time{}
+			}
 
 			// Extended Whirlwind tick (from rune)
 			if e.WhirlwindActive {
@@ -6519,6 +6594,7 @@ func (w *World) processHazardDamage(dt float64, players []*Entity) {
 		instanceID := player.InstanceID
 		disconnected := player.Disconnected
 		qaProtectionEnd := player.QAWaypointProtectionEndTime
+		qaHazardInspectionEnd := player.QAHazardInspectionEndTime
 		player.Mu.RUnlock()
 		if playerState == "DEAD" || playerHealth <= 0 || disconnected {
 			delete(w.PlayerHazardTicks, playerID)
@@ -6540,7 +6616,9 @@ func (w *World) processHazardDamage(dt float64, players []*Entity) {
 		// The allowlisted release waypoint promises a protected inspection
 		// window. Keep it independent from gameplay-rune invulnerability and do
 		// not bank a partial environmental tick while that window is active.
-		if !qaProtectionEnd.IsZero() && time.Now().Before(qaProtectionEnd) {
+		now := time.Now()
+		qaHazardInspectionActive := !qaHazardInspectionEnd.IsZero() && now.Before(qaHazardInspectionEnd)
+		if !qaProtectionEnd.IsZero() && now.Before(qaProtectionEnd) && !qaHazardInspectionActive {
 			delete(w.PlayerHazardTicks, playerID)
 			continue
 		}
@@ -9211,6 +9289,8 @@ func (w *World) EnterInstance(playerID string, instanceID string) error {
 	oldInstanceID := player.InstanceID
 	log.Printf("EnterInstance: Player %s moving from '%s' to '%s'", playerID, oldInstanceID, instanceID)
 	delete(w.PlayerHazardTicks, playerID)
+	player.QAHazardInspectionEndTime = time.Time{}
+	player.QAHealthRegenPausedUntil = time.Time{}
 	player.InstanceID = instanceID
 
 	// Set Spawn Position based on Dungeon Layout
