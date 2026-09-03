@@ -24,6 +24,9 @@ const ROGUE_PALETTE = Object.freeze({
     silver: 0xc0c8c3,
     poison: 0x68c878,
     skin: 0x8f6b5c,
+    hair: 0x17151d,
+    hairLight: 0x49364d,
+    lips: 0x793b4d,
     glow: 0x78e08a
 });
 
@@ -48,6 +51,9 @@ const CLERIC_PALETTE = Object.freeze({
     iron: 0x4a4d4e,
     leather: 0x493124,
     skin: 0x9a7563,
+    hair: 0x48291f,
+    hairLight: 0x9b6747,
+    lips: 0x874653,
     holy: 0xffd76a,
     spirit: 0x9fe0b2
 });
@@ -356,11 +362,11 @@ function addRogueDagger(anchor, materials, side, name) {
 
 function addRogueArm(parent, side, materials) {
     const sign = side === 'Left' ? 1 : -1;
-    const upperArm = addPivot(parent, `Rig_UpperArm${side}`, [sign * 0.72, 0.42, 0.01], [0.16, 0, -sign * 0.13]);
+    const upperArm = addPivot(parent, `Rig_UpperArm${side}`, [sign * 0.69, 0.42, 0.01], [0.16, 0, -sign * 0.13]);
     addMesh(
         upperArm,
         `Rogue_UpperArm${side}`,
-        geometry('rogue-upper-arm', () => new THREE.CylinderGeometry(0.16, 0.135, 0.7, 7)),
+        geometry('rogue-upper-arm', () => new THREE.CylinderGeometry(0.145, 0.12, 0.7, 7)),
         materials.cloth,
         { position: [0, -0.35, 0] }
     );
@@ -422,12 +428,12 @@ function addRogueArm(parent, side, materials) {
 
 function addRogueLeg(parent, side, materials) {
     const sign = side === 'Left' ? 1 : -1;
-    const thigh = addPivot(parent, `Rig_Thigh${side}`, [sign * 0.27, -0.08, 0], [0.04, 0, sign * 0.035]);
+    const thigh = addPivot(parent, `Rig_Thigh${side}`, [sign * 0.29, -0.08, 0], [0.04, 0, sign * 0.035]);
     const leg = addAnchor(thigh, `Equipment_Leg${side}`);
     addMesh(
         leg,
         `Rogue_Thigh${side}`,
-        geometry('rogue-thigh', () => new THREE.CylinderGeometry(0.21, 0.17, 0.8, 7)),
+        geometry('rogue-thigh', () => new THREE.CylinderGeometry(0.225, 0.17, 0.8, 7)),
         materials.cloth,
         { position: [0, -0.4, 0] }
     );
@@ -658,11 +664,11 @@ function addWizardFocus(anchor, materials) {
 
 function addClericArm(parent, side, materials) {
     const sign = side === 'Left' ? 1 : -1;
-    const upperArm = addPivot(parent, `Rig_UpperArm${side}`, [sign * 0.8, 0.48, 0], [0.02, 0, -sign * 0.11]);
+    const upperArm = addPivot(parent, `Rig_UpperArm${side}`, [sign * 0.74, 0.48, 0], [0.02, 0, -sign * 0.11]);
     addMesh(
         upperArm,
         `Cleric_UpperArm${side}`,
-        geometry('cleric-upper-arm', () => new THREE.CylinderGeometry(0.21, 0.165, 0.74, 8)),
+        geometry('cleric-upper-arm', () => new THREE.CylinderGeometry(0.18, 0.145, 0.74, 8)),
         materials.cloth,
         { position: [0, -0.36, 0], scale: [1, 1, 0.9] }
     );
@@ -1409,6 +1415,9 @@ export function createProceduralRogue() {
             roughness: 0.24
         }),
         skin: material('rogue-skin', ROGUE_PALETTE.skin, { roughness: 0.9 }),
+        hair: material('rogue-hair', ROGUE_PALETTE.hair, { roughness: 0.94 }),
+        hairLight: material('rogue-hair-light', ROGUE_PALETTE.hairLight, { roughness: 0.88 }),
+        lips: material('rogue-lips', ROGUE_PALETTE.lips, { roughness: 0.76 }),
         glow: material('rogue-glow', ROGUE_PALETTE.glow, {
             emissive: ROGUE_PALETTE.glow,
             emissiveIntensity: 1.5,
@@ -1424,7 +1433,7 @@ export function createProceduralRogue() {
     addMesh(
         hips,
         'Rogue_HipWrap',
-        geometry('rogue-hip-wrap', () => new THREE.CylinderGeometry(0.46, 0.4, 0.45, 7)),
+        geometry('rogue-hip-wrap', () => new THREE.CylinderGeometry(0.4, 0.5, 0.45, 7)),
         materials.cloth,
         { position: [0, 0.08, 0], scale: [1, 1, 0.78] }
     );
@@ -1449,7 +1458,7 @@ export function createProceduralRogue() {
     addMesh(
         belt,
         'Rogue_Belt',
-        geometry('rogue-belt', () => new THREE.CylinderGeometry(0.46, 0.46, 0.14, 7)),
+        geometry('rogue-belt', () => new THREE.CylinderGeometry(0.405, 0.405, 0.14, 7)),
         materials.leatherLight,
         { scale: [1, 1, 0.8] }
     );
@@ -1471,9 +1480,16 @@ export function createProceduralRogue() {
     addMesh(
         chestAnchor,
         'Rogue_Jerkin',
-        geometry('rogue-jerkin', () => new THREE.CylinderGeometry(0.5, 0.43, 1.04, 7)),
+        geometry('rogue-jerkin', () => new THREE.CylinderGeometry(0.48, 0.355, 1.04, 7)),
         materials.leather,
-        { position: [0, 0.45, 0], scale: [1.06, 1, 0.72] }
+        { position: [0, 0.45, 0], scale: [1.04, 1, 0.72] }
+    );
+    addMesh(
+        chestAnchor,
+        'Rogue_CuirassContour',
+        geometry('rogue-cuirass-contour', () => new THREE.DodecahedronGeometry(0.5, 0)),
+        materials.leatherLight,
+        { position: [0, 0.63, 0.34], scale: [0.82, 0.45, 0.26] }
     );
     addMesh(
         chestAnchor,
@@ -1540,15 +1556,35 @@ export function createProceduralRogue() {
         'Rogue_Head',
         geometry('rogue-head', () => new THREE.DodecahedronGeometry(0.285, 1)),
         materials.skin,
-        { position: [0, 0.1, 0], scale: [0.82, 1.06, 0.82] }
+        { position: [0, 0.1, 0], scale: [0.76, 1.08, 0.8] }
     );
     face.userData.equipmentBodyBase = true;
+    addMesh(
+        headAnchor,
+        'Rogue_HairCap',
+        geometry('rogue-hair-cap', () => new THREE.SphereGeometry(0.3, 7, 4, 0, Math.PI * 2, 0, Math.PI * 0.61)),
+        materials.hair,
+        { position: [0, 0.18, -0.015], scale: [0.83, 1, 0.83] }
+    );
+    [-1, 1].forEach((side) => {
+        addMesh(
+            headAnchor,
+            side < 0 ? 'Rogue_HairLockLeft' : 'Rogue_HairLockRight',
+            geometry('rogue-hair-lock', () => new THREE.ConeGeometry(0.075, 0.42, 5)),
+            side < 0 ? materials.hairLight : materials.hair,
+            {
+                position: [side * 0.205, -0.005, 0.02],
+                rotation: [0.1, 0, side * 0.1],
+                scale: [0.82, side < 0 ? 1.08 : 0.9, 0.72]
+            }
+        );
+    });
     addMesh(
         headAnchor,
         'Rogue_Hood',
         geometry('rogue-hood', () => new THREE.ConeGeometry(0.43, 0.76, 7, 1, true)),
         materials.cloth,
-        { position: [0, 0.27, -0.02], rotation: [0, 0, Math.PI], scale: [1, 1, 0.92] }
+        { position: [0, 0.29, -0.09], rotation: [0, 0, Math.PI], scale: [1, 1, 0.82] }
     );
     addMesh(
         headAnchor,
@@ -1559,19 +1595,67 @@ export function createProceduralRogue() {
     );
     addMesh(
         headAnchor,
-        'Rogue_Mask',
-        geometry('rogue-mask', () => new THREE.CylinderGeometry(0.25, 0.22, 0.25, 7, 1, false, 0, Math.PI)),
+        'Rogue_MaskScarf',
+        geometry('rogue-mask-scarf', () => new THREE.CylinderGeometry(0.245, 0.26, 0.11, 7, 1, false, 0, Math.PI)),
         materials.leatherLight,
-        { position: [0, 0.02, 0.17], rotation: [0, Math.PI / 2, Math.PI / 2], scale: [0.9, 1, 0.72] }
+        { position: [0, -0.14, 0.045], rotation: [0, Math.PI / 2, Math.PI / 2], scale: [0.88, 1, 0.76] }
     );
     const eyes = addMesh(
         headAnchor,
         'Rogue_EyeGlow',
-        geometry('rogue-eye-glow', () => new THREE.BoxGeometry(0.34, 0.035, 0.025)),
+        geometry('rogue-eye', () => new THREE.OctahedronGeometry(0.065, 0)),
         materials.glow,
-        { position: [0, 0.17, 0.315] }
+        { position: [0.095, 0.17, 0.235], scale: [1, 0.34, 0.28], rotation: [0, 0, -0.08] }
     );
     eyes.userData.equipmentBodyBase = true;
+    const rightEye = addMesh(
+        headAnchor,
+        'Rogue_EyeGlowRight',
+        geometry('rogue-eye', () => new THREE.OctahedronGeometry(0.065, 0)),
+        materials.glow,
+        { position: [-0.095, 0.17, 0.235], scale: [1, 0.34, 0.28], rotation: [0, 0, 0.08] }
+    );
+    rightEye.userData.equipmentBodyBase = true;
+    [-1, 1].forEach((side) => {
+        addMesh(
+            headAnchor,
+            side < 0 ? 'Rogue_BrowLeft' : 'Rogue_BrowRight',
+            geometry('rogue-brow', () => new THREE.BoxGeometry(0.105, 0.018, 0.018)),
+            materials.hair,
+            { position: [side * 0.095, 0.225, 0.235], rotation: [0, 0, -side * 0.09] }
+        );
+    });
+    addMesh(
+        headAnchor,
+        'Rogue_Nose',
+        geometry('rogue-nose', () => new THREE.TetrahedronGeometry(0.065, 0)),
+        materials.skin,
+        { position: [0, 0.105, 0.255], rotation: [0.16, Math.PI / 4, 0], scale: [0.52, 1, 0.55] }
+    );
+    addMesh(
+        headAnchor,
+        'Rogue_Lips',
+        geometry('rogue-lips', () => new THREE.BoxGeometry(0.105, 0.022, 0.018)),
+        materials.lips,
+        { position: [0, 0.01, 0.238], rotation: [0, 0, -0.025] }
+    );
+    const braid = addPivot(headAnchor, 'Rogue_Braid', [0.22, 0.02, -0.21], [0.18, 0, -0.16]);
+    for (let index = 0; index < 4; index++) {
+        addMesh(
+            braid,
+            `Rogue_BraidKnot${index}`,
+            geometry('rogue-braid-knot', () => new THREE.OctahedronGeometry(0.095, 0)),
+            index % 2 === 0 ? materials.hairLight : materials.hair,
+            { position: [index * 0.035, -index * 0.15, 0], scale: [0.8 - index * 0.08, 1, 0.68] }
+        );
+    }
+    addMesh(
+        braid,
+        'Rogue_BraidTie',
+        geometry('rogue-braid-tie', () => new THREE.OctahedronGeometry(0.06, 0)),
+        materials.poison,
+        { position: [0.13, -0.58, 0], scale: [0.7, 1.1, 0.65] }
+    );
 
     const offHand = addRogueArm(chest, 'Left', materials);
     const mainHand = addRogueArm(chest, 'Right', materials);
@@ -1582,6 +1666,7 @@ export function createProceduralRogue() {
     root.userData.proceduralHumanoid = true;
     root.userData.proceduralClass = 'Rogue';
     root.userData.artStyle = 'Gloamreach shadeblade';
+    root.userData.genderPresentation = 'female';
     root.userData.sharedGeometry = true;
     root.userData.equipmentAnchors = Object.fromEntries(
         Object.entries(HUMANOID_EQUIPMENT_ANCHORS).map(([slot, names]) => [slot, [...names]])
@@ -1856,6 +1941,9 @@ export function createProceduralCleric() {
         iron: material('cleric-iron', CLERIC_PALETTE.iron, { metalness: 0.68, roughness: 0.46 }),
         leather: material('cleric-leather', CLERIC_PALETTE.leather, { roughness: 0.9 }),
         skin: material('cleric-skin', CLERIC_PALETTE.skin, { roughness: 0.9 }),
+        hair: material('cleric-hair', CLERIC_PALETTE.hair, { roughness: 0.92 }),
+        hairLight: material('cleric-hair-light', CLERIC_PALETTE.hairLight, { roughness: 0.84 }),
+        lips: material('cleric-lips', CLERIC_PALETTE.lips, { roughness: 0.74 }),
         holy: material('cleric-holy', CLERIC_PALETTE.holy, {
             emissive: CLERIC_PALETTE.holy,
             emissiveIntensity: 1.35,
@@ -1876,7 +1964,7 @@ export function createProceduralCleric() {
     addMesh(
         hips,
         'Cleric_HipVestment',
-        geometry('cleric-hip-vestment', () => new THREE.CylinderGeometry(0.53, 0.6, 0.56, 8)),
+        geometry('cleric-hip-vestment', () => new THREE.CylinderGeometry(0.43, 0.6, 0.56, 8)),
         materials.cloth,
         { position: [0, 0.07, 0], scale: [1, 1, 0.84] }
     );
@@ -1899,7 +1987,7 @@ export function createProceduralCleric() {
     addMesh(
         belt,
         'Cleric_ReliquaryBelt',
-        geometry('cleric-reliquary-belt', () => new THREE.CylinderGeometry(0.52, 0.52, 0.16, 8)),
+        geometry('cleric-reliquary-belt', () => new THREE.CylinderGeometry(0.445, 0.445, 0.16, 8)),
         materials.leather,
         { scale: [1, 1, 0.84] }
     );
@@ -1921,9 +2009,16 @@ export function createProceduralCleric() {
     addMesh(
         chestAnchor,
         'Cleric_ReliquaryCuirass',
-        geometry('cleric-reliquary-cuirass', () => new THREE.CylinderGeometry(0.59, 0.5, 1.12, 8)),
+        geometry('cleric-reliquary-cuirass', () => new THREE.CylinderGeometry(0.52, 0.39, 1.12, 8)),
         materials.iron,
-        { position: [0, 0.48, 0], scale: [1.08, 1, 0.75] }
+        { position: [0, 0.48, 0], scale: [1.06, 1, 0.75] }
+    );
+    addMesh(
+        chestAnchor,
+        'Cleric_CuirassContour',
+        geometry('cleric-cuirass-contour', () => new THREE.DodecahedronGeometry(0.52, 0)),
+        materials.bronze,
+        { position: [0, 0.64, 0.34], scale: [0.84, 0.43, 0.25] }
     );
     addMesh(
         chestAnchor,
@@ -2015,31 +2110,98 @@ export function createProceduralCleric() {
         'Cleric_Head',
         geometry('cleric-head', () => new THREE.DodecahedronGeometry(0.3, 1)),
         materials.skin,
-        { position: [0, 0.1, 0], scale: [0.84, 1.08, 0.84] }
+        { position: [0, 0.1, 0], scale: [0.78, 1.1, 0.81] }
     );
     face.userData.equipmentBodyBase = true;
     addMesh(
         headAnchor,
         'Cleric_Coif',
-        geometry('cleric-coif', () => new THREE.CylinderGeometry(0.37, 0.33, 0.62, 8, 1, true)),
+        geometry('cleric-coif', () => new THREE.DodecahedronGeometry(0.35, 0)),
         materials.cloth,
-        { position: [0, 0.16, -0.02], scale: [1, 1, 0.9] }
+        { position: [0, 0.16, -0.18], scale: [1, 1.05, 0.55] }
+    );
+    addMesh(
+        headAnchor,
+        'Cleric_HairCap',
+        geometry('cleric-hair-cap', () => new THREE.SphereGeometry(0.31, 8, 4, 0, Math.PI * 2, 0, Math.PI * 0.62)),
+        materials.hair,
+        { position: [0, 0.19, -0.01], scale: [0.82, 1, 0.82] }
+    );
+    addMesh(
+        headAnchor,
+        'Cleric_HairBun',
+        geometry('cleric-hair-bun', () => new THREE.DodecahedronGeometry(0.21, 0)),
+        materials.hairLight,
+        { position: [0, 0.25, -0.31], scale: [1, 1.08, 0.8] }
     );
     addMesh(
         headAnchor,
         'Cleric_BrowPlate',
-        geometry('cleric-brow-plate', () => new THREE.BoxGeometry(0.58, 0.13, 0.09)),
+        geometry('cleric-brow-plate', () => new THREE.BoxGeometry(0.47, 0.055, 0.045)),
         materials.bronze,
-        { position: [0, 0.28, 0.31] }
+        { position: [0, 0.315, 0.235] }
     );
     const eyes = addMesh(
         headAnchor,
         'Cleric_EyeGlow',
-        geometry('cleric-eye-glow', () => new THREE.BoxGeometry(0.36, 0.04, 0.025)),
+        geometry('cleric-eye', () => new THREE.OctahedronGeometry(0.066, 0)),
         materials.holy,
-        { position: [0, 0.17, 0.32] }
+        { position: [0.098, 0.17, 0.25], scale: [1, 0.35, 0.28], rotation: [0, 0, -0.06] }
     );
     eyes.userData.equipmentBodyBase = true;
+    const rightEye = addMesh(
+        headAnchor,
+        'Cleric_EyeGlowRight',
+        geometry('cleric-eye', () => new THREE.OctahedronGeometry(0.066, 0)),
+        materials.holy,
+        { position: [-0.098, 0.17, 0.25], scale: [1, 0.35, 0.28], rotation: [0, 0, 0.06] }
+    );
+    rightEye.userData.equipmentBodyBase = true;
+    [-1, 1].forEach((side) => {
+        addMesh(
+            headAnchor,
+            side < 0 ? 'Cleric_BrowLeft' : 'Cleric_BrowRight',
+            geometry('cleric-brow', () => new THREE.BoxGeometry(0.108, 0.018, 0.018)),
+            materials.hair,
+            { position: [side * 0.098, 0.225, 0.249], rotation: [0, 0, -side * 0.07] }
+        );
+        const braid = addPivot(
+            headAnchor,
+            side < 0 ? 'Cleric_BraidLeft' : 'Cleric_BraidRight',
+            [side * 0.23, 0.04, -0.035],
+            [0.08, 0, -side * 0.07]
+        );
+        for (let index = 0; index < 4; index++) {
+            addMesh(
+                braid,
+                `${side < 0 ? 'Cleric_BraidLeft' : 'Cleric_BraidRight'}Knot${index}`,
+                geometry('cleric-braid-knot', () => new THREE.OctahedronGeometry(0.085, 0)),
+                index % 2 === 0 ? materials.hairLight : materials.hair,
+                { position: [side * index * 0.018, -index * 0.135, 0], scale: [0.78 - index * 0.07, 1, 0.67] }
+            );
+        }
+        addMesh(
+            braid,
+            side < 0 ? 'Cleric_BraidSealLeft' : 'Cleric_BraidSealRight',
+            geometry('cleric-braid-seal', () => new THREE.OctahedronGeometry(0.055, 0)),
+            materials.gold,
+            { position: [side * 0.055, -0.53, 0], scale: [0.7, 1.05, 0.62] }
+        );
+    });
+    addMesh(
+        headAnchor,
+        'Cleric_Nose',
+        geometry('cleric-nose', () => new THREE.TetrahedronGeometry(0.066, 0)),
+        materials.skin,
+        { position: [0, 0.105, 0.27], rotation: [0.16, Math.PI / 4, 0], scale: [0.52, 1, 0.55] }
+    );
+    addMesh(
+        headAnchor,
+        'Cleric_Lips',
+        geometry('cleric-lips', () => new THREE.BoxGeometry(0.11, 0.023, 0.018)),
+        materials.lips,
+        { position: [0, 0.01, 0.25] }
+    );
     for (let index = 0; index < 5; index++) {
         const angle = -Math.PI * 0.62 + index * Math.PI * 0.31;
         addMesh(
@@ -2064,6 +2226,7 @@ export function createProceduralCleric() {
     root.userData.proceduralHumanoid = true;
     root.userData.proceduralClass = 'Cleric';
     root.userData.artStyle = 'Lanternhold gravepriest';
+    root.userData.genderPresentation = 'female';
     root.userData.sharedGeometry = true;
     root.userData.equipmentAnchors = Object.fromEntries(
         Object.entries(HUMANOID_EQUIPMENT_ANCHORS).map(([slot, names]) => [slot, [...names]])

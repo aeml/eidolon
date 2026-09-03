@@ -143,7 +143,7 @@ describe('shared procedural humanoid Fighter', () => {
 });
 
 describe('shared procedural humanoid Rogue', () => {
-    test('creates a grounded Gloamreach shadeblade with an intentional asymmetric silhouette', () => {
+    test('creates a grounded female Gloamreach shadeblade with an intentional asymmetric silhouette', () => {
         const rogue = createProceduralRogue();
         const bounds = new THREE.Box3().setFromObject(rogue);
         const size = bounds.getSize(new THREE.Vector3());
@@ -152,6 +152,7 @@ describe('shared procedural humanoid Rogue', () => {
             proceduralHumanoid: true,
             proceduralClass: 'Rogue',
             artStyle: 'Gloamreach shadeblade',
+            genderPresentation: 'female',
             sharedGeometry: true
         }));
         expect(rogue.userData.assetFallback).toBeUndefined();
@@ -162,6 +163,15 @@ describe('shared procedural humanoid Rogue', () => {
         expect(size.x).toBeGreaterThan(1.5);
         expect(rogue.getObjectByName('Rogue_ShoulderHookLeft')).not.toBeNull();
         expect(rogue.getObjectByName('Rogue_ShoulderHookRight')).toBeUndefined();
+        expect(rogue.getObjectByName('Rogue_HairCap')).not.toBeNull();
+        expect(rogue.getObjectByName('Rogue_Braid')).not.toBeNull();
+        expect(rogue.getObjectByName('Rogue_EyeGlowRight')).not.toBeNull();
+        expect(rogue.getObjectByName('Rogue_Nose')).not.toBeNull();
+        expect(rogue.getObjectByName('Rogue_Lips')).not.toBeNull();
+        expect(rogue.getObjectByName('Rogue_HipWrap').geometry.parameters.radiusBottom)
+            .toBeGreaterThan(rogue.getObjectByName('Rogue_HipWrap').geometry.parameters.radiusTop);
+        expect(rogue.getObjectByName('Rogue_Jerkin').geometry.parameters.radiusBottom)
+            .toBeLessThan(rogue.getObjectByName('Rogue_Jerkin').geometry.parameters.radiusTop);
         expect(hasOnlyFiniteTransforms(rogue)).toBe(true);
     });
 
@@ -322,7 +332,7 @@ describe('shared procedural humanoid Wizard', () => {
 });
 
 describe('shared procedural humanoid Cleric', () => {
-    test('creates a grounded Lanternhold gravepriest with a reliquary silhouette', () => {
+    test('creates a grounded female Lanternhold gravepriest with a reliquary silhouette', () => {
         const cleric = createProceduralCleric();
         const bounds = new THREE.Box3().setFromObject(cleric);
         const size = bounds.getSize(new THREE.Vector3());
@@ -331,6 +341,7 @@ describe('shared procedural humanoid Cleric', () => {
             proceduralHumanoid: true,
             proceduralClass: 'Cleric',
             artStyle: 'Lanternhold gravepriest',
+            genderPresentation: 'female',
             sharedGeometry: true
         }));
         expect(cleric.userData.assetFallback).toBeUndefined();
@@ -338,10 +349,21 @@ describe('shared procedural humanoid Cleric', () => {
         expect(bounds.min.y).toBeCloseTo(0, 1);
         expect(size.y).toBeGreaterThan(4.4);
         expect(size.y).toBeLessThan(4.7);
-        expect(size.x).toBeGreaterThan(2.4);
+        expect(size.x).toBeGreaterThan(2.3);
+        expect(size.x).toBeLessThan(2.5);
         expect(cleric.getObjectByName('Cleric_Oathmace')).not.toBeNull();
         expect(cleric.getObjectByName('Rig_Censer')).not.toBeNull();
         expect(cleric.getObjectByName('Cleric_BrokenSunRay2')).not.toBeNull();
+        expect(cleric.getObjectByName('Cleric_HairCap')).not.toBeNull();
+        expect(cleric.getObjectByName('Cleric_BraidLeft')).not.toBeNull();
+        expect(cleric.getObjectByName('Cleric_BraidRight')).not.toBeNull();
+        expect(cleric.getObjectByName('Cleric_EyeGlowRight')).not.toBeNull();
+        expect(cleric.getObjectByName('Cleric_Nose')).not.toBeNull();
+        expect(cleric.getObjectByName('Cleric_Lips')).not.toBeNull();
+        expect(cleric.getObjectByName('Cleric_HipVestment').geometry.parameters.radiusBottom)
+            .toBeGreaterThan(cleric.getObjectByName('Cleric_HipVestment').geometry.parameters.radiusTop);
+        expect(cleric.getObjectByName('Cleric_ReliquaryCuirass').geometry.parameters.radiusBottom)
+            .toBeLessThan(cleric.getObjectByName('Cleric_ReliquaryCuirass').geometry.parameters.radiusTop);
         expect(hasOnlyFiniteTransforms(cleric)).toBe(true);
     });
 

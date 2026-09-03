@@ -348,7 +348,7 @@ describe('UIManager asset download settings', () => {
 
         await ui.requestAssetDownload('environment-textures');
 
-        expect(ui.assetLastSyncedVersion.textContent).toContain('2026-09-03-33');
-        expect(localStorage.getItem('eidolon.assetLastSyncedVersion')).toBe('2026-09-03-33');
+        expect(ui.assetLastSyncedVersion.textContent).toContain('2026-09-03-34');
+        expect(localStorage.getItem('eidolon.assetLastSyncedVersion')).toBe('2026-09-03-34');
     });
 });

@@ -1376,6 +1376,8 @@ export class AnimationGallery {
             lastStatePlayback: this.lastStatePlayback ? { ...this.lastStatePlayback } : null,
             proceduralHumanoid: Boolean(this.actor?.mesh?.userData?.proceduralHumanoid),
             proceduralClass: this.actor?.mesh?.userData?.proceduralClass || null,
+            genderPresentation: this.actor?.mesh?.userData?.genderPresentation || null,
+            remoteGenderPresentation: this.remoteActor?.mesh?.userData?.genderPresentation || null,
             proceduralTownActor: Boolean(this.actor?.mesh?.userData?.proceduralTownActor),
             proceduralSummon: Boolean(this.actor?.mesh?.userData?.proceduralSummon),
             proceduralEnemyFamily: Boolean(this.actor?.mesh?.userData?.proceduralEnemyFamily),

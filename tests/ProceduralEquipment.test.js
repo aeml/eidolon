@@ -287,6 +287,8 @@ describe('procedural equipment visual manifest', () => {
         });
         expect(face.visible).toBe(true);
         expect(eyes.visible).toBe(true);
+        expect(root.getObjectByName('Rogue_EyeGlowRight').visible).toBe(true);
+        expect(root.getObjectByName('Rogue_HairCap').visible).toBe(false);
         expect(root.getObjectByName('Rogue_MainhandFang').visible).toBe(false);
         expect(root.getObjectByName('Rogue_OffhandFang').visible).toBe(false);
         expect(finiteTransforms(root)).toBe(true);
@@ -377,6 +379,8 @@ describe('procedural equipment visual manifest', () => {
         });
         expect(face.visible).toBe(true);
         expect(eyes.visible).toBe(true);
+        expect(root.getObjectByName('Cleric_EyeGlowRight').visible).toBe(true);
+        expect(root.getObjectByName('Cleric_HairCap').visible).toBe(false);
         expect(root.getObjectByName('Cleric_Oathmace').visible).toBe(false);
         expect(root.getObjectByName('Rig_Censer').visible).toBe(false);
         expect(finiteTransforms(root)).toBe(true);

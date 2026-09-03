@@ -8,7 +8,7 @@ This is the root roadmap and planning source of truth for the repo. Per-patch hi
 
 ## Current Snapshot
 
-- Current in-game displayed version: `Alpha 0.41.0.33`
+- Current in-game displayed version: `Alpha 0.41.0.34`
 - Active implementation line: `0.41` procedural dark-fantasy art migration (final cutover complete)
 - Release-confidence gate: locked/self-hosted browser dependencies, production SHA/readiness reporting, and real-browser deployment QA gate every release; the final procedural closure ledger is `docs/art/FINAL_PROCEDURAL_CUTOVER_AUDIT.md`
 - Closed for planned implementation work: `0.21` through `0.37`

@@ -137,6 +137,12 @@ test.describe('deterministic production animation gallery', () => {
             let metrics = await galleryMetrics(page);
             expect(metrics.proceduralHumanoid).toBe(true);
             expect(metrics.proceduralClass).toBe(actorType);
+            expect(metrics.genderPresentation).toBe(
+                actorType === 'Rogue' || actorType === 'Cleric' ? 'female' : null
+            );
+            expect(metrics.remoteGenderPresentation).toBe(
+                actorType === 'Rogue' || actorType === 'Cleric' ? 'female' : null
+            );
             expect(metrics.equipmentAnchorCount).toBe(18);
             expect(metrics.actorVisibleMeshes).toBeGreaterThanOrEqual(40);
 

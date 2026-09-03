@@ -6,7 +6,7 @@ Migration baseline: `Alpha 0.40.0.1`
 
 First procedural-art release: `Alpha 0.41.0.0`
 
-Current migration release: `Alpha 0.41.0.33`
+Current migration release: `Alpha 0.41.0.34`
 
 This inventory is the migration ledger for the complete Eidolon dark-fantasy redesign. A category is only marked migrated after its production runtime reference, visual coverage, lifecycle behavior, and representative browser evidence pass. The legacy counts are maximums enforced by `tests/ProceduralArtMigrationGuard.test.js`; they may decrease but cannot increase.
 
@@ -312,3 +312,11 @@ The last compatibility escape hatch now fails closed. Every current actor alread
 The live extended-character route gains a four-realm hazard pilgrimage. An allowlisted QA account can enter only four fixed canonical anchors—one sandstorm, lightning zone, lava pool, and wind gust—while unrelated hostile protection stays active. Each stop verifies the exact position, type, radius, attached visual ownership, a single identity within the client's interest-managed scene, and a real server-authored damage event. The global server and gallery gates separately audit all 65 anchors together. The character then returns to Lanternhold and verifies that damage stops. Arbitrary destinations, normal accounts, dungeon use, expired inspection windows, and reuse of ordinary QA protection all fail closed.
 
 The complete release remains one atomic gate: lint, dependency audit, all client and server suites, race detection, build, anonymous browser smoke, High/Low galleries, disposable character and movement runs, every class/rune matrix, two-client replication, exact-SHA deployment, frontend/backend identity agreement, and live anonymous, quest, menus, movement, combat, loot, hazard, dungeon, persistence, four-class, and multiplayer QA must all pass on the same commit. Combat values, item statistics, the established stat squish, economy, progression, quest state, and player saves remain unchanged by this closure patch.
+
+## Two heroines step from the veil
+
+`Alpha 0.41.0.34` refines the Rogue and Cleric into unmistakably adult female heroes without abandoning Eidolon's faceted dark-fantasy language. The Rogue gains a visible angular face, paired emerald eyes, brows and lips, swept black-violet hair, a bound side braid, deeper hood framing, tapered leather cuirass, narrower shoulders, defined waist, and agile hip line. The Cleric gains warm facial planes, paired sunlit eyes, brows and lips, a braided auburn crown, twin side plaits, rear coif and bun, tapered reliquary plate, narrower shoulders, and a strong processional silhouette.
+
+The redesign remains armor-first rather than exposed or anatomically exaggerated. All 14 rendered positions and 18 attachment regions retain their original names and transforms, equipped headgear hides default hair and crown-adjacent pieces to prevent intersections, and the permanent face and paired eye anchors remain visible. Local and replicated actors use the same factory, cached geometry, materials, equipment fitting, animation clips, pooling reset, bounds, and hitboxes.
+
+Focused structural coverage verifies the female presentation metadata, paired features, hair and braid constructions, tapered torso and hip relationships, finite transforms, cache sharing, pose reset, all equipment families, and headgear clipping policy. The deterministic hardware gallery renders both heroes through Idle, Walk, Run, Attack and Death at High and Low quality. Class statistics, abilities, movement, authoritative bounds, animation timing, equipment data, multiplayer messages, progression and saves are unchanged.
