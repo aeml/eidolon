@@ -3,9 +3,9 @@ package game
 import "fmt"
 
 const (
-	MaxPlayerLevel                = 100
-	DungeonUnlockLevel            = 30
-	EndgameDifficultyUnlockLevel  = MaxPlayerLevel
+	MaxPlayerLevel               = 100
+	DungeonUnlockLevel           = 30
+	EndgameDifficultyUnlockLevel = MaxPlayerLevel
 )
 
 var dungeonRunLevelBands = []int{30, 40, 50, 60, 70, 80, 90, 100}
@@ -92,12 +92,8 @@ func DungeonRunLevelStatMultipliers(runLevel int) (healthMult float64, damageMul
 		return 1.0, 1.0
 	}
 
-	stepsAboveBaseline := float64(runLevel-DungeonUnlockLevel) / 10.0
-	if stepsAboveBaseline < 0 {
-		stepsAboveBaseline = 0
-	}
-
-	healthMult = 1.0 + (stepsAboveBaseline * 0.22)
-	damageMult = 1.0 + (stepsAboveBaseline * 0.12)
-	return healthMult, damageMult
+	baseline := balancedEnemyBaseStats(DungeonUnlockLevel)
+	target := balancedEnemyBaseStats(runLevel)
+	return float64(target.Vitality) / float64(baseline.Vitality),
+		float64(target.Strength) / float64(baseline.Strength)
 }

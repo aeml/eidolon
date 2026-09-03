@@ -285,7 +285,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.41.0.34</span>
+                <span class="start-version-row__label">Alpha 0.41.0.35</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -470,7 +470,7 @@
                                 </div>
                                 <div id="asset-pack-core-status" class="asset-cache-pack__status">Procedural core built in</div>
                                 <div id="asset-pack-core-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-34</div>
+                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-35</div>
                             </div>
                             <button id="btn-download-core-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -482,7 +482,7 @@
                                 </div>
                                 <div id="asset-pack-dungeon-status" class="asset-cache-pack__status">Procedural dungeon entrances built in</div>
                                 <div id="asset-pack-dungeon-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-34</div>
+                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-35</div>
                             </div>
                             <button id="btn-download-dungeon-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -494,7 +494,7 @@
                                 </div>
                                 <div id="asset-pack-environment-status" class="asset-cache-pack__status">Procedural realm terrain built in</div>
                                 <div id="asset-pack-environment-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-environment-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-34</div>
+                                <div id="asset-pack-environment-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-35</div>
                             </div>
                             <button id="btn-download-environment-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -587,6 +587,20 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.41.0.35">
+                    <h3 class="patch-note-entry__title">Patch 0.41.0.35 (the grave learns the weight of steel)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>The first bones remain the measure:</strong> level 1–10 Skeleton health, damage, and swing timing are unchanged and now anchor the complete enemy progression curve.</li>
+                        <li><strong>Higher realms answer post-squish heroes:</strong> every Imp, Demon Orc, Construct, Inferno Titan, Moonfrost creature, Cinder Wastes foe, and Stormcrown enemy now grows from one level-based health and damage budget instead of disconnected pre-squish stat blocks.</li>
+                        <li><strong>Gear quality changes the shape of a fight:</strong> same-level mixed uncommon/rare equipment lands in a steady middle encounter band, low or missing gear creates meaningful pressure, and full legendary, upgraded, potency-enhanced equipment makes ordinary same-level enemies decisively easy.</li>
+                        <li><strong>Creature identity survives the squish:</strong> glass cannons, bruisers, tanks, and swift attackers retain bounded family-specific health, damage, and movement differences without breaking the shared progression curve.</li>
+                        <li><strong>Dungeons no longer demand obsolete numbers:</strong> normal packs, elite rooms, sequential bosses, run levels, and Normal/Heroic/Mythic difficulty now compose from the same post-squish foundation; the old million-Vitality and accidental extra ×10 boss assumptions are gone.</li>
+                        <li><strong>Elite danger and elite rewards agree:</strong> Fire, Air, Verdant, and Abyssal elite-room spawns now carry explicit elite identity alongside their intended combat multiplier, allowing the existing elite loot path to recognize all of them.</li>
+                        <li><strong>Slows cannot heal the enemy:</strong> applying or expiring temporary movement effects no longer adds player-only level health, replaces authored hostile speed, or enables enemy regeneration during combat.</li>
+                        <li><strong>The curve is guarded end to end:</strong> server regression coverage checks every overworld family against low, medium, and optimized gear envelopes, preserves the exact Skeleton anchor, and verifies elite, dungeon, boss, run-level, difficulty, and debuff transitions.</li>
+                        <li><strong>Clients receive the new balance ledger:</strong> the built-in asset generation advances to 2026-09-03-35.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.41.0.34">
                     <h3 class="patch-note-entry__title">Patch 0.41.0.34 (two heroines step from the veil)</h3>
                     <ul class="patch-note-entry__list">

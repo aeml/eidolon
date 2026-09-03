@@ -18,8 +18,19 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.41.0.34 for the two heroine redesigns', () => {
-        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 0.41.0.34</span>');
+    test('advances the login screen to alpha 0.41.0.35 for the post-squish enemy rebalance', () => {
+        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 0.41.0.35</span>');
+        expect(indexHtml).toContain('Patch 0.41.0.35');
+        expect(indexHtml).toContain('the grave learns the weight of steel');
+        expect(indexHtml).toContain('The first bones remain the measure');
+        expect(indexHtml).toContain('Higher realms answer post-squish heroes');
+        expect(indexHtml).toContain('Gear quality changes the shape of a fight');
+        expect(indexHtml).toContain('Dungeons no longer demand obsolete numbers');
+        expect(indexHtml).toContain('Slows cannot heal the enemy');
+        expect(indexHtml).toContain('2026-09-03-35');
+    });
+
+    test('retains alpha 0.41.0.34 heroine redesign history', () => {
         expect(indexHtml).toContain('Patch 0.41.0.34');
         expect(indexHtml).toContain('two heroines step from the veil');
         expect(indexHtml).toContain('The shadeblade shows her face');
@@ -377,7 +388,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 0.41.0.34';
+        const expectedVersion = 'Alpha 0.41.0.35';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -394,9 +405,10 @@ describe('version presentation', () => {
         expect(finalCutoverAudit).toContain('Unknown actor types and malformed procedural shapes fail closed');
         expect(finalCutoverAudit).toContain('Frontend manifest, frontend runtime query, and backend health identity agreement');
         expect(finalCutoverAudit).toContain('Live anonymous, persistent-character, quest, menus, movement, combat/loot, four-realm hazard pilgrimage');
-        expect(migrationInventory).toContain('Current migration release: `Alpha 0.41.0.34`');
+        expect(migrationInventory).toContain('Current migration release: `Alpha 0.41.0.35`');
         expect(migrationInventory).toContain('## The last lantern knows every road');
         expect(migrationInventory).toContain('## Two heroines step from the veil');
+        expect(migrationInventory).toContain('## The grave learns the weight of steel');
     });
 
     test('retains the 0.40.0 entity extraction entry in patch history', () => {
@@ -495,8 +507,8 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Added client coverage for remote interpolation frame-spike handling and the 0.35.0 release state');
     });
 
-    test('marks 0.41.0.34 current and points the active line at 0.41', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.34`');
+    test('marks 0.41.0.35 current and points the active line at 0.41', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.35`');
         expect(alphaRoadmap).toContain('Active implementation line: `0.41`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');

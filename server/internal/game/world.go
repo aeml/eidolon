@@ -2318,19 +2318,8 @@ func (w *World) spawnSnowWorld() {
 	for i := 0; i < count; i++ {
 		x := minX + rand.Float64()*(maxX-minX)
 		z := minZ + rand.Float64()*(maxZ-minZ)
-
-		baseStats := Stats{Strength: 3500, Intelligence: 500, Dexterity: 800, Wisdom: 500, Vitality: 3500}
-		maxHealth := baseStats.Vitality * 10
-		damage := baseStats.Strength * 2
-
-		// Attack Speed
-		speedMult := 1.0 + (float64(baseStats.Dexterity) * 0.02)
-		cooldown := 5.0 / speedMult
-		if cooldown < 1.0 {
-			cooldown = 1.0
-		}
-		attackSpeed := cooldown
-		attackCooldown := time.Duration(cooldown * float64(time.Second))
+		level := 50 + rand.Intn(6)
+		profile := overworldEnemyCombatProfile("MountainTroll", level, false)
 
 		troll := &Entity{
 			ID:             fmt.Sprintf("MountainTroll-%d", i),
@@ -2341,15 +2330,16 @@ func (w *World) spawnSnowWorld() {
 			Z:              z,
 			SpawnX:         x,
 			SpawnZ:         z,
-			BaseStats:      baseStats,
-			Health:         maxHealth,
-			MaxHealth:      maxHealth,
-			Damage:         damage,
-			Level:          50 + rand.Intn(6),
-			Speed:          5.0,
+			BaseStats:      profile.BaseStats,
+			Health:         profile.Health,
+			MaxHealth:      profile.MaxHealth,
+			Damage:         profile.Damage,
+			Level:          level,
+			BaseSpeed:      profile.Speed,
+			Speed:          profile.Speed,
 			State:          "IDLE",
-			AttackSpeed:    attackSpeed,
-			AttackCooldown: attackCooldown,
+			AttackSpeed:    profile.AttackSpeed,
+			AttackCooldown: profile.AttackCooldown,
 			Scale:          1.0,
 		}
 		w.AddEntity(troll)
@@ -2366,19 +2356,8 @@ func (w *World) spawnSnowWorld() {
 	for i := 0; i < agCount; i++ {
 		x := minX + rand.Float64()*(maxX-minX)
 		z := agMinZ + rand.Float64()*(agMaxZ-agMinZ)
-
-		baseStats := Stats{Strength: 4500, Intelligence: 1000, Dexterity: 500, Wisdom: 1000, Vitality: 5000}
-		maxHealth := baseStats.Vitality * 10
-		damage := baseStats.Strength * 2
-
-		// Attack Speed
-		speedMult := 1.0 + (float64(baseStats.Dexterity) * 0.02)
-		cooldown := 5.0 / speedMult
-		if cooldown < 1.0 {
-			cooldown = 1.0
-		}
-		attackSpeed := cooldown
-		attackCooldown := time.Duration(cooldown * float64(time.Second))
+		level := 55 + rand.Intn(6)
+		profile := overworldEnemyCombatProfile("AquaGolem", level, false)
 
 		golem := &Entity{
 			ID:             fmt.Sprintf("AquaGolem-%d", i),
@@ -2389,15 +2368,16 @@ func (w *World) spawnSnowWorld() {
 			Z:              z,
 			SpawnX:         x,
 			SpawnZ:         z,
-			BaseStats:      baseStats,
-			Health:         maxHealth,
-			MaxHealth:      maxHealth,
-			Damage:         damage,
-			Level:          55 + rand.Intn(6),
-			Speed:          4.0,
+			BaseStats:      profile.BaseStats,
+			Health:         profile.Health,
+			MaxHealth:      profile.MaxHealth,
+			Damage:         profile.Damage,
+			Level:          level,
+			BaseSpeed:      profile.Speed,
+			Speed:          profile.Speed,
 			State:          "IDLE",
-			AttackSpeed:    attackSpeed,
-			AttackCooldown: attackCooldown,
+			AttackSpeed:    profile.AttackSpeed,
+			AttackCooldown: profile.AttackCooldown,
 			Scale:          1.0,
 		}
 		w.AddEntity(golem)
@@ -2414,19 +2394,8 @@ func (w *World) spawnSnowWorld() {
 	for i := 0; i < sirenCount; i++ {
 		x := minX + rand.Float64()*(maxX-minX)
 		z := sirenMinZ + rand.Float64()*(sirenMaxZ-sirenMinZ)
-
-		baseStats := Stats{Strength: 4000, Intelligence: 2000, Dexterity: 1000, Wisdom: 2000, Vitality: 4000}
-		maxHealth := baseStats.Vitality * 10
-		damage := baseStats.Strength * 2
-
-		// Attack Speed
-		speedMult := 1.0 + (float64(baseStats.Dexterity) * 0.02)
-		cooldown := 5.0 / speedMult
-		if cooldown < 1.0 {
-			cooldown = 1.0
-		}
-		attackSpeed := cooldown
-		attackCooldown := time.Duration(cooldown * float64(time.Second))
+		level := 60 + rand.Intn(6)
+		profile := overworldEnemyCombatProfile("Siren", level, false)
 
 		siren := &Entity{
 			ID:             fmt.Sprintf("Siren-%d", i),
@@ -2437,15 +2406,16 @@ func (w *World) spawnSnowWorld() {
 			Z:              z,
 			SpawnX:         x,
 			SpawnZ:         z,
-			BaseStats:      baseStats,
-			Health:         maxHealth,
-			MaxHealth:      maxHealth,
-			Damage:         damage,
-			Level:          60 + rand.Intn(6),
-			Speed:          5.4,
+			BaseStats:      profile.BaseStats,
+			Health:         profile.Health,
+			MaxHealth:      profile.MaxHealth,
+			Damage:         profile.Damage,
+			Level:          level,
+			BaseSpeed:      profile.Speed,
+			Speed:          profile.Speed,
 			State:          "IDLE",
-			AttackSpeed:    attackSpeed,
-			AttackCooldown: attackCooldown,
+			AttackSpeed:    profile.AttackSpeed,
+			AttackCooldown: profile.AttackCooldown,
 			Scale:          1.0,
 		}
 		w.AddEntity(siren)
@@ -2462,19 +2432,8 @@ func (w *World) spawnSnowWorld() {
 	for i := 0; i < fgCount; i++ {
 		x := minX + rand.Float64()*(maxX-minX)
 		z := fgMinZ + rand.Float64()*(fgMaxZ-fgMinZ)
-
-		baseStats := Stats{Strength: 5000, Intelligence: 1000, Dexterity: 800, Wisdom: 1000, Vitality: 6000}
-		maxHealth := baseStats.Vitality * 10
-		damage := baseStats.Strength * 2
-
-		// Attack Speed
-		speedMult := 1.0 + (float64(baseStats.Dexterity) * 0.02)
-		cooldown := 5.0 / speedMult
-		if cooldown < 1.0 {
-			cooldown = 1.0
-		}
-		attackSpeed := cooldown
-		attackCooldown := time.Duration(cooldown * float64(time.Second))
+		level := 65 + rand.Intn(6)
+		profile := overworldEnemyCombatProfile("FrostGuardian", level, false)
 
 		fg := &Entity{
 			ID:             fmt.Sprintf("FrostGuardian-%d", i),
@@ -2485,15 +2444,16 @@ func (w *World) spawnSnowWorld() {
 			Z:              z,
 			SpawnX:         x,
 			SpawnZ:         z,
-			BaseStats:      baseStats,
-			Health:         maxHealth,
-			MaxHealth:      maxHealth,
-			Damage:         damage,
-			Level:          65 + rand.Intn(6),
-			Speed:          4.5, // Slower but tankier
+			BaseStats:      profile.BaseStats,
+			Health:         profile.Health,
+			MaxHealth:      profile.MaxHealth,
+			Damage:         profile.Damage,
+			Level:          level,
+			BaseSpeed:      profile.Speed,
+			Speed:          profile.Speed,
 			State:          "IDLE",
-			AttackSpeed:    attackSpeed,
-			AttackCooldown: attackCooldown,
+			AttackSpeed:    profile.AttackSpeed,
+			AttackCooldown: profile.AttackCooldown,
 			Scale:          1.0,
 		}
 		w.AddEntity(fg)
@@ -2516,19 +2476,12 @@ func (w *World) spawnFireRealm() {
 	count := 200 // Per area
 
 	// Helper to spawn enemies in a Fire Realm area
-	spawnFireArea := func(subType string, minX, maxX float64, baseLevel int, stats Stats) {
+	spawnFireArea := func(subType string, minX, maxX float64, baseLevel int) {
 		for i := 0; i < count; i++ {
 			x := minX + rand.Float64()*(maxX-minX)
 			z := minZ + rand.Float64()*(maxZ-minZ)
-
-			maxHealth := stats.Vitality * 10
-			damage := stats.Strength * 2
-
-			speedMult := 1.0 + (float64(stats.Dexterity) * 0.02)
-			cooldown := 5.0 / speedMult
-			if cooldown < 1.0 {
-				cooldown = 1.0
-			}
+			level := baseLevel + rand.Intn(6)
+			profile := overworldEnemyCombatProfile(subType, level, false)
 
 			enemy := &Entity{
 				ID:             fmt.Sprintf("%s-%d", subType, i),
@@ -2539,15 +2492,16 @@ func (w *World) spawnFireRealm() {
 				Z:              z,
 				SpawnX:         x,
 				SpawnZ:         z,
-				BaseStats:      stats,
-				Health:         maxHealth,
-				MaxHealth:      maxHealth,
-				Damage:         damage,
-				Level:          baseLevel + rand.Intn(6),
-				Speed:          5.0,
+				BaseStats:      profile.BaseStats,
+				Health:         profile.Health,
+				MaxHealth:      profile.MaxHealth,
+				Damage:         profile.Damage,
+				Level:          level,
+				BaseSpeed:      profile.Speed,
+				Speed:          profile.Speed,
 				State:          "IDLE",
-				AttackSpeed:    cooldown,
-				AttackCooldown: time.Duration(cooldown * float64(time.Second)),
+				AttackSpeed:    profile.AttackSpeed,
+				AttackCooldown: profile.AttackCooldown,
 				Scale:          1.0,
 			}
 			w.AddEntity(enemy)
@@ -2555,24 +2509,19 @@ func (w *World) spawnFireRealm() {
 	}
 
 	// Area 1: Sandstorm Djinn (Lv 70-75) - AoE slow
-	spawnFireArea("SandstormDjinn", -1400.0+5.0, -1000.0-5.0, 70,
-		Stats{Strength: 4000, Intelligence: 1200, Dexterity: 1000, Wisdom: 1200, Vitality: 4500})
+	spawnFireArea("SandstormDjinn", -1400.0+5.0, -1000.0-5.0, 70)
 
 	// Area 2: Magma Golem (Lv 75-80) - Ground DoT zone
-	spawnFireArea("MagmaGolem", -1800.0+5.0, -1400.0-5.0, 75,
-		Stats{Strength: 5000, Intelligence: 500, Dexterity: 400, Wisdom: 500, Vitality: 6000})
+	spawnFireArea("MagmaGolem", -1800.0+5.0, -1400.0-5.0, 75)
 
 	// Area 3: Scorched Wraith (Lv 80-85) - Phase shift invulnerable
-	spawnFireArea("ScorchedWraith", -2200.0+5.0, -1800.0-5.0, 80,
-		Stats{Strength: 4500, Intelligence: 2000, Dexterity: 1500, Wisdom: 2000, Vitality: 4500})
+	spawnFireArea("ScorchedWraith", -2200.0+5.0, -1800.0-5.0, 80)
 
 	// Area 4: Infernal Behemoth (Lv 85-90) - AoE stun
-	spawnFireArea("InfernalBehemoth", -2600.0+5.0, -2200.0-5.0, 85,
-		Stats{Strength: 6000, Intelligence: 1000, Dexterity: 600, Wisdom: 1000, Vitality: 7000})
+	spawnFireArea("InfernalBehemoth", -2600.0+5.0, -2200.0-5.0, 85)
 
 	// Area 5: Phoenix Sentinel (Lv 90-95) - Rebirth (heals 50% HP once)
-	spawnFireArea("PhoenixSentinel", -3000.0+5.0, -2600.0-5.0, 90,
-		Stats{Strength: 5500, Intelligence: 2500, Dexterity: 1200, Wisdom: 2500, Vitality: 5500})
+	spawnFireArea("PhoenixSentinel", -3000.0+5.0, -2600.0-5.0, 90)
 }
 
 // spawnAirRealm spawns enemies in the Air Realm (East Zone - Skyward Peaks)
@@ -2591,19 +2540,12 @@ func (w *World) spawnAirRealm() {
 	count := 200 // Per area
 
 	// Helper to spawn enemies in an Air Realm area
-	spawnAirArea := func(subType string, minX, maxX float64, baseLevel int, stats Stats) {
+	spawnAirArea := func(subType string, minX, maxX float64, baseLevel int) {
 		for i := 0; i < count; i++ {
 			x := minX + rand.Float64()*(maxX-minX)
 			z := minZ + rand.Float64()*(maxZ-minZ)
-
-			maxHealth := stats.Vitality * 10
-			damage := stats.Strength * 2
-
-			speedMult := 1.0 + (float64(stats.Dexterity) * 0.02)
-			cooldown := 5.0 / speedMult
-			if cooldown < 1.0 {
-				cooldown = 1.0
-			}
+			level := baseLevel + rand.Intn(6)
+			profile := overworldEnemyCombatProfile(subType, level, false)
 
 			enemy := &Entity{
 				ID:             fmt.Sprintf("%s-%d", subType, i),
@@ -2614,15 +2556,16 @@ func (w *World) spawnAirRealm() {
 				Z:              z,
 				SpawnX:         x,
 				SpawnZ:         z,
-				BaseStats:      stats,
-				Health:         maxHealth,
-				MaxHealth:      maxHealth,
-				Damage:         damage,
-				Level:          baseLevel + rand.Intn(6),
-				Speed:          5.5,
+				BaseStats:      profile.BaseStats,
+				Health:         profile.Health,
+				MaxHealth:      profile.MaxHealth,
+				Damage:         profile.Damage,
+				Level:          level,
+				BaseSpeed:      profile.Speed,
+				Speed:          profile.Speed,
 				State:          "IDLE",
-				AttackSpeed:    cooldown,
-				AttackCooldown: time.Duration(cooldown * float64(time.Second)),
+				AttackSpeed:    profile.AttackSpeed,
+				AttackCooldown: profile.AttackCooldown,
 				Scale:          1.0,
 			}
 			w.AddEntity(enemy)
@@ -2630,24 +2573,19 @@ func (w *World) spawnAirRealm() {
 	}
 
 	// Area 1: Storm Harpy (Lv 70-75) - Knockback
-	spawnAirArea("StormHarpy", 1000.0+5.0, 1400.0-5.0, 70,
-		Stats{Strength: 3800, Intelligence: 1000, Dexterity: 1500, Wisdom: 1000, Vitality: 4200})
+	spawnAirArea("StormHarpy", 1000.0+5.0, 1400.0-5.0, 70)
 
 	// Area 2: Cloud Elemental (Lv 75-80) - Mist form (50% miss chance)
-	spawnAirArea("CloudElemental", 1400.0+5.0, 1800.0-5.0, 75,
-		Stats{Strength: 4200, Intelligence: 1500, Dexterity: 800, Wisdom: 1500, Vitality: 5500})
+	spawnAirArea("CloudElemental", 1400.0+5.0, 1800.0-5.0, 75)
 
 	// Area 3: Thunder Roc (Lv 80-85) - Chain lightning
-	spawnAirArea("ThunderRoc", 1800.0+5.0, 2200.0-5.0, 80,
-		Stats{Strength: 5000, Intelligence: 1800, Dexterity: 1200, Wisdom: 1800, Vitality: 5000})
+	spawnAirArea("ThunderRoc", 1800.0+5.0, 2200.0-5.0, 80)
 
 	// Area 4: Tempest Giant (Lv 85-90) - Tornado pull
-	spawnAirArea("TempestGiant", 2200.0+5.0, 2600.0-5.0, 85,
-		Stats{Strength: 5800, Intelligence: 1200, Dexterity: 700, Wisdom: 1200, Vitality: 6500})
+	spawnAirArea("TempestGiant", 2200.0+5.0, 2600.0-5.0, 85)
 
 	// Area 5: Cyclone Avatar (Lv 90-95) - Eye of storm safe zone
-	spawnAirArea("CycloneAvatar", 2600.0+5.0, 3000.0-5.0, 90,
-		Stats{Strength: 5200, Intelligence: 2200, Dexterity: 1400, Wisdom: 2200, Vitality: 5800})
+	spawnAirArea("CycloneAvatar", 2600.0+5.0, 3000.0-5.0, 90)
 }
 
 // spawnEnvironmentalHazards creates hazard zones in each realm
@@ -2897,61 +2835,7 @@ func (w *World) spawnEliteInRect(level int, minX, maxX, minZ, maxZ float64) {
 		}
 	}
 
-	// Base stats multiplier for Elite
-	mult := 1.5
-
-	// Base stats for the type (simplified lookup)
-	var baseStats Stats
-	switch subType {
-	case "Skeleton":
-		baseStats = Stats{Strength: 15, Intelligence: 6, Dexterity: 9, Wisdom: 6, Vitality: 15}
-	case "Imp":
-		baseStats = Stats{Strength: 600, Intelligence: 200, Dexterity: 300, Wisdom: 200, Vitality: 600}
-	case "DemonOrc":
-		baseStats = Stats{Strength: 1250, Intelligence: 400, Dexterity: 500, Wisdom: 400, Vitality: 1250}
-	case "Construct":
-		baseStats = Stats{Strength: 2000, Intelligence: 750, Dexterity: 250, Wisdom: 750, Vitality: 2000}
-	case "InfernoTitan":
-		baseStats = Stats{Strength: 3000, Intelligence: 1000, Dexterity: 400, Wisdom: 1000, Vitality: 3000}
-	case "Siren":
-		baseStats = Stats{Strength: 4000, Intelligence: 2000, Dexterity: 1000, Wisdom: 2000, Vitality: 4000}
-	case "FrostGuardian":
-		baseStats = Stats{Strength: 5000, Intelligence: 1000, Dexterity: 800, Wisdom: 1000, Vitality: 6500}
-	// Fire Realm enemies
-	case "SandstormDjinn":
-		baseStats = Stats{Strength: 4000, Intelligence: 1200, Dexterity: 1000, Wisdom: 1200, Vitality: 4500}
-	case "MagmaGolem":
-		baseStats = Stats{Strength: 5000, Intelligence: 500, Dexterity: 400, Wisdom: 500, Vitality: 6000}
-	case "ScorchedWraith":
-		baseStats = Stats{Strength: 4500, Intelligence: 2000, Dexterity: 1500, Wisdom: 2000, Vitality: 4500}
-	case "InfernalBehemoth":
-		baseStats = Stats{Strength: 6000, Intelligence: 1000, Dexterity: 600, Wisdom: 1000, Vitality: 7000}
-	case "PhoenixSentinel":
-		baseStats = Stats{Strength: 5500, Intelligence: 2500, Dexterity: 1200, Wisdom: 2500, Vitality: 5500}
-	// Air Realm enemies
-	case "StormHarpy":
-		baseStats = Stats{Strength: 3800, Intelligence: 1000, Dexterity: 1500, Wisdom: 1000, Vitality: 4200}
-	case "CloudElemental":
-		baseStats = Stats{Strength: 4200, Intelligence: 1500, Dexterity: 800, Wisdom: 1500, Vitality: 5500}
-	case "ThunderRoc":
-		baseStats = Stats{Strength: 5000, Intelligence: 1800, Dexterity: 1200, Wisdom: 1800, Vitality: 5000}
-	case "TempestGiant":
-		baseStats = Stats{Strength: 5800, Intelligence: 1200, Dexterity: 700, Wisdom: 1200, Vitality: 6500}
-	case "CycloneAvatar":
-		baseStats = Stats{Strength: 5200, Intelligence: 2200, Dexterity: 1400, Wisdom: 2200, Vitality: 5800}
-	}
-
-	maxHealth := int(float64(baseStats.Vitality*10) * mult)
-	damage := int(float64(baseStats.Strength*2) * mult)
-
-	// Attack Speed (Seconds Per Attack)
-	speedMult := 1.0 + (float64(baseStats.Dexterity) * 0.02)
-	cooldown := 5.0 / speedMult
-	if cooldown < 1.0 {
-		cooldown = 1.0
-	}
-	attackSpeed := cooldown
-	attackCooldown := time.Duration(cooldown * float64(time.Second))
+	profile := overworldEnemyCombatProfile(subType, level, true)
 
 	elite := &Entity{
 		ID:             fmt.Sprintf("elite-%s-%d", subType, time.Now().UnixNano()),
@@ -2962,15 +2846,16 @@ func (w *World) spawnEliteInRect(level int, minX, maxX, minZ, maxZ float64) {
 		Z:              z,
 		SpawnX:         x,
 		SpawnZ:         z,
-		BaseStats:      baseStats,
-		Health:         maxHealth,
-		MaxHealth:      maxHealth,
-		Damage:         damage,
+		BaseStats:      profile.BaseStats,
+		Health:         profile.Health,
+		MaxHealth:      profile.MaxHealth,
+		Damage:         profile.Damage,
 		Level:          level,
-		Speed:          5.4,
+		BaseSpeed:      profile.Speed,
+		Speed:          profile.Speed,
 		State:          "IDLE",
-		AttackSpeed:    attackSpeed,
-		AttackCooldown: attackCooldown,
+		AttackSpeed:    profile.AttackSpeed,
+		AttackCooldown: profile.AttackCooldown,
 		Scale:          1.0,
 	}
 	w.Entities[elite.ID] = elite
@@ -3101,23 +2986,23 @@ func (w *World) spawnEnemies() {
 
 	// Sector 3 (Center): Lv 1-10 (Skeleton)
 	// X: -200 to 200
-	w.spawnEnemyRect("Skeleton", 300, -200, 200, -600, 1000, 10, Stats{Strength: 15, Intelligence: 6, Dexterity: 9, Wisdom: 6, Vitality: 15})
+	w.spawnEnemyRect("Skeleton", 300, -200, 200, -600, 1000, 10)
 
 	// Sector 2 (Left): Lv 10-20 (Imp)
 	// X: -600 to -200
-	w.spawnEnemyRect("Imp", 300, -600, -200, -600, 1000, 20, Stats{Strength: 600, Intelligence: 200, Dexterity: 300, Wisdom: 200, Vitality: 600})
+	w.spawnEnemyRect("Imp", 300, -600, -200, -600, 1000, 20)
 
 	// Sector 4 (Right): Lv 20-30 (DemonOrc)
 	// X: 200 to 600
-	w.spawnEnemyRect("DemonOrc", 300, 200, 600, -600, 1000, 30, Stats{Strength: 1250, Intelligence: 400, Dexterity: 500, Wisdom: 400, Vitality: 1250})
+	w.spawnEnemyRect("DemonOrc", 300, 200, 600, -600, 1000, 30)
 
 	// Sector 1 (Far Left): Lv 30-40 (Construct)
 	// X: -1000 to -600
-	w.spawnEnemyRect("Construct", 300, -1000, -600, -600, 1000, 40, Stats{Strength: 2000, Intelligence: 750, Dexterity: 250, Wisdom: 750, Vitality: 2000})
+	w.spawnEnemyRect("Construct", 300, -1000, -600, -600, 1000, 40)
 
 	// Sector 5 (Far Right): Lv 40-50 (InfernoTitan)
 	// X: 600 to 1000
-	w.spawnEnemyRect("InfernoTitan", 300, 600, 1000, -600, 1000, 50, Stats{Strength: 3000, Intelligence: 1000, Dexterity: 400, Wisdom: 1000, Vitality: 3000})
+	w.spawnEnemyRect("InfernoTitan", 300, 600, 1000, -600, 1000, 50)
 }
 
 type deferredActions struct {
@@ -3138,7 +3023,7 @@ func (d *deferredActions) addAddition(e *Entity) {
 	d.additions = append(d.additions, e)
 }
 
-func (w *World) spawnEnemyRect(subType string, count int, minX, maxX, minZ, maxZ float64, level int, baseStats Stats) {
+func (w *World) spawnEnemyRect(subType string, count int, minX, maxX, minZ, maxZ float64, level int) {
 	for i := 0; i < count; i++ {
 		x := minX + rand.Float64()*(maxX-minX)
 		z := minZ + rand.Float64()*(maxZ-minZ)
@@ -3149,24 +3034,7 @@ func (w *World) spawnEnemyRect(subType string, count int, minX, maxX, minZ, maxZ
 			continue // Skip spawn inside town
 		}
 
-		// Calculate derived stats
-		maxHealth := baseStats.Vitality * 10
-		maxMana := baseStats.Intelligence * 10
-		damage := baseStats.Strength * 2
-
-		// Player Base Speed (0 Dex) = 3.0 * 1.2 = 3.6
-		// Enemy Speed = 150% of Player Base Speed = 5.4
-		speed := 5.4
-
-		// Attack Speed (Seconds Per Attack)
-		// Base 5.0s, scales down with Dex, min 1.0s
-		speedMult := 1.0 + (float64(baseStats.Dexterity) * 0.02)
-		cooldown := 5.0 / speedMult
-		if cooldown < 1.0 {
-			cooldown = 1.0
-		}
-		attackSpeed := cooldown
-		attackCooldown := time.Duration(cooldown * float64(time.Second))
+		profile := overworldEnemyCombatProfile(subType, level, false)
 
 		enemy := &Entity{
 			ID:             fmt.Sprintf("%s-%d", subType, i),
@@ -3177,17 +3045,18 @@ func (w *World) spawnEnemyRect(subType string, count int, minX, maxX, minZ, maxZ
 			Z:              z,
 			SpawnX:         x,
 			SpawnZ:         z,
-			BaseStats:      baseStats,
-			Health:         maxHealth,
-			MaxHealth:      maxHealth,
-			Mana:           maxMana,
-			MaxMana:        maxMana,
-			Damage:         damage,
+			BaseStats:      profile.BaseStats,
+			Health:         profile.Health,
+			MaxHealth:      profile.MaxHealth,
+			Mana:           profile.Mana,
+			MaxMana:        profile.MaxMana,
+			Damage:         profile.Damage,
 			Level:          level,
-			Speed:          speed,
+			BaseSpeed:      profile.Speed,
+			Speed:          profile.Speed,
 			State:          "IDLE",
-			AttackSpeed:    attackSpeed,
-			AttackCooldown: attackCooldown,
+			AttackSpeed:    profile.AttackSpeed,
+			AttackCooldown: profile.AttackCooldown,
 			Scale:          1.0,
 		}
 		w.AddEntity(enemy)
@@ -8027,6 +7896,7 @@ func (w *World) GetState() map[string]*Entity {
 			Stats:             v.Stats,
 			Damage:            v.Damage,
 			Defense:           v.Defense,
+			BaseSpeed:         v.BaseSpeed,
 			Speed:             v.Speed,
 			AttackSpeed:       v.AttackSpeed,
 			CooldownReduction: v.CooldownReduction,
@@ -8692,16 +8562,9 @@ func (w *World) generateVerdantBastionLayout(instanceID string, difficulty Dunge
 	// Start Room
 	appendDungeonRoom(&layout, DungeonRoom{X: offsetX, Z: offsetZ, Width: 120, Height: 120, Type: "start", Color: 0x444444})
 
-	// Boss Milestones
-	bosses := []struct {
-		Name  string
-		Stats Stats
-	}{
-		{"RootboundWarden", Stats{Strength: 2000, Vitality: 1250000, Dexterity: 150}},
-		{"BriarMatron", Stats{Strength: 2500, Vitality: 1350000, Dexterity: 200}},
-		{"RustboundColossus", Stats{Strength: 3000, Vitality: 1500000, Dexterity: 250}},
-		{"HollowSentinel", Stats{Strength: 3500, Vitality: 1750000, Dexterity: 300}},
-	}
+	// Boss milestones use the shared run-level curve plus the per-boss depth
+	// modifiers in enemy_balance.go.
+	bosses := []string{"RootboundWarden", "BriarMatron", "RustboundColossus", "HollowSentinel"}
 
 	currentX := offsetX
 	currentZ := offsetZ
@@ -8771,7 +8634,7 @@ func (w *World) generateVerdantBastionLayout(instanceID string, difficulty Dunge
 			X: currentX, Z: currentZ, Width: 120, Height: 120, Type: "boss", Color: 0x222222,
 		}, canonicalDungeonCorridorWidth)
 
-		w.spawnBossInInstance(boss.Name, currentX, currentZ, instanceID, boss.Stats, difficulty)
+		w.spawnBossInInstance(boss, currentX, currentZ, instanceID, difficulty)
 	}
 
 	return layout
@@ -8793,21 +8656,7 @@ func (w *World) generateMoltenCoreLayout(instanceID string, difficulty DungeonDi
 	appendDungeonRoom(&layout, DungeonRoom{X: offsetX, Z: offsetZ, Width: 140, Height: 140, Type: "start", Color: 0x8B0000})
 
 	// Molten Core Bosses (5 bosses)
-	bosses := []struct {
-		Name  string
-		Stats Stats
-	}{
-		// Boss 1: Cindermaw (Fire Elemental) - Normal: 3,000,000 HP
-		{"Cindermaw", Stats{Strength: 4000, Vitality: 3000000, Dexterity: 200}},
-		// Boss 2: ScorchedTwins (Duo Fight) - Actually one entity, but represents duo
-		{"ScorchedTwins", Stats{Strength: 3500, Vitality: 4000000, Dexterity: 250}},
-		// Boss 3: ForgemasterPyrax - Normal: 4,000,000 HP
-		{"ForgemasterPyrax", Stats{Strength: 4500, Vitality: 4000000, Dexterity: 220}},
-		// Boss 4: ObsidianGuardian - Normal: 5,000,000 HP
-		{"ObsidianGuardian", Stats{Strength: 5000, Vitality: 5000000, Dexterity: 180}},
-		// Boss 5: LordInfernax (Final Boss) - Normal: 8,000,000 HP
-		{"LordInfernax", Stats{Strength: 6000, Vitality: 8000000, Dexterity: 300}},
-	}
+	bosses := []string{"Cindermaw", "ScorchedTwins", "ForgemasterPyrax", "ObsidianGuardian", "LordInfernax"}
 
 	currentX := offsetX
 	currentZ := offsetZ
@@ -8877,7 +8726,7 @@ func (w *World) generateMoltenCoreLayout(instanceID string, difficulty DungeonDi
 			X: currentX, Z: currentZ, Width: bossRoomSize, Height: bossRoomSize, Type: "boss", Color: 0x2a0000,
 		}, canonicalDungeonCorridorWidth)
 
-		w.spawnBossInInstance(boss.Name, currentX, currentZ, instanceID, boss.Stats, difficulty)
+		w.spawnBossInInstance(boss, currentX, currentZ, instanceID, difficulty)
 	}
 
 	return layout
@@ -8899,21 +8748,7 @@ func (w *World) generateTempestSpireLayout(instanceID string, difficulty Dungeon
 	appendDungeonRoom(&layout, DungeonRoom{X: offsetX, Z: offsetZ, Width: 140, Height: 140, Type: "start", Color: 0x1a1a4a})
 
 	// Tempest Spire Bosses (5 bosses)
-	bosses := []struct {
-		Name  string
-		Stats Stats
-	}{
-		// Boss 1: Windshear - Normal: 2,800,000 HP
-		{"Windshear", Stats{Strength: 3800, Vitality: 2800000, Dexterity: 350}},
-		// Boss 2: Stormcallers (Duo Fight) - Combined 3,600,000 HP
-		{"Stormcallers", Stats{Strength: 3500, Vitality: 3600000, Dexterity: 280}},
-		// Boss 3: RocMatriarch (Flying Boss) - Normal: 3,800,000 HP
-		{"RocMatriarch", Stats{Strength: 4200, Vitality: 3800000, Dexterity: 400}},
-		// Boss 4: ThunderlordKaelix - Normal: 4,800,000 HP
-		{"ThunderlordKaelix", Stats{Strength: 4800, Vitality: 4800000, Dexterity: 320}},
-		// Boss 5: Zephyrion (Final Boss) - Normal: 7,500,000 HP
-		{"Zephyrion", Stats{Strength: 5500, Vitality: 7500000, Dexterity: 380}},
-	}
+	bosses := []string{"Windshear", "Stormcallers", "RocMatriarch", "ThunderlordKaelix", "Zephyrion"}
 
 	currentX := offsetX
 	currentZ := offsetZ
@@ -8983,7 +8818,7 @@ func (w *World) generateTempestSpireLayout(instanceID string, difficulty Dungeon
 			X: currentX, Z: currentZ, Width: bossRoomSize, Height: bossRoomSize, Type: "boss", Color: 0x0a0a2a,
 		}, canonicalDungeonCorridorWidth)
 
-		w.spawnBossInInstance(boss.Name, currentX, currentZ, instanceID, boss.Stats, difficulty)
+		w.spawnBossInInstance(boss, currentX, currentZ, instanceID, difficulty)
 	}
 
 	return layout
@@ -9005,21 +8840,7 @@ func (w *World) generateAbyssalWellLayout(instanceID string, difficulty DungeonD
 	appendDungeonRoom(&layout, DungeonRoom{X: offsetX, Z: offsetZ, Width: 130, Height: 130, Type: "start", Color: 0x0a2a4a})
 
 	// Abyssal Well Bosses (5 bosses)
-	bosses := []struct {
-		Name  string
-		Stats Stats
-	}{
-		// Boss 1: Tiderend Leviathan - Normal: 2,600,000 HP
-		{"TiderendLeviathan", Stats{Strength: 3600, Vitality: 2600000, Dexterity: 240}},
-		// Boss 2: DrownedChoir (Duo Fight) - Combined 3,400,000 HP
-		{"DrownedChoir", Stats{Strength: 3300, Vitality: 3400000, Dexterity: 220}},
-		// Boss 3: AbyssalGoliath - Normal: 3,800,000 HP
-		{"AbyssalGoliath", Stats{Strength: 4200, Vitality: 3800000, Dexterity: 200}},
-		// Boss 4: MaelstromWarden - Normal: 4,500,000 HP
-		{"MaelstromWarden", Stats{Strength: 4700, Vitality: 4500000, Dexterity: 260}},
-		// Boss 5: Thalorath (Final Boss) - Normal: 7,000,000 HP
-		{"Thalorath", Stats{Strength: 5400, Vitality: 7000000, Dexterity: 300}},
-	}
+	bosses := []string{"TiderendLeviathan", "DrownedChoir", "AbyssalGoliath", "MaelstromWarden", "Thalorath"}
 
 	currentX := offsetX
 	currentZ := offsetZ
@@ -9056,14 +8877,14 @@ func (w *World) generateAbyssalWellLayout(instanceID string, difficulty DungeonD
 			}, canonicalDungeonCorridorWidth)
 
 			if roomType == "elite" {
-				w.spawnEnemyInInstance("FrostGuardian", nextX, nextZ, instanceID, difficulty)
+				w.spawnDungeonEnemyInInstance("FrostGuardian", nextX, nextZ, instanceID, difficulty, true)
 			} else {
 				numTrash := 3 + rand.Intn(2)
 				for k := 0; k < numTrash; k++ {
 					ox := (rand.Float64() * 15) - 7.5
 					oz := (rand.Float64() * 15) - 7.5
 					trashType := waterTrash[rand.Intn(len(waterTrash))]
-					w.spawnEnemyInInstance(trashType, nextX+ox, nextZ+oz, instanceID, difficulty)
+					w.spawnDungeonEnemyInInstance(trashType, nextX+ox, nextZ+oz, instanceID, difficulty, false)
 				}
 			}
 
@@ -9083,7 +8904,7 @@ func (w *World) generateAbyssalWellLayout(instanceID string, difficulty DungeonD
 			X: currentX, Z: currentZ, Width: bossRoomSize, Height: bossRoomSize, Type: "boss", Color: 0x061a2a,
 		}, canonicalDungeonCorridorWidth)
 
-		w.spawnBossInInstance(boss.Name, currentX, currentZ, instanceID, boss.Stats, difficulty)
+		w.spawnBossInInstance(boss, currentX, currentZ, instanceID, difficulty)
 	}
 
 	return layout
@@ -9091,25 +8912,19 @@ func (w *World) generateAbyssalWellLayout(instanceID string, difficulty DungeonD
 
 // spawnFireDungeonEnemy spawns a fire-themed enemy in the Molten Core dungeon
 func (w *World) spawnFireDungeonEnemy(subType string, x, z float64, instanceID string, isElite bool, difficulty DungeonDifficulty) {
-	// Scaled for Level 80-90 dungeon
-	vitality := 200000
-	strength := 6000
-
+	runLevel := w.getInstanceRunLevelUnsafe(instanceID)
+	rank := dungeonRankTrash
 	if isElite {
-		vitality = 300000
-		strength = 8000
+		rank = dungeonRankElite
+	}
+	profile := dungeonEnemyCombatProfile(subType, runLevel, difficulty, rank, 3.0)
+	enemyID := fmt.Sprintf("%s-%s-%d", subType, instanceID, rand.Intn(10000))
+	if isElite {
+		enemyID = fmt.Sprintf("elite-%s-%s-%d", subType, instanceID, rand.Intn(10000))
 	}
 
-	runLevel := w.getInstanceRunLevelUnsafe(instanceID)
-	runLevelHealthMult, runLevelDamageMult := DungeonRunLevelStatMultipliers(runLevel)
-
-	// Apply difficulty multipliers
-	healthMult, damageMult, _, _ := DifficultyMultipliers(difficulty)
-	vitality = int(float64(vitality) * healthMult * runLevelHealthMult)
-	strength = int(float64(strength) * damageMult * runLevelDamageMult)
-
 	enemy := &Entity{
-		ID:             fmt.Sprintf("%s-%s-%d", subType, instanceID, rand.Intn(10000)),
+		ID:             enemyID,
 		InstanceID:     instanceID,
 		Type:           TypeEnemy,
 		SubType:        subType,
@@ -9119,14 +8934,15 @@ func (w *World) spawnFireDungeonEnemy(subType string, x, z float64, instanceID s
 		Z:              z,
 		SpawnX:         x,
 		SpawnZ:         z,
-		BaseStats:      Stats{Strength: strength, Vitality: vitality},
-		Health:         vitality * 10,
-		MaxHealth:      vitality * 10,
-		Damage:         strength * 2,
+		BaseStats:      profile.BaseStats,
+		Health:         profile.Health,
+		MaxHealth:      profile.MaxHealth,
+		Damage:         profile.Damage,
 		State:          "IDLE",
-		Speed:          3.0,
-		AttackSpeed:    2.0,
-		AttackCooldown: 2 * time.Second,
+		BaseSpeed:      profile.Speed,
+		Speed:          profile.Speed,
+		AttackSpeed:    profile.AttackSpeed,
+		AttackCooldown: profile.AttackCooldown,
 		Scale:          1.2,
 	}
 	w.Entities[enemy.ID] = enemy
@@ -9135,25 +8951,19 @@ func (w *World) spawnFireDungeonEnemy(subType string, x, z float64, instanceID s
 
 // spawnAirDungeonEnemy spawns an air-themed enemy in the Tempest Spire dungeon
 func (w *World) spawnAirDungeonEnemy(subType string, x, z float64, instanceID string, isElite bool, difficulty DungeonDifficulty) {
-	// Scaled for Level 80-90 dungeon
-	vitality := 180000
-	strength := 5500
-
+	runLevel := w.getInstanceRunLevelUnsafe(instanceID)
+	rank := dungeonRankTrash
 	if isElite {
-		vitality = 280000
-		strength = 7500
+		rank = dungeonRankElite
+	}
+	profile := dungeonEnemyCombatProfile(subType, runLevel, difficulty, rank, 3.5)
+	enemyID := fmt.Sprintf("%s-%s-%d", subType, instanceID, rand.Intn(10000))
+	if isElite {
+		enemyID = fmt.Sprintf("elite-%s-%s-%d", subType, instanceID, rand.Intn(10000))
 	}
 
-	runLevel := w.getInstanceRunLevelUnsafe(instanceID)
-	runLevelHealthMult, runLevelDamageMult := DungeonRunLevelStatMultipliers(runLevel)
-
-	// Apply difficulty multipliers
-	healthMult, damageMult, _, _ := DifficultyMultipliers(difficulty)
-	vitality = int(float64(vitality) * healthMult * runLevelHealthMult)
-	strength = int(float64(strength) * damageMult * runLevelDamageMult)
-
 	enemy := &Entity{
-		ID:             fmt.Sprintf("%s-%s-%d", subType, instanceID, rand.Intn(10000)),
+		ID:             enemyID,
 		InstanceID:     instanceID,
 		Type:           TypeEnemy,
 		SubType:        subType,
@@ -9163,38 +8973,24 @@ func (w *World) spawnAirDungeonEnemy(subType string, x, z float64, instanceID st
 		Z:              z,
 		SpawnX:         x,
 		SpawnZ:         z,
-		BaseStats:      Stats{Strength: strength, Vitality: vitality},
-		Health:         vitality * 10,
-		MaxHealth:      vitality * 10,
-		Damage:         strength * 2,
+		BaseStats:      profile.BaseStats,
+		Health:         profile.Health,
+		MaxHealth:      profile.MaxHealth,
+		Damage:         profile.Damage,
 		State:          "IDLE",
-		Speed:          3.5, // Air enemies are faster
-		AttackSpeed:    1.8,
-		AttackCooldown: time.Duration(1.8 * float64(time.Second)),
+		BaseSpeed:      profile.Speed,
+		Speed:          profile.Speed,
+		AttackSpeed:    profile.AttackSpeed,
+		AttackCooldown: profile.AttackCooldown,
 		Scale:          1.1,
 	}
 	w.Entities[enemy.ID] = enemy
 	w.Grid.Add(enemy)
 }
 
-func (w *World) spawnBossInInstance(subType string, x, z float64, instanceID string, stats Stats, difficulty DungeonDifficulty) {
+func (w *World) spawnBossInInstance(subType string, x, z float64, instanceID string, difficulty DungeonDifficulty) {
 	runLevel := w.getInstanceRunLevelUnsafe(instanceID)
-	runLevelHealthMult, runLevelDamageMult := DungeonRunLevelStatMultipliers(runLevel)
-
-	// Apply difficulty multipliers
-	healthMult, damageMult, _, _ := DifficultyMultipliers(difficulty)
-	scaledStats := Stats{
-		Strength:  int(float64(stats.Strength) * damageMult * runLevelDamageMult),
-		Vitality:  int(float64(stats.Vitality) * healthMult * runLevelHealthMult),
-		Dexterity: stats.Dexterity,
-	}
-
-	// Calculate Attack Speed
-	speedMult := 1.0 + (float64(scaledStats.Dexterity) * 0.02)
-	cooldown := 5.0 / speedMult
-	if cooldown < 0.5 {
-		cooldown = 0.5
-	}
+	profile := dungeonEnemyCombatProfile(subType, runLevel, difficulty, dungeonRankBoss, 2.5)
 
 	boss := &Entity{
 		ID:             fmt.Sprintf("%s-%s", subType, instanceID),
@@ -9207,43 +9003,35 @@ func (w *World) spawnBossInInstance(subType string, x, z float64, instanceID str
 		Z:              z,
 		SpawnX:         x,
 		SpawnZ:         z,
-		BaseStats:      scaledStats,
-		Health:         scaledStats.Vitality * 10,
-		MaxHealth:      scaledStats.Vitality * 10,
+		BaseStats:      profile.BaseStats,
+		Health:         profile.Health,
+		MaxHealth:      profile.MaxHealth,
 		State:          "IDLE",
-		Speed:          2.5,
-		AttackSpeed:    cooldown,
-		AttackCooldown: time.Duration(cooldown * float64(time.Second)),
+		BaseSpeed:      profile.Speed,
+		Speed:          profile.Speed,
+		AttackSpeed:    profile.AttackSpeed,
+		AttackCooldown: profile.AttackCooldown,
 		Scale:          4.0,
-		Damage:         scaledStats.Strength * 10,
+		Damage:         profile.Damage,
 	}
 	w.Entities[boss.ID] = boss
 	w.Grid.Add(boss)
 }
 
 func (w *World) spawnEnemyInInstance(subType string, x, z float64, instanceID string, difficulty DungeonDifficulty) {
-	// "25x normal hp"
-	// Assuming "normal hp" refers to a standard enemy at the dungeon's level (Level 70).
-	// If a Level 70 enemy has ~50,000 HP (5000 Vitality), then 25x is 1,250,000 HP (125,000 Vitality).
+	// Verdant's DemonOrc path is the legacy elite-room wrapper. Other dungeon
+	// families call the explicit ranked helper so a subtype may appear as both
+	// trash and elite without changing its loot identity.
+	w.spawnDungeonEnemyInInstance(subType, x, z, instanceID, difficulty, subType == "DemonOrc")
+}
 
-	vitality := 125000
-	strength := 4000 // Scaled up damage for Level 70
-	isElite := false
-
-	if subType == "DemonOrc" {
-		// Verdant elite-room placeholder until elite dungeon variants get distinct subtype plumbing.
-		isElite = true
-		vitality = 150000
-		strength = 5000
-	}
-
+func (w *World) spawnDungeonEnemyInInstance(subType string, x, z float64, instanceID string, difficulty DungeonDifficulty, isElite bool) {
 	runLevel := w.getInstanceRunLevelUnsafe(instanceID)
-	runLevelHealthMult, runLevelDamageMult := DungeonRunLevelStatMultipliers(runLevel)
-
-	// Apply difficulty multipliers
-	healthMult, damageMult, _, _ := DifficultyMultipliers(difficulty)
-	vitality = int(float64(vitality) * healthMult * runLevelHealthMult)
-	strength = int(float64(strength) * damageMult * runLevelDamageMult)
+	rank := dungeonRankTrash
+	if isElite {
+		rank = dungeonRankElite
+	}
+	profile := dungeonEnemyCombatProfile(subType, runLevel, difficulty, rank, 3.0)
 
 	enemyID := fmt.Sprintf("%s-%s-%d", subType, instanceID, rand.Intn(10000))
 	if isElite {
@@ -9261,14 +9049,15 @@ func (w *World) spawnEnemyInInstance(subType string, x, z float64, instanceID st
 		Z:              z,
 		SpawnX:         x,
 		SpawnZ:         z,
-		BaseStats:      Stats{Strength: strength, Vitality: vitality},
-		Health:         vitality * 10,
-		MaxHealth:      vitality * 10,
-		Damage:         strength * 2,
+		BaseStats:      profile.BaseStats,
+		Health:         profile.Health,
+		MaxHealth:      profile.MaxHealth,
+		Damage:         profile.Damage,
 		State:          "IDLE",
-		Speed:          3.0,
-		AttackSpeed:    2.0,
-		AttackCooldown: 2 * time.Second,
+		BaseSpeed:      profile.Speed,
+		Speed:          profile.Speed,
+		AttackSpeed:    profile.AttackSpeed,
+		AttackCooldown: profile.AttackCooldown,
 		Scale:          1.0,
 	}
 	w.Entities[enemy.ID] = enemy

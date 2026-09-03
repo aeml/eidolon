@@ -1,6 +1,9 @@
 package game
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func findOnlyEnemyForInstance(t *testing.T, w *World, instanceID string) *Entity {
 	t.Helper()
@@ -41,12 +44,11 @@ func TestDungeonRunLevelScalingIncreasesStandardEnemyStats(t *testing.T) {
 
 func TestDungeonRunLevelScalingIncreasesBossStats(t *testing.T) {
 	w := NewWorld(nil)
-	bossStats := Stats{Strength: 5000, Vitality: 120000, Dexterity: 20}
 	w.InstanceLayouts["boss-low"] = &DungeonInstance{ID: "boss-low", Difficulty: DifficultyHeroic, RunLevel: 30}
 	w.InstanceLayouts["boss-high"] = &DungeonInstance{ID: "boss-high", Difficulty: DifficultyHeroic, RunLevel: 100}
 
-	w.spawnBossInInstance("HollowSentinel", 0, 0, "boss-low", bossStats, DifficultyHeroic)
-	w.spawnBossInInstance("HollowSentinel", 0, 0, "boss-high", bossStats, DifficultyHeroic)
+	w.spawnBossInInstance("HollowSentinel", 0, 0, "boss-low", DifficultyHeroic)
+	w.spawnBossInInstance("HollowSentinel", 0, 0, "boss-high", DifficultyHeroic)
 
 	lowBoss := findOnlyEnemyForInstance(t, w, "boss-low")
 	highBoss := findOnlyEnemyForInstance(t, w, "boss-high")
@@ -69,8 +71,73 @@ func TestVerdantEliteRoomSpawnUsesEliteIDPrefixForLootLogic(t *testing.T) {
 	if enemy.SubType != "DemonOrc" {
 		t.Fatalf("expected DemonOrc elite placeholder, got %s", enemy.SubType)
 	}
-	if got := enemy.ID; len(got) < len("elite-") || got[:len("elite-")] != "elite-" {
+	if got := enemy.ID; !strings.HasPrefix(got, "elite-") {
 		t.Fatalf("expected Verdant elite-room enemy id to use elite prefix for loot logic, got %s", got)
+	}
+}
+
+func TestEveryDungeonEliteFactoryUsesEliteBalanceAndLootIdentity(t *testing.T) {
+	w := NewWorld(nil)
+	testCases := []struct {
+		name       string
+		subType    string
+		instanceID string
+		spawn      func()
+	}{
+		{
+			name:       "verdant",
+			subType:    "DemonOrc",
+			instanceID: "verdant-elite-factory",
+			spawn: func() {
+				w.spawnDungeonEnemyInInstance("DemonOrc", 0, 0, "verdant-elite-factory", DifficultyNormal, true)
+			},
+		},
+		{
+			name:       "molten",
+			subType:    "InfernalBehemoth",
+			instanceID: "molten-elite-factory",
+			spawn: func() {
+				w.spawnFireDungeonEnemy("InfernalBehemoth", 0, 0, "molten-elite-factory", true, DifficultyNormal)
+			},
+		},
+		{
+			name:       "tempest",
+			subType:    "TempestGiant",
+			instanceID: "tempest-elite-factory",
+			spawn: func() {
+				w.spawnAirDungeonEnemy("TempestGiant", 0, 0, "tempest-elite-factory", true, DifficultyNormal)
+			},
+		},
+		{
+			name:       "abyssal",
+			subType:    "FrostGuardian",
+			instanceID: "abyssal-elite-factory",
+			spawn: func() {
+				w.spawnDungeonEnemyInInstance("FrostGuardian", 0, 0, "abyssal-elite-factory", DifficultyNormal, true)
+			},
+		},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			w.InstanceLayouts[testCase.instanceID] = &DungeonInstance{
+				ID:         testCase.instanceID,
+				Difficulty: DifficultyNormal,
+				RunLevel:   70,
+			}
+			testCase.spawn()
+			enemy := findOnlyEnemyForInstance(t, w, testCase.instanceID)
+			if !strings.HasPrefix(enemy.ID, "elite-") {
+				t.Fatalf("expected elite loot id, got %s", enemy.ID)
+			}
+			if enemy.SubType != testCase.subType {
+				t.Fatalf("expected subtype %s, got %s", testCase.subType, enemy.SubType)
+			}
+			want := dungeonEnemyCombatProfile(testCase.subType, 70, DifficultyNormal, dungeonRankElite, enemy.BaseSpeed)
+			if enemy.MaxHealth != want.MaxHealth || enemy.Damage != want.Damage {
+				t.Fatalf("elite factory bypassed shared balance: got health=%d damage=%d, want health=%d damage=%d", enemy.MaxHealth, enemy.Damage, want.MaxHealth, want.Damage)
+			}
+		})
 	}
 }
 
@@ -106,7 +173,7 @@ func TestDungeonEnemySpawnsCarrySelectedRunLevel(t *testing.T) {
 			instanceID: "boss-level",
 			runLevel:   100,
 			spawn: func() {
-				w.spawnBossInInstance("Thalorath", 0, 0, "boss-level", Stats{Strength: 100, Vitality: 100, Dexterity: 10}, DifficultyMythic)
+				w.spawnBossInInstance("Thalorath", 0, 0, "boss-level", DifficultyMythic)
 			},
 		},
 	}

@@ -6,7 +6,7 @@ Migration baseline: `Alpha 0.40.0.1`
 
 First procedural-art release: `Alpha 0.41.0.0`
 
-Current migration release: `Alpha 0.41.0.34`
+Current migration release: `Alpha 0.41.0.35`
 
 This inventory is the migration ledger for the complete Eidolon dark-fantasy redesign. A category is only marked migrated after its production runtime reference, visual coverage, lifecycle behavior, and representative browser evidence pass. The legacy counts are maximums enforced by `tests/ProceduralArtMigrationGuard.test.js`; they may decrease but cannot increase.
 
@@ -320,3 +320,11 @@ The complete release remains one atomic gate: lint, dependency audit, all client
 The redesign remains armor-first rather than exposed or anatomically exaggerated. All 14 rendered positions and 18 attachment regions retain their original names and transforms, equipped headgear hides default hair and crown-adjacent pieces to prevent intersections, and the permanent face and paired eye anchors remain visible. Local and replicated actors use the same factory, cached geometry, materials, equipment fitting, animation clips, pooling reset, bounds, and hitboxes.
 
 Focused structural coverage verifies the female presentation metadata, paired features, hair and braid constructions, tapered torso and hip relationships, finite transforms, cache sharing, pose reset, all equipment families, and headgear clipping policy. The deterministic hardware gallery renders both heroes through Idle, Walk, Run, Attack and Death at High and Low quality. Class statistics, abilities, movement, authoritative bounds, animation timing, equipment data, multiplayer messages, progression and saves are unchanged.
+
+## The grave learns the weight of steel
+
+`Alpha 0.41.0.35` reconciles hostile progression with the 25× item-stat squish. The established level-10 Skeleton remains the exact anchor at 150 health, 30 damage, and its existing attack cadence. Every later overworld family now derives health, damage, Dexterity cadence, and authored movement from one level curve with narrow archetype modifiers, replacing disconnected legacy blocks that jumped from 15 to hundreds or thousands of primary stats between adjacent zones.
+
+The same foundation now composes dungeon trash, elite, boss-depth, run-level, and Normal/Heroic/Mythic modifiers. The obsolete million-Vitality boss declarations and implicit extra ×10 health layer are removed. Fire, Air, Verdant, and Abyssal elite-room actors carry elite IDs as well as elite combat profiles, keeping combat pressure and existing elite loot recognition aligned.
+
+The recalculation path is also type-correct: player-only level health and resource regeneration no longer attach to enemies when a slow begins or expires, while an authored hostile base speed survives the temporary modifier. Regression coverage checks all 18 post-starter overworld families against low, medium, and optimized same-level gear envelopes, plus the exact Skeleton anchor, overworld elites, dungeon ranks, sequential bosses, run levels, difficulty multipliers, and slow apply/restore transitions.

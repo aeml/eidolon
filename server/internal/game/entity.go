@@ -97,6 +97,10 @@ type Entity struct {
 	Defense   int   `json:"defense"`
 
 	// Derived Stats
+	// BaseSpeed preserves authored enemy/NPC locomotion through temporary stat
+	// recalculations such as slows. Players leave it at zero and derive speed
+	// from Dexterity as before.
+	BaseSpeed         float64 `json:"-"`
 	Speed             float64 `json:"speed"`
 	AttackSpeed       float64 `json:"attackSpeed"`
 	CooldownReduction float64 `json:"cooldownReduction"`
@@ -630,12 +634,20 @@ func (e *Entity) RecalculateStats() {
 		Vitality:     totalVit,
 	}
 
-	// Level Bonus (Matches Client)
-	levelBonus := (e.Level - 1) * 5
+	// The flat level bonus belongs to player progression. Enemy health is fully
+	// represented by its balanced BaseStats and must not jump when a temporary
+	// slow or debuff asks for a stat recalculation.
+	levelBonus := 0
+	if e.Type == TypePlayer {
+		levelBonus = (e.Level - 1) * 5
+	}
 
 	// Derived Stats
 	e.MaxHealth = (totalVit * 10) + levelBonus
-	e.HpRegen = float64(totalVit) * 0.5
+	e.HpRegen = 0
+	if e.Type == TypePlayer {
+		e.HpRegen = float64(totalVit) * 0.5
+	}
 
 	e.MaxMana = (totalInt * 10) + levelBonus
 	e.CooldownReduction = math.Min(0.5, float64(totalInt)*0.01)
@@ -664,7 +676,10 @@ func (e *Entity) RecalculateStats() {
 	}
 
 	// Speed Calculation
-	e.Speed = (3.0 + (float64(totalDex) * 0.5)) * 1.2
+	e.Speed = e.BaseSpeed
+	if e.Speed <= 0 {
+		e.Speed = (3.0 + (float64(totalDex) * 0.5)) * 1.2
+	}
 	if pctMoveSpeed != 0 {
 		e.Speed *= (1.0 + pctMoveSpeed)
 	}
@@ -688,7 +703,10 @@ func (e *Entity) RecalculateStats() {
 	e.AttackSpeed = cooldown
 	e.AttackCooldown = time.Duration(cooldown * float64(time.Second))
 
-	e.ManaRegen = float64(totalWis) * 0.5
+	e.ManaRegen = 0
+	if e.Type == TypePlayer {
+		e.ManaRegen = float64(totalWis) * 0.5
+	}
 	if pctManaRegen != 0 {
 		e.ManaRegen *= (1.0 + pctManaRegen)
 	}
@@ -811,6 +829,7 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		Stats:             e.Stats,
 		Damage:            e.Damage,
 		Defense:           e.Defense,
+		BaseSpeed:         e.BaseSpeed,
 		Speed:             e.Speed,
 		AttackSpeed:       e.AttackSpeed,
 		CooldownReduction: e.CooldownReduction,
