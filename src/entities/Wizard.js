@@ -5,6 +5,7 @@ import { MeshFactory } from '../utils/MeshFactory.js';
 import { Projectile } from './Projectile.js';
 import { AreaOfEffect } from './AreaOfEffect.js';
 import { spawnEffectSceneFallback, spawnSceneFallbackBeam } from './EffectSceneFallback.js';
+import { getAbilityAoeRadius } from '../skills/abilityRadii.js';
 
 export class Wizard extends Actor {
     constructor(id) {
@@ -52,8 +53,7 @@ export class Wizard extends Actor {
             duration: 5.0,
             damage: damage,
             damageInterval: 1.0,
-            color: 0xff4500,
-            visualType: 'cylinder',
+            effectType: 'BurningGround',
             isHostile: true
         };
         
@@ -221,20 +221,15 @@ export class Wizard extends Actor {
             // Massive AOE Zone
             const damage = (30 + (this.stats.intelligence * 1.0)) * damageMultiplier;
             const config = {
-                radius: 12.0,
+                radius: getAbilityAoeRadius('Wizard', 'Inferno Cataclysm', this) || 12,
                 duration: 8.0,
                 damage: damage,
                 damageInterval: 0.5, // Ticks fast
-                color: 0xff2200,
-                visualType: 'cylinder',
+                effectType: 'InfernoCataclysm',
                 isHostile: true
             };
-            
+
             const zone = gameEngine.isMultiplayer ? null : new AreaOfEffect(gameEngine, this, targetVector, config);
-            // Make visual bigger/cooler
-            if (zone?.mesh) {
-                zone.mesh.material.opacity = 0.6;
-            }
             if (zone) gameEngine.addEntity(zone);
             
             // Initial explosion visual
@@ -455,12 +450,11 @@ export class Wizard extends Actor {
             const damage = (10 + (this.stats.intelligence * 0.5)) * damageMultiplier;
             
             const config = {
-                radius: 6.0,
+                radius: getAbilityAoeRadius('Wizard', 'Gravity Well', this) || 8,
                 duration: 5.0,
                 damage: damage,
                 damageInterval: 0.5,
-                color: 0x440088, // Dark Purple
-                visualType: 'ring', // Swirling ring
+                effectType: 'GravityWell',
                 isHostile: true,
                 onTick: (engine, aoe) => {
                     // Pull Logic

@@ -285,7 +285,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.41.0.23</span>
+                <span class="start-version-row__label">Alpha 0.41.0.24</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -470,7 +470,7 @@
                                 </div>
                                 <div id="asset-pack-core-status" class="asset-cache-pack__status">Procedural core built in</div>
                                 <div id="asset-pack-core-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-23</div>
+                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-24</div>
                             </div>
                             <button id="btn-download-core-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -482,7 +482,7 @@
                                 </div>
                                 <div id="asset-pack-dungeon-status" class="asset-cache-pack__status">Procedural dungeon entrances built in</div>
                                 <div id="asset-pack-dungeon-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-23</div>
+                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-24</div>
                             </div>
                             <button id="btn-download-dungeon-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -587,6 +587,23 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.41.0.24">
+                    <h3 class="patch-note-entry__title">Patch 0.41.0.24 (the ground remembers every spell)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>The last generic local area meshes are gone:</strong> Burning Ground, offline Inferno Cataclysm, Gravity Well, and the Smoke Bomb gallery field now use explicit multi-part code-native constructions instead of a tinted cylinder, sphere, or ring.</li>
+                        <li><strong>Each field has its own ritual language:</strong> fire scars carry cinder script and crown flames, Gravity Well becomes a void astrolabe prison, and Smoke Bomb forms a blackglass concealment shroud with translucent low-poly wisps.</li>
+                        <li><strong>Gravity Well's old radius drift is fixed:</strong> the offline fallback and visual gallery now use the server's authoritative eight-unit base radius and twelve-unit Expanded radius instead of the stale six- and five-unit values.</li>
+                        <li><strong>Inferno stays exact in every mode:</strong> its local fallback resolves the same twelve-unit registry boundary used by the replicated server zone, while Burning Ground retains its intended 3.5-unit damage radius.</li>
+                        <li><strong>Smoke Bomb's evidence uses its real five-unit reach:</strong> the procedural gallery field no longer displays the old four-unit placeholder.</li>
+                        <li><strong>Boundaries do not breathe or lie:</strong> only interior brands, captured shards, and wisps animate; the outer gameplay edge remains fixed at the declared radius for the full field lifetime.</li>
+                        <li><strong>Low graphics remains readable:</strong> reduced-quality fields remove ornaments while preserving the identical field fill, boundary, identity, and collision metadata.</li>
+                        <li><strong>Field instances reuse immutable geometry and materials:</strong> expiration, chunk removal, and gallery cleanup detach each root without destroying resources still used by another active field.</li>
+                        <li><strong>The gallery no longer doubles target-anchored world effects:</strong> local and replicated actors share one ground object, eliminating overlap flicker and false brightness in deterministic evidence.</li>
+                        <li><strong>One-shot animation QA is deterministic:</strong> the gallery records that Attack actually started even when a very short clip has legitimately returned to Idle before the browser samples it.</li>
+                        <li><strong>Hardware Chrome now proves both Gravity Well sizes and Smoke Bomb:</strong> isolated effect plates, finite-transform checks, the 112-variant ability matrix, every actor state, and cleanup all pass together.</li>
+                        <li><strong>Clients cross a clean threshold:</strong> the built-in asset generation advances to 2026-09-03-24.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.41.0.23">
                     <h3 class="patch-note-entry__title">Patch 0.41.0.23 (spells carry their own relics)</h3>
                     <ul class="patch-note-entry__list">

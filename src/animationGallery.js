@@ -173,6 +173,7 @@ export class AnimationGallery {
         this.currentAbility = 'Spirit Guardians';
         this.currentActorType = 'Cleric';
         this.currentState = 'Idle';
+        this.lastStatePlayback = null;
         this.currentRuneId = null;
         this.phase = 'ready';
         this.jumpElapsed = 0;
@@ -645,6 +646,17 @@ export class AnimationGallery {
             return;
         }
 
+        // Target-anchored ground fields are shared world objects. Rendering a
+        // second copy for the replicated actor creates overlapping geometry
+        // and does not represent anything that production clients receive.
+        if (actor === this.remoteActor && [
+            'inferno_cataclysm',
+            'consecrated_ground',
+            'tripwire',
+            'gravity_well',
+            'smoke_bomb'
+        ].includes(stateKey)) return;
+
         const applyState = PERSISTENT_STATE_APPLIERS[stateKey];
         applyState?.(actor, target);
         actor.syncAttachedStatusEffects?.(0);
@@ -663,10 +675,11 @@ export class AnimationGallery {
             engine.addEntity(new Projectile('gallery-tripwire', actor, 'Tripwire', TARGET_POSITION, TARGET_POSITION));
         } else if (stateKey === 'gravity_well' || stateKey === 'smoke_bomb') {
             engine.addEntity(new AreaOfEffect(engine, actor, TARGET_POSITION, {
-                radius: stateKey === 'gravity_well' ? 5 : 4,
+                radius: stateKey === 'gravity_well'
+                    ? (getAbilityAoeRadius('Wizard', 'Gravity Well', actor) || 8)
+                    : (getAbilityAoeRadius('Rogue', 'Smoke Bomb', actor) || 5),
                 duration: 8,
-                color: stateKey === 'gravity_well' ? 0x5a2790 : 0x4f5663,
-                visualType: stateKey === 'gravity_well' ? 'ring' : 'sphere',
+                effectType: stateKey === 'gravity_well' ? 'GravityWell' : 'SmokeBomb',
                 damage: 0,
                 isHostile: false
             }));
@@ -762,7 +775,13 @@ export class AnimationGallery {
         } else {
             this.actor.state = state === 'Death' ? 'DEAD' : (state === 'Idle' ? 'IDLE' : (state === 'Attack' ? 'ATTACKING' : 'MOVING'));
             this.actor.isRunning = state === 'Run';
-            this.actor.playAnimation(state, !['Attack', 'Death'].includes(state), true);
+            const played = this.actor.playAnimation(state, !['Attack', 'Death'].includes(state), true);
+            this.lastStatePlayback = {
+                actorType: this.currentActorType,
+                state,
+                played,
+                startedAnimation: this.actor.currentAnimationName
+            };
         }
         this.frameActorState();
         this.phase = `state:${state.toLowerCase()}`;
@@ -856,6 +875,7 @@ export class AnimationGallery {
             remote: Boolean(this.remoteActor),
             clipNames: Object.keys(this.actor?.animations || {}),
             currentAnimation: this.actor?.currentAnimationName || null,
+            lastStatePlayback: this.lastStatePlayback ? { ...this.lastStatePlayback } : null,
             proceduralHumanoid: Boolean(this.actor?.mesh?.userData?.proceduralHumanoid),
             proceduralClass: this.actor?.mesh?.userData?.proceduralClass || null,
             proceduralTownActor: Boolean(this.actor?.mesh?.userData?.proceduralTownActor),
@@ -891,6 +911,14 @@ export class AnimationGallery {
                     type: entity.mesh.userData.projectileType,
                     family: entity.mesh.userData.projectileFamily,
                     role: entity.mesh.userData.projectileRole,
+                    artStyle: entity.mesh.userData.artStyle,
+                    gameplayRadius: entity.mesh.userData.gameplayRadius
+                })),
+            proceduralAreaFields: this.persistentEntities
+                .filter((entity) => entity.mesh?.userData?.proceduralAreaField)
+                .map((entity) => ({
+                    type: entity.mesh.userData.areaFieldType,
+                    family: entity.mesh.userData.areaFieldFamily,
                     artStyle: entity.mesh.userData.artStyle,
                     gameplayRadius: entity.mesh.userData.gameplayRadius
                 })),

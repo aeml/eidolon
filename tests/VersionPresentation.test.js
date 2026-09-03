@@ -16,8 +16,21 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.41.0.23 for procedural projectile effects', () => {
-        expect(indexHtml).toContain('Alpha 0.41.0.23');
+    test('advances the login screen to alpha 0.41.0.24 for procedural area fields', () => {
+        expect(indexHtml).toContain('Alpha 0.41.0.24');
+        expect(indexHtml).toContain('Patch 0.41.0.24');
+        expect(indexHtml).toContain('the ground remembers every spell');
+        expect(indexHtml).toContain('The last generic local area meshes are gone');
+        expect(indexHtml).toContain("Gravity Well's old radius drift is fixed");
+        expect(indexHtml).toContain('Smoke Bomb\'s evidence uses its real five-unit reach');
+        expect(indexHtml).toContain('Boundaries do not breathe or lie');
+        expect(indexHtml).toContain('Field instances reuse immutable geometry and materials');
+        expect(indexHtml).toContain('One-shot animation QA is deterministic');
+        expect(indexHtml).toContain('both Gravity Well sizes and Smoke Bomb');
+        expect(indexHtml).toContain('2026-09-03-24');
+    });
+
+    test('retains alpha 0.41.0.23 procedural projectile history', () => {
         expect(indexHtml).toContain('Patch 0.41.0.23');
         expect(indexHtml).toContain('spells carry their own relics');
         expect(indexHtml).toContain('Projectiles are no longer colored primitives');
@@ -230,7 +243,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 0.41.0.23';
+        const expectedVersion = 'Alpha 0.41.0.24';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -334,8 +347,8 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Added client coverage for remote interpolation frame-spike handling and the 0.35.0 release state');
     });
 
-    test('marks 0.41.0.23 current and points the active line at 0.41', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.23`');
+    test('marks 0.41.0.24 current and points the active line at 0.41', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.24`');
         expect(alphaRoadmap).toContain('Active implementation line: `0.41`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');
@@ -1405,6 +1418,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.41.0.24');
         expect(indexHtml).toContain('Patch 0.41.0.23');
         expect(indexHtml).toContain('Patch 0.41.0.22');
         expect(indexHtml).toContain('Patch 0.41.0.21');

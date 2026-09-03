@@ -484,6 +484,52 @@ test.describe('deterministic production animation gallery', () => {
             }));
         }
 
+        await page.locator('#gallery-quality').selectOption('high');
+        for (const expected of [
+            { className: 'Wizard', ability: 'Gravity Well', runeId: '', type: 'GravityWell', family: 'wizard', radius: 8 },
+            { className: 'Wizard', ability: 'Gravity Well', runeId: 'gravitywell_expanded', type: 'GravityWell', family: 'wizard', radius: 12 },
+            { className: 'Rogue', ability: 'Smoke Bomb', runeId: '', type: 'SmokeBomb', family: 'rogue', radius: 5 }
+        ]) {
+            await page.locator('#gallery-class').selectOption(expected.className);
+            await waitForActor(page, expected.className);
+            await page.locator('#gallery-ability').selectOption(expected.ability);
+            await page.locator('#gallery-rune').selectOption(expected.runeId);
+            await page.locator('#gallery-persist').click();
+            await expect.poll(async () => {
+                const snapshot = await galleryMetrics(page);
+                return snapshot.proceduralAreaFields?.[0] || null;
+            }).toEqual(expect.objectContaining({
+                type: expected.type,
+                family: expected.family,
+                gameplayRadius: expected.radius
+            }));
+            const fieldMetrics = await galleryMetrics(page);
+            expect(fieldMetrics.proceduralAreaFields[0].artStyle.length).toBeGreaterThan(8);
+            expect(fieldMetrics.nonFiniteTransforms).toBe(0);
+            await page.evaluate(() => {
+                const controller = window.__eidolonAnimationGalleryController;
+                [controller.actor, controller.remoteActor, controller.targetActor].forEach((actor) => {
+                    if (actor?.mesh) actor.mesh.visible = false;
+                });
+            });
+            await page.locator('#animation-gallery').evaluate((panel) => {
+                panel.style.visibility = 'hidden';
+            });
+            await page.screenshot({
+                path: testInfo.outputPath(`procedural-${expected.type.toLowerCase()}-${expected.radius}.png`),
+                animations: 'allow'
+            });
+            await page.locator('#animation-gallery').evaluate((panel) => {
+                panel.style.visibility = '';
+            });
+            await page.evaluate(() => {
+                const controller = window.__eidolonAnimationGalleryController;
+                [controller.actor, controller.remoteActor, controller.targetActor].forEach((actor) => {
+                    if (actor?.mesh) actor.mesh.visible = true;
+                });
+            });
+        }
+
         for (const [role, expectedCount] of [['projectile', 7], ['trap', 3], ['zone', 3]]) {
             await page.evaluate((galleryRole) => {
                 window.__eidolonAnimationGalleryController.presentProjectileGallery(galleryRole);
@@ -533,7 +579,14 @@ test.describe('deterministic production animation gallery', () => {
                 const snapshot = await galleryMetrics(page);
                 expect(snapshot.actorVisibleMeshes, `${entry.type}/${state} has no visible mesh`).toBeGreaterThan(0);
                 expect(snapshot.clipNames, `${entry.type}/${state} has no declared clip`).toContain(state);
-                expect(snapshot.currentAnimation).toBe(state);
+                expect(snapshot.lastStatePlayback).toEqual(expect.objectContaining({
+                    actorType: entry.type,
+                    state,
+                    played: true,
+                    startedAnimation: state
+                }));
+                if (state === 'Attack') expect(['Attack', 'Idle']).toContain(snapshot.currentAnimation);
+                else expect(snapshot.currentAnimation).toBe(state);
                 expect(snapshot.nonFiniteTransforms).toBe(0);
             }
             if (entry.jump !== 'not-used') {

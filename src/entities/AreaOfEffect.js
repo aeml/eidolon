@@ -1,7 +1,10 @@
-import * as THREE from 'three';
 import { Entity } from './Entity.js';
 import { Actor } from './Actor.js';
-import { disposeSceneMesh } from './EffectSceneFallback.js';
+import {
+    createProceduralAreaField,
+    releaseProceduralAreaField,
+    updateProceduralAreaField
+} from '../art/ProceduralAreaFields.js';
 
 export class AreaOfEffect extends Entity {
     constructor(gameEngine, owner, position, config) {
@@ -17,8 +20,7 @@ export class AreaOfEffect extends Entity {
         this.damageInterval = config.damageInterval || 1.0; // Seconds between ticks
         this.tickTimer = 0;
         this.elapsedTime = 0;
-        this.color = config.color || 0xff0000;
-        this.visualType = config.visualType || 'cylinder'; // cylinder, sphere, ring
+        this.effectType = config.effectType;
         
         this.onTick = config.onTick || null; // Custom logic per tick
         this.onExpire = config.onExpire || null; // Custom logic on expire
@@ -29,33 +31,10 @@ export class AreaOfEffect extends Entity {
     }
     
     createVisual() {
-        let geometry;
-        let material = new THREE.MeshBasicMaterial({ 
-            color: this.color, 
-            transparent: true, 
-            opacity: 0.4,
-            side: THREE.DoubleSide
-        });
-        
-        if (this.visualType === 'cylinder') {
-            geometry = new THREE.CylinderGeometry(this.radius, this.radius, 0.2, 32);
-        } else if (this.visualType === 'sphere') {
-            geometry = new THREE.SphereGeometry(this.radius, 32, 32);
-        } else if (this.visualType === 'ring') {
-            geometry = new THREE.RingGeometry(this.radius * 0.9, this.radius, 32);
-            geometry.rotateX(-Math.PI / 2);
-        } else {
-            geometry = new THREE.CylinderGeometry(this.radius, this.radius, 0.2, 32);
-        }
-        
-        const mesh = new THREE.Mesh(geometry, material);
-        mesh.position.copy(this.position);
-        // Lift slightly off ground to avoid z-fighting
-        if (this.visualType !== 'sphere') {
-            mesh.position.y += 0.1;
-        }
-        
-        return mesh;
+        const quality = this.gameEngine?.uiManager?.getGraphicsQuality?.() || 'high';
+        const field = createProceduralAreaField(this.effectType, this.radius, { quality });
+        field.position.copy(this.position);
+        return field;
     }
     
     update(dt, collisionManager, player, chunkManager, floatingTextManager) {
@@ -66,16 +45,7 @@ export class AreaOfEffect extends Entity {
             return;
         }
         
-        // Pulse effect
-        if (this.mesh) {
-            const pulse = 0.4 + Math.sin(this.elapsedTime * 5) * 0.1;
-            this.mesh.material.opacity = pulse;
-            
-            // Rotate if ring
-            if (this.visualType === 'ring') {
-                this.mesh.rotation.z += dt;
-            }
-        }
+        updateProceduralAreaField(this.mesh, this.elapsedTime, dt);
         
         // Damage Tick
         this.tickTimer += dt;
@@ -147,7 +117,7 @@ export class AreaOfEffect extends Entity {
 
     dispose() {
         if (this.mesh) {
-            disposeSceneMesh(this.mesh);
+            releaseProceduralAreaField(this.mesh);
             this.mesh = null;
         }
     }
