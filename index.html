@@ -645,6 +645,56 @@
                         <li><strong>Clients receive Alpha 1.0:</strong> the built-in asset generation advances to 2026-09-04-10.</li>
                     </ul>
                 </div>
+                <div class="patch-note-entry" data-version="0.90.0">
+                    <h3 class="patch-note-entry__title">Alpha 0.90.0 milestone (the foundation holds)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Characters survive interrupted journeys:</strong> reconnect, session resume, dungeon-room restoration, and interrupted crystal Vigil recovery preserve authoritative progress instead of silently restarting completed work.</li>
+                        <li><strong>Persistence has an upgrade path:</strong> ordered Mongo migrations, required indexes, and repository-owned character mapping protect existing players as the world schema evolves.</li>
+                        <li><strong>The protocol has enforceable boundaries:</strong> EDPB version 2, registered handlers, authentication rules, payload limits, per-message rate policies, and outbound backpressure keep malformed or excessive traffic from becoming gameplay authority.</li>
+                        <li><strong>Known duplication routes are closed:</strong> auctions, direct trade, guild banking, progression, raid rewards, loot ownership, and dungeon re-entry are guarded by server-side validation and regression coverage.</li>
+                        <li><strong>Release confidence is repeatable:</strong> multi-client load scenarios, hot-path benchmarks, race tests, real-browser gates, accessibility checks, and a scheduled 100-client soak define the final pre-beta standard.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="0.80.0">
+                    <h3 class="patch-note-entry__title">Alpha 0.80.0 milestone (the endgame answers)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Level 100 begins a new progression path:</strong> Resonance ranks and Power, Ward, and Fortune traits turn experience beyond the cap into persistent specialization.</li>
+                        <li><strong>The Umbral Nexus opens as a fifth dungeon:</strong> new dissonant enemies, Memory Fracture danger fields, and the Eidolon Devourer connect the elemental journey to the Dark Realm.</li>
+                        <li><strong>Every crystal has a true raid:</strong> Rootheart Sanctum, Tidestar Confluence, Ember Crown Crucible, and Skyglass Eyrie are separate 5–10-player assaults unlocked by their matching realm dungeons.</li>
+                        <li><strong>Raid victory requires restoration:</strong> defeating each crystal guardian begins Artificer Maelin's three-wave Vigil, and the crystal is not credited until every counterattack is cleared.</li>
+                        <li><strong>The Dark King becomes the weekly summit:</strong> the Dark Realm raid adds a personal weekly reward path and a four-phase Malachar encounter aided by Orun, Neris, Pyralis, and Aeral.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="0.70.0">
+                    <h3 class="patch-note-entry__title">Alpha 0.70.0 milestone (the banners cross)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Combat allegiance is authoritative:</strong> one server relationship resolver decides friendly, hostile, duel, arena, party, guild, and safe-zone interactions.</li>
+                        <li><strong>Duels have complete stakes and closure:</strong> challenge, accept, decline, surrender, cancel, and first-down outcomes support competitive fights without applying PvE death loss.</li>
+                        <li><strong>Arenas support real team formats:</strong> dedicated 1v1 and 2v2 instances isolate matches from the overworld and apply PvP-specific balance scalars.</li>
+                        <li><strong>Competition persists across sessions:</strong> seasonal rating, wins, losses, streaks, honor, cosmetic-first rewards, leaderboards, and queue or disconnect penalties form the ranked loop.</li>
+                        <li><strong>The world can become dangerous by choice:</strong> opt-in overworld PvP respects protected town space and clearly distinguishes hostile and friendly players through targets and nameplates.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="0.60.0">
+                    <h3 class="patch-note-entry__title">Alpha 0.60.0 milestone (the guild lanterns are lit)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Guilds become persistent institutions:</strong> players can create, invite, join, leave, remove members, set ranks and MOTDs, transfer leadership, recover inactive leadership, and disband.</li>
+                        <li><strong>Ranks carry real responsibility:</strong> Leader, Officer, and Member permissions control governance and shared-resource actions.</li>
+                        <li><strong>Guildmates remain connected across Eidolon:</strong> guild chat and presence work across regions, dungeons, raids, reconnects, and separate instances.</li>
+                        <li><strong>The guild bank is accountable:</strong> shared items and gold use serialized mutations, permission checks, withdrawal limits, and a durable audit history.</li>
+                        <li><strong>Guild identity is visible:</strong> tags appear in chat, social panels, remote nameplates, and guild-associated dungeon leaderboards.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="0.50.0">
+                    <h3 class="patch-note-entry__title">Alpha 0.50.0 milestone (no hero walks alone)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Chat becomes a multiplayer system:</strong> world, party, guild, whisper, and system channels include reconnect history, reply support, ignore, block, moderation reports, and rate protection.</li>
+                        <li><strong>Parties can organize difficult content:</strong> roles, ready checks, nearby health presentation, persistent membership, and configurable free-for-all or master-loot rules support coordinated play.</li>
+                        <li><strong>Direct exchange is trustworthy:</strong> both players must confirm the same server-owned offer, and any item or gold change invalidates prior confirmation before atomic settlement.</li>
+                        <li><strong>The Trading House is easier to use:</strong> category filters and clearer listing flows help players find the gear and materials they actually need.</li>
+                        <li><strong>The economy can be balanced from evidence:</strong> authoritative gold-source and gold-sink telemetry exposes where wealth enters, moves through, and leaves the world.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.41.0.36">
                     <h3 class="patch-note-entry__title">Patch 0.41.0.36 (the dawnwarden casts off the cowl)</h3>
                     <ul class="patch-note-entry__list">

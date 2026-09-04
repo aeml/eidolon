@@ -30,6 +30,26 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('2026-09-04-10');
     });
 
+    test('preserves player-facing patch notes for every Alpha 1.0 milestone band', () => {
+        const milestones = [
+            ['0.90.0', 'Alpha 0.90.0 milestone', 'the foundation holds'],
+            ['0.80.0', 'Alpha 0.80.0 milestone', 'the endgame answers'],
+            ['0.70.0', 'Alpha 0.70.0 milestone', 'the banners cross'],
+            ['0.60.0', 'Alpha 0.60.0 milestone', 'the guild lanterns are lit'],
+            ['0.50.0', 'Alpha 0.50.0 milestone', 'no hero walks alone']
+        ];
+
+        let previousPosition = indexHtml.indexOf('data-version="1.0.0"');
+        for (const [version, title, subtitle] of milestones) {
+            const position = indexHtml.indexOf(`data-version="${version}"`);
+            expect(position).toBeGreaterThan(previousPosition);
+            expect(indexHtml).toContain(title);
+            expect(indexHtml).toContain(subtitle);
+            previousPosition = position;
+        }
+        expect(indexHtml.indexOf('data-version="0.41.0.36"')).toBeGreaterThan(previousPosition);
+    });
+
     test('retains alpha 0.41.0.36 dawnwarden redesign history', () => {
         expect(indexHtml).toContain('Patch 0.41.0.36');
         expect(indexHtml).toContain('the dawnwarden casts off the cowl');
