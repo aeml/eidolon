@@ -61,6 +61,23 @@ import {
 } from '../art/ProceduralOverworldEnemies.js';
 import { createProceduralLanternholdStructure } from '../art/ProceduralLanternholdArchitecture.js';
 
+// New dungeon and raid enemies deliberately recompose existing production
+// rigs. Keep that relationship in the factory as well as GameEngine so direct
+// consumers (previews, QA galleries, and pooled respawns) resolve the same
+// visible mesh instead of falling through to an unknown-type error.
+export const PROCEDURAL_MESH_ALIASES = Object.freeze({
+    DissonantShade: 'ScorchedWraith',
+    MemoryReaver: 'Construct',
+    DissonantHerald: 'Stormcallers',
+    NullArchitect: 'ObsidianGuardian',
+    EidolonDevourer: 'HollowSentinel',
+    UmbraPrime: 'HollowSentinel',
+    GravenColossus: 'HollowSentinel',
+    TideboundTyrant: 'Thalorath',
+    AshenImperator: 'LordInfernax',
+    TempestSovereign: 'Zephyrion'
+});
+
 export class MeshFactory {
     static loader = new GLTFLoader();
     static cache = {};
@@ -697,6 +714,14 @@ export class MeshFactory {
     static async createMeshForType(type) {
         const pooled = this.getPooledMesh(type);
         if (pooled) return pooled;
+
+        const aliasedType = PROCEDURAL_MESH_ALIASES[type];
+        if (aliasedType) {
+            const aliasedMesh = await this.createMeshForType(aliasedType);
+            aliasedMesh.userData.proceduralAlias = type;
+            aliasedMesh.userData.proceduralSourceType = aliasedType;
+            return aliasedMesh;
+        }
 
         let mesh;
         

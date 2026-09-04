@@ -220,8 +220,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const showNewPlayerFlow = () => {
         updateStartFlow({
             title: 'Create your first character',
-            copy: 'Choose a class fantasy first: Fighter for frontline control, Rogue for burst and tricks, Wizard for ranged spell pressure, Cleric for healing and support. Then enter town, head to the Quest Giver by the Forge, and follow the quest tracker through your first combat and dungeon steps.',
-            steps: 'After you pick a class, use the Skill Tree (K) to understand your branches early. Then open World Map (M) or Journal (J), head to the Quest Giver by the Forge, vendor obvious junk, save Shards, Hearts, and Gems, reach level 30 to unlock all base dungeons, and push to level 100 for Heroic and Mythic runs.'
+            copy: 'Choose a class fantasy first: Fighter for frontline control, Rogue for burst and tricks, Wizard for ranged spell pressure, Cleric for healing and support. Your Fourfold Chronicle starts automatically when you enter Eidolon; follow its tracker through the elemental realms. The Quest Giver standing outside the Forge offers separate daily contracts.',
+            steps: 'After you pick a class, open Journal (J) for your active Chronicle chapter and use the Skill Tree (K) to understand your branches. Use World Map (M) to follow Earth, Water, Fire, and Air; clear each realm dungeon to reveal its crystal raid. Vendor obvious junk, save Shards, Hearts, and Gems, reach level 30 to unlock all base dungeons, and push to level 100 for Heroic and Mythic runs.'
         });
     };
 
@@ -274,7 +274,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
                 // Persist resume token so we can reconnect without re-authenticating.
                 if (data.resumeToken) {
-                    try { localStorage.setItem('eidolon_resume_token', data.resumeToken); } catch (_) {}
+                    try { localStorage.setItem('eidolon_resume_token', data.resumeToken); } catch (_) { /* Storage may be unavailable. */ }
                 }
                 
                 // Hide login panel
@@ -388,13 +388,13 @@ window.addEventListener('DOMContentLoaded', () => {
                     try { return localStorage.getItem('eidolon_resume_token'); } catch (_) { return null; }
                 };
                 window.game.network.onResumeSuccess = (newToken) => {
-                    try { localStorage.setItem('eidolon_resume_token', newToken); } catch (_) {}
+                    try { localStorage.setItem('eidolon_resume_token', newToken); } catch (_) { /* Storage may be unavailable. */ }
                 };
                 window.game.network.onConnectionStateChange = (state) => {
                     window.game?.uiManager?.setConnectionState(state);
                 };
                 window.game.network.onReconnectFailed = () => {
-                    try { localStorage.removeItem('eidolon_resume_token'); } catch (_) {}
+                    try { localStorage.removeItem('eidolon_resume_token'); } catch (_) { /* Storage may be unavailable. */ }
                     isAuthenticated = false;
                     if (loginPanel) loginPanel.style.display = '';
                     if (authStatus) {

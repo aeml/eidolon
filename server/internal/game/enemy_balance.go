@@ -57,6 +57,8 @@ var enemyArchetypeBalances = map[string]enemyArchetypeBalance{
 	"ThunderRoc":       {HealthMultiplier: 1.00, DamageMultiplier: 1.15, Speed: 5.7},
 	"TempestGiant":     {HealthMultiplier: 1.35, DamageMultiplier: 1.15, Speed: 4.5},
 	"CycloneAvatar":    {HealthMultiplier: 1.10, DamageMultiplier: 1.20, Speed: 5.8},
+	"DissonantShade":   {HealthMultiplier: 1.05, DamageMultiplier: 1.15, Speed: 5.6},
+	"MemoryReaver":     {HealthMultiplier: 1.40, DamageMultiplier: 1.20, Speed: 4.8},
 }
 
 type dungeonEnemyRank int
@@ -96,6 +98,14 @@ var dungeonBossBalances = map[string]dungeonBossBalance{
 	"AbyssalGoliath":    {HealthMultiplier: 1.45, DamageMultiplier: 1.12},
 	"MaelstromWarden":   {HealthMultiplier: 1.75, DamageMultiplier: 1.20},
 	"Thalorath":         {HealthMultiplier: 2.40, DamageMultiplier: 1.35},
+	"DissonantHerald":   {HealthMultiplier: 1.35, DamageMultiplier: 1.10},
+	"NullArchitect":     {HealthMultiplier: 1.80, DamageMultiplier: 1.22},
+	"EidolonDevourer":   {HealthMultiplier: 2.70, DamageMultiplier: 1.40},
+	"UmbraPrime":        {HealthMultiplier: 8.00, DamageMultiplier: 1.55},
+	"GravenColossus":    {HealthMultiplier: 4.00, DamageMultiplier: 1.35},
+	"TideboundTyrant":   {HealthMultiplier: 4.25, DamageMultiplier: 1.38},
+	"AshenImperator":    {HealthMultiplier: 4.50, DamageMultiplier: 1.42},
+	"TempestSovereign":  {HealthMultiplier: 4.50, DamageMultiplier: 1.45},
 }
 
 type enemyCombatProfile struct {

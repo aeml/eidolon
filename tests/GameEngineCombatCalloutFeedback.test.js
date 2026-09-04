@@ -20,8 +20,55 @@ jest.unstable_mockModule('../src/proto/state_pb.js', () => {
 const { GameEngine } = await import('../src/core/GameEngine.js');
 const { AUDIO_CUES } = await import('../src/audio/AudioManager.js');
 const repoRoot = path.resolve(process.cwd());
+const gameEngineSource = [
+    'GameEngine.js',
+    'GameEngineNetworkMessages.js',
+    'GameEngineEntitySync.js',
+    'GameEngineMovement.js',
+    'GameEngineRuntime.js'
+].map((name) => fs.readFileSync(path.join(repoRoot, 'src/core', name), 'utf8')).join('\n');
 
 describe('GameEngine encounter callouts', () => {
+    test('presents each Dark King Eidolon phase as story and combat feedback', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.uiManager = { showCombatCallout: jest.fn(), addGameMessage: jest.fn() };
+        engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
+
+        engine.handleServerMessage({
+            type: 'raid_phase',
+            payload: {
+                phase: 3, eidolon: 'Pyralis', element: 'Fire', title: 'Phase III · The Will to Burn',
+                dialogue: 'Malachar reveals his plan.', effect: 'Malachar takes 25% more damage.', color: '#ff7b3d'
+            }
+        });
+
+        expect(engine.uiManager.showCombatCallout).toHaveBeenCalledWith(expect.objectContaining({
+            title: 'Phase III · The Will to Burn', subtitle: expect.stringContaining('Pyralis'), tone: 'danger'
+        }));
+        expect(engine.uiManager.addGameMessage).toHaveBeenCalledWith('Dark King', 'Malachar reveals his plan.');
+        expect(engine.uiManager.addGameMessage).toHaveBeenCalledWith('Resonance', 'Malachar takes 25% more damage.');
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('Fire: Pyralis', engine.player.position, '#ff7b3d', '26px');
+    });
+
+    test('announces automatic Chronicle advancement without a quest giver', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.player = { id: 'player-1' };
+        engine.uiManager = { showCombatCallout: jest.fn(), addGameMessage: jest.fn() };
+        engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
+
+        engine.handleServerMessage({
+            type: 'chronicle_advance',
+            payload: { completedTitle: 'When the Roots Remember', nextTitle: 'Pearls Without Tides', nextLore: 'Neris remembers every promise.', finale: false }
+        });
+
+        expect(engine.uiManager.showCombatCallout).toHaveBeenCalledWith(expect.objectContaining({
+            title: 'CHAPTER COMPLETE · When the Roots Remember', subtitle: 'New chapter: Pearls Without Tides'
+        }));
+        expect(engine.uiManager.addGameMessage).toHaveBeenCalledWith('Recovered Lore', 'Neris remembers every promise.');
+    });
+
     test('notifies UI when a boss telegraph arrives', () => {
         const engine = Object.create(GameEngine.prototype);
         engine.effects = [];
@@ -2082,7 +2129,7 @@ describe('GameEngine encounter callouts', () => {
     });
 
     test('keeps all replicated remote support states in the shared support registry', () => {
-        const source = fs.readFileSync(path.join(repoRoot, 'src/core/GameEngine.js'), 'utf8');
+        const source = gameEngineSource;
 
         expect(source).toContain('const REMOTE_SUPPORT_STATE_CONFIG = {');
         expect(source).toContain('spirit_guardians:');
@@ -2096,7 +2143,7 @@ describe('GameEngine encounter callouts', () => {
     });
 
     test('routes replicated remote support effects through the shared support effect sync registry', () => {
-        const source = fs.readFileSync(path.join(repoRoot, 'src/core/GameEngine.js'), 'utf8');
+        const source = gameEngineSource;
 
         expect(source).toContain('const REMOTE_EFFECT_SYNC_CONFIG = {');
         expect(source).toContain('guardian_embrace:');
@@ -2109,14 +2156,14 @@ describe('GameEngine encounter callouts', () => {
     });
 
     test('routes local authoritative support effects through the shared support effect sync helper', () => {
-        const source = fs.readFileSync(path.join(repoRoot, 'src/core/GameEngine.js'), 'utf8');
+        const source = gameEngineSource;
 
         expect(source).toContain('syncPlayerSupportEffects(playerEntity, payload)');
         expect(source).toContain('this.syncPlayerSupportEffects(this.player, pData);');
     });
 
     test('routes spirit guardians through the shared support effect sync helper', () => {
-        const source = fs.readFileSync(path.join(repoRoot, 'src/core/GameEngine.js'), 'utf8');
+        const source = gameEngineSource;
 
         expect(source).toContain("spirit_guardians: {");
         expect(source).toContain("payloadKey: 'spiritsActive'");

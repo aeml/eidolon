@@ -46,6 +46,12 @@ message Quest {
   int32 reward_xp = 6;
   bool completed = 7;
   bool accepted = 8;
+  string title = 9;
+  string description = 10;
+  string lore = 11;
+  string category = 12;
+  int32 chapter = 13;
+  string objective_text = 14;
 }
 
 message SocketedGem {
@@ -95,8 +101,10 @@ message Entity {
   int32 max_mana = 13;
 
   int32 level = 14;
-  int32 experience = 15;
-  int32 max_experience = 16;
+  // Level-cap requirements exceed signed 32-bit range; keep these as 64-bit
+  // integers while values remain exactly representable by browser Numbers.
+  int64 experience = 15;
+  int64 max_experience = 16;
   int32 gold = 17;
 
   // Skills
@@ -206,6 +214,9 @@ message Entity {
   // Social / party
   string party_id = 79;
   string social_status = 80;
+  // Public identity only; ranks, permissions, and membership remain server-owned.
+  string guild_id = 107;
+  string guild_tag = 108;
 
   // Authoritative jump replication
   float jump_start_x = 81;

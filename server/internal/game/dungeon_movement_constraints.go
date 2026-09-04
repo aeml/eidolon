@@ -14,8 +14,13 @@ func (w *World) constrainPointToDungeon(instanceID string, x, z float64) (float6
 		return x, z, false
 	}
 
-	inst, ok := w.InstanceLayouts[instanceID]
-	if !ok || len(inst.Layout.WalkRects) == 0 {
+	inst, ok := w.getDungeonInstance(instanceID)
+	if !ok {
+		return x, z, false
+	}
+	inst.Mu.RLock()
+	defer inst.Mu.RUnlock()
+	if len(inst.Layout.WalkRects) == 0 {
 		return x, z, false
 	}
 

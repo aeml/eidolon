@@ -84,7 +84,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 				}
 
 				target.Mu.RLock()
-				if target.Type != TypeEnemy || target.State == "DEAD" {
+				if !w.CanDamage(player, target) || target.State == "DEAD" {
 					target.Mu.RUnlock()
 					continue
 				}
@@ -208,7 +208,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 				}
 
 				target.Mu.RLock()
-				if target.Type != TypeEnemy || target.State == "DEAD" {
+				if !w.CanDamage(player, target) || target.State == "DEAD" {
 					target.Mu.RUnlock()
 					continue
 				}
@@ -301,10 +301,10 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 					continue
 				}
 				target.Mu.Lock()
-				if target.Type == TypeEnemy && target.State != "DEAD" && withinAbilityRadius(skillName, player.X, player.Z, target, radius) && (target.Scale < 4.0 || canTauntBosses) {
+				if w.CanDamage(player, target) && target.State != "DEAD" && withinAbilityRadius(skillName, player.X, player.Z, target, radius) && (target.Scale < 4.0 || canTauntBosses) {
 					// Taunt: set fighter to highest threat + 10% for this enemy.
 					tauntThreatLocked(target, player.ID)
-				} else if (target.Type == TypePlayer || target.Type == TypeNPC) && target.State != "DEAD" && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
+				} else if (target.Type == TypePlayer || target.Type == TypeNPC) && w.CombatRelationship(player, target) != RelationshipHostile && target.State != "DEAD" && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
 					target.GuardianRoarActive = true
 					target.GuardianRoarEndTime = player.GuardianRoarEndTime
 					target.RecalculateStats()
@@ -389,7 +389,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 			nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID)
 			for _, target := range nearby {
 				target.Mu.Lock()
-				if target.Type != TypeEnemy || target.State == "DEAD" || !withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
+				if !w.CanDamage(player, target) || target.State == "DEAD" || !withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
 					target.Mu.Unlock()
 					continue
 				}
@@ -508,7 +508,7 @@ func (w *World) damageFighterCone(player *Entity, targetX, targetZ, radius, half
 	nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius("", radius), player.InstanceID)
 	for _, target := range nearby {
 		target.Mu.Lock()
-		if target.Type != TypeEnemy || target.State == "DEAD" {
+		if !w.CanDamage(player, target) || target.State == "DEAD" {
 			target.Mu.Unlock()
 			continue
 		}
@@ -543,7 +543,7 @@ func (w *World) damageEarthshakerArea(player *Entity, originX, originZ, targetX,
 	nearby := w.Grid.Nearby(originX, originZ, expandedAbilityRadius("Earthshaker", radius), player.InstanceID)
 	for _, target := range nearby {
 		target.Mu.Lock()
-		if target.Type != TypeEnemy || target.State == "DEAD" {
+		if !w.CanDamage(player, target) || target.State == "DEAD" {
 			target.Mu.Unlock()
 			continue
 		}
@@ -584,7 +584,7 @@ func (w *World) findFighterGripTarget(player *Entity, targetX, targetZ float64, 
 		}
 		target.Mu.RLock()
 		defer target.Mu.RUnlock()
-		if target.Type != TypeEnemy || target.State == "DEAD" || target.InstanceID != player.InstanceID {
+		if !w.CanDamage(player, target) || target.State == "DEAD" || target.InstanceID != player.InstanceID {
 			return false
 		}
 		dx := target.X - player.X

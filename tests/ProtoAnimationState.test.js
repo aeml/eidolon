@@ -33,7 +33,7 @@ describe('ordered movement protocol', () => {
     test('round-trips movement acknowledgement and server tick fields', () => {
         const serverTimeMs = 1_784_564_218_123;
         const envelope = {
-            version: 1,
+            version: 2,
             serverTimeMs,
             delta: {
                 entities: [{
@@ -56,6 +56,31 @@ describe('ordered movement protocol', () => {
             state: 'MOVING'
         }));
         expect(Number(decoded.delta.entities[0].moveSequence)).toBe(928);
+    });
+});
+
+describe('level-cap progression protocol', () => {
+    test('round-trips XP requirements above signed 32-bit range', () => {
+        const maxExperience = 6_901_495_794;
+        const encoded = eidolon.state.Entity.encode({
+            id: 'cap-player', level: 100, experience: maxExperience, maxExperience
+        }).finish();
+        const decoded = eidolon.state.Entity.decode(encoded);
+
+        expect(Number(decoded.experience)).toBe(maxExperience);
+        expect(Number(decoded.maxExperience)).toBe(maxExperience);
+    });
+});
+
+describe('public guild identity protocol', () => {
+    test('round-trips the guild id and nameplate tag', () => {
+        const encoded = eidolon.state.Entity.encode({
+            id: 'guild-player', guildId: 'guild-1', guildTag: 'DUSK'
+        }).finish();
+        const decoded = eidolon.state.Entity.decode(encoded);
+
+        expect(decoded.guildId).toBe('guild-1');
+        expect(decoded.guildTag).toBe('DUSK');
     });
 });
 

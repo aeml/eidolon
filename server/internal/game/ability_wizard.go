@@ -69,7 +69,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				if player.HasAnySetBonus("timeWarpZone") {
 					inRange = target.InstanceID == player.InstanceID
 				}
-				if (target.Type == TypePlayer || target.Type == TypeNPC) && target.State != "DEAD" && inRange {
+				if (target.Type == TypePlayer || target.Type == TypeNPC) && w.CombatRelationship(player, target) != RelationshipHostile && target.State != "DEAD" && inRange {
 					target.TimeWarpActive = true
 					target.TimeWarpEndTime = endTime
 					target.RecalculateStats()
@@ -109,7 +109,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					continue
 				}
 				target.Mu.Lock()
-				if target.Type == TypeEnemy && target.State != "DEAD" {
+				if w.CanDamage(player, target) && target.State != "DEAD" {
 					if !withinAbilityRadius(skillName, targetX, targetZ, target, radius) {
 						target.Mu.Unlock()
 						continue
@@ -274,7 +274,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				}
 
 				target.Mu.RLock()
-				if target.Type != TypeEnemy || target.State == "DEAD" {
+				if !w.CanDamage(player, target) || target.State == "DEAD" {
 					target.Mu.RUnlock()
 					continue
 				}
@@ -574,7 +574,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					continue
 				}
 				target.Mu.RLock()
-				if target.Type != TypeEnemy || target.State == "DEAD" {
+				if !w.CanDamage(player, target) || target.State == "DEAD" {
 					target.Mu.RUnlock()
 					continue
 				}
@@ -679,7 +679,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					continue
 				}
 				target.Mu.RLock()
-				if target.Type != TypeEnemy || target.State == "DEAD" {
+				if !w.CanDamage(player, target) || target.State == "DEAD" {
 					target.Mu.RUnlock()
 					continue
 				}
@@ -714,14 +714,14 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			player.Mana -= cost
 			var homingTarget *Entity
 			if targetID != "" {
-				if target, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(player, target, 18.0, TypeEnemy) {
+				if target, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(w, player, target, 18.0, TypeEnemy) {
 					homingTarget = target
 				}
 			}
 			if homingTarget == nil {
 				minDistance := 4.0
 				for _, target := range w.Grid.Nearby(targetX, targetZ, 4.0+maxAbilityTargetVisualRadius, player.InstanceID) {
-					if !validDirectAbilityTarget(player, target, 18.0, TypeEnemy) {
+					if !validDirectAbilityTarget(w, player, target, 18.0, TypeEnemy) {
 						continue
 					}
 					distance := math.Hypot(target.X-targetX, target.Z-targetZ)
@@ -809,7 +809,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					startNearby := w.Grid.Nearby(oldX, oldZ, effectiveWarpRadius, player.InstanceID)
 					for _, target := range startNearby {
 						target.Mu.RLock()
-						if target.Type != TypeEnemy || target.State == "DEAD" {
+						if !w.CanDamage(player, target) || target.State == "DEAD" {
 							target.Mu.RUnlock()
 							continue
 						}
@@ -864,7 +864,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					endNearby := w.Grid.Nearby(targetX, targetZ, effectiveWarpRadius, player.InstanceID)
 					for _, target := range endNearby {
 						target.Mu.RLock()
-						if target.Type != TypeEnemy || target.State == "DEAD" {
+						if !w.CanDamage(player, target) || target.State == "DEAD" {
 							target.Mu.RUnlock()
 							continue
 						}

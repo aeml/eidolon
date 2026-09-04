@@ -553,10 +553,11 @@ if (interiorGalleryMode) {
     renderSystem.scene.background = new THREE.Color(0x080a0d);
     gridHelper.visible = false;
     const placements = Object.freeze({
-        verdant_bastion_catacombs: [-23, 0, -15],
-        molten_core: [23, 0, -15],
-        tempest_spire: [-23, 0, 15],
-        abyssal_well: [23, 0, 15]
+        verdant_bastion_catacombs: [-46, 0, -16],
+        molten_core: [0, 0, -16],
+        tempest_spire: [46, 0, -16],
+        abyssal_well: [-23, 0, 18],
+        umbral_nexus: [23, 0, 18]
     });
     const roomTemplates = Object.freeze({
         entry_gate: { type: 'start' },
@@ -654,7 +655,7 @@ if (interiorGalleryMode) {
     window.__eidolonSetInteriorQuality = (quality) => {
         renderSystem.setGraphicsQuality(quality);
     };
-    setReadout('Procedural dungeon interior gallery\nFour generated surface languages and every authoritative room beat: gate, cache, shrine, ambush, approach, elite, boss, and route.');
+    setReadout('Procedural dungeon interior gallery\nFive generated surface languages and every authoritative room beat: gate, cache, shrine, ambush, approach, elite, boss, and route.');
 }
 
 const encounterGalleryEffects = [];
@@ -677,7 +678,8 @@ if (encounterGalleryMode) {
         ['verdant_bastion_catacombs', 'ROOT QUAKE', 'root_quake', -23, -15],
         ['molten_core', 'FURNACE RUPTURE', 'furnace_rupture', 23, -15],
         ['tempest_spire', 'STORMBREAK', 'stormbreak', -23, 15],
-        ['abyssal_well', 'UNDERTOW CRUSH', 'undertow_crush', 23, 15]
+        ['abyssal_well', 'UNDERTOW CRUSH', 'undertow_crush', 23, 15],
+        ['umbral_nexus', 'MEMORY FRACTURE', 'memory_fracture', 0, 0]
     ];
     previews.forEach(([theme, label, attack, x, z]) => {
         const effect = createTransientEffect(
@@ -705,7 +707,7 @@ if (encounterGalleryMode) {
     renderSystem.camera.position.set(54, 74, 66);
     controls.target.set(0, 0, 0);
     controls.update();
-    setReadout('Dungeon encounter telegraph gallery\nFour authoritative boss danger fields: Root Quake, Furnace Rupture, Stormbreak, and Undertow Crush.');
+    setReadout('Dungeon encounter telegraph gallery\nFive authoritative boss danger fields: Root Quake, Furnace Rupture, Stormbreak, Undertow Crush, and Memory Fracture.');
 }
 
 const terrainGallery = new THREE.Group();

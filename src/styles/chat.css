@@ -40,8 +40,8 @@
 
 .chat-tab {
     position: relative;
-    min-width: 76px;
-    padding: 7px 14px;
+    min-width: 62px;
+	padding: 7px 10px;
     border: 0;
     border-right: 1px solid var(--border-default);
     background: transparent;

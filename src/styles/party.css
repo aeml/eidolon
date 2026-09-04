@@ -56,6 +56,32 @@
     line-height: 1.45;
 }
 
+.party-panel__controls,
+.party-loot-rule {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    font-size: 10px;
+}
+
+.party-ready-status {
+    color: #8fd3ff;
+}
+
+.party-loot-rule select {
+    min-width: 112px;
+    padding: 3px 5px;
+    border: 1px solid #555;
+    background: #1b1f26;
+    color: #eee;
+    font: inherit;
+}
+
+.party-member--ready {
+    border: 1px solid rgba(92, 222, 139, 0.55);
+}
+
 .party-panel__footer {
     display: flex;
     gap: 5px;

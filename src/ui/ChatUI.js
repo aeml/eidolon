@@ -1,5 +1,5 @@
 const CHAT_SIZE_STORAGE_KEY = 'eidolon.chatSize';
-const CHAT_STREAMS = new Set(['chat', 'game']);
+const CHAT_VIEWS = new Set(['chat', 'party', 'guild', 'whisper', 'game']);
 
 /**
  * Owns the two-stream chat log. Communication stays in the Chat stream while
@@ -14,9 +14,8 @@ export class ChatUI {
         this.composer = document.getElementById('chat-composer') || this.input;
         this.tabs = Array.from(document.querySelectorAll('[data-chat-tab]'));
         this.activeStream = 'chat';
-        this.unread = { chat: 0, game: 0 };
+        this.unread = { chat: 0, party: 0, guild: 0, whisper: 0, game: 0 };
         this.maxMessages = 250;
-        this.dismissed = false;
 
         this.bindEvents();
         this.restoreSize();
@@ -32,6 +31,13 @@ export class ChatUI {
         });
 
         this.input?.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                event.stopPropagation();
+                this.setActiveStream('chat');
+                this.input.blur();
+                return;
+            }
             if (event.key !== 'Enter') return;
 
             // Prevent this Enter from reaching the global open-chat listener
@@ -48,7 +54,18 @@ export class ChatUI {
     }
 
     normalizeStream(stream) {
-        return CHAT_STREAMS.has(stream) ? stream : 'chat';
+        return CHAT_VIEWS.has(stream) ? stream : 'chat';
+    }
+
+    entryIsVisible(entry, view = this.activeStream) {
+        const stream = entry?.dataset?.chatStream || 'chat';
+        const channel = entry?.dataset?.chatChannel || '';
+        if (view === 'game') return stream === 'game';
+        if (stream !== 'chat') return false;
+        if (view === 'party') return channel === 'party';
+        if (view === 'guild') return channel === 'guild';
+        if (view === 'whisper') return channel === 'whisper';
+        return true;
     }
 
     setActiveStream(stream, { focusInput = false } = {}) {
@@ -65,13 +82,13 @@ export class ChatUI {
         if (this.messages) {
             this.messages.dataset.activeStream = nextStream;
             Array.from(this.messages.children).forEach((entry) => {
-                entry.hidden = entry.dataset.chatStream !== nextStream;
+                entry.hidden = !this.entryIsVisible(entry, nextStream);
             });
             this.messages.scrollTop = this.messages.scrollHeight;
         }
 
         if (this.composer) {
-            this.composer.hidden = nextStream !== 'chat';
+            this.composer.hidden = nextStream === 'game';
         }
 
         this.clearUnread(nextStream);
@@ -88,7 +105,7 @@ export class ChatUI {
         entry.className = `chat-message chat-message--${normalizedStream}`;
         entry.dataset.chatStream = normalizedStream;
         entry.dataset.chatChannel = String(channel || '');
-        entry.hidden = normalizedStream !== this.activeStream;
+        entry.hidden = !this.entryIsVisible(entry);
 
         if (channel) {
             const channelEl = document.createElement('span');
@@ -109,17 +126,19 @@ export class ChatUI {
         entry.appendChild(messageEl);
         this.messages.appendChild(entry);
         this.trimMessages();
-        // Communication may reveal chat until the player explicitly dismisses
-        // it. Game-feed events are frequent and should remain unread without
-        // opening a panel over gameplay or another window.
-        if (normalizedStream === 'chat' && !this.dismissed) {
+        // Communication keeps the permanent gameplay transcript visible.
+        if (normalizedStream === 'chat') {
             this.chatBox.style.display = 'flex';
         }
 
-        if (normalizedStream === this.activeStream) {
+        if (!entry.hidden) {
             this.messages.scrollTop = this.messages.scrollHeight;
         } else {
-            this.incrementUnread(normalizedStream);
+            this.incrementUnread(normalizedStream === 'game' ? 'game' : 'chat');
+        }
+        const channelView = String(channel || '').toLowerCase();
+        if (['party', 'guild', 'whisper'].includes(channelView) && this.activeStream !== channelView && this.activeStream !== 'chat') {
+            this.incrementUnread(channelView);
         }
     }
 
@@ -157,11 +176,8 @@ export class ChatUI {
         }
     }
 
-    show(show = true) {
-        this.dismissed = !show;
-        if (this.chatBox) {
-            this.chatBox.style.display = show ? 'flex' : 'none';
-        }
+    show() {
+        if (this.chatBox) this.chatBox.style.display = 'flex';
     }
 
     focusChatInput() {

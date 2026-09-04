@@ -1,11 +1,11 @@
 # Eidolon Engineering Roadmap
 
-Last refreshed: July 20, 2026
+Last refreshed: September 4, 2026
 
 This file is a short pointer. The engineering planning that used to live here now lives in two documents that are kept current:
 
-- [`2026-04-18-alpha-1-0-roadmap-and-status.md`](plans/2026-04-18-alpha-1-0-roadmap-and-status.md) — release-line tracker from `0.35.0` through `Alpha 1.0`
-- [`2026-05-03-v1-0-implementation-plan.md`](plans/2026-05-03-v1-0-implementation-plan.md) — audit-grounded slice-level implementation plan with files, dependencies, and definition-of-done gates
+- [`2026-04-18-alpha-1-0-roadmap-and-status.md`](plans/2026-04-18-alpha-1-0-roadmap-and-status.md) — completed release-line tracker from `0.35.0` through `Alpha 1.0`
+- [`2026-05-03-v1-0-implementation-plan.md`](plans/2026-05-03-v1-0-implementation-plan.md) — audit-grounded implementation and closeout record
 
 Per-patch detail lives in `index.html` Patch Notes.
 

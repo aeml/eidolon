@@ -138,3 +138,19 @@ describe('SocialPresenceController party-member highlight (0.37.2 / 0.39.2)', ()
         expect(mate.mesh.getObjectByName('PartyRing')).toBeTruthy();
     });
 });
+
+describe('SocialPresenceController PvP opponents', () => {
+    test('marks only authoritative opponents hostile', () => {
+        const hostile = { setPvPHostile: jest.fn() };
+        const neutral = { setPvPHostile: jest.fn() };
+        const controller = new SocialPresenceController({
+            network: { send: jest.fn() },
+            uiManager: { pvp: { update: jest.fn() } },
+            remotePlayers: new Map([['player-hostile', hostile], ['player-neutral', neutral]]),
+        });
+        expect(controller.handleMessage({ type: 'pvp_update', payload: { opponents: ['player-hostile'] } })).toBe(true);
+        expect(controller.isPvPHostile('player-hostile')).toBe(true);
+        expect(hostile.setPvPHostile).toHaveBeenCalledWith(true);
+        expect(neutral.setPvPHostile).toHaveBeenCalledWith(false);
+    });
+});

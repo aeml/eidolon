@@ -132,6 +132,19 @@ export class QuestUI {
         return `${label}s`;
     }
 
+    getQuestTitle(quest) {
+        if (quest?.title) return quest.title;
+        const target = this.formatQuestTarget(quest?.target, quest?.maxCount);
+        return quest?.type === 'COLLECT' ? `Collect ${target}` : `Kill ${target}`;
+    }
+
+    getQuestObjective(quest) {
+        if (quest?.objectiveText) return quest.objectiveText;
+        const target = this.formatQuestTarget(quest?.target, quest?.maxCount);
+        const verb = quest?.type === 'COLLECT' ? 'Collect' : 'Defeat';
+        return `${verb} ${quest?.maxCount || 0} ${target}.`;
+    }
+
     clearElement(element) {
         element?.replaceChildren();
     }
@@ -565,18 +578,24 @@ export class QuestUI {
             ? quests
                 .filter((q) => q && q.accepted && !q.completed)
                 .map((q) => {
-                    const targetLabel = this.formatQuestTarget(q.target, q.maxCount);
                     const remaining = Math.max(0, (q.maxCount || 0) - (q.count || 0));
+                    const isChronicle = q.category === 'chronicle';
                     return {
                         id: q.id,
-                        title: `Kill ${targetLabel}`,
+                        title: this.getQuestTitle(q),
                         progressLabel: `${q.count || 0} / ${q.maxCount || 0}`,
                         progressPct: q.maxCount > 0 ? Math.min(100, ((q.count || 0) / q.maxCount) * 100) : 0,
                         rewardXP: q.rewardXP || 0,
                         completed: Boolean(q.completed || ((q.count || 0) >= (q.maxCount || 0))),
-                        hint: remaining > 0 ? `${remaining} remaining` : 'Return to the quest NPC for your reward'
+                        badge: isChronicle ? `Story ${q.chapter || ''}`.trim() : 'Daily',
+                        badgeClass: isChronicle ? 'is-objective' : '',
+                        routeTone: isChronicle ? 'warning' : 'neutral',
+                        hint: isChronicle
+                            ? this.getQuestObjective(q)
+                            : remaining > 0 ? `${remaining} remaining` : 'Return to the quest NPC for your reward'
                     };
                 })
+                .sort((left, right) => Number(right.badge?.startsWith('Story')) - Number(left.badge?.startsWith('Story')))
             : [];
 
         const dungeonObjective = this.buildDungeonRoutingObjective();
@@ -739,12 +758,10 @@ export class QuestUI {
         this.clearElement(this.questList);
         if (!quests) return;
 
-        quests.forEach(q => {
+        quests.filter((q) => q?.category !== 'chronicle' && !q?.id?.startsWith('chronicle_')).forEach(q => {
             if (q.accepted && !q.completed && q.count < q.maxCount) return;
             if (q.completed && q.accepted) {
                 // Ready to turn in
-            } else if (q.accepted && q.completed) {
-                return;
             }
 
             const div = document.createElement('div');
@@ -813,6 +830,91 @@ export class QuestUI {
     // QUEST JOURNAL
     // ================================================================
 
+    renderChronicleSection(quests) {
+        const chronicle = Array.isArray(quests)
+            ? quests.filter((q) => q?.category === 'chronicle' || q?.id?.startsWith('chronicle_'))
+                .sort((left, right) => (Number(left.chapter) || 0) - (Number(right.chapter) || 0))
+            : [];
+        if (chronicle.length === 0) return false;
+
+        const completed = chronicle.filter((quest) => quest.completed);
+        const current = chronicle.find((quest) => quest.accepted && !quest.completed) || null;
+        const section = document.createElement('section');
+        section.className = 'chronicle-journal';
+        section.style.background = 'linear-gradient(145deg, rgba(34, 25, 49, 0.97), rgba(15, 21, 32, 0.97))';
+        section.style.border = '1px solid rgba(192, 102, 255, 0.48)';
+        section.style.padding = '14px';
+        section.style.marginBottom = '16px';
+        section.style.display = 'flex';
+        section.style.flexDirection = 'column';
+        section.style.gap = '9px';
+
+        section.appendChild(this.createMessage('The Fourfold Chronicle', {
+            color: '#dfb5ff', fontSize: '14px', fontWeight: 'bold', letterSpacing: '0.08em', textTransform: 'uppercase'
+        }));
+        section.appendChild(this.createMessage(
+            `${completed.length} of 15 chapters complete • Earth → Water → Fire → Air → Dark Realm`,
+            { color: '#aab8d0', fontSize: '11px' }
+        ));
+
+        if (current) {
+            section.appendChild(this.createMessage(`Chapter ${current.chapter}: ${this.getQuestTitle(current)}`, {
+                color: '#fff2bd', fontSize: '15px', fontWeight: 'bold', marginTop: '3px'
+            }));
+            section.appendChild(this.createMessage(current.description || this.getQuestObjective(current), {
+                color: '#e0e4ed', fontSize: '12px', lineHeight: '1.55'
+            }));
+            section.appendChild(this.createMessage(`Objective — ${this.getQuestObjective(current)}`, {
+                color: '#ffd36f', fontSize: '12px', fontWeight: 'bold'
+            }));
+            section.appendChild(this.createMessage(`${current.count || 0} / ${current.maxCount || 0} • ${Number(current.rewardXP || 0).toLocaleString()} XP`, {
+                color: '#8fd3ff', fontSize: '11px'
+            }));
+            if (current.lore) {
+                const lore = document.createElement('blockquote');
+                lore.style.margin = '5px 0 0';
+                lore.style.padding = '9px 11px';
+                lore.style.borderLeft = '3px solid rgba(192, 102, 255, 0.65)';
+                lore.style.background = 'rgba(6, 8, 15, 0.42)';
+                lore.style.color = '#c9bed6';
+                lore.style.fontSize = '11px';
+                lore.style.lineHeight = '1.55';
+                lore.textContent = current.lore;
+                section.appendChild(lore);
+            }
+        } else {
+            section.appendChild(this.createMessage('The resonance is whole. Malachar has fallen, and Eidolon belongs to no king.', {
+                color: '#7cf0a5', fontSize: '13px', fontWeight: 'bold'
+            }));
+        }
+
+        if (completed.length > 0) {
+            const archive = document.createElement('details');
+            const summary = document.createElement('summary');
+            summary.textContent = `Recovered Lore (${completed.length})`;
+            summary.style.color = '#caa8e7';
+            summary.style.cursor = 'pointer';
+            summary.style.fontSize = '11px';
+            archive.appendChild(summary);
+            completed.forEach((quest) => {
+                const entry = document.createElement('div');
+                entry.style.marginTop = '8px';
+                entry.style.paddingTop = '8px';
+                entry.style.borderTop = '1px solid rgba(255,255,255,0.08)';
+                entry.appendChild(this.createMessage(`Chapter ${quest.chapter}: ${this.getQuestTitle(quest)}`, {
+                    color: '#ded3e8', fontSize: '11px', fontWeight: 'bold'
+                }));
+                entry.appendChild(this.createMessage(quest.lore || quest.description || '', {
+                    color: '#9fa8b8', fontSize: '11px', lineHeight: '1.45', marginTop: '3px'
+                }));
+                archive.appendChild(entry);
+            });
+            section.appendChild(archive);
+        }
+        this.journalList.appendChild(section);
+        return Boolean(current);
+    }
+
     updateJournal(quests) {
         this.renderObjectivesPanel(this.buildObjectiveSummary(quests));
         this.clearElement(this.journalList);
@@ -827,6 +929,8 @@ export class QuestUI {
         infoDiv.style.paddingBottom = '10px';
         infoDiv.textContent = resetSnapshot.statusLine;
         this.journalList.appendChild(infoDiv);
+
+        const hasActiveChronicle = this.renderChronicleSection(quests);
 
         const repeatableLadder = this.buildRepeatableLadderSummary(quests);
         if (repeatableLadder) {
@@ -880,10 +984,11 @@ export class QuestUI {
         }
 
         if (!quests) return;
-        let hasActive = false;
+        let hasActive = hasActiveChronicle;
 
         quests.forEach(q => {
             if (!q.accepted || q.completed) return;
+            if (q.category === 'chronicle' || q.id?.startsWith('chronicle_')) return;
             hasActive = true;
 
             const div = document.createElement('div');
@@ -897,7 +1002,6 @@ export class QuestUI {
             const pct = Math.min(100, (q.count / q.maxCount) * 100);
             const color = q.completed ? '#4CAF50' : '#ffd700';
             const status = q.completed ? 'COMPLETED' : 'IN PROGRESS';
-            const targetLabel = this.formatQuestTarget(q.target, q.maxCount);
 
             const header = document.createElement('div');
             header.style.display = 'flex';
@@ -906,7 +1010,7 @@ export class QuestUI {
             const title = document.createElement('span');
             title.style.color = '#fff';
             title.style.fontWeight = 'bold';
-            title.textContent = `Kill ${targetLabel}`;
+            title.textContent = this.getQuestTitle(q);
 
             const statusEl = document.createElement('span');
             statusEl.style.color = color;

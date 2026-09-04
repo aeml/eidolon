@@ -1,0 +1,118 @@
+name: Nightly Multiplayer Soak
+
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+    inputs:
+      duration:
+        description: Soak duration understood by Go (for example 10m or 2h)
+        required: false
+        default: 24h
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nightly-multiplayer-soak
+  cancel-in-progress: false
+
+jobs:
+  soak:
+    name: 100-client authoritative-state soak
+    runs-on: [self-hosted, linux, x64, eidolon-live-browser]
+    timeout-minutes: 1500
+    env:
+      MONGO_URI: mongodb://localhost:27017
+      SOAK_DURATION: ${{ inputs.duration || '24h' }}
+    services:
+      mongodb:
+        image: mongo:7.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.runCommand({ ping: 1 }).ok'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Setup Go
+        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+        with:
+          go-version: '1.24.5'
+          cache-dependency-path: server/go.sum
+
+      - name: Build server and load harness
+        working-directory: server
+        run: |
+          go build -trimpath -o /tmp/eidolon-server .
+          go build -trimpath -o /tmp/eidolon-loadtest ./cmd/loadtest
+
+      - name: Run multiplayer soak
+        working-directory: server
+        run: |
+          set -euo pipefail
+          /tmp/eidolon-server \
+            -addr 127.0.0.1:8080 \
+            -mongo-uri "${MONGO_URI}" \
+            -log-file soak-server.log \
+            -log-stdout=false &
+          server_pid=$!
+          trap 'kill -INT "${server_pid}" 2>/dev/null || true; wait "${server_pid}" 2>/dev/null || true' EXIT
+
+          for attempt in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:8080/healthz >/dev/null; then
+              break
+            fi
+            if [ "${attempt}" -eq 60 ]; then
+              echo 'Server did not become healthy' >&2
+              exit 1
+            fi
+            sleep 1
+          done
+
+          /tmp/eidolon-loadtest \
+            -addr 127.0.0.1:8080 \
+            -scheme ws \
+            -n 100 \
+            -scenario mixed \
+            -duration "${SOAK_DURATION}" >soak-client.log 2>&1 &
+          load_pid=$!
+
+          : > soak-runtime.jsonl
+          while kill -0 "${load_pid}" 2>/dev/null; do
+            curl -fsS http://127.0.0.1:8080/healthz >> soak-runtime.jsonl
+            sleep 60
+          done
+          wait "${load_pid}"
+          cat soak-client.log
+
+          grep -Eq 'Load summary: connected=100 joined=100 state_frames=[1-9][0-9]* read_errors=0 write_errors=0' soak-client.log
+
+          node -e '
+            const fs = require("fs");
+            const samples = fs.readFileSync("soak-runtime.jsonl", "utf8").trim().split(/\n+/).filter(Boolean).map(JSON.parse);
+            if (samples.length < 2) throw new Error("insufficient runtime samples");
+            const maxGoroutines = Math.max(...samples.map(s => s.goroutines));
+            const maxHeap = Math.max(...samples.map(s => s.heapAllocBytes));
+            const growth = samples.at(-1).heapAllocBytes - samples[0].heapAllocBytes;
+            if (maxGoroutines > 2000) throw new Error(`goroutine ceiling exceeded: ${maxGoroutines}`);
+            if (maxHeap > 1610612736) throw new Error(`heap ceiling exceeded: ${maxHeap}`);
+            if (growth > 536870912) throw new Error(`heap growth exceeded: ${growth}`);
+            console.log({ samples: samples.length, maxGoroutines, maxHeap, growth });
+          '
+
+      - name: Upload soak evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: nightly-soak-${{ github.run_id }}
+          path: |
+            server/soak-server.log
+            server/soak-client.log
+            server/soak-runtime.jsonl
+          if-no-files-found: warn
+          retention-days: 14

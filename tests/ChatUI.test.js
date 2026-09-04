@@ -6,7 +6,13 @@ function buildChatDom() {
         <div id="chat-box" style="display:none">
             <div class="chat-tabs" role="tablist">
                 <button class="chat-tab chat-tab--active" data-chat-tab="chat" aria-selected="true">
-                    Chat <span data-chat-unread hidden></span>
+                    All <span data-chat-unread hidden></span>
+                </button>
+                <button class="chat-tab" data-chat-tab="party" aria-selected="false">
+                    Party <span data-chat-unread hidden></span>
+                </button>
+                <button class="chat-tab" data-chat-tab="whisper" aria-selected="false">
+                    Whispers <span data-chat-unread hidden></span>
                 </button>
                 <button class="chat-tab" data-chat-tab="game" aria-selected="false">
                     Game <span data-chat-unread hidden></span>
@@ -51,7 +57,7 @@ describe('ChatUI', () => {
         expect(gameTab.classList.contains('chat-tab--unread')).toBe(false);
     });
 
-    test('game events do not force chat open and dismissal survives delayed communication', () => {
+    test('game events do not force pre-session chat open and gameplay chat cannot be dismissed', () => {
         const chat = new ChatUI();
         const chatBox = document.getElementById('chat-box');
 
@@ -63,7 +69,7 @@ describe('ChatUI', () => {
 
         chat.show(false);
         chat.addMessage('Server', 'Delayed reply', { channel: 'server' });
-        expect(chatBox.style.display).toBe('none');
+        expect(chatBox.style.display).toBe('flex');
 
         chat.focusChatInput();
         expect(chatBox.style.display).toBe('flex');
@@ -80,6 +86,27 @@ describe('ChatUI', () => {
 
         expect(onSend).toHaveBeenCalledWith('hello world');
         expect(input.value).toBe('');
+    });
+
+    test('filters party and whisper channels and Escape returns to All', () => {
+        const chat = new ChatUI();
+        chat.addMessage('Ayla', 'world route', { channel: 'world' });
+        chat.addMessage('Borin', 'party route', { channel: 'party' });
+        chat.addMessage('Cyra', 'quiet route', { channel: 'whisper' });
+
+        document.querySelector('[data-chat-tab="party"]').click();
+        let entries = Array.from(document.querySelectorAll('.chat-message'));
+        expect(entries.map((entry) => entry.hidden)).toEqual([true, false, true]);
+
+        document.querySelector('[data-chat-tab="whisper"]').click();
+        entries = Array.from(document.querySelectorAll('.chat-message'));
+        expect(entries.map((entry) => entry.hidden)).toEqual([true, true, false]);
+
+        const input = document.getElementById('chat-input');
+        input.focus();
+        input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+        expect(chat.activeStream).toBe('chat');
+        expect(entries.every((entry) => !entry.hidden)).toBe(true);
     });
 
     test('restores a remembered desktop size within the current viewport', () => {

@@ -4,7 +4,7 @@ import "encoding/json"
 
 // handleMsgSocial sends the current online-player social list to the requester.
 func handleMsgSocial(c *Client, msg Message) {
-	playerList := buildSocialList()
+	playerList := buildSocialListFor(c.username)
 	payload, _ := json.Marshal(playerList)
 	c.sendSafe(createMessage(MsgSocial, payload))
 }

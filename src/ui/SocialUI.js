@@ -1,3 +1,5 @@
+import { GuildUI } from './GuildUI.js';
+
 /**
  * Social UI module — handles the social (online players) window,
  * party panel, party invite/leave/kick/promote, and party request modal.
@@ -33,6 +35,11 @@ export class SocialUI {
         this.onPartyResponse = null;
         this.onPartyKick = null;
         this.onPartyPromote = null;
+		this.onPartyReadyCheck = null;
+		this.onPartyReady = null;
+        this.onPartyLootRule = null;
+		this.onTradeRequest = null;
+		this.onDuelRequest = null;
 
         // --- Friends callbacks (set by UIBindings / GameEngine, 0.38) ---
         this.onFriendRequest = null;   // (username) → send request
@@ -48,7 +55,12 @@ export class SocialUI {
         this.partyList = document.getElementById('party-list');
         this.partyInviteInput = document.getElementById('party-invite-input');
         this.btnInviteParty = document.getElementById('btn-invite-party');
+		this.btnTradePlayer = document.getElementById('btn-trade-player');
         this.btnLeaveParty = document.getElementById('btn-leave-party');
+		this.btnPartyReadyCheck = document.getElementById('btn-party-ready-check');
+		this.btnPartyReady = document.getElementById('btn-party-ready');
+		this.partyReadyStatus = document.getElementById('party-ready-status');
+		this.partyLootRule = document.getElementById('party-loot-rule');
         this.partyRequestModal = document.getElementById('party-request-modal');
         this.partyInviterName = document.getElementById('party-inviter-name');
         this.btnAcceptParty = document.getElementById('btn-accept-party');
@@ -62,10 +74,26 @@ export class SocialUI {
                 this.partyInviteInput.value = '';
             }
         });
+		this.btnTradePlayer?.addEventListener('click', () => {
+			const name = this.partyInviteInput?.value.trim();
+			if (name) {
+				this.onTradeRequest?.(name);
+				this.partyInviteInput.value = '';
+			}
+		});
 
         if (this.btnLeaveParty) this.btnLeaveParty.addEventListener('click', () => {
             if (this.onPartyLeave) this.onPartyLeave();
         });
+
+		this.btnPartyReadyCheck?.addEventListener('click', () => this.onPartyReadyCheck?.());
+		this.btnPartyReady?.addEventListener('click', () => {
+			const ready = this.btnPartyReady.dataset.ready !== 'true';
+			this.onPartyReady?.(ready);
+		});
+		this.partyLootRule?.addEventListener('change', () => {
+			this.onPartyLootRule?.(this.partyLootRule.value);
+		});
 
         if (this.btnAcceptParty) this.btnAcceptParty.addEventListener('click', () => {
             if (this.onPartyResponse) this.onPartyResponse(this.currentInviter, true);
@@ -121,6 +149,7 @@ export class SocialUI {
 
         if (show) {
             if (this.onSocialOpen) this.onSocialOpen();
+            document.getElementById('close-social')?.focus();
             if (this.partyPanel) {
                 this.partyPanel.style.display = 'block';
             }
@@ -182,6 +211,13 @@ export class SocialUI {
                     }
                 });
                 action.appendChild(inviteButton);
+                const duelButton = document.createElement('button');
+                duelButton.className = 'social-window__invite-btn';
+                duelButton.type = 'button';
+                duelButton.textContent = 'Duel';
+                duelButton.setAttribute('aria-label', `Challenge ${p.name} to a duel`);
+                duelButton.addEventListener('click', () => this.onDuelRequest?.(p.name));
+                action.appendChild(duelButton);
             } else {
                 const selfBadge = document.createElement('span');
                 selfBadge.className = 'social-window__self-badge';
@@ -287,6 +323,13 @@ export class SocialUI {
         this.inParty = inParty;
 
         if (!inParty) {
+			if (this.btnPartyReadyCheck) this.btnPartyReadyCheck.hidden = true;
+			if (this.btnPartyReady) this.btnPartyReady.hidden = true;
+			if (this.partyReadyStatus) this.partyReadyStatus.textContent = '';
+			if (this.partyLootRule) {
+				this.partyLootRule.value = 'ffa';
+				this.partyLootRule.disabled = true;
+			}
             if (panelGuidance) {
                 panelGuidance.textContent = 'Stay near party members to share kill credit, gold, XP, and dungeon boss rewards. Each nearby member also adds to the party reward bonus.';
             }
@@ -313,6 +356,21 @@ export class SocialUI {
         const player = this.ctx.getLastPlayer();
         const myId = player ? player.id : null;
         const amILeader = myId === leaderId;
+		const myMember = members.find((member) => member.id === myId);
+		const readyCheckActive = !!partyData.readyCheckActive;
+		if (this.btnPartyReadyCheck) this.btnPartyReadyCheck.hidden = !amILeader;
+		if (this.btnPartyReady) {
+			this.btnPartyReady.hidden = !readyCheckActive;
+			this.btnPartyReady.dataset.ready = String(!!myMember?.ready);
+			this.btnPartyReady.textContent = myMember?.ready ? 'Not Ready' : 'Ready';
+		}
+		if (this.partyReadyStatus) {
+			this.partyReadyStatus.textContent = readyCheckActive ? 'Check active' : partyData.allReady ? 'All ready' : '';
+		}
+		if (this.partyLootRule) {
+			this.partyLootRule.value = partyData.lootRule || 'ffa';
+			this.partyLootRule.disabled = !amILeader;
+		}
         const nearbyBonusPct = Math.max(10, members.length * 10);
 
         if (panelGuidance) {
@@ -324,11 +382,13 @@ export class SocialUI {
         members.forEach(member => {
             const div = document.createElement('div');
             div.className = 'party-member';
+			div.classList.toggle('party-member--ready', !!member.ready);
 
             const hpPercent = (member.hp / member.maxHp) * 100;
             const isLeader = member.isLeader;
             const isMe = member.id === myId;
-            const roleLabel = isLeader ? 'Leader' : isMe ? 'You' : 'Member';
+			const combatRole = member.role || 'damage';
+			const roleLabel = `${combatRole}${isLeader ? ' • Leader' : isMe ? ' • You' : ''}${member.ready ? ' • Ready' : ''}`;
 
             const info = document.createElement('div');
             info.className = 'party-member-info';
@@ -387,6 +447,7 @@ export class SocialUI {
                 kickButton.className = 'party-btn';
                 kickButton.type = 'button';
                 kickButton.title = 'Kick';
+                kickButton.setAttribute('aria-label', `Kick ${member.name} from party`);
                 kickButton.textContent = 'K';
                 kickButton.addEventListener('click', () => {
                     this.onPartyKick?.(member.id);
@@ -396,6 +457,7 @@ export class SocialUI {
                 promoteButton.className = 'party-btn';
                 promoteButton.type = 'button';
                 promoteButton.title = 'Promote';
+                promoteButton.setAttribute('aria-label', `Promote ${member.name} to party leader`);
                 promoteButton.textContent = 'P';
                 promoteButton.addEventListener('click', () => {
                     this.onPartyPromote?.(member.id);
@@ -419,6 +481,7 @@ export class SocialUI {
             benefits.textContent = 'Accept to share nearby kill rewards, dungeon boss credit, and party-led dungeon entry flow.';
         }
         this.partyRequestModal.style.display = 'block';
+        this.btnAcceptParty?.focus();
     }
 
     hidePartyRequest() {
@@ -436,6 +499,9 @@ export class SocialUI {
         const div = document.getElementById('social-window') || document.createElement('div');
         div.id = 'social-window';
         div.className = 'window social-window content-aware-window';
+        div.setAttribute('role', 'dialog');
+        div.setAttribute('aria-modal', 'true');
+        div.setAttribute('aria-labelledby', 'social-window-title');
         div.style.display = 'none';
         div.style.position = 'absolute';
         div.style.top = '50%';
@@ -446,7 +512,7 @@ export class SocialUI {
 
         div.innerHTML = `
             <div class="window-header social-window__header">
-                <span class="social-window__title">SOCIAL</span>
+                <span id="social-window-title" class="social-window__title">SOCIAL</span>
                 <button id="close-social" class="close-btn" type="button" aria-label="Close social window">×</button>
             </div>
             <div class="social-window__status-control">
@@ -467,6 +533,10 @@ export class SocialUI {
                         id="tab-btn-friends" role="tab"
                         aria-selected="false" aria-controls="tab-panel-friends"
                         type="button">Friends <span id="friends-badge" class="social-window__friends-badge" style="display:none"></span></button>
+                <button class="social-window__tab"
+                        id="tab-btn-guild" role="tab"
+                        aria-selected="false" aria-controls="tab-panel-guild"
+                        type="button">Guild</button>
             </div>
             <div id="tab-panel-online" role="tabpanel" aria-labelledby="tab-btn-online">
                 <div class="social-window__columns">
@@ -493,6 +563,7 @@ export class SocialUI {
                 <div class="friends-section-header">Friends</div>
                 <div id="friends-list" class="friends-list"></div>
             </div>
+            <div id="tab-panel-guild" role="tabpanel" aria-labelledby="tab-btn-guild" style="display:none"></div>
         `;
 
         if (!div.parentElement) {
@@ -507,6 +578,7 @@ export class SocialUI {
             this._switchTab('friends');
             this._renderFriendsPanel();
         });
+        div.querySelector('#tab-btn-guild')?.addEventListener('click', () => this._switchTab('guild'));
 
         // Add friend button
         const addBtn = div.querySelector('#btn-add-friend');
@@ -532,6 +604,11 @@ export class SocialUI {
         this._friendsPendingList = div.querySelector('#friends-pending-list');
         this._friendsPendingSection = div.querySelector('#friends-pending-section');
         this._friendsBadge = div.querySelector('#friends-badge');
+        this.guild = new GuildUI({
+            container: div.querySelector('#tab-panel-guild'),
+            getLastPlayer: this.ctx.getLastPlayer,
+            addChatMessage: this.ctx.addChatMessage,
+        });
     }
 
     /** Switch between 'online' and 'friends' tabs. */
@@ -539,23 +616,29 @@ export class SocialUI {
         this._activeTab = tab;
         const onlinePanel = this.socialWindow.querySelector('#tab-panel-online');
         const friendsPanel = this.socialWindow.querySelector('#tab-panel-friends');
+        const guildPanel = this.socialWindow.querySelector('#tab-panel-guild');
         const onlineBtn = this.socialWindow.querySelector('#tab-btn-online');
         const friendsBtn = this.socialWindow.querySelector('#tab-btn-friends');
+        const guildBtn = this.socialWindow.querySelector('#tab-btn-guild');
+
+        for (const panel of [onlinePanel, friendsPanel, guildPanel]) panel.style.display = 'none';
+        for (const button of [onlineBtn, friendsBtn, guildBtn]) {
+            button?.classList.remove('social-window__tab--active');
+            button?.setAttribute('aria-selected', 'false');
+        }
 
         if (tab === 'online') {
             if (onlinePanel) onlinePanel.style.display = '';
-            if (friendsPanel) friendsPanel.style.display = 'none';
             onlineBtn?.classList.add('social-window__tab--active');
             onlineBtn?.setAttribute('aria-selected', 'true');
-            friendsBtn?.classList.remove('social-window__tab--active');
-            friendsBtn?.setAttribute('aria-selected', 'false');
-        } else {
-            if (onlinePanel) onlinePanel.style.display = 'none';
+        } else if (tab === 'friends') {
             if (friendsPanel) friendsPanel.style.display = '';
             friendsBtn?.classList.add('social-window__tab--active');
             friendsBtn?.setAttribute('aria-selected', 'true');
-            onlineBtn?.classList.remove('social-window__tab--active');
-            onlineBtn?.setAttribute('aria-selected', 'false');
+        } else {
+            if (guildPanel) guildPanel.style.display = '';
+            guildBtn?.classList.add('social-window__tab--active');
+            guildBtn?.setAttribute('aria-selected', 'true');
         }
     }
 

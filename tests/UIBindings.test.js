@@ -45,6 +45,7 @@ describe('UIBindings', () => {
                     updateInventory: jest.fn()
                 },
                 social: {},
+                directTrade: {},
                 trading: {},
                 skillTree: {},
                 forge: {},

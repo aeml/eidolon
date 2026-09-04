@@ -50,4 +50,29 @@ describe('tooling baseline', () => {
         expect(readme).toContain('npm run test:smoke');
         expect(readme).toContain('npm run lint');
     });
+
+    test('keeps orchestration entry points within their architecture budgets', () => {
+        const budgets = new Map([
+            ['server/internal/game/world.go', 3000],
+            ['server/main.go', 2000],
+            ['src/core/GameEngine.js', 2500],
+            ['src/ui/UIManager.js', 1500]
+        ]);
+
+        for (const [relativePath, maximumLines] of budgets) {
+            const source = fs.readFileSync(path.join(repoRoot, relativePath), 'utf8');
+            const lineCount = source.split(/\r?\n/).length;
+            expect({ relativePath, lineCount }).toEqual(expect.objectContaining({
+                relativePath,
+                lineCount: expect.any(Number)
+            }));
+            expect(lineCount).toBeLessThanOrEqual(maximumLines);
+        }
+    });
+
+    test('extracted runtime modules explicitly import every browser-colliding entity constructor', () => {
+        const runtime = fs.readFileSync(path.join(repoRoot, 'src/core/GameEngineRuntime.js'), 'utf8');
+        expect(runtime).toContain("import { Fence } from '../entities/Fence.js';");
+        expect(runtime).toContain('new Fence(');
+    });
 });

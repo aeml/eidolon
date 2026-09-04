@@ -1,0 +1,57 @@
+.resonance-panel {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid rgba(174, 126, 255, 0.55);
+    border-radius: 6px;
+    background: linear-gradient(135deg, rgba(42, 20, 66, 0.9), rgba(13, 26, 48, 0.9));
+    color: #e8ddff;
+}
+
+.resonance-panel > div {
+    margin-top: 4px;
+    color: #b9acd2;
+    font-size: 0.78rem;
+}
+
+.resonance-traits {
+    display: grid;
+    gap: 5px;
+}
+
+.resonance-btn {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 34px;
+    border: 1px solid #70519b;
+    border-radius: 4px;
+    background: #241937;
+    color: #f2eaff;
+    cursor: pointer;
+}
+
+.resonance-btn span {
+    color: #b9acd2;
+    font-size: 0.72rem;
+}
+
+.resonance-btn:disabled {
+    cursor: default;
+    opacity: 0.48;
+}
+
+.dungeon-raid-card {
+    display: grid;
+    gap: 8px;
+    margin: 14px 0;
+    padding: 12px;
+    border: 1px solid rgba(192, 102, 255, 0.55);
+    border-radius: 6px;
+    background: rgba(25, 13, 40, 0.9);
+    color: #eadcff;
+}
+
+.dungeon-raid-card span {
+    color: #baa9cf;
+    font-size: 0.78rem;
+}

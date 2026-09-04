@@ -18,9 +18,9 @@ func canonicalMovementTestLayout() DungeonLayout {
 		},
 		Corridors: []DungeonCorridor{
 			{
-				FromRoomIndex: 0,
-				ToRoomIndex:   1,
-				Width:         20,
+				FromRoomIndex:   0,
+				ToRoomIndex:     1,
+				Width:           20,
 				WalkRectIndices: []int{2, 3},
 			},
 		},

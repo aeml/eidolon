@@ -27,17 +27,12 @@ async function pressBodyKey(page, key) {
     await page.locator('body').press(key, { timeout: 20_000 });
 }
 
-async function dismissChatIfVisible(page) {
-    const chatBox = page.locator('#chat-box');
-    for (let attempt = 0; attempt < 4 && await chatBox.isVisible(); attempt += 1) {
-        await page.keyboard.press('Escape');
-        await page.waitForTimeout(100);
-    }
-    await expect(chatBox).toBeHidden();
+async function assertChatVisible(page) {
+    await expect(page.locator('#chat-box')).toBeVisible();
 }
 
 async function closeSocialWindow(page) {
-    await dismissChatIfVisible(page);
+    await assertChatVisible(page);
     const socialWindow = page.locator('#social-window');
     if (await socialWindow.isVisible()) await pressBodyKey(page, 'Escape');
     await expect(socialWindow).toBeHidden();
@@ -49,7 +44,7 @@ async function leavePartyIfPresent(page) {
         window.game?.uiManager?.social?.inParty
     ));
     if (!await inParty()) return;
-    await dismissChatIfVisible(page);
+    await assertChatVisible(page);
     await pressBodyKey(page, 'o');
     await expect(page.locator('#social-window')).toBeVisible();
     await page.locator('#btn-leave-party').click();
@@ -75,7 +70,7 @@ async function prepareAnimationCast(page, persistent = false) {
     if (await chatInput.evaluate((element) => element === document.activeElement)) {
         await page.keyboard.press('Escape');
     }
-    await dismissChatIfVisible(page);
+    await assertChatVisible(page);
     await expect.poll(() => page.evaluate(() => window.game?.animationQAReadySequence || 0), {
         timeout: 20_000
     }).toBeGreaterThan(sequence);
@@ -93,7 +88,7 @@ async function selectBranch(page, className, branch) {
         return expectedSkills;
     }
 
-    await dismissChatIfVisible(page);
+    await assertChatVisible(page);
     await pressBodyKey(page, 'k');
     const skillWindow = page.locator('#skill-tree-window');
     await expect(skillWindow).toBeVisible();
@@ -493,7 +488,7 @@ test.describe('two-account multiplayer', () => {
             await closeSocialWindow(secondPage);
             phase('closed secondary social window');
             await firstPage.bringToFront();
-            await dismissChatIfVisible(firstPage);
+            await assertChatVisible(firstPage);
             await expect(firstPage.locator('#social-window')).toBeVisible();
             phase('cleared chat overlay from party controls');
             await firstPage.locator('#party-invite-input').fill(secondary.username);

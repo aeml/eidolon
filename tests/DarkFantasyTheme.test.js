@@ -17,7 +17,7 @@ import {
 describe('Eidolon dark-fantasy art direction', () => {
     test('every overworld realm, town, and dungeon has a distinct intentional theme', () => {
         const keys = [...OVERWORLD_THEME_KEYS, ...DUNGEON_THEME_KEYS];
-        expect(keys).toHaveLength(9);
+        expect(keys).toHaveLength(10);
 
         const themes = keys.map((key) => DARK_FANTASY_REGION_THEMES[key]);
         expect(new Set(themes.map((theme) => theme.id)).size).toBe(themes.length);

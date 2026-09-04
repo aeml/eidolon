@@ -210,6 +210,24 @@
             </div>
         </div>
 
+		<div id="direct-trade-window" class="window direct-trade-window" style="display: none;" role="dialog" aria-labelledby="direct-trade-title">
+			<div class="window-header">
+				<span id="direct-trade-title">Direct Trade</span>
+				<button id="btn-close-direct-trade" class="close-btn" type="button" aria-label="Cancel direct trade">×</button>
+			</div>
+			<div class="direct-trade-status" id="direct-trade-status">Both players must confirm the final offer.</div>
+			<div class="direct-trade-columns">
+				<section><h3>Your offer</h3><div id="direct-trade-own-items" class="direct-trade-items"></div></section>
+				<section><h3 id="direct-trade-partner-title">Their offer</h3><div id="direct-trade-other-items" class="direct-trade-items"></div><div id="direct-trade-other-gold"></div></section>
+			</div>
+			<label class="direct-trade-gold">Your gold <input id="direct-trade-gold" type="number" min="0" max="100000" value="0"></label>
+			<div class="direct-trade-actions">
+				<button id="btn-direct-trade-offer" class="btn-action" type="button">Update Offer</button>
+				<button id="btn-direct-trade-confirm" class="btn-action" type="button">Confirm</button>
+				<button id="btn-direct-trade-cancel" class="btn-secondary" type="button">Cancel</button>
+			</div>
+		</div>
+
         <!-- Party Panel -->
         <div id="party-panel">
             <div class="party-panel__header">
@@ -217,17 +235,29 @@
                 <button id="btn-leave-party" class="party-btn party-btn--danger" type="button">Leave</button>
             </div>
             <div id="party-panel-guidance" class="party-panel__guidance">Stay near party members to share kill credit, gold, XP, and dungeon boss rewards. Each nearby member also adds to the party reward bonus.</div>
+            <div id="party-readiness" class="party-panel__controls">
+                <button id="btn-party-ready-check" class="party-btn" type="button">Ready Check</button>
+                <button id="btn-party-ready" class="party-btn party-btn--success" type="button" hidden>Ready</button>
+                <span id="party-ready-status" class="party-ready-status"></span>
+            </div>
+            <label class="party-loot-rule" for="party-loot-rule">Loot
+                <select id="party-loot-rule">
+                    <option value="ffa">Free for all</option>
+                    <option value="master">Master loot</option>
+                </select>
+            </label>
             <div id="party-list">
                 <!-- Members go here -->
             </div>
             <div class="party-panel__footer">
-                <input type="text" id="party-invite-input" class="party-panel__invite-input" placeholder="Player Name">
+                <input type="text" id="party-invite-input" class="party-panel__invite-input" placeholder="Player Name" aria-label="Party, trade, or duel player name">
                 <button id="btn-invite-party" class="party-btn party-btn--success" type="button">Invite</button>
+				<button id="btn-trade-player" class="party-btn" type="button">Trade</button>
             </div>
         </div>
 
         <!-- Party Request Modal -->
-        <div id="party-request-modal" class="party-request-modal">
+        <div id="party-request-modal" class="party-request-modal" role="dialog" aria-modal="true" aria-labelledby="party-request-text">
             <h3 id="party-request-text" class="party-request-modal__title">Party Invite</h3>
             <div class="party-request-modal__body">
                 <span id="party-inviter-name" class="party-request-modal__inviter">Player</span> wants to invite you to a party.
@@ -243,7 +273,16 @@
         <div id="chat-box" aria-label="Chat and game event log">
             <div id="chat-tabs" class="chat-tabs" role="tablist" aria-label="Message log">
                 <button id="chat-tab-chat" class="chat-tab chat-tab--active" type="button" role="tab" aria-selected="true" aria-controls="chat-messages" data-chat-tab="chat">
-                    Chat <span class="chat-tab__unread" data-chat-unread hidden></span>
+                    All <span class="chat-tab__unread" data-chat-unread hidden></span>
+                </button>
+                <button id="chat-tab-party" class="chat-tab" type="button" role="tab" aria-selected="false" aria-controls="chat-messages" data-chat-tab="party" tabindex="-1">
+                    Party <span class="chat-tab__unread" data-chat-unread hidden></span>
+                </button>
+                <button id="chat-tab-guild" class="chat-tab" type="button" role="tab" aria-selected="false" aria-controls="chat-messages" data-chat-tab="guild" tabindex="-1">
+                    Guild <span class="chat-tab__unread" data-chat-unread hidden></span>
+                </button>
+                <button id="chat-tab-whisper" class="chat-tab" type="button" role="tab" aria-selected="false" aria-controls="chat-messages" data-chat-tab="whisper" tabindex="-1">
+                    Whispers <span class="chat-tab__unread" data-chat-unread hidden></span>
                 </button>
                 <button id="chat-tab-game" class="chat-tab" type="button" role="tab" aria-selected="false" aria-controls="chat-messages" data-chat-tab="game" tabindex="-1">
                     Game <span class="chat-tab__unread" data-chat-unread hidden></span>
@@ -258,12 +297,13 @@
 
         <!-- Menu Bar -->
         <div id="menu-bar">
-            <div class="hud-menu-btn" id="btn-menu-map" title="World Map (M)">Map</div>
-            <div class="hud-menu-btn" id="btn-menu-social" title="Social (O)">Social</div>
-            <div class="hud-menu-btn" id="btn-menu-inventory" title="Inventory (I)">Inventory</div>
-            <div class="hud-menu-btn" id="btn-menu-character" title="Character (C)">Character</div>
-            <div class="hud-menu-btn" id="btn-menu-quest" title="Quest Journal (J)">Quests</div>
-            <div class="hud-menu-btn" id="btn-menu-skills" title="Skills (K)">Skills</div>
+            <button type="button" class="hud-menu-btn" id="btn-menu-map" title="World Map (M)">Map</button>
+            <button type="button" class="hud-menu-btn" id="btn-menu-social" title="Social (O)">Social</button>
+            <button type="button" class="hud-menu-btn" id="btn-menu-pvp" title="Duels and Arena">PvP</button>
+            <button type="button" class="hud-menu-btn" id="btn-menu-inventory" title="Inventory (I)">Inventory</button>
+            <button type="button" class="hud-menu-btn" id="btn-menu-character" title="Character (C)">Character</button>
+            <button type="button" class="hud-menu-btn" id="btn-menu-quest" title="Quest Journal (J)">Quests</button>
+            <button type="button" class="hud-menu-btn" id="btn-menu-skills" title="Skills (K)">Skills</button>
         </div>
 
         <div id="world-map">
@@ -285,7 +325,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.41.0.36</span>
+                <span class="start-version-row__label">Alpha 1.0.0</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -293,8 +333,8 @@
                 <div class="window-header"><span>FIRST STEPS</span></div>
                 <div class="start-flow-panel__body">
                     <div id="start-flow-title" class="start-flow-panel__title">Login to continue your run</div>
-                    <div id="start-flow-copy" class="start-flow-panel__copy">Returning players can jump straight back in. New players should pick a class fantasy first: Fighter for frontline control, Rogue for burst and tricks, Wizard for ranged spell pressure, Cleric for healing and support. Then enter town, head to the Quest Giver by the Forge, and follow the quest tracker through the first combat and dungeon steps.</div>
-                    <div id="start-flow-steps" class="start-flow-panel__steps">1. Login or register. 2. Enter world or create a character. 3. Open Skill Tree (K) to review your branches, then use Quests (J), World Map (M), and the Quest Giver by the Forge to start your route. Vendor obvious junk, save forge materials, reach level 30 to unlock all base dungeons, and push to level 100 for Heroic and Mythic runs.</div>
+                    <div id="start-flow-copy" class="start-flow-panel__copy">Returning players can jump straight back in. New players should pick a class fantasy first: Fighter for frontline control, Rogue for burst and tricks, Wizard for ranged spell pressure, Cleric for healing and support. The Fourfold Chronicle starts automatically when you enter Eidolon; follow its tracker through the elemental realms. The Quest Giver standing outside the Forge offers separate daily contracts.</div>
+                    <div id="start-flow-steps" class="start-flow-panel__steps">1. Login or register. 2. Enter world or create a character. 3. Open Journal (J) for your active Chronicle chapter and Skill Tree (K) to review your branches. Use World Map (M) to follow Earth → Water → Fire → Air, clearing each realm dungeon to reveal its crystal raid. Vendor obvious junk, save forge materials, reach level 30 to unlock all base dungeons, and push to level 100 for Heroic and Mythic runs.</div>
                 </div>
             </div>
             
@@ -470,7 +510,7 @@
                                 </div>
                                 <div id="asset-pack-core-status" class="asset-cache-pack__status">Procedural core built in</div>
                                 <div id="asset-pack-core-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-36</div>
+                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-04-10</div>
                             </div>
                             <button id="btn-download-core-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -482,7 +522,7 @@
                                 </div>
                                 <div id="asset-pack-dungeon-status" class="asset-cache-pack__status">Procedural dungeon entrances built in</div>
                                 <div id="asset-pack-dungeon-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-36</div>
+                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-04-10</div>
                             </div>
                             <button id="btn-download-dungeon-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -494,7 +534,7 @@
                                 </div>
                                 <div id="asset-pack-environment-status" class="asset-cache-pack__status">Procedural realm terrain built in</div>
                                 <div id="asset-pack-environment-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-environment-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-36</div>
+                                <div id="asset-pack-environment-version" class="asset-cache-pack__meta">Built-in version: 2026-09-04-10</div>
                             </div>
                             <button id="btn-download-environment-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -555,7 +595,7 @@
                 </div>
                 <div id="help-first-hour-guide" class="help-guide help-guide--separated">
                     <div class="help-guide__title">First Hour Milestones</div>
-                    <div><strong class="help-guide__key">1.</strong> Start with the <strong>Quest Giver</strong> by the <strong>Forge</strong> and follow the objective tracker.</div>
+                    <div><strong class="help-guide__key">1.</strong> Your <strong>Fourfold Chronicle</strong> starts automatically. Follow its objective tracker; visit the <strong>Quest Giver</strong> outside the <strong>Forge</strong> for separate daily contracts.</div>
                     <div><strong class="help-guide__key">2.</strong> Use <strong>Vendor / Repair</strong> for obvious junk, <strong>Stash</strong> for anything you may keep, and <strong>Forge</strong> for Shards, Hearts, and Gems.</div>
                     <div><strong class="help-guide__key">3.</strong> <strong>Level 30</strong> unlocks all base dungeons through the <strong>Dungeon Guide</strong>.</div>
                     <div><strong class="help-guide__key">4.</strong> <strong>Level 100</strong> unlocks <strong>Heroic</strong> and <strong>Mythic</strong> dungeon difficulties.</div>
@@ -587,6 +627,24 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.0 (the worlds answer together)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Multiplayer has a social backbone:</strong> structured world, party, guild, whisper, and system chat now includes reconnect history, reply convenience, ignore/block controls, Mongo-backed reports, party readiness, role and health display, and configurable loot rules.</li>
+                        <li><strong>Trustworthy player trade:</strong> both-confirm direct trade uses server-owned escrow, while auction settlement independently tracks item and seller claims to prevent duplicate delivery or lost payout during retries and races.</li>
+                        <li><strong>Guilds are persistent institutions:</strong> create, invite, roster, rank, MOTD, leadership, bank, audit, guild chat, and seasonal dungeon leaderboard flows survive reconnects; compact guild identity now appears in chat, social surfaces, and remote nameplates.</li>
+                        <li><strong>PvP is genuinely playable:</strong> the central relationship resolver powers safe zones, duels, surrender and first-down outcomes, opt-in overworld flagging, 1v1 and 2v2 arenas, seasonal profiles, cosmetic-first rewards, balance scalars, and disconnect penalties.</li>
+                        <li><strong>The cap has a long tail:</strong> level-100 characters earn Resonance ranks, the Umbral Nexus becomes the fifth dungeon, and the 5–10-player Dark Realm raid has an ISO-week lockout and its own reward path.</li>
+                        <li><strong>The Fourfold Chronicle tells Eidolon's central story:</strong> every character begins a 15-chapter campaign without a quest-giver handoff, recovers soulbound relics across Earth, Water, Fire, and Air, clears each realm dungeon to expose a separate crystal raid, then completes all four raids and protects Artificer Maelin through three-wave repair Vigils.</li>
+                        <li><strong>Resonance opens the endgame:</strong> only four restored crystals can reveal the Umbral Nexus and stabilize the Dark Realm portal. Malachar explains his attempt to enslave Eidolon's elements during a four-phase finale where Orun, Neris, Pyralis, and Aeral each materially aid the raid.</li>
+                        <li><strong>The architecture can carry the game:</strong> the four former orchestration hotspots are below their roadmap limits, per-instance dungeon locking is documented and tested, handlers are registered with admission/rate policies, and the state protocol advances to EDPB version 2 for level-cap XP.</li>
+                        <li><strong>Persistence and operations are explicit:</strong> seven ordered Mongo migrations, required indexes, repository-owned character mapping, report administration, runtime health telemetry, real multi-client load scenarios, benchmarks, and a scheduled 100-client 24-hour soak replace implicit release assumptions.</li>
+                        <li><strong>Exploit surfaces were swept:</strong> progression bounds, dungeon re-entry, weekly rewards, proximity credit, auction concurrency, direct-trade confirmation, guild-bank races, malformed frames, oversized traffic, and client action contracts now have server-side guards and regression coverage.</li>
+                        <li><strong>Chat stays with the player:</strong> Escape releases chat focus and closes other windows without hiding the permanent transcript.</li>
+                        <li><strong>The Quest Giver steps into view:</strong> the Lanternhold guide now stands fully outside the Ashen Smithy doorway and remains aligned across server state, offline play, minimap, and world map.</li>
+                        <li><strong>Clients receive Alpha 1.0:</strong> the built-in asset generation advances to 2026-09-04-10.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.41.0.36">
                     <h3 class="patch-note-entry__title">Patch 0.41.0.36 (the dawnwarden casts off the cowl)</h3>
                     <ul class="patch-note-entry__list">
@@ -3475,6 +3533,12 @@
                         <input id="trading-search-input" type="text" placeholder="Search items..." style="flex: 1; background: #222; color: white; border: 1px solid #444; padding: 5px;">
                         <button id="btn-trading-search" class="btn-menu menu-btn--auto-width menu-btn--wide-padding">Search</button>
                     </div>
+					<div class="window-action-row window-action-row--tight" aria-label="Auction filters">
+						<select id="trading-filter-type"><option value="">All types</option><option value="WEAPON">Weapons</option><option value="ARMOR">Armor</option><option value="GEM">Gems</option><option value="MATERIAL">Materials</option></select>
+						<select id="trading-filter-rarity"><option value="">All rarities</option><option>Common</option><option>Uncommon</option><option>Rare</option><option>Legendary</option><option>Eidolic</option></select>
+						<input id="trading-filter-min-level" type="number" min="1" max="100" placeholder="Min lvl" aria-label="Minimum item level">
+						<input id="trading-filter-max-level" type="number" min="1" max="100" placeholder="Max lvl" aria-label="Maximum item level">
+					</div>
                     <div class="window-data-header">
                         <span>Item</span><span>Seller</span><span>Bid / Buyout</span><span>Action</span>
                     </div>

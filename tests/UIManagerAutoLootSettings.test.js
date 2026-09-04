@@ -214,8 +214,8 @@ describe('UIManager settings', () => {
 
         ui.handleEscape();
 
-        expect(chatBox.style.display).toBe('none');
-        expect(ui.social.isOpen).toBe(true);
+        expect(chatBox.style.display).toBe('flex');
+        expect(ui.social.isOpen).toBe(false);
     });
 
     test('camera shake defaults off when no setting is stored', () => {

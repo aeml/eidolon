@@ -1190,8 +1190,8 @@ test.describe('deterministic production animation gallery', () => {
 
         let metrics = await page.evaluate(() => window.__eidolonInteriorGallery);
         expect(metrics.interiors.map((entry) => entry.dungeonType)).toEqual(DUNGEON_INTERIOR_IDS);
-        expect(new Set(metrics.interiors.map((entry) => entry.artStyle)).size).toBe(4);
-        expect(new Set(metrics.interiors.map((entry) => entry.surfaceLanguage)).size).toBe(4);
+        expect(new Set(metrics.interiors.map((entry) => entry.artStyle)).size).toBe(DUNGEON_INTERIOR_IDS.length);
+        expect(new Set(metrics.interiors.map((entry) => entry.surfaceLanguage)).size).toBe(DUNGEON_INTERIOR_IDS.length);
         for (const entry of metrics.interiors) {
             expect(entry.artStyle).toBe(DUNGEON_INTERIOR_DEFINITIONS[entry.dungeonType].artStyle);
             expect(entry.surfaceCount).toBe(3);
@@ -1246,7 +1246,8 @@ test.describe('deterministic production animation gallery', () => {
             'root_quake',
             'furnace_rupture',
             'stormbreak',
-            'undertow_crush'
+            'undertow_crush',
+            'memory_fracture'
         ]);
         expect(metrics.encounters.every((entry) => entry.radius === 11)).toBe(true);
         expect(metrics.encounters.every((entry) => entry.motifParts >= 3)).toBe(true);

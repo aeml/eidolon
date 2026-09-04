@@ -758,8 +758,7 @@ async function openSettingsThroughEscape(page) {
 async function closeSettingsAndResume(page, escMenu) {
     await page.locator('#btn-close-settings').click();
     await expect(page.locator('#settings-screen')).toBeHidden();
-    // A server message can reopen chat above the Escape menu. Close visible
-    // layers one at a time through real Escape input until gameplay resumes.
+    // Chat remains visible while Escape closes the menu layer.
     for (let attempt = 0; attempt < 4 && await escMenu.isVisible(); attempt += 1) {
         await page.keyboard.press('Escape');
         await page.waitForTimeout(150);
@@ -980,12 +979,7 @@ export async function useCombatQAWaypoint(page) {
                 const state = await readPlayerState(page);
                 return Math.hypot(state.x - 120, state.z - 200);
             }, { timeout: 30_000 }).toBeLessThan(3);
-            // The server response opens the chat transcript. Dismiss it with
-            // the same Escape path a player uses so it cannot cover gameplay
-            // or social-window controls later in the scenario.
-            const chatBox = page.locator('#chat-box');
-            if (await chatBox.isVisible()) await page.keyboard.press('Escape');
-            await expect(page.locator('#chat-box')).toBeHidden();
+            await expect(page.locator('#chat-box')).toBeVisible();
             // The fixed waypoint intentionally rejects movement for one second
             // so packets queued at the pre-teleport position cannot undo the
             // authoritative handoff. Do not let the next real click appear to
@@ -1117,9 +1111,7 @@ export async function exerciseAreaHazards(page) {
             timeout: 15_000
         }).toBe(true);
 
-        const chatBox = page.locator('#chat-box');
-        if (await chatBox.isVisible()) await page.keyboard.press('Escape');
-        await expect(chatBox).toBeHidden();
+        await expect(page.locator('#chat-box')).toBeVisible();
     }
 
     await submitVisibleQACommand(page, '/qa-hazard town');
@@ -1130,9 +1122,7 @@ export async function exerciseAreaHazards(page) {
     await page.evaluate(() => { window.__qaHazardDamageEvents = []; });
     await page.waitForTimeout(1_250);
     expect(await page.evaluate(() => window.__qaHazardDamageEvents)).toEqual([]);
-    const chatBox = page.locator('#chat-box');
-    if (await chatBox.isVisible()) await page.keyboard.press('Escape');
-    await expect(chatBox).toBeHidden();
+    await expect(page.locator('#chat-box')).toBeVisible();
 }
 
 export async function useEncounterQAWaypoint(page) {
@@ -1161,9 +1151,7 @@ export async function useEncounterQAWaypoint(page) {
                 }
                 return nearest;
             }), { timeout: 30_000 }).toBeLessThan(12);
-            const chatBox = page.locator('#chat-box');
-            if (await chatBox.isVisible()) await page.keyboard.press('Escape');
-            await expect(chatBox).toBeHidden();
+            await expect(page.locator('#chat-box')).toBeVisible();
             await page.waitForTimeout(1_100);
             return;
         } catch (error) {
@@ -1417,9 +1405,7 @@ async function useVerdantQAWaypoint(page) {
         const state = await readPlayerState(page);
         return Math.hypot(state.x - 800, state.z - 200);
     }, { timeout: 30_000 }).toBeLessThan(3);
-    const chatBox = page.locator('#chat-box');
-    if (await chatBox.isVisible()) await page.keyboard.press('Escape');
-    await expect(chatBox).toBeHidden();
+    await expect(page.locator('#chat-box')).toBeVisible();
 }
 
 async function zoomOutForPortal(page) {

@@ -259,7 +259,7 @@ describe('NetworkManager — basic send / queue', () => {
         });
         nm.setupListeners();
 
-        const frame = new Uint8Array([0x45, 0x44, 0x50, 0x42, 0x01, 0x99]);
+        const frame = new Uint8Array([0x45, 0x44, 0x50, 0x42, 0x02, 0x99]);
         sock.onmessage({ data: frame.buffer });
 
         expect(decodeStateEnvelopeMock).toHaveBeenCalledWith(new Uint8Array([0x99]));
@@ -285,7 +285,7 @@ describe('NetworkManager — basic send / queue', () => {
         });
         nm.setupListeners();
 
-        const frame = new Uint8Array([0x45, 0x44, 0x50, 0x42, 0x01, 0x99]);
+        const frame = new Uint8Array([0x45, 0x44, 0x50, 0x42, 0x02, 0x99]);
         sock.onmessage({ data: frame.buffer });
 
         const [message] = nm.drainMessages();
@@ -307,7 +307,7 @@ describe('NetworkManager — basic send / queue', () => {
         });
         nm.setupListeners();
 
-        const frame = new Uint8Array([0x45, 0x44, 0x50, 0x42, 0x01, 0x99]);
+        const frame = new Uint8Array([0x45, 0x44, 0x50, 0x42, 0x02, 0x99]);
         sock.onmessage({ data: frame.buffer });
 
         const decoded = nm.drainMessages()[0].payload.u['player-one'];
@@ -328,7 +328,7 @@ describe('NetworkManager — basic send / queue', () => {
         });
         nm.setupListeners();
 
-        const frame = new Uint8Array([0x45, 0x44, 0x50, 0x42, 0x01, 0x99]);
+        const frame = new Uint8Array([0x45, 0x44, 0x50, 0x42, 0x02, 0x99]);
         sock.onmessage({ data: frame.buffer });
 
         expect(nm.drainMessages()[0].payload['player-one'].quests).toEqual([

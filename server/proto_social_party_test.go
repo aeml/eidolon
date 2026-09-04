@@ -41,6 +41,25 @@ func TestEntityToSnapshot_StoresSocialStatus(t *testing.T) {
 	}
 }
 
+func TestGuildIdentityReplicatesAndTriggersDelta(t *testing.T) {
+	e := &game.Entity{
+		ID: "guild-player", Type: game.TypePlayer, SubType: "Cleric", State: "IDLE",
+		TalentRanks: map[string]int{}, GuildID: "guild-1", GuildTag: "DUSK",
+	}
+	snap := entityToSnapshot(e)
+	if snap.GuildID != "guild-1" || snap.GuildTag != "DUSK" {
+		t.Fatalf("snapshot guild identity = %q/%q", snap.GuildID, snap.GuildTag)
+	}
+	pb := entityToProto(e)
+	if pb.GuildId != "guild-1" || pb.GuildTag != "DUSK" {
+		t.Fatalf("protobuf guild identity = %q/%q", pb.GuildId, pb.GuildTag)
+	}
+	e.GuildTag = "DAWN"
+	if !hasEntityChanged(e, snap) {
+		t.Fatal("guild tag change must produce a state delta")
+	}
+}
+
 func TestEntityToSnapshot_EmptyPartyAndStatusByDefault(t *testing.T) {
 	e := &game.Entity{
 		ID:          "p3",

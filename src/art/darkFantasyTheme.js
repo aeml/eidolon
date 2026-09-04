@@ -168,6 +168,15 @@ export const DARK_FANTASY_REGION_THEMES = Object.freeze({
         palette: { shadow: 0x07131b, ground: 0x102b37, midtone: 0x275568, accent: 0x41d5df, spirit: 0x79a9ff, fog: 0x1c3a48 },
         lighting: { ambientIntensity: 1.3, keyIntensity: 2.25, keyColor: 0xa8f5f1, fillColor: 0x315a91, fillIntensity: 0.42, fogColor: 0x1c3a48, fogNear: 100, fogFar: 600, exposure: 1.2, bloomStrength: 0.46, bloomRadius: 0.46, bloomThreshold: 0.64 },
         particles: { color: 0x70e3df, size: 2.55, velY: [0.06, 0.3], velXZ: [-0.2, 0.2], life: [5, 10], spread: [38, 22, 38], spawnY: [-1, 20] }
+    }),
+    umbral_nexus: regionTheme({
+        id: 'umbral_nexus',
+        name: 'Umbral Nexus — The Broken Memory',
+        realm: 'dungeon',
+        motif: 'fractured memory glass, void masonry, violet eidolon seams, broken constellations',
+        palette: { shadow: 0x090711, ground: 0x1a1328, midtone: 0x4d3768, accent: 0xc066ff, spirit: 0x65f4df, fog: 0x241a35 },
+        lighting: { ambientIntensity: 1.22, keyIntensity: 2.45, keyColor: 0xe4c7ff, fillColor: 0x4d3277, fillIntensity: 0.46, fogColor: 0x241a35, fogNear: 90, fogFar: 560, exposure: 1.2, bloomStrength: 0.5, bloomRadius: 0.48, bloomThreshold: 0.6 },
+        particles: { color: 0xc066ff, size: 2.4, velY: [-0.15, 0.35], velXZ: [-0.7, 0.7], life: [3, 7], spread: [42, 24, 42], spawnY: [0, 22] }
     })
 });
 
@@ -188,7 +197,8 @@ export const DUNGEON_THEME_KEYS = freezeArray([
     'verdant_bastion_catacombs',
     'molten_core',
     'tempest_spire',
-    'abyssal_well'
+    'abyssal_well',
+    'umbral_nexus'
 ]);
 export const REGION_THEME_KEYS = freezeArray([
     ...OVERWORLD_THEME_KEYS,

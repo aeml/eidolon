@@ -57,7 +57,7 @@ describe('WorldMap town wayfinding', () => {
 
     test('uses exact canonical town-service anchor positions for world-map wayfinding', () => {
         expect(TOWN_SERVICE_POINTS).toEqual(expect.arrayContaining([
-            expect.objectContaining({ id: 'quest-giver', label: 'Quest Giver', x: -25, z: 200 }),
+            expect.objectContaining({ id: 'quest-giver', label: 'Quest Giver', x: -20, z: 200 }),
             expect.objectContaining({ id: 'forge', label: 'Forge', x: -28, z: 218 }),
             expect.objectContaining({ id: 'stash', label: 'Stash', x: 0, z: 185 }),
             expect.objectContaining({ id: 'trading-house', label: 'Trading House', x: -22, z: 185 }),

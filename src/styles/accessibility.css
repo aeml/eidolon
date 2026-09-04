@@ -1,0 +1,20 @@
+/* Alpha 1.0 accessibility guardrails shared by static and generated UI. */
+:where(button, input, select, textarea, [role="button"], [role="tab"]):focus-visible {
+    outline: 2px solid #ffd76a;
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+@media (forced-colors: active) {
+    :where(button, input, select, textarea, .window, .generated-menu) {
+        border: 1px solid CanvasText;
+    }
+}

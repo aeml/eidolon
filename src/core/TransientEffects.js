@@ -249,6 +249,12 @@ function getTelegraphTheme(options = {}) {
             fillColor: 0x126c83,
             motifColor: 0xa8fff3,
             labelColor: '#d6fffa'
+        },
+        umbral_nexus: {
+            ringColor: 0xd393ff,
+            fillColor: 0x4d2375,
+            motifColor: 0x73ffe6,
+            labelColor: '#f1ddff'
         }
     };
     const dungeonTheme = dungeonThemes[options.theme];
@@ -365,6 +371,18 @@ function createDungeonTelegraphMotif(themeId, radius, position, color) {
                 `UndertowRing:${i}`
             );
         }
+    } else if (themeId === 'umbral_nexus') {
+        for (let i = 0; i < 7; i += 1) {
+            const angle = (i / 7) * Math.PI * 2;
+            addGroundMesh(
+                new THREE.PlaneGeometry(radius * 0.055, radius * 0.72),
+                `MemoryFracture:${i}`,
+                Math.cos(angle) * radius * 0.3,
+                Math.sin(angle) * radius * 0.3,
+                -angle + (i % 2 ? 0.16 : -0.2)
+            );
+        }
+        addGroundMesh(new THREE.RingGeometry(radius * 0.18, radius * 0.24, 7), 'EidolonSeal');
     } else {
         material.dispose();
         return null;

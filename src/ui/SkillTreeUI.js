@@ -968,6 +968,9 @@ export class SkillTreeUI {
         const menu = document.createElement('div');
         menu.id = 'respec-menu';
         menu.className = 'generated-menu generated-menu--respec';
+        menu.setAttribute('role', 'dialog');
+        menu.setAttribute('aria-modal', 'true');
+        menu.setAttribute('aria-labelledby', 'respec-menu-title');
         menu.addEventListener('click', (e) => e.stopPropagation());
 
         const header = document.createElement('div');
@@ -975,6 +978,7 @@ export class SkillTreeUI {
         header.style.marginBottom = '18px';
 
         const title = document.createElement('h2');
+        title.id = 'respec-menu-title';
         title.textContent = 'Talent Master';
         title.style.margin = '0';
         title.style.color = '#6a4';
@@ -1082,5 +1086,6 @@ export class SkillTreeUI {
 
         document.body.appendChild(backdrop);
         document.body.appendChild(menu);
+        closeBtn.focus();
     }
 }

@@ -307,7 +307,7 @@ describe('Dungeon entrance hints', () => {
             dungeonName: 'Quest Giver',
             inRange: true,
             statusLabel: expect.stringContaining('In range'),
-            promptLabel: expect.stringContaining('pick up your first quest')
+            promptLabel: expect.stringContaining('daily contracts')
         }));
     });
 

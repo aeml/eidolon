@@ -26,14 +26,14 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 		if player.Mana >= cost {
 			var strikeTarget *Entity
 			if targetID != "" {
-				if target, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(player, target, 10.0, TypeEnemy) {
+				if target, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(w, player, target, 10.0, TypeEnemy) {
 					strikeTarget = target
 				}
 			}
 			if strikeTarget == nil {
 				minDistance := 3.0
 				for _, target := range w.Grid.Nearby(targetX, targetZ, 3.0+maxAbilityTargetVisualRadius, player.InstanceID) {
-					if !validDirectAbilityTarget(player, target, 10.0, TypeEnemy) {
+					if !validDirectAbilityTarget(w, player, target, 10.0, TypeEnemy) {
 						continue
 					}
 					distance := math.Hypot(target.X-targetX, target.Z-targetZ)
@@ -103,7 +103,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			// Find target near cursor while enforcing the authoritative cast range.
 			var bestTarget *Entity
 			if targetID != "" {
-				if target, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(player, target, 10.0, TypeEnemy) {
+				if target, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(w, player, target, 10.0, TypeEnemy) {
 					bestTarget = target
 				}
 			}
@@ -116,7 +116,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				if target.ID == player.ID {
 					continue
 				}
-				if !validDirectAbilityTarget(player, target, 10.0, TypeEnemy) {
+				if !validDirectAbilityTarget(w, player, target, 10.0, TypeEnemy) {
 					continue
 				}
 				target.Mu.RLock()
@@ -264,7 +264,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					continue
 				}
 				target.Mu.Lock()
-				if target.Type == TypeEnemy && target.State != "DEAD" {
+				if w.CanDamage(player, target) && target.State != "DEAD" {
 					if withinAbilityRadius(skillName, targetX, targetZ, target, radius) {
 						finalDamage := applyFinalDamage(player, target, damage, "physical")
 						addThreatLocked(target, player.ID, float64(finalDamage))
@@ -408,7 +408,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					continue
 				}
 				target.Mu.RLock()
-				if target.Type != TypeEnemy || target.State == "DEAD" {
+				if !w.CanDamage(player, target) || target.State == "DEAD" {
 					target.Mu.RUnlock()
 					continue
 				}
@@ -531,7 +531,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			// Find target
 			var bestTarget *Entity
 			if targetID != "" {
-				if target, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(player, target, maxRange, TypeEnemy) {
+				if target, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(w, player, target, maxRange, TypeEnemy) {
 					bestTarget = target
 				}
 			}
@@ -545,7 +545,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				if target.ID == player.ID {
 					continue
 				}
-				if !validDirectAbilityTarget(player, target, maxRange, TypeEnemy) {
+				if !validDirectAbilityTarget(w, player, target, maxRange, TypeEnemy) {
 					continue
 				}
 				target.Mu.RLock()
@@ -693,7 +693,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					continue
 				}
 				target.Mu.RLock()
-				if target.Type != TypeEnemy || target.State == "DEAD" {
+				if !w.CanDamage(player, target) || target.State == "DEAD" {
 					target.Mu.RUnlock()
 					continue
 				}
@@ -801,7 +801,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			nearby := w.Grid.Nearby(player.X, player.Z, effectiveRadius, player.InstanceID)
 			for _, target := range nearby {
 				target.Mu.Lock()
-				if target.Type == TypeEnemy && target.State != "DEAD" && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
+				if w.CanDamage(player, target) && target.State != "DEAD" && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
 					if !target.CCImmune {
 						target.Slowed = true
 						target.SlowFactor = 0.5

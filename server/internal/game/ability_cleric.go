@@ -20,14 +20,14 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			const castRange = 15.0
 			var primaryTarget *Entity
 			if targetID != "" {
-				if target, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(player, target, castRange, TypePlayer, TypeNPC) {
+				if target, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(w, player, target, castRange, TypePlayer, TypeNPC) {
 					primaryTarget = target
 				}
 			}
 			if primaryTarget == nil {
 				minDist := 3.0 + maxAbilityTargetVisualRadius
 				for _, target := range w.Grid.Nearby(targetX, targetZ, minDist, player.InstanceID) {
-					if !validDirectAbilityTarget(player, target, castRange, TypePlayer, TypeNPC) {
+					if !validDirectAbilityTarget(w, player, target, castRange, TypePlayer, TypeNPC) {
 						continue
 					}
 					distance := math.Hypot(target.X-targetX, target.Z-targetZ)
@@ -76,7 +76,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				var nearestAlly *Entity
 				nearby := w.Grid.Nearby(player.X, player.Z, castRange, player.InstanceID)
 				for _, t := range nearby {
-					if t.ID == primaryTarget.ID || !validDirectAbilityTarget(player, t, castRange, TypePlayer, TypeNPC) {
+					if t.ID == primaryTarget.ID || !validDirectAbilityTarget(w, player, t, castRange, TypePlayer, TypeNPC) {
 						continue
 					}
 					d := math.Hypot(t.X-player.X, t.Z-player.Z)
@@ -134,7 +134,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			radius := 8.0
 			nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID)
 			for _, target := range nearby {
-				if (target.Type == TypePlayer || target.Type == TypeNPC) && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
+				if (target.Type == TypePlayer || target.Type == TypeNPC) && w.CombatRelationship(player, target) != RelationshipHostile && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
 					target.Mu.Lock()
 					// Cleanse Debuffs
 					target.Bleeding = false
@@ -220,7 +220,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			// Single Target
 			var target *Entity
 			if targetID != "" {
-				if t, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(player, t, 4.0, TypeEnemy) {
+				if t, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(w, player, t, 4.0, TypeEnemy) {
 					target = t
 				}
 			}
@@ -229,7 +229,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				minDist := 3.0
 				nearby := w.Grid.Nearby(targetX, targetZ, 3.0+maxAbilityTargetVisualRadius, player.InstanceID)
 				for _, t := range nearby {
-					if validDirectAbilityTarget(player, t, 4.0, TypeEnemy) {
+					if validDirectAbilityTarget(w, player, t, 4.0, TypeEnemy) {
 						dx := t.X - targetX
 						dz := t.Z - targetZ
 						d := math.Sqrt(dx*dx + dz*dz)
@@ -269,7 +269,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			radius := 10.0
 			for _, target := range w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID) {
 				target.Mu.Lock()
-				if (target.Type == TypePlayer || target.Type == TypeNPC) && target.State != "DEAD" && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
+				if (target.Type == TypePlayer || target.Type == TypeNPC) && w.CombatRelationship(player, target) != RelationshipHostile && target.State != "DEAD" && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
 					target.BlessingResolveActive = true
 					target.BlessingResolveEndTime = endTime
 					target.RecalculateStats()
@@ -327,7 +327,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				partyRadius := 20.0
 				nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, partyRadius), player.InstanceID)
 				for _, ally := range nearby {
-					if (ally.Type == TypePlayer || ally.Type == TypeNPC) && withinAbilityRadius(skillName, player.X, player.Z, ally, partyRadius) {
+					if (ally.Type == TypePlayer || ally.Type == TypeNPC) && w.CombatRelationship(player, ally) != RelationshipHostile && withinAbilityRadius(skillName, player.X, player.Z, ally, partyRadius) {
 						ally.Mu.Lock()
 						if ally.State == "DEAD" {
 							ally.Mu.Unlock()
@@ -353,7 +353,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				var target *Entity
 				// Find target near cursor if targetID not set
 				if targetID != "" {
-					if t, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(player, t, 15.0, TypePlayer, TypeNPC) {
+					if t, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(w, player, t, 15.0, TypePlayer, TypeNPC) {
 						target = t
 					}
 				}
@@ -362,7 +362,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 					minDist := 3.0
 					nearby := w.Grid.Nearby(targetX, targetZ, 3.0+maxAbilityTargetVisualRadius, player.InstanceID)
 					for _, t := range nearby {
-						if validDirectAbilityTarget(player, t, 15.0, TypePlayer, TypeNPC) {
+						if validDirectAbilityTarget(w, player, t, 15.0, TypePlayer, TypeNPC) {
 							dx := t.X - targetX
 							dz := t.Z - targetZ
 							d := math.Sqrt(dx*dx + dz*dz)
@@ -384,7 +384,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 					aoeRadius := 5.0
 					nearby := w.Grid.Nearby(tX, tZ, expandedAbilityRadius(skillName, aoeRadius), player.InstanceID)
 					for _, ally := range nearby {
-						if (ally.Type == TypePlayer || ally.Type == TypeNPC) && withinAbilityRadius(skillName, tX, tZ, ally, aoeRadius) {
+						if (ally.Type == TypePlayer || ally.Type == TypeNPC) && w.CombatRelationship(player, ally) != RelationshipHostile && withinAbilityRadius(skillName, tX, tZ, ally, aoeRadius) {
 							ally.Mu.Lock()
 							if ally.State == "DEAD" {
 								ally.Mu.Unlock()
@@ -500,7 +500,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				}
 
 				target.Mu.RLock()
-				if target.Type != TypeEnemy || target.State == "DEAD" {
+				if !w.CanDamage(player, target) || target.State == "DEAD" {
 					target.Mu.RUnlock()
 					continue
 				}
@@ -595,7 +595,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				}
 
 				target.Mu.RLock()
-				if target.Type != TypeEnemy || target.State == "DEAD" {
+				if !w.CanDamage(player, target) || target.State == "DEAD" {
 					target.Mu.RUnlock()
 					continue
 				}
@@ -683,7 +683,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID)
 			for _, target := range nearby {
 				target.Mu.Lock()
-				if (target.Type == TypePlayer || target.Type == TypeNPC) && target.State != "DEAD" && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
+				if (target.Type == TypePlayer || target.Type == TypeNPC) && w.CombatRelationship(player, target) != RelationshipHostile && target.State != "DEAD" && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
 					target.ZealActive = true
 					target.ZealEndTime = time.Now().Add(8 * time.Second)
 					target.RecalculateStats()
@@ -703,7 +703,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			// Find target
 			var target *Entity
 			if targetID != "" {
-				if t, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(player, t, 15.0, TypeEnemy) {
+				if t, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(w, player, t, 15.0, TypeEnemy) {
 					target = t
 				}
 			}
@@ -712,7 +712,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				minDist := 5.0
 				nearby := w.Grid.Nearby(targetX, targetZ, 5.0+maxAbilityTargetVisualRadius, player.InstanceID)
 				for _, t := range nearby {
-					if validDirectAbilityTarget(player, t, 15.0, TypeEnemy) {
+					if validDirectAbilityTarget(w, player, t, 15.0, TypeEnemy) {
 						d := math.Sqrt((t.X-targetX)*(t.X-targetX) + (t.Z-targetZ)*(t.Z-targetZ))
 						if d < minDist {
 							minDist = d

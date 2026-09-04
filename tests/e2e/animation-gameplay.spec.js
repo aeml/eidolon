@@ -24,6 +24,8 @@ import {
 const credentials = credentialsFromEnvironment();
 const supportedClasses = new Set(Object.keys(PLAYER_ABILITY_VISUALS));
 const hasCredentials = Boolean(credentials.username && credentials.password);
+const MIN_QA_CHAT_INTERVAL_MS = 1_100;
+let lastQAChatCommandAt = 0;
 
 function classMatrix(className) {
     const tree = CONSTANTS.SKILL_TREES[className];
@@ -40,31 +42,32 @@ function classMatrix(className) {
     return { base, branches, skillBranch };
 }
 
-async function dismissChat(page) {
-    const chatBox = page.locator('#chat-box');
-    for (let attempt = 0; attempt < 4 && await chatBox.isVisible(); attempt += 1) {
-        await page.keyboard.press('Escape');
-        await page.waitForTimeout(100);
-    }
-    await expect(chatBox).toBeHidden();
+async function assertChatVisible(page) {
+    await expect(page.locator('#chat-box')).toBeVisible();
 }
 
 async function visibleChatCommand(page, command, confirmation) {
     const chatInput = page.locator('#chat-input');
+    const matchingConfirmations = page.locator('.chat-message__text').filter({ hasText: confirmation });
+    const previousConfirmationCount = await matchingConfirmations.count();
     if (!await chatInput.evaluate((element) => element === document.activeElement)) {
         await page.keyboard.press('Enter');
     }
     await expect(chatInput).toBeFocused();
     await chatInput.fill(command);
     await chatInput.press('Enter');
-    await expect(page.locator('#chat-messages')).toContainText(confirmation, { timeout: 20_000 });
+    await expect.poll(() => matchingConfirmations.count(), { timeout: 20_000 })
+        .toBeGreaterThan(previousConfirmationCount);
     if (await chatInput.evaluate((element) => element === document.activeElement)) {
         await page.keyboard.press('Escape');
     }
-    await dismissChat(page);
+    await assertChatVisible(page);
 }
 
 async function prepareAnimationCast(page, lowHealth = false) {
+    const rateLimitDelay = Math.max(0, MIN_QA_CHAT_INTERVAL_MS - (Date.now() - lastQAChatCommandAt));
+    if (rateLimitDelay > 0) await page.waitForTimeout(rateLimitDelay);
+    lastQAChatCommandAt = Date.now();
     const sequence = await page.evaluate(() => window.game?.animationQAReadySequence || 0);
     await visibleChatCommand(
         page,

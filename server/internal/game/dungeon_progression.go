@@ -10,6 +10,22 @@ const (
 
 var dungeonRunLevelBands = []int{30, 40, 50, 60, 70, 80, 90, 100}
 
+var supportedDungeonTypes = map[string]int{
+	"crypt": 30, "verdant_bastion_catacombs": 30, "abyssal_well": 60,
+	"molten_core": 70, "tempest_spire": 70, "umbral_nexus": MaxPlayerLevel,
+}
+
+func ValidateDungeonTypeEntry(playerLevel int, dungeonType string) error {
+	requiredLevel, ok := supportedDungeonTypes[dungeonType]
+	if !ok {
+		return fmt.Errorf("unknown dungeon")
+	}
+	if playerLevel < requiredLevel {
+		return fmt.Errorf("%s unlocks at level %d", formatDungeonLabel(dungeonType), requiredLevel)
+	}
+	return nil
+}
+
 func DungeonRunLevelBands() []int {
 	bands := make([]int, len(dungeonRunLevelBands))
 	copy(bands, dungeonRunLevelBands)

@@ -18,6 +18,8 @@ export class Entity {
         this.meshType = null;
         this.isMeshLoading = false;
         this.scale = 1.0;
+        this.guildId = '';
+        this.guildTag = '';
     }
 
     async ensureMesh() {
@@ -105,6 +107,9 @@ export class Entity {
         if (this._partyHighlightActive) {
             this._updatePartyRing();
         }
+        if (this._pvpHostileActive) {
+            this._updatePvPRing();
+        }
 
         if (this.onMeshReady) {
             this.onMeshReady(mesh);
@@ -168,6 +173,40 @@ export class Entity {
         }
     }
 
+    setGuildIdentity(guildId, guildTag) {
+        const nextId = guildId || '';
+        const nextTag = guildTag || '';
+        if (this.guildId === nextId && this.guildTag === nextTag) return;
+        this.guildId = nextId;
+        this.guildTag = nextTag;
+        if (this.mesh && this.name) this.updateNameTag();
+    }
+
+    setPvPHostile(active) {
+        this._pvpHostileActive = Boolean(active);
+        if (this.mesh) this._updatePvPRing();
+    }
+
+    _updatePvPRing() {
+        if (!this.mesh) return;
+        const name = 'PvPHostileRing';
+        const existing = this.mesh.getObjectByName(name);
+        if (this._pvpHostileActive && !existing) {
+            const ring = new THREE.Mesh(
+                new THREE.RingGeometry(0.78, 1.0, 32),
+                new THREE.MeshBasicMaterial({ color: 0xff3f4f, transparent: true, opacity: 0.85, side: THREE.DoubleSide })
+            );
+            ring.name = name;
+            ring.rotation.x = -Math.PI / 2;
+            ring.position.y = 0.06;
+            this.mesh.add(ring);
+        } else if (!this._pvpHostileActive && existing) {
+            existing.geometry?.dispose();
+            existing.material?.dispose();
+            this.mesh.remove(existing);
+        }
+    }
+
     updateNameTag() {
         if (!this.mesh || !this.name) return;
 
@@ -181,7 +220,8 @@ export class Entity {
             this.mesh.remove(existingTag);
         }
 
-        let texture = NAME_TEXTURE_CACHE.get(this.name);
+        const displayName = this.guildTag ? `[${this.guildTag}] ${this.name}` : this.name;
+        let texture = NAME_TEXTURE_CACHE.get(displayName);
         let width, height;
 
         if (!texture) {
@@ -189,7 +229,7 @@ export class Entity {
             const context = canvas.getContext('2d');
             const fontSize = 32; // Higher resolution for texture
             context.font = `bold ${fontSize}px Arial`;
-            const textWidth = context.measureText(this.name).width;
+            const textWidth = context.measureText(displayName).width;
             
             canvas.width = textWidth + 20;
             canvas.height = fontSize + 20;
@@ -200,8 +240,8 @@ export class Entity {
             context.textBaseline = "middle";
             context.strokeStyle = 'black';
             context.lineWidth = 4;
-            context.strokeText(this.name, canvas.width / 2, canvas.height / 2);
-            context.fillText(this.name, canvas.width / 2, canvas.height / 2);
+            context.strokeText(displayName, canvas.width / 2, canvas.height / 2);
+            context.fillText(displayName, canvas.width / 2, canvas.height / 2);
 
             texture = new THREE.CanvasTexture(canvas);
             texture.minFilter = THREE.LinearFilter;
@@ -210,7 +250,7 @@ export class Entity {
                 NAME_TEXTURE_CACHE.forEach(t => t.dispose());
                 NAME_TEXTURE_CACHE.clear();
             }
-            NAME_TEXTURE_CACHE.set(this.name, texture);
+            NAME_TEXTURE_CACHE.set(displayName, texture);
             
             width = canvas.width;
             height = canvas.height;

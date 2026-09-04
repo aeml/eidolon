@@ -57,6 +57,17 @@ describe('Entity System', () => {
         expect(typeof entity.id).toBe('string');
     });
 
+    test('Entity stores replicated guild identity for its nameplate', () => {
+        const entity = new Entity('guild-member');
+        entity.setName('Aria');
+        entity.setGuildIdentity('guild-1', 'DUSK');
+        expect(entity.guildId).toBe('guild-1');
+        expect(entity.guildTag).toBe('DUSK');
+
+        entity.setGuildIdentity('', '');
+        expect(entity.guildTag).toBe('');
+    });
+
     test('Entity can set scale', () => {
         const entity = new Entity('test-entity');
         entity.mesh = new THREE.Mesh(

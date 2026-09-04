@@ -26,6 +26,10 @@ func handleMsgFriendRequest(c *Client, msg Message) {
 		c.sendError("cannot send friend request to yourself")
 		return
 	}
+	if chatService.shouldFilter(req.Username, c.username) || chatService.shouldFilter(c.username, req.Username) {
+		c.sendError("player is not available for friend requests")
+		return
+	}
 	requesterID := c.playerID
 	addresseeID := usernameToPlayerID(req.Username)
 	if err := db.SendFriendRequest(requesterID, addresseeID); err != nil {

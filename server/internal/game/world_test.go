@@ -95,8 +95,8 @@ func TestGenerateDailyQuestsGivesLevelOneStarterCatalog(t *testing.T) {
 	if generated == nil {
 		t.Fatal("expected daily quest generation to return the level-one player")
 	}
-	if len(generated.Quests) != len(dailyQuestCatalog()) {
-		t.Fatalf("expected complete daily catalog, got %d quests", len(generated.Quests))
+	if len(generated.Quests) != len(dailyQuestCatalog())+1 {
+		t.Fatalf("expected complete daily catalog plus auto-started Chronicle, got %d quests", len(generated.Quests))
 	}
 
 	foundStarter := false
@@ -114,6 +114,9 @@ func TestGenerateDailyQuestsGivesLevelOneStarterCatalog(t *testing.T) {
 	}
 	if !foundStarter {
 		t.Fatal("expected daily_skeleton to be available to a level-one player")
+	}
+	if generated.Quests[0].ID != "chronicle_01_bell_below" || !generated.Quests[0].Accepted {
+		t.Fatalf("expected the Chronicle to start automatically, got %+v", generated.Quests[0])
 	}
 }
 
@@ -138,8 +141,8 @@ func TestGenerateDailyQuestsRepairsPartialSameDayCatalogWithoutResettingProgress
 	w.AddEntity(player)
 
 	generated := w.GenerateDailyQuests(player.ID)
-	if len(generated.Quests) != len(dailyQuestCatalog()) {
-		t.Fatalf("expected partial same-day row to be repaired to %d quests, got %d", len(dailyQuestCatalog()), len(generated.Quests))
+	if len(generated.Quests) != len(dailyQuestCatalog())+1 {
+		t.Fatalf("expected partial same-day row plus Chronicle to be repaired to %d quests, got %d", len(dailyQuestCatalog())+1, len(generated.Quests))
 	}
 	for _, quest := range generated.Quests {
 		if quest.ID == "daily_skeleton" {
@@ -481,6 +484,33 @@ func TestPerformPickup_InventoryFull_DoesNotDeleteLoot(t *testing.T) {
 	}
 	if got := w.GetEntity(loot.ID); got == nil {
 		t.Fatalf("expected loot to remain in world, but it was deleted")
+	}
+}
+
+func TestPerformPickupHonorsMasterLoot(t *testing.T) {
+	w := NewWorld(nil)
+	leader := &Entity{ID: "leader", Type: TypePlayer, X: 0, Z: 0, Inventory: make([]Item, MaxInventorySize)}
+	member := &Entity{ID: "member", Type: TypePlayer, X: 0, Z: 0, Inventory: make([]Item, MaxInventorySize)}
+	w.AddEntity(leader)
+	w.AddEntity(member)
+	party := w.CreateParty(leader.ID)
+	if err := w.JoinParty(party.ID, member.ID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := w.SetPartyLootRule(leader.ID, "master", member.ID); err != nil {
+		t.Fatal(err)
+	}
+	loot := &Entity{
+		ID: "master-loot", Type: TypeLoot, X: 0, Z: 0, LootPartyID: party.ID,
+		LootItem: &Item{ID: "reward", Name: "Reward", Stack: 1, MaxStack: 1},
+	}
+	w.AddEntity(loot)
+
+	if _, ok, reason := w.PerformPickup(leader.ID, loot.ID); ok || reason != "master_looter_only" {
+		t.Fatalf("leader bypassed master looter: ok=%v reason=%q", ok, reason)
+	}
+	if _, ok, reason := w.PerformPickup(member.ID, loot.ID); !ok || reason != "" {
+		t.Fatalf("master looter could not pick up: ok=%v reason=%q", ok, reason)
 	}
 }
 

@@ -31,6 +31,10 @@ export class TradingUI {
 
         this.tradingSearchInput = document.getElementById('trading-search-input');
         this.btnTradingSearch = document.getElementById('btn-trading-search');
+		this.tradingFilterType = document.getElementById('trading-filter-type');
+		this.tradingFilterRarity = document.getElementById('trading-filter-rarity');
+		this.tradingFilterMinLevel = document.getElementById('trading-filter-min-level');
+		this.tradingFilterMaxLevel = document.getElementById('trading-filter-max-level');
         this.tradingListContainer = document.getElementById('trading-list-container');
 
         this.tradingSellSlot = document.getElementById('trading-sell-slot');
@@ -194,7 +198,13 @@ export class TradingUI {
     handleSearch() {
         const query = this.tradingSearchInput ? this.tradingSearchInput.value : '';
         if (this.onTradingSearch) {
-            this.onTradingSearch(query);
+			this.onTradingSearch({
+				query,
+				itemType: this.tradingFilterType?.value || '',
+				rarity: this.tradingFilterRarity?.value || '',
+				minLevel: Math.max(0, Number(this.tradingFilterMinLevel?.value) || 0),
+				maxLevel: Math.max(0, Number(this.tradingFilterMaxLevel?.value) || 0)
+			});
         }
     }
 

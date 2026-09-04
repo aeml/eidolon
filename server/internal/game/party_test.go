@@ -41,6 +41,67 @@ func TestCreateParty(t *testing.T) {
 	}
 }
 
+func TestWeeklyRaidRequiresConvertedReadyCapGroup(t *testing.T) {
+	w := NewWorld(nil)
+	memberIDs := []string{"raid-leader", "raid-2", "raid-3", "raid-4", "raid-5"}
+	for _, id := range memberIDs {
+		w.AddEntity(&Entity{ID: id, Type: TypePlayer, Level: MaxPlayerLevel})
+	}
+	party := w.CreateParty(memberIDs[0])
+	for _, id := range memberIDs[1:] {
+		if err := w.JoinParty(party.ID, id); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if _, _, err := w.ValidateWeeklyRaidParty(memberIDs[0]); err == nil {
+		t.Fatal("ordinary party entered weekly raid")
+	}
+	if _, err := w.ConvertPartyToRaid(memberIDs[0]); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := w.StartPartyReadyCheck(memberIDs[0]); err != nil {
+		t.Fatal(err)
+	}
+	for _, id := range memberIDs {
+		if _, err := w.SetPartyReady(id, true); err != nil {
+			t.Fatal(err)
+		}
+	}
+	_, members, err := w.ValidateWeeklyRaidParty(memberIDs[0])
+	if err != nil || len(members) != 5 {
+		t.Fatalf("ready cap raid rejected: members=%v err=%v", members, err)
+	}
+}
+
+func TestWeeklyRaidRejectsUnderlevelMember(t *testing.T) {
+	w := NewWorld(nil)
+	memberIDs := []string{"raid-leader-low", "raid-low-2", "raid-low-3", "raid-low-4", "raid-low-5"}
+	for index, id := range memberIDs {
+		level := MaxPlayerLevel
+		if index == len(memberIDs)-1 {
+			level--
+		}
+		w.AddEntity(&Entity{ID: id, Type: TypePlayer, Level: level})
+	}
+	party := w.CreateParty(memberIDs[0])
+	for _, id := range memberIDs[1:] {
+		if err := w.JoinParty(party.ID, id); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if _, err := w.ConvertPartyToRaid(memberIDs[0]); err != nil {
+		t.Fatal(err)
+	}
+	party.Mu.Lock()
+	for _, id := range memberIDs {
+		party.Ready[id] = true
+	}
+	party.Mu.Unlock()
+	if _, _, err := w.ValidateWeeklyRaidParty(memberIDs[0]); err == nil {
+		t.Fatal("underlevel raid member was accepted")
+	}
+}
+
 func TestCreatePartyNonexistentPlayer(t *testing.T) {
 	w := NewWorld(nil)
 
@@ -312,5 +373,60 @@ func TestPartyMaxSize(t *testing.T) {
 
 	if party.MaxSize != 5 {
 		t.Errorf("Expected max party size 5, got %d", party.MaxSize)
+	}
+}
+
+func TestPartyReadyCheckAndRoles(t *testing.T) {
+	w := NewWorld(nil)
+	w.AddEntity(&Entity{ID: "leader", Type: TypePlayer, SubType: "Fighter"})
+	w.AddEntity(&Entity{ID: "member", Type: TypePlayer, SubType: "Cleric"})
+	party := w.CreateParty("leader")
+	if err := w.JoinParty(party.ID, "member"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := w.StartPartyReadyCheck("member"); err == nil {
+		t.Fatal("non-leader started ready check")
+	}
+	if _, err := w.StartPartyReadyCheck("leader"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := w.SetPartyReady("leader", true); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := w.SetPartyReady("member", true); err != nil {
+		t.Fatal(err)
+	}
+	party.Mu.RLock()
+	active := party.ReadyCheckActive
+	party.Mu.RUnlock()
+	if active {
+		t.Fatal("all-ready party did not complete the ready check")
+	}
+	if PartyRoleForClass("Fighter") != "tank" || PartyRoleForClass("Cleric") != "support" || PartyRoleForClass("Wizard") != "damage" {
+		t.Fatal("class roles are not stable")
+	}
+}
+
+func TestPartyMasterLootRequiresLeaderAndMember(t *testing.T) {
+	w := NewWorld(nil)
+	w.AddEntity(&Entity{ID: "leader", Type: TypePlayer})
+	w.AddEntity(&Entity{ID: "member", Type: TypePlayer})
+	party := w.CreateParty("leader")
+	if err := w.JoinParty(party.ID, "member"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := w.SetPartyLootRule("member", "master", "member"); err == nil {
+		t.Fatal("non-leader changed loot rule")
+	}
+	if _, err := w.SetPartyLootRule("leader", "master", "outsider"); err == nil {
+		t.Fatal("non-member became master looter")
+	}
+	if _, err := w.SetPartyLootRule("leader", "master", "member"); err != nil {
+		t.Fatal(err)
+	}
+	party.Mu.RLock()
+	defer party.Mu.RUnlock()
+	if party.LootRule != "master" || party.MasterLooterID != "member" {
+		t.Fatalf("master loot state mismatch: %+v", party)
 	}
 }

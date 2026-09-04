@@ -41,6 +41,9 @@ jobs:
       - name: Run tests with coverage
         run: npm test -- --coverage --coverageReporters=lcov --coverageReporters=text
 
+      - name: Run client hot-path benchmark
+        run: npm run benchmark:client
+
       - name: Upload client coverage artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
@@ -52,6 +55,18 @@ jobs:
   server-tests:
     name: Server Tests (Go)
     runs-on: ubuntu-latest
+    env:
+      MONGO_URI: mongodb://localhost:27017
+    services:
+      mongodb:
+        image: mongo:7.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.runCommand({ ping: 1 }).ok'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
     steps:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -71,6 +86,10 @@ jobs:
       - name: Run Go race detector
         working-directory: server
         run: go test -race ./...
+
+      - name: Run server hot-path benchmarks
+        working-directory: server
+        run: go test -run='^$' -bench=. -benchmem -benchtime=250ms ./...
 
       - name: Build server
         working-directory: server
@@ -249,7 +268,7 @@ jobs:
           cp -r index.html assets src vendor public/
           cp sw.js public/
           node scripts/version-pages-runtime.mjs public "${GITHUB_SHA}"
-          printf '{"commit":"%s","version":"Alpha 0.41.0.36"}\n' "${GITHUB_SHA}" > public/release.json
+          printf '{"commit":"%s","version":"Alpha 1.0.0"}\n' "${GITHUB_SHA}" > public/release.json
           
           # Create coverage directory
           mkdir -p public/coverage/client public/coverage/server
@@ -431,7 +450,7 @@ jobs:
           chmod --reference=.env "${qa_env_tmp}"
           mv "${qa_env_tmp}" .env
           trap - EXIT
-          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 0.41.0.36" bash ./deploy/deploy_linux.sh
+          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.0.0" bash ./deploy/deploy_linux.sh
           EOF
 
   post-deploy-browser:

@@ -38,7 +38,7 @@ export const eidolon = $root.eidolon = (() => {
              * @property {number|null} [version] StateEnvelope version
              * @property {eidolon.state.StateFull.$Properties|null} [full] StateEnvelope full
              * @property {eidolon.state.StateDelta.$Properties|null} [delta] StateEnvelope delta
-             * @property {number|Long|null} [serverTimeMs] StateEnvelope serverTimeMs
+             * @property {number|null} [serverTimeMs] StateEnvelope serverTimeMs
              * @property {"full"|"delta"} [payload] StateEnvelope payload
              * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
              */
@@ -57,7 +57,7 @@ export const eidolon = $root.eidolon = (() => {
              *   version?: number|null;
              *   full?: eidolon.state.StateFull.$Shape|null;
              *   delta?: eidolon.state.StateDelta.$Shape|null;
-             *   serverTimeMs?: number|Long|null;
+             *   serverTimeMs?: number|null;
              *   $unknowns?: Array.<Uint8Array>;
              * } & (
              *   ({ payload?: undefined; full?: null; delta?: null }|{ payload?: "full"; full: eidolon.state.StateFull.$Shape; delta?: null }|{ payload?: "delta"; full?: null; delta: eidolon.state.StateDelta.$Shape })
@@ -105,7 +105,7 @@ export const eidolon = $root.eidolon = (() => {
 
             /**
              * StateEnvelope serverTimeMs.
-             * @member {number|Long} serverTimeMs
+             * @member {number} serverTimeMs
              * @memberof eidolon.state.StateEnvelope
              * @instance
              */
@@ -1420,6 +1420,12 @@ export const eidolon = $root.eidolon = (() => {
              * @property {number|null} [rewardXp] Quest rewardXp
              * @property {boolean|null} [completed] Quest completed
              * @property {boolean|null} [accepted] Quest accepted
+             * @property {string|null} [title] Quest title
+             * @property {string|null} [description] Quest description
+             * @property {string|null} [lore] Quest lore
+             * @property {string|null} [category] Quest category
+             * @property {number|null} [chapter] Quest chapter
+             * @property {string|null} [objectiveText] Quest objectiveText
              * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
              */
 
@@ -1516,6 +1522,54 @@ export const eidolon = $root.eidolon = (() => {
             Quest.prototype.accepted = false;
 
             /**
+             * Quest title.
+             * @member {string} title
+             * @memberof eidolon.state.Quest
+             * @instance
+             */
+            Quest.prototype.title = "";
+
+            /**
+             * Quest description.
+             * @member {string} description
+             * @memberof eidolon.state.Quest
+             * @instance
+             */
+            Quest.prototype.description = "";
+
+            /**
+             * Quest lore.
+             * @member {string} lore
+             * @memberof eidolon.state.Quest
+             * @instance
+             */
+            Quest.prototype.lore = "";
+
+            /**
+             * Quest category.
+             * @member {string} category
+             * @memberof eidolon.state.Quest
+             * @instance
+             */
+            Quest.prototype.category = "";
+
+            /**
+             * Quest chapter.
+             * @member {number} chapter
+             * @memberof eidolon.state.Quest
+             * @instance
+             */
+            Quest.prototype.chapter = 0;
+
+            /**
+             * Quest objectiveText.
+             * @member {string} objectiveText
+             * @memberof eidolon.state.Quest
+             * @instance
+             */
+            Quest.prototype.objectiveText = "";
+
+            /**
              * Creates a new Quest instance using the specified properties.
              * @function create
              * @memberof eidolon.state.Quest
@@ -1563,6 +1617,18 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 7, wireType 0 =*/56).bool(message.completed);
                 if (message.accepted != null && $Object.hasOwnProperty.call(message, "accepted") && message.accepted !== false)
                     writer.uint32(/* id 8, wireType 0 =*/64).bool(message.accepted);
+                if (message.title != null && $Object.hasOwnProperty.call(message, "title") && message.title !== "")
+                    writer.uint32(/* id 9, wireType 2 =*/74).string(message.title);
+                if (message.description != null && $Object.hasOwnProperty.call(message, "description") && message.description !== "")
+                    writer.uint32(/* id 10, wireType 2 =*/82).string(message.description);
+                if (message.lore != null && $Object.hasOwnProperty.call(message, "lore") && message.lore !== "")
+                    writer.uint32(/* id 11, wireType 2 =*/90).string(message.lore);
+                if (message.category != null && $Object.hasOwnProperty.call(message, "category") && message.category !== "")
+                    writer.uint32(/* id 12, wireType 2 =*/98).string(message.category);
+                if (message.chapter != null && $Object.hasOwnProperty.call(message, "chapter") && message.chapter !== 0)
+                    writer.uint32(/* id 13, wireType 0 =*/104).int32(message.chapter);
+                if (message.objectiveText != null && $Object.hasOwnProperty.call(message, "objectiveText") && message.objectiveText !== "")
+                    writer.uint32(/* id 14, wireType 2 =*/114).string(message.objectiveText);
                 if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
                     for (let i = 0; i < message.$unknowns.length; ++i)
                         writer.raw(message.$unknowns[i]);
@@ -1682,6 +1748,60 @@ export const eidolon = $root.eidolon = (() => {
                                 delete message.accepted;
                             continue;
                         }
+                    case 9: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.title = value;
+                            else
+                                delete message.title;
+                            continue;
+                        }
+                    case 10: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.description = value;
+                            else
+                                delete message.description;
+                            continue;
+                        }
+                    case 11: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.lore = value;
+                            else
+                                delete message.lore;
+                            continue;
+                        }
+                    case 12: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.category = value;
+                            else
+                                delete message.category;
+                            continue;
+                        }
+                    case 13: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.chapter = value;
+                            else
+                                delete message.chapter;
+                            continue;
+                        }
+                    case 14: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.objectiveText = value;
+                            else
+                                delete message.objectiveText;
+                            continue;
+                        }
                     }
                     reader.skipType(wireType, _depth, tag);
                     if (!reader.discardUnknown) {
@@ -1749,6 +1869,24 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.accepted != null && $Object.hasOwnProperty.call(message, "accepted"))
                     if (typeof message.accepted !== "boolean")
                         return "accepted: boolean expected";
+                if (message.title != null && $Object.hasOwnProperty.call(message, "title"))
+                    if (!$util.isString(message.title))
+                        return "title: string expected";
+                if (message.description != null && $Object.hasOwnProperty.call(message, "description"))
+                    if (!$util.isString(message.description))
+                        return "description: string expected";
+                if (message.lore != null && $Object.hasOwnProperty.call(message, "lore"))
+                    if (!$util.isString(message.lore))
+                        return "lore: string expected";
+                if (message.category != null && $Object.hasOwnProperty.call(message, "category"))
+                    if (!$util.isString(message.category))
+                        return "category: string expected";
+                if (message.chapter != null && $Object.hasOwnProperty.call(message, "chapter"))
+                    if (!$util.isInteger(message.chapter))
+                        return "chapter: integer expected";
+                if (message.objectiveText != null && $Object.hasOwnProperty.call(message, "objectiveText"))
+                    if (!$util.isString(message.objectiveText))
+                        return "objectiveText: string expected";
                 return null;
             };
 
@@ -1794,6 +1932,24 @@ export const eidolon = $root.eidolon = (() => {
                 if (object.accepted != null)
                     if (object.accepted)
                         message.accepted = $Boolean(object.accepted);
+                if (object.title != null)
+                    if (typeof object.title !== "string" || object.title.length)
+                        message.title = $String(object.title);
+                if (object.description != null)
+                    if (typeof object.description !== "string" || object.description.length)
+                        message.description = $String(object.description);
+                if (object.lore != null)
+                    if (typeof object.lore !== "string" || object.lore.length)
+                        message.lore = $String(object.lore);
+                if (object.category != null)
+                    if (typeof object.category !== "string" || object.category.length)
+                        message.category = $String(object.category);
+                if (object.chapter != null)
+                    if ($Number(object.chapter) !== 0)
+                        message.chapter = object.chapter | 0;
+                if (object.objectiveText != null)
+                    if (typeof object.objectiveText !== "string" || object.objectiveText.length)
+                        message.objectiveText = $String(object.objectiveText);
                 return message;
             };
 
@@ -1823,6 +1979,12 @@ export const eidolon = $root.eidolon = (() => {
                     object.rewardXp = 0;
                     object.completed = false;
                     object.accepted = false;
+                    object.title = "";
+                    object.description = "";
+                    object.lore = "";
+                    object.category = "";
+                    object.chapter = 0;
+                    object.objectiveText = "";
                 }
                 if (message.id != null && $Object.hasOwnProperty.call(message, "id"))
                     object.id = message.id;
@@ -1840,6 +2002,18 @@ export const eidolon = $root.eidolon = (() => {
                     object.completed = message.completed;
                 if (message.accepted != null && $Object.hasOwnProperty.call(message, "accepted"))
                     object.accepted = message.accepted;
+                if (message.title != null && $Object.hasOwnProperty.call(message, "title"))
+                    object.title = message.title;
+                if (message.description != null && $Object.hasOwnProperty.call(message, "description"))
+                    object.description = message.description;
+                if (message.lore != null && $Object.hasOwnProperty.call(message, "lore"))
+                    object.lore = message.lore;
+                if (message.category != null && $Object.hasOwnProperty.call(message, "category"))
+                    object.category = message.category;
+                if (message.chapter != null && $Object.hasOwnProperty.call(message, "chapter"))
+                    object.chapter = message.chapter;
+                if (message.objectiveText != null && $Object.hasOwnProperty.call(message, "objectiveText"))
+                    object.objectiveText = message.objectiveText;
                 return object;
             };
 
@@ -3193,7 +3367,7 @@ export const eidolon = $root.eidolon = (() => {
              * @property {number|null} [poisonCoatingDuration] Entity poisonCoatingDuration
              * @property {number|null} [stealthDuration] Entity stealthDuration
              * @property {number|null} [zealDuration] Entity zealDuration
-             * @property {number|Long|null} [moveSequence] Entity moveSequence
+             * @property {number|null} [moveSequence] Entity moveSequence
              * @property {number|null} [slowFactor] Entity slowFactor
              * @property {number|null} [rootDuration] Entity rootDuration
              * @property {number|null} [stunDuration] Entity stunDuration
@@ -3208,6 +3382,8 @@ export const eidolon = $root.eidolon = (() => {
              * @property {Object.<string,string>|null} [skillRunes] Entity skillRunes
              * @property {string|null} [partyId] Entity partyId
              * @property {string|null} [socialStatus] Entity socialStatus
+             * @property {string|null} [guildId] Entity guildId
+             * @property {string|null} [guildTag] Entity guildTag
              * @property {number|null} [jumpStartX] Entity jumpStartX
              * @property {number|null} [jumpStartY] Entity jumpStartY
              * @property {number|null} [jumpStartZ] Entity jumpStartZ
@@ -3372,7 +3548,7 @@ export const eidolon = $root.eidolon = (() => {
              * @memberof eidolon.state.Entity
              * @instance
              */
-            Entity.prototype.experience = 0;
+            Entity.prototype.experience = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
 
             /**
              * Entity maxExperience.
@@ -3380,7 +3556,7 @@ export const eidolon = $root.eidolon = (() => {
              * @memberof eidolon.state.Entity
              * @instance
              */
-            Entity.prototype.maxExperience = 0;
+            Entity.prototype.maxExperience = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
 
             /**
              * Entity gold.
@@ -3912,7 +4088,7 @@ export const eidolon = $root.eidolon = (() => {
 
             /**
              * Entity moveSequence.
-             * @member {number|Long} moveSequence
+             * @member {number} moveSequence
              * @memberof eidolon.state.Entity
              * @instance
              */
@@ -4029,6 +4205,22 @@ export const eidolon = $root.eidolon = (() => {
              * @instance
              */
             Entity.prototype.socialStatus = "";
+
+            /**
+             * Entity guildId.
+             * @member {string} guildId
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.guildId = "";
+
+            /**
+             * Entity guildTag.
+             * @member {string} guildTag
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.guildTag = "";
 
             /**
              * Entity jumpStartX.
@@ -4162,10 +4354,10 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 13, wireType 0 =*/104).int32(message.maxMana);
                 if (message.level != null && $Object.hasOwnProperty.call(message, "level") && message.level !== 0)
                     writer.uint32(/* id 14, wireType 0 =*/112).int32(message.level);
-                if (message.experience != null && $Object.hasOwnProperty.call(message, "experience") && message.experience !== 0)
-                    writer.uint32(/* id 15, wireType 0 =*/120).int32(message.experience);
-                if (message.maxExperience != null && $Object.hasOwnProperty.call(message, "maxExperience") && message.maxExperience !== 0)
-                    writer.uint32(/* id 16, wireType 0 =*/128).int32(message.maxExperience);
+                if (message.experience != null && $Object.hasOwnProperty.call(message, "experience") && (typeof message.experience === "object" ? message.experience.low || message.experience.high : message.experience !== 0))
+                    writer.uint32(/* id 15, wireType 0 =*/120).int64(message.experience);
+                if (message.maxExperience != null && $Object.hasOwnProperty.call(message, "maxExperience") && (typeof message.maxExperience === "object" ? message.maxExperience.low || message.maxExperience.high : message.maxExperience !== 0))
+                    writer.uint32(/* id 16, wireType 0 =*/128).int64(message.maxExperience);
                 if (message.gold != null && $Object.hasOwnProperty.call(message, "gold") && message.gold !== 0)
                     writer.uint32(/* id 17, wireType 0 =*/136).int32(message.gold);
                 if (message.skillPoints != null && $Object.hasOwnProperty.call(message, "skillPoints") && message.skillPoints !== 0)
@@ -4354,6 +4546,10 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 105, wireType 5 =*/845).float(message.zealDuration);
                 if (message.moveSequence != null && $Object.hasOwnProperty.call(message, "moveSequence") && (typeof message.moveSequence === "object" ? message.moveSequence.low || message.moveSequence.high : message.moveSequence !== 0))
                     writer.uint32(/* id 106, wireType 0 =*/848).uint64(message.moveSequence);
+                if (message.guildId != null && $Object.hasOwnProperty.call(message, "guildId") && message.guildId !== "")
+                    writer.uint32(/* id 107, wireType 2 =*/858).string(message.guildId);
+                if (message.guildTag != null && $Object.hasOwnProperty.call(message, "guildTag") && message.guildTag !== "")
+                    writer.uint32(/* id 108, wireType 2 =*/866).string(message.guildTag);
                 if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
                     for (let i = 0; i < message.$unknowns.length; ++i)
                         writer.raw(message.$unknowns[i]);
@@ -4530,7 +4726,7 @@ export const eidolon = $root.eidolon = (() => {
                     case 15: {
                             if (wireType !== 0)
                                 break;
-                            if (value = reader.int32())
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
                                 message.experience = value;
                             else
                                 delete message.experience;
@@ -4539,7 +4735,7 @@ export const eidolon = $root.eidolon = (() => {
                     case 16: {
                             if (wireType !== 0)
                                 break;
-                            if (value = reader.int32())
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
                                 message.maxExperience = value;
                             else
                                 delete message.maxExperience;
@@ -5325,6 +5521,24 @@ export const eidolon = $root.eidolon = (() => {
                                 delete message.socialStatus;
                             continue;
                         }
+                    case 107: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.guildId = value;
+                            else
+                                delete message.guildId;
+                            continue;
+                        }
+                    case 108: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.guildTag = value;
+                            else
+                                delete message.guildTag;
+                            continue;
+                        }
                     case 81: {
                             if (wireType !== 5)
                                 break;
@@ -5492,11 +5706,11 @@ export const eidolon = $root.eidolon = (() => {
                     if (!$util.isInteger(message.level))
                         return "level: integer expected";
                 if (message.experience != null && $Object.hasOwnProperty.call(message, "experience"))
-                    if (!$util.isInteger(message.experience))
-                        return "experience: integer expected";
+                    if (!$util.isInteger(message.experience) && !(message.experience && $util.isInteger(message.experience.low) && $util.isInteger(message.experience.high)))
+                        return "experience: integer|Long expected";
                 if (message.maxExperience != null && $Object.hasOwnProperty.call(message, "maxExperience"))
-                    if (!$util.isInteger(message.maxExperience))
-                        return "maxExperience: integer expected";
+                    if (!$util.isInteger(message.maxExperience) && !(message.maxExperience && $util.isInteger(message.maxExperience.low) && $util.isInteger(message.maxExperience.high)))
+                        return "maxExperience: integer|Long expected";
                 if (message.gold != null && $Object.hasOwnProperty.call(message, "gold"))
                     if (!$util.isInteger(message.gold))
                         return "gold: integer expected";
@@ -5777,6 +5991,12 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.socialStatus != null && $Object.hasOwnProperty.call(message, "socialStatus"))
                     if (!$util.isString(message.socialStatus))
                         return "socialStatus: string expected";
+                if (message.guildId != null && $Object.hasOwnProperty.call(message, "guildId"))
+                    if (!$util.isString(message.guildId))
+                        return "guildId: string expected";
+                if (message.guildTag != null && $Object.hasOwnProperty.call(message, "guildTag"))
+                    if (!$util.isString(message.guildTag))
+                        return "guildTag: string expected";
                 if (message.jumpStartX != null && $Object.hasOwnProperty.call(message, "jumpStartX"))
                     if (typeof message.jumpStartX !== "number")
                         return "jumpStartX: number expected";
@@ -5868,11 +6088,25 @@ export const eidolon = $root.eidolon = (() => {
                     if ($Number(object.level) !== 0)
                         message.level = object.level | 0;
                 if (object.experience != null)
-                    if ($Number(object.experience) !== 0)
-                        message.experience = object.experience | 0;
+                    if (typeof object.experience === "object" ? object.experience.low || object.experience.high : $Number(object.experience) !== 0)
+                        if ($util.Long)
+                            message.experience = $util.Long.fromValue(object.experience, false);
+                        else if (typeof object.experience === "string")
+                            message.experience = $parseInt(object.experience, 10);
+                        else if (typeof object.experience === "number")
+                            message.experience = object.experience;
+                        else if (typeof object.experience === "object")
+                            message.experience = new $util.LongBits(object.experience.low >>> 0, object.experience.high >>> 0).toNumber();
                 if (object.maxExperience != null)
-                    if ($Number(object.maxExperience) !== 0)
-                        message.maxExperience = object.maxExperience | 0;
+                    if (typeof object.maxExperience === "object" ? object.maxExperience.low || object.maxExperience.high : $Number(object.maxExperience) !== 0)
+                        if ($util.Long)
+                            message.maxExperience = $util.Long.fromValue(object.maxExperience, false);
+                        else if (typeof object.maxExperience === "string")
+                            message.maxExperience = $parseInt(object.maxExperience, 10);
+                        else if (typeof object.maxExperience === "number")
+                            message.maxExperience = object.maxExperience;
+                        else if (typeof object.maxExperience === "object")
+                            message.maxExperience = new $util.LongBits(object.maxExperience.low >>> 0, object.maxExperience.high >>> 0).toNumber();
                 if (object.gold != null)
                     if ($Number(object.gold) !== 0)
                         message.gold = object.gold | 0;
@@ -6167,6 +6401,12 @@ export const eidolon = $root.eidolon = (() => {
                 if (object.socialStatus != null)
                     if (typeof object.socialStatus !== "string" || object.socialStatus.length)
                         message.socialStatus = $String(object.socialStatus);
+                if (object.guildId != null)
+                    if (typeof object.guildId !== "string" || object.guildId.length)
+                        message.guildId = $String(object.guildId);
+                if (object.guildTag != null)
+                    if (typeof object.guildTag !== "string" || object.guildTag.length)
+                        message.guildTag = $String(object.guildTag);
                 if (object.jumpStartX != null)
                     if (!$Object.is($Number(object.jumpStartX), 0))
                         message.jumpStartX = $Number(object.jumpStartX);
@@ -6239,8 +6479,16 @@ export const eidolon = $root.eidolon = (() => {
                     object.mana = 0;
                     object.maxMana = 0;
                     object.level = 0;
-                    object.experience = 0;
-                    object.maxExperience = 0;
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.experience = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.experience = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.maxExperience = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.maxExperience = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
                     object.gold = 0;
                     object.skillPoints = 0;
                     object.selectedBranch = "";
@@ -6329,6 +6577,8 @@ export const eidolon = $root.eidolon = (() => {
                         object.moveSequence = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
                     } else
                         object.moveSequence = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                    object.guildId = "";
+                    object.guildTag = "";
                 }
                 if (message.id != null && $Object.hasOwnProperty.call(message, "id"))
                     object.id = message.id;
@@ -6359,9 +6609,19 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.level != null && $Object.hasOwnProperty.call(message, "level"))
                     object.level = message.level;
                 if (message.experience != null && $Object.hasOwnProperty.call(message, "experience"))
-                    object.experience = message.experience;
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.experience = typeof message.experience === "number" ? $BigInt(message.experience) : $util.Long.fromBits(message.experience.low >>> 0, message.experience.high >>> 0, false).toBigInt();
+                    else if (typeof message.experience === "number")
+                        object.experience = options.longs === $String ? $String(message.experience) : message.experience;
+                    else
+                        object.experience = options.longs === $String ? $util.Long.prototype.toString.call(message.experience) : options.longs === $Number ? new $util.LongBits(message.experience.low >>> 0, message.experience.high >>> 0).toNumber() : message.experience;
                 if (message.maxExperience != null && $Object.hasOwnProperty.call(message, "maxExperience"))
-                    object.maxExperience = message.maxExperience;
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.maxExperience = typeof message.maxExperience === "number" ? $BigInt(message.maxExperience) : $util.Long.fromBits(message.maxExperience.low >>> 0, message.maxExperience.high >>> 0, false).toBigInt();
+                    else if (typeof message.maxExperience === "number")
+                        object.maxExperience = options.longs === $String ? $String(message.maxExperience) : message.maxExperience;
+                    else
+                        object.maxExperience = options.longs === $String ? $util.Long.prototype.toString.call(message.maxExperience) : options.longs === $Number ? new $util.LongBits(message.maxExperience.low >>> 0, message.maxExperience.high >>> 0).toNumber() : message.maxExperience;
                 if (message.gold != null && $Object.hasOwnProperty.call(message, "gold"))
                     object.gold = message.gold;
                 if (message.skillPoints != null && $Object.hasOwnProperty.call(message, "skillPoints"))
@@ -6575,6 +6835,10 @@ export const eidolon = $root.eidolon = (() => {
                         object.moveSequence = options.longs === $String ? $String(message.moveSequence) : message.moveSequence;
                     else
                         object.moveSequence = options.longs === $String ? $util.Long.prototype.toString.call(message.moveSequence) : options.longs === $Number ? new $util.LongBits(message.moveSequence.low >>> 0, message.moveSequence.high >>> 0).toNumber(true) : message.moveSequence;
+                if (message.guildId != null && $Object.hasOwnProperty.call(message, "guildId"))
+                    object.guildId = message.guildId;
+                if (message.guildTag != null && $Object.hasOwnProperty.call(message, "guildTag"))
+                    object.guildTag = message.guildTag;
                 return object;
             };
 

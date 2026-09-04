@@ -1,0 +1,57 @@
+.pvp-window {
+    width: min(460px, calc(100vw - 24px));
+    max-height: min(620px, calc(100vh - 24px));
+}
+
+.pvp-window__body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px;
+    overflow-y: auto;
+}
+
+.pvp-stats,
+.pvp-card {
+    padding: 11px;
+    border: 1px solid rgba(255, 82, 103, 0.24);
+    border-radius: 9px;
+    background: rgba(15, 8, 13, 0.78);
+}
+
+.pvp-card h3,
+.pvp-card p { margin: 0 0 8px; }
+
+.pvp-card--challenge,
+.pvp-card--match {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pvp-card--challenge strong,
+.pvp-card--match h3 { flex: 1; }
+
+.pvp-score {
+    color: #ff8794;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.pvp-btn {
+    margin-right: 7px;
+    padding: 7px 10px;
+    border: 1px solid rgba(255, 82, 103, 0.45);
+    border-radius: 6px;
+    background: rgba(79, 28, 39, 0.9);
+    color: #ffd9de;
+    cursor: pointer;
+}
+
+.pvp-btn--success { border-color: #68bd78; background: #245e33; color: #edfff0; }
+.pvp-btn--danger { border-color: #d65060; background: #652632; }
+
+.pvp-leader-row {
+    padding: 5px 2px;
+    color: #d7dbe4;
+}

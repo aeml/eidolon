@@ -61,8 +61,8 @@ export class UIBindings {
             engine.network.send('social_status', { status });
             engine.network.send('social', {});
         };
-        ui.trading.onTradingSearch = (query) => {
-            engine.network.send('trading_search', { query });
+        ui.trading.onTradingSearch = (filters) => {
+			engine.network.send('trading_search', filters);
         };
         ui.trading.onTradingCreate = (slotIndex, bid, buyout, duration) => {
             engine.network.send('trading_create', { slotIndex, bid, buyout, duration });
@@ -86,6 +86,7 @@ export class UIBindings {
         ui.onReportSubmit = (type, text) => {
             engine.network.send('report', { reportType: type, text });
         };
+        ui.onResonanceSpend = (trait) => engine.network.send('endgame_spend', { trait });
         ui.social.onPartyInvite = (targetName) => {
             engine.socialController.sendPartyMessage('party_invite', { targetName });
         };
@@ -101,11 +102,24 @@ export class UIBindings {
         ui.social.onPartyPromote = (targetId) => {
             engine.socialController.promotePartyMember(targetId);
         };
+		ui.social.onPartyReadyCheck = () => {
+			engine.socialController.sendPartyMessage('party_ready_check', {});
+		};
+		ui.social.onPartyReady = (ready) => {
+			engine.socialController.sendPartyMessage('party_ready', { ready });
+		};
+        ui.social.onPartyLootRule = (rule) => {
+			engine.socialController.sendPartyMessage('party_loot_rule', { rule });
+		};
 
         // Friends callbacks (0.38)
         ui.social.onFriendRequest = (username) => {
             engine.network.send('friend_request', { username });
         };
+		ui.social.onTradeRequest = (targetName) => engine.network.send('trade_request', { targetName });
+		ui.directTrade.onOffer = (tradeId, itemIds, gold) => engine.network.send('trade_offer', { tradeId, itemIds, gold });
+		ui.directTrade.onConfirm = (tradeId) => engine.network.send('trade_confirm', { tradeId });
+		ui.directTrade.onCancel = (tradeId) => engine.network.send('trade_cancel', { tradeId });
         ui.social.onFriendAccept = (username) => {
             engine.network.send('friend_accept', { username });
         };
@@ -115,6 +129,31 @@ export class UIBindings {
         ui.social.onFriendRemove = (username) => {
             engine.network.send('friend_remove', { username });
         };
+        const guild = ui.social.guild;
+        if (guild) {
+            guild.onCreate = (name, tag) => engine.network.send('guild_create', { name, tag });
+            guild.onInvite = (username) => engine.network.send('guild_invite', { username });
+            guild.onRespond = (guildId, accept) => engine.network.send('guild_respond', { guildId, accept });
+            guild.onLeave = () => engine.network.send('guild_leave', {});
+            guild.onKick = (username) => engine.network.send('guild_kick', { username });
+            guild.onSetRank = (playerId, rank) => engine.network.send('guild_set_rank', { playerId, rank });
+            guild.onTransfer = (playerId) => engine.network.send('guild_transfer', { playerId });
+            guild.onSetMOTD = (motd) => engine.network.send('guild_set_motd', { motd });
+            guild.onDisband = () => engine.network.send('guild_disband', {});
+            guild.onClaimLeadership = () => engine.network.send('guild_claim_leader', {});
+            guild.onBankDeposit = (payload) => engine.network.send('guild_bank_deposit', payload);
+            guild.onBankWithdraw = (payload) => engine.network.send('guild_bank_withdraw', payload);
+            guild.onLeaderboard = (payload) => engine.network.send('guild_leaderboard', payload);
+        }
+        if (ui.pvp) {
+            ui.pvp.onRefresh = () => engine.network.send('pvp_get', {});
+            ui.pvp.onDuelRespond = (requesterId, accept) => engine.network.send('duel_respond', { requesterId, accept });
+            ui.pvp.onQueue = (teamSize) => engine.network.send('arena_queue', { teamSize });
+            ui.pvp.onLeave = () => engine.network.send('arena_leave', {});
+            ui.pvp.onLeaderboard = () => engine.network.send('pvp_leaderboard', {});
+            ui.pvp.onFlag = (enabled) => engine.network.send('pvp_flag', { enabled });
+        }
+        ui.social.onDuelRequest = (username) => engine.network.send('duel_request', { username });
 
         ui.skillTree.onSelectBranch = (branch) => {
             engine.network.send('selectBranch', { branch });
@@ -187,12 +226,6 @@ export class UIBindings {
         };
 
         ui.showHUD();
-        ui.onStatUpgrade = (stat) => {
-            if (engine.player) {
-                engine.network.send('upgrade_stat', { stat });
-            }
-        };
-
         ui.onRespawn = () => {
             if (!engine.player) return;
 

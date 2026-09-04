@@ -3,7 +3,7 @@ export const TOWN_SERVICE_POINTS = [
         id: 'quest-giver',
         label: 'Quest Giver',
         shortLabel: 'Quest Giver',
-        x: -25,
+        x: -20,
         z: 200,
         color: '#ffd700',
         strokeColor: '#ffd700',

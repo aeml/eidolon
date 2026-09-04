@@ -2,7 +2,9 @@ package game
 
 import (
 	"reflect"
+	"sync"
 	"testing"
+	"time"
 )
 
 func TestTradingDatabaseRoundTripPreservesCompleteItemMetadata(t *testing.T) {
@@ -33,6 +35,87 @@ func TestTradingDatabaseRoundTripPreservesCompleteItemMetadata(t *testing.T) {
 	restored := ts.fromDBItem(ts.toDBItem(original))
 	if !reflect.DeepEqual(restored, original) {
 		t.Fatalf("trading persistence changed item metadata:\nwant %#v\n got %#v", original, restored)
+	}
+}
+
+func TestConcurrentBuyoutHasOneWinnerAndCannotBeCollectedTwice(t *testing.T) {
+	ts := NewTradingSystem(nil)
+	ts.Auctions["race"] = &Auction{
+		ID: "race", SellerID: "seller", Item: Item{ID: "only-copy", Name: "Only Copy", Stack: 1, MaxStack: 1},
+		Bid: 50, Buyout: 100, Status: AuctionActive, EndTime: time.Now().Add(time.Hour), Deposit: 5,
+	}
+	world := NewWorld(nil)
+	buyers := []*Entity{
+		{ID: "buyer-a", Gold: 1000, Inventory: make([]Item, 2)},
+		{ID: "buyer-b", Gold: 1000, Inventory: make([]Item, 2)},
+	}
+	var wg sync.WaitGroup
+	results := make(chan error, len(buyers))
+	for _, buyer := range buyers {
+		wg.Add(1)
+		go func(candidate *Entity) {
+			defer wg.Done()
+			_, err := ts.BuyoutAuction("race", candidate, world)
+			results <- err
+		}(buyer)
+	}
+	wg.Wait()
+	close(results)
+	successes := 0
+	for err := range results {
+		if err == nil {
+			successes++
+		}
+	}
+	if successes != 1 {
+		t.Fatalf("concurrent buyout winners = %d, want 1", successes)
+	}
+	itemCopies := 0
+	for _, buyer := range buyers {
+		for _, item := range buyer.Inventory {
+			if item.ID == "only-copy" {
+				itemCopies++
+			}
+		}
+		if _, err := ts.CollectAuction("race", buyer); err == nil {
+			t.Fatal("direct-buyout item was collectable a second time")
+		}
+	}
+	if itemCopies != 1 {
+		t.Fatalf("delivered item copies = %d, want 1", itemCopies)
+	}
+
+	seller := &Entity{ID: "seller"}
+	if payout, err := ts.CollectAuction("race", seller); err != nil || payout != 100 {
+		t.Fatalf("seller payout = %v, err=%v", payout, err)
+	}
+	if _, err := ts.CollectAuction("race", seller); err == nil {
+		t.Fatal("seller collected auction proceeds twice")
+	}
+}
+
+func TestBidSettlementKeepsBothIndependentClaims(t *testing.T) {
+	ts := NewTradingSystem(nil)
+	ts.Auctions["bid-win"] = &Auction{
+		ID: "bid-win", SellerID: "seller", BuyerID: "winner", BidderID: "winner",
+		Item: Item{ID: "won-item", Stack: 1}, Bid: 100, Buyout: 1000, SalePrice: 100,
+		Status: AuctionSold, Deposit: 5,
+	}
+	winner := &Entity{ID: "winner"}
+	item, err := ts.CollectAuction("bid-win", winner)
+	if err != nil || item.(Item).ID != "won-item" {
+		t.Fatalf("winner claim = %#v, err=%v", item, err)
+	}
+	if ts.Auctions["bid-win"] == nil {
+		t.Fatal("buyer claim deleted seller's unpaid proceeds")
+	}
+	seller := &Entity{ID: "seller"}
+	payout, err := ts.CollectAuction("bid-win", seller)
+	if err != nil || payout != 100 {
+		t.Fatalf("bid seller payout = %#v, err=%v", payout, err)
+	}
+	if ts.Auctions["bid-win"] != nil {
+		t.Fatal("fully claimed auction was not finalized")
 	}
 }
 
@@ -208,5 +291,32 @@ func TestAuctionStruct(t *testing.T) {
 
 	if auction.Status != AuctionActive {
 		t.Error("Auction status not ACTIVE")
+	}
+}
+
+func TestSearchAuctionsFilteredCombinesCategoryRarityAndLevel(t *testing.T) {
+	ts := NewTradingSystem(nil)
+	ts.Auctions["matching"] = &Auction{
+		ID: "matching", Status: AuctionActive, EndTime: time.Now().Add(time.Hour),
+		Item: Item{Name: "Ember Sword", Type: ItemWeapon, Rarity: RarityLegendary, Level: 60},
+	}
+	ts.Auctions["wrong-rarity"] = &Auction{
+		ID: "wrong-rarity", Status: AuctionActive, EndTime: time.Now().Add(time.Hour),
+		Item: Item{Name: "Ember Axe", Type: ItemWeapon, Rarity: RarityRare, Level: 60},
+	}
+	ts.Auctions["wrong-level"] = &Auction{
+		ID: "wrong-level", Status: AuctionActive, EndTime: time.Now().Add(time.Hour),
+		Item: Item{Name: "Ember Sword", Type: ItemWeapon, Rarity: RarityLegendary, Level: 20},
+	}
+	ts.Auctions["sold"] = &Auction{
+		ID: "sold", Status: AuctionSold, EndTime: time.Now().Add(time.Hour),
+		Item: Item{Name: "Ember Sword", Type: ItemWeapon, Rarity: RarityLegendary, Level: 60},
+	}
+
+	results := ts.SearchAuctionsFiltered(AuctionSearchFilter{
+		Query: "sword", ItemType: "weapon", Rarity: "legendary", MinLevel: 50, MaxLevel: 70,
+	})
+	if len(results) != 1 || results[0].ID != "matching" {
+		t.Fatalf("unexpected filtered auctions: %+v", results)
 	}
 }

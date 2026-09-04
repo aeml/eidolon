@@ -208,18 +208,30 @@ func withinAbilityRadius(effectName string, originX, originZ float64, target *En
 	return (dx*dx + dz*dz) <= effectiveRadius*effectiveRadius
 }
 
-func validDirectAbilityTarget(player, target *Entity, maxRange float64, allowedTypes ...EntityType) bool {
+func validDirectAbilityTarget(w *World, player, target *Entity, maxRange float64, allowedTypes ...EntityType) bool {
 	if player == nil || target == nil || player.InstanceID != target.InstanceID || target.State == "DEAD" {
 		return false
 	}
 	typeAllowed := false
+	offensive := false
 	for _, allowedType := range allowedTypes {
+		if allowedType == TypeEnemy {
+			offensive = true
+		}
 		if target.Type == allowedType {
 			typeAllowed = true
 			break
 		}
 	}
 	if !typeAllowed {
+		if !offensive || target.Type != TypePlayer {
+			return false
+		}
+	}
+	if offensive && !w.CanDamage(player, target) {
+		return false
+	}
+	if !offensive && target.Type == TypePlayer && w.CombatRelationship(player, target) == RelationshipHostile {
 		return false
 	}
 	if maxRange <= 0 {
@@ -241,7 +253,7 @@ func (w *World) spreadPoison(source, primaryTarget *Entity, damage int, endTime 
 			continue
 		}
 		target.Mu.Lock()
-		if target.Type == TypeEnemy && target.State != "DEAD" && withinAbilityRadius("Poison Spread", originX, originZ, target, radius) {
+		if w.CanDamage(source, target) && target.State != "DEAD" && withinAbilityRadius("Poison Spread", originX, originZ, target, radius) {
 			target.Poisoned = true
 			target.PoisonDamage = damage
 			target.PoisonSourceID = source.ID

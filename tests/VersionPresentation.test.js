@@ -18,8 +18,19 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.41.0.36 for the dawnwarden redesign', () => {
-        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 0.41.0.36</span>');
+    test('advances the login screen and player-facing history to Alpha 1.0', () => {
+        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.0.0</span>');
+        expect(indexHtml).toContain('Alpha 1.0.0 (the worlds answer together)');
+        expect(indexHtml).toContain('Multiplayer has a social backbone');
+        expect(indexHtml).toContain('Guilds are persistent institutions');
+        expect(indexHtml).toContain('PvP is genuinely playable');
+        expect(indexHtml).toContain('The cap has a long tail');
+        expect(indexHtml).toContain('Chat stays with the player');
+        expect(indexHtml).toContain('The Quest Giver steps into view');
+        expect(indexHtml).toContain('2026-09-04-10');
+    });
+
+    test('retains alpha 0.41.0.36 dawnwarden redesign history', () => {
         expect(indexHtml).toContain('Patch 0.41.0.36');
         expect(indexHtml).toContain('the dawnwarden casts off the cowl');
         expect(indexHtml).toContain('The friar silhouette is gone');
@@ -399,7 +410,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 0.41.0.36';
+        const expectedVersion = 'Alpha 1.0.0';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -519,9 +530,9 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Added client coverage for remote interpolation frame-spike handling and the 0.35.0 release state');
     });
 
-    test('marks 0.41.0.36 current and points the active line at 0.41', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.36`');
-        expect(alphaRoadmap).toContain('Active implementation line: `0.41`');
+    test('marks Alpha 1.0 current and preserves its completed runway', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 1.0.0`');
+        expect(alphaRoadmap).toContain('Active implementation line: `Alpha 1.0`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');
         expect(alphaRoadmap).toContain('0.37` (closed)');

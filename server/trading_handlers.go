@@ -13,7 +13,10 @@ func handleMsgTradingSearch(c *Client, msg Message) {
 	if err := json.Unmarshal(msg.Payload, &payload); err != nil {
 		return
 	}
-	results := world.Trading.SearchAuctions(payload.Query)
+	results := world.Trading.SearchAuctionsFiltered(game.AuctionSearchFilter{
+		Query: payload.Query, ItemType: payload.ItemType, Rarity: payload.Rarity,
+		MinLevel: payload.MinLevel, MaxLevel: payload.MaxLevel,
+	})
 
 	resPayload, _ := json.Marshal(results)
 	resp := Message{
@@ -72,9 +75,9 @@ func handleMsgTradingCreate(c *Client, msg Message) {
 		return
 	}
 
-	// Remove item immediately to prevent duplication
-	copy(player.Inventory[payload.SlotIndex:], player.Inventory[payload.SlotIndex+1:])
-	player.Inventory = player.Inventory[:len(player.Inventory)-1]
+	// Clear only the selected slot so listing does not shrink the player's
+	// fixed-capacity inventory over time.
+	player.Inventory[payload.SlotIndex] = game.Item{}
 	player.Mu.Unlock()
 
 	_, err := world.Trading.CreateAuction(player, item, payload.Bid, payload.Buyout, payload.Duration)

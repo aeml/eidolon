@@ -1,6 +1,9 @@
 package game
 
-import "testing"
+import (
+	"testing"
+	"time"
+)
 
 func TestDungeonProgressionAccessAndBands(t *testing.T) {
 	if CanAccessDungeon(29) {
@@ -25,6 +28,50 @@ func TestDungeonProgressionAccessAndBands(t *testing.T) {
 	}
 	if !CanSelectDungeonRunLevel(100, 100) {
 		t.Fatalf("expected level 100 to be able to select run level 100")
+	}
+}
+
+func TestUmbralNexusIsCapBoundAndUsesSharedDungeonRuntime(t *testing.T) {
+	if err := ValidateDungeonTypeEntry(99, "umbral_nexus"); err == nil {
+		t.Fatal("Umbral Nexus unlocked before level cap")
+	}
+	if err := ValidateDungeonTypeEntry(100, "umbral_nexus"); err != nil {
+		t.Fatalf("cap-level Umbral Nexus rejected: %v", err)
+	}
+	if err := ValidateDungeonTypeEntry(100, "invented"); err == nil {
+		t.Fatal("unknown dungeon type was accepted")
+	}
+
+	world := NewWorld(nil)
+	instanceID := world.CreateDungeon("endgame-party", "umbral_nexus", DifficultyMythic, 100)
+	instance, ok := world.getDungeonInstance(instanceID)
+	if !ok || instance.RoomState == nil || len(instance.Layout.Rooms) != 7 {
+		t.Fatalf("Umbral Nexus did not use production room state: %+v", instance)
+	}
+	if instance.Layout.Rooms[len(instance.Layout.Rooms)-1].Type != "boss" {
+		t.Fatal("Umbral Nexus route does not end in a boss room")
+	}
+	for _, entity := range world.Entities {
+		if entity.InstanceID == instanceID && entity.Type == TypeEnemy && entity.Level != 100 {
+			t.Fatalf("endgame enemy spawned at run level %d", entity.Level)
+		}
+	}
+}
+
+func TestPartyDungeonReentryReusesLiveInstanceAndExpiresEmptyRun(t *testing.T) {
+	w := NewWorld(nil)
+	first := w.CreateDungeon("party-reentry", "umbral_nexus", DifficultyMythic, MaxPlayerLevel)
+	second := w.CreateDungeon("party-reentry", "molten_core", DifficultyNormal, 70)
+	if second != first || w.GetInstanceType(second) != "umbral_nexus" {
+		t.Fatalf("live party instance was replaced: first=%s second=%s type=%s", first, second, w.GetInstanceType(second))
+	}
+	instance, _ := w.getDungeonInstance(first)
+	instance.Mu.Lock()
+	instance.EmptySince = time.Now().Add(-6 * time.Minute)
+	instance.Mu.Unlock()
+	third := w.CreateDungeon("party-reentry", "molten_core", DifficultyNormal, 70)
+	if third == first || w.GetInstanceType(third) != "molten_core" {
+		t.Fatalf("expired party instance was not replaced: first=%s third=%s type=%s", first, third, w.GetInstanceType(third))
 	}
 }
 

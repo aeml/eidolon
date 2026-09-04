@@ -17,6 +17,7 @@ export class SocialPresenceController {
         this.remotePlayers = remotePlayers;
         /** @type {string} Party ID for the local player; empty string when not in a party. */
         this.myPartyId = '';
+        this.pvpOpponents = new Set();
     }
 
     /**
@@ -54,6 +55,33 @@ export class SocialPresenceController {
             case 'friend_decline':
                 // Confirmation that a request was declined (no-op).
                 return true;
+            case 'guild_update':
+                this.uiManager.social?.guild?.update?.(msg.payload);
+                return true;
+            case 'guild_leaderboard':
+                this.uiManager.social?.guild?.updateLeaderboard?.(msg.payload);
+                return true;
+            case 'pvp_update':
+                this.uiManager.pvp?.update?.(msg.payload);
+                this.setPvPOpponents(msg.payload?.opponents);
+                return true;
+            case 'pvp_leaderboard':
+                this.uiManager.pvp?.updateLeaderboard?.(msg.payload);
+                return true;
+            case 'endgame_update': {
+                const player = this.uiManager.lastPlayerRef;
+                if (player && msg.payload) {
+                    player.resonanceUnlocked = Boolean(msg.payload.unlocked);
+                    player.resonanceLevel = Number(msg.payload.level) || 0;
+                    player.resonanceXP = Number(msg.payload.xp) || 0;
+                    player.resonanceXPToNext = Number(msg.payload.xpToNext) || 1;
+                    player.resonancePoints = Number(msg.payload.availablePoints) || 0;
+                    player.resonanceRanks = { ...(msg.payload.ranks || {}) };
+                    this.uiManager.lastCharacterSheetSignature = '';
+                    this.uiManager.updateCharacterSheet?.(player);
+                }
+                return true;
+            }
             case 'social':
                 this.uiManager.updateSocialList(msg.payload);
                 return true;
@@ -85,6 +113,15 @@ export class SocialPresenceController {
                 entity.setPartyHighlight(!!(this.myPartyId && entity.partyId === this.myPartyId));
             }
         });
+    }
+
+    setPvPOpponents(opponents = []) {
+        this.pvpOpponents = new Set(Array.isArray(opponents) ? opponents : []);
+        this.remotePlayers.forEach((entity, id) => entity.setPvPHostile?.(this.pvpOpponents.has(id)));
+    }
+
+    isPvPHostile(entityId) {
+        return this.pvpOpponents.has(entityId);
     }
 
     /**

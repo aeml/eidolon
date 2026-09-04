@@ -1,0 +1,142 @@
+#tab-panel-guild {
+    max-height: 470px;
+    overflow-y: auto;
+    padding-right: 3px;
+}
+
+.guild-card {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 10px;
+    padding: 11px;
+    border: 1px solid rgba(255, 215, 106, 0.18);
+    border-radius: 10px;
+    background: rgba(7, 10, 15, 0.72);
+}
+
+.guild-card h3 {
+    margin: 0;
+    color: #ffd76a;
+    font-size: 12px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.guild-card--header {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.guild-identity {
+    flex: 1 1 180px;
+    color: #fff0b0;
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.guild-form-row,
+.guild-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.guild-form-row input,
+.guild-form-row select {
+    min-width: 0;
+    flex: 1;
+    padding: 7px 9px;
+    border: 1px solid rgba(255, 215, 106, 0.25);
+    border-radius: 7px;
+    background: #090c12;
+    color: #f3f6fb;
+}
+
+.guild-row {
+    min-height: 30px;
+    padding: 5px 7px;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.035);
+}
+
+.guild-row > :first-child:not(button) {
+    flex: 1;
+}
+
+.guild-btn,
+.guild-form-row button {
+    padding: 5px 9px;
+    border: 1px solid rgba(255, 215, 106, 0.3);
+    border-radius: 6px;
+    background: rgba(64, 53, 24, 0.78);
+    color: #fff0b0;
+    font: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.guild-btn--success {
+    border-color: rgba(84, 184, 109, 0.55);
+    background: rgba(34, 90, 47, 0.9);
+    color: #eaffee;
+}
+
+.guild-btn--danger {
+    border-color: rgba(200, 80, 80, 0.45);
+    background: rgba(80, 40, 40, 0.85);
+    color: #ffb3b3;
+}
+
+.guild-roster-row {
+    display: grid;
+    grid-template-columns: 8px minmax(80px, 1fr) minmax(90px, auto) auto repeat(3, auto);
+}
+
+.guild-presence {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.guild-presence--online { background: #78d97f; }
+.guild-presence--offline { background: #4a5568; }
+
+.guild-member-combat,
+.guild-rank,
+.guild-audit-row,
+.guild-empty {
+    color: #929dad;
+    font-size: 11px;
+}
+
+.guild-rank {
+    color: #cbb978;
+    text-transform: capitalize;
+}
+
+.guild-bank-items {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.guild-audit-row {
+    padding: 4px 2px;
+    text-transform: capitalize;
+}
+
+@media (max-width: 620px) {
+    .guild-roster-row {
+        grid-template-columns: 8px 1fr auto;
+    }
+
+    .guild-member-combat,
+    .guild-rank {
+        grid-column: 2;
+    }
+}

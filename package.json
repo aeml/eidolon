@@ -22,6 +22,7 @@
     "test:e2e:movement": "playwright test tests/e2e/movement-smoothness.spec.js",
     "test:e2e:multiplayer": "playwright test tests/e2e/multiplayer.spec.js",
     "test:e2e:animations": "playwright test tests/e2e/animation-gallery.spec.js",
+    "benchmark:client": "node scripts/benchmark-client.mjs",
     "verify:browser-gpu": "node scripts/verify-browser-gpu.mjs",
     "docs:animations": "node scripts/generate-animation-coverage.mjs",
     "lint": "eslint src tests scripts playwright.config.js --max-warnings=0"

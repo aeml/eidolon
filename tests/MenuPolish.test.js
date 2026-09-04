@@ -951,8 +951,8 @@ describe('menu polish regressions', () => {
             partyId: 'party-1',
             leaderId: 'player-1',
             members: [
-                { id: 'player-1', name: 'Rob', class: 'Wizard', level: 25, hp: 80, maxHp: 100, isLeader: true },
-                { id: 'player-2', name: 'Alice', class: 'Rogue', level: 24, hp: 70, maxHp: 100, isLeader: false }
+				{ id: 'player-1', name: 'Rob', class: 'Wizard', role: 'damage', level: 25, hp: 80, maxHp: 100, isLeader: true, ready: true },
+				{ id: 'player-2', name: 'Alice', class: 'Cleric', role: 'support', level: 24, hp: 70, maxHp: 100, isLeader: false, ready: false }
             ]
         });
 
@@ -961,9 +961,9 @@ describe('menu polish regressions', () => {
 
         const members = document.querySelectorAll('.party-member');
         expect(members).toHaveLength(2);
-        expect(members[0].querySelector('.party-member-role').textContent).toBe('Leader');
+		expect(members[0].querySelector('.party-member-role').textContent).toBe('damage • Leader • Ready');
         expect(members[0].querySelector('.party-member-bonus').textContent).toContain('+20%');
-        expect(members[1].querySelector('.party-member-role').textContent).toBe('Member');
+		expect(members[1].querySelector('.party-member-role').textContent).toBe('support');
     });
 
     test('party invite modal explains cooperative benefits before accepting', () => {
@@ -1118,7 +1118,7 @@ describe('menu polish regressions', () => {
         expect(html).toContain('<div class="help-guide__grid">');
         expect(html).toContain('<strong class="help-guide__key">Left Click:</strong>');
         expect(html).toContain('<strong class="help-guide__key">Combat:</strong> Left Click for melee/basic attack, Right Click to use your selected ability, 1-4 for hotbar abilities');
-        expect(html).toContain('<strong class="help-guide__key">1.</strong> Start with the <strong>Quest Giver</strong>');
+        expect(html).toContain('<strong class="help-guide__key">1.</strong> Your <strong>Fourfold Chronicle</strong> starts automatically');
         expect(html).not.toContain('<div style="color: #ffd700; font-size: 15px; font-weight: bold; margin-bottom: 6px;">Core Controls</div>');
         expect(html).not.toContain('<div id="help-first-hour-guide" style="border-top: 1px solid #444; padding-top: 10px;">');
         expect(html).not.toContain('<strong style="color: #ffd700;">Left Click:</strong>');
@@ -1164,7 +1164,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 0.41.0.36</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 1.0.0</span>');
         expect(html).toContain('<span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');
@@ -1586,6 +1586,8 @@ describe('menu polish regressions', () => {
         const css = readFileSync(chatCssPath, 'utf8');
 
         expect(html).toContain('data-chat-tab="chat"');
+        expect(html).toContain('data-chat-tab="party"');
+        expect(html).toContain('data-chat-tab="whisper"');
         expect(html).toContain('data-chat-tab="game"');
         expect(html).toContain('id="chat-composer"');
         expect(css).toMatch(/#chat-box\s*\{[^}]*min-width:\s*280px;[^}]*max-width:\s*calc\(100vw - 40px\);[^}]*resize:\s*both;/s);

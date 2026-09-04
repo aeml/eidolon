@@ -235,7 +235,7 @@ describe('UIManager HUD diffing', () => {
             xpToNextLevel: 100
         });
 
-        expect(ui.serializeXP(player)).toBe('4|25|100');
+        expect(ui.serializeXP(player)).toBe('4|25|100|0|0|0');
     });
 
     test('updateHotbarCooldowns skips identical displayed cooldowns and refreshes when they change', () => {

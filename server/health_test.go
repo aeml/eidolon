@@ -31,6 +31,9 @@ func TestHealthHandlerReportsReleaseAndDatabaseReadiness(t *testing.T) {
 	if response.Commit != "abc123" || response.Version != "Alpha test" {
 		t.Fatalf("unexpected release identity: %+v", response)
 	}
+	if response.Goroutines <= 0 || response.HeapAllocBytes == 0 || response.HeapObjects == 0 {
+		t.Fatalf("runtime telemetry was not populated: %+v", response)
+	}
 	if got := recorder.Header().Get("Cache-Control"); got != "no-store" {
 		t.Fatalf("expected no-store cache policy, got %q", got)
 	}

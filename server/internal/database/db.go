@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"errors"
+	"sync"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -12,10 +13,19 @@ import (
 )
 
 type DB struct {
-	client      *mongo.Client
-	users       *mongo.Collection
-	auctions    *mongo.Collection
-	friendships *mongo.Collection
+	client       *mongo.Client
+	users        *mongo.Collection
+	auctions     *mongo.Collection
+	friendships  *mongo.Collection
+	migrations   *mongo.Collection
+	characters   CharacterRepository
+	reports      *mongo.Collection
+	guilds       *mongo.Collection
+	guildInvites *mongo.Collection
+	pvpProfiles  *mongo.Collection
+	raidLockouts *mongo.Collection
+	guildRuns    *mongo.Collection
+	guildMu      sync.Mutex
 }
 
 type User struct {
@@ -27,60 +37,125 @@ type User struct {
 }
 
 type Auction struct {
-	ID         string    `bson:"id"`
-	SellerID   string    `bson:"seller_id"`
-	SellerName string    `bson:"seller_name"`
-	Item       Item      `bson:"item"`
-	Bid        int       `bson:"bid"`
-	Buyout     int       `bson:"buyout"`
-	Duration   int       `bson:"duration"`
-	StartTime  time.Time `bson:"start_time"`
-	EndTime    time.Time `bson:"end_time"`
-	Status     string    `bson:"status"`
-	BuyerID    string    `bson:"buyer_id"`
-	BidderID   string    `bson:"bidder_id"`
-	BidderName string    `bson:"bidder_name"`
-	Deposit    int       `bson:"deposit"`
+	ID            string    `bson:"id"`
+	SellerID      string    `bson:"seller_id"`
+	SellerName    string    `bson:"seller_name"`
+	Item          Item      `bson:"item"`
+	Bid           int       `bson:"bid"`
+	Buyout        int       `bson:"buyout"`
+	Duration      int       `bson:"duration"`
+	StartTime     time.Time `bson:"start_time"`
+	EndTime       time.Time `bson:"end_time"`
+	Status        string    `bson:"status"`
+	BuyerID       string    `bson:"buyer_id"`
+	BidderID      string    `bson:"bidder_id"`
+	BidderName    string    `bson:"bidder_name"`
+	Deposit       int       `bson:"deposit"`
+	SalePrice     int       `bson:"sale_price,omitempty"`
+	ItemClaimed   bool      `bson:"item_claimed,omitempty"`
+	SellerClaimed bool      `bson:"seller_claimed,omitempty"`
 }
 
 type Character struct {
-	Name           string            `bson:"name"`
-	Class          string            `bson:"class"` // Fighter, Wizard, etc.
-	Level          int               `bson:"level"`
-	XP             int               `bson:"xp"`
-	Gold           int               `bson:"gold"`
-	X              float64           `bson:"x"`
-	Y              float64           `bson:"y"`
-	Z              float64           `bson:"z"`
-	InstanceID     string            `bson:"instance_id"`
-	LastLogout     time.Time         `bson:"last_logout"`
-	Stats          Stats             `bson:"stats"`
-	Inventory      []Item            `bson:"inventory"`
-	Stash          []Item            `bson:"stash"`
-	Buyback        []Item            `bson:"buyback"`
-	Equipment      map[string]Item   `bson:"equipment"`
-	Quests         []Quest           `bson:"quests"`
-	LastDailyQuest time.Time         `bson:"last_daily_quest"`
-	SkillPoints    int               `bson:"skill_points"`
-	SelectedBranch string            `bson:"selected_branch"`
-	UnlockedSkills []string          `bson:"unlocked_skills"`
-	SkillRunes     map[string]string `bson:"skill_runes,omitempty"` // skill name -> rune ID
+	Name            string            `bson:"name"`
+	Class           string            `bson:"class"` // Fighter, Wizard, etc.
+	Level           int               `bson:"level"`
+	XP              int               `bson:"xp"`
+	ResonanceLevel  int               `bson:"resonance_level,omitempty"`
+	ResonanceXP     int               `bson:"resonance_xp,omitempty"`
+	ResonancePoints int               `bson:"resonance_points,omitempty"`
+	ResonanceRanks  map[string]int    `bson:"resonance_ranks,omitempty"`
+	Gold            int               `bson:"gold"`
+	X               float64           `bson:"x"`
+	Y               float64           `bson:"y"`
+	Z               float64           `bson:"z"`
+	InstanceID      string            `bson:"instance_id"`
+	LastLogout      time.Time         `bson:"last_logout"`
+	Stats           Stats             `bson:"stats"`
+	Inventory       []Item            `bson:"inventory"`
+	Stash           []Item            `bson:"stash"`
+	Buyback         []Item            `bson:"buyback"`
+	Equipment       map[string]Item   `bson:"equipment"`
+	Quests          []Quest           `bson:"quests"`
+	LastDailyQuest  time.Time         `bson:"last_daily_quest"`
+	SkillPoints     int               `bson:"skill_points"`
+	SelectedBranch  string            `bson:"selected_branch"`
+	UnlockedSkills  []string          `bson:"unlocked_skills"`
+	SkillRunes      map[string]string `bson:"skill_runes,omitempty"` // skill name -> rune ID
 	// Passive talents
 	UnlockedTalents []string       `bson:"unlocked_talents"` // legacy: treated as rank 1 per id
 	TalentRanks     map[string]int `bson:"talent_ranks,omitempty"`
 	// Social
-	PartyID string `bson:"party_id,omitempty"`
+	PartyID         string                  `bson:"party_id,omitempty"`
+	DungeonProgress *CharacterDungeonResume `bson:"dungeon_progress,omitempty"`
+}
+
+type CharacterDungeonResume struct {
+	InstanceID            string                `bson:"instance_id"`
+	PartyID               string                `bson:"party_id,omitempty"`
+	CreatedAt             time.Time             `bson:"created_at"`
+	Difficulty            string                `bson:"difficulty"`
+	DungeonType           string                `bson:"dungeon_type"`
+	RunLevel              int                   `bson:"run_level"`
+	Layout                DungeonLayoutSnapshot `bson:"layout"`
+	Rooms                 []DungeonRoomProgress `bson:"rooms"`
+	CurrentRoomIndexValue int                   `bson:"current_room_index"`
+}
+
+type DungeonRoomSnapshot struct {
+	X      float64 `bson:"x"`
+	Z      float64 `bson:"z"`
+	Width  float64 `bson:"width"`
+	Height float64 `bson:"height"`
+	Type   string  `bson:"type"`
+	Hook   string  `bson:"hook,omitempty"`
+	Pacing string  `bson:"pacing,omitempty"`
+	Color  int     `bson:"color"`
+}
+
+type DungeonWalkRectSnapshot struct {
+	X         float64 `bson:"x"`
+	Z         float64 `bson:"z"`
+	Width     float64 `bson:"width"`
+	Height    float64 `bson:"height"`
+	Kind      string  `bson:"kind"`
+	RoomIndex int     `bson:"room_index,omitempty"`
+}
+
+type DungeonCorridorSnapshot struct {
+	FromRoomIndex   int     `bson:"from_room_index"`
+	ToRoomIndex     int     `bson:"to_room_index"`
+	Width           float64 `bson:"width"`
+	WalkRectIndices []int   `bson:"walk_rect_indices"`
+}
+
+type DungeonLayoutSnapshot struct {
+	Rooms     []DungeonRoomSnapshot     `bson:"rooms"`
+	WalkRects []DungeonWalkRectSnapshot `bson:"walk_rects,omitempty"`
+	Corridors []DungeonCorridorSnapshot `bson:"corridors,omitempty"`
+}
+
+type DungeonRoomProgress struct {
+	Explored bool `bson:"explored"`
+	Cleared  bool `bson:"cleared"`
+	Rewarded bool `bson:"rewarded"`
 }
 
 type Quest struct {
-	ID        string `bson:"id"`
-	Type      string `bson:"type"` // "KILL"
-	Target    string `bson:"target"`
-	Count     int    `bson:"count"`
-	MaxCount  int    `bson:"max_count"`
-	RewardXP  int    `bson:"reward_xp"`
-	Completed bool   `bson:"completed"`
-	Accepted  bool   `bson:"accepted"`
+	ID            string `bson:"id"`
+	Type          string `bson:"type"` // "KILL" or "COLLECT"
+	Target        string `bson:"target"`
+	Count         int    `bson:"count"`
+	MaxCount      int    `bson:"max_count"`
+	RewardXP      int    `bson:"reward_xp"`
+	Completed     bool   `bson:"completed"`
+	Accepted      bool   `bson:"accepted"`
+	Title         string `bson:"title,omitempty"`
+	Description   string `bson:"description,omitempty"`
+	Lore          string `bson:"lore,omitempty"`
+	Category      string `bson:"category,omitempty"`
+	Chapter       int    `bson:"chapter,omitempty"`
+	ObjectiveText string `bson:"objective_text,omitempty"`
 }
 
 type Stats struct {
@@ -124,6 +199,8 @@ type SocketedGem struct {
 const (
 	FriendshipPending  = "pending"
 	FriendshipAccepted = "accepted"
+	FriendshipIgnored  = "ignored"
+	FriendshipBlocked  = "blocked"
 )
 
 // Friendship represents a directed friend request or established friendship between two players.
@@ -152,42 +229,33 @@ func New(uri string) (*DB, error) {
 	}
 
 	db := client.Database("eidolon")
-	users := db.Collection("users")
-	auctions := db.Collection("auctions")
-	friendships := db.Collection("friendships")
-
-	// Create unique index on username
-	_, err = users.Indexes().CreateOne(ctx, mongo.IndexModel{
-		Keys:    bson.D{{Key: "username", Value: 1}},
-		Options: options.Index().SetUnique(true),
-	})
-	if err != nil {
+	database := &DB{
+		client:       client,
+		users:        db.Collection("users"),
+		auctions:     db.Collection("auctions"),
+		friendships:  db.Collection("friendships"),
+		migrations:   db.Collection("schema_migrations"),
+		reports:      db.Collection("reports"),
+		guilds:       db.Collection("guilds"),
+		guildInvites: db.Collection("guild_invites"),
+		pvpProfiles:  db.Collection("pvp_profiles"),
+		raidLockouts: db.Collection("raid_lockouts"),
+		guildRuns:    db.Collection("guild_dungeon_runs"),
+	}
+	database.characters = newMongoCharacterRepository(database.users)
+	if err := database.RunMigrations(ctx); err != nil {
+		_ = client.Disconnect(context.Background())
 		return nil, err
 	}
+	return database, nil
+}
 
-	// Unique compound index prevents duplicate directed requests.
-	_, err = friendships.Indexes().CreateOne(ctx, mongo.IndexModel{
-		Keys:    bson.D{{Key: "requester_id", Value: 1}, {Key: "addressee_id", Value: 1}},
-		Options: options.Index().SetUnique(true),
-	})
-	if err != nil {
-		return nil, err
+// Close releases the Mongo client owned by DB.
+func (db *DB) Close(ctx context.Context) error {
+	if db == nil || db.client == nil {
+		return nil
 	}
-
-	// Index for fast reverse-lookup (incoming requests / accepted friendships for addressee side).
-	_, err = friendships.Indexes().CreateOne(ctx, mongo.IndexModel{
-		Keys: bson.D{{Key: "addressee_id", Value: 1}},
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	return &DB{
-		client:      client,
-		users:       users,
-		auctions:    auctions,
-		friendships: friendships,
-	}, nil
+	return db.client.Disconnect(ctx)
 }
 
 // Ping verifies that the database backing the authoritative game state is ready.
@@ -278,22 +346,7 @@ func (db *DB) SetFirstCharacter(username string, char *Character) error {
 }
 
 func (db *DB) GetCharacter(username, charName string) (*Character, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	var user User
-	// Projection to fetch only the specific character would be better, but for now fetch user
-	err := db.users.FindOne(ctx, bson.M{"username": username}).Decode(&user)
-	if err != nil {
-		return nil, err
-	}
-
-	for _, c := range user.Characters {
-		if c.Name == charName {
-			return c, nil
-		}
-	}
-	return nil, errors.New("character not found")
+	return db.characters.LoadCharacter(username, charName)
 }
 
 func (db *DB) GetUser(username string) (*User, error) {
@@ -309,20 +362,7 @@ func (db *DB) GetUser(username string) (*User, error) {
 }
 
 func (db *DB) SaveCharacter(username string, char *Character) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	// Update specific character in the array
-	filter := bson.M{
-		"username":        username,
-		"characters.name": char.Name,
-	}
-	update := bson.M{
-		"$set": bson.M{"characters.$": char},
-	}
-
-	_, err := db.users.UpdateOne(ctx, filter, update)
-	return err
+	return db.characters.SaveCharacter(username, char)
 }
 
 func (db *DB) CreateAuction(auction *Auction) error {
@@ -535,4 +575,127 @@ func (db *DB) GetFriendship(playerA, playerB string) (*Friendship, error) {
 		return nil, err
 	}
 	return &f, nil
+}
+
+// BlockPlayer replaces any friendship or pending request between the two
+// players with a directed block owned by blockerID.
+func (db *DB) BlockPlayer(blockerID, blockedID string) error {
+	if blockerID == blockedID {
+		return errors.New("cannot block yourself")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	relationship := bson.M{"$or": bson.A{
+		bson.M{"requester_id": blockerID, "addressee_id": blockedID},
+		bson.M{"requester_id": blockedID, "addressee_id": blockerID},
+	}}
+	if _, err := db.friendships.DeleteMany(ctx, relationship); err != nil {
+		return err
+	}
+	now := time.Now().UTC()
+	_, err := db.friendships.InsertOne(ctx, Friendship{
+		RequesterID: blockerID,
+		AddresseeID: blockedID,
+		Status:      FriendshipBlocked,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	})
+	return err
+}
+
+func (db *DB) UnblockPlayer(blockerID, blockedID string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	result, err := db.friendships.DeleteOne(ctx, bson.M{
+		"requester_id": blockerID,
+		"addressee_id": blockedID,
+		"status":       FriendshipBlocked,
+	})
+	if err != nil {
+		return err
+	}
+	if result.DeletedCount == 0 {
+		return errors.New("block not found")
+	}
+	return nil
+}
+
+func (db *DB) GetBlockedPlayers(blockerID string) ([]*Friendship, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	cursor, err := db.friendships.Find(ctx, bson.M{
+		"requester_id": blockerID,
+		"status":       FriendshipBlocked,
+	})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+	var blocked []*Friendship
+	if err := cursor.All(ctx, &blocked); err != nil {
+		return nil, err
+	}
+	return blocked, nil
+}
+
+// IgnorePlayer replaces any social relationship with a directed, receiver-side
+// mute. Unlike a block, ignore is evaluated only for content flowing to the
+// player who owns the row.
+func (db *DB) IgnorePlayer(ignorerID, ignoredID string) error {
+	if ignorerID == ignoredID {
+		return errors.New("cannot ignore yourself")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	relationship := bson.M{"$or": bson.A{
+		bson.M{"requester_id": ignorerID, "addressee_id": ignoredID},
+		bson.M{"requester_id": ignoredID, "addressee_id": ignorerID},
+	}}
+	if _, err := db.friendships.DeleteMany(ctx, relationship); err != nil {
+		return err
+	}
+	now := time.Now().UTC()
+	_, err := db.friendships.InsertOne(ctx, Friendship{
+		RequesterID: ignorerID,
+		AddresseeID: ignoredID,
+		Status:      FriendshipIgnored,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	})
+	return err
+}
+
+func (db *DB) UnignorePlayer(ignorerID, ignoredID string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	result, err := db.friendships.DeleteOne(ctx, bson.M{
+		"requester_id": ignorerID,
+		"addressee_id": ignoredID,
+		"status":       FriendshipIgnored,
+	})
+	if err != nil {
+		return err
+	}
+	if result.DeletedCount == 0 {
+		return errors.New("ignore not found")
+	}
+	return nil
+}
+
+func (db *DB) GetIgnoredPlayers(ignorerID string) ([]*Friendship, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	cursor, err := db.friendships.Find(ctx, bson.M{
+		"requester_id": ignorerID,
+		"status":       FriendshipIgnored,
+	})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+	var ignored []*Friendship
+	if err := cursor.All(ctx, &ignored); err != nil {
+		return nil, err
+	}
+	return ignored, nil
 }

@@ -26,12 +26,12 @@ export class Fighter extends Actor {
         super(id, CONSTANTS.ENTITIES.FIGHTER);
         this.scaleAnimSpeed = true;
         this.meshType = 'Fighter';
-        
+
         this.abilityName = "Charge";
         this.abilityDescription = "Dash towards an enemy and deal damage.";
         this.abilityManaCost = 20;
         this.abilityMaxCooldown = 5.0;
-        
+
         this.isCharging = false;
         this.ironFortressTimer = 0;
         this.ironFortressReduction = 0;
@@ -63,10 +63,10 @@ export class Fighter extends Actor {
             this.whirlwindTimer = 0;
             this.whirlwindDuration = 1.0; // Spin for 1 second
             this.state = 'ATTACKING';
-            
+
             // Override Cooldown for Whirlwind (e.g. 10s)
             this.setSkillCooldown("Whirlwind", 10.0);
-            
+
             this.spawnVisualEffect(gameEngine, this.position, 0xaaaaaa, "spin");
             return;
         }
@@ -74,7 +74,7 @@ export class Fighter extends Actor {
         if (skill === "Shield Slam") {
             if (!this.unlockedSkills.includes("Shield Slam")) return;
             console.log("Fighter used Shield Slam!");
-            
+
             // Override Cooldown for Shield Slam (e.g. 6s)
             this.setSkillCooldown("Shield Slam", 6.0);
 
@@ -82,7 +82,7 @@ export class Fighter extends Actor {
             const range = 4.0;
             const angleThreshold = Math.PI / 4; // 45 degrees half-angle (90 total)
             const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(this.mesh.quaternion);
-            
+
             this.spawnVisualEffect(gameEngine, this.position.clone().add(forward), 0xffff00, "impact");
 
             const entities = gameEngine.chunkManager.getActiveEntities();
@@ -101,7 +101,7 @@ export class Fighter extends Actor {
                                 entity.takeDamage(damage);
                                 gameEngine.floatingTextManager.spawn(Math.floor(damage), entity.position, '#ffff00');
                             }
-                            
+
                             // Apply Stun
                             if (entity.stunTimer !== undefined) {
                                 entity.stunTimer = 1.5;
@@ -117,18 +117,18 @@ export class Fighter extends Actor {
         if (skill === "Iron Fortress") {
             if (!this.unlockedSkills.includes("Iron Fortress")) return;
             console.log("Fighter used Iron Fortress!");
-            
+
             // Duration 30s
             this.ironFortressTimer = 30.0;
-            
+
             // Formula: 1% per Strength, max 75%
             this.ironFortressReduction = Math.min(0.75, this.stats.strength * 0.01);
-            
+
             console.log(`Iron Fortress active: ${(this.ironFortressReduction * 100).toFixed(1)}% reduction for 30s`);
-            
+
             // Cooldown 60s
             this.setSkillCooldown("Iron Fortress", 60.0);
-            
+
             // Visual Effect
             gameEngine.floatingTextManager.spawn("Iron Fortress!", this.position, '#00ff00');
             this.spawnVisualEffect(gameEngine, this.position, 0x00ff00, "buff");
@@ -138,17 +138,17 @@ export class Fighter extends Actor {
         if (skill === "Guardian Roar") {
             if (!this.unlockedSkills.includes("Guardian Roar")) return;
             console.log("Fighter used Guardian Roar!");
-            
+
             // Cooldown 30s
             this.setSkillCooldown("Guardian Roar", 30.0);
-            
+
             const radius = 15.0;
             const entities = gameEngine.chunkManager.getActiveEntities();
-            
+
             // Visual
             gameEngine.floatingTextManager.spawn("ROAR!", this.position, '#ff0000');
             this.spawnVisualEffect(gameEngine, this.position, 0xff0000, "wave");
-            
+
             entities.forEach(entity => {
                 if (entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
                     const dist = this.position.distanceTo(entity.position);
@@ -172,7 +172,7 @@ export class Fighter extends Actor {
         if (skill === "Sweeping Strike") {
             if (!this.unlockedSkills.includes("Sweeping Strike")) return;
             console.log("Fighter used Sweeping Strike!");
-            
+
             // Cooldown 4s
             this.setSkillCooldown("Sweeping Strike", 4.0);
 
@@ -180,7 +180,7 @@ export class Fighter extends Actor {
             const range = 5.0;
             const angleThreshold = Math.PI / 2; // 90 degrees half-angle (180 total)
             const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(this.mesh.quaternion);
-            
+
             this.spawnVisualEffect(gameEngine, this.position, 0xffffff, "cone");
 
             const entities = gameEngine.chunkManager.getActiveEntities();
@@ -209,14 +209,14 @@ export class Fighter extends Actor {
         if (skill === "Earthshaker") {
             if (!this.unlockedSkills.includes("Earthshaker")) return;
             console.log("Fighter used Earthshaker!");
-            
+
             // Cooldown 12s
             this.setSkillCooldown("Earthshaker", 12.0);
 
             // AoE Circle
             const radius = 6.0;
             const entities = gameEngine.chunkManager.getActiveEntities();
-            
+
             // Visual
             gameEngine.floatingTextManager.spawn("SMASH!", this.position, '#ff8800');
             this.spawnVisualEffect(gameEngine, this.position, 0xff8800, "wave");
@@ -231,7 +231,7 @@ export class Fighter extends Actor {
                             entity.takeDamage(damage);
                             gameEngine.floatingTextManager.spawn(Math.floor(damage), entity.position, '#ffff00');
                         }
-                        
+
                         // Knockdown (Stun)
                         if (entity.stunTimer !== undefined) {
                             entity.stunTimer = 2.0;
@@ -245,7 +245,7 @@ export class Fighter extends Actor {
 
         if (skill === "Unbreakable Grip") {
             console.log("Fighter used Unbreakable Grip!");
-            
+
             // Cooldown 15s
             const cdr = this.stats.cooldownReduction || 0;
             this.cooldowns["Unbreakable Grip"] = 15.0 * (1 - cdr);
@@ -255,7 +255,7 @@ export class Fighter extends Actor {
             let target = null;
             let minDst = 1000;
             const entities = gameEngine.chunkManager.getActiveEntities();
-            
+
             // Find closest to cursor
             entities.forEach(entity => {
                 if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
@@ -275,7 +275,7 @@ export class Fighter extends Actor {
                 target.position.copy(pullPos); // Instant pull for now
                 gameEngine.floatingTextManager.spawn("Pulled!", target.position, '#ffffff');
                 this.spawnVisualEffect(gameEngine, target.position, 0xffffff, "impact");
-                
+
                 // Root/Stun briefly
                 if (target.stunTimer !== undefined) {
                     target.stunTimer = 1.0;
@@ -288,7 +288,7 @@ export class Fighter extends Actor {
 
         if (skill === "Juggernaut Charge") {
             console.log("Fighter used Juggernaut Charge (Shockwave)!");
-            
+
             // Cooldown 20s
             const cdr = this.stats.cooldownReduction || 0;
             this.cooldowns["Juggernaut Charge"] = 20.0 * (1 - cdr);
@@ -296,7 +296,7 @@ export class Fighter extends Actor {
             // AoE Shockwave
             const radius = 10.0;
             const entities = gameEngine.chunkManager.getActiveEntities();
-            
+
             // Visual
             gameEngine.floatingTextManager.spawn("SHOCKWAVE!", this.position, '#00ffff');
             this.spawnVisualEffect(gameEngine, this.position, 0x00ffff, "wave");
@@ -311,7 +311,7 @@ export class Fighter extends Actor {
                             entity.takeDamage(damage);
                             gameEngine.floatingTextManager.spawn(Math.floor(damage), entity.position, '#ffff00');
                         }
-                        
+
                         // Heavy Slow
                         if (entity.slowTimer !== undefined) {
                             entity.slowTimer = 5.0;
@@ -329,15 +329,15 @@ export class Fighter extends Actor {
             // Passive toggle or active buff? Description says "Gain a % damage buff when at >60% HP".
             // Usually passives are always on, but if it's a skill slot, maybe it's an active that enables this state?
             // Or maybe it's a short term buff. Let's make it a self-buff for now that enables the passive check.
-            
+
             // Cooldown 45s
             const cdr = this.stats.cooldownReduction || 0;
             this.cooldowns["Berserker Edge"] = 45.0 * (1 - cdr);
-            
+
             // Duration 15s
             this.berserkerEdgeTimer = 15.0;
             this.berserkerEdgeActive = true;
-            
+
             gameEngine.floatingTextManager.spawn("Berserker Mode!", this.position, '#ff0000');
             this.spawnVisualEffect(gameEngine, this.position, 0xff0000, "buff");
             return;
@@ -349,21 +349,21 @@ export class Fighter extends Actor {
             // However, the skill name IS "Shattering Charge".
             // If we follow "do things on their own", maybe it's a separate charge ability?
             // Let's implement it as a separate charge that applies armor reduction.
-            
+
             this.isCharging = true;
             this.state = 'ATTACKING';
             this.chargeTarget = targetVector.clone();
-            
+
             // Mark this charge as Shattering
             this.isShatteringCharge = true;
-            
+
             // Face target
             const lookTarget = new THREE.Vector3(targetVector.x, this.position.y, targetVector.z);
             if (this.mesh) {
                 this.mesh.lookAt(lookTarget);
                 this.rotation.copy(this.mesh.quaternion);
             }
-            
+
             // Cooldown 12s
             const cdr = this.stats.cooldownReduction || 0;
             this.cooldowns["Shattering Charge"] = 12.0 * (1 - cdr);
@@ -376,36 +376,36 @@ export class Fighter extends Actor {
             this.whirlwindTimer = 0;
             this.whirlwindDuration = 1.5; // Longer spin
             this.state = 'ATTACKING';
-            
+
             // Mark as Executioner
             this.isExecutionerSpin = true;
-            
+
             // Cooldown 15s
             const cdr = this.stats.cooldownReduction || 0;
             this.cooldowns["Executioner Spin"] = 15.0 * (1 - cdr);
-            
+
             this.spawnVisualEffect(gameEngine, this.position, 0xff0000, "spin");
             return;
         }
 
         if (skill === "Last Stand Rampage") {
             console.log("Fighter used Last Stand Rampage!");
-            
+
             // Check HP Requirement (< 30%)
             const hpPercent = this.stats.hp / this.stats.maxHp;
             if (hpPercent >= 0.30) {
                 gameEngine.floatingTextManager.spawn("HP too high!", this.position, '#888888');
                 return false; // Failed to cast
             }
-            
+
             // Cooldown 120s (Ultimate)
             const cdr = this.stats.cooldownReduction || 0;
             this.cooldowns["Last Stand Rampage"] = 120.0 * (1 - cdr);
-            
+
             // Duration 10s
             this.lastStandTimer = 10.0;
             this.lastStandDamageBoost = 2.0; // +200% Damage
-            
+
             gameEngine.floatingTextManager.spawn("RAMPAGE!", this.position, '#ff0000');
             this.spawnVisualEffect(gameEngine, this.position, 0xff0000, "buff");
             return;
@@ -415,10 +415,10 @@ export class Fighter extends Actor {
         console.log("Fighter used Charge!");
         this.isCharging = true;
         this.state = 'ATTACKING'; // Lock movement
-        
+
         // Calculate charge direction
         this.chargeTarget = targetVector.clone();
-        
+
         // Face target
         const lookTarget = new THREE.Vector3(targetVector.x, this.position.y, targetVector.z);
         if (this.mesh) {
@@ -468,7 +468,7 @@ export class Fighter extends Actor {
 
         if (this.isWhirlwinding) {
             this.whirlwindTimer += dt;
-            
+
             // Spin Effect
             if (this.mesh) {
                 this.mesh.rotation.y += 15.0 * dt; // Fast spin
@@ -478,10 +478,10 @@ export class Fighter extends Actor {
             const radius = 3.0;
             // Use chunkManager to get entities
             const entities = chunkManager ? chunkManager.getActiveEntities() : [];
-            
+
             if (!this.whirlwindDamageTimer) this.whirlwindDamageTimer = 0;
             this.whirlwindDamageTimer += dt;
-            
+
             if (this.whirlwindDamageTimer > 0.2) {
                 this.whirlwindDamageTimer = 0;
                 entities.forEach(entity => {
@@ -489,12 +489,12 @@ export class Fighter extends Actor {
                         const dist = this.position.distanceTo(entity.position);
                         if (dist < radius) {
                             let damage = this.stats.strength * 0.5; // Base tick damage
-                            
+
                             // Executioner Spin Bonus
                             if (this.isExecutionerSpin) {
                                 damage *= 1.5;
                             }
-                            
+
                             // Berserker Edge Bonus
                             if (this.berserkerEdgeActive) {
                                 const hpPercent = this.stats.hp / this.stats.maxHp;
@@ -502,7 +502,7 @@ export class Fighter extends Actor {
                                     damage *= 1.3; // 30% bonus
                                 }
                             }
-                            
+
                             // Last Stand Bonus
                             if (this.lastStandTimer > 0) {
                                 damage *= (1 + this.lastStandDamageBoost);
@@ -525,7 +525,7 @@ export class Fighter extends Actor {
                 this.state = 'IDLE';
                 this.playAnimation('Idle');
             }
-            
+
             if (this.mixer) this.mixer.update(dt);
             return;
         }
@@ -547,7 +547,7 @@ export class Fighter extends Actor {
             const speed = 25; // Fast charge speed
             const direction = new THREE.Vector3().subVectors(this.chargeTarget, this.position);
             const dist = direction.length();
-            
+
             if (dist < 1.0) {
                 // Impact!
                 this.isCharging = false;
@@ -555,15 +555,17 @@ export class Fighter extends Actor {
                 this.playAnimation('Idle');
 
                 // Charge Damage Logic
-                const entities = (this.gameEngine && this.gameEngine.chunkManager) ? this.gameEngine.chunkManager.getActiveEntities() : (activeEntities || []);
+                const entities = this.gameEngine?.chunkManager?.getActiveEntities?.()
+                    ?? chunkManager?.getActiveEntities?.()
+                    ?? [];
                 const chargeRadius = 3.0;
-                
+
                 entities.forEach(entity => {
                     if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
                         const d = this.position.distanceTo(entity.position);
                         if (d < chargeRadius) {
                             let damage = 25 + (this.stats.strength * 1.5);
-                            
+
                             // Berserker Edge Bonus
                             if (this.berserkerEdgeActive) {
                                 const hpPercent = this.stats.hp / this.stats.maxHp;
@@ -571,7 +573,7 @@ export class Fighter extends Actor {
                                     damage *= 1.3;
                                 }
                             }
-                            
+
                             // Last Stand Bonus
                             if (this.lastStandTimer > 0) {
                                 damage *= (1 + this.lastStandDamageBoost);
@@ -583,7 +585,7 @@ export class Fighter extends Actor {
                                     this.gameEngine.floatingTextManager.spawn(Math.floor(damage), entity.position, '#ff0000');
                                 }
                             }
-                            
+
                             // Shattering Charge Effect
                             if (this.isShatteringCharge) {
                                 if (this.gameEngine && this.gameEngine.floatingTextManager) {
@@ -595,20 +597,20 @@ export class Fighter extends Actor {
                         }
                     }
                 });
-                
+
                 this.isShatteringCharge = false;
 
             } else {
                 direction.normalize();
                 let moveDist = speed * dt;
                 if (moveDist > dist) moveDist = dist; // Prevent overshoot
-                
+
                 this.position.add(direction.multiplyScalar(moveDist));
-                
+
                 // Update mesh
                 if (this.mesh) this.mesh.position.copy(this.position);
             }
-            
+
             // Skip normal update movement logic
             if (this.mixer) this.mixer.update(dt);
             return;

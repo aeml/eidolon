@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { MeshFactory } from '../src/utils/MeshFactory.js';
+import { MeshFactory, PROCEDURAL_MESH_ALIASES } from '../src/utils/MeshFactory.js';
 import { MeshCatalog } from '../src/utils/MeshCatalog.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { jest } from '@jest/globals';
@@ -604,6 +604,21 @@ describe('MeshFactory catalog integration', () => {
             expect(MeshFactory.pool.AvengingSeraph).toHaveLength(50);
         } finally {
             disposeSpy.mockRestore();
+            MeshFactory.pool = previousPool;
+        }
+    });
+
+    test.each(Object.entries(PROCEDURAL_MESH_ALIASES))('%s resolves its declared production %s rig', async (type, sourceType) => {
+        const previousPool = MeshFactory.pool;
+        MeshFactory.pool = {};
+        try {
+            const mesh = await MeshFactory.createMeshForType(type);
+            expect(mesh.userData.proceduralAlias).toBe(type);
+            expect(mesh.userData.proceduralSourceType).toBe(sourceType);
+            expect(mesh.userData.animations.map((clip) => clip.name)).toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+            MeshFactory.releaseMesh(type, mesh);
+            expect(MeshFactory.pool[type]).toHaveLength(1);
+        } finally {
             MeshFactory.pool = previousPool;
         }
     });

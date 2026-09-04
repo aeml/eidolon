@@ -271,7 +271,7 @@ export class InputManager {
         }
 
         const key = e.key.toLowerCase();
-        if (this.keys.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(this.keys, key)) {
             this.keys[key] = true;
         }
         if (e.key === 'Alt') this.keys.alt = true; // Handle Alt specifically
@@ -324,7 +324,7 @@ export class InputManager {
 
     onKeyUp(e) {
         const key = e.key.toLowerCase();
-        if (this.keys.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(this.keys, key)) {
             this.keys[key] = false;
         }
         if (e.key === 'Alt') this.keys.alt = false;

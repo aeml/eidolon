@@ -11,6 +11,7 @@ func TestProjectilePiercing(t *testing.T) {
 	// Clear initial entities to avoid noise
 	w.Entities = make(map[string]*Entity)
 	w.Grid = NewSpatialMap(50.0)
+	w.AddEntity(&Entity{ID: "player-1", Type: TypePlayer})
 
 	// 1. Setup Enemies in a line
 	enemy1 := &Entity{
@@ -83,6 +84,7 @@ func TestProjectileNonPiercing(t *testing.T) {
 	w := NewWorld(nil)
 	w.Entities = make(map[string]*Entity)
 	w.Grid = NewSpatialMap(50.0)
+	w.AddEntity(&Entity{ID: "player-1", Type: TypePlayer})
 
 	enemy1 := &Entity{
 		ID:        "enemy-1",
@@ -127,6 +129,7 @@ func TestProjectileHitListInitialization(t *testing.T) {
 	w := NewWorld(nil)
 	w.Entities = make(map[string]*Entity)
 	w.Grid = NewSpatialMap(50.0)
+	w.AddEntity(&Entity{ID: "player-1", Type: TypePlayer})
 
 	enemy := &Entity{
 		ID:     "e1",
@@ -145,6 +148,7 @@ func TestProjectileHitListInitialization(t *testing.T) {
 		Z:         0,
 		VelX:      10,
 		Damage:    10,
+		OwnerID:   "player-1",
 		Radius:    1.0, // Set Radius
 		HitList:   nil, // Explicitly nil
 		CreatedAt: time.Now(),

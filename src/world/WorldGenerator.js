@@ -794,6 +794,12 @@ export class WorldGenerator {
         }
     }
 
+    async createUmbralNexus(centerX, centerZ, layout) {
+        console.log(`Generating Umbral Nexus at ${centerX},${centerZ}`);
+        this.dungeonInteriorKit = createProceduralDungeonInteriorKit('umbral_nexus');
+        this.createLayoutDrivenDungeon(layout);
+    }
+
     createRoom(x, z, size, color, openings = {}) {
         // Floor
         const floorGeo = this.dungeonInteriorKit

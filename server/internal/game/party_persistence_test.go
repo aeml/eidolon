@@ -51,6 +51,33 @@ func TestRejoinParty_SuccessfullyAddsPlayerToExistingParty(t *testing.T) {
 	}
 }
 
+func TestRejoinOrRestorePartyRebuildsRegistryAfterRestart(t *testing.T) {
+	w := NewWorld(nil)
+	w.AddEntity(newPlayerEntity("player-member"))
+	partyID := "party-player-leader"
+
+	if err := w.RejoinOrRestoreParty("player-member", partyID); err != nil {
+		t.Fatalf("restore party: %v", err)
+	}
+	party := w.GetParty(partyID)
+	if party == nil {
+		t.Fatal("expected restored party registry entry")
+	}
+	_, leaderID, members := party.GetSnapshot()
+	if leaderID != "player-leader" || len(members) != 1 || members[0] != "player-member" {
+		t.Fatalf("restored party mismatch: leader=%q members=%v", leaderID, members)
+	}
+
+	w.AddEntity(newPlayerEntity("player-leader"))
+	if err := w.RejoinOrRestoreParty("player-leader", partyID); err != nil {
+		t.Fatalf("restore leader: %v", err)
+	}
+	_, _, members = party.GetSnapshot()
+	if len(members) != 2 {
+		t.Fatalf("expected both restored members, got %v", members)
+	}
+}
+
 func TestRejoinParty_ExistingMemberIsIdempotent(t *testing.T) {
 	w := NewWorld(nil)
 	w.AddEntity(newPlayerEntity("player-leader"))

@@ -17,6 +17,7 @@ import (
 	"os"
 	"os/signal"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -29,7 +30,19 @@ var (
 	townMode        = flag.Bool("town", false, "bots only roam in town")
 	insecure        = flag.Bool("insecure-skip-verify", false, "skip TLS certificate verification for local/self-signed testing")
 	credentialsFile = flag.String("credentials-file", "", "optional read-only JSON credential file; generated credentials otherwise remain in memory")
+	duration        = flag.Duration("duration", 0, "stop automatically after this duration (zero waits for interrupt)")
+	scenario        = flag.String("scenario", "combat", "scripted flow: combat, town, social, or mixed")
 )
+
+type loadMetrics struct {
+	connected   atomic.Int64
+	joined      atomic.Int64
+	stateFrames atomic.Int64
+	readErrors  atomic.Int64
+	writeErrors atomic.Int64
+}
+
+var metrics loadMetrics
 
 type Message struct {
 	Type    string          `json:"type"`
@@ -104,6 +117,13 @@ func main() {
 	if *count < 1 {
 		log.Fatal("-n must be at least 1")
 	}
+	selectedScenario := *scenario
+	if *townMode {
+		selectedScenario = "town"
+	}
+	if selectedScenario != "combat" && selectedScenario != "town" && selectedScenario != "social" && selectedScenario != "mixed" {
+		log.Fatal("-scenario must be combat, town, social, or mixed")
+	}
 	rand.Seed(time.Now().UnixNano())
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
@@ -129,23 +149,44 @@ func main() {
 	}
 
 	var wg sync.WaitGroup
+	stop := make(chan struct{})
 
 	for i := 0; i < *count; i++ {
 		wg.Add(1)
 		go func(idx int) {
 			defer wg.Done()
-			runBot(idx, u.String(), creds[idx])
+			botScenario := selectedScenario
+			if botScenario == "mixed" {
+				botScenario = []string{"combat", "town", "social"}[idx%3]
+			}
+			runBot(idx, u.String(), creds[idx], botScenario, stop)
 		}(i)
 		// Stagger connections slightly to avoid hammering the server all at once
 		time.Sleep(100 * time.Millisecond)
 	}
 
-	// Wait for interrupt to stop
-	<-interrupt
+	if *duration > 0 {
+		select {
+		case <-interrupt:
+		case <-time.After(*duration):
+		}
+	} else {
+		<-interrupt
+	}
 	log.Println("Stopping bots...")
+	close(stop)
+	wg.Wait()
+	log.Printf(
+		"Load summary: connected=%d joined=%d state_frames=%d read_errors=%d write_errors=%d",
+		metrics.connected.Load(),
+		metrics.joined.Load(),
+		metrics.stateFrames.Load(),
+		metrics.readErrors.Load(),
+		metrics.writeErrors.Load(),
+	)
 }
 
-func runBot(id int, urlStr string, cred BotCredentials) {
+func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop <-chan struct{}) {
 	dialer := *websocket.DefaultDialer
 	if *insecure {
 		dialer.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
@@ -161,6 +202,8 @@ func runBot(id int, urlStr string, cred BotCredentials) {
 		return
 	}
 	defer c.Close()
+	defer writeLocks.Delete(c)
+	metrics.connected.Add(1)
 
 	// 1. Register (Try to register, ignore if exists)
 	regPayload := map[string]string{
@@ -203,6 +246,11 @@ func runBot(id int, urlStr string, cred BotCredentials) {
 		for {
 			_, message, err := c.ReadMessage()
 			if err != nil {
+				select {
+				case <-stop:
+				default:
+					metrics.readErrors.Add(1)
+				}
 				return
 			}
 
@@ -218,6 +266,18 @@ func runBot(id int, urlStr string, cred BotCredentials) {
 					continue
 				}
 				message = decompressed
+			}
+
+			if update, recognized, err := decodeStateFrame(message); recognized {
+				if err != nil {
+					log.Printf("Bot %d state frame error: %v", id, err)
+					continue
+				}
+				stateMu.Lock()
+				applyStateUpdate(worldState, update)
+				stateMu.Unlock()
+				metrics.stateFrames.Add(1)
+				continue
 			}
 
 			var msg Message
@@ -309,6 +369,7 @@ func runBot(id int, urlStr string, cred BotCredentials) {
 	}
 
 	log.Printf("Bot %s joined as %s.", cred.Username, randomArchetype)
+	metrics.joined.Add(1)
 
 	// Cooldowns
 	var abilityCooldown time.Duration
@@ -330,6 +391,8 @@ func runBot(id int, urlStr string, cred BotCredentials) {
 
 	for {
 		select {
+		case <-stop:
+			return
 		case <-done:
 			return
 		case <-ticker.C:
@@ -377,11 +440,19 @@ func runBot(id int, urlStr string, cred BotCredentials) {
 				continue
 			}
 
-			// Town Mode Override
-			if *townMode {
+			// Town and social scenarios exercise presence, bounded chat, and
+			// read-heavy feature registries without manufacturing combat load.
+			if botScenario == "town" || botScenario == "social" {
+				if botScenario == "social" && rand.Intn(75) == 0 {
+					send(c, "social", map[string]interface{}{})
+					send(c, "friend_list", map[string]interface{}{})
+					send(c, "guild_get", map[string]interface{}{})
+					send(c, "pvp_get", map[string]interface{}{})
+					send(c, "guild_leaderboard", map[string]interface{}{"dungeonType": "umbral_nexus", "difficulty": "mythic", "runLevel": 100})
+				}
 				// Announce presence occasionally
 				if rand.Intn(100) == 0 {
-					send(c, "chat", map[string]string{"message": fmt.Sprintf("I am roaming at %.1f, %.1f", me.X, me.Z)})
+					send(c, "chat", map[string]string{"channel": "world", "message": fmt.Sprintf("I am roaming at %.1f, %.1f", me.X, me.Z)})
 				}
 
 				// Pick new target if needed
@@ -556,7 +627,7 @@ func runBot(id int, urlStr string, cred BotCredentials) {
 	}
 }
 
-var writeMu sync.Mutex
+var writeLocks sync.Map
 
 func sendMove(c *websocket.Conn, x, z float64) {
 	payload := map[string]interface{}{
@@ -579,7 +650,13 @@ func send(c *websocket.Conn, msgType string, payload interface{}) error {
 		Payload: pBytes,
 	}
 
+	lock, _ := writeLocks.LoadOrStore(c, &sync.Mutex{})
+	writeMu := lock.(*sync.Mutex)
 	writeMu.Lock()
 	defer writeMu.Unlock()
-	return c.WriteJSON(msg)
+	if err := c.WriteJSON(msg); err != nil {
+		metrics.writeErrors.Add(1)
+		return err
+	}
+	return nil
 }

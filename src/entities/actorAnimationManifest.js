@@ -102,6 +102,36 @@ export const ACTOR_ANIMATION_MANIFEST = Object.freeze({
     Thalorath: entry('enemy', 'procedural Drowned Sanctum tide-king rig', WALKING_ENEMY_CLIPS, {
         special: 'thirteen-antler crown, black-tide rings, throne tentacles, pearls, and deep trident'
     }),
+    DissonantShade: entry('enemy', 'recomposed procedural Scorched Wraith rig', WALKING_ENEMY_CLIPS, {
+        special: 'Umbral Nexus shade palette, void-feather trails, and dissonance telegraphs'
+    }),
+    MemoryReaver: entry('enemy', 'recomposed procedural Construct rig', WALKING_ENEMY_CLIPS, {
+        special: 'fractured-memory reliquary, violet seams, and echo-strike telegraphs'
+    }),
+    DissonantHerald: entry('enemy', 'recomposed procedural Stormcallers rig', WALKING_ENEMY_CLIPS, {
+        special: 'split void masks, memory storm halo, and dissonance telegraphs'
+    }),
+    NullArchitect: entry('enemy', 'recomposed procedural Obsidian Guardian rig', WALKING_ENEMY_CLIPS, {
+        special: 'null masonry plates, broken constellation core, and collapse telegraphs'
+    }),
+    EidolonDevourer: entry('enemy', 'recomposed procedural Hollow Sentinel rig', WALKING_ENEMY_CLIPS, {
+        special: 'eidolon seam crown, memory maw, and final-dungeon telegraphs'
+    }),
+    UmbraPrime: entry('enemy', 'recomposed procedural Hollow Sentinel raid rig', WALKING_ENEMY_CLIPS, {
+        special: 'weekly raid scale, rotating void crown, and lethal null-zone telegraphs'
+    }),
+    GravenColossus: entry('enemy', 'recomposed procedural Hollow Sentinel raid rig', WALKING_ENEMY_CLIPS, {
+        special: 'Rootheart Sanctum raid guardian and crystal-vigil transition'
+    }),
+    TideboundTyrant: entry('enemy', 'recomposed procedural Thalorath raid rig', WALKING_ENEMY_CLIPS, {
+        special: 'Tidestar Confluence raid guardian and crystal-vigil transition'
+    }),
+    AshenImperator: entry('enemy', 'recomposed procedural Lord Infernax raid rig', WALKING_ENEMY_CLIPS, {
+        special: 'Ember Crown Crucible raid guardian and crystal-vigil transition'
+    }),
+    TempestSovereign: entry('enemy', 'recomposed procedural Zephyrion raid rig', WALKING_ENEMY_CLIPS, {
+        special: 'Skyglass Eyrie raid guardian and crystal-vigil transition'
+    }),
     SandstormDjinn: entry('enemy', 'procedural Cinder Wastes ash-dune rig', WALKING_ENEMY_CLIPS, {
         special: 'floating glasswind veils, crossed sand rings, depth shards, crown, and glass scimitar'
     }),

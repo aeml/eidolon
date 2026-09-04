@@ -29,14 +29,20 @@ const (
 )
 
 type Quest struct {
-	ID        string `json:"id"`
-	Type      string `json:"type"` // "KILL"
-	Target    string `json:"target"`
-	Count     int    `json:"count"`
-	MaxCount  int    `json:"maxCount"`
-	RewardXP  int    `json:"rewardXP"`
-	Completed bool   `json:"completed"`
-	Accepted  bool   `json:"accepted"`
+	ID            string `json:"id"`
+	Type          string `json:"type"` // "KILL" or "COLLECT"
+	Target        string `json:"target"`
+	Count         int    `json:"count"`
+	MaxCount      int    `json:"maxCount"`
+	RewardXP      int    `json:"rewardXP"`
+	Completed     bool   `json:"completed"`
+	Accepted      bool   `json:"accepted"`
+	Title         string `json:"title,omitempty"`
+	Description   string `json:"description,omitempty"`
+	Lore          string `json:"lore,omitempty"`
+	Category      string `json:"category,omitempty"`
+	Chapter       int    `json:"chapter,omitempty"`
+	ObjectiveText string `json:"objectiveText,omitempty"`
 }
 
 type Stats struct {
@@ -52,24 +58,28 @@ type Stats struct {
 // ---------------------------------------------------------------------------
 
 type Entity struct {
-	Mu            sync.RWMutex // Protects concurrent access
-	ID            string       `json:"id"`
-	InstanceID    string       `json:"instanceId"`
-	Name          string       `json:"name"`
-	Type          EntityType   `json:"type"`
-	SubType       string       `json:"subType"` // e.g., "Fighter", "Skeleton"
-	X             float64      `json:"x"`
-	Y             float64      `json:"y"`
-	Z             float64      `json:"z"`
-	Rotation      float64      `json:"rotation"` // Y-axis rotation in radians
-	Health        int          `json:"health"`
-	MaxHealth     int          `json:"maxHealth"`
-	Mana          int          `json:"mana"`
-	MaxMana       int          `json:"maxMana"`
-	Level         int          `json:"level"`
-	Experience    int          `json:"experience"`
-	MaxExperience int          `json:"maxExperience"`
-	Gold          int          `json:"gold"`
+	Mu              sync.RWMutex   // Protects concurrent access
+	ID              string         `json:"id"`
+	InstanceID      string         `json:"instanceId"`
+	Name            string         `json:"name"`
+	Type            EntityType     `json:"type"`
+	SubType         string         `json:"subType"` // e.g., "Fighter", "Skeleton"
+	X               float64        `json:"x"`
+	Y               float64        `json:"y"`
+	Z               float64        `json:"z"`
+	Rotation        float64        `json:"rotation"` // Y-axis rotation in radians
+	Health          int            `json:"health"`
+	MaxHealth       int            `json:"maxHealth"`
+	Mana            int            `json:"mana"`
+	MaxMana         int            `json:"maxMana"`
+	Level           int            `json:"level"`
+	Experience      int            `json:"experience"`
+	MaxExperience   int            `json:"maxExperience"`
+	ResonanceLevel  int            `json:"resonanceLevel,omitempty"`
+	ResonanceXP     int            `json:"resonanceXp,omitempty"`
+	ResonancePoints int            `json:"resonancePoints,omitempty"`
+	ResonanceRanks  map[string]int `json:"resonanceRanks,omitempty"`
+	Gold            int            `json:"gold"`
 
 	// Inventory
 	Inventory         []Item          `json:"-"`
@@ -145,9 +155,12 @@ type Entity struct {
 	Threat map[string]float64 `json:"-"`
 
 	// Loot
-	LootItem  *Item     `json:"lootItem,omitempty"` // If Type == TypeLoot
-	LootTime  time.Time `json:"-"`
-	CreatedAt time.Time `json:"-"`
+	LootItem    *Item     `json:"lootItem,omitempty"` // If Type == TypeLoot
+	LootTime    time.Time `json:"-"`
+	LootPartyID string    `json:"-"`
+	LootOwnerID string    `json:"-"`
+	CreatedAt   time.Time `json:"-"`
+	RaidPhase   int       `json:"-"`
 
 	// Projectile
 	OwnerID string          `json:"ownerId,omitempty"`
@@ -249,6 +262,8 @@ type Entity struct {
 	// Party
 	PartyID      string `json:"partyId,omitempty"`
 	SocialStatus string `json:"socialStatus,omitempty"`
+	GuildID      string `json:"guildId,omitempty"`
+	GuildTag     string `json:"guildTag,omitempty"`
 
 	// Reconnect / session resume
 	Disconnected   bool      `json:"-"`
@@ -674,6 +689,17 @@ func (e *Entity) RecalculateStats() {
 	if pctAllResist != 0 {
 		e.Defense = int(float64(e.Defense) * (1.0 + pctAllResist))
 	}
+	if e.Type == TypePlayer && e.ResonanceRanks != nil {
+		power := max(0, min(MaxResonanceRank, e.ResonanceRanks["power"]))
+		ward := max(0, min(MaxResonanceRank, e.ResonanceRanks["ward"]))
+		if power > 0 {
+			e.Damage = int(float64(e.Damage) * (1 + float64(power)*0.01))
+		}
+		if ward > 0 {
+			e.MaxHealth = int(float64(e.MaxHealth) * (1 + float64(ward)*0.01))
+			e.Defense = int(float64(e.Defense) * (1 + float64(ward)*0.01))
+		}
+	}
 
 	// Speed Calculation
 	e.Speed = e.BaseSpeed
@@ -797,11 +823,14 @@ func (e *Entity) RecalculateStats() {
 
 func (w *World) GetEntityCopy(id string) *Entity {
 	w.Mu.RLock()
-	defer w.Mu.RUnlock()
 	e, ok := w.Entities[id]
 	if !ok {
+		w.Mu.RUnlock()
 		return nil
 	}
+	e.Mu.RLock()
+	w.Mu.RUnlock()
+	defer e.Mu.RUnlock()
 
 	// Manual copy to avoid copying the.Mutex
 	newE := &Entity{
@@ -810,6 +839,8 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		Name:              e.Name,
 		PartyID:           e.PartyID,
 		SocialStatus:      e.SocialStatus,
+		GuildID:           e.GuildID,
+		GuildTag:          e.GuildTag,
 		Type:              e.Type,
 		SubType:           e.SubType,
 		X:                 e.X,
@@ -823,6 +854,9 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		Level:             e.Level,
 		Experience:        e.Experience,
 		MaxExperience:     e.MaxExperience,
+		ResonanceLevel:    e.ResonanceLevel,
+		ResonanceXP:       e.ResonanceXP,
+		ResonancePoints:   e.ResonancePoints,
 		Gold:              e.Gold,
 		LastDailyQuest:    e.LastDailyQuest,
 		BaseStats:         e.BaseStats,
@@ -850,6 +884,7 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		MoveLockUntil:     e.MoveLockUntil,
 		LootItem:          e.LootItem,
 		LootTime:          e.LootTime,
+		LootPartyID:       e.LootPartyID,
 		CreatedAt:         e.CreatedAt,
 		OwnerID:           e.OwnerID,
 		VelX:              e.VelX,
@@ -878,8 +913,13 @@ func (w *World) GetEntityCopy(id string) *Entity {
 	}
 
 	if e.UnlockedSkills != nil {
-		newE.UnlockedSkills = make([]string, len(e.UnlockedSkills))
-		copy(newE.UnlockedSkills, e.UnlockedSkills)
+		newE.UnlockedSkills = append([]string(nil), e.UnlockedSkills...)
+	}
+	if e.SkillRunes != nil {
+		newE.SkillRunes = make(map[string]string, len(e.SkillRunes))
+		for skill, runeID := range e.SkillRunes {
+			newE.SkillRunes[skill] = runeID
+		}
 	}
 	if e.TalentRanks != nil {
 		newE.TalentRanks = make(map[string]int, len(e.TalentRanks))
@@ -887,19 +927,26 @@ func (w *World) GetEntityCopy(id string) *Entity {
 			newE.TalentRanks[k] = v
 		}
 	}
+	if e.ResonanceRanks != nil {
+		newE.ResonanceRanks = make(map[string]int, len(e.ResonanceRanks))
+		for key, rank := range e.ResonanceRanks {
+			newE.ResonanceRanks[key] = rank
+		}
+	}
 
 	if e.Inventory != nil {
-		newE.Inventory = make([]Item, len(e.Inventory))
-		copy(newE.Inventory, e.Inventory)
+		newE.Inventory = cloneItems(e.Inventory)
 	}
 	if e.Stash != nil {
-		newE.Stash = make([]Item, len(e.Stash))
-		copy(newE.Stash, e.Stash)
+		newE.Stash = cloneItems(e.Stash)
+	}
+	if e.Buyback != nil {
+		newE.Buyback = cloneItems(e.Buyback)
 	}
 	if e.Equipment != nil {
-		newE.Equipment = make(map[string]Item)
+		newE.Equipment = make(map[string]Item, len(e.Equipment))
 		for k, v := range e.Equipment {
-			newE.Equipment[k] = v
+			newE.Equipment[k] = cloneItem(v)
 		}
 	}
 	if e.Quests != nil {
@@ -915,6 +962,37 @@ func (w *World) GetEntityCopy(id string) *Entity {
 	return newE
 }
 
+func cloneItems(items []Item) []Item {
+	cloned := make([]Item, len(items))
+	for index, item := range items {
+		cloned[index] = cloneItem(item)
+	}
+	return cloned
+}
+
+func cloneItem(item Item) Item {
+	cloned := item
+	if item.Stats != nil {
+		cloned.Stats = make(map[string]int, len(item.Stats))
+		for stat, value := range item.Stats {
+			cloned.Stats[stat] = value
+		}
+	}
+	if item.Gems != nil {
+		cloned.Gems = make([]SocketedGem, len(item.Gems))
+		for index, gem := range item.Gems {
+			cloned.Gems[index] = gem
+			if gem.Stats != nil {
+				cloned.Gems[index].Stats = make(map[string]int, len(gem.Stats))
+				for stat, value := range gem.Stats {
+					cloned.Gems[index].Stats[stat] = value
+				}
+			}
+		}
+	}
+	return cloned
+}
+
 func (w *World) copyEntity(v *Entity) *Entity {
 	// Optimized: Only copy essential fields based on entity type
 	// Enemies don't need inventory, stash, equipment details, etc.
@@ -928,6 +1006,8 @@ func (w *World) copyEntity(v *Entity) *Entity {
 		Name:              v.Name,
 		PartyID:           v.PartyID,
 		SocialStatus:      v.SocialStatus,
+		GuildID:           v.GuildID,
+		GuildTag:          v.GuildTag,
 		EquipmentRevision: v.EquipmentRevision,
 		Type:              v.Type,
 		SubType:           v.SubType,

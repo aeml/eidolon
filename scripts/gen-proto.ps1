@@ -60,7 +60,7 @@ try {
   }
 
   $JsOutFile = Join-Path $JsOutDir "state_pb.js"
-  & $Pbjs -t static-module -w es6 -o $JsOutFile $ProtoFile
+  & $Pbjs -t static-module -w es6 --force-number -o $JsOutFile $ProtoFile
 
   # Post-process for browser runtime: use globalThis.protobuf (loaded via <script>)
   $Content = Get-Content -Raw -Path $JsOutFile
@@ -81,6 +81,10 @@ if (!$protobuf) {
       'import * as $protobuf from "protobufjs/minimal"\r\n'
       "import * as $protobuf from 'protobufjs/minimal';"
       "import * as $protobuf from 'protobufjs/minimal'"
+      'import $protobuf from "protobufjs/minimal";'
+      'import $protobuf from "protobufjs/minimal"'
+      "import $protobuf from 'protobufjs/minimal';"
+      "import $protobuf from 'protobufjs/minimal'"
     )
 
     foreach ($Needle in $Needles) {

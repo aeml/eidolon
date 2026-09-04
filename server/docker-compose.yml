@@ -29,7 +29,7 @@ services:
       args:
         GO_VERSION: 1.24.5
         BUILD_COMMIT: ${EIDOLON_BUILD_COMMIT:-development}
-        BUILD_VERSION: ${EIDOLON_BUILD_VERSION:-Alpha 0.41.0.36}
+        BUILD_VERSION: ${EIDOLON_BUILD_VERSION:-Alpha 1.0.0}
     restart: unless-stopped
     env_file:
       - .env
@@ -49,7 +49,6 @@ services:
       - 127.0.0.1:${APP_HOST_PORT:-18082}:8080
     volumes:
       - ./logs:/app/logs
-      - ./bug_reports.json:/app/bug_reports.json
 
 volumes:
   mongo_data:

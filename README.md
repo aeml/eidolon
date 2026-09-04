@@ -196,33 +196,33 @@ Notes:
 - Both endpoints report the deployed Git commit. The deployment workflow polls until they match the pushed SHA, then runs the live Playwright suite.
 - Procedural cutover scope and closure gates: [docs/art/FINAL_PROCEDURAL_CUTOVER_AUDIT.md](docs/art/FINAL_PROCEDURAL_CUTOVER_AUDIT.md)
 - Complete migration ledger: [docs/art/PROCEDURAL_MIGRATION_INVENTORY.md](docs/art/PROCEDURAL_MIGRATION_INVENTORY.md)
-- `/level`, `/qa-waypoint <combat|encounter|verdant>`, `/qa-hazard <earth|water|fire|air|town>`, `/qa-loot-next`, `/qa-disconnect`, `/qa-animation-ready [low-health|persistent]`, and `/qa-protection off` are release-QA commands. They are disabled unless the authenticated username appears in the server's `EIDOLON_QA_USERNAMES` allowlist. The encounter waypoint chooses the live overworld enemy nearest the fixed combat anchor and places only the QA character eight metres toward that anchor; it neither spawns nor mutates the enemy and accepts no coordinates. The hazard pilgrimage accepts only four fixed canonical hazard centers plus Lanternhold, preserves hostile protection, and permits normal environmental damage for 45 seconds. Animation readiness restores bounded resources/cooldowns; `low-health` permits the Last Stand input path, and `persistent` extends only the next Spirit Guardians activation/boost long enough to prove late-join reconstruction. Protection can only be turned off after a bounded QA waypoint so death/respawn remains real server-authoritative gameplay.
+- `/level`, `/qa-waypoint <combat|encounter|verdant>`, `/qa-hazard <earth|water|fire|air|town>`, `/qa-loot-next`, `/qa-disconnect`, `/qa-animation-ready [low-health|persistent|near-death]`, and `/qa-protection off` are release-QA commands. They are disabled unless the authenticated username appears in the server's `EIDOLON_QA_USERNAMES` allowlist. The encounter waypoint chooses the live overworld enemy nearest the fixed combat anchor and places only the QA character eight metres toward that anchor; it neither spawns nor mutates the enemy and accepts no coordinates. The hazard pilgrimage accepts only four fixed canonical hazard centers plus Lanternhold, preserves hostile protection, and permits normal environmental damage for 45 seconds. Animation readiness restores bounded resources/cooldowns; `low-health` permits the Last Stand input path, `persistent` extends only the next Spirit Guardians activation/boost long enough to prove late-join reconstruction, and `near-death` clears prior ability protections before a real hostile death/respawn check. Protection can only be turned off after a bounded QA waypoint so death/respawn remains real server-authoritative gameplay.
 
 ## Project Status
 
-- Current in-game displayed version: `Alpha 0.41.0.36`
-- Active implementation line: `0.41` procedural dark-fantasy art migration (final cutover complete)
-- Current shipped foundation: four classes, four realms, four dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, social statuses, friends/presence, reconnect/session resume, asset caching, audio foundation, and substantial UX polish
-- Current engineering emphasis: reducing monolith hotspots in `server/internal/game/world.go`, `server/main.go`, `src/core/GameEngine.js`, and `src/ui/UIManager.js`
-- Next backend-facing hardening themes in the roadmap: persistence, protocol safety, performance, multi-client coverage, and soak validation
+- Current in-game displayed version: `Alpha 1.0.0`
+- Active implementation line: `Alpha 1.0` release-candidate closeout and beta readiness
+- Current foundation: four classes and elemental realms; authoritative multiplayer combat; persistent characters, parties, friends, guilds, direct trade, and auctions; structured chat and moderation; duels and arenas; five dungeons; four elemental raids; Resonance progression; and the Dark Realm endgame raid
+- Main campaign: the automatically started 15-chapter Fourfold Chronicle moves through Earth, Water, Fire, and Air collection arcs and dungeon clears, then four distinct raids with three-wave crystal-repair Vigils, the Umbral Nexus portal gate, and Malachar's four-Eidolon finale
+- Current engineering emphasis: exact-candidate verification and beta planning around scale, live balance, operations, moderation workflow, accessibility feedback, and content cadence
 
-Verification state as of July 20, 2026:
+Verification state as of September 4, 2026:
 
-- Implemented and unit-tested: locked/self-hosted browser runtimes, QA command authorization, canonical coverage for 52 active abilities, 60 rune variants, and 47 actor archetypes, persistent animation-state replication, disposable test credentials, health/release identity, and deployment SHA gates.
-- Locally browser-tested: exact/sub-arrival/nearby/sustained local movement, camera coherence, ordered acknowledgement, and two-process timestamped remote interpolation; the deterministic High/Low animation gallery; four real-input class matrices covering locomotion/basic attack/death and every canonical ability/rune; remote VFX including Spirit Guardians late-join/expiration; and the anonymous/general disposable character routes in hardware-accelerated system Chrome.
-- Live production-tested: deployed SHA `8b74226` passed the anonymous surface, measured exact/sub-arrival/short/sustained movement with camera and reconciliation bounds, persistent-character menus/reconnect, extended combat/loot/dungeon/persistence, every four-class ability/rune and locomotion/death matrix, and same-buffer two-client ground interpolation, jump, combat, plus the remote Spirit Guardians lifecycle in hardware-accelerated system Chrome. GitHub Actions run `33620256522` passed every predeploy, deploy, identity, and live browser job.
-- The full evidence record and workflow link are retained in `docs/plans/live-browser-qa-checklist.md`.
+- The Alpha 1.0 candidate adds migrations and repository coverage, protocol and exploit hardening, handler admission/rate policy, load and benchmark tooling, nightly soak configuration, guild/PvP/endgame coverage, and Fourfold Chronicle regression tests.
+- Locked browser runtimes, disposable-character QA, hardware-accelerated animation/movement routes, release identity, and deployment SHA checks remain part of the release pipeline.
+- The most recent production evidence predates this uncommitted Alpha 1.0 candidate. No documentation should imply the candidate is live until the exact committed SHA passes deployment and live-character verification.
+- The durable browser process and evidence requirements are retained in `docs/plans/live-browser-qa-checklist.md`.
 
 Current measured hotspots (physical lines, `wc -l`):
 
 | File | LOC |
 |---|---:|
-| `server/internal/game/world.go` | 8,578 |
-| `server/main.go` | 5,027 |
-| `src/core/GameEngine.js` | 5,810 |
-| `src/ui/UIManager.js` | 3,634 |
+| `server/internal/game/world.go` | 1,422 |
+| `server/main.go` | 938 |
+| `src/core/GameEngine.js` | 2,306 |
+| `src/ui/UIManager.js` | 1,203 |
 
-These measurements show that the `0.40` decomposition target is still open; release-confidence work does not claim the monolith reduction is complete.
+These measurements satisfy the Alpha 1.0 decomposition gates. New beta work should preserve the extracted ownership boundaries instead of rebuilding coordinator monoliths.
 
 ## Media TODO
 

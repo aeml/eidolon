@@ -36,6 +36,12 @@ export const DUNGEON_INTERIOR_DEFINITIONS = Object.freeze({
         'The Drowned Sanctum',
         'flooded basalt sanctums with black-water tide rings, moon pearls, and bioluminescent coral wards',
         'drowned basalt blocks beneath luminous tide marks'
+    ),
+    umbral_nexus: defineInterior(
+        'umbral_nexus',
+        'The Broken Memory',
+        'fractured memory halls with void-cut masonry, violet seams, and eidolon constellations',
+        'black memory glass divided by unstable spirit fractures'
     )
 });
 
@@ -106,7 +112,7 @@ function surfaceSample(dungeonType, surface, x, y, palette) {
             color = mixBytes(color, node ? accent : midtone, node ? 0.62 : 0.38);
             emissive = node ? 0.54 : 0.16;
         }
-    } else {
+    } else if (dungeonType === 'abyssal_well') {
         const blockX = (x + (Math.floor(y / 9) % 2) * 6) % 18;
         const joint = blockX < 1 || y % 9 < 1;
         const tide = Math.abs(y - (32 + Math.sin(x * 0.24) * (wall ? 10 : 7))) < 1.25;
@@ -115,6 +121,15 @@ function surfaceSample(dungeonType, surface, x, y, palette) {
         if (tide || pearl) {
             color = mixBytes(color, accent, tide ? 0.42 : 0.3);
             emissive = tide ? 0.28 : 0.2;
+        }
+    } else {
+        const fracture = Math.abs(x - (31 + Math.sin(y * 0.31) * 15)) < 1.2;
+        const constellation = ((x * 17 + y * 23) % 61) < 2;
+        const memoryTile = (x + (Math.floor(y / 10) % 2) * 5) % 19 < 1 || y % 10 < 1;
+        if (memoryTile) color = mixBytes(color, shadow, 0.72);
+        if (fracture || constellation) {
+            color = mixBytes(color, fracture ? accent : midtone, fracture ? 0.56 : 0.38);
+            emissive = fracture ? 0.42 : 0.24;
         }
     }
 
@@ -467,7 +482,7 @@ function buildRegionalMotif(root, dungeonType, shapes, materials, radius) {
                 scale: [3.2, 0.55, 2.1]
             });
         }
-    } else {
+    } else if (dungeonType === 'abyssal_well') {
         for (const side of [-1, 1]) {
             addPart(root, `abyssal:coral-antler:${side}`, shapes.cone6, materials.spirit, {
                 position: [side * radius * 0.58, 1.5, radius * 0.55],
@@ -475,6 +490,15 @@ function buildRegionalMotif(root, dungeonType, shapes, materials, radius) {
                 scale: [1.15, 3.5, 1.15],
                 castShadow: false
             });
+        }
+    } else {
+        for (const side of [-1, 1]) {
+            const shard = addPart(root, `umbral:memory-shard:${side}`, shapes.octahedron, side > 0 ? materials.accent : materials.spirit, {
+                position: [side * radius * 0.58, 1.8, radius * 0.54],
+                scale: [1.4, 3.6, 1.4],
+                castShadow: false
+            });
+            shard.rotation.z = side * 0.34;
         }
     }
 }

@@ -23,6 +23,10 @@ func handleMsgPartyInvite(c *Client, msg Message) {
 		c.sendError("Cannot invite yourself")
 		return
 	}
+	if chatService.shouldFilter(targetClient.username, c.username) || chatService.shouldFilter(c.username, targetClient.username) {
+		c.sendError("Player is not available for party invitations")
+		return
+	}
 
 	inviter := world.GetEntity(c.playerID)
 	if inviter == nil {
@@ -186,5 +190,42 @@ func handleMsgPartyPromote(c *Client, msg Message) {
 		return
 	}
 
+	broadcastPartyUpdate(party)
+}
+
+func handleMsgPartyReadyCheck(c *Client, msg Message) {
+	party, err := world.StartPartyReadyCheck(c.playerID)
+	if err != nil {
+		c.sendError(err.Error())
+		return
+	}
+	broadcastPartyUpdate(party)
+}
+
+func handleMsgPartyReady(c *Client, msg Message) {
+	var payload PartyReadyPayload
+	if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+		c.sendError("invalid ready payload")
+		return
+	}
+	party, err := world.SetPartyReady(c.playerID, payload.Ready)
+	if err != nil {
+		c.sendError(err.Error())
+		return
+	}
+	broadcastPartyUpdate(party)
+}
+
+func handleMsgPartyLootRule(c *Client, msg Message) {
+	var payload PartyLootRulePayload
+	if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+		c.sendError("invalid loot rule payload")
+		return
+	}
+	party, err := world.SetPartyLootRule(c.playerID, payload.Rule, payload.MasterLooterID)
+	if err != nil {
+		c.sendError(err.Error())
+		return
+	}
 	broadcastPartyUpdate(party)
 }

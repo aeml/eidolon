@@ -199,7 +199,7 @@ export class NetworkManager {
             }
 
             const wireVersion = compressed[4];
-            if (wireVersion !== 1) {
+            if (wireVersion !== 2) {
                 console.warn('Unsupported state proto wire version:', wireVersion);
                 return;
             }
@@ -245,6 +245,12 @@ export class NetworkManager {
     _normalizeDecodedEntityPresence(entity) {
         if (Array.isArray(entity?.quests) && entity.quests.length === 0) {
             delete entity.quests;
+        }
+        if (entity?.experience !== undefined) {
+            entity.experience = Number(entity.experience);
+        }
+        if (entity?.maxExperience !== undefined) {
+            entity.maxExperience = Number(entity.maxExperience);
         }
     }
 

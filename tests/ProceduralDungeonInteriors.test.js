@@ -27,10 +27,10 @@ function finiteObject(object) {
 }
 
 describe('Procedural dungeon interior art', () => {
-    test('defines four distinct interior languages and four distinct generated surface maps', () => {
-        expect(DUNGEON_INTERIOR_IDS).toHaveLength(4);
-        expect(new Set(DUNGEON_INTERIOR_IDS.map((id) => DUNGEON_INTERIOR_DEFINITIONS[id].artStyle)).size).toBe(4);
-        expect(new Set(DUNGEON_INTERIOR_IDS.map((id) => DUNGEON_INTERIOR_DEFINITIONS[id].surfaceLanguage)).size).toBe(4);
+    test('defines five distinct interior languages and five distinct generated surface maps', () => {
+        expect(DUNGEON_INTERIOR_IDS).toHaveLength(5);
+        expect(new Set(DUNGEON_INTERIOR_IDS.map((id) => DUNGEON_INTERIOR_DEFINITIONS[id].artStyle)).size).toBe(5);
+        expect(new Set(DUNGEON_INTERIOR_IDS.map((id) => DUNGEON_INTERIOR_DEFINITIONS[id].surfaceLanguage)).size).toBe(5);
 
         const surfaceSignatures = DUNGEON_INTERIOR_IDS.map((dungeonType) => {
             const kit = createProceduralDungeonInteriorKit(dungeonType);
