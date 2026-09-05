@@ -128,7 +128,7 @@
     max-height: min(360px, max(80px, calc(100vh - var(--chat-panel-height, 230px) - var(--chat-panel-bottom, 80px) - 82px)));
     overflow-y: hidden;
     overflow-x: hidden;
-    pointer-events: auto;
+    pointer-events: none;
     z-index: calc(var(--z-hud) + 1);
 }
 
@@ -425,6 +425,10 @@
 
 .objectives-panel__more { flex-shrink: 0; margin-top: 6px; border: 1px solid #b99b6240; border-radius: 5px; background: #111923ee; color: var(--color-gold); padding: 8px; cursor: pointer; font: inherit; font-size: 11px; }
 .objectives-panel__more:focus-visible { outline: 2px solid var(--color-gold); outline-offset: -2px; }
+.objectives-panel__more { pointer-events: auto; }
+/* Keep the Journal shortcut above the roster, not a stack of cards over its
+   controls. Restoring the solo HUD restores the complete tracker shortlist. */
+.party-roster-visible #objectives-list { display: none; }
 #objectives-panel .objective-entry__hint { font-size: 11px; line-height: 1.4; }
 #objectives-panel .objective-entry__status { flex-shrink: 0; }
 #objectives-panel .objective-entry { flex-shrink: 0; }

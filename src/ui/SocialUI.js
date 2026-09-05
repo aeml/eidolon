@@ -151,11 +151,11 @@ export class SocialUI {
             if (this.onSocialOpen) this.onSocialOpen();
             document.getElementById('close-social')?.focus();
             if (this.partyPanel) {
-                this.partyPanel.style.display = 'block';
+                this.setPartyPanelVisible(true);
             }
         } else {
             if (this.partyPanel && !this.inParty) {
-                this.partyPanel.style.display = 'none';
+                this.setPartyPanelVisible(false);
             }
         }
     }
@@ -313,6 +313,12 @@ export class SocialUI {
     // PARTY
     // ================================================================
 
+    setPartyPanelVisible(visible) {
+        if (!this.partyPanel) return;
+        this.partyPanel.style.display = visible ? 'block' : 'none';
+        document.body.classList.toggle('party-roster-visible', visible);
+    }
+
     updateParty(partyData) {
         this.partyData = partyData;
         if (!this.partyPanel || !this.partyList) return;
@@ -334,9 +340,9 @@ export class SocialUI {
                 panelGuidance.textContent = 'Stay near party members to share kill credit, gold, XP, and dungeon boss rewards. Each nearby member also adds to the party reward bonus.';
             }
             if (this.socialWindow.style.display === 'none') {
-                this.partyPanel.style.display = 'none';
+                this.setPartyPanelVisible(false);
             } else {
-                this.partyPanel.style.display = 'block';
+                this.setPartyPanelVisible(true);
             }
             this.partyList.replaceChildren();
             const emptyState = document.createElement('div');
@@ -348,7 +354,7 @@ export class SocialUI {
             return;
         }
 
-        this.partyPanel.style.display = 'block';
+        this.setPartyPanelVisible(true);
         this.partyList.replaceChildren();
 
         const members = partyData.members || [];

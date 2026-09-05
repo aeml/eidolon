@@ -697,9 +697,11 @@ describe('menu polish regressions', () => {
         const socialWindow = document.getElementById('social-window');
         expect(socialWindow.style.display).toBe('block');
         expect(document.getElementById('party-panel').style.display).toBe('block');
+        expect(document.body.classList.contains('party-roster-visible')).toBe(true);
         socialWindow.querySelector('#close-social').click();
         expect(socialWindow.style.display).toBe('none');
         expect(document.getElementById('party-panel').style.display).toBe('none');
+        expect(document.body.classList.contains('party-roster-visible')).toBe(false);
     });
 
     test('primary hud menus open one at a time and world map header close works', () => {

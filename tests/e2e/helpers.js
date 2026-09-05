@@ -448,6 +448,10 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
                 })),
             escMenuOpen: Boolean(game?.uiManager?.isEscMenuOpen),
             patchNotesOpen: Boolean(game?.uiManager?.isPatchNotesOpen),
+            focusedControl: document.activeElement?.id || document.activeElement?.tagName,
+            openPanels: [...document.querySelectorAll('.window')]
+                .filter((element) => getComputedStyle(element).display !== 'none')
+                .map((element) => element.id),
             deathScreenVisible: game?.uiManager?.deathScreen?.style?.display !== 'none'
         };
     });

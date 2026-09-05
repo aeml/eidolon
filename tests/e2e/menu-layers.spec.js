@@ -9,7 +9,14 @@ test('party roster and resized permanent chat remain separately reachable', asyn
         const { UIManager } = await import('/src/ui/UIManager.js');
         document.getElementById('start-screen').style.display = 'none';
         const ui = new UIManager(false);
-        ui.lastPlayerRef = { id: 'party-visual-0' };
+        ui.lastPlayerRef = { id: 'party-visual-0', position: { x: 120, z: 200 }, quests: [
+            { id: 'chronicle_02_seeds_first_grove', category: 'chronicle', chapter: 2, title: 'Seeds of the First Grove', objectiveText: 'Recover 4 Verdant Memory Seeds from Earth-realm creatures.', type: 'COLLECT', target: 'Verdant Memory Seed', count: 0, maxCount: 4, rewardXP: 1000, accepted: true, completed: false },
+            ...Array.from({ length: 26 }, (_, i) => ({ id: `daily_${i}`, target: 'Skeleton', count: 0, maxCount: 100, accepted: true, completed: false }))
+        ] };
+        ui.updateJournal(ui.lastPlayerRef.quests);
+        window.__partyQuestFixture = ui;
+        window.__partyLeaveClicks = 0;
+        ui.social.onPartyLeave = () => { window.__partyLeaveClicks++; };
         ui.toggleChat(true);
         ui.updateParty({
             partyId: 'visual-party', leaderId: 'party-visual-0', readyCheckActive: true,
@@ -27,7 +34,8 @@ test('party roster and resized permanent chat remain separately reachable', asyn
             await expect.poll(() => page.evaluate(() => {
                 const party = document.getElementById('party-panel').getBoundingClientRect();
                 const chat = document.getElementById('chat-box').getBoundingClientRect();
-                return party.top >= 0 && party.bottom + 10 <= chat.top;
+                const quests = document.getElementById('objectives-panel').getBoundingClientRect();
+                return party.top >= quests.bottom + 8 && party.bottom + 10 <= chat.top;
             })).toBe(true);
             await page.locator('#chat-input').click();
             await expect(page.locator('#chat-input')).toBeFocused();
@@ -37,6 +45,10 @@ test('party roster and resized permanent chat remain separately reachable', asyn
             await page.locator('#party-invite-input').scrollIntoViewIfNeeded();
             await page.locator('#party-invite-input').click();
             await expect(page.locator('#party-invite-input')).toBeFocused();
+            await page.locator('#btn-leave-party').click();
+            await page.locator('.objectives-panel__more').click();
+            await expect(page.locator('#quest-journal')).toBeVisible();
+            await page.locator('#btn-close-journal').click();
             await page.locator('#chat-input').click();
             await expect(page.locator('#chat-input')).toBeFocused();
         }
@@ -49,6 +61,9 @@ test('party roster and resized permanent chat remain separately reachable', asyn
     await page.keyboard.press('Home');
     await expect(page.locator('#chat-tab-chat')).toBeFocused();
     await expect(page.locator('#chat-box')).toBeVisible();
+    expect(await page.evaluate(() => window.__partyLeaveClicks)).toBe(8);
+    await page.evaluate(() => window.__partyQuestFixture.social.updateParty(null));
+    await expect(page.locator('#objectives-list')).toBeVisible();
     expect(failures, failures.join('\n')).toEqual([]);
 });
 

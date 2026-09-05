@@ -367,7 +367,7 @@ class UIManagerWindowMethods {
             }
         }
         if (id === 'social' && this.social?.partyPanel && !this.social.inParty) {
-            this.social.partyPanel.style.display = 'none';
+            this.social.setPartyPanelVisible(false);
         }
     }
 
