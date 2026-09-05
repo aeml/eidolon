@@ -12,6 +12,7 @@ describe('UIBindings', () => {
                 targetPosition: { x: 1, z: 2 }
             },
             username: 'tester',
+            requestTownRecall: jest.fn(),
             isMultiplayer: true,
             pendingInteraction: { id: 'enemy-1' },
             collisionManager: {},
@@ -160,6 +161,8 @@ describe('UIBindings', () => {
 
         engine.uiManager.onChatSend('hello');
         expect(engine.network.send).toHaveBeenCalledWith('chat', { message: 'hello', sender: 'tester' });
+        engine.uiManager.onRecall();
+        expect(engine.requestTownRecall).toHaveBeenCalledTimes(1);
 
         engine.uiManager.onHotbarAssign(2, 'Meteor Drop');
         expect(engine.player.hotbar[2]).toBe('Meteor Drop');

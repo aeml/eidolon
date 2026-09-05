@@ -130,9 +130,13 @@ type DungeonCorridorSnapshot struct {
 }
 
 type DungeonLayoutSnapshot struct {
-	Rooms     []DungeonRoomSnapshot     `bson:"rooms"`
-	WalkRects []DungeonWalkRectSnapshot `bson:"walk_rects,omitempty"`
-	Corridors []DungeonCorridorSnapshot `bson:"corridors,omitempty"`
+	GenerationSeed     string                    `bson:"generation_seed,omitempty"`
+	GeneratorVersion   int                       `bson:"generator_version,omitempty"`
+	GenerationAttempt  int                       `bson:"generation_attempt,omitempty"`
+	GenerationFallback bool                      `bson:"generation_fallback,omitempty"`
+	Rooms              []DungeonRoomSnapshot     `bson:"rooms"`
+	WalkRects          []DungeonWalkRectSnapshot `bson:"walk_rects,omitempty"`
+	Corridors          []DungeonCorridorSnapshot `bson:"corridors,omitempty"`
 }
 
 type DungeonRoomProgress struct {

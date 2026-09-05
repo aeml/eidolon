@@ -68,7 +68,14 @@ QA before either deployment. The jump destination was projected before the
 camera settled; the retry then inherited the unfinished dungeon visit. The
 corrective QA change waits for a visible ground destination and returns the
 dedicated character to town after inspection failures or before a resumed run.
-This candidate is not yet live; no milestone gate is closed.
+That initial attempt did not go live; the correction below subsequently did.
+
+Correction pushed as `434216c7224392e936bd50d99620671cd6b22120`, with run
+`33988179112` now completed successfully, including deployment and all live QA.
+Independent frontend and backend checks report Alpha 1.0.3 and that exact SHA.
+The corrected portal test passed against
+an exact detached copy of that commit, not the newer uncommitted dungeon work.
+Its disposable API/Mongo data and temporary verification worktree were removed.
 
 Confirmed reproductions and changes:
 
@@ -109,23 +116,99 @@ development port and two test assumptions (town's existing 0.5m presentation
 lift and repeat visits already at maximum zoom); the final run used port 4185
 and corrected those assumptions without weakening the recovery-state checks.
 All eight anonymous browser release checks also pass on the final candidate.
-Publication and exact live verification of 1.0.3 remain pending.
+Publication and live verification of 1.0.3 are complete; the wider 1.1 gate is not.
+
+## Alpha 1.0.4 candidate — roads that remember
+
+Status: release candidate validated locally and ready for publication. The
+previous 1.0.3 release is verified live; deployment and live QA for 1.0.4 are
+separate gates and are not claimed by these local results.
+
+- Four regional generators now have a local seeded RNG independent of global
+  combat/loot traffic. Production retries receive distinct deterministic seeds;
+  the successful seed, generator version, attempt, and fallback marker travel
+  with the layout and survive database mapping, JSON, and restore. Existing
+  saved geometry is not regenerated. Fixed-layout Umbral/raid instances share
+  the diagnostic identity. The four global-RNG dependence repros fail before
+  the change and pass afterward.
+- Real client fixtures exposed the old X=50000 scene boundary pushing Water
+  positions and excluding Umbral/crystal-raid space. Canonical dungeon collision
+  now uses its own walkable area instead of that unrelated envelope. The client
+  still enforces its walls/union; clearing the instance restores the scene guard.
+  All six Water/Umbral fixture failures pass after the fix, along with explicit
+  tests at every dungeon/raid origin from X=50000 through X=110000.
+- Added [seed capture/replay instructions](dungeon-seed-replay-qa.md), 1,500
+  production layout checks, 20 shared server-generated fixtures, actual client
+  floor/collision traversal sampling, and a browser geometry/High-Low fixture
+  check. The latter is included in the next anonymous CI suite.
+- Dungeon entry also retained departed charge/jump targets: a reproduced jump
+  sent the newly entered player to (0,0,0) on the next update. The shared scene
+  movement reset now runs on entry under the player lock. Recall/respawn still
+  preserve cooldowns and buffs. Focused entry/recovery/restore race tests pass.
+- Added a visible Escape-menu Return to Lanternhold (B) action using the shared
+  keyboard recall path. Updated help and completed-dungeon routing text so they
+  do not imply that a player must backtrack to a physical exit. UI callback and
+  menu tests pass.
+- The real Water route exposed a stale legacy socket reference after reconnect:
+  movement and recall used the new connection, but Continue Party Run sent to
+  the closed original socket. The engine's compatibility accessor now follows
+  NetworkManager's active socket. A focused regression and the actual browser
+  route pass. The route verifies eastward Water movement, session resume, menu
+  recall, and re-entry with unchanged instance ID and exact generation seed.
+  It is included in predeploy and live CI. Camera-follow reprojection corrected
+  the guide-selection test without bypassing real mouse interaction.
+- Running Water after the existing Verdant tests exposed incorrect party-leader
+  detection in both menu status and reset authorization: the handler compared
+  the party ID, not its leader ID. Corrected both tuple reads. Reset now rejects
+  an occupied instance under the world lock instead of deleting its players.
+  A dispatch-level regression reproduced both failures, then passed leader/member
+  status, non-leader rejection, occupied-run preservation, and empty-run reset.
+  Successful resets now use system chat rather than an error frame; the combined
+  Water run exposed that misleading success-as-error response after all gameplay
+  assertions had passed. The final full server race suite passes with these fixes.
+
+Earlier evidence: 148 client suites / 2,138 tests and the full server race suite pass.
+The additional diagnostic-seed test passes in a focused 16-test containment run;
+the explicit reported-seed replay command passes. All 20 browser fixtures pass.
+Inspected Water High and Umbral Low corridor screenshots: floors are continuous
+through the shown joins. The browser check captures both qualities for all ten
+dungeon/raid families, but this is not a claim of whole-run visual inspection or
+real-player combat/traversal. The final server race suite and lint pass; all nine
+anonymous browser checks pass, including the 20 production fixtures. The focused
+Water gameplay route passes with normal entry/reconnect/menu recall/re-entry.
+The final client suite passes all 148 suites / 2,142 tests. Two older test harnesses
+were updated to stop assigning the now-read-only compatibility socket accessor.
+The first full updated character QA sequence completed its authenticated gameplay
+assertions but failed the final browser-error check on Chrome
+`ERR_NETWORK_CHANGED`; the focused portal route also passed in that attempt.
+The next run passed all three authenticated routes, then exposed the leader
+bug above when resetting the earlier Verdant run before Water. The corrected
+complete sequence passes: all three authenticated routes, Water reset/entry/
+movement/reconnect/menu recall/re-entry, acknowledged movement smoothness, all
+four class ability/rune matrices, and two-account remote effects/movement/combat.
+The artifact credential scan passes. Disposable API/Mongo containers and data
+were removed by the runner. Final whitespace checks pass; the added patch notes
+pass the 177-test version/history suite. Publication and live verification remain
+open for this candidate.
 
 ## Dungeon investigations still open
 
-- DUN-01: movement and scene-ordering failures reproduced and repaired locally;
-  real-server mid-movement recall, wipe, reconnect, and party variants remain open.
-- DUN-02: contact/range mismatch reproduced and repaired locally; mouse picking,
+- DUN-01: targeted movement/scene fixes and the Verdant mid-jump recall route
+  shipped in 1.0.3. Water reconnect/menu recall/re-entry passes on the 1.0.4
+  candidate. Wipe, remaining dungeons, and party variants remain open.
+  In addition to the wider recovery gate, inspect Continue Party Run's settings
+  display and member-specific re-entry: the menu currently defaults to a new
+  Verdant selection and the entry handler moves all party members, even when
+  resuming. Preserve authoritative access checks and members already inside.
+- DUN-02: contact/range mismatch reproduced and repaired in 1.0.3; mouse picking,
   all-class full combat, boss deaths, loot, and progression still need validation.
-- DUN-03: Teleport failure reproduced and repaired locally; remaining abilities,
+- DUN-03: Teleport failure reproduced and repaired in 1.0.3; remaining abilities,
   rune variants, wall restrictions, presentation, and instance isolation need
   systematic coverage. Neither this nor the projectile fix proves all skills work.
-- DUN-04/05: surface construction improved, but actual server seed sweeps,
-  multi-dungeon traversal and repeated scene-lifecycle checks remain open.
-  Existing layout tests call global `rand.Seed`; inspection of the project's
-  Go 1.24.5 standard library confirms that is a no-op by default. They cannot be
-  cited as reproducible seed coverage. Add explicit per-layout RNG/seed identity
-  and replayable generation checks before claiming the deterministic seed gate.
+- DUN-04/05: multi-dungeon player-controlled traversal, reported failing-seed
+  capture, and repeated scene-lifecycle checks remain open. The next local
+  hotfix now supplies real seed sweeps and rendered
+  fixture coverage; these are stronger evidence, not completion of the play gate.
 
 ## Milestone tracking
 

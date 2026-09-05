@@ -76,6 +76,7 @@ function buildStaticWindowDom() {
         <button id="btn-close-settings"></button>
         <button id="btn-close-patch-notes"></button>
         <button id="btn-respawn"></button>
+        <button id="btn-recall"></button>
         <div id="abilities-menu" style="display:none"></div>
         <div id="abilities-content"></div>
         <button id="btn-close-abilities"></button>
@@ -642,6 +643,19 @@ describe('menu polish regressions', () => {
         expect(player.skillRunes['Iron Fortress']).toBe('ironfortress_extended');
     });
 
+    test('the pause menu recall control invokes recall and resumes without a respawn', () => {
+        buildStaticWindowDom();
+        const ui = new UIManager(false);
+        ui.onRecall = jest.fn();
+        ui.onRespawn = jest.fn();
+        ui.toggleEscMenu();
+        document.getElementById('btn-recall').click();
+        expect(ui.onRecall).toHaveBeenCalledTimes(1);
+        expect(ui.onRespawn).not.toHaveBeenCalled();
+        expect(document.getElementById('esc-menu').style.display).toBe('none');
+        expect(ui.isEscMenuOpen).toBe(false);
+    });
+
     test('escape closes static modal first and keeps esc menu open', () => {
         buildStaticWindowDom();
         const ui = new UIManager(false);
@@ -1182,7 +1196,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 1.0.3</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 1.0.4</span>');
         expect(html).toContain('<button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');

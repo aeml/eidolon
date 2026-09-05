@@ -113,7 +113,6 @@ function createEngineHarness() {
     engine.frameCount = 1;
     engine.effects = [];
     engine.collisionManager = {};
-    engine.socket = null;
     engine.username = 'tester';
     engine.playerType = 'Fighter';
 

@@ -1423,7 +1423,7 @@ async function useVerdantQAWaypoint(page) {
     await expect(page.locator('#chat-box')).toBeVisible();
 }
 
-async function zoomOutForPortal(page) {
+export async function zoomOutForPortal(page) {
     const startingZoom = await page.evaluate(() => window.game?.renderSystem?.currentZoom);
     // Re-entry may already be at the maximum from the previous portal visit.
     if (startingZoom >= 30) return;

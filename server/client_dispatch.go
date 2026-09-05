@@ -748,7 +748,7 @@ func (c *Client) dispatchMessage(msg Message) {
 		party := world.GetParty(player.PartyID)
 		isLeader := false
 		if party != nil {
-			leaderID, _, _ := party.GetSnapshot()
+			_, leaderID, _ := party.GetSnapshot()
 			isLeader = (leaderID == c.playerID)
 		}
 
@@ -788,14 +788,17 @@ func (c *Client) dispatchMessage(msg Message) {
 		if party == nil {
 			return
 		}
-		leaderID, _, _ := party.GetSnapshot()
+		_, leaderID, _ := party.GetSnapshot()
 		if leaderID != c.playerID {
 			c.sendError("Only the party leader can reset the dungeon.")
 			return
 		}
 
-		world.ResetDungeon(player.PartyID)
-		c.sendError("Dungeon reset.") // Using sendError for notification for now
+		if err := world.ResetDungeon(player.PartyID); err != nil {
+			c.sendError(err.Error())
+			return
+		}
+		c.sendSystemChat("Dungeon reset.")
 
 	case MsgResumeSession:
 		// Client sends: { "token": "<64-char hex>" }

@@ -594,13 +594,13 @@ describe('QuestUI objectives panel', () => {
         expect(summary).toEqual([
             expect.objectContaining({
                 id: 'dungeon-route-tempest_spire',
-                title: 'Extract through the entrance',
+                title: 'Return to Lanternhold',
                 progressLabel: '2 / 2',
                 progressPct: 100,
                 badge: 'Exit',
                 badgeClass: 'is-exit',
                 completed: true,
-                hint: 'Boss down — backtrack to the entrance and leave with the loot',
+                hint: 'Boss down — press B or use Return to Lanternhold in the Escape menu to leave with your loot',
                 routeTone: 'support'
             })
         ]);
@@ -627,8 +627,8 @@ describe('QuestUI objectives panel', () => {
 
         const guidance = document.querySelector('.objective-guidance');
         expect(guidance).not.toBeNull();
-        expect(guidance.textContent).toContain('Extract through the entrance');
-        expect(guidance.textContent).toContain('Boss down — backtrack to the entrance and leave with the loot');
+        expect(guidance.textContent).toContain('Return to Lanternhold');
+        expect(guidance.textContent).toContain('Boss down — press B or use Return to Lanternhold in the Escape menu to leave with your loot');
         expect(guidance.textContent).not.toContain('Turn this in for 0 XP');
     });
 

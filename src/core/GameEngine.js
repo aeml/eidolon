@@ -374,14 +374,17 @@ import {
 } from '../utils/dungeonRoomMetadata.js';
 
 export class GameEngine {
+    /** @deprecated Prefer network.send(); legacy consumers must follow reconnects. */
+    get socket() {
+        return this.network?.socket ?? null;
+    }
+
     constructor(playerType, isMobile = false, isMultiplayer = true, serverAddress = '', username = '', socket = null) {
         this.isMobile = isMobile;
         this.isMultiplayer = true;
         this.serverAddress = serverAddress;
         this.username = username;
         this.network = new NetworkManager(socket);
-        /** @deprecated Use this.network instead. Kept for any external code. */
-        this.socket = socket;
         this.remotePlayers = new Map();
         this.renderSystem = new RenderSystem(isMobile);
         this.inputManager = new InputManager(this.renderSystem.camera, this.renderSystem.scene);
@@ -1160,26 +1163,7 @@ export class GameEngine {
         });
 
         this.inputManager.subscribe('onTeleport', () => {
-            if (this.player) {
-                console.log("Teleporting to town...");
-                // Send recall request to server to ensure sync
-                this.network.send('recall', {});
-                const previousX = this.player.position.x;
-                const previousZ = this.player.position.z;
-
-                // Optimistic update
-                // Match the authoritative server recall/respawn coordinate so
-                // the next state snapshot never has to pull the player 1.25m
-                // sideways immediately after this optimistic handoff.
-                this.player.position.set(-1.25, 0, 200);
-                this.player.targetPosition = null;
-                this.player.state = 'IDLE';
-
-                this.chunkManager.updateEntityChunk(this.player);
-                this.renderSystem.setCameraTarget(this.player.position);
-                this.chunkManager.update(this.player, 0, this.collisionManager);
-                this.syncTownRecoveryGuidance(previousX, previousZ, this.player.position.x, this.player.position.z, 'recall');
-            }
+            this.requestTownRecall();
         });
 
         this.inputManager.subscribe('onMap', () => {
@@ -2077,12 +2061,34 @@ export class GameEngine {
         return this.activeBuffs;
     }
 
+    requestTownRecall() {
+        if (!this.player) return;
+        this.network.send('recall', {});
+        const previousX = this.player.position.x;
+        const previousZ = this.player.position.z;
+        // Preserve the existing B-key handoff for both keyboard and menu use.
+        // Authoritative instance messages finish scenery/collision replacement.
+        this.player.position.set(-1.25, 0, 200);
+        this.player.targetPosition = null;
+        this.player.state = 'IDLE';
+        this.chunkManager.updateEntityChunk(this.player);
+        this.renderSystem.setCameraTarget(this.player.position);
+        this.chunkManager.update(this.player, 0, this.collisionManager);
+        this.syncTownRecoveryGuidance(previousX, previousZ, this.player.position.x, this.player.position.z, 'recall');
+    }
+
     getDungeonDebugOverlayData() {
         if (!this.currentDungeonLayout || !Array.isArray(this.currentDungeonLayout.walkRects) || this.currentDungeonLayout.walkRects.length === 0) {
             return null;
         }
 
         return {
+            instanceId: this.currentInstanceId || '',
+            dungeonType: this.currentInstanceType || '',
+            generationSeed: this.currentDungeonLayout.generationSeed || '',
+            generatorVersion: this.currentDungeonLayout.generatorVersion || 0,
+            generationAttempt: this.currentDungeonLayout.generationAttempt || 0,
+            generationFallback: Boolean(this.currentDungeonLayout.generationFallback),
             walkRects: this.currentDungeonLayout.walkRects,
             rooms: Array.isArray(this.currentDungeonLayout.rooms) ? this.currentDungeonLayout.rooms : [],
             corridors: Array.isArray(this.currentDungeonLayout.corridors) ? this.currentDungeonLayout.corridors : []

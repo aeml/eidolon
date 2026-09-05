@@ -73,6 +73,12 @@ func dungeonResumeToDatabase(snapshot game.DungeonResumeSnapshot) *database.Char
 		RunLevel:              snapshot.RunLevel,
 		CurrentRoomIndexValue: snapshot.CurrentRoomIndexValue,
 		Rooms:                 make([]database.DungeonRoomProgress, len(snapshot.Rooms)),
+		Layout: database.DungeonLayoutSnapshot{
+			GenerationSeed:     snapshot.Layout.GenerationSeed,
+			GeneratorVersion:   snapshot.Layout.GeneratorVersion,
+			GenerationAttempt:  snapshot.Layout.GenerationAttempt,
+			GenerationFallback: snapshot.Layout.GenerationFallback,
+		},
 	}
 	for _, room := range snapshot.Layout.Rooms {
 		persisted.Layout.Rooms = append(persisted.Layout.Rooms, database.DungeonRoomSnapshot{
@@ -115,6 +121,12 @@ func dungeonResumeFromDatabase(persisted *database.CharacterDungeonResume) game.
 		RunLevel:              persisted.RunLevel,
 		CurrentRoomIndexValue: persisted.CurrentRoomIndexValue,
 		Rooms:                 make([]game.DungeonRoomProgress, len(persisted.Rooms)),
+		Layout: game.DungeonLayout{
+			GenerationSeed:     persisted.Layout.GenerationSeed,
+			GeneratorVersion:   persisted.Layout.GeneratorVersion,
+			GenerationAttempt:  persisted.Layout.GenerationAttempt,
+			GenerationFallback: persisted.Layout.GenerationFallback,
+		},
 	}
 	for _, room := range persisted.Layout.Rooms {
 		snapshot.Layout.Rooms = append(snapshot.Layout.Rooms, game.DungeonRoom{

@@ -9,6 +9,18 @@ describe('CollisionManager', () => {
         manager = new CollisionManager();
     });
 
+    test.each([50000, 60000, 70000, 80000, 90000, 100000, 110000])('instance at x=%s owns its bounds without disabling wall constraints', (x) => {
+        manager.setDungeonWalkableGeometry([{ x, z: 20000, width: 100, height: 100 }]);
+        const inside = new THREE.Vector3(x + 10, 0, 20000);
+        expect(manager.checkCollision(inside, 1.25, inside)).toBeNull();
+        const outside = new THREE.Vector3(x + 100, 0, 20000);
+        const corrected = manager.checkCollision(outside, 1.25, inside);
+        expect(corrected.x).toBe(x + 50 - 1.25);
+        manager.clear();
+        // Returning to a scene without a canonical layout restores its guard.
+        expect(manager.checkCollision(outside, 1.25, outside).x).toBe(50000 - 1.25);
+    });
+
     describe('Initialization', () => {
         test('Initializes with empty colliders', () => {
             expect(manager.colliders).toHaveLength(0);

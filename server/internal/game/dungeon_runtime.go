@@ -55,7 +55,7 @@ func (w *World) CreateDungeon(partyID string, dungeonType string, difficulty Dun
 	// Register before generation so shared enemy builders can read the selected
 	// run level while they create encounters.
 	w.storeDungeonInstance(instanceID, dungeon)
-	buildLayout := func(generator func(string, DungeonDifficulty) DungeonLayout) DungeonLayout {
+	buildLayout := func() DungeonLayout {
 		const maxLayoutAttempts = 8
 		cleanupGeneratedEntities := func() {
 			toRemove := []string{}
@@ -74,7 +74,8 @@ func (w *World) CreateDungeon(partyID string, dungeonType string, difficulty Dun
 		var lastLayout DungeonLayout
 		var lastErr error
 		for attempt := 0; attempt < maxLayoutAttempts; attempt++ {
-			lastLayout = generator(instanceID, difficulty)
+			lastLayout = w.generateDungeonLayoutWithSeed(instanceID, difficulty, dungeonType, dungeonLayoutSeed(instanceID, attempt))
+			lastLayout.GenerationAttempt = attempt
 			lastErr = ValidateDungeonLayout(lastLayout)
 			if lastErr == nil {
 				assignDungeonRoomHooks(&lastLayout)
@@ -84,41 +85,43 @@ func (w *World) CreateDungeon(partyID string, dungeonType string, difficulty Dun
 		}
 		log.Printf("CreateDungeon: failed to generate valid %s layout for instance %s after %d attempts: %v", dungeonType, instanceID, maxLayoutAttempts, lastErr)
 		layout := fallbackDungeonLayout(dungeonType)
+		layout.GenerationSeed = lastLayout.GenerationSeed
+		layout.GeneratorVersion = dungeonGeneratorVersion
+		layout.GenerationAttempt = maxLayoutAttempts - 1
+		layout.GenerationFallback = true
 		assignDungeonRoomHooks(&layout)
 		return layout
 	}
 
 	if dungeonType == "verdant_bastion_catacombs" {
-		layout := buildLayout(w.generateVerdantBastionLayout)
+		layout := buildLayout()
 		dungeon.Layout = layout
 		dungeon.RoomState = NewDungeonRoomState(layout)
 		w.storeDungeonInstance(instanceID, dungeon)
 	} else if dungeonType == "molten_core" {
-		layout := buildLayout(w.generateMoltenCoreLayout)
+		layout := buildLayout()
 		dungeon.Layout = layout
 		dungeon.RoomState = NewDungeonRoomState(layout)
 		w.storeDungeonInstance(instanceID, dungeon)
 	} else if dungeonType == "tempest_spire" {
-		layout := buildLayout(w.generateTempestSpireLayout)
+		layout := buildLayout()
 		dungeon.Layout = layout
 		dungeon.RoomState = NewDungeonRoomState(layout)
 		w.storeDungeonInstance(instanceID, dungeon)
 	} else if dungeonType == "abyssal_well" {
-		layout := buildLayout(w.generateAbyssalWellLayout)
+		layout := buildLayout()
 		dungeon.Layout = layout
 		dungeon.RoomState = NewDungeonRoomState(layout)
 	} else if dungeonType == "umbral_nexus" {
-		layout := buildLayout(w.generateUmbralNexusLayout)
+		layout := buildLayout()
 		dungeon.Layout = layout
 		dungeon.RoomState = NewDungeonRoomState(layout)
 	} else if dungeonType == "weekly_raid" {
-		layout := buildLayout(w.generateWeeklyRaidLayout)
+		layout := buildLayout()
 		dungeon.Layout = layout
 		dungeon.RoomState = NewDungeonRoomState(layout)
 	} else if _, elementalRaid := ElementalRaidDefinitionForType(dungeonType); elementalRaid {
-		layout := buildLayout(func(instanceID string, difficulty DungeonDifficulty) DungeonLayout {
-			return w.generateElementalRaidLayout(instanceID, difficulty, dungeonType)
-		})
+		layout := buildLayout()
 		dungeon.Layout = layout
 		dungeon.RoomState = NewDungeonRoomState(layout)
 	} else {
@@ -141,7 +144,7 @@ func (w *World) CreateDungeon(partyID string, dungeonType string, difficulty Dun
 	return instanceID
 }
 
-func (w *World) ResetDungeon(partyID string) {
+func (w *World) ResetDungeon(partyID string) error {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 
@@ -150,10 +153,21 @@ func (w *World) ResetDungeon(partyID string) {
 		matchesParty := inst.PartyID == partyID
 		inst.Mu.RUnlock()
 		if matchesParty {
+			// Reset is only safe after everyone has left. Cleanup removes all
+			// instance entities, and must never remove a connected party member.
+			for _, entity := range w.Entities {
+				entity.Mu.RLock()
+				occupied := entity.Type == TypePlayer && entity.InstanceID == id
+				entity.Mu.RUnlock()
+				if occupied {
+					return fmt.Errorf("cannot reset while a player is still inside; everyone must return to Lanternhold first")
+				}
+			}
 			w.cleanupInstanceLocked(id)
-			return
+			return nil
 		}
 	}
+	return nil
 }
 
 func (w *World) GetDungeonStatus(partyID string) (bool, float64) {
@@ -530,7 +544,8 @@ func (w *World) generateWeeklyRaidLayout(instanceID string, difficulty DungeonDi
 	return layout
 }
 
-func (w *World) generateVerdantBastionLayout(instanceID string, difficulty DungeonDifficulty) DungeonLayout {
+func (w *World) generateVerdantBastionLayoutWithSeed(instanceID string, difficulty DungeonDifficulty, seed int64) DungeonLayout {
+	layoutRandom := rand.New(rand.NewSource(seed))
 	layout := DungeonLayout{
 		Rooms: []DungeonRoom{},
 	}
@@ -549,12 +564,9 @@ func (w *World) generateVerdantBastionLayout(instanceID string, difficulty Dunge
 	currentX := offsetX
 	currentZ := offsetZ
 
-	// Use a deterministic seed based on instanceID hash if possible,
-	// but for now we just use global rand since we store the layout.
-
 	for _, boss := range bosses {
 		// Generate 1-2 intermediate rooms (Reduced from 2-3 to prevent "endless" feel)
-		numIntermediate := 1 + rand.Intn(2)
+		numIntermediate := 1 + layoutRandom.Intn(2)
 
 		// Calculate Target Z based on required spacing
 		// We need enough space for the Z-shaped corridor segments to be longer than the wall offsets.
@@ -570,7 +582,7 @@ func (w *World) generateVerdantBastionLayout(instanceID string, difficulty Dunge
 			// Move North
 			nextZ := currentZ + stepZ
 			// Random East/West offset (-80 to 80)
-			offset := (rand.Float64() * 160) - 80
+			offset := (layoutRandom.Float64() * 160) - 80
 			// Avoid small offsets that cause Z-shape corner overlap in client generation
 			if math.Abs(offset) < 45 {
 				offset = 0
@@ -579,7 +591,7 @@ func (w *World) generateVerdantBastionLayout(instanceID string, difficulty Dunge
 
 			// Add Room
 			roomType := "normal"
-			if rand.Float64() < 0.3 {
+			if layoutRandom.Float64() < 0.3 {
 				roomType = "elite"
 			}
 
@@ -594,8 +606,8 @@ func (w *World) generateVerdantBastionLayout(instanceID string, difficulty Dunge
 			} else {
 				// Spawn Trash
 				for k := 0; k < 3; k++ {
-					ox := (rand.Float64() * 10) - 5
-					oz := (rand.Float64() * 10) - 5
+					ox := (layoutRandom.Float64() * 10) - 5
+					oz := (layoutRandom.Float64() * 10) - 5
 					w.spawnEnemyInInstance("Skeleton", nextX+ox, nextZ+oz, instanceID, difficulty)
 				}
 			}
@@ -623,7 +635,8 @@ func (w *World) generateVerdantBastionLayout(instanceID string, difficulty Dunge
 // generateMoltenCoreLayout creates the Fire Dungeon layout (Level 80-90)
 // Location: X: -2400, Z: 200 (Fire Realm)
 // 5 Bosses: Cindermaw, Scorched Twins, Forgemaster Pyrax, Obsidian Guardian, Lord Infernax
-func (w *World) generateMoltenCoreLayout(instanceID string, difficulty DungeonDifficulty) DungeonLayout {
+func (w *World) generateMoltenCoreLayoutWithSeed(instanceID string, difficulty DungeonDifficulty, seed int64) DungeonLayout {
+	layoutRandom := rand.New(rand.NewSource(seed))
 	layout := DungeonLayout{
 		Rooms: []DungeonRoom{},
 	}
@@ -646,20 +659,20 @@ func (w *World) generateMoltenCoreLayout(instanceID string, difficulty DungeonDi
 
 	for i, boss := range bosses {
 		// Generate 1-2 intermediate rooms between bosses
-		numIntermediate := 1 + rand.Intn(2)
+		numIntermediate := 1 + layoutRandom.Intn(2)
 		stepZ := -200.0
 		targetZ := currentZ + (stepZ * float64(numIntermediate+1))
 
 		for j := 0; j < numIntermediate; j++ {
 			nextZ := currentZ + stepZ
-			offset := (rand.Float64() * 160) - 80
+			offset := (layoutRandom.Float64() * 160) - 80
 			if math.Abs(offset) < 45 {
 				offset = 0
 			}
 			nextX := currentX + offset
 
 			roomType := "normal"
-			if rand.Float64() < 0.35 {
+			if layoutRandom.Float64() < 0.35 {
 				roomType = "elite"
 			}
 
@@ -679,11 +692,11 @@ func (w *World) generateMoltenCoreLayout(instanceID string, difficulty DungeonDi
 				w.spawnFireDungeonEnemy("InfernalBehemoth", nextX, nextZ, instanceID, true, difficulty)
 			} else {
 				// Spawn 3-4 trash mobs
-				numTrash := 3 + rand.Intn(2)
+				numTrash := 3 + layoutRandom.Intn(2)
 				for k := 0; k < numTrash; k++ {
-					ox := (rand.Float64() * 15) - 7.5
-					oz := (rand.Float64() * 15) - 7.5
-					trashType := fireTrash[rand.Intn(len(fireTrash))]
+					ox := (layoutRandom.Float64() * 15) - 7.5
+					oz := (layoutRandom.Float64() * 15) - 7.5
+					trashType := fireTrash[layoutRandom.Intn(len(fireTrash))]
 					w.spawnFireDungeonEnemy(trashType, nextX+ox, nextZ+oz, instanceID, false, difficulty)
 				}
 			}
@@ -715,7 +728,8 @@ func (w *World) generateMoltenCoreLayout(instanceID string, difficulty DungeonDi
 // generateTempestSpireLayout creates the Air Dungeon layout (Level 80-90)
 // Location: X: 2400, Z: 200 (Air Realm)
 // 5 Bosses: Windshear, Stormcallers, Roc Matriarch, Thunderlord Kaelix, Zephyrion
-func (w *World) generateTempestSpireLayout(instanceID string, difficulty DungeonDifficulty) DungeonLayout {
+func (w *World) generateTempestSpireLayoutWithSeed(instanceID string, difficulty DungeonDifficulty, seed int64) DungeonLayout {
+	layoutRandom := rand.New(rand.NewSource(seed))
 	layout := DungeonLayout{
 		Rooms: []DungeonRoom{},
 	}
@@ -738,20 +752,20 @@ func (w *World) generateTempestSpireLayout(instanceID string, difficulty Dungeon
 
 	for i, boss := range bosses {
 		// Generate 1-2 intermediate rooms between bosses
-		numIntermediate := 1 + rand.Intn(2)
+		numIntermediate := 1 + layoutRandom.Intn(2)
 		stepZ := -200.0
 		targetZ := currentZ + (stepZ * float64(numIntermediate+1))
 
 		for j := 0; j < numIntermediate; j++ {
 			nextZ := currentZ + stepZ
-			offset := (rand.Float64() * 160) - 80
+			offset := (layoutRandom.Float64() * 160) - 80
 			if math.Abs(offset) < 45 {
 				offset = 0
 			}
 			nextX := currentX + offset
 
 			roomType := "normal"
-			if rand.Float64() < 0.35 {
+			if layoutRandom.Float64() < 0.35 {
 				roomType = "elite"
 			}
 
@@ -771,11 +785,11 @@ func (w *World) generateTempestSpireLayout(instanceID string, difficulty Dungeon
 				w.spawnAirDungeonEnemy("TempestGiant", nextX, nextZ, instanceID, true, difficulty)
 			} else {
 				// Spawn 3-4 trash mobs
-				numTrash := 3 + rand.Intn(2)
+				numTrash := 3 + layoutRandom.Intn(2)
 				for k := 0; k < numTrash; k++ {
-					ox := (rand.Float64() * 15) - 7.5
-					oz := (rand.Float64() * 15) - 7.5
-					trashType := airTrash[rand.Intn(len(airTrash))]
+					ox := (layoutRandom.Float64() * 15) - 7.5
+					oz := (layoutRandom.Float64() * 15) - 7.5
+					trashType := airTrash[layoutRandom.Intn(len(airTrash))]
 					w.spawnAirDungeonEnemy(trashType, nextX+ox, nextZ+oz, instanceID, false, difficulty)
 				}
 			}
@@ -807,7 +821,8 @@ func (w *World) generateTempestSpireLayout(instanceID string, difficulty Dungeon
 // generateAbyssalWellLayout creates the Water Dungeon layout (Level 60-70)
 // Location: X: 0, Z: -1400 (Water Realm center)
 // 5 Bosses: Tiderend Leviathan, Drowned Choir, Abyssal Goliath, Maelstrom Warden, Thalorath
-func (w *World) generateAbyssalWellLayout(instanceID string, difficulty DungeonDifficulty) DungeonLayout {
+func (w *World) generateAbyssalWellLayoutWithSeed(instanceID string, difficulty DungeonDifficulty, seed int64) DungeonLayout {
+	layoutRandom := rand.New(rand.NewSource(seed))
 	layout := DungeonLayout{
 		Rooms: []DungeonRoom{},
 	}
@@ -830,20 +845,20 @@ func (w *World) generateAbyssalWellLayout(instanceID string, difficulty DungeonD
 
 	for i, boss := range bosses {
 		// Generate 1-2 intermediate rooms between bosses
-		numIntermediate := 1 + rand.Intn(2)
+		numIntermediate := 1 + layoutRandom.Intn(2)
 		stepZ := -190.0
 		targetZ := currentZ + (stepZ * float64(numIntermediate+1))
 
 		for j := 0; j < numIntermediate; j++ {
 			nextZ := currentZ + stepZ
-			offset := (rand.Float64() * 160) - 80
+			offset := (layoutRandom.Float64() * 160) - 80
 			if math.Abs(offset) < 45 {
 				offset = 0
 			}
 			nextX := currentX + offset
 
 			roomType := "normal"
-			if rand.Float64() < 0.35 {
+			if layoutRandom.Float64() < 0.35 {
 				roomType = "elite"
 			}
 
@@ -859,11 +874,11 @@ func (w *World) generateAbyssalWellLayout(instanceID string, difficulty DungeonD
 			if roomType == "elite" {
 				w.spawnDungeonEnemyInInstance("FrostGuardian", nextX, nextZ, instanceID, difficulty, true)
 			} else {
-				numTrash := 3 + rand.Intn(2)
+				numTrash := 3 + layoutRandom.Intn(2)
 				for k := 0; k < numTrash; k++ {
-					ox := (rand.Float64() * 15) - 7.5
-					oz := (rand.Float64() * 15) - 7.5
-					trashType := waterTrash[rand.Intn(len(waterTrash))]
+					ox := (layoutRandom.Float64() * 15) - 7.5
+					oz := (layoutRandom.Float64() * 15) - 7.5
+					trashType := waterTrash[layoutRandom.Intn(len(waterTrash))]
 					w.spawnDungeonEnemyInInstance(trashType, nextX+ox, nextZ+oz, instanceID, difficulty, false)
 				}
 			}
@@ -1057,16 +1072,6 @@ func (w *World) EnterInstance(playerID string, instanceID string) error {
 		w.Mu.Unlock()
 		return fmt.Errorf("player not found")
 	}
-
-	w.Grid.Remove(player)
-
-	oldInstanceID := player.InstanceID
-	log.Printf("EnterInstance: Player %s moving from '%s' to '%s'", playerID, oldInstanceID, instanceID)
-	delete(w.PlayerHazardTicks, playerID)
-	player.QAHazardInspectionEndTime = time.Time{}
-	player.QAHealthRegenPausedUntil = time.Time{}
-	player.InstanceID = instanceID
-
 	// Set Spawn Position based on Dungeon Layout
 	startX, startZ := 0.0, 0.0
 	if strings.HasPrefix(instanceID, "dungeon_") {
@@ -1083,12 +1088,24 @@ func (w *World) EnterInstance(playerID string, instanceID string) error {
 			inst.Mu.RUnlock()
 		}
 	}
+	// Resolve the instance layout before taking the player lock: room rewards
+	// use instance -> entity order and must not deadlock with entering players.
+	player.Mu.Lock()
+	w.Grid.Remove(player)
+	oldInstanceID := player.InstanceID
+	log.Printf("EnterInstance: Player %s moving from '%s' to '%s'", playerID, oldInstanceID, instanceID)
+	delete(w.PlayerHazardTicks, playerID)
+	player.QAHazardInspectionEndTime = time.Time{}
+	player.QAHealthRegenPausedUntil = time.Time{}
+	player.InstanceID = instanceID
 	player.X = startX
 	player.Z = startZ
 	player.TargetX = startX
 	player.TargetZ = startZ
+	resetSceneMovementLocked(player)
 
 	w.Grid.Add(player)
+	player.Mu.Unlock()
 
 	// Handle Old Instance (Leaving)
 	if strings.HasPrefix(oldInstanceID, "dungeon_") {

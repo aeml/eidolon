@@ -230,23 +230,27 @@ export class CollisionManager {
         // Reuse temp vector instead of cloning
         TEMP_VEC3.copy(position);
         
-        // 1. Check World Bounds
-        const bounds = CONSTANTS.SCENE.BOUNDS;
-        
-        if (TEMP_VEC3.x < bounds.MIN_X + radius) {
-            TEMP_VEC3.x = bounds.MIN_X + radius;
-            collided = true;
-        } else if (TEMP_VEC3.x > bounds.MAX_X - radius) {
-            TEMP_VEC3.x = bounds.MAX_X - radius;
-            collided = true;
-        }
+        // Canonical instances own their coordinate space. The legacy scene
+        // envelope ends at x=50000, where Water starts; Dark Realm and crystal
+        // raids are farther away. Applying it first pins valid players to walls.
+        // The instance union is still enforced after physical collisions below.
+        if (this.dungeonWalkableRects.length === 0) {
+            const bounds = CONSTANTS.SCENE.BOUNDS;
+            if (TEMP_VEC3.x < bounds.MIN_X + radius) {
+                TEMP_VEC3.x = bounds.MIN_X + radius;
+                collided = true;
+            } else if (TEMP_VEC3.x > bounds.MAX_X - radius) {
+                TEMP_VEC3.x = bounds.MAX_X - radius;
+                collided = true;
+            }
 
-        if (TEMP_VEC3.z < bounds.MIN_Z + radius) {
-            TEMP_VEC3.z = bounds.MIN_Z + radius;
-            collided = true;
-        } else if (TEMP_VEC3.z > bounds.MAX_Z - radius) {
-            TEMP_VEC3.z = bounds.MAX_Z - radius;
-            collided = true;
+            if (TEMP_VEC3.z < bounds.MIN_Z + radius) {
+                TEMP_VEC3.z = bounds.MIN_Z + radius;
+                collided = true;
+            } else if (TEMP_VEC3.z > bounds.MAX_Z - radius) {
+                TEMP_VEC3.z = bounds.MAX_Z - radius;
+                collided = true;
+            }
         }
 
         // Reuse temp sphere instead of creating new one

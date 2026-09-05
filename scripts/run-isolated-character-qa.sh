@@ -85,7 +85,7 @@ mongo_password="$(openssl rand -hex 24)"
 docker build \
   --build-arg GO_VERSION=1.24.5 \
   --build-arg BUILD_COMMIT=isolated-qa \
-  --build-arg "BUILD_VERSION=Alpha 1.0.3" \
+  --build-arg "BUILD_VERSION=Alpha 1.0.4" \
   --tag "${SERVER_IMAGE}" server >/dev/null
 image_created=true
 
@@ -158,7 +158,7 @@ run_animation_multiplayer() {
 set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   all)
-    npm run test:e2e:authenticated && npm run test:e2e:movement && run_animation_classes && run_animation_multiplayer
+    npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js && npm run test:e2e:movement && run_animation_classes && run_animation_multiplayer
     ;;
   animations)
     run_animation_classes
@@ -181,8 +181,11 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   portal)
     EIDOLON_E2E_PORTAL_ONLY=1 npx playwright test tests/e2e/authenticated.spec.js --grep "allowlisted QA waypoint"
     ;;
+  dungeons)
+    npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js
+    ;;
   *)
-    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, extended, or portal." >&2
+    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, extended, portal, or dungeons." >&2
     exit 1
     ;;
 esac

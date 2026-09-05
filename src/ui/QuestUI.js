@@ -433,7 +433,7 @@ export class QuestUI {
         if (!objectiveRoom) {
             return {
                 id: `dungeon-route-${instanceType}`,
-                title: 'Extract through the entrance',
+                title: 'Return to Lanternhold',
                 progressLabel,
                 progressPct,
                 rewardXP: 0,
@@ -441,7 +441,7 @@ export class QuestUI {
                 badge: 'Exit',
                 badgeClass: 'is-exit',
                 routeTone: 'support',
-                hint: 'Boss down — backtrack to the entrance and leave with the loot',
+                hint: 'Boss down — press B or use Return to Lanternhold in the Escape menu to leave with your loot',
                 sequenceHint: ''
             };
         }

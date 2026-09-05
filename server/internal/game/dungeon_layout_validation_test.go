@@ -1,8 +1,8 @@
 package game
 
 import (
+	"fmt"
 	"math"
-	"math/rand"
 	"strings"
 	"testing"
 )
@@ -109,11 +109,9 @@ func TestGeneratedDungeonLayoutsPopulateCanonicalGeometryAndValidate(t *testing.
 		"abyssal_well":    w.generateAbyssalWellLayout,
 	}
 
-	seed := int64(1)
-	rand.Seed(seed)
 	for name, generator := range generators {
 		for i := 0; i < 3; i++ {
-			layout := generator(name, DifficultyNormal)
+			layout := generator(fmt.Sprintf("%s-validation-%d", name, i), DifficultyNormal)
 			if len(layout.WalkRects) == 0 {
 				t.Fatalf("%s: expected canonical walk rects", name)
 			}
@@ -137,11 +135,9 @@ func TestGeneratedDungeonLayoutsKeepBossApproachLongEnoughForCanonicalCorridors(
 		"abyssal_well":    w.generateAbyssalWellLayout,
 	}
 
-	seed := int64(7)
-	rand.Seed(seed)
 	for name, generator := range generators {
 		for i := 0; i < 5; i++ {
-			layout := generator(name, DifficultyNormal)
+			layout := generator(fmt.Sprintf("%s-approach-%d", name, i), DifficultyNormal)
 			for corridorIndex, corridor := range layout.Corridors {
 				if corridor.ToRoomIndex <= 0 || corridor.ToRoomIndex >= len(layout.Rooms) {
 					continue

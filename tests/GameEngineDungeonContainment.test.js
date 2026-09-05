@@ -36,6 +36,21 @@ jest.unstable_mockModule('../src/world/WorldGenerator.js', () => ({
 
 const { GameEngine } = await import('../src/core/GameEngine.js');
 
+test('legacy menu socket follows the active connection after reconnect', () => {
+    const engine = Object.create(GameEngine.prototype);
+    const departed = { send: jest.fn(), readyState: WebSocket.CLOSED };
+    const resumed = { send: jest.fn(), readyState: WebSocket.OPEN };
+    engine.network = { socket: departed };
+    expect(engine.socket).toBe(departed);
+    engine.network.socket = resumed;
+    const message = JSON.stringify({ type: 'enter_dungeon', payload: {} });
+    engine.socket.send(message);
+    expect(resumed.send).toHaveBeenCalledWith(message);
+    expect(departed.send).not.toHaveBeenCalled();
+    engine.network.socket = null;
+    expect(engine.socket).toBeNull();
+});
+
 function createScene() {
     return {
         children: [],
@@ -361,6 +376,20 @@ describe('GameEngine dungeon containment wiring', () => {
         expect(engine.player.position.x).toBe(20000);
         expect(engine.player.position.z).toBe(20000);
         expect(townGenerator.createTown).not.toHaveBeenCalled();
+    });
+
+    test('dungeon diagnostics retain the exact replay identity without numeric rounding', () => {
+        const engine = createEngineHarness();
+        engine.currentInstanceId = 'dungeon_replay';
+        engine.currentInstanceType = 'abyssal_well';
+        engine.currentDungeonLayout = {
+            rooms: [], corridors: [], walkRects: [{ x: 50000, z: 20000, width: 100, height: 100 }],
+            generationSeed: '9223372036854775807', generatorVersion: 1, generationAttempt: 2
+        };
+        expect(engine.getDungeonDebugOverlayData()).toMatchObject({
+            instanceId: 'dungeon_replay', dungeonType: 'abyssal_well', generationSeed: '9223372036854775807',
+            generatorVersion: 1, generationAttempt: 2, generationFallback: false
+        });
     });
 
     test('town transition cancels predicted and server-driven movement from the old dungeon', async () => {

@@ -226,6 +226,7 @@ export class UIBindings {
         };
 
         ui.showHUD();
+        ui.onRecall = () => engine.requestTownRecall();
         ui.onRespawn = () => {
             if (!engine.player) return;
 

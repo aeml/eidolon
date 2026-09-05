@@ -93,6 +93,7 @@ export class UIManager {
         this.btnCloseReportHeader = document.getElementById('btn-close-report-header');
         this.btnCloseCharacter = document.getElementById('btn-close-character');
         this.btnRespawn = document.getElementById('btn-respawn');
+        this.btnRecall = document.getElementById('btn-recall');
 
         // Skill Tree UI (extracted module)
         this.skillTree = new SkillTreeUI({
@@ -381,6 +382,10 @@ export class UIManager {
             trading: this.trading,
         });
 
+        if (this.btnRecall) this.btnRecall.addEventListener('click', () => {
+            this.onRecall?.();
+            this.toggleEscMenu();
+        });
         if (this.btnRespawn) this.btnRespawn.addEventListener('click', () => {
             if (this.onRespawn) {
                 this.onRespawn();
@@ -541,6 +546,7 @@ export class UIManager {
         this.onStatUpgrade = null;
         this.onResonanceSpend = null;
         this.onRespawn = null;
+        this.onRecall = null;
         this.onChatSend = null;
         this.onReportSubmit = null;
     }

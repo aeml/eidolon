@@ -12,9 +12,13 @@ type DungeonRoom struct {
 }
 
 type DungeonLayout struct {
-	Rooms     []DungeonRoom     `json:"rooms"`
-	WalkRects []DungeonWalkRect `json:"walkRects,omitempty"`
-	Corridors []DungeonCorridor `json:"corridors,omitempty"`
+	GenerationSeed     string            `json:"generationSeed,omitempty"`
+	GeneratorVersion   int               `json:"generatorVersion,omitempty"`
+	GenerationAttempt  int               `json:"generationAttempt,omitempty"`
+	GenerationFallback bool              `json:"generationFallback,omitempty"`
+	Rooms              []DungeonRoom     `json:"rooms"`
+	WalkRects          []DungeonWalkRect `json:"walkRects,omitempty"`
+	Corridors          []DungeonCorridor `json:"corridors,omitempty"`
 }
 
 type DungeonRoomProgress struct {

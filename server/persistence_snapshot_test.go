@@ -98,6 +98,7 @@ func TestDungeonResumeDatabaseMappingRoundTripsEveryField(t *testing.T) {
 		Difficulty: game.DifficultyMythic, DungeonType: "molten_core", RunLevel: 100,
 		CurrentRoomIndexValue: 1,
 		Layout: game.DungeonLayout{
+			GenerationSeed: "9223372036854775807", GeneratorVersion: 1, GenerationAttempt: 3, GenerationFallback: true,
 			Rooms:     []game.DungeonRoom{{X: 1, Z: 2, Width: 3, Height: 4, Type: "elite", Hook: "chest", Pacing: "pressure", Color: 7}},
 			WalkRects: []game.DungeonWalkRect{{X: 5, Z: 6, Width: 7, Height: 8, Kind: "room", RoomIndex: 2}},
 			Corridors: []game.DungeonCorridor{{FromRoomIndex: 1, ToRoomIndex: 2, Width: 9, WalkRectIndices: []int{3, 4}}},

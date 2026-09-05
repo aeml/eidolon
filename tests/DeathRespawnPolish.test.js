@@ -254,7 +254,6 @@ describe('Death and respawn polish', () => {
         engine.entityCreationQueue = [];
         engine.frameCount = 1;
         engine.effects = [];
-        engine.socket = null;
         engine.username = 'tester';
         engine.playerType = 'Fighter';
         engine.floatingTextManager = { spawn: jest.fn() };

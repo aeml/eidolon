@@ -334,7 +334,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.3</span>
+                <span class="start-version-row__label">Alpha 1.0.4</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -406,6 +406,7 @@
                 <button id="btn-settings" class="menu-btn">Settings</button>
                 <button id="btn-patch-notes" class="menu-btn">Patch Notes</button>
                 <button id="btn-report" class="menu-btn pause-menu__button--report">Report Bug / Feature</button>
+                <button id="btn-recall" class="menu-btn" type="button">Return to Lanternhold (B)</button>
                 <button id="btn-respawn" class="menu-btn pause-menu__button--danger">Unstuck / Respawn</button>
                 <button id="btn-menu" class="menu-btn">Return to Menu</button>
             </div>
@@ -607,6 +608,7 @@
                     <div><strong class="help-guide__key">I:</strong> Inventory</div>
                     <div><strong class="help-guide__key">M:</strong> World Map</div>
                     <div><strong class="help-guide__key">J:</strong> Journal / current quest route</div>
+                    <div><strong class="help-guide__key">B:</strong> Return to Lanternhold, including from a dungeon. Also available in the Escape menu.</div>
                 </div>
                 <div id="help-keyboard-reference" class="help-guide help-guide--separated help-guide--keyboard-reference" style="display: none;">
                     <div class="help-guide__title">Detailed Keyboard Reference</div>
@@ -651,6 +653,18 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.4">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.4 (roads that remember)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Water and darkness have room to move:</strong> removed an unrelated scene boundary from canonical dungeon collision. Abyssal Well, Umbral Nexus, and the crystal and Dark King raids now use their own walkable bounds instead of pushing valid positions toward the old edge. Dungeon walls remain enforced.</li>
+                        <li><strong>A clear way home:</strong> the Escape menu now has Return to Lanternhold (B), using the same recall action as the keyboard shortcut. Help and completed-dungeon guidance explain this route instead of telling you to backtrack to an exit.</li>
+                        <li><strong>Arrive without old momentum:</strong> entering a dungeon now clears jumps, charges, and targets from the scene you left, just as recall and respawn do. Cooldowns and buffs remain intact.</li>
+                        <li><strong>Continue after reconnecting:</strong> dungeon entry, reset, and other legacy menu actions now follow the active connection instead of silently sending to a closed socket. A real-server Water route checks movement, reconnect, town recall, and return to the same saved run.</li>
+                        <li><strong>Party leaders can safely reset:</strong> corrected the party identity check that hid Reset from the actual leader. Non-leaders remain unable to reset, and everyone must leave the instance before it can be cleared.</li>
+                        <li><strong>Dungeon reports can be replayed:</strong> regional layouts use independent seeds. Saved runs retain their geometry and record a precise seed and generator version, so unrelated combat or loot randomness cannot change a reproduced hallway.</li>
+                        <li><strong>Broader dungeon checks:</strong> production seed sweeps and real-coordinate floor/collision checks cover all five dungeons and the elemental and Dark King raid layouts. Full encounters, party recovery, and campaign progression remain part of the open 1.1 verification gate.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.0.3">
                     <h3 class="patch-note-entry__title">Alpha 1.0.3 (within reach, safely home)</h3>
                     <ul class="patch-note-entry__list">

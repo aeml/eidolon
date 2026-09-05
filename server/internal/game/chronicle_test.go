@@ -404,7 +404,10 @@ func TestClearedElementalRaidRestartsInterruptedCrystalRepairOnEntry(t *testing.
 	if artificer := w.GetEntity(repair.NPCID); artificer == nil || artificer.SubType != "CrystalKeeper" {
 		t.Fatal("restarted repair Vigil did not restore Maelin")
 	}
-	w.ResetDungeon(party.ID)
+	w.PerformRecall(player.ID)
+	if err := w.ResetDungeon(party.ID); err != nil {
+		t.Fatal(err)
+	}
 }
 
 func TestDarkKingFourPhasesApplyEidolonAid(t *testing.T) {

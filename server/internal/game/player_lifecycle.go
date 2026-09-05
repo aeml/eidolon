@@ -29,7 +29,7 @@ func (w *World) PerformRespawn(playerID string) {
 	player.TargetX = -1.25
 	player.TargetZ = 200
 	player.InstanceID = "" // Reset to overworld
-	resetTownMovementLocked(player)
+	resetSceneMovementLocked(player)
 
 	// Add back to grid in the new location/instance
 	w.Grid.Add(player)
@@ -62,13 +62,14 @@ func (w *World) PerformRecall(playerID string) {
 	// For now, let's assume death sends you to town (Overworld).
 	// We need to handle the Grid update carefully if InstanceID changes.
 	player.InstanceID = ""
-	resetTownMovementLocked(player)
+	resetSceneMovementLocked(player)
 	w.Grid.Add(player)
 }
 
 // Scene changes invalidate destinations and motion from the departed instance.
-// Keep cooldowns and buffs intact; recalling is not an ability reset.
-func resetTownMovementLocked(player *Entity) {
+// Keep cooldowns and buffs intact; changing scenes is not an ability reset.
+func resetSceneMovementLocked(player *Entity) {
+	player.State = "IDLE"
 	player.Y = 0
 	player.TargetID = ""
 	player.VelX, player.VelZ = 0, 0
