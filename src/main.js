@@ -212,16 +212,16 @@ window.addEventListener('DOMContentLoaded', () => {
     const showReturningPlayerFlow = (characterType) => {
         updateStartFlow({
             title: 'Continue your character',
-            copy: `Enter world as ${characterType}, get your bearings in town, then push back into quests or dungeons.`,
-            steps: '1. Enter world. 2. Open quests (J). 3. Follow the objective tracker or world map to your next stop.'
+            copy: `Enter world as ${characterType}. Your next chapter awaits beyond Lanternhold.`,
+            steps: 'Open quests (J) to continue your Chronicle, or World Map (M) to find your next destination.'
         });
     };
 
     const showNewPlayerFlow = () => {
         updateStartFlow({
             title: 'Create your first character',
-            copy: 'Choose a class fantasy first: Fighter for frontline control, Rogue for burst and tricks, Wizard for ranged spell pressure, Cleric for healing and support. Your Fourfold Chronicle starts automatically when you enter Eidolon; follow its tracker through the elemental realms. The Quest Giver standing outside the Forge offers separate daily contracts.',
-            steps: 'After you pick a class, open Journal (J) for your active Chronicle chapter and use the Skill Tree (K) to understand your branches. Use World Map (M) to follow Earth, Water, Fire, and Air; clear each realm dungeon to reveal its crystal raid. Vendor obvious junk, save Shards, Hearts, and Gems, reach level 30 to unlock all base dungeons, and push to level 100 for Heroic and Mythic runs.'
+            copy: 'Choose a class to begin. Your Fourfold Chronicle starts automatically when you enter Eidolon. The Quest Giver standing outside the Forge offers separate daily contracts.',
+            steps: 'Follow your story in Journal (J), explore your Skill Tree (K), and find the next realm on World Map (M).'
         });
     };
 

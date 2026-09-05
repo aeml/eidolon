@@ -200,7 +200,8 @@ Notes:
 
 ## Project Status
 
-- Current in-game displayed version: `Alpha 1.0.0`
+- Current in-game displayed version: `Alpha 1.0.1`
+- Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.
 - Active implementation line: `Alpha 1.0` release-candidate closeout and beta readiness
 - Current foundation: four classes and elemental realms; authoritative multiplayer combat; persistent characters, parties, friends, guilds, direct trade, and auctions; structured chat and moderation; duels and arenas; five dungeons; four elemental raids; Resonance progression; and the Dark Realm endgame raid
 - Main campaign: the automatically started 15-chapter Fourfold Chronicle moves through Earth, Water, Fire, and Air collection arcs and dungeon clears, then four distinct raids with three-wave crystal-repair Vigils, the Umbral Nexus portal gate, and Malachar's four-Eidolon finale
@@ -219,8 +220,8 @@ Current measured hotspots (physical lines, `wc -l`):
 |---|---:|
 | `server/internal/game/world.go` | 1,422 |
 | `server/main.go` | 938 |
-| `src/core/GameEngine.js` | 2,306 |
-| `src/ui/UIManager.js` | 1,203 |
+| `src/core/GameEngine.js` | 2,310 |
+| `src/ui/UIManager.js` | 1,216 |
 
 These measurements satisfy the Alpha 1.0 decomposition gates. New beta work should preserve the extracted ownership boundaries instead of rebuilding coordinator monoliths.
 

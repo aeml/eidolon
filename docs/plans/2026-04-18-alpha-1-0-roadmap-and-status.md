@@ -6,10 +6,10 @@ This document is the release-band closeout for the alpha-to-beta runway. The roo
 
 ## Current Snapshot
 
-- Current in-game displayed version: `Alpha 1.0.0`
+- Current in-game displayed version: `Alpha 1.0.1`
 - Active implementation line: `Alpha 1.0`
 - Status: release candidate implemented; local verification must stay green and production deployment remains operator-controlled
-- Runtime hotspots: `world.go` 1,422 LOC, `main.go` 938, `GameEngine.js` 2,306, `UIManager.js` 1,203
+- Runtime hotspots: `world.go` 1,422 LOC, `main.go` 938, `GameEngine.js` 2,310, `UIManager.js` 1,216
 - The central Fourfold Chronicle is a 15-chapter, automatically started campaign separate from the daily Quest Giver
 
 ## Foundation History

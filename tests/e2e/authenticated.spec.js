@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { profileGameplayScene } from './scene-performance.js';
 import {
     collectBrowserFailures,
     credentialsFromEnvironment,
@@ -23,9 +24,10 @@ test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 test.describe('dedicated QA character', () => {
     test.skip(!hasCredentials, 'Set EIDOLON_E2E_USERNAME and EIDOLON_E2E_PASSWORD for character QA');
 
-    test('logs in, enters the world, moves, opens gameplay UI, and reconnects', async ({ page, baseURL }) => {
+    test('logs in, enters the world, moves, opens gameplay UI, and reconnects', async ({ page, baseURL }, testInfo) => {
         test.setTimeout(600_000);
         const failures = collectBrowserFailures(page, baseURL);
+        if (process.env.EIDOLON_E2E_CAPTURE_VISUALS === '1' || process.env.EIDOLON_E2E_PROFILE_VISUALS === '1') await page.setViewportSize({ width: 1440, height: 1000 });
         await loginAndEnterWorld(page, credentials);
         await page.evaluate(() => {
             const game = window.game;
@@ -61,6 +63,49 @@ test.describe('dedicated QA character', () => {
             await expect(page.locator('#quest-list').getByRole('button', { name: 'Accept Quest' }).first()).toBeVisible();
         }
         await page.evaluate(() => window.game?.uiManager?.toggleQuestWindow());
+        if (process.env.EIDOLON_E2E_PROFILE_VISUALS === '1') {
+            for (const quality of ['high', 'low']) {
+                await page.evaluate((quality) => window.game.renderSystem.setGraphicsQuality(quality), quality);
+                for (const state of ['closed', 'preview', 'closed-again']) {
+                    await page.evaluate((state) => {
+                        const ui = window.game.uiManager;
+                        ui.closePrimaryHudMenus();
+                        if (state === 'preview') ui.toggleCharacterSheet();
+                    }, state);
+                    const metrics = await profileGameplayScene(page, `${quality}-${state}`);
+                    console.log(`Scene profile: ${JSON.stringify(metrics)}`);
+                    await testInfo.attach(`scene-${quality}-${state}`, { body: JSON.stringify(metrics, null, 2), contentType: 'application/json' });
+                    expect(metrics.frames).toBe(180);
+                    expect(metrics.previewFramesDuringSample).toBe(0);
+                }
+            }
+            await page.evaluate(() => window.game.renderSystem.setGraphicsQuality('high'));
+        }
+        if (process.env.EIDOLON_E2E_CAPTURE_VISUALS === '1') {
+            // Opt-in component crops only: no authentication forms, account
+            // identifiers, chat transcripts or full-page credentialed captures.
+            for (const id of ['game-timer', 'objectives-panel', 'player-hud']) {
+                await page.locator(`#${id}`).screenshot({ path: testInfo.outputPath(`polish-${id}.png`) });
+            }
+            // A ground-only crop right of the local actor and away from chat.
+            await page.screenshot({ path: testInfo.outputPath('polish-town-surface.png'), clip: { x: 900, y: 350, width: 480, height: 280 } });
+            for (const [key, id] of [['i', 'inventory-screen'], ['j', 'quest-journal'], ['k', 'skill-tree-window']]) {
+                await page.keyboard.press(key);
+                await expect(page.locator(`#${id}`)).toBeVisible();
+                await expect.poll(() => page.locator(`#${id}`).evaluate((element) => {
+                    const bounds = element.getBoundingClientRect();
+                    const header = element.querySelector('.window-header').getBoundingClientRect();
+                    return {
+                        fits: bounds.x >= 0 && bounds.y >= 0 && bounds.right <= innerWidth && bounds.bottom <= innerHeight,
+                        headerUncovered: element.contains(document.elementFromPoint(header.x + 20, header.y + header.height / 2)),
+                        aboveHud: ['objectives-panel', 'game-timer'].every((id) =>
+                            Number(getComputedStyle(document.getElementById(id)).zIndex) < Number(getComputedStyle(element).zIndex))
+                    };
+                })).toEqual({ fits: true, headerUncovered: true, aboveHud: true });
+                await page.locator(`#${id}`).screenshot({ path: testInfo.outputPath(`polish-${id}.png`) });
+                await page.keyboard.press('Escape');
+            }
+        }
         await exerciseMovement(page);
         await exerciseMenus(page);
         await exerciseReconnect(page);

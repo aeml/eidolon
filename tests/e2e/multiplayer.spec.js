@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { CONSTANTS } from '../../src/core/Constants.js';
+import { captureGameplayVisual } from './gameplay-visual-capture.js';
 import {
     backendOriginBrowserArgs,
     hardwareWebGLBrowserArgs
@@ -56,7 +57,9 @@ async function prepareAnimationCast(page, persistent = false) {
     const sequence = await page.evaluate(() => window.game?.animationQAReadySequence || 0);
     const chatInput = page.locator('#chat-input');
     if (!await chatInput.evaluate((element) => element === document.activeElement)) {
-        await page.keyboard.press('Enter');
+        // The visible party-invite button can still own focus. Enter correctly
+        // activates that button now; explicitly choose the permanent chat.
+        await chatInput.click();
     }
     await expect(chatInput).toBeFocused();
     await chatInput.fill(`/qa-animation-ready${persistent ? ' persistent' : ''}`);
@@ -417,7 +420,7 @@ test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 test.describe('two-account multiplayer', () => {
     test.skip(!hasTwoAccounts, 'Set primary and _SECONDARY credentials for multiplayer QA');
 
-    test('both real characters observe one another through the live state stream', async ({ browser, baseURL }) => {
+    test('both real characters observe one another through the live state stream', async ({ browser, baseURL }, testInfo) => {
         test.setTimeout(1_200_000);
         const phase = (name) => console.log(`[multiplayer] ${name}`);
         expect(primary.username !== secondary.username).toBe(true);
@@ -618,6 +621,8 @@ test.describe('two-account multiplayer', () => {
                     ringRadius: 20
                 });
 
+                await captureGameplayVisual(secondPage, testInfo, 'remote-boosted-guardians-low');
+
                 // Refresh through the real hotbar path, then replace the
                 // observer runtime while the server-authoritative aura is live.
                 // The fresh page must reconstruct one boosted orbit set from
@@ -781,6 +786,7 @@ test.describe('two-account multiplayer', () => {
                     '3'
                 );
                 phase('verified remote projectile, forced movement, and persistent-area visuals');
+                await captureGameplayVisual(firstPage, testInfo, 'remote-gravity-well-low');
                 await useCombatQAWaypoint(firstPage);
             }
 

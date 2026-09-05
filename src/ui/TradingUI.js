@@ -317,8 +317,7 @@ export class TradingUI {
 
         auctions.forEach(auction => {
             const row = document.createElement('div');
-            row.style.display = 'grid';
-            row.style.gridTemplateColumns = '2fr 1fr 1fr 1fr';
+            row.className = 'auction-browse-row';
             row.style.padding = '5px';
             row.style.borderBottom = '1px solid #444';
             row.style.alignItems = 'center';
@@ -350,12 +349,14 @@ export class TradingUI {
 
             // Price
             const priceSpan = document.createElement('span');
+            priceSpan.className = 'auction-browse-price';
             this.setPriceContent(priceSpan, [auction.currentBid, auction.buyoutPrice]);
             priceSpan.title = bidState;
             row.appendChild(priceSpan);
 
             // Action
             const actionDiv = document.createElement('div');
+            actionDiv.className = 'auction-browse-actions';
             actionDiv.style.display = 'flex';
             actionDiv.style.gap = '5px';
 

@@ -30,8 +30,10 @@ class TransientEffect {
     }
 
     dispose() {
+        this.isActive = false;
         const geometries = new Set();
         const materials = new Set();
+        const textures = new Set();
 
         for (const mesh of this.meshes) {
             if (mesh.parent?.remove) {
@@ -40,6 +42,9 @@ class TransientEffect {
                 this.scene.remove(mesh);
             }
             mesh.traverse((child) => {
+                // Only explicitly owned maps: shared art/environment textures
+                // must survive the lifetime of individual transient effects.
+                for (const texture of child.userData.transientOwnedTextures || []) textures.add(texture);
                 if (child.geometry) geometries.add(child.geometry);
                 if (child.material) {
                     if (Array.isArray(child.material)) {
@@ -53,6 +58,7 @@ class TransientEffect {
 
         geometries.forEach((geo) => geo.dispose());
         materials.forEach((mat) => mat.dispose());
+        textures.forEach((texture) => texture.dispose());
         this.meshes.length = 0;
     }
 }
@@ -433,6 +439,7 @@ function createTelegraphLabelSprite(text, color = '#ffffff') {
     sprite.scale.set(6.5, 1.8, 1);
     sprite.userData.text = text;
     sprite.userData.baseScale = [6.5, 1.8];
+    sprite.userData.transientOwnedTextures = texture ? [texture] : [];
     return sprite;
 }
 
@@ -892,6 +899,8 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
             depthWrite: false
         });
         const ring = new THREE.Mesh(ringGeo, ringMat);
+        ring.userData.isGameplayBoundary = true;
+        ring.userData.gameplayRadius = radius;
         ring.rotation.x = -Math.PI / 2;
         ring.position.copy(position);
         ring.position.y += 0.06;
@@ -933,12 +942,11 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
         return new TransientEffect(scene, telegraphMeshes, telegraphDuration, ({ t }) => {
             // Pulsing opacity — gets more urgent near the end
             const pulse = 0.5 + 0.5 * Math.sin(t * Math.PI * 6);
-            ring.material.opacity = (theme.ringOpacity + theme.ringPulseBoost * t) * pulse;
+            // The edge is gameplay information: never blink it out or move it
+            // away from the authoritative radius. Pulse brightness, not size.
+            ring.material.opacity = Math.min(1, (theme.ringOpacity + theme.ringPulseBoost * t) * (0.65 + 0.35 * pulse));
             // Fill grows more opaque as impact approaches
             fill.material.opacity = theme.fillOpacity + theme.fillPulseBoost * t;
-            // Slight scale pulse
-            const s = 1.0 - 0.04 * Math.sin(t * Math.PI * 8);
-            ring.scale.set(s, s, s);
             if (motif) {
                 motif.rotation.y = t * Math.PI * 0.22;
                 motif.scale.setScalar(0.96 + (0.08 * t) + (0.02 * pulse));

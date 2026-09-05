@@ -2181,7 +2181,11 @@ export class GameEngine {
                 case 'DissonantHerald': p = new Stormcallers(id); break;
                 case 'NullArchitect': p = new ObsidianGuardian(id); break;
                 case 'EidolonDevourer': p = new HollowSentinel(id); break;
-                case 'UmbraPrime': p = new HollowSentinel(id); break;
+                case 'UmbraPrime':
+                    p = new HollowSentinel(id);
+                    p.meshType = 'UmbraPrime';
+                    p.name = 'Malachar, the Dark King';
+                    break;
                 case 'GravenColossus': p = new HollowSentinel(id); break;
                 case 'TideboundTyrant': p = new Thalorath(id); break;
                 case 'AshenImperator': p = new LordInfernax(id); break;

@@ -73,6 +73,10 @@ class GameEngineRuntimeMethods {
             this.inputManager.dispose();
         }
 
+        this.uiManager?.characterPreview?.dispose();
+        this.uiManager?.windowLayoutObserver?.disconnect();
+        this.uiManager?.chat?.sizeObserver?.disconnect();
+
         if (this.renderSystem) {
             this.renderSystem.dispose();
         }

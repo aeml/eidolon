@@ -7,37 +7,38 @@
 
 :root {
     /* ---- Color Palette ---- */
-    --color-gold:           #ffd700;
-    --color-gold-dim:       rgba(255, 215, 0, 0.5);
+    --color-gold:           #d5bb87;
+    --color-gold-dim:       rgba(213, 187, 135, 0.5);
     --color-white:          #eee;
     --color-white-bright:   #fff;
-    --color-text-muted:     #aaa;
-    --color-text-dim:       #666;
+    --color-text-muted:     #acb6c4;
+    --color-text-dim:       #8a96a6;
 
     /* Backgrounds */
-    --bg-panel:             rgba(20, 20, 20, 0.95);
+    --bg-panel:             rgba(17, 23, 32, 0.96);
     --bg-panel-light:       rgba(0, 0, 0, 0.3);
     --bg-dark:              rgba(0, 0, 0, 0.8);
     --bg-dark-medium:       rgba(0, 0, 0, 0.7);
-    --bg-input:             #111;
-    --bg-surface:           #222;
-    --bg-surface-hover:     #333;
-    --bg-surface-active:    #2a2a10;
-    --bg-surface-mid:       rgba(50, 50, 50, 0.9);
+    --bg-input:             #0d131d;
+    --bg-surface:           #202b3a;
+    --bg-surface-hover:     #303e50;
+    --bg-surface-active:    #37362f;
+    --bg-surface-mid:       rgba(37, 47, 61, 0.94);
 
     /* Borders */
-    --border-default:       #444;
-    --border-light:         #666;
-    --border-heavy:         #555;
-    --border-dim:           #333;
-    --border-window-active: rgba(255, 215, 0, 0.55);
+    --border-default:       #394453;
+    --border-light:         #566171;
+    --border-heavy:         #4b5768;
+    --border-dim:           #283342;
+    --border-window-active: rgba(213, 187, 135, 0.65);
 
     /* Health / Mana / XP fills */
-    --color-health-start:   #8b0000;
-    --color-health-end:     #ff0000;
-    --color-mana-start:     #00008b;
-    --color-mana-end:       #0000ff;
-    --color-xp:             #ffd700;
+    --color-health-start:   #813440;
+    --color-health-end:     #bd5360;
+    --color-mana-start:     #294773;
+    --color-mana-end:       #456d9e;
+    --color-success:        #a5cbb0;
+    --color-xp:             #c3a46a;
     --color-party-hp:       #d32f2f;
 
     /* Class accent colors */
@@ -84,17 +85,21 @@
     --radius-round:         50%;
 
     /* ---- Shadows ---- */
-    --shadow-panel:         0 0 20px rgba(0, 0, 0, 0.8);
+    --shadow-panel:         0 16px 40px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.035);
     --shadow-heavy:         0 0 30px rgba(0, 0, 0, 0.8);
-    --shadow-window-focused: 0 20px 45px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 215, 0, 0.14);
+    --shadow-window-focused: 0 20px 45px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(213, 187, 135, 0.14);
 
     /* ---- Z-Index Scale ---- */
     --z-ui-layer:           10;
     --z-start-screen:       20;
     --z-mobile-ui:          50;
     --z-hud:                100;
+    --z-window:             110;
+    --z-pause:              130;
+    --z-modal-backdrop:     140;
+    --z-modal:              150;
     --z-tooltip:            200;
-    --z-game-timer:         9999;
+    --z-game-timer:         105;
     --z-debug:              10000;
     --z-browser-warning:    20000;
     --z-perf:               20000;

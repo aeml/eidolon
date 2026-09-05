@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createTailoredTorsoGeometry, createPairedEyesGeometry, createOpenHoodGeometry } from './ProceduralGarmentGeometry.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -142,7 +143,7 @@ function addRivet(parent, name, position, size = 0.055) {
 
 function addArm(parent, side, materials) {
     const sign = side === 'Left' ? 1 : -1;
-    const upperArm = addPivot(parent, `Rig_UpperArm${side}`, [sign * 0.87, 0.48, 0], [0.08, 0, -sign * 0.08]);
+    const upperArm = addPivot(parent, `Rig_UpperArm${side}`, [sign * 0.81, 0.72, 0], [0.08, 0, -sign * 0.08]);
     addMesh(
         upperArm,
         `Fighter_UpperArm${side}`,
@@ -362,7 +363,7 @@ function addRogueDagger(anchor, materials, side, name) {
 
 function addRogueArm(parent, side, materials) {
     const sign = side === 'Left' ? 1 : -1;
-    const upperArm = addPivot(parent, `Rig_UpperArm${side}`, [sign * 0.69, 0.42, 0.01], [0.16, 0, -sign * 0.13]);
+    const upperArm = addPivot(parent, `Rig_UpperArm${side}`, [sign * 0.63, 0.66, 0.01], [0.16, 0, -sign * 0.13]);
     addMesh(
         upperArm,
         `Rogue_UpperArm${side}`,
@@ -480,7 +481,7 @@ function addRogueLeg(parent, side, materials) {
 
 function addWizardArm(parent, side, materials) {
     const sign = side === 'Left' ? 1 : -1;
-    const upperArm = addPivot(parent, `Rig_UpperArm${side}`, [sign * 0.76, 0.5, 0], [-0.04, 0, -sign * 0.16]);
+    const upperArm = addPivot(parent, `Rig_UpperArm${side}`, [sign * 0.68, 0.73, 0], [-0.04, 0, -sign * 0.16]);
     addMesh(
         upperArm,
         `Wizard_UpperArm${side}`,
@@ -664,7 +665,7 @@ function addWizardFocus(anchor, materials) {
 
 function addClericArm(parent, side, materials) {
     const sign = side === 'Left' ? 1 : -1;
-    const upperArm = addPivot(parent, `Rig_UpperArm${side}`, [sign * 0.71, 0.48, 0], [0.02, 0, -sign * 0.1]);
+    const upperArm = addPivot(parent, `Rig_UpperArm${side}`, [sign * 0.65, 0.72, 0], [0.02, 0, -sign * 0.1]);
     addMesh(
         upperArm,
         `Cleric_UpperArm${side}`,
@@ -1218,8 +1219,8 @@ export function createProceduralFighter() {
         edge: material('fighter-edge', FIGHTER_PALETTE.edge, { metalness: 0.88, roughness: 0.25 }),
         brass: material('fighter-brass', FIGHTER_PALETTE.brass, { metalness: 0.7, roughness: 0.38 }),
         leather: material('fighter-leather', FIGHTER_PALETTE.leather, { roughness: 0.9 }),
-        cloth: material('fighter-cloth', FIGHTER_PALETTE.cloth, { roughness: 0.96 }),
-        clothDark: material('fighter-cloth-dark', FIGHTER_PALETTE.clothDark, { roughness: 0.98 }),
+        cloth: material('fighter-cloth', FIGHTER_PALETTE.cloth, { roughness: 0.96, side: THREE.DoubleSide }),
+        clothDark: material('fighter-cloth-dark', FIGHTER_PALETTE.clothDark, { roughness: 0.98, side: THREE.DoubleSide }),
         skin: material('fighter-skin', FIGHTER_PALETTE.skin, { roughness: 0.88 }),
         glow: material('fighter-glow', FIGHTER_PALETTE.glow, {
             emissive: FIGHTER_PALETTE.glow,
@@ -1280,7 +1281,7 @@ export function createProceduralFighter() {
     addMesh(
         chestAnchor,
         'Fighter_Breastplate',
-        geometry('breastplate', () => new THREE.CylinderGeometry(0.62, 0.52, 1.12, 8)),
+        geometry('breastplate', () => createTailoredTorsoGeometry(0.52, 0.62, 1.12)),
         materials.iron,
         { position: [0, 0.48, 0], scale: [1.18, 1, 0.72] }
     );
@@ -1329,6 +1330,9 @@ export function createProceduralFighter() {
     );
 
     const neckAnchor = addAnchor(chest, 'Equipment_Neck', [0, 1.07, 0.04]);
+    addMesh(neckAnchor, 'Fighter_Neck', geometry('humanoid-neck', () => new THREE.CylinderGeometry(0.145, 0.17, 0.34, 8)), materials.skin, {
+        position: [0, 0.1, -0.04], scale: [1, 1, 0.9]
+    }).userData.equipmentBodyBase = true;
     addMesh(
         neckAnchor,
         'Fighter_Gorget',
@@ -1371,8 +1375,8 @@ export function createProceduralFighter() {
     const eyes = addMesh(
         headAnchor,
         'Fighter_EyeGlow',
-        geometry('eye-glow', () => new THREE.BoxGeometry(0.42, 0.045, 0.035)),
-        materials.glow,
+        geometry('eye-glow', () => createPairedEyesGeometry(0.105, 0.045, 0.25)),
+        material('fighter-eyes', 0xd4ad62, { emissive: 0xa07838, emissiveIntensity: 0.25 }),
         { position: [0, 0.18, 0.385] }
     );
     eyes.userData.equipmentBodyBase = true;
@@ -1392,6 +1396,7 @@ export function createProceduralFighter() {
     assertEquipmentAnchors(root);
     root.userData.proceduralHumanoid = true;
     root.userData.proceduralClass = 'Fighter';
+    root.userData.equipmentLengthBySlot = Object.freeze({ chest: 1, legs: 0.96 });
     root.userData.artStyle = 'Lanternhold oathguard';
     root.userData.sharedGeometry = true;
     root.userData.equipmentAnchors = Object.fromEntries(
@@ -1412,8 +1417,8 @@ export function createProceduralRogue() {
     const materials = {
         leather: material('rogue-leather', ROGUE_PALETTE.leather, { roughness: 0.88 }),
         leatherLight: material('rogue-leather-light', ROGUE_PALETTE.leatherLight, { roughness: 0.76 }),
-        cloth: material('rogue-cloth', ROGUE_PALETTE.cloth, { roughness: 0.96 }),
-        clothDark: material('rogue-cloth-dark', ROGUE_PALETTE.clothDark, { roughness: 0.98 }),
+        cloth: material('rogue-cloth', ROGUE_PALETTE.cloth, { roughness: 0.96, side: THREE.DoubleSide }),
+        clothDark: material('rogue-cloth-dark', ROGUE_PALETTE.clothDark, { roughness: 0.98, side: THREE.DoubleSide }),
         steel: material('rogue-steel', ROGUE_PALETTE.steel, { metalness: 0.76, roughness: 0.34 }),
         silver: material('rogue-silver', ROGUE_PALETTE.silver, { metalness: 0.9, roughness: 0.22 }),
         poison: material('rogue-poison', ROGUE_PALETTE.poison, {
@@ -1487,7 +1492,7 @@ export function createProceduralRogue() {
     addMesh(
         chestAnchor,
         'Rogue_Jerkin',
-        geometry('rogue-jerkin', () => new THREE.CylinderGeometry(0.48, 0.355, 1.04, 7)),
+        geometry('rogue-jerkin', () => createTailoredTorsoGeometry(0.355, 0.48, 1.04)),
         materials.leather,
         { position: [0, 0.45, 0], scale: [1.04, 1, 0.72] }
     );
@@ -1548,6 +1553,9 @@ export function createProceduralRogue() {
     });
 
     const neck = addAnchor(chest, 'Equipment_Neck', [0, 1, 0]);
+    addMesh(neck, 'Rogue_Neck', geometry('humanoid-neck', () => new THREE.CylinderGeometry(0.145, 0.17, 0.34, 8)), materials.skin, {
+        position: [0, 0.1, 0], scale: [0.85, 1, 0.85]
+    }).userData.equipmentBodyBase = true;
     addMesh(
         neck,
         'Rogue_Scarf',
@@ -1611,7 +1619,7 @@ export function createProceduralRogue() {
         headAnchor,
         'Rogue_EyeGlow',
         geometry('rogue-eye', () => new THREE.OctahedronGeometry(0.065, 0)),
-        materials.glow,
+        material('rogue-eyes', 0x91b49b, { emissive: 0x54765d, emissiveIntensity: 0.18 }),
         { position: [0.095, 0.17, 0.235], scale: [1, 0.34, 0.28], rotation: [0, 0, -0.08] }
     );
     eyes.userData.equipmentBodyBase = true;
@@ -1619,7 +1627,7 @@ export function createProceduralRogue() {
         headAnchor,
         'Rogue_EyeGlowRight',
         geometry('rogue-eye', () => new THREE.OctahedronGeometry(0.065, 0)),
-        materials.glow,
+        material('rogue-eyes', 0x91b49b, { emissive: 0x54765d, emissiveIntensity: 0.18 }),
         { position: [-0.095, 0.17, 0.235], scale: [1, 0.34, 0.28], rotation: [0, 0, 0.08] }
     );
     rightEye.userData.equipmentBodyBase = true;
@@ -1672,6 +1680,7 @@ export function createProceduralRogue() {
     assertEquipmentAnchors(root);
     root.userData.proceduralHumanoid = true;
     root.userData.proceduralClass = 'Rogue';
+    root.userData.equipmentLengthBySlot = Object.freeze({ chest: 0.95, legs: 0.92 });
     root.userData.artStyle = 'Gloamreach shadeblade';
     root.userData.genderPresentation = 'female';
     root.userData.sharedGeometry = true;
@@ -1707,9 +1716,9 @@ export function createProceduralRogue() {
  */
 export function createProceduralWizard() {
     const materials = {
-        cloth: material('wizard-cloth', WIZARD_PALETTE.cloth, { roughness: 0.96 }),
-        clothDark: material('wizard-cloth-dark', WIZARD_PALETTE.clothDark, { roughness: 0.99 }),
-        clothLight: material('wizard-cloth-light', WIZARD_PALETTE.clothLight, { roughness: 0.9 }),
+        cloth: material('wizard-cloth', WIZARD_PALETTE.cloth, { roughness: 0.96, side: THREE.DoubleSide }),
+        clothDark: material('wizard-cloth-dark', WIZARD_PALETTE.clothDark, { roughness: 0.99, side: THREE.DoubleSide }),
+        clothLight: material('wizard-cloth-light', WIZARD_PALETTE.clothLight, { roughness: 0.9, side: THREE.DoubleSide }),
         slate: material('wizard-slate', WIZARD_PALETTE.slate, { metalness: 0.28, roughness: 0.66 }),
         silver: material('wizard-silver', WIZARD_PALETTE.silver, { metalness: 0.86, roughness: 0.28 }),
         leather: material('wizard-leather', WIZARD_PALETTE.leather, { roughness: 0.9 }),
@@ -1772,7 +1781,7 @@ export function createProceduralWizard() {
     addMesh(
         chestAnchor,
         'Wizard_RunicCuirass',
-        geometry('wizard-runic-cuirass', () => new THREE.CylinderGeometry(0.52, 0.45, 1.13, 7)),
+        geometry('wizard-runic-cuirass', () => createTailoredTorsoGeometry(0.45, 0.52, 1.13)),
         materials.cloth,
         { position: [0, 0.48, 0], scale: [1.04, 1, 0.75] }
     );
@@ -1850,6 +1859,9 @@ export function createProceduralWizard() {
     );
 
     const neck = addAnchor(chest, 'Equipment_Neck', [0, 1.04, 0]);
+    addMesh(neck, 'Wizard_Neck', geometry('humanoid-neck', () => new THREE.CylinderGeometry(0.145, 0.17, 0.34, 8)), materials.skin, {
+        position: [0, 0.1, 0], scale: [0.92, 1, 0.88]
+    }).userData.equipmentBodyBase = true;
     addMesh(
         neck,
         'Wizard_HighCollar',
@@ -1871,9 +1883,9 @@ export function createProceduralWizard() {
     addMesh(
         headAnchor,
         'Wizard_Cowl',
-        geometry('wizard-cowl', () => new THREE.ConeGeometry(0.43, 0.76, 7, 1, true)),
+        geometry('wizard-cowl', createOpenHoodGeometry),
         materials.clothDark,
-        { position: [0, 0.28, -0.04], rotation: [0, 0, Math.PI], scale: [1, 1, 0.92] }
+        { position: [0, 0, -0.04], scale: [0.94, 1, 0.92] }
     );
     addMesh(
         headAnchor,
@@ -1892,8 +1904,8 @@ export function createProceduralWizard() {
     const eyes = addMesh(
         headAnchor,
         'Wizard_EyeGlow',
-        geometry('wizard-eye-glow', () => new THREE.BoxGeometry(0.35, 0.04, 0.025)),
-        materials.storm,
+        geometry('wizard-eye-glow', () => createPairedEyesGeometry(0.075, 0.035, 0.2)),
+        material('wizard-eyes', 0x9dc6d1, { emissive: 0x73a9bf, emissiveIntensity: 0.22 }),
         { position: [0, 0.17, 0.31] }
     );
     eyes.userData.equipmentBodyBase = true;
@@ -1906,6 +1918,7 @@ export function createProceduralWizard() {
     assertEquipmentAnchors(root);
     root.userData.proceduralHumanoid = true;
     root.userData.proceduralClass = 'Wizard';
+    root.userData.equipmentLengthBySlot = Object.freeze({ chest: 1, legs: 0.96 });
     root.userData.artStyle = 'Stormcrown hexweaver';
     root.userData.sharedGeometry = true;
     root.userData.equipmentAnchors = Object.fromEntries(
@@ -1940,8 +1953,8 @@ export function createProceduralWizard() {
  */
 export function createProceduralCleric() {
     const materials = {
-        cloth: material('cleric-cloth', CLERIC_PALETTE.cloth, { roughness: 0.96 }),
-        clothDark: material('cleric-cloth-dark', CLERIC_PALETTE.clothDark, { roughness: 0.99 }),
+        cloth: material('cleric-cloth', CLERIC_PALETTE.cloth, { roughness: 0.96, side: THREE.DoubleSide }),
+        clothDark: material('cleric-cloth-dark', CLERIC_PALETTE.clothDark, { roughness: 0.99, side: THREE.DoubleSide }),
         ivory: material('cleric-ivory', CLERIC_PALETTE.ivory, { roughness: 0.92 }),
         bronze: material('cleric-bronze', CLERIC_PALETTE.bronze, { metalness: 0.66, roughness: 0.44 }),
         gold: material('cleric-gold', CLERIC_PALETTE.gold, { metalness: 0.72, roughness: 0.36 }),
@@ -2038,7 +2051,7 @@ export function createProceduralCleric() {
     addMesh(
         chestAnchor,
         'Cleric_ReliquaryCuirass',
-        geometry('cleric-reliquary-cuirass-v2', () => new THREE.CylinderGeometry(0.5, 0.34, 1.08, 8)),
+        geometry('cleric-reliquary-cuirass-v2', () => createTailoredTorsoGeometry(0.34, 0.5, 1.08)),
         materials.iron,
         { position: [0, 0.48, 0], scale: [1.04, 1, 0.7] }
     );
@@ -2139,10 +2152,10 @@ export function createProceduralCleric() {
     addMesh(
         neck,
         'Cleric_Neck',
-        geometry('cleric-neck', () => new THREE.CylinderGeometry(0.145, 0.16, 0.25, 8)),
+        geometry('humanoid-neck', () => new THREE.CylinderGeometry(0.145, 0.17, 0.34, 8)),
         materials.skin,
-        { position: [0, 0.17, -0.01], scale: [1, 1, 0.9] }
-    );
+        { position: [0, 0.12, -0.01], scale: [1, 1, 0.9] }
+    ).userData.equipmentBodyBase = true;
     addMesh(
         neck,
         'Cleric_Gorget',
@@ -2235,7 +2248,7 @@ export function createProceduralCleric() {
         headAnchor,
         'Cleric_EyeGlow',
         geometry('cleric-eye', () => new THREE.OctahedronGeometry(0.066, 0)),
-        materials.holy,
+        material('cleric-eyes', 0xc6b57f, { emissive: 0x958044, emissiveIntensity: 0.18 }),
         { position: [0.098, 0.17, 0.25], scale: [1, 0.35, 0.28], rotation: [0, 0, -0.06] }
     );
     eyes.userData.equipmentBodyBase = true;
@@ -2243,7 +2256,7 @@ export function createProceduralCleric() {
         headAnchor,
         'Cleric_EyeGlowRight',
         geometry('cleric-eye', () => new THREE.OctahedronGeometry(0.066, 0)),
-        materials.holy,
+        material('cleric-eyes', 0xc6b57f, { emissive: 0x958044, emissiveIntensity: 0.18 }),
         { position: [-0.098, 0.17, 0.25], scale: [1, 0.35, 0.28], rotation: [0, 0, 0.06] }
     );
     rightEye.userData.equipmentBodyBase = true;
@@ -2321,6 +2334,7 @@ export function createProceduralCleric() {
     assertEquipmentAnchors(root);
     root.userData.proceduralHumanoid = true;
     root.userData.proceduralClass = 'Cleric';
+    root.userData.equipmentLengthBySlot = Object.freeze({ chest: 0.98, legs: 0.92 });
     root.userData.artStyle = 'Lanternhold dawnwarden';
     root.userData.genderPresentation = 'female';
     root.userData.sharedGeometry = true;
@@ -2328,7 +2342,7 @@ export function createProceduralCleric() {
         Object.entries(HUMANOID_EQUIPMENT_ANCHORS).map(([slot, names]) => [slot, [...names]])
     );
     root.userData.equipmentScaleBySlot = Object.freeze({
-        head: 0.5,
+        head: 0.86,
         shoulders: 0.6,
         chest: 0.62,
         gloves: 0.8,

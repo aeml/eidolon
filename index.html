@@ -135,39 +135,48 @@
         </div>
 
         <div id="character-sheet" class="window content-aware-window">
-            <div class="window-header"><span>CHARACTER STATS</span><button id="btn-close-character" class="close-btn" type="button" aria-label="Close character sheet">×</button></div>
+            <div class="window-header"><span>CHARACTER</span><button id="btn-close-character" class="close-btn" type="button" aria-label="Close character sheet">×</button></div>
             <div class="char-sheet-body">
                 <div id="stats-content">
                     <!-- Populated by JS -->
                 </div>
                 <div class="equipment-slots">
+                    <div id="character-preview" class="character-preview" aria-label="Equipped character preview">
+                        <div class="character-preview-label"></div>
+                        <div class="character-preview-stage"><span class="character-preview-status" role="status">Preparing preview…</span></div>
+                        <div class="character-preview-controls" aria-label="Rotate character">
+                            <button type="button" data-preview-turn="-0.785398" aria-label="Rotate character left">↶</button>
+                            <button type="button" data-preview-turn="reset" aria-label="Reset character view">Front</button>
+                            <button type="button" data-preview-turn="0.785398" aria-label="Rotate character right">↷</button>
+                        </div>
+                    </div>
                     <!-- Row 1 -->
-                    <div class="equip-slot" id="slot-head">HEAD</div>
-                    <div class="equip-slot" id="slot-gloves">GLOVES</div>
+                    <button type="button" class="equip-slot" id="slot-head">HEAD</button>
+                    <button type="button" class="equip-slot" id="slot-neck">NECK</button>
                     
                     <!-- Row 2 -->
-                    <div class="equip-slot" id="slot-shoulders">SHOULDERS</div>
-                    <div class="equip-slot" id="slot-belt">BELT</div>
+                    <button type="button" class="equip-slot" id="slot-shoulders">SHOULDERS</button>
+                    <button type="button" class="equip-slot" id="slot-gloves">GLOVES</button>
                     
                     <!-- Row 3 -->
-                    <div class="equip-slot" id="slot-chest">CHEST</div>
-                    <div class="equip-slot" id="slot-feet">FEET</div>
+                    <button type="button" class="equip-slot" id="slot-chest">CHEST</button>
+                    <button type="button" class="equip-slot" id="slot-belt">BELT</button>
                     
                     <!-- Row 4 -->
-                    <div class="equip-slot" id="slot-legs">LEGS</div>
-                    <div class="equip-slot" id="slot-neck">NECK</div>
+                    <button type="button" class="equip-slot" id="slot-legs">LEGS</button>
+                    <button type="button" class="equip-slot" id="slot-feet">FEET</button>
                     
                     <!-- Row 5 -->
-                    <div class="equip-slot" id="slot-ring1">RING 1</div>
-                    <div class="equip-slot" id="slot-ring2">RING 2</div>
+                    <button type="button" class="equip-slot" id="slot-ring1">RING 1</button>
+                    <button type="button" class="equip-slot" id="slot-ring2">RING 2</button>
                     
                     <!-- Row 6 -->
-                    <div class="equip-slot" id="slot-trinket1">TRINKET 1</div>
-                    <div class="equip-slot" id="slot-trinket2">TRINKET 2</div>
+                    <button type="button" class="equip-slot" id="slot-trinket1">TRINKET 1</button>
+                    <button type="button" class="equip-slot" id="slot-trinket2">TRINKET 2</button>
 
                     <!-- Row 7 -->
-                    <div class="equip-slot" id="slot-mainhand">MAIN HAND</div>
-                    <div class="equip-slot" id="slot-offhand">OFF HAND</div>
+                    <button type="button" class="equip-slot" id="slot-mainhand">MAIN HAND</button>
+                    <button type="button" class="equip-slot" id="slot-offhand">OFF HAND</button>
                 </div>
             </div>
         </div>
@@ -188,7 +197,7 @@
                     GOLD: 0
                 </div>
             </div>
-            <div id="inventory-guidance" class="inventory-guidance">Common gear is usually vendor junk unless it is an upgrade. Better drops are worth checking, while Shards, Hearts, and Gems should usually be saved for the Forge.</div>
+            <div id="inventory-guidance" class="inventory-guidance">Compare gear before selling. Shards raise item level; Hearts add power and sockets. Save gems for the Forge.</div>
         </div>
 
         <!-- Split Stack Window -->
@@ -234,6 +243,9 @@
                 <span class="party-panel__title">PARTY</span>
                 <button id="btn-leave-party" class="party-btn party-btn--danger" type="button">Leave</button>
             </div>
+            <div id="party-list">
+                <!-- Members go here, before secondary controls in the compact HUD. -->
+            </div>
             <div id="party-panel-guidance" class="party-panel__guidance">Stay near party members to share kill credit, gold, XP, and dungeon boss rewards. Each nearby member also adds to the party reward bonus.</div>
             <div id="party-readiness" class="party-panel__controls">
                 <button id="btn-party-ready-check" class="party-btn" type="button">Ready Check</button>
@@ -246,9 +258,6 @@
                     <option value="master">Master loot</option>
                 </select>
             </label>
-            <div id="party-list">
-                <!-- Members go here -->
-            </div>
             <div class="party-panel__footer">
                 <input type="text" id="party-invite-input" class="party-panel__invite-input" placeholder="Player Name" aria-label="Party, trade, or duel player name">
                 <button id="btn-invite-party" class="party-btn party-btn--success" type="button">Invite</button>
@@ -270,7 +279,7 @@
         </div>
 
         <!-- Chat Box -->
-        <div id="chat-box" aria-label="Chat and game event log">
+        <div id="chat-box" aria-label="Chat and game event log" title="Drag the lower-right corner to resize">
             <div id="chat-tabs" class="chat-tabs" role="tablist" aria-label="Message log">
                 <button id="chat-tab-chat" class="chat-tab chat-tab--active" type="button" role="tab" aria-selected="true" aria-controls="chat-messages" data-chat-tab="chat">
                     All <span class="chat-tab__unread" data-chat-unread hidden></span>
@@ -325,16 +334,17 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.0</span>
-                <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
+                <span class="start-version-row__label">Alpha 1.0.1</span>
+                <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
-            <div id="start-flow-panel" class="window start-flow-panel">
-                <div class="window-header"><span>FIRST STEPS</span></div>
+            <div id="start-flow-panel" class="start-flow-panel">
                 <div class="start-flow-panel__body">
-                    <div id="start-flow-title" class="start-flow-panel__title">Login to continue your run</div>
-                    <div id="start-flow-copy" class="start-flow-panel__copy">Returning players can jump straight back in. New players should pick a class fantasy first: Fighter for frontline control, Rogue for burst and tricks, Wizard for ranged spell pressure, Cleric for healing and support. The Fourfold Chronicle starts automatically when you enter Eidolon; follow its tracker through the elemental realms. The Quest Giver standing outside the Forge offers separate daily contracts.</div>
-                    <div id="start-flow-steps" class="start-flow-panel__steps">1. Login or register. 2. Enter world or create a character. 3. Open Journal (J) for your active Chronicle chapter and Skill Tree (K) to review your branches. Use World Map (M) to follow Earth → Water → Fire → Air, clearing each realm dungeon to reveal its crystal raid. Vendor obvious junk, save forge materials, reach level 30 to unlock all base dungeons, and push to level 100 for Heroic and Mythic runs.</div>
+                    <div class="start-sigil" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+                    <div class="start-flow-panel__eyebrow">THE FOURFOLD CHRONICLE</div>
+                    <div id="start-flow-title" class="start-flow-panel__title">Four crystals.<br> One broken world.</div>
+                    <div id="start-flow-copy" class="start-flow-panel__copy">Journey through Earth, Water, Fire, and Air. Restore their ancient crystals, awaken the Eidolons, and confront the darkness beyond.</div>
+                    <div id="start-flow-steps" class="start-flow-panel__steps">Your story begins when you enter the world. Return to an existing character, or create your first hero.</div>
                 </div>
             </div>
             
@@ -342,18 +352,24 @@
             <input type="hidden" id="server-address" value="wss://eserver.mendola.tech/ws">
 
             <div id="login-panel">
-                <div class="auth-panel__title">LOGIN / REGISTER</div>
+                <div class="auth-panel__title">Welcome, traveler</div>
                 
-                <input type="text" id="auth-username" class="auth-input" placeholder="Username">
-                <input type="email" id="auth-email" class="auth-input" placeholder="Email (Optional for Login)">
-                <input type="password" id="auth-password" class="auth-input" placeholder="Password">
+                <label class="auth-field" for="auth-username">Username
+                    <input type="text" id="auth-username" class="auth-input" placeholder="Username" autocomplete="username" autocapitalize="none" spellcheck="false">
+                </label>
+                <label class="auth-field" for="auth-email">Email <span class="auth-field__hint">only needed to register</span>
+                    <input type="email" id="auth-email" class="auth-input" placeholder="Email (Optional for Login)" autocomplete="email">
+                </label>
+                <label class="auth-field" for="auth-password">Password
+                    <input type="password" id="auth-password" class="auth-input" placeholder="Password" autocomplete="current-password">
+                </label>
                 
                 <div class="auth-panel__actions">
                     <button id="btn-login" class="auth-btn auth-btn--fill">Login</button>
                     <button id="btn-register" class="auth-btn auth-btn--fill">Register</button>
                 </div>
                 
-                <div id="auth-status" class="auth-status"></div>
+                <div id="auth-status" class="auth-status" role="status" aria-live="polite"></div>
             </div>
 
             <div id="play-container" class="play-container">
@@ -362,14 +378,22 @@
 
             <div id="class-selection-container" class="class-selection">
                 <div class="class-selection__title">Create New Character</div>
-                <div id="class-fighter-description" class="class-selection__description class-selection__description--fighter">Fighter — durable melee bruiser with the safest first-hour path.</div>
-                <button class="class-btn" data-type="Fighter">Fighter</button>
-                <div id="class-rogue-description" class="class-selection__description class-selection__description--rogue">Rogue — mobile skirmisher that rewards timing and repositioning.</div>
-                <button class="class-btn" data-type="Rogue">Rogue</button>
-                <div id="class-wizard-description" class="class-selection__description class-selection__description--wizard">Wizard — ranged caster with strong burst and more mana management.</div>
-                <button class="class-btn" data-type="Wizard">Wizard</button>
-                <div id="class-cleric-description" class="class-selection__description class-selection__description--cleric">Cleric — sustain-focused hybrid with forgiving recovery tools.</div>
-                <button class="class-btn" data-type="Cleric">Cleric</button>
+                <button class="class-btn" data-type="Fighter" aria-labelledby="class-fighter-name" aria-describedby="class-fighter-description">
+                    <span id="class-fighter-name" class="class-btn__name">Fighter</span>
+                    <span id="class-fighter-description" class="class-selection__description class-selection__description--fighter">A durable melee bruiser. Hold the frontline and protect your allies.</span>
+                </button>
+                <button class="class-btn" data-type="Rogue" aria-labelledby="class-rogue-name" aria-describedby="class-rogue-description">
+                    <span id="class-rogue-name" class="class-btn__name">Rogue</span>
+                    <span id="class-rogue-description" class="class-selection__description class-selection__description--rogue">A mobile skirmisher. Strike at the perfect moment, then slip away.</span>
+                </button>
+                <button class="class-btn" data-type="Wizard" aria-labelledby="class-wizard-name" aria-describedby="class-wizard-description">
+                    <span id="class-wizard-name" class="class-btn__name">Wizard</span>
+                    <span id="class-wizard-description" class="class-selection__description class-selection__description--wizard">A ranged caster. Master powerful spells and shape the battlefield.</span>
+                </button>
+                <button class="class-btn" data-type="Cleric" aria-labelledby="class-cleric-name" aria-describedby="class-cleric-description">
+                    <span id="class-cleric-name" class="class-btn__name">Cleric</span>
+                    <span id="class-cleric-description" class="class-selection__description class-selection__description--cleric">A sustain-focused hybrid. Mend your allies and bring down judgment.</span>
+                </button>
             </div>
         </div>
 
@@ -510,7 +534,7 @@
                                 </div>
                                 <div id="asset-pack-core-status" class="asset-cache-pack__status">Procedural core built in</div>
                                 <div id="asset-pack-core-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-04-10</div>
+                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-04-11</div>
                             </div>
                             <button id="btn-download-core-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -522,7 +546,7 @@
                                 </div>
                                 <div id="asset-pack-dungeon-status" class="asset-cache-pack__status">Procedural dungeon entrances built in</div>
                                 <div id="asset-pack-dungeon-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-04-10</div>
+                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-04-11</div>
                             </div>
                             <button id="btn-download-dungeon-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -534,7 +558,7 @@
                                 </div>
                                 <div id="asset-pack-environment-status" class="asset-cache-pack__status">Procedural realm terrain built in</div>
                                 <div id="asset-pack-environment-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-environment-version" class="asset-cache-pack__meta">Built-in version: 2026-09-04-10</div>
+                                <div id="asset-pack-environment-version" class="asset-cache-pack__meta">Built-in version: 2026-09-04-11</div>
                             </div>
                             <button id="btn-download-environment-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -627,6 +651,19 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.1">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.1 (a world worth seeing)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Heroes and equipment feel crafted:</strong> tailored armor and robes, open headwear, cleaner weapon edges, fitted shoulders and cuffs, smaller mounted gems, and restrained magical accents refine all four classes. Necks remain connected when necklaces replace costume collars. Cloth, leather, wood, and metal separate more clearly under shared procedural reflection lighting.</li>
+                        <li><strong>Your build takes center stage:</strong> the character sheet now includes a rotatable, fully equipped 3D preview between fourteen keyboard-accessible slots. It renders on demand and keeps controls reachable on small screens.</li>
+                        <li><strong>A calmer, clearer interface:</strong> login and class choice, menus, HUD, journals, skills, services, and social panels share an ink-and-brass palette, more consistent spacing, readable layers, and responsive scrolling. Item icons retain their original colors instead of being multiplied by rarity tint.</li>
+                        <li><strong>Adventure choices are easier to read:</strong> separate Dungeons and Raids tabs show party authority, elemental raid cards, Chronicle unlock requirements, and crystal-repair guidance. Auction controls match the theme, with readable cards on narrow screens.</li>
+                        <li><strong>The world supports the action:</strong> Lanternhold paving and Gloamwood soil have finer, less distracting patterns that align between High and Low settings. Boss-warning edges remain visible at their exact danger radius throughout the pulse.</li>
+                        <li><strong>The Dark King has his own silhouette:</strong> Malachar wears black iron, a fractured crown and royal mantle, carries an oathbreaker sword, and bears the four bound elements. His production model retains its full combat animation rig.</li>
+                        <li><strong>Clean controls and resource lifetime:</strong> Enter and Space activate focused menu controls without stealing chat focus or casting; Escape closes the portal menu without opening pause, and chat remains permanent. Corrected camera-impact timing and boss-label texture cleanup, batched rigid equipment pieces, and whole-frame render counters support smoother, measurable play.</li>
+                        <li><strong>Verified locally:</strong> class/equipment and High/Low visual checks, responsive keyboard menus, real-server movement and multiplayer combat, and repeated ten-hero rendering workloads accompany this pass. The busy-scene profile is a rendering fixture, not a claim that a full ten-player raid has been completed. Asset generation advances to 2026-09-04-11.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.0.0">
                     <h3 class="patch-note-entry__title">Alpha 1.0.0 (the worlds answer together)</h3>
                     <ul class="patch-note-entry__list">
@@ -3404,15 +3441,15 @@
             </div>
 
             <div class="window-body">
-                <div id="forge-buildcraft-order" style="margin: 0 0 10px 0; padding: 10px; border: 1px solid rgba(255, 215, 0, 0.2); background: rgba(24, 20, 10, 0.35); border-radius: 8px; text-align: center;">
-                    <div style="color: #ffd700; font-weight: bold; margin-bottom: 4px;">Buildcraft Order</div>
+                <div id="forge-buildcraft-order" class="forge-buildcraft-order">
+                    <div class="forge-section-title">Buildcraft Order</div>
                     <div style="color: #cfd8dc; font-size: 12px; line-height: 1.5;">1. Spend <strong>Shards</strong> first on drops that look worth keeping. 2. Spend <strong>Hearts</strong> on Potency once the item stays equipped. 3. Add <strong>Sockets</strong>, then commit <strong>Gems</strong>. 4. Open the <strong>Talent Master</strong> when the whole build plan changes.</div>
                     <button id="btn-open-respec-from-forge" class="menu-btn" type="button" style="margin-top: 8px; min-width: 180px;">Open Talent Master</button>
                 </div>
                 
                 <!-- Panel 1: Upgrade -->
                 <div id="forge-panel-upgrade" class="window-panel" style="display: flex;">
-                    <h3 style="margin: 0 0 10px 0; color: #ffd700; text-align: center;">Upgrade Equipment</h3>
+                    <h3 class="forge-section-title">Upgrade Equipment</h3>
                     <p id="forge-upgrade-guidance" style="margin: 0 0 10px 0; color: #aaa; text-align: center; font-size: 12px;">Spend Shards to raise item level. This is the straight upgrade path when a good drop is worth keeping instead of replacing immediately.</p>
                     <div id="forge-equipment-list" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 10px;">
                         <!-- Populated by JS -->
@@ -3431,7 +3468,7 @@
 
                 <!-- Panel 2: Potency -->
                 <div id="forge-panel-potency" class="window-panel" style="display: none;">
-                    <h3 style="margin: 0 0 10px 0; color: #ff4444; text-align: center;">Increase Potency</h3>
+                    <h3 class="forge-section-title">Increase Potency</h3>
                     <p id="forge-potency-guidance" style="margin: 0 0 10px 0; color: #aaa; text-align: center; font-size: 12px;">Spend Hearts to permanently boost an equipped item when it already feels worth keeping and you want stronger stats without replacing it.</p>
                     <div id="forge-potency-list" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 10px;">
                         <!-- Populated by JS -->
@@ -3446,7 +3483,7 @@
 
                 <!-- Panel 3: Sockets -->
                 <div id="forge-panel-socket" class="window-panel" style="display: none;">
-                    <h3 style="margin: 0 0 10px 0; color: #00ffff; text-align: center;">Add Sockets</h3>
+                    <h3 class="forge-section-title">Add Sockets</h3>
                     <p id="forge-socket-guidance" style="margin: 0 0 10px 0; color: #aaa; text-align: center; font-size: 12px;">Spend Hearts and Shards to add gem slots to equipped gear so one strong item can scale further instead of being tossed the moment a new drop appears.</p>
                     <div id="forge-socket-list" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 10px;">
                         <!-- Populated by JS -->
@@ -3561,7 +3598,7 @@
         </div>
 
         <!-- Trading House Screen -->
-        <div id="trading-house-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(600px, calc(100vw - 24px)); height: min(500px, calc(100vh - 24px)); z-index: 101; flex-direction: column;">
+        <div id="trading-house-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(600px, calc(100vw - 24px)); height: min(500px, calc(100vh - 24px)); flex-direction: column;">
             <div class="window-header">
                 <span>TRADING HOUSE</span>
                 <button id="btn-close-trading-house" class="close-btn" type="button" aria-label="Close trading house">×</button>
@@ -3580,12 +3617,12 @@
                 <!-- Panel 1: Bid (Search) -->
                 <div id="trading-panel-bid" class="window-panel" style="display: flex;">
                     <div class="window-action-row window-action-row--tight">
-                        <input id="trading-search-input" type="text" placeholder="Search items..." style="flex: 1; background: #222; color: white; border: 1px solid #444; padding: 5px;">
+                        <input id="trading-search-input" type="text" placeholder="Search items..." aria-label="Search auction items" style="flex: 1;">
                         <button id="btn-trading-search" class="btn-menu menu-btn--auto-width menu-btn--wide-padding">Search</button>
                     </div>
 					<div class="window-action-row window-action-row--tight" aria-label="Auction filters">
-						<select id="trading-filter-type"><option value="">All types</option><option value="WEAPON">Weapons</option><option value="ARMOR">Armor</option><option value="GEM">Gems</option><option value="MATERIAL">Materials</option></select>
-						<select id="trading-filter-rarity"><option value="">All rarities</option><option>Common</option><option>Uncommon</option><option>Rare</option><option>Legendary</option><option>Eidolic</option></select>
+						<select id="trading-filter-type" aria-label="Item type"><option value="">All types</option><option value="WEAPON">Weapons</option><option value="ARMOR">Armor</option><option value="GEM">Gems</option><option value="MATERIAL">Materials</option></select>
+						<select id="trading-filter-rarity" aria-label="Item rarity"><option value="">All rarities</option><option>Common</option><option>Uncommon</option><option>Rare</option><option>Legendary</option><option>Eidolic</option></select>
 						<input id="trading-filter-min-level" type="number" min="1" max="100" placeholder="Min lvl" aria-label="Minimum item level">
 						<input id="trading-filter-max-level" type="number" min="1" max="100" placeholder="Max lvl" aria-label="Maximum item level">
 					</div>
@@ -3648,7 +3685,7 @@
         </div>
 
         <!-- Quest Window (NPC Interaction) -->
-        <div id="quest-window" class="window content-aware-window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 101; flex-direction: column;">
+        <div id="quest-window" class="window content-aware-window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); flex-direction: column;">
             <div class="window-header">
                 <span>AVAILABLE QUESTS</span>
                 <button id="btn-close-quest" class="close-btn" type="button" aria-label="Close quest window">×</button>
@@ -3659,7 +3696,7 @@
         </div>
 
         <!-- Quest Journal (Player Log) -->
-        <div id="quest-journal" class="window content-aware-window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 100; flex-direction: column;">
+        <div id="quest-journal" class="window content-aware-window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); flex-direction: column;">
             <div class="window-header">
                 <span>QUEST JOURNAL</span>
                 <button id="btn-close-journal" class="close-btn" type="button" aria-label="Close quest journal">×</button>
@@ -3669,12 +3706,12 @@
             </div>
         </div>
 
-        <div id="objectives-panel" style="display: none; position: fixed; top: 88px; left: 20px; width: 320px; z-index: 120; pointer-events: none; flex-direction: column; gap: 8px;">
+        <div id="objectives-panel" style="display: none;">
             <div class="objectives-panel__header">OBJECTIVES</div>
             <div id="objectives-list" class="objectives-panel__list"></div>
         </div>
 
-        <div id="combat-intent-panel" style="display: none; position: fixed; top: 232px; right: 20px; width: 280px; z-index: 120; pointer-events: none;">
+        <div id="combat-intent-panel" style="display: none;">
             <div class="combat-intent__name" id="combat-intent-name"></div>
             <div class="combat-intent__meta" id="combat-intent-meta"></div>
             <div class="combat-intent__status" id="combat-intent-status"></div>
@@ -3688,7 +3725,7 @@
             </div>
         </div>
 
-        <div id="dungeon-entrance-hint" style="display: none; position: fixed; top: 376px; right: 20px; width: 280px; z-index: 120; pointer-events: none;">
+        <div id="dungeon-entrance-hint" style="display: none;">
             <div class="dungeon-entrance-hint__name" id="dungeon-entrance-hint-name"></div>
             <div class="dungeon-entrance-hint__status" id="dungeon-entrance-hint-status"></div>
             <div class="dungeon-entrance-hint__prompt" id="dungeon-entrance-hint-prompt"></div>

@@ -194,20 +194,16 @@ describe('asset persistence boot wiring', () => {
 
         expect(document.getElementById('start-flow-title').textContent).toContain('Create your first character');
         expect(document.getElementById('start-flow-copy').textContent).toContain('Choose a class');
-        expect(document.getElementById('start-flow-copy').textContent).toContain('Fighter for frontline control');
-        expect(document.getElementById('start-flow-copy').textContent).toContain('Rogue for burst and tricks');
-        expect(document.getElementById('start-flow-copy').textContent).toContain('Wizard for ranged spell pressure');
-        expect(document.getElementById('start-flow-copy').textContent).toContain('Cleric for healing and support');
         expect(document.getElementById('start-flow-copy').textContent).toContain('Quest Giver');
         expect(document.getElementById('start-flow-copy').textContent).toContain('Forge');
         expect(document.getElementById('start-flow-steps').textContent).toContain('Skill Tree (K)');
         expect(document.getElementById('start-flow-steps').textContent).toContain('World Map (M)');
         expect(document.getElementById('start-flow-copy').textContent).toContain('Chronicle starts automatically');
         expect(document.getElementById('start-flow-copy').textContent).toContain('Quest Giver standing outside the Forge');
-        expect(document.getElementById('start-flow-steps').textContent).toContain('Vendor obvious junk');
-        expect(document.getElementById('start-flow-steps').textContent).toContain('save Shards, Hearts, and Gems');
-        expect(document.getElementById('start-flow-steps').textContent).toContain('level 30');
-        expect(document.getElementById('start-flow-steps').textContent).toContain('Heroic and Mythic');
+        expect(document.getElementById('start-flow-steps').textContent).toContain('Journal (J)');
+        expect(document.getElementById('start-flow-copy').textContent).toContain('separate daily contracts');
+        expect(document.getElementById('start-flow-copy').textContent.length).toBeLessThan(250);
+        expect(document.getElementById('start-flow-steps').textContent.length).toBeLessThan(150);
     });
 
     test('replaces a failed auth socket and sends the pending login after reconnect', async () => {

@@ -18,8 +18,22 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
+    test('ships the visual polish notes first and advances both asset-cache defaults together', () => {
+        expect(indexHtml).toContain('Alpha 1.0.1 (a world worth seeing)');
+        expect(indexHtml.indexOf('data-version="1.0.1"')).toBeLessThan(indexHtml.indexOf('data-version="1.0.0"'));
+        for (const heading of ['Heroes and equipment feel crafted', 'Your build takes center stage', 'Adventure choices are easier to read', 'The Dark King has his own silhouette', 'Clean controls and resource lifetime']) {
+            expect(indexHtml).toContain(heading);
+        }
+        for (const relativePath of ['src/assets/assetManifest.js', 'src/assets/sw-asset-cache.js']) {
+            expect(fs.readFileSync(path.join(repoRoot, relativePath), 'utf8')).toContain("const DEFAULT_ASSET_VERSION = '2026-09-04-11'");
+        }
+        expect(fs.readFileSync(path.join(repoRoot, 'sw.js'), 'utf8')).toContain('sw-asset-cache.js?v=2026-09-04-11');
+        expect(indexHtml).toContain('Built-in version: 2026-09-04-11');
+        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.0.1');
+    });
+
     test('advances the login screen and player-facing history to Alpha 1.0', () => {
-        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.0.0</span>');
+        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.0.1</span>');
         expect(indexHtml).toContain('Alpha 1.0.0 (the worlds answer together)');
         expect(indexHtml).toContain('Multiplayer has a social backbone');
         expect(indexHtml).toContain('Guilds are persistent institutions');
@@ -430,7 +444,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 1.0.0';
+        const expectedVersion = 'Alpha 1.0.1';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -488,13 +502,14 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('id="class-cleric-description"');
         expect(indexHtml).toContain('Vendor / Repair');
         expect(indexHtml).toContain('Trading House');
-        expect(indexHtml).toContain('Fighter for frontline control');
-        expect(indexHtml).toContain('Rogue for burst and tricks');
-        expect(indexHtml).toContain('Wizard for ranged spell pressure');
-        expect(indexHtml).toContain('Cleric for healing and support');
-        expect(indexHtml).toContain('Skill Tree (K)');
-        expect(indexHtml).toContain('level 30 to unlock all base dungeons');
-        expect(indexHtml).toContain('level 100 for Heroic and Mythic runs');
+        const start = new DOMParser().parseFromString(indexHtml, 'text/html').getElementById('start-screen');
+        expect(start.querySelector('#class-fighter-description').textContent).toContain('durable melee');
+        expect(start.querySelector('#class-rogue-description').textContent).toContain('mobile skirmisher');
+        expect(start.querySelector('#class-wizard-description').textContent).toContain('ranged caster');
+        expect(start.querySelector('#class-cleric-description').textContent).toContain('sustain-focused');
+        expect(start.querySelector('#start-flow-copy').textContent).toContain('Earth, Water, Fire, and Air');
+        expect(start.querySelector('#start-flow-copy').textContent.length).toBeLessThan(200);
+        expect(start.querySelector('#start-flow-steps').textContent).toContain('Your story begins');
     });
 
     test('surfaces class and branch identity copy in the skill tree', () => {
@@ -539,7 +554,7 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Gems are build materials, not normal vendor trash');
         expect(indexHtml).toContain('Buy from other players, list your own gear, and use auctions when an item is worth selling to the market instead of being simple vendor cleanup');
         expect(indexHtml).toContain('id="inventory-guidance"');
-        expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
+        expect(indexHtml).toContain('Compare gear before selling');
     });
 
     test('includes the latest player-facing patch notes entry for 0.35.0', () => {
@@ -551,7 +566,7 @@ describe('version presentation', () => {
     });
 
     test('marks Alpha 1.0 current and preserves its completed runway', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 1.0.0`');
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 1.0.1`');
         expect(alphaRoadmap).toContain('Active implementation line: `Alpha 1.0`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');

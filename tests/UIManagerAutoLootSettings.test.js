@@ -187,6 +187,20 @@ describe('UIManager settings', () => {
         expect(localStorage.getItem('eidolon.autoLootEnabled')).toBe('true');
     });
 
+    test('Enter respects focused menu controls and still opens chat from gameplay', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        const button = document.getElementById('btn-respawn');
+        button.focus();
+        const enter = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true });
+        button.dispatchEvent(enter);
+        expect(document.activeElement).toBe(button);
+        expect(enter.defaultPrevented).toBe(false);
+        button.blur();
+        document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+        expect(document.activeElement).toBe(ui.chatInput);
+    });
+
     test('submitting chat stays blurred instead of reopening globally', () => {
         buildDom();
         const ui = new UIManager(false);

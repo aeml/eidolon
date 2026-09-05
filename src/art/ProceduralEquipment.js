@@ -1,7 +1,10 @@
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { createTailoredTorsoGeometry, createOpenHoodGeometry } from './ProceduralGarmentGeometry.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
+const BATCH_GEOMETRIES = new Map();
 
 export const EQUIPMENT_RENDER_SLOTS = Object.freeze([
     'head',
@@ -119,8 +122,22 @@ function geometry(key, create) {
     return GEOMETRIES.get(key);
 }
 
+function beveledPanel(points, depth, bevel = 0.02) {
+    const shape = new THREE.Shape(points.map(([x, y]) => new THREE.Vector2(x, y)));
+    shape.closePath();
+    const result = new THREE.ExtrudeGeometry(shape, {
+        depth, bevelEnabled: true, bevelSegments: 1,
+        bevelSize: bevel, bevelThickness: bevel, curveSegments: 1
+    });
+    result.translate(0, 0, -depth / 2);
+    return result;
+}
+
+const SHIELD_OUTLINE = [[0, 0.78], [0.58, 0.46], [0.47, -0.36], [0, -0.84], [-0.47, -0.36], [-0.58, 0.46]];
+
 function material(key, color, options = {}) {
-    const cacheKey = `${key}:${color.toString(16)}:${options.emissive || 0}:${options.emissiveIntensity || 0}`;
+    const cacheKey = [key, color.toString(16), options.emissive || 0, options.emissiveIntensity || 0,
+        options.roughness ?? 0.62, options.metalness ?? 0.15, options.side ?? THREE.FrontSide].join(':');
     if (!MATERIALS.has(cacheKey)) {
         MATERIALS.set(cacheKey, new THREE.MeshStandardMaterial({
             color,
@@ -177,7 +194,7 @@ function createMaterials(item, visual) {
             metalness: 0.5,
             roughness: 0.3,
             emissive: rarityColor,
-            emissiveIntensity: rarityName === 'Common' ? 0.03 : 0.2 + Math.min(0.5, potency * 0.035)
+            emissiveIntensity: rarityName === 'Common' ? 0 : 0.06 + Math.min(0.1, potency * 0.012)
         }),
         dark: material('equipment-dark', 0x17171c, { metalness: 0.2, roughness: 0.78 })
     };
@@ -208,14 +225,16 @@ function buildBlade(group, visual, mats) {
     addMesh(group, 'Gear_Guard', geometry('gear-guard', () => new THREE.BoxGeometry(0.56, 0.085, 0.1)), mats.secondary, {
         position: [0, 0.1, 0], scale: dagger ? [0.7, 1, 1] : [1, 1, 1]
     });
+    const bladeWidth = dagger ? 0.085 : 0.12;
     addMesh(group, 'Gear_Blade', geometry(`gear-blade-${dagger ? 'short' : 'long'}`, () =>
-        new THREE.CylinderGeometry(dagger ? 0.08 : 0.115, dagger ? 0.13 : 0.17, bladeLength, 4)
+        beveledPanel([[-bladeWidth, 0], [bladeWidth, 0], [bladeWidth * 0.72, bladeLength * 0.76],
+            [0, bladeLength], [-bladeWidth * 0.72, bladeLength * 0.76]], 0.035, 0.018)
     ), mats.primary, {
-        position: [0, 0.13 + bladeLength / 2, 0], rotation: [0, Math.PI / 4, 0], scale: [0.68, 1, 0.3]
+        position: [0, 0.13, 0]
     });
     addMesh(group, 'Gear_BladeRune', geometry(`gear-rune-${dagger ? 'short' : 'long'}`, () =>
-        new THREE.BoxGeometry(0.028, bladeLength * 0.7, 0.026)
-    ), mats.accent, { position: [0, 0.16 + bladeLength / 2, 0.07] });
+        new THREE.BoxGeometry(0.018, bladeLength * 0.52, 0.008)
+    ), mats.accent, { position: [0, 0.16 + bladeLength * 0.34, 0.039] });
 }
 
 function buildFocusWeapon(group, visual, mats) {
@@ -261,28 +280,26 @@ function buildOffhand(group, visual, mats) {
     shield.name = 'Gear_Shield';
     shield.position.set(0.05, 0.02, 0.22);
     group.add(shield);
-    addMesh(shield, 'Gear_ShieldFace', geometry('gear-shield-face', () => {
-        const shape = new THREE.Shape();
-        shape.moveTo(0, 0.78);
-        shape.lineTo(0.58, 0.46);
-        shape.lineTo(0.47, -0.36);
-        shape.lineTo(0, -0.84);
-        shape.lineTo(-0.47, -0.36);
-        shape.lineTo(-0.58, 0.46);
+    addMesh(shield, 'Gear_ShieldFace', geometry('gear-shield-face', () =>
+        beveledPanel(SHIELD_OUTLINE, 0.1, 0.025)
+    ), mats.primary);
+    addMesh(shield, 'Gear_ShieldRim', geometry('gear-shield-rim', () => {
+        const shape = new THREE.Shape(SHIELD_OUTLINE.map(([x, y]) => new THREE.Vector2(x, y)));
+        const hole = new THREE.Path(SHIELD_OUTLINE.map(([x, y]) => new THREE.Vector2(x * 0.88, y * 0.88)));
         shape.closePath();
+        hole.closePath();
+        shape.holes.push(hole);
         const result = new THREE.ExtrudeGeometry(shape, {
-            depth: 0.1,
-            bevelEnabled: true,
-            bevelSegments: 1,
-            bevelSize: 0.025,
-            bevelThickness: 0.025,
-            curveSegments: 1
+            depth: 0.035, bevelEnabled: true, bevelSegments: 1,
+            bevelSize: 0.01, bevelThickness: 0.01, curveSegments: 1
         });
-        result.center();
         return result;
-    }), mats.primary);
-    addMesh(shield, 'Gear_ShieldRim', geometry('gear-shield-rim', () => new THREE.TorusGeometry(0.46, 0.05, 4, 8)), mats.secondary, {
-        position: [0, 0.08, 0.13], rotation: [Math.PI / 2, 0, 0], scale: [0.9, 1.25, 1]
+    }), mats.secondary, { position: [0, 0, 0.065] });
+    addMesh(shield, 'Gear_ShieldSpine', geometry('gear-shield-spine', () =>
+        beveledPanel([[0, 0.61], [0.055, 0.2], [0, -0.62], [-0.055, 0.2]], 0.025, 0.008)
+    ), mats.secondary, { position: [0, 0, 0.084] });
+    addMesh(shield, 'Gear_ShieldGrip', geometry('gear-shield-grip', () => new THREE.TorusGeometry(0.18, 0.035, 5, 8, Math.PI)), mats.dark, {
+        position: [0, 0.08, -0.09], rotation: [Math.PI / 2, 0, 0]
     });
     addMesh(shield, 'Gear_ShieldBoss', geometry('gear-shield-boss', () => new THREE.OctahedronGeometry(0.17, 0)), mats.accent, {
         position: [0, 0.08, 0.18], scale: [1, 1, 0.5]
@@ -298,21 +315,27 @@ function buildHeadwear(group, visual, mats) {
             position: [0, 0.22, 0], rotation: [Math.PI / 2, 0, 0]
         });
     } else if (visual.variant === 'hood') {
-        addMesh(group, 'Gear_Hood', geometry('gear-hood', () => new THREE.ConeGeometry(0.48, 0.78, 8, 1, true)), mats.primary, {
-            position: [0, 0.27, -0.02], rotation: [0, 0, Math.PI]
-        });
-        addMesh(group, 'Gear_HoodEdge', geometry('gear-hood-edge', () => new THREE.TorusGeometry(0.3, 0.045, 5, 8)), mats.accent, {
-            position: [0, 0.16, 0.22], rotation: [Math.PI / 2, 0, 0], scale: [1, 1.18, 1]
-        });
+        addMesh(group, 'Gear_Hood', geometry('gear-hood', createOpenHoodGeometry), mats.primary);
+        addMesh(group, 'Gear_HoodEdge', geometry('gear-hood-edge', () => new THREE.TubeGeometry(
+            new THREE.CatmullRomCurve3([
+                [-0.28, -0.12, 0.32], [-0.29, 0.25, 0.33], [-0.22, 0.52, 0.25],
+                [0, 0.7, 0], [0.22, 0.52, 0.25], [0.29, 0.25, 0.33], [0.28, -0.12, 0.32]
+            ].map((point) => new THREE.Vector3(...point))), 16, 0.022, 4, false
+        )), mats.secondary);
     } else {
-        addMesh(group, 'Gear_Helm', geometry('gear-helm', () => new THREE.CylinderGeometry(0.4, 0.36, 0.68, 8)), mats.primary, {
-            position: [0, 0.17, 0]
+        addMesh(group, 'Gear_Helm', geometry('gear-helm', () => new THREE.CylinderGeometry(0.4, 0.36, 0.56, 10, 1, true, 0.72, Math.PI * 2 - 1.44)), mats.primary, {
+            position: [0, 0.16, 0]
+        });
+        addMesh(group, 'Gear_HelmCrown', geometry('gear-helm-crown', () => new THREE.SphereGeometry(0.405, 10, 4, 0, Math.PI * 2, 0, Math.PI / 2)), mats.primary, {
+            position: [0, 0.43, 0], scale: [1, 0.48, 1]
         });
         addMesh(group, 'Gear_HelmBrow', geometry('gear-helm-brow', () => new THREE.BoxGeometry(0.7, 0.11, 0.12)), mats.secondary, {
-            position: [0, 0.24, 0.32]
+            position: [0, 0.39, 0.32]
         });
-        addMesh(group, 'Gear_HelmNasal', geometry('gear-helm-nasal', () => new THREE.BoxGeometry(0.08, 0.38, 0.08)), mats.accent, {
-            position: [0, 0.06, 0.38]
+        addMesh(group, 'Gear_HelmNasal', geometry('gear-helm-nasal', () => beveledPanel(
+            [[-0.042, 0.16], [0.042, 0.16], [0.027, -0.16], [0, -0.19], [-0.027, -0.16]], 0.035, 0.008
+        )), mats.secondary, {
+            position: [0, 0.18, 0.4]
         });
     }
 }
@@ -321,7 +344,7 @@ function buildBodyArmor(group, visual, mats) {
     const cloth = visual.variant === 'robes';
     const tunic = visual.variant === 'tunic';
     addMesh(group, 'Gear_Torso', geometry(`gear-torso-${visual.variant}`, () =>
-        new THREE.CylinderGeometry(cloth ? 0.67 : 0.63, cloth ? 0.58 : 0.52, cloth ? 1.28 : 1.1, 8)
+        createTailoredTorsoGeometry(cloth ? 0.58 : 0.52, cloth ? 0.67 : 0.63, cloth ? 1.28 : 1.1)
     ), mats.primary, { position: [0, 0.47, 0], scale: [1.16, 1, cloth ? 0.76 : 0.72] });
     if (tunic) {
         addMesh(group, 'Gear_TunicLacing', geometry('gear-tunic-lacing', () => new THREE.BoxGeometry(0.1, 0.72, 0.04)), mats.accent, {
@@ -343,15 +366,24 @@ function buildBodyArmor(group, visual, mats) {
 
 function buildLegArmor(group, visual, mats) {
     const skirt = visual.variant === 'skirt';
-    addMesh(group, 'Gear_ThighArmor', geometry(`gear-leg-${visual.variant}`, () =>
+    const thighArmor = addMesh(group, 'Gear_ThighArmor', geometry(`gear-leg-${visual.variant}`, () =>
         skirt
-            ? new THREE.ConeGeometry(0.32, 0.92, 7, 1, true)
+            ? beveledPanel([[-0.27, 0.04], [0.27, 0.04], [0.31, -0.7], [0.23, -1.3],
+                [0.05, -1.18], [-0.26, -1.32], [-0.3, -0.7]], 0.018, 0.006)
             : new THREE.CylinderGeometry(visual.variant === 'plate' ? 0.285 : 0.265, 0.21, 0.9, 8)
     ), mats.primary, {
-        position: [0, -0.43, 0], rotation: skirt ? [0, 0, Math.PI] : [0, 0, 0], scale: skirt ? [1, 1, 0.72] : [1, 1, 1]
+        position: skirt ? [0, 0, 0.24] : [0, -0.43, 0]
     });
+    if (skirt) {
+        addMesh(group, 'Gear_SkirtBack', thighArmor.geometry, mats.primary, {
+            position: [0, 0, -0.2], rotation: [0, Math.PI, 0], scale: [1, 0.9, 1]
+        });
+        addMesh(group, 'Gear_SkirtBorder', geometry('gear-skirt-border', () => beveledPanel(
+            [[-0.025, 0], [0.025, 0], [0.055, -0.66], [0.02, -1.14], [-0.035, -1.22], [-0.04, -0.66]], 0.008, 0.003
+        )), mats.secondary, { position: [0.19, 0, 0.263] });
+    }
     addMesh(group, 'Gear_KneeMark', geometry('gear-knee-mark', () => new THREE.OctahedronGeometry(0.11, 0)), mats.accent, {
-        position: [0, -0.77, 0.2], scale: [1, 0.75, 0.45]
+        position: skirt ? [0.16, -0.72, 0.29] : [0, -0.77, 0.2], scale: [1, 0.75, 0.45]
     });
 }
 
@@ -526,11 +558,15 @@ function addSocketDetails(group, item, visual, mats) {
                 metalness: 0.18,
                 roughness: 0.2,
                 emissive: gemColor,
-                emissiveIntensity: 0.65
+                emissiveIntensity: 0.12
             })
             : mats.dark;
-        addMesh(group, `Gear_Socket${index + 1}`, geometry('gear-socket', () => new THREE.OctahedronGeometry(0.047, 0)), gemMaterial, {
-            position: [origin[0] + (index - (shown - 1) / 2) * 0.11, origin[1], origin[2]],
+        const position = [origin[0] + (index - (shown - 1) / 2) * 0.085, origin[1], origin[2]];
+        addMesh(group, `Gear_SocketMount${index + 1}`, geometry('gear-socket-mount', () => new THREE.OctahedronGeometry(0.048, 0)), mats.dark, {
+            position, scale: [1, 1, 0.4]
+        });
+        addMesh(group, `Gear_Socket${index + 1}`, geometry('gear-socket', () => new THREE.OctahedronGeometry(0.033, 0)), gemMaterial, {
+            position: [position[0], position[1], position[2] + 0.018],
             scale: [1, 1, 0.55]
         });
     }
@@ -548,11 +584,11 @@ function addIdentityDetails(group, item, visual) {
             metalness: 0.35,
             roughness: 0.28,
             emissive: setColor,
-            emissiveIntensity: 0.42
+            emissiveIntensity: 0.08
         });
-        addMesh(group, 'Gear_SetRune', geometry('gear-set-rune', () => new THREE.TorusGeometry(0.085, 0.018, 4, 8)), setMaterial, {
-            position: [origin[0] - (uniqueEffect ? 0.13 : 0), origin[1] + 0.13, origin[2] + 0.012],
-            rotation: [Math.PI / 2, 0, Math.PI / 4],
+        addMesh(group, 'Gear_SetRune', geometry('gear-set-rune', () => new THREE.TorusGeometry(0.058, 0.009, 3, 4)), setMaterial, {
+            position: [origin[0] - (uniqueEffect ? 0.08 : 0), origin[1] + 0.1, origin[2] + 0.012],
+            rotation: [0, 0, 0],
             scale: [1, 1.25, 1]
         });
     }
@@ -562,10 +598,10 @@ function addIdentityDetails(group, item, visual) {
             metalness: 0.22,
             roughness: 0.24,
             emissive: effectColor,
-            emissiveIntensity: 0.62
+            emissiveIntensity: 0.12
         });
-        addMesh(group, 'Gear_UniqueRune', geometry('gear-unique-rune', () => new THREE.OctahedronGeometry(0.075, 0)), effectMaterial, {
-            position: [origin[0] + (setId ? 0.13 : 0), origin[1] + 0.13, origin[2] + 0.018],
+        addMesh(group, 'Gear_UniqueRune', geometry('gear-unique-rune', () => new THREE.OctahedronGeometry(0.044, 0)), effectMaterial, {
+            position: [origin[0] + (setId ? 0.08 : 0), origin[1] + 0.1, origin[2] + 0.018],
             rotation: [0, 0, Math.PI / 4],
             scale: [0.85, 1.2, 0.48]
         });
@@ -581,7 +617,9 @@ export function createProceduralEquipmentVisual(item, {
     slot = null,
     side = -1,
     fitScale = 1,
-    name = null
+    fitLength = fitScale,
+    name = null,
+    batch = false
 } = {}) {
     const visual = resolveEquipmentVisualDescriptor(item);
     if (!visual) return null;
@@ -601,13 +639,57 @@ export function createProceduralEquipmentVisual(item, {
     group.userData.uniqueEffect = item.uniqueEffect || '';
     group.userData.statScaleVersion = Math.max(0, Number(item.statScaleVersion) || 0);
     group.userData.fitScale = Math.max(0.5, Math.min(1.25, Number(fitScale) || 1));
+    group.userData.fitLength = Math.max(0.5, Math.min(1.25, Number(fitLength) || 1));
     const mats = createMaterials(item, visual);
     BUILDERS[visual.family](group, visual, mats, side >= 0 ? 1 : -1);
     addSocketDetails(group, item, visual, mats);
     addIdentityDetails(group, item, visual);
+    if (batch) batchRigidEquipmentParts(group);
     const tierScale = (1 + group.userData.tier * 0.025) * group.userData.fitScale;
     group.scale.setScalar(tierScale);
+    group.scale.y = (1 + group.userData.tier * 0.025) * group.userData.fitLength;
     return group;
+}
+
+// Equipment parts are rigid within their skeletal anchor. Combine only opaque
+// sibling meshes with identical material/shadow state; the actor's bones and
+// the item root still own animation and class-specific fit. Keep named sources
+// hidden for inspection, bounds and asset tooling, never as extra draw calls.
+function batchRigidEquipmentParts(group) {
+    const buckets = new Map();
+    for (const part of group.children) {
+        if (!part.isMesh || !part.visible || Array.isArray(part.material) || part.material.transparent) continue;
+        part.updateMatrix();
+        const key = `${part.material.uuid}:${part.castShadow}:${part.receiveShadow}`;
+        if (!buckets.has(key)) buckets.set(key, []);
+        buckets.get(key).push(part);
+    }
+    for (const parts of buckets.values()) {
+        if (parts.length < 2) continue;
+        const key = parts.map((part) => `${part.geometry.uuid}:${part.matrix.elements.join(',')}`).join('|');
+        let merged = BATCH_GEOMETRIES.get(key);
+        if (!merged) {
+            const baked = parts.map((part) => (part.geometry.index ? part.geometry.toNonIndexed() : part.geometry.clone()).applyMatrix4(part.matrix));
+            merged = mergeGeometries(baked, false);
+            baked.forEach((entry) => entry.dispose());
+            if (!merged) throw new Error(`Unable to batch equipment ${group.userData.baseName}`);
+            merged.computeBoundingBox();
+            merged.computeBoundingSphere();
+            BATCH_GEOMETRIES.set(key, merged);
+        }
+        const combined = new THREE.Mesh(merged, parts[0].material);
+        combined.name = `Gear_Batch_${parts[0].name}`;
+        combined.castShadow = parts[0].castShadow;
+        combined.receiveShadow = parts[0].receiveShadow;
+        combined.userData.equipmentBatchSources = parts.map((part) => part.name);
+        combined.matrixAutoUpdate = false;
+        group.add(combined);
+        parts.forEach((part) => {
+            part.visible = false;
+            part.matrixAutoUpdate = false;
+            part.userData.equipmentBatchSource = true;
+        });
+    }
 }
 
 export function equipmentVisualSignature(equipment = {}) {
@@ -685,12 +767,14 @@ export function applyProceduralEquipment(root, equipment = {}, { force = false }
             const visual = createProceduralEquipmentVisual(item, {
                 slot,
                 side: anchor.name.includes('Left') ? 1 : -1,
-                fitScale: root.userData.equipmentScaleBySlot?.[slot] ?? 1
+                fitScale: root.userData.equipmentScaleBySlot?.[slot] ?? 1,
+                fitLength: root.userData.equipmentLengthBySlot?.[slot],
+                batch: true
             });
             if (!visual) return;
             anchor.add(visual);
             visual.traverse((child) => {
-                if (child.isMesh) parts++;
+                if (child.isMesh && !child.userData.equipmentBatchSource) parts++;
             });
             rendered = true;
         });
@@ -704,5 +788,5 @@ export function applyProceduralEquipment(root, equipment = {}, { force = false }
 }
 
 export function getProceduralEquipmentCacheMetrics() {
-    return Object.freeze({ geometries: GEOMETRIES.size, materials: MATERIALS.size });
+    return Object.freeze({ geometries: GEOMETRIES.size + BATCH_GEOMETRIES.size, materials: MATERIALS.size });
 }

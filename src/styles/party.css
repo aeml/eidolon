@@ -7,12 +7,12 @@
 
 #party-panel {
     position: fixed;
-    top: min(430px, calc(100vh - 260px));
+    top: 140px;
     left: 20px;
     box-sizing: border-box;
     width: 220px;
     max-width: calc(100vw - 40px);
-    max-height: min(240px, calc(100vh - 170px));
+    max-height: min(240px, max(100px, calc(100vh - var(--chat-panel-height, 230px) - var(--chat-panel-bottom, 80px) - 152px)));
     overflow-y: auto;
     overflow-x: hidden;
     display: none; /* Shown when in party */
@@ -92,6 +92,8 @@
 
 .party-panel__invite-input {
     width: 100px;
+    min-width: 0;
+    flex: 1 1 80px;
     padding: 2px;
     background: #222;
     border: 1px solid #444;

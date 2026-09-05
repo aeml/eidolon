@@ -14,7 +14,7 @@
     max-width: calc(100vw - 24px);
     max-height: calc(100vh - 24px);
     background: var(--bg-panel);
-    border: 2px solid var(--border-default);
+    border: 1px solid var(--border-light);
     box-shadow: var(--shadow-panel);
     display: none;
     flex-direction: column;
@@ -32,10 +32,24 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-weight: bold;
+    font-weight: 500;
     color: var(--color-gold);
-    font-size: 1.2rem;
+    font-size: 1rem;
 }
+
+#skill-tree-window button:not(.close-btn) {
+    padding: 7px 10px;
+    background: var(--bg-surface);
+    color: var(--color-white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    font: inherit;
+    font-size: 0.78rem;
+    cursor: pointer;
+}
+#skill-tree-window button:not(.close-btn):hover { background: var(--bg-surface-hover); border-color: var(--color-gold); }
+#skill-tree-window button:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 2px; }
+#skill-tree-window h2 { font-size: 1.25rem; font-weight: 500; letter-spacing: 0.02em; }
 
 .skill-tree-content {
     flex-grow: 1;

@@ -9,6 +9,7 @@ import {
 import {
     applyProceduralEquipment,
     clearProceduralEquipment,
+    createProceduralEquipmentVisual,
     EQUIPMENT_RENDER_SLOTS,
     EQUIPMENT_VISUAL_DESCRIPTORS,
     equipmentVisualSignature,
@@ -49,6 +50,77 @@ function visualGroups(root) {
     return groups;
 }
 
+describe('rigid equipment batching', () => {
+    test.each([
+        ['Fighter', createProceduralFighter], ['Rogue', createProceduralRogue],
+        ['Wizard', createProceduralWizard], ['Cleric', createProceduralCleric]
+    ])('%s keeps a physical neck between fitted torso and head when a necklace replaces the collar', (type, factory) => {
+        const root = factory();
+        const neck = root.getObjectByName(`${type}_Neck`);
+        expect(neck.userData.equipmentBodyBase).toBe(true);
+        for (const baseName of ['Necklace', 'Pendant', 'Choker']) {
+            applyProceduralEquipment(root, { neck: item(baseName, 'neck'), chest: item('Leather Tunic', 'chest') });
+            expect(neck.visible).toBe(true);
+            const neckBounds = new THREE.Box3().setFromObject(neck);
+            const faceBounds = new THREE.Box3().setFromObject(root.getObjectByName(`${type}_Head`));
+            const torsoBounds = new THREE.Box3().setFromObject(root.getObjectByName('Gear_Torso'));
+            expect(neckBounds.max.y).toBeGreaterThan(faceBounds.min.y);
+            expect(neckBounds.min.y).toBeLessThan(torsoBounds.max.y);
+        }
+        clearProceduralEquipment(root);
+        expect(neck.visible).toBe(true);
+    });
+
+    test.each(Object.keys(EQUIPMENT_VISUAL_DESCRIPTORS))('%s preserves every vertex, material and shadow while batching rigid pieces', (baseName) => {
+        const data = item(baseName, EQUIPMENT_VISUAL_DESCRIPTORS[baseName].slot, {
+            sockets: 3, gems: [{ type: 'Ruby', quality: 'Flawless' }], setId: 'bulwark_ages', uniqueEffect: 'guardian'
+        });
+        for (const side of [-1, 1]) {
+            const root = createProceduralEquipmentVisual(data, { side, batch: true });
+            const original = createProceduralEquipmentVisual(data, { side });
+            let originalTriangles = 0;
+            let batchedTriangles = 0;
+            original.traverseVisible((part) => { if (part.isMesh) originalTriangles += (part.geometry.index?.count || part.geometry.attributes.position.count) / 3; });
+            root.traverseVisible((part) => { if (part.isMesh) batchedTriangles += (part.geometry.index?.count || part.geometry.attributes.position.count) / 3; });
+            expect(batchedTriangles).toBe(originalTriangles);
+            for (const batch of root.children.filter((part) => part.userData.equipmentBatchSources)) {
+                const source = batch.userData.equipmentBatchSources.map((name) => root.getObjectByName(name));
+                const geometries = source.map((part) => {
+                    expect(part.visible).toBe(false);
+                    expect(part.material).toBe(batch.material);
+                    expect(part.castShadow).toBe(batch.castShadow);
+                    expect(part.receiveShadow).toBe(batch.receiveShadow);
+                    return (part.geometry.index ? part.geometry.toNonIndexed() : part.geometry.clone()).applyMatrix4(part.matrix);
+                });
+                for (const attribute of Object.keys(batch.geometry.attributes)) {
+                    expect([...batch.geometry.attributes[attribute].array]).toEqual(geometries.flatMap((geometry) => [...geometry.attributes[attribute].array]));
+                }
+                geometries.forEach((geometry) => geometry.dispose());
+            }
+            const bounds = new THREE.Box3().setFromObject(root);
+            const originalBounds = new THREE.Box3().setFromObject(original);
+            expect(bounds.min.distanceTo(originalBounds.min)).toBeLessThan(0.00001);
+            expect(bounds.max.distanceTo(originalBounds.max)).toBeLessThan(0.00001);
+        }
+    });
+
+    test('repeated batches share only immutable geometry and keep mutable appearance state independent', () => {
+        const data = item('Plate Mail', 'chest', { sockets: 3 });
+        const a = createProceduralEquipmentVisual(data, { batch: true });
+        const b = createProceduralEquipmentVisual(data, { batch: true });
+        const batches = a.children.filter((part) => part.userData.equipmentBatchSources);
+        expect(batches.length).toBeGreaterThan(0);
+        for (const batch of batches) {
+            const other = b.getObjectByName(batch.name);
+            expect(other).not.toBe(batch);
+            expect(other.geometry).toBe(batch.geometry);
+            batch.position.x = 5;
+            expect(other.position.x).toBe(0);
+        }
+        expect(a.children.filter((part) => part.visible).length).toBeLessThan(createProceduralEquipmentVisual(data).children.length);
+    });
+});
+
 function finiteTransforms(root) {
     root.updateMatrixWorld(true);
     let finite = true;
@@ -59,6 +131,65 @@ function finiteTransforms(root) {
 }
 
 describe('procedural equipment visual manifest', () => {
+    test('silk skirts have long front and back cloth panels that share their geometry', () => {
+        const root = createProceduralEquipmentVisual(item('Silk Skirt', 'legs', { level: 1 }));
+        const front = root.getObjectByName('Gear_ThighArmor');
+        const back = root.getObjectByName('Gear_SkirtBack');
+        front.geometry.computeBoundingBox();
+        expect(front.geometry.boundingBox.min.y).toBeLessThan(-1.3);
+        expect(front.geometry.boundingBox.max.y).toBeGreaterThan(0);
+        expect(back.geometry).toBe(front.geometry);
+        expect(front.position.z).toBeGreaterThan(0);
+        expect(back.position.z).toBeLessThan(0);
+        expect(front.material.side).toBe(THREE.DoubleSide);
+        expect(root.getObjectByName('Gear_SkirtBorder')).toBeTruthy();
+    });
+
+    test('uses inset gems and restrained identity marks, even at maximum potency', () => {
+        const root = createProceduralEquipmentVisual(item('Plate Mail', 'chest', {
+            rarity: 'Eidolic', potency: 100, sockets: 4,
+            gems: [{ type: 'Ruby' }, { type: 'Emerald' }, { type: 'Sapphire' }, { type: 'Topaz' }],
+            setId: 'warlord_fury', uniqueEffect: 'vampiric'
+        }));
+        for (let i = 1; i <= 3; i++) {
+            const gem = root.getObjectByName(`Gear_Socket${i}`);
+            const mount = root.getObjectByName(`Gear_SocketMount${i}`);
+            expect(gem.geometry.parameters.radius).toBeLessThan(mount.geometry.parameters.radius);
+            expect(gem.position.z).toBeGreaterThan(mount.position.z);
+            expect(gem.material.emissiveIntensity).toBeLessThanOrEqual(0.12);
+        }
+        expect(root.getObjectByName('Gear_Socket4')).toBeUndefined();
+        for (const name of ['Gear_SetRune', 'Gear_UniqueRune', 'Gear_ChestSigil']) {
+            expect(root.getObjectByName(name).material.emissiveIntensity).toBeLessThanOrEqual(0.16);
+        }
+    });
+
+    test('shield edging follows the actual shield perimeter and leaves the wood visible', () => {
+        const root = createProceduralEquipmentVisual(item('Wooden Shield', 'offHand'));
+        const face = root.getObjectByName('Gear_ShieldFace');
+        const rim = root.getObjectByName('Gear_ShieldRim');
+        expect(rim.geometry.parameters.shapes.holes).toHaveLength(1);
+        expect(rim.rotation.toArray().slice(0, 3)).toEqual([0, 0, 0]);
+        face.geometry.computeBoundingBox();
+        rim.geometry.computeBoundingBox();
+        expect(rim.geometry.boundingBox.max.y).toBeCloseTo(face.geometry.boundingBox.max.y, 1);
+        expect(rim.geometry.boundingBox.min.y).toBeCloseTo(face.geometry.boundingBox.min.y, 1);
+        expect(root.getObjectByName('Gear_ShieldGrip')).toBeTruthy();
+    });
+
+    test.each(['Iron Helm', 'Silk Hood', 'Leather Cap'])('%s covers the Cleric crown instead of being buried inside her head', (baseName) => {
+        const root = createProceduralCleric();
+        applyProceduralEquipment(root, { head: item(baseName, 'head', { level: 1 }) });
+        root.updateMatrixWorld(true);
+        const head = root.getObjectByName('Cleric_Head');
+        const gear = root.getObjectByName('EquippedVisual_head');
+        const headBounds = new THREE.Box3().setFromObject(head);
+        const gearBounds = new THREE.Box3().setFromObject(gear);
+        expect(gearBounds.max.y).toBeGreaterThan(headBounds.max.y);
+        expect(gearBounds.max.x).toBeGreaterThan(headBounds.max.x);
+        expect(gearBounds.min.x).toBeLessThan(headBounds.min.x);
+    });
+
     test('defines every equippable base item and excludes inventory-only materials', () => {
         const equippable = BASE_ITEMS.filter((entry) => !['material', 'relic'].includes(entry.slot));
         const inventoryOnly = BASE_ITEMS.filter((entry) => ['material', 'relic'].includes(entry.slot));

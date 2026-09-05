@@ -24,9 +24,17 @@ export class ChatUI {
     }
 
     bindEvents() {
-        this.tabs.forEach((tab) => {
+        this.tabs.forEach((tab, index) => {
             tab.addEventListener('click', () => {
                 this.setActiveStream(tab.dataset.chatTab, { focusInput: tab.dataset.chatTab === 'chat' });
+            });
+            tab.addEventListener('keydown', (event) => {
+                if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+                event.preventDefault();
+                const next = event.key === 'Home' ? 0 : event.key === 'End' ? this.tabs.length - 1
+                    : (index + (event.key === 'ArrowRight' ? 1 : -1) + this.tabs.length) % this.tabs.length;
+                this.setActiveStream(this.tabs[next].dataset.chatTab);
+                this.tabs[next].focus();
             });
         });
 
@@ -207,6 +215,7 @@ export class ChatUI {
         this.sizeObserver = new ResizeObserver(() => {
             const rect = this.chatBox.getBoundingClientRect();
             if (!rect || rect.width < 1 || rect.height < 1) return;
+            document.documentElement.style.setProperty('--chat-panel-height', `${Math.round(rect.height)}px`);
             try {
                 localStorage.setItem(CHAT_SIZE_STORAGE_KEY, JSON.stringify({
                     width: Math.round(rect.width),

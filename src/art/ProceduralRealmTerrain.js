@@ -8,13 +8,13 @@ function terrainDefinition(id, region, label, motif, seed, surface) {
 export const PROCEDURAL_TERRAIN_DEFINITIONS = Object.freeze({
     earth: terrainDefinition(
         'gloamwood-loam', 'earth', 'Gloamwood Marches',
-        'grave-loam, weathered cairn chips, moss veins, and old root scars', 0x6d2b79f5,
+        'mottled grave-loam, embedded cairn grains, moss patches, and short worn root fragments', 0x6d2b79f5,
         { roughness: 0.94, metalness: 0.02, repeat: [72, 58], tint: 0xd6c7a8 }
     ),
     town: terrainDefinition(
         'lanternhold-vigil-stone', 'town', 'Lanternhold',
-        'offset vigil cobbles, iron-dark mortar, amber oath marks, and worn thresholds', 0x14a7b0d3,
-        { roughness: 0.86, metalness: 0.08, repeat: [12, 12], tint: 0xf0d8b8 }
+        'hand-set weathered cobbles, softened mortar, chipped corners, and quiet lichen stains', 0x14a7b0d3,
+        { roughness: 0.94, metalness: 0.02, repeat: [28, 28], tint: 0xe0d8ca }
     ),
     water: terrainDefinition(
         'moonfrost-drowned-ice', 'water', 'Moonfrost Expanse',
@@ -74,34 +74,83 @@ function paletteFor(key) {
     return getRegionTheme(key).palette;
 }
 
-function sampleEarth(x, y, size, definition, palette) {
-    const noise = hash2d(x, y, definition.seed);
-    const coarse = hash2d(Math.floor(x / 7), Math.floor(y / 7), definition.seed ^ 0x5184);
-    const root = Math.abs(Math.sin(x * 0.082 + Math.sin(y * 0.037) * 2.4) + Math.cos(y * 0.096)) < 0.105;
-    const cairn = hash2d(Math.floor(x / 3), Math.floor(y / 3), definition.seed ^ 0xace1) > 0.965;
-    if (cairn) return mixColor(palette.ground, palette.midtone, 0.58 + noise * 0.2);
-    if (root) return mixColor(palette.shadow, 0x72583b, 0.26 + noise * 0.18);
-    const moss = Math.sin((x + y) / size * Math.PI * 8 + coarse * 2) > 0.82;
-    return mixColor(palette.ground, moss ? 0x536445 : palette.midtone, 0.08 + noise * (moss ? 0.28 : 0.15));
+function periodicNoise(x, y, cells, seed) {
+    const px = x / 256 * cells;
+    const py = y / 256 * cells;
+    const ix = Math.floor(px);
+    const iy = Math.floor(py);
+    const fx = px - ix;
+    const fy = py - iy;
+    const sx = fx * fx * (3 - 2 * fx);
+    const sy = fy * fy * (3 - 2 * fy);
+    const wrap = (value) => ((value % cells) + cells) % cells;
+    const a = hash2d(wrap(ix), wrap(iy), seed);
+    const b = hash2d(wrap(ix + 1), wrap(iy), seed);
+    const c = hash2d(wrap(ix), wrap(iy + 1), seed);
+    const d = hash2d(wrap(ix + 1), wrap(iy + 1), seed);
+    return a + (b - a) * sx + (c - a) * sy + (a - b - c + d) * sx * sy;
 }
 
-function sampleTown(x, y, _size, definition, palette) {
-    const tileWidth = 42;
-    const tileHeight = 23;
-    const row = Math.floor(y / tileHeight);
-    const shiftedX = x + (row % 2) * tileWidth * 0.5;
-    const localX = ((shiftedX % tileWidth) + tileWidth) % tileWidth;
-    const localY = y % tileHeight;
-    const mortar = localX < 2 || localX > tileWidth - 2 || localY < 2 || localY > tileHeight - 2;
-    if (mortar) return mixColor(palette.shadow, 0x090a0b, 0.34);
-    const stoneX = Math.floor(shiftedX / tileWidth);
-    const stoneY = row;
-    const stoneNoise = hash2d(stoneX, stoneY, definition.seed);
-    const wear = hash2d(x, y, definition.seed ^ 0x9f31);
-    const oathMark = stoneNoise > 0.968
-        && (Math.abs(localX - tileWidth / 2) < 1.5 || Math.abs(localY - tileHeight / 2) < 1.5);
-    if (oathMark) return mixColor(palette.accent, 0xffdb8a, 0.36);
-    return mixColor(palette.ground, palette.midtone, 0.08 + stoneNoise * 0.22 + wear * 0.08);
+function sampleEarth(x, y, _size, definition) {
+    // Patchy loam rather than closed sinusoidal cells that read as paving.
+    // All fields wrap on the same canonical tile at both quality levels.
+    const seed = definition.seed;
+    const broad = periodicNoise(x, y, 8, seed);
+    const grit = periodicNoise(x, y, 32, seed ^ 0x5184);
+    const grain = hash2d(x, y, seed ^ 0x3d28);
+    const moss = Math.max(0, (broad - 0.45) * 1.5);
+    const soil = mixColor(0x383329, 0x635a46, 0.12 + grit * 0.32 + grain * 0.12);
+    const mossColor = colorChannels(0x47513a);
+    const color = soil.map((value, index) => value + (mossColor[index] - value) * moss);
+
+    // Sparse short, tapered root fragments. Each fits inside its cell so no
+    // seam joins them into a repeated network of large outlined polygons.
+    const cellX = Math.floor(x / 32);
+    const cellY = Math.floor(y / 32);
+    const rootSeed = hash2d(cellX, cellY, seed ^ 0xace1);
+    if (rootSeed > 0.62) {
+        const angle = rootSeed * Math.PI * 7;
+        const dx = x % 32 - 16;
+        const dy = y % 32 - 16;
+        const along = dx * Math.cos(angle) + dy * Math.sin(angle);
+        const across = -dx * Math.sin(angle) + dy * Math.cos(angle);
+        const taper = Math.max(0, 1 - Math.abs(along) / 11);
+        const root = Math.max(0, 1 - Math.abs(across - Math.sin(along * 0.23)) / 1.25) * taper;
+        for (let channel = 0; channel < 3; channel++) color[channel] *= 1 - root * 0.27;
+    }
+
+    // Small embedded stones, not bright square/diamond confetti.
+    const chipSeed = hash2d(Math.floor(x / 8), Math.floor(y / 8), seed ^ 0xb917);
+    const chip = chipSeed > 0.83
+        ? Math.max(0, 1 - Math.hypot((x % 8 - 4) / 1.5, (y % 8 - 4) / 0.85))
+        : 0;
+    return color.map((channel) => Math.round(channel + chip * 13));
+}
+
+function sampleTown(x, y, size, definition, palette) {
+    // Canonical texel coordinates keep Low's stones the same physical size.
+    // Eight columns / sixteen rows wrap exactly, including the offset bond.
+    const px = x * 256 / size;
+    const py = y * 256 / size;
+    const row = Math.floor(py / 16);
+    const shiftedX = px + (row % 2) * 16 + Math.sin(py * Math.PI / 128) * 0.7;
+    const localX = ((shiftedX % 32) + 32) % 32;
+    const localY = py % 16;
+    const stoneX = ((Math.floor(shiftedX / 32) % 8) + 8) % 8;
+    const stoneNoise = hash2d(stoneX, row, definition.seed);
+    const dx = Math.min(localX, 32 - localX);
+    const dy = Math.min(localY, 16 - localY);
+    const cornerCut = 1.1 + stoneNoise * 1.3;
+    const edge = Math.min(dx, dy, (dx + dy - cornerCut) * 0.707);
+    const wear = hash2d(Math.floor(px), Math.floor(py), definition.seed ^ 0x9f31);
+    const stain = Math.sin(px * Math.PI / 128) * Math.cos(py * Math.PI / 64);
+    const stone = mixColor(palette.ground, palette.midtone, 0.17 + stoneNoise * 0.16 + wear * 0.05 + stain * 0.035);
+    const joint = mixColor(palette.shadow, palette.ground, 0.53);
+    // A soft bevel/joint, rather than an oversized black grid. The only bright
+    // oath marks now belong to world landmarks, not a repeating floor stamp.
+    const coverage = Math.max(0, Math.min(1, (edge - 0.45) / (256 / size)));
+    const bevel = 0.89 + Math.min(1, Math.max(0, edge) / 2.6) * 0.11;
+    return stone.map((channel, index) => Math.round(joint[index] + (channel * bevel - joint[index]) * coverage));
 }
 
 function sampleWater(x, y, _size, definition, palette) {
@@ -181,10 +230,14 @@ export function createProceduralTerrainTexture(key, { quality = 'high' } = {}) {
     const data = new Uint8Array(size * size * 4);
     const sampler = SAMPLERS[key];
     const palette = paletteFor(key);
+    // Surface landmarks must not move or double in size when quality changes.
+    // Town handles footprint-aware joint filtering itself; sky preserves its
+    // resolution-dependent sparse star count rather than scaling surface UVs.
+    const sampleScale = key === 'town' || key === 'sky' ? 1 : 256 / size;
     let signature = 0x811c9dc5;
     for (let y = 0; y < size; y++) {
         for (let x = 0; x < size; x++) {
-            const [red, green, blue] = sampler(x, y, size, definition, palette);
+            const [red, green, blue] = sampler(x * sampleScale, y * sampleScale, size * sampleScale, definition, palette);
             const offset = (y * size + x) * 4;
             data[offset] = red;
             data[offset + 1] = green;

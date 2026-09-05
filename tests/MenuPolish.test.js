@@ -451,6 +451,21 @@ describe('menu polish regressions', () => {
         expect(document.getElementById('respec-menu-backdrop')).toBeNull();
     });
 
+    test('gameplay Escape closes the adventure dialog without opening pause and restores its opener', () => {
+        const ui = Object.create(UIManager.prototype);
+        ui.toggleEscMenu = jest.fn();
+        const opener = document.createElement('button');
+        document.body.append(opener);
+        opener.focus();
+        ui.showDungeonMenu({ playerLevel: 30, hasInstance: false, isLeader: true });
+        ui.handleEscape();
+        expect(document.getElementById('dungeon-menu')).toBeNull();
+        expect(document.getElementById('dungeon-menu-backdrop')).toBeNull();
+        expect(ui.toggleEscMenu).not.toHaveBeenCalled();
+        expect(document.activeElement).toBe(opener);
+        opener.remove();
+    });
+
     test('dungeon and respec menus keep inside clicks open but footer close buttons dismiss them', () => {
         const uiManager = Object.create(UIManager.prototype);
         window.game = { socket: { send: jest.fn() } };
@@ -777,7 +792,7 @@ describe('menu polish regressions', () => {
         expect(skillTreeCss).toMatch(/#skill-tree-window\s*\{[^}]*max-width:\s*calc\(100vw - 24px\);[^}]*max-height:\s*calc\(100vh - 24px\);[^}]*overflow:\s*hidden;/s);
         expect(skillTreeCss).toMatch(/\.skill-tree-content\s*\{[^}]*min-height:\s*0;[^}]*overflow-y:\s*auto;/s);
 
-        expect(partyCss).toMatch(/#party-panel\s*\{[^}]*max-width:\s*calc\(100vw - 40px\);[^}]*max-height:\s*min\(240px, calc\(100vh - 170px\)\);[^}]*overflow-y:\s*auto;/s);
+        expect(partyCss).toMatch(/#party-panel\s*\{[^}]*max-width:\s*calc\(100vw - 40px\);[^}]*max-height:[^;]*var\(--chat-panel-height, 230px\)[^;]*;[^}]*overflow-y:\s*auto;/s);
         expect(partyCss).toMatch(/\.party-request-modal\s*\{[^}]*width:\s*min\(360px, calc\(100vw - 24px\)\);[^}]*max-height:\s*calc\(100vh - 24px\);[^}]*overflow-y:\s*auto;/s);
     });
 
@@ -1071,7 +1086,7 @@ describe('menu polish regressions', () => {
         expect(html).not.toContain('id="btn-respawn" class="menu-btn" style="border-color: #ff4444; color: #ff4444;"');
         expect(css).toMatch(/\.pause-menu\s*\{[^}]*width:\s*min\(300px, calc\(100vw - 24px\)\);[^}]*max-height:\s*calc\(100vh - 24px\);[^}]*overflow:\s*hidden;/s);
         expect(css).toMatch(/\.pause-menu__actions\s*\{[^}]*max-height:\s*calc\(100vh - 92px\);[^}]*overflow-y:\s*auto;[^}]*display:\s*flex;[^}]*flex-direction:\s*column;/s);
-        expect(css).toMatch(/\.pause-menu__button--report\s*\{[^}]*border-color:\s*#ffd700;[^}]*color:\s*#ffd700;/s);
+        expect(css).toMatch(/\.pause-menu__button--report\s*\{[^}]*border-color:\s*var\(--color-gold\);[^}]*color:\s*var\(--color-gold\);/s);
         expect(css).toMatch(/\.pause-menu__button--danger\s*\{[^}]*border-color:\s*#ff4444;[^}]*color:\s*#ff4444;/s);
     });
 
@@ -1164,46 +1179,50 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 1.0.0</span>');
-        expect(html).toContain('<span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 1.0.1</span>');
+        expect(html).toContain('<button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');
         expect(html).not.toContain('id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;"');
 
-        expect(css).toMatch(/\.start-version-row\s*\{[^}]*text-align:\s*center;[^}]*margin-top:\s*-20px;[^}]*margin-bottom:\s*20px;/s);
-        expect(css).toMatch(/\.start-version-row__label\s*\{[^}]*color:\s*white;[^}]*font-size:\s*18px;[^}]*font-weight:\s*bold;/s);
-        expect(css).toMatch(/\.start-version-row__link\s*\{[^}]*color:\s*#ffd700;[^}]*cursor:\s*pointer;[^}]*text-decoration:\s*underline;[^}]*font-size:\s*14px;[^}]*margin-left:\s*5px;/s);
+        expect(css).toMatch(/\.start-version-row\s*\{[^}]*grid-column:\s*1 \/ -1;[^}]*text-align:\s*center;/s);
+        expect(css).toMatch(/\.start-version-row__label\s*\{[^}]*color:\s*var\(--entry-muted\);/s);
+        expect(css).toMatch(/\.start-version-row__link\s*\{[^}]*color:\s*var\(--entry-gold\);[^}]*cursor:\s*pointer;/s);
     });
 
     test('start flow panel uses shared shell body and copy classes', () => {
         const html = readFileSync(indexHtmlPath, 'utf8');
         const css = readFileSync(startScreenCssPath, 'utf8');
 
-        expect(html).toContain('<div id="start-flow-panel" class="window start-flow-panel">');
+        expect(html).toContain('<div id="start-flow-panel" class="start-flow-panel">');
         expect(html).toContain('<div class="start-flow-panel__body">');
-        expect(html).toContain('<div id="start-flow-title" class="start-flow-panel__title">Login to continue your run</div>');
+        expect(html).toContain('<div id="start-flow-title" class="start-flow-panel__title">');
+        expect(html).toContain('Four crystals.');
         expect(html).toContain('<div id="start-flow-copy" class="start-flow-panel__copy">');
         expect(html).toContain('<div id="start-flow-steps" class="start-flow-panel__steps">');
         expect(html).not.toContain('id="start-flow-panel" class="window" style="position: relative; top: auto; left: auto; transform: none; width: min(560px, calc(100vw - 40px)); margin: 0 auto 20px auto; display: flex; flex-direction: column; gap: 10px;"');
         expect(html).not.toContain('<div style="padding: 16px; display: flex; flex-direction: column; gap: 10px; text-align: left;">');
         expect(html).not.toContain('id="start-flow-title" style="color: #ffd700; font-size: 20px; font-weight: bold;"');
 
-        expect(css).toMatch(/\.start-flow-panel\s*\{[^}]*position:\s*relative;[^}]*top:\s*auto;[^}]*left:\s*auto;[^}]*transform:\s*none;[^}]*width:\s*min\(560px, calc\(100vw - 40px\)\);[^}]*margin:\s*0 auto 20px auto;[^}]*display:\s*flex;[^}]*flex-direction:\s*column;[^}]*gap:\s*10px;/s);
-        expect(css).toMatch(/\.start-flow-panel__body\s*\{[^}]*padding:\s*16px;[^}]*display:\s*flex;[^}]*flex-direction:\s*column;[^}]*gap:\s*10px;[^}]*text-align:\s*left;/s);
-        expect(css).toMatch(/\.start-flow-panel__title\s*\{[^}]*color:\s*#ffd700;[^}]*font-size:\s*20px;[^}]*font-weight:\s*bold;/s);
-        expect(css).toMatch(/\.start-flow-panel__copy\s*\{[^}]*color:\s*#ddd;[^}]*line-height:\s*1\.5;/s);
-        expect(css).toMatch(/\.start-flow-panel__steps\s*\{[^}]*color:\s*#aaa;[^}]*font-size:\s*14px;[^}]*line-height:\s*1\.6;/s);
+        expect(css).toMatch(/\.start-flow-panel\s*\{[^}]*min-width:\s*0;/s);
+        expect(css).toMatch(/\.start-flow-panel__body\s*\{[^}]*display:\s*flex;[^}]*flex-direction:\s*column;/s);
+        expect(css).toMatch(/\.start-flow-panel__title\s*\{[^}]*font-size:\s*clamp\(/s);
+        expect(css).toMatch(/\.start-flow-panel__copy\s*\{[^}]*line-height:\s*1\.7;/s);
+        expect(css).toMatch(/\.start-flow-panel__steps\s*\{[^}]*line-height:\s*1\.6;/s);
     });
 
     test('auth entry controls use shared classes instead of inline chrome', () => {
         const html = readFileSync(indexHtmlPath, 'utf8');
         const css = readFileSync(startScreenCssPath, 'utf8');
 
-        expect(html).toContain('<div class="auth-panel__title">LOGIN / REGISTER</div>');
+        expect(html).toContain('<div class="auth-panel__title">Welcome, traveler</div>');
         expect(html).toContain('<div class="auth-panel__actions">');
         expect(html).toContain('<button id="btn-login" class="auth-btn auth-btn--fill">Login</button>');
         expect(html).toContain('<button id="btn-register" class="auth-btn auth-btn--fill">Register</button>');
-        expect(html).toContain('<div id="auth-status" class="auth-status"></div>');
+        expect(html).toContain('<div id="auth-status" class="auth-status" role="status" aria-live="polite"></div>');
+        for (const field of ['username', 'email', 'password']) {
+            expect(html).toContain(`<label class="auth-field" for="auth-${field}">`);
+        }
         expect(html).toContain('<div id="play-container" class="play-container">');
         expect(html).toContain('<button id="btn-play-character" class="menu-btn play-container__button">ENTER WORLD</button>');
         expect(html).not.toContain('<div style="text-align: center; font-size: 1.2rem; color: #ffd700; margin-bottom: 10px; font-weight: bold;">LOGIN / REGISTER</div>');
@@ -1211,12 +1230,12 @@ describe('menu polish regressions', () => {
         expect(html).not.toContain('<div id="auth-status" style="color: #ffeb3b; font-size: 14px; text-align: center; min-height: 20px;"></div>');
         expect(html).not.toContain('<div id="play-container" style="display: none; text-align: center; margin-top: 20px;">');
 
-        expect(css).toMatch(/\.auth-panel__title\s*\{[^}]*text-align:\s*center;[^}]*font-size:\s*1\.2rem;[^}]*color:\s*#ffd700;[^}]*margin-bottom:\s*10px;[^}]*font-weight:\s*bold;/s);
+        expect(css).toMatch(/\.auth-panel__title\s*\{[^}]*font-family:\s*Georgia,/s);
         expect(css).toMatch(/\.auth-panel__actions\s*\{[^}]*display:\s*flex;[^}]*gap:\s*10px;[^}]*margin-top:\s*10px;/s);
         expect(css).toMatch(/\.auth-btn--fill\s*\{[^}]*flex:\s*1;/s);
-        expect(css).toMatch(/\.auth-status\s*\{[^}]*color:\s*#ffeb3b;[^}]*font-size:\s*14px;[^}]*text-align:\s*center;[^}]*min-height:\s*20px;/s);
-        expect(css).toMatch(/\.play-container\s*\{[^}]*display:\s*none;[^}]*text-align:\s*center;[^}]*margin-top:\s*20px;/s);
-        expect(css).toMatch(/\.play-container__button\s*\{[^}]*font-size:\s*24px;[^}]*padding:\s*15px 50px;[^}]*background:\s*#4CAF50;[^}]*border:\s*2px solid #45a049;[^}]*box-shadow:\s*0 0 20px rgba\(76, 175, 80, 0\.5\);/s);
+        expect(css).toMatch(/\.auth-status\s*\{[^}]*text-align:\s*center;[^}]*min-height:\s*20px;/s);
+        expect(css).toMatch(/\.play-container\s*\{[^}]*display:\s*none;/s);
+        expect(css).toMatch(/#start-screen \.play-container__button\s*\{[^}]*min-height:\s*56px;/s);
     });
 
     test('death overlay uses reusable closeout classes instead of inline chrome', () => {
@@ -1253,13 +1272,16 @@ describe('menu polish regressions', () => {
         expect(html).not.toContain('style="width: 100%; text-align: center; color: #8ec5ff; margin-bottom: 6px; font-size: 13px;"');
         expect(html).not.toContain('style="width: 100%; text-align: center; color: #ffd27a; margin-bottom: 6px; font-size: 13px;"');
 
-        expect(css).toMatch(/\.class-selection__title,[\s\S]*\.class-selection__description\s*\{[^}]*width:\s*100%;[^}]*text-align:\s*center;/s);
-        expect(css).toMatch(/\.class-selection__title\s*\{[^}]*color:\s*#aaa;[^}]*margin-bottom:\s*10px;/s);
-        expect(css).toMatch(/\.class-selection__description\s*\{[^}]*margin-bottom:\s*6px;[^}]*font-size:\s*13px;/s);
-        expect(css).toMatch(/\.class-selection__description--fighter\s*\{[^}]*color:\s*#8ec5ff;/s);
-        expect(css).toMatch(/\.class-selection__description--rogue\s*\{[^}]*color:\s*#9ee6a0;/s);
-        expect(css).toMatch(/\.class-selection__description--wizard\s*\{[^}]*color:\s*#caa8ff;/s);
-        expect(css).toMatch(/\.class-selection__description--cleric\s*\{[^}]*color:\s*#ffd27a;/s);
+        expect(css).toMatch(/\.class-selection__title,[\s\S]*\.class-selection__description\s*\{[^}]*width:\s*100%;[^}]*text-align:\s*left;/s);
+        expect(css).toMatch(/\.class-selection__description\s*\{[^}]*font-size:\s*13px;[^}]*line-height:\s*1\.45;/s);
+        const start = new DOMParser().parseFromString(html, 'text/html').getElementById('start-screen');
+        for (const type of ['Fighter', 'Rogue', 'Wizard', 'Cleric']) {
+            const button = start.querySelector(`.class-btn[data-type="${type}"]`);
+            const name = button.querySelector(`#${button.getAttribute('aria-labelledby')}`);
+            const description = button.querySelector(`#${button.getAttribute('aria-describedby')}`);
+            expect(name.textContent).toBe(type);
+            expect(description.textContent.length).toBeGreaterThan(20);
+        }
     });
 
     test('loading overlay uses shared shell title progress and text classes', () => {
@@ -1336,7 +1358,7 @@ describe('menu polish regressions', () => {
         expect(html).not.toContain('<select id="report-type" style="padding: 10px; background: #333; color: white; border: 1px solid #666; font-family: inherit;">');
         expect(html).not.toContain('<textarea id="report-text" rows="8" placeholder="Describe your issue or idea..." style="padding: 10px; background: #333; color: white; border: 1px solid #666; resize: none; font-family: inherit;"></textarea>');
 
-        expect(css).toMatch(/\.support-field__control\s*\{[^}]*padding:\s*10px;[^}]*background:\s*#333;[^}]*color:\s*#fff;[^}]*border:\s*1px solid #666;[^}]*font-family:\s*inherit;/s);
+        expect(css).toMatch(/\.support-field__control\s*\{[^}]*padding:\s*10px;[^}]*background:\s*var\(--bg-input\);[^}]*color:\s*var\(--color-white\);[^}]*border:\s*1px solid var\(--border-light\);[^}]*font-family:\s*inherit;/s);
         expect(css).toMatch(/\.support-field__textarea\s*\{[^}]*resize:\s*none;/s);
     });
 
@@ -1371,9 +1393,9 @@ describe('menu polish regressions', () => {
 
         expect(css).toMatch(/\.support-field\s*\{[^}]*display:\s*flex;[^}]*flex-direction:\s*column;[^}]*gap:\s*8px;[^}]*text-align:\s*left;/s);
         expect(css).toMatch(/\.support-field__row\s*\{[^}]*justify-content:\s*space-between;[^}]*align-items:\s*center;[^}]*gap:\s*12px;/s);
-        expect(css).toMatch(/\.support-field__label\s*\{[^}]*color:\s*#ffd700;[^}]*font-size:\s*13px;/s);
-        expect(css).toMatch(/\.support-field__hint\s*\{[^}]*font-size:\s*12px;[^}]*color:\s*#aaa;[^}]*line-height:\s*1\.4;/s);
-        expect(css).toMatch(/\.support-field__control\s*\{[^}]*padding:\s*10px;[^}]*background:\s*#333;[^}]*border:\s*1px solid #666;/s);
+        expect(css).toMatch(/\.support-field__label\s*\{[^}]*color:\s*var\(--color-gold\);[^}]*font-size:\s*13px;/s);
+        expect(css).toMatch(/\.support-field__hint\s*\{[^}]*font-size:\s*12px;[^}]*color:\s*var\(--color-text-muted\);[^}]*line-height:\s*1\.4;/s);
+        expect(css).toMatch(/\.support-field__control\s*\{[^}]*padding:\s*10px;[^}]*background:\s*var\(--bg-input\);[^}]*border:\s*1px solid var\(--border-light\);/s);
     });
 
     test('ui scale uses shared css token on the ui layer', () => {
@@ -1559,7 +1581,7 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/\.abilities-menu\s*\{[^}]*width:\s*min\(380px, calc\(100vw - 24px\)\);[^}]*height:\s*fit-content;[^}]*min-height:\s*min\(180px, calc\(100vh - 24px\)\);/s);
         expect(css).toMatch(/\.split-stack-window\s*\{[^}]*width:\s*min\(250px, calc\(100vw - 24px\)\);[^}]*max-height:\s*calc\(100vh - 24px\);[^}]*overflow:\s*hidden;/s);
         expect(css).toMatch(/\.split-stack-content\s*\{[^}]*max-height:\s*calc\(100vh - 110px\);[^}]*overflow-y:\s*auto;/s);
-        expect(css).toMatch(/#character-sheet\s*\{[^}]*width:\s*min\(420px, calc\(100vw - 24px\)\);[^}]*height:\s*fit-content;/s);
+        expect(css).toMatch(/#character-sheet\s*\{[^}]*width:\s*min\(600px, calc\(100vw - 24px\)\);[^}]*height:\s*fit-content;/s);
         expect(css).toMatch(/#inventory-screen\s*\{[^}]*width:\s*min\(360px, calc\(100vw - 24px\)\);[^}]*height:\s*fit-content;/s);
         expect(css).toMatch(/#abilities-content,[\s\S]*#inventory-grid\s*\{[^}]*min-height:\s*0;[^}]*overflow-y:\s*auto;/);
         expect(css).toMatch(/\.abilities-content\s*\{[^}]*display:\s*grid;[^}]*grid-template-columns:\s*repeat\(4, 1fr\);/s);
@@ -1610,7 +1632,7 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/\.inventory-footer\s*\{[^}]*display:\s*flex;[^}]*align-items:\s*center;[^}]*justify-content:\s*space-between;[^}]*border-top:\s*1px solid var\(--border-default\);/s);
         expect(css).toMatch(/\.inventory-sort-button\s*\{[^}]*padding:\s*6px 12px;[^}]*background:\s*linear-gradient\(180deg, #2b3442 0%, #18212c 100%\);[^}]*letter-spacing:\s*0\.05em;/s);
         expect(css).toMatch(/\.inventory-gold-display\s*\{[^}]*color:\s*var\(--color-gold\);[^}]*font-weight:\s*bold;[^}]*text-align:\s*right;/s);
-        expect(css).toMatch(/\.inventory-guidance\s*\{[^}]*color:\s*#8fb7d9;[^}]*line-height:\s*1\.5;[^}]*border-top:\s*1px solid #2a3340;/s);
+        expect(css).toMatch(/\.inventory-guidance\s*\{[^}]*color:\s*var\(--color-text-muted\);[^}]*line-height:\s*1\.5;[^}]*border-top:\s*1px solid #2a3340;/s);
     });
 
     test('split stack dialog chrome uses shared classes', () => {

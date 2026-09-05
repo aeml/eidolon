@@ -241,10 +241,10 @@ export class InventoryUI {
     }
     _buildInventoryGuidance(player) {
         if (!this._isStarterProgressionWindow(player)) {
-            return 'Sort your bag often. Shards handle item levels, Hearts handle long-term empowerment and sockets, and gems are worth stashing or forging instead of selling by accident.';
+            return 'Shards: levels · Hearts: power and sockets · Gems: Forge. Trade valuable drops; stash what you want to keep.';
         }
 
-        return 'Common gear is usually vendor junk unless it is an immediate upgrade. Uncommon and Rare gear are worth checking. Shards raise item level, Hearts empower gear or add sockets, gems are crafting pieces, and the Trading House is for drops actually worth listing.';
+        return 'Compare gear before selling. Shards raise item level; Hearts add power and sockets. Save gems for the Forge.';
     }
     _buildStarterItemGuidance(item, player) {
         if (!item || !this._isStarterProgressionWindow(player)) return '';
@@ -346,7 +346,6 @@ export class InventoryUI {
         }
     }
     _getItemInnerHtml(item, iconPath) {
-        const color = item.rarity ? item.rarity.color : '#ffffff';
         const isEidolic = item.rarity && item.rarity.name === 'Eidolic';
         const gemSlotStyle = this._getGemSlotStyle(item);
 
@@ -358,7 +357,9 @@ export class InventoryUI {
             return `<div style="width:100%; height:100%; background-image:${gemSlotStyle.overlay}, url('${iconPath}'); background-color:${gemSlotStyle.backgroundColor}; background-size:cover, contain; background-repeat:no-repeat; background-position:center;"></div>`;
         }
 
-        return `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-color:${color}; background-blend-mode:multiply; background-size:contain; background-repeat:no-repeat; background-position:center;"></div>`;
+        // The icon already describes wood, cloth and metal. Rarity belongs on
+        // its frame; multiplying the whole image by blue/green erases that art.
+        return `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-size:contain; background-repeat:no-repeat; background-position:center;"></div>`;
     }
     _applyItemSlotVisual(slotEl, item, iconPath, extraHtml = '') {
         const color = item.rarity ? item.rarity.color : '#ffffff';
@@ -640,6 +641,7 @@ export class InventoryUI {
     updateEquipSlot(id, item, placeholder, serverSlotName) {
         const el = document.getElementById(id);
         if (!el) return;
+        const hadFocus = document.activeElement === el;
 
         el._item = (item && item.id) ? item : null;
         el.innerHTML = '';
@@ -651,6 +653,7 @@ export class InventoryUI {
         const slotEl = newEl;
         slotEl._item = (item && item.id) ? item : null;
         const slotId = serverSlotName || id.replace('slot-', '');
+        slotEl.setAttribute('aria-label', item?.id ? `${placeholder}: ${item.name || 'Equipped item'}. Activate to unequip.` : `${placeholder}: empty`);
 
         if (item && item.id) {
             const iconPath = this._getItemIconPath(item);
@@ -664,7 +667,7 @@ export class InventoryUI {
                 potencyDiv.style.position = 'absolute';
                 potencyDiv.style.top = '2px';
                 potencyDiv.style.right = '2px';
-                potencyDiv.style.color = '#00ff00';
+                potencyDiv.style.color = '#a5cbb0';
                 potencyDiv.style.fontWeight = 'bold';
                 potencyDiv.style.fontSize = '12px';
                 potencyDiv.style.textShadow = '1px 1px 0 #000';
@@ -675,6 +678,7 @@ export class InventoryUI {
             // Click to unequip
             slotEl.onclick = (e) => {
                 e.stopPropagation();
+                this.hideTooltips();
                 if (this.onUnequipRequest) this.onUnequipRequest(slotId);
             };
 
@@ -684,16 +688,22 @@ export class InventoryUI {
                 this.showItemTooltip(item, rect.right + 10, rect.top);
             });
             slotEl.addEventListener('mouseleave', () => this.hideTooltips());
+            slotEl.addEventListener('focus', () => {
+                const rect = slotEl.getBoundingClientRect();
+                this.showItemTooltip(item, rect.right + 10, rect.top);
+            });
+            slotEl.addEventListener('blur', () => this.hideTooltips());
         } else {
             slotEl.textContent = placeholder;
-            slotEl.style.color = '#666';
-            slotEl.style.border = '1px solid #444';
-            slotEl.style.borderColor = '#444';
+            slotEl.style.color = '#aeb9c8';
+            slotEl.style.border = '1px solid #b99b6240';
+            slotEl.style.borderColor = '#b99b6240';
             slotEl.style.boxShadow = 'none';
             slotEl.title = 'Empty Slot';
             slotEl.onclick = null;
             this.setupItemDragAndDrop(slotEl, 'equipment', slotId, null);
         }
+        if (hadFocus) slotEl.focus({ preventScroll: true });
     }
 
     // ================================================================

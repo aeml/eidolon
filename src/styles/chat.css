@@ -14,7 +14,8 @@
     min-width: 280px;
     min-height: 180px;
     max-width: calc(100vw - 40px);
-    max-height: calc(100vh - 110px);
+    /* Leave room for the player HUD and a scrollable party roster. */
+    max-height: max(180px, calc(100vh - 332px));
     background: rgba(9, 12, 18, 0.94);
     border: 1px solid rgba(255, 215, 0, 0.32);
     border-radius: var(--radius-md);
@@ -29,7 +30,8 @@
 }
 
 .chat-tabs {
-    display: flex;
+    display: grid;
+    grid-template-columns: 0.8fr 1fr 1fr 1.5fr 1fr;
     align-items: stretch;
     flex: 0 0 auto;
     min-height: 34px;
@@ -40,16 +42,21 @@
 
 .chat-tab {
     position: relative;
-    min-width: 62px;
-	padding: 7px 10px;
+    min-width: 0;
+    padding: 7px 3px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
     border: 0;
     border-right: 1px solid var(--border-default);
     background: transparent;
     color: var(--color-text-muted);
     font: inherit;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.02em;
     text-transform: uppercase;
     cursor: pointer;
 }
@@ -73,7 +80,7 @@
     justify-content: center;
     min-width: 16px;
     height: 16px;
-    margin-left: 4px;
+    margin-left: 0;
     padding: 0 4px;
     border-radius: 999px;
     background: #b94747;
@@ -87,6 +94,7 @@
 }
 
 .chat-tabs__resize-hint {
+    display: none;
     align-self: center;
     margin-left: auto;
     padding: 0 9px;

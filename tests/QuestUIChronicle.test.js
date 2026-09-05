@@ -73,4 +73,20 @@ describe('QuestUI Fourfold Chronicle', () => {
         }));
         expect(summary[0].hint).toContain('Recover 4 Verdant Memory Seeds');
     });
+
+    test('keeps the story primary in town while retaining explicit respawn recovery', () => {
+        let recovery = null;
+        const ui = new QuestUI({
+            getLastPlayer: () => ({ level: 5, position: { x: 0, z: 200 } }),
+            getCurrentInstanceId: () => '', getCurrentInstanceType: () => 'overworld',
+            getOnboardingRecoveryContext: () => recovery
+        });
+        expect(ui.buildObjectiveSummary([chronicleQuest()])[0].id).toBe('chronicle_02_seeds_first_grove');
+        recovery = { reason: 'town_return' };
+        expect(ui.buildObjectiveSummary([chronicleQuest()])[0].id).toBe('chronicle_02_seeds_first_grove');
+        recovery = { reason: 'respawn' };
+        const summary = ui.buildObjectiveSummary([chronicleQuest()]);
+        expect(summary[0].id).toBe('starter-town-recovery-respawn');
+        expect(summary[1].id).toBe('chronicle_02_seeds_first_grove');
+    });
 });

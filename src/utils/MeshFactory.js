@@ -60,6 +60,7 @@ import {
     createProceduralOverworldEnemy
 } from '../art/ProceduralOverworldEnemies.js';
 import { createProceduralLanternholdStructure } from '../art/ProceduralLanternholdArchitecture.js';
+import { createProceduralDarkKing } from '../art/ProceduralDarkKing.js';
 
 // New dungeon and raid enemies deliberately recompose existing production
 // rigs. Keep that relationship in the factory as well as GameEngine so direct
@@ -71,7 +72,6 @@ export const PROCEDURAL_MESH_ALIASES = Object.freeze({
     DissonantHerald: 'Stormcallers',
     NullArchitect: 'ObsidianGuardian',
     EidolonDevourer: 'HollowSentinel',
-    UmbraPrime: 'HollowSentinel',
     GravenColossus: 'HollowSentinel',
     TideboundTyrant: 'Thalorath',
     AshenImperator: 'LordInfernax',
@@ -714,6 +714,8 @@ export class MeshFactory {
     static async createMeshForType(type) {
         const pooled = this.getPooledMesh(type);
         if (pooled) return pooled;
+
+        if (type === 'UmbraPrime') return createProceduralDarkKing();
 
         const aliasedType = PROCEDURAL_MESH_ALIASES[type];
         if (aliasedType) {

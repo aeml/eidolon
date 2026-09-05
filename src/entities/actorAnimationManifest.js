@@ -117,8 +117,8 @@ export const ACTOR_ANIMATION_MANIFEST = Object.freeze({
     EidolonDevourer: entry('enemy', 'recomposed procedural Hollow Sentinel rig', WALKING_ENEMY_CLIPS, {
         special: 'eidolon seam crown, memory maw, and final-dungeon telegraphs'
     }),
-    UmbraPrime: entry('enemy', 'recomposed procedural Hollow Sentinel raid rig', WALKING_ENEMY_CLIPS, {
-        special: 'weekly raid scale, rotating void crown, and lethal null-zone telegraphs'
+    UmbraPrime: entry('enemy', 'procedural Broken Covenant sovereign on the Sentinel animation rig', WALKING_ENEMY_CLIPS, {
+        special: 'fractured crown, royal mantle, bound elemental seals, oathbreaker blade and lethal null-zone telegraphs'
     }),
     GravenColossus: entry('enemy', 'recomposed procedural Hollow Sentinel raid rig', WALKING_ENEMY_CLIPS, {
         special: 'Rootheart Sanctum raid guardian and crystal-vigil transition'

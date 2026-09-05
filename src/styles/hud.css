@@ -15,7 +15,7 @@
     width: 100%;
     height: 20px;
     background: var(--bg-dark-medium);
-    border: 2px solid var(--border-default);
+    border: 1px solid var(--border-light);
     margin-bottom: var(--spacing-sm);
     position: relative;
     border-radius: var(--radius-md);
@@ -59,7 +59,7 @@
     font-family: var(--font-primary);
     letter-spacing: 0.5px;
     pointer-events: none;
-    z-index: var(--z-game-timer);
+    z-index: calc(var(--z-tooltip) + 1);
     display: none;
 }
 
@@ -90,35 +90,39 @@
     position: fixed;
     top: 20px;
     left: 20px;
-    font-size: 28px;
-    font-weight: 700;
-    color: #ffeb3b;
-    text-shadow: 0 0 10px rgba(255, 0, 0, 0.5), 2px 2px 0 #000;
-    font-family: var(--font-display);
-    background: linear-gradient(180deg, #2a0a0a 0%, #1a0505 100%);
-    padding: 8px 20px;
-    border: 2px solid var(--color-gold);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-gold);
+    text-shadow: 0 1px 2px #000;
+    font-family: var(--font-primary);
+    font-variant-numeric: tabular-nums;
+    background: var(--bg-panel);
+    padding: 8px 12px;
+    border: 1px solid var(--border-default);
     border-radius: var(--radius-md);
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(139, 0, 0, 0.3);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     display: none;
     align-items: center;
     justify-content: center;
     min-width: 120px;
     z-index: var(--z-game-timer);
-    letter-spacing: 2px;
+    letter-spacing: 0.04em;
 }
 
 #game-timer::before {
-    content: '\2694\FE0F'; /* crossed swords emoji */
-    margin-right: 12px;
-    font-size: 20px;
-    filter: drop-shadow(0 0 2px var(--color-gold));
+    content: '';
+    width: 6px;
+    height: 6px;
+    border: 1px solid var(--color-gold);
+    transform: rotate(45deg);
+    margin-right: 10px;
 }
 
 #objectives-panel {
     display: none;
+    flex-direction: column;
     position: fixed;
-    top: 88px;
+    top: 66px;
     left: 20px;
     width: min(320px, calc(100vw - 40px));
     max-height: calc(100vh - 260px);
@@ -130,6 +134,7 @@
 
 #combat-intent-panel {
     display: none;
+    pointer-events: none;
     position: fixed;
     top: 232px;
     right: 20px;
@@ -251,6 +256,7 @@
 
 #dungeon-entrance-hint {
     display: none;
+    pointer-events: none;
     position: fixed;
     top: 376px;
     right: 20px;
@@ -331,16 +337,13 @@
 }
 
 .objectives-panel__header {
-    padding: 8px 12px;
-    border: 1px solid rgba(255, 215, 0, 0.45);
-    border-radius: var(--radius-md);
-    background: linear-gradient(180deg, rgba(44, 24, 8, 0.95) 0%, rgba(20, 12, 6, 0.92) 100%);
+    padding: 3px 0;
     color: var(--color-gold);
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 1.8px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    text-shadow: 0 1px 3px #000;
 }
 
 .objectives-panel__list {
@@ -390,7 +393,7 @@
 .objective-entry {
     background: rgba(10, 12, 18, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-left: 3px solid rgba(255, 215, 0, 0.6);
+    border-left: 2px solid rgba(213, 187, 135, 0.55);
     border-radius: var(--radius-md);
     padding: 10px 12px;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
@@ -405,16 +408,23 @@
 
 .objective-entry__title-wrap {
     display: inline-flex;
-    align-items: center;
-    gap: 8px;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
     min-width: 0;
 }
 
 .objective-entry__title {
     color: #f2f2f2;
     font-size: 13px;
-    font-weight: 700;
+    font-weight: 600;
 }
+
+.objective-guidance { background: linear-gradient(145deg, #1f2936f2, #111923ed); }
+.objective-guidance__heading { color: var(--color-gold); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 7px; }
+.objective-guidance__cadence, .objective-guidance__sequence, .objective-guidance__footer { font-size: 11px; line-height: 1.5; margin-top: 6px; color: #a6bfd6; }
+.objective-guidance__sequence { color: #d5bb87; }
+.objective-guidance__footer { color: var(--color-text-muted); border-top: 1px solid #b99b6226; padding-top: 6px; }
 
 .objective-entry__badge {
     display: inline-flex;
@@ -493,7 +503,7 @@
 }
 
 .objective-entry__status {
-    color: #ffd966;
+    color: var(--color-gold);
     font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
@@ -507,7 +517,7 @@
 
 .objective-entry__progress {
     margin-top: 8px;
-    height: 8px;
+    height: 4px;
     background: rgba(255, 255, 255, 0.08);
     border-radius: 999px;
     overflow: hidden;
@@ -516,7 +526,7 @@
 .objective-entry__progress-fill {
     height: 100%;
     border-radius: 999px;
-    background: linear-gradient(90deg, #c18b2d 0%, #ffd966 100%);
+    background: linear-gradient(90deg, #987b47 0%, #d5bb87 100%);
 }
 
 .objective-entry__progress-fill.is-complete {

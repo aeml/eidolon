@@ -340,6 +340,44 @@ describe('UIManager HUD diffing', () => {
         expect(document.getElementById('stats-content').textContent).toContain('18');
     });
 
+    test('reflows managed windows when rendered contents resize and replaces the old observer safely', () => {
+        const original = globalThis.ResizeObserver;
+        globalThis.ResizeObserver = class {
+            constructor(callback) { this.callback = callback; }
+            observe = jest.fn();
+            disconnect = jest.fn();
+        };
+        try {
+            buildDom();
+            const ui = new UIManager(false);
+            const observer = ui.windowLayoutObserver;
+            const reflow = jest.spyOn(ui, 'reflowVisibleWindows');
+            observer.callback();
+            expect(reflow).toHaveBeenCalledTimes(1);
+            expect(observer.observe).toHaveBeenCalledWith(ui.characterSheet);
+            ui.registerWindowLayouts();
+            expect(observer.disconnect).toHaveBeenCalledTimes(1);
+            expect(ui.windowLayoutObserver).not.toBe(observer);
+            ui.windowLayoutObserver.disconnect();
+        } finally {
+            if (original === undefined) delete globalThis.ResizeObserver;
+            else globalThis.ResizeObserver = original;
+        }
+    });
+
+    test('character diff includes resonance spending and equipment appearance changes', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        const player = createPlayer({ level: 100, resonancePoints: 1, resonanceRanks: { power: 0 }, equipment: { head: { id: 'same-helm', name: 'Iron Helm', level: 1 } } });
+        const initial = ui.serializeCharacterSheet(player);
+        player.resonanceRanks.power = 1;
+        player.resonancePoints = 0;
+        expect(ui.serializeCharacterSheet(player)).not.toBe(initial);
+        const spent = ui.serializeCharacterSheet(player);
+        player.equipment.head.level = 50;
+        expect(ui.serializeCharacterSheet(player)).not.toBe(spent);
+    });
+
     test('toggleCharacterSheet refreshes visible contents each time the panel opens', () => {
         buildDom();
         const ui = new UIManager(false);

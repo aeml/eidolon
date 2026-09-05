@@ -53,6 +53,17 @@ function createInventory(player) {
 }
 
 describe('Inventory sorting', () => {
+    test('item material colors remain visible while rarity stays on the slot frame', () => {
+        buildDom();
+        const inventory = createInventory({ inventory: [], equipment: {} });
+        const slot = document.querySelector('.inv-slot');
+        inventory._applyItemSlotVisual(slot, { name: 'Iron Sword', rarity: { name: 'Rare', color: '#0070dd' } }, '/test-icon.svg');
+        expect(slot.style.borderColor).toBe('rgb(0, 112, 221)');
+        expect(slot.firstElementChild.style.backgroundImage).toContain('/test-icon.svg');
+        expect(slot.firstElementChild.style.backgroundBlendMode).toBe('');
+        expect(slot.firstElementChild.style.backgroundColor).toBe('');
+    });
+
     test('sorts hearts, shards, gems, then items from top left', () => {
         buildDom();
         const player = {
@@ -118,10 +129,10 @@ describe('Inventory sorting', () => {
 
         inventory.updateInventory(player);
 
-        expect(document.getElementById('inventory-guidance').textContent).toContain('Common gear is usually vendor junk unless it is an immediate upgrade');
+        expect(document.getElementById('inventory-guidance').textContent).toContain('Compare gear before selling');
         expect(document.getElementById('inventory-guidance').textContent).toContain('Shards raise item level');
-        expect(document.getElementById('inventory-guidance').textContent).toContain('Hearts empower gear or add sockets');
-        expect(document.getElementById('inventory-guidance').textContent).toContain('Trading House');
+        expect(document.getElementById('inventory-guidance').textContent).toContain('Hearts add power and sockets');
+        expect(document.getElementById('inventory-guidance').textContent).toContain('Save gems for the Forge');
     });
 
     test('starter item tooltips explain why shards and gems should be kept', () => {

@@ -6,8 +6,7 @@ function buildQuestDom() {
         <div id="quest-list"></div>
         <div id="quest-journal" style="display:none"></div>
         <div id="journal-list"></div>
-        <div id="objectives-panel" style="display:none"></div>
-        <div id="objectives-list"></div>
+        <div id="objectives-panel" style="display:none"><div id="objectives-list"></div></div>
         <button id="btn-close-quest"></button>
         <button id="btn-close-journal"></button>
     `;
@@ -58,7 +57,7 @@ describe('QuestUI objectives panel', () => {
         expect(list.innerHTML).toContain('1 / 3');
         expect(list.innerHTML).toContain('2 remaining');
         expect(list.innerHTML).toContain('Kill Abyssal Well Boss');
-        expect(list.innerHTML).toContain('Reward: 900 XP');
+        expect(list.innerHTML).toContain('Return for your reward: 900 XP');
         expect(list.querySelectorAll('.objective-entry__status.is-complete')).toHaveLength(1);
     });
 
@@ -201,7 +200,9 @@ describe('QuestUI objectives panel', () => {
         expect(guidance.textContent).toContain('Forge');
         expect(guidance.textContent).toContain('World Map (M)');
         expect(guidance.textContent).toContain('Journal (J)');
-        expect(guidance.textContent).toContain('Closed a menu or got turned around?');
+        expect(guidance.querySelector('.objective-guidance__footer').textContent).toBe('World Map (M) · Journal (J)');
+        expect(panel.querySelectorAll('.objective-entry__title')).toHaveLength(2);
+        expect(list.firstChild).toBe(guidance);
         expect(list.children).toHaveLength(2);
         expect(list.firstChild.textContent).toContain('Recover in town and re-orient');
         expect(list.textContent).toContain('Kill Dungeon Bosses');

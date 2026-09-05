@@ -192,6 +192,22 @@ class UIManagerWindowMethods {
             ['report', { element: this.reportScreen, display: 'block', group: 'modal', placement: 'center' }],
             ['patchNotes', { element: this.patchNotesScreen, display: 'flex', group: 'modal', placement: 'center' }]
         ]);
+        this.windowLayouts.forEach(({ element, group }, id) => {
+            // The fullscreen world map owns a separate overlay layer.
+            if (element && id !== 'map') {
+                element.dataset.windowLayer = group === 'modal' ? 'modal' : 'panel';
+            }
+        });
+        // Windows are opened before some of their contents arrive/render. A
+        // size change must re-clamp the populated panel, not just its empty
+        // placeholder. Position-only reflow does not retrigger this observer.
+        this.windowLayoutObserver?.disconnect();
+        if (typeof ResizeObserver !== 'undefined') {
+            this.windowLayoutObserver = new ResizeObserver(() => this.reflowVisibleWindows());
+            this.windowLayouts.forEach(({ element }) => {
+                if (element) this.windowLayoutObserver.observe(element);
+            });
+        }
     }
 
     isWindowOpen(id) {

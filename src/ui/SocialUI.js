@@ -374,9 +374,10 @@ export class SocialUI {
         const nearbyBonusPct = Math.max(10, members.length * 10);
 
         if (panelGuidance) {
-            panelGuidance.textContent = amILeader
+            panelGuidance.title = amILeader
                 ? `Leader view: keep members nearby to share kill credit, gold, XP, and dungeon boss rewards. Current nearby party bonus target reads +${nearbyBonusPct}% before dungeon difficulty multipliers.`
                 : `Party rewards are proximity-based: stay near the group to share kill credit, gold, XP, and dungeon boss rewards. A full nearby party currently targets about +${nearbyBonusPct}% bonus rewards before difficulty scaling.`;
+            panelGuidance.textContent = `${amILeader ? 'Leader view' : 'Stay together'} · nearby allies share rewards (+${nearbyBonusPct}% target).`;
         }
 
         members.forEach(member => {

@@ -6,6 +6,7 @@ import { TradingUI } from './TradingUI.js';
 import { QuestUI } from './QuestUI.js';
 import { SocialUI } from './SocialUI.js';
 import { InventoryUI } from './InventoryUI.js';
+import { CharacterPreview } from './CharacterPreview.js';
 import { ChatUI } from './ChatUI.js';
 import { DirectTradeUI } from './DirectTradeUI.js';
 import { PvPUI } from './PvPUI.js';
@@ -56,6 +57,8 @@ export class UIManager {
         this.xpText = document.getElementById('xp-text');
         this.characterSheet = document.getElementById('character-sheet');
         this.statsContent = document.getElementById('stats-content');
+        const previewHost = document.getElementById('character-preview');
+        this.characterPreview = previewHost ? new CharacterPreview(previewHost) : null;
 
         // Quest UI (extracted module)
         this.quest = new QuestUI({
@@ -523,6 +526,9 @@ export class UIManager {
         // Global Enter to open chat
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
+                // Let native controls handle activation/submission before the
+                // gameplay shortcut. Otherwise Enter steals focus from menus.
+                if (!this.chatInput?.isConnected || e.defaultPrevented || document.activeElement?.closest('button, input, textarea, select, a[href], [contenteditable]:not([contenteditable="false"])')) return;
                 if (this.chatInput && document.activeElement !== this.chatInput) {
                     e.preventDefault(); // Prevent other actions
                     this.chat.focusChatInput();
@@ -1090,6 +1096,13 @@ export class UIManager {
     updateBuybackList(items) { this.inventory.updateBuybackList(items); }
 
     handleEscape() {
+        // The topmost generated dialog owns Escape; closing it must not also
+        // open the pause menu underneath or dismiss other gameplay windows.
+        const dungeonDialog = document.getElementById('dungeon-menu-backdrop');
+        if (typeof dungeonDialog?.__closeMenu === 'function') {
+            dungeonDialog.__closeMenu();
+            return;
+        }
         let closedSomething = false;
 
         // Chat is a permanent gameplay surface. Escape may release keyboard

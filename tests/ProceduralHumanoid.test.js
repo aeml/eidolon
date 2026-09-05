@@ -170,8 +170,8 @@ describe('shared procedural humanoid Rogue', () => {
         expect(rogue.getObjectByName('Rogue_Lips')).not.toBeNull();
         expect(rogue.getObjectByName('Rogue_HipWrap').geometry.parameters.radiusBottom)
             .toBeGreaterThan(rogue.getObjectByName('Rogue_HipWrap').geometry.parameters.radiusTop);
-        expect(rogue.getObjectByName('Rogue_Jerkin').geometry.parameters.radiusBottom)
-            .toBeLessThan(rogue.getObjectByName('Rogue_Jerkin').geometry.parameters.radiusTop);
+        expect(rogue.getObjectByName('Rogue_Jerkin').geometry.parameters.points[0].x)
+            .toBeLessThan(rogue.getObjectByName('Rogue_Jerkin').geometry.parameters.points[2].x);
         expect(hasOnlyFiniteTransforms(rogue)).toBe(true);
     });
 
@@ -349,7 +349,7 @@ describe('shared procedural humanoid Cleric', () => {
         expect(bounds.min.y).toBeCloseTo(0, 1);
         expect(size.y).toBeGreaterThan(4.4);
         expect(size.y).toBeLessThan(4.7);
-        expect(size.x).toBeGreaterThan(2.2);
+        expect(size.x).toBeGreaterThan(2.1);
         expect(size.x).toBeLessThan(2.35);
         expect(cleric.getObjectByName('Cleric_Oathmace')).not.toBeNull();
         expect(cleric.getObjectByName('Rig_Censer')).not.toBeNull();
@@ -377,10 +377,10 @@ describe('shared procedural humanoid Cleric', () => {
         expect(cleric.getObjectByName('Cleric_BurialCloak')).toBeUndefined();
         expect(cleric.getObjectByName('Cleric_HipVestment').geometry.parameters.radiusBottom)
             .toBeGreaterThan(cleric.getObjectByName('Cleric_HipVestment').geometry.parameters.radiusTop);
-        expect(cleric.getObjectByName('Cleric_ReliquaryCuirass').geometry.parameters.radiusBottom)
-            .toBeLessThan(cleric.getObjectByName('Cleric_ReliquaryCuirass').geometry.parameters.radiusTop);
+        expect(cleric.getObjectByName('Cleric_ReliquaryCuirass').geometry.parameters.points[0].x)
+            .toBeLessThan(cleric.getObjectByName('Cleric_ReliquaryCuirass').geometry.parameters.points[2].x);
         expect(cleric.userData.equipmentScaleBySlot).toEqual(expect.objectContaining({
-            head: 0.5,
+            head: 0.86,
             shoulders: 0.6,
             chest: 0.62
         }));

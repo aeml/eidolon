@@ -1,4 +1,5 @@
 import { installPrototypeMethods } from '../core/PrototypeInstaller.js';
+import { equipmentVisualSignature } from '../art/ProceduralEquipment.js';
 
 class UIManagerCharacterMethods {
     updateXP(player) {
@@ -32,6 +33,8 @@ class UIManagerCharacterMethods {
         // Only update DOM if visible to save performance
         if (this.characterSheet.style.display === 'none') return;
 
+        if (this.characterSheet.style.display === 'block') this.characterPreview?.update(player);
+
         const signature = this.serializeCharacterSheet(player);
         if (signature === this.lastCharacterSheetSignature) {
             return;
@@ -47,7 +50,7 @@ class UIManagerCharacterMethods {
             const base = player.baseStats ? player.baseStats[statName] : total; // Fallback if baseStats missing
             const bonus = total - base;
             if (bonus > 0) {
-                return `${total} <span style="color:#0f0; font-size:0.9em;">(+${bonus})</span>`;
+                return `${total} <span class="character-stat-bonus">(+${bonus})</span>`;
             }
             return total;
         };
@@ -66,26 +69,23 @@ class UIManagerCharacterMethods {
             </div>` : '';
 
         this.statsContent.innerHTML = `
-            <div style="margin-bottom: 5px;">
-                <div><strong>Level:</strong> ${player.level}</div>
-                <div style="font-size: 0.8rem; color: #aaa;"><strong>XP:</strong> ${player.xp} / ${player.xpToNextLevel}</div>
-                ${showPoints ? `<div style="color: #ffd700;"><strong>Points:</strong> ${player.statPoints}</div>` : ''}
+            <div class="character-summary">
+                <strong>Level ${player.level}</strong>
+                <span>XP ${player.xp} / ${player.xpToNextLevel}</span>
+                ${showPoints ? `<span class="character-points">${player.statPoints} attribute points</span>` : ''}
             </div>
             ${resonance}
-            <div style="margin-bottom: 5px; border-top: 1px solid #444; padding-top: 2px;">
-                <div style="color: #ff4444;"><strong>HP:</strong> ${Math.ceil(player.stats.hp)} / ${player.stats.maxHp}</div>
-                <div style="color: #4444ff;"><strong>Mana:</strong> ${Math.ceil(player.stats.mana)} / ${player.stats.maxMana}</div>
+            <div class="character-vitals">
+                <span class="character-health">Health <strong>${Math.ceil(player.stats.hp)} / ${player.stats.maxHp}</strong></span>
+                <span class="character-mana">Mana <strong>${Math.ceil(player.stats.mana)} / ${player.stats.maxMana}</strong></span>
             </div>
-            <div style="margin-bottom: 5px; border-top: 1px solid #444; padding-top: 2px;">
-                <div class="stat-row" data-stat-name="strength"><strong>STR:</strong> ${fmtStat('strength')} <button class="stat-btn" data-stat="strength" style="${btnStyle}">+</button></div>
-                <div class="stat-row" data-stat-name="dexterity"><strong>DEX:</strong> ${fmtStat('dexterity')} <button class="stat-btn" data-stat="dexterity" style="${btnStyle}">+</button></div>
-                <div class="stat-row" data-stat-name="intelligence"><strong>INT:</strong> ${fmtStat('intelligence')} <button class="stat-btn" data-stat="intelligence" style="${btnStyle}">+</button></div>
-                <div class="stat-row" data-stat-name="vitality"><strong>VIT:</strong> ${fmtStat('vitality')} <button class="stat-btn" data-stat="vitality" style="${btnStyle}">+</button></div>
-                <div class="stat-row" data-stat-name="wisdom"><strong>WIS:</strong> ${fmtStat('wisdom')} <button class="stat-btn" data-stat="wisdom" style="${btnStyle}">+</button></div>
+            <div class="character-attributes">
+                ${[['strength', 'Strength'], ['dexterity', 'Dexterity'], ['intelligence', 'Intellect'], ['vitality', 'Vitality'], ['wisdom', 'Wisdom']].map(([stat, label]) => `
+                    <div class="stat-row" data-stat-name="${stat}"><strong>${label}</strong><span class="character-stat-value">${fmtStat(stat)}</span><button type="button" class="stat-btn" data-stat="${stat}" aria-label="Increase ${stat}" style="${btnStyle}">+</button></div>`).join('')}
             </div>
-            <div style="border-top: 1px solid #444; padding-top: 2px;">
-                <div><strong>DMG:</strong> ${player.stats.damage}</div>
-                <div><strong>DEF:</strong> ${player.stats.defense}</div>
+            <div class="character-combat-stats">
+                <span>Damage <strong>${player.stats.damage}</strong></span>
+                <span>Defense <strong>${player.stats.defense}</strong></span>
             </div>
         `;
 
@@ -127,6 +127,14 @@ class UIManagerCharacterMethods {
         ];
 
         return [
+            player?.subType || player?.meshType || '',
+            equipmentVisualSignature(equipment),
+            player?.resonanceUnlocked ? 1 : 0,
+            player?.resonanceLevel ?? 0,
+            player?.resonanceXP ?? 0,
+            player?.resonanceXPToNext ?? 0,
+            player?.resonancePoints ?? 0,
+            ...['power', 'ward', 'fortune'].map((trait) => player?.resonanceRanks?.[trait] ?? 0),
             player?.level ?? 0,
             player?.xp ?? 0,
             player?.xpToNextLevel ?? 0,

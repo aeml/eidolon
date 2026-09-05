@@ -8,10 +8,10 @@ This is the product-level roadmap and Alpha 1.0 closeout record. Per-patch histo
 
 ## Current Snapshot
 
-- Current in-game displayed version: `Alpha 1.0.0`
+- Current in-game displayed version: `Alpha 1.0.1`
 - Active implementation line: `Alpha 1.0` closeout and beta-readiness verification
 - The planned `0.50`, `0.60`, `0.70`, `0.80`, and `0.90` bands are implemented in the working tree
-- Current architecture measurements: `world.go` 1,422 LOC, `main.go` 938, `GameEngine.js` 2,306, and `UIManager.js` 1,203
+- Current architecture measurements: `world.go` 1,422 LOC, `main.go` 938, `GameEngine.js` 2,310, and `UIManager.js` 1,216
 - Release identity is aligned across the browser, server health endpoint, container defaults, deploy scripts, isolated QA, and CI
 - Production deployment remains a separate operator action; Alpha status here means the release candidate is implemented and locally verified, not that an uncommitted tree was deployed
 

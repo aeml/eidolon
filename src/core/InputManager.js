@@ -263,6 +263,8 @@ export class InputManager {
 
     onKeyDown(e) {
         const activeElement = document.activeElement;
+        // Native activation must not also cast or move focus to multiplayer chat.
+        if ((e.code === 'Space' || e.key === 'Enter') && activeElement?.closest('button, [role="button"], select, a[href]')) return;
         if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
             if (e.key === 'Escape') {
                 activeElement.blur();

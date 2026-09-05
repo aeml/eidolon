@@ -6,6 +6,7 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { CONSTANTS } from './Constants.js';
+import { createProceduralReflectionEnvironment } from '../art/ProceduralReflectionEnvironment.js';
 import {
     DUNGEON_THEME_KEYS,
     createRegionLightingPresets,
@@ -61,6 +62,9 @@ export class RenderSystem {
         this.renderer.outputColorSpace = THREE.SRGBColorSpace;
         this.renderer.toneMapping = THREE.LinearToneMapping;
         this.renderer.toneMappingExposure = 1.45;
+        this.reflectionEnvironment = createProceduralReflectionEnvironment();
+        this.scene.environment = this.reflectionEnvironment;
+        this.scene.environmentIntensity = 0.65;
         // Mobile preset: shadows are a major GPU cost; disable entirely on mobile.
         this.renderer.shadowMap.enabled = !this.isMobile;
         this.renderer.shadowMap.autoUpdate = true;
@@ -669,6 +673,9 @@ export class RenderSystem {
         this.keyLight.color.copy(this.currentLighting.keyColor);
         this.fillLight.intensity = this.currentLighting.fillIntensity;
         this.fillLight.color.copy(this.currentLighting.fillColor);
+        // Keep reflected light in step with regional ambience, including fades
+        // into darker interiors, without rebuilding the shared radiance map.
+        this.scene.environmentIntensity = 0.65 * THREE.MathUtils.clamp(this.currentLighting.ambientIntensity / 1.9, 0.45, 1.1);
         if (!this.scene.fog) {
             this.scene.fog = new THREE.Fog(
                 this.currentLighting.fogColor.clone(),
@@ -832,7 +839,7 @@ export class RenderSystem {
         this.camera.position.copy(this.cameraTarget).add(this.cameraOffset);
 
         if (this.cameraPunch) {
-            const elapsed = (performance.now() - this.cameraPunch.startTime) / this.cameraPunch.duration;
+            const elapsed = (performance.now() - this.cameraPunch.startTime) / (this.cameraPunch.duration * 1000);
             if (elapsed >= 1) {
                 this.cameraPunch = null;
             } else {
@@ -972,10 +979,21 @@ export class RenderSystem {
                 this.waterTexture.offset.y = time;
             }
         }
-        if (this.usePostProcessing && this.composer) {
-            this.composer.render();
-        } else {
-            this.renderer.render(this.scene, this.camera);
+        // Count the complete frame (shadow maps, world and post-processing),
+        // not just the composer's final fullscreen triangle. Restore the
+        // renderer's policy for callers that use it outside this frame.
+        const info = this.renderer.info;
+        const autoReset = info.autoReset;
+        info.autoReset = false;
+        info.reset();
+        try {
+            if (this.usePostProcessing && this.composer) {
+                this.composer.render();
+            } else {
+                this.renderer.render(this.scene, this.camera);
+            }
+        } finally {
+            info.autoReset = autoReset;
         }
         this.updatePerfOverlay();
     }
@@ -1038,11 +1056,14 @@ export class RenderSystem {
         const ownedTextures = new Set([
             this.waterTexture,
             this.backgroundTexture,
+            this.reflectionEnvironment,
             ...Object.values(this.terrainTextures || {})
         ].filter(Boolean));
         ownedTextures.forEach((texture) => texture.dispose());
         this.waterTexture = null;
         this.backgroundTexture = null;
+        this.reflectionEnvironment = null;
+        this.scene.environment = null;
         this.terrainTextures = {};
         if (this.scene.background?.isTexture) this.scene.background = new THREE.Color(0x080b11);
 

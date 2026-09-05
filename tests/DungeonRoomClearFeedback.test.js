@@ -666,6 +666,6 @@ describe('Dungeon room clear feedback', () => {
 
         const hints = Array.from(document.querySelectorAll('.objective-entry__hint')).map(node => node.textContent);
         expect(hints[0]).toContain('Boss path open — one last room before the boss');
-        expect(hints[1]).toContain('Reward: 1200 XP');
+        expect(hints[1]).toContain('Return for your reward: 1200 XP');
     });
 });

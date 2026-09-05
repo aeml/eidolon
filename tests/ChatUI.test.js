@@ -57,6 +57,19 @@ describe('ChatUI', () => {
         expect(gameTab.classList.contains('chat-tab--unread')).toBe(false);
     });
 
+    test('arrow, Home and End keys navigate channel tabs without moving focus to the composer', () => {
+        const chat = new ChatUI();
+        chat.show();
+        chat.tabs[0].focus();
+        for (const [key, stream] of [['ArrowLeft', 'game'], ['Home', 'chat'], ['ArrowRight', 'party'], ['End', 'game']]) {
+            document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
+            expect(chat.activeStream).toBe(stream);
+            expect(document.activeElement.dataset.chatTab).toBe(stream);
+            expect(document.querySelectorAll('.chat-tab[tabindex="0"]')).toHaveLength(1);
+        }
+        expect(document.getElementById('chat-box').style.display).toBe('flex');
+    });
+
     test('game events do not force pre-session chat open and gameplay chat cannot be dismissed', () => {
         const chat = new ChatUI();
         const chatBox = document.getElementById('chat-box');

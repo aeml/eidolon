@@ -540,6 +540,17 @@ export async function exerciseMenus(page) {
         }
         expect(opened, `${key.toUpperCase()} must open ${selector} through keyboard input`).toBe(true);
 
+        if (selector === '#character-sheet') {
+            await expect(menu.locator('.character-preview-stage canvas')).toBeVisible();
+            await expect.poll(() => page.evaluate(() => {
+                const game = window.game;
+                const preview = game?.uiManager?.characterPreview;
+                return Boolean(preview?.renderer?.info.render.calls > 0 &&
+                    preview.model?.userData.proceduralClass === game.player.mesh?.userData.proceduralClass &&
+                    preview.model?.userData.equipmentVisualSignature === game.player.mesh?.userData.equipmentVisualSignature);
+            }), { message: 'Character preview must render the live actor class and equipped appearance' }).toBe(true);
+        }
+
         for (let attempt = 0; attempt < 4 && await menu.isVisible(); attempt += 1) {
             await page.keyboard.press('Escape');
             await page.waitForTimeout(150);

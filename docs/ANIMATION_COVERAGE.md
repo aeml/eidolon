@@ -98,7 +98,7 @@ Aliases reuse the canonical composition deliberately; they are tested so a serve
 | Cleric | Sacred Ground | Consecrated Ground |
 | Cleric | Resurrection | Divine Intervention |
 
-## Actor animation inventory (47)
+## Actor animation inventory (57)
 
 All player classes declare Idle/Walk/Run/Attack/Death clips through the shared procedural humanoid architecture and their class-specific generated rigs. No player currently has a dedicated Jump clip, so Jump uses an intentional procedural arc/lean synchronized to the best locomotion clip. Procedural enemies and bosses receive deterministic generated Idle/Walk/Run/Attack/Death clips. NPCs that never move or fight are explicitly Idle-only.
 
@@ -136,6 +136,16 @@ All player classes declare Idle/Walk/Run/Attack/Death clips through the shared p
 | AbyssalGoliath | enemy | procedural Drowned Sanctum anchor-cairn rig | Idle, Walk, Run, Attack, Death | not-used | sunken cairn armor, anchor fists, drowned chain, grave-anchor, and captive souls | local hardware gallery: High/Low |
 | MaelstromWarden | enemy | procedural Drowned Sanctum maelstrom-bulwark rig | Idle, Walk, Run, Attack, Death | not-used | crossed tide rings, vigil shell mantle, moon-anchor poleblade, and pearl orbit | local hardware gallery: High/Low |
 | Thalorath | enemy | procedural Drowned Sanctum tide-king rig | Idle, Walk, Run, Attack, Death | not-used | thirteen-antler crown, black-tide rings, throne tentacles, pearls, and deep trident | local hardware gallery: High/Low |
+| DissonantShade | enemy | recomposed procedural Scorched Wraith rig | Idle, Walk, Run, Attack, Death | not-used | Umbral Nexus shade palette, void-feather trails, and dissonance telegraphs | local hardware gallery: High/Low |
+| MemoryReaver | enemy | recomposed procedural Construct rig | Idle, Walk, Run, Attack, Death | not-used | fractured-memory reliquary, violet seams, and echo-strike telegraphs | local hardware gallery: High/Low |
+| DissonantHerald | enemy | recomposed procedural Stormcallers rig | Idle, Walk, Run, Attack, Death | not-used | split void masks, memory storm halo, and dissonance telegraphs | local hardware gallery: High/Low |
+| NullArchitect | enemy | recomposed procedural Obsidian Guardian rig | Idle, Walk, Run, Attack, Death | not-used | null masonry plates, broken constellation core, and collapse telegraphs | local hardware gallery: High/Low |
+| EidolonDevourer | enemy | recomposed procedural Hollow Sentinel rig | Idle, Walk, Run, Attack, Death | not-used | eidolon seam crown, memory maw, and final-dungeon telegraphs | local hardware gallery: High/Low |
+| UmbraPrime | enemy | procedural Broken Covenant sovereign on the Sentinel animation rig | Idle, Walk, Run, Attack, Death | not-used | fractured crown, royal mantle, bound elemental seals, oathbreaker blade and lethal null-zone telegraphs | local hardware gallery: High/Low |
+| GravenColossus | enemy | recomposed procedural Hollow Sentinel raid rig | Idle, Walk, Run, Attack, Death | not-used | Rootheart Sanctum raid guardian and crystal-vigil transition | local hardware gallery: High/Low |
+| TideboundTyrant | enemy | recomposed procedural Thalorath raid rig | Idle, Walk, Run, Attack, Death | not-used | Tidestar Confluence raid guardian and crystal-vigil transition | local hardware gallery: High/Low |
+| AshenImperator | enemy | recomposed procedural Lord Infernax raid rig | Idle, Walk, Run, Attack, Death | not-used | Ember Crown Crucible raid guardian and crystal-vigil transition | local hardware gallery: High/Low |
+| TempestSovereign | enemy | recomposed procedural Zephyrion raid rig | Idle, Walk, Run, Attack, Death | not-used | Skyglass Eyrie raid guardian and crystal-vigil transition | local hardware gallery: High/Low |
 | SandstormDjinn | enemy | procedural Cinder Wastes ash-dune rig | Idle, Walk, Run, Attack, Death | not-used | floating glasswind veils, crossed sand rings, depth shards, crown, and glass scimitar | local hardware gallery: High/Low |
 | MagmaGolem | enemy | procedural Cinder Wastes fault-heart rig | Idle, Walk, Run, Attack, Death | not-used | eighteen basalt fault slabs, caged magma heart, burning fists, and fault hammer | local hardware gallery: High/Low |
 | ScorchedWraith | enemy | procedural Cinder Wastes cinder-shroud rig | Idle, Walk, Run, Attack, Death | not-used | burnt rib reliquary, crown, paired censers, ember orbit, and cinder scythe | local hardware gallery: High/Low |
@@ -193,6 +203,6 @@ These effects are world-space groups: they follow actor position without inherit
 ## Evidence status
 
 - Inventory and explicit classification: implemented and unit tested.
-- Deterministic local/remote gallery: all 112 base/rune presentations and all 47 actor entries pass at High and Low in hardware Chrome; the release checklist records the renderer and release-specific run.
+- Deterministic local/remote gallery: all 112 base/rune presentations and all 57 actor entries pass at High and Low in hardware Chrome; the release checklist records the renderer and release-specific run.
 - Real-input gameplay: all four dedicated class routes cover idle/run/jump/basic attack/death, 52 selectable abilities, and 60 rune variants. The two-browser route covers remote persistent aura refresh/reconstruction/cleanup, summon, ground, projectile, teleport, movement, jump, and combat convergence.
 - Multiplayer and live production: must be re-run for each release SHA and are not implied by this generated document.

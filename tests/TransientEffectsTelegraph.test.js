@@ -3,6 +3,59 @@ import { jest } from '@jest/globals';
 import { createTransientEffect } from '../src/core/TransientEffects.js';
 
 describe('Transient telegraph readability', () => {
+    test.each(['expiry', 'explicit'])('releases owned label textures exactly once on %s, without disposing shared maps', (mode) => {
+        const context = {
+            clearRect: jest.fn(), fillRect: jest.fn(), strokeRect: jest.fn(),
+            fillText: jest.fn(), measureText: () => ({ width: 60 })
+        };
+        const canvasContext = jest.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(context);
+        try {
+            const effect = createTransientEffect(new THREE.Scene(), 'telegraph', new THREE.Vector3(), 0xff2200, {
+                radius: 3, telegraphDuration: 2, threatTier: 'boss', label: 'DANGER'
+            });
+            const label = effect.meshes.find((mesh) => mesh.isSprite);
+            expect(label.material.map.isCanvasTexture).toBe(true);
+            const disposeLabel = jest.spyOn(label.material.map, 'dispose');
+            const shared = new THREE.Texture();
+            const disposeShared = jest.spyOn(shared, 'dispose');
+            effect.meshes[0].material.map = shared;
+            if (mode === 'expiry') effect.update(2);
+            else effect.dispose();
+            effect.dispose();
+            effect.update(1);
+            expect(disposeLabel).toHaveBeenCalledTimes(1);
+            expect(disposeShared).not.toHaveBeenCalled();
+            expect(effect.isActive).toBe(false);
+            expect(effect.meshes).toHaveLength(0);
+            shared.dispose();
+        } finally {
+            canvasContext.mockRestore();
+        }
+    });
+
+    test.each(['minor', 'elite', 'boss'])('%s danger boundary stays visible and exact across the full warning', (threatTier) => {
+        const scene = new THREE.Scene();
+        const effect = createTransientEffect(scene, 'telegraph', new THREE.Vector3(4, 0, 7), 0xff2200, {
+            radius: 12, telegraphDuration: 2, threatTier
+        });
+        const [ring] = effect.meshes;
+        expect(ring.userData.isGameplayBoundary).toBe(true);
+        expect(ring.userData.gameplayRadius).toBe(12);
+        for (let sample = 0; sample < 100; sample += 1) {
+            effect.update(0.019);
+            expect(ring.material.opacity).toBeGreaterThanOrEqual(0.27);
+            expect(ring.material.opacity).toBeLessThanOrEqual(1);
+            expect(ring.scale.toArray()).toEqual([1, 1, 1]);
+            expect(ring.geometry.parameters.outerRadius * ring.scale.x).toBe(12);
+            expect(ring.position.x).toBe(4);
+            expect(ring.position.z).toBe(7);
+        }
+        expect(effect.isActive).toBe(true);
+        effect.update(0.2);
+        expect(effect.isActive).toBe(false);
+        expect(ring.parent).toBeNull();
+    });
+
     test('creates stronger boss telegraphs with danger-tier visuals and label sprite', () => {
         const scene = new THREE.Scene();
         const effect = createTransientEffect(

@@ -93,6 +93,43 @@ describe('InputManager ctrl-click propagation', () => {
         manager.dispose();
     });
 
+    test('Space activates menu buttons without also casting the gameplay ability', () => {
+        const manager = new InputManager({}, {});
+        const callback = jest.fn();
+        manager.subscribe('onSpace', callback);
+        const button = document.createElement('button');
+        document.body.append(button);
+        button.focus();
+        manager.onKeyDown({ key: ' ', code: 'Space' });
+        expect(callback).not.toHaveBeenCalled();
+        button.blur();
+        manager.onKeyDown({ key: ' ', code: 'Space' });
+        expect(callback).toHaveBeenCalledTimes(1);
+        button.remove();
+        manager.dispose();
+    });
+
+    test.each(['button', 'select', 'a'])('Enter and Space stay with a focused %s control', (tag) => {
+        const manager = new InputManager({}, {});
+        const chat = jest.fn();
+        const ability = jest.fn();
+        manager.subscribe('onChat', chat);
+        manager.subscribe('onSpace', ability);
+        const control = document.createElement(tag);
+        if (tag === 'a') control.href = '#help';
+        document.body.append(control);
+        control.focus();
+        manager.onKeyDown({ key: 'Enter', code: 'Enter' });
+        manager.onKeyDown({ key: ' ', code: 'Space' });
+        expect(chat).not.toHaveBeenCalled();
+        expect(ability).not.toHaveBeenCalled();
+        control.blur();
+        manager.onKeyDown({ key: 'Enter', code: 'Enter' });
+        expect(chat).toHaveBeenCalledTimes(1);
+        control.remove();
+        manager.dispose();
+    });
+
     test('F2 forwards dungeon debug overlay toggles to subscribers', () => {
         const manager = new InputManager({}, {});
         const callback = jest.fn();

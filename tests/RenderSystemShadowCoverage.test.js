@@ -7,6 +7,10 @@ describe('RenderSystem shadow coverage', () => {
         localStorage.clear();
     });
 
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
     test('tracks the directional shadow camera around the player instead of a tiny origin-bound frustum', () => {
         const renderSystem = new RenderSystem(false);
 
@@ -117,6 +121,7 @@ describe('RenderSystem shadow coverage', () => {
 
     test('camera punch resumes when players enable it with softened scaling', () => {
         const renderSystem = new RenderSystem(false);
+        jest.spyOn(performance, 'now').mockReturnValue(1000);
 
         renderSystem.setCameraShakeEnabled(true);
         renderSystem.applyCameraPunch({ intensity: 1, duration: 0.25, vertical: 1, horizontal: 1 });
@@ -127,6 +132,31 @@ describe('RenderSystem shadow coverage', () => {
             vertical: 0.55,
             horizontal: 0.3
         }));
+    });
+
+    test('camera punch lasts its duration in seconds, decays and returns exactly to the camera target', () => {
+        const renderSystem = new RenderSystem(false);
+        const now = jest.spyOn(performance, 'now').mockReturnValue(1000);
+        renderSystem.setCameraTarget(new THREE.Vector3(30, 0, -20));
+        const baseline = renderSystem.camera.position.clone();
+        renderSystem.setCameraShakeEnabled(true);
+        renderSystem.applyCameraPunch({ intensity: 1, duration: 0.25, vertical: 1, horizontal: 1 });
+
+        now.mockReturnValue(1035);
+        renderSystem.updateCamera();
+        expect(renderSystem.cameraPunch).not.toBeNull();
+        expect(renderSystem.camera.position.distanceTo(baseline)).toBeGreaterThan(0.01);
+        expect(renderSystem.camera.position.distanceTo(baseline)).toBeLessThan(0.35);
+
+        now.mockReturnValue(1139);
+        renderSystem.updateCamera();
+        expect(renderSystem.cameraPunch).not.toBeNull();
+        expect(renderSystem.camera.position.distanceTo(baseline)).toBeLessThan(0.01);
+
+        now.mockReturnValue(1141);
+        renderSystem.updateCamera();
+        expect(renderSystem.cameraPunch).toBeNull();
+        expect(renderSystem.camera.position.equals(baseline)).toBe(true);
     });
 
     test('snaps shadow focus to the shadow texel grid to reduce jitter on thin geometry while moving', () => {

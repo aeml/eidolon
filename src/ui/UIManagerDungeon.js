@@ -7,6 +7,7 @@ import { installPrototypeMethods } from '../core/PrototypeInstaller.js';
 
 class UIManagerDungeonMethods {
     showDungeonMenu(data) {
+        const opener = document.activeElement;
         const existingBackdrop = document.getElementById('dungeon-menu-backdrop');
         if (existingBackdrop && typeof existingBackdrop.__closeMenu === 'function') {
             existingBackdrop.__closeMenu();
@@ -32,6 +33,18 @@ class UIManagerDungeonMethods {
         const handleMenuEscape = (event) => {
             if (event.key === 'Escape') {
                 removeMenu();
+            } else if (event.key === 'Tab') {
+                const controls = [...menu.querySelectorAll('button:not(:disabled), select:not(:disabled), [tabindex="0"]')]
+                    .filter((element) => element.tabIndex >= 0 && element.getClientRects().length > 0);
+                const first = controls[0];
+                const last = controls[controls.length - 1];
+                if (first && event.shiftKey && document.activeElement === first) {
+                    event.preventDefault();
+                    last.focus();
+                } else if (last && !event.shiftKey && document.activeElement === last) {
+                    event.preventDefault();
+                    first.focus();
+                }
             }
         };
         const removeMenu = () => {
@@ -43,6 +56,7 @@ class UIManagerDungeonMethods {
             delete backdrop.__closeMenu;
             menu.remove();
             backdrop.remove();
+            if (opener?.isConnected) opener.focus();
         };
 
         backdrop.__closeMenu = removeMenu;
@@ -57,7 +71,7 @@ class UIManagerDungeonMethods {
         title.id = 'dungeon-menu-title';
         title.innerText = 'Dungeon Portal';
         title.style.margin = '0';
-        title.style.fontSize = '1.5rem';
+        title.style.fontSize = '1.1rem';
 
         const closeBtn = document.createElement('button');
         closeBtn.id = 'btn-close-dungeon-menu';
@@ -70,6 +84,53 @@ class UIManagerDungeonMethods {
         header.appendChild(title);
         header.appendChild(closeBtn);
         menu.appendChild(header);
+
+        const tabs = document.createElement('div');
+        tabs.className = 'adventure-tabs';
+        tabs.setAttribute('role', 'tablist');
+        tabs.setAttribute('aria-label', 'Adventure type');
+        menu.appendChild(tabs);
+        const scroll = document.createElement('div');
+        scroll.className = 'adventure-scroll';
+        menu.appendChild(scroll);
+        const dungeonPanel = document.createElement('div');
+        const raidPanel = document.createElement('div');
+        raidPanel.className = 'adventure-raids';
+        const panels = [dungeonPanel, raidPanel];
+        const tabButtons = panels.map((panel, index) => {
+            panel.id = index === 0 ? 'adventure-dungeons' : 'adventure-raids';
+            panel.setAttribute('role', 'tabpanel');
+            panel.hidden = index !== 0;
+            const tab = document.createElement('button');
+            tab.type = 'button';
+            tab.id = `${panel.id}-tab`;
+            tab.className = 'menu-btn adventure-tab';
+            tab.textContent = index === 0 ? 'Dungeons' : 'Raids';
+            tab.setAttribute('role', 'tab');
+            tab.setAttribute('aria-controls', panel.id);
+            tab.setAttribute('aria-selected', String(index === 0));
+            tab.tabIndex = index === 0 ? 0 : -1;
+            panel.setAttribute('aria-labelledby', tab.id);
+            tab.onclick = () => selectTab(index);
+            tab.onkeydown = (event) => {
+                if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
+                    event.preventDefault();
+                    const next = event.key === 'Home' ? 0 : event.key === 'End' ? 1 : 1 - index;
+                    selectTab(next);
+                    tabButtons[next].focus();
+                }
+            };
+            tabs.appendChild(tab);
+            return tab;
+        });
+        const selectTab = (index) => {
+            panels.forEach((panel, position) => {
+                panel.hidden = position !== index;
+                tabButtons[position].setAttribute('aria-selected', String(position === index));
+                tabButtons[position].tabIndex = position === index ? 0 : -1;
+            });
+            scroll.scrollTop = 0;
+        };
 
         const partyStateBox = document.createElement('div');
         partyStateBox.id = 'dungeon-party-state-box';
@@ -100,7 +161,7 @@ class UIManagerDungeonMethods {
                 <div style="color: ${data.isLeader ? '#ffd36f' : '#8ea8d1'}; margin-top: 4px; line-height: 1.5;">${data.isLeader ? 'As party leader, your dungeon choice and reset actions define the run for the group.' : 'If you want a different dungeon or a reset, ask the party leader to drive it.'}</div>
             `;
         }
-        menu.appendChild(partyStateBox);
+        scroll.append(partyStateBox, dungeonPanel, raidPanel);
 
         // Dungeon Selection
         const dungeonInfo = {
@@ -122,7 +183,7 @@ class UIManagerDungeonMethods {
         const difficultyInfo = {
             normal: {
                 name: 'Normal',
-                color: '#aaa',
+                color: '#bac3cf',
                 hp: '1x',
                 dmg: '1x',
                 loot: '1x',
@@ -131,7 +192,7 @@ class UIManagerDungeonMethods {
             },
             heroic: {
                 name: 'Heroic',
-                color: '#ff0',
+                color: '#d5b779',
                 hp: '2x',
                 dmg: '1.5x',
                 loot: '2x',
@@ -140,7 +201,7 @@ class UIManagerDungeonMethods {
             },
             mythic: {
                 name: 'Mythic',
-                color: '#f60',
+                color: '#d49d7d',
                 hp: '4x',
                 dmg: '2.5x',
                 loot: '4x',
@@ -155,7 +216,8 @@ class UIManagerDungeonMethods {
         dungeonLabel.style.display = 'block';
         dungeonLabel.style.marginTop = '15px';
         dungeonLabel.style.fontWeight = 'bold';
-        menu.appendChild(dungeonLabel);
+        dungeonLabel.htmlFor = 'dungeon-type-select';
+        dungeonPanel.appendChild(dungeonLabel);
 
         // Dungeon Type Dropdown
         const dungeonSelect = document.createElement('select');
@@ -164,9 +226,6 @@ class UIManagerDungeonMethods {
         dungeonSelect.style.margin = '5px';
         dungeonSelect.style.padding = '8px';
         dungeonSelect.style.fontSize = '14px';
-        dungeonSelect.style.backgroundColor = '#222';
-        dungeonSelect.style.color = '#fff';
-        dungeonSelect.style.border = '1px solid #555';
         dungeonSelect.style.cursor = 'pointer';
         dungeonSelect.style.userSelect = 'text';
         dungeonSelect.style.webkitUserSelect = 'text';
@@ -189,7 +248,7 @@ class UIManagerDungeonMethods {
             dungeonSelect.style.cursor = 'default';
             dungeonSelect.style.opacity = '0.8';
         }
-        menu.appendChild(dungeonSelect);
+        dungeonPanel.appendChild(dungeonSelect);
 
         const availableRunLevels = Array.isArray(data.availableRunLevels) && data.availableRunLevels.length > 0
             ? data.availableRunLevels
@@ -201,7 +260,8 @@ class UIManagerDungeonMethods {
         runLevelLabel.style.display = 'block';
         runLevelLabel.style.marginTop = '15px';
         runLevelLabel.style.fontWeight = 'bold';
-        menu.appendChild(runLevelLabel);
+        runLevelLabel.htmlFor = 'dungeon-run-level-select';
+        dungeonPanel.appendChild(runLevelLabel);
 
         const runLevelSelect = document.createElement('select');
         runLevelSelect.id = 'dungeon-run-level-select';
@@ -209,9 +269,6 @@ class UIManagerDungeonMethods {
         runLevelSelect.style.margin = '5px';
         runLevelSelect.style.padding = '8px';
         runLevelSelect.style.fontSize = '14px';
-        runLevelSelect.style.backgroundColor = '#222';
-        runLevelSelect.style.color = '#fff';
-        runLevelSelect.style.border = '1px solid #555';
         runLevelSelect.style.cursor = 'pointer';
         runLevelSelect.style.userSelect = 'text';
         runLevelSelect.style.webkitUserSelect = 'text';
@@ -221,7 +278,7 @@ class UIManagerDungeonMethods {
             option.innerText = `Level ${runLevel}`;
             runLevelSelect.appendChild(option);
         }
-        menu.appendChild(runLevelSelect);
+        dungeonPanel.appendChild(runLevelSelect);
 
         const unlockNote = document.createElement('div');
         unlockNote.style.marginTop = '10px';
@@ -230,7 +287,7 @@ class UIManagerDungeonMethods {
         unlockNote.textContent = endgameUnlocked
             ? `All run levels unlocked. Heroic and Mythic are now available at level ${data.endgameDifficultyUnlockLevel || 100}.`
             : `All dungeons unlock at level ${data.dungeonUnlockLevel || 30}. Heroic and Mythic unlock at level ${data.endgameDifficultyUnlockLevel || 100}.`;
-        menu.appendChild(unlockNote);
+        dungeonPanel.appendChild(unlockNote);
 
         // Difficulty Label
         const diffLabel = document.createElement('label');
@@ -238,23 +295,27 @@ class UIManagerDungeonMethods {
         diffLabel.style.display = 'block';
         diffLabel.style.marginTop = '15px';
         diffLabel.style.fontWeight = 'bold';
-        menu.appendChild(diffLabel);
+        diffLabel.id = 'dungeon-difficulty-label';
+        dungeonPanel.appendChild(diffLabel);
 
         // Difficulty Buttons Container
         const diffContainer = document.createElement('div');
         diffContainer.className = 'generated-menu__choice-row';
+        diffContainer.setAttribute('role', 'group');
+        diffContainer.setAttribute('aria-labelledby', diffLabel.id);
 
         let selectedDifficulty = 'normal';
 
         for (const [key, info] of Object.entries(difficultyInfo)) {
             const btn = document.createElement('button');
             btn.id = `diff-btn-${key}`;
+            btn.type = 'button';
+            btn.className = 'menu-btn adventure-difficulty';
+            btn.style.setProperty('--difficulty-accent', info.color);
+            btn.setAttribute('aria-pressed', String(key === 'normal'));
             btn.innerText = info.name;
             btn.style.padding = '8px 16px';
             btn.style.cursor = 'pointer';
-            btn.style.backgroundColor = key === 'normal' ? info.color : '#333';
-            btn.style.color = key === 'normal' ? '#000' : info.color;
-            btn.style.border = `2px solid ${info.color}`;
             btn.style.fontWeight = 'bold';
             btn.style.transition = 'all 0.2s';
             if (key !== 'normal' && !endgameUnlocked) {
@@ -270,11 +331,10 @@ class UIManagerDungeonMethods {
                 }
                 selectedDifficulty = key;
                 // Update button styles
-                for (const [k, i] of Object.entries(difficultyInfo)) {
+                for (const k of Object.keys(difficultyInfo)) {
                     const b = document.getElementById(`diff-btn-${k}`);
                     if (b) {
-                        b.style.backgroundColor = k === key ? i.color : '#333';
-                        b.style.color = k === key ? '#000' : i.color;
+                        b.setAttribute('aria-pressed', String(k === key));
                     }
                 }
                 // Update info display
@@ -282,7 +342,7 @@ class UIManagerDungeonMethods {
             };
             diffContainer.appendChild(btn);
         }
-        menu.appendChild(diffContainer);
+        dungeonPanel.appendChild(diffContainer);
 
         // Difficulty Info Display
         const diffInfoBox = document.createElement('div');
@@ -294,7 +354,7 @@ class UIManagerDungeonMethods {
         diffInfoBox.style.borderRadius = '4px';
         diffInfoBox.style.fontSize = '12px';
         diffInfoBox.style.textAlign = 'left';
-        menu.appendChild(diffInfoBox);
+        dungeonPanel.appendChild(diffInfoBox);
 
         const rewardLadderBox = document.createElement('div');
         rewardLadderBox.id = 'dungeon-reward-ladder-box';
@@ -305,7 +365,7 @@ class UIManagerDungeonMethods {
         rewardLadderBox.style.borderRadius = '4px';
         rewardLadderBox.style.fontSize = '12px';
         rewardLadderBox.style.textAlign = 'left';
-        menu.appendChild(rewardLadderBox);
+        dungeonPanel.appendChild(rewardLadderBox);
 
         const updateDifficultyInfo = () => {
             const dungeonKey = dungeonSelect.value;
@@ -356,9 +416,9 @@ class UIManagerDungeonMethods {
         enterBtn.type = 'button';
         enterBtn.style.minWidth = '160px';
         enterBtn.style.padding = '12px 30px';
-        enterBtn.style.backgroundColor = '#2a6';
+        enterBtn.style.backgroundColor = '#29483d';
         enterBtn.style.color = '#fff';
-        enterBtn.style.border = '1px solid rgba(126, 247, 182, 0.45)';
+        enterBtn.style.border = '1px solid #779e89';
         enterBtn.style.fontWeight = 'bold';
         enterBtn.style.fontSize = '16px';
         enterBtn.style.boxShadow = '0 10px 24px rgba(12, 38, 24, 0.35)';
@@ -383,12 +443,20 @@ class UIManagerDungeonMethods {
             { type: 'fire_crystal_raid', name: 'Ember Crown Crucible', element: 'Fire', level: 70, chapter: 7 },
             { type: 'air_crystal_raid', name: 'Skyglass Eyrie', element: 'Air', level: 70, chapter: 9 }
         ];
+        const raidNote = document.createElement('p');
+        raidNote.className = 'adventure-raid-note';
+        raidNote.textContent = data.isLeader
+            ? 'Gather 5–10 players. Clear each elemental raid, then defend Maelin while she restores its crystal.'
+            : 'Only your party leader can form or enter raids. Gather 5–10 players and choose your next crystal together.';
+        raidPanel.appendChild(raidNote);
         elementalRaids.forEach((raid) => {
             const unlocked = Boolean(data.elementalRaidAccess?.[raid.type]);
             if (playerLevel < raid.level && !unlocked) return;
             const raidBox = document.createElement('section');
             raidBox.className = 'dungeon-raid-card elemental-raid-card';
             raidBox.dataset.raidType = raid.type;
+            raidBox.dataset.element = raid.element.toLowerCase();
+            raidBox.dataset.access = unlocked ? 'open' : 'sealed';
             raidBox.innerHTML = unlocked
                 ? `<strong>${raid.element} Crystal Raid · ${raid.name}</strong><span>5–10 players · clear the assault, then defend Maelin through 3 repair waves</span>`
                 : `<strong>${raid.element} Crystal Raid · Sealed</strong><span>Complete Chronicle chapter ${raid.chapter} by clearing this realm’s dungeon to reveal ${raid.name}.</span>`;
@@ -408,19 +476,27 @@ class UIManagerDungeonMethods {
                 removeMenu();
             };
             raidBox.append(formRaid, enterRaid);
-            menu.appendChild(raidBox);
+            raidPanel.appendChild(raidBox);
         });
+        if (!raidPanel.querySelector('.elemental-raid-card') && playerLevel < 100) {
+            const lockedNote = document.createElement('p');
+            lockedNote.className = 'adventure-raid-note';
+            lockedNote.textContent = 'Your first crystal raid awaits at level 30. Follow the Chronicle and clear Verdant Bastion Catacombs to reveal Rootheart Sanctum.';
+            raidPanel.appendChild(lockedNote);
+        }
 
         if (playerLevel >= 100 && !data.crystalsRestored) {
             const storyGate = document.createElement('section');
             storyGate.className = 'dungeon-raid-card';
             storyGate.innerHTML = '<strong>Umbral Nexus · Sealed</strong><span>Complete all four elemental raids and their defended crystal-repair Vigils through Chronicle chapter 13.</span>';
-            menu.appendChild(storyGate);
+            raidPanel.appendChild(storyGate);
         }
 
         if (playerLevel >= 100) {
             const raidBox = document.createElement('section');
             raidBox.className = 'dungeon-raid-card';
+            raidBox.dataset.element = 'dark';
+            raidBox.dataset.access = data.darkRealmOpen ? 'open' : 'sealed';
             raidBox.innerHTML = data.darkRealmOpen
                 ? '<strong>Dark Realm Raid · Malachar, the Dark King</strong><span>5–10 players · level 100 · Mythic · four Eidolon phases · weekly personal cache</span>'
                 : '<strong>Dark Realm Raid · Portal Dormant</strong><span>After all four crystal raids, defeat the Eidolon Devourer in Chronicle chapter 14 to stabilize the portal.</span>';
@@ -440,7 +516,7 @@ class UIManagerDungeonMethods {
                 removeMenu();
             };
             raidBox.append(formRaid, enterRaid);
-            menu.appendChild(raidBox);
+            raidPanel.appendChild(raidBox);
         }
 
         // Reset Button (Leader Only)
@@ -476,7 +552,7 @@ class UIManagerDungeonMethods {
         footerCloseBtn.style.minWidth = '120px';
         footerCloseBtn.onclick = removeMenu;
         actions.appendChild(footerCloseBtn);
-        menu.appendChild(actions);
+        dungeonPanel.appendChild(actions);
 
         document.body.appendChild(backdrop);
         document.body.appendChild(menu);

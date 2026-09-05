@@ -24,7 +24,7 @@ export class FloatingTextManager {
         el.style.textShadow = '2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000';
         el.style.pointerEvents = 'none';
         el.style.userSelect = 'none';
-        el.style.zIndex = '1000';
+        el.style.zIndex = 'calc(var(--z-hud) - 10)';
         el.style.whiteSpace = 'nowrap';
         el.style.willChange = 'transform, opacity';
         el.style.top = '0';

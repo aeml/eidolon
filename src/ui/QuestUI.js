@@ -263,6 +263,9 @@ export class QuestUI {
         if (!this.isPlayerInTown()) return null;
 
         const recovery = this.ctx.getOnboardingRecoveryContext?.() || null;
+        // The auto-start Chronicle is already a concrete next step. Generic
+        // town orientation should not displace it; explicit recovery still can.
+        if (!['respawn', 'recall'].includes(recovery?.reason) && quests.some((quest) => quest?.category === 'chronicle' && quest.accepted && !quest.completed)) return null;
         const reason = recovery?.reason || 'town_return';
         const copyByReason = {
             respawn: {
@@ -617,79 +620,22 @@ export class QuestUI {
         return townProgressionObjective ? [townProgressionObjective, ...questObjectives] : questObjectives;
     }
 
-    renderObjectiveGuidance(objective) {
-        if (!this.objectivesPanel || !objective) return;
-
-        const existing = this.objectivesPanel.querySelector('.objective-guidance');
-        if (existing) existing.remove();
-
-        const guidance = document.createElement('div');
-        guidance.className = 'objective-guidance';
-        guidance.style.marginBottom = '10px';
-        guidance.style.padding = '10px 12px';
-        guidance.style.border = '1px solid rgba(255, 215, 90, 0.35)';
-        guidance.style.background = 'linear-gradient(180deg, rgba(38, 32, 18, 0.92), rgba(24, 20, 12, 0.92))';
-        guidance.style.color = '#ddd';
-        guidance.style.fontSize = '12px';
-        guidance.style.lineHeight = '1.5';
-        const guidanceBody = objective.badgeClass === 'is-exit'
-            ? objective.hint
-            : objective.completed
-                ? `Turn this in for ${objective.rewardXP || 0} XP.`
-                : objective.hint;
-        const heading = this.createMessage('Next Step', {
-            color: '#ffd700',
-            fontSize: '11px',
-            fontWeight: 'bold',
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            marginBottom: '4px'
-        });
-        const title = this.createMessage(objective.title, {
-            color: '#fff',
-            fontSize: '13px',
-            fontWeight: 'bold',
-            marginBottom: '4px'
-        });
-        const body = this.createMessage(guidanceBody);
-        const cadence = objective.cadenceLabel
-            ? this.createMessage(`Cadence: ${objective.cadenceLabel}`, {
-                color: '#8fd3ff',
-                marginTop: '6px',
-                fontSize: '11px',
-                letterSpacing: '0.04em',
-                textTransform: 'uppercase'
-            })
-            : null;
-        const footer = this.createMessage('Closed a menu or got turned around? Open World Map (M) and Journal (J) to re-orient.', {
-            color: '#aaa',
-            marginTop: '6px'
-        });
-
-        guidance.appendChild(heading);
-        guidance.appendChild(title);
-        guidance.appendChild(body);
-
-        if (cadence) {
-            guidance.appendChild(cadence);
-        }
-
-        if (objective.sequenceHint) {
-            guidance.appendChild(this.createMessage(objective.sequenceHint, {
-                color: '#ffdf8a',
-                marginTop: '6px',
-                fontSize: '11px',
-                letterSpacing: '0.04em',
-                textTransform: 'uppercase'
-            }));
-        }
-
-        guidance.appendChild(footer);
-        if (this.objectivesList.parentNode === this.objectivesPanel) {
-            this.objectivesPanel.insertBefore(guidance, this.objectivesList);
-        } else {
-            this.objectivesPanel.appendChild(guidance);
-        }
+    renderObjectiveGuidance(objective, entry) {
+        if (!objective || !entry) return;
+        // Enrich the primary objective itself instead of repeating its title
+        // and instructions in a separate card above the objective list.
+        entry.classList.add('objective-guidance');
+        const heading = this.createMessage('Next Step');
+        heading.className = 'objective-guidance__heading';
+        entry.prepend(heading);
+        const appendDetail = (text, className) => {
+            const detail = this.createMessage(text);
+            detail.className = className;
+            entry.appendChild(detail);
+        };
+        if (objective.cadenceLabel) appendDetail(`Cadence: ${objective.cadenceLabel}`, 'objective-guidance__cadence');
+        if (objective.sequenceHint) appendDetail(objective.sequenceHint, 'objective-guidance__sequence');
+        appendDetail('World Map (M) · Journal (J)', 'objective-guidance__footer');
     }
 
     renderObjectivesPanel(summary) {
@@ -700,11 +646,7 @@ export class QuestUI {
         this.clearElement(this.objectivesList);
         this.objectivesPanel.querySelector('.objective-guidance')?.remove();
 
-        if (this.activeQuestSummary.length > 0) {
-            this.renderObjectiveGuidance(this.activeQuestSummary[0]);
-        }
-
-        this.activeQuestSummary.forEach((objective) => {
+        this.activeQuestSummary.forEach((objective, index) => {
             const item = document.createElement('div');
             item.className = `objective-entry ${objective.routeTone ? `is-${objective.routeTone}` : ''}`.trim();
             const header = document.createElement('div');
@@ -741,11 +683,13 @@ export class QuestUI {
 
             const hint = document.createElement('div');
             hint.className = 'objective-entry__hint';
-            hint.textContent = objective.completed ? `Reward: ${objective.rewardXP} XP` : objective.hint;
+            hint.textContent = objective.completed && objective.badgeClass !== 'is-exit'
+                ? `Return for your reward: ${objective.rewardXP || 0} XP` : objective.hint;
 
             item.appendChild(header);
             item.appendChild(progress);
             item.appendChild(hint);
+            if (index === 0) this.renderObjectiveGuidance(objective, item);
             this.objectivesList.appendChild(item);
         });
     }
@@ -841,13 +785,6 @@ export class QuestUI {
         const current = chronicle.find((quest) => quest.accepted && !quest.completed) || null;
         const section = document.createElement('section');
         section.className = 'chronicle-journal';
-        section.style.background = 'linear-gradient(145deg, rgba(34, 25, 49, 0.97), rgba(15, 21, 32, 0.97))';
-        section.style.border = '1px solid rgba(192, 102, 255, 0.48)';
-        section.style.padding = '14px';
-        section.style.marginBottom = '16px';
-        section.style.display = 'flex';
-        section.style.flexDirection = 'column';
-        section.style.gap = '9px';
 
         section.appendChild(this.createMessage('The Fourfold Chronicle', {
             color: '#dfb5ff', fontSize: '14px', fontWeight: 'bold', letterSpacing: '0.08em', textTransform: 'uppercase'

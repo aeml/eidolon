@@ -188,13 +188,13 @@ export class SkillTreeUI {
         const wrap = document.createElement('div');
         wrap.style.margin = '0 0 12px 0';
         wrap.style.padding = '10px 12px';
-        wrap.style.border = '1px solid rgba(255, 215, 0, 0.25)';
-        wrap.style.background = 'rgba(32, 24, 8, 0.45)';
+        wrap.style.border = '1px solid rgba(213, 187, 135, 0.25)';
+        wrap.style.background = 'rgba(25, 34, 47, 0.65)';
         wrap.style.borderRadius = '8px';
         wrap.style.textAlign = 'center';
         wrap.style.color = '#d9dfeb';
         wrap.style.lineHeight = '1.5';
-        wrap.innerHTML = `<strong style="color:#ffd700;">${classType} Identity:</strong> ${identity.summary}`;
+        wrap.innerHTML = `<strong style="color:var(--color-gold);">${classType} Identity:</strong> ${identity.summary}`;
         return wrap;
     }
 
@@ -237,7 +237,7 @@ export class SkillTreeUI {
             b.style.cursor = 'pointer';
             b.style.border = '1px solid #666';
             b.style.background = (this.skillTreeMode === mode) ? 'rgba(50,50,50,0.9)' : 'rgba(0,0,0,0.6)';
-            b.style.color = (this.skillTreeMode === mode) ? '#ffd700' : '#eee';
+            b.style.color = (this.skillTreeMode === mode) ? 'var(--color-gold)' : '#eee';
             b.onclick = () => {
                 this.skillTreeMode = mode;
                 this.renderSkillTree(classType);
@@ -271,7 +271,7 @@ export class SkillTreeUI {
 
         const header = document.createElement('h2');
         header.style.textAlign = 'center';
-        header.style.color = '#ffd700';
+        header.style.color = 'var(--color-gold)';
         header.style.margin = '5px 0';
         header.textContent = `${classType} Skill Tree`;
         this.skillTreeContent.appendChild(header);
@@ -283,7 +283,7 @@ export class SkillTreeUI {
             t1Container.className = 'skill-tier-1-container';
             t1Container.innerHTML = `
                 <div class="skill-tier-label">Tier 1 (Starting Skill)</div>
-                <div class="skill-node unlocked" style="cursor: default; border-color: #00ff00;">
+                <div class="skill-node unlocked" style="cursor: default; border-color: var(--color-success);">
                     <div class="skill-node-title">${treeData.Tier1.name}</div>
                     <div class="skill-node-desc">${treeData.Tier1.desc}</div>
                 </div>
@@ -309,7 +309,7 @@ export class SkillTreeUI {
             title.textContent = branchData.name;
 
             if (isBranchSelected) {
-                title.style.color = "#00ff00";
+                title.style.color = "var(--color-success)";
                 title.textContent += " (Active)";
             } else {
                 const selectBtn = document.createElement('button');
@@ -349,7 +349,7 @@ export class SkillTreeUI {
                 metaTag.style.fontWeight = 'bold';
                 metaTag.style.letterSpacing = '0.08em';
                 metaTag.style.textTransform = 'uppercase';
-                metaTag.style.color = isBranchSelected ? '#9cff9c' : '#ffd700';
+                metaTag.style.color = isBranchSelected ? 'var(--color-success)' : 'var(--color-gold)';
                 metaTag.textContent = roleCopy.tag;
 
                 const wants = document.createElement('div');
@@ -381,7 +381,7 @@ export class SkillTreeUI {
 
                 if (isUnlocked) {
                     node.classList.add('unlocked');
-                    node.style.borderColor = '#00ff00';
+                    node.style.borderColor = 'var(--color-success)';
                 } else if (!canUnlock) {
                     node.style.opacity = '0.7';
                     node.style.cursor = 'default';
@@ -405,7 +405,7 @@ export class SkillTreeUI {
                 levelReqDiv.style.fontSize = '10px';
                 levelReqDiv.style.marginTop = '4px';
                 if (isUnlocked) {
-                    levelReqDiv.style.color = '#00ff00';
+                    levelReqDiv.style.color = 'var(--color-success)';
                     levelReqDiv.textContent = 'Unlocked';
                 } else {
                     levelReqDiv.style.color = '#aaa';
@@ -415,7 +415,7 @@ export class SkillTreeUI {
                 const pointsDiv = document.createElement('div');
                 pointsDiv.style.fontSize = '10px';
                 pointsDiv.style.marginTop = '2px';
-                pointsDiv.style.color = canUnlock ? '#ffd700' : '#666';
+                pointsDiv.style.color = canUnlock ? 'var(--color-gold)' : '#666';
                 pointsDiv.textContent = canUnlock ? 'Tap to unlock (cost: 1 point)' : '';
 
                 node.appendChild(nodeTitle);
@@ -504,7 +504,7 @@ export class SkillTreeUI {
 
         const header = document.createElement('h2');
         header.style.textAlign = 'center';
-        header.style.color = '#ffd700';
+        header.style.color = 'var(--color-gold)';
         header.style.margin = '5px 0';
         header.textContent = `${classType} Talents`;
         this.skillTreeContent.appendChild(header);
@@ -545,7 +545,7 @@ export class SkillTreeUI {
 
             if (isUnlocked) {
                 node.classList.add('unlocked');
-                node.style.borderColor = '#00ff00';
+                node.style.borderColor = 'var(--color-success)';
             } else if (!canRankUp) {
                 node.style.opacity = '0.75';
                 node.style.cursor = 'default';
@@ -576,7 +576,7 @@ export class SkillTreeUI {
             const status = document.createElement('div');
             status.style.fontSize = '10px';
             status.style.marginTop = '4px';
-            status.style.color = isUnlocked ? '#00ff00' : (canRankUp ? '#ffd700' : '#666');
+            status.style.color = isUnlocked ? 'var(--color-success)' : (canRankUp ? 'var(--color-gold)' : '#666');
             const statusSuffix = (currentRank >= maxRank)
                 ? '(Max rank)'
                 : (canRankUp ? '(Tap to rank up: 1 point)' : (isUnlocked ? '(No points)' : '(Locked)'));
@@ -614,7 +614,7 @@ export class SkillTreeUI {
 
         const header = document.createElement('h2');
         header.style.textAlign = 'center';
-        header.style.color = '#ffd700';
+        header.style.color = 'var(--color-gold)';
         header.style.margin = '5px 0';
         header.textContent = `${classType} Skill Runes`;
         this.skillTreeContent.appendChild(header);
@@ -666,7 +666,7 @@ export class SkillTreeUI {
             const skillTitle = document.createElement('div');
             skillTitle.style.fontSize = '14px';
             skillTitle.style.fontWeight = 'bold';
-            skillTitle.style.color = isUnlocked ? '#ffd700' : '#888';
+            skillTitle.style.color = isUnlocked ? 'var(--color-gold)' : '#888';
             skillTitle.style.marginBottom = '8px';
             skillTitle.textContent = skillName + (isUnlocked ? '' : ' (Skill Locked)');
             skillCard.appendChild(skillTitle);
@@ -685,7 +685,7 @@ export class SkillTreeUI {
                 runeBtn.style.minWidth = '120px';
                 runeBtn.style.padding = '8px';
                 runeBtn.style.background = isEquipped ? 'rgba(0, 128, 0, 0.4)' : 'rgba(50, 50, 50, 0.8)';
-                runeBtn.style.border = isEquipped ? '2px solid #00ff00' : '1px solid #666';
+                runeBtn.style.border = isEquipped ? '2px solid var(--color-success)' : '1px solid #666';
                 runeBtn.style.borderRadius = '4px';
                 runeBtn.style.cursor = canEquip ? 'pointer' : 'default';
                 runeBtn.style.opacity = canEquip ? '1' : '0.6';
@@ -693,7 +693,7 @@ export class SkillTreeUI {
                 const runeName = document.createElement('div');
                 runeName.style.fontSize = '12px';
                 runeName.style.fontWeight = 'bold';
-                runeName.style.color = isEquipped ? '#00ff00' : (canEquip ? '#fff' : '#888');
+                runeName.style.color = isEquipped ? 'var(--color-success)' : (canEquip ? '#fff' : '#888');
                 runeName.textContent = rune.name;
 
                 const runeLevel = document.createElement('div');
@@ -761,7 +761,7 @@ export class SkillTreeUI {
 
         const header = document.createElement('h2');
         header.style.textAlign = 'center';
-        header.style.color = '#ffd700';
+        header.style.color = 'var(--color-gold)';
         header.style.margin = '5px 0 15px 0';
         header.textContent = `${classType} Combos`;
         this.skillTreeContent.appendChild(header);
@@ -771,7 +771,7 @@ export class SkillTreeUI {
         instructions.style.color = '#aaa';
         instructions.style.marginBottom = '15px';
         instructions.style.fontSize = '12px';
-        instructions.innerHTML = 'Use skills in sequence within <span style="color: #ffd700;">3 seconds</span> to trigger combo effects.';
+        instructions.innerHTML = 'Use skills in sequence within <span style="color: var(--color-gold);">3 seconds</span> to trigger combo effects.';
         this.skillTreeContent.appendChild(instructions);
 
         if (!combos || combos.length === 0) {
@@ -799,7 +799,7 @@ export class SkillTreeUI {
             comboCard.style.transition = 'border-color 0.2s';
 
             comboCard.addEventListener('mouseenter', () => {
-                comboCard.style.borderColor = '#ffd700';
+                comboCard.style.borderColor = 'var(--color-gold)';
             });
             comboCard.addEventListener('mouseleave', () => {
                 comboCard.style.borderColor = '#555';
@@ -807,7 +807,7 @@ export class SkillTreeUI {
 
             // Combo name
             const nameDiv = document.createElement('div');
-            nameDiv.style.color = '#ffd700';
+            nameDiv.style.color = 'var(--color-gold)';
             nameDiv.style.fontWeight = 'bold';
             nameDiv.style.fontSize = '14px';
             nameDiv.style.marginBottom = '8px';
@@ -830,7 +830,7 @@ export class SkillTreeUI {
             firstSkill.textContent = combo.firstSkill;
 
             const arrow = document.createElement('span');
-            arrow.style.color = '#ffd700';
+            arrow.style.color = 'var(--color-gold)';
             arrow.style.fontSize = '16px';
             arrow.textContent = '\u2192';
 
@@ -849,7 +849,7 @@ export class SkillTreeUI {
 
             // Effect description
             const descDiv = document.createElement('div');
-            descDiv.style.color = '#00ff00';
+            descDiv.style.color = 'var(--color-success)';
             descDiv.style.fontSize = '12px';
             descDiv.style.fontStyle = 'italic';
             descDiv.textContent = combo.description;
@@ -872,7 +872,7 @@ export class SkillTreeUI {
         notification.style.left = '50%';
         notification.style.transform = 'translate(-50%, -50%)';
         notification.style.background = 'linear-gradient(135deg, rgba(40, 40, 40, 0.95), rgba(20, 20, 20, 0.95))';
-        notification.style.border = '3px solid #ffd700';
+        notification.style.border = '3px solid var(--color-gold)';
         notification.style.borderRadius = '12px';
         notification.style.padding = '20px 40px';
         notification.style.zIndex = '10000';
@@ -881,7 +881,7 @@ export class SkillTreeUI {
         notification.style.animation = 'comboNotificationPulse 0.5s ease-out';
 
         const label = document.createElement('div');
-        label.style.color = '#ffd700';
+        label.style.color = 'var(--color-gold)';
         label.style.fontSize = '12px';
         label.style.textTransform = 'uppercase';
         label.style.letterSpacing = '3px';
@@ -892,7 +892,7 @@ export class SkillTreeUI {
         name.style.color = '#ffffff';
         name.style.fontSize = '24px';
         name.style.fontWeight = 'bold';
-        name.style.textShadow = '0 0 10px #ffd700';
+        name.style.textShadow = '0 0 10px var(--color-gold)';
         name.textContent = comboName;
 
         notification.appendChild(label);

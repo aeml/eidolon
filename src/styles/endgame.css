@@ -43,15 +43,57 @@
 .dungeon-raid-card {
     display: grid;
     gap: 8px;
-    margin: 14px 0;
-    padding: 12px;
-    border: 1px solid rgba(192, 102, 255, 0.55);
-    border-radius: 6px;
-    background: rgba(25, 13, 40, 0.9);
-    color: #eadcff;
+    margin: 0;
+    padding: 16px;
+    border: 1px solid var(--border-default);
+    border-top: 3px solid var(--raid-accent, #847396);
+    border-radius: var(--radius-md);
+    background: var(--bg-input);
+    color: var(--color-white);
+    text-align: left;
+    align-content: start;
 }
 
 .dungeon-raid-card span {
-    color: #baa9cf;
+    color: var(--color-text-muted);
     font-size: 0.78rem;
+    line-height: 1.55;
+}
+
+#dungeon-menu {
+    display: flex;
+    flex-direction: column;
+    width: min(760px, calc(100vw - 24px));
+    overflow: hidden;
+    border-color: var(--border-light);
+    border-radius: var(--radius-md);
+}
+
+#dungeon-menu > .window-header,
+.adventure-tabs { flex-shrink: 0; }
+
+.adventure-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+.adventure-tab { flex: 1; }
+.adventure-difficulty { background: var(--bg-input); color: var(--difficulty-accent); border: 1px solid var(--border-light); }
+.adventure-difficulty[aria-pressed="true"] { background: var(--bg-surface-active); border-color: var(--difficulty-accent); }
+#dungeon-menu .generated-menu__select { background: var(--bg-input); color: var(--color-text-white); border: 1px solid var(--border-light); border-radius: var(--radius-sm); }
+.adventure-tab[aria-selected="true"] { color: var(--color-gold); border-color: var(--color-gold); background: var(--bg-surface-active); }
+.adventure-scroll { min-height: 0; overflow-y: auto; padding-right: 6px; scrollbar-gutter: stable; }
+.adventure-raids { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.adventure-raids[hidden] { display: none; }
+.adventure-raid-note { grid-column: 1 / -1; margin: 0 0 4px; color: var(--color-text-muted); font-size: 0.8rem; line-height: 1.5; }
+.dungeon-raid-card strong { font-size: 0.9rem; line-height: 1.45; font-weight: 500; color: var(--raid-accent, var(--color-gold)); }
+.dungeon-raid-card[data-element="earth"] { --raid-accent: #a5b88c; }
+.dungeon-raid-card[data-element="water"] { --raid-accent: #8cb8cf; }
+.dungeon-raid-card[data-element="fire"] { --raid-accent: #d49d7d; }
+.dungeon-raid-card[data-element="air"] { --raid-accent: #b8afd8; }
+.dungeon-raid-card[data-element="dark"] { --raid-accent: #c29cdb; grid-column: 1 / -1; }
+.dungeon-raid-card button { margin: 0; min-width: 0; white-space: normal; }
+.dungeon-raid-card button:disabled { color: var(--color-text-dim); background: var(--bg-input); border-color: var(--border-dim); cursor: not-allowed; }
+#dungeon-menu :is(button, select):focus-visible { outline: 2px solid var(--color-gold); outline-offset: 2px; }
+
+@media (max-width: 600px) {
+    #dungeon-menu { padding: 14px; }
+    .adventure-raids { grid-template-columns: minmax(0, 1fr); }
+    .adventure-scroll { padding-right: 4px; }
 }

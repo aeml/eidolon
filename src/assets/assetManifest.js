@@ -1,6 +1,6 @@
 import { MeshCatalog } from '../utils/MeshCatalog.js';
 
-const DEFAULT_ASSET_VERSION = '2026-09-04-10';
+const DEFAULT_ASSET_VERSION = '2026-09-04-11';
 
 const ASSET_VERSION_OVERRIDES = {};
 
