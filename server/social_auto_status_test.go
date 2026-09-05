@@ -44,6 +44,34 @@ func newAutoStatusClient(playerID string) *Client {
 	}
 }
 
+// Receiving every recipient's broadcast orders all shared-world/session reads
+// before fixture teardown. A sleep, or waiting for only one recipient, does not.
+func waitAutoStatusBroadcasts(t *testing.T, clients ...*Client) map[*Client][]Message {
+	t.Helper()
+	received := make(map[*Client][]Message, len(clients))
+	deadline := time.NewTimer(5 * time.Second)
+	defer deadline.Stop()
+	for _, client := range clients {
+		for {
+			select {
+			case raw := <-client.send:
+				var message Message
+				if err := json.Unmarshal(raw, &message); err != nil {
+					t.Fatalf("decode social message: %v", err)
+				}
+				received[client] = append(received[client], message)
+				if message.Type == MsgSocial {
+					goto nextClient
+				}
+			case <-deadline.C:
+				t.Fatal("timed out waiting for every social broadcast recipient")
+			}
+		}
+	nextClient:
+	}
+	return received
+}
+
 // ---------------------------------------------------------------------------
 // autoSetSocialStatus — in_run path
 // ---------------------------------------------------------------------------
@@ -65,9 +93,7 @@ func TestAutoSetSocialStatus_SetInRun_AcksClientAndBroadcasts(t *testing.T) {
 	activeSessions["p1"] = c
 
 	autoSetSocialStatus(c, "p1", "in_run")
-	time.Sleep(20 * time.Millisecond)
-
-	msgs := drainSentMessages(c.send)
+	msgs := waitAutoStatusBroadcasts(t, c)[c]
 
 	// Must have received a MsgSocialStatus ack with the new value.
 	var ack *Message
@@ -117,7 +143,6 @@ func TestAutoSetSocialStatus_BusyPlayer_NoAckNoBroadcast(t *testing.T) {
 	activeSessions["p2"] = c
 
 	autoSetSocialStatus(c, "p2", "in_run")
-	time.Sleep(20 * time.Millisecond)
 
 	msgs := drainSentMessages(c.send)
 	for _, m := range msgs {
@@ -157,9 +182,7 @@ func TestAutoSetSocialStatus_InRunToAvailable_AcksAndBroadcasts(t *testing.T) {
 	activeSessions["p3"] = c
 
 	autoSetSocialStatus(c, "p3", "available")
-	time.Sleep(20 * time.Millisecond)
-
-	msgs := drainSentMessages(c.send)
+	msgs := waitAutoStatusBroadcasts(t, c)[c]
 
 	var ack *Message
 	for i := range msgs {
@@ -209,7 +232,6 @@ func TestAutoSetSocialStatus_NonInRunExit_NoOp(t *testing.T) {
 	activeSessions["p4"] = c
 
 	autoSetSocialStatus(c, "p4", "available")
-	time.Sleep(20 * time.Millisecond)
 
 	msgs := drainSentMessages(c.send)
 	for _, m := range msgs {
@@ -251,10 +273,10 @@ func TestAutoSetSocialStatus_BroadcastReachesOtherSessions(t *testing.T) {
 
 	// Alice enters dungeon.
 	autoSetSocialStatus(cA, "pa", "in_run")
-	time.Sleep(20 * time.Millisecond)
+	msgs := waitAutoStatusBroadcasts(t, cA, cB)
 
 	// Bob must receive a MsgSocial broadcast that shows Alice as in_run.
-	msgsB := drainSentMessages(cB.send)
+	msgsB := msgs[cB]
 	var socialMsg *Message
 	for i := range msgsB {
 		if msgsB[i].Type == MsgSocial {

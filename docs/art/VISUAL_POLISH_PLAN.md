@@ -4,7 +4,9 @@ Started: September 4, 2026
 
 Status: completed locally on September 4, 2026. All six implementation passes
 and the final acceptance checks are complete for the Alpha 1.0.1 candidate.
-Nothing has been committed, pushed or published.
+The implementation was committed and pushed September 5; production release
+verification is tracked separately below. The local acceptance result does not
+by itself establish a live release.
 The dated progress entries below are a chronological record; their remaining
 work lists describe that point in time, not the final acceptance state.
 
@@ -745,3 +747,16 @@ Completion decision: the scoped local visual-polish goal is complete. All six
 passes have implementation and acceptance evidence; no required local fix or
 check remains open. Further artistic iteration, broader device coverage and
 full networked raid validation are future work, not claims of this pass.
+
+## September 5 — Production release follow-up
+
+- Visual polish committed as `76461f7eeee8d364aa739b7a0f0feb88697d72eb`.
+- [Initial release run](https://github.com/aeml/eidolon/actions/runs/33933724500)
+  passed client checks but stopped before deployment: the Go race detector
+  caught the existing social-status test restoring shared globals while its
+  asynchronous broadcast still read them. Reproduced locally with the race
+  detector; this was not a visual or production gameplay change.
+- Replaced fixed sleeps in that test with channel receives for every broadcast
+  recipient before teardown. No production behavior or CI gate was weakened.
+  The follow-up commit's Actions run is the source of truth for deployment and
+  live verification; the initial failed run is not release evidence.
