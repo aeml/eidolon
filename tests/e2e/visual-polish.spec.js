@@ -66,7 +66,9 @@ test.describe('visual polish entry flow', () => {
                 await expect(page.locator('#class-selection-container')).toBeVisible();
                 await expect(page.locator('.class-btn')).toHaveCount(4);
                 for (const button of await page.locator('.class-btn').all()) await expect(button).toBeInViewport();
-                await expect(page.locator('#start-flow-copy')).toContainText('Chronicle starts automatically');
+                await expect(page.locator('#start-flow-copy')).toContainText('meet Archmage Ilyra');
+                await expect(page.locator('#start-flow-copy')).toContainText('click Complete Quest for rewards');
+                await expect(page.locator('#start-flow-copy')).not.toContainText('starts automatically');
             }
             await page.screenshot({ path: testInfo.outputPath(hasCharacter ? 'returning-character.png' : 'choose-class.png') });
         }

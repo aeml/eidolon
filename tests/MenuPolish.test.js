@@ -1133,7 +1133,8 @@ describe('menu polish regressions', () => {
         expect(html).toContain('<div class="help-guide__grid">');
         expect(html).toContain('<strong class="help-guide__key">Left Click:</strong>');
         expect(html).toContain('<strong class="help-guide__key">Combat:</strong> Left Click for melee/basic attack, Right Click to use your selected ability, 1-4 for hotbar abilities');
-        expect(html).toContain('<strong class="help-guide__key">1.</strong> Your <strong>Fourfold Chronicle</strong> starts automatically');
+        expect(html).toContain('<strong class="help-guide__key">1.</strong> Meet <strong>Archmage Ilyra</strong>');
+        expect(html).toContain('click <strong>Complete Quest</strong> to receive your rewards.');
         expect(html).not.toContain('<div style="color: #ffd700; font-size: 15px; font-weight: bold; margin-bottom: 6px;">Core Controls</div>');
         expect(html).not.toContain('<div id="help-first-hour-guide" style="border-top: 1px solid #444; padding-top: 10px;">');
         expect(html).not.toContain('<strong style="color: #ffd700;">Left Click:</strong>');

@@ -52,7 +52,7 @@ describe('GameEngine encounter callouts', () => {
         expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('Fire: Pyralis', engine.player.position, '#ff7b3d', '26px');
     });
 
-    test('announces automatic Chronicle advancement without a quest giver', () => {
+    test('announces server-confirmed Chronicle completion after a quest turn-in', () => {
         const engine = Object.create(GameEngine.prototype);
         engine.player = { id: 'player-1' };
         engine.uiManager = { showCombatCallout: jest.fn(), addGameMessage: jest.fn() };
