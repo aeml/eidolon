@@ -58,6 +58,7 @@ var inboundMessagePolicies = map[string]messagePolicy{
 	MsgEquip:             policy(accessCharacter, 2<<10, 20, time.Second),
 	MsgUnequip:           policy(accessCharacter, 2<<10, 20, time.Second),
 	MsgInventoryMove:     policy(accessCharacter, 2<<10, 30, time.Second),
+	MsgInventoryDrop:     policy(accessCharacter, 2<<10, 10, time.Second),
 	MsgInventorySort:     policy(accessCharacter, 1<<10, 5, time.Second),
 	MsgSplitStack:        policy(accessCharacter, 2<<10, 20, time.Second),
 	MsgBuyGamble:         policy(accessCharacter, 2<<10, 10, time.Second),

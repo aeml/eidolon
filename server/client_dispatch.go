@@ -971,6 +971,21 @@ func (c *Client) dispatchMessage(msg Message) {
 			c.sendSafe(b)
 		}
 
+	case MsgInventoryDrop:
+		var payload InventoryDropPayload
+		if c.playerID == "" || json.Unmarshal(msg.Payload, &payload) != nil {
+			return
+		}
+		inventory, err := world.PerformInventoryDrop(c.playerID, payload.Index, payload.ItemID)
+		if err != nil {
+			c.sendError(err.Error())
+			return
+		}
+		invPayload, _ := json.Marshal(inventory)
+		response, _ := json.Marshal(Message{Type: MsgInventory, Payload: invPayload})
+		c.sendSafe(response)
+		savePlayer(c)
+
 	case MsgInventoryMove:
 		if c.playerID == "" {
 			return

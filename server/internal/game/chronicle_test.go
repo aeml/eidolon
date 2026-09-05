@@ -220,10 +220,10 @@ func TestDailyResetPreservesChronicleProgress(t *testing.T) {
 
 func TestChronicleWorldLootIsOwnerOnlyAndAdvancesOnPickup(t *testing.T) {
 	w := NewWorld(nil)
-	owner := &Entity{ID: "owner", Type: TypePlayer, X: 0, Z: 0, Inventory: make([]Item, MaxInventorySize)}
+	owner := &Entity{ID: "owner", Type: TypePlayer, Health: 100, X: 0, Z: 0, Inventory: make([]Item, MaxInventorySize)}
 	completedChronicleThrough(owner, 1)
 	ensureChronicleLocked(owner)
-	stranger := &Entity{ID: "stranger", Type: TypePlayer, X: 0, Z: 0, Inventory: make([]Item, MaxInventorySize)}
+	stranger := &Entity{ID: "stranger", Type: TypePlayer, Health: 100, X: 0, Z: 0, Inventory: make([]Item, MaxInventorySize)}
 	w.AddEntity(owner)
 	w.AddEntity(stranger)
 	item := ChronicleDropForKill(owner, "Skeleton", 0.1)

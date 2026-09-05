@@ -126,6 +126,71 @@ export class QuestUI {
     // HELPERS
     // ================================================================
 
+    questTrackingKey(quest) {
+        return quest?.category === 'chronicle' || quest?.badge?.startsWith('Story') || quest?.id?.startsWith('chronicle_')
+            ? 'story' : quest?.id;
+    }
+
+    loadTrackingPreferences() {
+        const player = this.ctx.getLastPlayer?.();
+        const identity = player?.id || player?.characterId;
+        const key = identity ? `eidolon.questTracking.v1:${identity}` : null;
+        if (this.trackingStorageKey === key) return;
+        this.trackingStorageKey = key;
+        this.trackedQuestKeys = null;
+        if (!key) return;
+        try {
+            const saved = JSON.parse(localStorage.getItem(key));
+            if (Array.isArray(saved) && saved.every(value => typeof value === 'string')) {
+                this.trackedQuestKeys = new Set(saved.slice(0, 200));
+            }
+        } catch { /* Storage may be unavailable; tracking still works this session. */ }
+    }
+
+    getTrackedObjectives(summary = this.activeQuestSummary) {
+        this.loadTrackingPreferences();
+        if (!this.trackedQuestKeys) return summary.slice(0, 3);
+        return summary.filter(objective =>
+            !['Daily', 'Story'].some(kind => objective.badge?.startsWith(kind)) ||
+            this.trackedQuestKeys.has(this.questTrackingKey(objective)));
+    }
+
+    setQuestTracked(quest, tracked) {
+        const visible = this.getTrackedObjectives();
+        if (!this.trackedQuestKeys) {
+            this.trackedQuestKeys = new Set(visible
+                .filter(objective => objective.badge === 'Daily' || objective.badge?.startsWith('Story'))
+                .map(objective => this.questTrackingKey(objective)));
+        }
+        const key = this.questTrackingKey(quest);
+        if (tracked) this.trackedQuestKeys.add(key);
+        else this.trackedQuestKeys.delete(key);
+        try {
+            if (this.trackingStorageKey) localStorage.setItem(this.trackingStorageKey, JSON.stringify([...this.trackedQuestKeys]));
+        } catch { /* Keep the in-memory choice when browser storage is blocked. */ }
+        const scrollTop = this.journalList?.scrollTop || 0;
+        const restoreFocus = document.activeElement?.dataset?.questTrack === quest.id;
+        this.updateJournal(this.lastJournalQuests || []);
+        if (this.journalList) this.journalList.scrollTop = scrollTop;
+        if (restoreFocus) {
+            [...this.journalList.querySelectorAll('[data-quest-track]')]
+                .find(input => input.dataset.questTrack === quest.id)?.focus({ preventScroll: true });
+        }
+    }
+
+    createTrackingControl(quest) {
+        const label = document.createElement('label');
+        label.className = 'quest-tracking-control';
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.dataset.questTrack = quest.id;
+        input.checked = this.getTrackedObjectives().some(objective => this.questTrackingKey(objective) === this.questTrackingKey(quest));
+        input.setAttribute('aria-label', `Track ${this.getQuestTitle(quest)}`);
+        input.addEventListener('change', () => this.setQuestTracked(quest, input.checked));
+        label.append(input, document.createTextNode('Track on screen'));
+        return label;
+    }
+
     formatQuestTarget(target, maxCount) {
         const targetMap = {
             DungeonBoss: 'Dungeon Boss',
@@ -674,7 +739,8 @@ export class QuestUI {
         if (!this.objectivesPanel || !this.objectivesList) return;
 
         this.activeQuestSummary = Array.isArray(summary) ? summary : [];
-        const signature = JSON.stringify(this.activeQuestSummary);
+        const trackedObjectives = this.getTrackedObjectives();
+        const signature = JSON.stringify([this.activeQuestSummary, trackedObjectives, this.trackingStorageKey]);
         if (this.objectiveSignature === signature) return;
         this.objectiveSignature = signature;
         this.objectivesPanel.style.display = this.activeQuestSummary.length > 0 ? 'flex' : 'none';
@@ -683,8 +749,8 @@ export class QuestUI {
         this.objectivesPanel.querySelector('.objective-guidance')?.remove();
 
         const heading = this.objectivesPanel.querySelector('.objectives-panel__header');
-        if (heading) heading.textContent = `OBJECTIVES · ${this.activeQuestSummary.length}`;
-        this.activeQuestSummary.slice(0, 3).forEach((objective, index) => {
+        if (heading) heading.textContent = `TRACKED · ${trackedObjectives.length}`;
+        trackedObjectives.forEach((objective, index) => {
             const item = document.createElement('div');
             item.className = `objective-entry ${objective.routeTone ? `is-${objective.routeTone}` : ''}`.trim();
             const header = document.createElement('div');
@@ -733,8 +799,7 @@ export class QuestUI {
         const more = document.createElement('button');
         more.type = 'button';
         more.className = 'objectives-panel__more';
-        more.textContent = this.activeQuestSummary.length > 3
-            ? `View all ${this.activeQuestSummary.length} objectives · Journal (J)` : 'Open Journal (J)';
+        more.textContent = 'Choose tracked quests · Open Journal (J)';
         more.addEventListener('click', () => this.toggleJournal());
         if (this.activeQuestSummary.length) this.objectivesPanel.appendChild(more);
     }
@@ -790,6 +855,7 @@ export class QuestUI {
         ));
 
         if (current) {
+            section.appendChild(this.createTrackingControl(current));
             section.appendChild(this.createMessage(!current.accepted ? 'Available from Archmage Ilyra in Lanternhold' : current.count >= current.maxCount ? 'Ready to complete — return to Archmage Ilyra' : 'Given by Archmage Ilyra · Return to her when ready', { color: '#ffd56a', fontSize: '12px' }));
             section.appendChild(this.createMessage(`Chapter ${current.chapter}: ${this.getQuestTitle(current)}`, {
                 color: '#fff2bd', fontSize: '15px', fontWeight: 'bold', marginTop: '3px'
@@ -849,6 +915,7 @@ export class QuestUI {
     }
 
     updateJournal(quests) {
+        this.lastJournalQuests = quests;
         this.renderObjectivesPanel(this.buildObjectiveSummary(quests));
         this.clearElement(this.journalList);
         const resetSnapshot = this.getDailyResetSnapshot();
@@ -862,6 +929,9 @@ export class QuestUI {
         infoDiv.style.paddingBottom = '10px';
         infoDiv.textContent = resetSnapshot.statusLine;
         this.journalList.appendChild(infoDiv);
+        const trackingHint = this.createMessage('Choose “Track on screen” on any quest. Scroll the left tracker to see all your selections. Story tracking follows the next chapter.');
+        trackingHint.className = 'quest-tracking-hint';
+        this.journalList.appendChild(trackingHint);
 
         const hasActiveChronicle = this.renderChronicleSection(quests);
 
@@ -985,6 +1055,7 @@ export class QuestUI {
             reward.textContent = `Reward: ${this.getQuestRewardLabel(q)}`;
 
             div.appendChild(header);
+            div.appendChild(this.createTrackingControl(q));
             div.appendChild(progress);
             div.appendChild(reward);
 

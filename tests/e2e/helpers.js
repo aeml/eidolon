@@ -818,6 +818,13 @@ async function disableAutoLootThroughSettings(page) {
     await closeSettingsAndResume(page, escMenu);
 }
 
+export async function setAutoLootThroughSettings(page, enabled) {
+    const escMenu = await openSettingsThroughEscape(page);
+    await page.locator('#auto-loot-enabled').setChecked(enabled);
+    await expect(page.locator('#auto-loot-enabled')).toBeChecked({ checked: enabled });
+    await closeSettingsAndResume(page, escMenu);
+}
+
 async function findAndApproachLoot(page, inventoryBefore) {
     const immediateState = await readPlayerState(page);
     if (immediateState.inventoryCount > inventoryBefore) {

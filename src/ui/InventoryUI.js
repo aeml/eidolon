@@ -412,6 +412,29 @@ export class InventoryUI {
     }
 
     _bindInventoryEvents() {
+        // Only the live world canvas accepts a bag-to-ground drop. Dropping
+        // onto another window, outside the browser, or pressing Escape cancels.
+        const isWorldDrop = (event) => event.target instanceof Element && event.target.tagName === 'CANVAS' &&
+            event.target === window.game?.renderSystem?.renderer?.domElement;
+        document.addEventListener('dragover', event => {
+            if (!this.draggedBagItem || !isWorldDrop(event)) return;
+            event.preventDefault();
+            if (event.dataTransfer) event.dataTransfer.dropEffect = 'move';
+        });
+        document.addEventListener('drop', event => {
+            if (!this.draggedBagItem || !isWorldDrop(event)) return;
+            event.preventDefault();
+            event.stopPropagation();
+            const source = this.draggedBagItem;
+            this.draggedBagItem = null;
+            const item = this._getLastPlayer()?.inventory?.[source.index];
+            if (item?.id !== source.itemId) return;
+            if (item.id.startsWith('chronicle-item-')) {
+                this._addChatMessage('System', 'Quest items cannot be dropped.');
+                return;
+            }
+            if (window.game?.dropInventoryItem(source.index, source.itemId)) this.hideTooltips();
+        });
         if (this.btnSortInventory) {
             this.btnSortInventory.addEventListener('click', () => this.handleSortInventory());
         }
@@ -717,7 +740,7 @@ export class InventoryUI {
             this.goldDisplay.textContent = `GOLD: ${player.gold || 0}`;
         }
         if (this.inventoryGuidance) {
-            this.inventoryGuidance.textContent = this._buildInventoryGuidance(player);
+            this.inventoryGuidance.textContent = `${this._buildInventoryGuidance(player)} Drag a bag item into the world to drop its stack. Ground loot expires after 1 minute; quest items are protected.`;
         }
 
         const slots = this.inventoryGrid.children;
@@ -1375,9 +1398,11 @@ export class InventoryUI {
 
         element.ondragstart = (e) => {
             if (!e.dataTransfer) return;
+            this.draggedBagItem = type === 'inventory' ? { index: indexOrSlot, itemId: item.id } : null;
             e.dataTransfer.setData('text/plain', JSON.stringify({ type, id: indexOrSlot }));
             e.dataTransfer.effectAllowed = 'move';
         };
+        element.ondragend = () => { this.draggedBagItem = null; };
     }
 
     handleItemDrop(source, target) {

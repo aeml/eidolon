@@ -18,6 +18,12 @@ func (w *World) PerformPickup(playerID, lootID string) (*Entity, bool, string) {
 	if !ok || loot.Type != TypeLoot {
 		return nil, false, "loot_not_found"
 	}
+	if player.Type != TypePlayer || player.State == "DEAD" || player.Health <= 0 {
+		return nil, false, "player_unavailable"
+	}
+	if player.InstanceID != loot.InstanceID {
+		return nil, false, "different_instance"
+	}
 	if loot.LootOwnerID != "" && loot.LootOwnerID != playerID {
 		return nil, false, "not_your_loot"
 	}

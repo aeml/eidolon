@@ -350,6 +350,8 @@
 .objectives-panel__list {
     min-height: 0;
     overflow-y: auto;
+    pointer-events: auto;
+    overscroll-behavior: contain;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -436,7 +438,10 @@
 #objectives-panel .objective-entry:not(:first-child) .objective-entry__title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 #objectives-panel .objective-entry:not(:first-child) .objective-entry__hint,
 #objectives-panel .objective-entry:not(:first-child) .objective-entry__progress { display: none; }
-@media (max-height: 700px) { #objectives-list .objective-entry:nth-child(n+3) { display: none; } }
+.quest-tracking-control { display: flex; align-items: center; gap: 8px; color: var(--color-gold); font-size: 12px; cursor: pointer; min-height: 28px; }
+.quest-tracking-control input { accent-color: var(--color-gold); width: 16px; height: 16px; }
+.quest-tracking-control input:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 3px; }
+.quest-tracking-hint { color: #b7cce0; font-size: 12px; line-height: 1.5; margin-bottom: 12px; }
 
 .objective-guidance { background: linear-gradient(145deg, #1f2936f2, #111923ed); }
 .objective-guidance__heading { color: var(--color-gold); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 7px; }

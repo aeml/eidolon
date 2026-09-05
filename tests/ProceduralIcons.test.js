@@ -24,6 +24,23 @@ function canonicalValues(record) {
 }
 
 describe('procedural UI icons', () => {
+    test('every authoritative Chronicle quest drop has a distinct bag icon', () => {
+        const source = readFileSync('server/internal/game/quests.go', 'utf8');
+        const dropTable = source.match(/var chronicleDropSources = [^\n]+\{([\s\S]*?)\n\}/)?.[1] || '';
+        const names = [...dropTable.matchAll(/"([^"]+)":\s*\{/g)].map(match => match[1]);
+        expect(names).toHaveLength(4);
+        expect(names.sort()).toEqual(Object.keys(PROCEDURAL_ITEM_ICON_DEFINITIONS.quest).sort());
+        const icons = names.map(name => {
+            const item = { id: 'chronicle-item-123', name, type: 'RELIC', slot: 'relic' };
+            const icon = UIManager.prototype.getItemIconPath(item);
+            expect(decodeIcon(icon)).toContain('data-procedural-icon="quest:');
+            expect(getProceduralItemIcon({ ...item, id: 'chronicle-item-456', stack: 4 })).toBe(icon);
+            return icon;
+        });
+        expect(new Set(icons).size).toBe(4);
+        expect(decodeIcon(getProceduralItemIcon({ id: 'chronicle-item-future', name: 'Future relic' })))
+            .toContain('quest:chronicle-relic');
+    });
     test('every canonical and compatibility ability owns a unique code-generated sigil', () => {
         const expected = Object.values(PROCEDURAL_ABILITY_CAST_DEFINITIONS)
             .reduce((sum, abilities) => sum + Object.keys(abilities).length, 0)

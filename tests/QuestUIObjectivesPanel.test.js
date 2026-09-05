@@ -1,4 +1,5 @@
 import { QuestUI } from '../src/ui/QuestUI.js';
+import { jest } from '@jest/globals';
 
 function buildQuestDom() {
     document.body.innerHTML = `
@@ -13,6 +14,77 @@ function buildQuestDom() {
 }
 
 describe('QuestUI objectives panel', () => {
+    test('tracking remains usable with blocked storage and preserves checkbox focus', () => {
+        buildQuestDom();
+        const quest = { id: 'daily_storage', target: 'Skeleton', accepted: true, maxCount: 1 };
+        const read = jest.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new Error('blocked'); });
+        const write = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('blocked'); });
+        try {
+            const ui = new QuestUI({ getLastPlayer: () => ({ id: 'storage-blocked' }) });
+            ui.updateJournal([quest]);
+            const input = document.querySelector('[data-quest-track="daily_storage"]');
+            input.focus();
+            input.checked = false;
+            input.dispatchEvent(new Event('change'));
+            expect(document.activeElement.dataset.questTrack).toBe(quest.id);
+            expect(document.activeElement.checked).toBe(false);
+            ui.updateJournal([quest]);
+            expect(document.getElementById('objectives-list').children).toHaveLength(0);
+        } finally { read.mockRestore(); write.mockRestore(); }
+    });
+    test('lets the player track any dailies, hide story, and retain selections per character', () => {
+        buildQuestDom();
+        localStorage.clear();
+        const quests = [{ id: 'chronicle_01', title: 'Story chapter', category: 'chronicle', chapter: 1, accepted: true, maxCount: 1 },
+            ...Array.from({ length: 6 }, (_, index) => ({ id: `daily_${index}`, title: `Daily ${index}`, target: 'Skeleton', accepted: true, count: 0, maxCount: 2 }))];
+        const player = { id: 'tracker-test', quests };
+        const ui = new QuestUI({ getLastPlayer: () => player });
+        ui.updateJournal(quests);
+        const choose = (id, checked) => {
+            const input = document.querySelector(`[data-quest-track="${id}"]`);
+            input.checked = checked;
+            input.dispatchEvent(new Event('change'));
+        };
+        choose('chronicle_01', false);
+        choose('daily_0', false);
+        choose('daily_5', true);
+        const titles = () => [...document.querySelectorAll('#objectives-list .objective-entry__title')].map(node => node.textContent);
+        expect(titles()).toEqual(['Daily 1', 'Daily 5']);
+        for (const id of ['daily_0', 'daily_2', 'daily_3', 'daily_4']) choose(id, true);
+        expect(titles()).toHaveLength(6);
+        const reopened = new QuestUI({ getLastPlayer: () => player });
+        reopened.updateJournal(quests);
+        expect(titles()).toHaveLength(6);
+        expect(titles()).not.toContain('Story chapter');
+        player.id = 'different-character';
+        reopened.updateJournal(quests);
+        expect(titles()).toContain('Story chapter');
+        expect(titles()).toHaveLength(3);
+        localStorage.clear();
+    });
+
+    test('story tracking follows the next chapter without re-enabling untracked dailies', () => {
+        buildQuestDom();
+        const story = { id: 'chronicle_01', title: 'First chapter', category: 'chronicle', chapter: 1, accepted: true, maxCount: 1 };
+        const daily = { id: 'daily_other', title: 'Other daily', accepted: true, maxCount: 1 };
+        const ui = new QuestUI({ getLastPlayer: () => ({}) });
+        ui.updateJournal([story, daily]);
+        ui.setQuestTracked(daily, false);
+        ui.updateJournal([{ ...story, completed: true }, { ...story, id: 'chronicle_02', title: 'Next chapter', chapter: 2 }, daily]);
+        expect(document.getElementById('objectives-list').textContent).toContain('Next chapter');
+        expect(document.getElementById('objectives-list').textContent).not.toContain('Other daily');
+    });
+
+    test('an explicitly empty tracker stays empty and still offers its Journal shortcut', () => {
+        buildQuestDom();
+        const quest = { id: 'daily_only', title: 'Only daily', accepted: true, maxCount: 1 };
+        const ui = new QuestUI({ getLastPlayer: () => ({}) });
+        ui.updateJournal([quest]);
+        ui.setQuestTracked(quest, false);
+        ui.updateJournal([quest]);
+        expect(document.getElementById('objectives-list').children).toHaveLength(0);
+        expect(document.getElementById('objectives-panel').textContent).toContain('Choose tracked quests');
+    });
     test('renders active quest progress and ready-to-turn-in state in objectives panel', () => {
         buildQuestDom();
         const questUI = new QuestUI({

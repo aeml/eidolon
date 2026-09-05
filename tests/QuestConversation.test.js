@@ -66,7 +66,7 @@ test('many accepted quests remain in the Journal but only three compact cards ap
     const ui = new QuestUI({ getLastPlayer: () => player });
     ui.updateJournal(player.quests);
     expect(document.querySelectorAll('#objectives-list .objective-entry')).toHaveLength(3);
-    expect(document.querySelector('.objectives-panel__more').textContent).toContain('View all 27 objectives');
+    expect(document.querySelector('.objectives-panel__more').textContent).toContain('Choose tracked quests');
     const button = document.querySelector('.objectives-panel__more');
     ui.updateJournal(player.quests);
     expect(document.querySelector('.objectives-panel__more')).toBe(button);

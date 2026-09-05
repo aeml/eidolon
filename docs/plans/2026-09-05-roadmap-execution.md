@@ -275,7 +275,14 @@ also passes the restored-login membership correction added after the first
 isolated image was built.
 This work is deployed as recorded above and does not close the full 1.1 gate.
 
-## Alpha 1.0.6 candidate — every road has an ending
+## Alpha 1.0.6 — every road has an ending
+
+Pushed as `8027f221952156a6a7d4c2ee0ac8f24b60f2e3b3`, CI `33997180208`.
+Server, client, anonymous browser and disposable predeploy gameplay gates passed.
+Both deployments completed, and independent frontend/backend endpoints report
+Alpha 1.0.6 with this exact SHA. Final live gameplay checks are still running.
+The next push can now queue safely: deployment's branch-tip checks have finished
+and workflow concurrency has `cancel-in-progress: false`.
 
 The old retry-exhaustion path removed generated actors and returned only an empty
 start room. Required-encounter regressions failed for all ten dungeon/raid types.
@@ -337,8 +344,68 @@ remains open until the committed candidate clears CI and live verification.
   hotfix now supplies real seed sweeps and rendered
   fixture coverage; these are stronger evidence, not completion of the play gate.
   The 1.0.6 candidate replaces the confirmed empty retry-exhaustion fallback and
-  forces that path in encounter tests. Full real-player fallback progression is
-  still under verification; do not treat the seed sweep as covering this gate.
+  forces that path in encounter tests. Full Verdant fallback Fighter progression
+  passes as recorded above; other regional and raid runs remain open. Do not
+  treat the seed sweep as covering this whole gate.
+
+## Alpha 1.0.7 candidate — your bag, your adventure
+
+Added in response to the player's bag-icon, drag-out drop and tracker-selection
+requests while 1.0.6 passes through deployment:
+
+- Four authored elemental SVG icons cover every server Chronicle drop name.
+  A generic Chronicle relic fallback prevents future quest items from going blank.
+  Shared inventory icon resolution also covers tooltips/stash consumers.
+- Dragging a bag item onto the actual world canvas requests an authoritative
+  whole-stack ground drop at the character's current position and instance.
+  Quest items, stale indices/IDs, duplicate requests, dead/disconnected players
+  and active trades are rejected. Items retain stack, stats, sockets and identity.
+  No bag removal is predicted before the server acknowledges it. Dropped loot is
+  public and follows the existing one-minute expiry; bag guidance explains this.
+  Deliberate drops are excluded from this session's auto-loot selection but can
+  be manually picked up. Pickup now also rejects cross-instance and dead actors.
+- Journal checkboxes select any accepted daily and the story chain. Choices are
+  saved per character in browser storage, tolerate unavailable storage, and follow
+  the next story chapter. Custom selections are not truncated to three cards;
+  the bounded tracker scrolls, including at short screen heights. Default tracking
+  remains the initial three until the player customizes it. The existing compact
+  party-roster mode still shows the Journal shortcut instead of overlapping cards.
+
+Evidence: focused unit checks cover arbitrary selections, more than three tracked
+quests, an intentionally empty selection, per-character reload isolation, chapter
+handoff, icon catalog parity, canceled/invalid/quest-item drags, delayed inventory
+acknowledgement and auto-loot exclusion. Server checks preserve a complete item on
+drop/pickup, reject cross-instance pickup, validate failed drops leave state intact,
+and accept exactly one of 32 concurrent duplicate requests. Dispatch tests require
+the inventory acknowledgement and reject replay. The full server race suite passes.
+
+A disposable real-browser route passes earned loot → bag drag-out → ground item
+survives auto-loot cycles → ordinary mouse pickup → fresh-login inventory and
+tracking-preference persistence (21.7 seconds including setup). Its first attempt
+incorrectly assumed the fresh starter model represented owned equipment; the
+corrected test acquires an actual server drop through the existing QA loot route.
+This is an inventory test, not evidence for level-appropriate combat balance.
+Credential artifact scanning passes and disposable services/data were removed.
+
+Two anonymous browser checks pass (8.4 seconds): all four icons decode at 48px,
+and nine selected objectives remain reachable by ordinary tracker scrolling.
+Inspected the icon strip and tracker crop. An initial fixture placed the journal
+halfway down the screen without its normal centering transform; positioning the
+fixture inside the viewport resolved that test-only failure. These checks join
+the predeploy gallery; the real bag route joins disposable full-character QA.
+The full client suite before final release metadata passes 148 suites / 2,165
+tests. Version metadata, login text and patch notes advance together to 1.0.7.
+Publication is pending the 1.0.6 deployment and final candidate checks.
+
+Final candidate checks pass: 148 client suites / 2,166 tests, the full server race
+suite, lint and whitespace checks. The new real-browser inventory route and both
+visual checks also pass as recorded above. Neither this quality-of-life patch nor
+the fallback repair closes the broader 1.1 dungeon, party, ability and PvP gates.
+Checkbox updates also preserve keyboard focus and journal scroll position; a
+storage-blocked regression verifies that selection remains usable without browser
+persistence. This final UI refinement is included in the candidate.
+The final full client rerun passes all 148 suites / 2,167 tests; lint and
+whitespace checks remain clean.
 
 ## Milestone tracking
 

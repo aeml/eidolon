@@ -91,6 +91,39 @@ function createEngineHarness() {
 }
 
 describe('GameEngine loot pickup feedback', () => {
+    test('deliberately dropped items stay on the ground with auto-loot enabled but remain manually recoverable', () => {
+        const engine = createEngineHarness();
+        const item = createItem();
+        engine.player.inventory[0] = item;
+        engine.network.socket = { readyState: WebSocket.OPEN };
+        expect(engine.dropInventoryItem(0, item.id)).toBe(true);
+        expect(engine.player.inventory[0]).toBe(item);
+        expect(engine.network.send).toHaveBeenCalledWith('inventory_drop', { index: 0, itemId: item.id });
+        const loot = createLootEntity({ item });
+        engine.player.inventory[0] = null; // authoritative inventory acknowledgement
+        engine.activeEntitiesCache = [loot];
+        engine.remotePlayers.set(loot.id, loot);
+        engine.autoLootEnabled = true;
+        engine.network.send.mockClear();
+        engine.processAutoLoot();
+        expect(engine.network.send).not.toHaveBeenCalled();
+        expect(engine.shouldAutoLootEntity(loot)).toBe(false);
+        expect(engine.pickupLoot(loot.id)).toBe(true);
+        expect(engine.network.send).toHaveBeenCalledWith('pickup', { lootId: loot.id });
+    });
+
+    test('disconnected, stale and quest-item drop requests leave the bag unchanged', () => {
+        const engine = createEngineHarness();
+        const item = createItem();
+        engine.player.inventory[0] = item;
+        expect(engine.dropInventoryItem(0, item.id)).toBe(false);
+        engine.network.socket = { readyState: WebSocket.OPEN };
+        expect(engine.dropInventoryItem(0, 'stale-id')).toBe(false);
+        item.id = 'chronicle-item-seed';
+        expect(engine.dropInventoryItem(0, item.id)).toBe(false);
+        expect(engine.player.inventory[0]).toBe(item);
+        expect(engine.network.send).not.toHaveBeenCalled();
+    });
     beforeEach(() => {
         jest.useFakeTimers();
         jest.setSystemTime(new Date('2026-03-31T23:40:00Z'));

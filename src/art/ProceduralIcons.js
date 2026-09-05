@@ -12,6 +12,19 @@ const ABILITY_CACHE = new Map();
 const ITEM_CACHE = new Map();
 const ITEM_CACHE_LIMIT = 512;
 
+const QUEST_ITEM_DEFINITIONS = Object.freeze({
+    'Verdant Memory Seed': Object.freeze({ variant: 'memory-seed', base: '23492d', accent: '8fdc77', pale: 'e4ffd2',
+        body: '<path d="M48 79C18 59 28 28 48 19c20 9 30 40 0 60Z"/><path d="M48 72V30M48 47 34 37M48 59l15-14" fill="none"/><path d="M49 31c1-16 16-18 23-15-1 14-13 23-23 15Z"/>' }),
+    'Moon-Tide Pearl': Object.freeze({ variant: 'moon-tide-pearl', base: '173e66', accent: '8bcfec', pale: 'f0faff',
+        body: '<path d="M18 60q30 36 60 0L65 79H31Z"/><circle cx="48" cy="42" r="23"/><path d="M52 23c-20 5-21 28-3 36-27-1-29-33 3-36Z" fill="#4e8ac1"/><path d="M27 66q21 12 42 0" fill="none"/>' }),
+    'Cinderheart Ore': Object.freeze({ variant: 'cinderheart-ore', base: '512820', accent: 'ef793f', pale: 'ffe3a1',
+        body: '<path d="m24 30 24-13 27 20-5 34-29 11-24-22Z" fill="#5d4240"/><path d="m48 22-7 20 12 9-7 27M23 36l18 6M53 51l19-10" fill="none" stroke="#ffc16d" stroke-width="5"/><path d="m48 39 11 11-10 14-11-14Z"/>' }),
+    'Stormglass Pinion': Object.freeze({ variant: 'stormglass-pinion', base: '253254', accent: 'a7bcfa', pale: 'f1f4ff',
+        body: '<path d="M72 15Q28 20 23 77l17-12 10 1-5-14 17-7-10-8Q65 30 72 15Z"/><path d="m29 76 29-43M39 58l-1-16M47 49l13-4" fill="none"/><path d="m68 47-12 15h9L53 80l23-23H65Z" fill="#fff0a9"/>' })
+});
+const UNKNOWN_QUEST_ITEM = Object.freeze({ variant: 'chronicle-relic', base: '453552', accent: 'ddbb67', pale: 'fff0c7',
+    body: '<path d="m48 15 23 22-8 38-15 10-15-10-8-38Z"/><path d="M48 32v23m0 9v3" fill="none" stroke-width="5"/>' });
+
 const CURRENCY_DEFINITIONS = Object.freeze({
     'Eidolon Shard': Object.freeze({
         family: 'currency',
@@ -92,6 +105,7 @@ export const PROCEDURAL_ABILITY_ICON_DEFINITIONS = Object.freeze(Object.fromEntr
 export const PROCEDURAL_ITEM_ICON_DEFINITIONS = Object.freeze({
     equipment: EQUIPMENT_VISUAL_DESCRIPTORS,
     currency: CURRENCY_DEFINITIONS,
+    quest: QUEST_ITEM_DEFINITIONS,
     gems: Object.freeze(Object.fromEntries(canonicalEntries(GEM_TYPES).flatMap(([, gem]) =>
         canonicalEntries(GEM_QUALITIES).map(([, quality]) => [
             `${quality.name}:${gem.name}`,
@@ -318,6 +332,17 @@ function currencyIcon(name, definition) {
 
 export function getProceduralItemIcon(item) {
     if (!item) return null;
+    const questDefinition = QUEST_ITEM_DEFINITIONS[item.name] ||
+        (String(item.id || '').startsWith('chronicle-item-') ? UNKNOWN_QUEST_ITEM : null);
+    if (questDefinition) {
+        const key = `quest:${questDefinition.variant}`;
+        const cached = cachedValue(ITEM_CACHE, key);
+        if (cached) return cached;
+        return cacheValue(ITEM_CACHE, key, dataUri(frameSvg({
+            ...questDefinition, id: key, dark: '141922',
+            badges: '<circle cx="79" cy="17" r="10" fill="#d4ad53" stroke="#fff0c7"/><path d="M79 11v7m0 4v1" stroke="#292015" stroke-width="3"/>'
+        })), ITEM_CACHE_LIMIT);
+    }
     const gemDefinition = resolveGemDefinition(item);
     if (gemDefinition) {
         const key = `gem:${gemDefinition.motif}`;

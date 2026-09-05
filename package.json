@@ -1,6 +1,6 @@
 {
   "name": "eidolon-tests",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Eidolon browser game client, validation, and release tooling",
   "type": "module",
   "engines": {
@@ -22,7 +22,7 @@
     "test:e2e:movement": "playwright test tests/e2e/movement-smoothness.spec.js",
     "test:e2e:visual-load": "playwright test tests/e2e/raid-scene-performance.spec.js",
     "test:e2e:multiplayer": "playwright test tests/e2e/multiplayer.spec.js",
-    "test:e2e:animations": "playwright test tests/e2e/animation-gallery.spec.js tests/e2e/character-fit.spec.js tests/e2e/character-sheet.spec.js tests/e2e/terrain-polish.spec.js tests/e2e/combat-readability.spec.js tests/e2e/dark-king.spec.js tests/e2e/production-dungeon-layouts.spec.js",
+    "test:e2e:animations": "playwright test tests/e2e/animation-gallery.spec.js tests/e2e/character-fit.spec.js tests/e2e/character-sheet.spec.js tests/e2e/terrain-polish.spec.js tests/e2e/combat-readability.spec.js tests/e2e/dark-king.spec.js tests/e2e/production-dungeon-layouts.spec.js tests/e2e/quest-item-icons.spec.js",
     "benchmark:client": "node scripts/benchmark-client.mjs",
     "verify:browser-gpu": "node scripts/verify-browser-gpu.mjs",
     "docs:animations": "node scripts/generate-animation-coverage.mjs",

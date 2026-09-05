@@ -177,6 +177,7 @@ const (
 	MsgTradeUpdate       = "trade_update"
 	MsgTradeComplete     = "trade_complete"
 	MsgInventoryMove     = "inventory_move"
+	MsgInventoryDrop     = "inventory_drop"
 	MsgInventorySort     = "inventory_sort"
 	MsgEnterDungeon      = "enter_dungeon"
 	MsgEnterInstance     = "enter_instance"
@@ -266,6 +267,11 @@ type TradingBidPayload struct {
 type InventoryMovePayload struct {
 	FromIndex int `json:"fromIndex"`
 	ToIndex   int `json:"toIndex"`
+}
+
+type InventoryDropPayload struct {
+	Index  int    `json:"index"`
+	ItemID string `json:"itemId"`
 }
 
 type SocialEntry struct {

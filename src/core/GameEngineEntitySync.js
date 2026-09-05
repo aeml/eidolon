@@ -417,13 +417,27 @@ class GameEngineEntitySyncMethods {
         }
     }
 
-    findNearestLootInRange(radius = this.getLootPickupRadius()) {
+    dropInventoryItem(index, itemId) {
+        const item = this.player?.inventory?.[index];
+        if (!itemId || item?.id !== itemId || itemId.startsWith('chronicle-item-') ||
+            this.isPlayerDead?.() || this.socket?.readyState !== WebSocket.OPEN) return false;
+        // Remember deliberate drops before sending: world snapshots may arrive
+        // before the inventory acknowledgement. Manual pickup remains available.
+        this.droppedInventoryItemIds ||= new Set();
+        this.droppedInventoryItemIds.add(itemId);
+        if (this.droppedInventoryItemIds.size > 200) this.droppedInventoryItemIds.delete(this.droppedInventoryItemIds.values().next().value);
+        this.network.send('inventory_drop', { index, itemId });
+        return true;
+    }
+
+    findNearestLootInRange(radius = this.getLootPickupRadius(), excludeDropped = false) {
         if (!this.player || !this.activeEntitiesCache) return null;
         let nearest = null;
         let nearestDistance = radius;
 
         for (const entity of this.activeEntitiesCache) {
             if (!this.isLootEntity(entity) || !entity.isActive || this.recentlyPickedUpLoot.has(entity.id)) continue;
+            if (excludeDropped && this.droppedInventoryItemIds?.has(entity.item?.id)) continue;
             const dx = this.player.position.x - entity.position.x;
             const dz = this.player.position.z - entity.position.z;
             const dist = Math.sqrt(dx * dx + dz * dz);
@@ -437,7 +451,7 @@ class GameEngineEntitySyncMethods {
     }
 
     shouldAutoLootEntity(entity) {
-        return Boolean(this.autoLootEnabled && this.canAttemptLootPickup(entity));
+        return Boolean(this.autoLootEnabled && !this.droppedInventoryItemIds?.has(entity?.item?.id) && this.canAttemptLootPickup(entity));
     }
 
     processAutoLoot() {
@@ -445,7 +459,7 @@ class GameEngineEntitySyncMethods {
         const now = Date.now();
         if (now - (this.lastAutoLootAttemptTime || 0) < this.autoLootAttemptCooldownMs) return;
 
-        const nearestLoot = this.findNearestLootInRange();
+        const nearestLoot = this.findNearestLootInRange(this.getLootPickupRadius(), true);
         if (!nearestLoot) return;
 
         this.lastAutoLootAttemptTime = now;

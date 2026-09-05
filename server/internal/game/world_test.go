@@ -464,7 +464,7 @@ func TestEntityRecalculateStatsWizard(t *testing.T) {
 func TestPerformPickup_InventoryFull_DoesNotDeleteLoot(t *testing.T) {
 	w := NewWorld(nil)
 
-	player := &Entity{ID: "player-1", Type: TypePlayer, X: 0, Z: 0}
+	player := &Entity{ID: "player-1", Type: TypePlayer, Health: 100, X: 0, Z: 0}
 	player.Inventory = make([]Item, MaxInventorySize)
 	for i := 0; i < len(player.Inventory); i++ {
 		player.Inventory[i] = Item{ID: "filled"}
@@ -489,8 +489,8 @@ func TestPerformPickup_InventoryFull_DoesNotDeleteLoot(t *testing.T) {
 
 func TestPerformPickupHonorsMasterLoot(t *testing.T) {
 	w := NewWorld(nil)
-	leader := &Entity{ID: "leader", Type: TypePlayer, X: 0, Z: 0, Inventory: make([]Item, MaxInventorySize)}
-	member := &Entity{ID: "member", Type: TypePlayer, X: 0, Z: 0, Inventory: make([]Item, MaxInventorySize)}
+	leader := &Entity{ID: "leader", Type: TypePlayer, Health: 100, X: 0, Z: 0, Inventory: make([]Item, MaxInventorySize)}
+	member := &Entity{ID: "member", Type: TypePlayer, Health: 100, X: 0, Z: 0, Inventory: make([]Item, MaxInventorySize)}
 	w.AddEntity(leader)
 	w.AddEntity(member)
 	party := w.CreateParty(leader.ID)

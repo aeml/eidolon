@@ -53,6 +53,55 @@ function createInventory(player) {
 }
 
 describe('Inventory sorting', () => {
+    test('dragging a bag item onto the world requests a drop; other windows and cancelled drags do not', () => {
+        buildDom();
+        const player = { inventory: [{ id: 'bag-item' }], equipment: {} };
+        const inventory = createInventory(player);
+        const slot = document.querySelector('.inv-slot');
+        const canvas = document.createElement('canvas');
+        document.body.appendChild(canvas);
+        const previousGame = window.game;
+        window.game = { renderSystem: { renderer: { domElement: canvas } }, dropInventoryItem: jest.fn(() => true) };
+        try {
+            inventory.setupItemDragAndDrop(slot, 'inventory', 0, player.inventory[0]);
+            const start = () => slot.ondragstart({ dataTransfer: { setData: jest.fn() } });
+            start();
+            document.getElementById('shop-screen').dispatchEvent(new Event('drop', { bubbles: true, cancelable: true }));
+            expect(window.game.dropInventoryItem).not.toHaveBeenCalled();
+            slot.ondragend();
+            canvas.dispatchEvent(new Event('drop', { bubbles: true, cancelable: true }));
+            expect(window.game.dropInventoryItem).not.toHaveBeenCalled();
+            start();
+            canvas.dispatchEvent(new Event('drop', { bubbles: true, cancelable: true }));
+            expect(window.game.dropInventoryItem).toHaveBeenCalledTimes(1);
+            expect(window.game.dropInventoryItem).toHaveBeenCalledWith(0, 'bag-item');
+            expect(player.inventory[0].id).toBe('bag-item');
+            slot.ondragend();
+        } finally { window.game = previousGame; }
+    });
+
+    test('quest-item and stale-slot drags cannot drop anything into the world', () => {
+        buildDom();
+        const player = { inventory: [{ id: 'chronicle-item-seed' }], equipment: {} };
+        const inventory = createInventory(player);
+        const slot = document.querySelector('.inv-slot');
+        const canvas = document.createElement('canvas');
+        document.body.appendChild(canvas);
+        const previousGame = window.game;
+        window.game = { renderSystem: { renderer: { domElement: canvas } }, dropInventoryItem: jest.fn() };
+        try {
+            inventory.setupItemDragAndDrop(slot, 'inventory', 0, player.inventory[0]);
+            slot.ondragstart({ dataTransfer: { setData: jest.fn() } });
+            canvas.dispatchEvent(new Event('drop', { bubbles: true, cancelable: true }));
+            expect(window.game.dropInventoryItem).not.toHaveBeenCalled();
+            expect(inventory.ctx.addChatMessage).toHaveBeenCalledWith('System', 'Quest items cannot be dropped.');
+            inventory.setupItemDragAndDrop(slot, 'inventory', 0, { id: 'old-item' });
+            slot.ondragstart({ dataTransfer: { setData: jest.fn() } });
+            canvas.dispatchEvent(new Event('drop', { bubbles: true, cancelable: true }));
+            expect(window.game.dropInventoryItem).not.toHaveBeenCalled();
+            slot.ondragend();
+        } finally { window.game = previousGame; }
+    });
     test('item material colors remain visible while rarity stays on the slot frame', () => {
         buildDom();
         const inventory = createInventory({ inventory: [], equipment: {} });
