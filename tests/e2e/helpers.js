@@ -1505,6 +1505,9 @@ async function projectVerdantEntrance(page) {
 }
 
 export async function enterAndExitDungeon(page, { beforeExit } = {}) {
+    // Retries reuse the dedicated character. An interrupted earlier route may
+    // have left it in an instance, where overworld QA waypoints are rejected.
+    if ((await readPlayerState(page)).instanceType !== 'overworld') await returnToTown(page);
     await useVerdantQAWaypoint(page);
     await zoomOutForPortal(page);
 
@@ -1554,7 +1557,17 @@ export async function enterAndExitDungeon(page, { beforeExit } = {}) {
         throw new Error(`Real dungeon entry did not transition instances: ${JSON.stringify(diagnostic)}`);
     }
 
-    if (beforeExit) await beforeExit(page);
+    let inspectionError;
+    try {
+        if (beforeExit) await beforeExit(page);
+    } catch (error) {
+        inspectionError = error;
+    }
+    await returnToTown(page);
+    if (inspectionError) throw inspectionError;
+}
+
+export async function returnToTown(page) {
     await page.keyboard.press('b');
     await expect.poll(async () => (await readPlayerState(page)).instanceType, {
         timeout: 30_000

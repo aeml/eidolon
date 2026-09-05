@@ -62,7 +62,13 @@ not close the broader dungeon repair or milestone gates.
 
 ## Alpha 1.0.3 — within reach, safely home
 
-Status: implemented locally; not published. No milestone gate is closed yet.
+Status: pushed as `2ec04bc94d8b5cd684e7182499172ddd80d1d5df`. CI run
+`33987477412` passed server/client/anonymous checks but failed predeploy portal
+QA before either deployment. The jump destination was projected before the
+camera settled; the retry then inherited the unfinished dungeon visit. The
+corrective QA change waits for a visible ground destination and returns the
+dedicated character to town after inspection failures or before a resumed run.
+This candidate is not yet live; no milestone gate is closed.
 
 Confirmed reproductions and changes:
 
