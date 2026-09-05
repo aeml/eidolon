@@ -7,6 +7,7 @@ readonly API_CONTAINER="eidolon-isolated-qa-api-${QA_RUN_ID}"
 readonly QA_NETWORK="eidolon-isolated-qa-net-${QA_RUN_ID}"
 readonly QA_PORT="${EIDOLON_ISOLATED_QA_PORT:-18085}"
 readonly SERVER_IMAGE="eidolon-server:isolated-qa-${QA_RUN_ID}"
+readonly QA_NETWORK_MODE="${EIDOLON_ISOLATED_QA_NETWORK_MODE:-bridge}"
 
 network_created=false
 mongo_created=false
@@ -57,6 +58,31 @@ if ss -ltn | grep -Eq ":${QA_PORT}[[:space:]]"; then
 fi
 trap cleanup_isolated_qa EXIT INT TERM
 
+if [[ "${QA_NETWORK_MODE}" != bridge && "${QA_NETWORK_MODE}" != host ]]; then
+  echo "EIDOLON_ISOLATED_QA_NETWORK_MODE must be bridge or host." >&2
+  exit 1
+fi
+mongo_port=27017
+mongo_host=mongo
+mongo_network_args=(--network "${QA_NETWORK}" --network-alias mongo)
+api_network_args=(--network "${QA_NETWORK}" -p "127.0.0.1:${QA_PORT}:8080")
+api_addr=:8080
+mongo_bind=--bind_ip_all
+if [[ "${QA_NETWORK_MODE}" == host ]]; then
+  # Linux-only local QA: no bridge/veth changes to disturb other Chrome jobs.
+  # Both services still bind only to loopback, with disposable authenticated data.
+  mongo_port=$((10#${QA_PORT} + 1))
+  if [[ "${mongo_port}" -gt 65535 ]] || ss -ltn | grep -Eq ":${mongo_port}[[:space:]]"; then
+    echo "The adjacent isolated Mongo port is invalid or already in use." >&2
+    exit 1
+  fi
+  mongo_host=127.0.0.1
+  mongo_network_args=(--network host)
+  api_network_args=(--network host)
+  api_addr="127.0.0.1:${QA_PORT}"
+  mongo_bind=--bind_ip=127.0.0.1
+fi
+
 export EIDOLON_E2E_WS_URL="ws://127.0.0.1:${QA_PORT}/ws"
 export EIDOLON_E2E_USERNAME="codexqa$(openssl rand -hex 6)"
 export EIDOLON_E2E_PASSWORD="$(openssl rand -hex 24)"
@@ -89,16 +115,19 @@ docker build \
   --tag "${SERVER_IMAGE}" server >/dev/null
 image_created=true
 
-docker network create "${QA_NETWORK}" >/dev/null
-network_created=true
-docker run -d --name "${MONGO_CONTAINER}" --network "${QA_NETWORK}" --network-alias mongo \
+if [[ "${QA_NETWORK_MODE}" == bridge ]]; then
+  docker network create "${QA_NETWORK}" >/dev/null
+  network_created=true
+fi
+docker run -d --name "${MONGO_CONTAINER}" "${mongo_network_args[@]}" \
   -e MONGO_INITDB_ROOT_USERNAME="${mongo_username}" \
   -e MONGO_INITDB_ROOT_PASSWORD="${mongo_password}" \
-  mongo:7.0.14 --auth --bind_ip_all >/dev/null
+  mongo:7.0.14 --auth "${mongo_bind}" --port "${mongo_port}" >/dev/null
 mongo_created=true
 
 for attempt in $(seq 1 60); do
   if docker exec "${MONGO_CONTAINER}" mongosh \
+    --port "${mongo_port}" \
     --username "${mongo_username}" --password "${mongo_password}" \
     --authenticationDatabase admin --quiet \
     --eval 'db.runCommand({ ping: 1 }).ok' 2>/dev/null | grep -Eq '^1$'; then
@@ -111,10 +140,9 @@ for attempt in $(seq 1 60); do
   sleep 1
 done
 
-mongo_uri="mongodb://${mongo_username}:${mongo_password}@mongo:27017/eidolon?authSource=admin"
-docker run -d --name "${API_CONTAINER}" --network "${QA_NETWORK}" \
-  -p "127.0.0.1:${QA_PORT}:8080" "${SERVER_IMAGE}" \
-  --addr=:8080 --mongo-uri="${mongo_uri}" \
+mongo_uri="mongodb://${mongo_username}:${mongo_password}@${mongo_host}:${mongo_port}/eidolon?authSource=admin"
+docker run -d --name "${API_CONTAINER}" "${api_network_args[@]}" "${SERVER_IMAGE}" \
+  --addr="${api_addr}" --mongo-uri="${mongo_uri}" \
   --qa-usernames="${qa_allowlist}" \
   --log-file= --log-stdout=false --suspicious-log-file= --suspicious-stdout=false >/dev/null
 api_created=true
@@ -158,7 +186,7 @@ run_animation_multiplayer() {
 set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   all)
-    npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js && npm run test:e2e:movement && run_animation_classes && run_animation_multiplayer
+    npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js && npm run test:e2e:movement && run_animation_classes && run_animation_multiplayer
     ;;
   animations)
     run_animation_classes
@@ -182,10 +210,13 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     EIDOLON_E2E_PORTAL_ONLY=1 npx playwright test tests/e2e/authenticated.spec.js --grep "allowlisted QA waypoint"
     ;;
   dungeons)
-    npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js
+    npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js
+    ;;
+  verdant)
+    npx playwright test tests/e2e/verdant-dungeon-gameplay.spec.js
     ;;
   *)
-    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, extended, portal, or dungeons." >&2
+    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, extended, portal, dungeons, or verdant." >&2
     exit 1
     ;;
 esac

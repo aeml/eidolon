@@ -34,7 +34,7 @@ func TestDungeonEntryDoesNotHoldPlayerWhileWaitingForInstance(t *testing.T) {
 		time.Sleep(time.Millisecond)
 	}
 	if !player.Mu.TryLock() {
-		t.Fatal("entry holds player lock while waiting for instance, reversing room-reward lock order")
+		t.Fatal("entry holds player lock while waiting for instance instead of resolving its layout first")
 	}
 	player.Mu.Unlock()
 }

@@ -21,7 +21,7 @@ describe('version presentation', () => {
     test('leads with 1.0.4 instance-boundary and recovery notes', () => {
         expect(indexHtml).toContain('Alpha 1.0.4 (roads that remember)');
         expect(indexHtml.indexOf('data-version="1.0.4"')).toBeLessThan(indexHtml.indexOf('data-version="1.0.3"'));
-        for (const heading of ['Water and darkness have room to move', 'A clear way home', 'Arrive without old momentum', 'Dungeon reports can be replayed']) expect(indexHtml).toContain(heading);
+        for (const heading of ['Dungeon combat keeps running after a room clear', 'Water and darkness have room to move', 'A clear way home', 'Arrive without old momentum', 'Dungeon reports can be replayed']) expect(indexHtml).toContain(heading);
         expect(indexHtml).toContain('id="btn-recall"');
     });
     test('retains targeted 1.0.3 repairs while preserving previous notes', () => {

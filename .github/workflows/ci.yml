@@ -509,7 +509,7 @@ jobs:
           EIDOLON_E2E_CLASS_SECONDARY: ${{ secrets.EIDOLON_E2E_CLASS_SECONDARY }}
           EIDOLON_E2E_FULL_GAMEPLAY: '1'
           EIDOLON_E2E_PORTAL_ONLY: '1'
-        run: sg render -c 'npx playwright test tests/e2e/anonymous.spec.js tests/e2e/authenticated.spec.js tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/movement-smoothness.spec.js'
+        run: sg render -c 'npx playwright test tests/e2e/anonymous.spec.js tests/e2e/authenticated.spec.js tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/movement-smoothness.spec.js'
 
       - name: Run live four-class and remote-animation QA
         env:

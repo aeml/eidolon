@@ -656,6 +656,7 @@
                 <div class="patch-note-entry" data-version="1.0.4">
                     <h3 class="patch-note-entry__title">Alpha 1.0.4 (roads that remember)</h3>
                     <ul class="patch-note-entry__list">
+                        <li><strong>Dungeon combat keeps running after a room clear:</strong> removed a deadlock between room rewards and enemy movement that could freeze the world before the first boss fight. Room rewards remain reserved once, with combat and later rooms able to continue updating.</li>
                         <li><strong>Water and darkness have room to move:</strong> removed an unrelated scene boundary from canonical dungeon collision. Abyssal Well, Umbral Nexus, and the crystal and Dark King raids now use their own walkable bounds instead of pushing valid positions toward the old edge. Dungeon walls remain enforced.</li>
                         <li><strong>A clear way home:</strong> the Escape menu now has Return to Lanternhold (B), using the same recall action as the keyboard shortcut. Help and completed-dungeon guidance explain this route instead of telling you to backtrack to an exit.</li>
                         <li><strong>Arrive without old momentum:</strong> entering a dungeon now clears jumps, charges, and targets from the scene you left, just as recall and respawn do. Cooldowns and buffs remain intact.</li>

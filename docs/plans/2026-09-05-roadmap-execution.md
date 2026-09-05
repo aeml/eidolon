@@ -120,9 +120,13 @@ Publication and live verification of 1.0.3 are complete; the wider 1.1 gate is n
 
 ## Alpha 1.0.4 candidate — roads that remember
 
-Status: release candidate validated locally and ready for publication. The
-previous 1.0.3 release is verified live; deployment and live QA for 1.0.4 are
-separate gates and are not claimed by these local results.
+Status: pushed as `40658d07538404e3db1c9ac5c3a6d82e47bcc785`. CI run
+`33990677342` failed before deployment: client/server checks and eight browser
+tests passed, but the production-layout fixture timed out twice while capturing
+a screenshot on hosted Chromium. The unchanged fixture is being moved to the
+existing hardware-Chrome predeploy gate, retaining all 20 layouts and High/Low
+captures. The previous 1.0.3 release remains live. A corrective 1.0.4 candidate
+also addresses the renewed first-boss report below; it is not yet published.
 
 - Four regional generators now have a local seeded RNG independent of global
   combat/loot traffic. Production retries receive distinct deterministic seeds;
@@ -140,7 +144,8 @@ separate gates and are not claimed by these local results.
 - Added [seed capture/replay instructions](dungeon-seed-replay-qa.md), 1,500
   production layout checks, 20 shared server-generated fixtures, actual client
   floor/collision traversal sampling, and a browser geometry/High-Low fixture
-  check. The latter is included in the next anonymous CI suite.
+  check. The latter now runs in the hardware-Chrome predeploy gate after the
+  hosted screenshot failure described above.
 - Dungeon entry also retained departed charge/jump targets: a reproduced jump
   sent the newly entered player to (0,0,0) on the next update. The shared scene
   movement reset now runs on entry under the player lock. Recall/respawn still
@@ -192,6 +197,32 @@ pass the 177-test version/history suite. Publication and live verification remai
 open for this candidate.
 
 ## Dungeon investigations still open
+
+The renewed Verdant first-boss/no-later-spawns report exposed another confirmed
+failure: room rewards acquired instance -> actor locks, while enemy movement
+held actor -> instance locks. A deterministic real-layout regression reproduced
+the deadlock. The candidate reserves each room reward under the instance lock,
+copies its context, then releases it before touching actors. The regression,
+32 concurrent once-only reward attempts, and full server race suite pass.
+A new real-input Wizard route passed ordinary kills, Rootbound Warden, later
+rooms, Briar Matron, both boss-room clear assertions, and town recall. It does
+not use forced kills or inside-instance waypoints. A starter-equipped Fighter
+landed steady basic attacks (approximately 540 damage per 15 seconds), but the
+15,000-health first boss exceeded the original two-minute encounter deadline.
+That run is not recorded as a boss-kill pass. Follow-up melee QA selects the
+normal level-unlocked Whirlwind/Shield Slam specialization through its skill UI.
+The final Fighter sequence passes Water movement/reconnect/recall/re-entry,
+normal reset into fresh Verdant, ordinary enemies, Rootbound Warden's death,
+later enemies, Briar Matron's death, both room-clear checks, and town recall
+(3.7 minutes total). World-state heartbeat assertions remain active throughout.
+The input helper can click a visible point on tall hitboxes when their center
+is behind the HUD; no target, health, or progression state is injected. The
+credential artifact scan passes, and disposable containers/data were removed.
+The client suite was rerun after the final helper changes: all 2,142 tests pass.
+The corrected hardware layout fixture passes all 20 layouts and High/Low
+captures in 10.8 seconds total. Full client checks pass 148 suites / 2,142 tests;
+the full server race suite, lint, and 177 version/history tests also pass.
+This is a candidate repair, not yet a live fix or closure of all dungeon gates.
 
 - DUN-01: targeted movement/scene fixes and the Verdant mid-jump recall route
   shipped in 1.0.3. Water reconnect/menu recall/re-entry passes on the 1.0.4

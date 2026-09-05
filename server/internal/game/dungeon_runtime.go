@@ -335,9 +335,9 @@ func (w *World) markDungeonRoomClearedIfDefeated(instanceID, defeatedEnemyID str
 }
 
 func (w *World) MarkDungeonRoomCleared(instanceID string, roomIndex int) {
-	// Snapshot entity pointers before taking the instance lock. The lock order is
-	// world/registry -> instance -> entity; instance code must never reacquire the
-	// world lock while holding an instance lock.
+	// Snapshot entities before reserving the room reward. Never hold the instance
+	// lock while acquiring an actor lock: AI reads instance walking geometry while
+	// owning its actor, so the opposite order can freeze the entire world tick.
 	w.Mu.RLock()
 	entities := make([]*Entity, 0, len(w.Entities))
 	for _, entity := range w.Entities {
@@ -391,10 +391,16 @@ func (w *World) MarkDungeonRoomCleared(instanceID string, roomIndex int) {
 	}
 
 	shouldReward := room.Type != "start" && room.Type != "boss" && !progress.Rewarded
+	objectiveRoomIndex := inst.RoomState.ObjectiveRoomIndex()
+	runLevel, dungeonType, difficulty := inst.RunLevel, inst.DungeonType, inst.Difficulty
+	if shouldReward {
+		// Reserve once under the instance lock, before another clear can race us.
+		inst.RoomState.Rooms[roomIndex].Rewarded = true
+	}
+	inst.Mu.Unlock()
+
 	playerRewards := make([]DungeonRoomClearRewardEvent, 0)
 	if shouldReward {
-		inst.RoomState.Rooms[roomIndex].Rewarded = true
-		objectiveRoomIndex := inst.RoomState.ObjectiveRoomIndex()
 		rewardScale := 1.0
 		if room.Type == "elite" {
 			rewardScale = 1.5
@@ -415,8 +421,8 @@ func (w *World) MarkDungeonRoomCleared(instanceID string, roomIndex int) {
 				continue
 			}
 			rewardMultiplier := resonanceRewardMultiplier(entity)
-			xpReward := int(float64(max(50, inst.RunLevel*10)) * rewardScale * rewardMultiplier)
-			goldReward := int(float64(max(25, inst.RunLevel*3)) * rewardScale * rewardMultiplier)
+			xpReward := int(float64(max(50, runLevel*10)) * rewardScale * rewardMultiplier)
+			goldReward := int(float64(max(25, runLevel*3)) * rewardScale * rewardMultiplier)
 			itemCount := 0
 			gemCount := 0
 			heartCount := 0
@@ -431,14 +437,14 @@ func (w *World) MarkDungeonRoomCleared(instanceID string, roomIndex int) {
 				entity.SanctuaryEndTime = time.Now().Add(8 * time.Second)
 			}
 			if room.Hook == "chest" {
-				if gem := GenerateRandomGemByLevel(max(20, inst.RunLevel), false); gem != nil {
+				if gem := GenerateRandomGemByLevel(max(20, runLevel), false); gem != nil {
 					if entity.AddItemToInventory(*gem) == 0 {
 						gemCount = 1
 					}
 				}
 			}
 			if room.Hook == "elite_ambush" {
-				if loot := GenerateEliteLoot(max(20, inst.RunLevel)); loot != nil {
+				if loot := GenerateEliteLoot(max(20, runLevel)); loot != nil {
 					if entity.AddItemToInventory(*loot) == 0 {
 						itemCount = 1
 					}
@@ -447,12 +453,10 @@ func (w *World) MarkDungeonRoomCleared(instanceID string, roomIndex int) {
 			awardRoomExperienceLocked(entity, xpReward)
 			entity.Gold += goldReward
 			w.Economy.RecordSource("dungeon_room_rewards", goldReward)
-			playerRewards = append(playerRewards, buildDungeonRoomClearRewardSummary(entity.ID, roomIndex, objectiveRoomIndex, goldReward, xpReward, itemCount, gemCount, heartCount, inst.DungeonType, inst.Difficulty, room.Type, room.Hook, healthRestored, manaRestored))
+			playerRewards = append(playerRewards, buildDungeonRoomClearRewardSummary(entity.ID, roomIndex, objectiveRoomIndex, goldReward, xpReward, itemCount, gemCount, heartCount, dungeonType, difficulty, room.Type, room.Hook, healthRestored, manaRestored))
 			entity.Mu.Unlock()
 		}
 	}
-	inst.Mu.Unlock()
-
 	if w.OnEvent != nil {
 		for _, reward := range playerRewards {
 			w.OnEvent("room_clear_reward", reward)
@@ -1088,8 +1092,8 @@ func (w *World) EnterInstance(playerID string, instanceID string) error {
 			inst.Mu.RUnlock()
 		}
 	}
-	// Resolve the instance layout before taking the player lock: room rewards
-	// use instance -> entity order and must not deadlock with entering players.
+	// Resolve the instance layout before taking the player lock. Scene entry
+	// need not nest layout reads with mutable actor state.
 	player.Mu.Lock()
 	w.Grid.Remove(player)
 	oldInstanceID := player.InstanceID

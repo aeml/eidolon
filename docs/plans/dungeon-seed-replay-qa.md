@@ -43,13 +43,29 @@ at its actual difficulty/run level instead of treating this command as proof.
   Each sampled point must have exactly one floor and no movement correction.
 - `production-dungeon-layouts.spec.js`: repeats the geometry check in a real
   browser at the production coordinates, with High/Low screenshots of each
-  dungeon/raid family. These are rendered fixtures, not player-controlled runs.
+  dungeon/raid family. This runs in the hardware-Chrome predeploy gallery gate;
+  hosted software-rendered screenshot capture exceeded its five-minute timeout.
+  These are rendered fixtures, not player-controlled runs.
 - `regional-dungeon-gameplay.spec.js`: uses the town guide and ordinary mouse
   movement to enter Water, cross the former scene boundary, reconnect, recall
   through the Escape menu, and continue the identical instance/seed. Run it
   against disposable services with `EIDOLON_ISOLATED_QA_ROUTE=dungeons npm run
   test:e2e:isolated` from the repository root. This is a short real-player route,
   not a complete dungeon or boss encounter.
+- `verdant-dungeon-gameplay.spec.js`: a fresh normal-level-30 run with a level-100
+  QA character, ordinary walking, basic attacks and abilities through the first
+  two bosses, room-clear checks, then recall. No forced kill or inside-instance
+  waypoint is used. The overworld entrance waypoint provides temporary incoming
+  damage protection; this tests functionality, not level-30 balance or survivability.
+  Fighter QA selects Shield & Mitigation through the normal skill UI and uses
+  Whirlwind/Shield Slam alongside basic attacks and gap-closing Charge; a bare
+  starter weapon alone is too slow for the two-minute boss-check deadline.
+  Use `EIDOLON_ISOLATED_QA_ROUTE=verdant npm run test:e2e:isolated`.
+
+On Linux, `EIDOLON_ISOLATED_QA_NETWORK_MODE=host` avoids bridge/veth creation
+while another browser job is running on the same machine. Both disposable
+services bind only to loopback; Mongo uses the API port plus one and keeps
+authentication enabled. The default remains an isolated Docker bridge.
 
 Regenerate fixtures only after reviewing a deliberate generator change:
 

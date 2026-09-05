@@ -691,15 +691,32 @@ export async function projectEntity(page, targetId) {
         if (!entity?.position || !game?.renderSystem?.camera) return null;
         const worldPoint = entity.position.clone();
         let foundMesh = false;
+        let visiblePoint = null;
+        const projectPoint = point => {
+            const projected = point.clone().project(game.renderSystem.camera);
+            const x = (projected.x + 1) * window.innerWidth / 2;
+            const y = (-projected.y + 1) * window.innerHeight / 2;
+            return { x, y, visible: projected.z >= -1 && projected.z <= 1 &&
+                projected.x >= -1 && projected.x <= 1 && projected.y >= -1 && projected.y <= 1 &&
+                document.elementFromPoint(x, y)?.tagName === 'CANVAS' };
+        };
         entity.mesh?.updateWorldMatrix?.(true, true);
         entity.mesh?.traverse?.((child) => {
-            if (foundMesh || child?.userData?.entityId !== entity.id || !child.geometry) return;
+            if (visiblePoint || child?.userData?.entityId !== entity.id || !child.geometry) return;
             if (!child.geometry.boundingBox) child.geometry.computeBoundingBox?.();
             const box = child.geometry.boundingBox;
             if (!box) return;
             box.getCenter(worldPoint);
             child.localToWorld(worldPoint);
             foundMesh = true;
+            // A tall boss's center can sit behind the HUD at melee contact.
+            // Pick a visible point on its real hitbox instead of walking into it.
+            for (const height of [0.5, 0.25, 0.75]) {
+                const point = box.getCenter(worldPoint.clone());
+                point.y = box.min.y + (box.max.y - box.min.y) * height;
+                const candidate = projectPoint(child.localToWorld(point));
+                if (candidate.visible) { visiblePoint = candidate; break; }
+            }
         });
         if (!foundMesh) {
             entity.mesh?.traverse?.((child) => {
@@ -712,16 +729,7 @@ export async function projectEntity(page, targetId) {
                 foundMesh = true;
             });
         }
-        const projected = worldPoint.project(game.renderSystem.camera);
-        const x = (projected.x + 1) * window.innerWidth / 2;
-        const y = (-projected.y + 1) * window.innerHeight / 2;
-        return {
-            x,
-            y,
-            visible: projected.z >= -1 && projected.z <= 1 &&
-                projected.x >= -1 && projected.x <= 1 && projected.y >= -1 && projected.y <= 1 &&
-                document.elementFromPoint(x, y)?.tagName === 'CANVAS'
-        };
+        return visiblePoint || projectPoint(worldPoint);
     }, targetId);
 }
 
@@ -1504,7 +1512,7 @@ async function projectVerdantEntrance(page) {
     });
 }
 
-export async function enterAndExitDungeon(page, { beforeExit } = {}) {
+export async function enterAndExitDungeon(page, { beforeExit, resetRun = false } = {}) {
     // Retries reuse the dedicated character. An interrupted earlier route may
     // have left it in an instance, where overworld QA waypoints are rejected.
     if ((await readPlayerState(page)).instanceType !== 'overworld') await returnToTown(page);
@@ -1512,6 +1520,8 @@ export async function enterAndExitDungeon(page, { beforeExit } = {}) {
     await zoomOutForPortal(page);
 
     let entered = false;
+    let pendingReset = resetRun;
+    let verifyReset = false;
     for (let attempt = 0; attempt < 3 && !entered; attempt += 1) {
         let entrance = null;
         await expect.poll(async () => {
@@ -1524,6 +1534,17 @@ export async function enterAndExitDungeon(page, { beforeExit } = {}) {
 
         const menu = page.locator('#dungeon-menu');
         await expect(menu).toBeVisible({ timeout: 20_000 });
+        if (pendingReset) {
+            await page.locator('#btn-reset-dungeon').click();
+            await expect(menu).toBeHidden();
+            pendingReset = false;
+            verifyReset = true;
+            continue;
+        }
+        if (verifyReset) {
+            await expect(page.locator('#dungeon-party-state-box')).toContainText('No active party instance');
+            verifyReset = false;
+        }
         await page.locator('#diff-btn-normal').click();
         const runLevel = page.locator('#dungeon-run-level-select');
         if (await runLevel.locator('option[value="30"]').count()) {
