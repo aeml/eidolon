@@ -14,8 +14,9 @@ const (
 	PvPModeArena1v1 = "arena_1v1"
 	PvPModeArena2v2 = "arena_2v2"
 
-	PvPMatchActive   = "active"
-	PvPMatchComplete = "complete"
+	PvPMatchPreparing = "preparing"
+	PvPMatchActive    = "active"
+	PvPMatchComplete  = "complete"
 )
 
 type CombatRelationship string
@@ -41,19 +42,21 @@ type PvPOrigin struct {
 }
 
 type PvPMatch struct {
-	ID        string               `json:"id"`
-	Mode      string               `json:"mode"`
-	TeamA     []string             `json:"teamA"`
-	TeamB     []string             `json:"teamB"`
-	ScoreA    int                  `json:"scoreA"`
-	ScoreB    int                  `json:"scoreB"`
-	FirstTo   int                  `json:"firstTo"`
-	Round     int                  `json:"round"`
-	Status    string               `json:"status"`
-	StartedAt time.Time            `json:"startedAt"`
-	EndsAt    time.Time            `json:"endsAt"`
-	Origins   map[string]PvPOrigin `json:"-"`
-	WinnerIDs []string             `json:"winnerIds,omitempty"`
+	ID           string               `json:"id"`
+	Mode         string               `json:"mode"`
+	TeamA        []string             `json:"teamA"`
+	TeamB        []string             `json:"teamB"`
+	ScoreA       int                  `json:"scoreA"`
+	ScoreB       int                  `json:"scoreB"`
+	FirstTo      int                  `json:"firstTo"`
+	Round        int                  `json:"round"`
+	Status       string               `json:"status"`
+	StartedAt    time.Time            `json:"startedAt"`
+	EndsAt       time.Time            `json:"endsAt"`
+	Origins      map[string]PvPOrigin `json:"-"`
+	WinnerIDs    []string             `json:"winnerIds,omitempty"`
+	Eliminated   []string             `json:"eliminated,omitempty"`
+	RoundPending bool                 `json:"roundPending"`
 }
 
 type PvPProfile struct {
@@ -182,7 +185,9 @@ func (system *PvPSystem) areOpponents(first, second string) bool {
 		return false
 	}
 	match := system.Matches[matchID]
-	return match != nil && match.Status == PvPMatchActive && playersOnOpposingTeams(match, first, second)
+	return match != nil && match.Status == PvPMatchActive && !match.RoundPending &&
+		!containsPlayer(match.Eliminated, first) && !containsPlayer(match.Eliminated, second) &&
+		playersOnOpposingTeams(match, first, second)
 }
 
 func playersOnOpposingTeams(match *PvPMatch, first, second string) bool {
@@ -313,14 +318,24 @@ func (w *World) startPvPMatchLocked(mode string, teamA, teamB []string) *PvPMatc
 	match := &PvPMatch{
 		ID: fmt.Sprintf("pvp-%d", now.UnixNano()), Mode: mode,
 		TeamA: append([]string(nil), teamA...), TeamB: append([]string(nil), teamB...),
-		FirstTo: 1, Round: 1, Status: PvPMatchActive, StartedAt: now, EndsAt: now.Add(10 * time.Minute), Origins: make(map[string]PvPOrigin),
+		FirstTo: 1, Round: 1, Status: PvPMatchPreparing, StartedAt: now, EndsAt: now.Add(10 * time.Minute), Origins: make(map[string]PvPOrigin),
 	}
 	if mode != PvPModeDuel {
 		match.FirstTo = 2
 	}
+	// Caller holds World.Mu and PvP.mu. Reserve membership first, then release
+	// PvP.mu while locking actors (combat's lock order is actor -> PvP).
+	w.PvP.Matches[match.ID] = match
+	for _, team := range [][]string{teamA, teamB} {
+		for _, playerID := range team {
+			w.PvP.MatchByPlayer[playerID] = match.ID
+		}
+	}
+	w.PvP.mu.Unlock()
 	for teamIndex, team := range [][]string{teamA, teamB} {
 		for memberIndex, playerID := range team {
 			player := w.Entities[playerID]
+			player.Mu.Lock()
 			w.Grid.Remove(player)
 			match.Origins[playerID] = PvPOrigin{InstanceID: player.InstanceID, X: player.X, Y: player.Y, Z: player.Z}
 			player.InstanceID = match.ID
@@ -330,12 +345,15 @@ func (w *World) startPvPMatchLocked(mode string, teamA, teamB []string) *PvPMatc
 			player.Health = player.MaxHealth
 			player.Mana = player.MaxMana
 			player.State = "IDLE"
+			resetSceneMovementLocked(player)
+			player.TargetX, player.TargetZ = player.X, player.Z
 			player.InvulnerableEndTime = now.Add(3 * time.Second)
 			w.Grid.Add(player)
-			w.PvP.MatchByPlayer[playerID] = match.ID
+			player.Mu.Unlock()
 		}
 	}
-	w.PvP.Matches[match.ID] = match
+	w.PvP.mu.Lock()
+	match.Status = PvPMatchActive
 	return copyPvPMatch(match)
 }
 
@@ -347,6 +365,7 @@ func copyPvPMatch(match *PvPMatch) *PvPMatch {
 	copyMatch.TeamA = append([]string(nil), match.TeamA...)
 	copyMatch.TeamB = append([]string(nil), match.TeamB...)
 	copyMatch.WinnerIDs = append([]string(nil), match.WinnerIDs...)
+	copyMatch.Eliminated = append([]string(nil), match.Eliminated...)
 	copyMatch.Origins = make(map[string]PvPOrigin, len(match.Origins))
 	for id, origin := range match.Origins {
 		copyMatch.Origins[id] = origin
@@ -379,8 +398,19 @@ func (w *World) RecordPvPDeath(targetID, attackerID string) (*PvPMatch, bool) {
 	w.PvP.mu.Lock()
 	defer w.PvP.mu.Unlock()
 	match := w.PvP.Matches[w.PvP.MatchByPlayer[targetID]]
-	if match == nil || match.Status != PvPMatchActive || !playersOnOpposingTeams(match, targetID, attackerID) {
+	if match == nil || match.Status != PvPMatchActive || match.RoundPending ||
+		containsPlayer(match.Eliminated, targetID) || !playersOnOpposingTeams(match, targetID, attackerID) {
 		return nil, false
+	}
+	match.Eliminated = append(match.Eliminated, targetID)
+	defeatedTeam := match.TeamB
+	if containsPlayer(match.TeamA, targetID) {
+		defeatedTeam = match.TeamA
+	}
+	for _, memberID := range defeatedTeam {
+		if !containsPlayer(match.Eliminated, memberID) {
+			return copyPvPMatch(match), false
+		}
 	}
 	if containsPlayer(match.TeamA, targetID) {
 		match.ScoreB++
@@ -396,7 +426,7 @@ func (w *World) RecordPvPDeath(targetID, attackerID string) (*PvPMatch, bool) {
 			match.WinnerIDs = append([]string(nil), match.TeamB...)
 		}
 	} else {
-		match.Round++
+		match.RoundPending = true
 	}
 	return copyPvPMatch(match), complete
 }
@@ -416,19 +446,21 @@ func (w *World) ResolvePvPDeath(targetID, attackerID string) {
 		}()
 		return
 	}
-	go func() {
-		time.Sleep(3 * time.Second)
-		w.resetPvPRound(match.ID)
-	}()
+	if match.RoundPending {
+		go func() {
+			time.Sleep(3 * time.Second)
+			w.resetPvPRound(match.ID, match.Round)
+		}()
+	}
 }
 
-func (w *World) resetPvPRound(matchID string) {
+func (w *World) resetPvPRound(matchID string, expectedRound int) {
 	w.Mu.Lock()
-	defer w.Mu.Unlock()
 	w.PvP.mu.RLock()
 	match := w.PvP.Matches[matchID]
-	if match == nil || match.Status != PvPMatchActive {
+	if match == nil || match.Status != PvPMatchActive || !match.RoundPending || match.Round != expectedRound {
 		w.PvP.mu.RUnlock()
+		w.Mu.Unlock()
 		return
 	}
 	teamA := append([]string(nil), match.TeamA...)
@@ -441,16 +473,46 @@ func (w *World) resetPvPRound(matchID string) {
 			if player == nil {
 				continue
 			}
+			player.Mu.Lock()
 			w.Grid.Remove(player)
 			player.X = -8 + float64(teamIndex)*16
 			player.Z = -3 + float64(memberIndex)*6
 			player.Health = player.MaxHealth
 			player.Mana = player.MaxMana
 			player.State = "IDLE"
+			resetSceneMovementLocked(player)
+			player.TargetX, player.TargetZ = player.X, player.Z
 			player.InvulnerableEndTime = now.Add(2 * time.Second)
 			w.Grid.Add(player)
+			player.Mu.Unlock()
 		}
 	}
+	// Keep combat suspended until every participant has been restored. Do not
+	// acquire entity locks while holding PvP.mu: combat takes them in reverse.
+	var updated *PvPMatch
+	w.PvP.mu.Lock()
+	if match.Status == PvPMatchActive && match.Round == expectedRound && match.RoundPending {
+		match.Round++
+		match.RoundPending = false
+		match.Eliminated = nil
+		updated = copyPvPMatch(match)
+	}
+	w.PvP.mu.Unlock()
+	w.Mu.Unlock()
+	if updated != nil && w.OnPvPMatchUpdate != nil {
+		w.OnPvPMatchUpdate(updated)
+	}
+}
+
+// HasPvPMatch includes the brief result/restoration window as well as combat.
+// Town recovery must not bypass elimination, rewards, or arena forfeit rules.
+func (w *World) HasPvPMatch(playerID string) bool {
+	if w.PvP == nil {
+		return false
+	}
+	w.PvP.mu.RLock()
+	defer w.PvP.mu.RUnlock()
+	return w.PvP.MatchByPlayer[playerID] != ""
 }
 
 func (w *World) ForfeitPvP(playerID string) {
@@ -470,7 +532,9 @@ func (w *World) ForfeitPvP(playerID string) {
 		match.WinnerIDs = append([]string(nil), match.TeamA...)
 	}
 	match.Status = PvPMatchComplete
-	w.PvP.DeserterUntil[playerID] = w.PvP.now().Add(5 * time.Minute)
+	if match.Mode != PvPModeDuel {
+		w.PvP.DeserterUntil[playerID] = w.PvP.now().Add(5 * time.Minute)
+	}
 	matchID := match.ID
 	w.PvP.mu.Unlock()
 	w.completePvPMatch(matchID, true)
@@ -498,30 +562,21 @@ func (w *World) completePvPMatch(matchID string, forfeit bool) {
 		return
 	}
 	winners := append([]string(nil), match.WinnerIDs...)
-	if len(winners) == 0 {
-		// A completed match must always have a winner. Treat a malformed result as
-		// cancelled and restore everyone without awarding rating or currency.
-		for _, playerID := range append(append([]string(nil), match.TeamA...), match.TeamB...) {
-			if player := w.Entities[playerID]; player != nil {
-				w.Grid.Remove(player)
-				origin := match.Origins[playerID]
-				player.InstanceID, player.X, player.Y, player.Z = origin.InstanceID, origin.X, origin.Y, origin.Z
-				player.Health, player.Mana, player.State = player.MaxHealth, player.MaxMana, "IDLE"
-				w.Grid.Add(player)
-			}
-			delete(w.PvP.MatchByPlayer, playerID)
+	participants := append(append([]string(nil), match.TeamA...), match.TeamB...)
+	losers := participants
+	if len(winners) > 0 {
+		losers = append([]string(nil), match.TeamA...)
+		if containsPlayer(match.TeamA, winners[0]) {
+			losers = append([]string(nil), match.TeamB...)
 		}
-		delete(w.PvP.Matches, matchID)
-		w.PvP.mu.Unlock()
-		w.Mu.Unlock()
-		return
-	}
-	losers := append([]string(nil), match.TeamA...)
-	if containsPlayer(match.TeamA, winners[0]) {
-		losers = append([]string(nil), match.TeamB...)
 	}
 	profiles := make([]PvPProfile, 0, len(winners)+len(losers))
-	for _, playerID := range append(append([]string(nil), winners...), losers...) {
+	for _, playerID := range participants {
+		// Practice duels (including forfeits) and cancelled matches never create
+		// or change ranked records. Only the two ranked arena modes award points.
+		if len(winners) == 0 || (match.Mode != PvPModeArena1v1 && match.Mode != PvPModeArena2v2) {
+			continue
+		}
 		profile, exists := w.PvP.Profiles[playerID]
 		if !exists {
 			profile = PvPProfile{PlayerID: playerID, Rating: 1000}
@@ -543,19 +598,28 @@ func (w *World) completePvPMatch(matchID string, forfeit bool) {
 		profile.UpdatedAt = time.Now().UTC()
 		w.PvP.Profiles[playerID] = profile
 		profiles = append(profiles, profile)
-		if player := w.Entities[playerID]; player != nil {
-			w.Grid.Remove(player)
-			origin := match.Origins[playerID]
-			player.InstanceID, player.X, player.Y, player.Z = origin.InstanceID, origin.X, origin.Y, origin.Z
-			player.Health, player.Mana, player.State = player.MaxHealth, player.MaxMana, "IDLE"
-			player.InvulnerableEndTime = time.Now().Add(3 * time.Second)
-			w.Grid.Add(player)
-		}
+	}
+	for _, playerID := range participants {
 		delete(w.PvP.MatchByPlayer, playerID)
 	}
 	delete(w.PvP.Matches, matchID)
 	result := PvPMatchResult{MatchID: match.ID, Mode: match.Mode, WinnerIDs: winners, LoserIDs: losers, Profiles: profiles, Forfeit: forfeit}
 	w.PvP.mu.Unlock()
+	for _, playerID := range participants {
+		if player := w.Entities[playerID]; player != nil {
+			player.Mu.Lock()
+			w.Grid.Remove(player)
+			origin := match.Origins[playerID]
+			player.InstanceID, player.X, player.Y, player.Z = origin.InstanceID, origin.X, origin.Y, origin.Z
+			player.Health, player.Mana, player.State = player.MaxHealth, player.MaxMana, "IDLE"
+			resetSceneMovementLocked(player)
+			player.Y = origin.Y
+			player.TargetX, player.TargetZ = player.X, player.Z
+			player.InvulnerableEndTime = time.Now().Add(3 * time.Second)
+			w.Grid.Add(player)
+			player.Mu.Unlock()
+		}
+	}
 	w.Mu.Unlock()
 	if w.OnPvPMatchComplete != nil {
 		w.OnPvPMatchComplete(result)
@@ -616,7 +680,15 @@ func (w *World) PvPStatus(playerID string) map[string]interface{} {
 		if containsPlayer(match.TeamA, playerID) {
 			opponents = append([]string(nil), match.TeamB...)
 		}
-		status["opponents"] = opponents
+		targetable := make([]string, 0, len(opponents))
+		if match.Status == PvPMatchActive && !match.RoundPending && !containsPlayer(match.Eliminated, playerID) {
+			for _, opponent := range opponents {
+				if !containsPlayer(match.Eliminated, opponent) {
+					targetable = append(targetable, opponent)
+				}
+			}
+		}
+		status["opponents"] = targetable
 	}
 	for size, queue := range w.PvP.Queues {
 		for _, entry := range queue {

@@ -1289,7 +1289,10 @@ func (c *Client) dispatchMessage(msg Message) {
 		p := world.GetEntity(c.playerID)
 		wasInInstance := p != nil && p.InstanceID != ""
 
-		world.PerformRespawn(c.playerID)
+		if err := world.PerformRespawn(c.playerID); err != nil {
+			c.sendError(err.Error())
+			return
+		}
 
 		if wasInInstance {
 			log.Printf("Respawn: Sending return to overworld for %s", c.playerID)
@@ -1318,7 +1321,10 @@ func (c *Client) dispatchMessage(msg Message) {
 		p := world.GetEntity(c.playerID)
 		wasInInstance := p != nil && p.InstanceID != ""
 
-		world.PerformRecall(c.playerID)
+		if err := world.PerformRecall(c.playerID); err != nil {
+			c.sendError(err.Error())
+			return
+		}
 
 		if wasInInstance {
 			log.Printf("Recall: Sending return to overworld for %s", c.playerID)

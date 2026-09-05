@@ -154,8 +154,20 @@ func persistPvPMatchResult(result game.PvPMatchResult) {
 		if err != nil {
 			log.Printf("save PvP profile %s: %v", profile.PlayerID, err)
 		}
-		if client := getClientByPlayerID(profile.PlayerID); client != nil {
-			if containsString(result.WinnerIDs, profile.PlayerID) {
+	}
+	// Practice results have no profiles to persist, but every participant still
+	// needs the cleared match state and a result message.
+	for _, playerID := range append(append([]string(nil), result.WinnerIDs...), result.LoserIDs...) {
+		if client := getClientByPlayerID(playerID); client != nil {
+			if len(result.WinnerIDs) == 0 {
+				client.sendSystemChat("PvP match cancelled. No ranked rewards or rating changes.")
+			} else if result.Mode == game.PvPModeDuel {
+				if containsString(result.WinnerIDs, playerID) {
+					client.sendSystemChat("Practice duel victory! No rating, honor, or season points awarded.")
+				} else {
+					client.sendSystemChat("Practice duel complete. Your ranked record is unchanged.")
+				}
+			} else if containsString(result.WinnerIDs, playerID) {
 				client.sendSystemChat("PvP victory! +50 honor, rating increased.")
 			} else {
 				client.sendSystemChat("PvP match complete. +15 honor.")

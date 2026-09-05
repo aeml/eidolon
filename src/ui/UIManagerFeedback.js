@@ -22,7 +22,9 @@ class UIManagerFeedbackMethods {
 
         const btn = div.querySelector('#btn-death-respawn');
         btn.onclick = () => {
-            if (this.onRespawn) {
+            if (this.pvp?.state?.match) {
+                if (this.pvp.state.match.status !== 'complete') this.pvp.onLeave?.();
+            } else if (this.onRespawn) {
                 this.onRespawn();
             }
         };
@@ -35,8 +37,18 @@ class UIManagerFeedbackMethods {
 
     showDeathScreen(details = {}) {
         if (this.deathScreen) {
-            const title = details.title || 'YOU DIED';
-            const hint = details.hint || 'Respawn in town to recover, repair, and re-enter the fight.';
+            const match = this.pvp?.state?.match;
+            const title = match ? 'ELIMINATED' : (details.title || 'YOU DIED');
+            const hint = match
+                ? (match.status === 'complete' ? 'Match complete. You will return automatically.'
+                    : match.roundPending ? 'Round over. You will recover automatically for the next round.'
+                        : 'Your teammate can still win this round. You will recover when the round ends.')
+                : (details.hint || 'Respawn in town to recover, repair, and re-enter the fight.');
+            const button = this.deathScreen.querySelector('#btn-death-respawn');
+            if (button) {
+                button.textContent = match ? (match.status === 'complete' ? 'Returning…' : 'Forfeit and Leave Match') : 'Respawn in Town';
+                button.disabled = match?.status === 'complete';
+            }
             const elapsedSeconds = Number(details.elapsedSeconds || 0);
             if (this.deathScreenTitle) {
                 this.deathScreenTitle.textContent = title;
@@ -45,7 +57,9 @@ class UIManagerFeedbackMethods {
                 this.deathScreenHint.textContent = hint;
             }
             if (this.deathScreenMeta) {
-                this.deathScreenMeta.textContent = elapsedSeconds > 0
+                this.deathScreenMeta.textContent = match
+                    ? (match.mode === 'duel' ? 'Practice duels do not affect your ranked record.' : 'Forfeiting ends the match for your team and applies a five-minute queue penalty.')
+                    : elapsedSeconds > 0
                     ? `Down for ${elapsedSeconds.toFixed(1)}s • Town respawn restores your footing fast.`
                     : 'Town respawn restores your footing fast.';
             }

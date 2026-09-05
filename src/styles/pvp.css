@@ -22,20 +22,38 @@
 .pvp-card h3,
 .pvp-card p { margin: 0 0 8px; }
 
-.pvp-card--challenge,
-.pvp-card--match {
+.pvp-card--challenge {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.pvp-card--challenge strong,
-.pvp-card--match h3 { flex: 1; }
+.pvp-card--challenge strong { flex: 1; }
+
+.pvp-card--match {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+}
+
+.pvp-card--match h3,
+.pvp-card--match p {
+    grid-column: 1 / -1;
+    margin: 0;
+    line-height: 1.45;
+}
+
+.pvp-card--match h3 { font-size: 16px; }
+.pvp-card--match p { color: #d7dbe4; }
+.pvp-card--match .pvp-score { grid-row: 2; }
+.pvp-card--match .pvp-btn { grid-column: 2; grid-row: 2; margin: 0; }
 
 .pvp-score {
     color: #ff8794;
     font-size: 22px;
     font-weight: 900;
+    white-space: nowrap;
 }
 
 .pvp-btn {

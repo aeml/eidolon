@@ -42,7 +42,10 @@ export class PvPUI {
     }
 
     update(payload = {}) {
-        this.state = { ...this.state, ...payload, opponents: Array.isArray(payload.opponents) ? payload.opponents : [] };
+        // Server updates are complete snapshots; absent transient fields mean
+        // the challenge/match ended, not that the previous one should survive.
+        this.state = { ...this.state, queued: 0, match: null, challenge: null, deserterUntil: null,
+            ...payload, opponents: Array.isArray(payload.opponents) ? payload.opponents : [] };
         this.render();
     }
 
@@ -95,12 +98,23 @@ export class PvPUI {
             const score = document.createElement('div');
             score.className = 'pvp-score';
             score.textContent = `${match.scoreA} — ${match.scoreB}`;
-            matchCard.append(title, score, this.button('Forfeit', () => this.onLeave?.(), 'pvp-btn--danger'));
+            const progress = document.createElement('p');
+            const eliminated = new Set(match.eliminated || []);
+            const standing = team => (team || []).filter(id => !eliminated.has(id)).length;
+            progress.textContent = match.status === 'complete'
+                ? 'Match complete. Returning you to your departure point…'
+                : match.roundPending
+                    ? 'Team eliminated. The next round starts shortly.'
+                    : `Standing: ${standing(match.teamA)} vs ${standing(match.teamB)}. ${match.mode === 'duel' ? 'Practice duel — no ranked rewards.' : 'Eliminate the whole opposing team to win a round. First to two rounds wins.'}`;
+            matchCard.append(title, score, progress);
+            if (match.status !== 'complete') {
+                matchCard.appendChild(this.button('Forfeit', () => this.onLeave?.(), 'pvp-btn--danger'));
+            }
             body.appendChild(matchCard);
         } else {
             const queue = document.createElement('section');
             queue.className = 'pvp-card';
-            queue.innerHTML = '<h3>Ranked Arena</h3><p>Best-of-three, normalized PvP damage, and consent-only combat.</p>';
+            queue.innerHTML = '<h3>Ranked Arena</h3><p>Best-of-three team elimination. PvP damage is reduced and burst-capped; equipment still matters. Leaving a ranked match forfeits it and applies a five-minute queue penalty.</p><p>Practice duels use player challenges and never change rating, honor, season points, or ranked wins and losses.</p>';
             if (this.state.queued) {
                 const queued = document.createElement('strong');
                 queued.textContent = `Queued for ${this.state.queued}v${this.state.queued}`;

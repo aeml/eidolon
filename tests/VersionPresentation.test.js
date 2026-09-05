@@ -18,7 +18,12 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
-    test('leads with quest icons, deliberate drops and player-selected tracking', () => {
+    test('leads with team elimination, practice separation and clear recovery', () => {
+        expect(indexHtml).toContain('Alpha 1.0.8 (the last teammate standing)');
+        expect(indexHtml.indexOf('data-version="1.0.8"')).toBeLessThan(indexHtml.indexOf('data-version="1.0.7"'));
+        for (const heading of ['A teammate can turn the round', 'Practice means practice', 'Know when to wait', 'Finish cleanly']) expect(indexHtml).toContain(heading);
+    });
+    test('retains quest icons, deliberate drops and player-selected tracking notes', () => {
         expect(indexHtml).toContain('Alpha 1.0.7 (your bag, your adventure)');
         expect(indexHtml.indexOf('data-version="1.0.7"')).toBeLessThan(indexHtml.indexOf('data-version="1.0.6"'));
         for (const heading of ['Quest materials have faces', 'Drag items out to drop them', 'Choose your tracked quests']) expect(indexHtml).toContain(heading);
@@ -60,11 +65,11 @@ describe('version presentation', () => {
         }
         expect(fs.readFileSync(path.join(repoRoot, 'sw.js'), 'utf8')).toContain('sw-asset-cache.js?v=2026-09-04-11');
         expect(indexHtml).toContain('Built-in version: 2026-09-04-11');
-        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.0.7');
+        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.0.8');
     });
 
     test('advances the login screen and player-facing history to Alpha 1.0', () => {
-        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.0.7</span>');
+        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.0.8</span>');
         expect(indexHtml).toContain('Alpha 1.0.0 (the worlds answer together)');
         expect(indexHtml).toContain('Multiplayer has a social backbone');
         expect(indexHtml).toContain('Guilds are persistent institutions');
@@ -475,7 +480,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 1.0.7';
+        const expectedVersion = 'Alpha 1.0.8';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -597,7 +602,7 @@ describe('version presentation', () => {
     });
 
     test('marks Alpha 1.0 current and preserves its completed runway', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 1.0.7`');
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 1.0.8`');
         expect(alphaRoadmap).toContain('Active implementation line: `Alpha 1.0`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');

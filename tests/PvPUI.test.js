@@ -32,4 +32,23 @@ describe('PvPUI', () => {
         expect(ui.window.textContent).toContain('1 — 0');
         expect(ui.window.textContent).toContain('Bob · 1200');
     });
+
+    test('shows remaining teammates, intermission, and clears finished snapshot state', () => {
+        const ui = createUI();
+        const match = { mode: 'arena_2v2', status: 'active', round: 1, scoreA: 0, scoreB: 0,
+            teamA: ['a', 'b'], teamB: ['c', 'd'], eliminated: ['c'] };
+        ui.update({ match, challenge: { requesterId: 'old' } });
+        expect(ui.window.textContent).toContain('Standing: 2 vs 1');
+        expect(ui.window.textContent).toContain('whole opposing team');
+        ui.update({ match: { ...match, roundPending: true, scoreA: 1, eliminated: ['c', 'd'] } });
+        expect(ui.window.textContent).toContain('next round starts shortly');
+        expect(ui.state.challenge).toBeNull();
+        ui.update({ match: { ...match, status: 'complete' } });
+        expect(ui.window.querySelector('.pvp-card--match').textContent).not.toContain('Forfeit');
+        ui.update({ queued: 0, profile: { rating: 1025 } });
+        expect(ui.state.match).toBeNull();
+        expect(ui.window.querySelector('.pvp-card--match')).toBeNull();
+        expect(ui.window.textContent).toContain('Queue 2v2 Party');
+        expect(ui.window.textContent).toContain('Practice duels');
+    });
 });

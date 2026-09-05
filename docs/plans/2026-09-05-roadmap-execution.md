@@ -348,7 +348,13 @@ remains open until the committed candidate clears CI and live verification.
   passes as recorded above; other regional and raid runs remain open. Do not
   treat the seed sweep as covering this whole gate.
 
-## Alpha 1.0.7 candidate — your bag, your adventure
+Alpha 1.0.6 publication is now verified: commit
+`8027f221952156a6a7d4c2ee0ac8f24b60f2e3b3`, CI run `33997180208`, completed
+successfully including predeploy, both deployments, and the live class/remote
+matrices. Both public release endpoints independently reported this exact version
+and commit while 1.0.7 was in predeploy QA.
+
+## Alpha 1.0.7 — your bag, your adventure
 
 Added in response to the player's bag-icon, drag-out drop and tracker-selection
 requests while 1.0.6 passes through deployment:
@@ -406,6 +412,68 @@ storage-blocked regression verifies that selection remains usable without browse
 persistence. This final UI refinement is included in the candidate.
 The final full client rerun passes all 148 suites / 2,167 tests; lint and
 whitespace checks remain clean.
+
+Published as commit `015f3cd4258c8cb2cf65e16b2529dc9ad922c418`. CI run
+`33998433871` has passed server/client suites, browser smoke, disposable
+full-character predeploy QA, and both deployments. Both public release endpoints,
+the login label and the client entrypoint release query independently match
+Alpha 1.0.7 and that exact commit. Post-deployment live gameplay QA is running;
+its terminal result remains open.
+
+Additional DUN-02/04 evidence: the full **generated** Verdant Fighter route passes
+in 7.5 minutes (`/tmp/eidolon-full-generated-verdant-1-0-7.log`), with ordinary
+combat, all four actual boss deaths, room completion, increased gold and town
+recall. This complements the forced-fallback run above, but remains one generated
+instance of one dungeon/class, with level-100 QA setup and entrance protection.
+It is not a balance test, three-seed proof, campaign credit proof or a party run.
+The original log omitted the generated seed; subsequent Verdant routes now log
+seed, generator version, attempt and fallback status without account/instance IDs.
+
+## Alpha 1.0.8 candidate — the last teammate standing
+
+The next 1.1 PvP corrections were reproduced with failing regressions: one death
+awarded a 2v2 round immediately, and a practice duel changed rating, wins, honor
+and season points. The candidate now records each elimination once and awards
+a round only after the whole opposing team is eliminated. Intermission suspends
+hostility and rejects further death records; one round-scoped timer restores all
+participants before incrementing the round. Stale timers cannot reset later
+rounds. Client opponent lists follow the same elimination/intermission state.
+
+Only ranked arena modes update ranked profiles; duel completion/forfeit leaves
+existing profiles unchanged and creates no new profile. Practice forfeits do not
+apply a ranked queue penalty. Results notify every participant independently of
+profile persistence, and completed match/challenge fields clear from UI snapshots.
+The panel explains the actual damage scalar/burst cap instead of claiming full
+stat normalization. Rating-aware matching, normalization policy, seasons and
+anti-farming remain 1.7 work, not claims of this patch.
+
+Town recall/respawn returns an actionable error during a PvP match, without a false
+overworld transition. The death screen instead explains teammate survival, round
+recovery or automatic return, and offers explicit forfeit where applicable.
+Match startup/reset/completion reset movement and acquire actor locks without
+holding the PvP lock, preserving combat's actor-to-PvP lock order.
+
+Evidence: server regressions cover duplicate and 32 concurrent death records,
+survivor hostility, round intermission, early/stale resets, re-entrant state
+callbacks, both teams' best-of-three rewards exactly once, practice results and
+forfeits, recall/respawn world and dispatch rejection, and result messages without
+database writes. A full server-combat test uses ordinary asynchronous melee hits,
+waits out production protection clocks, observes the first elimination surviving
+the old three-second reset window, and completes both rounds and restoration
+(13.32 seconds). Positions are test fixtures; health is never forced and this is
+server combat evidence, not a four-browser player-control test.
+
+Full final-candidate server race suite passes; client suite passes 148 suites /
+2,170 tests after version/patch-note updates. Anonymous real-Chrome feedback QA
+passes; screenshot inspection identified the old cramped horizontal match card.
+It is now a two-column score/action layout with full-width title and guidance;
+the recheck passes in 5.5 seconds and the corrected screenshot is inspected.
+The check covers survivor count, forfeit clicks (not town respawn), automatic
+recovery text, disabled return button and cleared result snapshot. It joins the
+predeploy UI gallery. Lint and whitespace checks pass. Final publication/live
+verification are pending; 1.0.7 has now finished both deployment jobs, so this
+candidate can enter CI without changing the prior deployment's branch tip.
+The broader 1.1 gate stays open.
 
 ## Milestone tracking
 

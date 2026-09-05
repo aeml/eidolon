@@ -152,6 +152,34 @@ function buildDom() {
 }
 
 describe('Death and respawn polish', () => {
+    test('PvP elimination waits for team resolution and offers explicit forfeit, not town respawn', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        ui.onRespawn = jest.fn();
+        ui.pvp.onLeave = jest.fn();
+        ui.pvp.update({ match: { mode: 'arena_2v2', status: 'active' } });
+        ui.showDeathScreen();
+        const button = document.getElementById('btn-death-respawn');
+        expect(ui.deathScreen.textContent).toContain('Your teammate can still win');
+        expect(button.textContent).toBe('Forfeit and Leave Match');
+        button.click();
+        expect(ui.pvp.onLeave).toHaveBeenCalledTimes(1);
+        expect(ui.onRespawn).not.toHaveBeenCalled();
+        ui.pvp.update({ match: { mode: 'arena_2v2', status: 'active', roundPending: true } });
+        ui.showDeathScreen();
+        expect(ui.deathScreen.textContent).toContain('recover automatically');
+        ui.pvp.update({ match: { mode: 'duel', status: 'complete' } });
+        ui.showDeathScreen();
+        expect(button.disabled).toBe(true);
+        expect(ui.deathScreen.textContent).toContain('do not affect your ranked record');
+        ui.pvp.update({ queued: 0 });
+        ui.showDeathScreen();
+        expect(button.disabled).toBe(false);
+        expect(button.textContent).toBe('Respawn in Town');
+        button.click();
+        expect(ui.onRespawn).toHaveBeenCalledTimes(1);
+    });
+
     test('UIManager death screen includes recovery guidance text', () => {
         buildDom();
         const ui = new UIManager(false);

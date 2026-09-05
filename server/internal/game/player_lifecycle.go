@@ -1,14 +1,20 @@
 package game
 
-import "time"
+import (
+	"errors"
+	"time"
+)
 
-func (w *World) PerformRespawn(playerID string) {
+func (w *World) PerformRespawn(playerID string) error {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
+	if w.HasPvPMatch(playerID) {
+		return errors.New("wait for the PvP round to finish, or use Forfeit in Duels & Arena to leave the match")
+	}
 
 	player, ok := w.Entities[playerID]
 	if !ok {
-		return
+		return errors.New("player unavailable")
 	}
 	player.Mu.Lock()
 	defer player.Mu.Unlock()
@@ -33,15 +39,19 @@ func (w *World) PerformRespawn(playerID string) {
 
 	// Add back to grid in the new location/instance
 	w.Grid.Add(player)
+	return nil
 }
 
-func (w *World) PerformRecall(playerID string) {
+func (w *World) PerformRecall(playerID string) error {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
+	if w.HasPvPMatch(playerID) {
+		return errors.New("use Forfeit in Duels & Arena to leave the PvP match before recalling")
+	}
 
 	player, ok := w.Entities[playerID]
 	if !ok {
-		return
+		return errors.New("player unavailable")
 	}
 	player.Mu.Lock()
 	defer player.Mu.Unlock()
@@ -64,6 +74,7 @@ func (w *World) PerformRecall(playerID string) {
 	player.InstanceID = ""
 	resetSceneMovementLocked(player)
 	w.Grid.Add(player)
+	return nil
 }
 
 // Scene changes invalidate destinations and motion from the departed instance.

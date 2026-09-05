@@ -144,6 +144,10 @@ test(fullRun ? `Verdant complete ${fallbackRun ? 'fallback' : 'generated'} run r
     });
     await enterAndExitDungeon(page, { resetRun: true, beforeExit: async () => {
         const layout = await page.evaluate(() => window.game.currentDungeonLayout);
+        // Preserve replay identity without logging instance IDs/QA usernames.
+        console.log(`[verdant] replay ${JSON.stringify({ seed: layout.generationSeed,
+            generator: layout.generatorVersion, attempt: layout.generationAttempt || 0,
+            fallback: Boolean(layout.generationFallback), fullRun })}`);
         expect(Boolean(layout.generationFallback)).toBe(fallbackRun);
         const routes = buildDungeonTraversalRoutes(layout);
         const bossRooms = layout.rooms.map((room, index) => room.type === 'boss' ? index : -1).filter(index => index >= 0);
