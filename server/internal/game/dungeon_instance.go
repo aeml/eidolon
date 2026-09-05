@@ -145,6 +145,20 @@ func (w *World) RestoreDungeon(snapshot DungeonResumeSnapshot) error {
 	}
 
 	layout := cloneDungeonLayout(snapshot.Layout)
+	// Version-1 retry exhaustion saved only an empty starting room. It has no
+	// completed encounter to preserve, but resuming it forever would strand the
+	// party. Upgrade only this exact broken fallback shape; valid saved layouts
+	// and their generator identity remain authoritative.
+	if layout.GenerationFallback && len(layout.Rooms) == 1 && layout.Rooms[0].Type == "start" && len(snapshot.Rooms) <= 1 {
+		repaired := fallbackDungeonLayout(snapshot.DungeonType)
+		if len(repaired.Rooms) > 1 {
+			repaired.GenerationFallback = true
+			repaired.GenerationSeed, repaired.GenerationAttempt = layout.GenerationSeed, layout.GenerationAttempt
+			repaired.GeneratorVersion = dungeonGeneratorVersion
+			assignDungeonRoomHooks(&repaired)
+			layout = repaired
+		}
+	}
 	roomState := NewDungeonRoomState(layout)
 	copy(roomState.Rooms, snapshot.Rooms)
 	roomState.CurrentRoomIndexValue = snapshot.CurrentRoomIndexValue

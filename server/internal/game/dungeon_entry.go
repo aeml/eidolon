@@ -135,7 +135,18 @@ func (w *World) enterPartyDungeonLocked(playerID, dungeonType string, difficulty
 		}
 	}
 	if !resuming {
-		run.InstanceID = w.createDungeonLocked(player.PartyID, run.DungeonType, run.Difficulty, run.RunLevel)
+		generate := w.generateDungeonLayoutWithSeed
+		player.Mu.Lock()
+		if player.QADungeonFallbackNext {
+			if run.DungeonType == "crypt" {
+				player.Mu.Unlock()
+				return fail(fmt.Errorf("select one of the five regional dungeons for fallback QA"))
+			}
+			player.QADungeonFallbackNext = false
+			generate = func(string, DungeonDifficulty, string, int64) DungeonLayout { return DungeonLayout{} }
+		}
+		player.Mu.Unlock()
+		run.InstanceID = w.createDungeonWithGeneratorLocked(player.PartyID, run.DungeonType, run.Difficulty, run.RunLevel, generate)
 	}
 	moved := make([]string, 0, len(entering))
 	for _, id := range entering {

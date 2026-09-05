@@ -157,6 +157,31 @@ func (w *World) MovePlayerToQAHazard(playerID, destination string) (*Entity, *Ha
 	return player, hazard, true
 }
 
+// ArmPlayerQADungeonFallback selects the real retry-exhaustion route for one
+// fresh dungeon. It changes no level, access gate, enemy health or quest state.
+// The messaging layer restricts this command to the configured QA allowlist.
+func (w *World) ArmPlayerQADungeonFallback(playerID string) bool {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+	player := w.Entities[playerID]
+	if player == nil || player.Type != TypePlayer {
+		return false
+	}
+	if party := w.Parties[player.PartyID]; party != nil {
+		_, leaderID, _ := party.GetSnapshot()
+		if leaderID != playerID {
+			return false
+		}
+	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
+	if player.InstanceID != "" || player.State == "DEAD" {
+		return false
+	}
+	player.QADungeonFallbackNext = true
+	return true
+}
+
 // ArmPlayerQAGuaranteedLoot makes one subsequent enemy encounter deterministic:
 // the next accepted basic attack can finish the enemy and that kill uses the
 // normal equipment generator even when its random 50% roll would miss.

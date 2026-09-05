@@ -78,3 +78,27 @@ func TestBodyRadiusSurvivesBothEntitySnapshotPaths(t *testing.T) {
 		}
 	}
 }
+
+func TestFighterDungeonSkillsDamageLargeBossesAtBodyContact(t *testing.T) {
+	for _, bossType := range []string{"RootboundWarden", "BriarMatron", "RustboundColossus", "HollowSentinel"} {
+		for _, skill := range []string{"Whirlwind", "Shield Slam"} {
+			t.Run(bossType+"/"+skill, func(t *testing.T) {
+				w := NewWorld(nil)
+				instanceID := "dungeon_skill_contact"
+				w.storeDungeonInstance(instanceID, &DungeonInstance{ID: instanceID, Difficulty: DifficultyNormal, RunLevel: 30})
+				w.spawnBossInInstance(bossType, 20000, 20000, instanceID, DifficultyNormal)
+				boss := findOnlyEnemyForInstance(t, w, instanceID)
+				player := newTestPlayer("contact-fighter", "Fighter")
+				player.InstanceID = instanceID
+				player.UnlockedSkills = []string{skill}
+				player.X = boss.X - boss.ReplicatedBodyRadius() - player.ReplicatedBodyRadius() - 0.05
+				player.Z = boss.Z
+				w.AddEntity(player)
+				result := w.PerformAbility(player.ID, boss.X, boss.Z, boss.ID, skill)
+				if !result.Accepted || boss.Health >= boss.MaxHealth {
+					t.Fatalf("body-contact skill failed: accepted=%v reason=%s health=%d/%d", result.Accepted, result.Reason, boss.Health, boss.MaxHealth)
+				}
+			})
+		}
+	}
+}

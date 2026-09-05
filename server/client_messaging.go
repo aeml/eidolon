@@ -133,6 +133,21 @@ func (c *Client) handleChatCommand(raw string) bool {
 			))
 		}
 		return true
+	case "/qa-dungeon-fallback-next":
+		if !isQAUsername(c.username) {
+			c.sendError("QA command unavailable for this account.")
+			return true
+		}
+		if len(fields) != 1 {
+			c.sendError("Usage: /qa-dungeon-fallback-next")
+			return true
+		}
+		if c.playerID == "" || world == nil || !world.ArmPlayerQADungeonFallback(c.playerID) {
+			c.sendError("Return to town alive as the party leader before selecting a QA fallback run.")
+			return true
+		}
+		c.sendSystemChat("Next fresh dungeon will use its complete fallback route; normal access and combat rules remain active.")
+		return true
 	case "/qa-loot-next":
 		if !isQAUsername(c.username) {
 			c.sendError("QA command unavailable for this account.")

@@ -334,7 +334,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.5</span>
+                <span class="start-version-row__label">Alpha 1.0.6</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -653,6 +653,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.6">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.6 (every road has an ending)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>A complete route when generation fails:</strong> exhausting dungeon layout retries now builds a connected fallback with ordinary enemies, elites, and every required boss instead of leaving an empty starting room. Elemental raid fallbacks retain their defended crystal-repair event.</li>
+                        <li><strong>Required bosses are checked:</strong> new layouts must include their full boss sequence and actual boss spawns inside the correct rooms. Failed attempts are cleaned up before another layout or the fallback is populated.</li>
+                        <li><strong>Recover old empty fallbacks:</strong> restoring an old saved run containing only a fallback starting room repairs that unusable route. Valid saved layouts and cleared encounters remain unchanged.</li>
+                        <li><strong>Enemies keep their identity:</strong> ordinary and elite dungeon spawns no longer overwrite another enemy when random identifiers collide, keeping the world registry and spatial index consistent.</li>
+                        <li><strong>Fallbacks have their own checks:</strong> forced-failure tests cover all five dungeons and five raid layouts at each difficulty, with High/Low floor and collision checks. Full multi-class, party, campaign, and raid-event verification remain open for 1.1.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.0.5">
                     <h3 class="patch-note-entry__title">Alpha 1.0.5 (your party holds its ground)</h3>
                     <ul class="patch-note-entry__list">

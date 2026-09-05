@@ -151,6 +151,7 @@ type Entity struct {
 	LastRespawnTime          time.Time            `json:"-"`
 	MoveLockUntil            time.Time            `json:"-"`
 	QAGuaranteedLoot         bool                 `json:"-"`
+	QADungeonFallbackNext    bool                 `json:"-"`
 	QAPersistentDuration     time.Duration        `json:"-"`
 	QAHealthRegenPausedUntil time.Time            `json:"-"`
 	LastSpecialAttack        time.Time            `json:"-"` // Boss AoE slam cooldown

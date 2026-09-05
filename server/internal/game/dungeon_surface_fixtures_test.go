@@ -30,6 +30,13 @@ func TestProductionDungeonSurfaceFixtures(t *testing.T) {
 			}
 			fixtures = append(fixtures, fixture{dungeonType, layout})
 		}
+		fallback := fallbackDungeonLayout(dungeonType)
+		fallback.GenerationFallback, fallback.GeneratorVersion = true, dungeonGeneratorVersion
+		assignDungeonRoomHooks(&fallback)
+		if err := validateDungeonProgressionLayout(dungeonType, fallback); err != nil {
+			t.Fatal(err)
+		}
+		fixtures = append(fixtures, fixture{dungeonType, fallback})
 	}
 	fixturePath := filepath.Join("..", "..", "..", "tests", "fixtures", "production-dungeon-layouts.json")
 	if os.Getenv("EIDOLON_UPDATE_DUNGEON_FIXTURES") == "1" {

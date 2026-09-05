@@ -266,8 +266,11 @@ func TestDungeonFallbackLayoutUsesDungeonTypeOffsets(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			layout := fallbackDungeonLayout(tt.dungeonType)
-			if len(layout.Rooms) != 1 {
-				t.Fatalf("expected one fallback room, got %d", len(layout.Rooms))
+			if len(layout.Rooms) == 0 {
+				t.Fatal("fallback has no starting room")
+			}
+			if tt.dungeonType == "crypt" && len(layout.Rooms) != 1 {
+				t.Fatal("legacy crypt layout changed")
 			}
 			if got := layout.Rooms[0]; got.Type != "start" || got.X != tt.wantX || got.Z != tt.wantZ {
 				t.Fatalf("unexpected fallback room: %+v", got)

@@ -2,10 +2,12 @@ import { expect, test } from '@playwright/test';
 import { buildDungeonTraversalRoutes } from '../dungeonTraversalRoutes.js';
 import {
     collectBrowserFailures, credentialsFromEnvironment, ensureDungeonReadyLevel,
-    enterAndExitDungeon, loginAndEnterWorld, moveByGroundClick, projectEntity, readPlayerState
+    enterAndExitDungeon, loginAndEnterWorld, moveByGroundClick, projectEntity, readPlayerState, returnToTown
 } from './helpers.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
+const fallbackRun = process.env.EIDOLON_E2E_DUNGEON_FALLBACK === '1';
+const fullRun = fallbackRun || process.env.EIDOLON_E2E_FULL_DUNGEON === '1';
 
 async function prepareFighterSkills(page) {
     if (!await page.evaluate(() => window.game.player.abilityName === 'Charge')) return;
@@ -83,10 +85,15 @@ async function defeatByMouse(page, target) {
             }, target.id);
             if (shouldCast) await page.mouse.click(point.x, point.y, { button: 'right' });
             const meleeSkillKey = await page.evaluate(id => {
-                const player = window.game.player;
-                const enemy = window.game.remotePlayers.get(id);
+                const game = window.game;
+                const player = game.player;
+                const enemy = game.remotePlayers.get(id);
+                // Large bosses stop movement at their body edge. Both skills
+                // include that body radius in their server-side hit test;
+                // a fixed four-unit center distance prevents valid casts.
                 if (player.abilityName !== 'Charge' || !enemy ||
-                    enemy.position.distanceTo(player.position) > 4 || player.stats.mp < 30) return null;
+                    enemy.position.distanceTo(player.position) > game.getBasicAttackRangeForEntity(enemy) ||
+                    player.stats.mp < 30) return null;
                 const index = player.hotbar.findIndex(skill =>
                     ['Whirlwind', 'Shield Slam'].includes(skill) && !(player.cooldowns[skill] > 0));
                 return index >= 0 ? String(index + 1) : null;
@@ -110,7 +117,7 @@ async function assertWorldUpdatesContinue(page) {
     expect(age, 'authoritative world updates stalled during dungeon progression').toBeLessThan(10_000);
 }
 
-test('Verdant ordinary encounters, first boss, and later spawns remain playable', async ({ page, baseURL }) => {
+test(fullRun ? `Verdant complete ${fallbackRun ? 'fallback' : 'generated'} run remains playable` : 'Verdant ordinary encounters, first boss, and later spawns remain playable', async ({ page, baseURL }) => {
     const credentials = credentialsFromEnvironment();
     test.skip(!credentials.username || !credentials.password, 'Requires a dedicated QA character');
     test.setTimeout(900_000);
@@ -118,6 +125,14 @@ test('Verdant ordinary encounters, first boss, and later spawns remain playable'
     await loginAndEnterWorld(page, credentials);
     await ensureDungeonReadyLevel(page);
     await prepareFighterSkills(page);
+    if (fallbackRun) {
+        await returnToTown(page);
+        const chat = page.locator('#chat-input');
+        await chat.click();
+        await chat.fill('/qa-dungeon-fallback-next');
+        await chat.press('Enter');
+        await expect(page.locator('#chat-messages')).toContainText('Next fresh dungeon will use its complete fallback route');
+    }
     await page.evaluate(() => {
         const game = window.game;
         const original = game.handleServerMessage.bind(game);
@@ -129,12 +144,15 @@ test('Verdant ordinary encounters, first boss, and later spawns remain playable'
     });
     await enterAndExitDungeon(page, { resetRun: true, beforeExit: async () => {
         const layout = await page.evaluate(() => window.game.currentDungeonLayout);
+        expect(Boolean(layout.generationFallback)).toBe(fallbackRun);
         const routes = buildDungeonTraversalRoutes(layout);
         const bossRooms = layout.rooms.map((room, index) => room.type === 'boss' ? index : -1).filter(index => index >= 0);
         const defeated = new Set();
-        // Walk the actual joins through two boss rooms. No waypoint inside the
-        // instance, forced kill, health edit, or progression override is used.
-        for (let routeIndex = 0; routeIndex < bossRooms[1]; routeIndex++) {
+        const lastBoss = fullRun ? bossRooms.length - 1 : 1;
+        const goldBefore = await page.evaluate(() => window.game.player.gold);
+        // Walk actual joins through the chosen boss rooms. The fallback switch
+        // selects geometry only: no inside waypoint, kill or health override.
+        for (let routeIndex = 0; routeIndex < bossRooms[lastBoss]; routeIndex++) {
             for (const destination of routes[routeIndex]) {
                 let deadline = Date.now() + 180_000;
                 while (true) {
@@ -159,10 +177,11 @@ test('Verdant ordinary encounters, first boss, and later spawns remain playable'
                 }
             }
         }
-        expect([...defeated]).toEqual(expect.arrayContaining(['RootboundWarden', 'BriarMatron']));
+        const expectedBosses = ['RootboundWarden', 'BriarMatron', 'RustboundColossus', 'HollowSentinel'].slice(0, lastBoss + 1);
+        expect([...defeated]).toEqual(expect.arrayContaining(expectedBosses));
         const summary = await page.evaluate(() => window.game.currentDungeonRoomState);
-        expect(summary.rooms[bossRooms[0]].cleared).toBe(true);
-        expect(summary.rooms[bossRooms[1]].cleared).toBe(true);
+        for (const index of bossRooms.slice(0, lastBoss + 1)) expect(summary.rooms[index].cleared).toBe(true);
+        expect(await page.evaluate(() => window.game.player.gold)).toBeGreaterThan(goldBefore);
     } });
     expect(failures, failures.join('\n')).toEqual([]);
 });

@@ -233,7 +233,14 @@ captures in 10.8 seconds total. Full client checks pass 148 suites / 2,142 tests
 the full server race suite, lint, and 177 version/history tests also pass.
 This repair is now live as recorded above, but does not close all dungeon gates.
 
-## Alpha 1.0.5 candidate — your party holds its ground
+## Alpha 1.0.5 — your party holds its ground
+
+Pushed as `3443609cb4d29b20bedb18688fe6ed8898f7ba19`, CI `33995464506`.
+Server/client/browser and full disposable predeploy character QA passed, followed
+by both deployments. Independent frontend `release.json` and backend `/healthz`
+checks report Alpha 1.0.5 and that exact SHA. The run subsequently completed
+successfully, including live persistent-character, four-class and remote-animation
+QA. The full release is verified.
 
 Confirmed regressions: returning through the dungeon portal moved all members
 back to the entrance, a low-level dungeon request could enter a saved higher-
@@ -266,7 +273,52 @@ scan and disposable cleanup. The full combined sequence is not yet recorded as
 passed; predeploy CI will run it against the committed candidate. The latest server race suite
 also passes the restored-login membership correction added after the first
 isolated image was built.
-This work is not yet published and does not close the full 1.1 gate.
+This work is deployed as recorded above and does not close the full 1.1 gate.
+
+## Alpha 1.0.6 candidate — every road has an ending
+
+The old retry-exhaustion path removed generated actors and returned only an empty
+start room. Required-encounter regressions failed for all ten dungeon/raid types.
+The candidate builds connected ordinary/elite/boss blocks covering the catalog,
+including the elemental raids' terminal crystal Vigil hook. New attempts check
+both boss-room count and actual required boss spawns inside those rooms. Tests
+force eight failures at all three difficulties, verify failed actors are removed,
+preserve unrelated instances, and require every encounter without pre-clearing
+rooms or granting rewards. A successful third attempt also stops retrying normally.
+
+Generator identity advances to 2. Valid saved version-1 layouts remain exact;
+only flagged one-start-room fallbacks are upgraded on restore. Persistence tests
+retain exploration, cleared bosses and reward flags without spawning cleared
+encounters. The configured QA-account allowlist can select the next fresh fallback
+through a one-shot chat command; normal level, party and Chronicle gates remain
+enforced, and resuming a saved run does not consume this selection.
+
+The complete server race suite exposed a missing ordinary actor in one Water
+fallback. Dungeon spawns used only 10,000 random suffixes and could overwrite an
+existing actor. Deterministic regressions occupying all old suffixes reproduced
+this across regional, Fire and Air spawn helpers for ordinary and elite enemies.
+Collision-safe suffix selection now checks the world registry before insertion;
+it does not alter the independent geometry random stream.
+
+Thirty production/fallback browser fixtures pass their real-coordinate route
+collision and single-floor coverage checks at High/Low (22.8 seconds). Inspected
+Verdant High and Dark King raid Low fallback joins are continuous. These are
+rendered geometry checks, not completed raid encounters. The first full fallback
+Fighter run killed Rootbound Warden and Briar Matron but exceeded its encounter
+deadline on Rustbound Colossus: the test's fixed four-unit range suppressed both
+melee skills at large-body contact. Real server Whirlwind and Shield Slam tests
+pass at all four Verdant bosses' replicated body boundaries. The browser helper
+now casts through the hotbar at the normal basic-attack boundary. The full fallback
+rerun passes all four boss deaths, boss room clears, increased gold and town recall
+in 8.2 minutes, without forced kills or in-instance waypoints. It uses the existing
+level-100 QA setup and entrance protection, so it is a functional check, not a
+level-appropriate balance claim. This browser image predates the ID-collision fix;
+the final full server race suite passes with that fix and the legacy-save recovery.
+Artifact credential scanning passes and disposable services/data were removed.
+The workspace client suite passes 148 suites / 2,158 tests (including the new,
+separately staged quest-icon regression for the next UI update). Lint and whitespace
+checks pass. Release metadata and patch notes are ready for 1.0.6; publication
+remains open until the committed candidate clears CI and live verification.
 
 - DUN-01: targeted movement/scene fixes and the Verdant mid-jump recall route
   shipped in 1.0.3. Water reconnect/menu recall/re-entry passes on the 1.0.4
@@ -284,11 +336,9 @@ This work is not yet published and does not close the full 1.1 gate.
   capture, and repeated scene-lifecycle checks remain open. The next local
   hotfix now supplies real seed sweeps and rendered
   fixture coverage; these are stronger evidence, not completion of the play gate.
-  Source inspection also confirms the retry-exhaustion fallback is only a start
-  room, after generated encounters have been removed. Existing fallback tests
-  prove offsets/connectivity, not bosses or progression. Replace this with a
-  complete progression-safe fallback and explicitly force that path in tests
-  before closing the gate; do not treat the seed sweep as covering it.
+  The 1.0.6 candidate replaces the confirmed empty retry-exhaustion fallback and
+  forces that path in encounter tests. Full real-player fallback progression is
+  still under verification; do not treat the seed sweep as covering this gate.
 
 ## Milestone tracking
 

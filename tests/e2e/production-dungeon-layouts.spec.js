@@ -72,8 +72,9 @@ test('production dungeon and raid fixtures have clear routes at their real coord
         expect(metrics, `${fixture.dungeonType} seed ${fixture.layout.generationSeed}`).toEqual({ blocked: 0, wrongFloorCount: 0, samples: samples.length });
         for (const quality of ['high', 'low']) {
             await page.evaluate(quality => window.__eidolonAnimationGalleryController.renderSystem.setGraphicsQuality(quality), quality);
-            if (fixture.layout.generationSeed === '2026090501') {
-                await page.screenshot({ path: testInfo.outputPath(`${fixture.dungeonType}-${quality}.png`) });
+            if (fixture.layout.generationSeed === '2026090501' || fixture.layout.generationFallback) {
+                const variant = fixture.layout.generationFallback ? '-fallback' : '';
+                await page.screenshot({ path: testInfo.outputPath(`${fixture.dungeonType}${variant}-${quality}.png`) });
             }
         }
     }

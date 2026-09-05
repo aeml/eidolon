@@ -601,6 +601,34 @@ func TestHandleMessageQALootNextRejectsNonQAAccount(t *testing.T) {
 	t.Fatalf("expected QA authorization error, got %+v", msgs)
 }
 
+func TestQADungeonFallbackCommandIsAllowlisted(t *testing.T) {
+	originalWorld, originalQAUsernames := world, qaUsernames
+	defer func() { world, qaUsernames = originalWorld, originalQAUsernames }()
+	world = game.NewWorld(nil)
+	client := newLevelCommandClient()
+	player := newLevelCommandPlayer(client.playerID)
+	world.AddEntity(player)
+	qaUsernames = parseQAUsernames("different-account")
+	payload, _ := json.Marshal(ChatPayload{Message: "/qa-dungeon-fallback-next", Sender: client.username})
+	client.handleMessage(Message{Type: MsgChat, Payload: payload})
+	if player.QADungeonFallbackNext {
+		t.Fatal("non-QA player selected a fallback")
+	}
+	messages := drainSentMessages(client.send)
+	if len(messages) == 0 || messages[0].Type != MsgError {
+		t.Fatal("missing authorization rejection")
+	}
+	qaUsernames = parseQAUsernames(client.username)
+	client.handleMessage(Message{Type: MsgChat, Payload: payload})
+	if !player.QADungeonFallbackNext {
+		t.Fatal("allowlisted player could not select a fallback")
+	}
+	messages = drainSentMessages(client.send)
+	if len(messages) == 0 || messages[0].Type != MsgChat {
+		t.Fatal("missing fallback acknowledgement")
+	}
+}
+
 func TestHandleMessageQADisconnectSchedulesAllowlistedConnectionFault(t *testing.T) {
 	allowLevelCommandTestUser(t)
 	client := newLevelCommandClient()

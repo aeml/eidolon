@@ -16,6 +16,10 @@ func (w *World) CreateDungeon(partyID string, dungeonType string, difficulty Dun
 }
 
 func (w *World) createDungeonLocked(partyID string, dungeonType string, difficulty DungeonDifficulty, runLevel int) string {
+	return w.createDungeonWithGeneratorLocked(partyID, dungeonType, difficulty, runLevel, w.generateDungeonLayoutWithSeed)
+}
+
+func (w *World) createDungeonWithGeneratorLocked(partyID string, dungeonType string, difficulty DungeonDifficulty, runLevel int, generate dungeonLayoutGenerator) string {
 
 	// A party owns at most one live dungeon. Re-entry resumes its authoritative
 	// room state; only an explicit reset or the empty-instance timeout creates a
@@ -59,75 +63,10 @@ func (w *World) createDungeonLocked(partyID string, dungeonType string, difficul
 	// Register before generation so shared enemy builders can read the selected
 	// run level while they create encounters.
 	w.storeDungeonInstance(instanceID, dungeon)
-	buildLayout := func() DungeonLayout {
-		const maxLayoutAttempts = 8
-		cleanupGeneratedEntities := func() {
-			toRemove := []string{}
-			for id, entity := range w.Entities {
-				if entity.InstanceID == instanceID {
-					toRemove = append(toRemove, id)
-				}
-			}
-			for _, id := range toRemove {
-				if entity, ok := w.Entities[id]; ok {
-					w.Grid.Remove(entity)
-					delete(w.Entities, id)
-				}
-			}
-		}
-		var lastLayout DungeonLayout
-		var lastErr error
-		for attempt := 0; attempt < maxLayoutAttempts; attempt++ {
-			lastLayout = w.generateDungeonLayoutWithSeed(instanceID, difficulty, dungeonType, dungeonLayoutSeed(instanceID, attempt))
-			lastLayout.GenerationAttempt = attempt
-			lastErr = ValidateDungeonLayout(lastLayout)
-			if lastErr == nil {
-				assignDungeonRoomHooks(&lastLayout)
-				return lastLayout
-			}
-			cleanupGeneratedEntities()
-		}
-		log.Printf("CreateDungeon: failed to generate valid %s layout for instance %s after %d attempts: %v", dungeonType, instanceID, maxLayoutAttempts, lastErr)
-		layout := fallbackDungeonLayout(dungeonType)
-		layout.GenerationSeed = lastLayout.GenerationSeed
-		layout.GeneratorVersion = dungeonGeneratorVersion
-		layout.GenerationAttempt = maxLayoutAttempts - 1
-		layout.GenerationFallback = true
-		assignDungeonRoomHooks(&layout)
-		return layout
-	}
-
-	if dungeonType == "verdant_bastion_catacombs" {
-		layout := buildLayout()
-		dungeon.Layout = layout
-		dungeon.RoomState = NewDungeonRoomState(layout)
-		w.storeDungeonInstance(instanceID, dungeon)
-	} else if dungeonType == "molten_core" {
-		layout := buildLayout()
-		dungeon.Layout = layout
-		dungeon.RoomState = NewDungeonRoomState(layout)
-		w.storeDungeonInstance(instanceID, dungeon)
-	} else if dungeonType == "tempest_spire" {
-		layout := buildLayout()
-		dungeon.Layout = layout
-		dungeon.RoomState = NewDungeonRoomState(layout)
-		w.storeDungeonInstance(instanceID, dungeon)
-	} else if dungeonType == "abyssal_well" {
-		layout := buildLayout()
-		dungeon.Layout = layout
-		dungeon.RoomState = NewDungeonRoomState(layout)
-	} else if dungeonType == "umbral_nexus" {
-		layout := buildLayout()
-		dungeon.Layout = layout
-		dungeon.RoomState = NewDungeonRoomState(layout)
-	} else if dungeonType == "weekly_raid" {
-		layout := buildLayout()
-		dungeon.Layout = layout
-		dungeon.RoomState = NewDungeonRoomState(layout)
-	} else if _, elementalRaid := ElementalRaidDefinitionForType(dungeonType); elementalRaid {
-		layout := buildLayout()
-		dungeon.Layout = layout
-		dungeon.RoomState = NewDungeonRoomState(layout)
+	_, regularDungeon := supportedDungeonTypes[dungeonType]
+	_, elementalRaid := ElementalRaidDefinitionForType(dungeonType)
+	if (regularDungeon && dungeonType != "crypt") || elementalRaid || dungeonType == "weekly_raid" {
+		w.buildDungeonInstanceLayoutLocked(dungeon, generate)
 	} else {
 		// Default Crypt
 		// Generate a simple layout for the crypt too, so we have a start point
@@ -511,6 +450,39 @@ func fallbackDungeonLayout(dungeonType string) DungeonLayout {
 
 	layout := DungeonLayout{}
 	appendDungeonRoom(&layout, DungeonRoom{X: startX, Z: startZ, Width: 40, Height: 40, Type: "start"})
+	_, regular := supportedDungeonTypes[dungeonType]
+	definition, elemental := ElementalRaidDefinitionForType(dungeonType)
+	if (!regular || dungeonType == "crypt") && !elemental && dungeonType != "weekly_raid" {
+		return layout // Preserve the legacy crypt's original entry layout.
+	}
+	// Retry exhaustion must still yield the entire adventure, not an empty
+	// room or a shortcut past the bosses that award campaign credit.
+	layout = DungeonLayout{}
+	color := map[string]int{
+		"verdant_bastion_catacombs": 0x354a32, "molten_core": 0x57332b,
+		"tempest_spire": 0x344b66, "abyssal_well": 0x264652,
+		"umbral_nexus": 0x241634, "weekly_raid": 0x171022,
+	}[dungeonType]
+	if elemental {
+		color = definition.Color
+	}
+	appendDungeonRoom(&layout, DungeonRoom{X: startX, Z: startZ, Width: 140, Height: 140, Type: "start", Color: color})
+	_, _, bosses := dungeonEncounterCatalog(dungeonType)
+	roomZ := startZ
+	for range bosses {
+		for _, roomType := range []string{"normal", "elite"} {
+			roomZ -= 240
+			appendDungeonRoomAndConnect(&layout, DungeonRoom{X: startX, Z: roomZ, Width: 140, Height: 140, Type: roomType, Color: color}, canonicalDungeonCorridorWidth)
+		}
+		roomZ -= 280
+		width, hook := 220.0, ""
+		if elemental {
+			width, hook = 270, "crystal_vigil"
+		} else if dungeonType == "weekly_raid" {
+			width = 300
+		}
+		appendDungeonRoomAndConnect(&layout, DungeonRoom{X: startX, Z: roomZ, Width: width, Height: width, Type: "boss", Color: color, Hook: hook}, canonicalDungeonCorridorWidth)
+	}
 	return layout
 }
 
@@ -913,6 +885,24 @@ func (w *World) generateAbyssalWellLayoutWithSeed(instanceID string, difficulty 
 	return layout
 }
 
+// nextDungeonEnemyIDLocked preserves existing actors when the small random
+// suffix space collides. Callers own the world registry lock; neither ID draws
+// nor collision resolution affect the independent layout random stream.
+func (w *World) nextDungeonEnemyIDLocked(subType, instanceID string, elite bool) string {
+	prefix := subType + "-" + instanceID
+	if elite {
+		prefix = "elite-" + prefix
+	}
+	base := fmt.Sprintf("%s-%d", prefix, rand.Intn(10000))
+	candidate := base
+	for suffix := 1; ; suffix++ {
+		if _, exists := w.Entities[candidate]; !exists {
+			return candidate
+		}
+		candidate = fmt.Sprintf("%s-%d", base, suffix)
+	}
+}
+
 // spawnFireDungeonEnemy spawns a fire-themed enemy in the Molten Core dungeon
 func (w *World) spawnFireDungeonEnemy(subType string, x, z float64, instanceID string, isElite bool, difficulty DungeonDifficulty) {
 	runLevel := w.getInstanceRunLevelUnsafe(instanceID)
@@ -921,10 +911,7 @@ func (w *World) spawnFireDungeonEnemy(subType string, x, z float64, instanceID s
 		rank = dungeonRankElite
 	}
 	profile := dungeonEnemyCombatProfile(subType, runLevel, difficulty, rank, 3.0)
-	enemyID := fmt.Sprintf("%s-%s-%d", subType, instanceID, rand.Intn(10000))
-	if isElite {
-		enemyID = fmt.Sprintf("elite-%s-%s-%d", subType, instanceID, rand.Intn(10000))
-	}
+	enemyID := w.nextDungeonEnemyIDLocked(subType, instanceID, isElite)
 
 	enemy := &Entity{
 		ID:             enemyID,
@@ -960,10 +947,7 @@ func (w *World) spawnAirDungeonEnemy(subType string, x, z float64, instanceID st
 		rank = dungeonRankElite
 	}
 	profile := dungeonEnemyCombatProfile(subType, runLevel, difficulty, rank, 3.5)
-	enemyID := fmt.Sprintf("%s-%s-%d", subType, instanceID, rand.Intn(10000))
-	if isElite {
-		enemyID = fmt.Sprintf("elite-%s-%s-%d", subType, instanceID, rand.Intn(10000))
-	}
+	enemyID := w.nextDungeonEnemyIDLocked(subType, instanceID, isElite)
 
 	enemy := &Entity{
 		ID:             enemyID,
@@ -1041,10 +1025,7 @@ func (w *World) spawnDungeonEnemyInInstance(subType string, x, z float64, instan
 	}
 	profile := dungeonEnemyCombatProfile(subType, runLevel, difficulty, rank, 3.0)
 
-	enemyID := fmt.Sprintf("%s-%s-%d", subType, instanceID, rand.Intn(10000))
-	if isElite {
-		enemyID = fmt.Sprintf("elite-%s-%s-%d", subType, instanceID, rand.Intn(10000))
-	}
+	enemyID := w.nextDungeonEnemyIDLocked(subType, instanceID, isElite)
 
 	enemy := &Entity{
 		ID:             enemyID,
