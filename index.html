@@ -334,7 +334,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.4</span>
+                <span class="start-version-row__label">Alpha 1.0.5</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -653,6 +653,17 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.5">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.5 (your party holds its ground)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Return without moving your party:</strong> continuing a saved dungeon or raid brings back only the returning player. Teammates already inside keep their position and progress, and repeated entry requests no longer reset movement.</li>
+                        <li><strong>The portal remembers the real run:</strong> Continue Party Run shows the saved dungeon, difficulty, and level. These settings stay locked until the leader resets an empty instance.</li>
+                        <li><strong>Restored runs stay active:</strong> logging back into a restored dungeon now cancels its empty-instance timer and restores your room summary instead of treating the occupied run as abandoned.</li>
+                        <li><strong>Access follows the adventure:</strong> returning players must qualify for the actual saved run, including its level and Chronicle requirements. Choosing an easier dungeon cannot bypass a higher-level dungeon or crystal/Dark Realm raid gate.</li>
+                        <li><strong>Start together, return individually:</strong> only leaders can start fresh dungeon runs, and the whole group is checked before launch. Qualified raid members can return to an existing formed raid individually; a new raid still requires its normal ready check.</li>
+                        <li><strong>Party recovery is tested through real controls:</strong> two-player checks cover member and leader recall/re-entry while preserving the teammate’s scene and the run’s seed. Full-dungeon, wipe, campaign, and wider ability verification remain open for 1.1.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.0.4">
                     <h3 class="patch-note-entry__title">Alpha 1.0.4 (roads that remember)</h3>
                     <ul class="patch-note-entry__list">

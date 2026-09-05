@@ -134,8 +134,9 @@ func TestHazardTickStateClearsOnEveryExplicitWorldTransfer(t *testing.T) {
 
 	t.Run("instance transition", func(t *testing.T) {
 		w, player, _ := newHazardLifecycleWorld(t)
+		instanceID := w.CreateDungeon("hazard-lifecycle-party", "verdant_bastion_catacombs", DifficultyNormal, 30)
 		w.PlayerHazardTicks[player.ID] = map[string]float64{"hazard-lifecycle": 0.75}
-		if err := w.EnterInstance(player.ID, "dungeon_hazard_lifecycle"); err != nil {
+		if err := w.EnterInstance(player.ID, instanceID); err != nil {
 			t.Fatalf("EnterInstance failed: %v", err)
 		}
 		if _, exists := w.PlayerHazardTicks[player.ID]; exists {

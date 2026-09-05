@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { CONSTANTS } from '../../src/core/Constants.js';
 import { captureGameplayVisual } from './gameplay-visual-capture.js';
+import { exercisePartyDungeonResume } from './party-dungeon-route.js';
 import {
     backendOriginBrowserArgs,
     hardwareWebGLBrowserArgs
@@ -546,6 +547,8 @@ test.describe('two-account multiplayer', () => {
             }
             phase('formed fresh replicated party');
             await closeSocialWindow(firstPage);
+            await exercisePartyDungeonResume(firstPage, secondPage);
+            phase('verified member-specific dungeon recall and resume');
 
             if (primary.characterClass === 'Cleric') {
                 phase('verifying remote Spirit Guardians lifecycle');

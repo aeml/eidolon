@@ -34,6 +34,21 @@ func handleMsgRaidConvert(client *Client, message Message) {
 
 func handleMsgRaidEnter(client *Client, message Message) {
 	raidType := requestedRaidType(message)
+	if player := world.GetEntityCopy(client.playerID); player != nil {
+		if active, exists := world.GetPartyDungeonRun(player.PartyID); exists {
+			if active.DungeonType != raidType {
+				client.sendError("reset the party's active instance before entering this raid")
+				return
+			}
+			run, moved, resumeErr := world.EnterPartyDungeon(client.playerID, raidType, active.Difficulty, active.RunLevel)
+			if resumeErr != nil {
+				client.sendError(resumeErr.Error())
+				return
+			}
+			sendDungeonEntry(run, moved)
+			return
+		}
+	}
 	var party *game.Party
 	var members []string
 	var err error

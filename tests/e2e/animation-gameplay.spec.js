@@ -528,11 +528,23 @@ test.describe('real-input animation gameplay matrix', () => {
         await expect.poll(() => page.evaluate(() => window.game?.player?.currentAnimationName), {
             timeout: 15_000
         }).toBe('Idle');
-        await moveByGroundClick(page, 15, 0);
-        await expect.poll(() => page.evaluate(() => window.game?.player?.currentAnimationName), {
-            timeout: 5_000,
-            intervals: [25, 50, 100]
-        }).toMatch(/^(Run|Walk)$/);
+        await page.evaluate(() => {
+            window.__movementAnimationSamples = [];
+            window.__movementAnimationObserver = setInterval(() => {
+                window.__movementAnimationSamples.push(window.game?.player?.currentAnimationName);
+            }, 16);
+        });
+        try {
+            await moveByGroundClick(page, 15, 0);
+            // The helper waits for authoritative displacement. A short move
+            // can finish before it returns, so observe the actual move rather
+            // than requiring its animation to still be running afterward.
+            await expect.poll(() => page.evaluate(() =>
+                window.__movementAnimationSamples.some(name => /^(Run|Walk)$/.test(name))
+            ), { timeout: 5_000 }).toBe(true);
+        } finally {
+            await page.evaluate(() => clearInterval(window.__movementAnimationObserver));
+        }
         await expect.poll(() => page.evaluate(() => window.game?.player?.state), {
             timeout: 12_000
         }).toBe('IDLE');

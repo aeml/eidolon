@@ -171,10 +171,24 @@ class UIManagerDungeonMethods {
             abyssal_well: { name: 'Abyssal Well', baseLevel: 60, color: '#4ad' },
             umbral_nexus: { name: 'Umbral Nexus', baseLevel: 100, color: '#c066ff' }
         };
+        const raidInfo = {
+            earth_crystal_raid: { name: 'Rootheart Sanctum', baseLevel: 30, color: '#4a4' },
+            water_crystal_raid: { name: 'Tidestar Confluence', baseLevel: 60, color: '#4ad' },
+            fire_crystal_raid: { name: 'Ember Crown Crucible', baseLevel: 70, color: '#f64' },
+            air_crystal_raid: { name: 'Skyglass Eyrie', baseLevel: 70, color: '#6af' },
+            weekly_raid: { name: 'Dark Realm Raid', baseLevel: 100, color: '#c066ff' }
+        };
+        const resumeInfo = { ...raidInfo, crypt: { name: 'Crypt (legacy run)', baseLevel: 30, color: '#bac3cf' } };
+        const activeRun = data.hasInstance && data.activeRun &&
+            (dungeonInfo[data.activeRun.dungeonType] || resumeInfo[data.activeRun.dungeonType])
+            ? data.activeRun : null;
+        if (activeRun && resumeInfo[activeRun.dungeonType]) {
+            dungeonInfo[activeRun.dungeonType] = resumeInfo[activeRun.dungeonType];
+        }
 
-        const lockedDungeonType = data && data.dungeonType && dungeonInfo[data.dungeonType]
+        const lockedDungeonType = activeRun?.dungeonType || (data && data.dungeonType && dungeonInfo[data.dungeonType]
             ? data.dungeonType
-            : null;
+            : null);
 
         if (lockedDungeonType) {
             title.innerText = dungeonInfo[lockedDungeonType].name;
@@ -209,6 +223,12 @@ class UIManagerDungeonMethods {
                 rewardNote: 'Bosses guarantee one bonus gem and one unique-effect item.'
             }
         };
+        if (activeRun) {
+            const summary = document.createElement('p');
+            summary.id = 'dungeon-active-run-summary';
+            summary.textContent = `${dungeonInfo[activeRun.dungeonType].name} · ${difficultyInfo[activeRun.difficulty]?.name || 'Normal'} · Level ${activeRun.runLevel}. Continuing returns only you; members already inside keep their position and progress.`;
+            partyStateBox.appendChild(summary);
+        }
 
         // Dungeon Type Label
         const dungeonLabel = document.createElement('label');
@@ -272,12 +292,13 @@ class UIManagerDungeonMethods {
         runLevelSelect.style.cursor = 'pointer';
         runLevelSelect.style.userSelect = 'text';
         runLevelSelect.style.webkitUserSelect = 'text';
-        for (const runLevel of availableRunLevels.length > 0 ? availableRunLevels : DUNGEON_RUN_LEVEL_BANDS) {
+        for (const runLevel of activeRun ? [activeRun.runLevel] : availableRunLevels.length > 0 ? availableRunLevels : DUNGEON_RUN_LEVEL_BANDS) {
             const option = document.createElement('option');
             option.value = String(runLevel);
             option.innerText = `Level ${runLevel}`;
             runLevelSelect.appendChild(option);
         }
+        runLevelSelect.disabled = Boolean(activeRun);
         dungeonPanel.appendChild(runLevelSelect);
 
         const unlockNote = document.createElement('div');
@@ -304,7 +325,7 @@ class UIManagerDungeonMethods {
         diffContainer.setAttribute('role', 'group');
         diffContainer.setAttribute('aria-labelledby', diffLabel.id);
 
-        let selectedDifficulty = 'normal';
+        let selectedDifficulty = activeRun && difficultyInfo[activeRun.difficulty] ? activeRun.difficulty : 'normal';
 
         for (const [key, info] of Object.entries(difficultyInfo)) {
             const btn = document.createElement('button');
@@ -312,7 +333,7 @@ class UIManagerDungeonMethods {
             btn.type = 'button';
             btn.className = 'menu-btn adventure-difficulty';
             btn.style.setProperty('--difficulty-accent', info.color);
-            btn.setAttribute('aria-pressed', String(key === 'normal'));
+            btn.setAttribute('aria-pressed', String(key === selectedDifficulty));
             btn.innerText = info.name;
             btn.style.padding = '8px 16px';
             btn.style.cursor = 'pointer';
@@ -323,6 +344,10 @@ class UIManagerDungeonMethods {
                 btn.style.opacity = '0.45';
                 btn.style.cursor = 'not-allowed';
                 btn.title = `Unlocks at level ${data.endgameDifficultyUnlockLevel || 100}`;
+            }
+            if (activeRun) {
+                btn.disabled = true;
+                btn.title = 'The active run keeps its original difficulty. Reset an empty run to change it.';
             }
 
             btn.onclick = () => {
@@ -414,6 +439,8 @@ class UIManagerDungeonMethods {
         enterBtn.innerText = data.hasInstance ? 'Continue Party Run' : 'Start Party Run';
         enterBtn.className = 'menu-btn';
         enterBtn.type = 'button';
+        enterBtn.disabled = !data.hasInstance && data.isLeader === false;
+        if (enterBtn.disabled) enterBtn.title = 'Ask your party leader to start the run.';
         enterBtn.style.minWidth = '160px';
         enterBtn.style.padding = '12px 30px';
         enterBtn.style.backgroundColor = '#29483d';
@@ -470,7 +497,9 @@ class UIManagerDungeonMethods {
             enterRaid.type = 'button';
             enterRaid.className = 'menu-btn';
             enterRaid.textContent = `Enter ${raid.name}`;
-            enterRaid.disabled = !data.isLeader || !unlocked;
+            const continuing = activeRun?.dungeonType === raid.type;
+            enterRaid.disabled = (!data.isLeader && !continuing) || !unlocked;
+            if (continuing) enterRaid.textContent = `Continue ${raid.name}`;
             enterRaid.onclick = () => {
                 window.game?.network?.send?.('raid_enter', { raidType: raid.type });
                 removeMenu();
@@ -510,7 +539,9 @@ class UIManagerDungeonMethods {
             enterRaid.type = 'button';
             enterRaid.className = 'menu-btn';
             enterRaid.textContent = 'Enter Dark Realm Raid';
-            enterRaid.disabled = !data.isLeader || !data.darkRealmOpen;
+            const continuing = activeRun?.dungeonType === 'weekly_raid';
+            enterRaid.disabled = (!data.isLeader && !continuing) || !data.darkRealmOpen;
+            if (continuing) enterRaid.textContent = 'Continue Dark Realm Raid';
             enterRaid.onclick = () => {
                 window.game?.network?.send?.('raid_enter', { raidType: 'weekly_raid' });
                 removeMenu();

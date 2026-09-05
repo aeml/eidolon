@@ -12,6 +12,10 @@ import (
 func (w *World) CreateDungeon(partyID string, dungeonType string, difficulty DungeonDifficulty, runLevel int) string {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
+	return w.createDungeonLocked(partyID, dungeonType, difficulty, runLevel)
+}
+
+func (w *World) createDungeonLocked(partyID string, dungeonType string, difficulty DungeonDifficulty, runLevel int) string {
 
 	// A party owns at most one live dungeon. Re-entry resumes its authoritative
 	// room state; only an explicit reset or the empty-instance timeout creates a
@@ -1070,11 +1074,18 @@ func (w *World) spawnDungeonEnemyInInstance(subType string, x, z float64, instan
 
 func (w *World) EnterInstance(playerID string, instanceID string) error {
 	w.Mu.Lock()
+	changed, err := w.enterInstanceLocked(playerID, instanceID)
+	w.Mu.Unlock()
+	if changed && strings.HasPrefix(instanceID, "dungeon_") {
+		w.ensureRestoredCrystalRepair(instanceID, playerID)
+	}
+	return err
+}
 
+func (w *World) enterInstanceLocked(playerID string, instanceID string) (bool, error) {
 	player, ok := w.Entities[playerID]
 	if !ok {
-		w.Mu.Unlock()
-		return fmt.Errorf("player not found")
+		return false, fmt.Errorf("player not found")
 	}
 	// Set Spawn Position based on Dungeon Layout
 	startX, startZ := 0.0, 0.0
@@ -1090,11 +1101,17 @@ func (w *World) EnterInstance(playerID string, instanceID string) error {
 				startZ = fallback.Rooms[0].Z
 			}
 			inst.Mu.RUnlock()
+		} else {
+			return false, fmt.Errorf("dungeon has expired; open the portal again")
 		}
 	}
 	// Resolve the instance layout before taking the player lock. Scene entry
 	// need not nest layout reads with mutable actor state.
 	player.Mu.Lock()
+	if player.InstanceID == instanceID {
+		player.Mu.Unlock()
+		return false, nil
+	}
 	w.Grid.Remove(player)
 	oldInstanceID := player.InstanceID
 	log.Printf("EnterInstance: Player %s moving from '%s' to '%s'", playerID, oldInstanceID, instanceID)
@@ -1118,23 +1135,24 @@ func (w *World) EnterInstance(playerID string, instanceID string) error {
 
 	// Handle New Instance (Entering)
 	if strings.HasPrefix(instanceID, "dungeon_") {
-		if inst, ok := w.getDungeonInstance(instanceID); ok {
-			inst.Mu.Lock()
-			inst.EmptySince = time.Time{} // Reset empty timer
-			if inst.RoomState != nil {
-				inst.RoomState.MarkExploredAt(startX, startZ)
-				inst.PlayerRoomSummary[playerID] = withDungeonSummaryContext(inst.RoomState.Summary(startX, startZ), inst.Difficulty, inst.RunLevel)
+		w.activateDungeonMembershipLocked(instanceID, playerID, startX, startZ)
+	}
+	return true, nil
+}
+
+func (w *World) activateDungeonMembershipLocked(instanceID, playerID string, x, z float64) {
+	if instance, ok := w.getDungeonInstance(instanceID); ok {
+		instance.Mu.Lock()
+		defer instance.Mu.Unlock()
+		instance.EmptySince = time.Time{}
+		if instance.RoomState != nil {
+			instance.RoomState.MarkExploredAt(x, z)
+			if instance.PlayerRoomSummary == nil {
+				instance.PlayerRoomSummary = make(map[string]DungeonRoomSummary)
 			}
-			inst.Mu.Unlock()
+			instance.PlayerRoomSummary[playerID] = withDungeonSummaryContext(instance.RoomState.Summary(x, z), instance.Difficulty, instance.RunLevel)
 		}
 	}
-	w.Mu.Unlock()
-
-	if strings.HasPrefix(instanceID, "dungeon_") {
-		w.ensureRestoredCrystalRepair(instanceID, playerID)
-	}
-
-	return nil
 }
 
 func (w *World) cleanupInstanceLocked(instanceID string) {

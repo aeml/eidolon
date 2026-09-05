@@ -1221,6 +1221,11 @@ func (w *World) AddEntity(e *Entity) {
 	}
 	w.Entities[e.ID] = e
 	w.Grid.Add(e)
+	if e.Type == TypePlayer && strings.HasPrefix(e.InstanceID, "dungeon_") {
+		// Login can restore membership directly without EnterInstance. The run
+		// is no longer empty once that player is registered in the world.
+		w.activateDungeonMembershipLocked(e.InstanceID, e.ID, e.X, e.Z)
+	}
 }
 
 func (w *World) RemoveEntity(id string) {

@@ -36,14 +36,18 @@ func TestDungeonMenuRecognizesLeaderAndProtectsOccupiedReset(t *testing.T) {
 		client.dispatchMessage(Message{Type: MsgGetDungeonStatus})
 		message := readMessage(client)
 		var payload struct {
-			IsLeader    bool `json:"isLeader"`
-			HasInstance bool `json:"hasInstance"`
+			IsLeader    bool                 `json:"isLeader"`
+			HasInstance bool                 `json:"hasInstance"`
+			ActiveRun   game.PartyDungeonRun `json:"activeRun"`
 		}
 		if err := json.Unmarshal(message.Payload, &payload); err != nil {
 			t.Fatal(err)
 		}
 		if message.Type != MsgGetDungeonStatus || payload.IsLeader != (client == leader) || !payload.HasInstance {
 			t.Fatalf("incorrect dungeon authority for %s: %+v", client.playerID, payload)
+		}
+		if payload.ActiveRun.InstanceID != instanceID || payload.ActiveRun.DungeonType != "abyssal_well" || payload.ActiveRun.RunLevel != 60 {
+			t.Fatalf("menu lost the actual run settings: %+v", payload.ActiveRun)
 		}
 	}
 	member.dispatchMessage(Message{Type: MsgResetDungeon})

@@ -604,101 +604,16 @@ func (c *Client) dispatchMessage(msg Message) {
 			difficulty = game.DifficultyMythic
 		}
 
-		player := world.GetEntityCopy(c.playerID)
-		if player == nil {
-			return
-		}
-
-		if player.PartyID == "" {
-			c.sendError("You must be in a party to enter a dungeon.")
-			return
-		}
-
 		runLevel := req.RunLevel
 		if runLevel == 0 {
 			runLevel = game.DungeonUnlockLevel
 		}
-		if err := game.ValidateDungeonEntrySelection(player.Level, runLevel, difficulty); err != nil {
+		run, members, err := world.EnterPartyDungeon(c.playerID, dungeonType, difficulty, runLevel)
+		if err != nil {
 			c.sendError(err.Error())
 			return
 		}
-		if err := game.ValidateDungeonTypeEntry(player.Level, dungeonType); err != nil {
-			c.sendError(err.Error())
-			return
-		}
-		if dungeonType == "umbral_nexus" {
-			if err := world.RequirePartyChronicleQuest(player.PartyID, game.ChronicleAirRestoredID); err != nil {
-				c.sendError("The four crystals must be restored before the Umbral Nexus opens: " + err.Error())
-				return
-			}
-		}
-
-		// Create Dungeon
-		log.Printf("Creating dungeon for party %s (Player: %s, Difficulty: %s, RunLevel: %d)", player.PartyID, c.playerID, difficulty, runLevel)
-		instanceID := world.CreateDungeon(player.PartyID, dungeonType, difficulty, runLevel)
-		actualDungeonType := world.GetInstanceType(instanceID)
-		log.Printf("Dungeon created: %s", instanceID)
-		// c.sendError(fmt.Sprintf("Debug: Dungeon Created %s", instanceID))
-
-		// Get Party
-		party := world.GetParty(player.PartyID)
-		if party == nil {
-			c.sendError("Debug: Party not found")
-			return
-		}
-
-		// Get members safely
-		_, _, members := party.GetSnapshot()
-
-		for _, memberID := range members {
-			err := world.EnterInstance(memberID, instanceID)
-			if err != nil {
-				// c.sendError(fmt.Sprintf("Debug: EnterInstance failed for %s: %v", memberID, err))
-				continue
-			}
-
-			// Notify Client
-			sessionsMu.Lock()
-			var memberClient *Client
-			for _, mc := range activeSessions {
-				if mc.playerID == memberID {
-					memberClient = mc
-					break
-				}
-			}
-			sessionsMu.Unlock()
-
-			if memberClient != nil {
-				layout, hasLayout := world.GetInstanceLayout(instanceID)
-				if hasLayout {
-					log.Printf("Sending layout to %s: %d rooms", memberID, len(layout.Rooms))
-				} else {
-					log.Printf("Sending NO layout to %s", memberID)
-				}
-
-				resp := map[string]interface{}{
-					"instanceId": instanceID,
-					"type":       actualDungeonType,
-				}
-				if hasLayout {
-					resp["layout"] = layout
-				}
-				if roomState, ok := world.GetDungeonRoomSummary(instanceID, memberID); ok {
-					resp["roomState"] = roomState
-				}
-				payloadBytes, _ := json.Marshal(resp)
-
-				msg := Message{
-					Type:    MsgEnterInstance,
-					Payload: payloadBytes,
-				}
-				b, _ := json.Marshal(msg)
-				memberClient.sendSafe(b)
-				// memberClient.sendError("Debug: Sent EnterInstance")
-				// Auto-set social status: in_run (0.37.4)
-				autoSetSocialStatus(memberClient, memberID, "in_run")
-			}
-		}
+		sendDungeonEntry(run, members)
 
 	case MsgGetDungeonStatus:
 		if c.playerID == "" {
@@ -769,6 +684,9 @@ func (c *Client) dispatchMessage(msg Message) {
 		resp["elementalRaidAccess"] = game.ElementalRaidAccessForPlayer(player)
 		if statusReq.DungeonType != "" {
 			resp["dungeonType"] = statusReq.DungeonType
+		}
+		if run, exists := world.GetPartyDungeonRun(player.PartyID); exists {
+			resp["activeRun"] = run
 		}
 		payloadBytes, _ := json.Marshal(resp)
 		log.Printf("Sending Dungeon Menu to %s: %+v", c.username, resp)

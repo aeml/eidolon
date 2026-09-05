@@ -118,7 +118,7 @@ and corrected those assumptions without weakening the recovery-state checks.
 All eight anonymous browser release checks also pass on the final candidate.
 Publication and live verification of 1.0.3 are complete; the wider 1.1 gate is not.
 
-## Alpha 1.0.4 candidate — roads that remember
+## Alpha 1.0.4 — roads that remember
 
 Status: pushed as `40658d07538404e3db1c9ac5c3a6d82e47bcc785`. CI run
 `33990677342` failed before deployment: client/server checks and eight browser
@@ -127,6 +127,15 @@ a screenshot on hosted Chromium. The unchanged fixture is being moved to the
 existing hardware-Chrome predeploy gate, retaining all 20 layouts and High/Low
 captures. The previous 1.0.3 release remains live. A corrective 1.0.4 candidate
 also addresses the renewed first-boss report below; it is not yet published.
+
+Correction published as `b888f7f0bdd290ecabc5de4418bc5b66e0562afc`.
+CI run `33992723668` passed every job, including both deployments and live
+character/class/multiplayer QA. Independent frontend `release.json`, entry-point
+asset query, login version, patch history, and backend `/healthz` match Alpha
+1.0.4 and that exact SHA. The real Wizard route killed Rootbound Warden and
+Briar Matron, cleared intervening encounters, and returned to town both before
+deployment and against production. The initial failed push did not go live;
+this corrected release did. Wider dungeon gates remain open.
 
 - Four regional generators now have a local seeded RNG independent of global
   combat/loot traffic. Production retries receive distinct deterministic seeds;
@@ -222,15 +231,50 @@ The client suite was rerun after the final helper changes: all 2,142 tests pass.
 The corrected hardware layout fixture passes all 20 layouts and High/Low
 captures in 10.8 seconds total. Full client checks pass 148 suites / 2,142 tests;
 the full server race suite, lint, and 177 version/history tests also pass.
-This is a candidate repair, not yet a live fix or closure of all dungeon gates.
+This repair is now live as recorded above, but does not close all dungeon gates.
+
+## Alpha 1.0.5 candidate — your party holds its ground
+
+Confirmed regressions: returning through the dungeon portal moved all members
+back to the entrance, a low-level dungeon request could enter a saved higher-
+level/Chronicle-gated dungeon or raid, and a non-leader could create a new run.
+Dispatch-level tests reproduced each before the change. Entry now resolves the
+saved run, checks its real access requirements and moves only the caller on
+resume. New runs remain leader-owned and validate the group before creation.
+Concurrent duplicate enters are idempotent and preserve movement/geometry.
+Qualified raid members can resume an existing formed raid individually without
+repeating its launch ready check; initial raid creation retains the full group,
+readiness and Chronicle requirements. Unqualified replacements cannot enter.
+The menu displays the saved name, difficulty and level with immutable controls.
+Login registration now marks restored dungeon membership active; previously
+restored instances retained their empty timer even with a player inside. The
+new restart/login regression verifies the timer and room-summary initialization.
+Two-player real-browser recall/re-entry in both directions passes, followed by
+the existing remote summon/effect/movement/combat assertions (1.3 minutes total).
+The credential artifact scan passes and disposable services/data were removed.
+The full server race suite passes. A prior failure was an old hazard-transfer
+fixture entering a nonexistent dungeon; it now creates a real run and retains
+the hazard-reset assertion. The full client suite passes 2,146 tests with the
+release metadata updates. The complete isolated sequence passed all authenticated
+routes, Water recovery, both Verdant boss deaths/return, smoothness, Fighter and
+Rogue matrices, then failed the Wizard's post-move animation assertion: the
+helper can return after a short move has already completed. The observer now
+records animation during the actual movement and still requires Run/Walk plus
+authoritative displacement. Focused Wizard verification passes on the latest
+server image (49.2 seconds including setup), with a clean credential artifact
+scan and disposable cleanup. The full combined sequence is not yet recorded as
+passed; predeploy CI will run it against the committed candidate. The latest server race suite
+also passes the restored-login membership correction added after the first
+isolated image was built.
+This work is not yet published and does not close the full 1.1 gate.
 
 - DUN-01: targeted movement/scene fixes and the Verdant mid-jump recall route
   shipped in 1.0.3. Water reconnect/menu recall/re-entry passes on the 1.0.4
   candidate. Wipe, remaining dungeons, and party variants remain open.
-  In addition to the wider recovery gate, inspect Continue Party Run's settings
-  display and member-specific re-entry: the menu currently defaults to a new
-  Verdant selection and the entry handler moves all party members, even when
-  resuming. Preserve authoritative access checks and members already inside.
+  The 1.0.5 candidate resolves Continue Party Run's settings display and
+  member-specific re-entry with actual saved-run access checks. Two-player
+  Heroic Water recall/re-entry passes in both directions. Other dungeons,
+  completed/wiped runs and actual group raid recovery still require evidence.
 - DUN-02: contact/range mismatch reproduced and repaired in 1.0.3; mouse picking,
   all-class full combat, boss deaths, loot, and progression still need validation.
 - DUN-03: Teleport failure reproduced and repaired in 1.0.3; remaining abilities,
@@ -240,6 +284,11 @@ This is a candidate repair, not yet a live fix or closure of all dungeon gates.
   capture, and repeated scene-lifecycle checks remain open. The next local
   hotfix now supplies real seed sweeps and rendered
   fixture coverage; these are stronger evidence, not completion of the play gate.
+  Source inspection also confirms the retry-exhaustion fallback is only a start
+  room, after generated encounters have been removed. Existing fallback tests
+  prove offsets/connectivity, not bosses or progression. Replace this with a
+  complete progression-safe fallback and explicitly force that path in tests
+  before closing the gate; do not treat the seed sweep as covering it.
 
 ## Milestone tracking
 

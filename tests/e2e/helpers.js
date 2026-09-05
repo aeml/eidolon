@@ -1545,10 +1545,14 @@ export async function enterAndExitDungeon(page, { beforeExit, resetRun = false }
             await expect(page.locator('#dungeon-party-state-box')).toContainText('No active party instance');
             verifyReset = false;
         }
-        await page.locator('#diff-btn-normal').click();
         const runLevel = page.locator('#dungeon-run-level-select');
-        if (await runLevel.locator('option[value="30"]').count()) {
-            await runLevel.selectOption('30');
+        if (await page.locator('#dungeon-active-run-summary').count()) {
+            await expect(page.locator('#dungeon-type-select')).toHaveValue('verdant_bastion_catacombs');
+        } else {
+            await page.locator('#diff-btn-normal').click();
+            if (await runLevel.locator('option[value="30"]').count()) {
+                await runLevel.selectOption('30');
+            }
         }
         const enterButton = page.locator('#btn-enter-dungeon');
         await expect(enterButton).toBeEnabled();

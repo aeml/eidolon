@@ -209,7 +209,7 @@ describe('dungeon progression menu', () => {
 
         ui.showDungeonMenu({
             hasInstance: false,
-            isLeader: false,
+            isLeader: true,
             playerLevel: 100,
             maxPlayerLevel: 100,
             dungeonUnlockLevel: 30,
@@ -235,6 +235,47 @@ describe('dungeon progression menu', () => {
                 runLevel: 80
             }
         }));
+    });
+
+    test('resumes the saved run settings instead of the entrance defaults', () => {
+        const ui = new UIManager(false);
+        ui.showDungeonMenu({
+            hasInstance: true, isLeader: false, playerLevel: 100,
+            dungeonType: 'verdant_bastion_catacombs',
+            activeRun: { instanceId: 'saved-water', dungeonType: 'abyssal_well', difficulty: 'heroic', runLevel: 80 }
+        });
+        expect(document.getElementById('dungeon-active-run-summary').textContent)
+            .toContain('Abyssal Well · Heroic · Level 80');
+        expect(document.getElementById('dungeon-type-select').value).toBe('abyssal_well');
+        expect(document.getElementById('dungeon-type-select').disabled).toBe(true);
+        expect(document.getElementById('dungeon-run-level-select').value).toBe('80');
+        expect(document.getElementById('dungeon-run-level-select').disabled).toBe(true);
+        expect(document.getElementById('diff-btn-heroic').getAttribute('aria-pressed')).toBe('true');
+        expect(document.getElementById('diff-btn-normal').disabled).toBe(true);
+        document.getElementById('btn-enter-dungeon').click();
+        expect(window.game.socket.send).toHaveBeenCalledWith(JSON.stringify({
+            type: 'enter_dungeon', payload: { dungeonType: 'abyssal_well', difficulty: 'heroic', runLevel: 80 }
+        }));
+    });
+
+    test('shows an active raid and allows qualified non-leaders to resume it', () => {
+        const ui = new UIManager(false);
+        ui.showDungeonMenu({
+            hasInstance: true, isLeader: false, playerLevel: 100,
+            elementalRaidAccess: { earth_crystal_raid: true },
+            activeRun: { instanceId: 'saved-raid', dungeonType: 'earth_crystal_raid', difficulty: 'normal', runLevel: 30 }
+        });
+        expect(document.getElementById('dungeon-active-run-summary').textContent).toContain('Rootheart Sanctum');
+        const continueRaid = [...document.querySelectorAll('button')].find(button => button.textContent === 'Continue Rootheart Sanctum');
+        expect(continueRaid.disabled).toBe(false);
+        continueRaid.click();
+        expect(window.game.network.send).toHaveBeenCalledWith('raid_enter', { raidType: 'earth_crystal_raid' });
+    });
+
+    test('non-leaders cannot start a fresh dungeon from the menu', () => {
+        const ui = new UIManager(false);
+        ui.showDungeonMenu({ hasInstance: false, isLeader: false, playerLevel: 100 });
+        expect(document.getElementById('btn-enter-dungeon').disabled).toBe(true);
     });
 
     test('explains active party-instance ownership and labels continue/reset actions for leaders', () => {

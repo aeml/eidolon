@@ -61,6 +61,13 @@ at its actual difficulty/run level instead of treating this command as proof.
   Whirlwind/Shield Slam alongside basic attacks and gap-closing Charge; a bare
   starter weapon alone is too slow for the two-minute boss-check deadline.
   Use `EIDOLON_ISOLATED_QA_ROUTE=verdant npm run test:e2e:isolated`.
+- `multiplayer.spec.js` also runs `party-dungeon-route.js`: two level-100
+  characters enter a Heroic level-80 Water run, then each recalls and rejoins
+  while the other remains inside. Both directions must preserve the teammate's
+  coordinates and scene, exact instance/seed, and the menu's original settings.
+  The route then returns both players to the existing remote combat/effect
+  checks. Run with `EIDOLON_ISOLATED_QA_ROUTE=multiplayer npm run test:e2e:isolated`.
+  This is party recovery coverage, not a full Heroic dungeon clear or raid run.
 
 On Linux, `EIDOLON_ISOLATED_QA_NETWORK_MODE=host` avoids bridge/veth creation
 while another browser job is running on the same machine. Both disposable

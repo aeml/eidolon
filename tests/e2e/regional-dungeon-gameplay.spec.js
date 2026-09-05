@@ -1,41 +1,13 @@
 import { expect, test } from '@playwright/test';
 import {
     collectBrowserFailures, credentialsFromEnvironment, ensureDungeonReadyLevel,
-    exerciseReconnect, loginAndEnterWorld, moveByGroundClick, projectEntity, projectGroundOffset,
-    readPlayerState, returnToTown, zoomOutForPortal
+    exerciseReconnect, loginAndEnterWorld, projectGroundOffset,
+    readPlayerState, returnToTown
 } from './helpers.js';
+import { openDungeonGuide } from './dungeon-guide.js';
 
 const credentials = credentialsFromEnvironment();
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
-
-async function openDungeonGuide(page) {
-    await zoomOutForPortal(page);
-    let guide;
-    // The guide is forty meters south of recall, beyond the usable canvas at
-    // some camera/aspect combinations. Approach through normal movement first.
-    for (let step = 0; step < 4; step++) {
-        guide = await projectEntity(page, 'dungeon-npc-1');
-        if (guide?.visible) break;
-        const player = await readPlayerState(page);
-        const dx = -player.x;
-        const dz = 240 - player.z;
-        const scale = Math.min(1, 16 / Math.hypot(dx, dz));
-        await moveByGroundClick(page, dx * scale, dz * scale, { allowJumpFallback: false });
-    }
-    await expect.poll(async () => {
-        guide = await projectEntity(page, 'dungeon-npc-1');
-        return Boolean(guide?.visible);
-    }, { timeout: 20_000 }).toBe(true);
-    // Reproject as the camera finishes following the walking approach.
-    await expect.poll(async () => {
-        guide = await projectEntity(page, 'dungeon-npc-1');
-        if (!guide?.visible) return null;
-        await page.mouse.move(guide.x, guide.y);
-        return page.evaluate(() => window.game?.hoveredEntity?.id);
-    }, { timeout: 10_000 }).toBe('dungeon-npc-1');
-    await page.mouse.click(guide.x, guide.y);
-    await expect(page.locator('#dungeon-menu')).toBeVisible({ timeout: 30_000 });
-}
 
 test('Water dungeon accepts eastward movement, reconnect, town recall and re-entry', async ({ page, baseURL }) => {
     test.skip(!credentials.username || !credentials.password, 'Requires a dedicated QA character');
@@ -80,6 +52,8 @@ test('Water dungeon accepts eastward movement, reconnect, town recall and re-ent
     await expect.poll(() => page.evaluate(() => window.game?.currentInstanceType)).toBe('overworld');
     await returnToTown(page);
     await openDungeonGuide(page);
+    await expect(page.locator('#dungeon-active-run-summary')).toContainText('Abyssal Well · Normal · Level 60');
+    await expect(page.locator('#dungeon-run-level-select')).toBeDisabled();
     await page.locator('#btn-enter-dungeon').click();
     await expect.poll(() => page.evaluate(() => window.game?.currentInstanceType)).toBe('abyssal_well');
     await expect.poll(() => page.evaluate(() => ({ id: window.game.currentInstanceId, seed: window.game.currentDungeonLayout?.generationSeed }))).toEqual(identity);
