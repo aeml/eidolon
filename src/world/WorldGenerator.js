@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { buildDungeonSurfaceUnion } from './dungeonSurfaceUnion.js';
 import { getLanternholdWalkCollider } from '../art/ProceduralLanternholdArchitecture.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
 import {
@@ -420,49 +421,43 @@ export class WorldGenerator {
     }
 
     createCanonicalLayoutDungeon(layout) {
-        const roomOpenings = this.buildCanonicalRoomOpenings(layout);
-
-        layout.rooms.forEach((room, index) => {
-            this.createRoom(room.x, room.z, room.width, room.color, roomOpenings[index] || {});
-            this.addDungeonRoomDressing(room, index);
-        });
-
-        layout.corridors.forEach((corridor) => {
-            const corridorRects = this.getCanonicalCorridorRects(layout, corridor);
-            if (corridorRects.length === 0) return;
-
-            const fromRoom = layout.rooms[corridor.fromRoomIndex];
-            const toRoom = layout.rooms[corridor.toRoomIndex];
-            if (!fromRoom || !toRoom) return;
-
-            const points = [this.getRoomAttachmentPoint(fromRoom, corridorRects[0])];
-
-            for (let i = 0; i < corridorRects.length - 1; i++) {
-                const cornerPoint = this.getCorridorConnectionPoint(corridorRects[i], corridorRects[i + 1]);
-                if (cornerPoint) {
-                    points.push(cornerPoint);
-                }
+        const { floors, walls } = buildDungeonSurfaceUnion(layout.walkRects);
+        const origin = layout.rooms[0];
+        const floorMaterial = this.dungeonInteriorKit
+            ? this.dungeonInteriorKit.floorMaterial(12, 12) : new THREE.MeshStandardMaterial({ map: this.floorTexture });
+        for (const rect of floors) {
+            const width = rect.right - rect.left;
+            const depth = rect.bottom - rect.top;
+            const centerX = (rect.left + rect.right) / 2;
+            const centerZ = (rect.top + rect.bottom) / 2;
+            const geometry = new THREE.PlaneGeometry(width, depth);
+            const positions = geometry.getAttribute('position');
+            const uv = geometry.getAttribute('uv');
+            // One texture scale/origin across every partition: no stretched
+            // narrow strips or restarted tile patterns at room/corridor joins.
+            for (let i = 0; i < uv.count; i++) {
+                uv.setXY(i, (positions.getX(i) + centerX - origin.x) / 12,
+                    (positions.getY(i) - centerZ + origin.z) / 12);
             }
-
-            points.push(this.getRoomAttachmentPoint(toRoom, corridorRects[corridorRects.length - 1]));
-
-            const corridorWidth = corridor.width || this.getWalkRectThickness(corridorRects[0]) || 40;
-            for (let i = 0; i < points.length - 1; i++) {
-                const start = points[i];
-                const end = points[i + 1];
-                if (this.getPointDistance(start, end) < 0.1) continue;
-                this.createCorridor(start.x, start.z, end.x, end.z, corridorWidth, 0, 0);
-            }
-
-            for (let i = 1; i < points.length - 1; i++) {
-                this.createCorner(
-                    points[i].x,
-                    points[i].z,
-                    corridorWidth,
-                    this.buildCornerOpenings(points[i - 1], points[i], points[i + 1])
-                );
-            }
-        });
+            const floor = new THREE.Mesh(geometry, floorMaterial);
+            floor.name = 'DungeonUnionFloor';
+            floor.userData.proceduralDungeonSurface = Boolean(this.dungeonInteriorKit);
+            floor.userData.dungeonType = this.dungeonInteriorKit?.dungeonType || '';
+            floor.userData.walkSurface = { ...rect };
+            floor.rotation.x = -Math.PI / 2;
+            floor.position.set(centerX, 0.1, centerZ);
+            floor.receiveShadow = true;
+            this.scene.add(floor);
+        }
+        for (const wall of walls) {
+            const middle = (wall.start + wall.end) / 2;
+            // Place masonry outside the walkable union, never across a join.
+            const outside = wall.at + wall.normal;
+            this.createWall(wall.axis === 'x' ? middle : outside,
+                wall.axis === 'x' ? outside : middle,
+                wall.end - wall.start, 15, 2, wall.axis === 'x' ? 0 : Math.PI / 2, wall.normal > 0);
+        }
+        layout.rooms.forEach((room, index) => this.addDungeonRoomDressing(room, index));
     }
 
     createLegacyLayoutDungeon(layout) {

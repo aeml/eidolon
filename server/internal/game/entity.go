@@ -29,20 +29,24 @@ const (
 )
 
 type Quest struct {
-	ID            string `json:"id"`
-	Type          string `json:"type"` // "KILL" or "COLLECT"
-	Target        string `json:"target"`
-	Count         int    `json:"count"`
-	MaxCount      int    `json:"maxCount"`
-	RewardXP      int    `json:"rewardXP"`
-	Completed     bool   `json:"completed"`
-	Accepted      bool   `json:"accepted"`
-	Title         string `json:"title,omitempty"`
-	Description   string `json:"description,omitempty"`
-	Lore          string `json:"lore,omitempty"`
-	Category      string `json:"category,omitempty"`
-	Chapter       int    `json:"chapter,omitempty"`
-	ObjectiveText string `json:"objectiveText,omitempty"`
+	ID                 string `json:"id"`
+	Type               string `json:"type"` // "KILL" or "COLLECT"
+	Target             string `json:"target"`
+	Count              int    `json:"count"`
+	MaxCount           int    `json:"maxCount"`
+	RewardXP           int    `json:"rewardXP"`
+	RewardGold         int    `json:"rewardGold"`
+	GrantedGold        int    `json:"grantedGold,omitempty"`
+	GrantedXP          int    `json:"grantedXP,omitempty"`
+	GrantedResonanceXP int    `json:"grantedResonanceXP,omitempty"`
+	Completed          bool   `json:"completed"`
+	Accepted           bool   `json:"accepted"`
+	Title              string `json:"title,omitempty"`
+	Description        string `json:"description,omitempty"`
+	Lore               string `json:"lore,omitempty"`
+	Category           string `json:"category,omitempty"`
+	Chapter            int    `json:"chapter,omitempty"`
+	ObjectiveText      string `json:"objectiveText,omitempty"`
 }
 
 type Stats struct {

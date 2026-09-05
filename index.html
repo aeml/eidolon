@@ -334,7 +334,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.1</span>
+                <span class="start-version-row__label">Alpha 1.0.2</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -651,14 +651,18 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
-                <div class="patch-note-entry" data-version="unreleased">
-                    <h3 class="patch-note-entry__title">Unreleased (Ilyra's call and little guardians)</h3>
+                <div class="patch-note-entry" data-version="1.0.2">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.2 (rewards and roads that meet)</h3>
                     <ul class="patch-note-entry__list">
+                        <li><strong>Dungeon floors share one footprint:</strong> rooms, hallway bends, and crossings now render from the same walkable area the server uses. Floor partitions do not overlap, tiles keep a shared scale and alignment, and boundary walls no longer cut across connected passages.</li>
+                        <li><strong>Quest rewards worth collecting:</strong> story and daily turn-ins grant gold plus experience. At level 100, experience goes into the existing Resonance progression instead; overflow from reaching the cap does too. Offers, the Journal, and completion dialogue show the reward, including the exact XP/Resonance split received.</li>
+                        <li><strong>Spells reach every realm:</strong> fixed an old world-boundary check that immediately removed projectiles in the Air and Fire realms. Fireball and other projectile abilities can now travel and hit there.</li>
                         <li><strong>A wizard needs your help:</strong> meet Archmage Ilyra in the open town square to accept the Chronicle. Each chapter now waits for you to return and click Complete Quest; rewards and the next chapter no longer arrive automatically. Fifteen authored turn-in conversations deepen the story of the four crystals and Malachar.</li>
                         <li><strong>Follow the right marker:</strong> Ilyra has gold quest symbols and the daily quest giver has blue ones. An exclamation mark means quests are available; a question mark takes priority when you can turn one in. Quest givers are friendly interaction targets, never attack targets.</li>
                         <li><strong>A tidier quest tracker:</strong> a compact, story-first shortlist keeps the HUD readable with many accepted quests. The full Journal is one click away, and the tracker leaves room for permanent chat on short and narrow screens. Opening the party roster compacts the tracker to its Journal shortcut so party controls stay visible and clickable.</li>
                         <li><strong>Town walls match the buildings:</strong> the rotated trading house, stash coffer, and Oathhall behind it use current wall footprints instead of oversized old model and roof bounds. Removed service models also remove their collision shapes.</li>
                         <li><strong>Spirit Guardians become cherubs:</strong> little rounded angels with bare torsos, curls, feathered wings, and halos orbit your Cleric. Animated wings and shared, batched geometry preserve the existing aura radius, runes, boosted guardian count, and server-owned damage.</li>
+                        <li><strong>Dungeon repair continues:</strong> reported return-to-town failures, boss attackability, and dungeon-specific ability problems remain under investigation. This patch does not claim those issues are resolved; they remain priorities before 1.1.</li>
                     </ul>
                 </div>
                 <div class="patch-note-entry" data-version="1.0.1">

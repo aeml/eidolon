@@ -1,4 +1,5 @@
 import { installPrototypeMethods } from '../core/PrototypeInstaller.js';
+import { formatQuestRewards } from './questRewards.js';
 
 class UIManagerFeedbackMethods {
     createDeathScreen() {
@@ -213,6 +214,7 @@ class UIManagerFeedbackMethods {
                     label: labelByQuestId[quest.id] || quest.id,
                     progressText: `${Math.min(count, maxCount)} / ${maxCount}`,
                     rewardXP: Number(quest.rewardXP) || 0,
+                    rewardLabel: formatQuestRewards(quest, this.lastPlayerRef),
                     complete: Boolean(quest.completed || count >= maxCount)
                 };
             });

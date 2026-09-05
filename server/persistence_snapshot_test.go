@@ -54,7 +54,7 @@ func TestCharacterSnapshotPreservesPersistentGameplayState(t *testing.T) {
 		Equipment: map[string]game.Item{"mainHand": item},
 		Quests: []game.Quest{{
 			ID: "quest-1", Type: "KILL", Target: "Skeleton", Count: 2, MaxCount: 5,
-			RewardXP: 100, Accepted: true, Title: "Remembered Chapter", Description: "Persistent story description",
+			RewardXP: 100, RewardGold: 250, GrantedGold: 250, GrantedXP: 30, GrantedResonanceXP: 70, Accepted: true, Title: "Remembered Chapter", Description: "Persistent story description",
 			Lore: "Persistent recovered lore", Category: game.QuestCategoryChronicle, Chapter: 3, ObjectiveText: "Defeat the remembered foe.",
 		}},
 		LastDailyQuest: savedAt.Add(-time.Hour),
@@ -86,6 +86,9 @@ func TestCharacterSnapshotPreservesPersistentGameplayState(t *testing.T) {
 		character.Quests[0].Category != game.QuestCategoryChronicle || character.Quests[0].Chapter != 3 ||
 		character.Quests[0].ObjectiveText != "Defeat the remembered foe." {
 		t.Fatalf("rich Chronicle fields were not preserved: %+v", character.Quests[0])
+	}
+	if q := character.Quests[0]; q.RewardGold != 250 || q.GrantedGold != 250 || q.GrantedXP != 30 || q.GrantedResonanceXP != 70 {
+		t.Fatalf("quest reward receipt was not preserved: %+v", q)
 	}
 }
 

@@ -527,20 +527,24 @@ func (c *Client) dispatchMessage(msg Message) {
 			entity.Quests = make([]game.Quest, len(char.Quests))
 			for i, q := range char.Quests {
 				entity.Quests[i] = game.Quest{
-					ID:            q.ID,
-					Type:          q.Type,
-					Target:        q.Target,
-					Count:         q.Count,
-					MaxCount:      q.MaxCount,
-					RewardXP:      q.RewardXP,
-					Completed:     q.Completed,
-					Accepted:      q.Accepted,
-					Title:         q.Title,
-					Description:   q.Description,
-					Lore:          q.Lore,
-					Category:      q.Category,
-					Chapter:       q.Chapter,
-					ObjectiveText: q.ObjectiveText,
+					ID:                 q.ID,
+					Type:               q.Type,
+					Target:             q.Target,
+					Count:              q.Count,
+					MaxCount:           q.MaxCount,
+					RewardXP:           q.RewardXP,
+					RewardGold:         q.RewardGold,
+					GrantedGold:        q.GrantedGold,
+					GrantedXP:          q.GrantedXP,
+					GrantedResonanceXP: q.GrantedResonanceXP,
+					Completed:          q.Completed,
+					Accepted:           q.Accepted,
+					Title:              q.Title,
+					Description:        q.Description,
+					Lore:               q.Lore,
+					Category:           q.Category,
+					Chapter:            q.Chapter,
+					ObjectiveText:      q.ObjectiveText,
 				}
 			}
 		}

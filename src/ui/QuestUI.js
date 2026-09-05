@@ -1,4 +1,6 @@
 import { renderQuestConversation } from './QuestConversation.js';
+import { formatQuestRewards } from './questRewards.js';
+import { MAX_PLAYER_LEVEL } from '../data/dungeonProgression.js';
 import {
     findNextDungeonMeaningfulRoom,
     getDungeonCadenceLabel,
@@ -158,6 +160,10 @@ export class QuestUI {
         return `${verb} ${quest?.maxCount || 0} ${target}.`;
     }
 
+    getQuestRewardLabel(quest, options) {
+        return formatQuestRewards(quest, this.ctx.getLastPlayer?.(), options);
+    }
+
     clearElement(element) {
         element?.replaceChildren();
     }
@@ -190,7 +196,8 @@ export class QuestUI {
                 accepted: Boolean(quest.accepted && !quest.completed),
                 completed: Boolean(quest.accepted && quest.count >= quest.maxCount),
                 progressText: `${Math.max(0, Number(quest.count) || 0)} / ${Math.max(0, Number(quest.maxCount) || 0)}`,
-                rewardXP: Number(quest.rewardXP) || 0
+                rewardXP: Number(quest.rewardXP) || 0,
+                rewardLabel: this.getQuestRewardLabel(quest)
             }));
 
         return {
@@ -201,11 +208,12 @@ export class QuestUI {
     }
 
     getDailyResetSnapshot() {
+        const progression = Number(this.ctx.getLastPlayer?.()?.level) >= MAX_PLAYER_LEVEL ? 'Resonance XP' : 'XP';
         const serverEpochSeconds = Number(this.ctx.getServerEpochSeconds?.() || 0);
         if (!Number.isFinite(serverEpochSeconds) || serverEpochSeconds <= 0) {
             return {
                 statusLine: 'Daily quests reset at 12:00 AM Eastern Time',
-                ladderLine: 'Highest-value dailies reset tomorrow, so this is the fastest XP ladder to pick back up.'
+                ladderLine: `Highest-value dailies reset tomorrow, so this is the fastest ${progression} ladder to pick back up.`
             };
         }
 
@@ -250,7 +258,7 @@ export class QuestUI {
 
         return {
             statusLine: `Daily reset: ${countdown} remaining (${easternNow})`,
-            ladderLine: `Server clock says the daily ladder rolls in ${countdown}, so this is the fastest XP route still paying before reset.`
+            ladderLine: `Server clock says the daily ladder rolls in ${countdown}, so this is the fastest ${progression} route still paying before reset.`
         };
     }
 
@@ -602,6 +610,7 @@ export class QuestUI {
                         progressLabel: `${q.count || 0} / ${q.maxCount || 0}`,
                         progressPct: q.maxCount > 0 ? Math.min(100, ((q.count || 0) / q.maxCount) * 100) : 0,
                         rewardXP: q.rewardXP || 0,
+                        rewardLabel: this.getQuestRewardLabel(q),
                         completed: Boolean(q.completed || ((q.count || 0) >= (q.maxCount || 0))),
                         badge: isChronicle ? `Story ${q.chapter || ''}`.trim() : 'Daily',
                         badgeClass: isChronicle ? 'is-objective' : '',
@@ -713,7 +722,7 @@ export class QuestUI {
             const hint = document.createElement('div');
             hint.className = 'objective-entry__hint';
             hint.textContent = objective.completed && objective.badgeClass !== 'is-exit'
-                ? `${objective.hint} · ${Number(objective.rewardXP || 0).toLocaleString()} XP` : objective.hint;
+                ? `${objective.hint} · ${objective.rewardLabel || this.getQuestRewardLabel(objective)}` : objective.hint;
 
             item.appendChild(header);
             item.appendChild(progress);
@@ -739,10 +748,10 @@ export class QuestUI {
         const pending = this.pendingQuestAction;
         const acknowledged = pending && quests?.find((quest) => quest.id === pending.quest.id && (pending.complete ? quest.completed : quest.accepted));
         if (acknowledged) {
-            if (pending.complete && (pending.quest.category === 'chronicle') === (this.questKind === 'story')) this.completedDialogue = pending.quest;
+            if (pending.complete && (pending.quest.category === 'chronicle') === (this.questKind === 'story')) this.completedDialogue = { ...pending.quest, ...acknowledged };
             this.pendingQuestAction = null;
         }
-        const signature = JSON.stringify([this.questKind, this.selectedQuestId, quests, this.completedDialogue?.id, Boolean(this.pendingQuestAction), this.questActionError]);
+        const signature = JSON.stringify([this.questKind, this.selectedQuestId, quests, this.completedDialogue?.id, Boolean(this.pendingQuestAction), this.questActionError, Number(this.ctx.getLastPlayer?.()?.level) >= MAX_PLAYER_LEVEL]);
         if (signature === this.questWindowSignature) return;
         this.questWindowSignature = signature;
         renderQuestConversation(this, quests);
@@ -791,7 +800,7 @@ export class QuestUI {
             section.appendChild(this.createMessage(`Objective — ${this.getQuestObjective(current)}`, {
                 color: '#ffd36f', fontSize: '12px', fontWeight: 'bold'
             }));
-            section.appendChild(this.createMessage(`${current.count || 0} / ${current.maxCount || 0} • ${Number(current.rewardXP || 0).toLocaleString()} XP`, {
+            section.appendChild(this.createMessage(`${current.count || 0} / ${current.maxCount || 0} • ${this.getQuestRewardLabel(current)}`, {
                 color: '#8fd3ff', fontSize: '11px'
             }));
             if (current.lore) {
@@ -895,8 +904,8 @@ export class QuestUI {
                     { color: entry.completed ? '#7cf0a5' : entry.accepted ? '#ffd36f' : '#cfd7e2' }
                 );
                 const right = this.createMessage(
-                    `${entry.progressText} • ${entry.rewardXP.toLocaleString()} XP`,
-                    { color: '#8fd3ff', whiteSpace: 'nowrap' }
+                    `${entry.progressText} • ${entry.rewardLabel}`,
+                    { color: '#8fd3ff' }
                 );
 
                 row.appendChild(left);
@@ -973,7 +982,7 @@ export class QuestUI {
             const reward = document.createElement('div');
             reward.style.color = '#aaa';
             reward.style.fontSize = '12px';
-            reward.textContent = `Reward: ${q.rewardXP} XP`;
+            reward.textContent = `Reward: ${this.getQuestRewardLabel(q)}`;
 
             div.appendChild(header);
             div.appendChild(progress);

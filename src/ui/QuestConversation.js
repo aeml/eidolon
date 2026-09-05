@@ -46,7 +46,7 @@ export function renderQuestConversation(ui, quests) {
         response.setAttribute('aria-live', 'polite');
         response.append(text('div', 'QUEST COMPLETE', 'quest-dialogue__eyebrow'), text('h3', ui.getQuestTitle(quest)));
         response.append(text('p', story ? ILYRA_REPLIES[(quest.chapter || 1) - 1] : '“Good work. Fewer dangers on the road means more people make it home tonight. Your reward is earned; speak to me again when you are ready for another contract.”', 'quest-dialogue__speech'));
-        response.append(text('p', `Reward received · ${Number(quest.rewardXP || 0).toLocaleString()} XP`, 'quest-dialogue__reward'));
+        response.append(text('p', `Reward received · ${ui.getQuestRewardLabel(quest, { claimed: true })}`, 'quest-dialogue__reward'));
         response.append(button(story ? 'Continue conversation' : 'Browse contracts', () => {
             ui.completedDialogue = null;
             ui.selectedQuestId = null;
@@ -80,10 +80,11 @@ export function renderQuestConversation(ui, quests) {
         detail.appendChild(lore);
     }
     detail.append(text('p', ui.getQuestObjective(selected), 'quest-dialogue__objective'));
-    detail.append(text('p', `${selected.count || 0} / ${selected.maxCount} · Reward: ${Number(selected.rewardXP || 0).toLocaleString()} XP`, 'quest-dialogue__reward'));
+    detail.append(text('p', `${selected.count || 0} / ${selected.maxCount} · Reward: ${ui.getQuestRewardLabel(selected)}`, 'quest-dialogue__reward'));
+    detail.append(text('p', 'At level 100, XP becomes Resonance XP. Any XP left over when you reach the cap also goes into Resonance.', 'quest-dialogue__status'));
     if (!selected.accepted || ready) {
         const action = button(ready ? 'Complete Quest' : 'Accept Quest', () => {
-            ui.pendingQuestAction = { quest: { ...selected }, complete: ready };
+            ui.pendingQuestAction = { quest: { ...selected, rewardLabelAtTurnIn: ui.getQuestRewardLabel(selected) }, complete: ready };
             action.disabled = true;
             action.textContent = 'Waiting for reply…';
             if (ready) ui.onCompleteQuest?.(selected.id);

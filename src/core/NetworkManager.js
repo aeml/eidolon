@@ -246,6 +246,11 @@ export class NetworkManager {
         if (Array.isArray(entity?.quests) && entity.quests.length === 0) {
             delete entity.quests;
         }
+        for (const quest of entity?.quests || []) {
+            if (quest.rewardXp !== undefined) quest.rewardXP = Number(quest.rewardXp);
+            if (quest.grantedXp !== undefined) quest.grantedXP = Number(quest.grantedXp);
+            if (quest.grantedResonanceXp !== undefined) quest.grantedResonanceXP = Number(quest.grantedResonanceXp);
+        }
         if (entity?.experience !== undefined) {
             entity.experience = Number(entity.experience);
         }

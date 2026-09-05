@@ -294,23 +294,27 @@ func (x *Stats) GetVitality() int32 {
 }
 
 type Quest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Type          string                 `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
-	Target        string                 `protobuf:"bytes,3,opt,name=target,proto3" json:"target,omitempty"`
-	Count         int32                  `protobuf:"varint,4,opt,name=count,proto3" json:"count,omitempty"`
-	MaxCount      int32                  `protobuf:"varint,5,opt,name=max_count,json=maxCount,proto3" json:"max_count,omitempty"`
-	RewardXp      int32                  `protobuf:"varint,6,opt,name=reward_xp,json=rewardXp,proto3" json:"reward_xp,omitempty"`
-	Completed     bool                   `protobuf:"varint,7,opt,name=completed,proto3" json:"completed,omitempty"`
-	Accepted      bool                   `protobuf:"varint,8,opt,name=accepted,proto3" json:"accepted,omitempty"`
-	Title         string                 `protobuf:"bytes,9,opt,name=title,proto3" json:"title,omitempty"`
-	Description   string                 `protobuf:"bytes,10,opt,name=description,proto3" json:"description,omitempty"`
-	Lore          string                 `protobuf:"bytes,11,opt,name=lore,proto3" json:"lore,omitempty"`
-	Category      string                 `protobuf:"bytes,12,opt,name=category,proto3" json:"category,omitempty"`
-	Chapter       int32                  `protobuf:"varint,13,opt,name=chapter,proto3" json:"chapter,omitempty"`
-	ObjectiveText string                 `protobuf:"bytes,14,opt,name=objective_text,json=objectiveText,proto3" json:"objective_text,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	Id                 string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Type               string                 `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
+	Target             string                 `protobuf:"bytes,3,opt,name=target,proto3" json:"target,omitempty"`
+	Count              int32                  `protobuf:"varint,4,opt,name=count,proto3" json:"count,omitempty"`
+	MaxCount           int32                  `protobuf:"varint,5,opt,name=max_count,json=maxCount,proto3" json:"max_count,omitempty"`
+	RewardXp           int32                  `protobuf:"varint,6,opt,name=reward_xp,json=rewardXp,proto3" json:"reward_xp,omitempty"`
+	Completed          bool                   `protobuf:"varint,7,opt,name=completed,proto3" json:"completed,omitempty"`
+	Accepted           bool                   `protobuf:"varint,8,opt,name=accepted,proto3" json:"accepted,omitempty"`
+	Title              string                 `protobuf:"bytes,9,opt,name=title,proto3" json:"title,omitempty"`
+	Description        string                 `protobuf:"bytes,10,opt,name=description,proto3" json:"description,omitempty"`
+	Lore               string                 `protobuf:"bytes,11,opt,name=lore,proto3" json:"lore,omitempty"`
+	Category           string                 `protobuf:"bytes,12,opt,name=category,proto3" json:"category,omitempty"`
+	Chapter            int32                  `protobuf:"varint,13,opt,name=chapter,proto3" json:"chapter,omitempty"`
+	ObjectiveText      string                 `protobuf:"bytes,14,opt,name=objective_text,json=objectiveText,proto3" json:"objective_text,omitempty"`
+	RewardGold         int32                  `protobuf:"varint,15,opt,name=reward_gold,json=rewardGold,proto3" json:"reward_gold,omitempty"`
+	GrantedGold        int32                  `protobuf:"varint,16,opt,name=granted_gold,json=grantedGold,proto3" json:"granted_gold,omitempty"`
+	GrantedXp          int32                  `protobuf:"varint,17,opt,name=granted_xp,json=grantedXp,proto3" json:"granted_xp,omitempty"`
+	GrantedResonanceXp int32                  `protobuf:"varint,18,opt,name=granted_resonance_xp,json=grantedResonanceXp,proto3" json:"granted_resonance_xp,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
 }
 
 func (x *Quest) Reset() {
@@ -439,6 +443,34 @@ func (x *Quest) GetObjectiveText() string {
 		return x.ObjectiveText
 	}
 	return ""
+}
+
+func (x *Quest) GetRewardGold() int32 {
+	if x != nil {
+		return x.RewardGold
+	}
+	return 0
+}
+
+func (x *Quest) GetGrantedGold() int32 {
+	if x != nil {
+		return x.GrantedGold
+	}
+	return 0
+}
+
+func (x *Quest) GetGrantedXp() int32 {
+	if x != nil {
+		return x.GrantedXp
+	}
+	return 0
+}
+
+func (x *Quest) GetGrantedResonanceXp() int32 {
+	if x != nil {
+		return x.GrantedResonanceXp
+	}
+	return 0
 }
 
 type SocketedGem struct {
@@ -1640,7 +1672,7 @@ const file_state_proto_rawDesc = "" +
 	"\tdexterity\x18\x02 \x01(\x05R\tdexterity\x12\"\n" +
 	"\fintelligence\x18\x03 \x01(\x05R\fintelligence\x12\x16\n" +
 	"\x06wisdom\x18\x04 \x01(\x05R\x06wisdom\x12\x1a\n" +
-	"\bvitality\x18\x05 \x01(\x05R\bvitality\"\xf6\x02\n" +
+	"\bvitality\x18\x05 \x01(\x05R\bvitality\"\x8b\x04\n" +
 	"\x05Quest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04type\x18\x02 \x01(\tR\x04type\x12\x16\n" +
@@ -1656,7 +1688,13 @@ const file_state_proto_rawDesc = "" +
 	"\x04lore\x18\v \x01(\tR\x04lore\x12\x1a\n" +
 	"\bcategory\x18\f \x01(\tR\bcategory\x12\x18\n" +
 	"\achapter\x18\r \x01(\x05R\achapter\x12%\n" +
-	"\x0eobjective_text\x18\x0e \x01(\tR\robjectiveText\"\xb2\x01\n" +
+	"\x0eobjective_text\x18\x0e \x01(\tR\robjectiveText\x12\x1f\n" +
+	"\vreward_gold\x18\x0f \x01(\x05R\n" +
+	"rewardGold\x12!\n" +
+	"\fgranted_gold\x18\x10 \x01(\x05R\vgrantedGold\x12\x1d\n" +
+	"\n" +
+	"granted_xp\x18\x11 \x01(\x05R\tgrantedXp\x120\n" +
+	"\x14granted_resonance_xp\x18\x12 \x01(\x05R\x12grantedResonanceXp\"\xb2\x01\n" +
 	"\vSocketedGem\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x12\x18\n" +
 	"\aquality\x18\x02 \x01(\tR\aquality\x12;\n" +

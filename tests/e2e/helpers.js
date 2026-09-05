@@ -1556,6 +1556,15 @@ export async function enterAndExitDungeon(page) {
     await expect.poll(async () => (await readPlayerState(page)).instanceType, {
         timeout: 30_000
     }).toBe('overworld');
+    // Instance type changes at the start of the asynchronous scene transition.
+    // Do not accept that alone as proof recall reached the starting city.
+    await expect.poll(() => page.evaluate(() => {
+        const game = window.game;
+        return Boolean(game?.player && !game.currentInstanceId && !game.currentDungeonLayout
+            && Math.hypot(game.player.position.x + 1.25, game.player.position.z - 200) < 3
+            && game.collisionManager.dungeonWalkableRects.length === 0
+            && game.renderSystem.instanceEnvironmentGroup.children.some(child => child.name === 'DungeonEntrance'));
+    }), { timeout: 30_000, message: 'recall must finish town scenery, collision and authoritative-position recovery' }).toBe(true);
 }
 
 export async function verifyPersistenceAfterFreshLogin(page, credentials, minimumInventoryCount) {

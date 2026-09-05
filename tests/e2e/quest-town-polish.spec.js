@@ -11,6 +11,8 @@ test('Ilyra dialogue, manual quest acknowledgement and a crowded tracker remain 
         const quest = { id: 'chronicle_01_bell_below', category: 'chronicle', chapter: 1, title: 'The Bell That Rang Below', description: 'I am Ilyra, keeper of the Fourfold Chronicle. The four crystals are faltering, and my wards cannot reach their buried sanctums. I need your help to save Eidolon. Face the risen dead beyond our walls and bring me the echoes bound inside them; together we can trace the wound.', lore: 'Orun of Root and Stone, Neris of Tide and Memory, Pyralis of Flame and Will, and Aeral of Sky and Freedom keep the elements willing to shelter mortal lands.', objectiveText: 'Defeat three risen dead beyond Lanternhold and bring their echoes to Ilyra.', count: 3, maxCount: 3, rewardXP: 500, accepted: true, completed: false };
         const player = { position: { x: 20, z: 200 }, level: 15, quests: [quest, ...Array.from({ length: 26 }, (_, i) => ({ id: `daily_${i}`, category: 'daily', title: `Daily Hunt ${i + 1}`, target: 'Skeleton', maxCount: 100, count: i * 3, rewardXP: 50000, accepted: true, completed: false }))] };
         ui.lastPlayerRef = player;
+        player.level = 100;
+        player.quests.forEach((entry) => { entry.rewardGold = 100; });
         document.getElementById('start-screen').style.display = 'none';
         ui.toggleChat(true);
         ui.updateJournal(player.quests);
@@ -20,6 +22,8 @@ test('Ilyra dialogue, manual quest acknowledgement and a crowded tracker remain 
     });
     const panel = page.locator('#quest-window');
     await expect(panel).toContainText('save Eidolon');
+    await expect(panel).toContainText('100 gold · 500 Resonance XP');
+    await expect(page.locator('#objectives-list')).toContainText('100 gold · 500 Resonance XP');
     await expect(page.locator('#objectives-list .objective-entry')).toHaveCount(3);
     await expect(page.locator('.objectives-panel__more')).toContainText('View all 27 objectives');
     for (const [width, height] of [[1440, 1000], [1280, 600], [390, 844], [320, 640]]) {
@@ -36,17 +40,19 @@ test('Ilyra dialogue, manual quest acknowledgement and a crowded tracker remain 
     await page.evaluate(() => {
         const { ui, player } = window.__questFixture;
         player.quests[0].completed = true;
+        Object.assign(player.quests[0], { grantedGold: 100, grantedXP: 0, grantedResonanceXP: 500 });
         player.quests.push({ ...player.quests[0], id: 'chronicle_02_seeds_first_grove', chapter: 2, title: 'Seeds of the First Grove', accepted: false, completed: false, count: 0 });
         ui.updateQuestWindow(player.quests);
         ui.updateJournal(player.quests);
     });
     await expect(panel).toContainText('I once called him a fellow keeper');
-    await expect(panel).toContainText('Reward received · 500 XP');
+    await expect(panel).toContainText('Reward received · 100 gold · 500 Resonance XP');
     await panel.getByRole('button', { name: 'Continue conversation' }).click();
     await expect(panel.getByRole('button', { name: 'Accept Quest', exact: true })).toBeVisible();
     await page.locator('#btn-close-quest').click();
     await page.locator('.objectives-panel__more').click();
     await expect(page.locator('#quest-journal')).toBeVisible();
+    await expect(page.locator('#quest-journal')).toContainText('100 gold · 50,000 Resonance XP');
     await expect(page.locator('#chat-box')).toBeVisible();
     expect(failures, failures.join('\n')).toEqual([]);
 });

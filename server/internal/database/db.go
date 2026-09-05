@@ -142,20 +142,24 @@ type DungeonRoomProgress struct {
 }
 
 type Quest struct {
-	ID            string `bson:"id"`
-	Type          string `bson:"type"` // "KILL" or "COLLECT"
-	Target        string `bson:"target"`
-	Count         int    `bson:"count"`
-	MaxCount      int    `bson:"max_count"`
-	RewardXP      int    `bson:"reward_xp"`
-	Completed     bool   `bson:"completed"`
-	Accepted      bool   `bson:"accepted"`
-	Title         string `bson:"title,omitempty"`
-	Description   string `bson:"description,omitempty"`
-	Lore          string `bson:"lore,omitempty"`
-	Category      string `bson:"category,omitempty"`
-	Chapter       int    `bson:"chapter,omitempty"`
-	ObjectiveText string `bson:"objective_text,omitempty"`
+	ID                 string `bson:"id"`
+	Type               string `bson:"type"` // "KILL" or "COLLECT"
+	Target             string `bson:"target"`
+	Count              int    `bson:"count"`
+	MaxCount           int    `bson:"max_count"`
+	RewardXP           int    `bson:"reward_xp"`
+	RewardGold         int    `bson:"reward_gold"`
+	GrantedGold        int    `bson:"granted_gold,omitempty"`
+	GrantedXP          int    `bson:"granted_xp,omitempty"`
+	GrantedResonanceXP int    `bson:"granted_resonance_xp,omitempty"`
+	Completed          bool   `bson:"completed"`
+	Accepted           bool   `bson:"accepted"`
+	Title              string `bson:"title,omitempty"`
+	Description        string `bson:"description,omitempty"`
+	Lore               string `bson:"lore,omitempty"`
+	Category           string `bson:"category,omitempty"`
+	Chapter            int    `bson:"chapter,omitempty"`
+	ObjectiveText      string `bson:"objective_text,omitempty"`
 }
 
 type Stats struct {

@@ -2,14 +2,15 @@
 
 > Project by [Robert Mendola](https://mendola.tech)
 >
-> Last refreshed: September 4, 2026
+> Last refreshed: September 5, 2026
 
 This is the product-level roadmap and Alpha 1.0 closeout record. Per-patch history lives in `index.html`; implementation and release evidence lives under `docs/`.
 
 ## Current Snapshot
 
-- Current in-game displayed version: `Alpha 1.0.1`
+- Current in-game displayed version: `Alpha 1.0.2` (candidate; deployment tracked separately)
 - Active implementation line: `Alpha 1.0` closeout and beta-readiness verification
+- Proposed next releases: [1.1–1.10 roadmap](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md). Dungeon return-to-town, boss targeting, abilities, hallway generation, and overlapping-floor reports reopen dungeon reliability as an immediate release gate. Their causes and fixes are not yet verified.
 - The planned `0.50`, `0.60`, `0.70`, `0.80`, and `0.90` bands are implemented in the working tree
 - Current architecture measurements: `world.go` 1,422 LOC, `main.go` 938, `GameEngine.js` 2,310, and `UIManager.js` 1,216
 - Release identity is aligned across the browser, server health endpoint, container defaults, deploy scripts, isolated QA, and CI
@@ -19,7 +20,7 @@ This is the product-level roadmap and Alpha 1.0 closeout record. Per-patch histo
 
 Alpha 1.0 is a complete browser action-RPG foundation rather than a vertical slice. It includes four classes and elemental regions, authoritative combat, persistent characters and social systems, dungeons and raids, a player economy, guilds, PvP, max-level progression, reconnect support, and a central story with a real endgame conclusion.
 
-The Fourfold Chronicle begins automatically for every character. The player learns that Orun, Neris, Pyralis, and Aeral shaped Earth, Water, Fire, and Air into a covenant that protects Eidolon. Malachar, the Dark King, destabilized their crystals so each realm would become dependent on his command.
+The Fourfold Chronicle is offered to every character by Archmage Ilyra, with explicit acceptance and completion conversations. The player learns that Orun, Neris, Pyralis, and Aeral shaped Earth, Water, Fire, and Air into a covenant that protects Eidolon. Malachar, the Dark King, destabilized their crystals so each realm would become dependent on his command.
 
 The 15-chapter campaign requires the player to:
 
@@ -94,7 +95,7 @@ Outcome: known alpha risks have explicit guards and repeatable evidence.
 
 The Alpha 1.0 candidate is expected to satisfy these gates:
 
-- The Fourfold Chronicle is automatically started, persisted, readable in the Journal, and gated through all four dungeons, four raids, four repair Vigils, the Umbral Nexus, and the Dark King
+- The Fourfold Chronicle is offered through Ilyra, explicitly accepted and completed, persisted, readable in the Journal, and gated through all four dungeons, four raids, four repair Vigils, the Umbral Nexus, and the Dark King
 - Core gameplay and remote actions are readable across normal multiplayer play
 - Dungeons, elemental raids, PvP, guild activity, Resonance progression, and the weekly raid provide repeatable loops
 - Social play includes durable friends, parties, guilds, chat, moderation controls, and direct trade
@@ -105,7 +106,7 @@ The Alpha 1.0 candidate is expected to satisfy these gates:
 
 ## Next: Beta
 
-Beta should not reopen Alpha's foundation by default. The next planning pass should prioritize live balance data, larger concurrency trials, content cadence, moderation operations, onboarding completion analytics, accessibility feedback, and production incident response. A fifth class remains a candidate only after live evidence shows the four existing class and raid roles are healthy.
+The [1.1–1.10 plan](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md) proposes the alpha-to-beta sequence. Immediate dungeon defects take priority in `1.0.x` hotfixes and must be closed before `1.1`; `1.6` is reserved for encounter improvements, not repairs to unplayable basics. Historical foundation closeout does not override newly reported failures. Later milestones cover visual and combat polish, story depth, progression, competitive PvP, social activity, world events, and measured beta readiness. A fifth class and major realm expansion remain outside this scope.
 
 ## Supporting Documents
 

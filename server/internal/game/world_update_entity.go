@@ -720,9 +720,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		}
 
 		e.Mu.Lock()
-		// Only check bounds if in Overworld (InstanceID == "")
+		// Include the Fire and Air realm wings, not just the original Earth/Water map.
 		if e.InstanceID == "" {
-			if e.X < -1000 || e.X > 1000 || e.Z < -2200 || e.Z > 1000 {
+			if e.X < -3000 || e.X > 3000 || e.Z < -2200 || e.Z > 1000 {
 				deferred.addRemoval(e.ID)
 			}
 		}

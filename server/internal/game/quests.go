@@ -36,7 +36,7 @@ type ChronicleAdvanceEvent struct {
 }
 
 func chronicleQuestCatalog() []Quest {
-	return []Quest{
+	quests := []Quest{
 		{
 			ID: "chronicle_01_bell_below", Type: "KILL", Target: "Skeleton", MaxCount: 3, RewardXP: 500,
 			Title: "The Bell That Rang Below", Category: QuestCategoryChronicle, Chapter: 1,
@@ -143,7 +143,15 @@ func chronicleQuestCatalog() []Quest {
 			Lore:          "Malachar was once the mortal keeper who carried messages between the four sanctums. He came to despise a world whose powers required balance instead of obedience. If he falls, it will not be because one champion overpowered him, but because Earth, Water, Fire, Air, and mortal will chose one another freely.",
 		},
 	}
+	for i := range quests {
+		quests[i].RewardGold = questGoldReward(quests[i].RewardXP)
+	}
+	return quests
 }
+
+// Initial quest gold tuning follows reward tiers, with a useful starter floor
+// and a ceiling matching the existing 50,000-gold weekly raid reward.
+func questGoldReward(xp int) int { return max(100, min(50_000, xp/500)) }
 
 func dailyQuestCatalog() []Quest {
 	quests := []Quest{
@@ -175,6 +183,7 @@ func dailyQuestCatalog() []Quest {
 		{ID: "daily_dungeon_bosses_mythic", Type: "KILL", Target: "DungeonBossMythic", MaxCount: 4, RewardXP: 15000000},
 	}
 	for i := range quests {
+		quests[i].RewardGold = questGoldReward(quests[i].RewardXP)
 		quests[i].Category = QuestCategoryDaily
 		quests[i].Title = fmt.Sprintf("Daily Hunt: %s", splitQuestTarget(quests[i].Target))
 		quests[i].ObjectiveText = fmt.Sprintf("Defeat %d %s.", quests[i].MaxCount, splitQuestTarget(quests[i].Target))
@@ -202,6 +211,9 @@ func copyQuestDefinition(progress Quest, definition Quest) Quest {
 	definition.Count = progress.Count
 	definition.Completed = progress.Completed
 	definition.Accepted = progress.Accepted
+	definition.GrantedGold = progress.GrantedGold
+	definition.GrantedXP = progress.GrantedXP
+	definition.GrantedResonanceXP = progress.GrantedResonanceXP
 	return definition
 }
 
@@ -347,6 +359,7 @@ func (w *World) PerformCompleteQuest(playerID, questID string) (*Entity, bool) {
 				}
 				consumeInventoryItemLocked(player, q.Target, q.MaxCount)
 			}
+			w.awardQuestRewardsLocked(player, q)
 			if q.Category == QuestCategoryChronicle {
 				event := w.advanceChronicleLocked(player, i)
 				if w.OnEvent != nil {
@@ -354,7 +367,6 @@ func (w *World) PerformCompleteQuest(playerID, questID string) (*Entity, bool) {
 				}
 			} else {
 				q.Completed = true
-				w.awardExperienceLocked(player, q.RewardXP)
 			}
 			return player, true
 		}
@@ -396,7 +408,6 @@ func questSnapshot(player *Entity) []Quest {
 func (w *World) advanceChronicleLocked(player *Entity, questIndex int) ChronicleAdvanceEvent {
 	quest := &player.Quests[questIndex]
 	quest.Completed = true
-	w.awardExperienceLocked(player, quest.RewardXP)
 	event := ChronicleAdvanceEvent{PlayerID: player.ID, CompletedID: quest.ID, CompletedTitle: quest.Title}
 	ensureChronicleLocked(player)
 	for _, next := range player.Quests {
@@ -409,6 +420,18 @@ func (w *World) advanceChronicleLocked(player *Entity, questIndex int) Chronicle
 	}
 	event.Finale = event.NextID == ""
 	return event
+}
+
+// Record the exact split, including a turn-in which crosses level 100, so the
+// completion dialogue reports what was awarded rather than guessing from level.
+func (w *World) awardQuestRewardsLocked(player *Entity, quest *Quest) {
+	beforeResonance := player.ResonanceLevel*ResonanceXPPerLevel + player.ResonanceXP
+	w.awardExperienceLocked(player, quest.RewardXP)
+	quest.GrantedResonanceXP = player.ResonanceLevel*ResonanceXPPerLevel + player.ResonanceXP - beforeResonance
+	quest.GrantedXP = max(0, quest.RewardXP-quest.GrantedResonanceXP)
+	quest.GrantedGold = max(0, quest.RewardGold)
+	player.Gold += quest.GrantedGold
+	w.Economy.RecordSource("quest_rewards", quest.GrantedGold)
 }
 
 func (w *World) publishQuestProgress(player *Entity, updated bool) {

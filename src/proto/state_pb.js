@@ -1426,6 +1426,10 @@ export const eidolon = $root.eidolon = (() => {
              * @property {string|null} [category] Quest category
              * @property {number|null} [chapter] Quest chapter
              * @property {string|null} [objectiveText] Quest objectiveText
+             * @property {number|null} [rewardGold] Quest rewardGold
+             * @property {number|null} [grantedGold] Quest grantedGold
+             * @property {number|null} [grantedXp] Quest grantedXp
+             * @property {number|null} [grantedResonanceXp] Quest grantedResonanceXp
              * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
              */
 
@@ -1570,6 +1574,38 @@ export const eidolon = $root.eidolon = (() => {
             Quest.prototype.objectiveText = "";
 
             /**
+             * Quest rewardGold.
+             * @member {number} rewardGold
+             * @memberof eidolon.state.Quest
+             * @instance
+             */
+            Quest.prototype.rewardGold = 0;
+
+            /**
+             * Quest grantedGold.
+             * @member {number} grantedGold
+             * @memberof eidolon.state.Quest
+             * @instance
+             */
+            Quest.prototype.grantedGold = 0;
+
+            /**
+             * Quest grantedXp.
+             * @member {number} grantedXp
+             * @memberof eidolon.state.Quest
+             * @instance
+             */
+            Quest.prototype.grantedXp = 0;
+
+            /**
+             * Quest grantedResonanceXp.
+             * @member {number} grantedResonanceXp
+             * @memberof eidolon.state.Quest
+             * @instance
+             */
+            Quest.prototype.grantedResonanceXp = 0;
+
+            /**
              * Creates a new Quest instance using the specified properties.
              * @function create
              * @memberof eidolon.state.Quest
@@ -1629,6 +1665,14 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 13, wireType 0 =*/104).int32(message.chapter);
                 if (message.objectiveText != null && $Object.hasOwnProperty.call(message, "objectiveText") && message.objectiveText !== "")
                     writer.uint32(/* id 14, wireType 2 =*/114).string(message.objectiveText);
+                if (message.rewardGold != null && $Object.hasOwnProperty.call(message, "rewardGold") && message.rewardGold !== 0)
+                    writer.uint32(/* id 15, wireType 0 =*/120).int32(message.rewardGold);
+                if (message.grantedGold != null && $Object.hasOwnProperty.call(message, "grantedGold") && message.grantedGold !== 0)
+                    writer.uint32(/* id 16, wireType 0 =*/128).int32(message.grantedGold);
+                if (message.grantedXp != null && $Object.hasOwnProperty.call(message, "grantedXp") && message.grantedXp !== 0)
+                    writer.uint32(/* id 17, wireType 0 =*/136).int32(message.grantedXp);
+                if (message.grantedResonanceXp != null && $Object.hasOwnProperty.call(message, "grantedResonanceXp") && message.grantedResonanceXp !== 0)
+                    writer.uint32(/* id 18, wireType 0 =*/144).int32(message.grantedResonanceXp);
                 if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
                     for (let i = 0; i < message.$unknowns.length; ++i)
                         writer.raw(message.$unknowns[i]);
@@ -1802,6 +1846,42 @@ export const eidolon = $root.eidolon = (() => {
                                 delete message.objectiveText;
                             continue;
                         }
+                    case 15: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.rewardGold = value;
+                            else
+                                delete message.rewardGold;
+                            continue;
+                        }
+                    case 16: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.grantedGold = value;
+                            else
+                                delete message.grantedGold;
+                            continue;
+                        }
+                    case 17: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.grantedXp = value;
+                            else
+                                delete message.grantedXp;
+                            continue;
+                        }
+                    case 18: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.grantedResonanceXp = value;
+                            else
+                                delete message.grantedResonanceXp;
+                            continue;
+                        }
                     }
                     reader.skipType(wireType, _depth, tag);
                     if (!reader.discardUnknown) {
@@ -1887,6 +1967,18 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.objectiveText != null && $Object.hasOwnProperty.call(message, "objectiveText"))
                     if (!$util.isString(message.objectiveText))
                         return "objectiveText: string expected";
+                if (message.rewardGold != null && $Object.hasOwnProperty.call(message, "rewardGold"))
+                    if (!$util.isInteger(message.rewardGold))
+                        return "rewardGold: integer expected";
+                if (message.grantedGold != null && $Object.hasOwnProperty.call(message, "grantedGold"))
+                    if (!$util.isInteger(message.grantedGold))
+                        return "grantedGold: integer expected";
+                if (message.grantedXp != null && $Object.hasOwnProperty.call(message, "grantedXp"))
+                    if (!$util.isInteger(message.grantedXp))
+                        return "grantedXp: integer expected";
+                if (message.grantedResonanceXp != null && $Object.hasOwnProperty.call(message, "grantedResonanceXp"))
+                    if (!$util.isInteger(message.grantedResonanceXp))
+                        return "grantedResonanceXp: integer expected";
                 return null;
             };
 
@@ -1950,6 +2042,18 @@ export const eidolon = $root.eidolon = (() => {
                 if (object.objectiveText != null)
                     if (typeof object.objectiveText !== "string" || object.objectiveText.length)
                         message.objectiveText = $String(object.objectiveText);
+                if (object.rewardGold != null)
+                    if ($Number(object.rewardGold) !== 0)
+                        message.rewardGold = object.rewardGold | 0;
+                if (object.grantedGold != null)
+                    if ($Number(object.grantedGold) !== 0)
+                        message.grantedGold = object.grantedGold | 0;
+                if (object.grantedXp != null)
+                    if ($Number(object.grantedXp) !== 0)
+                        message.grantedXp = object.grantedXp | 0;
+                if (object.grantedResonanceXp != null)
+                    if ($Number(object.grantedResonanceXp) !== 0)
+                        message.grantedResonanceXp = object.grantedResonanceXp | 0;
                 return message;
             };
 
@@ -1985,6 +2089,10 @@ export const eidolon = $root.eidolon = (() => {
                     object.category = "";
                     object.chapter = 0;
                     object.objectiveText = "";
+                    object.rewardGold = 0;
+                    object.grantedGold = 0;
+                    object.grantedXp = 0;
+                    object.grantedResonanceXp = 0;
                 }
                 if (message.id != null && $Object.hasOwnProperty.call(message, "id"))
                     object.id = message.id;
@@ -2014,6 +2122,14 @@ export const eidolon = $root.eidolon = (() => {
                     object.chapter = message.chapter;
                 if (message.objectiveText != null && $Object.hasOwnProperty.call(message, "objectiveText"))
                     object.objectiveText = message.objectiveText;
+                if (message.rewardGold != null && $Object.hasOwnProperty.call(message, "rewardGold"))
+                    object.rewardGold = message.rewardGold;
+                if (message.grantedGold != null && $Object.hasOwnProperty.call(message, "grantedGold"))
+                    object.grantedGold = message.grantedGold;
+                if (message.grantedXp != null && $Object.hasOwnProperty.call(message, "grantedXp"))
+                    object.grantedXp = message.grantedXp;
+                if (message.grantedResonanceXp != null && $Object.hasOwnProperty.call(message, "grantedResonanceXp"))
+                    object.grantedResonanceXp = message.grantedResonanceXp;
                 return object;
             };
 

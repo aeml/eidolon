@@ -377,10 +377,10 @@ class UIManagerDungeonMethods {
                 ? dailyQuestEntries.map((entry) => `
                     <div style="display: flex; justify-content: space-between; gap: 10px; margin-top: 6px; align-items: baseline;">
                         <span style="color: ${entry.complete ? '#7cf0a5' : '#d7dfef'};">${entry.label}</span>
-                        <span style="color: ${entry.complete ? '#7cf0a5' : '#ffd36f'}; white-space: nowrap;">${entry.progressText} • ${entry.rewardXP.toLocaleString()} XP</span>
+                        <span style="color: ${entry.complete ? '#7cf0a5' : '#ffd36f'};">${entry.progressText} • ${entry.rewardLabel}</span>
                     </div>
                 `).join('')
-                : '<div style="color: #8ea8d1; margin-top: 6px;">Accept dungeon dailies at the Quest Giver to turn repeated clears into a live XP ladder.</div>';
+                : '<div style="color: #8ea8d1; margin-top: 6px;">Accept dungeon dailies at the Quest Giver for gold and XP (Resonance XP at level 100).</div>';
 
             diffInfoBox.innerHTML = `
                 <div style="color: ${diff.color}; font-weight: bold; font-size: 14px; margin-bottom: 8px;">${diff.name} Mode</div>

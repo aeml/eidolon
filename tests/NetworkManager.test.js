@@ -314,6 +314,20 @@ describe('NetworkManager — basic send / queue', () => {
         expect(Object.hasOwn(decoded, 'quests')).toBe(false);
     });
 
+    test('normalizes protobuf quest rewards and authoritative completion receipts', () => {
+        const sock = makeMockSocket();
+        const nm = new NetworkManager(sock);
+        decodeStateEnvelopeMock.mockReturnValueOnce({
+            full: { entities: [{ id: 'player-one', quests: [{ id: 'daily_skeleton', rewardGold: 100, rewardXp: 500, grantedGold: 100, grantedXp: 50, grantedResonanceXp: 450 }] }] },
+            delta: null
+        });
+        nm.setupListeners();
+        sock.onmessage({ data: new Uint8Array([0x45, 0x44, 0x50, 0x42, 0x02, 0x99]).buffer });
+        expect(nm.drainMessages()[0].payload['player-one'].quests[0]).toEqual(expect.objectContaining({
+            rewardGold: 100, rewardXP: 500, grantedGold: 100, grantedXP: 50, grantedResonanceXP: 450
+        }));
+    });
+
     test('preserves a non-empty authoritative protobuf quest catalog', () => {
         const sock = makeMockSocket();
         const nm = new NetworkManager(sock);

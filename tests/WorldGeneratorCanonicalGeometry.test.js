@@ -46,6 +46,30 @@ function buildCanonicalLayout() {
     };
 }
 
+function verifyCanonicalSurfaces(generator, layout) {
+    expect(generator.createRoom).not.toHaveBeenCalled();
+    expect(generator.createCorridor).not.toHaveBeenCalled();
+    expect(generator.createCorner).not.toHaveBeenCalled();
+    const floors = generator.scene.add.mock.calls.map(([mesh]) => mesh).filter(mesh => mesh.name === 'DungeonUnionFloor');
+    expect(floors.length).toBeGreaterThan(0);
+    const xs = [...new Set(layout.walkRects.flatMap(r => [r.x - r.width / 2, r.x + r.width / 2]))].sort((a, b) => a - b);
+    const zs = [...new Set(layout.walkRects.flatMap(r => [r.z - r.height / 2, r.z + r.height / 2]))].sort((a, b) => a - b);
+    for (let i = 1; i < xs.length; i++) for (let j = 1; j < zs.length; j++) {
+        const x = (xs[i - 1] + xs[i]) / 2;
+        const z = (zs[j - 1] + zs[j]) / 2;
+        const walkable = layout.walkRects.some(r => Math.abs(x - r.x) < r.width / 2 && Math.abs(z - r.z) < r.height / 2);
+        const coveringFloors = floors.filter(mesh => {
+            const r = mesh.userData.walkSurface;
+            return x > r.left && x < r.right && z > r.top && z < r.bottom;
+        });
+        expect(coveringFloors).toHaveLength(walkable ? 1 : 0);
+        if (walkable) {
+            const point = new THREE.Vector3(x, 1, z);
+            expect(generator.collisionManager.addCollider.mock.calls.some(([box]) => box.containsPoint(point))).toBe(false);
+        }
+    }
+}
+
 function buildLargeBossApproachLayout() {
     return {
         rooms: [
@@ -162,29 +186,7 @@ describe.each([
 
         await generator[methodName](0, 0, buildCanonicalLayout());
 
-        expect(generator.createCorridor.mock.calls).toEqual([
-            [40, 0, 100, 0, 20, 0, 0],
-            [100, 0, 100, 60, 20, 0, 0]
-        ]);
-
-        expect(generator.createCorner.mock.calls).toEqual([
-            [100, 0, 20, { west: true, south: true }]
-        ]);
-
-        expect(generator.createRoom.mock.calls[0]).toEqual([
-            0,
-            0,
-            80,
-            0x111111,
-            { east: true }
-        ]);
-        expect(generator.createRoom.mock.calls[1]).toEqual([
-            100,
-            100,
-            80,
-            0x222222,
-            { north: true }
-        ]);
+        verifyCanonicalSurfaces(generator, buildCanonicalLayout());
     });
 
     test('uses canonical boss approaches that leave a non-zero final segment into large rooms', async () => {
@@ -192,34 +194,7 @@ describe.each([
 
         await generator[methodName](0, 0, buildLargeBossApproachLayout());
 
-        expect(generator.createCorridor.mock.calls).toEqual([
-            [0, -50, 0, -70, 40, 0, 0],
-            [0, -70, 80, -70, 40, 0, 0],
-            [80, -70, 80, -90, 40, 0, 0]
-        ]);
-
-        expect(generator.createCorner.mock.calls).toEqual([
-            [0, -70, 40, { south: true, east: true }],
-            [80, -70, 40, { west: true, north: true }]
-        ]);
-
-        const finalSegment = generator.createCorridor.mock.calls[2];
-        expect(Math.abs(finalSegment[3] - finalSegment[1])).toBeGreaterThan(0);
-
-        expect(generator.createRoom.mock.calls[0]).toEqual([
-            0,
-            0,
-            100,
-            0x111111,
-            { north: true }
-        ]);
-        expect(generator.createRoom.mock.calls[1]).toEqual([
-            80,
-            -180,
-            180,
-            0x222222,
-            { south: true }
-        ]);
+        verifyCanonicalSurfaces(generator, buildLargeBossApproachLayout());
     });
 
     test('falls back to legacy room-order routing when canonical geometry is absent', async () => {

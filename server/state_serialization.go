@@ -864,20 +864,24 @@ func questsToProto(qs []game.Quest) []*statepb.Quest {
 	out := make([]*statepb.Quest, 0, len(qs))
 	for _, q := range qs {
 		out = append(out, &statepb.Quest{
-			Id:            q.ID,
-			Type:          q.Type,
-			Target:        q.Target,
-			Count:         int32(q.Count),
-			MaxCount:      int32(q.MaxCount),
-			RewardXp:      int32(q.RewardXP),
-			Completed:     q.Completed,
-			Accepted:      q.Accepted,
-			Title:         q.Title,
-			Description:   q.Description,
-			Lore:          q.Lore,
-			Category:      q.Category,
-			Chapter:       int32(q.Chapter),
-			ObjectiveText: q.ObjectiveText,
+			Id:                 q.ID,
+			Type:               q.Type,
+			Target:             q.Target,
+			Count:              int32(q.Count),
+			MaxCount:           int32(q.MaxCount),
+			RewardXp:           int32(q.RewardXP),
+			RewardGold:         int32(q.RewardGold),
+			GrantedGold:        int32(q.GrantedGold),
+			GrantedXp:          int32(q.GrantedXP),
+			GrantedResonanceXp: int32(q.GrantedResonanceXP),
+			Completed:          q.Completed,
+			Accepted:           q.Accepted,
+			Title:              q.Title,
+			Description:        q.Description,
+			Lore:               q.Lore,
+			Category:           q.Category,
+			Chapter:            int32(q.Chapter),
+			ObjectiveText:      q.ObjectiveText,
 		})
 	}
 	return out
