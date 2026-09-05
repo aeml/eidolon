@@ -95,6 +95,32 @@ function buildLargeBossApproachLayout() {
 }
 
 describe('WorldGenerator staged overworld startup', () => {
+    test('a legacy dungeon preload cannot attach floors after its scene is superseded', async () => {
+        const generator = createGenerator();
+        let finishPreload;
+        let current = true;
+        generator.preloadTextures = jest.fn(() => new Promise(resolve => { finishPreload = resolve; }));
+        const pending = generator.createDungeon(0, 0, 100, { shouldAttach: () => current });
+        current = false;
+        finishPreload();
+        await pending;
+        expect(generator.scene.add).not.toHaveBeenCalled();
+        expect(generator.collisionManager.addCollider).not.toHaveBeenCalled();
+    });
+
+    test('a town invalidated between base and decorations does not attach stale services', async () => {
+        const generator = createGenerator();
+        let finishBase;
+        let current = true;
+        generator.createTownBase = jest.fn(() => new Promise(resolve => { finishBase = resolve; }));
+        generator.createTownDecorations = jest.fn();
+        const pending = generator.createTown(0, 200, 100, { shouldAttach: () => current });
+        current = false;
+        finishBase();
+        await pending;
+        expect(generator.createTownDecorations).not.toHaveBeenCalled();
+    });
+
     test('keeps the town base independently loadable and preserves full createTown behavior', async () => {
         const generator = createGenerator();
         generator.createRectangularFence = jest.fn();
@@ -111,8 +137,8 @@ describe('WorldGenerator staged overworld startup', () => {
         await generator.createTown(10, 20, 30);
 
         expect(generator.createRectangularFence).toHaveBeenLastCalledWith(10, 20, 60, 60);
-        expect(generator.loadBuildings).toHaveBeenCalledWith(10, 20);
-        expect(generator.loadTrees).toHaveBeenCalledWith(10, 20);
+        expect(generator.loadBuildings).toHaveBeenCalledWith(10, 20, {});
+        expect(generator.loadTrees).toHaveBeenCalledWith(10, 20, {});
     });
 
     test('does not attach a deferred dungeon entrance after its overworld scene is invalidated', async () => {

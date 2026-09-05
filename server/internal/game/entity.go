@@ -121,7 +121,8 @@ type Entity struct {
 	HpRegen           float64 `json:"hpRegen"`
 	ManaRegen         float64 `json:"manaRegen"`
 	CastSpeed         float64 `json:"castSpeed"`
-	Scale             float64 `json:"scale,omitempty"` // Visual scale multiplier
+	Scale             float64 `json:"scale,omitempty"`      // Visual scale multiplier
+	BodyRadius        float64 `json:"bodyRadius,omitempty"` // Derived replication metadata, not a model's decorative bounds.
 	CritChanceBonus   float64 `json:"-"`
 	FireDamageBonus   float64 `json:"-"`
 	PoisonDamageBonus float64 `json:"-"`
@@ -875,6 +876,7 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		ManaRegen:         e.ManaRegen,
 		CastSpeed:         e.CastSpeed,
 		Scale:             e.Scale,
+		BodyRadius:        e.ReplicatedBodyRadius(),
 		TargetX:           e.TargetX,
 		TargetZ:           e.TargetZ,
 		SpawnX:            e.SpawnX,
@@ -1025,6 +1027,7 @@ func (w *World) copyEntity(v *Entity) *Entity {
 		State:             v.State,
 		LastMoveSequence:  v.LastMoveSequence,
 		Scale:             v.Scale,
+		BodyRadius:        v.ReplicatedBodyRadius(),
 		JumpStartX:        v.JumpStartX,
 		JumpStartY:        v.JumpStartY,
 		JumpStartZ:        v.JumpStartZ,

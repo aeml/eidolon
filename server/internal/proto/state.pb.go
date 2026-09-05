@@ -849,6 +849,8 @@ type Entity struct {
 	// Public identity only; ranks, permissions, and membership remain server-owned.
 	GuildId  string `protobuf:"bytes,107,opt,name=guild_id,json=guildId,proto3" json:"guild_id,omitempty"`
 	GuildTag string `protobuf:"bytes,108,opt,name=guild_tag,json=guildTag,proto3" json:"guild_tag,omitempty"`
+	// Authoritative actor collision footprint, independent of model decoration.
+	BodyRadius float32 `protobuf:"fixed32,109,opt,name=body_radius,json=bodyRadius,proto3" json:"body_radius,omitempty"`
 	// Authoritative jump replication
 	JumpStartX    float32 `protobuf:"fixed32,81,opt,name=jump_start_x,json=jumpStartX,proto3" json:"jump_start_x,omitempty"`
 	JumpStartY    float32 `protobuf:"fixed32,82,opt,name=jump_start_y,json=jumpStartY,proto3" json:"jump_start_y,omitempty"`
@@ -1586,6 +1588,13 @@ func (x *Entity) GetGuildTag() string {
 	return ""
 }
 
+func (x *Entity) GetBodyRadius() float32 {
+	if x != nil {
+		return x.BodyRadius
+	}
+	return 0
+}
+
 func (x *Entity) GetJumpStartX() float32 {
 	if x != nil {
 		return x.JumpStartX
@@ -1729,7 +1738,7 @@ const file_state_proto_rawDesc = "" +
 	"\n" +
 	"StatsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\x85\"\n" +
+	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\xa6\"\n" +
 	"\x06Entity\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
 	"\vinstance_id\x18\x02 \x01(\tR\n" +
@@ -1841,7 +1850,9 @@ const file_state_proto_rawDesc = "" +
 	"\bparty_id\x18O \x01(\tR\apartyId\x12#\n" +
 	"\rsocial_status\x18P \x01(\tR\fsocialStatus\x12\x19\n" +
 	"\bguild_id\x18k \x01(\tR\aguildId\x12\x1b\n" +
-	"\tguild_tag\x18l \x01(\tR\bguildTag\x12 \n" +
+	"\tguild_tag\x18l \x01(\tR\bguildTag\x12\x1f\n" +
+	"\vbody_radius\x18m \x01(\x02R\n" +
+	"bodyRadius\x12 \n" +
 	"\fjump_start_x\x18Q \x01(\x02R\n" +
 	"jumpStartX\x12 \n" +
 	"\fjump_start_y\x18R \x01(\x02R\n" +

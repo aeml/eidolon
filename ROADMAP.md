@@ -8,7 +8,7 @@ This is the product-level roadmap and Alpha 1.0 closeout record. Per-patch histo
 
 ## Current Snapshot
 
-- Current in-game displayed version: `Alpha 1.0.2` (candidate; deployment tracked separately)
+- Current in-game displayed version: `Alpha 1.0.3` (candidate; deployment tracked separately)
 - Active implementation line: `Alpha 1.0` closeout and beta-readiness verification
 - Proposed next releases: [1.1–1.10 roadmap](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md). Dungeon return-to-town, boss targeting, abilities, hallway generation, and overlapping-floor reports reopen dungeon reliability as an immediate release gate. Their causes and fixes are not yet verified.
 - The planned `0.50`, `0.60`, `0.70`, `0.80`, and `0.90` bands are implemented in the working tree

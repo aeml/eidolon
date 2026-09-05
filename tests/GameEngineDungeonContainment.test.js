@@ -219,7 +219,7 @@ describe('GameEngine dungeon containment wiring', () => {
         expect(engine.collisionManager.clearDungeonWalkableGeometry).toHaveBeenCalled();
         expect(engine.collisionManager.setDungeonWalkableGeometry).not.toHaveBeenCalled();
         expect(worldGeneratorInstances).toHaveLength(1);
-        expect(worldGeneratorInstances[0].createTown).toHaveBeenCalledWith(0, 200, 100);
+        expect(worldGeneratorInstances[0].createTown).toHaveBeenCalledWith(0, 200, 100, { shouldAttach: expect.any(Function) });
         expect(worldGeneratorInstances[0].createOverworldStructures).toHaveBeenCalled();
         expect(engine.renderSystem.setEnvironmentContext).toHaveBeenCalledWith('overworld', engine.player.position, true);
     });
@@ -344,6 +344,39 @@ describe('GameEngine dungeon containment wiring', () => {
         expect(engine.highlightedCombatTarget).toBeNull();
         expect(engine.combatTargetHighlight.visible).toBe(false);
         expect(engine.combatTargetHighlight.parent).toBeNull();
+    });
+
+    test('a superseded town load cannot overwrite a newer dungeon scene', async () => {
+        const engine = createEngineHarness();
+        let finishPreload;
+        engine.renderSystem.preloadEnvironment = jest.fn(() => new Promise(resolve => { finishPreload = resolve; }));
+        const returning = engine.enterInstance('', 'overworld', null);
+        const townGenerator = worldGeneratorInstances.at(-1);
+        await engine.enterInstance('new-dungeon', 'verdant_bastion_catacombs', {
+            rooms: [{ x: 20000, z: 20000, width: 100 }]
+        });
+        finishPreload();
+        await returning;
+        expect(engine.currentInstanceId).toBe('new-dungeon');
+        expect(engine.player.position.x).toBe(20000);
+        expect(engine.player.position.z).toBe(20000);
+        expect(townGenerator.createTown).not.toHaveBeenCalled();
+    });
+
+    test('town transition cancels predicted and server-driven movement from the old dungeon', async () => {
+        const engine = createEngineHarness();
+        engine.playerJumpState = { start: new THREE.Vector3(20000, 0, 20000), end: new THREE.Vector3(20010, 0, 20000) };
+        engine.playerQueuedJump = true;
+        engine.playerCorrectionVisualState = { displayPosition: new THREE.Vector3(20000, 0, 20000) };
+        engine.player.isCharging = true;
+        engine.abilityController = { pendingAbilityTarget: { id: 'old-boss' }, pendingAbilitySkill: 'Charge', inputBuffer: [{ skill: 'Charge' }] };
+        await engine.enterInstance('', 'overworld', null);
+        expect(engine.playerJumpState).toBeNull();
+        expect(engine.playerQueuedJump).toBe(false);
+        expect(engine.playerCorrectionVisualState).toBeNull();
+        expect(engine.player.isCharging).toBe(false);
+        expect(engine.abilityController.inputBuffer).toEqual([]);
+        expect(engine.abilityController.pendingAbilityTarget).toBeNull();
     });
 
     test('enterInstance resets render and UI display signatures so the first new-scene frame refreshes UI', async () => {

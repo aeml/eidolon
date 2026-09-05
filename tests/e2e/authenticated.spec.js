@@ -11,6 +11,7 @@ import {
     exerciseMovement,
     exerciseReconnect,
     loginAndEnterWorld,
+    projectGroundOffset,
     verifyPersistenceAfterFreshLogin
 } from './helpers.js';
 
@@ -134,6 +135,25 @@ test.describe('dedicated QA character', () => {
         await loginAndEnterWorld(page, credentials);
         await ensureDungeonReadyLevel(page);
         await enterAndExitDungeon(page);
+        await enterAndExitDungeon(page, { beforeExit: async () => {
+            // Re-enter through the real portal, then recall during a real
+            // Ctrl-click jump instead of invoking a scene change directly.
+            await expect.poll(() => page.evaluate(() => Boolean(
+                window.game?.currentDungeonLayout &&
+                window.game?.collisionManager?.dungeonWalkableRects?.length
+            )), { timeout: 15_000 }).toBe(true);
+            const target = await projectGroundOffset(page, 10, 0);
+            expect(target?.canvas, 'dungeon start room must have a visible jump destination').toBe(true);
+            await page.keyboard.down('Control');
+            try {
+                await page.mouse.click(target.x, target.y);
+            } finally {
+                await page.keyboard.up('Control');
+            }
+            await page.waitForFunction(() => Boolean(
+                window.game?.playerJumpState || window.game?.player?.state === 'JUMPING'
+            ), null, { timeout: 3_000 });
+        } });
         expect(failures, failures.join('\n')).toEqual([]);
     });
 });

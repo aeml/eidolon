@@ -3500,6 +3500,7 @@ export const eidolon = $root.eidolon = (() => {
              * @property {string|null} [socialStatus] Entity socialStatus
              * @property {string|null} [guildId] Entity guildId
              * @property {string|null} [guildTag] Entity guildTag
+             * @property {number|null} [bodyRadius] Entity bodyRadius
              * @property {number|null} [jumpStartX] Entity jumpStartX
              * @property {number|null} [jumpStartY] Entity jumpStartY
              * @property {number|null} [jumpStartZ] Entity jumpStartZ
@@ -4339,6 +4340,14 @@ export const eidolon = $root.eidolon = (() => {
             Entity.prototype.guildTag = "";
 
             /**
+             * Entity bodyRadius.
+             * @member {number} bodyRadius
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.bodyRadius = 0;
+
+            /**
              * Entity jumpStartX.
              * @member {number} jumpStartX
              * @memberof eidolon.state.Entity
@@ -4666,6 +4675,8 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 107, wireType 2 =*/858).string(message.guildId);
                 if (message.guildTag != null && $Object.hasOwnProperty.call(message, "guildTag") && message.guildTag !== "")
                     writer.uint32(/* id 108, wireType 2 =*/866).string(message.guildTag);
+                if (message.bodyRadius != null && $Object.hasOwnProperty.call(message, "bodyRadius") && !$Object.is(message.bodyRadius, 0))
+                    writer.uint32(/* id 109, wireType 5 =*/877).float(message.bodyRadius);
                 if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
                     for (let i = 0; i < message.$unknowns.length; ++i)
                         writer.raw(message.$unknowns[i]);
@@ -5655,6 +5666,15 @@ export const eidolon = $root.eidolon = (() => {
                                 delete message.guildTag;
                             continue;
                         }
+                    case 109: {
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.bodyRadius = value;
+                            else
+                                delete message.bodyRadius;
+                            continue;
+                        }
                     case 81: {
                             if (wireType !== 5)
                                 break;
@@ -6113,6 +6133,9 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.guildTag != null && $Object.hasOwnProperty.call(message, "guildTag"))
                     if (!$util.isString(message.guildTag))
                         return "guildTag: string expected";
+                if (message.bodyRadius != null && $Object.hasOwnProperty.call(message, "bodyRadius"))
+                    if (typeof message.bodyRadius !== "number")
+                        return "bodyRadius: number expected";
                 if (message.jumpStartX != null && $Object.hasOwnProperty.call(message, "jumpStartX"))
                     if (typeof message.jumpStartX !== "number")
                         return "jumpStartX: number expected";
@@ -6523,6 +6546,9 @@ export const eidolon = $root.eidolon = (() => {
                 if (object.guildTag != null)
                     if (typeof object.guildTag !== "string" || object.guildTag.length)
                         message.guildTag = $String(object.guildTag);
+                if (object.bodyRadius != null)
+                    if (!$Object.is($Number(object.bodyRadius), 0))
+                        message.bodyRadius = $Number(object.bodyRadius);
                 if (object.jumpStartX != null)
                     if (!$Object.is($Number(object.jumpStartX), 0))
                         message.jumpStartX = $Number(object.jumpStartX);
@@ -6695,6 +6721,7 @@ export const eidolon = $root.eidolon = (() => {
                         object.moveSequence = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
                     object.guildId = "";
                     object.guildTag = "";
+                    object.bodyRadius = 0;
                 }
                 if (message.id != null && $Object.hasOwnProperty.call(message, "id"))
                     object.id = message.id;
@@ -6955,6 +6982,8 @@ export const eidolon = $root.eidolon = (() => {
                     object.guildId = message.guildId;
                 if (message.guildTag != null && $Object.hasOwnProperty.call(message, "guildTag"))
                     object.guildTag = message.guildTag;
+                if (message.bodyRadius != null && $Object.hasOwnProperty.call(message, "bodyRadius"))
+                    object.bodyRadius = options.json && !$isFinite(message.bodyRadius) ? $String(message.bodyRadius) : message.bodyRadius;
                 return object;
             };
 

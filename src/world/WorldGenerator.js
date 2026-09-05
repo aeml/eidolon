@@ -57,11 +57,12 @@ export class WorldGenerator {
         this.wallTexture = wall;
     }
 
-    async createTown(centerX, centerZ, size) {
+    async createTown(centerX, centerZ, size, options = {}) {
         console.log(`Generating town at ${centerX},${centerZ} size ${size}`);
-
+        if (options.shouldAttach && !options.shouldAttach()) return;
         await this.createTownBase(centerX, centerZ, size);
-        await this.createTownDecorations(centerX, centerZ);
+        if (options.shouldAttach && !options.shouldAttach()) return;
+        await this.createTownDecorations(centerX, centerZ, options);
     }
 
     async createTownBase(centerX, centerZ, size) {
@@ -77,10 +78,10 @@ export class WorldGenerator {
         this.createRectangularFence(centerX, centerZ, size * 2, size * 2);
     }
 
-    async createTownDecorations(centerX, centerZ) {
+    async createTownDecorations(centerX, centerZ, options = {}) {
         await Promise.all([
-            this.loadBuildings(centerX, centerZ),
-            this.loadTrees(centerX, centerZ)
+            this.loadBuildings(centerX, centerZ, options),
+            this.loadTrees(centerX, centerZ, options)
         ]);
     }
 
@@ -328,10 +329,11 @@ export class WorldGenerator {
         group.add(post);
     }
 
-    async createDungeon(centerX, centerZ, size) {
+    async createDungeon(centerX, centerZ, size, { shouldAttach = () => true } = {}) {
         console.log(`Generating dungeon at ${centerX},${centerZ}`);
 
         await this.preloadTextures();
+        if (!shouldAttach()) return;
 
         // Simple room for now
         const floorGeo = new THREE.PlaneGeometry(size, size);

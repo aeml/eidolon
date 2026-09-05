@@ -19,6 +19,8 @@ type EntitySnapshot struct {
 	Mana                       int
 	State                      string
 	Level                      int
+	Scale                      float64
+	BodyRadius                 float64
 	IsCharging                 bool
 	SpiritsActive              bool
 	SpiritsBoosted             bool

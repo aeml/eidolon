@@ -361,7 +361,13 @@ export class Actor extends Entity {
         if (this.baseRadius === undefined) {
             this.baseRadius = this.radius;
         }
-        this.radius = this.baseRadius * scale;
+        this.radius = this.authoritativeBodyRadius || this.baseRadius * scale;
+    }
+
+    setBodyRadius(radius) {
+        if (!Number.isFinite(radius) || radius <= 0) return;
+        this.authoritativeBodyRadius = radius;
+        this.radius = radius;
     }
 
     setMesh(mesh) {

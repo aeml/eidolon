@@ -198,6 +198,23 @@ func entityVisualRadius(target *Entity) float64 {
 	return baseActorVisualRadius * scale
 }
 
+// ReplicatedBodyRadius exposes the existing authoritative combat footprint to
+// client movement. Call under the entity's read lock (or on an owned snapshot).
+// BodyRadius carries the value through stripped broadcast copies, whose private
+// Radius field is intentionally omitted for actors.
+func (e *Entity) ReplicatedBodyRadius() float64 {
+	if e == nil {
+		return 0
+	}
+	if e.BodyRadius > 0 {
+		return e.BodyRadius
+	}
+	if e.Type != TypeEnemy && e.Type != TypePlayer && e.Type != TypeNPC {
+		return 0
+	}
+	return entityVisualRadius(e)
+}
+
 func withinAbilityRadius(effectName string, originX, originZ float64, target *Entity, radius float64) bool {
 	if target == nil {
 		return false

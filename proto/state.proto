@@ -221,6 +221,8 @@ message Entity {
   // Public identity only; ranks, permissions, and membership remain server-owned.
   string guild_id = 107;
   string guild_tag = 108;
+  // Authoritative actor collision footprint, independent of model decoration.
+  float body_radius = 109;
 
   // Authoritative jump replication
   float jump_start_x = 81;

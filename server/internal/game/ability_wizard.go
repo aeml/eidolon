@@ -832,18 +832,11 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					}
 				}
 
-				// Clamp to bounds
-				if targetX < -1000 {
-					targetX = -1000
-				}
-				if targetX > 1000 {
-					targetX = 1000
-				}
-				if targetZ < -2200 {
-					targetZ = -2200
-				}
-				if targetZ > 1000 {
-					targetZ = 1000
+				// Only overworld casts use realm bounds. Dungeon coordinates live
+				// far outside this envelope and are constrained by their own layout.
+				if player.InstanceID == "" {
+					targetX = math.Max(-3000, math.Min(3000, targetX))
+					targetZ = math.Max(-2200, math.Min(1000, targetZ))
 				}
 
 				if constrainedX, constrainedZ, ok := w.constrainPlayerPointToDungeon(player.InstanceID, targetX, targetZ); ok {

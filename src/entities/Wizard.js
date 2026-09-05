@@ -543,11 +543,14 @@ export class Wizard extends Actor {
                 finalTarget = this.position.clone().add(dir.multiplyScalar(maxRange));
             }
             
-            // Clamp to bounds (Client side check, server is authority)
-            if (finalTarget.x < -1000) finalTarget.x = -1000;
-            if (finalTarget.x > 1000) finalTarget.x = 1000;
-            if (finalTarget.z < -2200) finalTarget.z = -2200;
-            if (finalTarget.z > 1000) finalTarget.z = 1000;
+            // Offline prediction uses the same realm envelope; instances use
+            // their own walkable geometry, never the old overworld rectangle.
+            if (!gameEngine.currentInstanceId) {
+                finalTarget.x = Math.max(-3000, Math.min(3000, finalTarget.x));
+                finalTarget.z = Math.max(-2200, Math.min(1000, finalTarget.z));
+            } else {
+                gameEngine.collisionManager?.constrainToDungeonWalkableArea?.(finalTarget, this.radius);
+            }
 
             this.position.copy(finalTarget);
             if (this.mesh) this.mesh.position.copy(this.position);

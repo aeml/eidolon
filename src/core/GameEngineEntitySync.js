@@ -225,6 +225,9 @@ class GameEngineEntitySyncMethods {
         if (pData.scale !== undefined && remoteEntity.scale !== pData.scale) {
             remoteEntity.setScale(pData.scale);
         }
+        // Decorative boss model radii can exceed melee reach. Collision must
+        // use the server's combat footprint, not the locally scaled costume.
+        remoteEntity.setBodyRadius?.(pData.bodyRadius);
 
         // --- Death handling ---
         if (pData.state === 'DEAD') {

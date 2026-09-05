@@ -247,6 +247,8 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		Mana:                       e.Mana,
 		State:                      e.State,
 		Level:                      e.Level,
+		Scale:                      e.Scale,
+		BodyRadius:                 e.ReplicatedBodyRadius(),
 		IsCharging:                 e.IsCharging,
 		SpiritsActive:              e.SpiritsActive,
 		SpiritsBoosted:             e.SpiritsBoosted,
@@ -328,6 +330,8 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	cmana := current.Mana
 	cstate := current.State
 	clevel := current.Level
+	cscale := current.Scale
+	cbodyRadius := current.ReplicatedBodyRadius()
 	cisCharging := current.IsCharging
 	cspiritsActive := current.SpiritsActive
 	cspiritsBoosted := current.SpiritsBoosted
@@ -550,6 +554,10 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	cguildTag := current.GuildTag
 	cequipmentRevision := current.EquipmentRevision
 	current.Mu.RUnlock()
+
+	if cscale != last.Scale || cbodyRadius != last.BodyRadius {
+		return true
+	}
 
 	// Position change threshold (0.05 units = basically any movement)
 	const posTolerance = 0.05
@@ -1138,6 +1146,7 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		ManaRegen:                  float32(e.ManaRegen),
 		CastSpeed:                  float32(e.CastSpeed),
 		Scale:                      float32(e.Scale),
+		BodyRadius:                 float32(e.ReplicatedBodyRadius()),
 		State:                      e.State,
 		Equipment:                  equipment,
 		Quests:                     questsToProto(quests),

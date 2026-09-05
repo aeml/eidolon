@@ -1425,6 +1425,8 @@ async function useVerdantQAWaypoint(page) {
 
 async function zoomOutForPortal(page) {
     const startingZoom = await page.evaluate(() => window.game?.renderSystem?.currentZoom);
+    // Re-entry may already be at the maximum from the previous portal visit.
+    if (startingZoom >= 30) return;
     for (let step = 0; step < 30; step += 1) {
         const canvasPoint = await page.evaluate(() => {
             const canvas = window.game?.renderSystem?.renderer?.domElement;
@@ -1502,7 +1504,7 @@ async function projectVerdantEntrance(page) {
     });
 }
 
-export async function enterAndExitDungeon(page) {
+export async function enterAndExitDungeon(page, { beforeExit } = {}) {
     await useVerdantQAWaypoint(page);
     await zoomOutForPortal(page);
 
@@ -1552,6 +1554,7 @@ export async function enterAndExitDungeon(page) {
         throw new Error(`Real dungeon entry did not transition instances: ${JSON.stringify(diagnostic)}`);
     }
 
+    if (beforeExit) await beforeExit(page);
     await page.keyboard.press('b');
     await expect.poll(async () => (await readPlayerState(page)).instanceType, {
         timeout: 30_000
@@ -1565,6 +1568,16 @@ export async function enterAndExitDungeon(page) {
             && game.collisionManager.dungeonWalkableRects.length === 0
             && game.renderSystem.instanceEnvironmentGroup.children.some(child => child.name === 'DungeonEntrance'));
     }), { timeout: 30_000, message: 'recall must finish town scenery, collision and authoritative-position recovery' }).toBe(true);
+    // A stale charge/jump can move the player away on the tick after arrival.
+    await page.waitForTimeout(1_100);
+    const recovered = await readPlayerState(page);
+    expect(Math.hypot(recovered.x + 1.25, recovered.z - 200)).toBeLessThan(3);
+    // enterInstance uses a 0.5m presentation lift until ordinary movement
+    // settles the actor; neither that lift nor authoritative ground zero is
+    // an airborne recovery failure.
+    expect(recovered.y).toBeGreaterThanOrEqual(0);
+    expect(recovered.y).toBeLessThanOrEqual(0.5);
+    expect(await page.evaluate(() => Boolean(window.game?.playerJumpState || window.game?.player?.isCharging))).toBe(false);
 }
 
 export async function verifyPersistenceAfterFreshLogin(page, credentials, minimumInventoryCount) {

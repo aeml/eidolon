@@ -62,6 +62,7 @@ export EIDOLON_E2E_USERNAME="codexqa$(openssl rand -hex 6)"
 export EIDOLON_E2E_PASSWORD="$(openssl rand -hex 24)"
 export EIDOLON_E2E_CLASS="${EIDOLON_E2E_CLASS:-Wizard}"
 export EIDOLON_E2E_FULL_GAMEPLAY=1
+export EIDOLON_E2E_PORTAL_ONLY=1
 export EIDOLON_E2E_REGISTER=1
 export EIDOLON_E2E_REUSE_SERVER=0
 
@@ -84,7 +85,7 @@ mongo_password="$(openssl rand -hex 24)"
 docker build \
   --build-arg GO_VERSION=1.24.5 \
   --build-arg BUILD_COMMIT=isolated-qa \
-  --build-arg "BUILD_VERSION=Alpha 1.0.2" \
+  --build-arg "BUILD_VERSION=Alpha 1.0.3" \
   --tag "${SERVER_IMAGE}" server >/dev/null
 image_created=true
 

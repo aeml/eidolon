@@ -16,6 +16,8 @@ class GameEngineNetworkMessageMethods {
         // Any scenery job started for the prior scene must not add meshes or
         // colliders after the instance transition has cleared that scene.
         this.overworldSceneGeneration = (this.overworldSceneGeneration || 0) + 1;
+        const transitionGeneration = this.overworldSceneGeneration;
+        const isCurrentTransition = () => this.overworldSceneGeneration === transitionGeneration;
         const previousInstanceType = this.currentInstanceType || 'overworld';
         this.currentInstanceId = instanceId;
         this.currentInstanceType = type;
@@ -25,6 +27,25 @@ class GameEngineNetworkMessageMethods {
         this.resetRenderUpdateSignatures();
         this.refreshDungeonEntranceHint();
         this.pendingInteraction = null;
+        this.playerJumpState = null;
+        this.playerQueuedJump = false;
+        this.playerJumpLandingVisual = null;
+        this.playerJumpVisualHeight = 0;
+        this.playerCorrectionVisualState = null;
+        if (this.player) {
+            this.player.isCharging = false;
+            this.player.targetEntity = null;
+            this.player.targetPosition = null;
+            this.player.state = 'IDLE';
+            this.player.velocity?.set?.(0, 0, 0);
+            this.player.clearJumpAnimation?.();
+        }
+        if (this.abilityController) {
+            this.abilityController.pendingAbilityTarget = null;
+            this.abilityController.pendingAbilitySkill = null;
+            this.abilityController.inputBuffer = [];
+        }
+        this.inputManager?.clearInputState?.();
 
         for (const effect of this.effects) {
             effect?.dispose?.();
@@ -109,7 +130,7 @@ class GameEngineNetworkMessageMethods {
         const worldGen = new WorldGenerator(this.getInstanceEnvironmentGroup(), this.collisionManager);
         this.activeWorldGenerator = worldGen;
         if (type === 'crypt') {
-            await worldGen.createDungeon(0, 0, 100);
+            await worldGen.createDungeon(0, 0, 100, { shouldAttach: isCurrentTransition });
         } else if (type === 'verdant_bastion_catacombs') {
             await worldGen.createVerdantBastionCatacombs(0, 0, layout);
         } else if (type === 'molten_core') {
@@ -134,9 +155,12 @@ class GameEngineNetworkMessageMethods {
             // Returning to overworld - ensure persistent environment meshes are re-added
             // after the scene was cleared.
             await this.renderSystem.preloadEnvironment();
-            await worldGen.createTown(0, 200, 100);
-            await worldGen.createOverworldStructures();
+            if (!isCurrentTransition()) return;
+            await worldGen.createTown(0, 200, 100, { shouldAttach: isCurrentTransition });
+            if (!isCurrentTransition()) return;
+            await worldGen.createOverworldStructures({ shouldAttach: isCurrentTransition });
         }
+        if (!isCurrentTransition()) return;
         worldGen.updateDungeonRoomState?.(this.currentDungeonRoomState);
 
         // Reset player position and state
