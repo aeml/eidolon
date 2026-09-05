@@ -124,7 +124,7 @@ class GameEngineRuntimeMethods {
                 // QuestNPC Cleanup
                 if (entity instanceof QuestNPC) {
                     // Allow server quest npc (quest-npc-1) and local (quest-npc-local)
-                    if (entity.id !== 'quest-npc-local' && entity.id !== 'quest-npc-1') {
+                    if (!['quest-npc-local', 'quest-npc-1', 'story-wizard-1', 'story-wizard-local'].includes(entity.id)) {
                         console.warn(`Removing rogue QuestNPC entity: ${entity.id} at ${entity.position.x}, ${entity.position.z}`);
                         this.chunkManager.removeEntity(entity);
                     } else if (entity.id === 'quest-npc-local') {
@@ -616,7 +616,7 @@ class GameEngineRuntimeMethods {
                                 this.player.state = 'IDLE';
                                 this.player.playAnimation('Idle');
                             }
-                            this.uiManager.toggleQuestWindow();
+                            this.uiManager.toggleQuestWindow(this.pendingInteraction.story ? 'story' : 'daily');
                             this.pendingInteraction = null;
 
                         } else if (this.pendingInteraction instanceof RespecNPC) {

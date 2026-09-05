@@ -27,6 +27,10 @@ const REALM_COLORS = {
 
 const toMarkerColor = (hexColor) => {
     switch (hexColor) {
+    case '#ffd56a':
+        return 'rgba(255, 213, 106, 0.95)';
+    case '#65baff':
+        return 'rgba(101, 186, 255, 0.95)';
     case '#ffd700':
         return 'rgba(255, 215, 90, 0.95)';
     case '#ff9b4a':
@@ -71,6 +75,7 @@ function getRealmForPosition(x, z) {
 function classifyEntity(entity) {
     const type = entity.constructor.name;
     const meshType = entity.meshType;
+    if (type === 'QuestNPC') return { color: entity.story ? '#ffd56a' : '#65baff', size: 3, ring: true };
 
     // Players
     if (PLAYER_CLASSES.includes(type) || PLAYER_CLASSES.includes(meshType)) {

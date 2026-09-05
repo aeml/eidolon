@@ -151,18 +151,18 @@ func TestMsgSocialStatus_BroadcastsSocialListToAllSessions(t *testing.T) {
 	statusPayload, _ := json.Marshal(SocialStatusPayload{Status: "in_run"})
 	clientA.handleMessage(Message{Type: MsgSocialStatus, Payload: statusPayload})
 
-	// Allow the goroutine launched by the handler to complete.
-	time.Sleep(20 * time.Millisecond)
+	// Wait for every recipient before restoring shared globals in teardown.
+	received := waitAutoStatusBroadcasts(t, clientA, clientB)
 
 	// Both clients should have received a MsgSocial message.
 	for _, name := range []string{"Alice (clientA)", "Bob (clientB)"} {
-		var ch chan []byte
+		var client *Client
 		if name == "Alice (clientA)" {
-			ch = clientA.send
+			client = clientA
 		} else {
-			ch = clientB.send
+			client = clientB
 		}
-		msgs := drainSentMessages(ch)
+		msgs := received[client]
 		found := false
 		for _, m := range msgs {
 			if m.Type == MsgSocial {
@@ -200,10 +200,10 @@ func TestMsgSocialStatus_BroadcastReflectsNewStatus(t *testing.T) {
 	statusPayload, _ := json.Marshal(SocialStatusPayload{Status: "busy"})
 	clientA.handleMessage(Message{Type: MsgSocialStatus, Payload: statusPayload})
 
-	time.Sleep(20 * time.Millisecond)
+	received := waitAutoStatusBroadcasts(t, clientA, clientB)
 
 	// Bob's broadcast MsgSocial should contain Alice's new "busy" status.
-	msgs := drainSentMessages(clientB.send)
+	msgs := received[clientB]
 	var socialMsg *Message
 	for i := range msgs {
 		if msgs[i].Type == MsgSocial {

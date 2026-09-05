@@ -1,3 +1,4 @@
+import { renderQuestConversation } from './QuestConversation.js';
 import {
     findNextDungeonMeaningfulRoom,
     getDungeonCadenceLabel,
@@ -24,6 +25,7 @@ export class QuestUI {
     constructor(ctx) {
         this.ctx = ctx;
         this.activeQuestSummary = [];
+        this.questKind = 'daily';
 
         // --- DOM refs ---
         this.questWindow = document.getElementById('quest-window');
@@ -62,7 +64,11 @@ export class QuestUI {
     }
 
     /** Toggle the quest NPC window. */
-    toggleQuestWindow() {
+    toggleQuestWindow(kind) {
+        if (kind && kind !== this.questKind) {
+            this.closeQuestWindow();
+            this.questKind = kind;
+        }
         const isHidden = this.questWindow.style.display === 'none' || this.questWindow.style.display === '';
         if (this.ctx.toggleManagedWindow) {
             this.ctx.toggleManagedWindow('quest');
@@ -70,6 +76,13 @@ export class QuestUI {
             this.questWindow.style.display = isHidden ? 'flex' : 'none';
         }
         if (isHidden) {
+            this.questWindowSignature = '';
+            // Reopening requests authoritative state and permits a safe retry
+            // if a previous connection lost its acknowledgement.
+            this.pendingQuestAction = null;
+            this.selectedQuestId = null;
+            this.completedDialogue = null;
+            this.questActionError = '';
             this.onRequestQuests?.();
             const player = this.ctx.getLastPlayer();
             if (player && player.quests) {
@@ -159,7 +172,7 @@ export class QuestUI {
     buildRepeatableLadderSummary(quests) {
         if (!Array.isArray(quests)) return null;
 
-        const repeatableQuests = quests.filter((quest) => quest?.id?.startsWith('daily_'));
+        const repeatableQuests = quests.filter((quest) => quest?.id?.startsWith('daily_') && !quest.completed);
         if (repeatableQuests.length === 0) return null;
 
         const formatLadderLabel = (quest) => {
@@ -175,14 +188,14 @@ export class QuestUI {
                 id: quest.id,
                 label: formatLadderLabel(quest),
                 accepted: Boolean(quest.accepted && !quest.completed),
-                completed: Boolean(quest.accepted && quest.completed),
+                completed: Boolean(quest.accepted && quest.count >= quest.maxCount),
                 progressText: `${Math.max(0, Number(quest.count) || 0)} / ${Math.max(0, Number(quest.maxCount) || 0)}`,
                 rewardXP: Number(quest.rewardXP) || 0
             }));
 
         return {
             acceptedCount: repeatableQuests.filter((quest) => quest?.accepted && !quest?.completed).length,
-            readyCount: repeatableQuests.filter((quest) => quest?.accepted && quest?.completed).length,
+            readyCount: repeatableQuests.filter((quest) => quest?.accepted && quest.count >= quest.maxCount).length,
             topEntries
         };
     }
@@ -265,7 +278,7 @@ export class QuestUI {
         const recovery = this.ctx.getOnboardingRecoveryContext?.() || null;
         // The auto-start Chronicle is already a concrete next step. Generic
         // town orientation should not displace it; explicit recovery still can.
-        if (!['respawn', 'recall'].includes(recovery?.reason) && quests.some((quest) => quest?.category === 'chronicle' && quest.accepted && !quest.completed)) return null;
+        if (!['respawn', 'recall'].includes(recovery?.reason) && quests.some((quest) => quest?.category === 'chronicle' && !quest.completed)) return null;
         const reason = recovery?.reason || 'town_return';
         const copyByReason = {
             respawn: {
@@ -593,13 +606,22 @@ export class QuestUI {
                         badge: isChronicle ? `Story ${q.chapter || ''}`.trim() : 'Daily',
                         badgeClass: isChronicle ? 'is-objective' : '',
                         routeTone: isChronicle ? 'warning' : 'neutral',
-                        hint: isChronicle
+                        hint: q.maxCount > 0 && q.count >= q.maxCount
+                            ? `Speak to ${isChronicle ? 'Archmage Ilyra' : 'the Quest Giver'} in town and click Complete Quest`
+                            : isChronicle
                             ? this.getQuestObjective(q)
                             : remaining > 0 ? `${remaining} remaining` : 'Return to the quest NPC for your reward'
                     };
                 })
                 .sort((left, right) => Number(right.badge?.startsWith('Story')) - Number(left.badge?.startsWith('Story')))
             : [];
+
+        const offeredStory = quests?.find((quest) => quest.category === 'chronicle' && !quest.accepted && !quest.completed);
+        if (offeredStory) questObjectives.unshift({
+            id: offeredStory.id, title: 'Speak to Archmage Ilyra', progressLabel: 'Available', progressPct: 0,
+            badge: `Story ${offeredStory.chapter || 1}`, badgeClass: 'is-objective', routeTone: 'warning',
+            hint: 'Follow the gold ! in Lanternhold to accept your next Chronicle chapter.'
+        });
 
         const dungeonObjective = this.buildDungeonRoutingObjective();
         if (dungeonObjective) {
@@ -610,6 +632,7 @@ export class QuestUI {
         if (townRecoveryObjective) {
             return [townRecoveryObjective, ...questObjectives];
         }
+        if (offeredStory) return questObjectives;
 
         const starterTownObjective = this.buildStarterTownObjective(quests);
         if (starterTownObjective) {
@@ -642,11 +665,17 @@ export class QuestUI {
         if (!this.objectivesPanel || !this.objectivesList) return;
 
         this.activeQuestSummary = Array.isArray(summary) ? summary : [];
+        const signature = JSON.stringify(this.activeQuestSummary);
+        if (this.objectiveSignature === signature) return;
+        this.objectiveSignature = signature;
         this.objectivesPanel.style.display = this.activeQuestSummary.length > 0 ? 'flex' : 'none';
         this.clearElement(this.objectivesList);
+        this.objectivesPanel.querySelector('.objectives-panel__more')?.remove();
         this.objectivesPanel.querySelector('.objective-guidance')?.remove();
 
-        this.activeQuestSummary.forEach((objective, index) => {
+        const heading = this.objectivesPanel.querySelector('.objectives-panel__header');
+        if (heading) heading.textContent = `OBJECTIVES · ${this.activeQuestSummary.length}`;
+        this.activeQuestSummary.slice(0, 3).forEach((objective, index) => {
             const item = document.createElement('div');
             item.className = `objective-entry ${objective.routeTone ? `is-${objective.routeTone}` : ''}`.trim();
             const header = document.createElement('div');
@@ -684,14 +713,21 @@ export class QuestUI {
             const hint = document.createElement('div');
             hint.className = 'objective-entry__hint';
             hint.textContent = objective.completed && objective.badgeClass !== 'is-exit'
-                ? `Return for your reward: ${objective.rewardXP || 0} XP` : objective.hint;
+                ? `${objective.hint} · ${Number(objective.rewardXP || 0).toLocaleString()} XP` : objective.hint;
 
             item.appendChild(header);
             item.appendChild(progress);
             item.appendChild(hint);
-            if (index === 0) this.renderObjectiveGuidance(objective, item);
+            if (index === 0 && !objective.badge?.startsWith('Story') && objective.badge !== 'Daily') this.renderObjectiveGuidance(objective, item);
             this.objectivesList.appendChild(item);
         });
+        const more = document.createElement('button');
+        more.type = 'button';
+        more.className = 'objectives-panel__more';
+        more.textContent = this.activeQuestSummary.length > 3
+            ? `View all ${this.activeQuestSummary.length} objectives · Journal (J)` : 'Open Journal (J)';
+        more.addEventListener('click', () => this.toggleJournal());
+        if (this.activeQuestSummary.length) this.objectivesPanel.appendChild(more);
     }
 
     // ================================================================
@@ -699,75 +735,25 @@ export class QuestUI {
     // ================================================================
 
     updateQuestWindow(quests) {
-        this.clearElement(this.questList);
-        if (!quests) return;
-
-        quests.filter((q) => q?.category !== 'chronicle' && !q?.id?.startsWith('chronicle_')).forEach(q => {
-            if (q.accepted && !q.completed && q.count < q.maxCount) return;
-            if (q.completed && q.accepted) {
-                // Ready to turn in
-            }
-
-            const div = document.createElement('div');
-            div.style.background = '#222';
-            div.style.border = '1px solid #444';
-            div.style.padding = '10px';
-            div.style.display = 'flex';
-            div.style.flexDirection = 'column';
-            div.style.gap = '5px';
-
-            const targetLabel = this.formatQuestTarget(q.target, q.maxCount);
-            const statusText = document.createElement('div');
-            const actionButton = document.createElement('button');
-            actionButton.className = 'menu-btn';
-            actionButton.type = 'button';
-            actionButton.style.marginTop = '5px';
-
-            if (!q.accepted) {
-                statusText.style.color = '#ffd700';
-                statusText.style.fontWeight = 'bold';
-                statusText.textContent = `Daily: Kill ${q.maxCount} ${targetLabel}`;
-                actionButton.textContent = 'Accept Quest';
-                actionButton.style.background = '#4CAF50';
-                actionButton.style.borderColor = '#45a049';
-            } else if (q.accepted && !q.completed && q.count >= q.maxCount) {
-                statusText.style.color = '#4CAF50';
-                statusText.style.fontWeight = 'bold';
-                statusText.textContent = `COMPLETE: Kill ${q.maxCount} ${targetLabel}`;
-                actionButton.textContent = 'Claim Reward';
-                actionButton.style.background = '#FFD700';
-                actionButton.style.color = '#000';
-                actionButton.style.borderColor = '#FFA000';
-            } else {
-                return;
-            }
-
-            const reward = document.createElement('div');
-            reward.style.color = '#aaa';
-            reward.style.fontSize = '12px';
-            reward.textContent = `Reward: ${q.rewardXP} XP`;
-
-            actionButton.addEventListener('click', () => {
-                if (!q.accepted) {
-                    if (this.onAcceptQuest) this.onAcceptQuest(q.id);
-                } else {
-                    if (this.onCompleteQuest) this.onCompleteQuest(q.id);
-                }
-            });
-
-            div.appendChild(statusText);
-            div.appendChild(reward);
-            div.appendChild(actionButton);
-            this.questList.appendChild(div);
-        });
-
-        if (this.questList.children.length === 0) {
-            this.questList.appendChild(this.createMessage('No available quests. Check your Journal (J) for active quests.', {
-                color: '#888',
-                textAlign: 'center',
-                marginTop: '20px'
-            }));
+        if (!this.questList) return;
+        const pending = this.pendingQuestAction;
+        const acknowledged = pending && quests?.find((quest) => quest.id === pending.quest.id && (pending.complete ? quest.completed : quest.accepted));
+        if (acknowledged) {
+            if (pending.complete && (pending.quest.category === 'chronicle') === (this.questKind === 'story')) this.completedDialogue = pending.quest;
+            this.pendingQuestAction = null;
         }
+        const signature = JSON.stringify([this.questKind, this.selectedQuestId, quests, this.completedDialogue?.id, Boolean(this.pendingQuestAction), this.questActionError]);
+        if (signature === this.questWindowSignature) return;
+        this.questWindowSignature = signature;
+        renderQuestConversation(this, quests);
+        if (acknowledged && this.isQuestWindowOpen) this.questList.querySelector('button:not(:disabled)')?.focus();
+    }
+
+    handleQuestActionError(message) {
+        if (!this.pendingQuestAction) return;
+        this.pendingQuestAction = null;
+        this.questActionError = String(message);
+        this.updateQuestWindow(this.ctx.getLastPlayer()?.quests || []);
     }
 
     // ================================================================
@@ -782,7 +768,7 @@ export class QuestUI {
         if (chronicle.length === 0) return false;
 
         const completed = chronicle.filter((quest) => quest.completed);
-        const current = chronicle.find((quest) => quest.accepted && !quest.completed) || null;
+        const current = chronicle.find((quest) => !quest.completed) || null;
         const section = document.createElement('section');
         section.className = 'chronicle-journal';
 
@@ -795,6 +781,7 @@ export class QuestUI {
         ));
 
         if (current) {
+            section.appendChild(this.createMessage(!current.accepted ? 'Available from Archmage Ilyra in Lanternhold' : current.count >= current.maxCount ? 'Ready to complete — return to Archmage Ilyra' : 'Given by Archmage Ilyra · Return to her when ready', { color: '#ffd56a', fontSize: '12px' }));
             section.appendChild(this.createMessage(`Chapter ${current.chapter}: ${this.getQuestTitle(current)}`, {
                 color: '#fff2bd', fontSize: '15px', fontWeight: 'bold', marginTop: '3px'
             }));
@@ -937,8 +924,9 @@ export class QuestUI {
             div.style.gap = '5px';
 
             const pct = Math.min(100, (q.count / q.maxCount) * 100);
-            const color = q.completed ? '#4CAF50' : '#ffd700';
-            const status = q.completed ? 'COMPLETED' : 'IN PROGRESS';
+            const ready = q.maxCount > 0 && q.count >= q.maxCount;
+            const color = ready ? '#65baff' : '#b7cce0';
+            const status = ready ? 'RETURN TO QUEST GIVER' : 'IN PROGRESS';
 
             const header = document.createElement('div');
             header.style.display = 'flex';

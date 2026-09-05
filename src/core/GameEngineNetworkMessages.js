@@ -692,6 +692,7 @@ class GameEngineNetworkMessageMethods {
                 }
             }
         } else if (msg.type === 'error') {
+            this.uiManager?.quest?.handleQuestActionError?.(msg.payload);
             console.error("Server Error:", msg.payload);
 
             // Special-case: Inventory full is a common, non-fatal error.

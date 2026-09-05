@@ -1068,6 +1068,11 @@ func (w *World) spawnQuestNPC() {
 		Scale:    1.0,
 	}
 	w.AddEntity(npc)
+	w.AddEntity(&Entity{
+		ID: "story-wizard-1", Type: TypeNPC, SubType: "StoryWizard",
+		Name: "Archmage Ilyra", X: 20, Y: 0.5, Z: 215,
+		Rotation: -math.Pi / 2, State: "IDLE", Scale: 1,
+	})
 }
 
 func (w *World) spawnDungeonNPC() {

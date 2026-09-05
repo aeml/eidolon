@@ -15,10 +15,9 @@ const definition = (id, label, artStyle, role, bounds) => Object.freeze({
 });
 
 /**
- * Bounds mirror the production-scaled authored objects this module retires.
- * They are gameplay contracts, not inferred art extents: every generated
- * structure carries an invisible box with this exact footprint so collision,
- * picking, and town navigation cannot drift during the visual migration.
+ * Retain the retired authored-object bounds for picking and asset compatibility.
+ * Walking uses the separate current-wall footprints below where provided;
+ * roof overhangs and historical padding must not obstruct the town approaches.
  */
 export const LANTERNHOLD_STRUCTURE_DEFINITIONS = Object.freeze({
     oathhall: definition(
@@ -75,6 +74,22 @@ export const LANTERNHOLD_STRUCTURE_DEFINITIONS = Object.freeze({
 export const LANTERNHOLD_STRUCTURE_IDS = Object.freeze(
     Object.keys(LANTERNHOLD_STRUCTURE_DEFINITIONS)
 );
+
+// Walk-blocking walls/coffers, independent of roof overhangs, name tags and
+// retired-asset picking bounds. The low foundation steps remain approachable.
+const WALK_FOOTPRINTS = Object.freeze({
+    oathhall: [18.9, 16.3], trading_house: [12.35, 10.01], stash: [3.55, 2.55]
+});
+
+export function getLanternholdWalkCollider(mesh) {
+    const footprint = WALK_FOOTPRINTS[mesh?.userData?.structureId];
+    if (!footprint) return null;
+    mesh.updateMatrixWorld(true);
+    return {
+        box: new THREE.Box3(new THREE.Vector3(-footprint[0] / 2, -2, -footprint[1] / 2), new THREE.Vector3(footprint[0] / 2, 30, footprint[1] / 2)),
+        matrix: mesh.matrixWorld.clone(), inverse: mesh.matrixWorld.clone().invert()
+    };
+}
 
 function geometry(key, create) {
     if (!GEOMETRIES.has(key)) {

@@ -3,6 +3,7 @@ import { RenderSystem } from './RenderSystem.js';
 import { InputManager } from './InputManager.js';
 import { ChunkManager, isAlwaysResidentEntityType } from './ChunkManager.js';
 import { CollisionManager } from './CollisionManager.js';
+import { getLanternholdWalkCollider } from '../art/ProceduralLanternholdArchitecture.js';
 import { NetworkManager } from './NetworkManager.js';
 import { AbilityController } from './AbilityController.js';
 import { UIBindings } from './UIBindings.js';
@@ -1332,7 +1333,7 @@ export class GameEngine {
             // Create a copy to safely remove while iterating
             const entities = Array.from(chunk);
             for (const entity of entities) {
-                if (entity.id === 'quest-npc-local' || entity.id === 'stash-local') {
+                if (entity.id === 'quest-npc-local' || entity.id === 'story-wizard-local' || entity.id === 'stash-local') {
                     console.log(`Removing existing ${entity.id} before respawn`);
                     this.chunkManager.removeEntity(entity);
                 }
@@ -1344,6 +1345,11 @@ export class GameEngine {
         questNPC.position.set(-20, 0, 200); // In full view outside the smithy door
         questNPC.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);
         this.addEntity(questNPC);
+
+        const storyWizard = new QuestNPC('story-wizard-local', { story: true });
+        storyWizard.position.set(20, 0, 215);
+        storyWizard.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.PI / 2);
+        this.addEntity(storyWizard);
 
         // Stash (In front of Two Story Building)
         const stash = new Stash('stash-local');
@@ -1421,7 +1427,7 @@ export class GameEngine {
         if (!entity || !(entity instanceof Actor)) return false;
         if (entity === this.player) return false;
         if (!entity.isActive || entity.state === 'DEAD') return false;
-        if (entity instanceof DwarfSalesman) return false;
+        if (this.isInteractableEntity(entity)) return false;
         if (this.isPlayerClassEntity(entity)) return Boolean(this.socialController?.isPvPHostile?.(entity.id));
         return true;
     }
@@ -1453,7 +1459,7 @@ export class GameEngine {
         const type = entity.constructor?.name || entity.type || entity.meshType || entity.name || '';
         switch (type) {
         case 'QuestNPC':
-            return 'Quest Giver';
+            return entity.story ? 'Archmage Ilyra' : 'Quest Giver';
         case 'Stash':
             return 'Stash';
         case 'Forge':
@@ -1539,8 +1545,8 @@ export class GameEngine {
             }
         } else if (interactableType === 'QuestNPC') {
             promptLabel = inRange
-                ? 'Click to browse the Quest Giver’s daily contracts. Your Chronicle starts automatically.'
-                : 'Move closer to browse daily contracts. Your Chronicle starts automatically.';
+                ? 'Click to speak about quests. Blue marks daily contracts; gold marks Ilyra’s story.'
+                : 'Move closer to speak with this quest giver.';
         } else if (interactableType === 'Forge') {
             promptLabel = inRange
                 ? 'Click to use the Forge and upgrade or socket gear.'
@@ -2117,6 +2123,8 @@ export class GameEngine {
                 p = new DwarfSalesman(id);
             } else if (subType === 'QuestNPC') {
                 p = new QuestNPC(id);
+            } else if (subType === 'StoryWizard') {
+                p = new QuestNPC(id, { story: true });
             } else if (subType === 'DungeonNPC') {
                 p = new DungeonNPC(id);
             } else if (subType === 'RespecNPC') {
@@ -2236,14 +2244,17 @@ export class GameEngine {
             if (originalOnMeshReady) originalOnMeshReady.call(entity, mesh);
 
             // Add Collision for static structures
-            if (entity.type === 'TradingHouse') {
+            if (entity.type === 'TradingHouse' || entity.type === 'Stash') {
                 mesh.position.copy(entity.position);
                 mesh.quaternion.copy(entity.rotation);
                 mesh.updateMatrixWorld(true);
-                const box = new THREE.Box3().setFromObject(mesh);
-                this.collisionManager.addCollider(box);
-                console.log(`Added collision for TradingHouse ${entity.id}`);
-            } else if (entity.type === 'Stash' || entity.type === 'Forge') {
+                const collider = getLanternholdWalkCollider(mesh);
+                if (collider) {
+                    entity.clearWalkCollider?.();
+                    this.collisionManager.addOrientedCollider(collider);
+                    entity.clearWalkCollider = () => this.collisionManager.removeOrientedCollider(collider);
+                }
+            } else if (entity.type === 'Forge') {
                 mesh.position.copy(entity.position);
                 mesh.quaternion.copy(entity.rotation);
                 mesh.updateMatrixWorld(true);

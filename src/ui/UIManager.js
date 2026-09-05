@@ -698,7 +698,7 @@ export class UIManager {
     renderMyAuctions(auctions) { this.trading.renderMyAuctions(auctions); }
 
     // --- Quest delegates (QuestUI module) ---
-    toggleQuestWindow() { this.quest.toggleQuestWindow(); }
+    toggleQuestWindow(kind) { this.quest.toggleQuestWindow(kind); }
     toggleJournal() { this.quest.toggleJournal(); }
     updateQuestWindow(quests) { this.quest.updateQuestWindow(quests); }
     updateJournal(quests) { this.quest.updateJournal(quests); }

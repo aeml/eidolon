@@ -57,7 +57,7 @@ describe('QuestUI objectives panel', () => {
         expect(list.innerHTML).toContain('1 / 3');
         expect(list.innerHTML).toContain('2 remaining');
         expect(list.innerHTML).toContain('Kill Abyssal Well Boss');
-        expect(list.innerHTML).toContain('Return for your reward: 900 XP');
+        expect(list.innerHTML).toContain('click Complete Quest · 900 XP');
         expect(list.querySelectorAll('.objective-entry__status.is-complete')).toHaveLength(1);
     });
 
@@ -120,11 +120,9 @@ describe('QuestUI objectives panel', () => {
         const panel = document.getElementById('objectives-panel');
         const guidance = panel.querySelector('.objective-guidance');
         expect(panel.style.display).toBe('flex');
-        expect(guidance).not.toBeNull();
-        expect(guidance.textContent).toContain('Next Step');
-        expect(guidance.textContent).toContain('Kill Dungeon Bosses');
-        expect(guidance.textContent).toContain('World Map (M)');
-        expect(guidance.textContent).toContain('Journal (J)');
+        expect(guidance).toBeNull();
+        expect(panel.textContent).toContain('Kill Dungeon Bosses');
+        expect(panel.textContent).toContain('Open Journal (J)');
     });
 
     test('renders a starter town objective when the player has no active quests in town', () => {
@@ -294,7 +292,7 @@ describe('QuestUI objectives panel', () => {
                 id: 'daily_tempest_spire_bosses',
                 target: 'TempestSpireBoss',
                 accepted: true,
-                completed: true,
+                completed: false,
                 count: 5,
                 maxCount: 5,
                 rewardXP: 9000000
@@ -303,7 +301,7 @@ describe('QuestUI objectives panel', () => {
 
         const journal = document.getElementById('journal-list');
         expect(journal.textContent).toContain('Repeatable Ladder');
-        expect(journal.textContent).toContain('Accepted now: 1');
+        expect(journal.textContent).toContain('Accepted now: 2');
         expect(journal.textContent).toContain('Ready to claim: 1');
         expect(journal.textContent).toContain('Daily reset:');
         expect(journal.textContent).toContain('00:29:45 remaining');

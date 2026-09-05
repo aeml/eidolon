@@ -49,7 +49,7 @@
     top: 62px !important;
     left: 10px !important;
     width: min(280px, calc(100vw - 20px)) !important;
-    max-height: min(38vh, calc(100vh - 210px)) !important;
+    max-height: min(38vh, max(80px, calc(100vh - var(--chat-panel-height, 230px) - var(--chat-panel-bottom, 80px) - 82px))) !important;
 }
 
 .mobile-mode #combat-intent-panel {

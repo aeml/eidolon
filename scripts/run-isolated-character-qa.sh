@@ -171,6 +171,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   smoke)
     npx playwright test tests/e2e/authenticated.spec.js --grep "logs in, enters the world"
     ;;
+  quests)
+    npx playwright test tests/e2e/quest-conversation-gameplay.spec.js
+    ;;
   extended)
     npx playwright test tests/e2e/authenticated.spec.js --grep "kills and loots"
     ;;
@@ -178,7 +181,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     EIDOLON_E2E_PORTAL_ONLY=1 npx playwright test tests/e2e/authenticated.spec.js --grep "allowlisted QA waypoint"
     ;;
   *)
-    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, extended, or portal." >&2
+    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, extended, or portal." >&2
     exit 1
     ;;
 esac

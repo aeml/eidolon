@@ -5,11 +5,16 @@ export const TOWN_SERVICE_POINTS = [
         shortLabel: 'Quest Giver',
         x: -20,
         z: 200,
-        color: '#ffd700',
-        strokeColor: '#ffd700',
+        color: '#65baff',
+        strokeColor: '#65baff',
         ring: true,
         minScale: 0.75,
         labelOffsetY: -20
+    },
+    {
+        id: 'story-wizard', label: 'Archmage Ilyra · Story', shortLabel: 'Story Wizard',
+        x: 20, z: 215, color: '#ffd56a', strokeColor: '#ffd56a', ring: true,
+        minScale: 0.75, labelOffsetY: 20
     },
     {
         id: 'forge',

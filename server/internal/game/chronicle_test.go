@@ -26,9 +26,15 @@ func completedChronicleThrough(player *Entity, chapter int) {
 		quest.Count = quest.MaxCount
 		player.Quests = append(player.Quests, quest)
 	}
+	ensureChronicleLocked(player)
+	for i := range player.Quests {
+		if !player.Quests[i].Completed {
+			player.Quests[i].Accepted = true
+		}
+	}
 }
 
-func TestChronicleCatalogIsDeepOrderedAndAutoStarted(t *testing.T) {
+func TestChronicleCatalogIsDeepOrderedAndOfferedByWizard(t *testing.T) {
 	catalog := chronicleQuestCatalog()
 	if len(catalog) != 15 {
 		t.Fatalf("expected 15 Chronicle chapters, got %d", len(catalog))
@@ -57,18 +63,23 @@ func TestChronicleCatalogIsDeepOrderedAndAutoStarted(t *testing.T) {
 	if !ensureChronicleLocked(player) {
 		t.Fatal("new character should receive a Chronicle")
 	}
-	if len(player.Quests) != 1 || !player.Quests[0].Accepted || player.Quests[0].ID != catalog[0].ID {
-		t.Fatalf("expected only chapter one to auto-start: %+v", player.Quests)
+	if len(player.Quests) != 1 || player.Quests[0].Accepted || player.Quests[0].ID != catalog[0].ID {
+		t.Fatalf("expected only chapter one to be offered: %+v", player.Quests)
 	}
 }
 
-func TestChronicleAutoAdvancesKillAndCollectionChapters(t *testing.T) {
+func TestChronicleRequiresManualTurnInForKillAndCollectionChapters(t *testing.T) {
 	w := NewWorld(nil)
 	player := &Entity{
 		ID: "hero", Type: TypePlayer, Level: 1, MaxHealth: 100, Health: 100,
 		Inventory: make([]Item, MaxInventorySize),
 	}
 	ensureChronicleLocked(player)
+	w.AddEntity(player)
+	player.X, player.Z = 20, 215
+	if _, ok := w.PerformAcceptQuest(player.ID, player.Quests[0].ID); !ok {
+		t.Fatal("could not accept first chapter")
+	}
 	events := []ChronicleAdvanceEvent{}
 	w.OnEvent = func(kind string, data interface{}) {
 		if kind == "chronicle_advance" {
@@ -79,12 +90,18 @@ func TestChronicleAutoAdvancesKillAndCollectionChapters(t *testing.T) {
 	for i := 0; i < 3; i++ {
 		w.UpdateQuestProgress(player, "Skeleton")
 	}
-	if !questByID(t, player, "chronicle_01_bell_below").Completed {
-		t.Fatal("first Chronicle chapter did not complete automatically")
+	if questByID(t, player, "chronicle_01_bell_below").Completed || len(events) != 0 {
+		t.Fatal("objective progress completed a chapter without turn-in")
+	}
+	if _, ok := w.PerformCompleteQuest(player.ID, "chronicle_01_bell_below"); !ok {
+		t.Fatal("manual completion failed")
 	}
 	collection := questByID(t, player, "chronicle_02_seeds_first_grove")
-	if !collection.Accepted || collection.Completed {
-		t.Fatalf("second chapter was not accepted atomically: %+v", collection)
+	if collection.Accepted || collection.Completed {
+		t.Fatalf("second chapter was accepted without asking: %+v", collection)
+	}
+	if _, ok := w.PerformAcceptQuest(player.ID, collection.ID); !ok {
+		t.Fatal("could not accept collection")
 	}
 
 	for i := 0; i < 4; i++ {
@@ -97,11 +114,17 @@ func TestChronicleAutoAdvancesKillAndCollectionChapters(t *testing.T) {
 		}
 		w.UpdateCollectionQuestProgress(player, item.Name, 1)
 	}
-	if !questByID(t, player, "chronicle_02_seeds_first_grove").Completed {
-		t.Fatal("collection chapter did not complete automatically")
+	if questByID(t, player, "chronicle_02_seeds_first_grove").Completed {
+		t.Fatal("collection auto-completed")
 	}
-	if next := questByID(t, player, ChronicleEarthDungeonID); !next.Accepted {
-		t.Fatalf("Earth dungeon chapter was not accepted: %+v", next)
+	if player.Inventory[0].Name != "Verdant Memory Seed" {
+		t.Fatal("items consumed before turn-in")
+	}
+	if _, ok := w.PerformCompleteQuest(player.ID, "chronicle_02_seeds_first_grove"); !ok {
+		t.Fatal("collection turn-in failed")
+	}
+	if next := questByID(t, player, ChronicleEarthDungeonID); next.Accepted {
+		t.Fatalf("Earth dungeon chapter was auto-accepted: %+v", next)
 	}
 	for _, item := range player.Inventory {
 		if item.Name == "Verdant Memory Seed" {
@@ -120,6 +143,8 @@ func TestChronicleCanAdvanceAcrossAllFifteenChaptersInOrder(t *testing.T) {
 		Inventory: make([]Item, MaxInventorySize),
 	}
 	ensureChronicleLocked(player)
+	w.AddEntity(player)
+	player.X, player.Z = 20, 215
 	advances := []ChronicleAdvanceEvent{}
 	w.OnEvent = func(kind string, data interface{}) {
 		if kind == "chronicle_advance" {
@@ -128,6 +153,9 @@ func TestChronicleCanAdvanceAcrossAllFifteenChaptersInOrder(t *testing.T) {
 	}
 
 	for _, definition := range chronicleQuestCatalog() {
+		if _, ok := w.PerformAcceptQuest(player.ID, definition.ID); !ok {
+			t.Fatalf("chapter %d accept failed", definition.Chapter)
+		}
 		active := questByID(t, player, definition.ID)
 		if !active.Accepted || active.Completed {
 			t.Fatalf("chapter %d was not the active story step: %+v", definition.Chapter, active)
@@ -144,6 +172,12 @@ func TestChronicleCanAdvanceAcrossAllFifteenChaptersInOrder(t *testing.T) {
 			w.UpdateChronicleEventProgress(player, "REPAIR", definition.Target)
 		default:
 			t.Fatalf("chapter %d has unsupported objective type %q", definition.Chapter, definition.Type)
+		}
+		if questByID(t, player, definition.ID).Completed {
+			t.Fatal("objective auto-completed")
+		}
+		if _, ok := w.PerformCompleteQuest(player.ID, definition.ID); !ok {
+			t.Fatalf("chapter %d turn-in failed", definition.Chapter)
 		}
 		if !questByID(t, player, definition.ID).Completed {
 			t.Fatalf("chapter %d did not complete", definition.Chapter)
@@ -238,7 +272,7 @@ func TestChroniclePartyGateRequiresEveryMember(t *testing.T) {
 	}
 	quest := chronicleQuestCatalog()[2]
 	quest.Accepted, quest.Completed, quest.Count = true, true, quest.MaxCount
-	member.Quests = append(member.Quests, quest)
+	*questByID(t, member, quest.ID) = quest
 	if err := w.RequirePartyChronicleQuest(party.ID, ChronicleEarthDungeonID); err != nil {
 		t.Fatalf("fully qualified party was rejected: %v", err)
 	}
@@ -299,11 +333,15 @@ func TestCrystalRepairCompletionAdvancesRaidVigilAndNextRaid(t *testing.T) {
 		RepairTarget: "EarthCrystal", Participants: []string{player.ID},
 	}
 	w.completeCrystalRepair(state)
-	if !questByID(t, player, ChronicleEarthRestoredID).Completed {
-		t.Fatal("three-wave repair completion did not restore the Rootheart")
+	if q := questByID(t, player, ChronicleEarthRestoredID); q.Completed || q.Count != q.MaxCount {
+		t.Fatal("repair should be ready, awaiting report to Ilyra")
 	}
-	if !questByID(t, player, ChronicleWaterRestoredID).Accepted {
-		t.Fatal("Rootheart restoration did not begin the next elemental raid Vigil")
+	player.InstanceID, player.X, player.Z = "", 20, 215
+	if _, ok := w.PerformCompleteQuest(player.ID, ChronicleEarthRestoredID); !ok {
+		t.Fatal("repair turn-in failed")
+	}
+	if questByID(t, player, ChronicleWaterRestoredID).Accepted {
+		t.Fatal("next Vigil should be offered, not auto-accepted")
 	}
 }
 

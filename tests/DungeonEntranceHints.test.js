@@ -16,7 +16,18 @@ jest.unstable_mockModule('../src/proto/state_pb.js', () => {
 
 const { UIManager } = await import('../src/ui/UIManager.js');
 const { GameEngine } = await import('../src/core/GameEngine.js');
+const { QuestNPC } = await import('../src/entities/QuestNPC.js');
 const { decorateDungeonRoomState } = await import('../src/utils/dungeonRoomMetadata.js');
+
+test('story and daily quest givers are friendly interaction targets, never attack targets', () => {
+    const engine = Object.create(GameEngine.prototype);
+    for (const story of [false, true]) {
+        const npc = new QuestNPC(`quest-${story}`, { story });
+        expect(engine.isInteractableEntity(npc)).toBe(true);
+        expect(engine.isHostileActorTarget(npc)).toBe(false);
+        expect(engine.getInteractionRangeForEntity(npc)).toBe(5);
+    }
+});
 
 function buildDom() {
     document.body.innerHTML = `

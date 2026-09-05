@@ -115,8 +115,8 @@ func TestGenerateDailyQuestsGivesLevelOneStarterCatalog(t *testing.T) {
 	if !foundStarter {
 		t.Fatal("expected daily_skeleton to be available to a level-one player")
 	}
-	if generated.Quests[0].ID != "chronicle_01_bell_below" || !generated.Quests[0].Accepted {
-		t.Fatalf("expected the Chronicle to start automatically, got %+v", generated.Quests[0])
+	if generated.Quests[0].ID != "chronicle_01_bell_below" || generated.Quests[0].Accepted {
+		t.Fatalf("expected the Chronicle to be offered by Ilyra, got %+v", generated.Quests[0])
 	}
 }
 

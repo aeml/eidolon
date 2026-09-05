@@ -198,8 +198,8 @@ describe('asset persistence boot wiring', () => {
         expect(document.getElementById('start-flow-copy').textContent).toContain('Forge');
         expect(document.getElementById('start-flow-steps').textContent).toContain('Skill Tree (K)');
         expect(document.getElementById('start-flow-steps').textContent).toContain('World Map (M)');
-        expect(document.getElementById('start-flow-copy').textContent).toContain('Chronicle starts automatically');
-        expect(document.getElementById('start-flow-copy').textContent).toContain('Quest Giver standing outside the Forge');
+        expect(document.getElementById('start-flow-copy').textContent).toContain('meet Archmage Ilyra');
+        expect(document.getElementById('start-flow-copy').textContent).toContain('Quest Giver outside the Forge');
         expect(document.getElementById('start-flow-steps').textContent).toContain('Journal (J)');
         expect(document.getElementById('start-flow-copy').textContent).toContain('separate daily contracts');
         expect(document.getElementById('start-flow-copy').textContent.length).toBeLessThan(250);

@@ -14,6 +14,20 @@ function makeSource() {
 }
 
 describe('SpiritGuardiansEffect', () => {
+    test.each(['high', 'low'])('cherubs share batched geometry and flap their wings on %s quality', (quality) => {
+        const effect = new SpiritGuardiansEffect(new THREE.Group(), makeSource(), { quality });
+        const [first, second] = effect.guardians;
+        expect(first.getObjectByName('Cherub_Batch_body').geometry).toBe(second.getObjectByName('Cherub_Batch_body').geometry);
+        let visibleMeshes = 0;
+        first.traverseVisible((object) => { if (object.isMesh) visibleMeshes++; });
+        expect(visibleMeshes).toBeLessThanOrEqual(7);
+        const before = first.userData.wings[0].rotation.y;
+        effect.update(0.2);
+        expect(first.userData.wings[0].rotation.y).not.toBe(before);
+        expect(first.userData.bodyMaterial.transparent).toBe(false);
+        effect.dispose();
+    });
+
     test('renders three recognizable world-space guardians plus an aura', () => {
         const scene = new THREE.Group();
         const source = makeSource();
@@ -27,7 +41,11 @@ describe('SpiritGuardiansEffect', () => {
         expect(effect.guardians).toHaveLength(3);
         expect(effect.group.getObjectByName('SpiritGuardiansAura')).not.toBeNull();
         for (const guardian of effect.guardians) {
-            expect(guardian.children).toHaveLength(3);
+            expect(guardian.userData.presentation).toBe('cherub');
+            expect(guardian.getObjectByName('Cherub_Belly')).toBeTruthy();
+            expect(guardian.getObjectByName('Cherub_Head')).toBeTruthy();
+            expect(guardian.userData.wings).toHaveLength(2);
+            expect(guardian.getObjectByName('Cherub_Halo')).toBeTruthy();
             expect(Math.hypot(guardian.position.x, guardian.position.z)).toBeCloseTo(12, 5);
         }
         expect(effect.getMetrics()).toEqual(expect.objectContaining({

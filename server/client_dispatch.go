@@ -1491,6 +1491,9 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 
 		player, success := world.PerformAcceptQuest(c.playerID, payload.QuestID)
+		if !success {
+			c.sendError("Speak to the correct quest giver in town to accept an available quest.")
+		}
 		if success {
 			// Send Quest Update
 			questPayload, _ := json.Marshal(player.Quests)
@@ -1512,6 +1515,9 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 
 		player, success := world.PerformCompleteQuest(c.playerID, payload.QuestID)
+		if !success {
+			c.sendError("Return to the correct quest giver with all objectives and required items to complete this quest.")
+		}
 		if success {
 			// Send Quest Update
 			questPayload, _ := json.Marshal(player.Quests)

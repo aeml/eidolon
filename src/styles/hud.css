@@ -125,10 +125,10 @@
     top: 66px;
     left: 20px;
     width: min(320px, calc(100vw - 40px));
-    max-height: calc(100vh - 260px);
-    overflow-y: auto;
+    max-height: min(360px, max(80px, calc(100vh - var(--chat-panel-height, 230px) - var(--chat-panel-bottom, 80px) - 82px)));
+    overflow-y: hidden;
     overflow-x: hidden;
-    pointer-events: none;
+    pointer-events: auto;
     z-index: calc(var(--z-hud) + 1);
 }
 
@@ -337,6 +337,7 @@
 }
 
 .objectives-panel__header {
+    flex-shrink: 0;
     padding: 3px 0;
     color: var(--color-gold);
     font-size: 11px;
@@ -347,6 +348,8 @@
 }
 
 .objectives-panel__list {
+    min-height: 0;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -367,7 +370,7 @@
         top: 70px;
         left: 10px;
         width: min(300px, calc(100vw - 20px));
-        max-height: min(42vh, calc(100vh - 210px));
+        max-height: min(42vh, max(80px, calc(100vh - var(--chat-panel-height, 230px) - var(--chat-panel-bottom, 80px) - 82px)));
     }
 
     #combat-intent-panel,
@@ -395,7 +398,7 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-left: 2px solid rgba(213, 187, 135, 0.55);
     border-radius: var(--radius-md);
-    padding: 10px 12px;
+    padding: 8px 10px;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
 }
 
@@ -416,9 +419,20 @@
 
 .objective-entry__title {
     color: #f2f2f2;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
 }
+
+.objectives-panel__more { flex-shrink: 0; margin-top: 6px; border: 1px solid #b99b6240; border-radius: 5px; background: #111923ee; color: var(--color-gold); padding: 8px; cursor: pointer; font: inherit; font-size: 11px; }
+.objectives-panel__more:focus-visible { outline: 2px solid var(--color-gold); outline-offset: -2px; }
+#objectives-panel .objective-entry__hint { font-size: 11px; line-height: 1.4; }
+#objectives-panel .objective-entry__status { flex-shrink: 0; }
+#objectives-panel .objective-entry { flex-shrink: 0; }
+#objectives-panel .objective-entry:not(:first-child) .objective-entry__title-wrap { flex-direction: row; align-items: center; }
+#objectives-panel .objective-entry:not(:first-child) .objective-entry__title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#objectives-panel .objective-entry:not(:first-child) .objective-entry__hint,
+#objectives-panel .objective-entry:not(:first-child) .objective-entry__progress { display: none; }
+@media (max-height: 700px) { #objectives-list .objective-entry:nth-child(n+3) { display: none; } }
 
 .objective-guidance { background: linear-gradient(145deg, #1f2936f2, #111923ed); }
 .objective-guidance__heading { color: var(--color-gold); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 7px; }

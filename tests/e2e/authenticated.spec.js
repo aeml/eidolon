@@ -60,6 +60,7 @@ test.describe('dedicated QA character', () => {
             });
         }
         if (process.env.EIDOLON_E2E_REGISTER === '1') {
+            await page.locator('#quest-list .quest-contract').first().click();
             await expect(page.locator('#quest-list').getByRole('button', { name: 'Accept Quest' }).first()).toBeVisible();
         }
         await page.evaluate(() => window.game?.uiManager?.toggleQuestWindow());

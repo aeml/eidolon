@@ -220,7 +220,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const showNewPlayerFlow = () => {
         updateStartFlow({
             title: 'Create your first character',
-            copy: 'Choose a class to begin. Your Fourfold Chronicle starts automatically when you enter Eidolon. The Quest Giver standing outside the Forge offers separate daily contracts.',
+            copy: 'Choose a class, then meet Archmage Ilyra to save Eidolon. Gold markers lead to her Chronicle; the Quest Giver outside the Forge offers separate daily contracts marked blue. Return to your giver and click Complete Quest for rewards.',
             steps: 'Follow your story in Journal (J), explore your Skill Tree (K), and find the next realm on World Map (M).'
         });
     };

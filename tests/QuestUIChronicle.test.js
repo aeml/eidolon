@@ -24,14 +24,14 @@ function chronicleQuest(overrides = {}) {
 describe('QuestUI Fourfold Chronicle', () => {
     beforeEach(buildDom);
 
-    test('keeps the auto-start story out of the daily quest giver window', () => {
+    test('keeps Ilyra’s story out of the daily quest giver window', () => {
         const ui = new QuestUI({ getLastPlayer: jest.fn() });
         ui.updateQuestWindow([
             chronicleQuest(),
             { id: 'daily_skeleton', type: 'KILL', target: 'Skeleton', count: 0, maxCount: 100, rewardXP: 50000, accepted: false, completed: false }
         ]);
 
-        expect(document.getElementById('quest-list').textContent).toContain('Daily: Kill 100 Skeletons');
+        expect(document.getElementById('quest-list').textContent).toContain('Kill Skeletons');
         expect(document.getElementById('quest-list').textContent).not.toContain('Seeds of the First Grove');
     });
 

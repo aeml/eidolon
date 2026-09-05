@@ -22,6 +22,7 @@ function stableHash32(str) {
 export class CollisionManager {
     constructor() {
         this.colliders = []; // Array of THREE.Box3
+        this.orientedColliders = [];
         this.circularColliders = []; // Array of {x, z, radius}
         this.safeZones = []; // Array of THREE.Box3
         this.dungeonWalkableRects = []; // Canonical server-provided walk rects for local containment
@@ -31,6 +32,15 @@ export class CollisionManager {
         this.colliders.push(box);
     }
 
+    addOrientedCollider(collider) {
+        this.orientedColliders.push(collider);
+    }
+
+    removeOrientedCollider(collider) {
+        const index = this.orientedColliders.indexOf(collider);
+        if (index >= 0) this.orientedColliders.splice(index, 1);
+    }
+
     addCircularCollider(x, z, radius) {
         // Debug logging removed for performance
         this.circularColliders.push({x, z, radius});
@@ -38,6 +48,7 @@ export class CollisionManager {
 
     clear() {
         this.colliders = [];
+        this.orientedColliders = [];
         this.circularColliders = [];
         this.safeZones = [];
         this.clearDungeonWalkableGeometry();
@@ -308,6 +319,41 @@ export class CollisionManager {
                     TEMP_VEC3.add(TEMP_PUSH);
                 }
             }
+        }
+
+        // Resolve in each building's local frame, not its oversized rotated AABB.
+        for (const collider of this.orientedColliders) {
+            TEMP_POINT.copy(TEMP_VEC3).applyMatrix4(collider.inverse);
+            TEMP_CLOSEST.setFromMatrixScale(collider.matrix);
+            const localRadius = radius / Math.min(Math.abs(TEMP_CLOSEST.x), Math.abs(TEMP_CLOSEST.z));
+            const box = collider.box;
+            const x = Math.max(box.min.x, Math.min(box.max.x, TEMP_POINT.x));
+            const z = Math.max(box.min.z, Math.min(box.max.z, TEMP_POINT.z));
+            const dx = TEMP_POINT.x - x, dz = TEMP_POINT.z - z;
+            const distance = Math.hypot(dx, dz);
+            if (distance >= localRadius || TEMP_POINT.y > box.max.y + localRadius) continue;
+            if (distance > 0.00001) {
+                TEMP_POINT.x = x + dx / distance * localRadius;
+                TEMP_POINT.z = z + dz / distance * localRadius;
+            } else {
+                const faces = [TEMP_POINT.x - box.min.x, box.max.x - TEMP_POINT.x, TEMP_POINT.z - box.min.z, box.max.z - TEMP_POINT.z];
+                let face = faces.indexOf(Math.min(...faces));
+                if (oldPosition) {
+                    TEMP_CLOSEST.copy(oldPosition).applyMatrix4(collider.inverse);
+                    if (TEMP_CLOSEST.x < box.min.x) face = 0;
+                    else if (TEMP_CLOSEST.x > box.max.x) face = 1;
+                    else if (TEMP_CLOSEST.z < box.min.z) face = 2;
+                    else if (TEMP_CLOSEST.z > box.max.z) face = 3;
+                }
+                if (face === 0) TEMP_POINT.x = box.min.x - localRadius;
+                if (face === 1) TEMP_POINT.x = box.max.x + localRadius;
+                if (face === 2) TEMP_POINT.z = box.min.z - localRadius;
+                if (face === 3) TEMP_POINT.z = box.max.z + localRadius;
+            }
+            const height = TEMP_VEC3.y;
+            TEMP_VEC3.copy(TEMP_POINT).applyMatrix4(collider.matrix);
+            TEMP_VEC3.y = height;
+            collided = true;
         }
 
         // 3. Circular Colliders

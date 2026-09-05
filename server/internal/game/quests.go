@@ -24,7 +24,7 @@ const (
 )
 
 // ChronicleAdvanceEvent is emitted after a story chapter completes. The next
-// chapter is accepted in the same transaction, without the daily quest giver.
+// chapter becomes available from Archmage Ilyra, but must be accepted explicitly.
 type ChronicleAdvanceEvent struct {
 	PlayerID       string `json:"playerId"`
 	CompletedID    string `json:"completedId"`
@@ -41,7 +41,7 @@ func chronicleQuestCatalog() []Quest {
 			ID: "chronicle_01_bell_below", Type: "KILL", Target: "Skeleton", MaxCount: 3, RewardXP: 500,
 			Title: "The Bell That Rang Below", Category: QuestCategoryChronicle, Chapter: 1,
 			ObjectiveText: "Defeat 3 risen dead beyond Aethelgard's walls and recover their dissonant echoes.",
-			Description:   "You woke with a cracked note ringing behind your heartbeat. No herald gave you this charge; the four crystals themselves pressed it into your memory. Follow the wrongness beyond town and learn what is making the dead answer a buried bell.",
+			Description:   "I am Ilyra, keeper of the Fourfold Chronicle. Last night I heard a bell beneath Lanternhold that has no living ringer. The four crystals are faltering, and my wards cannot reach their buried sanctums. I need your help to save Eidolon. Face the risen dead beyond our walls and bring me the echoes bound inside them; together we can trace the wound.",
 			Lore:          "Eidolon was not named for a kingdom. It was named for the four great spirits who dreamed matter into covenant: Orun of Root and Stone, Neris of Tide and Memory, Pyralis of Flame and Will, and Aeral of Sky and Freedom. Their crystals do not create the elements—they keep the elements willing to shelter mortal lands.",
 		},
 		{
@@ -205,8 +205,8 @@ func copyQuestDefinition(progress Quest, definition Quest) Quest {
 	return definition
 }
 
-// ensureChronicleLocked repairs story metadata and auto-accepts exactly the
-// next unfinished chapter. Caller owns player state.
+// ensureChronicleLocked repairs metadata and offers only the next unfinished
+// chapter. Existing accepted/completed progress survives migration and resets.
 func ensureChronicleLocked(player *Entity) bool {
 	if player == nil {
 		return false
@@ -241,13 +241,7 @@ func ensureChronicleLocked(player *Entity) bool {
 	}
 	if nextIndex < len(catalog) {
 		definition := catalog[nextIndex]
-		if idx, exists := indices[definition.ID]; exists {
-			if !player.Quests[idx].Accepted {
-				player.Quests[idx].Accepted = true
-				changed = true
-			}
-		} else {
-			definition.Accepted = true
+		if _, exists := indices[definition.ID]; !exists {
 			player.Quests = append(player.Quests, definition)
 			changed = true
 		}
@@ -318,7 +312,7 @@ func (w *World) PerformAcceptQuest(playerID, questID string) (*Entity, bool) {
 	for i := range player.Quests {
 		q := &player.Quests[i]
 		if q.ID == questID {
-			if !isDailyQuest(*q) || q.Accepted {
+			if q.Accepted || q.Completed || !w.canDiscussQuestLocked(player, *q) {
 				return nil, false
 			}
 			q.Accepted = true
@@ -338,15 +332,59 @@ func (w *World) PerformCompleteQuest(playerID, questID string) (*Entity, bool) {
 	for i := range player.Quests {
 		q := &player.Quests[i]
 		if q.ID == questID {
-			if !isDailyQuest(*q) || !q.Accepted || q.Completed || q.Count < q.MaxCount {
+			if !q.Accepted || q.Completed || q.Count < q.MaxCount || !w.canDiscussQuestLocked(player, *q) {
 				return nil, false
 			}
-			q.Completed = true
-			w.awardExperienceLocked(player, q.RewardXP)
+			if q.Type == "COLLECT" {
+				available := 0
+				for _, item := range player.Inventory {
+					if item.ID != "" && item.Name == q.Target {
+						available += item.Stack
+					}
+				}
+				if available < q.MaxCount {
+					return nil, false
+				}
+				consumeInventoryItemLocked(player, q.Target, q.MaxCount)
+			}
+			if q.Category == QuestCategoryChronicle {
+				event := w.advanceChronicleLocked(player, i)
+				if w.OnEvent != nil {
+					w.OnEvent("chronicle_advance", event)
+				}
+			} else {
+				q.Completed = true
+				w.awardExperienceLocked(player, q.RewardXP)
+			}
 			return player, true
 		}
 	}
 	return nil, false
+}
+
+// Quest actions are town conversations, not remotely callable reward claims.
+// Recheck chapter order even if a saved client submits a future chapter ID.
+func (w *World) canDiscussQuestLocked(player *Entity, quest Quest) bool {
+	npcID := "quest-npc-1"
+	if quest.Category == QuestCategoryChronicle {
+		npcID = "story-wizard-1"
+		for _, definition := range chronicleQuestCatalog() {
+			if definition.ID == quest.ID {
+				break
+			}
+			if !HasCompletedChronicleQuest(player, definition.ID) {
+				return false
+			}
+		}
+	} else if !isDailyQuest(quest) {
+		return false
+	}
+	npc := w.Entities[npcID]
+	if npc == nil || player.InstanceID != npc.InstanceID {
+		return false
+	}
+	dx, dz := player.X-npc.X, player.Z-npc.Z
+	return dx*dx+dz*dz <= 100
 }
 
 func questSnapshot(player *Entity) []Quest {
@@ -362,7 +400,7 @@ func (w *World) advanceChronicleLocked(player *Entity, questIndex int) Chronicle
 	event := ChronicleAdvanceEvent{PlayerID: player.ID, CompletedID: quest.ID, CompletedTitle: quest.Title}
 	ensureChronicleLocked(player)
 	for _, next := range player.Quests {
-		if next.Category == QuestCategoryChronicle && next.Accepted && !next.Completed {
+		if next.Category == QuestCategoryChronicle && !next.Completed {
 			event.NextID = next.ID
 			event.NextTitle = next.Title
 			event.NextLore = next.Lore
@@ -373,23 +411,17 @@ func (w *World) advanceChronicleLocked(player *Entity, questIndex int) Chronicle
 	return event
 }
 
-func (w *World) publishQuestProgress(player *Entity, updated bool, advances []ChronicleAdvanceEvent) {
+func (w *World) publishQuestProgress(player *Entity, updated bool) {
 	if !updated {
 		return
 	}
 	if w.OnQuestUpdate != nil {
 		w.OnQuestUpdate(player.ID, questSnapshot(player))
 	}
-	if w.OnEvent != nil {
-		for _, event := range advances {
-			w.OnEvent("chronicle_advance", event)
-		}
-	}
 }
 
 func (w *World) UpdateQuestProgress(player *Entity, targetType string) bool {
 	updated := false
-	advances := []ChronicleAdvanceEvent{}
 	for i := 0; i < len(player.Quests); i++ {
 		q := &player.Quests[i]
 		if !q.Accepted || q.Completed || q.Type != "KILL" || q.Target != targetType {
@@ -399,11 +431,8 @@ func (w *World) UpdateQuestProgress(player *Entity, targetType string) bool {
 			q.Count++
 			updated = true
 		}
-		if q.Category == QuestCategoryChronicle && q.Count >= q.MaxCount {
-			advances = append(advances, w.advanceChronicleLocked(player, i))
-		}
 	}
-	w.publishQuestProgress(player, updated, advances)
+	w.publishQuestProgress(player, updated)
 	return updated
 }
 
@@ -430,7 +459,6 @@ func (w *World) UpdateCollectionQuestProgress(player *Entity, itemName string, a
 		return false
 	}
 	updated := false
-	advances := []ChronicleAdvanceEvent{}
 	for i := 0; i < len(player.Quests); i++ {
 		q := &player.Quests[i]
 		if !q.Accepted || q.Completed || q.Type != "COLLECT" || q.Target != itemName {
@@ -440,12 +468,8 @@ func (w *World) UpdateCollectionQuestProgress(player *Entity, itemName string, a
 		credited := min(amount, remaining)
 		q.Count += credited
 		updated = updated || credited > 0
-		if q.Category == QuestCategoryChronicle && q.Count >= q.MaxCount {
-			consumeInventoryItemLocked(player, itemName, q.MaxCount)
-			advances = append(advances, w.advanceChronicleLocked(player, i))
-		}
 	}
-	w.publishQuestProgress(player, updated, advances)
+	w.publishQuestProgress(player, updated)
 	return updated
 }
 
@@ -456,17 +480,17 @@ func (w *World) UpdateChronicleEventProgress(player *Entity, eventType, target s
 		return false
 	}
 	updated := false
-	advances := []ChronicleAdvanceEvent{}
 	for i := 0; i < len(player.Quests); i++ {
 		q := &player.Quests[i]
 		if !q.Accepted || q.Completed || q.Category != QuestCategoryChronicle || q.Type != eventType || q.Target != target {
 			continue
 		}
-		q.Count = q.MaxCount
-		updated = true
-		advances = append(advances, w.advanceChronicleLocked(player, i))
+		if q.Count < q.MaxCount {
+			q.Count = q.MaxCount
+			updated = true
+		}
 	}
-	w.publishQuestProgress(player, updated, advances)
+	w.publishQuestProgress(player, updated)
 	return updated
 }
 
@@ -484,7 +508,7 @@ func ChronicleDropForKill(player *Entity, defeatedSubType string, roll float64) 
 		return nil
 	}
 	for _, quest := range player.Quests {
-		if quest.Category != QuestCategoryChronicle || quest.Type != "COLLECT" || !quest.Accepted || quest.Completed {
+		if quest.Category != QuestCategoryChronicle || quest.Type != "COLLECT" || !quest.Accepted || quest.Completed || quest.Count >= quest.MaxCount {
 			continue
 		}
 		if !chronicleDropSources[quest.Target][defeatedSubType] {

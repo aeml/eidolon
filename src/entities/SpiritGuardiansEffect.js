@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { getAbilityAoeRadius } from '../skills/abilityRadii.js';
+import { createCherubArt, createProceduralCherub } from '../art/ProceduralCherub.js';
 
 const GOLD = 0xffd75a;
 const BOOSTED_GOLD = 0xffffff;
@@ -105,56 +106,8 @@ export class SpiritGuardiansEffect {
     }
 
     createGuardian(index, count, color) {
-        const guardian = new THREE.Group();
-        guardian.name = `GuardianSpirit:${index + 1}`;
-
-        const bodyGeometry = this.track(new THREE.ConeGeometry(0.38, 1.15, this.quality === 'low' ? 7 : 12));
-        const bodyMaterial = this.track(new THREE.MeshStandardMaterial({
-            color,
-            emissive: new THREE.Color(color),
-            emissiveIntensity: this.boosted ? 1.35 : 0.9,
-            transparent: true,
-            opacity: 0.72,
-            depthWrite: false,
-            roughness: 0.35,
-            metalness: 0.05,
-            blending: THREE.AdditiveBlending
-        }));
-        const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-        body.rotation.x = Math.PI;
-        body.position.y = 0.25;
-        guardian.add(body);
-
-        const headGeometry = this.track(new THREE.SphereGeometry(0.25, this.quality === 'low' ? 7 : 12, this.quality === 'low' ? 5 : 9));
-        const headMaterial = this.track(new THREE.MeshBasicMaterial({
-            color,
-            transparent: true,
-            opacity: 0.9,
-            depthWrite: false,
-            blending: THREE.AdditiveBlending
-        }));
-        const head = new THREE.Mesh(headGeometry, headMaterial);
-        head.position.y = 0.95;
-        guardian.add(head);
-
-        const haloGeometry = this.track(new THREE.TorusGeometry(0.34, 0.035, 6, this.quality === 'low' ? 12 : 20));
-        const haloMaterial = this.track(new THREE.MeshBasicMaterial({
-            color: this.boosted ? 0xffffff : 0xfff4a8,
-            transparent: true,
-            opacity: 0.88,
-            depthWrite: false,
-            blending: THREE.AdditiveBlending
-        }));
-        const halo = new THREE.Mesh(haloGeometry, haloMaterial);
-        halo.rotation.x = Math.PI / 2;
-        halo.position.y = 1.23;
-        guardian.add(halo);
-
-        guardian.userData.bodyMaterial = bodyMaterial;
-        guardian.userData.headMaterial = headMaterial;
-        guardian.userData.haloMaterial = haloMaterial;
-        guardian.userData.phase = (index / count) * Math.PI * 2;
-        return guardian;
+        this.cherubArt ||= createCherubArt((resource) => this.track(resource), this.quality, color, this.boosted);
+        return createProceduralCherub(this.cherubArt, index, count);
     }
 
     rebuild() {
@@ -166,6 +119,7 @@ export class SpiritGuardiansEffect {
             else resource?.dispose?.();
         }
         this.resources.clear();
+        this.cherubArt = null;
         this.guardians = [];
 
         const color = this.getColor();
@@ -230,6 +184,9 @@ export class SpiritGuardiansEffect {
             guardian.userData.bodyMaterial.opacity = 0.6 + pulse * 0.18;
             guardian.userData.headMaterial.opacity = 0.76 + pulse * 0.2;
             guardian.userData.haloMaterial.opacity = 0.68 + pulse * 0.25;
+            guardian.userData.wings.forEach((wing) => {
+                wing.rotation.y = wing.userData.side * (0.2 + Math.sin(this.elapsed * 7 + guardian.userData.phase) * 0.3);
+            });
         });
 
         if (this.pulseRing) {

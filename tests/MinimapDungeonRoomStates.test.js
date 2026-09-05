@@ -354,7 +354,8 @@ describe('Minimap dungeon room states', () => {
         expect(texts.some((entry) => String(entry.args[0]).includes('Trading House'))).toBe(true);
         expect(texts.some((entry) => String(entry.args[0]).includes('Vendor / Repair'))).toBe(true);
         expect(texts.some((entry) => String(entry.args[0]).includes('Dungeon Guide'))).toBe(true);
-        expect(strokes.some((entry) => entry.strokeStyle === 'rgba(255, 215, 90, 0.95)')).toBe(true);
+        expect(strokes.some((entry) => entry.strokeStyle === 'rgba(255, 213, 106, 0.95)')).toBe(true);
+        expect(strokes.some((entry) => entry.strokeStyle === 'rgba(101, 186, 255, 0.95)')).toBe(true);
     });
 
     test('renders starter-route services in onboarding order and highlights forge alongside the quest marker', () => {

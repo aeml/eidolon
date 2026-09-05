@@ -277,6 +277,8 @@ export class Entity {
     }
 
     dispose() {
+        this.clearWalkCollider?.();
+        this.clearWalkCollider = null;
         if (this.mesh) {
             // Dispose NameTag
             const nameTag = this.mesh.getObjectByName("NameTag");

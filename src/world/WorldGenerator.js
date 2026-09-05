@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { getLanternholdWalkCollider } from '../art/ProceduralLanternholdArchitecture.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
 import {
     PROCEDURAL_FOLIAGE_RECIPES,
@@ -196,8 +197,9 @@ export class WorldGenerator {
             } else {
                 // Re-calculate box for collision after moving
                 mesh.updateMatrixWorld(true);
-                const finalBox = new THREE.Box3().setFromObject(mesh);
-                this.collisionManager.addCollider(finalBox);
+                const walkCollider = getLanternholdWalkCollider(mesh);
+                if (walkCollider) this.collisionManager.addOrientedCollider(walkCollider);
+                else this.collisionManager.addCollider(new THREE.Box3().setFromObject(mesh));
             }
             return true;
         };

@@ -1501,7 +1501,8 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/#inventory-screen\s*\{[^}]*transform:\s*translate\(-50%, -50%\);/s);
         expect(css).not.toContain('transform: translate(-150%, -50%);');
         expect(css).not.toContain('transform: translate(100%, -50%);');
-        expect(hudCss).toMatch(/#objectives-panel\s*\{[^}]*max-height:\s*calc\(100vh - 260px\);[^}]*overflow-y:\s*auto;/s);
+        expect(hudCss).toMatch(/#objectives-panel\s*\{[^}]*max-height:[^;]*var\(--chat-panel-height,[^;]*;[^}]*overflow-y:\s*hidden;/s);
+        expect(hudCss).toMatch(/\.objectives-panel__list\s*\{[^}]*overflow-y:\s*auto;/s);
         expect(responsiveCss).not.toContain('scale(0.5)');
         expect(responsiveCss).not.toContain('scale(0.6)');
     });

@@ -12,6 +12,7 @@ function createGenerator() {
     const scene = { add: jest.fn() };
     const collisionManager = {
         addCollider: jest.fn(),
+        addOrientedCollider: jest.fn(),
         addCircularCollider: jest.fn()
     };
     const generator = new WorldGenerator(scene, collisionManager);
@@ -332,7 +333,8 @@ describe('WorldGenerator shadow setup', () => {
 
         expect(loadModelSpy).not.toHaveBeenCalled();
         expect(generator.scene.add).toHaveBeenCalledTimes(4);
-        expect(generator.collisionManager.addCollider).toHaveBeenCalledTimes(18);
+        expect(generator.collisionManager.addCollider).toHaveBeenCalledTimes(17);
+        expect(generator.collisionManager.addOrientedCollider).toHaveBeenCalledTimes(1);
         const structures = generator.scene.add.mock.calls.map(([object]) => object);
         expect(structures.slice(0, 3).map((structure) => structure.userData.structureId)).toEqual([
             'oathhall',
