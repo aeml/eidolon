@@ -121,10 +121,10 @@ test.describe('dedicated QA character', () => {
         await loginAndEnterWorld(page, credentials);
         await ensureDungeonReadyLevel(page);
         await exerciseAreaHazards(page);
-        const inventoryCount = await exerciseCombatAndLoot(page);
+        const lootReceipt = await exerciseCombatAndLoot(page);
         await enterAndExitDungeon(page);
         await exerciseReconnect(page);
-        await verifyPersistenceAfterFreshLogin(page, credentials, inventoryCount);
+        await verifyPersistenceAfterFreshLogin(page, credentials, lootReceipt);
         expect(failures, failures.join('\n')).toEqual([]);
     });
 
