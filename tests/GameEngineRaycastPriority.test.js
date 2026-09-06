@@ -15,6 +15,7 @@ jest.unstable_mockModule('../src/proto/state_pb.js', () => {
 const { GameEngine } = await import('../src/core/GameEngine.js');
 const { Actor } = await import('../src/entities/Actor.js');
 const { Fighter } = await import('../src/entities/Fighter.js');
+const { LootDrop } = await import('../src/entities/LootDrop.js');
 
 const actorConfig = {
     STATS: {
@@ -28,6 +29,42 @@ const actorConfig = {
 };
 
 describe('GameEngine raycast target priority', () => {
+    test.each([false, true])('live enemies remain selectable through overlapping loot (mobile=%s)', mobile => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.player = new Fighter('overlap-player');
+        engine.isMobile = mobile;
+        engine.uiManager = { isEscMenuOpen: false, isPatchNotesOpen: false, reportScreen: { style: { display: 'none' } } };
+        const enemy = new Actor('overlap-enemy', actorConfig);
+        enemy.state = 'IDLE'; enemy.isActive = true;
+        const loot = Object.assign(Object.create(LootDrop.prototype), { id: 'overlap-loot', isActive: true });
+        for (const entity of [enemy, loot]) {
+            entity.mesh = new THREE.Mesh(new THREE.BoxGeometry(3, 3, 3), new THREE.MeshBasicMaterial());
+            entity.mesh.userData.entityId = entity.id;
+        }
+        // The loot is nearer the camera, but both silhouettes cover this click.
+        loot.mesh.position.z = 1;
+        enemy.mesh.updateMatrixWorld(true); loot.mesh.updateMatrixWorld(true);
+        const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
+        camera.position.z = 12; camera.lookAt(0, 0, 0); camera.updateMatrixWorld(true);
+        engine.renderSystem = { camera, environmentGroup: new THREE.Group() };
+        engine.inputManager = { raycaster: new THREE.Raycaster(), mouse: new THREE.Vector2(), keys: {} };
+        engine.activeEntitiesCache = [loot, enemy];
+        engine.refreshDungeonEntranceHint = jest.fn(); engine.refreshCombatIntentState = jest.fn();
+        engine.moveToAndInteract = jest.fn(); engine.setMobileCombatTarget = jest.fn();
+        engine.getMobileCombatTarget = () => null;
+        engine.handlePrimaryClick({});
+        expect(engine.raycastHitEntities).toEqual([enemy, loot]);
+        expect(engine.hoveredEntity).toBe(enemy);
+        if (mobile) {
+            expect(engine.setMobileCombatTarget).toHaveBeenLastCalledWith(enemy);
+            expect(engine.moveToAndInteract).not.toHaveBeenCalled();
+        } else expect(engine.moveToAndInteract).toHaveBeenLastCalledWith(enemy);
+        // Once the target is dead, the same click can still collect the item.
+        enemy.state = 'DEAD'; engine.handlePrimaryClick({});
+        expect(engine.hoveredEntity).toBe(loot);
+        expect(engine.moveToAndInteract).toHaveBeenLastCalledWith(loot);
+        for (const entity of [enemy, loot]) { entity.mesh.geometry.dispose(); entity.mesh.material.dispose(); }
+    });
     test('canvas pointer movement raycasts immediately from one coherent input sample', () => {
         const engine = Object.create(GameEngine.prototype);
         engine.mousePosition = new THREE.Vector2();
