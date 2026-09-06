@@ -5,21 +5,35 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-Current release queue (September 6): **1.0.19 (`200478f`) is deployed and verified**:
-CI `34026658393` passed in full. Independent post-terminal frontend manifest,
-login/runtime entry and backend SHA/version/database-readiness checks match
-`200478fddd5c3e1f28f8ef5d93644df3395da020` / Alpha 1.0.19. Only the next exact
-commit, 1.0.20 (`bd54b2aab3b56aa6c83efe40d6071e3881ba6074`), was pushed;
-CI `34028688737` is running. 1.0.21's runtime (`0498ffe`)
-had a QA-route gap: the earlier phone inventory test did not open Settings' Play
-category. Test-only correction **`2f5c46b` passed its exact-source inventory route**
-and is the next 1.0.21 commit to publish after 1.0.20's full gate. It was merged
-forward as `e3bbcf7` so the 1.0.22 release remains a fast-forward descendant.
-1.0.22's runtime (`ecf7524`) has passed its recorded checks; its final queued
-source is `d5b4320`. The earned Earth campaign route exposed an inventory-sync
-defect, corrected in the separate local 1.0.23 candidate, and now passes in full.
-None of 1.0.21, 1.0.22 or 1.0.23 is published. Push each exact next release only
-after its predecessor's full gate.
+Current release queue (September 6): **1.0.19 (`200478f`) remains the last fully
+verified release**; CI `34026658393` and its recorded post-terminal live checks
+passed. The original 1.0.20 (`bd54b2a`) deployed, but CI `34028688737` **failed**
+its final live multiplayer check. Fresh frontend manifest and backend health
+requests still identify `bd54b2a` / Alpha 1.0.20 with database ready; that does
+not erase the gameplay failure.
+
+The confirmed loot-over-enemy targeting defect is corrected in the successor
+1.0.20 commit **`99303f5a108ab1a965bd723fbd4272923a0f67b9`**, now pushed and
+running CI **`34031297122`**. See the separate
+[repair record](2026-09-06-release20-targeting-repair.md). No later version has
+been pushed. Local merges carry that same fix forward and preserve ancestry:
+
+| Next version | Queued source | Supersedes |
+|---|---|---|
+| 1.0.21 | `c76db477fb070fe15a7d665ec3cc41f0b0feb916` | `2f5c46b`; retains its Settings → Play inventory QA correction |
+| 1.0.22 | `ed793e0ccc8e54aa71d2597d84c1ff1b3f0d6fba` | `d5b4320`; inherits the corrected 1.0.21 |
+| 1.0.23 | `4fcb89d5816837e5a250550b100e2b3e9f346f31` | `fba546a`; retains the verified collection inventory repair |
+| 1.0.24 | `cc1b7d40302c47cb124819dfbae6eb33cd383ce4` plus subsequent evidence-only commits | phone navigation merged with the corrected release line |
+
+All four ancestry links were checked with `git merge-base --is-ancestor`.
+Exact clean `c76db47` repeated the real phone inventory route successfully in
+**59.6 seconds** (58.6-second test body), including both orientations, normal
+combat loot, equip/unequip, canceled/confirmed drop and manual recovery. Credential
+scan and disposable cleanup passed; log `/tmp/eidolon-release21-targeting-inventory.log`,
+session `59951` closed. This verifies the next Settings candidate after the
+targeting merge, not the old failed 1.0.20 deployment.
+Publish each next release only after its predecessor's full CI/live gate. The
+earned Earth campaign route passes locally; the wider 1.1–1.10 scope stays open.
 Earlier entries describe their status at the time,
 not the current queue. Do not publish a successor before the preceding version's
 complete CI/live verification. The original 1.0.14 failure remains recorded below.
@@ -97,6 +111,15 @@ client suite passed 163 suites / 2,352 tests; lint also passed. The earlier
 "not yet run" statements above record preparation, not current test status.
 
 ## Alpha 1.0.24 — room for the adventure (local candidate)
+
+Integration update: branch commit `5d9a81a` was merged as clean **`cc1b7d4`**
+after the corrected 1.0.20 → 1.0.21 → 1.0.22 → 1.0.23 ancestry. The merged
+candidate passes **164 client suites / 2,361 tests in 50.442 seconds**, lint,
+the server race suite (root 7.751 seconds, game cached), and an exact-source
+real phone-combat repeat in **15.7 seconds**. Both orientations exercise
+deliberate selection, Attack/Skill, two-thumb cast, joystick takeover and Clear
+Target. Credential scan and disposable cleanup passed; session `26273` closed.
+Logs: `/tmp/eidolon-1-0-24-merged-{client,lint,server,phone-combat}.log`.
 
 Implemented in `/tmp/eidolon-phone-hud-uGi4ZU`, branch
 `feature/phone-hud-composition`, based on `fba546a`. A single Menu launcher

@@ -3,20 +3,41 @@
 Status: baseline diagnosis plus incremental implementation evidence, not a completed phone redesign. Requirements
 and release gates live in [the main roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13).
 
-Latest phone-runtime candidate: **Alpha 1.0.22**, phone adventure selection and the
-landscape party/joystick overlap correction, not yet published. Current live
-release is verified 1.0.19; 1.0.20 is in CI. The corrected 1.0.21 (`2f5c46b`)
-passed the older bag route through Settings → Play in 1.8 minutes, including
-both orientations, credential scan and cleanup. Neither 1.0.21 nor
-1.0.22 is published; see the execution ledger for the ordered queue.
+Latest local phone-runtime candidate: **Alpha 1.0.24**, a single navigation
+launcher, readable status and scrolling menu with reachable Back, not yet
+published. 1.0.19 is the last fully verified release. The original 1.0.20 deployed
+but failed live targeting QA; corrected 1.0.20 `99303f5` is in CI `34031297122`.
+Versions 1.0.21–1.0.24 inherit the correction locally and remain unpublished;
+see the execution ledger for the exact ordered queue.
 Earlier entries below are chronological snapshots, not current process status.
 
-The overall local release line now also contains **1.0.23**, a verified collection
+The local release line also contains **1.0.23**, a verified collection
 turn-in inventory-sync correction, not an additional phone-layout release.
 The [working layout specification](mobile-layout-design.md) records annotated
 portrait/landscape proposals informed by the existing 568×320 populated-HUD
 capture. These are design proposals, not implemented layouts or physical-phone
 sign-off; the full mobile gate remains open.
+
+## Navigation and readable status (Alpha 1.0.24 candidate)
+
+Five navigation shortcuts now live inside Menu, retaining their existing input
+callbacks. The remaining launcher does not overlap health/resource bars at
+568×320; bar text is 16px. Menu uses readable actions with Back outside its
+scroller and permanent chat below. Portrait objectives move into the freed row.
+Desktop controls, world zoom and existing party targeting are not redesigned.
+
+Versioned checks pass 164 suites / 2,359 client tests, lint, Go race tests and
+31 anonymous browser cases. Real core-menu/joystick/chat navigation passes in
+8.5 seconds; both orientations' normal-loot equip/unequip/drop/recovery journey
+passes in 37.2 seconds. Credential scans and disposable cleanup pass. Inspected
+captures: `/tmp/eidolon-phone-hub-{status,menu-top,menu}-{360,568,844}.png`.
+These HUD captures are fixtures, not actual encounter-readability evidence.
+
+After integrating the targeting correction, exact `cc1b7d4` passes 2,361 client
+tests, lint, the server race suite and both real phone-combat orientations in
+15.7 seconds (including two-thumb cast, pursuit takeover and target cancellation).
+Detailed logs and release identities are in the execution ledger. The full
+camera/HUD composition, remaining menus and physical-device gates stay open.
 
 ## Phone adventure and post-dungeon movement (Alpha 1.0.22 candidate)
 
