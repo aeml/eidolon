@@ -177,8 +177,8 @@ export class UIBindings {
         ui.inventory.onStashWithdraw = (itemId) => {
             engine.network.send('stash_withdraw', { itemId });
         };
-        ui.inventory.onUnequipRequest = (slot) => {
-            engine.network.send('unequip', { slot });
+        ui.inventory.onUnequipRequest = (slot, itemId) => {
+            engine.network.send('unequip', { slot, ...(itemId ? { itemId } : {}) });
         };
         ui.inventory.onSortInventory = () => {
             engine.network.send('inventory_sort', {});

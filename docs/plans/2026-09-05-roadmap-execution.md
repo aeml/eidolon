@@ -15,6 +15,9 @@ failed before deployment** in its animation gallery check (Imp Walk/Run read
 Idle). Both deployments and the live gate were skipped. A gallery preview-jump
 lifecycle repair passed local validation and is now pushed as **1.0.23
 `5f1c3f71de4f22f8fa3bb0f1706154085020fe4f`**, CI **`34062629059`** running.
+Its client/server/browser and predeploy character jobs have passed, as have both
+deployment jobs. The final live character gate is still running; deployment alone
+does not establish complete verification.
 No 1.0.24-or-later release has been pushed.
 
 Previously, corrected 1.0.21 (`9f58757`) passed every job in CI `34055526018`,
@@ -50,7 +53,8 @@ Local merges carry that same fix forward and preserve ancestry:
 | 1.0.24 | `44c7ed1509317c499643c10d77b71ebb228d2025`, branch `release/24-with-gallery` | `bcc29f4` plus corrected 1.0.23; phone navigation and fresh-opening QA |
 | 1.0.25 | `d55b5d8d8460f75513a0eca02baf873aa52203c6`, branch `release/25-with-gallery`; original runtime `bea6c34` | `dd2ce16` plus corrected 1.0.24; starter encounters, Ilyra guidance and recall pursuit cleanup |
 | 1.0.26 | `85efebef86ccb9a980bc630b9e860d7f68c47d4b`, branch `release/26-with-gallery`; original runtime `479cfd7` | `f0a1286` plus corrected 1.0.25; server-sourced entry requirements and guarded entry |
-| 1.0.27 | `a5ed0428bfee0823340128bf2f91142dc4010d4c` plus subsequent evidence-only commit; not pushed | original `ac494b8` preparation copy, earned-route QA `f0cfc15`, and inherited gallery repair |
+| 1.0.27 | `0d4e1a1fb37d728db85c1eac9d56b6dc3bc785dd`, branch `release/27-with-gallery`; not pushed | original `ac494b8` preparation copy, earned-route QA `f0cfc15`, and inherited gallery repair |
+| 1.0.28 | local candidate, not yet committed or pushed | equipment-slot validation, lossless legacy recovery and readable phone recovery panel; separate notes/version metadata |
 
 The corrected 1.0.21 → 1.0.22 → 1.0.23 → 1.0.24 ancestry was checked with
 `git merge-base --is-ancestor`. Exact clean `9f58757` passes **163 client suites /
@@ -74,6 +78,29 @@ not the current queue. Do not publish a successor before the preceding version's
 complete CI/live verification. The original 1.0.14 failure remains recorded below.
 
 ## September 6 continuation — dungeon class and campaign evidence
+
+### Alpha 1.0.28 candidate — every item in its place
+
+The ordinary bag-click gem defect now has client/server slot validation and an
+explicit recovery path for existing saved items. Recovery stages all merges so
+a full bag cannot duplicate a partial stack or lose the original; unsupported
+entries remain saved but grant no equipment bonuses. A readable phone panel
+offers Back to bag and reachable recovery actions above persistent chat.
+
+The real-server legacy fixture passes full-bag rejection, legal equip, exact
+18+5 gem conservation, direct saved-state inspection and fresh login in **11.4
+seconds**. It is explicitly seeded into a newly registered run-owned local
+account, not earned-progression evidence. Final client validation passes **169
+suites / 2,418 tests**, lint and full server race checks pass, and **seven phone
+recovery/bag layout checks** pass. The normal phone inventory gameplay regression
+also passes in **36.2 seconds**, covering both orientations with equip/unequip,
+confirmed/canceled drops, manual pickup and reconnect persistence. Its prepared
+level-30 fixture is functional evidence only. Retained failures and scope are in the
+[equipment recovery record](2026-09-06-equipment-recovery.md).
+
+The patch has its own 1.0.28 notes and synchronized version metadata. It remains
+behind the ordered 1.0.23–1.0.27 release gates; no wider roadmap milestone, fresh
+Imp hunt or physical-phone review is marked complete by this repair.
 
 ### Earned preparation extension and 1.0.23 predeploy repair
 

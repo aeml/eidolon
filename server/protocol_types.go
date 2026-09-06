@@ -116,6 +116,7 @@ const (
 	MsgError            = "error"
 	MsgPickup           = "pickup"
 	MsgInventory        = "inventory"
+	MsgEquipmentResult  = "equipment_result"
 	MsgAbility          = "ability"
 	MsgAbilityResult    = "ability_result"
 	MsgAbilityCooldowns = "ability_cooldowns"
@@ -516,7 +517,8 @@ type TradingCancelPayload struct {
 }
 
 type UnequipPayload struct {
-	Slot string `json:"slot"`
+	Slot   string `json:"slot"`
+	ItemID string `json:"itemId,omitempty"`
 }
 
 type AbilityPayload struct {

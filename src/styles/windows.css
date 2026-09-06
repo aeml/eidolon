@@ -1164,6 +1164,63 @@
     text-align: right;
 }
 
+#inventory-recovery {
+    margin: 6px 10px;
+    max-height: 180px;
+    overflow-y: auto;
+    flex: 0 1 auto;
+    border: 1px solid var(--color-gold-dim);
+    border-radius: 6px;
+    background: var(--color-bg-dark, #15191e);
+    color: var(--color-text, #eee);
+    font-size: 16px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+    touch-action: pan-y;
+}
+#inventory-recovery summary {
+    min-height: 44px;
+    padding: 10px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+#inventory-recovery p { margin: 8px 10px; }
+.inventory-recovery-items { display: grid; gap: 8px; padding: 0 10px 10px; }
+.inventory-recovery-items button {
+    min-height: 44px;
+    padding: 8px;
+    font: inherit;
+    color: inherit;
+    background: #26323c;
+    border: 1px solid #74818c;
+    border-radius: 5px;
+    cursor: pointer;
+    overflow-wrap: anywhere;
+}
+.mobile-mode #inventory-recovery { max-height: 30dvh; }
+.mobile-mode #inventory-recovery[open] {
+    position: absolute;
+    inset: 52px 0 0;
+    max-height: none;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    z-index: 2;
+    overscroll-behavior: contain;
+}
+.mobile-mode #inventory-recovery[open] summary {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: #15191e;
+    border-bottom: 1px solid #74818c;
+}
+@media (max-height: 480px) and (orientation: landscape) {
+    /* The recovery disclosure already explains bag space. Keep a usable bag
+       row instead of repeating optional guidance in this short-screen state. */
+    .mobile-mode #inventory-screen:has(#inventory-recovery:not([hidden])) .inventory-guidance { display: none; }
+}
+
 .inventory-guidance {
     padding: var(--spacing-md) 0 0;
     color: var(--color-text-muted);

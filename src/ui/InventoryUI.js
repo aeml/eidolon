@@ -1,5 +1,6 @@
 import { SLOTS, Item, BASE_ITEMS, RARITY, SET_DEFINITIONS, UNIQUE_EFFECTS, GEM_TYPES, GEM_QUALITIES } from '../core/ItemSystem.js';
 import { MobileItemDetails } from './MobileItemDetails.js';
+import { isEquippableItem, isActiveEquipment, itemFitsEquipmentSlot } from '../core/EquipmentSlots.js';
 
 /**
  * InventoryUI — handles inventory grid, equipment slots, shop/gamble,
@@ -184,11 +185,7 @@ export class InventoryUI {
         return 0;
     }
     _isEquippableItem(item) {
-        if (!item?.slot) return false;
-        if (this._isGemItem(item)) return false;
-        if (item.type === 'MATERIAL' || item.type === 'RELIC') return false;
-        if (item.slot === 'material' || item.slot === 'relic' || item.slot === 'gem') return false;
-        return true;
+        return isEquippableItem(item);
     }
     _formatEquipmentSlotLabel(slotKey) {
         const explicitLabels = {
@@ -751,8 +748,56 @@ export class InventoryUI {
     // Inventory Grid
     // ================================================================
 
+    updateEquipmentRecovery(player) {
+        const panel = document.getElementById('inventory-recovery');
+        if (!panel) return;
+        const entries = Object.entries(player.equipment || {}).filter(([slot, item]) =>
+            item?.id && !isActiveEquipment(slot, item)).sort(([a], [b]) => a.localeCompare(b));
+        const signature = JSON.stringify(entries.map(([slot, item]) => [slot, item.id, item.name, item.stack]));
+        if (panel.dataset.items === signature) return;
+        const hadFocus = panel.contains(document.activeElement);
+        panel.dataset.items = signature;
+        panel.hidden = entries.length === 0;
+        const setSummary = () => {
+            panel.querySelector('summary').textContent = this.isMobile && panel.open
+                ? `Back to bag · Stored items (${entries.length})` : `Recover stored items (${entries.length})`;
+        };
+        setSummary(); panel.ontoggle = setSummary;
+        const list = panel.querySelector('.inventory-recovery-items');
+        const status = panel.querySelector('.inventory-recovery-status');
+        list.replaceChildren(); status.textContent = '';
+        for (const [slot, item] of entries) {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.textContent = `Recover ${item.name || 'item'}${item.stack > 1 ? ` ×${item.stack}` : ''}`;
+            const { id, stack } = item;
+            button.onclick = event => {
+                event.stopPropagation();
+                const current = this._getLastPlayer()?.equipment?.[slot];
+                if (current?.id !== id || current.stack !== stack || isActiveEquipment(slot, current)) {
+                    status.textContent = 'This item changed. Reopen the bag to refresh.';
+                    return;
+                }
+                this.recoveryRequest = { slot, itemId: id };
+                this.onUnequipRequest?.(slot, id);
+                status.textContent = 'Recovery requested. Your bag updates when the server confirms it. If full, free space and retry.';
+            };
+            list.append(button);
+        }
+        if (hadFocus) (entries.length ? panel.querySelector('summary') : this.btnSortInventory)?.focus();
+    }
+
+    handleEquipmentActionResult(result) {
+        const pending = this.recoveryRequest;
+        if (!pending || result?.slot !== pending.slot || result?.itemId !== pending.itemId) return;
+        this.recoveryRequest = null;
+        const status = document.querySelector('#inventory-recovery .inventory-recovery-status');
+        if (status) status.textContent = result.message || (result.success ? 'Item recovered.' : 'Recovery failed. Try again.');
+    }
+
     updateInventory(player) {
         if (!player) return;
+        this.updateEquipmentRecovery(player);
 
         if (this.goldDisplay) {
             this.goldDisplay.textContent = `GOLD: ${player.gold || 0}`;
@@ -840,7 +885,7 @@ export class InventoryUI {
                     }
 
                     // Prevent equipping non-equippable items
-                    if (item.type === 'MATERIAL' || item.type === 'RELIC' || item.slot === 'material' || item.slot === 'relic') {
+                    if (!this._isEquippableItem(item)) {
                         return;
                     }
 
@@ -1278,7 +1323,7 @@ export class InventoryUI {
         }
 
         // Equip Button on Mobile
-        if (this.isMobile) {
+        if (this.isMobile && this._isEquippableItem(item)) {
             desc += `<button id="btn-tooltip-equip" style="width:100%; margin-top:5px; padding: 8px; background:#222; color:#fff; border:1px solid #666; cursor:pointer;">EQUIP</button>`;
         }
 
@@ -1455,7 +1500,7 @@ export class InventoryUI {
         // Inventory -> Equipment (Equip)
         else if (source.type === 'inventory' && target.type === 'equipment') {
             const item = player.inventory[source.id];
-            if (item && window.game) {
+            if (itemFitsEquipmentSlot(item, target.id) && window.game) {
                 window.game.sendEquipMessage(item, target.id);
             }
         }

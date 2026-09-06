@@ -191,6 +191,20 @@ does not prove human discovery, enjoyable pacing or physical-phone usability.
 Run only one local Eidolon Playwright route at a time. Recorded outcomes and
 limitations are in [fresh progression evidence](docs/plans/fresh-progression-evidence.md).
 
+Legacy equipment recovery has its own disposable-save regression route:
+
+```bash
+sg render -c 'EIDOLON_ISOLATED_QA_ROUTE=equipment-recovery npm run test:e2e:isolated'
+```
+
+This route registers a new empty account in the run-owned local Mongo instance,
+then seeds an old-style unsupported gem slot before its first world entry. It
+checks full-bag rejection, exact stack conservation, ordinary equip/recovery UI,
+saved database state and fresh-login persistence. It cannot target production
+and is not earned-progression or balance evidence. The full isolated suite also
+includes it under a separate disposable account. See the
+[equipment recovery record](docs/plans/2026-09-06-equipment-recovery.md).
+
 The generated canonical inventory is [docs/ANIMATION_COVERAGE.md](docs/ANIMATION_COVERAGE.md). Edit its source manifests and regenerate it; do not hand-edit its tables.
 
 Server validation from `server/`:

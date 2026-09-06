@@ -146,42 +146,29 @@ func (w *World) PerformEquip(playerID, itemID, slot string) (*Entity, bool) {
 	}
 
 	// Prevent equipping non-equippable items
-	if itemToEquip.Type == ItemMaterial || itemToEquip.Type == ItemRelic {
-		return nil, false
-	}
-
-	// Validate Slot
-	validSlot := false
-	if itemToEquip.Slot == slot {
-		validSlot = true
-	} else if itemToEquip.Slot == "ring" && (slot == "ring1" || slot == "ring2") {
-		validSlot = true
-	} else if itemToEquip.Slot == "trinket" && (slot == "trinket1" || slot == "trinket2") {
-		validSlot = true
-	}
-
-	if !validSlot {
+	if !itemFitsEquipmentSlot(*itemToEquip, slot) {
 		return nil, false
 	}
 
 	// Capture the item value BEFORE any inventory modifications to prevent pointer invalidation
 	newItem := *itemToEquip
 
-	// Remove from inventory (Clear slot)
-	player.Inventory[invIndex] = Item{}
+	// Stage the swap so any legacy stack that cannot fit leaves both items intact.
+	staged := &Entity{Inventory: append([]Item(nil), player.Inventory...)}
+	staged.Inventory[invIndex] = Item{}
 
 	// Unequip current
-	if current, ok := player.Equipment[slot]; ok {
-		remaining := player.AddItemToInventory(current)
+	if current, ok := player.Equipment[slot]; ok && current.ID != "" {
+		if current.Stack < 1 {
+			current.Stack = 1
+		}
+		remaining := staged.AddItemToInventory(current)
 		if remaining > 0 {
-			// If we can't fit the old item, we have a problem.
-			// Since we just cleared one slot, we should have at least one slot.
-			// Restore the item to inventory if swap fails (unlikely)
-			player.Inventory[invIndex] = newItem
 			return nil, false
 		}
 	}
 
+	player.Inventory = staged.Inventory
 	if player.Equipment == nil {
 		player.Equipment = make(map[string]Item)
 	}
@@ -318,7 +305,7 @@ func (w *World) PerformInventorySort(playerID string) (*Entity, bool) {
 	return player, true
 }
 
-func (w *World) PerformUnequip(playerID, slot string) (*Entity, bool) {
+func (w *World) PerformUnequip(playerID, slot string, expectedItemID ...string) (*Entity, bool) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 
@@ -329,18 +316,27 @@ func (w *World) PerformUnequip(playerID, slot string) (*Entity, bool) {
 
 	// Check if slot has item
 	item, ok := player.Equipment[slot]
-	if !ok {
+	if !ok || item.ID == "" {
+		return nil, false
+	}
+	if len(expectedItemID) > 0 && expectedItemID[0] != "" && item.ID != expectedItemID[0] {
 		return nil, false
 	}
 
-	// Try to add to inventory
-	remaining := player.AddItemToInventory(item)
+	// Stage the entire return, including stack merges. A failed return must not
+	// partially mutate the bag while leaving the original equipment stack saved.
+	staged := &Entity{Inventory: append([]Item(nil), player.Inventory...)}
+	if item.Stack < 1 {
+		item.Stack = 1
+	}
+	remaining := staged.AddItemToInventory(item)
 	if remaining > 0 {
 		// Inventory full
 		return nil, false
 	}
 
 	// Remove from equipment
+	player.Inventory = staged.Inventory
 	delete(player.Equipment, slot)
 	player.EquipmentRevision++
 

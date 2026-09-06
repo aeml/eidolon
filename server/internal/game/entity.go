@@ -543,7 +543,8 @@ func (e *Entity) RecalculateStats() {
 	}
 
 	// Add Equipment Stats
-	for _, item := range e.Equipment {
+	activeEquipment := activeEquipmentItems(e.Equipment)
+	for _, item := range activeEquipment {
 		applyItemStats(item.Stats)
 		for _, gem := range item.Gems {
 			applyItemStats(gem.Stats)
@@ -551,7 +552,7 @@ func (e *Entity) RecalculateStats() {
 	}
 
 	// Calculate and Apply Set Bonuses
-	e.ActiveSetBonuses = CalculateSetBonuses(e.Equipment)
+	e.ActiveSetBonuses = CalculateSetBonuses(activeEquipment)
 
 	for _, bonuses := range e.ActiveSetBonuses {
 		for bonusKey, value := range bonuses {
@@ -583,7 +584,7 @@ func (e *Entity) RecalculateStats() {
 
 	// Collect Active Unique Effects from equipment
 	e.ActiveUniqueEffects = nil
-	for _, item := range e.Equipment {
+	for _, item := range activeEquipment {
 		if item.UniqueEffect != "" {
 			e.ActiveUniqueEffects = append(e.ActiveUniqueEffects, item.UniqueEffect)
 		}

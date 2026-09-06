@@ -405,6 +405,9 @@ class GameEngineNetworkMessageMethods {
             const chatData = msg.payload;
             const channel = chatData.channel || (chatData.sender === 'System' ? 'server' : 'global');
             this.uiManager.addChatMessage(chatData.sender, chatData.message, { channel });
+        } else if (msg.type === 'equipment_result') {
+            this.uiManager?.inventory?.handleEquipmentActionResult?.(msg.payload);
+            if (!msg.payload?.success && msg.payload?.message) this.uiManager?.addChatMessage?.('System', msg.payload.message);
         } else if (msg.type === 'inventory') {
             const inventory = msg.payload.map(item => this.hydrateItem(item));
             if (this.player) {
@@ -1073,6 +1076,7 @@ class GameEngineNetworkMessageMethods {
                                 this.player.equipment[key] = this.hydrateItem(this.player.equipment[key]);
                             }
                             this.player.syncEquipmentVisuals?.();
+                            this.uiManager.inventory?.updateEquipmentRecovery?.(this.player);
 
                             // Force UI Update if Forge is open
                             if (this.uiManager.forge.isOpen) {
@@ -1413,6 +1417,7 @@ class GameEngineNetworkMessageMethods {
                             this.player.equipment[key] = this.hydrateItem(this.player.equipment[key]);
                         }
                         this.player.syncEquipmentVisuals?.();
+                        this.uiManager.inventory?.updateEquipmentRecovery?.(this.player);
                     }
 
                     if (Object.prototype.hasOwnProperty.call(pData, 'quests')) {

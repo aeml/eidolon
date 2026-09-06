@@ -232,7 +232,7 @@ describe('Inventory sorting', () => {
                 offHand: {
                     id: 'offhand-1',
                     name: 'Training Sigil',
-                    type: 'OFF_HAND',
+                    type: 'ARMOR',
                     rarity: { name: 'Common', color: '#fff', multiplier: 1.0 },
                     slot: 'offHand',
                     level: 8,
@@ -259,7 +259,7 @@ describe('Inventory sorting', () => {
         inventory.showItemTooltip({
             id: 'offhand-2',
             name: 'Blessed Tome',
-            type: 'OFF_HAND',
+            type: 'ARMOR',
             rarity: { name: 'Rare', color: '#0070dd', multiplier: 2.0 },
             slot: 'offHand',
             level: 8,

@@ -910,7 +910,7 @@ func (c *Client) dispatchMessage(msg Message) {
 			return
 		}
 
-		player, success := world.PerformUnequip(c.playerID, payload.Slot)
+		player, success := world.PerformUnequip(c.playerID, payload.Slot, payload.ItemID)
 		if success {
 			// Send Inventory Update
 			invPayload, _ := json.Marshal(player.Inventory)
@@ -920,7 +920,15 @@ func (c *Client) dispatchMessage(msg Message) {
 			}
 			b, _ := json.Marshal(msg)
 			c.sendSafe(b)
+			savePlayer(c)
 		}
+		resultMessage := "Item returned to your bag."
+		if !success {
+			resultMessage = "Could not return that item to your bag. Free enough bag space and try again."
+		}
+		resultPayload, _ := json.Marshal(map[string]interface{}{"slot": payload.Slot, "itemId": payload.ItemID, "success": success, "message": resultMessage})
+		resultBytes, _ := json.Marshal(Message{Type: MsgEquipmentResult, Payload: resultPayload})
+		c.sendSafe(resultBytes)
 
 	case MsgInventoryDrop:
 		var payload InventoryDropPayload

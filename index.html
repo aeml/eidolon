@@ -197,6 +197,12 @@
                     GOLD: 0
                 </div>
             </div>
+            <details id="inventory-recovery" hidden>
+                <summary>Recover stored items</summary>
+                <p>These items were saved in unsupported equipment slots. They are safe here but grant no bonuses. Free bag space, then recover them.</p>
+                <div class="inventory-recovery-items"></div>
+                <p class="inventory-recovery-status" role="status"></p>
+            </details>
             <div id="inventory-guidance" class="inventory-guidance">Compare gear before selling. Shards raise item level; Hearts add power and sockets. Save gems for the Forge.</div>
         </div>
 
@@ -335,7 +341,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.27</span>
+                <span class="start-version-row__label">Alpha 1.0.28</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -661,6 +667,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.28">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.28 (every item in its place)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Loose gems belong in your bag:</strong> Clicking or dragging a gem no longer equips it into an invisible slot. Equipment actions now validate real character slots on both client and server; gems socketed through the Forge still work.</li>
+                        <li><strong>Recover misplaced items:</strong> If an older save contains an item in an unsupported equipment slot, open your bag's Recover stored items section. These items remain saved but grant no bonuses until used appropriately.</li>
+                        <li><strong>No partial recovery:</strong> Returning an item requires enough bag space for its full stack. A failed attempt leaves both the stored item and bag unchanged; freeing space lets you try again without losing or duplicating items.</li>
+                        <li><strong>Safe on desktop and phone:</strong> Recovery uses explicit, readable actions, validates the selected item, and saves successful returns. Normal equipment, socketed gems, quest-item protection, and earlier patch notes are preserved.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.0.27">
                     <h3 class="patch-note-entry__title">Alpha 1.0.27 (before the descent)</h3>
                     <ul class="patch-note-entry__list">

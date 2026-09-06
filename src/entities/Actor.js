@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { Entity } from './Entity.js';
 import { calculateSetBonuses, getEquippedUniqueEffects, getGemStats, UNIQUE_EFFECTS } from '../core/ItemSystem.js';
+import { isEquippableItem, isActiveEquipment } from '../core/EquipmentSlots.js';
 import { CONSTANTS } from '../core/Constants.js';
 import {
     exponentialSmoothingFactor,
@@ -1834,8 +1835,9 @@ export class Actor extends Entity {
         totalStats.defense = 0;
 
         // Add Equipment Stats
-        for (const slot in this.equipment) {
-            const item = this.equipment[slot];
+        const activeEquipment = Object.fromEntries(Object.entries(this.equipment).filter(([slot, item]) => isActiveEquipment(slot, item)));
+        for (const slot in activeEquipment) {
+            const item = activeEquipment[slot];
             if (item) {
                 applyItemStats(item.stats);
 
@@ -1849,7 +1851,7 @@ export class Actor extends Entity {
         }
 
         // Calculate Set Bonuses
-        this.activeSetBonuses = calculateSetBonuses(this.equipment);
+        this.activeSetBonuses = calculateSetBonuses(activeEquipment);
         for (const setId in this.activeSetBonuses) {
             const setBonus = this.activeSetBonuses[setId];
             if (setBonus.stats) {
@@ -1869,7 +1871,7 @@ export class Actor extends Entity {
         }
 
         // Get Unique Effects from equipment
-        this.activeUniqueEffects = getEquippedUniqueEffects(this.equipment);
+        this.activeUniqueEffects = getEquippedUniqueEffects(activeEquipment);
 
         // Update Total Stats in this.stats
         this.stats.strength = totalStats.strength;
@@ -2008,7 +2010,7 @@ export class Actor extends Entity {
     }
 
     equipItem(item) {
-        if (!item || !item.slot) return false;
+        if (!isEquippableItem(item)) return false;
         
         if (this.level < item.level) {
             console.log(`Cannot equip ${item.name}. Level ${item.level} required.`);

@@ -223,6 +223,19 @@ function createEngineHarness() {
 }
 
 describe('GameEngine multiplayer respawn sync', () => {
+    test.each(['state', 'delta'])('%s equipment arrival refreshes recovery after the earlier bag update', type => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+        engine.player.equipment = { gem: { id: 'old-gem', slot: 'gem', type: 'GEM' } };
+        const refresh = jest.fn();
+        engine.uiManager.inventory = { updateEquipmentRecovery: refresh };
+        const record = { id: 'player-1', state: 'IDLE', equipment: {} };
+        engine.handleServerMessage({ type, payload: type === 'state'
+            ? { 'player-1': record } : { u: { 'player-1': record }, r: [] } });
+        expect(engine.player.equipment).toEqual({});
+        expect(refresh).toHaveBeenCalledWith(engine.player);
+    });
+
     test.each(['Fighter', 'Rogue', 'Wizard', 'Cleric'])('living %s recall clears pursuit and buffered travel before another frame', className => {
         const engine = createEngineHarness();
         engine.player.state = 'ATTACKING';
