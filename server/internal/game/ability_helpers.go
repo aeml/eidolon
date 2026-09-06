@@ -251,10 +251,18 @@ func validDirectAbilityTarget(w *World, player, target *Entity, maxRange float64
 	if !offensive && target.Type == TypePlayer && w.CombatRelationship(player, target) == RelationshipHostile {
 		return false
 	}
-	if maxRange <= 0 {
-		return true
+	inRange := maxRange <= 0 || math.Hypot(target.X-player.X, target.Z-player.Z) <= maxRange+entityVisualRadius(target)
+	if !inRange {
+		return false
 	}
-	return math.Hypot(target.X-player.X, target.Z-player.Z) <= maxRange+entityVisualRadius(target)
+	if offensive {
+		// Range alone cannot authorize a hostile target in the room behind a
+		// solid wall. Friendly support and noncanonical instances retain their
+		// existing rules; real doorways remain valid paths.
+		_, _, blocked := w.firstDungeonWallHit(player.InstanceID, player.X, player.Z, target.X, target.Z)
+		return !blocked
+	}
+	return true
 }
 
 func (w *World) spreadPoison(source, primaryTarget *Entity, damage int, endTime time.Time) {

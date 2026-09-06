@@ -65,6 +65,19 @@ observed. This is not a fifth-boss/full-clear/re-entry pass. Log:
 `/tmp/eidolon-abyssal-full-fighter-defense.log`. The later mana-selector field fix
 and 40-minute aggregate budget were not part of that running test.
 
+The corrected defensive run on clean
+`a8c09ef4db43162b4752437e757c70d4859b5bad`, seed `-3014860983784452515`, generator 2
+attempt 0, Normal 60, **passed in 29.1 minutes**. All five bosses were defeated
+through normal controls, every encounter room cleared, gold increased, and
+completed-run recall/re-entry preserved seed, cleared boss state and gold. Actual
+events confirmed all four hotbar skills; the corrected mana selector and chosen
+Bloodwhirl/Fortify/Extended runes were used. Log:
+`/tmp/eidolon-1-0-10-abyssal-full-fighter-recovery.log`. Credential scan and
+disposable cleanup passed. This is one level-100 functional Fighter run at Normal
+60, not level-appropriate balance, three successful generated instances, other
+classes, a party clear, or campaign/raid-unlock credit. It predates the subsequent
+local direct/basic-attack wall patches.
+
 The first regional attempt tried to select Molten at Verdant's locked portal and
 failed before entry. Correcting the test to use the town guide resolved that
 fixture error without changing any game access rule.

@@ -125,6 +125,7 @@ func snapshotCombatAttackerLocked(attacker *Entity) *Entity {
 	}
 	snapshot := &Entity{
 		ID:                  attacker.ID,
+		InstanceID:          attacker.InstanceID,
 		Type:                attacker.Type,
 		SubType:             attacker.SubType,
 		Health:              attacker.Health,

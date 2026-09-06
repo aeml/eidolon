@@ -735,6 +735,10 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				targetID = homingTarget.ID
 				targetX = homingTarget.X
 				targetZ = homingTarget.Z
+			} else {
+				// A rejected explicit target must not survive on the projectile.
+				// Untargeted missiles still fire toward the cursor normally.
+				targetID = ""
 			}
 
 			dx := targetX - player.X

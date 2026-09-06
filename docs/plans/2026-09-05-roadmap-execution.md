@@ -643,6 +643,100 @@ The corrected fresh-account runner passes in 35.6 seconds on generator 2 seed
 and preserved-run re-entry; credential scan and disposable cleanup pass. Log:
 `/tmp/eidolon-dungeon-recovery-fresh-account-allowlisted.log`.
 
+Pushed the corrected 1.0.10 candidate as
+`a8c09ef4db43162b4752437e757c70d4859b5bad`, CI `34005044422`.
+Client/server checks, anonymous smoke and the High/Low gallery pass, but the
+disposable gameplay job **failed again** at the multiplayer guide. Both attempts
+failed its initial leader interaction (party route line 13), not member re-entry.
+Diagnostics show a live socket, IDLE player at (-2.685579, 240.213598), no pending
+interaction and no menu. Neither deployment ran; live remains verified 1.0.9.
+Log: `/tmp/eidolon-1-0-10-recovery-ci-failure.log`. Click/request/response probes
+and three repeated party-return cycles are being tested locally to find the cause;
+do not call this fixed merely because one fresh standalone run passed earlier.
+
+A clean full Abyssal Fighter run on this exact commit **passed in 29.1 minutes**,
+seed `-3014860983784452515`, generator 2 attempt 0, Normal 60, with corrected mana
+selection and the 40-minute budget. All five bosses, every encounter room, gold,
+town recall and completed-run re-entry assertions passed. Log:
+`/tmp/eidolon-1-0-10-abyssal-full-fighter-recovery.log`. Its image does not include
+the following unpublished changes and it does not close the full 1.1 matrix.
+
+## Continued 1.1 direct-target boundaries — unpublished
+
+Twelve direct-dispatch cases reproduce six blocked-path failures: Smite, Mark of
+Weakness and Weak Point Mark applied damage/debuffs and spent resources across a
+solid gap, with either explicit targeting or cursor fallback. The local patch
+uses canonical path validation for hostile direct targets, preserves friendly
+support/legacy rules and open doorways, and commits these spells' resources only
+after selecting a reachable target. Arcane Missiles no longer retains a rejected
+explicit homing ID; ordinary cursor volleys still fire. The existing targeted
+movement wrapper reuses the shared validation without a duplicate geometry scan.
+
+Focused race checks pass for the 12 spell cases, four missile-lock cases, support/
+legacy/isolation checks and the existing Rogue targeted-movement wall matrix
+(latest 6.611 seconds). The first full server race run found an older contract
+explicitly expecting Smite to spend its cast on a cross-instance target. That
+contract now requires rejection with no damage, mana loss or cooldown. The full
+corrected server race suite passes (game package 206.853 seconds), log
+`/tmp/eidolon-dungeon-direct-skills-server-rerun.log`. These are server
+fixtures, not rendered class playthroughs; rendered basic attacks, ground-targeted AoE and
+secondary wall effects remain open. Nothing in this section has been published.
+A real-input Cleric/Rogue mark test is prepared for empty-target rejection and a
+server-accepted mark on a reachable ordinary enemy. Its first execution exposed
+an accepted cursor-selected mark publishing an empty target ID. Three red server
+cases reproduce the omission for both marks and legacy Smite. Those handlers now
+publish the resolved target and its coordinates. The actual Rogue and Cleric
+browser checks both pass (11.3 and 11.9 seconds including setup), log
+`/tmp/eidolon-direct-target-resolved-browser.log`. They join the isolated predeploy
+chain using the exact allowlisted class actors. The full Water run has finished;
+an updated short Verdant Fighter route is checking the new basic-attack code.
+
+Basic-attack regressions then reproduced wall-crossing admission with all four
+classes, plus damage landing after a target moved behind a wall during wind-up.
+The local repair validates both admission and actual impact against canonical
+floors. Delayed attacks retain a private floor snapshot so impact validation does
+not acquire an instance lock while holding an actor lock; old attacks cannot
+follow actors into another scene. The post-delay damage body is extracted without
+changing its damage rules, letting tests prove rejected impacts by synchronous
+completion rather than an absence-of-events timer. Open-doorway dispatch still
+lands real delayed damage for each class.
+
+The basic/impact/snapshot, direct-spell and projectile-wall focused race checks
+pass in 7.963 seconds (`/tmp/eidolon-dungeon-basic-wall-impact-green.log`). The
+complete server race suite passes with this change (game package 224.471 seconds,
+`/tmp/eidolon-dungeon-basic-wall-server-full.log`). A further red regression found
+that the combat snapshot omitted InstanceID, sending actual basic and reflected
+damage events with empty routing scope. The snapshot now retains its instance;
+the focused event/basic/impact matrix passes (3.431 seconds). Another final full
+race run passes after that last field correction (game package 146.604 seconds,
+`/tmp/eidolon-dungeon-attack-routing-server-final.log`). The completed clean
+1.0.10 Water playthrough predates these local patches and cannot verify them.
+
+The guide failure reproduced in a fresh three-cycle multiplayer route. The click
+probe records DungeonNPC before the click, no hit on the click's fresh raycast,
+and an ordinary ground-move destination afterwards. No menu request or response
+occurred; 937 state updates arrived while the test waited. The player was still
+at z=217.28 during the click, proving the approach/camera had not settled. Log:
+`/tmp/eidolon-dungeon-guide-click-probe.log`. The helper now waits for IDLE with
+no movement destination and rendered actor/camera agreement before reprojecting
+and clicking. This corrects a test timing error; production click raycasts still
+use the actual click coordinates. The repeated route passes in 2.4 minutes: all
+three cycles, both party roles, remote combat/movement and browser error audit,
+log `/tmp/eidolon-dungeon-guide-settled-cycles.log`.
+
+The updated client candidate passes all 150 suites / 2,202 tests (73.236 seconds).
+The never-deployed Alpha 1.0.10 entry now includes the basic/direct wall and damage
+routing corrections. The complete server race suite passes after the final
+resolved-target event correction (game package 161.847 seconds), log
+`/tmp/eidolon-direct-resolved-server-final.log`. The actual short Verdant Fighter
+route passes in 3.5 minutes on dirty `a8c09ef`, generator 2 seed
+`6311919532000196432`, Normal 30: Rootbound Warden and Briar Matron die, ordinary
+encounters continue and town return succeeds. Log:
+`/tmp/eidolon-direct-basic-verdant-browser.log`. This tests the new attack code,
+but is not a full dungeon/class/party completion claim. Lint, shell syntax and
+whitespace checks pass. The corrected candidate is ready for a new full CI run;
+deployment and exact live verification remain unproven.
+
 ## Milestone tracking
 
 1.1 remains open until all five dungeon reports meet their acceptance criteria,

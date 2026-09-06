@@ -98,7 +98,6 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 		// Weak Point Mark (Debuff)
 		cost := resolveAbilityManaCost(player, skillName, 25)
 		if player.Mana >= cost {
-			player.Mana -= cost
 
 			// Find target near cursor while enforcing the authoritative cast range.
 			var bestTarget *Entity
@@ -131,12 +130,15 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				}
 			}
 
-			if bestTarget != nil {
-				bestTarget.Mu.Lock()
-				bestTarget.WeakPointMarked = true
-				bestTarget.WeakPointEndTime = time.Now().Add(10 * time.Second)
-				bestTarget.Mu.Unlock()
+			if bestTarget == nil {
+				return
 			}
+			player.Mana -= cost
+			bestTarget.Mu.Lock()
+			targetID, targetX, targetZ = bestTarget.ID, bestTarget.X, bestTarget.Z
+			bestTarget.WeakPointMarked = true
+			bestTarget.WeakPointEndTime = time.Now().Add(10 * time.Second)
+			bestTarget.Mu.Unlock()
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 12*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)

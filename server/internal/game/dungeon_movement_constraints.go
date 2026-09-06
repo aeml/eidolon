@@ -82,11 +82,7 @@ func (w *World) constrainDungeonMovementDestination(entity *Entity, x, z float64
 // Targeted movement strikes require an accessible enemy before committing
 // mana, debuffs or damage. Landing-point clipping alone cannot enforce that.
 func (w *World) validDungeonMovementAttackTarget(player, target *Entity, maxRange float64) bool {
-	if !validDirectAbilityTarget(w, player, target, maxRange, TypeEnemy) {
-		return false
-	}
-	_, _, blocked := w.firstDungeonWallHit(player.InstanceID, player.X, player.Z, target.X, target.Z)
-	return !blocked
+	return validDirectAbilityTarget(w, player, target, maxRange, TypeEnemy)
 }
 
 func (w *World) moveEntityWithinDungeon(entity *Entity, targetX, targetZ float64) bool {

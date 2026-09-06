@@ -554,7 +554,10 @@ test.describe('two-account multiplayer', () => {
             }
             phase('formed fresh replicated party');
             await closeSocialWindow(firstPage);
-            await exercisePartyDungeonResume(firstPage, secondPage);
+            for (let cycle = 0; cycle < 3; cycle++) {
+                await exercisePartyDungeonResume(firstPage, secondPage);
+                phase(`verified party dungeon return cycle ${cycle + 1}/3`);
+            }
             phase('verified member-specific dungeon recall and resume');
 
             if (primary.characterClass === 'Cleric') {

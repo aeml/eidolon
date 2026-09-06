@@ -18,12 +18,29 @@ func (w *World) firstDungeonWallHit(instanceID string, fromX, fromZ, toX, toZ fl
 	}
 	instance.Mu.RLock()
 	defer instance.Mu.RUnlock()
-	if len(instance.Layout.WalkRects) == 0 {
+	return firstDungeonWalkRectWallHit(instance.Layout.WalkRects, fromX, fromZ, toX, toZ)
+}
+
+// Delayed attacks retain their own floor snapshot so impact validation never
+// acquires an instance lock while holding an actor lock. Layout changes or
+// instance removal cannot mutate this attack's geometry underneath it.
+func (w *World) dungeonWalkRectsSnapshot(instanceID string) []DungeonWalkRect {
+	instance, exists := w.getDungeonInstance(instanceID)
+	if !exists {
+		return nil
+	}
+	instance.Mu.RLock()
+	defer instance.Mu.RUnlock()
+	return append([]DungeonWalkRect(nil), instance.Layout.WalkRects...)
+}
+
+func firstDungeonWalkRectWallHit(rects []DungeonWalkRect, fromX, fromZ, toX, toZ float64) (float64, float64, bool) {
+	if len(rects) == 0 {
 		return toX, toZ, false
 	}
 	dx, dz := toX-fromX, toZ-fromZ
 	var intervals []dungeonSegmentInterval
-	for _, rect := range instance.Layout.WalkRects {
+	for _, rect := range rects {
 		enter, leave, intersects := dungeonRectSegmentInterval(rect, fromX, fromZ, dx, dz)
 		if intersects && enter <= 0 && leave >= 1 {
 			return toX, toZ, false // Common case: the whole step stays in one convex room.

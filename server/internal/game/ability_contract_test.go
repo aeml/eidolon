@@ -235,8 +235,9 @@ func TestDirectAbilityTargetCannotCrossInstances(t *testing.T) {
 	w.AddEntity(target)
 
 	result := w.PerformAbility(cleric.ID, target.X, target.Z, target.ID, "Smite")
-	if !result.Accepted {
-		t.Fatalf("Smite should still commit even if no valid target is found: %+v", result)
+	if result.Accepted || result.Reason != "requirements_not_met" || cleric.Mana != 1000 ||
+		result.CooldownRemaining != 0 || !cleric.LastAbilityTime.IsZero() {
+		t.Fatalf("Smite without a valid target must reject without spending resources: %+v", result)
 	}
 	if target.Health != 1000 || target.Stunned {
 		t.Fatalf("cross-instance target was affected: health=%d stunned=%v", target.Health, target.Stunned)

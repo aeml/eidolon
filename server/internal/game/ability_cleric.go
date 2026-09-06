@@ -213,7 +213,6 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 		// Smite (Damage + Stun)
 		cost := resolveAbilityManaCost(player, skillName, 30)
 		if player.Mana >= cost {
-			player.Mana -= cost
 
 			damage := int(float64(30+(player.Stats.Wisdom*2)) * player.GetSkillDamageMultiplier("Smite"))
 
@@ -241,21 +240,24 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				}
 			}
 
-			if target != nil {
-				target.Mu.Lock()
-				finalDamage := applyFinalDamage(player, target, damage, "holy")
-				addThreatLocked(target, player.ID, float64(finalDamage))
-				if !target.CCImmune {
-					target.Stunned = true
-					target.StunEndTime = time.Now().Add(2 * time.Second)
-				}
-
-				w.fireDamageEvent(player.ID, target.ID, finalDamage, "holy", player.InstanceID)
-				if target.Health <= 0 {
-					w.handleDeath(target, player, nil)
-				}
-				target.Mu.Unlock()
+			if target == nil {
+				return
 			}
+			player.Mana -= cost
+			target.Mu.Lock()
+			targetID, targetX, targetZ = target.ID, target.X, target.Z
+			finalDamage := applyFinalDamage(player, target, damage, "holy")
+			addThreatLocked(target, player.ID, float64(finalDamage))
+			if !target.CCImmune {
+				target.Stunned = true
+				target.StunEndTime = time.Now().Add(2 * time.Second)
+			}
+
+			w.fireDamageEvent(player.ID, target.ID, finalDamage, "holy", player.InstanceID)
+			if target.Health <= 0 {
+				w.handleDeath(target, player, nil)
+			}
+			target.Mu.Unlock()
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 12*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
@@ -698,7 +700,6 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 		// Mark of Weakness (Debuff)
 		cost := resolveAbilityManaCost(player, skillName, 30)
 		if player.Mana >= cost {
-			player.Mana -= cost
 
 			// Find target
 			var target *Entity
@@ -722,13 +723,16 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				}
 			}
 
-			if target != nil {
-				target.Mu.Lock()
-				target.MarkWeakness = true
-				target.MarkWeaknessFactor = 0.20
-				target.MarkWeaknessEndTime = time.Now().Add(10 * time.Second)
-				target.Mu.Unlock()
+			if target == nil {
+				return
 			}
+			player.Mana -= cost
+			target.Mu.Lock()
+			targetID, targetX, targetZ = target.ID, target.X, target.Z
+			target.MarkWeakness = true
+			target.MarkWeaknessFactor = 0.20
+			target.MarkWeaknessEndTime = time.Now().Add(10 * time.Second)
+			target.Mu.Unlock()
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 20*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
