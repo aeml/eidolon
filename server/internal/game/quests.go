@@ -40,8 +40,8 @@ func chronicleQuestCatalog() []Quest {
 		{
 			ID: "chronicle_01_bell_below", Type: "KILL", Target: "Skeleton", MaxCount: 3, RewardXP: 500,
 			Title: "The Bell That Rang Below", Category: QuestCategoryChronicle, Chapter: 1,
-			ObjectiveText: "Defeat 3 risen dead beyond Lanternhold's walls and recover their dissonant echoes.",
-			Description:   "I am Ilyra, keeper of the Fourfold Chronicle. Last night I heard a bell beneath Lanternhold that has no living ringer. The four crystals are faltering, and my wards cannot reach their buried sanctums. I need your help to save Eidolon. Face the risen dead beyond our walls and bring me the echoes bound inside them; together we can trace the wound.",
+			ObjectiveText: "Defeat 3 risen dead beyond Lanternhold's east gate and recover their dissonant echoes.",
+			Description:   "I am Ilyra, keeper of the Fourfold Chronicle. Last night I heard a bell beneath Lanternhold that has no living ringer. The four crystals are faltering, and my wards cannot reach their buried sanctums. I need your help to save Eidolon. Begin just beyond the east gate: my wards still weaken the newly risen near our walls, but their strength returns farther out. Bring me the echoes bound inside three of them; together we can trace the wound.",
 			Lore:          "Eidolon was not named for a kingdom. It was named for the four great spirits who dreamed matter into covenant: Orun of Root and Stone, Neris of Tide and Memory, Pyralis of Flame and Will, and Aeral of Sky and Freedom. Their crystals do not create the elements—they keep the elements willing to shelter mortal lands.",
 		},
 		{

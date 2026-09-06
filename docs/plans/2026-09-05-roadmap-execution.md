@@ -34,6 +34,7 @@ version has been pushed. Local merges carry that same fix forward and preserve a
 | 1.0.22 | `e0b9afd3f8cfcefdbd056ef0339cb7937c27c4e7` | `ed793e0`; inherits corrected 1.0.21 |
 | 1.0.23 | `ad72a642592b5ce6fc6e22b23af1d8b2ab3a52dc` | `4fcb89d`; retains the verified collection inventory repair |
 | 1.0.24 | `370f7593a254f5c4691d59440f270b4edda69b1d` plus subsequent evidence-only commits | phone navigation and fresh-opening QA with corrected release ancestry |
+| 1.0.25 | local starter-area and overworld recall candidate; verification below | normal starter encounters, Ilyra guidance and clearing stale recall pursuit |
 
 The corrected 1.0.21 → 1.0.22 → 1.0.23 → 1.0.24 ancestry was checked with
 `git merge-base --is-ancestor`. Exact clean `9f58757` passes **163 client suites /
@@ -57,6 +58,35 @@ not the current queue. Do not publish a successor before the preceding version's
 complete CI/live verification. The original 1.0.14 failure remains recorded below.
 
 ## September 6 continuation — dungeon class and campaign evidence
+
+### Alpha 1.0.25 — a first step beyond the wards (local candidate)
+
+The previous turn was progress: it corrected and pushed 1.0.21 verification and
+reproduced fresh Fighter combat failure. This continuation implements an actual
+level-one-to-ten Skeleton band around Lanternhold, three shared ordinary east-gate
+encounters, preserved outer/dungeon profiles and Ilyra's matching guidance.
+The new full-world test found elites could still spawn at x=120 beside the gate;
+their spawn positions now stay beyond the starter band without changing their
+strength. A Cleric run then exposed stale overworld recall pursuit. Four failing
+client regressions reproduced it; living recall now clears pending combat and
+travel state immediately. Both fixes are included in 1.0.25 patch notes and its
+synchronized login/server/build metadata; older patch-note history is retained.
+
+Fresh Fighter, Wizard and Rogue routes passed with zero deaths on the initial
+starter candidate (97 / 34 / 38 seconds); final-code Cleric passed in 43 seconds
+after recall repair. All earned their kills and manually claimed rewards, then
+verified saved progress, without debug grants. The final real phone quest route
+also passes (48.9 seconds), but uses functional level/waypoint preparation.
+Final client checks: **165 suites / 2,371 tests, 124.612 seconds**, lint; focused
+recall/version checks **252 tests, 6.85 seconds**. Full server race verification
+and clean-commit gameplay repeats are pending. Full details and failed attempts:
+[fresh-character evidence](fresh-progression-evidence.md).
+
+Preserve **`bcc29f498504fa83a53f62e5cb5aa00e020844c8`**, branch
+`release/24-with-pickup`, as the unpublished Alpha 1.0.24 tip; the new candidate
+must not replace that release or jump past 1.0.21–1.0.24. The current working
+version is 1.0.25, not the version deployed live. The broader first-hour XP/
+dungeon handoff, full 1.1 dungeon/party matrix and the rest of 1.1–1.10 remain open.
 
 Latest continuation completed and pushed the 1.0.21 pickup-verification successor
 after exact-source checks, then reproduced a separate fresh Fighter failure.

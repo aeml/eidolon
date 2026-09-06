@@ -2127,6 +2127,19 @@ export class GameEngine {
         if (this.player.state === 'DEAD' || this.player.stats?.hp <= 0) return;
         const previousX = this.player.position.x;
         const previousZ = this.player.position.z;
+        // Overworld-to-town recall does not receive enter_instance. Clear the
+        // old pursuit now, or its next frame can walk straight back into combat.
+        this.cancelMobilePursuit();
+        this.clearCombatIntentState();
+        this.inputManager?.clearInputState?.();
+        this.playerJumpState = null;
+        this.playerQueuedJump = false;
+        this.playerJumpLandingVisual = null;
+        this.playerJumpVisualHeight = 0;
+        this.playerCorrectionVisualState = null;
+        this.player.isCharging = false;
+        this.player.velocity?.set?.(0, 0, 0);
+        this.player.clearJumpAnimation?.();
         // Preserve the existing B-key handoff for both keyboard and menu use.
         // Authoritative instance messages finish scenery/collision replacement.
         this.player.position.set(-1.25, 0, 200);

@@ -223,6 +223,48 @@ function createEngineHarness() {
 }
 
 describe('GameEngine multiplayer respawn sync', () => {
+    test.each(['Fighter', 'Rogue', 'Wizard', 'Cleric'])('living %s recall clears pursuit and buffered travel before another frame', className => {
+        const engine = createEngineHarness();
+        engine.player.state = 'ATTACKING';
+        engine.player.stats.hp = 100;
+        engine.player.type = className;
+        const target = { id: 'old-hostile' };
+        engine.pendingInteraction = target;
+        engine.mobileCombatTarget = target;
+        engine.player.targetEntity = target;
+        engine.player.isCharging = true;
+        engine.player.velocity = new THREE.Vector3(9, 0, 0);
+        engine.player.clearJumpAnimation = jest.fn();
+        engine.playerJumpState = { progress: 0.3 };
+        engine.playerQueuedJump = true;
+        engine.playerJumpLandingVisual = {};
+        engine.playerCorrectionVisualState = {};
+        engine.abilityController = { pendingAbilityTarget: target,
+            pendingAbilitySkill: 'queued', inputBuffer: [{ skill: 'queued' }] };
+        engine.inputManager = { clearInputState: jest.fn() };
+        engine.network = { send: jest.fn() };
+        engine.syncTownRecoveryGuidance = jest.fn();
+
+        engine.requestTownRecall();
+
+        expect(engine.pendingInteraction).toBeNull();
+        expect(engine.mobileCombatTarget).toBeNull();
+        expect(engine.player.targetEntity).toBeNull();
+        expect(engine.player.targetPosition).toBeNull();
+        expect(engine.abilityController.pendingAbilityTarget).toBeNull();
+        expect(engine.abilityController.inputBuffer).toEqual([]);
+        expect(engine.playerJumpState).toBeNull();
+        expect(engine.playerQueuedJump).toBe(false);
+        expect(engine.playerJumpLandingVisual).toBeNull();
+        expect(engine.playerCorrectionVisualState).toBeNull();
+        expect(engine.player.isCharging).toBe(false);
+        expect(engine.player.velocity.length()).toBe(0);
+        expect(engine.player.clearJumpAnimation).toHaveBeenCalled();
+        expect(engine.inputManager.clearInputState).toHaveBeenCalled();
+        expect(engine.player.position).toEqual(new THREE.Vector3(-1.25, 0, 200));
+        expect(engine.network.send).toHaveBeenCalledWith('recall', { movementContext: expect.any(String) });
+    });
+
     test.each(['DEAD', 'IDLE'])('recall does not predict a town arrival for a zero-health %s actor', state => {
         const engine = createEngineHarness();
         engine.player.state = state;

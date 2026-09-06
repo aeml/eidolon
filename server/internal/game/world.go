@@ -973,6 +973,9 @@ func (w *World) spawnEliteInRect(level int, minX, maxX, minZ, maxZ float64) {
 		}
 	}
 
+	if subType == "Skeleton" {
+		x, z = lanternholdElitePosition(x, z)
+	}
 	profile := overworldEnemyCombatProfile(subType, level, true)
 
 	elite := &Entity{
@@ -1130,6 +1133,9 @@ func (w *World) spawnEnemies() {
 	// Sector 3 (Center): Lv 1-10 (Skeleton)
 	// X: -200 to 200
 	w.spawnEnemyRect("Skeleton", 300, -200, 200, -600, 1000, 10)
+	for index, point := range lanternholdStarterSpawns {
+		w.spawnOverworldEnemyAt(starterSkeletonID(index), "Skeleton", point.x, point.z, 1)
+	}
 
 	// Sector 2 (Left): Lv 10-20 (Imp)
 	// X: -600 to -200
@@ -1177,33 +1183,44 @@ func (w *World) spawnEnemyRect(subType string, count int, minX, maxX, minZ, maxZ
 			continue // Skip spawn inside town
 		}
 
-		profile := overworldEnemyCombatProfile(subType, level, false)
-
-		enemy := &Entity{
-			ID:             fmt.Sprintf("%s-%d", subType, i),
-			Type:           TypeEnemy,
-			SubType:        subType,
-			X:              x,
-			Y:              0,
-			Z:              z,
-			SpawnX:         x,
-			SpawnZ:         z,
-			BaseStats:      profile.BaseStats,
-			Health:         profile.Health,
-			MaxHealth:      profile.MaxHealth,
-			Mana:           profile.Mana,
-			MaxMana:        profile.MaxMana,
-			Damage:         profile.Damage,
-			Level:          level,
-			BaseSpeed:      profile.Speed,
-			Speed:          profile.Speed,
-			State:          "IDLE",
-			AttackSpeed:    profile.AttackSpeed,
-			AttackCooldown: profile.AttackCooldown,
-			Scale:          1.0,
+		spawnLevel := level
+		if subType == "Skeleton" {
+			if nearAuthoredStarterEncounter(x, z) {
+				continue
+			}
+			spawnLevel = lanternholdSkeletonLevel(x, z)
 		}
-		w.AddEntity(enemy)
+		w.spawnOverworldEnemyAt(fmt.Sprintf("%s-%d", subType, i), subType, x, z, spawnLevel)
 	}
+}
+
+func (w *World) spawnOverworldEnemyAt(id, subType string, x, z float64, level int) {
+	profile := overworldEnemyCombatProfile(subType, level, false)
+
+	enemy := &Entity{
+		ID:             id,
+		Type:           TypeEnemy,
+		SubType:        subType,
+		X:              x,
+		Y:              0,
+		Z:              z,
+		SpawnX:         x,
+		SpawnZ:         z,
+		BaseStats:      profile.BaseStats,
+		Health:         profile.Health,
+		MaxHealth:      profile.MaxHealth,
+		Mana:           profile.Mana,
+		MaxMana:        profile.MaxMana,
+		Damage:         profile.Damage,
+		Level:          level,
+		BaseSpeed:      profile.Speed,
+		Speed:          profile.Speed,
+		State:          "IDLE",
+		AttackSpeed:    profile.AttackSpeed,
+		AttackCooldown: profile.AttackCooldown,
+		Scale:          1.0,
+	}
+	w.AddEntity(enemy)
 }
 
 func (w *World) AddEntity(e *Entity) {

@@ -196,6 +196,17 @@ func overworldEnemyCombatProfile(subType string, level int, elite bool) enemyCom
 	if speed == 0 {
 		speed = 5.4
 	}
+	if subType == "Skeleton" && level >= 1 && level < starterEnemyLevel {
+		// Only the overworld's advertised 1–10 starter band gets this onramp.
+		// Preserve the level-ten anchor and every dungeon/family profile.
+		growth := level - 1
+		stats := Stats{Strength: 1 + 14*growth/9, Vitality: 3 + 12*growth/9,
+			Dexterity: starterEnemyDexterity, Intelligence: starterEnemyCasterStat,
+			Wisdom: starterEnemyCasterStat}
+		stats.Strength = positiveScaledStat(stats.Strength, damageMultiplier)
+		stats.Vitality = positiveScaledStat(stats.Vitality, healthMultiplier)
+		return enemyProfileFromStats(stats, speed)
+	}
 	return enemyProfileFromStats(
 		balancedEnemyStats(subType, level, healthMultiplier, damageMultiplier),
 		speed,

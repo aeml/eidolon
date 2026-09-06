@@ -1,6 +1,71 @@
 # Fresh-character progression evidence — 1.1 gate
 
-Latest result: the corrected optional opening route **passed in 93 seconds**
+## Alpha 1.0.25 candidate — an actual starter band
+
+The new local candidate addresses the reproduced encounter mismatch without
+changing saved player stats or weakening all enemies. Overworld Skeletons now
+start at level one within 45 world units outside Lanternhold's town rectangle,
+then gain a level per 20 additional units up to the unchanged level-ten anchor.
+Level-one Skeletons have 30 HP / 2 Damage, increasing toward the existing
+150 HP / 30 Damage at level ten. Levels remain tied to spawn locations rather
+than adapting to each player. Other families and dungeon profiles are unchanged.
+
+Three ordinary Skeletons have authored spawn points outside the east gate, with
+random spawns kept 16 units clear of those points. They use the normal world
+enemy, combat, loot, quest-credit and respawn systems. Ilyra explicitly describes
+the weakened risen near the wards and directs the player east. Reward amounts,
+manual completion and all dungeon/raid gates are unchanged.
+
+Focused server checks pass for the bands, monotonic starter profiles, unchanged
+level-ten/other-family/dungeon profiles, authored spawn placement and ordinary
+respawn. The full client suite passes **165 suites / 2,367 tests in 111.719 seconds**.
+The fresh Fighter repeat passes in **97 seconds**, level one → five, **zero
+deaths**, three ordinary kills and manual 100 gold / 500 XP turn-in with fresh-login
+persistence. Wizard also passes in **34 seconds** with zero deaths, three retreat
+movements and the same manual reward/persistence checks. Logs
+`/tmp/eidolon-1-0-25-fresh-fighter.log` and `/tmp/eidolon-1-0-25-fresh-Wizard.log`;
+credential scans and disposable cleanup passed. The server race suite and remaining
+class routes are pending. This candidate does not yet prove all-class opening balance, the first dungeon's
+earned-level handoff or the wider first-hour gate. It is not published ahead of
+the corrected 1.0.21 and queued 1.0.22–1.0.24 releases.
+
+Follow-up findings during candidate verification:
+
+- Rogue completed in **38 seconds**, zero deaths, level one → five with manual
+  rewards and persistence; `/tmp/eidolon-1-0-25-fresh-Rogue.log`.
+- The first full server race run failed the new starter-band scan because a
+  level-ten elite Skeleton could still spawn beside the gate (the old safe-zone
+  logic pushed it to x=120). Elites now retain their level/stats but spawn beyond
+  the starter band, within their original sector. The focused band/profile/
+  respawn checks pass ten race-enabled repetitions in 2.845 seconds. Full rerun
+  pending; retain `/tmp/eidolon-1-0-25-server-tests.log` as failed evidence.
+- Cleric earned all three kills without death, but recalled 11.2 units away from
+  the town arrival point after the next movement ticks. Overworld recall does not
+  receive `enter_instance`, so its old pending combat chase survived. Four new
+  client cases reproduced the stale intent before the fix (four failed, 50
+  existing cases passed). Living recall now clears pursuit, queued abilities,
+  held input and jump/charge movement state immediately; dead recall remains
+  unchanged. Focused tests pass; the real Cleric repeat is pending. Retain
+  `/tmp/eidolon-1-0-25-fresh-Cleric.log` and `...-recall-red.log` as failed results.
+
+The active full reruns include both the elite-placement and recall corrections;
+the earlier Fighter/Wizard/Rogue runs predate those additions. No earlier pass is
+being presented as exact-source proof of the final candidate.
+
+Final-code results so far: **Cleric passes in 43 seconds**, zero deaths, normal
+recall, manual 100 gold / 500 XP turn-in, level five and fresh-login persistence.
+Log `/tmp/eidolon-1-0-25-fresh-cleric-recall.log`, session `19863` closed. The
+real phone quest route passes in **48.9 seconds** (46.1-second body), including
+touch movement, Menu → Recall, manual turn-in, reply/next offer, rewards and
+saved progress. It uses functional level-30/waypoint preparation, unlike the
+fresh desktop routes; it is not phone first-hour balance evidence. Log
+`/tmp/eidolon-1-0-25-phone-quests.log`, session `47133` closed. Credential scans
+and disposable cleanup passed for both. The final client suite passes **165
+suites / 2,371 tests in 124.612 seconds**, plus lint; the full server race rerun
+remains pending. The four recall regressions and prior cases pass together with
+version checks: **252 tests in two suites, 6.85 seconds**.
+
+Before the starting-area correction, the optional opening route **passed in 93 seconds**
 (1.6 minutes including overhead), fresh Wizard level one → six, three earned
 Skeleton kills, 18 real retreat movements and **one death**. Normal respawn,
 manual Ilyra completion, 100 quest gold / 500 quest XP, the next unaccepted offer
