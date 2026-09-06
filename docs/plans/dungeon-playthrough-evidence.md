@@ -49,6 +49,17 @@ it must observe all four server-accepted skill events by the first boss death.
 
 ## Recorded full runs
 
+September 6, third-class full run: clean
+`fba546a4994f4190b60e496ecb1e8e8ec5665ab3` passed **Rogue Verdant in 8.9 minutes**
+(test body 8.8), Normal 30, generator 2 / attempt 0, seed
+`-7334011171890423023`. Normal mouse/basic and primary-ability inputs defeated
+Rootbound Warden, Briar Matron, Rustbound Colossus and Hollow Sentinel, cleared
+every encounter room, awarded gold and preserved seed/boss progress/gold across
+completed-run recall and re-entry. Credential scan and disposable cleanup passed;
+log `/tmp/eidolon-1-0-23-verdant-full-rogue.log`, session `37673` closed. This uses
+the documented level-100/entrance-protection setup and does not verify Rogue
+specialization hotbars/runes, fresh-level balance, Chronicle credit or party combat.
+
 September 6, earned Earth campaign: `d5b4320` plus the Alpha 1.0.23 inventory-sync
 correction passed **10.1 minutes** of real Wizard play, Normal 30, generator 2 /
 attempt 0, seed `-3877784623499751578`. The dedicated `chronicle-earth` isolated

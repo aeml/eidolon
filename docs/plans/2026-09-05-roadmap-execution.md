@@ -26,6 +26,24 @@ complete CI/live verification. The original 1.0.14 failure remains recorded belo
 
 ## September 6 continuation — dungeon class and campaign evidence
 
+Latest continuation: the preceding goal turn was progress (1.0.23's sync repair
+and earned Earth route). Clean `fba546a` subsequently passed a full Rogue Verdant
+run in **8.9 minutes**, seed `-7334011171890423023`, Normal 30, generator 2 /
+attempt 0, all four bosses/rooms, gold and preserved completed-run recall/re-entry.
+Credential scan and cleanup passed; session `37673` is closed. It adds class/
+layout evidence, not the full skill/party/level-appropriate matrix.
+
+The next phone-menu/HUD implementation is isolated in worktree
+`/tmp/eidolon-phone-hud-uGi4ZU`, branch `feature/phone-hud-composition`, based on
+`fba546a`. The current working design moves five navigation shortcuts into the
+existing menu, keeps Back outside its scroller, enlarges health/resource text and
+removes the reproduced short-landscape header overlap. Party-target ergonomics
+remain separate; do not collapse all party targeting without Cleric verification.
+Initial checks pass 164 client suites / 2,358 tests and lint. Browser layout checks
+are running in `/tmp/eidolon-phone-hub-layout.log` (session `72794`); this is not
+yet a versioned, verified or published release. Runtime changes were made only
+in that worktree while the clean main-source Rogue browser ran.
+
 The previous goal turn completed the Settings/adventure candidates and exact-source
 checks; it was progress, not completion of the roadmap. This continuation started
 by confirming 1.0.19's CI was still live. It subsequently passed predeploy QA and
