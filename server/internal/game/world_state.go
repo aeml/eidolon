@@ -75,6 +75,8 @@ func (w *World) GetState() map[string]*Entity {
 			VelZ:              v.VelZ,
 			Radius:            v.Radius,
 			SpiritsActive:     v.SpiritsActive,
+			WhirlwindActive:   v.WhirlwindActive && !v.Disconnected,
+			WhirlwindEndTime:  v.WhirlwindEndTime,
 			SpiritEndTime:     v.SpiritEndTime,
 			LastSpiritTick:    v.LastSpiritTick,
 			IsCharging:        v.IsCharging,

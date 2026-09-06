@@ -1196,7 +1196,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 1.0.12</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 1.0.13</span>');
         expect(html).toContain('<button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');
@@ -1205,6 +1205,24 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/\.start-version-row\s*\{[^}]*grid-column:\s*1 \/ -1;[^}]*text-align:\s*center;/s);
         expect(css).toMatch(/\.start-version-row__label\s*\{[^}]*color:\s*var\(--entry-muted\);/s);
         expect(css).toMatch(/\.start-version-row__link\s*\{[^}]*color:\s*var\(--entry-gold\);[^}]*cursor:\s*pointer;/s);
+    });
+
+    test('login quietly credits the open-source project with a safe GitHub link', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const template = document.createElement('template');
+        template.innerHTML = html;
+        const note = template.content.querySelector('#login-panel .auth-project-note');
+        expect(note.textContent).toContain('Eidolon is an open-source project.');
+        const link = note.querySelector('a');
+        expect(link.getAttribute('href')).toBe('https://github.com/aeml/eidolon');
+        expect(link.getAttribute('target')).toBe('_blank');
+        expect(link.relList.contains('noopener')).toBe(true);
+        expect(link.relList.contains('noreferrer')).toBe(true);
+        expect(link.getAttribute('aria-label')).toBe('View on GitHub (opens in a new tab)');
+
+        const css = readFileSync(startScreenCssPath, 'utf8');
+        expect(css).toMatch(/\.auth-project-note\s*\{[^}]*color:\s*var\(--entry-muted\);/s);
+        expect(css).toMatch(/\.auth-project-note a:focus-visible\s*\{[^}]*outline:\s*2px solid var\(--entry-gold\);/s);
     });
 
     test('start flow panel uses shared shell body and copy classes', () => {

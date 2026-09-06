@@ -180,3 +180,32 @@ A focused in-room segment benchmark on this host's AMD Ryzen 7 5700G measured
 45.13 ns/op, 0 B/op and 0 allocations. This is a hot-path check, not a whole-game
 performance or concurrency claim. The completed Molten run predates this repair
 and cannot verify it.
+
+## Complete Tempest Spire — clean Alpha 1.0.12 candidate
+
+The complete generated Tempest route passed in **31.5 minutes** (31.6 including
+browser overhead), `/tmp/eidolon-1-0-12-tempest-full.log`. Source was clean
+`fd93bd3b89d1817762df757a6568e14be8dd1794`, seed
+`-5249240270438193008`, generator 2 attempt 0, Normal 70, Fighter level 100.
+Ordinary controls defeated Windshear, Stormcallers, Roc Matriarch, Thunderlord
+Kaelix and Zephyrion, then completed-run recall/re-entry preserved the seed,
+cleared bosses and gold. The run used the authored defensive build and the
+eight-minute encounter ceiling; it is not a level-appropriate balance benchmark.
+Credential scanning passed and the disposable services/data were removed.
+
+This evidence predates the local Whirlwind duration implementation and cannot
+verify it. One class/seed/solo clear does not close the all-class, party,
+three-generated-instance or campaign quest/raid-unlock requirements.
+
+## Complete Verdant after Whirlwind duration repair — 1.0.13 candidate
+
+The fresh complete Verdant route **passed in 8.7 minutes** (8.8 including browser
+overhead), `/tmp/eidolon-1-0-13-verdant-full.log`. Source was `fd93bd3` with the
+local 1.0.13 candidate changes, seed `4391125778650393874`, generator 2 attempt 0,
+Normal 30, Fighter 100. All four bosses died by ordinary attacks/hotbar controls;
+completed-run recall/re-entry preserved the seed, cleared bosses and gold.
+The normal defensive build selected Bloodwhirl, Fortify and Iron Fortress's
+Extended rune. Credential scanning passed and the disposable services/data were
+removed. This run includes the new server-owned Whirlwind pulses, unlike the
+earlier clean Tempest run. It remains one solo functional route, not a campaign
+quest/raid-unlock, party, level-appropriate balance or all-class completion claim.

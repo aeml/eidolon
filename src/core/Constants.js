@@ -487,7 +487,7 @@ export const CONSTANTS = {
             { id: "charge_shockwave", name: "Shockwave", skill: "Charge", unlockLevel: 70, description: "Ends with knockback AoE (5 unit radius)" },
             { id: "charge_unstoppable", name: "Unstoppable", skill: "Charge", unlockLevel: 90, description: "CC immune during charge, +20% armor for 5s after" },
             // Whirlwind Runes
-            { id: "whirlwind_extended", name: "Extended", skill: "Whirlwind", unlockLevel: 50, description: "+100% duration, -50% damage" },
+            { id: "whirlwind_extended", name: "Extended", skill: "Whirlwind", unlockLevel: 50, description: "+100% duration, -50% damage per pulse" },
             { id: "whirlwind_bladestorm", name: "Bladestorm", skill: "Whirlwind", unlockLevel: 70, description: "Pulls enemies toward you" },
             { id: "whirlwind_bloodwhirl", name: "Bloodwhirl", skill: "Whirlwind", unlockLevel: 90, description: "Heals 2% HP per enemy hit" },
             // Shield Slam Runes

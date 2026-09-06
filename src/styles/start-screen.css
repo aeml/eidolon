@@ -236,6 +236,33 @@
     min-height: 20px;
 }
 
+.auth-project-note {
+    margin: 0;
+    color: var(--entry-muted);
+    font-size: 12px;
+    line-height: 1.6;
+    text-align: center;
+}
+
+.auth-project-note a {
+    display: inline-block;
+    padding: 4px 6px;
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    border-radius: 3px;
+}
+
+.auth-project-note a:hover {
+    color: var(--entry-gold);
+}
+
+.auth-project-note a:focus-visible {
+    color: var(--entry-gold);
+    outline: 2px solid var(--entry-gold);
+    outline-offset: 3px;
+}
+
 #btn-login {
     background: linear-gradient(#dbc38f, #b99a60);
     color: #191b1f;

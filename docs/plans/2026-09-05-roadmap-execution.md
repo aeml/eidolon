@@ -963,6 +963,84 @@ whitespace validation. The candidate is ready for a local commit and a new
 clean-source full Tempest run. Publishing still waits for 1.0.11's complete
 deployment and post-live verification; the full 1.1–1.10 roadmap remains active.
 
+### Continued rune duration audit — unpublished after 1.0.12 candidate
+
+The previous goal turn made implementation/release progress: committed 1.0.12
+as `fd93bd3b89d1817762df757a6568e14be8dd1794` after final checks. It remains
+local, behind 1.0.11's post-live gate. CI `34009078308` passed both deployments
+and live anonymous/persistent-character QA; four-class/remote-animation QA is
+still running at this continuation's latest check. Public frontend release,
+backend health, login label and entrypoint query were verified at exact 1.0.11
+commit `ba4a32e5477da6f13105f278eb5f40a207abe241`.
+
+The clean-`fd93bd3` full Tempest Fighter rerun is live in
+`/tmp/eidolon-1-0-12-tempest-full.log`, session `27831`, seed
+`-5249240270438193008`, generator 2 attempt 0, Normal 70. Windshear, Stormcallers
+and Roc Matriarch are dead at the latest observation. It uses ordinary
+Bloodwhirl/Fortify/Extended defenses and the eight-minute per-encounter ceiling.
+It is not a completed run and its built server cannot verify the newer local
+Whirlwind edits below. No client runtime or active QA shell-script edits were
+made during this clean-source run.
+
+Two actual-cast regressions reproduced missing Whirlwind activation for both
+base and Extended, `/tmp/eidolon-whirlwind-duration-red.log`. The local repair
+uses the existing authored one-second Fighter spin and half-second pulse cadence:
+base has two pulses, Extended has four over two seconds. Each Extended pulse has
+half the normal pulse's raw damage (integer rounding distributed across pulses).
+The former instant cast's raw damage budget, including its talent/combo bonus,
+is preserved, not multiplied by the number of ticks. This deliberately changes
+base Whirlwind from an instant hit to damage over its spin; final post-mitigation
+damage can still vary with normal combat effects on each pulse.
+
+The server owns an independent pulse clock, snapshots the cast budget, and
+rechecks current target range, relationship, instance and canonical walls per
+pulse. Bloodwhirl healing and Bladestorm pulls occur once per distinct enemy per
+cast. Death, disconnection, scene reset, expiry and instance change terminate
+the spin; late updates do not replay an already-expired cast. Attacker snapshots
+are captured before target locking, retaining party identity and safe-zone
+coordinates. The old manually activated tick fixture now uses a real Extended
+cast followed by a later pulse.
+
+Focused race checks pass in 16.272 seconds, then expanded checks pass in 19.432
+seconds, `/tmp/eidolon-whirlwind-expanded.log`, covering duration, exact budget,
+independent timers, range/wall rechecks, rune side-effect limits, cancellation,
+combo capture and an ordinary later-pulse kill with gold rewards. An additional
+parallel shared-enemy/party-safety race check passes in 1.352 seconds,
+`/tmp/eidolon-whirlwind-parallel.log`.
+
+New server protobuf fields 110/111 carry active state and remaining duration;
+entity broadcast copies preserve that presentation state without copying private
+pulse maps/budgets. Observer change detection includes expiry and elapsed time.
+The full-server run in `/tmp/eidolon-whirlwind-server-full.log` first exposed a
+test-only 100 ms allowance around copying a whole world. The copy test now
+requires the exact preserved deadline and a positive, bounded remaining time;
+the focused protocol race rerun passes in 1.565 seconds,
+`/tmp/eidolon-whirlwind-protocol-corrected.log`. The original full game-package
+run is still executing; a final full rerun is required after test refinements.
+
+This rune work is **not release-ready**: client protobuf generation, local and
+remote animation/effect timing, late-observer and cancellation presentation,
+real browser casting, final full checks, version metadata and patch notes remain
+to do. The running Tempest test retains the unmodified 1.0.12 client graph; only
+the server protobuf output was regenerated so far. No 1.1 or later milestone is
+closed by these local changes.
+
+The initial full game-package race run passed in **242.803 seconds**; that
+overall invocation failed only the copy-timing assertion described above. The
+corrected full-server rerun then **passed**, game package **242.828 seconds**,
+`/tmp/eidolon-whirlwind-server-final.log`. A final inactive-path optimization
+(avoid unlocking/relocking actors that are not spinning) passes focused race
+checks in 5.765 seconds. A normal entity-update/copy-path test was also added;
+the full check including these last refinements is running in
+`/tmp/eidolon-whirlwind-server-current.log`. These results do not establish
+client animation agreement or release readiness.
+
+Tempest has now defeated Thunderlord Kaelix as well as its first three bosses
+and is clearing the route to Zephyrion on the same clean source/seed/process.
+The 1.0.11 CI watcher remains live (`/tmp/eidolon-1-0-11-ci-watch.log`), still
+in four-class and remote-animation QA. The committed 1.0.12 candidate has not
+been pushed ahead of that gate.
+
 Tempest has defeated Windshear, Stormcallers and Roc Matriarch and is fighting
 Thunderlord Kaelix on the same clean-1.0.11 process/seed. This is progress, not a
 complete clear; the current local fixes are absent from that running server.
@@ -970,3 +1048,108 @@ complete clear; the current local fixes are absent from that running server.
 1.1 remains open until all five dungeon reports meet their acceptance criteria,
 alongside onboarding/reconnect and the initial PvP corrections. Releases 1.2
 through 1.10 remain unimplemented roadmap work; none is closed by this hotfix.
+
+## September 6 continuation — Tempest complete, Whirlwind client integration
+
+The previous turn made concrete progress: the requested subtle open-source
+credit and GitHub link are implemented beneath the login controls. All 70 menu
+tests, lint, and desktop/mobile keyboard browser checks pass. The link opens the
+actual repository in a separate tab without opener access. This remains local.
+
+The clean 1.0.12 Tempest run above is now **terminal PASS**, all five bosses plus
+completed recall/re-entry, 31.5 minutes, seed `-5249240270438193008`. Its full
+evidence is recorded in `dungeon-playthrough-evidence.md`. Alpha 1.0.11 CI
+`34009078308` completed all gates successfully. Alpha 1.0.12 was pushed as
+`fd93bd3b89d1817762df757a6568e14be8dd1794`; CI `34011698025` has passed client,
+server and browser smoke and is now running predeploy character QA. Neither a
+queued nor a running deployment gate is a verified live release.
+
+The final full server race run including the Whirlwind inactive-path refinement
+and normal entity-update/copy regression **passed**, game package 200.263 seconds,
+`/tmp/eidolon-whirlwind-server-current.log`. After the clean Tempest process ended,
+client protobuf was regenerated and local/remote presentation integrated. Base
+and Extended spin meshes follow the caster for one and two seconds respectively;
+authoritative remaining time supports late observers, explicit stop, and event
+deduplication. Predicted rejection and death/removal/disposal clear the effect.
+
+Twelve initial real-Three presentation regressions failed before integration,
+then passed; expanded coverage now passes **18 tests**, including protobuf false
+defaults, late observers, rejected predictions, acknowledged repeat rejection
+and cancellation. The earlier complete client check passed 153 suites / 2,232
+tests; later additions require a fresh final run. Extended's tooltip now explicitly
+says its damage reduction is **per pulse**, in both client and server catalogs.
+The new ordinary-input dungeon browser route is running against a fresh disposable
+server in `/tmp/eidolon-whirlwind-browser.log`; its outcome is not yet established.
+No version beyond 1.0.12 has been prepared or deployed, and the full roadmap gates
+remain open.
+
+### Alpha 1.0.13 candidate — hold the whirlwind
+
+Version defaults, the login label and patch history are now prepared for 1.0.13.
+Notes explicitly describe the change from an instant hit to two pulses, Extended's
+four half-damage pulses, per-target side-effect limits, duration presentation and
+the open-source login credit. All previous release entries remain intact.
+
+The first actual browser route failed after its first successful High-quality
+cast: a late positive snapshot recreated an expired effect for approximately
+11 milliseconds. A regression reproduced the extra mesh; synchronization now
+remembers the preceding authoritative remaining time and rejects a decreasing
+tail snapshot after local expiry. A new cast can start after a clear or newly
+increased duration. All **19** presentation tests pass after this correction.
+
+The fresh-server corrected browser route passed **27.8 seconds**, followed by
+the versioned candidate and dedicated CI account route passing **27.5 seconds**,
+`/tmp/eidolon-1-0-13-whirlwind-browser.log`. Both exercise base/Extended at High/Low,
+ordinary movement, authoritative acknowledgment, duration and no duplicated
+effect. Artifact credential scanning passed and disposable services were removed.
+The route is included in the full predeploy sequence, not only a manual command.
+
+Final full client/server checks are running in `/tmp/eidolon-1-0-13-client.log`
+and `/tmp/eidolon-1-0-13-server.log`. A fresh complete Verdant Fighter run is live
+in `/tmp/eidolon-1-0-13-verdant-full.log`; this is deliberately after the Whirlwind
+damage-timing change, unlike the earlier clean Tempest evidence. These pending
+checks are not yet passes. Alpha 1.0.12 remains in predeploy full-character QA;
+the next candidate has not been pushed ahead of that release's live gates.
+
+### Added scope: phone playability (September 6 player report)
+
+The main roadmap now explicitly treats usable phone framing, HUD, touch controls
+and core menus as a **1.1 release gate**, with a complete portrait/landscape visual
+redesign in **1.2**, touch-combat/performance refinement in **1.3**, retained mobile
+flows through later features, and physical-device evidence required for **1.10**.
+The player reports excessive mandatory zoom-out and unusably small/awkward UI.
+Source inspection confirms aspect-scaled orthographic horizontal framing and
+fixed-offset touch controls; the exact physical-phone failures still need reproduction.
+This is a roadmap change, not a claim of a shipped mobile fix. It includes readable
+UI independent of world zoom, no keyboard/hover-only actions, safe-area/keyboard
+handling, always-available visible chat, and real Android/iOS testing.
+
+The final 1.0.13 client run passed **153 suites / 2,241 tests**, 110.341 seconds;
+lint also passed. The full server race and Verdant playthrough remain live at this
+update. Verdant seed `4391125778650393874`, generator 2 attempt 0, Normal 30,
+Fighter 100, has reached and is damaging Rootbound Warden through ordinary combat.
+
+The final full server race check subsequently **passed**, game package 239.040
+seconds, `/tmp/eidolon-1-0-13-server.log`. The same Verdant process has defeated
+Rootbound Warden and Briar Matron; the remaining bosses and recall/re-entry are
+still pending, not a complete-run pass.
+
+The Verdant process subsequently **passed in 8.7 minutes**, all four bosses and
+completed recall/re-entry with preserved seed/boss/gold state. This is the first
+complete dungeon evidence containing the Whirlwind duration changes; replay details
+are in the dungeon evidence document. The final anonymous browser suite is running
+in `/tmp/eidolon-1-0-13-anonymous.log` before candidate commit.
+
+The new `mobile-playability-evidence.md` records concrete phone baseline findings:
+aspect-ratio camera span, 10px mobile HUD/chat text, 36px scaled landscape skill/
+interact targets, and a production InputManager/jsdom reproduction where a
+two-finger gesture over the quest list emits a world zoom callback. This is
+diagnostic evidence for the upcoming phone work, not a claimed mobile fix.
+
+Final candidate anonymous checks **passed all nine tests**, including the new
+desktop/mobile login-credit route, release/dependency surface, canonical dungeon
+floors, menu layers, raid menus and responsive entry flow. Together with the
+153-suite client pass, full server race pass, ordinary Whirlwind casts and complete
+Verdant run above, this permits committing the 1.0.13 candidate. Publication still
+waits for 1.0.12's terminal live gates; watcher session `1678` follows CI
+`34011698025` in `/tmp/eidolon-1-0-12-ci-watch.log` without restarting it.

@@ -237,7 +237,10 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		}
 	}
 
+	whirlwindDuration := e.WhirlwindRemaining(time.Now())
 	snap := &EntitySnapshot{
+		WhirlwindActive:            whirlwindDuration > 0,
+		WhirlwindDuration:          whirlwindDuration,
 		X:                          e.X,
 		Z:                          e.Z,
 		Y:                          e.Y,
@@ -334,6 +337,8 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	cbodyRadius := current.ReplicatedBodyRadius()
 	cisCharging := current.IsCharging
 	cspiritsActive := current.SpiritsActive
+	cwhirlwindDuration := current.WhirlwindRemaining(time.Now())
+	cwhirlwindActive := cwhirlwindDuration > 0
 	cspiritsBoosted := current.SpiritsBoosted
 	cguardianEmbraceActive := current.GuardianEmbraceActive
 	cblessingResolveActive := current.BlessingResolveActive
@@ -601,6 +606,9 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 		return true
 	}
 	if cspiritsActive != last.SpiritsActive {
+		return true
+	}
+	if cwhirlwindActive != last.WhirlwindActive || math.Abs(cwhirlwindDuration-last.WhirlwindDuration) > 0.05 {
 		return true
 	}
 	if cspiritsBoosted != last.SpiritsBoosted {
@@ -1110,7 +1118,10 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		}
 	}
 
+	whirlwindDuration := e.WhirlwindRemaining(time.Now())
 	out := &statepb.Entity{
+		WhirlwindActive:            whirlwindDuration > 0,
+		WhirlwindDuration:          float32(whirlwindDuration),
 		Id:                         e.ID,
 		InstanceId:                 e.InstanceID,
 		Name:                       e.Name,

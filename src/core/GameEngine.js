@@ -8,6 +8,7 @@ import { NetworkManager } from './NetworkManager.js';
 import { AbilityController } from './AbilityController.js';
 import { CONSTANTS } from './Constants.js';
 import { resolveDungeonBeamEndpoint } from '../skills/dungeonEffectGeometry.js';
+import { syncWhirlwindPresentation } from '../skills/whirlwindPresentation.js';
 import { UIBindings } from './UIBindings.js';
 import { SocialPresenceController } from './SocialPresenceController.js';
 import { RARITY } from './ItemSystem.js';
@@ -791,6 +792,7 @@ export class GameEngine {
     }
 
     syncRemoteSupportEffects(remoteEntity, payload) {
+        syncWhirlwindPresentation(this, remoteEntity, payload);
         Object.entries(REMOTE_EFFECT_SYNC_CONFIG).forEach(([supportKey, config]) => {
             const payloadKeys = config.payloadKeys || [config.payloadKey];
             const hasRelevantPayload = payloadKeys.some((key) => payload[key] !== undefined);
@@ -947,6 +949,9 @@ export class GameEngine {
     }
 
     spawnTransientEffect(type, position, color, options = {}) {
+        if (type === 'spin' && options.abilityName === 'Whirlwind' && options.source?.whirlwindCastEffect?.isActive) {
+            return true;
+        }
         let effectPosition = position;
         if (type === 'beam' && options.abilityName === 'Scorch Beam' && options.source?.position) {
             const walkRects = this.currentInstanceId && this.currentInstanceType !== 'overworld'

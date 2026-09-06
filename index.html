@@ -334,7 +334,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.12</span>
+                <span class="start-version-row__label">Alpha 1.0.13</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -370,6 +370,9 @@
                 </div>
                 
                 <div id="auth-status" class="auth-status" role="status" aria-live="polite"></div>
+                <p class="auth-project-note">Eidolon is an open-source project.<br>
+                    <a href="https://github.com/aeml/eidolon" target="_blank" rel="noopener noreferrer" aria-label="View on GitHub (opens in a new tab)">View on GitHub</a>
+                </p>
             </div>
 
             <div id="play-container" class="play-container">
@@ -653,6 +656,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.13">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.13 (hold the whirlwind)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Whirlwind lasts through its spin:</strong> Multiplayer Whirlwind now deals its damage over two pulses in one second instead of one instant hit. Extended doubles the duration and pulse count while halving damage per pulse, preserving the cast's raw damage budget.</li>
+                        <li><strong>Every pulse checks its target:</strong> Moving enemies must still be within reach, in your instance and reachable through dungeon walls. Bloodwhirl healing and Bladestorm pulls apply once per enemy per cast. Death, disconnection and scene changes stop the spin.</li>
+                        <li><strong>The tempest travels with you:</strong> Local and remote Whirlwind effects follow the caster and use the server's remaining duration. Late observers see the remaining spin, rejected predictions clear, and the final snapshot no longer creates a brief extra flash.</li>
+                        <li><strong>Built in the open:</strong> The login screen quietly identifies Eidolon as an open-source project and links to its GitHub repository in a new tab.</li>
+                        <li><strong>Dungeon verification continues:</strong> Base and Extended casts are checked through ordinary controls at High and Low quality. The full all-class, party and campaign dungeon milestone remains open.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.0.12">
                     <h3 class="patch-note-entry__title">Alpha 1.0.12 (a clear line of fire)</h3>
                     <ul class="patch-note-entry__list">

@@ -96,6 +96,7 @@ func (w *World) PerformRecall(playerID string) error {
 // Scene changes invalidate destinations and motion from the departed instance.
 // Keep cooldowns and buffs intact; changing scenes is not an ability reset.
 func resetSceneMovementLocked(player *Entity) {
+	clearWhirlwindLocked(player)
 	player.State = "IDLE"
 	player.Y = 0
 	player.TargetID = ""

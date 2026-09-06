@@ -3501,6 +3501,8 @@ export const eidolon = $root.eidolon = (() => {
              * @property {string|null} [guildId] Entity guildId
              * @property {string|null} [guildTag] Entity guildTag
              * @property {number|null} [bodyRadius] Entity bodyRadius
+             * @property {boolean|null} [whirlwindActive] Entity whirlwindActive
+             * @property {number|null} [whirlwindDuration] Entity whirlwindDuration
              * @property {number|null} [jumpStartX] Entity jumpStartX
              * @property {number|null} [jumpStartY] Entity jumpStartY
              * @property {number|null} [jumpStartZ] Entity jumpStartZ
@@ -4348,6 +4350,22 @@ export const eidolon = $root.eidolon = (() => {
             Entity.prototype.bodyRadius = 0;
 
             /**
+             * Entity whirlwindActive.
+             * @member {boolean} whirlwindActive
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.whirlwindActive = false;
+
+            /**
+             * Entity whirlwindDuration.
+             * @member {number} whirlwindDuration
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.whirlwindDuration = 0;
+
+            /**
              * Entity jumpStartX.
              * @member {number} jumpStartX
              * @memberof eidolon.state.Entity
@@ -4677,6 +4695,10 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 108, wireType 2 =*/866).string(message.guildTag);
                 if (message.bodyRadius != null && $Object.hasOwnProperty.call(message, "bodyRadius") && !$Object.is(message.bodyRadius, 0))
                     writer.uint32(/* id 109, wireType 5 =*/877).float(message.bodyRadius);
+                if (message.whirlwindActive != null && $Object.hasOwnProperty.call(message, "whirlwindActive") && message.whirlwindActive !== false)
+                    writer.uint32(/* id 110, wireType 0 =*/880).bool(message.whirlwindActive);
+                if (message.whirlwindDuration != null && $Object.hasOwnProperty.call(message, "whirlwindDuration") && !$Object.is(message.whirlwindDuration, 0))
+                    writer.uint32(/* id 111, wireType 5 =*/893).float(message.whirlwindDuration);
                 if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
                     for (let i = 0; i < message.$unknowns.length; ++i)
                         writer.raw(message.$unknowns[i]);
@@ -5675,6 +5697,24 @@ export const eidolon = $root.eidolon = (() => {
                                 delete message.bodyRadius;
                             continue;
                         }
+                    case 110: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.whirlwindActive = value;
+                            else
+                                delete message.whirlwindActive;
+                            continue;
+                        }
+                    case 111: {
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.whirlwindDuration = value;
+                            else
+                                delete message.whirlwindDuration;
+                            continue;
+                        }
                     case 81: {
                             if (wireType !== 5)
                                 break;
@@ -6136,6 +6176,12 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.bodyRadius != null && $Object.hasOwnProperty.call(message, "bodyRadius"))
                     if (typeof message.bodyRadius !== "number")
                         return "bodyRadius: number expected";
+                if (message.whirlwindActive != null && $Object.hasOwnProperty.call(message, "whirlwindActive"))
+                    if (typeof message.whirlwindActive !== "boolean")
+                        return "whirlwindActive: boolean expected";
+                if (message.whirlwindDuration != null && $Object.hasOwnProperty.call(message, "whirlwindDuration"))
+                    if (typeof message.whirlwindDuration !== "number")
+                        return "whirlwindDuration: number expected";
                 if (message.jumpStartX != null && $Object.hasOwnProperty.call(message, "jumpStartX"))
                     if (typeof message.jumpStartX !== "number")
                         return "jumpStartX: number expected";
@@ -6549,6 +6595,12 @@ export const eidolon = $root.eidolon = (() => {
                 if (object.bodyRadius != null)
                     if (!$Object.is($Number(object.bodyRadius), 0))
                         message.bodyRadius = $Number(object.bodyRadius);
+                if (object.whirlwindActive != null)
+                    if (object.whirlwindActive)
+                        message.whirlwindActive = $Boolean(object.whirlwindActive);
+                if (object.whirlwindDuration != null)
+                    if (!$Object.is($Number(object.whirlwindDuration), 0))
+                        message.whirlwindDuration = $Number(object.whirlwindDuration);
                 if (object.jumpStartX != null)
                     if (!$Object.is($Number(object.jumpStartX), 0))
                         message.jumpStartX = $Number(object.jumpStartX);
@@ -6722,6 +6774,8 @@ export const eidolon = $root.eidolon = (() => {
                     object.guildId = "";
                     object.guildTag = "";
                     object.bodyRadius = 0;
+                    object.whirlwindActive = false;
+                    object.whirlwindDuration = 0;
                 }
                 if (message.id != null && $Object.hasOwnProperty.call(message, "id"))
                     object.id = message.id;
@@ -6984,6 +7038,10 @@ export const eidolon = $root.eidolon = (() => {
                     object.guildTag = message.guildTag;
                 if (message.bodyRadius != null && $Object.hasOwnProperty.call(message, "bodyRadius"))
                     object.bodyRadius = options.json && !$isFinite(message.bodyRadius) ? $String(message.bodyRadius) : message.bodyRadius;
+                if (message.whirlwindActive != null && $Object.hasOwnProperty.call(message, "whirlwindActive"))
+                    object.whirlwindActive = message.whirlwindActive;
+                if (message.whirlwindDuration != null && $Object.hasOwnProperty.call(message, "whirlwindDuration"))
+                    object.whirlwindDuration = options.json && !$isFinite(message.whirlwindDuration) ? $String(message.whirlwindDuration) : message.whirlwindDuration;
                 return object;
             };
 

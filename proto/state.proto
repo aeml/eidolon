@@ -223,6 +223,9 @@ message Entity {
   string guild_tag = 108;
   // Authoritative actor collision footprint, independent of model decoration.
   float body_radius = 109;
+  // Authoritative sustained spin, including remaining time for new observers.
+  bool whirlwind_active = 110;
+  float whirlwind_duration = 111;
 
   // Authoritative jump replication
   float jump_start_x = 81;

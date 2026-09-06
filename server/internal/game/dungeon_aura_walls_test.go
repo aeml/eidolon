@@ -86,16 +86,18 @@ func TestDungeonRoarWallRulePreservesFriendlyBuff(t *testing.T) {
 	}
 }
 
-// Cover the existing active-state tick branch separately. This is not proof
-// that selecting the Extended rune currently activates that state.
+// Exercise a later pulse after a real rune cast, not an injected active flag.
 func TestDungeonActiveWhirlwindTickRespectsWalls(t *testing.T) {
 	for _, doorway := range []bool{false, true} {
 		t.Run(fmt.Sprint(doorway), func(t *testing.T) {
 			w, p, target := directSkillWallFixture("Fighter", doorway)
-			p.WhirlwindActive = true
-			p.WhirlwindEndTime = time.Now().Add(time.Second)
+			p.UnlockedSkills = []string{"Whirlwind"}
+			p.SkillRunes = map[string]string{"Whirlwind": "whirlwind_extended"}
+			if result := w.PerformAbility(p.ID, target.X, target.Z, "", "Whirlwind"); !result.Accepted {
+				t.Fatal(result)
+			}
 			health := target.Health
-			w.updateEntity(p, 0.05, nil, &deferredActions{})
+			w.updateWhirlwind(p, p.WhirlwindStartTime.Add(500*time.Millisecond), &deferredActions{})
 			if doorway && target.Health >= health {
 				t.Fatal("open doorway prevented active Whirlwind tick")
 			}

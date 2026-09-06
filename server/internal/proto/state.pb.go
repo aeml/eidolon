@@ -851,6 +851,9 @@ type Entity struct {
 	GuildTag string `protobuf:"bytes,108,opt,name=guild_tag,json=guildTag,proto3" json:"guild_tag,omitempty"`
 	// Authoritative actor collision footprint, independent of model decoration.
 	BodyRadius float32 `protobuf:"fixed32,109,opt,name=body_radius,json=bodyRadius,proto3" json:"body_radius,omitempty"`
+	// Authoritative sustained spin, including remaining time for new observers.
+	WhirlwindActive   bool    `protobuf:"varint,110,opt,name=whirlwind_active,json=whirlwindActive,proto3" json:"whirlwind_active,omitempty"`
+	WhirlwindDuration float32 `protobuf:"fixed32,111,opt,name=whirlwind_duration,json=whirlwindDuration,proto3" json:"whirlwind_duration,omitempty"`
 	// Authoritative jump replication
 	JumpStartX    float32 `protobuf:"fixed32,81,opt,name=jump_start_x,json=jumpStartX,proto3" json:"jump_start_x,omitempty"`
 	JumpStartY    float32 `protobuf:"fixed32,82,opt,name=jump_start_y,json=jumpStartY,proto3" json:"jump_start_y,omitempty"`
@@ -1595,6 +1598,20 @@ func (x *Entity) GetBodyRadius() float32 {
 	return 0
 }
 
+func (x *Entity) GetWhirlwindActive() bool {
+	if x != nil {
+		return x.WhirlwindActive
+	}
+	return false
+}
+
+func (x *Entity) GetWhirlwindDuration() float32 {
+	if x != nil {
+		return x.WhirlwindDuration
+	}
+	return 0
+}
+
 func (x *Entity) GetJumpStartX() float32 {
 	if x != nil {
 		return x.JumpStartX
@@ -1738,7 +1755,7 @@ const file_state_proto_rawDesc = "" +
 	"\n" +
 	"StatsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\xa6\"\n" +
+	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\x80#\n" +
 	"\x06Entity\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
 	"\vinstance_id\x18\x02 \x01(\tR\n" +
@@ -1852,7 +1869,9 @@ const file_state_proto_rawDesc = "" +
 	"\bguild_id\x18k \x01(\tR\aguildId\x12\x1b\n" +
 	"\tguild_tag\x18l \x01(\tR\bguildTag\x12\x1f\n" +
 	"\vbody_radius\x18m \x01(\x02R\n" +
-	"bodyRadius\x12 \n" +
+	"bodyRadius\x12)\n" +
+	"\x10whirlwind_active\x18n \x01(\bR\x0fwhirlwindActive\x12-\n" +
+	"\x12whirlwind_duration\x18o \x01(\x02R\x11whirlwindDuration\x12 \n" +
 	"\fjump_start_x\x18Q \x01(\x02R\n" +
 	"jumpStartX\x12 \n" +
 	"\fjump_start_y\x18R \x01(\x02R\n" +

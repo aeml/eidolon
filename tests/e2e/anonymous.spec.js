@@ -6,6 +6,26 @@ import {
     openGame
 } from './helpers.js';
 
+test('login project credit stays readable and keyboard-accessible on desktop and mobile', async ({ page }) => {
+    await openGame(page);
+    const note = page.locator('#login-panel .auth-project-note');
+    const link = note.getByRole('link', { name: 'View on GitHub (opens in a new tab)' });
+    for (const viewport of [{ width: 1280, height: 800 }, { width: 375, height: 667 }]) {
+        await page.setViewportSize(viewport);
+        await expect(note).toContainText('Eidolon is an open-source project.');
+        await page.locator('#btn-register').focus();
+        await page.keyboard.press('Tab');
+        await expect(link).toBeFocused();
+        await expect(link).toBeInViewport();
+        await expect(link).toHaveAttribute('href', 'https://github.com/aeml/eidolon');
+        await expect(link).toHaveAttribute('target', '_blank');
+        const bounds = await note.boundingBox();
+        expect(bounds.x).toBeGreaterThanOrEqual(0);
+        expect(bounds.x + bounds.width).toBeLessThanOrEqual(viewport.width);
+        await expect(link).toHaveCSS('outline-style', 'solid');
+    }
+});
+
 test('anonymous release surface, runtime dependencies, and server are healthy', async ({ page, request, baseURL }) => {
     test.setTimeout(360_000);
     const failures = collectBrowserFailures(page, baseURL);

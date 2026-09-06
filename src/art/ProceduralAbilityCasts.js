@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { getWhirlwindCastDuration, stopWhirlwindPresentation } from '../skills/whirlwindPresentation.js';
 
 const geometryCache = new Map();
 const materialCache = new Map();
@@ -442,20 +443,42 @@ function updateRoot(root, elapsed, duration, dt) {
 }
 
 class ProceduralAbilityCastEffect {
-    constructor(scene, root, duration) {
+    constructor(scene, root, duration, whirlwindSource = null) {
         this.scene = scene;
         this.root = root;
         this.meshes = [root];
-        this.duration = Math.max(0.1, duration);
+        this.duration = Math.max(whirlwindSource ? 0.001 : 0.1, duration);
         this.elapsed = 0;
         this.isActive = true;
         this.disposed = false;
+        this.whirlwindSource = whirlwindSource;
+        this.authoritativeSeen = false;
+        if (whirlwindSource) whirlwindSource.whirlwindCastEffect = this;
+    }
+
+    setRemaining(seconds) {
+        const remaining = Math.max(0, Math.min(2, Number(seconds) || 0));
+        if (!remaining) { this.dispose(); return; }
+        this.duration = this.elapsed + remaining;
     }
 
     update(dt) {
         if (!this.isActive) return;
         const step = Math.max(0, Number(dt) || 0);
+        const source = this.whirlwindSource;
+        if (source) {
+            if (source.state === 'DEAD' || source.isActive === false) { this.dispose(); return; }
+            this.root.position.copy(source.position);
+            // Snapshots can extend the predicted endpoint slightly. Start each
+            // frame from authored scales so an earlier fade does not accumulate.
+            this.root.traverse(child => {
+                if (child.userData?.baseScale && !child.userData.gameplayBoundary) {
+                    child.scale.fromArray(child.userData.baseScale);
+                }
+            });
+        }
         this.elapsed += step;
+        if (source) source.whirlwindRemaining = Math.max(0, this.duration - this.elapsed);
         updateRoot(this.root, this.elapsed, this.duration, step);
         if (this.elapsed >= this.duration) {
             this.isActive = false;
@@ -470,6 +493,11 @@ class ProceduralAbilityCastEffect {
         this.root.parent?.remove(this.root);
         this.root.clear();
         this.meshes.length = 0;
+        if (this.whirlwindSource?.whirlwindCastEffect === this) {
+            const source = this.whirlwindSource;
+            source.whirlwindCastEffect = null;
+            stopWhirlwindPresentation(source);
+        }
     }
 }
 
@@ -497,12 +525,17 @@ export function createProceduralAbilityCastEffect(scene, type, position, _color,
         sharedMaterials: true
     });
     const materials = createMaterials(className, requestedAbilityName, definition.palette);
-    const duration = buildCast(root, identity, definition, materials, type, position, options);
+    let duration = buildCast(root, identity, definition, materials, type, position, options);
+    const isWhirlwind = className === 'Fighter' && abilityName === 'Whirlwind' && type === 'spin';
+    if (isWhirlwind) {
+        duration = Number.isFinite(options.whirlwindDuration)
+            ? Math.max(0.001, Math.min(2, options.whirlwindDuration)) : getWhirlwindCastDuration(options.source);
+    }
     root.traverse((child) => {
         if (child.userData?.highQualityOnly) child.visible = quality !== 'low';
     });
     scene.add(root);
-    return new ProceduralAbilityCastEffect(scene, root, duration);
+    return new ProceduralAbilityCastEffect(scene, root, duration, isWhirlwind ? options.source : null);
 }
 
 export function getProceduralAbilityCastCacheMetrics() {

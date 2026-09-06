@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { WorldGenerator } from '../world/WorldGenerator.js';
 import { AUDIO_CUES } from '../audio/AudioManager.js';
 import { getProjectileImpactRadius } from '../skills/abilityRadii.js';
+import { stopWhirlwindPresentation } from '../skills/whirlwindPresentation.js';
 import { PROCEDURAL_COMBAT_FEEDBACK_DEFINITIONS } from '../art/ProceduralCombatFeedback.js';
 import { PROCEDURAL_PROJECTILE_IMPACT_DEFINITIONS } from '../art/ProceduralProjectileImpacts.js';
 import { LootDrop } from '../entities/LootDrop.js';
@@ -472,6 +473,7 @@ class GameEngineNetworkMessageMethods {
                 }
             }
             if (result.accepted === false && skillName) {
+                if (skillName === 'Whirlwind') stopWhirlwindPresentation(this.player, { predictedOnly: true });
                 const hints = {
                     cooldown: 'Wait for this ability to recharge.',
                     global_cooldown: 'Wait a moment before casting your next ability.',

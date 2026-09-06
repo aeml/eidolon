@@ -15,6 +15,7 @@ import {
     isAbilityVisualLayerEnabled
 } from '../skills/abilityVisualManifest.js';
 import { getAbilityAoeArc, getAbilityAoeRadius, isAoeBoundaryVisualType } from '../skills/abilityRadii.js';
+import { getWhirlwindCastDuration } from '../skills/whirlwindPresentation.js';
 import { ACTOR_STATUS_VISUAL_STATES, AttachedStatusEffect } from './AttachedStatusEffect.js';
 import { applyProceduralEquipment, clearProceduralEquipment } from '../art/ProceduralEquipment.js';
 
@@ -535,7 +536,9 @@ export class Actor extends Entity {
         const played = this.playAnimation(clipName, false, true);
         if (!played || !this.currentAction?.getClip) return played;
 
-        const duration = Math.max(0.15, Number(options.duration || profile.duration) || 0.7);
+        const authoredDuration = skillName === 'Whirlwind' && className === 'Fighter'
+            ? getWhirlwindCastDuration(this) : profile.duration;
+        const duration = Math.max(0.15, Number(options.duration || authoredDuration) || 0.7);
         const clipDuration = Math.max(0.001, this.currentAction.getClip()?.duration || duration);
         this.currentAction.setEffectiveTimeScale?.(clipDuration / duration);
         this.currentAbilityAnimation = {

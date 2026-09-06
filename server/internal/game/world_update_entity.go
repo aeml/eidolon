@@ -1040,56 +1040,10 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				e.QAHazardInspectionEndTime = time.Time{}
 			}
 
-			// Extended Whirlwind tick (from rune)
 			if e.WhirlwindActive {
-				if now.After(e.WhirlwindEndTime) {
-					e.WhirlwindActive = false
-					e.WhirlwindRuneID = ""
-				} else if now.Sub(e.LastSpiritTick) >= 500*time.Millisecond {
-					// Tick every 0.5s
-					e.LastSpiritTick = now // Reuse this timer
-					radius := 6.0
-					effectiveRadius := expandedAbilityRadius("Whirlwind", radius)
-					damage := int((float64(e.Damage)*0.8 + float64(e.Stats.Strength)*2) * 1.3 * 0.5) // -50% damage
-					pX, pZ, instanceID := e.X, e.Z, e.InstanceID
-					e.Mu.Unlock()
-					walkRects := w.dungeonWalkRectsSnapshot(instanceID)
-
-					nearby := w.Grid.Nearby(pX, pZ, effectiveRadius, instanceID)
-					for _, target := range nearby {
-						if target.ID == e.ID {
-							continue
-						}
-						target.Mu.RLock()
-						if !w.CanDamage(e, target) || target.State == "DEAD" || target.InstanceID != instanceID {
-							target.Mu.RUnlock()
-							continue
-						}
-						target.Mu.RUnlock()
-
-						target.Mu.Lock()
-						if w.CanDamage(e, target) && target.State != "DEAD" && target.InstanceID == instanceID && withinDungeonAbilityRadius(walkRects, "Whirlwind", pX, pZ, target, radius) {
-							finalDamage := applyFinalDamage(e, target, damage, "physical")
-							addThreatLocked(target, e.ID, float64(finalDamage))
-							isDead := target.Health <= 0
-							target.Mu.Unlock()
-
-							if w.OnEvent != nil {
-								w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: e.ID, Amount: finalDamage, Kind: "physical", InstanceID: e.InstanceID})
-							}
-
-							if isDead {
-								target.Mu.Lock()
-								w.handleDeath(target, e, deferred)
-								target.Mu.Unlock()
-							}
-						} else {
-							target.Mu.Unlock()
-						}
-					}
-
-					e.Mu.Lock()
-				}
+				e.Mu.Unlock()
+				w.updateWhirlwind(e, now, deferred)
+				e.Mu.Lock()
 			}
 
 			// DoT Ticks

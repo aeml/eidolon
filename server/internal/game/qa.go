@@ -264,8 +264,7 @@ func (w *World) PreparePlayerForAnimationQA(playerID string, lowHealth, persiste
 		player.ChargeTargetZ = player.Z
 		player.ChargeRuneID = ""
 		player.ChargeSkillName = ""
-		player.WhirlwindActive = false
-		player.WhirlwindRuneID = ""
+		clearWhirlwindLocked(player)
 		player.ArcaneShieldActive = false
 		player.ArcaneShieldHP = 0
 		player.ArcaneShieldEndTime = time.Time{}

@@ -36,6 +36,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 
 	target.Health = 0
 	target.State = "DEAD"
+	clearWhirlwindLocked(target)
 	target.LastAttackTime = time.Now()
 	if target.Type == TypePlayer && attacker != nil && attacker.Type == TypePlayer {
 		w.ResolvePvPDeath(target.ID, attacker.ID)

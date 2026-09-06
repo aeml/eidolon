@@ -152,7 +152,11 @@ export class AbilityController {
             typeof entity.spawnVisualEffect !== 'function'
         )) return;
 
-        entity.playAbilityAnimation?.(skillName);
+        // A state snapshot can arrive before its cast event. Keep the existing
+        // remaining-time animation instead of restarting a late-observed spin.
+        if (skillName !== 'Whirlwind' || !entity.whirlwindCastEffect?.isActive) {
+            entity.playAbilityAnimation?.(skillName);
+        }
 
         const targetPosition = new THREE.Vector3(targetX, 0, targetZ);
         const visual = resolveRemoteSkillVisual(entity, skillName, targetPosition);
