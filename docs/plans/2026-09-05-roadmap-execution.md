@@ -16,7 +16,15 @@ that failure remains recorded rather than reclassified as a pass.
 The confirmed loot-over-enemy targeting defect is corrected in the successor
 1.0.20 commit **`99303f5a108ab1a965bd723fbd4272923a0f67b9`**. See the separate
 [repair record](2026-09-06-release20-targeting-repair.md). After its full gate,
-**1.0.21 `c76db47` was pushed to `master`**; CI `34051295918` is running. No later
+**1.0.21 `c76db47` was pushed to `master`**, but CI `34051295918` failed final
+live gameplay after both deployments succeeded. Its two loot attempts expected
+occupied slots to exceed 24 and timed out at 24; the bag limit is 25, so this
+alone does not prove a full-bag defect. The test also blindly clicks a projected
+ground position and treats stack merges as failed pickups. A correction is being
+verified in the 1.0.21 worktree with exact item/quantity receipts, actual pointer
+acquisition and saved-quantity checks. The old failure remains unresolved as a
+live gate until the successor passes; do not claim its precise cause is proven
+by the limited old diagnostics. No later
 version has been pushed. Local merges carry that same fix forward and preserve ancestry:
 
 | Next version | Queued source | Supersedes |

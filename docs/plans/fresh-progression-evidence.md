@@ -16,6 +16,14 @@ balance or the time required to reach a dungeon.
 
 ## Opening-chapter route
 
+All-class follow-up: clean `f2b7b76` **failed as Fighter** after three deaths
+with zero opening kills, still level one. The route stopped at its existing
+two-respawn bound; no extra protection, level grant or weakened bound was added.
+Log `/tmp/eidolon-fresh-opening-fighter.log`, session `35594` closed; credential
+scan passed. Investigate actual target acquisition/damage and the fresh-stat
+baseline before attributing every death to numerical balance. The Wizard pass
+does not establish a dependable opening for all four classes.
+
 Optional isolated route `fresh-opening` registers a new character, asserts level
 one, talks to Ilyra, accepts the opening Chronicle, travels through the east gate,
 earns three Skeleton kills, explicitly completes the quest and continues the
