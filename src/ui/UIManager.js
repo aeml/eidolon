@@ -3,6 +3,7 @@ import { CONSTANTS } from '../core/Constants.js';
 import { ForgeUI } from './ForgeUI.js';
 import { SkillTreeUI } from './SkillTreeUI.js';
 import { PhoneSettingsUI } from './PhoneSettingsUI.js';
+import { PhoneMenuUI } from './PhoneMenuUI.js';
 import { TradingUI } from './TradingUI.js';
 import { QuestUI } from './QuestUI.js';
 import { SocialUI } from './SocialUI.js';
@@ -172,6 +173,11 @@ export class UIManager {
         this.assetPackEnvironmentVersion = document.getElementById('asset-pack-environment-version');
 
         if (this.btnResume) this.btnResume.addEventListener('click', () => this.toggleEscMenu());
+        if (this.isMobile && this.escMenu) {
+            this.phoneMenu = new PhoneMenuUI(this.escMenu, () => {
+                if (this.isEscMenuOpen) this.toggleEscMenu();
+            });
+        }
         document.getElementById('btn-mobile-target-clear')?.addEventListener('click', () => this.onMobileTargetClear?.());
         for (const [id, open] of [
             ['btn-phone-skills', () => this.toggleSkillTree()],
@@ -546,6 +552,7 @@ export class UIManager {
             onSend: (message) => this.onChatSend?.(message),
             onMobileExpanded: (expanded) => {
                 if (this.isMobile && expanded) this.phoneDungeonMenuClose?.();
+                if (this.isMobile && expanded && this.isEscMenuOpen) this.toggleEscMenu();
                 if (this.isMobile && expanded && this.isElementVisible(this.settingsScreen)) {
                     this.closeStaticModal(this.settingsScreen);
                     if (this.isEscMenuOpen) this.toggleEscMenu();

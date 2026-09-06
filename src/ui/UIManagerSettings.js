@@ -5,7 +5,15 @@ import { installPrototypeMethods } from '../core/PrototypeInstaller.js';
 class UIManagerSettingsMethods {
     toggleEscMenu() {
         const isHidden = this.escMenu.style.display === 'none' || this.escMenu.style.display === '';
+        if (this.isMobile && isHidden) {
+            this.chat?.setMobileExpanded(false);
+            window.game?.inputManager?.clearInputState?.();
+        }
         this.escMenu.style.display = isHidden ? 'block' : 'none';
+        if (this.isMobile) {
+            document.getElementById('btn-mobile-menu')?.setAttribute('aria-expanded', String(isHidden));
+            (isHidden ? this.btnResume : document.getElementById('btn-mobile-menu'))?.focus({ preventScroll: true });
+        }
         this.playUICue(isHidden ? AUDIO_CUES.uiOpen : AUDIO_CUES.uiClose);
         this.onEscMenuChange?.(isHidden);
 

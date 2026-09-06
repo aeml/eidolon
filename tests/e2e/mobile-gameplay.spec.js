@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld } from './helpers.js';
+import { openPhoneNavigation } from './mobile-helpers.js';
 
 test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true,
     actionTimeout: 12_000, trace: 'off', screenshot: 'off', video: 'off' });
@@ -37,10 +38,11 @@ test('phone touch controls move a real character and open its core menus in both
                 ['btn-mobile-inv', 'inventory-screen', 'btn-close-inventory'],
                 ['btn-mobile-char', 'character-sheet', 'btn-close-character'],
                 ['btn-mobile-quest', 'quest-journal', 'btn-close-journal'],
-                ['btn-mobile-social', 'social-window', 'close-social']
+                ['btn-mobile-social', 'social-window', 'close-social'],
+                ['btn-mobile-map', 'world-map', 'btn-close-world-map']
             ]) {
                 console.log(`[phone-gameplay] ${width}x${height}: opening ${panel}`);
-                await page.locator(`#${button}`).tap();
+                await openPhoneNavigation(page, button);
                 await expect(page.locator(`#${panel}`)).toBeVisible();
                 await expect(page.locator(`#${close}`)).toBeInViewport();
                 await page.locator(`#${close}`).tap();

@@ -1,6 +1,6 @@
 import { devices, expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld } from './helpers.js';
-import { approachEncounter, selectLiveTarget } from './mobile-helpers.js';
+import { approachEncounter, openPhoneNavigation, selectLiveTarget } from './mobile-helpers.js';
 
 test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, userAgent: devices['Pixel 7'].userAgent,
     actionTimeout: 12_000, trace: 'off', screenshot: 'off', video: 'off' });
@@ -22,7 +22,7 @@ test('phone bag equips, unequips and confirms a recoverable server-owned item dr
     await page.locator('#chat-mobile-toggle').tap();
     const points = await page.evaluate(() => window.game.player.statPoints);
     if (points > 0) {
-        await page.locator('#btn-mobile-char').tap();
+        await openPhoneNavigation(page, 'btn-mobile-char');
         await page.getByRole('button', { name: 'Increase strength', exact: true }).tap();
         await expect.poll(() => page.evaluate(() => window.game.player.statPoints)).toBe(points - 1);
         await page.locator('#btn-close-character').tap();
@@ -84,7 +84,7 @@ test('phone bag equips, unequips and confirms a recoverable server-owned item dr
 
     for (const [width, height] of [[390, 844], [844, 390]]) {
         await page.setViewportSize({ width, height });
-        await page.locator('#btn-mobile-inv').tap();
+        await openPhoneNavigation(page, 'btn-mobile-inv');
         const index = await page.evaluate(id => window.game.player.inventory.findIndex(item => item?.id === id), itemId);
         expect(index).toBeGreaterThanOrEqual(0);
         await page.locator('#inventory-grid .inv-slot').nth(index).tap();
@@ -97,7 +97,7 @@ test('phone bag equips, unequips and confirms a recoverable server-owned item dr
             return Boolean(equippedSlot);
         }).toBe(true);
         await page.locator('#btn-close-inventory').tap();
-        await page.locator('#btn-mobile-char').tap();
+        await openPhoneNavigation(page, 'btn-mobile-char');
         await page.locator(`#slot-${equippedSlot.toLowerCase()}`).tap();
         await expect(page.locator('#phone-item-details')).toBeVisible();
         expect(await page.evaluate(slot => window.game.player.equipment[slot]?.id, equippedSlot)).toBe(itemId);
@@ -105,7 +105,7 @@ test('phone bag equips, unequips and confirms a recoverable server-owned item dr
         await expect.poll(ownsItem).toBe(true);
         await page.locator('#btn-close-character').tap();
 
-        await page.locator('#btn-mobile-inv').tap();
+        await openPhoneNavigation(page, 'btn-mobile-inv');
         const returnedIndex = await page.evaluate(id => window.game.player.inventory.findIndex(item => item?.id === id), itemId);
         await page.locator('#inventory-grid .inv-slot').nth(returnedIndex).tap();
         await page.locator('#phone-item-drop').tap();

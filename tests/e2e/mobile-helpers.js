@@ -1,6 +1,13 @@
 import { expect } from '@playwright/test';
 import { projectNearestHostile, projectEntity, useEncounterQAWaypoint } from './helpers.js';
 
+export async function openPhoneNavigation(page, buttonId) {
+    await page.locator('#btn-mobile-menu').tap();
+    await expect(page.locator('#esc-menu')).toBeVisible();
+    await page.locator(`#${buttonId}`).tap();
+    await expect(page.locator('#esc-menu')).toBeHidden();
+}
+
 export async function approachEncounter(page) {
     if (await page.locator('#chat-mobile-toggle').getAttribute('aria-expanded') !== 'true') {
         await page.locator('#chat-mobile-toggle').tap();

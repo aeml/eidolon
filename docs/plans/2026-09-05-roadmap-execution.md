@@ -96,6 +96,37 @@ dispatch regression, inventory refresh and an earned-route rerun. The 1.0.22
 client suite passed 163 suites / 2,352 tests; lint also passed. The earlier
 "not yet run" statements above record preparation, not current test status.
 
+## Alpha 1.0.24 — room for the adventure (local candidate)
+
+Implemented in `/tmp/eidolon-phone-hud-uGi4ZU`, branch
+`feature/phone-hud-composition`, based on `fba546a`. A single Menu launcher
+replaces five permanent phone shortcuts; the same bound navigation controls move
+into its readable panel. Back stays outside the scroller, health/resource text
+is 16px, and portrait objectives use the freed row. Navigation closes the hub
+before opening its destination; opening chat closes it, and opening Menu clears
+held movement input. Desktop navigation and camera zoom are unchanged. Party
+targeting/roster ergonomics and physical-device sign-off are still open.
+
+Five composition unit cases cover node identity, callback ordering, reachable
+Back and safe reinitialization. Final versioned checks pass **164 suites / 2,359
+tests in 70.113 seconds**, lint, the complete server race suite (root 9.814 seconds,
+game 146.559 seconds), and **31 anonymous cases in 2.8 minutes**. New layout cases
+cover 360×800, 844×390 and 568×320 at 125% menu text, including hit targets,
+unobstructed health/navigation, scroll bounds, Back, bag navigation and chat.
+Inspected captures distinguish the initial menu from its scrolled-bottom view;
+these fixtures are layout evidence, not real-world or physical-phone proof.
+
+Real-server core navigation passed in **8.5 seconds**, covering joystick movement,
+Bag/Hero/Quests/Social/Map, Skills, camera reset and chat in both orientations.
+The updated real inventory journey passed in **37.2 seconds**, including normal
+combat loot, both orientations' authoritative equip/unequip, canceled drop,
+confirmed drop and manual recovery. Both passed credential scans and disposable
+cleanup. Logs: `/tmp/eidolon-phone-hub-{layout,gameplay}.log` and
+`/tmp/eidolon-1-0-24-{client,lint,server,anonymous,inventory}.log`.
+Separate 1.0.24 patch notes and all release labels/defaults are updated. It is
+not yet published and must inherit the pending 1.0.20 live-QA targeting repair
+before entering the ordered release queue.
+
 ## Alpha 1.0.23 — relics delivered (local candidate)
 
 Committed runtime: `2070c420e9e98f37e75480cbf504c65bf5318fdd`. Its exact clean
