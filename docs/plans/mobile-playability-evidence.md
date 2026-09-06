@@ -10,6 +10,11 @@ Earlier entries below are chronological snapshots, not current process status.
 
 ## Phone adventure and post-dungeon movement (Alpha 1.0.22 candidate)
 
+Committed runtime `ecf7524` passed its exact clean-source phone adventure repeat
+in **12.7 seconds**, with credential scanning and disposable cleanup; log
+`/tmp/eidolon-1-0-22-exact-adventure.log`. This release remains queued locally.
+The intermediate failures and corrections below are retained as evidence history.
+
 Source: `0498ffe` plus phone adventure changes. Readable dungeon/raid choices and
 native controls share a viewport panel above chat. Expandable detail sections and
 remembered tab scroll reduce permanent clutter; Start/Continue and selected run

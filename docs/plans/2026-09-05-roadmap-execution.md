@@ -14,14 +14,22 @@ corrected exact-format check passed without changing either deployment.
 Only the next exact commit, 1.0.19 (`200478fddd5c3e1f28f8ef5d93644df3395da020`),
 was pushed; CI `34026658393` is running. It includes quest UI `43321ed`, verified
 recovery correction `98f4286` and documentation-only evidence updates.
-1.0.20 (`bd54b2a`) and 1.0.21 (`0498ffe`) are committed locally. 1.0.22 phone
-adventure work is undergoing final versioned checks. None is published. Push each exact next release only
+1.0.20 (`bd54b2a`), 1.0.21 (`0498ffe`) and 1.0.22 (`ecf7524`, plus this
+documentation-only status update) are committed and verified locally. None is
+published. Push each exact next release only
 after its predecessor's full gate.
 Earlier entries describe their status at the time,
 not the current queue. Do not publish a successor before the preceding version's
 complete CI/live verification. The original 1.0.14 failure remains recorded below.
 
 ## Alpha 1.0.22 — adventure within reach (local candidate)
+
+Committed runtime: `ecf75247895a4021423c968187e4b143ef3ef901`. Its exact clean
+source subsequently passed the complete phone adventure route in **12.7 seconds**,
+with credential scanning and disposable cleanup. Log:
+`/tmp/eidolon-1-0-22-exact-adventure.log`. Local browser session `91715` is closed.
+The following entries retain the implementation/reproduction sequence, not an
+unresolved test failure. The release still awaits its ordered publication turn.
 
 Phone dungeon/raid selection has readable native choices and controls, expandable
 party/difficulty/daily-reward details, remembered tab scroll, and an always-reachable
