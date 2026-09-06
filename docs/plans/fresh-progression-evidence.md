@@ -89,6 +89,17 @@ choosing implementation versus revised design. Fixing tooltip wording alone
 cannot close that combat/build gate. The current baseline's Fireball damage
 multiplier does have an authoritative consumer.
 
+The separately versioned **1.0.29 candidate** now reproduces and repairs the
+cooldown/mana consumer gaps in paired four-class casts. Its phone UI route buys
+the ranks normally on a prepared level-100 fixture, observes Fireball's actual
+cost change from 30 to 21 mana and reduced cooldown, and repeats after fresh
+login in landscape (**25.8 seconds**, passing). A shared Go/JavaScript contract
+checks those bonus fields across all 160 talents. This does not establish range,
+duration or the other effects listed above, does not reclassify the failed Imp
+hunt, and is not earned-progression evidence. Full verification and publication
+status remain in the [talent economy record](2026-09-06-talent-economy.md) and
+execution ledger.
+
 ## Preparation-route measurement — in progress after 1.0.26
 
 The next optional route, `fresh-hunt`, extends the genuinely earned first two

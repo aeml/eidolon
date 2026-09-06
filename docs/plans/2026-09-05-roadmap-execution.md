@@ -5,8 +5,15 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-Current release queue (September 6): **1.0.22 (`e0b9afd`) is the last fully
-verified release**. CI **`34058325420`** passed every job, including final live
+Current release queue (September 6): **1.0.23 (`5f1c3f7`) is the last fully
+verified release**. Its corrected CI **`34062629059`** passed every job. Fresh
+post-terminal uncached checks at **22:51:20 UTC** matched frontend manifest,
+login label, main entry query and backend health to
+`5f1c3f71de4f22f8fa3bb0f1706154085020fe4f` / Alpha 1.0.23; health is `ok`, database
+`ready`. Only **1.0.24 `44c7ed1509317c499643c10d77b71ebb228d2025`** was pushed next;
+CI **`34065220719`** is running. No 1.0.25-or-later release has been pushed.
+
+Previously, 1.0.22 CI **`34058325420`** passed every job, including final live
 character/animation QA. Post-terminal uncached checks at **21:26:23 UTC** matched
 frontend manifest, login label, main script release query and backend health to
 `e0b9afd3f8cfcefdbd056ef0339cb7937c27c4e7` / Alpha 1.0.22; health reported status
@@ -14,13 +21,9 @@ frontend manifest, login label, main script release query and backend health to
 failed before deployment** in its animation gallery check (Imp Walk/Run read
 Idle). Both deployments and the live gate were skipped. A gallery preview-jump
 lifecycle repair passed local validation and is now pushed as **1.0.23
-`5f1c3f71de4f22f8fa3bb0f1706154085020fe4f`**, CI **`34062629059`** running.
-Its client/server/browser and predeploy character jobs have passed, as have both
-deployment jobs. The final live character gate is still running; deployment alone
-does not establish complete verification. Uncached checks at **22:42:30 UTC**
-match all four live identity surfaces to `5f1c3f7` / Alpha 1.0.23, with health
-`ok` and database `ready`, but these precede the final CI result.
-No 1.0.24-or-later release has been pushed.
+`5f1c3f71de4f22f8fa3bb0f1706154085020fe4f`**, whose complete gate is now verified
+above. Uncached checks at 22:42:30 UTC also matched the corrected release, but
+were pre-terminal observations, not the evidence used to advance the queue.
 
 Previously, corrected 1.0.21 (`9f58757`) passed every job in CI `34055526018`,
 including final live character/animation QA. Post-terminal checks at **20:32:20 UTC**
@@ -51,12 +54,13 @@ Local merges carry that same fix forward and preserve ancestry:
 |---|---|---|
 | 1.0.21 | `9f587570313d2f78aa469f21bd73bf8db1dd50ab` (fully verified live) | `c76db47`; strengthens pickup and persistence verification |
 | 1.0.22 | `e0b9afd3f8cfcefdbd056ef0339cb7937c27c4e7` (fully verified live; CI `34058325420`) | `ed793e0`; inherits corrected 1.0.21 |
-| 1.0.23 | `5f1c3f71de4f22f8fa3bb0f1706154085020fe4f` (pushed; CI `34062629059` running) | `ad72a64`, whose CI `34061096121` failed before deployment; adds gallery jump cleanup while retaining collection inventory repair |
-| 1.0.24 | `44c7ed1509317c499643c10d77b71ebb228d2025`, branch `release/24-with-gallery` | `bcc29f4` plus corrected 1.0.23; phone navigation and fresh-opening QA |
+| 1.0.23 | `5f1c3f71de4f22f8fa3bb0f1706154085020fe4f` (fully verified live; CI `34062629059`) | `ad72a64`, whose CI `34061096121` failed before deployment; adds gallery jump cleanup while retaining collection inventory repair |
+| 1.0.24 | `44c7ed1509317c499643c10d77b71ebb228d2025`, branch `release/24-with-gallery`; pushed, CI `34065220719` running | `bcc29f4` plus corrected 1.0.23; phone navigation and fresh-opening QA |
 | 1.0.25 | `d55b5d8d8460f75513a0eca02baf873aa52203c6`, branch `release/25-with-gallery`; original runtime `bea6c34` | `dd2ce16` plus corrected 1.0.24; starter encounters, Ilyra guidance and recall pursuit cleanup |
 | 1.0.26 | `85efebef86ccb9a980bc630b9e860d7f68c47d4b`, branch `release/26-with-gallery`; original runtime `479cfd7` | `f0a1286` plus corrected 1.0.25; server-sourced entry requirements and guarded entry |
 | 1.0.27 | `0d4e1a1fb37d728db85c1eac9d56b6dc3bc785dd`, branch `release/27-with-gallery`; not pushed | original `ac494b8` preparation copy, earned-route QA `f0cfc15`, and inherited gallery repair |
-| 1.0.28 | branch `release/28-with-recovery`, runtime `d4670b2ce4945d0766b4e67e8036060b7f9d351c` plus evidence-only follow-up; not pushed | equipment-slot validation, lossless legacy recovery and readable phone recovery panel; separate notes/version metadata |
+| 1.0.28 | `424e6b11579b5e7ea5c50a060dcb89011fab7126`, branch `release/28-with-recovery`; runtime `d4670b2`; not pushed | equipment-slot validation, lossless legacy recovery and readable phone recovery panel; separate notes/version metadata |
+| 1.0.29 | branch `release/29-with-economy`, locally verified; not pushed | real talent cooldown/mana consumers, matching client checks and explicit economy contract |
 
 The corrected 1.0.21 → 1.0.22 → 1.0.23 → 1.0.24 ancestry was checked with
 `git merge-base --is-ancestor`. Exact clean `9f58757` passes **163 client suites /
@@ -80,6 +84,27 @@ not the current queue. Do not publish a successor before the preceding version's
 complete CI/live verification. The original 1.0.14 failure remains recorded below.
 
 ## September 6 continuation — dungeon class and campaign evidence
+
+### Alpha 1.0.29 candidate — make your training count
+
+Paired actual casts reproduce missing talent mana/cooldown consumers in all
+four classes, and four client regressions reproduce the matching prediction
+failure. The candidate connects the existing bonus definitions to real spell
+execution, input affordability, cooldown prediction, HUD cost and Teleport charge
+recovery. A shared Go/JavaScript contract checks the relevant metadata across all
+160 talent entries; this is not a claim that every talent effect works.
+
+The new phone route purchases ten Wizard ranks through normal UI on an explicitly
+prepared disposable level-100 fixture, verifies server-confirmed Fireball cost
+30 → 21 and reduced cooldown, and repeats after fresh login in landscape. It
+passes in **25.8 seconds**, with credential scan and exact cleanup passed. Full
+client/lint checks pass **170 suites / 2,435 tests** after real-class multiplayer
+override coverage. Full server race checks pass (game package **245.523 seconds**
+in the final repeat), including both Teleport charges. The patch has separate
+1.0.29 notes and aligned version metadata; its publication source is
+`release/29-with-economy`, and it is not pushed. See the
+[talent economy record](2026-09-06-talent-economy.md) for formulas, preserved rates,
+remaining talent categories and evidence limits.
 
 ### Alpha 1.0.28 candidate — every item in its place
 

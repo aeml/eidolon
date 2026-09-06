@@ -1,4 +1,5 @@
 import { RARITY } from '../core/ItemSystem.js';
+import { getAbilityManaCost } from '../core/AbilityEconomy.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { ForgeUI } from './ForgeUI.js';
 import { SkillTreeUI } from './SkillTreeUI.js';
@@ -639,6 +640,7 @@ export class UIManager {
             player?.abilityCooldown > 0 ? Math.ceil(player.abilityCooldown) : 0,
             player?.abilityManaCost ?? 0,
             stats.manaCostReduction ?? 0,
+            getAbilityManaCost(player, player?.abilityName, player?.abilityManaCost ?? 0),
             player?.subType || player?.meshType || ''
         ].join('|');
     }
@@ -675,7 +677,7 @@ export class UIManager {
         // Update Info (only needs to happen once really, but safe here)
         this.abilityName.textContent = player.abilityName;
         this.abilityDesc.textContent = player.abilityDescription;
-        const cost = Math.floor(player.abilityManaCost * (1 - player.stats.manaCostReduction));
+        const cost = getAbilityManaCost(player, player.abilityName, player.abilityManaCost);
         this.abilityCost.textContent = `Mana: ${cost}`;
 
         // Update Icon

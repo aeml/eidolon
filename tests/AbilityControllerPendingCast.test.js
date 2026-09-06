@@ -3,6 +3,21 @@ import { jest } from '@jest/globals';
 import { AbilityController } from '../src/core/AbilityController.js';
 
 describe('AbilityController pending target casting', () => {
+    test('the normal input path sends a spell with exactly its discounted mana cost', () => {
+        const player = createPlayer();
+        player.subType = 'Wizard';
+        player.abilityManaCost = 30;
+        player.stats = { mana: 21, manaCostReduction: 0 };
+        player.talentRanks = { WIZ_02: 5, WIZ_27: 5 };
+        const engine = { player, isMobile: false, isMultiplayer: true,
+            network: { send: jest.fn() },
+            uiManager: { reportScreen: { style: { display: 'none' } } },
+            showReadabilityFeedback: jest.fn(), hoveredEntity: null };
+        new AbilityController(engine).performAbility(new THREE.Vector3(4, 0, 0), 'Fireball');
+        expect(engine.showReadabilityFeedback).not.toHaveBeenCalled();
+        expect(engine.network.send).toHaveBeenCalledWith('ability', expect.objectContaining({ skillName: 'Fireball' }));
+        expect(player.useSkill).toHaveBeenCalled();
+    });
     function createPlayer() {
         return {
             id: 'player-1',

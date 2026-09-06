@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { Entity } from './Entity.js';
 import { calculateSetBonuses, getEquippedUniqueEffects, getGemStats, UNIQUE_EFFECTS } from '../core/ItemSystem.js';
 import { isEquippableItem, isActiveEquipment } from '../core/EquipmentSlots.js';
+import { getAbilityManaCost, getAbilityCooldown } from '../core/AbilityEconomy.js';
 import { CONSTANTS } from '../core/Constants.js';
 import {
     exponentialSmoothingFactor,
@@ -835,7 +836,7 @@ export class Actor extends Entity {
         }
         
         // Apply Mana Cost Reduction
-        const cost = manaCostBase * (1 - (this.stats.manaCostReduction || 0));
+        const cost = getAbilityManaCost(this, skillName, manaCostBase);
         
         if (this.stats.mana < cost) {
             console.log("Not enough mana");
@@ -868,8 +869,7 @@ export class Actor extends Entity {
         this.stats.mana -= cost;
         
         // Apply Cooldown Reduction
-        const cdr = this.stats.cooldownReduction || 0;
-        const maxCd = cooldownBase * (1 - cdr);
+        const maxCd = getAbilityCooldown(this, skillName, cooldownBase);
         
         // Set Cooldown
         if (skillName) {

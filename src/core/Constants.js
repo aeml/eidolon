@@ -345,7 +345,9 @@ export const CONSTANTS = {
                 { name: "Vanguard Momentum", desc: "+1% all damage per rank (5% max).", maxRank: 5 },
             );
 
-            return entries.slice(0, 40).map((t, i) => ({ id: `FTR_${String(i + 1).padStart(2, '0')}`, ...t }));
+            return entries.slice(0, 40).map((t, i) => ({ id: `FTR_${String(i + 1).padStart(2, '0')}`, ...t,
+                abilityEconomy: i < 26 && i % 2 === 1 ? { skill: skills[Math.floor(i / 2)], cdr: 0.03 }
+                    : i === 27 ? { manaReduction: 0.03 } : undefined }));
         })(),
         Rogue: (() => {
             const skills = [
@@ -377,7 +379,7 @@ export const CONSTANTS = {
                 { name: "Shadow Poise", desc: "+2% evasion per rank (10% max).", maxRank: 5 },
                 { name: "Silent Balance", desc: "+3% movement speed per rank (15% max).", maxRank: 5 },
                 { name: "Needle Precision", desc: "+2% crit chance per rank (10% max).", maxRank: 5 },
-                { name: "Lightstep", desc: "-5% escape cooldowns per rank (25% max).", maxRank: 5 },
+                { name: "Lightstep", desc: "-2% skill cooldowns and +1% movement speed per rank (10% / 5% max).", maxRank: 5 },
                 { name: "Fine Motor", desc: "+2% multi-hit damage per rank (10% max).", maxRank: 5 },
                 { name: "Catlike Reflexes", desc: "+1% dodge per rank (5% max).", maxRank: 5 },
                 { name: "Quick Draw", desc: "+3% projectile damage per rank (15% max).", maxRank: 5 },
@@ -387,7 +389,9 @@ export const CONSTANTS = {
                 { name: "Wrist Control", desc: "+1% all damage per rank (5% max).", maxRank: 5 },
             );
 
-            return entries.slice(0, 40).map((t, i) => ({ id: `ROG_${String(i + 1).padStart(2, '0')}`, ...t }));
+            return entries.slice(0, 40).map((t, i) => ({ id: `ROG_${String(i + 1).padStart(2, '0')}`, ...t,
+                abilityEconomy: i < 26 && i % 2 === 1 ? { skill: skills[Math.floor(i / 2)], cdr: 0.03 }
+                    : i === 32 ? { cdr: 0.02 } : undefined }));
         })(),
         Wizard: (() => {
             const skills = [
@@ -429,7 +433,10 @@ export const CONSTANTS = {
                 { name: "Contingency Wards", desc: "+2% damage reduction per rank (10% max).", maxRank: 5 },
             );
 
-            return entries.slice(0, 40).map((t, i) => ({ id: `WIZ_${String(i + 1).padStart(2, '0')}`, ...t }));
+            return entries.slice(0, 40).map((t, i) => ({ id: `WIZ_${String(i + 1).padStart(2, '0')}`, ...t,
+                ...(i < 26 && i % 2 === 1 ? { desc: `+3% ${skills[Math.floor(i / 2)]} CDR and -2% mana cost per rank (15% / 10% max).` } : {}),
+                abilityEconomy: i < 26 && i % 2 === 1 ? { skill: skills[Math.floor(i / 2)], cdr: 0.03, manaReduction: 0.02 }
+                    : i === 26 ? { manaReduction: 0.04 } : i === 29 ? { skill: 'Teleport', cdr: 0.05 } : undefined }));
         })(),
         Cleric: (() => {
             const skills = [
@@ -460,7 +467,7 @@ export const CONSTANTS = {
                 { name: "Mercy Routine", desc: "+3% healing done per rank (15% max).", maxRank: 5 },
                 { name: "Sanctuary Practice", desc: "+3% shield/absorb effectiveness per rank (15% max).", maxRank: 5 },
                 { name: "Radiant Doctrine", desc: "+3% holy damage per rank (15% max).", maxRank: 5 },
-                { name: "Cleanse Discipline", desc: "-5% cleanse cooldown per rank (25% max).", maxRank: 5 },
+                { name: "Cleanse Discipline", desc: "-5% Purifying Wave cooldown per rank (25% max).", maxRank: 5 },
                 { name: "Chorus of Faith", desc: "+2% party buff duration per rank (10% max).", maxRank: 5 },
                 { name: "Battlefield Ministry", desc: "+3% AoE heal radius per rank (15% max).", maxRank: 5 },
                 { name: "Warden's Instinct", desc: "+2% damage reduction per rank (10% max).", maxRank: 5 },
@@ -471,7 +478,9 @@ export const CONSTANTS = {
                 { name: "Ritekeeper", desc: "+1% all healing/damage per rank (5% max).", maxRank: 5 },
             );
 
-            return entries.slice(0, 40).map((t, i) => ({ id: `CLR_${String(i + 1).padStart(2, '0')}`, ...t }));
+            return entries.slice(0, 40).map((t, i) => ({ id: `CLR_${String(i + 1).padStart(2, '0')}`, ...t,
+                abilityEconomy: i < 26 && i % 2 === 1 ? { skill: skills[Math.floor(i / 2)], cdr: 0.03 }
+                    : i === 26 ? { manaReduction: 0.04 } : i === 31 ? { skill: 'Purifying Wave', cdr: 0.05 } : undefined }));
         })(),
     },
 

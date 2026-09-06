@@ -111,7 +111,7 @@ else
 fi
 # Exact disposable actors used by the routes, including multiplayer/direct
 # casts when the animation matrix is intentionally restricted to one class.
-qa_allowlist="${QA_USERNAME_BASE},${QA_USERNAME_BASE}-legacy,${QA_USERNAME_BASE}-recovery,${QA_USERNAME_BASE}-spin,${QA_USERNAME_BASE}-phone,${QA_USERNAME_BASE}-phone-combat,${QA_USERNAME_BASE}-phone-bag,${QA_USERNAME_BASE}-phone-quests,${QA_USERNAME_BASE}-phone-build,${QA_USERNAME_BASE}-phone-settings,${QA_USERNAME_BASE}-phone-adventure,${QA_USERNAME_BASE}-fighter,${QA_USERNAME_BASE}-rogue,${QA_USERNAME_BASE}-wizard,${QA_USERNAME_BASE}-cleric"
+qa_allowlist="${QA_USERNAME_BASE},${QA_USERNAME_BASE}-economy,${QA_USERNAME_BASE}-legacy,${QA_USERNAME_BASE}-recovery,${QA_USERNAME_BASE}-spin,${QA_USERNAME_BASE}-phone,${QA_USERNAME_BASE}-phone-combat,${QA_USERNAME_BASE}-phone-bag,${QA_USERNAME_BASE}-phone-quests,${QA_USERNAME_BASE}-phone-build,${QA_USERNAME_BASE}-phone-settings,${QA_USERNAME_BASE}-phone-adventure,${QA_USERNAME_BASE}-fighter,${QA_USERNAME_BASE}-rogue,${QA_USERNAME_BASE}-wizard,${QA_USERNAME_BASE}-cleric"
 
 mongo_username="qa_root"
 mongo_password="$(openssl rand -hex 24)"
@@ -119,7 +119,7 @@ mongo_password="$(openssl rand -hex 24)"
 docker build \
   --build-arg GO_VERSION=1.24.5 \
   --build-arg "BUILD_COMMIT=${qa_build_commit}" \
-  --build-arg "BUILD_VERSION=Alpha 1.0.28" \
+  --build-arg "BUILD_VERSION=Alpha 1.0.29" \
   --tag "${SERVER_IMAGE}" server >/dev/null
 image_created=true
 
@@ -218,6 +218,11 @@ run_equipment_recovery() {
     npx playwright test tests/e2e/equipment-recovery-gameplay.spec.js
 }
 
+run_talent_economy() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-economy" EIDOLON_E2E_CLASS=Wizard \
+    npx playwright test tests/e2e/talent-economy-gameplay.spec.js
+}
+
 run_phone_quests() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-phone-quests" \
     EIDOLON_E2E_PASSWORD="${QA_PASSWORD}" \
@@ -283,7 +288,7 @@ run_animation_multiplayer() {
 set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   all)
-    npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js && run_whirlwind && run_phone && run_phone_combat && run_phone_inventory && run_equipment_recovery && run_phone_quests && run_phone_build && run_phone_settings && run_phone_adventure && run_dungeon_recovery && run_direct_target_classes && npm run test:e2e:movement && run_animation_classes && run_animation_multiplayer
+    npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js && run_whirlwind && run_phone && run_phone_combat && run_phone_inventory && run_equipment_recovery && run_talent_economy && run_phone_quests && run_phone_build && run_phone_settings && run_phone_adventure && run_dungeon_recovery && run_direct_target_classes && npm run test:e2e:movement && run_animation_classes && run_animation_multiplayer
     ;;
   animations)
     run_animation_classes
@@ -302,6 +307,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   equipment-recovery)
     run_equipment_recovery
+    ;;
+  talent-economy)
+    run_talent_economy
     ;;
   inventory)
     npx playwright test tests/e2e/inventory-quality-of-life.spec.js
@@ -387,7 +395,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     run_phone_adventure
     ;;
   *)
-    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, inventory, equipment-recovery, extended, portal, dungeons, verdant, dungeon-full, chronicle-earth, chronicle-collection, fresh-opening, fresh-collection, fresh-hunt, fresh-hunt-npc, fresh-ready, dungeon-recovery, direct-skills, projectile-walls, movement-walls, ground-walls, beam-walls, whirlwind, phone, phone-combat, phone-inventory, phone-quests, phone-build, phone-settings, or phone-adventure." >&2
+    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, inventory, equipment-recovery, talent-economy, extended, portal, dungeons, verdant, dungeon-full, chronicle-earth, chronicle-collection, fresh-opening, fresh-collection, fresh-hunt, fresh-hunt-npc, fresh-ready, dungeon-recovery, direct-skills, projectile-walls, movement-walls, ground-walls, beam-walls, whirlwind, phone, phone-combat, phone-inventory, phone-quests, phone-build, phone-settings, or phone-adventure." >&2
     exit 1
     ;;
 esac

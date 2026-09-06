@@ -1,0 +1,22 @@
+{
+  "Fighter": {
+    "prefix": "FTR", "techniqueMana": 0,
+    "skills": ["Charge", "Whirlwind", "Shield Slam", "Iron Fortress", "Guardian Roar", "Sweeping Strike", "Earthshaker", "Unbreakable Grip", "Juggernaut Charge", "Berserker Edge", "Shattering Charge", "Executioner Spin", "Last Stand Rampage"],
+    "generic": { "28": { "manaReduction": 0.03 } }
+  },
+  "Rogue": {
+    "prefix": "ROG", "techniqueMana": 0,
+    "skills": ["Piercing Throw", "Backstab", "Weak Point Mark", "Shadow Lunge", "Death Spiral", "Fan of Knives", "Serrated Edges", "Blade Storm", "Phantom Volley", "Smoke Bomb", "Poison Coating", "Tripwire", "Cloak & Vanish"],
+    "generic": { "33": { "cdr": 0.02 } }
+  },
+  "Wizard": {
+    "prefix": "WIZ", "techniqueMana": 0.02,
+    "skills": ["Fireball", "Flame Whip", "Flame Tornado", "Meteor Drop", "Inferno Cataclysm", "Scorch Beam", "Arcane Missiles", "Spell Focus", "Dragonfire Lance", "Teleport", "Arcane Shield", "Gravity Well", "Time Warp"],
+    "generic": { "27": { "manaReduction": 0.04 }, "30": { "skill": "Teleport", "cdr": 0.05 } }
+  },
+  "Cleric": {
+    "prefix": "CLR", "techniqueMana": 0,
+    "skills": ["Spirit Guardians", "Healing Light", "Guardian Embrace", "Purifying Wave", "Divine Intervention", "Radiant Strike", "Consecrated Ground", "Spirit Guardians Boost", "Avenging Seraph", "Blessing of Resolve", "Blessing of Zeal", "Mark of Weakness", "Heaven's Trumpet"],
+    "generic": { "27": { "manaReduction": 0.04 }, "32": { "skill": "Purifying Wave", "cdr": 0.05 } }
+  }
+}

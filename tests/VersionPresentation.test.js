@@ -18,6 +18,10 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
+    test('adds talent economy notes without replacing recovery history', () => {
+        expect(indexHtml).toContain('Alpha 1.0.29 (make your training count)');
+        expect(indexHtml.indexOf('data-version="1.0.29"')).toBeLessThan(indexHtml.indexOf('data-version="1.0.28"'));
+    });
     test('adds lossless equipment recovery notes while keeping preparation history', () => {
         expect(indexHtml).toContain('Alpha 1.0.28 (every item in its place)');
         expect(indexHtml.indexOf('data-version="1.0.28"')).toBeLessThan(indexHtml.indexOf('data-version="1.0.27"'));
@@ -166,11 +170,11 @@ describe('version presentation', () => {
         }
         expect(fs.readFileSync(path.join(repoRoot, 'sw.js'), 'utf8')).toContain('sw-asset-cache.js?v=2026-09-04-11');
         expect(indexHtml).toContain('Built-in version: 2026-09-04-11');
-        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.0.28');
+        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.0.29');
     });
 
     test('advances the login screen and player-facing history to Alpha 1.0', () => {
-        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.0.28</span>');
+        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.0.29</span>');
         expect(indexHtml).toContain('Alpha 1.0.0 (the worlds answer together)');
         expect(indexHtml).toContain('Multiplayer has a social backbone');
         expect(indexHtml).toContain('Guilds are persistent institutions');
@@ -581,7 +585,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 1.0.28';
+        const expectedVersion = 'Alpha 1.0.29';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -703,7 +707,7 @@ describe('version presentation', () => {
     });
 
     test('marks Alpha 1.0 current and preserves its completed runway', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 1.0.28`');
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 1.0.29`');
         expect(alphaRoadmap).toContain('Active implementation line: `Alpha 1.0`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');

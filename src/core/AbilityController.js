@@ -4,6 +4,7 @@
 // ============================================================================
 
 import * as THREE from 'three';
+import { getAbilityManaCost } from './AbilityEconomy.js';
 import { CONSTANTS } from './Constants.js';
 import { Fighter } from '../entities/Fighter.js';
 import { Rogue } from '../entities/Rogue.js';
@@ -335,7 +336,7 @@ export class AbilityController {
             : (defaultAbilityConfig && typeof defaultAbilityConfig.mana === 'number')
                 ? defaultAbilityConfig.mana
                 : player.abilityManaCost;
-        const cost = manaCostBase * (1 - (player.stats.manaCostReduction || 0));
+        const cost = getAbilityManaCost(player, castSkillName, manaCostBase);
         if (player.stats.mana < cost) {
             engine.showReadabilityFeedback?.(
                 `ability-mana-${skillNameOverride || player.abilityName || 'primary'}`,

@@ -923,11 +923,11 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					}
 					player.TeleportCharges--
 					if player.TeleportCharges > 0 {
-						effectiveCooldown := time.Duration(float64(baseCooldown) * (1.0 - player.CooldownReduction))
+						effectiveCooldown := effectiveAbilityCooldown(player, skillName, baseCooldown)
 						player.TeleportChargeReadyAt = now.Add(effectiveCooldown)
 						setCooldown(0)
 					} else {
-						player.TeleportChargeReadyAt = now.Add(time.Duration(float64(baseCooldown) * (1.0 - player.CooldownReduction)))
+						player.TeleportChargeReadyAt = now.Add(effectiveAbilityCooldown(player, skillName, baseCooldown))
 						setCooldown(baseCooldown)
 					}
 				} else {

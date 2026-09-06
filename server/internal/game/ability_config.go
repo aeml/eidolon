@@ -1,6 +1,9 @@
 package game
 
-import "time"
+import (
+	"math"
+	"time"
+)
 
 type AbilitySpec struct {
 	ManaCost int
@@ -97,7 +100,16 @@ func resolveAbilityManaCost(player *Entity, skillName string, fallback int) int 
 	if spec, ok := getAbilitySpec(player.SubType, skillName); ok && spec.ManaCost >= 0 {
 		cost = spec.ManaCost
 	}
-	return player.GetEffectiveManaCost(cost)
+	// Preserve equipment discount rounding before applying talent reductions.
+	cost = player.GetEffectiveManaCost(cost)
+	bonus := player.GetSkillBonus(skillName)
+	return int(math.Floor(float64(cost)*math.Max(0, 1+bonus.SkillManaCost) + 1e-9))
+}
+
+func effectiveAbilityCooldown(player *Entity, skillName string, base time.Duration) time.Duration {
+	global := math.Max(0, math.Min(1, player.CooldownReduction))
+	skill := math.Max(0, math.Min(1, player.GetSkillCdrBonus(skillName)))
+	return time.Duration(float64(base) * (1 - global) * (1 - skill))
 }
 
 func resolveAbilityCooldown(classType, skillName string, fallback time.Duration) time.Duration {

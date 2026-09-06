@@ -164,6 +164,16 @@ function createPlayer(overrides = {}) {
 }
 
 describe('UIManager HUD diffing', () => {
+    test('a talent rank change refreshes the displayed mana cost without another stat change', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        const player = createPlayer({ subType: 'Wizard', abilityName: 'Fireball', abilityManaCost: 30, talentRanks: {} });
+        ui.updatePlayerStats(player);
+        expect(document.getElementById('ability-cost').textContent).toBe('Mana: 30');
+        player.talentRanks.WIZ_02 = 5;
+        ui.updatePlayerStats(player);
+        expect(document.getElementById('ability-cost').textContent).toBe('Mana: 27');
+    });
     test('resetDisplaySignatures clears all UI-level diff caches', () => {
         buildDom();
         const ui = new UIManager(false);

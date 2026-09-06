@@ -205,6 +205,13 @@ and is not earned-progression or balance evidence. The full isolated suite also
 includes it under a separate disposable account. See the
 [equipment recovery record](docs/plans/2026-09-06-equipment-recovery.md).
 
+Talent cast-cost/cooldown QA is available with
+`EIDOLON_ISOLATED_QA_ROUTE=talent-economy npm run test:e2e:isolated` (under the
+same system Chrome/render-group setup). It prepares a disposable level-100
+Wizard, buys ranks through the phone interface, checks server-confirmed spell
+cost/cooldown changes and repeats after fresh login in landscape. This functional
+route is included in full isolated QA; it does not measure earned progression.
+
 The generated canonical inventory is [docs/ANIMATION_COVERAGE.md](docs/ANIMATION_COVERAGE.md). Edit its source manifests and regenerate it; do not hand-edit its tables.
 
 Server validation from `server/`:

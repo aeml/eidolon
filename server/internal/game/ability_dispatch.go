@@ -91,9 +91,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 	abilityCommitted := false
 	authoritativeCooldown := time.Duration(0)
 	setCooldown := func(duration time.Duration) {
-		if player.CooldownReduction > 0 {
-			duration = time.Duration(float64(duration) * (1.0 - player.CooldownReduction))
-		}
+		duration = effectiveAbilityCooldown(player, skillName, duration)
 		if duration > 0 {
 			player.Cooldowns[skillName] = time.Now().Add(duration)
 		} else {
