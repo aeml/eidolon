@@ -8,6 +8,16 @@ readonly QA_NETWORK="eidolon-isolated-qa-net-${QA_RUN_ID}"
 readonly QA_PORT="${EIDOLON_ISOLATED_QA_PORT:-18085}"
 readonly SERVER_IMAGE="eidolon-server:isolated-qa-${QA_RUN_ID}"
 readonly QA_NETWORK_MODE="${EIDOLON_ISOLATED_QA_NETWORK_MODE:-bridge}"
+readonly QA_SOURCE_COMMIT="$(git rev-parse HEAD)"
+export EIDOLON_E2E_SOURCE_COMMIT="${QA_SOURCE_COMMIT}"
+export EIDOLON_E2E_SOURCE_DIRTY=0
+if [[ -n "$(git status --porcelain)" ]]; then
+  export EIDOLON_E2E_SOURCE_DIRTY=1
+fi
+qa_build_commit="${QA_SOURCE_COMMIT}"
+if [[ "${EIDOLON_E2E_SOURCE_DIRTY}" == 1 ]]; then
+  qa_build_commit+="-dirty"
+fi
 
 network_created=false
 mongo_created=false
@@ -110,8 +120,8 @@ mongo_password="$(openssl rand -hex 24)"
 
 docker build \
   --build-arg GO_VERSION=1.24.5 \
-  --build-arg BUILD_COMMIT=isolated-qa \
-  --build-arg "BUILD_VERSION=Alpha 1.0.8" \
+  --build-arg "BUILD_COMMIT=${qa_build_commit}" \
+  --build-arg "BUILD_VERSION=Alpha 1.0.9" \
   --tag "${SERVER_IMAGE}" server >/dev/null
 image_created=true
 
@@ -186,7 +196,7 @@ run_animation_multiplayer() {
 set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   all)
-    npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js && npm run test:e2e:movement && run_animation_classes && run_animation_multiplayer
+    npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js && npm run test:e2e:movement && run_animation_classes && run_animation_multiplayer
     ;;
   animations)
     run_animation_classes
@@ -218,8 +228,14 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   verdant)
     npx playwright test tests/e2e/verdant-dungeon-gameplay.spec.js
     ;;
+  dungeon-full)
+    EIDOLON_E2E_FULL_DUNGEON=1 npx playwright test tests/e2e/verdant-dungeon-gameplay.spec.js
+    ;;
+  projectile-walls)
+    npx playwright test tests/e2e/dungeon-projectile-wall-gameplay.spec.js
+    ;;
   *)
-    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, inventory, extended, portal, dungeons, or verdant." >&2
+    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, inventory, extended, portal, dungeons, verdant, dungeon-full, or projectile-walls." >&2
     exit 1
     ;;
 esac

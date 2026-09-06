@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { buildDungeonTraversalRoutes } from '../dungeonTraversalRoutes.js';
+import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
 import {
     collectBrowserFailures, credentialsFromEnvironment, ensureDungeonReadyLevel,
     enterAndExitDungeon, loginAndEnterWorld, moveByGroundClick, projectEntity, readPlayerState, returnToTown
@@ -7,7 +8,9 @@ import {
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 const fallbackRun = process.env.EIDOLON_E2E_DUNGEON_FALLBACK === '1';
-const fullRun = fallbackRun || process.env.EIDOLON_E2E_FULL_DUNGEON === '1';
+const playthrough = dungeonPlaythroughOptions(process.env);
+const fullRun = fallbackRun || process.env.EIDOLON_E2E_FULL_DUNGEON === '1' || playthrough.dungeonType !== 'verdant_bastion_catacombs';
+const logPrefix = `[dungeon:${playthrough.dungeonType}]`;
 
 async function prepareFighterSkills(page) {
     if (!await page.evaluate(() => window.game.player.abilityName === 'Charge')) return;
@@ -41,9 +44,11 @@ async function hostiles(page) {
 }
 
 async function defeatByMouse(page, target) {
-    console.log(`[verdant] fighting ${target.type}`);
-    const deadline = Date.now() + 120_000;
+    console.log(`${logPrefix} fighting ${target.type}`);
+    const deadline = Date.now() + (fullRun ? 360_000 : 120_000);
     let sawDamage = false;
+    let lowestHealth = target.health;
+    let lastDamageAt = Date.now();
     let nextReport = 0;
     while (Date.now() < deadline) {
         await assertWorldUpdatesContinue(page);
@@ -52,11 +57,16 @@ async function defeatByMouse(page, target) {
             return entity ? { health: entity.health ?? entity.stats?.hp, state: entity.state } : null;
         }, target.id);
         if (state?.state === 'DEAD' || state?.health <= 0) {
-            console.log(`[verdant] defeated ${target.type}`);
+            console.log(`${logPrefix} defeated ${target.type}`);
             return;
         }
         if (!state) throw new Error(`Combat target disappeared without a confirmed death: ${target.type}`);
         sawDamage ||= state.health < target.health;
+        if (state.health < lowestHealth) {
+            lowestHealth = state.health;
+            lastDamageAt = Date.now();
+        }
+        if (Date.now() - lastDamageAt > 60_000) throw new Error(`No damage progress against ${target.type} for 60 seconds`);
         if (Date.now() >= nextReport) {
             const diagnostic = await page.evaluate(id => {
                 const game = window.game;
@@ -64,7 +74,7 @@ async function defeatByMouse(page, target) {
                 return { health: enemy?.health ?? enemy?.stats?.hp, distance: enemy?.position.distanceTo(game.player.position),
                     range: game.getBasicAttackRangeForEntity(enemy), playerDamage: game.player.stats?.damage };
             }, target.id);
-            console.log(`[verdant] ${target.type}: ${JSON.stringify(diagnostic)}`);
+            console.log(`${logPrefix} ${target.type}: ${JSON.stringify(diagnostic)}`);
             nextReport = Date.now() + 15_000;
         }
         const point = await projectEntity(page, target.id);
@@ -117,10 +127,10 @@ async function assertWorldUpdatesContinue(page) {
     expect(age, 'authoritative world updates stalled during dungeon progression').toBeLessThan(10_000);
 }
 
-test(fullRun ? `Verdant complete ${fallbackRun ? 'fallback' : 'generated'} run remains playable` : 'Verdant ordinary encounters, first boss, and later spawns remain playable', async ({ page, baseURL }) => {
+test(fullRun ? `${playthrough.name} complete ${fallbackRun ? 'fallback' : 'generated'} run remains playable` : 'Verdant ordinary encounters, first boss, and later spawns remain playable', async ({ page, baseURL }) => {
     const credentials = credentialsFromEnvironment();
     test.skip(!credentials.username || !credentials.password, 'Requires a dedicated QA character');
-    test.setTimeout(900_000);
+    test.setTimeout(1_500_000);
     const failures = collectBrowserFailures(page, baseURL);
     await loginAndEnterWorld(page, credentials);
     await ensureDungeonReadyLevel(page);
@@ -142,15 +152,21 @@ test(fullRun ? `Verdant complete ${fallbackRun ? 'fallback' : 'generated'} run r
             return original(message);
         };
     });
-    await enterAndExitDungeon(page, { resetRun: true, beforeExit: async () => {
+    let completedRun;
+    await enterAndExitDungeon(page, { ...playthrough, resetRun: true, beforeExit: async () => {
         const layout = await page.evaluate(() => window.game.currentDungeonLayout);
         // Preserve replay identity without logging instance IDs/QA usernames.
-        console.log(`[verdant] replay ${JSON.stringify({ seed: layout.generationSeed,
+        console.log(`${logPrefix} replay ${JSON.stringify({ seed: layout.generationSeed,
             generator: layout.generatorVersion, attempt: layout.generationAttempt || 0,
-            fallback: Boolean(layout.generationFallback), fullRun })}`);
+            fallback: Boolean(layout.generationFallback), fullRun,
+            difficulty: playthrough.difficulty, level: playthrough.runLevel, class: process.env.EIDOLON_E2E_CLASS || 'Wizard',
+            sourceCommit: process.env.EIDOLON_E2E_SOURCE_COMMIT || 'not-recorded',
+            sourceDirty: process.env.EIDOLON_E2E_SOURCE_DIRTY === '1' })}`);
+        expect(layout.generationSeed).toBeTruthy();
         expect(Boolean(layout.generationFallback)).toBe(fallbackRun);
         const routes = buildDungeonTraversalRoutes(layout);
         const bossRooms = layout.rooms.map((room, index) => room.type === 'boss' ? index : -1).filter(index => index >= 0);
+        expect(bossRooms).toHaveLength(playthrough.bosses.length);
         const defeated = new Set();
         const lastBoss = fullRun ? bossRooms.length - 1 : 1;
         const goldBefore = await page.evaluate(() => window.game.player.gold);
@@ -181,11 +197,28 @@ test(fullRun ? `Verdant complete ${fallbackRun ? 'fallback' : 'generated'} run r
                 }
             }
         }
-        const expectedBosses = ['RootboundWarden', 'BriarMatron', 'RustboundColossus', 'HollowSentinel'].slice(0, lastBoss + 1);
+        const expectedBosses = playthrough.bosses.slice(0, lastBoss + 1);
         expect([...defeated]).toEqual(expect.arrayContaining(expectedBosses));
         const summary = await page.evaluate(() => window.game.currentDungeonRoomState);
         for (const index of bossRooms.slice(0, lastBoss + 1)) expect(summary.rooms[index].cleared).toBe(true);
+        if (fullRun) {
+            for (const [index, room] of layout.rooms.entries()) {
+                if (room.type !== 'start') expect(summary.rooms[index].cleared, `Room ${index} (${room.type}) must be cleared`).toBe(true);
+            }
+            completedRun = { seed: layout.generationSeed, generator: layout.generatorVersion,
+                bossRooms, gold: await page.evaluate(() => window.game.player.gold) };
+        }
         expect(await page.evaluate(() => window.game.player.gold)).toBeGreaterThan(goldBefore);
     } });
+    if (fullRun) {
+        await enterAndExitDungeon(page, { ...playthrough, beforeExit: async () => {
+            expect(await page.evaluate(() => window.game.currentDungeonLayout.generationSeed)).toBe(completedRun.seed);
+            expect(await page.evaluate(() => window.game.currentDungeonLayout.generatorVersion)).toBe(completedRun.generator);
+            const summary = await page.evaluate(() => window.game.currentDungeonRoomState);
+            for (const index of completedRun.bossRooms) expect(summary.rooms[index].cleared).toBe(true);
+            expect(await page.evaluate(() => window.game.player.gold)).toBe(completedRun.gold);
+            console.log(`${logPrefix} completed-run recall/re-entry preserved seed, cleared bosses and gold`);
+        } });
+    }
     expect(failures, failures.join('\n')).toEqual([]);
 });

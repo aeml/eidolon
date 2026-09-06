@@ -334,7 +334,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.8</span>
+                <span class="start-version-row__label">Alpha 1.0.9</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -653,6 +653,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.9">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.9 (walls hold, roads continue)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Projectiles respect dungeon walls:</strong> travelling fireballs, daggers, and other ground projectiles stop at the first solid boundary instead of crossing into another room. Their full travel segment is checked, including large simulation steps.</li>
+                        <li><strong>Doorways stay open:</strong> shared room and corridor edges remain passable. This uses the dungeon's authoritative floor geometry, not invisible extra blockers at every tile seam.</li>
+                        <li><strong>Wall impacts tell the truth:</strong> blocked projectiles show an impact at the wall without displaying a false explosion damage area. Explicit zero-radius impacts survive the network payload and client effect rendering.</li>
+                        <li><strong>Directions name the right town:</strong> Ilyra's opening objective and daily contract descriptions now name Lanternhold consistently. Existing quest acceptance and progress are preserved.</li>
+                        <li><strong>More of the dungeon journey is checked:</strong> full-run QA now supports regional dungeon choices, replay seeds, difficulty, completed-run recall and re-entry. Molten Core's five-boss Fighter route passes, and skill/rune damage checks cover all five dungeons. The broader four-class, party and campaign verification remains open for 1.1.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.0.8">
                     <h3 class="patch-note-entry__title">Alpha 1.0.8 (the last teammate standing)</h3>
                     <ul class="patch-note-entry__list">

@@ -6,6 +6,26 @@ import (
 	"time"
 )
 
+func TestStarterQuestDirectionsNameTheActualStartingCity(t *testing.T) {
+	first := chronicleQuestCatalog()[0]
+	if !strings.Contains(first.ObjectiveText, "Lanternhold") || !strings.Contains(first.Description, "Lanternhold") {
+		t.Fatal("Ilyra's first objective and conversation disagree about the starting city")
+	}
+	for _, quest := range dailyQuestCatalog() {
+		if !strings.Contains(quest.Description, "Lanternhold's quest giver") {
+			t.Fatalf("daily quest %s names the wrong town", quest.ID)
+		}
+	}
+	old := first
+	old.ObjectiveText = "Defeat 3 risen dead beyond Aethelgard's walls."
+	old.Accepted, old.Count = true, 2
+	player := &Entity{Quests: []Quest{old}}
+	ensureChronicleLocked(player)
+	if player.Quests[0].ObjectiveText != first.ObjectiveText || player.Quests[0].Count != 2 || !player.Quests[0].Accepted || player.Quests[0].Completed {
+		t.Fatal("updating the town directions changed an existing character's quest progress")
+	}
+}
+
 func questByID(t *testing.T, player *Entity, id string) *Quest {
 	t.Helper()
 	for i := range player.Quests {

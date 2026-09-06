@@ -1519,25 +1519,35 @@ async function projectVerdantEntrance(page) {
     });
 }
 
-export async function enterAndExitDungeon(page, { beforeExit, resetRun = false } = {}) {
+export async function enterAndExitDungeon(page, { beforeExit, resetRun = false,
+    dungeonType = 'verdant_bastion_catacombs', difficulty = 'normal', runLevel: requestedRunLevel = 30 } = {}) {
     // Retries reuse the dedicated character. An interrupted earlier route may
     // have left it in an instance, where overworld QA waypoints are rejected.
     if ((await readPlayerState(page)).instanceType !== 'overworld') await returnToTown(page);
     await useVerdantQAWaypoint(page);
+    // A regional entrance intentionally locks its own dungeon choice. Other
+    // matrix rows use Lanternhold's real guide, not a patched portal selector.
+    const viaGuide = dungeonType !== 'verdant_bastion_catacombs';
+    if (viaGuide) await returnToTown(page);
     await zoomOutForPortal(page);
 
     let entered = false;
     let pendingReset = resetRun;
     let verifyReset = false;
     for (let attempt = 0; attempt < 3 && !entered; attempt += 1) {
-        let entrance = null;
-        await expect.poll(async () => {
-            entrance = await projectVerdantEntrance(page);
-            return Boolean(entrance?.visible);
-        }, { timeout: 15_000 }).toBe(true);
-        expect(entrance, 'Verdant Bastion entrance must be loaded').not.toBeNull();
-        await page.mouse.move(entrance.x, entrance.y);
-        await page.mouse.click(entrance.x, entrance.y);
+        if (viaGuide) {
+            const { openDungeonGuide } = await import('./dungeon-guide.js');
+            await openDungeonGuide(page);
+        } else {
+            let entrance = null;
+            await expect.poll(async () => {
+                entrance = await projectVerdantEntrance(page);
+                return Boolean(entrance?.visible);
+            }, { timeout: 15_000 }).toBe(true);
+            expect(entrance, 'Verdant Bastion entrance must be loaded').not.toBeNull();
+            await page.mouse.move(entrance.x, entrance.y);
+            await page.mouse.click(entrance.x, entrance.y);
+        }
 
         const menu = page.locator('#dungeon-menu');
         await expect(menu).toBeVisible({ timeout: 20_000 });
@@ -1554,12 +1564,15 @@ export async function enterAndExitDungeon(page, { beforeExit, resetRun = false }
         }
         const runLevel = page.locator('#dungeon-run-level-select');
         if (await page.locator('#dungeon-active-run-summary').count()) {
-            await expect(page.locator('#dungeon-type-select')).toHaveValue('verdant_bastion_catacombs');
+            await expect(page.locator('#dungeon-type-select')).toHaveValue(dungeonType);
         } else {
-            await page.locator('#diff-btn-normal').click();
-            if (await runLevel.locator('option[value="30"]').count()) {
-                await runLevel.selectOption('30');
+            await expect(page.locator(`#dungeon-type-select option[value="${dungeonType}"]`),
+                'The selected dungeon must be unlocked through its normal level/story requirements').toHaveCount(1);
+            if (await page.locator('#dungeon-type-select').inputValue() !== dungeonType) {
+                await page.locator('#dungeon-type-select').selectOption(dungeonType);
             }
+            await page.locator(`#diff-btn-${difficulty}`).click();
+            await runLevel.selectOption(String(requestedRunLevel));
         }
         const enterButton = page.locator('#btn-enter-dungeon');
         await expect(enterButton).toBeEnabled();
@@ -1569,7 +1582,7 @@ export async function enterAndExitDungeon(page, { beforeExit, resetRun = false }
         try {
             await expect.poll(async () => (await readPlayerState(page)).instanceType, {
                 timeout: 45_000
-            }).toBe('verdant_bastion_catacombs');
+            }).toBe(dungeonType);
             entered = true;
         } catch {
             // Reopening the same real portal is idempotent: if the first click

@@ -418,7 +418,8 @@ Published as commit `015f3cd4258c8cb2cf65e16b2529dc9ad922c418`. CI run
 full-character predeploy QA, and both deployments. Both public release endpoints,
 the login label and the client entrypoint release query independently match
 Alpha 1.0.7 and that exact commit. Post-deployment live gameplay QA is running;
-its terminal result remains open.
+its terminal result is now **success**. CI `33998433871` completed successfully,
+including all post-deployment live gameplay, class and remote-animation checks.
 
 Additional DUN-02/04 evidence: the full **generated** Verdant Fighter route passes
 in 7.5 minutes (`/tmp/eidolon-full-generated-verdant-1-0-7.log`), with ordinary
@@ -474,6 +475,44 @@ predeploy UI gallery. Lint and whitespace checks pass. Final publication/live
 verification are pending; 1.0.7 has now finished both deployment jobs, so this
 candidate can enter CI without changing the prior deployment's branch tip.
 The broader 1.1 gate stays open.
+
+Published the PvP candidate as commit
+`968c2c722d8fc7cef200224a352b7fa713079608`, CI `33999632052`. Server/client suites
+and browser smoke pass; disposable predeploy character QA and both deployment
+jobs now pass. Both public release endpoints, the login label and entrypoint
+release query match this exact Alpha 1.0.8 commit. CI `33999632052` now completed
+successfully, including all post-deployment gameplay and class/remote checks.
+
+## Continued 1.1 dungeon verification
+
+The full player-control route is now parameterized for the five catalog dungeons,
+difficulty and run level, with logged replay identity and completed-run re-entry
+assertions. The server body-contact matrix expands to all four classes and adds
+220 skill/rune/instance-isolation combinations. These are meaningful partial
+checks, not closure of the all-class/all-dungeon player-control gate.
+
+Molten Core's full Fighter route passes in 23.8 minutes after resolving a
+locked-portal test assumption and replacing its too-short two-minute combat timer.
+It covers all five bosses, every encounter room, gold, recall and completed-run
+re-entry without duplicated gold. A distinct solid-wall projectile bug was
+reproduced and repaired locally; fresh-server Wizard browser verification now
+passes in 11.3 seconds, including actual wall contact and zero-radius presentation.
+It exposed a protocol-layer zero omission that is also repaired and regression
+tested. Commands, seeds, exact limitations and
+run results are recorded in [the playthrough evidence](dungeon-playthrough-evidence.md).
+
+## Alpha 1.0.9 candidate — walls hold, roads continue
+
+Packages the verified ground-projectile wall repair and explicit zero-radius
+impact transport/rendering with the expanded dungeon verification routes. It also
+corrects Ilyra's opening objective and daily descriptions to name Lanternhold,
+with a regression preserving acceptance and kill count on existing characters.
+Other cross-wall ability types, secondary effects and the full 1.1 matrix remain
+open; the patch notes do not claim those fixed. Login, package, server/container,
+deploy and CI release defaults advance together. Final candidate checks pass:
+the complete server race suite, 149 client suites / 2,180 tests, lint and
+whitespace validation. Publication is pending; Alpha 1.0.8 is the currently
+verified live release.
 
 ## Milestone tracking
 

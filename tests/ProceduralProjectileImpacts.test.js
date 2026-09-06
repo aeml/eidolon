@@ -105,6 +105,16 @@ describe('procedural projectile impacts', () => {
         }
     });
 
+    test('a zero-radius wall impact has visible sparks but no damage-area boundary', () => {
+        const effect = createProceduralProjectileImpactEffect(new THREE.Group(), new THREE.Vector3(), {
+            projectileType: 'Fireball', radius: 0, quality: 'high'
+        });
+        const meshes = collectMeshes(effect.root);
+        expect(meshes.length).toBeGreaterThan(0);
+        expect(meshes.filter(part => part.userData.gameplayBoundary)).toHaveLength(0);
+        effect.dispose();
+    });
+
     test.each([
         ['Fireball', 10],
         ['ExplosiveTrap', 6],

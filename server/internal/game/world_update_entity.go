@@ -358,9 +358,19 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 		// Move
 		oldX, oldZ := e.X, e.Z
-		e.X += e.VelX * dt
-		e.Z += e.VelZ * dt
+		nextX, nextZ := e.X+e.VelX*dt, e.Z+e.VelZ*dt
+		wallX, wallZ, wallHit := w.firstDungeonWallHit(e.InstanceID, oldX, oldZ, nextX, nextZ)
+		e.X, e.Z = wallX, wallZ
 		w.Grid.Update(e, oldX, oldZ)
+		if wallHit {
+			impact := ProjectileImpactEvent{ProjectileID: e.ID, ProjectileType: e.SubType,
+				SourceID: e.OwnerID, InstanceID: e.InstanceID, SkillName: e.ProjectileSkill,
+				X: e.X, Y: e.Y, Z: e.Z, DirectionX: e.VelX, DirectionZ: e.VelZ, Terminal: true}
+			deferred.addRemoval(e.ID)
+			e.Mu.Unlock()
+			w.fireProjectileImpactEvent(impact)
+			return
+		}
 
 		// Snapshot for collision check
 		projX, projY, projZ, radius, damage, ownerID, subType := e.X, e.Y, e.Z, e.Radius, e.Damage, e.OwnerID, e.SubType

@@ -40,7 +40,7 @@ func chronicleQuestCatalog() []Quest {
 		{
 			ID: "chronicle_01_bell_below", Type: "KILL", Target: "Skeleton", MaxCount: 3, RewardXP: 500,
 			Title: "The Bell That Rang Below", Category: QuestCategoryChronicle, Chapter: 1,
-			ObjectiveText: "Defeat 3 risen dead beyond Aethelgard's walls and recover their dissonant echoes.",
+			ObjectiveText: "Defeat 3 risen dead beyond Lanternhold's walls and recover their dissonant echoes.",
 			Description:   "I am Ilyra, keeper of the Fourfold Chronicle. Last night I heard a bell beneath Lanternhold that has no living ringer. The four crystals are faltering, and my wards cannot reach their buried sanctums. I need your help to save Eidolon. Face the risen dead beyond our walls and bring me the echoes bound inside them; together we can trace the wound.",
 			Lore:          "Eidolon was not named for a kingdom. It was named for the four great spirits who dreamed matter into covenant: Orun of Root and Stone, Neris of Tide and Memory, Pyralis of Flame and Will, and Aeral of Sky and Freedom. Their crystals do not create the elements—they keep the elements willing to shelter mortal lands.",
 		},
@@ -187,7 +187,7 @@ func dailyQuestCatalog() []Quest {
 		quests[i].Category = QuestCategoryDaily
 		quests[i].Title = fmt.Sprintf("Daily Hunt: %s", splitQuestTarget(quests[i].Target))
 		quests[i].ObjectiveText = fmt.Sprintf("Defeat %d %s.", quests[i].MaxCount, splitQuestTarget(quests[i].Target))
-		quests[i].Description = "A repeatable contract from Aethelgard's quest giver. Daily hunts reset at midnight Eastern Time."
+		quests[i].Description = "A repeatable contract from Lanternhold's quest giver. Daily hunts reset at midnight Eastern Time."
 	}
 	return quests
 }

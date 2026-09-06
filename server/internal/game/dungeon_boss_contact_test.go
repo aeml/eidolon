@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func TestDungeonBossBodyContactAllowsRealMeleeAttacks(t *testing.T) {
+func TestDungeonBossBodyContactAllowsRealBasicAttacks(t *testing.T) {
 	bosses := []string{
 		"RootboundWarden", "BriarMatron", "RustboundColossus", "HollowSentinel",
 		"Cindermaw", "ScorchedTwins", "ForgemasterPyrax", "ObsidianGuardian", "LordInfernax",
@@ -16,7 +16,7 @@ func TestDungeonBossBodyContactAllowsRealMeleeAttacks(t *testing.T) {
 		"GravenColossus", "TideboundTyrant", "AshenImperator", "TempestSovereign",
 	}
 	for _, bossType := range bosses {
-		for _, class := range []string{"Fighter", "Cleric"} {
+		for _, class := range []string{"Fighter", "Cleric", "Wizard", "Rogue"} {
 			t.Run(bossType+"/"+class, func(t *testing.T) {
 				w := NewWorld(nil)
 				w.InstanceLayouts["boss-contact"] = &DungeonInstance{ID: "boss-contact", Difficulty: DifficultyNormal, RunLevel: 30}
@@ -35,7 +35,7 @@ func TestDungeonBossBodyContactAllowsRealMeleeAttacks(t *testing.T) {
 					}
 				}
 				if _, accepted := w.PerformAttack(player.ID, boss.ID); !accepted {
-					t.Fatal("melee attack rejected at the replicated collision boundary")
+					t.Fatal("basic attack rejected at the replicated collision boundary")
 				}
 				select {
 				case <-damage:

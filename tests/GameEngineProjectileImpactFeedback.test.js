@@ -16,6 +16,14 @@ function makeEngine() {
 }
 
 describe('authoritative projectile impact feedback', () => {
+    test('a terminal wall hit preserves zero area damage instead of inventing a fireball explosion', () => {
+        const engine = makeEngine();
+        engine.renderProjectileImpactFeedback({ projectileId: 'wall-fireball', projectileType: 'Fireball',
+            instanceId: 'dungeon-impact-test', x: 10, y: 1.5, z: 0, radius: 0, terminal: true });
+        expect(engine.spawnTransientEffect).toHaveBeenCalledWith('projectile_impact', expect.any(THREE.Vector3), 0xffffff,
+            expect.objectContaining({ radius: 0, terminal: true, targetId: '' }));
+        expect(engine.lastProjectileImpactPresentation.radius).toBe(0);
+    });
     test('renders the server identity, direction, target, and exact radius', () => {
         const engine = makeEngine();
         engine.handleServerMessage({

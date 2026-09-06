@@ -184,7 +184,7 @@ type ProjectileImpactEvent struct {
 	Z              float64 `json:"z"`
 	DirectionX     float64 `json:"directionX"`
 	DirectionZ     float64 `json:"directionZ"`
-	Radius         float64 `json:"radius,omitempty"`
+	Radius         float64 `json:"radius"`
 	Terminal       bool    `json:"terminal"`
 }
 

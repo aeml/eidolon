@@ -264,8 +264,8 @@ class GameEngineNetworkMessageMethods {
         // a replicated projectile/source instead of making every connected
         // overworld client animate distant combat it cannot see.
         if (!eventInstance && !projectile && !source) return false;
-        const suppliedRadius = Number(data.radius);
-        const radius = Number.isFinite(suppliedRadius) && suppliedRadius > 0
+        const suppliedRadius = data.radius == null ? NaN : Number(data.radius);
+        const radius = Number.isFinite(suppliedRadius) && suppliedRadius >= 0
             ? suppliedRadius
             : getProjectileImpactRadius(projectileType, source, projectile?.scale);
         const spawned = this.spawnTransientEffect?.('projectile_impact', position, 0xffffff, {

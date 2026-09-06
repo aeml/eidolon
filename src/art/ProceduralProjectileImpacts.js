@@ -247,8 +247,8 @@ export function createProceduralProjectileImpactEffect(scene, position, options 
     const definition = PROCEDURAL_PROJECTILE_IMPACT_DEFINITIONS[type];
     if (!definition) throw new Error(`Unknown procedural projectile impact: ${type}`);
     const quality = options.quality === 'low' ? 'low' : 'high';
-    const suppliedRadius = Number(options.radius);
-    const gameplayRadius = Number.isFinite(suppliedRadius) && suppliedRadius > 0
+    const suppliedRadius = options.radius == null ? NaN : Number(options.radius);
+    const gameplayRadius = Number.isFinite(suppliedRadius) && suppliedRadius >= 0
         ? suppliedRadius
         : definition.gameplayRadius;
     const root = new THREE.Group();
