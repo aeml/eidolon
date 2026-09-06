@@ -122,6 +122,35 @@ async function hardwareRenderer(page) {
 test.describe('deterministic production animation gallery', () => {
     test.describe.configure({ timeout: 1_200_000 });
 
+    test('switching actors during a jump cannot idle the replacement preview', async ({ page, baseURL }) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });
+        for (const quality of ['high', 'low']) {
+            await page.locator('#gallery-quality').selectOption(quality);
+            for (const state of ['Walk', 'Run']) {
+                await page.locator('#gallery-actor').selectOption('Cleric');
+                await waitForActor(page, 'Cleric');
+                await page.locator('#gallery-state').selectOption('Jump');
+                await page.locator('#gallery-play-state').click();
+                await expect.poll(async () => (await galleryMetrics(page)).phase).toBe('state:jump');
+                await page.locator('#gallery-actor').selectOption('Imp');
+                await waitForActor(page, 'Imp');
+                await page.locator('#gallery-state').selectOption(state);
+                await page.locator('#gallery-play-state').click();
+                // Observe beyond the previous actor's entire one-second jump.
+                // A snapshot at click time alone missed this delayed overwrite.
+                await page.waitForTimeout(1_100);
+                const metrics = await galleryMetrics(page);
+                expect(metrics.currentAnimation, `${quality}/Imp/${state} after interrupted jump`).toBe(state);
+                expect(metrics.nonFiniteTransforms).toBe(0);
+                expect(metrics.lastStatePlayback).toEqual(expect.objectContaining({
+                    actorType: 'Imp', state, played: true, startedAnimation: state
+                }));
+            }
+        }
+        expect(failures, failures.join('\n')).toEqual([]);
+    });
+
     test('renders every attachment-ready procedural class in every state and quality tier', async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
         const response = await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });
