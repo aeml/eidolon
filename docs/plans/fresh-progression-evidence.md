@@ -24,6 +24,28 @@ scan passed. Investigate actual target acquisition/damage and the fresh-stat
 baseline before attributing every death to numerical balance. The Wizard pass
 does not establish a dependable opening for all four classes.
 
+The next diagnosis should also cover the advertised starter band. `world.go`
+labels the town's Skeleton sector “Lv 1-10” but passes fixed level 10 to
+`spawnEnemyRect`; `balancedEnemyBaseStats` also clamps all lower levels to the
+level-10 profile. Fresh unequipped Fighter Strength 10 becomes basic Damage 2
+under `RecalculateStats`, while that Skeleton profile has 150 health and Damage
+30. These are source-derived baseline values, not a simulated time-to-kill or
+proof of the exact damage exchanged in the failed browser run. Capture actual
+target acquisition and damage, then address the real starting encounter/stat
+budget without weakening the no-grants test or globally nerfing later dungeons.
+
+The diagnostic repeat also **failed after three deaths without a kill**. It
+observed a fresh Fighter with 100 maximum HP, basic Damage 2 and Charge, against
+a level-10 Skeleton. The intended target was actually hovered at close range;
+its health fell 150 → 130 during the first life, then 130 → 117 during the
+second. Damage reaches the target, so a wholly unattackable enemy is not a
+sufficient explanation for this failure. Starting encounter/character budget
+is the next gameplay priority; this does not measure every class or prove the
+entire combat system balanced or broken. Log
+`/tmp/eidolon-fresh-opening-fighter-damage.log`, session `76713` closed with
+failure; credential scan passed. Source was `370f759` plus diagnostic and
+documentation changes, with unchanged game runtime.
+
 Optional isolated route `fresh-opening` registers a new character, asserts level
 one, talks to Ilyra, accepts the opening Chronicle, travels through the east gate,
 earns three Skeleton kills, explicitly completes the quest and continues the

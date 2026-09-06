@@ -63,3 +63,21 @@ classification, stackability and before/after quantity, not account/item IDs.
 Publish a successor of 1.0.21 and
 repeat its entire live gate before marking this release verified or pushing
 1.0.22. Carry the correction forward through the existing queued ancestry.
+
+## Final candidate and publication
+
+Clean **`9f587570313d2f78aa469f21bd73bf8db1dd50ab`** passed the complete client
+suite again: **163 suites / 2,351 tests in 73.794 seconds**, plus lint. The
+exact-source real extended route passed in **29.5 seconds** (27.6-second body).
+Its recorded early manual pickup matched non-stackable equipment quantity 0 → 1;
+the received item survived dungeon return, reconnect and fresh login. Credential
+scan and disposable cleanup passed. Logs `/tmp/eidolon-release21-pickup-final.log`
+and `/tmp/eidolon-release21-pickup-final-client.log`; sessions `84554`, `36573`
+closed. These final results include the passive request observer.
+
+This successor was pushed to `master`; CI **`34055526018`** is running. It has
+not yet passed the full live gate. Fresh frontend manifest and backend health
+checks before that push still identified deployed `c76db47` / Alpha 1.0.21,
+status `ok`, database `ready`; health does not erase its failed gameplay check.
+The correction is merged into later local release candidates, not skipped ahead
+to production. 1.0.20 `99303f5` remains the last fully verified release.

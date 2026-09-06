@@ -20,21 +20,30 @@ The confirmed loot-over-enemy targeting defect is corrected in the successor
 live gameplay after both deployments succeeded. Its two loot attempts expected
 occupied slots to exceed 24 and timed out at 24; the bag limit is 25, so this
 alone does not prove a full-bag defect. The test also blindly clicks a projected
-ground position and treats stack merges as failed pickups. A correction is being
-verified in the 1.0.21 worktree with exact item/quantity receipts, actual pointer
-acquisition and saved-quantity checks. The old failure remains unresolved as a
+ground position and treats stack merges as failed pickups. Corrected successor
+**`9f587570313d2f78aa469f21bd73bf8db1dd50ab` is now pushed**, CI **`34055526018`**
+running, with exact item/quantity receipts, actual pointer acquisition,
+recorded early manual pickups and saved-quantity checks. The old failure remains unresolved as a
 live gate until the successor passes; do not claim its precise cause is proven
 by the limited old diagnostics. No later
 version has been pushed. Local merges carry that same fix forward and preserve ancestry:
 
 | Next version | Queued source | Supersedes |
 |---|---|---|
-| 1.0.21 | `c76db477fb070fe15a7d665ec3cc41f0b0feb916` | `2f5c46b`; retains its Settings → Play inventory QA correction |
-| 1.0.22 | `ed793e0ccc8e54aa71d2597d84c1ff1b3f0d6fba` | `d5b4320`; inherits the corrected 1.0.21 |
-| 1.0.23 | `4fcb89d5816837e5a250550b100e2b3e9f346f31` | `fba546a`; retains the verified collection inventory repair |
-| 1.0.24 | `cc1b7d40302c47cb124819dfbae6eb33cd383ce4` plus subsequent evidence-only commits | phone navigation merged with the corrected release line |
+| 1.0.21 | `9f587570313d2f78aa469f21bd73bf8db1dd50ab` (pushed; live gate pending) | `c76db47`; strengthens pickup and persistence verification |
+| 1.0.22 | `e0b9afd3f8cfcefdbd056ef0339cb7937c27c4e7` | `ed793e0`; inherits corrected 1.0.21 |
+| 1.0.23 | `ad72a642592b5ce6fc6e22b23af1d8b2ab3a52dc` | `4fcb89d`; retains the verified collection inventory repair |
+| 1.0.24 | `370f7593a254f5c4691d59440f270b4edda69b1d` plus subsequent evidence-only commits | phone navigation and fresh-opening QA with corrected release ancestry |
 
-All four ancestry links were checked with `git merge-base --is-ancestor`.
+The corrected 1.0.21 → 1.0.22 → 1.0.23 → 1.0.24 ancestry was checked with
+`git merge-base --is-ancestor`. Exact clean `9f58757` passes **163 client suites /
+2,351 tests in 73.794 seconds**, lint and real extended gameplay in **29.5 seconds**
+(27.6-second body). That run observed an actual early manual pickup request,
+matched equipment quantity 0 → 1, then verified the received item after dungeon
+return, reconnect and fresh login. Credential scan and disposable cleanup passed;
+logs `/tmp/eidolon-release21-pickup-final{,-client}.log`, sessions `84554` and
+`36573` closed. See the [pickup verification record](2026-09-06-release21-pickup-verification.md).
+
 Exact clean `c76db47` repeated the real phone inventory route successfully in
 **59.6 seconds** (58.6-second test body), including both orientations, normal
 combat loot, equip/unequip, canceled/confirmed drop and manual recovery. Credential
@@ -48,6 +57,17 @@ not the current queue. Do not publish a successor before the preceding version's
 complete CI/live verification. The original 1.0.14 failure remains recorded below.
 
 ## September 6 continuation — dungeon class and campaign evidence
+
+Latest continuation completed and pushed the 1.0.21 pickup-verification successor
+after exact-source checks, then reproduced a separate fresh Fighter failure.
+The Fighter suffered three deaths without a kill on both the clean `f2b7b76`
+route and the diagnostic repeat; the latter proved actual target health loss
+against a level-10 Skeleton. See the [fresh-character evidence](fresh-progression-evidence.md).
+Do not weaken the no-grants route, classify this as a dungeon-targeting failure,
+or claim all-class onboarding is complete. Starting encounter/stat budget is the
+next gameplay repair, alongside the ongoing corrected 1.0.21 CI/live gate.
+The final merged Alpha 1.0.24 helper/version checks pass lint and **208 tests
+in three suites, 1.998 seconds**; `/tmp/eidolon-1-0-24-observer-merge-checks.log`.
 
 Clean `a8d0aa9` passed the full Cleric Verdant route in **8.7 minutes**, Normal
 30 / player 100, seed `6533633041847534961`, generator 2 attempt 0. All four

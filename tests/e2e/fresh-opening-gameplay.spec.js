@@ -49,6 +49,13 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     const failures = collectBrowserFailures(page, baseURL);
     await loginAndEnterWorld(page, credentials);
     expect((await readPlayerState(page)).level).toBe(1);
+    console.log(`[fresh-opening] baseline ${JSON.stringify(await page.evaluate(() => {
+        const player = window.game.player;
+        return { class: player.constructor.name, level: player.level,
+            hp: player.health ?? player.stats?.hp, maxHP: player.maxHealth ?? player.stats?.maxHp,
+            basicDamage: player.stats?.damage ?? player.damage,
+            primaryAbility: player.abilityName };
+    }))}`);
     await openIlyra(page);
     await page.locator('#quest-window').getByRole('button', { name: 'Accept Quest', exact: true }).click();
     await expect.poll(async () => (await readChronicleChapter(page, chapter))?.accepted).toBe(true);
@@ -59,18 +66,31 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     let retreats = 0;
     while ((await readChronicleChapter(page, chapter)).count < 3) {
         let target = await findSkeletonThroughTravel(page);
+        let targetStartHP = target.health;
+        let targetLowestHP = target.health;
         const before = (await readChronicleChapter(page, chapter)).count;
         const deadline = Date.now() + 120_000;
         while (Date.now() < deadline && (await readChronicleChapter(page, chapter)).count === before) {
             const player = await readPlayerState(page);
+            const targetState = await page.evaluate(id => {
+                const game = window.game;
+                const enemy = game.remotePlayers.get(id);
+                return enemy ? { level: enemy.level, hp: enemy.health ?? enemy.stats?.hp,
+                    distance: game.player.position.distanceTo(enemy.position),
+                    hovered: game.hoveredEntity?.id === id } : null;
+            }, target.id);
+            if (Number.isFinite(targetState?.hp)) targetLowestHP = Math.min(targetLowestHP, targetState.hp);
             if (player.state === 'DEAD') {
                 deaths++;
-                console.log(`[fresh-opening] death ${JSON.stringify({ deaths, count: before, level: player.level })}`);
+                console.log(`[fresh-opening] death ${JSON.stringify({ deaths, count: before, level: player.level,
+                    targetStartHP, targetLowestHP, target: targetState })}`);
                 expect(deaths, 'Bounded opening route exceeded two normal respawns').toBeLessThanOrEqual(2);
                 await returnToTown(page);
                 expect((await readChronicleChapter(page, chapter)).count, 'Death must not erase earned quest credit').toBe(before);
                 await leaveTown(page);
                 target = await findSkeletonThroughTravel(page);
+                targetStartHP = target.health;
+                targetLowestHP = target.health;
                 continue;
             }
             // Use the ranged class as a ranged player: retreat through ordinary
