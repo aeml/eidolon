@@ -149,6 +149,16 @@ describe('GameEngine settings persistence', () => {
         expect(engine.inputManager.canvas).toBe(engine.renderSystem.renderer.domElement);
     });
 
+    test('camera reset relocks follow and restores the view around the current player', () => {
+        const engine = new GameEngine('Fighter', false, true, '', 'tester', null);
+        engine.renderSystem.resetCamera = jest.fn();
+        engine.player = { position: { x: 12, y: 0, z: 205 } };
+        engine.cameraLocked = false;
+        engine.uiManager.onCameraReset();
+        expect(engine.cameraLocked).toBe(true);
+        expect(engine.renderSystem.resetCamera).toHaveBeenCalledWith(engine.player.position);
+    });
+
     test('auto-loot runtime state still follows later UI toggles', () => {
         const engine = new GameEngine('Fighter', false, true, '', 'tester', null);
 

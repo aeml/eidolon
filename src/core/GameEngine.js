@@ -400,6 +400,10 @@ export class GameEngine {
         this.collisionManager = new CollisionManager();
         this.audioManager = new AudioManager();
         this.uiManager = new UIManager(this.isMobile, { audioManager: this.audioManager });
+        this.uiManager.onCameraReset = () => {
+            this.cameraLocked = true;
+            this.renderSystem.resetCamera(this.player?.position);
+        };
         this.autoLootEnabled = this.uiManager.getAutoLootEnabled();
         this.uiManager.onAutoLootChange = (enabled) => {
             this.autoLootEnabled = enabled;

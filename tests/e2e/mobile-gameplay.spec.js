@@ -17,6 +17,10 @@ test('phone touch controls move a real character and open its core menus in both
         for (const [width, height] of [[390, 844], [844, 390]]) {
             await page.setViewportSize({ width, height });
             await expect(page.locator('#chat-mobile-toggle')).toBeVisible();
+            await expect.poll(() => page.evaluate(() => {
+                const camera = window.game.renderSystem.camera;
+                return Math.min(camera.right - camera.left, camera.top - camera.bottom);
+            })).toBeCloseTo(24);
             const before = await page.evaluate(() => ({ x: window.game.player.position.x, z: window.game.player.position.z }));
             const bounds = await page.locator('#joystick-zone').boundingBox();
             await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [
@@ -47,6 +51,12 @@ test('phone touch controls move a real character and open its core menus in both
             await page.locator('#btn-phone-skills').tap();
             await expect(page.locator('#skill-tree-window')).toBeVisible();
             await page.locator('#btn-close-skills').tap();
+            await page.evaluate(() => window.game.renderSystem.setZoom(25));
+            await page.locator('#btn-mobile-menu').tap();
+            await page.locator('#btn-phone-camera').tap();
+            await expect(page.locator('#esc-menu')).toBeHidden();
+            expect(await page.evaluate(() => window.game.renderSystem.currentZoom)).toBe(15);
+            expect(await page.evaluate(() => window.game.cameraLocked)).toBe(true);
             console.log(`[phone-gameplay] ${width}x${height}: opening chat history and composer`);
             await page.locator('#chat-mobile-toggle').tap();
             await page.locator('#chat-input').tap();

@@ -171,7 +171,8 @@ export class UIManager {
         if (this.btnResume) this.btnResume.addEventListener('click', () => this.toggleEscMenu());
         for (const [id, open] of [
             ['btn-phone-skills', () => this.toggleSkillTree()],
-            ['btn-phone-abilities', () => this.toggleAbilitiesMenu()]
+            ['btn-phone-abilities', () => this.toggleAbilitiesMenu()],
+            ['btn-phone-camera', () => this.onCameraReset?.()]
         ]) {
             document.getElementById(id)?.addEventListener('click', () => {
                 if (this.escMenu?.style.display !== 'none') this.toggleEscMenu();

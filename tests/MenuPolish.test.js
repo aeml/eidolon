@@ -67,6 +67,7 @@ function buildStaticWindowDom() {
         <div id="patch-notes-screen" class="window support-window support-window--patch-notes" style="display:none;"></div>
         <button id="btn-close-patch-notes-header"></button>
         <button id="btn-resume"></button>
+        <button id="btn-phone-camera"></button>
         <button id="btn-help"></button>
         <button id="btn-settings"></button>
         <button id="btn-patch-notes"></button>
@@ -255,6 +256,16 @@ describe('menu polish regressions', () => {
         document.body.innerHTML = '';
         localStorage.clear();
         delete window.game;
+    });
+
+    test('phone camera reset closes Menu and invokes its gameplay callback', () => {
+        buildStaticWindowDom();
+        const ui = new UIManager(true);
+        ui.onCameraReset = jest.fn();
+        ui.toggleEscMenu();
+        document.getElementById('btn-phone-camera').click();
+        expect(ui.escMenu.style.display).toBe('none');
+        expect(ui.onCameraReset).toHaveBeenCalledTimes(1);
     });
 
     test('window headers do not start dragging when close controls are pressed', () => {
@@ -1196,7 +1207,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 1.0.14</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 1.0.15</span>');
         expect(html).toContain('<button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');

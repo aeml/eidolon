@@ -226,6 +226,7 @@ export class UIBindings {
         };
 
         ui.showHUD();
+        if (engine.isMobile) engine.renderSystem.updateCameraProjection();
         ui.onRecall = () => engine.requestTownRecall();
         ui.onRespawn = () => {
             if (!engine.player) return;

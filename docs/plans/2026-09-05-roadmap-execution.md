@@ -1261,3 +1261,45 @@ were inspected and preserved at `/tmp/eidolon-1-0-14-phone-hud-portrait.png` and
 `/tmp/eidolon-1-0-14-phone-hud-landscape.png`. These are rendered UI fixtures, not
 physical-phone gameplay captures. The 1.0.14 candidate is ready for local commit;
 push/deployment still waits for 1.0.13's live gates.
+
+### Alpha 1.0.15 candidate — a wider view of Eidolon
+
+The preceding HUD candidate was committed as
+`af3757b668da11cc932c9e93b7a0f770259d334b`. It is not yet pushed: 1.0.13 CI
+`34013545773` has passed predeploy and both deployment jobs, and is still running
+its live four-class/remote-animation gate. Do not overlap the next deployment.
+
+The next local candidate changes phone projection to a 24-unit short-axis default,
+preserving rotation scale and manual zoom. Persistent navigation/hotbar bounds
+influence hero framing; chat and transient menus do not. Phone Menu gains Reset
+Camera, relocking follow and restoring default zoom. Desktop framing stays intact,
+raycasts use the same projection, and zoom no longer reallocates drawing buffers.
+Patch notes/login/runtime metadata are prepared as Alpha 1.0.15. None of the open
+1.1–1.10 milestones is closed by this change.
+
+The former projection failed 8 of the 9 new camera regressions; all now pass.
+Initial full client tests passed 155 suites / 2,266 tests. A corrected production
+mesh fixture and HUD pair passed 2 checks in 24.3 seconds; the first fixture's
+nonexistent Goblin mesh request was a test error, corrected to Skeleton. Inspected
+portrait/landscape captures show a readable Fighter, Skeleton and six-unit warning
+boundary, not a populated dungeon or physical-phone combat session. A fresh
+real-server phone route passed 10.5 seconds with movement, core menus, chat, default
+framing and Reset Camera in both orientations, with credential scan/cleanup passing.
+
+Final versioned **client/lint passed: 155 suites / 2,267 tests**, 101.69 seconds,
+`/tmp/eidolon-1-0-15-client.log` and `/tmp/eidolon-1-0-15-lint.log`. Full server
+race checks passed, root package 13.480 seconds (unchanged game package cached),
+`/tmp/eidolon-1-0-15-server.log`. All **12 anonymous browser checks passed in
+1.8 minutes**, `/tmp/eidolon-1-0-15-anonymous.log`, including camera layout at
+360×800, 390×844, 430×932, 844×390 and 800×360. The narrow portrait/landscape
+captures were inspected and preserved in `/tmp/eidolon-1-0-15-camera-*.png`.
+
+The versioned real-server phone rerun is active through session `89316`, log
+`/tmp/eidolon-1-0-15-phone.log`. Do not edit that runtime or the isolated QA script
+until it finishes. Further phone requirements and evidence limits are recorded
+in `mobile-playability-evidence.md`; touch targeting is a concrete next issue.
+
+The versioned phone rerun **passed in 12.6 seconds**, 15.3 with browser overhead;
+artifact credential scan and disposable cleanup passed. Session `89316` ended
+successfully. All final 1.0.15 checks are complete and the candidate is ready for
+commit. Its publication follows 1.0.14, which still waits on 1.0.13's live gate.

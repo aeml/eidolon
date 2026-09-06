@@ -1,7 +1,68 @@
 # Phone playability — baseline evidence
 
-Status: initial source/DOM diagnosis, not a completed phone redesign. Requirements
+Status: baseline diagnosis plus incremental implementation evidence, not a completed phone redesign. Requirements
 and release gates live in [the main roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13).
+
+Latest local candidate: **Alpha 1.0.15**, camera composition/reset, not yet published.
+Earlier entries below are chronological snapshots, not current process status.
+
+## Camera composition candidate after the 1.0.14 commit
+
+Source: `af3757b668da11cc932c9e93b7a0f770259d334b` plus the local camera changes.
+The new phone projection covers 24 camera-plane world units along the shorter
+viewport edge at default zoom, preserving pixel scale through a simple orientation
+swap and retaining manual zoom preference. Desktop projection and isometric angle
+are unchanged. This is a wider portrait default, not an attempt to fit an entire
+desktop encounter view onto a narrow phone. At 390×844, horizontal default span
+increases from about 13.86 to 24 units. Compared with the old maximum zoom-out,
+the new default makes rendered objects about 15.5% larger in that viewport.
+
+Persistent navigation and hotbar bounds move the projection center into the space
+between them. The initial HUD mount refreshes this framing; transient chat/menu
+expansion does not drive it. Reset Camera in the phone Menu restores default zoom
+and locks follow onto the player. Pinch changes projection without resizing the
+drawing buffer. Ground raycasts continue to use that same projection.
+
+Evidence before version finalization:
+
+- Regression first reproduced **8 failures / 1 pass** in the former projection,
+  `/tmp/eidolon-phone-camera-red.log`; all 9 camera tests then passed, including
+  desktop invariance, rotation scale, HUD center, ground raycast, reset and finite
+  projection. Camera plus shadow checks passed 18/18.
+- Full client suite passed **155 suites / 2,266 tests**, 96.557 seconds,
+  `/tmp/eidolon-phone-camera-full.log`. Focused menu/engine reset checks and lint
+  passed too.
+- The initial rendered fixture failed because its test requested a nonexistent
+  Goblin mesh. It was corrected to the production Skeleton, not a runtime fallback.
+  The corrected camera/HUD browser pair passed **2 tests in 24.3 seconds**,
+  `/tmp/eidolon-phone-camera-browser-final.log`. Inspected captures show production
+  Fighter/Skeleton silhouettes and a six-unit warning boundary in both orientations.
+  Fighter projected height exceeds 44 pixels; sampled warning boundary points fit
+  the exercised view. The fixture uses production rendering with a simple terrain
+  backdrop, not a dungeon, full town, live combat or a physical phone.
+- Real-server fresh-character touch gameplay passed **10.5 seconds**, 13.6 with
+  browser overhead, `/tmp/eidolon-phone-camera-gameplay.log`. Both orientations
+  exercised joystick movement/release, core menus, chat, default framing and reset
+  through Menu. Credential scanning and exact disposable cleanup passed. No quest
+  progress or kills were granted, and no combat-readiness claim follows from it.
+
+Captures were preserved at `/tmp/eidolon-phone-camera-portrait.png`,
+`/tmp/eidolon-phone-camera-landscape.png` and
+`/tmp/eidolon-phone-camera-legacy-maximum.png`. The versioned 1.0.15 anonymous
+suite now also checks 360×800, 430×932 and 800×360 camera layouts. Final versioned
+checks passed: 155 suites / 2,267 client tests (101.69 seconds), lint, full server
+race checks (root 13.480 seconds; unchanged game package cached), 12 anonymous
+browser tests (1.8 minutes), and the real-server phone route (12.6 seconds; 15.3
+including browser overhead). The versioned phone scan/cleanup passed. Logs use the
+`/tmp/eidolon-1-0-15-` prefix (`client`, `lint`, `server`, `anonymous`, `phone`).
+Publication still follows the preceding release's live gates.
+
+Remaining: deliberate touch target selection/aim/cancel and combat under pressure,
+full menu reflow, adjustment preferences, crowded town/dungeon/group readability,
+safe-area/software-keyboard physical behavior and sustained iOS/Android performance.
+The existing mobile Attack path selects a nearby hostile rather than respecting
+an explicitly tapped enemy (`GameEngineMovement.handlePrimaryClick`); this is a
+concrete next interaction-design issue, not resolved by changing the camera.
 
 ## September 6 baseline
 

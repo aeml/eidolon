@@ -31,10 +31,9 @@ export class RenderSystem {
         this.isMobile = isMobile;
 
         // Camera Setup (Isometric Orthographic)
-        const aspect = window.innerWidth / window.innerHeight;
         this.currentZoom = CONSTANTS.CAMERA.ZOOM;
-        const d = this.currentZoom;
-        this.camera = new THREE.OrthographicCamera(-d * aspect, d * aspect, d, -d, 0.1, 2000); // Increased Far Plane
+        this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 2000);
+        this.updateCameraProjection();
         
         // Isometric rotation
         this.cameraOffset = new THREE.Vector3(100, 100, 100);
@@ -813,16 +812,37 @@ export class RenderSystem {
         });
     }
 
-    onWindowResize() {
-        const aspect = window.innerWidth / window.innerHeight;
-        const d = this.currentZoom;
-        
+    updateCameraProjection() {
+        const width = Math.max(1, window.innerWidth || 1);
+        const height = Math.max(1, window.innerHeight || 1);
+        const aspect = width / height;
+        // Phones keep a stable world scale through rotation. At default zoom,
+        // the shorter viewport edge covers 24 units (desktop remains unchanged).
+        // This widens portrait encounters without requiring maximum zoom, and
+        // enlarges landscape actors instead of retaining desktop vertical scale.
+        const d = this.isMobile
+            ? 12 * (this.currentZoom / CONSTANTS.CAMERA.ZOOM) * height / Math.min(width, height)
+            : this.currentZoom;
+        let verticalOffset = 0;
+        if (this.isMobile) {
+            const navigation = document.getElementById('mobile-top-right')?.getBoundingClientRect();
+            const hotbar = document.getElementById('hotbar-container')?.getBoundingClientRect();
+            // Only persistent HUD regions influence framing: opening a menu or
+            // chat must not move the world. Hidden/not-yet-mounted HUD is ignored.
+            const top = navigation?.height > 0 ? Math.min(height * 0.3, Math.max(0, navigation.bottom)) : 0;
+            const bottom = hotbar?.height > 0 ? Math.max(height * 0.6, Math.min(height, hotbar.top)) : height;
+            const centerY = (top + bottom) / 2;
+            verticalOffset = (centerY - height / 2) * (2 * d / height);
+        }
         this.camera.left = -d * aspect;
         this.camera.right = d * aspect;
-        this.camera.top = d;
-        this.camera.bottom = -d;
-        
+        this.camera.top = d + verticalOffset;
+        this.camera.bottom = -d + verticalOffset;
         this.camera.updateProjectionMatrix();
+    }
+
+    onWindowResize() {
+        this.updateCameraProjection();
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         if (this.composer) {
             this.composer.setSize(window.innerWidth, window.innerHeight);
@@ -831,8 +851,15 @@ export class RenderSystem {
     }
 
     setZoom(zoomLevel) {
+        if (!Number.isFinite(zoomLevel)) return;
         this.currentZoom = Math.max(CONSTANTS.CAMERA.MIN_ZOOM, Math.min(CONSTANTS.CAMERA.MAX_ZOOM, zoomLevel));
-        this.onWindowResize();
+        // Zoom changes the projection, not the drawing-buffer dimensions.
+        this.updateCameraProjection();
+    }
+
+    resetCamera(target) {
+        this.setZoom(CONSTANTS.CAMERA.ZOOM);
+        if (target) this.setCameraTarget(target);
     }
 
     updateCamera() {
