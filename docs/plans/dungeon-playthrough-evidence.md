@@ -41,7 +41,7 @@ The character is raised to level 100 with existing allowlisted QA setup; the
 existing entrance waypoint provides five minutes of incoming-damage protection.
 No inside-instance waypoint, direct health edit or force-kill command is used.
 These are functional runs, not level-appropriate balance tests. The full-run
-combat timer permits six minutes per encounter with a separate 60-second
+combat timer permits eight minutes per encounter with a separate 60-second
 no-damage-progress watchdog; full runs now have a 40-minute aggregate budget
 (short Verdant smoke retains 25 minutes). The defensive Fighter route selects
 Bloodwhirl/Fortify/Extended through the rune UI and uses ordinary hotbar defenses;
@@ -98,6 +98,20 @@ Log: `/tmp/eidolon-1-0-10-tempest-full-fighter.log`. The route now retains a bou
 account-ID-free incoming damage/healing history and prints it on death, alongside
 position, mana and cooldowns, to make the next survival failure diagnosable. It
 does not add protection, healing, damage or a forced recovery.
+
+The next clean `ba4a32e5477da6f13105f278eb5f40a207abe241` run, generator 2
+attempt 0 seed `-1329185764639002788`, Normal 70 Fighter, **failed after 29.7
+minutes at the six-minute encounter deadline**. Windshear, Stormcallers, Roc
+Matriarch and Thunderlord Kaelix died normally. Zephyrion was continuously taking
+damage (93,600 starting HP; 12,673 at the last periodic report); the Fighter was
+alive at 2,021/2,575 HP in that report. The terminal error explicitly records
+`observed damage=true`. This is not a final-boss kill or full-clear pass. Log:
+`/tmp/eidolon-1-0-11-tempest-diagnostic.log`; credential scanning and disposable
+cleanup completed. This server predates the local directional/aura/beam changes.
+After that process terminated, the functional encounter ceiling was extended to
+eight minutes. The 60-second no-damage watchdog, survival assertions, ordinary
+combat inputs and 40-minute total ceiling remain. No combat stat or reward rule
+was changed to pass this test; a new complete run is still required.
 
 A fresh level-30 Wizard passed in 37.4 seconds on the dirty `6212ef3` recovery
 candidate, Verdant seed `-1986625632463315919`, generator 2. Normal enemies

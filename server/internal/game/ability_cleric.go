@@ -471,6 +471,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 		cost := resolveAbilityManaCost(player, skillName, 20)
 		if player.Mana >= cost {
 			player.Mana -= cost
+			walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 
 			// Radiant Strike Rune Effects
 			runeID := player.GetRuneForSkill("Radiant Strike")
@@ -526,6 +527,10 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 						}
 
 						target.Mu.Lock()
+						if !dungeonEffectReachesTarget(walkRects, player.X, player.Z, target) {
+							target.Mu.Unlock()
+							continue
+						}
 						finalDamage := applyFinalDamage(player, target, damage, "holy")
 						totalDamageDealt += finalDamage
 						addThreatLocked(target, player.ID, float64(finalDamage))
@@ -585,6 +590,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 		cost := resolveAbilityManaCost(player, skillName, 50)
 		if player.Mana >= cost {
 			player.Mana -= cost
+			walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 
 			radius := 12.0
 			effectiveRadius := expandedAbilityRadius(skillName, radius)
@@ -603,8 +609,8 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				}
 				target.Mu.RUnlock()
 
-				if withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
-					target.Mu.Lock()
+				target.Mu.Lock()
+				if w.CanDamage(player, target) && target.State != "DEAD" && withinDungeonAbilityRadius(walkRects, skillName, player.X, player.Z, target, radius) {
 					finalDamage := applyFinalDamage(player, target, damage, "holy")
 					addThreatLocked(target, player.ID, float64(finalDamage))
 					if !target.CCImmune {
@@ -623,6 +629,8 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 						w.handleDeath(target, player, nil)
 						target.Mu.Unlock()
 					}
+				} else {
+					target.Mu.Unlock()
 				}
 			}
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 60*time.Second))

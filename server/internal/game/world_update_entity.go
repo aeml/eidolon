@@ -1051,22 +1051,24 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					radius := 6.0
 					effectiveRadius := expandedAbilityRadius("Whirlwind", radius)
 					damage := int((float64(e.Damage)*0.8 + float64(e.Stats.Strength)*2) * 1.3 * 0.5) // -50% damage
+					pX, pZ, instanceID := e.X, e.Z, e.InstanceID
 					e.Mu.Unlock()
+					walkRects := w.dungeonWalkRectsSnapshot(instanceID)
 
-					nearby := w.Grid.Nearby(e.X, e.Z, effectiveRadius, e.InstanceID)
+					nearby := w.Grid.Nearby(pX, pZ, effectiveRadius, instanceID)
 					for _, target := range nearby {
 						if target.ID == e.ID {
 							continue
 						}
 						target.Mu.RLock()
-						if !w.CanDamage(e, target) || target.State == "DEAD" {
+						if !w.CanDamage(e, target) || target.State == "DEAD" || target.InstanceID != instanceID {
 							target.Mu.RUnlock()
 							continue
 						}
 						target.Mu.RUnlock()
 
-						if withinAbilityRadius("Whirlwind", e.X, e.Z, target, radius) {
-							target.Mu.Lock()
+						target.Mu.Lock()
+						if w.CanDamage(e, target) && target.State != "DEAD" && target.InstanceID == instanceID && withinDungeonAbilityRadius(walkRects, "Whirlwind", pX, pZ, target, radius) {
 							finalDamage := applyFinalDamage(e, target, damage, "physical")
 							addThreatLocked(target, e.ID, float64(finalDamage))
 							isDead := target.Health <= 0
@@ -1081,6 +1083,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 								w.handleDeath(target, e, deferred)
 								target.Mu.Unlock()
 							}
+						} else {
+							target.Mu.Unlock()
 						}
 					}
 
@@ -1263,26 +1267,34 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							healReduction = 0.75
 						}
 
-						pX, pZ := e.X, e.Z
+						pX, pZ, instanceID := e.X, e.Z, e.InstanceID
 						hasSpiritHeal := e.HasAnySetBonus("spiritGuardiansHeal")
 						e.Mu.Unlock() // Unlock before interaction
+						walkRects := w.dungeonWalkRectsSnapshot(instanceID)
 
 						effectiveRadius := expandedAbilityRadius("Spirit Guardians", radius)
-						nearby := w.Grid.Nearby(pX, pZ, effectiveRadius, e.InstanceID)
+						nearby := w.Grid.Nearby(pX, pZ, effectiveRadius, instanceID)
 						for _, target := range nearby {
-							if target.InstanceID != e.InstanceID {
+							target.Mu.RLock()
+							if target.InstanceID != instanceID {
+								target.Mu.RUnlock()
 								continue
 							}
-							target.Mu.RLock()
 							targetType := target.Type
 							targetState := target.State
 							targetID := target.ID
+							inRadius := withinAbilityRadius("Spirit Guardians", pX, pZ, target, radius)
 							target.Mu.RUnlock()
 
-							if withinAbilityRadius("Spirit Guardians", pX, pZ, target, radius) {
+							if inRadius {
 								// Damage enemies
 								if targetType == TypeEnemy && targetState != "DEAD" {
 									target.Mu.Lock()
+									if target.State == "DEAD" || target.InstanceID != instanceID ||
+										!withinDungeonAbilityRadius(walkRects, "Spirit Guardians", pX, pZ, target, radius) {
+										target.Mu.Unlock()
+										continue
+									}
 									finalDamage := applyFinalDamage(e, target, damage, "holy")
 									addThreatLocked(target, e.ID, float64(finalDamage))
 									isDead := target.Health <= 0

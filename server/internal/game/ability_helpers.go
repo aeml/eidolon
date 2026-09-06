@@ -231,6 +231,13 @@ func withinDungeonAbilityRadius(rects []DungeonWalkRect, effectName string, orig
 	if !withinAbilityRadius(effectName, originX, originZ, target, radius) {
 		return false
 	}
+	return dungeonEffectReachesTarget(rects, originX, originZ, target)
+}
+
+func dungeonEffectReachesTarget(rects []DungeonWalkRect, originX, originZ float64, target *Entity) bool {
+	if target == nil {
+		return false
+	}
 	_, _, blocked := firstDungeonWalkRectWallHit(rects, originX, originZ, target.X, target.Z)
 	return !blocked
 }

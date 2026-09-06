@@ -256,6 +256,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 		cost := resolveAbilityManaCost(player, skillName, 35)
 		if player.Mana >= cost {
 			player.Mana -= cost
+			walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 
 			// Combo: Nova Cascade (Teleport → Flame Whip) = 360° cone
 			novaCascadeActive := player.ActiveCombo == "flame_whip_360"
@@ -293,6 +294,10 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					// Nova Cascade combo: skip angle check (360° AoE)
 					if novaCascadeActive || dot > math.Cos(angleThreshold) {
 						target.Mu.Lock()
+						if !dungeonEffectReachesTarget(walkRects, player.X, player.Z, target) {
+							target.Mu.Unlock()
+							continue
+						}
 						finalDamage := applyFinalDamage(player, target, damage, "fire")
 						addThreatLocked(target, player.ID, float64(finalDamage))
 						if !target.CCImmune {
@@ -561,6 +566,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 		cost := resolveAbilityManaCost(player, skillName, 40)
 		if player.Mana >= cost {
 			player.Mana -= cost
+			walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 
 			rangeDist := 18.0
 			width := 1.0
@@ -576,9 +582,12 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			}
 			dirX := dx / dist
 			dirZ := dz / dist
+			beamEndX, beamEndZ, _ := firstDungeonWalkRectWallHit(walkRects, player.X, player.Z,
+				player.X+dirX*rangeDist, player.Z+dirZ*rangeDist)
+			rangeDist = math.Hypot(beamEndX-player.X, beamEndZ-player.Z)
 
 			// Check all entities
-			nearby := w.Grid.Nearby(player.X, player.Z, rangeDist, player.InstanceID)
+			nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, rangeDist), player.InstanceID)
 			for _, target := range nearby {
 				if target.ID == player.ID {
 					continue
@@ -607,6 +616,10 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					if d2 < lineWidth*lineWidth {
 						// Hit
 						target.Mu.Lock()
+						if !dungeonEffectReachesTarget(walkRects, player.X, player.Z, target) {
+							target.Mu.Unlock()
+							continue
+						}
 						finalDamage := applyFinalDamage(player, target, damage, "fire")
 						addThreatLocked(target, player.ID, float64(finalDamage))
 						target.ArmorReduction = 5
@@ -626,7 +639,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 			player.State = "ATTACKING"
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 8*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityEvent(player.ID, targetID, skillName, beamEndX, beamEndZ)
 
 		}
 	} else if skillName == "Dragonfire Lance" {
@@ -678,6 +691,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 		cost := resolveAbilityManaCost(player, skillName, 40)
 		if player.Mana >= cost {
 			player.Mana -= cost
+			walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 
 			radius := 8.0
 			effectiveRadius := expandedAbilityRadius(skillName, radius)
@@ -695,8 +709,8 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				}
 				target.Mu.RUnlock()
 
-				if withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
-					target.Mu.Lock()
+				target.Mu.Lock()
+				if w.CanDamage(player, target) && target.State != "DEAD" && withinDungeonAbilityRadius(walkRects, skillName, player.X, player.Z, target, radius) {
 					finalDamage := applyFinalDamage(player, target, damage, "arcane")
 					addThreatLocked(target, player.ID, float64(finalDamage))
 					isDead := target.Health <= 0
@@ -709,6 +723,8 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 						w.handleDeath(target, player, nil)
 						target.Mu.Unlock()
 					}
+				} else {
+					target.Mu.Unlock()
 				}
 			}
 

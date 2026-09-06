@@ -813,6 +813,160 @@ these results closes the full 1.1 acceptance matrix.
 
 ## Milestone tracking
 
+### Continued directional and pull audit — unpublished after 1.0.11 candidate
+
+The previous goal turn made implementation progress: the 1.0.11 ground-spell
+candidate was committed locally as `ba4a32e5477da6f13105f278eb5f40a207abe241`,
+and 1.0.10's exact public identity was verified. At this continuation's latest
+check, CI `34007206525` is still executing live four-class/remote-animation QA;
+the 1.0.11 candidate has not been pushed ahead of that verification.
+
+A new clean-`ba4a32e` full Tempest Fighter run is active with generator 2 attempt
+0 seed `-1329185764639002788`, Normal 70, log
+`/tmp/eidolon-1-0-11-tempest-diagnostic.log`. Windshear died and Stormcallers is
+in combat at the latest observation. This is not a completed run. The server
+image predates the local changes below and cannot verify them.
+
+Sixteen directional dispatch cases reproduced eight wall-crossing failures:
+Flame Whip, Scorch Beam, Radiant Strike (base/Smite), Shield Slam, Sweeping Strike,
+and Earthshaker (radial/Fissure). Log: `/tmp/eidolon-directional-wall-red.log`.
+Private canonical-floor snapshots now block damage, stun and armor-reduction
+effects across walls without changing legal empty-space casts or open-doorway
+hits. The shared Earthshaker helper checks the actual effect origin, including
+its delayed use. No area/beam visual clipping is claimed by these server tests.
+
+Eight Grip cases reproduced six failures: selecting enemies across a wall and
+pushing targets closer than two units outward, sometimes into the next room.
+Log: `/tmp/eidolon-grip-wall-red.log`. Selection now requires a reachable enemy
+before spending resources; the pull stops at the lesser of two units and the
+original distance, keeping movement on the validated segment without nesting
+an instance lock under the target lock.
+
+Combined directional/Grip/ground/Meteor race checks pass in 21.604 seconds,
+`/tmp/eidolon-directional-grip-green.log`. The complete server race run is active,
+`/tmp/eidolon-directional-grip-server-full.log`. These local changes are not part
+of the committed 1.0.11 candidate and still require rendered verification and
+their own release notes/version before publication.
+
+The complete server race run subsequently passed (game package 214.627 seconds),
+`/tmp/eidolon-directional-grip-server-full.log`. Whitespace checks pass. Source
+inspection identifies the next presentation work: the canonical beam uses the
+requested target position, while the network handler discards the local actor's
+accepted ability event. Server damage occlusion alone therefore does not prove
+that local/remote beam endpoints and area footprints agree with walls. That
+rendered/authoritative presentation audit remains open; no client presentation
+change was made during the active clean-source Tempest playthrough.
+
+### Alpha 1.0.11 publication and continued aura audit
+
+CI `34007206525` is now terminal **success**, including all post-deployment live
+character, class and remote-animation checks. Frontend release and backend
+health were rechecked at the exact healthy 1.0.10 commit. Pushed only the already
+tested 1.0.11 candidate `ba4a32e5477da6f13105f278eb5f40a207abe241`; its CI run is
+`34009078308`. New local directional/pull/aura changes are not in that commit.
+The 1.0.11 client/server jobs pass and browser smoke is running at the latest
+check. No 1.0.11 deployment is claimed yet.
+
+Twenty-six initial self-area cases reproduced thirteen blocked-wall failures,
+`/tmp/eidolon-self-area-wall-red.log`: Whirlwind (base/Bladestorm), Executioner
+Spin, Guardian Roar taunt, Juggernaut Charge, Death Spiral, Smoke Bomb, Frost Nova,
+Heaven's Trumpet and Spirit Guardians (base/Expanded/Vengeful/Boost). Canonical
+floor reachability now applies to these hostile effects and existing active
+Whirlwind ticks. Friendly Roar buffs and Spirit healing retain their existing
+rules. Bladestorm pulls stay on the validated segment and cannot overshoot the
+caster. The actual target position is checked under its lock before damage;
+floor snapshots are taken outside actor locks.
+
+The expanded checks include Bloodwhirl healing only from reachable hits, ordinary
+Spirit casts ticking before/after an enemy moves behind a wall, friendly Roar
+buffs and the existing active-Whirlwind tick branch. The initial combined race
+checks pass (22.766 seconds), and the first full race suite passes (game package
+201.957 seconds), `/tmp/eidolon-aura-directional-server-full.log`. The subsequent
+target-lock refinement passes focused checks (26.691 seconds),
+`/tmp/eidolon-aura-locks-focused.log`. Final full checks including the explicit
+active-state fixture are running in `/tmp/eidolon-aura-locks-server-final.log`.
+
+The rune audit also exposes a separate unresolved contract: `whirlwind_extended`
+reduces instant damage by 50%, but no cast path sets `WhirlwindActive` true. Its
+advertised extra duration is therefore not established. The explicit active-state
+fixture tests wall behavior only and is not claimed as rune activation evidence.
+This needs a real duration/damage/presentation repair before the rune gate closes.
+Rendered aura footprints and beam endpoints likewise remain open.
+
+### Continued beam agreement and Tempest evidence — unpublished
+
+The final aura full-server race check passed (game package **208.503 seconds**),
+`/tmp/eidolon-aura-locks-server-final.log`, including the target-lock refinement
+and explicit active-state fixture. It predates the following beam endpoint edit.
+
+Two new Scorch Beam event cases reproduced that the server reported the cursor
+position rather than the actual line endpoint, `/tmp/eidolon-scorch-endpoint-red.log`.
+The event now reports the canonical-wall-clipped full-range endpoint; the line
+hit extent uses that same length. Focused directional/endpoint race checks pass
+in 4.561 seconds, `/tmp/eidolon-scorch-endpoint-green.log`. A new full server race
+run is active in `/tmp/eidolon-beam-server-full.log`.
+
+Eight real-Three mesh tests reproduced the analogous local/remote presentation
+failure at High and Low quality, `/tmp/eidolon-beam-presentation-red.log`. After
+the clean Tempest process terminated, the shared transient-effect route was
+updated to normalize Scorch Beam to its configured range and clip its segment
+against the canonical floor union. Caller aim vectors are not mutated. All eight
+mesh cases and six segment-geometry cases pass (1.957 seconds). A disposable
+Wizard browser route is running in `/tmp/eidolon-beam-browser.log`; rendered
+browser/server agreement is not yet claimed. Other aura/cone footprints and the
+legacy offline Wizard hit path are not covered by this beam integration.
+
+Tempest terminated **failed after 29.7 minutes**: four bosses dead, final boss
+Zephyrion still taking damage at the six-minute encounter cutoff. The last
+report was 12,673 boss HP and 2,021/2,575 player HP. The exact clean-source seed
+and limitations are recorded in `dungeon-playthrough-evidence.md`. Only after
+termination was the functional encounter ceiling extended to eight minutes,
+retaining the stall watchdog and whole-run ceiling. A full-clear rerun is pending.
+
+CI `34009078308` is still live in disposable full-character predeploy QA;
+client, server and browser-smoke jobs pass. The public frontend and backend
+remain healthy at exact 1.0.10 commit `3dbb76d0a24d972e756583023e2ba4a11356cff0`.
+The latest user-request check also reconfirmed the already-deployed bag icons,
+deliberate drops and tracking choices: 244 focused client tests and server drop
+race tests pass. No new feature release or 1.1 milestone closure is claimed.
+
+### Alpha 1.0.12 candidate — a clear line of fire
+
+The ordinary Wizard browser route now **passes in 27.8 seconds** (30.8 seconds
+including browser setup), `/tmp/eidolon-beam-browser-corrected.log`. Actual
+production beam meshes attached to the effect scene match accepted server
+endpoints for north-wall and open-floor casts at High and Low quality. Input uses
+the skill tree, hotbar, mouse aiming, settings and recall; no actors, casts or
+combat events are injected. The first browser attempt used the wrong observer
+field (`x/z` instead of the protocol's `targetX/targetZ`) and failed in its numeric
+assertion. Correcting only that observer resolved the failure. This is local-cast
+browser evidence; the remote endpoint check remains the separate real-Three unit
+matrix, not a claim of two-client dungeon browser verification.
+
+The full post-beam server race suite passes (game package **189.500 seconds**),
+`/tmp/eidolon-beam-server-full.log`. Ten mesh cases now include non-mutating aim
+and source vectors and stale-layout overworld/legacy compatibility. The beam
+browser route joins disposable CI and can run alone with `beam-walls` and class
+`Wizard`. Credential scanning and temporary-service cleanup pass.
+
+Login label, package/lockfile, release manifest, server/container/deploy/QA/CI
+defaults and historical patch notes now identify the local **1.0.12 candidate**.
+The 1.0.11 history is retained. Full final client/server checks and lint are
+running in `/tmp/eidolon-1-0-12-client-full.log`,
+`/tmp/eidolon-1-0-12-server-final.log`, and `/tmp/eidolon-1-0-12-lint.log`.
+This candidate is not published; 1.0.11 still precedes it in deployment order.
+
+Final candidate checks pass: **152 client suites / 2,220 tests** in 106.401
+seconds, final full server race checks (unchanged game-package results cached
+from the successful 189.500-second post-beam run), lint, shell syntax and
+whitespace validation. The candidate is ready for a local commit and a new
+clean-source full Tempest run. Publishing still waits for 1.0.11's complete
+deployment and post-live verification; the full 1.1–1.10 roadmap remains active.
+
+Tempest has defeated Windshear, Stormcallers and Roc Matriarch and is fighting
+Thunderlord Kaelix on the same clean-1.0.11 process/seed. This is progress, not a
+complete clear; the current local fixes are absent from that running server.
+
 1.1 remains open until all five dungeon reports meet their acceptance criteria,
 alongside onboarding/reconnect and the initial PvP corrections. Releases 1.2
 through 1.10 remain unimplemented roadmap work; none is closed by this hotfix.

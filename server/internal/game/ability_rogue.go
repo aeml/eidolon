@@ -686,6 +686,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 		cost := resolveAbilityManaCost(player, skillName, 35)
 		if player.Mana >= cost {
 			player.Mana -= cost
+			walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 
 			radius := 4.0
 			effectiveRadius := expandedAbilityRadius(skillName, radius)
@@ -707,15 +708,14 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					target.Mu.RUnlock()
 					continue
 				}
-				isPoisoned := target.Poisoned
 				target.Mu.RUnlock()
 
-				if withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
-					target.Mu.Lock()
+				target.Mu.Lock()
+				if w.CanDamage(player, target) && target.State != "DEAD" && withinDungeonAbilityRadius(walkRects, skillName, player.X, player.Z, target, radius) {
 					// Calculate final damage
 					finalDamage := damage
 					// Venom Burst: +100% damage to poisoned targets
-					if venomBurstActive && isPoisoned {
+					if venomBurstActive && target.Poisoned {
 						finalDamage = damage * 2
 					}
 					if player.HasAnySetBonus("deathSpiralConsume") {
@@ -749,6 +749,8 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 						w.handleDeath(target, player, nil)
 						target.Mu.Unlock()
 					}
+				} else {
+					target.Mu.Unlock()
 				}
 			}
 			// BUG FIX: was setCooldown(20 * time.Second) without resolveAbilityCooldown
@@ -805,13 +807,14 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 
 		if player.Mana >= cost {
 			player.Mana -= cost
+			walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 
 			radius := 5.0
 			effectiveRadius := expandedAbilityRadius(skillName, radius)
 			nearby := w.Grid.Nearby(player.X, player.Z, effectiveRadius, player.InstanceID)
 			for _, target := range nearby {
 				target.Mu.Lock()
-				if w.CanDamage(player, target) && target.State != "DEAD" && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
+				if w.CanDamage(player, target) && target.State != "DEAD" && withinDungeonAbilityRadius(walkRects, skillName, player.X, player.Z, target, radius) {
 					if !target.CCImmune {
 						target.Slowed = true
 						target.SlowFactor = 0.5

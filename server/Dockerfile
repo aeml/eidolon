@@ -2,7 +2,7 @@ ARG GO_VERSION=1.24.5
 FROM golang:${GO_VERSION}-alpine AS builder
 
 ARG BUILD_COMMIT=development
-ARG BUILD_VERSION="Alpha 1.0.11"
+ARG BUILD_VERSION="Alpha 1.0.12"
 
 WORKDIR /src
 

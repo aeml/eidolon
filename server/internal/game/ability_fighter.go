@@ -55,6 +55,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 		cost := resolveAbilityManaCost(player, skillName, 30)
 		if player.Mana >= cost {
 			player.Mana -= cost
+			walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 
 			// Check for rune effects
 			runeID := player.GetRuneForSkill("Whirlwind")
@@ -88,15 +89,13 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 					target.Mu.RUnlock()
 					continue
 				}
-				// Distance check
-				dx := player.X - target.X
-				dz := player.Z - target.Z
-				tx, tz := target.X, target.Z
 				target.Mu.RUnlock()
 
+				target.Mu.Lock()
+				dx, dz := player.X-target.X, player.Z-target.Z
+				tx, tz := target.X, target.Z
 				distSq := dx*dx + dz*dz
-				if withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
-					target.Mu.Lock()
+				if w.CanDamage(player, target) && target.State != "DEAD" && withinDungeonAbilityRadius(walkRects, skillName, player.X, player.Z, target, radius) {
 					finalDamage := applyFinalDamage(player, target, damage, "physical")
 					addThreatLocked(target, player.ID, float64(finalDamage))
 					isDead := target.Health <= 0
@@ -105,16 +104,12 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 					if runeID == "whirlwind_bladestorm" && !isDead && !target.CCImmune && !target.IronFortressImmovable {
 						dist := math.Sqrt(distSq)
 						if dist > 1.0 {
-							pullDist := 2.0 // Pull 2 units toward player
+							pullDist := math.Min(2.0, dist) // Never pull past the validated endpoint.
 							pullDx := (player.X - tx) / dist * pullDist
 							pullDz := (player.Z - tz) / dist * pullDist
 							oldTX, oldTZ := target.X, target.Z
 							target.X += pullDx
 							target.Z += pullDz
-							if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(target, target.X, target.Z); ok {
-								target.X = constrainedX
-								target.Z = constrainedZ
-							}
 							w.Grid.Update(target, oldTX, oldTZ)
 						}
 					}
@@ -129,6 +124,8 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 						w.handleDeath(target, player, nil)
 						target.Mu.Unlock()
 					}
+				} else {
+					target.Mu.Unlock()
 				}
 			}
 			if runeID == "whirlwind_bloodwhirl" && hitCount > 0 {
@@ -196,6 +193,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 		cost := resolveAbilityManaCost(player, skillName, 40)
 		if player.Mana >= cost {
 			player.Mana -= cost
+			walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 
 			radius := 6.0
 			effectiveRadius := expandedAbilityRadius(skillName, radius)
@@ -214,8 +212,8 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 				}
 				target.Mu.RUnlock()
 
-				if withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
-					target.Mu.Lock()
+				target.Mu.Lock()
+				if w.CanDamage(player, target) && target.State != "DEAD" && withinDungeonAbilityRadius(walkRects, skillName, player.X, player.Z, target, radius) {
 					modifiedDamage := damage
 					if target.WeakPointMarked || target.MarkWeakness || target.Threat[player.ID] > 0 {
 						modifiedDamage = int(float64(modifiedDamage) * 1.5)
@@ -232,6 +230,8 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 						w.handleDeath(target, player, nil)
 						target.Mu.Unlock()
 					}
+				} else {
+					target.Mu.Unlock()
 				}
 			}
 
@@ -281,6 +281,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 		cost := resolveAbilityManaCost(player, skillName, 35)
 		if player.Mana >= cost {
 			player.Mana -= cost
+			walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 
 			// Combo: Guardian Combo (Shield Slam → Guardian Roar) = +50% buff/taunt duration
 			buffDuration := 10 * time.Second
@@ -301,7 +302,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 					continue
 				}
 				target.Mu.Lock()
-				if w.CanDamage(player, target) && target.State != "DEAD" && withinAbilityRadius(skillName, player.X, player.Z, target, radius) && (target.Scale < 4.0 || canTauntBosses) {
+				if w.CanDamage(player, target) && target.State != "DEAD" && withinDungeonAbilityRadius(walkRects, skillName, player.X, player.Z, target, radius) && (target.Scale < 4.0 || canTauntBosses) {
 					// Taunt: set fighter to highest threat + 10% for this enemy.
 					tauntThreatLocked(target, player.ID)
 				} else if (target.Type == TypePlayer || target.Type == TypeNPC) && w.CombatRelationship(player, target) != RelationshipHostile && target.State != "DEAD" && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
@@ -364,11 +365,11 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 				dist := math.Sqrt(dx*dx + dz*dz)
 				if dist > 0 && !target.IronFortressImmovable && !target.CCImmune {
 					oldX, oldZ := target.X, target.Z
-					target.X = player.X + dx/dist*2.0
-					target.Z = player.Z + dz/dist*2.0
-					if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(target, target.X, target.Z); ok {
-						target.X, target.Z = constrainedX, constrainedZ
-					}
+					// Pull along the validated segment without pushing an enemy
+					// already inside the two-unit stopping distance outwards.
+					stopDistance := math.Min(2.0, dist)
+					target.X = player.X + dx/dist*stopDistance
+					target.Z = player.Z + dz/dist*stopDistance
 					w.Grid.Update(target, oldX, oldZ)
 				}
 				if !target.CCImmune {
@@ -384,12 +385,13 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 		cost := resolveAbilityManaCost(player, skillName, 30)
 		if player.Mana >= cost {
 			player.Mana -= cost
+			walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 			radius := 10.0
 			damage := player.Damage + player.Stats.Strength
 			nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID)
 			for _, target := range nearby {
 				target.Mu.Lock()
-				if !w.CanDamage(player, target) || target.State == "DEAD" || !withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
+				if !w.CanDamage(player, target) || target.State == "DEAD" || !withinDungeonAbilityRadius(walkRects, skillName, player.X, player.Z, target, radius) {
 					target.Mu.Unlock()
 					continue
 				}
@@ -504,6 +506,7 @@ func fighterFacing(player *Entity, targetX, targetZ float64) (float64, float64) 
 
 func (w *World) damageFighterCone(player *Entity, targetX, targetZ, radius, halfAngle float64, damage int, stun time.Duration, threatMultiplier float64) int {
 	facingX, facingZ := fighterFacing(player, targetX, targetZ)
+	walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 	totalDamage := 0
 	nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius("", radius), player.InstanceID)
 	for _, target := range nearby {
@@ -515,7 +518,8 @@ func (w *World) damageFighterCone(player *Entity, targetX, targetZ, radius, half
 		dx := target.X - player.X
 		dz := target.Z - player.Z
 		dist := math.Sqrt(dx*dx + dz*dz)
-		if dist <= 0 || dist > radius+entityVisualRadius(target) || facingX*(dx/dist)+facingZ*(dz/dist) < math.Cos(halfAngle) {
+		if dist <= 0 || dist > radius+entityVisualRadius(target) || facingX*(dx/dist)+facingZ*(dz/dist) < math.Cos(halfAngle) ||
+			!dungeonEffectReachesTarget(walkRects, player.X, player.Z, target) {
 			target.Mu.Unlock()
 			continue
 		}
@@ -540,6 +544,7 @@ func (w *World) damageFighterCone(player *Entity, targetX, targetZ, radius, half
 
 func (w *World) damageEarthshakerArea(player *Entity, originX, originZ, targetX, targetZ, radius float64, damage int, stun time.Duration, line bool) {
 	facingX, facingZ := fighterFacing(player, targetX, targetZ)
+	walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 	nearby := w.Grid.Nearby(originX, originZ, expandedAbilityRadius("Earthshaker", radius), player.InstanceID)
 	for _, target := range nearby {
 		target.Mu.Lock()
@@ -555,7 +560,7 @@ func (w *World) damageEarthshakerArea(player *Entity, originX, originZ, targetX,
 			lateral := math.Abs(dx*facingZ - dz*facingX)
 			hit = forward >= 0 && forward <= radius+entityVisualRadius(target) && lateral <= 1.5+entityVisualRadius(target)
 		}
-		if !hit {
+		if !hit || !dungeonEffectReachesTarget(walkRects, originX, originZ, target) {
 			target.Mu.Unlock()
 			continue
 		}
@@ -578,6 +583,7 @@ func (w *World) damageEarthshakerArea(player *Entity, originX, originZ, targetX,
 
 func (w *World) findFighterGripTarget(player *Entity, targetX, targetZ float64, targetID string) *Entity {
 	maxRange := 10.0
+	walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 	valid := func(target *Entity) bool {
 		if target == nil {
 			return false
@@ -589,7 +595,8 @@ func (w *World) findFighterGripTarget(player *Entity, targetX, targetZ float64, 
 		}
 		dx := target.X - player.X
 		dz := target.Z - player.Z
-		return dx*dx+dz*dz <= (maxRange+entityVisualRadius(target))*(maxRange+entityVisualRadius(target))
+		return dx*dx+dz*dz <= (maxRange+entityVisualRadius(target))*(maxRange+entityVisualRadius(target)) &&
+			dungeonEffectReachesTarget(walkRects, player.X, player.Z, target)
 	}
 	if targetID != "" && valid(w.Entities[targetID]) {
 		return w.Entities[targetID]

@@ -6,6 +6,8 @@ import { CollisionManager } from './CollisionManager.js';
 import { getLanternholdWalkCollider } from '../art/ProceduralLanternholdArchitecture.js';
 import { NetworkManager } from './NetworkManager.js';
 import { AbilityController } from './AbilityController.js';
+import { CONSTANTS } from './Constants.js';
+import { resolveDungeonBeamEndpoint } from '../skills/dungeonEffectGeometry.js';
 import { UIBindings } from './UIBindings.js';
 import { SocialPresenceController } from './SocialPresenceController.js';
 import { RARITY } from './ItemSystem.js';
@@ -945,12 +947,24 @@ export class GameEngine {
     }
 
     spawnTransientEffect(type, position, color, options = {}) {
+        let effectPosition = position;
+        if (type === 'beam' && options.abilityName === 'Scorch Beam' && options.source?.position) {
+            const walkRects = this.currentInstanceId && this.currentInstanceType !== 'overworld'
+                ? this.currentDungeonLayout?.walkRects : null;
+            const endpoint = resolveDungeonBeamEndpoint(walkRects, options.source.position, position,
+                CONSTANTS.ABILITY_CONFIG.Wizard.skills['Scorch Beam'].range);
+            // Both predicted local casts and accepted remote casts use the same
+            // full-range, wall-clipped geometry. Never mutate the caller's aim.
+            effectPosition = position.clone();
+            effectPosition.x = endpoint.x;
+            effectPosition.z = endpoint.z;
+        }
         const mergedOptions = {
             quality: this.uiManager ? this.uiManager.getGraphicsQuality() : 'high',
             effectScale: this.renderSystem.getEffectQualityScale(),
             ...options
         };
-        const effect = createTransientEffect(this.renderSystem.effectGroup, type, position, color, mergedOptions);
+        const effect = createTransientEffect(this.renderSystem.effectGroup, type, effectPosition, color, mergedOptions);
         if (!effect) return false;
         this.effects.push(effect);
         return true;

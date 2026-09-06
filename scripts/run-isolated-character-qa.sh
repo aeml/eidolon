@@ -119,7 +119,7 @@ mongo_password="$(openssl rand -hex 24)"
 docker build \
   --build-arg GO_VERSION=1.24.5 \
   --build-arg "BUILD_COMMIT=${qa_build_commit}" \
-  --build-arg "BUILD_VERSION=Alpha 1.0.11" \
+  --build-arg "BUILD_VERSION=Alpha 1.0.12" \
   --tag "${SERVER_IMAGE}" server >/dev/null
 image_created=true
 
@@ -213,7 +213,7 @@ run_animation_multiplayer() {
 set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   all)
-    npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js && run_dungeon_recovery && run_direct_target_classes && npm run test:e2e:movement && run_animation_classes && run_animation_multiplayer
+    npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js && run_dungeon_recovery && run_direct_target_classes && npm run test:e2e:movement && run_animation_classes && run_animation_multiplayer
     ;;
   animations)
     run_animation_classes
@@ -263,8 +263,11 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   ground-walls)
     npx playwright test tests/e2e/dungeon-ground-area-gameplay.spec.js
     ;;
+  beam-walls)
+    npx playwright test tests/e2e/dungeon-beam-gameplay.spec.js
+    ;;
   *)
-    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, inventory, extended, portal, dungeons, verdant, dungeon-full, dungeon-recovery, direct-skills, projectile-walls, movement-walls, or ground-walls." >&2
+    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, inventory, extended, portal, dungeons, verdant, dungeon-full, dungeon-recovery, direct-skills, projectile-walls, movement-walls, ground-walls, or beam-walls." >&2
     exit 1
     ;;
 esac

@@ -334,7 +334,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.11</span>
+                <span class="start-version-row__label">Alpha 1.0.12</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -653,6 +653,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.12">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.12 (a clear line of fire)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Directional attacks respect walls:</strong> Flame Whip, Scorch Beam, Radiant Strike, Shield Slam, Sweeping Strike and Earthshaker no longer damage or debuff enemies through solid dungeon walls. Open doorways remain valid attack paths.</li>
+                        <li><strong>Pulls stay on the floor:</strong> Grip requires a reachable enemy before spending mana or starting its cooldown. Grip and Whirlwind's Bladestorm pull cannot overshoot a nearby enemy through the caster or into a wall.</li>
+                        <li><strong>Hostile auras respect cover:</strong> Whirlwind, Executioner Spin, Guardian Roar's taunt, Juggernaut Charge, Death Spiral, Smoke Bomb, Frost Nova, Heaven's Trumpet and Spirit Guardians check dungeon walls before affecting enemies. Bloodwhirl heals only from reachable hits; existing friendly buffs and healing retain their rules.</li>
+                        <li><strong>Scorch Beam shows its actual reach:</strong> Its beam extends beyond a nearby cursor to its full range and ends at a solid dungeon wall. Local and remote beam meshes use the same rule at High and Low quality, and the server publishes the clipped endpoint.</li>
+                        <li><strong>Dungeon verification continues:</strong> Ordinary Wizard casts verify beam geometry against accepted server events. Full dungeon, party, rune-duration and wider area-effect presentation checks remain open; this update does not mark the 1.1 milestone complete.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.0.11">
                     <h3 class="patch-note-entry__title">Alpha 1.0.11 (grounded in the dungeon)</h3>
                     <ul class="patch-note-entry__list">

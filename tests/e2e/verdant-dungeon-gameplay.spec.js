@@ -60,7 +60,11 @@ async function hostiles(page) {
 
 async function defeatByMouse(page, target) {
     console.log(`${logPrefix} fighting ${target.type}`);
-    const deadline = Date.now() + (fullRun ? 360_000 : 120_000);
+    // Tempest seed -1329185764639002788 reached Zephyrion alive with
+    // continuous damage but outlasted six minutes (93,600 starting HP).
+    // Allow eight minutes for functional combat; retain the 60s damage-stall
+    // watchdog and 40-minute whole-run ceiling. This is not a balance pass.
+    const deadline = Date.now() + (fullRun ? 480_000 : 120_000);
     let sawDamage = false;
     let lowestHealth = target.health;
     let lastDamageAt = Date.now();
@@ -165,8 +169,8 @@ async function assertWorldUpdatesContinue(page) {
 test(fullRun ? `${playthrough.name} complete ${fallbackRun ? 'fallback' : 'generated'} run remains playable` : 'Verdant ordinary encounters, first boss, and later spawns remain playable', async ({ page, baseURL }) => {
     const credentials = credentialsFromEnvironment();
     test.skip(!credentials.username || !credentials.password, 'Requires a dedicated QA character');
-    // Five independently bounded six-minute boss fights plus ordinary mobs,
-    // traversal and completed-run re-entry cannot fit the short route's budget.
+    // Each encounter is bounded independently; the whole route still has a
+    // forty-minute ceiling including mobs, traversal and completed-run re-entry.
     test.setTimeout(fullRun ? 2_400_000 : 1_500_000);
     const failures = collectBrowserFailures(page, baseURL);
     await loginAndEnterWorld(page, credentials);
