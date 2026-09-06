@@ -3,8 +3,78 @@
 Status: baseline diagnosis plus incremental implementation evidence, not a completed phone redesign. Requirements
 and release gates live in [the main roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13).
 
-Latest local candidate: **Alpha 1.0.15**, camera composition/reset, not yet published.
+Latest local candidate: **Alpha 1.0.16**, deliberate touch targeting, not yet published.
 Earlier entries below are chronological snapshots, not current process status.
+
+## Deliberate touch targeting after the 1.0.15 commit
+
+Source: `2b55efabfa4da459d14f37b5e18b659888de7e1e` plus local targeting changes.
+Canvas touch release selects an enemy without attacking. Attack and offensive
+skills use that selection; a selected out-of-range cast reports range rather than
+switching enemies. Without selection, directional skills retain a facing cast;
+self-centered abilities still use the caster. A compact target card/gold ring
+shows selection. Empty ground and the 44px Clear Target button cancel pursuit,
+queued skills and buffered abilities. NPC/loot interaction remains separate.
+Target death/removal, player death, scene changes and changed PvP hostility
+invalidate selection. Pinch/drag/cancel/blur/reset cannot become a world tap.
+
+Initial canvas regressions reproduced missing release callbacks and unconsumed
+native gestures. The first combat unit harness had an incomplete proto
+mock; its import error was corrected before claiming any targeting assertions.
+The pre-cycle full suite passed **157 suites / 2,285 tests**, 105.851 seconds,
+`/tmp/eidolon-touch-target-full.log`. Later focused cases also cover NPC taps,
+friendly/PvP changes and self-centered casts. Browser-generated pinch/tap/drag and
+portrait/landscape target-card controls passed **2 checks in 21.4 seconds**,
+`/tmp/eidolon-touch-target-browser.log`; inspected UI-only captures are preserved
+at `/tmp/eidolon-touch-target-portrait.png` and `-landscape.png`.
+
+The real-server route deliberately uses an allowlisted encounter waypoint for
+setup, then normal taps and combat buttons against a live overworld enemy. It
+does not grant kills, loot or campaign completion. Initial failures included a
+keyboard-based setup helper activating a focused button instead of chat; explicit
+phone chat controls fixed that. A single portrait route then passed in 9.5 seconds.
+Expanding the route exposed a desktop-user-agent fixture error in landscape;
+the route now uses the installed Pixel 7 browser-emulation user agent and asserts
+that the game actually enabled mobile mode.
+
+Repeated acquisition failures were not all timing errors. Diagnostics in
+`/tmp/eidolon-touch-target-diagnostic.log` showed several normal Skeleton hitboxes
+overlapping at the same ray distance, with correct individual entity IDs. The
+frontmost enemy blocked selection of the intended rear enemy. The production
+repair retains the actual raycast hit stack and cycles overlapping hostiles in
+stable ID order on repeated taps. It does not assign the test's preferred target
+or loosen targeting assertions. A new unit case verifies cycling without attack.
+The browser uses bounded actual taps to acquire the intended visible enemy.
+
+After cycling, **both real-server orientations passed in 18.5 seconds total**,
+`/tmp/eidolon-touch-target-cycle-gameplay.log`. The route proves no attack on
+selection, a selected-target spell and authoritative enemy health loss, the basic
+attack's selected ID, target-card cancellation and no further combat commands
+for a subsequent 1.1-second observation. Credential scanning and exact disposable
+cleanup passed. The dedicated Wizard route joins full predeploy QA.
+
+Alpha 1.0.16 patch notes/login/runtime metadata are prepared. Final versioned
+client/lint passed **157 suites / 2,290 tests**, 104.05 seconds; server race checks
+passed (root 11.520 seconds; unchanged game package cached); and two-orientation
+combat passed **2 tests in 27.8 seconds**. Logs are
+`/tmp/eidolon-1-0-16-{client,lint,server,combat}.log`. Credential scanning and
+disposable cleanup passed. Full anonymous browser and final movement/menu checks
+remain; no release is claimed yet. Gesture tests and target-card regressions are retained.
+The initial anonymous run later ended 11/12: local module loads failed with
+`ERR_NETWORK_CHANGED` before the dungeon fixture initialized (trace preserved as
+`/tmp/eidolon-1-0-16-anonymous-network-change.zip`). It was not restarted while live.
+After it ended, the full rerun passed all 12 checks in 1.4 minutes. The local shell
+had also selected Node 18; supported-toolchain checks were explicitly rerun with
+the installed Node 24.18.0: lint and 157 suites / 2,290 tests passed in 67.024
+seconds. Those logs use `/tmp/eidolon-1-0-16-node24-`; final phone movement/menu
+and combat routes subsequently passed with that same toolchain: movement/core
+menus/chat in both orientations took 6.7 seconds (8.0 total), and the two combat
+checks took 17.2 seconds total. Both credential scans and disposable cleanups
+passed. The candidate is ready for commit; publication remains queued in order.
+This does not establish deliberate drag-to-aim/cast cancellation, sustained
+two-thumb combat, all-class/party/dungeon phone readiness or physical-device
+ergonomics/performance. Manual joystick override of queued pursuit is another
+remaining interaction to refine, alongside full menu reflow.
 
 ## Camera composition candidate after the 1.0.14 commit
 
@@ -60,9 +130,10 @@ Publication still follows the preceding release's live gates.
 Remaining: deliberate touch target selection/aim/cancel and combat under pressure,
 full menu reflow, adjustment preferences, crowded town/dungeon/group readability,
 safe-area/software-keyboard physical behavior and sustained iOS/Android performance.
-The existing mobile Attack path selects a nearby hostile rather than respecting
+At this camera-only stage, the mobile Attack path selected a nearby hostile rather than respecting
 an explicitly tapped enemy (`GameEngineMovement.handlePrimaryClick`); this is a
-concrete next interaction-design issue, not resolved by changing the camera.
+separate interaction-design issue, addressed by the later targeting work above,
+not by changing the camera itself.
 
 ## September 6 baseline
 

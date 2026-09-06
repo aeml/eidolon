@@ -335,7 +335,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.15</span>
+                <span class="start-version-row__label">Alpha 1.0.16</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -627,6 +627,7 @@
                     </div>
                 </div>
                 <div id="help-first-hour-guide" class="help-guide help-guide--separated">
+                    <div class="phone-menu-action"><strong>Touch combat:</strong> Move with the joystick. Tap an enemy to select it, then press Attack, Skill or a hotbar ability. Tap overlapping enemies again to cycle the selection. Tap empty ground or the target's × button to cancel pursuit. Without a selected enemy, directional skills cast ahead of your hero. Pinch the world to zoom; Menu → Reset Camera restores the default view.</div>
                     <div class="help-guide__title">First Hour Milestones</div>
                     <div><strong class="help-guide__key">1.</strong> Meet <strong>Archmage Ilyra</strong> in town to accept your <strong>Fourfold Chronicle</strong> beneath her gold quest marker. Visit the <strong>Quest Giver</strong> outside the <strong>Forge</strong> for blue-marked daily contracts. Return to the appropriate giver and click <strong>Complete Quest</strong> to receive your rewards.</div>
                     <div><strong class="help-guide__key">2.</strong> Use <strong>Vendor / Repair</strong> for obvious junk, <strong>Stash</strong> for anything you may keep, and <strong>Forge</strong> for Shards, Hearts, and Gems.</div>
@@ -660,6 +661,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.16">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.16 (choose your mark)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Tap to choose, then attack:</strong> Phone taps select an enemy without starting combat. Attack and offensive skills honor that selection instead of silently choosing a closer enemy. The gold ring and compact target card stay with your chosen target.</li>
+                        <li><strong>Pick an enemy out of the crowd:</strong> Repeated taps cycle overlapping enemy hitboxes. Selection respects active enemies and PvP hostility, and clears when the target dies, disappears or belongs to a previous instance.</li>
+                        <li><strong>Cancel with a clear action:</strong> Tap empty ground or the target card's large × button to clear selection, pursuit and buffered abilities. NPC and loot taps still interact normally. A selected enemy outside cast range produces feedback instead of redirecting the spell; unselected directional skills cast ahead, while self-centered skills retain their behavior.</li>
+                        <li><strong>Gestures do not start fights:</strong> Selection happens on a short canvas tap's release. Dragging, pinching, canceled gestures, backgrounding and scene resets cannot turn into a selection or synthetic attack. Touch Help explains the new controls.</li>
+                        <li><strong>Touch combat verification expands:</strong> A real-server Wizard route checks selection, spell damage, basic attacks and cancellation in portrait and landscape. Full touch aiming, movement/pursuit refinement, menu reflow and physical-phone testing remain open.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.0.15">
                     <h3 class="patch-note-entry__title">Alpha 1.0.15 (a wider view of Eidolon)</h3>
                     <ul class="patch-note-entry__list">
@@ -3869,6 +3880,7 @@
         </div>
 
         <div id="combat-intent-panel" style="display: none;">
+            <button id="btn-mobile-target-clear" class="phone-menu-action" type="button" aria-label="Clear target and cancel pursuit">×</button>
             <div class="combat-intent__name" id="combat-intent-name"></div>
             <div class="combat-intent__meta" id="combat-intent-meta"></div>
             <div class="combat-intent__status" id="combat-intent-status"></div>

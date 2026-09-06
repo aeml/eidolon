@@ -169,6 +169,7 @@ export class UIManager {
         this.assetPackEnvironmentVersion = document.getElementById('asset-pack-environment-version');
 
         if (this.btnResume) this.btnResume.addEventListener('click', () => this.toggleEscMenu());
+        document.getElementById('btn-mobile-target-clear')?.addEventListener('click', () => this.onMobileTargetClear?.());
         for (const [id, open] of [
             ['btn-phone-skills', () => this.toggleSkillTree()],
             ['btn-phone-abilities', () => this.toggleAbilitiesMenu()],

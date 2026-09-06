@@ -1303,3 +1303,78 @@ The versioned phone rerun **passed in 12.6 seconds**, 15.3 with browser overhead
 artifact credential scan and disposable cleanup passed. Session `89316` ended
 successfully. All final 1.0.15 checks are complete and the candidate is ready for
 commit. Its publication follows 1.0.14, which still waits on 1.0.13's live gate.
+
+### 1.0.14 deployment advances; Alpha 1.0.16 candidate — choose your mark
+
+The camera release was committed as
+`2b55efabfa4da459d14f37b5e18b659888de7e1e`. Alpha 1.0.13 CI `34013545773`
+subsequently completed all live gates successfully. Frontend/backend manifests,
+database readiness, login label and commit-qualified runtime were reverified as
+exact `b3213077faa8eb8e1ddc7b45d2905d5682b8fbb8`, Alpha 1.0.13. Only then was
+the exact 1.0.14 commit `af3757b668da11cc932c9e93b7a0f770259d334b` pushed,
+without prematurely publishing 1.0.15. Its CI is `34015379084`, watcher `21598`,
+`/tmp/eidolon-1-0-14-ci-watch.log`. It has now passed client/server/browser and
+full predeploy gameplay checks and is running both deployment jobs. Wait for all
+postdeploy live gates before pushing the camera release.
+
+The next local candidate adds persistent deliberate mobile selection, shared by
+Attack and offensive abilities; invalid/dead/removed/previous-instance/friendly
+targets cannot remain selected. Canvas taps select without attacking, while
+empty-ground taps and a 44px target-card Clear button cancel pursuit and queued
+casts. Self-centered casts retain their behavior; unselected directional casts
+use facing. Target-card name/range feedback is compact on phones, with the existing
+gold world ring. Menu/drag/pinch/cancel/blur/reset cannot become synthetic selection.
+
+The actual combat route exposed overlapping Skeleton hitboxes that made a rear
+enemy unselectable through repeated identical taps. Production raycasting now
+retains the actual hit stack and repeated phone taps cycle hostile overlaps in
+stable ID order without attacking. The unit regression covers cycling and the
+real route still requires the intended target, not any arbitrary acquired enemy.
+Earlier failures and diagnostic IDs/positions are recorded in the mobile evidence
+document; the fixture's proto import, chat-focus and desktop-UA errors are not
+claimed as gameplay fixes. Corrected pre-version combat passed both orientations
+in 18.5 seconds, with normal enemy health loss and cancellation observations.
+
+Alpha 1.0.16 patch notes, login/package/release and all runtime version defaults
+are prepared. Its dedicated Wizard `phone-combat` route is added to full predeploy
+QA with an exact disposable account; it grants no kills or campaign completion.
+The open phone and 1.1–1.10 requirements remain intact.
+
+Final versioned **client/lint passed: 157 suites / 2,290 tests**, 104.05 seconds,
+`/tmp/eidolon-1-0-16-client.log` and `-lint.log`. Full server race checks passed,
+root 11.520 seconds (unchanged game package cached), `-server.log`. Real-server
+touch combat passed **2 tests / 27.8 seconds**, `-combat.log`, including selected
+spell damage, basic attack IDs, both orientations and no new combat commands for
+1.1 seconds after cancellation; credential scan/cleanup passed. The full anonymous
+browser suite is active as session `93949`, `/tmp/eidolon-1-0-16-anonymous.log`.
+A final phone movement/menu regression remains to run after that browser process.
+No 1.0.16 commit or push is claimed yet.
+
+The first final anonymous run ended **11 passed / 1 failed**, 3.5 minutes. Its
+dungeon gallery never initialized: the preserved trace
+`/tmp/eidolon-1-0-16-anonymous-network-change.zip` reports `ERR_NETWORK_CHANGED`
+for multiple local module requests. It did not reach the floor assertions. The
+same process was allowed to finish before any rerun; no assertion was weakened.
+
+Inspection also found the login shell selected `/usr/bin/node` 18.19.1, below
+the repository's Node 24 baseline. Local JS checks now explicitly use the existing
+runner toolcache's Node **24.18.0** at
+`/home/aeml/.local/share/eidolon-actions-runner/_work/_tool/node/24.18.0/x64/bin`.
+Use this prefix for subsequent local npm/Playwright commands; it changes no global
+installation. The full supported-toolchain rerun passed **157 suites / 2,290 tests
+in 67.024 seconds**, lint, and **12 anonymous checks in 1.4 minutes**. The dungeon
+gallery passed in 3.0 seconds. Logs: `/tmp/eidolon-1-0-16-node24-{client,lint,anonymous}.log`.
+The independently passing server race checks are unaffected by Node selection.
+
+Final Node 24 phone movement/menu and combat reruns are sequential in session
+`87532`, logs `/tmp/eidolon-1-0-16-node24-phone.log` and `-combat.log`. Do not run
+another local Playwright session or edit their runtime while this sequence runs.
+Alpha 1.0.14 now has both deployment jobs successful and its live character gate
+running; later versions still wait for that gate's terminal success.
+
+The final Node 24 phone sequence **passed** and session `87532` is closed:
+movement/core menus/chat in both orientations passed in 6.7 seconds (8.0 total),
+and the two combat orientations passed in 17.2 seconds total. Both artifact
+credential scans and exact disposable cleanup passed. All required local candidate
+checks are now complete; 1.0.16 is ready for commit, but its publication remains
+behind the committed 1.0.15 release and 1.0.14's active final live animation gate.

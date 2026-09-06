@@ -371,31 +371,25 @@ export class AbilityController {
         }
         
         if (engine.isMobile && !targetVectorOverride) {
-            // Auto-target nearest enemy for mobile ability
-            let nearest = null;
-            let minDst = 1000;
-            const activeEntities = engine.chunkManager.getActiveEntities();
-
-            activeEntities.forEach(e => {
-                if (engine.isHostileActorTarget(e)) {
-                    const d = player.position.distanceTo(e.position);
-                    if (d < minDst) {
-                        minDst = d;
-                        nearest = e;
-                    }
-                }
-            });
+            const selected = engine.getMobileCombatTarget();
 
             let targetPos = null;
             let targetId = "";
 
-            const autoAimRange = this.getAbilityCastRange(skillNameOverride || player.abilityName);
-            if (nearest && minDst < autoAimRange) {
-                targetPos = nearest.position;
-                targetId = nearest.id;
+            const castRange = this.getAbilityCastRange(skillNameOverride || player.abilityName);
+            if (selected && player.position.distanceTo(selected.position) > castRange) {
+                engine.showReadabilityFeedback?.('mobile-cast-range', {
+                    title: 'Move into range', tone: 'warning',
+                    subtitle: `${skillNameOverride || player.abilityName} needs ${castRange.toFixed(1)}m. Your selected target is farther away.`
+                }, 700);
+                return;
+            }
+            if (selected) {
+                targetPos = selected.position;
+                targetId = selected.id;
 
                 // Turn towards enemy
-                const lookTarget = new THREE.Vector3(nearest.position.x, player.position.y, nearest.position.z);
+                const lookTarget = new THREE.Vector3(selected.position.x, player.position.y, selected.position.z);
                 if (player.mesh) {
                     player.mesh.lookAt(lookTarget);
                     player.rotation.copy(player.mesh.quaternion);

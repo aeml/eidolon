@@ -47,6 +47,12 @@
 .mobile-mode #minimap-hud { top: calc(var(--phone-top) + 110px) !important; }
 .mobile-mode #objectives-panel { top: calc(var(--phone-top) + 110px) !important; width: calc(100vw - 126px) !important; max-height: 108px !important; }
 .mobile-mode #combat-intent-panel { top: calc(var(--phone-top) + 224px) !important; width: min(260px, calc(100vw - 24px)) !important; }
+.mobile-mode #combat-intent-panel { padding: 8px 56px 8px 12px; min-height: 48px; box-sizing: border-box; }
+.mobile-mode #combat-intent-panel .combat-intent__name { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mobile-mode #combat-intent-panel .combat-intent__status { font-size: 12px; margin: 2px 0 0; }
+.mobile-mode #combat-intent-panel :is(.combat-intent__meta, .combat-intent__preview-row) { display: none; }
+.mobile-mode #btn-mobile-target-clear { position: absolute; right: 2px; top: 2px; width: 44px; height: 44px; pointer-events: auto; color: var(--color-gold); background: #111923; border: 1px solid #b99b6266; border-radius: 6px; font-family: inherit; font-size: 24px; line-height: 1; }
+.mobile-mode #btn-mobile-target-clear:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 2px; }
 .mobile-mode #dungeon-entrance-hint { top: calc(var(--phone-top) + 330px) !important; }
 .mobile-mode #party-panel { top: var(--phone-party-top); max-height: min(220px, max(60px, calc(100dvh - var(--chat-panel-height, 48px) - var(--phone-bottom) - var(--phone-party-top) - 12px))); }
 

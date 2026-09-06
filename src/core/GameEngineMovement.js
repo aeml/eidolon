@@ -39,32 +39,31 @@ class GameEngineMovementMethods {
         }
 
         if (this.isMobile) {
-            let nearest = null;
-            let minDst = 1000;
-            const activeEntities = this.chunkManager.getActiveEntities();
-
-            activeEntities.forEach(e => {
-                if (this.isHostileActorTarget(e)) {
-                    const d = this.player.position.distanceTo(e.position);
-                    if (d < minDst) {
-                        minDst = d;
-                        nearest = e;
+            if (event) {
+                const hit = this.hoveredEntity;
+                let selected = this.isHostileActorTarget(hit) ? hit : null;
+                if (selected) {
+                    // Overlapping silhouettes remain deliberately selectable:
+                    // subsequent taps cycle the actual hit stack in stable id
+                    // order, not by rapidly changing distance from the camera.
+                    const candidates = (this.raycastHitEntities || [hit])
+                        .filter(entity => this.isHostileActorTarget(entity))
+                        .sort((a, b) => String(a.id).localeCompare(String(b.id)));
+                    const previousIndex = candidates.indexOf(this.getMobileCombatTarget());
+                    if (candidates.length > 1 && previousIndex >= 0) {
+                        selected = candidates[(previousIndex + 1) % candidates.length];
                     }
                 }
-            });
-
-            if (nearest && minDst < 8.0) {
-                const lookTarget = new THREE.Vector3(nearest.position.x, this.player.position.y, nearest.position.z);
-                if (this.player.mesh) {
-                    this.player.mesh.lookAt(lookTarget);
-                    this.player.rotation.copy(this.player.mesh.quaternion);
-                }
-
-                this.pendingInteraction = nearest;
-                this.player.move(nearest.position);
-            } else {
-                this.player.playAnimation('Attack', false);
+                this.setMobileCombatTarget(selected);
+                if (hit instanceof LootDrop || this.isInteractableEntity(hit)) this.moveToAndInteract(hit);
+                return true;
             }
+            const target = this.getMobileCombatTarget();
+            if (target) this.moveToAndInteract(target);
+            else this.showReadabilityFeedback?.('mobile-select-target', {
+                title: 'Select an enemy', tone: 'support',
+                subtitle: 'Tap an enemy, then Attack or use a skill. Tap empty ground to cancel.'
+            }, 700);
             return true;
         }
 
@@ -1138,6 +1137,7 @@ class GameEngineMovementMethods {
     }
 
     performRaycast() {
+        this.raycastHitEntities = [];
         const meshes = this.activeEntitiesCache
             .filter(e => e.mesh && e.isActive && e !== this.player)
             .map(e => this.getRaycastMeshForEntity(e))
@@ -1196,6 +1196,7 @@ class GameEngineMovementMethods {
             hitEntities = this.sortRaycastEntities(
                 hitEntities.filter(e => e.state !== 'DEAD' || e instanceof LootDrop)
             );
+            this.raycastHitEntities = hitEntities;
 
             if (hitEntities.length > 0) {
                 this.hoveredEntity = hitEntities[0];

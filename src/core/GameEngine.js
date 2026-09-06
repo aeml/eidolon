@@ -404,6 +404,7 @@ export class GameEngine {
             this.cameraLocked = true;
             this.renderSystem.resetCamera(this.player?.position);
         };
+        this.uiManager.onMobileTargetClear = () => this.setMobileCombatTarget(null);
         this.autoLootEnabled = this.uiManager.getAutoLootEnabled();
         this.uiManager.onAutoLootChange = (enabled) => {
             this.autoLootEnabled = enabled;
@@ -1607,10 +1608,38 @@ export class GameEngine {
     }
 
     getEffectiveCombatTarget() {
+        if (this.isMobile) return this.getMobileCombatTarget();
         const pendingTarget = this.abilityController?.pendingAbilityTarget;
         if (this.isHostileActorTarget(pendingTarget)) return pendingTarget;
         if (this.isHostileActorTarget(this.hoveredEntity)) return this.hoveredEntity;
         return null;
+    }
+
+    setMobileCombatTarget(entity) {
+        this.mobileCombatTarget = entity || null;
+        this.mobileCombatInstanceId = this.currentInstanceId;
+        this.pendingInteraction = null;
+        if (this.abilityController) {
+            this.abilityController.pendingAbilityTarget = null;
+            this.abilityController.pendingAbilitySkill = null;
+            this.abilityController.inputBuffer = [];
+        }
+        if (this.player) {
+            this.player.targetPosition = null;
+            this.player.targetEntity = null;
+        }
+        this.refreshCombatIntentState();
+    }
+
+    getMobileCombatTarget() {
+        const target = this.mobileCombatTarget;
+        if (this.isPlayerDead() || this.mobileCombatInstanceId !== this.currentInstanceId
+            || !this.isHostileActorTarget(target)
+            || !this.chunkManager.getActiveEntities().includes(target)) {
+            this.mobileCombatTarget = null;
+            return null;
+        }
+        return target;
     }
 
     serializeCombatIntent(intent) {
@@ -1755,6 +1784,7 @@ export class GameEngine {
     }
 
     clearCombatIntentState() {
+        this.mobileCombatTarget = null;
         const hadIntent = !!this.combatIntent || !!this.highlightedCombatTarget;
         this.combatIntent = null;
         this.combatIntentSignature = '';

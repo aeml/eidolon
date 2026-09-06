@@ -18,7 +18,9 @@ test('browser touch targets isolate canvas pinches from menu gestures', async ({
         const input = new InputManager(null, null, canvas);
         window.__pinchInput = input;
         window.__pinchDeltas = [];
+        window.__worldTaps = [];
         input.subscribe('onZoom', delta => window.__pinchDeltas.push(delta));
+        input.subscribe('onClick', event => window.__worldTaps.push({ x: event?.clientX, y: event?.clientY }));
         input.setupMobileControls();
     });
     const cdp = await context.newCDPSession(page);
@@ -43,6 +45,15 @@ test('browser touch targets isolate canvas pinches from menu gestures', async ({
         await send('touchCancel', []);
         expect(await page.evaluate(() => window.__pinchDeltas.length)).toBe(1);
         expect(await page.evaluate(() => window.__pinchInput.pinchState)).toBeNull();
+        expect(await page.evaluate(() => window.__worldTaps)).toEqual([]);
+
+        await send('touchStart', [{ id: 1, x: 150, y: 300 }]);
+        await send('touchEnd', []);
+        expect(await page.evaluate(() => window.__worldTaps)).toEqual([{ x: 150, y: 300 }]);
+        await send('touchStart', [{ id: 1, x: 150, y: 300 }]);
+        await send('touchMove', [{ id: 1, x: 200, y: 300 }]);
+        await send('touchEnd', []);
+        expect(await page.evaluate(() => window.__worldTaps)).toHaveLength(1);
     } finally {
         await page.evaluate(() => window.__pinchInput.dispose());
         await cdp.detach();

@@ -51,6 +51,23 @@ test('phone HUD keeps thumb targets and expandable permanent chat usable in both
         await expect(page.locator('#skill-tree-window')).toBeVisible();
         await page.locator('#btn-close-skills').tap();
         await expect(page.locator('#skill-tree-window')).toBeHidden();
+        await page.evaluate(() => {
+            window.__phoneUI.onMobileTargetClear = () => {
+                window.__targetCleared = true;
+                document.getElementById('combat-intent-panel').style.display = 'none';
+            };
+            document.getElementById('combat-intent-name').textContent = 'Selected Skeleton';
+            document.getElementById('combat-intent-status').textContent = 'In range';
+            document.getElementById('combat-intent-panel').style.display = 'block';
+        });
+        await page.screenshot({ path: testInfo.outputPath(`phone-target-${width}-${height}.png`) });
+        const clearTarget = page.getByRole('button', { name: 'Clear target and cancel pursuit' });
+        const clearBounds = await clearTarget.boundingBox();
+        expect(clearBounds.width).toBeGreaterThanOrEqual(44);
+        expect(clearBounds.height).toBeGreaterThanOrEqual(44);
+        await clearTarget.tap();
+        expect(await page.evaluate(() => window.__targetCleared)).toBe(true);
+        await expect(page.locator('#combat-intent-panel')).toBeHidden();
         await page.evaluate(() => window.__phoneInput.dispose());
     }
 });

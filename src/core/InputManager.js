@@ -6,6 +6,7 @@ export class InputManager {
         this.scene = scene;
         this.canvas = canvas;
         this.pinchState = null;
+        this.worldTapState = null;
         this.raycaster = new THREE.Raycaster();
         this.mouse = new THREE.Vector2();
         this.pointerOverCanvas = false;
@@ -166,18 +167,8 @@ export class InputManager {
             }
         };
 
-        // Map Mobile Buttons to Game Actions
-        // Attack -> Left Click (Ground/Enemy) logic is handled by GameEngine, but we need to trigger it.
-        // Actually, GameEngine listens to 'onClick'.
-        // But 'onClick' usually expects a mouse position for raycasting.
-        // For mobile, "Attack" button should probably attack the nearest enemy or just trigger "Attack" action.
-        // Since we don't have a "target" from mouse hover, we might need auto-targeting or just attack in front.
-        // For now, let's map Attack to onClick, but we need to fake a mouse position? 
-        // Or better, GameEngine should handle "Attack Button Pressed" differently.
-        
-        // Let's reuse existing callbacks but maybe add a flag or new callback?
-        // Reuse 'onClick' for Attack. GameEngine will need to handle "no mouse position" or use player position/direction.
-        
+        // An event-less click is an explicit Attack button action. Canvas taps
+        // below carry coordinates and select a target without attacking it.
         bindBtn('btn-mobile-attack', 'onClick'); // Attack
         bindBtn('btn-mobile-ability', 'onRightClick'); // Ability
         bindBtn('btn-mobile-interact', 'onInteract'); // Interact (Loot/NPC)
@@ -230,6 +221,42 @@ export class InputManager {
         this._registerListener(window, 'touchmove', onPinchMove, { passive: false });
         this._registerListener(window, 'touchend', onPinchEnd);
         this._registerListener(window, 'touchcancel', onPinchEnd);
+
+        // Select only after a short, canvas-owned tap. Starting a pinch, dragging
+        // or interrupting a gesture must never produce a synthetic combat click.
+        const canvasTouches = event => Array.from(event.touches).filter(touch => touch.target === this.canvas);
+        this._registerListener(window, 'touchstart', event => {
+            if (canvasTouches(event).length !== 1 || event.defaultPrevented) {
+                this.worldTapState = null;
+                return;
+            }
+            if (!this.canvas || event.target !== this.canvas) return;
+            const touch = canvasTouches(event)[0];
+            this.worldTapState = { id: touch.identifier, x: touch.clientX, y: touch.clientY };
+            event.preventDefault();
+        }, { passive: false });
+        this._registerListener(window, 'touchmove', event => {
+            const state = this.worldTapState;
+            if (!state) return;
+            const touches = canvasTouches(event);
+            const touch = touches.find(touch => touch.identifier === state.id);
+            if (touches.length !== 1 || !touch || Math.hypot(touch.clientX - state.x, touch.clientY - state.y) > 12) {
+                this.worldTapState = null;
+            }
+        }, { passive: true });
+        this._registerListener(window, 'touchend', event => {
+            const state = this.worldTapState;
+            if (!state) return;
+            const touch = Array.from(event.changedTouches).find(touch => touch.identifier === state.id);
+            if (!touch) return;
+            this.worldTapState = null;
+            if (event.defaultPrevented || canvasTouches(event).length || Math.hypot(touch.clientX - state.x, touch.clientY - state.y) > 12) return;
+            event.preventDefault();
+            this.updateMouseFromEvent(touch);
+            this.pointerOverCanvas = true;
+            this.callbacks.onClick.forEach(callback => callback({ clientX: touch.clientX, clientY: touch.clientY, target: this.canvas }));
+        }, { passive: false });
+        this._registerListener(window, 'touchcancel', () => { this.worldTapState = null; });
     }
 
 
@@ -410,6 +437,7 @@ export class InputManager {
 
     clearInputState() {
         this.pinchState = null;
+        this.worldTapState = null;
         this.isMouseDown = false;
         this.primaryMouseButtonDown = false;
         this.isRightMouseDown = false;
@@ -434,6 +462,7 @@ export class InputManager {
 
     dispose() {
         this.pinchState = null;
+        this.worldTapState = null;
         for (const listener of this._listeners) {
             listener.target.removeEventListener(listener.event, listener.handler, listener.options);
         }
