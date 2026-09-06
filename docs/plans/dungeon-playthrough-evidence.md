@@ -7,6 +7,14 @@ recovery/reconnect, and High/Low scene inspection in the main roadmap.
 
 ## Reproducible player-control route
 
+Latest class evidence: clean Alpha 1.0.24 candidate `a8d0aa9165222547235d2a729a3bd75b6ae34ecc`
+passed complete Verdant as **Cleric in 8.7 minutes**, Normal 30 / player 100,
+seed `6533633041847534961`, generator 2 attempt 0. All four bosses, all encounter
+rooms, gold and completed-run recall/re-entry passed. Credential scanning and
+disposable cleanup passed; log `/tmp/eidolon-1-0-24-verdant-full-cleric.log`,
+session `50690` closed. This uses primary/basic attacks with functional level
+preparation, not an all-skill/rune, party-healing or earned-level balance claim.
+
 `tests/e2e/verdant-dungeon-gameplay.spec.js` retains its default two-boss Verdant
 smoke for CI and now accepts all five dungeon catalog keys. Full runs walk the
 canonical room/corridor joins, fight ordinary enemies and every boss using mouse

@@ -1,0 +1,136 @@
+import { expect, test } from '@playwright/test';
+import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
+import { collectBrowserFailures, credentialsFromEnvironment, jumpByGroundClick,
+    loginAndEnterWorld, moveByGroundClick, projectEntity, projectNearestHostile,
+    readPlayerState, returnToTown } from './helpers.js';
+
+test.use({ trace: 'off', screenshot: 'off', video: 'off' });
+const chapter = 'chronicle_01_bell_below';
+
+// Deliberately does not use findOverworldTarget: that functional QA helper may
+// teleport to an encounter. Every movement here is an ordinary player input.
+async function findSkeletonThroughTravel(page) {
+    for (let step = 0; step < 24; step++) {
+        const target = await projectNearestHostile(page, 'Skeleton');
+        if (target) return target;
+        const offset = await page.evaluate(() => {
+            const game = window.game;
+            const enemies = [...game.remotePlayers.values()].filter(entity =>
+                entity.isActive && entity.state !== 'DEAD' &&
+                (entity.subType || entity.constructor?.name) === 'Skeleton');
+            enemies.sort((a, b) => game.player.position.distanceTo(a.position) -
+                game.player.position.distanceTo(b.position));
+            const nearest = enemies[0];
+            if (!nearest) return { x: 0, z: -15 };
+            const dx = nearest.position.x - game.player.position.x;
+            const dz = nearest.position.z - game.player.position.z;
+            const scale = Math.min(1, 15 / Math.max(1, Math.hypot(dx, dz)));
+            return { x: dx * scale, z: dz * scale };
+        });
+        await moveByGroundClick(page, offset.x, offset.z);
+    }
+    throw new Error('No visible Skeleton after bounded ordinary travel');
+}
+
+async function leaveTown(page) {
+    for (let step = 0; (await readPlayerState(page)).x < 115 && step < 20; step++) {
+        const position = await readPlayerState(page);
+        await jumpByGroundClick(page, 25, Math.max(-8, Math.min(8, 200 - position.z)));
+    }
+    expect((await readPlayerState(page)).x).toBeGreaterThanOrEqual(115);
+}
+
+test('fresh level-one character earns and manually turns in the opening Chronicle without grants', async ({ page, baseURL }) => {
+    const credentials = credentialsFromEnvironment();
+    test.skip(!credentials.username || !credentials.password, 'Requires a disposable QA character');
+    expect(process.env.EIDOLON_E2E_REGISTER).toBe('1');
+    test.setTimeout(600_000);
+    const started = Date.now();
+    const failures = collectBrowserFailures(page, baseURL);
+    await loginAndEnterWorld(page, credentials);
+    expect((await readPlayerState(page)).level).toBe(1);
+    await openIlyra(page);
+    await page.locator('#quest-window').getByRole('button', { name: 'Accept Quest', exact: true }).click();
+    await expect.poll(async () => (await readChronicleChapter(page, chapter))?.accepted).toBe(true);
+    await page.locator('#btn-close-quest').click();
+    await returnToTown(page);
+    await leaveTown(page);
+    let deaths = 0;
+    let retreats = 0;
+    while ((await readChronicleChapter(page, chapter)).count < 3) {
+        let target = await findSkeletonThroughTravel(page);
+        const before = (await readChronicleChapter(page, chapter)).count;
+        const deadline = Date.now() + 120_000;
+        while (Date.now() < deadline && (await readChronicleChapter(page, chapter)).count === before) {
+            const player = await readPlayerState(page);
+            if (player.state === 'DEAD') {
+                deaths++;
+                console.log(`[fresh-opening] death ${JSON.stringify({ deaths, count: before, level: player.level })}`);
+                expect(deaths, 'Bounded opening route exceeded two normal respawns').toBeLessThanOrEqual(2);
+                await returnToTown(page);
+                expect((await readChronicleChapter(page, chapter)).count, 'Death must not erase earned quest credit').toBe(before);
+                await leaveTown(page);
+                target = await findSkeletonThroughTravel(page);
+                continue;
+            }
+            // Use the ranged class as a ranged player: retreat through ordinary
+            // movement when approached. No state writes, healing or protection.
+            const retreat = await page.evaluate(id => {
+                const game = window.game;
+                const enemy = game.remotePlayers.get(id);
+                if (!enemy || game.player.constructor?.name !== 'Wizard') return null;
+                const dx = game.player.position.x - enemy.position.x;
+                const dz = game.player.position.z - enemy.position.z;
+                const distance = Math.hypot(dx, dz);
+                return distance < 5 ? { x: dx / Math.max(0.1, distance) * 8,
+                    z: dz / Math.max(0.1, distance) * 8 } : null;
+            }, target.id);
+            if (retreat) {
+                try {
+                    await moveByGroundClick(page, retreat.x, retreat.z);
+                } catch (error) {
+                    // Combat continues during movement. A normal death belongs
+                    // to the bounded respawn path above; retain other movement
+                    // failures instead of hiding collision/input defects.
+                    if ((await readPlayerState(page)).state === 'DEAD') continue;
+                    throw error;
+                }
+                retreats++;
+            }
+            const point = await projectEntity(page, target.id);
+            if (point?.visible) {
+                await page.mouse.click(point.x, point.y);
+                if (await page.evaluate(() => window.game.player.abilityCooldown <= 0)) {
+                    await page.mouse.click(point.x, point.y, { button: 'right' });
+                }
+            }
+            await page.waitForTimeout(250);
+        }
+        const diagnostic = await page.evaluate(id => {
+            const game = window.game, enemy = game.remotePlayers.get(id);
+            return { playerHP: game.player.health, enemyHP: enemy?.health,
+                enemyState: enemy?.state, hoveredType: game.hoveredEntity?.constructor?.name,
+                distance: enemy ? game.player.position.distanceTo(enemy.position) : null };
+        }, target.id);
+        expect((await readChronicleChapter(page, chapter)).count,
+            `Opening combat deadline: ${JSON.stringify(diagnostic)}`).toBeGreaterThan(before);
+        const player = await readPlayerState(page);
+        console.log(`[fresh-opening] ${JSON.stringify({ kills: (await readChronicleChapter(page, chapter)).count, deaths, level: player.level, hp: player.health, elapsedSeconds: Math.round((Date.now() - started) / 1000) })}`);
+    }
+    expect((await readChronicleChapter(page, chapter)).completed).toBe(false);
+    await openIlyra(page);
+    await page.locator('#quest-window').getByRole('button', { name: 'Complete Quest', exact: true }).click();
+    await expect.poll(async () => (await readChronicleChapter(page, chapter)).completed).toBe(true);
+    const rewarded = await readChronicleChapter(page, chapter);
+    expect(rewarded.grantedGold).toBeGreaterThan(0);
+    expect(rewarded.grantedXP).toBeGreaterThan(0);
+    await page.locator('#quest-window').getByRole('button', { name: 'Continue conversation', exact: true }).click();
+    expect((await readChronicleChapter(page, 'chronicle_02_seeds_first_grove')).accepted).toBe(false);
+    const earnedLevel = (await readPlayerState(page)).level;
+    await page.reload({ waitUntil: 'networkidle' });
+    await loginAndEnterWorld(page, credentials);
+    expect((await readPlayerState(page)).level).toBe(earnedLevel);
+    expect((await readChronicleChapter(page, chapter)).completed).toBe(true);
+    console.log(`[fresh-opening] completed ${JSON.stringify({ level: earnedLevel, deaths, retreats, grantedGold: rewarded.grantedGold, grantedXP: rewarded.grantedXP, elapsedSeconds: Math.round((Date.now() - started) / 1000) })}`);
+    expect(failures, failures.join('\n')).toEqual([]);
+});

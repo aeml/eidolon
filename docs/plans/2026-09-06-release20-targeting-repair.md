@@ -46,3 +46,13 @@ Publish this correction as a successor commit of the failed 1.0.20 candidate,
 keeping the 1.0.20 version identity until it passes its full gate. Carry that
 commit into 1.0.21, then into each later queued version through fast-forwardable
 ancestry. No force-push, skipped version or passing claim for the old CI run.
+
+## Verified publication
+
+Successor `99303f5a108ab1a965bd723fbd4272923a0f67b9` passed CI `34031297122`
+in full, including final live character QA. After CI reached terminal success,
+fresh uncached requests confirmed frontend manifest, login version label,
+`main.js` release query and backend health all identify this commit / Alpha
+1.0.20; backend status was `ok` and database `ready`. Only then was successor
+1.0.21 `c76db477fb070fe15a7d665ec3cc41f0b0feb916` pushed to `master` for CI
+`34051295918`. The old failed run is not the release evidence.

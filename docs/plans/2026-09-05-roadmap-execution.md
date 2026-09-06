@@ -5,18 +5,19 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-Current release queue (September 6): **1.0.19 (`200478f`) remains the last fully
-verified release**; CI `34026658393` and its recorded post-terminal live checks
-passed. The original 1.0.20 (`bd54b2a`) deployed, but CI `34028688737` **failed**
-its final live multiplayer check. Fresh frontend manifest and backend health
-requests still identify `bd54b2a` / Alpha 1.0.20 with database ready; that does
-not erase the gameplay failure.
+Current release queue (September 6): **corrected 1.0.20 (`99303f5`) is the last
+fully verified release**. CI `34031297122` passed every job, including final live
+character QA. Post-terminal uncached frontend manifest, login label, main script
+release query and backend health all matched the full `99303f5` commit / Alpha
+1.0.20; health reported status `ok`, database `ready`. The original 1.0.20
+(`bd54b2a`) deployed but failed CI `34028688737`'s final live multiplayer check;
+that failure remains recorded rather than reclassified as a pass.
 
 The confirmed loot-over-enemy targeting defect is corrected in the successor
-1.0.20 commit **`99303f5a108ab1a965bd723fbd4272923a0f67b9`**, now pushed and
-running CI **`34031297122`**. See the separate
-[repair record](2026-09-06-release20-targeting-repair.md). No later version has
-been pushed. Local merges carry that same fix forward and preserve ancestry:
+1.0.20 commit **`99303f5a108ab1a965bd723fbd4272923a0f67b9`**. See the separate
+[repair record](2026-09-06-release20-targeting-repair.md). After its full gate,
+**1.0.21 `c76db47` was pushed to `master`**; CI `34051295918` is running. No later
+version has been pushed. Local merges carry that same fix forward and preserve ancestry:
 
 | Next version | Queued source | Supersedes |
 |---|---|---|
@@ -39,6 +40,31 @@ not the current queue. Do not publish a successor before the preceding version's
 complete CI/live verification. The original 1.0.14 failure remains recorded below.
 
 ## September 6 continuation — dungeon class and campaign evidence
+
+Clean `a8d0aa9` passed the full Cleric Verdant route in **8.7 minutes**, Normal
+30 / player 100, seed `6533633041847534961`, generator 2 attempt 0. All four
+bosses and rooms cleared, gold and completed-run recall/re-entry persisted.
+Credential scanning and disposable cleanup passed; session `50690` is closed.
+This is solo basic/primary-ability functional evidence, not every Cleric skill,
+party healing, level-appropriate balance or a complete class/instance matrix.
+
+A new optional `fresh-opening` route starts at level one and uses ordinary town
+travel, Skeleton combat and explicit Ilyra turn-in, with no level grants, QA
+waypoints, item grants or quest-progress grants. The corrected route passed in
+**93 seconds** (1.6 minutes including overhead): Wizard level one → six, three
+earned kills, 18 retreats, **one death**, normal respawn, manual 100 gold / 500 XP
+turn-in and fresh-login persistence. Credential scan and cleanup passed; log
+`/tmp/eidolon-fresh-opening-recovery.log`, session `92005` closed. Source was
+`a8d0aa9` plus these test/documentation changes; runtime was unchanged. Earlier
+stationary-control and recovery-helper failures remain recorded separately.
+This is opening-chapter evidence, not a whole first-hour benchmark.
+Source inspection found the first two chapters give
+8,500 quest XP, while the current exponential curve requires roughly 98,400
+cumulative XP to reach level 30. Combat also awards XP, so the quest-only budget
+is a reason to measure earned progression, not proof of the actual pacing or
+authorization to bypass dungeon entry gates.
+Method, failed attempts and the remaining earned-progression checks are tracked
+in [fresh-character evidence](fresh-progression-evidence.md).
 
 Latest continuation: the preceding goal turn was progress (1.0.23's sync repair
 and earned Earth route). Clean `fba546a` subsequently passed a full Rogue Verdant

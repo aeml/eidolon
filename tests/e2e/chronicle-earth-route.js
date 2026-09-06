@@ -14,7 +14,7 @@ export const readChronicleChapter = (page, id) => page.evaluate(id => {
         grantedXP: quest.grantedXP, grantedResonanceXP: quest.grantedResonanceXP } : null;
 }, id);
 
-async function openIlyra(page) {
+export async function openIlyra(page) {
     await returnToTown(page);
     for (let step = 0; step < 12; step++) {
         const position = await readPlayerState(page);
