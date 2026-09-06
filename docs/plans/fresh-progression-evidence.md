@@ -1,5 +1,94 @@
 # Fresh-character progression evidence — 1.1 gate
 
+## Earned dungeon-readiness extension — September 6, measurement pending
+
+The optional `fresh-ready` route extends the same real opening, collection and
+100-Skeleton contract with normal preparation and the existing 100-Imp contract.
+It uses collected eligible equipment to fill empty slots, spends up to five
+earned Intelligence points and five Fireball Mastery ranks through the desktop
+menus, and checks those choices after fresh login. Ordinary westward Ctrl-click
+travel and canvas attacks must earn the Imp credits; its 150,000 XP and gold
+require a manual NPC turn-in and saved-login check before inspecting Verdant entry.
+No level, item, skill, protection, quest or travel grants are used. Enemy positions
+assist automated navigation read-only; this is not human-discovery evidence.
+
+The first measurement ran against `8609a6f` plus QA-only changes, runtime Alpha
+1.0.27, log `/tmp/eidolon-fresh-ready-Wizard.log`, session `48789`. Its result is
+**failed after a third Imp death**, not a successful level-30 or dungeon clear
+claim. The 16.1-minute test last reported 61 Imp credits, level 28 / 10,478 XP /
+11,760 gold at 402 seconds from Imp hunt start, with two deaths at that checkpoint.
+It then exceeded its existing two-respawn bound; it did not claim the Imp reward.
+Credential scanning and exact disposable cleanup completed; the handle is closed.
+The earlier unequipped
+Skeleton baseline remains available as `fresh-hunt`. Dailies remain optional
+activities, not new campaign prerequisites. This route is Wizard-only preparation;
+melee/all-class comparisons and actual earned-build dungeon combat remain open.
+
+The first attempt passed both story turn-ins and the Skeleton daily:
+100 credits in 312 seconds with zero deaths; manual 50,000 XP / 100 gold and
+fresh login yield level 27 / 4,688 XP / 2,292 gold (333 seconds including return
+and persistence). Preparation saved five `WIZ_01` ranks and no attribute
+allocations because `statPoints` was zero. It made 11 equipment actions, but
+inspection of the saved snapshot found only 10 occupied keys, **including an
+unsupported `gem` equipment key**. Generic trinkets can replace occupied slots,
+so the initial helper is not accurately restricted to filling empty legal slots.
+Do not treat this initial preparation as a clean gear baseline.
+
+This also exposed a real ordinary-click validation gap: desktop `InventoryUI`
+and `Actor.equipItem` exclude materials/relics but allow a gem slot; server
+`PerformEquip` accepts any exact matching item/target slot without restricting it
+to the 14 character-sheet slots. The gem key survived login in the disposable
+character. The helper must use a legal-slot allowlist and resolve ring/trinket
+empty slots explicitly; the game needs separate client/server regressions,
+rejection of non-equipment and a lossless recovery policy for any existing
+unsupported equipped items. The current run makes no live-player changes or
+balance tuning. Preserve its raw outcome, including its compromised gear
+baseline, then remeasure after the scoped corrections.
+
+After that handle closed, the helper was restricted to the 14 real equipment
+slots plus explicitly resolved ring/trinket categories, with no gem/material/
+relic equip attempts or replacement of filled slots. It checks saved equipment
+count and forbids a gem key. Readiness now explicitly opens the Dungeons tab,
+selects Verdant and requires a **visible** enabled Start button. The default
+Skeleton helper still retains its original contract/reward assertions; its
+progress log now avoids a shadowed target name. These test-only corrections
+require a new played measurement; no rerun pass is claimed here. Before balance
+tuning, add appropriate Wizard spacing/defensive skill use to this simple
+stationary-casting hunt strategy and compare lawful equipment builds. Do not
+raise the death bound or grant levels merely to obtain a pass.
+
+### Build-copy follow-up found during preparation inspection
+
+The baseline uses Fireball **Mastery**, whose +4% damage per rank agrees between
+`src/core/Constants.js` and `server/internal/game/talents.go`. Several other Wizard
+descriptions demonstrably disagree with their server definitions, so readable
+build menus alone do not establish trustworthy preparation guidance:
+
+| Talent | Current client description, per rank | Server definition, per rank |
+|---|---|---|
+| Fireball Technique (`WIZ_02`) | +3% cooldown reduction and +2% range/area | +3% skill cooldown reduction, −2% skill mana cost |
+| Quickened Formulae (`WIZ_28`) | +2% global cooldown reduction | +1.5% global cooldown reduction |
+| Channel Discipline (`WIZ_37`) | +2% channeled spell damage | +3 flat Intelligence |
+| Contingency Wards (`WIZ_40`) | +2% damage reduction | +2% maximum health and +2 flat Wisdom |
+
+This is a source-level description mismatch, not a played effect measurement.
+Audit all class descriptions against both definitions and their actual consumers,
+then add drift regressions and correct the copy in a separately versioned patch.
+Do not silently rebalance authoritative talents to match old text. No talent
+effect or description is changed by the current QA-only extension.
+
+The consumer search found a more important follow-up than wording: production
+code calls `GetSkillDamageMultiplier` (including Fireball in `ability_wizard.go`),
+but `GetSkillCdrBonus` has no production caller. Searches for `SkillManaCost`,
+`SkillRange` and `SkillDuration` find their definitions/accumulation, not use in
+authoritative ability execution. Treat those bonuses as **unverified consumers**,
+not working effects established by a populated `TalentBonus`. Add paired real
+ability tests for rank zero versus earned ranks, including cooldown/mana/range/
+duration and client/server agreement; establish each missing effect before
+choosing implementation versus revised design. Fixing tooltip wording alone
+cannot close that combat/build gate. The current baseline's Fireball damage
+multiplier does have an authoritative consumer.
+
 ## Preparation-route measurement — in progress after 1.0.26
 
 The next optional route, `fresh-hunt`, extends the genuinely earned first two

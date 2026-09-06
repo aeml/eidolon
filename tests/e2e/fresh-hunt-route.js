@@ -4,26 +4,25 @@ import { openDungeonGuide } from './dungeon-guide.js';
 import { loginAndEnterWorld, projectEntity, readPlayerState,
     returnToTown, setAutoLootThroughSettings, zoomOutForPortal } from './helpers.js';
 
-const daily = 'daily_skeleton';
 const snapshot = page => page.evaluate(() => {
     const p = window.game.player;
     return { level: p.level, xp: p.xp, maxXP: p.xpToNextLevel, gold: p.gold };
 });
 
-async function selectSkeletonContract(page) {
+async function selectContract(page, target) {
     const heading = page.locator('#quest-window .quest-dialogue h3');
-    if (await heading.filter({ hasText: 'Daily Hunt: Skeleton' }).isVisible()) return;
+    if (await heading.isVisible() && await heading.textContent() === `Daily Hunt: ${target}`) return;
     const back = page.getByRole('button', { name: 'Back to contracts', exact: true });
     if (await back.isVisible()) await back.click();
-    await page.locator('.quest-contract').filter({ hasText: 'Skeleton' }).first().click();
-    await expect(heading).toHaveText('Daily Hunt: Skeleton');
+    await page.locator('.quest-contract').filter({ hasText: `Daily Hunt: ${target}` }).first().click();
+    await expect(heading).toHaveText(`Daily Hunt: ${target}`);
 }
 
-export async function discussHunt(page) {
+export async function discussHunt(page, target = 'Skeleton') {
     await returnToTown(page);
     if (await page.locator('#quest-window').isVisible()) {
         await expect(page.locator('#quest-window')).toContainText('DAILY CONTRACTS');
-        await selectSkeletonContract(page);
+        await selectContract(page, target);
         return;
     }
     // Frame the giver, then click the NPC itself and let normal interaction
@@ -77,15 +76,21 @@ export async function discussHunt(page) {
     });
     await page.mouse.click(point.x, point.y);
     await expect(page.locator('#quest-window')).toBeVisible();
-    await selectSkeletonContract(page);
+    await selectContract(page, target);
 }
 
 // This baseline deliberately does not equip drops, spend talent points or grant
 // QA travel/protection/progress. It measures one existing contract, not the best
 // leveling route or a human player's ability to discover it.
 export async function earnFreshSkeletonHunt(page, credentials, { findTarget, leaveTown }) {
+    return earnFreshHunt(page, credentials, { findTarget, leaveTown });
+}
+
+export async function earnFreshHunt(page, credentials, {
+    findTarget, leaveTown, target = 'Skeleton', daily = 'daily_skeleton', rewardXP = 50_000
+}) {
     await page.locator('#btn-close-dungeon-menu').click();
-    await discussHunt(page);
+    await discussHunt(page, target);
     await page.getByRole('button', { name: 'Accept Quest', exact: true }).click();
     await expect.poll(async () => (await readChronicleChapter(page, daily)).accepted).toBe(true);
     await page.locator('#btn-close-quest').click();
@@ -93,12 +98,12 @@ export async function earnFreshSkeletonHunt(page, credentials, { findTarget, lea
     await setAutoLootThroughSettings(page, false);
     const baseline = await snapshot(page);
     const started = Date.now();
-    console.log(`[fresh-hunt] baseline ${JSON.stringify(baseline)}`);
+    console.log(`[fresh-hunt:${target}] baseline ${JSON.stringify(baseline)}`);
     await returnToTown(page);
     await leaveTown();
     let deaths = 0, reported = 0;
     while ((await readChronicleChapter(page, daily)).count < 100) {
-        const target = await findTarget();
+        const enemy = await findTarget();
         const before = (await readChronicleChapter(page, daily)).count;
         const deadline = Date.now() + 120_000;
         let respawned = false;
@@ -111,7 +116,7 @@ export async function earnFreshSkeletonHunt(page, credentials, { findTarget, lea
                 respawned = true;
                 break;
             }
-            const point = await projectEntity(page, target.id);
+            const point = await projectEntity(page, enemy.id);
             if (point?.visible) {
                 await page.mouse.click(point.x, point.y);
                 if (await page.evaluate(() => window.game.player.abilityCooldown <= 0)) {
@@ -125,17 +130,17 @@ export async function earnFreshSkeletonHunt(page, credentials, { findTarget, lea
         expect(count, 'Ordinary hunt combat must produce server quest credit').toBeGreaterThan(before);
         if (count >= reported + 10 || count === 100) {
             reported = count;
-            console.log(`[fresh-hunt] ${JSON.stringify({ count, deaths, ...await snapshot(page),
+            console.log(`[fresh-hunt:${target}] ${JSON.stringify({ count, deaths, ...await snapshot(page),
                 seconds: Math.round((Date.now() - started) / 1000) })}`);
         }
     }
     expect((await readChronicleChapter(page, daily)).completed).toBe(false);
-    await discussHunt(page);
+    await discussHunt(page, target);
     const beforeReward = await snapshot(page);
     await page.getByRole('button', { name: 'Complete Quest', exact: true }).click();
     await expect.poll(async () => (await readChronicleChapter(page, daily)).completed).toBe(true);
     const reward = await readChronicleChapter(page, daily);
-    expect(reward.grantedXP).toBe(50_000);
+    expect(reward.grantedXP).toBe(rewardXP);
     expect(reward.grantedGold).toBeGreaterThan(0);
     await page.locator('#btn-close-quest').click();
     await setAutoLootThroughSettings(page, previousAutoLoot);
@@ -148,7 +153,7 @@ export async function earnFreshSkeletonHunt(page, credentials, { findTarget, lea
     await openDungeonGuide(page);
     const entryEnabled = await page.locator('#btn-enter-dungeon').isEnabled();
     expect(entryEnabled).toBe(earned.level >= 30);
-    console.log(`[fresh-hunt] complete ${JSON.stringify({ baseline, beforeReward, earned, deaths,
+    console.log(`[fresh-hunt:${target}] complete ${JSON.stringify({ baseline, beforeReward, earned, deaths,
         rewardXP: reward.grantedXP, rewardGold: reward.grantedGold, entryEnabled,
         seconds: Math.round((Date.now() - started) / 1000) })}`);
 }

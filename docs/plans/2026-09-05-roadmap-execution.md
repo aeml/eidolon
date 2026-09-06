@@ -10,8 +10,11 @@ verified release**. CI **`34058325420`** passed every job, including final live
 character/animation QA. Post-terminal uncached checks at **21:26:23 UTC** matched
 frontend manifest, login label, main script release query and backend health to
 `e0b9afd3f8cfcefdbd056ef0339cb7937c27c4e7` / Alpha 1.0.22; health reported status
-`ok`, database `ready`. **1.0.23 `ad72a64` is now pushed**, CI **`34061096121`**
-running. No 1.0.24-or-later release has been pushed.
+`ok`, database `ready`. **1.0.23 `ad72a64` is pushed**, but CI **`34061096121`
+failed before deployment** in its animation gallery check (Imp Walk/Run read
+Idle). Both deployments and the live gate were skipped. A gallery preview-jump
+lifecycle repair is being verified in the isolated 1.0.23 worktree; no successor
+is pushed yet. No 1.0.24-or-later release has been pushed.
 
 Previously, corrected 1.0.21 (`9f58757`) passed every job in CI `34055526018`,
 including final live character/animation QA. Post-terminal checks at **20:32:20 UTC**
@@ -42,7 +45,7 @@ Local merges carry that same fix forward and preserve ancestry:
 |---|---|---|
 | 1.0.21 | `9f587570313d2f78aa469f21bd73bf8db1dd50ab` (fully verified live) | `c76db47`; strengthens pickup and persistence verification |
 | 1.0.22 | `e0b9afd3f8cfcefdbd056ef0339cb7937c27c4e7` (fully verified live; CI `34058325420`) | `ed793e0`; inherits corrected 1.0.21 |
-| 1.0.23 | `ad72a642592b5ce6fc6e22b23af1d8b2ab3a52dc` (pushed; CI `34061096121`) | `4fcb89d`; retains the verified collection inventory repair |
+| 1.0.23 | `ad72a642592b5ce6fc6e22b23af1d8b2ab3a52dc` (pushed; CI `34061096121` failed predeploy gallery; correction pending) | `4fcb89d`; retains the verified collection inventory repair |
 | 1.0.24 | `bcc29f498504fa83a53f62e5cb5aa00e020844c8`, branch `release/24-with-pickup` | phone navigation and fresh-opening QA with corrected release ancestry |
 | 1.0.25 | `dd2ce169d54f54c4af13edb8ac6caf69e36ba8b3`, branch `release/25-with-starter`; runtime `bea6c34` | normal starter encounters, Ilyra guidance and clearing stale recall pursuit |
 | 1.0.26 | `f0a1286eb0cacdc12e6545e3cf703256ce0e4179`, branch `release/26-with-entry`; runtime `479cfd7` | server-sourced dungeon requirements, guarded entry and fresh collection/handoff measurement |
@@ -70,6 +73,31 @@ not the current queue. Do not publish a successor before the preceding version's
 complete CI/live verification. The original 1.0.14 failure remains recorded below.
 
 ## September 6 continuation — dungeon class and campaign evidence
+
+### Earned preparation extension and 1.0.23 predeploy repair
+
+The next optional `fresh-ready` route uses ordinary story/contract combat and
+manual rewards, then earned equipment and Fireball Mastery selection. Its first
+Wizard run passed the two story chapters, 100-Skeleton contract and saved level
+27 preparation. The Imp extension failed on its third death after last reporting
+61 credits at level 28; no Imp reward or dungeon readiness pass was obtained.
+The test also exposed a persistent unsupported gem equipment slot through an
+ordinary desktop click. Its helper now excludes gems and resolves only empty
+legal slots, but that corrected build needs a new measurement. Game-side slot
+validation/recovery and truthful/functional talent bonuses are concrete follow-ups
+recorded in [fresh progression evidence](fresh-progression-evidence.md).
+No gameplay balance changed in this QA-only extension; lint and shell syntax pass.
+
+1.0.23 CI `34061096121` failed the predeploy gallery on an Imp movement preview;
+deployments were skipped. A previous actor's one-second preview jump timer was
+not canceled by presentation cleanup and could later reset the replacement actor
+to Idle. Three focused regressions reproduce this; the scoped gallery cleanup
+repair passes 21 focused checks and the full 165-suite / 2,364-test client suite.
+The full rendered gallery repeat is running in the 1.0.23 worktree. The existing
+strict movement assertions are retained. Uncached live checks at **21:53:29 UTC**
+still match healthy 1.0.22 `e0b9afd` across manifest, login label, main script and
+server, with database ready. Later releases remain queued pending a fully verified
+1.0.23 successor. The full roadmap goal stays active.
 
 ### Alpha 1.0.27 — before the descent (local candidate)
 

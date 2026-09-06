@@ -331,6 +331,10 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   fresh-hunt-npc)
     npx playwright test tests/e2e/fresh-hunt-npc.spec.js
     ;;
+  fresh-ready)
+    EIDOLON_E2E_FRESH_COLLECTION=1 EIDOLON_E2E_FRESH_HUNT=1 EIDOLON_E2E_FRESH_READY=1 \
+      npx playwright test tests/e2e/fresh-opening-gameplay.spec.js
+    ;;
   dungeon-recovery)
     run_dungeon_recovery
     ;;
@@ -374,7 +378,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     run_phone_adventure
     ;;
   *)
-    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, inventory, extended, portal, dungeons, verdant, dungeon-full, chronicle-earth, chronicle-collection, fresh-opening, fresh-collection, fresh-hunt, fresh-hunt-npc, dungeon-recovery, direct-skills, projectile-walls, movement-walls, ground-walls, beam-walls, whirlwind, phone, phone-combat, phone-inventory, phone-quests, phone-build, phone-settings, or phone-adventure." >&2
+    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, inventory, extended, portal, dungeons, verdant, dungeon-full, chronicle-earth, chronicle-collection, fresh-opening, fresh-collection, fresh-hunt, fresh-hunt-npc, fresh-ready, dungeon-recovery, direct-skills, projectile-walls, movement-walls, ground-walls, beam-walls, whirlwind, phone, phone-combat, phone-inventory, phone-quests, phone-build, phone-settings, or phone-adventure." >&2
     exit 1
     ;;
 esac

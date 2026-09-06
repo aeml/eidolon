@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { earnFreshCollectionAndInspectHandoff } from './fresh-collection-route.js';
 import { earnFreshSkeletonHunt } from './fresh-hunt-route.js';
+import { earnFreshDungeonReadiness } from './fresh-ready-route.js';
 import { collectBrowserFailures, credentialsFromEnvironment, jumpByGroundClick,
     loginAndEnterWorld, moveByGroundClick, projectEntity, projectNearestHostile,
     readPlayerState, returnToTown } from './helpers.js';
@@ -11,15 +12,15 @@ const chapter = 'chronicle_01_bell_below';
 
 // Deliberately does not use findOverworldTarget: that functional QA helper may
 // teleport to an encounter. Every movement here is an ordinary player input.
-async function findSkeletonThroughTravel(page) {
+async function findHostileThroughTravel(page, subtype = 'Skeleton') {
     for (let step = 0; step < 24; step++) {
-        const target = await projectNearestHostile(page, 'Skeleton');
+        const target = await projectNearestHostile(page, subtype);
         if (target) return target;
-        const offset = await page.evaluate(() => {
+        const offset = await page.evaluate(subtype => {
             const game = window.game;
             const enemies = [...game.remotePlayers.values()].filter(entity =>
                 entity.isActive && entity.state !== 'DEAD' &&
-                (entity.subType || entity.constructor?.name) === 'Skeleton');
+                (entity.subType || entity.constructor?.name) === subtype);
             enemies.sort((a, b) => game.player.position.distanceTo(a.position) -
                 game.player.position.distanceTo(b.position));
             const nearest = enemies[0];
@@ -28,11 +29,13 @@ async function findSkeletonThroughTravel(page) {
             const dz = nearest.position.z - game.player.position.z;
             const scale = Math.min(1, 15 / Math.max(1, Math.hypot(dx, dz)));
             return { x: dx * scale, z: dz * scale };
-        });
+        }, subtype);
         await moveByGroundClick(page, offset.x, offset.z);
     }
-    throw new Error('No visible Skeleton after bounded ordinary travel');
+    throw new Error(`No visible ${subtype} after bounded ordinary travel`);
 }
+
+const findSkeletonThroughTravel = page => findHostileThroughTravel(page);
 
 async function leaveTown(page) {
     for (let step = 0; (await readPlayerState(page)).x < 115 && step < 20; step++) {
@@ -51,6 +54,10 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     const started = Date.now();
     const failures = collectBrowserFailures(page, baseURL);
     await loginAndEnterWorld(page, credentials);
+    if (process.env.EIDOLON_E2E_FRESH_READY === '1') {
+        expect(await page.evaluate(() => window.game.player.constructor.name),
+            'fresh-ready currently measures Wizard preparation; select EIDOLON_E2E_CLASS=Wizard').toBe('Wizard');
+    }
     expect((await readPlayerState(page)).level).toBe(1);
     console.log(`[fresh-opening] baseline ${JSON.stringify(await page.evaluate(() => {
         const player = window.game.player;
@@ -163,6 +170,11 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     if (process.env.EIDOLON_E2E_FRESH_HUNT === '1') {
         await earnFreshSkeletonHunt(page, credentials, {
             findTarget: () => findSkeletonThroughTravel(page), leaveTown: () => leaveTown(page)
+        });
+    }
+    if (process.env.EIDOLON_E2E_FRESH_READY === '1') {
+        await earnFreshDungeonReadiness(page, credentials, {
+            findTarget: () => findHostileThroughTravel(page, 'Imp')
         });
     }
     expect(failures, failures.join('\n')).toEqual([]);

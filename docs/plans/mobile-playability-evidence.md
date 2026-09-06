@@ -5,17 +5,21 @@ and release gates live in [the main roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md
 
 Latest local phone-runtime candidate: **Alpha 1.0.24**, a single navigation
 launcher, readable status and scrolling menu with reachable Back, not yet
-published. 1.0.19 is the last fully verified release. The original 1.0.20 deployed
-but failed live targeting QA; corrected 1.0.20 `99303f5` is in CI `34031297122`.
-Versions 1.0.21–1.0.24 inherit the correction locally and remain unpublished;
-see the execution ledger for the exact ordered queue.
+published. **1.0.22 `e0b9afd` is the last fully verified release**: CI
+`34058325420` passed, followed by matching uncached frontend/login/backend
+identities. **1.0.23 `ad72a64` is pushed**, but CI `34061096121` failed its
+predeployment animation gallery check, so neither deployment ran.
+Versions 1.0.24–1.0.27 remain local; the later entry-requirement and Chronicle
+copy patches also have emulated phone layout evidence. See the
+[execution ledger](2026-09-05-roadmap-execution.md) for the exact ordered queue.
 Earlier entries below are chronological snapshots, not current process status.
 
 The local release line also contains **1.0.23**, a verified collection
 turn-in inventory-sync correction, not an additional phone-layout release.
 The [working layout specification](mobile-layout-design.md) records annotated
 portrait/landscape proposals informed by the existing 568×320 populated-HUD
-capture. These are design proposals, not implemented layouts or physical-phone
+capture. Incremental implementations below realize parts of that proposal, but
+do not establish the complete default-view composition or physical-phone
 sign-off; the full mobile gate remains open.
 
 ## Navigation and readable status (Alpha 1.0.24 candidate)

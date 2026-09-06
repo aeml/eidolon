@@ -172,6 +172,25 @@ The deterministic gallery renders every canonical base/rune presentation and eve
 
 Playwright's local static server uses port `4173` by default. Set `EIDOLON_E2E_WEB_PORT` when that port is already reserved by another service; the predeploy character gate uses dedicated port `41873`.
 
+Fresh-progression measurements are separate from prepared-character functional QA:
+
+```bash
+sg render -c 'EIDOLON_ISOLATED_QA_ROUTE=fresh-opening EIDOLON_E2E_CLASS=Fighter npm run test:e2e:isolated'
+sg render -c 'EIDOLON_ISOLATED_QA_ROUTE=fresh-collection EIDOLON_E2E_CLASS=Wizard npm run test:e2e:isolated'
+sg render -c 'EIDOLON_ISOLATED_QA_ROUTE=fresh-hunt EIDOLON_E2E_CLASS=Wizard npm run test:e2e:isolated'
+sg render -c 'EIDOLON_ISOLATED_QA_ROUTE=fresh-ready EIDOLON_E2E_CLASS=Wizard npm run test:e2e:isolated'
+```
+
+These optional routes create disposable level-one characters and earn progress
+through ordinary input, without level/item/quest/travel grants. Each extends the
+preceding route: opening Chronicle, natural collection, Skeleton contract, then
+Wizard equipment/point preparation and the Imp contract. `fresh-ready` currently
+supports Wizard preparation only and checks saved readiness for Verdant, not a
+dungeon clear. They use read-only world positions to assist navigation; passing
+does not prove human discovery, enjoyable pacing or physical-phone usability.
+Run only one local Eidolon Playwright route at a time. Recorded outcomes and
+limitations are in [fresh progression evidence](docs/plans/fresh-progression-evidence.md).
+
 The generated canonical inventory is [docs/ANIMATION_COVERAGE.md](docs/ANIMATION_COVERAGE.md). Edit its source manifests and regenerate it; do not hand-edit its tables.
 
 Server validation from `server/`:

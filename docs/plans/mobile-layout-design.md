@@ -1,9 +1,14 @@
 # Phone layout design — working specification
 
-Status: proposed September 6, 2026; **not implemented or physically reviewed**.
+Status: proposed September 6, 2026; **partially implemented, not physically reviewed**.
 This is the shared design pass requested by the mobile roadmap, not a replacement
 for its release gates. Existing phone menu improvements must be reviewed against
 the same composition rather than treated as a finished interface.
+Incremental camera, navigation, bag, conversation, build, Settings and adventure
+work is recorded in [phone evidence](mobile-playability-evidence.md); publication
+status is separate in [the execution ledger](2026-09-05-roadmap-execution.md).
+The complete default-view encounter composition and real-device sign-off remain
+open, including party healing, software keyboards and the remaining town menus.
 
 ## Evidence and design problem
 
