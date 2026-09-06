@@ -1,0 +1,129 @@
+/* Phone HUD owns distinct status, navigation and thumb-control regions.
+   Kept after legacy responsive overrides while the full phone redesign proceeds. */
+.chat-mobile-toggle { display: none; }
+.phone-menu-action { display: none; }
+.mobile-mode .phone-menu-action { display: block; }
+
+.mobile-mode {
+    --phone-bottom: max(8px, env(safe-area-inset-bottom, 0px));
+    --phone-top: max(12px, env(safe-area-inset-top, 0px));
+    --chat-panel-bottom: var(--phone-bottom);
+    --phone-party-top: calc(var(--phone-top) + 230px);
+}
+
+.mobile-mode #game-timer { display: none !important; }
+.mobile-mode #player-hud {
+    top: var(--phone-top) !important;
+    left: max(12px, env(safe-area-inset-left, 0px)) !important;
+    width: min(260px, calc(100vw - 88px)) !important;
+}
+.mobile-mode .bar-container { height: 20px !important; }
+.mobile-mode .bar-text { font-size: 13px !important; line-height: 20px; }
+.mobile-mode #ability-container {
+    top: var(--phone-top) !important;
+    left: auto !important;
+    right: max(12px, env(safe-area-inset-right, 0px)) !important;
+    width: 44px !important;
+    height: 44px !important;
+    transform: none;
+}
+.mobile-mode #mobile-top-right {
+    top: calc(var(--phone-top) + 56px);
+    left: max(12px, env(safe-area-inset-left, 0px));
+    right: max(12px, env(safe-area-inset-right, 0px));
+    gap: 6px;
+    justify-content: space-between;
+}
+.mobile-mode .mobile-icon-btn {
+    width: 48px;
+    min-width: 44px;
+    height: 44px;
+    padding: 0;
+    font-size: 12px;
+    font-family: inherit;
+    border-color: #b99b6266;
+    background: #111923ee;
+}
+.mobile-mode #minimap-hud { top: calc(var(--phone-top) + 110px) !important; }
+.mobile-mode #objectives-panel { top: calc(var(--phone-top) + 110px) !important; width: calc(100vw - 126px) !important; max-height: 108px !important; }
+.mobile-mode #combat-intent-panel { top: calc(var(--phone-top) + 224px) !important; width: min(260px, calc(100vw - 24px)) !important; }
+.mobile-mode #dungeon-entrance-hint { top: calc(var(--phone-top) + 330px) !important; }
+.mobile-mode #party-panel { top: var(--phone-party-top); max-height: min(220px, max(60px, calc(100dvh - var(--chat-panel-height, 48px) - var(--phone-bottom) - var(--phone-party-top) - 12px))); }
+
+.mobile-mode #chat-box {
+    left: max(12px, env(safe-area-inset-left, 0px)) !important;
+    bottom: var(--phone-bottom) !important;
+    width: calc(100vw - max(12px, env(safe-area-inset-left, 0px)) - max(12px, env(safe-area-inset-right, 0px))) !important;
+    height: 48px !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 48px !important;
+    max-height: calc(100dvh - 24px) !important;
+    font-size: 16px !important;
+}
+.mobile-mode .chat-mobile-toggle {
+    display: block;
+    flex: 0 0 46px;
+    width: 100%;
+    min-height: 44px;
+    border: 0;
+    background: #111923;
+    color: var(--color-gold);
+    font: inherit;
+    text-align: left;
+    padding: 0 12px;
+    cursor: pointer;
+}
+.mobile-mode #chat-box:not(.chat-mobile-expanded) :is(.chat-tabs, #chat-messages, .chat-composer) { display: none; }
+.mobile-mode #chat-box.chat-mobile-expanded { height: min(360px, calc(100dvh - 24px)) !important; z-index: calc(var(--z-hud) + 1); }
+.mobile-mode .chat-tab { min-height: 44px; font-size: 12px; }
+.mobile-mode #chat-input { min-height: 44px; font-size: 16px; }
+.mobile-mode #chat-messages { font-size: 16px; }
+
+.mobile-mode #joystick-zone {
+    left: max(18px, env(safe-area-inset-left, 0px)) !important;
+    bottom: calc(var(--phone-bottom) + 72px) !important;
+    width: 112px !important;
+    height: 112px !important;
+    transform: none !important;
+}
+.mobile-mode #mobile-actions {
+    right: max(12px, env(safe-area-inset-right, 0px)) !important;
+    bottom: calc(var(--phone-bottom) + 196px) !important;
+    width: 196px !important;
+    height: 64px !important;
+    transform: none !important;
+}
+.mobile-mode #btn-mobile-attack { width: 64px !important; height: 64px !important; right: 0; bottom: 0; font-size: 13px !important; background: linear-gradient(#542a25, #251719); border-color: #c58b70; }
+.mobile-mode #btn-mobile-ability { width: 56px !important; height: 56px !important; right: 76px !important; bottom: 0 !important; font-size: 13px !important; background: linear-gradient(#2c3b50, #171e2d); border-color: #8fa9c2; }
+.mobile-mode #btn-mobile-interact { width: 48px !important; height: 48px !important; right: 144px !important; bottom: 0 !important; font-size: 13px !important; background: linear-gradient(#2a4339, #14251f); border-color: #8bb5a0; }
+.mobile-mode #mobile-actions .mobile-btn:active { filter: brightness(1.35); }
+.mobile-mode .mobile-btn:focus-visible, .mobile-mode .chat-mobile-toggle:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 3px; }
+.mobile-mode #hotbar-container {
+    left: auto;
+    right: max(12px, env(safe-area-inset-right, 0px));
+    bottom: calc(var(--phone-bottom) + 60px);
+    transform: none;
+    width: 130px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.mobile-mode .hotbar-slot { width: 60px; height: 60px; box-sizing: border-box; }
+.mobile-mode .hotbar-key { font-size: 12px; }
+.mobile-mode #xp-bar-container { left: 12px; bottom: calc(var(--phone-bottom) + 50px); width: calc(100vw - 24px); height: 4px; border-top-width: 1px; }
+.mobile-mode .close-btn { min-width: 44px; width: 44px; height: 44px; }
+
+@media (orientation: landscape) and (max-height: 600px) {
+    .mobile-mode { --phone-party-top: 150px; }
+    .mobile-mode #player-hud { width: 180px !important; }
+    .mobile-mode #mobile-top-right { top: var(--phone-top); left: auto; right: 70px; width: 318px; }
+    .mobile-mode #objectives-panel { top: 66px !important; max-height: 76px !important; width: 230px !important; }
+    .mobile-mode #minimap-hud { top: 66px !important; }
+    .mobile-mode #minimap-canvas { width: 88px !important; height: 88px !important; }
+    .mobile-mode #combat-intent-panel, .mobile-mode #dungeon-entrance-hint { top: 66px !important; right: 120px !important; width: 230px !important; }
+    .mobile-mode #dungeon-entrance-hint { top: 150px !important; }
+    .mobile-mode #joystick-zone { width: 104px !important; height: 104px !important; bottom: calc(var(--phone-bottom) + 60px) !important; }
+    .mobile-mode #hotbar-container { width: 232px; gap: 8px; }
+    .mobile-mode .hotbar-slot { width: 52px; height: 52px; }
+    .mobile-mode #mobile-actions { bottom: calc(var(--phone-bottom) + 126px) !important; }
+}

@@ -390,7 +390,7 @@ export class GameEngine {
         this.network = new NetworkManager(socket);
         this.remotePlayers = new Map();
         this.renderSystem = new RenderSystem(isMobile);
-        this.inputManager = new InputManager(this.renderSystem.camera, this.renderSystem.scene);
+        this.inputManager = new InputManager(this.renderSystem.camera, this.renderSystem.scene, this.renderSystem.renderer.domElement);
         if (this.isMobile) {
             this.inputManager.setupMobileControls();
             this.cameraLocked = true;

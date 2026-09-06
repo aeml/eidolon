@@ -1153,3 +1153,111 @@ floors, menu layers, raid menus and responsive entry flow. Together with the
 Verdant run above, this permits committing the 1.0.13 candidate. Publication still
 waits for 1.0.12's terminal live gates; watcher session `1678` follows CI
 `34011698025` in `/tmp/eidolon-1-0-12-ci-watch.log` without restarting it.
+
+### Candidate committed; 1.0.12 deployed; next phone input repair
+
+Alpha 1.0.13 is committed locally as
+`b3213077faa8eb8e1ddc7b45d2905d5682b8fbb8`, including Whirlwind, login credit,
+phone roadmap/baseline evidence, synchronized version metadata and patch notes.
+All nine final anonymous tests passed in 1.4 minutes. It has not been pushed
+ahead of the preceding release's terminal live checks.
+
+Alpha 1.0.12 CI subsequently passed predeploy QA and both deployment jobs. Direct
+public checks confirm frontend release, login label, entrypoint query and backend
+health all identify `fd93bd3b89d1817762df757a6568e14be8dd1794`, Alpha 1.0.12,
+with database ready. Post-deployment character QA remains active; the full CI run
+is not yet a terminal pass.
+
+Separate local work after `b321307` fixes the reproduced phone pinch-routing
+problem. All 11 new regressions first failed, then passed alongside 11 existing
+input tests. Browser-generated touch targeting passes in 3.1 seconds; the check
+is added to anonymous CI for the next candidate. The repair is limited to gesture
+ownership, cancellation and distance-based zoom response; phone camera composition,
+HUD, menus and real-device acceptance remain open. See the mobile evidence document.
+The full client rerun is active in `/tmp/eidolon-mobile-pinch-full.log`.
+
+That full client run finished with 152 passing suites and two failing constructor
+fixture suites (10 failures): their RenderSystem mocks omitted the renderer canvas
+now explicitly passed into input handling. The mocks now expose that production
+interface, and the settings constructor test also asserts that the correct canvas
+is wired. Production code retains strict renderer-canvas ownership. Focused
+constructor/pinch checks and a corrected full rerun are executing via session
+`13196`, `/tmp/eidolon-mobile-pinch-constructor.log` and
+`/tmp/eidolon-mobile-pinch-full-final.log`. This is still uncommitted next-candidate
+work, not a modification of committed 1.0.13.
+
+### 1.0.13 pushed; phone HUD work advances separately
+
+Alpha 1.0.12 CI `34011698025` completed **all gates successfully**. Exact frontend
+and backend identities were rechecked after terminal success; both report
+`fd93bd3b89d1817762df757a6568e14be8dd1794`, Alpha 1.0.12, database ready.
+The existing watcher ended successfully. Only then was committed candidate
+`b3213077faa8eb8e1ddc7b45d2905d5682b8fbb8` pushed to master. Alpha 1.0.13 CI
+`34013545773` has passed client/server/browser checks and is in predeploy QA.
+Newer phone work stays uncommitted and is absent from that release.
+
+The corrected pinch full suite passed **154 suites / 2,252 tests**, 104.32 seconds.
+The phone HUD then gained separated controls/status/navigation, 44px-or-larger
+primary touch targets, explicit menu labels, compact permanent expandable chat
+with activity count, preserved XP/level feedback and phone Menu entries for Skills
+& Runes/Abilities. These address inspected overlaps and missing touch navigation,
+not merely source formatting. Full HUD tests passed 154 suites / 2,253 tests before
+the last spacing/menu refinements. The corrected combined browser suite passes
+all three phone/party/service checks (44.1 seconds). Remaining evidence and scope
+are in `mobile-playability-evidence.md`.
+
+A new real-server phone route is currently live via session `63902`,
+`/tmp/eidolon-phone-gameplay.log`. It uses a fresh disposable character, actual
+browser touch input for joystick movement, inventory/character/quest/social menus,
+Skills & Runes and chat, in portrait and landscape. It does not grant quest progress
+or kills. Do not edit the running isolated-QA shell script or client graph before
+it terminates. No mobile patch version/notes have been finalized or pushed yet.
+
+The first phone route ended at its 180-second limit, with cleanup masking the
+stalled action. After bounded action timeouts and stage diagnostics, a fresh run
+reproduced a real obstruction: joystick movement and Inventory opening worked,
+but the minimap intercepted Inventory's Close tap. It was mounted at body level
+above the whole menu UI stacking context. A failing unit regression confirmed
+the wrong parent; minimap and tooltip now mount in the same UI root as menus.
+The local phone fixture also instantiates the real minimap. A new disposable
+rerun is active through session `67356`, `/tmp/eidolon-phone-gameplay-layer-fixed.log`.
+The prior phone processes are terminal failures, not verified usable mobile runs.
+
+### Alpha 1.0.14 candidate — room for your thumbs
+
+The layer-corrected real-server phone route **passed**, 10.1 seconds, both
+orientations and all its movement/menu/chat actions; minimap tests pass 15/15.
+Replay limits and failures remain recorded in the mobile evidence document.
+
+Version metadata/login display and patch notes are prepared for 1.0.14. The notes
+describe separated phone controls, persistent compact chat, canvas-owned pinch,
+touch-accessible skill menus and the minimap layering repair. They explicitly
+leave camera framing, complete menu redesign, combat and physical-phone acceptance
+open. The fresh phone account route joins full predeploy QA; phone HUD/pinch fixtures
+join anonymous CI. No 1.1 or later milestone is closed.
+
+Final versioned client/lint, server-race and phone checks are live via sessions
+`83396`, `67029` and `98106`, logs `/tmp/eidolon-1-0-14-client.log`,
+`/tmp/eidolon-1-0-14-server.log` and `/tmp/eidolon-1-0-14-phone.log`. Do not edit
+the active isolated script or runtime while that phone check runs. The 1.0.13
+deployment watcher is session `38496`, `/tmp/eidolon-1-0-13-ci-watch.log`;
+publication of 1.0.14 will wait for that preceding release's terminal live gates.
+
+The final versioned client/lint checks **passed**, 154 suites / 2,255 tests,
+107.594 seconds. Full server race checks passed (root package 14.173 seconds,
+unchanged game package cached). The dedicated-account 1.0.14 phone route also
+**passed in 15.4 seconds**, 19.8 including browser overhead, with normal touch
+movement, all exercised menus and chat in both orientations; credential scanning
+and disposable cleanup passed. The final 11-test anonymous suite is active via
+session `90199`, `/tmp/eidolon-1-0-14-anonymous.log`. No candidate commit or push
+has occurred yet.
+
+All **11 final anonymous checks passed in 1.1 minutes**, including the new phone
+HUD with the real minimap and browser-generated pinch targeting. A final CSS-only
+palette pass replaces neon action rings with muted game-consistent colors and
+reduces the short-landscape minimap to 88px. The phone HUD/skill-menu check was
+rerun afterward and **passed in 14.1 seconds**; its portrait and landscape captures
+were inspected and preserved at `/tmp/eidolon-1-0-14-phone-hud-portrait.png` and
+`/tmp/eidolon-1-0-14-phone-hud-landscape.png`. These are rendered UI fixtures, not
+physical-phone gameplay captures. The 1.0.14 candidate is ready for local commit;
+push/deployment still waits for 1.0.13's live gates.

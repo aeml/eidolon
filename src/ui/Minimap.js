@@ -136,8 +136,11 @@ export class Minimap {
 
         this.wrapper.appendChild(this.buffList);
         this.wrapper.appendChild(this.canvas);
-        document.body.appendChild(this.wrapper);
-        document.body.appendChild(this.buffTooltip);
+        // Menus live under this stacking root. A body-level minimap otherwise
+        // sits above the entire UI layer, including inventory close controls.
+        const hudHost = document.getElementById('ui-layer') || document.body;
+        hudHost.appendChild(this.wrapper);
+        hudHost.appendChild(this.buffTooltip);
         this.ctx = this.canvas.getContext('2d');
 
         // Animation tick counter for pulsing effects

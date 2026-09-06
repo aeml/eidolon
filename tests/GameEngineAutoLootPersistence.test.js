@@ -18,14 +18,16 @@ jest.unstable_mockModule('../src/core/RenderSystem.js', () => ({
         constructor() {
             this.camera = {};
             this.scene = {};
+            this.renderer = { domElement: document.createElement('canvas') };
         }
     }
 }));
 
 jest.unstable_mockModule('../src/core/InputManager.js', () => ({
     InputManager: class InputManager {
-        constructor() {
+        constructor(...args) {
             this.keys = {};
+            this.canvas = args[2];
         }
     }
 }));
@@ -144,6 +146,7 @@ describe('GameEngine settings persistence', () => {
 
         expect(mockGetAutoLootEnabled).toHaveBeenCalledTimes(1);
         expect(engine.autoLootEnabled).toBe(true);
+        expect(engine.inputManager.canvas).toBe(engine.renderSystem.renderer.domElement);
     });
 
     test('auto-loot runtime state still follows later UI toggles', () => {

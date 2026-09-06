@@ -3,6 +3,15 @@ import { Minimap } from '../src/ui/Minimap.js';
 import { TOWN_SERVICE_POINTS } from '../src/ui/townServiceConfig.js';
 
 describe('Minimap dungeon room states', () => {
+    test('minimap and buff tooltip share the menu HUD stacking root', () => {
+        const layer = document.createElement('div');
+        layer.id = 'ui-layer';
+        document.body.appendChild(layer);
+        const minimap = new Minimap(200);
+        expect(minimap.wrapper.parentElement).toBe(layer);
+        expect(minimap.buffTooltip.parentElement).toBe(layer);
+    });
+
     let fillRects;
     let strokes;
     let texts;

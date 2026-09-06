@@ -29,6 +29,7 @@ test('party roster and resized permanent chat remain separately reachable', asyn
     for (const [width, height, mobile] of [[1280, 720, false], [1280, 600, false], [390, 844, true], [320, 640, false]]) {
         await page.setViewportSize({ width, height });
         await page.evaluate((mobile) => document.body.classList.toggle('mobile-mode', mobile), mobile);
+        if (mobile) await page.evaluate(() => window.__partyQuestFixture.chat.setMobileExpanded(true));
         for (const chatHeight of [230, 900]) {
             await page.locator('#chat-box').evaluate((element, chatHeight) => { element.style.height = `${chatHeight}px`; }, chatHeight);
             await expect.poll(() => page.evaluate(() => {

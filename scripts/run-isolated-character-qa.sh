@@ -111,7 +111,7 @@ else
 fi
 # Exact disposable actors used by the routes, including multiplayer/direct
 # casts when the animation matrix is intentionally restricted to one class.
-qa_allowlist="${QA_USERNAME_BASE},${QA_USERNAME_BASE}-recovery,${QA_USERNAME_BASE}-spin,${QA_USERNAME_BASE}-fighter,${QA_USERNAME_BASE}-rogue,${QA_USERNAME_BASE}-wizard,${QA_USERNAME_BASE}-cleric"
+qa_allowlist="${QA_USERNAME_BASE},${QA_USERNAME_BASE}-recovery,${QA_USERNAME_BASE}-spin,${QA_USERNAME_BASE}-phone,${QA_USERNAME_BASE}-fighter,${QA_USERNAME_BASE}-rogue,${QA_USERNAME_BASE}-wizard,${QA_USERNAME_BASE}-cleric"
 
 mongo_username="qa_root"
 mongo_password="$(openssl rand -hex 24)"
@@ -119,7 +119,7 @@ mongo_password="$(openssl rand -hex 24)"
 docker build \
   --build-arg GO_VERSION=1.24.5 \
   --build-arg "BUILD_COMMIT=${qa_build_commit}" \
-  --build-arg "BUILD_VERSION=Alpha 1.0.13" \
+  --build-arg "BUILD_VERSION=Alpha 1.0.14" \
   --tag "${SERVER_IMAGE}" server >/dev/null
 image_created=true
 
@@ -188,6 +188,14 @@ run_whirlwind() {
     npx playwright test tests/e2e/dungeon-whirlwind-gameplay.spec.js
 }
 
+run_phone() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-phone" \
+    EIDOLON_E2E_PASSWORD="${QA_PASSWORD}" \
+    EIDOLON_E2E_CLASS="Fighter" \
+    EIDOLON_E2E_REGISTER=1 \
+    npx playwright test tests/e2e/mobile-gameplay.spec.js
+}
+
 run_dungeon_recovery() {
   # A separate new actor has no earlier waypoint protection or combat buffs.
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-recovery" \
@@ -221,7 +229,7 @@ run_animation_multiplayer() {
 set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   all)
-    npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js && run_whirlwind && run_dungeon_recovery && run_direct_target_classes && npm run test:e2e:movement && run_animation_classes && run_animation_multiplayer
+    npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js && run_whirlwind && run_phone && run_dungeon_recovery && run_direct_target_classes && npm run test:e2e:movement && run_animation_classes && run_animation_multiplayer
     ;;
   animations)
     run_animation_classes
@@ -277,8 +285,11 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   whirlwind)
     run_whirlwind
     ;;
+  phone)
+    run_phone
+    ;;
   *)
-    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, inventory, extended, portal, dungeons, verdant, dungeon-full, dungeon-recovery, direct-skills, projectile-walls, movement-walls, ground-walls, beam-walls, or whirlwind." >&2
+    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, inventory, extended, portal, dungeons, verdant, dungeon-full, dungeon-recovery, direct-skills, projectile-walls, movement-walls, ground-walls, beam-walls, whirlwind, or phone." >&2
     exit 1
     ;;
 esac

@@ -35,6 +35,7 @@ jest.unstable_mockModule('../src/core/RenderSystem.js', () => ({
                 }
             });
             this.camera = {};
+            this.renderer = { domElement: document.createElement('canvas') };
             this.scene = {
                 children: [],
                 remove() {},

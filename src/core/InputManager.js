@@ -1,9 +1,11 @@
 import * as THREE from 'three';
 
 export class InputManager {
-    constructor(camera, scene) {
+    constructor(camera, scene, canvas = null) {
         this.camera = camera;
         this.scene = scene;
+        this.canvas = canvas;
+        this.pinchState = null;
         this.raycaster = new THREE.Raycaster();
         this.mouse = new THREE.Vector2();
         this.pointerOverCanvas = false;
@@ -78,6 +80,7 @@ export class InputManager {
 
 
     setupMobileControls() {
+        if (this.isMobile) return;
         this.isMobile = true;
         const mobileUI = document.getElementById('mobile-ui');
         if (mobileUI) mobileUI.style.display = 'block';
@@ -159,7 +162,7 @@ export class InputManager {
                     this.callbacks[callbackName].forEach(cb => cb());
                 };
                 this._registerListener(btn, 'touchstart', handler, { passive: false });
-                this._registerListener(btn, 'mousedown', handler);
+                this._registerListener(btn, 'click', handler);
             }
         };
 
@@ -186,48 +189,47 @@ export class InputManager {
         bindBtn('btn-mobile-quest', 'onQuest');
         bindBtn('btn-mobile-menu', 'onEscape');
 
-        // Pinch to Zoom Logic
-        let initialPinchDist = null;
-        
+        // A game gesture belongs to the actual renderer canvas, never a menu,
+        // minimap, joystick/action pair, or a finger that began on the HUD.
+        const canvasPair = touches => touches.length === 2 && this.canvas &&
+            Array.from(touches).every(touch => touch.target === this.canvas);
+        const distanceOf = touches => Math.hypot(
+            touches[0].clientX - touches[1].clientX,
+            touches[0].clientY - touches[1].clientY
+        );
         const onPinchStart = (e) => {
-            if (e.touches.length === 2) {
-                const dx = e.touches[0].clientX - e.touches[1].clientX;
-                const dy = e.touches[0].clientY - e.touches[1].clientY;
-                initialPinchDist = Math.sqrt(dx * dx + dy * dy);
-            }
+            this.pinchState = null;
+            if (e.defaultPrevented || !canvasPair(e.touches)) return;
+            const distance = distanceOf(e.touches);
+            if (!Number.isFinite(distance) || distance <= 0) return;
+            this.pinchState = { ids: Array.from(e.touches, touch => touch.identifier), distance };
+            e.preventDefault();
         };
 
         const onPinchMove = (e) => {
-            if (e.touches.length === 2 && initialPinchDist) {
-                const dx = e.touches[0].clientX - e.touches[1].clientX;
-                const dy = e.touches[0].clientY - e.touches[1].clientY;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                
-                const diff = dist - initialPinchDist;
-                
-                // Threshold to avoid jitter
-                if (Math.abs(diff) > 2) {
-                    // diff > 0 means spreading (Zoom In) -> We want negative delta (Zoom In)
-                    // diff < 0 means pinching (Zoom Out) -> We want positive delta (Zoom Out)
-                    const sensitivity = 0.1; 
-                    const dir = diff > 0 ? -1 : 1;
-                    
-                    this.callbacks.onZoom.forEach(cb => cb(dir * sensitivity));
-                    
-                    initialPinchDist = dist;
-                }
+            const state = this.pinchState;
+            if (!state) return;
+            if (e.defaultPrevented || !canvasPair(e.touches) ||
+                !Array.from(e.touches).every(touch => state.ids.includes(touch.identifier))) {
+                this.pinchState = null;
+                return;
             }
+            const distance = distanceOf(e.touches);
+            if (!Number.isFinite(distance) || distance <= 0) { this.pinchState = null; return; }
+            e.preventDefault();
+            // Log ratios add to the same result regardless of event frequency.
+            // Spreading fingers zooms in; the renderer retains its zoom bounds.
+            const delta = -4 * Math.log(distance / state.distance);
+            state.distance = distance;
+            if (delta) this.callbacks.onZoom.forEach(cb => cb(delta));
         };
 
-        const onPinchEnd = (e) => {
-            if (e.touches.length < 2) {
-                initialPinchDist = null;
-            }
-        };
+        const onPinchEnd = () => { this.pinchState = null; };
 
         this._registerListener(window, 'touchstart', onPinchStart, { passive: false });
         this._registerListener(window, 'touchmove', onPinchMove, { passive: false });
         this._registerListener(window, 'touchend', onPinchEnd);
+        this._registerListener(window, 'touchcancel', onPinchEnd);
     }
 
 
@@ -407,6 +409,7 @@ export class InputManager {
     }
 
     clearInputState() {
+        this.pinchState = null;
         this.isMouseDown = false;
         this.primaryMouseButtonDown = false;
         this.isRightMouseDown = false;
@@ -430,6 +433,7 @@ export class InputManager {
     }
 
     dispose() {
+        this.pinchState = null;
         for (const listener of this._listeners) {
             listener.target.removeEventListener(listener.event, listener.handler, listener.options);
         }

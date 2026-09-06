@@ -16,14 +16,19 @@ export class ChatUI {
         this.activeStream = 'chat';
         this.unread = { chat: 0, party: 0, guild: 0, whisper: 0, game: 0 };
         this.maxMessages = 250;
+        this.mobileToggle = document.getElementById('chat-mobile-toggle');
+        this.mobileExpanded = false;
+        this.mobileUnread = 0;
 
         this.bindEvents();
         this.restoreSize();
         this.setActiveStream('chat');
         this.observeSize();
+        this.renderMobileToggle();
     }
 
     bindEvents() {
+        this.mobileToggle?.addEventListener('click', () => this.setMobileExpanded(!this.mobileExpanded));
         this.tabs.forEach((tab, index) => {
             tab.addEventListener('click', () => {
                 this.setActiveStream(tab.dataset.chatTab, { focusInput: tab.dataset.chatTab === 'chat' });
@@ -107,6 +112,10 @@ export class ChatUI {
 
     addMessage(sender, message, { stream = 'chat', channel = '' } = {}) {
         if (!this.chatBox || !this.messages || message === undefined || message === null) return;
+        if (document.body.classList.contains('mobile-mode') && !this.mobileExpanded) {
+            this.mobileUnread = Math.min(999, this.mobileUnread + 1);
+            this.renderMobileToggle();
+        }
 
         const normalizedStream = this.normalizeStream(stream);
         const entry = document.createElement('div');
@@ -188,8 +197,28 @@ export class ChatUI {
         if (this.chatBox) this.chatBox.style.display = 'flex';
     }
 
+    setMobileExpanded(expanded) {
+        this.mobileExpanded = Boolean(expanded);
+        this.chatBox?.classList.toggle('chat-mobile-expanded', this.mobileExpanded);
+        if (this.mobileExpanded) {
+            this.mobileUnread = 0;
+            if (this.messages) this.messages.scrollTop = this.messages.scrollHeight;
+        }
+        this.renderMobileToggle();
+        this.show();
+    }
+
+    renderMobileToggle() {
+        if (!this.mobileToggle) return;
+        this.mobileToggle.setAttribute('aria-expanded', String(this.mobileExpanded));
+        this.mobileToggle.setAttribute('aria-label', this.mobileExpanded ? 'Collapse chat history' : 'Open chat history');
+        this.mobileToggle.setAttribute('aria-description', this.mobileUnread ? `${this.mobileUnread} new messages or game events` : '');
+        this.mobileToggle.textContent = this.mobileExpanded ? 'Chat · Collapse' : `Chat${this.mobileUnread ? ` · ${this.mobileUnread} new` : ' · Open history'}`;
+    }
+
     focusChatInput() {
         this.show(true);
+        if (document.body.classList.contains('mobile-mode')) this.setMobileExpanded(true);
         this.setActiveStream('chat');
         this.input?.focus();
     }
@@ -216,6 +245,8 @@ export class ChatUI {
             const rect = this.chatBox.getBoundingClientRect();
             if (!rect || rect.width < 1 || rect.height < 1) return;
             document.documentElement.style.setProperty('--chat-panel-height', `${Math.round(rect.height)}px`);
+            // A compact phone strip must not overwrite the user's desktop size.
+            if (document.body.classList.contains('mobile-mode')) return;
             try {
                 localStorage.setItem(CHAT_SIZE_STORAGE_KEY, JSON.stringify({
                     width: Math.round(rect.width),

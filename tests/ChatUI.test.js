@@ -4,6 +4,7 @@ import { ChatUI } from '../src/ui/ChatUI.js';
 function buildChatDom() {
     document.body.innerHTML = `
         <div id="chat-box" style="display:none">
+            <button id="chat-mobile-toggle" aria-expanded="false">Chat</button>
             <div class="chat-tabs" role="tablist">
                 <button class="chat-tab chat-tab--active" data-chat-tab="chat" aria-selected="true">
                     All <span data-chat-unread hidden></span>
@@ -25,6 +26,31 @@ function buildChatDom() {
 }
 
 describe('ChatUI', () => {
+    test('phone chat remains visible as a compact unread strip and expands deliberately', () => {
+        buildChatDom();
+        document.body.classList.add('mobile-mode');
+        try {
+            const chat = new ChatUI();
+            chat.show();
+            const button = document.getElementById('chat-mobile-toggle');
+            chat.addMessage('Ilyra', 'Come find me');
+            chat.addMessage('Quest', 'A seed recovered', { stream: 'game' });
+            expect(button.textContent).toContain('2 new');
+            expect(chat.chatBox.style.display).toBe('flex');
+            expect(chat.mobileExpanded).toBe(false);
+            button.click();
+            expect(button.getAttribute('aria-expanded')).toBe('true');
+            expect(chat.chatBox.classList.contains('chat-mobile-expanded')).toBe(true);
+            expect(chat.mobileUnread).toBe(0);
+            button.click();
+            expect(button.getAttribute('aria-expanded')).toBe('false');
+            chat.show(false);
+            expect(chat.chatBox.style.display).toBe('flex');
+            chat.focusChatInput();
+            expect(chat.mobileExpanded).toBe(true);
+            expect(document.activeElement).toBe(chat.input);
+        } finally { document.body.classList.remove('mobile-mode'); }
+    });
     beforeEach(() => {
         localStorage.clear();
         buildChatDom();

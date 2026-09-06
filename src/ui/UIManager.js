@@ -169,6 +169,15 @@ export class UIManager {
         this.assetPackEnvironmentVersion = document.getElementById('asset-pack-environment-version');
 
         if (this.btnResume) this.btnResume.addEventListener('click', () => this.toggleEscMenu());
+        for (const [id, open] of [
+            ['btn-phone-skills', () => this.toggleSkillTree()],
+            ['btn-phone-abilities', () => this.toggleAbilitiesMenu()]
+        ]) {
+            document.getElementById(id)?.addEventListener('click', () => {
+                if (this.escMenu?.style.display !== 'none') this.toggleEscMenu();
+                open();
+            });
+        }
         if (this.btnHelp) this.btnHelp.addEventListener('click', () => this.toggleHelp());
         if (this.btnSettings) this.btnSettings.addEventListener('click', () => this.toggleSettings());
         if (this.btnPatchNotes) this.btnPatchNotes.addEventListener('click', () => this.togglePatchNotes());

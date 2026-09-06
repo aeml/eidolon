@@ -49,18 +49,18 @@
             </div>
             
             <div id="mobile-actions">
-                <div id="btn-mobile-attack" class="mobile-btn">ATK</div>
-                <div id="btn-mobile-ability" class="mobile-btn">SKILL</div>
-                <div id="btn-mobile-interact" class="mobile-btn">USE</div>
+                <button id="btn-mobile-attack" class="mobile-btn" type="button" aria-label="Attack">Attack</button>
+                <button id="btn-mobile-ability" class="mobile-btn" type="button" aria-label="Use primary ability">Skill</button>
+                <button id="btn-mobile-interact" class="mobile-btn" type="button" aria-label="Interact or pick up loot">Use</button>
             </div>
 
             <div id="mobile-top-right">
-                <div id="btn-mobile-inv" class="mobile-btn mobile-icon-btn">I</div>
-                <div id="btn-mobile-char" class="mobile-btn mobile-icon-btn">C</div>
-                <div id="btn-mobile-social" class="mobile-btn mobile-icon-btn">O</div>
-                <div id="btn-mobile-map" class="mobile-btn mobile-icon-btn">M</div>
-                <div id="btn-mobile-quest" class="mobile-btn mobile-icon-btn">J</div>
-                <div id="btn-mobile-menu" class="mobile-btn mobile-icon-btn">☰</div>
+                <button id="btn-mobile-inv" class="mobile-btn mobile-icon-btn" type="button" aria-label="Inventory">Bag</button>
+                <button id="btn-mobile-char" class="mobile-btn mobile-icon-btn" type="button" aria-label="Character">Hero</button>
+                <button id="btn-mobile-social" class="mobile-btn mobile-icon-btn" type="button">Social</button>
+                <button id="btn-mobile-map" class="mobile-btn mobile-icon-btn" type="button">Map</button>
+                <button id="btn-mobile-quest" class="mobile-btn mobile-icon-btn" type="button">Quests</button>
+                <button id="btn-mobile-menu" class="mobile-btn mobile-icon-btn" type="button">Menu</button>
             </div>
         </div>
 
@@ -280,6 +280,7 @@
 
         <!-- Chat Box -->
         <div id="chat-box" aria-label="Chat and game event log" title="Drag the lower-right corner to resize">
+            <button id="chat-mobile-toggle" class="chat-mobile-toggle" type="button" aria-label="Open chat history" aria-expanded="false" aria-controls="chat-tabs chat-messages chat-composer">Chat</button>
             <div id="chat-tabs" class="chat-tabs" role="tablist" aria-label="Message log">
                 <button id="chat-tab-chat" class="chat-tab chat-tab--active" type="button" role="tab" aria-selected="true" aria-controls="chat-messages" data-chat-tab="chat">
                     All <span class="chat-tab__unread" data-chat-unread hidden></span>
@@ -334,7 +335,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.13</span>
+                <span class="start-version-row__label">Alpha 1.0.14</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -405,6 +406,8 @@
             <div class="window-header">PAUSED</div>
             <div class="pause-menu__actions">
                 <button id="btn-resume" class="menu-btn">Resume Game</button>
+                <button id="btn-phone-skills" class="menu-btn phone-menu-action" type="button">Skills &amp; Runes</button>
+                <button id="btn-phone-abilities" class="menu-btn phone-menu-action" type="button">Abilities</button>
                 <button id="btn-help" class="menu-btn">Help</button>
                 <button id="btn-settings" class="menu-btn">Settings</button>
                 <button id="btn-patch-notes" class="menu-btn">Patch Notes</button>
@@ -656,6 +659,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.14">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.14 (room for your thumbs)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Phone controls have their own space:</strong> Health bars, labeled navigation, the joystick, action buttons and hotbar no longer pile on top of one another. Portrait and landscape use different arrangements, and primary touch targets no longer shrink below 44 pixels in landscape.</li>
+                        <li><strong>Chat stays present without filling the screen:</strong> On phones, an always-visible strip shows new activity and opens readable history and composing controls. Collapse returns to the strip; chat never disappears. Desktop chat sizing is preserved.</li>
+                        <li><strong>Pinch the world, not the menus:</strong> Zoom gestures belong to the game canvas. Menu, minimap and mixed control touches cannot zoom the world; canceled or replaced fingers clear the gesture. Zoom follows finger distance instead of touch-event frequency.</li>
+                        <li><strong>Menus stay reachable:</strong> The phone Menu includes Skills &amp; Runes and Abilities. Close buttons have larger hit areas, and the minimap now shares the HUD's layer so it cannot cover inventory and other menu controls.</li>
+                        <li><strong>Phone verification has begun:</strong> A real-server touch route checks movement and core menus in portrait and landscape. Camera framing, full menu redesign, touch combat and physical-device performance remain in progress; this is not the completed mobile or 1.1 milestone.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.0.13">
                     <h3 class="patch-note-entry__title">Alpha 1.0.13 (hold the whirlwind)</h3>
                     <ul class="patch-note-entry__list">

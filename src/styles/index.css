@@ -36,3 +36,4 @@
 
 /* 4. Responsive overrides (must come last) */
 @import './responsive.css';
+@import './phone-layout.css';

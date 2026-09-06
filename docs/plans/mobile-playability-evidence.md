@@ -54,3 +54,92 @@ This DOM reproduction establishes event-routing behavior, not physical-device
 ergonomics or browser gesture handling. iOS/Android and rendered portrait/landscape
 evidence remain required. Fixing pinch isolation alone will not satisfy the camera,
 HUD, menu or full phone-playability gate.
+
+## Local gesture repair after the 1.0.13 candidate commit
+
+Eleven new regressions first failed against the original implementation,
+`/tmp/eidolon-mobile-pinch-red.log`. The local repair now receives the renderer's
+specific canvas from GameEngine, accepts only a two-finger pair that began there,
+tracks both touch identifiers, and clears on cancellation, replacement, a third
+finger, focus loss and scene input reset. Distance-ratio deltas replace the
+event-count-dependent fixed step. Repeated mobile setup no longer adds duplicate
+listeners. Mouse/keyboard behavior is unchanged by this scoped repair.
+
+All 11 new tests plus 11 existing input regressions pass, and lint is clean.
+The browser-generated touch route passed in **3.1 seconds**,
+`/tmp/eidolon-mobile-pinch-browser.log`, including canvas spread, menu gestures,
+mixed menu/canvas touches and cancellation. It uses the production InputManager
+with an explicit canvas/overlay fixture; it is not authenticated gameplay, a
+camera-layout assessment, or physical-phone verification. It joins anonymous CI
+in the next candidate. Full client regression checking is still running.
+
+These changes are local after committed candidate `b321307`; they are **not part
+of Alpha 1.0.13**, and no later version or mobile patch notes have been finalized.
+
+## Local HUD/navigation implementation and rendered checks
+
+The phone HUD fixture initially failed its unobstructed-hit check. Its inspected
+390×844 capture showed navigation on top of health/resource bars and the hotbar
+overlapping both the joystick and action controls. The local `phone-layout.css`
+now separates status, labeled navigation and thumb-control regions, with distinct
+portrait/short-landscape arrangements. Navigation and primary action hit areas are
+at least 44 CSS pixels; landscape no longer scales them below that size. XP/level
+feedback remains in a narrow strip above chat. The clock is omitted from the phone
+HUD to free its status area; it is unchanged on desktop.
+
+Mobile chat remains visible as a 48px strip, with new-activity count and explicit
+expand/collapse. Expanded history and composing use readable text; collapsing
+never removes chat, and mobile dimensions no longer overwrite desktop resize
+preferences. The unchanged desktop transcript remains resizable. Native labeled
+navigation buttons replace single-letter div controls; the phone Menu now offers
+Skills & Runes and Abilities without requiring keyboard shortcuts.
+
+The first revised portrait/landscape fixture passed in 11.6 seconds, but screenshot
+inspection found the inherited ability-icon translation overlapping navigation
+in landscape. It was removed. A broader party/chat regression then found the
+roster retained its old top offset; it now follows the new objective position and
+available chat space. The corrected combined browser run **passed all three
+checks in 44.1 seconds**, `/tmp/eidolon-mobile-hud-corrected.log`, including both
+orientations, unobstructed thumb targets, chat activity/expansion, touch access to
+Skills & Runes, and desktop/mobile party and service-window layering.
+
+The earlier full HUD client check passed **154 suites / 2,253 tests**, 85.601
+seconds. Subsequent menu-entry/spacing refinements pass 88 focused tests and lint;
+a fresh final full run remains required. An authenticated disposable phone route
+is running in `/tmp/eidolon-phone-gameplay.log` to exercise actual joystick movement
+and core menus. No result is claimed yet. Camera composition, full phone menu
+reflow, touch combat/aiming, keyboard/safe-area edge cases and physical-device
+acceptance remain open; this local HUD work does not close the 1.1 mobile gate.
+
+### Real-character blocker: minimap above menu Close buttons
+
+The first authenticated phone route timed out; its unconditional CDP cleanup
+masked the original stalled action. The route now has bounded action timeouts,
+non-sensitive step logging and cleanup that preserves the original failure.
+The diagnostic run entered the actual world and accepted/released joystick
+movement, then opened Inventory. Its Close tap was intercepted by `#minimap-canvas`.
+Log: `/tmp/eidolon-phone-gameplay-diagnostic.log`. Neither attempt is a route pass.
+
+`Minimap` appended its wrapper directly to `body`, above the entire `#ui-layer`
+stacking context that owns inventory and other menus. Merely increasing a child
+menu's z-index could not fix that ownership error. A new mounting regression failed
+before correction; the minimap and its buff tooltip now join `#ui-layer` when
+available, retaining a body fallback for isolated fixtures. The phone HUD fixture
+now includes the real Minimap as well as UIManager. A fresh authenticated rerun is
+active in `/tmp/eidolon-phone-gameplay-layer-fixed.log`; no result is claimed yet.
+
+The layer-fixed real-character rerun subsequently **passed in 10.1 seconds**,
+13.9 including browser overhead. Both 390×844 and 844×390 used browser touch input
+to move the Fighter with the joystick, open and close Inventory/Character/Quests/
+Social, reach Skills & Runes through Menu, and expand/focus/collapse chat. The
+isolated services/data were removed and credential scanning passed. The minimap
+mounting regression also passes, with all 15 minimap tests green. This establishes
+the exercised emulated-phone controls against a real server, not physical-device
+ergonomics or full phone combat/camera readiness.
+
+The changes are now being prepared as **Alpha 1.0.14**, with accurate patch notes
+and synchronized version defaults. The phone gameplay route uses a dedicated fresh
+Fighter in the full predeploy sequence, and the anonymous suite includes both phone
+HUD and pinch checks. Final versioned checks are running in
+`/tmp/eidolon-1-0-14-client.log`, `/tmp/eidolon-1-0-14-server.log` and
+`/tmp/eidolon-1-0-14-phone.log`; no publication is claimed yet.
