@@ -1,0 +1,78 @@
+/* Bag and equipment are readable routes on phones, not miniature windows. */
+.phone-equipped-label, .phone-bag-row-copy { display: none; }
+.mobile-mode :is(#inventory-screen, #character-sheet) {
+    position: fixed !important;
+    top: var(--phone-top) !important;
+    left: max(12px, env(safe-area-inset-left, 0px)) !important;
+    width: calc(100vw - max(12px, env(safe-area-inset-left, 0px)) - max(12px, env(safe-area-inset-right, 0px))) !important;
+    height: calc(100dvh - var(--phone-top) - var(--phone-bottom) - 60px) !important;
+    max-height: none;
+    max-width: none;
+    transform: none !important;
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+}
+.mobile-mode :is(#inventory-screen, #character-sheet)[style*="display: block"] { display: flex !important; flex-direction: column; }
+.mobile-mode :is(#inventory-screen, #character-sheet) > .window-header { flex: 0 0 auto; min-height: 52px; padding: 0 12px; touch-action: pan-y; }
+.mobile-mode #inventory-grid { flex: 1 1 auto; min-height: 0; padding: 12px; grid-template-columns: minmax(0, 1fr); align-content: start; gap: 10px; overscroll-behavior: contain; touch-action: pan-y; }
+.mobile-mode #inventory-grid .inv-slot { width: auto; height: auto; min-width: 0; min-height: 76px; aspect-ratio: auto; padding: 10px 12px 10px 76px; box-sizing: border-box; text-align: left; border-radius: 6px; cursor: pointer; }
+.mobile-mode #inventory-grid .inv-slot[data-empty="true"] { display: none; }
+.mobile-mode #inventory-grid .inv-slot > div:first-child { position: absolute; top: 12px; left: 12px; width: 52px !important; height: 52px !important; }
+.mobile-mode #inventory-grid .inv-slot > div:not(:first-child):not(.phone-bag-row-copy) { display: none; }
+.mobile-mode .phone-bag-row-copy { display: flex; flex-direction: column; gap: 6px; min-width: 0; overflow-wrap: anywhere; }
+.mobile-mode .phone-bag-row-copy strong { font-size: 16px; font-weight: 500; line-height: 1.35; }
+.mobile-mode .phone-bag-row-copy span { font-size: 14px; line-height: 1.4; color: #b9c5d3; }
+.mobile-mode #inventory-screen .inventory-footer { flex: 0 0 auto; padding: 8px 12px; }
+.mobile-mode #inventory-screen .inventory-guidance { flex: 0 0 auto; margin: 0; padding: 8px 12px; font-size: 16px; line-height: 1.4; }
+.mobile-mode .inventory-sort-button { min-width: 72px; min-height: 44px; font: inherit; }
+.mobile-mode #character-sheet .char-sheet-body { flex: 1 1 auto; min-height: 0; max-height: none; padding: 12px; overscroll-behavior: contain; touch-action: pan-y; }
+.mobile-mode #character-sheet :is(#stats-content, .stat-row, .character-attributes .stat-row) { font-size: 16px; }
+.mobile-mode #character-sheet .stat-btn, .mobile-mode .character-preview-controls button { min-width: 44px; min-height: 44px; }
+.mobile-mode #character-sheet .equipment-slots { flex: 0 0 auto; grid-template-columns: 76px minmax(0, 1fr) 76px; grid-template-rows: repeat(7, 76px); }
+.mobile-mode #character-sheet .equip-slot { width: 76px; height: 76px; font-size: 13px; padding-bottom: 22px; }
+.mobile-mode .phone-equipped-label { display: block; position: absolute; bottom: 2px; left: 2px; right: 2px; color: #d4deea; font-size: 11px; line-height: 1.1; }
+.mobile-mode .character-preview-label { font-size: 14px; }
+
+#phone-item-details {
+    position: fixed;
+    inset: max(12px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) calc(max(8px, env(safe-area-inset-bottom, 0px)) + 60px) max(12px, env(safe-area-inset-left, 0px));
+    width: auto;
+    height: auto;
+    max-width: none;
+    max-height: none;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    border: 1px solid #b99b6266;
+    border-radius: 10px;
+    background: linear-gradient(150deg, #1b222d, #10141c);
+    color: #d4deea;
+    font: 16px/1.5 var(--font-body, sans-serif);
+}
+#phone-item-details[open] { display: flex; flex-direction: column; }
+#phone-item-details::backdrop { background: #04070bba; }
+.phone-item-header { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-bottom: 1px solid #b99b6233; flex: 0 0 auto; }
+.phone-item-header h2 { font: inherit; font-size: 18px; line-height: 1.3; margin: 0; overflow-wrap: anywhere; }
+.phone-item-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 16px; overscroll-behavior: contain; touch-action: pan-y; }
+.phone-item-scroll p { margin: 6px 0; overflow-wrap: anywhere; }
+.phone-item-icon { width: 72px; height: 72px; float: right; margin: 0 0 12px 12px; }
+.phone-item-meta { color: #b9c5d3; }
+.phone-item-section, #phone-item-comparison h3 { color: #dfc796; font-size: 16px; font-weight: 500; padding-top: 12px; border-top: 1px solid #b99b6233; }
+#phone-item-comparison { clear: both; padding-top: 12px; }
+.phone-item-footer { flex: 0 0 auto; padding: 10px 12px; border-top: 1px solid #b99b6233; }
+#phone-item-status { margin: 0 0 8px; font-size: 16px; }
+#phone-item-status:empty { display: none; }
+.phone-item-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+#phone-item-details button { min-height: 44px; padding: 8px 14px; font: inherit; border: 1px solid #b99b6266; border-radius: 5px; color: #dfc796; background: #263244; cursor: pointer; }
+.phone-item-header button { flex: 0 0 auto; }
+#phone-item-details button:disabled { opacity: 0.55; cursor: default; }
+#phone-item-details button:focus-visible, .mobile-mode #inventory-grid .inv-slot:focus-visible { outline: 2px solid #e4c991; outline-offset: 2px; }
+#phone-item-drop { color: #efb29c !important; background: #3a2727 !important; }
+@media (orientation: landscape) {
+    .phone-item-scroll:has(#phone-item-comparison:not([hidden])) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-content: start; }
+    #phone-item-comparison { padding-top: 0; }
+    #phone-item-comparison h3 { margin-top: 0; padding-top: 0; border-top: 0; }
+    .mobile-mode #inventory-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .mobile-mode #character-sheet .char-sheet-body { display: grid; grid-template-columns: minmax(280px, 1fr) minmax(250px, 1fr); align-items: start; gap: 18px; }
+}

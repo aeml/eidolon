@@ -1,4 +1,5 @@
 import { SLOTS, Item, BASE_ITEMS, RARITY, SET_DEFINITIONS, UNIQUE_EFFECTS, GEM_TYPES, GEM_QUALITIES } from '../core/ItemSystem.js';
+import { MobileItemDetails } from './MobileItemDetails.js';
 
 /**
  * InventoryUI — handles inventory grid, equipment slots, shop/gamble,
@@ -77,6 +78,8 @@ export class InventoryUI {
         this._bindShopEvents();
         this._bindTooltipEvents();
         this._bindCompareMode();
+
+        this.mobileDetails = this.isMobile ? new MobileItemDetails(this) : null;
 
         this.setupShop();
     }
@@ -473,6 +476,7 @@ export class InventoryUI {
     _bindTooltipEvents() {
         // Inventory Grid Tooltips
         this.inventoryGrid.addEventListener('mousemove', (e) => {
+            if (this.isMobile) return;
             if (this.selectedSlot !== -1) return;
             const slot = e.target.closest('.inv-slot');
             if (slot && slot._item) {
@@ -489,6 +493,7 @@ export class InventoryUI {
         const equipContainer = document.querySelector('#character-sheet .equipment-slots');
         if (equipContainer) {
             equipContainer.addEventListener('mousemove', (e) => {
+                if (this.isMobile) return;
                 const slot = e.target.closest('.equip-slot');
                 if (slot && slot._item) {
                     this.showItemTooltip(slot._item, e.clientX, e.clientY, e);
@@ -501,7 +506,7 @@ export class InventoryUI {
 
         // Close tooltip/selection when clicking outside
         window.addEventListener('click', (e) => {
-            if (this.selectedSlot !== -1 && !e.target.closest('#stat-tooltip') && !e.target.closest('.inv-slot')) {
+            if (this.selectedSlot !== -1 && !e.target.closest('#phone-item-details') && !e.target.closest('#stat-tooltip') && !e.target.closest('.inv-slot')) {
                 this.selectedSlot = -1;
                 this.hideTooltips();
             }
@@ -533,6 +538,7 @@ export class InventoryUI {
 
     toggleInventory() {
         const isHidden = this.inventoryScreen.style.display === 'none' || this.inventoryScreen.style.display === '';
+        if (!isHidden) this.mobileDetails?.close();
         if (this.ctx.toggleManagedWindow) {
             this.ctx.toggleManagedWindow('inventory');
         } else {
@@ -676,7 +682,7 @@ export class InventoryUI {
         const slotEl = newEl;
         slotEl._item = (item && item.id) ? item : null;
         const slotId = serverSlotName || id.replace('slot-', '');
-        slotEl.setAttribute('aria-label', item?.id ? `${placeholder}: ${item.name || 'Equipped item'}. Activate to unequip.` : `${placeholder}: empty`);
+        slotEl.setAttribute('aria-label', item?.id ? `${placeholder}: ${item.name || 'Equipped item'}. Activate to ${this.isMobile ? 'inspect' : 'unequip'}.` : `${placeholder}: empty`);
 
         if (item && item.id) {
             const iconPath = this._getItemIconPath(item);
@@ -701,17 +707,23 @@ export class InventoryUI {
             // Click to unequip
             slotEl.onclick = (e) => {
                 e.stopPropagation();
+                if (this.isMobile) {
+                    this.mobileDetails.open({ type: 'equipment', slot: slotId, itemId: item.id }, slotEl);
+                    return;
+                }
                 this.hideTooltips();
                 if (this.onUnequipRequest) this.onUnequipRequest(slotId);
             };
 
             // Tooltip
             slotEl.addEventListener('mouseenter', () => {
+                if (this.isMobile) return;
                 const rect = slotEl.getBoundingClientRect();
                 this.showItemTooltip(item, rect.right + 10, rect.top);
             });
             slotEl.addEventListener('mouseleave', () => this.hideTooltips());
             slotEl.addEventListener('focus', () => {
+                if (this.isMobile) return;
                 const rect = slotEl.getBoundingClientRect();
                 this.showItemTooltip(item, rect.right + 10, rect.top);
             });
@@ -726,6 +738,12 @@ export class InventoryUI {
             slotEl.onclick = null;
             this.setupItemDragAndDrop(slotEl, 'equipment', slotId, null);
         }
+        if (this.isMobile && item?.id) {
+            const label = document.createElement('span');
+            label.className = 'phone-equipped-label'; label.textContent = placeholder;
+            slotEl.append(label);
+        }
+        this.mobileDetails?.refresh();
         if (hadFocus) slotEl.focus({ preventScroll: true });
     }
 
@@ -740,7 +758,9 @@ export class InventoryUI {
             this.goldDisplay.textContent = `GOLD: ${player.gold || 0}`;
         }
         if (this.inventoryGuidance) {
-            this.inventoryGuidance.textContent = `${this._buildInventoryGuidance(player)} Drag a bag item into the world to drop its stack. Ground loot expires after 1 minute; quest items are protected.`;
+            this.inventoryGuidance.textContent = this.isMobile
+                ? `${player.inventory.filter(item => item?.id).length} / ${player.inventory.length} bag slots used. Tap an item to inspect, compare or choose an action. Quest items are protected.`
+                : `${this._buildInventoryGuidance(player)} Drag a bag item into the world to drop its stack. Ground loot expires after 1 minute; quest items are protected.`;
         }
 
         const slots = this.inventoryGrid.children;
@@ -748,6 +768,13 @@ export class InventoryUI {
             const item = player.inventory[i];
             slots[i]._item = (item && item.id) ? item : null;
             slots[i].innerHTML = '';
+            slots[i].dataset.empty = String(!item?.id);
+            slots[i].tabIndex = item?.id ? 0 : -1;
+            slots[i].setAttribute('role', 'button');
+            slots[i].setAttribute('aria-label', item?.id ? `${item.name || 'Item'}${item.stack > 1 ? `, stack of ${item.stack}` : ''}` : 'Empty bag slot');
+            slots[i].onkeydown = item?.id ? event => {
+                if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.stopPropagation(); slots[i].click(); }
+            } : null;
 
             if (item && item.id) {
             const iconPath = this._getItemIconPath(item);
@@ -786,11 +813,25 @@ export class InventoryUI {
 
                 this._applyItemSlotVisual(slots[i], item, iconPath, `${stackHtml}${potencyHtml}${socketHtml}`);
 
+                if (this.isMobile) {
+                    const copy = document.createElement('div'); copy.className = 'phone-bag-row-copy';
+                    const name = document.createElement('strong'); name.textContent = item.name;
+                    const meta = document.createElement('span');
+                    meta.textContent = `${this._getItemRarityName(item)} · ${this._formatEquipmentSlotLabel(item.slot)} · Lv ${item.level || 1}${item.stack > 1 ? ` · ×${item.stack}` : ''}${item.potency > 0 ? ` · +${item.potency} potency` : ''}`;
+                    copy.append(name, meta); slots[i].append(copy);
+                }
+
                 this.setupItemDragAndDrop(slots[i], 'inventory', i, item);
 
                 // Click handler for equipping
                 slots[i].onclick = (e) => {
                     e.stopPropagation();
+
+                    if (this.isMobile) {
+                        this.selectedSlot = i;
+                        this.mobileDetails.open({ type: 'inventory', index: i, itemId: item.id }, slots[i]);
+                        return;
+                    }
 
                     // Shift+Click to Split Stack
                     if (e.shiftKey && item.stack > 1) {
@@ -803,23 +844,7 @@ export class InventoryUI {
                         return;
                     }
 
-                    if (this.isMobile) {
-                        if (this.selectedSlot === i) {
-                            if (player.level < item.level) return;
-                            if (player.equipItem(item)) {
-                                this.selectedSlot = -1;
-                                this.hideTooltips();
-                                this.updateInventory(player);
-                                this._updateCharacterSheet(player);
-                            }
-                        } else {
-                            this.selectedSlot = i;
-                            const rect = slots[i].getBoundingClientRect();
-                            let x = rect.right;
-                            if (x + 220 > window.innerWidth) x = rect.left - 220;
-                            this.showItemTooltip(item, x, rect.top);
-                        }
-                    } else {
+                    {
                         // Check if Trading House is open
                         const trading = this.ctx.trading;
                         if (trading && trading.isOpen) {
@@ -866,6 +891,7 @@ export class InventoryUI {
                 this.setupItemDragAndDrop(slots[i], 'inventory', i, null);
             }
         }
+        this.mobileDetails?.refresh();
     }
 
     // ================================================================
@@ -1372,6 +1398,12 @@ export class InventoryUI {
 
     setupItemDragAndDrop(element, type, indexOrSlot, item) {
         if (!element) return;
+
+        if (this.isMobile) {
+            element.draggable = false;
+            element.ondragstart = element.ondragend = element.ondragover = element.ondrop = null;
+            return;
+        }
 
         element.ondragover = (e) => {
             e.preventDefault();

@@ -74,6 +74,7 @@ class GameEngineRuntimeMethods {
         }
 
         this.uiManager?.characterPreview?.dispose();
+        this.uiManager?.inventory?.mobileDetails?.dispose();
         this.uiManager?.windowLayoutObserver?.disconnect();
         this.uiManager?.chat?.sizeObserver?.disconnect();
 

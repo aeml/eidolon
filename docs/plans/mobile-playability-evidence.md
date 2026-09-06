@@ -3,8 +3,74 @@
 Status: baseline diagnosis plus incremental implementation evidence, not a completed phone redesign. Requirements
 and release gates live in [the main roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13).
 
-Latest local candidate: **Alpha 1.0.17**, manual joystick ownership, not yet published.
+Latest local candidate: **Alpha 1.0.18**, phone inventory and equipment details, not yet published.
 Earlier entries below are chronological snapshots, not current process status.
+
+## Phone bag and equipped-item routes (Alpha 1.0.18 candidate)
+
+On top of `99c9ab9`, mobile inventory becomes a scrolling list with readable names,
+icons and item metadata; equipment and bag panels use the available phone viewport.
+Tapping opens a native modal detail route rather than equipping/unequipping on a
+repeat tap. Explicit actions preserve source slot/item identity; Drop requires
+confirmation of the current stack and keeps quest items protected. Comparison
+uses the intended equipment slot, including the weaker ring/trinket choice, with
+no Shift requirement. The detail route retains the bag scroll position and leaves
+the persistent chat strip visible below it. Desktop click/drag flows remain intact.
+
+Seven initial regressions failed before implementation. The first candidate passed
+20 inventory checks and lint, then failed all three rendered routes: inherited
+desktop `aspect-ratio: 1` caused oversized hit areas and neighboring-row pointer
+interception. Those runs ended before changing the runtime. Explicit phone row
+proportions repaired the geometry; all three 360×800, 390×844 and 844×390 routes
+passed in **16.4 seconds**. Inspected captures:
+`/tmp/eidolon-phone-bag-{360,390,844}.png` and `-item-{360,390,844}.png`.
+These use seeded display data, not owned server inventory. Native touch scrolling,
+44px actions, quest inspection, comparison, Back/Escape navigation, preserved scroll
+and non-destructive equipped-slot taps are covered. A subsequent layout refinement
+places the landscape comparison side by side and awaits its final rendered rerun.
+
+The intermediate full client suite passed **159 suites / 2,304 tests** in 56.269
+seconds. Later stale-slot, level, quest-protection, offline-equip and disposal
+checks bring the focused inventory run to **25 passing tests**, with lint passing.
+Final full-suite verification still remains after those lifecycle additions.
+
+The first real-server route stopped during loot setup, before reaching item
+actions. Read-only diagnostics on the subsequent run showed a level-1 Fighter
+dealing valid damage to a level-10 Skeleton (150 → 130 HP over 40 seconds), not a
+proven attack-acquisition failure. The setup now explicitly prepares the dedicated
+QA character at level 30 before normal combat/loot; no forced kill or guaranteed
+loot is used. This is an inventory action test, not first-hour balance or normal
+campaign-leveling evidence. Session `33951` is currently running that route.
+
+The phone redesign remains open, including remaining menu reflow, stack-splitting
+ergonomics, sustained physical-device play, all-class combat and campaign flows.
+The candidate now has synchronized 1.0.18 login/runtime metadata and separate
+patch notes; it is not committed or published yet. The level-prepared real-server
+route subsequently **passed in 1.1 minutes**, including both orientations and
+item persistence after reconnect. No item or kill was granted; level preparation
+and the encounter waypoint remain explicit setup limits. Both equip and unequip
+awaited server state, Drop was tested canceled and confirmed, the intentional
+drop stayed outside the bag through auto-loot ticks, and Use recovered it normally.
+Log: `/tmp/eidolon-phone-inventory-gameplay-level30.log`; sanitization and exact
+disposable cleanup passed.
+
+Final versioned Node 24 client checks passed **159 suites / 2,310 tests** in
+67.612 seconds, plus lint and server race checks. The initial anonymous run ended
+**14 passed / 1 failed** in 1.6 minutes: the login-flow audit captured
+`ERR_NETWORK_CHANGED` for local modules, rather than a failing layout assertion.
+Trace: `/tmp/eidolon-1-0-18-anonymous-network-change.zip`. The process ended before
+an unchanged full rerun started. Final versioned browser/combat/inventory checks
+remain pending; their logs use `/tmp/eidolon-1-0-18-`.
+
+Those final checks subsequently **passed**: the unchanged anonymous rerun passed
+all **15 checks in 1.4 minutes**, the two-thumb combat route passed both
+orientations in **17.2 seconds**, and the authoritative inventory route passed in
+**1.0 minute**, including both orientations and persistence. Both credential
+scans and exact disposable cleanup passed. Session `43940` is closed. The final
+landscape comparison capture was inspected with both items visible side by side.
+Logs: `/tmp/eidolon-1-0-18-{anonymous-rerun,combat,inventory}.log`. The server race
+suite also passed (root 7.816 seconds; unchanged game package cached). This
+candidate is ready for commit; publication remains queued behind prior releases.
 
 ## Manual movement follow-up (Alpha 1.0.17 candidate)
 

@@ -335,7 +335,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.17</span>
+                <span class="start-version-row__label">Alpha 1.0.18</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -661,6 +661,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.18">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.18 (a bag made for your hands)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Read your bag at a glance:</strong> Phone inventory uses scrolling item rows with icons, names and readable metadata. Bag and equipment panels use the available screen instead of shrinking desktop windows; chat keeps its small strip below them.</li>
+                        <li><strong>Inspect first, choose an action:</strong> Tapping bag items or equipped gear opens a dedicated detail screen. Quest materials can be inspected too. Equip and Unequip are explicit actions, so tapping gear to read it no longer removes it.</li>
+                        <li><strong>Compare without a keyboard:</strong> Compare shows the equipment slot a new item would replace, including ring and trinket choices. Landscape comparisons sit side by side; Back returns to your bag position.</li>
+                        <li><strong>A deliberate way to drop:</strong> Drop Stack asks for confirmation and rechecks the item and quantity before requesting a server drop. Changed slots cannot discard another item, quest items stay protected, and normal desktop drag-out remains available.</li>
+                        <li><strong>Touch flows stay under test:</strong> Phone checks cover scrolling, readable details, server-authoritative equip/unequip, canceled and confirmed drops, manual recovery and persistence. Remaining menu reflow and physical-phone playtesting are still planned.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.0.17">
                     <h3 class="patch-note-entry__title">Alpha 1.0.17 (your next step is yours)</h3>
                     <ul class="patch-note-entry__list">

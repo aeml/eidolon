@@ -358,6 +358,9 @@ class UIManagerWindowMethods {
     }
 
     closeManagedWindow(id, { silent = false } = {}) {
+        const details = this.inventory?.mobileDetails;
+        if ((id === 'inventory' && details?.source?.type === 'inventory')
+            || (id === 'character' && details?.source?.type === 'equipment')) details.close();
         const layout = this.windowLayouts?.get(id);
         if (layout?.element) {
             const wasOpen = this.isElementVisible(layout.element);

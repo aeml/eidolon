@@ -5,11 +5,12 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-Current release queue (September 6): **1.0.14 is deployed but its final live gate
-failed**; 1.0.15 (`2b55efa`) and 1.0.16 (`226a298`) are committed locally and not
-published. Earlier entries describe their status at the time, not the current
-queue. Do not publish either successor until the failed gate is investigated and
-the deployed release is verified. See the diagnostic entry at the end of this file.
+Current release queue (September 6): **1.0.14 is deployed and verified after its
+original failed live job passed on rerun**. 1.0.15 (`2b55efa`) is pushed with CI
+`34018964584` running; 1.0.16 (`226a298`) and 1.0.17 (`99c9ab9`) are committed
+locally and not published. Earlier entries describe their status at the time,
+not the current queue. Do not publish a successor before the preceding version's
+complete CI/live verification. The original 1.0.14 failure remains recorded below.
 
 ## Alpha 1.0.2 — rewards and roads that meet
 
@@ -1453,3 +1454,70 @@ credential scans and exact disposable cleanups passed; local browser session
 `44631` is closed. Logs: `/tmp/eidolon-1-0-17-{lint,server,anonymous,phone,combat}.log`.
 The candidate is ready for commit; no gameplay release is published by this work.
 The original 1.0.14 live gate rerun remains active and successors remain queued.
+
+### 1.0.14 verified; 1.0.15 publication starts; phone item routes underway
+
+The unchanged original live job in `34015379084` subsequently **passed**, making
+the full CI run successful after its earlier failure. Independent post-terminal
+checks confirmed frontend release metadata, versioned main entry, login label and
+backend commit/version all match `af3757b` / Alpha 1.0.14; backend database status
+is `ready`. The exact-live diagnostic had also passed independently. The original
+acquisition failure was not reproduced or attributed to a confirmed cause; retain
+its evidence rather than calling it fixed. Loot-first raycast priority remains
+an unconfirmed investigation lead.
+
+Only `2b55efabfa4da459d14f37b5e18b659888de7e1e` was pushed to master next, preserving
+the separate 1.0.15 camera release. CI `34018964584` is running. Later commits
+remain local; do not push HEAD over this gate. 1.0.17 was committed as `99c9ab9`
+after all its local checks completed.
+
+The next local phone work adds readable bag rows and explicit item details/actions.
+Source inspection found that mobile material/quest-item clicks returned without
+inspection and equipped-slot taps immediately unequipped gear. Seven new tests
+failed before the change; the initial candidate passed 20 inventory tests and
+lint. Its first rendered check then exposed inherited square-slot geometry causing
+neighboring rows to intercept taps. This is a candidate regression, not evidence
+that the new layout is ready. Browser session `65130` is still running at this
+entry; no runtime changes or replacement browser run are made over it.
+
+### Alpha 1.0.18 candidate — a bag made for your hands
+
+The phone bag/detail implementation now has separate patch notes and synchronized
+login/package/runtime release metadata. The initial square-slot regression was
+repaired after its browser run ended; three rendered phone layouts passed in
+16.4 seconds, including actual touch scrolling, target reachability, comparison
+and Back/Escape navigation. Item details expose explicit equip/unequip and
+confirmed drop actions, validate current item identity/stack, protect quest items
+and preserve desktop drag-out. Native dialog lifecycle cleanup is included.
+
+The real-server inventory route initially failed its combat setup. Diagnostics
+proved a level-1 Fighter was dealing damage to a level-10 Skeleton, but not enough
+to finish within 40 seconds. Explicitly preparing the dedicated QA character at
+level 30 corrected that test precondition; it does not prove first-hour balance.
+The resulting normal-combat/loot route passed in 1.1 minutes with authoritative
+equip, unequip, canceled/confirmed drop, manual recovery and reconnect persistence
+in both phone orientations. No forced kill or guaranteed-loot command is used.
+Credential scanning and exact disposable cleanup passed. This route is now part
+of full predeploy QA, alongside the existing two-thumb combat route.
+
+Final versioned Node 24 client/lint checks pass: **159 suites / 2,310 tests**, 67.612
+seconds, plus server race checks. The first anonymous run ended 14/15 because
+Chrome reported `ERR_NETWORK_CHANGED` loading local modules in the login-flow
+audit; its trace is preserved at `/tmp/eidolon-1-0-18-anonymous-network-change.zip`.
+The unchanged rerun and subsequent versioned combat/inventory checks are pending.
+No assertion was weakened and no live local browser run was replaced.
+
+Meanwhile, 1.0.15's predeploy and both deployment jobs succeeded. CI `34018964584`
+is now in Live Release and Character QA. Later releases remain queued; 1.0.18 is
+not yet committed or published. The wider dungeon, phone and 1.1–1.10 gates remain
+open. Detailed phone evidence and remaining limits are in the companion evidence file.
+
+The final 1.0.18 sequence **passed** and session `43940` is closed: unchanged
+anonymous rerun **15/15 in 1.4 minutes**, two-thumb combat **2/2 in 17.2 seconds**,
+and server-owned bag/equipment/drop/recovery/persistence **1/1 in 1.0 minute**
+covering both orientations. Both credential scans and exact disposable cleanup
+passed. Final landscape comparison was visually inspected. Server race checks
+passed (root 7.816 seconds; unchanged game package cached). Logs use
+`/tmp/eidolon-1-0-18-{anonymous-rerun,combat,inventory,server}.log`.
+The candidate is ready for commit. 1.0.15 is still in its final live gate;
+1.0.16, 1.0.17 and 1.0.18 must retain separate, ordered publication.
