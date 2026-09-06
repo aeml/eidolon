@@ -9,6 +9,8 @@ published. **1.0.22 `e0b9afd` is the last fully verified release**: CI
 `34058325420` passed, followed by matching uncached frontend/login/backend
 identities. **1.0.23 `ad72a64` is pushed**, but CI `34061096121` failed its
 predeployment animation gallery check, so neither deployment ran.
+Corrected successor **1.0.23 `5f1c3f7` is now pushed**, CI `34062629059` running;
+the verified gallery cleanup fix is inherited by the local release queue.
 Versions 1.0.24–1.0.27 remain local; the later entry-requirement and Chronicle
 copy patches also have emulated phone layout evidence. See the
 [execution ledger](2026-09-05-roadmap-execution.md) for the exact ordered queue.

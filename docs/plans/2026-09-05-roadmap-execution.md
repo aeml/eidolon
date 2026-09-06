@@ -13,8 +13,9 @@ frontend manifest, login label, main script release query and backend health to
 `ok`, database `ready`. **1.0.23 `ad72a64` is pushed**, but CI **`34061096121`
 failed before deployment** in its animation gallery check (Imp Walk/Run read
 Idle). Both deployments and the live gate were skipped. A gallery preview-jump
-lifecycle repair is being verified in the isolated 1.0.23 worktree; no successor
-is pushed yet. No 1.0.24-or-later release has been pushed.
+lifecycle repair passed local validation and is now pushed as **1.0.23
+`5f1c3f71de4f22f8fa3bb0f1706154085020fe4f`**, CI **`34062629059`** running.
+No 1.0.24-or-later release has been pushed.
 
 Previously, corrected 1.0.21 (`9f58757`) passed every job in CI `34055526018`,
 including final live character/animation QA. Post-terminal checks at **20:32:20 UTC**
@@ -45,11 +46,11 @@ Local merges carry that same fix forward and preserve ancestry:
 |---|---|---|
 | 1.0.21 | `9f587570313d2f78aa469f21bd73bf8db1dd50ab` (fully verified live) | `c76db47`; strengthens pickup and persistence verification |
 | 1.0.22 | `e0b9afd3f8cfcefdbd056ef0339cb7937c27c4e7` (fully verified live; CI `34058325420`) | `ed793e0`; inherits corrected 1.0.21 |
-| 1.0.23 | `ad72a642592b5ce6fc6e22b23af1d8b2ab3a52dc` (pushed; CI `34061096121` failed predeploy gallery; correction pending) | `4fcb89d`; retains the verified collection inventory repair |
-| 1.0.24 | `bcc29f498504fa83a53f62e5cb5aa00e020844c8`, branch `release/24-with-pickup` | phone navigation and fresh-opening QA with corrected release ancestry |
-| 1.0.25 | `dd2ce169d54f54c4af13edb8ac6caf69e36ba8b3`, branch `release/25-with-starter`; runtime `bea6c34` | normal starter encounters, Ilyra guidance and clearing stale recall pursuit |
-| 1.0.26 | `f0a1286eb0cacdc12e6545e3cf703256ce0e4179`, branch `release/26-with-entry`; runtime `479cfd7` | server-sourced dungeon requirements, guarded entry and fresh collection/handoff measurement |
-| 1.0.27 | `ac494b8eb3123d5890f4a1b9880cae88d7ad713c` plus subsequent evidence-only commit; locally verified, not pushed | truthful Chronicle preparation and four-dungeon entry-level objectives; normal daily-hunt measurement |
+| 1.0.23 | `5f1c3f71de4f22f8fa3bb0f1706154085020fe4f` (pushed; CI `34062629059` running) | `ad72a64`, whose CI `34061096121` failed before deployment; adds gallery jump cleanup while retaining collection inventory repair |
+| 1.0.24 | `44c7ed1509317c499643c10d77b71ebb228d2025`, branch `release/24-with-gallery` | `bcc29f4` plus corrected 1.0.23; phone navigation and fresh-opening QA |
+| 1.0.25 | `d55b5d8d8460f75513a0eca02baf873aa52203c6`, branch `release/25-with-gallery`; original runtime `bea6c34` | `dd2ce16` plus corrected 1.0.24; starter encounters, Ilyra guidance and recall pursuit cleanup |
+| 1.0.26 | `85efebef86ccb9a980bc630b9e860d7f68c47d4b`, branch `release/26-with-gallery`; original runtime `479cfd7` | `f0a1286` plus corrected 1.0.25; server-sourced entry requirements and guarded entry |
+| 1.0.27 | `a5ed0428bfee0823340128bf2f91142dc4010d4c` plus subsequent evidence-only commit; not pushed | original `ac494b8` preparation copy, earned-route QA `f0cfc15`, and inherited gallery repair |
 
 The corrected 1.0.21 → 1.0.22 → 1.0.23 → 1.0.24 ancestry was checked with
 `git merge-base --is-ancestor`. Exact clean `9f58757` passes **163 client suites /
@@ -93,11 +94,25 @@ deployments were skipped. A previous actor's one-second preview jump timer was
 not canceled by presentation cleanup and could later reset the replacement actor
 to Idle. Three focused regressions reproduce this; the scoped gallery cleanup
 repair passes 21 focused checks and the full 165-suite / 2,364-test client suite.
-The full rendered gallery repeat is running in the 1.0.23 worktree. The existing
-strict movement assertions are retained. Uncached live checks at **21:53:29 UTC**
+The full rendered gallery repeat **passes all 30 checks in 4.1 minutes**, including
+the original strict movement matrix and new interrupted-jump regression. The
+repair is committed and pushed as `5f1c3f7`; CI `34062629059` is running. Local
+merges carry it through the queued 1.0.24–1.0.27 versions without publishing them.
+See the [gallery repair record](2026-09-06-release23-gallery-repair.md).
+Uncached live checks at **21:53:29 UTC**
 still match healthy 1.0.22 `e0b9afd` across manifest, login label, main script and
 server, with database ready. Later releases remain queued pending a fully verified
 1.0.23 successor. The full roadmap goal stays active.
+
+The integrated 1.0.27 tree passes **221 focused gallery/actor/version tests in
+1.444 seconds** and lint (`/tmp/eidolon-gallery-queue-focused.log`). Each queued
+1.0.23–1.0.27 SHA has checked sequential ancestry and matching package, manifest
+and login versions. All local browser, client and push handles from this
+continuation are closed. CI `34062629059` remains running; its client job has
+passed. The next publication target is **1.0.24 `44c7ed1`**, only after the full
+corrected 1.0.23 CI and post-terminal live identity checks. The new gem-slot and
+talent-consumer findings remain open; the failed fresh-readiness route is not a
+completed first-hour or dungeon balance gate.
 
 ### Alpha 1.0.27 — before the descent (local candidate)
 
