@@ -32,7 +32,8 @@ export function renderQuestConversation(ui, quests) {
     const button = (label, action, className = 'menu-btn') => {
         const element = text('button', label, className);
         element.type = 'button';
-        element.addEventListener('click', action);
+        element.dataset.questAction = label;
+        element.onclick = action;
         return element;
     };
     const redraw = () => { ui.questWindowSignature = ''; ui.updateQuestWindow(quests); };
@@ -83,17 +84,24 @@ export function renderQuestConversation(ui, quests) {
     detail.append(text('p', `${selected.count || 0} / ${selected.maxCount} · Reward: ${ui.getQuestRewardLabel(selected)}`, 'quest-dialogue__reward'));
     detail.append(text('p', 'At level 100, XP becomes Resonance XP. Any XP left over when you reach the cap also goes into Resonance.', 'quest-dialogue__status'));
     if (!selected.accepted || ready) {
-        const action = button(ready ? 'Complete Quest' : 'Accept Quest', () => {
+        const action = button(ready ? 'Complete Quest' : 'Accept Quest', (event) => {
+            ui.questActionError = '';
+            ui.questWindow.querySelector('.quest-dialogue__error')?.remove();
             ui.pendingQuestAction = { quest: { ...selected, rewardLabelAtTurnIn: ui.getQuestRewardLabel(selected) }, complete: ready };
-            action.disabled = true;
-            action.textContent = 'Waiting for reply…';
+            event.currentTarget.disabled = true;
+            event.currentTarget.textContent = 'Waiting for reply…';
             if (ready) ui.onCompleteQuest?.(selected.id);
             else ui.onAcceptQuest?.(selected.id);
         });
         action.disabled = Boolean(ui.pendingQuestAction);
+        if (action.disabled) action.textContent = 'Waiting for reply…';
         detail.appendChild(action);
     } else detail.append(text('p', `Return to ${speaker} when your objectives are ready. Rewards are granted only when you click Complete Quest.`, 'quest-dialogue__status'));
-    if (ui.questActionError) detail.append(text('p', ui.questActionError, 'quest-dialogue__status'));
+    if (ui.questActionError) {
+        const error = text('p', ui.questActionError, 'quest-dialogue__status quest-dialogue__error');
+        error.setAttribute('role', 'alert');
+        detail.append(error);
+    }
     if (!story) detail.append(button('Back to contracts', () => { ui.selectedQuestId = null; redraw(); }));
     ui.questList.appendChild(detail);
 }

@@ -5,12 +5,47 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-Current release queue (September 6): **1.0.14 is deployed and verified after its
-original failed live job passed on rerun**. 1.0.15 (`2b55efa`) is pushed with CI
-`34018964584` running; 1.0.16 (`226a298`) and 1.0.17 (`99c9ab9`) are committed
-locally and not published. Earlier entries describe their status at the time,
+Current release queue (September 6): **1.0.15 (`2b55efa`) is deployed and verified**:
+CI `34018964584` passed in full, and independent frontend manifest, login/runtime
+entry and backend version/SHA/database readiness checks matched. 1.0.16 (`226a298`)
+is deployed with CI `34020900312` still in progress: all predeployment checks and
+both deployments passed, and live character QA is running. Independent frontend
+manifest/login/runtime and backend SHA/version/database readiness checks match
+`226a298888949c38cee99a0ba728d6daa4f3012d` / Alpha 1.0.16. This is not yet the
+complete live QA gate. 1.0.17 (`99c9ab9`) and 1.0.18 (`d77f215`)
+are committed locally and not published. Earlier entries describe their status at the time,
 not the current queue. Do not publish a successor before the preceding version's
 complete CI/live verification. The original 1.0.14 failure remains recorded below.
+
+## Alpha 1.0.19 — a story you can settle into (local candidate)
+
+Status: prepared locally, not published; queued behind 1.0.16–1.0.18. Phone quests use
+readable viewport-sized conversation/journal panels, footer actions and a compact
+tracker that cycles all saved selections. Manual acceptance/completion still
+awaits server acknowledgement. Progress updates preserve lore, scroll and focus;
+daily Back restores the offers-list position. Chat remains visible below the
+panels. Login, package, release defaults and patch history identify 1.0.19.
+
+The initial full client run passed 160 suites / 2,317 tests plus lint. Three
+rendered phone layouts passed in 17.6 seconds after correcting a test locator
+that did not follow the pending button's changed label. A dedicated real-server
+first-chapter route passed in 1.3 minutes: touch acceptance, actual kill credit,
+manual landscape turn-in, gold/XP, Ilyra's reply and reconnect persistence. Setup
+explicitly uses level 30 and the encounter waypoint; this is neither first-hour
+balance nor full-campaign evidence. A later daily-list scroll regression was
+reproduced and repaired, and final versioned checks are running. See
+[phone evidence](mobile-playability-evidence.md) for logs and limits. The broader
+1.1 and physical-phone gates remain open.
+
+Final versioned checks subsequently passed **160 suites / 2,321 tests in 75.584
+seconds**, lint, the server race suite, all **18 anonymous browser checks in 1.9
+minutes**, and the real-server phone quest route in **1.4 minutes**, including
+reconnect, credential scanning and exact disposable cleanup. Inspection and a
+failing geometry assertion caught and repaired long tracker titles overlapping
+progress. Matching footer actions now retain their DOM/focus across quest updates.
+One earlier server turn-in timed out and then passed with diagnostics; its cause
+remains unconfirmed, not established by the separate action-node regression.
+Keep that failure recorded and retain the diagnostic route during publication.
 
 ## Alpha 1.0.2 — rewards and roads that meet
 

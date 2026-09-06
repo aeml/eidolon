@@ -38,6 +38,12 @@ export class QuestUI {
         this.objectivesList = document.getElementById('objectives-list');
         this.btnCloseQuest = document.getElementById('btn-close-quest');
         this.btnCloseJournal = document.getElementById('btn-close-journal');
+        if (ctx.isMobile && this.questWindow) {
+            this.questWindow.querySelector('.phone-quest-actions')?.remove();
+            this.questActions = document.createElement('div');
+            this.questActions.className = 'phone-quest-actions';
+            this.questWindow.appendChild(this.questActions);
+        }
 
         // --- Callbacks (set by GameEngine) ---
         this.onAcceptQuest = null;
@@ -79,6 +85,8 @@ export class QuestUI {
         }
         if (isHidden) {
             this.questWindowSignature = '';
+            this.conversationReading = new Map();
+            this.conversationRoute = null;
             // Reopening requests authoritative state and permits a safe retry
             // if a previous connection lost its acknowledgement.
             this.pendingQuestAction = null;
@@ -235,6 +243,7 @@ export class QuestUI {
 
     createMessage(text, styles = {}) {
         const message = document.createElement('div');
+        message.className = 'quest-copy';
         Object.assign(message.style, styles);
         message.textContent = text;
         return message;
@@ -740,17 +749,21 @@ export class QuestUI {
 
         this.activeQuestSummary = Array.isArray(summary) ? summary : [];
         const trackedObjectives = this.getTrackedObjectives();
-        const signature = JSON.stringify([this.activeQuestSummary, trackedObjectives, this.trackingStorageKey]);
+        const phoneIndex = Math.max(0, trackedObjectives.findIndex(objective => this.questTrackingKey(objective) === this.phoneObjectiveKey));
+        const visibleObjectives = this.ctx.isMobile ? trackedObjectives.slice(phoneIndex, phoneIndex + 1) : trackedObjectives;
+        const signature = JSON.stringify([this.activeQuestSummary, trackedObjectives, this.trackingStorageKey, this.ctx.isMobile, phoneIndex]);
         if (this.objectiveSignature === signature) return;
         this.objectiveSignature = signature;
         this.objectivesPanel.style.display = this.activeQuestSummary.length > 0 ? 'flex' : 'none';
         this.clearElement(this.objectivesList);
         this.objectivesPanel.querySelector('.objectives-panel__more')?.remove();
+        this.objectivesPanel.querySelector('.phone-objectives-controls')?.remove();
         this.objectivesPanel.querySelector('.objective-guidance')?.remove();
 
         const heading = this.objectivesPanel.querySelector('.objectives-panel__header');
-        if (heading) heading.textContent = `TRACKED · ${trackedObjectives.length}`;
-        trackedObjectives.forEach((objective, index) => {
+        if (heading) heading.textContent = this.ctx.isMobile && trackedObjectives.length
+            ? `TRACKED · ${phoneIndex + 1} / ${trackedObjectives.length}` : `TRACKED · ${trackedObjectives.length}`;
+        visibleObjectives.forEach((objective, index) => {
             const item = document.createElement('div');
             item.className = `objective-entry ${objective.routeTone ? `is-${objective.routeTone}` : ''}`.trim();
             const header = document.createElement('div');
@@ -799,9 +812,23 @@ export class QuestUI {
         const more = document.createElement('button');
         more.type = 'button';
         more.className = 'objectives-panel__more';
-        more.textContent = 'Choose tracked quests · Open Journal (J)';
+        more.textContent = this.ctx.isMobile ? 'Journal' : 'Choose tracked quests · Open Journal (J)';
         more.addEventListener('click', () => this.toggleJournal());
-        if (this.activeQuestSummary.length) this.objectivesPanel.appendChild(more);
+        if (this.activeQuestSummary.length && this.ctx.isMobile) {
+            const controls = document.createElement('div'); controls.className = 'phone-objectives-controls';
+            controls.appendChild(more);
+            if (trackedObjectives.length > 1) {
+                const next = document.createElement('button'); next.type = 'button'; next.className = 'phone-objectives-next';
+                next.textContent = 'Next quest'; next.setAttribute('aria-label', 'Show next tracked objective');
+                next.onclick = () => {
+                    this.phoneObjectiveKey = this.questTrackingKey(trackedObjectives[(phoneIndex + 1) % trackedObjectives.length]);
+                    this.renderObjectivesPanel(this.activeQuestSummary);
+                    this.objectivesPanel.querySelector('.phone-objectives-next')?.focus({ preventScroll: true });
+                };
+                controls.appendChild(next);
+            }
+            this.objectivesPanel.appendChild(controls);
+        } else if (this.activeQuestSummary.length) this.objectivesPanel.appendChild(more);
     }
 
     // ================================================================
@@ -819,8 +846,45 @@ export class QuestUI {
         const signature = JSON.stringify([this.questKind, this.selectedQuestId, quests, this.completedDialogue?.id, Boolean(this.pendingQuestAction), this.questActionError, Number(this.ctx.getLastPlayer?.()?.level) >= MAX_PLAYER_LEVEL]);
         if (signature === this.questWindowSignature) return;
         this.questWindowSignature = signature;
+        const offered = (quests || []).filter(q => !q.completed &&
+            (q.category === 'chronicle' || Boolean(q.id?.startsWith('chronicle_'))) === (this.questKind === 'story'));
+        const route = `${this.questKind}:${this.completedDialogue ? `reply:${this.completedDialogue.id}`
+            : this.selectedQuestId || (this.questKind === 'story' ? offered[0]?.id : 'contracts')}`;
+        const sameRoute = route === this.conversationRoute;
+        this.conversationReading ||= new Map();
+        if (this.conversationRoute) this.conversationReading.set(this.conversationRoute, {
+            scroll: this.questList.scrollTop, loreOpen: Boolean(this.questList.querySelector('details')?.open)
+        });
+        const { scroll = 0, loreOpen = false } = this.conversationReading.get(route) || {};
+        const loreFocused = sameRoute && document.activeElement === this.questList.querySelector('details > summary');
+        this.conversationRoute = route;
         renderQuestConversation(this, quests);
-        if (acknowledged && this.isQuestWindowOpen) this.questList.querySelector('button:not(:disabled)')?.focus();
+        if (loreOpen && this.questList.querySelector('details')) this.questList.querySelector('details').open = true;
+        if (this.questActions) {
+            // Keep reachable actions mounted across state updates: focus and a
+            // held pointer belong to this DOM node, not its replacement.
+            const remaining = new Set(this.questActions.children);
+            for (const next of this.questList.querySelectorAll('.quest-dialogue > button, .quest-dialogue__error')) {
+                const current = next.dataset.questAction && [...remaining].find(node => node.dataset.questAction === next.dataset.questAction);
+                if (current) {
+                    current.onclick = next.onclick;
+                    current.disabled = next.disabled;
+                    current.textContent = next.textContent;
+                    remaining.delete(current);
+                    next.remove();
+                } else this.questActions.appendChild(next);
+            }
+            for (const obsolete of remaining) obsolete.remove();
+        }
+        this.questList.scrollTop = acknowledged ? 0 : scroll;
+        if (loreFocused && !acknowledged) this.questList.querySelector('details > summary')?.focus({ preventScroll: true });
+        if (acknowledged && this.isQuestWindowOpen) {
+            const focusTarget = this.ctx.isMobile ? this.questList.querySelector('h3') : this.questList.querySelector('button:not(:disabled)');
+            if (focusTarget) {
+                if (this.ctx.isMobile) focusTarget.tabIndex = -1;
+                focusTarget.focus({ preventScroll: true });
+            }
+        }
     }
 
     handleQuestActionError(message) {
@@ -915,12 +979,25 @@ export class QuestUI {
     }
 
     updateJournal(quests) {
+        const scroll = this.journalList?.scrollTop || 0;
+        const archiveOpen = Boolean(this.journalList?.querySelector('details')?.open);
+        const archiveFocused = document.activeElement === this.journalList?.querySelector('details > summary');
+        const focusedQuest = this.journalList?.contains(document.activeElement) ? document.activeElement.dataset.questTrack : null;
+        const restoreReading = () => {
+            const archive = this.journalList?.querySelector('details');
+            if (archive && archiveOpen) archive.open = true;
+            if (this.journalList) this.journalList.scrollTop = scroll;
+            if (archiveFocused) archive?.querySelector('summary')?.focus({ preventScroll: true });
+            if (focusedQuest) [...this.journalList.querySelectorAll('[data-quest-track]')]
+                .find(input => input.dataset.questTrack === focusedQuest)?.focus({ preventScroll: true });
+        };
         this.lastJournalQuests = quests;
         this.renderObjectivesPanel(this.buildObjectiveSummary(quests));
         this.clearElement(this.journalList);
         const resetSnapshot = this.getDailyResetSnapshot();
 
         const infoDiv = document.createElement('div');
+        infoDiv.className = 'quest-journal-reset';
         infoDiv.style.color = '#888';
         infoDiv.style.fontSize = '12px';
         infoDiv.style.marginBottom = '15px';
@@ -929,7 +1006,9 @@ export class QuestUI {
         infoDiv.style.paddingBottom = '10px';
         infoDiv.textContent = resetSnapshot.statusLine;
         this.journalList.appendChild(infoDiv);
-        const trackingHint = this.createMessage('Choose “Track on screen” on any quest. Scroll the left tracker to see all your selections. Story tracking follows the next chapter.');
+        const trackingHint = this.createMessage(this.ctx.isMobile
+            ? 'Choose “Track on screen” on any quest. Use Next quest on the compact tracker to cycle your selections. Story tracking follows the next chapter.'
+            : 'Choose “Track on screen” on any quest. Scroll the left tracker to see all your selections. Story tracking follows the next chapter.');
         trackingHint.className = 'quest-tracking-hint';
         this.journalList.appendChild(trackingHint);
 
@@ -986,7 +1065,7 @@ export class QuestUI {
             this.journalList.appendChild(ladder);
         }
 
-        if (!quests) return;
+        if (!quests) { restoreReading(); return; }
         let hasActive = hasActiveChronicle;
 
         quests.forEach(q => {
@@ -995,6 +1074,7 @@ export class QuestUI {
             hasActive = true;
 
             const div = document.createElement('div');
+            div.className = 'quest-journal-entry';
             div.style.background = '#222';
             div.style.border = '1px solid #444';
             div.style.padding = '10px';
@@ -1008,6 +1088,7 @@ export class QuestUI {
             const status = ready ? 'RETURN TO QUEST GIVER' : 'IN PROGRESS';
 
             const header = document.createElement('div');
+            header.className = 'quest-journal-entry__header';
             header.style.display = 'flex';
             header.style.justifyContent = 'space-between';
 
@@ -1025,6 +1106,7 @@ export class QuestUI {
             header.appendChild(statusEl);
 
             const progress = document.createElement('div');
+            progress.className = 'quest-journal-entry__progress';
             progress.style.background = '#111';
             progress.style.height = '10px';
             progress.style.border = '1px solid #444';
@@ -1036,6 +1118,7 @@ export class QuestUI {
             progressFill.style.height = '100%';
 
             const progressLabel = document.createElement('div');
+            progressLabel.className = 'quest-journal-entry__count';
             progressLabel.style.position = 'absolute';
             progressLabel.style.top = '0';
             progressLabel.style.left = '0';
@@ -1072,5 +1155,6 @@ export class QuestUI {
                 marginTop: '20px'
             }));
         }
+        restoreReading();
     }
 }

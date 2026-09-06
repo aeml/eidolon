@@ -3,8 +3,89 @@
 Status: baseline diagnosis plus incremental implementation evidence, not a completed phone redesign. Requirements
 and release gates live in [the main roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13).
 
-Latest local candidate: **Alpha 1.0.18**, phone inventory and equipment details, not yet published.
+Latest local candidate: **Alpha 1.0.19**, readable phone conversations and quest tracking, not yet published.
 Earlier entries below are chronological snapshots, not current process status.
+
+## Phone quest reading and tracking (Alpha 1.0.19 candidate)
+
+Source: `d77f215` plus local quest UI changes. Phone conversations and the journal
+use readable scrolling panels above the permanent chat strip. Accept/Complete/
+Continue and daily Back actions stay in a separate reachable footer. Completion
+still requires a click and authoritative acknowledgement. Rejected requests show
+an accessible error beside the action and allow an explicit retry. Same-quest
+progress updates preserve open lore and reading position; journal updates preserve
+recovered-lore disclosure and tracking focus. A compact tracker cycles every saved
+selection without dropping entries from the player's preferences.
+
+Seven phone unit checks pass; the full client suite passes **160 suites / 2,317
+tests in 55.291 seconds**, plus lint. All three initial rendered cases failed
+because the test kept locating “Accept Quest” after its label correctly changed
+to “Waiting for reply…”. After correcting that locator, the unchanged runtime
+passed **360×800, 390×844 and 844×390 in 17.6 seconds**. Native touch scrolling,
+reachable footer actions, a 16-contract journal, preserved reading state, saved
+tracking selection, unclipped tracker buttons and the visible chat strip are
+covered. Inspected portrait dialogue and landscape journal captures:
+`/tmp/eidolon-phone-{quest,journal}-{360,390,844}.png`.
+
+These fixtures seed display state and simulate acknowledgements; they do not
+prove actual quest earning or server rewards. A new dedicated real-server route
+is running separately, with normal combat and manual Ilyra turn-in. Its level-30
+and encounter-waypoint setup is explicit, not first-hour balance evidence.
+Logs: `/tmp/eidolon-phone-quest-{client,lint,layout,layout-rerun,gameplay}.log`.
+The full phone release gate, physical devices and remaining menus remain open.
+
+The real-server route subsequently **passed in 1.3 minutes**: a fresh Fighter
+walked to Ilyra using the joystick at default zoom, tapped to accept, earned three
+ordinary kills after the documented level preparation, recalled and returned to
+Ilyra in landscape. The quest remained uncompleted until Complete was tapped.
+Authoritative gold/XP, the authored reply, the next offered chapter and completed
+state after reconnect were verified. The credential scan and exact disposable
+container/data cleanup passed. No quest completion or kill was granted.
+
+One additional regression demonstrated that daily Back lost the offers-list
+scroll position (expected 240, received 0). Conversation-route reading state now
+restores it, with fresh state when opening a new conversation. The candidate has
+separate 1.0.19 patch notes and synchronized login/package/runtime versions. Final
+versioned client, lint, server-race, anonymous-browser and real-server quest
+reruns are in progress; logs use `/tmp/eidolon-1-0-19-`. It is not yet committed
+or published, and remains queued behind 1.0.16–1.0.18.
+
+The initial versioned checks passed **160 suites / 2,320 tests in 67.487 seconds**,
+lint, server race checks (root 9.116 seconds; unchanged game package cached),
+and all **18 anonymous browser checks in 1.8 minutes**. Visual inspection then
+found a long tracker title overlapping its progress count. The added landscape
+assertion reproduced it (title right 241.59, permitted right 204.64 CSS pixels).
+Explicit flex sizing/ellipsis repaired the title; all three layouts passed again
+in **18.7 seconds**. Log: `/tmp/eidolon-phone-tracker-overlap-{red,fixed}.log`.
+
+The versioned server quest rerun **failed in 1.5 minutes**: real kill credit was
+complete, but the manual turn-in did not acknowledge within 15 seconds. That run
+did not retain enough state to determine why. A diagnostic-enabled rerun of the
+same quest-action runtime **passed in 1.3 minutes**, including turn-in/reconnect;
+both runs passed credential scanning and exact cleanup. Do not claim that a
+passing rerun establishes the original cause or eliminates an intermittent fault.
+Logs: `/tmp/eidolon-1-0-19-quests.log` and
+`/tmp/eidolon-phone-quest-turnin-diagnostic.log`.
+
+A separate unit regression confirms that unrelated quest updates replaced the
+footer action node and lost its focus. The phone footer now retains matching
+action nodes while updating handlers and pending state. Focus and duplicate-click
+protection pass in the **14-test focused run**. An explicit browser touch-down /
+quest update / touch-release sequence already passed before this change; this
+is not proof that node replacement caused the earlier turn-in failure. That
+failure remains unconfirmed. Fresh full client/anonymous/server-quest checks
+are running with the stabilized footer; their logs end in `-final.log`.
+
+Those final checks subsequently **passed**: **160 client suites / 2,321 tests in
+75.584 seconds**, lint, **18 anonymous checks in 1.9 minutes**, and the dedicated
+real-server quest route in **1.4 minutes**. The quest stayed unclaimed after actual
+kills, then manual landscape completion acknowledged gold/XP and the authored
+reply; reconnect retained completion. Credential scanning and exact disposable
+cleanup passed. The final landscape tracker capture was inspected with title
+ellipsis and a separated progress count. The earlier timed-out turn-in remains
+an unconfirmed intermittent observation; passing subsequent runs is not a
+root-cause finding. The 1.0.19 candidate is prepared for a separate local commit,
+with publication held behind prior complete release gates.
 
 ## Phone bag and equipped-item routes (Alpha 1.0.18 candidate)
 

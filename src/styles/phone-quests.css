@@ -1,0 +1,55 @@
+.mobile-mode :is(#quest-window, #quest-journal) {
+    position: fixed !important;
+    top: var(--phone-top) !important;
+    left: max(12px, env(safe-area-inset-left, 0px)) !important;
+    width: calc(100vw - max(12px, env(safe-area-inset-left, 0px)) - max(12px, env(safe-area-inset-right, 0px))) !important;
+    height: calc(100dvh - var(--phone-top) - var(--phone-bottom) - 60px) !important;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    transform: none !important;
+    font-size: 16px;
+    overflow: hidden;
+}
+.mobile-mode :is(#quest-window, #quest-journal) > .window-header { flex: 0 0 auto; min-height: 52px; padding: 8px 12px; gap: 12px; }
+.mobile-mode #quest-window .window-header > span { font-size: 14px; line-height: 1.4; letter-spacing: 0.04em; }
+.mobile-mode :is(#quest-list, #journal-list) { flex: 1 1 auto; min-height: 0; padding: 12px; overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; }
+.mobile-mode :is(.quest-conversation__intro, .quest-dialogue__speech, .quest-dialogue__lore, .quest-dialogue__objective, .quest-dialogue__reward, .quest-dialogue__status) { font-size: 16px; line-height: 1.6; overflow-wrap: anywhere; }
+.mobile-mode .quest-dialogue { padding: 12px; }
+.mobile-mode .quest-dialogue__eyebrow { font-size: 13px; line-height: 1.4; letter-spacing: 0.06em; }
+.mobile-mode .quest-dialogue h3 { font-size: 22px; line-height: 1.3; overflow-wrap: anywhere; }
+.mobile-mode :is(.quest-dialogue__lore summary, #journal-list summary) { min-height: 44px; box-sizing: border-box; padding: 8px 0; cursor: pointer; }
+.phone-quest-actions { flex: 0 0 auto; display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 12px; border-top: 1px solid #b99b6233; background: #111923; }
+.phone-quest-actions:empty { display: none; }
+.phone-quest-actions button { flex: 1 1 120px; min-height: 44px; margin: 0; padding: 8px 12px; font-size: 16px; border-color: var(--quest-accent); }
+.phone-quest-actions .quest-dialogue__error { flex: 1 0 100%; order: -1; margin: 0; color: #ffb6aa; }
+.mobile-mode .quest-contract { min-height: 64px; font-size: 16px; gap: 12px; padding: 12px; }
+.mobile-mode .quest-contract small { font-size: 14px; }
+.mobile-mode #journal-list :is(.quest-copy, blockquote, summary, .quest-journal-reset) { font-size: 16px !important; line-height: 1.6 !important; overflow-wrap: anywhere; }
+.mobile-mode .quest-tracking-control { min-height: 44px; font-size: 16px; gap: 12px; padding: 4px 0; }
+.mobile-mode .quest-tracking-control input { width: 24px; height: 24px; flex: 0 0 24px; }
+.mobile-mode .quest-tracking-hint { font-size: 16px; }
+.mobile-mode .quest-journal-entry__header { flex-wrap: wrap; gap: 8px; font-size: 16px; overflow-wrap: anywhere; }
+.mobile-mode .quest-journal-entry__header span { font-size: 16px !important; }
+.mobile-mode .quest-journal-entry__progress { height: 22px !important; }
+.mobile-mode .quest-journal-entry__count { font-size: 14px !important; line-height: 22px !important; }
+.mobile-mode .quest-journal-entry > div:last-child { font-size: 16px !important; }
+
+/* Keep one readable summary visible; Next cycles the full saved tracking set. */
+.mobile-mode #objectives-panel { padding: 6px; gap: 4px; }
+.mobile-mode #objectives-list { flex: 0 0 auto; overflow: hidden; }
+.mobile-mode #objectives-panel .objectives-panel__header { font-size: 11px; padding: 0; line-height: 14px; }
+.mobile-mode #objectives-panel .objective-entry { padding: 0; border: 0; }
+.mobile-mode #objectives-panel .objective-entry__header { gap: 4px; }
+.mobile-mode #objectives-panel .objective-entry__title-wrap { min-width: 0; flex: 1 1 0; overflow: hidden; }
+.mobile-mode #objectives-panel .objective-entry__title { width: 100%; font-size: 14px; line-height: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mobile-mode #objectives-panel :is(.objective-entry__hint, .objective-entry__badge, .objective-guidance) { display: none; }
+.mobile-mode #objectives-panel .objective-entry__status { font-size: 12px; line-height: 18px; }
+.mobile-mode #objectives-panel .objective-entry__progress { height: 3px; margin-top: 3px; }
+.phone-objectives-controls { display: flex; flex: 0 0 auto; gap: 4px; }
+.phone-objectives-controls :is(.objectives-panel__more, .phone-objectives-next) { pointer-events: auto; flex: 1 1 0; min-width: 0; min-height: 44px; margin: 0; padding: 4px; font: inherit; font-size: 13px; color: #dfc796; background: #111923; border: 1px solid #b99b6240; border-radius: 5px; cursor: pointer; }
+.phone-objectives-next:focus-visible { outline: 2px solid #e4c991; outline-offset: -2px; }
+@media (orientation: landscape) and (max-height: 600px) {
+    .mobile-mode { --phone-party-top: 182px; }
+    .mobile-mode #objectives-panel { max-height: 108px !important; }
+}
