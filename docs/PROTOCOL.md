@@ -66,6 +66,21 @@ idempotency or replay-protection contract. Single-flight UI controls suppress
 accidental repeated taps while a request is pending. Progression, rune validation
 and point-spending rules remain server-owned. EDPB stays at version 2.
 
+## Quest turn-in inventory synchronization
+
+Alpha 1.0.23 sends the authoritative `inventory` array before `quest_update`
+after a successful `complete_quest`. Both payloads are serialized while holding
+world/entity read locks; collection consumption remains server-owned. This
+prevents a completed collection chapter from leaving delivered relics visible
+until an unrelated bag update. The existing `endgame_update` still follows.
+No new message type or EDPB version is required.
+
+Missing items, the wrong giver/location and repeated completion remain rejected
+without a success inventory receipt or additional rewards. Clients must not
+remove items optimistically. The separate asynchronous `chronicle_advance`
+narrative notification is not the inventory acknowledgement and has no ordering
+guarantee relative to these responses.
+
 ## Backpressure
 
 State snapshots are replaceable and use a bounded lossy queue. Authentication,

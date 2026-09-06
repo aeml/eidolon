@@ -15,9 +15,10 @@ had a QA-route gap: the earlier phone inventory test did not open Settings' Play
 category. Test-only correction **`2f5c46b` passed its exact-source inventory route**
 and is the next 1.0.21 commit to publish after 1.0.20's full gate. It was merged
 forward as `e3bbcf7` so the 1.0.22 release remains a fast-forward descendant.
-1.0.22's runtime (`ecf7524`) has passed its recorded checks; the new earned
-Earth campaign route is now being tested on the working candidate. Neither
-1.0.21 nor 1.0.22 is published. Push each exact next release only
+1.0.22's runtime (`ecf7524`) has passed its recorded checks; its final queued
+source is `d5b4320`. The earned Earth campaign route exposed an inventory-sync
+defect, corrected in the separate local 1.0.23 candidate, and now passes in full.
+None of 1.0.21, 1.0.22 or 1.0.23 is published. Push each exact next release only
 after its predecessor's full gate.
 Earlier entries describe their status at the time,
 not the current queue. Do not publish a successor before the preceding version's
@@ -76,6 +77,40 @@ not yet prove a campaign clear. A separate 1.0.23 correction will carry the
 dispatch regression, inventory refresh and an earned-route rerun. The 1.0.22
 client suite passed 163 suites / 2,352 tests; lint also passed. The earlier
 "not yet run" statements above record preparation, not current test status.
+
+## Alpha 1.0.23 — relics delivered (local candidate)
+
+The earned Earth route found that successful collection turn-in consumes the
+server's items but leaves the browser's bag stale. `MsgCompleteQuest` now
+serializes inventory and quest payloads under world/entity read locks, then sends
+inventory before quests. The asynchronous story callout is not treated as an
+inventory acknowledgement. Manual acceptance/turn-in, quantities, rewards and
+raid gates are unchanged.
+
+The new dispatch test reproduced missing inventory responses for both exactly
+four seeds and six seeds before the fix. Afterward it verifies the authoritative
+bag, freed slots, spare seeds/unrelated equipment, completed quest/reward, replay
+rejection and physical-item rejection despite a saved ready count. Focused
+dispatch/recovery checks pass; the complete server race suite passes (root
+10.221 seconds, game cached). Client checks pass **163 suites / 2,353 tests in
+75.509 seconds**, plus lint. Separate patch notes, login label, manifests and
+runtime build defaults identify Alpha 1.0.23.
+
+The real earned route **passed in 10.1 minutes** against `d5b4320` plus this
+correction in `/tmp/eidolon-1-0-23-chronicle-earth.log` (session `47393` closed,
+credential scan and disposable cleanup passed). It covers ordinary kills,
+natural relic pickup, exact consumption on manual turn-in and the sealed pre-clear
+raid, all four bosses/rooms of a generated Normal-30 Wizard run with seed
+`-3877784623499751578`, generator 2 / attempt 0, preserved completed-run recall/
+re-entry, real dungeon quest credit, manual Ilyra completion, Rootheart access
+and reconnect persistence. Level-100 preparation and travel/protection are explicit;
+this does not establish fresh-level balance, full Wizard hotbars/runes, party raids
+or the rest of the campaign. The separate `chronicle-collection` isolated route
+supports a shorter exact-commit collection/reconnect repeat without claiming
+a dungeon clear. This is not published and does not replace any full-roadmap
+gate. Alpha 1.0.22's separate queued source is
+`d5b432065ffbc887851613da9c36d6175cc646ec`; later runtime fixes must not be
+mistaken for part of that release.
 
 ## Alpha 1.0.22 — adventure within reach (local candidate)
 

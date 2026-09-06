@@ -119,7 +119,7 @@ mongo_password="$(openssl rand -hex 24)"
 docker build \
   --build-arg GO_VERSION=1.24.5 \
   --build-arg "BUILD_COMMIT=${qa_build_commit}" \
-  --build-arg "BUILD_VERSION=Alpha 1.0.22" \
+  --build-arg "BUILD_VERSION=Alpha 1.0.23" \
   --tag "${SERVER_IMAGE}" server >/dev/null
 image_created=true
 
@@ -316,6 +316,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     EIDOLON_E2E_CHRONICLE_EARTH=1 EIDOLON_E2E_FULL_DUNGEON=1 EIDOLON_E2E_DUNGEON=verdant_bastion_catacombs \
       npx playwright test tests/e2e/verdant-dungeon-gameplay.spec.js
     ;;
+  chronicle-collection)
+    npx playwright test tests/e2e/chronicle-collection-gameplay.spec.js
+    ;;
   dungeon-recovery)
     run_dungeon_recovery
     ;;
@@ -359,7 +362,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     run_phone_adventure
     ;;
   *)
-    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, inventory, extended, portal, dungeons, verdant, dungeon-full, chronicle-earth, dungeon-recovery, direct-skills, projectile-walls, movement-walls, ground-walls, beam-walls, whirlwind, phone, phone-combat, phone-inventory, phone-quests, phone-build, phone-settings, or phone-adventure." >&2
+    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, inventory, extended, portal, dungeons, verdant, dungeon-full, chronicle-earth, chronicle-collection, dungeon-recovery, direct-skills, projectile-walls, movement-walls, ground-walls, beam-walls, whirlwind, phone, phone-combat, phone-inventory, phone-quests, phone-build, phone-settings, or phone-adventure." >&2
     exit 1
     ;;
 esac

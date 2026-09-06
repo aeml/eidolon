@@ -1427,8 +1427,16 @@ func (c *Client) dispatchMessage(msg Message) {
 			c.sendError("Return to the correct quest giver with all objectives and required items to complete this quest.")
 		}
 		if success {
-			// Send Quest Update
+			// Collection turn-ins consume physical items. Publish the authoritative
+			// bag before the completion UI can show the next chapter, without
+			// reading inventory or quest slices while another action mutates them.
+			world.Mu.RLock()
+			player.Mu.RLock()
+			invPayload, _ := json.Marshal(player.Inventory)
 			questPayload, _ := json.Marshal(player.Quests)
+			player.Mu.RUnlock()
+			world.Mu.RUnlock()
+			c.sendSafe(createMessage(MsgInventory, invPayload))
 			msg := Message{
 				Type:    MsgQuestUpdate,
 				Payload: questPayload,

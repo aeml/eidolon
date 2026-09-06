@@ -8,7 +8,7 @@ This is the product-level roadmap and Alpha 1.0 closeout record. Per-patch histo
 
 ## Current Snapshot
 
-- Current in-game displayed version: `Alpha 1.0.22` (candidate; deployment tracked separately)
+- Current in-game displayed version: `Alpha 1.0.23` (candidate; deployment tracked separately)
 - Active implementation line: `Alpha 1.0` closeout and beta-readiness verification
 - Proposed next releases: [1.1–1.10 roadmap](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md). Dungeon return-to-town, boss targeting, abilities, hallway generation, and overlapping-floor reports reopen dungeon reliability as an immediate release gate. Ship confirmed progression blockers in `1.0.x`; all five repair gates must pass before `1.1` closes. Investigation and verification status is tracked in the [execution ledger](docs/plans/2026-09-05-roadmap-execution.md); individual fixes do not establish full dungeon reliability.
 - Phone playability is also a release priority: a useful default camera, readable characters/text, and touch-first menus must replace the need to zoom out a desktop-sized interface. Basic usability is required for `1.1`; the complete phone HUD/menu redesign belongs in `1.2`, with touch-combat and performance tuning in `1.3`. See the [mobile redesign and acceptance gates](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13).
