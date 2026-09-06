@@ -106,7 +106,13 @@ Further invalid-request, legacy-client and jump checks pass with the final serve
 race suite (game 158.739 seconds). The final client suite passes 160 suites /
 2,322 tests in 83.576 seconds, plus lint, and all 18 anonymous browser checks pass
 in 1.9 minutes. Portrait dialogue and landscape journal captures were inspected.
-A separate ordinary dungeon death/respawn/re-entry route remains in progress.
+A separate ordinary dungeon death/respawn/re-entry route passed in 1.7 minutes
+with a level-30 Wizard and preserved seed `-7689347035156546500` (generator 2).
+The exact clean correction commit `98f4286` subsequently passed the phone quest
+route in 1.3 minutes and both two-thumb combat orientations in 16.7 seconds;
+credential scans and cleanup passed. Exact-runtime logs use
+`/tmp/eidolon-recovery-context-exact-{quests,combat}.log`. No physical-device
+or whole-campaign completion is inferred from these focused browser checks.
 Logs: `/tmp/eidolon-recovery-context-{quests,client-final,lint,server}.log`;
 failed exact-commit reproduction: `/tmp/eidolon-1-0-19-exact-commit-quests.log`.
 The movement-context protocol is documented in `docs/PROTOCOL.md`; physical-phone

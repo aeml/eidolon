@@ -9,10 +9,14 @@ Current release queue (September 6): **1.0.16 (`226a298`) is deployed and verifi
 CI `34020900312` passed in full, followed by independent frontend manifest,
 login/runtime entry and backend version/SHA/database readiness checks matching
 `226a298888949c38cee99a0ba728d6daa4f3012d` / Alpha 1.0.16. Only the next exact
-commit, 1.0.17 (`99c9ab9`), was pushed; CI `34022781555` is in predeploy character
-QA after successful client, server and browser-smoke jobs. 1.0.18 (`d77f215`)
-remains local. 1.0.19 (`43321ed` plus the recovery correction below) is also local
-and must not be published without that correction. Earlier entries describe their status at the time,
+commit, 1.0.17 (`99c9ab9`), was pushed; CI `34022781555` passed predeployment QA
+and both deployment jobs and is now in Live Release and Character QA. Independent
+frontend manifest/login/runtime and backend SHA/version/database-readiness checks
+match `99c9ab9482f217ce396b75b1f12a5d9c2cbf9f81` / Alpha 1.0.17. This is not yet
+the complete live gate. 1.0.18 (`d77f215`) remains local. 1.0.19 includes both the
+quest UI commit `43321ed` and verified recovery correction `98f4286`, followed by
+documentation-only evidence updates; it also remains local.
+Earlier entries describe their status at the time,
 not the current queue. Do not publish a successor before the preceding version's
 complete CI/live verification. The original 1.0.14 failure remains recorded below.
 
@@ -74,10 +78,29 @@ race run passed (root 9.826 seconds; game 158.739 seconds). The final client run
 passed 160 suites / 2,322 tests in 83.576 seconds, plus lint; all 18 anonymous
 browser checks passed in 1.9 minutes. Portrait dialogue and landscape journal
 captures were inspected. The real-server dungeon death/respawn/re-entry regression
-is still running in `/tmp/eidolon-recovery-context-dungeon.log`. Logs use
+passed in **1.7 minutes**, using a level-30 Wizard, generator 2 and seed
+`-7689347035156546500`: normal hostile death, denied dead-player recall, explicit
+respawn and guide re-entry preserved the unfinished run. Credential scanning and
+cleanup passed. Log: `/tmp/eidolon-recovery-context-dungeon.log`. Logs use
 `/tmp/eidolon-recovery-context-`; original reproductions are retained under
 `/tmp/eidolon-phone-quest-{transaction,recall-movement}-diagnostic.log`.
 These checks do not close the physical-phone, full-campaign or full dungeon gates.
+
+The correction was committed as `98f42866848e6fdd1c113b304b0d5d397e54e14d`.
+The exact clean committed runtime then passed the phone quest route in **1.3
+minutes** and both two-thumb combat orientations in **16.7 seconds**. Both
+credential scans and disposable cleanups passed. Sequential local session `21689`
+is closed; logs are `/tmp/eidolon-recovery-context-exact-{quests,combat}.log`.
+
+Next phone implementation: Skills & Runes. Inspection identifies 10–14px inline
+descriptions, tabs inside the content scroller, rerenders that discard reading
+position, whole-card rank/rune actions and optimistic talent-rank mutations.
+Reflow this into readable deliberate controls with server-confirmed feedback and
+preserved navigation. Preserve the actual progression rules: selecting a branch
+currently enables its level-eligible skills automatically; do not invent a new
+point-spending requirement during the UI redesign. Verify branch choice, talent
+ranks, rune equipment and reconnect with the real server. No skill-menu runtime
+changes are included in 1.0.19.
 
 ## Alpha 1.0.2 — rewards and roads that meet
 
