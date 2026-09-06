@@ -5,21 +5,20 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-Current release queue (September 6): **1.0.15 (`2b55efa`) is deployed and verified**:
-CI `34018964584` passed in full, and independent frontend manifest, login/runtime
-entry and backend version/SHA/database readiness checks matched. 1.0.16 (`226a298`)
-is deployed with CI `34020900312` still in progress: all predeployment checks and
-both deployments passed, and live character QA is running. Independent frontend
-manifest/login/runtime and backend SHA/version/database readiness checks match
-`226a298888949c38cee99a0ba728d6daa4f3012d` / Alpha 1.0.16. This is not yet the
-complete live QA gate. 1.0.17 (`99c9ab9`) and 1.0.18 (`d77f215`)
-are committed locally and not published. Earlier entries describe their status at the time,
+Current release queue (September 6): **1.0.16 (`226a298`) is deployed and verified**:
+CI `34020900312` passed in full, followed by independent frontend manifest,
+login/runtime entry and backend version/SHA/database readiness checks matching
+`226a298888949c38cee99a0ba728d6daa4f3012d` / Alpha 1.0.16. Only the next exact
+commit, 1.0.17 (`99c9ab9`), was pushed; CI `34022781555` is in predeploy character
+QA after successful client, server and browser-smoke jobs. 1.0.18 (`d77f215`)
+remains local. 1.0.19 (`43321ed` plus the recovery correction below) is also local
+and must not be published without that correction. Earlier entries describe their status at the time,
 not the current queue. Do not publish a successor before the preceding version's
 complete CI/live verification. The original 1.0.14 failure remains recorded below.
 
 ## Alpha 1.0.19 — a story you can settle into (local candidate)
 
-Status: prepared locally, not published; queued behind 1.0.16–1.0.18. Phone quests use
+Status: prepared locally, not published; queued behind 1.0.17–1.0.18. Phone quests use
 readable viewport-sized conversation/journal panels, footer actions and a compact
 tracker that cycles all saved selections. Manual acceptance/completion still
 awaits server acknowledgement. Progress updates preserve lore, scroll and focus;
@@ -46,6 +45,39 @@ progress. Matching footer actions now retain their DOM/focus across quest update
 One earlier server turn-in timed out and then passed with diagnostics; its cause
 remains unconfirmed, not established by the separate action-node regression.
 Keep that failure recorded and retain the diagnostic route during publication.
+
+### Confirmed post-recall turn-in failure and recovery correction
+
+An exact-commit repeat of `43321ed` failed again. The Complete callback fired,
+but the server rejected giver distance. Temporary admission diagnostics then
+proved that the client reached approximately `(17.5, 215.4)` while the server
+still placed it at the recall spawn `(-1.25, 200)`: fresh movement packets arrived
+128–943 ms after recall and were rejected by the existing one-second recovery
+guard. This explains the reproduced immediate turn-in failure; it does not
+retroactively prove the cause of every earlier timeout. Diagnostic-only server
+logging was removed after gathering evidence.
+
+The correction gives approved recall/respawn an acknowledged movement context.
+Fresh-context movement works immediately, old-context packets remain rejected,
+and legacy clients retain their timed guard. Sequence, ability-lock, crowd-control,
+distance and geometry checks remain. Join/resume sends the current session
+context. Manual quest acceptance and completion are unchanged. Protocol details
+and the player-facing correction are included in the unpublished 1.0.19 notes.
+
+Initial corrected checks passed **160 client suites / 2,322 tests in 69.466
+seconds**, lint and the complete server race suite (game package 150.448 seconds).
+The real-server phone quest route passed in **1.4 minutes**, including normal
+kill credit, immediate manual landscape turn-in, gold/XP, next chapter, reconnect
+and authoritative movement after reconnect. Credential scanning and disposable
+cleanup passed. Additional compatibility/rejection/jump tests and the final server
+race run passed (root 9.826 seconds; game 158.739 seconds). The final client run
+passed 160 suites / 2,322 tests in 83.576 seconds, plus lint; all 18 anonymous
+browser checks passed in 1.9 minutes. Portrait dialogue and landscape journal
+captures were inspected. The real-server dungeon death/respawn/re-entry regression
+is still running in `/tmp/eidolon-recovery-context-dungeon.log`. Logs use
+`/tmp/eidolon-recovery-context-`; original reproductions are retained under
+`/tmp/eidolon-phone-quest-{transaction,recall-movement}-diagnostic.log`.
+These checks do not close the physical-phone, full-campaign or full dungeon gates.
 
 ## Alpha 1.0.2 — rewards and roads that meet
 

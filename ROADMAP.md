@@ -2,7 +2,7 @@
 
 > Project by [Robert Mendola](https://mendola.tech)
 >
-> Last refreshed: September 5, 2026
+> Last refreshed: September 6, 2026
 
 This is the product-level roadmap and Alpha 1.0 closeout record. Per-patch history lives in `index.html`; implementation and release evidence lives under `docs/`.
 
@@ -11,6 +11,7 @@ This is the product-level roadmap and Alpha 1.0 closeout record. Per-patch histo
 - Current in-game displayed version: `Alpha 1.0.4` (candidate; deployment tracked separately)
 - Active implementation line: `Alpha 1.0` closeout and beta-readiness verification
 - Proposed next releases: [1.1–1.10 roadmap](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md). Dungeon return-to-town, boss targeting, abilities, hallway generation, and overlapping-floor reports reopen dungeon reliability as an immediate release gate. Ship confirmed progression blockers in `1.0.x`; all five repair gates must pass before `1.1` closes. Investigation and verification status is tracked in the [execution ledger](docs/plans/2026-09-05-roadmap-execution.md); individual fixes do not establish full dungeon reliability.
+- Phone playability is also a release priority: a useful default camera, readable characters/text, and touch-first menus must replace the need to zoom out a desktop-sized interface. Basic usability is required for `1.1`; the complete phone HUD/menu redesign belongs in `1.2`, with touch-combat and performance tuning in `1.3`. See the [mobile redesign and acceptance gates](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13).
 - The planned `0.50`, `0.60`, `0.70`, `0.80`, and `0.90` bands are implemented in the working tree
 - Current architecture measurements: `world.go` 1,422 LOC, `main.go` 938, `GameEngine.js` 2,310, and `UIManager.js` 1,216
 - Release identity is aligned across the browser, server health endpoint, container defaults, deploy scripts, isolated QA, and CI
@@ -107,6 +108,30 @@ The Alpha 1.0 candidate is expected to satisfy these gates:
 ## Next: Beta
 
 The [1.1–1.10 plan](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md) proposes the alpha-to-beta sequence. Immediate dungeon defects take priority in `1.0.x` hotfixes and must be closed before `1.1`; `1.6` is reserved for encounter improvements, not repairs to unplayable basics. Historical foundation closeout does not override newly reported failures. Later milestones cover visual and combat polish, story depth, progression, competitive PvP, social activity, world events, and measured beta readiness. A fifth class and major realm expansion remain outside this scope.
+
+### Phone-first playability — a release requirement
+
+The September 6 report identifies a connected camera and interface problem:
+zooming out enough to see the world makes characters tiny, while desktop-style
+menus remain difficult to use. The planned solution is a phone-specific layout,
+not further shrinking the desktop screen.
+
+- **1.1: make ordinary play usable.** Frame the camera around the visible play
+  area, keep the hero and threats readable at the default zoom, simplify the HUD,
+  and make essential menus and two-thumb controls work in portrait and landscape.
+- **1.2: finish the redesign.** Use readable full-screen panels or bottom sheets,
+  large item rows, explicit actions, consistent Back/Close navigation, safe-area
+  spacing, and independently adjustable UI scale. Keep chat available without
+  letting it cover combat; preserve desktop controls.
+- **1.3: refine the feel.** Tune touch targeting, aiming, telegraphs, effects and
+  sustained device performance. Carry phone usability through subsequent releases.
+
+Success means normal play without maximum zoom-out, browser zoom, or forced
+rotation; readable text and separated touch targets; and verified town, combat,
+inventory, quest and dungeon flows on actual iOS and Android phones. The detailed
+[mobile acceptance gates](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13)
+remain open until that evidence exists. This is planned scope, not a claim that
+the redesign is already complete.
 
 ## Supporting Documents
 

@@ -68,6 +68,7 @@ func runHub() {
 // and (optionally) the current dungeon instance layout to the client. It is
 // called both on a fresh MsgJoin and on a successful MsgResumeSession.
 func sendInitialPlayerState(c *Client, entity *game.Entity, instanceID string) {
+	sendMovementContext(c)
 	// Cooldowns are server-owned and survive the session-resume window. Send a
 	// complete snapshot so reconnecting clients do not show abilities as ready
 	// only to have the server reject their first cast.
@@ -146,6 +147,15 @@ func sendInitialPlayerState(c *Client, entity *game.Entity, instanceID string) {
 	sendPvPState(c)
 	sendEndgameState(c)
 	go touchAndBroadcastGuildPresence(c.playerID, time.Now())
+}
+
+// Recovery state survives a transport reconnect but is not persisted across a
+// new server entity. Send it on join/resume as well as each approved recovery.
+func sendMovementContext(c *Client) {
+	if player := world.GetEntityCopy(c.playerID); player != nil {
+		payload, _ := json.Marshal(map[string]string{"movementContext": player.MovementContext})
+		c.sendSafe(createMessage(MsgMovementContext, payload))
+	}
 }
 
 func cleanupClient(client *Client) {

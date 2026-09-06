@@ -182,7 +182,7 @@ describe('GameEngine ctrl-click hold regression', () => {
         engine.update(1 / 60);
 
         expect(handled).toBe(true);
-        expect(engine.network.send).toHaveBeenCalledWith('jump', { x: 12, y: 0, z: 8 });
+        expect(engine.network.send).toHaveBeenCalledWith('jump', { x: 12, y: 0, z: 8, movementContext: '' });
         expect(engine.inputManager.isMouseDown).toBe(false);
         expect(engine.player.playAnimation).not.toHaveBeenCalledWith('Attack', false);
         expect(engine.player.state).not.toBe('ATTACKING');

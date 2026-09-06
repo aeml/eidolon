@@ -232,7 +232,7 @@ describe('GameEngine multiplayer respawn sync', () => {
 
         engine.requestTownRecall();
 
-        expect(engine.network.send).toHaveBeenCalledWith('recall', {});
+        expect(engine.network.send).toHaveBeenCalledWith('recall', { movementContext: expect.any(String) });
         expect(engine.player.position).toEqual(position);
         expect(engine.player.targetPosition).toEqual(target);
         expect(engine.player.state).toBe(state);

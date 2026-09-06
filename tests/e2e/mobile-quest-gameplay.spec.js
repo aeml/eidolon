@@ -82,6 +82,7 @@ test('phone player earns the first Chronicle objective and explicitly claims Ily
     const before = await page.evaluate(() => ({ gold: window.game.player.gold, xp: window.game.player.xp }));
     const complete = page.getByRole('button', { name: 'Complete Quest', exact: true });
     await expect(complete).toBeInViewport();
+    expect(await page.evaluate(() => window.game.ensureMovementNetworkState().recoveryContext)).toBeTruthy();
     expect((await questState()).completed).toBe(false);
     await page.evaluate(() => {
         const ui = window.game.uiManager.quest;
@@ -96,6 +97,10 @@ test('phone player earns the first Chronicle objective and explicitly claims Ily
         console.log('[phone-quests] turn-in diagnostic', JSON.stringify(await page.evaluate(() => {
             const game = window.game, ui = game.uiManager.quest;
             return { position: game.player.position.toArray(), state: game.player.state,
+                movement: { multiplayer: game.isMultiplayer, next: game.movementNetworkState?.nextSequence,
+                    ack: game.movementNetworkState?.lastAcknowledgedSequence, last: game.movementNetworkState?.lastPacket,
+                    serverPosition: game.movementNetworkState?.lastAcknowledgedServerPosition,
+                    sent: game.movementTelemetry?.packetsSent },
                 quest: game.player.quests.find(q => q.id === 'chronicle_01_bell_below'),
                 pending: ui.pendingQuestAction, error: ui.questActionError,
                 buttons: [...document.querySelectorAll('.phone-quest-actions button')].map(b => ({ text: b.textContent, disabled: b.disabled })),
@@ -114,5 +119,24 @@ test('phone player earns the first Chronicle objective and explicitly claims Ily
     await page.reload({ waitUntil: 'networkidle' });
     await loginAndEnterWorld(page, credentials);
     expect((await questState()).completed).toBe(true);
+    // Recovery context must also survive a resumed transport (or reset cleanly
+    // with a newly joined entity); client-only movement is insufficient proof.
+    const cdp = await context.newCDPSession(page);
+    const stick = await page.locator('#joystick-zone').boundingBox();
+    const beforeMove = await page.evaluate(() => window.game.player.position.toArray());
+    try {
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [
+            { id: 82, x: stick.x + stick.width / 2 - 24, y: stick.y + stick.height / 2 }
+        ] });
+        await expect.poll(() => page.evaluate(before => Math.hypot(window.game.player.position.x - before[0],
+            window.game.player.position.z - before[2]), beforeMove)).toBeGreaterThan(1);
+    } finally {
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+        await cdp.detach();
+    }
+    await expect.poll(() => page.evaluate(() => {
+        const game = window.game, server = game.movementNetworkState?.lastAcknowledgedServerPosition;
+        return server ? Math.hypot(game.player.position.x - server.x, game.player.position.z - server.z) : Infinity;
+    })).toBeLessThan(0.5);
     expect(failures, failures.join('\n')).toEqual([]);
 });

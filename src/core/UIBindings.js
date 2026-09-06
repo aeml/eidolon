@@ -234,7 +234,7 @@ export class UIBindings {
             const x = -1.25;
             const z = 200;
             if (engine.isMultiplayer) {
-                engine.network.send('respawn', {});
+                engine.network.send('respawn', { movementContext: crypto.randomUUID() });
             }
 
             engine.player.respawn(x, z);

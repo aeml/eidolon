@@ -133,6 +133,7 @@ const (
 	MsgRequestQuests    = "request_quests"
 	MsgAcceptQuest      = "accept_quest"
 	MsgCompleteQuest    = "complete_quest"
+	MsgMovementContext  = "movement_context"
 	MsgSelectBranch     = "selectBranch"
 	MsgUnlockSkill      = "unlockSkill"
 	MsgUnlockTalent     = "unlockTalent"
@@ -368,18 +369,24 @@ type JoinPayload struct {
 }
 
 type MovePayload struct {
-	X        float64 `json:"x"`
-	Y        float64 `json:"y"`
-	Z        float64 `json:"z"`
-	Rotation float64 `json:"rotation"`
-	State    string  `json:"state"`
-	Sequence uint64  `json:"sequence"`
+	MovementContext string  `json:"movementContext"`
+	X               float64 `json:"x"`
+	Y               float64 `json:"y"`
+	Z               float64 `json:"z"`
+	Rotation        float64 `json:"rotation"`
+	State           string  `json:"state"`
+	Sequence        uint64  `json:"sequence"`
+}
+
+type TownRecoveryPayload struct {
+	MovementContext string `json:"movementContext"`
 }
 
 type JumpPayload struct {
-	X float64 `json:"x"`
-	Y float64 `json:"y"`
-	Z float64 `json:"z"`
+	MovementContext string  `json:"movementContext"`
+	X               float64 `json:"x"`
+	Y               float64 `json:"y"`
+	Z               float64 `json:"z"`
 }
 
 type AttackPayload struct {

@@ -23,6 +23,31 @@ wire-version byte, and an envelope version inside the protobuf payload. Alpha
 - WebSocket input is capped at 8 KiB. Malformed bytes either decode to one
   valid message or return an error without mutating game state.
 
+## Town recovery movement context
+
+Starting in Alpha 1.0.19, `recall` and `respawn` accept an optional
+`movementContext` string (at most 64 characters). Updated clients generate a fresh
+opaque identifier per request. An accepted recovery atomically installs it and
+returns the lossless JSON control message
+`{"type":"movement_context","payload":{"movementContext":"..."}}`.
+Rejected requests do not change or acknowledge the context. Reusing the current
+nonempty identifier is rejected. Fresh join and session resume also send the
+current context; it is session state, not a persisted character field.
+
+Clients include the **acknowledged** context in every `move` and `jump`, switching
+only on the server reply and publishing a fresh movement sample afterward.
+Network movement checks the context under the actor/world locks: stale contexts
+are rejected while the fresh recovery context can move immediately. This replaces
+the one-second recovery hold for updated clients, preventing local movement toward
+an NPC while the server still places the character at the town spawn. Sequence,
+ability-lock, crowd-control, movement-bound and instance-geometry checks remain.
+
+Omitted/empty contexts retain the existing one-second recovery guard for legacy
+clients. Other scene transitions still use that guard and do not gain early
+movement merely because an earlier recall supplied a context. This additive JSON
+extension does not change EDPB version 2. The identifier is not a secret or an
+anti-cheat credential, and this change is not a redesign of movement authority.
+
 ## Backpressure
 
 State snapshots are replaceable and use a bounded lossy queue. Authentication,

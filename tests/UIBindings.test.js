@@ -171,7 +171,7 @@ describe('UIBindings', () => {
         expect(engine.abilityController.performHotbarAbility).toHaveBeenCalledWith(1);
 
         engine.uiManager.onRespawn();
-        expect(engine.network.send).toHaveBeenCalledWith('respawn', {});
+        expect(engine.network.send).toHaveBeenCalledWith('respawn', { movementContext: expect.any(String) });
         expect(engine.player.respawn).toHaveBeenCalledWith(-1.25, 200);
         expect(engine.pendingInteraction).toBeNull();
         expect(engine.abilityController.pendingAbilityTarget).toBeNull();

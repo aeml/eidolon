@@ -31,6 +31,17 @@ function movementHarness() {
 }
 
 describe('GameEngine ordered movement transport', () => {
+    test('approved recovery context tags fresh movement and forces a new sample', () => {
+        const engine = movementHarness();
+        engine.sendPlayerMovementIfNeeded(1 / 60);
+        expect(engine.network.send.mock.lastCall[1].movementContext).toBe('');
+        engine.handleServerMessage({ type: 'movement_context', payload: { movementContext: 'fresh-recall' } });
+        expect(engine.ensureMovementNetworkState().lastPacket).toBeNull();
+        engine.sendPlayerMovementIfNeeded(1 / 30);
+        expect(engine.network.send.mock.lastCall[1].movementContext).toBe('fresh-recall');
+        engine.handleServerMessage({ type: 'movement_context', payload: { movementContext: '' } });
+        expect(engine.ensureMovementNetworkState().recoveryContext).toBe('');
+    });
     test('server-owned charge reconciles short steps and the final landing without replaying it', () => {
         const engine = movementHarness();
         engine.sendPlayerMovementIfNeeded(1 / 60);

@@ -1319,6 +1319,16 @@ func (w *World) UpdateEntityPosition(id string, x, y, z, rotation float64) {
 // which preserves the pre-sequencing behavior without disturbing the current
 // acknowledgement.
 func (w *World) UpdatePlayerMovement(id string, x, y, z, rotation float64, state string, sequence uint64) bool {
+	return w.updatePlayerMovement(id, x, y, z, rotation, state, sequence, nil)
+}
+
+// Network movement adds atomic context, handoff and discontinuity admission.
+// Internal callers retain the existing ordered/clamped movement helper.
+func (w *World) UpdatePlayerMovementWithContext(id string, x, y, z, rotation float64, state string, sequence uint64, context string) bool {
+	return w.updatePlayerMovement(id, x, y, z, rotation, state, sequence, &context)
+}
+
+func (w *World) updatePlayerMovement(id string, x, y, z, rotation float64, state string, sequence uint64, context *string) bool {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 
@@ -1328,6 +1338,15 @@ func (w *World) UpdatePlayerMovement(id string, x, y, z, rotation float64, state
 	}
 	e.Mu.Lock()
 	defer e.Mu.Unlock()
+	if context != nil {
+		if *context != e.MovementContext || (!e.RecoveryContextReady && time.Since(e.LastRespawnTime) < time.Second) {
+			return false
+		}
+		dx, dz := x-e.X, z-e.Z
+		if dx*dx+dz*dz > 100*100 {
+			return false
+		}
+	}
 	if e.State == "DEAD" || e.State == "JUMPING" || e.IsCharging || e.Stunned || e.Rooted || time.Now().Before(e.MoveLockUntil) {
 		return false
 	}
@@ -1368,6 +1387,14 @@ func (w *World) UpdatePlayerMovement(id string, x, y, z, rotation float64, state
 }
 
 func (w *World) StartPlayerJump(id string, x, y, z float64) bool {
+	return w.startPlayerJump(id, x, y, z, nil)
+}
+
+func (w *World) StartPlayerJumpWithContext(id string, x, y, z float64, context string) bool {
+	return w.startPlayerJump(id, x, y, z, &context)
+}
+
+func (w *World) startPlayerJump(id string, x, y, z float64, context *string) bool {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 
@@ -1377,6 +1404,9 @@ func (w *World) StartPlayerJump(id string, x, y, z float64) bool {
 	}
 	e.Mu.Lock()
 	defer e.Mu.Unlock()
+	if context != nil && (*context != e.MovementContext || (!e.RecoveryContextReady && time.Since(e.LastRespawnTime) < time.Second)) {
+		return false
+	}
 	if e.State == "DEAD" || e.IsCharging || e.Stunned || e.Rooted || time.Now().Before(e.MoveLockUntil) {
 		return false
 	}

@@ -619,6 +619,15 @@ class GameEngineNetworkMessageMethods {
             }
         } else if (msg.type === 'trading_refresh') {
             this.uiManager.trading.handleSearch();
+        } else if (msg.type === 'movement_context') {
+            const context = msg.payload?.movementContext;
+            if (typeof context === 'string' && context.length <= 64) {
+                const movement = this.ensureMovementNetworkState();
+                movement.recoveryContext = context;
+                // The next frame must publish the current prediction even if
+                // its last old-context sample was rejected during recovery.
+                movement.lastPacket = null;
+            }
         } else if (msg.type === 'select_rune') {
             // Server sends updated runes after select_rune
             if (this.player && msg.payload && msg.payload.skillRunes) {

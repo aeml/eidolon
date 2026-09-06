@@ -87,6 +87,31 @@ an unconfirmed intermittent observation; passing subsequent runs is not a
 root-cause finding. The 1.0.19 candidate is prepared for a separate local commit,
 with publication held behind prior complete release gates.
 
+### Immediate turn-in after recall: confirmed movement desynchronization
+
+An exact `43321ed` repeat failed, despite the completion callback being sent.
+Server-side rejection and movement-admission diagnostics established a specific
+cause: the client walked to Ilyra in less than one second, while the existing
+post-recall guard rejected those movement packets and retained the town-spawn
+position. The giver-distance rejection was therefore correct for the server's
+stale position. This is distinct from footer focus loss and is not fixed by
+automatically retrying completion or adding an arbitrary browser-test delay.
+
+The unpublished 1.0.19 correction uses an acknowledged recovery movement context
+to accept fresh movement immediately and reject departed packets. The dedicated
+phone quest route now also checks authoritative movement after reconnect. It
+passed in **1.4 minutes**, including manual rewards and credential-safe cleanup.
+Full client checks passed **160 suites / 2,322 tests**, lint and server race tests.
+Further invalid-request, legacy-client and jump checks pass with the final server
+race suite (game 158.739 seconds). The final client suite passes 160 suites /
+2,322 tests in 83.576 seconds, plus lint, and all 18 anonymous browser checks pass
+in 1.9 minutes. Portrait dialogue and landscape journal captures were inspected.
+A separate ordinary dungeon death/respawn/re-entry route remains in progress.
+Logs: `/tmp/eidolon-recovery-context-{quests,client-final,lint,server}.log`;
+failed exact-commit reproduction: `/tmp/eidolon-1-0-19-exact-commit-quests.log`.
+The movement-context protocol is documented in `docs/PROTOCOL.md`; physical-phone
+and broader campaign acceptance remain open.
+
 ## Phone bag and equipped-item routes (Alpha 1.0.18 candidate)
 
 On top of `99c9ab9`, mobile inventory becomes a scrolling list with readable names,

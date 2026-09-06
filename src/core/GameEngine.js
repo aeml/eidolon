@@ -2121,7 +2121,7 @@ export class GameEngine {
 
     requestTownRecall() {
         if (!this.player) return;
-        this.network.send('recall', {});
+        this.network.send('recall', { movementContext: crypto.randomUUID() });
         // The server requires explicit Respawn for a dead actor. Keep the
         // dungeon and death presentation intact while that rejection arrives.
         if (this.player.state === 'DEAD' || this.player.stats?.hp <= 0) return;

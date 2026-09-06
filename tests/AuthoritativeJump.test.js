@@ -188,6 +188,7 @@ describe('authoritative jump flow', () => {
             clientY: 120
         }));
         expect(engine.network.send).toHaveBeenCalledWith('jump', {
+            movementContext: '',
             x: 33,
             y: 0,
             z: -4

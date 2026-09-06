@@ -132,6 +132,7 @@ class GameEngineMovementMethods {
         if (this.isMultiplayer && this.network?.send) {
             this.startPlayerJump(end);
             this.network.send('jump', {
+                movementContext: this.ensureMovementNetworkState().recoveryContext || '',
                 x: end.x,
                 y: end.y,
                 z: end.z
@@ -898,7 +899,7 @@ class GameEngineMovementMethods {
         }
 
         const sequence = movement.nextSequence++;
-        const payload = { ...packet, sequence };
+        const payload = { ...packet, sequence, movementContext: movement.recoveryContext || '' };
         this.network.send('move', payload);
         movement.lastSentAt = movement.clock;
         movement.lastPacket = packet;

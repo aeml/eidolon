@@ -793,47 +793,9 @@ func (c *Client) dispatchMessage(msg Message) {
 		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
 			return
 		}
-		// Authoritative movement validation should happen here
-		// For now, trust client but update world state
-
-		// Check for respawn immunity first
-		if e := world.GetEntity(c.playerID); e != nil {
-			e.Mu.RLock()
-			lastRespawnTime := e.LastRespawnTime
-			moveLockUntil := e.MoveLockUntil
-			state := e.State
-			x, z := e.X, e.Z
-			e.Mu.RUnlock()
-			if time.Since(lastRespawnTime) < 1*time.Second {
-				return
-			}
-			if time.Now().Before(moveLockUntil) {
-				return
-			}
-			if state == "JUMPING" {
-				return
-			}
-
-			// Basic distance validation to prevent teleporting across map due to lag/race conditions
-			// e.g. Client sends (0,0) after server moved player to (20000, 20000)
-			dx := payload.X - x
-			dz := payload.Z - z
-			distSq := dx*dx + dz*dz
-			if distSq > 100*100 { // 100 units max jump per frame
-				// Ignore this move packet, it's likely from the previous context
-				// log.Printf("Ignored large move for %s: distSq=%f", c.playerID, distSq)
-				return
-			}
-		}
-
-		world.UpdatePlayerMovement(
-			c.playerID,
-			payload.X,
-			payload.Y,
-			payload.Z,
-			payload.Rotation,
-			payload.State,
-			payload.Sequence,
+		world.UpdatePlayerMovementWithContext(
+			c.playerID, payload.X, payload.Y, payload.Z, payload.Rotation,
+			payload.State, payload.Sequence, payload.MovementContext,
 		)
 
 	case MsgJump:
@@ -844,19 +806,7 @@ func (c *Client) dispatchMessage(msg Message) {
 		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
 			return
 		}
-		if e := world.GetEntity(c.playerID); e != nil {
-			e.Mu.RLock()
-			lastRespawnTime := e.LastRespawnTime
-			moveLockUntil := e.MoveLockUntil
-			e.Mu.RUnlock()
-			if time.Since(lastRespawnTime) < 1*time.Second {
-				return
-			}
-			if time.Now().Before(moveLockUntil) {
-				return
-			}
-		}
-		world.StartPlayerJump(c.playerID, payload.X, payload.Y, payload.Z)
+		world.StartPlayerJumpWithContext(c.playerID, payload.X, payload.Y, payload.Z, payload.MovementContext)
 
 	case MsgAttack:
 		if c.playerID == "" {
@@ -1284,15 +1234,21 @@ func (c *Client) dispatchMessage(msg Message) {
 		if c.playerID == "" {
 			return
 		}
+		var recovery TownRecoveryPayload
+		if len(msg.Payload) > 0 && json.Unmarshal(msg.Payload, &recovery) != nil {
+			c.sendError("Invalid recovery request")
+			return
+		}
 
 		// Check if in instance before respawn resets it
 		p := world.GetEntity(c.playerID)
 		wasInInstance := p != nil && p.InstanceID != ""
 
-		if err := world.PerformRespawn(c.playerID); err != nil {
+		if err := world.PerformRespawn(c.playerID, recovery.MovementContext); err != nil {
 			c.sendError(err.Error())
 			return
 		}
+		sendMovementContext(c)
 
 		if wasInInstance {
 			log.Printf("Respawn: Sending return to overworld for %s", c.playerID)
@@ -1316,15 +1272,21 @@ func (c *Client) dispatchMessage(msg Message) {
 		if c.playerID == "" {
 			return
 		}
+		var recovery TownRecoveryPayload
+		if len(msg.Payload) > 0 && json.Unmarshal(msg.Payload, &recovery) != nil {
+			c.sendError("Invalid recovery request")
+			return
+		}
 
 		// Check if in instance before recall resets it
 		p := world.GetEntity(c.playerID)
 		wasInInstance := p != nil && p.InstanceID != ""
 
-		if err := world.PerformRecall(c.playerID); err != nil {
+		if err := world.PerformRecall(c.playerID, recovery.MovementContext); err != nil {
 			c.sendError(err.Error())
 			return
 		}
+		sendMovementContext(c)
 
 		if wasInInstance {
 			log.Printf("Recall: Sending return to overworld for %s", c.playerID)
