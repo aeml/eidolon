@@ -1189,6 +1189,14 @@ export class AnimationGallery {
 
     cleanupPresentation() {
         this.presentationSequence++;
+        // A preview jump belongs to the actor/state that started it. Otherwise
+        // its delayed landing can reset a subsequently selected actor to Idle.
+        this.jumpDuration = 0;
+        this.jumpElapsed = 0;
+        this.actor?.clearJumpAnimation?.();
+        if (this.actor?.mesh && this.actor.position) {
+            this.actor.mesh.position.y = this.actor.position.y;
+        }
         this.clearProceduralIconGallery();
         this.clearProceduralLootGallery();
         this.clearEffects();
