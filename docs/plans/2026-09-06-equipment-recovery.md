@@ -1,6 +1,6 @@
 # Alpha 1.0.28 — every item in its place
 
-Status: local candidate, not published. Publication order remains in the
+Status: locally verified and committed as `d4670b2`, not published. Publication order remains in the
 [execution ledger](2026-09-05-roadmap-execution.md). This is an inventory integrity
 and usability repair within the 1.1 readiness gate, not closure of that milestone.
 

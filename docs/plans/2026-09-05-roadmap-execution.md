@@ -17,7 +17,9 @@ lifecycle repair passed local validation and is now pushed as **1.0.23
 `5f1c3f71de4f22f8fa3bb0f1706154085020fe4f`**, CI **`34062629059`** running.
 Its client/server/browser and predeploy character jobs have passed, as have both
 deployment jobs. The final live character gate is still running; deployment alone
-does not establish complete verification.
+does not establish complete verification. Uncached checks at **22:42:30 UTC**
+match all four live identity surfaces to `5f1c3f7` / Alpha 1.0.23, with health
+`ok` and database `ready`, but these precede the final CI result.
 No 1.0.24-or-later release has been pushed.
 
 Previously, corrected 1.0.21 (`9f58757`) passed every job in CI `34055526018`,
@@ -54,7 +56,7 @@ Local merges carry that same fix forward and preserve ancestry:
 | 1.0.25 | `d55b5d8d8460f75513a0eca02baf873aa52203c6`, branch `release/25-with-gallery`; original runtime `bea6c34` | `dd2ce16` plus corrected 1.0.24; starter encounters, Ilyra guidance and recall pursuit cleanup |
 | 1.0.26 | `85efebef86ccb9a980bc630b9e860d7f68c47d4b`, branch `release/26-with-gallery`; original runtime `479cfd7` | `f0a1286` plus corrected 1.0.25; server-sourced entry requirements and guarded entry |
 | 1.0.27 | `0d4e1a1fb37d728db85c1eac9d56b6dc3bc785dd`, branch `release/27-with-gallery`; not pushed | original `ac494b8` preparation copy, earned-route QA `f0cfc15`, and inherited gallery repair |
-| 1.0.28 | local candidate, not yet committed or pushed | equipment-slot validation, lossless legacy recovery and readable phone recovery panel; separate notes/version metadata |
+| 1.0.28 | branch `release/28-with-recovery`, runtime `d4670b2ce4945d0766b4e67e8036060b7f9d351c` plus evidence-only follow-up; not pushed | equipment-slot validation, lossless legacy recovery and readable phone recovery panel; separate notes/version metadata |
 
 The corrected 1.0.21 → 1.0.22 → 1.0.23 → 1.0.24 ancestry was checked with
 `git merge-base --is-ancestor`. Exact clean `9f58757` passes **163 client suites /
@@ -98,7 +100,8 @@ confirmed/canceled drops, manual pickup and reconnect persistence. Its prepared
 level-30 fixture is functional evidence only. Retained failures and scope are in the
 [equipment recovery record](2026-09-06-equipment-recovery.md).
 
-The patch has its own 1.0.28 notes and synchronized version metadata. It remains
+The patch is committed as `d4670b2`, with its own 1.0.28 notes and synchronized
+version metadata. It remains
 behind the ordered 1.0.23–1.0.27 release gates; no wider roadmap milestone, fresh
 Imp hunt or physical-phone review is marked complete by this repair.
 
