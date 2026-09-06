@@ -75,9 +75,14 @@ scan and disposable cleanup passed. Logs `/tmp/eidolon-release21-pickup-final.lo
 and `/tmp/eidolon-release21-pickup-final-client.log`; sessions `84554`, `36573`
 closed. These final results include the passive request observer.
 
-This successor was pushed to `master`; CI **`34055526018`** is running. It has
-not yet passed the full live gate. Fresh frontend manifest and backend health
-checks before that push still identified deployed `c76db47` / Alpha 1.0.21,
-status `ok`, database `ready`; health does not erase its failed gameplay check.
-The correction is merged into later local release candidates, not skipped ahead
-to production. 1.0.20 `99303f5` remains the last fully verified release.
+This successor was pushed to `master`; CI **`34055526018` passed every job**,
+including final live persistent-character, four-class and remote-animation QA.
+Fresh post-terminal uncached checks at **September 6, 20:32:20 UTC** matched the
+frontend manifest, login label, main script release query and backend health to
+`9f587570313d2f78aa469f21bd73bf8db1dd50ab` / Alpha 1.0.21. Health reported status
+`ok`, database `ready`. This is now the last fully verified live release.
+
+The old `c76db47` failure remains recorded; its matching health alone never
+established passing gameplay. After the corrected successor's complete gate,
+the next 1.0.22 commit `e0b9afd3f8cfcefdbd056ef0339cb7937c27c4e7` was fast-forward
+pushed to `master`. CI `34058325420` is running; no later version may skip its gate.

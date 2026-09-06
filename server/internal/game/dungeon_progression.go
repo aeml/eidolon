@@ -15,6 +15,15 @@ var supportedDungeonTypes = map[string]int{
 	"molten_core": 70, "tempest_spire": 70, "umbral_nexus": MaxPlayerLevel,
 }
 
+// DungeonEntryLevels returns a menu snapshot without exposing mutable authority.
+func DungeonEntryLevels() map[string]int {
+	levels := make(map[string]int, len(supportedDungeonTypes))
+	for dungeonType, level := range supportedDungeonTypes {
+		levels[dungeonType] = level
+	}
+	return levels
+}
+
 func ValidateDungeonTypeEntry(playerLevel int, dungeonType string) error {
 	requiredLevel, ok := supportedDungeonTypes[dungeonType]
 	if !ok {

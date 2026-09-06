@@ -45,6 +45,7 @@ func TestDungeonMenuRecognizesLeaderAndProtectsOccupiedReset(t *testing.T) {
 			IsLeader    bool                 `json:"isLeader"`
 			HasInstance bool                 `json:"hasInstance"`
 			ActiveRun   game.PartyDungeonRun `json:"activeRun"`
+			EntryLevels map[string]int       `json:"dungeonEntryLevels"`
 		}
 		if err := json.Unmarshal(message.Payload, &payload); err != nil {
 			t.Fatal(err)
@@ -54,6 +55,14 @@ func TestDungeonMenuRecognizesLeaderAndProtectsOccupiedReset(t *testing.T) {
 		}
 		if payload.ActiveRun.InstanceID != instanceID || payload.ActiveRun.DungeonType != "abyssal_well" || payload.ActiveRun.RunLevel != 60 {
 			t.Fatalf("menu lost the actual run settings: %+v", payload.ActiveRun)
+		}
+		if len(payload.EntryLevels) != len(game.DungeonEntryLevels()) {
+			t.Fatal("menu omitted dungeon family requirements")
+		}
+		for dungeonType, level := range payload.EntryLevels {
+			if game.ValidateDungeonTypeEntry(level, dungeonType) != nil || game.ValidateDungeonTypeEntry(level-1, dungeonType) == nil {
+				t.Fatalf("menu requirement differs from authority for %s: %d", dungeonType, level)
+			}
 		}
 	}
 	member.dispatchMessage(Message{Type: MsgResetDungeon})

@@ -30,6 +30,7 @@ for (const [width, height] of [[360, 800], [390, 844], [844, 390]]) {
             await expect(page.locator('#btn-close-dungeon-menu')).toBeInViewport();
         };
         await checkFrame(); await expect(enter).toBeInViewport();
+        const availableEntryColor = await enter.evaluate(n => getComputedStyle(n).backgroundColor);
         expect(await page.locator('label[for="dungeon-type-select"]').evaluate(n => getComputedStyle(n).fontSize)).toBe('20px');
         await page.locator('#dungeon-type-select').selectOption('abyssal_well');
         await page.locator('#dungeon-run-level-select').selectOption('60');
@@ -67,6 +68,19 @@ for (const [width, height] of [[360, 800], [390, 844], [844, 390]]) {
         await page.locator('#btn-reset-dungeon').tap(); await page.locator('#btn-confirm-dungeon-reset').tap();
         await expect(menu).toHaveCount(0);
         expect(await page.evaluate(() => window.__adventureSent.at(-1))).toEqual({ type: 'reset_dungeon', payload: {} });
+        await page.evaluate(() => window.__phoneAdventure.showDungeonMenu({ playerLevel: 16, isLeader: true, availableRunLevels: [] }));
+        await checkFrame();
+        await expect(enter).toBeDisabled();
+        await expect(enter).toBeInViewport();
+        await expect(page.locator('#dungeon-run-level-select')).toBeDisabled();
+        expect(await enter.evaluate(n => getComputedStyle(n).backgroundColor)).not.toBe(availableEntryColor);
+        await expect(menu.locator('.phone-adventure-summary')).toContainText('unlocks at level 30. Your level: 16');
+        const footer = menu.locator('.phone-adventure-actions');
+        expect(await footer.evaluate(n => n.scrollWidth <= n.clientWidth && n.scrollHeight <= n.clientHeight)).toBe(true);
+        await page.screenshot({ path: `/tmp/eidolon-phone-adventure-underlevel-${width}.png` });
+        await page.locator('#dungeon-type-select').selectOption('abyssal_well');
+        await expect(enter).toBeDisabled();
+        await expect(menu.locator('.phone-adventure-summary')).toContainText('unlocks at level 60. Your level: 16');
         await page.evaluate(() => window.__phoneAdventure.showDungeonMenu({ playerLevel: 30, isLeader: true }));
         await page.locator('#chat-mobile-toggle').tap(); await expect(menu).toHaveCount(0);
         await expect(page.locator('#chat-input')).toBeVisible();

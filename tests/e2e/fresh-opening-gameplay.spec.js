@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
+import { earnFreshCollectionAndInspectHandoff } from './fresh-collection-route.js';
 import { collectBrowserFailures, credentialsFromEnvironment, jumpByGroundClick,
     loginAndEnterWorld, moveByGroundClick, projectEntity, projectNearestHostile,
     readPlayerState, returnToTown } from './helpers.js';
@@ -44,7 +45,7 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     const credentials = credentialsFromEnvironment();
     test.skip(!credentials.username || !credentials.password, 'Requires a disposable QA character');
     expect(process.env.EIDOLON_E2E_REGISTER).toBe('1');
-    test.setTimeout(600_000);
+    test.setTimeout(process.env.EIDOLON_E2E_FRESH_COLLECTION === '1' ? 1_200_000 : 600_000);
     const started = Date.now();
     const failures = collectBrowserFailures(page, baseURL);
     await loginAndEnterWorld(page, credentials);
@@ -152,5 +153,10 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     expect((await readPlayerState(page)).level).toBe(earnedLevel);
     expect((await readChronicleChapter(page, chapter)).completed).toBe(true);
     console.log(`[fresh-opening] completed ${JSON.stringify({ level: earnedLevel, deaths, retreats, grantedGold: rewarded.grantedGold, grantedXP: rewarded.grantedXP, elapsedSeconds: Math.round((Date.now() - started) / 1000) })}`);
+    if (process.env.EIDOLON_E2E_FRESH_COLLECTION === '1') {
+        await earnFreshCollectionAndInspectHandoff(page, credentials, {
+            findTarget: () => findSkeletonThroughTravel(page), leaveTown: () => leaveTown(page)
+        });
+    }
     expect(failures, failures.join('\n')).toEqual([]);
 });

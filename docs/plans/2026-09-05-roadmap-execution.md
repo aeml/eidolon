@@ -5,11 +5,16 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-Current release queue (September 6): **corrected 1.0.20 (`99303f5`) is the last
-fully verified release**. CI `34031297122` passed every job, including final live
-character QA. Post-terminal uncached frontend manifest, login label, main script
-release query and backend health all matched the full `99303f5` commit / Alpha
-1.0.20; health reported status `ok`, database `ready`. The original 1.0.20
+Current release queue (September 6): **corrected 1.0.21 (`9f58757`) is the last
+fully verified release**. CI `34055526018` passed every job, including final live
+character and animation QA. Post-terminal uncached checks at **20:32:20 UTC**
+matched frontend manifest, login label, main script release query and backend
+health to `9f587570313d2f78aa469f21bd73bf8db1dd50ab` / Alpha 1.0.21; health reported
+status `ok`, database `ready`. **1.0.22 `e0b9afd` is now pushed**, with CI
+**`34058325420`** in progress. No 1.0.23-or-later release has been pushed.
+
+Previously verified 1.0.20 `99303f5` passed CI `34031297122` and its post-terminal
+identity checks. The original 1.0.20
 (`bd54b2a`) deployed but failed CI `34028688737`'s final live multiplayer check;
 that failure remains recorded rather than reclassified as a pass.
 
@@ -21,20 +26,20 @@ live gameplay after both deployments succeeded. Its two loot attempts expected
 occupied slots to exceed 24 and timed out at 24; the bag limit is 25, so this
 alone does not prove a full-bag defect. The test also blindly clicks a projected
 ground position and treats stack merges as failed pickups. Corrected successor
-**`9f587570313d2f78aa469f21bd73bf8db1dd50ab` is now pushed**, CI **`34055526018`**
-running, with exact item/quantity receipts, actual pointer acquisition,
-recorded early manual pickups and saved-quantity checks. The old failure remains unresolved as a
-live gate until the successor passes; do not claim its precise cause is proven
-by the limited old diagnostics. No later
-version has been pushed. Local merges carry that same fix forward and preserve ancestry:
+**`9f587570313d2f78aa469f21bd73bf8db1dd50ab` passed CI `34055526018`**, with exact
+item/quantity receipts, actual pointer acquisition, recorded early manual pickups
+and saved-quantity checks. This successor clears the live gate; the old failure
+remains recorded, and its precise cause is not proven by the limited old diagnostics.
+Local merges carry that same fix forward and preserve ancestry:
 
 | Next version | Queued source | Supersedes |
 |---|---|---|
-| 1.0.21 | `9f587570313d2f78aa469f21bd73bf8db1dd50ab` (pushed; live gate pending) | `c76db47`; strengthens pickup and persistence verification |
-| 1.0.22 | `e0b9afd3f8cfcefdbd056ef0339cb7937c27c4e7` | `ed793e0`; inherits corrected 1.0.21 |
+| 1.0.21 | `9f587570313d2f78aa469f21bd73bf8db1dd50ab` (fully verified live) | `c76db47`; strengthens pickup and persistence verification |
+| 1.0.22 | `e0b9afd3f8cfcefdbd056ef0339cb7937c27c4e7` (pushed; CI `34058325420`) | `ed793e0`; inherits corrected 1.0.21 |
 | 1.0.23 | `ad72a642592b5ce6fc6e22b23af1d8b2ab3a52dc` | `4fcb89d`; retains the verified collection inventory repair |
 | 1.0.24 | `bcc29f498504fa83a53f62e5cb5aa00e020844c8`, branch `release/24-with-pickup` | phone navigation and fresh-opening QA with corrected release ancestry |
 | 1.0.25 | `bea6c349284a42e3bfbf5007c092c73ac2bede0d` plus subsequent test/evidence-only commits | normal starter encounters, Ilyra guidance and clearing stale recall pursuit |
+| 1.0.26 | working candidate after `dd2ce16`; verification in progress | server-sourced dungeon requirements, guarded entry and fresh collection/handoff measurement |
 
 The corrected 1.0.21 → 1.0.22 → 1.0.23 → 1.0.24 ancestry was checked with
 `git merge-base --is-ancestor`. Exact clean `9f58757` passes **163 client suites /
@@ -58,6 +63,29 @@ not the current queue. Do not publish a successor before the preceding version's
 complete CI/live verification. The original 1.0.14 failure remains recorded below.
 
 ## September 6 continuation — dungeon class and campaign evidence
+
+### Alpha 1.0.26 — know when you are ready (local candidate)
+
+The previous continuation completed and verified the starter/recall candidate;
+this one extends genuinely earned progression through the second Chronicle and
+addresses the guide's confirmed misleading entry flow. The old menu offered
+under-level Start and all run bands, while claiming every dungeon unlocked at 30.
+Twelve new desktop/phone checks reproduce the defect; the corrected menu passes
+all 30 focused tests and server race-enabled authority/snapshot checks. Patch
+notes preserve all earlier releases and login/build defaults advance together.
+The full client suite passes **166 suites / 2,386 tests**, lint and full Go race
+checks pass, and all four classes pass the first two genuinely earned chapters
+with no deaths, manual rewards and fresh-login persistence (level 16 for Fighter,
+Wizard and Rogue; 17 for Cleric). Three enlarged-text phone layouts also pass;
+the muted disabled-button appearance passes the final 27.7-second layout repeat. The
+level-16/17-to-30 preparation interval is not yet verified. See
+[fresh progression evidence](fresh-progression-evidence.md) for the interrupted
+first measurement's harness defect and the unchanged XP/entry-authority scope.
+
+Corrected 1.0.21 CI `34055526018` passed the entire gate and post-terminal identity
+checks. The next 1.0.22 source `e0b9afd` was then fast-forward pushed to `master`;
+CI `34058325420` is running. Wait for its full gate and fresh matching identities
+before pushing queued 1.0.23 `ad72a64`; never push the local 1.0.26 HEAD past it.
 
 ### Alpha 1.0.25 — a first step beyond the wards (local candidate)
 

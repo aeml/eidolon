@@ -33,6 +33,7 @@ jest.unstable_mockModule('../src/data/dungeonProgression.js', () => ({
     MAX_PLAYER_LEVEL: 100,
     DUNGEON_RUN_LEVEL_BANDS: [],
     availableDungeonRunLevelsForPlayer: () => [],
+    canSelectDungeonRunLevel: () => false,
     isEndgameDifficultyUnlocked: () => false,
 }));
 

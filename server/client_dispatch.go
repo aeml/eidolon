@@ -674,6 +674,7 @@ func (c *Client) dispatchMessage(msg Message) {
 			"playerLevel":                  player.Level,
 			"maxPlayerLevel":               game.MaxPlayerLevel,
 			"dungeonUnlockLevel":           game.DungeonUnlockLevel,
+			"dungeonEntryLevels":           game.DungeonEntryLevels(),
 			"endgameDifficultyUnlockLevel": game.EndgameDifficultyUnlockLevel,
 			"availableRunLevels":           game.AvailableDungeonRunLevelsForPlayer(player.Level),
 		}

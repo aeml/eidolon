@@ -1,5 +1,106 @@
 # Fresh-character progression evidence — 1.1 gate
 
+## Alpha 1.0.26 candidate — explain the first dungeon handoff
+
+The guide previously described **all** dungeons as unlocking at level 30, even
+though server family entry gates are Verdant/legacy Crypt 30, Abyssal 60,
+Molten/Tempest 70 and Umbral 100. An under-level leader could press Start, and
+an empty unlocked-run list incorrectly fell back to every level band through
+100. Twelve new desktop/phone assertions failed against that implementation;
+two preservation cases passed.
+
+The candidate publishes a copied server entry-level map, uses it in the guide,
+and displays the selected family's unmet requirement and current player level.
+Start is disabled for unmet family/run/difficulty/leader requirements, with a
+guard in the handler as well as the button. Phone footer text repeats the reason.
+Empty run lists now show a disabled placeholder. Qualified followers can still
+resume, and eligible level-60 characters can still choose level-30 Water scaling:
+family entry eligibility and run scaling are intentionally separate rules.
+Server entry authority, party-wide qualification, story access and XP are unchanged.
+
+Focused checks pass **30 client tests** across three suites; server race-enabled
+menu/authority checks pass. The first full client run found an outdated friend-
+toast test mock missing the newly imported run-level validator (165 suites /
+2,370 tests passed, one suite could not load). The mock now includes that export;
+the corrected complete suite passes **166 suites / 2,386 tests in 106.277 seconds**,
+with lint passing. Full `go test -race ./...` passes (server root 17.634 seconds,
+game package 222.400 seconds). Logs `/tmp/eidolon-1-0-26-client-final.log` and
+`/tmp/eidolon-1-0-26-server.log`; the earlier client failure remains in
+`/tmp/eidolon-1-0-26-client.log`.
+
+Corrected fresh Wizard route **passes in 1.6 minutes**, ending at level **16**.
+The collection portion took **53 seconds**, observed four target deaths, four
+natural seeds and **zero deaths**, then manually awarded **100 gold / 8,000 XP**.
+Four seeds were consumed; collection completion, next accepted chapter, bag
+remainder and earned level persisted after login. The guide reported Verdant's
+level-30 requirement/current level 16 and disabled entry. The earlier opening
+portion also had zero deaths and manually awarded 100 gold / 500 XP. Credential
+scan and disposable cleanup passed. Log `/tmp/eidolon-1-0-26-fresh-Wizard.log`,
+session `60541` closed. This measures the first two chapters, **not a route to 30**.
+
+Fighter also passes in **2.6 minutes** (2.5-minute test body), ending at level 16.
+Collection took **70 seconds** with five observed target deaths, four naturally
+collected seeds and zero deaths; the opening was also death-free. Manual rewards,
+exact four-seed consumption, fresh-login persistence and the blocked level-30
+handoff all passed. Credential scan and disposable cleanup passed; log
+`/tmp/eidolon-1-0-26-fresh-Fighter.log`, session `59366` closed. Wizard and Fighter
+used the candidate before a subsequent button-color-only polish; its disabled
+entry semantics are unchanged. Cleric/Rogue and layout repeats target that polish.
+
+Real-browser phone-layout fixtures pass **3 checks in 25.6 seconds** at 360×800,
+390×844 and 844×390 with 125% text. They retain qualified entry/reset behavior
+and check the under-level explanation, disabled controls, reachable footer,
+scrolling space and no footer overflow. Portrait/landscape captures were visually
+inspected. This is emulated layout evidence, not physical-phone gameplay or earned
+level preparation. Log `/tmp/eidolon-1-0-26-phone-layout.log`, session `23735` closed.
+Visual review found the disabled entry still looked green/active; the candidate
+now uses a readable muted background, border and label, removes the active shadow
+and exposes the disabled cursor without dimming the entire control. A layout
+regression compares the available and unavailable entry colors.
+
+After that polish, the full client suite again passes **166 suites / 2,386 tests
+in 95.791 seconds**, plus lint (`/tmp/eidolon-1-0-26-client-styled.log`, session
+`28739` closed). No server runtime changed after its full race pass.
+
+Cleric and Rogue also pass on the polished candidate, with **zero opening or
+collection deaths**. Cleric took **1.5 minutes** overall, **48 seconds** for
+collection, four observed target deaths and finished at **level 17**. Rogue took
+**1.4 minutes** overall (1.3-minute body), **47 seconds** for collection, three
+observed target deaths and finished at **level 16**. Both naturally collected four
+seeds, manually received 100 gold / 8,000 XP, consumed exactly four seeds, retained
+the earned chapter/level/bag state after fresh login and saw correctly disabled
+level-30 entry. Area-effect kills can credit additional enemies beyond the selected
+target count; these counts must not be interpreted as total kills. Credential scans
+and disposable cleanup passed. Logs `/tmp/eidolon-1-0-26-fresh-{Cleric,Rogue}.log`,
+sessions `82427` and `3062` closed.
+
+All four classes now have a death-free automated first-two-chapter pass. None
+establishes progression from level 16/17 to the first dungeon, human discovery,
+full build/rune balance, real phone feel or a complete fresh campaign.
+
+Final phone-layout repeat after the button polish passes **3 checks in 27.7
+seconds**, including distinct available/unavailable button colors; the updated
+portrait capture was visually inspected. Log
+`/tmp/eidolon-1-0-26-phone-layout-final.log`, session `92897` closed.
+
+The optional `fresh-collection` route extends `fresh-opening` through four natural
+seed pickups, manual turn-in, exact bag consumption, positive rewards, next-quest
+acceptance, fresh-login persistence and the first dungeon guide. It uses normal
+canvas movement/combat and Settings auto-loot, with no QA level, item, progress,
+protection or travel grants. Collection reports observed selected-target deaths,
+not a claimed total of every possible area-effect kill. Read-only world-state
+navigation and automated input do not establish human discovery or phone feel.
+
+First measurement against the 1.0.25 runtime collected four seeds after six
+observed target deaths, with zero collection deaths, but the new diagnostic
+waited for a nonexistent `#dungeon-unlock-note`. The run was deliberately
+interrupted after confirming that harness defect; it is **not a full pass**.
+The error stack confirms the missing locator, not a gameplay timeout. Credential
+scan passed and the isolated script exited. Log
+`/tmp/eidolon-fresh-collection-first.log`. The corrected diagnostic has an explicit
+five-second label timeout and respects the existing hidden under-level raid card.
+The menu now exposes that label as part of its accessible entry explanation.
+
 ## Alpha 1.0.25 candidate — an actual starter band
 
 The new local candidate addresses the reproduced encounter mismatch without

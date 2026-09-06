@@ -1,6 +1,6 @@
 import {
-    DUNGEON_RUN_LEVEL_BANDS,
     availableDungeonRunLevelsForPlayer,
+    canSelectDungeonRunLevel,
     isEndgameDifficultyUnlocked
 } from '../data/dungeonProgression.js';
 import { installPrototypeMethods } from '../core/PrototypeInstaller.js';
@@ -184,6 +184,12 @@ class UIManagerDungeonMethods {
             abyssal_well: { name: 'Abyssal Well', baseLevel: 60, color: '#4ad' },
             umbral_nexus: { name: 'Umbral Nexus', baseLevel: 100, color: '#c066ff' }
         };
+        // Older servers retain the known defaults during a rolling deployment.
+        // Current servers publish the same family gates used for actual entry.
+        for (const [type, info] of Object.entries(dungeonInfo)) {
+            const required = Number(data.dungeonEntryLevels?.[type]);
+            if (Number.isInteger(required) && required > 0) info.baseLevel = required;
+        }
         const raidInfo = {
             earth_crystal_raid: { name: 'Rootheart Sanctum', baseLevel: 30, color: '#4a4' },
             water_crystal_raid: { name: 'Tidestar Confluence', baseLevel: 60, color: '#4ad' },
@@ -283,9 +289,9 @@ class UIManagerDungeonMethods {
         }
         dungeonPanel.appendChild(dungeonSelect);
 
-        const availableRunLevels = Array.isArray(data.availableRunLevels) && data.availableRunLevels.length > 0
-            ? data.availableRunLevels
-            : availableDungeonRunLevelsForPlayer(playerLevel);
+        const availableRunLevels = (Array.isArray(data.availableRunLevels)
+            ? data.availableRunLevels : availableDungeonRunLevelsForPlayer(playerLevel))
+            .map(Number).filter(level => canSelectDungeonRunLevel(playerLevel, level));
         const endgameUnlocked = isEndgameDifficultyUnlocked(playerLevel);
 
         const runLevelLabel = document.createElement('label');
@@ -305,22 +311,27 @@ class UIManagerDungeonMethods {
         runLevelSelect.style.cursor = 'pointer';
         runLevelSelect.style.userSelect = 'text';
         runLevelSelect.style.webkitUserSelect = 'text';
-        for (const runLevel of activeRun ? [activeRun.runLevel] : availableRunLevels.length > 0 ? availableRunLevels : DUNGEON_RUN_LEVEL_BANDS) {
+        for (const runLevel of activeRun ? [activeRun.runLevel] : availableRunLevels) {
             const option = document.createElement('option');
             option.value = String(runLevel);
             option.innerText = `Level ${runLevel}`;
             runLevelSelect.appendChild(option);
         }
-        runLevelSelect.disabled = Boolean(activeRun);
+        if (!activeRun && availableRunLevels.length === 0) {
+            const placeholder = document.createElement('option');
+            placeholder.value = '';
+            placeholder.textContent = `Unlocks at level ${data.dungeonUnlockLevel || 30}`;
+            runLevelSelect.appendChild(placeholder);
+        }
+        runLevelSelect.disabled = Boolean(activeRun) || availableRunLevels.length === 0;
         dungeonPanel.appendChild(runLevelSelect);
 
         const unlockNote = document.createElement('div');
+        unlockNote.id = 'dungeon-unlock-note';
+        unlockNote.setAttribute('aria-live', 'polite');
         unlockNote.style.marginTop = '10px';
         unlockNote.style.fontSize = '12px';
         unlockNote.style.color = '#aab6c8';
-        unlockNote.textContent = endgameUnlocked
-            ? `All run levels unlocked. Heroic and Mythic are now available at level ${data.endgameDifficultyUnlockLevel || 100}.`
-            : `All dungeons unlock at level ${data.dungeonUnlockLevel || 30}. Heroic and Mythic unlock at level ${data.endgameDifficultyUnlockLevel || 100}.`;
         dungeonPanel.appendChild(unlockNote);
 
         // Difficulty Label
@@ -405,12 +416,37 @@ class UIManagerDungeonMethods {
         rewardLadderBox.style.textAlign = 'left';
         dungeonPanel.appendChild(rewardLadderBox);
 
+        const entryRestriction = () => {
+            const dungeon = dungeonInfo[dungeonSelect.value];
+            if (playerLevel < dungeon.baseLevel) {
+                return `${dungeon.name} unlocks at level ${dungeon.baseLevel}. Your level: ${playerLevel}.`;
+            }
+            const runLevel = Number(runLevelSelect.value);
+            if (!canSelectDungeonRunLevel(playerLevel, runLevel)) {
+                return `This run level is not unlocked. Your level: ${playerLevel}.`;
+            }
+            if (selectedDifficulty !== 'normal' && !endgameUnlocked) {
+                return `Heroic and Mythic unlock at level ${data.endgameDifficultyUnlockLevel || 100}. Your level: ${playerLevel}.`;
+            }
+            if (!data.hasInstance && data.isLeader === false) return 'Ask your party leader to start the run.';
+            return '';
+        };
+
         const updateDifficultyInfo = () => {
             const dungeonKey = dungeonSelect.value;
             const dungeon = dungeonInfo[dungeonKey];
             const diff = difficultyInfo[selectedDifficulty];
-            const selectedRunLevel = Number(runLevelSelect.value) || availableRunLevels[0] || 30;
-            phoneMenu?.updateSummary(`${dungeon.name} · ${diff.name} · Level ${selectedRunLevel}`);
+            const selectedRunLevel = Number(runLevelSelect.value) || null;
+            const restriction = entryRestriction();
+            enterBtn.disabled = Boolean(restriction);
+            enterBtn.title = restriction;
+            enterBtn.style.backgroundColor = restriction ? '#25303b' : '#29483d';
+            enterBtn.style.color = restriction ? '#aab6c8' : '#fff';
+            enterBtn.style.borderColor = restriction ? '#506076' : '#779e89';
+            enterBtn.style.boxShadow = restriction ? 'none' : '0 10px 24px rgba(12, 38, 24, 0.35)';
+            enterBtn.style.cursor = restriction ? 'not-allowed' : 'pointer';
+            unlockNote.textContent = restriction || `${dungeon.name} entry available. Your level: ${playerLevel}. Party members must also meet the entry requirements.`;
+            phoneMenu?.updateSummary(restriction || `${dungeon.name} · ${diff.name} · Level ${selectedRunLevel}`);
             const dailyQuestEntries = this.getDungeonDailyQuestEntries(dungeonKey, selectedDifficulty, data.quests);
             const ladderRows = dailyQuestEntries.length > 0
                 ? dailyQuestEntries.map((entry) => `
@@ -424,13 +460,13 @@ class UIManagerDungeonMethods {
             diffInfoBox.innerHTML = `
                 <div style="color: ${diff.color}; font-weight: bold; font-size: 14px; margin-bottom: 8px;">${diff.name} Mode</div>
                 <div><span style="color: #888;">Dungeon:</span> <span style="color: #fff;">${dungeon.name}</span></div>
-                <div><span style="color: #888;">Run Level:</span> <span style="color: #fff;">${selectedRunLevel}</span></div>
+                <div><span style="color: #888;">Run Level:</span> <span style="color: #fff;">${selectedRunLevel || 'Not yet unlocked'}</span></div>
                 <div><span style="color: #888;">Enemy HP:</span> <span style="color: #f66;">${diff.hp}</span></div>
                 <div><span style="color: #888;">Enemy Damage:</span> <span style="color: #f66;">${diff.dmg}</span></div>
                 <div><span style="color: #888;">Loot & XP:</span> <span style="color: #6f6;">${diff.loot}</span></div>
                 <div style="color: #d7dfef; margin-top: 6px; line-height: 1.5;">${diff.identity}</div>
                 <div style="color: ${diff.color}; margin-top: 5px; line-height: 1.5;">${diff.rewardNote}</div>
-                <div style="color: #8ea8d1; margin-top: 6px;">All dungeons unlock at level ${data.dungeonUnlockLevel || 30}. Heroic and Mythic unlock at level ${data.endgameDifficultyUnlockLevel || 100}.</div>
+                <div style="color: #8ea8d1; margin-top: 6px;">${dungeon.name} unlocks at level ${dungeon.baseLevel}. Heroic and Mythic unlock at level ${data.endgameDifficultyUnlockLevel || 100}.</div>
             `;
 
             rewardLadderBox.innerHTML = `
@@ -442,7 +478,6 @@ class UIManagerDungeonMethods {
 
         dungeonSelect.onchange = updateDifficultyInfo;
         runLevelSelect.onchange = updateDifficultyInfo;
-        updateDifficultyInfo(); // Initial update
 
         // Enter Button
         const actions = document.createElement('div');
@@ -453,8 +488,7 @@ class UIManagerDungeonMethods {
         enterBtn.innerText = data.hasInstance ? 'Continue Party Run' : 'Start Party Run';
         enterBtn.className = 'menu-btn';
         enterBtn.type = 'button';
-        enterBtn.disabled = !data.hasInstance && data.isLeader === false;
-        if (enterBtn.disabled) enterBtn.title = 'Ask your party leader to start the run.';
+        enterBtn.setAttribute('aria-describedby', unlockNote.id);
         enterBtn.style.minWidth = '160px';
         enterBtn.style.padding = '12px 30px';
         enterBtn.style.backgroundColor = '#29483d';
@@ -464,6 +498,8 @@ class UIManagerDungeonMethods {
         enterBtn.style.fontSize = '16px';
         enterBtn.style.boxShadow = '0 10px 24px rgba(12, 38, 24, 0.35)';
         enterBtn.onclick = () => {
+            updateDifficultyInfo();
+            if (enterBtn.disabled) return;
             if (window.game && window.game.socket) {
                 window.game.socket.send(JSON.stringify({
                     type: 'enter_dungeon',
@@ -601,8 +637,8 @@ class UIManagerDungeonMethods {
 
         if (this.isMobile) {
             phoneMenu = new PhoneDungeonMenuUI(menu, { actions, partyStateBox, diffInfoBox, rewardLadderBox, hasInstance: data.hasInstance });
-            updateDifficultyInfo();
         }
+        updateDifficultyInfo();
 
         document.body.appendChild(backdrop);
         document.body.appendChild(menu);
