@@ -545,6 +545,7 @@ export class UIManager {
         this.chat = new ChatUI({
             onSend: (message) => this.onChatSend?.(message),
             onMobileExpanded: (expanded) => {
+                if (this.isMobile && expanded) this.phoneDungeonMenuClose?.();
                 if (this.isMobile && expanded && this.isElementVisible(this.settingsScreen)) {
                     this.closeStaticModal(this.settingsScreen);
                     if (this.isEscMenuOpen) this.toggleEscMenu();

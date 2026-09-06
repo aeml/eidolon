@@ -3,11 +3,65 @@
 Status: baseline diagnosis plus incremental implementation evidence, not a completed phone redesign. Requirements
 and release gates live in [the main roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13).
 
-Latest local candidate: **Alpha 1.0.21**, readable phone Settings and independent
-menu text sizing, not yet published. 1.0.18 is live and verified; 1.0.19 is in CI.
+Latest local candidate: **Alpha 1.0.22**, phone adventure selection and the
+landscape party/joystick overlap correction, not yet published. 1.0.18 is live
+and verified; 1.0.19 is in CI. 1.0.20 and 1.0.21 are committed locally.
 Earlier entries below are chronological snapshots, not current process status.
 
+## Phone adventure and post-dungeon movement (Alpha 1.0.22 candidate)
+
+Source: `0498ffe` plus phone adventure changes. Readable dungeon/raid choices and
+native controls share a viewport panel above chat. Expandable detail sections and
+remembered tab scroll reduce permanent clutter; Start/Continue and selected run
+remain outside the scroller. Reset requires explicit confirmation, and chat can
+close the guide. Existing party authority, run parameters and story gates remain.
+
+The real-server entry/recall route exposed a second issue: a dungeon automatically
+creates a party, whose landscape roster intercepted joystick touches after recall.
+The diagnostic repeat recorded a `.party-member` at the stick center, zero input
+and unchanged authoritative town position. The landscape roster was moved between
+the thumb regions, not layered above movement. Logs retain both failed runs:
+`/tmp/eidolon-phone-adventure-{gameplay,diagnostic}.log`.
+
+Corrected checks: **163 suites / 2,351 client tests**, lint, five layout/HUD tests
+in **32.4 seconds**, and real-server guide entry/recall/continuation/reset in
+**12.3 seconds**. The latter grants only level 30, walks by joystick at default
+zoom, operates guide/menu by touch, verifies sealed raids and difficulties,
+returns to fully rebuilt town, continues the same instance after canceled reset,
+then confirms a reset and enters a new instance. Credential scan and disposable
+cleanup passed. It does not prove dungeon combat completion or physical phones.
+
+The new populated-party fixture required a corrected phone browser identity to
+remain in mobile mode through rotation; no thumb-access assertion was weakened.
+Visual captures cover 125% adventure text and five-member rosters. 568×320 adds
+thumb-access coverage only: header/status overlap and tiny party controls remain
+polish work. Capture prefixes: `/tmp/eidolon-phone-adventure-` and
+`/tmp/eidolon-phone-party-controls-`. Final versioned checks are running under
+`/tmp/eidolon-1-0-22-`; the broad phone and dungeon gates remain open.
+
+Versioned client checks passed **163 suites / 2,352 tests**, lint, the server
+race suite and **28 anonymous cases in 2.5 minutes**. A repeat real-server route
+then oscillated around its arbitrary one-metre waypoint despite working joystick
+input and matching authoritative movement. The corrected fixture stops within
+the guide's existing interaction range instead, without changing runtime movement
+or skipping any guide/instance assertion. The original repeat is retained in
+`/tmp/eidolon-1-0-22-adventure.log`; its corrected rerun is in
+`/tmp/eidolon-1-0-22-adventure-range.log` and is not yet claimed as passed.
+That revision also needed to wait for the real guide actor after town scenery
+finished rebuilding. The added actor-readiness check avoids reading a not-yet-created
+entity; no runtime readiness or interaction assertion was bypassed. Latest rerun:
+`/tmp/eidolon-1-0-22-adventure-ready.log`.
+
+That final route **passed in 13.6 seconds**, with credential scan and disposable
+cleanup. The versioned candidate is ready for local commit, not yet publication
+or the full mobile milestone. No runtime changes followed the 28-case anonymous
+pass; the last corrections affected only the test's guide-approach controller.
+
 ## Phone Settings and independent menu text (Alpha 1.0.21 candidate)
+
+Committed as `0498ffe`; the exact clean source's real-server Settings repeat passed
+in **8.1 seconds**, with credential scan and cleanup. See
+`/tmp/eidolon-1-0-21-exact-settings.log`. This is not yet a published release.
 
 Source: `bd54b2a` plus phone Settings changes. Screen, Play, Sound and Device
 categories keep navigation and Close outside the native content scroller. Existing

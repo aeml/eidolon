@@ -4,6 +4,7 @@ import {
     isEndgameDifficultyUnlocked
 } from '../data/dungeonProgression.js';
 import { installPrototypeMethods } from '../core/PrototypeInstaller.js';
+import { PhoneDungeonMenuUI } from './PhoneDungeonMenuUI.js';
 
 class UIManagerDungeonMethods {
     showDungeonMenu(data) {
@@ -15,6 +16,10 @@ class UIManagerDungeonMethods {
             const existing = document.getElementById('dungeon-menu');
             if (existing) existing.remove();
             if (existingBackdrop) existingBackdrop.remove();
+        }
+        if (this.isMobile) {
+            this.chat?.setMobileExpanded(false);
+            if (this.isEscMenuOpen) this.toggleEscMenu();
         }
 
         const backdrop = document.createElement('div');
@@ -54,12 +59,14 @@ class UIManagerDungeonMethods {
             isMenuClosed = true;
             window.removeEventListener('keydown', handleMenuEscape);
             delete backdrop.__closeMenu;
+            if (this.phoneDungeonMenuClose === removeMenu) this.phoneDungeonMenuClose = null;
             menu.remove();
             backdrop.remove();
             if (opener?.isConnected) opener.focus();
         };
 
         backdrop.__closeMenu = removeMenu;
+        if (this.isMobile) this.phoneDungeonMenuClose = removeMenu;
         backdrop.addEventListener('click', removeMenu);
         window.addEventListener('keydown', handleMenuEscape);
 
@@ -85,6 +92,9 @@ class UIManagerDungeonMethods {
         header.appendChild(closeBtn);
         menu.appendChild(header);
 
+        let phoneMenu = null;
+        let activeTab = 0;
+        const tabScroll = [0, 0];
         const tabs = document.createElement('div');
         tabs.className = 'adventure-tabs';
         tabs.setAttribute('role', 'tablist');
@@ -124,12 +134,15 @@ class UIManagerDungeonMethods {
             return tab;
         });
         const selectTab = (index) => {
+            if (this.isMobile) tabScroll[activeTab] = scroll.scrollTop;
             panels.forEach((panel, position) => {
                 panel.hidden = position !== index;
                 tabButtons[position].setAttribute('aria-selected', String(position === index));
                 tabButtons[position].tabIndex = position === index ? 0 : -1;
             });
-            scroll.scrollTop = 0;
+            activeTab = index;
+            phoneMenu?.showTab(index);
+            scroll.scrollTop = this.isMobile ? tabScroll[index] : 0;
         };
 
         const partyStateBox = document.createElement('div');
@@ -397,6 +410,7 @@ class UIManagerDungeonMethods {
             const dungeon = dungeonInfo[dungeonKey];
             const diff = difficultyInfo[selectedDifficulty];
             const selectedRunLevel = Number(runLevelSelect.value) || availableRunLevels[0] || 30;
+            phoneMenu?.updateSummary(`${dungeon.name} · ${diff.name} · Level ${selectedRunLevel}`);
             const dailyQuestEntries = this.getDungeonDailyQuestEntries(dungeonKey, selectedDifficulty, data.quests);
             const ladderRows = dailyQuestEntries.length > 0
                 ? dailyQuestEntries.map((entry) => `
@@ -584,6 +598,11 @@ class UIManagerDungeonMethods {
         footerCloseBtn.onclick = removeMenu;
         actions.appendChild(footerCloseBtn);
         dungeonPanel.appendChild(actions);
+
+        if (this.isMobile) {
+            phoneMenu = new PhoneDungeonMenuUI(menu, { actions, partyStateBox, diffInfoBox, rewardLadderBox, hasInstance: data.hasInstance });
+            updateDifficultyInfo();
+        }
 
         document.body.appendChild(backdrop);
         document.body.appendChild(menu);

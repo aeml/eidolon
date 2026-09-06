@@ -129,6 +129,12 @@
     .mobile-mode #combat-intent-panel, .mobile-mode #dungeon-entrance-hint { top: 66px !important; right: 120px !important; width: 230px !important; }
     .mobile-mode #dungeon-entrance-hint { top: 150px !important; }
     .mobile-mode #joystick-zone { width: 104px !important; height: 104px !important; bottom: calc(var(--phone-bottom) + 60px) !important; }
+    /* A dungeon creates a party even for a solo player. Keep its populated
+       roster between the thumb regions rather than over the movement stick. */
+    .mobile-mode #party-panel {
+        left: calc(max(18px, env(safe-area-inset-left, 0px)) + 116px);
+        width: min(220px, calc(100vw - max(18px, env(safe-area-inset-left, 0px)) - max(12px, env(safe-area-inset-right, 0px)) - 360px));
+    }
     .mobile-mode #hotbar-container { width: 232px; gap: 8px; }
     .mobile-mode .hotbar-slot { width: 52px; height: 52px; }
     .mobile-mode #mobile-actions { bottom: calc(var(--phone-bottom) + 126px) !important; }

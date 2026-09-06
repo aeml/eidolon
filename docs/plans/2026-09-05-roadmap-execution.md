@@ -14,14 +14,90 @@ corrected exact-format check passed without changing either deployment.
 Only the next exact commit, 1.0.19 (`200478fddd5c3e1f28f8ef5d93644df3395da020`),
 was pushed; CI `34026658393` is running. It includes quest UI `43321ed`, verified
 recovery correction `98f4286` and documentation-only evidence updates.
-1.0.20 (`bd54b2a`) is committed locally; 1.0.21 phone Settings is locally verified
-and being committed. Neither is published. Push each exact next release only
+1.0.20 (`bd54b2a`) and 1.0.21 (`0498ffe`) are committed locally. 1.0.22 phone
+adventure work is undergoing final versioned checks. None is published. Push each exact next release only
 after its predecessor's full gate.
 Earlier entries describe their status at the time,
 not the current queue. Do not publish a successor before the preceding version's
 complete CI/live verification. The original 1.0.14 failure remains recorded below.
 
+## Alpha 1.0.22 — adventure within reach (local candidate)
+
+Phone dungeon/raid selection has readable native choices and controls, expandable
+party/difficulty/daily-reward details, remembered tab scroll, and an always-reachable
+Start/Continue footer with the actual selected run summary. Raids hide the dungeon
+footer. Existing run settings, follower permissions and Chronicle unlocks are
+preserved. Phone reset requires confirmation and is absent without an instance;
+cancel preserves the run and focus. The server's occupied-instance rejection is
+unchanged. Chat can close the guide and open its composer without disappearing.
+
+Six of seven new unit regressions failed before implementation; the existing
+story/leader gate check already passed. Focused checks passed 109 tests; the
+initial full run passed **163 suites / 2,351 tests in 58.187 seconds**, plus lint.
+Three initial phone layouts passed in **14.3 seconds** at 360×800, 390×844 and
+844×390. Inspected dungeon, raid and reset captures with 125% menu text.
+
+The first real-server route entered Verdant and recalled, then failed to walk
+after landscape rotation. A diagnostic repeat proved the populated party roster
+was above the joystick: `elementFromPoint` returned a `.party-member`, joystick
+input stayed zero, and both client/server positions remained at town spawn. A
+dungeon creates a party even for a solo player. The landscape roster now occupies
+space between the thumb regions. No movement/server guard was bypassed.
+
+The new anonymous populated-party test initially used a desktop browser identity,
+causing the application's resize handler to leave mobile mode. Its first cleanup
+also obscured the assertion by sending touchEnd without an active touch. Those
+test issues were corrected: a phone identity and safe touch cancellation preserve
+the original assertions. This does not invalidate the separate real-phone-mode
+server reproduction. All **five layout/HUD checks passed in 32.4 seconds**,
+including joystick acquisition/release with five seeded members and controls at
+390×844, 844×390 and 568×320. The very small landscape case proves thumb access,
+not full visual acceptance; header/status overlap and party readability still
+belong to the remaining phone polish work.
+
+The corrected real-server route passed in **12.3 seconds**: default-zoom joystick
+approach and guide tap, level/story restrictions, initial entry, fully rebuilt
+town recall, landscape continuation of the same instance, canceled reset, and
+confirmed reset creating a different instance. Only level 30 was prepared;
+no instance, crystal access, kill or quest credit was granted. Credential scanning
+and exact disposable cleanup passed. This is entry/recovery evidence, not a full
+dungeon clear, group combat or physical-device test.
+
+Logs: `/tmp/eidolon-phone-adventure-{red,unit,client,layout,gameplay,diagnostic,layout-device,gameplay-fixed}.log`.
+Separate 1.0.22 patch notes and all version defaults are updated. Final versioned
+client/lint/server and 28 anonymous checks followed by the real-server route are
+running under `/tmp/eidolon-1-0-22-`. No publication or full milestone sign-off
+is claimed.
+
+Final versioned checks passed **163 client suites / 2,352 tests in 66.161 seconds**,
+lint, server race checks (root 9.683 seconds; game package cached), and all
+**28 anonymous browser checks in 2.5 minutes**. The real-server repeat then found
+the test's full-speed joystick controller oscillating across its arbitrary
+one-metre waypoint: client and server positions agreed around Z=235.53 and 238.23,
+with nonzero input. This is distinct from the confirmed zero-input roster overlap.
+The fixture now stops within the guide's existing interaction radius (with a
+0.5m margin), not at an irrelevant exact waypoint. It still must open the guide
+by actual touch and pass every server-owned entry/recall/continue/reset assertion.
+The corrected route is running in `/tmp/eidolon-1-0-22-adventure-range.log`.
+
+That fixture revision initially read the guide before town's throttled actor
+queue had recreated it after recall. It now explicitly waits for the real guide
+actor before reading its radius. The original scenery/collision/position recall
+assertions remain, with additional actor readiness rather than a fixed sleep.
+Latest route log: `/tmp/eidolon-1-0-22-adventure-ready.log`.
+
+The corrected final route **passed in 13.6 seconds**, including credential scan
+and exact disposable cleanup. Browser session `28148` is closed. Together with
+the full versioned checks above, this makes 1.0.22 ready for a separate local
+commit. The fixture corrections made no runtime changes after the passing
+28-case anonymous suite. Publication remains queued behind 1.0.19–1.0.21.
+
 ## Alpha 1.0.21 — comfort without losing the view (local candidate)
+
+Committed as `0498ffed14591c10c2d3072a287958e68eed71ff`. Its exact clean source
+passed the Settings real-server route again in **8.1 seconds**, with credential
+scanning and disposable cleanup. Log: `/tmp/eidolon-1-0-21-exact-settings.log`.
+Still queued locally behind 1.0.19 and 1.0.20.
 
 Phone Settings reuses the existing native controls in four readable categories:
 Screen, Play, Sound and Device. Navigation and Close remain outside the content

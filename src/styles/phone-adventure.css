@@ -1,0 +1,40 @@
+.mobile-mode #dungeon-menu {
+    position: fixed;
+    top: var(--phone-top);
+    left: max(12px, env(safe-area-inset-left, 0px));
+    width: calc(100vw - max(12px, env(safe-area-inset-left, 0px)) - max(12px, env(safe-area-inset-right, 0px)));
+    height: calc(100dvh - var(--phone-top) - var(--phone-bottom) - 60px);
+    max-height: none;
+    transform: none;
+    padding: 0;
+    font-size: var(--phone-menu-text-size, 16px);
+    text-align: left;
+}
+.mobile-mode #dungeon-menu-backdrop { bottom: calc(var(--phone-bottom) + 60px); }
+.mobile-mode #dungeon-menu > .window-header { margin: 0 !important; min-height: 44px; padding: 4px 12px; gap: 8px; }
+.mobile-mode #dungeon-menu-title { min-width: 0; font-size: 16px !important; overflow-wrap: anywhere; }
+.mobile-mode #dungeon-menu .close-btn { flex: 0 0 44px; min-width: 44px; min-height: 44px; }
+.mobile-mode #dungeon-menu .adventure-tabs { gap: 8px; margin: 0; padding: 4px 12px; border-bottom: 1px solid var(--border-light); }
+.mobile-mode #dungeon-menu .adventure-scroll { flex: 1 1 auto; min-height: 0; padding: 12px; overflow-y: auto; touch-action: pan-y; overscroll-behavior: contain; }
+.mobile-mode #dungeon-menu :is(button:not(.close-btn), select, summary) { min-height: 44px; font-size: var(--phone-menu-text-size, 16px) !important; }
+.mobile-mode #dungeon-menu select { width: 100%; margin: 6px 0 !important; padding: 8px !important; }
+.mobile-mode #dungeon-menu button { min-width: 0 !important; padding: 8px !important; white-space: normal; overflow-wrap: anywhere; }
+.mobile-mode #dungeon-menu :is(p, label, span, strong, #dungeon-party-state-box, #difficulty-info-box, #dungeon-reward-ladder-box, #adventure-dungeons > div:not(.generated-menu__choice-row)) { font-size: var(--phone-menu-text-size, 16px) !important; line-height: 1.5; overflow-wrap: anywhere; }
+.mobile-mode #dungeon-menu :is(#difficulty-info-box, #dungeon-reward-ladder-box) div { font-size: inherit !important; flex-wrap: wrap; }
+.mobile-mode #dungeon-menu .generated-menu__choice-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.mobile-mode #dungeon-menu .adventure-raids { grid-template-columns: minmax(0, 1fr); }
+.phone-adventure-details { margin-bottom: 12px; border: 1px solid var(--border-light); border-radius: 6px; }
+.phone-adventure-details > summary { padding: 10px; color: var(--color-gold); cursor: pointer; line-height: 1.5; }
+.phone-adventure-actions { flex: 0 0 auto; padding: 8px 12px; border-top: 1px solid var(--border-light); background: var(--bg-surface); }
+.phone-adventure-actions[hidden], .phone-adventure-actions [hidden] { display: none !important; }
+.mobile-mode #dungeon-menu .phone-adventure-summary { font-size: 14px !important; margin: 0 0 6px; }
+.mobile-mode #dungeon-menu .generated-menu__actions { display: flex; gap: 8px; margin: 0; }
+.mobile-mode #dungeon-menu .generated-menu__actions button { flex: 1; margin: 0; }
+#phone-dungeon-reset-confirm button { width: calc(50% - 4px); margin: 0; }
+#phone-dungeon-reset-confirm button + button { margin-left: 8px; }
+#phone-dungeon-reset-confirm p { margin: 0 0 8px; }
+@media (max-height: 500px) and (orientation: landscape) {
+    .phone-adventure-actions { display: flex; align-items: center; gap: 12px; }
+    .mobile-mode #dungeon-menu .phone-adventure-summary { flex: 1; margin: 0; }
+    .mobile-mode #dungeon-menu .generated-menu__actions { flex: 1; }
+}
