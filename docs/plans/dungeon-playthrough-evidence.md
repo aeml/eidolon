@@ -88,6 +88,17 @@ instances per dungeon. Do not turn partial, unseeded or failed runs into that cl
 
 ## Actual death and unfinished-run recovery
 
+Tempest Spire's full Fighter run on clean
+`3dbb76d0a24d972e756583023e2ba4a11356cff0`, generator 2 attempt 0 seed
+`3202185699779077470`, Normal 70, **failed after 9.2 minutes**. Windshear and
+Stormcallers died through ordinary combat; the player then died while fighting
+a Cloud Elemental in a later room. The log does not establish the exact incoming
+damage sources or prove a balance/targeting defect. This is not a full-clear pass.
+Log: `/tmp/eidolon-1-0-10-tempest-full-fighter.log`. The route now retains a bounded,
+account-ID-free incoming damage/healing history and prints it on death, alongside
+position, mana and cooldowns, to make the next survival failure diagnosable. It
+does not add protection, healing, damage or a forced recovery.
+
 A fresh level-30 Wizard passed in 37.4 seconds on the dirty `6212ef3` recovery
 candidate, Verdant seed `-1986625632463315919`, generator 2. Normal enemies
 inflicted actual damage and death. Recall was rejected while the death screen,

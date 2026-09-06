@@ -126,6 +126,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				isSanctuary := e.ConsecratedGroundSanctuary
 				zoneX, zoneZ, zoneInstanceID := e.X, e.Z, e.InstanceID
 				e.Mu.Unlock() // Unlock to query grid
+				walkRects := w.dungeonWalkRectsSnapshot(zoneInstanceID)
 
 				effectiveRadius := expandedAbilityRadius(zoneSubType, radius)
 				nearby := w.Grid.Nearby(zoneX, zoneZ, effectiveRadius, zoneInstanceID)
@@ -133,9 +134,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					target.Mu.RLock()
 					targetType := target.Type
 					targetState := target.State
+					inRadius := withinAbilityRadius(zoneSubType, zoneX, zoneZ, target, radius)
 					target.Mu.RUnlock()
 
-					inRadius := withinAbilityRadius(zoneSubType, zoneX, zoneZ, target, radius)
 					if !inRadius {
 						continue
 					}
@@ -155,6 +156,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							damageType = "fire"
 						}
 						target.Mu.Lock()
+						if target.State == "DEAD" || target.InstanceID != zoneInstanceID ||
+							!withinDungeonAbilityRadius(walkRects, zoneSubType, zoneX, zoneZ, target, radius) {
+							target.Mu.Unlock()
+							continue
+						}
 						finalDamage := applyFinalDamage(owner, target, damage, damageType)
 						if ownerIsPlayer {
 							addThreatLocked(target, ownerID, float64(finalDamage))
@@ -231,6 +237,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				impactX, impactZ, impactInstanceID := e.X, e.Z, e.InstanceID
 
 				e.Mu.Unlock() // Unlock to query grid
+				walkRects := w.dungeonWalkRectsSnapshot(impactInstanceID)
 				w.fireProjectileImpactEvent(ProjectileImpactEvent{
 					ProjectileID: e.ID, ProjectileType: projectileSubType,
 					SourceID: ownerID, InstanceID: impactInstanceID, SkillName: impactName,
@@ -240,32 +247,28 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 				nearby := w.Grid.Nearby(impactX, impactZ, effectiveRadius, impactInstanceID)
 				for _, target := range nearby {
-					target.Mu.RLock()
-					if !w.CanDamage(owner, target) || target.State == "DEAD" {
-						target.Mu.RUnlock()
+					target.Mu.Lock()
+					if !w.CanDamage(owner, target) || target.State == "DEAD" || target.InstanceID != impactInstanceID ||
+						!withinDungeonAbilityRadius(walkRects, impactName, impactX, impactZ, target, radius) {
+						target.Mu.Unlock()
 						continue
 					}
-					target.Mu.RUnlock()
+					finalDamage := applyFinalDamage(owner, target, damage, "fire")
+					if ownerIsPlayer {
+						addThreatLocked(target, ownerID, float64(finalDamage))
+					}
+					isDead := target.Health <= 0
+					target.Mu.Unlock()
 
-					if withinAbilityRadius(impactName, impactX, impactZ, target, radius) {
+					if w.OnEvent != nil {
+						w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: finalDamage, Kind: "fire", InstanceID: impactInstanceID})
+					}
+
+					if isDead {
+						owner := w.GetEntity(ownerID)
 						target.Mu.Lock()
-						finalDamage := applyFinalDamage(owner, target, damage, "fire")
-						if ownerIsPlayer {
-							addThreatLocked(target, ownerID, float64(finalDamage))
-						}
-						isDead := target.Health <= 0
+						w.handleDeath(target, owner, deferred)
 						target.Mu.Unlock()
-
-						if w.OnEvent != nil {
-							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: finalDamage, Kind: "fire", InstanceID: impactInstanceID})
-						}
-
-						if isDead {
-							owner := w.GetEntity(ownerID)
-							target.Mu.Lock()
-							w.handleDeath(target, owner, deferred)
-							target.Mu.Unlock()
-						}
 					}
 				}
 
@@ -284,31 +287,27 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						effectiveExplosionRadius := expandedAbilityRadius(impactName, explosionRadius)
 						explosionNearby := w.Grid.Nearby(impactX, impactZ, effectiveExplosionRadius, impactInstanceID)
 						for _, target := range explosionNearby {
-							target.Mu.RLock()
-							if !w.CanDamage(owner, target) || target.State == "DEAD" {
-								target.Mu.RUnlock()
+							target.Mu.Lock()
+							if !w.CanDamage(owner, target) || target.State == "DEAD" || target.InstanceID != impactInstanceID ||
+								!withinDungeonAbilityRadius(walkRects, impactName, impactX, impactZ, target, explosionRadius) {
+								target.Mu.Unlock()
 								continue
 							}
-							target.Mu.RUnlock()
+							finalDamage := applyFinalDamage(owner, target, shieldExplosionDamage, "arcane")
+							if ownerIsPlayer {
+								addThreatLocked(target, ownerID, float64(finalDamage))
+							}
+							isDead := target.Health <= 0
+							target.Mu.Unlock()
 
-							if withinAbilityRadius(impactName, impactX, impactZ, target, explosionRadius) {
+							if w.OnEvent != nil {
+								w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: finalDamage, Kind: "arcane", InstanceID: impactInstanceID})
+							}
+
+							if isDead {
 								target.Mu.Lock()
-								finalDamage := applyFinalDamage(owner, target, shieldExplosionDamage, "arcane")
-								if ownerIsPlayer {
-									addThreatLocked(target, ownerID, float64(finalDamage))
-								}
-								isDead := target.Health <= 0
+								w.handleDeath(target, owner, deferred)
 								target.Mu.Unlock()
-
-								if w.OnEvent != nil {
-									w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: finalDamage, Kind: "arcane", InstanceID: impactInstanceID})
-								}
-
-								if isDead {
-									target.Mu.Lock()
-									w.handleDeath(target, owner, deferred)
-									target.Mu.Unlock()
-								}
 							}
 						}
 					} else {

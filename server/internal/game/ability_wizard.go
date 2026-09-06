@@ -82,8 +82,12 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 		// Gravity Well (AoE Pull + Slow)
 		cost := resolveAbilityManaCost(player, skillName, 60)
 		if player.Mana >= cost {
-			player.Mana -= cost
 			targetX, targetZ = clampAbilityTargetDistance(player, targetX, targetZ, 18.0)
+			if !w.validDungeonGroundCastTarget(player, targetX, targetZ) {
+				return
+			}
+			player.Mana -= cost
+			walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 
 			// Check for rune effects
 			runeID := player.GetRuneForSkill("Gravity Well")
@@ -110,7 +114,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				}
 				target.Mu.Lock()
 				if w.CanDamage(player, target) && target.State != "DEAD" {
-					if !withinAbilityRadius(skillName, targetX, targetZ, target, radius) {
+					if !withinDungeonAbilityRadius(walkRects, skillName, targetX, targetZ, target, radius) {
 						target.Mu.Unlock()
 						continue
 					}
@@ -132,10 +136,8 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 						oldX, oldZ := target.X, target.Z
 						target.X += dx * pullStrength
 						target.Z += dz * pullStrength
-						if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(target, target.X, target.Z); ok {
-							target.X = constrainedX
-							target.Z = constrainedZ
-						}
+						// The whole pull segment was validated above. Interpolation
+						// stays on that segment without a nested instance lock.
 						w.Grid.Update(target, oldX, oldZ)
 					}
 
@@ -365,8 +367,11 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 		// Meteor Drop
 		cost := resolveAbilityManaCost(player, skillName, 60)
 		if player.Mana >= cost {
-			player.Mana -= cost
 			targetX, targetZ = clampAbilityTargetDistance(player, targetX, targetZ, 20.0)
+			if !w.validDungeonGroundCastTarget(player, targetX, targetZ) {
+				return
+			}
+			player.Mana -= cost
 
 			// Check for rune effects
 			runeID := player.GetRuneForSkill("Meteor Drop")
@@ -401,6 +406,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					impactDelay := time.Duration(1500+i*200) * time.Millisecond
 					impactX := targetX + offset.dx
 					impactZ := targetZ + offset.dz
+					impactX, impactZ, _ = w.firstDungeonWallHit(player.InstanceID, targetX, targetZ, impactX, impactZ)
 					proj := &Entity{
 						ID:                  fmt.Sprintf("proj-meteor-%d-%d", time.Now().UnixNano(), i),
 						InstanceID:          player.InstanceID,
@@ -476,15 +482,16 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 							// Spawn additional meteor at random offset
 							offsetX := (rand.Float64() - 0.5) * 10
 							offsetZ := (rand.Float64() - 0.5) * 10
+							impactX, impactZ, _ := w.firstDungeonWallHit(instanceID, px, pz, px+offsetX, pz+offsetZ)
 							impactDelay := 1500 * time.Millisecond
 							apocProj := &Entity{
 								ID:              fmt.Sprintf("proj-meteor-apoc-%d-%d", time.Now().UnixNano(), i),
 								InstanceID:      instanceID,
 								Type:            TypeProjectile,
 								SubType:         "Meteor",
-								X:               px + offsetX,
+								X:               impactX,
 								Y:               30.0,
-								Z:               pz + offsetZ,
+								Z:               impactZ,
 								VelX:            0,
 								VelZ:            0,
 								Radius:          radius * 0.7,
@@ -512,8 +519,11 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 		// Inferno Cataclysm (AoE Zone)
 		cost := resolveAbilityManaCost(player, skillName, 60)
 		if player.Mana >= cost {
-			player.Mana -= cost
 			targetX, targetZ = clampAbilityTargetDistance(player, targetX, targetZ, 20.0)
+			if !w.validDungeonGroundCastTarget(player, targetX, targetZ) {
+				return
+			}
+			player.Mana -= cost
 
 			// Combo: Time Burn (Time Warp → Inferno Cataclysm) = Double tick rate
 			doubleTickActive := player.ActiveCombo == "cataclysm_double_tick"

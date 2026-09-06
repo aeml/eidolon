@@ -661,7 +661,7 @@ town recall and completed-run re-entry assertions passed. Log:
 `/tmp/eidolon-1-0-10-abyssal-full-fighter-recovery.log`. Its image does not include
 the following unpublished changes and it does not close the full 1.1 matrix.
 
-## Continued 1.1 direct-target boundaries — unpublished
+## Alpha 1.0.10 corrected candidate — direct-target boundaries
 
 Twelve direct-dispatch cases reproduce six blocked-path failures: Smite, Mark of
 Weakness and Weak Point Mark applied damage/debuffs and spent resources across a
@@ -680,7 +680,7 @@ contract now requires rejection with no damage, mana loss or cooldown. The full
 corrected server race suite passes (game package 206.853 seconds), log
 `/tmp/eidolon-dungeon-direct-skills-server-rerun.log`. These are server
 fixtures, not rendered class playthroughs; rendered basic attacks, ground-targeted AoE and
-secondary wall effects remain open. Nothing in this section has been published.
+secondary wall effects remain open. Nothing in this section has deployed yet.
 A real-input Cleric/Rogue mark test is prepared for empty-target rejection and a
 server-accepted mark on a reachable ordinary enemy. Its first execution exposed
 an accepted cursor-selected mark publishing an empty target ID. Three red server
@@ -736,6 +736,80 @@ encounters continue and town return succeeds. Log:
 but is not a full dungeon/class/party completion claim. Lint, shell syntax and
 whitespace checks pass. The corrected candidate is ready for a new full CI run;
 deployment and exact live verification remain unproven.
+
+Pushed the corrected candidate as `3dbb76d0a24d972e756583023e2ba4a11356cff0`, CI
+`34007206525`. Client checks pass; the server race step is running. Public
+frontend release and server health still match healthy Alpha 1.0.9 at
+`20eadc9483abbc6d2bd19f1bde0a2a3f78bda4b9`. A full Tempest Spire Fighter run is
+active on clean `3dbb76d`, seed `3202185699779077470`, generator 2 attempt 0,
+Normal 70. Log: `/tmp/eidolon-1-0-10-tempest-full-fighter.log`. No full Tempest
+completion or 1.0.10 live deployment is claimed yet.
+
+The Tempest run has now terminated **failed after 9.2 minutes**: Windshear and
+Stormcallers died normally, then the player died during a later Cloud Elemental
+encounter. The incoming sources are not established by that log. Its replay seed
+is retained in the full-run evidence document; the route now prints bounded
+damage/healing history on death without changing combat or granting protection.
+CI `34007206525` has passed client/server/smoke checks and is executing predeploy
+character QA. The public build remains Alpha 1.0.9 at the last verified check.
+
+Both 1.0.10 deployment jobs subsequently succeeded. The public release manifest,
+healthy database-ready backend, login label and commit-qualified main module
+independently match **Alpha 1.0.10** at
+`3dbb76d0a24d972e756583023e2ba4a11356cff0`. Post-deployment live character QA is
+running; the entire CI run is not yet terminal. This is the first deployed 1.0.10
+candidate, not either of its earlier failed candidates.
+
+## Alpha 1.0.11 candidate — grounded in the dungeon (not deployed)
+
+Red canonical-floor dispatch tests reproduced four ground spells accepting
+wall-blocked destinations and spending resources: Gravity Well, Meteor Drop,
+Inferno Cataclysm and legacy Rain of Arrows. Independent legal-center tests
+reproduced those spells and Consecrated Ground damaging enemies across a wall.
+The repair validates clamped cast destinations before resources/combos, and
+uses private floor snapshots for area damage while actor locks are held.
+Gravity Well's accepted pull stays on the validated segment, without nesting
+an instance lock under the target lock. Meteor's shield-explosion combo uses
+the same damage boundary. Cluster and Apocalypse scatter clip from the accepted
+center; their actual corrected positions drive warnings and impacts.
+
+Focused race checks cover open doorways, blocked casts, damage/pull/debuffs,
+expanded/Black Hole/Cluster/Extinction variants, all six Apocalypse meteors,
+shield explosions, friendly Sanctuary/healing, invalid points, legacy geometry,
+and stale spatial entries after a target changes instance. The final focused
+suite passes (14.382 seconds), `/tmp/eidolon-ground-area-final-focused.log`.
+The full server race suite passes (game package 171.606 seconds),
+`/tmp/eidolon-ground-area-server-full.log`; the final two additional tests were
+added during that full run and are covered by the later focused run.
+
+The real Wizard UI route passes in 23.5 seconds including setup, source dirty
+`3dbb76d`: ordinary walking to a generated dungeon wall, rejected Meteor/Inferno/
+Gravity casts with zero cooldown and no accepted ability event, followed by
+accepted reachable-floor casts and a client-presented Meteor impact. Log:
+`/tmp/eidolon-ground-area-browser.log`. Credential scan and disposable cleanup
+pass. This is placement/feedback evidence, not a full dungeon or rendered AoE
+occlusion matrix. The route joins predeploy QA and is available as `ground-walls`.
+
+The candidate advances version defaults, login text and patch notes to 1.0.11.
+It must not be pushed into deployment ahead of the pending 1.0.10 deployments.
+Full client checks and final release verification are still required. Remaining
+1.1 work includes self-centered AoE, channels/cones, secondary effects, clipped
+area footprints, full class/party/campaign progression, and Tempest survival.
+Zone PvP relationship coverage is also still open; this geometry patch does not
+silently change the existing zone target-type policy.
+
+The first complete client candidate run passed 149 suites and failed one stale
+MenuPolish login-version assertion (2,202 passing tests, one failure). That
+assertion now expects 1.0.11, matching the updated release identity; the complete
+client rerun is in progress. This was a test expectation mismatch, not a runtime
+UI failure. Lint, shell syntax and whitespace checks pass.
+
+Final candidate checks pass: **150 client suites / 2,203 tests** (102.149 seconds),
+`/tmp/eidolon-1-0-11-client-final.log`, and the complete server race suite after
+all final tests and metadata edits (game package 183.721 seconds),
+`/tmp/eidolon-1-0-11-server-final.log`. The candidate is ready for a local commit;
+publishing remains sequenced after 1.0.10's post-deployment verification. None of
+these results closes the full 1.1 acceptance matrix.
 
 ## Milestone tracking
 

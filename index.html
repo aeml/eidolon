@@ -334,7 +334,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.10</span>
+                <span class="start-version-row__label">Alpha 1.0.11</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -653,6 +653,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.11">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.11 (grounded in the dungeon)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Ground spells respect solid walls:</strong> Gravity Well, Meteor Drop, Inferno Cataclysm and legacy Rain of Arrows reject blocked ground placement without spending mana or starting cooldowns. Reachable floor through an open doorway remains a valid target.</li>
+                        <li><strong>Area damage stays on reachable ground:</strong> These spells and persistent ground zones no longer damage enemies through solid dungeon walls. Gravity Well cannot pull enemies through them, and Meteor's shield-explosion combo respects the same boundary. Friendly Consecrated Ground healing and Sanctuary retain their existing rules.</li>
+                        <li><strong>Meteor scatter stays connected:</strong> Cluster and Apocalypse impacts stop at dungeon boundaries instead of scattering into a disconnected room. Each meteor's warning and impact use its corrected position.</li>
+                        <li><strong>Verification continues:</strong> Real Wizard controls now check blocked and accepted ground casts. The wider all-class, party, area-effect presentation and full-dungeon milestone remains open.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.0.10">
                     <h3 class="patch-note-entry__title">Alpha 1.0.10 (paths, not just landings)</h3>
                     <ul>

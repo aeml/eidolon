@@ -225,6 +225,26 @@ func withinAbilityRadius(effectName string, originX, originZ float64, target *En
 	return (dx*dx + dz*dz) <= effectiveRadius*effectiveRadius
 }
 
+// Area effects use a private canonical-floor snapshot. Callers may hold the
+// target lock here; geometry checks must not acquire instance locks under it.
+func withinDungeonAbilityRadius(rects []DungeonWalkRect, effectName string, originX, originZ float64, target *Entity, radius float64) bool {
+	if !withinAbilityRadius(effectName, originX, originZ, target, radius) {
+		return false
+	}
+	_, _, blocked := firstDungeonWalkRectWallHit(rects, originX, originZ, target.X, target.Z)
+	return !blocked
+}
+
+// Check the clamped ground destination before spending resources or consuming
+// a combo. A destination in another room is not legal through a solid wall.
+func (w *World) validDungeonGroundCastTarget(player *Entity, x, z float64) bool {
+	if player == nil || math.IsNaN(x) || math.IsNaN(z) || math.IsInf(x, 0) || math.IsInf(z, 0) {
+		return false
+	}
+	_, _, blocked := w.firstDungeonWallHit(player.InstanceID, player.X, player.Z, x, z)
+	return !blocked
+}
+
 func validDirectAbilityTarget(w *World, player, target *Entity, maxRange float64, allowedTypes ...EntityType) bool {
 	if player == nil || target == nil || player.InstanceID != target.InstanceID || target.State == "DEAD" {
 		return false

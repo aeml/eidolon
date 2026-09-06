@@ -143,7 +143,16 @@ async function defeatByMouse(page, target) {
                 { allowJumpFallback: false });
         }
         await page.waitForTimeout(350);
-        expect((await readPlayerState(page)).state, 'character must survive the encounter').not.toBe('DEAD');
+        const playerState = await readPlayerState(page);
+        if (playerState.state === 'DEAD') {
+            const death = await page.evaluate(() => ({
+                x: window.game.player.position.x, z: window.game.player.position.z,
+                mana: window.game.player.stats.mana, cooldowns: window.game.player.cooldowns,
+                events: window.__dungeonSurvivalEvents
+            }));
+            console.log(`${logPrefix} death diagnostic ${JSON.stringify(death)}`);
+        }
+        expect(playerState.state, 'character must survive the encounter').not.toBe('DEAD');
     }
     throw new Error(`Real attacks did not defeat ${target.type}; observed damage=${sawDamage}`);
 }
@@ -176,8 +185,18 @@ test(fullRun ? `${playthrough.name} complete ${fallbackRun ? 'fallback' : 'gener
         const original = game.handleServerMessage.bind(game);
         window.__verdantLastState = performance.now();
         window.__dungeonObservedSkills = [];
+        window.__dungeonSurvivalEvents = [];
         game.handleServerMessage = message => {
             if (message.type === 'state' || message.type === 'delta') window.__verdantLastState = performance.now();
+            if (['damage', 'heal'].includes(message.type) && message.payload?.targetId === game.player.id) {
+                const data = message.payload;
+                const source = game.remotePlayers.get(data.sourceId);
+                window.__dungeonSurvivalEvents.push({ time: Math.round(performance.now()), event: message.type,
+                    amount: data.amount, kind: data.kind, sourceType: source?.subType || source?.constructor.name ||
+                        (String(data.sourceId || '').startsWith('hazard-') ? 'hazard' : 'unresolved'),
+                    hpBeforePresentation: game.player.stats.hp });
+                if (window.__dungeonSurvivalEvents.length > 80) window.__dungeonSurvivalEvents.shift();
+            }
             if (message.type === 'ability' && message.payload?.sourceId === game.player.id &&
                 !window.__dungeonObservedSkills.includes(message.payload.skillName)) {
                 window.__dungeonObservedSkills.push(message.payload.skillName);

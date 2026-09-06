@@ -252,8 +252,12 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 		// Rain of Arrows (AoE)
 		cost := resolveAbilityManaCost(player, skillName, 45)
 		if player.Mana >= cost {
-			player.Mana -= cost
 			targetX, targetZ = clampAbilityTargetDistance(player, targetX, targetZ, 12.0)
+			if !w.validDungeonGroundCastTarget(player, targetX, targetZ) {
+				return
+			}
+			player.Mana -= cost
+			walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 
 			// Target area
 			radius := 6.0
@@ -267,7 +271,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				}
 				target.Mu.Lock()
 				if w.CanDamage(player, target) && target.State != "DEAD" {
-					if withinAbilityRadius(skillName, targetX, targetZ, target, radius) {
+					if withinDungeonAbilityRadius(walkRects, skillName, targetX, targetZ, target, radius) {
 						finalDamage := applyFinalDamage(player, target, damage, "physical")
 						addThreatLocked(target, player.ID, float64(finalDamage))
 						w.fireDamageEvent(player.ID, target.ID, finalDamage, "physical", player.InstanceID)
