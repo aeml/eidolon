@@ -29,7 +29,9 @@ test('phone bag equips, unequips and confirms a recoverable server-owned item dr
     }
     await page.locator('#btn-mobile-menu').tap();
     await page.locator('#btn-settings').tap();
+    await page.locator('.phone-settings-tabs').getByRole('button', { name: 'Play', exact: true }).tap();
     const autoLoot = page.locator('#auto-loot-enabled');
+    await autoLoot.scrollIntoViewIfNeeded();
     if (!await autoLoot.isChecked()) await autoLoot.tap();
     await page.locator('#btn-close-settings-header').tap();
     if (await page.locator('#esc-menu').isVisible()) await page.locator('#btn-resume').tap();
