@@ -24,8 +24,9 @@ deaths**, three ordinary kills and manual 100 gold / 500 XP turn-in with fresh-l
 persistence. Wizard also passes in **34 seconds** with zero deaths, three retreat
 movements and the same manual reward/persistence checks. Logs
 `/tmp/eidolon-1-0-25-fresh-fighter.log` and `/tmp/eidolon-1-0-25-fresh-Wizard.log`;
-credential scans and disposable cleanup passed. The server race suite and remaining
-class routes are pending. This candidate does not yet prove all-class opening balance, the first dungeon's
+credential scans and disposable cleanup passed. The remaining class and server
+results, including the subsequently discovered elite/recall issues, are recorded
+below. This candidate does not yet prove all-class opening balance, the first dungeon's
 earned-level handoff or the wider first-hour gate. It is not published ahead of
 the corrected 1.0.21 and queued 1.0.22–1.0.24 releases.
 
@@ -48,7 +49,7 @@ Follow-up findings during candidate verification:
   unchanged. Focused tests pass; the real Cleric repeat is pending. Retain
   `/tmp/eidolon-1-0-25-fresh-Cleric.log` and `...-recall-red.log` as failed results.
 
-The active full reruns include both the elite-placement and recall corrections;
+The final full reruns include both the elite-placement and recall corrections;
 the earlier Fighter/Wizard/Rogue runs predate those additions. No earlier pass is
 being presented as exact-source proof of the final candidate.
 
@@ -61,9 +62,22 @@ saved progress. It uses functional level-30/waypoint preparation, unlike the
 fresh desktop routes; it is not phone first-hour balance evidence. Log
 `/tmp/eidolon-1-0-25-phone-quests.log`, session `47133` closed. Credential scans
 and disposable cleanup passed for both. The final client suite passes **165
-suites / 2,371 tests in 124.612 seconds**, plus lint; the full server race rerun
-remains pending. The four recall regressions and prior cases pass together with
+suites / 2,371 tests in 124.612 seconds**, plus lint; the completed server race
+rerun is recorded below. The four recall regressions and prior cases pass together with
 version checks: **252 tests in two suites, 6.85 seconds**.
+
+The **final full server race suite passed**: root 16.862 seconds, game 251.592
+seconds; `/tmp/eidolon-1-0-25-server-final.log`, session `11224` closed. Clean
+runtime commit **`bea6c349284a42e3bfbf5007c092c73ac2bede0d`** then passed the
+fresh opening as **Fighter in 93 seconds** and **Cleric in 45 seconds** (the
+latter 50 seconds including overhead). Both had zero deaths, earned all kills,
+ended at level five after manual 100 gold / 500 XP rewards, and retained the
+completed chapter after fresh login. Credential scans and cleanup passed;
+`/tmp/eidolon-1-0-25-exact-{Fighter,Cleric}.log`, session `88889` closed.
+These repeats include the elite-placement and recall fixes. Subsequent test-only
+cleanup removes a redundant population spawn from the constructor regression
+and explicitly preserves elite positions already outside the starter band.
+This is local release evidence, not a deployed 1.0.25 or full first-hour claim.
 
 Before the starting-area correction, the optional opening route **passed in 93 seconds**
 (1.6 minutes including overhead), fresh Wizard level one → six, three earned

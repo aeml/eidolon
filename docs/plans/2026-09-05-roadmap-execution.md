@@ -33,8 +33,8 @@ version has been pushed. Local merges carry that same fix forward and preserve a
 | 1.0.21 | `9f587570313d2f78aa469f21bd73bf8db1dd50ab` (pushed; live gate pending) | `c76db47`; strengthens pickup and persistence verification |
 | 1.0.22 | `e0b9afd3f8cfcefdbd056ef0339cb7937c27c4e7` | `ed793e0`; inherits corrected 1.0.21 |
 | 1.0.23 | `ad72a642592b5ce6fc6e22b23af1d8b2ab3a52dc` | `4fcb89d`; retains the verified collection inventory repair |
-| 1.0.24 | `370f7593a254f5c4691d59440f270b4edda69b1d` plus subsequent evidence-only commits | phone navigation and fresh-opening QA with corrected release ancestry |
-| 1.0.25 | local starter-area and overworld recall candidate; verification below | normal starter encounters, Ilyra guidance and clearing stale recall pursuit |
+| 1.0.24 | `bcc29f498504fa83a53f62e5cb5aa00e020844c8`, branch `release/24-with-pickup` | phone navigation and fresh-opening QA with corrected release ancestry |
+| 1.0.25 | `bea6c349284a42e3bfbf5007c092c73ac2bede0d` plus subsequent test/evidence-only commits | normal starter encounters, Ilyra guidance and clearing stale recall pursuit |
 
 The corrected 1.0.21 → 1.0.22 → 1.0.23 → 1.0.24 ancestry was checked with
 `git merge-base --is-ancestor`. Exact clean `9f58757` passes **163 client suites /
@@ -78,8 +78,17 @@ after recall repair. All earned their kills and manually claimed rewards, then
 verified saved progress, without debug grants. The final real phone quest route
 also passes (48.9 seconds), but uses functional level/waypoint preparation.
 Final client checks: **165 suites / 2,371 tests, 124.612 seconds**, lint; focused
-recall/version checks **252 tests, 6.85 seconds**. Full server race verification
-and clean-commit gameplay repeats are pending. Full details and failed attempts:
+recall/version checks **252 tests, 6.85 seconds**. The full server race rerun
+passed (root 16.862 seconds, game 251.592 seconds). Clean runtime commit
+**`bea6c34`** then repeated the fresh opening successfully as **Fighter in 93
+seconds** and **Cleric in 45 seconds**, both zero deaths, level one → five,
+manual rewards and saved progress. Credential scans and disposable cleanup
+passed; logs `/tmp/eidolon-1-0-25-exact-{Fighter,Cleric}.log`, session `88889`
+closed. The final test-only cleanup inspects `NewWorld`'s actual population
+without an extra spawn call and checks that outer elites keep their positions.
+Those final focused server regressions passed ten race-enabled repetitions in
+**4.245 seconds**; session `16149` closed. Runtime is unchanged from `bea6c34`.
+Full details and failed attempts:
 [fresh-character evidence](fresh-progression-evidence.md).
 
 Preserve **`bcc29f498504fa83a53f62e5cb5aa00e020844c8`**, branch

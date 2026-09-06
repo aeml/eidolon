@@ -11,6 +11,9 @@ func TestLanternholdSkeletonBandsAndCombatProfiles(t *testing.T) {
 		if lanternholdSkeletonLevel(x, z) != 10 || x < -200 || x > 200 || z < -600 || z > 1000 {
 			t.Fatalf("elite position escaped its sector or entered the starter band: %v,%v", x, z)
 		}
+		if lanternholdSkeletonLevel(point[0], point[1]) == 10 && (x != point[0] || z != point[1]) {
+			t.Fatal("an elite already outside the starter band was unnecessarily relocated")
+		}
 	}
 	for _, tc := range []struct {
 		x, z  float64
@@ -49,7 +52,8 @@ func TestLanternholdSkeletonBandsAndCombatProfiles(t *testing.T) {
 
 func TestLanternholdHasNormalPersistentStarterEncounters(t *testing.T) {
 	w := NewWorld(nil)
-	w.spawnEnemies()
+	// Inspect real constructor output; explicitly respawning the population
+	// here would hide missing initialization and leave stale spatial entries.
 	for i, point := range lanternholdStarterSpawns {
 		enemy := w.Entities[starterSkeletonID(i)]
 		if enemy == nil || enemy.Type != TypeEnemy || enemy.SubType != "Skeleton" || enemy.Level != 1 ||
