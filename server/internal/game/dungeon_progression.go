@@ -101,7 +101,7 @@ func IsDungeonDifficultyUnlocked(playerLevel int, difficulty DungeonDifficulty) 
 
 func ValidateDungeonEntrySelection(playerLevel int, runLevel int, difficulty DungeonDifficulty) error {
 	if !CanAccessDungeon(playerLevel) {
-		return fmt.Errorf("all dungeons unlock at level %d", DungeonUnlockLevel)
+		return fmt.Errorf("dungeon runs begin at level %d", DungeonUnlockLevel)
 	}
 	if !CanSelectDungeonRunLevel(playerLevel, runLevel) {
 		return fmt.Errorf("you have not unlocked level %d dungeon runs yet", runLevel)

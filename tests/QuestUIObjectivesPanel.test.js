@@ -298,7 +298,7 @@ describe('QuestUI objectives panel', () => {
         expect(panel.style.display).toBe('flex');
         expect(guidance).not.toBeNull();
         expect(guidance.textContent).toContain('Check the Dungeon Guide');
-        expect(guidance.textContent).toContain('Level 30 unlocked all base dungeons');
+        expect(guidance.textContent).toContain('Level 30 unlocked Verdant Bastion Catacombs');
         expect(guidance.textContent).toContain('Dungeon Guide');
         expect(guidance.textContent).toContain('World Map (M)');
         expect(guidance.textContent).toContain('Journal (J)');

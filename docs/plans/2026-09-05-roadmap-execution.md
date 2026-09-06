@@ -40,6 +40,7 @@ Local merges carry that same fix forward and preserve ancestry:
 | 1.0.24 | `bcc29f498504fa83a53f62e5cb5aa00e020844c8`, branch `release/24-with-pickup` | phone navigation and fresh-opening QA with corrected release ancestry |
 | 1.0.25 | `dd2ce169d54f54c4af13edb8ac6caf69e36ba8b3`, branch `release/25-with-starter`; runtime `bea6c34` | normal starter encounters, Ilyra guidance and clearing stale recall pursuit |
 | 1.0.26 | `479cfd73c4a6ed8406d9159380c43d9af488df1d` plus subsequent evidence-only commit; locally verified, not pushed | server-sourced dungeon requirements, guarded entry and fresh collection/handoff measurement |
+| 1.0.27 | working candidate; verification in progress | truthful Chronicle preparation and four-dungeon entry-level objectives; normal daily-hunt measurement |
 
 The corrected 1.0.21 → 1.0.22 → 1.0.23 → 1.0.24 ancestry was checked with
 `git merge-base --is-ancestor`. Exact clean `9f58757` passes **163 client suites /
@@ -63,6 +64,25 @@ not the current queue. Do not publish a successor before the preceding version's
 complete CI/live verification. The original 1.0.14 failure remains recorded below.
 
 ## September 6 continuation — dungeon class and campaign evidence
+
+### Alpha 1.0.27 — before the descent (local candidate)
+
+The previous goal turn implemented and verified 1.0.26, verified 1.0.21 live,
+and pushed 1.0.22; it was progress. This continuation corrects stale level-30
+claims in town guidance and gives Ilyra's dungeon handoff actual preparation
+context, with authoritative entry levels in all four dungeon objectives. Rewards,
+manual turn-ins, existing-save progression and dungeon gates remain unchanged.
+Focused regressions and full client/server checks pass; the final Help/error-copy
+sweep is receiving its full repeat. The existing 100-Skeleton route now passes
+through manual 100-gold / 50,000-XP turn-in and login persistence in 208 seconds
+from hunt start, with no deaths, ending at level 27. This is not yet level-30
+entry or a complete first hour. See the
+[preparation measurement](fresh-progression-evidence.md) for failed approach and
+contract-list assumptions, their diagnostics, and the final direct-NPC result.
+
+CI `34058325420` for 1.0.22 has passed predeploy checks and both deployment jobs.
+Final live anonymous/persistent-character checks have passed; four-class and
+remote-animation checks are running. The same job remains live; it was not restarted.
 
 ### Alpha 1.0.26 — know when you are ready (local candidate)
 

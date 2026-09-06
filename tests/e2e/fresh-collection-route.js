@@ -84,6 +84,8 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
     expect(reward.grantedGold).toBeGreaterThan(0);
     expect(reward.grantedXP).toBeGreaterThan(0);
     await page.getByRole('button', { name: 'Continue conversation', exact: true }).click();
+    await expect(page.locator('#quest-window')).toContainText('The Dungeon Guide requires level 30 for the Bastion');
+    await expect(page.locator('#quest-window')).toContainText('Daily contracts are optional');
     await page.getByRole('button', { name: 'Accept Quest', exact: true }).click();
     await expect.poll(async () => (await readChronicleChapter(page, dungeonChapter)).accepted).toBe(true);
     await page.locator('#btn-close-quest').click();

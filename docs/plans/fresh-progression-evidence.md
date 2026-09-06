@@ -1,5 +1,161 @@
 # Fresh-character progression evidence — 1.1 gate
 
+## Preparation-route measurement — in progress after 1.0.26
+
+The next optional route, `fresh-hunt`, extends the genuinely earned first two
+chapters through the existing Skeleton daily: normal NPC acceptance, 100 ordinary
+kill credits, manual completion, actual level/XP/gold and fresh-login persistence.
+It does not grant levels, equipment, quests, protection or travel. This initial
+baseline stays unequipped and does not spend talents, so it cannot establish the
+best preparation route or tuned-build combat. Auto-loot is deliberately disabled
+through Settings during the hunt and restored afterwards; this is kill/reward
+measurement, not a bag-management or loot-optimization test.
+
+The first attempt passed the early story but failed to acquire the daily NPC at
+the helper's selected mesh-center pointer. No daily was accepted and no hunt
+result was obtained. Log `/tmp/eidolon-fresh-hunt-Wizard.log`, session `25293`
+closed; credential scan and disposable script cleanup passed. The next attempt
+tries the rendered mesh point and ordinary body-height projections, verifying
+actual hover before clicking, and records pointer/position diagnostics if none
+works. It never forces a hovered entity or calls the NPC interaction directly.
+Inspection also corrected the new XP diagnostic to the actual client fields
+`xp` and `xpToNextLevel`; the first attempt had not reached that diagnostic.
+
+Source budget is not a played duration: the first two story rewards total 8,500
+XP, the existing Skeleton daily awards 50,000, and level 30 requires 98,391
+cumulative XP. Those quest rewards alone reach level 27 and leave 39,891 XP to
+30. Adding 2,000 or 11,000 hypothetical kill XP yields level 27 or 28 respectively;
+neither is a measured hunt outcome. Measure ordinary enemy levels and actual XP
+before using this comparison for tuning. Daily contracts stay optional, not a
+new prerequisite for the main story.
+
+Separate guidance defects are confirmed by source/failing regressions: the town
+tracker still claims “all base dungeons” unlock at 30, and the first dungeon
+description does not explain its level requirement or preparation. Corrections
+must preserve acceptance, saved progress, manual turn-in and existing objectives;
+they do not by themselves close the first-hour pacing gate.
+
+The second full attempt also failed before daily acceptance, with the giver
+reported under the cursor but no usable projected point. Its diagnostics did not
+yet identify the covering DOM element; the precise cause is not proven. Log
+`/tmp/eidolon-fresh-hunt-Wizard-pointer.log`, session `37287` closed, credential
+scan/disposable cleanup passed. The helper now recognizes a daily conversation
+already opened by normal approach input and adds DOM-blocker diagnostics.
+Short isolated daily-acceptance checks pass both from initial login (**12.0
+seconds**, 9.4-second body) and after visiting/closing the Dungeon Guide (**19.4
+seconds**, 18-second body). Logs `/tmp/eidolon-fresh-hunt-npc{,-guide}.log`,
+sessions `13693`, `97252` closed. These checks do not replace the full hunt.
+
+### Alpha 1.0.27 — before the descent (candidate)
+
+Ilyra's first dungeon description now explains level 30, Earth exploration,
+earned equipment and unspent skill/talent points; it explicitly keeps daily
+contracts optional. Each of the four dungeon objectives includes its family
+entry level drawn from server entry authority. Existing metadata refresh carries
+the copy into saves without changing acceptance, counts, completion or rewards.
+The town tracker now identifies Verdant at 30 instead of claiming all dungeons
+are available. Patch notes and login/build versions advance together.
+
+Focused client checks pass **32 tests**; focused race-enabled Chronicle checks
+pass. Full client checks pass **167 suites / 2,388 tests in 92.966 seconds**, lint
+passes, and full Go race checks pass (root **14.681 seconds**, game **228.499
+seconds**). Logs `/tmp/eidolon-1-0-27-client.log` and
+`/tmp/eidolon-1-0-27-server.log`, sessions `93465` and `51002` closed.
+The complete hunt measurement is still running. This attempt observed the daily
+conversation already opened by normal approach input, then accepted the contract;
+the helper no longer insists on clicking through an open dialogue. Actual XP
+diagnostics are now present. The first 30 credits took 86 seconds with no deaths,
+but do not extrapolate that partial observation into a completed hunt result.
+
+That attempt subsequently earned all **100 Skeleton credits in 255 seconds**, with
+zero deaths, reaching **level 18 / 472 current XP** before payment. It then failed
+waiting for the contract-list row on return to the giver; no manual daily reward
+or persistence pass was obtained. Log `/tmp/eidolon-1-0-27-fresh-hunt-Wizard.log`,
+session `85226` closed, credential scan/disposable cleanup passed. This is combat
+and earned-credit evidence, not a completed-contract pass. The helper now stops
+world approach clicks once a dialogue is visible, accepts the matching detail
+view if it is already selected, and otherwise uses the ordinary contract list.
+It captures the pre-reward snapshot only after returning to the giver, so late
+ordinary combat updates cannot be mistaken for the quest reward. The full route
+is being repeated with those harness corrections; gameplay/reward logic is unchanged.
+
+The next repeat again earned all **100 credits**, in **245 seconds** with zero
+deaths, reaching **level 18 / 1,276 XP** before payment, but the ground-movement
+helper failed during the return approach. Its diagnostic explicitly reported
+`openPanels: ["quest-window"]`: opening a conversation was being mistaken for
+failed ground travel. No daily reward was claimed. Log
+`/tmp/eidolon-1-0-27-fresh-hunt-Wizard-turnin.log`, session `64778` closed;
+credential scan/disposable cleanup passed. The route now frames the giver with
+normal wheel input, confirms actual hover and clicks the NPC itself, allowing
+the game's normal interaction approach to handle movement. The dedicated
+initial-login/after-guide check passes in **24.5 seconds** (22.3-second body),
+log `/tmp/eidolon-1-0-27-daily-direct.log`, session `25110` closed. The full hunt
+repeat remains pending; do not turn these failed return checks into reward proof.
+
+The direct-NPC full route **passes in 5.2 minutes overall**. It earned 100 hunt
+credits in **196 seconds**, and completed return, deliberate turn-in and fresh
+login in **208 seconds** from hunt start. There were **zero deaths**. Baseline
+was level 17 / 4 XP / 363 gold; before payment it was level 18 / 840 XP / 2,155
+gold. Manual payment granted **50,000 XP and 100 gold**, yielding **level 27 /
+4,701 XP / 2,255 gold**. All displayed progression fields and completed daily
+state persisted after login, and Verdant entry correctly remained disabled.
+Log `/tmp/eidolon-1-0-27-fresh-hunt-Wizard-direct.log`, session `11411` closed;
+credential scan and disposable cleanup passed. The preceding failures remain
+recorded above. This is one unequipped Wizard's existing-contract baseline,
+not an optimized build, a level-30 route or a full first-hour completion.
+
+A final copy sweep also found the old “all base dungeons” claim in current Help.
+Its failing regression is corrected along with the generic under-30 server error;
+both now describe the first dungeon/run threshold rather than implying every
+family opens at 30. Earlier patch-note history is retained. Full validation is
+being repeated after these final copy edits.
+
+After the final Help/error wording changes, client validation passes **167 suites
+/ 2,389 tests in 81.992 seconds**, with lint passing. Phone conversation/journal
+layout fixtures pass **3 checks in 41.6 seconds** at 360×800, 390×844 and 844×390;
+these are emulated layout checks, not physical-phone sign-off. Logs
+`/tmp/eidolon-1-0-27-client-final.log` and `/tmp/eidolon-1-0-27-phone-quest-layout.log`.
+The final server race repeat is still running at this observation.
+
+The measured level-27 / 4,701-XP result corresponds to **61,424 cumulative XP**
+under the current curve, leaving **36,967 XP** to level 30. It does not yet
+establish the ordinary entry-level dungeon experience. The 1.0.27 candidate
+remains behind earlier releases in the deployment queue.
+The preparation-copy correction is not a replacement for a verified, enjoyable
+first-hour route. No reward, entry-level or existing-save stat tuning has shipped
+as part of this candidate.
+
+Next first-hour evidence must extend beyond this one contract:
+
+- Follow an ordinary Earth preparation route toward level 30 (including the
+  existing Imp contract if chosen), with real west-gate travel and actual combat.
+  Distinguish the contribution of optional contracts from ordinary kill XP; do
+  not present contracts as mandatory campaign prerequisites.
+- Include normal equipment inspection/equipping and available skill/talent
+  decisions before interpreting a weak unequipped run as proof that all players
+  need easier enemies. Compare at least melee and ranged starts, then all classes.
+- Enter and fight the first dungeon at the character's **earned** level/build.
+  Existing prepared-level-100 clears cannot establish level-30 encounter balance.
+  Record actual attack acquisition, damage exchanged, deaths, boss mechanics,
+  recovery and completion; fix demonstrated defects rather than granting access
+  or weakening the test to reach the next chapter.
+- Retain discovery, pacing judgment, phone controls and real-device evidence as
+  separate gates. A world-state-assisted automated route proves execution, not
+  that a first-time human finds it naturally or enjoys the repetition.
+
+The broader curve also needs a deliberate campaign budget, not just an opening
+reward bump. Source-derived cumulative XP is **98,391 at 30**, **23,477,600 at
+60**, **145,369,863 at 70**, and **34,507,488,832 at 100**. The 15 current Chronicle
+rewards sum to **90,008,500 XP**, some only obtainable after high-level gates.
+This is not a duration estimate and omits combat, optional contracts and other
+sources; nevertheless, full fresh-campaign readiness cannot be inferred from
+the early chapter passes. A non-blocking player question asks whether level-100
+/ Dark King readiness should target roughly 15–25 or 40–60 hours of ordinary
+questing/combat, excluding raid organization. No response or target is assumed.
+Before changing the curve, measure actual activities, review quest and kill XP
+together, preserve earned levels/progress through any save migration, and keep
+gold/Resonance balance separate rather than accidentally repricing every reward.
+
 ## Alpha 1.0.26 candidate — explain the first dungeon handoff
 
 The guide previously described **all** dungeons as unlocking at level 30, even

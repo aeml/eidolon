@@ -448,7 +448,7 @@ export class QuestUI {
             badge: 'Town',
             badgeClass: 'is-objective',
             routeTone: 'support',
-            hint: 'Level 30 unlocked all base dungeons. Visit the Dungeon Guide, choose your next run, and use World Map (M), Journal (J), Stash, and Forge to get ready before leaving town.'
+            hint: 'Level 30 unlocked Verdant Bastion Catacombs. Other realms require higher levels; check the Dungeon Guide for each route. Use World Map (M), Journal (J), Stash, and Forge to get ready before leaving town.'
         };
     }
 

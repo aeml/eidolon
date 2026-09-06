@@ -1,11 +1,12 @@
 import { expect, test } from '@playwright/test';
 import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { earnFreshCollectionAndInspectHandoff } from './fresh-collection-route.js';
+import { earnFreshSkeletonHunt } from './fresh-hunt-route.js';
 import { collectBrowserFailures, credentialsFromEnvironment, jumpByGroundClick,
     loginAndEnterWorld, moveByGroundClick, projectEntity, projectNearestHostile,
     readPlayerState, returnToTown } from './helpers.js';
 
-test.use({ trace: 'off', screenshot: 'off', video: 'off' });
+test.use({ trace: 'off', screenshot: 'off', video: 'off', actionTimeout: 20_000 });
 const chapter = 'chronicle_01_bell_below';
 
 // Deliberately does not use findOverworldTarget: that functional QA helper may
@@ -45,7 +46,8 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     const credentials = credentialsFromEnvironment();
     test.skip(!credentials.username || !credentials.password, 'Requires a disposable QA character');
     expect(process.env.EIDOLON_E2E_REGISTER).toBe('1');
-    test.setTimeout(process.env.EIDOLON_E2E_FRESH_COLLECTION === '1' ? 1_200_000 : 600_000);
+    test.setTimeout(process.env.EIDOLON_E2E_FRESH_HUNT === '1' ? 3_600_000 :
+        process.env.EIDOLON_E2E_FRESH_COLLECTION === '1' ? 1_200_000 : 600_000);
     const started = Date.now();
     const failures = collectBrowserFailures(page, baseURL);
     await loginAndEnterWorld(page, credentials);
@@ -155,6 +157,11 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     console.log(`[fresh-opening] completed ${JSON.stringify({ level: earnedLevel, deaths, retreats, grantedGold: rewarded.grantedGold, grantedXP: rewarded.grantedXP, elapsedSeconds: Math.round((Date.now() - started) / 1000) })}`);
     if (process.env.EIDOLON_E2E_FRESH_COLLECTION === '1') {
         await earnFreshCollectionAndInspectHandoff(page, credentials, {
+            findTarget: () => findSkeletonThroughTravel(page), leaveTown: () => leaveTown(page)
+        });
+    }
+    if (process.env.EIDOLON_E2E_FRESH_HUNT === '1') {
+        await earnFreshSkeletonHunt(page, credentials, {
             findTarget: () => findSkeletonThroughTravel(page), leaveTown: () => leaveTown(page)
         });
     }

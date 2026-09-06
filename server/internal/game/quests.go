@@ -55,7 +55,7 @@ func chronicleQuestCatalog() []Quest {
 			ID: ChronicleEarthDungeonID, Type: "KILL", Target: "HollowSentinel", MaxCount: 1, RewardXP: 250000,
 			Title: "When the Roots Remember", Category: QuestCategoryChronicle, Chapter: 3,
 			ObjectiveText: "Clear the Verdant Bastion Catacombs and defeat the Hollow Sentinel to uncover the road to the Rootheart sanctum.",
-			Description:   "Carry the restored memories through the entire Bastion. The Hollow Sentinel guards an old root-road rather than the crystal itself; break the shadow command inside it and the sealed path to Orun's deeper raid sanctum will open.",
+			Description:   "Carry the restored memories through the entire Bastion. The Hollow Sentinel guards an old root-road rather than the crystal itself; break the shadow command inside it and the sealed path to Orun's deeper raid sanctum will open. The Dungeon Guide requires level 30 for the Bastion; an open Chronicle chapter is not permission to enter its dungeon yet. Explore Earth, check your earned equipment, and spend available skill and talent points before descending. Daily contracts are optional ways to earn gold and experience, not a requirement for my story. Return to Lanternhold to prepare, then ask the Guide to lead you below.",
 			Lore:          "Orun hid the Rootheart beyond a living labyrinth so no passing army could touch it. The Dark King corrupted the outer Sentinel, but even he could not enter the inner sanctum without first forcing a mortal hand to open the way.",
 		},
 		{
@@ -143,8 +143,15 @@ func chronicleQuestCatalog() []Quest {
 			Lore:          "Malachar was once the mortal keeper who carried messages between the four sanctums. He came to despise a world whose powers required balance instead of obedience. If he falls, it will not be because one champion overpowered him, but because Earth, Water, Fire, Air, and mortal will chose one another freely.",
 		},
 	}
+	dungeonChapters := map[string]string{
+		ChronicleEarthDungeonID: "verdant_bastion_catacombs", ChronicleWaterDungeonID: "abyssal_well",
+		ChronicleFireDungeonID: "molten_core", ChronicleAirDungeonID: "tempest_spire",
+	}
 	for i := range quests {
 		quests[i].RewardGold = questGoldReward(quests[i].RewardXP)
+		if dungeonType, ok := dungeonChapters[quests[i].ID]; ok {
+			quests[i].ObjectiveText = fmt.Sprintf("Level %d required — %s", supportedDungeonTypes[dungeonType], quests[i].ObjectiveText)
+		}
 	}
 	return quests
 }
