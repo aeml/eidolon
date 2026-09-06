@@ -155,20 +155,20 @@ export class UIBindings {
         }
         ui.social.onDuelRequest = (username) => engine.network.send('duel_request', { username });
 
-        ui.skillTree.onSelectBranch = (branch) => {
-            engine.network.send('selectBranch', { branch });
+        ui.skillTree.onSelectBranch = (branch, requestId) => {
+            engine.network.send('selectBranch', { branch, ...(requestId ? { requestId } : {}) });
         };
         ui.skillTree.onUnlockSkill = (skillName) => {
             engine.network.send('unlockSkill', { skillName });
         };
-        ui.skillTree.onUnlockTalent = (talentId) => {
-            engine.network.send('unlockTalent', { talentId });
+        ui.skillTree.onUnlockTalent = (talentId, requestId) => {
+            engine.network.send('unlockTalent', { talentId, ...(requestId ? { requestId } : {}) });
         };
-        ui.skillTree.onResetTalents = () => {
-            engine.network.send('resetTalents', {});
+        ui.skillTree.onResetTalents = (requestId) => {
+            engine.network.send('resetTalents', requestId ? { requestId } : {});
         };
-        ui.skillTree.onSelectRune = (skill, runeId) => {
-            engine.network.send('select_rune', { skill, runeId });
+        ui.skillTree.onSelectRune = (skill, runeId, requestId) => {
+            engine.network.send('select_rune', { skill, runeId, ...(requestId ? { requestId } : {}) });
         };
 
         ui.inventory.onStashDeposit = (itemId) => {

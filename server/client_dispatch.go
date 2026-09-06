@@ -1580,6 +1580,10 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 
 	case MsgSelectBranch:
+		requestID, valid := c.buildRequestID(msg)
+		if !valid {
+			return
+		}
 		if c.playerID == "" {
 			return
 		}
@@ -1588,7 +1592,10 @@ func (c *Client) dispatchMessage(msg Message) {
 			return
 		}
 		if _, success := world.PerformSelectBranch(c.playerID, payload.Branch); success {
+			c.sendBuildActionResult(requestID, true, "Specialization selected")
 			savePlayer(c) // Persist immediately
+		} else {
+			c.sendBuildActionResult(requestID, false, "Choose a valid specialization for your character")
 		}
 
 	case MsgUnlockSkill:
@@ -1604,6 +1611,10 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 
 	case MsgUnlockTalent:
+		requestID, valid := c.buildRequestID(msg)
+		if !valid {
+			return
+		}
 		if c.playerID == "" {
 			return
 		}
@@ -1612,19 +1623,25 @@ func (c *Client) dispatchMessage(msg Message) {
 			return
 		}
 		if _, success, msgStr := world.PerformUnlockTalent(c.playerID, payload.TalentId); success {
+			c.sendBuildActionResult(requestID, true, "Talent rank added")
 			savePlayer(c) // Persist immediately
 		} else {
-			c.sendError(msgStr)
+			c.sendBuildActionResult(requestID, false, msgStr)
 		}
 
 	case MsgResetTalents:
+		requestID, valid := c.buildRequestID(msg)
+		if !valid {
+			return
+		}
 		if c.playerID == "" {
 			return
 		}
 		if _, success, msgStr := world.PerformResetTalents(c.playerID); success {
+			c.sendBuildActionResult(requestID, true, "Talent ranks reset")
 			savePlayer(c) // Persist immediately
 		} else {
-			c.sendError(msgStr)
+			c.sendBuildActionResult(requestID, false, msgStr)
 		}
 
 	case MsgRespec:
@@ -1682,6 +1699,10 @@ func (c *Client) dispatchMessage(msg Message) {
 		c.sendSafe(msgBytes)
 
 	case MsgSelectRune:
+		requestID, valid := c.buildRequestID(msg)
+		if !valid {
+			return
+		}
 		if c.playerID == "" {
 			return
 		}
@@ -1690,7 +1711,7 @@ func (c *Client) dispatchMessage(msg Message) {
 			RuneID string `json:"runeId"` // Empty string to unequip
 		}
 		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
-			c.sendError("Invalid rune payload")
+			c.sendBuildActionResult(requestID, false, "Invalid rune payload")
 			return
 		}
 
@@ -1705,19 +1726,19 @@ func (c *Client) dispatchMessage(msg Message) {
 			runeDef, ok := game.GetRuneDef(payload.RuneID)
 			if !ok {
 				player.Mu.Unlock()
-				c.sendError("Invalid rune ID")
+				c.sendBuildActionResult(requestID, false, "Invalid rune ID")
 				return
 			}
 			// Check level requirement
 			if player.Level < runeDef.UnlockLevel {
 				player.Mu.Unlock()
-				c.sendError(fmt.Sprintf("You need to be level %d to use this rune", runeDef.UnlockLevel))
+				c.sendBuildActionResult(requestID, false, fmt.Sprintf("You need to be level %d to use this rune", runeDef.UnlockLevel))
 				return
 			}
 			// Check that the rune matches the skill
 			if runeDef.Skill != payload.Skill {
 				player.Mu.Unlock()
-				c.sendError("This rune doesn't work with that skill")
+				c.sendBuildActionResult(requestID, false, "This rune doesn't work with that skill")
 				return
 			}
 			// Verify player has this skill unlocked
@@ -1730,7 +1751,7 @@ func (c *Client) dispatchMessage(msg Message) {
 			}
 			if !hasSkill {
 				player.Mu.Unlock()
-				c.sendError("You don't have this skill unlocked")
+				c.sendBuildActionResult(requestID, false, "You don't have this skill unlocked")
 				return
 			}
 		}
@@ -1760,6 +1781,7 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 		b, _ := json.Marshal(runeMsg)
 		c.sendSafe(b)
+		c.sendBuildActionResult(requestID, true, "Rune updated")
 		savePlayer(c)
 
 	case MsgGetRunes:

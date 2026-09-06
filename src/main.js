@@ -392,6 +392,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 };
                 window.game.network.onConnectionStateChange = (state) => {
                     window.game?.uiManager?.setConnectionState(state);
+                    window.game?.uiManager?.skillTree?.handleBuildConnectionState?.(state);
                 };
                 window.game.network.onReconnectFailed = () => {
                     try { localStorage.removeItem('eidolon_resume_token'); } catch (_) { /* Storage may be unavailable. */ }

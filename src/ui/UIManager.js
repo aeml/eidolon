@@ -98,6 +98,7 @@ export class UIManager {
 
         // Skill Tree UI (extracted module)
         this.skillTree = new SkillTreeUI({
+            isMobile: this.isMobile,
             getLastPlayer: () => this.lastPlayerRef,
             sendRespec: (type) => {
                 if (window.game && window.game.socket) {

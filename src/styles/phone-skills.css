@@ -1,0 +1,36 @@
+.mobile-mode #skill-tree-window {
+    position: fixed !important;
+    top: var(--phone-top) !important;
+    left: max(12px, env(safe-area-inset-left, 0px)) !important;
+    width: calc(100vw - max(12px, env(safe-area-inset-left, 0px)) - max(12px, env(safe-area-inset-right, 0px))) !important;
+    height: calc(100dvh - var(--phone-top) - var(--phone-bottom) - 60px) !important;
+    min-height: 0;
+    max-height: none;
+    transform: none !important;
+    font-size: 16px;
+}
+.mobile-mode #skill-tree-window .skill-tree-header { flex: 0 0 auto; padding: 8px 12px; min-height: 44px; gap: 12px; }
+.phone-build-tabs { flex: 0 0 auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; padding: 8px; border-bottom: 1px solid var(--border-light); }
+.mobile-mode #skill-tree-window button:not(.close-btn) { min-height: 44px; padding: 8px; font-size: 16px; white-space: normal; overflow-wrap: anywhere; }
+.mobile-mode #skill-tree-window button[aria-pressed="true"] { color: var(--color-gold); border-color: var(--color-gold); background: var(--bg-surface-active); }
+.mobile-mode #skill-tree-window button:disabled { cursor: default; opacity: 0.65; }
+.mobile-mode #skill-tree-content { flex: 1 1 auto; min-height: 0; padding: 12px; overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; gap: 16px; }
+.phone-build-content > *, .phone-build-branch > *, .phone-build-card > * { flex-shrink: 0; min-width: 0; }
+.phone-build-content :is(h2, h3, p) { margin: 0; overflow-wrap: anywhere; }
+.phone-build-content h3 { font-size: 18px; line-height: 1.4; color: var(--color-gold); }
+.phone-build-content p { font-size: 16px; line-height: 1.55; color: var(--color-text); }
+.phone-build-branch { display: flex; flex-direction: column; gap: 12px; border-top: 1px solid var(--border-light); padding-top: 16px; }
+.phone-build-card { display: flex; flex-direction: column; gap: 10px; padding: 14px; border: 1px solid var(--border-light); border-radius: 8px; background: var(--bg-surface); }
+.phone-build-content .phone-build-meta { color: #bacddd; }
+.phone-build-reset { display: flex; flex-wrap: wrap; gap: 8px; }
+.phone-build-reset p { flex-basis: 100%; }
+.phone-build-content select { flex-shrink: 0; width: 100%; min-height: 44px; padding: 8px; font-size: 16px; color: var(--color-white); background: var(--bg-surface); border: 1px solid var(--border-light); }
+.phone-build-feedback { flex: 0 0 auto; margin: 0; padding: 8px 12px; font-size: 16px; line-height: 1.4; border-top: 1px solid var(--border-light); background: var(--bg-surface); }
+.phone-build-feedback[hidden] { display: none; }
+.phone-build-feedback[role="alert"] { color: #ffb6aa; }
+
+@media (orientation: landscape) and (max-height: 500px) {
+    .phone-build-card:has(button) { display: grid; grid-template-columns: minmax(0, 1fr) minmax(140px, 0.4fr); column-gap: 16px; }
+    .phone-build-card:has(button) > :is(h3, p) { grid-column: 1; }
+    .phone-build-card:has(button) > button { grid-column: 2; grid-row: 1 / span 3; align-self: center; }
+}

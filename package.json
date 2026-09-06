@@ -1,6 +1,6 @@
 {
   "name": "eidolon-tests",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "Eidolon browser game client, validation, and release tooling",
   "type": "module",
   "engines": {
@@ -15,7 +15,7 @@
     "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
     "test:smoke": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runTestsByPath tests/CollisionManager.test.js tests/ItemSystem.test.js",
     "test:e2e": "playwright test",
-    "test:e2e:anonymous": "playwright test tests/e2e/anonymous.spec.js tests/e2e/visual-polish.spec.js tests/e2e/menu-layers.spec.js tests/e2e/raid-menu.spec.js tests/e2e/dungeon-layout-polish.spec.js tests/e2e/mobile-pinch.spec.js tests/e2e/mobile-hud-layout.spec.js tests/e2e/mobile-camera-layout.spec.js tests/e2e/mobile-inventory-layout.spec.js tests/e2e/mobile-quest-layout.spec.js",
+    "test:e2e:anonymous": "playwright test tests/e2e/anonymous.spec.js tests/e2e/visual-polish.spec.js tests/e2e/menu-layers.spec.js tests/e2e/raid-menu.spec.js tests/e2e/dungeon-layout-polish.spec.js tests/e2e/mobile-pinch.spec.js tests/e2e/mobile-hud-layout.spec.js tests/e2e/mobile-camera-layout.spec.js tests/e2e/mobile-inventory-layout.spec.js tests/e2e/mobile-quest-layout.spec.js tests/e2e/mobile-skills-layout.spec.js",
     "test:e2e:authenticated": "playwright test tests/e2e/authenticated.spec.js",
     "test:e2e:isolated": "bash scripts/run-isolated-character-qa.sh",
     "test:e2e:live-animations": "bash scripts/run-live-animation-qa.sh",

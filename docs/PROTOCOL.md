@@ -48,6 +48,24 @@ movement merely because an earlier recall supplied a context. This additive JSON
 extension does not change EDPB version 2. The identifier is not a secret or an
 anti-cheat credential, and this change is not a redesign of movement authority.
 
+## Build-action receipts
+
+Alpha 1.0.20 accepts optional `requestId` strings (up to 64 characters) on
+`selectBranch`, `unlockTalent`, `resetTalents` and `select_rune`. Updated phone
+menus generate an identifier per deliberate action. Accepted and rejected
+actions return a lossless `build_action` payload with `requestId`, `ok` and
+`message`. Requests without an identifier keep their legacy response behavior.
+Malformed or oversized identifiers are rejected before build mutation.
+
+The receipt does not carry an optimistic build or replace authoritative snapshots.
+The phone UI waits for both a matching successful receipt and matching server
+build state; an unrelated receipt cannot clear its pending action. A reconnect
+waits for a fresh full build snapshot, then reports the observed outcome without
+resending the command. Request identifiers correlate replies; they are not an
+idempotency or replay-protection contract. Single-flight UI controls suppress
+accidental repeated taps while a request is pending. Progression, rune validation
+and point-spending rules remain server-owned. EDPB stays at version 2.
+
 ## Backpressure
 
 State snapshots are replaceable and use a bounded lossy queue. Authentication,

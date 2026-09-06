@@ -628,6 +628,8 @@ class GameEngineNetworkMessageMethods {
                 // its last old-context sample was rejected during recovery.
                 movement.lastPacket = null;
             }
+        } else if (msg.type === 'build_action') {
+            this.uiManager?.skillTree?.handleBuildActionResult?.(msg.payload);
         } else if (msg.type === 'select_rune') {
             // Server sends updated runes after select_rune
             if (this.player && msg.payload && msg.payload.skillRunes) {
@@ -1039,6 +1041,8 @@ class GameEngineNetworkMessageMethods {
 
                         // Server-authoritative skill runes
                         if (pData.skillRunes !== undefined) this.player.skillRunes = pData.skillRunes || {};
+
+                        this.uiManager?.skillTree?.handleBuildSnapshot?.();
 
                         const currUnlocked = this.player.unlockedSkills ? this.player.unlockedSkills.length : 0;
 

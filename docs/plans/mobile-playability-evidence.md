@@ -3,8 +3,57 @@
 Status: baseline diagnosis plus incremental implementation evidence, not a completed phone redesign. Requirements
 and release gates live in [the main roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13).
 
-Latest local candidate: **Alpha 1.0.19**, readable phone conversations and quest tracking, not yet published.
+Latest local candidate: **Alpha 1.0.20**, readable phone build menus, not yet published.
 Earlier entries below are chronological snapshots, not current process status.
+
+## Phone build reading and deliberate choices (Alpha 1.0.20 candidate)
+
+Source: `200478f` plus local phone Skills & Runes changes. Skills, Talents, Runes
+and Combos use a separate phone composition: 16px descriptions, 44px primary
+controls, tabs outside the scroller, explicit actions, confirmed talent reset
+and saved section reading position. A native ability picker narrows runes to
+one supported skill. The existing specialization/level progression is unchanged.
+Actions await a correlated lossless server receipt and matching authoritative
+build state; neither card reading nor pending feedback mutates player ranks.
+Reconnect waits for a fresh server build and never automatically resends an action.
+
+Initial evidence: six red behavior tests before implementation; 161 suites /
+2,329 client tests and lint passed afterward. Server race checks and receipt/
+rejection/legacy tests passed. All three emulated touch-layout cases passed in
+11.4 seconds; inspected `/tmp/eidolon-phone-skills-runes-{390,844}.png`.
+These layouts use seeded player data and simulated receipts, not real progression.
+
+The first real-server route confirmed a specialization change and talent rank,
+then failed because it attempted to select a skill without rune definitions.
+The corrected fixture uses Earthshaker and is being rerun with final versioned
+client/server checks. Logs: `/tmp/eidolon-phone-skills-{red,layout,gameplay}.log`
+and `/tmp/eidolon-1-0-20-`. The level-100 QA fixture exposes build choices; it is
+not earned-level or balance evidence. Physical-device, all-class touch-combat
+and remaining-menu gates remain open.
+
+The corrected versioned real-server route subsequently passed in 10.3 seconds.
+Its expanded run passed in **13.8 seconds**, covering both phone orientations,
+server-confirmed branch/rank/rune changes, canceled and confirmed talent reset,
+re-ranking, open-menu transport interruption/resume and persisted build after
+reload. No build state was granted directly by the test. Credential scanning and
+exact disposable cleanup passed. All 21 anonymous browser checks passed in 2.0
+minutes; versioned client checks passed 161 suites / 2,332 tests plus lint and
+server race tests. One stale login-label assertion was updated after the version
+bump. Final additional all-class locked-choice and rune-button hit-area checks
+are running; logs use `/tmp/eidolon-1-0-20-`.
+
+The additional checks passed: 161 suites / 2,336 tests, lint, and three rune-button
+hit-area layouts. Reviewing the short landscape capture prompted a CSS-only
+two-column card layout, with actions beside the talent/rune descriptions. The
+anonymous and expanded server-owned build routes are being rerun on that final
+composition; no publication is claimed until their results are recorded.
+
+Final composition checks passed: **21 anonymous cases in 1.9 minutes**, and the
+expanded server-owned phone build route in **13.7 seconds**, with credential
+scanning and disposable cleanup. The final landscape rune capture shows the
+title, effect, level and Equip action together above chat. Local browser session
+`6314` is closed. This candidate is ready for a separate local commit, not yet
+publication or the wider phone milestone's sign-off.
 
 ## Phone quest reading and tracking (Alpha 1.0.19 candidate)
 

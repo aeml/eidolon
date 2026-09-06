@@ -335,7 +335,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.19</span>
+                <span class="start-version-row__label">Alpha 1.0.20</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -661,6 +661,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.20">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.20 (a build you can read)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Room to understand your build:</strong> Phone Skills, Talents, Runes and Combos use readable cards and larger controls above the permanent chat strip. Section buttons stay reachable while you scroll, and returning to a section preserves your reading position.</li>
+                        <li><strong>Read first, choose deliberately:</strong> Specialization, talent ranks and rune changes have explicit buttons. Reading a description no longer spends a talent point. Talent reset asks for confirmation; shared build state is never changed optimistically by the phone menu.</li>
+                        <li><strong>Find the rune you need:</strong> An ability picker narrows the rune list to one skill, with clear level requirements and Equip or Remove actions. The menu explains that specialization skills unlock automatically by level; existing progression rules are unchanged.</li>
+                        <li><strong>Know when a change is confirmed:</strong> Build actions wait for a matching server receipt and authoritative state. Rejected requests show feedback in the panel. Reconnect waits for a fresh build snapshot and never automatically replays an interrupted action.</li>
+                        <li><strong>The phone redesign continues:</strong> Desktop skill-tree interactions remain available. Remaining menus, physical-device ergonomics, sustained performance and the wider mobile milestone still require verification.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.0.19">
                     <h3 class="patch-note-entry__title">Alpha 1.0.19 (a story you can settle into)</h3>
                     <ul class="patch-note-entry__list">

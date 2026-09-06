@@ -1,4 +1,5 @@
 import { CONSTANTS } from '../core/Constants.js';
+import { MobileSkillTree } from './MobileSkillTree.js';
 
 /**
  * Skill Tree UI module — handles skill trees, talents, runes, combos, and respec.
@@ -29,6 +30,8 @@ export class SkillTreeUI {
         this.onUnlockTalent = null;
         this.onResetTalents = null;
         this.onSelectRune = null;
+
+        if (ctx.isMobile && this.skillTreeWindow?.contains(this.skillTreeContent)) this.mobile = new MobileSkillTree(this);
 
         // --- Event listeners ---
         if (this.btnCloseSkillTree) {
@@ -200,6 +203,7 @@ export class SkillTreeUI {
 
     renderSkillTree(classType) {
         if (!classType) return;
+        if (this.mobile) return this.mobile.render(classType);
 
         // Tabs at top
         this.skillTreeContent.innerHTML = '';
@@ -221,6 +225,18 @@ export class SkillTreeUI {
         }
 
         this.renderActiveSkillTree(classType);
+    }
+
+    handleBuildActionResult(payload) {
+        this.mobile?.receive(payload);
+    }
+
+    handleBuildConnectionState(state) {
+        this.mobile?.connection(state);
+    }
+
+    handleBuildSnapshot() {
+        this.mobile?.synchronizeAfterReconnect();
     }
 
     createSkillTreeTabs(classType) {

@@ -5,20 +5,77 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-Current release queue (September 6): **1.0.16 (`226a298`) is deployed and verified**:
-CI `34020900312` passed in full, followed by independent frontend manifest,
-login/runtime entry and backend version/SHA/database readiness checks matching
-`226a298888949c38cee99a0ba728d6daa4f3012d` / Alpha 1.0.16. Only the next exact
-commit, 1.0.17 (`99c9ab9`), was pushed; CI `34022781555` passed predeployment QA
-and both deployment jobs and is now in Live Release and Character QA. Independent
-frontend manifest/login/runtime and backend SHA/version/database-readiness checks
-match `99c9ab9482f217ce396b75b1f12a5d9c2cbf9f81` / Alpha 1.0.17. This is not yet
-the complete live gate. 1.0.18 (`d77f215`) remains local. 1.0.19 includes both the
-quest UI commit `43321ed` and verified recovery correction `98f4286`, followed by
-documentation-only evidence updates; it also remains local.
+Current release queue (September 6): **1.0.17 (`99c9ab9`) is deployed and verified**:
+CI `34022781555` passed in full. Independent post-terminal frontend manifest,
+login/runtime entry and backend SHA/version/database-readiness checks match
+`99c9ab9482f217ce396b75b1f12a5d9c2cbf9f81` / Alpha 1.0.17. Only the next exact
+commit, 1.0.18 (`d77f2154b2143e7a1a039b01ed8e07f474be486e`), was pushed;
+CI `34024689105` is running. 1.0.19 is ready locally as `200478f`, including the
+quest UI commit `43321ed`, verified recovery correction `98f4286` and
+documentation-only evidence updates. 1.0.20 phone build-menu work is local and
+unpublished. Push each exact next release only after its predecessor's full gate.
 Earlier entries describe their status at the time,
 not the current queue. Do not publish a successor before the preceding version's
 complete CI/live verification. The original 1.0.14 failure remains recorded below.
+
+## Alpha 1.0.20 — a build you can read (local candidate)
+
+Phone Skills, Talents, Runes and Combos now have readable cards, permanent section
+navigation outside the scroller, explicit build actions and preserved reading
+position. Rune selection filters to one ability. Talent reset requires confirmation;
+the phone UI never mutates shared ranks optimistically. Correlated server receipts
+plus authoritative state confirm changes. Reconnect waits for a full build snapshot
+without replaying an interrupted request. Desktop rendering remains on its existing
+path. Current level-gated branch progression is explained, not redesigned.
+
+Six new behavior tests failed on the prior UI and passed after implementation.
+The initial full client run passed **161 suites / 2,329 tests in 53.91 seconds**,
+plus lint. Server race tests passed (root 9.378 seconds; unchanged game package
+cached), including new action receipts, rejections and legacy compatibility.
+The initial server run caught a violation of the dispatcher's single-switch
+architecture guard; moving request-ID parsing into the individual handlers
+restored the guard without weakening it.
+
+All three touch-layout cases passed in **11.4 seconds** at 360×800, 390×844 and
+844×390; portrait and landscape rune captures were inspected. The first real-server
+route confirmed branch and talent actions, then failed because its test selected
+Sweeping Strike, which has no rune definitions. The fixture now selects Earthshaker,
+an actual supported branch-B rune skill; no assertion was removed. Final versioned
+checks and the corrected real-server route are running under `/tmp/eidolon-1-0-20-`.
+Separate patch notes and all login/package/server/deployment version defaults
+identify 1.0.20. This is not publication or physical-phone acceptance.
+
+Final versioned server race checks passed (root 9.587 seconds; unchanged game
+package cached). The first versioned client run found one stale login-version
+assertion still expecting 1.0.19; after updating it, **161 suites / 2,332 tests
+passed in 64.581 seconds**, plus lint. All **21 anonymous browser checks passed
+in 2.0 minutes**. The corrected real-server build route initially passed both
+orientations and reconnect persistence in 10.3 seconds, then its expanded route
+passed in **13.8 seconds** with canceled/confirmed reset, refunded ranks, re-ranking
+and an open-menu WebSocket interruption/resume. The client waited for a fresh
+authoritative build before allowing further changes. Credential scanning and
+exact disposable cleanup passed. Local browser session `93035` is closed.
+
+Logs: `/tmp/eidolon-1-0-20-{client-final,lint-final,server,anonymous,build,build-final}.log`.
+Additional four-class locked-choice checks and explicit rune-button hit-area
+assertions are being finalized before commit; no runtime changes followed the
+passing real-server route. Broader all-class combat, physical-phone and remaining
+menu gates remain open.
+
+Those additional checks passed: **161 suites / 2,336 tests in 59.634 seconds**,
+lint and all three explicit rune hit-area layouts in **14.9 seconds**. Final
+landscape inspection then prompted a CSS-only composition refinement: talent
+and rune actions sit beside their descriptions on short landscape screens so
+more of a card fits at once. The anonymous suite and expanded real-server build
+route are being rerun after that refinement. Logs use
+`/tmp/eidolon-1-0-20-{client-release,lint-release,layout-final,anonymous-release,build-release}.log`.
+
+The final composition reruns **passed**: all 21 anonymous browser checks in
+**1.9 minutes** and the expanded server-owned build route in **13.7 seconds**.
+The landscape rune card was visually inspected with its name, description,
+requirement and Equip action visible together. Credential scanning and disposable
+cleanup passed; local browser session `6314` is closed. The 1.0.20 candidate is
+ready for its separate local commit; it is not published over the queued releases.
 
 ## Alpha 1.0.19 — a story you can settle into (local candidate)
 
