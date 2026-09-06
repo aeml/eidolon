@@ -80,6 +80,16 @@ client suite passed 163 suites / 2,352 tests; lint also passed. The earlier
 
 ## Alpha 1.0.23 — relics delivered (local candidate)
 
+Committed runtime: `2070c420e9e98f37e75480cbf504c65bf5318fdd`. Its exact clean
+source passed the dedicated real-server collection/reconnect repeat in **37.4
+seconds** (test body 36.3 seconds), with credential scan and disposable cleanup.
+Log: `/tmp/eidolon-1-0-23-exact-collection.log`; session `17371` is closed. This
+checks immediate bag consumption before reload and the same remaining relics,
+completed collection chapter and accepted next offer after reload/login. It is
+not a second full dungeon run. No runtime changes followed the full campaign
+pass; subsequent edits added this optional focused QA route and documentation.
+Publication remains behind 1.0.20's full gate, then exact 1.0.21 and 1.0.22.
+
 The earned Earth route found that successful collection turn-in consumes the
 server's items but leaves the browser's bag stale. `MsgCompleteQuest` now
 serializes inventory and quest payloads under world/entity read locks, then sends
