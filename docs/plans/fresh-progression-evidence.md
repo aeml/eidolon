@@ -117,6 +117,18 @@ these are emulated layout checks, not physical-phone sign-off. Logs
 `/tmp/eidolon-1-0-27-client-final.log` and `/tmp/eidolon-1-0-27-phone-quest-layout.log`.
 The final server race repeat is still running at this observation.
 
+Final server validation subsequently passed: `go test -race ./...`, root
+**17.100 seconds**, game **177.865 seconds**. Log
+`/tmp/eidolon-1-0-27-server-final.log`, session `7476` closed. Exact clean runtime
+**`ac494b8eb3123d5890f4a1b9880cae88d7ad713c`** repeats fresh Wizard collection and
+the new Ilyra preparation text successfully in **1.5 minutes**: zero deaths,
+five observed collection target deaths, four natural seeds, manual gold/XP,
+exact bag consumption and fresh-login persistence, ending at level 17 with
+correctly disabled Verdant entry. Log `/tmp/eidolon-1-0-27-exact-collection.log`,
+session `7035` closed; credential scan/disposable cleanup passed. All local QA
+handles from this continuation are now closed. The final Help regression and
+phone layout results are included; no physical-device sign-off is implied.
+
 The measured level-27 / 4,701-XP result corresponds to **61,424 cumulative XP**
 under the current curve, leaving **36,967 XP** to level 30. It does not yet
 establish the ordinary entry-level dungeon experience. The 1.0.27 candidate

@@ -5,13 +5,19 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-Current release queue (September 6): **corrected 1.0.21 (`9f58757`) is the last
-fully verified release**. CI `34055526018` passed every job, including final live
-character and animation QA. Post-terminal uncached checks at **20:32:20 UTC**
+Current release queue (September 6): **1.0.22 (`e0b9afd`) is the last fully
+verified release**. CI **`34058325420`** passed every job, including final live
+character/animation QA. Post-terminal uncached checks at **21:26:23 UTC** matched
+frontend manifest, login label, main script release query and backend health to
+`e0b9afd3f8cfcefdbd056ef0339cb7937c27c4e7` / Alpha 1.0.22; health reported status
+`ok`, database `ready`. **1.0.23 `ad72a64` is now pushed**, CI **`34061096121`**
+running. No 1.0.24-or-later release has been pushed.
+
+Previously, corrected 1.0.21 (`9f58757`) passed every job in CI `34055526018`,
+including final live character/animation QA. Post-terminal checks at **20:32:20 UTC**
 matched frontend manifest, login label, main script release query and backend
 health to `9f587570313d2f78aa469f21bd73bf8db1dd50ab` / Alpha 1.0.21; health reported
-status `ok`, database `ready`. **1.0.22 `e0b9afd` is now pushed**, with CI
-**`34058325420`** in progress. No 1.0.23-or-later release has been pushed.
+status `ok`, database `ready`, before 1.0.22 was published.
 
 Previously verified 1.0.20 `99303f5` passed CI `34031297122` and its post-terminal
 identity checks. The original 1.0.20
@@ -35,12 +41,12 @@ Local merges carry that same fix forward and preserve ancestry:
 | Next version | Queued source | Supersedes |
 |---|---|---|
 | 1.0.21 | `9f587570313d2f78aa469f21bd73bf8db1dd50ab` (fully verified live) | `c76db47`; strengthens pickup and persistence verification |
-| 1.0.22 | `e0b9afd3f8cfcefdbd056ef0339cb7937c27c4e7` (pushed; CI `34058325420`) | `ed793e0`; inherits corrected 1.0.21 |
-| 1.0.23 | `ad72a642592b5ce6fc6e22b23af1d8b2ab3a52dc` | `4fcb89d`; retains the verified collection inventory repair |
+| 1.0.22 | `e0b9afd3f8cfcefdbd056ef0339cb7937c27c4e7` (fully verified live; CI `34058325420`) | `ed793e0`; inherits corrected 1.0.21 |
+| 1.0.23 | `ad72a642592b5ce6fc6e22b23af1d8b2ab3a52dc` (pushed; CI `34061096121`) | `4fcb89d`; retains the verified collection inventory repair |
 | 1.0.24 | `bcc29f498504fa83a53f62e5cb5aa00e020844c8`, branch `release/24-with-pickup` | phone navigation and fresh-opening QA with corrected release ancestry |
 | 1.0.25 | `dd2ce169d54f54c4af13edb8ac6caf69e36ba8b3`, branch `release/25-with-starter`; runtime `bea6c34` | normal starter encounters, Ilyra guidance and clearing stale recall pursuit |
-| 1.0.26 | `479cfd73c4a6ed8406d9159380c43d9af488df1d` plus subsequent evidence-only commit; locally verified, not pushed | server-sourced dungeon requirements, guarded entry and fresh collection/handoff measurement |
-| 1.0.27 | working candidate; verification in progress | truthful Chronicle preparation and four-dungeon entry-level objectives; normal daily-hunt measurement |
+| 1.0.26 | `f0a1286eb0cacdc12e6545e3cf703256ce0e4179`, branch `release/26-with-entry`; runtime `479cfd7` | server-sourced dungeon requirements, guarded entry and fresh collection/handoff measurement |
+| 1.0.27 | `ac494b8eb3123d5890f4a1b9880cae88d7ad713c` plus subsequent evidence-only commit; locally verified, not pushed | truthful Chronicle preparation and four-dungeon entry-level objectives; normal daily-hunt measurement |
 
 The corrected 1.0.21 → 1.0.22 → 1.0.23 → 1.0.24 ancestry was checked with
 `git merge-base --is-ancestor`. Exact clean `9f58757` passes **163 client suites /
@@ -72,17 +78,24 @@ and pushed 1.0.22; it was progress. This continuation corrects stale level-30
 claims in town guidance and gives Ilyra's dungeon handoff actual preparation
 context, with authoritative entry levels in all four dungeon objectives. Rewards,
 manual turn-ins, existing-save progression and dungeon gates remain unchanged.
-Focused regressions and full client/server checks pass; the final Help/error-copy
-sweep is receiving its full repeat. The existing 100-Skeleton route now passes
+Focused regressions and final full client/server checks pass: **167 suites /
+2,389 client tests**, lint and full Go race checks (root 17.100 seconds, game
+177.865 seconds). Three phone conversation/journal layouts pass. Exact clean
+runtime `ac494b8` repeats the collection/Ilyra-preparation route in 1.5 minutes,
+with zero deaths, manual rewards and fresh-login persistence. The existing 100-Skeleton route passes
 through manual 100-gold / 50,000-XP turn-in and login persistence in 208 seconds
 from hunt start, with no deaths, ending at level 27. This is not yet level-30
 entry or a complete first hour. See the
 [preparation measurement](fresh-progression-evidence.md) for failed approach and
 contract-list assumptions, their diagnostics, and the final direct-NPC result.
 
-CI `34058325420` for 1.0.22 has passed predeploy checks and both deployment jobs.
-Final live anonymous/persistent-character checks have passed; four-class and
-remote-animation checks are running. The same job remains live; it was not restarted.
+CI `34058325420` for 1.0.22 completed successfully and fresh post-terminal
+identities match. Queued 1.0.23 `ad72a64` was then fast-forward pushed; CI
+`34061096121` is running. Wait for its full gate and post-terminal matching
+identities before pushing 1.0.24 `bcc29f4`. All local validation handles from this
+continuation are closed. The full roadmap remains active and incomplete; the
+next first-hour work is ordinary preparation from the measured level 27 to 30,
+appropriate equipment/skill choices and actual earned-level dungeon play.
 
 ### Alpha 1.0.26 — know when you are ready (local candidate)
 

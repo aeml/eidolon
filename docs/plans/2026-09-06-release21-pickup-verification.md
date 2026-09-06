@@ -80,9 +80,12 @@ including final live persistent-character, four-class and remote-animation QA.
 Fresh post-terminal uncached checks at **September 6, 20:32:20 UTC** matched the
 frontend manifest, login label, main script release query and backend health to
 `9f587570313d2f78aa469f21bd73bf8db1dd50ab` / Alpha 1.0.21. Health reported status
-`ok`, database `ready`. This is now the last fully verified live release.
+`ok`, database `ready`. This verified 1.0.21 before publishing the next release;
+current publication status is maintained in the [execution ledger](2026-09-05-roadmap-execution.md).
 
 The old `c76db47` failure remains recorded; its matching health alone never
 established passing gameplay. After the corrected successor's complete gate,
 the next 1.0.22 commit `e0b9afd3f8cfcefdbd056ef0339cb7937c27c4e7` was fast-forward
-pushed to `master`. CI `34058325420` is running; no later version may skip its gate.
+pushed to `master`. CI `34058325420` subsequently passed, with post-terminal
+matching identities recorded at September 6, 21:26:23 UTC. Only then was 1.0.23
+`ad72a64` pushed; its CI is `34061096121`. No version skipped its predecessor's gate.
