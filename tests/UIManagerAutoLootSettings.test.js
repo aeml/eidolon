@@ -304,6 +304,49 @@ describe('UIManager settings', () => {
         expect(localStorage.getItem('eidolon.audioDetailLevel')).toBe('reduced');
     });
 
+    test('fresh brightness uses the documented midpoint while explicit zero is preserved', () => {
+        buildDom();
+        const fresh = new UIManager(false);
+        expect(fresh.getBrightnessLevel()).toBe(50);
+        expect(fresh.graphicsBrightnessValue.textContent).toBe('50%');
+        localStorage.setItem('eidolon.graphicsBrightness', '0');
+        const saved = new UIManager(false);
+        expect(saved.getBrightnessLevel()).toBe(0);
+    });
+
+    test('phone menu text uses its own preference and leaves desktop scale unchanged', () => {
+        buildDom(); localStorage.setItem('eidolon.uiScale', '85');
+        const ui = new UIManager(true);
+        expect(ui.getUiScale()).toBe(1);
+        expect(ui.uiScaleSlider.min).toBe('100');
+        ui.setUiScale(125);
+        expect(localStorage.getItem('eidolon.phoneMenuTextScale')).toBe('125');
+        expect(localStorage.getItem('eidolon.uiScale')).toBe('85');
+        expect(document.documentElement.style.getPropertyValue('--phone-menu-text-size')).toBe('20px');
+        expect(document.documentElement.style.getPropertyValue('--ui-scale')).toBe('1');
+        ui.setUiScale(85); expect(ui.getUiScale()).toBe(1);
+    });
+
+    test('phone settings replaces the pause menu and chat expansion closes settings', () => {
+        buildDom();
+        const ui = new UIManager(true);
+        ui.toggleEscMenu(); ui.toggleSettings();
+        expect(ui.escMenu.style.display).toBe('none');
+        expect(ui.settingsScreen.style.display).toBe('flex');
+        ui.chat.setMobileExpanded(true);
+        expect(ui.settingsScreen.style.display).toBe('none');
+        expect(ui.chat.mobileExpanded).toBe(true);
+    });
+
+    test('phone menu text restores without changing the desktop scale preference', () => {
+        buildDom(); localStorage.setItem('eidolon.phoneMenuTextScale', '115');
+        localStorage.setItem('eidolon.uiScale', '90');
+        const ui = new UIManager(true);
+        expect(ui.getUiScale()).toBe(1.15);
+        expect(document.documentElement.style.getPropertyValue('--phone-menu-text-size')).toBe('18.4px');
+        expect(localStorage.getItem('eidolon.uiScale')).toBe('90');
+    });
+
     test('ui scale persists, clamps, and applies root css variable', () => {
         buildDom();
         const ui = new UIManager(false);

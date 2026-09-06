@@ -2,6 +2,7 @@ import { RARITY } from '../core/ItemSystem.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { ForgeUI } from './ForgeUI.js';
 import { SkillTreeUI } from './SkillTreeUI.js';
+import { PhoneSettingsUI } from './PhoneSettingsUI.js';
 import { TradingUI } from './TradingUI.js';
 import { QuestUI } from './QuestUI.js';
 import { SocialUI } from './SocialUI.js';
@@ -226,8 +227,10 @@ export class UIManager {
             });
         }
 
-        const storedBrightness = Number(localStorage.getItem('eidolon.graphicsBrightness'));
-        this.graphicsBrightness = Number.isFinite(storedBrightness) ? Math.max(0, Math.min(100, storedBrightness)) : 50;
+        const storedBrightnessValue = localStorage.getItem('eidolon.graphicsBrightness');
+        const storedBrightness = Number(storedBrightnessValue);
+        this.graphicsBrightness = storedBrightnessValue !== null && storedBrightnessValue.trim() !== '' && Number.isFinite(storedBrightness)
+            ? Math.max(0, Math.min(100, storedBrightness)) : 50;
         if (this.graphicsBrightnessSlider) {
             this.graphicsBrightnessSlider.value = String(this.graphicsBrightness);
             this.graphicsBrightnessSlider.addEventListener('input', () => {
@@ -236,12 +239,13 @@ export class UIManager {
         }
         this.updateBrightnessLabel();
 
-        const storedUiScaleValue = localStorage.getItem('eidolon.uiScale');
+        const storedUiScaleValue = localStorage.getItem(this.isMobile ? 'eidolon.phoneMenuTextScale' : 'eidolon.uiScale');
         const storedUiScale = Number(storedUiScaleValue);
         this.uiScale = storedUiScaleValue !== null && Number.isFinite(storedUiScale)
-            ? Math.max(85, Math.min(125, storedUiScale))
+            ? Math.max(this.isMobile ? 100 : 85, Math.min(125, storedUiScale))
             : 100;
         if (this.uiScaleSlider) {
+            this.uiScaleSlider.min = this.isMobile ? '100' : '85';
             this.uiScaleSlider.value = String(this.uiScale);
             this.uiScaleSlider.addEventListener('input', () => {
                 this.setUiScale(Number(this.uiScaleSlider.value));
@@ -249,6 +253,10 @@ export class UIManager {
         }
         this.applyUiScale();
         this.updateUiScaleLabel();
+
+        if (this.isMobile && this.settingsScreen?.querySelector('.support-window__body--settings')) {
+            this.phoneSettings = new PhoneSettingsUI(this.settingsScreen);
+        }
 
         this.controlHintLevel = this.normalizeControlHintLevel(localStorage.getItem('eidolon.controlHintLevel'));
         if (this.controlHintLevelSelect) {
@@ -535,7 +543,13 @@ export class UIManager {
 
         // Chat UI
         this.chat = new ChatUI({
-            onSend: (message) => this.onChatSend?.(message)
+            onSend: (message) => this.onChatSend?.(message),
+            onMobileExpanded: (expanded) => {
+                if (this.isMobile && expanded && this.isElementVisible(this.settingsScreen)) {
+                    this.closeStaticModal(this.settingsScreen);
+                    if (this.isEscMenuOpen) this.toggleEscMenu();
+                }
+            }
         });
         this.chatBox = this.chat.chatBox;
         this.chatMessages = this.chat.messages;

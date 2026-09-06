@@ -5,20 +5,69 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-Current release queue (September 6): **1.0.17 (`99c9ab9`) is deployed and verified**:
-CI `34022781555` passed in full. Independent post-terminal frontend manifest,
+Current release queue (September 6): **1.0.18 (`d77f215`) is deployed and verified**:
+CI `34024689105` passed in full. Independent post-terminal frontend manifest,
 login/runtime entry and backend SHA/version/database-readiness checks match
-`99c9ab9482f217ce396b75b1f12a5d9c2cbf9f81` / Alpha 1.0.17. Only the next exact
-commit, 1.0.18 (`d77f2154b2143e7a1a039b01ed8e07f474be486e`), was pushed;
-CI `34024689105` is running. 1.0.19 is ready locally as `200478f`, including the
-quest UI commit `43321ed`, verified recovery correction `98f4286` and
-documentation-only evidence updates. 1.0.20 phone build-menu work is local and
-unpublished. Push each exact next release only after its predecessor's full gate.
+`d77f2154b2143e7a1a039b01ed8e07f474be486e` / Alpha 1.0.18. The verification
+script initially expected the backend version without its `Alpha` prefix; the
+corrected exact-format check passed without changing either deployment.
+Only the next exact commit, 1.0.19 (`200478fddd5c3e1f28f8ef5d93644df3395da020`),
+was pushed; CI `34026658393` is running. It includes quest UI `43321ed`, verified
+recovery correction `98f4286` and documentation-only evidence updates.
+1.0.20 (`bd54b2a`) is committed locally; 1.0.21 phone Settings is locally verified
+and being committed. Neither is published. Push each exact next release only
+after its predecessor's full gate.
 Earlier entries describe their status at the time,
 not the current queue. Do not publish a successor before the preceding version's
 complete CI/live verification. The original 1.0.14 failure remains recorded below.
 
+## Alpha 1.0.21 — comfort without losing the view (local candidate)
+
+Phone Settings reuses the existing native controls in four readable categories:
+Screen, Play, Sound and Device. Navigation and Close remain outside the content
+scroller; controls have at least 44px hit areas. Menu text can grow from 100% to
+125%, with a separate phone preference, without scaling the world, camera or
+desktop layout. This is menu text sizing, not completion of the whole HUD-scale
+or physical-phone gate. Settings replaces the pause menu, and tapping the permanent
+chat strip closes Settings so the composer is reachable after rotation.
+
+A regression also found missing brightness storage being converted from `null`
+to numeric zero. Fresh settings now use the documented 50% renderer default;
+an explicitly saved zero remains zero. Initial HTML output now matches that default.
+
+Evidence and corrections:
+
+- Two independent phone-text preference tests failed before the implementation;
+  the fresh-brightness test separately reproduced 0 instead of 50.
+- Initial rendered layouts failed in both portrait sizes because the new flex
+  panel lacked column direction. Correcting composition restored all three cases.
+  Visual review then kept category labels unwrapped and the chat strip unobscured.
+- The first real-server Settings route found the old pause menu intercepting
+  chat after rotation. Closing it when opening Settings fixed the actual route;
+  no forced click or weaker assertion was used. The corrected route passed in
+  9.3 seconds before the final versioned rerun.
+- Final versioned checks passed **162 client suites / 2,344 tests in 60.087
+  seconds**, lint, server race checks (root 10.216 seconds; game package cached),
+  and **24 anonymous browser checks in 2.0 minutes**.
+- The final fresh-character real-server route passed in **8.4 seconds**: native
+  touch text sizing, graphics/audio/loot preferences, unchanged camera zoom and
+  character position, landscape chat, and reload persistence. Credential scanning
+  and exact disposable cleanup passed. No level or progression grants were used.
+- Inspected 390×844 and 844×390 Settings captures at 125% and the enlarged
+  landscape rune card. Layout coverage also includes 360×800. These are desktop
+  Chrome touch emulation, not physical iOS/Android performance evidence.
+
+Logs: `/tmp/eidolon-1-0-21-{client,lint,server,anonymous,settings}.log`.
+All login/package/server/deployment version defaults and separate patch notes
+identify 1.0.21. Essential dungeon-guide touch flow is next; remaining menus,
+physical devices, full dungeon coverage and the broader roadmap gates stay open.
+
 ## Alpha 1.0.20 — a build you can read (local candidate)
+
+Committed locally as `bd54b2aab3b56aa6c83efe40d6071e3881ba6074`. Its exact clean
+commit subsequently passed the expanded real-server phone build route in
+**12.9 seconds**, including credential scanning and disposable cleanup.
+Log: `/tmp/eidolon-1-0-20-exact-build.log`. Not yet published.
 
 Phone Skills, Talents, Runes and Combos now have readable cards, permanent section
 navigation outside the scroller, explicit build actions and preserved reading

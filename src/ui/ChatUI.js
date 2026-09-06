@@ -6,8 +6,9 @@ const CHAT_VIEWS = new Set(['chat', 'party', 'guild', 'whisper', 'game']);
  * character-specific rewards and progression stay in the Game stream.
  */
 export class ChatUI {
-    constructor({ onSend = null } = {}) {
+    constructor({ onSend = null, onMobileExpanded = null } = {}) {
         this.onSend = onSend;
+        this.onMobileExpanded = onMobileExpanded;
         this.chatBox = document.getElementById('chat-box');
         this.messages = document.getElementById('chat-messages');
         this.input = document.getElementById('chat-input');
@@ -199,6 +200,7 @@ export class ChatUI {
 
     setMobileExpanded(expanded) {
         this.mobileExpanded = Boolean(expanded);
+        this.onMobileExpanded?.(this.mobileExpanded);
         this.chatBox?.classList.toggle('chat-mobile-expanded', this.mobileExpanded);
         if (this.mobileExpanded) {
             this.mobileUnread = 0;

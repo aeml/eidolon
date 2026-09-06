@@ -20,7 +20,11 @@ class UIManagerSettingsMethods {
     }
 
     toggleSettings() {
-        this.toggleStaticModal(this.settingsScreen, 'block');
+        if (this.isMobile && !this.isElementVisible(this.settingsScreen)) {
+            this.chat?.setMobileExpanded(false);
+            if (this.isEscMenuOpen) this.toggleEscMenu();
+        }
+        this.toggleStaticModal(this.settingsScreen, this.isMobile ? 'flex' : 'block');
     }
 
     togglePatchNotes() {
@@ -85,14 +89,15 @@ class UIManagerSettingsMethods {
     }
 
     applyUiScale() {
-        document.documentElement?.style?.setProperty?.('--ui-scale', String(this.uiScale / 100));
+        document.documentElement?.style?.setProperty?.('--ui-scale', this.isMobile ? '1' : String(this.uiScale / 100));
+        document.documentElement?.style?.setProperty?.('--phone-menu-text-size', `${this.isMobile ? Math.round(16 * this.uiScale) / 100 : 16}px`);
     }
 
     setUiScale(scalePercent) {
         const numericScale = Number.isFinite(scalePercent) ? scalePercent : 100;
-        const clamped = Math.max(85, Math.min(125, numericScale));
+        const clamped = Math.max(this.isMobile ? 100 : 85, Math.min(125, numericScale));
         this.uiScale = clamped;
-        localStorage.setItem('eidolon.uiScale', String(clamped));
+        localStorage.setItem(this.isMobile ? 'eidolon.phoneMenuTextScale' : 'eidolon.uiScale', String(clamped));
         if (this.uiScaleSlider && Number(this.uiScaleSlider.value) !== clamped) {
             this.uiScaleSlider.value = String(clamped);
         }
@@ -104,7 +109,7 @@ class UIManagerSettingsMethods {
     }
 
     getUiScale() {
-        return Math.max(0.85, Math.min(1.25, (Number(this.uiScale) || 100) / 100));
+        return Math.max(this.isMobile ? 1 : 0.85, Math.min(1.25, (Number(this.uiScale) || 100) / 100));
     }
 
     normalizeControlHintLevel(level) {

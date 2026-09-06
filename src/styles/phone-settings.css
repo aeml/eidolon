@@ -1,0 +1,42 @@
+.mobile-mode #settings-screen {
+    position: fixed !important;
+    top: var(--phone-top) !important;
+    left: max(12px, env(safe-area-inset-left, 0px)) !important;
+    width: calc(100vw - max(12px, env(safe-area-inset-left, 0px)) - max(12px, env(safe-area-inset-right, 0px))) !important;
+    height: calc(100dvh - var(--phone-top) - var(--phone-bottom) - 60px) !important;
+    max-height: none;
+    min-height: 0;
+    transform: none !important;
+    overflow: hidden;
+    flex-direction: column;
+}
+.mobile-mode #settings-screen > .window-header { flex: 0 0 auto; min-height: 44px; padding: 8px 12px; gap: 12px; }
+.phone-settings-tabs { flex: 0 0 auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; padding: 8px; border-bottom: 1px solid var(--border-light); }
+.mobile-mode #settings-screen :is(button:not(.close-btn), select) { min-height: 44px; min-width: 0; padding: 8px; font-size: var(--phone-menu-text-size, 16px); color: var(--color-white); background: var(--bg-surface); border: 1px solid var(--border-light); white-space: normal; overflow-wrap: anywhere; }
+.phone-settings-tabs button[aria-pressed="true"] { color: var(--color-gold) !important; border-color: var(--color-gold) !important; }
+.mobile-mode #settings-screen .phone-settings-tabs button,
+.mobile-mode #skill-tree-window .phone-build-tabs button { font-size: 16px !important; white-space: nowrap; }
+.mobile-mode:has(#settings-screen[style*="display: flex"]) #ui-static-modal-backdrop { bottom: calc(var(--phone-bottom) + 60px); }
+.mobile-mode #settings-screen .support-window__body--settings { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 12px; overscroll-behavior: contain; touch-action: pan-y; }
+.phone-settings-section { display: flex; flex-direction: column; gap: 20px; padding-bottom: 20px; }
+.phone-settings-section[hidden] { display: none; }
+.mobile-mode #settings-screen :is(.support-field__label, .support-field__hint, .support-field__value, .asset-cache-panel__detail, .asset-cache-pack__meta, .asset-cache-pack__status, .asset-cache-panel__title, .asset-cache-panel__status, .asset-cache-pack__title, .asset-cache-pack__badge) { font-size: var(--phone-menu-text-size, 16px); line-height: 1.5; overflow-wrap: anywhere; }
+.mobile-mode #settings-screen .support-field { padding: 12px; border: 1px solid var(--border-light); border-radius: 8px; background: var(--bg-surface); }
+.mobile-mode #settings-screen .support-field__row:has(input[type="checkbox"]) { min-height: 44px; position: relative; }
+.mobile-mode #settings-screen .support-field__row:has(input[type="checkbox"]) label { flex: 1; min-height: 44px; display: flex; align-items: center; cursor: pointer; }
+.mobile-mode #settings-screen input[type="checkbox"] { flex: 0 0 44px; width: 44px; height: 44px; margin: 0; cursor: pointer; }
+.mobile-mode #settings-screen input[type="range"] { min-height: 44px; margin: 0; touch-action: pan-y; }
+.mobile-mode #settings-screen input[type="range"]::-webkit-slider-thumb { width: 28px; height: 28px; }
+.mobile-mode #settings-screen :is(.asset-cache-panel__header, .asset-cache-pack, .asset-cache-pack__heading) { flex-wrap: wrap; gap: 12px; }
+.mobile-mode #settings-screen .asset-cache-panel__actions { display: grid; grid-template-columns: 1fr; gap: 8px; }
+
+/* Menu text is independent of world framing and graphics resolution. Existing
+   phone hit areas stay at least 44px; enlarging text can wrap within the panel. */
+.mobile-mode :is(.phone-bag-row-copy strong, .inventory-guidance, #stats-content, .stat-row,
+    .quest-dialogue__speech, .quest-dialogue__lore, .quest-dialogue__objective, .quest-dialogue__reward,
+    .quest-dialogue__status, .quest-conversation__intro, .quest-tracking-control,
+    .phone-build-content p, .phone-build-content select, .phone-build-feedback) { font-size: var(--phone-menu-text-size, 16px) !important; }
+.mobile-mode :is(.phone-quest-actions button, #skill-tree-window button:not(.close-btn)) { font-size: var(--phone-menu-text-size, 16px) !important; }
+.mobile-mode #journal-list :is(.quest-copy, blockquote, summary, .quest-journal-reset) { font-size: var(--phone-menu-text-size, 16px) !important; }
+#phone-item-details { font-size: var(--phone-menu-text-size, 16px); }
+#phone-item-details :is(.phone-item-section, #phone-item-comparison h3, #phone-item-status) { font-size: inherit; }

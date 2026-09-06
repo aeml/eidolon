@@ -335,7 +335,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.20</span>
+                <span class="start-version-row__label">Alpha 1.0.21</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -436,7 +436,7 @@
                 <div class="support-field">
                     <div class="support-field__row">
                         <label for="graphics-brightness" class="support-field__label">Brightness</label>
-                        <span id="graphics-brightness-value" class="support-field__value">100%</span>
+                        <span id="graphics-brightness-value" class="support-field__value">50%</span>
                     </div>
                     <input id="graphics-brightness" class="support-field__range" type="range" min="0" max="100" step="1" value="50" />
                     <div class="support-field__hint">
@@ -661,6 +661,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.21">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.21 (comfort without losing the view)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Settings made for your hands:</strong> Phone Settings has readable Screen, Play, Sound and Device sections, larger touch controls and saved reading positions. Categories and Close stay reachable while the settings scroll.</li>
+                        <li><strong>Larger words, the same world:</strong> Phone menu text can grow from 100% to 125% without changing camera zoom or graphics resolution. The preference is separate from desktop UI scale and applies to the readable bag, item details, quest, journal and build-menu text.</li>
+                        <li><strong>Chat stays within reach:</strong> Opening phone Settings replaces the pause menu. The permanent chat strip stays clear; expanding chat closes Settings so the composer is usable, including after rotation.</li>
+                        <li><strong>Start at the intended brightness:</strong> A missing brightness preference now uses the documented 50% default instead of being read as zero. An explicitly saved 0% setting remains unchanged.</li>
+                        <li><strong>Preferences stay yours:</strong> Touch checks cover text size, graphics, sound, auto-loot, rotation, chat and saved preferences. Physical-phone sessions, remaining menus and the full mobile-playability gate are still open.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.0.20">
                     <h3 class="patch-note-entry__title">Alpha 1.0.20 (a build you can read)</h3>
                     <ul class="patch-note-entry__list">

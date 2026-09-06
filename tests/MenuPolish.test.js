@@ -1207,7 +1207,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 1.0.20</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 1.0.21</span>');
         expect(html).toContain('<button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');
@@ -1415,7 +1415,7 @@ describe('menu polish regressions', () => {
         expect(html).toContain('<label for="graphics-quality" class="support-field__label">Graphics Quality</label>');
         expect(html).toContain('<select id="graphics-quality" class="support-field__control">');
         expect(html).toContain('<label for="graphics-brightness" class="support-field__label">Brightness</label>');
-        expect(html).toContain('<span id="graphics-brightness-value" class="support-field__value">100%</span>');
+        expect(html).toContain('<span id="graphics-brightness-value" class="support-field__value">50%</span>');
         expect(html).toContain('<input id="graphics-brightness" class="support-field__range" type="range"');
         expect(html).toContain('<label for="ui-scale" class="support-field__label">UI Scale</label>');
         expect(html).toContain('<span id="ui-scale-value" class="support-field__value">100%</span>');

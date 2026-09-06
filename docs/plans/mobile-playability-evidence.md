@@ -3,10 +3,47 @@
 Status: baseline diagnosis plus incremental implementation evidence, not a completed phone redesign. Requirements
 and release gates live in [the main roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13).
 
-Latest local candidate: **Alpha 1.0.20**, readable phone build menus, not yet published.
+Latest local candidate: **Alpha 1.0.21**, readable phone Settings and independent
+menu text sizing, not yet published. 1.0.18 is live and verified; 1.0.19 is in CI.
 Earlier entries below are chronological snapshots, not current process status.
 
+## Phone Settings and independent menu text (Alpha 1.0.21 candidate)
+
+Source: `bd54b2a` plus phone Settings changes. Screen, Play, Sound and Device
+categories keep navigation and Close outside the native content scroller. Existing
+control bindings are preserved, with 44px touch targets and readable text. Phone
+menu text has its own saved 100–125% preference, independent of desktop UI scaling
+and world framing. Settings, bag reading text, quest reading/actions and build
+reading/actions use it; this does not claim all HUD text or every menu is redesigned.
+
+Real regressions caught before release: absent brightness storage incorrectly
+became zero instead of the documented 50%; portrait Settings initially laid out
+as a row; and opening through the pause menu left a hidden-overlap layer that
+intercepted chat after rotation. All were corrected and explicitly rechecked.
+An intentionally saved brightness of zero still restores correctly. Tapping chat
+closes Settings and opens the composer; chat is never removed.
+
+Final checks passed **162 suites / 2,344 client tests**, lint, the server race
+suite, **24 anonymous browser checks in 2.0 minutes**, and a fresh-level-1
+real-server Settings route in **8.4 seconds**. It uses native touch on actual
+settings controls, verifies the renderer's brightness/quality, independent
+desktop preference, unchanged camera zoom and character position, usable
+landscape chat, and persisted preferences after reload. It does not grant levels
+or progression. Credential scanning and exact disposable cleanup passed.
+
+Visual inspection covered portrait and short-landscape Settings at 125% and the
+enlarged landscape rune card; layout tests cover 360×800, 390×844 and 844×390.
+Logs: `/tmp/eidolon-1-0-21-{client,lint,server,anonymous,settings}.log`.
+Captures: `/tmp/eidolon-phone-settings-{360,390,844}.png` and
+`/tmp/eidolon-phone-large-build-{360,390,844}.png`. No physical-phone performance,
+full HUD-scale support, or completed mobile milestone is claimed. Dungeon guide
+and actual touch entry/recall are the next essential-menu work.
+
 ## Phone build reading and deliberate choices (Alpha 1.0.20 candidate)
+
+Exact committed source `bd54b2a` subsequently passed its real-server build route
+in **12.9 seconds**, with credential scan and cleanup, recorded in
+`/tmp/eidolon-1-0-20-exact-build.log`. This release remains queued locally.
 
 Source: `200478f` plus local phone Skills & Runes changes. Skills, Talents, Runes
 and Combos use a separate phone composition: 16px descriptions, 44px primary
