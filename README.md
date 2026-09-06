@@ -212,6 +212,13 @@ Wizard, buys ranks through the phone interface, checks server-confirmed spell
 cost/cooldown changes and repeats after fresh login in landscape. This functional
 route is included in full isolated QA; it does not measure earned progression.
 
+`npm run audit:talent-consumers` runs separate paired-cast probes for still-open
+healing, duration, range and area talent consumers. It currently fails on those
+known defects; it is not a passing release gate. It uses a temporary Go build
+overlay and does not modify server source or saved characters. Evidence and
+next implementation requirements are in the
+[consumer audit](docs/plans/2026-09-06-talent-consumer-audit.md).
+
 The generated canonical inventory is [docs/ANIMATION_COVERAGE.md](docs/ANIMATION_COVERAGE.md). Edit its source manifests and regenerate it; do not hand-edit its tables.
 
 Server validation from `server/`:

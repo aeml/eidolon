@@ -1,6 +1,7 @@
 import { expect } from '@playwright/test';
 import { readChronicleChapter } from './chronicle-earth-route.js';
 import { openDungeonGuide } from './dungeon-guide.js';
+import { findHuntTargetWithRecovery } from '../huntTargetRecovery.js';
 import { loginAndEnterWorld, projectEntity, readPlayerState,
     returnToTown, setAutoLootThroughSettings, zoomOutForPortal } from './helpers.js';
 
@@ -87,7 +88,7 @@ export async function earnFreshSkeletonHunt(page, credentials, { findTarget, lea
 }
 
 export async function earnFreshHunt(page, credentials, {
-    findTarget, leaveTown, target = 'Skeleton', daily = 'daily_skeleton', rewardXP = 50_000
+    findTarget, leaveTown, target = 'Skeleton', daily = 'daily_skeleton', rewardXP = 50_000, beforeCombat
 }) {
     await page.locator('#btn-close-dungeon-menu').click();
     await discussHunt(page, target);
@@ -102,20 +103,29 @@ export async function earnFreshHunt(page, credentials, {
     await returnToTown(page);
     await leaveTown();
     let deaths = 0, reported = 0;
+    const recoverDeath = async before => {
+        deaths++;
+        console.log(`[fresh-hunt:${target}] death ${JSON.stringify({ deaths, count: before,
+            ...await snapshot(page), defense: await page.evaluate(() => window.__freshWizardDefense?.counts || null) })}`);
+        expect(deaths, 'Fresh hunt exceeded two ordinary respawns').toBeLessThanOrEqual(2);
+        await returnToTown(page);
+        expect((await readChronicleChapter(page, daily)).count, 'Death must not erase earned hunt credit').toBeGreaterThanOrEqual(before);
+        await leaveTown();
+    };
     while ((await readChronicleChapter(page, daily)).count < 100) {
-        const enemy = await findTarget();
         const before = (await readChronicleChapter(page, daily)).count;
+        const enemy = await findHuntTargetWithRecovery({ findTarget,
+            isDead: async () => (await readPlayerState(page)).state === 'DEAD', recover: () => recoverDeath(before) });
+        if (!enemy) continue;
         const deadline = Date.now() + 120_000;
         let respawned = false;
         while (Date.now() < deadline && (await readChronicleChapter(page, daily)).count === before) {
             if ((await readPlayerState(page)).state === 'DEAD') {
-                deaths++;
-                expect(deaths, 'Fresh hunt exceeded two ordinary respawns').toBeLessThanOrEqual(2);
-                await returnToTown(page);
-                await leaveTown();
+                await recoverDeath(before);
                 respawned = true;
                 break;
             }
+            if (beforeCombat && await beforeCombat()) continue;
             const point = await projectEntity(page, enemy.id);
             if (point?.visible) {
                 await page.mouse.click(point.x, point.y);
@@ -131,9 +141,11 @@ export async function earnFreshHunt(page, credentials, {
         if (count >= reported + 10 || count === 100) {
             reported = count;
             console.log(`[fresh-hunt:${target}] ${JSON.stringify({ count, deaths, ...await snapshot(page),
+                defense: await page.evaluate(() => window.__freshWizardDefense?.counts || null),
                 seconds: Math.round((Date.now() - started) / 1000) })}`);
         }
     }
+    const defense = await page.evaluate(() => window.__freshWizardDefense?.counts || null);
     expect((await readChronicleChapter(page, daily)).completed).toBe(false);
     await discussHunt(page, target);
     const beforeReward = await snapshot(page);
@@ -154,6 +166,6 @@ export async function earnFreshHunt(page, credentials, {
     const entryEnabled = await page.locator('#btn-enter-dungeon').isEnabled();
     expect(entryEnabled).toBe(earned.level >= 30);
     console.log(`[fresh-hunt:${target}] complete ${JSON.stringify({ baseline, beforeReward, earned, deaths,
-        rewardXP: reward.grantedXP, rewardGold: reward.grantedGold, entryEnabled,
+        rewardXP: reward.grantedXP, rewardGold: reward.grantedGold, entryEnabled, defense,
         seconds: Math.round((Date.now() - started) / 1000) })}`);
 }

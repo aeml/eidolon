@@ -1,18 +1,21 @@
 import { expect } from '@playwright/test';
 import { openDungeonGuide } from './dungeon-guide.js';
 import { earnFreshHunt } from './fresh-hunt-route.js';
-import { jumpByGroundClick, loginAndEnterWorld, readPlayerState, returnToTown } from './helpers.js';
+import { jumpByGroundClick, loginAndEnterWorld, moveByGroundClick, readPlayerState, returnToTown } from './helpers.js';
+import { planWizardHuntStep } from '../wizardHuntControls.js';
 
 const preparationState = page => page.evaluate(() => {
     const p = window.game.player;
     return { equipment: Object.fromEntries(Object.entries(p.equipment).filter(([, item]) => item?.id)
         .map(([slot, item]) => [slot, item.id])), talentRanks: p.talentRanks,
-    talentPoints: p.talentPoints, statPoints: p.statPoints, intelligence: p.baseStats?.intelligence };
+    talentPoints: p.talentPoints, statPoints: p.statPoints, intelligence: p.baseStats?.intelligence,
+    branch: p.selectedBranch, hotbar: p.hotbar, unlockedSkills: p.unlockedSkills };
 });
 
 // Use only gear already collected during the earned story route. This is a
 // deliberately simple baseline: fill empty slots, five Intelligence allocations,
-// and up to five Fireball Mastery ranks. Not an optimized build or a loot grant.
+// up to five Fireball Mastery ranks, and the earned Control & Utility branch.
+// Not an optimized build or a loot grant.
 async function prepareEarnedWizard(page, credentials) {
     expect(await page.evaluate(() => window.game.player.constructor.name)).toBe('Wizard');
     await page.locator('#btn-close-dungeon-menu').click();
@@ -52,6 +55,13 @@ async function prepareEarnedWizard(page, credentials) {
     if (await page.locator('#character-sheet').isVisible()) await page.locator('#btn-close-character').click();
     await page.keyboard.press('k');
     const skills = page.locator('#skill-tree-window');
+    await skills.getByRole('button', { name: 'Skills', exact: true }).click();
+    const branch = skills.locator('.skill-branch').filter({ hasText: 'Control & Utility' });
+    const selectBranch = branch.getByRole('button', { name: 'Select Spec' });
+    if (await selectBranch.count()) await selectBranch.click();
+    await expect.poll(() => page.evaluate(() => window.game.player.selectedBranch)).toBe('C');
+    await expect.poll(() => page.evaluate(() => window.game.player.hotbar.includes('Arcane Shield'))).toBe(true);
+    await expect.poll(() => page.evaluate(() => window.game.player.unlockedSkills.includes('Arcane Shield'))).toBe(true);
     await skills.getByRole('button', { name: 'Talents', exact: true }).click();
     const points = await page.evaluate(() => window.game.player.talentPoints);
     const ranks = Math.min(5, points);
@@ -81,8 +91,49 @@ async function leaveWestTown(page) {
 
 export async function earnFreshDungeonReadiness(page, credentials, { findTarget }) {
     await prepareEarnedWizard(page, credentials);
+    await page.evaluate(() => {
+        const game = window.game, original = game.handleServerMessage.bind(game);
+        window.__freshWizardDefense = { lastAcceptedAt: 0, counts: { retreats: 0, shields: 0, rejectedShields: 0 } };
+        game.handleServerMessage = message => {
+            if (message.type === 'ability_result') {
+                const state = window.__freshWizardDefense;
+                if (message.payload?.accepted) state.lastAcceptedAt = Date.now();
+                if (message.payload?.skillName === 'Arcane Shield') {
+                    state.counts[message.payload.accepted ? 'shields' : 'rejectedShields']++;
+                }
+            }
+            return original(message);
+        };
+    });
+    const beforeCombat = async () => {
+        const state = await page.evaluate(async () => {
+            const game = window.game, p = game.player;
+            const { getAbilityManaCost } = await import('/src/core/AbilityEconomy.js');
+            return { className: p.constructor.name, dead: p.state === 'DEAD', x: p.position.x, z: p.position.z,
+                healthRatio: p.stats.hp / p.stats.maxHp, shieldHP: p.shieldHP || 0, mana: p.stats.mana,
+                shieldCost: getAbilityManaCost(p, 'Arcane Shield', 40), hotbar: p.hotbar, cooldowns: p.cooldowns,
+                sinceCastMs: Date.now() - window.__freshWizardDefense.lastAcceptedAt,
+                threats: (game.activeEntitiesCache || []).filter(enemy => game.isHostileActorTarget(enemy) &&
+                    p.position.distanceTo(enemy.position) < 18).map(enemy => ({ x: enemy.position.x, z: enemy.position.z })) };
+        });
+        const plan = planWizardHuntStep(state);
+        if (!plan) return false;
+        if (plan.action === 'shield') {
+            await page.keyboard.press(plan.key);
+            await page.waitForTimeout(550);
+            return true;
+        }
+        try {
+            await moveByGroundClick(page, plan.x, plan.z, { minimumDistance: 6, allowJumpFallback: false, timeout: 2500 });
+        } catch (error) {
+            if ((await readPlayerState(page)).state === 'DEAD') return true;
+            throw error;
+        }
+        await page.evaluate(() => window.__freshWizardDefense.counts.retreats++);
+        return false;
+    };
     await earnFreshHunt(page, credentials, { target: 'Imp', daily: 'daily_imp', rewardXP: 150_000,
-        findTarget, leaveTown: () => leaveWestTown(page) });
+        findTarget, leaveTown: () => leaveWestTown(page), beforeCombat });
     const p = await readPlayerState(page);
     expect(p.level, 'Existing earned story and contracts should reach the first dungeon gate').toBeGreaterThanOrEqual(30);
     await page.getByRole('tab', { name: 'Dungeons', exact: true }).click();

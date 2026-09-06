@@ -102,6 +102,54 @@ execution ledger.
 
 ## Preparation-route measurement — in progress after 1.0.26
 
+September 6 continuation on the 1.0.29 runtime adds a read-only Wizard strategy
+to the optional readiness route: legal earned gear, existing five Mastery ranks,
+the normally selected Control & Utility branch, available Arcane Shield and
+ground-click retreats from nearby threats. Twelve strategy checks pass. No
+progress, items, protection or travel are granted; the two-respawn bound and
+all reward/entry assertions remain unchanged.
+
+The first run **failed in 3.7 minutes before reaching the Imp hunt**. It passed
+the opening chapter in 45 seconds (three kills, no deaths, manual 100 gold /
+500 XP) and collection in 58 seconds (four observed target deaths, four seeds,
+no deaths, manual 100 gold / 8,000 XP), reaching level 16. The Skeleton contract
+last reported 30 credits at 81 seconds and level 17. Its target-search movement
+helper then threw, with the decisive diagnostic `state: DEAD`, `health: 0` and a
+visible death screen. This is an unhandled ordinary travel death in the harness,
+not proof of a living-character collision failure or a readiness pass. Log
+`/tmp/eidolon-fresh-ready-wizard-defense.log`; session `54064` closed, credential
+scan and exact disposable cleanup passed.
+
+Target search now sends observed travel deaths through the same counted respawn
+path as combat deaths; genuine navigation failures while alive still propagate.
+Five additional tests cover live acquisition, pre-search/in-search death,
+preservation of navigation errors and propagation of the death-limit failure.
+The **17 focused checks pass**. The second fresh run **failed after 12.4 minutes**
+at the final browser-error assertion. Session `11882` is closed; log
+`/tmp/eidolon-fresh-ready-wizard-defense-recovery.log`. Credential scanning and
+exact disposable cleanup passed. Its gameplay assertions did reach:
+
+- Opening (32 seconds) and collection (37 seconds), each manually claimed with
+  exact rewards and no deaths; level 16 after collection.
+- 100 Skeleton credits in 179 seconds, no deaths; manual 50,000 XP / 100 gold
+  and fresh login at level 27 / 5,012 XP / 2,431 gold (191 seconds total).
+- Seven legal earned equipment slots, five Mastery ranks, selected C branch and
+  Teleport/Arcane Shield hotbar persisted after login; no stat-point allocation.
+- 100 Imp credits in 453 seconds, no deaths, 205 ordinary retreats and seven
+  accepted Shields (zero rejected). Manual 150,000 XP / 300 gold and fresh login
+  at level 34 / 31,469 XP / 15,256 gold (464 seconds including turn-in/login).
+- Verdant selected, its Start button visible and enabled. No dungeon entry or
+  clear was attempted.
+
+These milestones are **not a clean route pass**: `Imp.update` called
+`distanceTo(this.targetPosition)` after `Actor.move` cleared that destination,
+causing repeated null-coordinate exceptions in the game loop. The stack passes
+through ChunkManager, but does not establish a world-generation defect. Repair
+and regress the actual entity lifecycle before another readiness run; keep this
+failed result. The full client suite at this QA checkpoint passes **172 suites /
+2,452 tests in 61.316 seconds**, demonstrating that existing tests missed this
+played error.
+
 The next optional route, `fresh-hunt`, extends the genuinely earned first two
 chapters through the existing Skeleton daily: normal NPC acceptance, 100 ordinary
 kill credits, manual completion, actual level/XP/gold and fresh-login persistence.

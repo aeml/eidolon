@@ -72,6 +72,9 @@ cooldowns; those branches are not evidence for the online cast contract and are
 not repaired or certified by this patch.
 
 Do not extrapolate these two consumed bonus categories to the entire talent tree.
+Subsequent paired-cast probes now reproduce four specific remaining failures;
+see the [consumer audit](2026-09-06-talent-consumer-audit.md). That diagnostic
+command remains red, separate from the passing cooldown/mana release coverage.
 Range, duration, secondary mastery effects on non-damaging skills, crit/healing/
 area consumers and all remaining description mismatches need explicit paired
 behavior tests. The previous failed fresh Imp hunt is still failed; this patch

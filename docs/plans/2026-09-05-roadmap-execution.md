@@ -85,6 +85,38 @@ complete CI/live verification. The original 1.0.14 failure remains recorded belo
 
 ## September 6 continuation — dungeon class and campaign evidence
 
+### Earned Wizard defensive route and remaining talent probes
+
+The optional `fresh-ready` measurement now uses a normally selected Control &
+Utility specialization, available Arcane Shield and ordinary ground-click
+retreats, without progress grants or a changed death bound. Its first run failed
+before the Imp hunt: a normal death during target-search travel escaped the
+combat-only recovery path. The diagnostic showed a dead character, not a living
+collision blockage. Target-search death now goes through the same counted
+respawn path; live-character navigation errors still fail. **219 focused tests**
+(including version/history checks) and lint pass.
+
+The second run **failed its final browser-error assertion after 12.4 minutes**;
+session `11882` is closed. Gameplay assertions reached earned level 34 with zero
+deaths, both manually claimed contract rewards saved after fresh login and
+Verdant entry enabled. Preparation saved seven legal equipment slots, five
+Mastery ranks and the selected C branch/hotbar. The Imp hunt used 205 ordinary
+retreats and seven accepted Shields, with no rejected Shields. However, an Imp's
+roam update passed a null destination to `Vector3.distanceTo` after `Actor.move`
+cleared it on arrival. This is an entity-update error, not a proven world-generation
+defect. The route is **not a clean readiness pass**. Credential scanning and exact
+disposable cleanup passed. Full client verification passes **172 suites / 2,452
+tests in 61.316 seconds**. Details and retained failure are in
+[fresh progression evidence](fresh-progression-evidence.md).
+
+Independent build-overlay probes reproduce four more real-cast defects in
+healing, shield duration, range and area. The separate
+`npm run audit:talent-consumers` command deliberately reports these open failures;
+it neither changes runtime code nor suppresses standard release regressions.
+The [consumer audit](2026-09-06-talent-consumer-audit.md) records paired outcomes
+and the required client/server geometry and presentation follow-through. This
+is a QA/evidence follow-up to 1.0.29, not another player-facing release.
+
 ### Alpha 1.0.29 candidate — make your training count
 
 Paired actual casts reproduce missing talent mana/cooldown consumers in all
