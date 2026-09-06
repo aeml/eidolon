@@ -1098,8 +1098,11 @@ class GameEngineMovementMethods {
     }
 
     getRaycastEntityPriority(entity) {
-        if (entity instanceof LootDrop) return 0;
-        if (this.isHostileActorTarget(entity)) return 1;
+        // A visible enemy must remain selectable when a drop overlaps its
+        // silhouette. Loot remains clickable on its own or after the enemy dies;
+        // phone Use and auto-loot retain their independent pickup paths.
+        if (this.isHostileActorTarget(entity)) return 0;
+        if (entity instanceof LootDrop) return 1;
         if (this.isInteractableEntity(entity)) return 2;
         if (entity instanceof Actor) return 3;
         return 4;
