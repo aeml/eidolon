@@ -1,4 +1,5 @@
 import { expect } from '@playwright/test';
+import { inventoryQuantity, pickupReceipt } from './lootPickupEvidence.js';
 import {
     isBenignCanceledAssetRequest,
     isIgnoredBrowserRequest
@@ -825,13 +826,7 @@ export async function setAutoLootThroughSettings(page, enabled) {
     await closeSettingsAndResume(page, escMenu);
 }
 
-async function findAndApproachLoot(page, inventoryBefore) {
-    const immediateState = await readPlayerState(page);
-    if (immediateState.inventoryCount > inventoryBefore) {
-        expect(await page.locator('#auto-loot-enabled').isChecked()).toBe(false);
-        return { alreadyPickedUp: true };
-    }
-
+async function findAndApproachLoot(page) {
     let loot = null;
     try {
         await expect.poll(async () => {
@@ -854,9 +849,6 @@ async function findAndApproachLoot(page, inventoryBefore) {
                 pendingEntityCount: game?.pendingEntityIds?.size || 0
             };
         });
-        if (diagnostic.inventoryCount > inventoryBefore && diagnostic.autoLootEnabled === false) {
-            return { alreadyPickedUp: true };
-        }
         throw new Error(`Guaranteed QA kill produced no manual loot result: ${JSON.stringify(diagnostic)}`);
     }
 
@@ -1263,7 +1255,6 @@ export async function exerciseCombatAndLoot(page) {
         }).toBeLessThan(25);
     }
 
-    const inventoryBefore = (await readPlayerState(page)).inventoryCount;
     let abilityWasUsed = false;
 
     await disableAutoLootThroughSettings(page);
@@ -1371,17 +1362,41 @@ export async function exerciseCombatAndLoot(page) {
         const finalTargetState = await readEntity(page, target.id);
         expect(observedDamage || !finalTargetState || finalTargetState.state === 'DEAD').toBe(true);
 
-        const loot = await findAndApproachLoot(page, inventoryBefore);
+        const loot = await findAndApproachLoot(page);
 
-        if (loot.alreadyPickedUp) {
-            return (await readPlayerState(page)).inventoryCount;
+        // The ground projection can be below the actual loot hitbox, or under
+        // a living hostile. Never treat an unverified click as a pickup attempt.
+        let point;
+        await expect.poll(async () => {
+            point = await projectEntity(page, loot.id);
+            if (!point?.visible) return false;
+            await page.mouse.move(point.x, point.y);
+            return page.evaluate(id => window.game.hoveredEntity?.id === id, loot.id);
+        }, { timeout: 10_000, message: 'A real pointer must acquire the intended loot hitbox' }).toBe(true);
+        const item = await page.evaluate(id => window.game.remotePlayers.get(id)?.item, loot.id);
+        expect(item?.id, 'The selected loot must expose an authoritative item').toBeTruthy();
+        const beforePickup = await page.evaluate(() => window.game.player.inventory);
+        await page.mouse.click(point.x, point.y);
+        let receipt;
+        try {
+            await expect.poll(async () => {
+                receipt = pickupReceipt(beforePickup, await page.evaluate(() => window.game.player.inventory), item);
+                return Boolean(receipt);
+            }, { timeout: 20_000, message: 'The selected item quantity must increase after manual pickup' }).toBe(true);
+        } catch (error) {
+            const diagnostic = await page.evaluate(id => {
+                const game = window.game, drop = game.remotePlayers.get(id);
+                return { capacity: game.player.inventory.length,
+                    occupied: game.player.inventory.filter(item => item?.id).length,
+                    hoveredType: game.hoveredEntity?.constructor?.name,
+                    intendedLootHovered: game.hoveredEntity?.id === id,
+                    dropExists: Boolean(drop), dropStack: drop?.item?.stack,
+                    distance: drop ? game.player.position.distanceTo(drop.position) : null,
+                    playerState: game.player.state };
+            }, loot.id);
+            throw new Error(`Manual pickup failed: ${JSON.stringify(diagnostic)}`, { cause: error });
         }
-
-        await page.mouse.click(loot.x, loot.y);
-        await expect.poll(async () => (await readPlayerState(page)).inventoryCount, {
-            timeout: 20_000
-        }).toBeGreaterThan(inventoryBefore);
-        return (await readPlayerState(page)).inventoryCount;
+        return receipt;
     }
 
     throw new Error('Five overworld kills produced no loot that could be added to the QA inventory');
@@ -1643,12 +1658,15 @@ export async function returnToTown(page) {
     expect(await page.evaluate(() => Boolean(window.game?.playerJumpState || window.game?.player?.isCharging))).toBe(false);
 }
 
-export async function verifyPersistenceAfterFreshLogin(page, credentials, minimumInventoryCount) {
+export async function verifyPersistenceAfterFreshLogin(page, credentials, receipt) {
     await page.reload({ waitUntil: 'domcontentloaded' });
     await loginAndEnterWorld(page, credentials);
     const restored = await readPlayerState(page);
     expect(restored.level).toBeGreaterThanOrEqual(100);
-    expect(restored.inventoryCount).toBeGreaterThanOrEqual(minimumInventoryCount);
+    const inventory = await page.evaluate(() => window.game.player.inventory);
+    expect(inventoryQuantity(inventory, receipt.item),
+        'The exact picked-up equipment or merged stack quantity must survive login')
+        .toBeGreaterThanOrEqual(receipt.quantity);
 }
 
 export async function exerciseCombat(page) {
