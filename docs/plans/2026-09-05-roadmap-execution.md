@@ -38,8 +38,8 @@ Local merges carry that same fix forward and preserve ancestry:
 | 1.0.22 | `e0b9afd3f8cfcefdbd056ef0339cb7937c27c4e7` (pushed; CI `34058325420`) | `ed793e0`; inherits corrected 1.0.21 |
 | 1.0.23 | `ad72a642592b5ce6fc6e22b23af1d8b2ab3a52dc` | `4fcb89d`; retains the verified collection inventory repair |
 | 1.0.24 | `bcc29f498504fa83a53f62e5cb5aa00e020844c8`, branch `release/24-with-pickup` | phone navigation and fresh-opening QA with corrected release ancestry |
-| 1.0.25 | `bea6c349284a42e3bfbf5007c092c73ac2bede0d` plus subsequent test/evidence-only commits | normal starter encounters, Ilyra guidance and clearing stale recall pursuit |
-| 1.0.26 | working candidate after `dd2ce16`; verification in progress | server-sourced dungeon requirements, guarded entry and fresh collection/handoff measurement |
+| 1.0.25 | `dd2ce169d54f54c4af13edb8ac6caf69e36ba8b3`, branch `release/25-with-starter`; runtime `bea6c34` | normal starter encounters, Ilyra guidance and clearing stale recall pursuit |
+| 1.0.26 | `479cfd73c4a6ed8406d9159380c43d9af488df1d` plus subsequent evidence-only commit; locally verified, not pushed | server-sourced dungeon requirements, guarded entry and fresh collection/handoff measurement |
 
 The corrected 1.0.21 → 1.0.22 → 1.0.23 → 1.0.24 ancestry was checked with
 `git merge-base --is-ancestor`. Exact clean `9f58757` passes **163 client suites /
@@ -81,6 +81,12 @@ the muted disabled-button appearance passes the final 27.7-second layout repeat.
 level-16/17-to-30 preparation interval is not yet verified. See
 [fresh progression evidence](fresh-progression-evidence.md) for the interrupted
 first measurement's harness defect and the unchanged XP/entry-authority scope.
+Exact clean runtime `479cfd7` repeats the Wizard route successfully in 1.8 minutes,
+ending at level 17 with zero deaths and all manual turn-in/persistence checks.
+All local validation handles from this continuation are closed. The full goal
+remains active; the next first-hour work must measure an ordinary preparation
+route to level 30 without debug grants, alongside the outstanding dungeon,
+phone, campaign and later-version gates.
 
 Corrected 1.0.21 CI `34055526018` passed the entire gate and post-terminal identity
 checks. The next 1.0.22 source `e0b9afd` was then fast-forward pushed to `master`;

@@ -83,6 +83,16 @@ seconds**, including distinct available/unavailable button colors; the updated
 portrait capture was visually inspected. Log
 `/tmp/eidolon-1-0-26-phone-layout-final.log`, session `92897` closed.
 
+Exact clean runtime commit **`479cfd73c4a6ed8406d9159380c43d9af488df1d`** repeats
+the fresh Wizard route successfully in **1.8 minutes** (1.7-minute body). Natural
+drop variation required eight observed collection target deaths and **65 seconds**,
+ending at level **17**, with zero deaths. Ordinary four-seed pickup, exact turn-in
+consumption, manual gold/XP, next accepted chapter, fresh-login persistence and
+blocked level-30 entry all pass. Credential scan and disposable cleanup pass;
+log `/tmp/eidolon-1-0-26-exact-Wizard.log`, session `79631` closed. No local browser
+or test process remains from this continuation. This candidate is committed but
+not pushed past the earlier release queue.
+
 The optional `fresh-collection` route extends `fresh-opening` through four natural
 seed pickups, manual turn-in, exact bag consumption, positive rewards, next-quest
 acceptance, fresh-login persistence and the first dungeon guide. It uses normal
