@@ -91,6 +91,15 @@ class GameEngineRuntimeMethods {
         this.frameCount++;
         this.activeWorldGenerator?.updateDungeonPresentation?.(dt);
 
+        // Manual movement owns this tick before buffered casts, actor movement
+        // and pursuit can execute. The joystick's start callback clears older
+        // buffered inputs once; preserve new casts requested while moving.
+        if (this.isMobile && this.player && !this.isPlayerDead()
+            && !this.playerJumpState && this.player.state !== 'JUMPING'
+            && this.inputManager.getMovementDirection().lengthSq() > 0) {
+            this.cancelMobilePursuit(false);
+        }
+
         // Process Input Buffer
         this.abilityController.processInputBuffer();
 

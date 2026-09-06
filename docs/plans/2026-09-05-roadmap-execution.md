@@ -5,6 +5,12 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+Current release queue (September 6): **1.0.14 is deployed but its final live gate
+failed**; 1.0.15 (`2b55efa`) and 1.0.16 (`226a298`) are committed locally and not
+published. Earlier entries describe their status at the time, not the current
+queue. Do not publish either successor until the failed gate is investigated and
+the deployed release is verified. See the diagnostic entry at the end of this file.
+
 ## Alpha 1.0.2 — rewards and roads that meet
 
 Status: pushed as `89dad70db593ac8509eeef5e0506e796e0aec212`; CI run
@@ -1378,3 +1384,72 @@ and the two combat orientations passed in 17.2 seconds total. Both artifact
 credential scans and exact disposable cleanup passed. All required local candidate
 checks are now complete; 1.0.16 is ready for commit, but its publication remains
 behind the committed 1.0.15 release and 1.0.14's active final live animation gate.
+
+### 1.0.14 live failure and manual phone movement follow-up
+
+CI `34015379084` ended in **failure** at Live Release and Character QA. Both
+deployments and all preceding jobs succeeded, as did the live four-class matrices.
+The final two-account route failed on its original attempt and retry when a real
+hostile click did not acquire an attack target. The projected centers were on the
+canvas; this alone does not prove that the current ray intersected an active
+hostile. Do not classify this as transient or bypass the assertion without evidence.
+
+Added read-only acquisition diagnostics to the multiplayer test: pointer/canvas
+ownership, open-menu flags, target activity/position, hovered entity and current
+ray hits. The isolated route on `226a298` plus local changes passed in **1.9 minutes**,
+including all three party dungeon return cycles, effect lifecycles, remote movement,
+jump, basic attack and ability. Log:
+`/tmp/eidolon-release14-multiplayer-diagnostic.log`. Credential scanning and exact
+disposable cleanup passed. This newer local source is not proof that deployed
+1.0.14 passes.
+
+Diagnostic-only branch `qa/release14-click-diagnostic`, commit `527a812`, starts
+from exact deployed `af3757b` and changes only the test diagnostics and its branch's
+workflow. Run `34017914992` verifies frontend/backend SHA before repeating the
+original four-class and remote sequence against production with existing QA
+accounts. It has no deployment step or automatic push trigger and must not be
+merged as the production CI workflow. The run is pending at this entry.
+
+Meanwhile, local phone input work gives joystick movement priority over old
+attack/ability pursuit before actor updates. Crossing the movement dead zone
+clears older buffered actions once, while new casts requested with the other thumb
+remain available; the selected enemy is retained. Another finger cannot steal
+joystick ownership, and blur/reset/cancellation clears the knob and rejects stale
+touch movement. No new release number or publication is assigned to this work yet.
+
+The old behavior failed **5 tests** before repair. Focused checks passed **36 tests**;
+Node 24 lint and the full client suite passed **158 suites / 2,296 tests** in 55.016
+seconds. Logs use `/tmp/eidolon-manual-movement-`. The real-server two-thumb route
+passed both orientations in **18.1 seconds**: movement while the second finger
+casts, authoritative selected-target health loss, manual takeover of attack pursuit,
+retained selection and no resumed pursuit after release. It uses an allowlisted
+encounter waypoint for setup, not ordinary traversal or campaign-completion proof.
+Physical-phone, all-class and full-menu acceptance remain open.
+
+Diagnostic run `34017914992` subsequently **passed** against the exact deployed
+`af3757b` frontend and backend: all four real-input class matrices and the remote
+Cleric/Wizard sequence, including basic attack acquisition. Sanitization passed.
+Log: `/tmp/eidolon-release14-live-diagnostic.log`. This did not reproduce or explain
+the original failure; the loot-first raycast priority is only an investigation
+lead, not an established live cause. The original failed job in `34015379084` is
+now being rerun unchanged; do not publish successors while it is running.
+
+### Alpha 1.0.17 candidate — your next step is yours
+
+The manual joystick follow-up above now has a separate patch-note entry and
+synchronized login, package, release manifest and runtime version defaults. It
+remains an unpublished candidate behind 1.0.15 and 1.0.16, not a claim that the
+mobile milestone is finished. Final Node 24 client checks passed **158 suites /
+2,297 tests** in 44.658 seconds (`/tmp/eidolon-1-0-17-client.log`). Final versioned
+lint, server race and anonymous-browser checks are pending at this entry. The
+prior two-thumb combat proof uses the same input/runtime changes before the
+version-only update; a final versioned phone run remains to be gathered.
+
+Final versioned checks subsequently **passed**: lint, server race suite (root
+7.010 seconds; unchanged game package cached), and 12 anonymous browser checks
+in 1.1 minutes. The sequential real-server phone route passed in **8.3 seconds**,
+followed by both two-thumb combat orientations in **17.1 seconds**. Both
+credential scans and exact disposable cleanups passed; local browser session
+`44631` is closed. Logs: `/tmp/eidolon-1-0-17-{lint,server,anonymous,phone,combat}.log`.
+The candidate is ready for commit; no gameplay release is published by this work.
+The original 1.0.14 live gate rerun remains active and successors remain queued.

@@ -3,8 +3,37 @@
 Status: baseline diagnosis plus incremental implementation evidence, not a completed phone redesign. Requirements
 and release gates live in [the main roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13).
 
-Latest local candidate: **Alpha 1.0.16**, deliberate touch targeting, not yet published.
+Latest local candidate: **Alpha 1.0.17**, manual joystick ownership, not yet published.
 Earlier entries below are chronological snapshots, not current process status.
+
+## Manual movement follow-up (Alpha 1.0.17 candidate)
+
+On top of committed `226a298`, the joystick now cancels old approach/attack/cast
+pursuit before actor movement, while retaining the deliberately selected target.
+The initial movement intent clears older buffered casts once; new second-thumb
+casts remain usable while moving. Touch ownership survives unrelated fingers,
+and cancellation/blur/reset clears both vector and knob without accepting stale
+touchmove events.
+
+The regression first failed 5 tests. Final Node 24 checks passed 158 suites / 2,296
+tests plus lint; the two-orientation real-server combat route passed 2 tests in
+18.1 seconds, including a second-finger cast during actual movement and subsequent
+authoritative enemy health loss. Logs: `/tmp/eidolon-manual-movement-{client,lint,combat}.log`.
+The route uses an allowlisted encounter waypoint, and is desktop browser touch
+emulation—not sustained physical-phone or full campaign evidence.
+
+Publication is held: deployed 1.0.14's final live remote-attack test failed, and
+1.0.15/1.0.16 remain queued locally. The execution ledger tracks the exact-live
+diagnostic run; these local phone checks do not override that release gate.
+
+The follow-up now has its own 1.0.17 patch notes and synchronized login/package/
+runtime version metadata. The final versioned Node 24 client run passed **158
+suites / 2,297 tests** in 44.658 seconds (`/tmp/eidolon-1-0-17-client.log`). Lint,
+server race checks and all **12 anonymous browser checks** (1.1 minutes) passed.
+The final real-server phone route passed in 8.3 seconds, and both combat
+orientations passed in 17.1 seconds; both credential scans and disposable cleanup
+passed. Logs use `/tmp/eidolon-1-0-17-`. The candidate is ready for commit, with
+publication still queued behind the earlier releases.
 
 ## Deliberate touch targeting after the 1.0.15 commit
 

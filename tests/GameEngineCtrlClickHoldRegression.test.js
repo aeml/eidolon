@@ -124,6 +124,36 @@ function createEngineHarness() {
 }
 
 describe('GameEngine ctrl-click hold regression', () => {
+    test('manual phone movement cancels pursuit before queued actions and actor movement, preserving selection and new casts', () => {
+        const engine = createEngineHarness();
+        engine.isMobile = true;
+        engine.inputManager.isMouseDown = false;
+        engine.inputManager.keys.control = false;
+        engine.inputManager.getMovementDirection.mockImplementation(() => new THREE.Vector3(1, 0, 0));
+        const target = Object.assign(Object.create(Actor.prototype), {
+            id: 'selected', isActive: true, state: 'IDLE', position: new THREE.Vector3(2, 0, 0)
+        });
+        engine.mobileCombatTarget = target;
+        engine.pendingInteraction = target;
+        engine.player.targetPosition = target.position.clone();
+        engine.abilityController.pendingAbilityTarget = target;
+        const newCast = { skillName: 'Fireball' };
+        engine.abilityController.inputBuffer = [newCast];
+        engine.abilityController.processInputBuffer.mockImplementation(() => {
+            expect(engine.pendingInteraction).toBeNull();
+            expect(engine.abilityController.pendingAbilityTarget).toBeNull();
+            expect(engine.abilityController.inputBuffer).toEqual([newCast]);
+        });
+        engine.chunkManager.update.mockImplementation(() => expect(engine.player.targetPosition).toBeNull());
+        engine.update(0.1);
+        expect(engine.mobileCombatTarget).toBe(target);
+        expect(engine.abilityController.performAttack).not.toHaveBeenCalled();
+        expect(engine.player.position.x).toBeCloseTo(0.5);
+        engine.inputManager.getMovementDirection.mockImplementation(() => new THREE.Vector3());
+        engine.update(0.1);
+        expect(engine.player.position.x).toBeCloseTo(0.5);
+        expect(engine.pendingInteraction).toBeNull();
+    });
     test('stationary hover refresh follows an acquired actor without polling empty ground', () => {
         const engine = createEngineHarness();
         engine.inputManager.isMouseDown = false;

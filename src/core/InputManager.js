@@ -48,6 +48,7 @@ export class InputManager {
             onQuest: [], // New callback for Quest Journal
             onChat: [], // New callback for Chat
             onInteract: [], // New callback for Mobile "USE" button
+            onManualMovement: [], // Joystick crosses its movement dead zone
             onSocial: [], // New callback for Social Window
             onSkills: [], // New callback for Skill Tree
             onAbilities: [], // New callback for Abilities Menu (P)
@@ -93,6 +94,11 @@ export class InputManager {
         if (zone && knob) {
             let joystickTouchId = null;
             const maxDist = 35; // Max radius for knob movement
+            this.resetJoystick = () => {
+                joystickTouchId = null;
+                knob.style.transform = 'translate(-50%, -50%)';
+                this.joystickVector.set(0, 0);
+            };
 
             const handleJoystick = (touch) => {
                 const rect = zone.getBoundingClientRect();
@@ -114,12 +120,17 @@ export class InputManager {
                 knob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
 
                 // Update Vector (-1 to 1)
+                const wasMoving = this.joystickVector.lengthSq() > 0.01;
                 this.joystickVector.x = dx / maxDist;
                 this.joystickVector.y = dy / maxDist;
+                if (!wasMoving && this.joystickVector.lengthSq() > 0.01) {
+                    this.callbacks.onManualMovement.forEach(callback => callback());
+                }
             };
 
             const onZoneTouchStart = (e) => {
                 e.preventDefault();
+                if (joystickTouchId !== null) return;
                 const touch = e.changedTouches[0];
                 joystickTouchId = touch.identifier;
                 handleJoystick(touch);
@@ -139,9 +150,7 @@ export class InputManager {
                 e.preventDefault();
                 for (let i = 0; i < e.changedTouches.length; i++) {
                     if (e.changedTouches[i].identifier === joystickTouchId) {
-                        joystickTouchId = null;
-                        knob.style.transform = `translate(-50%, -50%)`;
-                        this.joystickVector.set(0, 0);
+                        this.resetJoystick();
                         break;
                     }
                 }
@@ -436,6 +445,7 @@ export class InputManager {
     }
 
     clearInputState() {
+        this.resetJoystick?.();
         this.pinchState = null;
         this.worldTapState = null;
         this.isMouseDown = false;
@@ -461,6 +471,7 @@ export class InputManager {
     }
 
     dispose() {
+        this.resetJoystick?.();
         this.pinchState = null;
         this.worldTapState = null;
         for (const listener of this._listeners) {

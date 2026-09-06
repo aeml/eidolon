@@ -1114,6 +1114,7 @@ export class GameEngine {
         this.inputManager.subscribe('onClick', (event) => {
             this.handlePrimaryClick(event);
         });
+        this.inputManager.subscribe('onManualMovement', () => this.cancelMobilePursuit());
 
         this.inputManager.subscribe('onRightClick', () => {
             this.abilityController.performAbility();
@@ -1618,17 +1619,21 @@ export class GameEngine {
     setMobileCombatTarget(entity) {
         this.mobileCombatTarget = entity || null;
         this.mobileCombatInstanceId = this.currentInstanceId;
+        this.cancelMobilePursuit();
+        this.refreshCombatIntentState();
+    }
+
+    cancelMobilePursuit(clearBufferedAbilities = true) {
         this.pendingInteraction = null;
         if (this.abilityController) {
             this.abilityController.pendingAbilityTarget = null;
             this.abilityController.pendingAbilitySkill = null;
-            this.abilityController.inputBuffer = [];
+            if (clearBufferedAbilities) this.abilityController.inputBuffer = [];
         }
         if (this.player) {
             this.player.targetPosition = null;
             this.player.targetEntity = null;
         }
-        this.refreshCombatIntentState();
     }
 
     getMobileCombatTarget() {
