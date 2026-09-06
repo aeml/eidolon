@@ -42,7 +42,10 @@ existing entrance waypoint provides five minutes of incoming-damage protection.
 No inside-instance waypoint, direct health edit or force-kill command is used.
 These are functional runs, not level-appropriate balance tests. The full-run
 combat timer permits six minutes per encounter with a separate 60-second
-no-damage-progress watchdog; the total run remains bounded to 25 minutes.
+no-damage-progress watchdog; full runs now have a 40-minute aggregate budget
+(short Verdant smoke retains 25 minutes). The defensive Fighter route selects
+Bloodwhirl/Fortify/Extended through the rune UI and uses ordinary hotbar defenses;
+it must observe all four server-accepted skill events by the first boss death.
 
 ## Recorded full runs
 
@@ -54,6 +57,14 @@ no-damage-progress watchdog; the total run remains bounded to 25 minutes.
 | Molten Core | Fighter, complete generated rerun | `7439113819114914641`, generator 2, Normal 70 | **Passed in 23.8 minutes:** all five bosses killed through normal controls, every encounter room cleared, gold increased, town recall and completed-run re-entry preserved seed/boss progress/gold. Source `968c2c7` with QA-route worktree changes; this server image predates the wall repair below. Log: `/tmp/eidolon-molten-full-fighter-bounded.log`. |
 | Abyssal Well | Fighter, complete generated attempt | `-7057617757322159080`, generator 2 attempt 0, Normal 60 | **Failed after 18.7 minutes:** all first four bosses defeated, then the character died during a Siren encounter before Thalorath. Source `20eadc9483abbc6d2bd19f1bde0a2a3f78bda4b9`, clean. No full-run/re-entry pass or fifth-boss evidence. Log: `/tmp/eidolon-1-0-9-abyssal-full-fighter.log`; disposable cleanup and credential scan completed. This route currently uses damage skills without defensive-skill/rune management or wipe recovery. Source inspection found no potion system; investigate the existing Iron Fortress/Guardian Roar skills and Bloodwhirl/Fortify runes through normal UI, plus wipe recovery, without granting health or kills. |
 
+An additional defensive Abyssal attempt on dirty `6212ef3`, seed
+`-412794620771892541`, generator 2 attempt 0, Normal 60, **failed at the old
+25-minute aggregate timeout**. The first four bosses died; Thalorath had 18,626 HP
+remaining and the Fighter had 2,575/2,575 HP. All four normal hotbar skills were
+observed. This is not a fifth-boss/full-clear/re-entry pass. Log:
+`/tmp/eidolon-abyssal-full-fighter-defense.log`. The later mana-selector field fix
+and 40-minute aggregate budget were not part of that running test.
+
 The first regional attempt tried to select Molten at Verdant's locked portal and
 failed before entry. Correcting the test to use the town guide resolved that
 fixture error without changing any game access rule.
@@ -61,6 +72,22 @@ fixture error without changing any game access rule.
 Other class/dungeon/full-run/party rows remain open. Neither the fixture gallery
 nor the server matrices below count as three real player-controlled generated
 instances per dungeon. Do not turn partial, unseeded or failed runs into that claim.
+
+## Actual death and unfinished-run recovery
+
+A fresh level-30 Wizard passed in 37.4 seconds on the dirty `6212ef3` recovery
+candidate, Verdant seed `-1986625632463315919`, generator 2. Normal enemies
+inflicted actual damage and death. Recall was rejected while the death screen,
+instance and dead state remained; explicit Respawn restored an alive actor in
+Lanternhold. Normal guide re-entry preserved seed and cleared flags. No protected
+waypoint, forced kill or health override was used. This is solo early-run recovery,
+not a full clear or a party wipe. Log:
+`/tmp/eidolon-dungeon-natural-recovery-browser.log`.
+
+The fresh two-account Cleric/Wizard route passed both directions of member/leader
+recall and re-entry without resetting the player who stayed inside (1.0 minute,
+`/tmp/eidolon-party-guide-investigation.log`). The original Alpha 1.0.10 CI guide
+failure has not reproduced and remains documented in the execution ledger.
 
 ## Authoritative combat matrices
 

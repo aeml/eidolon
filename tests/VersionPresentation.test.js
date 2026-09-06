@@ -21,7 +21,7 @@ describe('version presentation', () => {
     test('retains movement-wall repair notes without closing the dungeon milestone', () => {
         expect(indexHtml).toContain('Alpha 1.0.10 (paths, not just landings)');
         expect(indexHtml.indexOf('data-version="1.0.10"')).toBeLessThan(indexHtml.indexOf('data-version="1.0.9"'));
-        for (const heading of ['Movement respects dungeon walls', 'Shadowsteps need a reachable target', 'Charge reaches its real landing', 'Rejected casts explain themselves']) expect(indexHtml).toContain(heading);
+        for (const heading of ['Movement respects dungeon walls', 'Shadowsteps need a reachable target', 'Charge reaches its real landing', 'Rejected casts explain themselves', 'Death recovery stays deliberate', 'Your unfinished run waits']) expect(indexHtml).toContain(heading);
     });
     test('leads with dungeon projectile boundaries and truthful impacts', () => {
         expect(indexHtml).toContain('Alpha 1.0.9 (walls hold, roads continue)');

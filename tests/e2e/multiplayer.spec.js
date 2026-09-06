@@ -15,6 +15,7 @@ import {
     moveByGroundClick,
     projectEntity,
     projectGroundOffset,
+    returnToTown,
     selectLowGraphicsThroughSettings,
     useCombatQAWaypoint
 } from './helpers.js';
@@ -464,6 +465,12 @@ test.describe('two-account multiplayer', () => {
             await leavePartyIfPresent(firstPage);
             await leavePartyIfPresent(secondPage);
             phase('cleared stale party state');
+
+            // A failed previous attempt can leave a living or dead character in
+            // its dungeon. Recover through normal town/Respawn controls before
+            // requesting an overworld-only waypoint.
+            await returnToTown(firstPage);
+            await returnToTown(secondPage);
 
             // Persistent QA characters can begin outside the server's 200-unit
             // replication radius. Put both at the same fixed allowlisted point

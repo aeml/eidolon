@@ -17,7 +17,13 @@ func (w *World) PerformRespawn(playerID string) error {
 		return errors.New("player unavailable")
 	}
 	player.Mu.Lock()
-	defer player.Mu.Unlock()
+	oldInstanceID := player.InstanceID
+	defer func() {
+		player.Mu.Unlock()
+		if w.isDungeonInstance(oldInstanceID) {
+			w.checkAndResetDungeonLocked(oldInstanceID)
+		}
+	}()
 
 	// Allow respawn even if not dead (unstuck)
 	player.State = "IDLE"
@@ -54,7 +60,17 @@ func (w *World) PerformRecall(playerID string) error {
 		return errors.New("player unavailable")
 	}
 	player.Mu.Lock()
-	defer player.Mu.Unlock()
+	if player.State == "DEAD" || player.Health <= 0 {
+		player.Mu.Unlock()
+		return errors.New("use Respawn to recover in Lanternhold before recalling")
+	}
+	oldInstanceID := player.InstanceID
+	defer func() {
+		player.Mu.Unlock()
+		if w.isDungeonInstance(oldInstanceID) {
+			w.checkAndResetDungeonLocked(oldInstanceID)
+		}
+	}()
 
 	// Teleport to town
 	player.State = "IDLE"

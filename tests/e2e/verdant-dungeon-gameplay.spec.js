@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { buildDungeonTraversalRoutes } from '../dungeonTraversalRoutes.js';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
+import { selectFighterDungeonSkill } from '../dungeonCombatControls.js';
 import {
     collectBrowserFailures, credentialsFromEnvironment, ensureDungeonReadyLevel,
     enterAndExitDungeon, loginAndEnterWorld, moveByGroundClick, projectEntity, readPlayerState, returnToTown
@@ -26,6 +27,20 @@ async function prepareFighterSkills(page) {
     if (await select.count()) await select.click();
     await expect.poll(() => page.evaluate(() => window.game.player.hotbar?.slice(0, 2)))
         .toEqual(['Whirlwind', 'Shield Slam']);
+    if (fullRun) {
+        await expect.poll(() => page.evaluate(() => window.game.player.hotbar?.slice(0, 4)))
+            .toEqual(['Whirlwind', 'Shield Slam', 'Iron Fortress', 'Guardian Roar']);
+        for (const [skill, id, name] of [
+            ['Whirlwind', 'whirlwind_bloodwhirl', 'Bloodwhirl'],
+            ['Shield Slam', 'shieldslam_fortify', 'Fortify'],
+            ['Iron Fortress', 'ironfortress_extended', 'Extended']
+        ]) {
+            await skills.getByRole('button', { name: 'Runes', exact: true }).click();
+            const card = skills.getByText(skill, { exact: true }).locator('..');
+            await card.getByText(name, { exact: true }).click();
+            await expect.poll(() => page.evaluate(skill => window.game.player.skillRunes?.[skill], skill)).toBe(id);
+        }
+    }
     await page.locator('#btn-close-skills').click();
     await expect(skills).toBeHidden();
 }
@@ -50,6 +65,7 @@ async function defeatByMouse(page, target) {
     let lowestHealth = target.health;
     let lastDamageAt = Date.now();
     let nextReport = 0;
+    let nextSkillAttemptAt = 0;
     while (Date.now() < deadline) {
         await assertWorldUpdatesContinue(page);
         const state = await page.evaluate(id => {
@@ -58,6 +74,11 @@ async function defeatByMouse(page, target) {
         }, target.id);
         if (state?.state === 'DEAD' || state?.health <= 0) {
             console.log(`${logPrefix} defeated ${target.type}`);
+            if (fullRun && target.type === playthrough.bosses[0] && process.env.EIDOLON_E2E_CLASS === 'Fighter') {
+                const observedSkills = await page.evaluate(() => window.__dungeonObservedSkills);
+                expect(observedSkills).toEqual(expect.arrayContaining(['Iron Fortress', 'Guardian Roar', 'Whirlwind', 'Shield Slam']));
+                console.log(`${logPrefix} accepted hotbar skills ${JSON.stringify(observedSkills)}`);
+            }
             return;
         }
         if (!state) throw new Error(`Combat target disappeared without a confirmed death: ${target.type}`);
@@ -72,7 +93,9 @@ async function defeatByMouse(page, target) {
                 const game = window.game;
                 const enemy = game.remotePlayers.get(id);
                 return { health: enemy?.health ?? enemy?.stats?.hp, distance: enemy?.position.distanceTo(game.player.position),
-                    range: game.getBasicAttackRangeForEntity(enemy), playerDamage: game.player.stats?.damage };
+                    range: game.getBasicAttackRangeForEntity(enemy), playerDamage: game.player.stats?.damage,
+                    playerHealth: game.player.stats?.hp, playerMaxHealth: game.player.stats?.maxHp,
+                    playerMana: game.player.stats?.mana };
             }, target.id);
             console.log(`${logPrefix} ${target.type}: ${JSON.stringify(diagnostic)}`);
             nextReport = Date.now() + 15_000;
@@ -94,21 +117,24 @@ async function defeatByMouse(page, target) {
                 return distance <= game.abilityController.getAbilityCastRange();
             }, target.id);
             if (shouldCast) await page.mouse.click(point.x, point.y, { button: 'right' });
-            const meleeSkillKey = await page.evaluate(id => {
+            const skillState = await page.evaluate(id => {
                 const game = window.game;
                 const player = game.player;
                 const enemy = game.remotePlayers.get(id);
                 // Large bosses stop movement at their body edge. Both skills
                 // include that body radius in their server-side hit test;
                 // a fixed four-unit center distance prevents valid casts.
-                if (player.abilityName !== 'Charge' || !enemy ||
-                    enemy.position.distanceTo(player.position) > game.getBasicAttackRangeForEntity(enemy) ||
-                    player.stats.mp < 30) return null;
-                const index = player.hotbar.findIndex(skill =>
-                    ['Whirlwind', 'Shield Slam'].includes(skill) && !(player.cooldowns[skill] > 0));
-                return index >= 0 ? String(index + 1) : null;
+                if (!enemy) return null;
+                return { classAbility: player.abilityName, isCharging: player.isCharging, dead: player.state === 'DEAD',
+                    distance: enemy.position.distanceTo(player.position), attackRange: game.getBasicAttackRangeForEntity(enemy),
+                    mana: player.stats.mana, manaCostReduction: player.stats.manaCostReduction,
+                    hotbar: player.hotbar, cooldowns: player.cooldowns };
             }, target.id);
-            if (meleeSkillKey) await page.keyboard.press(meleeSkillKey);
+            const skillAction = skillState && selectFighterDungeonSkill(skillState, fullRun);
+            if (skillAction && Date.now() >= nextSkillAttemptAt) {
+                await page.keyboard.press(skillAction.key);
+                nextSkillAttemptAt = Date.now() + 1000;
+            }
         } else {
             const player = await readPlayerState(page);
             const distance = Math.hypot(target.x - player.x, target.z - player.z);
@@ -130,7 +156,9 @@ async function assertWorldUpdatesContinue(page) {
 test(fullRun ? `${playthrough.name} complete ${fallbackRun ? 'fallback' : 'generated'} run remains playable` : 'Verdant ordinary encounters, first boss, and later spawns remain playable', async ({ page, baseURL }) => {
     const credentials = credentialsFromEnvironment();
     test.skip(!credentials.username || !credentials.password, 'Requires a dedicated QA character');
-    test.setTimeout(1_500_000);
+    // Five independently bounded six-minute boss fights plus ordinary mobs,
+    // traversal and completed-run re-entry cannot fit the short route's budget.
+    test.setTimeout(fullRun ? 2_400_000 : 1_500_000);
     const failures = collectBrowserFailures(page, baseURL);
     await loginAndEnterWorld(page, credentials);
     await ensureDungeonReadyLevel(page);
@@ -147,8 +175,13 @@ test(fullRun ? `${playthrough.name} complete ${fallbackRun ? 'fallback' : 'gener
         const game = window.game;
         const original = game.handleServerMessage.bind(game);
         window.__verdantLastState = performance.now();
+        window.__dungeonObservedSkills = [];
         game.handleServerMessage = message => {
             if (message.type === 'state' || message.type === 'delta') window.__verdantLastState = performance.now();
+            if (message.type === 'ability' && message.payload?.sourceId === game.player.id &&
+                !window.__dungeonObservedSkills.includes(message.payload.skillName)) {
+                window.__dungeonObservedSkills.push(message.payload.skillName);
+            }
             return original(message);
         };
     });
@@ -162,6 +195,9 @@ test(fullRun ? `${playthrough.name} complete ${fallbackRun ? 'fallback' : 'gener
             difficulty: playthrough.difficulty, level: playthrough.runLevel, class: process.env.EIDOLON_E2E_CLASS || 'Wizard',
             sourceCommit: process.env.EIDOLON_E2E_SOURCE_COMMIT || 'not-recorded',
             sourceDirty: process.env.EIDOLON_E2E_SOURCE_DIRTY === '1' })}`);
+        if (fullRun && process.env.EIDOLON_E2E_CLASS === 'Fighter') {
+            console.log(`${logPrefix} defensive runes ${JSON.stringify(await page.evaluate(() => window.game.player.skillRunes))}`);
+        }
         expect(layout.generationSeed).toBeTruthy();
         expect(Boolean(layout.generationFallback)).toBe(fallbackRun);
         const routes = buildDungeonTraversalRoutes(layout);

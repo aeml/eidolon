@@ -656,6 +656,8 @@
                 <div class="patch-note-entry" data-version="1.0.10">
                     <h3 class="patch-note-entry__title">Alpha 1.0.10 (paths, not just landings)</h3>
                     <ul>
+                        <li><strong>Death recovery stays deliberate:</strong> Recall no longer leaves a dead character standing at zero health or predicts a false arrival in town. Use the death screen's Respawn button to recover in Lanternhold, then return through the Dungeon Guide.</li>
+                        <li><strong>Your unfinished run waits:</strong> The last party member recalling or respawning now starts the existing five-minute return window. Returning within that window keeps the dungeon's layout and encounter progress; a teammate staying inside keeps the run occupied.</li>
                         <li><strong>Movement respects dungeon walls:</strong> Charge, Shattering Charge, Teleport and jumping follow the full path through dungeon floors. Landing in another room no longer lets these moves skip a solid wall; open doorways remain passable.</li>
                         <li><strong>Shadowsteps need a reachable target:</strong> Shadow Strike, Shadow Lunge and Backstab reject enemies behind solid dungeon walls before spending mana, starting cooldowns or applying damage and debuffs. Rogue blink landings also respect the intervening geometry.</li>
                         <li><strong>Charge reaches its real landing:</strong> The client follows server-controlled dash steps and the final landing, even when the remaining distance is smaller than ordinary movement correction thresholds.</li>

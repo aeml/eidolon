@@ -516,7 +516,8 @@ whitespace validation. Publication and live results follow below.
 Published as `20eadc9483abbc6d2bd19f1bde0a2a3f78bda4b9`, CI `34001977877`.
 Client/server checks, browser smoke, predeploy gameplay QA and both deployment
 jobs pass. Both public release endpoints, the login label and runtime entry query
-match this exact Alpha 1.0.9 commit. Post-deployment gameplay QA remains running.
+match this exact Alpha 1.0.9 commit. CI `34001977877` completed successfully,
+including post-deployment gameplay, all four classes and remote-animation QA.
 The complete Abyssal Well Fighter attempt used this clean commit, generator 2 seed
 `-7057617757322159080`, Normal 60. All first four bosses were defeated, but the
 character died during a Siren encounter before Thalorath after 18.7 minutes.
@@ -567,6 +568,80 @@ syntax checks passing. The final complete server race suite passes (game package
 110.525 seconds). Publication remains pending. Cross-wall secondary/AoE
 effects, ordinary movement authority, Rogue rendered wall checks and the full
 dungeon/class/party matrix remain open. This is not 1.1 closure.
+
+Published Alpha 1.0.10 as `6212ef3d50b7712126a1349fff50dcdd842d1930`, CI
+`34003316079`. Client/server suites and browser smoke pass; disposable predeploy
+gameplay QA **failed** at the multiplayer member's dungeon-guide re-entry. Its
+retry then failed an overworld-only waypoint while still in the unfinished run.
+Both deployment jobs were skipped. Alpha 1.0.9 remains the verified live release;
+Alpha 1.0.10 has not deployed. The guide failure is under investigation.
+
+## Continued 1.1 recovery checks — unpublished
+
+The full Fighter route now selects Bloodwhirl, Fortify and Extended through the
+rune UI and uses Iron Fortress/Guardian Roar alongside its damage skills. An
+independent hotbar selector honors placement, cooldowns, class, charging, mana and
+range; its nine tests pass. Actual server ability events must confirm all four
+hotbar skills by the first boss kill. The new Abyssal attempt ran on
+`6212ef3` with QA-route changes, seed `-412794620771892541`, generator 2 attempt 0,
+Normal 60. First-boss events confirm all four skills. It killed the first four
+bosses and reduced Thalorath to 18,626 HP while the Fighter remained at 2,575 HP,
+then hit the aggregate 25-minute test timeout. This is a failed run, not full
+completion/reward/re-entry evidence. The full route now has a 40-minute aggregate
+budget consistent with five individually bounded six-minute boss fights plus
+trash/traversal; its no-damage and individual encounter deadlines remain intact.
+The new health logs exposed the old test's nonexistent `stats.mp` field. The
+selector/telemetry now read `stats.mana` and reject missing mana; that correction
+was made after this run started and is not evidence from this running attempt.
+All requests still use normal client/server resource validation.
+
+Recovery regressions reproduce two independent issues: dead recall created an
+IDLE actor with zero health, and recall/respawn did not start the empty-instance
+return window. Dead recall now requires explicit Respawn, with non-blocking client
+guidance rather than an alert. Successful town exits update presence after
+releasing the actor lock. One member leaving retains the occupied run; the last
+starts its existing five-minute grace period; re-entry preserves room progress
+and clears that timer. Dispatch, lock-order and membership tests cover these
+contracts. Progress/death states in these unit tests are fixtures, not a claim of
+a real party wipe. Two older chat/Chronicle test actors needed explicit living
+health for their intended recall scenarios; the production health guard remains.
+
+The corrected full server race suite passes (game package 134.295 seconds,
+`/tmp/eidolon-dungeon-recovery-server-rerun.log`). Client suites pass 150 suites /
+2,199 tests before the later recovery-guidance test; that addition and the hotbar
+selector pass together (57 focused tests). Two additional regressions exposed
+the client predicting recall for a zero-health actor before server acceptance;
+both fail before the client guard and pass after it (59 focused tests total).
+
+The actual level-30 Wizard route passes in 37.4 seconds, generator 2 seed
+`-1986625632463315919`, dirty `6212ef3` candidate. It observes ordinary hostile
+damage and death, rejected recall while still dead inside, explicit Respawn and
+normal guide re-entry with the same seed and cleared flags. It uses no protected
+waypoint or health/kill command. Log:
+`/tmp/eidolon-dungeon-natural-recovery-browser.log`. The isolated predeploy chain
+now runs this check on its own newly registered Wizard, not an earlier protected
+combat character.
+
+A fresh actual Cleric/Wizard multiplayer route passes in 1.0 minute, including
+both member/leader-specific recall and same-run re-entry, remote casts, movement,
+jump and browser error audit (`/tmp/eidolon-party-guide-investigation.log`). The
+original CI guide failure has not reproduced; diagnostics remain in place rather
+than claiming a proven gameplay cause. Retry setup now uses normal recall/Respawn
+before asking for an overworld-only waypoint, fixing the separate retry failure.
+The never-deployed 1.0.10 candidate retains its version and adds recovery patch
+notes; full CI and exact live verification remain required before release.
+The full dungeon/class/party and remaining ability-wall gates stay open.
+
+The final client candidate passes all 150 suites / 2,202 tests in 58.59 seconds,
+with lint, shell syntax and whitespace checks passing. Moving the recovery check
+to a separate newly registered account first exposed an omitted disposable QA
+allowlist entry (failed before dungeon entry); that account is now explicitly
+included in the isolated server's allowlist. Production QA permissions are not
+changed by this test-runner configuration.
+The corrected fresh-account runner passes in 35.6 seconds on generator 2 seed
+`5580111386158966775`, including actual death, rejected recall, explicit Respawn
+and preserved-run re-entry; credential scan and disposable cleanup pass. Log:
+`/tmp/eidolon-dungeon-recovery-fresh-account-allowlisted.log`.
 
 ## Milestone tracking
 

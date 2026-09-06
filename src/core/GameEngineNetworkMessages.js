@@ -733,6 +733,14 @@ class GameEngineNetworkMessageMethods {
                 }
             }
         } else if (msg.type === 'error') {
+            if (msg.payload === 'use Respawn to recover in Lanternhold before recalling') {
+                this.showReadabilityFeedback?.('recall-needs-respawn', {
+                    title: 'Respawn to recover', tone: 'warning', metaText: 'Return to Lanternhold',
+                    subtitle: 'Use the Respawn button on the death screen to return with your health restored.'
+                }, 1500);
+                this.uiManager?.addChatMessage?.('System', msg.payload);
+                return;
+            }
             this.uiManager?.quest?.handleQuestActionError?.(msg.payload);
             console.error("Server Error:", msg.payload);
 

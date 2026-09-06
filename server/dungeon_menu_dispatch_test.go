@@ -13,6 +13,12 @@ func TestDungeonMenuRecognizesLeaderAndProtectsOccupiedReset(t *testing.T) {
 	defer restore()
 	leader := addChatTestClient("dungeon-leader", "")
 	member := addChatTestClient("dungeon-member", "")
+	// Chat-only fixtures do not initialize combat health. This scenario is a
+	// living party member recalling, not a zero-health recovery attempt.
+	actor := world.GetEntity(member.playerID)
+	actor.Mu.Lock()
+	actor.Health, actor.MaxHealth = 100, 100
+	actor.Mu.Unlock()
 	party := world.CreateParty(leader.playerID)
 	if err := world.JoinParty(party.ID, member.playerID); err != nil {
 		t.Fatal(err)
@@ -67,7 +73,9 @@ func TestDungeonMenuRecognizesLeaderAndProtectsOccupiedReset(t *testing.T) {
 	if _, exists := world.GetInstanceLayout(instanceID); !exists {
 		t.Fatal("reset deleted an occupied run")
 	}
-	world.PerformRecall(member.playerID)
+	if err := world.PerformRecall(member.playerID); err != nil {
+		t.Fatal(err)
+	}
 	leader.dispatchMessage(Message{Type: MsgResetDungeon})
 	if message := readMessage(leader); message.Type != MsgChat || !strings.Contains(string(message.Payload), "Dungeon reset.") {
 		t.Fatalf("leader could not reset empty run: %s", message.Payload)

@@ -25,5 +25,24 @@ export async function openDungeonGuide(page) {
         return page.evaluate(() => window.game?.hoveredEntity?.id);
     }, { timeout: 10_000 }).toBe('dungeon-npc-1');
     await page.mouse.click(guide.x, guide.y);
-    await expect(page.locator('#dungeon-menu')).toBeVisible({ timeout: 30_000 });
+    try {
+        await expect(page.locator('#dungeon-menu')).toBeVisible({ timeout: 30_000 });
+    } catch (error) {
+        const diagnostic = await page.evaluate(() => {
+            const game = window.game;
+            const pending = game?.pendingInteraction;
+            return {
+                instance: game?.currentInstanceType,
+                player: game?.player?.position,
+                state: game?.player?.state,
+                target: game?.player?.targetPosition,
+                pending: pending ? { type: pending.constructor.name, active: pending.isActive,
+                    position: pending.position, range: game.getInteractionRangeForEntity(pending) } : null,
+                socket: game?.network?.socket?.readyState,
+                focusedElement: document.activeElement?.tagName
+            };
+        });
+        console.log(`[dungeon-guide] menu did not open: ${JSON.stringify(diagnostic)}`);
+        throw error;
+    }
 }

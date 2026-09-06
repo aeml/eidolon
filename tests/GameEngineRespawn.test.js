@@ -223,6 +223,41 @@ function createEngineHarness() {
 }
 
 describe('GameEngine multiplayer respawn sync', () => {
+    test.each(['DEAD', 'IDLE'])('recall does not predict a town arrival for a zero-health %s actor', state => {
+        const engine = createEngineHarness();
+        engine.player.state = state;
+        engine.network = { send: jest.fn() };
+        const position = engine.player.position.clone();
+        const target = engine.player.targetPosition.clone();
+
+        engine.requestTownRecall();
+
+        expect(engine.network.send).toHaveBeenCalledWith('recall', {});
+        expect(engine.player.position).toEqual(position);
+        expect(engine.player.targetPosition).toEqual(target);
+        expect(engine.player.state).toBe(state);
+        expect(engine.player.stats.hp).toBe(0);
+        expect(engine.chunkManager.updateEntityChunk).not.toHaveBeenCalled();
+    });
+
+    test('dead recall gives non-blocking recovery guidance without changing death state', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'DEAD';
+        engine.showReadabilityFeedback = jest.fn();
+        engine.uiManager.addChatMessage = jest.fn();
+        const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});
+        try {
+            engine.handleServerMessage({ type: 'error', payload: 'use Respawn to recover in Lanternhold before recalling' });
+            expect(engine.player.state).toBe('DEAD');
+            expect(engine.showReadabilityFeedback).toHaveBeenCalledWith('recall-needs-respawn',
+                expect.objectContaining({ title: 'Respawn to recover', subtitle: expect.stringContaining('Respawn button') }), 1500);
+            expect(engine.uiManager.addChatMessage).toHaveBeenCalledWith('System', expect.stringContaining('use Respawn'));
+            expect(alertSpy).not.toHaveBeenCalled();
+        } finally {
+            alertSpy.mockRestore();
+        }
+    });
+
     test.each([
         ['requirements_not_met', 'reachable target'],
         ['cooldown', 'recharge'],

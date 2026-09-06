@@ -2064,6 +2064,9 @@ export class GameEngine {
     requestTownRecall() {
         if (!this.player) return;
         this.network.send('recall', {});
+        // The server requires explicit Respawn for a dead actor. Keep the
+        // dungeon and death presentation intact while that rejection arrives.
+        if (this.player.state === 'DEAD' || this.player.stats?.hp <= 0) return;
         const previousX = this.player.position.x;
         const previousZ = this.player.position.z;
         // Preserve the existing B-key handoff for both keyboard and menu use.

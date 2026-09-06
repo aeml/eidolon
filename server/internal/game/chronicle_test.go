@@ -394,7 +394,7 @@ func TestCrystalRepairSpawnsPersonalNPCAndThreeEscalatingWaveRules(t *testing.T)
 
 func TestClearedElementalRaidRestartsInterruptedCrystalRepairOnEntry(t *testing.T) {
 	w := NewWorld(nil)
-	player := &Entity{ID: "returning-hero", Name: "Returning Hero", Type: TypePlayer, Level: 30, Inventory: make([]Item, MaxInventorySize)}
+	player := &Entity{ID: "returning-hero", Name: "Returning Hero", Type: TypePlayer, State: "IDLE", Health: 100, MaxHealth: 100, Level: 30, Inventory: make([]Item, MaxInventorySize)}
 	completedChronicleThrough(player, 9)
 	ensureChronicleLocked(player)
 	w.AddEntity(player)
@@ -424,7 +424,9 @@ func TestClearedElementalRaidRestartsInterruptedCrystalRepairOnEntry(t *testing.
 	if artificer := w.GetEntity(repair.NPCID); artificer == nil || artificer.SubType != "CrystalKeeper" {
 		t.Fatal("restarted repair Vigil did not restore Maelin")
 	}
-	w.PerformRecall(player.ID)
+	if err := w.PerformRecall(player.ID); err != nil {
+		t.Fatal(err)
+	}
 	if err := w.ResetDungeon(party.ID); err != nil {
 		t.Fatal(err)
 	}

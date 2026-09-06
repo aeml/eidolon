@@ -1520,14 +1520,15 @@ async function projectVerdantEntrance(page) {
 }
 
 export async function enterAndExitDungeon(page, { beforeExit, resetRun = false,
-    dungeonType = 'verdant_bastion_catacombs', difficulty = 'normal', runLevel: requestedRunLevel = 30 } = {}) {
+    dungeonType = 'verdant_bastion_catacombs', difficulty = 'normal', runLevel: requestedRunLevel = 30,
+    useTownGuide = false } = {}) {
     // Retries reuse the dedicated character. An interrupted earlier route may
     // have left it in an instance, where overworld QA waypoints are rejected.
     if ((await readPlayerState(page)).instanceType !== 'overworld') await returnToTown(page);
-    await useVerdantQAWaypoint(page);
+    if (!useTownGuide) await useVerdantQAWaypoint(page);
     // A regional entrance intentionally locks its own dungeon choice. Other
     // matrix rows use Lanternhold's real guide, not a patched portal selector.
-    const viaGuide = dungeonType !== 'verdant_bastion_catacombs';
+    const viaGuide = useTownGuide || dungeonType !== 'verdant_bastion_catacombs';
     if (viaGuide) await returnToTown(page);
     await zoomOutForPortal(page);
 
@@ -1613,7 +1614,11 @@ export async function enterAndExitDungeon(page, { beforeExit, resetRun = false,
 }
 
 export async function returnToTown(page) {
-    await page.keyboard.press('b');
+    if ((await readPlayerState(page)).state === 'DEAD') {
+        await page.locator('#btn-death-respawn').click();
+    } else {
+        await page.keyboard.press('b');
+    }
     await expect.poll(async () => (await readPlayerState(page)).instanceType, {
         timeout: 30_000
     }).toBe('overworld');

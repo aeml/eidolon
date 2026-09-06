@@ -113,7 +113,7 @@ qa_animation_usernames=()
 for class_name in "${QA_ANIMATION_CLASSES[@]}"; do
   qa_animation_usernames+=("${QA_USERNAME_BASE}-$(printf '%s' "${class_name}" | tr '[:upper:]' '[:lower:]')")
 done
-qa_allowlist="${QA_USERNAME_BASE},$(IFS=,; printf '%s' "${qa_animation_usernames[*]}")"
+qa_allowlist="${QA_USERNAME_BASE},${QA_USERNAME_BASE}-recovery,$(IFS=,; printf '%s' "${qa_animation_usernames[*]}")"
 
 mongo_username="qa_root"
 mongo_password="$(openssl rand -hex 24)"
@@ -182,6 +182,15 @@ run_animation_classes() {
   done
 }
 
+run_dungeon_recovery() {
+  # A separate new actor has no earlier waypoint protection or combat buffs.
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-recovery" \
+    EIDOLON_E2E_PASSWORD="${QA_PASSWORD}" \
+    EIDOLON_E2E_CLASS="Wizard" \
+    EIDOLON_E2E_REGISTER=1 \
+    npx playwright test tests/e2e/dungeon-wipe-recovery-gameplay.spec.js
+}
+
 run_animation_multiplayer() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-cleric" \
     EIDOLON_E2E_PASSWORD="${QA_PASSWORD}" \
@@ -196,7 +205,7 @@ run_animation_multiplayer() {
 set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   all)
-    npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js && npm run test:e2e:movement && run_animation_classes && run_animation_multiplayer
+    npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js && run_dungeon_recovery && npm run test:e2e:movement && run_animation_classes && run_animation_multiplayer
     ;;
   animations)
     run_animation_classes
@@ -231,6 +240,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   dungeon-full)
     EIDOLON_E2E_FULL_DUNGEON=1 npx playwright test tests/e2e/verdant-dungeon-gameplay.spec.js
     ;;
+  dungeon-recovery)
+    run_dungeon_recovery
+    ;;
   projectile-walls)
     npx playwright test tests/e2e/dungeon-projectile-wall-gameplay.spec.js
     ;;
@@ -238,7 +250,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     npx playwright test tests/e2e/dungeon-movement-wall-gameplay.spec.js
     ;;
   *)
-    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, inventory, extended, portal, dungeons, verdant, dungeon-full, projectile-walls, or movement-walls." >&2
+    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, inventory, extended, portal, dungeons, verdant, dungeon-full, dungeon-recovery, projectile-walls, or movement-walls." >&2
     exit 1
     ;;
 esac
