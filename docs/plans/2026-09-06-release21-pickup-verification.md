@@ -21,7 +21,10 @@ an inventory-loss bug, or which entity was hit by the failed click. Failure log:
   projecting its ground position alone does not prove what a click will hit.
 - Reload must retain that exact equipment or the received stack quantity, not
   merely a minimum total occupied-slot count.
-- The old early return for unrelated inventory-count growth is removed. A
+- The old early return for unrelated inventory-count growth is removed. Early
+  pickups instead require a recorded real pickup request and an increase in that
+  requested item's quantity. The passive recorder forwards messages unchanged
+  and excludes auto-loot. A
   failed pickup reports capacity, occupied slots, pointer target classification,
   drop existence/stack, distance and player state without account credentials.
 
@@ -46,6 +49,17 @@ fresh functional QA account, not a replay of the persistent production bag.
 
 The complete client suite passed **163 suites / 2,351 tests in 90.19 seconds**;
 log `/tmp/eidolon-release21-pickup-client.log`, session `21529` closed.
+The exact `fbb3d6a` repeat then failed: a combat click had already collected the
+only drop (one occupied slot, auto-loot disabled, no remaining LootDrop). Log
+`/tmp/eidolon-release21-pickup-exact.log`, session `40504` closed, credential scan
+passed. The request recorder above addresses this early-pickup case without
+restoring acceptance of unrelated bag growth. The corrected observer route
+**passed in 28.7 seconds** (27.1-second body), including item-specific saved
+quantity. Credential scan and disposable cleanup passed; log
+`/tmp/eidolon-release21-pickup-observed.log`, session `80816` closed. Lint and all
+11 focused receipt/helper tests passed again (1.208 seconds). The full 2,351-test
+suite predates this observer addition. Pickup success now logs only early/manual
+classification, stackability and before/after quantity, not account/item IDs.
 Publish a successor of 1.0.21 and
 repeat its entire live gate before marking this release verified or pushing
 1.0.22. Carry the correction forward through the existing queued ancestry.

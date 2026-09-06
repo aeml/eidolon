@@ -826,10 +826,26 @@ export async function setAutoLootThroughSettings(page, enabled) {
     await closeSettingsAndResume(page, escMenu);
 }
 
+async function readObservedManualPickup(page) {
+    const evidence = await page.evaluate(() => ({
+        requests: window.game.__qaManualPickupRequests || [],
+        inventory: window.game.player.inventory
+    }));
+    for (const request of evidence.requests) {
+        const receipt = pickupReceipt(request.before, evidence.inventory, request.item);
+        if (receipt) return receipt;
+    }
+    return null;
+}
+
 async function findAndApproachLoot(page) {
+    let receipt = await readObservedManualPickup(page);
+    if (receipt) return { receipt };
     let loot = null;
     try {
         await expect.poll(async () => {
+            receipt = await readObservedManualPickup(page);
+            if (receipt) return true;
             loot = await projectNearestLoot(page);
             return Boolean(loot);
         }, { timeout: 15_000 }).toBe(true);
@@ -851,6 +867,7 @@ async function findAndApproachLoot(page) {
         });
         throw new Error(`Guaranteed QA kill produced no manual loot result: ${JSON.stringify(diagnostic)}`);
     }
+    if (receipt) return { receipt };
 
     for (let step = 0; !loot.visible && step < 20; step += 1) {
         const distance = Math.hypot(loot.deltaX, loot.deltaZ) || 1;
@@ -1258,6 +1275,29 @@ export async function exerciseCombatAndLoot(page) {
     let abilityWasUsed = false;
 
     await disableAutoLootThroughSettings(page);
+    // Observe actual outgoing pickup requests without changing controls,
+    // messages or inventory. An earlier real combat click can acquire a drop
+    // before the dedicated pickup step; it still needs item-specific evidence.
+    await page.evaluate(() => {
+        const game = window.game;
+        game.__qaManualPickupRequests = [];
+        if (game.__qaPickupRecorderNetwork === game.network) return;
+        game.__qaPickupRecorderNetwork = game.network;
+        const originalSend = game.network.send.bind(game.network);
+        game.network.send = (type, payload) => {
+            if (type === 'pickup' && !game.autoLootEnabled &&
+                !game.__qaManualPickupRequests.some(request => request.lootId === payload.lootId)) {
+                const item = game.remotePlayers.get(payload.lootId)?.item;
+                if (item?.id) {
+                    const snapshot = entry => entry?.id ? { id: entry.id, name: entry.name,
+                        stack: entry.stack, maxStack: entry.maxStack } : null;
+                    game.__qaManualPickupRequests.push({ lootId: payload.lootId,
+                        item: snapshot(item), before: game.player.inventory.map(snapshot) });
+                }
+            }
+            return originalSend(type, payload);
+        };
+    });
     await useCombatQAWaypoint(page);
 
     // Prove the real right-click ability before arming the deterministic basic
@@ -1363,6 +1403,12 @@ export async function exerciseCombatAndLoot(page) {
         expect(observedDamage || !finalTargetState || finalTargetState.state === 'DEAD').toBe(true);
 
         const loot = await findAndApproachLoot(page);
+        if (loot.receipt) {
+            console.log(`[loot-pickup] ${JSON.stringify({ earlierManualRequest: true,
+                stackable: loot.receipt.item.maxStack > 1,
+                before: loot.receipt.previousQuantity, after: loot.receipt.quantity })}`);
+            return loot.receipt;
+        }
 
         // The ground projection can be below the actual loot hitbox, or under
         // a living hostile. Never treat an unverified click as a pickup attempt.
@@ -1396,6 +1442,8 @@ export async function exerciseCombatAndLoot(page) {
             }, loot.id);
             throw new Error(`Manual pickup failed: ${JSON.stringify(diagnostic)}`, { cause: error });
         }
+        console.log(`[loot-pickup] ${JSON.stringify({ earlierManualRequest: false,
+            stackable: receipt.item.maxStack > 1, before: receipt.previousQuantity, after: receipt.quantity })}`);
         return receipt;
     }
 
