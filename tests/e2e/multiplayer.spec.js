@@ -367,10 +367,34 @@ async function attackAndObserveRemote(sourcePage, observerPage, sourceUsername, 
             aimedHostileId = clickTarget || aimedHostileId;
         }
         if (!aimedHostileId) {
+            const acquisition = await sourcePage.evaluate(async ({ targetId, projected }) => {
+                const THREE = await import('three');
+                const game = window.game;
+                const element = document.elementFromPoint(projected.x, projected.y);
+                const target = game.activeEntitiesCache.find(entity => entity.id === targetId);
+                const ray = new THREE.Raycaster();
+                ray.setFromCamera(game.inputManager.mouse, game.renderSystem.camera);
+                const meshes = game.activeEntitiesCache.filter(entity => entity.mesh && entity.isActive && entity !== game.player)
+                    .map(entity => game.getRaycastMeshForEntity(entity));
+                return {
+                    mobile: game.isMobile, playerState: game.player?.state,
+                    mouse: game.inputManager.mouse.toArray(), pointerOverCanvas: game.inputManager.pointerOverCanvas,
+                    element: { tag: element?.tagName, id: element?.id, className: element?.className },
+                    menus: { escape: game.uiManager.isEscMenuOpen, shop: game.uiManager.isShopOpen,
+                        patchNotes: game.uiManager.isPatchNotesOpen, report: game.uiManager.reportScreen?.style.display },
+                    hovered: { id: game.hoveredEntity?.id, type: game.hoveredEntity?.constructor?.name,
+                        state: game.hoveredEntity?.state, active: game.hoveredEntity?.isActive },
+                    target: target ? { active: target.isActive, state: target.state, position: target.position.toArray(),
+                        meshPosition: target.mesh?.position.toArray(), hitboxId: game.getRaycastMeshForEntity(target)?.userData?.entityId } : null,
+                    hits: ray.intersectObjects(meshes, true).slice(0, 5).map(hit => ({ id: hit.object.userData?.entityId,
+                        distance: hit.distance, name: hit.object.name }))
+                };
+            }, { targetId: hostile.id, projected });
             lastDiagnostic = {
                 attempt: attempt + 1,
                 hostileId: hostile.id,
                 projected,
+                acquisition,
                 reason: 'production click raycast found no hostile at its live projected center'
             };
             continue;
