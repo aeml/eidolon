@@ -3,16 +3,17 @@
 Status: baseline diagnosis plus incremental implementation evidence, not a completed phone redesign. Requirements
 and release gates live in [the main roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13).
 
-Latest local phone-runtime candidate: **Alpha 1.0.24**, a single navigation
-launcher, readable status and scrolling menu with reachable Back, not yet
-published. **1.0.22 `e0b9afd` is the last fully verified release**: CI
-`34058325420` passed, followed by matching uncached frontend/login/backend
-identities. **1.0.23 `ad72a64` is pushed**, but CI `34061096121` failed its
-predeployment animation gallery check, so neither deployment ran.
-Corrected successor **1.0.23 `5f1c3f7` is now pushed**, CI `34062629059` running;
-the verified gallery cleanup fix is inherited by the local release queue.
-Versions 1.0.24–1.0.27 remain local; the later entry-requirement and Chronicle
-copy patches also have emulated phone layout evidence. See the
+Latest fully verified phone navigation release: **Alpha 1.0.24 `44c7ed1`**, a
+single navigation launcher, readable status and scrolling menu with reachable
+Back. CI **`34065220719`** passed every job; independent uncached checks at
+**23:39:32 UTC September 6** matched frontend manifest, login label, main entry
+query and backend health to its exact commit/version, with a ready database.
+**1.0.25 `d55b5d8`** is pushed to `master` next and CI
+**`34067519448`** attempt 2 is running after attempt 1 stopped before gameplay
+on a local API-port collision; no 1.0.25 deployment ran. 1.0.26 and later remain local. Their entry guidance,
+lossless equipment recovery and talent-economy work also have phone-browser
+evidence, but are not yet verified live. Earlier 1.0.23's gallery failure and
+corrected successor remain recorded in the
 [execution ledger](2026-09-05-roadmap-execution.md) for the exact ordered queue.
 Earlier entries below are chronological snapshots, not current process status.
 
@@ -24,7 +25,7 @@ capture. Incremental implementations below realize parts of that proposal, but
 do not establish the complete default-view composition or physical-phone
 sign-off; the full mobile gate remains open.
 
-## Navigation and readable status (Alpha 1.0.24 candidate)
+## Navigation and readable status (Alpha 1.0.24, verified live)
 
 Five navigation shortcuts now live inside Menu, retaining their existing input
 callbacks. The remaining launcher does not overlap health/resource bars at

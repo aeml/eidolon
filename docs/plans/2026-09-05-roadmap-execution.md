@@ -5,13 +5,22 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-Current release queue (September 6): **1.0.23 (`5f1c3f7`) is the last fully
-verified release**. Its corrected CI **`34062629059`** passed every job. Fresh
-post-terminal uncached checks at **22:51:20 UTC** matched frontend manifest,
-login label, main entry query and backend health to
-`5f1c3f71de4f22f8fa3bb0f1706154085020fe4f` / Alpha 1.0.23; health is `ok`, database
-`ready`. Only **1.0.24 `44c7ed1509317c499643c10d77b71ebb228d2025`** was pushed next;
-CI **`34065220719`** is running. No 1.0.25-or-later release has been pushed.
+Current release queue (September 6): **1.0.24 (`44c7ed1`) is the last fully
+verified release**. CI **`34065220719`** passed every job, including final live
+four-class/remote-animation QA. Fresh post-terminal uncached checks at
+**23:39:32 UTC** matched frontend manifest, login label, main entry query and
+backend health to `44c7ed1509317c499643c10d77b71ebb228d2025` / Alpha 1.0.24;
+health is `ok`, database `ready`. Only **1.0.25
+`d55b5d8d8460f75513a0eca02baf873aa52203c6`** was pushed next; CI
+**`34067519448`** attempt 2 is running. Attempt 1 stopped before gameplay because
+the local readiness check occupied API port 18085; no deployment ran. The unchanged
+failed jobs were rerun after exact local cleanup, and new local QA defaults use
+18087 to prevent that collision. No 1.0.26-or-later release has been pushed.
+
+Previously, corrected 1.0.23 CI **`34062629059`** passed every job. Its
+post-terminal uncached checks at **22:51:20 UTC** matched all four identities
+to `5f1c3f71de4f22f8fa3bb0f1706154085020fe4f` / Alpha 1.0.23, with healthy backend
+and ready database, before 1.0.24 was published.
 
 Previously, 1.0.22 CI **`34058325420`** passed every job, including final live
 character/animation QA. Post-terminal uncached checks at **21:26:23 UTC** matched
@@ -55,12 +64,13 @@ Local merges carry that same fix forward and preserve ancestry:
 | 1.0.21 | `9f587570313d2f78aa469f21bd73bf8db1dd50ab` (fully verified live) | `c76db47`; strengthens pickup and persistence verification |
 | 1.0.22 | `e0b9afd3f8cfcefdbd056ef0339cb7937c27c4e7` (fully verified live; CI `34058325420`) | `ed793e0`; inherits corrected 1.0.21 |
 | 1.0.23 | `5f1c3f71de4f22f8fa3bb0f1706154085020fe4f` (fully verified live; CI `34062629059`) | `ad72a64`, whose CI `34061096121` failed before deployment; adds gallery jump cleanup while retaining collection inventory repair |
-| 1.0.24 | `44c7ed1509317c499643c10d77b71ebb228d2025`, branch `release/24-with-gallery`; pushed, CI `34065220719` running | `bcc29f4` plus corrected 1.0.23; phone navigation and fresh-opening QA |
-| 1.0.25 | `d55b5d8d8460f75513a0eca02baf873aa52203c6`, branch `release/25-with-gallery`; original runtime `bea6c34` | `dd2ce16` plus corrected 1.0.24; starter encounters, Ilyra guidance and recall pursuit cleanup |
+| 1.0.24 | `44c7ed1509317c499643c10d77b71ebb228d2025`, branch `release/24-with-gallery`; fully verified live, CI `34065220719` | `bcc29f4` plus corrected 1.0.23; phone navigation and fresh-opening QA |
+| 1.0.25 | `d55b5d8d8460f75513a0eca02baf873aa52203c6`, branch `release/25-with-gallery`; original runtime `bea6c34`; pushed, CI `34067519448` running | `dd2ce16` plus corrected 1.0.24; starter encounters, Ilyra guidance and recall pursuit cleanup |
 | 1.0.26 | `85efebef86ccb9a980bc630b9e860d7f68c47d4b`, branch `release/26-with-gallery`; original runtime `479cfd7` | `f0a1286` plus corrected 1.0.25; server-sourced entry requirements and guarded entry |
 | 1.0.27 | `0d4e1a1fb37d728db85c1eac9d56b6dc3bc785dd`, branch `release/27-with-gallery`; not pushed | original `ac494b8` preparation copy, earned-route QA `f0cfc15`, and inherited gallery repair |
 | 1.0.28 | `424e6b11579b5e7ea5c50a060dcb89011fab7126`, branch `release/28-with-recovery`; runtime `d4670b2`; not pushed | equipment-slot validation, lossless legacy recovery and readable phone recovery panel; separate notes/version metadata |
 | 1.0.29 | branch `release/29-with-economy`, locally verified; not pushed | real talent cooldown/mana consumers, matching client checks and explicit economy contract |
+| 1.0.30 | local candidate, browser verification in progress; not pushed | Imp arrival null-destination repair and server-owned Imp AI lifecycle; separate patch notes/version metadata |
 
 The corrected 1.0.21 → 1.0.22 → 1.0.23 → 1.0.24 ancestry was checked with
 `git merge-base --is-ancestor`. Exact clean `9f58757` passes **163 client suites /
@@ -84,6 +94,24 @@ not the current queue. Do not publish a successor before the preceding version's
 complete CI/live verification. The original 1.0.14 failure remains recorded below.
 
 ## September 6 continuation — dungeon class and campaign evidence
+
+### Alpha 1.0.30 candidate — a steadier hunt
+
+The Imp exception found by the earned readiness route now has eight regressions:
+five fail before the scoped repair, all eight pass afterwards. Replicated Imps
+also stop making a second local AI decision after their server-owned base update.
+Full client **173 suites / 2,461 tests in 65.521 seconds**, lint and server race
+checks pass (root 9.330 seconds, game package cached). The new earned-readiness
+browser run **failed its final browser-error assertion after 15.3 minutes**;
+session `22831` is closed, log `/tmp/eidolon-1-0-30-fresh-ready.log`. It reached
+earned level 34, zero deaths, saved manual rewards and enabled entry, with no Imp
+exception recorded. Chrome instead recorded local-module `ERR_NETWORK_CHANGED`
+failures. No clean full-route pass is claimed. Credential scanning and cleanup
+passed. The CI/local API-port collision is separately prevented with disjoint
+port defaults; Linux uses the existing loopback host-network mode to avoid
+script-created bridge/veth changes. See the
+[repair record](2026-09-06-imp-movement-repair.md). No dungeon clear or balance
+change is claimed by this narrowly scoped fix.
 
 ### Earned Wizard defensive route and remaining talent probes
 

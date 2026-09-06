@@ -341,7 +341,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.29</span>
+                <span class="start-version-row__label">Alpha 1.0.30</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -667,6 +667,14 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.30">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.30 (a steadier hunt)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>No stumble at the end of a wander:</strong> Fixed an Imp movement error that could interrupt game-loop updates when it reached a nearby roaming destination.</li>
+                        <li><strong>One source for enemy movement:</strong> Multiplayer Imps retain their server-directed movement and animation instead of starting a second local chase or wander. Local encounters still support normal roaming and pursuit.</li>
+                        <li><strong>Your journey stays yours:</strong> Quest requirements, rewards, enemy strength and saved progress are unchanged. Earlier patch notes remain available below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.0.29">
                     <h3 class="patch-note-entry__title">Alpha 1.0.29 (make your training count)</h3>
                     <ul class="patch-note-entry__list">

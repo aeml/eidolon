@@ -172,6 +172,14 @@ The deterministic gallery renders every canonical base/rune presentation and eve
 
 Playwright's local static server uses port `4173` by default. Set `EIDOLON_E2E_WEB_PORT` when that port is already reserved by another service; the predeploy character gate uses dedicated port `41873`.
 
+Local isolated QA defaults to API port `18087`; CI explicitly reserves `18085`.
+Linux defaults to the existing host-network mode, with authenticated disposable
+Mongo on the adjacent port and both services bound to loopback. This avoids local
+Docker bridge/veth creation and deletion while another Chrome check is running.
+Other hosts retain bridge mode; `EIDOLON_ISOLATED_QA_NETWORK_MODE=bridge` explicitly
+selects it. Port-collision checks and exact-resource cleanup remain in place.
+Older queued releases still use API port `18085`, so keep local checks on `18087`.
+
 Fresh-progression measurements are separate from prepared-character functional QA:
 
 ```bash

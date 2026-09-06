@@ -25,7 +25,9 @@ export class Imp extends Actor {
     update(dt, collisionManager, player, chunkManager) {
         super.update(dt, collisionManager, player, chunkManager);
 
-        if (this.state === 'DEAD') return;
+        // Actor.update already handles server-owned movement and animation.
+        // Do not overwrite it with a second, local chase/roam decision.
+        if (this.isRemote || this.state === 'DEAD') return;
 
         // AI Logic
         if (player && player.state !== 'DEAD') {
@@ -58,7 +60,8 @@ export class Imp extends Actor {
                 
                 if (this.targetPosition) {
                     this.move(this.targetPosition, collisionManager);
-                    if (this.position.distanceTo(this.targetPosition) < 0.5) {
+                    // move() clears destinations within its arrival threshold.
+                    if (!this.targetPosition || this.position.distanceTo(this.targetPosition) < 0.5) {
                         this.targetPosition = null;
                         this.state = 'IDLE';
                         this.playAnimation('Idle');

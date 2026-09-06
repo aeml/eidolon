@@ -5,9 +5,13 @@ readonly QA_RUN_ID="${EIDOLON_ISOLATED_QA_RUN_ID:-$(openssl rand -hex 5)}"
 readonly MONGO_CONTAINER="eidolon-isolated-qa-mongo-${QA_RUN_ID}"
 readonly API_CONTAINER="eidolon-isolated-qa-api-${QA_RUN_ID}"
 readonly QA_NETWORK="eidolon-isolated-qa-net-${QA_RUN_ID}"
-readonly QA_PORT="${EIDOLON_ISOLATED_QA_PORT:-18085}"
+readonly QA_PORT="${EIDOLON_ISOLATED_QA_PORT:-18087}"
 readonly SERVER_IMAGE="eidolon-server:isolated-qa-${QA_RUN_ID}"
-readonly QA_NETWORK_MODE="${EIDOLON_ISOLATED_QA_NETWORK_MODE:-bridge}"
+qa_default_network_mode=bridge
+if [[ "$(uname -s)" == Linux ]]; then
+  qa_default_network_mode=host
+fi
+readonly QA_NETWORK_MODE="${EIDOLON_ISOLATED_QA_NETWORK_MODE:-${qa_default_network_mode}}"
 readonly QA_SOURCE_COMMIT="$(git rev-parse HEAD)"
 export EIDOLON_E2E_SOURCE_COMMIT="${QA_SOURCE_COMMIT}"
 export EIDOLON_E2E_SOURCE_DIRTY=0
@@ -119,7 +123,7 @@ mongo_password="$(openssl rand -hex 24)"
 docker build \
   --build-arg GO_VERSION=1.24.5 \
   --build-arg "BUILD_COMMIT=${qa_build_commit}" \
-  --build-arg "BUILD_VERSION=Alpha 1.0.29" \
+  --build-arg "BUILD_VERSION=Alpha 1.0.30" \
   --tag "${SERVER_IMAGE}" server >/dev/null
 image_created=true
 

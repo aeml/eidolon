@@ -148,6 +148,8 @@ jobs:
     if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
     env:
       EIDOLON_E2E_WEB_PORT: '41873'
+      EIDOLON_ISOLATED_QA_PORT: '18085'
+      EIDOLON_ISOLATED_QA_NETWORK_MODE: 'host'
     steps:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -268,7 +270,7 @@ jobs:
           cp -r index.html assets src vendor public/
           cp sw.js public/
           node scripts/version-pages-runtime.mjs public "${GITHUB_SHA}"
-          printf '{"commit":"%s","version":"Alpha 1.0.29"}\n' "${GITHUB_SHA}" > public/release.json
+          printf '{"commit":"%s","version":"Alpha 1.0.30"}\n' "${GITHUB_SHA}" > public/release.json
           
           # Create coverage directory
           mkdir -p public/coverage/client public/coverage/server
@@ -450,7 +452,7 @@ jobs:
           chmod --reference=.env "${qa_env_tmp}"
           mv "${qa_env_tmp}" .env
           trap - EXIT
-          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.0.29" bash ./deploy/deploy_linux.sh
+          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.0.30" bash ./deploy/deploy_linux.sh
           EOF
 
   post-deploy-browser:
