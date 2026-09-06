@@ -471,6 +471,23 @@ class GameEngineNetworkMessageMethods {
                     this.player.abilityCooldown = remaining;
                 }
             }
+            if (result.accepted === false && skillName) {
+                const hints = {
+                    cooldown: 'Wait for this ability to recharge.',
+                    global_cooldown: 'Wait a moment before casting your next ability.',
+                    action_locked: 'Finish your jump or charge before casting again.',
+                    crowd_controlled: 'You cannot cast while stunned.',
+                    dead: 'Recover before casting again.',
+                    locked: 'Unlock this skill before using it.',
+                    requirements_not_met: 'Choose a reachable target in range and check your mana.'
+                };
+                this.showReadabilityFeedback?.(`ability-rejected-${skillName}-${result.reason || 'unknown'}`, {
+                    title: `Cannot cast ${skillName}`,
+                    tone: 'warning',
+                    metaText: 'Cast rejected',
+                    subtitle: hints[result.reason] || 'This cast is unavailable. Check your character and target, then try again.'
+                }, 1500);
+            }
         } else if (msg.type === 'ability_cooldowns') {
             const cooldownState = msg.payload || {};
             Object.keys(this.player.cooldowns || {}).forEach((skillName) => {

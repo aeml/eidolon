@@ -1381,7 +1381,7 @@ func (w *World) StartPlayerJump(id string, x, y, z float64) bool {
 		return false
 	}
 
-	if constrainedX, constrainedZ, ok := w.constrainPlayerPointToDungeon(e.InstanceID, x, z); ok {
+	if constrainedX, constrainedZ, ok := w.constrainDungeonMovementDestination(e, x, z); ok {
 		x = constrainedX
 		z = constrainedZ
 	}

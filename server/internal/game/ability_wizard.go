@@ -839,7 +839,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					targetZ = math.Max(-2200, math.Min(1000, targetZ))
 				}
 
-				if constrainedX, constrainedZ, ok := w.constrainPlayerPointToDungeon(player.InstanceID, targetX, targetZ); ok {
+				if constrainedX, constrainedZ, ok := w.constrainDungeonMovementDestination(player, targetX, targetZ); ok {
 					targetX = constrainedX
 					targetZ = constrainedZ
 				}

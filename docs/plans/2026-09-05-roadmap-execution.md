@@ -511,8 +511,62 @@ Other cross-wall ability types, secondary effects and the full 1.1 matrix remain
 open; the patch notes do not claim those fixed. Login, package, server/container,
 deploy and CI release defaults advance together. Final candidate checks pass:
 the complete server race suite, 149 client suites / 2,180 tests, lint and
-whitespace validation. Publication is pending; Alpha 1.0.8 is the currently
-verified live release.
+whitespace validation. Publication and live results follow below.
+
+Published as `20eadc9483abbc6d2bd19f1bde0a2a3f78bda4b9`, CI `34001977877`.
+Client/server checks, browser smoke, predeploy gameplay QA and both deployment
+jobs pass. Both public release endpoints, the login label and runtime entry query
+match this exact Alpha 1.0.9 commit. Post-deployment gameplay QA remains running.
+The complete Abyssal Well Fighter attempt used this clean commit, generator 2 seed
+`-7057617757322159080`, Normal 60. All first four bosses were defeated, but the
+character died during a Siren encounter before Thalorath after 18.7 minutes.
+This is not a full-run pass. The failure and normal defensive/rune/wipe-control
+follow-up are recorded in the playthrough evidence ledger.
+
+## Alpha 1.0.10 candidate — paths, not just landings
+
+Endpoint-only movement checks allow Charge, Shattering Charge, Teleport and
+jumping to skip a solid wall when the landing is in another valid room. Twelve
+ordinary-dispatch charge/teleport regressions and two authoritative jump cases
+reproduce the problem. Ground-targeted movement now clips its complete path
+through the canonical floor union, preserving open doorways, existing realm
+bounds and invalid-position recovery. Charge/Teleport events and jump targets
+carry the actual bounded destination. Normal walk-target selection and AI routing
+are unchanged.
+
+The matrix covers base/Momentum Charge, Shattering Charge, base/Blink/Warp
+Teleport, two distant coordinate regions, solid gaps and open doorways; jumping
+adds ordinary and large simulation steps. The full server race suite passes
+(`/tmp/eidolon-movement-walls-server-full.log`, game package 110.292 seconds).
+Six further red cases reproduce Rogue movement, damage and debuffs through a
+thin wall. Shadow Strike, Shadow Lunge and Backstab now require an accessible
+target before mana/cooldown commitment; blink landings also clip the full path.
+Open doorways retain damage and representative rune effects. The expanded server
+race suite passes (`/tmp/eidolon-movement-rogue-server-full.log`, game package
+142.951 seconds); additional legacy/recovery matrix checks pass in 6.937 seconds.
+Rejected casts now explain their requirements, action locks and cooldowns while
+reconciling authoritative resource state. The client suite passes 149 suites /
+2,188 tests before the subsequent charge-sync and release-note additions.
+
+The fresh-server Wizard browser route passes in 13.1 seconds, including actual
+Teleport events/landing, Ctrl-click jumps against the wall and on open floor,
+and ordinary recall (`/tmp/eidolon-movement-wall-wizard-browser.log`). Fighter's
+first attempt failed with its client stopping 2.8848 units short of the server
+landing. Normal prediction's three-unit correction threshold did not reconcile
+short server-driven Charge steps. Charge now reconciles each authoritative step
+and its final landing while retaining ordered movement acknowledgements.
+Focused client checks pass, and the unchanged Fighter browser assertions now
+pass in 12.2 seconds (`/tmp/eidolon-movement-wall-fighter-browser-sync.log`).
+Both disposable runs clean up successfully. The new route joins predeploy QA.
+These are real-control wall/open-floor movement checks; crossing a gap between
+two valid rooms is separately established by the server regression matrix.
+
+Version defaults and patch notes advance to Alpha 1.0.10, not milestone 1.10.
+The final client candidate passes 149 suites / 2,190 tests, with lint and shell
+syntax checks passing. The final complete server race suite passes (game package
+110.525 seconds). Publication remains pending. Cross-wall secondary/AoE
+effects, ordinary movement authority, Rogue rendered wall checks and the full
+dungeon/class/party matrix remain open. This is not 1.1 closure.
 
 ## Milestone tracking
 

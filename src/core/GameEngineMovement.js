@@ -862,6 +862,7 @@ class GameEngineMovementMethods {
             nextSequence: 1,
             lastAcknowledgedSequence: 0,
             lastAcknowledgedServerPosition: null,
+            authoritativeChargeActive: false,
             lastPacket: null,
             sentHistory: new Map()
         };
@@ -918,6 +919,18 @@ class GameEngineMovementMethods {
 
         const movement = this.ensureMovementNetworkState();
         const acknowledgedSequence = Number(pData?.moveSequence || 0);
+        // Charge is simulated by the server, not accepted client movement.
+        // Reconcile each short step and its final landing even within the
+        // normal three-unit prediction deadband. Keep processing sequence
+        // acknowledgements so normal movement resumes without stale pullback.
+        let chargeCorrection = null;
+        if (pData?.isCharging === true) {
+            movement.authoritativeChargeActive = true;
+            chargeCorrection = 'authoritative charge';
+        } else if (pData?.isCharging === false && movement.authoritativeChargeActive) {
+            movement.authoritativeChargeActive = false;
+            chargeCorrection = 'authoritative charge landing';
+        }
         if (acknowledgedSequence > 0) {
             // A newly constructed browser engine may resume a server-side
             // entity whose counter survived the transport disconnect. Rebase
@@ -940,7 +953,7 @@ class GameEngineMovementMethods {
                 // threshold behind the local actor. It is still an ordinary
                 // duplicate, not a teleport, and must never stop the path.
                 this.movementTelemetry.duplicateAcknowledgements += 1;
-                return null;
+                return chargeCorrection;
             }
 
             const sent = movement.sentHistory.get(acknowledgedSequence);
@@ -963,15 +976,16 @@ class GameEngineMovementMethods {
                 );
                 if (adjustment > LOCAL_SERVER_ADJUSTMENT_TOLERANCE) {
                     this.movementTelemetry.serverAdjustments += 1;
-                    return 'acknowledged server adjustment';
+                    return chargeCorrection || 'acknowledged server adjustment';
                 }
                 // The server accepted this prediction. Its snapshot may be a
                 // frame or two behind the current local path, so never pull the
                 // player backward toward an already-accepted sample.
-                return null;
+                return chargeCorrection;
             }
         }
 
+        if (chargeCorrection) return chargeCorrection;
         if (currentDistance > LOCAL_POSITION_CORRECTION_DISTANCE) {
             this.movementTelemetry.hardCorrections += 1;
             return 'authoritative discontinuity';

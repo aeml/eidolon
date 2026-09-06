@@ -36,7 +36,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 				player.CCImmuneEndTime = time.Now().Add(10 * time.Second) // Will be cleared on charge end
 			}
 
-			if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(player, finalTargetX, finalTargetZ); ok {
+			if constrainedX, constrainedZ, ok := w.constrainDungeonMovementDestination(player, finalTargetX, finalTargetZ); ok {
 				finalTargetX = constrainedX
 				finalTargetZ = constrainedZ
 			}
@@ -177,7 +177,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 		if player.Mana >= cost {
 			player.Mana -= cost
 			finalTargetX, finalTargetZ := clampAbilityTargetDistance(player, targetX, targetZ, 28.0)
-			if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(player, finalTargetX, finalTargetZ); ok {
+			if constrainedX, constrainedZ, ok := w.constrainDungeonMovementDestination(player, finalTargetX, finalTargetZ); ok {
 				finalTargetX = constrainedX
 				finalTargetZ = constrainedZ
 			}

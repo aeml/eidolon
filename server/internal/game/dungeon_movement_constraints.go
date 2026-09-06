@@ -65,6 +65,30 @@ func (w *World) constrainDungeonTargetPosition(entity *Entity, x, z float64) (fl
 	return w.constrainPointToDungeon(entity.InstanceID, x, z)
 }
 
+// Ground-targeted dashes/blinks must not skip a wall merely because their
+// landing lies in another room. Keep point recovery for an already-invalid
+// position, then constrain the complete path through the canonical floors.
+// Ordinary walk target selection and AI routing retain their separate policy.
+func (w *World) constrainDungeonMovementDestination(entity *Entity, x, z float64) (float64, float64, bool) {
+	x, z, constrained := w.constrainDungeonTargetPosition(entity, x, z)
+	if !constrained {
+		return x, z, false
+	}
+	startX, startZ, _ := w.constrainPointToDungeon(entity.InstanceID, entity.X, entity.Z)
+	x, z, _ = w.firstDungeonWallHit(entity.InstanceID, startX, startZ, x, z)
+	return x, z, true
+}
+
+// Targeted movement strikes require an accessible enemy before committing
+// mana, debuffs or damage. Landing-point clipping alone cannot enforce that.
+func (w *World) validDungeonMovementAttackTarget(player, target *Entity, maxRange float64) bool {
+	if !validDirectAbilityTarget(w, player, target, maxRange, TypeEnemy) {
+		return false
+	}
+	_, _, blocked := w.firstDungeonWallHit(player.InstanceID, player.X, player.Z, target.X, target.Z)
+	return !blocked
+}
+
 func (w *World) moveEntityWithinDungeon(entity *Entity, targetX, targetZ float64) bool {
 	if entity == nil {
 		return false

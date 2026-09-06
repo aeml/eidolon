@@ -31,6 +31,23 @@ function movementHarness() {
 }
 
 describe('GameEngine ordered movement transport', () => {
+    test('server-owned charge reconciles short steps and the final landing without replaying it', () => {
+        const engine = movementHarness();
+        engine.sendPlayerMovementIfNeeded(1 / 60);
+        const point = new THREE.Vector3(0, 0, 1);
+        expect(engine.getLocalPositionCorrectionReason({ moveSequence: 1, isCharging: true }, point, 1))
+            .not.toBeNull();
+        point.z = 2;
+        expect(engine.getLocalPositionCorrectionReason({ moveSequence: 1, isCharging: true }, point, 1))
+            .toBe('authoritative charge');
+        point.z = 2.5;
+        expect(engine.getLocalPositionCorrectionReason({ moveSequence: 1, isCharging: false }, point, 0.5))
+            .toBe('authoritative charge landing');
+        const next = engine.getLocalPositionCorrectionReason({ moveSequence: 1, isCharging: false }, point, 0);
+        expect(next).not.toBe('authoritative charge landing');
+        expect(engine.getLocalPositionCorrectionReason({ moveSequence: 1, isCharging: false }, point, 0)).toBeNull();
+    });
+
     test('sends movement at 30 Hz, sends state edges immediately, and suppresses idle floods', () => {
         const engine = movementHarness();
 

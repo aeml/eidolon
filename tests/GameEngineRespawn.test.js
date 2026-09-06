@@ -223,8 +223,35 @@ function createEngineHarness() {
 }
 
 describe('GameEngine multiplayer respawn sync', () => {
+    test.each([
+        ['requirements_not_met', 'reachable target'],
+        ['cooldown', 'recharge'],
+        ['global_cooldown', 'Wait a moment'],
+        ['action_locked', 'jump or charge'],
+        ['crowd_controlled', 'stunned'],
+        ['dead', 'Recover'],
+        ['locked', 'Unlock'],
+        ['future-reason', 'unavailable']
+    ])('rejected ability explains %s while reconciling prediction', (reason, hint) => {
+        const engine = createEngineHarness();
+        engine.showReadabilityFeedback = jest.fn();
+        engine.player.cooldowns = { 'Shadow Lunge': 10 };
+        engine.player.stats.mana = 75;
+        engine.handleServerMessage({ type: 'ability_result', payload: {
+            skillName: 'Shadow Lunge', accepted: false, reason, mana: 100, cooldownRemaining: 0
+        } });
+        expect(engine.player.stats.mana).toBe(100);
+        expect(engine.player.cooldowns['Shadow Lunge']).toBe(0);
+        expect(engine.showReadabilityFeedback).toHaveBeenCalledWith(
+            `ability-rejected-Shadow Lunge-${reason}`,
+            expect.objectContaining({ title: 'Cannot cast Shadow Lunge', subtitle: expect.stringContaining(hint) }),
+            1500
+        );
+    });
+
     test('ability result reconciles predicted mana and cooldown', () => {
         const engine = createEngineHarness();
+        engine.showReadabilityFeedback = jest.fn();
         engine.player.state = 'IDLE';
         engine.player.abilityName = 'Fireball';
         engine.player.cooldowns = { Fireball: 2 };
@@ -244,6 +271,7 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.stats.mana).toBe(73);
         expect(engine.player.cooldowns.Fireball).toBe(1.25);
         expect(engine.player.abilityCooldown).toBe(1.25);
+        expect(engine.showReadabilityFeedback).not.toHaveBeenCalled();
     });
 
     test('reconnect cooldown snapshot replaces stale local readiness', () => {

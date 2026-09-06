@@ -26,14 +26,14 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 		if player.Mana >= cost {
 			var strikeTarget *Entity
 			if targetID != "" {
-				if target, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(w, player, target, 10.0, TypeEnemy) {
+				if target, ok := w.Entities[targetID]; ok && w.validDungeonMovementAttackTarget(player, target, 10.0) {
 					strikeTarget = target
 				}
 			}
 			if strikeTarget == nil {
 				minDistance := 3.0
 				for _, target := range w.Grid.Nearby(targetX, targetZ, 3.0+maxAbilityTargetVisualRadius, player.InstanceID) {
-					if !validDirectAbilityTarget(w, player, target, 10.0, TypeEnemy) {
+					if !w.validDungeonMovementAttackTarget(player, target, 10.0) {
 						continue
 					}
 					distance := math.Hypot(target.X-targetX, target.Z-targetZ)
@@ -54,7 +54,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				destX := targetX - math.Sin(targetRotation)*1.5
 				destZ := targetZ - math.Cos(targetRotation)*1.5
 
-				if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(player, destX, destZ); ok {
+				if constrainedX, constrainedZ, ok := w.constrainDungeonMovementDestination(player, destX, destZ); ok {
 					destX = constrainedX
 					destZ = constrainedZ
 				}
@@ -390,8 +390,6 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 		// Backstab
 		cost := resolveAbilityManaCost(player, skillName, 20)
 		if player.Mana >= cost {
-			player.Mana -= cost
-
 			// Check for rune effects
 			runeID := player.GetRuneForSkill("Backstab")
 
@@ -404,7 +402,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 
 			nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, rangeDist), player.InstanceID)
 			for _, target := range nearby {
-				if target.ID == player.ID {
+				if target.ID == player.ID || !w.validDungeonMovementAttackTarget(player, target, rangeDist) {
 					continue
 				}
 				target.Mu.RLock()
@@ -423,6 +421,10 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				}
 			}
 
+			if bestTarget == nil {
+				return
+			}
+			player.Mana -= cost
 			if bestTarget != nil {
 				// Shadowstep rune: teleport behind target before striking
 				if runeID == "backstab_shadowstep" {
@@ -437,7 +439,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					teleX := tx - tDirX*1.5
 					teleZ := tz - tDirZ*1.5
 
-					if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(player, teleX, teleZ); ok {
+					if constrainedX, constrainedZ, ok := w.constrainDungeonMovementDestination(player, teleX, teleZ); ok {
 						teleX = constrainedX
 						teleZ = constrainedZ
 					}
@@ -517,8 +519,6 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 		// Teleport Behind
 		cost := resolveAbilityManaCost(player, skillName, 25)
 		if player.Mana >= cost {
-			player.Mana -= cost
-
 			// Check for rune effects
 			runeID := player.GetRuneForSkill("Shadow Lunge")
 
@@ -531,7 +531,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			// Find target
 			var bestTarget *Entity
 			if targetID != "" {
-				if target, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(w, player, target, maxRange, TypeEnemy) {
+				if target, ok := w.Entities[targetID]; ok && w.validDungeonMovementAttackTarget(player, target, maxRange) {
 					bestTarget = target
 				}
 			}
@@ -545,7 +545,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				if target.ID == player.ID {
 					continue
 				}
-				if !validDirectAbilityTarget(w, player, target, maxRange, TypeEnemy) {
+				if !w.validDungeonMovementAttackTarget(player, target, maxRange) {
 					continue
 				}
 				target.Mu.RLock()
@@ -560,6 +560,10 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				}
 			}
 
+			if bestTarget == nil {
+				return
+			}
+			player.Mana -= cost
 			if bestTarget != nil {
 				bestTarget.Mu.RLock()
 				tRot := bestTarget.Rotation
@@ -573,7 +577,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				teleX := tx - tDirX*1.5
 				teleZ := tz - tDirZ*1.5
 
-				if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(player, teleX, teleZ); ok {
+				if constrainedX, constrainedZ, ok := w.constrainDungeonMovementDestination(player, teleX, teleZ); ok {
 					teleX = constrainedX
 					teleZ = constrainedZ
 				}
