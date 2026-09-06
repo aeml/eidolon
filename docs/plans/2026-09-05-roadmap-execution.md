@@ -5,22 +5,77 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-Current release queue (September 6): **1.0.18 (`d77f215`) is deployed and verified**:
-CI `34024689105` passed in full. Independent post-terminal frontend manifest,
+Current release queue (September 6): **1.0.19 (`200478f`) is deployed and verified**:
+CI `34026658393` passed in full. Independent post-terminal frontend manifest,
 login/runtime entry and backend SHA/version/database-readiness checks match
-`d77f2154b2143e7a1a039b01ed8e07f474be486e` / Alpha 1.0.18. The verification
-script initially expected the backend version without its `Alpha` prefix; the
-corrected exact-format check passed without changing either deployment.
-Only the next exact commit, 1.0.19 (`200478fddd5c3e1f28f8ef5d93644df3395da020`),
-was pushed; CI `34026658393` is running. It includes quest UI `43321ed`, verified
-recovery correction `98f4286` and documentation-only evidence updates.
-1.0.20 (`bd54b2a`), 1.0.21 (`0498ffe`) and 1.0.22 (`ecf7524`, plus this
-documentation-only status update) are committed and verified locally. None is
-published. Push each exact next release only
+`200478fddd5c3e1f28f8ef5d93644df3395da020` / Alpha 1.0.19. Only the next exact
+commit, 1.0.20 (`bd54b2aab3b56aa6c83efe40d6071e3881ba6074`), was pushed;
+CI `34028688737` is running. 1.0.21's runtime (`0498ffe`)
+had a QA-route gap: the earlier phone inventory test did not open Settings' Play
+category. Test-only correction **`2f5c46b` passed its exact-source inventory route**
+and is the next 1.0.21 commit to publish after 1.0.20's full gate. It was merged
+forward as `e3bbcf7` so the 1.0.22 release remains a fast-forward descendant.
+1.0.22's runtime (`ecf7524`) has passed its recorded checks; the new earned
+Earth campaign route is now being tested on the working candidate. Neither
+1.0.21 nor 1.0.22 is published. Push each exact next release only
 after its predecessor's full gate.
 Earlier entries describe their status at the time,
 not the current queue. Do not publish a successor before the preceding version's
 complete CI/live verification. The original 1.0.14 failure remains recorded below.
+
+## September 6 continuation — dungeon class and campaign evidence
+
+The previous goal turn completed the Settings/adventure candidates and exact-source
+checks; it was progress, not completion of the roadmap. This continuation started
+by confirming 1.0.19's CI was still live. It subsequently passed predeploy QA and
+both deploy jobs; final live character QA is still running.
+
+Clean `a323d96` passed a complete **Wizard Verdant run in 8.4 minutes**, Normal 30,
+generator 2, seed `4005696311737504843`: all four bosses, all encounter rooms,
+gold, town recall and completed-run re-entry. Credential scan and disposable
+cleanup passed; session `18569` is closed. Full evidence and limitations are in
+`dungeon-playthrough-evidence.md`. This adds another class, not the whole matrix.
+
+The next dedicated `chronicle-earth` route is being prepared to earn the first
+three Chronicle chapters through actual combat, natural relic drops and manual
+turn-in, then prove the dungeon kill opens Rootheart access only after Ilyra's
+completion dialogue. Level preparation and encounter travel/protection are
+explicit; it does not grant quest progress, items or raid access and is not
+fresh-level balance evidence. The implementation is test-only and not yet run.
+
+Review also found the old phone bag QA route tried to tap hidden Auto-loot after
+the 1.0.21 Settings reflow. In `/tmp/eidolon-release21-qa-iF7eif`, branch
+`qa/phone-settings-inventory`, `2f5c46bef15601d965cda2bd098867cfe12b4b6d` adds
+the real Play-category tap and scroll before the existing checkbox action.
+Lint passes; exact-source real inventory QA is running in
+`/tmp/eidolon-release21-inventory-route.log`. Do not publish the old `0498ffe`
+without the correction, or claim the new route passed before it finishes.
+
+The first worktree run stopped before login: its generated `vendor/` browser
+dependencies had not been prepared when sharing the installed Node dependencies.
+`npm run prepare:client` creates the required local Three/protobuf runtime files.
+The exact same committed candidate is rerunning after this setup correction in
+`/tmp/eidolon-release21-inventory-route-prepared.log`; the original failed route
+does not supply gameplay evidence.
+
+After preparation, exact `2f5c46b` **passed in 1.8 minutes**: normal combat loot,
+Settings → Play, and both orientations' authoritative equip/unequip, canceled
+drop, confirmed drop and manual recovery. Credential scanning and disposable
+cleanup passed; session `94525` is closed. Merge `e3bbcf7` carries those two
+test-navigation lines into the later release without changing its runtime.
+The old `0498ffe` is superseded as the next publishable 1.0.21 commit.
+
+The first earned Earth route failed after 38.4 seconds at collection turn-in:
+four naturally acquired seeds remained visible in the client inventory after
+Ilyra completed the chapter (expected zero). Server consumption already has
+unit coverage; inspection found `MsgCompleteQuest` sends quests/endgame state
+but no updated inventory. This is a real synchronization defect, not grounds to
+remove the consumption assertion. Log: `/tmp/eidolon-chronicle-earth-first.log`;
+credential scan passed and the isolated run terminated. The optional route does
+not yet prove a campaign clear. A separate 1.0.23 correction will carry the
+dispatch regression, inventory refresh and an earned-route rerun. The 1.0.22
+client suite passed 163 suites / 2,352 tests; lint also passed. The earlier
+"not yet run" statements above record preparation, not current test status.
 
 ## Alpha 1.0.22 — adventure within reach (local candidate)
 

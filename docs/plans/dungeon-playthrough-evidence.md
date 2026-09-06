@@ -49,6 +49,19 @@ it must observe all four server-accepted skill events by the first boss death.
 
 ## Recorded full runs
 
+September 6, current-runtime addition: clean
+`a323d966f4177fa4a3fe8db3916801a76d3c79aa` passed the full Verdant route with a
+**Wizard in 8.4 minutes**, Normal 30, generator 2 attempt 0, seed
+`4005696311737504843`. Rootbound Warden, Briar Matron, Rustbound Colossus and
+Hollow Sentinel died through real mouse attacks/Fireball. All encounter rooms
+cleared, gold increased, and completed-run recall/re-entry preserved seed,
+cleared bosses and gold. Credential scanning and disposable cleanup passed;
+session `18569` is closed. Log: `/tmp/eidolon-1-0-22-verdant-full-wizard.log`.
+This is a level-100 functional run with the documented entrance protection,
+not level-appropriate balance, all Wizard specialization/rune skills, party combat
+or Chronicle credit. The next route adds earned opening chapters, natural relic
+drops and manual post-dungeon raid-unlock verification without granting progress.
+
 | Dungeon | Class/path | Replay identity | Evidence |
 |---|---|---|---|
 | Verdant Bastion | Fighter, complete generated | Seed missing from the original log | Passed all four bosses, room progress, gold and recall in 7.5 minutes on 1.0.7 source; no completed-run re-entry assertion in that earlier route. |

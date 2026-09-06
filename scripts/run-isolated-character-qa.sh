@@ -312,6 +312,10 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   dungeon-full)
     EIDOLON_E2E_FULL_DUNGEON=1 npx playwright test tests/e2e/verdant-dungeon-gameplay.spec.js
     ;;
+  chronicle-earth)
+    EIDOLON_E2E_CHRONICLE_EARTH=1 EIDOLON_E2E_FULL_DUNGEON=1 EIDOLON_E2E_DUNGEON=verdant_bastion_catacombs \
+      npx playwright test tests/e2e/verdant-dungeon-gameplay.spec.js
+    ;;
   dungeon-recovery)
     run_dungeon_recovery
     ;;
@@ -355,7 +359,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     run_phone_adventure
     ;;
   *)
-    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, inventory, extended, portal, dungeons, verdant, dungeon-full, dungeon-recovery, direct-skills, projectile-walls, movement-walls, ground-walls, beam-walls, whirlwind, phone, phone-combat, phone-inventory, phone-quests, phone-build, phone-settings, or phone-adventure." >&2
+    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, inventory, extended, portal, dungeons, verdant, dungeon-full, chronicle-earth, dungeon-recovery, direct-skills, projectile-walls, movement-walls, ground-walls, beam-walls, whirlwind, phone, phone-combat, phone-inventory, phone-quests, phone-build, phone-settings, or phone-adventure." >&2
     exit 1
     ;;
 esac

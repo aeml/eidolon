@@ -4,8 +4,11 @@ Status: baseline diagnosis plus incremental implementation evidence, not a compl
 and release gates live in [the main roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13).
 
 Latest local candidate: **Alpha 1.0.22**, phone adventure selection and the
-landscape party/joystick overlap correction, not yet published. 1.0.18 is live
-and verified; 1.0.19 is in CI. 1.0.20 and 1.0.21 are committed locally.
+landscape party/joystick overlap correction, not yet published. Current live
+release is verified 1.0.19; 1.0.20 is in CI. The corrected 1.0.21 (`2f5c46b`)
+passed the older bag route through Settings → Play in 1.8 minutes, including
+both orientations, credential scan and cleanup. Neither 1.0.21 nor
+1.0.22 is published; see the execution ledger for the ordered queue.
 Earlier entries below are chronological snapshots, not current process status.
 
 ## Phone adventure and post-dungeon movement (Alpha 1.0.22 candidate)

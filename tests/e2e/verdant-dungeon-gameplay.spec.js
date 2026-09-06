@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import { buildDungeonTraversalRoutes } from '../dungeonTraversalRoutes.js';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
 import { selectFighterDungeonSkill } from '../dungeonCombatControls.js';
+import { prepareEarthChronicleThroughPlay, verifyEarthDungeonChronicleTurnIn } from './chronicle-earth-route.js';
 import {
     collectBrowserFailures, credentialsFromEnvironment, ensureDungeonReadyLevel,
     enterAndExitDungeon, loginAndEnterWorld, moveByGroundClick, projectEntity, readPlayerState, returnToTown
@@ -11,6 +12,10 @@ test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 const fallbackRun = process.env.EIDOLON_E2E_DUNGEON_FALLBACK === '1';
 const playthrough = dungeonPlaythroughOptions(process.env);
 const fullRun = fallbackRun || process.env.EIDOLON_E2E_FULL_DUNGEON === '1' || playthrough.dungeonType !== 'verdant_bastion_catacombs';
+const chronicleEarth = process.env.EIDOLON_E2E_CHRONICLE_EARTH === '1';
+if (chronicleEarth && (!fullRun || playthrough.dungeonType !== 'verdant_bastion_catacombs' || process.env.EIDOLON_E2E_REGISTER !== '1')) {
+    throw new Error('Earth Chronicle verification requires a full Verdant run with a fresh disposable character');
+}
 const logPrefix = `[dungeon:${playthrough.dungeonType}]`;
 
 async function prepareFighterSkills(page) {
@@ -176,6 +181,7 @@ test(fullRun ? `${playthrough.name} complete ${fallbackRun ? 'fallback' : 'gener
     await loginAndEnterWorld(page, credentials);
     await ensureDungeonReadyLevel(page);
     await prepareFighterSkills(page);
+    if (chronicleEarth) await prepareEarthChronicleThroughPlay(page);
     if (fallbackRun) {
         await returnToTown(page);
         const chat = page.locator('#chat-input');
@@ -279,5 +285,6 @@ test(fullRun ? `${playthrough.name} complete ${fallbackRun ? 'fallback' : 'gener
             console.log(`${logPrefix} completed-run recall/re-entry preserved seed, cleared bosses and gold`);
         } });
     }
+    if (chronicleEarth) await verifyEarthDungeonChronicleTurnIn(page, credentials);
     expect(failures, failures.join('\n')).toEqual([]);
 });
