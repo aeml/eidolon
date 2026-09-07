@@ -124,6 +124,7 @@ qa_allowlist+=",${QA_USERNAME_BASE}-holy"
 qa_allowlist+=",${QA_USERNAME_BASE}-support-area"
 qa_allowlist+=",${QA_USERNAME_BASE}-spirit-area"
 qa_allowlist+=",${QA_USERNAME_BASE}-phone-party,${QA_USERNAME_BASE}-phone-party-ally"
+qa_allowlist+=",${QA_USERNAME_BASE}-critical-rogue,${QA_USERNAME_BASE}-critical-wizard,${QA_USERNAME_BASE}-critical-fighter"
 
 mongo_username="qa_root"
 mongo_password="$(openssl rand -hex 24)"
@@ -252,6 +253,16 @@ run_talent_economy() {
 run_talent_healing() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-healing" EIDOLON_E2E_CLASS=Cleric \
     npx playwright test tests/e2e/talent-healing-gameplay.spec.js
+}
+
+run_talent_critical() {
+  local class_name
+  for class_name in ${EIDOLON_CRITICAL_QA_CLASS:-Rogue Wizard Fighter}; do
+    case "${class_name}" in Rogue|Wizard|Fighter) ;; *) echo "Unsupported critical QA class" >&2; return 1 ;; esac
+    EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-critical-$(printf '%s' "${class_name}" | tr '[:upper:]' '[:lower:]')" \
+      EIDOLON_E2E_PASSWORD="${QA_PASSWORD}" EIDOLON_E2E_CLASS="${class_name}" \
+      npx playwright test tests/e2e/talent-critical-gameplay.spec.js || return $?
+  done
 }
 
 run_purifying_area() {
@@ -393,6 +404,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   talent-healing)
     run_talent_healing
     ;;
+  talent-critical)
+    run_talent_critical
+    ;;
   purifying-area)
     run_purifying_area
     ;;
@@ -515,6 +529,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     echo "Trained cleanse-area verification: EIDOLON_ISOLATED_QA_ROUTE=purifying-area" >&2
     echo "Trained persistent support-area verification: EIDOLON_ISOLATED_QA_ROUTE=guardian-area" >&2
     echo "Trained holy-zone verification: EIDOLON_ISOLATED_QA_ROUTE=consecrated-area" >&2
+    echo "Critical training/persistence verification: EIDOLON_ISOLATED_QA_ROUTE=talent-critical" >&2
     echo "Trained Blessing/Trumpet verification: EIDOLON_ISOLATED_QA_ROUTE=cleric-area" >&2
     echo "Trained cone/Beacon/Mass Revival verification: EIDOLON_ISOLATED_QA_ROUTE=cleric-final-area" >&2
     echo "Trained Spirit Guardians verification: EIDOLON_ISOLATED_QA_ROUTE=spirit-area" >&2
