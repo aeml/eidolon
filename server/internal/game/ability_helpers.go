@@ -137,6 +137,17 @@ func applyAbilityHealingBonus(source *Entity, skillName string, amount int) int 
 	return int(math.Floor(float64(amount)*(1+bonus) + 1e-9))
 }
 
+// resolveAbilityEffectDuration snapshots applicable duration ranks at cast time,
+// after authored rune changes. It never scales cooldowns, impact delays, movement
+// locks or the already-resolved remaining timer replicated to clients.
+func resolveAbilityEffectDuration(source *Entity, skillName string, base time.Duration) time.Duration {
+	if source == nil || base <= 0 {
+		return base
+	}
+	bonus := math.Max(0, source.GetSkillBonus(skillName).SkillDuration)
+	return time.Duration(math.Round(float64(base) * (1 + bonus)))
+}
+
 // applyHealingReceived applies target-side healing modifiers. Poison Coating's
 // client contract is a 50% reduction and follows the poison itself, including
 // spread poison and projectile-applied poison.

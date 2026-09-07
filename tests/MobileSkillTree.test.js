@@ -24,6 +24,25 @@ describe('phone build reading and deliberate actions', () => {
         expect(player.selectedBranch).toBe('A');
         expect(document.querySelector('[data-build-action="branch:B"]').disabled).toBe(true);
     });
+    test.each(['Fighter', 'Rogue', 'Wizard', 'Cleric'].flatMap(className => ['A', 'B', 'C'].map(branch => [className, branch])))(
+        '%s branch %s retains general talents alongside its skill talents', (className, branch) => {
+            player = { ...player, subType: className, selectedBranch: branch };
+            ui.renderSkillTree(className); button('Talents').click();
+            const offered = [...document.querySelectorAll('button[data-build-action^="talent:"]')]
+                .map(node => node.dataset.buildAction.slice('talent:'.length));
+            const general = CONSTANTS.PASSIVE_TALENTS[className].slice(26).map(talent => talent.id);
+            expect(offered).toEqual(expect.arrayContaining(general));
+            expect(offered).toHaveLength(24);
+        });
+    test('specialized Wizard can deliberately purchase Arcane Stability without optimistic ranks', () => {
+        player = { ...player, subType: 'Wizard', selectedBranch: 'C' };
+        ui.renderSkillTree('Wizard'); button('Talents').click();
+        const buy = document.querySelector('button[data-build-action="talent:WIZ_32"]');
+        expect(buy).not.toBeNull(); buy.click();
+        expect(ui.onUnlockTalent).toHaveBeenCalledWith('WIZ_32', expect.any(String));
+        expect(player.talentRanks.WIZ_32).toBeUndefined();
+        expect(ui.mobile.pending).not.toBeNull();
+    });
     test('reading position and focused control survive unrelated updates and tab returns', () => {
         const choose = document.querySelector('[data-build-action="branch:B"]');
         choose.focus(); ui.skillTreeContent.scrollTop = 240;

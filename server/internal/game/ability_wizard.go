@@ -16,7 +16,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 		if player.Mana >= cost {
 			player.Mana -= cost
 			player.SpellFocusActive = true
-			player.SpellFocusEndTime = time.Now().Add(15 * time.Second)
+			player.SpellFocusEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 15*time.Second))
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 45*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 		}
@@ -37,7 +37,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 			player.ArcaneShieldActive = true
 			player.ArcaneShieldHP = 100 + (player.Stats.Intelligence * 5)
-			player.ArcaneShieldEndTime = time.Now().Add(duration)
+			player.ArcaneShieldEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, duration))
 			player.ArcaneShieldRuneID = runeID
 			player.ArcaneShieldAbsorbed = 0
 
@@ -52,7 +52,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			// Time Warp should not reduce its own cooldown; commit before the
 			// party-wide CDR buff is applied.
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 60*time.Second))
-			endTime := time.Now().Add(8 * time.Second)
+			endTime := time.Now().Add(resolveAbilityEffectDuration(player, skillName, 8*time.Second))
 			radius := 15.0
 			targets := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID)
 			if player.HasAnySetBonus("timeWarpZone") {
@@ -129,7 +129,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 						pullStrength = 0.8 // Stronger pull
 						// Also root enemies briefly
 						target.Rooted = true
-						target.RootEndTime = time.Now().Add(2 * time.Second)
+						target.RootEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 2*time.Second))
 					}
 
 					if dist > 0.5 && !target.CCImmune {
@@ -150,7 +150,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					if !target.CCImmune {
 						target.Slowed = true
 						target.SlowFactor = 0.5
-						target.SlowEndTime = time.Now().Add(3 * time.Second)
+						target.SlowEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 3*time.Second))
 						target.RecalculateStats()
 					}
 
@@ -302,7 +302,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 						addThreatLocked(target, player.ID, float64(finalDamage))
 						if !target.CCImmune {
 							target.Stunned = true
-							target.StunEndTime = time.Now().Add(3 * time.Second)
+							target.StunEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 3*time.Second))
 						}
 						isDead := target.Health <= 0
 						target.Mu.Unlock()
@@ -623,7 +623,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 						finalDamage := applyFinalDamage(player, target, damage, "fire")
 						addThreatLocked(target, player.ID, float64(finalDamage))
 						target.ArmorReduction = 5
-						target.ArmorReductionEndTime = time.Now().Add(5 * time.Second)
+						target.ArmorReductionEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 5*time.Second))
 						isDead := target.Health <= 0
 						target.Mu.Unlock()
 
@@ -912,7 +912,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 				// Phase rune: invulnerable for 1s after teleport
 				if runeID == "teleport_phase" {
-					player.InvulnerableEndTime = time.Now().Add(1 * time.Second)
+					player.InvulnerableEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 1*time.Second))
 				}
 
 				baseCooldown := resolveAbilityCooldown(player.SubType, skillName, 12*time.Second)
