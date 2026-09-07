@@ -5,7 +5,40 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 22:30 UTC
+## Current checkpoint — September 7, 22:35 UTC
+
+Alpha **1.0.50** is locally verified and root-integrated as merge **93b62cc**.
+Release ref **`release/50-routine-equipment-budget`** points to
+**9f475e903aad06ebf54dbd20d1b906bccc15b695** (documentation-only final commit over
+tested clean **4212e54e5347ba7a10f379f7634f970fc27e06b1**). Root runtime/package
+matches that release; only execution-ledger documentation differs before the
+latest plan status update. Root integration contracts pass **251 / 3.221s**,
+handle **89224** closed. No 50 publication or public verification yet.
+
+Exact-package fresh collection **18500** closes **SUCCESS / 1 / 2.2m**, test
+2.1m. Actual local login and backend return HTTP 200 / Alpha 1.0.50 / clean
+4212e54, backend `ok` / database `ready`. The route earns eight fragments with
+**18 observed target deaths / zero deaths**, three gear drops worth **230 unsold
+vendor gold** and 442 gold before turn-in. The inspected actual ready screenshot
+shows 8/8 and a deliberate Complete Quest button. Claim/reconnect retains the
+actual gear IDs/rarities/stats/value, manual 8,000 XP/100 gold leaves level 17 /
+542 gold, and level-30 Guide remains locked. Collection/handoff takes 91 seconds.
+Credential scan/cleanup pass. Small-run Common/Uncommon/Legendary observations
+are not rarity-distribution estimates or a complete pacing approval.
+
+Fire normal-jump investigation **1309** is active against clean **409da01**,
+log `/tmp/eidolon-investigations-fire-jump-route.log`. This is the **sole owned
+browser; freeze the entire investigation worktree until terminal**. All prior
+Fire handles are closed. Full client on that source already passes 219 / 3,256 /
+131.314s; full ordered Fire play and Air remain open. Root retains the original
+15-chapter story with dormant investigation foundation, not the isolated 23 graph.
+
+42 **ea565ebf… / CI 34166841477** remains active (client pass, server running).
+Last fully verified public build is 41. Next remains 43, gated on all 42 jobs and
+fresh exact public identity. The full roadmap, broader coordinated XP/gold curve,
+non-daily leveling, rarity power and late-forge affordability are unfinished.
+
+## Historical checkpoint — September 7, 22:30 UTC
 
 41 **9c6eb9d… / CI 34163174335** closes **SUCCESS**, including both deployments
 and live character/four-class/remote-animation QA. Fresh public manifest, login

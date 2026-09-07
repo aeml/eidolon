@@ -5,10 +5,15 @@ The locally verified, root-integrated 1.0.47 candidate implements eight-fragment
 collections, reduced ordinary drop rates, saved bad-luck protection and
 legacy-contract migration. It is queued, not published. The
 [personal fragment budget](2026-09-07-personal-fragment-budget.md) additionally
-prevents simultaneous kills from creating surplus quest fragments; its runtime
-is root-integrated and the separate 1.0.49 package is in final local verification.
-XP/equipment/gold tuning
-and playable investigations remain open. The
+prevents simultaneous kills from creating surplus quest fragments; its 1.0.49
+package is locally verified and root-integrated, but not published.
+The [routine equipment budget](2026-09-07-routine-equipment-budget.md), locally
+verified and root-integrated as 1.0.50, reduces ordinary equipment frequency by
+40% and caps non-boss elites at one equipment piece while preserving material
+rolls, boss rewards and owned gear. Its full browser and earned collection/
+preparation checks pass; its publication remains in the sequential release queue.
+XP/gold tuning, equipment power/usefulness and playable investigations remain
+open. The
 [loot/Forge baseline](2026-09-07-loot-and-forge-baseline.md) now measures combined
 material/equipment sources and actual transactions; the
 [Forge precision correction](2026-09-07-forge-earned-scaling.md) is locally
@@ -20,8 +25,11 @@ The [investigation foundation](2026-09-07-investigation-implementation.md) now
 compiles this text into matching catalogs, validates personal discoveries, saves
 individual evidence and selects Ilyra's replies by stable quest ID. It is locally
 tested and integrated, but world interactions and the expanded quest graph are
-not yet active. Authored text and recording tests are not evidence of reachable
-world locations or completed playable quests.
+not yet active on root or released builds. An isolated 23-chapter implementation
+has actual Earth and prepared returning-character Water playthrough evidence,
+including manual rewards and saved discoveries; Fire/Air and broader touch/
+continuity/pacing gates remain open. Authored text and recording tests alone are
+not evidence of reachable world locations or completed playable quests.
 This expands the active full-roadmap goal. Ship verified excessive-reward fixes
 in suitable 1.0.x patches; establish progression pacing in 1.1, deliver the
 expanded Chronicle in 1.4, finish the economy pass in 1.5 and revalidate raid
