@@ -99,7 +99,7 @@ them. Do not tear out the mark before you understand what it is holding apart.�
 replaces that exchange with a single master. Each time the grove grows, it is
 told the false story again.
 
-“The Memory Seeds preserve what the mark cannot rewrite. Keep gathering them;
+“The Memory Seeds you brought preserve what the mark cannot rewrite. I will keep them safe;
 Maelin will need that truth at the crystal itself. First, the Bastion's outer
 guardian must fall. Its road is the way in, not the place of repair.”
 

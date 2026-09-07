@@ -1,3 +1,5 @@
+import { getChronicleInvestigation } from '../core/ChronicleInvestigation.js';
+
 export const ILYRA_REPLIES = [
     'Listen—the bell has lost a note. These echoes bear Malachar’s binding, a signature I hoped never to hear again. I once called him a fellow keeper. He learned the roads between the sanctums from our own maps. We will begin where his wound runs deepest: the Rootheart.',
     'There is rain inside this seed, and a forest older than language. I will keep these memories safe for Maelin’s Vigil. They are repair materials, not a cure by themselves. First you must reach the root-road beneath the Bastion; the Sentinel has forgotten whom it guards.',
@@ -15,6 +17,22 @@ export const ILYRA_REPLIES = [
     'The portal is open. Before you go, know this: Malachar was not born a shadow. He chose command over covenant, one frightened decision at a time. He will offer that same bargain to you. Refuse it. Orun, Neris, Pyralis, and Aeral will each stand beside you when his court breaks into battle.',
     'The bells are ringing above the ground. Malachar is dead, but the answer to him is not another throne. It is the defenders who held Maelin’s circle, the four spirits who chose to help, and you, who returned when we asked. Rest now. Eidolon is still imperfect—and it is free.'
 ];
+
+// Existing saves keep these IDs as new chapters are inserted. The displayed
+// chapter number is presentation, never the identity of a completion speech.
+const originalChapterIds = [
+    'chronicle_01_bell_below', 'chronicle_02_seeds_first_grove', 'chronicle_03_roots_remember',
+    'chronicle_04_pearls_without_tides', 'chronicle_05_drowned_name', 'chronicle_06_ash_refuses_cool',
+    'chronicle_07_crown_of_embers', 'chronicle_08_feathers_thunder', 'chronicle_09_sky_answers',
+    'chronicle_10_rootheart_raid', 'chronicle_11_tidestar_raid', 'chronicle_12_ember_crown_raid',
+    'chronicle_13_skyglass_raid', 'chronicle_14_resonance_gate', 'chronicle_15_dark_king'
+];
+const repliesById = new Map(originalChapterIds.map((id, index) => [id, ILYRA_REPLIES[index]]));
+
+export function getIlyraCompletionReply(quest) {
+    return getChronicleInvestigation(quest?.id)?.completion || repliesById.get(quest?.id)
+        || 'Thank you. I have recorded your work in the Fourfold Chronicle. Speak to me when you are ready to continue.';
+}
 
 export function renderQuestConversation(ui, quests) {
     const story = ui.questKind === 'story';
@@ -46,7 +64,8 @@ export function renderQuestConversation(ui, quests) {
         const response = text('section', '', 'quest-dialogue');
         response.setAttribute('aria-live', 'polite');
         response.append(text('div', 'QUEST COMPLETE', 'quest-dialogue__eyebrow'), text('h3', ui.getQuestTitle(quest)));
-        response.append(text('p', story ? ILYRA_REPLIES[(quest.chapter || 1) - 1] : '“Good work. Fewer dangers on the road means more people make it home tonight. Your reward is earned; speak to me again when you are ready for another contract.”', 'quest-dialogue__speech'));
+        const reply = story ? getIlyraCompletionReply(quest) : '“Good work. Fewer dangers on the road means more people make it home tonight. Your reward is earned; speak to me again when you are ready for another contract.”';
+        for (const paragraph of reply.split(/\n\s*\n/)) response.append(text('p', paragraph, 'quest-dialogue__speech'));
         response.append(text('p', `Reward received · ${ui.getQuestRewardLabel(quest, { claimed: true })}`, 'quest-dialogue__reward'));
         response.append(button(story ? 'Continue conversation' : 'Browse contracts', () => {
             ui.completedDialogue = null;

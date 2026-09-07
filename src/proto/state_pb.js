@@ -1430,6 +1430,7 @@ export const eidolon = $root.eidolon = (() => {
              * @property {number|null} [grantedGold] Quest grantedGold
              * @property {number|null} [grantedXp] Quest grantedXp
              * @property {number|null} [grantedResonanceXp] Quest grantedResonanceXp
+             * @property {number|null} [investigationMask] Quest investigationMask
              * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
              */
 
@@ -1606,6 +1607,14 @@ export const eidolon = $root.eidolon = (() => {
             Quest.prototype.grantedResonanceXp = 0;
 
             /**
+             * Quest investigationMask.
+             * @member {number} investigationMask
+             * @memberof eidolon.state.Quest
+             * @instance
+             */
+            Quest.prototype.investigationMask = 0;
+
+            /**
              * Creates a new Quest instance using the specified properties.
              * @function create
              * @memberof eidolon.state.Quest
@@ -1673,6 +1682,8 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 17, wireType 0 =*/136).int32(message.grantedXp);
                 if (message.grantedResonanceXp != null && $Object.hasOwnProperty.call(message, "grantedResonanceXp") && message.grantedResonanceXp !== 0)
                     writer.uint32(/* id 18, wireType 0 =*/144).int32(message.grantedResonanceXp);
+                if (message.investigationMask != null && $Object.hasOwnProperty.call(message, "investigationMask") && message.investigationMask !== 0)
+                    writer.uint32(/* id 19, wireType 0 =*/152).uint32(message.investigationMask);
                 if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
                     for (let i = 0; i < message.$unknowns.length; ++i)
                         writer.raw(message.$unknowns[i]);
@@ -1882,6 +1893,15 @@ export const eidolon = $root.eidolon = (() => {
                                 delete message.grantedResonanceXp;
                             continue;
                         }
+                    case 19: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.uint32())
+                                message.investigationMask = value;
+                            else
+                                delete message.investigationMask;
+                            continue;
+                        }
                     }
                     reader.skipType(wireType, _depth, tag);
                     if (!reader.discardUnknown) {
@@ -1979,6 +1999,9 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.grantedResonanceXp != null && $Object.hasOwnProperty.call(message, "grantedResonanceXp"))
                     if (!$util.isInteger(message.grantedResonanceXp))
                         return "grantedResonanceXp: integer expected";
+                if (message.investigationMask != null && $Object.hasOwnProperty.call(message, "investigationMask"))
+                    if (!$util.isInteger(message.investigationMask))
+                        return "investigationMask: integer expected";
                 return null;
             };
 
@@ -2054,6 +2077,9 @@ export const eidolon = $root.eidolon = (() => {
                 if (object.grantedResonanceXp != null)
                     if ($Number(object.grantedResonanceXp) !== 0)
                         message.grantedResonanceXp = object.grantedResonanceXp | 0;
+                if (object.investigationMask != null)
+                    if ($Number(object.investigationMask) !== 0)
+                        message.investigationMask = object.investigationMask >>> 0;
                 return message;
             };
 
@@ -2093,6 +2119,7 @@ export const eidolon = $root.eidolon = (() => {
                     object.grantedGold = 0;
                     object.grantedXp = 0;
                     object.grantedResonanceXp = 0;
+                    object.investigationMask = 0;
                 }
                 if (message.id != null && $Object.hasOwnProperty.call(message, "id"))
                     object.id = message.id;
@@ -2130,6 +2157,8 @@ export const eidolon = $root.eidolon = (() => {
                     object.grantedXp = message.grantedXp;
                 if (message.grantedResonanceXp != null && $Object.hasOwnProperty.call(message, "grantedResonanceXp"))
                     object.grantedResonanceXp = message.grantedResonanceXp;
+                if (message.investigationMask != null && $Object.hasOwnProperty.call(message, "investigationMask"))
+                    object.investigationMask = message.investigationMask;
                 return object;
             };
 
