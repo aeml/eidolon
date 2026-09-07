@@ -124,7 +124,9 @@ describe('procedural persistent area fields', () => {
         EXPECTED_FIELD_TYPES.forEach((type) => {
             expect(`${wizardSource}\n${gallerySource}`).toContain(`'${type}'`);
         });
-        expect(wizardSource).toContain("getAbilityAoeRadius('Wizard', 'Gravity Well', this) || 8");
+        // Gravity Well now resolves its immediate cast through this shared
+        // radius; GroundTalentShape exercises actual pulls and cover.
+        expect(wizardSource).toContain("const radius = getAbilityAoeRadius('Wizard', skill, this);");
         expect(gallerySource).toContain("getAbilityAoeRadius('Wizard', 'Gravity Well', actor) || 8");
         expect(gallerySource).toContain("getAbilityAoeRadius('Rogue', 'Smoke Bomb', actor) || 5");
         expect(wizardSource).not.toContain('radius: 6.0');

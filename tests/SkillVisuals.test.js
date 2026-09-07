@@ -43,8 +43,8 @@ describe('skill visuals registry', () => {
 
         expect(visual).toEqual({
             layers: [
-                { color: 0xff3324, type: 'telegraph', origin: target, radius: 26.4 },
-                { color: 0xff9b32, type: 'ring', origin: target, radius: 26.4 }
+                { color: 0xff3324, type: 'telegraph', origin: target, radius: 26.4, arc: 2 * Math.PI },
+                { color: 0xff9b32, type: 'ring', origin: target, radius: 26.4, arc: 2 * Math.PI }
             ]
         });
     });

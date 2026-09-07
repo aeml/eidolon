@@ -1,0 +1,14 @@
+[
+  {"name":"well baseline","skill":"Gravity Well","range":18,"radius":8,"visualRadius":8,"ranks":{}},
+  {"name":"well range","skill":"Gravity Well","range":21.6,"radius":8,"visualRadius":8,"ranks":{"WIZ_35":5}},
+  {"name":"well area","skill":"Gravity Well","range":18,"radius":9.2,"visualRadius":9.2,"ranks":{"WIZ_36":5}},
+  {"name":"well geometry","skill":"Gravity Well","range":19.8,"radius":8.8,"visualRadius":8.8,"ranks":{"WIZ_38":5}},
+  {"name":"expanded well combined","skill":"Gravity Well","rune":"gravitywell_expanded","range":26.1,"radius":15,"visualRadius":15,"ranks":{"WIZ_29":5,"WIZ_35":5,"WIZ_36":5,"WIZ_38":5}},
+  {"name":"meteor baseline","skill":"Meteor Drop","range":20,"radius":16,"visualRadius":26.4,"ranks":{}},
+  {"name":"meteor geometry","skill":"Meteor Drop","range":22,"radius":17.6,"visualRadius":29.04,"ranks":{"WIZ_38":5}},
+  {"name":"extinction combined","skill":"Meteor Drop","rune":"meteor_extinction","range":29,"radius":30,"visualRadius":49.5,"ranks":{"WIZ_29":5,"WIZ_35":5,"WIZ_36":5,"WIZ_38":5}},
+  {"name":"cluster geometry","skill":"Meteor Drop","rune":"meteor_cluster","range":22,"radius":10.56,"visualRadius":17.424,"ranks":{"WIZ_38":5}},
+  {"name":"inferno baseline","skill":"Inferno Cataclysm","range":20,"radius":12,"visualRadius":12,"ranks":{}},
+  {"name":"inferno geometry","skill":"Inferno Cataclysm","range":22,"radius":13.2,"visualRadius":13.2,"ranks":{"WIZ_38":5}},
+  {"name":"inferno combined","skill":"Inferno Cataclysm","range":29,"radius":15,"visualRadius":15,"ranks":{"WIZ_29":5,"WIZ_35":5,"WIZ_36":5,"WIZ_38":5}}
+]

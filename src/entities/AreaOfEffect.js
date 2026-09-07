@@ -1,5 +1,6 @@
 import { Entity } from './Entity.js';
 import { Actor } from './Actor.js';
+import { clipDungeonEffectSegment } from '../skills/dungeonEffectGeometry.js';
 import {
     createProceduralAreaField,
     releaseProceduralAreaField,
@@ -100,8 +101,15 @@ export class AreaOfEffect extends Entity {
                 
                 if (!isEnemy) continue;
 
-                const dist = this.position.distanceTo(entity.position);
-                if (dist <= this.radius) {
+                const canonical = this.effectType === 'InfernoCataclysm';
+                const dist = canonical ? Math.hypot(this.position.x - entity.position.x, this.position.z - entity.position.z)
+                    : this.position.distanceTo(entity.position);
+                const rects = this.gameEngine.currentInstanceId && this.gameEngine.currentInstanceType !== 'overworld'
+                    ? this.gameEngine.currentDungeonLayout?.walkRects : null;
+                const hostile = typeof this.gameEngine.isHostileActorTarget === 'function'
+                    ? this.gameEngine.isHostileActorTarget(entity) : entity.constructor.name !== 'AvengingSeraph';
+                if (canonical && (!hostile || entity.isInvulnerable || clipDungeonEffectSegment(rects, this.position, entity.position).blocked)) continue;
+                if (dist <= this.radius + (canonical ? entity.radius || 0 : 0)) {
                     entity.takeDamage(this.damage);
                     if (this.gameEngine.floatingTextManager) {
                         this.gameEngine.floatingTextManager.spawn(Math.floor(this.damage), entity.position, '#ff8800');

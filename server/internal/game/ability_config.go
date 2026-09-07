@@ -118,6 +118,10 @@ func effectiveAbilityRange(player *Entity, skillName string, base float64) float
 	return base * math.Max(0, 1+player.GetSkillBonus(skillName).SkillRange)
 }
 
+func effectiveAbilityAreaRadius(player *Entity, skillName string, base float64) float64 {
+	return base * math.Max(0, 1+player.GetSkillBonus(skillName).SkillAoe)
+}
+
 func resolveAbilityCooldown(classType, skillName string, fallback time.Duration) time.Duration {
 	if spec, ok := getAbilitySpec(classType, skillName); ok && spec.Cooldown > 0 {
 		return spec.Cooldown

@@ -4,6 +4,10 @@ Status: **in progress, unversioned and unpublished**. Base is the verified local
 1.0.35 candidate `0088543`; the separate `release/35-with-forge` branch must keep
 that tested source. This is not completion of the range/area or 160-talent gate.
 
+The subsequent [Wizard ground-spell checkpoint](2026-09-07-ground-spell-talents.md)
+records actual placement/area consumers, Meteor snapshot replication, offline
+geometry repairs and final client/server/gameplay evidence. It remains unpublished.
+
 The current overlay audit still reproduced both representative failures on that
 base: five Aether Reach ranks reject a 17m Teleport, and five Battlefield Ministry
 ranks leave the friendly actor at 10.2m uncleansed. Log

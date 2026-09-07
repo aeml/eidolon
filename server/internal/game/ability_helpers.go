@@ -242,6 +242,18 @@ func (e *Entity) ReplicatedBodyRadius() float64 {
 	return entityVisualRadius(e)
 }
 
+// Meteor geometry is captured by the cast, not reconstructed from the owner's
+// current/private ranks. Copies carry it even when private Radius is stripped.
+func (e *Entity) ReplicatedImpactRadius() float64 {
+	if e == nil || e.Type != TypeProjectile || e.SubType != "Meteor" {
+		return 0
+	}
+	if e.ImpactRadius > 0 {
+		return e.ImpactRadius
+	}
+	return visualAbilityRadius("Meteor", e.Radius)
+}
+
 func withinAbilityRadius(effectName string, originX, originZ float64, target *Entity, radius float64) bool {
 	if target == nil {
 		return false

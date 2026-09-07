@@ -117,7 +117,7 @@ fi
 # casts when the animation matrix is intentionally restricted to one class.
 qa_allowlist="${QA_USERNAME_BASE},${QA_USERNAME_BASE}-healing,${QA_USERNAME_BASE}-economy,${QA_USERNAME_BASE}-legacy,${QA_USERNAME_BASE}-recovery,${QA_USERNAME_BASE}-spin,${QA_USERNAME_BASE}-phone,${QA_USERNAME_BASE}-phone-combat,${QA_USERNAME_BASE}-phone-bag,${QA_USERNAME_BASE}-phone-quests,${QA_USERNAME_BASE}-phone-build,${QA_USERNAME_BASE}-phone-settings,${QA_USERNAME_BASE}-phone-adventure,${QA_USERNAME_BASE}-fighter,${QA_USERNAME_BASE}-rogue,${QA_USERNAME_BASE}-wizard,${QA_USERNAME_BASE}-cleric"
 
-qa_allowlist+=",${QA_USERNAME_BASE}-duration,${QA_USERNAME_BASE}-forge,${QA_USERNAME_BASE}-whip"
+qa_allowlist+=",${QA_USERNAME_BASE}-duration,${QA_USERNAME_BASE}-forge,${QA_USERNAME_BASE}-whip,${QA_USERNAME_BASE}-ground"
 
 mongo_username="qa_root"
 mongo_password="$(openssl rand -hex 24)"
@@ -250,6 +250,11 @@ run_whip_shape() {
     npx playwright test tests/e2e/flame-whip-gameplay.spec.js
 }
 
+run_ground_shape() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-ground" EIDOLON_E2E_CLASS=Wizard EIDOLON_E2E_GROUND_TALENTS=1 \
+    npx playwright test tests/e2e/dungeon-ground-area-gameplay.spec.js
+}
+
 run_phone_quests() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-phone-quests" \
     EIDOLON_E2E_PASSWORD="${QA_PASSWORD}" \
@@ -315,7 +320,7 @@ run_animation_multiplayer() {
 set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   all)
-    npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js && run_whip_shape && run_whirlwind && run_phone && run_phone_combat && run_phone_inventory && run_equipment_recovery && run_forge_guide && run_talent_economy && run_talent_healing && run_talent_duration && run_phone_quests && run_phone_build && run_phone_settings && run_phone_adventure && run_dungeon_recovery && run_direct_target_classes && npm run test:e2e:movement && run_animation_classes && run_animation_multiplayer
+    npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js && run_whip_shape && run_ground_shape && run_whirlwind && run_phone && run_phone_combat && run_phone_inventory && run_equipment_recovery && run_forge_guide && run_talent_economy && run_talent_healing && run_talent_duration && run_phone_quests && run_phone_build && run_phone_settings && run_phone_adventure && run_dungeon_recovery && run_direct_target_classes && npm run test:e2e:movement && run_animation_classes && run_animation_multiplayer
     ;;
   animations)
     run_animation_classes
@@ -413,6 +418,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   whip-shape)
     run_whip_shape
     ;;
+  ground-shape)
+    run_ground_shape
+    ;;
   whirlwind)
     run_whirlwind
     ;;
@@ -438,6 +446,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     run_phone_adventure
     ;;
   *)
+    echo "Trained ground-spell geometry verification: EIDOLON_ISOLATED_QA_ROUTE=ground-shape" >&2
     echo "Forge/material refresh and guide verification: EIDOLON_ISOLATED_QA_ROUTE=forge-guide" >&2
     echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, inventory, equipment-recovery, talent-economy, talent-healing, talent-duration, extended, portal, dungeons, verdant, dungeon-full, chronicle-earth, chronicle-collection, fresh-opening, fresh-collection, fresh-hunt, fresh-hunt-npc, fresh-ready, fresh-dungeon, dungeon-recovery, direct-skills, projectile-walls, movement-walls, ground-walls, beam-walls, whip-shape, whirlwind, phone, phone-combat, phone-inventory, phone-quests, phone-build, phone-settings, or phone-adventure." >&2
     exit 1

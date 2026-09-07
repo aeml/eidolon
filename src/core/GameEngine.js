@@ -8,7 +8,7 @@ import { NetworkManager } from './NetworkManager.js';
 import { AbilityController } from './AbilityController.js';
 import { CONSTANTS } from './Constants.js';
 import { resolveDungeonBeamEndpoint } from '../skills/dungeonEffectGeometry.js';
-import { getAbilityRange } from './AbilityRange.js';
+import { getAbilityRange, WIZARD_GROUND_ABILITIES } from './AbilityRange.js';
 import { syncWhirlwindPresentation } from '../skills/whirlwindPresentation.js';
 import { UIBindings } from './UIBindings.js';
 import { SocialPresenceController } from './SocialPresenceController.js';
@@ -977,8 +977,8 @@ export class GameEngine {
         };
         const effect = createTransientEffect(this.renderSystem.effectGroup, type, effectPosition, color, mergedOptions);
         if (!effect) return false;
-        if (options.abilityName === 'Flame Whip') {
-            effect.abilityShape = { sourceId: options.source?.id, skillName: 'Flame Whip',
+        if ((options.abilityName === 'Flame Whip' || WIZARD_GROUND_ABILITIES.has(options.abilityName)) && Number.isFinite(options.radius)) {
+            effect.abilityShape = { sourceId: options.source?.id, skillName: options.abilityName, x: effectPosition.x, z: effectPosition.z,
                 radius: options.radius, arc: options.arc, authoritative: Boolean(options.authoritativeShape) };
         }
         this.effects.push(effect);

@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import {
     collectBrowserFailures, credentialsFromEnvironment, ensureDungeonReadyLevel, enterAndExitDungeon,
-    loginAndEnterWorld, moveByGroundClick, projectGroundOffset, readPlayerState
+    loginAndEnterWorld, moveByGroundClick, projectGroundOffset, readPlayerState, selectGraphicsThroughSettings
 } from './helpers.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
@@ -14,6 +14,21 @@ test('ground spells reject dungeon walls without cooldown and still cast on reac
     const failures = collectBrowserFailures(page, baseURL);
     await loginAndEnterWorld(page, credentials);
     await ensureDungeonReadyLevel(page);
+    const trained = process.env.EIDOLON_E2E_GROUND_TALENTS === '1';
+    if (trained) {
+        await page.keyboard.press('k');
+        const skills = page.locator('#skill-tree-window');
+        await expect(skills).toBeVisible();
+        await skills.getByRole('button', { name: 'Talents', exact: true }).click();
+        for (let rank = 1; rank <= 5; rank++) {
+            const talent = skills.locator('.skill-node').filter({ has: page.locator('.skill-node-title', { hasText: 'Mana Geometry' }) });
+            await talent.scrollIntoViewIfNeeded();
+            await talent.click();
+            await expect.poll(() => page.evaluate(() => window.game.player.talentRanks?.WIZ_38 || 0)).toBe(rank);
+            await page.waitForTimeout(300);
+        }
+        await page.locator('#btn-close-skills').click();
+    }
     await enterAndExitDungeon(page, { resetRun: true, beforeExit: async () => {
         const start = await page.evaluate(() => window.game.currentDungeonLayout.rooms[0]);
         const destinationZ = start.z + start.height / 2 - 8;
@@ -32,12 +47,23 @@ test('ground spells reject dungeon walls without cooldown and still cast on reac
             const original = game.handleServerMessage.bind(game);
             window.__groundCastResults = [];
             window.__groundCasts = [];
+            window.__groundShapes = [];
             game.handleServerMessage = message => {
                 if (message.type === 'ability_result') window.__groundCastResults.push(message.payload);
                 if (message.type === 'ability' && message.payload?.sourceId === game.player.id) {
                     window.__groundCasts.push(message.payload);
                 }
-                return original(message);
+                const result = original(message);
+                if (message.type === 'ability' && message.payload?.sourceId === game.player.id) {
+                    const shapes = game.effects.filter(effect => effect.isActive && effect.abilityShape?.sourceId === game.player.id && effect.abilityShape?.skillName === message.payload.skillName);
+                    window.__groundShapes.push({ skill: message.payload.skillName, shapes: shapes.map(effect => {
+                        const root = effect.meshes[0];
+                        const boundary = root.children.find(part => part.userData.normalizedGameplayRadius === 1);
+                        return { radius: boundary?.scale.x, x: root.position.x, z: root.position.z,
+                            attached: root.parent === game.renderSystem.effectGroup, authoritative: effect.abilityShape.authoritative };
+                    }) });
+                }
+                return result;
             };
         });
         for (const [branchName, spells] of [
@@ -54,6 +80,7 @@ test('ground spells reject dungeon walls without cooldown and still cast on reac
             await expect.poll(() => page.evaluate(skill => window.game.player.hotbar.indexOf(skill), spells[0])).toBeGreaterThanOrEqual(0);
             await page.locator('#btn-close-skills').click();
             for (const skill of spells) {
+                if (trained) await selectGraphicsThroughSettings(page, skill === 'Inferno Cataclysm' ? 'low' : 'high');
                 const key = String(1 + await page.evaluate(skill => window.game.player.hotbar.indexOf(skill), skill));
                 const blocked = await projectGroundOffset(page, 0, 12);
                 expect(blocked?.canvas).toBe(true);
@@ -72,13 +99,36 @@ test('ground spells reject dungeon walls without cooldown and still cast on reac
                 await expect.poll(() => page.evaluate(skill => window.__groundCastResults.filter(result => result.skillName === skill).length, skill)).toBe(2);
                 expect(await page.evaluate(skill => window.__groundCastResults.filter(result => result.skillName === skill)[1].accepted, skill)).toBe(true);
                 await expect.poll(() => page.evaluate(skill => window.__groundCasts.filter(cast => cast.skillName === skill).length, skill)).toBe(1);
+                if (trained) {
+                    const expectedRadius = { 'Meteor Drop': 29.04, 'Inferno Cataclysm': 13.2, 'Gravity Well': 8.8 }[skill];
+                    const observed = await page.evaluate(skill => ({ cast: window.__groundCasts.find(cast => cast.skillName === skill),
+                        mesh: window.__groundShapes.find(shape => shape.skill === skill) }), skill);
+                    expect(observed.cast.radius).toBeCloseTo(expectedRadius, 6);
+                    expect(observed.mesh.shapes.length).toBeGreaterThan(0);
+                    for (const shape of observed.mesh.shapes) {
+                        expect(shape).toMatchObject({ attached: true, authoritative: true });
+                        expect(shape.radius).toBeCloseTo(expectedRadius, 6);
+                        expect(shape.x).toBeCloseTo(observed.cast.targetX, 5);
+                        expect(shape.z).toBeCloseTo(observed.cast.targetZ, 5);
+                    }
+                    if (skill === 'Inferno Cataclysm') {
+                        await expect.poll(() => page.evaluate(() => [...window.game.remotePlayers.values()].find(entity =>
+                            entity.type === 'ZoneDamage' && entity.owner?.id === window.game.player.id)?.mesh?.userData.gameplayRadius), { timeout: 5000 }).toBeCloseTo(13.2, 4);
+                    }
+                }
                 if (skill === 'Meteor Drop') {
                     await expect.poll(() => page.evaluate(() => window.game.lastProjectileImpactPresentation?.projectileType), { timeout: 10_000 }).toBe('Meteor');
+                    if (trained) expect(await page.evaluate(() => window.game.lastProjectileImpactPresentation.radius)).toBeCloseTo(29.04, 4);
                 }
                 await page.waitForTimeout(600); // ordinary global cooldown before the next skill
                 console.log(`[dungeon-ground] ${skill}: blocked placement rejected, reachable floor accepted`);
             }
         }
     } });
+    if (trained) {
+        await page.reload({ waitUntil: 'networkidle' });
+        await loginAndEnterWorld(page, credentials);
+        await expect.poll(() => page.evaluate(() => window.game.player.talentRanks?.WIZ_38 || 0)).toBe(5);
+    }
     expect(failures, failures.join('\n')).toEqual([]);
 });

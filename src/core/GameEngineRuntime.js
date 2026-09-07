@@ -253,7 +253,7 @@ class GameEngineRuntimeMethods {
                     remoteEntity.velocity.set(pData.velX || 0, verticalVelocity, pData.velZ || 0);
                     const horizontalSpeed = Math.hypot(pData.velX || 0, pData.velZ || 0);
                     if (horizontalSpeed > 0) remoteEntity.speed = horizontalSpeed;
-                    remoteEntity.explosionRadius = getProjectileImpactRadius(
+                    remoteEntity.explosionRadius = Number.isFinite(pData.impactRadius) && pData.impactRadius > 0 ? pData.impactRadius : getProjectileImpactRadius(
                         pData.subType,
                         owner,
                         pData.scale

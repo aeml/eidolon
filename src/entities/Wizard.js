@@ -6,7 +6,7 @@ import { Projectile } from './Projectile.js';
 import { AreaOfEffect } from './AreaOfEffect.js';
 import { spawnEffectSceneFallback, spawnSceneFallbackBeam } from './EffectSceneFallback.js';
 import { getAbilityAoeRadius } from '../skills/abilityRadii.js';
-import { getAbilityRange, getTeleportCastRange } from '../core/AbilityRange.js';
+import { getAbilityRange, getTeleportCastRange, clampWizardGroundTarget, WIZARD_GROUND_ABILITIES } from '../core/AbilityRange.js';
 import { clipDungeonEffectSegment, resolveDungeonBeamEndpoint } from '../skills/dungeonEffectGeometry.js';
 import { findOfflineAbilityTarget } from '../skills/offlineAbilityTargeting.js';
 
@@ -68,6 +68,13 @@ export class Wizard extends Actor {
         if (!targetVector) return;
         const offline = !this.isMultiplayer && !gameEngine?.isMultiplayer;
         const requestedSkill = skillNameOverride || this.abilityName;
+        if (offline && WIZARD_GROUND_ABILITIES.has(requestedSkill)) {
+            const placement = clampWizardGroundTarget(this, requestedSkill, targetVector);
+            const rects = gameEngine.currentInstanceId && gameEngine.currentInstanceType !== 'overworld'
+                ? gameEngine.currentDungeonLayout?.walkRects : null;
+            if (clipDungeonEffectSegment(rects, this.position, placement).blocked) return;
+            targetVector = placement;
+        }
         this.flameWhipNovaCascade = offline && requestedSkill === 'Flame Whip' &&
             Number.isFinite(this.lastOfflineTeleportAt) && Date.now() - this.lastOfflineTeleportAt <= 3000;
         if (!super.useAbility(targetVector, gameEngine, skillNameOverride)) return;
@@ -176,7 +183,9 @@ export class Wizard extends Actor {
             console.log("Wizard used Meteor Drop!");
 
             const meteorRuneId = this.skillRunes?.["Meteor Drop"] || null;
-            const meteorRadius = meteorRuneId === 'meteor_extinction' ? 24.0 : 16.0;
+            // The authoritative Meteor hit helper uses the same 1.65x footprint
+            // as its telegraph. Snapshot that resolved radius for each impact.
+            const meteorRadius = getAbilityAoeRadius('Wizard', skill, this);
             const isClusterMeteor = meteorRuneId === 'meteor_cluster';
             
             // Cooldown 15s
@@ -197,21 +206,23 @@ export class Wizard extends Actor {
                 }
             };
 
-            const spawnMeteor = (impactPos, radius, damage) => {
+            const spawnMeteor = (impactPos, radius, damage, index = 0) => {
                 const startPos = impactPos.clone();
-                startPos.y += 30.0;
+                startPos.y += 30.0 + index * 4;
 
                 const meteor = new Projectile(null, this, 'Meteor', startPos, impactPos);
                 meteor.damage = damage;
                 meteor.explosionRadius = radius;
                 meteor.speed = 20.0;
+                meteor.velocity.set(0, -20, 0);
+                meteor.groundImpactPosition = impactPos.clone();
                 gameEngine.addEntity(meteor);
                 spawnMeteorTelegraph(impactPos, radius);
             };
 
             const baseDamage = (50 + (this.stats.intelligence * 3.0)) * damageMultiplier;
             if (isClusterMeteor) {
-                const clusterRadius = meteorRadius * 0.6;
+                const clusterRadius = meteorRadius;
                 const clusterDamage = baseDamage * (2 / 3);
                 const offsets = [
                     new THREE.Vector3(0, 0, 0),
@@ -219,9 +230,14 @@ export class Wizard extends Actor {
                     new THREE.Vector3(3, 0, -2)
                 ];
 
-                offsets.forEach((offset) => {
+                offsets.forEach((offset, index) => {
                     const impactPos = targetVector.clone().add(offset);
-                    spawnMeteor(impactPos, clusterRadius, clusterDamage);
+                    const rects = gameEngine.currentInstanceId && gameEngine.currentInstanceType !== 'overworld'
+                        ? gameEngine.currentDungeonLayout?.walkRects : null;
+                    const clipped = clipDungeonEffectSegment(rects, targetVector, impactPos);
+                    impactPos.x = clipped.x;
+                    impactPos.z = clipped.z;
+                    spawnMeteor(impactPos, clusterRadius, clusterDamage, index);
                 });
             } else {
                 spawnMeteor(targetVector.clone(), meteorRadius, baseDamage);
@@ -243,7 +259,7 @@ export class Wizard extends Actor {
                 radius: getAbilityAoeRadius('Wizard', 'Inferno Cataclysm', this) || 12,
                 duration: 8.0,
                 damage: damage,
-                damageInterval: 0.5, // Ticks fast
+                damageInterval: 1.0, // Ordinary server cadence; combo timing is separate.
                 effectType: 'InfernoCataclysm',
                 isHostile: true
             };
@@ -453,54 +469,34 @@ export class Wizard extends Actor {
             if (!this.unlockedSkills.includes("Gravity Well")) return;
             console.log("Wizard used Gravity Well!");
             
-            // Cooldown 25s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Gravity Well"] = 25.0 * (1 - cdr);
-            
-            const damage = (10 + (this.stats.intelligence * 0.5)) * damageMultiplier;
-            
-            const config = {
-                radius: getAbilityAoeRadius('Wizard', 'Gravity Well', this) || 8,
-                duration: 5.0,
-                damage: damage,
-                damageInterval: 0.5,
-                effectType: 'GravityWell',
-                isHostile: true,
-                onTick: (engine, aoe) => {
-                    // Pull Logic
-                    const entities = engine.chunkManager.getActiveEntities();
-                    for (const entity of entities) {
-                        if (!entity.isActive || entity.state === 'DEAD') continue;
-                        if (entity === this) continue;
-                        if (!(entity instanceof Actor) || typeof entity.takeDamage !== 'function') continue;
-                        
-                        // Enemy Check
-                        let isEnemy = true;
-                        if (entity.constructor.name === 'Fighter' || entity.constructor.name === 'Rogue' || entity.constructor.name === 'Cleric' || entity.constructor.name === 'Wizard') {
-                            isEnemy = false;
-                        }
-                        
-                        if (isEnemy) {
-                            const dist = aoe.position.distanceTo(entity.position);
-                            if (dist < aoe.radius + 2.0) { // Pull from slightly outside
-                                const pullDir = new THREE.Vector3().subVectors(aoe.position, entity.position).normalize();
-                                // Pull force
-                                const pullSpeed = 4.0;
-                                entity.position.add(pullDir.multiplyScalar(pullSpeed * 0.1)); // 0.1s approx tick? No, tick is 0.5s but this runs every tick.
-                                // Actually onTick runs every damageInterval (0.5s). That's too slow for smooth pull.
-                                // But AreaOfEffect.update calls onTick only on interval.
-                                // We need a per-frame update for smooth pull.
-                                // AreaOfEffect doesn't support per-frame callback yet.
-                                // Let's just do a big yank every tick.
-                                entity.position.add(pullDir.multiplyScalar(1.5)); 
-                            }
-                        }
+            // Gravity Well is an immediate pull/damage/slow on the server, not
+            // the old offline repeated-damage zone. Keep the canonical cast VFX.
+            const radius = getAbilityAoeRadius('Wizard', skill, this);
+            const rune = this.skillRunes?.[skill];
+            const damage = (20 + this.stats.intelligence) * damageMultiplier * (rune === 'gravitywell_crushing' ? 2 : 1);
+            const rects = gameEngine.currentInstanceId && gameEngine.currentInstanceType !== 'overworld'
+                ? gameEngine.currentDungeonLayout?.walkRects : null;
+            for (const entity of gameEngine.chunkManager.getActiveEntities()) {
+                if (!(entity instanceof Actor) || entity === this || !entity.isActive || entity.state === 'DEAD') continue;
+                const hostile = typeof gameEngine.isHostileActorTarget === 'function' ? gameEngine.isHostileActorTarget(entity)
+                    : !entity.isInvulnerable && !['Wizard', 'Cleric', 'Fighter', 'Rogue', 'AvengingSeraph'].includes(entity.constructor.name);
+                if (!hostile) continue;
+                const distance = Math.hypot(entity.position.x - targetVector.x, entity.position.z - targetVector.z);
+                if (distance > radius + (entity.radius || 0) || clipDungeonEffectSegment(rects, targetVector, entity.position).blocked) continue;
+                if (!entity.ccImmune) {
+                    const strength = rune === 'gravitywell_blackhole' ? .8 : .5;
+                    if (distance > .5) {
+                        entity.position.x += (targetVector.x - entity.position.x) * strength;
+                        entity.position.z += (targetVector.z - entity.position.z) * strength;
+                        entity.mesh?.position.copy(entity.position);
                     }
+                    if (rune === 'gravitywell_blackhole') entity.rootTimer = 2;
+                    entity.slowTimer = 3;
+                    entity.slowFactor = .5;
                 }
-            };
-            
-            const well = new AreaOfEffect(gameEngine, this, targetVector, config);
-            gameEngine.addEntity(well);
+                entity.takeDamage(damage);
+                gameEngine.floatingTextManager?.spawn(Math.floor(damage), entity.position, '#9966ff');
+            }
             return;
         }
 

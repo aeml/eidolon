@@ -8,6 +8,8 @@ import {
     updateProceduralProjectileVisual
 } from '../art/ProceduralProjectileEffects.js';
 import { getProjectileImpactRadius } from '../skills/abilityRadii.js';
+import { Actor } from './Actor.js';
+import { clipDungeonEffectSegment } from '../skills/dungeonEffectGeometry.js';
 
 // =====================================================
 // Particle Pool Manager - Centralized for performance
@@ -311,6 +313,32 @@ export class Projectile extends Entity {
         }
 
         // Collision Detection (Client-side prediction / Singleplayer)
+        if (this.type === 'Meteor' && this.groundImpactPosition && !this.serverAuthoritativeLifetime) {
+            // A falling meteor impacts its selected ground point, even when no
+            // actor stands under it. Do not detonate early on an actor's head.
+            if (this.position.y <= this.groundImpactPosition.y) {
+                this.position.copy(this.groundImpactPosition);
+                this.mesh?.position.copy(this.position);
+                this.hasExploded = true;
+                this.isActive = false;
+                if (this.mesh) this.mesh.visible = false;
+                const rects = gameEngine?.currentInstanceId && gameEngine.currentInstanceType !== 'overworld'
+                    ? gameEngine.currentDungeonLayout?.walkRects : null;
+                for (const target of chunkManager?.getActiveEntities() || []) {
+                    if (!(target instanceof Actor) || target === this.owner || !target.isActive || target.state === 'DEAD') continue;
+                    const hostile = typeof gameEngine?.isHostileActorTarget === 'function' ? gameEngine.isHostileActorTarget(target)
+                        : !target.isInvulnerable && !['Wizard', 'Cleric', 'Fighter', 'Rogue', 'AvengingSeraph'].includes(target.constructor.name);
+                    if (!hostile || Math.hypot(target.position.x - this.position.x, target.position.z - this.position.z) > this.explosionRadius + (target.radius || 0) ||
+                        clipDungeonEffectSegment(rects, this.position, target.position).blocked) continue;
+                    if (!this.owner.isMultiplayer && !this.owner.isRemote) {
+                        target.takeDamage(this.damage);
+                        floatingTextManager?.spawn(Math.floor(this.damage), target.position, '#ff4500');
+                    }
+                }
+                spawnProjectileImpact(gameEngine, this, this.position, { radius: this.explosionRadius, terminal: true });
+            }
+            return;
+        }
         if (chunkManager && !this.serverAuthoritativeLifetime) {
             const activeEntities = chunkManager.getActiveEntities();
             const hitRadius = this.radius || 1.0; // Use projectile's radius

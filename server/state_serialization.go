@@ -252,6 +252,7 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		Level:                      e.Level,
 		Scale:                      e.Scale,
 		BodyRadius:                 e.ReplicatedBodyRadius(),
+		ImpactRadius:               e.ReplicatedImpactRadius(),
 		IsCharging:                 e.IsCharging,
 		SpiritsActive:              e.SpiritsActive,
 		SpiritsBoosted:             e.SpiritsBoosted,
@@ -335,6 +336,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	clevel := current.Level
 	cscale := current.Scale
 	cbodyRadius := current.ReplicatedBodyRadius()
+	cimpactRadius := current.ReplicatedImpactRadius()
 	cisCharging := current.IsCharging
 	cspiritsActive := current.SpiritsActive
 	cwhirlwindDuration := current.WhirlwindRemaining(time.Now())
@@ -560,7 +562,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	cequipmentRevision := current.EquipmentRevision
 	current.Mu.RUnlock()
 
-	if cscale != last.Scale || cbodyRadius != last.BodyRadius {
+	if cscale != last.Scale || cbodyRadius != last.BodyRadius || cimpactRadius != last.ImpactRadius {
 		return true
 	}
 
@@ -1158,6 +1160,7 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		CastSpeed:                  float32(e.CastSpeed),
 		Scale:                      float32(e.Scale),
 		BodyRadius:                 float32(e.ReplicatedBodyRadius()),
+		ImpactRadius:               float32(e.ReplicatedImpactRadius()),
 		State:                      e.State,
 		Equipment:                  equipment,
 		Quests:                     questsToProto(quests),

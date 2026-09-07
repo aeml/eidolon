@@ -82,7 +82,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 		// Gravity Well (AoE Pull + Slow)
 		cost := resolveAbilityManaCost(player, skillName, 60)
 		if player.Mana >= cost {
-			targetX, targetZ = clampAbilityTargetDistance(player, targetX, targetZ, 18.0)
+			targetX, targetZ = clampAbilityTargetDistance(player, targetX, targetZ, effectiveAbilityRange(player, skillName, 18.0))
 			if !w.validDungeonGroundCastTarget(player, targetX, targetZ) {
 				return
 			}
@@ -97,6 +97,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			if runeID == "gravitywell_expanded" {
 				radius = 12.0
 			}
+			radius = effectiveAbilityAreaRadius(player, skillName, radius)
 			effectiveRadius := expandedAbilityRadius(skillName, radius)
 
 			// Base damage with talent bonus
@@ -169,7 +170,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			}
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 20*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ, AbilityShape{Radius: radius, Arc: 2 * math.Pi})
 		}
 	} else if skillName == "Fireball" {
 		// Fireball
@@ -266,7 +267,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 			// Cone reach and AoE radius are independent talent categories; each
 			// category sums its ranks before applying its multiplier once.
-			rangeDist := effectiveAbilityRange(player, skillName, 12.0) * math.Max(0, 1+player.GetSkillBonus(skillName).SkillAoe)
+			rangeDist := effectiveAbilityAreaRadius(player, skillName, effectiveAbilityRange(player, skillName, 12.0))
 			arc := math.Pi / 2
 			if novaCascadeActive {
 				arc = 2 * math.Pi
@@ -378,7 +379,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 		// Meteor Drop
 		cost := resolveAbilityManaCost(player, skillName, 60)
 		if player.Mana >= cost {
-			targetX, targetZ = clampAbilityTargetDistance(player, targetX, targetZ, 20.0)
+			targetX, targetZ = clampAbilityTargetDistance(player, targetX, targetZ, effectiveAbilityRange(player, skillName, 20.0))
 			if !w.validDungeonGroundCastTarget(player, targetX, targetZ) {
 				return
 			}
@@ -401,6 +402,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			if runeID == "meteor_extinction" {
 				radius = 24.0
 			}
+			radius = effectiveAbilityAreaRadius(player, skillName, radius)
 
 			// Cluster rune: 3 smaller meteors instead of 1
 			if runeID == "meteor_cluster" {
@@ -524,13 +526,17 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 			player.State = "ATTACKING"
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 15*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			castRadius := radius
+			if runeID == "meteor_cluster" {
+				castRadius *= 0.6
+			}
+			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ, AbilityShape{Radius: visualAbilityRadius(skillName, castRadius), Arc: 2 * math.Pi})
 		}
 	} else if skillName == "Inferno Cataclysm" {
 		// Inferno Cataclysm (AoE Zone)
 		cost := resolveAbilityManaCost(player, skillName, 60)
 		if player.Mana >= cost {
-			targetX, targetZ = clampAbilityTargetDistance(player, targetX, targetZ, 20.0)
+			targetX, targetZ = clampAbilityTargetDistance(player, targetX, targetZ, effectiveAbilityRange(player, skillName, 20.0))
 			if !w.validDungeonGroundCastTarget(player, targetX, targetZ) {
 				return
 			}
@@ -542,6 +548,8 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				player.ActiveCombo = "" // Consume combo
 			}
 
+			// Snapshot the actual radius once for ticks and replicated zone scale.
+			radius := effectiveAbilityAreaRadius(player, skillName, 12.0)
 			// Spawn Zone
 			zone := &Entity{
 				ID:              fmt.Sprintf("zone-inferno-%d", time.Now().UnixNano()),
@@ -551,11 +559,11 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				X:               targetX,
 				Y:               0.1,
 				Z:               targetZ,
-				Radius:          12.0,
+				Radius:          radius,
 				Damage:          int(float64(30+player.Stats.Intelligence) * player.GetSkillDamageMultiplier("Inferno Cataclysm")),
 				OwnerID:         player.ID,
 				CreatedAt:       time.Now(),
-				Scale:           12.0 / 5.0,       // Encode radius for client rendering (base geometry is 5.0)
+				Scale:           radius / 5.0,     // Encode radius for client rendering (base geometry is 5.0)
 				ZoneDoubleTick:  doubleTickActive, // Combo: Time Burn
 				ProjectileSkill: "Inferno Cataclysm",
 			}
@@ -564,7 +572,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 			player.State = "ATTACKING"
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 60*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ, AbilityShape{Radius: radius, Arc: 2 * math.Pi})
 
 		}
 	} else if skillName == "Scorch Beam" {

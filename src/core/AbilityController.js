@@ -5,7 +5,7 @@
 
 import * as THREE from 'three';
 import { getAbilityManaCost } from './AbilityEconomy.js';
-import { getAbilityRange, getFlameWhipRadius, getRogueMovementCastRange, getTeleportCastRange } from './AbilityRange.js';
+import { getAbilityRange, getFlameWhipRadius, getRogueMovementCastRange, getTeleportCastRange, getWizardGroundCastRange, WIZARD_GROUND_ABILITIES } from './AbilityRange.js';
 import { CONSTANTS } from './Constants.js';
 import { Fighter } from '../entities/Fighter.js';
 import { Rogue } from '../entities/Rogue.js';
@@ -59,6 +59,7 @@ export class AbilityController {
         const player = this.engine.player;
         if (skillName === 'Teleport') return getTeleportCastRange(player);
         if (skillName === 'Flame Whip') return getFlameWhipRadius(player);
+        if (WIZARD_GROUND_ABILITIES.has(skillName)) return getWizardGroundCastRange(player, skillName);
         if (['Backstab', 'Shadow Lunge', 'Shadow Strike'].includes(skillName)) return getRogueMovementCastRange(player, skillName);
         if (skillName === 'Scorch Beam') return getAbilityRange(player, skillName, CONSTANTS.ABILITY_CONFIG.Wizard.skills[skillName].range);
         if (skillName === 'Arcane Missiles') return getAbilityRange(player, skillName, CONSTANTS.ABILITY_CONFIG.Wizard.skills[skillName].range);
@@ -154,7 +155,7 @@ export class AbilityController {
      * @param {number} targetX
      * @param {number} targetZ
      */
-    triggerRemoteAbilityVisuals(entity, skillName, targetX, targetZ, shape = {}, { skipAnimation = false } = {}) {
+    triggerRemoteAbilityVisuals(entity, skillName, targetX, targetZ, shape = {}, { skipAnimation = false, boundaryOnly = false } = {}) {
         if (!entity || (
             typeof this.engine?.spawnTransientEffect !== 'function' &&
             typeof entity.spawnVisualEffect !== 'function'
@@ -178,6 +179,7 @@ export class AbilityController {
         if (direction.lengthSq() > 0) direction.normalize();
         const visualLayers = Array.isArray(visual.layers) ? visual.layers : [visual];
         visualLayers.forEach((entry, index) => {
+            if (boundaryOnly && !Number.isFinite(entry.radius)) return;
             if (typeof this.engine?.spawnTransientEffect === 'function') {
                 this.engine.spawnTransientEffect(entry.type, entry.origin, entry.color, {
                     source: entity,
@@ -217,13 +219,15 @@ export class AbilityController {
     }
 
     reconcileLocalAbilityShape(data) {
-        if (data.skillName !== 'Flame Whip' || !Number.isFinite(data.radius) || data.radius <= 0 ||
+        const ground = WIZARD_GROUND_ABILITIES.has(data.skillName);
+        if ((!ground && data.skillName !== 'Flame Whip') || !Number.isFinite(data.radius) || data.radius <= 0 ||
             !Number.isFinite(data.arc) || data.arc <= 0 || data.arc > 2 * Math.PI) return;
         const player = this.engine.player;
         const predicted = (this.engine.effects || []).filter(effect => effect.isActive &&
             effect.abilityShape?.sourceId === player.id && effect.abilityShape?.skillName === data.skillName);
         if (predicted.length && predicted.every(effect => Math.abs(effect.abilityShape.radius - data.radius) < 1e-8 &&
-            Math.abs(effect.abilityShape.arc - data.arc) < 1e-8)) {
+            Math.abs(effect.abilityShape.arc - data.arc) < 1e-8 && (!ground ||
+                Math.hypot(effect.abilityShape.x - data.targetX, effect.abilityShape.z - data.targetZ) < 1e-6))) {
             predicted.forEach(effect => { effect.abilityShape.authoritative = true; });
             return;
         }
@@ -231,7 +235,7 @@ export class AbilityController {
         // and never replay an unchanged prediction or apply gameplay damage here.
         predicted.forEach(effect => effect.dispose());
         this.engine.effects = (this.engine.effects || []).filter(effect => !predicted.includes(effect));
-        this.triggerRemoteAbilityVisuals(player, data.skillName, data.targetX, data.targetZ, data, { skipAnimation: true });
+        this.triggerRemoteAbilityVisuals(player, data.skillName, data.targetX, data.targetZ, data, { skipAnimation: true, boundaryOnly: true });
     }
 
     // ------------------------------------------------------------------

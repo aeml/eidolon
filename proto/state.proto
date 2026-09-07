@@ -226,6 +226,8 @@ message Entity {
   // Authoritative sustained spin, including remaining time for new observers.
   bool whirlwind_active = 110;
   float whirlwind_duration = 111;
+  // Cast-time Meteor footprint for reconnects and removal-before-impact fallback.
+  float impact_radius = 112;
 
   // Authoritative jump replication
   float jump_start_x = 81;

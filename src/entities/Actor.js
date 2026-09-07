@@ -17,6 +17,7 @@ import {
     isAbilityVisualLayerEnabled
 } from '../skills/abilityVisualManifest.js';
 import { getAbilityAoeArc, getAbilityAoeRadius, isAoeBoundaryVisualType } from '../skills/abilityRadii.js';
+import { clampWizardGroundTarget, WIZARD_GROUND_ABILITIES } from '../core/AbilityRange.js';
 import { getWhirlwindCastDuration } from '../skills/whirlwindPresentation.js';
 import { ACTOR_STATUS_VISUAL_STATES, AttachedStatusEffect } from './AttachedStatusEffect.js';
 import { applyProceduralEquipment, clearProceduralEquipment } from '../art/ProceduralEquipment.js';
@@ -558,7 +559,8 @@ export class Actor extends Entity {
         if (!presentation || typeof gameEngine?.spawnTransientEffect !== 'function') return false;
 
         const sourcePosition = this.position?.clone?.() || this.position;
-        const targetPosition = targetVector?.clone?.() || targetVector || sourcePosition;
+        let targetPosition = targetVector?.clone?.() || targetVector || sourcePosition;
+        if (className === 'Wizard' && WIZARD_GROUND_ABILITIES.has(skillName)) targetPosition = clampWizardGroundTarget(this, skillName, targetPosition);
         const direction = sourcePosition?.clone && targetPosition?.clone
             ? targetPosition.clone().sub(sourcePosition).normalize()
             : null;

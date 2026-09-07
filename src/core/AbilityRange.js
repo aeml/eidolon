@@ -19,6 +19,10 @@ export function getTeleportCastRange(player) {
 }
 
 export function getFlameWhipRadius(player) {
+    return getWizardAbilityAreaRadius(player, getAbilityRange(player, 'Flame Whip', 12));
+}
+
+export function getWizardAbilityAreaRadius(player, base) {
     let areaBonus = 0;
     for (const talent of CONSTANTS.PASSIVE_TALENTS.Wizard) {
         if (!talent.abilityArea) continue;
@@ -26,7 +30,25 @@ export function getFlameWhipRadius(player) {
         const rank = Number.isFinite(raw) ? Math.max(0, Math.min(talent.maxRank, Math.floor(raw))) : 0;
         areaBonus += talent.abilityArea.radius * rank;
     }
-    return getAbilityRange(player, 'Flame Whip', 12) * Math.max(0, 1 + areaBonus);
+    return base * Math.max(0, 1 + areaBonus);
+}
+
+export const WIZARD_GROUND_ABILITIES = new Set(['Gravity Well', 'Meteor Drop', 'Inferno Cataclysm']);
+
+export function getWizardGroundCastRange(player, skillName) {
+    return getAbilityRange(player, skillName, skillName === 'Gravity Well' ? 18 : 20);
+}
+
+// Ground placement range does not grow with the radius of the resulting area.
+export function clampWizardGroundTarget(player, skillName, target) {
+    const result = target.clone();
+    const distance = Math.hypot(target.x - player.position.x, target.z - player.position.z);
+    const range = getWizardGroundCastRange(player, skillName);
+    if (distance > range) {
+        result.x = player.position.x + (target.x - player.position.x) * range / distance;
+        result.z = player.position.z + (target.z - player.position.z) * range / distance;
+    }
+    return result;
 }
 
 export function getRogueMovementCastRange(player, skillName) {

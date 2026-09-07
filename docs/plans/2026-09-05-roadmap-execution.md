@@ -5,14 +5,27 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-Current release queue (September 7): **1.0.29 (`bc96862`) is fully verified**.
-CI **`34078663504`** passed every job, including final live character QA.
-Fresh post-terminal uncached checks at **04:06:20.318 UTC** matched release
+Current release queue (September 7): **1.0.30 (`c3247e8`) is fully verified**.
+CI **`34081910599`** passed every job, including final live character QA.
+Fresh post-terminal uncached checks at **04:58:37.772 UTC** matched release
 manifest, login label, versioned main script and backend to
-`bc96862209b621b1e995c3dd4d9d72acf61aaf44` / Alpha 1.0.29; health `ok`, database
-`ready`. Only **1.0.30 `c3247e849daad029b0c4f053b3d4d969ebba0f82`** was pushed next;
-CI **`34081910599`** is running. Later versions remain queued behind its complete
-CI/live gate; do not push main HEAD over it.
+`c3247e849daad029b0c4f053b3d4d969ebba0f82` / Alpha 1.0.30; health `ok`, database
+`ready`. Only **1.0.31 `bacaa59c7dd2fa016d400ddeacbe90c4a51982d2`** was pushed next;
+CI **`34085084576` failed before deployment** on the server race-suite near-death
+QA test's one-second wait. Client checks passed; browser/deploy/live jobs were
+skipped. Its own patch notes and package/login version were checked before the
+exact-source push. Fifty isolated race repetitions pass (10.089 seconds,
+`/tmp/eidolon-release31-qa-reproduction.log`); the cause is not established and a
+full-suite reproduction is in progress on exact source in the dedicated release31
+worktree. Later versions remain queued behind its complete CI/live gate; do not
+push main HEAD over it.
+
+The unversioned [ground-spell geometry checkpoint](2026-09-07-ground-spell-talents.md)
+passes 2,770 client tests, full server race checks and final isolated gameplay.
+It remains local, separately from the failed 1.0.31 release and queued 1.0.32–35.
+
+Previous **1.0.29 `bc96862`** passed CI `34078663504` and its post-terminal
+uncached manifest/login/script/backend identity check at **04:06:20.318 UTC**.
 
 Previous checkpoint **1.0.28 (`48c74cd`)** passed CI **`34075628459`**, including
 final live four-class and remote animation QA. Its fresh post-terminal uncached
