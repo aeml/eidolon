@@ -12,6 +12,10 @@ class TestSkillStrategy extends SkillStrategy {
 }
 
 describe('SkillStrategy', () => {
+    // Cooldown boundaries must not depend on scheduler delays between two
+    // Date.now() calls. Keep the production clock and comparison unchanged.
+    beforeEach(() => jest.spyOn(Date, 'now').mockReturnValue(1_000_000));
+    afterEach(() => jest.restoreAllMocks());
     describe('constructor', () => {
         test('initializes with name, cooldown, and resourceCost', () => {
             const skill = new SkillStrategy('Fireball', 1000, 25);
@@ -64,14 +68,11 @@ describe('SkillStrategy', () => {
             expect(skill.canExecute(owner)).toBe(true);
         });
 
-        test('returns false when exactly at cooldown boundary', () => {
+        test.each([[999, false], [1000, true], [1001, true]])('elapsed %dms has readiness %s for a 1000ms cooldown', (elapsed, ready) => {
             const skill = new SkillStrategy('Fireball', 1000, 25);
             const owner = { stats: { mana: 100 } };
-            
-            // Set lastUsed to exactly cooldown ms ago
-            skill.lastUsed = Date.now() - 999;
-            
-            expect(skill.canExecute(owner)).toBe(false);
+            skill.lastUsed = Date.now() - elapsed;
+            expect(skill.canExecute(owner)).toBe(ready);
         });
 
         test('returns true with zero cooldown after use', () => {
