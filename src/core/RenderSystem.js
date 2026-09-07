@@ -6,6 +6,7 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { CONSTANTS } from './Constants.js';
+import { SceneryVisibility } from './SceneryVisibility.js';
 import { createProceduralReflectionEnvironment } from '../art/ProceduralReflectionEnvironment.js';
 import {
     DUNGEON_THEME_KEYS,
@@ -106,6 +107,8 @@ export class RenderSystem {
         this.scene.add(this.environmentGroup);
         this.scene.add(this.entityGroup);
         this.scene.add(this.effectGroup);
+        this.sceneryVisibility = new SceneryVisibility();
+        this.sceneryFocus = null;
         this.shadowFollowOffset = new THREE.Vector3(360, 500, 220);
         this.shadowTarget = new THREE.Vector3();
         this.shadowCoverageRadius = 280;
@@ -902,6 +905,12 @@ export class RenderSystem {
         this.updateCamera();
     }
 
+    setSceneryFocus(position) {
+        if (!position) { this.sceneryFocus = null; return; }
+        if (!this.sceneryFocus) this.sceneryFocus = new THREE.Vector3();
+        this.sceneryFocus.copy(position);
+    }
+
     setCameraShakeEnabled(enabled) {
         this.cameraShakeEnabled = Boolean(enabled);
         if (!this.cameraShakeEnabled) {
@@ -967,6 +976,10 @@ export class RenderSystem {
 
     clearGroupChildren(group, options = {}) {
         if (!group) return;
+        if (group === this.instanceEnvironmentGroup) {
+            this.sceneryVisibility?.clear();
+            this.sceneryFocus = null;
+        }
         if (options.dispose) {
             // Traverse the whole ownership group once so resources shared by
             // sibling room, corridor, and dressing roots are deduplicated.
@@ -1008,6 +1021,7 @@ export class RenderSystem {
     }
 
     render() {
+        this.sceneryVisibility?.update(this.instanceEnvironmentGroup, this.camera, this.sceneryFocus, performance.now() / 1000);
         if (this.waterTexture) {
             const time = performance.now() * 0.0001;
             if (this.waterPlane && this.waterPlane.material && this.waterPlane.material.uniforms && this.waterPlane.material.uniforms.uTime) {

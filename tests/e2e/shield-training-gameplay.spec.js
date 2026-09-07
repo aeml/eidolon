@@ -123,6 +123,12 @@ test('Shield mastery increases actual saved absorption, renders and expires thro
         const p = window.game.player.position;
         return Math.hypot(p.x - 800, p.z - 200);
     }), { timeout: 30_000 }).toBeLessThan(3);
+    if (process.env.EIDOLON_E2E_SCENERY_VISIBILITY === '1') {
+        await expect.poll(() => page.evaluate(() => [...window.game.renderSystem.sceneryVisibility.entries.values()]
+            .some(entry => entry.opacity < .005))).toBe(true);
+        await page.screenshot({ path: testInfo.outputPath('entrance-live-cutaway.png') });
+        console.log('[entrance-live] normal rendered hero receives a cutaway at the existing protected waypoint');
+    }
     let target;
     for (let step = 0; !target && step < 12; step++) {
         await moveByGroundClick(page, 0, 12);
@@ -151,5 +157,10 @@ test('Shield mastery increases actual saved absorption, renders and expires thro
     await page.screenshot({ path: testInfo.outputPath('shield-hostile-absorption.png') });
     console.log(`[shield-absorption] ${JSON.stringify(absorbed)}`);
     await returnToTown(page);
+    if (process.env.EIDOLON_E2E_SCENERY_VISIBILITY === '1') {
+        await expect.poll(() => page.evaluate(() => [...window.game.renderSystem.sceneryVisibility.entries.values()]
+            .every(entry => entry.opacity === 1 && entry.parts.every(part => part.mesh.material === part.material)))).toBe(true);
+        console.log('[entrance-live] ordinary town recall restores the original landmark materials');
+    }
     expect(failures, failures.join('\n')).toEqual([]);
 });

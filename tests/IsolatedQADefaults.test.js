@@ -56,3 +56,12 @@ test('anonymous CI retains content-sized and long-list phone status coverage', (
     expect(commands['test:e2e:anonymous']).toContain('tests/e2e/mobile-status-compact.spec.js');
     expect(commands['test:e2e:anonymous']).toContain('tests/e2e/mobile-status-layout.spec.js');
 });
+
+test('the release gate retains rendered entrance cutaways and normal gameplay restoration', () => {
+    const commands = JSON.parse(readFileSync('package.json', 'utf8')).scripts;
+    const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
+    expect(commands['test:e2e:anonymous']).toContain('tests/e2e/entrance-visibility.spec.js');
+    expect(script).toContain('&& run_shield_training && run_entrance_visibility &&');
+    expect(script).toContain('${QA_USERNAME_BASE}-sight-retry1');
+    expect(script).toContain('EIDOLON_E2E_SCENERY_VISIBILITY=1 npx playwright test tests/e2e/shield-training-gameplay.spec.js');
+});
