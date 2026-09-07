@@ -1,5 +1,33 @@
 # Fresh-character progression evidence — 1.1 gate
 
+## September 7 — earned Fighter comparison in progress
+
+The class-specific driver checkpoint `0a92c71b75bf238ebecf21cff694e614f010f16a`
+passes **202 suites / 2,999 client tests in 88.342 seconds**, lint and whitespace
+checks. [The comparison plan](2026-09-07-earned-melee-followup.md) preserves the
+Wizard route and prepared level-100 Fighter evidence as separate measurements.
+
+The full no-grants Fighter route starts from that exact clean checkpoint,
+session **`98662`**, log `/tmp/eidolon-earned-fighter-gameplay.log`; local API/Mongo
+ports 18185/18186 and static port 4187. Runtime and selected QA sources remain
+frozen during gameplay; this evidence addition is documentation only.
+
+Observed so far: opening manual turn-in passes in **83 seconds**, three actual
+kills and zero deaths, awarding 100 gold / 500 XP and reaching level 5. Collection
+takes **75 seconds**, three observed target deaths, four natural seeds and zero
+player deaths. Its manual 100 gold / 8,000 XP reward reaches level 16; the guide
+correctly explains that Verdant remains locked until level 30.
+
+Normal preparation equips six collected items into empty slots, purchases three
+Whirlwind Mastery (`FTR_03`) ranks and selects Shield & Mitigation. There are no
+available stat points, so none are spent. Fresh login preserves the six item IDs,
+three ranks, branch A and the level-appropriate Whirlwind hotbar. The Skeleton
+contract begins at level 16 / 1,524 XP / 365 gold.
+
+The route is still running. These observations do **not** establish completed
+contracts, dungeon readiness, a boss kill, full dungeon clear or saved raid access.
+They are not physical-phone or human discoverability evidence.
+
 ## September 7 — earlier earned preparation comparison
 
 The optional `EIDOLON_E2E_FRESH_EARLY_PREPARATION=1` switch compares normal
