@@ -5,7 +5,49 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 22:35 UTC
+## Current checkpoint — September 7, 22:45 UTC
+
+Fire **1309** closes **FAIL / 5.2m**. Normal jump retreats clear fourteen actual
+pursuers and the cold ash is genuinely inspected/recorded (mask 1); its actual
+earned journal screenshot is inspected and copied to
+`/tmp/eidolon-fire-earned-cold-ash.png`. The prepared character subsequently dies
+in the anchor fight. Scan/cleanup pass. This is not ordered-combat completion or
+evidence that Fire is comfortably balanced. That driver only attacked when the
+anchor itself won the hover test; other covering enemies could leave it without
+offense. New **0e6820c** allows normal attacks on actual covering hostiles, retains
+the required ash → observed anchor death → ember checks, and adds attack/health/
+position/mask diagnostics plus a combat-failure screenshot. Lint/diff checks pass
+(9811 closed). No runtime difficulty or credit requirements are weakened.
+
+The isolated investigation branch now merges the locally verified 50 release at
+**170c53f8651987f8bb4f31e094f752a5e77709d5**. Merge is clean; generated eight
+chapters/sixteen discoveries, shell syntax and diff checks pass. This aligns its
+23-chapter story with current personal-fragment and reduced-equipment runtime
+before further playtesting; **it is not the released 1.0.50 package or merged to
+root**. Root remains locally verified 50 with the dormant investigation foundation.
+
+Combined verification is active against clean 170c53f:
+
+- **30280**, full client then lint, `/tmp/eidolon-investigations-50-client.log`.
+- **19540**, full server race, `/tmp/eidolon-investigations-50-server.log`.
+- **53097**, actual Fire route with ordinary crowd combat,
+  `/tmp/eidolon-investigations-fire-combined-50.log`.
+
+**53097 is the sole owned browser. Freeze the entire investigation worktree while
+these checks run; resume these handles rather than starting duplicates.** No Air
+run yet. Remaining narrative review includes retrospective optional chapter
+instructions and Fire's completion line telling the player to keep ore already
+entrusted to Ilyra; these have not been changed during the frozen tests.
+
+42 **ea565ebf… / CI 34166841477** passes client/server/browser and is in predeploy
+character QA. Last fully verified public release remains 41; next publisher stays
+43 only after every 42 deployment/live gate and fresh exact public identity.
+User has been asked asynchronously whether dungeon entry levels may be adjusted
+to remove the Earth→Water preparation gap; no response yet. This is a pending
+design preference for coordinated XP pacing, not a blocker to the current tests
+or the overall goal. Full roadmap and broader balance/expansion remain active.
+
+## Historical checkpoint — September 7, 22:35 UTC
 
 Alpha **1.0.50** is locally verified and root-integrated as merge **93b62cc**.
 Release ref **`release/50-routine-equipment-budget`** points to
