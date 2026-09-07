@@ -87,7 +87,11 @@ func TestQuestCatalogGoldMigrationPreservesProgressAndReceipts(t *testing.T) {
 	beforeGold := player.Gold
 	w.GenerateDailyQuests(player.ID)
 	for _, quest := range append(dailyQuestCatalog(), chronicleQuestCatalog()...) {
-		if quest.RewardGold < 100 || quest.RewardGold > 50_000 {
+		minimum := 100
+		if quest.Category == QuestCategoryChronicle && (quest.Type == "INVESTIGATE" || quest.Type == "COLLECT") {
+			minimum = 1
+		}
+		if quest.RewardGold < minimum || quest.RewardGold > 50_000 {
 			t.Fatalf("invalid gold tier: %+v", quest)
 		}
 	}

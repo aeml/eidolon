@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
 import { QuestUI } from '../src/ui/QuestUI.js';
+import { chronicleInvestigations } from '../src/data/chronicleInvestigations.generated.js';
 
 function buildDom() {
     document.body.innerHTML = `
@@ -20,6 +21,45 @@ function chronicleQuest(overrides = {}) {
         ...overrides
     };
 }
+
+test('optional earlier lore does not replace the current chapter and tracks independently', () => {
+    buildDom();
+    const ui = new QuestUI({ getLastPlayer: () => ({ level: 70, position: { x: 200, z: 200 } }) });
+    const optional = chronicleQuest({ id: 'chronicle_earth_keepers_house', title: 'An earlier diary', legacyOptional: true, chapter: 2 });
+    const current = chronicleQuest({ id: 'chronicle_07_crown_of_embers', title: 'The Crown of Embers', chapter: 13 });
+    ui.updateJournal([optional, current]);
+    expect(ui.buildObjectiveSummary([optional, current])[0].id).toBe(current.id);
+    expect(ui.questTrackingKey(optional)).toBe(optional.id);
+    expect(ui.questTrackingKey(current)).toBe('story');
+    expect(document.querySelector('.chronicle-journal').textContent).toContain('Chapter 13: The Crown of Embers');
+    expect(document.querySelector('.chronicle-journal').textContent).toContain('Optional earlier investigations');
+    ui.setQuestTracked(optional, false);
+    expect(ui.getTrackedObjectives().map(quest => quest.id)).toContain(current.id);
+    expect(ui.getTrackedObjectives().map(quest => quest.id)).not.toContain(optional.id);
+});
+
+test('the journal reveals only recorded evidence and preserves an open page across quest updates', () => {
+    buildDom();
+    const ui = new QuestUI({ getLastPlayer: () => ({ level: 30 }) });
+    const chapter = chronicleInvestigations[1];
+    const quest = chronicleQuest({ id: chapter.id, type: 'INVESTIGATE', title: chapter.title,
+        lore: chapter.summary, description: chapter.acceptance, chapter: 4, investigationMask: 5 });
+    ui.updateJournal([quest]);
+    const journal = document.querySelector('#journal-list');
+    expect(journal.querySelectorAll('details[data-discovery-id]')).toHaveLength(2);
+    expect(journal.textContent).toContain(chapter.sites[0].text);
+    expect(journal.textContent).not.toContain(chapter.sites[1].text);
+    expect(journal.textContent).not.toContain(chapter.summary);
+    const record = journal.querySelector('details[data-discovery-id]');
+    record.open = true;
+    record.querySelector('summary').focus();
+    journal.scrollTop = 123;
+    ui.updateJournal([quest]);
+    const restored = journal.querySelector(`details[data-discovery-id="${record.dataset.discoveryId}"]`);
+    expect(restored.open).toBe(true);
+    expect(document.activeElement).toBe(restored.querySelector('summary'));
+    expect(journal.scrollTop).toBe(123);
+});
 
 describe('QuestUI Fourfold Chronicle', () => {
     beforeEach(buildDom);
@@ -50,7 +90,7 @@ describe('QuestUI Fourfold Chronicle', () => {
 
         const journal = document.getElementById('journal-list');
         expect(journal.textContent).toContain('The Fourfold Chronicle');
-        expect(journal.textContent).toContain('1 of 15');
+        expect(journal.textContent).toContain('1 of 23');
         expect(journal.textContent).toContain('Chapter 2: Seeds of the First Grove');
         expect(journal.textContent).toContain('The Rootheart is forgetting every forest');
         expect(journal.textContent).toContain('Recover 4 Verdant Memory Seeds');

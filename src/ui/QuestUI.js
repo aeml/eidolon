@@ -1,6 +1,7 @@
 import { renderQuestConversation } from './QuestConversation.js';
 import { formatQuestRewards } from './questRewards.js';
 import { MAX_PLAYER_LEVEL } from '../data/dungeonProgression.js';
+import { CHRONICLE_CHAPTER_COUNT, getCurrentChronicleQuest, getRecordedChronicleDiscoveries } from '../core/ChronicleInvestigation.js';
 import {
     findNextDungeonMeaningfulRoom,
     getDungeonCadenceLabel,
@@ -135,6 +136,7 @@ export class QuestUI {
     // ================================================================
 
     questTrackingKey(quest) {
+        if (quest?.legacyOptional) return quest.id;
         return quest?.category === 'chronicle' || quest?.badge?.startsWith('Story') || quest?.id?.startsWith('chronicle_')
             ? 'story' : quest?.id;
     }
@@ -680,13 +682,14 @@ export class QuestUI {
                     const isChronicle = q.category === 'chronicle';
                     return {
                         id: q.id,
+                        legacyOptional: Boolean(q.legacyOptional),
                         title: this.getQuestTitle(q),
                         progressLabel: `${q.count || 0} / ${q.maxCount || 0}`,
                         progressPct: q.maxCount > 0 ? Math.min(100, ((q.count || 0) / q.maxCount) * 100) : 0,
                         rewardXP: q.rewardXP || 0,
                         rewardLabel: this.getQuestRewardLabel(q),
                         completed: Boolean(q.completed || ((q.count || 0) >= (q.maxCount || 0))),
-                        badge: isChronicle ? `Story ${q.chapter || ''}`.trim() : 'Daily',
+                        badge: isChronicle ? q.legacyOptional ? 'Story · Optional lore' : `Story ${q.chapter || ''}`.trim() : 'Daily',
                         badgeClass: isChronicle ? 'is-objective' : '',
                         routeTone: isChronicle ? 'warning' : 'neutral',
                         hint: q.maxCount > 0 && q.count >= q.maxCount
@@ -696,10 +699,11 @@ export class QuestUI {
                             : remaining > 0 ? `${remaining} remaining` : 'Return to the quest NPC for your reward'
                     };
                 })
-                .sort((left, right) => Number(right.badge?.startsWith('Story')) - Number(left.badge?.startsWith('Story')))
+                .sort((left, right) => Number(right.badge?.startsWith('Story')) * (right.legacyOptional ? 1 : 2) - Number(left.badge?.startsWith('Story')) * (left.legacyOptional ? 1 : 2))
             : [];
 
-        const offeredStory = quests?.find((quest) => quest.category === 'chronicle' && !quest.accepted && !quest.completed);
+        const nextStory = getCurrentChronicleQuest(quests);
+        const offeredStory = nextStory && !nextStory.accepted ? nextStory : null;
         if (offeredStory) questObjectives.unshift({
             id: offeredStory.id, title: 'Speak to Archmage Ilyra', progressLabel: 'Available', progressPct: 0,
             badge: `Story ${offeredStory.chapter || 1}`, badgeClass: 'is-objective', routeTone: 'warning',
@@ -912,7 +916,8 @@ export class QuestUI {
         if (chronicle.length === 0) return false;
 
         const completed = chronicle.filter((quest) => quest.completed);
-        const current = chronicle.find((quest) => !quest.completed) || null;
+        const current = getCurrentChronicleQuest(chronicle);
+        const optional = chronicle.filter(quest => quest.legacyOptional && !quest.completed);
         const section = document.createElement('section');
         section.className = 'chronicle-journal';
 
@@ -920,7 +925,7 @@ export class QuestUI {
             color: '#dfb5ff', fontSize: '14px', fontWeight: 'bold', letterSpacing: '0.08em', textTransform: 'uppercase'
         }));
         section.appendChild(this.createMessage(
-            `${completed.length} of 15 chapters complete • Earth → Water → Fire → Air → Dark Realm`,
+            `${completed.length} of ${CHRONICLE_CHAPTER_COUNT} chapters complete${optional.length ? ` • ${optional.length} earlier investigations optional` : ''} • Earth → Water → Fire → Air → Dark Realm`,
             { color: '#aab8d0', fontSize: '11px' }
         ));
 
@@ -939,7 +944,7 @@ export class QuestUI {
             section.appendChild(this.createMessage(`${current.count || 0} / ${current.maxCount || 0} • ${this.getQuestRewardLabel(current)}`, {
                 color: '#8fd3ff', fontSize: '11px'
             }));
-            if (current.lore) {
+            if (current.lore && current.type !== 'INVESTIGATE') {
                 const lore = document.createElement('blockquote');
                 lore.style.margin = '5px 0 0';
                 lore.style.padding = '9px 11px';
@@ -980,6 +985,35 @@ export class QuestUI {
             });
             section.appendChild(archive);
         }
+        if (optional.length) {
+            const catchup = document.createElement('section');
+            catchup.append(this.createMessage('Optional earlier investigations', { color: '#dfb5ff', fontWeight: 'bold' }));
+            catchup.append(this.createMessage('Your completed dungeon and raid access is unchanged. Ask Ilyra about these discoveries when you wish.'));
+            for (const quest of optional) {
+                catchup.append(this.createMessage(this.getQuestTitle(quest)));
+                if (quest.accepted) {
+                    catchup.append(this.createTrackingControl(quest));
+                    catchup.append(this.createMessage(this.getQuestObjective(quest)));
+                }
+            }
+            section.append(catchup);
+        }
+        for (const quest of chronicle) {
+            const discoveries = getRecordedChronicleDiscoveries(quest);
+            if (!discoveries.length) continue;
+            const records = document.createElement('section');
+            records.append(this.createMessage(`Field records · ${this.getQuestTitle(quest)}`, { color: '#ffd36f', fontWeight: 'bold' }));
+            for (const site of discoveries) {
+                const record = document.createElement('details');
+                record.dataset.discoveryId = site.id;
+                const heading = document.createElement('summary');
+                heading.textContent = site.title;
+                record.append(heading);
+                for (const paragraph of site.text.split(/\n\s*\n/)) record.append(this.createMessage(paragraph, { lineHeight: '1.6' }));
+                records.append(record);
+            }
+            section.append(records);
+        }
         this.journalList.appendChild(section);
         return Boolean(current);
     }
@@ -989,6 +1023,8 @@ export class QuestUI {
         const archiveOpen = Boolean(this.journalList?.querySelector('details')?.open);
         const archiveFocused = document.activeElement === this.journalList?.querySelector('details > summary');
         const focusedQuest = this.journalList?.contains(document.activeElement) ? document.activeElement.dataset.questTrack : null;
+        const openDiscoveries = new Set([...this.journalList?.querySelectorAll('details[data-discovery-id][open]') || []].map(record => record.dataset.discoveryId));
+        const focusedDiscovery = document.activeElement?.closest?.('details[data-discovery-id]')?.dataset.discoveryId;
         const restoreReading = () => {
             const archive = this.journalList?.querySelector('details');
             if (archive && archiveOpen) archive.open = true;
@@ -996,6 +1032,10 @@ export class QuestUI {
             if (archiveFocused) archive?.querySelector('summary')?.focus({ preventScroll: true });
             if (focusedQuest) [...this.journalList.querySelectorAll('[data-quest-track]')]
                 .find(input => input.dataset.questTrack === focusedQuest)?.focus({ preventScroll: true });
+            for (const record of this.journalList?.querySelectorAll('details[data-discovery-id]') || []) {
+                record.open = openDiscoveries.has(record.dataset.discoveryId);
+                if (record.dataset.discoveryId === focusedDiscovery) record.querySelector('summary')?.focus({ preventScroll: true });
+            }
         };
         this.lastJournalQuests = quests;
         this.renderObjectivesPanel(this.buildObjectiveSummary(quests));

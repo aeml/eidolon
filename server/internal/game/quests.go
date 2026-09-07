@@ -38,6 +38,10 @@ type ChronicleAdvanceEvent struct {
 }
 
 func chronicleQuestCatalog() []Quest {
+	return expandChronicleInvestigations(classicChronicleQuestCatalog())
+}
+
+func classicChronicleQuestCatalog() []Quest {
 	quests := []Quest{
 		{
 			ID: "chronicle_01_bell_below", Type: "KILL", Target: "Skeleton", MaxCount: 3, RewardXP: 500,
@@ -221,6 +225,9 @@ func isDailyQuest(q Quest) bool {
 
 func copyQuestDefinition(progress Quest, definition Quest) Quest {
 	if definition.Category == QuestCategoryChronicle && definition.Type == "COLLECT" && (progress.Accepted || progress.Completed) {
+		// An already accepted contract keeps its quoted payout as well as its
+		// requirements when the new investigations divide future realm budgets.
+		definition.RewardXP, definition.RewardGold = progress.RewardXP, progress.RewardGold
 		// Accepted contracts retain their requirements and drop rules. A missing
 		// version identifies a pre-balance save, not a newly accepted chapter.
 		count := max(1, progress.MaxCount)
@@ -241,6 +248,7 @@ func copyQuestDefinition(progress Quest, definition Quest) Quest {
 	definition.GrantedGold = progress.GrantedGold
 	definition.GrantedXP = progress.GrantedXP
 	definition.GrantedResonanceXP = progress.GrantedResonanceXP
+	definition.LegacyOptional = progress.LegacyOptional && definition.Type == "INVESTIGATE"
 	if definition.Type == "INVESTIGATE" {
 		definition.InvestigationMask = progress.InvestigationMask & ((1 << definition.MaxCount) - 1)
 		definition.Count = bits.OnesCount32(definition.InvestigationMask)
@@ -274,10 +282,35 @@ func ensureChronicleLocked(player *Entity) bool {
 		}
 		indices[definition.ID] = i
 	}
+	// Missing investigations behind an already accepted/completed classic
+	// milestone become optional catch-up lore, not retroactively completed quests.
+	// Only newly inserted records are classified; a fresh character's required
+	// investigation must never become optional on a later metadata refresh.
+	lastLegacyMilestone := -1
+	for index, definition := range catalog {
+		if definition.Type == "INVESTIGATE" {
+			continue
+		}
+		if saved, exists := indices[definition.ID]; exists && (player.Quests[saved].Accepted || player.Quests[saved].Completed) {
+			lastLegacyMilestone = index
+		}
+	}
+	for index, definition := range catalog {
+		if index >= lastLegacyMilestone || definition.Type != "INVESTIGATE" {
+			continue
+		}
+		if _, exists := indices[definition.ID]; exists {
+			continue
+		}
+		definition.LegacyOptional = true
+		indices[definition.ID] = len(player.Quests)
+		player.Quests = append(player.Quests, definition)
+		changed = true
+	}
 	nextIndex := 0
 	for nextIndex < len(catalog) {
 		idx, exists := indices[catalog[nextIndex].ID]
-		if !exists || !player.Quests[idx].Completed {
+		if !exists || (!player.Quests[idx].Completed && !player.Quests[idx].LegacyOptional) {
 			break
 		}
 		nextIndex++
@@ -421,7 +454,7 @@ func (w *World) canDiscussQuestLocked(player *Entity, quest Quest) bool {
 			if definition.ID == quest.ID {
 				break
 			}
-			if !HasCompletedChronicleQuest(player, definition.ID) {
+			if !quest.LegacyOptional && !hasSatisfiedChroniclePrerequisite(player, definition.ID) {
 				return false
 			}
 		}
@@ -448,14 +481,13 @@ func (w *World) advanceChronicleLocked(player *Entity, questIndex int) Chronicle
 	event := ChronicleAdvanceEvent{PlayerID: player.ID, CompletedID: quest.ID, CompletedTitle: quest.Title}
 	ensureChronicleLocked(player)
 	for _, next := range player.Quests {
-		if next.Category == QuestCategoryChronicle && !next.Completed {
+		if next.Category == QuestCategoryChronicle && !next.Completed && !next.LegacyOptional && (event.NextID == "" || next.Chapter < nextChapterNumber(player, event.NextID)) {
 			event.NextID = next.ID
 			event.NextTitle = next.Title
 			event.NextLore = next.Lore
-			break
 		}
 	}
-	event.Finale = event.NextID == ""
+	event.Finale = event.NextID == "" && event.CompletedID == ChronicleDarkKingID
 	return event
 }
 

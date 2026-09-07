@@ -155,6 +155,7 @@ type Quest struct {
 	CollectionVersion  int    `bson:"collection_version,omitempty"`
 	DropMisses         int    `bson:"drop_misses,omitempty"`
 	InvestigationMask  uint32 `bson:"investigation_mask,omitempty"`
+	LegacyOptional     bool   `bson:"legacy_optional,omitempty"`
 	RewardXP           int    `bson:"reward_xp"`
 	RewardGold         int    `bson:"reward_gold"`
 	GrantedGold        int    `bson:"granted_gold,omitempty"`

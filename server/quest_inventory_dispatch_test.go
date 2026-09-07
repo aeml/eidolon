@@ -29,6 +29,22 @@ func TestCollectionTurnInDispatchRefreshesBagBeforeQuestCompletion(t *testing.T)
 			if _, ok := world.PerformCompleteQuest(player.ID, first); !ok {
 				t.Fatal("first chapter setup failed")
 			}
+			// Complete the newly required diary through its real recording and
+			// manual turn-in paths before testing collection bag receipts.
+			diary := game.ChronicleInvestigationCatalog()[0]
+			site := diary.Sites[0]
+			world.AddEntity(&game.Entity{ID: site.EntityID, Type: game.TypeNPC, SubType: "ChronicleSite", X: site.X, Z: site.Z})
+			if _, ok := world.PerformAcceptQuest(player.ID, diary.ID); !ok {
+				t.Fatal("diary acceptance failed")
+			}
+			player.X, player.Z = site.X, site.Z
+			if _, err := world.InspectChronicleSite(player.ID, site.EntityID); err != nil {
+				t.Fatal(err)
+			}
+			player.X, player.Z = 20, 215
+			if _, ok := world.PerformCompleteQuest(player.ID, diary.ID); !ok {
+				t.Fatal("diary manual turn-in failed")
+			}
 			world.PerformAcceptQuest(player.ID, collection)
 			required := 0
 			for _, quest := range player.Quests {

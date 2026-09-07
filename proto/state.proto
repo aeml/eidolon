@@ -57,6 +57,7 @@ message Quest {
   int32 granted_xp = 17;
   int32 granted_resonance_xp = 18;
   uint32 investigation_mask = 19;
+  bool legacy_optional = 20;
 }
 
 message SocketedGem {

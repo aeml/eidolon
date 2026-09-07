@@ -102,3 +102,28 @@ test('investigation turn-in keeps its authored paragraphs and manual continuatio
     expect(document.querySelector('#quest-list button').textContent).toBe('Continue conversation');
     expect(ui.completedDialogue).toBe(quest);
 });
+
+test('Ilyra keeps the required chapter primary while offering earlier lore separately', () => {
+    const chapter = chronicleInvestigations[0];
+    const optional = story({ id: chapter.id, legacyOptional: true, type: 'INVESTIGATE', chapter: 2,
+        title: chapter.title, lore: chapter.summary });
+    const current = story({ id: 'chronicle_07_crown_of_embers', chapter: 13, title: 'The Crown of Embers' });
+    const quests = [optional, current];
+    const ui = new QuestUI({ getLastPlayer: () => ({ quests }) });
+    ui.questKind = 'story';
+    ui.updateQuestWindow(quests);
+    expect(document.querySelector('.quest-dialogue h3').textContent).toBe(current.title);
+    const choose = [...document.querySelectorAll('#quest-list button')].find(button => button.textContent === optional.title);
+    choose.click();
+    expect(document.querySelector('.quest-dialogue h3').textContent).toBe(optional.title);
+    expect(document.querySelector('#quest-list').textContent).not.toContain(chapter.summary);
+    [...document.querySelectorAll('#quest-list button')].find(button => button.textContent === 'Return to main story').click();
+    expect(document.querySelector('.quest-dialogue h3').textContent).toBe(current.title);
+});
+
+test('future saved offers do not put an exclamation over an active required investigation', () => {
+    const active = story({ id: 'chronicle_earth_keepers_house', chapter: 2, accepted: true, count: 0, maxCount: 1 });
+    const future = story({ id: 'chronicle_02_seeds_first_grove', chapter: 3 });
+    expect(questMarkerState([future, active], true)).toBe('');
+    expect(questMarkerState([future, { ...active, count: 1 }], true)).toBe('?');
+});

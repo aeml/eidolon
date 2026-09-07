@@ -231,6 +231,7 @@ func characterSnapshot(username string, entity *game.Entity, savedAt time.Time) 
 				MaxCount:           q.MaxCount,
 				CollectionVersion:  q.CollectionVersion,
 				InvestigationMask:  q.InvestigationMask,
+				LegacyOptional:     q.LegacyOptional,
 				DropMisses:         q.DropMisses,
 				RewardXP:           q.RewardXP,
 				RewardGold:         q.RewardGold,

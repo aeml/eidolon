@@ -1,4 +1,4 @@
-import { getChronicleInvestigation } from '../core/ChronicleInvestigation.js';
+import { getChronicleInvestigation, getCurrentChronicleQuest } from '../core/ChronicleInvestigation.js';
 
 export const ILYRA_REPLIES = [
     'Listen—the bell has lost a note. These echoes bear Malachar’s binding, a signature I hoped never to hear again. I once called him a fellow keeper. He learned the roads between the sanctums from our own maps. We will begin where his wound runs deepest: the Rootheart.',
@@ -77,7 +77,17 @@ export function renderQuestConversation(ui, quests) {
     }
     const offered = (quests || []).filter((quest) =>
         (quest.category === 'chronicle' || Boolean(quest.id?.startsWith('chronicle_'))) === story && !quest.completed);
-    const selected = offered.find((quest) => quest.id === ui.selectedQuestId) || (story ? offered[0] : null);
+    const current = story ? getCurrentChronicleQuest(offered) : null;
+    const eligible = story ? offered.filter(quest => quest.legacyOptional || quest.id === current?.id) : offered;
+    const selected = eligible.find((quest) => quest.id === ui.selectedQuestId) || (story ? current || eligible[0] : null);
+    const catchup = story ? offered.filter(quest => quest.legacyOptional) : [];
+    if (catchup.length) {
+        const list = text('details', '', 'quest-dialogue__lore');
+        list.append(text('summary', `Other discoveries (${catchup.length}) · Optional catch-up lore`));
+        list.append(text('p', 'These earlier investigations do not block your current story or change your earned dungeon and raid access.'));
+        for (const quest of catchup) list.append(button(ui.getQuestTitle(quest), () => { ui.selectedQuestId = quest.id; redraw(); }, 'quest-contract'));
+        ui.questList.append(list);
+    }
     if (!selected) {
         if (!offered.length) ui.questList.appendChild(text('p', story ? '“The four crystals sing freely. You will always be welcome here, friend of Eidolon.”' : 'No contracts remain today. New contracts arrive at the daily reset.', 'quest-dialogue__speech'));
         offered.forEach((quest) => {
@@ -91,10 +101,10 @@ export function renderQuestConversation(ui, quests) {
     }
     const ready = selected.accepted && selected.maxCount > 0 && selected.count >= selected.maxCount;
     const detail = text('section', '', 'quest-dialogue');
-    detail.append(text('div', story ? `CHAPTER ${selected.chapter} · ${speaker}` : 'DAILY CONTRACT', 'quest-dialogue__eyebrow'));
+    detail.append(text('div', story ? `${selected.legacyOptional ? 'OPTIONAL LORE' : `CHAPTER ${selected.chapter}`} · ${speaker}` : 'DAILY CONTRACT', 'quest-dialogue__eyebrow'));
     detail.append(text('h3', ui.getQuestTitle(selected)));
     detail.append(text('p', selected.description || 'Help keep the roads around Eidolon safe.', 'quest-dialogue__speech'));
-    if (story && selected.lore) {
+    if (story && selected.lore && selected.type !== 'INVESTIGATE') {
         const lore = text('details', '', 'quest-dialogue__lore');
         lore.append(text('summary', 'Ask Ilyra about the history'), text('p', selected.lore));
         detail.appendChild(lore);
@@ -122,5 +132,6 @@ export function renderQuestConversation(ui, quests) {
         detail.append(error);
     }
     if (!story) detail.append(button('Back to contracts', () => { ui.selectedQuestId = null; redraw(); }));
+    if (story && selected.legacyOptional && current) detail.append(button('Return to main story', () => { ui.selectedQuestId = null; redraw(); }));
     ui.questList.appendChild(detail);
 }

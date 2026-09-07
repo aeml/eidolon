@@ -14,7 +14,7 @@ import (
 func TestChronicleDiscoveryMaskSurvivesRealSaveLoadAndWire(t *testing.T) {
 	p := &game.Entity{ID: "saved-discoveries", Type: game.TypePlayer, SubType: "Wizard", Level: 30,
 		Quests: []game.Quest{{ID: "chronicle_earth_returning_scar", Type: "INVESTIGATE", Category: game.QuestCategoryChronicle,
-			Accepted: true, MaxCount: 3, Count: 2, InvestigationMask: 5}},
+			Accepted: true, MaxCount: 3, Count: 2, InvestigationMask: 5, LegacyOptional: true}},
 	}
 	snapshot := characterSnapshot("saved-discoveries", p, time.Now())
 	encoded, err := bson.Marshal(snapshot)
@@ -26,7 +26,7 @@ func TestChronicleDiscoveryMaskSurvivesRealSaveLoadAndWire(t *testing.T) {
 		t.Fatal(err)
 	}
 	loaded := questFromDatabase(saved.Quests[0])
-	if loaded.InvestigationMask != 5 || loaded.Count != 2 || !loaded.Accepted || loaded.Completed {
+	if loaded.InvestigationMask != 5 || loaded.Count != 2 || !loaded.Accepted || loaded.Completed || !loaded.LegacyOptional {
 		t.Fatalf("discovery state lost: %+v", loaded)
 	}
 	w := game.NewWorld(nil)
@@ -44,7 +44,7 @@ func TestChronicleDiscoveryMaskSurvivesRealSaveLoadAndWire(t *testing.T) {
 	if err := proto.Unmarshal(wire, &received); err != nil {
 		t.Fatal(err)
 	}
-	if received.GetInvestigationMask() != 5 {
+	if received.GetInvestigationMask() != 5 || !received.GetLegacyOptional() {
 		t.Fatal("client cannot identify its recorded discoveries")
 	}
 }

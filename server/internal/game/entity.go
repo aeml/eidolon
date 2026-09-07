@@ -37,6 +37,7 @@ type Quest struct {
 	CollectionVersion  int    `json:"collectionVersion,omitempty"`
 	DropMisses         int    `json:"dropMisses,omitempty"`
 	InvestigationMask  uint32 `json:"investigationMask,omitempty"`
+	LegacyOptional     bool   `json:"legacyOptional,omitempty"`
 	RewardXP           int    `json:"rewardXP"`
 	RewardGold         int    `json:"rewardGold"`
 	GrantedGold        int    `json:"grantedGold,omitempty"`
