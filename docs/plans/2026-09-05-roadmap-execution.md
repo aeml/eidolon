@@ -56,6 +56,37 @@ worktree. Actual baseline/trained/saved browser casts and rendered absorption,
 packaging, integration checks and publication remain open. This is not a
 completed four-class audit or a completed roadmap milestone.
 
+### Shield package and the next visual follow-up
+
+1.0.38 CI **34141178711** has now passed client, server and browser smoke;
+predeployment character QA is running. No deployment/live success is claimed.
+
+Shield gameplay passes on `7f4a157` (**43.7s**): baseline/trained/saved absorption
+**695 / 834 / 834**, real 20-second expiry, and a normal hostile hit absorbs
+**310**, leaving **524** with full player health. Scan/cleanup pass. Integrated
+server race passes (root **13.355s**, game **321.115s**). Actual phone captures
+show correct details but also oversized empty status-panel space and an entrance
+facade obscuring combat. Both remain visual work, not signed-off polish.
+
+The separate worktree `/tmp/eidolon-shield-training-CcxkLZ` packages **Alpha
+1.0.44 `fedf247`**, with distinct patch notes, aligned login/runtime/deployment
+defaults and the Shield route added to full predeploy QA. Final **214 client
+suites / 3,171 tests / 104.897s**, lint and backend-root race **12.413s** pass.
+Its anonymous suite is still running. The HUD case has failed during startup;
+the retained trace shows **97 `ERR_NETWORK_CHANGED` module requests** at
+16:16:32 UTC, before UI setup. The underlying network-change trigger is not
+established. Preserve that failure and finish the handle before repair/rerun.
+Final versioned Shield gameplay is pending. 44 is not merged to root or queued
+for publication until those remaining local checks finish.
+
+The compact status-panel follow-up is isolated in
+`/tmp/eidolon-status-compact-vP1t1z`, branch `work/status-compact-20260907`, based
+on the frozen 44 package. Only a new three-viewport rendered regression is added
+so far; no CSS fix or browser pass is claimed. It requires an empty panel to fit
+its content and one portrait shield to leave the encounter center unobscured.
+The browser slot remains owned by 44's anonymous suite; do not overlap another
+owned local browser or edit the frozen package's served runtime while it runs.
+
 ## Earlier execution history
 
 Current release queue (September 7): **corrected 1.0.37 (`2e37508`) is fully
