@@ -296,11 +296,6 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 			}
 
 			var lootItems []*Item
-			type ownedChronicleDrop struct {
-				ownerID string
-				item    *Item
-			}
-			chronicleDrops := []ownedChronicleDrop{}
 
 			if dropCount > 0 {
 				for i := 0; i < dropCount; i++ {
@@ -380,9 +375,6 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 					memberRewardItemCount := 0
 					memberRewardGemCount := 0
 					memberRewardItems := []*Item{}
-					if storyItem := ChronicleDropForKill(member, tSubType, rand.Float64()); storyItem != nil {
-						chronicleDrops = append(chronicleDrops, ownedChronicleDrop{ownerID: member.ID, item: storyItem})
-					}
 
 					// Update Quests for all party members
 					w.UpdateQuestProgress(member, tSubType)
@@ -485,9 +477,6 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				attackerRewardItemCount := 0
 				attackerRewardGemCount := 0
 				attackerRewardItems := []*Item{}
-				if storyItem := ChronicleDropForKill(attacker, tSubType, rand.Float64()); storyItem != nil {
-					chronicleDrops = append(chronicleDrops, ownedChronicleDrop{ownerID: attacker.ID, item: storyItem})
-				}
 				// Update Quests
 				w.UpdateQuestProgress(attacker, tSubType)
 				if isDungeonBoss {
@@ -595,7 +584,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				})
 			}
 
-			if len(lootItems) > 0 || len(chronicleDrops) > 0 {
+			if len(lootItems) > 0 || len(participants) > 0 {
 				w.Mu.Lock() // Lock world to add entities
 				for i, item := range lootItems {
 					if item == nil {
@@ -621,23 +610,8 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 					w.Entities[lootEntity.ID] = lootEntity
 					w.Grid.Add(lootEntity)
 				}
-				for i, drop := range chronicleDrops {
-					if drop.item == nil {
-						continue
-					}
-					lootEntity := &Entity{
-						ID:          fmt.Sprintf("story-loot-%d-%d", time.Now().UnixNano(), i),
-						InstanceID:  tInstanceID,
-						Type:        TypeLoot,
-						X:           tX + (rand.Float64()-0.5)*1.5,
-						Y:           0.5,
-						Z:           tZ + (rand.Float64()-0.5)*1.5,
-						LootItem:    drop.item,
-						LootTime:    time.Now(),
-						LootOwnerID: drop.ownerID,
-					}
-					w.Entities[lootEntity.ID] = lootEntity
-					w.Grid.Add(lootEntity)
+				for _, playerID := range participants {
+					w.spawnChronicleDropLocked(playerID, tSubType, tInstanceID, tX, tZ, rand.Float64())
 				}
 				w.Mu.Unlock()
 			}

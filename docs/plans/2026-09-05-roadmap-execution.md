@@ -5,7 +5,259 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 18:36 UTC
+## Current checkpoint — September 7, 20:30 UTC
+
+Isolated world-integration commit **`f1f7919bd6302728f86e7ec0868cf486b5816344`**
+is saved clean on `work/chronicle-investigations-20260907`; it is not merged
+to root or release branches. Final lint/generated-content/diff checks pass.
+The first actual diary route **65713 passes 1 / 1.2m**. A fresh level-one Wizard
+earns the opening normally, accepts Mara's investigation, walks to its cottage,
+clicks visible real prop geometry, reads the server-confirmed journal, completes
+manually at Ilyra and reconnects with the completed quest/level intact. No grants
+or hostile-priority bypass. The actual approach/journal PNGs are inspected.
+Log `/tmp/eidolon-investigations-diary-visible-prop.log`; credential scan and
+disposable cleanup pass. All local browser/full-client/full-server handles are
+closed. The first three failed diary attempts remain recorded below.
+
+Opening reward 500 XP/100 gold produces level 5; diary reward 1,000 XP/25 gold
+produces level 8; automated route elapsed 71 seconds. This is not a new-player
+timing estimate or final balance approval. Remaining seven investigation chapters,
+touch readability, actual Fire combat, reconnect rereading and coordinated
+progression/economy tuning remain open. Full local client **219 / 3,238 /
+163.896s**, full server race **16.818s / 307.701s** and lint pass for this
+isolated runtime; subsequent changes only affect browser travel/picking helpers.
+
+Root merges the new queued 48 correction as **`6f5e69a`** and passes
+**256 integration checks / 5.505s**. Root still has only dormant story foundation,
+not the isolated 23-chapter expansion. Staging is clean on
+`release/48-with-forge-pointer / c83b626`; next publisher remains exact 41
+`9c6eb9d20ad5171a5bb18240612b0998aba25d28` after 40's complete success gate.
+40 CI **34159297803** currently has client success/server active; no deployment
+success or live 40 claim. Last fresh public identity remains healthy/ready 39.
+
+## Historical checkpoint — September 7, 20:28 UTC
+
+**New 40 `008ee7d3bb2b2017cea012006935897066629a49` is pushed; CI
+`34159297803` is queued/active.** Its test-only Forge pointer/retry correction
+passes the actual isolated Forge route **1 / 14.2s** (test 13.0s), lint and
+credential scan/cleanup. No game runtime changed from `e7a07b6`.
+Fresh public HTTP 200 manifest/login/versioned-main/backend checks before push
+still match `7ddf776ef18caa0763eedeb8d5a0d7f25afdcd4d` / **Alpha 1.0.39** and
+healthy/ready. Prior CI `34156520169` failed and all its deployments skipped.
+No 40 live claim. Gate 41 on all new 40 CI/deploy/live jobs succeeding plus
+fresh exact public identity; next publisher is explicitly
+`release/41-with-forge-pointer`, **not root/master/HEAD**.
+
+The correction is carried through preserved new release refs; all contract
+checks pass (version, isolation, versioned assets and landing):
+
+| Version | Branch suffix `-with-forge-pointer` commit | Checks |
+|---|---|---|
+| 41 | `9c6eb9d20ad5171a5bb18240612b0998aba25d28` | 237 / 2.161s |
+| 42 | `ea565ebfdedb52fff7841e0fd4d650febd3d20da` | 238 / 1.836s |
+| 43 | `7523d0bb291917da52b2bf145157f88128ba6663` | 240 / 1.865s |
+| 44 | `e1c66fddf256327b73b766679105c087e2054b66` | 242 / 1.975s |
+| 45 | `91f2a7014a680bb299756c777fdfc50491b08e3c` | 244 / 1.981s |
+| 46 | `8d4943c02adf995ae5701deb0c6550516223f86e` | 246 / 2.126s |
+| 47 | `965edce3f315fe695aeca83635469be924c8515c` | 248 / 2.018s |
+| 48 | `c83b6263acf3c5a6e9eb8f2d7cd26ed242331d60` | 249 / 2.230s |
+
+Investigation full client passes **219 / 3,238 / 163.896s**; full server race
+**68729** closes green (root **16.818s**, game **307.701s**). The second diary
+route **66245** reaches the site but cannot hover its center. Diagnostic third
+run **71050** confirms three Skeletons cover that foundation-center ray;
+the actual screenshot shows the reachable cottage, book and player. Runtime
+hostile-target priority is correct and is not bypassed. The route now tries
+visible real prop geometry; fourth run **65713** is active, log
+`/tmp/eidolon-investigations-diary-visible-prop.log`. Prior diagnostic log
+`/tmp/eidolon-investigations-diary-hover.log`, actual image inspected at
+`/tmp/eidolon-investigations-Ock9zw/test-results/fresh-opening-gameplay-fre-bfa75-ng-Chronicle-without-grants/approach-mara_diary.png`.
+All earlier local handles are closed. Investigation runtime remains frozen for
+this owned browser; expansion is still isolated/unreleased.
+
+## Historical checkpoint — September 7, 20:19 UTC
+
+**40 CI `34156520169` fails; all deployments/live jobs are skipped.** Client,
+server and browser smoke pass. Predeploy passes the corrected Lunge and preceding
+routes, then Forge's projected click leaves the player outside interaction range
+with no pending interaction. Its retry separately attempts to register the
+already-created username. Log `/tmp/eidolon-release40-e7-failed-ci.log`.
+Do not publish 41 or claim 40 live. Last exact verified live remains 39.
+Staging now holds `work/release40-forge-hit-20260907` based on `e7a07b6`, with an
+uncommitted test-only correction: await settled camera and actual Forge hover,
+and register a fresh retry account. Lint passes; actual rerun is pending the
+owned investigation browser. Existing 41–48 release refs are unchanged/preserved.
+
+The isolated graph's final full game rerun **61937 passes 242.722s** and closes.
+Further uncommitted investigation work connects authenticated inspection,
+ordered personal state/discovery acknowledgements, earned journal opening and
+actual Fire anchor death/party credit. Targeted race repeats pass root **2.121s**,
+game **1.799s**; further graph/network checks pass **1.912s / 7.472s**.
+Fifteen native readable landmarks have ordinary interactions, personal beacons,
+three-wall-only building collisions and chunk cleanup. The hardware model gallery
+passes **1 / 2.7s** and its actual PNG is inspected; this is not reachability QA.
+
+Site spawning is active only in `/tmp/eidolon-investigations-Ock9zw`. The first
+fresh opening passes at level 5/no deaths, but the diary route **69440** fails
+to reach 125,200. Its helper issued clicks before walks/camera settled; corrected
+helper rerun **66245** is active, log
+`/tmp/eidolon-investigations-fresh-diary-settled.log`. First log
+`/tmp/eidolon-investigations-fresh-diary.log`. Do not claim diary completion.
+Full client **44707** passes **219 suites / 3,238 tests / 163.896s**, lint passes.
+Full server race **68729** is active, root already **16.818s**, log
+`/tmp/eidolon-investigations-landmarks-server.log`. No other browser is owned;
+freeze investigation runtime until its checks close.
+
+Root retains only the dormant foundation and 15-chapter playable chain. No new
+balance/story package is released. Full roadmap, coordinated XP/gold/equipment
+tuning and remaining earned investigations are materially incomplete.
+
+## Historical checkpoint — September 7, 19:50 UTC
+
+**Corrected Alpha 1.0.40 `e7a07b6` is pushed; CI 34156520169 is active.**
+The preceding `34152138480` is terminal failure with all deployments skipped.
+After clean staging, exact remote `1106228` and ancestry checks, the new
+`release/40-with-lunge-landing` branch is pushed as a fast-forward. Fresh public
+manifest/login/versioned-main/backend checks just before publication still
+return exact `7ddf776ef18caa0763eedeb8d5a0d7f25afdcd4d` / **Alpha 1.0.39**, HTTP
+200 and healthy/ready. No 40 live success is claimed. **Publish 41 only after all
+40 CI/deployment/live jobs succeed and a fresh exact public identity check passes.**
+
+40's final local verification passes **203 suites / 2,996 client tests /
+122.763s**, full server race root **12.307s** and game **277.331s**, lint, and
+**58 anonymous checks / 5.7m**. The first completed sweep passes 57/58 but its
+failure collector records `net::ERR_NETWORK_CHANGED` for the external Cinzel
+Google Fonts stylesheet; its actual trace is inspected and retained at
+`/tmp/eidolon-release40-font-network-change-trace.zip`. The unchanged full rerun
+passes every assertion. All owned 40 local handles are closed. Actual Rogue/
+Cleric landing/bleed gameplay and complete evidence are in
+[the Lunge correction](2026-09-07-release40-lunge-landing.md).
+
+The verified correction and readiness backport are carried through new branches;
+old candidates remain preserved. 41 resolves the readiness import by retaining
+both `openGame` and its existing touch-scroll helper. All carry checks pass:
+
+| Version | Branch suffix `-with-lunge-landing` | Commit | Contracts |
+|---|---|---|---|
+| 41 | `release/41` | `a820d9a` | 237 / 1.206s |
+| 42 | `release/42` | `9c71a40` | 238 / 1.286s |
+| 43 | `release/43` | `fc41641` | 240 / 1.323s |
+| 44 | `release/44` | `85e5a62` | 242 / 1.387s |
+| 45 | `release/45` | `a2c216c` | 244 / 1.443s |
+| 46 | `release/46` | `3cbbd60` | 246 / 1.837s |
+| 47 | `release/47` | `9f9bca7` | 248 / 1.840s |
+| 48 | `release/48` | `ca14d8d` | 249 / 1.791s |
+
+Root merge **`8aa307e`** passes **269 integration checks / 2.597s**. Staging
+`/tmp/eidolon-release37-targeting-lT3Mdt` is clean on the new 48 branch; root is
+not a publication target. The next publisher is explicitly the new 41 branch.
+
+### Expanded Chronicle implementation, not released
+
+The separate investigation worktree `/tmp/eidolon-investigations-Ock9zw` now
+implements a **23-chapter** graph, interleaving diary → collection → linked
+evidence → dungeon in each realm, followed by the original four raids/Vigils,
+portal and Dark King. Returning characters retain every accepted/completed
+classic milestone and quoted collection payout; missing earlier investigations
+become unaccepted optional lore, never silently completed objectives. Tests cover
+migration at all 15 classic milestones and idempotent refresh. New investigations
+split existing collection XP (1/8 each) and gold (1/4 each), with the collection
+retaining the remainder, so fresh realm and total story budgets do not inflate.
+This is allocation, not final XP/loot balance sign-off.
+
+Client changes keep required story primary, expose optional lore separately,
+track optional quests independently, display the 23-chapter total, and preserve
+recorded diary pages, reading state and focus across updates without exposing
+undiscovered text. Targeted client checks pass **18 / 1.451s**; full client passes
+**217 suites / 3,207 tests / 76.604s**, lint, and migration/discovery/protocol
+checks pass three race repetitions (root **1.720s**, game **14.063s**).
+
+The first full backend run **85154** closes with two stale fixture failures:
+the root collection setup skipped the newly required diary, and the game turn-in
+test expected collection immediately after the opening hunt. The root fixture
+now records the diary and turns it in manually before testing bag receipts;
+full root rerun **74966** passes **11.770s**, log
+`/tmp/eidolon-investigations-expanded-server-root-final.log`. The game fixture
+now checks that the actual next diary remains unaccepted, retaining the manual
+turn-in requirement. Targeted graph/turn-in checks pass three race repetitions
+**3.144s**. The complete game rerun **61937** is active, log
+`/tmp/eidolon-investigations-expanded-game-final.log`; original failed game
+duration is **247.941s**, not a passing full-game result. Revalidate this exact
+new handle. No owned local browser is active. Expanded-graph commit **`9e1b0c4`**
+must remain isolated: world rendering, inspect request/acknowledgement, actual Fire
+combat credit, site reachability and earned desktop/touch playthroughs are not
+integrated yet. Root still contains only the tested dormant foundation and
+the existing 15-chapter playable chain.
+
+Full roadmap delivery, coordinated rewards/XP/equipment tuning, late-potency
+affordability and eight playable investigations remain open.
+
+## Historical checkpoint — September 7, 19:27 UTC
+
+**Alpha 1.0.39 remains live and healthy.** Corrected 40 CI **34152138480**
+finishes with client/server/browser smoke passing, but predeploy character QA
+fails: Rogue Shadow Lunge is accepted without visible movement; the retry also
+fails real target hover. All deployments and live QA are skipped. Fresh public
+manifest, login/main and backend checks at 19:22 return HTTP 200 and exact
+`7ddf776ef18caa0763eedeb8d5a0d7f25afdcd4d` / **Alpha 1.0.39**, healthy/ready.
+Do not publish 41 or later; 40 must be repaired and pass its complete gate first.
+
+The repair is isolated in staging `/tmp/eidolon-release37-targeting-lT3Mdt`,
+branch `work/release40-direct-target-20260907`, based on `1106228`.
+Regression tests demonstrate that a short Lunge is moved authoritatively but
+ignored by the local prediction deadband. An explicit accepted landing preserves
+the aim point and legacy event behavior. Original client regression fails
+**4 tests / 1.520s** and server event regression fails **6.246s**; corrected
+client **15 / 0.989s**, related server movement/bleed/wall checks **16.036s**.
+The first actual browser attempt detects a missing network payload mapping;
+that mapper is corrected with a separate wire/zero-coordinate/isolation test,
+passing three race repetitions **1.042s**. Actual direct-skills rerun passes
+Rogue **21.4s total** and Cleric **14.1s total**, exact accepted landing,
+attributed bleed, credential scan and cleanup. Both `92810` and `91656` are closed.
+
+Runtime/notes/tests commit **`c7d07d3`** is followed by status-test readiness
+backport **`785bd73`**. Its import conflict is resolved for the older 40 test;
+a prematurely started anonymous attempt exits on that syntax error before any
+checks run, and is closed. Final staging is clean and lint passes. Full final
+checks are confirmed active: client **67547**, server race **83399**, anonymous
+browser **24886**, logs `/tmp/eidolon-release40-lunge-full-client.log`,
+`/tmp/eidolon-release40-lunge-full-server.log`, and
+`/tmp/eidolon-release40-lunge-anonymous-final.log`. Revalidate these exact handles,
+do not restart on observation timeout, and keep staging runtime frozen during
+its browser test. This is not yet a verified/re-published correction. Earlier
+release branches remain preserved and need carry-forward of the eventual
+verified correction. Lunge evidence is in
+`docs/plans/2026-09-07-release40-lunge-landing.md` on the staging branch;
+it has not yet been merged into root.
+
+**Alpha 1.0.48 is locally verified and root-integrated**, not published.
+Release branch `release/48-with-combo-observation` is **`e13f512`**; root merge
+**`b65295c`** passes **261 integration checks / 3.397s**. Full client passes
+**216 suites / 3,198 tests / 149.264s**, full server race root **15.501s** and
+game **381.500s**; actual Forge/reconnect **24.4s / 26.4s total**, credential scan
+and cleanup pass. The inspected actual image is preserved at
+`/tmp/eidolon-release48-forge-accumulated-progress.png`. Final anonymous suite
+passes **75 / 9.4m**. The first 74/75 attempt fails on module dependency requests
+with `net::ERR_NETWORK_CHANGED`; test-only startup correction `be80c67` uses
+existing bounded readiness and passes four sizes twice before the full rerun.
+All owned 48 local handles are closed. See [Forge evidence](2026-09-07-forge-earned-scaling.md).
+
+**Investigation foundation `e320427` is root-integrated at `4f45b29`.** Shared
+eight-chapter/sixteen-object content, authoritative personal recording, distinct
+saved bits, snapshot/BSON/protobuf persistence and ID-based Ilyra replies pass
+**217 suites / 3,203 tests / 120.157s**, full server race root **13.400s** and game
+**321.451s**, plus lint. Root integration passes **254 checks / 3.249s**.
+Worktree `/tmp/eidolon-investigations-Ock9zw` is committed; all its owned checks
+are closed. The existing 15-chapter game is still active: no investigation world
+spawn, network/combat integration or migration-safe 23-chapter graph is enabled
+yet. Do not ship this foundation as playable expanded story. See
+[implementation and remaining activation work](2026-09-07-investigation-implementation.md).
+
+The full roadmap goal, coordinated XP/gold/equipment tuning, late-potency
+affordability and eight playable investigations remain open. Root/master is an
+integration branch, not a sequential publication target.
+
+## Historical checkpoint — September 7, 18:44 UTC
 
 **Alpha 1.0.39 remains fully verified live.** The first 40 run `34150633216`
 fails anonymous smoke before deployment; every deploy job is skipped. The phone
@@ -40,8 +292,29 @@ Root integrates this queue at `a39eab3`, and the measured loot/Forge audit
 root is not the publication target. The next balance implementation fixes lost
 Forge stat precision and batch pricing, with persisted metadata and matched
 previews. See [Forge work and exact active handles](2026-09-07-forge-earned-scaling.md).
-It is isolated/unpackaged; its auction mappers still need the new metadata.
-The broad goal, reward tuning and eight playable investigations remain open.
+The Forge runtime **`9695add`** now preserves precision in both auction mappers;
+the original auction regression fails **0.234s**, and the corrected Forge/trade/
+snapshot set passes three race repetitions **10.146s**. Initial full regression
+passes **216 suites / 3,197 client tests / 124.202s**, full server race (root
+**18.301s**, game **298.426s**), and actual Forge/reconnect **17.9s / 19.6s total**.
+The actual image is inspected and independently preserved. These initial owned
+handles are all closed; they are not final versioned-package evidence.
+
+The isolated worktree merges corrected queue/root ancestry at `d055ccb` and
+packages **Alpha 1.0.48 `2f365d0`**, with **every shard counts** patch notes and
+aligned version defaults. Contracts pass **239 / 1.302s**. Final checks are
+confirmed active: client `57233` (`/tmp/eidolon-release48-client.log`) and server
+`46715` (`/tmp/eidolon-release48-server.log`). Actual packaged Forge `97542`
+finishes **24.4s / 26.4s total**, with saved item/precision, guide choices,
+credential scan and disposable cleanup passing. Its actual image is inspected
+and copied to `/tmp/eidolon-release48-forge-accumulated-progress.png` before the
+next suite. Final lint also passes; both those handles are closed.
+
+The final anonymous suite is now confirmed active as owned handle **`8402`**,
+log `/tmp/eidolon-release48-anonymous.log`. Revalidate these exact handles; do
+not restart them on an observation timeout. Only one owned local browser may
+run at once. No 48 release branch, root integration or publication is claimed
+yet. The broad goal, reward tuning and eight playable investigations remain open.
 
 ## Historical checkpoint — September 7, 18:11 UTC
 
