@@ -40,11 +40,19 @@ test('Seraph training persists, changes actual smites and lifetime, and cleans u
                         qa.births[state.id] = now;
                     }
                 }
-                const result = handle(message);
-                for (const id of Object.keys(qa.births)) {
-                    if (!game.remotePlayers.has(id) && !qa.removals[id]) qa.removals[id] = now;
+                // Creation loads its model asynchronously; an absent replica
+                // immediately after a birth packet is not a removal. Observe
+                // the authoritative deletion/full-state absence instead.
+                for (const id of message.type === 'delta' ? message.payload?.r || [] : []) {
+                    if (qa.births[id] && !qa.removals[id]) qa.removals[id] = now;
                 }
-                return result;
+                if (message.type === 'state') {
+                    const present = new Set(Object.values(states || {}).map(state => state.id));
+                    for (const id of Object.keys(qa.births)) {
+                        if (!present.has(id) && !qa.removals[id]) qa.removals[id] = now;
+                    }
+                }
+                return handle(message);
             };
         });
     }
