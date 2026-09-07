@@ -49,8 +49,8 @@ test('dungeon movement casts and jumps stop at the wall and still permit ordinar
             const original = game.handleServerMessage.bind(game);
             window.__dungeonMovementCast = null;
             window.__movementObservation = { samples: [], outgoing: [] };
-            const send = game.networkManager.send.bind(game.networkManager);
-            game.networkManager.send = (type, payload) => {
+            const send = game.network.send.bind(game.network);
+            game.network.send = (type, payload) => {
                 if (type === 'ability' || type === 'move') {
                     const samples = window.__movementObservation.outgoing;
                     samples.push({ type, x: payload.x, z: payload.z, targetX: payload.targetX,
