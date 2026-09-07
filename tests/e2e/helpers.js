@@ -753,6 +753,49 @@ export async function projectEntity(page, targetId) {
     }, targetId);
 }
 
+export async function acquireLootPointer(page, id, timeout = 10_000) {
+    let point;
+    let candidate = 0;
+    try {
+        await expect.poll(async () => {
+            point = await page.evaluate(({ id, candidate }) => {
+                const game = window.game, drop = game.remotePlayers.get(id);
+                const mesh = drop?.mesh?.getObjectByName('LootHitbox');
+                if (!drop?.isActive || !mesh?.geometry) return null;
+                mesh.updateWorldMatrix(true, false);
+                if (!mesh.geometry.boundingBox) mesh.geometry.computeBoundingBox();
+                const box = mesh.geometry.boundingBox;
+                // Stay inside the actual hitbox. A hostile can cover its center
+                // without covering every side; never change runtime priorities
+                // or call pickup directly to get around that hostile.
+                const offsets = [[.5, .5, .5], [.15, .5, .5], [.85, .5, .5],
+                    [.5, .5, .15], [.5, .5, .85], [.5, .85, .5],
+                    [.15, .85, .15], [.85, .85, .85], [.15, .85, .85], [.85, .85, .15]];
+                const offset = offsets[candidate % offsets.length];
+                const world = drop.position.clone().set(
+                    box.min.x + (box.max.x - box.min.x) * offset[0],
+                    box.min.y + (box.max.y - box.min.y) * offset[1],
+                    box.min.z + (box.max.z - box.min.z) * offset[2]);
+                const projected = mesh.localToWorld(world).project(game.renderSystem.camera);
+                const x = (projected.x + 1) * innerWidth / 2;
+                const y = (1 - projected.y) * innerHeight / 2;
+                return { x, y, visible: Math.abs(projected.x) <= 1 && Math.abs(projected.y) <= 1 &&
+                    Math.abs(projected.z) <= 1 && document.elementFromPoint(x, y)?.tagName === 'CANVAS' };
+            }, { id, candidate: candidate++ });
+            if (!point?.visible) return false;
+            await page.mouse.move(point.x, point.y);
+            // The real hover route is budgeted to 20Hz. Let it sample this
+            // pointer before inspecting its result or moving to another edge.
+            await page.waitForTimeout(75);
+            return page.evaluate(id => window.game.hoveredEntity?.id === id, id);
+        }, { timeout, intervals: [75, 100, 150], message: 'A real pointer must acquire the intended loot hitbox' }).toBe(true);
+    } catch (error) {
+        error.lootPoint = point;
+        throw error;
+    }
+    return point;
+}
+
 async function projectNearestLoot(page) {
     return page.evaluate(() => {
         const game = window.game;
@@ -1433,13 +1476,9 @@ export async function exerciseCombatAndLoot(page) {
         // a living hostile. Never treat an unverified click as a pickup attempt.
         let point;
         try {
-            await expect.poll(async () => {
-                point = await projectEntity(page, loot.id);
-                if (!point?.visible) return false;
-                await page.mouse.move(point.x, point.y);
-                return page.evaluate(id => window.game.hoveredEntity?.id === id, loot.id);
-            }, { timeout: 10_000, message: 'A real pointer must acquire the intended loot hitbox' }).toBe(true);
+            point = await acquireLootPointer(page, loot.id);
         } catch (error) {
+            point = error.lootPoint;
             const diagnostic = await page.evaluate(({ id, point }) => {
                 const game = window.game, drop = game.remotePlayers.get(id);
                 return { point, dropExists: Boolean(drop), active: drop?.isActive,
