@@ -99,8 +99,15 @@ test('status Mastery purchases change real ticks and persist through fresh login
         const dexterity = await page.evaluate(() => window.game.player.stats.dexterity);
         let aim;
         async function acquireAim() {
+            let sample = 0;
+            const points = [null,
+                { x: .15, y: .5, z: .15 }, { x: .85, y: .5, z: .85 },
+                { x: .15, y: .75, z: .85 }, { x: .85, y: .75, z: .15 }];
             await expect.poll(async () => {
-                aim = await projectEntity(page, target.id);
+                // A wounded foreground enemy can cover the center of a fresh
+                // target. Aim at other real points on its interaction hitbox,
+                // as a player would, without changing any entity or raycast.
+                aim = await projectEntity(page, target.id, points[sample++ % points.length]);
                 if (aim?.visible) await page.mouse.move(aim.x, aim.y);
                 const acquired = await page.evaluate(async ({ visible }) => {
                     await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));

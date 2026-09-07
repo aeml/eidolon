@@ -716,8 +716,8 @@ async function readEntity(page, targetId) {
     }, targetId);
 }
 
-export async function projectEntity(page, targetId) {
-    return page.evaluate((id) => {
+export async function projectEntity(page, targetId, hitboxPoint = null) {
+    return page.evaluate(({ id, hitboxPoint }) => {
         const game = window.game;
         const entity = (game?.activeEntitiesCache || []).find((candidate) => candidate.id === id) ||
             game?.remotePlayers?.get?.(id);
@@ -747,6 +747,10 @@ export async function projectEntity(page, targetId) {
             for (const height of [0.5, 0.25, 0.75]) {
                 const point = box.getCenter(worldPoint.clone());
                 point.y = box.min.y + (box.max.y - box.min.y) * height;
+                if (hitboxPoint) {
+                    for (const axis of ['x', 'y', 'z']) point[axis] = box.min[axis]
+                        + (box.max[axis] - box.min[axis]) * hitboxPoint[axis];
+                }
                 const candidate = projectPoint(child.localToWorld(point));
                 if (candidate.visible) { visiblePoint = candidate; break; }
             }
@@ -763,7 +767,7 @@ export async function projectEntity(page, targetId) {
             });
         }
         return visiblePoint || projectPoint(worldPoint);
-    }, targetId);
+    }, { id: targetId, hitboxPoint });
 }
 
 async function projectNearestLoot(page) {
