@@ -9,13 +9,30 @@ Current release queue (September 7): **1.0.27 (`0d4e1a1`) is fully verified**.
 CI **`34072603962`** passed every job, including final live character/animation QA.
 Post-terminal uncached checks at **02:03:16 UTC** matched manifest, login label,
 versioned main entry and backend to `0d4e1a1fb37d728db85c1eac9d56b6dc3bc785dd` /
-Alpha 1.0.27; health `ok`, database `ready`. Only **1.0.28
-`424e6b11579b5e7ea5c50a060dcb89011fab7126`** was pushed next; CI
-**`34075003387`** is running.
+Alpha 1.0.27; health `ok`, database `ready`. Original **1.0.28
+`424e6b11579b5e7ea5c50a060dcb89011fab7126`** failed CI **`34075003387`** before
+deployment on a real-clock-dependent cooldown unit test. Server checks passed;
+all browser/deploy/live jobs were skipped. The deterministic test-only successor
+**`48c74cddaf79293a80dc62ebd66565cc0cf7923d`** is pushed, with CI **`34075628459`**
+running. Full local coverage passes 169 suites / 2,420 tests plus lint. See
+[the retained failure and clock repair](2026-09-07-release28-clock.md).
 The prior 1.0.26 full verification (`34070192341`, uncached identity at
 01:18:17 UTC), 1.0.25 verification at 00:32:55 UTC and retained attempt-1
 local-port collision remain historical checkpoints.
 Later releases remain local until the preceding complete CI/live gate passes.
+
+The same test-only repair is merged into queued descendants without runtime
+changes. Sequential ancestry and package/manifest/login versions are checked.
+These are the current successor sources; older source IDs below remain historical
+implementation/validation receipts, not the next commits to push:
+
+| Version | Queued source | Branch |
+|---|---|---|
+| 1.0.29 | `bc96862209b621b1e995c3dd4d9d72acf61aaf44` | `release/29-with-clock` |
+| 1.0.30 | `c3247e849daad029b0c4f053b3d4d969ebba0f82` | `release/30-with-clock` |
+| 1.0.31 | `bacaa59c7dd2fa016d400ddeacbe90c4a51982d2` | `release/31-with-clock` |
+| 1.0.32 | `0d6f1e42a93718b3d3fd7653f61bb0a8d009d871` | `release/32-with-clock` |
+| 1.0.33 | `92842b5b6757bd4b3ca7d1cf5cff94b98665bcec` | `release/33-with-clock` |
 
 Alpha 1.0.33 phone status implementation `fe857a6` is committed locally with
 separate notes and synchronized metadata. It adds tap-readable buff/debuff details,
