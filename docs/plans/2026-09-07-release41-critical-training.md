@@ -2,7 +2,10 @@
 
 Status: local candidate, not published. It follows corrected 1.0.40 ancestry;
 do not skip 1.0.37–40 or push root ahead of their individual CI/live gates.
-Current integration source: **52d78ee09073d743947392fbc8e9375189ec03ef**.
+Runtime integration source: **52d78ee09073d743947392fbc8e9375189ec03ef**.
+Final QA/ancestry integration: **1fa2a219d76af303112b8965de3a61a03d1dab94**.
+Game/server/index source is identical between these checkpoints; the latter
+adds the verified healing-retry correction and touch-driver repairs.
 
 ## Player-facing scope
 
@@ -47,6 +50,15 @@ touch-down/release, and successful chat opening. They do not retry failed taps.
 The HUD import failure does not recur in this bounded rerun; its original cause
 is not established. A full anonymous rerun remains required after cleanup.
 Logs: `status-diagnostic`, `status-activation`, `touch-settled` under the same prefix.
+
+Final rerun on **1fa2a21**, with temporary diagnostics removed, passes **all 53
+anonymous browser checks in 2.0 minutes**, including all four quest/status phone
+sizes and the previously failed HUD import route. Final lint and shell syntax
+pass; merged version/history/isolated-default checks pass **215 tests in 0.968s**.
+The owned browser exits zero. Logs: `browser-final`, `lint-final`, `queue-final`
+under the same prefix. These supplement the unchanged runtime's full 3,080-client
+and server-race passes above. Local verification is complete for this package;
+its sequential CI/deployment/live verification has not begun.
 
 No full-talent, offline-parity, phone-device or dungeon/raid completion is claimed.
 Bleed/poison source consumption, unimplemented offline Avenging Seraph, older

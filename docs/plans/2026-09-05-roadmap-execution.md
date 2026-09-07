@@ -90,6 +90,20 @@ It is not published; do not skip the four
 preceding releases. Historical separate-branch and pending critical-browser
 statements below are superseded by this checkpoint, not erased evidence.
 
+Final 1.0.41 QA integration **1fa2a21** now carries the healing retry correction
+through corrected 1.0.40 ancestry. Touch diagnostics reproduce native scrolling
+consuming the next tap; waiting for measured scroll offset to settle repairs the
+driver without changing runtime UI or retrying taps. The speculative status
+dismissal change is removed. Ten targeted browser cases pass 27.9s; the cleaned
+full anonymous rerun passes **53/53 in 2.0 minutes**, including the HUD import
+case. Final lint/shell checks pass, and merged version/default/history checks
+pass **215 tests in 0.968s**. Runtime source is unchanged from the full 3,080-client
+and server-race passes. The package is locally verified, not published.
+
+Latest confirmed 1.0.37 CI **34121785766**: client/server checks pass and browser
+smoke is in progress. The goal remains the full 1.1–1.10 roadmap; neither this
+critical package nor its passing checks close the broader gates.
+
 The earned Fighter run completed on unchanged source `2c80b06`, session
 `47165`, `/tmp/eidolon-earned-fighter-corrected-gameplay.log`. Its paid Skeleton
 and Imp contracts and saved manual rewards reach level 34; the full Verdant

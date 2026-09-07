@@ -1,12 +1,19 @@
 # Remaining talent consumers — reproduced September 6
 
-Latest September 7 diagnostic: the [critical-chance consumer record](2026-09-07-talent-critical-chance.md)
-reproduces ignored Rogue, Wizard and Fighter critical talents through actual
-paid casts, with deterministic paired rolls and passing equipment-only controls.
-The expanded audit fails those four expectations in **1.699 seconds**. The
-previous Cleric area probes now pass in the preserved 1.0.40 runtime; historical
-unresolved labels below describe earlier checkpoints. Critical-chance repair,
-Purifying Wave's ineffective mastery and the remaining full-tree gate stay open.
+Latest September 7 integration: the [critical-chance consumer record](2026-09-07-talent-critical-chance.md)
+retains the original four trained-cast failures (1.699s), now repaired in the
+local 1.0.41 candidate. The same actual-consumer audit passes **0.890s**, alongside
+promoted rank/control/composition/flight regressions and three-class ordinary
+browser purchases, combat and saved ranks. Publication remains pending; this is
+not a full 160-talent sign-off. The previous Cleric area probes also pass in the
+preserved 1.0.40 runtime. Historical unresolved labels below describe their
+checkpoints, not the current audit command's result.
+
+Next audit work remains Purifying Wave's healing-only Mastery without a healing
+consumer, periodic bleed/poison source attribution and unimplemented offline
+Avenging Seraph. Any change to an intended talent benefit must reconcile its
+copy, ordinary cast behavior and preserved saved investment; adding metadata or
+silently resetting ranks is not a repair. The broader full-tree gate stays open.
 
 Status: four representative consumer defects reproduced against the 1.0.29
 runtime. Not repaired by the cooldown/mana patch, and not a complete 160-talent
