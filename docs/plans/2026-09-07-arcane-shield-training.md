@@ -32,7 +32,15 @@ it. Logs: `/tmp/eidolon-shield-training-client-before.log`,
 `/tmp/eidolon-shield-training-client-focused.log`,
 `/tmp/eidolon-shield-training-status-final.log`.
 
-Remaining: full client/server race and lint; actual baseline/trained/saved-login
+Checkpoint **`304f2a6`** passes **213 client suites / 3,161 tests / 121.867s**,
+the full Go race suite (**root 26.487s, game 278.437s**) and final lint.
+The final shield/status/attached-effect set passes **62 / 1.668s** after the
+locked-cast guard. All these handles are terminal success; logs:
+`/tmp/eidolon-shield-training-full-client.log`,
+`/tmp/eidolon-shield-training-full-server.log`,
+`/tmp/eidolon-shield-training-final-lint.log`.
+
+Remaining: actual baseline/trained/saved-login
 shield casts, rendered absorption/expiry inspection, release packaging/notes,
 and sequential CI/live verification. Offline Reflective/Explosive rune behavior
 still needs separate parity work; only their server consumers are verified here.
