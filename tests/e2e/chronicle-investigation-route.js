@@ -52,7 +52,10 @@ export async function earnInvestigation(page, id, openIlyra, capture, { waypoint
         if (site.kind === 'combat') {
             expect(defeatSite, 'Combat evidence needs ordinary combat, never inspection credit').toBeTruthy();
             await walkTo(page, site.x + 18, site.z + 18);
-            await defeatSite(site, chapter);
+            try { await defeatSite(site, chapter); } catch (error) {
+                if (capture) await capture(site, 'combat-failure');
+                throw error;
+            }
             if (capture) await capture(site, 'earned-combat');
             continue;
         }
