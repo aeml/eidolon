@@ -382,7 +382,7 @@ export const CONSTANTS = {
                 { name: "Lightstep", desc: "-2% skill cooldowns and +1% movement speed per rank (10% / 5% max).", maxRank: 5 },
                 { name: "Fine Motor", desc: "+2% multi-hit damage per rank (10% max).", maxRank: 5 },
                 { name: "Catlike Reflexes", desc: "+1% dodge per rank (5% max).", maxRank: 5 },
-                { name: "Quick Draw", desc: "+3% projectile damage per rank (15% max).", maxRank: 5 },
+                { name: "Quick Draw", desc: "+3% ability range per rank (15% max).", maxRank: 5 },
                 { name: "Evasive Flow", desc: "+2% damage reduction per rank (10% max).", maxRank: 5 },
                 { name: "Close-Quarters Grace", desc: "+3% melee damage per rank (15% max).", maxRank: 5 },
                 { name: "Edge Awareness", desc: "+4% crit damage per rank (20% max).", maxRank: 5 },
@@ -390,6 +390,7 @@ export const CONSTANTS = {
             );
 
             return entries.slice(0, 40).map((t, i) => ({ id: `ROG_${String(i + 1).padStart(2, '0')}`, ...t,
+                abilityRange: i === 35 ? { range: 0.03 } : undefined,
                 abilityEconomy: i < 26 && i % 2 === 1 ? { skill: skills[Math.floor(i / 2)], cdr: 0.03 }
                     : i === 32 ? { cdr: 0.02 } : undefined }));
         })(),

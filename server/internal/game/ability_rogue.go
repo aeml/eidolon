@@ -98,11 +98,12 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 		// Weak Point Mark (Debuff)
 		cost := resolveAbilityManaCost(player, skillName, 25)
 		if player.Mana >= cost {
+			castRange := effectiveAbilityRange(player, skillName, 10.0)
 
 			// Find target near cursor while enforcing the authoritative cast range.
 			var bestTarget *Entity
 			if targetID != "" {
-				if target, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(w, player, target, 10.0, TypeEnemy) {
+				if target, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(w, player, target, castRange, TypeEnemy) {
 					bestTarget = target
 				}
 			}
@@ -115,7 +116,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				if target.ID == player.ID {
 					continue
 				}
-				if !validDirectAbilityTarget(w, player, target, 10.0, TypeEnemy) {
+				if !validDirectAbilityTarget(w, player, target, castRange, TypeEnemy) {
 					continue
 				}
 				target.Mu.RLock()

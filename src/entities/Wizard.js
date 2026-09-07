@@ -8,6 +8,7 @@ import { spawnEffectSceneFallback, spawnSceneFallbackBeam } from './EffectSceneF
 import { getAbilityAoeRadius } from '../skills/abilityRadii.js';
 import { getAbilityRange, getTeleportCastRange } from '../core/AbilityRange.js';
 import { clipDungeonEffectSegment, resolveDungeonBeamEndpoint } from '../skills/dungeonEffectGeometry.js';
+import { findOfflineAbilityTarget } from '../skills/offlineAbilityTargeting.js';
 
 export class Wizard extends Actor {
     constructor(id) {
@@ -322,28 +323,11 @@ export class Wizard extends Actor {
             const cdr = this.stats.cooldownReduction || 0;
             this.cooldowns["Arcane Missiles"] = 6.0 * (1 - cdr);
             
-            // Find target
-            let target = null;
-            let minDst = 20.0;
-            const entities = gameEngine.chunkManager.getActiveEntities();
-            entities.forEach(entity => {
-                if (
-                    entity instanceof Actor &&
-                    typeof entity.takeDamage === 'function' &&
-                    entity.isActive &&
-                    entity.state !== 'DEAD' &&
-                    entity !== this
-                ) {
-                     // Enemy check (simplified)
-                     if (entity.constructor.name !== 'Wizard' && entity.constructor.name !== 'Cleric' && entity.constructor.name !== 'Fighter' && entity.constructor.name !== 'Rogue') {
-                         const d = entity.position.distanceTo(targetVector);
-                         if (d < minDst) {
-                             minDst = d;
-                             target = entity;
-                         }
-                     }
-                }
+            const target = findOfflineAbilityTarget(this, gameEngine, targetVector, {
+                range: getAbilityRange(this, skill, CONSTANTS.ABILITY_CONFIG.Wizard.skills[skill].range),
+                cursorRadius: 4, padCursor: true
             });
+            const cursorAngle = Math.atan2(targetVector.z - this.position.z, targetVector.x - this.position.x);
             
             // Spawn 3 missiles
             const spawnMissile = (delay, offsetAngle) => {
@@ -356,7 +340,10 @@ export class Wizard extends Actor {
                     startPos.z += Math.cos(offsetAngle) * 0.5;
                     
                     // Initial direction: Up and out, then home
-                    const initialTarget = startPos.clone().add(new THREE.Vector3(Math.sin(offsetAngle), 1, Math.cos(offsetAngle)).multiplyScalar(5));
+                    const launchDirection = target
+                        ? new THREE.Vector3(Math.sin(offsetAngle), 1, Math.cos(offsetAngle))
+                        : new THREE.Vector3(Math.cos(cursorAngle + offsetAngle * .1), 0, Math.sin(cursorAngle + offsetAngle * .1));
+                    const initialTarget = startPos.clone().add(launchDirection.multiplyScalar(5));
                     
                     const missile = new Projectile(null, this, 'ArcaneMissile', startPos, initialTarget);
                     missile.damage = (10 + (this.stats.intelligence * 1.0)) * damageMultiplier;

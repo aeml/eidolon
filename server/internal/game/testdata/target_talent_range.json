@@ -1,0 +1,10 @@
+[
+  { "name": "missiles baseline", "class": "Wizard", "skill": "Arcane Missiles", "ranks": {}, "range": 18 },
+  { "name": "missiles aether one", "class": "Wizard", "skill": "Arcane Missiles", "ranks": { "WIZ_35": 1 }, "range": 18.72 },
+  { "name": "missiles aether five", "class": "Wizard", "skill": "Arcane Missiles", "ranks": { "WIZ_35": 5 }, "range": 21.6 },
+  { "name": "missiles stacked", "class": "Wizard", "skill": "Arcane Missiles", "ranks": { "WIZ_29": 5, "WIZ_35": 5, "WIZ_38": 5 }, "range": 26.1 },
+  { "name": "mark baseline", "class": "Rogue", "skill": "Weak Point Mark", "ranks": {}, "range": 10 },
+  { "name": "mark quick draw one", "class": "Rogue", "skill": "Weak Point Mark", "ranks": { "ROG_36": 1 }, "range": 10.3 },
+  { "name": "mark quick draw five", "class": "Rogue", "skill": "Weak Point Mark", "ranks": { "ROG_36": 5 }, "range": 11.5 },
+  { "name": "mark unrelated mastery", "class": "Rogue", "skill": "Weak Point Mark", "ranks": { "ROG_01": 5 }, "range": 10 }
+]

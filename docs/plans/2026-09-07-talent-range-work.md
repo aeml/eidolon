@@ -102,7 +102,66 @@ It uses a prepared level-100 disposable character, not earned progression or
 proof of remote multiplayer play. Runtime and selected browser source stayed
 unchanged throughout that run. No range release is ready yet.
 
-Source trace for the next consumers: ordinary server projectiles expire after
+## Third/fourth consumers: Arcane Missiles and Weak Point Mark
+
+Working after checkpoint `2fc71f3` (Teleport/beam), not a separately versioned
+release. Arcane Missiles now uses the talent-adjusted 18m homing acquisition
+range in both explicit-target validation and cursor fallback. A rejected target
+still produces the normal three unguided missiles and an accepted paid cast;
+the rejected ID must not survive in any projectile or ability event. This does
+not yet change projectile travel/lifetime or speed.
+
+Weak Point Mark now applies Rogue Quick Draw's existing global +3% range per
+rank to both target paths (10m → 11.5m at five ranks). Invalid targets still reject
+before mana/cooldown/event consumption. Quick Draw's old projectile-damage copy
+is corrected to the actual range effect, with client range metadata and cast
+intent updated for these two working consumers only. Other Rogue range consumers
+must follow before a range release; metadata alone does not implement them.
+
+Offline selection now separates caster reach from the cursor pick radius,
+uses horizontal coordinates and canonical cover, and rejects friendly heroes,
+dead actors and protected NPCs. Weak Point Mark preflights before the shared
+cast spends resources or emits its visual. Unguided offline missiles now launch
+toward the cursor with the server's ±0.2-radian spread instead of retaining the
+old upward/outward homing-launch pattern without a homing target. Existing
+targeted offline homing animation, projectile speed/lifetime and online
+projectile simulation remain unchanged in this step.
+
+The new shared eight-case contract covers both classes, baseline, one/five
+relevant ranks, stacked Wizard ranks and unrelated Rogue Mastery. Server cases
+test just inside/outside body-padded reach for normal/4x-scale targets, with
+explicit/cursor selection and resource/event/projectile outcomes. Before fixes,
+**17 of 24 client checks failed** and the ranked server target probes failed;
+logs `/tmp/eidolon-target-range-before-{client,server}.log`.
+
+The expanded targeted race suite passes **17.311 seconds**, including actual
+projectile updates and impacts through a doorway beyond untrained homing range,
+wall rejection, friendly protection, dead targets and other-instance targets.
+Log `/tmp/eidolon-target-range-expanded-server.log`. The first focused race run
+also passed in 13.770 seconds. Expanded client selection checks pass **30 tests**
+in 1.017 seconds, `/tmp/eidolon-target-range-expanded-client.log`; the subsequent
+full suite additionally covers the new unguided launch-direction assertions.
+
+The full client suite passes **186 suites / 2,638 tests in 149.080 seconds**,
+`/tmp/eidolon-target-range-full-client.log`; final lint passes in
+`/tmp/eidolon-target-range-final-lint.log`. The full server race run is still
+running separately, `/tmp/eidolon-target-range-full-server.log` (session `37764`);
+do not infer its result from the focused race checks. The isolated `direct-skills`
+browser route passes for **Rogue in 32.7 seconds (30.3-second body)** and
+**Cleric in 22.9 seconds (19.6-second body)**, log
+`/tmp/eidolon-target-range-gameplay.log`. Credential scan and disposable cleanup
+also pass; session `16329` exits zero. Runtime and selected browser sources stayed
+unchanged during the route. The browser route retains the Cleric comparison and adds Rogue
+normal-menu Quick Draw purchases with an independent authoritative-state rank
+observer, ordinary enemy marking, fresh login and saved 11.5m cast intent. It
+does **not** prove a boundary hit: its enemy is deliberately close enough for
+the existing interaction flow. Exact boundary and missile-impact evidence comes
+from the server tests above, not this browser smoke. Real multiplayer/phone and
+the remaining range/area/talent gates are still open.
+
+## Projectile travel trace — still unresolved
+
+Ordinary server projectiles expire after
 five seconds in `world_update_entity.go` (traps use sixty); Fireball speed is
 20m/s or 12m/s with Magma, while the offline projectile has a ten-second baseline.
 Client Fireball intent uses 36m and the server ability-spec entry says 18m.
@@ -117,16 +176,20 @@ expiry must remain consistent with their replicated presentation.
 - Continue Wizard and Rogue actual consumers, not just Teleport: direct target
   validation, cone/beam reach, directional projectile travel/lifetime, placement
   bounds and relevant runes. Preserve base behavior where no ranks are allocated.
-- Next direct/homing boundaries: Arcane Missiles still validates both explicit
-  and cursor-selected homing targets at a fixed 18m; Weak Point Mark still uses
-  fixed 10m. Preserve the distinction between a rejected homing target (missiles
-  still launch without homing) and a rejected targeted debuff (no resource cost).
-  Flame Whip still uses fixed 12m, Shadow Lunge fixed 10m/15m with its rune, and
+- Next direct/cone/movement boundaries: Flame Whip still uses fixed 12m,
+  Shadow Strike fixed 10m, Shadow Lunge fixed 10m/15m with its rune, and
   Backstab fixed 2.5m. Do not change only their search radius while retaining an
   old final hit/movement check.
 - Update client chase/targeting and local/remote presentation for every changed
   consumer. Teleport's helper alone must not be wired globally ahead of working
   server consumers. Current metadata does not mean all corresponding spells work.
+- Cone/area presentation needs an explicit resolved-shape path: `AbilityEvent`
+  currently publishes only source/target IDs, name and target coordinates, while
+  `abilityRadii.js` derives fixed/rune radii locally. Remote actors do not carry
+  private talent allocations. Carry final radius/arc for affected accepted events
+  instead of guessing ranks from the viewer; keep predicted local geometry paired.
+  Decide and document how range versus area bonuses apply to a caster-origin cone
+  before stacking both on the same radius, including Nova Cascade's 360° shape.
 - Pair inside/outside boundary casts with unchanged LOS, walls, height, instance,
   relationship and oversized-target checks. Add real-server gameplay and saved
   rank checks before publication, then separate patch notes/version metadata.

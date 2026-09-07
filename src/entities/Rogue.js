@@ -4,6 +4,8 @@ import { CONSTANTS } from '../core/Constants.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
 import { Projectile } from './Projectile.js';
 import { spawnEffectSceneFallback } from './EffectSceneFallback.js';
+import { getAbilityRange } from '../core/AbilityRange.js';
+import { findOfflineAbilityTarget } from '../skills/offlineAbilityTargeting.js';
 import {
     PROCEDURAL_PROJECTILE_VISUAL_DEFINITIONS,
     createProceduralProjectileVisual,
@@ -94,9 +96,17 @@ export class Rogue extends Actor {
 
     useAbility(targetVector, gameEngine, skillNameOverride = null) {
         if (!targetVector) return;
-        if (!super.useAbility(targetVector, gameEngine, skillNameOverride)) return;
-
         const skill = skillNameOverride || this.abilityName;
+        let markTarget = null;
+        if (skill === 'Weak Point Mark' && !this.isMultiplayer && !gameEngine?.isMultiplayer) {
+            markTarget = findOfflineAbilityTarget(this, gameEngine, targetVector, {
+                range: getAbilityRange(this, skill, CONSTANTS.ABILITY_CONFIG.Rogue.skills[skill].range), cursorRadius: 3
+            });
+            // Match the authoritative rejection before super spends mana or
+            // presents a cast. An invalid targeted debuff is not a free aim.
+            if (!markTarget) return false;
+        }
+        if (!super.useAbility(targetVector, gameEngine, skillNameOverride)) return;
 
         if (this.isMultiplayer || gameEngine?.isMultiplayer) return true;
 
@@ -160,20 +170,7 @@ export class Rogue extends Actor {
             const cdr = this.stats.cooldownReduction || 0;
             this.cooldowns["Weak Point Mark"] = 12.0 * (1 - cdr);
 
-            // Target closest enemy to cursor
-            let target = null;
-            let minDst = 1000;
-            const entities = gameEngine.chunkManager.getActiveEntities();
-            
-            entities.forEach(entity => {
-                if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
-                    const d = entity.position.distanceTo(targetVector);
-                    if (d < 3.0 && d < minDst) {
-                        minDst = d;
-                        target = entity;
-                    }
-                }
-            });
+            const target = markTarget;
 
             if (target) {
                 target.weakPointMarkTimer = 10.0;

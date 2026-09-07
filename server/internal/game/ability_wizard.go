@@ -738,16 +738,17 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 		cost := resolveAbilityManaCost(player, skillName, 30)
 		if player.Mana >= cost {
 			player.Mana -= cost
+			castRange := effectiveAbilityRange(player, skillName, 18.0)
 			var homingTarget *Entity
 			if targetID != "" {
-				if target, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(w, player, target, 18.0, TypeEnemy) {
+				if target, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(w, player, target, castRange, TypeEnemy) {
 					homingTarget = target
 				}
 			}
 			if homingTarget == nil {
 				minDistance := 4.0
 				for _, target := range w.Grid.Nearby(targetX, targetZ, 4.0+maxAbilityTargetVisualRadius, player.InstanceID) {
-					if !validDirectAbilityTarget(w, player, target, 18.0, TypeEnemy) {
+					if !validDirectAbilityTarget(w, player, target, castRange, TypeEnemy) {
 						continue
 					}
 					distance := math.Hypot(target.X-targetX, target.Z-targetZ)

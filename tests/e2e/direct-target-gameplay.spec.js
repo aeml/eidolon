@@ -57,6 +57,33 @@ test('hostile marks reject an empty cast and accept an actual reachable enemy', 
     expect(await page.evaluate(() => window.__directCastTargets)).toEqual([]);
     await expect.poll(() => page.evaluate(skill => window.game.player.cooldowns?.[skill] || 0, skill)).toBe(0);
 
+    if (className === 'Rogue') {
+        // Observe authoritative ranks independently of the desktop's optimistic
+        // preview. Purchase only through the normal talent menu.
+        await page.evaluate(() => {
+            window.__directSavedRank = 0;
+            const game = window.game, original = game.handleServerMessage.bind(game);
+            game.handleServerMessage = message => {
+                const states = message.type === 'state' ? message.payload : message.type === 'delta' ? message.payload?.u : null;
+                for (const state of Object.values(states || {})) {
+                    if (state.id === game.player.id && state.talentRanks?.ROG_36 !== undefined) {
+                        window.__directSavedRank = state.talentRanks.ROG_36;
+                    }
+                }
+                return original(message);
+            };
+        });
+        await page.keyboard.press('k');
+        await skills.getByRole('button', { name: 'Talents', exact: true }).click();
+        for (let rank = 1; rank <= 5; rank++) {
+            const talent = skills.locator('.skill-node').filter({ has: page.locator('.skill-node-title', { hasText: 'Quick Draw' }) });
+            await talent.scrollIntoViewIfNeeded(); await talent.click();
+            await expect.poll(() => page.evaluate(() => window.__directSavedRank)).toBe(rank);
+        }
+        await page.locator('#btn-close-skills').click();
+        expect(await page.evaluate(() => window.game.abilityController.getAbilityCastRange('Weak Point Mark'))).toBeCloseTo(11.5, 8);
+    }
+
     // Protection is only incoming-damage QA setup. Selection, movement and
     // casting use ordinary controls against a normal authoritative enemy.
     await useCombatQAWaypoint(page);
@@ -90,5 +117,11 @@ test('hostile marks reject an empty cast and accept an actual reachable enemy', 
     await expect.poll(() => page.evaluate(() => window.__directCastTargets)).toEqual([target.id]);
     console.log(`[direct-target] ${className} empty rejection and authoritative enemy mark passed`);
     await returnToTown(page);
+    if (className === 'Rogue') {
+        await page.reload({ waitUntil: 'networkidle' });
+        await loginAndEnterWorld(page, credentials);
+        await expect.poll(() => page.evaluate(() => window.game.player.talentRanks?.ROG_36 || 0)).toBe(5);
+        expect(await page.evaluate(() => window.game.abilityController.getAbilityCastRange('Weak Point Mark'))).toBeCloseTo(11.5, 8);
+    }
     expect(failures, failures.join('\n')).toEqual([]);
 });

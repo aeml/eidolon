@@ -59,6 +59,8 @@ export class AbilityController {
         const player = this.engine.player;
         if (skillName === 'Teleport') return getTeleportCastRange(player);
         if (skillName === 'Scorch Beam') return getAbilityRange(player, skillName, CONSTANTS.ABILITY_CONFIG.Wizard.skills[skillName].range);
+        if (skillName === 'Arcane Missiles') return getAbilityRange(player, skillName, CONSTANTS.ABILITY_CONFIG.Wizard.skills[skillName].range);
+        if (skillName === 'Weak Point Mark') return getAbilityRange(player, skillName, CONSTANTS.ABILITY_CONFIG.Rogue.skills[skillName].range);
         const className = player && player.constructor ? player.constructor.name : '';
         const classAbilityConfig = CONSTANTS.ABILITY_CONFIG ? CONSTANTS.ABILITY_CONFIG[className] : null;
         const defaultRange = classAbilityConfig && classAbilityConfig.default ? classAbilityConfig.default.range : null;
