@@ -10,7 +10,7 @@ import (
 )
 
 func TestCollectionTurnInDispatchRefreshesBagBeforeQuestCompletion(t *testing.T) {
-	for _, seeds := range []int{2, 4, 6} {
+	for _, seeds := range []int{6, 8, 10} {
 		t.Run(fmt.Sprintf("seeds_%d", seeds), func(t *testing.T) {
 			previousWorld, previousDB := world, db
 			defer func() { world, db = previousWorld, previousDB }()
@@ -30,16 +30,25 @@ func TestCollectionTurnInDispatchRefreshesBagBeforeQuestCompletion(t *testing.T)
 				t.Fatal("first chapter setup failed")
 			}
 			world.PerformAcceptQuest(player.ID, collection)
+			required := 0
+			for _, quest := range player.Quests {
+				if quest.ID == collection {
+					required = quest.MaxCount
+				}
+			}
+			if required != 8 {
+				t.Fatalf("expected current eight-fragment contract, got %d", required)
+			}
 			player.Inventory[0] = game.Item{ID: "quest-seeds", Name: "Verdant Memory Seed", Stack: seeds}
 			player.Inventory[1] = game.Item{ID: "keep-sword", Name: "Iron Sword", Stack: 1}
 			// A saved ready count must not bypass the physical-item requirement.
-			world.UpdateCollectionQuestProgress(player, "Verdant Memory Seed", 4)
+			world.UpdateCollectionQuestProgress(player, "Verdant Memory Seed", required)
 			goldBefore := player.Gold
 			payload, _ := json.Marshal(CompleteQuestPayload{QuestID: collection})
 			request := Message{Type: MsgCompleteQuest, Payload: payload}
 			client.handleMessage(request)
 			messages := drainSentMessages(client.send)
-			if seeds < 4 {
+			if seeds < required {
 				if len(messages) != 1 || messages[0].Type != MsgError || player.Inventory[0].Stack != seeds || player.Gold != goldBefore {
 					t.Fatal("missing-item turn-in changed the bag or returned success")
 				}
@@ -56,10 +65,10 @@ func TestCollectionTurnInDispatchRefreshesBagBeforeQuestCompletion(t *testing.T)
 			if err := json.Unmarshal(messages[0].Payload, &bag); err != nil {
 				t.Fatal(err)
 			}
-			if !reflect.DeepEqual(bag, player.Inventory) || bag[0].Stack != seeds-4 || bag[1].ID != "keep-sword" {
+			if !reflect.DeepEqual(bag, player.Inventory) || bag[0].Stack != seeds-required || bag[1].ID != "keep-sword" {
 				t.Fatalf("bag receipt differs from exact authoritative consumption: %+v", bag)
 			}
-			if seeds == 4 && bag[0].ID != "" {
+			if seeds == required && bag[0].ID != "" {
 				t.Fatal("consumed stack did not free its slot")
 			}
 			var quests []game.Quest

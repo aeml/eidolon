@@ -16,13 +16,15 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
     await openIlyra(page);
     await page.getByRole('button', { name: 'Accept Quest', exact: true }).click();
     await expect.poll(async () => (await readChronicleChapter(page, collection))?.accepted).toBe(true);
+    const required = (await readChronicleChapter(page, collection)).maxCount;
+    expect(required).toBe(8);
     await page.locator('#btn-close-quest').click();
     const previousAutoLoot = await page.evaluate(() => window.game.autoLootEnabled);
     await setAutoLootThroughSettings(page, true);
     await returnToTown(page);
     await leaveTown();
     let observedTargetDeaths = 0, deaths = 0;
-    for (let encounter = 0; encounter < 40 && (await readChronicleChapter(page, collection)).count < 4; encounter++) {
+    for (let encounter = 0; encounter < required * 5 + 2 && (await readChronicleChapter(page, collection)).count < required; encounter++) {
         const target = await findTarget();
         const deadline = Date.now() + 120_000;
         let defeated = null, respawned = false;
@@ -70,16 +72,16 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
             seeds: (await readChronicleChapter(page, collection)).count,
             level: (await readPlayerState(page)).level })}`);
     }
-    expect((await readChronicleChapter(page, collection)).count).toBe(4);
+    expect((await readChronicleChapter(page, collection)).count).toBe(required);
     expect((await readChronicleChapter(page, collection)).completed).toBe(false);
     await setAutoLootThroughSettings(page, false);
     await expect.poll(() => page.evaluate(() => window.game.pendingLootPickups.size)).toBe(0);
     const seedsBefore = await seedsInBag(page);
-    expect(seedsBefore).toBeGreaterThanOrEqual(4);
+    expect(seedsBefore).toBeGreaterThanOrEqual(required);
     await openIlyra(page);
     await page.getByRole('button', { name: 'Complete Quest', exact: true }).click();
     await expect.poll(async () => (await readChronicleChapter(page, collection)).completed).toBe(true);
-    await expect.poll(() => seedsInBag(page)).toBe(seedsBefore - 4);
+    await expect.poll(() => seedsInBag(page)).toBe(seedsBefore - required);
     const reward = await readChronicleChapter(page, collection);
     expect(reward.grantedGold).toBeGreaterThan(0);
     expect(reward.grantedXP).toBeGreaterThan(0);
@@ -96,7 +98,7 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
     expect((await readPlayerState(page)).level).toBe(earnedLevel);
     expect((await readChronicleChapter(page, collection)).completed).toBe(true);
     expect((await readChronicleChapter(page, dungeonChapter)).accepted).toBe(true);
-    expect(await seedsInBag(page)).toBe(seedsBefore - 4);
+    expect(await seedsInBag(page)).toBe(seedsBefore - required);
     await openDungeonGuide(page);
     await page.locator('#dungeon-type-select').selectOption('verdant_bastion_catacombs');
     const enabled = await page.locator('#btn-enter-dungeon').isEnabled();
