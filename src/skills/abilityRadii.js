@@ -1,7 +1,7 @@
 import { getAbilityAreaRadius, getFlameWhipRadius, getWizardAbilityAreaRadius, WIZARD_GROUND_ABILITIES } from '../core/AbilityRange.js';
 
 // Only abilities whose server casts publish authoritative radius/arc are enrolled.
-export const SELF_CENTERED_SHAPE_ABILITIES = new Set(['Purifying Wave', 'Guardian Embrace']);
+export const SELF_CENTERED_SHAPE_ABILITIES = new Set(['Purifying Wave', 'Guardian Embrace', 'Consecrated Ground']);
 export const AUTHORITATIVE_SHAPE_ABILITIES = new Set(['Flame Whip', ...WIZARD_GROUND_ABILITIES, ...SELF_CENTERED_SHAPE_ABILITIES]);
 
 /**

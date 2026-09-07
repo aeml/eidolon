@@ -6,6 +6,8 @@ import { disposeSceneMesh, spawnEffectSceneFallback } from './EffectSceneFallbac
 import { SpiritGuardiansEffect } from './SpiritGuardiansEffect.js';
 import { getAbilityAoeRadius } from '../skills/abilityRadii.js';
 import { getAbilityHealingAmount } from '../core/AbilityHealing.js';
+import { createProceduralProjectileVisual, applyProceduralProjectileScale, updateProceduralProjectileVisual, releaseProceduralProjectileVisual } from '../art/ProceduralProjectileEffects.js';
+import { clipDungeonEffectSegment } from '../skills/dungeonEffectGeometry.js';
 
 export class Cleric extends Actor {
     constructor(id) {
@@ -185,20 +187,20 @@ export class Cleric extends Actor {
 
         if (skill === "Consecrated Ground") {
             console.log("Cleric used Consecrated Ground!");
-            
-            // Cooldown 12s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Consecrated Ground"] = 12.0 * (1 - cdr);
 
-            // Create Zone
-            this.consecratedZone = gameEngine.isMultiplayer ? null : {
+            this.clearConsecratedZone();
+            const radius = getAbilityAoeRadius('Cleric', skill, this);
+            const visual = createProceduralProjectileVisual('ZoneHoly');
+            visual.position.copy(this.position);
+            visual.scale.setScalar(radius / 5);
+            applyProceduralProjectileScale(visual, radius / 5);
+            (gameEngine.effectScene || gameEngine.scene)?.add(visual);
+            this.consecratedZone = {
                 position: this.position.clone(),
-                duration: 8.0,
-                radius: 5.0
+                duration: this.skillRunes?.[skill] === 'consecratedground_lingering' ? 16 : 8,
+                radius, visual, elapsed: 0, tickTimer: 1,
+                damage: 20 + this.stats.wisdom
             };
-            
-            // Visual
-            this.spawnVisualEffect(gameEngine, this.position, 0xffd700, "ground_circle");
             return;
         }
 
@@ -430,7 +432,13 @@ export class Cleric extends Actor {
         this.seraphMesh = null;
     }
 
+    clearConsecratedZone() {
+        releaseProceduralProjectileVisual(this.consecratedZone?.visual);
+        this.consecratedZone = null;
+    }
+
     cancelAbilities() {
+        this.clearConsecratedZone();
         this.spiritsActive = false;
         this.spiritDuration = 0;
         this.spiritBoosted = false;
@@ -455,31 +463,36 @@ export class Cleric extends Actor {
         if (this.consecratedZone) {
             this.consecratedZone.duration -= dt;
             if (this.consecratedZone.duration <= 0) {
-                this.consecratedZone = null;
-            } else {
+                this.clearConsecratedZone();
+            } else if (!this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) {
+                this.consecratedZone.elapsed += dt;
+                updateProceduralProjectileVisual(this.consecratedZone.visual, 'ZoneHoly', this.consecratedZone.elapsed, dt);
                 // Tick every 1s
-                if (!this.consecratedZone.tickTimer) this.consecratedZone.tickTimer = 0;
                 this.consecratedZone.tickTimer += dt;
                 
                 if (this.consecratedZone.tickTimer >= 1.0) {
                     this.consecratedZone.tickTimer -= 1.0;
                     const radius = this.consecratedZone.radius;
-                    const healAmount = 15 + (this.stats.wisdom * 0.5);
-                    const damageAmount = 10 + (this.stats.wisdom * 0.5);
+                    const healAmount = getAbilityHealingAmount(this, 'Consecrated Ground', 15 + Math.floor(this.stats.wisdom / 2));
+                    const damageAmount = this.consecratedZone.damage;
+                    const rects = this.gameEngine?.currentInstanceId && this.gameEngine.currentInstanceType !== 'overworld'
+                        ? this.gameEngine.currentDungeonLayout?.walkRects : null;
                     
                     const entities = chunkManager ? chunkManager.getActiveEntities() : [];
-                    entities.forEach(entity => {
+                    new Set([this, ...entities]).forEach(entity => {
                         if (entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
-                            if (entity.position.distanceTo(this.consecratedZone.position) < radius) {
-                                // Heal Allies (including self)
-                                if (entity === this || entity === player) { // Simple ally check
-                                    entity.stats.hp = Math.min(entity.stats.maxHp, entity.stats.hp + healAmount);
-                                    if (this.gameEngine && this.gameEngine.floatingTextManager) {
-                                        this.gameEngine.floatingTextManager.spawn(`+${Math.floor(healAmount)}`, entity.position, '#00ff00');
-                                    }
+                            if (Math.hypot(entity.position.x - this.consecratedZone.position.x, entity.position.z - this.consecratedZone.position.z) <= radius + (entity.radius || 0)) {
+                                const hostile = entity !== this && (typeof this.gameEngine?.isHostileActorTarget === 'function'
+                                    ? this.gameEngine.isHostileActorTarget(entity)
+                                    : !['Wizard', 'Cleric', 'Fighter', 'Rogue', 'AvengingSeraph'].includes(entity.constructor.name));
+                                if (!hostile) {
+                                    const received = entity.poisonTimer > 0 ? Math.max(1, Math.floor(healAmount / 2)) : healAmount;
+                                    const before = entity.stats.hp;
+                                    entity.stats.hp = Math.min(entity.stats.maxHp, before + received);
+                                    if (entity.stats.hp > before) this.gameEngine?.floatingTextManager?.spawn(`+${entity.stats.hp - before}`, entity.position, '#00ff00');
                                 } else {
                                     // Damage Enemies
-                                    if (entity.takeDamage) {
+                                    if (entity.takeDamage && !clipDungeonEffectSegment(rects, this.consecratedZone.position, entity.position).blocked) {
                                         entity.takeDamage(damageAmount);
                                         if (this.gameEngine && this.gameEngine.floatingTextManager) {
                                             this.gameEngine.floatingTextManager.spawn(Math.floor(damageAmount), entity.position, '#ffff00');

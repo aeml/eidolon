@@ -12,13 +12,21 @@ label, versioned main script and backend to
 `a82baa2adcd41d25f9e9bc01c96d3af6a853674f` / Alpha 1.0.31; health `ok`, database
 `ready`. Only **1.0.32 `d578bdfff7cd998c56bc422bc403d4cbe666b902`** was pushed next.
 CI **`34089969590`** is in progress: client/server checks passed, browser smoke
-running. Do not push 1.0.33 until the complete CI/live gate and fresh identity check.
+passed, predeploy character QA running. Do not push 1.0.33 until the complete
+CI/live gate and fresh identity check. A fresh uncached public check at
+**06:33:12.223 UTC** still matches healthy 1.0.31 across manifest/login/script/backend.
 
-The [Guardian Embrace area repair](2026-09-07-guardian-area.md) is locally verified
+The [Guardian Embrace area repair](2026-09-07-guardian-area.md), checkpoint
+`a0a17e705055c4e5fdc4ee0ce4f12743e092db4e`, is locally verified
 after the preserved 1.0.36 source: 191 client suites / 2,809 tests, full server race
 checks and actual two-browser cast/late-observer/expiry gameplay pass. It is not
 part of the queued 1.0.36 candidate and does not close the wider combat/phone gates.
-The next diagnostic cast reproduces Consecrated Ground's ignored area talent.
+The [Consecrated Ground follow-up](2026-09-07-consecrated-area.md) now passes
+192 client suites / 2,822 tests and real-server phone casting/rune/persistence QA
+in 57.3s. Full server race checks pass root 22.926s / game 322.243s, plus final
+lint/shell/whitespace checks. It is a local checkpoint, not yet a release.
+The next diagnostic batch reproduces ignored area training on both Blessings and
+Heaven's Trumpet, without changing production character data.
 
 Historical 1.0.30 → original 1.0.31 failure and repair:
 CI **`34081910599`** passed every job, including final live character QA.

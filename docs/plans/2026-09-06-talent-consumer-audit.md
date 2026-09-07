@@ -5,14 +5,16 @@ runtime. Not repaired by the cooldown/mana patch, and not a complete 160-talent
 audit. No production save, running browser source or game balance was changed
 by these diagnostic casts.
 
-Latest September 7 local work: [Guardian Embrace area](2026-09-07-guardian-area.md)
-joins Purifying Wave and Teleport in ordinary actual-consumer regression coverage.
-The diagnostic overlay now retains **Consecrated Ground's periodic-area** defect:
-its rank-five actual cast/zone tick leaves the 6.8m ally unhealed despite the
-defined 5.75m radius plus 1.25m body padding; the zero-rank control passes.
-Log `/tmp/eidolon-consecrated-area-probe.log`, 0.113s. The earlier Guardian failure
-remains in `/tmp/eidolon-guardian-area-probe.log`. Earlier probe counts below
-describe historical checkpoints, not the current command's contents.
+Latest September 7 local work: [Consecrated Ground area](2026-09-07-consecrated-area.md)
+joins Guardian Embrace, Purifying Wave and Teleport in ordinary actual-consumer
+regression coverage. Its retained 6.8m cast/zone-tick probe changed from failing
+(0.113s) to passing (0.126s); logs are recorded in that work record. The diagnostic
+overlay now exercises **Blessing of Resolve, Blessing of Zeal and Heaven's Trumpet**
+as one immediate-area batch. All three rank-five casts fail at the new boundary
+while rank-zero controls pass: 12.2m for blessings, 14.2m for Trumpet, with 1.25m
+body padding. Log `/tmp/eidolon-cleric-immediate-area-probes.log`, 0.494s.
+Earlier probe counts below describe historical checkpoints, not the current
+command's contents. Remaining full-suite/publication gates stay in the work record.
 The full category and ineffective Purifying Wave healing mastery remain open.
 
 September 7: the separate [1.0.31 healing candidate](2026-09-07-talent-healing.md)

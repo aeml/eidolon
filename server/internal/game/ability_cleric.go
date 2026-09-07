@@ -651,6 +651,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			if runeID == "consecratedground_expanded" {
 				radius = 7.5
 			}
+			radius = effectiveAbilityAreaRadius(player, skillName, radius)
 
 			// Spawn Zone Entity
 			zone := &Entity{
@@ -682,7 +683,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			w.Grid.Add(zone)
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 12*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityEvent(player.ID, targetID, skillName, player.X, player.Z, AbilityShape{Radius: radius, Arc: 2 * math.Pi})
 		}
 	} else if skillName == "Blessing of Zeal" {
 		// AoE Buff
