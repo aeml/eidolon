@@ -1510,7 +1510,18 @@ async function useVerdantQAWaypoint(page) {
     await recoverThroughDeathScreen(page);
     await page.keyboard.press('Enter');
     const chatInput = page.locator('#chat-input');
-    await expect(chatInput).toBeFocused();
+    await expect(chatInput).toBeFocused().catch(async error => {
+        console.log('[waypoint-chat-focus]', await page.evaluate(() => {
+            const active = document.activeElement;
+            const ancestors = [];
+            for (let element = active; element && ancestors.length < 5; element = element.parentElement) {
+                ancestors.push({ tag: element.tagName, id: element.id, display: getComputedStyle(element).display });
+            }
+            return { ancestors, skills: document.getElementById('skill-tree-window')?.style.display,
+                playerState: window.game?.player?.state, pointerOverCanvas: window.game?.inputManager?.pointerOverCanvas };
+        }));
+        throw error;
+    });
     await chatInput.fill('/qa-waypoint verdant');
     await chatInput.press('Enter');
     await expect.poll(async () => {
