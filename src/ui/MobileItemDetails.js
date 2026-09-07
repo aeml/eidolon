@@ -20,11 +20,12 @@ export class MobileItemDetails {
                 <button type="button" id="phone-item-unequip">Unequip</button>
                 <button type="button" id="phone-item-sell">Sell</button>
                 <button type="button" id="phone-item-stash">Store in stash</button>
+                <button type="button" id="phone-item-withdraw">Withdraw to bag</button>
                 <button type="button" id="phone-item-drop">Drop stack</button>
             </div></footer>`;
         document.body.append(this.dialog);
         this.get('back').onclick = () => this.close();
-        for (const action of ['compare', 'equip', 'unequip', 'sell', 'stash', 'drop']) {
+        for (const action of ['compare', 'equip', 'unequip', 'sell', 'stash', 'withdraw', 'drop']) {
             this.get(action).onclick = () => this.act(action);
         }
         // Escape dismisses this route, not another menu underneath it.
@@ -33,7 +34,11 @@ export class MobileItemDetails {
             this.inventory.selectedSlot = -1;
             this.source = null;
             this.confirmStack = null;
-            const origin = this.returnFocus?.isConnected ? this.returnFocus : this.inventory.btnCloseInventory;
+            const refreshedRow = this.inventory.isStashOpen && this.inventory.phoneStash
+                ? [...this.inventory.phoneStash.list.querySelectorAll('button')].find(row =>
+                    row.dataset.itemId === this.returnFocus?.dataset.itemId) : null;
+            const origin = this.returnFocus?.isConnected ? this.returnFocus : refreshedRow ||
+                (this.inventory.isStashOpen ? this.inventory.phoneStash?.list || this.inventory.btnCloseStash : this.inventory.btnCloseInventory);
             origin?.focus({ preventScroll: true });
         });
     }
@@ -46,7 +51,7 @@ export class MobileItemDetails {
         const player = this.inventory._getLastPlayer();
         const item = this.source?.type === 'equipment'
             ? player?.equipment?.[this.source.slot]
-            : player?.inventory?.[this.source?.index];
+            : player?.[this.source?.type === 'stash' ? 'stash' : 'inventory']?.[this.source?.index];
         return item?.id === this.source?.itemId ? item : null;
     }
 
@@ -66,13 +71,15 @@ export class MobileItemDetails {
         this.get('status').textContent = item.id.startsWith('chronicle-item-')
             ? 'Quest item — protected from dropping.' : '';
         const bag = source.type === 'inventory';
+        const storage = source.context === 'stash';
         const equippable = this.inventory._isEquippableItem(item);
-        this.get('equip').hidden = !bag || !equippable;
-        this.get('unequip').hidden = bag;
-        this.get('compare').hidden = !bag || !equippable;
-        this.get('drop').hidden = !bag || item.id.startsWith('chronicle-item-');
-        this.get('sell').hidden = !bag || !this.inventory.isShopOpen || item.id.startsWith('chronicle-item-');
+        this.get('equip').hidden = storage || !bag || !equippable;
+        this.get('unequip').hidden = source.type !== 'equipment';
+        this.get('compare').hidden = storage || !bag || !equippable;
+        this.get('drop').hidden = storage || !bag || item.id.startsWith('chronicle-item-');
+        this.get('sell').hidden = storage || !bag || !this.inventory.isShopOpen || item.id.startsWith('chronicle-item-');
         this.get('stash').hidden = !bag || !this.inventory.isStashOpen || item.id.startsWith('chronicle-item-');
+        this.get('withdraw').hidden = source.type !== 'stash' || !this.inventory.isStashOpen;
         for (const button of this.dialog.querySelectorAll('.phone-item-actions button')) button.disabled = false;
         this.get('equip').disabled = Number(item.level || 0) > this.inventory._getLastPlayer().level;
         if (this.get('equip').disabled && !this.get('equip').hidden) this.get('status').textContent = `Requires level ${item.level}.`;
@@ -122,6 +129,7 @@ export class MobileItemDetails {
     }
 
     act(action) {
+        if (this.source?.context === 'stash' && !['stash', 'withdraw'].includes(action)) return;
         const item = this.currentItem();
         if (!item) { this.refresh(); return; }
         const ui = this.inventory;
@@ -162,9 +170,10 @@ export class MobileItemDetails {
                 return;
             }
             ui.updateInventory(player); ui._updateCharacterSheet(player);
-        } else if (action === 'unequip' && !bag && ui.onUnequipRequest) ui.onUnequipRequest(this.source.slot);
+        } else if (action === 'unequip' && this.source.type === 'equipment' && ui.onUnequipRequest) ui.onUnequipRequest(this.source.slot);
         else if (action === 'sell' && bag && ui.isShopOpen && !item.id.startsWith('chronicle-item-')) ui.sellItem(player, this.source.index);
         else if (action === 'stash' && bag && ui.isStashOpen && !item.id.startsWith('chronicle-item-') && ui.onStashDeposit) ui.onStashDeposit(item.id);
+        else if (action === 'withdraw' && this.source.type === 'stash' && ui.isStashOpen && ui.onStashWithdraw) ui.onStashWithdraw(item.id);
         else return;
         this.close();
     }

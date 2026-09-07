@@ -1,5 +1,6 @@
 import { SLOTS, Item, BASE_ITEMS, RARITY, SET_DEFINITIONS, UNIQUE_EFFECTS, GEM_TYPES, GEM_QUALITIES } from '../core/ItemSystem.js';
 import { MobileItemDetails } from './MobileItemDetails.js';
+import { PhoneStashUI } from './PhoneStashUI.js';
 import { isEquippableItem, isActiveEquipment, itemFitsEquipmentSlot } from '../core/EquipmentSlots.js';
 
 /**
@@ -81,6 +82,7 @@ export class InventoryUI {
         this._bindCompareMode();
 
         this.mobileDetails = this.isMobile ? new MobileItemDetails(this) : null;
+        this.phoneStash = this.isMobile && this.stashScreen ? new PhoneStashUI(this) : null;
 
         this.setupShop();
     }
@@ -577,14 +579,15 @@ export class InventoryUI {
 
     toggleStash() {
         const isHidden = this.stashScreen.style.display === 'none' || this.stashScreen.style.display === '';
+        this.mobileDetails?.close();
         if (this.ctx.toggleManagedWindow) {
-            this.ctx.toggleManagedWindow('stash', { keepCompanion: true });
+            this.ctx.toggleManagedWindow('stash', { keepCompanion: !this.isMobile });
         } else {
             this.stashScreen.style.display = isHidden ? 'flex' : 'none';
         }
 
         if (isHidden) {
-            if (!this.ctx.toggleManagedWindow) this.inventoryScreen.style.display = 'block';
+            if (!this.ctx.toggleManagedWindow) this.inventoryScreen.style.display = this.isMobile ? 'none' : 'block';
             const player = this._getLastPlayer();
             if (player) {
                 this.updateInventory(player);
@@ -937,6 +940,7 @@ export class InventoryUI {
             }
         }
         this.mobileDetails?.refresh();
+        this.phoneStash?.update(player);
     }
 
     // ================================================================
@@ -945,6 +949,11 @@ export class InventoryUI {
 
     updateStash(player) {
         if (!player) return;
+        if (this.phoneStash) {
+            this.phoneStash.update(player);
+            this.mobileDetails?.refresh();
+            return;
+        }
 
         if (this.stashGrid.children.length === 0) {
             for (let i = 0; i < 100; i++) {
