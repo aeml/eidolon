@@ -5,7 +5,45 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 18:11 UTC
+## Current checkpoint — September 7, 18:36 UTC
+
+**Alpha 1.0.39 remains fully verified live.** The first 40 run `34150633216`
+fails anonymous smoke before deployment; every deploy job is skipped. The phone
+composition test reads a transient combo label across separate browser round
+trips after measuring it. A connected, atomic geometry/hit-policy observation
+retains the runtime's normal 1.8-second expiry and all later tap checks.
+The correction passes **9 repeated phone checks / 1.6m** and **222 contracts /
+2.458s**; an actual portrait with the Mass Revival label is inspected.
+See [40 correction evidence](2026-09-07-release40-combo-observation.md).
+
+After terminal-failure, clean staging, exact remote and ancestry checks,
+`release/40-with-combo-observation` / **`1106228`** is pushed as a fast-forward.
+Fresh manifest/backend checks still return exact 39 and healthy/ready. New CI
+**34152138480** is active. **Do not publish 41 before all corrected 40 CI/live
+jobs succeed and a fresh exact public identity check passes.**
+
+The test-only correction is carried through new sequential branches; old
+candidates remain preserved. All owned carry-forward handles are closed.
+
+| Version | Branch suffix `-with-combo-observation` | Commit | Contracts |
+|---|---|---|---|
+| 41 | `release/41` | `3daa489` | 226 / 1.416s |
+| 42 | `release/42` | `74f5a5e` | 227 / 1.641s |
+| 43 | `release/43` | `837c490` | 229 / 1.555s |
+| 44 | `release/44` | `bea516d` | 231 / 1.811s |
+| 45 | `release/45` | `95e4864` | 233 / 1.666s |
+| 46 | `release/46` | `101f9ab` | 235 / 1.827s |
+| 47 | `release/47` | `e8a40d3` | 237 / 1.622s |
+
+Root integrates this queue at `a39eab3`, and the measured loot/Forge audit
+(`6172111`, evidence `1fddd1e`) at **`7a20386`**. Runtime remains local 47;
+root is not the publication target. The next balance implementation fixes lost
+Forge stat precision and batch pricing, with persisted metadata and matched
+previews. See [Forge work and exact active handles](2026-09-07-forge-earned-scaling.md).
+It is isolated/unpackaged; its auction mappers still need the new metadata.
+The broad goal, reward tuning and eight playable investigations remain open.
+
+## Historical checkpoint — September 7, 18:11 UTC
 
 **Alpha 1.0.39 `7ddf776` is fully verified live.** CI **34146247683**
 has terminal success for every job, including both deployments and live character

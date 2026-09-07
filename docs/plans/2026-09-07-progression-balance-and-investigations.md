@@ -5,6 +5,10 @@ The locally verified, root-integrated 1.0.47 candidate implements eight-fragment
 collections, reduced ordinary drop rates, saved bad-luck protection and
 legacy-contract migration. It is queued, not published. XP/equipment/gold tuning
 and playable investigations remain open. The
+[loot/Forge baseline](2026-09-07-loot-and-forge-baseline.md) now measures combined
+material/equipment sources and actual transactions; the
+[Forge precision correction](2026-09-07-forge-earned-scaling.md) is in progress.
+The
 [authored investigation draft](2026-09-07-investigation-story-content.md) supplies
 Ilyra conversations, personal accounts and discoveries for all eight planned sites;
 authored text is not evidence of implemented quests or reachable world locations.
