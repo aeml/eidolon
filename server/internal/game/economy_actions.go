@@ -649,7 +649,7 @@ func (w *World) PerformStashDeposit(playerID, itemID string) (*Entity, bool) {
 		}
 	}
 
-	if itemToDeposit == nil {
+	if itemToDeposit == nil || IsChronicleQuestItem(*itemToDeposit) {
 		return nil, false
 	}
 

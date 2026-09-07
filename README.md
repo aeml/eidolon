@@ -261,6 +261,11 @@ overlay and does not modify server source or saved characters. Evidence and
 next implementation requirements are in the
 [consumer audit](docs/plans/2026-09-06-talent-consumer-audit.md).
 
+The isolated `phone-inventory` route also checks ordinary town-stash interaction,
+explicit Store/Withdraw, and fresh-login persistence of the complete serialized
+item in portrait and landscape. It prepares a disposable level-30 functional
+fixture; this is not earned-progression or physical-phone evidence.
+
 The generated canonical inventory is [docs/ANIMATION_COVERAGE.md](docs/ANIMATION_COVERAGE.md). Edit its source manifests and regenerate it; do not hand-edit its tables.
 
 Server validation from `server/`:

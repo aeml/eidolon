@@ -1,12 +1,13 @@
 import { devices, expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld } from './helpers.js';
 import { approachEncounter, openPhoneNavigation, selectLiveTarget } from './mobile-helpers.js';
+import { verifyPhoneStash } from './phone-stash-route.js';
 
 test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, userAgent: devices['Pixel 7'].userAgent,
     actionTimeout: 12_000, trace: 'off', screenshot: 'off', video: 'off' });
 
-test('phone bag equips, unequips and confirms a recoverable server-owned item drop', async ({ page, baseURL }) => {
-    test.setTimeout(300_000);
+test('phone bag equips, drops and stores server-owned items with saved retrieval', async ({ page, baseURL }) => {
+    test.setTimeout(420_000);
     const credentials = credentialsFromEnvironment();
     test.skip(!credentials.username || !credentials.password, 'Requires a dedicated disposable QA character');
     const failures = collectBrowserFailures(page, baseURL);
@@ -127,5 +128,6 @@ test('phone bag equips, unequips and confirms a recoverable server-owned item dr
     await page.reload();
     await loginAndEnterWorld(page, credentials);
     expect(await page.evaluate(id => window.game.player.inventory.some(item => item?.id === id), itemId)).toBe(true);
+    await verifyPhoneStash(page, credentials, itemId);
     expect(failures, failures.join('\n')).toEqual([]);
 });

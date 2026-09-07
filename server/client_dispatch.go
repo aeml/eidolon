@@ -1356,6 +1356,10 @@ func (c *Client) dispatchMessage(msg Message) {
 			c.sendSafe(bStash)
 		}
 
+		if !success {
+			c.sendSystemChat("Could not store that item. Check stash space and select the item again. Chronicle quest items stay in your bag.")
+		}
+
 	case MsgStashWithdraw:
 		if c.playerID == "" {
 			return
@@ -1384,6 +1388,10 @@ func (c *Client) dispatchMessage(msg Message) {
 			}
 			bStash, _ := json.Marshal(msgStash)
 			c.sendSafe(bStash)
+		}
+
+		if !success {
+			c.sendSystemChat("Could not withdraw that item. Check bag space and select the item again.")
 		}
 
 	case MsgRequestQuests:
