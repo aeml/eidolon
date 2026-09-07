@@ -5,7 +5,32 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 21:27 UTC
+## Current checkpoint — September 7, 21:31 UTC
+
+Phone earned reading run **84495** now closes **SUCCESS / 1 test / 48.8s**
+(test 47.4s), including actual landscape swipes until the final diary line is
+inside the scrollport and unobscured, manual turn-in and saved rereading.
+Credential scan/cleanup pass. Both actual screenshots are inspected and copied
+to `/tmp/eidolon-earned-diary-reading-390.png` and
+`/tmp/eidolon-earned-diary-reading-844.png`. These retain the explicit level-30
+functional fixture and QA performance overlay; not fresh pacing/device evidence.
+
+The isolated journal fix, browser red/green regression and phone reading proof
+are committed as **c14388b**. The new ordinary Water travel/returning-character
+test and isolated route are committed separately as **0262488**, with lint,
+shell syntax and diff checks passing. Investigation worktree is clean. Actual
+Water route **59985** is active against that exact commit, log
+`/tmp/eidolon-investigations-water-earned.log`; its local containers are ready
+and Playwright is running. **This is the sole owned browser. Freeze investigation
+runtime/tests while it runs.** Water completion remains unproven.
+
+41 **9c6eb9d… / CI 34163174335** remains active: client success, server running
+at last poll. Full live-40 gate and fresh exact identity are established below;
+next publisher remains **42 / ea565ebf…** only after 41's complete gate. Root
+49 integration and its local package evidence remain valid but unpublished.
+No expansion/root merge or completion claim for the broader goal.
+
+## Historical checkpoint — September 7, 21:27 UTC
 
 This goal turn makes concrete progress: closes 49's local sweep, integrates its
 verified package, reproduces and fixes a real browser reading-position defect,
