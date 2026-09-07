@@ -95,6 +95,26 @@ Full verification after the correction passes **177 suites / 2,482 tests in
 remains required. The next source includes the separately verified 1.0.31 Cleric
 healing release; do not relabel its result as an exact 1.0.30-source run.
 
+The repeat on exact `8171c2e`, session `14852`, **failed in 3.2 minutes before
+entering any dungeon**. Opening manual completion took 32 seconds with no deaths;
+collection took 46 seconds with six observed Skeleton deaths, four natural seeds
+and saved level 16 rewards. The hunt last reported 50 Skeleton credits at 101
+seconds. It then failed target-search movement at level 17 / 500 HP, with
+`attempts: []`: no input was attempted. Log
+`/tmp/eidolon-earned-dungeon-floor-aware.log`; credential scan sanitized two
+artifacts and disposable cleanup completed. It provides no browser verdict on
+the new dungeon-corner planner.
+
+The helper skipped entity-covered ground points before its optional Ctrl-click
+jump fallback could execute. `GameEngineMovement.handlePrimaryClick` resolves
+that modifier through a ground intersection before entity interaction. The
+optional fallback now also handles a covered canvas point using real modifier
+input; strictly no-jump Wizard retreat remains unchanged. Three input regressions
+cover covered-ground jumps, strict no-jump failure without fake desktop WASD, and
+ordinary clear-ground clicks. All **178 suites / 2,485 tests in 60.458 seconds**
+and lint pass. The evidence does not prove whether each skipped point in the
+failed run was entity-covered or unprojectable; a repeat remains necessary.
+
 ## Earned dungeon-readiness extension — September 6, measurement pending
 
 The optional `fresh-ready` route extends the same real opening, collection and
