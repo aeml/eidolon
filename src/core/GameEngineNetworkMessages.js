@@ -450,12 +450,16 @@ class GameEngineNetworkMessageMethods {
                 // not just an aim point. Ordinary prediction tolerates up to
                 // three units of drift, which can otherwise swallow a short
                 // blink entirely and send the old position back after its lock.
-                // Charge and targeted strikes do not share this event contract.
-                if (abilityData.skillName === 'Teleport' &&
-                    Number.isFinite(abilityData.targetX) && Number.isFinite(abilityData.targetZ)) {
+                // Shadow Lunge carries a separate accepted landing: its target
+                // coordinates remain the aim point for compatibility. A legacy
+                // event without a landing must not be mistaken for a teleport.
+                const landing = abilityData.skillName === 'Teleport'
+                    ? { x: abilityData.targetX, z: abilityData.targetZ }
+                    : abilityData.skillName === 'Shadow Lunge' ? abilityData.landing : null;
+                if (Number.isFinite(landing?.x) && Number.isFinite(landing?.z)) {
                     const previousPosition = this.player.position.clone();
-                    this.player.position.x = abilityData.targetX;
-                    this.player.position.z = abilityData.targetZ;
+                    this.player.position.x = landing.x;
+                    this.player.position.z = landing.z;
                     this.player.targetPosition = null;
                     this.player.velocity?.set(0, 0, 0);
                     this.pendingInteraction = null;

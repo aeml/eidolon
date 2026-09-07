@@ -75,6 +75,15 @@ func (w *World) fireProjectileImpactEvent(event ProjectileImpactEvent) {
 	}
 }
 
+// Keep targeting and movement separate: old clients still receive the same aim
+// point, while new clients can commit even a sub-three-unit authoritative blink.
+func (w *World) fireAbilityLandingEvent(sourceID, targetID, skillName string, targetX, targetZ float64, landing AbilityLanding) {
+	if w.OnEvent != nil {
+		w.OnEvent("ability", AbilityEvent{SourceID: sourceID, TargetID: targetID, SkillName: skillName,
+			TargetX: targetX, TargetZ: targetZ, Landing: &landing})
+	}
+}
+
 // Callers pass the live combat owner, not a damage snapshot. This helper is
 // used both inside locked ability dispatch and by unlocked periodic effects:
 // looking up the world map here would race loot insertion, while taking the
