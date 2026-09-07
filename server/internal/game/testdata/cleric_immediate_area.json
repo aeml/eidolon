@@ -1,0 +1,11 @@
+[
+  {"skill":"Blessing of Resolve","rank":0,"radius":10,"cost":35,"cooldown":45},
+  {"skill":"Blessing of Resolve","rank":1,"radius":10.3,"cost":35,"cooldown":45},
+  {"skill":"Blessing of Resolve","rank":5,"radius":11.5,"cost":35,"cooldown":45},
+  {"skill":"Blessing of Zeal","rank":0,"radius":10,"cost":35,"cooldown":25},
+  {"skill":"Blessing of Zeal","rank":1,"radius":10.3,"cost":35,"cooldown":25},
+  {"skill":"Blessing of Zeal","rank":5,"radius":11.5,"cost":35,"cooldown":25},
+  {"skill":"Heaven's Trumpet","rank":0,"radius":12,"cost":50,"cooldown":60},
+  {"skill":"Heaven's Trumpet","rank":1,"radius":12.36,"cost":50,"cooldown":60},
+  {"skill":"Heaven's Trumpet","rank":5,"radius":13.8,"cost":50,"cooldown":60}
+]

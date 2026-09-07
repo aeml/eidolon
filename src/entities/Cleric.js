@@ -235,60 +235,27 @@ export class Cleric extends Actor {
 
         // --- Branch C: Buff/Debuff Support ---
 
-        if (skill === "Blessing of Resolve") {
-            console.log("Cleric used Blessing of Resolve!");
-            
-            // Cooldown 20s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Blessing of Resolve"] = 20.0 * (1 - cdr);
-
-            const radius = 10.0;
-            const entities = gameEngine.chunkManager.getActiveEntities();
-            
-            // Visual
-            this.spawnVisualEffect(gameEngine, this.position, 0x0000ff, "ring");
-
-            entities.forEach(entity => {
-                if (entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
-                    // Allies only (including self)
-                    if (entity === this || entity.constructor.name === 'Fighter' || entity.constructor.name === 'Rogue' || entity.constructor.name === 'Wizard' || entity.constructor.name === 'Cleric') {
-                        if (this.position.distanceTo(entity.position) < radius) {
-                            entity.blessingResolveTimer = 10.0;
-                            entity.blessingResolveReduction = 0.25; // 25% damage reduction
-                            gameEngine.floatingTextManager.spawn("DEFENSE UP!", entity.position, '#0000ff');
-                        }
-                    }
+        if (skill === "Blessing of Resolve" || skill === "Blessing of Zeal") {
+            const radius = getAbilityAoeRadius('Cleric', skill, this);
+            // Retain shared cooldown/presentation and include self even when
+            // the chunk list omits the local actor. Support remains planar.
+            for (const entity of new Set([this, ...gameEngine.chunkManager.getActiveEntities()])) {
+                if (!(entity instanceof Actor) || !entity.isActive || entity.state === 'DEAD') continue;
+                const hostile = entity !== this && (typeof gameEngine.isHostileActorTarget === 'function'
+                    ? gameEngine.isHostileActorTarget(entity)
+                    : !['Fighter', 'Rogue', 'Wizard', 'Cleric', 'AvengingSeraph'].includes(entity.constructor.name));
+                if (hostile || Math.hypot(this.position.x - entity.position.x, this.position.z - entity.position.z) > radius + (entity.radius || 0)) continue;
+                if (skill === 'Blessing of Resolve') {
+                    entity.blessingResolveTimer = 20;
+                    entity.blessingResolveReduction = 0.25;
+                    gameEngine.floatingTextManager.spawn('DEFENSE UP!', entity.position, '#0000ff');
+                } else {
+                    entity.blessingZealTimer = 8;
+                    entity.blessingZealFactor = 0.35;
+                    gameEngine.floatingTextManager.spawn('ZEAL!', entity.position, '#ff0000');
                 }
-            });
-            return;
-        }
-
-        if (skill === "Blessing of Zeal") {
-            console.log("Cleric used Blessing of Zeal!");
-            
-            // Cooldown 25s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Blessing of Zeal"] = 25.0 * (1 - cdr);
-
-            const radius = 10.0;
-            const entities = gameEngine.chunkManager.getActiveEntities();
-            
-            // Visual
-            this.spawnVisualEffect(gameEngine, this.position, 0xff0000, "ring");
-
-            entities.forEach(entity => {
-                if (entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
-                    // Allies only
-                    if (entity === this || entity.constructor.name === 'Fighter' || entity.constructor.name === 'Rogue' || entity.constructor.name === 'Wizard' || entity.constructor.name === 'Cleric') {
-                        if (this.position.distanceTo(entity.position) < radius) {
-                            entity.blessingZealTimer = 8.0;
-                            entity.blessingZealFactor = 0.35;
-                            // Zeal effect (e.g. attack speed or damage) handled in stats or update
-                            gameEngine.floatingTextManager.spawn("ZEAL!", entity.position, '#ff0000');
-                        }
-                    }
-                }
-            });
+                entity.syncAttachedStatusEffects(0);
+            }
             return;
         }
 
@@ -327,33 +294,31 @@ export class Cleric extends Actor {
 
         if (skill === "Heaven's Trumpet") {
             console.log("Cleric used Heaven's Trumpet!");
-            
-            // Cooldown 60s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Heaven's Trumpet"] = 60.0 * (1 - cdr);
 
-            const radius = 12.0;
+            const radius = getAbilityAoeRadius('Cleric', skill, this);
             const entities = gameEngine.chunkManager.getActiveEntities();
-            
-            // Visual
-            this.spawnVisualEffect(gameEngine, this.position, 0xffd700, "ring");
+            const rects = gameEngine.currentInstanceId && gameEngine.currentInstanceType !== 'overworld'
+                ? gameEngine.currentDungeonLayout?.walkRects : null;
             gameEngine.floatingTextManager.spawn("HEAVEN'S TRUMPET!", this.position, '#ffd700');
 
             entities.forEach(entity => {
                 if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
-                    // Enemies only (simple check: not a player class)
-                    const isPlayer = ['Fighter', 'Rogue', 'Wizard', 'Cleric'].includes(entity.constructor.name);
-                    if (!isPlayer) {
-                        if (this.position.distanceTo(entity.position) < radius) {
+                    const hostile = typeof gameEngine.isHostileActorTarget === 'function' ? gameEngine.isHostileActorTarget(entity)
+                        : !['Fighter', 'Rogue', 'Wizard', 'Cleric', 'AvengingSeraph'].includes(entity.constructor.name);
+                    if (hostile) {
+                        if (Math.hypot(this.position.x - entity.position.x, this.position.z - entity.position.z) <= radius + (entity.radius || 0) &&
+                            !clipDungeonEffectSegment(rects, this.position, entity.position).blocked) {
+                            // The server deals damage before applying its weakness mark.
+                            entity.takeDamage(this.stats.wisdom * 3, this);
                             // Stun
-                            if (entity.stunTimer !== undefined) {
+                            if (entity.stunTimer !== undefined && !entity.ccImmune) {
                                 entity.stunTimer = 3.0;
                             }
                             // Debuff
                             entity.markWeaknessTimer = 5.0;
                             entity.markWeaknessFactor = 0.50; // 50% more damage taken!
                             
-                            gameEngine.floatingTextManager.spawn("STUNNED!", entity.position, '#ffffff');
+                            gameEngine.floatingTextManager.spawn(entity.ccImmune ? 'WEAKENED!' : 'STUNNED!', entity.position, '#ffffff');
                         }
                     }
                 }

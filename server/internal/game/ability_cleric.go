@@ -269,7 +269,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 		if player.Mana >= cost {
 			player.Mana -= cost
 			endTime := time.Now().Add(20 * time.Second)
-			radius := 10.0
+			radius := effectiveAbilityAreaRadius(player, skillName, 10)
 			for _, target := range w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID) {
 				target.Mu.Lock()
 				if (target.Type == TypePlayer || target.Type == TypeNPC) && w.CombatRelationship(player, target) != RelationshipHostile && target.State != "DEAD" && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
@@ -280,7 +280,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				target.Mu.Unlock()
 			}
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 45*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityEvent(player.ID, targetID, skillName, player.X, player.Z, AbilityShape{Radius: radius, Arc: 2 * math.Pi})
 		}
 	} else if skillName == "Spirit Guardians" {
 		// Guardian Spirits
@@ -593,7 +593,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			player.Mana -= cost
 			walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 
-			radius := 12.0
+			radius := effectiveAbilityAreaRadius(player, skillName, 12)
 			effectiveRadius := expandedAbilityRadius(skillName, radius)
 			damage := int(float64(player.Stats.Wisdom*3) * player.GetSkillDamageMultiplier("Heaven's Trumpet"))
 
@@ -635,7 +635,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				}
 			}
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 60*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityEvent(player.ID, targetID, skillName, player.X, player.Z, AbilityShape{Radius: radius, Arc: 2 * math.Pi})
 		}
 	} else if skillName == "Consecrated Ground" {
 		// Zone AoE
@@ -691,7 +691,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 		if player.Mana >= cost {
 			player.Mana -= cost
 
-			radius := 10.0
+			radius := effectiveAbilityAreaRadius(player, skillName, 10)
 			nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID)
 			for _, target := range nearby {
 				target.Mu.Lock()
@@ -704,7 +704,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			}
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 25*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityEvent(player.ID, targetID, skillName, player.X, player.Z, AbilityShape{Radius: radius, Arc: 2 * math.Pi})
 		}
 	} else if skillName == "Mark of Weakness" {
 		// Mark of Weakness (Debuff)

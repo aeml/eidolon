@@ -341,7 +341,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.36</span>
+                <span class="start-version-row__label">Alpha 1.0.37</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -667,6 +667,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.37">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.37 (a wider circle of protection)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Protection that reaches:</strong> Battlefield Ministry now expands Guardian Embrace, Consecrated Ground, both Blessings and Heaven's Trumpet. Their accepted cast boundaries match trained reach while retaining target-body, allegiance and dungeon-wall rules.</li>
+                        <li><strong>A circle that stays with you:</strong> Guardian Embrace has a persistent healing perimeter that follows the caster without enlarging its body-sized decorations. Players joining mid-cast receive its trained radius and remaining time.</li>
+                        <li><strong>Holy ground, clearly marked:</strong> Consecrated Ground's healing and damage use its trained area, including the Expanded rune. Its persistent circle matches that area for the caster and observers.</li>
+                        <li><strong>More dependable offline support:</strong> Guardian healing uses the server's base amount and healing bonuses; holy ground remains visible until expiry. Support includes the caster and filters hostile actors. Heaven's Trumpet now deals its base damage and respects dungeon walls and stun immunity.</li>
+                        <li><strong>No doubled local healing:</strong> Multiplayer Guardian Embrace relies on server healing instead of also running the offline healing loop. These repairs do not complete the broader talent, offline-parity or phone-layout work.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.0.36">
                     <h3 class="patch-note-entry__title">Alpha 1.0.36 (the reach of your training)</h3>
                     <ul class="patch-note-entry__list">

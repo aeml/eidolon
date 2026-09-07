@@ -11,9 +11,12 @@ post-terminal uncached checks at **06:14:00.877 UTC** matched manifest, login
 label, versioned main script and backend to
 `a82baa2adcd41d25f9e9bc01c96d3af6a853674f` / Alpha 1.0.31; health `ok`, database
 `ready`. Only **1.0.32 `d578bdfff7cd998c56bc422bc403d4cbe666b902`** was pushed next.
-CI **`34089969590`** is in progress: client/server checks passed, browser smoke
-passed, predeploy character QA running. Do not push 1.0.33 until the complete
-CI/live gate and fresh identity check. A fresh uncached public check at
+CI **`34089969590` attempt 1 failed before deployment**: client/server and browser
+smoke passed; phone-settings gameplay completed but its browser-error guard caught
+local `ERR_NETWORK_CHANGED` errors on both initial and built-in retry. One unchanged
+failed-job rerun is active as **attempt 2**, predeploy character QA running. See
+[the retained failure](2026-09-07-release32-network-retry.md). Do not push 1.0.33
+until the complete CI/live gate and fresh identity check. A fresh uncached check at
 **06:33:12.223 UTC** still matches healthy 1.0.31 across manifest/login/script/backend.
 
 The [Guardian Embrace area repair](2026-09-07-guardian-area.md), checkpoint
@@ -25,8 +28,16 @@ The [Consecrated Ground follow-up](2026-09-07-consecrated-area.md) now passes
 192 client suites / 2,822 tests and real-server phone casting/rune/persistence QA
 in 57.3s. Full server race checks pass root 22.926s / game 322.243s, plus final
 lint/shell/whitespace checks. It is a local checkpoint, not yet a release.
-The next diagnostic batch reproduces ignored area training on both Blessings and
-Heaven's Trumpet, without changing production character data.
+The [Alpha 1.0.37 candidate](2026-09-07-release37-protection.md) now includes both
+checkpoints plus trained Blessings/Trumpet, with separate notes and synchronized
+login/runtime metadata. Final client checks pass 193 suites / 2,864 tests and full
+server race checks pass root 19.953s / game 354.538s. Actual phone support casts
+pass 48.9s. The final Guardian route hit the same browser network error after its
+functional assertions; its unchanged monitored rerun passes 55.6s with all error
+checks intact. The final holy-ground route passes 39.0s, including rune selection,
+actual healing and fresh-login persistence. This candidate is not
+published. The diagnostic batch now
+reproduces ignored Spirit Guardians/Boost area for both ordinary and Expanded runes.
 
 Historical 1.0.30 → original 1.0.31 failure and repair:
 CI **`34081910599`** passed every job, including final live character QA.

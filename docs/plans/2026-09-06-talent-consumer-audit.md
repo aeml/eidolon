@@ -5,14 +5,15 @@ runtime. Not repaired by the cooldown/mana patch, and not a complete 160-talent
 audit. No production save, running browser source or game balance was changed
 by these diagnostic casts.
 
-Latest September 7 local work: [Consecrated Ground area](2026-09-07-consecrated-area.md)
-joins Guardian Embrace, Purifying Wave and Teleport in ordinary actual-consumer
-regression coverage. Its retained 6.8m cast/zone-tick probe changed from failing
-(0.113s) to passing (0.126s); logs are recorded in that work record. The diagnostic
-overlay now exercises **Blessing of Resolve, Blessing of Zeal and Heaven's Trumpet**
-as one immediate-area batch. All three rank-five casts fail at the new boundary
-while rank-zero controls pass: 12.2m for blessings, 14.2m for Trumpet, with 1.25m
-body padding. Log `/tmp/eidolon-cleric-immediate-area-probes.log`, 0.494s.
+Latest local Alpha 1.0.37 work promotes [both Blessings and Heaven's Trumpet](2026-09-07-cleric-immediate-areas.md)
+alongside Consecrated Ground, Guardian Embrace, Purifying Wave and Teleport into
+ordinary actual-consumer coverage. Corrected fixtures reproduce the old handler's
+failure via a Go build overlay; the repaired runtime passes. The original Trumpet
+diagnostic's zero-Wisdom limitation is explicitly retained in that work record.
+The next diagnostic batch now exercises **Spirit Guardians and Spirit Guardians
+Boost**, with and without Expanded. All four rank-five actual periodic ticks miss
+targets in the trained annulus while rank-zero controls pass, 0.798s,
+`/tmp/eidolon-spirit-area-probes.log`. All use nonzero Wisdom and ordinary dispatch.
 Earlier probe counts below describe historical checkpoints, not the current
 command's contents. Remaining full-suite/publication gates stay in the work record.
 The full category and ineffective Purifying Wave healing mastery remain open.
