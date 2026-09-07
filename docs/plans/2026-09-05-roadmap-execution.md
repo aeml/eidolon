@@ -5,7 +5,34 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-Current release queue (September 7): **corrected 1.0.36 (`69b34a7`) is fully
+Current release queue (September 7): **corrected 1.0.37 (`2e37508`) is fully
+verified live**. CI **34121785766** completed successfully at 13:14:09 UTC,
+with every job passing, including live character/four-class QA. Fresh
+post-terminal checks at **13:15:13.160 UTC** return HTTP 200 and match the public
+manifest, login label, versioned main script and healthy/ready backend to
+`2e37508505c9ff67e160886e2a91fad89196f25f` / Alpha 1.0.37.
+
+After clean-state, exact remote-head and predecessor-ancestry checks, corrected
+**1.0.38 `faf18fd62c60c36cab79ceb565453f3d63d1c3d3`** is pushed successfully.
+New CI **34126386286 is in progress**. Do not push 1.0.39 until every 1.0.38
+CI/live job passes and fresh post-terminal public identity agrees. The remaining
+1.0.39–41 candidates are preserved and unpublished. Do not push root HEAD.
+
+Independent status-training work now reproduces and repairs an actual entrance
+targeting defect: entrance geometry overrode any enemy in the raycast hit stack,
+even when the entrance was behind it. New real-geometry tests fail twice before
+the fix and pass afterward; combined targeting/mobile/status coverage passes
+29 tests in 0.985s. Isolated runtime checkpoint **b095bd9** retains hostile-first
+selection while allowing normal entrance interaction after the enemy dies.
+Browser targeting proceeds past the old entrance proxy failure. Subsequent
+driver failures expose overlapping moving enemies and an incorrect assumption
+that `ability_result` contains a target ID; the actual `ability` event does.
+The current driver **aa1b7f7** snapshots the hovered actor at outgoing input,
+requires matching server cast identity and exact attributed status ticks, and
+is running the three-skill route. No complete browser pass or 1.0.42 release is
+claimed yet. Full roadmap and physical-phone gates remain open.
+
+Previous release checkpoint: **corrected 1.0.36 (`69b34a7`) is fully
 verified live**. CI `34114458548` is terminal success with every job passing,
 including live character/four-class QA. Fresh post-terminal checks at
 **11:48:44.381 UTC** match the public manifest, login label, versioned main script
