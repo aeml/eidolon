@@ -214,5 +214,21 @@ and missing offline skills remain separate audit work. In particular Avenging
 Seraph's offline handler only announces a summon; its old attack loop is commented
 out, so it is **not** an implemented periodic consumer or a passing summon test.
 The new Fireball explosion tests do not establish a real paid Explosive Trap
-cast. The branch still needs the separate hotbar correction integrated and
-real-server browser/persistence validation before release packaging.
+cast. Real-server browser/persistence validation is still required before
+release packaging.
+
+## Integrated targeting checkpoint
+
+Offline implementation is committed as **`3dd9c4608bcbbcfbbca2b62801ff4a4868d9d2ca`**.
+The separate corrected 1.0.36 hotbar source is merged in
+**`054b285628c6020e2591a4e1842f51d143793bbf`**. Combined regression passes
+**208 suites / 3,079 client tests in 62.461s**, lint and whitespace pass, and
+the original isolated actual-cast consumer probes pass **0.457s**. Logs:
+`/tmp/eidolon-critical-hotbar-merged-{client,lint}.log` and
+`/tmp/eidolon-critical-final-consumer-audit.log`.
+
+The critical branch remains separate from root and from queued 1.0.37–40.
+Next validation must use ordinary browser talent purchases, accepted real-server
+casts and fresh-login saved ranks; seeded Go casts already prove the damage math,
+so a browser UI rank change alone must not be presented as that mathematical
+proof. Existing partial/full-offline limitations above remain open.
