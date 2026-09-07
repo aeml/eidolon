@@ -47,30 +47,46 @@ deployment. The correction's detailed evidence is in its isolated worktree's
 `docs/plans/2026-09-07-release38-phone-chat.md`.
 
 Do not push 1.0.39 until corrected 1.0.38 completes every CI/live gate and fresh
-public identity agrees. Carry this **new phone-chat correction** through all
-queued descendants below before their publication. Original candidates remain
+public identity agrees. The **new phone-chat correction** is now carried through
+the queued descendants below. Original candidates remain
 unchanged; do not push root HEAD or the older queue over the corrected release.
 Carry-forward inspection finds conflicts in 1.0.39's package and phone-layout
 files: union the anonymous test lists and **retain 1.0.39's higher existing
 `--z-window + 1` chat layer** for its party sheet, rather than lowering it to
-1.0.38's HUD+2 fix. No queued descendant has this second correction yet.
+1.0.38's HUD+2 fix. These conflicts are resolved without dropping either browser
+test list or the later party-sheet behavior.
 
-The correction is carried through sequential descendants, with no `src`,
-`server` or `index.html` changes relative to each original candidate:
+The sequential descendants differ from their previous `with-chat-focus`
+candidates only in QA/evidence, the additional 1.0.38 patch-note bullet, and two
+CSS comment lines. Game/server behavior is unchanged. Their version/default
+checks pass, and the final carried chat, action-readability and encounter-framing
+browser set passes **9/9 / 39.2s**, `/tmp/eidolon-phone-chat-carried-browser.log`.
 
 | Version | Current queued branch | Candidate | Version/default checks |
 |---|---|---|---|
-| 1.0.39 | `release/39-with-chat-focus` | `bcab158` | 213 pass / 1.177s |
-| 1.0.40 | `release/40-with-chat-focus` | `c69a8ac` | 214 pass / 1.182s |
-| 1.0.41 | `release/41-with-chat-focus` | `fbf0869` | 215 pass / 1.240s |
-| 1.0.42 | `release/42-with-chat-focus` | `46de0a0` | 216 pass / 1.445s |
+| 1.0.39 | `release/39-with-phone-chat` | `3607275` | 214 pass / 1.157s |
+| 1.0.40 | `release/40-with-phone-chat` | `76fb0f3` | 215 pass / 1.220s |
+| 1.0.41 | `release/41-with-phone-chat` | `c7b9d67` | 216 pass / 1.435s |
+| 1.0.42 | `release/42-with-phone-chat` | `9a23d62` | 217 pass / 1.212s |
 
-Root fast-forwards to corrected 1.0.42; staging in
+Root merges corrected 1.0.42 at `0b206c7`; staging in
 `/tmp/eidolon-release37-targeting-lT3Mdt` is also on that queued branch. Neither
 is authorization to skip 1.0.38's current gate. The older queue table below is
 historical evidence, not the branch to publish next.
 
-Next independent work is on `work/seraph-lifecycle-20260907` in
+Local **1.0.43 `e0bc417`** now packages Seraph training, lifecycle, offline actor
+and self-casting repairs, with its own patch notes and aligned version defaults.
+The offline rendered scene passes **3 / 31.2s**; an additional desktop label
+regression reproduces oversized smite text, then the combined rendered fallback
+and compact-label set passes **4 / 34.3s**. Inspected captures show the actual
+summon and its attributed two-line label above the model. Version/default checks
+pass **219 / 1.635s**, backend-root race **14.015s**, lint/syntax/whitespace pass.
+Full packaged client and anonymous browser checks are running. The versioned
+real-cast route remains next; this is not published or yet merged into root.
+Its detailed record lives in the isolated worktree's
+`docs/plans/2026-09-07-release43-seraph.md`.
+
+Earlier Seraph implementation evidence on `work/seraph-lifecycle-20260907` in
 `/tmp/eidolon-seraph-lifecycle-MbWPg7`, checkpoint **2329891**. Seven paid summon
 failures (0.247s) reproduce ignored damage/duration training, owner-lifecycle and
 dungeon-wall defects. Server fixes and an actual offline summoned actor now
@@ -78,9 +94,8 @@ have 59 focused client checks (0.933s), shared-contract/expanded actual-cast rac
 checks (3.680s), lint and **212 suites / 3,137 full client tests (115.252s)**.
 The full Go race suite finishes successfully, session **22417** terminal exit
 zero: root **10.143s**, game **264.589s**. The longer duration was active test
-execution, not a stuck process. All owned local test handles are now closed.
-Browser/model/transition evidence is still open;
-this is not merged into root, packaged as 1.0.43 or published.
+execution, not a stuck process. Those test handles are closed. Subsequent
+browser/model/transition and packaging evidence follows; none implies publication.
 
 September 7 continuation: Seraph checkpoint **`1b6235d`** additionally repairs
 desktop self-casting. Four new failing hotbar cases (0.845s) show that a missing
