@@ -29,6 +29,47 @@ const actorConfig = {
 };
 
 describe('GameEngine raycast target priority', () => {
+    test.each([false, true])('an exposed entrance remains clickable beside a live enemy (mobile=%s)', mobile => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.player = new Fighter('portal-player');
+        engine.isMobile = mobile;
+        engine.uiManager = { isEscMenuOpen: false, isPatchNotesOpen: false, reportScreen: { style: { display: 'none' } } };
+        const enemy = new Actor('covering-enemy', actorConfig);
+        enemy.isActive = true; enemy.state = 'IDLE';
+        enemy.mesh = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshBasicMaterial());
+        enemy.mesh.userData.entityId = enemy.id;
+        enemy.mesh.position.z = 1; enemy.mesh.updateMatrixWorld(true);
+        const entrance = new THREE.Group();
+        entrance.name = 'DungeonEntrance';
+        entrance.userData.dungeonType = 'verdant_bastion_catacombs';
+        const gate = new THREE.Mesh(new THREE.BoxGeometry(8, 8, 1), new THREE.MeshBasicMaterial());
+        entrance.add(gate);
+        const environmentGroup = new THREE.Group();
+        environmentGroup.add(entrance); environmentGroup.updateMatrixWorld(true);
+        const camera = new THREE.PerspectiveCamera(60, 1, .1, 100);
+        camera.position.z = 12; camera.lookAt(0, 0, 0); camera.updateMatrixWorld(true);
+        engine.renderSystem = { camera, environmentGroup };
+        engine.inputManager = { raycaster: new THREE.Raycaster(), mouse: new THREE.Vector2(), keys: {} };
+        engine.activeEntitiesCache = [enemy];
+        engine.refreshDungeonEntranceHint = jest.fn(); engine.refreshCombatIntentState = jest.fn();
+        engine.moveToAndInteract = jest.fn(); engine.setMobileCombatTarget = jest.fn();
+        engine.getMobileCombatTarget = () => null;
+
+        engine.handlePrimaryClick({});
+        expect(engine.hoveredEntity).toBe(enemy);
+        if (mobile) expect(engine.setMobileCombatTarget).toHaveBeenLastCalledWith(enemy);
+        else expect(engine.moveToAndInteract).toHaveBeenLastCalledWith(enemy);
+        const exposed = new THREE.Vector3(3, 0, 0).project(camera);
+        engine.inputManager.mouse.set(exposed.x, exposed.y);
+        engine.handlePrimaryClick({});
+        expect(enemy.state).toBe('IDLE');
+        expect(engine.moveToAndInteract).toHaveBeenLastCalledWith(expect.objectContaining({
+            name: 'DungeonEntrance', mesh: entrance, isActive: true
+        }));
+        expect(engine.raycastHitEntities).toHaveLength(1);
+        for (const mesh of [enemy.mesh, gate]) { mesh.geometry.dispose(); mesh.material.dispose(); }
+    });
+
     test.each([-4, 4])('entrance geometry cannot steal a live enemy target (entrance z=%s)', z => {
         const engine = Object.create(GameEngine.prototype);
         engine.player = new Fighter('entrance-player');
