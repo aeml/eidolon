@@ -12,14 +12,48 @@ post-terminal checks at **13:15:13.160 UTC** return HTTP 200 and match the publi
 manifest, login label, versioned main script and healthy/ready backend to
 `2e37508505c9ff67e160886e2a91fad89196f25f` / Alpha 1.0.37.
 
-After clean-state, exact remote-head and predecessor-ancestry checks, corrected
-**1.0.38 `faf18fd62c60c36cab79ceb565453f3d63d1c3d3`** is pushed successfully.
-New CI **34126386286 is in progress**. Do not push 1.0.39 until every 1.0.38
-CI/live job passes and fresh post-terminal public identity agrees. The remaining
-1.0.39–41 candidates are preserved and unpublished. Do not push root HEAD.
+The first 1.0.38 CI **34126386286** fails before deployment at the movement
+route's chat-focus assertion; neither deployment runs. The
+[retained correction](2026-09-07-release38-chat-focus.md) reproduces three invalid
+helper focus assumptions, then passes four focused browser checks (14.0s),
+47 anonymous checks (3.2m), the authenticated/beam/ground/movement sequence,
+lint and 212 version/default tests. Game/server/index source is unchanged.
 
-Latest 1.0.38 CI observation: client, server and browser smoke pass; predeploy
-character QA is in progress. Local **1.0.42 `0d57f0e`** now packages the status
+After exact remote-head, clean-state and ancestry checks, corrected **1.0.38
+`b071afff3475dfd4cb4710419688c70f52e364e2`** is pushed successfully from
+`release/38-with-chat-focus`. New CI **34130749050 is in progress**. Do not push
+1.0.39 until every 1.0.38 CI/live job passes and fresh post-terminal public
+identity agrees. Original candidates remain unchanged; do not push root HEAD.
+
+The correction is carried through sequential descendants, with no `src`,
+`server` or `index.html` changes relative to each original candidate:
+
+| Version | Current queued branch | Candidate | Version/default checks |
+|---|---|---|---|
+| 1.0.39 | `release/39-with-chat-focus` | `bcab158` | 213 pass / 1.177s |
+| 1.0.40 | `release/40-with-chat-focus` | `c69a8ac` | 214 pass / 1.182s |
+| 1.0.41 | `release/41-with-chat-focus` | `fbf0869` | 215 pass / 1.240s |
+| 1.0.42 | `release/42-with-chat-focus` | `46de0a0` | 216 pass / 1.445s |
+
+Root fast-forwards to corrected 1.0.42; staging in
+`/tmp/eidolon-release37-targeting-lT3Mdt` is also on that queued branch. Neither
+is authorization to skip 1.0.38's current gate. The older queue table below is
+historical evidence, not the branch to publish next.
+
+Next independent work is on `work/seraph-lifecycle-20260907` in
+`/tmp/eidolon-seraph-lifecycle-MbWPg7`, checkpoint **2329891**. Seven paid summon
+failures (0.247s) reproduce ignored damage/duration training, owner-lifecycle and
+dungeon-wall defects. Server fixes and an actual offline summoned actor now
+have 59 focused client checks (0.933s), shared-contract/expanded actual-cast race
+checks (3.680s), lint and **212 suites / 3,137 full client tests (115.252s)**.
+The full Go race suite finishes successfully, session **22417** terminal exit
+zero: root **10.143s**, game **264.589s**. The longer duration was active test
+execution, not a stuck process. All owned local test handles are now closed.
+Browser/model/transition evidence is still open;
+this is not merged into root, packaged as 1.0.43 or published.
+
+Corrected 1.0.38 CI currently has client/server checks in progress.
+Local **1.0.42 `0d57f0e`** packages the status
 work below after integration `4e05228`, with separate patch notes and matching
 login/runtime versions. Final package checks pass **3,113 client tests / 211
 suites (73.66s)**, lint, root backend race (**7.576s**) and **53/53 anonymous
