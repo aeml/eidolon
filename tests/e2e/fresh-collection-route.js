@@ -9,10 +9,21 @@ const dungeonChapter = 'chronicle_03_roots_remember';
 const seedsInBag = page => page.evaluate(() => window.game.player.inventory.reduce((sum, item) =>
     sum + (item?.name === 'Verdant Memory Seed' ? item.stack || 1 : 0), 0));
 
+const equipmentSnapshot = page => page.evaluate(() => {
+    const player = window.game.player;
+    const gear = player.inventory.filter(item => item?.id && ['WEAPON', 'ARMOR', 'ACCESSORY', 'NECK', 'GLOVES'].includes(item.type));
+    return { level: player.level, gold: player.gold, bagEquipment: gear.length,
+        bagVendorValue: gear.reduce((sum, item) => sum + (item.value || 0), 0),
+        occupiedSlots: player.inventory.filter(item => item?.id).length,
+        gear: gear.map(item => ({ id: item.id, type: item.type, slot: item.slot, level: item.level, rarity: item.rarity,
+            value: item.value, stats: item.stats })).sort((a, b) => a.id.localeCompare(b.id)) };
+});
+
 // Extends the genuinely earned opening. Callbacks use only ordinary canvas
 // movement; no level, item, quest, protection or encounter-waypoint commands.
 export async function earnFreshCollectionAndInspectHandoff(page, credentials, { findTarget, leaveTown, captureReady }) {
     const started = Date.now();
+    const economyBefore = await equipmentSnapshot(page);
     await openIlyra(page);
     await page.getByRole('button', { name: 'Accept Quest', exact: true }).click();
     await expect.poll(async () => (await readChronicleChapter(page, collection))?.accepted).toBe(true);
@@ -78,6 +89,8 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
     await expect.poll(() => page.evaluate(() => window.game.pendingLootPickups.size)).toBe(0);
     const seedsBefore = await seedsInBag(page);
     expect(seedsBefore, 'This fresh contract must not accumulate surplus fragments from overlapping kills').toBe(required);
+    console.log(`[fresh-collection-economy] ${JSON.stringify({ before: economyBefore, afterCombat: await equipmentSnapshot(page),
+        observedTargetDeaths, deaths, note: 'Observed earned drops and unspent gold; vendor values are not claimed as sale income.' })}`);
     await openIlyra(page);
     if (captureReady) await captureReady();
     await page.getByRole('button', { name: 'Complete Quest', exact: true }).click();
@@ -94,8 +107,10 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
     await page.locator('#btn-close-quest').click();
     await setAutoLootThroughSettings(page, previousAutoLoot);
     const earnedLevel = (await readPlayerState(page)).level;
+    const retainedGear = (await equipmentSnapshot(page)).gear;
     await page.reload({ waitUntil: 'networkidle' });
     await loginAndEnterWorld(page, credentials);
+    expect((await equipmentSnapshot(page)).gear, 'Earned gear, rolls and vendor values survive reconnect unchanged').toEqual(retainedGear);
     expect((await readPlayerState(page)).level).toBe(earnedLevel);
     expect((await readChronicleChapter(page, collection)).completed).toBe(true);
     expect((await readChronicleChapter(page, dungeonChapter)).accepted).toBe(true);
