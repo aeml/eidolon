@@ -1508,8 +1508,12 @@ async function recoverThroughDeathScreen(page) {
 
 export async function useVerdantQAWaypoint(page) {
     await recoverThroughDeathScreen(page);
-    await page.keyboard.press('Enter');
+    // This helper submits a waypoint, not a global-keyboard-focus test. Enter
+    // submits/blurs an already-focused composer and activates focused buttons.
+    // Use the real All tab and composer so either prior UI state is valid.
+    await page.locator('#chat-tab-chat').click();
     const chatInput = page.locator('#chat-input');
+    await chatInput.click();
     await expect(chatInput).toBeFocused().catch(async error => {
         console.log('[waypoint-chat-focus]', await page.evaluate(() => {
             const active = document.activeElement;
