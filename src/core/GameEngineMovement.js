@@ -1164,6 +1164,7 @@ class GameEngineMovementMethods {
 
         if (intersects.length > 0) {
             let hitEntities = [];
+            const entranceProxies = new Map();
             for (const hit of intersects) {
                 let obj = hit.object;
 
@@ -1171,19 +1172,21 @@ class GameEngineMovementMethods {
                 let current = obj;
                 while (current) {
                     if (current.name === 'DungeonEntrance') {
-                        // Create a proxy entity for interaction
-                        const proxy = {
-                            name: 'DungeonEntrance',
-                            position: current.position,
-                            userData: current.userData,
-                            mesh: current,
-                            isActive: true // Required to prevent immediate cancellation in update loop
-                        };
-                        this.hoveredEntity = proxy;
-                        document.body.style.cursor = 'pointer';
-                        this.refreshDungeonEntranceHint();
-                        this.refreshCombatIntentState();
-                        return; // Prioritize entrance
+                        // Entrance bounds can cover a large part of the view.
+                        // Treat them like other interactables, not an override
+                        // of live enemies in the same pointer hit stack.
+                        if (!entranceProxies.has(current)) {
+                            const proxy = {
+                                name: 'DungeonEntrance',
+                                position: current.position,
+                                userData: current.userData,
+                                mesh: current,
+                                isActive: true
+                            };
+                            entranceProxies.set(current, proxy);
+                            hitEntities.push(proxy);
+                        }
+                        break;
                     }
                     current = current.parent;
                 }
@@ -1207,7 +1210,7 @@ class GameEngineMovementMethods {
 
                 if (this.hoveredEntity instanceof LootDrop) {
                     document.body.style.cursor = 'grab';
-                } else if (this.hoveredEntity instanceof Forge || this.hoveredEntity instanceof TradingHouse) {
+                } else if (this.hoveredEntity.name === 'DungeonEntrance' || this.hoveredEntity instanceof Forge || this.hoveredEntity instanceof TradingHouse) {
                     document.body.style.cursor = 'pointer';
                 } else if (this.hoveredEntity && this.hoveredEntity.state !== 'DEAD') {
                     document.body.style.cursor = 'crosshair';

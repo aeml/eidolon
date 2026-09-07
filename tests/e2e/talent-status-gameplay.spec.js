@@ -54,10 +54,8 @@ test('status Mastery purchases change real ticks and persist through fresh login
         await page.locator('#chat-input').press('Enter');
         await expect.poll(() => page.evaluate(() => Math.hypot(window.game.player.position.x-800, window.game.player.position.z-200))).toBeLessThan(3);
         await page.waitForTimeout(1100); // Existing authoritative waypoint movement lock.
-        // The waypoint is the dungeon entrance itself. Move out of its
-        // foreground interaction mesh before selecting an overworld enemy.
-        await moveByGroundClick(page, 0, 12);
-        await moveByGroundClick(page, 0, 12);
+        // Enemies must remain selectable even where the entrance overlaps
+        // their silhouette; exercise the real interaction-priority path.
         let target = await projectNearestHostile(page, 'InfernoTitan');
         for (let step = 0; !target && step < 12; step++) {
             await moveByGroundClick(page, 0, 20);
@@ -98,6 +96,7 @@ test('status Mastery purchases change real ticks and persist through fresh login
                     const game = window.game, enemy = game.remotePlayers.get(id);
                     return { player: game.player.position, enemy: enemy?.position, distance: enemy?.position.distanceTo(game.player.position),
                         state: game.player.state, targetState: enemy?.state, hovered: game.hoveredEntity?.constructor?.name,
+                        hoveredName: game.hoveredEntity?.name, hoveredId: game.hoveredEntity?.id,
                         targetType: enemy?.constructor?.name, health: enemy?.stats?.hp };
                 }, target.id));
                 throw error;
