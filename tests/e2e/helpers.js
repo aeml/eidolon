@@ -341,6 +341,8 @@ export async function projectGroundOffset(page, deltaX, deltaZ) {
 export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
     const before = await readPlayerState(page);
     expect(before).not.toBeNull();
+    const attempts = [];
+    let maximumDisplacement = 0;
     const magnitude = Math.hypot(deltaX, deltaZ) || 1;
     const sideDistance = Math.max(8, magnitude * 0.4);
     const sideX = -deltaZ / magnitude * sideDistance;
@@ -371,11 +373,16 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
         await page.waitForTimeout(75);
         const isClearGround = await page.evaluate(() => !window.game?.hoveredEntity);
         if (!isClearGround) continue;
+        const attempt = { candidateX, candidateZ, screenX: target.x, screenY: target.y };
+        attempts.push(attempt);
         await page.mouse.click(target.x, target.y);
         try {
             await expect.poll(async () => {
                 const after = await readPlayerState(page);
-                return Math.hypot(after.x - before.x, after.z - before.z);
+                const displacement = Math.hypot(after.x - before.x, after.z - before.z);
+                maximumDisplacement = Math.max(maximumDisplacement, displacement);
+                attempt.last = { x: after.x, z: after.z, state: after.state, displacement };
+                return displacement;
             }, { timeout: options.timeout || 1_500 }).toBeGreaterThan(options.minimumDistance || 1);
             return readPlayerState(page);
         } catch {
@@ -401,9 +408,10 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
         }
     }
 
-    // Dense randomized town props can occupy every projected click target.
-    // Preserve the browser-input guarantee with bounded real WASD fallbacks.
-    for (const key of ['w', 'a', 's', 'd']) {
+    // WASD drives the player only in mobile mode. On desktop these keys can pan
+    // an unlocked camera, but cannot recover a failed click-to-move request.
+    const mobileMovement = await page.evaluate(() => Boolean(window.game?.isMobile));
+    for (const key of mobileMovement ? ['w', 'a', 's', 'd'] : []) {
         await page.keyboard.down(key);
         try {
             await page.waitForTimeout(2_500);
@@ -457,7 +465,8 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
         };
     });
     throw new Error(
-        `No real canvas click moved the character toward (${deltaX}, ${deltaZ}): ${JSON.stringify(diagnostic)}`
+        `No real input established ${options.minimumDistance || 1} units toward (${deltaX}, ${deltaZ}): ` +
+        JSON.stringify({ before, maximumDisplacement, attempts, ...diagnostic })
     );
 }
 

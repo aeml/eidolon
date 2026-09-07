@@ -23,6 +23,7 @@ export async function createEarnedWizardDefense(page) {
             const game = window.game, p = game.player;
             const { getAbilityManaCost } = await import('/src/core/AbilityEconomy.js');
             return { className: p.constructor.name, dead: p.state === 'DEAD', x: p.position.x, z: p.position.z,
+                radius: p.radius, walkRects: game.currentInstanceType !== 'overworld' ? game.currentDungeonLayout?.walkRects : null,
                 healthRatio: p.stats.hp / p.stats.maxHp, shieldHP: p.shieldHP || 0, mana: p.stats.mana,
                 shieldCost: getAbilityManaCost(p, 'Arcane Shield', 40), hotbar: p.hotbar, cooldowns: p.cooldowns,
                 sinceCastMs: Date.now() - window.__freshWizardDefense.lastAcceptedAt,

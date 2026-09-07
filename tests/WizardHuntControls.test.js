@@ -23,3 +23,26 @@ test.each([{ dead: true }, { className: 'Fighter' }, { threats: [] }, { threats:
     'leaves ordinary combat alone when no defensive action is needed: %j', change => {
         expect(planWizardHuntStep({ ...state, ...change })).toBeNull();
     });
+
+test('earned Verdant corner replay selects a full nine-unit retreat inside the floor', () => {
+    // Generator 2, seed 610775016641147330: failed run's room 8 and position.
+    const corner = { ...state, healthRatio: 1, x: 19956.91379991249, z: 18511.25,
+        radius: 1.25, walkRects: [{ x: 20005.66379991249, z: 18560, width: 100, height: 100 }],
+        threats: [{ x: 19958.50390625, z: 18513.57421875 }, { x: 19958.71484375, z: 18513.615234375 }] };
+    const plan = planWizardHuntStep(corner);
+    expect(plan?.action).toBe('retreat');
+    expect(plan.x).toBeGreaterThanOrEqual(-1e-8);
+    expect(plan.z).toBeGreaterThanOrEqual(-1e-8);
+    expect(Math.hypot(plan.x, plan.z)).toBeCloseTo(9);
+});
+
+test('does not pretend a nine-unit retreat fits inside a tiny enclosed floor', () => {
+    expect(planWizardHuntStep({ ...state, healthRatio: 1, radius: 1.25,
+        walkRects: [{ x: 0, z: 0, width: 8, height: 8 }] })).toBeNull();
+});
+
+test('does not choose a reachable-looking endpoint across a floor gap', () => {
+    const plan = planWizardHuntStep({ ...state, healthRatio: 1, radius: 1.25,
+        walkRects: [{ x: 0, z: 0, width: 8, height: 8 }, { x: -9, z: 0, width: 8, height: 8 }] });
+    expect(plan).toBeNull();
+});

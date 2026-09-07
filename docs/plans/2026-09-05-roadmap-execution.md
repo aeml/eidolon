@@ -13,6 +13,14 @@ to `d55b5d8d8460f75513a0eca02baf873aa52203c6` / Alpha 1.0.25; health `ok`, datab
 CI **`34070192341`** is running.
 Later releases remain local until the preceding complete CI/live gate passes.
 
+Alpha 1.0.31 healing implementation `b2bf5fd` is locally verified and merged as
+`1d425049234293622c15c769b468cb4d78ab53f1`, branch `release/31-with-healing`; not
+published. Actual direct/periodic healing regressions, full race checks, 177 client
+suites / 2,479 tests, lint and the real-server phone cast/purchase/login route pass.
+It has its own patch notes and synchronized login/release metadata. The three
+remaining duration/range/area probes still fail intentionally. See
+[the scoped healing evidence](2026-09-07-talent-healing.md).
+
 Previous release checkpoint (September 6): **1.0.24 (`44c7ed1`) was fully
 verified**. CI **`34065220719`** passed every job, including final live
 four-class/remote-animation QA. Fresh post-terminal uncached checks at

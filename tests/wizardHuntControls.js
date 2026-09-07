@@ -1,3 +1,5 @@
+import { clipDungeonEffectSegment } from '../src/skills/dungeonEffectGeometry.js';
+
 // Read-only strategy for earned-route QA. It chooses ordinary inputs, never
 // grants progress, changes positions or relaxes the hunt's death bound.
 export function planWizardHuntStep(state) {
@@ -13,10 +15,23 @@ export function planWizardHuntStep(state) {
     }
     if (nearest.distance >= 6) return null;
     const angle = Math.atan2(state.z - nearest.z, state.x - nearest.x);
-    const options = [0, Math.PI / 4, -Math.PI / 4, Math.PI / 2, -Math.PI / 2].map(offset => {
+    const inDungeon = state.walkRects?.length > 0;
+    // Dungeon corners can require turning back toward the room interior. Retain
+    // the open-world strategy, but reject full paths through walls in instances.
+    const offsets = inDungeon ? Array.from({ length: 16 }, (_, i) => i * Math.PI / 8)
+        : [0, Math.PI / 4, -Math.PI / 4, Math.PI / 2, -Math.PI / 2];
+    const radius = Number.isFinite(state.radius) ? state.radius : 1.25;
+    const floors = inDungeon ? state.walkRects.map(rect => ({ ...rect,
+        width: rect.width - 2 * radius, height: rect.height - 2 * radius })) : null;
+    const options = offsets.map(offset => {
         const x = Math.cos(angle + offset) * 9, z = Math.sin(angle + offset) * 9;
         const clearance = Math.min(...threats.map(enemy => Math.hypot(state.x + x - enemy.x, state.z + z - enemy.z)));
         return { x, z, clearance };
-    }).sort((a, b) => b.clearance - a.clearance);
+    }).filter(option => !inDungeon || !clipDungeonEffectSegment(floors, state,
+        { x: state.x + option.x, z: state.z + option.z }).blocked)
+        .sort((a, b) => b.clearance - a.clearance);
+    // A constrained player may need to keep fighting; do not invent a successful
+    // retreat or require a ground click into a wall. Combat watchdogs still apply.
+    if (!options.length) return null;
     return { action: 'retreat', x: options[0].x, z: options[0].z };
 }

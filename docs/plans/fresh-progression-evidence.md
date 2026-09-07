@@ -66,6 +66,35 @@ geometry or a runtime collision defect; inspect the retreat threshold, actual
 candidate positions and dungeon walls before selecting a correction. Preserve
 the failed run rather than silently weakening its movement requirement.
 
+### Corner replay and QA correction
+
+`TestReportedDungeonSeed` reproduced the exact generator-2 seed above and passed
+layout validation. Room 8 is centered at `(20005.66379991249, 18560)`, size 100×100.
+The recorded player is precisely at its west/south inner corner, inset by the
+1.25-unit body radius. The requested retreat `(-3.1132, -8.4444)` points outside
+that floor. This explains an invalid chosen retreat, not every movement issue.
+The raw replay is `/tmp/eidolon-earned-dungeon-seed-replay-exact.log`.
+
+Source inspection additionally confirms `GameEngineRuntime` applies WASD player
+movement only in mobile mode; desktop keys pan an unlocked camera. The shared
+helper's desktop WASD recovery was therefore ineffective. It now keeps that
+fallback mobile-only and reports attempted ground targets, initial/final observed
+positions and maximum sampled click displacement on failure. It retains the
+six-unit retreat assertion and no-jump setting for earned Wizard defense.
+
+The read-only dungeon planner now considers directions around the player and
+rejects paths crossing the canonical floor boundary, inset for body radius.
+If none fits, it continues ordinary combat rather than asserting a fictional
+retreat. Open-world behavior and combat/death watchdogs are unchanged. Three
+regressions (recorded corner, enclosed floor and disconnected-floor gap) fail
+before this QA correction; all 26 focused planner/route/entry checks pass after.
+This is a test-navigation change, **not a runtime collision fix or clear**.
+Full verification after the correction passes **177 suites / 2,482 tests in
+48.747 seconds**, lint and diff checks; logs
+`/tmp/eidolon-dungeon-retreat-{client,lint}.log`. A new full earned measurement
+remains required. The next source includes the separately verified 1.0.31 Cleric
+healing release; do not relabel its result as an exact 1.0.30-source run.
+
 ## Earned dungeon-readiness extension — September 6, measurement pending
 
 The optional `fresh-ready` route extends the same real opening, collection and
