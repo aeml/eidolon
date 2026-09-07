@@ -639,7 +639,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			}
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 10*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityLandingEvent(player.ID, bestTarget.ID, skillName, targetX, targetZ, AbilityLanding{X: player.X, Z: player.Z})
 		}
 	} else if skillName == "Blade Storm" {
 		// Cone of Daggers

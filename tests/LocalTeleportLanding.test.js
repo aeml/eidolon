@@ -38,3 +38,24 @@ test.each([
     expect(engine.player.position.z).toBe(20000);
     expect(engine.chunkManager.updateEntityChunk).not.toHaveBeenCalled();
 });
+
+test.each([0, .5, 2.83, 12])('accepted local Shadow Lunge applies its explicit %s-unit landing, never its aim point', distance => {
+    const engine = fixture();
+    engine.handleServerMessage({ type: 'ability', payload: {
+        sourceId: 'local', skillName: 'Shadow Lunge', targetX: 20008, targetZ: 20010,
+        landing: { x: 20000, z: 20000 + distance }
+    } });
+    expect(engine.player.position.toArray()).toEqual([20000, .5, 20000 + distance]);
+    expect(engine.player.targetPosition).toBeNull();
+    expect(engine.player.velocity.length()).toBe(0);
+    expect(engine.clearCombatIntentState).toHaveBeenCalled();
+});
+
+test.each([undefined, null, { x: null, z: 20002 }, { x: 20000, z: NaN }])('legacy or malformed Lunge events retain normal correction: %j', landing => {
+    const engine = fixture();
+    engine.handleServerMessage({ type: 'ability', payload: {
+        sourceId: 'local', skillName: 'Shadow Lunge', targetX: 20008, targetZ: 20010, landing
+    } });
+    expect(engine.player.position.toArray()).toEqual([20000, .5, 20000]);
+    expect(engine.chunkManager.updateEntityChunk).not.toHaveBeenCalled();
+});

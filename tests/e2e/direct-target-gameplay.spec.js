@@ -7,6 +7,23 @@ import {
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 
+async function hoverDirectTarget(page, targetId, maxDistance = Infinity) {
+    // A model's projected center can be covered by another approaching actor.
+    // Try several points on its real hitbox, and require ordinary game hover to
+    // confirm the target. Never assign hoveredEntity or dispatch a forged cast.
+    await expect.poll(async () => {
+        for (const point of [null, { x: .2, y: .7, z: .5 }, { x: .8, y: .7, z: .5 }, { x: .5, y: .2, z: .5 }]) {
+            const aim = await projectEntity(page, targetId, point);
+            if (!aim?.visible) continue;
+            await page.mouse.move(aim.x, aim.y);
+            if (await page.evaluate(({ id, maxDistance }) => window.game.hoveredEntity?.id === id &&
+                window.game.hoveredEntity.position.distanceTo(window.game.player.position) < maxDistance,
+            { id: targetId, maxDistance })) return true;
+        }
+        return false;
+    }).toBe(true);
+}
+
 test('hostile marks reject an empty cast and accept an actual reachable enemy', async ({ page, baseURL }) => {
     const credentials = credentialsFromEnvironment();
     const className = process.env.EIDOLON_E2E_CLASS || 'Wizard';
@@ -104,13 +121,7 @@ test('hostile marks reject an empty cast and accept an actual reachable enemy', 
         const scale = Math.min(8, distance - 4) / distance;
         await moveByGroundClick(page, offset.x * scale, offset.z * scale, { allowJumpFallback: false });
     }
-    await expect.poll(async () => {
-        const aim = await projectEntity(page, target.id);
-        if (!aim?.visible) return false;
-        await page.mouse.move(aim.x, aim.y);
-        return page.evaluate(id => window.game.hoveredEntity?.id === id &&
-            window.game.hoveredEntity.position.distanceTo(window.game.player.position) < 8, target.id);
-    }).toBe(true);
+    await hoverDirectTarget(page, target.id, 8);
     await page.keyboard.press(key);
     await expect.poll(() => page.evaluate(() => window.__directCastResults.length)).toBe(2);
     const accepted = await page.evaluate(() => window.__directCastResults[1]);
@@ -120,7 +131,7 @@ test('hostile marks reject an empty cast and accept an actual reachable enemy', 
     console.log(`[direct-target] ${className} empty rejection and authoritative enemy mark passed`);
     if (className === 'Rogue') {
         await page.evaluate(targetId => {
-            window.__lungeQA = { requests: [], results: [], bleed: [], damage: [], casts: [], states: [], before: window.game.player.position.toArray() };
+            window.__lungeQA = { requests: [], results: [], bleed: [], damage: [], casts: [], states: [], landings: [], before: window.game.player.position.toArray() };
             const game = window.game, original = game.handleServerMessage.bind(game);
             const originalSend = game.network.send.bind(game.network);
             game.network.send = (kind, payload) => {
@@ -151,7 +162,12 @@ test('hostile marks reject an empty cast and accept an actual reachable enemy', 
                     if (state.id === targetId || state.bleeding) window.__lungeQA.states.push({ targetMatches: state.id === targetId,
                         bleeding: state.bleeding, damage: state.bleedDamage, duration: state.bleedDuration, health: state.health });
                 }
-                return original(message);
+                const result = original(message);
+                if (message.type === 'ability' && message.payload?.skillName === 'Shadow Lunge' && message.payload.sourceId === game.player.id) {
+                    window.__lungeQA.landings.push({ expected: message.payload.landing,
+                        actual: { x: game.player.position.x, z: game.player.position.z } });
+                }
+                return result;
             };
         }, target.id);
         // Respect the real global cooldown after the accepted mark.
@@ -160,12 +176,7 @@ test('hostile marks reject an empty cast and accept an actual reachable enemy', 
         // Reacquire the intended actor through ordinary hover before casting.
         const lungeSlot = await page.evaluate(() => window.game.player.hotbar.indexOf('Shadow Lunge'));
         expect(lungeSlot).toBeGreaterThanOrEqual(0);
-        await expect.poll(async () => {
-            const aim = await projectEntity(page, target.id);
-            if (!aim?.visible) return false;
-            await page.mouse.move(aim.x, aim.y);
-            return page.evaluate(id => window.game.hoveredEntity?.id === id, target.id);
-        }).toBe(true);
+        await hoverDirectTarget(page, target.id);
         await page.keyboard.press(String(lungeSlot + 1));
         await expect.poll(() => page.evaluate(() => window.__lungeQA.requests)).toEqual([
             { targetMatches: true, hoveredMatches: true, hasTarget: true }
@@ -175,6 +186,9 @@ test('hostile marks reject an empty cast and accept an actual reachable enemy', 
         await expect.poll(() => page.evaluate(() => window.__lungeQA.casts)).toEqual([
             { targetMatches: true, sourceMatches: true }
         ]);
+        const landing = await page.evaluate(() => window.__lungeQA.landings[0]);
+        expect(landing.expected).toEqual({ x: expect.any(Number), z: expect.any(Number) });
+        expect(landing.actual).toEqual(landing.expected);
         await expect.poll(() => page.evaluate(() => {
             const p = window.game.player.position, before = window.__lungeQA.before;
             return Math.hypot(p.x - before[0], p.z - before[2]);
