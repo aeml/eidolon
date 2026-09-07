@@ -24,7 +24,13 @@ retains a 44px Close control. Status lifecycle checks pass **9 / 0.508s** and
 lint passes. Logs: `/tmp/eidolon-status-compact-after.log`,
 `/tmp/eidolon-status-compact-client.log`, `/tmp/eidolon-status-compact-lint.log`.
 
-Actual populated gameplay inspection, separate successor version/patch notes,
-final package checks and sequential deployment remain open. This does not fix
-entrance occlusion or establish physical-phone playability. Keep those broader
-visual gates open instead of treating a compact component fixture as full play.
+Actual Shield gameplay passes **44.8s** on `54f4195`, with baseline/trained/saved
+capacities **695 / 834 / 834**, normal expiry and **310** absorbed from a real
+hostile hit. Zero-sanitization scan and exact disposable cleanup finish. The
+inspected trained portrait capture shows the readable compact details above the
+actual visible shielded Wizard, instead of the old blank panel over the hero.
+Log: `/tmp/eidolon-status-compact-gameplay.log`. All local handles are closed.
+
+Separate successor version/patch notes, final package checks and sequential
+deployment remain open. This does not fix entrance occlusion or establish
+physical-phone playability; keep those broader visual gates open.
