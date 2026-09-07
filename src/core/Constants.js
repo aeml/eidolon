@@ -485,7 +485,9 @@ export const CONSTANTS = {
             return entries.slice(0, 40).map((t, i) => ({ id: `CLR_${String(i + 1).padStart(2, '0')}`, ...t,
                 abilityEconomy: i < 26 && i % 2 === 1 ? { skill: skills[Math.floor(i / 2)], cdr: 0.03 }
                     : i === 26 ? { manaReduction: 0.04 } : i === 31 ? { skill: 'Purifying Wave', cdr: 0.05 } : undefined,
-                abilityArea: i === 33 ? { radius: 0.03 } : undefined }));
+                abilityArea: i === 33 ? { radius: 0.03 } : undefined,
+                abilityHealing: [2, 4, 8].includes(i) ? { skill: skills[i / 2], healing: 0.04 }
+                    : i === 28 ? { healing: 0.03 } : i === 38 ? { healing: 0.02 } : undefined }));
         })(),
     },
 

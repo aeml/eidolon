@@ -359,9 +359,28 @@ export function createProceduralStatusEffect(statusKey, options = {}) {
         sharedGeometry: true,
         sharedMaterials: true
     });
-    buildStatus(root, statusKey, def, createMaterials(statusKey, def.palette));
+    const materials = createMaterials(statusKey, def.palette);
+    buildStatus(root, statusKey, def, materials);
+    if (statusKey === 'guardian_embrace') {
+        // Gameplay reach is separate from the body-sized reliquary arms/seals.
+        // A steady thin perimeter remains exact at both graphics settings.
+        const boundary = ring(root, statusKey, 'HealingReach', 1, materials.base, { thickness: 0.012, segments: quality === 'low' ? 32 : 64 });
+        boundary.userData.gameplayBoundary = true;
+        boundary.userData.normalizedGameplayRadius = 1;
+        setProceduralStatusAreaRadius(root, Number(options.gameplayRadius) || 10);
+    }
     setQuality(root, quality);
     return root;
+}
+
+export function setProceduralStatusAreaRadius(root, radius) {
+    if (!Number.isFinite(radius) || radius <= 0) return;
+    for (const child of root.children) {
+        if (!child.userData.gameplayBoundary) continue;
+        child.scale.setScalar(radius);
+        child.userData.baseScale = [radius, radius, radius];
+        root.userData.gameplayRadius = radius;
+    }
 }
 
 export function updateProceduralStatusEffect(root, elapsed, dt) {

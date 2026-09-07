@@ -28,6 +28,7 @@ type EntitySnapshot struct {
 	WhirlwindDuration          float64
 	SpiritsBoosted             bool
 	GuardianEmbraceActive      bool
+	GuardianEmbraceRadius      float64
 	BlessingResolveActive      bool
 	DivineInterventionActive   bool
 	ArcaneShieldActive         bool

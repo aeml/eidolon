@@ -228,6 +228,8 @@ message Entity {
   float whirlwind_duration = 111;
   // Cast-time Meteor footprint for reconnects and removal-before-impact fallback.
   float impact_radius = 112;
+  // Active Guardian Embrace's cast-time healing footprint for every observer.
+  float guardian_embrace_radius = 113;
 
   // Authoritative jump replication
   float jump_start_x = 81;

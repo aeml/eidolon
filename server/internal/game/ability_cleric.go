@@ -113,6 +113,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 		if player.Mana >= cost {
 			player.Mana -= cost
 			player.GuardianEmbraceActive = true
+			player.GuardianEmbraceRadius = effectiveAbilityAreaRadius(player, skillName, 10)
 			player.GuardianEmbraceEndTime = time.Now().Add(10 * time.Second)
 
 			// Combo: Sanctuary (Consecrated Ground → Guardian Embrace) = Damage immunity
@@ -123,7 +124,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			}
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 30*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityEvent(player.ID, targetID, skillName, player.X, player.Z, AbilityShape{Radius: player.GuardianEmbraceRadius, Arc: 2 * math.Pi})
 		}
 	} else if skillName == "Purifying Wave" {
 		// Purifying Wave (AoE Cleanse)

@@ -2,6 +2,7 @@ import {
     PROCEDURAL_STATUS_EFFECT_DEFINITIONS,
     createProceduralStatusEffect,
     releaseProceduralStatusEffect,
+    setProceduralStatusAreaRadius,
     updateProceduralStatusEffect
 } from '../art/ProceduralStatusEffects.js';
 
@@ -57,6 +58,9 @@ export class AttachedStatusEffect {
         this.elapsed += step;
         const sourcePosition = this.owner.mesh?.position || this.owner.position;
         if (sourcePosition) this.group.position.copy(sourcePosition);
+        if (this.statusKey === 'guardian_embrace') {
+            setProceduralStatusAreaRadius(this.group, this.owner.guardianEmbraceRadius > 0 ? this.owner.guardianEmbraceRadius : 10);
+        }
         updateProceduralStatusEffect(this.group, this.elapsed, step);
     }
 

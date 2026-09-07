@@ -5,6 +5,7 @@ import { MeshFactory } from '../utils/MeshFactory.js';
 import { disposeSceneMesh, spawnEffectSceneFallback } from './EffectSceneFallback.js';
 import { SpiritGuardiansEffect } from './SpiritGuardiansEffect.js';
 import { getAbilityAoeRadius } from '../skills/abilityRadii.js';
+import { getAbilityHealingAmount } from '../core/AbilityHealing.js';
 
 export class Cleric extends Actor {
     constructor(id) {
@@ -81,15 +82,14 @@ export class Cleric extends Actor {
         if (skill === "Guardian Embrace") {
             console.log("Cleric used Guardian Embrace!");
             
-            // Cooldown 15s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Guardian Embrace"] = 15.0 * (1 - cdr);
-
             this.guardianEmbraceActive = true;
-            this.guardianEmbraceTimer = 8.0; // 8s duration
+            this.guardianEmbraceTimer = 10.0;
+            this.guardianEmbraceRadius = getAbilityAoeRadius('Cleric', skill, this);
+            this.embraceTickTimer = 1; // The server's first eligible update pulses immediately.
             
             gameEngine.floatingTextManager.spawn("Guardian Embrace!", this.position, '#ffff00');
             this.spawnVisualEffect(gameEngine, this.position, 0xffff00, "buff");
+            this.syncAttachedStatusEffects(0);
             return;
         }
 
@@ -438,6 +438,7 @@ export class Cleric extends Actor {
         this.clearSpiritMeshes();
         this.guardianEmbraceActive = false;
         this.guardianEmbraceTimer = 0;
+        this.guardianEmbraceRadius = 0;
         this.seraphActive = false;
         this.clearSeraphMesh();
     }
@@ -542,26 +543,31 @@ export class Cleric extends Actor {
             if (this.guardianEmbraceTimer <= 0) {
                 this.guardianEmbraceActive = false;
                 this.guardianEmbraceTimer = 0;
-            } else {
+                this.guardianEmbraceRadius = 0;
+                this.syncAttachedStatusEffects(0);
+            } else if (!this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) {
                 // Heal Tick (every 1s)
                 this.embraceTickTimer = (this.embraceTickTimer || 0) + dt;
                 if (this.embraceTickTimer >= 1.0) {
                     this.embraceTickTimer -= 1.0;
-                    const radius = getAbilityAoeRadius('Cleric', 'Guardian Embrace', this);
-                    const healAmount = 10 + (this.stats.wisdom * 0.5);
+                    const radius = this.guardianEmbraceRadius > 0 ? this.guardianEmbraceRadius : 10;
+                    const healAmount = getAbilityHealingAmount(this, 'Guardian Embrace', 20 + this.stats.wisdom * 2);
                     
                     // Find allies in range
                     const entities = (this.gameEngine && this.gameEngine.chunkManager) ? this.gameEngine.chunkManager.getActiveEntities() : (chunkManager ? chunkManager.getActiveEntities() : []);
-                    entities.forEach(entity => {
-                        if (entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
-                            if (this.position.distanceTo(entity.position) < radius) {
-                                entity.stats.hp = Math.min(entity.stats.maxHp, entity.stats.hp + healAmount);
-                                if (this.gameEngine && this.gameEngine.floatingTextManager) {
-                                    this.gameEngine.floatingTextManager.spawn(`+${Math.floor(healAmount)}`, entity.position, '#00ff00');
-                                }
-                            }
-                        }
-                    });
+                    for (const entity of new Set([this, ...entities])) {
+                        if (!(entity instanceof Actor) || !entity.isActive || entity.state === 'DEAD') continue;
+                        const hostile = typeof this.gameEngine?.isHostileActorTarget === 'function'
+                            ? this.gameEngine.isHostileActorTarget(entity)
+                            : !['Fighter', 'Rogue', 'Wizard', 'Cleric', 'AvengingSeraph'].includes(entity.constructor.name);
+                        if (entity !== this && hostile) continue;
+                        if (Math.hypot(this.position.x - entity.position.x, this.position.z - entity.position.z) > radius + (entity.radius || 0)) continue;
+                        const received = entity.poisonTimer > 0 ? Math.max(1, Math.floor(healAmount / 2)) : healAmount;
+                        const before = entity.stats.hp;
+                        entity.stats.hp = Math.min(entity.stats.maxHp, before + received);
+                        const actual = entity.stats.hp - before;
+                        if (actual > 0) this.gameEngine?.floatingTextManager?.spawn(`+${actual}`, entity.position, '#00ff00');
+                    }
                 }
             }
         }

@@ -5,7 +5,22 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-Current release queue (September 7): **1.0.30 (`c3247e8`) is fully verified**.
+Current release queue (September 7): **1.0.31 (`a82baa2`) is fully verified**.
+CI **`34086731393`** passed every job including final live character QA. Fresh
+post-terminal uncached checks at **06:14:00.877 UTC** matched manifest, login
+label, versioned main script and backend to
+`a82baa2adcd41d25f9e9bc01c96d3af6a853674f` / Alpha 1.0.31; health `ok`, database
+`ready`. Only **1.0.32 `d578bdfff7cd998c56bc422bc403d4cbe666b902`** was pushed next.
+CI **`34089969590`** is in progress: client/server checks passed, browser smoke
+running. Do not push 1.0.33 until the complete CI/live gate and fresh identity check.
+
+The [Guardian Embrace area repair](2026-09-07-guardian-area.md) is locally verified
+after the preserved 1.0.36 source: 191 client suites / 2,809 tests, full server race
+checks and actual two-browser cast/late-observer/expiry gameplay pass. It is not
+part of the queued 1.0.36 candidate and does not close the wider combat/phone gates.
+The next diagnostic cast reproduces Consecrated Ground's ignored area talent.
+
+Historical 1.0.30 → original 1.0.31 failure and repair:
 CI **`34081910599`** passed every job, including final live character QA.
 Fresh post-terminal uncached checks at **04:58:37.772 UTC** matched release
 manifest, login label, versioned main script and backend to

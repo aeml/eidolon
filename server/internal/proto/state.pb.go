@@ -856,6 +856,8 @@ type Entity struct {
 	WhirlwindDuration float32 `protobuf:"fixed32,111,opt,name=whirlwind_duration,json=whirlwindDuration,proto3" json:"whirlwind_duration,omitempty"`
 	// Cast-time Meteor footprint for reconnects and removal-before-impact fallback.
 	ImpactRadius float32 `protobuf:"fixed32,112,opt,name=impact_radius,json=impactRadius,proto3" json:"impact_radius,omitempty"`
+	// Active Guardian Embrace's cast-time healing footprint for every observer.
+	GuardianEmbraceRadius float32 `protobuf:"fixed32,113,opt,name=guardian_embrace_radius,json=guardianEmbraceRadius,proto3" json:"guardian_embrace_radius,omitempty"`
 	// Authoritative jump replication
 	JumpStartX    float32 `protobuf:"fixed32,81,opt,name=jump_start_x,json=jumpStartX,proto3" json:"jump_start_x,omitempty"`
 	JumpStartY    float32 `protobuf:"fixed32,82,opt,name=jump_start_y,json=jumpStartY,proto3" json:"jump_start_y,omitempty"`
@@ -1621,6 +1623,13 @@ func (x *Entity) GetImpactRadius() float32 {
 	return 0
 }
 
+func (x *Entity) GetGuardianEmbraceRadius() float32 {
+	if x != nil {
+		return x.GuardianEmbraceRadius
+	}
+	return 0
+}
+
 func (x *Entity) GetJumpStartX() float32 {
 	if x != nil {
 		return x.JumpStartX
@@ -1764,7 +1773,7 @@ const file_state_proto_rawDesc = "" +
 	"\n" +
 	"StatsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\xa5#\n" +
+	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\xdd#\n" +
 	"\x06Entity\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
 	"\vinstance_id\x18\x02 \x01(\tR\n" +
@@ -1881,7 +1890,8 @@ const file_state_proto_rawDesc = "" +
 	"bodyRadius\x12)\n" +
 	"\x10whirlwind_active\x18n \x01(\bR\x0fwhirlwindActive\x12-\n" +
 	"\x12whirlwind_duration\x18o \x01(\x02R\x11whirlwindDuration\x12#\n" +
-	"\rimpact_radius\x18p \x01(\x02R\fimpactRadius\x12 \n" +
+	"\rimpact_radius\x18p \x01(\x02R\fimpactRadius\x126\n" +
+	"\x17guardian_embrace_radius\x18q \x01(\x02R\x15guardianEmbraceRadius\x12 \n" +
 	"\fjump_start_x\x18Q \x01(\x02R\n" +
 	"jumpStartX\x12 \n" +
 	"\fjump_start_y\x18R \x01(\x02R\n" +

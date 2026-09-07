@@ -1111,6 +1111,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			if e.GuardianEmbraceActive {
 				if now.After(e.GuardianEmbraceEndTime) {
 					e.GuardianEmbraceActive = false
+					e.GuardianEmbraceRadius = 0
 				} else if time.Since(e.LastGuardianEmbraceTick) >= 1*time.Second {
 					e.LastGuardianEmbraceTick = now
 					heal := applyAbilityHealingBonus(e, "Guardian Embrace", 20+(e.Stats.Wisdom*2))
@@ -1128,8 +1129,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 					// Heal Nearby Allies
 					pX, pZ := e.X, e.Z
+					areaRadius := e.GuardianEmbraceAreaRadius()
 					e.Mu.Unlock()
-					nearby := w.Grid.Nearby(pX, pZ, expandedAbilityRadius("Guardian Embrace", 10.0), e.InstanceID)
+					nearby := w.Grid.Nearby(pX, pZ, expandedAbilityRadius("Guardian Embrace", areaRadius), e.InstanceID)
 					for _, target := range nearby {
 						if target.InstanceID != e.InstanceID {
 							continue
@@ -1137,7 +1139,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						if target.ID == e.ID {
 							continue
 						}
-						if (target.Type == TypePlayer || target.Type == TypeNPC) && w.CombatRelationship(e, target) != RelationshipHostile && withinAbilityRadius("Guardian Embrace", pX, pZ, target, 10.0) {
+						if (target.Type == TypePlayer || target.Type == TypeNPC) && w.CombatRelationship(e, target) != RelationshipHostile && withinAbilityRadius("Guardian Embrace", pX, pZ, target, areaRadius) {
 							target.Mu.Lock()
 							if target.State == "DEAD" {
 								target.Mu.Unlock()

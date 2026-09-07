@@ -1,7 +1,8 @@
 import { getAbilityAreaRadius, getFlameWhipRadius, getWizardAbilityAreaRadius, WIZARD_GROUND_ABILITIES } from '../core/AbilityRange.js';
 
 // Only abilities whose server casts publish authoritative radius/arc are enrolled.
-export const AUTHORITATIVE_SHAPE_ABILITIES = new Set(['Flame Whip', ...WIZARD_GROUND_ABILITIES, 'Purifying Wave']);
+export const SELF_CENTERED_SHAPE_ABILITIES = new Set(['Purifying Wave', 'Guardian Embrace']);
+export const AUTHORITATIVE_SHAPE_ABILITIES = new Set(['Flame Whip', ...WIZARD_GROUND_ABILITIES, ...SELF_CENTERED_SHAPE_ABILITIES]);
 
 /**
  * World-space radii for player ability presentations with a circular gameplay
@@ -90,13 +91,13 @@ export function getAbilityAoeRadius(className, canonicalSkillName, source = null
     const runeId = source?.skillRunes?.[runeSkill] || null;
     const runeRadius = runeId ? definition.runes?.[runeId] : null;
     const radius = Number.isFinite(runeRadius) ? runeRadius : definition.base;
-    if (className === 'Cleric' && canonicalSkillName === 'Purifying Wave') return getAbilityAreaRadius(source, className, radius);
+    if (className === 'Cleric' && SELF_CENTERED_SHAPE_ABILITIES.has(canonicalSkillName)) return getAbilityAreaRadius(source, className, radius);
     if (className === 'Wizard' && WIZARD_GROUND_ABILITIES.has(canonicalSkillName)) return getWizardAbilityAreaRadius(source, radius);
     return Number.isFinite(radius) && radius > 0 ? radius : null;
 }
 
 export function getAbilityAoeArc(className, canonicalSkillName, source = null) {
-    if (className === 'Cleric' && canonicalSkillName === 'Purifying Wave') return 2 * Math.PI;
+    if (className === 'Cleric' && SELF_CENTERED_SHAPE_ABILITIES.has(canonicalSkillName)) return 2 * Math.PI;
     if (className === 'Wizard' && WIZARD_GROUND_ABILITIES.has(canonicalSkillName)) return 2 * Math.PI;
     if (className === 'Wizard' && canonicalSkillName === 'Flame Whip' && source?.flameWhipNovaCascade) return 2 * Math.PI;
     const arc = PLAYER_ABILITY_AOE_RADII[className]?.[canonicalSkillName]?.arc;

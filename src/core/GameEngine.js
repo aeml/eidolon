@@ -156,12 +156,19 @@ const REMOTE_EFFECT_SYNC_CONFIG = {
         },
         getNextActive: (entity) => Boolean(entity.spiritsActive),
     },
-    guardian_embrace: createTimedRemoteEffectConfig({
+    guardian_embrace: { ...createTimedRemoteEffectConfig({
         payloadKey: 'guardianEmbraceActive',
         durationKey: 'guardianEmbraceDuration',
         timerProperty: 'guardianEmbraceTimer',
-        fallbackDuration: 8
-    }),
+        fallbackDuration: 10,
+        onActivate: (entity, payload) => {
+            if (payload.guardianEmbraceRadius !== undefined) {
+                const radius = Number(payload.guardianEmbraceRadius);
+                entity.guardianEmbraceRadius = Number.isFinite(radius) && radius > 0 ? radius : 10;
+            } else if (!(entity.guardianEmbraceRadius > 0)) entity.guardianEmbraceRadius = 10;
+        },
+        onDeactivate: entity => { entity.guardianEmbraceRadius = 0; }
+    }), payloadKeys: ['guardianEmbraceActive', 'guardianEmbraceDuration', 'guardianEmbraceRadius'] },
     blessing_resolve: createTimedRemoteEffectConfig({
         payloadKey: 'blessingResolveActive',
         durationKey: 'blessingResolveDuration',

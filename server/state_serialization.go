@@ -293,6 +293,7 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		BlessingResolveDuration:    blessingResolveDuration,
 		TimeWarpDuration:           timeWarpDuration,
 		GuardianEmbraceDuration:    guardianEmbraceDuration,
+		GuardianEmbraceRadius:      e.GuardianEmbraceAreaRadius(),
 		ArcaneShieldDuration:       arcaneShieldDuration,
 		DivineInterventionDuration: divineInterventionDuration,
 		SpellFocusDuration:         spellFocusDuration,
@@ -343,6 +344,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	cwhirlwindActive := cwhirlwindDuration > 0
 	cspiritsBoosted := current.SpiritsBoosted
 	cguardianEmbraceActive := current.GuardianEmbraceActive
+	cguardianEmbraceRadius := current.GuardianEmbraceAreaRadius()
 	cblessingResolveActive := current.BlessingResolveActive
 	cdivineInterventionActive := current.DivineInterventionActive
 	carcaneShieldActive := current.ArcaneShieldActive
@@ -616,7 +618,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	if cspiritsBoosted != last.SpiritsBoosted {
 		return true
 	}
-	if cguardianEmbraceActive != last.GuardianEmbraceActive {
+	if cguardianEmbraceActive != last.GuardianEmbraceActive || cguardianEmbraceRadius != last.GuardianEmbraceRadius {
 		return true
 	}
 	if cblessingResolveActive != last.BlessingResolveActive {
@@ -1208,6 +1210,7 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		BlessingResolveDuration:    blessingResolveDuration,
 		TimeWarpDuration:           timeWarpDuration,
 		GuardianEmbraceDuration:    guardianEmbraceDuration,
+		GuardianEmbraceRadius:      float32(e.GuardianEmbraceAreaRadius()),
 		ArcaneShieldDuration:       arcaneShieldDuration,
 		DivineInterventionDuration: divineInterventionDuration,
 		SpellFocusDuration:         spellFocusDuration,

@@ -3504,6 +3504,7 @@ export const eidolon = $root.eidolon = (() => {
              * @property {boolean|null} [whirlwindActive] Entity whirlwindActive
              * @property {number|null} [whirlwindDuration] Entity whirlwindDuration
              * @property {number|null} [impactRadius] Entity impactRadius
+             * @property {number|null} [guardianEmbraceRadius] Entity guardianEmbraceRadius
              * @property {number|null} [jumpStartX] Entity jumpStartX
              * @property {number|null} [jumpStartY] Entity jumpStartY
              * @property {number|null} [jumpStartZ] Entity jumpStartZ
@@ -4375,6 +4376,14 @@ export const eidolon = $root.eidolon = (() => {
             Entity.prototype.impactRadius = 0;
 
             /**
+             * Entity guardianEmbraceRadius.
+             * @member {number} guardianEmbraceRadius
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.guardianEmbraceRadius = 0;
+
+            /**
              * Entity jumpStartX.
              * @member {number} jumpStartX
              * @memberof eidolon.state.Entity
@@ -4710,6 +4719,8 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 111, wireType 5 =*/893).float(message.whirlwindDuration);
                 if (message.impactRadius != null && $Object.hasOwnProperty.call(message, "impactRadius") && !$Object.is(message.impactRadius, 0))
                     writer.uint32(/* id 112, wireType 5 =*/901).float(message.impactRadius);
+                if (message.guardianEmbraceRadius != null && $Object.hasOwnProperty.call(message, "guardianEmbraceRadius") && !$Object.is(message.guardianEmbraceRadius, 0))
+                    writer.uint32(/* id 113, wireType 5 =*/909).float(message.guardianEmbraceRadius);
                 if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
                     for (let i = 0; i < message.$unknowns.length; ++i)
                         writer.raw(message.$unknowns[i]);
@@ -5735,6 +5746,15 @@ export const eidolon = $root.eidolon = (() => {
                                 delete message.impactRadius;
                             continue;
                         }
+                    case 113: {
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.guardianEmbraceRadius = value;
+                            else
+                                delete message.guardianEmbraceRadius;
+                            continue;
+                        }
                     case 81: {
                             if (wireType !== 5)
                                 break;
@@ -6205,6 +6225,9 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.impactRadius != null && $Object.hasOwnProperty.call(message, "impactRadius"))
                     if (typeof message.impactRadius !== "number")
                         return "impactRadius: number expected";
+                if (message.guardianEmbraceRadius != null && $Object.hasOwnProperty.call(message, "guardianEmbraceRadius"))
+                    if (typeof message.guardianEmbraceRadius !== "number")
+                        return "guardianEmbraceRadius: number expected";
                 if (message.jumpStartX != null && $Object.hasOwnProperty.call(message, "jumpStartX"))
                     if (typeof message.jumpStartX !== "number")
                         return "jumpStartX: number expected";
@@ -6627,6 +6650,9 @@ export const eidolon = $root.eidolon = (() => {
                 if (object.impactRadius != null)
                     if (!$Object.is($Number(object.impactRadius), 0))
                         message.impactRadius = $Number(object.impactRadius);
+                if (object.guardianEmbraceRadius != null)
+                    if (!$Object.is($Number(object.guardianEmbraceRadius), 0))
+                        message.guardianEmbraceRadius = $Number(object.guardianEmbraceRadius);
                 if (object.jumpStartX != null)
                     if (!$Object.is($Number(object.jumpStartX), 0))
                         message.jumpStartX = $Number(object.jumpStartX);
@@ -6803,6 +6829,7 @@ export const eidolon = $root.eidolon = (() => {
                     object.whirlwindActive = false;
                     object.whirlwindDuration = 0;
                     object.impactRadius = 0;
+                    object.guardianEmbraceRadius = 0;
                 }
                 if (message.id != null && $Object.hasOwnProperty.call(message, "id"))
                     object.id = message.id;
@@ -7071,6 +7098,8 @@ export const eidolon = $root.eidolon = (() => {
                     object.whirlwindDuration = options.json && !$isFinite(message.whirlwindDuration) ? $String(message.whirlwindDuration) : message.whirlwindDuration;
                 if (message.impactRadius != null && $Object.hasOwnProperty.call(message, "impactRadius"))
                     object.impactRadius = options.json && !$isFinite(message.impactRadius) ? $String(message.impactRadius) : message.impactRadius;
+                if (message.guardianEmbraceRadius != null && $Object.hasOwnProperty.call(message, "guardianEmbraceRadius"))
+                    object.guardianEmbraceRadius = options.json && !$isFinite(message.guardianEmbraceRadius) ? $String(message.guardianEmbraceRadius) : message.guardianEmbraceRadius;
                 return object;
             };
 

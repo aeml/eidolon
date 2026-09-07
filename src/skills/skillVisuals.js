@@ -1,6 +1,6 @@
 import { AvengingSeraph } from '../entities/AvengingSeraph.js';
 import { getAbilityPresentation, isAbilityVisualLayerEnabled } from './abilityVisualManifest.js';
-import { getAbilityAoeArc, getAbilityAoeRadius, isAoeBoundaryVisualType } from './abilityRadii.js';
+import { getAbilityAoeArc, getAbilityAoeRadius, isAoeBoundaryVisualType, SELF_CENTERED_SHAPE_ABILITIES } from './abilityRadii.js';
 
 const CLASS_FALLBACKS = Object.freeze({
     Fighter: Object.freeze({ color: 0xffaa55, type: 'wave' }),
@@ -49,7 +49,7 @@ export function resolveRemoteSkillVisual(entity, skillName, targetPos, shape = {
         type: entry.type,
         // A self-centered cleanse is fixed at its accepted cast point, not at
         // the observer's newer interpolated actor position.
-        origin: resolvePosition(entity, targetPos, skillName === 'Purifying Wave' && Number.isFinite(shape.radius) && shape.radius > 0 ? 'target' : entry.anchor),
+        origin: resolvePosition(entity, targetPos, SELF_CENTERED_SHAPE_ABILITIES.has(skillName) && Number.isFinite(shape.radius) && shape.radius > 0 ? 'target' : entry.anchor),
         ...(gameplayRadius && isAoeBoundaryVisualType(entry.type)
             ? { radius: gameplayRadius, ...(gameplayArc ? { arc: gameplayArc } : {}) }
             : {})

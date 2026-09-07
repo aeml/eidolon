@@ -5,7 +5,7 @@
 
 import * as THREE from 'three';
 import { getAbilityManaCost } from './AbilityEconomy.js';
-import { AUTHORITATIVE_SHAPE_ABILITIES } from '../skills/abilityRadii.js';
+import { AUTHORITATIVE_SHAPE_ABILITIES, SELF_CENTERED_SHAPE_ABILITIES } from '../skills/abilityRadii.js';
 import { getAbilityRange, getFlameWhipRadius, getRogueMovementCastRange, getTeleportCastRange, getWizardGroundCastRange, WIZARD_GROUND_ABILITIES } from './AbilityRange.js';
 import { CONSTANTS } from './Constants.js';
 import { Fighter } from '../entities/Fighter.js';
@@ -220,7 +220,7 @@ export class AbilityController {
     }
 
     reconcileLocalAbilityShape(data) {
-        const positioned = WIZARD_GROUND_ABILITIES.has(data.skillName) || data.skillName === 'Purifying Wave';
+        const positioned = WIZARD_GROUND_ABILITIES.has(data.skillName) || SELF_CENTERED_SHAPE_ABILITIES.has(data.skillName);
         if (!AUTHORITATIVE_SHAPE_ABILITIES.has(data.skillName) || !Number.isFinite(data.radius) || data.radius <= 0 ||
             !Number.isFinite(data.arc) || data.arc <= 0 || data.arc > 2 * Math.PI) return;
         const player = this.engine.player;
