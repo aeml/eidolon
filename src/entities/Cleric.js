@@ -96,27 +96,21 @@ export class Cleric extends Actor {
         if (skill === "Purifying Wave") {
             console.log("Cleric used Purifying Wave!");
             
-            // Cooldown 12s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Purifying Wave"] = 12.0 * (1 - cdr);
-
-            const radius = 8.0;
-            const entities = gameEngine.chunkManager.getActiveEntities();
-            
-            // Visual Ring
-            this.spawnVisualEffect(gameEngine, this.position, 0x00ffff, "ring");
-
-            entities.forEach(entity => {
-                if (entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
-                    const dist = this.position.distanceTo(entity.position);
-                    if (dist < radius) {
-                        if (entity.cleanse) {
-                            entity.cleanse();
-                            gameEngine.floatingTextManager.spawn("Cleanse!", entity.position, '#ffffff');
-                        }
-                    }
-                }
-            });
+            // Keep the shared economy's talented cooldown and canonical cast
+            // presentation. This remains a cleanse, not an invented healing pulse.
+            const radius = getAbilityAoeRadius('Cleric', skill, this);
+            const entities = new Set([this, ...gameEngine.chunkManager.getActiveEntities()]);
+            for (const entity of entities) {
+                if (!(entity instanceof Actor) || !entity.isActive || entity.state === 'DEAD') continue;
+                const hostile = typeof gameEngine.isHostileActorTarget === 'function'
+                    ? gameEngine.isHostileActorTarget(entity)
+                    : !['Fighter', 'Rogue', 'Wizard', 'Cleric', 'AvengingSeraph'].includes(entity.constructor.name);
+                if (entity !== this && hostile) continue;
+                const distance = Math.hypot(this.position.x - entity.position.x, this.position.z - entity.position.z);
+                if (distance > radius + (entity.radius || 0)) continue;
+                entity.cleanse();
+                gameEngine.floatingTextManager?.spawn('Cleanse!', entity.position, '#ffffff');
+            }
             return;
         }
 

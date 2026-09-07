@@ -1482,7 +1482,12 @@ export class Actor extends Entity {
         this.bleedStacks = 0;
         this.bleedTickDamage = 0;
         this.weakPointMarkTimer = 0;
-        // Add other debuffs here if they exist (poison, bleed, etc.)
+        this.bleedTickTimer = 0;
+        this.rootTimer = 0;
+        this.poisonTimer = 0;
+        this.poisonStacks = 0;
+        this.poisonTickDamage = 0;
+        this.poisonTickTimer = 0;
         console.log(`${this.id} was cleansed!`);
     }
 

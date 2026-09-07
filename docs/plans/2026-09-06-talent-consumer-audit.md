@@ -5,6 +5,15 @@ runtime. Not repaired by the cooldown/mana patch, and not a complete 160-talent
 audit. No production save, running browser source or game balance was changed
 by these diagnostic casts.
 
+Latest September 7 candidate: [Purifying Wave area](2026-09-07-cleansing-area.md)
+joins Teleport in ordinary actual-consumer regression coverage. The diagnostic
+overlay now retains the next **Guardian Embrace periodic-area** defect, not the
+two already-repaired representative probes. Its rank-five actual cast/tick leaves
+the 12.2m ally unhealed despite the defined 11.5m radius plus body padding; the
+zero-rank control passes. Log `/tmp/eidolon-guardian-area-probe.log`. Earlier probe
+counts below describe historical checkpoints, not the current command's contents.
+The full category and ineffective Purifying Wave healing mastery remain open.
+
 September 7: the separate [1.0.31 healing candidate](2026-09-07-talent-healing.md)
 promotes the Healing Light reproduction into normal server regression coverage,
 with direct/periodic, rune/combo and receiving-modifier checks. Its focused tests

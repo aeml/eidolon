@@ -23,8 +23,12 @@ export function getFlameWhipRadius(player) {
 }
 
 export function getWizardAbilityAreaRadius(player, base) {
+    return getAbilityAreaRadius(player, 'Wizard', base);
+}
+
+export function getAbilityAreaRadius(player, className, base) {
     let areaBonus = 0;
-    for (const talent of CONSTANTS.PASSIVE_TALENTS.Wizard) {
+    for (const talent of CONSTANTS.PASSIVE_TALENTS[className] || []) {
         if (!talent.abilityArea) continue;
         const raw = Number(player?.talentRanks?.[talent.id] || 0);
         const rank = Number.isFinite(raw) ? Math.max(0, Math.min(talent.maxRank, Math.floor(raw))) : 0;

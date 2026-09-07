@@ -47,7 +47,9 @@ export function resolveRemoteSkillVisual(entity, skillName, targetPos, shape = {
         .map((entry) => ({
         color: entry.color,
         type: entry.type,
-        origin: resolvePosition(entity, targetPos, entry.anchor),
+        // A self-centered cleanse is fixed at its accepted cast point, not at
+        // the observer's newer interpolated actor position.
+        origin: resolvePosition(entity, targetPos, skillName === 'Purifying Wave' && Number.isFinite(shape.radius) && shape.radius > 0 ? 'target' : entry.anchor),
         ...(gameplayRadius && isAoeBoundaryVisualType(entry.type)
             ? { radius: gameplayRadius, ...(gameplayArc ? { arc: gameplayArc } : {}) }
             : {})

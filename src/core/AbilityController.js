@@ -5,6 +5,7 @@
 
 import * as THREE from 'three';
 import { getAbilityManaCost } from './AbilityEconomy.js';
+import { AUTHORITATIVE_SHAPE_ABILITIES } from '../skills/abilityRadii.js';
 import { getAbilityRange, getFlameWhipRadius, getRogueMovementCastRange, getTeleportCastRange, getWizardGroundCastRange, WIZARD_GROUND_ABILITIES } from './AbilityRange.js';
 import { CONSTANTS } from './Constants.js';
 import { Fighter } from '../entities/Fighter.js';
@@ -219,14 +220,14 @@ export class AbilityController {
     }
 
     reconcileLocalAbilityShape(data) {
-        const ground = WIZARD_GROUND_ABILITIES.has(data.skillName);
-        if ((!ground && data.skillName !== 'Flame Whip') || !Number.isFinite(data.radius) || data.radius <= 0 ||
+        const positioned = WIZARD_GROUND_ABILITIES.has(data.skillName) || data.skillName === 'Purifying Wave';
+        if (!AUTHORITATIVE_SHAPE_ABILITIES.has(data.skillName) || !Number.isFinite(data.radius) || data.radius <= 0 ||
             !Number.isFinite(data.arc) || data.arc <= 0 || data.arc > 2 * Math.PI) return;
         const player = this.engine.player;
         const predicted = (this.engine.effects || []).filter(effect => effect.isActive &&
             effect.abilityShape?.sourceId === player.id && effect.abilityShape?.skillName === data.skillName);
         if (predicted.length && predicted.every(effect => Math.abs(effect.abilityShape.radius - data.radius) < 1e-8 &&
-            Math.abs(effect.abilityShape.arc - data.arc) < 1e-8 && (!ground ||
+            Math.abs(effect.abilityShape.arc - data.arc) < 1e-8 && (!positioned ||
                 Math.hypot(effect.abilityShape.x - data.targetX, effect.abilityShape.z - data.targetZ) < 1e-6))) {
             predicted.forEach(effect => { effect.abilityShape.authoritative = true; });
             return;

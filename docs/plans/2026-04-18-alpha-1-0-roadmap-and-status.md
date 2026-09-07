@@ -6,7 +6,8 @@ This document is the release-band closeout for the alpha-to-beta runway. The roo
 
 ## Current Snapshot
 
-- Current in-game displayed version: `Alpha 1.0.35`
+- Current in-game displayed version: `Alpha 1.0.36`
+- This is the local candidate's label; actual publication and verified live version are recorded in [the execution ledger](2026-09-05-roadmap-execution.md).
 - Active implementation line: `Alpha 1.0`
 - Status: release candidate implemented; local verification must stay green and production deployment remains operator-controlled
 - Runtime hotspots: `world.go` 1,422 LOC, `main.go` 938, `GameEngine.js` 2,310, `UIManager.js` 1,216

@@ -131,11 +131,11 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 		if player.Mana >= cost {
 			player.Mana -= cost
 
-			radius := 8.0
+			radius := effectiveAbilityAreaRadius(player, skillName, 8.0)
 			nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID)
 			for _, target := range nearby {
-				if (target.Type == TypePlayer || target.Type == TypeNPC) && w.CombatRelationship(player, target) != RelationshipHostile && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
-					target.Mu.Lock()
+				target.Mu.Lock()
+				if target.State != "DEAD" && (target.Type == TypePlayer || target.Type == TypeNPC) && w.CombatRelationship(player, target) != RelationshipHostile && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
 					// Cleanse Debuffs
 					target.Bleeding = false
 					target.BleedDamage = 0
@@ -158,12 +158,12 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 					target.MarkWeaknessEndTime = time.Time{}
 					target.MarkWeaknessFactor = 0
 					target.RecalculateStats()
-					target.Mu.Unlock()
 				}
+				target.Mu.Unlock()
 			}
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 12*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityEvent(player.ID, targetID, skillName, player.X, player.Z, AbilityShape{Radius: radius, Arc: 2 * math.Pi})
 		}
 	} else if skillName == "Spirit Guardians Boost" {
 		// Spirit Guardians Boost (Buff)

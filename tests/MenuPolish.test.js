@@ -1205,9 +1205,12 @@ describe('menu polish regressions', () => {
     test('start screen version row uses shared label and patch notes link classes', () => {
         const html = readFileSync(indexHtmlPath, 'utf8');
         const css = readFileSync(startScreenCssPath, 'utf8');
+        // VersionPresentation checks the exact release. This layout regression
+        // should follow its label instead of retaining a second stale version.
+        const version = JSON.parse(readFileSync(new URL('../release.json', import.meta.url), 'utf8')).version;
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 1.0.35</span>');
+        expect(html).toContain(`<span class="start-version-row__label">${version}</span>`);
         expect(html).toContain('<button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');
