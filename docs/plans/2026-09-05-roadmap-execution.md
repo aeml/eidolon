@@ -5,7 +5,51 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, shared-combat release correction
+## Current checkpoint — September 7, 17:06 UTC
+
+This checkpoint supersedes the historical release-status paragraphs below.
+**Alpha 1.0.38 `9ed011b` is fully verified live.** CI **34141178711** completes
+successfully with every job passing, including predeploy and live character QA.
+Fresh checks at **17:06:45 UTC** return HTTP 200 for public manifest, login and
+backend; manifest/versioned-main/backend all match exact commit
+`9ed011b3a32b92ac6c8b24ae73cb6f217c2e7cd9`, label **Alpha 1.0.38**, backend
+healthy and database ready.
+
+After clean staging, exact remote-head and ancestry checks, **1.0.39 `7ddf776`**
+is pushed from `release/39-with-runtime-readiness` to `origin/master`. CI
+**34146247683** is queued. No 39 deployment or live success is claimed yet;
+40 must wait for every 39 CI/live job and fresh exact public identity to pass.
+
+The existing tested HUD runtime-readiness helper is backported through a new
+sequential queue. Old candidates are retained. 39–43 differ only in that test
+file from their prior candidates; final 45's tree is identical to `82f01c6`.
+All seven version/default/landing carry-forward checks pass; no local test
+process remains active from the earlier carry-forward loop.
+
+| Version | Queued branch | Commit | Carry-forward tests |
+|---|---|---|---|
+| 1.0.39 | `release/39-with-runtime-readiness` | `7ddf776` | 222 / 3.276s; pushed |
+| 1.0.40 | `release/40-with-runtime-readiness` | `8328637` | 223 / 2.315s |
+| 1.0.41 | `release/41-with-runtime-readiness` | `daaec74` | 224 / 2.238s |
+| 1.0.42 | `release/42-with-runtime-readiness` | `bcf3f98` | 225 / 2.224s |
+| 1.0.43 | `release/43-with-runtime-readiness` | `7eb1d1f` | 227 / 2.420s |
+| 1.0.44 | `release/44-with-runtime-readiness` | `7c3d0be` | 229 / 2.287s |
+| 1.0.45 | `release/45-with-runtime-readiness` | `7ceb61d` | 231 / 2.497s |
+
+Root integrates 45 and the new queue ancestry, but is not the publication target.
+45 package `71c0158`, evidence `82f01c6`, passes **214 suites / 3,173 tests /
+163.807s**, lint, backend-root race **31.359s**, **65 anonymous checks / 8.0m**,
+and actual versioned Shield gameplay **44.4s**, scan and cleanup. The final actual
+portrait is inspected. See [compact status evidence](2026-09-07-compact-status-details.md).
+
+The isolated entrance follow-up at `/tmp/eidolon-entrance-visibility-vPO24x`
+implements a localized depth-correct cutaway (`d8a5361`). After rejecting whole
+building transparency and an alpha-depth regression, it passes **10 GPU checks /
+50.4s**, **215 suites / 3,183 tests / 129.07s**, lint and real cutaway/combat/town
+restoration **47.7s**, scan and cleanup. Actual landscape imagery is inspected.
+46 packaging is underway in that worktree; it is not root-integrated or live.
+
+## Scope addition — September 7
 
 Scope addition, September 7: the user requests a solid item-drop, XP and reward
 balancing pass, longer appropriately paced collection/hunt objectives, and
@@ -14,6 +58,8 @@ investigation-driven story additions in each realm. The
 adds coordinated tuning, eight investigations, active-save migration and earned
 playthrough gates across 1.0.x/1.1/1.4/1.5/1.6. This update changes planning only;
 no reward values, live quest requirements, version numbers or deployments change.
+
+## Earlier checkpoint — shared-combat release correction
 
 This checkpoint supersedes the older in-progress statements below. Public
 release remains last verified **Alpha 1.0.37**. Corrected **1.0.38 `9ed011b`**
