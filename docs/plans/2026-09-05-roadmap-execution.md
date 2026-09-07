@@ -30,7 +30,7 @@ attributed bleed, credential scan and cleanup. Both `92810` and `91656` are clos
 
 Runtime/notes/tests commit **`c7d07d3`** is followed by status-test readiness
 backport **`785bd73`**. Its import conflict is resolved for the older 40 test;
-an prematurely started anonymous attempt exits on that syntax error before any
+a prematurely started anonymous attempt exits on that syntax error before any
 checks run, and is closed. Final staging is clean and lint passes. Full final
 checks are confirmed active: client **67547**, server race **83399**, anonymous
 browser **24886**, logs `/tmp/eidolon-release40-lunge-full-client.log`,
@@ -39,8 +39,9 @@ browser **24886**, logs `/tmp/eidolon-release40-lunge-full-client.log`,
 do not restart on observation timeout, and keep staging runtime frozen during
 its browser test. This is not yet a verified/re-published correction. Earlier
 release branches remain preserved and need carry-forward of the eventual
-verified correction. See [Lunge correction evidence](2026-09-07-release40-lunge-landing.md)
-on the staging branch; it has not yet been merged into root.
+verified correction. Lunge evidence is in
+`docs/plans/2026-09-07-release40-lunge-landing.md` on the staging branch;
+it has not yet been merged into root.
 
 **Alpha 1.0.48 is locally verified and root-integrated**, not published.
 Release branch `release/48-with-combo-observation` is **`e13f512`**; root merge
