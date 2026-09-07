@@ -48,6 +48,21 @@ pass **3.144s**. All these handles are closed; the expanded graph backend passes
 
 ### World integration checkpoint
 
+Air run **59545** against **fa9feaa** closes **SUCCESS / one test / 5.1m** (test
+5.0m). Ordinary travel and actual crowd combat reach Selen's journal and all
+three horizon markers; seven/eight engaged pursuers before the journal/updraft
+are target observations, not audited kill counts. Both optional chapters receive
+explicit manual catch-up replies/rewards, survive reconnect with masks 1/7, and
+all four saved records are reopened and checked against the complete authored
+text. Old Air dungeon remains completed; the first raid stays uncompleted.
+Actual observatory, trapped-updraft and final earned journal images are inspected
+and preserved in `/tmp/eidolon-air-earned-proof-U6GbWV/`. Log:
+`/tmp/eidolon-investigations-air-earned.log`; credential scan/cleanup pass. All
+four realms now have earned investigation evidence, on the explicitly recorded
+source checkpoints. Water/Fire/Air use prepared returning-character fixtures;
+this does not establish a complete fresh 23-chapter campaign, new XP pacing,
+physical-phone usability or a released expansion.
+
 Fire's bounded encounter run **3159** against **24d51e5** closes **SUCCESS / one
 test / 4.4m** (test 4.3m). Ordinary combat clears seven pursuers before cold ash;
 the later anchor fight records its actual death and mask **1 → 3**, with ember
