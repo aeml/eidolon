@@ -71,17 +71,18 @@ test('ordinary critical-talent purchases persist and retain real targeted combat
             await moveByGroundClick(page, offset.x * scale, offset.z * scale, { allowJumpFallback: false });
         }
         await expect.poll(() => page.evaluate(skill => window.game.player.cooldowns?.[skill] || 0, config.skill)).toBe(0);
-        const slot = await page.evaluate(skill => window.game.player.hotbar.indexOf(skill), config.skill);
-        expect(slot).toBeGreaterThanOrEqual(0);
+        expect(await page.evaluate(() => window.game.player.abilityName)).toBe(config.skill);
         await page.evaluate(id => Object.assign(window.__criticalQA, { results: [], hits: [], requests: [], targetId: id }), target.id);
+        let aim;
         await expect.poll(async () => {
-            const aim = await projectEntity(page, target.id);
+            aim = await projectEntity(page, target.id);
             if (!aim?.visible) return false;
             await page.mouse.move(aim.x, aim.y);
             return page.evaluate(id => window.game.hoveredEntity?.id === id &&
                 window.game.hoveredEntity.position.distanceTo(window.game.player.position) < 9, target.id);
         }).toBe(true);
-        await page.keyboard.press(String(slot + 1));
+        // These are the class primary abilities, not specialization slots.
+        await page.mouse.click(aim.x, aim.y, { button: 'right' });
         await expect.poll(() => page.evaluate(() => window.__criticalQA.results.length)).toBe(1);
         expect(await page.evaluate(() => window.__criticalQA.results[0])).toEqual(expect.objectContaining({ accepted: true }));
         expect(await page.evaluate(() => window.__criticalQA.requests)).toEqual([{ selectedTarget: true }]);
