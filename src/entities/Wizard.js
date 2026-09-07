@@ -10,6 +10,7 @@ import { getAbilityAoeRadius } from '../skills/abilityRadii.js';
 import { getAbilityRange, getTeleportCastRange, clampWizardGroundTarget, WIZARD_GROUND_ABILITIES } from '../core/AbilityRange.js';
 import { clipDungeonEffectSegment, resolveDungeonBeamEndpoint } from '../skills/dungeonEffectGeometry.js';
 import { findOfflineAbilityTarget } from '../skills/offlineAbilityTargeting.js';
+import { getArcaneShieldTraining } from '../core/ArcaneShieldTraining.js';
 
 export class Wizard extends Actor {
     constructor(id) {
@@ -67,8 +68,10 @@ export class Wizard extends Actor {
 
     useAbility(targetVector, gameEngine, skillNameOverride = null) {
         if (!targetVector) return;
+        if (this.isRemote) return;
         const offline = !this.isMultiplayer && !gameEngine?.isMultiplayer;
         const requestedSkill = skillNameOverride || this.abilityName;
+        if (requestedSkill === 'Arcane Shield' && !this.unlockedSkills.includes(requestedSkill)) return;
         if (offline && WIZARD_GROUND_ABILITIES.has(requestedSkill)) {
             const placement = clampWizardGroundTarget(this, requestedSkill, targetVector);
             const rects = gameEngine.currentInstanceId && gameEngine.currentInstanceType !== 'overworld'
@@ -90,7 +93,7 @@ export class Wizard extends Actor {
 
         // Apply Spell Focus Multiplier if active
         let damageMultiplier = 1.0;
-        if (this.spellFocusActive) {
+        if (this.spellFocusActive && skill !== 'Arcane Shield') {
             damageMultiplier = this.spellFocusMultiplier;
             this.spellFocusActive = false; // Consume it
             this.spellFocusTimer = 0;
@@ -448,15 +451,13 @@ export class Wizard extends Actor {
             if (!this.unlockedSkills.includes("Arcane Shield")) return;
             console.log("Wizard used Arcane Shield!");
             
-            // Cooldown 20s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Arcane Shield"] = 20.0 * (1 - cdr);
-            
-            // Shield Amount: 30% of Max HP + Int scaling
-            const shieldAmount = (this.stats.maxHp * 0.30) + (this.stats.intelligence * 5.0);
+            // Actor committed the canonical paid cooldown. Shield capacity is
+            // defensive training, not spell damage or a Spell Focus consumer.
+            const training = getArcaneShieldTraining(this);
+            const shieldAmount = training.capacity;
             this.shieldHP = shieldAmount;
             this.arcaneShieldActive = true;
-            this.arcaneShieldTimer = 10.0;
+            this.arcaneShieldTimer = training.duration;
             
             gameEngine.floatingTextManager.spawn(`SHIELD +${Math.floor(shieldAmount)}`, this.position, '#0088ff');
             

@@ -36,8 +36,11 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			}
 
 			player.ArcaneShieldActive = true
-			player.ArcaneShieldHP = 100 + (player.Stats.Intelligence * 5)
-			player.ArcaneShieldEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, duration))
+			training := snapshotCombatAttackerLocked(player)
+			training.NormalizeTalentRanks()
+			capacity := float64(100 + player.Stats.Intelligence*5)
+			player.ArcaneShieldHP = int(math.Floor(capacity*(1+training.GetSkillBonus(skillName).SkillAbsorption) + 1e-9))
+			player.ArcaneShieldEndTime = time.Now().Add(resolveAbilityEffectDuration(training, skillName, duration))
 			player.ArcaneShieldRuneID = runeID
 			player.ArcaneShieldAbsorbed = 0
 

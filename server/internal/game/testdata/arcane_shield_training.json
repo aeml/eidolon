@@ -1,0 +1,11 @@
+[
+  {"name":"baseline","ranks":{},"capacity":150,"duration":20},
+  {"name":"rank1","ranks":{"WIZ_21":1},"capacity":156,"duration":20},
+  {"name":"rank5","ranks":{"WIZ_21":5},"capacity":180,"duration":20},
+  {"name":"clamped","ranks":{"WIZ_21":99},"capacity":180,"duration":20},
+  {"name":"negative","ranks":{"WIZ_21":-2},"capacity":150,"duration":20},
+  {"name":"unrelated","ranks":{"WIZ_01":5,"FTR_21":5},"capacity":150,"duration":20},
+  {"name":"focused","ranks":{"WIZ_21":5},"focus":true,"capacity":180,"duration":20},
+  {"name":"extended","ranks":{"WIZ_21":5},"rune":"arcaneshield_extended","capacity":180,"duration":30},
+  {"name":"duration-trained","ranks":{"WIZ_21":5,"WIZ_32":5,"WIZ_34":5},"capacity":180,"duration":29}
+]
