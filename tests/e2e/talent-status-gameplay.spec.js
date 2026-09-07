@@ -44,8 +44,19 @@ test('status Mastery purchases change real ticks and persist through fresh login
             };
             const send = game.network.send.bind(game.network);
             game.network.send = (kind, payload) => {
-                if (kind === 'ability') window.__statusQA.requests.push({ skill: payload.skillName,
-                    selectedTarget: payload.targetId === window.__statusQA.target });
+                if (kind === 'ability') {
+                    const target = game.hoveredEntity;
+                    const targeted = payload.skillName === 'Shadow Lunge' || payload.skillName === 'Piercing Throw';
+                    // Input can arrive on a later frame than the aim probe.
+                    // Snapshot the real hovered actor at dispatch, not a stale
+                    // pre-input projection of a moving, overlapping crowd.
+                    const selectedTarget = payload.targetId === target?.id && game.isHostileActorTarget(target);
+                    if (targeted && selectedTarget) window.__statusQA.target = target.id;
+                    window.__statusQA.requests.push({ skill: payload.skillName, targetId: payload.targetId, selectedTarget,
+                        durable: Boolean(target?.constructor?.name === 'InfernoTitan'
+                            && target.stats.hp > 2*(15+1.5*game.player.stats.dexterity)),
+                        inRange: Boolean(target && target.position.distanceTo(game.player.position) < 9) });
+                }
                 return send(kind, payload);
             };
         }, config.talent);
@@ -137,10 +148,10 @@ test('status Mastery purchases change real ticks and persist through fresh login
             expect(await page.evaluate(() => window.__statusQA.results[1])).toEqual(expect.objectContaining({ skillName: 'Piercing Throw', accepted: true }));
         }
         const delivery = config.skill === 'Shadow Lunge' ? config.skill : 'Piercing Throw';
-        expect(await page.evaluate(skill => window.__statusQA.requests.filter(request => request.skill === skill), delivery))
-            .toEqual([{ skill: delivery, selectedTarget: true }]);
+        const requests = await page.evaluate(skill => window.__statusQA.requests.filter(request => request.skill === skill), delivery);
+        expect(requests).toEqual([expect.objectContaining({ skill: delivery, selectedTarget: true, durable: true, inRange: true })]);
         await expect.poll(() => page.evaluate(skill => window.__statusQA.casts.filter(cast => cast.skillName === skill).map(cast => cast.targetId), delivery))
-            .toEqual([target.id]);
+            .toEqual([requests[0].targetId]);
         await expect.poll(() => page.evaluate(kind => window.__statusQA.damage.some(hit => hit.kind === kind), config.kind)).toBe(true).catch(async error => {
             console.log('[status-training-missing-tick]', await page.evaluate(id => {
                 const game = window.game, enemy = game.remotePlayers.get(id);
