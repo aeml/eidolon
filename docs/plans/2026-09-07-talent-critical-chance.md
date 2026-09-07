@@ -1,8 +1,8 @@
 # Critical-chance talent consumers — reproduced September 7
 
-Status: **server critical consumption/composition, offline basic criticals and
-critical tooltip corrections implemented in an isolated working branch;
-offline ability consumers and real-gameplay checks remain open**. This is
+Status: **server critical consumption/composition, offline basic and implemented
+ability criticals, and tooltip corrections implemented in an isolated branch;
+real-browser/persistence and remaining consumer coverage remain open**. This is
 not a completed talent category or release.
 The main game and earned Fighter browser sources remained frozen during these
 isolated Go overlay diagnostics. No production or browser character was modified.
@@ -150,3 +150,69 @@ new helper, correct skill identity, rune/combo composition and real paid-cast
 tests; the generic basic repair does not establish offline ability parity.
 Non-damaging Technique benefits, periodic source coverage and browser/persistence
 validation remain open. Do not package it as a complete talent or 1.1 release.
+
+## Offline ability and projectile follow-up
+
+Nine ordinary paid offline casts reproduce the missing critical multiplier in
+0.766s: Backstab (`ROG_04` and `ROG_32`), Flame Whip (`WIZ_39`), Shield Slam
+(`FTR_39`), Piercing Throw, Fan of Knives, Blade Storm, Phantom Volley and
+Fireball. Tests advance actual projectiles to a real collision; they do not call
+a replacement damage calculation. Shared Dagger visuals now carry the actual
+originating skill so another Dagger skill's Technique cannot apply. Rank-zero,
+one, five and unrelated-skill controls pass and critical hits receive explicit
+offline feedback.
+
+A shared offline hit step now passes the critical amount and caster into normal
+recipient damage. Existing base/area/rune rules remain with the consumers;
+Lucky is independent, and multiplayer/remote sources or targets cannot acquire
+local damage or critical feedback. Implemented Fighter, Rogue, Wizard and
+Cleric direct, projectile and periodic consumers use this step. Fighter's damage
+override now preserves the attacker argument for reflection/kill attribution.
+Actual paid periodic/area checks cover Whirlwind, Inferno Cataclysm, Spirit
+Guardians, Boost, Consecrated Ground and Radiant Strike; the expanded 15-case
+consumer suite passes 0.673s. Radiant Strike retains its real received-HP
+accounting for lifesteal.
+
+Offline Ambush and Implosion also needed actual consumption, not just a shared
+critical helper. Backstab's 12-case matrix initially has seven failures/five
+passes (0.513s). Accepted Cloak → Backstab now guarantees one ordinary critical;
+Ambush's 50% rune roll composes with it and equipment without extra doubling.
+Armor and Eviscerate follow the same post-armor critical order as the server.
+Expired sequences do not proc; rejected targets preserve the pending sequence
+without spending mana. Combo feedback follows the successful hit.
+
+Fireball's seven initial splash/flight/authority cases all fail: secondary
+targets receive 100% rather than 40% raw damage, splash and flight cross walls,
+and an authoritative engine flag alone does not stop local damage. Local
+projectiles now clip against canonical dungeon floors and terminate at the wall;
+recipient line-of-sight is checked separately. Fireball/Explosive Trap splash
+starts at 40% raw damage; Meteor remains a full-strength area impact. An
+authoritative engine never simulates the local collision or damage. Gravity
+Well → Fireball now carries Implosion into the projectile and checks each
+recipient's slow independently, including splash and ordinary critical chance.
+Three additional actual paid combo cases reproduce missing Implosion before
+the fix. Combined Backstab, projectile-composition and direct/projectile
+consumer checks pass 31 tests in 0.969s (before adding the six periodic cases).
+
+The first full client run reports **15 failures / 3,055 passes in 81.968s**,
+all in Spirit/Consecrated boundary assertions expecting a one-argument damage
+call. Actual amounts are unchanged; the new second argument is the caster.
+Assertions now retain exact damage and additionally require that caster.
+The corrected full regression passes **207 suites / 3,074 tests in 92.635s**;
+lint and whitespace pass. Production Go source is unchanged from the recorded
+server race pass. This is still the isolated critical branch without the hotbar
+correction, not a combined-root or live-release result.
+
+Logs are retained under `/tmp/eidolon-critical-offline-`: `abilities-before`,
+`abilities-after`, `consumers-expanded`, `backstab-before`, `backstab-after`,
+`splash-before`, `splash-after`, `implosion-before`, `composition-complete`,
+`periodic`, `full-client` and `full-client-final` (all `.log`).
+
+Remaining limits are explicit: this is not a claim of complete offline combat
+parity. Older base-damage/stat/rune differences, bleed/poison source consumption,
+and missing offline skills remain separate audit work. In particular Avenging
+Seraph's offline handler only announces a summon; its old attack loop is commented
+out, so it is **not** an implemented periodic consumer or a passing summon test.
+The new Fireball explosion tests do not establish a real paid Explosive Trap
+cast. The branch still needs the separate hotbar correction integrated and
+real-server browser/persistence validation before release packaging.

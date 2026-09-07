@@ -9,6 +9,7 @@ import {
 } from '../art/ProceduralProjectileEffects.js';
 import { getProjectileImpactRadius } from '../skills/abilityRadii.js';
 import { Actor } from './Actor.js';
+import { applyOfflineAbilityHit } from '../core/AbilityCritical.js';
 import { clipDungeonEffectSegment } from '../skills/dungeonEffectGeometry.js';
 
 // =====================================================
@@ -170,6 +171,10 @@ export class Projectile extends Entity {
         super(id);
         this.owner = owner;
         this.type = type; // 'Fireball', 'Dagger'
+        this.skillName = ({ Dagger: 'Piercing Throw', PhantomArrow: 'Phantom Volley',
+            Fireball: 'Fireball', FlameTornado: 'Flame Tornado', DragonfireLance: 'Dragonfire Lance',
+            ArcaneMissile: 'Arcane Missiles', Meteor: 'Meteor Drop', ExplosiveTrap: 'Explosive Trap',
+            SnareTrap: 'Snare Trap', Tripwire: 'Tripwire' })[type] || '';
         if (startPos) {
             this.position.copy(startPos);
         }
@@ -266,6 +271,10 @@ export class Projectile extends Entity {
 
     update(dt, collisionManager, player, chunkManager, floatingTextManager, gameEngine) {
         if (!this.isActive) return;
+        const locallySimulated = !this.serverAuthoritativeLifetime && !gameEngine?.isMultiplayer &&
+            !this.owner?.isMultiplayer && !this.owner?.isRemote;
+        const walkRects = gameEngine?.currentInstanceId && gameEngine.currentInstanceType !== 'overworld'
+            ? gameEngine.currentDungeonLayout?.walkRects : null;
 
         this.visualElapsed += Math.max(0, Number(dt) || 0);
 
@@ -305,6 +314,18 @@ export class Projectile extends Entity {
 
         // Move
         const moveStep = this.velocity.clone().multiplyScalar(dt);
+        if (locallySimulated) {
+            const destination = this.position.clone().add(moveStep);
+            const clipped = clipDungeonEffectSegment(walkRects, this.position, destination);
+            if (clipped.blocked) {
+                this.position.set(clipped.x, destination.y, clipped.z);
+                this.mesh?.position.copy(this.position);
+                this.isActive = false;
+                if (this.mesh) this.mesh.visible = false;
+                spawnProjectileImpact(gameEngine, this, this.position, { terminal: true });
+                return;
+            }
+        }
         this.position.add(moveStep);
         
         if (this.mesh) {
@@ -313,7 +334,7 @@ export class Projectile extends Entity {
         }
 
         // Collision Detection (Client-side prediction / Singleplayer)
-        if (this.type === 'Meteor' && this.groundImpactPosition && !this.serverAuthoritativeLifetime) {
+        if (this.type === 'Meteor' && this.groundImpactPosition && locallySimulated) {
             // A falling meteor impacts its selected ground point, even when no
             // actor stands under it. Do not detonate early on an actor's head.
             if (this.position.y <= this.groundImpactPosition.y) {
@@ -331,15 +352,14 @@ export class Projectile extends Entity {
                     if (!hostile || Math.hypot(target.position.x - this.position.x, target.position.z - this.position.z) > this.explosionRadius + (target.radius || 0) ||
                         clipDungeonEffectSegment(rects, this.position, target.position).blocked) continue;
                     if (!this.owner.isMultiplayer && !this.owner.isRemote) {
-                        target.takeDamage(this.damage);
-                        floatingTextManager?.spawn(Math.floor(this.damage), target.position, '#ff4500');
+                        applyOfflineAbilityHit(this.owner, target, this.damage, this.skillName, floatingTextManager, '#ff4500');
                     }
                 }
                 spawnProjectileImpact(gameEngine, this, this.position, { radius: this.explosionRadius, terminal: true });
             }
             return;
         }
-        if (chunkManager && !this.serverAuthoritativeLifetime) {
+        if (chunkManager && locallySimulated) {
             const activeEntities = chunkManager.getActiveEntities();
             const hitRadius = this.radius || 1.0; // Use projectile's radius
 
@@ -357,6 +377,7 @@ export class Projectile extends Entity {
                 // Only the damageable actor contract is a valid collision
                 // target; otherwise a visual pass can throw on takeDamage.
                 if (typeof entity.takeDamage !== 'function') continue;
+                if (clipDungeonEffectSegment(walkRects, this.position, entity.position).blocked) continue;
 
                 const dist = this.position.distanceTo(entity.position);
                 if (dist < hitRadius + (entity.radius || 0.5)) {
@@ -423,10 +444,7 @@ export class Projectile extends Entity {
                                 if (floatingTextManager) floatingTextManager.spawn("POISON!", entity.position, '#00ff00');
                             }
 
-                            entity.takeDamage(finalDamage);
-                            if (floatingTextManager) {
-                                floatingTextManager.spawn(Math.floor(finalDamage), entity.position, '#ffffff');
-                            }
+                            applyOfflineAbilityHit(this.owner, entity, finalDamage, this.skillName, floatingTextManager);
                         }
 
                         spawnProjectileImpact(gameEngine, this, this.position, {
@@ -440,10 +458,7 @@ export class Projectile extends Entity {
                         if (this.mesh) this.mesh.visible = false;
                         
                         if (!this.owner.isMultiplayer && !this.owner.isRemote) {
-                            entity.takeDamage(this.damage);
-                            if (floatingTextManager) {
-                                floatingTextManager.spawn(Math.floor(this.damage), entity.position, '#aa00ff');
-                            }
+                            applyOfflineAbilityHit(this.owner, entity, this.damage, this.skillName, floatingTextManager, '#aa00ff');
                         }
                         
                         spawnProjectileImpact(gameEngine, this, this.position, {
@@ -468,13 +483,17 @@ export class Projectile extends Entity {
                             if (typeof splashTarget.takeDamage !== 'function') continue;
                             if (this.owner && this.owner.constructor.name === splashTarget.constructor.name) continue;
 
-                            const splashDist = this.position.distanceTo(splashTarget.position);
-                            if (splashDist < splashRadius) {
+                            const splashDist = Math.hypot(this.position.x - splashTarget.position.x, this.position.z - splashTarget.position.z);
+                            if (splashDist <= splashRadius + (splashTarget.radius || 0) &&
+                                !clipDungeonEffectSegment(walkRects, this.position, splashTarget.position).blocked) {
                                 if (!this.owner.isMultiplayer && !this.owner.isRemote) {
-                                    splashTarget.takeDamage(this.damage);
-                                    if (floatingTextManager) {
-                                        floatingTextManager.spawn(Math.floor(this.damage), splashTarget.position, '#ff4500');
-                                    }
+                                    // Meteor is a full-strength area impact. Fireball
+                                    // and traps splash for 40% of raw damage, with
+                                    // independent recipient criticals, never a
+                                    // critical multiplied into another critical.
+                                    let raw = splashTarget === entity || this.type === 'Meteor' ? this.damage : Math.floor(this.damage * .4);
+                                    if (this.type === 'Fireball' && this.fireballWellBoost && splashTarget.slowTimer > 0) raw *= 2;
+                                    applyOfflineAbilityHit(this.owner, splashTarget, raw, this.skillName, floatingTextManager, '#ff4500');
                                 }
                             }
                         }
@@ -495,8 +514,7 @@ export class Projectile extends Entity {
                         this.isActive = false;
                         if (this.mesh) this.mesh.visible = false;
                         if (!this.owner.isMultiplayer && !this.owner.isRemote) {
-                            entity.takeDamage(this.damage);
-                            if (floatingTextManager) floatingTextManager.spawn(Math.floor(this.damage), entity.position, '#ffffff');
+                            applyOfflineAbilityHit(this.owner, entity, this.damage, this.skillName, floatingTextManager);
                         }
                         spawnProjectileImpact(gameEngine, this, this.position, {
                             targetId: entity.id,

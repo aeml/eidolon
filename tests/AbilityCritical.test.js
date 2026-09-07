@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import { readFileSync } from 'node:fs';
 import { CONSTANTS } from '../src/core/Constants.js';
-import { getCriticalChance, rollOfflineCriticalDamage } from '../src/core/AbilityCritical.js';
+import { getCriticalChance, rollOfflineCriticalDamage, applyOfflineAbilityHit } from '../src/core/AbilityCritical.js';
 
 afterEach(() => jest.restoreAllMocks());
 
@@ -73,4 +73,27 @@ test.each([{ isMultiplayer: true }, { isRemote: true }, { gameEngine: { isMultip
     expect(rollOfflineCriticalDamage({ ...flags, stats: { critChanceBonus: 1 } }, 100, 'Fireball', true))
         .toEqual({ amount: 100, critical: false });
     expect(random).not.toHaveBeenCalled();
+});
+
+test('ability hit preserves independent Lucky, one ordinary critical and source attribution', () => {
+    jest.spyOn(Math, 'random').mockReturnValue(.05);
+    const source = { meshType: 'Rogue', stats: { critChanceBonus: 1 }, hasLuckyEffect: true };
+    const target = { takeDamage: jest.fn(), position: { x: 0, y: 0, z: 0 } };
+    const feedback = { spawn: jest.fn() };
+    expect(applyOfflineAbilityHit(source, target, 100, 'Backstab', feedback, '#fff', true)).toBe(400);
+    expect(target.takeDamage).toHaveBeenCalledWith(400, source);
+    expect(feedback.spawn).toHaveBeenCalledWith(400, target.position, '#ffd166');
+    expect(feedback.spawn).toHaveBeenCalledWith('CRITICAL!', target.position, '#ffd166');
+});
+
+test.each([{ isMultiplayer: true }, { isRemote: true }, { gameEngine: { isMultiplayer: true } }])('ability damage never mutates either authoritative participant: %p', flags => {
+    const random = jest.spyOn(Math, 'random');
+    const feedback = { spawn: jest.fn() };
+    const source = { stats: { critChanceBonus: 1 }, hasLuckyEffect: true };
+    const target = { takeDamage: jest.fn() };
+    expect(applyOfflineAbilityHit({ ...source, ...flags }, target, 100, 'Fireball', feedback)).toBe(0);
+    expect(applyOfflineAbilityHit(source, { ...target, ...flags }, 100, 'Fireball', feedback)).toBe(0);
+    expect(target.takeDamage).not.toHaveBeenCalled();
+    expect(random).not.toHaveBeenCalled();
+    expect(feedback.spawn).not.toHaveBeenCalled();
 });

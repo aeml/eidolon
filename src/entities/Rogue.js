@@ -3,6 +3,7 @@ import { Actor } from './Actor.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
 import { Projectile } from './Projectile.js';
+import { applyOfflineAbilityHit } from '../core/AbilityCritical.js';
 import { spawnEffectSceneFallback } from './EffectSceneFallback.js';
 import { getAbilityRange, getRogueMovementCastRange } from '../core/AbilityRange.js';
 import { findOfflineAbilityTarget } from '../skills/offlineAbilityTargeting.js';
@@ -113,6 +114,7 @@ export class Rogue extends Actor {
         if (!targetVector) return;
         const skill = skillNameOverride || this.abilityName;
         let castTarget = null;
+        if (skill === 'Backstab' && !this.isMultiplayer && !gameEngine?.isMultiplayer && !this.unlockedSkills.includes(skill)) return false;
         if (['Weak Point Mark', 'Backstab', 'Shadow Lunge'].includes(skill) && !this.isMultiplayer && !gameEngine?.isMultiplayer) {
             const range = skill === 'Weak Point Mark'
                 ? getAbilityRange(this, skill, CONSTANTS.ABILITY_CONFIG.Rogue.skills[skill].range)
@@ -128,6 +130,14 @@ export class Rogue extends Actor {
 
         if (this.isMultiplayer || gameEngine?.isMultiplayer) return true;
 
+        // Only accepted offline casts advance sequence history. Target, mana
+        // and cooldown rejections above must not consume a pending Ambush.
+        const now = Date.now();
+        const ambushCombo = skill === 'Backstab' && this.lastOfflineRogueSkill === 'Cloak & Vanish' &&
+            now - this.lastOfflineRogueSkillAt <= 3000;
+        this.lastOfflineRogueSkill = skill;
+        this.lastOfflineRogueSkillAt = now;
+
         // --- Branch A: Assassin Burst Path ---
 
         if (skill === "Backstab") {
@@ -141,7 +151,7 @@ export class Rogue extends Actor {
             const target = castTarget;
 
             if (target) {
-                let damage = this.stats.damage * 1.5;
+                let damage = Math.floor(this.stats.damage * 1.5);
                 if (this.skillRunes?.Backstab === 'backstab_shadowstep') this.moveBehindOfflineTarget(target, gameEngine);
                 
                 // Backstab Check: Are we behind the target?
@@ -156,8 +166,16 @@ export class Rogue extends Actor {
                     gameEngine.floatingTextManager.spawn("BACKSTAB!", target.position, '#ff0000');
                 }
                 
-                target.takeDamage(damage);
-                gameEngine.floatingTextManager.spawn(Math.floor(damage), target.position, '#ffffff');
+                const rune = this.skillRunes?.Backstab;
+                const runeCritical = rune === 'backstab_ambush' && Math.random() < .5;
+                let armor = Math.max(0, Math.floor(Number(target.stats?.defense) || 0));
+                if (rune === 'backstab_eviscerate') armor -= Math.floor(armor / 2);
+                damage = Math.max(1, damage - armor);
+                applyOfflineAbilityHit(this, target, damage, skill, gameEngine.floatingTextManager, '#ffffff', ambushCombo || runeCritical);
+                if (ambushCombo) {
+                    gameEngine.floatingTextManager?.spawn('COMBO: Ambush!', this.position, '#ffd700');
+                    gameEngine.uiManager?.showComboNotification?.('Ambush', 'ambush');
+                }
                 this.spawnVisualEffect(gameEngine, target.position, 0xff0000, "blood");
             }
             return;
@@ -236,8 +254,7 @@ export class Rogue extends Actor {
                             gameEngine.floatingTextManager.spawn("EVISCERATE!", entity.position, '#ff0000');
                         }
                         
-                        entity.takeDamage(damage);
-                        gameEngine.floatingTextManager.spawn(Math.floor(damage), entity.position, '#ffffff');
+                        applyOfflineAbilityHit(this, entity, damage, skill, gameEngine.floatingTextManager);
                     }
                 }
             });
@@ -290,6 +307,7 @@ export class Rogue extends Actor {
                 );
 
                 const dagger = new Projectile(null, this, 'Dagger', startPos, targetPos);
+                dagger.skillName = skill;
                 dagger.damage = 10 + this.stats.dexterity;
                 gameEngine.addEntity(dagger);
             }
@@ -314,6 +332,7 @@ export class Rogue extends Actor {
                 this.scheduleTask(() => {
                     // Use 'PhantomArrow' for the purple visual
                     const arrow = new Projectile(null, this, 'PhantomArrow', startPos, targetPos);
+                    arrow.skillName = skill;
                     // Damage is set in Projectile.js for PhantomArrow
                     gameEngine.addEntity(arrow);
                     
@@ -346,6 +365,7 @@ export class Rogue extends Actor {
                 const target = startPos.clone().add(direction.multiplyScalar(10)); // Target 10 units away
                 
                 const dagger = new Projectile(null, this, 'Dagger', startPos, target);
+                dagger.skillName = skill;
                 dagger.damage = 10 + this.stats.dexterity;
                 dagger.isPiercingThrow = true;
                 if (this.serratedEdgesActive) dagger.applyBleed = true;
@@ -468,6 +488,7 @@ export class Rogue extends Actor {
         adjustedTarget.y = startPos.y;
 
         const dagger = new Projectile(null, this, 'Dagger', startPos, adjustedTarget);
+        dagger.skillName = skill;
         
         // Damage Calculation: Base 15 + (Dexterity * 1.5)
         let damage = 15 + (this.stats.dexterity * 1.5);

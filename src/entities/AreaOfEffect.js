@@ -1,5 +1,6 @@
 import { Entity } from './Entity.js';
 import { Actor } from './Actor.js';
+import { applyOfflineAbilityHit } from '../core/AbilityCritical.js';
 import { clipDungeonEffectSegment } from '../skills/dungeonEffectGeometry.js';
 import {
     createProceduralAreaField,
@@ -22,6 +23,7 @@ export class AreaOfEffect extends Entity {
         this.tickTimer = 0;
         this.elapsedTime = 0;
         this.effectType = config.effectType;
+        this.skillName = config.skillName || (config.effectType === 'InfernoCataclysm' ? 'Inferno Cataclysm' : '');
         
         this.onTick = config.onTick || null; // Custom logic per tick
         this.onExpire = config.onExpire || null; // Custom logic on expire
@@ -57,6 +59,7 @@ export class AreaOfEffect extends Entity {
     }
     
     performTick(chunkManager) {
+        if (this.gameEngine?.isMultiplayer || this.owner?.isMultiplayer || this.owner?.isRemote) return;
         if (this.damage > 0) {
             const entities = chunkManager ? chunkManager.getActiveEntities() : [];
             for (const entity of entities) {
@@ -110,10 +113,7 @@ export class AreaOfEffect extends Entity {
                     ? this.gameEngine.isHostileActorTarget(entity) : entity.constructor.name !== 'AvengingSeraph';
                 if (canonical && (!hostile || entity.isInvulnerable || clipDungeonEffectSegment(rects, this.position, entity.position).blocked)) continue;
                 if (dist <= this.radius + (canonical ? entity.radius || 0 : 0)) {
-                    entity.takeDamage(this.damage);
-                    if (this.gameEngine.floatingTextManager) {
-                        this.gameEngine.floatingTextManager.spawn(Math.floor(this.damage), entity.position, '#ff8800');
-                    }
+                    applyOfflineAbilityHit(this.owner, entity, this.damage, this.skillName, this.gameEngine.floatingTextManager, '#ff8800');
                 }
             }
         }

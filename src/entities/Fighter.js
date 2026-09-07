@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { Actor } from './Actor.js';
+import { applyOfflineAbilityHit } from '../core/AbilityCritical.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
 import { spawnEffectSceneFallback } from './EffectSceneFallback.js';
@@ -98,8 +99,7 @@ export class Fighter extends Actor {
                             const damage = this.stats.strength * 1.5;
                             // Apply Damage
                             if (entity.takeDamage) {
-                                entity.takeDamage(damage);
-                                gameEngine.floatingTextManager.spawn(Math.floor(damage), entity.position, '#ffff00');
+                                applyOfflineAbilityHit(this, entity, damage, skill, gameEngine.floatingTextManager, '#ffff00');
                             }
 
                             // Apply Stun
@@ -195,8 +195,7 @@ export class Fighter extends Actor {
                             // Hit!
                             const damage = this.stats.strength * 1.2;
                             if (entity.takeDamage) {
-                                entity.takeDamage(damage);
-                                gameEngine.floatingTextManager.spawn(Math.floor(damage), entity.position, '#ffff00');
+                                applyOfflineAbilityHit(this, entity, damage, skill, gameEngine.floatingTextManager, '#ffff00');
                                 gameEngine.floatingTextManager.spawn("Threat!", entity.position, '#ff0000');
                             }
                         }
@@ -228,8 +227,7 @@ export class Fighter extends Actor {
                         // Hit!
                         const damage = this.stats.strength * 2.0;
                         if (entity.takeDamage) {
-                            entity.takeDamage(damage);
-                            gameEngine.floatingTextManager.spawn(Math.floor(damage), entity.position, '#ffff00');
+                            applyOfflineAbilityHit(this, entity, damage, skill, gameEngine.floatingTextManager, '#ffff00');
                         }
 
                         // Knockdown (Stun)
@@ -308,8 +306,7 @@ export class Fighter extends Actor {
                         // Hit!
                         const damage = this.stats.strength * 1.0;
                         if (entity.takeDamage) {
-                            entity.takeDamage(damage);
-                            gameEngine.floatingTextManager.spawn(Math.floor(damage), entity.position, '#ffff00');
+                            applyOfflineAbilityHit(this, entity, damage, skill, gameEngine.floatingTextManager, '#ffff00');
                         }
 
                         // Heavy Slow
@@ -439,13 +436,13 @@ export class Fighter extends Actor {
         this.berserkerEdgeActive = false;
     }
 
-    takeDamage(amount) {
+    takeDamage(amount, attacker = null) {
         let finalAmount = amount;
         if (this.ironFortressTimer > 0) {
             finalAmount = amount * (1 - this.ironFortressReduction);
             // console.log(`Iron Fortress reduced damage from ${amount} to ${finalAmount}`);
         }
-        super.takeDamage(finalAmount);
+        super.takeDamage(finalAmount, attacker);
     }
 
     update(dt, collisionManager, player, chunkManager, floatingTextManager) {
@@ -509,10 +506,7 @@ export class Fighter extends Actor {
                             }
 
                             if (entity.takeDamage) {
-                                entity.takeDamage(damage);
-                                if (this.gameEngine && this.gameEngine.floatingTextManager) {
-                                    this.gameEngine.floatingTextManager.spawn(Math.floor(damage), entity.position, '#ff8800');
-                                }
+                                applyOfflineAbilityHit(this, entity, damage, this.isExecutionerSpin ? 'Executioner Spin' : 'Whirlwind', this.gameEngine?.floatingTextManager, '#ff8800');
                             }
                         }
                     }
@@ -580,10 +574,7 @@ export class Fighter extends Actor {
                             }
 
                             if (entity.takeDamage) {
-                                entity.takeDamage(damage);
-                                if (this.gameEngine && this.gameEngine.floatingTextManager) {
-                                    this.gameEngine.floatingTextManager.spawn(Math.floor(damage), entity.position, '#ff0000');
-                                }
+                                applyOfflineAbilityHit(this, entity, damage, this.isShatteringCharge ? 'Shattering Charge' : 'Charge', this.gameEngine?.floatingTextManager, '#ff0000');
                             }
 
                             // Shattering Charge Effect

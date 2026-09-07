@@ -34,3 +34,18 @@ export function rollOfflineCriticalDamage(source, amount, skillName = '', guaran
     const critical = guaranteed || rolled;
     return { amount: critical ? amount * 2 : amount, critical };
 }
+
+// Offline ability consumers keep their own base/rune/area rules. This shared
+// hit step applies one ordinary critical, preserves Lucky's independent proc,
+// and sends the resulting amount through the real recipient damage handler.
+export function applyOfflineAbilityHit(source, target, amount, skillName, feedback = null, color = '#ffffff', guaranteed = false) {
+    if (!source || source.isMultiplayer || source.isRemote || source.gameEngine?.isMultiplayer ||
+        !target || target.isMultiplayer || target.isRemote || target.gameEngine?.isMultiplayer ||
+        target.state === 'DEAD' || target.isActive === false || typeof target.takeDamage !== 'function' || !(amount > 0) || !Number.isFinite(amount)) return 0;
+    if (source.hasLuckyEffect && Math.random() < .1) amount *= 2;
+    const hit = rollOfflineCriticalDamage(source, amount, skillName, guaranteed);
+    target.takeDamage(hit.amount, source);
+    feedback?.spawn(Math.floor(hit.amount), target.position, hit.critical ? '#ffd166' : color);
+    if (hit.critical) feedback?.spawn('CRITICAL!', target.position, '#ffd166');
+    return hit.amount;
+}
