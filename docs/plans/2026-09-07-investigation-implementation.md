@@ -48,6 +48,20 @@ pass **3.144s**. All these handles are closed; the expanded graph backend passes
 
 ### World integration checkpoint
 
+Fire's bounded encounter run **3159** against **24d51e5** closes **SUCCESS / one
+test / 4.4m** (test 4.3m). Ordinary combat clears seven pursuers before cold ash;
+the later anchor fight records its actual death and mask **1 → 3**, with ember
+still unrecorded. Click targets include the anchor (nine) and two covering Djinn
+(twenty each); no discovery or kill credit is injected. The released ember is
+then inspected normally, followed by manual catch-up replies/rewards, reconnect,
+and full earned journal rereading. Credential scan and isolated cleanup pass.
+Actual anchor combat, released hearth/sprout model and earned-record screenshots
+are visually inspected and preserved in `/tmp/eidolon-fire-earned-proof-5ElOA2/`.
+Log: `/tmp/eidolon-investigations-fire-bounded-encounter.log`. This demonstrates
+ordered Fire functionality with the explicit level-100 common-staff veteran
+fixture and available control skills, not fresh leveling or comfortable average
+player difficulty. Air and broader balance verification remain open.
+
 Latest story/model source **0036656** passes full client **219 / 3,279 / 174.009s**
 and lint, plus full server race root **22.755s**, game **455.511s** (86062/1610
 closed). Logs `/tmp/eidolon-investigations-catchup-client.log` and
