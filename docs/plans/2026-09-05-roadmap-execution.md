@@ -10,7 +10,10 @@ CI `34067519448` attempt 2 passed every job. Post-terminal uncached checks at
 **00:32:55 UTC** matched manifest, login label, versioned main entry and backend
 to `d55b5d8d8460f75513a0eca02baf873aa52203c6` / Alpha 1.0.25; health `ok`, database
 `ready`. Only 1.0.26 `85efebef86ccb9a980bc630b9e860d7f68c47d4b` was pushed next;
-CI **`34070192341`** is running.
+CI **`34070192341`** passed unit/race, browser smoke and full predeploy character
+QA, and both deployments succeeded. It is now in **Live Release and Character
+QA**. 1.0.25 remains the last fully verified release until this final gate and a
+new independent uncached live identity check pass.
 Later releases remain local until the preceding complete CI/live gate passes.
 
 Alpha 1.0.31 healing implementation `b2bf5fd` is locally verified and merged as
@@ -20,6 +23,14 @@ suites / 2,479 tests, lint and the real-server phone cast/purchase/login route p
 It has its own patch notes and synchronized login/release metadata. The three
 remaining duration/range/area probes still fail intentionally. See
 [the scoped healing evidence](2026-09-07-talent-healing.md).
+
+Alpha 1.0.32 is committed locally as `95de5ce8e514d4c495cb74ea63b41654dc7bc5fa`,
+branch `release/32-with-duration`. Timed Wizard duration consumers and general
+phone talents are verified by paired casts, expiry, all class/branch menu cases,
+2,498 client tests and real phone timer/badge/expiry/login checks. The unchanged
+full race rerun passed after a retained, unreproduced Tripwire fixture failure.
+See [the complete evidence and limits](2026-09-07-talent-duration.md). Not published;
+the full 1.1–1.10 roadmap and ordered deployment queue remain open.
 
 Previous release checkpoint (September 6): **1.0.24 (`44c7ed1`) was fully
 verified**. CI **`34065220719`** passed every job, including final live

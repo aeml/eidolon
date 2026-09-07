@@ -10,6 +10,16 @@ status is separate in [the execution ledger](2026-09-05-roadmap-execution.md).
 The complete default-view encounter composition and real-device sign-off remain
 open, including party healing, software keyboards and the remaining town menus.
 
+September 7 status-feedback finding: the duration browser route confirms actual
+server timers and visible shield expiry, but the minimap buff buttons expose
+details only through mouse hover. The inspected phone captures do not establish
+readable or reachable touch details. Add a compact touch-accessible status entry
+with a tap-open list of current buffs/debuffs, readable remaining times and
+descriptions, an explicit Close/Back action, and stable focus while timers update.
+Keep movement, combat buttons and chat accessible; do not shrink icons to fit a
+large raid-buff list. Verify portrait/landscape, crowded effect lists, expiry while
+open, and keyboard/touch navigation before closing this part of the phone gate.
+
 ## Evidence and design problem
 
 The player reports that useful visibility requires maximum zoom-out, making

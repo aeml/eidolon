@@ -126,6 +126,22 @@ the source of lethal damage was not captured. The next diagnostic adds a bounded
 read-only incoming damage/heal history, attacker identities, player coordinates
 and nearby hostiles to each death receipt before changing navigation or balance.
 
+The diagnostic on exact `17ab5e0`, session `48763`, **passed in 5.3 minutes**.
+The Skeleton contract took 233 seconds including manual reward/login, ending
+at level 27 / 4,945 XP / 2,359 gold with two deaths (25 and 92 credits). Both
+deaths captured repeated **166-damage hits from level-30 Demon Orcs** around
+`(140.5, 203.2)` and `(128.7, 203.5)`. Three Orcs were nearby at the first death;
+one at the second. Nearby low-level Skeleton hits were typically 2–10 damage.
+Log `/tmp/eidolon-fresh-hunt-survival-diagnostic.log`; browser errors, credential
+scan and exact cleanup passed. This proves a successful baseline hunt and its
+observed danger, not a dungeon clear or a cause for all earlier failures.
+
+The no-equipment/no-specialization Skeleton baseline stays intact for comparison.
+Before tuning enemy strength or leashes, compare a normally prepared earned
+character using available equipment and defensive skills earlier in the route,
+and inspect how a player is guided around the neighboring level-30 area. No
+progress grants or relaxed survival bounds are justified by this evidence.
+
 ## Earned dungeon-readiness extension — September 6, measurement pending
 
 The optional `fresh-ready` route extends the same real opening, collection and
