@@ -23,9 +23,23 @@ dispatch path. Logs: `/tmp/eidolon-release38-lifesteal-race-before.log`,
 `/tmp/eidolon-release38-lifesteal-race-after.log`,
 `/tmp/eidolon-release38-lifesteal-lock.log`.
 
-1.0.38 notes add **Safer shared combat**. Full server race, actual Whirlwind,
-final version/lint and publication checks remain open. Client runtime is
-unchanged from the verified movement candidate; retain its 52 anonymous and
-real movement/loot proofs. Carry this additional correction into the queued
-39–43 descendants and the separate Shield work only after verification.
-Live is not updated by a failed CI run; do not push a later version past it.
+1.0.38 notes add **Safer shared combat**. Runtime checkpoint **`814adbf`**
+passes the full server race suite (root **7.749s**, game **210.796s**); the
+world-lock-held/lifesteal set passes twenty repetitions in **7.040s**. These
+tests finished on the exact source subsequently committed as this checkpoint.
+The actual Whirlwind route passes **29.4s**, covering ordinary and Extended
+casts in high/low graphics, acknowledged duration and effects following normal
+movement. Credential scanning passes with zero sanitizations and disposable
+cleanup finishes. Final version/default/Teleport checks pass **221 / 2.062s**
+and lint passes. An initial direct Jest invocation omitted the project's ESM
+flag and failed before running tests; the successful run uses `npm test`.
+Logs: `/tmp/eidolon-release38-lifesteal-full-server.log`,
+`/tmp/eidolon-release38-lifesteal-whirlwind.log`,
+`/tmp/eidolon-release38-lifesteal-contract-after.log`,
+`/tmp/eidolon-release38-lifesteal-lint.log`.
+
+Client runtime is unchanged from the verified movement candidate; retain its
+52 anonymous and real movement/loot proofs. Publication checks remain open.
+Carry this additional correction into the queued 39–43 descendants and the
+separate Shield work. Live is not updated by a failed CI run; do not push a
+later version past it.
