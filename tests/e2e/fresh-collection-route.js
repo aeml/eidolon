@@ -77,7 +77,7 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
     await setAutoLootThroughSettings(page, false);
     await expect.poll(() => page.evaluate(() => window.game.pendingLootPickups.size)).toBe(0);
     const seedsBefore = await seedsInBag(page);
-    expect(seedsBefore).toBeGreaterThanOrEqual(required);
+    expect(seedsBefore, 'This fresh contract must not accumulate surplus fragments from overlapping kills').toBe(required);
     await openIlyra(page);
     if (captureReady) await captureReady();
     await page.getByRole('button', { name: 'Complete Quest', exact: true }).click();

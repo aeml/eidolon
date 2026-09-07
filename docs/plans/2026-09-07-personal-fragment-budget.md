@@ -42,6 +42,33 @@ roll/publication across three runs, log `/tmp/eidolon-quest-world-budget-benchma
 This measures a single source operation, not whole-server concurrency capacity.
 The world scan is skipped for characters without a relevant accepted collection.
 
-Still required before release: version/patch-note packaging, final package checks
-and the ordinary fresh collection route against this exact implementation. The
-separate investigation branch's earned route does not validate this drop fix.
+## Alpha 1.0.49 package — verification in progress
+
+Runtime **`b01d3c5`** is root-integrated, without changing root's version or
+publishing it. The isolated package now aligns login/package/manifest/server/
+container/deploy/QA defaults to **Alpha 1.0.49**, with a separate **only the
+fragments you need** patch-note entry preserving all previous releases. Notes
+explain personal world reservations, full bags, pity and the normal lifecycle
+for fragments left in another instance; broader economy/story work is not
+advertised as complete or live.
+
+Package version/isolation/assets/landing contracts pass **250 / 2.957s**;
+full client passes **217 suites / 3,212 tests / 201.597s**, lint passes.
+Package Chronicle/quest/pickup race checks pass root **3.626s**, game **11.243s**.
+The ordinary fresh Wizard collection route against this package passes **2.3m**:
+twenty observed target deaths, no player deaths, **exactly eight** physical seeds
+with no surplus, explicit manual consumption/reward and saved completion after
+reconnect. Collection/handoff takes **95 seconds**, final level **17**; the
+existing 8,000-XP/100-gold payout remains unchanged and requires broader tuning.
+The level-30 dungeon stays correctly locked. Credential scan/cleanup pass.
+
+The actual ready conversation is inspected and copied to
+`/tmp/eidolon-release49-earned-collection-ready.png` before subsequent browser
+runs can replace test-results. Logs `/tmp/eidolon-release49-client.log`,
+`/tmp/eidolon-release49-quest-regression.log`, and
+`/tmp/eidolon-release49-earned-collection.log`.
+
+Still required before publication: final anonymous browser sweep, package
+checkpoint/integration, all earlier sequential release gates, its own CI/deploy
+and exact live verification. The separate investigation branch retains its own
+earned evidence and is not part of this package's active quest chain.
