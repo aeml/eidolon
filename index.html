@@ -343,7 +343,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.40</span>
+                <span class="start-version-row__label">Alpha 1.0.41</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -669,6 +669,17 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.41">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.41 (training with a critical edge)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Critical training counts:</strong> Applicable critical-chance talents now contribute alongside equipment on attacks, damaging abilities and their retained effects. Rogue Technique applies to its own skill; its text, Needle Precision and Edge Awareness now describe their actual critical bonuses.</li>
+                        <li><strong>One decisive critical:</strong> Backstab's Cloak combo and Ambush rune share one ordinary critical with equipment and training, after armor. They no longer multiply the same critical repeatedly; Lucky remains a separate proc.</li>
+                        <li><strong>Fire that respects the fight:</strong> Fireball splash starts at 40% of raw damage and evaluates each target's modifiers separately. Implosion checks whether each recipient is slowed, and solid dungeon walls block splash.</li>
+                        <li><strong>Offline hits with feedback:</strong> Implemented offline attacks, damaging skills and periodic effects consume critical training and preserve the attacking character. Critical hits receive explicit feedback; local projectile flight and splash respect dungeon walls without predicting online damage.</li>
+                        <li><strong>Builds that stay trained:</strong> Real-server checks cover normal critical-talent purchases, targeted primary attacks and saved ranks after a fresh login for Rogue, Wizard and Fighter.</li>
+                        <li><strong>Still being refined:</strong> The broader talent audit, remaining offline abilities and rune differences, class balance and full dungeon/raid validation remain in progress.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.0.40">
                     <h3 class="patch-note-entry__title">Alpha 1.0.40 (clearer rites, clearer battles)</h3>
                     <ul class="patch-note-entry__list">

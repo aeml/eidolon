@@ -18,6 +18,12 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
+    test('adds critical training notes without replacing Cleric and phone history', () => {
+        expect(indexHtml).toContain('Alpha 1.0.41 (training with a critical edge)');
+        expect(indexHtml.match(/data-version="1\.0\.41"/g)).toHaveLength(1);
+        expect(indexHtml.indexOf('data-version="1.0.41"')).toBeLessThan(indexHtml.indexOf('data-version="1.0.40"'));
+        for (const heading of ['Critical training counts', 'One decisive critical', 'Fire that respects the fight', 'Offline hits with feedback', 'Builds that stay trained']) expect(indexHtml).toContain(heading);
+    });
     test('adds Cleric and phone readability notes without replacing party history', () => {
         expect(indexHtml).toContain('Alpha 1.0.40 (clearer rites, clearer battles)');
         expect(indexHtml.match(/data-version="1\.0\.40"/g)).toHaveLength(1);
@@ -226,11 +232,11 @@ describe('version presentation', () => {
         }
         expect(fs.readFileSync(path.join(repoRoot, 'sw.js'), 'utf8')).toContain('sw-asset-cache.js?v=2026-09-04-11');
         expect(indexHtml).toContain('Built-in version: 2026-09-04-11');
-        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.0.40');
+        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.0.41');
     });
 
     test('advances the login screen and player-facing history to Alpha 1.0', () => {
-        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.0.40</span>');
+        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.0.41</span>');
         expect(indexHtml).toContain('Alpha 1.0.0 (the worlds answer together)');
         expect(indexHtml).toContain('Multiplayer has a social backbone');
         expect(indexHtml).toContain('Guilds are persistent institutions');
@@ -641,7 +647,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 1.0.40';
+        const expectedVersion = 'Alpha 1.0.41';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -763,7 +769,7 @@ describe('version presentation', () => {
     });
 
     test('marks Alpha 1.0 current and preserves its completed runway', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 1.0.40`');
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 1.0.41`');
         expect(alphaRoadmap).toContain('Active implementation line: `Alpha 1.0`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');
