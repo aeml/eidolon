@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"math/bits"
 	"strings"
 	"time"
 )
@@ -240,6 +241,10 @@ func copyQuestDefinition(progress Quest, definition Quest) Quest {
 	definition.GrantedGold = progress.GrantedGold
 	definition.GrantedXP = progress.GrantedXP
 	definition.GrantedResonanceXP = progress.GrantedResonanceXP
+	if definition.Type == "INVESTIGATE" {
+		definition.InvestigationMask = progress.InvestigationMask & ((1 << definition.MaxCount) - 1)
+		definition.Count = bits.OnesCount32(definition.InvestigationMask)
+	}
 	return definition
 }
 

@@ -1,7 +1,8 @@
 import { jest } from '@jest/globals';
 import { QuestUI } from '../src/ui/QuestUI.js';
 import { questMarkerState } from '../src/entities/QuestNPC.js';
-import { ILYRA_REPLIES } from '../src/ui/QuestConversation.js';
+import { ILYRA_REPLIES, getIlyraCompletionReply } from '../src/ui/QuestConversation.js';
+import { chronicleInvestigations } from '../src/data/chronicleInvestigations.generated.js';
 
 const story = (overrides = {}) => ({ id: 'chronicle_01_bell_below', category: 'chronicle', chapter: 1, title: 'The Bell That Rang Below', description: 'I need your help to save Eidolon.', lore: 'The covenant of the four spirits.', type: 'KILL', target: 'Skeleton', count: 0, maxCount: 3, rewardXP: 500, accepted: false, completed: false, ...overrides });
 const daily = (overrides = {}) => ({ ...story(), id: 'daily_skeleton', category: 'daily', title: 'Daily Hunt', ...overrides });
@@ -78,4 +79,26 @@ test('many accepted quests remain in the Journal but only three compact cards ap
 test('all fifteen chapters have distinct substantial completion dialogue', () => {
     expect(new Set(ILYRA_REPLIES).size).toBe(15);
     expect(ILYRA_REPLIES.every((reply) => reply.length > 180)).toBe(true);
+});
+
+test('completion dialogue follows stable quest identity after chapters are inserted', () => {
+    expect(getIlyraCompletionReply(story({ chapter: 23 }))).toBe(ILYRA_REPLIES[0]);
+    expect(getIlyraCompletionReply({ id: 'chronicle_15_dark_king', chapter: 23 })).toBe(ILYRA_REPLIES[14]);
+    for (const investigation of chronicleInvestigations) {
+        expect(getIlyraCompletionReply({ id: investigation.id, chapter: 2 })).toBe(investigation.completion);
+    }
+    expect(getIlyraCompletionReply({ id: 'unknown', chapter: 1 })).not.toBe(ILYRA_REPLIES[0]);
+});
+
+test('investigation turn-in keeps its authored paragraphs and manual continuation', () => {
+    const investigation = chronicleInvestigations[0];
+    const quest = story({ id: investigation.id, chapter: 2, title: investigation.title, completed: true });
+    const ui = new QuestUI({ getLastPlayer: () => ({ quests: [quest] }) });
+    ui.questKind = 'story';
+    ui.completedDialogue = quest;
+    ui.updateQuestWindow([quest]);
+    const paragraphs = [...document.querySelectorAll('.quest-dialogue__speech')].map(element => element.textContent);
+    expect(paragraphs).toEqual(investigation.completion.split(/\n\s*\n/));
+    expect(document.querySelector('#quest-list button').textContent).toBe('Continue conversation');
+    expect(ui.completedDialogue).toBe(quest);
 });

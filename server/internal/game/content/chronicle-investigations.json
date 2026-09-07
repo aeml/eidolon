@@ -1,0 +1,263 @@
+{
+  "schemaVersion": 1,
+  "chapters": [
+    {
+      "id": "chronicle_earth_keepers_house",
+      "realm": "earth",
+      "beforeQuestId": "chronicle_02_seeds_first_grove",
+      "directions": "Beyond Lanternhold's east gate, look for the roofless grove-warden's cottage beside the road.",
+      "sites": [
+        {
+          "id": "mara_diary",
+          "kind": "inspect",
+          "model": "ruined_house",
+          "x": 150,
+          "z": 215,
+          "title": "Mara's diary",
+          "text": "“The children have named the split in the kitchen wall Orun's Smile. I have not told them that it widens every night.\n\n“A messenger came offering a stronger ward. He did not ask what the grove needed. He asked how many people I could persuade to swear the same oath. When I asked who would hear it, he said that a promise only mattered if someone could enforce it.\n\n“Tonight the roots withdrew from the nursery, but held fast beneath the stone where he left his seal. They are not dying. Something is teaching them whom to obey.\n\n“I have taken the families to Lanternhold. If this house survives us, let it remember that we left the door open. No living thing should have to kneel to be sheltered.”",
+          "entityId": "chronicle-site-mara_diary"
+        }
+      ],
+      "title": "The Keeper's Empty House",
+      "acceptance": "“Mara Fen kept the first grove beyond Lanternhold. When the roots shifted, she sent me a pressed leaf with no veins. I answered with a warning to leave. She answered with a list of families who could not.\n\n“Her house has gone quiet. Find her planting table and the diary she kept beneath it. I need to know what she saw before we ask the land for anything more.”",
+      "completion": "“She got them out. That matters more than a perfect ward or a brave last stand.\n\n“And she found the distinction I missed. This is not simply a loss of strength. Someone is diverting the Rootheart's protection toward a command. Mara describes a seal at the old stone circle. We must learn what the roots were made to forget.”",
+      "summary": "Mara evacuated her neighbors after a stranger's seal began redirecting the grove's protection. Investigate the blighted stone circle."
+    },
+    {
+      "id": "chronicle_earth_returning_scar",
+      "realm": "earth",
+      "beforeQuestId": "chronicle_03_roots_remember",
+      "directions": "Leave through Lanternhold's east gate, then follow the roots north to the blighted stone circle.",
+      "sites": [
+        {
+          "id": "severed_root",
+          "kind": "inspect",
+          "model": "root_memory",
+          "x": 150,
+          "z": 60,
+          "title": "Severed root",
+          "text": "a memory of a child planting a sapling beside an elderly neighbor. Neither asks the tree to belong to them. The earth remembers both hands.",
+          "entityId": "chronicle-site-severed_root"
+        },
+        {
+          "id": "new_growth",
+          "kind": "inspect",
+          "model": "root_growth",
+          "x": 162,
+          "z": 60,
+          "title": "New growth",
+          "text": "the same memory begins again, but the neighbor's hand is missing. The child repeats an oath instead. Every new branch points toward the stone.",
+          "entityId": "chronicle-site-new_growth"
+        },
+        {
+          "id": "marked_stone",
+          "kind": "inspect",
+          "model": "command_stone",
+          "x": 156,
+          "z": 50,
+          "title": "Marked stone",
+          "text": "four curved strokes surround a straight fifth incision. The incision interrupts each curve. A fragment of a courier's seal is fused beneath it, pointing toward the Bastion's old root-road.",
+          "entityId": "chronicle-site-marked_stone"
+        }
+      ],
+      "title": "The Scar That Grows Back",
+      "acceptance": "“A damaged root tries to heal. If the scar returns, something is repeating the wound. Compare the old root with its new growth, then examine the stone between them. Do not tear out the mark before you understand what it is holding apart.”",
+      "completion": "“Orun's covenant remembers care passing from one life to another. This mark replaces that exchange with a single master. Each time the grove grows, it is told the false story again.\n\n“The Memory Seeds you brought preserve what the mark cannot rewrite. I will keep them safe; Maelin will need that truth at the crystal itself. First, the Bastion's outer guardian must fall. Its road is the way in, not the place of repair.”",
+      "summary": "The wound repeats a false oath. Memory Seeds preserve the original covenant; the Bastion guards the road to the deeper crystal raid."
+    },
+    {
+      "id": "chronicle_water_flood_shelter",
+      "realm": "water",
+      "beforeQuestId": "chronicle_04_pearls_without_tides",
+      "directions": "Beyond the northern passage into Water, find the abandoned flood shelter west of the road.",
+      "sites": [
+        {
+          "id": "dain_ledger",
+          "kind": "inspect",
+          "model": "flood_shelter",
+          "x": -60,
+          "z": -740,
+          "title": "the crossing ledger",
+          "text": "“Twelve names on the morning list. Thirteen people in the boat. The little girl refused to let go of the coat she said her brother was wearing. I could see neither the boy nor his reflection. I made room anyway.\n\n“At the shelter I counted thirteen wet footprints. In the ledger his name had become a promise to serve. I crossed it out. The ink returned before it dried.\n\n“A seal has appeared beneath the landing, the same one the stranger pressed into our emergency charter. He said the tide would never fail anyone who accepted his protection. I thought protection meant bringing people home.\n\n“I am writing the boy's name on every plank of this boat. If the water forgets him again, perhaps the wood will remember. His name is Tovin. He is not a debt.”",
+          "entityId": "chronicle-site-dain_ledger"
+        }
+      ],
+      "title": "The House Beneath the Tide",
+      "acceptance": "“The shelter bells have been ringing at low tide. No one remains there to pull the ropes. Dain kept a record of every crossing, including passengers who could not pay. Find that ledger. Neris keeps promises in water; a record of who was carried home may tell us which promise has been broken.”",
+      "completion": "“Mara's grove was taught to obey. Here, obedience is being written into the past, as though the people had asked for their own chains.\n\n“Dain understood Neris better than the author of that charter ever will. A promise cannot be kept by erasing the person to whom it was made. There are two echo pools near the shelter. Find which memory still holds Tovin's name.”",
+      "summary": "A false charter is rewriting rescued people as sworn servants. Compare the echo pools and find the surviving record of Tovin."
+    },
+    {
+      "id": "chronicle_water_false_reflection",
+      "realm": "water",
+      "beforeQuestId": "chronicle_05_drowned_name",
+      "directions": "Follow the shelter's mooring posts north to two echo pools and a bell exposed at the water's edge.",
+      "sites": [
+        {
+          "id": "still_pool",
+          "kind": "inspect",
+          "model": "still_echo",
+          "x": -80,
+          "z": -830,
+          "title": "Still pool",
+          "text": "thirteen identical reflections bow together. A voice says, “We asked to be kept.” The boat never moves, and no passenger has a name.",
+          "entityId": "chronicle-site-still_pool"
+        },
+        {
+          "id": "moving_pool",
+          "kind": "inspect",
+          "model": "moving_echo",
+          "x": -68,
+          "z": -830,
+          "title": "Moving pool",
+          "text": "a frightened child loses his footing. Another passenger steadies him. Dain asks his name twice because the wind carries the first answer away. On the second attempt, the water answers: Tovin.",
+          "entityId": "chronicle-site-moving_pool"
+        },
+        {
+          "id": "mooring_bell",
+          "kind": "inspect",
+          "model": "mooring_bell",
+          "x": -74,
+          "z": -840,
+          "title": "Mooring bell",
+          "text": "beneath its rim lies the broken half of the courier seal. The true echo passes through it toward a drowned route-name, then stops at the Abyssal Well. Thalorath is swallowing the way to the Confluence.",
+          "entityId": "chronicle-site-mooring_bell"
+        }
+      ],
+      "title": "A Reflection Out of Time",
+      "acceptance": "“Listen to both pools before you touch the bell. A lie can sound calmer than the truth. We are looking for a memory that can change when another person enters it, not one that repeats its answer perfectly.”",
+      "completion": "“The true memory was untidy. People spoke over one another. Someone was afraid, and someone else helped. That is what the false charter cannot allow: a promise made freely, with no certainty that the world will obey it.\n\n“The Moon-Tide Pearls will carry that living rhythm into Maelin's ritual. To reach the Tidestar, we first need the route-name Thalorath has taken. Clear the Well; do not mistake recovering a road for restoring its destination.”",
+      "summary": "The moving echo preserves a freely kept promise. Thalorath holds the route-name needed to reach Neris's separate crystal sanctum."
+    },
+    {
+      "id": "chronicle_fire_cold_kiln",
+      "realm": "fire",
+      "beforeQuestId": "chronicle_06_ash_refuses_cool",
+      "directions": "Past the western passage into Fire, find the cold communal kiln south of the road.",
+      "sites": [
+        {
+          "id": "hessa_ledger",
+          "kind": "inspect",
+          "model": "cold_kiln",
+          "x": -1170,
+          "z": 245,
+          "title": "Hessa's ledger",
+          "text": "“Six roof tiles. Two kettles. A cooking pot for the shelter, to be paid for when the family can pay. The furnace burned all night and none of them grew warm.\n\n“The stranger returned with an ember in a closed fist. It answered every order he gave. He promised enough heat for the valley if I would sign the kiln over to his protector. I signed. People were cold.\n\n“For one night it worked. Then the fire stopped answering anyone but me. When I slept, the furnaces slept. When I fell ill, the whole valley shivered. He called this proof that they needed a stronger master.\n\n“I broke the token. I have put the tools outside so anyone may take them. Let them say I was frightened. Let them say I was fooled. Do not let them say the fire belonged to me.”",
+          "entityId": "chronicle-site-hessa_ledger"
+        }
+      ],
+      "title": "The Cold Kiln",
+      "acceptance": "“Hessa's kiln once fired every pot in its valley. The messengers now speak only of furnaces and weapons, as though fire had no other purpose. Find what she was making when the warmth failed. Small unfinished things often tell the truth that rulers leave out of their histories.”",
+      "completion": "“Hessa did not want an empire. She wanted a warm house for someone else. That was enough for the trap to take hold.\n\n“The command is making the land dependent, then offering dependence as the cure. An obedient ember still burns above the kiln's exhaust vents. Find the anchors feeding it before it turns another frightened person into a jailer.”",
+      "summary": "Hessa accepted a controlled flame to help her neighbors, then broke its token when it made the valley dependent on one person's commands."
+    },
+    {
+      "id": "chronicle_fire_obedient_ember",
+      "realm": "fire",
+      "beforeQuestId": "chronicle_07_crown_of_embers",
+      "directions": "Follow the kiln's old exhaust channel north. Study the ash, defeat the command anchor, then inspect the freed ember.",
+      "sites": [
+        {
+          "id": "cold_ash",
+          "kind": "inspect",
+          "model": "cold_ash",
+          "x": -1180,
+          "z": 145,
+          "title": "Cold ash",
+          "text": "no seed will take root in it. Each grain contains the same unfinished instant of burning; nothing has been allowed to become something new.",
+          "entityId": "chronicle-site-cold_ash"
+        },
+        {
+          "id": "command_anchor",
+          "kind": "combat",
+          "model": "MagmaGolem",
+          "x": -1192,
+          "z": 145,
+          "requires": "cold_ash",
+          "title": "Command anchor",
+          "text": "its defenders bear the courier's four curves and fifth cut. Defeating them exposes an order bound to the Molten Core's furnace-key. The anchor is a relay, not the crystal and not a substitute for the dungeon boss.",
+          "entityId": "chronicle-site-command_anchor"
+        },
+        {
+          "id": "released_ember",
+          "kind": "inspect",
+          "model": "free_ember",
+          "x": -1186,
+          "z": 135,
+          "requires": "command_anchor",
+          "title": "Released ember",
+          "text": "it lights the abandoned cooking pot's small hearth, then burns down into ordinary ash. In that ash, one dormant seed opens.",
+          "entityId": "chronicle-site-released_ember"
+        }
+      ],
+      "title": "An Ember That Obeys",
+      "acceptance": "“Pyralis gave fire a purpose beyond hunger: to change what it touches, then let it go. This ember has been forbidden to finish. Study its ash, break the anchor that restrains it, and watch what it chooses when no one gives an order.”",
+      "completion": "“It chose a hearth, not a throne. And then it ended. There is more courage in that small ending than in all of Infernax's promises of eternal victory.\n\n“Keep the Cinderheart Ore for the Crucible. It remembers that bargain between purpose and release. The furnace-key is still inside the full Molten Core; without it, Maelin cannot reach the circuit that keeps the Ember Crown bound.”",
+      "summary": "The command prevents fire from completing its work. Freeing one relay reveals why the furnace-key and the later Crucible repair are needed."
+    },
+    {
+      "id": "chronicle_air_weatherkeeper",
+      "realm": "air",
+      "beforeQuestId": "chronicle_08_feathers_thunder",
+      "directions": "Past the eastern passage into Air, look for the weatherkeeper's abandoned observatory south of the road.",
+      "sites": [
+        {
+          "id": "selen_journal",
+          "kind": "inspect",
+          "model": "observatory",
+          "x": 1150,
+          "z": 245,
+          "title": "the weatherkeeper's journal",
+          "text": "“The harpy returns to the eastern vane at the ninth bell. She opens her wings. The gust strikes. She returns to the eastern vane at the ninth bell.\n\n“I tied a red thread to the vane. The next time the storm began, it was gone. But a loose strand remained in my sleeve. The storm can repeat a place more easily than it can repeat a person who knows what happened.\n\n“I found the seal in the old courier charts. Malachar carried petitions between the sanctums before anyone called him king. The earliest charts show four open curves. In his own revisions, each curves inward to meet a single line.\n\n“He did not first ask how to destroy the covenant. He asked why it needed four answers when one answer would be simpler.\n\n“I have taken the strand beyond the storm. I will not be here for its next beginning.”",
+          "entityId": "chronicle-site-selen_journal"
+        }
+      ],
+      "title": "The Last Weatherkeeper",
+      "acceptance": "“Selen measured the weather without pretending to own it. Her last chart shows the same storm on seven successive sheets, down to a bird caught beside the same tower. Find her journal. If the sky is repeating itself, she would have noticed what was being left out.”",
+      "completion": "“Now we have more than the Dark King's mark. We have the history of his method. The messenger learned every road between the spirits, then decided that the roads should lead only to him.\n\n“Selen found a seam he could not close. Take her record to the stationary storm. We need to hear the command beneath its thunder, and find what still refuses it.”",
+      "summary": "Selen identified Malachar's old courier seal and escaped the repeating storm by remembering what its cycle tried to erase."
+    },
+    {
+      "id": "chronicle_air_stolen_horizon",
+      "realm": "air",
+      "beforeQuestId": "chronicle_09_sky_answers",
+      "directions": "North of the observatory, compare the silent vane, the trapped updraft and the horizon marker beside the stationary storm.",
+      "sites": [
+        {
+          "id": "silent_vane",
+          "kind": "inspect",
+          "model": "silent_vane",
+          "x": 1180,
+          "z": 145,
+          "title": "Silent vane",
+          "text": "a voice promises, “No roof will fall. No road will be lost. No one need choose again.” Behind the promise, every direction is named forbidden.",
+          "entityId": "chronicle-site-silent_vane"
+        },
+        {
+          "id": "trapped_updraft",
+          "kind": "inspect",
+          "model": "trapped_updraft",
+          "x": 1192,
+          "z": 145,
+          "title": "Trapped updraft",
+          "text": "the harpy beats against the same gust. Between repetitions, an answering note rises from above—not an order, but an invitation to turn.",
+          "entityId": "chronicle-site-trapped_updraft"
+        },
+        {
+          "id": "free_horizon",
+          "kind": "inspect",
+          "model": "horizon_marker",
+          "x": 1186,
+          "z": 135,
+          "title": "Free horizon marker",
+          "text": "the pinions resonate with that interval. For one breath, the harpy takes a different current. The false horizon splits, exposing the command's path through Tempest Spire to the separate Skyglass Eyrie.",
+          "entityId": "chronicle-site-free_horizon"
+        }
+      ],
+      "title": "The Stolen Horizon",
+      "acceptance": "“Listen where the wind has stopped, where it is trapped, and where it can still leave. Do not try to overpower the whole storm. We need one true interval that Maelin can preserve when she reaches the Skyglass lattice.”",
+      "completion": "“That is his promised peace: nothing can be lost because nothing may change. Earth without shared shelter. Water without remembered names. Fire without release. Air without another direction.\n\n“And now we know how to answer. Maelin must restore the Rootheart's memory, the Tidestar's true rhythm, the Ember Crown's release and the Skyglass interval. Your fragments carry those truths. Your discoveries explain why they matter.\n\n“One outer road remains. Clear Tempest Spire. Then we can plan the four raids and defend Maelin while she gives the crystals back their freedom to protect us.”",
+      "summary": "Malachar offers safety through absolute control. The four Vigils must reverse four different wounds before the crystals can resonate."
+    }
+  ]
+}

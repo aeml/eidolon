@@ -313,6 +313,7 @@ type Quest struct {
 	GrantedGold        int32                  `protobuf:"varint,16,opt,name=granted_gold,json=grantedGold,proto3" json:"granted_gold,omitempty"`
 	GrantedXp          int32                  `protobuf:"varint,17,opt,name=granted_xp,json=grantedXp,proto3" json:"granted_xp,omitempty"`
 	GrantedResonanceXp int32                  `protobuf:"varint,18,opt,name=granted_resonance_xp,json=grantedResonanceXp,proto3" json:"granted_resonance_xp,omitempty"`
+	InvestigationMask  uint32                 `protobuf:"varint,19,opt,name=investigation_mask,json=investigationMask,proto3" json:"investigation_mask,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
@@ -469,6 +470,13 @@ func (x *Quest) GetGrantedXp() int32 {
 func (x *Quest) GetGrantedResonanceXp() int32 {
 	if x != nil {
 		return x.GrantedResonanceXp
+	}
+	return 0
+}
+
+func (x *Quest) GetInvestigationMask() uint32 {
+	if x != nil {
+		return x.InvestigationMask
 	}
 	return 0
 }
@@ -1809,7 +1817,7 @@ const file_state_proto_rawDesc = "" +
 	"\tdexterity\x18\x02 \x01(\x05R\tdexterity\x12\"\n" +
 	"\fintelligence\x18\x03 \x01(\x05R\fintelligence\x12\x16\n" +
 	"\x06wisdom\x18\x04 \x01(\x05R\x06wisdom\x12\x1a\n" +
-	"\bvitality\x18\x05 \x01(\x05R\bvitality\"\x8b\x04\n" +
+	"\bvitality\x18\x05 \x01(\x05R\bvitality\"\xba\x04\n" +
 	"\x05Quest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04type\x18\x02 \x01(\tR\x04type\x12\x16\n" +
@@ -1831,7 +1839,8 @@ const file_state_proto_rawDesc = "" +
 	"\fgranted_gold\x18\x10 \x01(\x05R\vgrantedGold\x12\x1d\n" +
 	"\n" +
 	"granted_xp\x18\x11 \x01(\x05R\tgrantedXp\x120\n" +
-	"\x14granted_resonance_xp\x18\x12 \x01(\x05R\x12grantedResonanceXp\"\xb2\x01\n" +
+	"\x14granted_resonance_xp\x18\x12 \x01(\x05R\x12grantedResonanceXp\x12-\n" +
+	"\x12investigation_mask\x18\x13 \x01(\rR\x11investigationMask\"\xb2\x01\n" +
 	"\vSocketedGem\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x12\x18\n" +
 	"\aquality\x18\x02 \x01(\tR\aquality\x12;\n" +

@@ -1,0 +1,66 @@
+[
+  {
+    "id": "chronicle_earth_keepers_house", "realm": "earth",
+    "beforeQuestId": "chronicle_02_seeds_first_grove",
+    "directions": "Beyond Lanternhold's east gate, look for the roofless grove-warden's cottage beside the road.",
+    "sites": [{"id": "mara_diary", "kind": "inspect", "model": "ruined_house", "x": 150, "z": 215}]
+  },
+  {
+    "id": "chronicle_earth_returning_scar", "realm": "earth",
+    "beforeQuestId": "chronicle_03_roots_remember",
+    "directions": "Leave through Lanternhold's east gate, then follow the roots north to the blighted stone circle.",
+    "sites": [
+      {"id": "severed_root", "kind": "inspect", "model": "root_memory", "x": 150, "z": 60},
+      {"id": "new_growth", "kind": "inspect", "model": "root_growth", "x": 162, "z": 60},
+      {"id": "marked_stone", "kind": "inspect", "model": "command_stone", "x": 156, "z": 50}
+    ]
+  },
+  {
+    "id": "chronicle_water_flood_shelter", "realm": "water",
+    "beforeQuestId": "chronicle_04_pearls_without_tides",
+    "directions": "Beyond the northern passage into Water, find the abandoned flood shelter west of the road.",
+    "sites": [{"id": "dain_ledger", "kind": "inspect", "model": "flood_shelter", "x": -60, "z": -740}]
+  },
+  {
+    "id": "chronicle_water_false_reflection", "realm": "water",
+    "beforeQuestId": "chronicle_05_drowned_name",
+    "directions": "Follow the shelter's mooring posts north to two echo pools and a bell exposed at the water's edge.",
+    "sites": [
+      {"id": "still_pool", "kind": "inspect", "model": "still_echo", "x": -80, "z": -830},
+      {"id": "moving_pool", "kind": "inspect", "model": "moving_echo", "x": -68, "z": -830},
+      {"id": "mooring_bell", "kind": "inspect", "model": "mooring_bell", "x": -74, "z": -840}
+    ]
+  },
+  {
+    "id": "chronicle_fire_cold_kiln", "realm": "fire",
+    "beforeQuestId": "chronicle_06_ash_refuses_cool",
+    "directions": "Past the western passage into Fire, find the cold communal kiln south of the road.",
+    "sites": [{"id": "hessa_ledger", "kind": "inspect", "model": "cold_kiln", "x": -1170, "z": 245}]
+  },
+  {
+    "id": "chronicle_fire_obedient_ember", "realm": "fire",
+    "beforeQuestId": "chronicle_07_crown_of_embers",
+    "directions": "Follow the kiln's old exhaust channel north. Study the ash, defeat the command anchor, then inspect the freed ember.",
+    "sites": [
+      {"id": "cold_ash", "kind": "inspect", "model": "cold_ash", "x": -1180, "z": 145},
+      {"id": "command_anchor", "kind": "combat", "model": "MagmaGolem", "x": -1192, "z": 145, "requires": "cold_ash"},
+      {"id": "released_ember", "kind": "inspect", "model": "free_ember", "x": -1186, "z": 135, "requires": "command_anchor"}
+    ]
+  },
+  {
+    "id": "chronicle_air_weatherkeeper", "realm": "air",
+    "beforeQuestId": "chronicle_08_feathers_thunder",
+    "directions": "Past the eastern passage into Air, look for the weatherkeeper's abandoned observatory south of the road.",
+    "sites": [{"id": "selen_journal", "kind": "inspect", "model": "observatory", "x": 1150, "z": 245}]
+  },
+  {
+    "id": "chronicle_air_stolen_horizon", "realm": "air",
+    "beforeQuestId": "chronicle_09_sky_answers",
+    "directions": "North of the observatory, compare the silent vane, the trapped updraft and the horizon marker beside the stationary storm.",
+    "sites": [
+      {"id": "silent_vane", "kind": "inspect", "model": "silent_vane", "x": 1180, "z": 145},
+      {"id": "trapped_updraft", "kind": "inspect", "model": "trapped_updraft", "x": 1192, "z": 145},
+      {"id": "free_horizon", "kind": "inspect", "model": "horizon_marker", "x": 1186, "z": 135}
+    ]
+  }
+]

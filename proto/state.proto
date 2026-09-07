@@ -56,6 +56,7 @@ message Quest {
   int32 granted_gold = 16;
   int32 granted_xp = 17;
   int32 granted_resonance_xp = 18;
+  uint32 investigation_mask = 19;
 }
 
 message SocketedGem {
