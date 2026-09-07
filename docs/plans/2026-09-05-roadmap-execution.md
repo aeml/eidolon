@@ -5,7 +5,34 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 20:28 UTC
+## Current checkpoint — September 7, 20:30 UTC
+
+The first actual diary route **65713 passes 1 / 1.2m**. A fresh level-one Wizard
+earns the opening normally, accepts Mara's investigation, walks to its cottage,
+clicks visible real prop geometry, reads the server-confirmed journal, completes
+manually at Ilyra and reconnects with the completed quest/level intact. No grants
+or hostile-priority bypass. The actual approach/journal PNGs are inspected.
+Log `/tmp/eidolon-investigations-diary-visible-prop.log`; credential scan and
+disposable cleanup pass. All local browser/full-client/full-server handles are
+closed. The first three failed diary attempts remain recorded below.
+
+Opening reward 500 XP/100 gold produces level 5; diary reward 1,000 XP/25 gold
+produces level 8; automated route elapsed 71 seconds. This is not a new-player
+timing estimate or final balance approval. Remaining seven investigation chapters,
+touch readability, actual Fire combat, reconnect rereading and coordinated
+progression/economy tuning remain open. Full local client **219 / 3,238 /
+163.896s**, full server race **16.818s / 307.701s** and lint pass for this
+isolated runtime; subsequent changes only affect browser travel/picking helpers.
+
+Root merges the new queued 48 correction as **`6f5e69a`** and passes
+**256 integration checks / 5.505s**. Root still has only dormant story foundation,
+not the isolated 23-chapter expansion. Staging is clean on
+`release/48-with-forge-pointer / c83b626`; next publisher remains exact 41
+`9c6eb9d20ad5171a5bb18240612b0998aba25d28` after 40's complete success gate.
+40 CI **34159297803** currently has client success/server active; no deployment
+success or live 40 claim. Last fresh public identity remains healthy/ready 39.
+
+## Historical checkpoint — September 7, 20:28 UTC
 
 **New 40 `008ee7d3bb2b2017cea012006935897066629a49` is pushed; CI
 `34159297803` is queued/active.** Its test-only Forge pointer/retry correction
