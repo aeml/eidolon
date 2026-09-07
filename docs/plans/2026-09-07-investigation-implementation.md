@@ -48,6 +48,19 @@ pass **3.144s**. All these handles are closed; the expanded graph backend passes
 
 ### World integration checkpoint
 
+The combined branch merges the verified portal-pointer QA ancestry at **144aac1**
+without changing investigation runtime. Latest phone route **49124 SUCCESS /
+one test / 50.3s** (test 48.9s): three ordinary touch-combat kills, explicit
+landscape Ilyra reward/reply, real joystick travel to Mara, USE inspection, actual
+swipes to the diary ending in both orientations, manual completion and saved
+rereading. The existing level-30 fixture remains functional QA, not fresh pacing.
+Both earned phone images are inspected and preserved in
+`/tmp/eidolon-phone-combined-proof-YTqlQw/`; log
+`/tmp/eidolon-investigations-phone-combined.log`, credential scan/cleanup pass.
+This closes the latest combined first-diary touch regression only; the other
+seven chapters' touch playthroughs and physical-phone verification remain open.
+No owned browser remains active.
+
 Air run **59545** against **fa9feaa** closes **SUCCESS / one test / 5.1m** (test
 5.0m). Ordinary travel and actual crowd combat reach Selen's journal and all
 three horizon markers; seven/eight engaged pursuers before the journal/updraft
