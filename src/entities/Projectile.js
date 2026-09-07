@@ -10,6 +10,7 @@ import {
 import { getProjectileImpactRadius } from '../skills/abilityRadii.js';
 import { Actor } from './Actor.js';
 import { applyOfflineAbilityHit } from '../core/AbilityCritical.js';
+import { applyOfflineStatus } from '../core/OfflineDamageOverTime.js';
 import { clipDungeonEffectSegment } from '../skills/dungeonEffectGeometry.js';
 
 // =====================================================
@@ -428,23 +429,19 @@ export class Projectile extends Entity {
                                 if (floatingTextManager) floatingTextManager.spawn("CRIT!", entity.position, '#ff0000');
                             }
                             
-                            // Bleed Application
-                            if (this.applyBleed) {
-                                entity.bleedTimer = 5.0;
-                                entity.bleedStacks = (entity.bleedStacks || 0) + 1;
-                                if (floatingTextManager) floatingTextManager.spawn("BLEED!", entity.position, '#ff0000');
+                            const hit = applyOfflineAbilityHit(this.owner, entity, finalDamage, this.skillName, floatingTextManager);
+                            // Like the server, coatings are checked at impact.
+                            // The bleed inherits this hit's modifiers and crit;
+                            // its own Mastery is applied once to the snapshot.
+                            if (hit > 0 && this.owner.serratedEdgesActive &&
+                                ['Piercing Throw', 'Fan of Knives'].includes(this.skillName) &&
+                                applyOfflineStatus(this.owner, entity, 'bleed', Math.max(1, Math.floor(hit/5)), 5, 'Serrated Edges', true)) {
+                                floatingTextManager?.spawn('BLEED!', entity.position, '#ff0000');
                             }
-
-                            // Poison Application
-                            if (this.applyPoison) {
-                                entity.poisonTimer = 8.0;
-                                entity.poisonStacks = (entity.poisonStacks || 0) + 1;
-                                entity.healingReductionTimer = 8.0;
-                                entity.healingReductionFactor = 0.5; // 50% healing reduction
-                                if (floatingTextManager) floatingTextManager.spawn("POISON!", entity.position, '#00ff00');
+                            if (hit > 0 && this.skillName === 'Piercing Throw' && this.owner.poisonCoatingActive &&
+                                applyOfflineStatus(this.owner, entity, 'poison', 8+Math.floor(this.owner.stats.dexterity/2), 8, 'Poison Coating')) {
+                                floatingTextManager?.spawn('POISON!', entity.position, '#00ff00');
                             }
-
-                            applyOfflineAbilityHit(this.owner, entity, finalDamage, this.skillName, floatingTextManager);
                         }
 
                         spawnProjectileImpact(gameEngine, this, this.position, {

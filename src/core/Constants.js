@@ -385,12 +385,14 @@ export const CONSTANTS = {
                 { name: "Catlike Reflexes", desc: "+1% dodge per rank (5% max).", maxRank: 5 },
                 { name: "Quick Draw", desc: "+3% ability range per rank (15% max).", maxRank: 5 },
                 { name: "Evasive Flow", desc: "+2% damage reduction per rank (10% max).", maxRank: 5 },
-                { name: "Close-Quarters Grace", desc: "+3% melee damage per rank (15% max).", maxRank: 5 },
+                { name: "Close-Quarters Grace", desc: "+2% skill damage per rank (10% max).", maxRank: 5 },
                 { name: "Edge Awareness", desc: "+2% crit chance per rank (10% max).", maxRank: 5 },
                 { name: "Wrist Control", desc: "+1% all damage per rank (5% max).", maxRank: 5 },
             );
 
             return entries.slice(0, 40).map((t, i) => ({ id: `ROG_${String(i + 1).padStart(2, '0')}`, ...t,
+                statusTraining: [6, 12, 20].includes(i) ? { skill: skills[Math.floor(i / 2)], damage: 0.04 }
+                    : i === 37 ? { damage: 0.02 } : undefined,
                 ...(i < 26 && i % 2 === 1 ? { desc: `+3% ${skills[Math.floor(i / 2)]} CDR and +2% critical chance per rank (15% / 10% max).` } : {}),
                 criticalChance: i < 26 && i % 2 === 1 ? { skill: skills[Math.floor(i / 2)], chance: 0.02 }
                     : i === 31 ? { chance: 0.03 } : i === 38 ? { chance: 0.02 } : undefined,

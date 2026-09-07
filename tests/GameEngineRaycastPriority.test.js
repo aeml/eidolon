@@ -29,6 +29,44 @@ const actorConfig = {
 };
 
 describe('GameEngine raycast target priority', () => {
+    test.each([-4, 4])('entrance geometry cannot steal a live enemy target (entrance z=%s)', z => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.player = new Fighter('entrance-player');
+        const enemy = new Actor('entrance-enemy', actorConfig);
+        enemy.isActive = true; enemy.state = 'IDLE';
+        enemy.mesh = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshBasicMaterial());
+        enemy.mesh.userData.entityId = enemy.id;
+        enemy.mesh.updateMatrixWorld(true);
+        const entrance = new THREE.Group();
+        entrance.name = 'DungeonEntrance';
+        entrance.position.z = z;
+        entrance.userData.dungeonType = 'verdant_bastion_catacombs';
+        const gate = new THREE.Mesh(new THREE.BoxGeometry(3, 3, 1), new THREE.MeshBasicMaterial());
+        entrance.add(gate);
+        const environmentGroup = new THREE.Group();
+        environmentGroup.add(entrance); environmentGroup.updateMatrixWorld(true);
+        const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
+        camera.position.z = 12; camera.lookAt(0, 0, 0); camera.updateMatrixWorld(true);
+        engine.renderSystem = { camera, environmentGroup };
+        engine.inputManager = { raycaster: new THREE.Raycaster(), mouse: new THREE.Vector2() };
+        engine.activeEntitiesCache = [enemy];
+        engine.refreshDungeonEntranceHint = jest.fn(); engine.refreshCombatIntentState = jest.fn();
+
+        engine.performRaycast();
+        expect(engine.hoveredEntity).toBe(enemy);
+        expect(engine.raycastHitEntities).toHaveLength(2);
+        expect(engine.raycastHitEntities[1]).toEqual(expect.objectContaining({ name: 'DungeonEntrance', mesh: entrance }));
+        expect(document.body.style.cursor).toBe('crosshair');
+        enemy.state = 'DEAD'; engine.performRaycast();
+        expect(engine.hoveredEntity).toEqual(expect.objectContaining({
+            name: 'DungeonEntrance', mesh: entrance, position: entrance.position,
+            userData: entrance.userData, isActive: true
+        }));
+        expect(document.body.style.cursor).toBe('pointer');
+        expect(engine.refreshDungeonEntranceHint).toHaveBeenCalledTimes(2);
+        for (const mesh of [enemy.mesh, gate]) { mesh.geometry.dispose(); mesh.material.dispose(); }
+    });
+
     test.each([false, true])('live enemies remain selectable through overlapping loot (mobile=%s)', mobile => {
         const engine = Object.create(GameEngine.prototype);
         engine.player = new Fighter('overlap-player');

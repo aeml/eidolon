@@ -8,6 +8,7 @@ import { spawnEffectSceneFallback } from './EffectSceneFallback.js';
 import { getAbilityRange, getRogueMovementCastRange } from '../core/AbilityRange.js';
 import { findOfflineAbilityTarget } from '../skills/offlineAbilityTargeting.js';
 import { resolveDungeonMovementEndpoint } from '../skills/dungeonEffectGeometry.js';
+import { applyOfflineStatus } from '../core/OfflineDamageOverTime.js';
 import {
     PROCEDURAL_PROJECTILE_VISUAL_DEFINITIONS,
     createProceduralProjectileVisual,
@@ -216,8 +217,7 @@ export class Rogue extends Actor {
                 this.rotation.copy(this.mesh.quaternion);
                 
                 // Apply Bleed
-                target.bleedTimer = 10.0;
-                target.bleedStacks = (target.bleedStacks || 0) + 1;
+                applyOfflineStatus(this, target, 'bleed', 10+Math.floor(this.stats.dexterity/2), 10, skill);
                 gameEngine.floatingTextManager.spawn("BLEED!", target.position, '#ff0000');
                 
                 this.spawnVisualEffect(gameEngine, this.position, 0x000000, "smoke");

@@ -1,0 +1,15 @@
+[
+  {"name":"untrained","class":"Rogue","skill":"Shadow Lunge","ranks":{},"amount":100,"inherited":false,"want":100},
+  {"name":"one rank","class":"Rogue","skill":"Shadow Lunge","ranks":{"ROG_07":1},"amount":100,"inherited":false,"want":104},
+  {"name":"five ranks","class":"Rogue","skill":"Shadow Lunge","ranks":{"ROG_07":5},"amount":100,"inherited":false,"want":120},
+  {"name":"legacy duplicate","class":"Rogue","skill":"Shadow Lunge","ranks":{"ROG_07":5,"ROG_7":5},"amount":100,"inherited":false,"want":120},
+  {"name":"capped rank","class":"Rogue","skill":"Shadow Lunge","ranks":{"ROG_07":999},"amount":100,"inherited":false,"want":120},
+  {"name":"negative rank","class":"Rogue","skill":"Shadow Lunge","ranks":{"ROG_07":-5},"amount":100,"inherited":false,"want":100},
+  {"name":"wrong class","class":"Wizard","skill":"Shadow Lunge","ranks":{"ROG_07":5},"amount":100,"inherited":false,"want":100},
+  {"name":"wrong skill","class":"Rogue","skill":"Poison Coating","ranks":{"ROG_07":5},"amount":100,"inherited":false,"want":100},
+  {"name":"generic raw","class":"Rogue","skill":"Poison Coating","ranks":{"ROG_38":5},"amount":100,"inherited":false,"want":110},
+  {"name":"additive raw","class":"Rogue","skill":"Poison Coating","ranks":{"ROG_38":5,"ROG_21":5},"amount":100,"inherited":false,"want":130},
+  {"name":"derived keeps generic once","class":"Rogue","skill":"Serrated Edges","ranks":{"ROG_38":5},"amount":110,"inherited":true,"want":110},
+  {"name":"derived adds own mastery","class":"Rogue","skill":"Serrated Edges","ranks":{"ROG_38":5,"ROG_13":5},"amount":110,"inherited":true,"want":132},
+  {"name":"round down","class":"Rogue","skill":"Poison Coating","ranks":{"ROG_21":5},"amount":98,"inherited":false,"want":117}
+]
