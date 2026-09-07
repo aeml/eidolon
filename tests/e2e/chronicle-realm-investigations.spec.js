@@ -84,7 +84,10 @@ async function defeatCommandAnchor(page, site, chapter, beforeCombat) {
         expect(enemy.exists).toBe(true);
         sawDeath ||= enemy.dead;
         if (sawDeath && (await mask() & 2)) return true;
-        if (enemy.dead || await beforeCombat()) return false;
+        // Keep ordinary kiting near the authored encounter. An unconstrained
+        // retreat can leave the slower anchor behind and recruit a new train
+        // of unrelated enemies while the driver never returns to its objective.
+        if (enemy.dead || await beforeCombat({ encounter: { x: site.x, z: site.z, radius: 32 } })) return false;
         let point = await projectEntity(page, site.entityId);
         if (!point?.visible && enemy.nearest) point = await projectEntity(page, enemy.nearest);
         if (!point?.visible) return false;

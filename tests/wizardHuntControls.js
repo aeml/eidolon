@@ -33,9 +33,10 @@ export function planWizardHuntStep(state) {
     if (nearest.distance >= 6) return null;
     const angle = Math.atan2(state.z - nearest.z, state.x - nearest.x);
     const inDungeon = state.walkRects?.length > 0;
+    const encounter = state.encounter;
     // Dungeon corners can require turning back toward the room interior. Retain
     // the open-world strategy, but reject full paths through walls in instances.
-    const offsets = inDungeon ? Array.from({ length: 16 }, (_, i) => i * Math.PI / 8)
+    const offsets = inDungeon || encounter ? Array.from({ length: 16 }, (_, i) => i * Math.PI / 8)
         : [0, Math.PI / 4, -Math.PI / 4, Math.PI / 2, -Math.PI / 2];
     const radius = Number.isFinite(state.radius) ? state.radius : 1.25;
     const floors = inDungeon ? state.walkRects.map(rect => ({ ...rect,
@@ -44,7 +45,9 @@ export function planWizardHuntStep(state) {
         const x = Math.cos(angle + offset) * 9, z = Math.sin(angle + offset) * 9;
         const clearance = Math.min(...threats.map(enemy => Math.hypot(state.x + x - enemy.x, state.z + z - enemy.z)));
         return { x, z, clearance };
-    }).filter(option => !inDungeon || !clipDungeonEffectSegment(floors, state,
+    }).filter(option => !encounter || Math.hypot(state.x + option.x - encounter.x,
+        state.z + option.z - encounter.z) <= encounter.radius)
+        .filter(option => !inDungeon || !clipDungeonEffectSegment(floors, state,
         { x: state.x + option.x, z: state.z + option.z }).blocked)
         .sort((a, b) => b.clearance - a.clearance);
     // A constrained player may need to keep fighting; do not invent a successful

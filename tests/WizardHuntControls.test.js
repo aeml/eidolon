@@ -63,3 +63,23 @@ test('does not choose a reachable-looking endpoint across a floor gap', () => {
         walkRects: [{ x: 0, z: 0, width: 8, height: 8 }, { x: -9, z: 0, width: 8, height: 8 }] });
     expect(plan).toBeNull();
 });
+
+test('objective combat retreats stay near the anchor rather than chasing new crowds across Fire', () => {
+    const encounter = { x: -1192, z: 145, radius: 32 };
+    const player = { ...state, healthRatio: 1, x: -1221, z: 145, encounter,
+        threats: [{ x: -1218, z: 145 }] };
+    const unconstrained = planWizardHuntStep({ ...player, encounter: undefined });
+    expect(Math.hypot(player.x + unconstrained.x - encounter.x,
+        player.z + unconstrained.z - encounter.z)).toBeGreaterThan(32);
+    const bounded = planWizardHuntStep(player);
+    expect(bounded.action).toBe('retreat');
+    expect(Math.hypot(player.x + bounded.x - encounter.x,
+        player.z + bounded.z - encounter.z)).toBeLessThanOrEqual(32);
+    expect(Math.hypot(bounded.x, bounded.z)).toBeCloseTo(9);
+});
+
+test('objective bounds do not pretend a retreat exists or override dungeon collision planning', () => {
+    expect(planWizardHuntStep({ ...state, healthRatio: 1, encounter: { x: 0, z: 0, radius: 2 } })).toBeNull();
+    expect(planWizardHuntStep({ ...state, healthRatio: 1, encounter: { x: 0, z: 0, radius: 32 },
+        radius: 1.25, walkRects: [{ x: 0, z: 0, width: 8, height: 8 }] })).toBeNull();
+});

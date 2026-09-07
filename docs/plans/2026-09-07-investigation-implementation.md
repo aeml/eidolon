@@ -48,6 +48,29 @@ pass **3.144s**. All these handles are closed; the expanded graph backend passes
 
 ### World integration checkpoint
 
+Latest story/model source **0036656** passes full client **219 / 3,279 / 174.009s**
+and lint, plus full server race root **22.755s**, game **455.511s** (86062/1610
+closed). Logs `/tmp/eidolon-investigations-catchup-client.log` and
+`/tmp/eidolon-investigations-catchup-server.log`. Fire **26226** closes **FAIL /
+8.9m**: Hessa and cold ash are genuinely earned; the actual bound-ember image is
+inspected and preserved `/tmp/eidolon-fire-bound-ember.png`. The character
+survives with full **2,575 HP**, and the counters prove **120 accepted Fireballs,
+six Gravity Wells and five Shields**, with zero rejected casts in those counters.
+No claim that Fireball failed follows from earlier uninstrumented deaths.
+
+The anchor objective times out because the driver kites to **(-1313.9, 206.7)**
+while the slower anchor returns to **(-1199.3, 145.0)** with **1,884 HP**. Mask
+remains **1**, no anchor death is observed, and recorded click targets are ten
+unrelated Djinn, not the anchor. This is target drift, not an unavailable reward
+or completed fight. Failure image is preserved `/tmp/eidolon-fire-anchor-drift.png`;
+scan/cleanup pass. The next test bounds only its ordinary retreat choices to a
+32-unit encounter radius, including alternate sidesteps, so it stays with the
+objective instead of recruiting new crowds across the realm. Dungeon collision
+planning and existing unbounded fresh-hunt behavior remain unchanged. All **30
+control tests / 0.465s** and lint/diff checks pass. Runtime enemy behavior, player
+stats, damage, rewards and kill-credit checks are unchanged. Actual ordered Fire
+completion and Air remain unverified.
+
 Combined Alpha 1.0.50 ancestry **170c53f** passes full client **219 / 3,258 /
 173.048s** and lint; full server race passes root **24.250s**, game **416.594s**
 and remaining packages (30280/19540 closed). Logs

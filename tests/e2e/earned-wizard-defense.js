@@ -24,7 +24,7 @@ export async function createEarnedWizardDefense(page, { allowJumpFallback = fals
             return original(message);
         };
     });
-    const beforeCombat = async () => {
+    const beforeCombat = async ({ encounter } = {}) => {
         const state = await page.evaluate(async () => {
             const game = window.game, p = game.player;
             const { getAbilityManaCost } = await import('/src/core/AbilityEconomy.js');
@@ -38,7 +38,7 @@ export async function createEarnedWizardDefense(page, { allowJumpFallback = fals
                 threats: (game.activeEntitiesCache || []).filter(enemy => game.isHostileActorTarget(enemy) &&
                     p.position.distanceTo(enemy.position) < 18).map(enemy => ({ x: enemy.position.x, z: enemy.position.z })) };
         });
-        const plan = planWizardHuntStep(state);
+        const plan = planWizardHuntStep({ ...state, encounter });
         if (plan?.action === 'shield') {
             await page.keyboard.press(plan.key);
             await page.waitForTimeout(550);
