@@ -95,7 +95,9 @@ The first full client run's 15 failures were exact one-argument damage-call
 expectations; amounts were unchanged and assertions now also require the caster.
 
 The critical branch now integrates corrected hotbar targeting in **`054b285`**;
-combined client verification is running separately. It remains isolated in
+combined verification passes **208 suites / 3,079 tests in 62.461s**, lint and
+whitespace pass. Original actual-cast consumer probes pass 0.457s; that narrow
+probe pass does not close the full talent audit. It remains isolated in
 `/tmp/eidolon-critical-talents-lkoMno`, not in the 1.0.37–40 queue. Browser/saved
 talent validation and further consumer coverage remain open. Older offline
 base/stat/rune differences, bleed/poison attribution and the unimplemented
