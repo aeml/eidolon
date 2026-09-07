@@ -82,7 +82,8 @@ test('Shield mastery increases actual saved absorption, renders and expires thro
         await expect(badge.locator('h3')).toHaveText('Arcane Shield');
         await expect(badge.locator('.phone-status-remaining')).toHaveText(/^\d+\.\ds left$/);
         await page.screenshot({ path: testInfo.outputPath(`shield-${label}.png`) });
-        await page.locator('#btn-phone-status').tap();
+        await page.locator('#btn-close-phone-status').tap();
+        await expect(page.locator('#phone-status-panel')).toBeHidden();
         if (expiry) {
             await expect.poll(() => page.evaluate(() => window.game.player.arcaneShieldActive), { timeout: 23_000 }).toBe(false);
             expect(await page.evaluate(() => window.game.player.shieldHP)).toBe(0);
