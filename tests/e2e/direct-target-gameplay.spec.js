@@ -61,7 +61,8 @@ test('hostile marks reject an empty cast and accept an actual reachable enemy', 
         // Observe authoritative ranks independently of the desktop's optimistic
         // preview. Purchase only through the normal talent menu.
         await page.evaluate(() => {
-            window.__directSavedRank = 0;
+            // A Playwright retry reuses the same disposable character and save.
+            window.__directSavedRank = window.game.player.talentRanks?.ROG_36 || 0;
             const game = window.game, original = game.handleServerMessage.bind(game);
             game.handleServerMessage = message => {
                 const states = message.type === 'state' ? message.payload : message.type === 'delta' ? message.payload?.u : null;
@@ -75,7 +76,8 @@ test('hostile marks reject an empty cast and accept an actual reachable enemy', 
         });
         await page.keyboard.press('k');
         await skills.getByRole('button', { name: 'Talents', exact: true }).click();
-        for (let rank = 1; rank <= 5; rank++) {
+        const initialRank = await page.evaluate(() => window.__directSavedRank);
+        for (let rank = initialRank + 1; rank <= 5; rank++) {
             const talent = skills.locator('.skill-node').filter({ has: page.locator('.skill-node-title', { hasText: 'Quick Draw' }) });
             await talent.scrollIntoViewIfNeeded(); await talent.click();
             await expect.poll(() => page.evaluate(() => window.__directSavedRank)).toBe(rank);
@@ -118,8 +120,16 @@ test('hostile marks reject an empty cast and accept an actual reachable enemy', 
     console.log(`[direct-target] ${className} empty rejection and authoritative enemy mark passed`);
     if (className === 'Rogue') {
         await page.evaluate(targetId => {
-            window.__lungeQA = { results: [], bleed: [], damage: [], casts: [], states: [], before: window.game.player.position.toArray() };
+            window.__lungeQA = { requests: [], results: [], bleed: [], damage: [], casts: [], states: [], before: window.game.player.position.toArray() };
             const game = window.game, original = game.handleServerMessage.bind(game);
+            const originalSend = game.network.send.bind(game.network);
+            game.network.send = (kind, payload) => {
+                if (kind === 'ability' && payload?.skillName === 'Shadow Lunge') {
+                    window.__lungeQA.requests.push({ targetMatches: payload.targetId === targetId,
+                        hoveredMatches: game.hoveredEntity?.id === targetId, hasTarget: Boolean(payload.targetId) });
+                }
+                return originalSend(kind, payload);
+            };
             game.handleServerMessage = message => {
                 if (message.type === 'ability_result' && message.payload?.skillName === 'Shadow Lunge') {
                     window.__lungeQA.results.push(message.payload);
@@ -148,17 +158,23 @@ test('hostile marks reject an empty cast and accept an actual reachable enemy', 
         await page.waitForTimeout(600);
         // Enemies can cross the cursor while the previous skill resolves.
         // Reacquire the intended actor through ordinary hover before casting.
+        const lungeSlot = await page.evaluate(() => window.game.player.hotbar.indexOf('Shadow Lunge'));
+        expect(lungeSlot).toBeGreaterThanOrEqual(0);
         await expect.poll(async () => {
             const aim = await projectEntity(page, target.id);
             if (!aim?.visible) return false;
             await page.mouse.move(aim.x, aim.y);
             return page.evaluate(id => window.game.hoveredEntity?.id === id, target.id);
         }).toBe(true);
-        const lungeSlot = await page.evaluate(() => window.game.player.hotbar.indexOf('Shadow Lunge'));
-        expect(lungeSlot).toBeGreaterThanOrEqual(0);
         await page.keyboard.press(String(lungeSlot + 1));
+        await expect.poll(() => page.evaluate(() => window.__lungeQA.requests)).toEqual([
+            { targetMatches: true, hoveredMatches: true, hasTarget: true }
+        ]);
         await expect.poll(() => page.evaluate(() => window.__lungeQA.results.length)).toBe(1);
         expect(await page.evaluate(() => window.__lungeQA.results[0].accepted)).toBe(true);
+        await expect.poll(() => page.evaluate(() => window.__lungeQA.casts)).toEqual([
+            { targetMatches: true, sourceMatches: true }
+        ]);
         await expect.poll(() => page.evaluate(() => {
             const p = window.game.player.position, before = window.__lungeQA.before;
             return Math.hypot(p.x - before[0], p.z - before[2]);
@@ -166,7 +182,7 @@ test('hostile marks reject an empty cast and accept an actual reachable enemy', 
         try {
             await expect.poll(() => page.evaluate(() => window.__lungeQA.bleed.some(event => event.amount > 0)), { timeout: 5000 }).toBe(true);
         } catch (error) {
-            console.log('[lunge-diagnostic]', await page.evaluate(() => ({ results: window.__lungeQA.results,
+            console.log('[lunge-diagnostic]', await page.evaluate(() => ({ requests: window.__lungeQA.requests, results: window.__lungeQA.results,
                 casts: window.__lungeQA.casts, damage: window.__lungeQA.damage, states: window.__lungeQA.states.slice(-15) })));
             throw error;
         }
