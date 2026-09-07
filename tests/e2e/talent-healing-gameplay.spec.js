@@ -9,9 +9,14 @@ test('phone healing talent purchases change actual healing and feedback after fr
     test.setTimeout(180_000);
     test.skip(process.env.EIDOLON_E2E_REGISTER !== '1', 'Requires the disposable healing route');
     const credentials = credentialsFromEnvironment();
+    // Retries must start untrained, not reuse the saved build from attempt one.
+    // The isolated runner explicitly allowlists this second disposable account.
+    expect(testInfo.retry, 'isolated healing route supports the configured single retry').toBeLessThanOrEqual(1);
+    if (testInfo.retry > 0) credentials.username += `-retry${testInfo.retry}`;
     const failures = collectBrowserFailures(page, baseURL);
     await loginAndEnterWorld(page, credentials);
     expect(await page.evaluate(() => window.game.player.constructor.name)).toBe('Cleric');
+    expect(await page.evaluate(() => window.game.player.talentRanks?.CLR_03 || 0)).toBe(0);
 
     let lastCommandAt = 0;
     async function command(value) {
@@ -96,4 +101,9 @@ test('phone healing talent purchases change actual healing and feedback after fr
     await page.setViewportSize({ width: 844, height: 390 });
     await verifyHeal(5, 'landscape-saved');
     expect(failures, failures.join('\n')).toEqual([]);
+    if (process.env.EIDOLON_E2E_HEALING_RETRY_PROBE === '1' && testInfo.retry === 0) {
+        // Opt-in fault injection after all saved-build checks pass. This tests
+        // the real Playwright retry without relaxing any gameplay assertion.
+        throw new Error('Intentional healing retry probe after successful saved-build verification');
+    }
 });

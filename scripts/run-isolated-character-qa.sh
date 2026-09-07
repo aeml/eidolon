@@ -124,6 +124,7 @@ qa_allowlist+=",${QA_USERNAME_BASE}-holy"
 qa_allowlist+=",${QA_USERNAME_BASE}-support-area"
 qa_allowlist+=",${QA_USERNAME_BASE}-spirit-area"
 qa_allowlist+=",${QA_USERNAME_BASE}-phone-party,${QA_USERNAME_BASE}-phone-party-ally"
+qa_allowlist+=",${QA_USERNAME_BASE}-healing-retry1"
 
 mongo_username="qa_root"
 mongo_password="$(openssl rand -hex 24)"
@@ -251,7 +252,7 @@ run_talent_economy() {
 
 run_talent_healing() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-healing" EIDOLON_E2E_CLASS=Cleric \
-    npx playwright test tests/e2e/talent-healing-gameplay.spec.js
+    npx playwright test tests/e2e/talent-healing-gameplay.spec.js "$@"
 }
 
 run_purifying_area() {
@@ -387,6 +388,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   talent-healing)
     run_talent_healing
+    ;;
+  talent-healing-retry)
+    EIDOLON_E2E_HEALING_RETRY_PROBE=1 run_talent_healing --retries=1
     ;;
   purifying-area)
     run_purifying_area
