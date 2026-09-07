@@ -1,6 +1,6 @@
 # Phone actor-action readability after Alpha 1.0.39
 
-Unversioned work after the preserved 1.0.39 source
+Unversioned checkpoint `c9c93b9b521d27c1b96bbc113c150893bb6399b1`, after the preserved 1.0.39 source
 `c6145c35dc935ae197ca643ce1a3dfe75416fcd1`. Not included in that candidate or
 published. The full 1.1–1.10 roadmap remains open.
 

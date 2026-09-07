@@ -92,6 +92,23 @@ complete. Source `c6145c35dc935ae197ca643ce1a3dfe75416fcd1` is preserved on
 `release/39-with-party`. It is not published and does not
 change the preserved 1.0.38 source or close physical-phone sign-off.
 
+The subsequent [phone actor-action readability pass](2026-09-07-phone-action-readability.md)
+is preserved as unversioned checkpoint `c9c93b9b521d27c1b96bbc113c150893bb6399b1`.
+It bounds long actor/action labels above the model while retaining attribution,
+keeps damage-number/desktop presentation separate, and cleans up pooled feedback
+at teardown. Full client checks pass **198 suites / 2,925 tests in 128.766s**,
+all **53 anonymous checks pass in 5.7 minutes**, and real two-account support and
+actual recipient-label checks pass **43.8s**. Lint/whitespace pass; all local
+verification processes are terminal. This is not part of preserved 1.0.39 and
+still needs its next release packaging.
+
+The [expanded remaining Cleric probes](2026-09-07-cleric-final-area-probes.md)
+complete in **0.595s** with explicit expected failures: trained boundaries remain
+ignored, and all nine accepted-shape cases emit zero radius/arc. Normal branch-A
+Divine Intervention → Healing Light proves Mass Revival is reachable without
+granting an ActiveCombo flag; other cross-branch issues remain separate. These
+diagnostics do not close the remaining area, offline or broader roadmap gates.
+
 Historical 1.0.30 → original 1.0.31 failure and repair:
 CI **`34081910599`** passed every job, including final live character QA.
 Fresh post-terminal uncached checks at **04:58:37.772 UTC** matched release
