@@ -1,5 +1,31 @@
 # Alpha 1.0.37 candidate — a wider circle of protection
 
+## Current gate: retained predeployment failure and retry repair
+
+CI **34118770059**, source **6740974**, fails before either deployment. The
+healing route completes real baseline/trained/fresh-login heals (387/464/464),
+but its final browser-error guard reports a local ProceduralStatusEffects module
+request failing with `net::ERR_NETWORK_CHANGED`. The host event is not established;
+the guard remains intact. Its automatic retry then tries to tap the disabled
+already-active specialization because the first attempt saved its build.
+
+Correction **aa19c52** changes only the healing test and isolated runner: the
+configured single retry receives a separately allowlisted disposable account,
+and both attempts require zero initial healing ranks. Normal purchases, baseline
+healing, trained healing and fresh-login persistence assertions are unchanged.
+The opt-in `talent-healing-retry` route deliberately fails only after all first
+attempt assertions pass, then exercises the real retry. Both attempts complete
+387/464/464 heals; Playwright reports one intentionally flaky test, process exit
+zero, credential scan zero sanitizations and all owned ports released. This is
+retry fault-injection proof, not an unexplained flaky pass or a production check.
+Lint, shell syntax and whitespace checks pass; game/server source is unchanged.
+
+Logs: `/tmp/eidolon-release37-ci-failure.log` and
+`/tmp/eidolon-release37-healing-retry-probe.log`. Publish this descendant correction
+without skipping to 1.0.38. Every new CI/live job and fresh public identity must
+pass; Alpha 1.0.36 remains the last fully verified live release. Earlier candidate
+status paragraphs below are historical checkpoints.
+
 Local candidate, not published. The original candidate is preserved at
 `47a565b0ec4d38ef9149b1a7055cf056ccfe3802`. The corrected candidate now includes
 1.0.36 hotbar correction `69b34a78cd880f7a863d5ad2a0aa33af0680f961`; every earlier queued release must clear
