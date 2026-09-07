@@ -1685,6 +1685,44 @@ async function projectVerdantEntrance(page) {
     });
 }
 
+// Observe the existing real pointer path without forcing hover, sending a
+// request, moving the actor or changing production targeting priority.
+async function observeEntranceClick(page) {
+    await page.evaluate(() => {
+        const game = window.game;
+        window.__entranceClickProbe = { click: null, requested: 0, received: 0 };
+        if (window.__entranceClickProbeInstalled) return;
+        window.__entranceClickProbeInstalled = true;
+        const describe = entity => entity ? {
+            type: entity.name === 'DungeonEntrance' ? entity.name : entity.constructor?.name,
+            state: entity.state, active: entity.isActive,
+            position: entity.position ? { x: entity.position.x, z: entity.position.z } : null
+        } : null;
+        const click = game.handlePrimaryClick;
+        game.handlePrimaryClick = function (event) {
+            const before = describe(this.hoveredEntity);
+            const result = click.call(this, event);
+            window.__entranceClickProbe.click = {
+                before, after: describe(this.hoveredEntity), pending: describe(this.pendingInteraction),
+                player: { x: this.player.position.x, z: this.player.position.z },
+                state: this.player.state, dom: event?.target?.tagName, result,
+                stack: (this.raycastHitEntities || []).map(describe)
+            };
+            return result;
+        };
+        const request = game.requestDungeonStatus;
+        game.requestDungeonStatus = function (...args) {
+            window.__entranceClickProbe.requested++;
+            return request.apply(this, args);
+        };
+        const message = game.handleServerMessage;
+        game.handleServerMessage = function (value) {
+            if (value.type === 'get_dungeon_status') window.__entranceClickProbe.received++;
+            return message.call(this, value);
+        };
+    });
+}
+
 export async function enterAndExitDungeon(page, { beforeExit, resetRun = false,
     dungeonType = 'verdant_bastion_catacombs', difficulty = 'normal', runLevel: requestedRunLevel = 30,
     useTownGuide = false } = {}) {
@@ -1706,6 +1744,7 @@ export async function enterAndExitDungeon(page, { beforeExit, resetRun = false,
             const { openDungeonGuide } = await import('./dungeon-guide.js');
             await openDungeonGuide(page);
         } else {
+            await observeEntranceClick(page);
             let entrance = null;
             await expect.poll(async () => {
                 entrance = await projectVerdantEntrance(page);
@@ -1717,7 +1756,17 @@ export async function enterAndExitDungeon(page, { beforeExit, resetRun = false,
         }
 
         const menu = page.locator('#dungeon-menu');
-        await expect(menu).toBeVisible({ timeout: 20_000 });
+        try {
+            await expect(menu).toBeVisible({ timeout: 20_000 });
+        } catch (error) {
+            if (!viaGuide) console.log('[entrance-click]', JSON.stringify(await page.evaluate(() => ({
+                probe: window.__entranceClickProbe,
+                pointerOverCanvas: window.game?.inputManager?.pointerOverCanvas,
+                focusedTag: document.activeElement?.tagName,
+                instance: window.game?.currentInstanceType
+            }))));
+            throw error;
+        }
         if (pendingReset) {
             await page.locator('#btn-reset-dungeon').click();
             await expect(menu).toBeHidden();
