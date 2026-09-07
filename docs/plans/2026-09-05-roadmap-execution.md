@@ -5,7 +5,59 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 18:44 UTC
+## Current checkpoint — September 7, 19:24 UTC
+
+**Alpha 1.0.39 remains live and healthy.** Corrected 40 CI **34152138480**
+finishes with client/server/browser smoke passing, but predeploy character QA
+fails: Rogue Shadow Lunge is accepted without visible movement; the retry also
+fails real target hover. All deployments and live QA are skipped. Fresh public
+manifest, login/main and backend checks at 19:22 return HTTP 200 and exact
+`7ddf776ef18caa0763eedeb8d5a0d7f25afdcd4d` / **Alpha 1.0.39**, healthy/ready.
+Do not publish 41 or later; 40 must be repaired and pass its complete gate first.
+
+The repair is isolated in staging `/tmp/eidolon-release37-targeting-lT3Mdt`,
+branch `work/release40-direct-target-20260907`, based on `1106228`.
+Regression tests demonstrate that a short Lunge is moved authoritatively but
+ignored by the local prediction deadband. An explicit accepted landing preserves
+the aim point and legacy event behavior. Original client regression fails
+**4 tests / 1.520s** and server event regression fails **6.246s**; corrected
+client **15 / 0.989s**, related server movement/bleed/wall checks **16.036s**.
+The first actual browser attempt detects a missing network payload mapping;
+that mapper is corrected with a separate wire/zero-coordinate/isolation test.
+Actual direct-skills rerun **92810** is active, log
+`/tmp/eidolon-release40-lunge-gameplay-final.log`; payload race check **91656**
+is also active. This is not yet a verified/re-published correction. Staging
+runtime must stay frozen during its browser test. Earlier release branches remain
+preserved and need carry-forward of the eventual verified correction.
+
+**Alpha 1.0.48 is locally verified and root-integrated**, not published.
+Release branch `release/48-with-combo-observation` is **`e13f512`**; root merge
+**`b65295c`** passes **261 integration checks / 3.397s**. Full client passes
+**216 suites / 3,198 tests / 149.264s**, full server race root **15.501s** and
+game **381.500s**; actual Forge/reconnect **24.4s / 26.4s total**, credential scan
+and cleanup pass. The inspected actual image is preserved at
+`/tmp/eidolon-release48-forge-accumulated-progress.png`. Final anonymous suite
+passes **75 / 9.4m**. The first 74/75 attempt fails on module dependency requests
+with `net::ERR_NETWORK_CHANGED`; test-only startup correction `be80c67` uses
+existing bounded readiness and passes four sizes twice before the full rerun.
+All owned 48 local handles are closed. See [Forge evidence](2026-09-07-forge-earned-scaling.md).
+
+**Investigation foundation `e320427` is root-integrated at `4f45b29`.** Shared
+eight-chapter/sixteen-object content, authoritative personal recording, distinct
+saved bits, snapshot/BSON/protobuf persistence and ID-based Ilyra replies pass
+**217 suites / 3,203 tests / 120.157s**, full server race root **13.400s** and game
+**321.451s**, plus lint. Root integration passes **254 checks / 3.249s**.
+Worktree `/tmp/eidolon-investigations-Ock9zw` is committed; all its owned checks
+are closed. The existing 15-chapter game is still active: no investigation world
+spawn, network/combat integration or migration-safe 23-chapter graph is enabled
+yet. Do not ship this foundation as playable expanded story. See
+[implementation and remaining activation work](2026-09-07-investigation-implementation.md).
+
+The full roadmap goal, coordinated XP/gold/equipment tuning, late-potency
+affordability and eight playable investigations remain open. Root/master is an
+integration branch, not a sequential publication target.
+
+## Historical checkpoint — September 7, 18:44 UTC
 
 **Alpha 1.0.39 remains fully verified live.** The first 40 run `34150633216`
 fails anonymous smoke before deployment; every deploy job is skipped. The phone

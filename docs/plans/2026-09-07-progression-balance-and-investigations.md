@@ -7,11 +7,17 @@ legacy-contract migration. It is queued, not published. XP/equipment/gold tuning
 and playable investigations remain open. The
 [loot/Forge baseline](2026-09-07-loot-and-forge-baseline.md) now measures combined
 material/equipment sources and actual transactions; the
-[Forge precision correction](2026-09-07-forge-earned-scaling.md) is in progress.
+[Forge precision correction](2026-09-07-forge-earned-scaling.md) is locally
+verified and root-integrated as the queued 1.0.48 candidate.
 The
 [authored investigation draft](2026-09-07-investigation-story-content.md) supplies
 Ilyra conversations, personal accounts and discoveries for all eight planned sites;
-authored text is not evidence of implemented quests or reachable world locations.
+The [investigation foundation](2026-09-07-investigation-implementation.md) now
+compiles this text into matching catalogs, validates personal discoveries, saves
+individual evidence and selects Ilyra's replies by stable quest ID. It is locally
+tested and integrated, but world interactions and the expanded quest graph are
+not yet active. Authored text and recording tests are not evidence of reachable
+world locations or completed playable quests.
 This expands the active full-roadmap goal. Ship verified excessive-reward fixes
 in suitable 1.0.x patches; establish progression pacing in 1.1, deliver the
 expanded Chronicle in 1.4, finish the economy pass in 1.5 and revalidate raid
