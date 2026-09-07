@@ -26,17 +26,46 @@ post-terminal public identity check matches. Preserve the original 1.0.37–1.0.
 candidates and carry this correction forward into each before its publication.
 Do not push the root 1.0.40 working HEAD.
 
+The hotbar fix is now integrated into root checkpoint **`affcd47`** after the
+earned Fighter run completed; **203 suites / 3,009 client tests pass in 105.293s**,
+plus lint. Corrected sequential candidates preserve their original versions,
+patch-note histories and server trees:
+
+| Version | Corrected branch | Candidate |
+|---|---|---|
+| 1.0.37 | `release/37-with-target-identity` | `6740974` |
+| 1.0.38 | `release/38-with-target-identity` | `e5000c7` |
+| 1.0.39 | `release/39-with-target-identity` | `ac3fa6d` |
+| 1.0.40 | `release/40-with-target-identity` | `eb5eb3e` |
+
+Each is a descendant of the preceding corrected candidate; originals remain
+unchanged. The staging checkout `/tmp/eidolon-release37-targeting-lT3Mdt` is
+returned to corrected 1.0.37 for the next publication gate. Target identity,
+ability config and version/default/history checks pass on every corrected
+candidate; these supplement their original full tests, not new full browser
+runs. Server-tree equality to each original candidate is verified. Nothing in
+this table is published yet. Remote master still equals corrected 1.0.36 `69b34a7`.
+
 The earned Fighter run completed on unchanged source `2c80b06`, session
 `47165`, `/tmp/eidolon-earned-fighter-corrected-gameplay.log`. Its paid Skeleton
 and Imp contracts and saved manual rewards reach level 34; the full Verdant
 route passes in **29.3 minutes**, including all four bosses, completed recall/
 re-entry, manual Earth reward and saved Rootheart access. It ends at level 54,
 with zero rejected dungeon casts; see the fresh-progression evidence for counts.
-The isolated critical-talent checkpoint is committed as **`b32c084`**
+The isolated critical-talent checkpoint is now **`1a8cf94`**, following `b32c084`,
 on `work/critical-talents-20260907` in `/tmp/eidolon-critical-talents-lkoMno`.
-Its server race suite passes (game 338.626s), but offline/copy/composition and
-browser checks remain open. It is not merged into the root checkout or queued
-as a release.
+Its latest server race suite passes (root 10.524s, game 235.272s), plus a new
+shared metadata/critical composition race run (4.950s). Real paid Backstab casts
+reproduced 600/1,200 damage from stacked critical sources instead of 300; the fix
+composes rune/combo/equipment into one ordinary critical after armor, preserving
+Lucky independently. Real Fireball flights reproduced doubled splash modifiers,
+primary-only debuff leakage and splash through solid dungeon walls; all have
+regression coverage and corrections. Offline basic criticals and numeric tooltips
+now agree with a server-validated 160-talent metadata contract. Client regression
+passes **204 suites / 3,033 tests in 72.435s**, lint and whitespace pass. The
+critical checkout does not yet include the separate hotbar fix. Offline ability/
+projectile consumption, utility/periodic coverage and real browser/persistence
+checks remain open. It is not merged into root or queued as a release.
 
 Previous 1.0.36 publication snapshot:
 CI **`34105565222`** is terminal success with every job successful, including
