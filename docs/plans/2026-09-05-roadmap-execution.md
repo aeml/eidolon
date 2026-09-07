@@ -5,7 +5,45 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 21:00 UTC
+## Current checkpoint — September 7, 21:18 UTC
+
+40 `008ee7d` CI **34159297803** now has client/server/browser, predeploy
+character QA, input validation and both deployments successful. **Live Release
+and Character QA remains in progress**. Do not publish 41 until that terminal
+success and a fresh exact public-40 identity check. Earlier live-39 evidence is
+historical, not a claim that 40 has passed its full gate.
+
+49 final anonymous handle **46704** is closed: **74/75 pass, 10.1m**. The one
+failure occurs before layout assertions when dynamic imports encounter
+`net::ERR_NETWORK_CHANGED`; the actual trace identifies simultaneous local-module
+load failures, not a demonstrated layout regression. It is preserved at
+`/tmp/eidolon-release49-network-change-trace.zip`. Unchanged full rerun **82828**
+is active, log `/tmp/eidolon-release49-anonymous-rerun.log`; freeze package c0a6910.
+No final-49 integration/publication yet. This is the only owned browser run.
+
+Investigation combined backend **90803** is closed with **SIGTERM/143**, root
+package passing **16.127s** but no game result. No Go child remained; the cause
+of termination is unknown, not established OOM or test failure. Game-only verbose
+rerun **83699** is now closed and **passes race / 396.729s**; log
+`/tmp/eidolon-investigations-combined-game-rerun.log`. Combined runtime 84abecf
+therefore has passing package coverage, without claiming the terminated invocation
+itself passed.
+
+Further isolated reading QA finds an ordering defect for a later open field
+record: restoring scroll before expanded height can clamp the saved offset.
+A modeled-browser regression reproduces **500 → 100 / 1.426s**; moving scroll
+restoration after disclosure restoration passes **19 focused checks / 1.457s**.
+The first one-record control passes because the legacy archive selector already
+opens that first disclosure; the corrected regression covers a later record.
+Logs `/tmp/eidolon-diary-scroll-before-second-record.log` and
+`/tmp/eidolon-diary-scroll-after.log`. New real-browser layout coverage and actual
+landscape diary swipe-to-final-line checks are authored but **not yet run**.
+Full isolated client/lint **63653** is active, log
+`/tmp/eidolon-investigations-reading-client.log`. These changes remain uncommitted
+and isolated; do not merge the 23-chapter graph into root. Remaining realms,
+ordered Fire fight, broader progression/economy and the full roadmap stay open.
+
+## Historical checkpoint — September 7, 21:00 UTC
 
 The preceding goal turn made concrete progress: real Earth discovery play,
 phone interaction support, a reproduced/fixed surplus-drop defect and a separate
