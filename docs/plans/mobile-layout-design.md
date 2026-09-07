@@ -29,6 +29,14 @@ interaction checks, not the physical-device or broader camera/HUD acceptance gat
 
 ## Evidence and design problem
 
+September 7 follow-up: [finite notices and a one-row tracker](2026-09-07-phone-encounter-space.md)
+address two observed intrusions on the encounter view. The objective itself opens
+the journal; Next retains access to all selected quests. A level-up callout now
+has an actual lifetime instead of remaining indefinitely. This is an incremental
+implementation of the composition, not closure of the mockup, shared-camera-region
+or physical-device tasks below. Screenshot review also caught a landscape overlap
+that passing tap tests alone missed; full bounds are now checked explicitly.
+
 The player reports that useful visibility requires maximum zoom-out, making
 characters tiny, while desktop-sized UI is difficult to operate. The local
 568×320 populated-HUD capture `/tmp/eidolon-phone-party-controls-568.png` also

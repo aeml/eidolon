@@ -29,6 +29,15 @@ const gameEngineSource = [
 ].map((name) => fs.readFileSync(path.join(repoRoot, 'src/core', name), 'utf8')).join('\n');
 
 describe('GameEngine encounter callouts', () => {
+    test('phone self-feedback omits the redundant player name without losing other players’ attribution', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.isMobile = true;
+        engine.player = { id: 'self', name: 'AnExceptionallyLongPlayerName' };
+        expect(engine.buildRemoteActionReadabilityText(engine.player, 'GUARDIANS UP')).toBe('GUARDIANS UP');
+        expect(engine.buildRemoteActionReadabilityText({ id: 'other', name: 'Ayla' }, 'GUARDIANS UP')).toBe('AYLA: GUARDIANS UP');
+        engine.isMobile = false;
+        expect(engine.buildRemoteActionReadabilityText(engine.player, 'GUARDIANS UP')).toContain('ANEXCEPTIONALLYLONGPLAYERNAME:');
+    });
     test('presents each Dark King Eidolon phase as story and combat feedback', () => {
         const engine = Object.create(GameEngine.prototype);
         engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
@@ -373,7 +382,7 @@ describe('GameEngine encounter callouts', () => {
         expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('LEVEL UP!', expect.any(THREE.Vector3), '#ffd700');
         expect(engine.uiManager.showCombatCallout).toHaveBeenCalledWith(expect.objectContaining({
             title: 'Level 30 Reached',
-            subtitle: expect.stringContaining('All base dungeons are now unlocked')
+            subtitle: expect.stringContaining('Verdant Bastion Catacombs is now unlocked')
         }));
         expect(engine.uiManager.addGameMessage).toHaveBeenCalledWith(
             'Level Up',
@@ -381,6 +390,11 @@ describe('GameEngine encounter callouts', () => {
         );
         expect(engine.network.send).toHaveBeenCalledWith('chat', expect.objectContaining({ message: expect.stringContaining('level 30') }));
     });
+
+    test.each([[1, 100, 'Heroic and Mythic'], [59, 60, 'Abyssal Well'], [69, 70, 'Molten Core and Tempest Spire']])(
+        'level guidance for %s → %s names the highest actual unlock', (previous, next, name) => {
+            expect(GameEngine.prototype.getLevelUpReadabilityHint(previous, next)).toContain(name);
+        });
 
     test('records ordinary XP gains privately in the Game stream after initial sync', () => {
         const engine = Object.create(GameEngine.prototype);

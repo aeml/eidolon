@@ -112,4 +112,15 @@ describe('phone quest reading and deliberate actions', () => {
         expect(ui.trackedQuestKeys.size).toBe(6);
         expect(document.querySelector('.objective-entry__title').textContent).toBe('Contract 0');
     });
+    test('the objective itself is the journal button, including non-quest guidance', () => {
+        ui.toggleJournal = jest.fn();
+        ui.renderObjectivesPanel([{ id: 'town', title: 'Speak to Ilyra', hint: 'She needs your help', progressLabel: 'Available' }]);
+        const entry = document.querySelector('.objective-entry');
+        expect(entry.tagName).toBe('BUTTON');
+        expect(entry.getAttribute('aria-label')).toContain('Speak to Ilyra');
+        expect(entry.classList.contains('objective-guidance')).toBe(false);
+        entry.click();
+        expect(ui.toggleJournal).toHaveBeenCalledTimes(1);
+        expect(document.querySelector('.phone-objectives-controls .objectives-panel__more')).toBeNull();
+    });
 });

@@ -404,6 +404,15 @@ class UIManagerFeedbackMethods {
 
         const tone = callout.tone || 'warning';
         const duration = Number(callout.duration || 0);
+        clearTimeout(this.combatCalloutTimer);
+        this.lastCombatIntentSignature = '';
+        const lifetime = Number.isFinite(duration) && duration > 0 ? duration : 4;
+        this.combatCalloutTimer = setTimeout(() => {
+            this.combatCalloutTimer = null;
+            const intent = this.activeCombatIntent;
+            if (intent) this.updateCombatIntent(intent);
+            else this.clearCombatIntent();
+        }, lifetime * 1000);
         this.combatIntentPanel.style.display = 'block';
         this.combatIntentPanel.dataset.calloutTone = tone;
 
@@ -415,6 +424,7 @@ class UIManagerFeedbackMethods {
         }
         if (this.combatIntentStatus) {
             this.combatIntentStatus.textContent = callout.subtitle || 'Brace for impact';
+            this.combatIntentStatus.className = 'combat-intent__status';
         }
         if (this.combatIntentPreviewBasic) {
             this.combatIntentPreviewBasic.textContent = '';
@@ -489,6 +499,11 @@ class UIManagerFeedbackMethods {
     updateCombatIntent(intent) {
         if (!this.combatIntentPanel || !intent) return;
 
+        this.activeCombatIntent = intent;
+        clearTimeout(this.combatCalloutTimer);
+        this.combatCalloutTimer = null;
+        delete this.combatIntentPanel.dataset.calloutTone;
+
         const signature = this.serializeCombatIntent(intent);
         if (signature === this.lastCombatIntentSignature) return;
         this.lastCombatIntentSignature = signature;
@@ -510,8 +525,12 @@ class UIManagerFeedbackMethods {
     }
 
     clearCombatIntent() {
+        this.activeCombatIntent = null;
+        clearTimeout(this.combatCalloutTimer);
+        this.combatCalloutTimer = null;
         this.lastCombatIntentSignature = '';
         if (!this.combatIntentPanel) return;
+        delete this.combatIntentPanel.dataset.calloutTone;
         this.combatIntentPanel.style.display = 'none';
         if (this.combatIntentName) this.combatIntentName.textContent = '';
         if (this.combatIntentMeta) this.combatIntentMeta.textContent = '';

@@ -143,6 +143,9 @@
 /* One navigation launcher leaves status and the world readable. The existing
    Bag/Hero/Map/Quest/Social controls now live in the phone menu, not the HUD. */
 .mobile-mode #player-hud { width: min(260px, calc(100vw - 164px)) !important; }
+@media (orientation: landscape) and (max-height: 600px) {
+    .mobile-mode #player-hud { width: 180px !important; }
+}
 .mobile-mode .bar-container { height: 22px !important; }
 .mobile-mode .bar-text { font-size: 16px !important; line-height: 22px; }
 .mobile-mode #mobile-top-right {

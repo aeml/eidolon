@@ -764,8 +764,13 @@ export class QuestUI {
         if (heading) heading.textContent = this.ctx.isMobile && trackedObjectives.length
             ? `TRACKED · ${phoneIndex + 1} / ${trackedObjectives.length}` : `TRACKED · ${trackedObjectives.length}`;
         visibleObjectives.forEach((objective, index) => {
-            const item = document.createElement('div');
+            const item = document.createElement(this.ctx.isMobile ? 'button' : 'div');
             item.className = `objective-entry ${objective.routeTone ? `is-${objective.routeTone}` : ''}`.trim();
+            if (this.ctx.isMobile) {
+                item.type = 'button';
+                item.setAttribute('aria-label', `Open journal: ${objective.title} · ${objective.completed ? 'Ready' : objective.progressLabel || ''}`);
+                item.addEventListener('click', () => this.toggleJournal());
+            }
             const header = document.createElement('div');
             header.className = 'objective-entry__header';
 
@@ -806,7 +811,7 @@ export class QuestUI {
             item.appendChild(header);
             item.appendChild(progress);
             item.appendChild(hint);
-            if (index === 0 && !objective.badge?.startsWith('Story') && objective.badge !== 'Daily') this.renderObjectiveGuidance(objective, item);
+            if (!this.ctx.isMobile && index === 0 && !objective.badge?.startsWith('Story') && objective.badge !== 'Daily') this.renderObjectiveGuidance(objective, item);
             this.objectivesList.appendChild(item);
         });
         const more = document.createElement('button');
@@ -816,10 +821,11 @@ export class QuestUI {
         more.addEventListener('click', () => this.toggleJournal());
         if (this.activeQuestSummary.length && this.ctx.isMobile) {
             const controls = document.createElement('div'); controls.className = 'phone-objectives-controls';
-            controls.appendChild(more);
+            if (!visibleObjectives.length) controls.appendChild(more);
             if (trackedObjectives.length > 1) {
                 const next = document.createElement('button'); next.type = 'button'; next.className = 'phone-objectives-next';
-                next.textContent = 'Next quest'; next.setAttribute('aria-label', 'Show next tracked objective');
+                next.textContent = '›'; next.setAttribute('aria-label', 'Show next tracked objective');
+                next.title = `${phoneIndex + 1} of ${trackedObjectives.length} tracked objectives`;
                 next.onclick = () => {
                     this.phoneObjectiveKey = this.questTrackingKey(trackedObjectives[(phoneIndex + 1) % trackedObjectives.length]);
                     this.renderObjectivesPanel(this.activeQuestSummary);

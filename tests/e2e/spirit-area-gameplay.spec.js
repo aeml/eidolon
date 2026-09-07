@@ -21,6 +21,12 @@ test('trained spirit rings preserve cherubs and reach a late observer without pr
     await build('Skills');const branch=page.locator('[data-build-action="branch:B"]');await branch.scrollIntoViewIfNeeded();await branch.tap();
     await expect.poll(()=>page.evaluate(()=>window.game.player.hotbar.indexOf('Spirit Guardians Boost'))).toBeGreaterThanOrEqual(0);
     await page.locator('#btn-close-skills').tap();
+    // A normal level event must not leave a permanent notice over the world.
+    await expect(page.locator('#combat-intent-panel')).toBeHidden({timeout:6000});
+    expect((await page.locator('#objectives-panel').boundingBox()).height).toBeLessThanOrEqual(52);
+    await page.locator('#objectives-panel').getByRole('button',{name:/^Open journal:/}).tap();
+    await expect(page.locator('#quest-journal')).toBeVisible();
+    await page.locator('#btn-close-journal').tap();
     await page.evaluate(()=>{
         const g=window.game,receive=g.handleServerMessage.bind(g);window.__spiritArea=[];
         g.handleServerMessage=message=>{const result=receive(message),p=message.payload;

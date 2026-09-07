@@ -696,6 +696,9 @@ export class GameEngine {
     buildRemoteActionReadabilityText(entity, actionLabel) {
         const action = this.formatRemoteActionLabel(actionLabel);
         if (!action) return '';
+        // Local replicated buffs share this path. Repeating the entire player's
+        // name over their own hero can span a phone's whole encounter view.
+        if (this.isMobile && (entity === this.player || (entity?.id && entity.id === this.player?.id))) return action;
         return `${this.getRemoteActionSourceLabel(entity)}: ${action}`;
     }
 
@@ -918,13 +921,20 @@ export class GameEngine {
     }
 
     getLevelUpReadabilityHint(previousLevel, nextLevel) {
-        if (previousLevel < 30 && nextLevel >= 30) {
-            return 'All base dungeons are now unlocked. Talk to the Dungeon Guide in town when you are ready.';
-        }
         if (previousLevel < 100 && nextLevel >= 100) {
-            return 'Heroic and Mythic are now unlocked. Push back into the dungeon menu for endgame runs.';
+            return 'Heroic and Mythic are now unlocked. Visit the Dungeon Guide to prepare an endgame run.';
         }
-        return 'Open Skills (K) and review your build before pushing deeper.';
+        if (previousLevel < 70 && nextLevel >= 70) {
+            return 'Molten Core and Tempest Spire are now unlocked. Check their routes with the Dungeon Guide.';
+        }
+        if (previousLevel < 60 && nextLevel >= 60) {
+            return 'Abyssal Well is now unlocked. Check its route with the Dungeon Guide.';
+        }
+        if (previousLevel < 30 && nextLevel >= 30) {
+            return 'Verdant Bastion Catacombs is now unlocked. Other realms need higher levels; visit the Dungeon Guide.';
+        }
+        return this.isMobile ? 'Open Menu → Skills & Runes to review your build.'
+            : 'Open Skills (K) and review your build before pushing deeper.';
     }
 
     handleLevelUpFeedback(previousLevel, nextLevel) {
@@ -1825,7 +1835,7 @@ export class GameEngine {
         if (this.clearCombatTargetHighlight) {
             this.clearCombatTargetHighlight();
         }
-        if (hadIntent) {
+        if (hadIntent || this.uiManager?.combatCalloutTimer) {
             this.uiManager?.clearCombatIntent?.();
         }
         this.dungeonEntranceHint = null;

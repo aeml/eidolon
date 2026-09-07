@@ -61,6 +61,12 @@ function createTarget(id, x, z) {
 }
 
 describe('GameEngine combat target highlight', () => {
+    test('scene cleanup clears a pending notice even without a selected target', () => {
+        const engine = createEngineHarness();
+        engine.uiManager.combatCalloutTimer = 123;
+        engine.clearCombatIntentState();
+        expect(engine.uiManager.clearCombatIntent).toHaveBeenCalledTimes(1);
+    });
     test('attaches a reusable highlight to the current combat target', () => {
         const engine = createEngineHarness();
         const target = createTarget('enemy-1', 10, 4);

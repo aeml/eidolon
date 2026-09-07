@@ -14,10 +14,15 @@ label, versioned main script and backend to
 CI **`34089969590` attempt 1 failed before deployment**: client/server and browser
 smoke passed; phone-settings gameplay completed but its browser-error guard caught
 local `ERR_NETWORK_CHANGED` errors on both initial and built-in retry. One unchanged
-failed-job rerun is active as **attempt 2**, predeploy character QA running. See
+failed-job rerun is active as **attempt 2**. Predeploy character QA and both
+deployments now pass; final live four-class/remote-animation QA is running. See
 [the retained failure](2026-09-07-release32-network-retry.md). Do not push 1.0.33
 until the complete CI/live gate and fresh identity check. A fresh uncached check at
 **06:33:12.223 UTC** still matches healthy 1.0.31 across manifest/login/script/backend.
+After attempt-2 deployment, the fresh **07:35:08.399 UTC** check matches healthy
+**1.0.32 `d578bdf`** across all four surfaces. Final live animation QA is still
+running; 1.0.31 remains the latest fully verified release until that completes
+and a new post-terminal identity check passes.
 
 The [Guardian Embrace area repair](2026-09-07-guardian-area.md), checkpoint
 `a0a17e705055c4e5fdc4ee0ce4f12743e092db4e`, is locally verified
@@ -42,6 +47,7 @@ published.
 The subsequent [Spirit Guardians/Boost area checkpoint](2026-09-07-spirit-area.md)
 passes **194 suites / 2,875 client tests**, full server race checks (game
 **367.003s**) and real-server phone/late-observer gameplay in **1.2 minutes**.
+Checkpoint `b8a761ee46ce6e91ed171aac351508ea6f072180` retains this work.
 Trained/rune radius is captured at cast, replicated, consumed by real ticks and
 drawn with an exact perimeter without enlarging the cherubs. This is not included
 in the preserved 1.0.37 candidate. Screenshot review still finds excessive phone
@@ -49,6 +55,20 @@ HUD occupancy; shared encounter composition is the next visual priority.
 The next paired diagnostic casts reproduce ignored Ministry area for Radiant
 Strike, Healing Light's Beacon and Mass Revival in **0.438s**; rank-zero controls
 pass. Those remain open, not a reason to claim the talent audit complete.
+
+The next [phone encounter-space pass](2026-09-07-phone-encounter-space.md) gives
+callouts real expiration, keeps one tappable objective row, preserves every
+tracking selection, corrects level-unlock guidance and removes the redundant local
+player-name prefix from phone support feedback. Screenshot review and a new
+568×320 route catch tracker/health overlap, clipped row margins and the Journal's
+desktop minimum height covering chat. Corrections and seven expanded layout checks
+pass, including 568×320. The [1.0.38 candidate](2026-09-07-release38-encounter-space.md)
+adds distinct patch notes and aligned version labels. Actual Spirit/phone/observer
+gameplay passes in 1.3 minutes, full server race checks pass, and final client
+regression passes **195 suites / 2,892 tests in 142.066s** after correcting two
+missed CI version defaults. All local verification processes are terminal.
+Shared camera/encounter-region composition and physical-phone sign-off
+remain next, rather than treating another menu patch as the completed redesign.
 
 Historical 1.0.30 → original 1.0.31 failure and repair:
 CI **`34081910599`** passed every job, including final live character QA.

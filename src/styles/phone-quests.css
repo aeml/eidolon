@@ -6,6 +6,7 @@
     height: calc(100dvh - var(--phone-top) - var(--phone-bottom) - 60px) !important;
     max-width: none;
     max-height: none;
+    min-height: 0;
     margin: 0;
     transform: none !important;
     font-size: 16px;
@@ -35,21 +36,25 @@
 .mobile-mode .quest-journal-entry__count { font-size: 14px !important; line-height: 22px !important; }
 .mobile-mode .quest-journal-entry > div:last-child { font-size: 16px !important; }
 
-/* Keep one readable summary visible; Next cycles the full saved tracking set. */
-.mobile-mode #objectives-panel { padding: 6px; gap: 4px; }
-.mobile-mode #objectives-list { flex: 0 0 auto; overflow: hidden; }
-.mobile-mode #objectives-panel .objectives-panel__header { font-size: 11px; padding: 0; line-height: 14px; }
-.mobile-mode #objectives-panel .objective-entry { padding: 0; border: 0; }
+/* The summary itself opens the journal; no second full-height navigation row.
+   Keep every selected quest reachable through the separate thumb-sized Next. */
+.mobile-mode #objectives-panel { padding: 0; gap: 4px; flex-direction: row; height: 52px; max-height: 52px !important; }
+.mobile-mode #objectives-list { flex: 1 1 0; min-width: 0; overflow: hidden; margin: 0; }
+.mobile-mode #objectives-panel .objectives-panel__header { display: none; }
+.mobile-mode #objectives-panel .objective-entry { width: 100%; height: 52px; margin: 0; padding: 5px 8px; border: 1px solid #b99b6240; border-radius: 6px; pointer-events: auto; cursor: pointer; text-align: left; font: inherit; color: #f3ece0; background: #111923ed; touch-action: manipulation; }
 .mobile-mode #objectives-panel .objective-entry__header { gap: 4px; }
 .mobile-mode #objectives-panel .objective-entry__title-wrap { min-width: 0; flex: 1 1 0; overflow: hidden; }
-.mobile-mode #objectives-panel .objective-entry__title { width: 100%; font-size: 14px; line-height: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mobile-mode #objectives-panel .objective-entry__title { width: 100%; font-size: 16px; line-height: 20px; white-space: normal; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .mobile-mode #objectives-panel :is(.objective-entry__hint, .objective-entry__badge, .objective-guidance) { display: none; }
-.mobile-mode #objectives-panel .objective-entry__status { font-size: 12px; line-height: 18px; }
-.mobile-mode #objectives-panel .objective-entry__progress { height: 3px; margin-top: 3px; }
+.mobile-mode #objectives-panel .objective-entry__status { font-size: 14px; line-height: 20px; max-width: 64px; overflow: hidden; text-overflow: ellipsis; }
+.mobile-mode #objectives-panel .objective-entry__progress { display: none; }
 .phone-objectives-controls { display: flex; flex: 0 0 auto; gap: 4px; }
+.phone-objectives-controls:empty { display: none; }
 .phone-objectives-controls :is(.objectives-panel__more, .phone-objectives-next) { pointer-events: auto; flex: 1 1 0; min-width: 0; min-height: 44px; margin: 0; padding: 4px; font: inherit; font-size: 13px; color: #dfc796; background: #111923; border: 1px solid #b99b6240; border-radius: 5px; cursor: pointer; }
 .phone-objectives-next:focus-visible { outline: 2px solid #e4c991; outline-offset: -2px; }
+.mobile-mode .phone-objectives-next { width: 44px; font-size: 28px; }
+.mobile-mode #objectives-panel .objective-entry:focus-visible { outline: 2px solid #e4c991; outline-offset: -3px; }
 @media (orientation: landscape) and (max-height: 600px) {
-    .mobile-mode { --phone-party-top: 182px; }
-    .mobile-mode #objectives-panel { max-height: 108px !important; }
+    .mobile-mode { --phone-party-top: 150px; }
+    .mobile-mode #objectives-panel { top: var(--phone-top) !important; left: 204px !important; width: calc(100vw - 352px) !important; max-width: 350px; }
 }

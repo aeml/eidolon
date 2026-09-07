@@ -3,7 +3,7 @@ import { collectBrowserFailures } from './helpers.js';
 
 test.use({ hasTouch: true, isMobile: true, actionTimeout: 12_000 });
 
-for (const [width, height] of [[360, 800], [390, 844], [844, 390]]) {
+for (const [width, height] of [[360, 800], [390, 844], [844, 390], [568, 320]]) {
     test(`${width}x${height}: phone conversations and a long journal remain readable and reachable`, async ({ page, context, baseURL }) => {
         const failures = collectBrowserFailures(page, baseURL);
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
@@ -116,10 +116,18 @@ for (const [width, height] of [[360, 800], [390, 844], [844, 390]]) {
         await page.screenshot({ path: `/tmp/eidolon-phone-journal-${width}.png` });
         await page.locator('#btn-close-journal').tap();
         const tracker = page.locator('#objectives-panel');
+        const trackerBox = await tracker.boundingBox();
+        expect(trackerBox.height).toBeLessThanOrEqual(52);
+        const health = await page.locator('#player-hud').boundingBox();
+        const overlap = Math.min(health.x + health.width, trackerBox.x + trackerBox.width) > Math.max(health.x, trackerBox.x)
+            && Math.min(health.y + health.height, trackerBox.y + trackerBox.height) > Math.max(health.y, trackerBox.y);
+        expect(overlap, 'The compact tracker must not cover health or mana').toBe(false);
         await expect(tracker.locator('.objective-entry')).toHaveCount(1);
         for (const button of await tracker.locator('button').all()) {
             const box = await button.boundingBox();
             expect(box.height).toBeGreaterThanOrEqual(44);
+            expect(box.y).toBeGreaterThanOrEqual(trackerBox.y);
+            expect(box.y + box.height).toBeLessThanOrEqual(trackerBox.y + trackerBox.height);
             expect(await button.evaluate(el => {
                 const box = el.getBoundingClientRect();
                 return el.contains(document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2));
@@ -130,7 +138,7 @@ for (const [width, height] of [[360, 800], [390, 844], [844, 390]]) {
         const count = await tracker.locator('.objective-entry__status').boundingBox();
         expect(title.x + title.width, 'Long quest titles must not run into their progress count').toBeLessThanOrEqual(count.x - 3);
         await page.screenshot({ path: `/tmp/eidolon-phone-tracker-${width}.png` });
-        await tracker.getByRole('button', { name: 'Journal', exact: true }).tap();
+        await tracker.getByRole('button', { name: /^Open journal:/ }).tap();
         await expect(journal).toBeVisible();
         await expect(page.locator('#chat-box')).toBeVisible();
         await page.evaluate(() => window.__phoneQuest.ui.characterPreview.dispose());
