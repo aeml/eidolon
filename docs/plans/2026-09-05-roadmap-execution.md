@@ -74,6 +74,19 @@ Root merges corrected 1.0.42 at `0b206c7`; staging in
 is authorization to skip 1.0.38's current gate. The older queue table below is
 historical evidence, not the branch to publish next.
 
+September 7 continuation: CI **34134256905 is terminal failure**. Client/server
+and browser smoke pass; predeployment fails the dungeon movement wall check.
+First attempt's Teleport endpoint is 0.285 units short of the asserted north
+wall; retry's event reaches the wall but the client settles 2.83 units away.
+Neither deployment runs. The authenticated loot route also needed a successful
+retry after failing pointer acquisition. Preserve the failure log
+`/tmp/eidolon-release38-phone-chat-ci-failure.log`; do not classify either issue
+as a harmless flake without investigation. The bounded movement observer on
+`work/release38-movement-observer` records actual cast, movement input and
+position evidence while retaining the original assertions and game runtime.
+The corrected 39–43 queue still needs any resulting correction carried forward
+before publication. Live remains last verified 1.0.37, not 1.0.38.
+
 Local **1.0.43 `e0bc417`** now packages Seraph training, lifecycle, offline actor
 and self-casting repairs, with its own patch notes and aligned version defaults.
 The offline rendered scene passes **3 / 31.2s**; an additional desktop label
@@ -81,10 +94,25 @@ regression reproduces oversized smite text, then the combined rendered fallback
 and compact-label set passes **4 / 34.3s**. Inspected captures show the actual
 summon and its attributed two-line label above the model. Version/default checks
 pass **219 / 1.635s**, backend-root race **14.015s**, lint/syntax/whitespace pass.
-Full packaged client and anonymous browser checks are running. The versioned
-real-cast route remains next; this is not published or yet merged into root.
-Its detailed record lives in the isolated worktree's
-`docs/plans/2026-09-07-release43-seraph.md`.
+Full packaged client checks pass **212 suites / 3,146 tests / 134.915s** and all
+**60 anonymous browser checks pass / 7.9m**. The versioned real-server cast route
+passes **1.3m**, damage **288 / 345 / 345**, lifetime **14.97 / 16.41s**, saved
+training, following and recall cleanup. Credential scan and disposable cleanup
+pass. No local Seraph test remains active. Evidence commit `884741c` and merge
+`ffe8a98` integrate the verified package into root, with retained candidate
+`release/43-with-phone-chat`. This is not published; all earlier release gates
+still apply. See [the packaged evidence](2026-09-07-release43-seraph.md).
+The actual combat capture still shows concurrent action-label overlap and
+entrance-facade obstruction; compact single-label proof is not full visual polish.
+
+The next defensive-talent probe independently reproduces ignored Arcane Shield
+Mastery via paid casts: baseline capacity 150, rank 1 still 150 instead of 156,
+rank 5 still 150 instead of 180 (0.190s). The diagnostic Go overlay is outside
+the production worktree, `/tmp/eidolon-shield-mastery-probe-3XfUpt`; log
+`/tmp/eidolon-shield-mastery-probe.log`. Separate clean worktree
+`/tmp/eidolon-shield-training-CcxkLZ`, branch `work/shield-training-20260907`,
+starts from `e0bc417`; no fix or later release is claimed yet. Deployment failure
+investigation takes priority over implementing that follow-up.
 
 Earlier Seraph implementation evidence on `work/seraph-lifecycle-20260907` in
 `/tmp/eidolon-seraph-lifecycle-MbWPg7`, checkpoint **2329891**. Seven paid summon
