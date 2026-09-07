@@ -56,7 +56,7 @@ test('status Mastery purchases change real ticks and persist through fresh login
         await page.waitForTimeout(1100); // Existing authoritative waypoint movement lock.
         let target = await projectNearestHostile(page, 'InfernoTitan');
         for (let step = 0; !target && step < 12; step++) {
-            await moveByGroundClick(page, 0, 20, { allowJumpFallback: false });
+            await moveByGroundClick(page, 0, 20);
             target = await projectNearestHostile(page, 'InfernoTitan');
         }
         expect(target, 'a real durable overworld enemy must be visible').not.toBeNull();
@@ -72,9 +72,10 @@ test('status Mastery purchases change real ticks and persist through fresh login
             const distance = Math.hypot(offset.x, offset.z);
             if (distance < 7) break;
             const scale = Math.min(8, distance-5)/distance;
-            await moveByGroundClick(page, offset.x*scale, offset.z*scale, { allowJumpFallback: false });
+            await moveByGroundClick(page, offset.x*scale, offset.z*scale);
         }
         await expect.poll(() => page.evaluate(skill => window.game.player.cooldowns?.[skill] || 0, config.skill)).toBe(0);
+        await expect.poll(() => page.evaluate(() => window.game.player.state)).not.toBe('JUMPING');
         const dexterity = await page.evaluate(() => window.game.player.stats.dexterity);
         let aim;
         async function acquireAim() {
