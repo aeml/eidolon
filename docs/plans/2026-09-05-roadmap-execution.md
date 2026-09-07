@@ -5,7 +5,60 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 22:45 UTC
+## Current checkpoint — September 7, 23:08 UTC
+
+Combined 170c53f verification closes: full client **30280 SUCCESS / 219 suites /
+3,258 tests / 173.048s**, lint passes; full server **19540 SUCCESS**, root
+**24.250s**, game **416.594s**, remaining packages green. Fire **53097** closes
+**FAIL / 4.2m** before cold ash: nine actual hostiles nearby when the unarmored
+common-staff fixture dies. Actual death screenshot is inspected; scan/cleanup
+pass. No ordered-anchor completion or comfortable realm-pacing claim. Both
+pointer-driver limitations and the prepared fixture's limited skill use are
+kept distinct from unproven enemy-density conclusions.
+
+Investigation source **0036656448ca78c3a53a235dd90b298481e6ce76** adds:
+
+- Authored retrospective acceptance/completion for all eight optional chapters,
+  generated into matching catalogs. Server initial migration/refresh supplies
+  those descriptions; client conversation and manual reply use the same source.
+  Fresh required speeches stay separate. Fire correctly says Ilyra holds the
+  ore already handed in. Counts, rewards, evidence and access are unchanged.
+- Player-specific native bound/released ember states. Actual anchor evidence
+  replaces shackles with hearth embers and a sprout; counts alone and another
+  player's progress cannot release it. Completed evidence restores the visual
+  after reload. Browser visual inspection of this latest model is still pending.
+- Optional prepared-fixture Gravity Well against real nearby clusters through
+  the available hotbar, mana and cooldowns. Existing fresh-hunt baselines retain
+  their shield/retreat-only controls. Added accepted/rejected Fireball/Well
+  counters distinguish attempted inputs from accepted abilities. No damage,
+  gear, talent, immunity, teleport-to-site or discovery grants.
+- The realm browser checks the two ember states and actual manual catch-up
+  speeches. Full Fire/Air play and broader touch/continuity/pacing remain open.
+
+Catch-up regressions reproduce before routing changes: client **8 failed / 13
+passed / 1.761s** (43316 closed), server **FAIL / 0.034s** (81109 closed). After:
+client **24 / 1.487s** (26807), server discovery/expansion/catch-up three race
+repetitions **6.302s** (12968); both pass. Combined model/content/conversation/
+control checks pass **81 / 2.386s** (42660), then final lint/generated/diff checks
+pass before clean commit 0036656 (29619). No failed run is counted as a pass.
+
+Latest combined checks are active against clean **0036656**:
+
+- **86062**, full client then lint, `/tmp/eidolon-investigations-catchup-client.log`.
+- **1610**, full server race, `/tmp/eidolon-investigations-catchup-server.log`.
+- **26226**, actual Fire with available control kit,
+  `/tmp/eidolon-investigations-fire-control-kit.log`.
+
+**26226 is the sole owned browser. Freeze the entire investigation worktree until
+these checks are terminal; resume the same handles.** All older owned handles
+are closed. Source remains isolated; root stays verified local 50 / 15 chapters.
+42 **ea565ebf… / CI 34166841477** remains in predeploy character QA after successful
+client/server/browser. Last fully verified public build is 41. Next publisher
+stays 43, after all 42 deployment/live gates and fresh exact public identity.
+Entry-level design preference remains unanswered and non-blocking. Full roadmap,
+coordinated XP/gold/rarity/affordability and expansion release remain unfinished.
+
+## Historical checkpoint — September 7, 22:45 UTC
 
 Fire **1309** closes **FAIL / 5.2m**. Normal jump retreats clear fourteen actual
 pursuers and the cold ash is genuinely inspected/recorded (mask 1); its actual
