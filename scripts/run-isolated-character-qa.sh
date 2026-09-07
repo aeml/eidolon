@@ -119,6 +119,7 @@ qa_allowlist="${QA_USERNAME_BASE},${QA_USERNAME_BASE}-healing,${QA_USERNAME_BASE
 
 qa_allowlist+=",${QA_USERNAME_BASE}-duration,${QA_USERNAME_BASE}-forge,${QA_USERNAME_BASE}-whip,${QA_USERNAME_BASE}-ground"
 qa_allowlist+=",${QA_USERNAME_BASE}-cleanse"
+qa_allowlist+=",${QA_USERNAME_BASE}-cleanse-retry1"
 qa_allowlist+=",${QA_USERNAME_BASE}-guardian"
 qa_allowlist+=",${QA_USERNAME_BASE}-holy"
 qa_allowlist+=",${QA_USERNAME_BASE}-support-area"
@@ -268,7 +269,7 @@ run_talent_critical() {
 
 run_purifying_area() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-cleanse" EIDOLON_E2E_CLASS=Cleric \
-    npx playwright test tests/e2e/purifying-area-gameplay.spec.js
+    npx playwright test tests/e2e/purifying-area-gameplay.spec.js "$@"
 }
 
 run_guardian_area() {
@@ -413,6 +414,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   purifying-area)
     run_purifying_area
+    ;;
+  purifying-area-retry)
+    EIDOLON_E2E_PURIFYING_RETRY_PROBE=1 run_purifying_area --retries=1
     ;;
   guardian-area)
     run_guardian_area

@@ -15,3 +15,16 @@ test('local and CI isolated servers reserve disjoint API/database ports', () => 
     expect(script).toContain('mongo_bind=--bind_ip=127.0.0.1');
     expect(script).toContain('api_addr="127.0.0.1:${QA_PORT}"');
 });
+
+test('phone chat coverage and Purifying retry keep the real player path', () => {
+    const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
+    const probe = readFileSync('tests/e2e/purifying-area-gameplay.spec.js', 'utf8');
+    const commands = JSON.parse(readFileSync('package.json', 'utf8')).scripts;
+    expect(script).toContain('${QA_USERNAME_BASE}-cleanse-retry1');
+    expect(script).toContain('EIDOLON_E2E_PURIFYING_RETRY_PROBE=1 run_purifying_area --retries=1');
+    expect(probe).toContain('credentials.username += `-retry${testInfo.retry}`');
+    expect(probe).toContain("await verifyCast(0, 'high')");
+    expect(probe).toContain("await verifyCast(5, 'low')");
+    expect(probe).toContain("await verifyCast(5, 'high')");
+    expect(commands['test:e2e:anonymous']).toContain('tests/e2e/mobile-chat-layering.spec.js');
+});
