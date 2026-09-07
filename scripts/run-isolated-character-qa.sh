@@ -489,6 +489,12 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   movement-walls)
     npx playwright test tests/e2e/dungeon-movement-wall-gameplay.spec.js
     ;;
+  movement-walls-sequence)
+    npm run test:e2e:authenticated && npx playwright test tests/e2e/dungeon-beam-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js
+    ;;
+  waypoint-chat-focus)
+    npx playwright test tests/e2e/waypoint-chat-focus.spec.js
+    ;;
   ground-walls)
     npx playwright test tests/e2e/dungeon-ground-area-gameplay.spec.js
     ;;
