@@ -104,6 +104,31 @@ Latest confirmed 1.0.37 CI **34121785766**: client/server checks pass and browse
 smoke is in progress. The goal remains the full 1.1–1.10 roadmap; neither this
 critical package nor its passing checks close the broader gates.
 
+Next isolated implementation: **`work/status-consumers-20260907`**, checkout
+`/tmp/eidolon-status-consumers-eCpCd1`, runtime **b7e807a**, latest browser driver
+**8c482a9**. Paid casts reproduce six ignored rank-one/five Mastery expectations
+for Shadow Lunge, Serrated Edges and Poison Coating in 0.236s. Their wound
+application now snapshots the matching training; derived bleeds retain inherited
+modifiers once. Expanded real applications include Fan of Knives and asynchronous
+coated basic attacks, plus generic and unrelated controls. Offline ticks retain
+their attacker, work during stun, and respect expiry/cleanse/authority.
+
+Full isolated client checks pass **211 suites / 3,109 tests in 79.330s**, lint
+passes, and full server race passes (root **8.048s**, game **190.252s**). Additional
+shared-contract/actual-cast race checks pass 4.182s. Browser Shadow Lunge passes
+baseline/trained/saved ticks (69/82/82); projectile coatings still require proof.
+Starter enemies can die to the initiating hit, so the new route uses natural
+durable overworld enemies by the existing Verdant waypoint, with ordinary input
+and no enemy-health edits. An overly restrictive ground-only driver failed
+before casting; the current run permits normal jump input and waits for landing.
+Source and tests stay frozen in that worktree during the browser run. This is
+not merged into root or packaged/published as 1.0.42. Preserve 1.0.41 unchanged.
+
+The remaining Purifying Wave Mastery design choice has been sent to the user
+(modest healing versus a cleanse-only radius benefit); other work continues.
+Latest 1.0.37 CI now has client/server/browser smoke passing, predeploy character
+QA in progress. Do not publish 1.0.38 until its full live gate completes.
+
 The earned Fighter run completed on unchanged source `2c80b06`, session
 `47165`, `/tmp/eidolon-earned-fighter-corrected-gameplay.log`. Its paid Skeleton
 and Imp contracts and saved manual rewards reach level 34; the full Verdant
