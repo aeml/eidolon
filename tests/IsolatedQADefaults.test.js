@@ -1,5 +1,14 @@
 import { readFileSync } from 'node:fs';
 
+test('the full release gate retains an earned fresh collection and a genuinely fresh retry', () => {
+    const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
+    const route = readFileSync('tests/e2e/fresh-opening-gameplay.spec.js', 'utf8');
+    expect(script).toContain('&& run_forge_guide && run_fresh_collection && run_talent_economy');
+    expect(script).toContain('${QA_USERNAME_BASE}-first-grove-retry1');
+    expect(route).toContain('credentials.username += `-retry${testInfo.retry}`');
+    expect(route).toContain('expect((await readPlayerState(page)).level).toBe(1)');
+});
+
 test('anonymous CI retains exact cast aiming and covered-loot pointer regressions', () => {
     const commands = JSON.parse(readFileSync('package.json', 'utf8')).scripts;
     expect(commands['test:e2e:anonymous']).toContain('tests/e2e/ground-aim.spec.js');

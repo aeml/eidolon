@@ -11,7 +11,7 @@ const seedsInBag = page => page.evaluate(() => window.game.player.inventory.redu
 
 // Extends the genuinely earned opening. Callbacks use only ordinary canvas
 // movement; no level, item, quest, protection or encounter-waypoint commands.
-export async function earnFreshCollectionAndInspectHandoff(page, credentials, { findTarget, leaveTown }) {
+export async function earnFreshCollectionAndInspectHandoff(page, credentials, { findTarget, leaveTown, captureReady }) {
     const started = Date.now();
     await openIlyra(page);
     await page.getByRole('button', { name: 'Accept Quest', exact: true }).click();
@@ -79,6 +79,7 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
     const seedsBefore = await seedsInBag(page);
     expect(seedsBefore).toBeGreaterThanOrEqual(required);
     await openIlyra(page);
+    if (captureReady) await captureReady();
     await page.getByRole('button', { name: 'Complete Quest', exact: true }).click();
     await expect.poll(async () => (await readChronicleChapter(page, collection)).completed).toBe(true);
     await expect.poll(() => seedsInBag(page)).toBe(seedsBefore - required);

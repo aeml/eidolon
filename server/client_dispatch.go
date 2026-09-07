@@ -1381,7 +1381,11 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 		player := world.GenerateDailyQuests(c.playerID)
 		if player != nil {
+			world.Mu.RLock()
+			player.Mu.RLock()
 			questPayload, _ := json.Marshal(player.Quests)
+			player.Mu.RUnlock()
+			world.Mu.RUnlock()
 			msg := Message{Type: MsgQuestUpdate, Payload: questPayload}
 			b, _ := json.Marshal(msg)
 			c.sendSafe(b)
@@ -1402,7 +1406,11 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 		if success {
 			// Send Quest Update
+			world.Mu.RLock()
+			player.Mu.RLock()
 			questPayload, _ := json.Marshal(player.Quests)
+			player.Mu.RUnlock()
+			world.Mu.RUnlock()
 			msg := Message{
 				Type:    MsgQuestUpdate,
 				Payload: questPayload,

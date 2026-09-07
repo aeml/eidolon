@@ -14,6 +14,8 @@ func (w *World) PerformPickup(playerID, lootID string) (*Entity, bool, string) {
 	if !ok {
 		return nil, false, "player_not_found"
 	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
 	loot, ok := w.Entities[lootID]
 	if !ok || loot.Type != TypeLoot {
 		return nil, false, "loot_not_found"

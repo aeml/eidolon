@@ -294,6 +294,8 @@ func (w *World) GenerateDailyQuests(playerID string) *Entity {
 	if !ok {
 		return nil
 	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
 	ensureChronicleLocked(player)
 
 	loc, err := time.LoadLocation("America/New_York")
@@ -347,6 +349,8 @@ func (w *World) PerformAcceptQuest(playerID, questID string) (*Entity, bool) {
 	if !ok {
 		return nil, false
 	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
 	for i := range player.Quests {
 		q := &player.Quests[i]
 		if q.ID == questID {
@@ -367,6 +371,8 @@ func (w *World) PerformCompleteQuest(playerID, questID string) (*Entity, bool) {
 	if !ok {
 		return nil, false
 	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
 	for i := range player.Quests {
 		q := &player.Quests[i]
 		if q.ID == questID {
@@ -597,7 +603,8 @@ func HasCompletedChronicleQuest(player *Entity, questID string) bool {
 	if player == nil {
 		return false
 	}
-	for _, quest := range player.Quests {
+	for i := range player.Quests {
+		quest := &player.Quests[i]
 		if quest.ID == questID {
 			return quest.Completed
 		}

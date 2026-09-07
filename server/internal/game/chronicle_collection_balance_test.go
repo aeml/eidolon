@@ -4,8 +4,43 @@ import (
 	"fmt"
 	"math"
 	"strings"
+	"sync"
 	"testing"
 )
+
+func TestChronicleCollectionConcurrentRefreshAndDrops(t *testing.T) {
+	w := newTestWorld()
+	player := newCollectionBalancePlayer(t)
+	player.Quests = append([]Quest{{ID: "chronicle_01_bell_below", Completed: true, Accepted: true}}, player.Quests...)
+	w.AddEntity(player)
+	w.GenerateDailyQuests(player.ID)
+	var workers sync.WaitGroup
+	start := make(chan struct{})
+	workers.Add(2)
+	go func() {
+		defer workers.Done()
+		<-start
+		for i := 0; i < 1000; i++ {
+			player.Mu.Lock()
+			ChronicleDropForKill(player, "Skeleton", .99)
+			player.Mu.Unlock()
+		}
+	}()
+	go func() {
+		defer workers.Done()
+		<-start
+		for i := 0; i < 1000; i++ {
+			w.GenerateDailyQuests(player.ID)
+			w.GetEntityCopy(player.ID)
+		}
+	}()
+	close(start)
+	workers.Wait()
+	q := player.Quests[1]
+	if q.CollectionVersion != 2 || q.Count != 0 || q.DropMisses < 0 || q.DropMisses > 4 {
+		t.Fatalf("concurrent refresh lost the collection contract: %+v", q)
+	}
+}
 
 func TestChronicleCollectionAllRealmsUseCurrentBudget(t *testing.T) {
 	checked := 0
