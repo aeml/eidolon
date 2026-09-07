@@ -631,8 +631,8 @@ export async function exerciseReconnect(page) {
     expect(after.id === before.id && after.name === before.name).toBe(true);
 }
 
-export async function projectNearestHostile(page, desiredSubtype = null) {
-    return page.evaluate((subtype) => {
+export async function projectNearestHostile(page, desiredSubtype = null, minimumHealth = 0) {
+    return page.evaluate(({ subtype, minimumHealth }) => {
         const game = window.game;
         if (!game?.player || !game.renderSystem?.camera) return null;
 
@@ -644,6 +644,7 @@ export async function projectNearestHostile(page, desiredSubtype = null) {
         // acquisition must select from the actual raycastable cache.
         for (const entity of game.activeEntitiesCache || []) {
             if (!entity?.isActive || !entity.mesh || !game.isHostileActorTarget?.(entity)) continue;
+            if ((entity.health ?? entity.stats?.hp ?? 0) <= minimumHealth) continue;
             const resolvedSubtype = entity.subType || entity.constructor?.name;
             if (subtype && resolvedSubtype !== subtype) continue;
             const worldPoint = entity.position.clone();
@@ -693,7 +694,7 @@ export async function projectNearestHostile(page, desiredSubtype = null) {
             }
         }
         return best;
-    }, desiredSubtype);
+    }, { subtype: desiredSubtype, minimumHealth });
 }
 
 async function readEntity(page, targetId) {

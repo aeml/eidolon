@@ -14,3 +14,9 @@ test.each([['ROG_07', 'Shadow Lunge'], ['ROG_13', 'Serrated Edges'], ['ROG_21', 
     expect(talent.statusTraining).toEqual({ skill, damage: .04 });
     expect(talent.desc).toContain('+4%'); expect(talent.desc).toContain('20% max');
 });
+
+test('Close-Quarters Grace describes its existing generic skill modifier', () => {
+    const talent = CONSTANTS.PASSIVE_TALENTS.Rogue.find(talent => talent.id === 'ROG_38');
+    expect(talent.statusTraining).toEqual({ damage: .02 });
+    expect(talent.desc).toBe('+2% skill damage per rank (10% max).');
+});

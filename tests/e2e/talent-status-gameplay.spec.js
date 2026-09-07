@@ -74,14 +74,14 @@ test('status Mastery purchases change real ticks and persist through fresh login
         await page.waitForTimeout(1100); // Existing authoritative waypoint movement lock.
         // Enemies must remain selectable even where the entrance overlaps
         // their silhouette; exercise the real interaction-priority path.
-        let target = await projectNearestHostile(page, 'InfernoTitan');
+        const minimumHealth = await page.evaluate(() => 2*(15+1.5*window.game.player.stats.dexterity));
+        let target = await projectNearestHostile(page, 'InfernoTitan', minimumHealth);
         for (let step = 0; !target && step < 12; step++) {
             await moveByGroundClick(page, 0, 20);
-            target = await projectNearestHostile(page, 'InfernoTitan');
+            target = await projectNearestHostile(page, 'InfernoTitan', minimumHealth);
         }
         expect(target, 'a real durable overworld enemy must be visible').not.toBeNull();
-        expect(target.health, 'enemy must survive the ordinary initiating hit').toBeGreaterThan(
-            await page.evaluate(() => 2*(15+1.5*window.game.player.stats.dexterity)));
+        expect(target.health, 'enemy must survive the ordinary initiating hit').toBeGreaterThan(minimumHealth);
         for (let step = 0; step < 15; step++) {
             const offset = await page.evaluate(id => {
                 const enemy = window.game.remotePlayers.get(id), player = window.game.player;

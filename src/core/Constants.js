@@ -385,7 +385,7 @@ export const CONSTANTS = {
                 { name: "Catlike Reflexes", desc: "+1% dodge per rank (5% max).", maxRank: 5 },
                 { name: "Quick Draw", desc: "+3% ability range per rank (15% max).", maxRank: 5 },
                 { name: "Evasive Flow", desc: "+2% damage reduction per rank (10% max).", maxRank: 5 },
-                { name: "Close-Quarters Grace", desc: "+3% melee damage per rank (15% max).", maxRank: 5 },
+                { name: "Close-Quarters Grace", desc: "+2% skill damage per rank (10% max).", maxRank: 5 },
                 { name: "Edge Awareness", desc: "+2% crit chance per rank (10% max).", maxRank: 5 },
                 { name: "Wrist Control", desc: "+1% all damage per rank (5% max).", maxRank: 5 },
             );
