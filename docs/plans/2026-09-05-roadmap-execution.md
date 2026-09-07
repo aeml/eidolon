@@ -5,7 +5,83 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 19:27 UTC
+## Current checkpoint — September 7, 19:46 UTC
+
+**Corrected Alpha 1.0.40 `e7a07b6` is pushed; CI 34156520169 is active.**
+The preceding `34152138480` is terminal failure with all deployments skipped.
+After clean staging, exact remote `1106228` and ancestry checks, the new
+`release/40-with-lunge-landing` branch is pushed as a fast-forward. Fresh public
+manifest/login/versioned-main/backend checks just before publication still
+return exact `7ddf776ef18caa0763eedeb8d5a0d7f25afdcd4d` / **Alpha 1.0.39**, HTTP
+200 and healthy/ready. No 40 live success is claimed. **Publish 41 only after all
+40 CI/deployment/live jobs succeed and a fresh exact public identity check passes.**
+
+40's final local verification passes **203 suites / 2,996 client tests /
+122.763s**, full server race root **12.307s** and game **277.331s**, lint, and
+**58 anonymous checks / 5.7m**. The first completed sweep passes 57/58 but its
+failure collector records `net::ERR_NETWORK_CHANGED` for the external Cinzel
+Google Fonts stylesheet; its actual trace is inspected and retained at
+`/tmp/eidolon-release40-font-network-change-trace.zip`. The unchanged full rerun
+passes every assertion. All owned 40 local handles are closed. Actual Rogue/
+Cleric landing/bleed gameplay and complete evidence are in
+[the Lunge correction](2026-09-07-release40-lunge-landing.md).
+
+The verified correction and readiness backport are carried through new branches;
+old candidates remain preserved. 41 resolves the readiness import by retaining
+both `openGame` and its existing touch-scroll helper. All carry checks pass:
+
+| Version | Branch suffix `-with-lunge-landing` | Commit | Contracts |
+|---|---|---|---|
+| 41 | `release/41` | `a820d9a` | 237 / 1.206s |
+| 42 | `release/42` | `9c71a40` | 238 / 1.286s |
+| 43 | `release/43` | `fc41641` | 240 / 1.323s |
+| 44 | `release/44` | `85e5a62` | 242 / 1.387s |
+| 45 | `release/45` | `a2c216c` | 244 / 1.443s |
+| 46 | `release/46` | `3cbbd60` | 246 / 1.837s |
+| 47 | `release/47` | `9f9bca7` | 248 / 1.840s |
+| 48 | `release/48` | `ca14d8d` | 249 / 1.791s |
+
+Root merge **`8aa307e`** passes **269 integration checks / 2.597s**. Staging
+`/tmp/eidolon-release37-targeting-lT3Mdt` is clean on the new 48 branch; root is
+not a publication target. The next publisher is explicitly the new 41 branch.
+
+### Expanded Chronicle implementation, not released
+
+The separate investigation worktree `/tmp/eidolon-investigations-Ock9zw` now
+implements a **23-chapter** graph, interleaving diary → collection → linked
+evidence → dungeon in each realm, followed by the original four raids/Vigils,
+portal and Dark King. Returning characters retain every accepted/completed
+classic milestone and quoted collection payout; missing earlier investigations
+become unaccepted optional lore, never silently completed objectives. Tests cover
+migration at all 15 classic milestones and idempotent refresh. New investigations
+split existing collection XP (1/8 each) and gold (1/4 each), with the collection
+retaining the remainder, so fresh realm and total story budgets do not inflate.
+This is allocation, not final XP/loot balance sign-off.
+
+Client changes keep required story primary, expose optional lore separately,
+track optional quests independently, display the 23-chapter total, and preserve
+recorded diary pages, reading state and focus across updates without exposing
+undiscovered text. Targeted client checks pass **18 / 1.451s**; full client passes
+**217 suites / 3,207 tests / 76.604s**, lint, and migration/discovery/protocol
+checks pass three race repetitions (root **1.720s**, game **14.063s**).
+
+Full backend handle **85154** is confirmed active, log
+`/tmp/eidolon-investigations-expanded-server.log`. Its root package already
+reports one stale collection fixture that skipped the newly required diary.
+The fixture now records the diary and turns it in manually before testing bag
+receipts; full root rerun **74966** closes successfully **11.770s**, log
+`/tmp/eidolon-investigations-expanded-server-root-final.log`. Wait for the
+original game's result; do not restart it on observation timeout. No owned
+local browser is active. Expanded-graph edits are still uncommitted and must
+remain isolated: world rendering, inspect request/acknowledgement, actual Fire
+combat credit, site reachability and earned desktop/touch playthroughs are not
+integrated yet. Root still contains only the tested dormant foundation and
+the existing 15-chapter playable chain.
+
+Full roadmap delivery, coordinated rewards/XP/equipment tuning, late-potency
+affordability and eight playable investigations remain open.
+
+## Historical checkpoint — September 7, 19:27 UTC
 
 **Alpha 1.0.39 remains live and healthy.** Corrected 40 CI **34152138480**
 finishes with client/server/browser smoke passing, but predeploy character QA
