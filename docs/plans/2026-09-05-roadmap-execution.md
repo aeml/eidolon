@@ -5,7 +5,37 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 22:24 UTC
+## Current checkpoint — September 7, 22:30 UTC
+
+41 **9c6eb9d… / CI 34163174335** closes **SUCCESS**, including both deployments
+and live character/four-class/remote-animation QA. Fresh public manifest, login
+label/versioned main asset and backend all return **HTTP 200 / Alpha 1.0.41 /
+9c6eb9d20ad5171a5bb18240612b0998aba25d28**, health `ok` / database `ready`.
+Staging is clean, remote master matches that SHA, and ancestry to 42 is checked.
+Explicit **release/42-with-forge-pointer → origin/master** push **1718** succeeds;
+new CI **34166841477 / ea565ebfdedb52fff7841e0fd4d650febd3d20da** is active.
+Next publisher is **43 / 7523d0bb…**, strictly gated on all 42 CI/deploy/live jobs
+and a fresh exact public 42 identity check. No root/master or later version pushed.
+
+50 final anonymous **38023** closes **SUCCESS / 75 / 8.6m**, log
+`/tmp/eidolon-50-final-anonymous.log`. Final exact-package fresh-collection run is
+started against clean **4212e54**; log
+`/tmp/eidolon-50-final-fresh-collection.log`. It is the sole owned browser; freeze
+loot-frequency worktree while active. Final evidence/ref/root integration remain
+pending; prior 14.2m earned readiness and full runtime tests remain unchanged.
+
+Investigation browser controls/diagnostics commit **5554f5b** passes lint; no
+new Fire/Air browser run yet. Added Ilyra greeting continuity **409da01** reflects
+completed repair/portal/finale IDs instead of treating returning optional-lore
+players as if they had not saved the world. Empty/unclaimed quest state does not
+declare victory. Four regressions fail before the fix **1.427s**, all 13 relevant
+tests pass afterward **1.447s**, lint passes. Full client **63085** closes
+**SUCCESS / 219 suites / 3,256 tests / 131.314s**, log
+`/tmp/eidolon-investigations-continuity-client.log`. Runtime/graph remain isolated.
+Historic catch-up acceptance/completion speeches still need continuity review;
+the greeting fix is not completion of that wider review.
+
+## Historical checkpoint — September 7, 22:24 UTC
 
 Routine equipment is packaged locally as **Alpha 1.0.50 / 4212e54**, isolated
 `work/loot-frequency-20260907`. Patch notes and active version fields agree.
