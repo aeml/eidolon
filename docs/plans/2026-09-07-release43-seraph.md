@@ -14,8 +14,23 @@ is unchanged from `2329891` (full race **264.589s**); packaging changes only its
 build-version default outside that package. The full isolated route now includes
 Seraph gameplay; anonymous CI includes the four rendered fallback/label checks.
 
-Final packaged client, browser, lint and backend-root checks remain open at this
-checkpoint. The actual cast route must run again with this versioned package.
+Final packaged source `e0bc417` passes **212 client suites / 3,146 tests /
+134.915s**, lint, backend-root race **14.015s**, and all **60 anonymous browser
+checks / 7.9m**. Logs: `/tmp/eidolon-release43-full-client.log`,
+`/tmp/eidolon-release43-server-root.log`, `/tmp/eidolon-release43-lint.log`,
+`/tmp/eidolon-release43-anonymous.log`.
+
+The versioned real-server Seraph route also passes **1.3m**, with normal paid
+casts producing baseline/trained/saved smites **288 / 345 / 345**, observed
+lifetimes **14.97 / 16.41s** against **15 / 16.5s**, owner following and ordinary
+dungeon recall removing the replica. Credential scan passes with zero
+sanitizations and disposable cleanup completes; all local handles are terminal.
+Log: `/tmp/eidolon-release43-seraph-gameplay.log`.
+The inspected trained-combat screenshot shows the actual damage and summon,
+but overlapping concurrent cast/smite labels and the large entrance facade
+remain visual follow-up work. The single-label fixture is not evidence that
+crowded world combat is fully readable.
+
 This candidate is not permission to skip the live verification of 1.0.38–42.
 Full 1.1–1.10, physical-device playability, broad encounter visibility, class/rune
 balance and remaining offline parity remain open.
