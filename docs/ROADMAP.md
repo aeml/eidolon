@@ -1,10 +1,12 @@
 # Eidolon Engineering Roadmap
 
-Last refreshed: September 6, 2026
+Last refreshed: September 7, 2026
 
 This file is a short pointer. Current forward planning and historical closeout live in these documents:
 
 - [`2026-09-05-v1-1-to-v1-10-roadmap.md`](plans/2026-09-05-v1-1-to-v1-10-roadmap.md) — proposed next releases, the immediate dungeon repair gate, and the phone-playability redesign. Dungeon defects and basic phone usability must be resolved before 1.1 closes; 1.2 completes the phone HUD/menu redesign and 1.3 refines touch combat and performance.
+
+- [`2026-09-07-progression-balance-and-investigations.md`](plans/2026-09-07-progression-balance-and-investigations.md) — newly required reward/drop/XP balancing, coordinated quest pacing, and two story-investigation quests per elemental realm; planned, not shipped.
 
 - [`2026-04-18-alpha-1-0-roadmap-and-status.md`](plans/2026-04-18-alpha-1-0-roadmap-and-status.md) — completed release-line tracker from `0.35.0` through `Alpha 1.0`
 - [`2026-05-03-v1-0-implementation-plan.md`](plans/2026-05-03-v1-0-implementation-plan.md) — audit-grounded implementation and closeout record

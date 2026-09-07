@@ -7,6 +7,14 @@ the whole goal. Started September 5, 2026.
 
 ## Current checkpoint — September 7, shared-combat release correction
 
+Scope addition, September 7: the user requests a solid item-drop, XP and reward
+balancing pass, longer appropriately paced collection/hunt objectives, and
+investigation-driven story additions in each realm. The
+[new implementation plan](2026-09-07-progression-balance-and-investigations.md)
+adds coordinated tuning, eight investigations, active-save migration and earned
+playthrough gates across 1.0.x/1.1/1.4/1.5/1.6. This update changes planning only;
+no reward values, live quest requirements, version numbers or deployments change.
+
 This checkpoint supersedes the older in-progress statements below. Public
 release remains last verified **Alpha 1.0.37**. Corrected **1.0.38 `9ed011b`**
 is pushed successfully; CI **34141178711** has passed client/server/browser
