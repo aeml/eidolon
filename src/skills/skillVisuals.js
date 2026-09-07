@@ -38,12 +38,14 @@ export function resolveRemoteSkillVisual(entity, skillName, targetPos, shape = {
         };
     }
 
-    const gameplayRadius = Number.isFinite(shape.radius) && shape.radius > 0 ? shape.radius
+    const resolvedHealing = skillName === 'Healing Light' && (shape.shapeResolved || Number.isFinite(shape.radius));
+    const gameplayRadius = resolvedHealing ? (shape.radius > 0 ? shape.radius : null) : Number.isFinite(shape.radius) && shape.radius > 0 ? shape.radius
         : (getAbilityAoeRadius(className, skillName, entity) ?? getAbilityAoeRadius(className, presentation.canonicalName, entity));
     const gameplayArc = Number.isFinite(shape.arc) && shape.arc > 0 && shape.arc <= 2 * Math.PI ? shape.arc
         : (getAbilityAoeArc(className, skillName, entity) ?? getAbilityAoeArc(className, presentation.canonicalName, entity));
     const layers = presentation.layers
-        .filter((entry) => isAbilityVisualLayerEnabled(entry, entity, presentation.canonicalName))
+        .filter((entry) => resolvedHealing && entry.runeOnly === 'healinglight_beacon'
+            ? gameplayRadius > 0 : isAbilityVisualLayerEnabled(entry, entity, presentation.canonicalName))
         .map((entry) => ({
         color: entry.color,
         type: entry.type,

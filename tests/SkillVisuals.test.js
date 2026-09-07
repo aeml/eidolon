@@ -49,7 +49,7 @@ describe('skill visuals registry', () => {
         });
     });
 
-    test('shows Healing Light boundary only for the Beacon rune', () => {
+    test('legacy Healing Light uses a full-circle boundary only for the Beacon rune', () => {
         const target = new THREE.Vector3(7, 0, 8);
         const base = Object.create(Cleric.prototype);
         base.position = new THREE.Vector3();
@@ -68,7 +68,7 @@ describe('skill visuals registry', () => {
             layers: [
                 { color: 0x55ff9b, type: 'pillar', origin: target },
                 { color: 0xc8ffe0, type: 'burst', origin: target },
-                { color: 0x7dffc0, type: 'ring', origin: target, radius: 5 }
+                { color: 0x7dffc0, type: 'ring', origin: target, radius: 5, arc: 2 * Math.PI }
             ]
         });
     });

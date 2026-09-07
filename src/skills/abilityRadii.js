@@ -6,7 +6,7 @@ export const SELF_CENTERED_SHAPE_ABILITIES = new Set([
     'Blessing of Resolve', 'Blessing of Zeal', "Heaven's Trumpet",
     'Spirit Guardians', 'Spirit Guardians Boost'
 ]);
-export const AUTHORITATIVE_SHAPE_ABILITIES = new Set(['Flame Whip', ...WIZARD_GROUND_ABILITIES, ...SELF_CENTERED_SHAPE_ABILITIES]);
+export const AUTHORITATIVE_SHAPE_ABILITIES = new Set(['Flame Whip', 'Radiant Strike', 'Healing Light', ...WIZARD_GROUND_ABILITIES, ...SELF_CENTERED_SHAPE_ABILITIES]);
 
 /**
  * World-space radii for player ability presentations with a circular gameplay
@@ -88,6 +88,7 @@ export const AOE_BOUNDARY_VISUAL_TYPES = Object.freeze(new Set([
 
 export function getAbilityAoeRadius(className, canonicalSkillName, source = null) {
     if (className === 'Wizard' && canonicalSkillName === 'Flame Whip') return getFlameWhipRadius(source);
+    if (className === 'Cleric' && canonicalSkillName === 'Healing Light' && source?.healingLightMassRevival) return getAbilityAreaRadius(source, className, 20);
     const definition = PLAYER_ABILITY_AOE_RADII[className]?.[canonicalSkillName];
     if (!definition) return null;
 
@@ -95,12 +96,15 @@ export function getAbilityAoeRadius(className, canonicalSkillName, source = null
     const runeId = source?.skillRunes?.[runeSkill] || null;
     const runeRadius = runeId ? definition.runes?.[runeId] : null;
     const radius = Number.isFinite(runeRadius) ? runeRadius : definition.base;
-    if (className === 'Cleric' && SELF_CENTERED_SHAPE_ABILITIES.has(canonicalSkillName)) return getAbilityAreaRadius(source, className, radius);
+    if (className === 'Cleric' && (SELF_CENTERED_SHAPE_ABILITIES.has(canonicalSkillName) || ['Radiant Strike', 'Healing Light'].includes(canonicalSkillName))) {
+        return Number.isFinite(radius) && radius > 0 ? getAbilityAreaRadius(source, className, radius) : null;
+    }
     if (className === 'Wizard' && WIZARD_GROUND_ABILITIES.has(canonicalSkillName)) return getWizardAbilityAreaRadius(source, radius);
     return Number.isFinite(radius) && radius > 0 ? radius : null;
 }
 
 export function getAbilityAoeArc(className, canonicalSkillName, source = null) {
+    if (className === 'Cleric' && canonicalSkillName === 'Healing Light' && getAbilityAoeRadius(className, canonicalSkillName, source)) return 2 * Math.PI;
     if (className === 'Cleric' && SELF_CENTERED_SHAPE_ABILITIES.has(canonicalSkillName)) return 2 * Math.PI;
     if (className === 'Wizard' && WIZARD_GROUND_ABILITIES.has(canonicalSkillName)) return 2 * Math.PI;
     if (className === 'Wizard' && canonicalSkillName === 'Flame Whip' && source?.flameWhipNovaCascade) return 2 * Math.PI;

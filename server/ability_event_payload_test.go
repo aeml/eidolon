@@ -40,3 +40,29 @@ func TestAbilityPayloadPreservesOptionalResolvedShape(t *testing.T) {
 		}
 	}
 }
+
+func TestAbilityPayloadPreservesExplicitSingleTargetHealing(t *testing.T) {
+	for _, radius := range []float64{0, 5.75, 23} {
+		event := game.AbilityEvent{SourceID: "caster", TargetID: "ally", SkillName: "Healing Light", TargetX: 60008, TargetZ: 60000, ShapeResolved: true, Radius: radius}
+		if radius > 0 {
+			event.Arc = 2 * math.Pi
+		}
+		data, err := json.Marshal(abilityPayloadFromEvent(event))
+		if err != nil {
+			t.Fatal(err)
+		}
+		var wire map[string]interface{}
+		if err := json.Unmarshal(data, &wire); err != nil {
+			t.Fatal(err)
+		}
+		if wire["shapeResolved"] != true {
+			t.Fatalf("resolved healing shape dropped at radius %v: %s", radius, data)
+		}
+		if radius == 0 && (wire["radius"] != nil || wire["arc"] != nil) {
+			t.Fatalf("single target gained area: %s", data)
+		}
+		if radius > 0 && (wire["radius"] != radius || wire["arc"] != 2*math.Pi) {
+			t.Fatalf("area shape changed: %s", data)
+		}
+	}
+}

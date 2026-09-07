@@ -5,7 +5,7 @@
 
 import * as THREE from 'three';
 import { getAbilityManaCost } from './AbilityEconomy.js';
-import { AUTHORITATIVE_SHAPE_ABILITIES, SELF_CENTERED_SHAPE_ABILITIES } from '../skills/abilityRadii.js';
+import { AUTHORITATIVE_SHAPE_ABILITIES, SELF_CENTERED_SHAPE_ABILITIES, getAbilityAoeRadius } from '../skills/abilityRadii.js';
 import { getAbilityRange, getFlameWhipRadius, getRogueMovementCastRange, getTeleportCastRange, getWizardGroundCastRange, WIZARD_GROUND_ABILITIES } from './AbilityRange.js';
 import { CONSTANTS } from './Constants.js';
 import { Fighter } from '../entities/Fighter.js';
@@ -61,6 +61,7 @@ export class AbilityController {
         const player = this.engine.player;
         if (skillName === 'Teleport') return getTeleportCastRange(player);
         if (skillName === 'Flame Whip') return getFlameWhipRadius(player);
+        if (skillName === 'Radiant Strike') return getAbilityAoeRadius('Cleric', skillName, player);
         if (WIZARD_GROUND_ABILITIES.has(skillName)) return getWizardGroundCastRange(player, skillName);
         if (['Backstab', 'Shadow Lunge', 'Shadow Strike'].includes(skillName)) return getRogueMovementCastRange(player, skillName);
         if (skillName === 'Scorch Beam') return getAbilityRange(player, skillName, CONSTANTS.ABILITY_CONFIG.Wizard.skills[skillName].range);
@@ -85,6 +86,17 @@ export class AbilityController {
 
     getAbilityIntentRange(skillNameOverride = null) {
         return this.getAbilityCastRange(this.getAbilityIntentSkillName(skillNameOverride));
+    }
+
+    getAbilityTargetDistance(target, skillName) {
+        const origin = this.engine.player.position;
+        if (skillName === 'Radiant Strike') {
+            // The server's cone uses ground-plane distance plus the replicated
+            // target body radius. Render elevation must not force extra chasing.
+            const radius = Number.isFinite(target.radius) ? Math.max(0, target.radius) : 0;
+            return Math.max(0, Math.hypot(target.position.x - origin.x, target.position.z - origin.z) - radius);
+        }
+        return origin.distanceTo(target.position);
     }
 
     buildSoftDamagePreview(target = null, skillNameOverride = null) {
@@ -221,12 +233,18 @@ export class AbilityController {
     }
 
     reconcileLocalAbilityShape(data) {
-        const positioned = WIZARD_GROUND_ABILITIES.has(data.skillName) || SELF_CENTERED_SHAPE_ABILITIES.has(data.skillName);
-        if (!AUTHORITATIVE_SHAPE_ABILITIES.has(data.skillName) || !Number.isFinite(data.radius) || data.radius <= 0 ||
-            !Number.isFinite(data.arc) || data.arc <= 0 || data.arc > 2 * Math.PI) return;
+        const positioned = data.skillName === 'Healing Light' || WIZARD_GROUND_ABILITIES.has(data.skillName) || SELF_CENTERED_SHAPE_ABILITIES.has(data.skillName);
+        const singleHeal = data.skillName === 'Healing Light' && data.shapeResolved && !data.radius;
+        if (!AUTHORITATIVE_SHAPE_ABILITIES.has(data.skillName) || (!singleHeal && (!Number.isFinite(data.radius) || data.radius <= 0 ||
+            !Number.isFinite(data.arc) || data.arc <= 0 || data.arc > 2 * Math.PI))) return;
         const player = this.engine.player;
         const predicted = (this.engine.effects || []).filter(effect => effect.isActive &&
             effect.abilityShape?.sourceId === player.id && effect.abilityShape?.skillName === data.skillName);
+        if (singleHeal) {
+            predicted.forEach(effect => effect.dispose());
+            this.engine.effects = (this.engine.effects || []).filter(effect => !predicted.includes(effect));
+            return;
+        }
         if (predicted.length && predicted.every(effect => Math.abs(effect.abilityShape.radius - data.radius) < 1e-8 &&
             Math.abs(effect.abilityShape.arc - data.arc) < 1e-8 && (!positioned ||
                 Math.hypot(effect.abilityShape.x - data.targetX, effect.abilityShape.z - data.targetZ) < 1e-6))) {
@@ -423,7 +441,7 @@ export class AbilityController {
             let targetId = "";
 
             const castRange = this.getAbilityCastRange(skillNameOverride || player.abilityName);
-            if (selected && player.position.distanceTo(selected.position) > castRange) {
+            if (selected && this.getAbilityTargetDistance(selected, castSkillName) > castRange) {
                 engine.showReadabilityFeedback?.('mobile-cast-range', {
                     title: 'Move into range', tone: 'warning',
                     subtitle: `${skillNameOverride || player.abilityName} needs ${castRange.toFixed(1)}m. Your selected target is farther away.`
@@ -491,7 +509,7 @@ export class AbilityController {
         if (engine.hoveredEntity && engine.hoveredEntity !== player && engine.hoveredEntity.state !== 'DEAD') {
             if (engine.hoveredEntity instanceof DwarfSalesman) return;
 
-            const dist = player.position.distanceTo(engine.hoveredEntity.position);
+            const dist = this.getAbilityTargetDistance(engine.hoveredEntity, castSkillName);
             const abilityRange = this.getAbilityCastRange(skillNameOverride || player.abilityName);
 
             // Check if we are in range
@@ -658,8 +676,8 @@ export class AbilityController {
             return false;
         }
 
-        const dist = player.position.distanceTo(this.pendingAbilityTarget.position);
         const skillName = this.pendingAbilitySkill || player.abilityName;
+        const dist = this.getAbilityTargetDistance(this.pendingAbilityTarget, skillName);
         const range = this.getAbilityCastRange(skillName);
 
         if (dist <= range) {

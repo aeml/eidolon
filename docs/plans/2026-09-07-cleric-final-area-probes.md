@@ -1,5 +1,9 @@
 # Remaining Cleric cone and Healing Light area consumers
 
+Follow-up: the [accepted-area implementation](2026-09-07-cleric-final-area-implementation.md)
+now promotes these probes and verifies the online repairs. The evidence below
+is the retained pre-fix baseline; offline parity and wider gates remain open.
+
 Diagnostic expansion after the 1.0.39 phone work. These are open failures, not
 implemented fixes or a completed talent audit. Run `npm run audit:talent-consumers`;
 the explicit overlay remains separate from the normal passing release suite until

@@ -329,7 +329,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				player.ActiveCombo = "" // Consume combo
 
 				// Heal all allies in large radius around player
-				partyRadius := 20.0
+				partyRadius := effectiveAbilityAreaRadius(player, skillName, 20)
 				nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, partyRadius), player.InstanceID)
 				for _, ally := range nearby {
 					if (ally.Type == TypePlayer || ally.Type == TypeNPC) && w.CombatRelationship(player, ally) != RelationshipHostile && withinAbilityRadius(skillName, player.X, player.Z, ally, partyRadius) {
@@ -352,7 +352,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				}
 
 				setCooldown(resolveAbilityCooldown(player.SubType, skillName, 8*time.Second))
-				w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+				w.fireAbilityEvent(player.ID, player.ID, skillName, player.X, player.Z, AbilityShape{Radius: partyRadius, Arc: 2 * math.Pi})
 			} else {
 				// Normal Healing Light behavior
 				var target *Entity
@@ -384,9 +384,11 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				}
 
 				// healinglight_beacon: Heals in AoE (5 unit radius) around target
+				healShape := AbilityShape{}
 				if runeID == "healinglight_beacon" {
 					tX, tZ := target.X, target.Z
-					aoeRadius := 5.0
+					aoeRadius := effectiveAbilityAreaRadius(player, skillName, 5)
+					healShape = AbilityShape{Radius: aoeRadius, Arc: 2 * math.Pi}
 					nearby := w.Grid.Nearby(tX, tZ, expandedAbilityRadius(skillName, aoeRadius), player.InstanceID)
 					for _, ally := range nearby {
 						if (ally.Type == TypePlayer || ally.Type == TypeNPC) && w.CombatRelationship(player, ally) != RelationshipHostile && withinAbilityRadius(skillName, tX, tZ, ally, aoeRadius) {
@@ -466,7 +468,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				}
 
 				setCooldown(resolveAbilityCooldown(player.SubType, skillName, 8*time.Second))
-				w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+				w.fireAbilityEvent(player.ID, target.ID, skillName, target.X, target.Z, healShape)
 			}
 		}
 	} else if skillName == "Radiant Strike" {
@@ -485,7 +487,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				player.ActiveCombo = "" // Consume combo
 			}
 
-			rangeDist := 3.0
+			rangeDist := effectiveAbilityAreaRadius(player, skillName, 3)
 			angleThreshold := math.Pi / 3 // 60 degrees
 			baseDamage := int(float64(player.Damage+(player.Stats.Wisdom*2)) * player.GetSkillDamageMultiplier("Radiant Strike"))
 
@@ -586,7 +588,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			}
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 4*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ, AbilityShape{Radius: rangeDist, Arc: 2 * angleThreshold})
 		}
 	} else if skillName == "Heaven's Trumpet" {
 		// AoE Stun/Damage

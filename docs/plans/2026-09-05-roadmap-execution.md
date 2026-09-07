@@ -5,7 +5,17 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-Current release queue (September 7): **1.0.33 (`0024f33`) is fully verified**.
+Current release queue (September 7): **1.0.34 (`dba8268`) is fully verified**.
+CI **`34101007172`** passed every job, including final live character QA.
+Fresh post-terminal uncached checks at **09:21:25.161 UTC** matched manifest,
+login label, versioned main script and backend to
+`dba826845e13d81586ccecd06c352b7a662d42af` / Alpha 1.0.34; health `ok`, database
+`ready`. Remote master and next-source ancestry were checked before pushing only
+**1.0.35 `948ed0c178c7c5967db078b53ef951d930660f30`**; that push completed
+successfully. Do not push 1.0.36 until the complete 1.0.35 CI/live gate and fresh
+post-terminal public identity checks pass.
+
+Previous release: **1.0.33 (`0024f33`) is fully verified**.
 CI **`34096361856` attempt 1** passed every job, including final live character
 and four-class/remote-animation QA. Fresh post-terminal uncached checks at
 **08:30:51.811 UTC** matched manifest, login label, versioned main script and
@@ -102,7 +112,18 @@ actual recipient-label checks pass **43.8s**. Lint/whitespace pass; all local
 verification processes are terminal. This is not part of preserved 1.0.39 and
 still needs its next release packaging.
 
-The [expanded remaining Cleric probes](2026-09-07-cleric-final-area-probes.md)
+The subsequent [Cleric accepted-area implementation](2026-09-07-cleric-final-area-implementation.md)
+repairs trained cone/Beacon/Mass Revival radii, actual accepted healing centers,
+explicit direct-heal shape metadata and planar body-edge cast intent. Real phone
+casts exposed a missing WebSocket payload field; its retained regression now
+passes. Final actual cast/boundary route passes **21.4s**, two-account phone
+support passes **17.6s**, client **199 suites / 2,936 tests** pass in **100.639s**,
+and full server race coverage passes (game **219.529s**, post-wire root **8.348s**).
+This is an unversioned local checkpoint after 1.0.39, not a deployment or closure
+of offline Cleric parity, observer gameplay or the broader milestone gates.
+Screenshot review records the remaining oversized duplicate phone combo label.
+
+The earlier [expanded remaining Cleric probes](2026-09-07-cleric-final-area-probes.md)
 complete in **0.595s** with explicit expected failures: trained boundaries remain
 ignored, and all nine accepted-shape cases emit zero radius/arc. Normal branch-A
 Divine Intervention → Healing Light proves Mass Revival is reachable without

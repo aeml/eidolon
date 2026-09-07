@@ -274,6 +274,11 @@ run_cleric_area() {
     npx playwright test tests/e2e/cleric-immediate-area-gameplay.spec.js
 }
 
+run_cleric_final_area() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-support-area" EIDOLON_E2E_CLASS=Cleric \
+    npx playwright test tests/e2e/cleric-final-area-gameplay.spec.js
+}
+
 run_spirit_area() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-spirit-area" EIDOLON_E2E_CLASS=Cleric \
     npx playwright test tests/e2e/spirit-area-gameplay.spec.js
@@ -400,6 +405,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   cleric-area)
     run_cleric_area
     ;;
+  cleric-final-area)
+    run_cleric_final_area
+    ;;
   spirit-area)
     run_spirit_area
     ;;
@@ -508,6 +516,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     echo "Trained persistent support-area verification: EIDOLON_ISOLATED_QA_ROUTE=guardian-area" >&2
     echo "Trained holy-zone verification: EIDOLON_ISOLATED_QA_ROUTE=consecrated-area" >&2
     echo "Trained Blessing/Trumpet verification: EIDOLON_ISOLATED_QA_ROUTE=cleric-area" >&2
+    echo "Trained cone/Beacon/Mass Revival verification: EIDOLON_ISOLATED_QA_ROUTE=cleric-final-area" >&2
     echo "Trained Spirit Guardians verification: EIDOLON_ISOLATED_QA_ROUTE=spirit-area" >&2
     echo "Forge/material refresh and guide verification: EIDOLON_ISOLATED_QA_ROUTE=forge-guide" >&2
     echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, inventory, equipment-recovery, talent-economy, talent-healing, talent-duration, extended, portal, dungeons, verdant, dungeon-full, chronicle-earth, chronicle-collection, fresh-opening, fresh-collection, fresh-hunt, fresh-hunt-npc, fresh-ready, fresh-dungeon, dungeon-recovery, direct-skills, projectile-walls, movement-walls, ground-walls, beam-walls, whip-shape, whirlwind, phone, phone-combat, phone-party, phone-inventory, phone-quests, phone-build, phone-settings, or phone-adventure." >&2

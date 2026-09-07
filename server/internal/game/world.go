@@ -162,13 +162,14 @@ type HealEvent struct {
 }
 
 type AbilityEvent struct {
-	SourceID  string  `json:"sourceId"`
-	TargetID  string  `json:"targetId"` // Optional
-	SkillName string  `json:"skillName"`
-	TargetX   float64 `json:"targetX"`
-	TargetZ   float64 `json:"targetZ"`
-	Radius    float64 `json:"radius,omitempty"`
-	Arc       float64 `json:"arc,omitempty"`
+	SourceID      string  `json:"sourceId"`
+	TargetID      string  `json:"targetId"` // Optional
+	SkillName     string  `json:"skillName"`
+	TargetX       float64 `json:"targetX"`
+	TargetZ       float64 `json:"targetZ"`
+	Radius        float64 `json:"radius,omitempty"`
+	Arc           float64 `json:"arc,omitempty"`
+	ShapeResolved bool    `json:"shapeResolved,omitempty"` // Explicit zero radius means no area, not missing legacy data.
 }
 
 // Resolved gameplay dimensions for accepted casts; observers need no private ranks.

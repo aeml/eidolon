@@ -179,6 +179,7 @@ export function getAbilityPresentation(className, skillName) {
 
 export function isAbilityVisualLayerEnabled(entry, source, canonicalName) {
     if (!entry?.runeOnly) return true;
+    if (canonicalName === 'Healing Light' && entry.runeOnly === 'healinglight_beacon' && source?.healingLightMassRevival) return true;
     return source?.skillRunes?.[canonicalName] === entry.runeOnly;
 }
 

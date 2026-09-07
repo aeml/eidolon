@@ -63,6 +63,7 @@ func (w *World) fireAbilityEvent(sourceID, targetID, skillName string, targetX, 
 		}
 		if len(shapes) > 0 {
 			event.Radius, event.Arc = shapes[0].Radius, shapes[0].Arc
+			event.ShapeResolved = true
 		}
 		w.OnEvent("ability", event)
 	}
