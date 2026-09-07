@@ -321,27 +321,25 @@ expiry must remain consistent with their replicated presentation.
 - Continue Wizard and Rogue actual consumers, not just Teleport: direct target
   validation, cone/beam reach, directional projectile travel/lifetime, placement
   bounds and relevant runes. Preserve base behavior where no ranks are allocated.
-- Next cone/placement/projectile boundaries: Flame Whip still uses fixed 12m;
+- Next placement/projectile boundaries: Flame Whip's cone is implemented below;
   the remaining ground placements and directional projectiles still need their
   real range consumers traced and connected. Do not change only a search radius while retaining an
   old final hit/movement check.
 - Update client chase/targeting and local/remote presentation for every changed
   consumer. Teleport's helper alone must not be wired globally ahead of working
   server consumers. Current metadata does not mean all corresponding spells work.
-- Cone/area presentation needs an explicit resolved-shape path: `AbilityEvent`
-  currently publishes only source/target IDs, name and target coordinates, while
-  `abilityRadii.js` derives fixed/rune radii locally. Remote actors do not carry
-  private talent allocations. Carry final radius/arc for affected accepted events
-  instead of guessing ranks from the viewer; keep predicted local geometry paired.
-  Decide and document how range versus area bonuses apply to a caster-origin cone
-  before stacking both on the same radius, including Nova Cascade's 360° shape.
+- Extend the new Flame Whip resolved-shape path to each newly repaired area
+  consumer: `AbilityEvent` now supports optional radius/arc, but other abilities
+  still use fixed/rune geometry locally. Remote actors do not carry private
+  talent allocations. Publish final shapes instead of guessing ranks from the
+  viewer; pair predicted and accepted local geometry as each consumer changes.
 - Pair inside/outside boundary casts with unchanged LOS, walls, height, instance,
   relationship and oversized-target checks. Add real-server gameplay and saved
   rank checks before publication, then separate patch notes/version metadata.
 - Keep area consumers (including the still-failing Purifying Wave probe), other
   talent/copy gaps, physical phones and the full 1.1–1.10 scope open.
 
-### Next cone implementation contract (source trace, not completed work)
+### Cone implementation contract
 
 `TalentBonus.SkillAoe` explicitly means **radius**, not angle. For Flame Whip,
 apply the independent range multiplier to its 12m reach, then the AoE-radius
@@ -368,6 +366,101 @@ small and oversized bodies; ordinary angle exclusions versus a real Teleport →
 Whip combo; dungeon wall/doorway, hostility and instance isolation; serialized
 shape plus local/remote High/Low presentation. This contract is not evidence
 that any cone, general AoE or physical-phone gate is already closed.
+
+### Flame Whip implementation — local, verification ongoing
+
+The shared six-case `testdata/flame_whip_shape.json` covers baseline, Aether
+Reach, Runic Precision, Volatile Insight, Mana Geometry and all four combined.
+The initial actual-cast server probes failed on ranked hit boundaries and
+missing serialized radius/arc (`/tmp/eidolon-whip-before-server.log`). Client
+probes failed **13/20** on range, oversized planar hits and remote shape
+(`/tmp/eidolon-whip-before-client.log`). These failures are retained.
+
+The server now computes Flame Whip's final radius from both talent categories
+and publishes radius/arc through `AbilityEvent`, the tested production payload
+mapper and the existing ability message. Ordinary casts publish 90°, actual
+Teleport → Whip dispatch publishes 360°. Normal walls, body padding, damage and
+stun handling remain in the authoritative handler. Client intent, offline hits
+and predicted boundary radii use the same contract. Offline hits are planar,
+body-aware and dungeon-cover-aware; its successful Teleport can now complete
+Nova Cascade within three seconds, but an intervening cast or expiry prevents it.
+Runic Precision and Mana Geometry text now describes their server definitions;
+this does not establish that every other range/area consumer is repaired.
+
+Remote casts use the accepted shape even without private ranks. Local effects
+remain immediate: an unchanged prediction is retained; a changed accepted
+footprint replaces only the existing Whip effect, without replaying animation
+or applying local multiplayer damage. Legacy unshaped local messages do not
+replay casts. Full-circle art omits the misleading pair of radial cone edges.
+
+Expanded checks pass: **35 client tests** across three suites in **2.652 seconds**
+(`/tmp/eidolon-whip-expanded-client.log`); focused server race tests including
+the payload wire mapping and actual combo/wall dispatch pass (root **1.083s**,
+game **10.266s**, `/tmp/eidolon-whip-expanded-server.log`). High/Low tests inspect
+the actual boundary mesh scale and ring arc, not only a metadata label. Local
+message-handler reconciliation, unchanged/duplicate acceptance, remote routing,
+offline cover and combo expiry/intervening casts are covered. Lint passes at
+`/tmp/eidolon-whip-lint.log`.
+
+Full client/server race suites and the new isolated `whip-shape` browser route
+are running separately, at `/tmp/eidolon-whip-full-client.log`,
+`/tmp/eidolon-whip-full-server.log`, and `/tmp/eidolon-whip-gameplay.log`.
+The browser route uses a separate fresh prepared Wizard, normal Pyromancer
+selection, normal Mana Geometry purchases, High/Low casts in a real dungeon,
+accepted-event/actual-mesh observations and fresh-login rank persistence. It
+does not itself claim exact enemy hit boundaries, a multiplayer combo session,
+earned progression or physical-phone evidence. Runtime and selected browser
+source are frozen during that run. No new version/publication or whole
+range/area completion is claimed yet.
+
+The first full client run failed **2/2,704** tests in **145.034 seconds**: two
+callout mocks still expected four visual-controller arguments, while the actual
+network handler now forwards the accepted payload as its fifth argument. Their
+assertions now require the complete forwarded payload and retain facing/callout
+checks. The first browser run failed before casting because the new dedicated
+`-whip` prepared character was missing from the disposable server's QA allowlist;
+its `/level 100` preparation never completed. This is a route setup failure,
+not cone-play evidence. The route-specific account is now included in the same
+isolated-only list as the other prepared routes. Original failure logs above
+remain retained; corrected runs use separate paths.
+
+The corrected isolated browser route **passes in 43.0 seconds (40.0-second
+body)** at `/tmp/eidolon-whip-gameplay-allowlisted.log`, session `84472` exits
+zero after credential scan and disposable cleanup. At both High and Low, normal
+untrained casts publish/render 12m and five normally purchased Mana Geometry
+ranks publish/render 14.52m; the accepted arc and actual ring geometry agree.
+Fresh login retains all five ranks. No runtime or selected route source changed
+during the repeat. Full client and server suites remain separate gates.
+
+Additional combo-access limitation found by tracing `skills.go`: changing
+specialization replaces the unlocked-skill list with the selected branch.
+Teleport and Flame Whip belong to different branches. The paired combo unit
+fixture explicitly unlocks both and proves dispatch/shape, not an ordinary
+same-loadout combo. Do not treat that fixture as evidence of a usable cross-branch
+build; resolve player-facing combo access in the build/combat follow-up instead
+of hiding this limitation behind a prepared fixture.
+
+Final full client verification **passes all 188 suites / 2,704 tests in
+141.262 seconds**, `/tmp/eidolon-whip-full-client-corrected.log`, session `66916`
+exit zero. Final lint passes at `/tmp/eidolon-whip-final-lint.log`. Full server
+race verification **passes** at `/tmp/eidolon-whip-full-server.log`, session
+`92379` exit zero: root **16.391 seconds**, game **310.466 seconds**, remaining
+packages pass or have no tests. Runtime remained unchanged throughout both
+full suites and the passing browser repeat. Additional test-only rotated-angle,
+friendly/dead/other-instance and CC-immune cases then pass in the final focused
+race suite (root **1.060 seconds**, game **12.507 seconds**),
+`/tmp/eidolon-whip-final-focused-server.log`. No new runtime fix was needed for
+those retained targeting rules. This is a locally verified checkpoint, not a
+versioned release or completion of all range/area consumers.
+
+Next source-backed placement targets: Gravity Well clamps placement to 18m,
+Meteor Drop and Inferno Cataclysm to 20m before their existing dungeon-floor
+validation; client intent has matching untrained distances. Their actual talent
+consumers remain disconnected. Keep placement range independent of effect
+radius, preserve rune-adjusted bases, and verify both the initial cast and any
+delayed/periodic impacts. Inferno currently encodes radius in projectile `Scale`
+(radius / 5); Meteor also has a separate 1.65× presentation scale. These paths
+must remain consistent when adding AoE bonuses and remote accepted shapes.
 
 1.0.29 is fully verified: CI `34078663504` passed every job and uncached public
 manifest/login/script/backend identity matched `bc96862` / Alpha 1.0.29 at

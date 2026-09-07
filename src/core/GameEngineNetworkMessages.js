@@ -445,7 +445,10 @@ class GameEngineNetworkMessageMethods {
         } else if (msg.type === 'ability') {
             const abilityData = msg.payload;
             // Ignore if source is local player (we already played the effect locally)
-            if (this.player && abilityData.sourceId === this.player.id) return;
+            if (this.player && abilityData.sourceId === this.player.id) {
+                this.abilityController.reconcileLocalAbilityShape?.(abilityData);
+                return;
+            }
 
             const source = this.remotePlayers.get(abilityData.sourceId);
             if (source) {
@@ -460,7 +463,7 @@ class GameEngineNetworkMessageMethods {
                 if (this.isPlayerClassEntity(source)) {
                     this.beginRemoteActionPresentation(source);
                 }
-                this.abilityController.triggerRemoteAbilityVisuals(source, abilityData.skillName, abilityData.targetX, abilityData.targetZ);
+                this.abilityController.triggerRemoteAbilityVisuals(source, abilityData.skillName, abilityData.targetX, abilityData.targetZ, abilityData);
                 this.showRemoteActionReadability(source, abilityData.skillName);
             }
         } else if (msg.type === 'ability_result') {

@@ -564,8 +564,8 @@ export class Actor extends Entity {
             : null;
         const gameplayRadius = getAbilityAoeRadius(className, skillName, this)
             ?? getAbilityAoeRadius(className, presentation.canonicalName, this);
-        const gameplayArc = getAbilityAoeArc(className, skillName)
-            ?? getAbilityAoeArc(className, presentation.canonicalName);
+        const gameplayArc = getAbilityAoeArc(className, skillName, this)
+            ?? getAbilityAoeArc(className, presentation.canonicalName, this);
         let spawned = false;
         const activeLayers = presentation.layers.filter((entry) =>
             isAbilityVisualLayerEnabled(entry, this, presentation.canonicalName)

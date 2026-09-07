@@ -5,7 +5,7 @@
 
 import * as THREE from 'three';
 import { getAbilityManaCost } from './AbilityEconomy.js';
-import { getAbilityRange, getRogueMovementCastRange, getTeleportCastRange } from './AbilityRange.js';
+import { getAbilityRange, getFlameWhipRadius, getRogueMovementCastRange, getTeleportCastRange } from './AbilityRange.js';
 import { CONSTANTS } from './Constants.js';
 import { Fighter } from '../entities/Fighter.js';
 import { Rogue } from '../entities/Rogue.js';
@@ -58,6 +58,7 @@ export class AbilityController {
     getAbilityCastRange(skillName = null) {
         const player = this.engine.player;
         if (skillName === 'Teleport') return getTeleportCastRange(player);
+        if (skillName === 'Flame Whip') return getFlameWhipRadius(player);
         if (['Backstab', 'Shadow Lunge', 'Shadow Strike'].includes(skillName)) return getRogueMovementCastRange(player, skillName);
         if (skillName === 'Scorch Beam') return getAbilityRange(player, skillName, CONSTANTS.ABILITY_CONFIG.Wizard.skills[skillName].range);
         if (skillName === 'Arcane Missiles') return getAbilityRange(player, skillName, CONSTANTS.ABILITY_CONFIG.Wizard.skills[skillName].range);
@@ -153,7 +154,7 @@ export class AbilityController {
      * @param {number} targetX
      * @param {number} targetZ
      */
-    triggerRemoteAbilityVisuals(entity, skillName, targetX, targetZ) {
+    triggerRemoteAbilityVisuals(entity, skillName, targetX, targetZ, shape = {}, { skipAnimation = false } = {}) {
         if (!entity || (
             typeof this.engine?.spawnTransientEffect !== 'function' &&
             typeof entity.spawnVisualEffect !== 'function'
@@ -161,12 +162,12 @@ export class AbilityController {
 
         // A state snapshot can arrive before its cast event. Keep the existing
         // remaining-time animation instead of restarting a late-observed spin.
-        if (skillName !== 'Whirlwind' || !entity.whirlwindCastEffect?.isActive) {
+        if (!skipAnimation && (skillName !== 'Whirlwind' || !entity.whirlwindCastEffect?.isActive)) {
             entity.playAbilityAnimation?.(skillName);
         }
 
         const targetPosition = new THREE.Vector3(targetX, 0, targetZ);
-        const visual = resolveRemoteSkillVisual(entity, skillName, targetPosition);
+        const visual = resolveRemoteSkillVisual(entity, skillName, targetPosition, shape);
         if (visual.handled) {
             return;
         }
@@ -185,6 +186,7 @@ export class AbilityController {
                     // talent-adjusted and wall-clipped endpoint. Remote actors
                     // need not replicate their private talent allocation.
                     ...(skillName === 'Scorch Beam' ? { authoritativeEndpoint: true } : {}),
+                    authoritativeShape: Number.isFinite(shape.radius) && Number.isFinite(shape.arc),
                     ...(canonicalAbilityName ? { abilityName: canonicalAbilityName } : {}),
                     ...(canonicalAbilityName ? { requestedAbilityName: skillName } : {}),
                     ...(canonicalAbilityName ? { abilityLayer: index } : {}),
@@ -212,6 +214,24 @@ export class AbilityController {
                 console.warn(`[Remote VFX] Unmapped skill visual for ${key}; used ${visual.type} fallback.`);
             }
         }
+    }
+
+    reconcileLocalAbilityShape(data) {
+        if (data.skillName !== 'Flame Whip' || !Number.isFinite(data.radius) || data.radius <= 0 ||
+            !Number.isFinite(data.arc) || data.arc <= 0 || data.arc > 2 * Math.PI) return;
+        const player = this.engine.player;
+        const predicted = (this.engine.effects || []).filter(effect => effect.isActive &&
+            effect.abilityShape?.sourceId === player.id && effect.abilityShape?.skillName === data.skillName);
+        if (predicted.length && predicted.every(effect => Math.abs(effect.abilityShape.radius - data.radius) < 1e-8 &&
+            Math.abs(effect.abilityShape.arc - data.arc) < 1e-8)) {
+            predicted.forEach(effect => { effect.abilityShape.authoritative = true; });
+            return;
+        }
+        // Replace only this cast's stale footprint; keep immediate local animation
+        // and never replay an unchanged prediction or apply gameplay damage here.
+        predicted.forEach(effect => effect.dispose());
+        this.engine.effects = (this.engine.effects || []).filter(effect => !predicted.includes(effect));
+        this.triggerRemoteAbilityVisuals(player, data.skillName, data.targetX, data.targetZ, data, { skipAnimation: true });
     }
 
     // ------------------------------------------------------------------

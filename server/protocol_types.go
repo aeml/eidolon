@@ -527,6 +527,8 @@ type AbilityPayload struct {
 	TargetID  string  `json:"targetId"`
 	SkillName string  `json:"skillName"`
 	SourceID  string  `json:"sourceId"`
+	Radius    float64 `json:"radius,omitempty"`
+	Arc       float64 `json:"arc,omitempty"`
 }
 
 type DamagePayload struct {

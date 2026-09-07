@@ -18,6 +18,17 @@ export function getTeleportCastRange(player) {
     return getAbilityRange(player, 'Teleport', base);
 }
 
+export function getFlameWhipRadius(player) {
+    let areaBonus = 0;
+    for (const talent of CONSTANTS.PASSIVE_TALENTS.Wizard) {
+        if (!talent.abilityArea) continue;
+        const raw = Number(player?.talentRanks?.[talent.id] || 0);
+        const rank = Number.isFinite(raw) ? Math.max(0, Math.min(talent.maxRank, Math.floor(raw))) : 0;
+        areaBonus += talent.abilityArea.radius * rank;
+    }
+    return getAbilityRange(player, 'Flame Whip', 12) * Math.max(0, 1 + areaBonus);
+}
+
 export function getRogueMovementCastRange(player, skillName) {
     let base = skillName === 'Backstab' ? 2.5 : 10;
     if (skillName === 'Shadow Lunge' && player?.skillRunes?.[skillName] === 'shadowlunge_extended') base = 15;

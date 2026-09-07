@@ -17,7 +17,7 @@ function resolvePosition(entity, targetPos, anchor) {
     return entity.position?.clone ? entity.position.clone() : entity.position;
 }
 
-export function resolveRemoteSkillVisual(entity, skillName, targetPos) {
+export function resolveRemoteSkillVisual(entity, skillName, targetPos, shape = {}) {
     const className = entity?.meshType || entity?.subType || entity?.constructor?.name || '';
 
     if (entity instanceof AvengingSeraph && skillName === 'Smite') {
@@ -38,10 +38,10 @@ export function resolveRemoteSkillVisual(entity, skillName, targetPos) {
         };
     }
 
-    const gameplayRadius = getAbilityAoeRadius(className, skillName, entity)
-        ?? getAbilityAoeRadius(className, presentation.canonicalName, entity);
-    const gameplayArc = getAbilityAoeArc(className, skillName)
-        ?? getAbilityAoeArc(className, presentation.canonicalName);
+    const gameplayRadius = Number.isFinite(shape.radius) && shape.radius > 0 ? shape.radius
+        : (getAbilityAoeRadius(className, skillName, entity) ?? getAbilityAoeRadius(className, presentation.canonicalName, entity));
+    const gameplayArc = Number.isFinite(shape.arc) && shape.arc > 0 && shape.arc <= 2 * Math.PI ? shape.arc
+        : (getAbilityAoeArc(className, skillName, entity) ?? getAbilityAoeArc(className, presentation.canonicalName, entity));
     const layers = presentation.layers
         .filter((entry) => isAbilityVisualLayerEnabled(entry, entity, presentation.canonicalName))
         .map((entry) => ({

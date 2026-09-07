@@ -420,7 +420,7 @@ export const CONSTANTS = {
             entries.push(
                 { name: "Efficient Casting", desc: "-4% mana cost per rank (20% max).", maxRank: 5 },
                 { name: "Quickened Formulae", desc: "+2% global CDR per rank (10% max).", maxRank: 5 },
-                { name: "Runic Precision", desc: "+3% projectile speed per rank (15% max).", maxRank: 5 },
+                { name: "Runic Precision", desc: "+3% spell range per rank (15% max).", maxRank: 5 },
                 { name: "Leyline Recall", desc: "-5% Teleport cooldown per rank (25% max).", maxRank: 5 },
                 { name: "Overchannel", desc: "+3% burst damage per rank (15% max).", maxRank: 5 },
                 { name: "Arcane Stability", desc: "+5% Arcane Shield duration per rank (25% max).", maxRank: 5 },
@@ -429,13 +429,14 @@ export const CONSTANTS = {
                 { name: "Aether Reach", desc: "+4% spell range per rank (20% max).", maxRank: 5 },
                 { name: "Volatile Insight", desc: "+3% AoE radius per rank (15% max).", maxRank: 5 },
                 { name: "Channel Discipline", desc: "+2% channeled spell damage per rank (10% max).", maxRank: 5 },
-                { name: "Mana Geometry", desc: "+2% Intelligence per rank (10% max).", maxRank: 5 },
+                { name: "Mana Geometry", desc: "+2% spell range and AoE radius per rank (10% each at max).", maxRank: 5 },
                 { name: "Sigil Mastery", desc: "+2% crit chance per rank (10% max).", maxRank: 5 },
                 { name: "Contingency Wards", desc: "+2% damage reduction per rank (10% max).", maxRank: 5 },
             );
 
             return entries.slice(0, 40).map((t, i) => ({ id: `WIZ_${String(i + 1).padStart(2, '0')}`, ...t,
                 abilityRange: i === 28 ? { range: 0.03 } : i === 34 ? { range: 0.04 } : i === 37 ? { range: 0.02 } : undefined,
+                abilityArea: i === 35 ? { radius: 0.03 } : i === 37 ? { radius: 0.02 } : undefined,
                 ...(i < 26 && i % 2 === 1 ? { desc: `+3% ${skills[Math.floor(i / 2)]} CDR and -2% mana cost per rank (15% / 10% max).` } : {}),
                 abilityEconomy: i < 26 && i % 2 === 1 ? { skill: skills[Math.floor(i / 2)], cdr: 0.03, manaReduction: 0.02 }
                     : i === 26 ? { manaReduction: 0.04 } : i === 29 ? { skill: 'Teleport', cdr: 0.05 } : undefined }));

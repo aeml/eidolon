@@ -66,11 +66,16 @@ export class Wizard extends Actor {
 
     useAbility(targetVector, gameEngine, skillNameOverride = null) {
         if (!targetVector) return;
+        const offline = !this.isMultiplayer && !gameEngine?.isMultiplayer;
+        const requestedSkill = skillNameOverride || this.abilityName;
+        this.flameWhipNovaCascade = offline && requestedSkill === 'Flame Whip' &&
+            Number.isFinite(this.lastOfflineTeleportAt) && Date.now() - this.lastOfflineTeleportAt <= 3000;
         if (!super.useAbility(targetVector, gameEngine, skillNameOverride)) return;
 
         const skill = skillNameOverride || this.abilityName;
 
         if (this.isMultiplayer || gameEngine?.isMultiplayer) return true;
+        this.lastOfflineTeleportAt = null;
 
         // Apply Spell Focus Multiplier if active
         let damageMultiplier = 1.0;
@@ -93,10 +98,17 @@ export class Wizard extends Actor {
             this.cooldowns["Flame Whip"] = 10.0 * (1 - cdr);
             
             // Cone Logic
-            const range = 12.0;
+            const range = getAbilityAoeRadius('Wizard', skill, this);
             const angleThreshold = Math.PI / 4; // 45 degrees half-angle
+            const walkRects = gameEngine.currentInstanceId && gameEngine.currentInstanceType !== 'overworld'
+                ? gameEngine.currentDungeonLayout?.walkRects : null;
             const forward = new THREE.Vector3().subVectors(targetVector, this.position);
             forward.y = 0;
+            if (forward.lengthSq() === 0) {
+                forward.set(0, 0, 1);
+                if (this.mesh?.quaternion) forward.applyQuaternion(this.mesh.quaternion);
+                forward.y = 0;
+            }
             forward.normalize();
             
             // Visual
@@ -106,21 +118,25 @@ export class Wizard extends Actor {
             entities.forEach(entity => {
                 if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
                     // Enemy check
-                    const isEnemy = !['Wizard', 'Cleric', 'Fighter', 'Rogue'].includes(entity.constructor.name);
+                    const isEnemy = typeof gameEngine.isHostileActorTarget === 'function'
+                        ? gameEngine.isHostileActorTarget(entity)
+                        : !entity.isInvulnerable && !['Wizard', 'Cleric', 'Fighter', 'Rogue', 'AvengingSeraph'].includes(entity.constructor.name);
                     if (isEnemy) {
                         const dir = new THREE.Vector3().subVectors(entity.position, this.position);
+                        dir.y = 0;
                         const dist = dir.length();
-                        if (dist < range) {
+                        if (dist > 0 && dist <= range + (entity.radius || 0) &&
+                            !clipDungeonEffectSegment(walkRects, this.position, entity.position).blocked) {
                             dir.normalize();
                             const angle = forward.angleTo(dir);
-                            if (angle < angleThreshold) {
+                            if (this.flameWhipNovaCascade || angle < angleThreshold) {
                                 // Hit!
                                 const damage = (20 + (this.stats.intelligence * 1.5)) * damageMultiplier;
                                 entity.takeDamage(damage);
                                 gameEngine.floatingTextManager.spawn(Math.floor(damage), entity.position, '#ff4500');
                                 
                                 // Stun 3s
-                                if (entity.stunTimer !== undefined) {
+                                if (entity.stunTimer !== undefined && !entity.ccImmune) {
                                     entity.stunTimer = 3.0;
                                     gameEngine.floatingTextManager.spawn("STUNNED!", entity.position, '#ffffff');
                                 }
@@ -548,6 +564,7 @@ export class Wizard extends Actor {
 
             this.position.copy(finalTarget);
             if (this.mesh) this.mesh.position.copy(this.position);
+            this.lastOfflineTeleportAt = Date.now();
             
             // Arrival Effect
             this.spawnVisualEffect(gameEngine, this.position, 0x00ffff, "burst");

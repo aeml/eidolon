@@ -52,15 +52,19 @@ func visualAbilityRadius(effectName string, radius float64) float64 {
 
 // fireAbilityEvent emits an "ability" event if a listener is registered.
 // This replaces the repeated `if w.OnEvent != nil { w.OnEvent("ability", ...) }` pattern.
-func (w *World) fireAbilityEvent(sourceID, targetID, skillName string, targetX, targetZ float64) {
+func (w *World) fireAbilityEvent(sourceID, targetID, skillName string, targetX, targetZ float64, shapes ...AbilityShape) {
 	if w.OnEvent != nil {
-		w.OnEvent("ability", AbilityEvent{
+		event := AbilityEvent{
 			SourceID:  sourceID,
 			TargetID:  targetID,
 			SkillName: skillName,
 			TargetX:   targetX,
 			TargetZ:   targetZ,
-		})
+		}
+		if len(shapes) > 0 {
+			event.Radius, event.Arc = shapes[0].Radius, shapes[0].Arc
+		}
+		w.OnEvent("ability", event)
 	}
 }
 

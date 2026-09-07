@@ -1,0 +1,8 @@
+[
+  {"name":"baseline","ranks":{},"radius":12},
+  {"name":"Aether Reach","ranks":{"WIZ_35":5},"radius":14.4},
+  {"name":"Runic Precision","ranks":{"WIZ_29":5},"radius":13.8},
+  {"name":"Volatile Insight","ranks":{"WIZ_36":5},"radius":13.8},
+  {"name":"Mana Geometry","ranks":{"WIZ_38":5},"radius":14.52},
+  {"name":"combined","ranks":{"WIZ_29":5,"WIZ_35":5,"WIZ_36":5,"WIZ_38":5},"radius":21.75}
+]

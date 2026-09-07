@@ -479,13 +479,7 @@ func main() {
 			if !ok {
 				return
 			}
-			payload := AbilityPayload{
-				TargetX:   evt.TargetX,
-				TargetZ:   evt.TargetZ,
-				TargetID:  evt.TargetID,
-				SkillName: evt.SkillName,
-				SourceID:  evt.SourceID,
-			}
+			payload := abilityPayloadFromEvent(evt)
 			b, _ := json.Marshal(payload)
 			outMsg := Message{
 				Type:    MsgAbility,

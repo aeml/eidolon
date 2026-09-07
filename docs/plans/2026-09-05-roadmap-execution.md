@@ -99,6 +99,16 @@ See the same range evidence for retained
 failures, exact logs and remaining cone/placement/area work. None of this local
 unversioned work changes the source or publication status of queued 1.0.35.
 
+The next local Flame Whip change connects its actual talent-adjusted cone with
+cast intent, offline body/cover checks, and explicit accepted radius/arc through
+the network. Its new isolated browser route passes in **43.0 seconds**, verifying
+12m versus trained 14.52m actual meshes on High/Low and saved ranks. Full regression
+suites pass: **188 client suites / 2,704 tests**, lint, and server race checks
+(root **16.391 seconds**, game **310.466 seconds**). A final added test-only
+angle/relationship/CC-immunity race check also passes. The normal combo
+build-access limitation (different branches replace the unlocked list) is also
+recorded there; a prepared combo fixture is not a player-facing loadout sign-off.
+
 Alpha 1.0.33 phone status implementation `fe857a6` is committed locally with
 separate notes and synchronized metadata. It adds tap-readable buff/debuff details,
 stable countdown rows, explicit Close/Escape and unobstructed combat/chat controls;

@@ -167,6 +167,14 @@ type AbilityEvent struct {
 	SkillName string  `json:"skillName"`
 	TargetX   float64 `json:"targetX"`
 	TargetZ   float64 `json:"targetZ"`
+	Radius    float64 `json:"radius,omitempty"`
+	Arc       float64 `json:"arc,omitempty"`
+}
+
+// Resolved gameplay dimensions for accepted casts; observers need no private ranks.
+type AbilityShape struct {
+	Radius float64
+	Arc    float64
 }
 
 // ProjectileImpactEvent is emitted at the authoritative collision point. It

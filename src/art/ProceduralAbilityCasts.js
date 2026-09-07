@@ -249,6 +249,7 @@ function addConeBoundary(parent, identity, radius, arc, direction, materials) {
         gameplayArc: arc
     });
     boundary.userData.normalizedGameplayRadius = 1;
+    if (arc >= 2 * Math.PI) return;
     for (const side of [-1, 1]) {
         const ray = direction.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), side * arc / 2).normalize();
         const edge = addPart(parent, identity, `ExactArcEdge${side}`, geometry('cast-boundary-edge', () => new THREE.BoxGeometry(0.08, 0.04, 1)), materials.pale, {

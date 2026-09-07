@@ -1,3 +1,5 @@
+import { getFlameWhipRadius } from '../core/AbilityRange.js';
+
 /**
  * World-space radii for player ability presentations with a circular gameplay
  * boundary. These values mirror the authoritative Go ability implementation;
@@ -77,6 +79,7 @@ export const AOE_BOUNDARY_VISUAL_TYPES = Object.freeze(new Set([
 ]));
 
 export function getAbilityAoeRadius(className, canonicalSkillName, source = null) {
+    if (className === 'Wizard' && canonicalSkillName === 'Flame Whip') return getFlameWhipRadius(source);
     const definition = PLAYER_ABILITY_AOE_RADII[className]?.[canonicalSkillName];
     if (!definition) return null;
 
@@ -87,7 +90,8 @@ export function getAbilityAoeRadius(className, canonicalSkillName, source = null
     return Number.isFinite(radius) && radius > 0 ? radius : null;
 }
 
-export function getAbilityAoeArc(className, canonicalSkillName) {
+export function getAbilityAoeArc(className, canonicalSkillName, source = null) {
+    if (className === 'Wizard' && canonicalSkillName === 'Flame Whip' && source?.flameWhipNovaCascade) return 2 * Math.PI;
     const arc = PLAYER_ABILITY_AOE_RADII[className]?.[canonicalSkillName]?.arc;
     return Number.isFinite(arc) && arc > 0 ? arc : null;
 }

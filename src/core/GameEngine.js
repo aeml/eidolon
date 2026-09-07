@@ -977,6 +977,10 @@ export class GameEngine {
         };
         const effect = createTransientEffect(this.renderSystem.effectGroup, type, effectPosition, color, mergedOptions);
         if (!effect) return false;
+        if (options.abilityName === 'Flame Whip') {
+            effect.abilityShape = { sourceId: options.source?.id, skillName: 'Flame Whip',
+                radius: options.radius, arc: options.arc, authoritative: Boolean(options.authoritativeShape) };
+        }
         this.effects.push(effect);
         return true;
     }

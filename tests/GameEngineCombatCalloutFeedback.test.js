@@ -434,7 +434,8 @@ describe('GameEngine encounter callouts', () => {
         });
 
         expect(remotePlayer.mesh.lookAt).toHaveBeenCalledWith(expect.any(THREE.Vector3));
-        expect(engine.abilityController.triggerRemoteAbilityVisuals).toHaveBeenCalledWith(remotePlayer, 'Fireball', 12, 3);
+        expect(engine.abilityController.triggerRemoteAbilityVisuals).toHaveBeenCalledWith(remotePlayer, 'Fireball', 12, 3,
+            { sourceId: remotePlayer.id, skillName: 'Fireball', targetX: 12, targetZ: 3 });
         expect(remotePlayer.updateState).toHaveBeenCalledWith('ATTACKING');
         expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('AYLA: FIREBALL', remotePlayer.position, '#8fe7ff', '18px');
     });
@@ -487,7 +488,8 @@ describe('GameEngine encounter callouts', () => {
         });
 
         expect(remotePlayer.mesh.lookAt).toHaveBeenCalledWith(expect.any(THREE.Vector3));
-        expect(engine.abilityController.triggerRemoteAbilityVisuals).toHaveBeenCalledWith(remotePlayer, 'Healing Light', 10, 4);
+        expect(engine.abilityController.triggerRemoteAbilityVisuals).toHaveBeenCalledWith(remotePlayer, 'Healing Light', 10, 4,
+            { sourceId: remotePlayer.id, targetId: 'ally-1', skillName: 'Healing Light', targetX: 10, targetZ: 4 });
         expect(remotePlayer.updateState).toHaveBeenCalledWith('ATTACKING');
     });
 

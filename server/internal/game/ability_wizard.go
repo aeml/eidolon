@@ -264,7 +264,13 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				player.ActiveCombo = "" // Consume combo
 			}
 
-			rangeDist := 12.0
+			// Cone reach and AoE radius are independent talent categories; each
+			// category sums its ranks before applying its multiplier once.
+			rangeDist := effectiveAbilityRange(player, skillName, 12.0) * math.Max(0, 1+player.GetSkillBonus(skillName).SkillAoe)
+			arc := math.Pi / 2
+			if novaCascadeActive {
+				arc = 2 * math.Pi
+			}
 			angleThreshold := math.Pi / 4 // 45 degrees
 			damage := int(float64(25+(player.Stats.Intelligence*2)) * player.GetSkillDamageMultiplier("Flame Whip"))
 
@@ -320,7 +326,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 			player.State = "ATTACKING"
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 10*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ, AbilityShape{Radius: rangeDist, Arc: arc})
 
 		}
 	} else if skillName == "Flame Tornado" {
