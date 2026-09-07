@@ -42,7 +42,7 @@ roll/publication across three runs, log `/tmp/eidolon-quest-world-budget-benchma
 This measures a single source operation, not whole-server concurrency capacity.
 The world scan is skipped for characters without a relevant accepted collection.
 
-## Alpha 1.0.49 package — verification in progress
+## Alpha 1.0.49 package — local verification complete
 
 Runtime **`b01d3c5`** is root-integrated, without changing root's version or
 publishing it. The isolated package now aligns login/package/manifest/server/
@@ -68,7 +68,17 @@ runs can replace test-results. Logs `/tmp/eidolon-release49-client.log`,
 `/tmp/eidolon-release49-quest-regression.log`, and
 `/tmp/eidolon-release49-earned-collection.log`.
 
-Still required before publication: final anonymous browser sweep, package
-checkpoint/integration, all earlier sequential release gates, its own CI/deploy
-and exact live verification. The separate investigation branch retains its own
-earned evidence and is not part of this package's active quest chain.
+Final anonymous browser sweep passes **75 / 8.8m**, unchanged package c0a6910,
+log `/tmp/eidolon-release49-anonymous-rerun.log`. The first sweep closes with
+**74 / 75 passing in 10.1m**: one phone-build fixture cannot load modules before
+its layout assertions. Its actual trace shows simultaneous local-script
+`net::ERR_NETWORK_CHANGED` failures and is preserved at
+`/tmp/eidolon-release49-network-change-trace.zip`; no assertion is weakened and
+no source change is made for the successful full rerun. Both handles are closed.
+
+Still required before publication: all earlier sequential release gates, its
+own CI/deploy and exact live verification. This locally verified package may be
+checkpointed/integrated, but must not jump ahead of releases 40–48. The separate
+investigation branch retains its own earned evidence and is not part of this
+package's active quest chain. This package does not close the broader balance
+pass or full roadmap.
