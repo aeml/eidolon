@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { applyOfflineAbilityHit } from '../core/AbilityCritical.js';
 import {Actor} from './Actor.js';
 import {getAbilityAoeRadius} from '../skills/abilityRadii.js';
 import {clipDungeonEffectSegment} from '../skills/dungeonEffectGeometry.js';
@@ -76,7 +77,8 @@ export function applyOfflineRadiantStrike(source,aim,engine,holyFury = false) {
             clipDungeonEffectSegment(walkRects(engine),source.position,target.position).blocked) continue;
         const before = target.stats.hp;
         const hit = holyFury && target.markWeaknessTimer > 0 ? damage*2 : damage;
-        target.takeDamage(hit,source);
+        // Preserve receiving-side HP accounting for lifesteal and text.
+        applyOfflineAbilityHit(source,target,hit,'Radiant Strike');
         const actual = Math.max(0,before-target.stats.hp);
         totalDamage += actual;
         if (actual > 0) engine?.floatingTextManager?.spawn(Math.floor(actual),target.position,'#ffff00');

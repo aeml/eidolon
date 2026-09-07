@@ -175,11 +175,19 @@ func applyHealingReceived(target *Entity, amount int) int {
 	return amount
 }
 
-func applyFinalDamage(attacker, target *Entity, baseDamage int, damageType string) int {
+func applyFinalDamage(attacker, target *Entity, baseDamage int, damageType string, skills ...string) int {
+	skillName := ""
+	if len(skills) > 0 {
+		skillName = skills[0]
+	}
+	return applyFinalDamageWithCritical(attacker, target, baseDamage, damageType, skillName, false)
+}
+
+func applyFinalDamageWithCritical(attacker, target *Entity, baseDamage int, damageType, skillName string, guaranteedCritical bool) int {
 	if target == nil || baseDamage <= 0 {
 		return 0
 	}
-	finalDamage, _ := CalculateFinalDamage(attacker, target, baseDamage, damageType)
+	finalDamage, _ := calculateFinalDamageWithCritical(attacker, target, baseDamage, damageType, skillName, guaranteedCritical)
 	target.Health -= finalDamage
 	target.LastDamageType = damageType
 	return finalDamage

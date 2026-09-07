@@ -6,6 +6,7 @@ import { disposeSceneMesh, spawnEffectSceneFallback } from './EffectSceneFallbac
 import { SpiritGuardiansEffect } from './SpiritGuardiansEffect.js';
 import { getAbilityAoeRadius } from '../skills/abilityRadii.js';
 import { getAbilityHealingAmount } from '../core/AbilityHealing.js';
+import { applyOfflineAbilityHit } from '../core/AbilityCritical.js';
 import { createProceduralProjectileVisual, applyProceduralProjectileScale, updateProceduralProjectileVisual, releaseProceduralProjectileVisual } from '../art/ProceduralProjectileEffects.js';
 import { clipDungeonEffectSegment } from '../skills/dungeonEffectGeometry.js';
 import {applyOfflineHealingLight,applyOfflineRadiantStrike,resolveOfflineClericHealTarget} from './ClericAreaAbilities.js';
@@ -251,7 +252,7 @@ export class Cleric extends Actor {
                         if (Math.hypot(this.position.x - entity.position.x, this.position.z - entity.position.z) <= radius + (entity.radius || 0) &&
                             !clipDungeonEffectSegment(rects, this.position, entity.position).blocked) {
                             // The server deals damage before applying its weakness mark.
-                            entity.takeDamage(this.stats.wisdom * 3, this);
+                            applyOfflineAbilityHit(this, entity, this.stats.wisdom * 3, skill, gameEngine.floatingTextManager, '#ffff00');
                             // Stun
                             if (entity.stunTimer !== undefined && !entity.ccImmune) {
                                 entity.stunTimer = 3.0;
@@ -407,10 +408,7 @@ export class Cleric extends Actor {
                                 } else {
                                     // Damage Enemies
                                     if (entity.takeDamage && !clipDungeonEffectSegment(rects, this.consecratedZone.position, entity.position).blocked) {
-                                        entity.takeDamage(damageAmount);
-                                        if (this.gameEngine && this.gameEngine.floatingTextManager) {
-                                            this.gameEngine.floatingTextManager.spawn(Math.floor(damageAmount), entity.position, '#ffff00');
-                                        }
+                                        applyOfflineAbilityHit(this, entity, damageAmount, 'Consecrated Ground', this.gameEngine?.floatingTextManager, '#ffff00');
                                     }
                                 }
                             }
@@ -549,10 +547,7 @@ export class Cleric extends Actor {
                             const d = Math.hypot(this.position.x - entity.position.x, this.position.z - entity.position.z);
                             if (d <= damageRadius + (entity.radius || 0) && !clipDungeonEffectSegment(rects, this.position, entity.position).blocked) {
                                 if (entity.takeDamage) {
-                                    entity.takeDamage(damage);
-                                }
-                                if (textManager) {
-                                    textManager.spawn(Math.floor(damage), entity.position, '#ffff66');
+                                    applyOfflineAbilityHit(this, entity, damage, this.spiritBoosted ? 'Spirit Guardians Boost' : 'Spirit Guardians', textManager, '#ffff66');
                                 }
                              }
                         }

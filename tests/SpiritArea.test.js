@@ -20,7 +20,7 @@ describe.each([false,true])('Spirit boosted=%s',boosted=>{
             p.skillRunes={};p.talentRanks={};
             p.update(0,null,p,engine.chunkManager,engine.floatingTextManager);
             const damage=Math.floor((boosted?35:20)*(rune==='spirits_vengeful'?1.5:1));
-            expect(enemy.takeDamage).toHaveBeenCalledWith(damage);
+            expect(enemy.takeDamage).toHaveBeenCalledWith(damage,p);
             enemy.position.x+=.02;p.update(.5,null,p,engine.chunkManager,engine.floatingTextManager);
             expect(enemy.takeDamage).toHaveBeenCalledTimes(1);expect(enemy.slowTimer).toBe(0);
             p.spiritDuration=.1;p.update(.1,null,p,engine.chunkManager,engine.floatingTextManager);

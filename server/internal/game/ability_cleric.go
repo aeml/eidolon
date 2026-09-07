@@ -248,7 +248,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			player.Mana -= cost
 			target.Mu.Lock()
 			targetID, targetX, targetZ = target.ID, target.X, target.Z
-			finalDamage := applyFinalDamage(player, target, damage, "holy")
+			finalDamage := applyFinalDamage(player, target, damage, "holy", skillName)
 			addThreatLocked(target, player.ID, float64(finalDamage))
 			if !target.CCImmune {
 				target.Stunned = true
@@ -536,7 +536,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 							target.Mu.Unlock()
 							continue
 						}
-						finalDamage := applyFinalDamage(player, target, damage, "holy")
+						finalDamage := applyFinalDamage(player, target, damage, "holy", skillName)
 						totalDamageDealt += finalDamage
 						addThreatLocked(target, player.ID, float64(finalDamage))
 
@@ -616,7 +616,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 
 				target.Mu.Lock()
 				if w.CanDamage(player, target) && target.State != "DEAD" && withinDungeonAbilityRadius(walkRects, skillName, player.X, player.Z, target, radius) {
-					finalDamage := applyFinalDamage(player, target, damage, "holy")
+					finalDamage := applyFinalDamage(player, target, damage, "holy", skillName)
 					addThreatLocked(target, player.ID, float64(finalDamage))
 					if !target.CCImmune {
 						target.Stunned = true

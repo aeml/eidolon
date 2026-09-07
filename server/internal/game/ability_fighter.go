@@ -68,7 +68,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 			if runeID == "shieldslam_concussion" {
 				stunDuration += time.Second
 			}
-			totalDamage := w.damageFighterCone(player, targetX, targetZ, 4.0, math.Pi/4, damage, stunDuration, 1.0)
+			totalDamage := w.damageFighterCone(player, targetX, targetZ, 4.0, math.Pi/4, damage, stunDuration, 1.0, skillName)
 			if runeID == "shieldslam_fortify" && totalDamage > 0 {
 				// The combat pipeline already provides a replicated absorb shield.
 				player.ArcaneShieldActive = true
@@ -129,7 +129,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 					if target.WeakPointMarked || target.MarkWeakness || target.Threat[player.ID] > 0 {
 						modifiedDamage = int(float64(modifiedDamage) * 1.5)
 					}
-					finalDamage := applyFinalDamage(player, target, modifiedDamage, "physical")
+					finalDamage := applyFinalDamage(player, target, modifiedDamage, "physical", skillName)
 					addThreatLocked(target, player.ID, float64(finalDamage))
 					isDead := target.Health <= 0
 					target.Mu.Unlock()
@@ -232,7 +232,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 		if player.Mana >= cost {
 			player.Mana -= cost
 			damage := player.Damage + int(float64(player.Stats.Strength)*1.2)
-			w.damageFighterCone(player, targetX, targetZ, 5.0, math.Pi/2, damage, 0, 2.0)
+			w.damageFighterCone(player, targetX, targetZ, 5.0, math.Pi/2, damage, 0, 2.0, skillName)
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 4*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 		}
@@ -306,7 +306,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 					target.Mu.Unlock()
 					continue
 				}
-				finalDamage := applyFinalDamage(player, target, damage, "physical")
+				finalDamage := applyFinalDamage(player, target, damage, "physical", skillName)
 				addThreatLocked(target, player.ID, float64(finalDamage))
 				target.Slowed = true
 				target.SlowFactor = 0.6
@@ -415,7 +415,7 @@ func fighterFacing(player *Entity, targetX, targetZ float64) (float64, float64) 
 	return math.Sin(player.Rotation), math.Cos(player.Rotation)
 }
 
-func (w *World) damageFighterCone(player *Entity, targetX, targetZ, radius, halfAngle float64, damage int, stun time.Duration, threatMultiplier float64) int {
+func (w *World) damageFighterCone(player *Entity, targetX, targetZ, radius, halfAngle float64, damage int, stun time.Duration, threatMultiplier float64, skills ...string) int {
 	facingX, facingZ := fighterFacing(player, targetX, targetZ)
 	walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 	totalDamage := 0
@@ -434,7 +434,7 @@ func (w *World) damageFighterCone(player *Entity, targetX, targetZ, radius, half
 			target.Mu.Unlock()
 			continue
 		}
-		finalDamage := applyFinalDamage(player, target, damage, "physical")
+		finalDamage := applyFinalDamage(player, target, damage, "physical", skills...)
 		totalDamage += finalDamage
 		addThreatLocked(target, player.ID, float64(finalDamage)*threatMultiplier)
 		if stun > 0 && !target.CCImmune {
@@ -475,7 +475,7 @@ func (w *World) damageEarthshakerArea(player *Entity, originX, originZ, targetX,
 			target.Mu.Unlock()
 			continue
 		}
-		finalDamage := applyFinalDamage(player, target, damage, "physical")
+		finalDamage := applyFinalDamage(player, target, damage, "physical", "Earthshaker")
 		addThreatLocked(target, player.ID, float64(finalDamage))
 		if !target.CCImmune {
 			target.Stunned = true

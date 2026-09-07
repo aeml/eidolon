@@ -4,6 +4,7 @@ import { CONSTANTS } from '../core/Constants.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
 import { Projectile } from './Projectile.js';
 import { AreaOfEffect } from './AreaOfEffect.js';
+import { applyOfflineAbilityHit } from '../core/AbilityCritical.js';
 import { spawnEffectSceneFallback, spawnSceneFallbackBeam } from './EffectSceneFallback.js';
 import { getAbilityAoeRadius } from '../skills/abilityRadii.js';
 import { getAbilityRange, getTeleportCastRange, clampWizardGroundTarget, WIZARD_GROUND_ABILITIES } from '../core/AbilityRange.js';
@@ -77,12 +78,15 @@ export class Wizard extends Actor {
         }
         this.flameWhipNovaCascade = offline && requestedSkill === 'Flame Whip' &&
             Number.isFinite(this.lastOfflineTeleportAt) && Date.now() - this.lastOfflineTeleportAt <= 3000;
+        const implosion = offline && requestedSkill === 'Fireball' &&
+            Number.isFinite(this.lastOfflineGravityWellAt) && Date.now() - this.lastOfflineGravityWellAt <= 3000;
         if (!super.useAbility(targetVector, gameEngine, skillNameOverride)) return;
 
         const skill = skillNameOverride || this.abilityName;
 
         if (this.isMultiplayer || gameEngine?.isMultiplayer) return true;
         this.lastOfflineTeleportAt = null;
+        this.lastOfflineGravityWellAt = null;
 
         // Apply Spell Focus Multiplier if active
         let damageMultiplier = 1.0;
@@ -139,8 +143,7 @@ export class Wizard extends Actor {
                             if (this.flameWhipNovaCascade || angle < angleThreshold) {
                                 // Hit!
                                 const damage = (20 + (this.stats.intelligence * 1.5)) * damageMultiplier;
-                                entity.takeDamage(damage);
-                                gameEngine.floatingTextManager.spawn(Math.floor(damage), entity.position, '#ff4500');
+                                applyOfflineAbilityHit(this, entity, damage, skill, gameEngine.floatingTextManager, '#ff4500');
                                 
                                 // Stun 3s
                                 if (entity.stunTimer !== undefined && !entity.ccImmune) {
@@ -334,13 +337,12 @@ export class Wizard extends Actor {
                     const closestPoint = startPos.clone().add(dir.clone().multiplyScalar(t));
                     const dist = Math.hypot(closestPoint.x - entity.position.x, closestPoint.z - entity.position.z);
                     if (dist < width + targetRadius && !clipDungeonEffectSegment(walkRects, this.position, entity.position).blocked) {
-                         entity.takeDamage(damage);
+                         applyOfflineAbilityHit(this, entity, damage, skill, gameEngine.floatingTextManager, '#ffaa00');
                          // Armor Melt Debuff (Mockup)
                          if (entity.stats) {
                              entity.stats.defense = Math.max(0, entity.stats.defense - 5);
                              gameEngine.floatingTextManager.spawn("ARMOR MELT", entity.position, '#ffaa00');
                          }
-                         gameEngine.floatingTextManager.spawn(Math.floor(damage), entity.position, '#ffaa00');
                     }
                 }
             }
@@ -494,9 +496,9 @@ export class Wizard extends Actor {
                     entity.slowTimer = 3;
                     entity.slowFactor = .5;
                 }
-                entity.takeDamage(damage);
-                gameEngine.floatingTextManager?.spawn(Math.floor(damage), entity.position, '#9966ff');
+                applyOfflineAbilityHit(this, entity, damage, skill, gameEngine.floatingTextManager, '#9966ff');
             }
+            this.lastOfflineGravityWellAt = Date.now();
             return;
         }
 
@@ -579,6 +581,11 @@ export class Wizard extends Actor {
         adjustedTarget.y = startPos.y;
 
         const fireball = new Projectile(null, this, 'Fireball', startPos, adjustedTarget);
+        fireball.fireballWellBoost = implosion;
+        if (implosion) {
+            gameEngine.floatingTextManager?.spawn('COMBO: Implosion!', this.position, '#ffd700');
+            gameEngine.uiManager?.showComboNotification?.('Implosion', 'implosion');
+        }
         
         // Damage Calculation: Base 20 + (Intelligence * 2.0)
         fireball.damage = 20 + (this.stats.intelligence * 2.0);

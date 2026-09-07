@@ -30,7 +30,7 @@ describe.each([0,1,5])('Consecrated Ground rank %s', rank => {
             p.update(0,null,p,engine.chunkManager,engine.floatingTextManager);
             expect(ally.stats.hp).toBe(120); expect(p.stats.hp).toBe(120);
             expect(enemy.takeDamage).toHaveBeenCalledTimes(1);
-            expect(enemy.takeDamage).toHaveBeenCalledWith(30);
+            expect(enemy.takeDamage).toHaveBeenCalledWith(30,p);
             const origin=p.consecratedZone.position.clone(); p.position.x-=40;
             ally.position.x+=.02; enemy.position.x+=.02;
             p.update(1,null,p,engine.chunkManager,engine.floatingTextManager);

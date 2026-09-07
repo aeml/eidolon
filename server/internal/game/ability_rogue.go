@@ -76,7 +76,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				}
 
 				strikeTarget.Mu.Lock()
-				finalDamage := applyFinalDamage(player, strikeTarget, damage, "physical")
+				finalDamage := applyFinalDamage(player, strikeTarget, damage, "physical", skillName)
 				addThreatLocked(strikeTarget, player.ID, float64(finalDamage))
 				strikeTarget.Bleeding = true
 				strikeTarget.BleedDamage = 10 + (player.Stats.Dexterity / 2)
@@ -274,7 +274,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				target.Mu.Lock()
 				if w.CanDamage(player, target) && target.State != "DEAD" {
 					if withinDungeonAbilityRadius(walkRects, skillName, targetX, targetZ, target, radius) {
-						finalDamage := applyFinalDamage(player, target, damage, "physical")
+						finalDamage := applyFinalDamage(player, target, damage, "physical", skillName)
 						addThreatLocked(target, player.ID, float64(finalDamage))
 						w.fireDamageEvent(player.ID, target.ID, finalDamage, "physical", player.InstanceID)
 						if target.Health <= 0 {
@@ -484,15 +484,16 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				}
 
 				// Combo: Ambush (Cloak & Vanish → Backstab) = Guaranteed critical hit
+				guaranteedCritical := false
 				if player.ActiveCombo == "backstab_guaranteed_crit" {
-					damage = damage * 2     // 2x crit damage
+					guaranteedCritical = true
 					player.ActiveCombo = "" // Consume combo
 				}
 
 				// Ambush rune: a real 50% critical roll, rather than flattening
 				// the proc into average damage on every strike.
 				if runeID == "backstab_ambush" && rand.Float64() < 0.5 {
-					damage *= 2
+					guaranteedCritical = true
 				}
 
 				// Eviscerate rune: ignores 50% armor
@@ -507,7 +508,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				}
 
 				bestTarget.Mu.Lock()
-				finalDamage = applyFinalDamage(player, bestTarget, finalDamage, "physical")
+				finalDamage = applyFinalDamageWithCritical(player, bestTarget, finalDamage, "physical", skillName, guaranteedCritical)
 				addThreatLocked(bestTarget, player.ID, float64(finalDamage))
 				isDead := bestTarget.Health <= 0
 				bestTarget.Mu.Unlock()
@@ -624,7 +625,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					// Create a temporary "illusion" that deals one attack worth of damage
 					cloneDamage := player.Damage
 					bestTarget.Mu.Lock()
-					cloneDamage = applyFinalDamage(player, bestTarget, cloneDamage, "physical")
+					cloneDamage = applyFinalDamage(player, bestTarget, cloneDamage, "physical", skillName)
 					addThreatLocked(bestTarget, player.ID, float64(cloneDamage))
 					isDead := bestTarget.Health <= 0
 					bestTarget.Mu.Unlock()
@@ -750,7 +751,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 						target.BleedDamage = 0
 						target.BleedSourceID = ""
 					}
-					finalDamage = applyFinalDamage(player, target, finalDamage, "physical")
+					finalDamage = applyFinalDamage(player, target, finalDamage, "physical", skillName)
 					addThreatLocked(target, player.ID, float64(finalDamage))
 					isDead := target.Health <= 0
 					target.Mu.Unlock()
