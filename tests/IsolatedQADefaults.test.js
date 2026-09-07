@@ -43,3 +43,10 @@ test('the full release gate retains Seraph gameplay and rendered fallback checks
     expect(commands['test:e2e:anonymous']).toContain('tests/e2e/offline-seraph-render.spec.js');
     expect(commands['test:e2e:anonymous']).toContain('tests/e2e/summon-action-readability.spec.js');
 });
+
+test('the full release gate retains saved Shield training and hostile absorption', () => {
+    const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
+    expect(script).toContain('&& run_seraph && run_shield_training &&');
+    expect(script).toContain('${QA_USERNAME_BASE}-shield-retry1');
+    expect(script).toContain('npx playwright test tests/e2e/shield-training-gameplay.spec.js');
+});

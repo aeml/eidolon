@@ -2,7 +2,9 @@
 
 Separate follow-up worktree `/tmp/eidolon-shield-training-CcxkLZ`, branch
 `work/shield-training-20260907`, based on local 1.0.43 `e0bc417`. Not packaged or
-published. Integration `c48a09c` now carries the verified 1.0.38 movement and
+published at the original checkpoint. Now packaged locally as **Alpha 1.0.44**;
+publication remains gated by 1.0.38 and every sequential successor.
+Integration `c48a09c` now carries the verified 1.0.38 movement and
 shared-combat race corrections through the sequential 39–43 release queue.
 
 Nine shared baseline/rank/rune/focus/duration fixtures exercise actual paid
@@ -67,3 +69,23 @@ race is still running at this checkpoint; logs:
 `/tmp/eidolon-shield-training-integrated-server.log`,
 `/tmp/eidolon-shield-training-integrated-full-server.log`,
 `/tmp/eidolon-shield-training-browser.log`.
+
+The prepared browser run reaches a correct 695-point baseline shield, then
+fails trying to close details through the covered launcher. The normal panel
+has a dedicated Close control; using that visible button completes the route
+on **`7f4a157`**, **43.7s**: **695 / 834 / 834** baseline/trained/saved capacity,
+actual 20-second expiry and ordinary hostile absorption of **310** points,
+leaving **524** and full player health. Scan has zero sanitizations and exact
+disposable cleanup finishes. Log: `/tmp/eidolon-shield-training-browser-close.log`.
+The full integrated server race suite also passes (root **13.355s**, game
+**321.115s**). All prior local handles are closed. The historical talent-consumer
+overlay passes **1.523s**; it covers selected promoted consumers, not all 160
+talents. Log: `/tmp/eidolon-shield-training-remaining-consumers.log`.
+
+Inspected phone captures prove readable shield details, but reveal two open
+visual tasks: the one-effect status sheet wastes most of its large height, and
+entrance scenery obscures the actor during hostile absorption. Do not label
+those captures full visual polish. Final package adds a closed-panel model
+capture, distinct 1.0.44 notes, synchronized login/runtime/deployment version
+defaults and the real Shield route in the full predeployment gate. Final
+versioned client, anonymous, gameplay and backend-root checks remain open.
