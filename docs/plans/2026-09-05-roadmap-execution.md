@@ -28,7 +28,8 @@ The [Consecrated Ground follow-up](2026-09-07-consecrated-area.md) now passes
 192 client suites / 2,822 tests and real-server phone casting/rune/persistence QA
 in 57.3s. Full server race checks pass root 22.926s / game 322.243s, plus final
 lint/shell/whitespace checks. It is a local checkpoint, not yet a release.
-The [Alpha 1.0.37 candidate](2026-09-07-release37-protection.md) now includes both
+The [Alpha 1.0.37 candidate](2026-09-07-release37-protection.md), source
+`47a565b0ec4d38ef9149b1a7055cf056ccfe3802` on `release/37-with-protection`, includes both
 checkpoints plus trained Blessings/Trumpet, with separate notes and synchronized
 login/runtime metadata. Final client checks pass 193 suites / 2,864 tests and full
 server race checks pass root 19.953s / game 354.538s. Actual phone support casts
@@ -126,6 +127,7 @@ implementation/validation receipts, not the next commits to push:
 | 1.0.34 | `dba826845e13d81586ccecd06c352b7a662d42af` | `release/34-with-qa` |
 | 1.0.35 | `948ed0c178c7c5967db078b53ef951d930660f30` | `release/35-with-qa` |
 | 1.0.36 | `90e157973178fcd9907a756d8729248b49c312df` | `release/36-with-combat` |
+| 1.0.37 | `47a565b0ec4d38ef9149b1a7055cf056ccfe3802` | `release/37-with-protection` |
 
 Alpha 1.0.34 is committed locally and merged into main as `976235a`.
 The phone stash has separate notes/version metadata, server-side Chronicle
