@@ -96,3 +96,19 @@ investigation prerequisites and authored interactions; compare before/after
 through earned routes. Do not ship a boss-only nerf that leaves Water unreachable
 without new mandatory grinding. Existing items, gold, earned levels and completed
 quest/raid access must survive the migration.
+
+## Economy accounting correction — implemented separately, not live
+
+Inspection also finds an undercount in `GrantWeeklyRaidReward`: a full inventory
+receives the existing 10,000-gold equipment compensation in addition to 50,000
+base gold, but the economy source records only 50,000. The new regression fails
+with **50,000 recorded / 60,000 actually received** in **0.665s**; the empty-bag
+and rejected-recipient controls pass. Log `/tmp/eidolon-weekly-economy-before.log`.
+
+The correction uses one final gold amount for both payment and source recording.
+It does not change reward amounts, Resonance, equipment or weekly lockout policy.
+Full bags retain all existing items; underlevel/missing recipients receive no
+payment or telemetry. Three repeated race-enabled runs of weekly-raid, quest
+reward, cap-overflow and pacing checks pass **14.208s**. Log:
+`/tmp/eidolon-weekly-economy-after.log`. This correction belongs with the upcoming
+balance work, not the frozen 46 scenery package; it is not published yet.
