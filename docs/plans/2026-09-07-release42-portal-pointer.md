@@ -43,7 +43,9 @@ within the real 80ms throttle. The test now fixes its clock, preserves independe
 target/kind checks and explicitly checks before, at and after the 80ms damage /
 140ms healing boundaries. The clock is restored even on failure. Production
 throttling is unchanged. The 26 focused feedback tests pass in 0.677s and lint
-passes; final full client verification is still required. Failed log:
+passes. Final clean-source **24146cd** full client **27855 PASS / 212 suites /
+3,134 tests / 72.867s**, log `/tmp/eidolon-release42-portal-final-client.log`.
+All owned checks are terminal; no browser or isolated backend remains. Failed log:
 `/tmp/eidolon-release42-portal-client.log`.
 
 The correction contains only tests and this evidence record. Keep the existing
