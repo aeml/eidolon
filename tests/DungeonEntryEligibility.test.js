@@ -51,15 +51,50 @@ describe.each([false, true])('dungeon entry eligibility (phone=%s)', isMobile =>
         expect(button().style.cursor).toBe('pointer');
     });
 
-    test('keeps family eligibility separate from selectable run scaling', () => {
+    test('starts water runs at the family minimum instead of offering Earth run levels', () => {
         open({ playerLevel: 60 });
         select('abyssal_well');
         expect(button().disabled).toBe(false);
-        expect(document.getElementById('dungeon-run-level-select').value).toBe('30');
+        expect(document.getElementById('dungeon-run-level-select').value).toBe('60');
         button().click();
         expect(JSON.parse(window.game.socket.send.mock.calls[0][0]).payload).toEqual({
-            dungeonType: 'abyssal_well', difficulty: 'normal', runLevel: 30
+            dungeonType: 'abyssal_well', difficulty: 'normal', runLevel: 60
         });
+    });
+
+    test.each([['abyssal_well', [60, 70, 80, 90, 100]], ['molten_core', [70, 80, 90, 100]], ['tempest_spire', [70, 80, 90, 100]]])('filters run choices for %s and keeps a compatible selected level', (type, expected) => {
+        open({ playerLevel: 100 });
+        const levels = document.getElementById('dungeon-run-level-select');
+        select(type);
+        expect([...levels.options].map(option => Number(option.value))).toEqual(expected);
+        expect(Number(levels.value)).toBe(expected[0]);
+        levels.value = '90';
+        select('verdant_bastion_catacombs');
+        expect(levels.value).toBe('90');
+        expect([...levels.options].map(option => Number(option.value))).toEqual([30, 40, 50, 60, 70, 80, 90, 100]);
+        select(type);
+        expect(levels.value).toBe('90');
+    });
+
+    test('shows no low-level choices for a locked family and uses the server minimum', () => {
+        open({ playerLevel: 60, dungeonEntryLevels: { molten_core: 80 } });
+        select('molten_core');
+        const levels = document.getElementById('dungeon-run-level-select');
+        expect(levels.disabled).toBe(true);
+        expect(levels.value).toBe('');
+        expect(levels.textContent).toContain('Unlocks at level 80');
+        button().onclick();
+        expect(window.game.socket.send).not.toHaveBeenCalled();
+    });
+
+    test('continues an existing lower-scaled legacy run without changing its level', () => {
+        open({ playerLevel: 70, hasInstance: true,
+            activeRun: { dungeonType: 'molten_core', difficulty: 'normal', runLevel: 30 } });
+        const levels = document.getElementById('dungeon-run-level-select');
+        expect(levels.disabled).toBe(true);
+        expect(levels.value).toBe('30');
+        button().click();
+        expect(JSON.parse(window.game.socket.send.mock.calls[0][0]).payload.runLevel).toBe(30);
     });
 
     test('uses the server-provided family requirements', () => {

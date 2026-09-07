@@ -1,8 +1,30 @@
 import * as THREE from 'three';
 import { CollisionManager } from '../src/core/CollisionManager.js';
 import { createProceduralLanternholdStructure, getLanternholdWalkCollider } from '../src/art/ProceduralLanternholdArchitecture.js';
+import { Forge } from '../src/entities/Forge.js';
+import { installGameEngineMovement } from '../src/core/GameEngineMovement.js';
+
+class InteractionFixture {}
+installGameEngineMovement(InteractionFixture);
 
 describe('current town building footprints', () => {
+    test.each([false, true])('forge hearth blocks walking but leaves its interaction edge reachable by a full-size hero (batched %s)', optimized => {
+        const forge = createProceduralLanternholdStructure('forge', { optimized });
+        forge.position.set(-28, 0.5, 218);
+        forge.rotation.y = Math.PI / 2;
+        const shape = getLanternholdWalkCollider(forge);
+        expect(shape).not.toBeNull();
+        const manager = new CollisionManager();
+        manager.addOrientedCollider(shape);
+        const range = new InteractionFixture().getInteractionRangeForEntity(Object.create(Forge.prototype));
+        for (const [x, z] of [[0, 4.5], [0, -4.5], [4.5, 0], [-4.5, 0]]) {
+            const approach = new THREE.Vector3(x, 0, z).applyMatrix4(shape.matrix);
+            expect(Math.hypot(approach.x + 28, approach.z - 218)).toBeLessThan(range);
+            expect(manager.checkCollision(approach, 1.25)).toBeNull();
+        }
+        expect(manager.checkCollision(new THREE.Vector3(-28, 0, 218), 1.25)).not.toBeNull();
+    });
+
     test.each([false, true])('rotated trading hall uses its walls, not roof/AABB/name extents (batched %s)', (optimized) => {
         const mesh = createProceduralLanternholdStructure('trading_house', { optimized });
         mesh.position.set(-22, 0.5, 185);

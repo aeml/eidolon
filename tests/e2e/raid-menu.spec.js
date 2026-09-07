@@ -1,14 +1,14 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 
-async function setupMenu(page) {
+async function setupMenu(page, isMobile = false) {
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.goto('/', { waitUntil: 'networkidle' });
-    await page.evaluate(async () => {
+    await page.evaluate(async (isMobile) => {
         const { UIManager } = await import('/src/ui/UIManager.js');
         const { InputManager } = await import('/src/core/InputManager.js');
         document.getElementById('start-screen').style.display = 'none';
-        const ui = new UIManager(false);
+        const ui = new UIManager(isMobile);
         const input = new InputManager({}, {});
         // Reproduce the live multiplayer binding; Enter on buttons must not
         // move focus into chat before the browser activates the button.
@@ -21,6 +21,39 @@ async function setupMenu(page) {
             network: { send: (type, payload) => sent.push({ type, payload }) },
             socket: { send: (message) => sent.push(JSON.parse(message)) }
         };
+    }, isMobile);
+}
+
+for (const [width, height, isMobile] of [[1280, 720, false], [390, 844, true], [844, 390, true]]) {
+    test.describe(`family level choices ${width}x${height}`, () => {
+        test.use({ viewport: { width, height }, isMobile, hasTouch: isMobile });
+        test('new runs show their family floor and send the selected level', async ({ page, baseURL }, testInfo) => {
+            const failures = collectBrowserFailures(page, baseURL);
+            await setupMenu(page, isMobile);
+            await page.evaluate(() => window.__raidMenuFixture.ui.showDungeonMenu({
+                playerLevel: 100, isLeader: true, hasInstance: false,
+                dungeonEntryLevels: { molten_core: 70, tempest_spire: 70, abyssal_well: 60 }
+            }));
+            for (const [type, minimum] of [['molten_core', 70], ['tempest_spire', 70], ['abyssal_well', 60]]) {
+                await page.locator('#dungeon-type-select').selectOption(type);
+                expect(await page.locator('#dungeon-run-level-select option').evaluateAll(options => options.map(option => Number(option.value))))
+                    .toEqual([30, 40, 50, 60, 70, 80, 90, 100].filter(level => level >= minimum));
+                await expect(page.locator('#btn-enter-dungeon')).toBeEnabled();
+                await expect(page.locator('#dungeon-unlock-note')).toContainText('entry available');
+            }
+            await page.locator('#dungeon-run-level-select').selectOption('60');
+            const enter = page.locator('#btn-enter-dungeon');
+            await enter.scrollIntoViewIfNeeded();
+            await expect(enter).toBeInViewport();
+            expect(await page.locator('#dungeon-menu').evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+            await page.screenshot({ path: testInfo.outputPath('family-level-choices.png') });
+            if (isMobile) await enter.tap(); else await enter.click();
+            expect(await page.evaluate(() => window.__raidMenuFixture.sent.at(-1))).toEqual({
+                type: 'enter_dungeon', payload: { dungeonType: 'abyssal_well', difficulty: 'normal', runLevel: 60 }
+            });
+            await expect(page.locator('#chat-box')).toBeVisible();
+            expect(failures, failures.join('\n')).toEqual([]);
+        });
     });
 }
 

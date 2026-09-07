@@ -1381,6 +1381,9 @@ export class GameEngine {
     }
 
     hydrateItem(item) {
+        // Vacant saved slots can arrive as zero-valued item records.
+        // Preserve their vacancy instead of creating a nameless Common item.
+        if (item && !item.id && !item.name) return null;
         if (!item) return null;
         if (typeof item.rarity === 'string') {
             // Try direct lookup (e.g. "COMMON")
@@ -2324,7 +2327,7 @@ export class GameEngine {
             if (originalOnMeshReady) originalOnMeshReady.call(entity, mesh);
 
             // Add Collision for static structures
-            if (entity.type === 'TradingHouse' || entity.type === 'Stash') {
+            if (entity.type === 'TradingHouse' || entity.type === 'Stash' || entity.type === 'Forge') {
                 mesh.position.copy(entity.position);
                 mesh.quaternion.copy(entity.rotation);
                 mesh.updateMatrixWorld(true);
@@ -2334,13 +2337,6 @@ export class GameEngine {
                     this.collisionManager.addOrientedCollider(collider);
                     entity.clearWalkCollider = () => this.collisionManager.removeOrientedCollider(collider);
                 }
-            } else if (entity.type === 'Forge') {
-                mesh.position.copy(entity.position);
-                mesh.quaternion.copy(entity.rotation);
-                mesh.updateMatrixWorld(true);
-                const box = new THREE.Box3().setFromObject(mesh);
-                this.collisionManager.addCollider(box);
-                console.log(`Added collision for ${entity.type} ${entity.id}`);
             }
 
             const key = this.chunkManager.getChunkKey(entity.position.x, entity.position.z);

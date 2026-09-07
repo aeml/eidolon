@@ -236,6 +236,22 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(refresh).toHaveBeenCalledWith(engine.player);
     });
 
+    test.each(['state', 'delta'])('%s refreshes forge after equipment and materials are synchronized', type => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+        const seen = [];
+        engine.uiManager.forge.refresh = player => seen.push({
+            level: player.equipment.mainHand.level,
+            materials: player.inventory.filter(Boolean).map(item => item.stack)
+        });
+        const record = { id: 'player-1', state: 'IDLE',
+            equipment: { mainHand: { id: 'staff', name: 'Staff', level: 41, rarity: 'Common', stats: {} } },
+            inventory: [{ id: 'shards', name: 'Eidolon Shard', stack: 2, rarity: 'Common' }] };
+        engine.handleServerMessage({ type, payload: type === 'state'
+            ? { 'player-1': record } : { u: { 'player-1': record }, r: [] } });
+        expect(seen).toEqual([{ level: 41, materials: [2] }]);
+    });
+
     test.each(['Fighter', 'Rogue', 'Wizard', 'Cleric'])('living %s recall clears pursuit and buffered travel before another frame', className => {
         const engine = createEngineHarness();
         engine.player.state = 'ATTACKING';

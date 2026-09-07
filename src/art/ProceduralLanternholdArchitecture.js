@@ -78,7 +78,10 @@ export const LANTERNHOLD_STRUCTURE_IDS = Object.freeze(
 // Walk-blocking walls/coffers, independent of roof overhangs, name tags and
 // retired-asset picking bounds. The low foundation steps remain approachable.
 const WALK_FOOTPRINTS = Object.freeze({
-    oathhall: [18.9, 16.3], trading_house: [12.35, 10.01], stash: [3.55, 2.55]
+    oathhall: [18.9, 16.3], trading_house: [12.35, 10.01], stash: [3.55, 2.55],
+    // Hearth/anvil only: the hood, ward ring and foundation cannot block the
+    // four-metre interaction edge of the current forge asset.
+    forge: [5.35, 6.4]
 });
 
 export function getLanternholdWalkCollider(mesh) {

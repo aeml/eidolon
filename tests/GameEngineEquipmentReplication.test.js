@@ -41,6 +41,18 @@ function remoteHarness() {
 }
 
 describe('remote equipment replication', () => {
+    test.each([null, undefined, {}, { id: '', name: '', type: '', level: 0, rarity: '' }])('keeps an empty wire item vacant: %j', item => {
+        expect(engineHarness().hydrateItem(item)).toBeNull();
+    });
+
+    test('keeps named legacy items and identified equipment while hydrating rarity', () => {
+        for (const item of [{ name: 'Eidolon Heart', stack: 3, rarity: 'Common' }, { id: 'staff', name: 'Staff', level: 41, rarity: 'Rare' }]) {
+            const hydrated = engineHarness().hydrateItem({ ...item });
+            expect(hydrated.name).toBe(item.name);
+            expect(hydrated.rarity.color).toBeTruthy();
+        }
+    });
+
     test('forwards observer equipment payloads to the actor visual attachment layer', () => {
         const engine = engineHarness();
         const remote = remoteHarness();

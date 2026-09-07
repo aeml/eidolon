@@ -418,6 +418,7 @@ class GameEngineNetworkMessageMethods {
                 this.player.inventory = inventory;
                 this.uiManager.updateInventory(this.player);
                 this.confirmPendingLootPickups(inventory);
+                this.uiManager.forge?.refresh?.(this.player);
             }
         } else if (msg.type === 'stash') {
             const stash = msg.payload.map(item => this.hydrateItem(item));
@@ -1068,6 +1069,14 @@ class GameEngineNetworkMessageMethods {
                              }
                         }
 
+                        // Full snapshots may include materials alongside upgraded equipment.
+                        if (pData.inventory !== undefined) {
+                            const inventory = Array.isArray(pData.inventory) ? [...pData.inventory] : [];
+                            while (inventory.length < 25) inventory.push(null);
+                            this.player.inventory = inventory.map(item => this.hydrateItem(item));
+                            this.uiManager.updateInventory(this.player);
+                        }
+
                         // Sync Equipment
                         if (pData.equipment) {
                             this.player.equipment = pData.equipment;
@@ -1077,27 +1086,6 @@ class GameEngineNetworkMessageMethods {
                             }
                             this.player.syncEquipmentVisuals?.();
                             this.uiManager.inventory?.updateEquipmentRecovery?.(this.player);
-
-                            // Force UI Update if Forge is open
-                            if (this.uiManager.forge.isOpen) {
-                                this.uiManager.forge.updateForgeUI(this.player);
-                                this.uiManager.forge.updateForgePotencyUI(this.player);
-                                this.uiManager.forge.updateForgeSocketUI(this.player);
-
-                                // Update selected item info if any
-                                if (this.uiManager.forge.selectedForgeSlot) {
-                                    const item = this.player.equipment[this.uiManager.forge.selectedForgeSlot];
-                                    this.uiManager.forge.updateForgeInfo(item);
-                                }
-                                if (this.uiManager.forge.selectedForgePotencySlot) {
-                                    const item = this.player.equipment[this.uiManager.forge.selectedForgePotencySlot];
-                                    this.uiManager.forge.updateForgePotencyInfo(item);
-                                }
-                                if (this.uiManager.forge.selectedForgeSocketSlot) {
-                                    const item = this.player.equipment[this.uiManager.forge.selectedForgeSocketSlot];
-                                    this.uiManager.forge.updateForgeSocketInfo(item);
-                                }
-                            }
                         }
 
                         if (Object.prototype.hasOwnProperty.call(pData, 'quests')) {
@@ -1135,6 +1123,8 @@ class GameEngineNetworkMessageMethods {
                             this.uiManager.updateInventory(this.player);
                             this.lastGold = pData.gold;
                         }
+
+                        this.uiManager.forge?.refresh?.(this.player);
 
                         // Party highlight (0.37.2): track local player's partyId from state stream.
                         if (pData.partyId !== undefined) {
@@ -1418,6 +1408,10 @@ class GameEngineNetworkMessageMethods {
                         }
                         this.player.syncEquipmentVisuals?.();
                         this.uiManager.inventory?.updateEquipmentRecovery?.(this.player);
+                    }
+
+                    if (pData.equipment !== undefined || pData.inventory !== undefined || pData.gold !== undefined) {
+                        this.uiManager.forge?.refresh?.(this.player);
                     }
 
                     if (Object.prototype.hasOwnProperty.call(pData, 'quests')) {

@@ -139,6 +139,28 @@ export class ForgeUI {
         return this.forgeScreen && this.forgeScreen.style.display === 'flex';
     }
 
+    // Called after all equipment and material fields in a server packet are applied.
+    // Keep the current tab/selection, but never retain details for an empty slot.
+    refresh(player) {
+        if (!this.isOpen || !player) return;
+        this.updateForgeUI(player);
+        this.updateForgePotencyUI(player);
+        this.updateForgeSocketUI(player);
+        for (const [selection, panel, update] of [
+            ['selectedForgeSlot', 'forgeUpgradeInfo', 'updateForgeInfo'],
+            ['selectedForgePotencySlot', 'forgePotencyInfo', 'updateForgePotencyInfo'],
+            ['selectedForgeSocketSlot', 'forgeSocketInfo', 'updateForgeSocketInfo']
+        ]) {
+            if (!this[selection]) continue;
+            const item = player.equipment?.[this[selection]];
+            if (item) this[update](item, player);
+            else {
+                this[selection] = null;
+                if (this[panel]) this[panel].style.display = 'none';
+            }
+        }
+    }
+
     /** Close forge (used by handleEscape). */
     close() {
         if (this.forgeScreen) this.forgeScreen.style.display = 'none';
@@ -235,6 +257,11 @@ export class ForgeUI {
         return ['mainHand', 'offHand', 'head', 'chest', 'legs', 'feet', 'gloves', 'shoulders', 'belt', 'ring1', 'ring2', 'trinket1', 'trinket2', 'neck'];
     }
 
+    _setItemIcon(element, item) {
+        const path = this.ctx.getItemIconPath(item);
+        element.style.backgroundImage = path ? `url('${path}')` : 'none';
+    }
+
     _getInventoryStackCount(item) {
         if (!item) return 0;
         return item.stack && item.stack > 0 ? item.stack : 1;
@@ -305,10 +332,7 @@ export class ForgeUI {
                     this.forgeEquipmentList.appendChild(el);
                 }
 
-                const iconPath = this.ctx.getItemIconPath(item);
-                if (!el.style.backgroundImage.includes(iconPath)) {
-                    el.style.backgroundImage = `url('${iconPath}')`;
-                }
+                this._setItemIcon(el, item);
                 el.style.backgroundSize = 'contain';
                 el.style.backgroundRepeat = 'no-repeat';
                 el.style.backgroundPosition = 'center';
@@ -486,10 +510,7 @@ export class ForgeUI {
                     this.forgePotencyList.appendChild(el);
                 }
 
-                const iconPath = this.ctx.getItemIconPath(item);
-                if (!el.style.backgroundImage.includes(iconPath)) {
-                    el.style.backgroundImage = `url('${iconPath}')`;
-                }
+                this._setItemIcon(el, item);
                 el.style.backgroundSize = 'contain';
                 el.style.backgroundRepeat = 'no-repeat';
                 el.style.backgroundPosition = 'center';
@@ -633,10 +654,7 @@ export class ForgeUI {
                     this.forgeSocketList.appendChild(el);
                 }
 
-                const iconPath = this.ctx.getItemIconPath(item);
-                if (!el.style.backgroundImage.includes(iconPath)) {
-                    el.style.backgroundImage = `url('${iconPath}')`;
-                }
+                this._setItemIcon(el, item);
                 el.style.backgroundSize = 'contain';
                 el.style.backgroundRepeat = 'no-repeat';
                 el.style.backgroundPosition = 'center';
@@ -769,8 +787,7 @@ export class ForgeUI {
                 el.style.width = '48px';
                 el.style.height = '48px';
 
-                const iconPath = this.ctx.getItemIconPath(item);
-                el.style.backgroundImage = `url('${iconPath}')`;
+                this._setItemIcon(el, item);
                 el.style.backgroundSize = 'contain';
                 el.style.backgroundRepeat = 'no-repeat';
                 el.style.backgroundPosition = 'center';
@@ -1154,8 +1171,7 @@ export class ForgeUI {
                 el.style.width = '48px';
                 el.style.height = '48px';
 
-                const iconPath = this.ctx.getItemIconPath(item);
-                el.style.backgroundImage = `url('${iconPath}')`;
+                this._setItemIcon(el, item);
                 el.style.backgroundSize = 'contain';
                 el.style.backgroundRepeat = 'no-repeat';
                 el.style.backgroundPosition = 'center';

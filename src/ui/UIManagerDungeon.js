@@ -311,19 +311,29 @@ class UIManagerDungeonMethods {
         runLevelSelect.style.cursor = 'pointer';
         runLevelSelect.style.userSelect = 'text';
         runLevelSelect.style.webkitUserSelect = 'text';
-        for (const runLevel of activeRun ? [activeRun.runLevel] : availableRunLevels) {
-            const option = document.createElement('option');
-            option.value = String(runLevel);
-            option.innerText = `Level ${runLevel}`;
-            runLevelSelect.appendChild(option);
-        }
-        if (!activeRun && availableRunLevels.length === 0) {
-            const placeholder = document.createElement('option');
-            placeholder.value = '';
-            placeholder.textContent = `Unlocks at level ${data.dungeonUnlockLevel || 30}`;
-            runLevelSelect.appendChild(placeholder);
-        }
-        runLevelSelect.disabled = Boolean(activeRun) || availableRunLevels.length === 0;
+        const updateRunLevels = () => {
+            const previous = Number(runLevelSelect.value);
+            const minimum = dungeonInfo[dungeonSelect.value].baseLevel;
+            // Saved runs retain their original scaling, including older low-level runs.
+            const levels = activeRun ? [activeRun.runLevel] : availableRunLevels.filter(level => level >= minimum);
+            runLevelSelect.replaceChildren();
+            for (const runLevel of levels) {
+                const option = document.createElement('option');
+                option.value = String(runLevel);
+                option.innerText = `Level ${runLevel}`;
+                runLevelSelect.appendChild(option);
+            }
+            if (levels.length === 0) {
+                const placeholder = document.createElement('option');
+                placeholder.value = '';
+                placeholder.textContent = playerLevel < minimum ? `Unlocks at level ${minimum}` : 'No run levels available';
+                runLevelSelect.appendChild(placeholder);
+            } else if (levels.includes(previous)) {
+                runLevelSelect.value = String(previous);
+            }
+            runLevelSelect.disabled = Boolean(activeRun) || levels.length === 0;
+        };
+        updateRunLevels();
         dungeonPanel.appendChild(runLevelSelect);
 
         const unlockNote = document.createElement('div');
@@ -422,7 +432,8 @@ class UIManagerDungeonMethods {
                 return `${dungeon.name} unlocks at level ${dungeon.baseLevel}. Your level: ${playerLevel}.`;
             }
             const runLevel = Number(runLevelSelect.value);
-            if (!canSelectDungeonRunLevel(playerLevel, runLevel)) {
+            if (!canSelectDungeonRunLevel(playerLevel, runLevel) || (!activeRun &&
+                (runLevel < dungeon.baseLevel || !availableRunLevels.includes(runLevel)))) {
                 return `This run level is not unlocked. Your level: ${playerLevel}.`;
             }
             if (selectedDifficulty !== 'normal' && !endgameUnlocked) {
@@ -476,7 +487,10 @@ class UIManagerDungeonMethods {
             `;
         };
 
-        dungeonSelect.onchange = updateDifficultyInfo;
+        dungeonSelect.onchange = () => {
+            updateRunLevels();
+            updateDifficultyInfo();
+        };
         runLevelSelect.onchange = updateDifficultyInfo;
 
         // Enter Button
@@ -506,7 +520,7 @@ class UIManagerDungeonMethods {
                     payload: {
                         dungeonType: dungeonSelect.value,
                         difficulty: selectedDifficulty,
-                        runLevel: Number(runLevelSelect.value) || availableRunLevels[0] || 30
+                        runLevel: Number(runLevelSelect.value)
                     }
                 }));
             }

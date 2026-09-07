@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { jest } from '@jest/globals';
+import { createProceduralLanternholdStructure } from '../src/art/ProceduralLanternholdArchitecture.js';
 
 jest.unstable_mockModule('../src/proto/state_pb.js', () => {
     const mock = {
@@ -27,7 +28,9 @@ function createEngineHarness({ activeChunk = false } = {}) {
         remove: jest.fn()
     };
     engine.collisionManager = {
-        addCollider: jest.fn()
+        addCollider: jest.fn(),
+        addOrientedCollider: jest.fn(),
+        removeOrientedCollider: jest.fn()
     };
     engine.chunkManager = {
         activeChunkKeys: new Set(activeChunk ? ['0,0'] : []),
@@ -47,7 +50,7 @@ function createImmediateMeshEntity(type = 'Skeleton') {
         rotation: new THREE.Quaternion(),
         onMeshReady: jest.fn(),
         ensureMesh() {
-            const mesh = createMesh();
+            const mesh = type === 'Forge' ? createProceduralLanternholdStructure('forge') : createMesh();
             this.mesh = mesh;
             if (this.onMeshReady) {
                 this.onMeshReady(mesh);
@@ -102,6 +105,12 @@ describe('GameEngine mesh-ready residency', () => {
         engine.addEntity(entity);
 
         expect(engine.renderSystem.add).toHaveBeenCalledWith(entity.mesh);
-        expect(engine.collisionManager.addCollider).toHaveBeenCalledTimes(1);
+        expect(engine.collisionManager.addCollider).not.toHaveBeenCalled();
+        expect(engine.collisionManager.addOrientedCollider).toHaveBeenCalledTimes(1);
+        const shape = engine.collisionManager.addOrientedCollider.mock.calls[0][0];
+        expect(shape.box.max.x - shape.box.min.x).toBeCloseTo(5.35);
+        expect(shape.box.max.z - shape.box.min.z).toBeCloseTo(6.4);
+        entity.clearWalkCollider();
+        expect(engine.collisionManager.removeOrientedCollider).toHaveBeenCalledWith(shape);
     });
 });

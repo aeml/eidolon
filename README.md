@@ -261,6 +261,13 @@ overlay and does not modify server source or saved characters. Evidence and
 next implementation requirements are in the
 [consumer audit](docs/plans/2026-09-06-talent-consumer-audit.md).
 
+The isolated `forge-guide` route seeds a new disposable local account before its
+first login, then checks real Forge purchases, immediate selected-item/material
+refresh, saved equipment and family-specific guide choices. It is included in
+full predeploy QA and cannot seed a production account. Run it with
+`EIDOLON_ISOLATED_QA_ROUTE=forge-guide npm run test:e2e:isolated` under the renderer
+group; its prepared gear/materials do not prove earned progression.
+
 The isolated `phone-inventory` route also checks ordinary town-stash interaction,
 explicit Store/Withdraw, and fresh-login persistence of the complete serialized
 item in portrait and landscape. It prepares a disposable level-30 functional

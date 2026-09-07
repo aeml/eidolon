@@ -1230,7 +1230,11 @@ class GameEngineMovementMethods {
     getInteractionRangeForEntity(entity) {
         let range = 5.0;
 
-        if (entity instanceof DwarfSalesman || entity instanceof Forge) {
+        // The modern hearth and the hero's 1.25m collision capsule prevent
+        // reaching the old 4m centre distance. Interact from its outside edge.
+        if (entity instanceof Forge) return 6.0;
+
+        if (entity instanceof DwarfSalesman) {
             return 4.0;
         }
 
