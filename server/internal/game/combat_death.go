@@ -287,10 +287,12 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 			// Check if Elite
 			isElite := strings.HasPrefix(tID, "elite-")
 
-			// 1. Equipment Loot
+			// 1. Mixed-pool candidates. Equipment is bounded separately below;
+			// retain all original material candidates rather than nerfing Forge
+			// supply incidentally alongside routine equipment frequency.
 			dropCount := 0
 			if isElite {
-				dropCount = 3 // Elites drop 3 items guaranteed
+				dropCount = 3 // Elite pool candidates, not three guaranteed gear drops.
 			} else if (qaGuaranteedLoot || rand.Float64() < 0.5) && tLevel > 0 {
 				dropCount = 1 // Normal enemies have 50% chance for 1 item
 			}
@@ -308,6 +310,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 					}
 				}
 			}
+			lootItems = limitRoutineEquipmentLoot(lootItems, isElite, isBoss, qaGuaranteedLoot, rand.Float64())
 
 			// 2. Shard/Heart Loot (Eidolic)
 			eidolicLoot := GenerateShardLoot(isElite)

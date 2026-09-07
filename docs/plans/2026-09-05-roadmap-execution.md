@@ -5,7 +5,196 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 20:30 UTC
+## Current checkpoint — September 7, 21:31 UTC
+
+Phone earned reading run **84495** now closes **SUCCESS / 1 test / 48.8s**
+(test 47.4s), including actual landscape swipes until the final diary line is
+inside the scrollport and unobscured, manual turn-in and saved rereading.
+Credential scan/cleanup pass. Both actual screenshots are inspected and copied
+to `/tmp/eidolon-earned-diary-reading-390.png` and
+`/tmp/eidolon-earned-diary-reading-844.png`. These retain the explicit level-30
+functional fixture and QA performance overlay; not fresh pacing/device evidence.
+
+The isolated journal fix, browser red/green regression and phone reading proof
+are committed as **c14388b**. The new ordinary Water travel/returning-character
+test and isolated route are committed separately as **0262488**, with lint,
+shell syntax and diff checks passing. Investigation worktree is clean. Actual
+Water route **59985** is active against that exact commit, log
+`/tmp/eidolon-investigations-water-earned.log`; its local containers are ready
+and Playwright is running. **This is the sole owned browser. Freeze investigation
+runtime/tests while it runs.** Water completion remains unproven.
+
+41 **9c6eb9d… / CI 34163174335** remains active: client success, server running
+at last poll. Full live-40 gate and fresh exact identity are established below;
+next publisher remains **42 / ea565ebf…** only after 41's complete gate. Root
+49 integration and its local package evidence remain valid but unpublished.
+No expansion/root merge or completion claim for the broader goal.
+
+## Historical checkpoint — September 7, 21:27 UTC
+
+This goal turn makes concrete progress: closes 49's local sweep, integrates its
+verified package, reproduces and fixes a real browser reading-position defect,
+and advances the sequential release queue after a fully successful live gate.
+**The full roadmap and broader balancing/story scope remain incomplete.**
+
+40 **008ee7d3bb2b2017cea012006935897066629a49** CI **34159297803** is terminal
+**SUCCESS, every job**, including Live Release and Character QA. Fresh no-cache
+public checks immediately before publishing 41 return HTTP 200: manifest and
+login/versioned main script match **Alpha 1.0.40 / 008ee7d…**; backend matches
+that exact version/commit with `status: ok`, `database: ready`.
+Remote master is verified at 008ee7d and ancestry to 41 is checked, then only
+`refs/heads/release/41-with-forge-pointer:refs/heads/master` is pushed.
+Push **45226** closes successfully. **41 / 9c6eb9d20ad5171a5bb18240612b0998aba25d28**
+CI **34163174335** is active. Next publisher is
+`release/42-with-forge-pointer / ea565ebfdedb52fff7841e0fd4d650febd3d20da`, only
+after every 41 CI/deploy/live job succeeds and fresh exact public-41 identity.
+Never publish root/master/HEAD or skip the sequential queue.
+
+49 unchanged anonymous rerun **82828** closes **SUCCESS / 75 tests / 8.8m**.
+The earlier network-interrupted sweep and trace remain preserved. Final evidence
+commit **514702753d851f482b8b77656f06d4f71d678b0b** is saved on
+`release/49-personal-fragment-budget` and its work branch. Root merges this
+locally verified package as **31aff63**, with **250 integration contracts / 1.774s**
+(19507 closed). Root now says Alpha 1.0.49 but **is not published**. Release 49
+still waits for 41–48's gates and its own CI/deploy/live checks. Its active story
+remains 15 chapters; the investigation graph is still isolated.
+
+Investigation full client **63653** closes **219 suites / 3,252 tests / 145.889s**,
+lint passes. Backend coverage remains root **16.127s**, game **396.729s** as
+recorded below. The reading fix has an actual-browser red/green proof: with the
+old ordering a later open multi-paragraph diary jumps **671 → 486 pixels**;
+with the fix the same fixture retains its position across three rebuilds and
+passes **1 / 4.2s** (test 2.9s), handle **8694** closed. Actual failed trace is
+preserved at `/tmp/eidolon-reading-scroll-clamp-before-trace.zip`. Logs
+`/tmp/eidolon-investigations-reading-browser-before-long-record.log` and
+`/tmp/eidolon-investigations-reading-browser-final.log`. Earlier fixture attempts
+first omitted an objective/target, then used a short record which passed even
+with the old ordering; neither is evidence for the fix. The strengthened fixture
+uses real Earth/Water record text and is added to the anonymous browser suite.
+
+Actual earned phone diary touch-scroll-to-final-line run **84495** is active,
+log `/tmp/eidolon-investigations-phone-reading-final.log`. This is the sole owned
+browser; freeze the isolated investigation runtime/tests until it finishes.
+Water catch-up field travel is newly authored with an explicit disposable
+returning-character fixture, canonical level-100 Wizard stats and only the nine
+old dungeon milestones seeded. No investigations/raids are granted; normal
+acceptance, travel, prop interactions, manual rewards and reconnect are required.
+The new `water-investigations` route has lint/shell syntax checks but **has not
+run yet**. It is not fresh-character pacing evidence. Isolated source is still
+uncommitted; remaining Water/Fire/Air playtests and coordinated XP/gold/loot
+tuning stay open.
+
+## Historical checkpoint — September 7, 21:18 UTC
+
+40 `008ee7d` CI **34159297803** now has client/server/browser, predeploy
+character QA, input validation and both deployments successful. **Live Release
+and Character QA remains in progress**. Do not publish 41 until that terminal
+success and a fresh exact public-40 identity check. Earlier live-39 evidence is
+historical, not a claim that 40 has passed its full gate.
+
+49 final anonymous handle **46704** is closed: **74/75 pass, 10.1m**. The one
+failure occurs before layout assertions when dynamic imports encounter
+`net::ERR_NETWORK_CHANGED`; the actual trace identifies simultaneous local-module
+load failures, not a demonstrated layout regression. It is preserved at
+`/tmp/eidolon-release49-network-change-trace.zip`. Unchanged full rerun **82828**
+is active, log `/tmp/eidolon-release49-anonymous-rerun.log`; freeze package c0a6910.
+No final-49 integration/publication yet. This is the only owned browser run.
+
+Investigation combined backend **90803** is closed with **SIGTERM/143**, root
+package passing **16.127s** but no game result. No Go child remained; the cause
+of termination is unknown, not established OOM or test failure. Game-only verbose
+rerun **83699** is now closed and **passes race / 396.729s**; log
+`/tmp/eidolon-investigations-combined-game-rerun.log`. Combined runtime 84abecf
+therefore has passing package coverage, without claiming the terminated invocation
+itself passed.
+
+Further isolated reading QA finds an ordering defect for a later open field
+record: restoring scroll before expanded height can clamp the saved offset.
+A modeled-browser regression reproduces **500 → 100 / 1.426s**; moving scroll
+restoration after disclosure restoration passes **19 focused checks / 1.457s**.
+The first one-record control passes because the legacy archive selector already
+opens that first disclosure; the corrected regression covers a later record.
+Logs `/tmp/eidolon-diary-scroll-before-second-record.log` and
+`/tmp/eidolon-diary-scroll-after.log`. New real-browser layout coverage and actual
+landscape diary swipe-to-final-line checks are authored but **not yet run**.
+Full isolated client/lint **63653** is active, log
+`/tmp/eidolon-investigations-reading-client.log`. These changes remain uncommitted
+and isolated; do not merge the 23-chapter graph into root. Remaining realms,
+ordered Fire fight, broader progression/economy and the full roadmap stay open.
+
+## Historical checkpoint — September 7, 21:00 UTC
+
+The preceding goal turn made concrete progress: real Earth discovery play,
+phone interaction support, a reproduced/fixed surplus-drop defect and a separate
+49 package. **Full roadmap and economy/story expansion remain incomplete.**
+40 `008ee7d` CI **34159297803** currently has client/server/browser success and
+predeploy character QA active; no deployment or live-40 success is claimed.
+Last fresh public identity remains **Alpha 1.0.39 / 7ddf776e…**, healthy/ready.
+Next publisher is still `release/41-with-forge-pointer / 9c6eb9d…`, only after
+all 40 CI/deployment/live checks and fresh exact public identity succeed.
+Do not publish root/master/HEAD or skip queued releases.
+
+### Personal fragment limits and Alpha 1.0.49
+
+Runtime **`b01d3c562e5f9fde0de128f9b6c1047a4ebeab7f`** is root-integrated by
+fast-forward. It bounds personal quest drops using actual matching owned world
+stacks, with roll/budget/publication under one world→player lock transaction.
+The real asynchronous death test reproduces **20 drops with one needed** per
+solo/party recipient before the fix (**0.593s**) and passes three times afterward
+(**3.576s**). Lifecycle/collection race repeats pass **8.929s**; full backend race
+passes root **12.795s**, game **302.674s**. Ten-thousand-entity source-operation
+benchmark **0.240–0.255ms** is not a server concurrency-capacity claim.
+
+The isolated worktree `/tmp/eidolon-quest-loot-1i4saA`, branch
+`work/chronicle-loot-budget-20260907`, is clean at package
+**`c0a6910c1f6e1cb02e0b04c08ba8d407d5361f2e`**. Version/patch notes align to
+**Alpha 1.0.49 (only the fragments you need)**. Package contracts pass
+**250 / 2.957s**, full client **217 / 3,212 / 201.597s**, lint, quest-related
+race checks **3.626s / 11.243s**, and the actual fresh collection route **2.3m**:
+exactly eight physical fragments, 20 observed target deaths, zero player deaths,
+manual consumption/reward and saved reconnect. Unchanged 8,000 XP/100 gold still
+leaves the player at 17 with the level-30 Guide correctly locked; broader pacing
+is not signed off. The actual ready image is inspected and copied to
+`/tmp/eidolon-release49-earned-collection-ready.png` before the next browser run.
+
+Final anonymous sweep **46704** is active, log
+`/tmp/eidolon-release49-anonymous.log`. Freeze this package while it runs. The
+earlier fresh/browser/client/backend handles are closed. **Do not merge/package
+as final or publish 49 before this sweep and its preceding release gates pass.**
+Full evidence is in [the fragment budget](2026-09-07-personal-fragment-budget.md).
+
+### Isolated investigation expansion
+
+Latest release-48 corrections merge into the expansion at **93f0162** and pass
+**276 focused checks / 4.148s**. The complete earned Earth chain now passes
+**3.6m**: diary, eight seeds, all three scar discoveries, explicit turn-ins and
+saved dungeon handoff. Final level 17, 16 observed target deaths, no deaths;
+collection/scar/handoff portion 138 seconds. Log
+`/tmp/eidolon-investigations-earned-earth-travel.log`. Roaming enemies cover the
+first failed route's ground clicks; the successful route permits the existing
+ordinary jump fallback, not teleport/protection/quest grants.
+
+Phone USE previously handled only vendors. It now retains nearby loot priority
+and uses ordinary interactions/ranges for other services and readable discoveries;
+dead players cannot activate it, and interactables get a pointer cursor. Focused
+checks pass **42 / 1.759s**, full client **219 / 3,251 / 138.491s**, lint.
+Touch route passes **1 / 1.3m** (test 1.2m), log
+`/tmp/eidolon-investigations-phone-town-route.log`: joystick travel, actual USE
+inspection, journal at 390×844 and 844×390, manual completion and saved rereading.
+Both actual screenshots are inspected. This uses an explicit level-30 fixture,
+not fresh progression or physical-device performance evidence. Failed travel
+diagnostics identify the merchant stall on the direct path; routing around its
+south side preserves all collisions. No bypass is introduced.
+
+Implementation **645ed36** is committed. The verified fragment-limit runtime is
+merged into it as **84abecf**; combined full backend race **90803** is active,
+log `/tmp/eidolon-investigations-combined-server.log`. Root still has only the
+dormant foundation and 15-chapter active chain; the expansion remains isolated.
+Remaining six Water/Fire/Air chapters, actual ordered Fire fight, landscape
+diary touch-scroll-to-end, wider placements and coordinated reward tuning remain
+open. All prior owned investigation browser/client handles are closed.
+
+## Historical checkpoint — September 7, 20:30 UTC
 
 Isolated world-integration commit **`f1f7919bd6302728f86e7ec0868cf486b5816344`**
 is saved clean on `work/chronicle-investigations-20260907`; it is not merged
