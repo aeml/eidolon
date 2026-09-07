@@ -81,13 +81,23 @@ test('status Mastery purchases change real ticks and persist through fresh login
         async function acquireAim() {
             await expect.poll(async () => {
                 aim = await projectEntity(page, target.id);
-                if (!aim?.visible) return false;
-                await page.mouse.move(aim.x, aim.y);
-                return page.evaluate(async id => {
+                if (aim?.visible) await page.mouse.move(aim.x, aim.y);
+                return page.evaluate(async ({ id, visible }) => {
                     await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-                    return window.game.hoveredEntity?.id === id && window.game.hoveredEntity.position.distanceTo(window.game.player.position) < 9;
-                }, target.id);
-            }).toBe(true);
+                    const game = window.game, enemy = game.remotePlayers.get(id);
+                    return { visible, hovered: game.hoveredEntity?.id === id,
+                        inRange: Boolean(enemy && enemy.position.distanceTo(game.player.position) < 9),
+                        living: Boolean(enemy?.isActive && enemy.state !== 'DEAD') };
+                }, { id: target.id, visible: Boolean(aim?.visible) });
+            }).toEqual({ visible: true, hovered: true, inRange: true, living: true }).catch(async error => {
+                console.log('[status-aim]', await page.evaluate(id => {
+                    const game = window.game, enemy = game.remotePlayers.get(id);
+                    return { player: game.player.position, enemy: enemy?.position, distance: enemy?.position.distanceTo(game.player.position),
+                        state: game.player.state, targetState: enemy?.state, hovered: game.hoveredEntity?.constructor?.name,
+                        targetType: enemy?.constructor?.name, health: enemy?.stats?.hp };
+                }, target.id));
+                throw error;
+            });
         }
         await acquireAim();
         await page.evaluate(id => Object.assign(window.__statusQA, { target: id, results: [], damage: [] }), target.id);
