@@ -4,8 +4,17 @@ import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld,
 import { openIlyra } from './chronicle-earth-route.js';
 import { earnInvestigation } from './chronicle-investigation-route.js';
 import { createEarnedWizardDefense } from './earned-wizard-defense.js';
+import { chronicleInvestigations } from '../../src/data/chronicleInvestigations.generated.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off', actionTimeout: 20_000 });
+
+const realm = process.env.EIDOLON_E2E_INVESTIGATION_REALM || 'water';
+const realmRoutes = {
+    water: [[0, 230], [55, 230], [80, 200], [125, 200], [145, -200], [145, -550], [0, -575], [0, -625]],
+    fire: [[0, 230], [-55, 230], [-80, 200], [-125, 200], [-500, 200], [-900, 200], [-1030, 200], [-1130, 245]],
+    air: [[0, 230], [55, 230], [80, 200], [125, 200], [500, 200], [900, 200], [1030, 200], [1110, 245]]
+};
+if (!Object.hasOwn(realmRoutes, realm)) throw new Error('Investigation realm must be water, fire or air');
 
 async function clearPursuingHostiles(page, site, beforeCombat) {
     const engaged = new Set();
@@ -13,10 +22,12 @@ async function clearPursuingHostiles(page, site, beforeCombat) {
         if (await beforeCombat()) return false;
         const state = await page.evaluate(() => {
             const game = window.game, player = game.player;
+            const ashRecorded = Boolean((player.quests.find(q => q.id === 'chronicle_fire_obedient_ember')?.investigationMask || 0) & 1);
             const enemies = (game.activeEntitiesCache || []).filter(enemy => game.isHostileActorTarget(enemy) &&
+                (ashRecorded || !enemy.id.startsWith('chronicle-site-')) &&
                 player.position.distanceTo(enemy.position) < 14);
             enemies.sort((a, b) => player.position.distanceTo(a.position) - player.position.distanceTo(b.position));
-            return { dead: player.state === 'DEAD', id: enemies[0]?.id, cooldown: player.abilityCooldown };
+            return { dead: player.state === 'DEAD', id: enemies[0]?.id, cooldown: player.abilityCooldown, ashRecorded };
         });
         expect(state.dead, 'Prepared returning character must survive ordinary field combat').toBe(false);
         if (!state.id) return true;
@@ -27,7 +38,7 @@ async function clearPursuingHostiles(page, site, beforeCombat) {
             const game = window.game;
             return game.isHostileActorTarget(game.hoveredEntity) ? game.hoveredEntity.id : null;
         });
-        if (!actual) return false;
+        if (!actual || (!state.ashRecorded && actual.startsWith('chronicle-site-'))) return false;
         // Actual left-click pursuit/basic attack and Wizard's right-click
         // Fireball. No despawn, invulnerability, damage or kill-credit grants.
         await page.mouse.click(point.x, point.y);
@@ -35,7 +46,40 @@ async function clearPursuingHostiles(page, site, beforeCombat) {
         engaged.add(actual);
         return false;
     }, { timeout: 180_000, intervals: [250], message: `Clear ordinary pursuers before inspecting ${site.id}` }).toBe(true);
-    if (engaged.size) console.log(`[water-site-combat] ${site.id}: engaged ${engaged.size} actual pursuers; nearby hostile area cleared`);
+    if (engaged.size) console.log(`[${realm}-site-combat] ${site.id}: engaged ${engaged.size} actual pursuers; nearby hostile area cleared`);
+}
+
+async function defeatCommandAnchor(page, site, chapter, beforeCombat) {
+    const mask = () => page.evaluate(id => window.game.player.quests.find(q => q.id === id)?.investigationMask || 0, chapter.id);
+    expect(await mask(), 'Ash must be genuinely recorded before the anchor fight').toBe(1);
+    // It is an ordinary shared overworld enemy. If it died before the ash was
+    // recorded, wait for its real ten-second respawn, never fabricate a kill.
+    await expect.poll(() => page.evaluate(id => {
+        const enemy = window.game.remotePlayers.get(id);
+        return Boolean(enemy && enemy.state !== 'DEAD' && enemy.health > 0);
+    }, site.entityId), { timeout: 20_000 }).toBe(true);
+    let sawDeath = false;
+    await expect.poll(async () => {
+        const enemy = await page.evaluate(id => {
+            const game = window.game, enemy = game.remotePlayers.get(id);
+            return { deadPlayer: game.player.state === 'DEAD', exists: Boolean(enemy),
+                dead: enemy?.state === 'DEAD' || enemy?.health <= 0, cooldown: game.player.abilityCooldown };
+        }, site.entityId);
+        expect(enemy.deadPlayer, 'Anchor must be defeated through survivable ordinary combat').toBe(false);
+        expect(enemy.exists).toBe(true);
+        sawDeath ||= enemy.dead;
+        if (sawDeath && (await mask() & 2)) return true;
+        if (enemy.dead || await beforeCombat()) return false;
+        const point = await projectEntity(page, site.entityId);
+        if (!point?.visible) return false;
+        await page.mouse.move(point.x, point.y);
+        if (!await page.evaluate(id => window.game.hoveredEntity?.id === id, site.entityId)) return false;
+        await page.mouse.click(point.x, point.y);
+        if ((enemy.cooldown || 0) <= 0) await page.mouse.click(point.x, point.y, { button: 'right' });
+        return false;
+    }, { timeout: 240_000, intervals: [250], message: 'Actual command-anchor death grants ordered evidence' }).toBe(true);
+    expect(await mask(), 'Released ember must still be unrecorded after combat').toBe(3);
+    console.log('[fire-anchor] actual death observed after ash; mask 1 → 3, ember still unrecorded');
 }
 
 function seedReturningCharacter(username) {
@@ -81,7 +125,7 @@ function seedReturningCharacter(username) {
     } catch { throw new Error('Could not seed disposable returning-story fixture'); }
 }
 
-test('returning character earns Water records through ordinary travel and manual catch-up turn-ins', async ({ page, baseURL }, testInfo) => {
+test(`returning character earns ${realm} records through ordinary travel and manual catch-up turn-ins`, async ({ page, baseURL }, testInfo) => {
     test.skip(!process.env.EIDOLON_E2E_INVESTIGATION_MONGO_CONTAINER, 'Requires isolated returning-character fixture');
     test.setTimeout(900_000);
     const credentials = credentialsFromEnvironment();
@@ -105,7 +149,8 @@ test('returning character earns Water records through ordinary travel and manual
     await expect.poll(() => page.evaluate(() => window.game.player.hotbar.includes('Arcane Shield'))).toBe(true);
     await page.locator('#btn-close-skills').click();
     const beforeCombat = await createEarnedWizardDefense(page);
-    const ids = ['chronicle_water_flood_shelter', 'chronicle_water_false_reflection'];
+    const chapters = chronicleInvestigations.filter(chapter => chapter.realm === realm);
+    const ids = chapters.map(chapter => chapter.id);
     for (const id of ids) {
         const initial = await page.evaluate(id => window.game.player.quests.find(q => q.id === id), id);
         expect(initial.legacyOptional).toBe(true);
@@ -113,8 +158,9 @@ test('returning character earns Water records through ordinary travel and manual
         expect(initial.investigationMask || 0).toBe(0);
         await earnInvestigation(page, id, openIlyra,
             (site, stage) => page.screenshot({ path: testInfo.outputPath(`${site.id}-${stage}.png`) }), {
-                waypoints: [[0, 230], [55, 230], [80, 200], [125, 200], [145, -200], [145, -550], [0, -575], [0, -625]],
+                waypoints: realmRoutes[realm],
                 beforeInspect: site => clearPursuingHostiles(page, site, beforeCombat),
+                defeatSite: (site, chapter) => defeatCommandAnchor(page, site, chapter, beforeCombat),
                 selectChapter: async chapter => {
                     const other = page.locator('#quest-list details').filter({ has: page.locator('summary').filter({ hasText: 'Other discoveries' }) });
                     if (await other.getAttribute('open') === null) await other.locator('summary').click();
@@ -136,6 +182,16 @@ test('returning character earns Water records through ordinary travel and manual
     const saved = await page.evaluate(() => window.game.player.quests);
     expect(saved.find(q => q.id === 'chronicle_09_sky_answers').completed).toBe(true);
     expect(saved.find(q => q.id === 'chronicle_10_rootheart_raid').completed).toBe(false);
-    console.log('[water-investigations] local veteran fixture; actual field discoveries, manual rewards and reconnect passed');
+    await page.keyboard.press('j');
+    await expect(page.locator('#quest-journal')).toBeVisible();
+    for (const site of chapters.flatMap(chapter => chapter.sites)) {
+        const record = page.locator(`#journal-list details[data-discovery-id="${site.id}"]`);
+        await record.locator('summary').scrollIntoViewIfNeeded();
+        if (await record.getAttribute('open') === null) await record.locator('summary').click();
+        await expect(record).toHaveAttribute('open', '');
+        await expect(record).toContainText(site.text.replace(/\n\s*\n/g, ''));
+    }
+    await page.locator('#btn-close-journal').click();
+    console.log(`[${realm}-investigations] local veteran fixture; actual field discoveries, manual rewards, reconnect and journal rereading passed`);
     expect(failures, failures.join('\n')).toEqual([]);
 });

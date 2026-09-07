@@ -578,10 +578,12 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   phone-quests)
     run_phone_quests
     ;;
-  water-investigations)
-    EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-water-lore" EIDOLON_E2E_CLASS=Wizard \
+  water-investigations|fire-investigations|air-investigations)
+    investigation_realm="${EIDOLON_ISOLATED_QA_ROUTE%-investigations}"
+    EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-${investigation_realm}-lore" EIDOLON_E2E_CLASS=Wizard \
+      EIDOLON_E2E_INVESTIGATION_REALM="${investigation_realm}" \
       EIDOLON_E2E_INVESTIGATION_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_INVESTIGATION_MONGO_PORT="${mongo_port}" \
-      npx playwright test tests/e2e/chronicle-water-investigations.spec.js
+      npx playwright test tests/e2e/chronicle-realm-investigations.spec.js
     ;;
   phone-build)
     run_phone_build
