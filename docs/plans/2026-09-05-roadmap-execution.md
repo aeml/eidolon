@@ -5,14 +5,23 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-Current release queue (September 7): **1.0.32 (`d578bdf`) is fully verified**.
+Current release queue (September 7): **1.0.33 (`0024f33`) is fully verified**.
+CI **`34096361856` attempt 1** passed every job, including final live character
+and four-class/remote-animation QA. Fresh post-terminal uncached checks at
+**08:30:51.811 UTC** matched manifest, login label, versioned main script and
+backend to `0024f3370c0f1e648bc219a5d3ac816b4566a3e2` / Alpha 1.0.33; health `ok`,
+database `ready`. Only **1.0.34 `dba826845e13d81586ccecd06c352b7a662d42af`** was
+pushed next (terminal successful push). CI **`34101007172`** is in progress.
+Do not push 1.0.35 until its complete CI/live gate and fresh post-terminal
+identity check pass.
+
+Previous fully verified release: **1.0.32 (`d578bdf`)**.
 CI **`34089969590` attempt 2** passed every job including final live character and
 remote-animation QA. Fresh post-terminal uncached checks at **07:36:56.055 UTC**
 matched manifest, login label, versioned main script and backend to
 `d578bdfff7cd998c56bc422bc403d4cbe666b902` / Alpha 1.0.32; health `ok`, database
 `ready`. Only **1.0.33 `0024f3370c0f1e648bc219a5d3ac816b4566a3e2`** was pushed next.
-CI **`34096361856`** is in progress. Do not push 1.0.34 until its complete CI/live
-gate and fresh post-terminal identity check pass.
+Its subsequent full verification and ordered successor push are recorded above.
 
 The unchanged 1.0.32 rerun follows a predeploy browser `ERR_NETWORK_CHANGED`
 failure; [the original failure and pre-terminal checks](2026-09-07-release32-network-retry.md)
@@ -68,6 +77,19 @@ Source **`add49409a0b6fd845ebd7995aa462731b2a29271`** is preserved on
 **`release/38-with-space`**, after the unchanged 1.0.37 candidate.
 Shared camera/encounter-region composition and physical-phone sign-off
 remain next, rather than treating another menu patch as the completed redesign.
+
+The subsequent [1.0.39 candidate](2026-09-07-release39-phone-party.md) implements
+the shared CSS-owned camera reservation and landscape thumb layout, a readable
+tap-open party panel, deliberate Healing Light/Divine Intervention ally selection,
+chat-layer repair and compact touch-through combo feedback. It has separate patch
+notes and aligned login/runtime metadata. Final client checks pass **197 suites /
+2,915 tests in 118.224s**, server race checks pass, and ten populated camera/HUD
+checks pass. Both support spells reach a real selected party member in three phone
+sizes. Final combat (**18.7s**) and support (**18.9s**) repeats pass; final full
+anonymous retry passes **50 tests in 5.0 minutes** after the retained fixture
+corrections and module-load `ERR_NETWORK_CHANGED` failure. All local gates are
+complete and the candidate is ready to commit. It is not published and does not
+change the preserved 1.0.38 source or close physical-phone sign-off.
 
 Historical 1.0.30 → original 1.0.31 failure and repair:
 CI **`34081910599`** passed every job, including final live character QA.

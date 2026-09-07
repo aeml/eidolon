@@ -37,6 +37,8 @@
     </script>
     <div id="debug-console"></div>
     <div id="perf-overlay"></div>
+    <!-- Shared CSS layout reservation; never an input surface or world clip. -->
+    <div id="phone-encounter-region" aria-hidden="true"></div>
     <div id="ui-layer">
 
         <div id="game-timer">00:00</div>
@@ -341,7 +343,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.38</span>
+                <span class="start-version-row__label">Alpha 1.0.39</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -667,6 +669,17 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.39">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.39 (your party within reach)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>A view around your controls:</strong> Phone camera framing now follows the space reserved for encounters, including horizontal framing in landscape. Default character scale and your manual zoom remain unchanged when opening menus or chat.</li>
+                        <li><strong>Room for both thumbs:</strong> Short landscape arranges your four skills in a two-by-two group, moves Effects to the left and keeps the full map available through Menu.</li>
+                        <li><strong>Your party, when you need it:</strong> A Party button opens readable, scrolling member details and party actions. Health updates preserve your reading position instead of rebuilding the panel over the world.</li>
+                        <li><strong>Choose who receives your help:</strong> Select an ally in Party before casting Healing Light or Divine Intervention. Attacks retain their separate enemy target; unavailable selected allies and out-of-range casts give feedback.</li>
+                        <li><strong>Feedback without blocked controls:</strong> Expanded chat stays above the quest tracker so its close control remains usable. Phone combo notices are compact and never intercept touches.</li>
+                        <li><strong>Still being refined:</strong> These improvements do not complete the broader phone redesign or real-device, dungeon and group-play verification.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.0.38">
                     <h3 class="patch-note-entry__title">Alpha 1.0.38 (room for the adventure)</h3>
                     <ul class="patch-note-entry__list">

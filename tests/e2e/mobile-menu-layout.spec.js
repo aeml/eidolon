@@ -1,9 +1,11 @@
 import { devices, expect, test } from '@playwright/test';
+import { collectBrowserFailures } from './helpers.js';
 
-test.use({ hasTouch: true, isMobile: true, userAgent: devices['Pixel 7'].userAgent });
+test.use({ hasTouch: true, isMobile: true, userAgent: devices['Pixel 7'].userAgent, actionTimeout: 12_000 });
 
 for (const [width, height] of [[360, 800], [844, 390], [568, 320]]) {
-    test(`phone Menu preserves readable status and reachable navigation at ${width}x${height}`, async ({ page }) => {
+    test(`phone Menu preserves readable status and reachable navigation at ${width}x${height}`, async ({ page, baseURL }) => {
+        const failures = collectBrowserFailures(page, baseURL);
         await page.setViewportSize({ width, height });
         await page.goto('/', { waitUntil: 'networkidle' });
         await page.evaluate(async () => {
@@ -22,12 +24,25 @@ for (const [width, height] of [[360, 800], [844, 390], [568, 320]]) {
             await expect(page.locator('#mobile-top-right button')).toHaveCount(1);
             await expect(page.locator('#btn-mobile-inv')).toBeHidden();
             const status = await page.locator('#player-hud').boundingBox();
-            for (const selector of ['#btn-mobile-menu', '#ability-container']) {
+            await expect(page.locator('#ability-container')).toBeHidden();
+            for (const selector of ['#btn-mobile-menu', '#btn-phone-party']) {
                 const rect = await page.locator(selector).boundingBox();
                 expect(rect.x).toBeGreaterThanOrEqual(status.x + status.width + 6);
+                expect(rect.width).toBeGreaterThanOrEqual(44);
+                expect(rect.height).toBeGreaterThanOrEqual(44);
             }
+            const skill = page.locator('#btn-mobile-ability');
+            await expect(skill).toBeInViewport();
+            expect(await skill.evaluate(el => {
+                const r = el.getBoundingClientRect();
+                return el.contains(document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2));
+            })).toBe(true);
             expect(await page.locator('.bar-text').first().evaluate(el => parseFloat(getComputedStyle(el).fontSize))).toBeGreaterThanOrEqual(16);
             await page.screenshot({ path: `/tmp/eidolon-phone-hub-status-${width}.png` });
+            await page.locator('#btn-phone-party').tap();
+            await expect(page.locator('#phone-party-panel')).toBeVisible();
+            await page.locator('#btn-close-phone-party').tap();
+            await expect(page.locator('#phone-party-panel')).toBeHidden();
             await page.locator('#btn-mobile-menu').tap();
             await expect(page.locator('#esc-menu')).toBeVisible();
             await page.screenshot({ path: `/tmp/eidolon-phone-hub-menu-top-${width}.png` });
@@ -58,7 +73,8 @@ for (const [width, height] of [[360, 800], [844, 390], [568, 320]]) {
             await expect(page.locator('#esc-menu')).toBeHidden();
             await expect(page.locator('#chat-input')).toBeVisible();
         } finally {
-            await page.evaluate(() => { window.__phoneMenuInput.dispose(); window.__phoneMenuUI.characterPreview.dispose(); });
+            await page.evaluate(() => { window.__phoneMenuInput.dispose(); window.__phoneMenuUI.social.phoneParty.dispose(); window.__phoneMenuUI.characterPreview.dispose(); });
         }
+        expect(failures, failures.join('\n')).toEqual([]);
     });
 }

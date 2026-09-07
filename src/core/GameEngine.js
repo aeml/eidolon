@@ -1682,6 +1682,18 @@ export class GameEngine {
         return target;
     }
 
+    getMobileSupportTarget() {
+        if (!this.player || this.isPlayerDead()) return null;
+        const id = this.uiManager?.social?.phoneParty?.selectedId;
+        if (!id || id === this.player.id) return this.player;
+        const members = this.uiManager?.social?.partyData?.members || [];
+        if (!members.some(member => member.id === id)) return null;
+        const target = this.chunkManager.getActiveEntities().find(entity => entity.id === id);
+        if (!target?.isActive || target.state === 'DEAD' || !(target.stats?.hp > 0)
+            || !this.isPlayerClassEntity(target) || this.isHostileActorTarget(target)) return null;
+        return target;
+    }
+
     serializeCombatIntent(intent) {
         if (!intent) return '';
         return [

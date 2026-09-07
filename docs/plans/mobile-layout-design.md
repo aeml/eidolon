@@ -10,6 +10,27 @@ status is separate in [the execution ledger](2026-09-05-roadmap-execution.md).
 The complete default-view encounter composition and real-device sign-off remain
 open, including party healing, software keyboards and the remaining town menus.
 
+The September 7 [shared-region/party prototype](2026-09-07-phone-camera-party.md)
+now implements one CSS-owned encounter reservation read by the camera. It keeps
+the established default actor scale and offsets the framing around persistent
+controls, including horizontal offset in short landscape. Current no-notch
+reservations are below; these are measured layout budgets, not final ergonomic
+sign-off or a promise of identical world visibility on every phone.
+
+| Viewport | Encounter reservation (left, top, width, height) | Hero ground anchor |
+|---|---|---|
+| 390×844 portrait | 12, 216, 366, 348 CSS px | 195, 390 |
+| 568×320 landscape | 134, 72, 214, 180 CSS px | 241, 162 |
+
+Short landscape uses the proposed 2×2 skill group, moves Effects to the left and
+keeps the full map in Menu. Party details open from a 44px launcher rather than
+occupying the world permanently. An explicit ally choice drives healing; enemy
+attacks retain their separate target. Populated world/model, quest, party and
+chat fixtures pass, and a two-real-account Healing Light route passes all three
+tested orientations/sizes. The extended support/combat regressions are still
+underway. The tighter portrait budgets in the sketches below remain a design
+target, not the dimensions of the current implementation.
+
 September 7 status-feedback finding: the duration browser route confirms actual
 server timers and visible shield expiry, but the minimap buff buttons expose
 details only through mouse hover. The inspected phone captures do not establish

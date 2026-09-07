@@ -39,7 +39,7 @@ export class PhoneStatusUI {
                 !event.target?.closest('input, textarea, [contenteditable="true"]')) this.close(false);
         };
         this.onOutsideControl = event => {
-            if (!this.root.contains(event.target) && event.target?.closest('.window, #chat-box, #mobile-top-right')) this.close(false);
+            if (!this.root.contains(event.target) && event.target?.closest('.window, #chat-box, #mobile-top-right, #btn-phone-party')) this.close(false);
         };
     }
 

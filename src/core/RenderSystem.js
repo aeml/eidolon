@@ -152,7 +152,13 @@ export class RenderSystem {
         // can reliably wait for textures before gameplay begins.
 
         // Handle Resize
-        window.addEventListener('resize', () => this.onWindowResize(), false);
+        this._onWindowResize = () => this.onWindowResize();
+        window.addEventListener('resize', this._onWindowResize, false);
+        const encounterRegion = this.isMobile && document.getElementById('phone-encounter-region');
+        if (encounterRegion && typeof ResizeObserver !== 'undefined') {
+            this.phoneEncounterObserver = new ResizeObserver(() => this.updateCameraProjection());
+            this.phoneEncounterObserver.observe(encounterRegion);
+        }
     }
 
     async preloadEnvironment(onProgress) {
@@ -823,19 +829,24 @@ export class RenderSystem {
         const d = this.isMobile
             ? 12 * (this.currentZoom / CONSTANTS.CAMERA.ZOOM) * height / Math.min(width, height)
             : this.currentZoom;
-        let verticalOffset = 0;
+        let verticalOffset = 0, horizontalOffset = 0;
+        this.phoneEncounterBounds = null;
         if (this.isMobile) {
-            const navigation = document.getElementById('mobile-top-right')?.getBoundingClientRect();
-            const hotbar = document.getElementById('hotbar-container')?.getBoundingClientRect();
-            // Only persistent HUD regions influence framing: opening a menu or
-            // chat must not move the world. Hidden/not-yet-mounted HUD is ignored.
-            const top = navigation?.height > 0 ? Math.min(height * 0.3, Math.max(0, navigation.bottom)) : 0;
-            const bottom = hotbar?.height > 0 ? Math.max(height * 0.6, Math.min(height, hotbar.top)) : height;
-            const centerY = (top + bottom) / 2;
-            verticalOffset = (centerY - height / 2) * (2 * d / height);
+            const rect = document.getElementById('phone-encounter-region')?.getBoundingClientRect();
+            // One layout-owned region includes the objective/minimap and both
+            // thumb zones. No per-frame DOM reads or menu-driven camera shifts.
+            if (rect && [rect.left, rect.top, rect.width, rect.height].every(Number.isFinite) && rect.width > 0 && rect.height > 0) {
+                const left = Math.max(0, rect.left), top = Math.max(0, rect.top);
+                const right = Math.min(width, rect.left + rect.width), bottom = Math.min(height, rect.top + rect.height);
+                if (right > left && bottom > top) {
+                    this.phoneEncounterBounds = { left, top, right, bottom };
+                    verticalOffset = ((top + bottom) / 2 - height / 2) * (2 * d / height);
+                    horizontalOffset = (width / 2 - (left + right) / 2) * (2 * d / height);
+                }
+            }
         }
-        this.camera.left = -d * aspect;
-        this.camera.right = d * aspect;
+        this.camera.left = -d * aspect + horizontalOffset;
+        this.camera.right = d * aspect + horizontalOffset;
         this.camera.top = d + verticalOffset;
         this.camera.bottom = -d + verticalOffset;
         this.camera.updateProjectionMatrix();
@@ -1068,6 +1079,8 @@ export class RenderSystem {
 
 
     dispose() {
+        if (this._onWindowResize) window.removeEventListener('resize', this._onWindowResize, false);
+        this.phoneEncounterObserver?.disconnect();
         if (this._pMesh) {
             this._pMesh.geometry.dispose();
             this._pMesh.material.dispose();

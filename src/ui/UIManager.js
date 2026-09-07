@@ -434,6 +434,7 @@ export class UIManager {
 
         // Social UI (extracted module) — must come before setupWindow block
         this.social = new SocialUI({
+            isMobile: this.isMobile,
             getLastPlayer: () => this.lastPlayerRef,
             addChatMessage: (sender, msg) => this.addChatMessage(sender, msg),
             closePrimaryHudMenus: (options) => this.closePrimaryHudMenus(options),

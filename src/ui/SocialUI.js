@@ -1,4 +1,5 @@
 import { GuildUI } from './GuildUI.js';
+import { PhonePartyUI } from './PhonePartyUI.js';
 
 /**
  * Social UI module — handles the social (online players) window,
@@ -106,6 +107,7 @@ export class SocialUI {
         });
 
         this.socialStatusSelect = document.getElementById('social-status-select');
+        if (ctx.isMobile) this.phoneParty = new PhonePartyUI(this);
         if (this.socialStatusSelect) {
             this.socialStatusSelect.value = this.currentSocialStatus;
             this.socialStatusSelect.addEventListener('change', () => {
@@ -315,12 +317,23 @@ export class SocialUI {
 
     setPartyPanelVisible(visible) {
         if (!this.partyPanel) return;
+        if (this.ctx.isMobile) {
+            this.partyPanel.style.display = 'none';
+            document.body.classList.remove('party-roster-visible');
+            return;
+        }
         this.partyPanel.style.display = visible ? 'block' : 'none';
         document.body.classList.toggle('party-roster-visible', visible);
     }
 
     updateParty(partyData) {
         this.partyData = partyData;
+        if (this.phoneParty) {
+            this.inParty = Boolean(partyData?.partyId);
+            this.setPartyPanelVisible(false);
+            this.phoneParty.update(partyData);
+            return;
+        }
         if (!this.partyPanel || !this.partyList) return;
 
         const panelGuidance = document.getElementById('party-panel-guidance');

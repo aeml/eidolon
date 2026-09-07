@@ -883,6 +883,8 @@ export class SkillTreeUI {
 
     showComboNotification(comboName, comboId) {
         const notification = document.createElement('div');
+        notification.className = 'combo-notification';
+        notification.style.pointerEvents = 'none';
         notification.style.position = 'fixed';
         notification.style.top = '30%';
         notification.style.left = '50%';

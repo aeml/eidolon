@@ -21,7 +21,9 @@ test('a populated phone party roster never intercepts the joystick or combat con
     try {
         for (const [width, height] of [[390, 844], [844, 390], [568, 320]]) {
             await page.setViewportSize({ width, height });
-            await expect(page.locator('#party-panel')).toBeVisible();
+            await expect(page.locator('#party-panel')).toBeHidden();
+            await expect(page.locator('#btn-phone-party')).toBeVisible();
+            await expect(page.locator('#phone-party-panel')).toBeHidden();
             for (const target of await page.locator('#joystick-zone, #mobile-actions .mobile-btn, #hotbar-container .hotbar-slot').all()) {
                 await expect(target).toBeInViewport();
                 expect(await target.evaluate(element => {

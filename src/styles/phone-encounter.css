@@ -1,0 +1,76 @@
+/* A shared encounter reservation drives camera composition, not camera zoom.
+   Transient menus/notices never resize it. Keep the whole world canvas rendered. */
+#phone-encounter-region { display: none; pointer-events: none; }
+.phone-party-launcher, .phone-party-panel { display: none; }
+/* The primary skill already has its own thumb button and Skills description.
+   Use the duplicate desktop ability-icon slot for deliberate party access. */
+.mobile-mode #ability-container { display: none !important; }
+.mobile-mode .phone-party-launcher {
+    display: block; position: fixed; right: max(12px, env(safe-area-inset-right, 0px));
+    top: var(--phone-top); width: 44px; height: 44px; padding: 2px;
+    pointer-events: auto; z-index: var(--z-hud); font: inherit; font-size: 14px;
+    line-height: 18px; color: var(--color-gold); background: #111923f5;
+    border: 1px solid #b99b6288; border-radius: 8px; touch-action: manipulation;
+}
+.mobile-mode .phone-party-panel:not([hidden]) {
+    display: flex; flex-direction: column; position: fixed;
+    top: var(--phone-top); bottom: calc(var(--phone-bottom) + 60px);
+    left: max(12px, env(safe-area-inset-left, 0px)); right: max(12px, env(safe-area-inset-right, 0px));
+    min-height: 0; padding: 0; overflow: hidden; z-index: var(--z-window);
+    font-size: var(--phone-menu-text-size,16px);
+}
+.phone-party-panel[hidden], .phone-party-panel [hidden] { display: none !important; }
+.phone-party-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 12px; flex: 0 0 auto; border-bottom: 1px solid #b99b6240; }
+.phone-party-header h2 { margin: 0; font-size: 1.2em; color: var(--color-gold); }
+.phone-party-body { flex: 1 1 auto; min-height: 0; padding: 12px; overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; }
+.phone-party-body p { line-height: 1.5; overflow-wrap: anywhere; }
+.phone-party-member { border: 1px solid #b99b6240; border-radius: 8px; padding: 12px; margin: 12px 0; }
+.phone-party-member h3 { margin: 0; font-size: 1em; overflow-wrap: anywhere; }
+.phone-party-panel :is(button,input,select) { min-width: 44px; min-height: 44px; padding: 8px; font: inherit; color: #eee; background: #202a35; border: 1px solid #b99b6288; border-radius: 6px; margin: 4px; max-width: 100%; touch-action: manipulation; }
+.phone-party-panel input { display: block; box-sizing: border-box; }
+.phone-party-panel [aria-pressed="true"] { border-color: #9ed4ba; background: #294b3c; }
+.phone-party-launcher:focus-visible, .phone-party-panel :focus-visible { outline: 2px solid var(--color-gold); outline-offset: -3px; }
+.mobile-mode {
+    --phone-encounter-top: calc(var(--phone-top) + 204px);
+    --phone-encounter-bottom: calc(var(--phone-bottom) + 272px);
+    --phone-encounter-left: max(12px, env(safe-area-inset-left, 0px));
+    --phone-encounter-right: max(12px, env(safe-area-inset-right, 0px));
+}
+.mobile-mode #phone-encounter-region {
+    display: block; position: fixed;
+    top: var(--phone-encounter-top); bottom: var(--phone-encounter-bottom);
+    left: var(--phone-encounter-left); right: var(--phone-encounter-right);
+}
+/* Brief combo feedback uses the lower edge of the encounter reservation,
+   never a desktop-sized popup over the hero or a touch-intercepting surface. */
+.mobile-mode .combo-notification {
+    top: auto !important; bottom: var(--phone-encounter-bottom);
+    left: var(--phone-encounter-left) !important; right: var(--phone-encounter-right);
+    transform: none !important; animation: none !important;
+    padding: 6px 8px !important; border-width: 1px !important;
+    border-radius: 6px !important; z-index: var(--z-hud) !important;
+    box-sizing: border-box; pointer-events: none;
+}
+.mobile-mode .combo-notification > div:first-child { display: none; }
+.mobile-mode .combo-notification > div:last-child {
+    font-size: 16px !important; line-height: 22px; overflow-wrap: anywhere;
+}
+@media (orientation: landscape) and (max-height: 600px) {
+    .mobile-mode {
+        --phone-encounter-top: calc(var(--phone-top) + 60px);
+        --phone-encounter-bottom: calc(var(--phone-bottom) + 60px);
+        --phone-encounter-left: calc(max(18px, env(safe-area-inset-left, 0px)) + 116px);
+        --phone-encounter-right: calc(max(12px, env(safe-area-inset-right, 0px)) + 208px);
+    }
+    /* Four skills use the right thumb column, not a row across the world. */
+    .mobile-mode #hotbar-container { width: 112px; gap: 8px; }
+    .mobile-mode #mobile-actions { bottom: calc(var(--phone-bottom) + 180px) !important; }
+    /* The full map stays in Menu. Keep status reachable without laying a tiny
+       decorative radar over the upper action buttons on a 320px-high phone. */
+    .mobile-mode #minimap-canvas { display: none !important; }
+    .mobile-mode #minimap-hud {
+        top: calc(var(--phone-top) + 60px) !important;
+        left: max(12px, env(safe-area-inset-left, 0px)) !important;
+        right: auto !important;
+    }
+}

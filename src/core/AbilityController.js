@@ -24,6 +24,7 @@ import { getAbilityPresentation } from '../skills/abilityVisualManifest.js';
 const SELF_CAST_ABILITIES = new Set([
     'Spirit Guardians'
 ]);
+const PARTY_TARGET_ABILITIES = new Set(['Healing Light', 'Divine Intervention']);
 
 export class AbilityController {
     /**
@@ -407,7 +408,16 @@ export class AbilityController {
         }
         
         if (engine.isMobile && !targetVectorOverride) {
-            const selected = engine.getMobileCombatTarget();
+            const support = PARTY_TARGET_ABILITIES.has(castSkillName);
+            const selected = support ? (engine.getMobileSupportTarget ? engine.getMobileSupportTarget() : player)
+                : engine.getMobileCombatTarget();
+            if (support && !selected) {
+                engine.showReadabilityFeedback?.('mobile-ally-unavailable', {
+                    title: 'Ally unavailable', tone: 'warning',
+                    subtitle: 'Your selected ally is not alive and nearby. Open Party to choose another ally or yourself.'
+                }, 700);
+                return;
+            }
 
             let targetPos = null;
             let targetId = "";
