@@ -29,17 +29,24 @@ test('status Mastery purchases change real ticks and persist through fresh login
     async function observe() {
         await page.evaluate(talent => {
             const game = window.game;
-            window.__statusQA = { target: null, results: [], damage: [], rank: game.player.talentRanks?.[talent] || 0 };
+            window.__statusQA = { target: null, results: [], damage: [], casts: [], requests: [], rank: game.player.talentRanks?.[talent] || 0 };
             const handle = game.handleServerMessage.bind(game);
             game.handleServerMessage = message => {
                 const qa = window.__statusQA;
                 const states = message.type === 'state' ? message.payload : message.type === 'delta' ? message.payload?.u : null;
                 for (const state of Object.values(states || {})) if (state.id === game.player.id && state.talentRanks?.[talent] !== undefined) qa.rank = state.talentRanks[talent];
                 if (message.type === 'ability_result') qa.results.push(message.payload);
+                if (message.type === 'ability' && message.payload?.sourceId === game.player.id) qa.casts.push(message.payload);
                 if (message.type === 'damage' && message.payload?.sourceId === game.player.id && message.payload?.targetId === qa.target) {
                     qa.damage.push({ amount: message.payload.amount, kind: message.payload.kind });
                 }
                 return handle(message);
+            };
+            const send = game.network.send.bind(game.network);
+            game.network.send = (kind, payload) => {
+                if (kind === 'ability') window.__statusQA.requests.push({ skill: payload.skillName,
+                    selectedTarget: payload.targetId === window.__statusQA.target });
+                return send(kind, payload);
             };
         }, config.talent);
     }
@@ -114,22 +121,26 @@ test('status Mastery purchases change real ticks and persist through fresh login
             });
         }
         await acquireAim();
-        await page.evaluate(id => Object.assign(window.__statusQA, { target: id, results: [], damage: [] }), target.id);
+        await page.evaluate(id => Object.assign(window.__statusQA, { target: id, results: [], damage: [], casts: [], requests: [] }), target.id);
         const slot = await page.evaluate(skill => window.game.player.hotbar.indexOf(skill), config.skill);
         expect(slot).toBeGreaterThanOrEqual(0);
         await page.keyboard.press(String(slot+1));
         await expect.poll(() => page.evaluate(() => window.__statusQA.results.length)).toBe(1);
         const result = await page.evaluate(() => window.__statusQA.results[0]);
         expect(result).toEqual(expect.objectContaining({ skillName: config.skill, accepted: true }));
-        if (config.skill === 'Shadow Lunge') expect(result.targetId).toBe(target.id);
         expect(result.cooldownRemaining).toBeGreaterThan(0);
         if (config.skill !== 'Shadow Lunge') {
             await page.waitForTimeout(600); // Observe the ordinary 500ms global cooldown.
             await acquireAim();
             await page.mouse.click(aim.x, aim.y, { button: 'right' });
             await expect.poll(() => page.evaluate(() => window.__statusQA.results.length)).toBe(2);
-            expect(await page.evaluate(() => window.__statusQA.results[1])).toEqual(expect.objectContaining({ skillName: 'Piercing Throw', accepted: true, targetId: target.id }));
+            expect(await page.evaluate(() => window.__statusQA.results[1])).toEqual(expect.objectContaining({ skillName: 'Piercing Throw', accepted: true }));
         }
+        const delivery = config.skill === 'Shadow Lunge' ? config.skill : 'Piercing Throw';
+        expect(await page.evaluate(skill => window.__statusQA.requests.filter(request => request.skill === skill), delivery))
+            .toEqual([{ skill: delivery, selectedTarget: true }]);
+        await expect.poll(() => page.evaluate(skill => window.__statusQA.casts.filter(cast => cast.skillName === skill).map(cast => cast.targetId), delivery))
+            .toEqual([target.id]);
         await expect.poll(() => page.evaluate(kind => window.__statusQA.damage.some(hit => hit.kind === kind), config.kind)).toBe(true).catch(async error => {
             console.log('[status-training-missing-tick]', await page.evaluate(id => {
                 const game = window.game, enemy = game.remotePlayers.get(id);
