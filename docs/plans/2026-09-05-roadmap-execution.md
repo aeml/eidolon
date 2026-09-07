@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 18:36 UTC
+## Current checkpoint — September 7, 18:44 UTC
 
 **Alpha 1.0.39 remains fully verified live.** The first 40 run `34150633216`
 fails anonymous smoke before deployment; every deploy job is skipped. The phone
@@ -40,8 +40,24 @@ Root integrates this queue at `a39eab3`, and the measured loot/Forge audit
 root is not the publication target. The next balance implementation fixes lost
 Forge stat precision and batch pricing, with persisted metadata and matched
 previews. See [Forge work and exact active handles](2026-09-07-forge-earned-scaling.md).
-It is isolated/unpackaged; its auction mappers still need the new metadata.
-The broad goal, reward tuning and eight playable investigations remain open.
+The Forge runtime **`9695add`** now preserves precision in both auction mappers;
+the original auction regression fails **0.234s**, and the corrected Forge/trade/
+snapshot set passes three race repetitions **10.146s**. Initial full regression
+passes **216 suites / 3,197 client tests / 124.202s**, full server race (root
+**18.301s**, game **298.426s**), and actual Forge/reconnect **17.9s / 19.6s total**.
+The actual image is inspected and independently preserved. These initial owned
+handles are all closed; they are not final versioned-package evidence.
+
+The isolated worktree merges corrected queue/root ancestry at `d055ccb` and
+packages **Alpha 1.0.48 `2f365d0`**, with **every shard counts** patch notes and
+aligned version defaults. Contracts pass **239 / 1.302s**. Final checks are
+confirmed active: client `57233` (`/tmp/eidolon-release48-client.log`), server
+`46715` (`/tmp/eidolon-release48-server.log`), actual Forge `97542`
+(`/tmp/eidolon-release48-forge-gameplay.log`). Revalidate these exact handles;
+do not restart them on an observation timeout. Inspect/preserve the final Forge
+image before starting the anonymous browser sweep. Only one owned local browser
+may run at once. No 48 release branch, root integration or publication is claimed
+yet. The broad goal, reward tuning and eight playable investigations remain open.
 
 ## Historical checkpoint — September 7, 18:11 UTC
 
