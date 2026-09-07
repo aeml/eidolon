@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 19:46 UTC
+## Current checkpoint — September 7, 19:50 UTC
 
 **Corrected Alpha 1.0.40 `e7a07b6` is pushed; CI 34156520169 is active.**
 The preceding `34152138480` is terminal failure with all deployments skipped.
@@ -65,15 +65,19 @@ undiscovered text. Targeted client checks pass **18 / 1.451s**; full client pass
 **217 suites / 3,207 tests / 76.604s**, lint, and migration/discovery/protocol
 checks pass three race repetitions (root **1.720s**, game **14.063s**).
 
-Full backend handle **85154** is confirmed active, log
-`/tmp/eidolon-investigations-expanded-server.log`. Its root package already
-reports one stale collection fixture that skipped the newly required diary.
-The fixture now records the diary and turns it in manually before testing bag
-receipts; full root rerun **74966** closes successfully **11.770s**, log
-`/tmp/eidolon-investigations-expanded-server-root-final.log`. Wait for the
-original game's result; do not restart it on observation timeout. No owned
-local browser is active. Expanded-graph edits are still uncommitted and must
-remain isolated: world rendering, inspect request/acknowledgement, actual Fire
+The first full backend run **85154** closes with two stale fixture failures:
+the root collection setup skipped the newly required diary, and the game turn-in
+test expected collection immediately after the opening hunt. The root fixture
+now records the diary and turns it in manually before testing bag receipts;
+full root rerun **74966** passes **11.770s**, log
+`/tmp/eidolon-investigations-expanded-server-root-final.log`. The game fixture
+now checks that the actual next diary remains unaccepted, retaining the manual
+turn-in requirement. Targeted graph/turn-in checks pass three race repetitions
+**3.144s**. The complete game rerun **61937** is active, log
+`/tmp/eidolon-investigations-expanded-game-final.log`; original failed game
+duration is **247.941s**, not a passing full-game result. Revalidate this exact
+new handle. No owned local browser is active. Expanded-graph commit **`9e1b0c4`**
+must remain isolated: world rendering, inspect request/acknowledgement, actual Fire
 combat credit, site reachability and earned desktop/touch playthroughs are not
 integrated yet. Root still contains only the tested dormant foundation and
 the existing 15-chapter playable chain.
