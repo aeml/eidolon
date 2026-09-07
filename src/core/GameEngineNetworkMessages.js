@@ -446,6 +446,27 @@ class GameEngineNetworkMessageMethods {
             const abilityData = msg.payload;
             // Ignore if source is local player (we already played the effect locally)
             if (this.player && abilityData.sourceId === this.player.id) {
+                // Teleport's accepted event contains the server-clipped landing,
+                // not just an aim point. Ordinary prediction tolerates up to
+                // three units of drift, which can otherwise swallow a short
+                // blink entirely and send the old position back after its lock.
+                // Charge and targeted strikes do not share this event contract.
+                if (abilityData.skillName === 'Teleport' &&
+                    Number.isFinite(abilityData.targetX) && Number.isFinite(abilityData.targetZ)) {
+                    const previousPosition = this.player.position.clone();
+                    this.player.position.x = abilityData.targetX;
+                    this.player.position.z = abilityData.targetZ;
+                    this.player.targetPosition = null;
+                    this.player.velocity?.set(0, 0, 0);
+                    this.pendingInteraction = null;
+                    this.abilityController.pendingAbilityTarget = null;
+                    this.abilityController.pendingAbilitySkill = null;
+                    this.clearCombatIntentState?.();
+                    this.ensureMovementNetworkState().lastPacket = null;
+                    this.beginPlayerCorrectionVisual(previousPosition, this.player.position);
+                    this.chunkManager.updateEntityChunk(this.player);
+                    this.renderSystem.setCameraTarget(this.player.position);
+                }
                 this.abilityController.reconcileLocalAbilityShape?.(abilityData);
                 return;
             }
