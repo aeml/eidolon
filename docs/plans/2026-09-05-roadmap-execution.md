@@ -46,9 +46,10 @@ failures (0.247s) reproduce ignored damage/duration training, owner-lifecycle an
 dungeon-wall defects. Server fixes and an actual offline summoned actor now
 have 59 focused client checks (0.933s), shared-contract/expanded actual-cast race
 checks (3.680s), lint and **212 suites / 3,137 full client tests (115.252s)**.
-The full Go race suite remains live, session **22417**; a read-only process check
-confirms its owned `game.test` is actively using CPU. Do not restart it just for
-taking longer than a prior run. Browser/model/transition evidence is still open;
+The full Go race suite finishes successfully, session **22417** terminal exit
+zero: root **10.143s**, game **264.589s**. The longer duration was active test
+execution, not a stuck process. All owned local test handles are now closed.
+Browser/model/transition evidence is still open;
 this is not merged into root, packaged as 1.0.43 or published.
 
 Corrected 1.0.38 CI currently has client/server checks in progress.
