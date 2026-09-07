@@ -10,7 +10,9 @@ async function walkTo(page, x, z) {
         const distance = Math.hypot(dx, dz);
         if (distance < 2) return;
         const scale = Math.min(1, 12 / distance);
-        await moveByGroundClick(page, dx * scale, dz * scale, { allowJumpFallback: false });
+        // Ordinary jump input is allowed when roaming enemies cover the path;
+        // this is the same player-controlled fallback as other earned routes.
+        await moveByGroundClick(page, dx * scale, dz * scale);
         // The shared movement helper confirms displacement, not arrival. Let
         // both the walk and following camera settle before projecting again.
         await expect.poll(() => page.evaluate(() => {
@@ -23,7 +25,7 @@ async function walkTo(page, x, z) {
     throw new Error(`Ordinary investigation travel did not reach ${x}, ${z}: ${JSON.stringify(await readPlayerState(page))}`);
 }
 
-// Ordinary ground clicks, prop clicks and explicit Ilyra turn-ins only. No
+// Ordinary ground/jump clicks, prop clicks and explicit Ilyra turn-ins only. No
 // teleport-to-site, quest-state writes, credit messages or invulnerability.
 export async function earnEarthInvestigation(page, id, openIlyra, capture) {
     const chapter = chronicleInvestigations.find(chapter => chapter.id === id);

@@ -48,6 +48,40 @@ pass **3.144s**. All these handles are closed; the expanded graph backend passes
 
 ### World integration checkpoint
 
+Latest verified additions (September 7): release-48 corrections are merged into
+the isolated branch as **`93f0162`**, with **276 focused checks / 4.148s**.
+The full earned Earth route passes **3.6m**: diary, eight physical Memory Seeds,
+three scar discoveries, all explicit Ilyra turn-ins, saved handoff and the still
+closed level-30 dungeon gate. Final level **17**, **16 observed target deaths**,
+zero player deaths; collection/scar/handoff portion **138 seconds**, collection
+reward **6,000 XP / 50 gold**. Log
+`/tmp/eidolon-investigations-earned-earth-travel.log`. The first combined run
+failed when roaming enemies covered its walking path; the shared ordinary jump
+fallback is now permitted, without travel/quest/protection grants.
+
+Phone USE previously selected only vendors and directly opened the shop. It now
+retains nearby-loot priority and sends other nearby services/discoveries through
+their normal click interaction, using actual interaction ranges. Dead players
+cannot activate it. Readable/interactable props use a pointer cursor rather than
+a combat crosshair. Focused checks pass **42 / 1.759s**; full client passes
+**219 suites / 3,251 tests / 138.491s**, lint passes.
+
+The extended phone route passes **1 / 1.3m** (test 1.2m): ordinary opening kills,
+manual reward, diary acceptance, actual joystick travel/USE inspection, journal
+at **390×844 and 844×390**, manual diary completion and saved rereading after
+reconnect. Actual screenshots in its `test-results` directory are inspected.
+Log `/tmp/eidolon-investigations-phone-town-route.log`. This uses the existing
+explicit level-30 combat fixture; it is **not** fresh progression or physical-device
+performance evidence. The first two attempts fail on a straight route through
+the merchant stall, confirmed by position/nearby-entity diagnostics and an actual
+phone screenshot. The successful route follows the open south side of the square;
+no collision, teleport or runtime-position bypass is added. Credential scans and
+disposable cleanup pass. All these owned handles are closed.
+
+Still open: remaining Water/Fire/Air chapters, actual ordered Fire fight,
+landscape diary touch-scroll to the final paragraph, all-realm placement review,
+coordinated rewards/XP tuning and final combined backend/regression packaging.
+
 Authenticated inspection dispatch sends personal quest state before its receipt,
 including rereads. Actual Fire anchor death awards only eligible nearby party
 members with the earlier ash evidence. A real `PerformAttack` test kills the

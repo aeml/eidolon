@@ -1210,7 +1210,7 @@ class GameEngineMovementMethods {
 
                 if (this.hoveredEntity instanceof LootDrop) {
                     document.body.style.cursor = 'grab';
-                } else if (this.hoveredEntity.name === 'DungeonEntrance' || this.hoveredEntity instanceof Forge || this.hoveredEntity instanceof TradingHouse) {
+                } else if (this.isInteractableEntity(this.hoveredEntity)) {
                     document.body.style.cursor = 'pointer';
                 } else if (this.hoveredEntity && this.hoveredEntity.state !== 'DEAD') {
                     document.body.style.cursor = 'crosshair';

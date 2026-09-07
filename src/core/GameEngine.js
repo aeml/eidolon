@@ -1203,32 +1203,7 @@ export class GameEngine {
 
 
         this.inputManager.subscribe('onInteract', () => {
-            if (!this.player || !this.isMobile) return;
-
-            const activeEntities = this.chunkManager.getActiveEntities();
-            let nearestLoot = null;
-            let nearestNPC = null;
-            let lootDist = 2.5;
-            let npcDist = 4.0;
-
-            activeEntities.forEach(e => {
-                if (!e.isActive) return;
-                const d = this.player.position.distanceTo(e.position);
-
-                if (e instanceof LootDrop && d < lootDist) {
-                    nearestLoot = e;
-                    lootDist = d;
-                } else if (e instanceof DwarfSalesman && d < npcDist) {
-                    nearestNPC = e;
-                    npcDist = d;
-                }
-            });
-
-            if (nearestLoot) {
-                this.pickupLoot(nearestLoot.id);
-            } else if (nearestNPC) {
-                this.uiManager.toggleShop();
-            }
+            this.interactWithNearbyEntity();
         });
 
         this.inputManager.subscribe('onEscape', () => {
@@ -1478,6 +1453,29 @@ export class GameEngine {
             || type === 'Stash'
             || type === 'Forge'
             || type === 'TradingHouse';
+    }
+
+    interactWithNearbyEntity() {
+        if (!this.player || !this.isMobile || this.player.state === 'DEAD') return false;
+        let nearestLoot = null, nearestInteractable = null;
+        let lootDistance = 2.5, interactionDistance = Infinity;
+        for (const entity of this.chunkManager.getActiveEntities()) {
+            if (!entity.isActive || entity === this.player || (entity.state === 'DEAD' && !(entity instanceof LootDrop))) continue;
+            const distance = Math.hypot(entity.position.x - this.player.position.x, entity.position.z - this.player.position.z);
+            if (entity instanceof LootDrop && distance < lootDistance) {
+                nearestLoot = entity;
+                lootDistance = distance;
+            } else if (this.isInteractableEntity(entity) && distance < interactionDistance && distance <= this.getInteractionRangeForEntity(entity)) {
+                nearestInteractable = entity;
+                interactionDistance = distance;
+            }
+        }
+        // Keep nearby loot priority, then use the same normal interaction path
+        // as a prop/NPC click. USE must not turn every service into a shop.
+        if (nearestLoot) this.pickupLoot(nearestLoot.id);
+        else if (nearestInteractable) this.moveToAndInteract(nearestInteractable);
+        else return false;
+        return true;
     }
 
     isPlayerClassEntity(entity) {

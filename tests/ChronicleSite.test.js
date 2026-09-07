@@ -4,6 +4,7 @@ import { chronicleInvestigations } from '../src/data/chronicleInvestigations.gen
 import { createChronicleSiteModel, getChronicleSiteColliders } from '../src/art/ChronicleSiteModels.js';
 import { ChronicleSite } from '../src/entities/ChronicleSite.js';
 import { Actor } from '../src/entities/Actor.js';
+import { LootDrop } from '../src/entities/LootDrop.js';
 import { CollisionManager } from '../src/core/CollisionManager.js';
 import { GameEngine } from '../src/core/GameEngine.js';
 import { requestChronicleInspection } from '../src/core/ChronicleInspection.js';
@@ -81,4 +82,24 @@ test.each(['valid', 'far', 'dead', 'dungeon', 'offline', 'removed', 'combat'])('
         expect(engine.pendingChronicleInspection).toMatchObject({ entityId: site.id, playerId: 'reader', instanceId: '' });
         expect(engine.player.quests).toBeUndefined();
     }
+});
+
+test.each(['discovery', 'loot', 'far', 'dead', 'desktop'])('phone USE reaches discoveries through the normal interaction path: %s', scenario => {
+    const engine = Object.create(GameEngine.prototype);
+    engine.isMobile = scenario !== 'desktop';
+    engine.player = { position: new THREE.Vector3(), state: scenario === 'dead' ? 'DEAD' : 'IDLE' };
+    const site = new ChronicleSite(cases[0].site.entityId);
+    site.position.set(0, 0, scenario === 'far' ? 5.01 : 4.8);
+    const entities = [site];
+    if (scenario === 'loot') {
+        const loot = Object.assign(Object.create(LootDrop.prototype), { id: 'near-loot', isActive: true, position: new THREE.Vector3(0, 0, 2) });
+        entities.push(loot);
+    }
+    engine.chunkManager = { getActiveEntities: () => entities };
+    engine.moveToAndInteract = jest.fn();
+    engine.pickupLoot = jest.fn();
+    expect(engine.interactWithNearbyEntity()).toBe(['discovery', 'loot'].includes(scenario));
+    expect(engine.moveToAndInteract).toHaveBeenCalledTimes(scenario === 'discovery' ? 1 : 0);
+    expect(engine.pickupLoot).toHaveBeenCalledTimes(scenario === 'loot' ? 1 : 0);
+    if (scenario === 'discovery') expect(engine.moveToAndInteract).toHaveBeenCalledWith(site);
 });

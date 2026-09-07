@@ -1,6 +1,7 @@
 import { devices, expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, projectEntity } from './helpers.js';
 import { approachEncounter, selectLiveTarget } from './mobile-helpers.js';
+import { openPhoneNavigation } from './mobile-helpers.js';
 
 test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true,
     userAgent: devices['Pixel 7'].userAgent, actionTimeout: 12_000,
@@ -36,7 +37,41 @@ async function walkToIlyra(page, context) {
     await expect(page.locator('#quest-window')).toBeVisible();
 }
 
-test('phone player earns the first Chronicle objective and explicitly claims Ilyra’s reward', async ({ page, context, baseURL }) => {
+async function walkToPointByTouch(page, context, x, z) {
+    const cdp = await context.newCDPSession(page);
+    const box = await page.locator('#joystick-zone').boundingBox();
+    let started = false;
+    try {
+        await expect.poll(async () => {
+            const delta = await page.evaluate(({ x, z }) => ({ x: x - window.game.player.position.x, z: z - window.game.player.position.z }), { x, z });
+            const distance = Math.hypot(delta.x, delta.z);
+            if (distance < 2) return true;
+            const jx = delta.x - delta.z, jy = delta.x + delta.z, length = Math.hypot(jx, jy);
+            const radius = 32 * Math.min(1, distance / 4);
+            await cdp.send('Input.dispatchTouchEvent', { type: started ? 'touchMove' : 'touchStart', touchPoints: [
+                { id: 85, x: box.x + box.width / 2 + radius * jx / length, y: box.y + box.height / 2 + radius * jy / length }
+            ] });
+            started = true;
+            return false;
+        }, { timeout: 35_000, intervals: [100] }).toBe(true);
+    } catch (error) {
+        console.log('[phone-diary-travel]', JSON.stringify(await page.evaluate(({ x, z }) => {
+            const game = window.game;
+            return { destination: [x, z], position: game.player.position.toArray(), state: game.player.state,
+                joystick: game.inputManager.joystickVector.toArray(), health: game.player.health,
+                nearby: game.activeEntitiesCache.filter(e => e !== game.player && e.position.distanceTo(game.player.position) < 8)
+                    .map(e => ({ id: e.id, type: e.type, position: e.position.toArray(), state: e.state })),
+                menu: game.uiManager.isEscMenuOpen, journal: game.uiManager.quest.isJournalOpen };
+        }, { x, z })));
+        throw error;
+    } finally {
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+        await cdp.detach();
+    }
+    await expect.poll(() => page.evaluate(() => window.game.inputManager.joystickVector.lengthSq())).toBe(0);
+}
+
+test('phone player earns the first Chronicle objective and explicitly claims Ilyra’s reward', async ({ page, context, baseURL }, testInfo) => {
     const credentials = credentialsFromEnvironment();
     test.skip(!credentials.username || !credentials.password || process.env.EIDOLON_E2E_REGISTER !== '1', 'Requires a fresh disposable character');
     test.setTimeout(360_000);
@@ -138,5 +173,57 @@ test('phone player earns the first Chronicle objective and explicitly claims Ily
         const game = window.game, server = game.movementNetworkState?.lastAcknowledgedServerPosition;
         return server ? Math.hypot(game.player.position.x - server.x, game.player.position.z - server.z) : Infinity;
     })).toBeLessThan(0.5);
+
+    // Continue the genuinely recorded first objective into the new diary. The
+    // earlier level-30 fixture remains explicit: this is touch interaction QA,
+    // not a claim about fresh-character balance or an unassisted first hour.
+    await walkToIlyra(page, context);
+    await page.getByRole('button', { name: 'Accept Quest', exact: true }).tap();
+    const diary = () => page.evaluate(() => window.game.player.quests.find(q => q.id === 'chronicle_earth_keepers_house'));
+    await expect.poll(async () => (await diary())?.accepted).toBe(true);
+    await page.locator('#btn-close-quest').tap();
+    await page.setViewportSize({ width: 390, height: 844 });
+    await openPhoneNavigation(page, 'btn-recall');
+    await expect.poll(() => page.evaluate(() => Math.hypot(window.game.player.position.x + 1.25, window.game.player.position.z - 200))).toBeLessThan(3);
+    try {
+        // The direct recall → east-gate line runs through the merchant's stall.
+        // Follow the open south side of the square instead of pushing its wall.
+        for (const [x, z] of [[0, 230], [55, 230], [80, 200], [105, 200], [140, 240], [150, 218]]) await walkToPointByTouch(page, context, x, z);
+    } catch (error) {
+        await page.screenshot({ path: testInfo.outputPath('phone-diary-travel-failure.png') });
+        throw error;
+    }
+    await expect.poll(() => page.evaluate(() => {
+        const game = window.game, site = game.remotePlayers.get('chronicle-site-mara_diary');
+        return site ? game.player.position.distanceTo(site.position) : Infinity;
+    })).toBeLessThan(5);
+    await page.locator('#btn-mobile-interact').tap();
+    const record = page.locator('#journal-list details[data-discovery-id="mara_diary"]');
+    await expect(record).toHaveAttribute('open', '');
+    await expect(record).toContainText('No living thing should have to kneel');
+    expect((await diary()).completed).toBe(false);
+    for (const viewport of [{ width: 390, height: 844 }, { width: 844, height: 390 }]) {
+        await page.setViewportSize(viewport);
+        await expect(page.locator('#btn-close-journal')).toBeInViewport();
+        expect(await record.evaluate(el => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
+        await page.screenshot({ path: testInfo.outputPath(`earned-phone-diary-${viewport.width}.png`) });
+    }
+    await page.locator('#btn-close-journal').tap();
+    await openPhoneNavigation(page, 'btn-recall');
+    await expect.poll(() => page.evaluate(() => Math.hypot(window.game.player.position.x + 1.25, window.game.player.position.z - 200))).toBeLessThan(3);
+    await walkToIlyra(page, context);
+    await page.getByRole('button', { name: 'Complete Quest', exact: true }).tap();
+    await expect.poll(async () => (await diary()).completed).toBe(true);
+    await page.locator('#btn-close-quest').tap();
+    await page.reload({ waitUntil: 'networkidle' });
+    await loginAndEnterWorld(page, credentials);
+    expect((await diary()).investigationMask).toBe(1);
+    expect((await diary()).completed).toBe(true);
+    await openPhoneNavigation(page, 'btn-mobile-quest');
+    await record.locator('summary').scrollIntoViewIfNeeded();
+    if (await record.getAttribute('open') === null) await record.locator('summary').tap();
+    await expect(record).toHaveAttribute('open', '');
+    await expect(record).toContainText('No living thing should have to kneel');
+    console.log('[phone-diary] joystick travel, USE inspection, journal in both orientations, manual completion and saved rereading passed');
     expect(failures, failures.join('\n')).toEqual([]);
 });
