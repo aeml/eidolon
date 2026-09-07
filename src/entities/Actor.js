@@ -3,6 +3,7 @@ import { Entity } from './Entity.js';
 import { calculateSetBonuses, getEquippedUniqueEffects, getGemStats, UNIQUE_EFFECTS } from '../core/ItemSystem.js';
 import { isEquippableItem, isActiveEquipment } from '../core/EquipmentSlots.js';
 import { getAbilityManaCost, getAbilityCooldown } from '../core/AbilityEconomy.js';
+import { updateOfflineHealingLight } from '../core/AbilityHealing.js';
 import { CONSTANTS } from '../core/Constants.js';
 import {
     exponentialSmoothingFactor,
@@ -934,6 +935,8 @@ export class Actor extends Entity {
     update(dt, collisionManager, player, activeEntities) {
         super.update(dt);
         this.syncAttachedStatusEffects(dt);
+        // Recipient-owned Renewal continues while stunned; never heal replicas.
+        updateOfflineHealingLight(this, dt);
 
         // Stun Logic
         if (this.stunTimer > 0) {

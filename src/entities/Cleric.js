@@ -8,6 +8,7 @@ import { getAbilityAoeRadius } from '../skills/abilityRadii.js';
 import { getAbilityHealingAmount } from '../core/AbilityHealing.js';
 import { createProceduralProjectileVisual, applyProceduralProjectileScale, updateProceduralProjectileVisual, releaseProceduralProjectileVisual } from '../art/ProceduralProjectileEffects.js';
 import { clipDungeonEffectSegment } from '../skills/dungeonEffectGeometry.js';
+import {applyOfflineHealingLight,applyOfflineRadiantStrike,resolveOfflineClericHealTarget} from './ClericAreaAbilities.js';
 
 export class Cleric extends Actor {
     constructor(id) {
@@ -29,55 +30,30 @@ export class Cleric extends Actor {
     }
 
     useAbility(targetVector, gameEngine, skillNameOverride = null) {
-        if (!super.useAbility(targetVector, gameEngine, skillNameOverride)) return;
-        this.gameEngine = gameEngine || this.gameEngine;
-
         const skill = skillNameOverride || this.abilityName;
-
-        if (this.isMultiplayer || gameEngine?.isMultiplayer) return true;
+        const offline = !this.isMultiplayer && !this.isRemote && !gameEngine?.isMultiplayer;
+        if (offline && ['Healing Light','Radiant Strike'].includes(skill) && !this.unlockedSkills.includes(skill)) return;
+        const previous = this.lastOfflineClericCast;
+        const chained = offline && previous && Date.now()-previous.at >= 0 && Date.now()-previous.at <= 3000;
+        this.healingLightMassRevival = Boolean(chained && skill === 'Healing Light' && previous.skill === 'Divine Intervention');
+        const holyFury = chained && skill === 'Radiant Strike' && previous.skill === 'Mark of Weakness';
+        const healingTarget = offline && skill === 'Healing Light'
+            ? (this.healingLightMassRevival ? this : resolveOfflineClericHealTarget(this,targetVector,gameEngine)) : null;
+        // Resolve the offline target before the canonical cast presentation, so
+        // a fallback heal or Mass Revival is drawn at its actual healing center.
+        if (healingTarget) targetVector = healingTarget.position;
+        if (!super.useAbility(targetVector, gameEngine, skillNameOverride)) {
+            this.healingLightMassRevival = false;
+            return;
+        }
+        this.gameEngine = gameEngine || this.gameEngine;
+        if (!offline) return true;
+        this.lastOfflineClericCast = {skill,at:Date.now()};
 
         if (skill === "Healing Light") {
-            if (!this.unlockedSkills.includes("Healing Light")) return;
-            console.log("Cleric used Healing Light!");
-            
-            // Cooldown 5s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Healing Light"] = 5.0 * (1 - cdr);
-
-            // Find target (closest ally to cursor)
-            let target = null;
-            let minDst = 1000;
-            const entities = gameEngine.chunkManager.getActiveEntities();
-            
-            // Check cursor distance
-            entities.forEach(entity => {
-                if (entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
-                    // Allow self cast if close to self or no one else
-                    const d = entity.position.distanceTo(targetVector);
-                    if (d < 3.0) {
-                        if (d < minDst) {
-                            minDst = d;
-                            target = entity;
-                        }
-                    }
-                }
-            });
-
-            if (!target) target = this; // Self cast fallback
-
-            // Heal Logic
-            let healAmount = 30 + (this.stats.wisdom * 2.0);
-            const hpPercent = target.stats.hp / target.stats.maxHp;
-            if (hpPercent < 0.30) {
-                healAmount *= 1.5; // 50% bonus if low HP
-                gameEngine.floatingTextManager.spawn("CRIT HEAL!", target.position, '#00ff00');
-            }
-
-            target.stats.hp = Math.min(target.stats.maxHp, target.stats.hp + healAmount);
-            gameEngine.floatingTextManager.spawn(`+${Math.floor(healAmount)}`, target.position, '#00ff00');
-
-            // Visual
-            this.spawnVisualEffect(gameEngine, target.position, 0x00ff00, "pillar");
+            // Shared economy has already charged mana and the trained 8s CD.
+            applyOfflineHealingLight(this,healingTarget,gameEngine);
+            this.healingLightMassRevival = false;
             return;
         }
 
@@ -148,40 +124,7 @@ export class Cleric extends Actor {
         // --- Branch B: Battle Cleric ---
 
         if (skill === "Radiant Strike") {
-            console.log("Cleric used Radiant Strike!");
-            
-            // Cooldown 4s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Radiant Strike"] = 4.0 * (1 - cdr);
-
-            // Melee Hit + Bonus
-            const range = 3.0;
-            const entities = gameEngine.chunkManager.getActiveEntities();
-            let hit = false;
-
-            entities.forEach(entity => {
-                if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
-                    const dist = this.position.distanceTo(entity.position);
-                    if (dist < range) {
-                        // Check angle (front cone)
-                        const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(this.mesh.quaternion);
-                        const dir = new THREE.Vector3().subVectors(entity.position, this.position).normalize();
-                        if (forward.angleTo(dir) < Math.PI / 3) { // 60 deg cone
-                            const damage = this.stats.damage + (this.stats.wisdom * 1.5);
-                            if (entity.takeDamage) {
-                                entity.takeDamage(damage);
-                                gameEngine.floatingTextManager.spawn(Math.floor(damage), entity.position, '#ffff00');
-                                gameEngine.floatingTextManager.spawn("Radiant!", entity.position, '#ffffff');
-                                hit = true;
-                            }
-                        }
-                    }
-                }
-            });
-            
-            if (hit) {
-                this.spawnVisualEffect(gameEngine, this.position.clone().add(new THREE.Vector3(0,1,0)), 0xffff00, "burst");
-            }
+            applyOfflineRadiantStrike(this,targetVector,gameEngine,holyFury);
             return;
         }
 
@@ -405,6 +348,8 @@ export class Cleric extends Actor {
     }
 
     cancelAbilities() {
+        this.lastOfflineClericCast = null;
+        this.healingLightMassRevival = false;
         this.clearConsecratedZone();
         this.spiritsActive = false;
         this.spiritDuration = 0;
