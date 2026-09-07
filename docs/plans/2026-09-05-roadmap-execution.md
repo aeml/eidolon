@@ -13,9 +13,16 @@ and healthy/ready backend to `69b34a78cd880f7a863d5ad2a0aa33af0680f961` /
 Alpha 1.0.36. Earlier pre-terminal checks at 11:38:58.626 UTC also matched, but
 were not used to close the release gate.
 
-After checking remote master, clean staging state, exact 1.0.37 metadata and
-ancestry, only **1.0.37 `674097456ee2841f0bbf77f7a4b99daed8e6b359`** was pushed.
-Push succeeded and CI **`34118770059` is in progress**. Do not push corrected
+The first 1.0.37 CI **34118770059** fails predeployment: a local module request
+reports `ERR_NETWORK_CHANGED`, then the automatic healing retry cannot reselect
+its already-saved specialization. Neither deployment ran. The [retained repair](2026-09-07-release37-protection.md)
+isolates retry accounts without weakening baseline/trained/saved-healing checks.
+Its opt-in intentional-failure probe completes both attempts (9.9s/9.8s), with
+clean credential scan and normal cleanup. Game/server source is unchanged.
+
+After confirming exact remote ancestry and clean staging, corrected **1.0.37
+`2e37508505c9ff67e160886e2a91fad89196f25f`** is pushed successfully; new CI
+**34121785766 is in progress**. Do not push corrected
 1.0.38 until every 1.0.37 CI/live job passes and fresh post-terminal public
 identity agrees. Do not push the root working HEAD or skip any queued versions.
 
@@ -60,6 +67,20 @@ candidate; these supplement their original full tests, not new full browser
 runs. Server-tree equality to each original candidate is verified. The 1.0.37
 candidate is now pushed to remote master with CI in progress; 1.0.38–40 remain
 unpublished. The top entry records the current gate.
+
+Next local package: [1.0.41 critical training](2026-09-07-release41-critical-training.md),
+integration **52d78ee**, now includes the previously isolated critical work and
+corrected release ancestry through 1.0.40. Three-class ordinary browser purchases,
+accepted targeted primary casts and fresh-login saved ranks pass on **a93194b**
+(Rogue 21.7s, Wizard 19.5s, Fighter 21.6s), including positive authoritative
+cooldowns. Version/history/default checks pass 214 tests in 0.970s; full client
+regression passes 208 suites / 3,080 tests in 82.118s and actual-consumer probes
+pass 0.890s. Full server race passes (root 9.851s/game 185.709s), plus lint.
+Anonymous browser checks finish with 47 passes/six failures (HUD module import,
+two quest taps, three status-to-chat transitions); diagnosis remains open.
+It is not published; do not skip the four
+preceding releases. Historical separate-branch and pending critical-browser
+statements below are superseded by this checkpoint, not erased evidence.
 
 The earned Fighter run completed on unchanged source `2c80b06`, session
 `47165`, `/tmp/eidolon-earned-fighter-corrected-gameplay.log`. Its paid Skeleton

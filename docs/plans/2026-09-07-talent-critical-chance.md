@@ -1,9 +1,10 @@
 # Critical-chance talent consumers — reproduced September 7
 
 Status: **server critical consumption/composition, offline basic and implemented
-ability criticals, and tooltip corrections implemented in an isolated branch;
-real-browser/persistence and remaining consumer coverage remain open**. This is
-not a completed talent category or release.
+ability criticals, tooltip corrections and three-class real-browser/persistence
+checks are integrated into the local 1.0.41 candidate**. Publication is pending
+the earlier sequential releases and its own verification gate. Remaining consumer
+coverage is open; this is not a completed talent category or roadmap milestone.
 The main game and earned Fighter browser sources remained frozen during these
 isolated Go overlay diagnostics. No production or browser character was modified.
 
@@ -232,3 +233,38 @@ Next validation must use ordinary browser talent purchases, accepted real-server
 casts and fresh-login saved ranks; seeded Go casts already prove the damage math,
 so a browser UI rank change alone must not be presented as that mathematical
 proof. Existing partial/full-offline limitations above remain open.
+
+## Browser purchases, combat and saved builds
+
+The disposable `talent-critical` route covers Rogue's Piercing Throw Technique
+and Needle Precision, Wizard's Sigil Mastery, and Fighter's Battlefield Awareness.
+All ranks are purchased through the normal Talents menu and observed in server
+state. Each class attacks a real selected enemy before buying ranks, after buying
+five ranks, and after a fresh login proves those ranks persisted. Outgoing target
+identity, accepted server results, positive damage and positive finite server
+cooldowns are asserted. No browser damage or critical-rate substitution is used.
+Characters are level-prepared through the allowlisted QA command; this is not
+earned progression or a statistical estimate of critical chance from three hits.
+
+The first complete run at **944d5bc** passes all classes (20.5s, 19.9s, 19.8s).
+Adding explicit cooldown assertions at **27f4f68** passes Rogue (20.3s), but
+Wizard times out before its first cast on the combined hover/range predicate.
+That failure did not contain enough detail to establish a game defect. Hover
+observation now waits for the render loop and reports visibility, live-target,
+range and hover conditions separately; it does not bypass the raycast or cast.
+The strengthened route at **a93194b** passes Rogue **21.7s**, Wizard **19.5s** and
+Fighter **21.6s**, including all nine accepted targeted casts and fresh logins.
+All browser-failure collections remain empty; the artifact credential scan passes
+with zero sanitizations, the process exits zero, and the owned ports are free.
+
+Two earlier setup/driver failures are retained: a fresh checkout lacked generated
+`vendor/` dependencies until normal `npm run prepare:client`; a first driver
+incorrectly sought the class primary attack in numbered specialization slots.
+Primary skills use ordinary right-click. Neither failed attempt is gameplay proof.
+The new route is opt-in, not silently added to the already lengthy default CI run.
+
+Logs: `/tmp/eidolon-critical-browser-{primary,cooldown,render}-gameplay.log`.
+The source and tests are merged into root **52d78ee** with corrected release
+ancestry through 1.0.40. The [1.0.41 record](2026-09-07-release41-critical-training.md)
+tracks package verification and publication separately. Historical isolated-source
+statements above describe their checkpoints, not the current integration state.
