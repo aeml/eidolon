@@ -127,3 +127,34 @@ test('future saved offers do not put an exclamation over an active required inve
     expect(questMarkerState([future, active], true)).toBe('');
     expect(questMarkerState([future, { ...active, count: 1 }], true)).toBe('?');
 });
+
+test.each([
+    ['finished campaign', ['chronicle_15_dark_king'], 'Eidolon is free'],
+    ['four repaired crystals', ['chronicle_10_rootheart_raid', 'chronicle_11_tidestar_raid',
+        'chronicle_12_ember_crown_raid', 'chronicle_13_skyglass_raid'], 'four crystals sing again'],
+    ['opened portal', ['chronicle_14_resonance_gate'], 'portal is open']
+])('optional discoveries do not rewind Ilyra’s greeting after %s', (_label, completed, expected) => {
+    const optional = story({ id: chronicleInvestigations[0].id, legacyOptional: true,
+        type: 'INVESTIGATE', title: chronicleInvestigations[0].title });
+    const quests = [...completed.map(id => story({ id, accepted: true, completed: true })), optional];
+    const ui = new QuestUI({ getLastPlayer: () => ({ quests }) });
+    ui.questKind = 'story';
+    ui.updateQuestWindow(quests);
+    const intro = document.querySelector('.quest-conversation__intro').textContent;
+    expect(intro).toContain(expected);
+    expect(intro).not.toContain('crystals cannot heal');
+    expect(document.querySelector('#quest-list').textContent).toContain('Optional catch-up lore');
+    expect(quests.at(-1).accepted).toBe(false);
+});
+
+test('unclaimed repair objectives and missing quest state do not announce a saved world', () => {
+    for (const quests of [[], ['chronicle_10_rootheart_raid', 'chronicle_11_tidestar_raid',
+        'chronicle_12_ember_crown_raid', 'chronicle_13_skyglass_raid'].map(id =>
+        story({ id, accepted: true, count: 1, maxCount: 1, completed: false }))]) {
+        const ui = new QuestUI({ getLastPlayer: () => ({ quests }) });
+        ui.questKind = 'story';
+        ui.updateQuestWindow(quests);
+        expect(document.querySelector('.quest-conversation__intro').textContent).toContain('crystals cannot heal');
+        expect(document.querySelector('#quest-list').textContent).not.toContain('crystals sing freely');
+    }
+});

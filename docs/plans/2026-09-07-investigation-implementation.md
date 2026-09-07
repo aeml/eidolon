@@ -48,6 +48,16 @@ pass **3.144s**. All these handles are closed; the expanded graph backend passes
 
 ### World integration checkpoint
 
+Returning-story continuity: Ilyra's greeting now follows completed stable IDs for
+all four repairs, portal opening and the Dark King's defeat. Optional earlier
+discoveries no longer make her announce that already-restored crystals still
+need healing. An empty quest response no longer declares victory; objective
+counts without manual completion do not switch the greeting. Four new UI cases
+reproduce the old contradictions (**4 failed / 9 passed / 1.427s**), then all
+**13 pass / 1.447s**. This changes presentation only, not progression or rewards.
+Optional chapters' historical acceptance/completion instructions still need a
+full continuity review; the greeting fix alone does not complete that review.
+
 September 7 Fire follow-up: realm routes now share
 `tests/e2e/chronicle-realm-investigations.spec.js`, selected by guarded isolated
 `water-investigations`, `fire-investigations` or `air-investigations` routes.

@@ -29,6 +29,20 @@ const originalChapterIds = [
 ];
 const repliesById = new Map(originalChapterIds.map((id, index) => [id, ILYRA_REPLIES[index]]));
 
+function ilyraGreeting(quests) {
+    const completed = new Set((quests || []).filter(quest => quest.completed).map(quest => quest.id));
+    if (completed.has('chronicle_15_dark_king')) {
+        return '“Eidolon is free. Now we must remember more than the battles. Bring me the stories we passed along the way; the people in them helped hold this world together.”';
+    }
+    if (completed.has('chronicle_14_resonance_gate')) {
+        return '“The portal is open, and the four Eidolons stand with us. Malachar waits beyond it. The records you recover remind us why his promised peace must never become our answer.”';
+    }
+    if (originalChapterIds.slice(9, 13).every(id => completed.has(id))) {
+        return '“The four crystals sing again. You and Maelin have given them back their voices. Now their resonance must carry us to the source of the wound.”';
+    }
+    return '“The crystals cannot heal themselves. Let me guide you, and together we will save Eidolon.”';
+}
+
 export function getIlyraCompletionReply(quest) {
     return getChronicleInvestigation(quest?.id)?.completion || repliesById.get(quest?.id)
         || 'Thank you. I have recorded your work in the Fourfold Chronicle. Speak to me when you are ready to continue.';
@@ -56,7 +70,7 @@ export function renderQuestConversation(ui, quests) {
     };
     const redraw = () => { ui.questWindowSignature = ''; ui.updateQuestWindow(quests); };
     const intro = text('p', story
-        ? '“The crystals cannot heal themselves. Let me guide you, and together we will save Eidolon.”'
+        ? ilyraGreeting(quests)
         : '“Lanternhold needs steady hands. Choose your contracts, then return to me when the work is done.”', 'quest-conversation__intro');
     ui.questList.appendChild(intro);
     if (ui.completedDialogue) {
@@ -89,7 +103,11 @@ export function renderQuestConversation(ui, quests) {
         ui.questList.append(list);
     }
     if (!selected) {
-        if (!offered.length) ui.questList.appendChild(text('p', story ? '“The four crystals sing freely. You will always be welcome here, friend of Eidolon.”' : 'No contracts remain today. New contracts arrive at the daily reset.', 'quest-dialogue__speech'));
+        if (!offered.length) ui.questList.appendChild(text('p', story
+            ? quests?.some(quest => quest.id === 'chronicle_15_dark_king' && quest.completed)
+                ? '“You will always be welcome here, friend of Eidolon.”'
+                : 'No Chronicle task is available here right now.'
+            : 'No contracts remain today. New contracts arrive at the daily reset.', 'quest-dialogue__speech'));
         offered.forEach((quest) => {
             const ready = quest.accepted && quest.count >= quest.maxCount;
             const status = ready ? '?' : quest.accepted ? '·' : '!';
