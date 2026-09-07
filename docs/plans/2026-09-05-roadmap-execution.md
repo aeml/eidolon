@@ -5,7 +5,68 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 21:31 UTC
+## Current checkpoint — September 7, 21:48 UTC
+
+This turn makes concrete progress: actual Water discovery/encounter evidence and
+an isolated routine-equipment frequency candidate, with a reproduced production
+loot excess and passing repeated regressions. The full roadmap remains active.
+
+Water **59985** closes failure after **3.3m**: the actual flood-shelter diary is
+reached, inspected and earned; its approach/reading images are inspected. The
+following still pool is physically present/in range, but three pursuing Mountain
+Trolls cover its clickable geometry (actual hover/hit-list diagnostic). Preserve
+`/tmp/eidolon-water-first-earned-ledger.png` and
+`/tmp/eidolon-water-covered-pool.png`. No hostile-priority bypass is introduced.
+The next route **7160** adds ordinary left-click/basic and right-click/Fireball
+combat before inspection, then fails because the character dies. Both failed
+runs finish credential scan/cleanup; logs
+`/tmp/eidolon-investigations-water-earned.log` and
+`/tmp/eidolon-investigations-water-field-combat.log`.
+
+Third actual Water run **6729** is active, log
+`/tmp/eidolon-investigations-water-defensive-route.log`. It selects Control &
+Utility through the real Skills UI, uses actual Arcane Shield and ordinary
+kiting, and corrects the fixture's staff from an arbitrary 100 damage to the
+current common level-100 formula **round(12 × 16 / 25) = 8**. Canonical level-100
+base stats and the nine explicitly seeded old milestones remain; it is not fresh
+leveling or a claim of earned initial gear. Investigation branch 0262488 has two
+uncommitted browser-helper/test changes, lint passing. **Freeze this worktree;
+6729 is the sole owned browser.** The reading fix c14388b stays intact. Remaining
+Water completion, Fire/Air chapters, actual ordered Fire fight and wider placement
+quality remain unverified.
+
+New isolated worktree **`/tmp/eidolon-loot-frequency-V09L3M`**, branch
+`work/loot-frequency-20260907`, starts from root deede2e. Candidate retains 60%
+of ordinary equipment candidates (40% fewer gear drops) and at most the first
+equipment result from a non-boss elite. It preserves every material candidate,
+dedicated material/gem rolls, personal quest drops and all recognized boss
+rewards. Retained gear is not rerolled for rarity and existing inventory is not
+changed. Current pool expectations: equipment **0.47368 → 0.28421** ordinary,
+**2.84211 → 0.99985** elite; 25 empty bag slots imply approximately **53 → 88**
+ordinary or **9 → 25** elite kills for gear alone. Material supply stays unchanged.
+Exact accounting/design and open gates are in that worktree's
+`docs/plans/2026-09-07-routine-equipment-budget.md` (not yet root-integrated).
+
+The actual asynchronous production death test reproduces **57 equipment from 20
+elite kills** before tuning, using 20 personal guaranteed-fragment publications
+as its completion barrier. Red run **45706** closes **FAIL / 0.415s** as expected;
+log `/tmp/eidolon-routine-loot-before.log`. After filtering before world publication,
+the same route yields one QA-guaranteed gear piece per kill. Boundary, deterministic
+10,000-roll, material/boss/QA, personal-fragment and pickup/instance checks pass
+three race repetitions **49754 / 5.726s**, log `/tmp/eidolon-routine-loot-after.log`.
+Full race **60005** is active, log `/tmp/eidolon-routine-loot-server.log`, root
+package already passing **15.507s**. **Freeze that candidate's runtime/tests while
+it runs.** Source/docs remain uncommitted and unpublished; further distributions,
+earned gearing/affordability, packaging and sequential gates are required. This
+does not close XP, gold, rarity power, late potency or the broader economy pass.
+
+41 **9c6eb9d… / CI 34163174335** now has client/server/browser success;
+predeploy character QA is active at last poll. Next publisher remains 42 only
+after every 41 CI/deploy/live job and a fresh exact public-41 identity pass.
+Last fully verified public build remains **Alpha 1.0.40 / 008ee7d…**. Root's locally
+verified 49 package is not permission to skip the queued releases.
+
+## Historical checkpoint — September 7, 21:31 UTC
 
 Phone earned reading run **84495** now closes **SUCCESS / 1 test / 48.8s**
 (test 47.4s), including actual landscape swipes until the final diary line is
