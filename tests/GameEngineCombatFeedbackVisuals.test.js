@@ -135,16 +135,48 @@ describe('authoritative combat feedback visuals', () => {
     });
 
     test('throttles only matching target/kind reactions while preserving different afflictions', () => {
-        const engine = makeEngine();
-        const enemy = actor('enemy-1', 'Skeleton', 2, 3);
-        engine.remotePlayers.set(enemy.id, enemy);
-        const base = {
-            sourceId: engine.player.id, targetId: enemy.id, amount: 10,
-            instanceId: 'dungeon-feedback'
-        };
-        expect(engine.renderCombatFeedback({ ...base, kind: 'bleed' }, 'damage')).toBe(true);
-        expect(engine.renderCombatFeedback({ ...base, kind: 'bleed' }, 'damage')).toBe(false);
-        expect(engine.renderCombatFeedback({ ...base, kind: 'poison' }, 'damage')).toBe(true);
-        expect(engine.spawnTransientEffect).toHaveBeenCalledTimes(2);
+        const clock = jest.spyOn(Date, 'now').mockReturnValue(10_000);
+        try {
+            const engine = makeEngine();
+            const enemy = actor('enemy-1', 'Skeleton', 2, 3);
+            engine.remotePlayers.set(enemy.id, enemy);
+            const base = {
+                sourceId: engine.player.id, targetId: enemy.id, amount: 10,
+                instanceId: 'dungeon-feedback'
+            };
+            expect(engine.renderCombatFeedback({ ...base, kind: 'bleed' }, 'damage')).toBe(true);
+            expect(engine.renderCombatFeedback({ ...base, kind: 'bleed' }, 'damage')).toBe(false);
+            expect(engine.renderCombatFeedback({ ...base, kind: 'poison' }, 'damage')).toBe(true);
+            const other = actor('enemy-2', 'Skeleton', 4, 3);
+            engine.remotePlayers.set(other.id, other);
+            expect(engine.renderCombatFeedback({ ...base, targetId: other.id, kind: 'bleed' }, 'damage')).toBe(true);
+            expect(engine.spawnTransientEffect).toHaveBeenCalledTimes(3);
+        } finally {
+            clock.mockRestore();
+        }
+    });
+
+    test.each([
+        ['damage', 'bleed', 80],
+        ['heal', 'healing_light_hot', 140]
+    ])('%s / %s feedback resumes exactly at its %sms throttle boundary', (eventType, kind, interval) => {
+        const clock = jest.spyOn(Date, 'now').mockReturnValue(10_000);
+        try {
+            const engine = makeEngine();
+            const target = actor('target', 'Skeleton', 2, 3);
+            engine.remotePlayers.set(target.id, target);
+            const event = { sourceId: engine.player.id, targetId: target.id, amount: 10,
+                kind, instanceId: 'dungeon-feedback' };
+            expect(engine.renderCombatFeedback(event, eventType)).toBe(true);
+            clock.mockReturnValue(10_000 + interval - 1);
+            expect(engine.renderCombatFeedback(event, eventType)).toBe(false);
+            clock.mockReturnValue(10_000 + interval);
+            expect(engine.renderCombatFeedback(event, eventType)).toBe(true);
+            clock.mockReturnValue(10_000 + interval * 2 + 1);
+            expect(engine.renderCombatFeedback(event, eventType)).toBe(true);
+            expect(engine.spawnTransientEffect).toHaveBeenCalledTimes(3);
+        } finally {
+            clock.mockRestore();
+        }
     });
 });
