@@ -129,6 +129,7 @@ qa_allowlist+=",${QA_USERNAME_BASE}-critical-rogue,${QA_USERNAME_BASE}-critical-
 qa_allowlist+=",${QA_USERNAME_BASE}-healing-retry1"
 qa_allowlist+=",${QA_USERNAME_BASE}-status-lunge,${QA_USERNAME_BASE}-status-serrated,${QA_USERNAME_BASE}-status-poison"
 qa_allowlist+=",${QA_USERNAME_BASE}-seraph,${QA_USERNAME_BASE}-seraph-retry1"
+qa_allowlist+=",${QA_USERNAME_BASE}-shield,${QA_USERNAME_BASE}-shield-retry1"
 
 mongo_username="qa_root"
 mongo_password="$(openssl rand -hex 24)"
@@ -136,7 +137,7 @@ mongo_password="$(openssl rand -hex 24)"
 docker build \
   --build-arg GO_VERSION=1.24.5 \
   --build-arg "BUILD_COMMIT=${qa_build_commit}" \
-  --build-arg "BUILD_VERSION=Alpha 1.0.43" \
+  --build-arg "BUILD_VERSION=Alpha 1.0.44" \
   --tag "${SERVER_IMAGE}" server >/dev/null
 image_created=true
 
@@ -283,6 +284,11 @@ run_seraph() {
     npx playwright test tests/e2e/seraph-gameplay.spec.js
 }
 
+run_shield_training() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-shield" EIDOLON_E2E_CLASS=Wizard \
+    npx playwright test tests/e2e/shield-training-gameplay.spec.js
+}
+
 run_purifying_area() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-cleanse" EIDOLON_E2E_CLASS=Cleric \
     npx playwright test tests/e2e/purifying-area-gameplay.spec.js "$@"
@@ -393,7 +399,7 @@ run_animation_multiplayer() {
 set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   all)
-    npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js && run_whip_shape && run_ground_shape && run_purifying_area && run_guardian_area && run_consecrated_area && run_cleric_area && run_spirit_area && run_whirlwind && run_phone && run_phone_combat && run_phone_party && run_phone_inventory && run_equipment_recovery && run_forge_guide && run_talent_economy && run_talent_healing && run_talent_duration && run_seraph && run_phone_quests && run_phone_build && run_phone_settings && run_phone_adventure && run_dungeon_recovery && run_direct_target_classes && npm run test:e2e:movement && run_animation_classes && run_animation_multiplayer
+    npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js && run_whip_shape && run_ground_shape && run_purifying_area && run_guardian_area && run_consecrated_area && run_cleric_area && run_spirit_area && run_whirlwind && run_phone && run_phone_combat && run_phone_party && run_phone_inventory && run_equipment_recovery && run_forge_guide && run_talent_economy && run_talent_healing && run_talent_duration && run_seraph && run_shield_training && run_phone_quests && run_phone_build && run_phone_settings && run_phone_adventure && run_dungeon_recovery && run_direct_target_classes && npm run test:e2e:movement && run_animation_classes && run_animation_multiplayer
     ;;
   animations)
     run_animation_classes
@@ -430,6 +436,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   seraph)
     run_seraph
+    ;;
+  shield-training)
+    run_shield_training
     ;;
   talent-healing-retry)
     EIDOLON_E2E_HEALING_RETRY_PROBE=1 run_talent_healing --retries=1
@@ -571,6 +580,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     echo "Critical training/persistence verification: EIDOLON_ISOLATED_QA_ROUTE=talent-critical" >&2
     echo "Status Mastery tick/persistence verification: EIDOLON_ISOLATED_QA_ROUTE=talent-status" >&2
     echo "Seraph training, lifetime and transition verification: EIDOLON_ISOLATED_QA_ROUTE=seraph" >&2
+    echo "Shield mastery, expiry and actual absorption verification: EIDOLON_ISOLATED_QA_ROUTE=shield-training" >&2
     echo "Trained Blessing/Trumpet verification: EIDOLON_ISOLATED_QA_ROUTE=cleric-area" >&2
     echo "Trained cone/Beacon/Mass Revival verification: EIDOLON_ISOLATED_QA_ROUTE=cleric-final-area" >&2
     echo "Trained Spirit Guardians verification: EIDOLON_ISOLATED_QA_ROUTE=spirit-area" >&2

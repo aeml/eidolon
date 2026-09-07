@@ -1084,6 +1084,10 @@ export class Actor extends Entity {
             this.arcaneShieldTimer -= dt;
             if (this.arcaneShieldTimer <= 0) {
                 this.arcaneShieldTimer = 0;
+                if (!this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) {
+                    this.arcaneShieldActive = false;
+                    this.shieldHP = 0;
+                }
             }
         }
         
@@ -1476,6 +1480,10 @@ export class Actor extends Entity {
             const absorbed = Math.min(this.shieldHP, finalAmount);
             this.shieldHP -= absorbed;
             finalAmount -= absorbed;
+            if (this.arcaneShieldActive && this.shieldHP <= 0) {
+                this.arcaneShieldActive = false;
+                this.arcaneShieldTimer = 0;
+            }
             console.log(`${this.id} shield absorbed ${absorbed}. Remaining Shield: ${this.shieldHP}`);
             if (finalAmount <= 0) return; // Fully absorbed
         }

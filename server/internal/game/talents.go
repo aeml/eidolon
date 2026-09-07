@@ -31,6 +31,7 @@ type TalentBonus struct {
 	SkillManaCost   float64 // -X% mana cost for this skill (negative = reduction)
 	SkillCritChance float64 // +X% crit chance for this skill
 	SkillHealing    float64 // +X% healing for this skill (Cleric)
+	SkillAbsorption float64 // +X% shield capacity, independent of spell damage
 }
 
 type TalentDef struct {
@@ -207,6 +208,9 @@ var wizardSkills = []string{
 }
 
 func wizardTalentDef(n int) (TalentDef, bool) {
+	if n == 21 {
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: "Arcane Shield", SkillAbsorption: 0.04}}, true
+	}
 	if n <= 26 {
 		skillIdx := (n - 1) / 2
 		if skillIdx >= len(wizardSkills) {
@@ -431,6 +435,7 @@ func (e *Entity) GetSkillBonus(skillName string) TalentBonus {
 			total.SkillManaCost += bonus.SkillManaCost * float64(rank)
 			total.SkillCritChance += bonus.SkillCritChance * float64(rank)
 			total.SkillHealing += bonus.SkillHealing * float64(rank)
+			total.SkillAbsorption += bonus.SkillAbsorption * float64(rank)
 		}
 	}
 	return total
