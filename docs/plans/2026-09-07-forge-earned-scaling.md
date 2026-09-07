@@ -1,10 +1,11 @@
-# Forge earned scaling — implementation in progress
+# Forge earned scaling — Alpha 1.0.48 locally verified
 
 Follow-up to the [measured loot/Forge baseline](2026-09-07-loot-and-forge-baseline.md).
 Runtime work is isolated on `work/economy-balance-20260907` in
 `/tmp/eidolon-economy-balance-MYgoxi`. Runtime **`9695add`** and corrected release
 ancestry **`d055ccb`** are packaged as **Alpha 1.0.48 (every shard counts)**.
-Final package verification remains pending; it is not published or root-integrated.
+Package `2f365d0` plus test-only readiness correction `be80c67` is locally
+verified. It is not published; the preceding sequential release gates still apply.
 
 ## Required behavior
 
@@ -75,7 +76,7 @@ server-root persistence/equipment set passes **1.854s**. Logs:
 - [x] Integrate corrected 40 combo-observation ancestry and align 48's package,
   login, release manifest, server/deployment defaults and distinct patch notes.
   Version/default/Forge contracts pass **239 / 1.302s**.
-- [ ] Finish final packaged client/server/browser and real Forge checks; retain
+- [x] Finish final packaged client/server/browser and real Forge checks; retain
   exact artifacts and integrate locally only after the package is verified.
 - [ ] Publish after earlier sequential CI/live gates, then verify exact public
   commit/version and healthy/ready backend. Local 48 is not the current live game.
@@ -83,3 +84,27 @@ server-root persistence/equipment set passes **1.854s**. Logs:
 This is an arithmetic/persistence correction within balancing, not the full
 balance pass. Attainable late-potency costs, equipment frequency, XP/gold curve
 tuning and playable investigations remain separate required work.
+
+## Final packaged evidence
+
+- Full client: **216 suites / 3,198 tests / 149.264s**.
+- Full server race: root **15.501s**, game **381.500s**, remaining packages pass.
+- Version/default/Forge contracts: **239 / 1.302s**; lint passes.
+- Actual packaged Forge/reconnect: **24.4s / 26.4s total**, with exact saved
+  stats and precision basis, guide choices, credential scan and disposable cleanup.
+  Inspected image: `/tmp/eidolon-release48-forge-accumulated-progress.png`.
+- Final anonymous browser sweep: **75 / 9.4m**, all passing.
+
+The first anonymous attempt passes 74 checks but fails the phone status test
+during module loading, before layout assertions. Its trace shows UIManager
+returning HTTP 200 while dependency requests fail with `net::ERR_NETWORK_CHANGED`.
+The status test now uses the existing bounded runtime-readiness helper; its
+layout assertions and production code are unchanged. All four sizes pass twice
+(**8 / 49.0s**) before the complete 75-check rerun. This is test-startup recovery,
+not a claim to have diagnosed the machine's network change.
+
+Logs: `/tmp/eidolon-release48-client.log`, `/tmp/eidolon-release48-server.log`,
+`/tmp/eidolon-release48-anonymous.log` (failed first attempt),
+`/tmp/eidolon-release48-status-readiness.log`, and
+`/tmp/eidolon-release48-anonymous-final.log` (passing rerun).
+All owned final verification handles, including rerun `57685`, are closed.
