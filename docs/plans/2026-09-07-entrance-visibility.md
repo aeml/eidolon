@@ -56,12 +56,26 @@ inspected: the hero is visible through the facade, with controls and chat intact
 
 ## Alpha 1.0.46 package
 
-Distinct **a window through the stone** patch notes and synchronized version
-defaults are prepared. The ten rendered checks join anonymous CI; the actual
+Package **`2fe9cb2`** adds distinct **a window through the stone** patch notes and
+synchronized version defaults. The ten rendered checks join anonymous CI; the actual
 cutaway/return route joins full predeployment character QA using a separate
 allowlisted disposable character. Prior 45 runtime-readiness ancestry is merged.
-Final packaged verification and root integration remain pending. Publication
-must follow successful sequential CI/live gates for every earlier queued version.
+Final package verification passes **236 contracts / 1.788s**, **215 suites /
+3,185 client tests / 126.31s**, lint, backend-root race **12.231s**, and all
+**75 anonymous browser checks / 8.2m**. Gameplay-server runtime is unchanged
+from the previously race-tested 45 ancestry. The final versioned actual route
+passes **41.5s / 42.9s total**, repeating **695 / 834 / 834**, expiry, **310
+absorbed / 524 left**, cutaway and original-material town restoration. Scan
+and disposable cleanup pass. The final actual landscape image is inspected:
+the Wizard is visible through the small window, with nearby enemies, controls
+and chat still rendered. All owned local test handles are terminal success.
+
+Logs: `/tmp/eidolon-release46-contracts.log`, `/tmp/eidolon-release46-client.log`,
+`/tmp/eidolon-release46-lint.log`, `/tmp/eidolon-release46-root-server.log`,
+`/tmp/eidolon-release46-anonymous.log`, `/tmp/eidolon-release46-gameplay.log`.
+This locally verified package is ready for root integration. Publication must
+follow successful sequential CI/live gates for every earlier queued version;
+local package verification is not deployment evidence.
 
 Physical-phone performance, other world scenery, wider enemy visibility and
 the broader collision/playability audit remain open. This localized cutaway is
