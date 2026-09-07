@@ -395,7 +395,10 @@ import {
 } from '../utils/dungeonRoomMetadata.js';
 
 function spawnActorReadability(engine, entity, action, fullText, color, fontSize) {
-    if (!engine.isMobile) {
+    // A summon repeats its long identity on every smite. Keep that attribution
+    // above its model without a wide, enlarged line across the combatants.
+    const isSeraph = (entity.meshType || entity.subType || entity.constructor?.name) === 'AvengingSeraph';
+    if (!engine.isMobile && !isSeraph) {
         engine.floatingTextManager.spawn(fullText, entity.position, color, fontSize);
         return;
     }

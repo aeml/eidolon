@@ -29,6 +29,24 @@ const gameEngineSource = [
 ].map((name) => fs.readFileSync(path.join(repoRoot, 'src/core', name), 'utf8')).join('\n');
 
 describe('GameEngine encounter callouts', () => {
+    test.each(['AvengingSeraph', 'Cleric'])('desktop %s preserves identity with the appropriate action treatment', meshType => {
+        const engine = Object.create(GameEngine.prototype);
+        Object.assign(engine, { isMobile: false, player: { id: 'self' },
+            floatingTextManager: { spawn: jest.fn() }, readabilityFeedbackTimestamps: new Map(),
+            canShowThrottledReadabilityEvent: () => true, isPlayerClassEntity: () => true,
+            isPositionNearPlayer: () => true });
+        const ally = { id: 'ally', name: meshType === 'AvengingSeraph' ? 'Avenging Seraph' : 'Ayla', meshType,
+            position: new THREE.Vector3(), mesh: { userData: { bounds: { height: 4 } } } };
+        engine.showRemoteActionReadability(ally, 'Smite');
+        const call = engine.floatingTextManager.spawn.mock.calls.at(-1);
+        if (meshType === 'AvengingSeraph') {
+            expect(call[4]?.compactActorAction).toEqual({ source: 'AVENGING SERAPH', action: 'SMITE', anchorHeight: 4.65 });
+            expect(call[0]).toBe('AVENGING SERAPH: SMITE');
+        } else {
+            expect(call).toHaveLength(4);
+            expect(call[0]).toBe('AYLA: SMITE');
+        }
+    });
     test.each([
         ['showRemoteActionReadability', ['Divine Intervention'], 'DIVINE INTERVENTION'],
         ['showRemoteStateReadability', ['JUMPING', 'IDLE'], 'JUMP'],
