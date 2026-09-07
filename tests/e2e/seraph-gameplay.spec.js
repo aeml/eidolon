@@ -24,7 +24,7 @@ test('Seraph training persists, changes actual smites and lifetime, and cleans u
     async function observe() {
         await page.evaluate(() => {
             const game = window.game;
-            window.__seraphQA = { results: [], hits: [], births: {}, removals: {} };
+            window.__seraphQA = { results: [], hits: [], births: {}, removals: {}, ranks: { ...game.player.talentRanks } };
             const handle = game.handleServerMessage.bind(game);
             game.handleServerMessage = message => {
                 const qa = window.__seraphQA, now = performance.now();
@@ -36,6 +36,7 @@ test('Seraph training persists, changes actual smites and lifetime, and cleans u
                 }
                 const states = message.type === 'state' ? message.payload : message.type === 'delta' ? message.payload?.u : null;
                 for (const state of Object.values(states || {})) {
+                    if (state.id === game.player.id && state.talentRanks) qa.ranks = { ...state.talentRanks };
                     if (state.subType === 'AvengingSeraph' && state.ownerId === game.player.id && !qa.births[state.id]) {
                         qa.births[state.id] = now;
                     }
@@ -88,6 +89,7 @@ test('Seraph training persists, changes actual smites and lifetime, and cleans u
     async function lifetime(rank) {
         const id = await cast();
         const duration = 15*(1+.02*rank);
+        await page.screenshot({ path: testInfo.outputPath(`seraph-town-technique-${rank}.png`) });
         // Observe real server time; never change clocks or summon state.
         if (rank > 0) {
             const age = await page.evaluate(id => performance.now()-window.__seraphQA.births[id], id);
@@ -129,6 +131,7 @@ test('Seraph training persists, changes actual smites and lifetime, and cleans u
         await expect.poll(() => page.evaluate(id => window.__seraphQA.hits.filter(hit => hit.sourceId === id).length, id)).toBeGreaterThan(1);
         const hits = await page.evaluate(id => window.__seraphQA.hits.filter(hit => hit.sourceId === id), id);
         expect(hits.some(hit => hit.amount === expected), 'real summon must deliver the trained noncritical smite').toBe(true);
+        await page.screenshot({ path: testInfo.outputPath(`seraph-combat-${label}.png`) });
         console.log(`[seraph-combat] ${label}: rank ${rank}, expected ${expected}, observed ${hits.map(hit => hit.amount).join(',')}`);
         await returnToTown(page);
         // Recalling within the same overworld need not invalidate the owner.
@@ -144,8 +147,10 @@ test('Seraph training persists, changes actual smites and lifetime, and cleans u
     for (const [id, title] of [['CLR_17', 'Avenging Seraph - Mastery'], ['CLR_18', 'Avenging Seraph - Technique']]) {
         for (let rank = 1; rank <= 5; rank++) {
             const node = skills.locator('.skill-node').filter({ has: page.locator('.skill-node-title', { hasText: title }) });
-            await node.scrollIntoViewIfNeeded(); await node.click();
-            await expect.poll(() => page.evaluate(id => window.game.player.talentRanks?.[id], id)).toBe(rank);
+            // click retries through normal authoritative rerenders; waiting on
+            // the optimistic local rank alone can race the server's refresh.
+            await node.click();
+            await expect.poll(() => page.evaluate(id => window.__seraphQA.ranks[id], id)).toBe(rank);
         }
     }
     await page.locator('#btn-close-skills').click();
