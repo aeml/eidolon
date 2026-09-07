@@ -1,0 +1,9 @@
+[
+  { "name": "untrained", "ranks": {}, "range": 18 },
+  { "name": "aether one", "ranks": { "WIZ_35": 1 }, "range": 18.72 },
+  { "name": "aether five", "ranks": { "WIZ_35": 5 }, "range": 21.6 },
+  { "name": "runic five", "ranks": { "WIZ_29": 5 }, "range": 20.7 },
+  { "name": "geometry five", "ranks": { "WIZ_38": 5 }, "range": 19.8 },
+  { "name": "stacked", "ranks": { "WIZ_29": 5, "WIZ_35": 5, "WIZ_38": 5 }, "range": 26.1 },
+  { "name": "technique is not range", "ranks": { "WIZ_20": 5 }, "range": 18 }
+]

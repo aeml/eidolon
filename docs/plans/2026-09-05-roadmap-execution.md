@@ -52,6 +52,7 @@ implementation/validation receipts, not the next commits to push:
 | 1.0.32 | `0d6f1e42a93718b3d3fd7653f61bb0a8d009d871` | `release/32-with-clock` |
 | 1.0.33 | `92842b5b6757bd4b3ca7d1cf5cff94b98665bcec` | `release/33-with-clock` |
 | 1.0.34 | `fe34c345270c03628d63883edb42131c23b5e7d4` | `release/34-with-stash` |
+| 1.0.35 | `008854336fc0c9e396b7bb430ddf19cf16c5d082` | `release/35-with-forge` |
 
 Alpha 1.0.34 is committed locally and merged into main as `976235a`.
 The phone stash has separate notes/version metadata, server-side Chronicle
@@ -65,13 +66,20 @@ preceding release gate.
 The September 7 forge-refresh and dungeon-guide reports are now in the roadmap's
 immediate hotfix list. Their implementation and retained failing regressions are
 tracked in [forge and guide evidence](2026-09-07-forge-guide.md). Alpha 1.0.35 is
-locally verified and ready for its candidate commit: 183 client suites / 2,556
+locally verified and committed as `0088543`: 183 client suites / 2,556
 tests, lint, full server race suite, 46 anonymous browser checks and the final
 versioned real-server forge/persistence/guide route in 23.2 seconds all pass.
 It has separate patch notes and synchronized login/package/runtime metadata.
 The runtime also repairs the confirmed Forge approach blockage and vacant-item
 hydration discovered by the route. No later-version goal or physical-phone
 playability gate is closed, and this candidate is not yet published.
+
+The next unversioned range-consumer work is tracked in
+[the range evidence](2026-09-07-talent-range-work.md): Teleport and Scorch Beam
+now consume existing range talents, with paired client/server boundary and
+wall/presentation checks. The remaining Wizard/Rogue consumers, area probe and
+whole talent audit are still open. This working tree is not the queued 1.0.35
+source and must not replace it in the sequential deployment queue.
 
 Alpha 1.0.33 phone status implementation `fe857a6` is committed locally with
 separate notes and synchronized metadata. It adds tap-readable buff/debuff details,

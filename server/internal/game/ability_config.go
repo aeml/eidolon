@@ -112,6 +112,12 @@ func effectiveAbilityCooldown(player *Entity, skillName string, base time.Durati
 	return time.Duration(float64(base) * (1 - global) * (1 - skill))
 }
 
+// Apply additive talent ranks after the ability's rune-adjusted base range.
+// Callers retain their own collision, instance and valid-target checks.
+func effectiveAbilityRange(player *Entity, skillName string, base float64) float64 {
+	return base * math.Max(0, 1+player.GetSkillBonus(skillName).SkillRange)
+}
+
 func resolveAbilityCooldown(classType, skillName string, fallback time.Duration) time.Duration {
 	if spec, ok := getAbilitySpec(classType, skillName); ok && spec.Cooldown > 0 {
 		return spec.Cooldown

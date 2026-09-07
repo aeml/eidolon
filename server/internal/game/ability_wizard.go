@@ -568,7 +568,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			player.Mana -= cost
 			walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 
-			rangeDist := 18.0
+			rangeDist := effectiveAbilityRange(player, skillName, 18.0)
 			width := 1.0
 			damage := int(float64(25+(player.Stats.Intelligence*2)) * player.GetSkillDamageMultiplier("Scorch Beam"))
 
@@ -822,6 +822,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			if runeID == "teleport_blink" {
 				maxRange = 22.5
 			}
+			maxRange = effectiveAbilityRange(player, skillName, maxRange)
 
 			dx := targetX - player.X
 			dz := targetZ - player.Z

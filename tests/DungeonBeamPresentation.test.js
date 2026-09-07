@@ -39,7 +39,8 @@ describe('dungeon beam presentation', () => {
                         renderSystem: { effectGroup: new THREE.Group(), getEffectQualityScale: () => 1 },
                         spawnTransientEffect: GameEngine.prototype.spawnTransientEffect };
                     if (remote) {
-                        AbilityController.prototype.triggerRemoteAbilityVisuals.call({ engine }, source, 'Scorch Beam', 50011, 50000);
+                        // Wire events contain the resolved endpoint, not the cursor.
+                        AbilityController.prototype.triggerRemoteAbilityVisuals.call({ engine }, source, 'Scorch Beam', doorway ? 50027 : 50010, 50000);
                     } else {
                         Actor.prototype.spawnAbilityPresentation.call(source, engine, 'Scorch Beam', new THREE.Vector3(50011, 0, 50000));
                     }

@@ -43,6 +43,16 @@ describe('phone build reading and deliberate actions', () => {
         expect(player.talentRanks.WIZ_32).toBeUndefined();
         expect(ui.mobile.pending).not.toBeNull();
     });
+    test.each(['Fighter', 'Rogue', 'Wizard', 'Cleric'].flatMap(className => ['A', 'B', 'C'].map(branch => [className, branch])))(
+        'desktop %s branch %s also exposes every general talent', (className, branch) => {
+            player = { ...player, subType: className, selectedBranch: branch };
+            const desktop = new SkillTreeUI({ isMobile: false, getLastPlayer: () => player });
+            desktop.skillTreeMode = 'talents';
+            desktop.renderSkillTree(className);
+            const offered = [...document.querySelectorAll('.skill-node-title')].map(node => node.textContent);
+            expect(offered).toHaveLength(24);
+            expect(offered).toEqual(expect.arrayContaining(CONSTANTS.PASSIVE_TALENTS[className].slice(26).map(t => t.name)));
+        });
     test('reading position and focused control survive unrelated updates and tab returns', () => {
         const choose = document.querySelector('[data-build-action="branch:B"]');
         choose.focus(); ui.skillTreeContent.scrollTop = 240;

@@ -5,6 +5,7 @@
 
 import * as THREE from 'three';
 import { getAbilityManaCost } from './AbilityEconomy.js';
+import { getAbilityRange, getTeleportCastRange } from './AbilityRange.js';
 import { CONSTANTS } from './Constants.js';
 import { Fighter } from '../entities/Fighter.js';
 import { Rogue } from '../entities/Rogue.js';
@@ -56,6 +57,8 @@ export class AbilityController {
      */
     getAbilityCastRange(skillName = null) {
         const player = this.engine.player;
+        if (skillName === 'Teleport') return getTeleportCastRange(player);
+        if (skillName === 'Scorch Beam') return getAbilityRange(player, skillName, CONSTANTS.ABILITY_CONFIG.Wizard.skills[skillName].range);
         const className = player && player.constructor ? player.constructor.name : '';
         const classAbilityConfig = CONSTANTS.ABILITY_CONFIG ? CONSTANTS.ABILITY_CONFIG[className] : null;
         const defaultRange = classAbilityConfig && classAbilityConfig.default ? classAbilityConfig.default.range : null;
@@ -175,6 +178,10 @@ export class AbilityController {
                 this.engine.spawnTransientEffect(entry.type, entry.origin, entry.color, {
                     source: entity,
                     direction,
+                    // Scorch Beam events already carry the server's final,
+                    // talent-adjusted and wall-clipped endpoint. Remote actors
+                    // need not replicate their private talent allocation.
+                    ...(skillName === 'Scorch Beam' ? { authoritativeEndpoint: true } : {}),
                     ...(canonicalAbilityName ? { abilityName: canonicalAbilityName } : {}),
                     ...(canonicalAbilityName ? { requestedAbilityName: skillName } : {}),
                     ...(canonicalAbilityName ? { abilityLayer: index } : {}),

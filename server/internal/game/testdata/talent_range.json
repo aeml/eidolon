@@ -1,0 +1,10 @@
+[
+  {"name":"untrained", "ranks":{}, "rune":"", "range":15},
+  {"name":"aether-one", "ranks":{"WIZ_35":1}, "rune":"", "range":15.6},
+  {"name":"aether-five", "ranks":{"WIZ_35":5}, "rune":"", "range":18},
+  {"name":"blink", "ranks":{}, "rune":"teleport_blink", "range":22.5},
+  {"name":"aether-blink", "ranks":{"WIZ_35":5}, "rune":"teleport_blink", "range":27},
+  {"name":"all-range-talents", "ranks":{"WIZ_29":5,"WIZ_35":5,"WIZ_38":5}, "rune":"", "range":21.75},
+  {"name":"all-range-blink", "ranks":{"WIZ_29":5,"WIZ_35":5,"WIZ_38":5}, "rune":"teleport_blink", "range":32.625},
+  {"name":"technique-is-not-range", "ranks":{"WIZ_20":5}, "rune":"", "range":15}
+]

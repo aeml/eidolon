@@ -6,11 +6,11 @@ import {
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 
-test('ordinary Scorch Beam casts match the server endpoint at both graphics settings', async ({ page, baseURL }) => {
+test('ordinary and trained Scorch Beam casts match server endpoints and save ranks', async ({ page, baseURL }) => {
     const credentials = credentialsFromEnvironment();
     test.skip(!credentials.username || !credentials.password, 'Requires a dedicated QA character');
     test.skip((process.env.EIDOLON_E2E_CLASS || 'Wizard') !== 'Wizard', 'Wizard beam inspection');
-    test.setTimeout(240_000);
+    test.setTimeout(300_000);
     const failures = collectBrowserFailures(page, baseURL);
     await loginAndEnterWorld(page, credentials);
     await ensureDungeonReadyLevel(page);
@@ -68,32 +68,52 @@ test('ordinary Scorch Beam casts match the server endpoint at both graphics sett
                 return receive(message);
             };
         });
-        for (const quality of ['high', 'low']) {
-            await selectGraphicsThroughSettings(page, quality);
-            for (const wall of [true, false]) {
-                await expect.poll(() => page.evaluate(() => window.game.player.cooldowns?.['Scorch Beam'] || 0),
-                    { timeout: 15_000 }).toBe(0);
-                const previous = await page.evaluate(() => window.__beamEvents.length);
-                // Aim only four units away: the open cast must extend beyond
-                // the cursor; the northward cast must stop at the room wall.
-                const aim = await projectGroundOffset(page, 0, wall ? 4 : -4);
-                expect(aim?.canvas).toBe(true);
-                await page.mouse.move(aim.x, aim.y);
-                await page.keyboard.press(key);
-                await expect.poll(() => page.evaluate(() => window.__beamEvents.length)).toBe(previous + 1);
-                const observation = await page.evaluate(() => ({ mesh: window.__beamMeshes.at(-1), event: window.__beamEvents.at(-1) }));
-                expect(observation.mesh).toEqual(expect.objectContaining({ quality, attached: true }));
-                expect(observation.mesh.x).toBeCloseTo(observation.event.x, 1);
-                expect(observation.mesh.z).toBeCloseTo(observation.event.z, 1);
-                if (wall) {
-                    expect(observation.mesh.z).toBeCloseTo(start.z + start.height / 2, 1);
-                } else {
-                    expect(Math.hypot(observation.mesh.x - observation.mesh.sourceX,
-                        observation.mesh.z - observation.mesh.sourceZ)).toBeCloseTo(18, 1);
+        for (const rank of [0, 5]) {
+            if (rank) {
+                await page.keyboard.press('k');
+                await skills.getByRole('button', { name: 'Talents', exact: true }).click();
+                for (let next = 1; next <= rank; next++) {
+                    const talent = skills.locator('.skill-node').filter({ has: page.locator('.skill-node-title', { hasText: 'Aether Reach' }) });
+                    await talent.scrollIntoViewIfNeeded();
+                    await talent.click();
+                    await expect.poll(() => page.evaluate(() => window.game.player.talentRanks?.WIZ_35 || 0)).toBe(next);
+                    // Desktop currently previews ranks optimistically. Wait for
+                    // server state between purchases; accepted beam geometry
+                    // and the fresh login below independently prove authority.
+                    await page.waitForTimeout(300);
                 }
-                console.log(`[dungeon-beam] ${quality}, wall=${wall}: actual mesh matches accepted endpoint`);
+                await page.locator('#btn-close-skills').click();
+            }
+            for (const quality of ['high', 'low']) {
+                await selectGraphicsThroughSettings(page, quality);
+                for (const wall of [true, false]) {
+                    await expect.poll(() => page.evaluate(() => window.game.player.cooldowns?.['Scorch Beam'] || 0),
+                        { timeout: 15_000 }).toBe(0);
+                    const previous = await page.evaluate(() => window.__beamEvents.length);
+                    // Aim only four units away: the open cast must extend beyond
+                    // the cursor; the northward cast must stop at the room wall.
+                    const aim = await projectGroundOffset(page, 0, wall ? 4 : -4);
+                    expect(aim?.canvas).toBe(true);
+                    await page.mouse.move(aim.x, aim.y);
+                    await page.keyboard.press(key);
+                    await expect.poll(() => page.evaluate(() => window.__beamEvents.length)).toBe(previous + 1);
+                    const observation = await page.evaluate(() => ({ mesh: window.__beamMeshes.at(-1), event: window.__beamEvents.at(-1) }));
+                    expect(observation.mesh).toEqual(expect.objectContaining({ quality, attached: true }));
+                    expect(observation.mesh.x).toBeCloseTo(observation.event.x, 1);
+                    expect(observation.mesh.z).toBeCloseTo(observation.event.z, 1);
+                    if (wall) {
+                        expect(observation.mesh.z).toBeCloseTo(start.z + start.height / 2, 1);
+                    } else {
+                        expect(Math.hypot(observation.mesh.x - observation.mesh.sourceX,
+                            observation.mesh.z - observation.mesh.sourceZ)).toBeCloseTo(18 * (1 + rank * .04), 1);
+                    }
+                    console.log(`[dungeon-beam] rank=${rank}, ${quality}, wall=${wall}: actual mesh matches accepted endpoint`);
+                }
             }
         }
     } });
+    await page.reload({ waitUntil: 'networkidle' });
+    await loginAndEnterWorld(page, credentials);
+    await expect.poll(() => page.evaluate(() => window.game.player.talentRanks?.WIZ_35 || 0)).toBe(5);
     expect(failures, failures.join('\n')).toEqual([]);
 });

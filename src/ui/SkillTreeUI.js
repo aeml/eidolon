@@ -490,7 +490,7 @@ export class SkillTreeUI {
                 };
 
                 visibleTalents = talents.filter((t) => {
-                    if (!isSkillTalent(t)) return false;
+                    if (!isSkillTalent(t)) return true;
                     const skillName = skillNameForTalent(t);
                     return relevantSkills.has(skillName);
                 });

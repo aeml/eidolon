@@ -8,6 +8,7 @@ import { NetworkManager } from './NetworkManager.js';
 import { AbilityController } from './AbilityController.js';
 import { CONSTANTS } from './Constants.js';
 import { resolveDungeonBeamEndpoint } from '../skills/dungeonEffectGeometry.js';
+import { getAbilityRange } from './AbilityRange.js';
 import { syncWhirlwindPresentation } from '../skills/whirlwindPresentation.js';
 import { UIBindings } from './UIBindings.js';
 import { SocialPresenceController } from './SocialPresenceController.js';
@@ -958,13 +959,13 @@ export class GameEngine {
             return true;
         }
         let effectPosition = position;
-        if (type === 'beam' && options.abilityName === 'Scorch Beam' && options.source?.position) {
+        if (type === 'beam' && options.abilityName === 'Scorch Beam' && options.source?.position && !options.authoritativeEndpoint) {
             const walkRects = this.currentInstanceId && this.currentInstanceType !== 'overworld'
                 ? this.currentDungeonLayout?.walkRects : null;
             const endpoint = resolveDungeonBeamEndpoint(walkRects, options.source.position, position,
-                CONSTANTS.ABILITY_CONFIG.Wizard.skills['Scorch Beam'].range);
-            // Both predicted local casts and accepted remote casts use the same
-            // full-range, wall-clipped geometry. Never mutate the caller's aim.
+                getAbilityRange(options.source, 'Scorch Beam', CONSTANTS.ABILITY_CONFIG.Wizard.skills['Scorch Beam'].range));
+            // Predict local casts from the aim; accepted remote endpoints must
+            // remain untouched even if local rank/layout information is stale.
             effectPosition = position.clone();
             effectPosition.x = endpoint.x;
             effectPosition.z = endpoint.z;

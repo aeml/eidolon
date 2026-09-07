@@ -20,6 +20,11 @@ Wizard buffs/debuffs. The diagnostic overlay now retains **two range/area probes
 Projectile/zone lifetimes and other classes' duration consumers remain open;
 this is not a complete duration audit. Publication/phone validation are separate.
 
+Unpublished work after 1.0.35 begins the range category with Teleport's server,
+client targeting and offline landing contract. See [the work record](2026-09-07-talent-range-work.md).
+The broader range category and area probe remain open; do not interpret one
+repaired representative probe as all skill-range consumers being functional.
+
 ## Repeatable evidence
 
 Run `npm run audit:talent-consumers` with Node 24 and Go available. The script

@@ -6,6 +6,8 @@ import { Projectile } from './Projectile.js';
 import { AreaOfEffect } from './AreaOfEffect.js';
 import { spawnEffectSceneFallback, spawnSceneFallbackBeam } from './EffectSceneFallback.js';
 import { getAbilityAoeRadius } from '../skills/abilityRadii.js';
+import { getAbilityRange, getTeleportCastRange } from '../core/AbilityRange.js';
+import { clipDungeonEffectSegment, resolveDungeonBeamEndpoint } from '../skills/dungeonEffectGeometry.js';
 
 export class Wizard extends Actor {
     constructor(id) {
@@ -249,14 +251,18 @@ export class Wizard extends Actor {
             this.cooldowns["Scorch Beam"] = 8.0 * (1 - cdr);
             
             // Instant Line Damage
-            const range = 15.0;
+            const authoredRange = getAbilityRange(this, skill, CONSTANTS.ABILITY_CONFIG.Wizard.skills[skill].range);
+            const walkRects = gameEngine.currentInstanceId && gameEngine.currentInstanceType !== 'overworld'
+                ? gameEngine.currentDungeonLayout?.walkRects : null;
+            const endpoint = resolveDungeonBeamEndpoint(walkRects, this.position, targetVector, authoredRange);
+            const range = Math.hypot(endpoint.x - this.position.x, endpoint.z - this.position.z);
             const width = 1.0;
             const damage = (25 + (this.stats.intelligence * 2.5)) * damageMultiplier;
             
             const startPos = this.position.clone();
             startPos.y += 1.5;
             
-            const dir = new THREE.Vector3().subVectors(targetVector, this.position).normalize();
+            const dir = new THREE.Vector3(targetVector.x - this.position.x, 0, targetVector.z - this.position.z).normalize();
             const endPos = startPos.clone().add(dir.clone().multiplyScalar(range));
             
             const midPoint = startPos.clone().add(dir.clone().multiplyScalar(range / 2));
@@ -290,10 +296,11 @@ export class Wizard extends Actor {
                 const v = new THREE.Vector3().subVectors(entity.position, startPos);
                 const t = v.dot(dir);
                 
-                if (t > 0 && t < range) {
+                const targetRadius = entity.radius || 1.0;
+                if (t > 0 && t < range + targetRadius) {
                     const closestPoint = startPos.clone().add(dir.clone().multiplyScalar(t));
-                    const dist = closestPoint.distanceTo(entity.position);
-                    if (dist < width + 1.0) { // +1 for entity radius approx
+                    const dist = Math.hypot(closestPoint.x - entity.position.x, closestPoint.z - entity.position.z);
+                    if (dist < width + targetRadius && !clipDungeonEffectSegment(walkRects, this.position, entity.position).blocked) {
                          entity.takeDamage(damage);
                          // Armor Melt Debuff (Mockup)
                          if (entity.stats) {
@@ -534,7 +541,7 @@ export class Wizard extends Actor {
             // Visual Effect: Fade out/in or particles
             this.spawnVisualEffect(gameEngine, this.position, 0x00ffff, "burst");
             
-            const maxRange = 15.0;
+            const maxRange = getTeleportCastRange(this);
             const dist = this.position.distanceTo(targetVector);
             
             let finalTarget = targetVector.clone();
