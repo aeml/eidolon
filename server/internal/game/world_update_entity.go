@@ -1166,6 +1166,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				if now.After(e.SpiritEndTime) {
 					e.SpiritsActive = false
 					e.SpiritGuardiansRuneID = ""
+					e.SpiritRadius = 0
 					e.Mu.Unlock()
 				} else {
 					if time.Since(e.LastSpiritTick) >= 500*time.Millisecond {
@@ -1177,7 +1178,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 						// Spirit Guardians Rune Effects
 						spiritRuneID := e.SpiritGuardiansRuneID
-						radius := spiritGuardiansRadius(e.SpiritsBoosted, spiritRuneID)
+						radius := e.SpiritAreaRadius()
 
 						// spirits_vengeful: +50% damage, -25% healing
 						healReduction := 1.0

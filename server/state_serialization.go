@@ -256,6 +256,8 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		IsCharging:                 e.IsCharging,
 		SpiritsActive:              e.SpiritsActive,
 		SpiritsBoosted:             e.SpiritsBoosted,
+		SpiritRadius:               e.SpiritAreaRadius(),
+		SpiritRune:                 e.ActiveSpiritRune(),
 		GuardianEmbraceActive:      e.GuardianEmbraceActive,
 		BlessingResolveActive:      e.BlessingResolveActive,
 		DivineInterventionActive:   e.DivineInterventionActive,
@@ -343,6 +345,8 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	cwhirlwindDuration := current.WhirlwindRemaining(time.Now())
 	cwhirlwindActive := cwhirlwindDuration > 0
 	cspiritsBoosted := current.SpiritsBoosted
+	cspiritRadius := current.SpiritAreaRadius()
+	cspiritRune := current.ActiveSpiritRune()
 	cguardianEmbraceActive := current.GuardianEmbraceActive
 	cguardianEmbraceRadius := current.GuardianEmbraceAreaRadius()
 	cblessingResolveActive := current.BlessingResolveActive
@@ -615,7 +619,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	if cwhirlwindActive != last.WhirlwindActive || math.Abs(cwhirlwindDuration-last.WhirlwindDuration) > 0.05 {
 		return true
 	}
-	if cspiritsBoosted != last.SpiritsBoosted {
+	if cspiritsBoosted != last.SpiritsBoosted || cspiritRadius != last.SpiritRadius || cspiritRune != last.SpiritRune {
 		return true
 	}
 	if cguardianEmbraceActive != last.GuardianEmbraceActive || cguardianEmbraceRadius != last.GuardianEmbraceRadius {
@@ -1172,6 +1176,8 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		VelZ:                       float32(e.VelZ),
 		SpiritsActive:              e.SpiritsActive,
 		SpiritsBoosted:             e.SpiritsBoosted,
+		SpiritRadius:               float32(e.SpiritAreaRadius()),
+		SpiritRune:                 e.ActiveSpiritRune(),
 		IsCharging:                 e.IsCharging,
 		GuardianEmbraceActive:      e.GuardianEmbraceActive,
 		BlessingResolveActive:      e.BlessingResolveActive,

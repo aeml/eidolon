@@ -16,7 +16,7 @@ function disposeMaterial(material) {
 }
 
 function getRuneId(source) {
-    return source?.skillRunes?.['Spirit Guardians'] || null;
+    return source?.spiritRune ?? source?.skillRunes?.['Spirit Guardians'] ?? null;
 }
 
 /**
@@ -69,8 +69,10 @@ export class SpiritGuardiansEffect {
     }
 
     getEffectRadius() {
+        if (Number.isFinite(this.source.spiritRadius) && this.source.spiritRadius > 0) return this.source.spiritRadius;
         const skillName = this.boosted ? 'Spirit Guardians Boost' : 'Spirit Guardians';
         return getAbilityAoeRadius('Cleric', skillName, {
+            talentRanks: this.source.talentRanks,
             skillRunes: { 'Spirit Guardians': this.runeId }
         });
     }
@@ -88,6 +90,7 @@ export class SpiritGuardiansEffect {
 
         this.boosted = nextBoosted;
         this.runeId = nextRuneId;
+        const previousRadius = this.effectRadius;
         this.effectRadius = this.getEffectRadius();
         this.orbitRadius = this.getOrbitRadius();
         this.group.userData.boosted = this.boosted;
@@ -97,7 +100,16 @@ export class SpiritGuardiansEffect {
 
         if (options.rebuild || changed) {
             this.rebuild();
+        } else if (previousRadius !== this.effectRadius && this.pulseRing) {
+            const oldGeometry = this.pulseRing.geometry;
+            this.resources.delete(oldGeometry);
+            oldGeometry.dispose();
+            this.pulseRing.geometry = this.createRingGeometry();
         }
+    }
+
+    createRingGeometry() {
+        return this.track(new THREE.RingGeometry(Math.max(0.2, this.effectRadius - 0.35), this.effectRadius, this.quality === 'low' ? 32 : 64));
     }
 
     track(resource) {
@@ -130,11 +142,7 @@ export class SpiritGuardiansEffect {
             this.group.add(guardian);
         }
 
-        const ringGeometry = this.track(new THREE.RingGeometry(
-            Math.max(0.2, this.effectRadius - 0.35),
-            this.effectRadius,
-            this.quality === 'low' ? 32 : 64
-        ));
+        const ringGeometry = this.createRingGeometry();
         const ringMaterial = this.track(new THREE.MeshBasicMaterial({
             color,
             transparent: true,
@@ -190,10 +198,9 @@ export class SpiritGuardiansEffect {
         });
 
         if (this.pulseRing) {
-            // Pulse outward from the authoritative edge; never shrink the
-            // visible boundary inside the actual damage radius.
-            const ringPulse = 1 + pulse * 0.015;
-            this.pulseRing.scale.setScalar(ringPulse);
+            // Animate opacity, not the gameplay edge. Body padding is not a
+            // reason to draw a changing or oversized damage boundary.
+            this.pulseRing.scale.setScalar(1);
             this.pulseRing.material.opacity = 0.14 + pulse * (this.boosted ? 0.22 : 0.14);
             this.pulseRing.rotation.z = this.elapsed * 0.12;
         }

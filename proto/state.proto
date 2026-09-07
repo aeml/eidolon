@@ -230,6 +230,9 @@ message Entity {
   float impact_radius = 112;
   // Active Guardian Embrace's cast-time healing footprint for every observer.
   float guardian_embrace_radius = 113;
+  // Active Spirit Guardians cast snapshot, independent of private build data.
+  float spirit_radius = 114;
+  string spirit_rune = 115;
 
   // Authoritative jump replication
   float jump_start_x = 81;

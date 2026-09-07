@@ -176,10 +176,11 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			// Boost is also a standalone activation, so capture the selected
 			// Spirit Guardians rune instead of depending on an earlier base cast.
 			player.SpiritGuardiansRuneID = player.GetRuneForSkill("Spirit Guardians")
+			player.SpiritRadius = effectiveAbilityAreaRadius(player, skillName, spiritGuardiansRadius(true, player.SpiritGuardiansRuneID))
 			player.SpiritEndTime = time.Now().Add(consumePersistentDuration(player, 10*time.Second))
 			// Boost logic would be in updateEntity where spirits do damage
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 20*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityEvent(player.ID, targetID, skillName, player.X, player.Z, AbilityShape{Radius: player.SpiritRadius, Arc: 2 * math.Pi})
 		}
 	} else if skillName == "Avenging Seraph" {
 		// Avenging Seraph (Summon)
@@ -303,13 +304,14 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			}
 
 			// spirits_sanctuary: Also reduces damage taken by 20%
+			player.SpiritRadius = effectiveAbilityAreaRadius(player, skillName, spiritGuardiansRadius(player.SpiritsBoosted, runeID))
 			if runeID == "spirits_sanctuary" {
 				player.SanctuaryDamageReduction = true
 				player.SanctuaryEndTime = player.SpiritEndTime
 			}
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 10*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityEvent(player.ID, targetID, skillName, player.X, player.Z, AbilityShape{Radius: player.SpiritRadius, Arc: 2 * math.Pi})
 		}
 	} else if skillName == "Healing Light" {
 		// Same as Heal

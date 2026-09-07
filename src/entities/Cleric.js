@@ -206,14 +206,13 @@ export class Cleric extends Actor {
 
         if (skill === "Spirit Guardians Boost") {
             console.log("Cleric used Spirit Guardians Boost!");
-            
-            // Cooldown 20s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Spirit Guardians Boost"] = 20.0 * (1 - cdr);
 
             this.spiritsActive = true;
             this.spiritDuration = 10.0;
             this.spiritBoosted = true; // Enable boost
+            this.spiritRadius = getAbilityAoeRadius('Cleric', skill, this);
+            this.spiritRune = this.skillRunes?.['Spirit Guardians'] || '';
+            this.spiritDamageTimer = .5;
             this.createSpirits(gameEngine);
             
             gameEngine.floatingTextManager.spawn("SPIRIT BOOST!", this.position, '#ffff00');
@@ -333,6 +332,9 @@ export class Cleric extends Actor {
             this.spiritsActive = true;
             this.spiritDuration = 8.0;
             this.spiritBoosted = false; // Normal mode
+            this.spiritRadius = getAbilityAoeRadius('Cleric', 'Spirit Guardians', this);
+            this.spiritRune = this.skillRunes?.['Spirit Guardians'] || '';
+            this.spiritDamageTimer = .5;
             this.createSpirits(gameEngine);
             return;
         }
@@ -356,7 +358,7 @@ export class Cleric extends Actor {
             || null;
         if (!scene || !this.spiritsActive) return false;
 
-        const runeId = this.skillRunes?.['Spirit Guardians'] || null;
+        const runeId = this.spiritRune ?? this.skillRunes?.['Spirit Guardians'] ?? null;
         if (this.spiritEffect?.isActive) {
             this.spiritEffect.setVariant({ boosted: this.spiritBoosted, runeId });
             this.spirits = this.spiritEffect.guardians.map((mesh) => ({ mesh }));
@@ -406,6 +408,8 @@ export class Cleric extends Actor {
         this.clearConsecratedZone();
         this.spiritsActive = false;
         this.spiritDuration = 0;
+        this.spiritRadius = 0;
+        this.spiritRune = '';
         this.spiritBoosted = false;
         this.spiritDamageTimer = 0;
         this.clearSpiritMeshes();
@@ -558,30 +562,35 @@ export class Cleric extends Actor {
             if (this.spiritDuration <= 0) {
                 this.spiritsActive = false;
                 this.spiritDuration = 0;
+                this.spiritRadius = 0;
+                this.spiritRune = '';
                 this.spiritBoosted = false;
                 this.clearSpiritMeshes();
             } else {
                 if (!this.spiritEffect?.isActive) this.createSpirits();
                 this.spiritEffect?.setVariant?.({
                     boosted: this.spiritBoosted,
-                    runeId: this.skillRunes?.['Spirit Guardians'] || null
+                    runeId: this.spiritRune ?? this.skillRunes?.['Spirit Guardians'] ?? null
                 });
                 this.spiritEffect?.update?.(dt);
 
                 // Offline simulation retains its local damage loop. Multiplayer
                 // presentation follows server state and never applies combat.
-                if (chunkManager && !this.isMultiplayer && !this.isRemote) {
+                if (chunkManager && !this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) {
                     this.spiritDamageTimer = (this.spiritDamageTimer || 0) + dt;
-                    if (this.spiritDamageTimer > 0.5) {
-                        this.spiritDamageTimer = 0;
+                    if (this.spiritDamageTimer >= 0.5) {
+                        this.spiritDamageTimer -= .5;
                         
-                        const damageRadius = getAbilityAoeRadius(
+                        const damageRadius = this.spiritRadius > 0 ? this.spiritRadius : getAbilityAoeRadius(
                             'Cleric',
                             this.spiritBoosted ? 'Spirit Guardians Boost' : 'Spirit Guardians',
                             this
                         );
                         let damage = 10 + (this.stats.wisdom * 1.0);
-                        if (this.spiritBoosted) damage *= 1.5;
+                        if (this.spiritBoosted) damage = 20 + Math.floor(this.stats.wisdom * 1.5);
+                        if (this.spiritRune === 'spirits_vengeful') damage = Math.floor(damage * 1.5);
+                        const rects = this.gameEngine?.currentInstanceId && this.gameEngine.currentInstanceType !== 'overworld'
+                            ? this.gameEngine.currentDungeonLayout?.walkRects : null;
                         const textManager = (this.gameEngine && this.gameEngine.floatingTextManager) || floatingTextManager;
 
                         const entities = chunkManager.getActiveEntities();
@@ -589,19 +598,16 @@ export class Cleric extends Actor {
                             if (entity === this || entity.state === 'DEAD' || !entity.isActive) continue;
                             if (entity.constructor.name === 'LootDrop') continue;
                             if (entity.constructor.name === 'DwarfSalesman') continue;
-                            if (['Fighter', 'Rogue', 'Wizard', 'Cleric'].includes(entity.constructor.name)) continue;
+                            if (['Fighter', 'Rogue', 'Wizard', 'Cleric', 'AvengingSeraph'].includes(entity.constructor.name)) continue;
+                            if (typeof this.gameEngine?.isHostileActorTarget === 'function' && !this.gameEngine.isHostileActorTarget(entity)) continue;
                             
-                            const d = this.position.distanceTo(entity.position);
-                            if (d < damageRadius) {
+                            const d = Math.hypot(this.position.x - entity.position.x, this.position.z - entity.position.z);
+                            if (d <= damageRadius + (entity.radius || 0) && !clipDungeonEffectSegment(rects, this.position, entity.position).blocked) {
                                 if (entity.takeDamage) {
                                     entity.takeDamage(damage);
                                 }
                                 if (textManager) {
                                     textManager.spawn(Math.floor(damage), entity.position, '#ffff66');
-                                }
-                                if (this.spiritBoosted && entity.slowTimer !== undefined) {
-                                    entity.slowTimer = 1.0;
-                                    entity.slowFactor = 0.3;
                                 }
                              }
                         }

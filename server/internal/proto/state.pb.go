@@ -858,6 +858,9 @@ type Entity struct {
 	ImpactRadius float32 `protobuf:"fixed32,112,opt,name=impact_radius,json=impactRadius,proto3" json:"impact_radius,omitempty"`
 	// Active Guardian Embrace's cast-time healing footprint for every observer.
 	GuardianEmbraceRadius float32 `protobuf:"fixed32,113,opt,name=guardian_embrace_radius,json=guardianEmbraceRadius,proto3" json:"guardian_embrace_radius,omitempty"`
+	// Active Spirit Guardians cast snapshot, independent of private build data.
+	SpiritRadius float32 `protobuf:"fixed32,114,opt,name=spirit_radius,json=spiritRadius,proto3" json:"spirit_radius,omitempty"`
+	SpiritRune   string  `protobuf:"bytes,115,opt,name=spirit_rune,json=spiritRune,proto3" json:"spirit_rune,omitempty"`
 	// Authoritative jump replication
 	JumpStartX    float32 `protobuf:"fixed32,81,opt,name=jump_start_x,json=jumpStartX,proto3" json:"jump_start_x,omitempty"`
 	JumpStartY    float32 `protobuf:"fixed32,82,opt,name=jump_start_y,json=jumpStartY,proto3" json:"jump_start_y,omitempty"`
@@ -1630,6 +1633,20 @@ func (x *Entity) GetGuardianEmbraceRadius() float32 {
 	return 0
 }
 
+func (x *Entity) GetSpiritRadius() float32 {
+	if x != nil {
+		return x.SpiritRadius
+	}
+	return 0
+}
+
+func (x *Entity) GetSpiritRune() string {
+	if x != nil {
+		return x.SpiritRune
+	}
+	return ""
+}
+
 func (x *Entity) GetJumpStartX() float32 {
 	if x != nil {
 		return x.JumpStartX
@@ -1773,7 +1790,7 @@ const file_state_proto_rawDesc = "" +
 	"\n" +
 	"StatsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\xdd#\n" +
+	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\xa3$\n" +
 	"\x06Entity\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
 	"\vinstance_id\x18\x02 \x01(\tR\n" +
@@ -1891,7 +1908,10 @@ const file_state_proto_rawDesc = "" +
 	"\x10whirlwind_active\x18n \x01(\bR\x0fwhirlwindActive\x12-\n" +
 	"\x12whirlwind_duration\x18o \x01(\x02R\x11whirlwindDuration\x12#\n" +
 	"\rimpact_radius\x18p \x01(\x02R\fimpactRadius\x126\n" +
-	"\x17guardian_embrace_radius\x18q \x01(\x02R\x15guardianEmbraceRadius\x12 \n" +
+	"\x17guardian_embrace_radius\x18q \x01(\x02R\x15guardianEmbraceRadius\x12#\n" +
+	"\rspirit_radius\x18r \x01(\x02R\fspiritRadius\x12\x1f\n" +
+	"\vspirit_rune\x18s \x01(\tR\n" +
+	"spiritRune\x12 \n" +
 	"\fjump_start_x\x18Q \x01(\x02R\n" +
 	"jumpStartX\x12 \n" +
 	"\fjump_start_y\x18R \x01(\x02R\n" +

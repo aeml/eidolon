@@ -37,8 +37,18 @@ pass 48.9s. The final Guardian route hit the same browser network error after it
 functional assertions; its unchanged monitored rerun passes 55.6s with all error
 checks intact. The final holy-ground route passes 39.0s, including rune selection,
 actual healing and fresh-login persistence. This candidate is not
-published. The diagnostic batch now
-reproduces ignored Spirit Guardians/Boost area for both ordinary and Expanded runes.
+published.
+
+The subsequent [Spirit Guardians/Boost area checkpoint](2026-09-07-spirit-area.md)
+passes **194 suites / 2,875 client tests**, full server race checks (game
+**367.003s**) and real-server phone/late-observer gameplay in **1.2 minutes**.
+Trained/rune radius is captured at cast, replicated, consumed by real ticks and
+drawn with an exact perimeter without enlarging the cherubs. This is not included
+in the preserved 1.0.37 candidate. Screenshot review still finds excessive phone
+HUD occupancy; shared encounter composition is the next visual priority.
+The next paired diagnostic casts reproduce ignored Ministry area for Radiant
+Strike, Healing Light's Beacon and Mass Revival in **0.438s**; rank-zero controls
+pass. Those remain open, not a reason to claim the talent audit complete.
 
 Historical 1.0.30 → original 1.0.31 failure and repair:
 CI **`34081910599`** passed every job, including final live character QA.

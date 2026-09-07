@@ -3,7 +3,8 @@ import { getAbilityAreaRadius, getFlameWhipRadius, getWizardAbilityAreaRadius, W
 // Only abilities whose server casts publish authoritative radius/arc are enrolled.
 export const SELF_CENTERED_SHAPE_ABILITIES = new Set([
     'Purifying Wave', 'Guardian Embrace', 'Consecrated Ground',
-    'Blessing of Resolve', 'Blessing of Zeal', "Heaven's Trumpet"
+    'Blessing of Resolve', 'Blessing of Zeal', "Heaven's Trumpet",
+    'Spirit Guardians', 'Spirit Guardians Boost'
 ]);
 export const AUTHORITATIVE_SHAPE_ABILITIES = new Set(['Flame Whip', ...WIZARD_GROUND_ABILITIES, ...SELF_CENTERED_SHAPE_ABILITIES]);
 

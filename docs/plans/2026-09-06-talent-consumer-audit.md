@@ -40,6 +40,16 @@ repaired representative probe as all skill-range consumers being functional.
 
 ## Repeatable evidence
 
+Latest September 7 batch: [Spirit Guardians/Boost](2026-09-07-spirit-area.md) now
+has passing ordinary cast/tick, protocol and gameplay checks. Its diagnostic
+batch passed 0.653s before promotion. The overlay next reproduces **three**
+remaining Ministry area consumers: Radiant Strike at 4.55m, Beacon at 6.75m and
+Mass Revival at 23.25m. All rank-zero controls pass and all rank-five casts are
+accepted but miss their expected effect (**0.438s**,
+`/tmp/eidolon-cleric-next-area-probes.log`). The combo probe deliberately supplies
+active combo state; it does not prove normal cross-branch build access. Earlier
+batch counts below are historical, not a claim that all other consumers work.
+
 Run `npm run audit:talent-consumers` with Node 24 and Go available. The script
 uses Go's build overlay to add [paired diagnostic casts](../qa/talent_consumer_probe.go)
 without editing the server package. It refuses to replace an existing source

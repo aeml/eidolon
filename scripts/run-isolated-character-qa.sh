@@ -122,6 +122,7 @@ qa_allowlist+=",${QA_USERNAME_BASE}-cleanse"
 qa_allowlist+=",${QA_USERNAME_BASE}-guardian"
 qa_allowlist+=",${QA_USERNAME_BASE}-holy"
 qa_allowlist+=",${QA_USERNAME_BASE}-support-area"
+qa_allowlist+=",${QA_USERNAME_BASE}-spirit-area"
 
 mongo_username="qa_root"
 mongo_password="$(openssl rand -hex 24)"
@@ -264,6 +265,11 @@ run_cleric_area() {
     npx playwright test tests/e2e/cleric-immediate-area-gameplay.spec.js
 }
 
+run_spirit_area() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-spirit-area" EIDOLON_E2E_CLASS=Cleric \
+    npx playwright test tests/e2e/spirit-area-gameplay.spec.js
+}
+
 run_talent_duration() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-duration" EIDOLON_E2E_CLASS=Wizard \
     npx playwright test tests/e2e/talent-duration-gameplay.spec.js
@@ -344,7 +350,7 @@ run_animation_multiplayer() {
 set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   all)
-    npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js && run_whip_shape && run_ground_shape && run_purifying_area && run_guardian_area && run_consecrated_area && run_cleric_area && run_whirlwind && run_phone && run_phone_combat && run_phone_inventory && run_equipment_recovery && run_forge_guide && run_talent_economy && run_talent_healing && run_talent_duration && run_phone_quests && run_phone_build && run_phone_settings && run_phone_adventure && run_dungeon_recovery && run_direct_target_classes && npm run test:e2e:movement && run_animation_classes && run_animation_multiplayer
+    npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js && run_whip_shape && run_ground_shape && run_purifying_area && run_guardian_area && run_consecrated_area && run_cleric_area && run_spirit_area && run_whirlwind && run_phone && run_phone_combat && run_phone_inventory && run_equipment_recovery && run_forge_guide && run_talent_economy && run_talent_healing && run_talent_duration && run_phone_quests && run_phone_build && run_phone_settings && run_phone_adventure && run_dungeon_recovery && run_direct_target_classes && npm run test:e2e:movement && run_animation_classes && run_animation_multiplayer
     ;;
   animations)
     run_animation_classes
@@ -384,6 +390,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   cleric-area)
     run_cleric_area
+    ;;
+  spirit-area)
+    run_spirit_area
     ;;
   talent-duration)
     run_talent_duration
@@ -487,6 +496,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     echo "Trained persistent support-area verification: EIDOLON_ISOLATED_QA_ROUTE=guardian-area" >&2
     echo "Trained holy-zone verification: EIDOLON_ISOLATED_QA_ROUTE=consecrated-area" >&2
     echo "Trained Blessing/Trumpet verification: EIDOLON_ISOLATED_QA_ROUTE=cleric-area" >&2
+    echo "Trained Spirit Guardians verification: EIDOLON_ISOLATED_QA_ROUTE=spirit-area" >&2
     echo "Forge/material refresh and guide verification: EIDOLON_ISOLATED_QA_ROUTE=forge-guide" >&2
     echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, inventory, equipment-recovery, talent-economy, talent-healing, talent-duration, extended, portal, dungeons, verdant, dungeon-full, chronicle-earth, chronicle-collection, fresh-opening, fresh-collection, fresh-hunt, fresh-hunt-npc, fresh-ready, fresh-dungeon, dungeon-recovery, direct-skills, projectile-walls, movement-walls, ground-walls, beam-walls, whip-shape, whirlwind, phone, phone-combat, phone-inventory, phone-quests, phone-build, phone-settings, or phone-adventure." >&2
     exit 1

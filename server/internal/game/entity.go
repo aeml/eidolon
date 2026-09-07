@@ -193,6 +193,7 @@ type Entity struct {
 	// Abilities
 	SpiritsActive   bool      `json:"spiritsActive"`
 	SpiritsBoosted  bool      `json:"spiritsBoosted"`
+	SpiritRadius    float64   `json:"spiritRadius,omitempty"`
 	SpiritEndTime   time.Time `json:"-"`
 	LastSpiritTick  time.Time `json:"-"`
 	IsCharging      bool      `json:"isCharging,omitempty"`
@@ -913,6 +914,9 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		VelZ:                   e.VelZ,
 		Radius:                 e.Radius,
 		SpiritsActive:          e.SpiritsActive,
+		SpiritsBoosted:         e.SpiritsBoosted,
+		SpiritRadius:           e.SpiritAreaRadius(),
+		SpiritGuardiansRuneID:  e.ActiveSpiritRune(),
 		GuardianEmbraceActive:  e.GuardianEmbraceActive,
 		GuardianEmbraceEndTime: e.GuardianEmbraceEndTime,
 		GuardianEmbraceRadius:  e.GuardianEmbraceAreaRadius(),
@@ -1061,11 +1065,13 @@ func (w *World) copyEntity(v *Entity) *Entity {
 		JumpProgress:      v.JumpProgress,
 		OwnerID:           v.OwnerID,
 
-		SpiritsActive:    v.SpiritsActive,
-		WhirlwindActive:  v.WhirlwindActive && !v.Disconnected,
-		WhirlwindEndTime: v.WhirlwindEndTime,
-		SpiritsBoosted:   v.SpiritsBoosted,
-		SpiritEndTime:    v.SpiritEndTime,
+		SpiritsActive:         v.SpiritsActive,
+		WhirlwindActive:       v.WhirlwindActive && !v.Disconnected,
+		WhirlwindEndTime:      v.WhirlwindEndTime,
+		SpiritsBoosted:        v.SpiritsBoosted,
+		SpiritRadius:          v.SpiritAreaRadius(),
+		SpiritGuardiansRuneID: v.ActiveSpiritRune(),
+		SpiritEndTime:         v.SpiritEndTime,
 
 		BerserkerModeActive:  v.BerserkerModeActive,
 		BerserkerModeEndTime: v.BerserkerModeEndTime,

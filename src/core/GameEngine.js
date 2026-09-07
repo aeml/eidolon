@@ -125,7 +125,7 @@ function createTimedRemoteEffectConfig({
 const REMOTE_EFFECT_SYNC_CONFIG = {
     spirit_guardians: {
         payloadKey: 'spiritsActive',
-        payloadKeys: ['spiritsActive', 'spiritsBoosted', 'spiritDuration'],
+        payloadKeys: ['spiritsActive', 'spiritsBoosted', 'spiritDuration', 'spiritRadius', 'spiritRune'],
         getPreviousActive: (entity) => Boolean(entity.spiritsActive),
         applyPayload: (entity, value, payload) => {
             const wasActive = Boolean(entity.spiritsActive);
@@ -136,6 +136,8 @@ const REMOTE_EFFECT_SYNC_CONFIG = {
                 entity.spiritsActive = false;
                 entity.spiritBoosted = false;
                 entity.spiritDuration = 0;
+                entity.spiritRadius = 0;
+                entity.spiritRune = '';
                 if (typeof entity.clearSpiritMeshes === 'function') {
                     entity.clearSpiritMeshes();
                 }
@@ -143,14 +145,21 @@ const REMOTE_EFFECT_SYNC_CONFIG = {
             }
 
             entity.spiritsActive = true;
+            if (!wasActive || nextBoosted !== Boolean(entity.spiritBoosted)) {
+                entity.spiritDuration = nextBoosted ? 10 : 8;
+            }
             entity.spiritBoosted = nextBoosted;
-            entity.spiritDuration = Math.max(Number(entity.spiritDuration || 0), nextBoosted ? 10.0 : 8.0);
+            if (payload.spiritRadius !== undefined) {
+                const radius = Number(payload.spiritRadius);
+                entity.spiritRadius = Number.isFinite(radius) && radius > 0 ? radius : 0;
+            }
+            if (payload.spiritRune !== undefined) entity.spiritRune = String(payload.spiritRune || '');
 
             if (payload.spiritDuration !== undefined) {
                 entity.spiritDuration = Math.max(0, Number(payload.spiritDuration || 0));
             }
 
-            if ((!wasActive || !entity.spiritEffect?.isActive) && typeof entity.createSpirits === 'function') {
+            if (typeof entity.createSpirits === 'function') {
                 entity.createSpirits();
             }
         },
