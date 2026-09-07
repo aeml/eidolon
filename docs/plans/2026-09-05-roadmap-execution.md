@@ -88,7 +88,8 @@ checks pass. Both support spells reach a real selected party member in three pho
 sizes. Final combat (**18.7s**) and support (**18.9s**) repeats pass; final full
 anonymous retry passes **50 tests in 5.0 minutes** after the retained fixture
 corrections and module-load `ERR_NETWORK_CHANGED` failure. All local gates are
-complete and the candidate is ready to commit. It is not published and does not
+complete. Source `c6145c35dc935ae197ca643ce1a3dfe75416fcd1` is preserved on
+`release/39-with-party`. It is not published and does not
 change the preserved 1.0.38 source or close physical-phone sign-off.
 
 Historical 1.0.30 → original 1.0.31 failure and repair:
@@ -180,6 +181,7 @@ implementation/validation receipts, not the next commits to push:
 | 1.0.36 | `90e157973178fcd9907a756d8729248b49c312df` | `release/36-with-combat` |
 | 1.0.37 | `47a565b0ec4d38ef9149b1a7055cf056ccfe3802` | `release/37-with-protection` |
 | 1.0.38 | `add49409a0b6fd845ebd7995aa462731b2a29271` | `release/38-with-space` |
+| 1.0.39 | `c6145c35dc935ae197ca643ce1a3dfe75416fcd1` | `release/39-with-party` |
 
 Alpha 1.0.34 is committed locally and merged into main as `976235a`.
 The phone stash has separate notes/version metadata, server-side Chronicle

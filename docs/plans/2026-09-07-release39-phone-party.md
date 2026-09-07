@@ -1,7 +1,9 @@
 # Alpha 1.0.39 — your party within reach
 
 Local candidate after preserved Alpha 1.0.38 source
-`add49409a0b6fd845ebd7995aa462731b2a29271`. Not published. Keep separate ordered
+`add49409a0b6fd845ebd7995aa462731b2a29271`. Source
+`c6145c35dc935ae197ca643ce1a3dfe75416fcd1` is preserved on
+`release/39-with-party`. Not published. Keep separate ordered
 release gates; do not push this work over a predecessor's live verification.
 
 Implements the [shared camera/party prototype](2026-09-07-phone-camera-party.md):
@@ -73,10 +75,11 @@ not established. That run finished **49 passed / 1 failed in 5.0 minutes**;
 successful. The read-only network-link monitor recorded Docker bridge/veth events
 during this passing run, `/tmp/eidolon-release39-network-links.log`; it did not
 alter interfaces or filter browser errors. Those events alone do not establish
-the earlier failure's cause. The monitor was stopped after browser completion.
+the earlier failure's cause. The monitor finished at its 420-second bound (exit
+124, expected for the read-only monitor), after browser completion.
 
 All candidate verification is now complete locally after the retained fixture
-corrections and unchanged network rerun. Ready to commit and preserve separately;
+corrections and unchanged network rerun. Committed and preserved separately;
 publication remains behind 1.0.34–38, after 1.0.33's full live verification.
 
 ## Scope still open
