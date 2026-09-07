@@ -1,7 +1,7 @@
 # Avenging Seraph — summoned ally lifecycle
 
-Status: isolated implementation on `work/seraph-lifecycle-20260907`, based on
-preserved 1.0.42. Not packaged, merged into root or published. Full 1.1–1.10,
+Status: implementation on `work/seraph-lifecycle-20260907`, based on
+preserved 1.0.42 and packaged as local Alpha 1.0.43. Not published. Full 1.1–1.10,
 remaining talent consumers and phone acceptance gates remain open.
 
 ## Reproduction and server repair
@@ -86,6 +86,29 @@ following the Cleric after the birth flash. Combat captures retain a visual
 follow-up: desktop action text crowds the silhouette and nearby entrance facade
 geometry obscures combat. This does not establish full desktop/phone readability.
 
-Offline rendered fallback still requires verification. Full offline damage-modifier parity is not
+### Rendered fallback and desktop action label
+
+The anonymous offline component scene passes **3 tests / 31.2s** on `b031f57`:
+real paid casts create the mesh, deal owner-attributed 84-damage smites, expire
+through the normal chunk update loop and remove their mesh/ownership entries.
+Disconnected floor blocks damage; ordinary actor movement/collision drives
+following; changing the fixture instance removes the ally. This uses production
+actors, mesh loading, collision, effects and chunk updates, not mocked AI or
+rendering. It remains a prepared component scene: normal login is multiplayer,
+and this is not evidence of an offline campaign or earned progression.
+
+One desktop action-label test fails before `b9a28d4` (57 controls pass, 1.976s).
+Seraph now uses the existing compact above-model identity/action treatment on
+desktop too; other desktop player labels stay unchanged. Combined label/text
+tests pass **65 / 0.964s**. The integrated rendered scene and label set passes
+**4 checks / 34.3s** on `d4f83ab`; inspected captures show the two-line attributed
+label above the model, separate from damage numbers and the actor silhouette.
+Logs: `/tmp/eidolon-seraph-offline-render-first.log`,
+`/tmp/eidolon-seraph-label-before.log`, `/tmp/eidolon-seraph-label-after.log`,
+`/tmp/eidolon-seraph-render-final.log`. All these handles are terminal success.
+
+Packaging adds the rendered checks to anonymous CI and the real Seraph route to
+full isolated character QA. See the [1.0.43 release evidence](2026-09-07-release43-seraph.md)
+for final package regression and publication status. Full offline damage-modifier parity is not
 claimed by the shared summon base-damage/lifetime contract. Physical-phone and
 earned character progression are separate from prepared summon QA.

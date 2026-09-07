@@ -28,3 +28,12 @@ test('phone chat coverage and Purifying retry keep the real player path', () => 
     expect(probe).toContain("await verifyCast(5, 'high')");
     expect(commands['test:e2e:anonymous']).toContain('tests/e2e/mobile-chat-layering.spec.js');
 });
+
+test('the full release gate retains Seraph gameplay and rendered fallback checks', () => {
+    const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
+    const commands = JSON.parse(readFileSync('package.json', 'utf8')).scripts;
+    expect(script).toContain('&& run_talent_duration && run_seraph &&');
+    expect(script).toContain('${QA_USERNAME_BASE}-seraph-retry1');
+    expect(commands['test:e2e:anonymous']).toContain('tests/e2e/offline-seraph-render.spec.js');
+    expect(commands['test:e2e:anonymous']).toContain('tests/e2e/summon-action-readability.spec.js');
+});
