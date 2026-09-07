@@ -84,7 +84,10 @@ test('ordinary critical-talent purchases persist and retain real targeted combat
         // These are the class primary abilities, not specialization slots.
         await page.mouse.click(aim.x, aim.y, { button: 'right' });
         await expect.poll(() => page.evaluate(() => window.__criticalQA.results.length)).toBe(1);
-        expect(await page.evaluate(() => window.__criticalQA.results[0])).toEqual(expect.objectContaining({ accepted: true }));
+        const result = await page.evaluate(() => window.__criticalQA.results[0]);
+        expect(result.accepted).toBe(true);
+        expect(Number.isFinite(result.cooldownRemaining)).toBe(true);
+        expect(result.cooldownRemaining).toBeGreaterThan(0);
         expect(await page.evaluate(() => window.__criticalQA.requests)).toEqual([{ selectedTarget: true }]);
         await expect.poll(() => page.evaluate(() => window.__criticalQA.hits.some(hit => hit.amount > 0))).toBe(true);
         console.log(`[critical-gameplay] ${className} ${label}: accepted ${config.skill}, selected enemy damage and normal cooldown`,
