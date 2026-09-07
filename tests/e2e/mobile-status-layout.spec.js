@@ -1,5 +1,5 @@
 import { devices, expect, test } from '@playwright/test';
-import { collectBrowserFailures } from './helpers.js';
+import { collectBrowserFailures, openGame } from './helpers.js';
 
 test.use({ hasTouch: true, isMobile: true, userAgent: devices['Pixel 7'].userAgent, actionTimeout: 12_000 });
 for (const [width, height] of [[360, 800], [390, 844], [844, 390], [568, 320]]) {
@@ -7,7 +7,7 @@ for (const [width, height] of [[360, 800], [390, 844], [844, 390], [568, 320]]) 
         const failures = collectBrowserFailures(page, baseURL);
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
         await page.setViewportSize({ width, height });
-        await page.goto('/', { waitUntil: 'networkidle' });
+        await openGame(page);
         await page.evaluate(async () => {
             const { UIManager } = await import('/src/ui/UIManager.js');
             const { Minimap } = await import('/src/ui/Minimap.js');
