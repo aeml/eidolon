@@ -5,7 +5,51 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 21:55 UTC
+## Current checkpoint — September 7, 22:24 UTC
+
+Routine equipment is packaged locally as **Alpha 1.0.50 / 4212e54**, isolated
+`work/loot-frequency-20260907`. Patch notes and active version fields agree.
+Package verification passes **251 contracts / 2.387s**, full client **217 suites /
+3,213 tests / 137.407s**, lint and root server **17.940s**. Full runtime race checks
+previously pass root **15.507s**, game **360.700s**. A new production party pickup
+test passes three race repetitions **1.846s**: personal fragments remain separate,
+one elite gear drop retains master-looter ownership, failed/full-bag pickups keep
+the world item and successful pickup cannot duplicate it. Final package anonymous
+browser **38023** is active, log `/tmp/eidolon-50-final-anonymous.log`; **sole owned
+browser, freeze loot-frequency worktree until terminal**. No final release ref,
+root merge or public 50 deployment yet.
+
+Earned `fresh-ready` **58746** closes **SUCCESS / 1 / 14.2m** with credential scan
+and cleanup passing. Collection yields exactly eight fragments, 12 observed
+target deaths, five picked-up equipment items worth 80 unsold vendor gold and no
+deaths; explicit turn-in/reconnect retains gear rolls and leaves level 17 with
+the level-30 Guide locked. Optional Skeleton and Imp hunts then earn level 34
+and unlock the Guide, with **three player deaths** across both hunts. Real
+preparation uses common earned equipment, Control & Utility, Fireball mastery,
+Arcane Shield and kiting. The 50,000/150,000 XP daily rewards cause large level
+jumps (18→27 / 29→34); these remain balancing work, not a sign-off. This is not
+required non-daily leveling or a new-player duration estimate.
+
+Investigation head **cf4125d** generalizes the Water route for Fire/Air and adds
+saved journal rereading. Fire **35656** fails **3.7m** after earning Hessa's ledger,
+dying before cold-ash inspection. Removing a test-only restriction on fighting
+the command anchor leads to **48744**, which closes **FAIL / 3.6m**: player alive
+at 2,071/2,575 HP, but the walking-only retreat helper rejects all ground targets
+covered by hostile models. Actual screenshot is inspected/preserved at
+`/tmp/eidolon-fire-covered-retreat.png`; both runs pass credential scan/cleanup.
+Next prepared test allows the same ordinary Ctrl-click jump as travel and reads
+the actor's actual `stats.hp` for the anchor death/respawn check. No difficulty,
+damage, discovery grants or live-player state changes. Fire/Air remain unverified;
+23-chapter runtime remains isolated. Water 6.6m evidence remains valid and copied
+to `/tmp/eidolon-water-proof-hiXbJx` before subsequent browser artifacts replace it.
+
+41 **9c6eb9d… / CI 34163174335** has passed both deployments and is running live
+gameplay QA. Next publisher remains **42 / ea565ebf…**, gated on every 41 job
+passing and fresh exact manifest/login/backend identity. Last fully verified
+public release is 40. Full roadmap and coordinated XP/gold/pacing, rarity and
+late-forge affordability remain open.
+
+## Historical checkpoint — September 7, 21:55 UTC
 
 Water's prepared desktop route **6729** closes **SUCCESS / 1 / 6.6m**. Both
 investigations are accepted, earned through normal travel/field interactions,
