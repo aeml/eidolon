@@ -6,6 +6,36 @@ with patch notes. Scope and completion gates remain in
 the whole goal. Started September 5, 2026.
 
 Current release queue (September 7): **1.0.35 (`948ed0c`) is fully verified**.
+The first 1.0.36 CI (`34110323348`) failed predeployment Rogue targeting; neither
+deployment ran. Accepted Shadow Lunge and bleed events named a different enemy.
+The desktop hotbar dropped the hovered actor's ID when converting its position
+into a vector-only cast. A retry also assumed saved Quick Draw ranks were zero.
+The failure log is retained at `/tmp/eidolon-release36-ci-failure.log`.
+
+Correction **`69b34a78cd880f7a863d5ad2a0aa33af0680f961`** is a direct descendant
+of the original 1.0.36 source, prepared in
+`/tmp/eidolon-release36-targeting-AVg9om` (`work/release36-targeting`). It preserves
+hotbar actor identity through buffered input, handles unavailable targets,
+retains self-casting, fixes retry rank purchases and strengthens outgoing/accepted/
+bleed-target browser assertions. Its 1.0.36 patch notes are updated, without
+including later candidates. **191 suites / 2,802 client tests pass in 104.11s**;
+lint and whitespace pass. After confirming remote master and ancestry, only this
+correction was pushed successfully. New CI **`34114458548` is in progress**.
+Do not publish 1.0.37 until all corrected 1.0.36 CI/live jobs pass and a fresh
+post-terminal public identity check matches. Preserve the original 1.0.37–1.0.40
+candidates and carry this correction forward into each before its publication.
+Do not push the root 1.0.40 working HEAD.
+
+The earned Fighter run remains separate and unchanged at `2c80b06`, session
+`47165`, `/tmp/eidolon-earned-fighter-corrected-gameplay.log`. Its paid Skeleton
+and Imp contracts and saved manual rewards reach level 34; the full Verdant
+route is ongoing. The isolated critical-talent work is committed as **`b32c084`**
+on `work/critical-talents-20260907` in `/tmp/eidolon-critical-talents-lkoMno`.
+Its server race suite passes (game 338.626s), but offline/copy/composition and
+browser checks remain open. It is not merged into this running game or queued
+as a release.
+
+Previous 1.0.36 publication snapshot:
 CI **`34105565222`** is terminal success with every job successful, including
 final live character QA. Fresh post-terminal uncached checks at
 **10:13:16.396 UTC** match public manifest, login version, versioned main script

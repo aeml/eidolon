@@ -43,6 +43,35 @@ These observations do **not** establish completed contracts, dungeon readiness,
 a boss kill, full dungeon clear or saved raid access. They are not physical-phone
 or human discoverability evidence.
 
+### Corrected earned run — in progress
+
+Exact clean source **`2c80b06c59cc0dd771499e908510cda84a43fde7`**, session
+**`47165`**, `/tmp/eidolon-earned-fighter-corrected-gameplay.log`. The same
+dedicated ports are reused only after the prior attempt's terminal cleanup.
+Runtime and selected QA remain frozen; later ledger changes are documentation.
+
+Opening passes in 75 seconds with zero deaths. Collection produces four natural
+seeds in two observed target deaths. Normal preparation saves two collected
+equipment pieces and three Whirlwind Mastery ranks at level 17; no stat points
+are available. The Skeleton contract completes in **252 seconds**, including
+manual reward and login, with **one death** and preserved quest credit. Actual
+server casts include 28 Charges and 31 Whirlwinds, zero rejected casts. Its
+100-gold / 50,000-XP reward reaches level 27 / 5,009 XP / 2,463 gold.
+
+Later preparation preserves both item IDs, fills the empty head slot and tops
+Whirlwind Mastery up to five. Shield Slam is now unlocked and saved. The Imp
+contract completes in **427 seconds**, including manual reward/login, with zero
+deaths, 30 Charges, 72 Whirlwinds and 78 Shield Slams, zero rejected casts. Its
+300-gold / 150,000-XP reward reaches level 34 / 30,333 XP / 15,920 gold. The earned
+readiness and clean-browser-error checkpoint passes.
+
+Ordinary guide entry selects Normal level 30 Verdant, seed
+**`-9201157456171118839`**, generator 2, attempt 0, no fallback. Rootbound Warden
+and Briar Matron have been defeated through actual combat. Accepted skills by
+the first boss include Iron Fortress, Whirlwind and Shield Slam; Guardian Roar
+is not incorrectly required before its level-40 unlock. This remains a running
+measurement, not a full-clear, completed recall/re-entry or saved raid-access pass.
+
 ## September 7 — earlier earned preparation comparison
 
 The optional `EIDOLON_E2E_FRESH_EARLY_PREPARATION=1` switch compares normal
