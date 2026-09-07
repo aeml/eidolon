@@ -20,7 +20,7 @@ Full client validation passes **181 suites / 2,516 tests in 57.779 seconds**
 diff checks pass. The actual earned comparison is recorded below when terminal.
 A planned or running route does not establish a hunt/readiness/clear.
 
-The full comparison is running from exact clean **`fb3513908ad5c468f80355970617c519d566ed14`**,
+The full comparison ran from exact clean **`fb3513908ad5c468f80355970617c519d566ed14`**,
 session **`53280`**, log `/tmp/eidolon-earned-dungeon-early-preparation.log`.
 The observed readiness checkpoint has passed: opening 33 seconds / zero deaths,
 collection 38 seconds / four natural seeds / zero deaths, then two earned items
@@ -34,11 +34,25 @@ The Imp contract finished in 574 seconds including manual reward/login, zero
 deaths, 221 retreats and one accepted Shield, reaching level 34 / 34,411 XP /
 16,590 gold. The clean browser-error readiness checkpoint passed. Ordinary guide
 entry selected Normal level 30 Verdant, seed **`4806128072494505566`**, generator 2,
-attempt 0, no fallback. The route is still fighting inside the dungeon; no full
-clear, final credential scan or cleanup is claimed before its handle terminates.
+attempt 0, no fallback.
 This is one differently equipped/world-seeded run, not a controlled claim that
 preparation alone caused the zero-death result. Runtime and selected QA sources
 remain frozen during the browser run; later ledger edits are documentation only.
+
+**Final result: passed in 31.4 minutes**, session `53280` closed successfully.
+All encounter-room and four-boss assertions passed, including Rootbound Warden,
+Briar Matron, Rustbound Colossus and Hollow Sentinel. Completed-run recall and
+re-entry preserved seed, cleared bosses and gold. The Earth chapter required its
+manual turn-in, awarded 500 gold / 250,000 XP and saved Rootheart raid access after
+reconnect/login. The dungeon/story portion took 989 seconds, entering at level 34
+and ending at level 54, with 66 defensive retreats and ten accepted Shields (zero
+rejected Shields). Final browser-error assertion, credential scan (zero files
+sanitized) and isolated service/data cleanup passed.
+
+This is a complete earned **Wizard / Earth / Normal level-30 / one-seed** pass,
+not all classes, all random layouts, the other realms, raids, physical phones or
+human discovery/pacing. The prior failed runs remain below; the working floor-aware
+retreat planner and earlier legal preparation are not a reason to erase them.
 
 ## September 7 continuation — earned full-dungeon route prepared
 

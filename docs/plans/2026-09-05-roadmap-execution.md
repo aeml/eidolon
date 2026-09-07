@@ -21,6 +21,15 @@ The prior 1.0.26 full verification (`34070192341`, uncached identity at
 local-port collision remain historical checkpoints.
 Later releases remain local until the preceding complete CI/live gate passes.
 
+The earned Wizard Earth comparison on clean `fb35139` **passes in 31.4 minutes**:
+all four Verdant bosses and encounter-room checks, recall/re-entry, manual Earth
+story reward and saved Rootheart raid access. The clean earned-readiness checkpoint,
+final browser errors, credential scan and isolated cleanup also pass. See
+[the exact scope and retained failures](fresh-progression-evidence.md). This is
+one class/seed/realm, not closure of the whole dungeon/campaign or 1.1 gate.
+Main integration of the clock-only repair passes **181 client suites / 2,518 tests
+in 111.705 seconds**, log `/tmp/eidolon-clock-merged-client.log`, session `41396` closed.
+
 The same test-only repair is merged into queued descendants without runtime
 changes. Sequential ancestry and package/manifest/login versions are checked.
 These are the current successor sources; older source IDs below remain historical
