@@ -1,10 +1,11 @@
 import { devices, expect, test } from '@playwright/test';
+import { openGame } from './helpers.js';
 
 test.use({ hasTouch: true, isMobile: true, userAgent: devices['Pixel 7'].userAgent });
 
 test('a populated phone party roster never intercepts the joystick or combat controls', async ({ page, context }) => {
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
-    await page.goto('/', { waitUntil: 'networkidle' });
+    await openGame(page);
     await page.evaluate(async () => {
         const { UIManager } = await import('/src/ui/UIManager.js');
         const { InputManager } = await import('/src/core/InputManager.js');
@@ -48,7 +49,7 @@ test('a populated phone party roster never intercepts the joystick or combat con
 test('phone HUD keeps thumb targets and expandable permanent chat usable in both orientations', async ({ page }, testInfo) => {
     for (const [width, height] of [[390, 844], [844, 390]]) {
         await page.setViewportSize({ width, height });
-        await page.goto('/', { waitUntil: 'networkidle' });
+        await openGame(page);
         await page.evaluate(async () => {
             const { UIManager } = await import('/src/ui/UIManager.js');
             const { InputManager } = await import('/src/core/InputManager.js');
