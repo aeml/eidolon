@@ -95,6 +95,53 @@ Full verification after the correction passes **177 suites / 2,482 tests in
 remains required. The next source includes the separately verified 1.0.31 Cleric
 healing release; do not relabel its result as an exact 1.0.30-source run.
 
+The repeat on exact `8171c2e`, session `14852`, **failed in 3.2 minutes before
+entering any dungeon**. Opening manual completion took 32 seconds with no deaths;
+collection took 46 seconds with six observed Skeleton deaths, four natural seeds
+and saved level 16 rewards. The hunt last reported 50 Skeleton credits at 101
+seconds. It then failed target-search movement at level 17 / 500 HP, with
+`attempts: []`: no input was attempted. Log
+`/tmp/eidolon-earned-dungeon-floor-aware.log`; credential scan sanitized two
+artifacts and disposable cleanup completed. It provides no browser verdict on
+the new dungeon-corner planner.
+
+The helper skipped entity-covered ground points before its optional Ctrl-click
+jump fallback could execute. `GameEngineMovement.handlePrimaryClick` resolves
+that modifier through a ground intersection before entity interaction. The
+optional fallback now also handles a covered canvas point using real modifier
+input; strictly no-jump Wizard retreat remains unchanged. Three input regressions
+cover covered-ground jumps, strict no-jump failure without fake desktop WASD, and
+ordinary clear-ground clicks. All **178 suites / 2,485 tests in 60.458 seconds**
+and lint pass. The evidence does not prove whether each skipped point in the
+failed run was entity-covered or unprojectable; a repeat remains necessary.
+
+The next repeat on `4b63116`, session `69602`, **failed in 4.3 minutes after a
+third ordinary Skeleton-hunt death**, not a movement exception. Opening finished
+in 34 seconds with no deaths; the collection took 46 seconds, four observed kills
+and four natural seeds. Deaths occurred at 14, 31 and 58 hunt credits, ending
+at level 18 / 98 XP / 1,590 gold. The existing two-respawn bound was retained.
+Credential scanning and cleanup passed; log
+`/tmp/eidolon-earned-dungeon-covered-ground.log`. No dungeon was entered, and
+the source of lethal damage was not captured. The next diagnostic adds a bounded
+read-only incoming damage/heal history, attacker identities, player coordinates
+and nearby hostiles to each death receipt before changing navigation or balance.
+
+The diagnostic on exact `17ab5e0`, session `48763`, **passed in 5.3 minutes**.
+The Skeleton contract took 233 seconds including manual reward/login, ending
+at level 27 / 4,945 XP / 2,359 gold with two deaths (25 and 92 credits). Both
+deaths captured repeated **166-damage hits from level-30 Demon Orcs** around
+`(140.5, 203.2)` and `(128.7, 203.5)`. Three Orcs were nearby at the first death;
+one at the second. Nearby low-level Skeleton hits were typically 2–10 damage.
+Log `/tmp/eidolon-fresh-hunt-survival-diagnostic.log`; browser errors, credential
+scan and exact cleanup passed. This proves a successful baseline hunt and its
+observed danger, not a dungeon clear or a cause for all earlier failures.
+
+The no-equipment/no-specialization Skeleton baseline stays intact for comparison.
+Before tuning enemy strength or leashes, compare a normally prepared earned
+character using available equipment and defensive skills earlier in the route,
+and inspect how a player is guided around the neighboring level-30 area. No
+progress grants or relaxed survival bounds are justified by this evidence.
+
 ## Earned dungeon-readiness extension — September 6, measurement pending
 
 The optional `fresh-ready` route extends the same real opening, collection and

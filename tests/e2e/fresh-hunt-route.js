@@ -100,13 +100,37 @@ export async function earnFreshHunt(page, credentials, {
     const baseline = await snapshot(page);
     const started = Date.now();
     console.log(`[fresh-hunt:${target}] baseline ${JSON.stringify(baseline)}`);
+    await page.evaluate(() => {
+        const game = window.game, original = game.handleServerMessage.bind(game);
+        window.__huntSurvivalEvents = [];
+        game.handleServerMessage = message => {
+            if (['damage', 'heal'].includes(message.type) && message.payload?.targetId === game.player.id) {
+                const data = message.payload, source = game.remotePlayers.get(data.sourceId);
+                window.__huntSurvivalEvents.push({ at: Math.round(performance.now()), event: message.type,
+                    amount: data.amount, kind: data.kind, sourceId: data.sourceId,
+                    sourceType: source?.subType || source?.constructor.name || 'unresolved',
+                    sourceLevel: source?.level, x: game.player.position.x, z: game.player.position.z,
+                    hpBeforePresentation: game.player.stats.hp });
+                if (window.__huntSurvivalEvents.length > 60) window.__huntSurvivalEvents.shift();
+            }
+            return original(message);
+        };
+    });
     await returnToTown(page);
     await leaveTown();
     let deaths = 0, reported = 0;
     const recoverDeath = async before => {
         deaths++;
         console.log(`[fresh-hunt:${target}] death ${JSON.stringify({ deaths, count: before,
-            ...await snapshot(page), defense: await page.evaluate(() => window.__freshWizardDefense?.counts || null) })}`);
+            ...await snapshot(page), defense: await page.evaluate(() => window.__freshWizardDefense?.counts || null),
+            survival: await page.evaluate(() => {
+                const game = window.game, p = game.player;
+                return { x: p.position.x, z: p.position.z, maxHP: p.stats.maxHp, damage: p.stats.damage,
+                    recent: window.__huntSurvivalEvents,
+                    nearby: (game.activeEntitiesCache || []).filter(enemy => game.isHostileActorTarget(enemy) &&
+                        p.position.distanceTo(enemy.position) < 30).map(enemy => ({ type: enemy.subType || enemy.constructor.name,
+                        level: enemy.level, x: enemy.position.x, z: enemy.position.z, health: enemy.stats?.hp ?? enemy.health })) };
+            }) })}`);
         expect(deaths, 'Fresh hunt exceeded two ordinary respawns').toBeLessThanOrEqual(2);
         await returnToTown(page);
         expect((await readChronicleChapter(page, daily)).count, 'Death must not erase earned hunt credit').toBeGreaterThanOrEqual(before);
