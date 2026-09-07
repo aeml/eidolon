@@ -5,7 +5,61 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 21:18 UTC
+## Current checkpoint — September 7, 21:27 UTC
+
+This goal turn makes concrete progress: closes 49's local sweep, integrates its
+verified package, reproduces and fixes a real browser reading-position defect,
+and advances the sequential release queue after a fully successful live gate.
+**The full roadmap and broader balancing/story scope remain incomplete.**
+
+40 **008ee7d3bb2b2017cea012006935897066629a49** CI **34159297803** is terminal
+**SUCCESS, every job**, including Live Release and Character QA. Fresh no-cache
+public checks immediately before publishing 41 return HTTP 200: manifest and
+login/versioned main script match **Alpha 1.0.40 / 008ee7d…**; backend matches
+that exact version/commit with `status: ok`, `database: ready`.
+Remote master is verified at 008ee7d and ancestry to 41 is checked, then only
+`refs/heads/release/41-with-forge-pointer:refs/heads/master` is pushed.
+Push **45226** closes successfully. **41 / 9c6eb9d20ad5171a5bb18240612b0998aba25d28**
+CI **34163174335** is active. Next publisher is
+`release/42-with-forge-pointer / ea565ebfdedb52fff7841e0fd4d650febd3d20da`, only
+after every 41 CI/deploy/live job succeeds and fresh exact public-41 identity.
+Never publish root/master/HEAD or skip the sequential queue.
+
+49 unchanged anonymous rerun **82828** closes **SUCCESS / 75 tests / 8.8m**.
+The earlier network-interrupted sweep and trace remain preserved. Final evidence
+commit **514702753d851f482b8b77656f06d4f71d678b0b** is saved on
+`release/49-personal-fragment-budget` and its work branch. Root merges this
+locally verified package as **31aff63**, with **250 integration contracts / 1.774s**
+(19507 closed). Root now says Alpha 1.0.49 but **is not published**. Release 49
+still waits for 41–48's gates and its own CI/deploy/live checks. Its active story
+remains 15 chapters; the investigation graph is still isolated.
+
+Investigation full client **63653** closes **219 suites / 3,252 tests / 145.889s**,
+lint passes. Backend coverage remains root **16.127s**, game **396.729s** as
+recorded below. The reading fix has an actual-browser red/green proof: with the
+old ordering a later open multi-paragraph diary jumps **671 → 486 pixels**;
+with the fix the same fixture retains its position across three rebuilds and
+passes **1 / 4.2s** (test 2.9s), handle **8694** closed. Actual failed trace is
+preserved at `/tmp/eidolon-reading-scroll-clamp-before-trace.zip`. Logs
+`/tmp/eidolon-investigations-reading-browser-before-long-record.log` and
+`/tmp/eidolon-investigations-reading-browser-final.log`. Earlier fixture attempts
+first omitted an objective/target, then used a short record which passed even
+with the old ordering; neither is evidence for the fix. The strengthened fixture
+uses real Earth/Water record text and is added to the anonymous browser suite.
+
+Actual earned phone diary touch-scroll-to-final-line run **84495** is active,
+log `/tmp/eidolon-investigations-phone-reading-final.log`. This is the sole owned
+browser; freeze the isolated investigation runtime/tests until it finishes.
+Water catch-up field travel is newly authored with an explicit disposable
+returning-character fixture, canonical level-100 Wizard stats and only the nine
+old dungeon milestones seeded. No investigations/raids are granted; normal
+acceptance, travel, prop interactions, manual rewards and reconnect are required.
+The new `water-investigations` route has lint/shell syntax checks but **has not
+run yet**. It is not fresh-character pacing evidence. Isolated source is still
+uncommitted; remaining Water/Fire/Air playtests and coordinated XP/gold/loot
+tuning stay open.
+
+## Historical checkpoint — September 7, 21:18 UTC
 
 40 `008ee7d` CI **34159297803** now has client/server/browser, predeploy
 character QA, input validation and both deployments successful. **Live Release
