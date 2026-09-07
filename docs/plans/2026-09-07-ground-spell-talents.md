@@ -1,6 +1,8 @@
 # Wizard ground-spell geometry
 
-Status: locally verified, unversioned and unpublished after `b7342f6`.
+Status: locally verified after `b7342f6`, now packaged in the unpublished
+[1.0.36 candidate](2026-09-07-release36-combat.md). Earlier unversioned labels
+below describe this individual implementation checkpoint.
 This advances the range/area consumer audit; it does not close the 160-talent,
 class-balance, dungeon or roadmap gates.
 

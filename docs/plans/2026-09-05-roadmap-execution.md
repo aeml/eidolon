@@ -26,9 +26,15 @@ Fresh public checks at **05:21:22.997 UTC** still match healthy 1.0.30 across
 manifest/login/script/backend. Later versions remain queued behind the complete
 1.0.31 CI/live gate; do not push main HEAD over it.
 
-The unversioned [ground-spell geometry checkpoint](2026-09-07-ground-spell-talents.md)
-passes 2,770 client tests, full server race checks and final isolated gameplay.
-It remains local, separately from the failed 1.0.31 release and queued 1.0.32–35.
+The [1.0.36 combat candidate](2026-09-07-release36-combat.md),
+**`90e157973178fcd9907a756d8729248b49c312df`**, now packages the previously
+unversioned range, bleed/poison and ground-spell work with the
+[Purifying Wave area repair](2026-09-07-cleansing-area.md). Final checks pass
+**190 suites / 2,797 client tests**, full server race checks, lint and two
+isolated gameplay routes (phone cleanse 24.8s; Wizard ground spells 34.9s).
+Its distinct patch notes and all version defaults are 1.0.36. It remains local on
+`release/36-with-combat`, behind every predecessor; remote master is still the
+1.0.31 repair `a82baa2`. This does not close the 1.1 or full talent-consumer gates.
 
 Previous **1.0.29 `bc96862`** passed CI `34078663504` and its post-terminal
 uncached manifest/login/script/backend identity check at **04:06:20.318 UTC**.
@@ -85,6 +91,7 @@ implementation/validation receipts, not the next commits to push:
 | 1.0.33 | `0024f3370c0f1e648bc219a5d3ac816b4566a3e2` | `release/33-with-qa` |
 | 1.0.34 | `dba826845e13d81586ccecd06c352b7a662d42af` | `release/34-with-qa` |
 | 1.0.35 | `948ed0c178c7c5967db078b53ef951d930660f30` | `release/35-with-qa` |
+| 1.0.36 | `90e157973178fcd9907a756d8729248b49c312df` | `release/36-with-combat` |
 
 Alpha 1.0.34 is committed locally and merged into main as `976235a`.
 The phone stash has separate notes/version metadata, server-side Chronicle

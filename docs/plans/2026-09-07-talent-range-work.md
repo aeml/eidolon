@@ -1,6 +1,8 @@
 # Range consumers — work after Alpha 1.0.35
 
-Status: **in progress, unversioned and unpublished**. Base is the verified local
+Status: **partial category, now packaged in the unpublished
+[1.0.36 candidate](2026-09-07-release36-combat.md)**. Earlier unversioned labels
+below describe the individual implementation checkpoints. Base is the verified local
 1.0.35 candidate `0088543`; the separate `release/35-with-forge` branch must keep
 that tested source. This is not completion of the range/area or 160-talent gate.
 
