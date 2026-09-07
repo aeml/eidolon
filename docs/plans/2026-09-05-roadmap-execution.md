@@ -51,12 +51,17 @@ handles are all closed; they are not final versioned-package evidence.
 The isolated worktree merges corrected queue/root ancestry at `d055ccb` and
 packages **Alpha 1.0.48 `2f365d0`**, with **every shard counts** patch notes and
 aligned version defaults. Contracts pass **239 / 1.302s**. Final checks are
-confirmed active: client `57233` (`/tmp/eidolon-release48-client.log`), server
-`46715` (`/tmp/eidolon-release48-server.log`), actual Forge `97542`
-(`/tmp/eidolon-release48-forge-gameplay.log`). Revalidate these exact handles;
-do not restart them on an observation timeout. Inspect/preserve the final Forge
-image before starting the anonymous browser sweep. Only one owned local browser
-may run at once. No 48 release branch, root integration or publication is claimed
+confirmed active: client `57233` (`/tmp/eidolon-release48-client.log`) and server
+`46715` (`/tmp/eidolon-release48-server.log`). Actual packaged Forge `97542`
+finishes **24.4s / 26.4s total**, with saved item/precision, guide choices,
+credential scan and disposable cleanup passing. Its actual image is inspected
+and copied to `/tmp/eidolon-release48-forge-accumulated-progress.png` before the
+next suite. Final lint also passes; both those handles are closed.
+
+The final anonymous suite is now confirmed active as owned handle **`8402`**,
+log `/tmp/eidolon-release48-anonymous.log`. Revalidate these exact handles; do
+not restart them on an observation timeout. Only one owned local browser may
+run at once. No 48 release branch, root integration or publication is claimed
 yet. The broad goal, reward tuning and eight playable investigations remain open.
 
 ## Historical checkpoint — September 7, 18:11 UTC
