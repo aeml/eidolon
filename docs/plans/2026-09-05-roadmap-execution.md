@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 23:51 UTC
+## Current checkpoint — September 7, 23:53 UTC
 
 Corrected **42 / bfbbc87374682bb80c825ce96543012a08841735** is pushed normally
 through explicit `release/42-with-portal-pointer → origin/master` (47491 closed).
@@ -35,10 +35,15 @@ Next publisher is **43/f955608**, strictly after every corrected-42 CI/deploy/
 live gate and fresh exact public identity. Root merges new local 50 at **7481a0f**;
 targeting/feedback/version/runtime contracts **265 / 1.56s PASS** (39479 closed).
 Investigation merges the same QA ancestry at clean **144aac1745db45d67d60128f0e81b898910ca7f1**;
-generated eight/16 checks pass; no investigation runtime changes. **49124 is the
-sole owned browser**, latest combined phone quest/diary route, log
-`/tmp/eidolon-investigations-phone-combined.log`. Freeze that entire worktree and
-resume the same handle. All-realm touch, XP/gold/realm pacing and complete roadmap
+generated eight/16 checks pass; no investigation runtime changes. Latest combined
+phone **49124 PASS / one test / 50.3s** (48.9s): actual combat/joystick/USE,
+explicit rewards/reply, both orientations' real diary-ending swipes and saved
+rereading. Both earned phone images are inspected and preserved in
+`/tmp/eidolon-phone-combined-proof-YTqlQw/`; log
+`/tmp/eidolon-investigations-phone-combined.log`, scan/cleanup pass. Clean
+investigation **c775f9d** records the proof. **All owned handles are closed**;
+CI 34171247520 remains client-pass/server-active. The other seven investigations'
+touch routes, physical phones, XP/gold/realm pacing and complete roadmap
 remain open; no 51 package or expansion/root integration yet.
 
 ## Historical checkpoint — September 7, 23:42 UTC
