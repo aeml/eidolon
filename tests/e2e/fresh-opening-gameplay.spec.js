@@ -2,8 +2,8 @@ import { expect, test } from '@playwright/test';
 import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { earnFreshCollectionAndInspectHandoff } from './fresh-collection-route.js';
 import { earnFreshHunt, earnFreshSkeletonHunt } from './fresh-hunt-route.js';
-import { earnFreshDungeonReadiness, prepareEarnedWizard } from './fresh-ready-route.js';
-import { createEarnedWizardDefense } from './earned-wizard-defense.js';
+import { earnFreshDungeonReadiness, prepareEarnedClass } from './fresh-ready-route.js';
+import { createEarnedClassCombat } from './earned-class-combat.js';
 import { clearEarnedVerdant } from './fresh-dungeon-route.js';
 import { collectBrowserFailures, credentialsFromEnvironment, jumpByGroundClick,
     loginAndEnterWorld, moveByGroundClick, projectEntity, projectNearestHostile,
@@ -62,8 +62,8 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     }
     await loginAndEnterWorld(page, credentials);
     if (process.env.EIDOLON_E2E_FRESH_READY === '1') {
-        expect(await page.evaluate(() => window.game.player.constructor.name),
-            'fresh-ready currently measures Wizard preparation; select EIDOLON_E2E_CLASS=Wizard').toBe('Wizard');
+        expect(['Wizard', 'Fighter'], 'fresh-ready supports explicit earned Wizard and Fighter builds')
+            .toContain(await page.evaluate(() => window.game.player.constructor.name));
     }
     expect((await readPlayerState(page)).level).toBe(1);
     console.log(`[fresh-opening] baseline ${JSON.stringify(await page.evaluate(() => {
@@ -179,8 +179,8 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
             findTarget: () => findSkeletonThroughTravel(page), leaveTown: () => leaveTown(page)
         };
         if (preparedEarlier) {
-            await prepareEarnedWizard(page, credentials, { label: 'before-Skeleton-comparison' });
-            const beforeCombat = await createEarnedWizardDefense(page);
+            await prepareEarnedClass(page, credentials, { label: 'before-Skeleton-comparison' });
+            const beforeCombat = await createEarnedClassCombat(page);
             await earnFreshHunt(page, credentials, { ...hunt, beforeCombat });
         } else await earnFreshSkeletonHunt(page, credentials, hunt);
     }

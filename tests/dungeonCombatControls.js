@@ -9,8 +9,15 @@ export function selectFighterDungeonSkill(state, defensiveBuild = false) {
     for (const [skill, baseCost] of priorities) {
         const index = (state.hotbar || []).indexOf(skill);
         if (index < 0 || (state.cooldowns?.[skill] || 0) > 0 ||
-            state.mana < baseCost * (1 - (state.manaCostReduction || 0))) continue;
+            state.mana < (state.skillCosts?.[skill] ?? baseCost * (1 - (state.manaCostReduction || 0)))) continue;
         return { skill, key: String(index + 1) };
     }
     return null;
+}
+
+// Charge is a gap closer, not a replacement for melee contact attacks.
+export function shouldUseHuntPrimary(state) {
+    if (state.cooldown > 0 || state.dead || !Number.isFinite(state.distance)) return false;
+    if (state.ability === 'Charge' && state.distance <= state.attackRange + 2) return false;
+    return state.distance <= state.castRange;
 }

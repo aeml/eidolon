@@ -1,4 +1,4 @@
-import { selectFighterDungeonSkill } from './dungeonCombatControls.js';
+import { selectFighterDungeonSkill, shouldUseHuntPrimary } from './dungeonCombatControls.js';
 
 const fighter = {
     classAbility: 'Charge', isCharging: false, dead: false, distance: 8, attackRange: 8.5,
@@ -28,4 +28,23 @@ describe('full dungeon ordinary defensive controls', () => {
             .toEqual({ skill: 'Iron Fortress', key: '3' });
         expect(selectFighterDungeonSkill({ ...fighter, hotbar: [] }, true)).toBeNull();
     });
+});
+
+test('earned melee controls honor resolved talent/equipment costs', () => {
+    expect(selectFighterDungeonSkill({ ...fighter, mana: 24, hotbar: ['Whirlwind'],
+        skillCosts: { Whirlwind: 24 } }, true)).toEqual({ skill: 'Whirlwind', key: '1' });
+    expect(selectFighterDungeonSkill({ ...fighter, mana: 23, hotbar: ['Whirlwind'],
+        skillCosts: { Whirlwind: 24 } }, true)).toBeNull();
+});
+const primary = { ability: 'Charge', cooldown: 0, dead: false, distance: 10, attackRange: 4, castRange: 18 };
+test.each([[4, false], [6, false], [6.1, true], [18, true], [19, false]])(
+    'Charge at distance %s preserves contact basic attacks and respects range', (distance, expected) => {
+        expect(shouldUseHuntPrimary({ ...primary, distance })).toBe(expected);
+    }
+);
+test('ranged primaries retain close-range casts; cooldown/death/unknown targets cannot cast', () => {
+    expect(shouldUseHuntPrimary({ ...primary, ability: 'Fireball', distance: 2 })).toBe(true);
+    for (const override of [{ cooldown: 1 }, { dead: true }, { distance: undefined }]) {
+        expect(shouldUseHuntPrimary({ ...primary, ...override })).toBe(false);
+    }
 });

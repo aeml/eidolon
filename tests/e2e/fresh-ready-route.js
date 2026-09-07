@@ -1,26 +1,33 @@
 import { expect } from '@playwright/test';
 import { openDungeonGuide } from './dungeon-guide.js';
 import { earnFreshHunt } from './fresh-hunt-route.js';
-import { jumpByGroundClick, loginAndEnterWorld, moveByGroundClick, readPlayerState, returnToTown } from './helpers.js';
-import { createEarnedWizardDefense } from './earned-wizard-defense.js';
-import { earnedWizardPreparationBudget } from '../earnedPreparationPolicy.js';
+import { jumpByGroundClick, loginAndEnterWorld, readPlayerState, returnToTown } from './helpers.js';
+import { createEarnedClassCombat } from './earned-class-combat.js';
+import { earnedPreparationBudget, earnedPreparationProfile } from '../earnedPreparationPolicy.js';
 
 const preparationState = page => page.evaluate(() => {
     const p = window.game.player;
     return { level: p.level, equipment: Object.fromEntries(Object.entries(p.equipment).filter(([, item]) => item?.id)
         .map(([slot, item]) => [slot, item.id])), talentRanks: p.talentRanks,
     talentPoints: p.talentPoints, statPoints: p.statPoints, intelligence: p.baseStats?.intelligence,
+    strength: p.baseStats?.strength,
     branch: p.selectedBranch, hotbar: p.hotbar, unlockedSkills: p.unlockedSkills };
 });
 
 // Use only gear already collected during the earned story route. This is a
-// deliberately simple baseline: fill empty slots, five Intelligence allocations,
-// up to five Fireball Mastery ranks, and the earned Control & Utility branch.
+// deliberately simple baseline: fill empty slots, five class-stat allocations,
+// up to five mastery ranks, and an earned defensive/utility branch.
 // Not an optimized build or a loot grant.
 export async function prepareEarnedWizard(page, credentials, { statBudget = 5, label = 'before-Imp' } = {}) {
     expect(await page.evaluate(() => window.game.player.constructor.name)).toBe('Wizard');
+    return prepareEarnedClass(page, credentials, { statBudget, label });
+}
+
+export async function prepareEarnedClass(page, credentials, { statBudget = 5, label = 'before-Imp' } = {}) {
+    const className = await page.evaluate(() => window.game.player.constructor.name);
+    const profile = earnedPreparationProfile(className);
     const initial = await preparationState(page);
-    const budget = earnedWizardPreparationBudget(initial, statBudget);
+    const budget = earnedPreparationBudget(className, initial, statBudget);
     await page.locator('#btn-close-dungeon-menu').click();
     await returnToTown(page);
     await page.keyboard.press('i');
@@ -51,7 +58,7 @@ export async function prepareEarnedWizard(page, credentials, { statBudget = 5, l
     const available = await page.evaluate(() => window.game.player.statPoints);
     const allocated = budget.statAllocations;
     for (let i = 0; i < allocated; i++) {
-        await page.getByRole('button', { name: 'Increase intelligence', exact: true }).click();
+        await page.getByRole('button', { name: `Increase ${profile.stat}`, exact: true }).click();
         await expect.poll(() => page.evaluate(() => window.game.player.statPoints)).toBe(available - i - 1);
     }
     await page.locator('#btn-close-inventory').click();
@@ -59,10 +66,10 @@ export async function prepareEarnedWizard(page, credentials, { statBudget = 5, l
     await page.keyboard.press('k');
     const skills = page.locator('#skill-tree-window');
     await skills.getByRole('button', { name: 'Skills', exact: true }).click();
-    const branch = skills.locator('.skill-branch').filter({ hasText: 'Control & Utility' });
+    const branch = skills.locator('.skill-branch').filter({ hasText: profile.branchLabel });
     const selectBranch = branch.getByRole('button', { name: 'Select Spec' });
     if (await selectBranch.count()) await selectBranch.click();
-    await expect.poll(() => page.evaluate(() => window.game.player.selectedBranch)).toBe('C');
+    await expect.poll(() => page.evaluate(() => window.game.player.selectedBranch)).toBe(profile.branch);
     for (const skill of budget.expectedSkills) {
         await expect.poll(() => page.evaluate(skill => window.game.player.hotbar.includes(skill), skill)).toBe(true);
         await expect.poll(() => page.evaluate(skill => window.game.player.unlockedSkills.includes(skill), skill)).toBe(true);
@@ -71,9 +78,10 @@ export async function prepareEarnedWizard(page, credentials, { statBudget = 5, l
     const points = await page.evaluate(() => window.game.player.talentPoints);
     const ranks = budget.masteryPurchases;
     for (let i = 0; i < ranks; i++) {
-        await skills.locator('.skill-node').filter({ hasText: 'Fireball - Mastery' }).click();
+        await skills.locator('.skill-node').filter({ hasText: profile.masteryLabel }).click();
         await expect.poll(() => page.evaluate(() => window.game.player.talentPoints)).toBe(points - i - 1);
-        await expect.poll(() => page.evaluate(() => window.game.player.talentRanks.WIZ_01)).toBe(budget.currentMastery + i + 1);
+        await expect.poll(() => page.evaluate(id => window.game.player.talentRanks[id], profile.mastery))
+            .toBe(budget.currentMastery + i + 1);
     }
     await page.locator('#btn-close-skills').click();
     const prepared = await preparationState(page);
@@ -96,8 +104,8 @@ async function leaveWestTown(page) {
 }
 
 export async function earnFreshDungeonReadiness(page, credentials, { findTarget, preparedEarlier = false }) {
-    await prepareEarnedWizard(page, credentials, { statBudget: preparedEarlier ? 0 : 5 });
-    const beforeCombat = await createEarnedWizardDefense(page);
+    await prepareEarnedClass(page, credentials, { statBudget: preparedEarlier ? 0 : 5 });
+    const beforeCombat = await createEarnedClassCombat(page);
     await earnFreshHunt(page, credentials, { target: 'Imp', daily: 'daily_imp', rewardXP: 150_000,
         findTarget, leaveTown: () => leaveWestTown(page), beforeCombat });
     const p = await readPlayerState(page);

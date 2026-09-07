@@ -1,4 +1,5 @@
 import { expect } from '@playwright/test';
+import { shouldUseHuntPrimary } from '../dungeonCombatControls.js';
 import { readChronicleChapter } from './chronicle-earth-route.js';
 import { openDungeonGuide } from './dungeon-guide.js';
 import { findHuntTargetWithRecovery } from '../huntTargetRecovery.js';
@@ -122,7 +123,7 @@ export async function earnFreshHunt(page, credentials, {
     const recoverDeath = async before => {
         deaths++;
         console.log(`[fresh-hunt:${target}] death ${JSON.stringify({ deaths, count: before,
-            ...await snapshot(page), defense: await page.evaluate(() => window.__freshWizardDefense?.counts || null),
+            ...await snapshot(page), defense: await page.evaluate(() => window.__freshFighterCombat?.counts || window.__freshWizardDefense?.counts || null),
             survival: await page.evaluate(() => {
                 const game = window.game, p = game.player;
                 return { x: p.position.x, z: p.position.z, maxHP: p.stats.maxHp, damage: p.stats.damage,
@@ -149,11 +150,18 @@ export async function earnFreshHunt(page, credentials, {
                 respawned = true;
                 break;
             }
-            if (beforeCombat && await beforeCombat()) continue;
+            if (beforeCombat && await beforeCombat(page, enemy)) continue;
             const point = await projectEntity(page, enemy.id);
             if (point?.visible) {
                 await page.mouse.click(point.x, point.y);
-                if (await page.evaluate(() => window.game.player.abilityCooldown <= 0)) {
+                const primary = await page.evaluate(id => {
+                    const game = window.game, p = game.player, target = game.remotePlayers.get(id);
+                    if (!target) return null;
+                    return { ability: p.abilityName, cooldown: p.abilityCooldown, dead: p.state === 'DEAD',
+                        distance: p.position.distanceTo(target.position), attackRange: game.getBasicAttackRangeForEntity(target),
+                        castRange: game.abilityController.getAbilityCastRange() };
+                }, enemy.id);
+                if (primary && shouldUseHuntPrimary(primary)) {
                     await page.mouse.click(point.x, point.y, { button: 'right' });
                 }
             }
@@ -165,11 +173,11 @@ export async function earnFreshHunt(page, credentials, {
         if (count >= reported + 10 || count === 100) {
             reported = count;
             console.log(`[fresh-hunt:${target}] ${JSON.stringify({ count, deaths, ...await snapshot(page),
-                defense: await page.evaluate(() => window.__freshWizardDefense?.counts || null),
+                defense: await page.evaluate(() => window.__freshFighterCombat?.counts || window.__freshWizardDefense?.counts || null),
                 seconds: Math.round((Date.now() - started) / 1000) })}`);
         }
     }
-    const defense = await page.evaluate(() => window.__freshWizardDefense?.counts || null);
+    const defense = await page.evaluate(() => window.__freshFighterCombat?.counts || window.__freshWizardDefense?.counts || null);
     expect((await readChronicleChapter(page, daily)).completed).toBe(false);
     await discussHunt(page, target);
     const beforeReward = await snapshot(page);

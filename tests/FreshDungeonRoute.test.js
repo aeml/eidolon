@@ -12,7 +12,7 @@ jest.unstable_mockModule('./e2e/chronicle-earth-route.js', () => ({
     verifyEarthDungeonChronicleTurnIn: verifyTurnIn
 }));
 jest.unstable_mockModule('./e2e/dungeon-playthrough-route.js', () => ({ playDungeonThroughInputs: playDungeon }));
-jest.unstable_mockModule('./e2e/earned-wizard-defense.js', () => ({ createEarnedWizardDefense: createDefense }));
+jest.unstable_mockModule('./e2e/earned-class-combat.js', () => ({ createEarnedClassCombat: createDefense }));
 const { clearEarnedVerdant } = await import('./e2e/fresh-dungeon-route.js');
 
 let page;
@@ -45,6 +45,24 @@ test('an unmet earned level gate stops before entry without granting a level', a
     await expect(clearEarnedVerdant(page, {})).rejects.toThrow();
     expect(playDungeon).not.toHaveBeenCalled();
     expect(verifyTurnIn).not.toHaveBeenCalled();
+});
+
+test.each([
+    [34, ['Whirlwind', 'Shield Slam', 'Iron Fortress']],
+    [40, ['Whirlwind', 'Shield Slam', 'Iron Fortress', 'Guardian Roar']]
+])('earned Fighter level %s requires only the skills unlocked at entry', async (level, skills) => {
+    readPlayerState.mockResolvedValue({ level, state: 'IDLE', health: 400 });
+    page.evaluate.mockReset().mockResolvedValueOnce('Fighter').mockResolvedValue({ accepted: {} });
+    await clearEarnedVerdant(page, {});
+    expect(createDefense).toHaveBeenCalledWith(page, 'Fighter');
+    expect(playDungeon).toHaveBeenCalledWith(page, expect.objectContaining({ requiredFighterSkills: skills }));
+    expect(verifyTurnIn).toHaveBeenCalledWith(page, {});
+});
+
+test('an unsupported earned class fails before starting dungeon combat', async () => {
+    page.evaluate.mockReset().mockResolvedValue('Rogue');
+    await expect(clearEarnedVerdant(page, {})).rejects.toThrow();
+    expect(playDungeon).not.toHaveBeenCalled();
 });
 
 test.each([

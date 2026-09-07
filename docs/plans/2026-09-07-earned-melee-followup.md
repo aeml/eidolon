@@ -41,3 +41,27 @@ Fighter would fail this fixture, not diagnose game balance.
 
 One successful Fighter run strengthens the melee/ranged comparison; it does not
 close the remaining Cleric/Rogue, realm, seed, party or human-discovery matrix.
+
+## Driver implementation — September 7
+
+The class-specific preparation now retains Wizard Intelligence/Fireball/branch C
+and adds Fighter Strength/Whirlwind Mastery (`FTR_03`)/Shield & Mitigation branch A.
+Both use normal UI, at most five earned stat allocations and five total mastery
+ranks, existing loot in empty equipment slots, and fresh-login persistence checks.
+Fighter expectations follow actual unlocks: Whirlwind 10, Shield Slam 20,
+Iron Fortress 30, Guardian Roar 40. The earned dungeon route requires the skills
+available at entry; the prepared level-100 route retains its four-skill assertion.
+
+Ordinary hunt inputs use observed cooldowns and resolved mana costs, record
+accepted/rejected casts, and leave melee contact attacks uninterrupted by repeated
+Charge. No Wizard retreat strategy is applied to Fighter. The dungeon driver
+retains ownership of its own melee hotbar inputs; observers do not double-cast.
+The existing full-clear, first-boss damage, all-room, death, manual-reward and
+saved raid-access gates remain in place. Runtime/game balance is unchanged.
+
+Initial four-suite regression: **45 tests pass in 0.618 seconds**. Final full
+client regression, including the added driver tests: **202 suites / 2,999 tests
+pass in 88.342 seconds** (`/tmp/eidolon-earned-fighter-full-client.log`). Final
+lint and whitespace checks pass. No runtime/server changes were made in this
+checkpoint. The complete earned Fighter browser run is pending; this is
+implemented QA support, not yet successful earned-melee gameplay evidence.

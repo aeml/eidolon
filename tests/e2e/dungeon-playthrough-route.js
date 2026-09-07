@@ -7,7 +7,8 @@ import { enterAndExitDungeon, moveByGroundClick, projectEntity, readPlayerState 
 // default enters through the town guide, without grants. Only the legacy prepared
 // caller explicitly opts into the QA entrance waypoint (which grants protection).
 export async function playDungeonThroughInputs(page, {
-    playthrough, fullRun = true, fallbackRun = false, beforeCombat, useTownGuide = true
+    playthrough, fullRun = true, fallbackRun = false, beforeCombat, useTownGuide = true,
+    requiredFighterSkills = ['Iron Fortress', 'Guardian Roar', 'Whirlwind', 'Shield Slam']
 }) {
     const logPrefix = `[dungeon:${playthrough.dungeonType}]`;
     async function hostiles(page) {
@@ -46,7 +47,7 @@ export async function playDungeonThroughInputs(page, {
                 console.log(`${logPrefix} defeated ${target.type}`);
                 if (fullRun && target.type === playthrough.bosses[0] && process.env.EIDOLON_E2E_CLASS === 'Fighter') {
                     const observedSkills = await page.evaluate(() => window.__dungeonObservedSkills);
-                    expect(observedSkills).toEqual(expect.arrayContaining(['Iron Fortress', 'Guardian Roar', 'Whirlwind', 'Shield Slam']));
+                    expect(observedSkills).toEqual(expect.arrayContaining(requiredFighterSkills));
                     console.log(`${logPrefix} accepted hotbar skills ${JSON.stringify(observedSkills)}`);
                 }
                 return;

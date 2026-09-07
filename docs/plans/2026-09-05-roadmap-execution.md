@@ -5,7 +5,18 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-Current release queue (September 7): **1.0.34 (`dba8268`) is fully verified**.
+Current release queue (September 7): **1.0.35 (`948ed0c`) is fully verified**.
+CI **`34105565222`** is terminal success with every job successful, including
+final live character QA. Fresh post-terminal uncached checks at
+**10:13:16.396 UTC** match public manifest, login version, versioned main script
+and backend to `948ed0c178c7c5967db078b53ef951d930660f30` / Alpha 1.0.35;
+health `ok`, database `ready`. Remote master and next-source ancestry were
+checked before pushing only preserved **1.0.36
+`90e157973178fcd9907a756d8729248b49c312df`**. Push succeeded; its CI
+**`34110323348`** is in progress. Do not publish 1.0.37 until every 1.0.36 CI/live
+job passes and fresh post-terminal public identity agrees.
+
+Previous release queue snapshot: **1.0.34 (`dba8268`) is fully verified**.
 CI **`34101007172`** passed every job, including final live character QA.
 Fresh post-terminal uncached checks at **09:21:25.161 UTC** matched manifest,
 login label, versioned main script and backend to
