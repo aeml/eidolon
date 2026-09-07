@@ -5,7 +5,21 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-Current release queue (September 7): **1.0.35 (`948ed0c`) is fully verified**.
+Current release queue (September 7): **corrected 1.0.36 (`69b34a7`) is fully
+verified live**. CI `34114458548` is terminal success with every job passing,
+including live character/four-class QA. Fresh post-terminal checks at
+**11:48:44.381 UTC** match the public manifest, login label, versioned main script
+and healthy/ready backend to `69b34a78cd880f7a863d5ad2a0aa33af0680f961` /
+Alpha 1.0.36. Earlier pre-terminal checks at 11:38:58.626 UTC also matched, but
+were not used to close the release gate.
+
+After checking remote master, clean staging state, exact 1.0.37 metadata and
+ancestry, only **1.0.37 `674097456ee2841f0bbf77f7a4b99daed8e6b359`** was pushed.
+Push succeeded and CI **`34118770059` is in progress**. Do not push corrected
+1.0.38 until every 1.0.37 CI/live job passes and fresh post-terminal public
+identity agrees. Do not push the root working HEAD or skip any queued versions.
+
+Previous 1.0.36 repair checkpoint: **1.0.35 (`948ed0c`) was fully verified**.
 The first 1.0.36 CI (`34110323348`) failed predeployment Rogue targeting; neither
 deployment ran. Accepted Shadow Lunge and bleed events named a different enemy.
 The desktop hotbar dropped the hovered actor's ID when converting its position
@@ -43,8 +57,9 @@ unchanged. The staging checkout `/tmp/eidolon-release37-targeting-lT3Mdt` is
 returned to corrected 1.0.37 for the next publication gate. Target identity,
 ability config and version/default/history checks pass on every corrected
 candidate; these supplement their original full tests, not new full browser
-runs. Server-tree equality to each original candidate is verified. Nothing in
-this table is published yet. Remote master still equals corrected 1.0.36 `69b34a7`.
+runs. Server-tree equality to each original candidate is verified. The 1.0.37
+candidate is now pushed to remote master with CI in progress; 1.0.38–40 remain
+unpublished. The top entry records the current gate.
 
 The earned Fighter run completed on unchanged source `2c80b06`, session
 `47165`, `/tmp/eidolon-earned-fighter-corrected-gameplay.log`. Its paid Skeleton
@@ -66,6 +81,25 @@ passes **204 suites / 3,033 tests in 72.435s**, lint and whitespace pass. The
 critical checkout does not yet include the separate hotbar fix. Offline ability/
 projectile consumption, utility/periodic coverage and real browser/persistence
 checks remain open. It is not merged into root or queued as a release.
+
+Offline follow-up **`3dd9c46`** extends actual critical consumption to implemented
+direct abilities, projectiles and periodic areas, preserving caster attribution.
+Nine paid offline cast/flight tests first reproduce missing criticals. Backstab
+now consumes its normal Cloak sequence and Ambush rune with one post-armor
+critical; Fireball uses per-recipient Implosion, 40% raw splash and dungeon
+flight/splash walls, and never predicts authoritative-engine damage. Actual
+periodic checks cover Whirlwind, Inferno, Spirit/Boost, Consecrated and Radiant
+Strike. The final isolated client run passes **207 suites / 3,074 tests in
+92.635s**, lint and whitespace pass; Go source is unchanged from its race pass.
+The first full client run's 15 failures were exact one-argument damage-call
+expectations; amounts were unchanged and assertions now also require the caster.
+
+The critical branch now integrates corrected hotbar targeting in **`054b285`**;
+combined client verification is running separately. It remains isolated in
+`/tmp/eidolon-critical-talents-lkoMno`, not in the 1.0.37–40 queue. Browser/saved
+talent validation and further consumer coverage remain open. Older offline
+base/stat/rune differences, bleed/poison attribution and the unimplemented
+offline Seraph summon are not claimed fixed by these critical tests.
 
 Previous 1.0.36 publication snapshot:
 CI **`34105565222`** is terminal success with every job successful, including
