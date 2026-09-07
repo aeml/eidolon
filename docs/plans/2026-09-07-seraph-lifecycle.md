@@ -53,8 +53,39 @@ Full regression on **2329891** passes: **212 client suites / 3,137 tests in
 handles are terminal success. The later corrected 1.0.38–42 ancestry merge
 changes QA/evidence only; game/server/index source remains identical.
 
-Real browser casts/purchases/saved ranks, summon
-model and attack presentation, owner-transition cleanup and offline rendered
-play still require verification. Full offline damage-modifier parity is not
+### Browser self-cast correction and completed route
+
+Four hotbar regressions fail before the client repair (0.845s): both self-casts
+require a cursor intersection, and Seraph can chase a distant hovered enemy or
+lose its buffered summon when that enemy disappears. `1b6235d` treats Seraph as
+caster-centered and dispatches both self-casts before cursor targeting. The
+focused targeting/summon/party set passes **42 tests / 1.929s**; the complete
+client suite passes **212 suites / 3,141 tests / 151.394s**. Server source remains
+identical to the earlier fully race-tested implementation.
+
+The final real browser route on **`1b6235ddf2f1dbcd4e98ab475689477f65919a48`**
+passes **1.3 minutes**, `/tmp/eidolon-seraph-browser-final.log`: normal Battle
+Cleric selection and server-confirmed rank purchases produce **288 / 345 / 345**
+baseline/trained/fresh-login smites. Real expiry is **14.94 / 16.46 seconds**
+against **15 / 16.5 seconds** expected. Ground-click movement verifies following;
+ordinary dungeon entry/recall removes the summoned replica. Credential scan
+passes with zero sanitizations; disposable cleanup finishes and local ports are
+free. This is prepared level-100 functional evidence, not earned progression.
+
+Earlier route failures are retained in `/tmp/eidolon-seraph-browser-{first,second,third}.log`:
+the observer originally confused asynchronous model creation with removal, rank
+clicks raced authoritative rerenders, and the trained summon never dispatched.
+The four unit regressions establish the self-cast defect independently; no
+missing browser request trace is invented. The fourth run confirms baseline and
+trained combat/expiry but exits 143 before completion. Its resources were scoped
+and cleaned after confirming the driver was gone; no successful scan is claimed
+for that interrupted run. The final complete route supersedes that partial pass.
+
+Inspected town captures show the gold-winged summon and binding ring separately
+following the Cleric after the birth flash. Combat captures retain a visual
+follow-up: desktop action text crowds the silhouette and nearby entrance facade
+geometry obscures combat. This does not establish full desktop/phone readability.
+
+Offline rendered fallback still requires verification. Full offline damage-modifier parity is not
 claimed by the shared summon base-damage/lifetime contract. Physical-phone and
 earned character progression are separate from prepared summon QA.
