@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, ensureDungeonReadyLevel,
-    findOverworldTarget, loginAndEnterWorld, moveByGroundClick, projectEntity,
-    returnToTown, useCombatQAWaypoint } from './helpers.js';
+    loginAndEnterWorld, moveByGroundClick, projectEntity, projectNearestHostile,
+    returnToTown } from './helpers.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 
@@ -45,8 +45,23 @@ test('status Mastery purchases change real ticks and persist through fresh login
     }
 
     async function verifyTick(rank, label) {
-        await returnToTown(page); await useCombatQAWaypoint(page);
-        const target = await findOverworldTarget(page);
+        await returnToTown(page);
+        // The starter Skeleton can die to the primary hit before a coating
+        // ticks. Use the existing Verdant waypoint's ordinary level-40–50
+        // overworld population; never raise enemy health or bypass combat.
+        await page.keyboard.press('Enter');
+        await page.locator('#chat-input').fill('/qa-waypoint verdant');
+        await page.locator('#chat-input').press('Enter');
+        await expect.poll(() => page.evaluate(() => Math.hypot(window.game.player.position.x-800, window.game.player.position.z-200))).toBeLessThan(3);
+        await page.waitForTimeout(1100); // Existing authoritative waypoint movement lock.
+        let target = await projectNearestHostile(page, 'InfernoTitan');
+        for (let step = 0; !target && step < 12; step++) {
+            await moveByGroundClick(page, 0, 20, { allowJumpFallback: false });
+            target = await projectNearestHostile(page, 'InfernoTitan');
+        }
+        expect(target, 'a real durable overworld enemy must be visible').not.toBeNull();
+        expect(target.health, 'enemy must survive the ordinary initiating hit').toBeGreaterThan(
+            await page.evaluate(() => 2*(15+1.5*window.game.player.stats.dexterity)));
         for (let step = 0; step < 15; step++) {
             const offset = await page.evaluate(id => {
                 const enemy = window.game.remotePlayers.get(id), player = window.game.player;
