@@ -7,6 +7,9 @@ the whole goal. Started September 5, 2026.
 
 ## Current checkpoint — September 7, 20:30 UTC
 
+Isolated world-integration commit **`f1f7919bd6302728f86e7ec0868cf486b5816344`**
+is saved clean on `work/chronicle-investigations-20260907`; it is not merged
+to root or release branches. Final lint/generated-content/diff checks pass.
 The first actual diary route **65713 passes 1 / 1.2m**. A fresh level-one Wizard
 earns the opening normally, accepts Mara's investigation, walks to its cottage,
 clicks visible real prop geometry, reads the server-confirmed journal, completes
