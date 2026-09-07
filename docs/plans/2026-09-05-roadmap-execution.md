@@ -5,7 +5,42 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 23:08 UTC
+## Current checkpoint — September 7, 23:31 UTC
+
+Investigation runtime **0036656** passes full client **219 suites / 3,279 tests /
+174.009s** plus lint (86062 closed), and full server race root **22.755s**, game
+**455.511s**, other packages green (1610 closed). Fire control-kit run **26226**
+fails after **8.9m** with full 2,575 HP: 120 Fireballs, six Gravity Wells and five
+Shields are accepted, zero rejected. It drifts away from the anchor while
+fighting unrelated Djinn. This is not evidence of failed abilities or a kill.
+
+Bounded ordinary retreat strategy **24d51e5** changes QA only, passes 30 control
+tests / 0.465s and lint. Actual Fire **3159 SUCCESS / one test / 4.4m**: cold ash
+earned, actual anchor death observed, mask 1 → 3 before ember inspection, then
+manual catch-up completion/rewards, reconnect and earned journal rereading.
+Inspected combat/released hearth/sprout/record images are preserved in
+`/tmp/eidolon-fire-earned-proof-5ElOA2/`; scan/cleanup pass. Explicit level-100
+common-staff veteran fixture, not earned leveling or average-difficulty proof.
+Isolated source **fa9feaa** adds only the proof record over 24d51e5.
+
+**59545 is the sole owned browser**, Air earned investigations against clean
+fa9feaa, log `/tmp/eidolon-investigations-air-earned.log`. Freeze its entire
+worktree until terminal. Root still retains locally verified 50 / 15 chapters;
+the 23-chapter expansion is not root-merged or published.
+
+42 **ea565ebf… / CI 34166841477** deploys successfully but **live QA FAILS**:
+six tests pass; focused Verdant entry and Verdant combat route both time out
+waiting for the entrance menu, including their retries. Client/server/browser/
+predeploy and both deploy jobs pass. Live four-class/remote-animation checks
+are not run after the failure. Last fully verified public release remains 41.
+Do not publish 43 or count deployed 42 as signed off. Artifacts are preserved in
+`/tmp/eidolon-42-live-failure-DIViBh/`. Separate diagnostic worktree
+`/tmp/eidolon-release42-portal-QoFLrB`, branch `work/release42-portal-20260907`,
+starts from exact 42 with read-only click/request observations; no runtime fix or
+reproduction claimed yet. No blind CI rerun or skipped gate. Broader XP/reward
+balance, all-realm/phone proof and full roadmap remain unfinished.
+
+## Historical checkpoint — September 7, 23:08 UTC
 
 Combined 170c53f verification closes: full client **30280 SUCCESS / 219 suites /
 3,258 tests / 173.048s**, lint passes; full server **19540 SUCCESS**, root
