@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 19:24 UTC
+## Current checkpoint — September 7, 19:27 UTC
 
 **Alpha 1.0.39 remains live and healthy.** Corrected 40 CI **34152138480**
 finishes with client/server/browser smoke passing, but predeploy character QA
@@ -23,12 +23,24 @@ the aim point and legacy event behavior. Original client regression fails
 **4 tests / 1.520s** and server event regression fails **6.246s**; corrected
 client **15 / 0.989s**, related server movement/bleed/wall checks **16.036s**.
 The first actual browser attempt detects a missing network payload mapping;
-that mapper is corrected with a separate wire/zero-coordinate/isolation test.
-Actual direct-skills rerun **92810** is active, log
-`/tmp/eidolon-release40-lunge-gameplay-final.log`; payload race check **91656**
-is also active. This is not yet a verified/re-published correction. Staging
-runtime must stay frozen during its browser test. Earlier release branches remain
-preserved and need carry-forward of the eventual verified correction.
+that mapper is corrected with a separate wire/zero-coordinate/isolation test,
+passing three race repetitions **1.042s**. Actual direct-skills rerun passes
+Rogue **21.4s total** and Cleric **14.1s total**, exact accepted landing,
+attributed bleed, credential scan and cleanup. Both `92810` and `91656` are closed.
+
+Runtime/notes/tests commit **`c7d07d3`** is followed by status-test readiness
+backport **`785bd73`**. Its import conflict is resolved for the older 40 test;
+an prematurely started anonymous attempt exits on that syntax error before any
+checks run, and is closed. Final staging is clean and lint passes. Full final
+checks are confirmed active: client **67547**, server race **83399**, anonymous
+browser **24886**, logs `/tmp/eidolon-release40-lunge-full-client.log`,
+`/tmp/eidolon-release40-lunge-full-server.log`, and
+`/tmp/eidolon-release40-lunge-anonymous-final.log`. Revalidate these exact handles,
+do not restart on observation timeout, and keep staging runtime frozen during
+its browser test. This is not yet a verified/re-published correction. Earlier
+release branches remain preserved and need carry-forward of the eventual
+verified correction. See [Lunge correction evidence](2026-09-07-release40-lunge-landing.md)
+on the staging branch; it has not yet been merged into root.
 
 **Alpha 1.0.48 is locally verified and root-integrated**, not published.
 Release branch `release/48-with-combo-observation` is **`e13f512`**; root merge
