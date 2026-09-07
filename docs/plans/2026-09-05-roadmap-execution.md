@@ -87,6 +87,37 @@ position evidence while retaining the original assertions and game runtime.
 The corrected 39–43 queue still needs any resulting correction carried forward
 before publication. Live remains last verified 1.0.37, not 1.0.38.
 
+The movement correction progresses on `work/release38-movement-observer`,
+current clean checkpoint **`da43a0c`** in `/tmp/eidolon-release38-focus-oocXIw`.
+Three failing local event tests expose ignored short Teleport landings. Accepted
+finite local Teleport events now commit the clipped destination and clear stale
+path/intent; the normal three-unit prediction deadband no longer swallows a
+short blink. **109 focused tests / 1.833s**, **197 suites / 2,905 full client
+tests / 96.375s**, and lint pass. Game server source is unchanged. The real
+versioned route proves a 1.5-unit blink remains at its accepted landing after the
+movement lock and idle heartbeat; the authenticated → beam/ground/movement
+sequence passes **48.2s + 1.5m**, with successful credential scan/cleanup.
+
+The cast-aim helper's fractional-pixel setup error is independently reproduced
+(0.165 units, 15.2s) and corrected by aiming at the nearest real pixel and
+verifying that pixel's ground ray, without shortening the destination. Repeated
+loot QA then produces **two passes / one failure / 1.4m**: a living Skeleton
+covers the intended active drop. The actual hit stack proves enemy priority is
+correct; the helper kept trying the same covered center. A real LootDrop/input/
+raycast fixture fails before the helper starts checking exposed hitbox sides,
+then both aim and loot fixtures pass **2 / 6.1s**. No direct pickup or changed
+enemy priority is used; exact-item receipts remain required. Both join anonymous
+CI and 1.0.38's notes include **Short blinks count**.
+
+Final repeated real-loot QA is running on clean `da43a0c`, log
+`/tmp/eidolon-release38-loot-acquisition-after.log`. The final corrected movement
+sequence, full anonymous package checks and guard/lint are still to close before
+republishing. Full evidence is in that worktree's
+`docs/plans/2026-09-07-release38-movement-landing.md`.
+Fresh public identity at **15:17:11 UTC** still agrees on healthy/ready 1.0.37.
+Do not push root HEAD or the existing 39–43 candidates before carrying this
+correction through and closing each preceding CI/live gate.
+
 Local **1.0.43 `e0bc417`** now packages Seraph training, lifecycle, offline actor
 and self-casting repairs, with its own patch notes and aligned version defaults.
 The offline rendered scene passes **3 / 31.2s**; an additional desktop label
