@@ -5,7 +5,43 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 23:42 UTC
+## Current checkpoint — September 7, 23:51 UTC
+
+Corrected **42 / bfbbc87374682bb80c825ce96543012a08841735** is pushed normally
+through explicit `release/42-with-portal-pointer → origin/master` (47491 closed).
+Fresh predecessor manifest/login/main/backend all match healthy Alpha 42 ea565
+before push. New **CI 34171247520**: client passes, server active. No deployment
+or live success yet. Previous failed CI remains preserved. The
+[repair record](2026-09-07-release42-portal-pointer.md) contains the actual red,
+portal **11.9s**, Water/Verdant **two / 4.7m** and final full client **212 suites /
+3,134 tests / 72.867s** evidence. All of those owned handles are closed.
+
+Only tests/docs change from ea565; game runtime and existing 42 notes/version
+remain unchanged. Corrected QA ancestry is merged cleanly into newly named queue
+refs; old refs remain intact. All use suffix **`-with-portal-pointer`**:
+
+| Next release | Commit |
+|---|---|
+| 43 | f9556081a533db4b74ae52f7428a3520c1263acb |
+| 44 | 67a431566e2f476eb33dffb1ed9f4f0f107f02c2 |
+| 45 | cc9061daed673dd77faf1d3cab484511de555b4d |
+| 46 | 2ef800edb341606077b1610095a277f0ab676619 |
+| 47 | a9352defb446acfb07ef308da352782fef4283f3 |
+| 48 | 5d5f3f04c17d9c95249fd7ab79cad2d897c7d106 |
+| 49 | 72ab5288bed2dc6aab4b0f7537eb5e417cc9b357 |
+| 50 | 4a04eab94f42ae236a9266afe548c7b324a33f4c |
+
+Next publisher is **43/f955608**, strictly after every corrected-42 CI/deploy/
+live gate and fresh exact public identity. Root merges new local 50 at **7481a0f**;
+targeting/feedback/version/runtime contracts **265 / 1.56s PASS** (39479 closed).
+Investigation merges the same QA ancestry at clean **144aac1745db45d67d60128f0e81b898910ca7f1**;
+generated eight/16 checks pass; no investigation runtime changes. **49124 is the
+sole owned browser**, latest combined phone quest/diary route, log
+`/tmp/eidolon-investigations-phone-combined.log`. Freeze that entire worktree and
+resume the same handle. All-realm touch, XP/gold/realm pacing and complete roadmap
+remain open; no 51 package or expansion/root integration yet.
+
+## Historical checkpoint — September 7, 23:42 UTC
 
 Corrected portal **11052 SUCCESS / one test / 11.9s** (10.6s test) against clean
 **f94ea72**. It uses actual exposed-pointer acquisition, re-entry and town recall
