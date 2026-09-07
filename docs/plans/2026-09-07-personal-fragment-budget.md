@@ -42,6 +42,43 @@ roll/publication across three runs, log `/tmp/eidolon-quest-world-budget-benchma
 This measures a single source operation, not whole-server concurrency capacity.
 The world scan is skipped for characters without a relevant accepted collection.
 
-Still required before release: version/patch-note packaging, final package checks
-and the ordinary fresh collection route against this exact implementation. The
-separate investigation branch's earned route does not validate this drop fix.
+## Alpha 1.0.49 package — local verification complete
+
+Runtime **`b01d3c5`** is root-integrated, without changing root's version or
+publishing it. The isolated package now aligns login/package/manifest/server/
+container/deploy/QA defaults to **Alpha 1.0.49**, with a separate **only the
+fragments you need** patch-note entry preserving all previous releases. Notes
+explain personal world reservations, full bags, pity and the normal lifecycle
+for fragments left in another instance; broader economy/story work is not
+advertised as complete or live.
+
+Package version/isolation/assets/landing contracts pass **250 / 2.957s**;
+full client passes **217 suites / 3,212 tests / 201.597s**, lint passes.
+Package Chronicle/quest/pickup race checks pass root **3.626s**, game **11.243s**.
+The ordinary fresh Wizard collection route against this package passes **2.3m**:
+twenty observed target deaths, no player deaths, **exactly eight** physical seeds
+with no surplus, explicit manual consumption/reward and saved completion after
+reconnect. Collection/handoff takes **95 seconds**, final level **17**; the
+existing 8,000-XP/100-gold payout remains unchanged and requires broader tuning.
+The level-30 dungeon stays correctly locked. Credential scan/cleanup pass.
+
+The actual ready conversation is inspected and copied to
+`/tmp/eidolon-release49-earned-collection-ready.png` before subsequent browser
+runs can replace test-results. Logs `/tmp/eidolon-release49-client.log`,
+`/tmp/eidolon-release49-quest-regression.log`, and
+`/tmp/eidolon-release49-earned-collection.log`.
+
+Final anonymous browser sweep passes **75 / 8.8m**, unchanged package c0a6910,
+log `/tmp/eidolon-release49-anonymous-rerun.log`. The first sweep closes with
+**74 / 75 passing in 10.1m**: one phone-build fixture cannot load modules before
+its layout assertions. Its actual trace shows simultaneous local-script
+`net::ERR_NETWORK_CHANGED` failures and is preserved at
+`/tmp/eidolon-release49-network-change-trace.zip`; no assertion is weakened and
+no source change is made for the successful full rerun. Both handles are closed.
+
+Still required before publication: all earlier sequential release gates, its
+own CI/deploy and exact live verification. This locally verified package may be
+checkpointed/integrated, but must not jump ahead of releases 40–48. The separate
+investigation branch retains its own earned evidence and is not part of this
+package's active quest chain. This package does not close the broader balance
+pass or full roadmap.
