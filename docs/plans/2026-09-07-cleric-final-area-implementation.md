@@ -73,5 +73,23 @@ patch notes only after the intended release scope is verified.
 Screenshot review also finds the oversized duplicate `COMBO: MASS REVIVAL!`
 floating text crossing the phone encounter, despite the compact bottom combo
 notification. Its source is the legacy `combo` network handler, separate from
-the bounded actor-action feedback. Remove that duplication on phones and retain
-desktop feedback; do not treat the passing geometry test as visual sign-off.
+the bounded actor-action feedback.
+
+### Subsequent phone combo polish
+
+The follow-up removes only that duplicate floating text on phones; the compact
+notification still appears, desktop feedback remains unchanged, and other
+players' combos still do not trigger a local notification. The regression fails
+before the change (one failure, three controls pass, **0.783s**). The real normal
+combo route now asserts the compact notification is visible and no `COMBO:` text
+is present in the floating-text layer, alongside all previous geometry checks;
+it passes in **25.6s**. Before/after screenshot inspection confirms the character
+and healing numbers are no longer crossed by the oversized label. The after
+capture is `phone-combo-after.png` in the capture directory above. This is not
+physical-phone sign-off or closure of the offline/observer work listed above.
+Final full client regression passes **200 suites / 2,940 tests in 112.163s**;
+lint and whitespace checks pass. Server source is unchanged from the accepted-area
+checkpoint's passing race coverage. All local verification processes are closed.
+Logs: `/tmp/eidolon-phone-combo-before.log`,
+`/tmp/eidolon-phone-combo-gameplay.log`,
+`/tmp/eidolon-phone-combo-full-client.log`, `/tmp/eidolon-phone-combo-lint.log`.

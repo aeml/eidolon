@@ -654,8 +654,9 @@ class GameEngineNetworkMessageMethods {
                 const { playerId, comboId, comboName } = msg.payload;
                 // Only show for local player
                 if (playerId === this.player.id) {
-                    // Show floating text notification
-                    if (this.floatingTextManager && this.player.position) {
+                    // Phones already have a compact encounter-safe notification.
+                    // Avoid a second, oversized label across the hero and targets.
+                    if (!this.isMobile && this.floatingTextManager && this.player.position) {
                         this.floatingTextManager.spawn(`COMBO: ${comboName}!`, this.player.position, '#ffd700');
                     }
                     // Trigger UI notification

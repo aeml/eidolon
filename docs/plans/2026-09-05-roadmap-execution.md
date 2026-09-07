@@ -14,6 +14,9 @@ login label, versioned main script and backend to
 **1.0.35 `948ed0c178c7c5967db078b53ef951d930660f30`**; that push completed
 successfully. Do not push 1.0.36 until the complete 1.0.35 CI/live gate and fresh
 post-terminal public identity checks pass.
+CI **`34105565222`** has passed server/client/browser smoke and is running
+predeployment character QA; neither a complete live gate nor publication is
+claimed for 1.0.35 yet.
 
 Previous release: **1.0.33 (`0024f33`) is fully verified**.
 CI **`34096361856` attempt 1** passed every job, including final live character
@@ -121,7 +124,14 @@ support passes **17.6s**, client **199 suites / 2,936 tests** pass in **100.639s
 and full server race coverage passes (game **219.529s**, post-wire root **8.348s**).
 This is an unversioned local checkpoint after 1.0.39, not a deployment or closure
 of offline Cleric parity, observer gameplay or the broader milestone gates.
-Screenshot review records the remaining oversized duplicate phone combo label.
+Source `95eac97a9b40fdaa1e0add9bed23a6f1cd333441` preserves that accepted-area
+checkpoint. The subsequent phone combo polish removes the screenshot-observed
+oversized duplicate while keeping its compact notification and desktop feedback.
+Actual normal-combo/geometry QA passes **25.6s**, final client regression passes
+**200 suites / 2,940 tests in 112.163s**, and before/after capture inspection,
+lint and whitespace checks pass. All local verification processes are closed.
+These remain unversioned changes after preserved 1.0.39, not part of the queued
+1.0.35 deployment or proof of completion of the larger visual milestone.
 
 The earlier [expanded remaining Cleric probes](2026-09-07-cleric-final-area-probes.md)
 complete in **0.595s** with explicit expected failures: trained boundaries remain

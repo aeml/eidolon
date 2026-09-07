@@ -69,6 +69,12 @@ test('Cleric cone, Beacon and normal Mass Revival casts render their accepted tr
             expect(event.arc).toBeCloseTo(variant==='Radiant Strike'?2*Math.PI/3:2*Math.PI,8);
             if(skill==='Healing Light')expect(event.center).toEqual(event.target);
         }else expect(event.meshRadius).toBeUndefined();
+        if(variant==='Mass Revival'){
+            await expect(page.locator('.combo-notification').last()).toContainText('Mass Revival');
+            await expect(page.locator('.combo-notification').last()).toBeVisible();
+            expect(await page.evaluate(()=>window.game.floatingTextManager.texts.some(t=>
+                /^COMBO:/.test(t.el?.textContent||'')))).toBe(false);
+        }
         console.log(`[cleric-final-area] ${variant}/rank${rank}: accepted ${event.radius}m, real rendered boundary`);
     }
     for(const rank of [0,5]){
