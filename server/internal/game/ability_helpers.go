@@ -75,27 +75,32 @@ func (w *World) fireProjectileImpactEvent(event ProjectileImpactEvent) {
 	}
 }
 
-// fireDamageEvent emits a "damage" event if a listener is registered.
-func (w *World) fireDamageEvent(sourceID, targetID string, amount int, kind, instanceID string) {
+// Callers pass the live combat owner, not a damage snapshot. This helper is
+// used both inside locked ability dispatch and by unlocked periodic effects:
+// looking up the world map here would race loot insertion, while taking the
+// world lock again would deadlock the already-locked callers.
+func (w *World) fireDamageEvent(source *Entity, targetID string, amount int, kind, instanceID string) {
+	sourceID := ""
+	if source != nil {
+		sourceID = source.ID
+	}
 	actualLifesteal := 0
 	lifestealInstanceID := instanceID
 	if amount > 0 && sourceID != "" {
-		if source, ok := w.Entities[sourceID]; ok && source != nil {
-			source.Mu.Lock()
-			if lifestealInstanceID == "" {
-				lifestealInstanceID = source.InstanceID
-			}
-			healAmount := applyHealingReceived(source, int(float64(amount)*source.LifestealBonus))
-			if healAmount > 0 {
-				previousHealth := source.Health
-				source.Health += healAmount
-				if source.Health > source.MaxHealth {
-					source.Health = source.MaxHealth
-				}
-				actualLifesteal = source.Health - previousHealth
-			}
-			source.Mu.Unlock()
+		source.Mu.Lock()
+		if lifestealInstanceID == "" {
+			lifestealInstanceID = source.InstanceID
 		}
+		healAmount := applyHealingReceived(source, int(float64(amount)*source.LifestealBonus))
+		if healAmount > 0 {
+			previousHealth := source.Health
+			source.Health += healAmount
+			if source.Health > source.MaxHealth {
+				source.Health = source.MaxHealth
+			}
+			actualLifesteal = source.Health - previousHealth
+		}
+		source.Mu.Unlock()
 	}
 
 	if w.OnEvent != nil {

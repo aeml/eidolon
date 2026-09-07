@@ -123,7 +123,7 @@ func (w *World) updateWhirlwind(player *Entity, now time.Time, deferred *deferre
 				}
 			}
 			target.Mu.Unlock()
-			w.fireDamageEvent(attacker.ID, target.ID, finalDamage, "physical", attacker.InstanceID)
+			w.fireDamageEvent(player, target.ID, finalDamage, "physical", attacker.InstanceID)
 			if dead {
 				target.Mu.Lock()
 				w.handleDeath(target, player, deferred)

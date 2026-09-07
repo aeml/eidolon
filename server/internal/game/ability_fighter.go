@@ -134,7 +134,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 					isDead := target.Health <= 0
 					target.Mu.Unlock()
 
-					w.fireDamageEvent(player.ID, target.ID, finalDamage, "physical", player.InstanceID)
+					w.fireDamageEvent(player, target.ID, finalDamage, "physical", player.InstanceID)
 
 					if isDead {
 						target.Mu.Lock()
@@ -314,7 +314,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 				target.RecalculateStats()
 				isDead := target.Health <= 0
 				target.Mu.Unlock()
-				w.fireDamageEvent(player.ID, target.ID, finalDamage, "physical", player.InstanceID)
+				w.fireDamageEvent(player, target.ID, finalDamage, "physical", player.InstanceID)
 				if isDead {
 					target.Mu.Lock()
 					w.handleDeath(target, player, nil)
@@ -443,7 +443,7 @@ func (w *World) damageFighterCone(player *Entity, targetX, targetZ, radius, half
 		}
 		isDead := target.Health <= 0
 		target.Mu.Unlock()
-		w.fireDamageEvent(player.ID, target.ID, finalDamage, "physical", player.InstanceID)
+		w.fireDamageEvent(player, target.ID, finalDamage, "physical", player.InstanceID)
 		if isDead {
 			target.Mu.Lock()
 			w.handleDeath(target, player, nil)
@@ -483,7 +483,7 @@ func (w *World) damageEarthshakerArea(player *Entity, originX, originZ, targetX,
 		}
 		isDead := target.Health <= 0
 		target.Mu.Unlock()
-		w.fireDamageEvent(player.ID, target.ID, finalDamage, "physical", player.InstanceID)
+		w.fireDamageEvent(player, target.ID, finalDamage, "physical", player.InstanceID)
 		if isDead {
 			target.Mu.Lock()
 			w.handleDeath(target, player, nil)
