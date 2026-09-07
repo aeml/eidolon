@@ -5,6 +5,59 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## Current checkpoint — September 7, shared-combat release correction
+
+This checkpoint supersedes the older in-progress statements below. Public
+release remains last verified **Alpha 1.0.37**. Corrected **1.0.38 `9ed011b`**
+is pushed successfully; CI **34141178711** is running client/server checks.
+Do not publish 1.0.39 until every 1.0.38 CI/live job succeeds and fresh public
+manifest/login/main-script/backend identity matches that exact release.
+
+The prior movement candidate `b3c1057` passed all local final checks: **52
+anonymous tests / 4.9m**, **three repeated actual loot acquisitions / 1.4m**,
+authenticated **3 / 44.7s** then beam/ground/movement **3 / 1.5m**, and final
+contracts/lint. Scans and disposable cleanup passed. Its CI **34139776521**
+then exposed a real Go race between asynchronous loot insertion and an unlocked
+damage-event map lookup; both deployments were skipped, not failed live.
+
+The correction passes the already-held live caster into damage reporting,
+avoiding both the map race and recursive world locking. The red concurrency
+probe fails in **0.241s**; twenty repeated regression checks pass **13.238s**,
+world-lock-held checks pass **7.040s**, and the full Go race suite passes
+(root **7.749s**, game **210.796s**). Runtime `814adbf` also passes the actual
+Whirlwind route **29.4s**, final **221 contracts / 2.062s**, and lint. All local
+handles are terminal success, including successful scan/cleanup. See
+[release 38 race evidence](2026-09-07-release38-lifesteal-race.md).
+
+Both movement and race corrections are carried through new sequential branches;
+older candidates are preserved. These are local candidates, not live versions.
+
+| Version | Current queued branch | Candidate | Version/default/Teleport checks |
+|---|---|---|---|
+| 1.0.39 | `release/39-with-lifesteal-race` | `262ae30` | 222 pass / 1.977s |
+| 1.0.40 | `release/40-with-lifesteal-race` | `cf9db3f` | 223 pass / 1.852s |
+| 1.0.41 | `release/41-with-lifesteal-race` | `e2df346` | 224 pass / 2.098s |
+| 1.0.42 | `release/42-with-lifesteal-race` | `b4ba629` | 225 pass / 2.027s |
+| 1.0.43 | `release/43-with-lifesteal-race` | `7c3c036` | 227 pass / 2.188s |
+
+Root merges corrected 43 without publishing it. Movement carry-forward had
+already passed **11 combined rendered pointer/chat/action/framing checks /
+48.3s**. The race correction changes no client runtime. Each later release
+still needs its own sequential CI/live gate; integration checks are not those
+gates.
+
+The independent Shield follow-up `work/shield-training-20260907` now implements
+4%-per-rank absorption, normalized cast-time capacity, preserved Spell Focus,
+and canonical offline payment/cooldown/expiry. Actual paid server/rune impacts
+and shared offline fixtures pass. Original runtime `304f2a6` passes **213
+client suites / 3,161 tests / 121.867s**, full Go race (root **26.487s**, game
+**278.437s**) and lint. Movement/race corrections are now merged into that
+worktree. Actual baseline/trained/saved browser casts and rendered absorption,
+packaging, integration checks and publication remain open. This is not a
+completed four-class audit or a completed roadmap milestone.
+
+## Earlier execution history
+
 Current release queue (September 7): **corrected 1.0.37 (`2e37508`) is fully
 verified live**. CI **34121785766** completed successfully at 13:14:09 UTC,
 with every job passing, including live character/four-class QA. Fresh
