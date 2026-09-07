@@ -18,20 +18,25 @@ func (w *World) tickBleedLocked(e *Entity, now time.Time, deferred *deferredActi
 		return
 	}
 	e.LastBleedTick = now
-	e.Health -= e.BleedDamage
-	e.LastDamageType = "physical"
-	sourceID := e.BleedSourceID
+	w.applyDamageOverTimeLocked(e, e.BleedSourceID, e.BleedDamage, "bleed", "physical", deferred)
+}
+
+// Shared damage/death handling keeps poison and bleed attribution, threat and
+// lethal-damage protection identical without duplicating the lock transition.
+func (w *World) applyDamageOverTimeLocked(e *Entity, ownerID string, damage int, kind, damageType string, deferred *deferredActions) {
+	e.Health -= damage
+	e.LastDamageType = damageType
+	sourceID := ownerID
 	if sourceID == "" {
-		sourceID = "bleed"
+		sourceID = kind
 	}
-	if e.Type == TypeEnemy && e.BleedSourceID != "" {
-		addThreatLocked(e, e.BleedSourceID, float64(e.BleedDamage))
+	if e.Type == TypeEnemy && ownerID != "" {
+		addThreatLocked(e, ownerID, float64(damage))
 	}
 	if w.OnEvent != nil {
-		w.OnEvent("damage", DamageEvent{TargetID: e.ID, SourceID: sourceID, Amount: e.BleedDamage, Kind: "bleed", InstanceID: e.InstanceID})
+		w.OnEvent("damage", DamageEvent{TargetID: e.ID, SourceID: sourceID, Amount: damage, Kind: kind, InstanceID: e.InstanceID})
 	}
 	if e.Health <= 0 {
-		ownerID := e.BleedSourceID
 		e.Mu.Unlock()
 		attacker := w.GetEntity(ownerID)
 		e.Mu.Lock()

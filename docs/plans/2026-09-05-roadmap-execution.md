@@ -87,6 +87,18 @@ wall/presentation checks. The remaining Wizard/Rogue consumers, area probe and
 whole talent audit are still open. This working tree is not the queued 1.0.35
 source and must not replace it in the sequential deployment queue.
 
+Local checkpoint `18f1636` additionally connects Rogue movement ranges and
+restores Shadow Lunge's promised bleed plus actual enemy bleed ticks. Its final
+full server race suite passes (game **230.350 seconds**), alongside 187 client
+suites / 2,676 tests and the real-server Rogue/Cleric cast/login route. The
+follow-up poison checks reproduced applied-but-inert enemy poison and spread
+through dungeon walls. Both are repaired locally, with actual coated attack /
+projectile tick, kill-credit and cover regressions passing; the separate poison
+full race suite also passes (root **18.502 seconds**, game **278.453 seconds**).
+See the same range evidence for retained
+failures, exact logs and remaining cone/placement/area work. None of this local
+unversioned work changes the source or publication status of queued 1.0.35.
+
 Alpha 1.0.33 phone status implementation `fe857a6` is committed locally with
 separate notes and synchronized metadata. It adds tap-readable buff/debuff details,
 stable countdown rows, explicit Close/Escape and unobstructed combat/chat controls;

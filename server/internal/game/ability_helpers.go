@@ -323,12 +323,13 @@ func (w *World) spreadPoison(source, primaryTarget *Entity, damage int, endTime 
 	primaryTarget.Mu.RLock()
 	primaryID, originX, originZ, instanceID := primaryTarget.ID, primaryTarget.X, primaryTarget.Z, primaryTarget.InstanceID
 	primaryTarget.Mu.RUnlock()
+	walkRects := w.dungeonWalkRectsSnapshot(instanceID)
 	for _, target := range w.Grid.Nearby(originX, originZ, radius+maxAbilityTargetVisualRadius, instanceID) {
 		if target.ID == primaryID {
 			continue
 		}
 		target.Mu.Lock()
-		if w.CanDamage(source, target) && target.State != "DEAD" && withinAbilityRadius("Poison Spread", originX, originZ, target, radius) {
+		if w.CanDamage(source, target) && target.State != "DEAD" && withinDungeonAbilityRadius(walkRects, "Poison Spread", originX, originZ, target, radius) {
 			target.Poisoned = true
 			target.PoisonDamage = damage
 			target.PoisonSourceID = source.ID

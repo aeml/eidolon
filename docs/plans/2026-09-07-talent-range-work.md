@@ -262,13 +262,47 @@ positive bleed tick, saved Quick Draw ranks and cast intent; Cleric **17.1 secon
 (15.2-second body)** retains empty rejection and ordinary marking. Credential
 scan and disposable cleanup pass, session `88952` exits zero. Runtime and selected
 browser source were unchanged throughout that repeat. Final lint passes at
-`/tmp/eidolon-rogue-range-handoff-lint.log`. Full server race session `61913` is
-still running; its earlier failed fixture runs do not count as full verification.
+`/tmp/eidolon-rogue-range-handoff-lint.log`. The final full server race suite
+**passes**, including game in **230.350 seconds**, at
+`/tmp/eidolon-rogue-range-full-server-final.log` for runtime `18f1636`.
+Its earlier failed fixture runs remain retained and do not count as passes.
 
 Follow-up from this trace: poison ticking is also still located in the player
 branch. Investigate actual enemy poison outcomes with paired casts/ticks before
 claiming that every Rogue damage-over-time consumer is working. No poison fix
 or whole bleed/rune/area audit completion is claimed in this step.
+
+## Enemy poison follow-up — server verified, not published
+
+Actual Poison Coating → Piercing Throw and poisoned Fan of Knives casts applied
+the status but never damaged enemies on their world updates. A separate spread
+probe reached an enemy across a dungeon wall. These failures are retained in
+`/tmp/eidolon-poison-before-server.log`; they establish two runtime defects,
+not just incorrect talent text.
+
+Enemy/NPC updates now process poison before AI, and players use the same tick
+helper. Poison and bleed share attributed damage, enemy threat and normal
+death handling; the existing one-second cadence, expiry and player lethal-damage
+protection remain intact. Poison spread now uses canonical dungeon walk geometry
+as well as the existing body-aware five-metre radius and hostility rules.
+
+Focused race checks pass in **3.979 seconds** at
+`/tmp/eidolon-poison-final-focused-server.log`. Coverage includes actual coated
+basic attacks (observing their ordinary asynchronous impact), coated Piercing
+Throw and poisoned Fan of Knives through actual enemy updates; player/enemy/NPC
+cadence and expiry; attributed once-only kill rewards; lethal bleed before
+poison; Divine Intervention; oversized spread boundary, friendly/instance
+exclusion, and wall-versus-doorway spread. Earlier narrower passing runs remain
+at `/tmp/eidolon-poison-after-server.log` and
+`/tmp/eidolon-poison-expanded-server.log`.
+
+The full server race suite **passes** at
+`/tmp/eidolon-poison-full-server.log` (session `87479`, exit zero): root package
+**18.502 seconds**, game **278.453 seconds**, all other packages pass or have
+no tests. Runtime/tests were unchanged throughout the run. No new poison browser
+route, public deployment, full set-bonus balance audit or whole range/area
+completion is claimed. This remains unversioned local work after `18f1636`,
+not part of the queued 1.0.35 source.
 
 ## Projectile travel trace — still unresolved
 
@@ -306,6 +340,34 @@ expiry must remain consistent with their replicated presentation.
   rank checks before publication, then separate patch notes/version metadata.
 - Keep area consumers (including the still-failing Purifying Wave probe), other
   talent/copy gaps, physical phones and the full 1.1–1.10 scope open.
+
+### Next cone implementation contract (source trace, not completed work)
+
+`TalentBonus.SkillAoe` explicitly means **radius**, not angle. For Flame Whip,
+apply the independent range multiplier to its 12m reach, then the AoE-radius
+multiplier to that reach; sum ranks within each bonus category. Thus five Aether
+Reach ranks give 14.4m, five Volatile Insight ranks 13.8m, and five Mana Geometry
+ranks 14.52m (both of that talent's declared benefits). Do not reinterpret AoE
+as cone-angle widening or silently drop one benefit. Base angle stays 90°;
+Nova Cascade changes it to 360° without changing the resolved radius. Record
+combined-rank fixtures before implementing this rule in server and client.
+
+The server's resolved shape must survive every existing transport layer:
+`game.AbilityEvent` → `AbilityPayload` in `main.go` → the ability-message handler
+→ `AbilityController` → boundary visual options. Carry optional resolved radius
+and arc in accepted events; observers must not need the caster's private talent
+ranks. Preserve legacy events without those fields. Local accepted casts currently
+return early because their effects were predicted: explicitly reconcile changed
+shape/360° presentation without replaying every ordinary cast or applying damage
+on the client. The offline handler also currently uses a 3D centre-only 12m
+distance and no dungeon-cover check; pair planar body-aware hits and wall checks
+with the online geometry, rather than fixing only the targeting ring.
+
+Required evidence: baseline/range-only/area-only/combined ranks; inside/outside
+small and oversized bodies; ordinary angle exclusions versus a real Teleport →
+Whip combo; dungeon wall/doorway, hostility and instance isolation; serialized
+shape plus local/remote High/Low presentation. This contract is not evidence
+that any cone, general AoE or physical-phone gate is already closed.
 
 1.0.29 is fully verified: CI `34078663504` passed every job and uncached public
 manifest/login/script/backend identity matched `bc96862` / Alpha 1.0.29 at

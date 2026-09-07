@@ -59,7 +59,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 	}
 	if e.Type == TypeEnemy || e.Type == TypeNPC {
 		e.Mu.Lock()
-		w.tickBleedLocked(e, time.Now(), deferred)
+		now := time.Now()
+		w.tickBleedLocked(e, now, deferred)
+		w.tickPoisonLocked(e, now, deferred)
 		dead := e.State == "DEAD"
 		e.Mu.Unlock()
 		if dead {
@@ -1059,32 +1061,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 			// DoT Ticks
 			w.tickBleedLocked(e, now, deferred)
-			if e.State != "DEAD" && e.Poisoned {
-				if now.After(e.PoisonEndTime) {
-					e.Poisoned = false
-					e.PoisonSourceID = ""
-				} else if time.Since(e.LastPoisonTick) >= 1*time.Second {
-					e.LastPoisonTick = now
-					e.Health -= e.PoisonDamage
-					e.LastDamageType = "poison"
-					if w.OnEvent != nil {
-						sourceID := e.PoisonSourceID
-						if sourceID == "" {
-							sourceID = "poison"
-						}
-						w.OnEvent("damage", DamageEvent{TargetID: e.ID, SourceID: sourceID, Amount: e.PoisonDamage, Kind: "poison", InstanceID: e.InstanceID})
-					}
-					if e.Health <= 0 {
-						sourceID := e.PoisonSourceID
-						e.Mu.Unlock()
-						attacker := w.GetEntity(sourceID)
-						e.Mu.Lock()
-						if e.Health <= 0 && e.State != "DEAD" {
-							w.handleDeath(e, attacker, deferred)
-						}
-					}
-				}
-			}
+			w.tickPoisonLocked(e, now, deferred)
 
 			// Healing Light HoT (Renewal Rune)
 			if e.HealingLightHoTActive {
