@@ -84,13 +84,24 @@ test('status Mastery purchases change real ticks and persist through fresh login
             await expect.poll(async () => {
                 aim = await projectEntity(page, target.id);
                 if (aim?.visible) await page.mouse.move(aim.x, aim.y);
-                return page.evaluate(async ({ id, visible }) => {
+                const acquired = await page.evaluate(async ({ visible }) => {
                     await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-                    const game = window.game, enemy = game.remotePlayers.get(id);
-                    return { visible, hovered: game.hoveredEntity?.id === id,
+                    const game = window.game, enemy = game.hoveredEntity;
+                    // Several natural enemies can overlap at melee range.
+                    // Select the actual top hostile under the pointer, then
+                    // keep its identity through the request and damage event.
+                    return { id: enemy?.id, visible,
+                        hovered: game.isHostileActorTarget(enemy) && enemy?.constructor?.name === 'InfernoTitan',
                         inRange: Boolean(enemy && enemy.position.distanceTo(game.player.position) < 9),
-                        living: Boolean(enemy?.isActive && enemy.state !== 'DEAD') };
-                }, { id: target.id, visible: Boolean(aim?.visible) });
+                        living: Boolean(enemy?.isActive && enemy.state !== 'DEAD'
+                            && enemy.stats.hp > 2*(15+1.5*game.player.stats.dexterity)) };
+                }, { visible: Boolean(aim?.visible) });
+                const { id, ...state } = acquired;
+                if (state.visible && state.hovered && state.inRange && state.living) {
+                    target.id = id;
+                    await page.evaluate(id => Object.assign(window.__statusQA, { target: id, damage: [] }), id);
+                }
+                return state;
             }).toEqual({ visible: true, hovered: true, inRange: true, living: true }).catch(async error => {
                 console.log('[status-aim]', await page.evaluate(id => {
                     const game = window.game, enemy = game.remotePlayers.get(id);
@@ -110,13 +121,14 @@ test('status Mastery purchases change real ticks and persist through fresh login
         await expect.poll(() => page.evaluate(() => window.__statusQA.results.length)).toBe(1);
         const result = await page.evaluate(() => window.__statusQA.results[0]);
         expect(result).toEqual(expect.objectContaining({ skillName: config.skill, accepted: true }));
+        if (config.skill === 'Shadow Lunge') expect(result.targetId).toBe(target.id);
         expect(result.cooldownRemaining).toBeGreaterThan(0);
         if (config.skill !== 'Shadow Lunge') {
             await page.waitForTimeout(600); // Observe the ordinary 500ms global cooldown.
             await acquireAim();
             await page.mouse.click(aim.x, aim.y, { button: 'right' });
             await expect.poll(() => page.evaluate(() => window.__statusQA.results.length)).toBe(2);
-            expect(await page.evaluate(() => window.__statusQA.results[1])).toEqual(expect.objectContaining({ skillName: 'Piercing Throw', accepted: true }));
+            expect(await page.evaluate(() => window.__statusQA.results[1])).toEqual(expect.objectContaining({ skillName: 'Piercing Throw', accepted: true, targetId: target.id }));
         }
         await expect.poll(() => page.evaluate(kind => window.__statusQA.damage.some(hit => hit.kind === kind), config.kind)).toBe(true).catch(async error => {
             console.log('[status-training-missing-tick]', await page.evaluate(id => {
