@@ -5,7 +5,40 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 17:06 UTC
+## Current checkpoint — September 7, 18:11 UTC
+
+**Alpha 1.0.39 `7ddf776` is fully verified live.** CI **34146247683**
+has terminal success for every job, including both deployments and live character
+QA. Fresh checks in this checkpoint return HTTP 200 for manifest, login and
+backend; all match `7ddf776ef18caa0763eedeb8d5a0d7f25afdcd4d`, **Alpha 1.0.39**,
+with backend healthy and database ready.
+
+After clean staging, exact remote-head and ancestry checks, **1.0.40 `8328637`**
+is pushed explicitly from `release/40-with-runtime-readiness` to `origin/master`.
+CI **34150633216** is queued. No 40 live success is claimed. Publish 41 only
+after every 40 CI/live job succeeds and a fresh exact public identity check passes.
+
+**Alpha 1.0.47 is locally verified and root-integrated**, not published.
+Evidence/queued branch `release/47-with-runtime-readiness` is **`06f623f`**;
+root merge **`3ac9b7d`** passes **237 integration contracts / 1.621s**.
+Final package `f18dfcb` passes **215 suites / 3,187 client tests / 156.667s**,
+lint, full server race (root **19.922s**, game **330.735s**), and **75 anonymous
+browser checks / 7.9m**. The actual earned fresh collection route passes twice;
+the final repeat takes **110 seconds** collecting eight fragments, with no
+deaths, manual completion and saved progress after reconnect. Its actual ready
+conversation is inspected and copied to
+`/tmp/eidolon-release47-earned-collection-ready.png`. All owned local handles,
+including the anonymous sweep and root integration, are terminal success.
+See [collection evidence](2026-09-07-collection-pacing.md).
+
+The new collection rules, save migration, concurrency repair and weekly full-bag
+source-accounting correction are included in 47. Broader XP/gold/equipment
+tuning, surplus uncollected quest drops and playable investigations remain open.
+All eight investigation conversations and journal entries are authored as a
+draft, not implemented world interactions. Root/master remains an integration
+branch and must not be pushed as the next sequential release.
+
+## Historical checkpoint — September 7, 17:06 UTC
 
 This checkpoint supersedes the historical release-status paragraphs below.
 **Alpha 1.0.38 `9ed011b` is fully verified live.** CI **34141178711** completes
@@ -111,16 +144,13 @@ saved progress, zero deaths and **109 seconds** collection time over 22 observed
 target deaths. The unchanged XP reward still reaches level 17; broader pacing
 and investigation implementation remain open.
 
-The 47 anonymous sweep is running, session `44148`, log
-`/tmp/eidolon-release47-anonymous.log`. Its previous ready-conversation capture
-was cleared by the next test suite before visual inspection; recapture and
-inspect it after the anonymous handle closes. Do not claim that image was
-reviewed. The package is not root-integrated or published yet. Its primary
-evidence lives in `docs/plans/2026-09-07-collection-pacing.md` in that worktree.
+The 47 anonymous sweep subsequently passes **75 checks / 7.9m**. The previous
+ready-conversation capture was cleared before inspection; the same package's
+fresh repeat supplies the inspected and independently preserved image instead.
+Root integration and final evidence are recorded in the current checkpoint above.
 
-39 CI **34146247683** has passed both deployments and is running live character
-QA. 40 remains gated on its terminal success and a fresh exact public identity
-check. The last fully verified public release remains 38 until that gate passes.
+At this historical checkpoint, 39 was running live QA. Its later terminal
+success, exact public verification and the 40 push are recorded above.
 
 The [eight-investigation content draft](2026-09-07-investigation-story-content.md)
 now includes acceptance/discovery/completion copy and journal summaries. It is

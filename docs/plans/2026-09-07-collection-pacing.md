@@ -108,7 +108,10 @@ All owned local handles are terminal success. Logs:
 `/tmp/eidolon-release47-anonymous.log`, `/tmp/eidolon-release47-gameplay.log`,
 `/tmp/eidolon-release47-visual-gameplay.log`.
 
-This package is ready for root integration, not already published. Do not
+Evidence commit **`06f623f`** is retained as
+`release/47-with-runtime-readiness` and merged into root at **`3ac9b7d`**.
+Root integration passes **237 contracts / 1.621s**; its owned handle is closed.
+This package is locally integrated, not already published. Do not
 publish ahead of the earlier sequential CI/live release gates. Broader
 XP/loot tuning, surplus uncollected world drops, physical-phone review and the
 eight investigation quests remain open; no completion claim is made for them.

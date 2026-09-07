@@ -1,9 +1,9 @@
 # Progression balance and realm investigations
 
 Requested September 7, 2026. Status: **implementation active; full pass open**.
-The local 1.0.47 candidate implements eight-fragment collections, reduced ordinary
-drop rates, saved bad-luck protection and legacy-contract migration; final package
-verification is still running and it is not published. XP/equipment/gold tuning
+The locally verified, root-integrated 1.0.47 candidate implements eight-fragment
+collections, reduced ordinary drop rates, saved bad-luck protection and
+legacy-contract migration. It is queued, not published. XP/equipment/gold tuning
 and playable investigations remain open. The
 [authored investigation draft](2026-09-07-investigation-story-content.md) supplies
 Ilyra conversations, personal accounts and discoveries for all eight planned sites;
@@ -24,8 +24,9 @@ collection and kill requirements where the resulting playtime is appropriate.
 The existing [earned progression evidence](fresh-progression-evidence.md)
 records a Fighter reaching level 16 after the opening/collection turn-ins and
 an earned Verdant run entering at level 34 and finishing at level 54. The current
-catalog in `server/internal/game/quests.go` asks for four items in each elemental
-collection chapter; ordinary daily hunts already ask for 100 kills. These are
+pre-tuning catalog asked for four items in each elemental collection chapter;
+the 1.0.47 candidate raises new contracts to eight while retaining accepted
+legacy contracts. Ordinary daily hunts already ask for 100 kills. These are
 reasons to audit pacing, not proof that every source needs the same multiplier.
 Automated routes are not a substitute for a new player's exploration time.
 
