@@ -5,10 +5,14 @@ test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true
     userAgent: devices['Pixel 7'].userAgent, actionTimeout: 12_000,
     trace: 'off', screenshot: 'off', video: 'off' });
 
-test('phone Ministry purchases expand the accepted Purifying Wave and rendered ring across login', async ({ page, baseURL }) => {
+test('phone Ministry purchases expand the accepted Purifying Wave and rendered ring across login', async ({ page, baseURL }, testInfo) => {
     test.setTimeout(180_000);
     test.skip(process.env.EIDOLON_E2E_REGISTER !== '1', 'Requires the disposable cleanse-area route');
     const credentials = credentialsFromEnvironment();
+    // Retry the original untrained scenario, not the previous attempt's saved
+    // specialization and ranks. The isolated runner allowlists this account.
+    expect(testInfo.retry).toBeLessThanOrEqual(1);
+    if (testInfo.retry) credentials.username += `-retry${testInfo.retry}`;
     const failures = collectBrowserFailures(page, baseURL);
     await loginAndEnterWorld(page, credentials);
     expect(await page.evaluate(() => window.game.player.constructor.name)).toBe('Cleric');
@@ -91,4 +95,7 @@ test('phone Ministry purchases expand the accepted Purifying Wave and rendered r
     await page.setViewportSize({ width: 844, height: 390 });
     await verifyCast(5, 'high');
     expect(failures, failures.join('\n')).toEqual([]);
+    if (process.env.EIDOLON_E2E_PURIFYING_RETRY_PROBE === '1' && testInfo.retry === 0) {
+        throw new Error('Intentional Purifying retry probe after successful saved-build verification');
+    }
 });

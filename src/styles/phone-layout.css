@@ -81,7 +81,9 @@
     cursor: pointer;
 }
 .mobile-mode #chat-box:not(.chat-mobile-expanded) :is(.chat-tabs, #chat-messages, .chat-composer) { display: none; }
-.mobile-mode #chat-box.chat-mobile-expanded { height: min(360px, calc(100dvh - 24px)) !important; z-index: calc(var(--z-hud) + 1); }
+/* Expanded chat is an interactive sheet above the compact objective tracker,
+   while ordinary gameplay windows retain their higher window/modal layers. */
+.mobile-mode #chat-box.chat-mobile-expanded { height: min(360px, calc(100dvh - 24px)) !important; z-index: calc(var(--z-hud) + 2); }
 .mobile-mode .chat-tab { min-height: 44px; font-size: 12px; }
 .mobile-mode #chat-input { min-height: 44px; font-size: 16px; }
 .mobile-mode #chat-messages { font-size: 16px; }
