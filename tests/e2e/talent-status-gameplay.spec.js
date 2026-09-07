@@ -62,15 +62,18 @@ test('status Mastery purchases change real ticks and persist through fresh login
         await expect.poll(() => page.evaluate(skill => window.game.player.cooldowns?.[skill] || 0, config.skill)).toBe(0);
         const dexterity = await page.evaluate(() => window.game.player.stats.dexterity);
         let aim;
-        await expect.poll(async () => {
-            aim = await projectEntity(page, target.id);
-            if (!aim?.visible) return false;
-            await page.mouse.move(aim.x, aim.y);
-            return page.evaluate(async id => {
-                await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-                return window.game.hoveredEntity?.id === id && window.game.hoveredEntity.position.distanceTo(window.game.player.position) < 9;
-            }, target.id);
-        }).toBe(true);
+        async function acquireAim() {
+            await expect.poll(async () => {
+                aim = await projectEntity(page, target.id);
+                if (!aim?.visible) return false;
+                await page.mouse.move(aim.x, aim.y);
+                return page.evaluate(async id => {
+                    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+                    return window.game.hoveredEntity?.id === id && window.game.hoveredEntity.position.distanceTo(window.game.player.position) < 9;
+                }, target.id);
+            }).toBe(true);
+        }
+        await acquireAim();
         await page.evaluate(id => Object.assign(window.__statusQA, { target: id, results: [], damage: [] }), target.id);
         const slot = await page.evaluate(skill => window.game.player.hotbar.indexOf(skill), config.skill);
         expect(slot).toBeGreaterThanOrEqual(0);
@@ -81,13 +84,20 @@ test('status Mastery purchases change real ticks and persist through fresh login
         expect(result.cooldownRemaining).toBeGreaterThan(0);
         if (config.skill !== 'Shadow Lunge') {
             await page.waitForTimeout(600); // Observe the ordinary 500ms global cooldown.
-            aim = await projectEntity(page, target.id);
-            expect(aim?.visible).toBe(true);
+            await acquireAim();
             await page.mouse.click(aim.x, aim.y, { button: 'right' });
             await expect.poll(() => page.evaluate(() => window.__statusQA.results.length)).toBe(2);
             expect(await page.evaluate(() => window.__statusQA.results[1])).toEqual(expect.objectContaining({ skillName: 'Piercing Throw', accepted: true }));
         }
-        await expect.poll(() => page.evaluate(kind => window.__statusQA.damage.some(hit => hit.kind === kind), config.kind)).toBe(true);
+        await expect.poll(() => page.evaluate(kind => window.__statusQA.damage.some(hit => hit.kind === kind), config.kind)).toBe(true).catch(async error => {
+            console.log('[status-training-missing-tick]', await page.evaluate(id => {
+                const game = window.game, enemy = game.remotePlayers.get(id);
+                return { state: enemy?.state, hp: enemy?.stats?.hp, active: enemy?.isActive,
+                    serrated: game.player.serratedEdgesActive, coating: game.player.poisonCoatingActive,
+                    results: window.__statusQA.results, damage: window.__statusQA.damage };
+            }, target.id));
+            throw error;
+        });
         const events = await page.evaluate(() => window.__statusQA.damage);
         const base = config.skill === 'Serrated Edges' ? Math.floor(events.find(hit => hit.kind === 'physical').amount/5)
             : (config.kind === 'poison' ? 8 : 10)+Math.floor(dexterity/2);
