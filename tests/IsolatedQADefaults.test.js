@@ -50,3 +50,9 @@ test('the full release gate retains saved Shield training and hostile absorption
     expect(script).toContain('${QA_USERNAME_BASE}-shield-retry1');
     expect(script).toContain('npx playwright test tests/e2e/shield-training-gameplay.spec.js');
 });
+
+test('anonymous CI retains content-sized and long-list phone status coverage', () => {
+    const commands = JSON.parse(readFileSync('package.json', 'utf8')).scripts;
+    expect(commands['test:e2e:anonymous']).toContain('tests/e2e/mobile-status-compact.spec.js');
+    expect(commands['test:e2e:anonymous']).toContain('tests/e2e/mobile-status-layout.spec.js');
+});

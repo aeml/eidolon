@@ -12,7 +12,10 @@
     top: calc(var(--phone-top) + 52px);
     left: max(12px, env(safe-area-inset-left, 0px));
     right: max(12px, env(safe-area-inset-right, 0px));
-    bottom: calc(var(--phone-bottom) + 276px);
+    bottom: auto;
+    /* Fit a short list naturally; only long lists consume the reading budget.
+       Keep the encounter center visible rather than stretching empty space. */
+    max-height: min(38dvh, calc(100dvh - var(--phone-top) - var(--phone-bottom) - 328px));
     z-index: var(--z-window); pointer-events: auto;
     min-height: 0; overflow: hidden; border: 1px solid #b99b6288; border-radius: 10px;
     background: #111923f5; color: #f3ece0; box-shadow: 0 8px 24px #0008;
@@ -22,12 +25,14 @@
 .phone-status-header h2 { margin: 0; font-size: 1em; color: var(--color-gold); }
 .phone-status-header button { min-width: 52px; min-height: 44px; padding: 6px; color: var(--color-gold); background: #202a35; border: 1px solid #b99b6288; border-radius: 6px; font: inherit; touch-action: manipulation; }
 .phone-status-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; padding: 10px; }
-.phone-status-effect { border: 1px solid #8bc7b255; border-left: 3px solid #8bc7b2; padding: 10px; border-radius: 6px; margin-bottom: 10px; overflow-wrap: anywhere; }
+.phone-status-effect { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 8px; border: 1px solid #8bc7b255; border-left: 3px solid #8bc7b2; padding: 10px; border-radius: 6px; margin-bottom: 10px; overflow-wrap: anywhere; }
+.phone-status-effect:last-child { margin-bottom: 0; }
 .phone-status-effect.is-debuff { border-color: #ee978866; border-left-color: #ee9788; }
-.phone-status-effect h3 { margin: 6px 0; font-size: 1em; line-height: 1.35; }
+.phone-status-effect h3 { grid-column: 1 / -1; margin: 6px 0; font-size: 1em; line-height: 1.35; }
 .phone-status-kind { color: #a9decd; font-size: .875em; }
 .phone-status-effect.is-debuff .phone-status-kind { color: #ffb2a5; }
-.phone-status-remaining { display: block; color: #e0cfad; font-variant-numeric: tabular-nums; }
+.phone-status-remaining { display: block; color: #e0cfad; font-variant-numeric: tabular-nums; text-align: right; }
+.phone-status-detail { grid-column: 1 / -1; }
 .phone-status-detail, .phone-status-empty { margin: 0; line-height: 1.5; }
 .phone-status-panel [hidden] { display: none !important; }
 .phone-status-launcher:focus-visible, .phone-status-panel :focus-visible { outline: 2px solid var(--color-gold); outline-offset: -3px; }
@@ -37,7 +42,7 @@
     .mobile-mode .phone-status-panel:not([hidden]) {
         left: calc(max(12px, env(safe-area-inset-left, 0px)) + 122px);
         right: calc(max(12px, env(safe-area-inset-right, 0px)) + 244px);
-        bottom: calc(var(--phone-bottom) + 60px);
+        max-height: calc(100dvh - var(--phone-top) - var(--phone-bottom) - 112px);
     }
 }
 @media (orientation: landscape) and (max-height: 360px) {
