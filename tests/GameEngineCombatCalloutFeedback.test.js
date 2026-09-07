@@ -29,6 +29,28 @@ const gameEngineSource = [
 ].map((name) => fs.readFileSync(path.join(repoRoot, 'src/core', name), 'utf8')).join('\n');
 
 describe('GameEngine encounter callouts', () => {
+    test.each([
+        ['showRemoteActionReadability', ['Divine Intervention'], 'DIVINE INTERVENTION'],
+        ['showRemoteStateReadability', ['JUMPING', 'IDLE'], 'JUMP'],
+        ['showRemoteSupportStateReadability', ['divine_intervention', true], 'INTERVENTION UP']
+    ])('phone %s passes structured identity/action and an above-model anchor', (method, args, action) => {
+        const engine = Object.create(GameEngine.prototype);
+        Object.assign(engine, {
+            isMobile: true, player: { id: 'self' },
+            floatingTextManager: { spawn: jest.fn() },
+            readabilityFeedbackTimestamps: new Map(),
+            canShowThrottledReadabilityEvent: () => true,
+            isPlayerClassEntity: () => true, isPositionNearPlayer: () => true
+        });
+        const ally = { id: 'ally', name: 'Aurelian Of The Crystal Watch', position: new THREE.Vector3(),
+            mesh: { userData: { bounds: { height: 4 } } } };
+        expect(engine[method](ally, ...args)).toBe(true);
+        const call = engine.floatingTextManager.spawn.mock.calls.at(-1);
+        expect(call[0]).toBe(`AURELIAN OF THE CRYSTAL WATCH: ${action}`);
+        expect(call[4].compactActorAction.source).toBe('AURELIAN OF THE CRYSTAL WATCH');
+        expect(call[4].compactActorAction.action).toBe(action);
+        expect(call[4].compactActorAction.anchorHeight).toBeCloseTo(4.65);
+    });
     test('phone self-feedback omits the redundant player name without losing other players’ attribution', () => {
         const engine = Object.create(GameEngine.prototype);
         engine.isMobile = true;

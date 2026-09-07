@@ -394,6 +394,22 @@ import {
     isLiveDungeonBossRoom
 } from '../utils/dungeonRoomMetadata.js';
 
+function spawnActorReadability(engine, entity, action, fullText, color, fontSize) {
+    if (!engine.isMobile) {
+        engine.floatingTextManager.spawn(fullText, entity.position, color, fontSize);
+        return;
+    }
+    const local = entity === engine.player || (entity.id && entity.id === engine.player?.id);
+    const height = Number(entity.mesh?.userData?.bounds?.height);
+    engine.floatingTextManager.spawn(fullText, entity.position, color, fontSize, {
+        compactActorAction: {
+            source: local ? '' : engine.getRemoteActionSourceLabel(entity),
+            action: engine.formatRemoteActionLabel(action),
+            anchorHeight: Number.isFinite(height) && height > 0 ? height + .65 : 3.15
+        }
+    });
+}
+
 export class GameEngine {
     /** @deprecated Prefer network.send(); legacy consumers must follow reconnects. */
     get socket() {
@@ -716,7 +732,7 @@ export class GameEngine {
         const key = `remote-action-${sourceEntity.id || sourceEntity.name}-${label}`;
         if (!this.canShowThrottledReadabilityEvent(key, 750)) return false;
 
-        this.floatingTextManager.spawn(label, sourceEntity.position, '#8fe7ff', '18px');
+        spawnActorReadability(this, sourceEntity, skillName, label, '#8fe7ff', '18px');
         return true;
     }
 
@@ -777,7 +793,7 @@ export class GameEngine {
         const key = `remote-state-${entity.id || entity.name}-${state}`;
         if (!this.canShowThrottledReadabilityEvent(key, state === 'JUMPING' ? 650 : 500)) return false;
 
-        this.floatingTextManager.spawn(label, entity.position, color, fontSize);
+        spawnActorReadability(this, entity, actionLabel, label, color, fontSize);
         return true;
     }
 
@@ -813,7 +829,7 @@ export class GameEngine {
         const key = `remote-support-${actorKey}-${normalizedKey}-${active ? 'active' : 'inactive'}`;
         if (!this.canShowThrottledReadabilityEvent(key, cooldownMs)) return false;
 
-        this.floatingTextManager.spawn(label, entity.position, color, '16px');
+        spawnActorReadability(this, entity, actionLabel, label, color, '16px');
         return true;
     }
 

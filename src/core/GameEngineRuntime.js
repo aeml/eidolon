@@ -78,6 +78,7 @@ class GameEngineRuntimeMethods {
         this.uiManager?.inventory?.mobileDetails?.dispose();
         this.uiManager?.windowLayoutObserver?.disconnect();
         this.uiManager?.chat?.sizeObserver?.disconnect();
+        this.floatingTextManager?.dispose();
 
         if (this.renderSystem) {
             this.renderSystem.dispose();

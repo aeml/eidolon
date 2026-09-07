@@ -62,6 +62,21 @@ test('phone party selection heals a real ally through normal casts in both orien
                 await expect.poll(()=>page.evaluate(({casterId,allyId})=>window.__phonePartyHeals.filter(h=>h.sourceId===casterId&&h.targetId===allyId&&h.amount>0).length,{casterId,allyId})).toBe(1);
                 await expect.poll(()=>ally.evaluate(()=>window.game.player.stats.hp)).toBeGreaterThan(before);
                 expect(await page.evaluate(()=>window.game.player.stats.hp)).toBe(casterHP);
+                if (width === 390 && skill === 'Divine Intervention') {
+                    const source = `${credentials.username}-ally`.toUpperCase();
+                    await expect.poll(() => page.evaluate(name => window.game.floatingTextManager.texts.some(t =>
+                        t.compact?.source === name && t.compact?.action === 'INTERVENTION UP'), source)).toBe(true);
+                    const label = await page.evaluate(name => {
+                        const t = window.game.floatingTextManager.texts.find(t => t.compact?.source === name && t.compact?.action === 'INTERVENTION UP');
+                        const r = t.el.getBoundingClientRect();
+                        return {x:r.x,right:r.right,width:r.width,font:getComputedStyle(t.el).fontSize,full:t.el.getAttribute('aria-label')};
+                    }, source);
+                    expect(label.width).toBeLessThanOrEqual(216);
+                    expect(label.x).toBeGreaterThanOrEqual(11);
+                    expect(label.right).toBeLessThanOrEqual(width - 11);
+                    expect(parseFloat(label.font)).toBeGreaterThanOrEqual(16);
+                    expect(label.full).toContain(source);
+                }
                 console.log(`[phone-party] ${width}x${height}: ${skill}, deliberate ally selection, authoritative healing, unchanged caster health`);
             }
             await page.screenshot({path:testInfo.outputPath(`party-heal-${width}-${height}.png`)});
