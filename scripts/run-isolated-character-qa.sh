@@ -134,7 +134,7 @@ mongo_password="$(openssl rand -hex 24)"
 docker build \
   --build-arg GO_VERSION=1.24.5 \
   --build-arg "BUILD_COMMIT=${qa_build_commit}" \
-  --build-arg "BUILD_VERSION=Alpha 1.0.41" \
+  --build-arg "BUILD_VERSION=Alpha 1.0.42" \
   --tag "${SERVER_IMAGE}" server >/dev/null
 image_created=true
 
@@ -547,6 +547,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     echo "Trained persistent support-area verification: EIDOLON_ISOLATED_QA_ROUTE=guardian-area" >&2
     echo "Trained holy-zone verification: EIDOLON_ISOLATED_QA_ROUTE=consecrated-area" >&2
     echo "Critical training/persistence verification: EIDOLON_ISOLATED_QA_ROUTE=talent-critical" >&2
+    echo "Status Mastery tick/persistence verification: EIDOLON_ISOLATED_QA_ROUTE=talent-status" >&2
     echo "Trained Blessing/Trumpet verification: EIDOLON_ISOLATED_QA_ROUTE=cleric-area" >&2
     echo "Trained cone/Beacon/Mass Revival verification: EIDOLON_ISOLATED_QA_ROUTE=cleric-final-area" >&2
     echo "Trained Spirit Guardians verification: EIDOLON_ISOLATED_QA_ROUTE=spirit-area" >&2

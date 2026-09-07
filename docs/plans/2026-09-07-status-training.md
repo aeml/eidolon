@@ -1,7 +1,9 @@
 # Status Mastery and offline periodic consumers
 
-Status: implemented in `work/status-consumers-20260907`, isolated from preserved
-1.0.41 and earlier release candidates. Not published or a full talent sign-off.
+Status: integrated into root at `4e05228` after isolated verification in
+`work/status-consumers-20260907`. Packaged as the queued 1.0.42 candidate;
+preserved 1.0.41 and earlier release branches are unchanged. Not published or a
+full talent sign-off.
 
 ## Actual server applications
 
@@ -52,13 +54,47 @@ lint and whitespace pass. An initial lifecycle test used an unsupported Jest
 matcher; replacing it with separate count/argument assertions fixes the test,
 not game behavior. Logs use `/tmp/eidolon-status-*.log`.
 
-## Remaining gate
+## Browser proof and targeting repair
 
 The opt-in disposable `talent-status` browser route is added, not added to default
 CI. It selects each ordinary Rogue specialization, casts against real enemies,
 buys five Mastery ranks, verifies exact server tick amounts and checks fresh-login
 persistence. This route is level-prepared functional verification, not earned
-progression. Browser results are pending before release packaging.
+progression. Final local results on the same game runtime:
+
+- Shadow Lunge: **69 / 82 / 82** baseline/trained/saved ticks, **21.3s**.
+- Serrated Edges: **38 / 45 / 45**, **27.2s**. Both pass on `a37ae92`,
+  `/tmp/eidolon-status-browser-viable-target.log`.
+- Poison Coating: **67 / 80 / 80**, **30.9s**, on QA-only follow-up `f678061`,
+  `/tmp/eidolon-status-browser-poison-hitbox.log`. Credential scan and cleanup
+  pass. Each cast requires real hovered/request/server-event target identity,
+  acceptance, positive cooldown and damage attributed to that caster/target.
+
+Earlier failed runs are retained as `/tmp/eidolon-status-browser-*.log`.
+The starter enemy died too soon for projectile coatings, so the route selects
+natural durable Inferno Titans without editing enemy health. This exposed a
+production bug: any dungeon entrance intersection immediately overrode live
+enemy targets, regardless of depth. Two real-geometry raycast tests fail before
+the fix (0.597s); entrance proxies now share ordinary interaction priority,
+preserving enemy selection and entrance use after death. Combined targeting,
+mobile and status checks pass 29 tests (0.985s).
+
+Further driver failures distinguish moving, overlapping enemies, already-wounded
+targets and the protocol's separate acceptance/result and cast-identity events.
+Selection now samples exposed points on the actual hitbox, snapshots the hovered
+actor at input dispatch, and retains strict identity/health/damage checks. No
+raycast, ability or enemy state is directly replaced to make the test pass.
+The three skills pass individually; a single combined three-skill run on the
+final helper is not yet recorded. The opt-in route is not added to default CI.
+
+Final full client checks pass **211 suites / 3,112 tests in 73.485s**, plus lint,
+on `a37ae92`; the later helper-only change has no game runtime difference. New
+paid rune-only Piercing Throw controls confirm that inactive Serrated Edges
+Mastery cannot boost the separate rune, with shared-contract race checks passing
+**1.332s**. Go production source is unchanged from the full race pass above.
+Close-Quarters Grace copy now states its existing 2% generic skill damage, without
+changing server balance or saved ranks. Full 1.0.42 anonymous checks and ordered
+CI/live deployment remain separate gates.
 
 This does not close every status interaction or offline ability difference.
 Raw Shadow Lunge/Poison Coating critical-Technique behavior, generic debuff

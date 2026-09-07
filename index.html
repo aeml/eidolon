@@ -343,7 +343,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.41</span>
+                <span class="start-version-row__label">Alpha 1.0.42</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -669,6 +669,17 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.42">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.42 (every wound remembers)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Mastery in every wound:</strong> Shadow Lunge, Serrated Edges and Poison Coating now apply their trained damage to bleed and poison ticks. Five Mastery ranks grant the advertised 20% bonus, with saved ranks preserved.</li>
+                        <li><strong>One hit, one calculation:</strong> Serrated Edges inherits its initiating projectile's damage without multiplying equipment, generic training or critical bonuses a second time. Its Mastery does not boost the separate Serrated rune while the buff is inactive.</li>
+                        <li><strong>Offline wounds stay honest:</strong> Bleed and poison retain their attacker and application-time damage, keep ticking through stuns, and clear cleanly on cleanse, expiry or death. Coated basic attacks now apply poison offline; online damage remains server-owned.</li>
+                        <li><strong>Enemies remain within reach:</strong> Overlapping dungeon entrance geometry no longer steals enemy selection. Entrances remain available for normal interaction when no higher-priority target covers the pointer.</li>
+                        <li><strong>Clearer training:</strong> Close-Quarters Grace now describes its existing 2% skill-damage bonus per rank instead of incorrectly promising 3% melee damage.</li>
+                        <li><strong>Still being refined:</strong> Broader talent balance, remaining offline ability differences, mobile ergonomics and the larger roadmap milestones remain in progress.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.0.41">
                     <h3 class="patch-note-entry__title">Alpha 1.0.41 (training with a critical edge)</h3>
                     <ul class="patch-note-entry__list">
