@@ -75,6 +75,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		ownerPoisonCoating := false
 		ownerFireballPierce := false
 		ownerDexterity := 0
+		ownerZoneHealAmount := 15
 		if owner != nil {
 			owner.Mu.RLock()
 			ownerSpreadsPoison = owner.HasAnySetBonus("poisonSpread")
@@ -82,6 +83,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			ownerPoisonCoating = owner.PoisonCoatingActive
 			ownerFireballPierce = owner.HasAnySetBonus("fireballPierce")
 			ownerDexterity = owner.Stats.Dexterity
+			if projectileSubType == "ZoneHoly" {
+				ownerZoneHealAmount = applyAbilityHealingBonus(owner, "Consecrated Ground", 15+owner.Stats.Wisdom/2)
+			}
 			owner.Mu.RUnlock()
 		}
 		var homingTarget *Entity
@@ -183,11 +187,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					// --- ZoneHoly: heal allies + sanctuary buff ---
 					if zoneSubType == "ZoneHoly" && (targetType == TypePlayer || targetType == TypeNPC) && targetState != "DEAD" && w.CombatRelationship(owner, target) != RelationshipHostile {
 						// Heal allies (15 + owner_wisdom*0.5)
-						healAmount := 15
-						if owner != nil {
-							healAmount += owner.Stats.Wisdom / 2
-							healAmount = applyHealingDoneBonus(owner, healAmount)
-						}
+						// Snapshot under the caster's read lock before entering the zone
+						// loop, so concurrent talent/equipment updates cannot race this heal.
+						healAmount := ownerZoneHealAmount
 						target.Mu.Lock()
 						healAmount = applyHealingReceived(target, healAmount)
 						previousHealth := target.Health
@@ -1150,7 +1152,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					e.GuardianEmbraceActive = false
 				} else if time.Since(e.LastGuardianEmbraceTick) >= 1*time.Second {
 					e.LastGuardianEmbraceTick = now
-					heal := applyHealingDoneBonus(e, 20+(e.Stats.Wisdom*2))
+					heal := applyAbilityHealingBonus(e, "Guardian Embrace", 20+(e.Stats.Wisdom*2))
 
 					// Heal Self
 					previousHealth := e.Health
@@ -1223,6 +1225,14 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 						pX, pZ, instanceID := e.X, e.Z, e.InstanceID
 						hasSpiritHeal := e.HasAnySetBonus("spiritGuardiansHeal")
+						spiritHealAmount := 0
+						if hasSpiritHeal {
+							skill := "Spirit Guardians"
+							if e.SpiritsBoosted {
+								skill = "Spirit Guardians Boost"
+							}
+							spiritHealAmount = applyAbilityHealingBonus(e, skill, int(float64(5+(e.Stats.Wisdom/2))*healReduction))
+						}
 						e.Mu.Unlock() // Unlock before interaction
 						walkRects := w.dungeonWalkRectsSnapshot(instanceID)
 
@@ -1266,16 +1276,14 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 								}
 
 								// Set Bonus: Divine Light 4pc (spiritGuardiansHeal) - Heal allies
-								if hasSpiritHeal && targetType == TypePlayer && targetID != e.ID {
-									healAmount := int(float64(5+(e.Stats.Wisdom/2)) * healReduction) // Apply vengeful rune reduction
-									healAmount = applyHealingDoneBonus(e, healAmount)
+								if hasSpiritHeal && targetType == TypePlayer && targetID != e.ID && w.CombatRelationship(e, target) != RelationshipHostile {
 									target.Mu.Lock()
-									if target.State == "DEAD" {
+									if target.State == "DEAD" || target.InstanceID != instanceID {
 										target.Mu.Unlock()
 										continue
 									}
 									previousHealth := target.Health
-									target.Health += applyHealingReceived(target, healAmount)
+									target.Health += applyHealingReceived(target, spiritHealAmount)
 									if target.Health > target.MaxHealth {
 										target.Health = target.MaxHealth
 									}

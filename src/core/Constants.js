@@ -457,14 +457,15 @@ export const CONSTANTS = {
 
             const entries = [];
             for (const s of skills) {
-                entries.push({ name: `${s} - Mastery`, desc: `+4% ${s} power per rank (20% max).`, maxRank: 5 });
+                const benefit = ['Healing Light', 'Guardian Embrace', 'Divine Intervention'].includes(s) ? 'healing' : 'power';
+                entries.push({ name: `${s} - Mastery`, desc: `+4% ${s} ${benefit} per rank (20% max).`, maxRank: 5 });
                 entries.push({ name: `${s} - Technique`, desc: `+3% ${s} CDR, +2% duration/range per rank.`, maxRank: 5 });
             }
 
             entries.push(
                 { name: "Efficient Rites", desc: "-4% mana cost per rank (20% max).", maxRank: 5 },
                 { name: "Rites of Haste", desc: "+2% global CDR per rank (10% max).", maxRank: 5 },
-                { name: "Mercy Routine", desc: "+3% healing done per rank (15% max).", maxRank: 5 },
+                { name: "Mercy Routine", desc: "+3% spell healing per rank (15% max).", maxRank: 5 },
                 { name: "Sanctuary Practice", desc: "+3% shield/absorb effectiveness per rank (15% max).", maxRank: 5 },
                 { name: "Radiant Doctrine", desc: "+3% holy damage per rank (15% max).", maxRank: 5 },
                 { name: "Cleanse Discipline", desc: "-5% Purifying Wave cooldown per rank (25% max).", maxRank: 5 },
@@ -474,7 +475,7 @@ export const CONSTANTS = {
                 { name: "Blessed Footwork", desc: "+2% movement speed per rank (10% max).", maxRank: 5 },
                 { name: "Hymncraft", desc: "+2% HoT effectiveness per rank (10% max).", maxRank: 5 },
                 { name: "Pilgrim Patience", desc: "+3% mana regen per rank (15% max).", maxRank: 5 },
-                { name: "Mercy Doctrine", desc: "+2% Wisdom per rank (10% max).", maxRank: 5 },
+                { name: "Mercy Doctrine", desc: "+2% spell healing per rank (10% max).", maxRank: 5 },
                 { name: "Ritekeeper", desc: "+1% all healing/damage per rank (5% max).", maxRank: 5 },
             );
 

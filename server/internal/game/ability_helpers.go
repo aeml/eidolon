@@ -125,6 +125,18 @@ func applyHealingDoneBonus(source *Entity, amount int) int {
 	return boosted
 }
 
+// applyAbilityHealingBonus composes spell talents with the existing equipment
+// rounding. Receiving-target modifiers and overheal clamps remain at the caller.
+// Renewal stores this already-modified cast amount; do not apply it again there.
+func applyAbilityHealingBonus(source *Entity, skillName string, amount int) int {
+	amount = applyHealingDoneBonus(source, amount)
+	if source == nil || amount <= 0 {
+		return amount
+	}
+	bonus := math.Max(0, source.GetSkillBonus(skillName).SkillHealing)
+	return int(math.Floor(float64(amount)*(1+bonus) + 1e-9))
+}
+
 // applyHealingReceived applies target-side healing modifiers. Poison Coating's
 // client contract is a 50% reduction and follows the poison itself, including
 // spread poison and projectile-applied poison.

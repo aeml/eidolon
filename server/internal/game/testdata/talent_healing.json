@@ -1,0 +1,7 @@
+[
+  { "id": "CLR_03", "skill": "Healing Light", "perRank": 0.04 },
+  { "id": "CLR_05", "skill": "Guardian Embrace", "perRank": 0.04 },
+  { "id": "CLR_09", "skill": "Divine Intervention", "perRank": 0.04 },
+  { "id": "CLR_29", "skill": "", "perRank": 0.03 },
+  { "id": "CLR_39", "skill": "", "perRank": 0.02 }
+]
