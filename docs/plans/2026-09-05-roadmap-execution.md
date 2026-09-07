@@ -5,24 +5,21 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-Current release queue (September 7): **1.0.31 (`a82baa2`) is fully verified**.
-CI **`34086731393`** passed every job including final live character QA. Fresh
-post-terminal uncached checks at **06:14:00.877 UTC** matched manifest, login
-label, versioned main script and backend to
-`a82baa2adcd41d25f9e9bc01c96d3af6a853674f` / Alpha 1.0.31; health `ok`, database
-`ready`. Only **1.0.32 `d578bdfff7cd998c56bc422bc403d4cbe666b902`** was pushed next.
-CI **`34089969590` attempt 1 failed before deployment**: client/server and browser
-smoke passed; phone-settings gameplay completed but its browser-error guard caught
-local `ERR_NETWORK_CHANGED` errors on both initial and built-in retry. One unchanged
-failed-job rerun is active as **attempt 2**. Predeploy character QA and both
-deployments now pass; final live four-class/remote-animation QA is running. See
-[the retained failure](2026-09-07-release32-network-retry.md). Do not push 1.0.33
-until the complete CI/live gate and fresh identity check. A fresh uncached check at
-**06:33:12.223 UTC** still matches healthy 1.0.31 across manifest/login/script/backend.
-After attempt-2 deployment, the fresh **07:35:08.399 UTC** check matches healthy
-**1.0.32 `d578bdf`** across all four surfaces. Final live animation QA is still
-running; 1.0.31 remains the latest fully verified release until that completes
-and a new post-terminal identity check passes.
+Current release queue (September 7): **1.0.32 (`d578bdf`) is fully verified**.
+CI **`34089969590` attempt 2** passed every job including final live character and
+remote-animation QA. Fresh post-terminal uncached checks at **07:36:56.055 UTC**
+matched manifest, login label, versioned main script and backend to
+`d578bdfff7cd998c56bc422bc403d4cbe666b902` / Alpha 1.0.32; health `ok`, database
+`ready`. Only **1.0.33 `0024f3370c0f1e648bc219a5d3ac816b4566a3e2`** was pushed next.
+CI **`34096361856`** is in progress. Do not push 1.0.34 until its complete CI/live
+gate and fresh post-terminal identity check pass.
+
+The unchanged 1.0.32 rerun follows a predeploy browser `ERR_NETWORK_CHANGED`
+failure; [the original failure and pre-terminal checks](2026-09-07-release32-network-retry.md)
+remain recorded. A passing rerun does not establish the host-network cause.
+Previous fully verified 1.0.31 (`a82baa2`) passed CI `34086731393` and fresh
+post-terminal identity at **06:14:00.877 UTC**; a **06:33:12.223 UTC** recheck
+still matched healthy 1.0.31 before the 1.0.32 deployment.
 
 The [Guardian Embrace area repair](2026-09-07-guardian-area.md), checkpoint
 `a0a17e705055c4e5fdc4ee0ce4f12743e092db4e`, is locally verified
@@ -67,6 +64,8 @@ adds distinct patch notes and aligned version labels. Actual Spirit/phone/observ
 gameplay passes in 1.3 minutes, full server race checks pass, and final client
 regression passes **195 suites / 2,892 tests in 142.066s** after correcting two
 missed CI version defaults. All local verification processes are terminal.
+Source **`add49409a0b6fd845ebd7995aa462731b2a29271`** is preserved on
+**`release/38-with-space`**, after the unchanged 1.0.37 candidate.
 Shared camera/encounter-region composition and physical-phone sign-off
 remain next, rather than treating another menu patch as the completed redesign.
 
@@ -158,6 +157,7 @@ implementation/validation receipts, not the next commits to push:
 | 1.0.35 | `948ed0c178c7c5967db078b53ef951d930660f30` | `release/35-with-qa` |
 | 1.0.36 | `90e157973178fcd9907a756d8729248b49c312df` | `release/36-with-combat` |
 | 1.0.37 | `47a565b0ec4d38ef9149b1a7055cf056ccfe3802` | `release/37-with-protection` |
+| 1.0.38 | `add49409a0b6fd845ebd7995aa462731b2a29271` | `release/38-with-space` |
 
 Alpha 1.0.34 is committed locally and merged into main as `976235a`.
 The phone stash has separate notes/version metadata, server-side Chronicle

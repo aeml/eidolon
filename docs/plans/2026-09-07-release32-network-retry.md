@@ -28,3 +28,9 @@ all match `d578bdfff7cd998c56bc422bc403d4cbe666b902` / Alpha 1.0.32, with health
 and database `ready`. Final live four-class/remote-animation QA is still running;
 this pre-terminal identity check does not replace the required check after the
 complete job succeeds. Keep 1.0.33 queued until that gate.
+
+Final result: **attempt 2 succeeds in every job**. A new post-terminal uncached
+check at **07:36:56.055 UTC** matches all four surfaces to healthy Alpha 1.0.32 /
+`d578bdfff7cd998c56bc422bc403d4cbe666b902`. Only then is 1.0.33
+`0024f3370c0f1e648bc219a5d3ac816b4566a3e2` pushed, starting CI `34096361856`.
+The original network failure remains unexplained rather than filtered out.

@@ -1,7 +1,8 @@
 # Alpha 1.0.38 — room for the adventure
 
 Candidate after the preserved 1.0.37 source `47a565b0ec4d38ef9149b1a7055cf056ccfe3802`.
-Not published; retain sequential release gates and do not push over a predecessor's
+Source `add49409a0b6fd845ebd7995aa462731b2a29271` is preserved on
+`release/38-with-space`. Not published; retain sequential release gates and do not push over a predecessor's
 live verification.
 
 Includes [Spirit Guardians/Boost](2026-09-07-spirit-area.md), checkpoint
@@ -37,7 +38,8 @@ A distinct entry precedes the preserved 1.0.37 notes.
 - The corrected full client suite passes **195 suites / 2,892 tests in 142.066s**,
   `/tmp/eidolon-release38-full-client-final.log`. All local verification processes
   are terminal and successful after the retained correction. Whitespace and
-  predecessor ancestry checks pass; publication remains queued behind 1.0.32–37.
+  predecessor ancestry checks pass; publication remains queued behind 1.0.33–37
+  after 1.0.32's complete live verification.
 
 ## Limits and next work
 
