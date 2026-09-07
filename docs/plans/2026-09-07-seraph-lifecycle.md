@@ -47,7 +47,13 @@ part of the broader audit, not silently declared fixed by this implementation.
 
 ## Remaining evidence
 
-Full client/server regression, real browser casts/purchases/saved ranks, summon
+Full regression on **2329891** passes: **212 client suites / 3,137 tests in
+115.252s** (`/tmp/eidolon-seraph-full-client.log`) and full Go race, root
+**10.143s** / game **264.589s** (`/tmp/eidolon-seraph-full-server.log`). All test
+handles are terminal success. The later corrected 1.0.38–42 ancestry merge
+changes QA/evidence only; game/server/index source remains identical.
+
+Real browser casts/purchases/saved ranks, summon
 model and attack presentation, owner-transition cleanup and offline rendered
 play still require verification. Full offline damage-modifier parity is not
 claimed by the shared summon base-damage/lifetime contract. Physical-phone and
