@@ -1,5 +1,11 @@
 import { readFileSync } from 'node:fs';
 
+test('anonymous CI retains exact cast aiming and covered-loot pointer regressions', () => {
+    const commands = JSON.parse(readFileSync('package.json', 'utf8')).scripts;
+    expect(commands['test:e2e:anonymous']).toContain('tests/e2e/ground-aim.spec.js');
+    expect(commands['test:e2e:anonymous']).toContain('tests/e2e/loot-pointer.spec.js');
+});
+
 test('local and CI isolated servers reserve disjoint API/database ports', () => {
     const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
     const workflow = readFileSync('.github/workflows/ci.yml', 'utf8');
