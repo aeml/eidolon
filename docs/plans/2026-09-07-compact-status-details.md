@@ -31,6 +31,21 @@ inspected trained portrait capture shows the readable compact details above the
 actual visible shielded Wizard, instead of the old blank panel over the hero.
 Log: `/tmp/eidolon-status-compact-gameplay.log`. All local handles are closed.
 
-Separate successor version/patch notes, final package checks and sequential
-deployment remain open. This does not fix entrance occlusion or establish
-physical-phone playability; keep those broader visual gates open.
+## Packaged Alpha 1.0.45
+
+Package **`71c0158`** adds distinct **room beneath the ward** patch notes and
+synchronizes the login, package, manifest, server/container/deployment defaults.
+Final checks pass **214 suites / 3,173 client tests / 163.807s**, lint and
+backend-root race **31.359s**. Gameplay-server source is unchanged from 44's
+full race-tested implementation. All **65 anonymous browser checks pass /
+8.0m**, including compact and long-list status, framing, chat, menus and the
+corrected HUD runtime-readiness path. Final actual versioned Shield gameplay
+passes **44.4s**, repeating **695 / 834 / 834**, real expiry and **310 absorbed /
+524 left**, with successful scan/disposable cleanup. All local handles are
+terminal success. Logs: `/tmp/eidolon-release45-client.log`,
+`/tmp/eidolon-release45-lint.log`, `/tmp/eidolon-release45-root-server.log`,
+`/tmp/eidolon-release45-anonymous.log`, `/tmp/eidolon-release45-gameplay.log`.
+
+Sequential deployment remains open after 38–44 each clears its own CI/live gate.
+This does not fix entrance occlusion or establish physical-phone playability;
+keep those broader visual gates open. This package is local, not published.
