@@ -20,6 +20,13 @@ Keep movement, combat buttons and chat accessible; do not shrink icons to fit a
 large raid-buff list. Verify portrait/landscape, crowded effect lists, expiry while
 open, and keyboard/touch navigation before closing this part of the phone gate.
 
+The local Alpha 1.0.33 candidate implements that status entry. Four crowded-list
+touch fixtures and the actual server shield countdown/expiry/cast/chat route now
+pass, including saved training in landscape. Short landscape uses a smaller map
+so Attack stays reachable. See [status evidence](2026-09-07-phone-status.md) for
+the retained failures, verification and limits. This closes the emulated status
+interaction checks, not the physical-device or broader camera/HUD acceptance gate.
+
 ## Evidence and design problem
 
 The player reports that useful visibility requires maximum zoom-out, making

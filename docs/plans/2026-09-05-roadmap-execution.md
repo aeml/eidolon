@@ -15,6 +15,20 @@ Alpha 1.0.26; health `ok`, database `ready`. Only **1.0.27
 its retained attempt-1 local-port collision remain in the history below.
 Later releases remain local until the preceding complete CI/live gate passes.
 
+Alpha 1.0.33 phone status implementation `fe857a6` is committed locally with
+separate notes and synchronized metadata. It adds tap-readable buff/debuff details,
+stable countdown rows, explicit Close/Escape and unobstructed combat/chat controls;
+short landscape uses a compact minimap to avoid covering Attack. The real-server
+phone route passes countdown/expiry, ordinary casts, chat and saved training;
+180 integrated client suites / 2,511 tests, lint and all 39 anonymous browser checks pass.
+The latest main hunt diagnostics and movement-input QA are merged into this
+candidate; integration validation is recorded in
+[phone status evidence](2026-09-07-phone-status.md). Not published, not a full
+phone-playability milestone; physical-device and camera-composition gates remain.
+The final integrated gameplay repeat passes in 38.8 seconds after making the
+test respect the server's existing global cooldown; earlier failures remain in
+the evidence record. This candidate is ready for its place after 1.0.32.
+
 Alpha 1.0.31 healing implementation `b2bf5fd` is locally verified and merged as
 `1d425049234293622c15c769b468cb4d78ab53f1`, branch `release/31-with-healing`; not
 published. Actual direct/periodic healing regressions, full race checks, 177 client

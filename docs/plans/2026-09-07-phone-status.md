@@ -56,7 +56,34 @@ code changed; the inherited 1.0.32 paired tests and full race repeat are recorde
 in [duration evidence](2026-09-07-talent-duration.md), including its retained
 Tripwire failure. The real-server route above builds and exercises that backend.
 
-Keep the 1.0.28–1.0.32 ordered release queue intact. Integrate the main hunt-evidence
-and QA commits before release; this checkout's base predates those main-only
-changes. Physical iOS/Android keyboards and sustained play, camera composition,
+Implementation is committed as `fe857a6`; the main hunt-evidence and QA commits
+through `017dd32` are merged without conflicts. Keep the 1.0.28–1.0.32 ordered
+release queue intact. Physical iOS/Android keyboards and sustained play, camera composition,
 party-target healing and the remaining town menus are still open gates.
+
+Integrated client validation passed **180 suites / 2,511 tests in 62.775 seconds**
+(session `27765`, `/tmp/eidolon-1-0-33-status-integrated-client.log`), plus lint.
+The integrated gameplay repeat `86098` failed its follow-up Fireball acceptance
+check after 19.8 seconds; shield display checks had passed. Its old boolean-only
+assertion did not preserve rejection reasons, so that run's precise cause cannot
+be proven. Server inspection confirms a 500ms global cooldown after every spell,
+which the newly added follow-up cast did not wait out. The test now waits 600ms
+of real time after the shield acknowledgement before tapping Skill, and checks
+the returned Fireball result directly so a rejection includes its reason.
+No gameplay, timer or server state is changed. Retained log:
+`/tmp/eidolon-1-0-33-status-integrated-gameplay.log`. The corrected repeat is
+recorded separately, not substituted for this failure.
+
+The first cooldown-aware test edit had an extra closing parenthesis; lint and
+Playwright parsing rejected it before gameplay (session `72550`, log
+`/tmp/eidolon-1-0-33-status-integrated-gcd.log`). The typo is corrected, and the
+subsequent run is gated on passing lint before starting the isolated backend.
+
+Final integrated repeat **passed in 38.8 seconds** (37.7-second body), session
+`40728` closed, log `/tmp/eidolon-1-0-33-status-integrated-final.log`. Server
+durations were **19.972 / 24.982 / 24.999 seconds** for baseline, trained and
+saved landscape casts. Countdown/expiry, accepted follow-up Fireball while open,
+chat access and saved ranks all pass. Lint, credential scan and isolated cleanup
+pass. The only post-client-suite source change is this readiness-aware browser
+assertion; gameplay runtime is unchanged from the 39-test anonymous pass.
+Ready for the ordered local release queue, not published or verified live.

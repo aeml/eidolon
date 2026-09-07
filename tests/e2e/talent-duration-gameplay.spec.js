@@ -63,6 +63,7 @@ test('phone shield duration training changes server timers and visible expiry', 
         await page.locator('#hotbar-container .hotbar-slot').nth(1).tap();
         await expect.poll(() => page.evaluate(() => window.__durationQA.results.length)).toBe(1);
         expect(await page.evaluate(() => window.__durationQA.results[0].accepted)).toBe(true);
+        const shieldAcknowledgedAt = Date.now();
         await expect.poll(() => page.evaluate(() => Math.max(0, ...window.__durationQA.snapshots
             .filter(snapshot => snapshot.active).map(snapshot => snapshot.duration || 0)))).toBeGreaterThan(expected - 1);
         const maximum = await page.evaluate(() => Math.max(0, ...window.__durationQA.snapshots
@@ -110,9 +111,15 @@ test('phone shield duration training changes server timers and visible expiry', 
                 return original(message);
             };
         });
+        // The server enforces a 500ms global cooldown after every accepted
+        // spell. Fast screenshots must not turn this panel test into a race
+        // against that independent combat rule. Wait in real time after ACK.
+        await page.waitForTimeout(Math.max(0, shieldAcknowledgedAt + 600 - Date.now()));
         await page.locator('#btn-mobile-ability').tap();
-        await expect.poll(() => page.evaluate(() => window.__statusCastResults.some(result =>
-            result.skillName === 'Fireball' && result.accepted))).toBe(true);
+        await expect.poll(() => page.evaluate(() => window.__statusCastResults
+            .filter(result => result.skillName === 'Fireball'))).not.toEqual([]);
+        expect(await page.evaluate(() => window.__statusCastResults.find(result =>
+            result.skillName === 'Fireball'))).toMatchObject({ accepted: true });
         await expect(panel).toBeVisible();
         await page.locator('#chat-mobile-toggle').tap();
         await expect(panel).toBeHidden();
