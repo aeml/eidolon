@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { collectBrowserFailures } from './helpers.js';
+import { collectBrowserFailures, waitForTouchScrollSettled } from './helpers.js';
 
 test.use({ hasTouch: true, isMobile: true, actionTimeout: 12_000 });
 
@@ -50,6 +50,7 @@ for (const [width, height] of [[360, 800], [390, 844], [844, 390], [568, 320]]) 
         await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
         await cdp.detach();
         await expect.poll(() => list.evaluate(el => el.scrollTop)).toBeGreaterThan(20);
+        await waitForTouchScrollSettled(list);
         await expect(accept).toBeInViewport();
         await page.screenshot({ path: `/tmp/eidolon-phone-quest-${width}.png` });
         // A state update can arrive between touch-down and release. Keep the

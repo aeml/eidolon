@@ -34,8 +34,19 @@ regression passes **208 suites / 3,080 tests in 82.118s**; actual-consumer probe
 pass **0.890s**. Full server race checks pass (root **9.851s**, game **185.709s**),
 and lint passes. The anonymous browser suite completes with **47 passes / six
 failures in 3.0 minutes**: one HUD module-import failure, two quest acceptance
-touch assertions and three status-to-chat transitions. These require diagnosis;
-the candidate is not ready for publication. Logs use `/tmp/eidolon-release41-*.log`.
+touch assertions and three status-to-chat transitions. Logs use
+`/tmp/eidolon-release41-*.log`.
+
+Touch diagnostics show pointerdown/up but no click after the synthetic swipe.
+Deferring status dismissal to click does not fix it; that speculative runtime
+change is removed. Waiting for the actual scroll offset to stop changing for
+250ms before the next independent action gives **10/10 passes in 27.9s** across
+HUD, quest and status routes, all four phone sizes and unchanged production UI.
+The tests still require real touch activation, a state update between quest
+touch-down/release, and successful chat opening. They do not retry failed taps.
+The HUD import failure does not recur in this bounded rerun; its original cause
+is not established. A full anonymous rerun remains required after cleanup.
+Logs: `status-diagnostic`, `status-activation`, `touch-settled` under the same prefix.
 
 No full-talent, offline-parity, phone-device or dungeon/raid completion is claimed.
 Bleed/poison source consumption, unimplemented offline Avenging Seraph, older

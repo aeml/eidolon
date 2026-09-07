@@ -54,10 +54,10 @@ patch-note histories and server trees:
 
 | Version | Corrected branch | Candidate |
 |---|---|---|
-| 1.0.37 | `release/37-with-target-identity` | `6740974` |
-| 1.0.38 | `release/38-with-target-identity` | `e5000c7` |
-| 1.0.39 | `release/39-with-target-identity` | `ac3fa6d` |
-| 1.0.40 | `release/40-with-target-identity` | `eb5eb3e` |
+| 1.0.37 | `release/37-with-target-identity` | `2e37508` |
+| 1.0.38 | `release/38-with-target-identity` | `faf18fd` |
+| 1.0.39 | `release/39-with-target-identity` | `dbd991d` |
+| 1.0.40 | `release/40-with-target-identity` | `dbc6a0d` |
 
 Each is a descendant of the preceding corrected candidate; originals remain
 unchanged. The staging checkout `/tmp/eidolon-release37-targeting-lT3Mdt` is
@@ -67,6 +67,14 @@ candidate; these supplement their original full tests, not new full browser
 runs. Server-tree equality to each original candidate is verified. The 1.0.37
 candidate is now pushed to remote master with CI in progress; 1.0.38–40 remain
 unpublished. The top entry records the current gate.
+
+The table now includes the healing-retry correction carried forward from 1.0.37.
+Original corrected candidates are additionally preserved as
+`release/{38,39,40}-before-healing-retry`. Only the retry test/runner and retained
+failure record differ; each candidate's game/server/index source matches its
+previous version exactly. Version/history/isolated-default checks pass 212 tests
+in 1.207s for 38, 213 in 1.613s for 39, and 214 in 1.500s for 40. Shell syntax
+passes. Staging is returned to 1.0.37; later releases remain unpublished.
 
 Next local package: [1.0.41 critical training](2026-09-07-release41-critical-training.md),
 integration **52d78ee**, now includes the previously isolated critical work and

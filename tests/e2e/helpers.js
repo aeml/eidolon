@@ -10,6 +10,18 @@ const browserFailureState = new WeakMap();
 
 const delay = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
+// A tap during native kinetic scrolling can stop inertia without activating
+// its target. End the swipe before testing the next independent UI action.
+export async function waitForTouchScrollSettled(scrollable) {
+    let lastTop = await scrollable.evaluate(node => node.scrollTop);
+    let stableSince = Date.now();
+    await expect.poll(async () => {
+        const top = await scrollable.evaluate(node => node.scrollTop);
+        if (top !== lastTop) { lastTop = top; stableSince = Date.now(); }
+        return Date.now() - stableSince >= 250;
+    }, { timeout: 10_000, intervals: [50, 100] }).toBe(true);
+}
+
 function discardFailuresSince(page, startIndex) {
     const failures = browserFailureState.get(page);
     if (failures && failures.length > startIndex) failures.splice(startIndex);

@@ -1,5 +1,5 @@
 import { devices, expect, test } from '@playwright/test';
-import { collectBrowserFailures } from './helpers.js';
+import { collectBrowserFailures, waitForTouchScrollSettled } from './helpers.js';
 
 test.use({ hasTouch: true, isMobile: true, userAgent: devices['Pixel 7'].userAgent, actionTimeout: 12_000 });
 for (const [width, height] of [[360, 800], [390, 844], [844, 390], [568, 320]]) {
@@ -50,6 +50,7 @@ for (const [width, height] of [[360, 800], [390, 844], [844, 390], [568, 320]]) 
         }
         await client.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
         await expect.poll(() => body.evaluate(node => node.scrollTop)).toBeGreaterThan(20);
+        await waitForTouchScrollSettled(body);
         await page.screenshot({ path: testInfo.outputPath(`status-${width}.png`) });
         await page.locator('#chat-mobile-toggle').tap(); await expect(panel).toBeHidden();
         await expect(page.locator('#chat-input')).toBeVisible();
