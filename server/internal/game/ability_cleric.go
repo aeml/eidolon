@@ -189,20 +189,28 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			player.Mana -= cost
 
 			// Summon Entity
+			training := snapshotCombatAttackerLocked(player)
+			training.NormalizeTalentRanks()
+			baseDuration := 15 * time.Second
+			if player.HasAnySetBonus("permanentSeraph") {
+				baseDuration = 300 * time.Second
+			}
+			duration := min(resolveAbilityEffectDuration(training, skillName, baseDuration), 300*time.Second)
 			seraph := &Entity{
-				ID:         fmt.Sprintf("summon-seraph-%d", time.Now().UnixNano()),
-				InstanceID: player.InstanceID, // Inherit instance from owner
-				Type:       TypeNPC,           // Or specialized summon type
-				SubType:    "AvengingSeraph",
-				X:          player.X,
-				Y:          0,
-				Z:          player.Z,
-				OwnerID:    player.ID,
-				Health:     500 + (player.Stats.Wisdom * 10),
-				MaxHealth:  500 + (player.Stats.Wisdom * 10),
-				Damage:     50 + (player.Stats.Wisdom * 2),
-				State:      "IDLE",
-				CreatedAt:  time.Now(),
+				ID:             fmt.Sprintf("summon-seraph-%d", time.Now().UnixNano()),
+				InstanceID:     player.InstanceID, // Inherit instance from owner
+				Type:           TypeNPC,           // Or specialized summon type
+				SubType:        "AvengingSeraph",
+				X:              player.X,
+				Y:              0,
+				Z:              player.Z,
+				OwnerID:        player.ID,
+				Health:         500 + (player.Stats.Wisdom * 10),
+				MaxHealth:      500 + (player.Stats.Wisdom * 10),
+				Damage:         int(math.Floor(float64(50+player.Stats.Wisdom*2)*training.GetSkillDamageMultiplier(skillName) + 1e-9)),
+				State:          "IDLE",
+				CreatedAt:      time.Now(),
+				SummonDuration: duration,
 			}
 			// Direct entity add (PerformAbility already holds w.Mu)
 			w.Entities[seraph.ID] = seraph

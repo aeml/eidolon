@@ -166,12 +166,13 @@ type Entity struct {
 	Threat map[string]float64 `json:"-"`
 
 	// Loot
-	LootItem    *Item     `json:"lootItem,omitempty"` // If Type == TypeLoot
-	LootTime    time.Time `json:"-"`
-	LootPartyID string    `json:"-"`
-	LootOwnerID string    `json:"-"`
-	CreatedAt   time.Time `json:"-"`
-	RaidPhase   int       `json:"-"`
+	LootItem       *Item         `json:"lootItem,omitempty"` // If Type == TypeLoot
+	LootTime       time.Time     `json:"-"`
+	LootPartyID    string        `json:"-"`
+	LootOwnerID    string        `json:"-"`
+	CreatedAt      time.Time     `json:"-"`
+	SummonDuration time.Duration `json:"-"`
+	RaidPhase      int           `json:"-"`
 
 	// Projectile
 	OwnerID string          `json:"ownerId,omitempty"`
@@ -909,6 +910,7 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		LootTime:               e.LootTime,
 		LootPartyID:            e.LootPartyID,
 		CreatedAt:              e.CreatedAt,
+		SummonDuration:         e.SummonDuration,
 		OwnerID:                e.OwnerID,
 		VelX:                   e.VelX,
 		VelZ:                   e.VelZ,

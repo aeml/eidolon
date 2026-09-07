@@ -1,0 +1,11 @@
+[
+  {"name":"baseline","ranks":{},"damage":70,"duration":15},
+  {"name":"mastery-one","ranks":{"CLR_17":1},"damage":72,"duration":15},
+  {"name":"mastery-five","ranks":{"CLR_17":5},"damage":84,"duration":15},
+  {"name":"mastery-cap","ranks":{"CLR_17":99},"damage":84,"duration":15},
+  {"name":"technique","ranks":{"CLR_18":5},"damage":70,"duration":16.5},
+  {"name":"combined-duration","ranks":{"CLR_18":5,"CLR_30":5,"CLR_33":5,"CLR_39":5},"damage":70,"duration":23.25},
+  {"name":"generic-cap","ranks":{"CLR_30":99},"damage":70,"duration":18},
+  {"name":"unrelated-invalid","ranks":{"CLR_03":5,"WIZ_17":5,"CLR_17":-2},"damage":70,"duration":15},
+  {"name":"set-cap","ranks":{"CLR_18":5,"CLR_30":5},"permanent":true,"damage":70,"duration":300}
+]

@@ -490,6 +490,9 @@ export const CONSTANTS = {
             );
 
             return entries.slice(0, 40).map((t, i) => ({ id: `CLR_${String(i + 1).padStart(2, '0')}`, ...t,
+                summonTraining: i === 16 ? { damage: 0.04 } : i === 17 ? { duration: 0.02 }
+                    : i === 29 ? { duration: 0.04 } : i === 32 ? { duration: 0.03 } : i === 38 ? { duration: 0.02 } : undefined,
+                ...(i === 17 ? { desc: '+3% Avenging Seraph CDR and +2% summon duration per rank (15% / 10% max).' } : {}),
                 abilityEconomy: i < 26 && i % 2 === 1 ? { skill: skills[Math.floor(i / 2)], cdr: 0.03 }
                     : i === 26 ? { manaReduction: 0.04 } : i === 31 ? { skill: 'Purifying Wave', cdr: 0.05 } : undefined,
                 abilityArea: i === 33 ? { radius: 0.03 } : undefined,

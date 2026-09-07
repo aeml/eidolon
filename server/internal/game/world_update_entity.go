@@ -1289,6 +1289,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 	if e.SubType == "AvengingSeraph" {
 		e.Mu.RLock()
 		ownerID := e.OwnerID
+		instanceID := e.InstanceID
 		e.Mu.RUnlock()
 		owner := w.GetEntity(ownerID)
 		// Owner Check (needed for both duration and bonus check)
@@ -1297,19 +1298,24 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			return
 		}
 
-		// Duration Check - Set Bonus: Crusader's Zeal 6pc (permanentSeraph) extends duration
-		// Normal duration: 15s, with set bonus: permanent while in combat (300s max)
 		owner.Mu.RLock()
-		hasPermanentSeraph := owner.HasAnySetBonus("permanentSeraph")
+		ownerUnavailable := owner.State == "DEAD" || owner.Disconnected || owner.InstanceID != instanceID
 		seraphCombat := snapshotCombatAttackerLocked(owner)
+		seraphCombat.PartyID = owner.PartyID
 		ox, oz := owner.X, owner.Z
 		owner.Mu.RUnlock()
+		if ownerUnavailable {
+			deferred.addRemoval(e.ID)
+			return
+		}
+		walkRects := w.dungeonWalkRectsSnapshot(instanceID)
 
 		e.Mu.Lock()
 
-		maxDuration := 15 * time.Second
-		if hasPermanentSeraph {
-			maxDuration = 300 * time.Second // 5 minutes - effectively permanent in combat
+		// Cast-time training and set duration stay stable if equipment changes.
+		maxDuration := e.SummonDuration
+		if maxDuration <= 0 {
+			maxDuration = 15 * time.Second
 		}
 
 		if time.Since(e.CreatedAt) > maxDuration {
@@ -1327,13 +1333,10 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		ex, ez := e.X, e.Z
 		e.Mu.Unlock()
 
-		nearby := w.Grid.Nearby(ex, ez, minDist, e.InstanceID)
+		nearby := w.Grid.Nearby(ex, ez, minDist, instanceID)
 		for _, t := range nearby {
-			if t.InstanceID != e.InstanceID {
-				continue
-			}
 			t.Mu.RLock()
-			if !w.CanDamage(owner, t) || t.State == "DEAD" {
+			if !w.CanDamage(seraphCombat, t) || t.State == "DEAD" || !dungeonEffectReachesTarget(walkRects, ex, ez, t) {
 				t.Mu.RUnlock()
 				continue
 			}
@@ -1369,9 +1372,14 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 				e.Mu.Unlock() // Unlock before interaction
 
-				ownerIsPlayer := owner.Type == TypePlayer
-				ownerID := e.OwnerID
+				ownerIsPlayer := seraphCombat.Type == TypePlayer
 				target.Mu.Lock()
+				// The target may have moved or died since acquisition.
+				if !w.CanDamage(seraphCombat, target) || target.State == "DEAD" ||
+					math.Hypot(target.X-ex, target.Z-ez) >= 15 || !dungeonEffectReachesTarget(walkRects, ex, ez, target) {
+					target.Mu.Unlock()
+					return
+				}
 				finalDamage := applyFinalDamage(seraphCombat, target, damage, "holy", "Avenging Seraph")
 				if ownerIsPlayer {
 					addThreatLocked(target, ownerID, float64(finalDamage))
@@ -1403,13 +1411,10 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				// Move towards owner
 				dirX := dx / dist
 				dirZ := dz / dist
-				speed := 6.0 * dt
+				speed := math.Min(6.0*dt, dist-3)
 				newX := e.X + dirX*speed
 				newZ := e.Z + dirZ*speed
-				if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(e, newX, newZ); ok {
-					newX = constrainedX
-					newZ = constrainedZ
-				}
+				newX, newZ, _ = firstDungeonWalkRectWallHit(walkRects, e.X, e.Z, newX, newZ)
 
 				e.X = newX
 				e.Z = newZ

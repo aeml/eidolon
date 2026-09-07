@@ -10,6 +10,8 @@ import { applyOfflineAbilityHit } from '../core/AbilityCritical.js';
 import { createProceduralProjectileVisual, applyProceduralProjectileScale, updateProceduralProjectileVisual, releaseProceduralProjectileVisual } from '../art/ProceduralProjectileEffects.js';
 import { clipDungeonEffectSegment } from '../skills/dungeonEffectGeometry.js';
 import {applyOfflineHealingLight,applyOfflineRadiantStrike,resolveOfflineClericHealTarget} from './ClericAreaAbilities.js';
+import { AvengingSeraph } from './AvengingSeraph.js';
+import { configureOfflineSeraph, dismissOfflineSeraph } from './SeraphSummon.js';
 
 export class Cleric extends Actor {
     constructor(id) {
@@ -33,7 +35,8 @@ export class Cleric extends Actor {
     useAbility(targetVector, gameEngine, skillNameOverride = null) {
         const skill = skillNameOverride || this.abilityName;
         const offline = !this.isMultiplayer && !this.isRemote && !gameEngine?.isMultiplayer;
-        if (offline && ['Healing Light','Radiant Strike'].includes(skill) && !this.unlockedSkills.includes(skill)) return;
+        if (offline && ['Healing Light','Radiant Strike','Avenging Seraph'].includes(skill) && !this.unlockedSkills.includes(skill)) return;
+        if (offline && skill === 'Avenging Seraph' && !gameEngine?.addEntity) return;
         const previous = this.lastOfflineClericCast;
         const chained = offline && previous && Date.now()-previous.at >= 0 && Date.now()-previous.at <= 3000;
         this.healingLightMassRevival = Boolean(chained && skill === 'Healing Light' && previous.skill === 'Divine Intervention');
@@ -166,11 +169,10 @@ export class Cleric extends Actor {
         if (skill === "Avenging Seraph") {
             console.log("Cleric used Avenging Seraph!");
             
-            // Cooldown 45s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Avenging Seraph"] = 45.0 * (1 - cdr);
-
-            // Server handles summoning the entity
+            // Shared economy already charged the trained cost and cooldown.
+            const seraph = new AvengingSeraph(`summon-seraph-${crypto.randomUUID()}`);
+            configureOfflineSeraph(seraph, this, gameEngine);
+            gameEngine.addEntity(seraph);
             
             gameEngine.floatingTextManager.spawn("SERAPH SUMMONED!", this.position, '#ffffff');
             return;
@@ -349,6 +351,7 @@ export class Cleric extends Actor {
     }
 
     cancelAbilities() {
+        for (const seraph of this.offlineSeraphs || []) dismissOfflineSeraph(seraph);
         this.lastOfflineClericCast = null;
         this.healingLightMassRevival = false;
         this.clearConsecratedZone();
@@ -417,50 +420,6 @@ export class Cleric extends Actor {
                 }
             }
         }
-
-        // Avenging Seraph Logic (Handled by Server Entity now)
-        /*
-        if (this.seraphActive) {
-            this.seraphDuration -= dt;
-            if (this.seraphDuration <= 0) {
-                this.seraphActive = false;
-                this.clearSeraphMesh();
-            } else {
-                // Seraph Attacks (every 1.5s)
-                if (!this.seraphAttackTimer) this.seraphAttackTimer = 0;
-                this.seraphAttackTimer += dt;
-                
-                if (this.seraphAttackTimer >= 1.5) {
-                    this.seraphAttackTimer = 0;
-                    // Find target
-                    const entities = (this.gameEngine && this.gameEngine.chunkManager) ? this.gameEngine.chunkManager.getActiveEntities() : (activeEntities || []);
-                    let target = null;
-                    let minDst = 15.0; // Range
-                    
-                    entities.forEach(entity => {
-                        if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
-                            const d = this.position.distanceTo(entity.position);
-                            if (d < minDst) {
-                                minDst = d;
-                                target = entity;
-                            }
-                        }
-                    });
-                    
-                    if (target) {
-                        const damage = 40 + (this.stats.wisdom * 2.0);
-                        target.takeDamage(damage);
-                        if (this.gameEngine && this.gameEngine.floatingTextManager) {
-                            this.gameEngine.floatingTextManager.spawn(Math.floor(damage), target.position, '#ffffff');
-                            this.gameEngine.floatingTextManager.spawn("SMITE!", target.position, '#ffff00');
-                        }
-                        // Visual Beam
-                        this.spawnVisualEffect(this.gameEngine, target.position, 0xffffff, "burst");
-                    }
-                }
-            }
-        }
-        */
 
         // Guardian Embrace Logic
         if (this.guardianEmbraceActive) {
