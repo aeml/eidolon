@@ -88,4 +88,36 @@ entrance scenery obscures the actor during hostile absorption. Do not label
 those captures full visual polish. Final package adds a closed-panel model
 capture, distinct 1.0.44 notes, synchronized login/runtime/deployment version
 defaults and the real Shield route in the full predeployment gate. Final
-versioned client, anonymous, gameplay and backend-root checks remain open.
+versioned checks are recorded below.
+
+## Packaged 1.0.44 verification
+
+Package `fedf247` passes **214 suites / 3,171 client tests / 104.897s**, lint,
+and backend-root race **12.413s**. Gameplay-server source is unchanged from the
+integrated full game race pass above. Logs:
+`/tmp/eidolon-release44-full-client.log`, `/tmp/eidolon-release44-lint.log`,
+`/tmp/eidolon-release44-root-server.log`.
+
+The anonymous sweep finishes **61 pass / 1 fail / 6.0m**. Its phone-HUD case
+fails before UI setup when Chrome interrupts **97 module requests** with
+`ERR_NETWORK_CHANGED` at 16:16:32 UTC. The underlying network change is not
+established. The trace is preserved outside overwritten test output at
+`/tmp/eidolon-release44-hud-network-change.zip`; suite log:
+`/tmp/eidolon-release44-anonymous.log`. Runtime is unchanged: the test now uses
+the existing bounded `openGame` readiness/recovery path before importing UI
+components instead of treating network-idle as successful module loading.
+Both HUD cases then pass **18.5s** on `56438d7`, retaining their interaction
+assertions. This is 61 full-sweep passes plus focused corrected coverage, not
+a claim that a fresh complete 62-test command passed.
+
+The final versioned actual Shield route passes **43.9s** on `56438d7`:
+**695 / 834 / 834** capacities, actual expiry, **310** absorbed, **524** left,
+and successful zero-sanitization scan/disposable cleanup. The closed-panel
+portrait capture shows the actual sapphire ward around the Wizard; it is not
+an unoccluded-combat or physical-device sign-off. Logs:
+`/tmp/eidolon-release44-hud-after.log`,
+`/tmp/eidolon-release44-shield-final.log`.
+
+All local package handles are terminal. Preserve the sequential release queue;
+1.0.44 is not published, and its own full CI/live gate remains mandatory after
+38–43 each completes. Remaining visual and rune limitations above stay open.
