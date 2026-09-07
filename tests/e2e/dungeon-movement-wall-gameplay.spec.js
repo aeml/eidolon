@@ -48,6 +48,17 @@ test('dungeon movement casts and jumps stop at the wall and still permit ordinar
             const game = window.game;
             const original = game.handleServerMessage.bind(game);
             window.__dungeonMovementCast = null;
+            window.__movementObservation = { samples: [], outgoing: [] };
+            const send = game.networkManager.send.bind(game.networkManager);
+            game.networkManager.send = (type, payload) => {
+                if (type === 'ability' || type === 'move') {
+                    const samples = window.__movementObservation.outgoing;
+                    samples.push({ type, x: payload.x, z: payload.z, targetX: payload.targetX,
+                        targetZ: payload.targetZ, skill: payload.skillName, state: payload.state });
+                    if (samples.length > 20) samples.shift();
+                }
+                return send(type, payload);
+            };
             game.handleServerMessage = message => {
                 if (message.type === 'ability' && message.payload?.skillName === skill &&
                     message.payload.sourceId === game.player.id) {
@@ -58,13 +69,28 @@ test('dungeon movement casts and jumps stop at the wall and still permit ordinar
         }, skill);
         const aim = await projectGroundOffset(page, 0, 12);
         expect(aim?.canvas).toBe(true);
+        console.log('[movement-before]', JSON.stringify(await page.evaluate(({ northWall, aim }) => ({
+            northWall, aim, position: window.game.player.position.toArray(),
+            target: window.game.player.targetPosition?.toArray(),
+            camera: window.game.renderSystem.camera.position.toArray(),
+            rects: window.game.currentDungeonLayout.walkRects.slice(0, 6)
+        }), { northWall, aim })));
         await page.mouse.move(aim.x, aim.y);
         if (className === 'Wizard') await page.keyboard.press('1');
         else await page.mouse.click(aim.x, aim.y, { button: 'right' });
         await expect.poll(() => page.evaluate(() => Boolean(window.__dungeonMovementCast))).toBe(true);
         const cast = await page.evaluate(() => window.__dungeonMovementCast);
+        console.log('[movement-cast]', JSON.stringify(cast));
         expect(Math.abs(cast.z - northWall)).toBeLessThan(0.1);
-        await expect.poll(async () => Math.abs((await readPlayerState(page)).z - northWall)).toBeLessThan(2);
+        try {
+            await expect.poll(async () => {
+                const state = await readPlayerState(page);
+                console.log('[movement-position]', JSON.stringify({ x: state.x, z: state.z, state: state.state }));
+                return Math.abs(state.z - northWall);
+            }).toBeLessThan(2);
+        } finally {
+            console.log('[movement-outgoing]', JSON.stringify(await page.evaluate(() => window.__movementObservation)));
+        }
         await expect.poll(() => page.evaluate(() => window.game.player.state)).toBe('IDLE');
         await walkToZ(northWall - 8);
         await jumpByGroundClick(page, 0, 12);
