@@ -251,9 +251,9 @@ export const CONSTANTS = {
             default: { mana: 15, cooldown: 1.0, range: 24.0 },
             skills: {
                 "Piercing Throw": { mana: 15, cooldown: 1.0, range: 24.0 },
-                Backstab: { mana: 20, cooldown: 6.0, range: 3.0 },
+                Backstab: { mana: 20, cooldown: 6.0, range: 2.5 },
                 "Weak Point Mark": { mana: 25, cooldown: 12.0, range: 10.0 },
-                "Shadow Lunge": { mana: 25, cooldown: 10.0, range: 12.0 },
+                "Shadow Lunge": { mana: 25, cooldown: 10.0, range: 10.0 },
                 "Death Spiral": { mana: 35, cooldown: 20.0, range: 4.0 },
                 "Fan of Knives": { mana: 25, cooldown: 6.0, range: 5.0 },
                 "Serrated Edges": { mana: 30, cooldown: 20.0, range: 0.0 },

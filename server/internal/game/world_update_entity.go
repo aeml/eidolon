@@ -57,6 +57,15 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		}
 		e.Mu.Unlock()
 	}
+	if e.Type == TypeEnemy || e.Type == TypeNPC {
+		e.Mu.Lock()
+		w.tickBleedLocked(e, time.Now(), deferred)
+		dead := e.State == "DEAD"
+		e.Mu.Unlock()
+		if dead {
+			return
+		}
+	}
 	if e.Type == TypeEnemy && e.SubType == "UmbraPrime" {
 		w.updateDarkKingPhase(e, players)
 	}
@@ -1049,32 +1058,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			}
 
 			// DoT Ticks
-			if e.Bleeding {
-				if now.After(e.BleedEndTime) {
-					e.Bleeding = false
-					e.BleedSourceID = ""
-				} else if time.Since(e.LastBleedTick) >= 1*time.Second {
-					e.LastBleedTick = now
-					e.Health -= e.BleedDamage
-					e.LastDamageType = "physical"
-					if w.OnEvent != nil {
-						sourceID := e.BleedSourceID
-						if sourceID == "" {
-							sourceID = "bleed"
-						}
-						w.OnEvent("damage", DamageEvent{TargetID: e.ID, SourceID: sourceID, Amount: e.BleedDamage, Kind: "bleed", InstanceID: e.InstanceID})
-					}
-					if e.Health <= 0 {
-						sourceID := e.BleedSourceID
-						e.Mu.Unlock()
-						attacker := w.GetEntity(sourceID)
-						e.Mu.Lock()
-						if e.Health <= 0 && e.State != "DEAD" {
-							w.handleDeath(e, attacker, deferred)
-						}
-					}
-				}
-			}
+			w.tickBleedLocked(e, now, deferred)
 			if e.State != "DEAD" && e.Poisoned {
 				if now.After(e.PoisonEndTime) {
 					e.Poisoned = false

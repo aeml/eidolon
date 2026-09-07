@@ -1,0 +1,14 @@
+[
+  { "name": "backstab baseline", "skill": "Backstab", "rune": "", "rank": 0, "range": 2.5 },
+  { "name": "backstab trained", "skill": "Backstab", "rune": "", "rank": 5, "range": 2.875 },
+  { "name": "shadowstep trained", "skill": "Backstab", "rune": "backstab_shadowstep", "rank": 5, "range": 2.875 },
+  { "name": "lunge baseline", "skill": "Shadow Lunge", "rune": "", "rank": 0, "range": 10 },
+  { "name": "lunge one rank", "skill": "Shadow Lunge", "rune": "", "rank": 1, "range": 10.3 },
+  { "name": "lunge trained", "skill": "Shadow Lunge", "rune": "", "rank": 5, "range": 11.5 },
+  { "name": "extended baseline", "skill": "Shadow Lunge", "rune": "shadowlunge_extended", "rank": 0, "range": 15 },
+  { "name": "extended trained", "skill": "Shadow Lunge", "rune": "shadowlunge_extended", "rank": 5, "range": 17.25 },
+  { "name": "cripple trained", "skill": "Shadow Lunge", "rune": "shadowlunge_cripple", "rank": 5, "range": 11.5 },
+  { "name": "clone trained", "skill": "Shadow Lunge", "rune": "shadowlunge_shadow", "rank": 5, "range": 11.5 },
+  { "name": "legacy strike baseline", "skill": "Shadow Strike", "rune": "", "rank": 0, "range": 10 },
+  { "name": "legacy strike trained", "skill": "Shadow Strike", "rune": "", "rank": 5, "range": 11.5 }
+]

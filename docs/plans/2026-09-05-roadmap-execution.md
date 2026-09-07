@@ -5,14 +5,20 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-Current release queue (September 7): **1.0.28 (`48c74cd`) is fully verified**.
-CI **`34075628459`** passed every job, including final live four-class and remote
-animation QA. Fresh post-terminal uncached checks at **03:08:31 UTC** matched the
-release manifest, login label, versioned main script and backend to
-`48c74cddaf79293a80dc62ebd66565cc0cf7923d` / Alpha 1.0.28; health `ok`, database
-`ready`. Only **1.0.29 `bc96862209b621b1e995c3dd4d9d72acf61aaf44`** was pushed next;
-CI **`34078663504`** is running. Later versions remain queued behind its complete
+Current release queue (September 7): **1.0.29 (`bc96862`) is fully verified**.
+CI **`34078663504`** passed every job, including final live character QA.
+Fresh post-terminal uncached checks at **04:06:20.318 UTC** matched release
+manifest, login label, versioned main script and backend to
+`bc96862209b621b1e995c3dd4d9d72acf61aaf44` / Alpha 1.0.29; health `ok`, database
+`ready`. Only **1.0.30 `c3247e849daad029b0c4f053b3d4d969ebba0f82`** was pushed next;
+CI **`34081910599`** is running. Later versions remain queued behind its complete
 CI/live gate; do not push main HEAD over it.
+
+Previous checkpoint **1.0.28 (`48c74cd`)** passed CI **`34075628459`**, including
+final live four-class and remote animation QA. Its fresh post-terminal uncached
+verification at **03:08:31 UTC** matched manifest/login/script/backend to
+`48c74cddaf79293a80dc62ebd66565cc0cf7923d` / Alpha 1.0.28, health `ok`, database
+`ready`.
 
 Previous verified checkpoint: **1.0.27 (`0d4e1a1`)**.
 CI **`34072603962`** passed every job, including final live character/animation QA.

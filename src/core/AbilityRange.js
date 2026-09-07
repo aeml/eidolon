@@ -17,3 +17,9 @@ export function getTeleportCastRange(player) {
     const base = player?.skillRunes?.Teleport === 'teleport_blink' ? 22.5 : 15;
     return getAbilityRange(player, 'Teleport', base);
 }
+
+export function getRogueMovementCastRange(player, skillName) {
+    let base = skillName === 'Backstab' ? 2.5 : 10;
+    if (skillName === 'Shadow Lunge' && player?.skillRunes?.[skillName] === 'shadowlunge_extended') base = 15;
+    return getAbilityRange(player, skillName, base);
+}

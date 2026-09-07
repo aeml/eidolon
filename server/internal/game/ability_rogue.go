@@ -24,16 +24,17 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 		// Shadow Strike (Teleport + Damage)
 		cost := resolveAbilityManaCost(player, skillName, 35)
 		if player.Mana >= cost {
+			castRange := effectiveAbilityRange(player, skillName, 10.0)
 			var strikeTarget *Entity
 			if targetID != "" {
-				if target, ok := w.Entities[targetID]; ok && w.validDungeonMovementAttackTarget(player, target, 10.0) {
+				if target, ok := w.Entities[targetID]; ok && w.validDungeonMovementAttackTarget(player, target, castRange) {
 					strikeTarget = target
 				}
 			}
 			if strikeTarget == nil {
 				minDistance := 3.0
 				for _, target := range w.Grid.Nearby(targetX, targetZ, 3.0+maxAbilityTargetVisualRadius, player.InstanceID) {
-					if !w.validDungeonMovementAttackTarget(player, target, 10.0) {
+					if !w.validDungeonMovementAttackTarget(player, target, castRange) {
 						continue
 					}
 					distance := math.Hypot(target.X-targetX, target.Z-targetZ)
@@ -400,7 +401,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			// Check for rune effects
 			runeID := player.GetRuneForSkill("Backstab")
 
-			rangeDist := 2.5
+			rangeDist := effectiveAbilityRange(player, skillName, 2.5)
 			damage := int(float64(player.Damage) * 1.5 * player.GetSkillDamageMultiplier("Backstab"))
 
 			// Find target
@@ -534,6 +535,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			if runeID == "shadowlunge_extended" {
 				maxRange = 15.0
 			}
+			maxRange = effectiveAbilityRange(player, skillName, maxRange)
 
 			// Find target
 			var bestTarget *Entity
@@ -595,6 +597,15 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				player.MoveLockUntil = time.Now().Add(AbilityMovementLockDuration)
 				player.Rotation = tRot
 				w.Grid.Update(player, oldX, oldZ)
+
+				// The base skill primes Death Spiral with a bleed, independently
+				// of its selected rune, as described in the Assassin skill tree.
+				bestTarget.Mu.Lock()
+				bestTarget.Bleeding = true
+				bestTarget.BleedDamage = 10 + player.Stats.Dexterity/2
+				bestTarget.BleedSourceID = player.ID
+				bestTarget.BleedEndTime = time.Now().Add(10 * time.Second)
+				bestTarget.Mu.Unlock()
 
 				// Cripple rune: slow target by 50% for 3s
 				if runeID == "shadowlunge_cripple" {

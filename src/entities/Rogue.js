@@ -4,8 +4,9 @@ import { CONSTANTS } from '../core/Constants.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
 import { Projectile } from './Projectile.js';
 import { spawnEffectSceneFallback } from './EffectSceneFallback.js';
-import { getAbilityRange } from '../core/AbilityRange.js';
+import { getAbilityRange, getRogueMovementCastRange } from '../core/AbilityRange.js';
 import { findOfflineAbilityTarget } from '../skills/offlineAbilityTargeting.js';
+import { resolveDungeonMovementEndpoint } from '../skills/dungeonEffectGeometry.js';
 import {
     PROCEDURAL_PROJECTILE_VISUAL_DEFINITIONS,
     createProceduralProjectileVisual,
@@ -32,6 +33,20 @@ export class Rogue extends Actor {
         this.poisonCoatingTimer = 0;
         
         this.traps = []; // Array of active traps
+    }
+
+    moveBehindOfflineTarget(target, gameEngine) {
+        const facing = target.mesh?.quaternion || target.rotation || new THREE.Quaternion();
+        const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(facing);
+        const desired = target.position.clone().sub(forward.multiplyScalar(1.5));
+        const rects = gameEngine.currentInstanceId && gameEngine.currentInstanceType !== 'overworld'
+            ? gameEngine.currentDungeonLayout?.walkRects : null;
+        const landing = resolveDungeonMovementEndpoint(rects, this.position, desired);
+        this.position.x = landing.x;
+        this.position.z = landing.z;
+        this.mesh?.position.copy(this.position);
+        this.mesh?.quaternion.copy(facing);
+        this.rotation.copy(facing);
     }
 
     update(dt, collisionManager, player, chunkManager, floatingTextManager, gameEngine = null) {
@@ -97,14 +112,17 @@ export class Rogue extends Actor {
     useAbility(targetVector, gameEngine, skillNameOverride = null) {
         if (!targetVector) return;
         const skill = skillNameOverride || this.abilityName;
-        let markTarget = null;
-        if (skill === 'Weak Point Mark' && !this.isMultiplayer && !gameEngine?.isMultiplayer) {
-            markTarget = findOfflineAbilityTarget(this, gameEngine, targetVector, {
-                range: getAbilityRange(this, skill, CONSTANTS.ABILITY_CONFIG.Rogue.skills[skill].range), cursorRadius: 3
+        let castTarget = null;
+        if (['Weak Point Mark', 'Backstab', 'Shadow Lunge'].includes(skill) && !this.isMultiplayer && !gameEngine?.isMultiplayer) {
+            const range = skill === 'Weak Point Mark'
+                ? getAbilityRange(this, skill, CONSTANTS.ABILITY_CONFIG.Rogue.skills[skill].range)
+                : getRogueMovementCastRange(this, skill);
+            castTarget = findOfflineAbilityTarget(this, gameEngine, skill === 'Backstab' ? this.position : targetVector, {
+                range, cursorRadius: skill === 'Backstab' ? range : 3, padCursor: skill === 'Backstab'
             });
             // Match the authoritative rejection before super spends mana or
             // presents a cast. An invalid targeted debuff is not a free aim.
-            if (!markTarget) return false;
+            if (!castTarget) return false;
         }
         if (!super.useAbility(targetVector, gameEngine, skillNameOverride)) return;
 
@@ -120,29 +138,11 @@ export class Rogue extends Actor {
             const cdr = this.stats.cooldownReduction || 0;
             this.cooldowns["Backstab"] = 6.0 * (1 - cdr);
 
-            // Melee Range Check
-            const range = 2.5;
-            let target = null;
-            let minDst = 1000;
-            const entities = gameEngine.chunkManager.getActiveEntities();
-            
-            entities.forEach(entity => {
-                if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
-                    const d = entity.position.distanceTo(this.position);
-                    if (d < range && d < minDst) {
-                        // Check if in front of rogue (cone check)
-                        const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(this.mesh.quaternion);
-                        const dir = new THREE.Vector3().subVectors(entity.position, this.position).normalize();
-                        if (forward.angleTo(dir) < Math.PI / 3) {
-                            minDst = d;
-                            target = entity;
-                        }
-                    }
-                }
-            });
+            const target = castTarget;
 
             if (target) {
                 let damage = this.stats.damage * 1.5;
+                if (this.skillRunes?.Backstab === 'backstab_shadowstep') this.moveBehindOfflineTarget(target, gameEngine);
                 
                 // Backstab Check: Are we behind the target?
                 // Compare our forward vector with target's forward vector.
@@ -151,7 +151,7 @@ export class Rogue extends Actor {
                 const targetForward = new THREE.Vector3(0, 0, 1).applyQuaternion(target.mesh.quaternion);
                 const dot = myForward.dot(targetForward);
                 
-                if (dot > 0.5) { // Roughly same direction
+                if (dot > 0.5 || this.skillRunes?.Backstab === 'backstab_shadowstep') {
                     damage *= 2.5; // Massive bonus
                     gameEngine.floatingTextManager.spawn("BACKSTAB!", target.position, '#ff0000');
                 }
@@ -170,7 +170,7 @@ export class Rogue extends Actor {
             const cdr = this.stats.cooldownReduction || 0;
             this.cooldowns["Weak Point Mark"] = 12.0 * (1 - cdr);
 
-            const target = markTarget;
+            const target = castTarget;
 
             if (target) {
                 target.weakPointMarkTimer = 10.0;
@@ -188,29 +188,10 @@ export class Rogue extends Actor {
             const cdr = this.stats.cooldownReduction || 0;
             this.cooldowns["Shadow Lunge"] = 10.0 * (1 - cdr);
 
-            // Find target
-            let target = null;
-            let minDst = 1000;
-            const entities = gameEngine.chunkManager.getActiveEntities();
-            
-            entities.forEach(entity => {
-                if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
-                    const d = entity.position.distanceTo(targetVector);
-                    if (d < 3.0 && d < minDst) {
-                        minDst = d;
-                        target = entity;
-                    }
-                }
-            });
+            const target = castTarget;
 
             if (target) {
-                // Teleport behind target
-                const targetForward = new THREE.Vector3(0, 0, 1).applyQuaternion(target.mesh.quaternion);
-                const behindPos = target.position.clone().sub(targetForward.multiplyScalar(1.5));
-                
-                // Validate position (simple check)
-                this.position.copy(behindPos);
-                this.mesh.position.copy(this.position);
+                this.moveBehindOfflineTarget(target, gameEngine);
                 
                 // Face target
                 this.mesh.lookAt(target.position);

@@ -5,7 +5,7 @@
 
 import * as THREE from 'three';
 import { getAbilityManaCost } from './AbilityEconomy.js';
-import { getAbilityRange, getTeleportCastRange } from './AbilityRange.js';
+import { getAbilityRange, getRogueMovementCastRange, getTeleportCastRange } from './AbilityRange.js';
 import { CONSTANTS } from './Constants.js';
 import { Fighter } from '../entities/Fighter.js';
 import { Rogue } from '../entities/Rogue.js';
@@ -58,6 +58,7 @@ export class AbilityController {
     getAbilityCastRange(skillName = null) {
         const player = this.engine.player;
         if (skillName === 'Teleport') return getTeleportCastRange(player);
+        if (['Backstab', 'Shadow Lunge', 'Shadow Strike'].includes(skillName)) return getRogueMovementCastRange(player, skillName);
         if (skillName === 'Scorch Beam') return getAbilityRange(player, skillName, CONSTANTS.ABILITY_CONFIG.Wizard.skills[skillName].range);
         if (skillName === 'Arcane Missiles') return getAbilityRange(player, skillName, CONSTANTS.ABILITY_CONFIG.Wizard.skills[skillName].range);
         if (skillName === 'Weak Point Mark') return getAbilityRange(player, skillName, CONSTANTS.ABILITY_CONFIG.Rogue.skills[skillName].range);

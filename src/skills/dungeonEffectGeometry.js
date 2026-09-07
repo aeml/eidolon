@@ -54,3 +54,24 @@ export function resolveDungeonBeamEndpoint(rects, from, aim, range) {
         z: from.z + (aim.z - from.z) / distance * range
     });
 }
+
+// Match constrainDungeonMovementDestination on the server: recover the start
+// and requested landing onto canonical floor points, then clip the full path.
+// This is a movement-ability point constraint, not ordinary capsule collision.
+export function resolveDungeonMovementEndpoint(rects, from, to) {
+    if (![from?.x, from?.z, to?.x, to?.z].every(Number.isFinite)) return { x: from?.x, z: from?.z, blocked: true };
+    const floors = (Array.isArray(rects) ? rects : []).filter(rect =>
+        [rect?.x, rect?.z, rect?.width, rect?.height].every(Number.isFinite) && rect.width > 0 && rect.height > 0);
+    const nearest = point => {
+        let result = { x: point.x, z: point.z };
+        let best = Infinity;
+        for (const rect of floors) {
+            const x = Math.max(rect.x - rect.width / 2, Math.min(rect.x + rect.width / 2, point.x));
+            const z = Math.max(rect.z - rect.height / 2, Math.min(rect.z + rect.height / 2, point.z));
+            const distance = (x - point.x) ** 2 + (z - point.z) ** 2;
+            if (distance < best) { best = distance; result = { x, z }; }
+        }
+        return result;
+    };
+    return clipDungeonEffectSegment(floors, nearest(from), nearest(to));
+}

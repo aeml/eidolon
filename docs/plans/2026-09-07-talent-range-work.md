@@ -161,6 +161,115 @@ the existing interaction flow. Exact boundary and missile-impact evidence comes
 from the server tests above, not this browser smoke. Real multiplayer/phone and
 the remaining range/area/talent gates are still open.
 
+## Rogue melee and movement consumers
+
+Working after `b6063c3` / targeted-range runtime `9532f19`, still unversioned.
+Backstab, Shadow Lunge and the server's legacy Shadow Strike now apply Quick
+Draw to their actual target checks. Shadow Lunge applies the multiplier after
+Extended's 10m → 15m base. The client now advertises the real 2.5m Backstab and
+10m Shadow Lunge bases (previously 3m and 12m), then applies ranks/runes. The
+legacy Shadow Strike has a matching cast-intent range but is not added as a new
+player skill or offline handler; it remains a server-supported legacy ability.
+
+Offline Backstab and Shadow Lunge preflight target reach/cover before paying or
+presenting a cast. Backstab uses the same nearest-body acquisition as the
+server instead of an additional client-only facing cone; its facing damage
+bonus remains. Shadowstep's offline landing is now implemented. Behind-target
+landings preserve elevation and use canonical point recovery plus full-path
+wall clipping, not just a walkable destination. This does not change ordinary
+capsule collision or claim complete parity for every offline rune effect.
+
+The twelve-case shared contract covers baseline/five ranks, a single rank,
+Extended baseline/trained, Cripple/Shadow Clone, Shadowstep, and legacy Strike.
+Server casts test both sides of the body-padded boundary with a 4x-scale target
+and both explicit/cursor input. They assert paid successful casts, behind-target
+landing and movement lock, retained damage/slow/bleed, and free rejection with
+unchanged position/resources/effects. All **32 initial client checks failed**;
+ranked server checks failed as well. Logs
+`/tmp/eidolon-rogue-range-before-{client,server}.log`.
+
+Expanded wall/doorway cases target enemies beyond the untrained body-padded
+limit. Offline tests exercise actual Shadowstep casts and the point-constraint
+helper's wall, doorway, outside-landing and start-recovery cases at world offsets.
+Focused client checks pass **76 tests in 2.160 seconds**, and expanded geometry
+checks pass **48 tests in 1.764 seconds**. Logs
+`/tmp/eidolon-rogue-range-after-client.log` and
+`/tmp/eidolon-rogue-range-expanded-client.log`.
+
+The same path exposed a missing advertised effect: Shadow Lunge's skill-tree
+description and offline implementation apply bleed, but the server did not.
+The new baseline probe fails on both inside explicit/cursor casts before the
+repair (`/tmp/eidolon-lunge-bleed-before-server.log`). The authoritative skill
+now applies the existing Rogue movement-strike bleed model, 10 seconds at
+10 + Dexterity/2 damage per tick with the caster as source, independently of its
+rune. A paired actual-dispatch test proves that Death Spiral consumes it for
+the existing Dexterity/2 finisher bonus. No bleed stacking or new finisher
+balance model is introduced. Final focused server race checks pass in
+**13.678 seconds**, `/tmp/eidolon-rogue-range-final-server.log`.
+
+The full client suite passes **187 suites / 2,676 tests in 121.815 seconds**,
+`/tmp/eidolon-rogue-range-full-client.log`, with final lint at
+`/tmp/eidolon-rogue-range-final-lint.log`. The browser route adds an ordinary hotbar Shadow Lunge against the
+existing real enemy after marking, checking server acceptance, player movement
+and an attributed positive bleed tick. It retains rank purchases, login
+persistence and the Cleric control. It is prepared functional gameplay, not an
+earned run, exact range-boundary browser proof or physical-phone sign-off.
+
+The first browser repeat **failed at the real bleed-tick assertion**, despite
+accepted movement and the passing finisher test. Preserve
+`/tmp/eidolon-rogue-range-gameplay.log`; its credential scan/cleanup passed.
+Investigation found that `world_update_entity.go` processed bleed only inside the
+player branch, never for enemies. An actual enemy-update regression reproduced
+zero ticks and unchanged health (`/tmp/eidolon-enemy-bleed-before-server.log`).
+The player tick logic is now shared with enemy/NPC updates, before enemy AI;
+damage keeps its source/instance, adds enemy threat, respects one-second cadence
+and expiry, and resolves lethal damage through the normal death/credit path.
+This also activates existing enemy bleeds from other sources, not just Lunge.
+
+The focused corrected movement/bleed race checks pass in **11.467 seconds**,
+`/tmp/eidolon-rogue-range-bleed-fixed-server.log`. Additional shared actor-type
+cadence/expiry and once-only owner kill-credit tests accompany the full race run.
+Its first attempt hit a test-fixture compile error (`XP` instead of the actual
+`Experience` field), retained at `/tmp/eidolon-rogue-range-full-server.log`.
+The corrected full race run is separate, as is the unchanged browser assertion
+repeat at `/tmp/eidolon-rogue-range-gameplay-bleed-fixed.log`. Neither repeat's
+completion is inferred from the earlier focused tests.
+
+The bleed-fixed browser repeat still failed its original-target assertion. An
+additional observation-only run (`/tmp/eidolon-rogue-range-gameplay-diagnostic.log`)
+showed an accepted Lunge and a **69-damage attributed bleed tick on another
+enemy**, while the originally marked enemy remained unbled. The test moved the
+cursor and immediately pressed the key without confirming which moving actor
+was hovered. The repeat now uses the same ordinary projected-hover confirmation
+as its original mark check before pressing Lunge. The positive tick assertion
+is retained; no synthetic damage, server state mutation or direct cast API was
+substituted. Both failed repeats and their successful credential scans/cleanup
+are retained as evidence.
+
+The first compiling full race run failed in **282.927 seconds** on the new
+kill-credit test: it read `Experience` immediately without the owner lock while
+the normal asynchronous death-reward goroutine was still running. The retained
+log includes that fixture race, not a passing full suite. A focused reproduction
+at `/tmp/eidolon-bleed-kill-diagnostic.log` confirmed it. The fixture now observes
+the reward under the owner lock with a bounded wait and requires exactly 20 XP
+after two tick attempts on the dead enemy. The corrected focused race checks
+pass in **3.523 seconds**, `/tmp/eidolon-bleed-reward-corrected.log`.
+The new full race run is `/tmp/eidolon-rogue-range-full-server-final.log` and the
+reacquired browser run is `/tmp/eidolon-rogue-range-gameplay-reacquired.log`;
+their results remain separate gates. The final browser repeat **passes**:
+Rogue **27.8 seconds (25.8-second body)** includes trained movement, an attributed
+positive bleed tick, saved Quick Draw ranks and cast intent; Cleric **17.1 seconds
+(15.2-second body)** retains empty rejection and ordinary marking. Credential
+scan and disposable cleanup pass, session `88952` exits zero. Runtime and selected
+browser source were unchanged throughout that repeat. Final lint passes at
+`/tmp/eidolon-rogue-range-handoff-lint.log`. Full server race session `61913` is
+still running; its earlier failed fixture runs do not count as full verification.
+
+Follow-up from this trace: poison ticking is also still located in the player
+branch. Investigate actual enemy poison outcomes with paired casts/ticks before
+claiming that every Rogue damage-over-time consumer is working. No poison fix
+or whole bleed/rune/area audit completion is claimed in this step.
+
 ## Projectile travel trace — still unresolved
 
 Ordinary server projectiles expire after
@@ -178,9 +287,9 @@ expiry must remain consistent with their replicated presentation.
 - Continue Wizard and Rogue actual consumers, not just Teleport: direct target
   validation, cone/beam reach, directional projectile travel/lifetime, placement
   bounds and relevant runes. Preserve base behavior where no ranks are allocated.
-- Next direct/cone/movement boundaries: Flame Whip still uses fixed 12m,
-  Shadow Strike fixed 10m, Shadow Lunge fixed 10m/15m with its rune, and
-  Backstab fixed 2.5m. Do not change only their search radius while retaining an
+- Next cone/placement/projectile boundaries: Flame Whip still uses fixed 12m;
+  the remaining ground placements and directional projectiles still need their
+  real range consumers traced and connected. Do not change only a search radius while retaining an
   old final hit/movement check.
 - Update client chase/targeting and local/remote presentation for every changed
   consumer. Teleport's helper alone must not be wired globally ahead of working
@@ -198,7 +307,8 @@ expiry must remain consistent with their replicated presentation.
 - Keep area consumers (including the still-failing Purifying Wave probe), other
   talent/copy gaps, physical phones and the full 1.1–1.10 scope open.
 
-1.0.28 remains the last fully verified live release. 1.0.29 CI `34078663504`
-passed predeploy gameplay and both deployment jobs; final live-release/character
-QA is queued. Do not push a successor before whole-CI success and a fresh
+1.0.29 is fully verified: CI `34078663504` passed every job and uncached public
+manifest/login/script/backend identity matched `bc96862` / Alpha 1.0.29 at
+04:06:20.318 UTC. Only queued 1.0.30 `c3247e8` was pushed next; CI `34081910599`
+is running. Do not push another successor before whole-CI success and a fresh
 post-terminal uncached public identity check.

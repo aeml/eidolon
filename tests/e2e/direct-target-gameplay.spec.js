@@ -116,6 +116,62 @@ test('hostile marks reject an empty cast and accept an actual reachable enemy', 
     expect(accepted.cooldownRemaining).toBeGreaterThan(0);
     await expect.poll(() => page.evaluate(() => window.__directCastTargets)).toEqual([target.id]);
     console.log(`[direct-target] ${className} empty rejection and authoritative enemy mark passed`);
+    if (className === 'Rogue') {
+        await page.evaluate(targetId => {
+            window.__lungeQA = { results: [], bleed: [], damage: [], casts: [], states: [], before: window.game.player.position.toArray() };
+            const game = window.game, original = game.handleServerMessage.bind(game);
+            game.handleServerMessage = message => {
+                if (message.type === 'ability_result' && message.payload?.skillName === 'Shadow Lunge') {
+                    window.__lungeQA.results.push(message.payload);
+                }
+                if (message.type === 'damage' && message.payload?.kind === 'bleed' &&
+                    message.payload.targetId === targetId && message.payload.sourceId === game.player.id) {
+                    window.__lungeQA.bleed.push(message.payload);
+                }
+                if (message.type === 'damage') {
+                    window.__lungeQA.damage.push({ kind: message.payload?.kind, amount: message.payload?.amount,
+                        targetMatches: message.payload?.targetId === targetId, sourceMatches: message.payload?.sourceId === game.player.id });
+                }
+                if (message.type === 'ability' && message.payload?.skillName === 'Shadow Lunge') {
+                    window.__lungeQA.casts.push({ targetMatches: message.payload.targetId === targetId,
+                        sourceMatches: message.payload.sourceId === game.player.id });
+                }
+                const states = message.type === 'state' ? message.payload : message.type === 'delta' ? message.payload?.u : null;
+                for (const state of Object.values(states || {})) {
+                    if (state.id === targetId || state.bleeding) window.__lungeQA.states.push({ targetMatches: state.id === targetId,
+                        bleeding: state.bleeding, damage: state.bleedDamage, duration: state.bleedDuration, health: state.health });
+                }
+                return original(message);
+            };
+        }, target.id);
+        // Respect the real global cooldown after the accepted mark.
+        await page.waitForTimeout(600);
+        // Enemies can cross the cursor while the previous skill resolves.
+        // Reacquire the intended actor through ordinary hover before casting.
+        await expect.poll(async () => {
+            const aim = await projectEntity(page, target.id);
+            if (!aim?.visible) return false;
+            await page.mouse.move(aim.x, aim.y);
+            return page.evaluate(id => window.game.hoveredEntity?.id === id, target.id);
+        }).toBe(true);
+        const lungeSlot = await page.evaluate(() => window.game.player.hotbar.indexOf('Shadow Lunge'));
+        expect(lungeSlot).toBeGreaterThanOrEqual(0);
+        await page.keyboard.press(String(lungeSlot + 1));
+        await expect.poll(() => page.evaluate(() => window.__lungeQA.results.length)).toBe(1);
+        expect(await page.evaluate(() => window.__lungeQA.results[0].accepted)).toBe(true);
+        await expect.poll(() => page.evaluate(() => {
+            const p = window.game.player.position, before = window.__lungeQA.before;
+            return Math.hypot(p.x - before[0], p.z - before[2]);
+        })).toBeGreaterThan(.25);
+        try {
+            await expect.poll(() => page.evaluate(() => window.__lungeQA.bleed.some(event => event.amount > 0)), { timeout: 5000 }).toBe(true);
+        } catch (error) {
+            console.log('[lunge-diagnostic]', await page.evaluate(() => ({ results: window.__lungeQA.results,
+                casts: window.__lungeQA.casts, damage: window.__lungeQA.damage, states: window.__lungeQA.states.slice(-15) })));
+            throw error;
+        }
+        console.log('[direct-target] trained Shadow Lunge moved the Rogue and delivered an attributed bleed tick');
+    }
     await returnToTown(page);
     if (className === 'Rogue') {
         await page.reload({ waitUntil: 'networkidle' });
