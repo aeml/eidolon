@@ -61,7 +61,7 @@ var qaUsernamesFlag = flag.String("qa-usernames", os.Getenv("EIDOLON_QA_USERNAME
 
 var (
 	buildCommit  = "development"
-	buildVersion = "Alpha 1.0.32"
+	buildVersion = "Alpha 1.0.33"
 	qaUsernames  = map[string]struct{}{}
 )
 

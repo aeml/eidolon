@@ -1,4 +1,5 @@
 import { TOWN_SERVICE_POINTS } from './townServiceConfig.js';
+import { PhoneStatusUI } from './PhoneStatusUI.js';
 import {
     findNextDungeonMeaningfulRoom,
     getDungeonBeatLabel,
@@ -97,6 +98,7 @@ function classifyEntity(entity) {
     return { color: '#ff0000', size: 3, ring: false };
 }
 
+
 export class Minimap {
     constructor(size = 200) {
         this.baseSize = size;
@@ -141,6 +143,7 @@ export class Minimap {
         const hudHost = document.getElementById('ui-layer') || document.body;
         hudHost.appendChild(this.wrapper);
         hudHost.appendChild(this.buffTooltip);
+        this.phoneStatus = new PhoneStatusUI(hudHost, this.wrapper);
         this.ctx = this.canvas.getContext('2d');
 
         // Animation tick counter for pulsing effects
@@ -269,6 +272,7 @@ export class Minimap {
             return;
         }
         const buffs = Array.isArray(this.gameEngine?.getActiveBuffs?.()) ? this.gameEngine.getActiveBuffs() : [];
+        this.phoneStatus?.update(buffs, Boolean(this.gameEngine?.isMobile), this.gameEngine?.player?.id);
         const buffListSignature = buffs.map((buff) => [
             buff?.id || '',
             buff?.name || '',

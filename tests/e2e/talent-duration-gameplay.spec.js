@@ -68,10 +68,17 @@ test('phone shield duration training changes server timers and visible expiry', 
         const maximum = await page.evaluate(() => Math.max(0, ...window.__durationQA.snapshots
             .filter(snapshot => snapshot.active).map(snapshot => snapshot.duration || 0)));
         expect(maximum).toBeLessThanOrEqual(expected + .1);
-        const badge = page.locator('.minimap-buff-icon[data-buff-id="arcane_shield"]');
+        await page.locator('#btn-phone-status').tap();
+        const panel = page.locator('#phone-status-panel');
+        await expect(panel).toBeVisible();
+        const badge = panel.locator('[data-buff-id="arcane_shield"]');
         await expect(badge).toBeVisible();
-        await expect(badge).toHaveAttribute('aria-label', /^Arcane Shield \(\d+\.\ds\)$/);
-        const badgeSeconds = Number((await badge.getAttribute('aria-label')).match(/\((\d+\.\d)s\)/)[1]);
+        await expect(badge.locator('h3')).toHaveText('Arcane Shield');
+        await expect(badge.locator('.phone-status-kind')).toHaveText('Buff');
+        await expect(badge.locator('.phone-status-detail')).not.toBeEmpty();
+        const remaining = badge.locator('.phone-status-remaining');
+        await expect(remaining).toHaveText(/^\d+\.\ds left$/);
+        const badgeSeconds = Number((await remaining.textContent()).match(/(\d+\.\d)s/)[1]);
         expect(badgeSeconds).toBeGreaterThan(expected - 2);
         expect(badgeSeconds).toBeLessThanOrEqual(expected + .1);
         await expect.poll(() => page.evaluate(() => {
@@ -90,7 +97,27 @@ test('phone shield duration training changes server timers and visible expiry', 
             await expect.poll(() => page.evaluate(() => window.game.player.arcaneShieldActive === false &&
                 window.game.player.shieldHP === 0 && !window.game.player.attachedStatusEffects.has('arcane_shield'))).toBe(true);
             await expect(badge).toHaveCount(0);
+            await expect(panel).toBeVisible();
+            await expect(panel.locator('.phone-status-empty')).toBeVisible();
         }
+        // The reading panel is non-modal: the ordinary Skill button still reaches
+        // the server while it is open. No timer or combat state is modified.
+        await page.evaluate(() => {
+            window.__statusCastResults = [];
+            const game = window.game, original = game.handleServerMessage.bind(game);
+            game.handleServerMessage = message => {
+                if (message.type === 'ability_result') window.__statusCastResults.push(message.payload);
+                return original(message);
+            };
+        });
+        await page.locator('#btn-mobile-ability').tap();
+        await expect.poll(() => page.evaluate(() => window.__statusCastResults.some(result =>
+            result.skillName === 'Fireball' && result.accepted))).toBe(true);
+        await expect(panel).toBeVisible();
+        await page.locator('#chat-mobile-toggle').tap();
+        await expect(panel).toBeHidden();
+        await expect(page.locator('#chat-input')).toBeVisible();
+        await page.locator('#chat-mobile-toggle').tap();
         console.log(`[talent-duration] ${JSON.stringify({ label, rank, expected, maximum, verifiedExpiry: verifyExpiry })}`);
     }
 

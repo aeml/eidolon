@@ -238,7 +238,11 @@ The optional isolated route `EIDOLON_ISOLATED_QA_ROUTE=talent-duration` prepares
 disposable Wizard at level 100, then uses phone touch controls to select a branch,
 buy Arcane Stability ranks and cast Arcane Shield. It checks server-reported
 20 → 25 second durations, survival past the old deadline, actual expiry and
-saved ranks after login/rotation. It is a functional fixture, not earned progression.
+saved ranks after login/rotation. The phone Effects panel must show matching
+countdowns and expiry while still permitting normal Skill casts and chat access.
+It is a functional fixture, not earned progression. Anonymous smoke also covers
+crowded effect lists, native touch scrolling and unobstructed controls at four
+phone viewports; physical-device playability remains a separate gate.
 
 `npm run audit:talent-consumers` runs separate paired-cast probes for still-open
 range and area talent consumers. It currently fails on those
