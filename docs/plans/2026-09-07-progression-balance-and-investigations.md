@@ -3,7 +3,11 @@
 Requested September 7, 2026. Status: **implementation active; full pass open**.
 The locally verified, root-integrated 1.0.47 candidate implements eight-fragment
 collections, reduced ordinary drop rates, saved bad-luck protection and
-legacy-contract migration. It is queued, not published. XP/equipment/gold tuning
+legacy-contract migration. It is queued, not published. The
+[personal fragment budget](2026-09-07-personal-fragment-budget.md) additionally
+prevents simultaneous kills from creating surplus quest fragments; its runtime
+is root-integrated and the separate 1.0.49 package is in final local verification.
+XP/equipment/gold tuning
 and playable investigations remain open. The
 [loot/Forge baseline](2026-09-07-loot-and-forge-baseline.md) now measures combined
 material/equipment sources and actual transactions; the

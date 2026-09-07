@@ -5,7 +5,79 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 20:30 UTC
+## Current checkpoint — September 7, 21:00 UTC
+
+The preceding goal turn made concrete progress: real Earth discovery play,
+phone interaction support, a reproduced/fixed surplus-drop defect and a separate
+49 package. **Full roadmap and economy/story expansion remain incomplete.**
+40 `008ee7d` CI **34159297803** currently has client/server/browser success and
+predeploy character QA active; no deployment or live-40 success is claimed.
+Last fresh public identity remains **Alpha 1.0.39 / 7ddf776e…**, healthy/ready.
+Next publisher is still `release/41-with-forge-pointer / 9c6eb9d…`, only after
+all 40 CI/deployment/live checks and fresh exact public identity succeed.
+Do not publish root/master/HEAD or skip queued releases.
+
+### Personal fragment limits and Alpha 1.0.49
+
+Runtime **`b01d3c562e5f9fde0de128f9b6c1047a4ebeab7f`** is root-integrated by
+fast-forward. It bounds personal quest drops using actual matching owned world
+stacks, with roll/budget/publication under one world→player lock transaction.
+The real asynchronous death test reproduces **20 drops with one needed** per
+solo/party recipient before the fix (**0.593s**) and passes three times afterward
+(**3.576s**). Lifecycle/collection race repeats pass **8.929s**; full backend race
+passes root **12.795s**, game **302.674s**. Ten-thousand-entity source-operation
+benchmark **0.240–0.255ms** is not a server concurrency-capacity claim.
+
+The isolated worktree `/tmp/eidolon-quest-loot-1i4saA`, branch
+`work/chronicle-loot-budget-20260907`, is clean at package
+**`c0a6910c1f6e1cb02e0b04c08ba8d407d5361f2e`**. Version/patch notes align to
+**Alpha 1.0.49 (only the fragments you need)**. Package contracts pass
+**250 / 2.957s**, full client **217 / 3,212 / 201.597s**, lint, quest-related
+race checks **3.626s / 11.243s**, and the actual fresh collection route **2.3m**:
+exactly eight physical fragments, 20 observed target deaths, zero player deaths,
+manual consumption/reward and saved reconnect. Unchanged 8,000 XP/100 gold still
+leaves the player at 17 with the level-30 Guide correctly locked; broader pacing
+is not signed off. The actual ready image is inspected and copied to
+`/tmp/eidolon-release49-earned-collection-ready.png` before the next browser run.
+
+Final anonymous sweep **46704** is active, log
+`/tmp/eidolon-release49-anonymous.log`. Freeze this package while it runs. The
+earlier fresh/browser/client/backend handles are closed. **Do not merge/package
+as final or publish 49 before this sweep and its preceding release gates pass.**
+Full evidence is in [the fragment budget](2026-09-07-personal-fragment-budget.md).
+
+### Isolated investigation expansion
+
+Latest release-48 corrections merge into the expansion at **93f0162** and pass
+**276 focused checks / 4.148s**. The complete earned Earth chain now passes
+**3.6m**: diary, eight seeds, all three scar discoveries, explicit turn-ins and
+saved dungeon handoff. Final level 17, 16 observed target deaths, no deaths;
+collection/scar/handoff portion 138 seconds. Log
+`/tmp/eidolon-investigations-earned-earth-travel.log`. Roaming enemies cover the
+first failed route's ground clicks; the successful route permits the existing
+ordinary jump fallback, not teleport/protection/quest grants.
+
+Phone USE previously handled only vendors. It now retains nearby loot priority
+and uses ordinary interactions/ranges for other services and readable discoveries;
+dead players cannot activate it, and interactables get a pointer cursor. Focused
+checks pass **42 / 1.759s**, full client **219 / 3,251 / 138.491s**, lint.
+Touch route passes **1 / 1.3m** (test 1.2m), log
+`/tmp/eidolon-investigations-phone-town-route.log`: joystick travel, actual USE
+inspection, journal at 390×844 and 844×390, manual completion and saved rereading.
+Both actual screenshots are inspected. This uses an explicit level-30 fixture,
+not fresh progression or physical-device performance evidence. Failed travel
+diagnostics identify the merchant stall on the direct path; routing around its
+south side preserves all collisions. No bypass is introduced.
+
+Implementation **645ed36** is committed. The verified fragment-limit runtime is
+merged into it as **84abecf**; combined full backend race **90803** is active,
+log `/tmp/eidolon-investigations-combined-server.log`. Root still has only the
+dormant foundation and 15-chapter active chain; the expansion remains isolated.
+Remaining six Water/Fire/Air chapters, actual ordered Fire fight, landscape
+diary touch-scroll-to-end, wider placements and coordinated reward tuning remain
+open. All prior owned investigation browser/client handles are closed.
+
+## Historical checkpoint — September 7, 20:30 UTC
 
 Isolated world-integration commit **`f1f7919bd6302728f86e7ec0868cf486b5816344`**
 is saved clean on `work/chronicle-investigations-20260907`; it is not merged
