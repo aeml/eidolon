@@ -56,3 +56,34 @@ test('observer counts actual accepted and rejected server results without changi
         delete window.__freshFighterCombat;
     }
 });
+
+test.each([null, undefined, '', 'overworld'])('fresh overworld marker %s reaches melee target selection', async instanceType => {
+    const reachedTarget = new Error('reached ordinary melee target selection');
+    const getTarget = jest.fn(() => { throw reachedTarget; });
+    window.game = { currentInstanceType: instanceType, player: { state: 'IDLE' },
+        handleServerMessage: jest.fn(), remotePlayers: { get: getTarget } };
+    const page = { evaluate: jest.fn((callback, argument) => callback(argument)) };
+    try {
+        const driver = await createEarnedClassCombat(page, 'Fighter');
+        await expect(driver(page, { id: 'ordinary-skeleton' })).rejects.toBe(reachedTarget);
+        expect(getTarget).toHaveBeenCalledWith('ordinary-skeleton');
+    } finally {
+        delete window.game;
+        delete window.__freshFighterCombat;
+    }
+});
+
+test('a real dungeon still leaves melee input to the dungeon driver', async () => {
+    const getTarget = jest.fn();
+    window.game = { currentInstanceType: 'verdant_bastion_catacombs', player: { state: 'IDLE' },
+        handleServerMessage: jest.fn(), remotePlayers: { get: getTarget } };
+    const page = { evaluate: jest.fn((callback, argument) => callback(argument)) };
+    try {
+        const driver = await createEarnedClassCombat(page, 'Fighter');
+        expect(await driver(page, { id: 'dungeon-skeleton' })).toBe(false);
+        expect(getTarget).not.toHaveBeenCalled();
+    } finally {
+        delete window.game;
+        delete window.__freshFighterCombat;
+    }
+});

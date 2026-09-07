@@ -1,5 +1,13 @@
 # Remaining talent consumers — reproduced September 6
 
+Latest September 7 diagnostic: the [critical-chance consumer record](2026-09-07-talent-critical-chance.md)
+reproduces ignored Rogue, Wizard and Fighter critical talents through actual
+paid casts, with deterministic paired rolls and passing equipment-only controls.
+The expanded audit fails those four expectations in **1.699 seconds**. The
+previous Cleric area probes now pass in the preserved 1.0.40 runtime; historical
+unresolved labels below describe earlier checkpoints. Critical-chance repair,
+Purifying Wave's ineffective mastery and the remaining full-tree gate stay open.
+
 Status: four representative consumer defects reproduced against the 1.0.29
 runtime. Not repaired by the cooldown/mana patch, and not a complete 160-talent
 audit. No production save, running browser source or game balance was changed

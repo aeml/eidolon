@@ -65,3 +65,24 @@ pass in 88.342 seconds** (`/tmp/eidolon-earned-fighter-full-client.log`). Final
 lint and whitespace checks pass. No runtime/server changes were made in this
 checkpoint. The complete earned Fighter browser run is pending; this is
 implemented QA support, not yet successful earned-melee gameplay evidence.
+
+### First attempt and empty overworld marker correction
+
+The clean `0a92c71` run passed opening, collection and saved preparation, but
+recorded no hotbar casts through 50 Skeleton kills. Fresh login retains a null
+instance type; same-world recall does not send a new instance-enter event.
+The Fighter hook incorrectly excluded that ordinary overworld state. The attempt
+was stopped intentionally (session `98662`, exit 130) and its log retained;
+disposable cleanup and credential scan pass. This is a driver failure, not a
+Whirlwind combat diagnosis or a complete earned run.
+
+New actual-callback regressions fail for null, undefined and empty markers before
+the correction (**3 failed / 6 passed in 0.834s**). Normalize the marker with the
+same overworld fallback used by the game, preserving the separate dungeon driver.
+The complete corrected earned route must be measured from a fresh clean checkpoint.
+
+After the correction, **54 focused tests pass in 1.204s** and the full client
+suite passes **202 suites / 3,004 tests in 98.525s**. Lint and whitespace pass.
+Logs: `/tmp/eidolon-earned-fighter-null-{before,after,full,lint}.log`. The separate
+critical-talent diagnostic deliberately remains failing; it is not a runtime
+change or part of this earned driver's skill selection.

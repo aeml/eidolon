@@ -25,7 +25,9 @@ export async function createEarnedClassCombat(page, className) {
         if (Date.now() < nextAttemptAt) return false;
         const state = await page.evaluate(async id => {
             const game = window.game, p = game.player;
-            if (game.currentInstanceType !== 'overworld' || p.state === 'DEAD' ||
+            // Fresh login has no instance-enter event: null/empty means overworld.
+            // Recall from within that world also preserves the empty marker.
+            if ((game.currentInstanceType || 'overworld') !== 'overworld' || p.state === 'DEAD' ||
                 Date.now() - window.__freshFighterCombat.lastAcceptedAt < 550) return null;
             const enemy = game.remotePlayers.get(id);
             if (!enemy || !game.isHostileActorTarget(enemy)) return null;

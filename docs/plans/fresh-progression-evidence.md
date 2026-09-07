@@ -1,6 +1,6 @@
 # Fresh-character progression evidence — 1.1 gate
 
-## September 7 — earned Fighter comparison in progress
+## September 7 — earned Fighter comparison, stopped for a driver correction
 
 The class-specific driver checkpoint `0a92c71b75bf238ebecf21cff694e614f010f16a`
 passes **202 suites / 2,999 client tests in 88.342 seconds**, lint and whitespace
@@ -24,9 +24,24 @@ available stat points, so none are spent. Fresh login preserves the six item IDs
 three ranks, branch A and the level-appropriate Whirlwind hotbar. The Skeleton
 contract begins at level 16 / 1,524 XP / 365 gold.
 
-The route is still running. These observations do **not** establish completed
-contracts, dungeon readiness, a boss kill, full dungeon clear or saved raid access.
-They are not physical-phone or human discoverability evidence.
+The last contract checkpoint reaches **50/100 Skeletons in 580 seconds**, level
+17, zero deaths and zero accepted/rejected hotbar casts. Source tracing identifies
+a driver error: fresh sessions keep `currentInstanceType = null`, and overworld
+recall sends an instance-enter event only when leaving an actual instance. The
+new Fighter hook required literal `overworld`, so it returned before selecting
+skills. This is not evidence that Whirlwind itself failed.
+
+The attempt was deliberately interrupted through its verified local Playwright
+PID after identifying that error. Session `98662` exits **130**, credential scan
+passes with zero files sanitized, and all three local ports are released after
+disposable service/data cleanup. The original log is retained. Three regression
+cases reproduce the null/undefined/empty-marker failure; literal overworld and
+actual-dungeon ownership controls pass. The corrected guard follows the game's
+`currentInstanceType || 'overworld'` convention. A fresh full run is required.
+
+These observations do **not** establish completed contracts, dungeon readiness,
+a boss kill, full dungeon clear or saved raid access. They are not physical-phone
+or human discoverability evidence.
 
 ## September 7 — earlier earned preparation comparison
 
