@@ -5,14 +5,16 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-Current release queue (September 7): **1.0.26 (`85efebe`) is fully verified**.
-CI **`34070192341`** passed every job, including final live character/animation QA.
-Post-terminal uncached checks at **01:18:17 UTC** matched manifest, login label,
-versioned main entry and backend to `85efebef86ccb9a980bc630b9e860d7f68c47d4b` /
-Alpha 1.0.26; health `ok`, database `ready`. Only **1.0.27
-`0d4e1a1fb37d728db85c1eac9d56b6dc3bc785dd`** was pushed next; CI
-**`34072603962`** is running. The earlier 1.0.25 verification at 00:32:55 UTC and
-its retained attempt-1 local-port collision remain in the history below.
+Current release queue (September 7): **1.0.27 (`0d4e1a1`) is fully verified**.
+CI **`34072603962`** passed every job, including final live character/animation QA.
+Post-terminal uncached checks at **02:03:16 UTC** matched manifest, login label,
+versioned main entry and backend to `0d4e1a1fb37d728db85c1eac9d56b6dc3bc785dd` /
+Alpha 1.0.27; health `ok`, database `ready`. Only **1.0.28
+`424e6b11579b5e7ea5c50a060dcb89011fab7126`** was pushed next; CI
+**`34075003387`** is running.
+The prior 1.0.26 full verification (`34070192341`, uncached identity at
+01:18:17 UTC), 1.0.25 verification at 00:32:55 UTC and retained attempt-1
+local-port collision remain historical checkpoints.
 Later releases remain local until the preceding complete CI/live gate passes.
 
 Alpha 1.0.33 phone status implementation `fe857a6` is committed locally with

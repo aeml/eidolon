@@ -20,6 +20,26 @@ Full client validation passes **181 suites / 2,516 tests in 57.779 seconds**
 diff checks pass. The actual earned comparison is recorded below when terminal.
 A planned or running route does not establish a hunt/readiness/clear.
 
+The full comparison is running from exact clean **`fb3513908ad5c468f80355970617c519d566ed14`**,
+session **`53280`**, log `/tmp/eidolon-earned-dungeon-early-preparation.log`.
+The observed readiness checkpoint has passed: opening 33 seconds / zero deaths,
+collection 38 seconds / four natural seeds / zero deaths, then two earned items
+and three Mastery ranks saved at level 16. No stat points were available to spend.
+The Skeleton contract finished in 220 seconds including manual reward/login,
+zero deaths and 19 retreats, reaching level 27 / 5,600 XP / 2,682 gold.
+Later preparation preserved both items, filled four additional slots, topped
+Mastery up to five and verified the now-unlocked Shield after login.
+
+The Imp contract finished in 574 seconds including manual reward/login, zero
+deaths, 221 retreats and one accepted Shield, reaching level 34 / 34,411 XP /
+16,590 gold. The clean browser-error readiness checkpoint passed. Ordinary guide
+entry selected Normal level 30 Verdant, seed **`4806128072494505566`**, generator 2,
+attempt 0, no fallback. The route is still fighting inside the dungeon; no full
+clear, final credential scan or cleanup is claimed before its handle terminates.
+This is one differently equipped/world-seeded run, not a controlled claim that
+preparation alone caused the zero-death result. Runtime and selected QA sources
+remain frozen during the browser run; later ledger edits are documentation only.
+
 ## September 7 continuation — earned full-dungeon route prepared
 
 The 1.0.30 readiness measurement on `0c8c9c2` plus candidate changes **failed its
