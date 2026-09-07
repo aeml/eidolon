@@ -76,11 +76,18 @@ test('ordinary critical-talent purchases persist and retain real targeted combat
         let aim;
         await expect.poll(async () => {
             aim = await projectEntity(page, target.id);
-            if (!aim?.visible) return false;
-            await page.mouse.move(aim.x, aim.y);
-            return page.evaluate(id => window.game.hoveredEntity?.id === id &&
-                window.game.hoveredEntity.position.distanceTo(window.game.player.position) < 9, target.id);
-        }).toBe(true);
+            if (aim?.visible) await page.mouse.move(aim.x, aim.y);
+            // Hover selection updates during the render loop, not mouse.move's
+            // completion. Observe it after rendering and retain useful failure
+            // diagnostics instead of collapsing every targeting failure to false.
+            return page.evaluate(async ({ id, visible }) => {
+                await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+                const game = window.game, enemy = game.remotePlayers.get(id);
+                return { visible, hovered: game.hoveredEntity?.id === id,
+                    alive: Boolean(enemy?.isActive && enemy.state !== 'DEAD'),
+                    inRange: Boolean(enemy && enemy.position.distanceTo(game.player.position) < 9) };
+            }, { id: target.id, visible: Boolean(aim?.visible) });
+        }).toEqual({ visible: true, hovered: true, alive: true, inRange: true });
         // These are the class primary abilities, not specialization slots.
         await page.mouse.click(aim.x, aim.y, { button: 'right' });
         await expect.poll(() => page.evaluate(() => window.__criticalQA.results.length)).toBe(1);
