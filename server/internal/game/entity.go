@@ -1007,6 +1007,7 @@ func cloneItems(items []Item) []Item {
 
 func cloneItem(item Item) Item {
 	cloned := item
+	cloned.ForgeBasis = item.ForgeBasis.Clone()
 	if item.Stats != nil {
 		cloned.Stats = make(map[string]int, len(item.Stats))
 		for stat, value := range item.Stats {

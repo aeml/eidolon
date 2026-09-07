@@ -857,6 +857,14 @@ func itemToProto(i *game.Item) *statepb.Item {
 			Stats:   gemStats,
 		})
 	}
+	var forgeBasis *statepb.ForgeBasis
+	if i.ForgeBasis.Valid() {
+		basisStats := make(map[string]int32, len(i.ForgeBasis.Stats))
+		for stat, value := range i.ForgeBasis.Stats {
+			basisStats[stat] = int32(value)
+		}
+		forgeBasis = &statepb.ForgeBasis{Level: int32(i.ForgeBasis.Level), Potency: int32(i.ForgeBasis.Potency), Stats: basisStats, Value: int32(i.ForgeBasis.Value)}
+	}
 	return &statepb.Item{
 		Id:               i.ID,
 		Name:             i.Name,
@@ -878,6 +886,7 @@ func itemToProto(i *game.Item) *statepb.Item {
 		SetId:            i.SetID,
 		UniqueEffect:     i.UniqueEffect,
 		StatScaleVersion: int32(i.StatScaleVersion),
+		ForgeBasis:       forgeBasis,
 	}
 }
 

@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"eidolon-server/internal/forging"
 	"errors"
 	"sync"
 	"time"
@@ -197,6 +198,7 @@ type Item struct {
 	GemType          string         `bson:"gem_type,omitempty"`
 	GemQuality       string         `bson:"gem_quality,omitempty"`
 	StatScaleVersion int            `bson:"stat_scale_version,omitempty"`
+	ForgeBasis       *forging.Basis `bson:"forge_basis,omitempty"`
 }
 
 type SocketedGem struct {

@@ -2523,6 +2523,397 @@ export const eidolon = $root.eidolon = (() => {
             return SocketedGem;
         })();
 
+        state.ForgeBasis = (function() {
+
+            /**
+             * Properties of a ForgeBasis.
+             * @typedef {Object} eidolon.state.ForgeBasis.$Properties
+             * @property {number|null} [level] ForgeBasis level
+             * @property {number|null} [potency] ForgeBasis potency
+             * @property {Object.<string,number>|null} [stats] ForgeBasis stats
+             * @property {number|null} [value] ForgeBasis value
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a ForgeBasis.
+             * @memberof eidolon.state
+             * @interface IForgeBasis
+             * @augments eidolon.state.ForgeBasis.$Properties
+             * @deprecated Use eidolon.state.ForgeBasis.$Properties instead.
+             */
+
+            /**
+             * Shape of a ForgeBasis.
+             * @typedef {eidolon.state.ForgeBasis.$Properties} eidolon.state.ForgeBasis.$Shape
+             */
+
+            /**
+             * Constructs a new ForgeBasis.
+             * @memberof eidolon.state
+             * @classdesc Represents a ForgeBasis.
+             * @constructor
+             * @param {eidolon.state.ForgeBasis.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+            const ForgeBasis = function (properties) {
+                this.stats = {};
+                if (properties)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                            this[keys[i]] = properties[keys[i]];
+            };
+
+            /**
+             * ForgeBasis level.
+             * @member {number} level
+             * @memberof eidolon.state.ForgeBasis
+             * @instance
+             */
+            ForgeBasis.prototype.level = 0;
+
+            /**
+             * ForgeBasis potency.
+             * @member {number} potency
+             * @memberof eidolon.state.ForgeBasis
+             * @instance
+             */
+            ForgeBasis.prototype.potency = 0;
+
+            /**
+             * ForgeBasis stats.
+             * @member {Object.<string,number>} stats
+             * @memberof eidolon.state.ForgeBasis
+             * @instance
+             */
+            ForgeBasis.prototype.stats = $util.emptyObject;
+
+            /**
+             * ForgeBasis value.
+             * @member {number} value
+             * @memberof eidolon.state.ForgeBasis
+             * @instance
+             */
+            ForgeBasis.prototype.value = 0;
+
+            /**
+             * Creates a new ForgeBasis instance using the specified properties.
+             * @function create
+             * @memberof eidolon.state.ForgeBasis
+             * @static
+             * @param {eidolon.state.ForgeBasis.$Properties=} [properties] Properties to set
+             * @returns {eidolon.state.ForgeBasis} ForgeBasis instance
+             * @type {{
+             *   (properties: eidolon.state.ForgeBasis.$Shape): eidolon.state.ForgeBasis & eidolon.state.ForgeBasis.$Shape;
+             *   (properties?: eidolon.state.ForgeBasis.$Properties): eidolon.state.ForgeBasis;
+             * }}
+             */
+            ForgeBasis.create = function(properties) {
+                return new ForgeBasis(properties);
+            };
+
+            /**
+             * Encodes the specified ForgeBasis message. Does not implicitly {@link eidolon.state.ForgeBasis.verify|verify} messages.
+             * @function encode
+             * @memberof eidolon.state.ForgeBasis
+             * @static
+             * @param {eidolon.state.ForgeBasis.$Properties} message ForgeBasis message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ForgeBasis.encode = function (message, writer, _depth) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.level != null && $Object.hasOwnProperty.call(message, "level") && message.level !== 0)
+                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.level);
+                if (message.potency != null && $Object.hasOwnProperty.call(message, "potency") && message.potency !== 0)
+                    writer.uint32(/* id 2, wireType 0 =*/16).int32(message.potency);
+                if (message.stats != null && $Object.hasOwnProperty.call(message, "stats"))
+                    for (let keys = $Object.keys(message.stats), i = 0; i < keys.length; ++i)
+                        writer.uint32(/* id 3, wireType 2 =*/26).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 0 =*/16).int32(message.stats[keys[i]]).ldelim();
+                if (message.value != null && $Object.hasOwnProperty.call(message, "value") && message.value !== 0)
+                    writer.uint32(/* id 4, wireType 0 =*/32).int32(message.value);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified ForgeBasis message, length delimited. Does not implicitly {@link eidolon.state.ForgeBasis.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof eidolon.state.ForgeBasis
+             * @static
+             * @param {eidolon.state.ForgeBasis.$Properties} message ForgeBasis message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ForgeBasis.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
+            };
+
+            /**
+             * Decodes a ForgeBasis message from the specified reader or buffer.
+             * @function decode
+             * @memberof eidolon.state.ForgeBasis
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {eidolon.state.ForgeBasis & eidolon.state.ForgeBasis.$Shape} ForgeBasis
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ForgeBasis.decode = function (reader, length, _end, _depth, _target) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.eidolon.state.ForgeBasis(), key, value;
+                while (reader.pos < end) {
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
+                        break;
+                    }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.level = value;
+                            else
+                                delete message.level;
+                            continue;
+                        }
+                    case 2: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.potency = value;
+                            else
+                                delete message.potency;
+                            continue;
+                        }
+                    case 3: {
+                            if (wireType !== 2)
+                                break;
+                            if (message.stats === $util.emptyObject)
+                                message.stats = {};
+                            let end2 = reader.uint32() + reader.pos;
+                            key = "";
+                            value = 0;
+                            while (reader.pos < end2) {
+                                let tag2 = reader.tag();
+                                wireType = tag2 & 7;
+                                switch (tag2 >>>= 3) {
+                                case 1:
+                                    if (wireType !== 2)
+                                        break;
+                                    key = reader.stringVerify();
+                                    continue;
+                                case 2:
+                                    if (wireType !== 0)
+                                        break;
+                                    value = reader.int32();
+                                    continue;
+                                }
+                                reader.skipType(wireType, _depth, tag2);
+                            }
+                            if (key === "__proto__")
+                                $util.makeProp(message.stats, key);
+                            message.stats[key] = value;
+                            continue;
+                        }
+                    case 4: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.value = value;
+                            else
+                                delete message.value;
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
+                }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
+                return message;
+            };
+
+            /**
+             * Decodes a ForgeBasis message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof eidolon.state.ForgeBasis
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {eidolon.state.ForgeBasis & eidolon.state.ForgeBasis.$Shape} ForgeBasis
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ForgeBasis.decodeDelimited = function(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a ForgeBasis message.
+             * @function verify
+             * @memberof eidolon.state.ForgeBasis
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            ForgeBasis.verify = function (message, _depth) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.level != null && $Object.hasOwnProperty.call(message, "level"))
+                    if (!$util.isInteger(message.level))
+                        return "level: integer expected";
+                if (message.potency != null && $Object.hasOwnProperty.call(message, "potency"))
+                    if (!$util.isInteger(message.potency))
+                        return "potency: integer expected";
+                if (message.stats != null && $Object.hasOwnProperty.call(message, "stats")) {
+                    if (!$util.isObject(message.stats))
+                        return "stats: object expected";
+                    let key = $Object.keys(message.stats);
+                    for (let i = 0; i < key.length; ++i)
+                        if (!$util.isInteger(message.stats[key[i]]))
+                            return "stats: integer{k:string} expected";
+                }
+                if (message.value != null && $Object.hasOwnProperty.call(message, "value"))
+                    if (!$util.isInteger(message.value))
+                        return "value: integer expected";
+                return null;
+            };
+
+            /**
+             * Creates a ForgeBasis message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof eidolon.state.ForgeBasis
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {eidolon.state.ForgeBasis} ForgeBasis
+             */
+            ForgeBasis.fromObject = function (object, _depth) {
+                if (object instanceof $root.eidolon.state.ForgeBasis)
+                    return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".eidolon.state.ForgeBasis: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let message = new $root.eidolon.state.ForgeBasis();
+                if (object.level != null)
+                    if ($Number(object.level) !== 0)
+                        message.level = object.level | 0;
+                if (object.potency != null)
+                    if ($Number(object.potency) !== 0)
+                        message.potency = object.potency | 0;
+                if (object.stats) {
+                    if (!$util.isObject(object.stats))
+                        throw $TypeError(".eidolon.state.ForgeBasis.stats: object expected");
+                    message.stats = {};
+                    for (let keys = $Object.keys(object.stats), i = 0; i < keys.length; ++i) {
+                        if (keys[i] === "__proto__")
+                            $util.makeProp(message.stats, keys[i]);
+                        message.stats[keys[i]] = object.stats[keys[i]] | 0;
+                    }
+                }
+                if (object.value != null)
+                    if ($Number(object.value) !== 0)
+                        message.value = object.value | 0;
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a ForgeBasis message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof eidolon.state.ForgeBasis
+             * @static
+             * @param {eidolon.state.ForgeBasis} message ForgeBasis
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            ForgeBasis.toObject = function (message, options, _depth) {
+                if (!options)
+                    options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let object = {};
+                if (options.objects || options.defaults)
+                    object.stats = {};
+                if (options.defaults) {
+                    object.level = 0;
+                    object.potency = 0;
+                    object.value = 0;
+                }
+                if (message.level != null && $Object.hasOwnProperty.call(message, "level"))
+                    object.level = message.level;
+                if (message.potency != null && $Object.hasOwnProperty.call(message, "potency"))
+                    object.potency = message.potency;
+                let keys2;
+                if (message.stats && (keys2 = $Object.keys(message.stats)).length) {
+                    object.stats = {};
+                    for (let j = 0; j < keys2.length; ++j) {
+                        if (keys2[j] === "__proto__")
+                            $util.makeProp(object.stats, keys2[j]);
+                        object.stats[keys2[j]] = message.stats[keys2[j]];
+                    }
+                }
+                if (message.value != null && $Object.hasOwnProperty.call(message, "value"))
+                    object.value = message.value;
+                return object;
+            };
+
+            /**
+             * Converts this ForgeBasis to JSON.
+             * @function toJSON
+             * @memberof eidolon.state.ForgeBasis
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            ForgeBasis.prototype.toJSON = function() {
+                return ForgeBasis.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the type url for ForgeBasis
+             * @function getTypeUrl
+             * @memberof eidolon.state.ForgeBasis
+             * @static
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
+             */
+            ForgeBasis.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/eidolon.state.ForgeBasis";
+            };
+
+            return ForgeBasis;
+        })();
+
         state.Item = (function() {
 
             /**
@@ -2548,6 +2939,7 @@ export const eidolon = $root.eidolon = (() => {
              * @property {string|null} [setId] Item setId
              * @property {string|null} [uniqueEffect] Item uniqueEffect
              * @property {number|null} [statScaleVersion] Item statScaleVersion
+             * @property {eidolon.state.ForgeBasis.$Properties|null} [forgeBasis] Item forgeBasis
              * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
              */
 
@@ -2742,6 +3134,14 @@ export const eidolon = $root.eidolon = (() => {
             Item.prototype.statScaleVersion = 0;
 
             /**
+             * Item forgeBasis.
+             * @member {eidolon.state.ForgeBasis.$Properties|null|undefined} forgeBasis
+             * @memberof eidolon.state.Item
+             * @instance
+             */
+            Item.prototype.forgeBasis = null;
+
+            /**
              * Creates a new Item instance using the specified properties.
              * @function create
              * @memberof eidolon.state.Item
@@ -2815,6 +3215,8 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 19, wireType 2 =*/154).string(message.uniqueEffect);
                 if (message.statScaleVersion != null && $Object.hasOwnProperty.call(message, "statScaleVersion") && message.statScaleVersion !== 0)
                     writer.uint32(/* id 20, wireType 0 =*/160).int32(message.statScaleVersion);
+                if (message.forgeBasis != null && $Object.hasOwnProperty.call(message, "forgeBasis"))
+                    $root.eidolon.state.ForgeBasis.encode(message.forgeBasis, writer.uint32(/* id 21, wireType 2 =*/170).fork(), _depth + 1).ldelim();
                 if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
                     for (let i = 0; i < message.$unknowns.length; ++i)
                         writer.raw(message.$unknowns[i]);
@@ -3062,6 +3464,12 @@ export const eidolon = $root.eidolon = (() => {
                                 delete message.statScaleVersion;
                             continue;
                         }
+                    case 21: {
+                            if (wireType !== 2)
+                                break;
+                            message.forgeBasis = $root.eidolon.state.ForgeBasis.decode(reader, reader.uint32(), $undefined, _depth + 1, message.forgeBasis);
+                            continue;
+                        }
                     }
                     reader.skipType(wireType, _depth, tag);
                     if (!reader.discardUnknown) {
@@ -3176,6 +3584,11 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.statScaleVersion != null && $Object.hasOwnProperty.call(message, "statScaleVersion"))
                     if (!$util.isInteger(message.statScaleVersion))
                         return "statScaleVersion: integer expected";
+                if (message.forgeBasis != null && $Object.hasOwnProperty.call(message, "forgeBasis")) {
+                    let error = $root.eidolon.state.ForgeBasis.verify(message.forgeBasis, _depth + 1);
+                    if (error)
+                        return "forgeBasis." + error;
+                }
                 return null;
             };
 
@@ -3271,6 +3684,11 @@ export const eidolon = $root.eidolon = (() => {
                 if (object.statScaleVersion != null)
                     if ($Number(object.statScaleVersion) !== 0)
                         message.statScaleVersion = object.statScaleVersion | 0;
+                if (object.forgeBasis != null) {
+                    if (!$util.isObject(object.forgeBasis))
+                        throw $TypeError(".eidolon.state.Item.forgeBasis: object expected");
+                    message.forgeBasis = $root.eidolon.state.ForgeBasis.fromObject(object.forgeBasis, _depth + 1);
+                }
                 return message;
             };
 
@@ -3314,6 +3732,7 @@ export const eidolon = $root.eidolon = (() => {
                     object.setId = "";
                     object.uniqueEffect = "";
                     object.statScaleVersion = 0;
+                    object.forgeBasis = null;
                 }
                 if (message.id != null && $Object.hasOwnProperty.call(message, "id"))
                     object.id = message.id;
@@ -3365,6 +3784,8 @@ export const eidolon = $root.eidolon = (() => {
                     object.uniqueEffect = message.uniqueEffect;
                 if (message.statScaleVersion != null && $Object.hasOwnProperty.call(message, "statScaleVersion"))
                     object.statScaleVersion = message.statScaleVersion;
+                if (message.forgeBasis != null && $Object.hasOwnProperty.call(message, "forgeBasis"))
+                    object.forgeBasis = $root.eidolon.state.ForgeBasis.toObject(message.forgeBasis, options, _depth + 1);
                 return object;
             };
 

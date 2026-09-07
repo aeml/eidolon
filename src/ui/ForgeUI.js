@@ -1,4 +1,5 @@
 import { GEM_TYPES, GEM_QUALITIES, getGemStats } from '../core/ItemSystem.js';
+import { forgePreview, forgeUpgradeCost } from '../core/ForgeProgression.js';
 
 /**
  * Forge UI module — handles upgrade, potency, socket, and gem sub-systems.
@@ -385,27 +386,9 @@ export class ForgeUI {
             this.forgeSelectedItemName.style.color = item.rarity ? item.rarity.color : 'white';
         }
 
-        let perLevelCost = 0;
-        if (item.level < 90) {
-            const tier = Math.floor(item.level / 10);
-            const baseTierCost = Math.pow(2, tier);
-            perLevelCost = Math.floor(baseTierCost / 100);
-            if (perLevelCost < 1) perLevelCost = 1;
-        } else {
-            perLevelCost = 2;
-        }
-
-        const cost1 = perLevelCost;
-        const targetLevel1 = item.level + 1;
+        const { cost: cost1, target: targetLevel1 } = forgeUpgradeCost(item.level, 1);
         const availableShards = this._countInventoryItems(player, (invItem) => this._isShardItem(invItem));
-
-        let cost10 = perLevelCost * 10;
-        let targetLevel10 = item.level + 10;
-        if (targetLevel10 > 100) {
-            targetLevel10 = 100;
-            const actualLevels = targetLevel10 - item.level;
-            cost10 = perLevelCost * actualLevels;
-        }
+        const { cost: cost10, target: targetLevel10 } = forgeUpgradeCost(item.level, 10);
 
         if (this.forgeCostValue) {
             if (item.level >= 100) {
@@ -444,16 +427,14 @@ export class ForgeUI {
         if (this.forgeUpgradeStats) {
             let statsHtml = '<div style="margin-top: 10px; font-size: 12px;">';
             statsHtml += '<div style="color: #8fb7d9; margin-bottom: 6px;">Upgrade is the cheapest forge step. Spend Shards first while a piece is still proving it deserves later Heart and socket investment.</div>';
+            statsHtml += '<div style="color: #8fb7d9; margin-bottom: 6px;">Small stat gains carry forward to later upgrades. Buying levels separately or together gives the same result.</div>';
             statsHtml += `<div style="color: #aaa; margin-bottom: 5px;">Level: ${item.level} <span style="color: #0f0;">-> ${targetLevel1} / ${targetLevel10}</span></div>`;
             if (item.stats) {
-                const currentMult = 1.0 + (item.level * 0.15);
-                const nextMult1 = 1.0 + (targetLevel1 * 0.15);
-                const ratio1 = nextMult1 / currentMult;
-                const nextMult10 = 1.0 + (targetLevel10 * 0.15);
-                const ratio10 = nextMult10 / currentMult;
+                const preview1 = forgePreview(item, targetLevel1);
+                const preview10 = forgePreview(item, targetLevel10);
                 for (const [stat, value] of Object.entries(item.stats)) {
-                    const nextValue1 = Math.floor(value * ratio1);
-                    const nextValue10 = Math.floor(value * ratio10);
+                    const nextValue1 = preview1.stats[stat];
+                    const nextValue10 = preview10.stats[stat];
                     statsHtml += `<div>${stat}: ${value} <span style="color: #0f0;">-> ${nextValue1} / ${nextValue10}</span></div>`;
                 }
             }
@@ -595,11 +576,9 @@ export class ForgeUI {
             statsHtml += '<div style="color: #8fb7d9; margin-bottom: 6px;">Potency permanently boosts this item. Hearts are the fuel for each rank.</div>';
             statsHtml += `<div style="color: #aaa; margin-bottom: 5px;">Potency: +${currentPotency} <span style="color: #0f0;">-> +${currentPotency + 1}</span></div>`;
             if (item.stats) {
-                const currentMult = 1.0 + (currentPotency * 0.1);
-                const nextMult = 1.0 + ((currentPotency + 1) * 0.1);
-                const ratio = nextMult / currentMult;
+                const preview = forgePreview(item, item.level, currentPotency + 1);
                 for (const [stat, value] of Object.entries(item.stats)) {
-                    const nextValue = Math.floor(value * ratio);
+                    const nextValue = preview.stats[stat];
                     statsHtml += `<div>${stat}: ${value} <span style="color: #0f0;">-> ${nextValue}</span></div>`;
                 }
             }

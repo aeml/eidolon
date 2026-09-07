@@ -36,7 +36,7 @@ function seedForgeFixture(username) {
     }
 }
 
-test('forge purchases refresh the open selection and guide choices match dungeon families', async ({ page, baseURL }) => {
+test('forge purchases refresh the open selection and guide choices match dungeon families', async ({ page, baseURL }, testInfo) => {
     test.setTimeout(180_000);
     test.skip(!process.env.EIDOLON_E2E_FORGE_MONGO_CONTAINER, 'Requires the isolated forge fixture');
     const credentials = credentialsFromEnvironment();
@@ -89,6 +89,14 @@ test('forge purchases refresh the open selection and guide choices match dungeon
     await expect(page.locator('#btn-forge-potency')).toBeDisabled();
     await expect(page.locator('#forge-panel-potency')).toBeVisible();
     expect(await page.evaluate(() => window.game.uiManager.forge.selectedForgePotencySlot)).toBe('mainHand');
+    await expect.poll(() => page.evaluate(() => window.game.player.equipment.mainHand.stats.damage)).toBe(46);
+    await expect(page.locator('#forge-potency-stats')).toContainText('damage: 46');
+    await expect(page.locator('#forge-potency-stats')).toContainText('-> 50');
+    expect(await page.evaluate(() => {
+        const basis = window.game.player.equipment.mainHand.forgeBasis;
+        return { level: basis.level, potency: basis.potency, damage: basis.stats.damage };
+    })).toEqual({ level: 30, potency: 0, damage: 30 });
+    await page.screenshot({ path: testInfo.outputPath('forge-accumulated-progress.png') });
     const savedItem = await page.evaluate(() => JSON.parse(JSON.stringify(window.game.player.equipment.mainHand)));
     await page.locator('#btn-close-forge').click();
     await page.keyboard.press('Escape');
@@ -107,5 +115,5 @@ test('forge purchases refresh the open selection and guide choices match dungeon
     }
     await page.locator('#btn-close-dungeon-menu').click();
     expect(failures, failures.join('\n')).toEqual([]);
-    console.log('[forge-guide] +1/+10 levels, two potency ranks, live costs, selected tab, saved item and family choices passed');
+    console.log('[forge-guide] +1/+10 levels, two potency ranks, accumulated damage 46 with next preview 50, retained basis, live costs, selected tab, saved item and family choices passed');
 });

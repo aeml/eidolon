@@ -64,6 +64,13 @@ message SocketedGem {
   map<string, int32> stats = 3;
 }
 
+message ForgeBasis {
+  int32 level = 1;
+  int32 potency = 2;
+  map<string, int32> stats = 3;
+  int32 value = 4;
+}
+
 message Item {
   string id = 1;
   string name = 2;
@@ -85,6 +92,7 @@ message Item {
   string set_id = 18;
   string unique_effect = 19;
   int32 stat_scale_version = 20;
+  ForgeBasis forge_basis = 21;
 }
 
 message Entity {
