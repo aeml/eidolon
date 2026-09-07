@@ -35,6 +35,8 @@ whitespace, credential scans and cleanup pass; all owned local processes close.
 This candidate is not published and does not close the remaining offline combat,
 physical-device or larger 1.1–1.10 scope. The next concrete progression task is
 the [earned melee dungeon comparison](2026-09-07-earned-melee-followup.md).
+Candidate source **`be9184b79df00455542395b7cf68630ecb0f0817`** is preserved on
+**`release/40-with-rites`**, after the unchanged 1.0.39 candidate.
 
 Previous release: **1.0.33 (`0024f33`) is fully verified**.
 CI **`34096361856` attempt 1** passed every job, including final live character

@@ -3,6 +3,8 @@
 Locally verified candidate after preserved Alpha 1.0.39 source
 `c6145c35dc935ae197ca643ce1a3dfe75416fcd1`. Not published. Preserve the ordered
 1.0.35–39 CI/deployment/live gates before publishing this successor.
+Source `be9184b79df00455542395b7cf68630ecb0f0817` is preserved on
+`release/40-with-rites`.
 
 ## Included work
 
