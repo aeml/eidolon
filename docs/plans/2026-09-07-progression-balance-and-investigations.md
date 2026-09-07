@@ -26,9 +26,12 @@ compiles this text into matching catalogs, validates personal discoveries, saves
 individual evidence and selects Ilyra's replies by stable quest ID. It is locally
 tested and integrated, but world interactions and the expanded quest graph are
 not yet active on root or released builds. An isolated 23-chapter implementation
-has actual Earth and prepared returning-character Water playthrough evidence,
-including manual rewards and saved discoveries; Fire/Air and broader touch/
-continuity/pacing gates remain open. Authored text and recording tests alone are
+has actual Earth and prepared returning-character Water, Fire and Air playthrough
+evidence, including manual rewards and saved discoveries. Fire additionally
+proves the ordered anchor defeat and released ember visual; Fire/Air verify
+retrospective replies and full saved journal rereading. The fresh full campaign,
+broader touch/continuity/pacing and expansion-release gates remain open.
+Authored text and recording tests alone are
 not evidence of reachable world locations or completed playable quests.
 This expands the active full-roadmap goal. Ship verified excessive-reward fixes
 in suitable 1.0.x patches; establish progression pacing in 1.1, deliver the

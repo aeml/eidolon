@@ -5,7 +5,38 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 23:31 UTC
+## Current checkpoint — September 7, 23:38 UTC
+
+Air **59545 SUCCESS / one test / 5.1m** against **fa9feaa** (test 5.0m): Selen's
+journal, all three horizon markers, both manual optional speeches/rewards,
+reconnect and all four full saved records pass. Seven/eight engaged pursuers
+are observed targets, not audited kill counts. Actual observatory/updraft/earned
+journal screenshots are inspected and preserved in
+`/tmp/eidolon-air-earned-proof-U6GbWV/`; credential scan and cleanup pass. Clean
+investigation head **4bfa0e7** records the proof, with no runtime changes after
+the fully tested 0036656. No active investigation handles. All four realms have
+earned functionality on the recorded checkpoints; fresh full-campaign pacing,
+broader touch and expansion publication remain open.
+
+Public HTTP 200 manifest/login/main/backend all match **Alpha 1.0.42 / ea565ebf…**,
+backend `ok` / database `ready` at 23:33; this does not override failed live QA.
+Local diagnostic **77714 FAIL** on exact 42 plus observers **ad21d93** reproduces
+the failure: actual before/after/pending click target is a live Inferno Titan
+at (804.8,205.9), ray stack also contains the entrance, **zero dungeon-status
+requests/responses**. Canvas input correctly attacks a covering enemy; this is
+not an unresponsive server or evidence that the portal itself rejects clicks.
+Log `/tmp/eidolon-release42-portal-observation.log`, scan (two sanitized files)
+and cleanup pass. Existing live artifacts remain preserved.
+
+QA-only correction **f94ea72** keeps enemy priority, waits for actual camera
+settling and samples exposed entrance mesh points with normal hover checks.
+The fresh click must still select the portal. No game/runtime/server changes.
+Real-geometry desktop/touch checks preserve both enemy and exposed portal clicks:
+**11 tests / 0.591s**, lint/diff pass (17516 closed). Isolated corrected portal
+and full client checks are starting against the clean diagnostic worktree; no
+new publication, successful correction run, or 43 gate is claimed yet.
+
+## Historical checkpoint — September 7, 23:31 UTC
 
 Investigation runtime **0036656** passes full client **219 suites / 3,279 tests /
 174.009s** plus lint (86062 closed), and full server race root **22.755s**, game
