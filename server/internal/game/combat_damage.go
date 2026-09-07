@@ -1,6 +1,41 @@
 package game
 
-import "math/rand"
+import (
+	"math"
+	"math/rand"
+)
+
+// Generic critical talents cover ordinary damage (including basic attacks).
+// A named skill additionally receives only its own Technique bonus. Equipment
+// and talent chance share one roll, rather than introducing another multiplier.
+func effectiveCriticalChance(attacker *Entity, skillName string) float64 {
+	if attacker == nil {
+		return 0
+	}
+	chance := attacker.CritChanceBonus
+	if math.IsNaN(chance) || math.IsInf(chance, 0) {
+		chance = 0
+	}
+	chance = math.Max(0, chance)
+	canonical := make(map[string]int)
+	for id, rank := range attacker.TalentRanks {
+		rank, valid := NormalizeTalentRank(attacker.SubType, id, rank)
+		if !valid {
+			continue
+		}
+		id, valid = CanonicalizeTalentID(attacker.SubType, id)
+		if valid && rank > canonical[id] {
+			canonical[id] = rank
+		}
+	}
+	for id, rank := range canonical {
+		def, _ := talentDefForID(attacker.SubType, id)
+		if def.PerRank.SkillName == "" || def.PerRank.SkillName == skillName {
+			chance += def.PerRank.SkillCritChance * float64(rank)
+		}
+	}
+	return math.Min(1, chance)
+}
 
 // CalculateFinalDamage applies unique effects and set bonuses to outgoing damage.
 // Parameters:
@@ -9,8 +44,9 @@ import "math/rand"
 //   - baseDamage: the raw damage amount before modifiers
 //   - damageType: type of damage ("physical", "fire", "poison", "holy", "arcane", etc.)
 //
-// Returns the final damage amount and whether it was a lucky crit.
-func CalculateFinalDamage(attacker, target *Entity, baseDamage int, damageType string) (int, bool) {
+// Optional skill identity distinguishes skill-specific critical training from
+// generic critical chance. Returns damage and whether any critical proc occurred.
+func CalculateFinalDamage(attacker, target *Entity, baseDamage int, damageType string, skills ...string) (int, bool) {
 	if attacker == nil || baseDamage <= 0 {
 		return baseDamage, false
 	}
@@ -46,7 +82,11 @@ func CalculateFinalDamage(attacker, target *Entity, baseDamage int, damageType s
 		}
 	}
 
-	if attacker.CritChanceBonus > 0 && rand.Float64() < attacker.CritChanceBonus {
+	skillName := ""
+	if len(skills) > 0 {
+		skillName = skills[0]
+	}
+	if chance := effectiveCriticalChance(attacker, skillName); chance > 0 && rand.Float64() < chance {
 		finalDamage *= 2
 		isCrit = true
 	}
@@ -142,6 +182,12 @@ func snapshotCombatAttackerLocked(attacker *Entity) *Entity {
 		QAGuaranteedLoot:    attacker.QAGuaranteedLoot,
 	}
 	snapshot.ActiveUniqueEffects = append([]string(nil), attacker.ActiveUniqueEffects...)
+	if attacker.TalentRanks != nil {
+		snapshot.TalentRanks = make(map[string]int, len(attacker.TalentRanks))
+		for id, rank := range attacker.TalentRanks {
+			snapshot.TalentRanks[id] = rank
+		}
+	}
 	if attacker.ActiveSetBonuses != nil {
 		snapshot.ActiveSetBonuses = make(map[string]map[string]int, len(attacker.ActiveSetBonuses))
 		for setID, bonuses := range attacker.ActiveSetBonuses {

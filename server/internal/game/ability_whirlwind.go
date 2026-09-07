@@ -105,7 +105,7 @@ func (w *World) updateWhirlwind(player *Entity, now time.Time, deferred *deferre
 				target.Mu.Unlock()
 				continue
 			}
-			finalDamage := applyFinalDamage(attacker, target, damage, "physical")
+			finalDamage := applyFinalDamage(attacker, target, damage, "physical", "Whirlwind")
 			addThreatLocked(target, attacker.ID, float64(finalDamage))
 			dead := target.Health <= 0
 			if !seen[target.ID] {

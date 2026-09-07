@@ -81,6 +81,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		projectileInstanceID := e.InstanceID
 		e.Mu.RUnlock()
 		owner := w.GetEntity(projectileOwnerID)
+		var ownerCombat *Entity
 		ownerSpreadsPoison := false
 		ownerSerratedEdges := false
 		ownerPoisonCoating := false
@@ -89,6 +90,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		ownerZoneHealAmount := 15
 		if owner != nil {
 			owner.Mu.RLock()
+			ownerCombat = snapshotCombatAttackerLocked(owner)
 			ownerSpreadsPoison = owner.HasAnySetBonus("poisonSpread")
 			ownerSerratedEdges = owner.SerratedEdgesActive
 			ownerPoisonCoating = owner.PoisonCoatingActive
@@ -176,7 +178,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							target.Mu.Unlock()
 							continue
 						}
-						finalDamage := applyFinalDamage(owner, target, damage, damageType)
+						finalDamage := applyFinalDamage(ownerCombat, target, damage, damageType, zoneSkill)
 						if ownerIsPlayer {
 							addThreatLocked(target, ownerID, float64(finalDamage))
 						}
@@ -266,7 +268,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						target.Mu.Unlock()
 						continue
 					}
-					finalDamage := applyFinalDamage(owner, target, damage, "fire")
+					finalDamage := applyFinalDamage(ownerCombat, target, damage, "fire", impactName)
 					if ownerIsPlayer {
 						addThreatLocked(target, ownerID, float64(finalDamage))
 					}
@@ -306,7 +308,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 								target.Mu.Unlock()
 								continue
 							}
-							finalDamage := applyFinalDamage(owner, target, shieldExplosionDamage, "arcane")
+							finalDamage := applyFinalDamage(ownerCombat, target, shieldExplosionDamage, "arcane", "Arcane Shield")
 							if ownerIsPlayer {
 								addThreatLocked(target, ownerID, float64(finalDamage))
 							}
@@ -476,7 +478,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				spreadPoisonAfterHit := false
 				spreadPoisonDamage := 0
 				spreadPoisonEndTime := time.Time{}
-				finalDamage = applyFinalDamage(owner, target, finalDamage, damageType)
+				finalDamage = applyFinalDamage(ownerCombat, target, finalDamage, damageType, projSkill)
 				if ownerIsPlayer {
 					addThreatLocked(target, ownerID, float64(finalDamage))
 				}
@@ -617,7 +619,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						if withinAbilityRadius(subType, projX, projZ, splashTarget, splashRadius) {
 							splashTarget.Mu.Lock()
 							splashDmg := int(float64(finalDamage) * 0.4)
-							splashDmg = applyFinalDamage(owner, splashTarget, splashDmg, "fire")
+							splashDmg = applyFinalDamage(ownerCombat, splashTarget, splashDmg, "fire", projSkill)
 							if ownerIsPlayer {
 								addThreatLocked(splashTarget, ownerID, float64(splashDmg))
 							}
@@ -837,6 +839,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				impactX, impactZ := e.ChargeTargetX, e.ChargeTargetZ
 				instanceID, sourceID := e.InstanceID, e.ID
 				consumeKnockdownCombo := e.ActiveCombo == "charge_extended_knockdown"
+				chargeCombat := snapshotCombatAttackerLocked(e)
 				if consumeKnockdownCombo {
 					e.ActiveCombo = ""
 				}
@@ -855,7 +858,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 					if withinAbilityRadius(impactSkill, impactX, impactZ, target, 16.0) {
 						target.Mu.Lock()
-						finalDamage := applyFinalDamage(e, target, damage, "physical")
+						finalDamage := applyFinalDamage(chargeCombat, target, damage, "physical", impactSkill)
 						addThreatLocked(target, sourceID, float64(finalDamage))
 						isDead := target.Health <= 0
 						if impactSkill == "Shattering Charge" && !isDead {
@@ -1189,6 +1192,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 						pX, pZ, instanceID := e.X, e.Z, e.InstanceID
 						hasSpiritHeal := e.HasAnySetBonus("spiritGuardiansHeal")
+						spiritCombat := snapshotCombatAttackerLocked(e)
+						spiritSkill := "Spirit Guardians"
+						if e.SpiritsBoosted {
+							spiritSkill = "Spirit Guardians Boost"
+						}
 						spiritHealAmount := 0
 						if hasSpiritHeal {
 							skill := "Spirit Guardians"
@@ -1223,7 +1231,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 										target.Mu.Unlock()
 										continue
 									}
-									finalDamage := applyFinalDamage(e, target, damage, "holy")
+									finalDamage := applyFinalDamage(spiritCombat, target, damage, "holy", spiritSkill)
 									addThreatLocked(target, e.ID, float64(finalDamage))
 									isDead := target.Health <= 0
 									target.Mu.Unlock()
@@ -1284,6 +1292,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		// Normal duration: 15s, with set bonus: permanent while in combat (300s max)
 		owner.Mu.RLock()
 		hasPermanentSeraph := owner.HasAnySetBonus("permanentSeraph")
+		seraphCombat := snapshotCombatAttackerLocked(owner)
 		ox, oz := owner.X, owner.Z
 		owner.Mu.RUnlock()
 
@@ -1354,7 +1363,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				ownerIsPlayer := owner.Type == TypePlayer
 				ownerID := e.OwnerID
 				target.Mu.Lock()
-				finalDamage := applyFinalDamage(owner, target, damage, "holy")
+				finalDamage := applyFinalDamage(seraphCombat, target, damage, "holy", "Avenging Seraph")
 				if ownerIsPlayer {
 					addThreatLocked(target, ownerID, float64(finalDamage))
 				}

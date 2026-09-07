@@ -175,11 +175,11 @@ func applyHealingReceived(target *Entity, amount int) int {
 	return amount
 }
 
-func applyFinalDamage(attacker, target *Entity, baseDamage int, damageType string) int {
+func applyFinalDamage(attacker, target *Entity, baseDamage int, damageType string, skills ...string) int {
 	if target == nil || baseDamage <= 0 {
 		return 0
 	}
-	finalDamage, _ := CalculateFinalDamage(attacker, target, baseDamage, damageType)
+	finalDamage, _ := CalculateFinalDamage(attacker, target, baseDamage, damageType, skills...)
 	target.Health -= finalDamage
 	target.LastDamageType = damageType
 	return finalDamage

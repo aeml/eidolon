@@ -1,7 +1,8 @@
 # Critical-chance talent consumers — reproduced September 7
 
-Status: **four actual-cast failures reproduced; runtime repair pending**. This is
-the next build-correctness finding, not a completed talent category or release.
+Status: **server critical consumption implemented in an isolated working branch;
+offline, tooltip, composition and real-gameplay checks remain open**. This is
+not a completed talent category or release.
 The main game and earned Fighter browser sources remained frozen during these
 isolated Go overlay diagnostics. No production or browser character was modified.
 
@@ -62,3 +63,35 @@ The earned Fighter route does not allocate these critical talents, so these
 diagnostics neither explain its missing hotbar casts nor invalidate its ordinary
 opening/collection results. The separate fresh-overworld driver correction is
 recorded in the earned-melee plan.
+
+## Isolated server implementation checkpoint
+
+Work is isolated in `/tmp/eidolon-critical-talents-lkoMno`, branch
+`work/critical-talents-20260907`, based on `2c80b06`. It is not merged into the
+root checkout serving the active earned Fighter run, and is not in the release
+queue. Generic critical talents now contribute to ordinary damage, including
+basic attacks as their general critical-chance copy implies. A named skill also
+receives only its own Technique chance. Equipment and talent chance share one
+roll, capped at 100%; invalid/cross-class/negative ranks are ignored, oversized
+ranks are capped, and duplicate legacy IDs do not double-count.
+
+Immediate handlers, Rogue projectiles, zones, Meteor, Charge, Whirlwind and
+Cleric periodic damage carry explicit skill identities. Attacker snapshots copy
+private talent ranks and are captured before target locks, retaining delayed
+damage bonuses without aliasing the live talent map. Existing damage modifiers
+and event routing remain in place. There are no talent/save migrations.
+
+The original overlay now passes **1.838s**. Promoted actual-cast and new core
+chance/snapshot/composition checks pass **0.438s**. Actual projectile update tests
+for Piercing Throw, Fan of Knives, Blade Storm and Phantom Volley cover rank
+zero/one/five and unrelated Backstab training; they pass **0.539s**. Full server
+race checks pass: root **13.470s**, game **338.626s**. Logs:
+`/tmp/eidolon-critical-{consumer-first-fix,core-server,projectiles-server,server-race-initial}.log`.
+
+These results do not prove the remaining rune/guaranteed-crit and splash
+composition review, all periodic/utility talent benefits, offline parity,
+accurate client copy or real-server browser/persistence checks. In particular,
+inspect the existing splash path that derives its amount from already-modified
+direct damage before running the modifier pipeline again. Preserve its baseline
+evidence before choosing a correction. Do not package this checkpoint as a
+complete critical-system repair.
