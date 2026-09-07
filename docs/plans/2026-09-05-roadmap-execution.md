@@ -47,7 +47,45 @@ implements a localized depth-correct cutaway (`d8a5361`). After rejecting whole
 building transparency and an alpha-depth regression, it passes **10 GPU checks /
 50.4s**, **215 suites / 3,183 tests / 129.07s**, lint and real cutaway/combat/town
 restoration **47.7s**, scan and cleanup. Actual landscape imagery is inspected.
-46 packaging is underway in that worktree; it is not root-integrated or live.
+That earlier packaging state is superseded by the completion checkpoint below.
+
+### 46 locally verified and integrated; balancing implementation begun
+
+**Alpha 1.0.46** package **`2fe9cb2`**, evidence/queued branch
+**`release/46-with-runtime-readiness` / `80ac065`**, completes all local checks:
+**236 contracts / 1.788s**, **215 suites / 3,185 tests / 126.31s**, lint,
+backend-root race **12.231s**, **75 anonymous browser checks / 8.2m**, and actual
+packaged cutaway/combat/town-return gameplay **41.5s / 42.9s total**. Credential
+scan and disposable cleanup succeed; the actual landscape image is inspected.
+All owned local handles are closed. Root integration passes the same 236
+contracts **1.337s**. See [entrance evidence](2026-09-07-entrance-visibility.md).
+This is local Alpha 1.0.46, not the public version.
+
+39 CI **34146247683** now passes client/server/browser smoke and runs
+predeployment character QA. No 39 deployment/live success is claimed; the next
+publish remains `release/40-with-runtime-readiness` only after its prior release
+fully passes CI/live and exact public identity checks. The last exact public
+verification remains 38 at 17:06:45 UTC above.
+
+The new [progression baseline](2026-09-07-progression-pacing-baseline.md) and
+production-path audit (`850fee2`) are integrated in root. Actual boss receipts
+show a level-30 solo character receiving **2,000,310 XP / level 30 → 46** from
+one boss reward; early story payouts alone reach level 16. The curve then grows
+to billions of XP per level late in the game. Collection sweeps establish a
+65% ordinary / guaranteed guardian rate, four required items and 6.15 expected
+ordinary kills. This is measured reward logic, not a new earned playthrough or
+sign-off on balance. The audit passes race **5.535s**, then three repeats
+**9.039s**. Numeric reward tuning is still open.
+
+Branch `work/progression-balance-20260907` in
+`/tmp/eidolon-progression-balance-LQRg5a` additionally fixes weekly full-bag gold
+source undercount (`3f62935`): **60,000 received / 50,000 recorded** reproduces
+in **0.665s**, and the corrected weekly/quest/cap/pacing checks pass three
+race-enabled repetitions **14.208s**. Payouts remain unchanged. This runtime
+change is not root-integrated or packaged yet; the balance worktree has merged
+the verified 46 ancestry. The broad XP/loot/quest/investigation work remains
+open. A nonblocking question asks the player for desired first-dungeon pacing;
+1–2 hours is a provisional design target, not measured or approved sign-off.
 
 ## Scope addition — September 7
 
