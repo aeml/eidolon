@@ -2,7 +2,9 @@
 
 Follow-up to the [measured loot/Forge baseline](2026-09-07-loot-and-forge-baseline.md).
 Runtime work is isolated on `work/economy-balance-20260907` in
-`/tmp/eidolon-economy-balance-MYgoxi`. It is not yet a numbered release or live.
+`/tmp/eidolon-economy-balance-MYgoxi`. Runtime **`9695add`** and corrected release
+ancestry **`d055ccb`** are packaged as **Alpha 1.0.48 (every shard counts)**.
+Final package verification remains pending; it is not published or root-integrated.
 
 ## Required behavior
 
@@ -45,24 +47,38 @@ passes. Logs `/tmp/eidolon-forge-persistence.log`,
 `/tmp/eidolon-forge-progression-client.log`, `/tmp/eidolon-forge-full-client.log`,
 `/tmp/eidolon-forge-lint.log`.
 
-At this checkpoint the first full backend run is active (owned handle `58835`,
-`/tmp/eidolon-forge-full-server.log`). The actual isolated Forge route is also
-active (`83660`, `/tmp/eidolon-forge-precision-gameplay.log`). Do not restart
-either merely because observing it times out; revalidate its actual handle.
-No success or visual claim is made for these still-running checks.
+The first full backend run passes race (root **18.301s**, game **298.426s**),
+log `/tmp/eidolon-forge-full-server.log`. The actual isolated Forge route passes
+**17.9s / 19.6s total**, log `/tmp/eidolon-forge-precision-gameplay.log`, including
+credential scan and disposable cleanup. Its inspected image shows potency +2,
+**46 damage → 50** for the next rank, and the correctly disabled four-heart
+purchase with an empty bag. Reconnect preserves the exact item and its basis.
+The image is independently retained at `/tmp/eidolon-forge-accumulated-progress.png`.
+This is a prepared functional fixture, not earned economy or phone evidence.
+Both owned handles are closed. These full checks precede the auction mapper
+correction described next, not a claim of final packaged verification.
+
+The auction BSON round-trip regression fails **0.234s** because the basis is
+missing at the first saved upgraded level. Both auction mappers now deep-copy
+the basis. Repeated reload/continued upgrades, rejected purchases, direct-trade,
+snapshot and Forge checks pass three race repetitions **10.146s**. The final
+server-root persistence/equipment set passes **1.854s**. Logs:
+`/tmp/eidolon-forge-auction-before.log`, `/tmp/eidolon-forge-auction-after.log`,
+`/tmp/eidolon-forge-persistence-final.log`. These handles are closed.
 
 ## Remaining before packaging
 
-- [ ] Finish the active handles and inspect/preserve the actual Forge image.
-- [ ] Carry the saved basis through **TradingSystem.toDBItem/fromDBItem**;
-  inspection found these separate auction mappers after the initial suites
-  started. Add a real auction BSON round-trip/continued-upgrade regression.
-  Current runtime must not be packaged until this omission is corrected.
-- [ ] Cover rejected operations, copied/escrowed basis isolation, the final
-  persistence paths and any changed final runtime with proportionate regressions.
-- [ ] Integrate the corrected 40 combo-observation ancestry, version/package
-  the completed change with patch notes, run final release checks and publish
-  only after all earlier sequential CI/live gates pass.
+- [x] Finish the initial handles and inspect/preserve the actual Forge image.
+- [x] Preserve the basis through both auction mappers with a real auction BSON
+  round-trip and continued-upgrade regression.
+- [x] Cover rejected operations, copied-basis isolation and corrected persistence.
+- [x] Integrate corrected 40 combo-observation ancestry and align 48's package,
+  login, release manifest, server/deployment defaults and distinct patch notes.
+  Version/default/Forge contracts pass **239 / 1.302s**.
+- [ ] Finish final packaged client/server/browser and real Forge checks; retain
+  exact artifacts and integrate locally only after the package is verified.
+- [ ] Publish after earlier sequential CI/live gates, then verify exact public
+  commit/version and healthy/ready backend. Local 48 is not the current live game.
 
 This is an arithmetic/persistence correction within balancing, not the full
 balance pass. Attainable late-potency costs, equipment frequency, XP/gold curve
