@@ -286,14 +286,16 @@ export class AbilityController {
 
         // Determine target (mouse cursor)
         let targetPos = null;
+        let targetEntity = null;
         if (this.engine.hoveredEntity && this.engine.hoveredEntity !== player && this.engine.hoveredEntity.state !== 'DEAD' && !(this.engine.hoveredEntity instanceof DwarfSalesman)) {
-            targetPos = this.engine.hoveredEntity.position;
+            targetEntity = this.engine.hoveredEntity;
+            targetPos = targetEntity.position;
         } else {
             targetPos = this.engine.inputManager.getGroundIntersection();
         }
 
         if (targetPos) {
-            this.performAbility(targetPos, skillName);
+            this.performAbility(targetPos, skillName, targetEntity);
         }
     }
 
@@ -307,13 +309,22 @@ export class AbilityController {
      *
      * @param {THREE.Vector3|null} targetVectorOverride
      * @param {string|null} skillNameOverride
+     * @param {object|null} targetEntityOverride Captured hotbar actor intent.
      */
-    performAbility(targetVectorOverride = null, skillNameOverride = null) {
+    performAbility(targetVectorOverride = null, skillNameOverride = null, targetEntityOverride = null) {
         const engine = this.engine;
         const player = engine.player;
         if (!player) return;
         if (engine.uiManager.isEscMenuOpen || engine.uiManager.isPatchNotesOpen || engine.uiManager.reportScreen.style.display === 'block') return;
         if (player.state === 'JUMPING' || engine.playerJumpState) {
+            return;
+        }
+        if (!SELF_CAST_ABILITIES.has(skillNameOverride || player.abilityName) && targetEntityOverride &&
+            (targetEntityOverride.isActive === false || targetEntityOverride.state === 'DEAD')) {
+            engine.showReadabilityFeedback?.('ability-target-unavailable', {
+                title: 'Target unavailable', tone: 'warning',
+                subtitle: 'Choose a living target and cast again.'
+            }, 700);
             return;
         }
 
@@ -360,6 +371,7 @@ export class AbilityController {
                 this.inputBuffer.push({
                     skillName: skillNameOverride,
                     target: targetVectorOverride,
+                    targetEntity: targetEntityOverride,
                     timestamp: Date.now() / 1000
                 });
                 console.log(`Buffered ability: ${skillNameOverride || 'Primary'} (CD)`);
@@ -493,7 +505,7 @@ export class AbilityController {
                 engine.network.send('ability', {
                     targetX: targetVectorOverride.x,
                     targetZ: targetVectorOverride.z,
-                    targetId: "",
+                    targetId: targetEntityOverride?.id || "",
                     skillName: skillNameOverride || player.abilityName
                 });
             }
@@ -647,12 +659,12 @@ export class AbilityController {
                 this.inputBuffer.shift();
                 
                 // Re-determine target if not overridden
-                let target = buffered.target;
+                let target = buffered.targetEntity?.position || buffered.target;
                 if (!target) {
                      // performAbility logic handles null target by checking mouse.
                 }
                 
-                this.performAbility(target, buffered.skillName);
+                this.performAbility(target, buffered.skillName, buffered.targetEntity || null);
             }
         }
     }
