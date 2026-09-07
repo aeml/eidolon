@@ -1,5 +1,13 @@
 # Next 1.1 progression comparison — earned melee dungeon entry and completion
 
+Status: **the corrected Fighter comparison passed** on `2c80b06`, 29.3 minutes.
+Full evidence is in [fresh progression](fresh-progression-evidence.md): all four
+Verdant bosses, completed-run recall/re-entry, manual Earth reward and saved
+Rootheart raid access. Entered at earned level 34 and finished at level 54;
+zero rejected dungeon casts. This closes this bounded comparison, not the
+remaining Rogue/Cleric, realm, difficulty, party or physical-phone gates.
+The plan and earlier pending/stopped states below are retained as history.
+
 Queued after the 1.0.40 candidate's verification. This does not replace the
 full roadmap, all-class/all-realm dungeon matrix or physical-phone gates.
 
