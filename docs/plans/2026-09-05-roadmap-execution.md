@@ -26,13 +26,16 @@ post-terminal public identity check matches. Preserve the original 1.0.37–1.0.
 candidates and carry this correction forward into each before its publication.
 Do not push the root 1.0.40 working HEAD.
 
-The earned Fighter run remains separate and unchanged at `2c80b06`, session
+The earned Fighter run completed on unchanged source `2c80b06`, session
 `47165`, `/tmp/eidolon-earned-fighter-corrected-gameplay.log`. Its paid Skeleton
 and Imp contracts and saved manual rewards reach level 34; the full Verdant
-route is ongoing. The isolated critical-talent work is committed as **`b32c084`**
+route passes in **29.3 minutes**, including all four bosses, completed recall/
+re-entry, manual Earth reward and saved Rootheart access. It ends at level 54,
+with zero rejected dungeon casts; see the fresh-progression evidence for counts.
+The isolated critical-talent checkpoint is committed as **`b32c084`**
 on `work/critical-talents-20260907` in `/tmp/eidolon-critical-talents-lkoMno`.
 Its server race suite passes (game 338.626s), but offline/copy/composition and
-browser checks remain open. It is not merged into this running game or queued
+browser checks remain open. It is not merged into the root checkout or queued
 as a release.
 
 Previous 1.0.36 publication snapshot:

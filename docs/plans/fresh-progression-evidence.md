@@ -43,12 +43,13 @@ These observations do **not** establish completed contracts, dungeon readiness,
 a boss kill, full dungeon clear or saved raid access. They are not physical-phone
 or human discoverability evidence.
 
-### Corrected earned run — in progress
+### Corrected earned run — passed
 
 Exact clean source **`2c80b06c59cc0dd771499e908510cda84a43fde7`**, session
 **`47165`**, `/tmp/eidolon-earned-fighter-corrected-gameplay.log`. The same
 dedicated ports are reused only after the prior attempt's terminal cleanup.
-Runtime and selected QA remain frozen; later ledger changes are documentation.
+Runtime and selected QA remained frozen through terminal success; later ledger
+changes are documentation.
 
 Opening passes in 75 seconds with zero deaths. Collection produces four natural
 seeds in two observed target deaths. Normal preparation saves two collected
@@ -67,10 +68,22 @@ readiness and clean-browser-error checkpoint passes.
 
 Ordinary guide entry selects Normal level 30 Verdant, seed
 **`-9201157456171118839`**, generator 2, attempt 0, no fallback. Rootbound Warden
-and Briar Matron have been defeated through actual combat. Accepted skills by
-the first boss include Iron Fortress, Whirlwind and Shield Slam; Guardian Roar
-is not incorrectly required before its level-40 unlock. This remains a running
-measurement, not a full-clear, completed recall/re-entry or saved raid-access pass.
+and Briar Matron were followed by Rustbound Colossus and Hollow Sentinel, all
+defeated through actual combat. Accepted skills by the first boss include Iron
+Fortress, Whirlwind and Shield Slam; Guardian Roar is not incorrectly required
+before its level-40 unlock.
+
+**Final result: passed in 29.3 minutes**, session `47165` exited zero. The
+dungeon/story portion took 903 seconds, entering at level 34 and finishing at
+level 54. Accepted dungeon casts: Charge 9, Iron Fortress 28, Whirlwind 168,
+Shield Slam 161 and Guardian Roar 39; zero rejected casts. Completed-run recall
+and re-entry preserved seed, cleared bosses and gold. Manual Earth turn-in
+awarded 500 gold / 250,000 XP and saved Rootheart raid access across reconnect.
+The final browser-error check, credential scan (zero files sanitized) and
+isolated QA command passed with temporary service/data cleanup.
+
+This proves one earned **Fighter / Earth / Normal level-30 / one-seed** route,
+not the other classes, realms, difficulties, group raids or physical-phone gate.
 
 ## September 7 — earlier earned preparation comparison
 
