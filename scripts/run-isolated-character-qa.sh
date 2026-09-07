@@ -5,7 +5,7 @@ readonly QA_RUN_ID="${EIDOLON_ISOLATED_QA_RUN_ID:-$(openssl rand -hex 5)}"
 readonly MONGO_CONTAINER="eidolon-isolated-qa-mongo-${QA_RUN_ID}"
 readonly API_CONTAINER="eidolon-isolated-qa-api-${QA_RUN_ID}"
 readonly QA_NETWORK="eidolon-isolated-qa-net-${QA_RUN_ID}"
-readonly QA_PORT="${EIDOLON_ISOLATED_QA_PORT:-18087}"
+readonly QA_PORT="${EIDOLON_ISOLATED_QA_PORT:-18185}"
 readonly SERVER_IMAGE="eidolon-server:isolated-qa-${QA_RUN_ID}"
 qa_default_network_mode=bridge
 if [[ "$(uname -s)" == Linux ]]; then

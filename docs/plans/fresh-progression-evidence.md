@@ -15,7 +15,7 @@ compare it as identical equipment to the previous seven-slot attempt.
 
 Local API port 18085 also collided with the 1.0.25 CI predeploy attempt. That
 attempt stopped before gameplay/deployment; its unchanged failed jobs were rerun
-after cleanup. The 1.0.30 candidate now separates local API/Mongo ports 18087/18088
+after cleanup. The 1.0.30 candidate now separates local API/Mongo ports 18185/18186
 from CI's 18085/18086, with Linux loopback host-network defaults. The configuration
 removes the confirmed collision and avoids script-created bridge/veth changes,
 but does not establish the cause of every Chrome network error.
@@ -36,8 +36,12 @@ turn-in and saved Rootheart raid access. Eleven new entry/flow tests cover guide
 selection, re-entry, preconditions and failure propagation; the separate port
 configuration test also passes. Full client verification passes **176 suites /
 2,473 tests in 57.971 seconds**, lint and shell syntax pass. These are harness
-checks, **not an earned dungeon clear**. The first combined browser attempt is
-pending; no result is claimed until its checkpoints actually execute.
+checks, **not an earned dungeon clear**. The first combined launch stopped before
+any browser/build because the initially chosen adjacent Mongo port 18088 belongs
+to an unrelated existing service. The guard refused it; no service was stopped
+or replaced. The corrected default pair 18185/18186 was checked free before retry.
+The initial startup log is `/tmp/eidolon-1-0-30-fresh-dungeon.log`. The combined
+browser attempt is still pending; no result is claimed until its checkpoints execute.
 
 ## Earned dungeon-readiness extension — September 6, measurement pending
 

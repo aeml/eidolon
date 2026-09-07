@@ -39,7 +39,7 @@ pass. Credential scanning and exact disposable cleanup passed.
 During this local run, 1.0.25 CI attempt 1 stopped before gameplay because its API
 port 18085 was already occupied by the local test. No deployment ran. After local
 cleanup, the unchanged failed jobs were rerun. Local isolated QA now defaults to
-18087; CI explicitly reserves 18085, with adjacent authenticated Mongo ports.
+18185; CI explicitly reserves 18085, with adjacent authenticated Mongo ports.
 Linux defaults to the already-supported host-network mode and loopback-only
 services, avoiding bridge/veth changes made by this script. Other platforms keep
 bridge mode. A configuration regression checks disjoint port pairs and loopback

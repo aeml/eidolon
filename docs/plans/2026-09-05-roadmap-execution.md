@@ -15,7 +15,7 @@ health is `ok`, database `ready`. Only **1.0.25
 **`34067519448`** attempt 2 is running. Attempt 1 stopped before gameplay because
 the local readiness check occupied API port 18085; no deployment ran. The unchanged
 failed jobs were rerun after exact local cleanup, and new local QA defaults use
-18087 to prevent that collision. No 1.0.26-or-later release has been pushed.
+18185 to prevent that collision. No 1.0.26-or-later release has been pushed.
 
 Previously, corrected 1.0.23 CI **`34062629059`** passed every job. Its
 post-terminal uncached checks at **22:51:20 UTC** matched all four identities
