@@ -45,7 +45,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			applyIntervention := func(target *Entity) int {
 				target.DivineInterventionActive = true
 				target.DivineInterventionEndTime = protectionEnd
-				heal := applyHealingReceived(target, applyHealingDoneBonus(player, target.MaxHealth/2))
+				heal := applyHealingReceived(target, applyAbilityHealingBonus(player, skillName, target.MaxHealth/2))
 				previousHealth := target.Health
 				target.Health += heal
 				if target.Health > target.MaxHealth {
@@ -315,7 +315,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 		cost := resolveAbilityManaCost(player, skillName, 25)
 		if player.Mana >= cost {
 			player.Mana -= cost
-			healAmount := applyHealingDoneBonus(player, 30+(player.Stats.Wisdom*3))
+			healAmount := applyAbilityHealingBonus(player, skillName, 30+(player.Stats.Wisdom*3))
 
 			// Healing Light Rune Effects
 			runeID := player.GetRuneForSkill("Healing Light")

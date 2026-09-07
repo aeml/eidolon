@@ -227,8 +227,15 @@ Wizard, buys ranks through the phone interface, checks server-confirmed spell
 cost/cooldown changes and repeats after fresh login in landscape. This functional
 route is included in full isolated QA; it does not measure earned progression.
 
+The `talent-healing` isolated route uses a prepared level-100 Cleric and the
+existing allowlisted low-health fixture, then selects the healer branch and buys
+five Healing Light Mastery ranks through the phone UI. It checks real mana use,
+exact heal events and visible floating numbers before/after purchase and after
+fresh login in landscape. This is functional spell verification, not earned
+progression. It is included in full isolated QA.
+
 `npm run audit:talent-consumers` runs separate paired-cast probes for still-open
-healing, duration, range and area talent consumers. It currently fails on those
+duration, range and area talent consumers. It currently fails on those
 known defects; it is not a passing release gate. It uses a temporary Go build
 overlay and does not modify server source or saved characters. Evidence and
 next implementation requirements are in the

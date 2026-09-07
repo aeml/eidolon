@@ -5,6 +5,15 @@ runtime. Not repaired by the cooldown/mana patch, and not a complete 160-talent
 audit. No production save, running browser source or game balance was changed
 by these diagnostic casts.
 
+September 7: the separate [1.0.31 healing candidate](2026-09-07-talent-healing.md)
+promotes the Healing Light reproduction into normal server regression coverage,
+with direct/periodic, rune/combo and receiving-modifier checks. Its focused tests
+pass; browser and publication validation remain separate. The diagnostic command
+now retains the **three unresolved duration/range/area probes**. The original
+four-defect measurements below remain historical evidence, not current failures
+of the repaired Healing Light consumer. Purifying Wave's healing-only Mastery
+and other effect/copy gaps are still open.
+
 ## Repeatable evidence
 
 Run `npm run audit:talent-consumers` with Node 24 and Go available. The script
