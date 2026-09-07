@@ -87,6 +87,36 @@ its content and one portrait shield to leave the encounter center unobscured.
 The browser slot remains owned by 44's anonymous suite; do not overlap another
 owned local browser or edit the frozen package's served runtime while it runs.
 
+### Local 44 integrated; compact status details implemented
+
+The 44 anonymous handle finishes **61 pass / 1 startup failure / 6.0m**. Its
+network-change trace is retained at `/tmp/eidolon-release44-hud-network-change.zip`.
+Both HUD cases then pass **18.5s** using the existing bounded runtime-readiness
+helper; no gameplay or interaction assertion is changed. The final versioned
+Shield route passes **43.9s** on `56438d7`, repeating **695 / 834 / 834** and
+**310 absorbed / 524 left**, with successful scan/cleanup. The inspected
+closed-panel portrait capture shows the actual sapphire ward around the Wizard.
+This is focused corrected coverage plus the 61 sweep passes, not a claim that a
+fresh full anonymous command passed. All 44 local handles are closed.
+
+Candidate **`release/44-with-lifesteal-race` / `4f87516`** is retained and merged
+into root, with its complete [package evidence](2026-09-07-arcane-shield-training.md).
+Root now displays 1.0.44 locally, not on the public site. The exact public
+manifest/login/versioned-main/backend still agree on healthy, database-ready
+**1.0.37 `2e37508`** at **16:25:09 UTC**. The pushed 38 candidate remains in
+predeployment character QA; neither 39 nor any successor is authorized yet.
+
+The compact status follow-up is implemented in its isolated worktree at
+**`54f4195`**. Three failing rendered checks measure empty panels at **496 /
+258 / 188px**, instead of content budgets **129 / 105 / 177px**. Short panels
+now fit their content; long lists use bounded scrolling, with kind/time sharing
+a readable row. Combined compact and populated-list touch checks pass **7 /
+26.5s**, status lifecycle checks **9 / 0.508s**, and lint passes. The new tests
+join anonymous CI. Actual Shield gameplay with the revised CSS is running in
+`/tmp/eidolon-status-compact-gameplay.log`; this follow-up is not yet packaged
+with its own successor version or merged to root. Entrance occlusion and
+physical-phone review remain open.
+
 ## Earlier execution history
 
 Current release queue (September 7): **corrected 1.0.37 (`2e37508`) is fully
