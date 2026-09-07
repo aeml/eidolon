@@ -25,11 +25,15 @@ login/runtime versions. Final package checks pass **3,113 client tests / 211
 suites (73.66s)**, lint, root backend race (**7.576s**) and **53/53 anonymous
 browser tests (3.9m)**. Earlier full game race and additional shared-contract/
 rune-only checks cover unchanged Go gameplay source. All three status skills
-individually pass real baseline/trained/saved damage checks; a final combined
-versioned run is next. See [1.0.42 evidence](2026-09-07-release42-status-training.md).
+individually pass real baseline/trained/saved damage checks. The final combined
+versioned run on **`ef6f47d`** also passes: Lunge **23.9s** (69/82/82), Serrated
+Edges **28.4s** (38/45/45), Poison Coating **34.4s** (67/80/80), with exact
+cast/source/target checks and clean credential scan/disposable cleanup. All
+local handles are terminal success; no owned local browser remains active.
+See [1.0.42 evidence](2026-09-07-release42-status-training.md).
 This package is not published and does not close the full roadmap.
 
-Independent status-training work now reproduces and repairs an actual entrance
+Earlier isolated status-training checkpoint reproduces and repairs an entrance
 targeting defect: entrance geometry overrode any enemy in the raycast hit stack,
 even when the entrance was behind it. New real-geometry tests fail twice before
 the fix and pass afterward; combined targeting/mobile/status coverage passes

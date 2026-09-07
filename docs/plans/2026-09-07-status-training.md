@@ -84,8 +84,11 @@ targets and the protocol's separate acceptance/result and cast-identity events.
 Selection now samples exposed points on the actual hitbox, snapshots the hovered
 actor at input dispatch, and retains strict identity/health/damage checks. No
 raycast, ability or enemy state is directly replaced to make the test pass.
-The three skills pass individually; a single combined three-skill run on the
-final helper is not yet recorded. The opt-in route is not added to default CI.
+The final versioned combined run on `ef6f47d` also passes all three skills:
+23.9s / 28.4s / 34.4s with the same baseline/trained/saved ticks, strict target
+identity and clean artifact scan/cleanup. Log:
+`/tmp/eidolon-release42-status-gameplay.log`. The opt-in route is not added to
+default CI.
 
 Final full client checks pass **211 suites / 3,112 tests in 73.485s**, plus lint,
 on `a37ae92`; the later helper-only change has no game runtime difference. New

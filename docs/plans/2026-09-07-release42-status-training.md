@@ -20,8 +20,15 @@ browser tests in 3.9 minutes**. Logs: `/tmp/eidolon-release42-full-client.log`,
 retain the distinction between containment and full visual/physical-phone
 sign-off; follow-up Forge design work is recorded in the shared phone layout.
 
-The final versioned combined three-skill status route is being repeated next,
-supplementing the individually passing browser results. Preserve the sequential
+The final versioned combined three-skill status route **passes on `ef6f47d`**:
+Shadow Lunge **23.9s** (69/82/82), Serrated Edges **28.4s** (38/45/45), and
+Poison Coating **34.4s** (67/80/80). All baseline/trained/fresh-login ticks retain
+accepted cast identity and positive cooldowns. The artifact credential scan
+passes with zero sanitizations, and the disposable runtime/data clean up
+normally. Log: `/tmp/eidolon-release42-status-gameplay.log`. All local package
+handles are terminal success; no local browser/server remains active.
+
+The candidate is locally verified, not published. Preserve the sequential
 1.0.38–41 publication gates; never push
 this working HEAD over a predecessor still undergoing CI or live verification.
 The larger 1.1–1.10, physical-phone, complete talent and offline-parity gates
