@@ -89,6 +89,43 @@ open. A nonblocking question asks the player for desired first-dungeon pacing;
 
 ## Scope addition — September 7
 
+### Collection implementation continuation
+
+This supersedes the earlier statement that balance implementation was limited
+to accounting. Worktree `/tmp/eidolon-progression-balance-LQRg5a` implements
+eight-fragment / 35% collections with a fifth-eligible-kill guarantee, retained
+legacy accepted contracts, and snapshot/BSON/login persistence. Runtime
+`f66f50d` passes **3,185 client tests / 169.239s**, full game race **354.829s**
+and earned fresh collection **2.5m**. A subsequent targeted concurrency probe
+finds a real refresh/drop-state race (**0.968s**); player locking and response
+snapshot corrections pass ten race repetitions **6.762s**, related game checks
+**6.055s**, root **13.627s**, and five dispatch/combat repetitions **4.199s**.
+
+Package **Alpha 1.0.47 `f18dfcb`** adds distinct **fragments worth finding** notes,
+aligned defaults and a fresh-character collection route in full predeploy QA.
+Each retry gets a separate disposable character. Final contracts pass **237 /
+1.721s**, lint, **3,187 client tests / 156.667s**, full server race (root
+**19.922s**, game **330.735s**) and actual packaged collection **2.5m**, with
+scan/cleanup. The latter records eight physical fragments, manual completion,
+saved progress, zero deaths and **109 seconds** collection time over 22 observed
+target deaths. The unchanged XP reward still reaches level 17; broader pacing
+and investigation implementation remain open.
+
+The 47 anonymous sweep is running, session `44148`, log
+`/tmp/eidolon-release47-anonymous.log`. Its previous ready-conversation capture
+was cleared by the next test suite before visual inspection; recapture and
+inspect it after the anonymous handle closes. Do not claim that image was
+reviewed. The package is not root-integrated or published yet. Its primary
+evidence lives in `docs/plans/2026-09-07-collection-pacing.md` in that worktree.
+
+39 CI **34146247683** has passed both deployments and is running live character
+QA. 40 remains gated on its terminal success and a fresh exact public identity
+check. The last fully verified public release remains 38 until that gate passes.
+
+The [eight-investigation content draft](2026-09-07-investigation-story-content.md)
+now includes acceptance/discovery/completion copy and journal summaries. It is
+authored content, not playable world sites or a completed campaign expansion.
+
 Scope addition, September 7: the user requests a solid item-drop, XP and reward
 balancing pass, longer appropriately paced collection/hunt objectives, and
 investigation-driven story additions in each realm. The

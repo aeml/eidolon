@@ -1,6 +1,13 @@
 # Progression balance and realm investigations
 
-Requested September 7, 2026. Status: **planned, not implemented or deployed**.
+Requested September 7, 2026. Status: **implementation active; full pass open**.
+The local 1.0.47 candidate implements eight-fragment collections, reduced ordinary
+drop rates, saved bad-luck protection and legacy-contract migration; final package
+verification is still running and it is not published. XP/equipment/gold tuning
+and playable investigations remain open. The
+[authored investigation draft](2026-09-07-investigation-story-content.md) supplies
+Ilyra conversations, personal accounts and discoveries for all eight planned sites;
+authored text is not evidence of implemented quests or reachable world locations.
 This expands the active full-roadmap goal. Ship verified excessive-reward fixes
 in suitable 1.0.x patches; establish progression pacing in 1.1, deliver the
 expanded Chronicle in 1.4, finish the economy pass in 1.5 and revalidate raid
@@ -86,6 +93,8 @@ to explain why each repair ritual must reverse a different part of that method.
 
 - [ ] Author acceptance, discovery, journal and completion text for all eight
   quests, including Ilyra's connective conversations and accessible summaries.
+  A complete content draft is linked above; integration and in-game continuity
+  review are still required before this item is signed off.
 - [ ] Build recognizable, reachable world props and distinct magical disturbances
   with correct collisions, interaction prompts and desktop/touch readability.
   Each realm gets both a personal-history site and a supernatural investigation.
