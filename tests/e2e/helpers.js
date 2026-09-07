@@ -1645,33 +1645,36 @@ export async function zoomOutForPortal(page) {
     expect(await page.evaluate(() => window.game?.renderSystem?.currentZoom)).toBeGreaterThan(startingZoom);
 }
 
-async function projectVerdantEntrance(page) {
-    return page.evaluate(() => {
+async function projectVerdantEntrance(page, candidate = 0) {
+    return page.evaluate(candidate => {
         const game = window.game;
         let entrance = null;
         game?.renderSystem?.environmentGroup?.traverse((object) => {
             if (!entrance && object.name === 'DungeonEntrance' && object.userData?.dungeonType === 'verdant_bastion_catacombs') {
                 object.updateWorldMatrix?.(true, true);
-                let bestMeshProjection = null;
+                const projections = [];
                 object.traverse?.((child) => {
                     if (!child?.visible || !child.isMesh || !child.geometry) return;
                     if (!child.geometry.boundingBox) child.geometry.computeBoundingBox?.();
                     const box = child.geometry.boundingBox;
                     if (!box) return;
-                    const worldPoint = object.position.clone();
-                    box.getCenter(worldPoint);
-                    child.localToWorld(worldPoint);
-                    const projected = worldPoint.project(game.renderSystem.camera);
-                    const visible = projected.z >= -1 && projected.z <= 1 &&
-                        projected.x >= -1 && projected.x <= 1 && projected.y >= -1 && projected.y <= 1;
-                    if (!visible) return;
-                    const score = projected.x * projected.x + projected.y * projected.y;
-                    if (!bestMeshProjection || score < bestMeshProjection.score) {
-                        bestMeshProjection = { projected, score };
+                    for (const [u, v] of [[.5, .5], [.2, .5], [.8, .5], [.5, .2], [.5, .8]]) {
+                        const worldPoint = box.getCenter(object.position.clone());
+                        worldPoint.x = box.min.x + (box.max.x - box.min.x) * u;
+                        worldPoint.y = box.min.y + (box.max.y - box.min.y) * v;
+                        const projected = child.localToWorld(worldPoint).project(game.renderSystem.camera);
+                        const x = (projected.x + 1) * innerWidth / 2;
+                        const y = (1 - projected.y) * innerHeight / 2;
+                        const visible = projected.z >= -1 && projected.z <= 1 &&
+                            projected.x >= -1 && projected.x <= 1 && projected.y >= -1 && projected.y <= 1 &&
+                            document.elementFromPoint(x, y)?.tagName === 'CANVAS';
+                        if (!visible) continue;
+                        projections.push({ projected, score: projected.x * projected.x + projected.y * projected.y });
                     }
                 });
-                const projected = bestMeshProjection?.projected ||
-                    object.getWorldPosition(object.position.clone()).project(game.renderSystem.camera);
+                projections.sort((a, b) => a.score - b.score);
+                if (!projections.length) return;
+                const projected = projections[candidate % projections.length].projected;
                 entrance = {
                     x: (projected.x + 1) * window.innerWidth / 2,
                     y: (-projected.y + 1) * window.innerHeight / 2,
@@ -1682,7 +1685,7 @@ async function projectVerdantEntrance(page) {
             }
         });
         return entrance;
-    });
+    }, candidate);
 }
 
 // Observe the existing real pointer path without forcing hover, sending a
@@ -1745,14 +1748,28 @@ export async function enterAndExitDungeon(page, { beforeExit, resetRun = false,
             await openDungeonGuide(page);
         } else {
             await observeEntranceClick(page);
+            // A projected entrance point may share its ray with a live enemy.
+            // Wait for the real camera, then sample other exposed mesh points;
+            // never restore the old entrance-over-enemy targeting override.
+            await expect.poll(() => page.evaluate(() => {
+                const game = window.game;
+                return game.player.state === 'IDLE' && !game.player.targetPosition &&
+                    Math.hypot(game.renderSystem.cameraTarget.x - game.player.position.x,
+                        game.renderSystem.cameraTarget.z - game.player.position.z) < .05;
+            }), { timeout: 20_000 }).toBe(true);
             let entrance = null;
+            let candidate = 0;
             await expect.poll(async () => {
-                entrance = await projectVerdantEntrance(page);
-                return Boolean(entrance?.visible);
-            }, { timeout: 15_000 }).toBe(true);
+                entrance = await projectVerdantEntrance(page, candidate++);
+                if (!entrance?.visible) return false;
+                await page.mouse.move(entrance.x, entrance.y);
+                return page.evaluate(() => window.game?.hoveredEntity?.name === 'DungeonEntrance' &&
+                    window.game.hoveredEntity.userData?.dungeonType === 'verdant_bastion_catacombs');
+            }, { timeout: 15_000, intervals: [100], message: 'Acquire an actual exposed Verdant entrance pointer' }).toBe(true);
             expect(entrance, 'Verdant Bastion entrance must be loaded').not.toBeNull();
-            await page.mouse.move(entrance.x, entrance.y);
             await page.mouse.click(entrance.x, entrance.y);
+            expect(await page.evaluate(() => window.__entranceClickProbe.click?.after?.type),
+                'Fresh click raycast must select the portal, not a covering enemy').toBe('DungeonEntrance');
         }
 
         const menu = page.locator('#dungeon-menu');
