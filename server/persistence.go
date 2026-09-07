@@ -285,6 +285,7 @@ func databaseItem(item game.Item) database.Item {
 		GemType:          string(item.GemType),
 		GemQuality:       string(item.GemQuality),
 		StatScaleVersion: item.StatScaleVersion,
+		ForgeBasis:       item.ForgeBasis.Clone(),
 	}
 }
 
@@ -310,6 +311,7 @@ func gameItemFromDatabase(item database.Item) game.Item {
 		GemType:          game.GemType(item.GemType),
 		GemQuality:       game.GemQuality(item.GemQuality),
 		StatScaleVersion: item.StatScaleVersion,
+		ForgeBasis:       item.ForgeBasis.Clone(),
 	}
 	game.NormalizeItemStatScale(&converted)
 	return converted

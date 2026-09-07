@@ -1,6 +1,7 @@
 package game
 
 import (
+	"eidolon-server/internal/forging"
 	"fmt"
 	"log"
 	"math"
@@ -15,6 +16,8 @@ func (w *World) PerformForgeUpgrade(playerID, slot string, amount int) (*Entity,
 	if !ok {
 		return nil, false, "Player not found"
 	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
 
 	// Get item from slot
 	item, ok := player.Equipment[slot]
@@ -26,38 +29,13 @@ func (w *World) PerformForgeUpgrade(playerID, slot string, amount int) (*Entity,
 		amount = 1
 	}
 
-	// Calculate Cost and Target Level
-	cost := 0
-	targetLevel := 0
-
-	// Calculate per-level cost
-	perLevelCost := 0
-	if item.Level < 90 {
-		tier := item.Level / 10
-		baseTierCost := int(math.Pow(2, float64(tier)))
-		// User requested 1/10th of the cost for the range.
-		// Previous range cost was baseTierCost.
-		// So 10 levels should cost baseTierCost / 10.
-		// So 1 level should cost baseTierCost / 100.
-		perLevelCost = baseTierCost / 100
-		if perLevelCost < 1 {
-			perLevelCost = 1
-		}
-	} else {
-		perLevelCost = 2 // 200 / 100
-	}
-
-	targetLevel = item.Level + amount
-	if targetLevel > 100 {
-		targetLevel = 100
-	}
+	// Charge every purchased level at its own tier, independent of batch size.
+	targetLevel, cost := forging.UpgradeCost(item.Level, amount)
 
 	levelsToAdd := targetLevel - item.Level
 	if levelsToAdd <= 0 {
 		return nil, false, "Max level reached"
 	}
-
-	cost = perLevelCost * levelsToAdd
 
 	// Check Player Level Requirement
 	if player.Level < targetLevel {
@@ -98,20 +76,10 @@ func (w *World) PerformForgeUpgrade(playerID, slot string, amount int) (*Entity,
 	}
 
 	// Upgrade Item
-	newItem := item
-	oldLevel := newItem.Level
+	newItem := cloneItem(item)
+	ensureForgeBasis(&newItem)
 	newItem.Level = targetLevel
-
-	// Scale Stats
-	// Using Base Stat scaling formula: (1 + 0.15 * NewLevel) / (1 + 0.15 * OldLevel)
-	ratio := (1.0 + float64(newItem.Level)*0.15) / (1.0 + float64(oldLevel)*0.15)
-
-	for k, v := range newItem.Stats {
-		newItem.Stats[k] = int(float64(v) * ratio)
-	}
-
-	// Update Value
-	newItem.Value = int(float64(newItem.Value) * ratio)
+	newItem.Stats, newItem.Value = newItem.ForgeBasis.Scale(newItem.Level, newItem.Potency)
 
 	player.Equipment[slot] = newItem
 	player.EquipmentRevision++
@@ -125,6 +93,13 @@ func forgeInventoryStackCount(item Item) int {
 		return item.Stack
 	}
 	return 1
+}
+
+func ensureForgeBasis(item *Item) {
+	if item.ForgeBasis.Valid() {
+		return
+	}
+	item.ForgeBasis = (&forging.Basis{Level: max(1, item.Level), Potency: max(0, item.Potency), Stats: item.Stats, Value: item.Value}).Clone()
 }
 
 func isForgeHeartItem(item Item) bool {
@@ -143,6 +118,8 @@ func (w *World) PerformForgePotency(playerID, slot string) (*Entity, bool, strin
 	if !ok {
 		return nil, false, "Player not found"
 	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
 
 	// Get item from slot
 	item, ok := player.Equipment[slot]
@@ -189,22 +166,10 @@ func (w *World) PerformForgePotency(playerID, slot string) (*Entity, bool, strin
 	}
 
 	// Upgrade Potency
-	newItem := item
-	oldPotency := newItem.Potency
+	newItem := cloneItem(item)
+	ensureForgeBasis(&newItem)
 	newItem.Potency++
-
-	// Scale Stats: +10% per potency level
-	// NewStats = OldStats * (1 + 0.1 * NewPotency) / (1 + 0.1 * OldPotency)
-	oldMult := 1.0 + (0.1 * float64(oldPotency))
-	newMult := 1.0 + (0.1 * float64(newItem.Potency))
-	ratio := newMult / oldMult
-
-	for k, v := range newItem.Stats {
-		newItem.Stats[k] = int(float64(v) * ratio)
-	}
-
-	// Update Value
-	newItem.Value = int(float64(newItem.Value) * ratio)
+	newItem.Stats, newItem.Value = newItem.ForgeBasis.Scale(newItem.Level, newItem.Potency)
 
 	player.Equipment[slot] = newItem
 	player.EquipmentRevision++

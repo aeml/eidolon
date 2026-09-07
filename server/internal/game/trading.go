@@ -128,6 +128,7 @@ func (ts *TradingSystem) toDBItem(i Item) database.Item {
 		GemType:          string(i.GemType),
 		GemQuality:       string(i.GemQuality),
 		StatScaleVersion: i.StatScaleVersion,
+		ForgeBasis:       i.ForgeBasis.Clone(),
 	}
 }
 
@@ -209,6 +210,7 @@ func (ts *TradingSystem) fromDBItem(i database.Item) Item {
 		GemType:          GemType(i.GemType),
 		GemQuality:       GemQuality(i.GemQuality),
 		StatScaleVersion: i.StatScaleVersion,
+		ForgeBasis:       i.ForgeBasis.Clone(),
 	}
 	NormalizeItemStatScale(&item)
 	return item

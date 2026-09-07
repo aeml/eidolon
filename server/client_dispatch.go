@@ -365,6 +365,7 @@ func (c *Client) dispatchMessage(msg Message) {
 					StatScaleVersion: dbItem.StatScaleVersion,
 				}
 				game.NormalizeItemStatScale(&loadedItem)
+				loadedItem.ForgeBasis = dbItem.ForgeBasis.Clone()
 				entity.Inventory[i] = loadedItem
 			}
 		}
@@ -424,6 +425,7 @@ func (c *Client) dispatchMessage(msg Message) {
 					StatScaleVersion: dbItem.StatScaleVersion,
 				}
 				game.NormalizeItemStatScale(&loadedItem)
+				loadedItem.ForgeBasis = dbItem.ForgeBasis.Clone()
 				entity.Stash[i] = loadedItem
 			}
 		}
@@ -483,6 +485,7 @@ func (c *Client) dispatchMessage(msg Message) {
 					StatScaleVersion: dbItem.StatScaleVersion,
 				}
 				game.NormalizeItemStatScale(&loadedItem)
+				loadedItem.ForgeBasis = dbItem.ForgeBasis.Clone()
 				entity.Buyback[i] = loadedItem
 			}
 		}
@@ -518,6 +521,7 @@ func (c *Client) dispatchMessage(msg Message) {
 					StatScaleVersion: dbItem.StatScaleVersion,
 				}
 				game.NormalizeItemStatScale(&loadedItem)
+				loadedItem.ForgeBasis = dbItem.ForgeBasis.Clone()
 				entity.Equipment[slot] = loadedItem
 			}
 		}
@@ -1464,7 +1468,11 @@ func (c *Client) dispatchMessage(msg Message) {
 		player, success, msgStr := world.PerformForgeUpgrade(c.playerID, payload.Slot, payload.Amount)
 		if success {
 			// Send Inventory Update
+			world.Mu.RLock()
+			player.Mu.RLock()
 			invPayload, _ := json.Marshal(player.Inventory)
+			player.Mu.RUnlock()
+			world.Mu.RUnlock()
 			msgInv := Message{
 				Type:    MsgInventory,
 				Payload: invPayload,
@@ -1487,7 +1495,11 @@ func (c *Client) dispatchMessage(msg Message) {
 		player, success, msgStr := world.PerformForgePotency(c.playerID, payload.Slot)
 		if success {
 			// Send Inventory Update
+			world.Mu.RLock()
+			player.Mu.RLock()
 			invPayload, _ := json.Marshal(player.Inventory)
+			player.Mu.RUnlock()
+			world.Mu.RUnlock()
 			msgInv := Message{
 				Type:    MsgInventory,
 				Payload: invPayload,

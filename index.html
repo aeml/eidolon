@@ -343,7 +343,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.47</span>
+                <span class="start-version-row__label">Alpha 1.0.48</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -669,6 +669,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.48">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.48 (every shard counts)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Small gains stay earned:</strong> Forge upgrades now retain fractional stat progress instead of rounding it away after each purchase. Buying the same levels one at a time or in batches gives the same final stats and item value; mixing potency and level upgrades also gives a consistent result.</li>
+                        <li><strong>The same levels, the same price:</strong> Each purchased level uses its own shard tier. A batch that crosses level 80 now includes the higher-tier levels in its price, matching individual purchases. Forge previews show the corrected cost and accumulated stat gains without reopening the window.</li>
+                        <li><strong>Your gear keeps its history:</strong> Existing items keep their current stats as the starting point. New upgrade precision survives saves, reconnects, storage and auction persistence. Previously lost rounding cannot be reconstructed; existing items are not rerolled or reduced.</li>
+                        <li><strong>Safer work at the anvil:</strong> Level and potency upgrades now synchronize with character snapshots and return stable inventory updates. Upgrading an item no longer changes older copies of its stat map.</li>
+                        <li><strong>Balance work continues:</strong> This fixes Forge progression arithmetic. Equipment drop frequency, XP and gold rewards, attainable late-potency costs and the planned story investigations remain under development.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.0.47">
                     <h3 class="patch-note-entry__title">Alpha 1.0.47 (fragments worth finding)</h3>
                     <ul class="patch-note-entry__list">

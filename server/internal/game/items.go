@@ -1,6 +1,7 @@
 package game
 
 import (
+	"eidolon-server/internal/forging"
 	"fmt"
 	"math"
 	"math/rand"
@@ -342,6 +343,7 @@ type Item struct {
 	GemType          GemType        `json:"gemType,omitempty" bson:"gemType"`           // For gem items: type of gem
 	GemQuality       GemQuality     `json:"gemQuality,omitempty" bson:"gemQuality"`     // For gem items: quality of gem
 	StatScaleVersion int            `json:"statScaleVersion,omitempty" bson:"stat_scale_version"`
+	ForgeBasis       *forging.Basis `json:"forgeBasis,omitempty" bson:"forge_basis,omitempty"`
 }
 
 // Base Item Definitions (Matching Client)
