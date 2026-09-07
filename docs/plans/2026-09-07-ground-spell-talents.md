@@ -47,6 +47,8 @@ scatter remains inside connected dungeon floor.
   `/tmp/eidolon-ground-talents-full-client-corrected.log`.
 - Full server race suite: root 11.952 seconds / game **282.511 seconds**,
   `/tmp/eidolon-ground-talents-full-server.log`.
+- Final lint and diff checks pass; lint log
+  `/tmp/eidolon-ground-talents-final-lint-confirmed.log`.
 - Final isolated `ground-shape` gameplay route: **36.2 seconds** (34.5-second
   body), `/tmp/eidolon-ground-talents-gameplay-final.log`. Normal menu purchases
   train five Mana Geometry ranks; all three spells reject blocked placement
@@ -77,3 +79,9 @@ offline rune/duration/damage parity are still open. Rogue ground abilities,
 directional projectile travel, Cleric area consumers, remaining talent consumers,
 normal cross-branch combo access and physical-device/group playtesting remain open.
 No release version is advanced by this checkpoint.
+
+The post-checkpoint diagnostic audit still fails the actual rank-five Cleric
+Purifying Wave cast at the 10.2m ally, while the Teleport probe passes. Retain
+`/tmp/eidolon-post-ground-talent-audit.log` (0.254-second game test run). Passing
+the standard suites does not turn this explicitly open consumer into a working
+talent or close the larger area-consumer requirement.

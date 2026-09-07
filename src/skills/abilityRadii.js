@@ -26,7 +26,7 @@ export const PLAYER_ABILITY_AOE_RADII = Object.freeze({
         'Flame Whip': Object.freeze({ base: 12, arc: Math.PI / 2 }),
         'Frost Nova': Object.freeze({ base: 8 }),
         'Flame Tornado': Object.freeze({ base: 3 }),
-        // Meteor's server-side visual radius is 1.65x its damage radius.
+        // Meteor's server hit check and telegraph both use 1.65x authored Radius.
         'Meteor Drop': Object.freeze({
             base: 26.4,
             runes: Object.freeze({
@@ -103,9 +103,9 @@ export function isAoeBoundaryVisualType(type) {
 }
 
 /**
- * Radius used by the impact burst for replicated explosive projectiles. The
- * server projectile does not currently transmit its collision radius, so the
- * visual derives the same rune-specific value from its replicated owner.
+ * Legacy fallback for explosive projectile impacts. New Meteor replication
+ * supplies its resolved impactRadius (including cast-time talents); callers
+ * prefer that snapshot and use this owner/rune inference only when absent.
  */
 export function getProjectileImpactRadius(projectileType, source = null, projectileScale = 1) {
     if (projectileType === 'Fireball') return 10;
