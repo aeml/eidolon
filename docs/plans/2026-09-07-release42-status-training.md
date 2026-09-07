@@ -12,8 +12,17 @@ skills. The evidence record retains exact source checkpoints and test limits.
 Packaging adds no additional game behavior. Version/history/default checks pass
 **216 tests in 0.895s**, plus shell syntax and whitespace checks.
 
-Remaining local package gate: final anonymous desktop/phone browser regression
-and final lint. Preserve the sequential 1.0.38–41 publication gates; never push
+Final package `0d57f0e` passes **211 suites / 3,113 client tests in 73.66s**,
+lint, root backend race tests (**7.576s**) and **53/53 anonymous desktop/phone
+browser tests in 3.9 minutes**. Logs: `/tmp/eidolon-release42-full-client.log`,
+`/tmp/eidolon-release42-lint.log`, `/tmp/eidolon-release42-server-root.log`,
+`/tmp/eidolon-release42-anonymous.log`. Inspected 390px camera and Forge captures
+retain the distinction between containment and full visual/physical-phone
+sign-off; follow-up Forge design work is recorded in the shared phone layout.
+
+The final versioned combined three-skill status route is being repeated next,
+supplementing the individually passing browser results. Preserve the sequential
+1.0.38–41 publication gates; never push
 this working HEAD over a predecessor still undergoing CI or live verification.
 The larger 1.1–1.10, physical-phone, complete talent and offline-parity gates
 remain open. This hotfix does not redefine or close the goal.

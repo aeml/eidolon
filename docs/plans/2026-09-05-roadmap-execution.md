@@ -18,6 +18,17 @@ New CI **34126386286 is in progress**. Do not push 1.0.39 until every 1.0.38
 CI/live job passes and fresh post-terminal public identity agrees. The remaining
 1.0.39–41 candidates are preserved and unpublished. Do not push root HEAD.
 
+Latest 1.0.38 CI observation: client, server and browser smoke pass; predeploy
+character QA is in progress. Local **1.0.42 `0d57f0e`** now packages the status
+work below after integration `4e05228`, with separate patch notes and matching
+login/runtime versions. Final package checks pass **3,113 client tests / 211
+suites (73.66s)**, lint, root backend race (**7.576s**) and **53/53 anonymous
+browser tests (3.9m)**. Earlier full game race and additional shared-contract/
+rune-only checks cover unchanged Go gameplay source. All three status skills
+individually pass real baseline/trained/saved damage checks; a final combined
+versioned run is next. See [1.0.42 evidence](2026-09-07-release42-status-training.md).
+This package is not published and does not close the full roadmap.
+
 Independent status-training work now reproduces and repairs an actual entrance
 targeting defect: entrance geometry overrode any enemy in the raycast hit stack,
 even when the entrance was behind it. New real-geometry tests fail twice before

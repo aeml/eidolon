@@ -50,6 +50,33 @@ interaction checks, not the physical-device or broader camera/HUD acceptance gat
 
 ## Evidence and design problem
 
+September 7, local 1.0.42 visual review (`0d57f0e`): the anonymous
+`menu-layers` Forge capture at 390px is contained within the viewport, but still
+shows a dense equipment-icon grid, a long instructional block before selection,
+small item-level overlays and cramped upgrade details. `ForgeUI.js` explicitly
+renders upgrade, potency and socket stats at **12px**. Passing containment/layer
+tests does not establish the roadmap's readable phone experience. This review
+is a rendered fixture, not physical-phone sign-off or a newly broken purchase.
+The earlier 1.0.35 authoritative purchase-refresh fix remains separate.
+
+Carry this concrete work into the **1.2 town-menu redesign**:
+
+- Replace the portrait equipment grid with readable slot/item rows: a 48px icon,
+  item name, level/potency and clear selection. Preserve the desktop layout.
+- Move lengthy forging instructions behind an explicit help disclosure, keeping
+  the selected item and its current/next state prominent.
+- Use at least 16px body/stat text, separated current → next values and a
+  reachable action area with at least 44px controls. Keep costs and insufficient-
+  material explanations visible; do not require recognizing red text alone.
+- Preserve selection, list position and live material/item updates through
+  upgrade/potency changes. Recheck every tab at 360px portrait and short landscape,
+  including many items, long names, empty slots and exhausted materials.
+
+The paired phone-camera fixture shows production actor silhouettes and a clear
+telegraph at default scale, but its sparse terrain and fixture label do not
+establish crowded encounter, restoration-world or real-device readability. Keep
+the populated campaign/combat and physical-phone acceptance gates open.
+
 September 7 follow-up: [finite notices and a one-row tracker](2026-09-07-phone-encounter-space.md)
 address two observed intrusions on the encounter view. The objective itself opens
 the journal; Next retains access to all selected quests. A level-up callout now
