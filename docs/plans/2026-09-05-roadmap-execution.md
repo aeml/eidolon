@@ -5,15 +5,14 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-Current release queue (September 7): **1.0.25 (`d55b5d8`) is fully verified**.
-CI `34067519448` attempt 2 passed every job. Post-terminal uncached checks at
-**00:32:55 UTC** matched manifest, login label, versioned main entry and backend
-to `d55b5d8d8460f75513a0eca02baf873aa52203c6` / Alpha 1.0.25; health `ok`, database
-`ready`. Only 1.0.26 `85efebef86ccb9a980bc630b9e860d7f68c47d4b` was pushed next;
-CI **`34070192341`** passed unit/race, browser smoke and full predeploy character
-QA, and both deployments succeeded. It is now in **Live Release and Character
-QA**. 1.0.25 remains the last fully verified release until this final gate and a
-new independent uncached live identity check pass.
+Current release queue (September 7): **1.0.26 (`85efebe`) is fully verified**.
+CI **`34070192341`** passed every job, including final live character/animation QA.
+Post-terminal uncached checks at **01:18:17 UTC** matched manifest, login label,
+versioned main entry and backend to `85efebef86ccb9a980bc630b9e860d7f68c47d4b` /
+Alpha 1.0.26; health `ok`, database `ready`. Only **1.0.27
+`0d4e1a1fb37d728db85c1eac9d56b6dc3bc785dd`** was pushed next; CI
+**`34072603962`** is running. The earlier 1.0.25 verification at 00:32:55 UTC and
+its retained attempt-1 local-port collision remain in the history below.
 Later releases remain local until the preceding complete CI/live gate passes.
 
 Alpha 1.0.31 healing implementation `b2bf5fd` is locally verified and merged as
@@ -30,7 +29,9 @@ phone talents are verified by paired casts, expiry, all class/branch menu cases,
 2,498 client tests and real phone timer/badge/expiry/login checks. The unchanged
 full race rerun passed after a retained, unreproduced Tripwire fixture failure.
 See [the complete evidence and limits](2026-09-07-talent-duration.md). Not published;
-the full 1.1–1.10 roadmap and ordered deployment queue remain open.
+the full 1.1–1.10 roadmap and ordered deployment queue remain open. Integration
+with the later hunt diagnostic was merged as `b0f2db8`; the merged tree passes
+179 client suites / 2,501 tests in 57.571 seconds.
 
 Previous release checkpoint (September 6): **1.0.24 (`44c7ed1`) was fully
 verified**. CI **`34065220719`** passed every job, including final live
