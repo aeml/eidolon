@@ -47,7 +47,30 @@ Logs: `/tmp/eidolon-release40-lunge-client-before.log`,
 `/tmp/eidolon-release40-lunge-gameplay.log` (mapper failure),
 `/tmp/eidolon-release40-lunge-gameplay-final.log` (passing actual rerun).
 
-Full final client/server/browser verification, sequential publication and exact
-live verification are still required. Carry this correction forward through
-41–48 only after it is verified; preserve the previous candidate branches.
+## Final local package verification
+
+Runtime/patch notes/tests `c7d07d3` and test-readiness backport `785bd73` pass:
+
+- Full client: **203 suites / 2,996 tests / 122.763s**.
+- Full server race: root **12.307s**, game **277.331s**, other packages pass.
+- Full anonymous browser sweep: **58 / 5.7m**. Lint passes.
+- Actual unchanged Lunge runtime passes the Rogue/Cleric route above.
+
+The first completed anonymous attempt passes 57/58, including every layout
+assertion, but its phone settings failure collector records a network change.
+The inspected trace identifies the external Google Fonts Cinzel stylesheet,
+not a local game module or layout assertion. The complete rerun of the same
+candidate passes all 58 without weakening that assertion. Trace retained at
+`/tmp/eidolon-release40-font-network-change-trace.zip`.
+
+Logs: `/tmp/eidolon-release40-lunge-full-client.log`,
+`/tmp/eidolon-release40-lunge-full-server.log`,
+`/tmp/eidolon-release40-lunge-anonymous-final.log` (external font interruption),
+`/tmp/eidolon-release40-lunge-anonymous-rerun.log` (passing rerun).
+All owned final local handles are closed. An earlier prematurely started sweep
+exits before test execution on the readiness backport's unresolved import; the
+import is then resolved for the older 40 source before either complete sweep.
+
+Sequential publication and exact live verification are still required. Carry
+this verified correction through 41–48, preserving previous candidate branches.
 The broader balancing and playable-investigation goal remains open.
