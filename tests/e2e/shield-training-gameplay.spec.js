@@ -1,6 +1,6 @@
 import { devices, expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld,
-    moveByGroundClick, projectNearestHostile, returnToTown, useVerdantQAWaypoint } from './helpers.js';
+    moveByGroundClick, projectNearestHostile, returnToTown } from './helpers.js';
 
 test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true,
     userAgent: devices['Pixel 7'].userAgent, actionTimeout: 12_000,
@@ -116,7 +116,11 @@ test('Shield mastery increases actual saved absorption, renders and expires thro
 
     // Approach ordinary overworld enemies while protected, then explicitly
     // remove waypoint protection so a real hostile attack consumes the shield.
-    await useVerdantQAWaypoint(page);
+    await command('/qa-waypoint verdant');
+    await expect.poll(() => page.evaluate(() => {
+        const p = window.game.player.position;
+        return Math.hypot(p.x - 800, p.z - 200);
+    }), { timeout: 30_000 }).toBeLessThan(3);
     let target;
     for (let step = 0; !target && step < 12; step++) {
         await moveByGroundClick(page, 0, 12);

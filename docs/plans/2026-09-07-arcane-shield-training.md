@@ -2,7 +2,8 @@
 
 Separate follow-up worktree `/tmp/eidolon-shield-training-CcxkLZ`, branch
 `work/shield-training-20260907`, based on local 1.0.43 `e0bc417`. Not packaged or
-published; the new 1.0.38 movement correction has not yet been carried here.
+published. Integration `c48a09c` now carries the verified 1.0.38 movement and
+shared-combat race corrections through the sequential 39–43 release queue.
 
 Nine shared baseline/rank/rune/focus/duration fixtures exercise actual paid
 server casts and a real incoming melee-impact consumer. Six cases fail before
@@ -45,3 +46,24 @@ shield casts, rendered absorption/expiry inspection, release packaging/notes,
 and sequential CI/live verification. Offline Reflective/Explosive rune behavior
 still needs separate parity work; only their server consumers are verified here.
 This does not close the four-class talent audit or the full roadmap.
+
+Browser checkpoint `1ff8697` introduces a separate disposable `shield-training`
+route, including a fresh allowlisted retry account. It buys mastery through the
+phone talent menu, observes server-owned capacities before/after training and
+fresh login, checks attached effects and real-time expiry, then approaches an
+ordinary hostile and removes existing waypoint protection to observe absorption.
+It never injects shield state, ranks or damage. This new route is still under
+verification, not yet part of the full release gate or a passing browser claim.
+Integration checks pass **242 client tests / 2.327s** and repeated concurrent
+damage/Whirlwind/Shield checks **8.123s**. The first browser run fails before
+login (**3.0m**): the new worktree lacked generated `vendor/` dependencies,
+confirmed by missing files and HTTP 404. Credential scanning and disposable
+cleanup finish. After that handle closes, `npm run prepare:client` prepares
+the local ignored runtime files. The new route also uses its phone composer
+for the waypoint, not the desktop helper's collapsed chat tabs. A rerun is
+required; the failed setup proves no Shield behavior. Full integrated server
+race is still running at this checkpoint; logs:
+`/tmp/eidolon-shield-training-integrated-client.log`,
+`/tmp/eidolon-shield-training-integrated-server.log`,
+`/tmp/eidolon-shield-training-integrated-full-server.log`,
+`/tmp/eidolon-shield-training-browser.log`.
