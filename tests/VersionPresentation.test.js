@@ -58,7 +58,7 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Alpha 1.0.40 (clearer rites, clearer battles)');
         expect(indexHtml.match(/data-version="1\.0\.40"/g)).toHaveLength(1);
         expect(indexHtml.indexOf('data-version="1.0.40"')).toBeLessThan(indexHtml.indexOf('data-version="1.0.39"'));
-        for (const heading of ['Training reaches the edge', 'Help where it belongs', 'Strike the enemy you can reach', 'More dependable offline rites', 'Readable action, clear encounter']) expect(indexHtml).toContain(heading);
+        for (const heading of ['Training reaches the edge', 'Help where it belongs', 'Strike the enemy you can reach', 'More dependable offline rites', 'Readable action, clear encounter', 'Short lunges count']) expect(indexHtml).toContain(heading);
     });
     test('adds shared camera and party notes while retaining encounter-space history', () => {
         expect(indexHtml).toContain('Alpha 1.0.39 (your party within reach)');

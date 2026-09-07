@@ -64,6 +64,20 @@ func TestRogueTalentMovementRangeBoundaries(t *testing.T) {
 						t.Fatalf("inside cast failed: %+v", result)
 					}
 					moves := tc.Skill != "Backstab" || tc.Rune == "backstab_shadowstep"
+					if tc.Skill == "Shadow Lunge" {
+						wire, err := json.Marshal(event)
+						if err != nil {
+							t.Fatal(err)
+						}
+						var received map[string]interface{}
+						if err := json.Unmarshal(wire, &received); err != nil {
+							t.Fatal(err)
+						}
+						landing, ok := received["landing"].(map[string]interface{})
+						if !ok || landing["x"] != p.X || landing["z"] != p.Z || event.TargetID != target.ID {
+							t.Fatalf("accepted Lunge lacks its actual landing/target: %s", wire)
+						}
+					}
 					if moves {
 						if math.Abs(p.X-(target.X-1.5)) > 1e-8 || math.Abs(p.Z-target.Z) > 1e-8 || p.MoveLockUntil.IsZero() {
 							t.Fatal("incorrect behind-target landing")
