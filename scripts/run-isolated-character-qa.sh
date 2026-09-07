@@ -420,6 +420,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   extended)
     npx playwright test tests/e2e/authenticated.spec.js --grep "kills and loots"
     ;;
+  loot-acquisition-repeat)
+    npx playwright test tests/e2e/authenticated.spec.js --grep "kills and loots" --repeat-each=3
+    ;;
   portal)
     EIDOLON_E2E_PORTAL_ONLY=1 npx playwright test tests/e2e/authenticated.spec.js --grep "allowlisted QA waypoint"
     ;;
