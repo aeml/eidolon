@@ -48,6 +48,46 @@ pass **3.144s**. All these handles are closed; the expanded graph backend passes
 
 ### World integration checkpoint
 
+September 7, 21:30 follow-up: combined runtime 84abecf has backend race coverage
+root **16.127s**, game **396.729s**. The combined invocation 90803 terminates with
+SIGTERM/143 before reporting game results; its root package passes. No Go child
+remains, and the subsequent verbose game-only invocation 83699 passes. Logs
+`/tmp/eidolon-investigations-combined-server.log` and
+`/tmp/eidolon-investigations-combined-game-rerun.log`. Cause of termination is
+unknown; neither a timeout observation nor an assumed OOM is used as evidence.
+
+The journal now restores expanded records before its saved scroll offset. A
+later open entry otherwise loses reading position when the browser clamps the
+offset against the collapsed content height. Modeled-layout red: **500 → 100**,
+then focused **19 / 1.457s** pass. Actual browser red: **671 → 486 pixels** with
+the old ordering; the same long-record fixture passes **1 / 4.2s** with the fix,
+preserving position through three rebuilds. The first browser fixture omitted
+an objective/target; the next short record passed with both implementations, so
+neither proves the fix. The final test uses actual Earth/Water diary text and is
+included in the anonymous suite. Logs
+`/tmp/eidolon-investigations-reading-browser-before-long-record.log` and
+`/tmp/eidolon-investigations-reading-browser-final.log`; preserved actual red
+trace `/tmp/eidolon-reading-scroll-clamp-before-trace.zip`.
+
+Full client with this runtime passes **219 suites / 3,252 tests / 145.889s**, lint
+passes (`/tmp/eidolon-investigations-reading-client.log`). Actual earned phone
+diary route **84495** closes successfully **1 / 48.8s** (test 47.4s): ordinary
+joystick travel/USE, real touch scrolling until the final text line lies inside
+the journal scrollport and is unobscured, explicit Ilyra completion and saved
+rereading. Landscape starts with that ending outside the reading area, ensuring
+the swipe is exercised. No programmatic scroll is used for this earned reading
+check. Both actual images are inspected and preserved at
+`/tmp/eidolon-earned-diary-reading-390.png` and
+`/tmp/eidolon-earned-diary-reading-844.png`; log
+`/tmp/eidolon-investigations-phone-reading-final.log`. Credential scan and
+disposable cleanup pass. The explicit level-30 phone combat fixture remains,
+so this is not fresh leveling or physical-device performance evidence. The QA
+performance overlay is visible in captures; it is not claimed as production UI.
+
+Landscape diary reading is now verified. Remaining Water/Fire/Air field routes,
+ordered Fire combat, wider placement review and coordinated reward tuning stay
+open; this graph is still not merged to root or released.
+
 Latest verified additions (September 7): release-48 corrections are merged into
 the isolated branch as **`93f0162`**, with **276 focused checks / 4.148s**.
 The full earned Earth route passes **3.6m**: diary, eight physical Memory Seeds,

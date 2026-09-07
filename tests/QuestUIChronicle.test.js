@@ -77,6 +77,27 @@ test('an acknowledged inspection opens its recorded journal page, never undiscov
     expect(record.textContent).toContain(chapter.sites[0].text.replaceAll('\n\n', ''));
 });
 
+test('restores expanded field records before a browser clamps the saved reading offset', () => {
+    buildDom();
+    const chapter = chronicleInvestigations[1];
+    const quest = chronicleQuest({ id: chapter.id, type: 'INVESTIGATE', investigationMask: 5 });
+    const ui = new QuestUI({ getLastPlayer: () => ({ quests: [quest], level: 30 }) });
+    ui.updateJournal([quest]);
+    const journal = document.querySelector('#journal-list');
+    const laterRecord = `details[data-discovery-id="${chapter.sites[2].id}"]`;
+    journal.querySelector(laterRecord).open = true;
+    let offset = 500;
+    // jsdom has no layout. Model the browser's smaller scroll range while the
+    // rebuilt diary is collapsed; reopening it cannot undo an earlier clamp.
+    Object.defineProperty(journal, 'scrollTop', { configurable: true,
+        get: () => offset,
+        set: value => { offset = Math.min(value, journal.querySelector(laterRecord).open ? 600 : 100); }
+    });
+    ui.updateJournal([quest]);
+    expect(journal.querySelector(laterRecord).open).toBe(true);
+    expect(journal.scrollTop).toBe(500);
+});
+
 describe('QuestUI Fourfold Chronicle', () => {
     beforeEach(buildDom);
 

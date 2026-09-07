@@ -71,6 +71,43 @@ async function walkToPointByTouch(page, context, x, z) {
     await expect.poll(() => page.evaluate(() => window.game.inputManager.joystickVector.lengthSq())).toBe(0);
 }
 
+async function swipeJournal(page, context, direction) {
+    const box = await page.locator('#journal-list').boundingBox();
+    expect(box.height, 'Journal leaves room for a real reading gesture').toBeGreaterThan(60);
+    const cdp = await context.newCDPSession(page);
+    const start = direction === 'up' ? box.y + box.height - 16 : box.y + 16;
+    const distance = (box.height - 32) * (direction === 'up' ? -1 : 1);
+    try {
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ id: 86, x: box.x + box.width / 2, y: start }] });
+        for (let step = 1; step <= 8; step++) {
+            await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [
+                { id: 86, x: box.x + box.width / 2, y: start + distance * step / 8 }
+            ] });
+            await page.waitForTimeout(30);
+        }
+    } finally {
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+        await cdp.detach();
+    }
+    await page.waitForTimeout(150);
+}
+
+async function diaryEndingIsReadable(record) {
+    return record.evaluate(el => {
+        const paragraph = el.lastElementChild, text = paragraph?.lastChild;
+        if (text?.nodeType !== Node.TEXT_NODE) return false;
+        // Check the actual final line inside the scrollport, not just text in
+        // the DOM or the browser viewport beyond the clipped journal body.
+        const range = document.createRange();
+        range.setStart(text, Math.max(0, text.length - 12));
+        range.setEnd(text, text.length);
+        const line = range.getBoundingClientRect();
+        const body = el.closest('#journal-list').getBoundingClientRect();
+        return line.height > 0 && line.top >= body.top && line.bottom <= body.bottom &&
+            paragraph.contains(document.elementFromPoint(line.x + line.width / 2, line.y + line.height / 2));
+    });
+}
+
 test('phone player earns the first Chronicle objective and explicitly claims Ilyra’s reward', async ({ page, context, baseURL }, testInfo) => {
     const credentials = credentialsFromEnvironment();
     test.skip(!credentials.username || !credentials.password || process.env.EIDOLON_E2E_REGISTER !== '1', 'Requires a fresh disposable character');
@@ -206,6 +243,14 @@ test('phone player earns the first Chronicle objective and explicitly claims Ily
         await page.setViewportSize(viewport);
         await expect(page.locator('#btn-close-journal')).toBeInViewport();
         expect(await record.evaluate(el => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
+        if (viewport.width > viewport.height) {
+            // Start above the ending so the landscape check must actually
+            // exercise touch scrolling, even if portrait left it in view.
+            for (let swipe = 0; await diaryEndingIsReadable(record) && swipe < 8; swipe++) await swipeJournal(page, context, 'down');
+            expect(await diaryEndingIsReadable(record), 'Landscape ending starts outside the reading area').toBe(false);
+        }
+        for (let swipe = 0; !await diaryEndingIsReadable(record) && swipe < 16; swipe++) await swipeJournal(page, context, 'up');
+        await expect.poll(() => diaryEndingIsReadable(record), { message: 'Final diary line can be read using actual touch scrolling' }).toBe(true);
         await page.screenshot({ path: testInfo.outputPath(`earned-phone-diary-${viewport.width}.png`) });
     }
     await page.locator('#btn-close-journal').tap();

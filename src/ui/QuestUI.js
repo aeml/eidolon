@@ -1043,7 +1043,6 @@ export class QuestUI {
         const restoreReading = () => {
             const archive = this.journalList?.querySelector('details');
             if (archive && archiveOpen) archive.open = true;
-            if (this.journalList) this.journalList.scrollTop = scroll;
             if (archiveFocused) archive?.querySelector('summary')?.focus({ preventScroll: true });
             if (focusedQuest) [...this.journalList.querySelectorAll('[data-quest-track]')]
                 .find(input => input.dataset.questTrack === focusedQuest)?.focus({ preventScroll: true });
@@ -1051,6 +1050,9 @@ export class QuestUI {
                 record.open = openDiscoveries.has(record.dataset.discoveryId);
                 if (record.dataset.discoveryId === focusedDiscovery) record.querySelector('summary')?.focus({ preventScroll: true });
             }
+            // Restore expanded height first: browsers otherwise clamp the
+            // saved offset to the shorter, collapsed journal's scroll range.
+            if (this.journalList) this.journalList.scrollTop = scroll;
         };
         this.lastJournalQuests = quests;
         this.renderObjectivesPanel(this.buildObjectiveSummary(quests));
