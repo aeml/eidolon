@@ -263,7 +263,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				target.StunEndTime = time.Now().Add(2 * time.Second)
 			}
 
-			w.fireDamageEvent(player.ID, target.ID, finalDamage, "holy", player.InstanceID)
+			w.fireDamageEvent(player, target.ID, finalDamage, "holy", player.InstanceID)
 			if target.Health <= 0 {
 				w.handleDeath(target, player, nil)
 			}
@@ -573,7 +573,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 						isDead := target.Health <= 0
 						target.Mu.Unlock()
 
-						w.fireDamageEvent(player.ID, target.ID, finalDamage, "holy", player.InstanceID)
+						w.fireDamageEvent(player, target.ID, finalDamage, "holy", player.InstanceID)
 						if isDead {
 							target.Mu.Lock()
 							w.handleDeath(target, player, nil)
@@ -636,7 +636,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 					isDead := target.Health <= 0
 					target.Mu.Unlock()
 
-					w.fireDamageEvent(player.ID, target.ID, finalDamage, "holy", player.InstanceID)
+					w.fireDamageEvent(player, target.ID, finalDamage, "holy", player.InstanceID)
 					if isDead {
 						target.Mu.Lock()
 						w.handleDeath(target, player, nil)
