@@ -1,10 +1,42 @@
 import { execFileSync } from 'node:child_process';
 import { expect, test } from '@playwright/test';
-import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, openGame } from './helpers.js';
+import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, openGame, projectEntity } from './helpers.js';
 import { openIlyra } from './chronicle-earth-route.js';
 import { earnInvestigation } from './chronicle-investigation-route.js';
+import { createEarnedWizardDefense } from './earned-wizard-defense.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off', actionTimeout: 20_000 });
+
+async function clearPursuingHostiles(page, site, beforeCombat) {
+    const engaged = new Set();
+    await expect.poll(async () => {
+        if (await beforeCombat()) return false;
+        const state = await page.evaluate(() => {
+            const game = window.game, player = game.player;
+            const enemies = (game.activeEntitiesCache || []).filter(enemy => game.isHostileActorTarget(enemy) &&
+                player.position.distanceTo(enemy.position) < 14);
+            enemies.sort((a, b) => player.position.distanceTo(a.position) - player.position.distanceTo(b.position));
+            return { dead: player.state === 'DEAD', id: enemies[0]?.id, cooldown: player.abilityCooldown };
+        });
+        expect(state.dead, 'Prepared returning character must survive ordinary field combat').toBe(false);
+        if (!state.id) return true;
+        const point = await projectEntity(page, state.id);
+        if (!point?.visible) return false;
+        await page.mouse.move(point.x, point.y);
+        const actual = await page.evaluate(() => {
+            const game = window.game;
+            return game.isHostileActorTarget(game.hoveredEntity) ? game.hoveredEntity.id : null;
+        });
+        if (!actual) return false;
+        // Actual left-click pursuit/basic attack and Wizard's right-click
+        // Fireball. No despawn, invulnerability, damage or kill-credit grants.
+        await page.mouse.click(point.x, point.y);
+        if ((state.cooldown || 0) <= 0) await page.mouse.click(point.x, point.y, { button: 'right' });
+        engaged.add(actual);
+        return false;
+    }, { timeout: 180_000, intervals: [250], message: `Clear ordinary pursuers before inspecting ${site.id}` }).toBe(true);
+    if (engaged.size) console.log(`[water-site-combat] ${site.id}: engaged ${engaged.size} actual pursuers; nearby hostile area cleared`);
+}
 
 function seedReturningCharacter(username) {
     const container = process.env.EIDOLON_E2E_INVESTIGATION_MONGO_CONTAINER;
@@ -28,11 +60,12 @@ function seedReturningCharacter(username) {
     ];
     const character = { name: username, class: 'Wizard', level: 100, xp: 0, gold: 0,
         x: -1.25, y: 0, z: 200,
-        // Canonical Wizard level-100 growth, without talents or inflated gear.
+        // Canonical Wizard level-100 growth and a common level-100 staff
+        // (round(12 * (1 + 100 * .15) / 25) = 8 damage), without talents.
         stats: { strength: 208, dexterity: 109, intelligence: 119, wisdom: 109, vitality: 208 },
         inventory: [], stash: [], unlocked_skills: ['Fireball'],
         equipment: { mainHand: { id: 'returning-staff', name: 'Wooden Staff', type: 'WEAPON', slot: 'mainHand',
-            rarity: 'Common', level: 100, potency: 0, stats: { damage: 100 }, stat_scale_version: 1 } },
+            rarity: 'Common', level: 100, potency: 0, stats: { damage: 8 }, stat_scale_version: 1 } },
         quests: milestones.map(([id, type, target, count], index) => ({ id, type, target, count, max_count: count,
             accepted: true, completed: true, category: 'chronicle', chapter: index + 1, reward_xp: 0, reward_gold: 0 })) };
     const script = `
@@ -62,6 +95,16 @@ test('returning character earns Water records through ordinary travel and manual
     await expect(page.locator('#auth-status')).toContainText('Registration successful');
     seedReturningCharacter(credentials.username);
     await loginAndEnterWorld(page, credentials);
+    // Choose the available control branch normally, then use its actual
+    // defensive hotbar inputs and ordinary kiting rather than tanking a crowd.
+    await page.keyboard.press('k');
+    const skills = page.locator('#skill-tree-window');
+    await skills.getByRole('button', { name: 'Skills', exact: true }).click();
+    await skills.locator('.skill-branch').filter({ hasText: 'Control & Utility' }).getByRole('button', { name: 'Select Spec' }).click();
+    await expect.poll(() => page.evaluate(() => window.game.player.selectedBranch)).toBe('C');
+    await expect.poll(() => page.evaluate(() => window.game.player.hotbar.includes('Arcane Shield'))).toBe(true);
+    await page.locator('#btn-close-skills').click();
+    const beforeCombat = await createEarnedWizardDefense(page);
     const ids = ['chronicle_water_flood_shelter', 'chronicle_water_false_reflection'];
     for (const id of ids) {
         const initial = await page.evaluate(id => window.game.player.quests.find(q => q.id === id), id);
@@ -71,6 +114,7 @@ test('returning character earns Water records through ordinary travel and manual
         await earnInvestigation(page, id, openIlyra,
             (site, stage) => page.screenshot({ path: testInfo.outputPath(`${site.id}-${stage}.png`) }), {
                 waypoints: [[0, 230], [55, 230], [80, 200], [125, 200], [145, -200], [145, -550], [0, -575], [0, -625]],
+                beforeInspect: site => clearPursuingHostiles(page, site, beforeCombat),
                 selectChapter: async chapter => {
                     const other = page.locator('#quest-list details').filter({ has: page.locator('summary').filter({ hasText: 'Other discoveries' }) });
                     if (await other.getAttribute('open') === null) await other.locator('summary').click();

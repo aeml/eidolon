@@ -48,6 +48,37 @@ pass **3.144s**. All these handles are closed; the expanded graph backend passes
 
 ### World integration checkpoint
 
+September 7 Water follow-up: the two Water investigations pass actual desktop
+play **1 / 6.6m**, handle **6729** closed, log
+`/tmp/eidolon-investigations-water-defensive-route.log`. This is an explicitly
+seeded returning-character save through the nine old dungeon milestones, not
+earned leveling or raid credit. Migration leaves both new Water chapters
+unaccepted and optional. The player accepts each at Ilyra, travels through the
+real north passage, inspects the flood shelter, both pools and mooring bell,
+returns for explicit rewards, then reconnects with masks **1 / 7**, completed
+contracts, gold and cap-only Resonance receipts. Prior dungeon completion stays
+intact and the first raid is not completed by these discoveries. All actual
+earned Water screenshots are inspected. Credential scan/cleanup pass.
+
+First route 59985 fails **3.3m** after earning Dain's ledger: Mountain Trolls cover
+the still pool's real click geometry. The next route 7160 uses ordinary attacks
+to clear pursuers but dies. The successful route selects Control & Utility in
+the real Skills UI and uses actual Arcane Shield/ordinary kiting, without damage,
+invulnerability, despawn, teleport-to-site or discovery grants. It logs engaging
+eight pursuers near the moving pool and twelve near the bell; these are engaged
+target counts, not independently audited kill totals. Realm enemy pressure and
+normal ten-second overworld respawns remain a fresh-player pacing concern, not
+proof that a level-60 beginner can comfortably read here.
+
+The initial fixture's arbitrary 100-damage staff is also corrected downward to
+the actual common level-100 formula, **round(12 × (1 + 100 × .15) / 25) = 8**.
+Canonical level-100 Wizard base stats are unchanged. The earlier 100-damage
+fixture is not ordinary item-budget evidence. The prepared eight-damage route
+is the passing one. Root still does not activate this expansion; Fire/Air's four
+chapters, actual ordered Fire fight, all-realm touch/placement quality, fresh
+progression and broader economy remain open. Water save masks/receipts are checked
+after reconnect; explicit post-reconnect Water journal-opening remains to cover.
+
 September 7, 21:30 follow-up: combined runtime 84abecf has backend race coverage
 root **16.127s**, game **396.729s**. The combined invocation 90803 terminates with
 SIGTERM/143 before reporting game results; its root package passes. No Go child

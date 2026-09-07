@@ -32,7 +32,7 @@ export async function earnEarthInvestigation(page, id, openIlyra, capture) {
     return earnInvestigation(page, id, openIlyra, capture);
 }
 
-export async function earnInvestigation(page, id, openIlyra, capture, { waypoints, selectChapter } = {}) {
+export async function earnInvestigation(page, id, openIlyra, capture, { waypoints, selectChapter, beforeInspect } = {}) {
     const chapter = chronicleInvestigations.find(chapter => chapter.id === id);
     await openIlyra(page);
     if (selectChapter) await selectChapter(chapter);
@@ -51,6 +51,10 @@ export async function earnInvestigation(page, id, openIlyra, capture, { waypoint
     for (const site of chapter.sites) {
         expect(site.kind, 'Combat evidence requires a separate actual combat driver').toBe('inspect');
         await walkTo(page, site.x, site.z + 3);
+        if (beforeInspect) {
+            await beforeInspect(site);
+            await walkTo(page, site.x, site.z + 3);
+        }
         if (capture) await capture(site, 'approach');
         let point;
         let candidate = 0;
