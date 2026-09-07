@@ -164,3 +164,94 @@ func TestRoutineEliteDeathPipelinePublishesAtMostOneEquipmentEach(t *testing.T) 
 		time.Sleep(time.Millisecond)
 	}
 }
+
+func TestRoutineEliteLootKeepsPartyRulesAndPersonalFragments(t *testing.T) {
+	w := newTestWorld()
+	players := []*Entity{newCollectionBalancePlayer(t), newCollectionBalancePlayer(t)}
+	for i, player := range players {
+		player.ID = fmt.Sprintf("routine-party-%d", i)
+		player.Quests[0].Count = 7
+		player.Inventory[0] = Item{ID: "chronicle-item-owned", Name: player.Quests[0].Target, Type: ItemRelic, Stack: 7, MaxStack: 8}
+		w.AddEntity(player)
+	}
+	leader, member := players[0], players[1]
+	party := w.CreateParty(leader.ID)
+	if err := w.JoinParty(party.ID, member.ID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := w.SetPartyLootRule(leader.ID, "master", member.ID); err != nil {
+		t.Fatal(err)
+	}
+	leader.QAGuaranteedLoot = true
+	enemy := &Entity{ID: "elite-routine-party", Type: TypeEnemy, SubType: "InfernoTitan", Level: 1, Health: 1, MaxHealth: 1, State: "IDLE"}
+	w.AddEntity(enemy)
+	w.handleDeath(enemy, leader, nil)
+	var gearID, itemID, leaderFragment string
+	deadline := time.Now().Add(5 * time.Second)
+	for {
+		w.Mu.RLock()
+		fragments, gearCount := 0, 0
+		for _, entity := range w.Entities {
+			if entity.Type != TypeLoot || entity.LootItem == nil {
+				continue
+			}
+			if strings.HasPrefix(entity.LootOwnerID, "routine-party-") && IsChronicleQuestItem(*entity.LootItem) {
+				fragments++
+				if entity.LootOwnerID == leader.ID {
+					leaderFragment = entity.ID
+				}
+			}
+			switch entity.LootItem.Type {
+			case ItemWeapon, ItemArmor, ItemAccessory, ItemNeck, ItemGloves:
+				gearCount++
+				gearID, itemID = entity.ID, entity.LootItem.ID
+				if entity.LootPartyID != party.ID || entity.LootOwnerID != "" {
+					t.Error("equipment lost its existing party ownership")
+				}
+			}
+		}
+		w.Mu.RUnlock()
+		if fragments == 2 {
+			if gearCount != 1 {
+				t.Fatalf("party elite published %d equipment, want one", gearCount)
+			}
+			break
+		}
+		if time.Now().After(deadline) {
+			t.Fatal("party loot publication did not finish")
+		}
+		time.Sleep(time.Millisecond)
+	}
+	if _, ok, reason := w.PerformPickup(leader.ID, gearID); ok || reason != "master_looter_only" {
+		t.Fatalf("leader bypassed master loot: %t %s", ok, reason)
+	}
+	member.Mu.Lock()
+	for i := 1; i < len(member.Inventory); i++ {
+		member.Inventory[i] = Item{ID: fmt.Sprintf("keep-%d", i), Type: ItemArmor, Stack: 1, MaxStack: 1}
+	}
+	member.Mu.Unlock()
+	if _, ok, reason := w.PerformPickup(member.ID, gearID); ok || reason != "inventory_full" {
+		t.Fatalf("full master bag: %t %s", ok, reason)
+	}
+	if w.GetEntity(gearID) == nil {
+		t.Fatal("full bag destroyed the retained gear")
+	}
+	member.Mu.Lock()
+	member.Inventory[len(member.Inventory)-1] = Item{}
+	member.Mu.Unlock()
+	if _, ok, reason := w.PerformPickup(member.ID, gearID); !ok || reason != "" {
+		t.Fatalf("master pickup failed: %t %s", ok, reason)
+	}
+	if member.Inventory[len(member.Inventory)-1].ID != itemID {
+		t.Fatal("pickup replaced the retained equipment roll")
+	}
+	if _, ok, _ := w.PerformPickup(member.ID, gearID); ok {
+		t.Fatal("duplicate gear pickup succeeded")
+	}
+	if _, ok, reason := w.PerformPickup(leader.ID, leaderFragment); !ok || reason != "" {
+		t.Fatalf("master loot stole personal quest credit: %t %s", ok, reason)
+	}
+	if leader.Quests[0].Count != 8 || leader.Quests[0].Completed || member.Quests[0].Count != 7 {
+		t.Fatal("gear/fragment pickup changed unrelated or manual quest progress")
+	}
+}

@@ -2,7 +2,8 @@
 
 September 7. Part of the [broader balance pass](2026-09-07-progression-balance-and-investigations.md),
 not a claim that XP, rarity power, quest gold, Forge affordability or the overall
-economy are balanced. Not released, versioned or merged to root.
+economy are balanced. Packaged locally as Alpha 1.0.50; not released or merged
+to root, and final package browser verification remains open.
 
 ## Chosen first equipment targets
 
@@ -71,8 +72,54 @@ production pipeline and boundary controls. Three race repetitions pass **2.639s*
 log `/tmp/eidolon-routine-loot-exhaustive.log`. This additional test does not change
 the runtime covered by the full suite.
 
-Still required: further ownership checks; compare retained gear, selling, preparation affordability and
-survivability through ordinary earned routes; check all relevant clients/offline
-callers; package with explicit before/after patch notes and migration statement;
-pass the sequential release gates and verify the exact deployed build. The
-candidate does not change the XP curve or excuse delaying that coordinated work.
+The actual party death/pickup pipeline additionally preserves master-looter
+restrictions, full-bag world loot, the original retained item ID, duplicate-pickup
+rejection and independent personal fragments even when the leader is not master
+looter. Three race repetitions pass **1.846s**, log
+`/tmp/eidolon-routine-loot-party.log`.
+
+## Earned route and Alpha 1.0.50 package
+
+Clean runtime/test checkpoint **49ac0c7** passes the actual fresh Wizard readiness
+route **1 / 14.2m**, handle 58746 closed, log
+`/tmp/eidolon-routine-loot-earned-readiness.log`. No level/item/quest/protection
+grants. The route earns the opening and eight exact fragments, claims manually,
+reconnects with identical earned equipment IDs/stats/rarities/vendor values, then
+completes two optional daily hunts and equips/trains through the real UI.
+
+- Collection: **12 observed target deaths**, no player deaths, five picked-up
+  equipment pieces, 80 total vendor value (not sold), eight occupied bag slots.
+  Gold is 136 before collection / 333 after combat; manual 100 gold / 8,000 XP
+  leaves level 17, 433 gold and the level-30 Guide correctly locked. Collection
+  and handoff take 74 seconds.
+- Skeleton hunt: 100 credited kills, **one death**, manual 50,000 XP / 100 gold,
+  level 27. Eight earned items are equipped, Control & Utility chosen and five
+  Fireball mastery ranks purchased with earned points.
+- Imp hunt: 100 credited kills, **two deaths**, manual 150,000 XP / 300 gold,
+  saved level 34 / 15,987 gold, level-30 entry available. Defensive inputs record
+  181 retreats / five accepted shields / zero rejected shields.
+
+These observations establish a working earned preparation route, not pleasant
+first-hour pacing, a controlled before/after death comparison, or the required
+non-daily leveling path. Existing quest payouts still create large level jumps;
+three crowded-encounter deaths remain visible rather than being attributed to
+loot frequency without evidence. Selling, better upgrade selection, all-class/
+party affordability and source/sink balance still need further coverage.
+
+Local Alpha 1.0.50 aligns login/package/manifest/server/container/deploy/QA
+versions and adds **less clutter on the road** notes without replacing earlier
+history. Notes state the 40% routine equipment reduction, elite ceiling,
+preserved materials/bosses/owned gear/accepted contracts and incomplete wider
+balancing work. Package contracts pass **251 / 2.387s**. Full client passes
+**217 suites / 3,213 tests / 137.407s**, lint passes; package server-root race
+passes **17.940s**. Logs `/tmp/eidolon-release50-contracts.log`,
+`/tmp/eidolon-release50-client.log`, `/tmp/eidolon-release50-server-root.log`.
+The gameplay runtime is unchanged from the full game race and earned route;
+package changes are version/copy plus additional party regression coverage.
+
+Still required: final package browser sweep and exact package gameplay identity,
+final checkpoint/integration, every preceding sequential release gate, and this
+package's own CI/deployment/exact live verification. Client item-generator methods
+have no source callers outside their definitions in the current search; no offline
+loot parity claim is inferred from that alone. The candidate does not change the
+XP curve or excuse delaying its coordinated reward and level-gate work.
