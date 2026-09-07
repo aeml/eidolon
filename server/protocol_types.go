@@ -528,14 +528,20 @@ type UnequipPayload struct {
 }
 
 type AbilityPayload struct {
-	TargetX       float64 `json:"targetX"`
-	TargetZ       float64 `json:"targetZ"`
-	TargetID      string  `json:"targetId"`
-	SkillName     string  `json:"skillName"`
-	SourceID      string  `json:"sourceId"`
-	Radius        float64 `json:"radius,omitempty"`
-	Arc           float64 `json:"arc,omitempty"`
-	ShapeResolved bool    `json:"shapeResolved,omitempty"`
+	TargetX       float64                `json:"targetX"`
+	TargetZ       float64                `json:"targetZ"`
+	TargetID      string                 `json:"targetId"`
+	SkillName     string                 `json:"skillName"`
+	SourceID      string                 `json:"sourceId"`
+	Radius        float64                `json:"radius,omitempty"`
+	Arc           float64                `json:"arc,omitempty"`
+	ShapeResolved bool                   `json:"shapeResolved,omitempty"`
+	Landing       *AbilityLandingPayload `json:"landing,omitempty"`
+}
+
+type AbilityLandingPayload struct {
+	X float64 `json:"x"`
+	Z float64 `json:"z"`
 }
 
 type DamagePayload struct {
