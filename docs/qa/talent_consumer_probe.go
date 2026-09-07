@@ -4,30 +4,9 @@ package game
 // Run with scripts/audit-talent-consumers.mjs; they are not silently skipped
 // tests in the passing release suite. Promote them when implementing each fix.
 
-import (
-	"math"
-	"testing"
-	"time"
-)
+import "testing"
 
-// Healing Light now has normal coverage in talent_healing_consumer_test.go.
-func TestPendingTalentShieldDurationConsumer(t *testing.T) {
-	for _, rank := range []int{0, 5} {
-		w := newTestWorld()
-		p := newTestPlayer("probe-shield", "Wizard")
-		p.Level = 100
-		p.TalentRanks["WIZ_32"] = rank
-		p.UnlockedSkills = []string{"Arcane Shield"}
-		w.AddEntity(p)
-		start := time.Now()
-		result := w.PerformAbility(p.ID, 0, 0, "", "Arcane Shield")
-		want := 20.0 * (1 + 0.05*float64(rank))
-		got := p.ArcaneShieldEndTime.Sub(start).Seconds()
-		if !result.Accepted || math.Abs(got-want) > 0.1 {
-			t.Errorf("rank=%d accepted=%t duration=%.3fs; want %.3fs", rank, result.Accepted, got, want)
-		}
-	}
-}
+// Healing and Wizard status durations have normal consumer regression tests.
 
 func TestPendingTalentRangeConsumer(t *testing.T) {
 	for _, rank := range []int{0, 5} {

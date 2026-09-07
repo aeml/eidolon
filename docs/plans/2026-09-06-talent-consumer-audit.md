@@ -14,6 +14,12 @@ four-defect measurements below remain historical evidence, not current failures
 of the repaired Healing Light consumer. Purifying Wave's healing-only Mastery
 and other effect/copy gaps are still open.
 
+The [1.0.32 duration candidate](2026-09-07-talent-duration.md) also promotes the
+Arcane Shield probe into normal actual-cast and expiry tests, with other timed
+Wizard buffs/debuffs. The diagnostic overlay now retains **two range/area probes**.
+Projectile/zone lifetimes and other classes' duration consumers remain open;
+this is not a complete duration audit. Publication/phone validation are separate.
+
 ## Repeatable evidence
 
 Run `npm run audit:talent-consumers` with Node 24 and Go available. The script

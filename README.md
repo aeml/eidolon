@@ -234,8 +234,14 @@ exact heal events and visible floating numbers before/after purchase and after
 fresh login in landscape. This is functional spell verification, not earned
 progression. It is included in full isolated QA.
 
+The optional isolated route `EIDOLON_ISOLATED_QA_ROUTE=talent-duration` prepares a
+disposable Wizard at level 100, then uses phone touch controls to select a branch,
+buy Arcane Stability ranks and cast Arcane Shield. It checks server-reported
+20 → 25 second durations, survival past the old deadline, actual expiry and
+saved ranks after login/rotation. It is a functional fixture, not earned progression.
+
 `npm run audit:talent-consumers` runs separate paired-cast probes for still-open
-duration, range and area talent consumers. It currently fails on those
+range and area talent consumers. It currently fails on those
 known defects; it is not a passing release gate. It uses a temporary Go build
 overlay and does not modify server source or saved characters. Evidence and
 next implementation requirements are in the

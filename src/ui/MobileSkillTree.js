@@ -163,8 +163,10 @@ export class MobileSkillTree {
         const tree = CONSTANTS.SKILL_TREES[this.classType];
         const branch = tree?.[`Branch${player.selectedBranch}`];
         const skills = new Set([tree?.Tier1?.name, ...[2, 3, 4, 5].map(t => branch?.[`Tier${t}`]?.name)]);
-        const talents = (CONSTANTS.PASSIVE_TALENTS[this.classType] || []).filter(t => !branch ||
-            ((t.name.endsWith(' - Mastery') || t.name.endsWith(' - Technique')) && skills.has(t.name.slice(0, t.name.lastIndexOf(' - ')))));
+        const talents = (CONSTANTS.PASSIVE_TALENTS[this.classType] || []).filter(t => {
+            const skillTalent = t.name.endsWith(' - Mastery') || t.name.endsWith(' - Technique');
+            return !branch || !skillTalent || skills.has(t.name.slice(0, t.name.lastIndexOf(' - ')));
+        });
         for (const talent of talents) {
             const rank = ranks[talent.id] || 0, max = talent.maxRank || 1;
             const card = this.card(content, talent.name, talent.desc);
