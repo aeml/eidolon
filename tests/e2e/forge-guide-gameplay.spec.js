@@ -36,10 +36,13 @@ function seedForgeFixture(username) {
     }
 }
 
-test('forge purchases refresh the open selection and guide choices match dungeon families', async ({ page, baseURL }) => {
+test('forge purchases refresh the open selection and guide choices match dungeon families', async ({ page, baseURL }, testInfo) => {
     test.setTimeout(180_000);
     test.skip(!process.env.EIDOLON_E2E_FORGE_MONGO_CONTAINER, 'Requires the isolated forge fixture');
     const credentials = credentialsFromEnvironment();
+    // A retry must seed a new empty disposable account, not attempt to register
+    // the already-created first attempt or overwrite its character.
+    if (testInfo.retry) credentials.username += `-retry${testInfo.retry}`;
     const failures = collectBrowserFailures(page, baseURL);
     await openGame(page);
     await page.locator('#auth-username').fill(credentials.username);
@@ -51,8 +54,21 @@ test('forge purchases refresh the open selection and guide choices match dungeon
     seedForgeFixture(credentials.username);
     await loginAndEnterWorld(page, credentials);
     async function interact(id, selector) {
+        // Login's world-ready state precedes the end of camera interpolation.
+        // A projected point during that motion can become a ground click.
+        await expect.poll(() => page.evaluate(() => {
+            const game = window.game;
+            return game.player.state === 'IDLE' && !game.player.targetPosition &&
+                Math.hypot(game.renderSystem.cameraTarget.x - game.player.position.x,
+                    game.renderSystem.cameraTarget.z - game.player.position.z) < 0.05;
+        })).toBe(true);
         let point;
-        await expect.poll(async () => { point = await projectEntity(page, id); return point?.visible; }).toBe(true);
+        await expect.poll(async () => {
+            point = await projectEntity(page, id);
+            if (!point?.visible) return false;
+            await page.mouse.move(point.x, point.y);
+            return page.evaluate(id => window.game.hoveredEntity?.id === id, id);
+        }).toBe(true);
         await page.mouse.click(point.x, point.y);
         try {
             await expect(page.locator(selector)).toBeVisible({ timeout: 30_000 });
