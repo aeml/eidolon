@@ -9,7 +9,7 @@ export function planWizardHuntStep(state) {
     const nearest = threats[0];
     const shieldIndex = (state.hotbar || []).indexOf('Arcane Shield');
     if (nearest.distance < 9 && state.healthRatio < 0.8 && state.shieldHP <= 0 &&
-        shieldIndex >= 0 && shieldIndex < 4 && state.mana >= state.shieldCost &&
+        shieldIndex >= 0 && shieldIndex < 4 && state.unlockedSkills?.includes('Arcane Shield') && state.mana >= state.shieldCost &&
         (state.cooldowns?.['Arcane Shield'] || 0) <= 0 && state.sinceCastMs >= 550) {
         return { action: 'shield', key: String(shieldIndex + 1) };
     }

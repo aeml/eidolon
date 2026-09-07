@@ -26,6 +26,7 @@ export async function createEarnedWizardDefense(page) {
                 radius: p.radius, walkRects: game.currentInstanceType !== 'overworld' ? game.currentDungeonLayout?.walkRects : null,
                 healthRatio: p.stats.hp / p.stats.maxHp, shieldHP: p.shieldHP || 0, mana: p.stats.mana,
                 shieldCost: getAbilityManaCost(p, 'Arcane Shield', 40), hotbar: p.hotbar, cooldowns: p.cooldowns,
+                unlockedSkills: p.unlockedSkills,
                 sinceCastMs: Date.now() - window.__freshWizardDefense.lastAcceptedAt,
                 threats: (game.activeEntitiesCache || []).filter(enemy => game.isHostileActorTarget(enemy) &&
                     p.position.distanceTo(enemy.position) < 18).map(enemy => ({ x: enemy.position.x, z: enemy.position.z })) };

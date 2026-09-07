@@ -1,8 +1,9 @@
 import { expect, test } from '@playwright/test';
 import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { earnFreshCollectionAndInspectHandoff } from './fresh-collection-route.js';
-import { earnFreshSkeletonHunt } from './fresh-hunt-route.js';
-import { earnFreshDungeonReadiness } from './fresh-ready-route.js';
+import { earnFreshHunt, earnFreshSkeletonHunt } from './fresh-hunt-route.js';
+import { earnFreshDungeonReadiness, prepareEarnedWizard } from './fresh-ready-route.js';
+import { createEarnedWizardDefense } from './earned-wizard-defense.js';
 import { clearEarnedVerdant } from './fresh-dungeon-route.js';
 import { collectBrowserFailures, credentialsFromEnvironment, jumpByGroundClick,
     loginAndEnterWorld, moveByGroundClick, projectEntity, projectNearestHostile,
@@ -54,6 +55,11 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
         process.env.EIDOLON_E2E_FRESH_COLLECTION === '1' ? 1_200_000 : 600_000);
     const started = Date.now();
     const failures = collectBrowserFailures(page, baseURL);
+    const preparedEarlier = process.env.EIDOLON_E2E_FRESH_EARLY_PREPARATION === '1';
+    if (preparedEarlier) {
+        expect(process.env.EIDOLON_E2E_FRESH_HUNT).toBe('1');
+        expect(process.env.EIDOLON_E2E_FRESH_COLLECTION).toBe('1');
+    }
     await loginAndEnterWorld(page, credentials);
     if (process.env.EIDOLON_E2E_FRESH_READY === '1') {
         expect(await page.evaluate(() => window.game.player.constructor.name),
@@ -169,13 +175,18 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
         });
     }
     if (process.env.EIDOLON_E2E_FRESH_HUNT === '1') {
-        await earnFreshSkeletonHunt(page, credentials, {
+        const hunt = {
             findTarget: () => findSkeletonThroughTravel(page), leaveTown: () => leaveTown(page)
-        });
+        };
+        if (preparedEarlier) {
+            await prepareEarnedWizard(page, credentials, { label: 'before-Skeleton-comparison' });
+            const beforeCombat = await createEarnedWizardDefense(page);
+            await earnFreshHunt(page, credentials, { ...hunt, beforeCombat });
+        } else await earnFreshSkeletonHunt(page, credentials, hunt);
     }
     if (process.env.EIDOLON_E2E_FRESH_READY === '1') {
         await earnFreshDungeonReadiness(page, credentials, {
-            findTarget: () => findHostileThroughTravel(page, 'Imp')
+            findTarget: () => findHostileThroughTravel(page, 'Imp'), preparedEarlier
         });
         expect(failures, failures.join('\n')).toEqual([]);
         console.log('[fresh-ready] earned readiness and clean browser-error checkpoint passed');

@@ -244,6 +244,16 @@ It is a functional fixture, not earned progression. Anonymous smoke also covers
 crowded effect lists, native touch scrolling and unobstructed controls at four
 phone viewports; physical-device playability remains a separate gate.
 
+For the earned Wizard comparison, set `EIDOLON_E2E_FRESH_EARLY_PREPARATION=1`
+with isolated `fresh-hunt`, `fresh-ready` or `fresh-dungeon`. After the normal
+collection quest it equips eligible earned drops, spends up to five Intelligence
+points and available Fireball Mastery ranks, and selects the earned utility
+branch through ordinary menus. Later preparation fills remaining empty equipment
+slots and tops Mastery up to five without spending another five stat points.
+Defensive hunt inputs only use actually unlocked skills. The default unequipped
+Skeleton baseline remains unchanged; neither path grants progress or changes
+the existing two-respawn bound. This comparison is not human-discovery evidence.
+
 `npm run audit:talent-consumers` runs separate paired-cast probes for still-open
 range and area talent consumers. It currently fails on those
 known defects; it is not a passing release gate. It uses a temporary Go build

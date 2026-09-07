@@ -1,5 +1,25 @@
 # Fresh-character progression evidence — 1.1 gate
 
+## September 7 — earlier earned preparation comparison
+
+The optional `EIDOLON_E2E_FRESH_EARLY_PREPARATION=1` switch compares normal
+preparation after the collection chapter, before the Skeleton contract. It does
+not replace the default no-equipment/no-specialization Skeleton baseline. It
+uses only collected legal equipment, up to five earned Intelligence allocations,
+available Fireball Mastery ranks and normal branch selection. Level-16 characters
+require Teleport, not the level-20 Shield; the defensive input planner now checks
+actual unlocked skills rather than treating a future hotbar slot as usable.
+Later preparation preserves equipped item identities, fills only empty slots,
+tops Mastery up to five and spends no second stat-allocation budget. Both stages
+check persistence through a fresh login. No grants, enemy tuning, changed quest
+requirements, relaxed death limit or dungeon assertion removals are involved.
+
+Focused budget, defensive-input and full-dungeon-route checks pass **26 tests**.
+Full client validation passes **181 suites / 2,516 tests in 57.779 seconds**
+(session `24184`, `/tmp/eidolon-earned-early-preparation-client.log`); lint and
+diff checks pass. The actual earned comparison is recorded below when terminal.
+A planned or running route does not establish a hunt/readiness/clear.
+
 ## September 7 continuation — earned full-dungeon route prepared
 
 The 1.0.30 readiness measurement on `0c8c9c2` plus candidate changes **failed its

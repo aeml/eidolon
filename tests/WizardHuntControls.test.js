@@ -2,14 +2,14 @@ import { planWizardHuntStep } from './wizardHuntControls.js';
 
 const state = { className: 'Wizard', dead: false, x: 0, z: 0, healthRatio: 0.7,
     shieldHP: 0, mana: 50, shieldCost: 40, hotbar: ['Teleport', 'Arcane Shield'],
-    cooldowns: {}, sinceCastMs: 1000, threats: [{ x: 3, z: 0 }] };
+    cooldowns: {}, unlockedSkills: ['Teleport', 'Arcane Shield'], sinceCastMs: 1000, threats: [{ x: 3, z: 0 }] };
 
 test('uses the available shield through its actual hotbar key', () => {
     expect(planWizardHuntStep(state)).toEqual({ action: 'shield', key: '2' });
     expect(planWizardHuntStep({ ...state, hotbar: ['Arcane Shield'] })).toEqual({ action: 'shield', key: '1' });
 });
 test.each([{ mana: 39 }, { shieldHP: 10 }, { cooldowns: { 'Arcane Shield': 2 } },
-    { sinceCastMs: 200 }, { hotbar: [] }, { healthRatio: 1 }])('retreats instead of an unavailable/redundant shield: %j', change => {
+    { sinceCastMs: 200 }, { hotbar: [] }, { unlockedSkills: ['Teleport'] }, { healthRatio: 1 }])('retreats instead of an unavailable/redundant shield: %j', change => {
     const plan = planWizardHuntStep({ ...state, ...change });
     expect(plan.action).toBe('retreat');
     expect(plan.x).toBeLessThan(-8);
