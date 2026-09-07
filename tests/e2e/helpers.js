@@ -1432,12 +1432,25 @@ export async function exerciseCombatAndLoot(page) {
         // The ground projection can be below the actual loot hitbox, or under
         // a living hostile. Never treat an unverified click as a pickup attempt.
         let point;
-        await expect.poll(async () => {
-            point = await projectEntity(page, loot.id);
-            if (!point?.visible) return false;
-            await page.mouse.move(point.x, point.y);
-            return page.evaluate(id => window.game.hoveredEntity?.id === id, loot.id);
-        }, { timeout: 10_000, message: 'A real pointer must acquire the intended loot hitbox' }).toBe(true);
+        try {
+            await expect.poll(async () => {
+                point = await projectEntity(page, loot.id);
+                if (!point?.visible) return false;
+                await page.mouse.move(point.x, point.y);
+                return page.evaluate(id => window.game.hoveredEntity?.id === id, loot.id);
+            }, { timeout: 10_000, message: 'A real pointer must acquire the intended loot hitbox' }).toBe(true);
+        } catch (error) {
+            const diagnostic = await page.evaluate(({ id, point }) => {
+                const game = window.game, drop = game.remotePlayers.get(id);
+                return { point, dropExists: Boolean(drop), active: drop?.isActive,
+                    hoveredType: game.hoveredEntity?.constructor?.name,
+                    hits: (game.raycastHitEntities || []).map(entity => ({ type: entity.constructor?.name,
+                        intended: entity.id === id, state: entity.state })),
+                    dropPosition: drop?.position?.toArray(), playerPosition: game.player.position.toArray(),
+                    onCanvas: point ? document.elementFromPoint(point.x, point.y)?.tagName : null };
+            }, { id: loot.id, point });
+            throw new Error(`Manual loot pointer acquisition failed: ${JSON.stringify(diagnostic)}`, { cause: error });
+        }
         const item = await page.evaluate(id => window.game.remotePlayers.get(id)?.item, loot.id);
         expect(item?.id, 'The selected loot must expose an authoritative item').toBeTruthy();
         const beforePickup = await page.evaluate(() => window.game.player.inventory);

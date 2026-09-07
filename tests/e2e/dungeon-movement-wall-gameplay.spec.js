@@ -1,8 +1,9 @@
 import { expect, test } from '@playwright/test';
 import {
     collectBrowserFailures, credentialsFromEnvironment, ensureDungeonReadyLevel, enterAndExitDungeon,
-    jumpByGroundClick, loginAndEnterWorld, moveByGroundClick, projectGroundOffset, readPlayerState
+    jumpByGroundClick, loginAndEnterWorld, moveByGroundClick, readPlayerState
 } from './helpers.js';
+import { aimAtGroundPoint } from './ground-aim.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 
@@ -67,7 +68,8 @@ test('dungeon movement casts and jumps stop at the wall and still permit ordinar
                 return original(message);
             };
         }, skill);
-        const aim = await projectGroundOffset(page, 0, 12);
+        const beforeCast = await readPlayerState(page);
+        const aim = await aimAtGroundPoint(page, { x: beforeCast.x, z: northWall + 4 });
         expect(aim?.canvas).toBe(true);
         console.log('[movement-before]', JSON.stringify(await page.evaluate(({ northWall, aim }) => ({
             northWall, aim, position: window.game.player.position.toArray(),
@@ -93,6 +95,29 @@ test('dungeon movement casts and jumps stop at the wall and still permit ordinar
         }
         await expect.poll(() => page.evaluate(() => window.game.player.state)).toBe('IDLE');
         await walkToZ(northWall - 8);
+        await expect.poll(() => page.evaluate(() => window.game.player.state)).toBe('IDLE');
+        if (className === 'Wizard') {
+            await expect.poll(() => page.evaluate(() => window.game.player.cooldowns.Teleport || 0)).toBe(0);
+            const beforeShort = await readPlayerState(page);
+            await aimAtGroundPoint(page, { x: beforeShort.x + 1.5, z: beforeShort.z });
+            await page.evaluate(() => { window.__dungeonMovementCast = null; });
+            await page.keyboard.press('1');
+            await expect.poll(() => page.evaluate(() => Boolean(window.__dungeonMovementCast))).toBe(true);
+            const shortCast = await page.evaluate(() => window.__dungeonMovementCast);
+            expect(Math.hypot(shortCast.x - beforeShort.x, shortCast.z - beforeShort.z)).toBeGreaterThan(1);
+            expect(Math.hypot(shortCast.x - beforeShort.x, shortCast.z - beforeShort.z)).toBeLessThan(3);
+            await expect.poll(async () => {
+                const after = await readPlayerState(page);
+                return Math.hypot(after.x - shortCast.x, after.z - shortCast.z);
+            }).toBeLessThan(.15);
+            // Cross the server movement lock and an ordinary idle heartbeat:
+            // the old prediction must not overwrite this accepted short blink.
+            await page.waitForTimeout(1200);
+            const settled = await readPlayerState(page);
+            expect(Math.hypot(settled.x - shortCast.x, settled.z - shortCast.z)).toBeLessThan(.15);
+            console.log('[movement-short-blink]', JSON.stringify({ requested: shortCast,
+                settled: { x: settled.x, z: settled.z } }));
+        }
         await jumpByGroundClick(page, 0, 12);
         const landing = await readPlayerState(page);
         expect(landing.z).toBeLessThanOrEqual(northWall + 0.1);
