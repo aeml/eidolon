@@ -4,6 +4,7 @@ import { calculateSetBonuses, getEquippedUniqueEffects, getGemStats, UNIQUE_EFFE
 import { isEquippableItem, isActiveEquipment } from '../core/EquipmentSlots.js';
 import { getAbilityManaCost, getAbilityCooldown } from '../core/AbilityEconomy.js';
 import { updateOfflineHealingLight } from '../core/AbilityHealing.js';
+import { rollOfflineCriticalDamage } from '../core/AbilityCritical.js';
 import { CONSTANTS } from '../core/Constants.js';
 import {
     exponentialSmoothingFactor,
@@ -1688,6 +1689,7 @@ export class Actor extends Entity {
                     console.log(`${this.id} Lucky proc! Double damage!`);
                 }
                 
+                finalDmg = rollOfflineCriticalDamage(this, finalDmg).amount;
                 target.takeDamage(finalDmg, this);
                 
                 if (onHit) onHit(finalDmg, target);

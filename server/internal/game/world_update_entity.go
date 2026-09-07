@@ -603,22 +603,26 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						splashRadius = 6.0
 					}
 					effectiveSplashRadius := expandedAbilityRadius(subType, splashRadius)
+					walkRects := w.dungeonWalkRectsSnapshot(projectileInstanceID)
 
 					splashTargets := w.Grid.Nearby(projX, projZ, effectiveSplashRadius, projectileInstanceID)
 					for _, splashTarget := range splashTargets {
 						if splashTarget.InstanceID != projectileInstanceID {
 							continue
 						}
-						splashTarget.Mu.RLock()
+						splashTarget.Mu.Lock()
 						if !w.CanDamage(owner, splashTarget) || splashTarget.ID == target.ID || splashTarget.State == "DEAD" {
-							splashTarget.Mu.RUnlock()
+							splashTarget.Mu.Unlock()
 							continue
 						}
-						splashTarget.Mu.RUnlock()
 
-						if withinAbilityRadius(subType, projX, projZ, splashTarget, splashRadius) {
-							splashTarget.Mu.Lock()
-							splashDmg := int(float64(finalDamage) * 0.4)
+						if withinDungeonAbilityRadius(walkRects, subType, projX, projZ, splashTarget, splashRadius) {
+							// Begin with raw projectile damage. Direct-hit crits and
+							// target debuffs must not be reapplied to other recipients.
+							splashDmg := int(float64(damage) * 0.4)
+							if projSkill == "Fireball" && fireballWellBoost && splashTarget.Slowed {
+								splashDmg *= 2
+							}
 							splashDmg = applyFinalDamage(ownerCombat, splashTarget, splashDmg, "fire", projSkill)
 							if ownerIsPlayer {
 								addThreatLocked(splashTarget, ownerID, float64(splashDmg))
@@ -636,6 +640,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 								w.handleDeath(splashTarget, owner, deferred)
 								splashTarget.Mu.Unlock()
 							}
+						} else {
+							splashTarget.Mu.Unlock()
 						}
 					}
 				}

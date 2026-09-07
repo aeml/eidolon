@@ -1,7 +1,8 @@
 # Critical-chance talent consumers — reproduced September 7
 
-Status: **server critical consumption implemented in an isolated working branch;
-offline, tooltip, composition and real-gameplay checks remain open**. This is
+Status: **server critical consumption/composition, offline basic criticals and
+critical tooltip corrections implemented in an isolated working branch;
+offline ability consumers and real-gameplay checks remain open**. This is
 not a completed talent category or release.
 The main game and earned Fighter browser sources remained frozen during these
 isolated Go overlay diagnostics. No production or browser character was modified.
@@ -95,3 +96,57 @@ inspect the existing splash path that derives its amount from already-modified
 direct damage before running the modifier pipeline again. Preserve its baseline
 evidence before choosing a correction. Do not package this checkpoint as a
 complete critical-system repair.
+
+## Composition and offline-basic checkpoint
+
+Ordinary paid Cloak & Vanish → Backstab tests reproduce critical stacking:
+combo plus equipment and rune plus equipment each deal 600 rather than 300;
+all three sources deal 1,200. Six cases fail in 0.283s, including armored targets.
+Backstab now supplies a forced critical flag into the same ordinary critical
+calculation instead of multiplying damage before that calculation. Ambush keeps
+its real 50% roll and the combo is consumed normally; the independent Lucky proc
+and behind-target bonus remain separate. **Balance correction:** guaranteed/rune
+criticals now double damage after armor, as equipment/talent criticals do. The
+armor and Eviscerate tests explicitly cover this change.
+
+Actual paid Fireball flight reproduces eight splash failures in 0.553s. With a
+100-base projectile, guaranteed equipment critical and +50% fire damage, splash
+deals 360 instead of 120. Primary-only weakness and Implosion slow bonuses leak
+to secondary recipients, while a secondary-only slow receives no combo boost.
+Splash also crosses a solid dungeon wall. Splash now starts at 40% raw projectile
+damage, applies recipient-specific Implosion and outgoing modifiers once, and
+checks the canonical floor geometry. Open-doorway and other-instance controls
+pass. The shared Fireball/Explosive Trap branch is corrected; the new paid-cast
+composition matrix specifically exercises Fireball, not an actual Trap cast.
+
+Basic-attack post-delay tests exercise the production snapshot, armor, rank
+zero/one/five and authoritative damage event for all four generic critical
+talents. Unrelated Backstab Technique ranks do not affect basic attacks. Lucky
+still composes independently with one ordinary critical. Focused composition/
+basic checks pass 0.902s. Full server race checks pass: root 10.524s, game 235.272s.
+A subsequently added shared 160-talent metadata contract plus composition/basic
+race checks pass 4.950s; no production Go source changed after the full race run.
+
+Four real offline Actor attack-callback tests independently reproduce missing
+generic critical consumption (100 damage instead of 200) in 0.911s. The new
+offline critical helper shares equipment/talent chance, caps ranks/chance and
+normalizes duplicate legacy IDs without save mutation. Actor basic attacks now
+consume it before receiving shields and reflection, preserving Lucky as a
+separate proc. Multiplier calculations do not predict multiplayer/remote damage.
+Rogue Technique now describes skill critical chance rather than unused range;
+Needle Precision shows 3% per rank and Edge Awareness shows 2% critical chance,
+matching the authoritative definitions. Client metadata is checked against a
+shared JSON contract independently validated against all 160 server definitions.
+Full client regression passes **204 suites / 3,033 tests in 72.435s**; lint and
+whitespace checks pass. This checkout does not yet include the separate 1.0.36
+hotbar targeting correction, so these are not combined-root test totals.
+
+Logs: `/tmp/eidolon-critical-{composition-before,composition-after,splash-before,
+splash-after,composition-complete,server-race-composition,contract-race,
+offline-basic-before,offline-basic-after,offline-focused}.log`.
+
+This remains **unreleased**. Offline skill/projectile consumers still need the
+new helper, correct skill identity, rune/combo composition and real paid-cast
+tests; the generic basic repair does not establish offline ability parity.
+Non-damaging Technique benefits, periodic source coverage and browser/persistence
+validation remain open. Do not package it as a complete talent or 1.1 release.

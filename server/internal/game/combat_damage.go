@@ -47,6 +47,16 @@ func effectiveCriticalChance(attacker *Entity, skillName string) float64 {
 // Optional skill identity distinguishes skill-specific critical training from
 // generic critical chance. Returns damage and whether any critical proc occurred.
 func CalculateFinalDamage(attacker, target *Entity, baseDamage int, damageType string, skills ...string) (int, bool) {
+	skillName := ""
+	if len(skills) > 0 {
+		skillName = skills[0]
+	}
+	return calculateFinalDamageWithCritical(attacker, target, baseDamage, damageType, skillName, false)
+}
+
+// A rune or combo can guarantee the ordinary critical, not add another critical
+// multiplier. Lucky remains its separately defined, independent damage proc.
+func calculateFinalDamageWithCritical(attacker, target *Entity, baseDamage int, damageType, skillName string, guaranteedCritical bool) (int, bool) {
 	if attacker == nil || baseDamage <= 0 {
 		return baseDamage, false
 	}
@@ -82,11 +92,9 @@ func CalculateFinalDamage(attacker, target *Entity, baseDamage int, damageType s
 		}
 	}
 
-	skillName := ""
-	if len(skills) > 0 {
-		skillName = skills[0]
-	}
-	if chance := effectiveCriticalChance(attacker, skillName); chance > 0 && rand.Float64() < chance {
+	chance := effectiveCriticalChance(attacker, skillName)
+	rolledCritical := chance > 0 && rand.Float64() < chance
+	if guaranteedCritical || rolledCritical {
 		finalDamage *= 2
 		isCrit = true
 	}

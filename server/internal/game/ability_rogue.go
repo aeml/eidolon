@@ -484,15 +484,16 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				}
 
 				// Combo: Ambush (Cloak & Vanish → Backstab) = Guaranteed critical hit
+				guaranteedCritical := false
 				if player.ActiveCombo == "backstab_guaranteed_crit" {
-					damage = damage * 2     // 2x crit damage
+					guaranteedCritical = true
 					player.ActiveCombo = "" // Consume combo
 				}
 
 				// Ambush rune: a real 50% critical roll, rather than flattening
 				// the proc into average damage on every strike.
 				if runeID == "backstab_ambush" && rand.Float64() < 0.5 {
-					damage *= 2
+					guaranteedCritical = true
 				}
 
 				// Eviscerate rune: ignores 50% armor
@@ -507,7 +508,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				}
 
 				bestTarget.Mu.Lock()
-				finalDamage = applyFinalDamage(player, bestTarget, finalDamage, "physical", skillName)
+				finalDamage = applyFinalDamageWithCritical(player, bestTarget, finalDamage, "physical", skillName, guaranteedCritical)
 				addThreatLocked(bestTarget, player.ID, float64(finalDamage))
 				isDead := bestTarget.Health <= 0
 				bestTarget.Mu.Unlock()
