@@ -9,7 +9,8 @@ the whole goal. Started September 5, 2026.
 
 This checkpoint supersedes the older in-progress statements below. Public
 release remains last verified **Alpha 1.0.37**. Corrected **1.0.38 `9ed011b`**
-is pushed successfully; CI **34141178711** is running client/server checks.
+is pushed successfully; CI **34141178711** has passed client/server/browser
+smoke and is running predeployment character QA.
 Do not publish 1.0.39 until every 1.0.38 CI/live job succeeds and fresh public
 manifest/login/main-script/backend identity matches that exact release.
 
@@ -32,13 +33,14 @@ handles are terminal success, including successful scan/cleanup. See
 Both movement and race corrections are carried through new sequential branches;
 older candidates are preserved. These are local candidates, not live versions.
 
-| Version | Current queued branch | Candidate | Version/default/Teleport checks |
+| Version | Current queued branch | Candidate | Local client verification |
 |---|---|---|---|
 | 1.0.39 | `release/39-with-lifesteal-race` | `262ae30` | 222 pass / 1.977s |
 | 1.0.40 | `release/40-with-lifesteal-race` | `cf9db3f` | 223 pass / 1.852s |
 | 1.0.41 | `release/41-with-lifesteal-race` | `e2df346` | 224 pass / 2.098s |
 | 1.0.42 | `release/42-with-lifesteal-race` | `b4ba629` | 225 pass / 2.027s |
 | 1.0.43 | `release/43-with-lifesteal-race` | `7c3c036` | 227 pass / 2.188s |
+| 1.0.44 | `release/44-with-lifesteal-race` | `4f87516` | 3,171 full client tests / 104.897s |
 
 Root merges corrected 43 without publishing it. Movement carry-forward had
 already passed **11 combined rendered pointer/chat/action/framing checks /
@@ -112,10 +114,13 @@ The compact status follow-up is implemented in its isolated worktree at
 now fit their content; long lists use bounded scrolling, with kind/time sharing
 a readable row. Combined compact and populated-list touch checks pass **7 /
 26.5s**, status lifecycle checks **9 / 0.508s**, and lint passes. The new tests
-join anonymous CI. Actual Shield gameplay with the revised CSS is running in
-`/tmp/eidolon-status-compact-gameplay.log`; this follow-up is not yet packaged
-with its own successor version or merged to root. Entrance occlusion and
-physical-phone review remain open.
+join anonymous CI. Actual Shield gameplay with the revised CSS passes **44.8s**
+in `/tmp/eidolon-status-compact-gameplay.log`: **695 / 834 / 834**, normal expiry,
+**310 absorbed / 524 left**, and successful scan/cleanup. The inspected actual
+portrait now shows the shielded Wizard below readable compact details. All
+owned local handles are closed. This follow-up is not yet packaged with its own
+successor version or merged to root. Entrance occlusion and physical-phone
+review remain open.
 
 ## Earlier execution history
 
