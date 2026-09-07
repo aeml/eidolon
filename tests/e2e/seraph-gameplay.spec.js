@@ -89,6 +89,13 @@ test('Seraph training persists, changes actual smites and lifetime, and cleans u
     async function lifetime(rank) {
         const id = await cast();
         const duration = 15*(1+.02*rank);
+        // Separate the summoned silhouette from its owner after the birth
+        // flash, using normal movement rather than repositioning either actor.
+        await moveByGroundClick(page, 0, -7);
+        await expect.poll(() => page.evaluate(id => {
+            const game = window.game, summon = game.remotePlayers.get(id);
+            return summon ? summon.position.distanceTo(game.player.position) : 100;
+        }, id)).toBeLessThan(4);
         await page.screenshot({ path: testInfo.outputPath(`seraph-town-technique-${rank}.png`) });
         // Observe real server time; never change clocks or summon state.
         if (rank > 0) {
@@ -106,6 +113,10 @@ test('Seraph training persists, changes actual smites and lifetime, and cleans u
     async function attack(rank, label) {
         await useVerdantQAWaypoint(page);
         await page.waitForTimeout(1100);
+        // Leave the entrance facade before fighting so the model and impacts
+        // can actually be inspected, not merely counted behind architecture.
+        await moveByGroundClick(page, 0, 20);
+        await moveByGroundClick(page, 0, 20);
         let target = await projectNearestHostile(page, 'InfernoTitan');
         for (let step = 0; !target && step < 12; step++) {
             await moveByGroundClick(page, 0, 20);

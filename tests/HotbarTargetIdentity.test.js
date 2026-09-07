@@ -68,3 +68,41 @@ test('self-centered Spirit Guardians does not depend on a buffered hovered actor
         targetId: '', targetX: 0, targetZ: 0, skillName: 'Spirit Guardians'
     });
 });
+
+test.each(['Spirit Guardians', 'Avenging Seraph'])('%s hotbar casts at the owner without a cursor ground intersection', skill => {
+    const { engine, controller, player } = fixture();
+    player.constructor.name = 'Cleric'; player.hotbar = [skill];
+    engine.hoveredEntity = null;
+    engine.inputManager.getGroundIntersection.mockReturnValue(null);
+    controller.performHotbarAbility(0);
+    expect(engine.network.send).toHaveBeenCalledWith('ability', {
+        targetId: '', targetX: 0, targetZ: 0, skillName: skill
+    });
+});
+
+test('Seraph summoning cannot chase a distant hovered actor or redirect its spawn', () => {
+    const { engine, controller, player, target } = fixture();
+    player.constructor.name = 'Cleric'; player.hotbar = ['Avenging Seraph'];
+    target.position.set(100, 0, 100);
+    player.move = jest.fn();
+    controller.performHotbarAbility(0);
+    expect(player.move).not.toHaveBeenCalled();
+    expect(engine.network.send).toHaveBeenCalledWith('ability', {
+        targetId: '', targetX: 0, targetZ: 0, skillName: 'Avenging Seraph'
+    });
+    expect(controller.pendingAbilityTarget).toBeNull();
+});
+
+test('a buffered Seraph follows its moving owner even after the hovered enemy disappears', () => {
+    const { engine, controller, player, target } = fixture();
+    player.constructor.name = 'Cleric'; player.hotbar = ['Avenging Seraph'];
+    player.cooldowns['Avenging Seraph'] = .2;
+    controller.performHotbarAbility(0);
+    target.isActive = false;
+    player.position.set(4, 0, 3);
+    player.cooldowns['Avenging Seraph'] = 0;
+    controller.processInputBuffer();
+    expect(engine.network.send).toHaveBeenCalledWith('ability', {
+        targetId: '', targetX: 4, targetZ: 3, skillName: 'Avenging Seraph'
+    });
+});

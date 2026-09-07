@@ -22,7 +22,7 @@ import { getAbilityPresentation } from '../skills/abilityVisualManifest.js';
 // them into a targeted chase: doing so clears an otherwise valid movement path
 // when the caster reaches the hovered actor, producing a visible stop on cast.
 const SELF_CAST_ABILITIES = new Set([
-    'Spirit Guardians'
+    'Spirit Guardians', 'Avenging Seraph'
 ]);
 const PARTY_TARGET_ABILITIES = new Set(['Healing Light', 'Divine Intervention']);
 
@@ -275,6 +275,13 @@ export class AbilityController {
         const skillName = player.hotbar[slotIndex];
         if (!skillName) {
             console.log(`Hotbar slot ${slotIndex + 1} is empty.`);
+            return;
+        }
+
+        // Self-centered spells do not require a cursor hit, even when the
+        // pointer remains over the menu that selected or trained the spell.
+        if (SELF_CAST_ABILITIES.has(skillName)) {
+            this.performAbility(null, skillName);
             return;
         }
 
