@@ -21,9 +21,24 @@ lint and 212 version/default tests. Game/server/index source is unchanged.
 
 After exact remote-head, clean-state and ancestry checks, corrected **1.0.38
 `b071afff3475dfd4cb4710419688c70f52e364e2`** is pushed successfully from
-`release/38-with-chat-focus`. New CI **34130749050 is in progress**. Do not push
-1.0.39 until every 1.0.38 CI/live job passes and fresh post-terminal public
-identity agrees. Original candidates remain unchanged; do not push root HEAD.
+`release/38-with-chat-focus`. CI **34130749050 fails predeployment**: on landscape
+rotation the populated objective intercepts the expanded chat Collapse button.
+The retry also incorrectly reuses an already-selected specialization. Both
+deployments are skipped. Log: `/tmp/eidolon-release38-chat-correction-ci-failure.log`.
+
+Correction **`ace87c8`**, branch `work/release38-phone-chat`, lives in
+`/tmp/eidolon-release38-focus-oocXIw`. Expanded chat now sits above the objective
+but below normal windows; retry gets a fresh allowlisted character. The new
+populated-HUD test fails both landscape cases before repair (1 pass / 2 fail,
+10.5s) and passes all three viewports afterward (12.7s). Version/default checks
+pass **213 / 1.64s**. Full client checks and the opt-in intentional-failure
+Purifying retry probe are running; anonymous-suite and release gates remain.
+The login version remains 1.0.38 with an additional patch-note bullet.
+
+Do not push 1.0.39 until corrected 1.0.38 completes every CI/live gate and fresh
+public identity agrees. Carry this **new phone-chat correction** through all
+queued descendants below before their publication. Original candidates remain
+unchanged; do not push root HEAD or the older queue over the corrected release.
 
 The correction is carried through sequential descendants, with no `src`,
 `server` or `index.html` changes relative to each original candidate:
@@ -71,17 +86,20 @@ with exit 143 before saved-login/recall completion; it is **partial evidence**, 
 a passing route or successful credential scan. Its exact disposable containers,
 database, image and orphaned local web-server group were removed after checking
 the driver was gone; ports are free before restarting. The fresh same-checkpoint
-route is running in `/tmp/eidolon-seraph-browser-final.log` (session **9493**).
+route **passes 1.3 minutes** in `/tmp/eidolon-seraph-browser-final.log` (session
+**9493**, terminal exit zero): **288 / 345 / 345** baseline/trained/fresh-login
+damage, **14.94 / 16.46s** expiry, following, and ordinary dungeon recall cleanup.
+Credential scan passes with zero sanitizations and disposable cleanup completes.
+All local Seraph test handles are closed; its evidence checkpoint is **65e7b85**.
 Earlier retained test failures distinguish asynchronous model creation from
 server deletion and wait for authoritative rather than optimistic talent ranks.
 
 Visual follow-up remains: desktop summon action labels overlap the combat
 silhouette, and fighting near the large entrance facade obscures actors. The
 town follow capture proves a rendered summon, not broad encounter readability
-or physical-phone quality. Offline rendered fallback, final browser completion,
+or physical-phone quality. Offline rendered fallback,
 release packaging and the full roadmap gates remain open.
 
-Corrected 1.0.38 CI currently has client/server checks in progress.
 Local **1.0.42 `0d57f0e`** packages the status
 work below after integration `4e05228`, with separate patch notes and matching
 login/runtime versions. Final package checks pass **3,113 client tests / 211
