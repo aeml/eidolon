@@ -61,10 +61,14 @@ Specific source integration risks to retain for implementation:
   heal. Adding a talent modifier again at every renewal tick would double-apply
   it. Other periodic area heals apply owner bonuses during updates; identify
   whether each amount is a base or a cast-time snapshot before changing it.
-- `SkillHealing` is also assigned to Guardian Embrace/Purifying Wave Mastery,
-  despite their current shield/buff/cleanse behavior. Merely adding a numeric
-  healing helper cannot make those investments meaningful. Review their actual
-  intended benefit explicitly and preserve saved rank investment.
+- Following the active buff into `world_update_entity.go` confirms that Guardian
+  Embrace **does heal self and nearby allies once per second**. Its cast handler
+  alone only activates the buff; the earlier cast-only inspection was incomplete.
+  Apply its `CLR_05` healing bonus at that actual tick, with health clamps and
+  receiving-target modifiers. Purifying Wave still has no observed healing path,
+  despite `CLR_07` assigning `SkillHealing`; merely adding a numeric helper cannot
+  make that investment meaningful. Review that intended benefit explicitly and
+  preserve saved rank investment.
 - `withinAbilityRadius` and `expandedAbilityRadius` do not receive a caster.
   Resolve the skill's talent-adjusted base radius before both calls, and propagate
   the same effective dimensions into persistent effects and network presentation.

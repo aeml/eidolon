@@ -1,5 +1,44 @@
 # Fresh-character progression evidence — 1.1 gate
 
+## September 7 continuation — earned full-dungeon route prepared
+
+The 1.0.30 readiness measurement on `0c8c9c2` plus candidate changes **failed its
+final browser-error assertion in 15.3 minutes**. Its Imp null-destination exception
+did not recur, but local modules reported `ERR_NETWORK_CHANGED`. Session `22831`
+is closed; `/tmp/eidolon-1-0-30-fresh-ready.log`, credential scan and exact cleanup
+retained. Gameplay assertions reached level 34 / 31,166 XP / 15,763 gold, zero
+deaths, saved manual rewards and enabled Verdant entry. The Skeleton contract
+took 206 seconds (215 including reward/login); the Imp contract took 595 seconds
+(606 total), with 231 retreats and zero Shield casts. Preparation saved only
+three naturally earned equipment slots, five Mastery ranks and branch C; do not
+compare it as identical equipment to the previous seven-slot attempt.
+
+Local API port 18085 also collided with the 1.0.25 CI predeploy attempt. That
+attempt stopped before gameplay/deployment; its unchanged failed jobs were rerun
+after cleanup. The 1.0.30 candidate now separates local API/Mongo ports 18087/18088
+from CI's 18085/18086, with Linux loopback host-network defaults. The configuration
+removes the confirmed collision and avoids script-created bridge/veth changes,
+but does not establish the cause of every Chrome network error.
+
+The new optional `fresh-dungeon` route extends the complete earned opening,
+collection, Skeleton and Imp route. It records an explicit clean browser-error
+checkpoint at readiness before entering through the **ordinary town guide**.
+It does not invoke the prepared route's level grant or protected QA waypoint.
+The same traversal/combat implementation now serves both routes; mechanical
+comparison confirms all original combat, room-clear, boss, gold, recall and
+completed-run re-entry assertions are retained. Wizard defensive inputs are
+shared without changing their strategy. A failed fight still fails; the one-hour
+whole-route ceiling and 60-second damage-stall checks remain.
+
+The earned extension requires all four Verdant bosses and every encounter room,
+Normal level 30, town recall and completed-run re-entry, then manual Earth story
+turn-in and saved Rootheart raid access. Eleven new entry/flow tests cover guide
+selection, re-entry, preconditions and failure propagation; the separate port
+configuration test also passes. Full client verification passes **176 suites /
+2,473 tests in 57.971 seconds**, lint and shell syntax pass. These are harness
+checks, **not an earned dungeon clear**. The first combined browser attempt is
+pending; no result is claimed until its checkpoints actually execute.
+
 ## Earned dungeon-readiness extension — September 6, measurement pending
 
 The optional `fresh-ready` route extends the same real opening, collection and

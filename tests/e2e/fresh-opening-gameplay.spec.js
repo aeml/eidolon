@@ -3,6 +3,7 @@ import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { earnFreshCollectionAndInspectHandoff } from './fresh-collection-route.js';
 import { earnFreshSkeletonHunt } from './fresh-hunt-route.js';
 import { earnFreshDungeonReadiness } from './fresh-ready-route.js';
+import { clearEarnedVerdant } from './fresh-dungeon-route.js';
 import { collectBrowserFailures, credentialsFromEnvironment, jumpByGroundClick,
     loginAndEnterWorld, moveByGroundClick, projectEntity, projectNearestHostile,
     readPlayerState, returnToTown } from './helpers.js';
@@ -176,6 +177,12 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
         await earnFreshDungeonReadiness(page, credentials, {
             findTarget: () => findHostileThroughTravel(page, 'Imp')
         });
+        expect(failures, failures.join('\n')).toEqual([]);
+        console.log('[fresh-ready] earned readiness and clean browser-error checkpoint passed');
+    }
+    if (process.env.EIDOLON_E2E_FRESH_DUNGEON === '1') {
+        expect(process.env.EIDOLON_E2E_FRESH_READY).toBe('1');
+        await clearEarnedVerdant(page, credentials);
     }
     expect(failures, failures.join('\n')).toEqual([]);
 });

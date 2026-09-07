@@ -187,6 +187,7 @@ sg render -c 'EIDOLON_ISOLATED_QA_ROUTE=fresh-opening EIDOLON_E2E_CLASS=Fighter 
 sg render -c 'EIDOLON_ISOLATED_QA_ROUTE=fresh-collection EIDOLON_E2E_CLASS=Wizard npm run test:e2e:isolated'
 sg render -c 'EIDOLON_ISOLATED_QA_ROUTE=fresh-hunt EIDOLON_E2E_CLASS=Wizard npm run test:e2e:isolated'
 sg render -c 'EIDOLON_ISOLATED_QA_ROUTE=fresh-ready EIDOLON_E2E_CLASS=Wizard npm run test:e2e:isolated'
+sg render -c 'EIDOLON_ISOLATED_QA_ROUTE=fresh-dungeon EIDOLON_E2E_CLASS=Wizard npm run test:e2e:isolated'
 ```
 
 These optional routes create disposable level-one characters and earn progress
@@ -194,7 +195,13 @@ through ordinary input, without level/item/quest/travel grants. Each extends the
 preceding route: opening Chronicle, natural collection, Skeleton contract, then
 Wizard equipment/point preparation and the Imp contract. `fresh-ready` currently
 supports Wizard preparation only and checks saved readiness for Verdant, not a
-dungeon clear. They use read-only world positions to assist navigation; passing
+dungeon clear. `fresh-dungeon` continues that same earned character through the
+town guide into Normal level-30 Verdant, requiring all rooms/bosses, recall,
+completed-run re-entry, manual story reward and saved Earth-raid access. It does
+not use the prepared dungeon route's level grant or protected entrance waypoint.
+The whole earned route retains its one-hour ceiling, damage-stall/death checks
+and browser-error assertions; a clean readiness checkpoint is recorded separately
+before dungeon entry. These routes use read-only world positions to assist navigation; passing
 does not prove human discovery, enjoyable pacing or physical-phone usability.
 Run only one local Eidolon Playwright route at a time. Recorded outcomes and
 limitations are in [fresh progression evidence](docs/plans/fresh-progression-evidence.md).

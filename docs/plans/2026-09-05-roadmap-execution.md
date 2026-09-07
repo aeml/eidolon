@@ -97,6 +97,15 @@ complete CI/live verification. The original 1.0.14 failure remains recorded belo
 
 ### Alpha 1.0.30 candidate — a steadier hunt
 
+Runtime/configuration commit **`3375447`** remains local. The following QA-only
+work extracts the shared dungeon traversal without removing assertions, defaults
+it to ordinary town-guide entry, and adds `fresh-dungeon` for the no-grants earned
+chain plus complete Verdant and manual story/raid-access persistence. The
+prepared route explicitly retains its existing QA waypoint; it is not presented
+as earned evidence. Final client **176 suites / 2,473 tests in 57.971 seconds**,
+lint and shell syntax pass. The first combined browser measurement is pending;
+see [fresh progression evidence](fresh-progression-evidence.md).
+
 The Imp exception found by the earned readiness route now has eight regressions:
 five fail before the scoped repair, all eight pass afterwards. Replicated Imps
 also stop making a second local AI decision after their server-owned base update.
