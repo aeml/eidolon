@@ -52,6 +52,35 @@ execution, not a stuck process. All owned local test handles are now closed.
 Browser/model/transition evidence is still open;
 this is not merged into root, packaged as 1.0.43 or published.
 
+September 7 continuation: Seraph checkpoint **`1b6235d`** additionally repairs
+desktop self-casting. Four new failing hotbar cases (0.845s) show that a missing
+cursor intersection suppresses Spirit Guardians/Seraph, while Seraph can chase
+a distant hovered actor or lose a buffered cast when that actor disappears.
+Both self-casts now dispatch around the owner without cursor targeting. The
+focused set passes **42 tests / 1.929s** and the complete client suite passes
+**212 suites / 3,141 tests / 151.394s**. Server source is unchanged from the full
+race-tested summon implementation. Logs:
+`/tmp/eidolon-seraph-hotbar-before.log`,
+`/tmp/eidolon-seraph-hotbar-after.log`,
+`/tmp/eidolon-seraph-final-client.log`.
+
+The ordinary browser route observes baseline **288** and trained **345** smites,
+and **14.86s / 16.44s** expiry against expected **15s / 16.5s**. Inspected captures
+show the model following its owner after the birth flash. The run then terminates
+with exit 143 before saved-login/recall completion; it is **partial evidence**, not
+a passing route or successful credential scan. Its exact disposable containers,
+database, image and orphaned local web-server group were removed after checking
+the driver was gone; ports are free before restarting. The fresh same-checkpoint
+route is running in `/tmp/eidolon-seraph-browser-final.log` (session **9493**).
+Earlier retained test failures distinguish asynchronous model creation from
+server deletion and wait for authoritative rather than optimistic talent ranks.
+
+Visual follow-up remains: desktop summon action labels overlap the combat
+silhouette, and fighting near the large entrance facade obscures actors. The
+town follow capture proves a rendered summon, not broad encounter readability
+or physical-phone quality. Offline rendered fallback, final browser completion,
+release packaging and the full roadmap gates remain open.
+
 Corrected 1.0.38 CI currently has client/server checks in progress.
 Local **1.0.42 `0d57f0e`** packages the status
 work below after integration `4e05228`, with separate patch notes and matching
