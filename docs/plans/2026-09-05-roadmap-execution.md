@@ -14,11 +14,17 @@ manifest, login label, versioned main script and backend to
 CI **`34085084576` failed before deployment** on the server race-suite near-death
 QA test's one-second wait. Client checks passed; browser/deploy/live jobs were
 skipped. Its own patch notes and package/login version were checked before the
-exact-source push. Fifty isolated race repetitions pass (10.089 seconds,
-`/tmp/eidolon-release31-qa-reproduction.log`); the cause is not established and a
-full-suite reproduction is in progress on exact source in the dedicated release31
-worktree. Later versions remain queued behind its complete CI/live gate; do not
-push main HEAD over it.
+exact-source push. A closer ordinary overworld Skeleton deterministically
+reproduced the timeout: randomized world spawns could replace the intended test
+attacker with one whose normal swing takes longer than the one-second wait.
+The [test-only isolation repair](2026-09-07-release31-qa-isolation.md) passes 100
+race repetitions and the full repaired race suite (game 242.012 seconds).
+Successor **`a82baa2adcd41d25f9e9bc01c96d3af6a853674f`** is pushed, with CI
+**`34086731393` in progress**. Original CI did not record its chosen attacker;
+the reproducible fixture defect and original failure are both retained.
+Fresh public checks at **05:21:22.997 UTC** still match healthy 1.0.30 across
+manifest/login/script/backend. Later versions remain queued behind the complete
+1.0.31 CI/live gate; do not push main HEAD over it.
 
 The unversioned [ground-spell geometry checkpoint](2026-09-07-ground-spell-talents.md)
 passes 2,770 client tests, full server race checks and final isolated gameplay.
@@ -60,6 +66,13 @@ in 111.705 seconds**, log `/tmp/eidolon-clock-merged-client.log`, session `41396
 
 The same test-only repair is merged into queued descendants without runtime
 changes. Sequential ancestry and package/manifest/login versions are checked.
+The subsequent 1.0.31 test-only isolation repair is also inherited sequentially.
+Each 1.0.32–35 successor differs from its previously tested candidate only in the
+near-death unit test and repair evidence document. Package/manifest/login version,
+separate patch-note entry and preceding-repaired-release ancestry are checked.
+Main integration passes another **20 race repetitions in 4.941 seconds**,
+`/tmp/eidolon-main-qa-isolation-merged.log`. Its unversioned ground-spell changes
+remain separate from every queued release candidate.
 These are the current successor sources; older source IDs below remain historical
 implementation/validation receipts, not the next commits to push:
 
@@ -67,11 +80,11 @@ implementation/validation receipts, not the next commits to push:
 |---|---|---|
 | 1.0.29 | `bc96862209b621b1e995c3dd4d9d72acf61aaf44` | `release/29-with-clock` |
 | 1.0.30 | `c3247e849daad029b0c4f053b3d4d969ebba0f82` | `release/30-with-clock` |
-| 1.0.31 | `bacaa59c7dd2fa016d400ddeacbe90c4a51982d2` | `release/31-with-clock` |
-| 1.0.32 | `0d6f1e42a93718b3d3fd7653f61bb0a8d009d871` | `release/32-with-clock` |
-| 1.0.33 | `92842b5b6757bd4b3ca7d1cf5cff94b98665bcec` | `release/33-with-clock` |
-| 1.0.34 | `fe34c345270c03628d63883edb42131c23b5e7d4` | `release/34-with-stash` |
-| 1.0.35 | `008854336fc0c9e396b7bb430ddf19cf16c5d082` | `release/35-with-forge` |
+| 1.0.31 | `a82baa2adcd41d25f9e9bc01c96d3af6a853674f` | `fix/release31-qa` |
+| 1.0.32 | `d578bdfff7cd998c56bc422bc403d4cbe666b902` | `release/32-with-qa` |
+| 1.0.33 | `0024f3370c0f1e648bc219a5d3ac816b4566a3e2` | `release/33-with-qa` |
+| 1.0.34 | `dba826845e13d81586ccecd06c352b7a662d42af` | `release/34-with-qa` |
+| 1.0.35 | `948ed0c178c7c5967db078b53ef951d930660f30` | `release/35-with-qa` |
 
 Alpha 1.0.34 is committed locally and merged into main as `976235a`.
 The phone stash has separate notes/version metadata, server-side Chronicle
