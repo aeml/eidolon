@@ -5,7 +5,52 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 21:48 UTC
+## Current checkpoint — September 7, 21:55 UTC
+
+Water's prepared desktop route **6729** closes **SUCCESS / 1 / 6.6m**. Both
+investigations are accepted, earned through normal travel/field interactions,
+manually rewarded and saved across reconnect with masks **1 / 7**, gold and
+cap-only Resonance. Prior dungeon completion remains and the first raid is not
+completed. All actual earned screenshots are inspected; credential scan/cleanup
+pass. Ordinary defensive play engages eight pursuers near the moving pool and
+twelve near the bell; these are engaged targets, not audited death totals.
+The eight-damage common-staff fixture and actual Control & Utility selection/
+Arcane Shield/kiting are the successful route. Ten-second normal enemy respawns
+and pressure while reading remain fresh-player pacing concerns. Post-reconnect
+Water journal opening and Fire/Air's four chapters/ordered Fire fight remain open.
+Water proof/helpers are committed **fc50cfc**, isolated investigation tree clean,
+lint/diff checks pass (83438 closed). Root still does not activate the 23-chapter
+graph. All investigation browser handles are closed.
+
+Routine equipment candidate full backend **60005** closes **SUCCESS**, root
+**15.507s**, game **360.700s**, other packages green. Added exact enumeration of
+**54,872 elite-pool combinations** confirms **2.84210526 → 0.99985421** equipment
+per elite with both material candidate totals unchanged at **4,332**. Three
+repetitions of these and the production/boundary tests pass **30598 / 2.639s**;
+log `/tmp/eidolon-routine-loot-exhaustive.log`. Runtime/design evidence is committed
+**aaecc0180444459931216216daf66dff8c4e3bdb**, still isolated and not versioned.
+
+An earned-route measurement/reconnect check is committed as **49ac0c7**. It logs
+actual bag equipment, rarity/stat/value rolls, occupied slots and unspent gold;
+reported vendor values are not sale income. `node_modules` links to root and
+client assets are prepared. Lint/diff checks pass. Actual **fresh-ready** run
+**58746** is active against clean candidate 49ac0c7, log
+`/tmp/eidolon-routine-loot-earned-readiness.log`. **This is the sole owned browser;
+freeze the loot-frequency worktree until terminal.** Collection/handoff portion
+already passes: eight exact fragments, 12 observed target deaths, no player deaths,
+five equipment pickups worth 80 vendor gold (not sold), saved gear rolls intact;
+manual 8,000 XP/100 gold leaves level 17 with level-30 Guide correctly locked.
+Collection/handoff portion is 74 seconds. Longer earned hunt/preparation checks
+are still running. This route uses optional daily hunts; even a pass does not
+prove the required non-daily leveling path or complete economy balance.
+
+41 **9c6eb9d… / CI 34163174335** remains in predeploy character QA after successful
+client/server/browser checks. Do not publish 42 before every 41 deployment/live
+job and fresh exact identity pass. Last fully verified public build is 40.
+Full roadmap, XP/gold tuning, equipment usefulness/affordability, rarity power,
+late potency and all remaining story/release gates stay open.
+
+## Historical checkpoint — September 7, 21:48 UTC
 
 This turn makes concrete progress: actual Water discovery/encounter evidence and
 an isolated routine-equipment frequency candidate, with a reproduced production
