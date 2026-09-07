@@ -2,8 +2,8 @@
 
 September 7. Part of the [broader balance pass](2026-09-07-progression-balance-and-investigations.md),
 not a claim that XP, rarity power, quest gold, Forge affordability or the overall
-economy are balanced. Packaged locally as Alpha 1.0.50; not released or merged
-to root, and final package browser verification remains open.
+economy are balanced. Alpha 1.0.50 is locally verified and ready for sequential
+release integration; it is not published.
 
 ## Chosen first equipment targets
 
@@ -117,9 +117,27 @@ passes **17.940s**. Logs `/tmp/eidolon-release50-contracts.log`,
 The gameplay runtime is unchanged from the full game race and earned route;
 package changes are version/copy plus additional party regression coverage.
 
-Still required: final package browser sweep and exact package gameplay identity,
-final checkpoint/integration, every preceding sequential release gate, and this
-package's own CI/deployment/exact live verification. Client item-generator methods
+Final package **4212e54e5347ba7a10f379f7634f970fc27e06b1** passes anonymous
+browser **75 / 8.6m**, handle 38023 closed, log
+`/tmp/eidolon-50-final-anonymous.log`. Its final fresh collection run **18500**
+passes **1 / 2.2m** (test 2.1m), log
+`/tmp/eidolon-50-final-fresh-collection.log`. Fresh local login is Alpha 1.0.50;
+the actual isolated backend reports that same version and exact clean commit,
+HTTP 200 / `ok` / database `ready` while the route is active. This is local
+identity evidence, not a public deployment claim.
+
+The route earns eight exact fragments with **18 observed target deaths / zero
+player deaths**, and three picked-up equipment items (Common, Uncommon and
+Legendary) worth **230 unsold vendor gold**. Gold rises from 137 to 442 through
+combat; manual **8,000 XP / 100 gold** then leaves level **17 / 542 gold**. The
+ready-conversation screenshot is inspected: 8/8 and a deliberate Complete Quest
+button, not auto-completion. Reconnect retains exact gear IDs/stat/rarity/value
+rolls and the level-30 Guide remains correctly locked. Collection/handoff is
+91 seconds. Credential scan finds no leaked secrets and cleanup passes. A single
+Legendary in this small run is an observation, not a rarity-distribution estimate.
+
+Still required: every preceding sequential release gate, and this package's own
+CI/deployment/exact live verification. Client item-generator methods
 have no source callers outside their definitions in the current search; no offline
 loot parity claim is inferred from that alone. The candidate does not change the
 XP curve or excuse delaying its coordinated reward and level-gate work.
