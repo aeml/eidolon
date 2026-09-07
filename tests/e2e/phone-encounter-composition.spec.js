@@ -56,14 +56,28 @@ for (const [width,height] of [[390,844],[844,390],[568,320]]) {
                 expect(await button.evaluate(el=>{const r=el.getBoundingClientRect();return el.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2));})).toBe(true);
             }
             const beforeMatrix=await page.evaluate(()=>window.__encounterComposition.render.camera.projectionMatrix.elements);
-            await page.evaluate(()=>window.__encounterComposition.ui.skillTree.showComboNotification('Mass Revival','mass_revival'));
+            // The notification removes itself after 1.8 seconds. Measure its
+            // live geometry and hit policy in the same browser task that creates
+            // it; separate protocol round trips can otherwise inspect a detached
+            // element on a busy runner. Keep normal expiry and tap checks below.
+            const comboState=await page.evaluate(()=>{
+                window.__encounterComposition.ui.skillTree.showComboNotification('Mass Revival','mass_revival');
+                const el=document.querySelector('.combo-notification');
+                if (!el?.isConnected) throw new Error('Combo notification was not attached');
+                const rect=el.getBoundingClientRect();
+                return {x:rect.x,y:rect.y,width:rect.width,height:rect.height,
+                    pointerEvents:getComputedStyle(el).pointerEvents,connected:el.isConnected};
+            });
             const combo=page.locator('.combo-notification');
-            const comboBox=await combo.boundingBox();
+            const comboBox=comboState;
+            expect(comboState.connected).toBe(true);
+            expect(comboBox.height).toBeGreaterThan(0);
             expect(comboBox.height).toBeLessThanOrEqual(44);
             expect(comboBox.y).toBeGreaterThan(metrics.feet.y);
             expect(comboBox.x).toBeGreaterThanOrEqual(metrics.region.left);
             expect(comboBox.x+comboBox.width).toBeLessThanOrEqual(metrics.region.left+metrics.region.width);
-            expect(await combo.evaluate(el=>getComputedStyle(el).pointerEvents)).toBe('none');
+            expect(comboState.pointerEvents).toBe('none');
+            await testInfo.attach('live-combo-state',{body:JSON.stringify(comboState),contentType:'application/json'});
             await page.screenshot({path:testInfo.outputPath('combo.png')});
             await expect(combo).toHaveCount(0,{timeout:4000});
             await page.locator('#btn-phone-party').tap();
