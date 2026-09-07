@@ -38,6 +38,7 @@ describe('version presentation', () => {
     test('adds spirit and phone encounter-space notes without replacing protection history', () => {
         expect(indexHtml).toContain('Alpha 1.0.38 (room for the adventure)');
         expect(indexHtml).toContain('Short blinks count:');
+        expect(indexHtml).toContain('Safer shared combat:');
         expect(indexHtml.indexOf('data-version="1.0.38"')).toBeLessThan(indexHtml.indexOf('data-version="1.0.37"'));
         for (const heading of ['Small guardians, dependable reach', 'One row for your journey', 'Notices that make room', 'Better short-screen fit', 'The right milestones']) expect(indexHtml).toContain(heading);
     });

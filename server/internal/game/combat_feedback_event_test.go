@@ -15,7 +15,7 @@ func TestCombatFeedbackHelpersPreserveKindAndInstance(t *testing.T) {
 		}
 	}
 
-	w.fireDamageEvent("source", "target", 17, "holy", "instance-feedback")
+	w.fireDamageEvent(&Entity{ID: "source"}, "target", 17, "holy", "instance-feedback")
 	w.fireHealEvent("source", "target", 9, "guardian_embrace", "instance-feedback")
 
 	if damage.Kind != "holy" || damage.InstanceID != "instance-feedback" {
@@ -41,7 +41,7 @@ func TestDamageFeedbackEmitsTypedLifestealInTheSameInstance(t *testing.T) {
 		}
 	}
 
-	w.fireDamageEvent(source.ID, "target", 20, "physical", source.InstanceID)
+	w.fireDamageEvent(source, "target", 20, "physical", source.InstanceID)
 
 	if heal.Amount != 10 || heal.Kind != "lifesteal" || heal.InstanceID != source.InstanceID {
 		t.Fatalf("lifesteal feedback mismatch: %+v", heal)

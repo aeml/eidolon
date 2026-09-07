@@ -84,7 +84,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				strikeTarget.BleedEndTime = time.Now().Add(10 * time.Second)
 				isDead := strikeTarget.Health <= 0
 				strikeTarget.Mu.Unlock()
-				w.fireDamageEvent(player.ID, strikeTarget.ID, finalDamage, "physical", player.InstanceID)
+				w.fireDamageEvent(player, strikeTarget.ID, finalDamage, "physical", player.InstanceID)
 				if isDead {
 					strikeTarget.Mu.Lock()
 					w.handleDeath(strikeTarget, player, nil)
@@ -276,7 +276,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					if withinDungeonAbilityRadius(walkRects, skillName, targetX, targetZ, target, radius) {
 						finalDamage := applyFinalDamage(player, target, damage, "physical", skillName)
 						addThreatLocked(target, player.ID, float64(finalDamage))
-						w.fireDamageEvent(player.ID, target.ID, finalDamage, "physical", player.InstanceID)
+						w.fireDamageEvent(player, target.ID, finalDamage, "physical", player.InstanceID)
 						if target.Health <= 0 {
 							w.handleDeath(target, player, nil)
 						}
@@ -513,7 +513,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				isDead := bestTarget.Health <= 0
 				bestTarget.Mu.Unlock()
 
-				w.fireDamageEvent(player.ID, bestTarget.ID, finalDamage, "physical", player.InstanceID)
+				w.fireDamageEvent(player, bestTarget.ID, finalDamage, "physical", player.InstanceID)
 				if isDead {
 					bestTarget.Mu.Lock()
 					w.handleDeath(bestTarget, player, nil)
@@ -630,7 +630,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					isDead := bestTarget.Health <= 0
 					bestTarget.Mu.Unlock()
 
-					w.fireDamageEvent(player.ID, bestTarget.ID, cloneDamage, "physical", player.InstanceID)
+					w.fireDamageEvent(player, bestTarget.ID, cloneDamage, "physical", player.InstanceID)
 					if isDead {
 						bestTarget.Mu.Lock()
 						w.handleDeath(bestTarget, player, nil)
@@ -756,7 +756,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					isDead := target.Health <= 0
 					target.Mu.Unlock()
 
-					w.fireDamageEvent(player.ID, target.ID, finalDamage, "physical", player.InstanceID)
+					w.fireDamageEvent(player, target.ID, finalDamage, "physical", player.InstanceID)
 					if isDead {
 						target.Mu.Lock()
 						w.handleDeath(target, player, nil)
