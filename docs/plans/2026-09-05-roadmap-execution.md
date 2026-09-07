@@ -14,9 +14,27 @@ login label, versioned main script and backend to
 **1.0.35 `948ed0c178c7c5967db078b53ef951d930660f30`**; that push completed
 successfully. Do not push 1.0.36 until the complete 1.0.35 CI/live gate and fresh
 post-terminal public identity checks pass.
-CI **`34105565222`** has passed server/client/browser smoke and is running
-predeployment character QA; neither a complete live gate nor publication is
-claimed for 1.0.35 yet.
+CI **`34105565222`** has passed server/client/browser smoke, predeployment
+character QA and both deployments. Final live character and four-class QA is
+still in progress. Fresh **pre-terminal** public checks at **10:05:34.142 UTC**
+match manifest, login label, main script and healthy/ready backend to 1.0.35
+`948ed0c178c7c5967db078b53ef951d930660f30`. This proves deployed identity, not the
+complete live gate. Do not push 1.0.36 until terminal success and a new identity
+check after that terminal result.
+
+The [1.0.40 candidate](2026-09-07-release40-cleric-readability.md) packages bounded
+phone actor/action feedback, trained accepted Cleric areas, clear phone combo
+feedback and the [offline Healing Light/Radiant Strike repair](2026-09-07-cleric-offline-areas.md).
+The offline checkpoint is `43fa0c3571bd2a318b6001e80b13fbdffcf85a3f`.
+Separate patch notes and all version defaults advance to 1.0.40 without replacing
+1.0.39 history. Final client regression passes **201 suites / 2,974 tests in
+95.175s**, full server race checks pass (root **13.049s**, unchanged game cached),
+all **53 anonymous checks pass in 6.0 minutes** after the retained network-change
+failure, and final actual caster/observer gameplay passes **37.1s**. Lint, shell,
+whitespace, credential scans and cleanup pass; all owned local processes close.
+This candidate is not published and does not close the remaining offline combat,
+physical-device or larger 1.1–1.10 scope. The next concrete progression task is
+the [earned melee dungeon comparison](2026-09-07-earned-melee-followup.md).
 
 Previous release: **1.0.33 (`0024f33`) is fully verified**.
 CI **`34096361856` attempt 1** passed every job, including final live character

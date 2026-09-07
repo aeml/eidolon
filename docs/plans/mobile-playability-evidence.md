@@ -3,16 +3,24 @@
 Status: baseline diagnosis plus incremental implementation evidence, not a completed phone redesign. Requirements
 and release gates live in [the main roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md#phone-playability-and-interface-redesign--11-through-13).
 
-Latest fully verified phone navigation release: **Alpha 1.0.24 `44c7ed1`**, a
+Current publication is tracked in [the execution ledger](2026-09-05-roadmap-execution.md).
+At this September 7 update, **Alpha 1.0.34 `dba8268` is fully verified** and
+1.0.35 is in its separate CI/live gate. Later camera/party and feedback changes
+are local candidates, not automatically live: see
+[1.0.39 camera/party evidence](2026-09-07-release39-phone-party.md) and
+[1.0.40 Cleric/readability evidence](2026-09-07-release40-cleric-readability.md).
+The phone redesign and physical-device sign-off remain open.
+
+Historical phone navigation release: **Alpha 1.0.24 `44c7ed1`**, a
 single navigation launcher, readable status and scrolling menu with reachable
 Back. CI **`34065220719`** passed every job; independent uncached checks at
 **23:39:32 UTC September 6** matched frontend manifest, login label, main entry
 query and backend health to its exact commit/version, with a ready database.
-**1.0.25 `d55b5d8`** is pushed to `master` next and CI
-**`34067519448`** attempt 2 is running after attempt 1 stopped before gameplay
-on a local API-port collision; no 1.0.25 deployment ran. 1.0.26 and later remain local. Their entry guidance,
-lossless equipment recovery and talent-economy work also have phone-browser
-evidence, but are not yet verified live. Earlier 1.0.23's gallery failure and
+At that historical checkpoint, **1.0.25 `d55b5d8`** was pushed next and CI
+**`34067519448`** attempt 2 was running after attempt 1 stopped before gameplay
+on a local API-port collision; that first attempt did not deploy. Later entry
+guidance, lossless equipment recovery and talent-economy work have their own
+publication records in the ledger. Earlier 1.0.23's gallery failure and
 corrected successor remain recorded in the
 [execution ledger](2026-09-05-roadmap-execution.md) for the exact ordered queue.
 Earlier entries below are chronological snapshots, not current process status.
