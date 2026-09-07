@@ -1506,7 +1506,7 @@ async function recoverThroughDeathScreen(page) {
     }).not.toBe('DEAD');
 }
 
-async function useVerdantQAWaypoint(page) {
+export async function useVerdantQAWaypoint(page) {
     await recoverThroughDeathScreen(page);
     await page.keyboard.press('Enter');
     const chatInput = page.locator('#chat-input');
