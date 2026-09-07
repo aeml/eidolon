@@ -526,26 +526,7 @@ func (c *Client) dispatchMessage(msg Message) {
 		if len(char.Quests) > 0 {
 			entity.Quests = make([]game.Quest, len(char.Quests))
 			for i, q := range char.Quests {
-				entity.Quests[i] = game.Quest{
-					ID:                 q.ID,
-					Type:               q.Type,
-					Target:             q.Target,
-					Count:              q.Count,
-					MaxCount:           q.MaxCount,
-					RewardXP:           q.RewardXP,
-					RewardGold:         q.RewardGold,
-					GrantedGold:        q.GrantedGold,
-					GrantedXP:          q.GrantedXP,
-					GrantedResonanceXP: q.GrantedResonanceXP,
-					Completed:          q.Completed,
-					Accepted:           q.Accepted,
-					Title:              q.Title,
-					Description:        q.Description,
-					Lore:               q.Lore,
-					Category:           q.Category,
-					Chapter:            q.Chapter,
-					ObjectiveText:      q.ObjectiveText,
-				}
+				entity.Quests[i] = questFromDatabase(q)
 			}
 		}
 		entity.LastDailyQuest = char.LastDailyQuest
@@ -1400,7 +1381,11 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 		player := world.GenerateDailyQuests(c.playerID)
 		if player != nil {
+			world.Mu.RLock()
+			player.Mu.RLock()
 			questPayload, _ := json.Marshal(player.Quests)
+			player.Mu.RUnlock()
+			world.Mu.RUnlock()
 			msg := Message{Type: MsgQuestUpdate, Payload: questPayload}
 			b, _ := json.Marshal(msg)
 			c.sendSafe(b)
@@ -1421,7 +1406,11 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 		if success {
 			// Send Quest Update
+			world.Mu.RLock()
+			player.Mu.RLock()
 			questPayload, _ := json.Marshal(player.Quests)
+			player.Mu.RUnlock()
+			world.Mu.RUnlock()
 			msg := Message{
 				Type:    MsgQuestUpdate,
 				Payload: questPayload,

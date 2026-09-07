@@ -47,8 +47,10 @@ async function leaveTown(page) {
     expect((await readPlayerState(page)).x).toBeGreaterThanOrEqual(115);
 }
 
-test('fresh level-one character earns and manually turns in the opening Chronicle without grants', async ({ page, baseURL }) => {
+test('fresh level-one character earns and manually turns in the opening Chronicle without grants', async ({ page, baseURL }, testInfo) => {
     const credentials = credentialsFromEnvironment();
+    expect(testInfo.retry).toBeLessThanOrEqual(1);
+    if (testInfo.retry) credentials.username += `-retry${testInfo.retry}`;
     test.skip(!credentials.username || !credentials.password, 'Requires a disposable QA character');
     expect(process.env.EIDOLON_E2E_REGISTER).toBe('1');
     test.setTimeout(process.env.EIDOLON_E2E_FRESH_HUNT === '1' ? 3_600_000 :
@@ -171,7 +173,8 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     console.log(`[fresh-opening] completed ${JSON.stringify({ level: earnedLevel, deaths, retreats, grantedGold: rewarded.grantedGold, grantedXP: rewarded.grantedXP, elapsedSeconds: Math.round((Date.now() - started) / 1000) })}`);
     if (process.env.EIDOLON_E2E_FRESH_COLLECTION === '1') {
         await earnFreshCollectionAndInspectHandoff(page, credentials, {
-            findTarget: () => findSkeletonThroughTravel(page), leaveTown: () => leaveTown(page)
+            findTarget: () => findSkeletonThroughTravel(page), leaveTown: () => leaveTown(page),
+            captureReady: () => page.screenshot({ path: testInfo.outputPath('earned-collection-ready.png') })
         });
     }
     if (process.env.EIDOLON_E2E_FRESH_HUNT === '1') {

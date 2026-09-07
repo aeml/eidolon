@@ -105,12 +105,13 @@ async function defeatOrdinaryEarthEnemy(page) {
 
 async function earnObjective(page, id) {
     await useCombatQAWaypoint(page);
-    for (let kills = 0; kills < 30; kills++) {
+    const maxEncounters = Math.max(30, (await readChronicleChapter(page, id)).maxCount * 5);
+    for (let kills = 0; kills < maxEncounters; kills++) {
         const quest = await readChronicleChapter(page, id);
         if (quest.count >= quest.maxCount) return;
         await defeatOrdinaryEarthEnemy(page);
     }
-    throw new Error(`No complete objective after 30 normal Earth encounters: ${JSON.stringify(await readChronicleChapter(page, id))}`);
+    throw new Error(`No complete objective after ${maxEncounters} normal Earth encounters: ${JSON.stringify(await readChronicleChapter(page, id))}`);
 }
 
 export async function prepareEarthChronicleThroughPlay(page) {
@@ -123,15 +124,17 @@ export async function prepareEarthChronicleThroughPlay(page) {
     await earnObjective(page, FIRST_CHAPTER);
     await claimChapterAndContinue(page, FIRST_CHAPTER); await acceptOfferedChapter(page, SEED_CHAPTER);
     await earnObjective(page, SEED_CHAPTER);
+    const required = (await readChronicleChapter(page, SEED_CHAPTER)).maxCount;
+    expect(required).toBe(8);
     const seedsInBag = () => page.evaluate(() => window.game.player.inventory.reduce((sum, item) =>
         sum + (item?.name === 'Verdant Memory Seed' ? item.stack || 1 : 0), 0));
     // An area attack can roll several personal drops before pickups update the
     // objective. Verify the required consumption, not an artificial loot cap.
     await setAutoLootThroughSettings(page, false);
     const seedsBeforeTurnIn = await seedsInBag();
-    expect(seedsBeforeTurnIn).toBeGreaterThanOrEqual(4);
+    expect(seedsBeforeTurnIn).toBeGreaterThanOrEqual(required);
     await claimChapterAndContinue(page, SEED_CHAPTER);
-    expect(await seedsInBag()).toBe(seedsBeforeTurnIn - 4);
+    expect(await seedsInBag()).toBe(seedsBeforeTurnIn - required);
     await acceptOfferedChapter(page, EARTH_DUNGEON_CHAPTER);
     await setAutoLootThroughSettings(page, previousAutoLoot);
     await openDungeonGuide(page);

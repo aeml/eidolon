@@ -3,6 +3,7 @@ package game
 import (
 	"fmt"
 	"log"
+	"math"
 	"strings"
 	"time"
 )
@@ -45,9 +46,9 @@ func chronicleQuestCatalog() []Quest {
 			Lore:          "Eidolon was not named for a kingdom. It was named for the four great spirits who dreamed matter into covenant: Orun of Root and Stone, Neris of Tide and Memory, Pyralis of Flame and Will, and Aeral of Sky and Freedom. Their crystals do not create the elements—they keep the elements willing to shelter mortal lands.",
 		},
 		{
-			ID: "chronicle_02_seeds_first_grove", Type: "COLLECT", Target: "Verdant Memory Seed", MaxCount: 4, RewardXP: 8000,
+			ID: "chronicle_02_seeds_first_grove", Type: "COLLECT", Target: "Verdant Memory Seed", MaxCount: 8, RewardXP: 8000,
 			Title: "Seeds of the First Grove", Category: QuestCategoryChronicle, Chapter: 2,
-			ObjectiveText: "Recover 4 Verdant Memory Seeds from Earth-realm creatures, then let the Rootheart draw them into itself.",
+			ObjectiveText: "Recover 8 Verdant Memory Seeds from Earth-realm creatures and return to Ilyra to prepare the Rootheart's future repair.",
 			Description:   "The echoes name the first wound: the Rootheart Crystal beneath the Verdant Bastion is forgetting every forest it ever sustained. Creatures touched by its failing pulse carry fragments of those memories. Gather enough to remind the crystal what it was.",
 			Lore:          "A Verdant Memory Seed is not truly a seed. It is a moment made solid: rain on the first leaf, roots splitting ancient rock, the patience of mountains. When the Rootheart weakens, such memories fall loose and lodge in living things.",
 		},
@@ -59,9 +60,9 @@ func chronicleQuestCatalog() []Quest {
 			Lore:          "Orun hid the Rootheart beyond a living labyrinth so no passing army could touch it. The Dark King corrupted the outer Sentinel, but even he could not enter the inner sanctum without first forcing a mortal hand to open the way.",
 		},
 		{
-			ID: "chronicle_04_pearls_without_tides", Type: "COLLECT", Target: "Moon-Tide Pearl", MaxCount: 4, RewardXP: 500000,
+			ID: "chronicle_04_pearls_without_tides", Type: "COLLECT", Target: "Moon-Tide Pearl", MaxCount: 8, RewardXP: 500000,
 			Title: "Pearls Without Tides", Category: QuestCategoryChronicle, Chapter: 4,
-			ObjectiveText: "Recover 4 Moon-Tide Pearls from Water-realm creatures to restore the Tidestar's rhythm.",
+			ObjectiveText: "Recover 8 Moon-Tide Pearls from Water-realm creatures and return to Ilyra to prepare the Tidestar's future repair.",
 			Description:   "With the Rootheart raid-road uncovered for the coming Vigils, a second voice reaches you through wells and rain. The Tidestar has lost the pull that lets water remember its way home. Hunt the warped creatures of the Water realm; pieces of the stolen tide gleam inside them.",
 			Lore:          "Neris keeps every promise spoken beside water. Sailors once cast Moon-Tide Pearls into unknown seas so even a shipwrecked vow could find its shore. Now the pearls are motionless, severed from moon and memory alike.",
 		},
@@ -73,9 +74,9 @@ func chronicleQuestCatalog() []Quest {
 			Lore:          "Water survives by yielding without surrender. The Dark King could not command Neris, so he taught Thalorath to consume names. A nameless thing cannot remember where it belongs—and a nameless ocean will drown every border.",
 		},
 		{
-			ID: "chronicle_06_ash_refuses_cool", Type: "COLLECT", Target: "Cinderheart Ore", MaxCount: 4, RewardXP: 5000000,
+			ID: "chronicle_06_ash_refuses_cool", Type: "COLLECT", Target: "Cinderheart Ore", MaxCount: 8, RewardXP: 5000000,
 			Title: "Ash That Refuses to Cool", Category: QuestCategoryChronicle, Chapter: 6,
-			ObjectiveText: "Recover 4 pieces of Cinderheart Ore from Fire-realm creatures and reforge the Ember Crown's broken circuit.",
+			ObjectiveText: "Recover 8 pieces of Cinderheart Ore from Fire-realm creatures and return to Ilyra to prepare the Ember Crown's future repair.",
 			Description:   "The Ember Crown still burns, but its flame gives no warmth and leaves no fertile ash. Fire has been reduced to hunger. Find Cinderheart Ore in the realm's corrupted creatures—the metal remembers that flame must illuminate, transform, and finally release.",
 			Lore:          "Pyralis gave mortals the first forge on one condition: every weapon must outlive the anger that shaped it. Cinderheart Ore carries that compact. It glows brightest when a bearer chooses purpose over appetite.",
 		},
@@ -87,10 +88,10 @@ func chronicleQuestCatalog() []Quest {
 			Lore:          "The Dark King promised Infernax an eternal victory. He neglected to say that eternal victory requires an eternal war. Beneath the tyrant's boasting is a prisoner who has forgotten the difference between conquest and flame.",
 		},
 		{
-			ID: "chronicle_08_feathers_thunder", Type: "COLLECT", Target: "Stormglass Pinion", MaxCount: 4, RewardXP: 5000000,
+			ID: "chronicle_08_feathers_thunder", Type: "COLLECT", Target: "Stormglass Pinion", MaxCount: 8, RewardXP: 5000000,
 			Title: "Feathers of Captured Thunder", Category: QuestCategoryChronicle, Chapter: 8,
-			ObjectiveText: "Recover 4 Stormglass Pinions from Air-realm creatures and rebuild the Skyglass lattice.",
-			Description:   "Three regions answer again, revealing the silence above them. The Skyglass Crystal has been caged inside a single repeating storm. Its shattered pinions drift through the creatures trapped in that loop. Gather them and give the wind a future again.",
+			ObjectiveText: "Recover 8 Stormglass Pinions from Air-realm creatures and return to Ilyra to prepare the Skyglass Crystal's future repair.",
+			Description:   "Three raid-roads lie open, but their crystals still await Maelin's Vigils. Now we must trace the silence above them. The Skyglass Crystal has been caged inside a single repeating storm. Its shattered pinions drift through the creatures trapped in that loop. Gather them so we can prepare to give the wind a future again.",
 			Lore:          "Aeral refuses temples with doors. The wind Eidolon taught that freedom is not the absence of bonds, but the power to choose them. Stormglass forms where lightning makes that choice in an instant and leaves its decision behind.",
 		},
 		{
@@ -148,6 +149,9 @@ func chronicleQuestCatalog() []Quest {
 		ChronicleFireDungeonID: "molten_core", ChronicleAirDungeonID: "tempest_spire",
 	}
 	for i := range quests {
+		if quests[i].Type == "COLLECT" {
+			quests[i].CollectionVersion = 2
+		}
 		quests[i].RewardGold = questGoldReward(quests[i].RewardXP)
 		if dungeonType, ok := dungeonChapters[quests[i].ID]; ok {
 			quests[i].ObjectiveText = fmt.Sprintf("Level %d required — %s", supportedDungeonTypes[dungeonType], quests[i].ObjectiveText)
@@ -215,6 +219,21 @@ func isDailyQuest(q Quest) bool {
 }
 
 func copyQuestDefinition(progress Quest, definition Quest) Quest {
+	if definition.Category == QuestCategoryChronicle && definition.Type == "COLLECT" && (progress.Accepted || progress.Completed) {
+		// Accepted contracts retain their requirements and drop rules. A missing
+		// version identifies a pre-balance save, not a newly accepted chapter.
+		count := max(1, progress.MaxCount)
+		if progress.MaxCount <= 0 {
+			count = 4
+		}
+		definition.ObjectiveText = strings.Replace(definition.ObjectiveText,
+			fmt.Sprintf("Recover %d ", definition.MaxCount), fmt.Sprintf("Recover %d ", count), 1)
+		definition.MaxCount = count
+		definition.CollectionVersion = max(1, min(2, progress.CollectionVersion))
+		if definition.CollectionVersion == 2 {
+			definition.DropMisses = max(0, min(4, progress.DropMisses))
+		}
+	}
 	definition.Count = progress.Count
 	definition.Completed = progress.Completed
 	definition.Accepted = progress.Accepted
@@ -275,6 +294,8 @@ func (w *World) GenerateDailyQuests(playerID string) *Entity {
 	if !ok {
 		return nil
 	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
 	ensureChronicleLocked(player)
 
 	loc, err := time.LoadLocation("America/New_York")
@@ -328,6 +349,8 @@ func (w *World) PerformAcceptQuest(playerID, questID string) (*Entity, bool) {
 	if !ok {
 		return nil, false
 	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
 	for i := range player.Quests {
 		q := &player.Quests[i]
 		if q.ID == questID {
@@ -348,6 +371,8 @@ func (w *World) PerformCompleteQuest(playerID, questID string) (*Entity, bool) {
 	if !ok {
 		return nil, false
 	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
 	for i := range player.Quests {
 		q := &player.Quests[i]
 		if q.ID == questID {
@@ -532,12 +557,14 @@ var chronicleDropSources = map[string]map[string]bool{
 }
 
 // ChronicleDropForKill returns a personal world drop for the player's current
-// elemental chapter. The explicit roll keeps the authoritative rule testable.
+// elemental chapter. Callers hold the player lock (or legacy world lock).
+// The explicit roll keeps the authoritative rule and bounded bad luck testable.
 func ChronicleDropForKill(player *Entity, defeatedSubType string, roll float64) *Item {
-	if player == nil {
+	if player == nil || roll < 0 || roll >= 1 || math.IsNaN(roll) {
 		return nil
 	}
-	for _, quest := range player.Quests {
+	for i := range player.Quests {
+		quest := &player.Quests[i]
 		if quest.Category != QuestCategoryChronicle || quest.Type != "COLLECT" || !quest.Accepted || quest.Completed || quest.Count >= quest.MaxCount {
 			continue
 		}
@@ -546,13 +573,22 @@ func ChronicleDropForKill(player *Entity, defeatedSubType string, roll float64) 
 		}
 		guaranteed := defeatedSubType == "InfernoTitan" || defeatedSubType == "FrostGuardian" ||
 			defeatedSubType == "PhoenixSentinel" || defeatedSubType == "CycloneAvatar"
-		if !guaranteed && roll >= 0.65 {
+		dropChance := 0.65 // Grandfathered accepted contracts keep their old rule.
+		if quest.CollectionVersion >= 2 {
+			dropChance = 0.35
+			guaranteed = guaranteed || quest.DropMisses >= 4
+		}
+		if !guaranteed && roll >= dropChance {
+			if quest.CollectionVersion >= 2 {
+				quest.DropMisses = min(4, max(0, quest.DropMisses)+1)
+			}
 			return nil
 		}
+		quest.DropMisses = 0
 		return &Item{
 			ID: fmt.Sprintf("chronicle-item-%d", time.Now().UnixNano()), Name: quest.Target,
 			Type: ItemRelic, Rarity: RarityEidolic, Slot: "relic", Level: max(1, player.Level),
-			Value: 0, Stack: 1, MaxStack: 4,
+			Value: 0, Stack: 1, MaxStack: max(4, quest.MaxCount),
 			Description: "A soulbound fragment called forth by the four-crystal Chronicle. It cannot be traded or sold.",
 		}
 	}
@@ -567,7 +603,8 @@ func HasCompletedChronicleQuest(player *Entity, questID string) bool {
 	if player == nil {
 		return false
 	}
-	for _, quest := range player.Quests {
+	for i := range player.Quests {
+		quest := &player.Quests[i]
 		if quest.ID == questID {
 			return quest.Completed
 		}

@@ -251,15 +251,16 @@ func (w *World) GrantWeeklyRaidReward(playerID string) bool {
 		return false
 	}
 	player.addResonanceExperienceLocked(ResonanceXPPerLevel)
-	player.Gold += 50_000
+	goldReward := 50_000
 	if item := GenerateGuaranteedUniqueEquipment(MaxPlayerLevel); item != nil {
 		if player.AddItemToInventory(*item) > 0 {
 			// Never burn a weekly lockout because the inventory was full.
-			player.Gold += 10_000
+			goldReward += 10_000
 		}
 	}
+	player.Gold += goldReward
 	if w.Economy != nil {
-		w.Economy.RecordSource("weekly_raid", 50_000)
+		w.Economy.RecordSource("weekly_raid", goldReward)
 	}
 	return true
 }

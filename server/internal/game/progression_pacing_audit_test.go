@@ -2,6 +2,8 @@ package game
 
 import (
 	"fmt"
+	"math/rand"
+	"sort"
 	"testing"
 	"time"
 )
@@ -140,6 +142,7 @@ func TestProgressionPacingAuditCollectionDrops(t *testing.T) {
 			count, quantity := 0, 0
 			const rolls = 10000
 			for i := 0; i < rolls; i++ {
+				player.Quests[0].DropMisses = 0 // Measure base chance separately from pity.
 				item := ChronicleDropForKill(player, subtype, (float64(i)+.5)/rolls)
 				if item != nil {
 					count++
@@ -149,9 +152,28 @@ func TestProgressionPacingAuditCollectionDrops(t *testing.T) {
 			if count == 0 || quantity == 0 {
 				t.Fatalf("required item has no eligible drops: %s/%s", source.target, subtype)
 			}
-			t.Logf("COLLECTION item=%s source=%s required=%d drop_rate=%.4f mean_items_per_eligible_kill=%.4f expected_kills=%.2f",
+			t.Logf("COLLECTION_BASE_WITHOUT_PITY item=%s source=%s required=%d drop_rate=%.4f mean_items_per_eligible_kill=%.4f expected_kills=%.2f",
 				source.target, subtype, definition.MaxCount, float64(count)/rolls,
 				float64(quantity)/rolls, float64(definition.MaxCount)*rolls/float64(quantity))
 		}
+		rolls := rand.New(rand.NewSource(20260907))
+		trials := make([]int, 2000)
+		total := 0
+		for trial := range trials {
+			player.Quests[0] = definition
+			for player.Quests[0].Count < definition.MaxCount {
+				trials[trial]++
+				if trials[trial] > definition.MaxCount*100 {
+					t.Fatal("unbounded collection simulation")
+				}
+				if ChronicleDropForKill(player, source.ordinary, rolls.Float64()) != nil {
+					player.Quests[0].Count++
+				}
+			}
+			total += trials[trial]
+		}
+		sort.Ints(trials)
+		t.Logf("COLLECTION_WITH_PITY item=%s trials=%d mean_kills=%.2f p90_kills=%d max_observed=%d",
+			source.target, len(trials), float64(total)/float64(len(trials)), trials[len(trials)*9/10], trials[len(trials)-1])
 	}
 }

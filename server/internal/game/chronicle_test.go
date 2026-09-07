@@ -124,7 +124,7 @@ func TestChronicleRequiresManualTurnInForKillAndCollectionChapters(t *testing.T)
 		t.Fatal("could not accept collection")
 	}
 
-	for i := 0; i < 4; i++ {
+	for i := 0; i < collection.MaxCount; i++ {
 		item := ChronicleDropForKill(player, "Imp", 0.1)
 		if item == nil || item.Name != "Verdant Memory Seed" || !IsChronicleQuestItem(*item) {
 			t.Fatalf("expected personal Earth artifact drop, got %+v", item)

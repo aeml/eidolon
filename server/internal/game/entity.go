@@ -34,6 +34,8 @@ type Quest struct {
 	Target             string `json:"target"`
 	Count              int    `json:"count"`
 	MaxCount           int    `json:"maxCount"`
+	CollectionVersion  int    `json:"collectionVersion,omitempty"`
+	DropMisses         int    `json:"dropMisses,omitempty"`
 	RewardXP           int    `json:"rewardXP"`
 	RewardGold         int    `json:"rewardGold"`
 	GrantedGold        int    `json:"grantedGold,omitempty"`
