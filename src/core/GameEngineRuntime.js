@@ -881,6 +881,8 @@ class GameEngineRuntimeMethods {
             this.renderSystem.setCameraTarget(this._renderCameraTarget);
         }
 
+        this.renderSystem.setSceneryFocus?.(this.player && this.player.isActive !== false
+            ? this.player.mesh?.position || this.player.position : null);
         this.renderSystem.render();
 
         if (this.player) {
