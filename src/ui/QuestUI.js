@@ -121,6 +121,21 @@ export class QuestUI {
         }
     }
 
+    openChronicleDiscovery(receipt) {
+        const player = this.ctx.getLastPlayer?.();
+        const quest = player?.quests?.find(quest => quest.id === receipt?.questId);
+        if (!getRecordedChronicleDiscoveries(quest).some(site => site.id === receipt?.siteId)) return false;
+        if (!this.isJournalOpen) this.toggleJournal();
+        else this.updateJournal(player.quests);
+        const record = [...this.journalList.querySelectorAll('details[data-discovery-id]')]
+            .find(record => record.dataset.discoveryId === receipt.siteId);
+        if (!record) return false;
+        record.open = true;
+        record.scrollIntoView?.({ block: 'start', behavior: 'instant' });
+        record.querySelector('summary')?.focus({ preventScroll: true });
+        return true;
+    }
+
     /** Close the quest NPC window if open. */
     closeQuestWindow() {
         if (this.questWindow) this.questWindow.style.display = 'none';

@@ -19,8 +19,8 @@ export const chronicleInvestigations = [
     ],
     "title": "The Keeper's Empty House",
     "acceptance": "“Mara Fen kept the first grove beyond Lanternhold. When the roots shifted, she sent me a pressed leaf with no veins. I answered with a warning to leave. She answered with a list of families who could not.\n\n“Her house has gone quiet. Find her planting table and the diary she kept beneath it. I need to know what she saw before we ask the land for anything more.”",
-    "completion": "“She got them out. That matters more than a perfect ward or a brave last stand.\n\n“And she found the distinction I missed. This is not simply a loss of strength. Someone is diverting the Rootheart's protection toward a command. Mara describes a seal at the old stone circle. We must learn what the roots were made to forget.”",
-    "summary": "Mara evacuated her neighbors after a stranger's seal began redirecting the grove's protection. Investigate the blighted stone circle."
+    "completion": "“She got them out. That matters more than a perfect ward or a brave last stand.\n\n“And she found the distinction I missed. This is not simply a loss of strength. Someone is diverting the Rootheart's protection toward a command. Mara describes a seal at the old stone circle. First, bring me Memory Seeds from the grove's troubled creatures; their living memories will let us distinguish a scar from new growth when we study that circle.”",
+    "summary": "Mara evacuated her neighbors after a stranger's seal began redirecting the grove's protection. Ilyra needs Memory Seeds before the stone circle's altered roots can be understood."
   },
   {
     "id": "chronicle_earth_returning_scar",

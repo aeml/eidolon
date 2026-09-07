@@ -1,6 +1,7 @@
 # Chronicle investigations — shared content and recording foundation
 
-Status: foundation implemented and locally tested; **not yet playable quests**.
+Status: graph and world interactions implemented in the isolated branch;
+**earned gameplay verification incomplete; not released or merged to root**.
 This follows the [balance and story plan](2026-09-07-progression-balance-and-investigations.md)
 and [authored narrative](2026-09-07-investigation-story-content.md).
 
@@ -10,7 +11,7 @@ The following supersedes the foundation's 15-chapter status **on the isolated
 investigation branch only**. Root and release branches still retain the working
 15-chapter chain until the complete world interaction is ready. Do not merge or
 publish this intermediate graph as a playable expansion: it offers investigations
-whose world objects and network actions are not registered yet.
+until world objects and network actions pass earned playthroughs.
 
 Implemented in this branch:
 
@@ -41,16 +42,59 @@ UI **18 / 1.451s**, and discovery/graph/migration/protocol race checks three tim
 collection fixture completes the required diary normally. The original full game
 run fails **247.941s** on one other old fixture expecting collection immediately
 after the first hunt; that assertion now expects the actual next diary without
-weakening manual turn-in. Final game rerun is active as **61937**, log
+weakening manual turn-in. Final game rerun **61937** passes **242.722s**, log
 `/tmp/eidolon-investigations-expanded-game-final.log`; targeted repeats **48341**
-also run. All earlier handles are closed. Do not call the full backend pass green
-until this exact rerun is confirmed complete.
+pass **3.144s**. All these handles are closed; the expanded graph backend passes.
 
-Still required: native site models and correct collision/reachability, network
-inspect request/acknowledgement, real authoritative Fire combat integration,
-reading UI and actual earned desktop/touch playthroughs of all eight chapters.
-Fresh-opening/collection browser routes must also earn the added diary instead
-of skipping it. Review connective dialogue and reward pacing in the actual game.
+### World integration checkpoint
+
+Authenticated inspection dispatch sends personal quest state before its receipt,
+including rereads. Actual Fire anchor death awards only eligible nearby party
+members with the earlier ash evidence. A real `PerformAttack` test kills the
+ordinary anchor and confirms two prepared members receive credit, with no quest
+completion or quest payout. Three race repeats pass root **2.121s**, game
+**1.799s**; further graph/network checks pass **1.912s / 7.472s**.
+
+Normal move-to-interact requests inspection; an earned receipt opens the existing
+journal only for the current character, scene, site and unexpired reading intent.
+Delayed/unsolicited receipts cannot interrupt a new session. Next-investigation
+summaries no longer broadcast before discovery. Mara's completion now connects
+explicitly to Memory Seeds before examining the altered roots.
+
+Fifteen native non-Actor landmarks cover four abandoned records and eleven
+readable disturbances. Personal beacons reflect accepted, unrecorded evidence
+and its prerequisites. Only actual ruined walls block walking; the foundation
+and open approach stay clear. Chunk unload/reload owns geometry and colliders.
+Request/model/lifecycle/journal checks pass **37 / 2.075s** after completing the
+test canvas text-metrics stub. Hardware model gallery passes **1 / 2.7s**; its
+actual PNG is inspected. This is art evidence, not world placement/playtesting.
+
+World initialization now registers sites in this isolated branch. Fresh and
+functional Earth routes must earn the diary/scar rather than skipping them.
+The first fresh opening passes (level 5/no deaths), but diary travel fails to
+reach 125,200. The helper now waits for the previous walk/camera to settle.
+Rerun **66245** reaches the cottage but cannot hover its center. Diagnostic run
+**71050** confirms three Skeletons overlap the foundation-center ray; the actual
+approach screenshot shows the visible, reachable cottage and its book. The helper
+now tries visible geometry on the actual prop, preserving hostile raycast priority.
+Fourth run **65713** passes **1 / 1.2m**: ordinary level-one Wizard combat/travel,
+acceptance, real prop click, server-confirmed journal, explicit Ilyra completion
+and reconnect persistence. No credit, item, level or protection grants. First
+opening grants 500 XP/100 gold (level 5); diary grants 1,000 XP/25 gold (level 8),
+total automated route **71 seconds**. This is not a new-player timing estimate;
+it reinforces that early rewards still require coordinated tuning.
+Log `/tmp/eidolon-investigations-diary-visible-prop.log`. Actual approach and
+earned-journal screenshots are inspected under its `test-results` directory.
+Credential scan finds zero files to sanitize; disposable cleanup passes. All four
+owned browser handles are closed. Earlier logs are retained, not passing runs.
+Full client passes **219 suites / 3,238 tests / 163.896s**, lint passes.
+Full server race **68729** passes (root **16.818s**, game **307.701s**), log
+`/tmp/eidolon-investigations-landmarks-server.log`.
+
+Still required: remaining earned desktop/touch playthroughs, every realm's actual terrain
+and collision review, ordered Fire combat in-browser, rereading/reconnect,
+connective dialogue and pacing review. Keep isolated. Integrate newer release
+queue runtime ancestry before final expansion regression/release packaging.
 
 ## Historical foundation checkpoint
 

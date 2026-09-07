@@ -4,6 +4,7 @@ import { InputManager } from './InputManager.js';
 import { ChunkManager, isAlwaysResidentEntityType } from './ChunkManager.js';
 import { CollisionManager } from './CollisionManager.js';
 import { getLanternholdWalkCollider } from '../art/ProceduralLanternholdArchitecture.js';
+import { ChronicleSite } from '../entities/ChronicleSite.js';
 import { NetworkManager } from './NetworkManager.js';
 import { AbilityController } from './AbilityController.js';
 import { CONSTANTS } from './Constants.js';
@@ -1462,6 +1463,7 @@ export class GameEngine {
 
         const type = entity.constructor?.name || entity.type || entity.meshType || entity.name || '';
         return entity instanceof DwarfSalesman
+            || entity instanceof ChronicleSite
             || entity instanceof QuestNPC
             || entity instanceof RespecNPC
             || entity instanceof DungeonNPC
@@ -1469,6 +1471,7 @@ export class GameEngine {
             || entity instanceof Forge
             || entity instanceof TradingHouse
             || type === 'DwarfSalesman'
+            || type === 'ChronicleSite'
             || type === 'QuestNPC'
             || type === 'RespecNPC'
             || type === 'DungeonNPC'
@@ -1606,6 +1609,10 @@ export class GameEngine {
                     ? 'Click to open the dungeon portal.'
                     : 'Move closer to interact with this dungeon portal.';
             }
+        } else if (interactableType === 'ChronicleSite') {
+            promptLabel = inRange
+                ? 'Inspect this discovery. Recovered evidence is saved in your journal.'
+                : 'Move closer to inspect this discovery.';
         } else if (interactableType === 'QuestNPC') {
             promptLabel = inRange
                 ? 'Click to speak about quests. Blue marks daily contracts; gold marks Ilyra’s story.'
@@ -2265,7 +2272,9 @@ export class GameEngine {
 
         // If type is NPC, handle it
         if (type === 'NPC') {
-            if (subType === 'DwarfSalesman') {
+            if (subType === 'ChronicleSite') {
+                p = new ChronicleSite(id);
+            } else if (subType === 'DwarfSalesman') {
                 p = new DwarfSalesman(id);
             } else if (subType === 'QuestNPC') {
                 p = new QuestNPC(id);

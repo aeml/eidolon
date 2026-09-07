@@ -580,6 +580,14 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 			if IsElementalRaidBoss(instanceType, tSubType) {
 				w.StartCrystalRepair(tInstanceID, instanceType, participants, tX, tZ)
 			}
+			// Only actual death-pipeline recipients can receive the anchor's
+			// combat evidence. Each still needs their own accepted quest and ash
+			// discovery. Ordinary kills do not parse the investigation catalog.
+			if strings.HasPrefix(tID, "chronicle-site-") {
+				for _, playerID := range participants {
+					w.RecordChronicleInvestigationKill(playerID, tID)
+				}
+			}
 			if finalDungeonBoss && w.OnEvent != nil && !instanceCreatedAt.IsZero() {
 				w.OnEvent("dungeon_complete", DungeonCompletionEvent{
 					InstanceID: tInstanceID, DungeonType: instanceType, Difficulty: instanceDifficulty,

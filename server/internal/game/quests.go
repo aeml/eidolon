@@ -485,6 +485,11 @@ func (w *World) advanceChronicleLocked(player *Entity, questIndex int) Chronicle
 			event.NextID = next.ID
 			event.NextTitle = next.Title
 			event.NextLore = next.Lore
+			// An investigation's summary is its conclusion, not an invitation.
+			// Do not broadcast discoveries before the player has earned them.
+			if next.Type == "INVESTIGATE" {
+				event.NextLore = ""
+			}
 		}
 	}
 	event.Finale = event.NextID == "" && event.CompletedID == ChronicleDarkKingID

@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
+import { earnEarthInvestigation } from './chronicle-investigation-route.js';
 import { earnFreshCollectionAndInspectHandoff } from './fresh-collection-route.js';
 import { earnFreshHunt, earnFreshSkeletonHunt } from './fresh-hunt-route.js';
 import { earnFreshDungeonReadiness, prepareEarnedClass } from './fresh-ready-route.js';
@@ -164,13 +165,22 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     expect(rewarded.grantedGold).toBeGreaterThan(0);
     expect(rewarded.grantedXP).toBeGreaterThan(0);
     await page.locator('#quest-window').getByRole('button', { name: 'Continue conversation', exact: true }).click();
-    expect((await readChronicleChapter(page, 'chronicle_02_seeds_first_grove')).accepted).toBe(false);
+    expect((await readChronicleChapter(page, 'chronicle_earth_keepers_house')).accepted).toBe(false);
     const earnedLevel = (await readPlayerState(page)).level;
     await page.reload({ waitUntil: 'networkidle' });
     await loginAndEnterWorld(page, credentials);
     expect((await readPlayerState(page)).level).toBe(earnedLevel);
     expect((await readChronicleChapter(page, chapter)).completed).toBe(true);
     console.log(`[fresh-opening] completed ${JSON.stringify({ level: earnedLevel, deaths, retreats, grantedGold: rewarded.grantedGold, grantedXP: rewarded.grantedXP, elapsedSeconds: Math.round((Date.now() - started) / 1000) })}`);
+    await earnEarthInvestigation(page, 'chronicle_earth_keepers_house', openIlyra,
+        (site, phase) => page.screenshot({ path: testInfo.outputPath(`${phase}-${site.id}.png`) }));
+    const afterDiary = await readChronicleChapter(page, 'chronicle_earth_keepers_house');
+    const diaryLevel = (await readPlayerState(page)).level;
+    await page.reload({ waitUntil: 'networkidle' });
+    await loginAndEnterWorld(page, credentials);
+    expect((await readPlayerState(page)).level).toBe(diaryLevel);
+    expect((await readChronicleChapter(page, 'chronicle_earth_keepers_house')).completed).toBe(true);
+    console.log(`[fresh-diary] ${JSON.stringify({ level: diaryLevel, reward: afterDiary, elapsedSeconds: Math.round((Date.now() - started) / 1000) })}`);
     if (process.env.EIDOLON_E2E_FRESH_COLLECTION === '1') {
         await earnFreshCollectionAndInspectHandoff(page, credentials, {
             findTarget: () => findSkeletonThroughTravel(page), leaveTown: () => leaveTown(page),

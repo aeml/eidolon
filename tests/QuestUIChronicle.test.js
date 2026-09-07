@@ -61,6 +61,22 @@ test('the journal reveals only recorded evidence and preserves an open page acro
     expect(journal.scrollTop).toBe(123);
 });
 
+test('an acknowledged inspection opens its recorded journal page, never undiscovered text', () => {
+    buildDom();
+    const chapter = chronicleInvestigations[0];
+    const quest = chronicleQuest({ id: chapter.id, type: 'INVESTIGATE', investigationMask: 1 });
+    const ui = new QuestUI({ getLastPlayer: () => ({ quests: [quest], level: 30 }) });
+    const receipt = { questId: quest.id, siteId: chapter.sites[0].id };
+    expect(ui.openChronicleDiscovery({ ...receipt, siteId: 'unseen' })).toBe(false);
+    expect(ui.isJournalOpen).toBe(false);
+    expect(ui.openChronicleDiscovery(receipt)).toBe(true);
+    expect(ui.isJournalOpen).toBe(true);
+    const record = document.querySelector('details[data-discovery-id]');
+    expect(record.open).toBe(true);
+    expect(document.activeElement).toBe(record.querySelector('summary'));
+    expect(record.textContent).toContain(chapter.sites[0].text.replaceAll('\n\n', ''));
+});
+
 describe('QuestUI Fourfold Chronicle', () => {
     beforeEach(buildDom);
 

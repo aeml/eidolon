@@ -130,6 +130,9 @@ func TestChronicleRequiresManualTurnInForKillAndCollectionChapters(t *testing.T)
 	}
 	w.spawnChronicleInvestigationSites()
 	diary := ChronicleInvestigationCatalog()[0]
+	if len(events) != 1 || events[0].NextID != diary.ID || events[0].NextLore != "" {
+		t.Fatalf("next investigation must not disclose its unearned conclusion: %+v", events)
+	}
 	if _, ok := w.PerformAcceptQuest(player.ID, diary.ID); !ok {
 		t.Fatal("could not accept the diary investigation")
 	}

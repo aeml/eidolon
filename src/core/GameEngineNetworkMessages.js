@@ -1514,6 +1514,17 @@ class GameEngineNetworkMessageMethods {
             if (!finale && chapter.nextLore) {
                 this.uiManager?.addGameMessage?.('Recovered Lore', chapter.nextLore);
             }
+        } else if (msg.type === 'chronicle_discovery') {
+            const request = this.pendingChronicleInspection;
+            this.pendingChronicleInspection = null;
+            // A delayed acknowledgement must not open a reading window on a
+            // different character or after leaving the scene. The saved entry
+            // remains available in the journal without a forced popup.
+            if (request && this.player?.state !== 'DEAD' && request.playerId === this.player?.id &&
+                request.instanceId === (this.currentInstanceId || '') && Date.now() <= request.expiresAt &&
+                request.entityId === `chronicle-site-${msg.payload?.siteId}`) {
+                this.uiManager?.quest?.openChronicleDiscovery(msg.payload);
+            }
         } else if (msg.type === 'quest_update') {
             const quests = msg.payload;
             if (this.player) {

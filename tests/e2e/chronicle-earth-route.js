@@ -2,6 +2,7 @@ import { expect } from '@playwright/test';
 import { moveByGroundClick, projectEntity, projectNearestHostile, readPlayerState,
     returnToTown, setAutoLootThroughSettings, useCombatQAWaypoint, useEncounterQAWaypoint } from './helpers.js';
 import { openDungeonGuide } from './dungeon-guide.js';
+import { earnEarthInvestigation } from './chronicle-investigation-route.js';
 
 export const EARTH_DUNGEON_CHAPTER = 'chronicle_03_roots_remember';
 const FIRST_CHAPTER = 'chronicle_01_bell_below';
@@ -122,7 +123,10 @@ export async function prepareEarthChronicleThroughPlay(page) {
     await openIlyra(page); await acceptOfferedChapter(page, FIRST_CHAPTER);
     await setAutoLootThroughSettings(page, true);
     await earnObjective(page, FIRST_CHAPTER);
-    await claimChapterAndContinue(page, FIRST_CHAPTER); await acceptOfferedChapter(page, SEED_CHAPTER);
+    await claimChapterAndContinue(page, FIRST_CHAPTER);
+    await page.locator('#btn-close-quest').click();
+    await earnEarthInvestigation(page, 'chronicle_earth_keepers_house', openIlyra);
+    await openIlyra(page); await acceptOfferedChapter(page, SEED_CHAPTER);
     await earnObjective(page, SEED_CHAPTER);
     const required = (await readChronicleChapter(page, SEED_CHAPTER)).maxCount;
     expect(required).toBe(8);
@@ -135,6 +139,9 @@ export async function prepareEarthChronicleThroughPlay(page) {
     expect(seedsBeforeTurnIn).toBeGreaterThanOrEqual(required);
     await claimChapterAndContinue(page, SEED_CHAPTER);
     expect(await seedsInBag()).toBe(seedsBeforeTurnIn - required);
+    await page.locator('#btn-close-quest').click();
+    await earnEarthInvestigation(page, 'chronicle_earth_returning_scar', openIlyra);
+    await openIlyra(page);
     await acceptOfferedChapter(page, EARTH_DUNGEON_CHAPTER);
     await setAutoLootThroughSettings(page, previousAutoLoot);
     await openDungeonGuide(page);
@@ -153,8 +160,8 @@ export async function verifyEarthDungeonChronicleTurnIn(page, credentials) {
     await expect(page.locator('[data-raid-type="earth_crystal_raid"]')).toHaveAttribute('data-access', 'sealed');
     await page.locator('#btn-close-dungeon-menu').click();
     await claimChapterAndContinue(page, EARTH_DUNGEON_CHAPTER);
-    await expect.poll(() => readChronicleChapter(page, 'chronicle_04_pearls_without_tides')).not.toBeNull();
-    expect((await readChronicleChapter(page, 'chronicle_04_pearls_without_tides')).accepted).toBe(false);
+    await expect.poll(() => readChronicleChapter(page, 'chronicle_water_flood_shelter')).not.toBeNull();
+    expect((await readChronicleChapter(page, 'chronicle_water_flood_shelter')).accepted).toBe(false);
     await page.locator('#btn-close-quest').click();
     await openDungeonGuide(page);
     await page.getByRole('tab', { name: 'Raids', exact: true }).click();

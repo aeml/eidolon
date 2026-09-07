@@ -9,6 +9,8 @@ import { Forge } from '../entities/Forge.js';
 import { LootDrop } from '../entities/LootDrop.js';
 import { Projectile } from '../entities/Projectile.js';
 import { QuestNPC } from '../entities/QuestNPC.js';
+import { ChronicleSite } from '../entities/ChronicleSite.js';
+import { requestChronicleInspection } from './ChronicleInspection.js';
 import { RespecNPC } from '../entities/RespecNPC.js';
 import { Stash } from '../entities/Stash.js';
 import { TradingHouse } from '../entities/TradingHouse.js';
@@ -620,6 +622,13 @@ class GameEngineRuntimeMethods {
                                 this.player.playAnimation('Idle');
                             }
                             this.uiManager.toggleShop();
+                            this.pendingInteraction = null;
+
+                        } else if (this.pendingInteraction instanceof ChronicleSite) {
+                            this.player.targetPosition = null;
+                            this.player.state = 'IDLE';
+                            this.player.playAnimation('Idle');
+                            requestChronicleInspection(this, this.pendingInteraction);
                             this.pendingInteraction = null;
 
                         } else if (this.pendingInteraction instanceof QuestNPC) {

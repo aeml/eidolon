@@ -67,10 +67,13 @@ be sheltered.”
 
 “And she found the distinction I missed. This is not simply a loss of strength.
 Someone is diverting the Rootheart's protection toward a command. Mara describes
-a seal at the old stone circle. We must learn what the roots were made to forget.”
+a seal at the old stone circle. First, bring me Memory Seeds from the grove's
+troubled creatures; their living memories will let us distinguish a scar from
+new growth when we study that circle.”
 
 Journal summary: Mara evacuated her neighbors after a stranger's seal began
-redirecting the grove's protection. Investigate the blighted stone circle.
+redirecting the grove's protection. Ilyra needs Memory Seeds before the stone
+circle's altered roots can be understood.
 
 ## Earth: The Scar That Grows Back
 

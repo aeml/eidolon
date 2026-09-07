@@ -292,6 +292,7 @@ func (w *World) initWorld() {
 	w.spawnFireRealm()
 	w.spawnAirRealm()
 	w.spawnEnvironmentalHazards()
+	w.spawnChronicleInvestigationSites()
 }
 
 func (w *World) spawnFence() {
