@@ -144,9 +144,11 @@ full suite additionally covers the new unguided launch-direction assertions.
 
 The full client suite passes **186 suites / 2,638 tests in 149.080 seconds**,
 `/tmp/eidolon-target-range-full-client.log`; final lint passes in
-`/tmp/eidolon-target-range-final-lint.log`. The full server race run is still
-running separately, `/tmp/eidolon-target-range-full-server.log` (session `37764`);
-do not infer its result from the focused race checks. The isolated `direct-skills`
+`/tmp/eidolon-target-range-final-lint.log`. The full server race suite **passes**:
+root package 14.467 seconds, game package 262.633 seconds, remaining packages
+pass/cached or have no tests. Log `/tmp/eidolon-target-range-full-server.log`,
+session `37764` exits zero, runtime checkpoint `9532f19`.
+The isolated `direct-skills`
 browser route passes for **Rogue in 32.7 seconds (30.3-second body)** and
 **Cleric in 22.9 seconds (19.6-second body)**, log
 `/tmp/eidolon-target-range-gameplay.log`. Credential scan and disposable cleanup
@@ -196,5 +198,7 @@ expiry must remain consistent with their replicated presentation.
 - Keep area consumers (including the still-failing Purifying Wave probe), other
   talent/copy gaps, physical phones and the full 1.1–1.10 scope open.
 
-1.0.28 remains the last fully verified live release. 1.0.29 CI `34078663504` is
-in predeploy gameplay QA; do not push a successor before its whole CI/live gate.
+1.0.28 remains the last fully verified live release. 1.0.29 CI `34078663504`
+passed predeploy gameplay and both deployment jobs; final live-release/character
+QA is queued. Do not push a successor before whole-CI success and a fresh
+post-terminal uncached public identity check.
