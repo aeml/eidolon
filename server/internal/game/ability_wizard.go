@@ -160,7 +160,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 					target.Mu.Unlock()
 
-					w.fireDamageEvent(player.ID, target.ID, finalDamage, "arcane", player.InstanceID)
+					w.fireDamageEvent(player, target.ID, finalDamage, "arcane", player.InstanceID)
 
 					if isDead {
 						target.Mu.Lock()
@@ -317,7 +317,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 						isDead := target.Health <= 0
 						target.Mu.Unlock()
 
-						w.fireDamageEvent(player.ID, target.ID, finalDamage, "fire", player.InstanceID)
+						w.fireDamageEvent(player, target.ID, finalDamage, "fire", player.InstanceID)
 
 						if isDead {
 							target.Mu.Lock()
@@ -644,7 +644,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 						isDead := target.Health <= 0
 						target.Mu.Unlock()
 
-						w.fireDamageEvent(player.ID, target.ID, finalDamage, "fire", player.InstanceID)
+						w.fireDamageEvent(player, target.ID, finalDamage, "fire", player.InstanceID)
 						if isDead {
 							target.Mu.Lock()
 							w.handleDeath(target, player, nil)
@@ -733,7 +733,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					isDead := target.Health <= 0
 					target.Mu.Unlock()
 
-					w.fireDamageEvent(player.ID, target.ID, finalDamage, "arcane", player.InstanceID)
+					w.fireDamageEvent(player, target.ID, finalDamage, "arcane", player.InstanceID)
 
 					if isDead {
 						target.Mu.Lock()
@@ -871,7 +871,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 							isDead := target.Health <= 0
 							target.Mu.Unlock()
 
-							w.fireDamageEvent(player.ID, target.ID, finalDamage, "arcane", player.InstanceID)
+							w.fireDamageEvent(player, target.ID, finalDamage, "arcane", player.InstanceID)
 							if isDead {
 								target.Mu.Lock()
 								w.handleDeath(target, player, nil)
@@ -919,7 +919,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 							isDead := target.Health <= 0
 							target.Mu.Unlock()
 
-							w.fireDamageEvent(player.ID, target.ID, finalDamage, "arcane", player.InstanceID)
+							w.fireDamageEvent(player, target.ID, finalDamage, "arcane", player.InstanceID)
 							if isDead {
 								target.Mu.Lock()
 								w.handleDeath(target, player, nil)
