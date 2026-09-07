@@ -26,19 +26,34 @@ rotation the populated objective intercepts the expanded chat Collapse button.
 The retry also incorrectly reuses an already-selected specialization. Both
 deployments are skipped. Log: `/tmp/eidolon-release38-chat-correction-ci-failure.log`.
 
-Correction **`ace87c8`**, branch `work/release38-phone-chat`, lives in
+Correction runtime **`ace87c8`**, branch `work/release38-phone-chat`, lives in
 `/tmp/eidolon-release38-focus-oocXIw`. Expanded chat now sits above the objective
 but below normal windows; retry gets a fresh allowlisted character. The new
 populated-HUD test fails both landscape cases before repair (1 pass / 2 fail,
 10.5s) and passes all three viewports afterward (12.7s). Version/default checks
-pass **213 / 1.64s**. Full client checks and the opt-in intentional-failure
-Purifying retry probe are running; anonymous-suite and release gates remain.
+pass **213 / 1.64s**. Full client checks pass **196 suites / 2,898 tests /
+105.014s**, lint passes, and all **50 anonymous browser checks pass / 5.0m**.
+The intentional-failure Purifying probe completes baseline/trained/saved
+verification on both attempts (**16.4s / 20.2s**), with a successful credential
+scan and normal cleanup. The injected first-attempt failure is expected; the
+second attempt starts untrained. All local test handles are closed.
 The login version remains 1.0.38 with an additional patch-note bullet.
+
+After clean-state, remote-head and ancestry checks, **`c788e8537d4d221e0a88c7491d02f46eaf3a698c`**
+is pushed successfully from **`release/38-with-phone-chat`**. New CI
+**34134256905 is in progress**. Fresh public identity at **14:36:31.152 UTC**
+still agrees on healthy/ready Alpha 1.0.37. This is not a verified 1.0.38
+deployment. The correction's detailed evidence is in its isolated worktree's
+`docs/plans/2026-09-07-release38-phone-chat.md`.
 
 Do not push 1.0.39 until corrected 1.0.38 completes every CI/live gate and fresh
 public identity agrees. Carry this **new phone-chat correction** through all
 queued descendants below before their publication. Original candidates remain
 unchanged; do not push root HEAD or the older queue over the corrected release.
+Carry-forward inspection finds conflicts in 1.0.39's package and phone-layout
+files: union the anonymous test lists and **retain 1.0.39's higher existing
+`--z-window + 1` chat layer** for its party sheet, rather than lowering it to
+1.0.38's HUD+2 fix. No queued descendant has this second correction yet.
 
 The correction is carried through sequential descendants, with no `src`,
 `server` or `index.html` changes relative to each original candidate:
