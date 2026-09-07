@@ -187,8 +187,13 @@ func TestQAGuaranteedLootMakesNextAcceptedBasicAttackDeterministic(t *testing.T)
 
 func TestNearDeathAnimationQARemovesOwnedEffectsAndBlocksRecovery(t *testing.T) {
 	w := NewWorld(nil)
+	// NewWorld populates randomized overworld enemies. Keep the actors under
+	// test in their own instance so nearest-hostile selection is deterministic,
+	// while still using the real grid, range, swing and damage/death paths.
+	const instanceID = "qa-near-death-fixture"
 	player := &Entity{
 		ID:                          "player-qa-near-death",
+		InstanceID:                  instanceID,
 		Type:                        TypePlayer,
 		SubType:                     "Cleric",
 		Health:                      90,
@@ -202,6 +207,7 @@ func TestNearDeathAnimationQARemovesOwnedEffectsAndBlocksRecovery(t *testing.T) 
 	}
 	enemy := &Entity{
 		ID:             "qa-near-death-enemy",
+		InstanceID:     instanceID,
 		Type:           TypeEnemy,
 		SubType:        "Skeleton",
 		Health:         100,
@@ -235,6 +241,20 @@ func TestNearDeathAnimationQARemovesOwnedEffectsAndBlocksRecovery(t *testing.T) 
 	w.AddEntity(ownedSeraph)
 	w.AddEntity(unrelatedZone)
 	w.AddEntity(enemy)
+	// Retain an explicit closer overworld enemy: without instance isolation its
+	// ordinary ~1.48s swing replaces the fixture's 0.35ms swing and fails this
+	// test's one-second wait. Merely increasing the wait would test the wrong hit.
+	w.spawnOverworldEnemyAt("near-death-ambient-distractor", "Skeleton", .5, 0, 1)
+	attacks := make(chan AttackEvent, 2)
+	damage := make(chan DamageEvent, 2)
+	w.OnEvent = func(kind string, payload interface{}) {
+		if event, ok := payload.(AttackEvent); kind == "attack" && ok {
+			attacks <- event
+		}
+		if event, ok := payload.(DamageEvent); kind == "damage" && ok {
+			damage <- event
+		}
+	}
 
 	if !w.PreparePlayerForAnimationQA(player.ID, false, false, true) {
 		t.Fatal("expected near-death animation readiness reset")
@@ -267,6 +287,11 @@ func TestNearDeathAnimationQARemovesOwnedEffectsAndBlocksRecovery(t *testing.T) 
 	if deadOutsideMeleeRange {
 		t.Fatal("expected the normal melee range to remain authoritative")
 	}
+	select {
+	case attack := <-attacks:
+		t.Fatalf("out-of-range fixture or cross-instance hostile started an attack: %+v", attack)
+	default:
+	}
 
 	// Let the focused hostile finish its normal approach, then ask the same
 	// bounded command to exercise the real in-range attack and swing delay.
@@ -287,12 +312,28 @@ func TestNearDeathAnimationQARemovesOwnedEffectsAndBlocksRecovery(t *testing.T) 
 	if !w.DisablePlayerQAProtection(player.ID) {
 		t.Fatal("expected waypoint protection to be disabled")
 	}
+	select {
+	case attack := <-attacks:
+		if attack.SourceID != enemy.ID || attack.TargetID != player.ID {
+			t.Fatalf("wrong hostile selected for the real swing: %+v", attack)
+		}
+	default:
+		t.Fatal("expected the in-range fixture hostile to start its real swing")
+	}
 	deadline := time.Now().Add(time.Second)
 	for time.Now().Before(deadline) {
 		player.Mu.RLock()
 		dead := player.State == "DEAD"
 		player.Mu.RUnlock()
 		if dead {
+			select {
+			case hit := <-damage:
+				if hit.SourceID != enemy.ID || hit.TargetID != player.ID || hit.Amount != 1 {
+					t.Fatalf("expected one point of real fixture-hostile damage: %+v", hit)
+				}
+			default:
+				t.Fatal("death must follow the real hostile damage event")
+			}
 			return
 		}
 		time.Sleep(time.Millisecond)
