@@ -74,9 +74,9 @@ versus combat repetitions pass **4.199s**. Logs:
 `/tmp/eidolon-collection-locking-server.log`,
 `/tmp/eidolon-collection-dispatch-race.log`.
 
-## Alpha 1.0.47 package — final checks pending
+## Alpha 1.0.47 package — locally verified
 
-Distinct **fragments worth finding** patch notes align the login, package,
+Package **`f18dfcb`** adds distinct **fragments worth finding** patch notes and aligns the login, package,
 manifest and deployment/server defaults. The package includes the previously
 verified weekly full-bag economy-accounting correction without changing its
 payouts. Full predeployment QA now retains the genuinely earned collection
@@ -84,7 +84,31 @@ route, using its own disposable character and a separate fresh retry identity.
 The route retains the level-one/no-grants assertions and captures the actual
 ready-to-turn-in conversation. Contracts pass **237 / 1.721s**, and lint passes.
 
-Final packaged full suites, corrected gameplay and integration remain pending.
-Do not publish ahead of the earlier sequential CI/live release gates. Broader
+Final checks pass **215 suites / 3,187 client tests / 156.667s**, full server race
+(root **19.922s**, game **330.735s**) and all **75 anonymous browser checks /
+7.9m**. The final packaged earned route passes **2.5m**, with **109 seconds**
+collection time, 22 observed target deaths, zero deaths, eight real fragments,
+manual reward/consumption and saved completion after reconnect. Its ready-screen
+image was cleared by the following browser sweep before inspection; no visual
+claim is based on that lost artifact.
+
+A fresh repeat on the same exact package passes **2.4m / 2.5m total**, collecting
+eight fragments over 20 observed target deaths in **110 seconds**, with zero
+deaths and successful manual turn-in/reconnect. Both runs retain the still-high
+8,000-XP reward and correctly stop short of the level-30 dungeon gate at level
+17. Both credential scans and disposable service/data cleanups pass.
+
+The repeated run's actual ready conversation is inspected: clear eight-fragment
+objective, **8/8** progress, **100 gold / 8,000 XP**, cap-conversion explanation,
+and a readable explicit **Complete Quest** button. The independent image copy
+is retained at `/tmp/eidolon-release47-earned-collection-ready.png`; this is a
+desktop capture, not physical-phone or sustained-performance evidence.
+All owned local handles are terminal success. Logs:
+`/tmp/eidolon-release47-client.log`, `/tmp/eidolon-release47-server.log`,
+`/tmp/eidolon-release47-anonymous.log`, `/tmp/eidolon-release47-gameplay.log`,
+`/tmp/eidolon-release47-visual-gameplay.log`.
+
+This package is ready for root integration, not already published. Do not
+publish ahead of the earlier sequential CI/live release gates. Broader
 XP/loot tuning, surplus uncollected world drops, physical-phone review and the
 eight investigation quests remain open; no completion claim is made for them.
