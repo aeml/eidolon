@@ -28,17 +28,28 @@ async function walkTo(page, x, z) {
 // Ordinary ground/jump clicks, prop clicks and explicit Ilyra turn-ins only. No
 // teleport-to-site, quest-state writes, credit messages or invulnerability.
 export async function earnEarthInvestigation(page, id, openIlyra, capture) {
+    expect(chronicleInvestigations.find(chapter => chapter.id === id).realm).toBe('earth');
+    return earnInvestigation(page, id, openIlyra, capture);
+}
+
+export async function earnInvestigation(page, id, openIlyra, capture, { waypoints, selectChapter } = {}) {
     const chapter = chronicleInvestigations.find(chapter => chapter.id === id);
-    expect(chapter.realm).toBe('earth');
     await openIlyra(page);
+    if (selectChapter) await selectChapter(chapter);
     await page.locator('#quest-window').getByRole('button', { name: 'Accept Quest', exact: true }).click();
     await expect.poll(() => page.evaluate(id => window.game.player.quests.find(q => q.id === id)?.accepted, id)).toBe(true);
     await page.locator('#btn-close-quest').click();
     await returnToTown(page);
-    await walkTo(page, 80, 200);
-    await walkTo(page, 125, 200);
-    if (chapter.sites[0].z < 100) await walkTo(page, 145, 80);
+    if (waypoints) {
+        for (const [x, z] of waypoints) await walkTo(page, x, z);
+    } else {
+        expect(chapter.realm, 'Non-Earth routes require explicit ordinary travel').toBe('earth');
+        await walkTo(page, 80, 200);
+        await walkTo(page, 125, 200);
+        if (chapter.sites[0].z < 100) await walkTo(page, 145, 80);
+    }
     for (const site of chapter.sites) {
+        expect(site.kind, 'Combat evidence requires a separate actual combat driver').toBe('inspect');
         await walkTo(page, site.x, site.z + 3);
         if (capture) await capture(site, 'approach');
         let point;
@@ -88,6 +99,7 @@ export async function earnEarthInvestigation(page, id, openIlyra, capture) {
     expect(before.completed).toBe(false);
     expect(before.grantedXP || 0).toBe(0);
     await openIlyra(page);
+    if (selectChapter) await selectChapter(chapter);
     await page.locator('#quest-window').getByRole('button', { name: 'Complete Quest', exact: true }).click();
     await expect.poll(() => page.evaluate(id => window.game.player.quests.find(q => q.id === id)?.completed, id)).toBe(true);
     await page.locator('#quest-window').getByRole('button', { name: 'Continue conversation', exact: true }).click();
