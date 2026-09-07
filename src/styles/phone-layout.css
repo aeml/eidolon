@@ -81,6 +81,8 @@
     cursor: pointer;
 }
 .mobile-mode #chat-box:not(.chat-mobile-expanded) :is(.chat-tabs, #chat-messages, .chat-composer) { display: none; }
+/* Keep expanded chat above the compact objective and the phone party sheet.
+   Modal dialogs retain their higher layer. */
 .mobile-mode #chat-box.chat-mobile-expanded { height: min(360px, calc(100dvh - 24px)) !important; z-index: calc(var(--z-window) + 1); }
 .mobile-mode .chat-tab { min-height: 44px; font-size: 12px; }
 .mobile-mode #chat-input { min-height: 44px; font-size: 16px; }
