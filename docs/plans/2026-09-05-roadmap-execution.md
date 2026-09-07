@@ -5,7 +5,37 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 23:38 UTC
+## Current checkpoint — September 7, 23:42 UTC
+
+Corrected portal **11052 SUCCESS / one test / 11.9s** (10.6s test) against clean
+**f94ea72**. It uses actual exposed-pointer acquisition, re-entry and town recall
+during a real jump; credential scan (zero sanitizations) and cleanup pass.
+Log `/tmp/eidolon-release42-portal-exposed.log`. The old driver failure remains
+recorded; no production targeting rule is changed.
+
+Full client **77557 FAIL / 211 suites pass, one fails / 3,131 tests pass, one
+fails / 82.161s** on the same source. Failure is the existing
+`GameEngineCombatFeedbackVisuals` matching-kind throttle test: its second bleed
+call unexpectedly returns true. It uses real `Date.now()` around an 80ms
+production throttle and assumes adjacent assertions execute inside that window.
+Replace that scheduling assumption with a controlled clock and explicit
+before/at/after-boundary cases; do not change production throttling or silently
+count the failed suite as passed. No source edit during the current browser.
+Log `/tmp/eidolon-release42-portal-client.log`.
+
+**72220 is the sole owned browser**, corrected Water/Verdant routes against clean
+f94ea72 in `/tmp/eidolon-release42-portal-QoFLrB`, log
+`/tmp/eidolon-release42-portal-dungeons.log`. Water passes **15.9s**; Verdant earns
+ordinary kills and has reached Rootbound Warden. Resume this handle; freeze the
+entire repair worktree until terminal. All other owned handles are closed.
+Investigation branch stays clean **4bfa0e7** with no active checks; root has only
+documentation changes after its verified local 50 integration. Remote/public
+remain 42 ea565, live gate failed, next 43 still withheld. No corrected 42 push,
+43 publication or all-roadmap completion. All-realm touch and coordinated XP/
+gold/access pacing still require work; the dungeon-level preference remains
+unanswered and non-blocking.
+
+## Historical checkpoint — September 7, 23:38 UTC
 
 Air **59545 SUCCESS / one test / 5.1m** against **fa9feaa** (test 5.0m): Selen's
 journal, all three horizon markers, both manual optional speeches/rewards,
