@@ -80,6 +80,28 @@ Logs: `/tmp/eidolon-release38-loot-pointer-before.log`,
 
 Patch notes now include **Short blinks count** without advancing or replacing
 1.0.38. The later version/default/local-landing checks pass **220 / 2.921s** and
-lint passes before the additional anonymous-CI guard. Final guard/lint, repeated
-actual loot, corrected movement sequence and full anonymous package checks
-remain open. Do not republish or carry an unverified fix through 39–43 yet.
+lint passes before the additional anonymous-CI guard.
+
+Final clean runtime checkpoint **`da43a0c`** passes all remaining local checks:
+
+- **226 version/default/local-landing/receipt checks / 2.633s**, and lint.
+- **Three repeated real pickup routes / 1.4m**, including one explicit pickup
+  through the repaired pointer helper with an exact equipment-ID receipt.
+- **52 anonymous browser checks / 4.9m**, including both new input fixtures.
+- **Three authenticated checks / 44.7s**, followed by **three beam/ground/movement
+  checks / 1.5m**. The final movement route takes 21.4s and verifies accepted
+  short-blink position after the server lock and an idle heartbeat.
+
+Both isolated routes pass credential scanning with zero sanitizations and
+complete disposable cleanup. All local 1.0.38 handles are terminal success.
+Logs: `/tmp/eidolon-release38-input-final-contract.log`,
+`/tmp/eidolon-release38-input-final-lint.log`,
+`/tmp/eidolon-release38-loot-acquisition-after.log`,
+`/tmp/eidolon-release38-movement-final-anonymous.log`,
+`/tmp/eidolon-release38-movement-final-sequence.log`.
+
+Only this final evidence update follows the tested checkpoint. Preserve older
+candidate branches, publish the descendant as corrected 1.0.38, and carry the
+correction through 39–43 without replacing later runtime changes. Every prior
+CI/live job and fresh public identity must pass before the next version is
+pushed; these local checks do not establish a live deployment or full 1.1 gate.
