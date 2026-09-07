@@ -158,3 +158,20 @@ test('unclaimed repair objectives and missing quest state do not announce a save
         expect(document.querySelector('#quest-list').textContent).not.toContain('crystals sing freely');
     }
 });
+
+test.each(chronicleInvestigations)('$id has deliberate retrospective catch-up dialogue without resetting its objectives', chapter => {
+    expect(chapter.catchupAcceptance.length).toBeGreaterThan(150);
+    expect(chapter.catchupCompletion.length).toBeGreaterThan(200);
+    expect(chapter.catchupCompletion).not.toBe(chapter.completion);
+    const quest = story({ id: chapter.id, legacyOptional: true, type: 'INVESTIGATE',
+        title: chapter.title, description: chapter.acceptance, maxCount: chapter.sites.length });
+    const ui = new QuestUI({ getLastPlayer: () => ({ quests: [quest] }) });
+    ui.questKind = 'story';
+    ui.updateQuestWindow([quest]);
+    expect(document.querySelector('.quest-dialogue__speech').textContent).toBe(chapter.catchupAcceptance);
+    expect(getIlyraCompletionReply(quest)).toBe(chapter.catchupCompletion);
+    expect(getIlyraCompletionReply({ ...quest, legacyOptional: false })).toBe(chapter.completion);
+    expect(quest.accepted).toBe(false);
+    expect(quest.completed).toBe(false);
+    expect(quest.count).toBe(0);
+});

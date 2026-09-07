@@ -44,7 +44,8 @@ function ilyraGreeting(quests) {
 }
 
 export function getIlyraCompletionReply(quest) {
-    return getChronicleInvestigation(quest?.id)?.completion || repliesById.get(quest?.id)
+    const investigation = getChronicleInvestigation(quest?.id);
+    return (quest?.legacyOptional ? investigation?.catchupCompletion : investigation?.completion) || repliesById.get(quest?.id)
         || 'Thank you. I have recorded your work in the Fourfold Chronicle. Speak to me when you are ready to continue.';
 }
 
@@ -121,7 +122,10 @@ export function renderQuestConversation(ui, quests) {
     const detail = text('section', '', 'quest-dialogue');
     detail.append(text('div', story ? `${selected.legacyOptional ? 'OPTIONAL LORE' : `CHAPTER ${selected.chapter}`} · ${speaker}` : 'DAILY CONTRACT', 'quest-dialogue__eyebrow'));
     detail.append(text('h3', ui.getQuestTitle(selected)));
-    detail.append(text('p', selected.description || 'Help keep the roads around Eidolon safe.', 'quest-dialogue__speech'));
+    const description = story && selected.legacyOptional
+        ? getChronicleInvestigation(selected.id)?.catchupAcceptance || selected.description
+        : selected.description;
+    detail.append(text('p', description || 'Help keep the roads around Eidolon safe.', 'quest-dialogue__speech'));
     if (story && selected.lore && selected.type !== 'INVESTIGATE') {
         const lore = text('details', '', 'quest-dialogue__lore');
         lore.append(text('summary', 'Ask Ilyra about the history'), text('p', selected.lore));

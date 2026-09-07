@@ -119,6 +119,8 @@ export async function earnInvestigation(page, id, openIlyra, capture, { waypoint
     if (selectChapter) await selectChapter(chapter);
     await page.locator('#quest-window').getByRole('button', { name: 'Complete Quest', exact: true }).click();
     await expect.poll(() => page.evaluate(id => window.game.player.quests.find(q => q.id === id)?.completed, id)).toBe(true);
+    const reply = before.legacyOptional ? chapter.catchupCompletion : chapter.completion;
+    await expect(page.locator('#quest-window .quest-dialogue__speech')).toHaveText(reply.split(/\n\s*\n/));
     await page.locator('#quest-window').getByRole('button', { name: 'Continue conversation', exact: true }).click();
     await page.locator('#btn-close-quest').click();
 }

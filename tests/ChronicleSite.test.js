@@ -11,6 +11,37 @@ import { requestChronicleInspection } from '../src/core/ChronicleInspection.js';
 
 const cases = chronicleInvestigations.flatMap(chapter => chapter.sites.filter(site => site.kind === 'inspect').map(site => ({ site, realm: chapter.realm })));
 
+test('the ember changes only after that player records the anchor, including reload and sparse masks', () => {
+    const definition = cases.find(entry => entry.site.id === 'released_ember');
+    const create = quest => {
+        const entity = new ChronicleSite(definition.site.entityId);
+        entity.gameEngine = { player: { quests: quest ? [quest] : [] } };
+        entity.siteModel = createChronicleSiteModel(definition.site, definition.realm);
+        entity.update();
+        return entity;
+    };
+    const quest = { id: 'chronicle_fire_obedient_ember', accepted: true, investigationMask: 1 };
+    const reader = create(quest), stranger = create(null);
+    expect(reader.siteModel.boundEmber.visible).toBe(true);
+    expect(reader.siteModel.releasedEmber.visible).toBe(false);
+    expect(reader.siteModel.beacon.visible).toBe(false);
+    quest.investigationMask = 3;
+    reader.update();
+    expect(reader.siteModel.boundEmber.visible).toBe(false);
+    expect(reader.siteModel.releasedEmber.visible).toBe(true);
+    expect(reader.siteModel.beacon.visible).toBe(true);
+    expect(stranger.siteModel.boundEmber.visible).toBe(true);
+    expect(stranger.siteModel.releasedEmber.visible).toBe(false);
+    const reloaded = create({ ...quest, completed: true, investigationMask: 7 });
+    expect(reloaded.siteModel.releasedEmber.visible).toBe(true);
+    expect(reloaded.siteModel.beacon.visible).toBe(false);
+    quest.investigationMask = 0;
+    quest.count = 3;
+    reader.update();
+    expect(reader.siteModel.releasedEmber.visible).toBe(false);
+    for (const entity of [reader, stranger, reloaded]) entity.siteModel.dispose();
+});
+
 test.each(cases)('native discovery $site.model has finite geometry, picking identity and an open approach', ({ site, realm }) => {
     const model = createChronicleSiteModel(site, realm);
     const bounds = new THREE.Box3().setFromObject(model.mesh);

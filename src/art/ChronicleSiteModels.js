@@ -18,6 +18,7 @@ export function createChronicleSiteModel(site, realm) {
     const geometries = new Set();
     const materials = new Set();
     const walls = [];
+    let boundEmber = null, releasedEmber = null;
     const material = (color, extra = {}) => {
         const value = new THREE.MeshStandardMaterial({ color, roughness: 0.88, ...extra });
         materials.add(value);
@@ -124,8 +125,33 @@ export function createChronicleSiteModel(site, realm) {
         case 'cold_ash':
         case 'free_ember':
             for (let i = 0; i < 7; i++) mesh(new THREE.DodecahedronGeometry(0.25, 0), wood, Math.sin(i * 2.4), 0.3, Math.cos(i * 2.4));
-            if (site.model === 'free_ember') mesh(new THREE.OctahedronGeometry(0.65, 0), glow, 0, 1.2);
-            else box(1.2, 0.02, 0.06, glow, 0, 0.2);
+            if (site.model === 'free_ember') {
+                boundEmber = new THREE.Group();
+                releasedEmber = new THREE.Group();
+                boundEmber.name = 'BoundEmber';
+                releasedEmber.name = 'ReleasedEmber';
+                releasedEmber.visible = false;
+                root.add(boundEmber, releasedEmber);
+                const binding = material(0x985bb5, { emissive: 0x743598, emissiveIntensity: 0.55 });
+                boundEmber.add(mesh(new THREE.OctahedronGeometry(0.55, 0), binding, 0, 1.2));
+                for (let i = 0; i < 3; i++) {
+                    const shackle = ring(0.85, brass, 1.2, i * Math.PI / 3);
+                    shackle.rotation.z = i * Math.PI / 3;
+                    boundEmber.add(shackle);
+                }
+                // The freed flame serves an ordinary hearth, with new growth
+                // beside its ash. The discovery text records the short event;
+                // this lasting visual remains after reconnect and chunk reload.
+                releasedEmber.add(cylinder(0.65, 0.4, 0.55, stone, 0, 0.55));
+                releasedEmber.add(mesh(new THREE.DodecahedronGeometry(0.16, 0), glow, 0, 0.78));
+                const leaf = material(0x93b66c);
+                releasedEmber.add(cylinder(0.025, 0.045, 0.5, leaf, 0.95, 0.45, 0.25));
+                for (const side of [-1, 1]) {
+                    const bud = mesh(new THREE.IcosahedronGeometry(0.15, 0), leaf, 0.95 + side * 0.12, 0.66, 0.25);
+                    bud.scale.set(1.3, 0.55, 0.65);
+                    releasedEmber.add(bud);
+                }
+            } else box(1.2, 0.02, 0.06, glow, 0, 0.2);
             break;
         case 'silent_vane':
             cylinder(0.08, 0.15, 3, brass);
@@ -145,7 +171,7 @@ export function createChronicleSiteModel(site, realm) {
     beacon.visible = false;
     root.userData.bounds = { radius: house ? 4.8 : 2.2, height: house ? 4.1 : 3.9 };
     root.traverse(object => { object.userData.entityId = site.entityId; });
-    return { mesh: root, walls, beacon, dispose: () => {
+    return { mesh: root, walls, beacon, boundEmber, releasedEmber, dispose: () => {
         geometries.forEach(value => value.dispose());
         materials.forEach(value => value.dispose());
     } };

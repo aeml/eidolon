@@ -189,7 +189,7 @@ test(`returning character earns ${realm} records through ordinary travel and man
     // The same ordinary Ctrl-click used during travel also permits retreat
     // when a hostile model covers the projected ground. Other hunt baselines
     // retain their existing walking-only defense default.
-    const beforeCombat = await createEarnedWizardDefense(page, { allowJumpFallback: true });
+    const beforeCombat = await createEarnedWizardDefense(page, { allowJumpFallback: true, useCrowdControl: true });
     const chapters = chronicleInvestigations.filter(chapter => chapter.realm === realm);
     const ids = chapters.map(chapter => chapter.id);
     for (const id of ids) {
@@ -200,7 +200,16 @@ test(`returning character earns ${realm} records through ordinary travel and man
         await earnInvestigation(page, id, openIlyra,
             (site, stage) => page.screenshot({ path: testInfo.outputPath(`${site.id}-${stage}.png`) }), {
                 waypoints: realmRoutes[realm],
-                beforeInspect: site => clearPursuingHostiles(page, site, beforeCombat),
+                beforeInspect: async site => {
+                    if (realm === 'fire' && ['cold_ash', 'released_ember'].includes(site.id)) {
+                        const released = site.id === 'released_ember';
+                        await expect.poll(() => page.evaluate(() => {
+                            const model = window.game.remotePlayers.get('chronicle-site-released_ember')?.siteModel;
+                            return { bound: model?.boundEmber?.visible, released: model?.releasedEmber?.visible };
+                        })).toEqual({ bound: !released, released });
+                    }
+                    await clearPursuingHostiles(page, site, beforeCombat);
+                },
                 defeatSite: (site, chapter) => defeatCommandAnchor(page, site, chapter, beforeCombat),
                 selectChapter: async chapter => {
                     const other = page.locator('#quest-list details').filter({ has: page.locator('summary').filter({ hasText: 'Other discoveries' }) });

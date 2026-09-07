@@ -1,8 +1,25 @@
-import { planWizardHuntStep } from './wizardHuntControls.js';
+import { planWizardCrowdControl, planWizardHuntStep } from './wizardHuntControls.js';
 
 const state = { className: 'Wizard', dead: false, x: 0, z: 0, healthRatio: 0.7,
     shieldHP: 0, mana: 50, shieldCost: 40, hotbar: ['Teleport', 'Arcane Shield'],
     cooldowns: {}, unlockedSkills: ['Teleport', 'Arcane Shield'], sinceCastMs: 1000, threats: [{ x: 3, z: 0 }] };
+
+const crowd = { ...state, mana: 100, wellCost: 60, hotbar: ['Teleport', 'Arcane Shield', 'Gravity Well'],
+    unlockedSkills: ['Gravity Well'], threats: [{ x: 5, z: 0 }, { x: 6, z: 0 }, { x: 7, z: 0 }] };
+
+test('prepared crowd control uses the actual unlocked hotbar and an in-range cluster', () => {
+    expect(planWizardCrowdControl(crowd)).toEqual({ action: 'gravity-well', key: '3', x: 6, z: 0 });
+    expect(planWizardCrowdControl({ ...crowd, hotbar: ['Gravity Well'] }).key).toBe('1');
+});
+
+test.each([{ dead: true }, { className: 'Fighter' }, { mana: 59 }, { sinceCastMs: 200 },
+    { cooldowns: { 'Gravity Well': 1 } }, { hotbar: [] }, { unlockedSkills: [] },
+    { hotbar: ['', '', '', '', 'Gravity Well'] }, { threats: [{ x: 4, z: 0 }] },
+    { threats: [{ x: 4, z: 0 }, { x: -4, z: 0 }, { x: 0, z: 12 }] },
+    { threats: [{ x: 30, z: 0 }, { x: 31, z: 0 }, { x: 32, z: 0 }] }])(
+    'does not invent unavailable or unsuitable crowd control: %j', change => {
+        expect(planWizardCrowdControl({ ...crowd, ...change })).toBeNull();
+    });
 
 test('uses the available shield through its actual hotbar key', () => {
     expect(planWizardHuntStep(state)).toEqual({ action: 'shield', key: '2' });

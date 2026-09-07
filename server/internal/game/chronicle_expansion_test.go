@@ -1,9 +1,41 @@
 package game
 
 import (
+	"encoding/json"
 	"reflect"
 	"testing"
 )
+
+func TestChronicleCatchupDescriptionsRemainRetrospectiveAcrossRefresh(t *testing.T) {
+	var authored struct {
+		Chapters []struct {
+			ID                string `json:"id"`
+			CatchupAcceptance string `json:"catchupAcceptance"`
+		} `json:"chapters"`
+	}
+	if err := json.Unmarshal(chronicleInvestigationContent, &authored); err != nil {
+		t.Fatal(err)
+	}
+	p := newTestPlayer("catchup-dialogue", "Wizard")
+	for _, q := range classicChronicleQuestCatalog() {
+		q.Accepted, q.Completed, q.Count = true, true, q.MaxCount
+		p.Quests = append(p.Quests, q)
+	}
+	ensureChronicleLocked(p)
+	for _, chapter := range authored.Chapters {
+		q := questByID(t, p, chapter.ID)
+		if chapter.CatchupAcceptance == "" || q.Description != chapter.CatchupAcceptance {
+			t.Fatalf("%s: catch-up offer repeats required-story instructions: %q", q.ID, q.Description)
+		}
+		if !q.LegacyOptional || q.Accepted || q.Completed || q.Count != 0 {
+			t.Fatal("dialogue change granted progress")
+		}
+	}
+	before := append([]Quest(nil), p.Quests...)
+	if ensureChronicleLocked(p) || !reflect.DeepEqual(before, p.Quests) {
+		t.Fatal("refresh changes the retrospective description or progress")
+	}
+}
 
 func TestChronicleExpansionSharesRealmRewardsInsteadOfInflatingThem(t *testing.T) {
 	classic, expanded := classicChronicleQuestCatalog(), chronicleQuestCatalog()

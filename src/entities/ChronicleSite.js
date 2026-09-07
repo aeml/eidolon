@@ -34,9 +34,15 @@ export class ChronicleSite extends Entity {
         if (!this.siteModel) return;
         const quest = this.gameEngine?.player?.quests?.find(value => value.id === this.discovery.chapter.id);
         const recorded = getRecordedChronicleDiscoveries(quest);
+        const prerequisiteRecorded = Boolean(this.discovery.site.requires &&
+            recorded.some(site => site.id === this.discovery.site.requires));
+        if (this.siteModel.boundEmber && this.siteModel.releasedEmber) {
+            this.siteModel.boundEmber.visible = !prerequisiteRecorded;
+            this.siteModel.releasedEmber.visible = prerequisiteRecorded;
+        }
         this.siteModel.beacon.visible = Boolean(quest?.accepted && !quest.completed
             && !recorded.some(site => site.id === this.discovery.site.id)
-            && (!this.discovery.site.requires || recorded.some(site => site.id === this.discovery.site.requires)));
+            && (!this.discovery.site.requires || prerequisiteRecorded));
     }
 
     dispose() {

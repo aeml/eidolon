@@ -1,18 +1,24 @@
-import { moveByGroundClick, readPlayerState } from './helpers.js';
-import { planWizardHuntStep } from '../wizardHuntControls.js';
+import { moveByGroundClick, projectGroundOffset, readPlayerState } from './helpers.js';
+import { planWizardCrowdControl, planWizardHuntStep } from '../wizardHuntControls.js';
 
 // Only observes replicated state and chooses ordinary keys/ground clicks.
 // Reinstall after fresh login, which destroys the previous browser observer.
-export async function createEarnedWizardDefense(page, { allowJumpFallback = false } = {}) {
+export async function createEarnedWizardDefense(page, { allowJumpFallback = false, useCrowdControl = false } = {}) {
     await page.evaluate(() => {
         const game = window.game, original = game.handleServerMessage.bind(game);
-        window.__freshWizardDefense = { lastAcceptedAt: 0, counts: { retreats: 0, shields: 0, rejectedShields: 0 } };
+        window.__freshWizardDefense = { lastAcceptedAt: 0, counts: { retreats: 0, shields: 0, rejectedShields: 0, wells: 0, rejectedWells: 0, fireballs: 0, rejectedFireballs: 0 } };
         game.handleServerMessage = message => {
             if (message.type === 'ability_result') {
                 const state = window.__freshWizardDefense;
                 if (message.payload?.accepted) state.lastAcceptedAt = Date.now();
                 if (message.payload?.skillName === 'Arcane Shield') {
                     state.counts[message.payload.accepted ? 'shields' : 'rejectedShields']++;
+                }
+                if (message.payload?.skillName === 'Gravity Well') {
+                    state.counts[message.payload.accepted ? 'wells' : 'rejectedWells']++;
+                }
+                if (message.payload?.skillName === 'Fireball') {
+                    state.counts[message.payload.accepted ? 'fireballs' : 'rejectedFireballs']++;
                 }
             }
             return original(message);
@@ -26,18 +32,29 @@ export async function createEarnedWizardDefense(page, { allowJumpFallback = fals
                 radius: p.radius, walkRects: game.currentInstanceType !== 'overworld' ? game.currentDungeonLayout?.walkRects : null,
                 healthRatio: p.stats.hp / p.stats.maxHp, shieldHP: p.shieldHP || 0, mana: p.stats.mana,
                 shieldCost: getAbilityManaCost(p, 'Arcane Shield', 40), hotbar: p.hotbar, cooldowns: p.cooldowns,
+                wellCost: getAbilityManaCost(p, 'Gravity Well', 60),
                 unlockedSkills: p.unlockedSkills,
                 sinceCastMs: Date.now() - window.__freshWizardDefense.lastAcceptedAt,
                 threats: (game.activeEntitiesCache || []).filter(enemy => game.isHostileActorTarget(enemy) &&
                     p.position.distanceTo(enemy.position) < 18).map(enemy => ({ x: enemy.position.x, z: enemy.position.z })) };
         });
         const plan = planWizardHuntStep(state);
-        if (!plan) return false;
-        if (plan.action === 'shield') {
+        if (plan?.action === 'shield') {
             await page.keyboard.press(plan.key);
             await page.waitForTimeout(550);
             return true;
         }
+        const control = useCrowdControl ? planWizardCrowdControl(state) : null;
+        if (control) {
+            const target = await projectGroundOffset(page, control.x, control.z);
+            if (target?.canvas) {
+                await page.mouse.move(target.x, target.y);
+                await page.keyboard.press(control.key);
+                await page.waitForTimeout(550);
+                return true;
+            }
+        }
+        if (!plan) return false;
         try {
             await moveByGroundClick(page, plan.x, plan.z, { minimumDistance: 6, allowJumpFallback, timeout: 2500 });
         } catch (error) {

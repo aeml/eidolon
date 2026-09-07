@@ -12,14 +12,16 @@ const chapters = [...source.matchAll(/^## (Earth|Water|Fire|Air): (.+)\n([\s\S]*
     const placement = placements.find(entry => entry.id === id);
     if (!placement || placement.realm !== realm.toLowerCase()) throw new Error(`Missing/mismatched placement: ${id}`);
     const acceptance = section.match(/\*\*Ilyra — acceptance\*\*\n([\s\S]*?)\n\*\*(?:Discovery|Three discoveries)/)?.[1];
-    const completion = section.match(/\*\*Ilyra — manual completion\*\*\n([\s\S]*?)\nJournal summary:/)?.[1];
+    const completion = section.match(/\*\*Ilyra — manual completion\*\*\n([\s\S]*?)\n\*\*Ilyra — optional catch-up acceptance\*\*/)?.[1];
+    const catchupAcceptance = section.match(/\*\*Ilyra — optional catch-up acceptance\*\*\n([\s\S]*?)\n\*\*Ilyra — optional catch-up completion\*\*/)?.[1];
+    const catchupCompletion = section.match(/\*\*Ilyra — optional catch-up completion\*\*\n([\s\S]*?)\nJournal summary:/)?.[1];
     const summary = section.match(/Journal summary:([\s\S]*)$/)?.[1];
     const single = section.match(/\*\*Discovery — (.+)\*\*\n([\s\S]*?)\n\*\*Ilyra — manual completion/);
     const multiple = section.match(/\*\*Three discoveries\*\*\n([\s\S]*?)\n\*\*Ilyra — manual completion/)?.[1];
     const discoveries = single ? [{ title: single[1], text: paragraphs(single[2]) }]
         : [...(multiple || '').matchAll(/^- ([^:]+): ([\s\S]*?)(?=^- |$(?![\s\S]))/gm)]
             .map(([, title, text]) => ({ title, text: paragraphs(text.replace(/^ {2}/gm, '')) }));
-    if (!acceptance || !completion || !summary || discoveries.length !== placement.sites.length) throw new Error(`Incomplete authored chapter: ${id}`);
+    if (!acceptance || !completion || !catchupAcceptance || !catchupCompletion || !summary || discoveries.length !== placement.sites.length) throw new Error(`Incomplete authored chapter: ${id}`);
     const seen = new Set();
     const sites = placement.sites.map((site, index) => {
         if (seen.has(site.id) || !/^[a-z_]+$/.test(site.id) || !['inspect', 'combat'].includes(site.kind)
@@ -29,7 +31,9 @@ const chapters = [...source.matchAll(/^## (Earth|Water|Fire|Air): (.+)\n([\s\S]*
         seen.add(site.id);
         return { ...site, ...discoveries[index], entityId: `chronicle-site-${site.id}` };
     });
-    return { ...placement, title, acceptance: paragraphs(acceptance), completion: paragraphs(completion), summary: paragraphs(summary), sites };
+    return { ...placement, title, acceptance: paragraphs(acceptance), completion: paragraphs(completion),
+        catchupAcceptance: paragraphs(catchupAcceptance), catchupCompletion: paragraphs(catchupCompletion),
+        summary: paragraphs(summary), sites };
 });
 if (chapters.length !== 8 || placements.length !== 8 || new Set(chapters.map(chapter => chapter.id)).size !== 8) throw new Error('Expected exactly eight uniquely authored investigations');
 const entities = chapters.flatMap(chapter => chapter.sites.map(site => site.entityId));

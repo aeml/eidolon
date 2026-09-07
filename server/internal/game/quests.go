@@ -253,7 +253,7 @@ func copyQuestDefinition(progress Quest, definition Quest) Quest {
 		definition.InvestigationMask = progress.InvestigationMask & ((1 << definition.MaxCount) - 1)
 		definition.Count = bits.OnesCount32(definition.InvestigationMask)
 	}
-	return definition
+	return withChronicleCatchupDescription(definition)
 }
 
 // ensureChronicleLocked repairs metadata and offers only the next unfinished
@@ -303,6 +303,7 @@ func ensureChronicleLocked(player *Entity) bool {
 			continue
 		}
 		definition.LegacyOptional = true
+		definition = withChronicleCatchupDescription(definition)
 		indices[definition.ID] = len(player.Quests)
 		player.Quests = append(player.Quests, definition)
 		changed = true

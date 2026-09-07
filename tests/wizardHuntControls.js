@@ -1,5 +1,22 @@
 import { clipDungeonEffectSegment } from '../src/skills/dungeonEffectGeometry.js';
 
+// Optional full-kit strategy for prepared investigation fixtures. Ordinary
+// fresh-hunt baselines keep their existing shield/retreat-only strategy.
+export function planWizardCrowdControl(state) {
+    const slot = state.hotbar?.indexOf('Gravity Well') ?? -1;
+    if (state.className !== 'Wizard' || state.dead || slot < 0 || slot > 3 ||
+        !state.unlockedSkills?.includes('Gravity Well') || state.mana < state.wellCost ||
+        (state.cooldowns?.['Gravity Well'] || 0) > 0 || state.sinceCastMs < 550) return null;
+    const nearby = (state.threats || []).filter(enemy => Math.hypot(enemy.x - state.x, enemy.z - state.z) <= 12);
+    const groups = nearby.map(center => nearby.filter(enemy => Math.hypot(enemy.x - center.x, enemy.z - center.z) <= 6));
+    groups.sort((a, b) => b.length - a.length);
+    const group = groups[0];
+    if (!group || group.length < 3) return null;
+    return { action: 'gravity-well', key: String(slot + 1),
+        x: group.reduce((total, enemy) => total + enemy.x, 0) / group.length - state.x,
+        z: group.reduce((total, enemy) => total + enemy.z, 0) / group.length - state.z };
+}
+
 // Read-only strategy for earned-route QA. It chooses ordinary inputs, never
 // grants progress, changes positions or relaxes the hunt's death bound.
 export function planWizardHuntStep(state) {

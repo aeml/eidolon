@@ -48,6 +48,54 @@ pass **3.144s**. All these handles are closed; the expanded graph backend passes
 
 ### World integration checkpoint
 
+Combined Alpha 1.0.50 ancestry **170c53f** passes full client **219 / 3,258 /
+173.048s** and lint; full server race passes root **24.250s**, game **416.594s**
+and remaining packages (30280/19540 closed). Logs
+`/tmp/eidolon-investigations-50-client.log` and
+`/tmp/eidolon-investigations-50-server.log`. Its Fire route **53097** fails **4.2m**
+before cold ash: the unarmored common-staff returning fixture dies with nine
+actual hostiles nearby, only four recorded retreats and one shield. This is
+not ordered-anchor completion or comfortable field-pacing evidence. Prior **1309**
+earned cold ash after engaging fourteen pursuers, then died fighting the anchor;
+its inspected screenshot is preserved `/tmp/eidolon-fire-earned-cold-ash.png`.
+All failed runs pass credential scanning and cleanup. No retries are counted as
+passes and the current encounter-density/ordinary preparation question stays open.
+
+The next prepared fixture can use its actually unlocked **Gravity Well** hotbar
+against a close cluster, alongside normal Fireball, Arcane Shield and jump/kiting.
+It selects the available key and pays ordinary mana/cooldowns, with no granted
+damage, talents, gear or immunity. Existing fresh-hunt baselines keep their
+shield/retreat-only behavior. Read-only counters now record accepted/rejected
+Fireballs and wells as well as shields, so attempted inputs cannot be confused
+with successful abilities. Twelve strategy cases cover availability, cooldown,
+mana, hotbar, range and real clustering. This is better use of the prepared
+character's existing control kit, not a claim that enemy density is balanced.
+
+New source-authored retrospective acceptance and completion replies cover all
+eight optional investigations, avoiding instructions to repeat already-earned
+dungeon/raid progress. The server supplies those descriptions on initial
+migration and refresh; client conversations and manual completion use the same
+generated source. Fresh mandatory replies remain separate. Fire's required
+completion now correctly says Ilyra holds the ore already entrusted to her.
+Before routing fixes, all eight optional client cases fail (**1.761s**) and the
+server metadata regression fails (**0.034s**). Afterward client conversation/
+content tests pass **24 / 1.487s**; discovery/expansion/catch-up server tests pass
+three race repetitions **6.302s**. Objectives, rewards, masks and access do not
+change. Logs `/tmp/eidolon-catchup-client-before.log`,
+`/tmp/eidolon-catchup-client-after.log`, `/tmp/eidolon-catchup-server-before.log`,
+`/tmp/eidolon-catchup-server-after.log`.
+
+The ember has player-specific native bound/released meshes. The bound ember's
+shackles give way to a hearth's embers and a sprout only after the server records
+the anchor evidence; a count alone cannot free it. Another player's view stays
+bound and the completed mask restores the released view after reload. The normal
+inspection beacon still requires the prerequisite and hides after recording.
+Model, conversation, content and control tests pass **81 / 2.386s**, lint passing,
+before the final small hearth-coal visual adjustment and browser assertions.
+The prepared Fire browser now checks both visual states and actual manual
+catch-up speeches. Full combined/browser verification of these latest changes
+remains open; do not publish this isolated graph as a verified expansion.
+
 Returning-story continuity: Ilyra's greeting now follows completed stable IDs for
 all four repairs, portal opening and the Dark King's defeat. Optional earlier
 discoveries no longer make her announce that already-restored crystals still

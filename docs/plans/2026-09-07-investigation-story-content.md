@@ -71,6 +71,16 @@ a seal at the old stone circle. First, bring me Memory Seeds from the grove's
 troubled creatures; their living memories will let us distinguish a scar from
 new growth when we study that circle.”
 
+**Ilyra — optional catch-up acceptance**
+
+“There is a gap in our account of the first grove. Mara Fen kept a diary beneath her planting table. Return to her abandoned house and bring me her words. We are recovering a missing history, not asking you to repeat the road you have already opened.”
+
+**Ilyra — optional catch-up completion**
+
+“Mara left the door open. Even after the roots withdrew, she refused to make shelter something people must earn by kneeling.
+
+“We will keep her name beside the account of the Rootheart. A chronicle that remembers only guardians and battles would miss the courage that gave those battles a purpose.”
+
 Journal summary: Mara evacuated her neighbors after a stranger's seal began
 redirecting the grove's protection. Ilyra needs Memory Seeds before the stone
 circle's altered roots can be understood.
@@ -105,6 +115,16 @@ told the false story again.
 “The Memory Seeds you brought preserve what the mark cannot rewrite. I will keep them safe;
 Maelin will need that truth at the crystal itself. First, the Bastion's outer
 guardian must fall. Its road is the way in, not the place of repair.”
+
+**Ilyra — optional catch-up acceptance**
+
+“The old stone circle still holds traces of the wound. Compare the severed root, its altered growth and the marked stone. Preserve the difference between what the grove remembered and what it was ordered to remember. Your earned passage through the Chronicle will not change.”
+
+**Ilyra — optional catch-up completion**
+
+“Two hands planted that tree. The command tried to erase one of them, as if care could only come from a master.
+
+“This record names the wound: not weakness, but a stolen relationship. I will place it beside the Memory Seeds' account, so no future keeper mistakes obedience for the covenant's strength.”
 
 Journal summary: The wound repeats a false oath. Memory Seeds preserve the
 original covenant; the Bastion guards the road to the deeper crystal raid.
@@ -148,6 +168,16 @@ as though the people had asked for their own chains.
 promise cannot be kept by erasing the person to whom it was made. There are two
 echo pools near the shelter. Find which memory still holds Tovin's name.”
 
+**Ilyra — optional catch-up acceptance**
+
+“Our record of the tide is missing a ferryman's voice. Dain kept a crossing ledger in the abandoned flood shelter, including names no passenger could pay to have remembered. Recover its last entry. We are filling a gap in the Chronicle, not surrendering any progress you have earned.”
+
+**Ilyra — optional catch-up completion**
+
+“Tovin. I will write his name here, exactly as Dain did. Not a servant or an entry in a debt, but a child for whom someone made room.
+
+“The charter tried to turn a rescue into consent. Dain's account refuses that bargain. Whatever lies ahead, we must never measure protection by how completely people depend on its keeper.”
+
 Journal summary: A false charter is rewriting rescued people as sworn servants.
 Compare the echo pools and find the surviving record of Tovin.
 
@@ -182,6 +212,16 @@ made freely, with no certainty that the world will obey it.
 “The Moon-Tide Pearls will carry that living rhythm into Maelin's ritual. To
 reach the Tidestar, we first need the route-name Thalorath has taken. Clear the
 Well; do not mistake recovering a road for restoring its destination.”
+
+**Ilyra — optional catch-up acceptance**
+
+“Two echo pools near the shelter still hold different accounts of one crossing. Listen to both, then examine the mooring bell. The contrast belongs in our history of the Tidestar's wound. Recording it will not require you to repeat a dungeon or repair you have already completed.”
+
+**Ilyra — optional catch-up completion**
+
+“The false echo was perfect because no one in it was allowed to answer differently. The true crossing had fear, confusion and a stranger steadying a child.
+
+“We will preserve that untidy kindness. The broken seal explains the route-name's imprisonment; Dain and Tovin explain why reclaiming a route mattered at all.”
 
 Journal summary: The moving echo preserves a freely kept promise. Thalorath
 holds the route-name needed to reach Neris's separate crystal sanctum.
@@ -226,6 +266,16 @@ was enough for the trap to take hold.
 An obedient ember still burns above the kiln's exhaust vents. Find the anchors
 feeding it before it turns another frightened person into a jailer.”
 
+**Ilyra — optional catch-up acceptance**
+
+“The histories of Fire are crowded with furnaces and weapons. I am looking for a cooking pot. Hessa's last ledger remains at the abandoned communal kiln. Find what she was making when the warmth failed. Her account belongs in the Chronicle even if your journey has carried you beyond that chapter.”
+
+**Ilyra — optional catch-up completion**
+
+“She signed because people were cold. When she understood the price, she broke the token and left her tools for anyone who needed them.
+
+“I will record both decisions. If we remember only the mistake, we repeat Malachar's belief that a frightened person can never choose again. Hessa's refusal is part of this world's answer to him.”
+
 Journal summary: Hessa accepted a controlled flame to help her neighbors, then
 broke its token when it made the valley dependent on one person's commands.
 
@@ -256,9 +306,19 @@ that restrains it, and watch what it chooses when no one gives an order.”
 “It chose a hearth, not a throne. And then it ended. There is more courage in
 that small ending than in all of Infernax's promises of eternal victory.
 
-“Keep the Cinderheart Ore for the Crucible. It remembers that bargain between
+“The Cinderheart Ore you entrusted to me is safe for the Crucible. It remembers that bargain between
 purpose and release. The furnace-key is still inside the full Molten Core;
 without it, Maelin cannot reach the circuit that keeps the Ember Crown bound.”
+
+**Ilyra — optional catch-up acceptance**
+
+“One of the kiln's old relays still holds an unfinished ember. Study the cold ash, break its command anchor, then record what the ember does when it is free. Small bindings can outlast the road that fed them. This investigates that lingering wound; it does not replace any crystal's Vigil.”
+
+**Ilyra — optional catch-up completion**
+
+“A hearth, then ash, then a seed. The command demanded an endless flame; the ember chose work that could finish.
+
+“Your record explains why release belongs beside strength in Pyralis's covenant. I will keep it with our account of the Cinderheart Ore and the Ember Crown, without confusing this small relay with the crystal itself.”
 
 Journal summary: The command prevents fire from completing its work. Freeing
 one relay reveals why the furnace-key and the later Crucible repair are needed.
@@ -304,6 +364,16 @@ roads should lead only to him.
 “Selen found a seam he could not close. Take her record to the stationary storm.
 We need to hear the command beneath its thunder, and find what still refuses it.”
 
+**Ilyra — optional catch-up acceptance**
+
+“Selen's observatory contains an account our maps cannot give us: what it felt like to notice the sky repeating. Recover her final journal from the abandoned weatherkeeping station. We are preserving a witness, not resetting your passage through Air or the roads beyond it.”
+
+**Ilyra — optional catch-up completion**
+
+“One loose strand showed her that the storm's account was not the whole truth. She trusted that small contradiction and carried it beyond the loop.
+
+“Her charts preserve the change in Malachar's seal: four voices bent toward one command. We will keep her discovery alongside her escape. Seeing the trap and refusing it belong to the same history.”
+
 Journal summary: Selen identified Malachar's old courier seal and escaped the
 repeating storm by remembering what its cycle tried to erase.
 
@@ -341,6 +411,16 @@ Your fragments carry those truths. Your discoveries explain why they matter.
 
 “One outer road remains. Clear Tempest Spire. Then we can plan the four raids
 and defend Maelin while she gives the crystals back their freedom to protect us.”
+
+**Ilyra — optional catch-up acceptance**
+
+“There is one more gap in our account of the false horizon. Compare the silent vane, the trapped updraft and the free marker. Record both the promise beneath the thunder and the answer it could not silence. This earlier evidence will not take away any dungeon, raid or portal access you have earned.”
+
+**Ilyra — optional catch-up completion**
+
+“No roof would fall, he promised, because no one would ever be allowed to choose another road. The harpy's different current exposed the cost of that promise.
+
+“This belongs beside the four Vigils: memory, true rhythm, release and an open interval. Each answers a different wound. None asks the living world to become a perfect, motionless possession.”
 
 Journal summary: Malachar offers safety through absolute control. The four
 Vigils must reverse four different wounds before the crystals can resonate.
