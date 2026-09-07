@@ -115,6 +115,17 @@ ordinary clear-ground clicks. All **178 suites / 2,485 tests in 60.458 seconds**
 and lint pass. The evidence does not prove whether each skipped point in the
 failed run was entity-covered or unprojectable; a repeat remains necessary.
 
+The next repeat on `4b63116`, session `69602`, **failed in 4.3 minutes after a
+third ordinary Skeleton-hunt death**, not a movement exception. Opening finished
+in 34 seconds with no deaths; the collection took 46 seconds, four observed kills
+and four natural seeds. Deaths occurred at 14, 31 and 58 hunt credits, ending
+at level 18 / 98 XP / 1,590 gold. The existing two-respawn bound was retained.
+Credential scanning and cleanup passed; log
+`/tmp/eidolon-earned-dungeon-covered-ground.log`. No dungeon was entered, and
+the source of lethal damage was not captured. The next diagnostic adds a bounded
+read-only incoming damage/heal history, attacker identities, player coordinates
+and nearby hostiles to each death receipt before changing navigation or balance.
+
 ## Earned dungeon-readiness extension — September 6, measurement pending
 
 The optional `fresh-ready` route extends the same real opening, collection and
