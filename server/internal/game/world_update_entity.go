@@ -495,6 +495,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					(projSkill == "Fan of Knives" && ownerSerratedEdges)) && !isDead {
 					target.Bleeding = true
 					target.BleedDamage = finalDamage / 5
+					if ownerSerratedEdges {
+						target.BleedDamage = trainedStatusDamage(ownerCombat, "Serrated Edges", target.BleedDamage, true)
+					}
 					if target.BleedDamage < 1 {
 						target.BleedDamage = 1
 					}
@@ -526,7 +529,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				}
 				if projSkill == "Piercing Throw" && ownerPoisonCoating && !isDead {
 					target.Poisoned = true
-					target.PoisonDamage = 8 + ownerDexterity/2
+					target.PoisonDamage = trainedStatusDamage(ownerCombat, "Poison Coating", 8+ownerDexterity/2, false)
 					target.PoisonSourceID = ownerID
 					target.PoisonEndTime = time.Now().Add(8 * time.Second)
 					spreadPoisonAfterHit = ownerSpreadsPoison

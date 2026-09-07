@@ -603,7 +603,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				// of its selected rune, as described in the Assassin skill tree.
 				bestTarget.Mu.Lock()
 				bestTarget.Bleeding = true
-				bestTarget.BleedDamage = 10 + player.Stats.Dexterity/2
+				bestTarget.BleedDamage = trainedStatusDamage(player, skillName, 10+player.Stats.Dexterity/2, false)
 				bestTarget.BleedSourceID = player.ID
 				bestTarget.BleedEndTime = time.Now().Add(10 * time.Second)
 				bestTarget.Mu.Unlock()

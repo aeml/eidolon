@@ -5,6 +5,7 @@ import { isEquippableItem, isActiveEquipment } from '../core/EquipmentSlots.js';
 import { getAbilityManaCost, getAbilityCooldown } from '../core/AbilityEconomy.js';
 import { updateOfflineHealingLight } from '../core/AbilityHealing.js';
 import { rollOfflineCriticalDamage } from '../core/AbilityCritical.js';
+import { applyOfflineStatus, clearOfflineStatus, updateOfflineDamageOverTime } from '../core/OfflineDamageOverTime.js';
 import { CONSTANTS } from '../core/Constants.js';
 import {
     exponentialSmoothingFactor,
@@ -938,6 +939,7 @@ export class Actor extends Entity {
         this.syncAttachedStatusEffects(dt);
         // Recipient-owned Renewal continues while stunned; never heal replicas.
         updateOfflineHealingLight(this, dt);
+        updateOfflineDamageOverTime(this, dt);
 
         // Stun Logic
         if (this.stunTimer > 0) {
@@ -1021,26 +1023,6 @@ export class Actor extends Entity {
                 this.weakPointMarkTimer = 0;
             }
         }
-        if (this.bleedTimer > 0) {
-            this.bleedTimer -= dt;
-            
-            // Bleed Tick (every 1s)
-            if (!this.bleedTickTimer) this.bleedTickTimer = 0;
-            this.bleedTickTimer += dt;
-            if (this.bleedTickTimer >= 1.0) {
-                this.bleedTickTimer -= 1.0;
-                const bleedDmg = this.bleedTickDamage > 0 ? this.bleedTickDamage : 5 * this.bleedStacks;
-                this.takeDamage(bleedDmg);
-                // Visual
-                // if (floatingTextManager) floatingTextManager.spawn(bleedDmg, this.position, '#ff0000');
-            }
-
-            if (this.bleedTimer <= 0) {
-                this.bleedTimer = 0;
-                this.bleedStacks = 0;
-                this.bleedTickDamage = 0;
-            }
-        }
 
         // Rogue Branch C Logic
         if (this.accuracyReductionTimer > 0) this.accuracyReductionTimer -= dt;
@@ -1076,26 +1058,6 @@ export class Actor extends Entity {
             }
         }
 
-        if (this.poisonTimer > 0) {
-            this.poisonTimer -= dt;
-            
-            // Poison Tick (every 1s)
-            if (!this.poisonTickTimer) this.poisonTickTimer = 0;
-            this.poisonTickTimer += dt;
-            if (this.poisonTickTimer >= 1.0) {
-                this.poisonTickTimer -= 1.0;
-                const poisonDmg = this.poisonTickDamage > 0 ? this.poisonTickDamage : 3 * this.poisonStacks; // Lower base dmg than bleed but reduces healing
-                this.takeDamage(poisonDmg);
-                // Visual
-                // if (floatingTextManager) floatingTextManager.spawn(poisonDmg, this.position, '#00ff00');
-            }
-
-            if (this.poisonTimer <= 0) {
-                this.poisonTimer = 0;
-                this.poisonStacks = 0;
-                this.poisonTickDamage = 0;
-            }
-        }
 
         // The attached frost-prison effect owns freeze readability. Procedural
         // actor materials are pooled, so recoloring a mesh material here would
@@ -1482,16 +1444,12 @@ export class Actor extends Entity {
         this.slowFactor = 0;
         this.markWeaknessTimer = 0;
         this.markWeaknessFactor = 0;
-        this.bleedTimer = 0;
-        this.bleedStacks = 0;
-        this.bleedTickDamage = 0;
+        clearOfflineStatus(this, 'bleed');
         this.weakPointMarkTimer = 0;
-        this.bleedTickTimer = 0;
         this.rootTimer = 0;
-        this.poisonTimer = 0;
-        this.poisonStacks = 0;
-        this.poisonTickDamage = 0;
-        this.poisonTickTimer = 0;
+        clearOfflineStatus(this, 'poison');
+        this.healingReductionTimer = 0;
+        this.healingReductionFactor = 0;
         console.log(`${this.id} was cleansed!`);
     }
 
@@ -1691,6 +1649,9 @@ export class Actor extends Entity {
                 
                 finalDmg = rollOfflineCriticalDamage(this, finalDmg).amount;
                 target.takeDamage(finalDmg, this);
+                if (this.poisonCoatingActive) {
+                    applyOfflineStatus(this, target, 'poison', 8+Math.floor(this.stats.dexterity/2), 8, 'Poison Coating');
+                }
                 
                 if (onHit) onHit(finalDmg, target);
             }
