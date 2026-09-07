@@ -31,10 +31,11 @@ test.each(DUNGEON_ENTRANCE_IDS)('%s reveals an obscured hero without changing ga
     const metadata = JSON.stringify(s.root.userData);
     advance(s);
     const entry = s.controller.entries.get(s.root);
-    expect(entry.opacity).toBeLessThan(.15);
+    expect(entry.opacity).toBeLessThan(.01);
     expect(entry.clones.size).toBeGreaterThan(0);
-    expect(entry.parts.every(part => part.mesh.material !== part.material && !part.mesh.castShadow)).toBe(true);
-    expect(entry.parts.every(part => part.mesh.material.transparent && !part.mesh.material.depthWrite)).toBe(true);
+    expect(entry.parts.every(part => part.mesh.material !== part.material && part.mesh.castShadow === part.castShadow)).toBe(true);
+    expect(entry.parts.every(part => part.mesh.material.transparent === part.material.transparent &&
+        part.mesh.material.depthWrite === part.material.depthWrite)).toBe(true);
     expect(new THREE.Box3().setFromObject(s.root).equals(before)).toBe(true);
     expect(JSON.stringify(s.root.userData)).toBe(metadata);
     expect(boundsMesh.material).toBe(boundsMaterial);
@@ -48,7 +49,7 @@ test('fading is smooth and does not mutate another entrance sharing cached mater
     expect(s.root.children[0].material).toBe(original);
     s.controller.update(s.group, s.camera, s.focus, 0);
     const entry = s.controller.entries.get(s.root);
-    expect(entry.opacity).toBeLessThan(1); expect(entry.opacity).toBeGreaterThan(.14);
+    expect(entry.opacity).toBeLessThan(1); expect(entry.opacity).toBeGreaterThan(0);
     advance(s, 1 / 60);
     expect(other.children[0].material).toBe(original);
     expect(original.opacity).toBe(1); expect(original.transparent).toBe(false);
@@ -70,6 +71,20 @@ test('landmarks behind the hero and unrelated dungeon architecture remain opaque
     expect(s.controller.entries.get(s.root).opacity).toBe(1);
     expect(s.controller.entries.has(wall)).toBe(false);
     expect(wall.material.opacity).toBe(1);
+});
+
+test('the private shader cuts only a soft foreground window and retains material opacity outside it', () => {
+    const s = scene(); advance(s);
+    const entry = s.controller.entries.get(s.root), part = entry.parts[0];
+    const shader = { uniforms: {}, fragmentShader: '#include <opaque_fragment>' };
+    part.mesh.material.onBeforeCompile(shader, null);
+    expect(part.mesh.material.opacity).toBe(part.material.opacity);
+    expect(shader.uniforms.uSceneryReveal).toBe(entry.uniforms.reveal);
+    expect(shader.uniforms.uSceneryReveal.value).toBeGreaterThan(.99);
+    expect(shader.fragmentShader).toContain('smoothstep(3.2, 4.5, sceneryDistance)');
+    expect(shader.fragmentShader).toContain('sceneryForeground');
+    expect(shader.fragmentShader).toContain('discard;');
+    expect(part.mesh.material.customProgramCacheKey()).toContain('hero-cutaway-v2');
 });
 
 test('removed roots restore shared resources and dispose only private fade materials', () => {

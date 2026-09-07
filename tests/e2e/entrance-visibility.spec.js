@@ -35,6 +35,16 @@ for (const config of cases) {
             // A prepared visual component scene, not earned movement. The
             // production render controller and real meshes perform the reveal.
             const qa = { render, hero, root, originals: root.children.map(part => part.material) };
+            qa.capture = () => {
+                const target = new THREE.WebGLRenderTarget(256, 256);
+                const previous = render.renderer.getRenderTarget();
+                const pixels = new Uint8Array(256 * 256 * 4);
+                render.renderer.setRenderTarget(target);
+                render.renderer.render(render.scene, render.camera);
+                render.renderer.readRenderTargetPixels(target, 0, 0, 256, 256, pixels);
+                render.renderer.setRenderTarget(previous); target.dispose();
+                return pixels;
+            };
             qa.visiblePixels = () => {
                 const target = new THREE.WebGLRenderTarget(256, 256);
                 const previous = render.renderer.getRenderTarget();
@@ -62,7 +72,11 @@ for (const config of cases) {
             function frame() { render.render(); qa.frame = requestAnimationFrame(frame); }
             window.__visibilityQA = qa; frame();
         }, config);
-        const before = await page.evaluate(() => window.__visibilityQA.visiblePixels());
+        const before = await page.evaluate(() => {
+            const q = window.__visibilityQA;
+            q.beforeFrame = q.capture();
+            return q.visiblePixels();
+        });
         await page.screenshot({ path: testInfo.outputPath('entrance-before.png') });
         await page.evaluate(() => {
             const q = window.__visibilityQA;
@@ -71,9 +85,42 @@ for (const config of cases) {
         await expect.poll(() => page.evaluate(() => {
             const q = window.__visibilityQA;
             return q.render.sceneryVisibility.entries.get(q.root)?.opacity ?? 1;
-        })).toBeLessThan(.16);
+        })).toBeLessThan(.005);
         const after = await page.evaluate(() => window.__visibilityQA.visiblePixels());
-        expect(after, 'actual hero-colored pixels must increase through the same foreground architecture').toBeGreaterThan(before + 20);
+        const unobstructed = await page.evaluate(() => {
+            const q = window.__visibilityQA;
+            // Hide only camera color/depth writes, retaining the landmark's
+            // physical shadows so the reference uses the same illumination.
+            const materials = [...new Set(q.root.children.map(part => part.material))];
+            const state = materials.map(material => [material, material.colorWrite, material.depthWrite]);
+            for (const material of materials) { material.colorWrite = false; material.depthWrite = false; }
+            const count = q.visiblePixels();
+            for (const [material, colorWrite, depthWrite] of state) { material.colorWrite = colorWrite; material.depthWrite = depthWrite; }
+            return count;
+        });
+        // A fixed count at 256px penalizes different projection/lighting even
+        // when every visible hero pixel has returned. Require most of this
+        // exact model's unobstructed reference, not an arbitrary pixel total.
+        console.log(`[scenery-pixels] ${JSON.stringify({ ...config, before, after, unobstructed })}`);
+        expect(unobstructed, 'reference must contain a visibly rendered hero').toBeGreaterThan(5);
+        expect(before, 'fixture must initially obscure the actual hero').toBeLessThan(unobstructed * .25);
+        expect(after, 'the reveal must recover at least 80% of the unobstructed hero pixels').toBeGreaterThanOrEqual(unobstructed * .8);
+        const changedOutside = await page.evaluate(async () => {
+            const THREE = await import('three');
+            const q = window.__visibilityQA, camera = q.render.camera;
+            const center = q.hero.position.clone().add(new THREE.Vector3(0, 1.5, 0)).project(camera);
+            const cx = (center.x + 1) * 128, cy = (center.y + 1) * 128;
+            const rx = 256 * 4.7 / (camera.right - camera.left), ry = 256 * 4.7 / (camera.top - camera.bottom);
+            const after = q.capture(); let count = 0;
+            for (let y = 0; y < 256; y++) for (let x = 0; x < 256; x++) {
+                if (((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 <= 1) continue;
+                const i = (y * 256 + x) * 4;
+                if (Math.abs(after[i] - q.beforeFrame[i]) + Math.abs(after[i + 1] - q.beforeFrame[i + 1]) +
+                    Math.abs(after[i + 2] - q.beforeFrame[i + 2]) > 3) count++;
+            }
+            return count;
+        });
+        expect(changedOutside, 'architecture outside the cutaway must retain its original depth ordering and shadows').toBe(0);
         await page.screenshot({ path: testInfo.outputPath('entrance-revealed.png') });
         expect(await page.evaluate(() => {
             const q = window.__visibilityQA;
