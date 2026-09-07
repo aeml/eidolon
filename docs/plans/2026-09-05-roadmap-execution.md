@@ -5,8 +5,16 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-Current release queue (September 6): **1.0.24 (`44c7ed1`) is the last fully
-verified release**. CI **`34065220719`** passed every job, including final live
+Current release queue (September 7): **1.0.25 (`d55b5d8`) is fully verified**.
+CI `34067519448` attempt 2 passed every job. Post-terminal uncached checks at
+**00:32:55 UTC** matched manifest, login label, versioned main entry and backend
+to `d55b5d8d8460f75513a0eca02baf873aa52203c6` / Alpha 1.0.25; health `ok`, database
+`ready`. Only 1.0.26 `85efebef86ccb9a980bc630b9e860d7f68c47d4b` was pushed next;
+CI **`34070192341`** is running.
+Later releases remain local until the preceding complete CI/live gate passes.
+
+Previous release checkpoint (September 6): **1.0.24 (`44c7ed1`) was fully
+verified**. CI **`34065220719`** passed every job, including final live
 four-class/remote-animation QA. Fresh post-terminal uncached checks at
 **23:39:32 UTC** matched frontend manifest, login label, main entry query and
 backend health to `44c7ed1509317c499643c10d77b71ebb228d2025` / Alpha 1.0.24;
@@ -70,7 +78,7 @@ Local merges carry that same fix forward and preserve ancestry:
 | 1.0.27 | `0d4e1a1fb37d728db85c1eac9d56b6dc3bc785dd`, branch `release/27-with-gallery`; not pushed | original `ac494b8` preparation copy, earned-route QA `f0cfc15`, and inherited gallery repair |
 | 1.0.28 | `424e6b11579b5e7ea5c50a060dcb89011fab7126`, branch `release/28-with-recovery`; runtime `d4670b2`; not pushed | equipment-slot validation, lossless legacy recovery and readable phone recovery panel; separate notes/version metadata |
 | 1.0.29 | branch `release/29-with-economy`, locally verified; not pushed | real talent cooldown/mana consumers, matching client checks and explicit economy contract |
-| 1.0.30 | local candidate, browser verification in progress; not pushed | Imp arrival null-destination repair and server-owned Imp AI lifecycle; separate patch notes/version metadata |
+| 1.0.30 | `c6e5cd4f5c1aab13481dc0633c8202f609e76e51`, branch `release/30-with-imp`; browser verification in progress, not pushed | Imp arrival null-destination repair, server-owned Imp AI lifecycle and disjoint Linux QA services; separate patch notes/version metadata |
 
 The corrected 1.0.21 → 1.0.22 → 1.0.23 → 1.0.24 ancestry was checked with
 `git merge-base --is-ancestor`. Exact clean `9f58757` passes **163 client suites /
@@ -97,13 +105,30 @@ complete CI/live verification. The original 1.0.14 failure remains recorded belo
 
 ### Alpha 1.0.30 candidate — a steadier hunt
 
+The combined earned route in session **`92076`** is closed with failure after
+28.6 minutes. Its clean earned-readiness checkpoint passed at level 34, and it
+defeated Rootbound Warden, Briar Matron and Rustbound Colossus. A later retreat
+failed to establish six-unit displacement while the player was alive at level 52;
+Hollow Sentinel and the subsequent campaign checks were not reached. Credential
+scan and isolated cleanup completed. No full dungeon clear is claimed. See the
+[detailed outcome](fresh-progression-evidence.md).
+
+Original launch record: log
+`/tmp/eidolon-1-0-30-fresh-dungeon-host.log`, from exact clean **`c6e5cd4`** on
+local API/Mongo 18185/18186, host networking and static port 4187. The initial
+18087/18088 launch was safely refused before build/browser because an unrelated
+service owns 18088; it was not stopped or changed. Keep runtime and selected QA
+sources were frozen until the handle was terminal. Do not infer a readiness or
+dungeon pass from the completed unit checks. CI 1.0.25 attempt 2 remains in its
+full predeploy character job; only 1.0.24 is fully verified live.
+
 Runtime/configuration commit **`3375447`** remains local. The following QA-only
 work extracts the shared dungeon traversal without removing assertions, defaults
 it to ordinary town-guide entry, and adds `fresh-dungeon` for the no-grants earned
 chain plus complete Verdant and manual story/raid-access persistence. The
 prepared route explicitly retains its existing QA waypoint; it is not presented
 as earned evidence. Final client **176 suites / 2,473 tests in 57.971 seconds**,
-lint and shell syntax pass. The first combined browser measurement is pending;
+lint and shell syntax pass. The first combined browser measurement is active above;
 see [fresh progression evidence](fresh-progression-evidence.md).
 
 The Imp exception found by the earned readiness route now has eight regressions:

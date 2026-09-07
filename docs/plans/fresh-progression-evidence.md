@@ -41,7 +41,30 @@ any browser/build because the initially chosen adjacent Mongo port 18088 belongs
 to an unrelated existing service. The guard refused it; no service was stopped
 or replaced. The corrected default pair 18185/18186 was checked free before retry.
 The initial startup log is `/tmp/eidolon-1-0-30-fresh-dungeon.log`. The combined
-browser attempt is still pending; no result is claimed until its checkpoints execute.
+browser command is now active in session **`92076`** from exact clean
+`c6e5cd4f5c1aab13481dc0633c8202f609e76e51`, log
+`/tmp/eidolon-1-0-30-fresh-dungeon-host.log`, with explicit API 18185, host mode
+and static port 4187. That handle is now closed with **failure after 28.6 minutes**;
+credential scanning passed and the isolated services were cleaned up.
+
+The explicit earned-readiness/clean-browser-error checkpoint **passed**: saved
+level 34 / 36,289 XP / 18,982 gold, five legal earned gear slots, five Fireball
+Mastery ranks, Control & Utility branch and no granted progress. The Skeleton
+contract took 204 seconds including reward/login, with zero deaths; the Imp
+contract took 661 seconds including reward/login, with one counted death,
+263 retreats and three accepted Shields. Ordinary guide entry selected Normal
+level 30, seed `610775016641147330`, generator 2, attempt 0, no fallback.
+
+Rootbound Warden, Briar Matron and Rustbound Colossus were actually defeated.
+The route then failed during a defensive retreat against later Skeletons, before
+Hollow Sentinel. The living level-52 player had 1,127 HP at `(19956.914, 18511.25)`;
+the movement helper could not establish its required six-unit displacement.
+No menu or death screen was open. This is **not a complete dungeon clear**:
+recall, completed-run re-entry and Earth story/raid-access checks were not reached.
+The diagnostic does not distinguish zero movement, short movement in constrained
+geometry or a runtime collision defect; inspect the retreat threshold, actual
+candidate positions and dungeon walls before selecting a correction. Preserve
+the failed run rather than silently weakening its movement requirement.
 
 ## Earned dungeon-readiness extension — September 6, measurement pending
 
