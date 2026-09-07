@@ -66,3 +66,36 @@ func TestAbilityPayloadPreservesExplicitSingleTargetHealing(t *testing.T) {
 		}
 	}
 }
+
+func TestAbilityPayloadPreservesDistinctAuthoritativeLanding(t *testing.T) {
+	for _, landing := range []*game.AbilityLanding{nil, {X: 0, Z: 0}, {X: 11.5, Z: 34}} {
+		event := game.AbilityEvent{SourceID: "caster", TargetID: "target", SkillName: "Shadow Lunge",
+			TargetX: 13, TargetZ: 34, Landing: landing}
+		payload := abilityPayloadFromEvent(event)
+		data, err := json.Marshal(payload)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var received map[string]interface{}
+		if err := json.Unmarshal(data, &received); err != nil {
+			t.Fatal(err)
+		}
+		if received["targetX"] != 13.0 || received["targetZ"] != 34.0 {
+			t.Fatal("aim point changed")
+		}
+		if landing == nil {
+			if _, exists := received["landing"]; exists {
+				t.Fatal("legacy ability acquired a landing")
+			}
+			continue
+		}
+		point, ok := received["landing"].(map[string]interface{})
+		if !ok || point["x"] != landing.X || point["z"] != landing.Z {
+			t.Fatalf("landing lost on real wire: %s", data)
+		}
+		landing.X++
+		if payload.Landing.X == landing.X {
+			t.Fatal("payload aliases mutable event")
+		}
+	}
+}
