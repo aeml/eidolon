@@ -59,7 +59,10 @@ export async function earnInvestigation(page, id, openIlyra, capture, { waypoint
         expect(site.kind, 'Combat evidence requires a separate actual combat driver').toBe('inspect');
         await walkTo(page, site.x, site.z + 3);
         if (beforeInspect) {
-            await beforeInspect(site);
+            try { await beforeInspect(site); } catch (error) {
+                if (capture) await capture(site, 'combat-failure');
+                throw error;
+            }
             await walkTo(page, site.x, site.z + 3);
         }
         if (capture) await capture(site, 'approach');

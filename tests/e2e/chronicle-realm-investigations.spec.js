@@ -18,16 +18,14 @@ if (!Object.hasOwn(realmRoutes, realm)) throw new Error('Investigation realm mus
 
 async function clearPursuingHostiles(page, site, beforeCombat) {
     const engaged = new Set();
-    await expect.poll(async () => {
+    try { await expect.poll(async () => {
         if (await beforeCombat()) return false;
         const state = await page.evaluate(() => {
             const game = window.game, player = game.player;
-            const ashRecorded = Boolean((player.quests.find(q => q.id === 'chronicle_fire_obedient_ember')?.investigationMask || 0) & 1);
             const enemies = (game.activeEntitiesCache || []).filter(enemy => game.isHostileActorTarget(enemy) &&
-                (ashRecorded || !enemy.id.startsWith('chronicle-site-')) &&
                 player.position.distanceTo(enemy.position) < 14);
             enemies.sort((a, b) => player.position.distanceTo(a.position) - player.position.distanceTo(b.position));
-            return { dead: player.state === 'DEAD', id: enemies[0]?.id, cooldown: player.abilityCooldown, ashRecorded };
+            return { dead: player.state === 'DEAD', id: enemies[0]?.id, cooldown: player.abilityCooldown };
         });
         expect(state.dead, 'Prepared returning character must survive ordinary field combat').toBe(false);
         if (!state.id) return true;
@@ -38,14 +36,26 @@ async function clearPursuingHostiles(page, site, beforeCombat) {
             const game = window.game;
             return game.isHostileActorTarget(game.hoveredEntity) ? game.hoveredEntity.id : null;
         });
-        if (!actual || (!state.ashRecorded && actual.startsWith('chronicle-site-'))) return false;
+        if (!actual) return false;
         // Actual left-click pursuit/basic attack and Wizard's right-click
         // Fireball. No despawn, invulnerability, damage or kill-credit grants.
         await page.mouse.click(point.x, point.y);
         if ((state.cooldown || 0) <= 0) await page.mouse.click(point.x, point.y, { button: 'right' });
         engaged.add(actual);
         return false;
-    }, { timeout: 180_000, intervals: [250], message: `Clear ordinary pursuers before inspecting ${site.id}` }).toBe(true);
+    }, { timeout: 180_000, intervals: [250], message: `Clear ordinary pursuers before inspecting ${site.id}` }).toBe(true); } catch (error) {
+        console.log(`[${realm}-site-failure]`, JSON.stringify(await page.evaluate(site => {
+            const game = window.game, player = game.player;
+            return { site, position: player.position.toArray(), state: player.state, health: player.stats.hp,
+                maximumHealth: player.stats.maxHp, damage: player.stats.damage, shield: player.shieldHP,
+                target: player.targetEntity?.id, hovered: game.hoveredEntity?.id,
+                defense: window.__freshWizardDefense?.counts,
+                nearby: (game.activeEntitiesCache || []).filter(enemy => game.isHostileActorTarget(enemy) &&
+                    player.position.distanceTo(enemy.position) < 30).map(enemy => ({ id: enemy.id,
+                    health: enemy.stats?.hp, level: enemy.level, position: enemy.position.toArray() })) };
+        }, site.id)));
+        throw error;
+    }
     if (engaged.size) console.log(`[${realm}-site-combat] ${site.id}: engaged ${engaged.size} actual pursuers; nearby hostile area cleared`);
 }
 
@@ -56,14 +66,14 @@ async function defeatCommandAnchor(page, site, chapter, beforeCombat) {
     // recorded, wait for its real ten-second respawn, never fabricate a kill.
     await expect.poll(() => page.evaluate(id => {
         const enemy = window.game.remotePlayers.get(id);
-        return Boolean(enemy && enemy.state !== 'DEAD' && enemy.health > 0);
+        return Boolean(enemy && enemy.state !== 'DEAD' && enemy.stats?.hp > 0);
     }, site.entityId), { timeout: 20_000 }).toBe(true);
     let sawDeath = false;
     await expect.poll(async () => {
         const enemy = await page.evaluate(id => {
             const game = window.game, enemy = game.remotePlayers.get(id);
             return { deadPlayer: game.player.state === 'DEAD', exists: Boolean(enemy),
-                dead: enemy?.state === 'DEAD' || enemy?.health <= 0, cooldown: game.player.abilityCooldown };
+                dead: enemy?.state === 'DEAD' || enemy?.stats?.hp <= 0, cooldown: game.player.abilityCooldown };
         }, site.entityId);
         expect(enemy.deadPlayer, 'Anchor must be defeated through survivable ordinary combat').toBe(false);
         expect(enemy.exists).toBe(true);
@@ -148,7 +158,10 @@ test(`returning character earns ${realm} records through ordinary travel and man
     await expect.poll(() => page.evaluate(() => window.game.player.selectedBranch)).toBe('C');
     await expect.poll(() => page.evaluate(() => window.game.player.hotbar.includes('Arcane Shield'))).toBe(true);
     await page.locator('#btn-close-skills').click();
-    const beforeCombat = await createEarnedWizardDefense(page);
+    // The same ordinary Ctrl-click used during travel also permits retreat
+    // when a hostile model covers the projected ground. Other hunt baselines
+    // retain their existing walking-only defense default.
+    const beforeCombat = await createEarnedWizardDefense(page, { allowJumpFallback: true });
     const chapters = chronicleInvestigations.filter(chapter => chapter.realm === realm);
     const ids = chapters.map(chapter => chapter.id);
     for (const id of ids) {

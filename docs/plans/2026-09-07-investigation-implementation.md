@@ -48,6 +48,30 @@ pass **3.144s**. All these handles are closed; the expanded graph backend passes
 
 ### World integration checkpoint
 
+September 7 Fire follow-up: realm routes now share
+`tests/e2e/chronicle-realm-investigations.spec.js`, selected by guarded isolated
+`water-investigations`, `fire-investigations` or `air-investigations` routes.
+All use the same explicit old-save fixture and actual travel/skills/manual
+turn-ins; new checks reopen each saved journal record after reconnect. Fire also
+requires observed ordinary anchor death after the ash and before ember credit.
+These extra checks are prepared, **not yet passing gameplay evidence**.
+
+Fire run **35656 / 3.7m** fails after earning Hessa's ledger: death near cold ash.
+The first driver excluded the anchor from ordinary crowd combat before ash;
+this artificial restriction is removed. Real early anchor kills still grant no
+discovery, and the test must await normal respawn and another real death after
+recording ash. Rerun **48744 / 3.6m** fails differently: player alive at
+**2,071/2,575 HP**, but all projected retreat clicks are covered by enemies and
+the helper disallows jumping. Diagnostic and actual screenshot confirm no move
+was attempted. Screenshot is inspected and saved as
+`/tmp/eidolon-fire-covered-retreat.png`; logs
+`/tmp/eidolon-investigations-fire-earned.log` and
+`/tmp/eidolon-investigations-fire-normal-combat.log`. Credential scans/cleanup pass.
+Prepared correction permits normal Ctrl-click jump retreats only in this realm
+route (other earned hunt baselines keep walking-only defaults), reads actual
+actor `stats.hp` for death/respawn, and captures failures. Runtime difficulty and
+quest checks are unchanged. Fire ordered combat and Air remain open.
+
 September 7 Water follow-up: the two Water investigations pass actual desktop
 play **1 / 6.6m**, handle **6729** closed, log
 `/tmp/eidolon-investigations-water-defensive-route.log`. This is an explicitly

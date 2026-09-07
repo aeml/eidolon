@@ -3,7 +3,7 @@ import { planWizardHuntStep } from '../wizardHuntControls.js';
 
 // Only observes replicated state and chooses ordinary keys/ground clicks.
 // Reinstall after fresh login, which destroys the previous browser observer.
-export async function createEarnedWizardDefense(page) {
+export async function createEarnedWizardDefense(page, { allowJumpFallback = false } = {}) {
     await page.evaluate(() => {
         const game = window.game, original = game.handleServerMessage.bind(game);
         window.__freshWizardDefense = { lastAcceptedAt: 0, counts: { retreats: 0, shields: 0, rejectedShields: 0 } };
@@ -39,7 +39,7 @@ export async function createEarnedWizardDefense(page) {
             return true;
         }
         try {
-            await moveByGroundClick(page, plan.x, plan.z, { minimumDistance: 6, allowJumpFallback: false, timeout: 2500 });
+            await moveByGroundClick(page, plan.x, plan.z, { minimumDistance: 6, allowJumpFallback, timeout: 2500 });
         } catch (error) {
             if ((await readPlayerState(page)).state === 'DEAD') return true;
             throw error;
