@@ -5,7 +5,41 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 04:23 UTC
+## Current checkpoint — September 8, 04:48 UTC
+
+Release43 CI34182920134 closed with all eight jobs successful. Fresh public
+manifest/login/runtime/versioned entry/backend all returned HTTP200 and exact
+Alpha1.0.43/79a93b131b7192a3a3bc6b2ca355c257585d7d60; database ready.
+Explicit44 branch push46461 succeeded to847d454a94a7424ab303f6339c875ab170bff36e.
+CI34187405437 passes server/client; browser smoke is active. No45 push until
+all eight44 jobs and a fresh exact public identity check pass. Root was not pushed.
+
+Bridge full server18636 PASSED, clean8de4eb0 in its isolated worktree, no active
+handles. Actual database/login/rollback sessions and release packaging remain
+required. Curve2/31 chapters are still candidates, not live or merged to root.
+
+Full earned Earth57004 FAILED /10.8m after Watch40/40, Seeds8/8, Walking Ink5/60.
+The retreat driver hit the real west town wall, not a proven balance failure.
+Owned cleanup/credential scan passed. Driver-only full-path collision queries
+now pass67 focused tests26911 and lint93211; a fresh full Earth run is required.
+No game collision, six-unit movement assertion or death bound was relaxed.
+
+Separate scheduled soak34183672037 failed to bind occupied127.0.0.1:8080;
+its artifact contains no completed100-client evidence. The unrelated listener
+was left alone. Root's pending operational patch uses isolated Mongo port
+mapping, unique binaries/evidence, OS-assigned server port, exact per-run health
+identity and owned child cleanup. Two policy tests pass; lint40393 passes.
+A bounded real100-client check is required, not a claim of24-hour stability.
+That check subsequently closed **15821 PASS /70s /100 connected and joined /
+62,872 frames /zero read and write errors**. The owned Mongo was cleaned up;
+evidence is in `/tmp/eidolon-soak-92WVYQ/`. See
+[soak isolation](2026-09-08-nightly-soak-isolation.md). The fresh earned Earth
+rerun **75518 ACTIVE**, frozen source3f4d6d2; log
+`/tmp/eidolon-earned-earth-wall-rerun.log`, one owned browser.
+The previous checkpoint below is historical. Full roadmap and balance approval
+remain unfinished; do not mark the goal complete or blocked.
+
+## Historical checkpoint — September 8, 04:23 UTC
 
 Previous goal turn was progress; this turn closes the full31-chapter regression,
 earns the first new expedition in real play, implements a save-format bridge,
