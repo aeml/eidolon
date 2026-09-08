@@ -66,3 +66,14 @@ into a shared helper. Desktop retains its real mouse path; phone checks do not
 require nonexistent touch hover. Label height, marker, level-one, live frames and
 dialogue checks remain. No production source changed after89f690e. Lint61719
 passed; the corrected actual route remains required.
+
+Corrected actual86108 onf00814a PASS3/25.7s: desktop9.0s, portrait6.7s and
+landscape7.5s. Actual level-one login, ordinary mouse/joystick approach, Ilyra
+dialogue,22px label, gold marker and continuing frames pass. No grants used.
+Scan0 and owned cleanup/independent exact-container absence pass. Phone images
+viewed, all three retained in `/tmp/eidolon-nameplate-town-evidence-gGh3DL/`.
+Other disposable players can remain near Ilyra between these sequential logins;
+all player-class names/transcripts are hidden in captures. This verifies town
+integration and responsive controls, not physical-device or full-combat approval.
+All owned verification handles are terminal. Release packaging/CI inclusion is
+the next step, in sequence after the existing release queue; no push here.
