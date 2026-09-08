@@ -3,6 +3,21 @@
 Status: confirmed defect with an unreleased implementation candidate, not yet
 release-ready or assigned a published patch. Preserve .01 passive regen.
 
+Latest acceptance17:05 UTC: runtimebb11f9b fixes party-write and enemy scene-read
+races found in actual instance sessions; fullrace26408 PASS(game413.453s), and
+corrected actual51943 PASS254.335s twice through four-class alive/dead Verdant
+recovery plus practice/ranked1v1 forfeit and shutdown. Layout/seed/full prepared
+room progress and exact resources/gold/XP/equipment survive restart. Prepared
+cleared rooms and death do not prove earned boss combat or a full party wipe.
+Test-onlyf064c19 extends ordinary two-party 2v2 recovery: actual91101 PASS111.671s,
+three forfeit/shutdown repetitions with all four players' town resources and
+exact nonduplicated ranked results verified after fresh-process login. All68
+corrected instance/2v2 child logs clean and normal exits enforced. Owned local
+test services removed; no release approval. Actual other dungeon families,
+raid-group/crystal events and broader device play remain open. Next is durable
+auction-refund ordering against pending snapshots and disconnected expiry,
+plus delayed IO and rollback compatibility. Historical slice details follow.
+
 Candidate `work/resource-persistence-20260908` atac53b2c (tested runtime3efad53,
 browser-tested28ebabc,
 token-tested ea5d539, runtimea9f5960) implements versioned resource restoration and per-account

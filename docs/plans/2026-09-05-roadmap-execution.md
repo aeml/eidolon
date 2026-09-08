@@ -5,7 +5,66 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 16:40 UTC
+## Current checkpoint — September 8, 17:05 UTC
+
+The intervening regeneration-only turn was NO ROADMAP PROGRESS: existing .01
+client/server coefficients and focused tests were reconfirmed without changing
+the implementation or release state. This resumed turn is PROGRESS: exact
+pending actual dungeon/PvP and full-race handles closed successfully, and new
+ordinary four-player 2v2 recovery/restart coverage passed three times. Full
+1.1–1.10 remains active and incomplete; no release gate or scope is reduced.
+
+47 CI34248491147 on6925c5113ee6acdf698713f3332f80dcf546bd76 still has client,
+server and all3 browser smoke shards PASS; Predeploy Character QA freshly ACTIVE.
+Fresh release.json/healthz both report healthy/database-ready Alpha1.0.46 at
+6f7e4a72a774a9d2106c26fc6a98f81a1e535c7c. No47 deployment/pass claimed. No push
+this turn;48 remains gated on entire47 CI/finalLiveQA/freshpublicidentity. Never
+push root's local staged52/ledger branch.48–55 refs/validation unchanged below.
+
+Resource worktree `/tmp/eidolon-resource-persistence-c6E17J`: actual dungeon/PvP
+testscbc79758a0ca097f13846bb5884d590114a03321 exposed two genuine races missed by
+earlier green unit suites. Runtime fixbb11f9bf1da174371fb27d3c75c50f0620ad2b92
+locks entity party writes and enemy/player scene reads, rechecking disconnected/
+dead players in stale tick lists. Focused53093 PASS11.636s. Initialactual16263
+FAILED110.162s with six abnormal/race child exits despite passing gameplay
+assertions. Log `/tmp/eidolon-resource-instance-actual-sessions.log`; exact bad
+dirs recorded in the candidate implementation document, not a whole-run pass.
+
+Corrected51943 CLOSED PASS normal0/254.335s onbb11f9b, two complete repetitions
+of8 four-class alive/dead dungeon cases plus6 practice/ranked1v1 exit/shutdown
+cases. Fullrace26408 CLOSED PASS normal0 root22.706/game413.453s. Logs
+`/tmp/eidolon-resource-instance-repeat-sessions.log` and
+`/tmp/eidolon-resource-instance-full-race.log`. All56 actual child server logs
+independently clean of race/panic/fatal/credential markers and contain shutdown
+completion; strict normal exits enforced. Owned disposable Mongo/volumes removed
+and independently absent. Dungeon layout/seed/full saved progress, resources,
+manual town recovery, gold/XP/gear and nonduplicated arena profiles checked.
+Room clearance/death are explicit post-stop prepared fixtures, NOT earned
+dungeon-clear/party-wipe proof. Other dungeon families and raid events remain open.
+
+Test-onlyf064c197297c533eb049c0c4eab288c5f6e13afd adds ordinary invite/acceptance
+two-party 2v2 queue/scene entry, repeated Join, real Wizard mana consumption,
+team forfeit/maintenance exit and fresh-process logins. Focused90032 PASS1.046s
+(opt-in actual tests skipped; corrected an initial wrong-cwd invocation).
+Actual91101 CLOSED PASS normal0/111.671s, three repetitions36.55/37.01/37.07s:
+all four recover145HP/445mana/originaltown/gold/gear; each forfeit team member
+gets exactly one correct ranked result; maintenance awards none. Binary
+`/tmp/eidolon-resource-2v2-proof-o6uBQX/f064c197297c533eb049c0c4eab288c5f6e13afd`;
+log `/tmp/eidolon-resource-2v2-sessions.log`. All12 server logs independently
+clean including shutdown completion and strict normal exits. Owned Mongo
+`eidolon-resource-2v2-proof-20260908-1705` and volumes removed/independently absent.
+No production player data touched. All local owned test/browser handles closed.
+47 CI is the verified external wait. No56 assignment or resource release approval.
+
+Next: implement pending-save/offline-auction-refund/expiry ordering and durable
+idempotent refund delivery. Existing trading handler can mutate a disconnected
+entity after its save or increment Mongo underneath an older pending snapshot.
+Audit auction/user cross-document failure windows, delayed IO and compatible
+rollback. Broader raid/device play,31chapter earned campaign, complete phone
+baseline and remaining1.1–1.10 milestones still open. Recovery tests do not
+substitute for complete earned combat or a released milestone.
+
+## Historical checkpoint — September 8, 16:40 UTC
 
 Previous goal turn was PROGRESS (47 publication plus durable journal implementation
 and real recovery evidence). This turn is PROGRESS: shutdown admission/timer/
