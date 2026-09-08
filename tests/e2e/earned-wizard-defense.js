@@ -1,5 +1,6 @@
 import { moveByGroundClick, readPlayerState } from './helpers.js';
 import { GroundInputUnavailableError } from '../groundInputFailure.js';
+import { planReachableWizardStep } from './earned-retreat-plan.js';
 
 // Only observes replicated state and chooses ordinary keys/ground clicks.
 // Reinstall after fresh login, which destroys the previous browser observer.
@@ -34,12 +35,7 @@ export async function createEarnedWizardDefense(page, { retreatBelowHealthRatio 
                     meleeReach: (enemy.subType === 'DwarfSalesman' ? 6 : 3) +
                         Math.max(0, (enemy.scale || 1) - 1) * 1.5 + Math.max(0, (p.scale || 1) - 1) * 1.5 })) };
         });
-        const plan = await page.evaluate(async state => {
-            const { planWizardHuntStep, isEarnedRetreatPathClear } = await import('/tests/wizardHuntControls.js');
-            const game = window.game;
-            return planWizardHuntStep({ ...state, canRetreat: delta =>
-                isEarnedRetreatPathClear(game.collisionManager, game.player.position, state.radius || 1.25, delta) });
-        }, { ...state, retreatBelowHealthRatio });
+        const plan = await planReachableWizardStep(page, { ...state, retreatBelowHealthRatio });
         if (!plan) return false;
         if (plan.action === 'shield') {
             await page.keyboard.press(plan.key);
