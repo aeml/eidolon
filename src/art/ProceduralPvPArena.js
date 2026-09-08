@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createProceduralTerrainTexture } from './ProceduralRealmTerrain.js';
 
 // A low-walled sparring court. The server owns the floor dimensions and movement
 // limits; markings are decorative inlays, never additional collision or loot.
@@ -8,7 +9,9 @@ export function createProceduralPvPArena(layout) {
         rect.width <= 0 || rect.height <= 0) throw new Error('PvP arena requires its authoritative floor');
     const root = new THREE.Group();
     root.name = 'PvPArena';
-    const stone = new THREE.MeshStandardMaterial({ color: 0x303d52, roughness: 0.9 });
+    const paving = createProceduralTerrainTexture('town');
+    paving.repeat.set(rect.width / 12, rect.height / 12);
+    const stone = new THREE.MeshStandardMaterial({ map: paving, color: 0xb5c2d6, roughness: 0.9 });
     const rim = new THREE.MeshStandardMaterial({ color: 0x66758a, roughness: 0.75 });
     const gold = new THREE.MeshStandardMaterial({ color: 0xc7ae72, roughness: 0.55, metalness: 0.3 });
     const floor = new THREE.Mesh(new THREE.PlaneGeometry(rect.width, rect.height), stone);

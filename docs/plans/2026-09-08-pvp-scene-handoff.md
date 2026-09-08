@@ -48,3 +48,19 @@ and gives an actionable prepare:client instruction. The probe records world/
 arena milestones without account data and screenshots the actual direct-body
 game canvas, excluding nested preview/minimap canvases. A prepared rerun remains
 required; full runtime regression above still applies to unchanged game/server.
+
+65494 on clean634c20c PASS4/1.5minutes, normal exit0. Fighter22.0s, Rogue22.2s,
+Wizard22.2s, Cleric22.6s. Each side produced5 positive one-damage hits at measured
+mean intervals1.913–1.917s versus1.90476s stats, retained mana, lost health,
+forfeited normally, returned within1unit of its recorded departure and kept
+ranked profile/XP/gold unchanged. Scene roots and instance types were verified.
+Scan0 and independent exact-container absence passed. Both Fighter entry/combat
+images were inspected and archived at `/tmp/eidolon-pvp-entry-evidence-bG4RCB/`.
+The captures include game UI (element screenshots clip, not isolate DOM layers).
+
+Inspection exposed a flat untextured floor and oversized existing combat labels.
+The court now reuses Lanternhold's procedural cobbles at a consistent world scale
+on its single floor, with no new stacked floor geometry or collision change.
+Release47 notes describe the verified practice-duel repair, not ranked/party
+sign-off. Later nameplate/action-label polish remains open (queued53 is not in
+this branch). A versioned textured-court rerun/capture is required before merge.

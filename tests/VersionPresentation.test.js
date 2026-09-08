@@ -19,6 +19,8 @@ const versionedRuntimeFiles = [
 
 describe('version presentation', () => {
     test('release47 explains responsive basic attacks and preserves full release verification', () => {
+        expect(indexHtml).toContain('A real place to duel');
+        expect(indexHtml).toContain('Practice matches still award no ranked rewards');
         expect(indexHtml).toContain('A steadier basic attack');
         expect(indexHtml).toContain('one-second unbuffed minimum');
         expect(indexHtml).toContain('Parallel release checks');
