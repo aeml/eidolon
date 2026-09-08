@@ -5,7 +5,67 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 21:52 UTC
+## Current checkpoint — September 8, 22:08 UTC
+
+Previous turn was PROGRESS (respawn visual fix and expanded rest scope). This
+turn is PROGRESS: real dungeon recovery and Rogue respawn acceptance completed,
+49 republished with corrected QA, and fixes integrated through the later queue.
+Full1.1–1.10 goal remains active/incomplete; Well Rested remains planned.
+
+The navigation failure was the recovery driver continually evading slow melee
+enemies while trying to click an occupied room center.49 test0c1bf8a stops only
+inside the target room near a live hostile, then retains every real-damage/death/
+explicit-respawn/same-seed/re-entry assertion and timeout. Focused approach/input
+tests pass. Actual65495 CLOSED PASS0: THREE fresh Wizard layouts,52.5s/49.8s/42.6s;
+seeds2759083004004298719,5312252406745334818,-7273661173164765657. No jump, damage,
+kill, protection or position override; only the documented prepared level30.
+Logs `/tmp/eidolon-recovery49-2154{a,b,c}.log`.
+
+b576525 adds class selection to the isolated recovery runner and verifies the
+real post-respawn hitbox remains invisible. Actual66614 CLOSED PASS0/43.4s,
+Rogue seed6094580505815586236; ordinary dungeon death, rejected dead recall,
+button respawn, unchanged unfinished run on re-entry. Town screenshot inspected:
+normal Rogue, no cube. Logs `/tmp/eidolon-recovery49-rogue.log`; owned four Mongo/
+API containers and volumes removed/independently absent. This strengthens the
+earlier prepared-component proof of visual runtimee56b4c8; its full client39229
+remains PASS235 suites/3339 tests. Final version/approach10749 PASS230 checks.
+
+c3de669 cherry-picks the version-independent rendered manifest/login/latest-notes
+check from56. Final anonymous78723 PASS2 cases25.1s and lintPASS; screenshot of
+49 notes inspected including No glowing box after respawn. Normal push47083
+succeeded; however CI34283592413 then FAILED coverage at
+TestTripwireRootsForThreeSecondsAndRespectsCCImmunity/ordinary_enemy; client job
+passed and deployments skipped. This is the previously diagnosed random-overworld
+intruder in the single-use-trap fixture, not a Tripwire runtime change.
+
+49 now0c6d0cced85f3ebd0391eaac5f105b04e3b40be1 in
+`/tmp/eidolon-release49-navigation-dqbOBW`, branchwork/release49-navigation-20260908.
+Only the already-verified resource candidate's isolated Tripwire test was carried
+forward, retaining three-second duration/CC immunity and adding exact intended-
+target hit/damage checks.19907 CLOSED PASS0:100 race repetitions33.717s. Normal
+push24230 succeeded; remote independently matches0c6d0cc. New CI34284099182 is
+ACTIVE. No50 push before whole49/finalLiveQA/fresh public identity. Live last
+independently verified healthy48/546391c; root staged52 must not be pushed.
+
+Later queue currently inherits49/c3de669, NOT yet the final0c6d0cc Tripwire test:
+50=74ea6cd18710bc295e1b4a84c34d8724ff3455a2;
+51=7a124997174daa262129834db7341269d7f2b295;
+52=7baba4588a4b36fa76f234bc18fa85387d98a44c;
+53=5bbec2752a9a6fd3910b48fb17552ff03599351a;
+54=80ab8822520c250441ebde45956bc7b5d5ad871c;
+55=92bc43104ab65bb7c2f3c800d81b8924dc29283a;
+56=492ea722d0995358d9f5f8754b00e823e2b25640 (bridge tree).
+Existing canonical50–55 paths unchanged. Merge conflicts resolved preserving52
+death-only mana refill plus stealth cleanup,54 damage plus stealth imports, and
+all53/55 named QA scripts plus the new anonymous respawn check. All seven queue
+version/appearance/approach runs39402 CLOSED PASS0;52 combined death-resource/
+appearance/version53761 PASS.56's server tree is identical to race-verifieddff080b;
+its full merged client/lint83306 remains ACTIVE (lint passed, Jest progressing)
+at `/tmp/eidolon-schema56-merged-{lint,client}.log`. Keep its inputs frozen until
+completion. Carry final49 test ancestry through50–56 before publishing any of them.
+Resource candidate remains4321e69, not yet merged with the updated final queue.
+
+## Historical checkpoint — September 8, 21:52 UTC
 
 PROGRESS: user-reported respawn cube reproduced and fixed in49 descendant
 `/tmp/eidolon-release49-navigation-dqbOBW`, commit e56b4c8 (after diagnostic95acbd6).
