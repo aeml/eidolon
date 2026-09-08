@@ -121,6 +121,10 @@ Automated routes are not a substitute for a new player's exploration time.
 
 ## BAL-01 — reward and progression baseline
 
+- [ ] Resolve the [online/offline/prepared starting-stat discrepancy](2026-09-08-starting-stat-baselines.md).
+  Use actual new-character saves for first-hour combat evidence; the prepared
+  `/level` profile has extra primary stats. Preserve saved investments and keep
+  offline-only attribute allocation out of online preparation assumptions.
 - [ ] Trace authoritative and offline XP, gold, equipment, rarity, consumable,
   material and quest-item sources: ordinary/elite kills, bosses, chests, story,
   dailies, dungeon completion, crystal Vigils and repeatable raids. Separate
