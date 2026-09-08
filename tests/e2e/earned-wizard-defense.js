@@ -8,7 +8,8 @@ export function createEarnedWizardDefense(page, options) {
     return createEarnedRangedDefense(page, options);
 }
 
-export async function createEarnedRangedDefense(page, { allowJumpFallback = false, useCrowdControl = false } = {}) {
+export async function createEarnedRangedDefense(page, { allowJumpFallback = false, useCrowdControl = false,
+    retreatBelowHealthRatio = Infinity } = {}) {
     await page.evaluate(() => {
         const game = window.game, original = game.handleServerMessage.bind(game);
         window.__freshWizardDefense = { lastAcceptedAt: 0, counts: { retreats: 0, crowdJumps: 0, shields: 0, rejectedShields: 0, wells: 0, rejectedWells: 0, fireballs: 0, rejectedFireballs: 0 } };
@@ -66,7 +67,7 @@ export async function createEarnedRangedDefense(page, { allowJumpFallback = fals
                 return true;
             }
         }
-        if (!plan) return false;
+        if (!plan || (plan.action === 'retreat' && state.healthRatio >= retreatBelowHealthRatio)) return false;
         try {
             if (plan.useJump) {
                 const before = await readPlayerState(page);

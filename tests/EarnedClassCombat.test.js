@@ -14,7 +14,7 @@ test('Wizard retains its existing spacing and shield driver', async () => {
     const page = {}, driver = jest.fn();
     wizardDefense.mockResolvedValue(driver);
     expect(await createEarnedClassCombat(page, 'Wizard')).toBe(driver);
-    expect(wizardDefense).toHaveBeenCalledWith(page);
+    expect(wizardDefense).toHaveBeenCalledWith(page, undefined);
 });
 
 test('unsupported classes fail without installing an observer or granting anything', async () => {
@@ -27,8 +27,14 @@ test('Rogue receives ranged movement without becoming a Wizard', async () => {
     const page = {}, driver = jest.fn();
     rangedDefense.mockResolvedValue(driver);
     expect(await createEarnedClassCombat(page, 'Rogue')).toBe(driver);
-    expect(rangedDefense).toHaveBeenCalledWith(page);
+    expect(rangedDefense).toHaveBeenCalledWith(page, undefined);
     expect(wizardDefense).not.toHaveBeenCalled();
+});
+
+test.each(['Wizard', 'Rogue'])('%s receives the explicit healthy-combat strategy without changing other classes', async className => {
+    const page = {}, options = { retreatBelowHealthRatio: .8 };
+    await createEarnedClassCombat(page, className, options);
+    expect(className === 'Wizard' ? wizardDefense : rangedDefense).toHaveBeenCalledWith(page, options);
 });
 
 test('a fresh Cleric never tries to cast a locked heal', async () => {

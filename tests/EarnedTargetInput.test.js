@@ -56,5 +56,7 @@ test('both uninterrupted story combat loops use ordinary retained-target input',
     expect(hunt).toContain('const deadline = Date.now() + 120_000');
     expect(hunt).toContain('enemy = await findExpeditionTarget(page, hunt, deadline)');
     expect(hunt).toContain('step < 100 && Date.now() < deadline');
+    expect(hunt).toContain('combatTarget.distance > observed.basicRange + 2');
+    expect(hunt).toContain('retreatBelowHealthRatio: .8');
     expect(hunt).toContain('toBeGreaterThan(credit)');
 });

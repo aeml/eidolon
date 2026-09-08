@@ -27,3 +27,22 @@ full lint/diff passed. Additional bounded-reacquisition assertions and final
 verification follow. Actual successor gameplay is still required. This branch
 is based on the experimental story tree, NOT a successor to queued release55;
 do not publish its historical Alpha1.0.50 metadata or replace the release queue.
+
+Second actual42789 on2ae3849 CLOSED FAILED5.3m, QA_SCRIPT_EXIT=1. Opening113s
+with one ordinary death, diary165s; no checkpoint reconnect. Watch earned2/40,
+then stalled with player150/150HP, original Skeleton27HP at70.44distance, still
+alive/moving.18retreats/two actual crowd jumps/no Fireballs (mana17atstart).
+This is a distant disengaged-target case, not only a missing-streamed actor.
+Log `/tmp/eidolon-story-retained-target-gameplay.log`; scan0 and independent
+owned-container/network absence passed. It does not approve balance or prove
+the input correction alone sufficient.
+
+Follow-up reuses the verified collection strategy: healthy ranged characters
+finish normal basic attacks until below80%HP; other callers retain their prior
+retreat defaults and shield behavior. Distant original targets with no active
+attack/chase are reacquired through level-appropriate real travel under the same
+120s watchdog. Requirements/rewards/regen and two-respawn bound are unchanged.
+68focused strategy/target tests PASS1.509s, plus full lint/diff (30547). Earlier
+27-test call had two signature-expectation failures; a new test also needed the
+existing Jest-only Playwright mock. Both are corrected, no assertion removed.
+Actual follow-up remains required; no gameplay runtime changed.

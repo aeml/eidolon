@@ -96,7 +96,9 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady }
     }
     const previousAutoLoot = await page.evaluate(() => window.game.autoLootEnabled);
     await setAutoLootThroughSettings(page, true);
-    const beforeCombat = await createEarnedClassCombat(page);
+    // As in the verified collection route, allow a healthy ranged character to
+    // finish ordinary basic attacks; permanent retreat resets starter leashes.
+    const beforeCombat = await createEarnedClassCombat(page, undefined, { retreatBelowHealthRatio: .8 });
     console.log(`[story-hunt] start ${JSON.stringify({ id, ...before, combat: await combatSnapshot(page) })}`);
     let deaths = 0, lastReported = 0;
     const recover = async () => {
@@ -132,12 +134,14 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady }
                     distance: game.player.position.distanceTo(target.position) } : null;
                 return { goal: describe(game.remotePlayers.get(id)),
                     selected: describe(game.pendingInteraction),
+                    basicRange: game.getBasicAttackRangeForEntity(game.remotePlayers.get(id)),
                     nearby: [...game.remotePlayers.values()].filter(target => game.isHostileActorTarget(target))
                         .map(describe) };
             }, enemy.id);
             const combatTarget = chooseExpeditionCombatTarget(
                 observed.selected?.alive ? observed.selected : observed.goal, observed.nearby);
-            if (!combatTarget) {
+            if (!combatTarget || (!observed.selected?.alive && combatTarget.id === observed.goal?.id &&
+                combatTarget.distance > observed.basicRange + 2)) {
                 // Retreat/leash can stream out the original target. Seek a
                 // visible appropriate enemy through ordinary travel, without
                 // resetting the deadline or manufacturing quest credit.
