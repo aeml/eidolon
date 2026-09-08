@@ -5,7 +5,80 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 20:30 UTC
+## Current checkpoint — September 8, 20:52 UTC
+
+This turn is PROGRESS: stale listing-slot protection and acceptance completed.
+The full roadmap remains active/incomplete. Resource Go runtime57c97c1 full
+race77182 CLOSED PASS0: root17.736/game415.255s, database/lifecycle cached.
+Corrected actual31382 CLOSED PASS0/232.806s: two repetitions of nine normal/
+rejected listing modes and seven SIGKILL boundaries. All78 child logs independently
+clean:14 intended kills,64 normal completed drains. No skipped cases. Exact owned
+Mongo2046 and volumes removed; container independently absent. Log
+`/tmp/eidolon-listing-selection-sessions-corrected.log`. The initial55659 launcher
+failure is retained and does not count as acceptance.
+
+Client69597 PASS238 suites/3388 tests219.707s on57c97c1. Client-only1886cee
+clears stale tooltips and adds the browser regression to the normal anonymous CI
+script. Final lint16643 CLOSED PASS0; focused60 tests pass after that change.
+Browser21690 failed a too-strict
+hidden-tooltip assertion when the pointer legitimately hovered the NEW item;
+41095 then failed because a negative text assertion required a visible element.
+The final assertion requires zero visible OLD-item tooltips and verifies hiding
+after an ordinary pointer move. Browser21323 CLOSED PASS0:4 cases32.6s, TWO
+repetitions at1280x900 and390x844. Both resulting screenshots viewed: clear stale
+selection, readable guidance, no stale tooltip, persistent chat. This is prepared
+UI fixture evidence, not physical-phone/earned-inventory or full mobile signoff.
+Logs `/tmp/eidolon-listing-selection-browser-{final,pointer,accepted}.log`.
+
+49 CI34274941211 remains ACTIVE at20:52, Predeploy Character QA; all preceding
+server/client/browser-smoke jobs succeeded. Last independently verified live48.
+No50 push before the entire49/finalLiveQA/public-identity gate. Root staged52
+must not be pushed. Resource candidate still has unpublished55 metadata, not a
+release assignment. Next: publication-delay duration fairness, then enforced
+compatible rollback before resource-candidate publication; broader roadmap gates
+are unchanged. No server test process is left running for this slice.
+
+## Historical checkpoint — September 8, 20:48 UTC
+
+The preceding regeneration-only reply verified the existing .01 client/server
+rate but made no roadmap implementation progress. This continuation is PROGRESS:
+stale auction-slot protection is implemented and undergoing acceptance. The full
+1.1–1.10 goal remains active; no major-version gate is being narrowed.
+
+Listing0908438 full34429 CLOSED PASS0: root12.001/database1.088/game286.630s,
+confirmed from `/tmp/eidolon-auction-listing-full-race.log`. Its prior actual
+session acceptance remains closed. Resource candidate57c97c13ccf0a967bb7170b353d0549049963098
+now sends frozen selected item ID/quantity and validates both under the seller
+lock before reserving any listing or charging escrow. Missing expectations fail
+closed. Inventory refresh/submit clear stale selections and require reselection.
+
+Focused Go race9864 PASS0; initial client62423 PASS13 tests. Full client69597
+CLOSED PASS0:238 suites/3388 tests,219.707s; lint passed. Browser48658 failed only
+on prepared unknown-name icon404s after its selection assertions. Corrected
+fixture33513 CLOSED PASS0:2 desktop/phone cases21.8s. Screenshots exposed a stale
+tooltip; a client-only follow-up hides it when clearing selection. Final focused
+60 tests pass; final browser21690 remains ACTIVE. Go source remains identical
+to57c97c1 while its runs are active.
+
+Full Go race77182 ACTIVE at `/tmp/eidolon-listing-selection-full-race.log`.
+Initial actual55659 CLOSED FAIL1/158.414s: launcher named the binary `server`,
+but the existing health gate requires its basename to equal the embedded commit;
+crash cases also skipped because failpoint opt-in was omitted. No acceptance
+claimed from that run. Exact owned Mongo2045 and volumes removed/absent.
+Corrected actual31382 ACTIVE on the same binary renamed to57c97c1's full SHA,
+with failpoint opt-in, two repetitions of nine normal/rejected cases and seven
+SIGKILL boundaries. First nine normal cases passed; crashes are progressing.
+Log `/tmp/eidolon-listing-selection-sessions-corrected.log`; owned Mongo is
+`eidolon-listing-selection-proof-20260908-2046` with EXIT cleanup installed.
+
+49 CI34274941211 on9342ac0 is still ACTIVE: server/client and all three browser
+smoke shards passed, Predeploy Character QA running. No50 push until entire49
+CI/finalLiveQA/fresh public identity succeeds. Last verified live remains48.
+Root staged52 must not be pushed. Resource candidate remains unpublished55
+metadata, not release-approved; delayed-publication duration fairness and enforced
+compatible rollback remain next protections before publication.
+
+## Historical checkpoint — September 8, 20:30 UTC
 
 Previous turn was PROGRESS (atomic buyouts). This turn is PROGRESS: buyout
 acceptance closed, listing escrow implemented,48 fully verified live and49
