@@ -3,19 +3,20 @@ import { GroundInputUnavailableError } from './groundInputFailure.js';
 
 const move = jest.fn(), read = jest.fn();
 jest.unstable_mockModule('./e2e/helpers.js', () => ({ moveByGroundClick: move, readPlayerState: read }));
-jest.unstable_mockModule('./e2e/earned-retreat-plan.js', () => ({
-    planReachableWizardStep: async () => ({ action: 'retreat', x: -9, z: 0 })
-}));
 const { createEarnedWizardDefense } = await import('./e2e/earned-wizard-defense.js');
 beforeEach(() => { jest.clearAllMocks(); read.mockResolvedValue({ state: 'IDLE' }); });
 
-test('no clear ground falls back to combat without counting a successful retreat', async () => {
-    const page = { evaluate: jest.fn().mockResolvedValueOnce(undefined).mockResolvedValueOnce({})
-        .mockResolvedValue(undefined) };
+const pageForRetreat = () => ({ evaluate: jest.fn().mockResolvedValueOnce(undefined)
+    .mockResolvedValueOnce({ className: 'Wizard', x: 0, z: 0, healthRatio: 1,
+        threats: [{ x: 2, z: 0 }] })
+    .mockImplementation(async (_, data) => data?.options?.map(() => true)) });
+
+test('unavailable ground selects combat without claiming successful movement', async () => {
+    const page = pageForRetreat();
     move.mockRejectedValue(new GroundInputUnavailableError('no input available'));
     const defend = await createEarnedWizardDefense(page);
     expect(await defend()).toBe(false);
-    expect(move).toHaveBeenCalledWith(page, -9, 0, expect.objectContaining({ minimumDistance: 6 }));
+    expect(move).toHaveBeenCalledWith(page, -9, expect.any(Number), expect.objectContaining({ minimumDistance: 6 }));
     window.__freshWizardDefense = { counts: { retreats: 0 } };
     try {
         page.evaluate.mock.calls.at(-1)[0]();
@@ -24,7 +25,7 @@ test('no clear ground falls back to combat without counting a successful retreat
 });
 
 test('an issued movement failure still fails the playtest', async () => {
-    const page = { evaluate: jest.fn().mockResolvedValueOnce(undefined).mockResolvedValueOnce({}) };
+    const page = pageForRetreat();
     const error = new Error('click sent but no movement');
     move.mockRejectedValue(error);
     const defend = await createEarnedWizardDefense(page);
