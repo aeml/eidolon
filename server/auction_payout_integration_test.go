@@ -35,6 +35,9 @@ func TestAuctionSellerPayoutActualNormalCollection(t *testing.T) {
 	if !cast.Accepted || cast.Mana != 70 {
 		t.Fatal("ordinary pre-collection cast failed")
 	}
+	// The later locked-skill resource probe must run after the production
+	// 500ms global cooldown, but do not delay collection or its durability check.
+	probeReady := time.Now().Add(550 * time.Millisecond)
 	resourceSend(t, connection, MsgTradingCollect, TradingCollectPayload{AuctionID: auction.ID})
 	var reply string
 	resourceReadMessage(t, connection, MsgError, &reply)
@@ -65,6 +68,9 @@ func TestAuctionSellerPayoutActualNormalCollection(t *testing.T) {
 		}
 	}
 	verify() // Success must mean the character/claim are durable already.
+	if wait := time.Until(probeReady); wait > 0 {
+		time.Sleep(wait)
+	}
 	for phase := 124; phase < 126; phase++ {
 		if phase == 125 {
 			address, stop = compatStartServer(t, binary, uri, phase, "-save-journal-dir", dir)
