@@ -154,6 +154,7 @@ func chronicleQuestCatalog() []Quest {
 			quests[i].CollectionVersion = 2
 		}
 		quests[i].RewardGold = questGoldReward(quests[i].RewardXP)
+		quests[i].RewardXPQuoted, quests[i].RewardGoldQuoted = true, true
 		if dungeonType, ok := dungeonChapters[quests[i].ID]; ok {
 			quests[i].ObjectiveText = fmt.Sprintf("Level %d required — %s", supportedDungeonTypes[dungeonType], quests[i].ObjectiveText)
 		}
@@ -196,6 +197,7 @@ func dailyQuestCatalog() []Quest {
 	}
 	for i := range quests {
 		quests[i].RewardGold = questGoldReward(quests[i].RewardXP)
+		quests[i].RewardXPQuoted, quests[i].RewardGoldQuoted = true, true
 		quests[i].Category = QuestCategoryDaily
 		quests[i].Title = fmt.Sprintf("Daily Hunt: %s", splitQuestTarget(quests[i].Target))
 		quests[i].ObjectiveText = fmt.Sprintf("Defeat %d %s.", quests[i].MaxCount, splitQuestTarget(quests[i].Target))
@@ -220,6 +222,26 @@ func isDailyQuest(q Quest) bool {
 }
 
 func copyQuestDefinition(progress Quest, definition Quest) Quest {
+	if progress.Accepted || progress.Completed {
+		// A rollback/catalog refresh must honor existing contracts, including
+		// explicitly quoted zeroes. Only genuinely absent fields get defaults.
+		if progress.RewardXPQuoted || progress.RewardXP != 0 {
+			definition.RewardXP = progress.RewardXP
+		}
+		if progress.RewardGoldQuoted || progress.RewardGold != 0 {
+			definition.RewardGold = progress.RewardGold
+		}
+		if definition.Type == "KILL" && progress.MaxCount > 0 {
+			if definition.MaxCount != progress.MaxCount {
+				definition.ObjectiveText = progress.ObjectiveText
+				if definition.ObjectiveText == "" {
+					definition.ObjectiveText = fmt.Sprintf("Defeat %d %s.", progress.MaxCount, splitQuestTarget(definition.Target))
+				}
+			}
+			definition.MaxCount = progress.MaxCount
+		}
+	}
+	definition.RewardXPQuoted, definition.RewardGoldQuoted = true, true
 	if definition.Category == QuestCategoryChronicle && definition.Type == "COLLECT" && (progress.Accepted || progress.Completed) {
 		// Accepted contracts retain their requirements and drop rules. A missing
 		// version identifies a pre-balance save, not a newly accepted chapter.
@@ -363,6 +385,7 @@ func (w *World) PerformAcceptQuest(playerID, questID string) (*Entity, bool) {
 				return nil, false
 			}
 			q.Accepted = true
+			q.RewardXPQuoted, q.RewardGoldQuoted = true, true
 			return player, true
 		}
 	}
