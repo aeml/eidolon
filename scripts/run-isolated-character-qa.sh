@@ -425,6 +425,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   multiplayer)
     run_animation_multiplayer
     ;;
+  pvp-cadence)
+    npx playwright test tests/e2e/pvp-cadence-gameplay.spec.js
+    ;;
   movement)
     npm run test:e2e:movement
     ;;

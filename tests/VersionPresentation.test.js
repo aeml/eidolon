@@ -18,6 +18,12 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
+    test('release47 explains responsive basic attacks and preserves full release verification', () => {
+        expect(indexHtml).toContain('A steadier basic attack');
+        expect(indexHtml).toContain('one-second unbuffed minimum');
+        expect(indexHtml).toContain('Parallel release checks');
+        expect(indexHtml).toContain('a complete pass required before deployment');
+    });
     test('adds collection pacing notes without replacing entrance visibility history', () => {
         expect(indexHtml).toContain('Alpha 1.0.47 (fragments worth finding)');
         expect(indexHtml).toContain('A road patrol, not an endless pursuit');

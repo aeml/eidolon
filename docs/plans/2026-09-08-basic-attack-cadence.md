@@ -1,5 +1,28 @@
 # Basic-attack cadence — isolated experiment, not released
 
+## Four-class collection comparison closed; practice-duel probe next
+
+All original-campaign comparisons passed with ordinary inputs and the same
+0.01 regeneration. Fighter52647: opening95s, collection200s,13 observed target
+deaths,8 seeds,0 player deaths,5.0minutes total. Rogue92922: opening32s,
+collection435s,25 observed target deaths,8 seeds,0 deaths,7.8minutes total.
+Cleric30263: opening34s, collection303s,22 observed target deaths,8 seeds,
+1 ordinary death,5.7minutes total. All three used clean a38b535, returned normal
+exit0, passed credential scans and independent exact-container absence checks.
+Each manually claimed Ilyra's reward, consumed the items, preserved save/handoff
+and ended at level17 with the level30 gate clearly locked. The earlier Wizard
+result is below. Different drop rolls mean these are not class-DPS benchmarks.
+
+After the final run closed,57a762a was fast-forwarded into this candidate. It
+adds only the independently verified browser-smoke sharding workflow/regressions.
+Release47 notes now explicitly describe cadence, the unbuffed floor and CI
+changes. The broader level/reward gap, expanded31-chapter story and endgame
+PvP/class balance are still open. A new disposable four-class mirror-duel route
+will measure actual accepted basic attacks, health loss, unchanged mana, normal
+practice forfeits and absence of ranked rewards through ordinary UI inputs.
+No level, equipment, protection, damage or resource grants are used by that
+route. It is not a substitute for final ranked-match or endgame balance evidence.
+
 ## Original-campaign collection comparison passed
 
 76763 completed normally with exit0 on clean d72f7df: Wizard opening32seconds,
