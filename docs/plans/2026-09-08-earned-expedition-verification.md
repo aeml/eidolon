@@ -224,3 +224,15 @@ checkpoint and requires the panel to be hidden. No resources, counts, deadlines
 or permitted deaths changed. Fresh focused rerun83836 passed all10 checkpoint
 tests and route lint. A new uninterrupted browser run is required to verify the
 navigation correction and obtain an actual uninterrupted Watch result.
+
+Corrected8855589 browser33414 **FAILED /2.0m**, terminal with artifact scan and
+owned cleanup passed. Opening32s, no deaths, one retreat; its no-reconnect
+checkpoint retained125/125HP and11/115mana. Navigation proceeded past the
+previous blocked click and reached Mara's diary. The character then died during
+ordinary site-clearing combat, before inspection/turn-in or the Watch. The viewed
+screenshot shows level2,0/125HP,20/115mana and nearby Skeletons; it is archived at
+`/tmp/eidolon-uninterrupted-diary-evidence-3mszUV/combat-failure-mara_diary.png`.
+Log `/tmp/eidolon-earned-watch-close.log`. No owned QA containers remain.
+This closes the navigation reproduction, not the fresh pacing gate. Do not rerun
+the same source expecting a resource fix, restore checkpoint logins, grant bars,
+or call the later Watch balanced from this failed earlier chapter.
