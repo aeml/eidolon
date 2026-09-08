@@ -45,3 +45,10 @@ both phone after images viewed and archived at
 still has deliberately packed tiny models and an empty ground plane. This is
 component evidence, not full-world/physical-phone/model-composition approval.
 Full client integration and versioned packaging remain required.
+
+Full client25258 on899c957 PASS224suites/3270tests/170.666s; handle closed.
+An optional isolated nameplate-world route now checks actual authoritative town
+entry, ordinary Ilyra approach/dialogue, readable label/marker and ongoing frames
+in three viewport sizes, without grants. Its screenshot hides player-class names
+and DOM transcripts while leaving NPC labels visible. This new actual-world
+route and final packaging are not yet verified.

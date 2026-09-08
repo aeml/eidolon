@@ -526,6 +526,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   fresh-opening)
     npx playwright test tests/e2e/fresh-opening-gameplay.spec.js
     ;;
+  nameplate-world)
+    npx playwright test tests/e2e/nameplate-world.spec.js
+    ;;
   fresh-collection)
     run_fresh_collection
     ;;
