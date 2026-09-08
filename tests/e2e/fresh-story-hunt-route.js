@@ -6,6 +6,7 @@ import { recoverEarnedDeath } from './earned-death-recovery.js';
 import { earnedCheckpoint } from './earned-checkpoint.js';
 import { chooseExpeditionCombatTarget, levelAppropriateExpeditionTargets } from '../expeditionCombatTargets.js';
 import { equipEarnedEmptySlots } from './earned-equipment.js';
+import { selectEarnedAttackTarget } from './earned-target-input.js';
 import { openDungeonGuide } from './dungeon-guide.js';
 import { prepareEarnedClass } from './fresh-ready-route.js';
 import { moveByGroundClick, projectEntity, readPlayerState,
@@ -38,13 +39,13 @@ const combatSnapshot = page => page.evaluate(() => {
 
 // Read replicated enemies and approach through ordinary movement. No encounter
 // waypoints, teleport commands, entity moves or progression grants are used.
-async function findExpeditionTarget(page, hunt) {
+async function findExpeditionTarget(page, hunt, deadline = Infinity) {
     // The original Skeleton fallback lay in level-ten territory. Walk back
     // toward the authored starter band if streaming shows no appropriate foe.
     const fallback = hunt.enemy === 'Skeleton'
         ? (hunt.minEnemyLevel < 10 ? { x: 175, z: 200 } : { x: 125, z: -150 }) :
         hunt.enemy === 'Imp' ? { x: -300, z: 200 } : { x: 300, z: 200 };
-    for (let step = 0; step < 100; step++) {
+    for (let step = 0; step < 100 && Date.now() < deadline; step++) {
         expect((await readPlayerState(page)).state, 'Ordinary expedition travel must be survivable').not.toBe('DEAD');
         const observed = await page.evaluate(hunt => {
             const game = window.game;
@@ -130,20 +131,23 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady }
                         (target.health ?? target.stats?.hp) > 0,
                     distance: game.player.position.distanceTo(target.position) } : null;
                 return { goal: describe(game.remotePlayers.get(id)),
+                    selected: describe(game.pendingInteraction),
                     nearby: [...game.remotePlayers.values()].filter(target => game.isHostileActorTarget(target))
                         .map(describe) };
             }, enemy.id);
-            const combatTarget = chooseExpeditionCombatTarget(observed.goal, observed.nearby);
+            const combatTarget = chooseExpeditionCombatTarget(
+                observed.selected?.alive ? observed.selected : observed.goal, observed.nearby);
             if (!combatTarget) {
-                // Any credit still comes from normal server deaths. Do not
-                // spend the watchdog repeatedly clicking an already-dead actor.
-                await page.waitForTimeout(250);
+                // Retreat/leash can stream out the original target. Seek a
+                // visible appropriate enemy through ordinary travel, without
+                // resetting the deadline or manufacturing quest credit.
+                enemy = await findExpeditionTarget(page, hunt, deadline);
                 continue;
             }
             if (await beforeCombat(page, combatTarget)) continue;
             const point = await projectEntity(page, combatTarget.id);
             if (point?.visible) {
-                await page.mouse.click(point.x, point.y);
+                await selectEarnedAttackTarget(page, combatTarget, point);
                 if (await page.evaluate(() => window.game.player.abilityCooldown <= 0)) {
                     await page.mouse.click(point.x, point.y, { button: 'right' });
                 }

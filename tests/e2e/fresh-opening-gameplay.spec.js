@@ -8,6 +8,7 @@ import { earnFreshDungeonReadiness, prepareEarnedClass } from './fresh-ready-rou
 import { createEarnedClassCombat } from './earned-class-combat.js';
 import { clearEarnedVerdant } from './fresh-dungeon-route.js';
 import { earnFreshStoryHunt } from './fresh-story-hunt-route.js';
+import { selectEarnedAttackTarget } from './earned-target-input.js';
 import { recoverEarnedDeath } from './earned-death-recovery.js';
 import { earnedCheckpoint, uninterruptedEarnedMode } from './earned-checkpoint.js';
 import { collectBrowserFailures, credentialsFromEnvironment, jumpByGroundClick,
@@ -150,7 +151,7 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
             }
             const point = await projectEntity(page, target.id);
             if (point?.visible) {
-                await page.mouse.click(point.x, point.y);
+                target = await selectEarnedAttackTarget(page, target, point);
                 if (await page.evaluate(() => window.game.player.abilityCooldown <= 0)) {
                     await page.mouse.click(point.x, point.y, { button: 'right' });
                 }
