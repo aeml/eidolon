@@ -1,6 +1,6 @@
 # Resource persistence implementation candidate — not release-ready
 
-## Bounded refund lifecycle — September 8, 17:39 UTC
+## Bounded refund lifecycle — September 8, 17:47 UTC
 
 Runtime8b68f5610a9b382efd6be82c130523213e66ac2c adds one coalesced automatic
 worker,10s automatic outage backoff, nonblocking overlapping retry admission,
@@ -52,14 +52,13 @@ log `/tmp/eidolon-refund-lifecycle-sessions.log`. Exact owned Mongo
 EXIT trap, independently absent. Failpoints were enabled only on this loopback
 disposable container. No production player data touched.
 
-Full race **4474 freshly ACTIVE** on frozen8b68f56, log
-`/tmp/eidolon-refund-lifecycle-full-race.log`: root14.226s passed; database cached;
-game package still running. No whole-suite pass claimed. Re-poll exact handle;
-do not restart on observation timeout or edit runtime before terminal. No other
-owned local test/browser/Mongo handle remains.48 CI34257070035 remains active:
-client/server and browser2/3 pass; browser1/3 and3/3 running at last check.
+Full race **4474 CLOSED PASS normal0** on frozen8b68f56, log
+`/tmp/eidolon-refund-lifecycle-full-race.log`: root14.226s/game245.257s, other
+packages cached/no tests. No owned local test/browser/Mongo handle remains.
+48 CI34257070035 remains active: client/server/all3 browser-smoke shards pass;
+Predeploy Character QA freshly running. No48 deployment/pass or49 push claimed.
 
-Next after that exact suite: [durable auction operation recovery](2026-09-08-auction-operation-recovery.md),
+Next: [durable auction operation recovery](2026-09-08-auction-operation-recovery.md),
 starting with pending bid decision → receipted debit → atomic auction/refund
 transition and real interruption tests. Buyer items/seller payouts and ambiguous
 auction writes are still not atomic; rollout/rollback compatibility and broader
