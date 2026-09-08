@@ -5,7 +5,68 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 13:21 UTC
+## Current checkpoint — September 8, 13:31 UTC
+
+Previous turn was progress:49 inherited48 and passed its full suites while46
+deployed. This turn closes49 gameplay, integrates/verifies50, and repairs the
+confirmed final46 live-QA failure. Full1.1–1.10 scope remains active/incomplete.
+
+51936 closed PASS1/5.9m, explicit QA_SCRIPT_EXIT=0, normal0 on49/7a6c8a7.
+Opening42s; collection/handoff307s,14 observed target deaths/exactly8seeds/
+one player death. Retreat led into a level30 DemonOrc group; ordinary respawn
+kept mana11 rather than refilling. Manual100gold/8000XP, consumed items, saved
+completion and correctly locked Lv30 guide passed. Scan0/independent exact
+container absence passed. Ready8/8 screenshot inspected/archived at
+`/tmp/eidolon-release49-carried-evidence-SXCsA6/earned-collection-ready.png`.
+49 is now clean4996695, with detailed final48-inheritance closure. No publication.
+
+New `/tmp/eidolon-release50-final49-XhZNjw`, release/50-with-final49, runtime
+82c72b60050ebbc33c077ff2488393e355d9abad merges retained50/774d817 and49/7a6c8a7
+without conflicts.49 doc closure carried at1af50c6; own evidence61939da, clean.
+82580 prepare/lint and238 focused version/QA/shard tests PASS2.4s.35212 initial
+race subset PASS10.185s omitted RoutineElite names; corrected14060 includes
+Routine(Equipment|Elite), personal world drops/regen/cadence, three repetitions
+PASS11.006s. Full11645 client PASS231suites/3324tests/141.617s;96545 fullGo
+PASS root3.738s/database0.043s/game83.348s. All terminal0.50 actual earned route
+on inherited cadence remains due, and all later candidates need the latest QA
+corrections below before publication. Runtime balance scope remains unchanged.
+
+CI34226360903 is terminal FAILURE, not still running. Both46 deployments and
+all predeploy checks passed; final live anonymous/persistent QA had7PASS/1FAIL
+in4.6m. Both Verdant attempts failed with no available retreat ground, attempts[]
+and displacement0, live player alive at2281/2244HP. RootboundWarden was damaged
+15000→6444 on retry before the helper threw. This is an unissued input, not a
+server command failing to move. Logs `/tmp/eidolon-release46-final-live-failure.log`.
+46/6e556c4 remains deployed with matching public identity, but final gameplay
+acceptance failed.47 must not yet be published.
+
+46 candidate **af8f88a6a475dba6aeb8ebc7ef9193890bfdcfb5** only changes QA:
+typed GroundInputUnavailableError permits selecting combat when no click/key
+was issued. Issued movement failure still throws; no successful retreat credit,
+changed death bound, reward, resource or runtime change.89719 focused45tests/
+0.948s plus lint/diff PASS. **97726 ACTIVE**, sole owned browser route, frozen
+af8f88a in `/tmp/eidolon-release46-recovery-C5EHfe`, runID release46-live-ground,
+API18635/Mongo18636/web18637, log `/tmp/eidolon-release46-live-ground-gameplay.log`.
+Seed-4899557939214400244/gen2/normalLv30Wizard; first boss/later mobs defeated,
+second boss last12271/16800, player2575HP/791mana. Intermediate, not PASS.
+Poll this exact handle, preserve source until terminal, then record/push the
+QA-only46 correction after the existing clean/ancestry checks and local closure.
+
+Inspection also found47's defense helper imported `/tests/wizardHuntControls.js`
+inside the browser, but Pages publishes only game assets; independent public
+URL returns404.3572411 keeps strategy in Node and sends detached vectors to
+one import-free browser collision-path query, preserving walls and selection.
+Tests cover intermediate wall obstruction, no position mutation, all-blocked
+paths and no unnecessary query for healthy collection.21400 focused32tests/
+1.102s plus lint PASS.46 correction merged at **be38d69** with a sole import
+conflict resolved to the new planner; new prepared test uses collision results.
+75399 focused255tests/2.136s plus lint/diff PASS. **9479 ACTIVE** full client in
+frozen47 `/tmp/eidolon-starter-cadence-xCyOrR`, log
+`/tmp/eidolon-release47-live-ground-client.log`. No47 runtime changed. Actual
+prepared dungeon on this planner remains due after46 closes.48/49/50 still
+need this new47 QA ancestry carried after validation; do not push old candidates.
+
+## Historical checkpoint — September 8, 13:21 UTC
 
 This goal turn is progress:49 now inherits final48/47, with full client/server
 and focused race validation. Publication46 also advanced through both deploys.
