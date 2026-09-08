@@ -62,6 +62,9 @@ reconnect and retains125HP/70mana. Diary approach engages two targets in4.719s;
 actual lore inspection and manual25gold/200XP turn-in complete at153s/level3.
 Diary checkpoint also does not reconnect and retains150HP/46mana. Watch starts
 level3 with47/130mana and the unchanged0.01 rates; no hunt completion yet.
+Latest poll observes one Watch death at0/40 credit with six nearby Skeletons
+(levels1–4), followed by actual150HP/130mana death-button recovery. The handle
+remains active; ordinary spacing has not established first-hunt survivability.
 Do not edit, restart or launch another owned browser while36108 is live.
 
 Actual earned-diary PNG viewed and copied to
