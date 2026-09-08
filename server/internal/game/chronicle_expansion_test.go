@@ -150,7 +150,7 @@ func TestChronicleExpansionRequiredEvidenceCannotBeSkippedOrReclassified(t *test
 		t.Fatal("fresh investigation was skipped")
 	}
 	// Even an offered future collection cannot be accepted before the diary.
-	collection := chronicleQuestCatalog()[2]
+	collection := *questByID(t, &Entity{Quests: chronicleQuestCatalog()}, "chronicle_02_seeds_first_grove")
 	p.Quests = append(p.Quests, collection)
 	if _, accepted := w.PerformAcceptQuest(p.ID, collection.ID); accepted {
 		t.Fatal("future collection bypassed evidence")

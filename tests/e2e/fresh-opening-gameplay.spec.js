@@ -7,6 +7,7 @@ import { earnFreshHunt, earnFreshSkeletonHunt } from './fresh-hunt-route.js';
 import { earnFreshDungeonReadiness, prepareEarnedClass } from './fresh-ready-route.js';
 import { createEarnedClassCombat } from './earned-class-combat.js';
 import { clearEarnedVerdant } from './fresh-dungeon-route.js';
+import { earnFreshStoryHunt } from './fresh-story-hunt-route.js';
 import { collectBrowserFailures, credentialsFromEnvironment, jumpByGroundClick,
     loginAndEnterWorld, moveByGroundClick, projectEntity, projectNearestHostile,
     readPlayerState, returnToTown } from './helpers.js';
@@ -55,7 +56,8 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     if (testInfo.retry) credentials.username += `-retry${testInfo.retry}`;
     test.skip(!credentials.username || !credentials.password, 'Requires a disposable QA character');
     expect(process.env.EIDOLON_E2E_REGISTER).toBe('1');
-    test.setTimeout(process.env.EIDOLON_E2E_FRESH_HUNT === '1' ? 3_600_000 :
+    test.setTimeout(process.env.EIDOLON_E2E_FRESH_STORY_HUNT === '1' ? 1_800_000 :
+        process.env.EIDOLON_E2E_FRESH_HUNT === '1' ? 3_600_000 :
         process.env.EIDOLON_E2E_FRESH_COLLECTION === '1' ? 1_200_000 : 600_000);
     const started = Date.now();
     const failures = collectBrowserFailures(page, baseURL);
@@ -198,6 +200,16 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     expect((await readPlayerState(page)).level).toBe(diaryLevel);
     expect((await readChronicleChapter(page, 'chronicle_earth_keepers_house')).completed).toBe(true);
     console.log(`[fresh-diary] ${JSON.stringify({ level: diaryLevel, reward: afterDiary, elapsedSeconds: Math.round((Date.now() - started) / 1000) })}`);
+    if (process.env.EIDOLON_E2E_FRESH_STORY_HUNT === '1' || process.env.EIDOLON_E2E_FRESH_COLLECTION === '1') {
+        try {
+            await earnFreshStoryHunt(page, credentials, 'chronicle_earth_kept_watch', {
+                captureReady: () => page.screenshot({ path: testInfo.outputPath('earned-watch-ready.png') })
+            });
+        } catch (error) {
+            await page.screenshot({ path: testInfo.outputPath('failed-watch.png') });
+            throw error;
+        }
+    }
     if (process.env.EIDOLON_E2E_FRESH_COLLECTION === '1') {
         await earnFreshCollectionAndInspectHandoff(page, credentials, {
             findTarget: () => findSkeletonThroughTravel(page), leaveTown: () => leaveTown(page),

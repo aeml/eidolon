@@ -2,6 +2,7 @@ import { expect } from '@playwright/test';
 import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { earnEarthInvestigation } from './chronicle-investigation-route.js';
 import { clearFreshInvestigationApproach } from './fresh-investigation-combat.js';
+import { earnFreshStoryHunt } from './fresh-story-hunt-route.js';
 import { openDungeonGuide } from './dungeon-guide.js';
 import { loginAndEnterWorld, moveByGroundClick, projectEntity, readPlayerState,
     returnToTown, setAutoLootThroughSettings } from './helpers.js';
@@ -103,8 +104,10 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
     expect(reward.grantedXP).toBeGreaterThan(0);
     await page.getByRole('button', { name: 'Continue conversation', exact: true }).click();
     await page.locator('#btn-close-quest').click();
+    await earnFreshStoryHunt(page, credentials, 'chronicle_earth_walking_ink');
     await earnEarthInvestigation(page, 'chronicle_earth_returning_scar', openIlyra, null,
         { beforeInspect: site => clearFreshInvestigationApproach(page, site), inspectWithKeyboard: true });
+    await earnFreshStoryHunt(page, credentials, 'chronicle_earth_borrowed_oath');
     await openIlyra(page);
     await expect(page.locator('#quest-window')).toContainText('The Dungeon Guide requires level 30 for the Bastion');
     await expect(page.locator('#quest-window')).toContainText('Daily contracts are optional');
