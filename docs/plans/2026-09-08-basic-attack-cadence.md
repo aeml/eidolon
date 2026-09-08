@@ -1,5 +1,32 @@
 # Basic-attack cadence — isolated experiment, not released
 
+## Rebased comparison on the original campaign, September 8
+
+9505325 applies only the existing0bbc945 cadence commit to the current starter
+candidate0d05dcc. It does NOT import the expanded31-chapter story, future XP curve,
+death mana recovery or54 damage-parity change. This15-chapter/current-curve
+comparison includes the independently verified enemy-impact and starter pursuit
+fixes plus actual-target QA. No release or balance selection is implied.
+
+The concurrent baseline's normal preparation had0eligible gear and0available
+attribute points at level5. Source confirms online progression grows base stats
+automatically and deliberately disables manual allocation; offline-only points
+cannot be prescribed as the missing online preparation. Normal specialization is
+still level10+. The optional equipment/point comparison grants nothing.
+
+Below is the original prototype rationale. Its earlier expanded-story failures
+remain recorded in that branch's later document; do not treat this backport as
+new earned-play evidence. Full regression and a fresh comparison against these
+starter fixes are still required. Keep0.01 regeneration and per-hit damage intact.
+
+Rebased15042 PASS31focused tests/3.055s and full lint/diff. Full61045 server
+PASS root5.352s/database0.024s/game88.516s; full10812 client PASS226suites/
+3292tests/153.923s. Both terminal and source frozen throughout. Only this later
+document changes after the tested9505325 runtime. Actual fresh collection with
+the combined starter/cadence candidate remains due, after the owned46 recovery
+browser finishes. More frequent on-hit effects and PvP/PvE pacing remain release
+review requirements, not closed by unit regressions.
+
 The first-hour routes repeatedly run out of mana and die before a short hunt
 is complete. Starter spacing alone does not establish a playable opening: the
 latest47 route failed after two kills and two respawns. The online starting
