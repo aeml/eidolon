@@ -164,6 +164,54 @@ function createPlayer(overrides = {}) {
 }
 
 describe('UIManager HUD diffing', () => {
+    test('spending the last mana displays zero and later recovery refreshes the same HUD', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        const player = createPlayer();
+        player.stats.maxMana = 160;
+        for (const mana of [30, 0, 1]) {
+            player.stats.mana = mana;
+            ui.updatePlayerStats(player);
+            expect(ui.manaText.textContent).toBe(`${mana} / 160`);
+            expect(parseFloat(ui.manaBar.style.width)).toBeCloseTo(mana / 160 * 100);
+            expect(player.stats.mana).toBe(mana);
+        }
+    });
+
+    test.each([
+        [0, 0, '0 / 0', '0%'],
+        [-10, 100, '0 / 100', '0%'],
+        [150, 100, '100 / 100', '100%'],
+        [NaN, 100, '0 / 100', '0%'],
+        [Infinity, 100, '0 / 100', '0%'],
+        [10, NaN, '0 / 0', '0%'],
+        [undefined, undefined, '0 / 0', '0%']
+    ])('resource HUD bounds invalid or over-cap state (%s/%s) without modifying it', (value, maximum, text, width) => {
+        buildDom();
+        const ui = new UIManager(false);
+        const player = createPlayer();
+        Object.assign(player.stats, { hp: value, mana: value, maxHp: maximum, maxMana: maximum });
+        ui.updatePlayerStats(player);
+        expect(ui.hpText.textContent).toBe(text);
+        expect(ui.manaText.textContent).toBe(text);
+        expect(ui.hpBar.style.width).toBe(width);
+        expect(ui.manaBar.style.width).toBe(width);
+        expect(player.stats.hp).toBe(value);
+        expect(player.stats.mana).toBe(value);
+    });
+
+    test('fractional health rounds up and fractional mana rounds down without claiming a refill', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        const player = createPlayer();
+        player.stats.hp = player.stats.mana = .1;
+        ui.updatePlayerStats(player);
+        expect(ui.hpText.textContent).toBe('1 / 100');
+        expect(ui.manaText.textContent).toBe('0 / 100');
+        expect(ui.hpBar.style.width).toBe('0.1%');
+        expect(ui.manaBar.style.width).toBe('0.1%');
+    });
+
     test('a talent rank change refreshes the displayed mana cost without another stat change', () => {
         buildDom();
         const ui = new UIManager(false);

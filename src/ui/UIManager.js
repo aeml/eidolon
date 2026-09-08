@@ -21,6 +21,7 @@ import { installUIManagerWindows } from './UIManagerWindows.js';
 import { installUIManagerSettings } from './UIManagerSettings.js';
 import { installUIManagerCharacter } from './UIManagerCharacter.js';
 import { installUIManagerDungeon } from './UIManagerDungeon.js';
+import { resourceBarPresentation } from './resourceBarPresentation.js';
 
 export class UIManager {
     constructor(isMobile = false, options = {}) {
@@ -614,16 +615,13 @@ export class UIManager {
         }
         this.lastPlayerStatsSignature = signature;
         
-        const hpPct = (player.stats.hp / player.stats.maxHp) * 100;
-        this.hpBar.style.width = `${Math.max(0, hpPct)}%`;
-        this.hpText.textContent = `${Math.ceil(player.stats.hp)} / ${player.stats.maxHp}`;
-
-        // Assuming mana exists, if not default to 100%
-        const mana = player.stats.mana || 100;
-        const maxMana = player.stats.maxMana || 100;
-        const manaPct = (mana / maxMana) * 100;
-        this.manaBar.style.width = `${Math.max(0, manaPct)}%`;
-        this.manaText.textContent = `${Math.floor(mana)} / ${maxMana}`;
+        const stats = player.stats || {};
+        const hp = resourceBarPresentation(stats.hp, stats.maxHp, Math.ceil);
+        const mana = resourceBarPresentation(stats.mana, stats.maxMana);
+        this.hpBar.style.width = hp.width;
+        this.hpText.textContent = hp.text;
+        this.manaBar.style.width = mana.width;
+        this.manaText.textContent = mana.text;
 
         // Update Ability UI
         this.updateAbilityIcon(player);
