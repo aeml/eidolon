@@ -29,7 +29,10 @@ export async function createEarnedWizardDefense(page, { retreatBelowHealthRatio 
                 unlockedSkills: p.unlockedSkills,
                 sinceCastMs: Date.now() - window.__freshWizardDefense.lastAcceptedAt,
                 threats: (game.activeEntitiesCache || []).filter(enemy => game.isHostileActorTarget(enemy) &&
-                    p.position.distanceTo(enemy.position) < 18).map(enemy => ({ x: enemy.position.x, z: enemy.position.z })) };
+                    p.position.distanceTo(enemy.position) < 30).map(enemy => ({ x: enemy.position.x, z: enemy.position.z,
+                    // Server PerformAttack uses 3 + scaled attacker/target reach.
+                    meleeReach: (enemy.subType === 'DwarfSalesman' ? 6 : 3) +
+                        Math.max(0, (enemy.scale || 1) - 1) * 1.5 + Math.max(0, (p.scale || 1) - 1) * 1.5 })) };
         });
         const plan = await page.evaluate(async state => {
             const { planWizardHuntStep, isEarnedRetreatPathClear } = await import('/tests/wizardHuntControls.js');

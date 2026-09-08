@@ -42,6 +42,24 @@ test('does not pretend a nine-unit retreat fits inside a tiny enclosed floor', (
         walkRects: [{ x: 0, z: 0, width: 8, height: 8 }] })).toBeNull();
 });
 
+test('Briar Matron replay retreats outside scaled melee reach despite center distance above six', () => {
+    const plan = planWizardHuntStep({ ...state, mana: 0, threats: [{ x: 7.4746, z: 0, meleeReach: 7.5 }] });
+    expect(plan?.action).toBe('retreat');
+    expect(plan.x).toBeLessThan(-8);
+});
+
+test('clearance prioritizes a large boss over a nearer but nonthreatening small enemy', () => {
+    const plan = planWizardHuntStep({ ...state, mana: 0,
+        threats: [{ x: 7, z: 0, meleeReach: 3 }, { x: -8, z: 0, meleeReach: 7.5 }] });
+    expect(plan?.action).toBe('retreat');
+    expect(Math.abs(plan.z)).toBeGreaterThan(6);
+});
+
+test('large bosses outside the retreat buffer do not interrupt attacks', () => {
+    expect(planWizardHuntStep({ ...state, healthRatio: 1,
+        threats: [{ x: 11, z: 0, meleeReach: 7.5 }] })).toBeNull();
+});
+
 test('does not choose a reachable-looking endpoint across a floor gap', () => {
     const plan = planWizardHuntStep({ ...state, healthRatio: 1, radius: 1.25,
         walkRects: [{ x: 0, z: 0, width: 8, height: 8 }, { x: -9, z: 0, width: 8, height: 8 }] });
