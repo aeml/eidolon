@@ -880,7 +880,8 @@ test.describe('deterministic production animation gallery', () => {
             cleric: 'Cleric',
             relic: 'Fighter',
             control: 'Fighter',
-            affliction: 'Fighter'
+            affliction: 'Fighter',
+            sanctuary: 'Fighter'
         };
         const statusEntries = Object.entries(PROCEDURAL_STATUS_EFFECT_DEFINITIONS)
             .sort(([, left], [, right]) => left.family.localeCompare(right.family));
@@ -888,7 +889,7 @@ test.describe('deterministic production animation gallery', () => {
         const seenArtStyles = new Set();
         const screenshotStatuses = new Set([
             'iron_fortress', 'stealth', 'spell_focus', 'divine_intervention',
-            'swift', 'frozen', 'poisoned'
+            'swift', 'frozen', 'poisoned', 'well_rested'
         ]);
         let currentClass = '';
 

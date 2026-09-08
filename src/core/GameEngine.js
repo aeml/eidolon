@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { syncWellRested, wellRestedBuff } from './WellRested.js';
 import { RenderSystem } from './RenderSystem.js';
 import { InputManager } from './InputManager.js';
 import { ChunkManager, isAlwaysResidentEntityType } from './ChunkManager.js';
@@ -837,6 +838,7 @@ export class GameEngine {
     }
 
     syncRemoteSupportEffects(remoteEntity, payload) {
+        syncWellRested(remoteEntity, payload);
         syncWhirlwindPresentation(this, remoteEntity, payload);
         Object.entries(REMOTE_EFFECT_SYNC_CONFIG).forEach(([supportKey, config]) => {
             const payloadKeys = config.payloadKeys || [config.payloadKey];
@@ -1980,6 +1982,7 @@ export class GameEngine {
         }
 
         const trackedBuffs = [
+            wellRestedBuff(actor),
             {
                 id: 'guardian_roar',
                 active: Number(actor.guardianRoarTimer) > 0,
@@ -2148,6 +2151,7 @@ export class GameEngine {
                     detail: buff.detail,
                     durationSeconds: buff.durationSeconds,
                     remainingSeconds: buff.durationSeconds,
+                    timeLabel: buff.timeLabel,
                     isDebuff: Boolean(buff.isDebuff)
                 });
             } else {

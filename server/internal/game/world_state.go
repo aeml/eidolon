@@ -29,6 +29,8 @@ func (w *World) GetState() map[string]*Entity {
 			Rotation:          v.Rotation,
 			Health:            v.Health,
 			MaxHealth:         v.MaxHealth,
+			WellRestedSeconds: v.WellRestedSeconds,
+			SafeZoneID:        v.SafeZoneID,
 			Mana:              v.Mana,
 			MaxMana:           v.MaxMana,
 			Level:             v.Level,

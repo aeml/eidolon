@@ -73,7 +73,7 @@ export class PhoneStatusUI {
         }
         this.playerId = playerId;
         const active = (buffs || []).filter(buff => buff?.id && Number(buff.remainingSeconds) > 0);
-        const signature = JSON.stringify(active.map(buff => [buff.id, buff.name, buff.detail, Boolean(buff.isDebuff), Number(buff.remainingSeconds).toFixed(1)]));
+        const signature = JSON.stringify(active.map(buff => [buff.id, buff.name, buff.detail, buff.timeLabel, Boolean(buff.isDebuff), Number(buff.remainingSeconds).toFixed(1)]));
         if (signature === this.lastSignature) return;
         this.lastSignature = signature;
         const debuffs = active.filter(buff => buff.isDebuff).length;
@@ -95,7 +95,7 @@ export class PhoneStatusUI {
             row.root.classList.toggle('is-debuff', Boolean(buff.isDebuff));
             setText(row.kind, buff.isDebuff ? 'Debuff' : 'Buff');
             setText(row.name, buff.name || 'Unnamed effect');
-            setText(row.remaining, `${Number(buff.remainingSeconds).toFixed(1)}s left`);
+            setText(row.remaining, buff.timeLabel || `${Number(buff.remainingSeconds).toFixed(1)}s left`);
             setText(row.detail, buff.detail || 'A temporary effect on your character.');
         }
         for (const [id, row] of this.rows) {

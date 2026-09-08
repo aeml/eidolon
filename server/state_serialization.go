@@ -247,6 +247,8 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		Rotation:                   e.Rotation,
 		Health:                     e.Health,
 		MaxHealth:                  e.MaxHealth,
+		WellRestedSeconds:          e.WellRestedSeconds,
+		SafeZoneID:                 e.SafeZoneID,
 		Mana:                       e.Mana,
 		State:                      e.State,
 		Level:                      e.Level,
@@ -334,6 +336,8 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	crot := current.Rotation
 	chealth := current.Health
 	cmaxHealth := current.MaxHealth
+	cwellRestedSeconds := current.WellRestedSeconds
+	csafeZoneID := current.SafeZoneID
 	cmana := current.Mana
 	cstate := current.State
 	clevel := current.Level
@@ -589,6 +593,10 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	}
 
 	// Health/Mana changes are always significant
+	if csafeZoneID != last.SafeZoneID || (cwellRestedSeconds > 0) != (last.WellRestedSeconds > 0) ||
+		math.Ceil(cwellRestedSeconds) != math.Ceil(last.WellRestedSeconds) {
+		return true
+	}
 	if chealth != last.Health || cmaxHealth != last.MaxHealth {
 		return true
 	}
@@ -1170,6 +1178,8 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		HpRegen:                    float32(e.HpRegen),
 		ManaRegen:                  float32(e.ManaRegen),
 		CastSpeed:                  float32(e.CastSpeed),
+		WellRestedSeconds:          e.WellRestedSeconds,
+		SafeZoneId:                 e.SafeZoneID,
 		Scale:                      float32(e.Scale),
 		BodyRadius:                 float32(e.ReplicatedBodyRadius()),
 		ImpactRadius:               float32(e.ReplicatedImpactRadius()),

@@ -17,6 +17,8 @@ type EntitySnapshot struct {
 	Rotation                   float64
 	Health                     int
 	MaxHealth                  int
+	WellRestedSeconds          float64
+	SafeZoneID                 string
 	Mana                       int
 	State                      string
 	Level                      int

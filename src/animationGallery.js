@@ -212,6 +212,7 @@ const PERSISTENT_STATE_APPLIERS = Object.freeze({
 });
 
 const STATUS_GALLERY_APPLIERS = Object.freeze({
+    well_rested: (actor) => { actor.wellRestedSeconds = 7200; actor.safeZoneId = 'lanternhold'; },
     iron_fortress: (actor) => { actor.ironFortressTimer = 8; },
     guardian_roar: (actor) => { actor.guardianRoarTimer = 8; },
     berserker_edge: (actor) => { actor.berserkerEdgeActive = true; actor.berserkerEdgeTimer = 8; },
@@ -319,6 +320,8 @@ function clearActorStatusState(actor) {
     actor.frozenTimer = 0;
     actor.bleedTimer = 0;
     actor.poisonTimer = 0;
+    actor.wellRestedSeconds = 0;
+    actor.safeZoneId = '';
     actor.spiritsActive = false;
     actor.spiritDuration = 0;
     actor.clearSpiritMeshes?.();

@@ -278,6 +278,7 @@ export class Minimap {
             buff?.name || '',
             buff?.icon || '',
             buff?.detail || '',
+            buff?.timeLabel || '',
             buff?.isDebuff ? 1 : 0,
             Number(buff?.remainingSeconds || 0).toFixed(1),
             Number(buff?.durationSeconds || 0).toFixed(0)
@@ -319,7 +320,7 @@ export class Minimap {
                 icon.dataset.buffId = buff.id;
                 icon.dataset.buffType = buff.isDebuff ? 'debuff' : 'buff';
                 icon.textContent = buff.icon || '✨';
-                icon.setAttribute('aria-label', `${buff.name} (${buff.remainingSeconds?.toFixed?.(1) || '0.0'}s)`);
+                icon.setAttribute('aria-label', `${buff.name} (${buff.timeLabel || `${buff.remainingSeconds?.toFixed?.(1) || '0.0'}s`})`);
                 icon.addEventListener('mouseenter', (event) => this._showBuffTooltip(buff, event));
                 icon.addEventListener('mousemove', (event) => this._showBuffTooltip(buff, event));
                 icon.addEventListener('mouseleave', () => this._hideBuffTooltip());
@@ -336,7 +337,8 @@ export class Minimap {
         }
         const remaining = Number(buff.remainingSeconds || 0).toFixed(1);
         const duration = Number(buff.durationSeconds || 0).toFixed(0);
-        this.buffTooltip.textContent = `${buff.name} • ${remaining}s left${duration !== '0' ? ` / ${duration}s` : ''} • ${buff.detail || ''}`;
+        const timeLabel = buff.timeLabel || `${remaining}s left${duration !== '0' ? ` / ${duration}s` : ''}`;
+        this.buffTooltip.textContent = `${buff.name} • ${timeLabel} • ${buff.detail || ''}`;
         this.buffTooltip.style.display = 'block';
         this.buffTooltip.style.left = `${(event?.clientX || 0) + 12}px`;
         this.buffTooltip.style.top = `${(event?.clientY || 0) + 12}px`;

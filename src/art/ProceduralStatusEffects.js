@@ -13,6 +13,8 @@ const definition = (family, polarity, motif, artStyle, radius, palette) => Objec
 });
 
 export const PROCEDURAL_STATUS_EFFECT_DEFINITIONS = Object.freeze({
+    well_rested: definition('sanctuary', 'buff', 'lantern-resonance', 'golden sanctuary motes carrying four elemental echoes', 1.55,
+        { dark: 0x51340c, base: 0xc99435, accent: 0xffcf68, pale: 0xffedbd }),
     iron_fortress: definition('fighter', 'buff', 'bastion-cage', 'riveted oathsteel bastion cage', 1.75,
         { dark: 0x17212b, base: 0x617889, accent: 0xa8d8ff, pale: 0xf0f7ff }),
     guardian_roar: definition('fighter', 'buff', 'oath-shields', 'procession of sky-blue oath shields', 1.9,
@@ -195,15 +197,32 @@ function radialMarks(parent, statusKey, count, radius, materials, options = {}) 
 
 function buildStatus(root, statusKey, def, materials) {
     const radius = def.radius;
-    ring(root, statusKey, 'OuterSeal', radius, materials.accent, { segments: 28, thickness: 0.075 });
+    ring(root, statusKey, 'OuterSeal', radius, materials.accent, { segments: 28, thickness: statusKey === 'well_rested' ? 0.018 : 0.075 });
     ring(root, statusKey, 'InnerSeal', radius * 0.64, materials.base, {
         segments: 16,
-        thickness: 0.12,
+        thickness: statusKey === 'well_rested' ? 0.025 : 0.12,
         motion: 'counter-seal',
         highQualityOnly: true
     });
 
     switch (def.motif) {
+        case 'lantern-resonance': {
+            // A clear silhouette: thin ground light and small rising sparks,
+            // never a body shell, solid enclosure, or interaction mesh.
+            const colors = [0x93d58b, 0xc8efff, 0xff985c, 0x72caff];
+            for (let index = 0; index < 16; index++) {
+                const phase = index / 16;
+                addPart(root, statusKey, `SanctuaryMote${index}`, shapeGeometry('crystal'),
+                    index % 4 === 0 ? material(statusKey, `element-${index / 4}`, colors[index / 4], { opacity: 0.72 }) : materials.accent, {
+                        scale: [0.18, 0.32, 0.18], motion: 'rest-rise', phase,
+                        orbitRadius: 0.85 + (index % 3) * 0.2,
+                        highQualityOnly: index % 2 === 1
+                    });
+            }
+            ring(root, statusKey, 'SanctuaryThread', radius * 0.74, materials.accent,
+                { thickness: 0.018, y: 0.065, motion: 'counter-seal' });
+            break;
+        }
         case 'bastion-cage':
             addPart(root, statusKey, 'OathsteelShell', geometry('status-shell', () => new THREE.IcosahedronGeometry(1, 1)), materials.veil,
                 { position: [0, 1.35, 0], scale: [radius, 1.85, radius], motion: 'shell' });
@@ -392,7 +411,15 @@ export function updateProceduralStatusEffect(root, elapsed, dt) {
         const baseScale = child.userData.baseScale || [1, 1, 1];
         const basePosition = child.userData.basePosition || [0, 0, 0];
         const pulse = 1 + Math.sin(elapsed * 3.8 + phase) * 0.055;
-        if (motion === 'seal') child.rotation.z += dt * 0.42;
+        if (motion === 'rest-rise') {
+            const rise = (elapsed * 0.2 + phase) % 1;
+            const angle = phase * Math.PI * 8 + elapsed * 0.45;
+            const radius = child.userData.orbitRadius;
+            child.position.set(Math.cos(angle) * radius, 0.15 + rise * 2.6, Math.sin(angle) * radius);
+            const fade = Math.sin(rise * Math.PI);
+            child.scale.set(baseScale[0] * fade, baseScale[1] * fade, baseScale[2] * fade);
+            child.rotation.y = angle;
+        } else if (motion === 'seal') child.rotation.z += dt * 0.42;
         else if (motion === 'counter-seal') child.rotation.z -= dt * 0.34;
         else if (motion === 'pulse' || motion === 'wind-pulse') {
             const strength = motion === 'wind-pulse' ? 0.11 : 0.055;

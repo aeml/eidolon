@@ -208,6 +208,7 @@ func characterSnapshot(username string, entity *game.Entity, savedAt time.Time) 
 		GoldCreditReceipts:   cloneGoldCreditReceipts(entity.GoldCreditReceipts),
 		ItemDeliveryReceipts: cloneItemDeliveryReceipts(entity.ItemDeliveryReceipts),
 		Resources:            resourceSnapshot(entity),
+		WellRested:           wellRestedSnapshot(entity),
 		Name:                 username,
 		Class:                entity.SubType,
 		Level:                entity.Level,

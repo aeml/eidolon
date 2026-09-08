@@ -3957,6 +3957,8 @@ export const eidolon = $root.eidolon = (() => {
              * @property {number|null} [guardianEmbraceRadius] Entity guardianEmbraceRadius
              * @property {number|null} [spiritRadius] Entity spiritRadius
              * @property {string|null} [spiritRune] Entity spiritRune
+             * @property {number|null} [wellRestedSeconds] Entity wellRestedSeconds
+             * @property {string|null} [safeZoneId] Entity safeZoneId
              * @property {number|null} [jumpStartX] Entity jumpStartX
              * @property {number|null} [jumpStartY] Entity jumpStartY
              * @property {number|null} [jumpStartZ] Entity jumpStartZ
@@ -4852,6 +4854,22 @@ export const eidolon = $root.eidolon = (() => {
             Entity.prototype.spiritRune = "";
 
             /**
+             * Entity wellRestedSeconds.
+             * @member {number} wellRestedSeconds
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.wellRestedSeconds = 0;
+
+            /**
+             * Entity safeZoneId.
+             * @member {string} safeZoneId
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.safeZoneId = "";
+
+            /**
              * Entity jumpStartX.
              * @member {number} jumpStartX
              * @memberof eidolon.state.Entity
@@ -5193,6 +5211,10 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 114, wireType 5 =*/917).float(message.spiritRadius);
                 if (message.spiritRune != null && $Object.hasOwnProperty.call(message, "spiritRune") && message.spiritRune !== "")
                     writer.uint32(/* id 115, wireType 2 =*/922).string(message.spiritRune);
+                if (message.wellRestedSeconds != null && $Object.hasOwnProperty.call(message, "wellRestedSeconds") && !$Object.is(message.wellRestedSeconds, 0))
+                    writer.uint32(/* id 116, wireType 1 =*/929).double(message.wellRestedSeconds);
+                if (message.safeZoneId != null && $Object.hasOwnProperty.call(message, "safeZoneId") && message.safeZoneId !== "")
+                    writer.uint32(/* id 117, wireType 2 =*/938).string(message.safeZoneId);
                 if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
                     for (let i = 0; i < message.$unknowns.length; ++i)
                         writer.raw(message.$unknowns[i]);
@@ -6245,6 +6267,24 @@ export const eidolon = $root.eidolon = (() => {
                                 delete message.spiritRune;
                             continue;
                         }
+                    case 116: {
+                            if (wireType !== 1)
+                                break;
+                            if (!$Object.is(value = reader.double(), 0))
+                                message.wellRestedSeconds = value;
+                            else
+                                delete message.wellRestedSeconds;
+                            continue;
+                        }
+                    case 117: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.safeZoneId = value;
+                            else
+                                delete message.safeZoneId;
+                            continue;
+                        }
                     case 81: {
                             if (wireType !== 5)
                                 break;
@@ -6724,6 +6764,12 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.spiritRune != null && $Object.hasOwnProperty.call(message, "spiritRune"))
                     if (!$util.isString(message.spiritRune))
                         return "spiritRune: string expected";
+                if (message.wellRestedSeconds != null && $Object.hasOwnProperty.call(message, "wellRestedSeconds"))
+                    if (typeof message.wellRestedSeconds !== "number")
+                        return "wellRestedSeconds: number expected";
+                if (message.safeZoneId != null && $Object.hasOwnProperty.call(message, "safeZoneId"))
+                    if (!$util.isString(message.safeZoneId))
+                        return "safeZoneId: string expected";
                 if (message.jumpStartX != null && $Object.hasOwnProperty.call(message, "jumpStartX"))
                     if (typeof message.jumpStartX !== "number")
                         return "jumpStartX: number expected";
@@ -7155,6 +7201,12 @@ export const eidolon = $root.eidolon = (() => {
                 if (object.spiritRune != null)
                     if (typeof object.spiritRune !== "string" || object.spiritRune.length)
                         message.spiritRune = $String(object.spiritRune);
+                if (object.wellRestedSeconds != null)
+                    if (!$Object.is($Number(object.wellRestedSeconds), 0))
+                        message.wellRestedSeconds = $Number(object.wellRestedSeconds);
+                if (object.safeZoneId != null)
+                    if (typeof object.safeZoneId !== "string" || object.safeZoneId.length)
+                        message.safeZoneId = $String(object.safeZoneId);
                 if (object.jumpStartX != null)
                     if (!$Object.is($Number(object.jumpStartX), 0))
                         message.jumpStartX = $Number(object.jumpStartX);
@@ -7334,6 +7386,8 @@ export const eidolon = $root.eidolon = (() => {
                     object.guardianEmbraceRadius = 0;
                     object.spiritRadius = 0;
                     object.spiritRune = "";
+                    object.wellRestedSeconds = 0;
+                    object.safeZoneId = "";
                 }
                 if (message.id != null && $Object.hasOwnProperty.call(message, "id"))
                     object.id = message.id;
@@ -7608,6 +7662,10 @@ export const eidolon = $root.eidolon = (() => {
                     object.spiritRadius = options.json && !$isFinite(message.spiritRadius) ? $String(message.spiritRadius) : message.spiritRadius;
                 if (message.spiritRune != null && $Object.hasOwnProperty.call(message, "spiritRune"))
                     object.spiritRune = message.spiritRune;
+                if (message.wellRestedSeconds != null && $Object.hasOwnProperty.call(message, "wellRestedSeconds"))
+                    object.wellRestedSeconds = options.json && !$isFinite(message.wellRestedSeconds) ? $String(message.wellRestedSeconds) : message.wellRestedSeconds;
+                if (message.safeZoneId != null && $Object.hasOwnProperty.call(message, "safeZoneId"))
+                    object.safeZoneId = message.safeZoneId;
                 return object;
             };
 

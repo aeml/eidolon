@@ -572,6 +572,11 @@ func (c *Client) dispatchMessage(msg Message) {
 			entity.LastDailyQuest = time.Now().UTC()
 		}
 
+		if err := restoreCharacterWellRested(entity, char.WellRested); err != nil {
+			c.sendError("Unable to restore Well Rested; please contact support.")
+			log.Printf("Cannot restore Well Rested for %s: %v", c.username, err)
+			return
+		}
 		entity.RecalculateStats()
 		if err := restoreCharacterResources(entity, char.Resources); err != nil {
 			c.sendError("Unable to restore character resources; please contact support.")

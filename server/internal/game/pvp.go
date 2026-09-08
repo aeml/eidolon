@@ -114,6 +114,9 @@ func (w *World) CombatRelationship(source, target *Entity) CombatRelationship {
 		return RelationshipNeutral
 	}
 	if source.Type == TypePlayer && target.Type == TypeEnemy || source.Type == TypeEnemy && target.Type == TypePlayer {
+		if source.Type == TypePlayer && w.inSafeZone(source) || target.Type == TypePlayer && w.inSafeZone(target) {
+			return RelationshipNeutral
+		}
 		return RelationshipHostile
 	}
 	if source.Type == TypePlayer && (target.Type == TypeNPC || target.Type == TypeForge || target.Type == TypeStash || target.Type == TypeTradingHouse) {
@@ -126,7 +129,7 @@ func (w *World) CombatRelationship(source, target *Entity) CombatRelationship {
 		if w.PvP != nil && w.PvP.areOpponents(source.ID, target.ID) {
 			return RelationshipHostile
 		}
-		if w.PvP != nil && w.PvP.areOpenWorldOpponents(source, target) {
+		if w.PvP != nil && !w.inSafeZone(source) && !w.inSafeZone(target) && w.PvP.areOpenWorldOpponents(source, target) {
 			return RelationshipHostile
 		}
 		return RelationshipNeutral
@@ -138,17 +141,8 @@ func (w *World) CanDamage(source, target *Entity) bool {
 	return w.CombatRelationship(source, target) == RelationshipHostile
 }
 
-const overworldPvPSafeZoneRadius = 125.0
-
-func inOverworldPvPSafeZone(entity *Entity) bool {
-	if entity == nil || entity.InstanceID != "" {
-		return false
-	}
-	return math.Hypot(entity.X, entity.Z-200) <= overworldPvPSafeZoneRadius
-}
-
 func (system *PvPSystem) areOpenWorldOpponents(first, second *Entity) bool {
-	if first == nil || second == nil || first.InstanceID != "" || second.InstanceID != "" || inOverworldPvPSafeZone(first) || inOverworldPvPSafeZone(second) {
+	if first == nil || second == nil || first.InstanceID != "" || second.InstanceID != "" {
 		return false
 	}
 	system.mu.RLock()
@@ -163,7 +157,7 @@ func (w *World) SetOpenWorldPvP(playerID string, enabled bool) error {
 		w.Mu.RUnlock()
 		return errors.New("open-world PvP can only be changed while alive in the overworld")
 	}
-	inSafeZone := inOverworldPvPSafeZone(player)
+	inSafeZone := w.inSafeZone(player)
 	w.Mu.RUnlock()
 	w.PvP.mu.Lock()
 	defer w.PvP.mu.Unlock()
@@ -694,7 +688,7 @@ func (w *World) PvPStatus(playerID string) map[string]interface{} {
 	status["profile"] = profile
 	status["openWorldFlagged"] = w.PvP.OpenWorldFlag[playerID]
 	if playerSnapshot != nil {
-		status["inSafeZone"] = inOverworldPvPSafeZone(playerSnapshot)
+		status["inSafeZone"] = w.inSafeZone(playerSnapshot)
 	}
 	if challenge, ok := w.PvP.Challenges[playerID]; ok {
 		status["challenge"] = challenge

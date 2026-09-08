@@ -370,7 +370,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				for _, member := range partyMembers {
 					member.Mu.Lock()
 					rewardMultiplier := resonanceRewardMultiplier(member)
-					memberXP := int(float64(xpPerMember) * rewardMultiplier)
+					memberXP := wellRestedKillXP(member, int(float64(xpPerMember)*rewardMultiplier))
 					memberGold := int(float64(goldPerMember) * rewardMultiplier)
 					w.awardExperienceLocked(member, memberXP)
 					member.Gold += memberGold
@@ -472,7 +472,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				}
 				finalGold := int(float64(baseGold) * lootMult)
 				rewardMultiplier := resonanceRewardMultiplier(attacker)
-				finalXp = int(float64(finalXp) * rewardMultiplier)
+				finalXp = wellRestedKillXP(attacker, int(float64(finalXp)*rewardMultiplier))
 				finalGold = int(float64(finalGold) * rewardMultiplier)
 
 				w.awardExperienceLocked(attacker, finalXp)

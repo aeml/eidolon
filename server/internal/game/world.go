@@ -128,6 +128,7 @@ type World struct {
 	TradeByPlayer      map[string]string
 	Economy            *EconomyTelemetry
 	PvP                *PvPSystem
+	SafeZones          *SafeZoneRegistry // Initialized before publication; mutate through Register only.
 	CrystalRepairs     map[string]*CrystalRepairState
 	RepairMu           sync.RWMutex
 	Mu                 sync.RWMutex
@@ -272,6 +273,7 @@ func NewWorld(db *database.DB) *World {
 		TradeByPlayer:      make(map[string]string),
 		Economy:            economy,
 		PvP:                NewPvPSystem(),
+		SafeZones:          NewSafeZoneRegistry(),
 		CrystalRepairs:     make(map[string]*CrystalRepairState),
 		EliteSpawnTimer:    time.Now(),
 		RegenTimer:         0,
@@ -984,12 +986,15 @@ func (w *World) spawnEliteInRect(level int, minX, maxX, minZ, maxZ float64) {
 
 	// Avoid Town Safe Zone if in center sector
 	// Town: Rectangular (-100 to 100 X, 100 to 300 Z)
-	if x > -100 && x < 100 && z > 100 && z < 300 {
+	if w.SafeZoneAt("", x, z) != "" {
 		// Push out
 		if x > 0 {
 			x = 120
 		} else {
 			x = -120
+		}
+		if w.SafeZoneAt("", x, z) != "" {
+			return
 		}
 	}
 
@@ -1202,7 +1207,7 @@ func (w *World) spawnEnemyRect(subType string, count int, minX, maxX, minZ, maxZ
 
 		// Avoid Town Safe Zone if in center sector
 		// Town: Rectangular (-100 to 100 X, 100 to 300 Z)
-		if x > -100 && x < 100 && z > 100 && z < 300 {
+		if w.SafeZoneAt("", x, z) != "" {
 			continue // Skip spawn inside town
 		}
 

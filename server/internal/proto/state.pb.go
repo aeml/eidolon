@@ -945,6 +945,9 @@ type Entity struct {
 	// Active Spirit Guardians cast snapshot, independent of private build data.
 	SpiritRadius float32 `protobuf:"fixed32,114,opt,name=spirit_radius,json=spiritRadius,proto3" json:"spirit_radius,omitempty"`
 	SpiritRune   string  `protobuf:"bytes,115,opt,name=spirit_rune,json=spiritRune,proto3" json:"spirit_rune,omitempty"`
+	// Server-owned rest bank; replicated for local/remote UI and aura state.
+	WellRestedSeconds float64 `protobuf:"fixed64,116,opt,name=well_rested_seconds,json=wellRestedSeconds,proto3" json:"well_rested_seconds,omitempty"`
+	SafeZoneId        string  `protobuf:"bytes,117,opt,name=safe_zone_id,json=safeZoneId,proto3" json:"safe_zone_id,omitempty"`
 	// Authoritative jump replication
 	JumpStartX    float32 `protobuf:"fixed32,81,opt,name=jump_start_x,json=jumpStartX,proto3" json:"jump_start_x,omitempty"`
 	JumpStartY    float32 `protobuf:"fixed32,82,opt,name=jump_start_y,json=jumpStartY,proto3" json:"jump_start_y,omitempty"`
@@ -1731,6 +1734,20 @@ func (x *Entity) GetSpiritRune() string {
 	return ""
 }
 
+func (x *Entity) GetWellRestedSeconds() float64 {
+	if x != nil {
+		return x.WellRestedSeconds
+	}
+	return 0
+}
+
+func (x *Entity) GetSafeZoneId() string {
+	if x != nil {
+		return x.SafeZoneId
+	}
+	return ""
+}
+
 func (x *Entity) GetJumpStartX() float32 {
 	if x != nil {
 		return x.JumpStartX
@@ -1887,7 +1904,7 @@ const file_state_proto_rawDesc = "" +
 	"\n" +
 	"StatsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\xa3$\n" +
+	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\xf5$\n" +
 	"\x06Entity\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
 	"\vinstance_id\x18\x02 \x01(\tR\n" +
@@ -2008,7 +2025,10 @@ const file_state_proto_rawDesc = "" +
 	"\x17guardian_embrace_radius\x18q \x01(\x02R\x15guardianEmbraceRadius\x12#\n" +
 	"\rspirit_radius\x18r \x01(\x02R\fspiritRadius\x12\x1f\n" +
 	"\vspirit_rune\x18s \x01(\tR\n" +
-	"spiritRune\x12 \n" +
+	"spiritRune\x12.\n" +
+	"\x13well_rested_seconds\x18t \x01(\x01R\x11wellRestedSeconds\x12 \n" +
+	"\fsafe_zone_id\x18u \x01(\tR\n" +
+	"safeZoneId\x12 \n" +
 	"\fjump_start_x\x18Q \x01(\x02R\n" +
 	"jumpStartX\x12 \n" +
 	"\fjump_start_y\x18R \x01(\x02R\n" +

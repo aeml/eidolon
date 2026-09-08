@@ -64,7 +64,10 @@ func TestPassiveRegenerationDoesNotBankWhileFullDeadOrPaused(t *testing.T) {
 func TestPassiveRegenerationUsesRealWorldTick(t *testing.T) {
 	w := newTestWorld()
 	e := newTestPlayer("regen-tick", "Wizard")
-	e.X, e.Z = -1.25, 200
+	// This contract is outside-safe-zone passive regen. Town now deliberately
+	// restores 10% per second; isolate random hazards from this rate assertion.
+	e.X, e.Z = -1.25, 80
+	w.Hazards = make(map[string]*Hazard)
 	e.BaseStats = Stats{Vitality: 10, Wisdom: 10, Intelligence: 10}
 	e.RecalculateStats()
 	e.Health, e.Mana = 50, 50

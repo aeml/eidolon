@@ -34,6 +34,9 @@ func effectiveCriticalChance(attacker *Entity, skillName string) float64 {
 			chance += def.PerRank.SkillCritChance * float64(rank)
 		}
 	}
+	if attacker.IsWellRested() {
+		chance *= WellRestedStatMultiplier
+	}
 	return math.Min(1, chance)
 }
 
@@ -174,6 +177,9 @@ func snapshotCombatAttackerLocked(attacker *Entity) *Entity {
 	snapshot := &Entity{
 		ID:                  attacker.ID,
 		InstanceID:          attacker.InstanceID,
+		X:                   attacker.X,
+		Y:                   attacker.Y,
+		Z:                   attacker.Z,
 		Type:                attacker.Type,
 		SubType:             attacker.SubType,
 		Health:              attacker.Health,
@@ -182,6 +188,7 @@ func snapshotCombatAttackerLocked(attacker *Entity) *Entity {
 		Damage:              attacker.Damage,
 		Stats:               attacker.Stats,
 		CritChanceBonus:     attacker.CritChanceBonus,
+		WellRestedSeconds:   attacker.WellRestedSeconds,
 		PoisonDamageBonus:   attacker.PoisonDamageBonus,
 		FireDamageBonus:     attacker.FireDamageBonus,
 		HolyDamageBonus:     attacker.HolyDamageBonus,

@@ -91,6 +91,8 @@ type Entity struct {
 	ResonancePoints      int               `json:"resonancePoints,omitempty"`
 	ResonanceRanks       map[string]int    `json:"resonanceRanks,omitempty"`
 	Gold                 int               `json:"gold"`
+	WellRestedSeconds    float64           `json:"wellRestedSeconds"`
+	SafeZoneID           string            `json:"safeZoneId"`
 	GoldCreditReceipts   map[string]int    `json:"-"`
 	ItemDeliveryReceipts map[string]string `json:"-"`
 
@@ -495,6 +497,12 @@ func (e *Entity) GetEffectiveSpeed() float64 {
 // ---------------------------------------------------------------------------
 
 func (e *Entity) RecalculateStats() {
+	defer func() {
+		e.applyWellRestedStats()
+		if e.Mana > e.MaxMana {
+			e.Mana = e.MaxMana
+		}
+	}()
 	// Start with Base Stats
 	totalStr := e.BaseStats.Strength
 	totalDex := e.BaseStats.Dexterity
@@ -780,10 +788,6 @@ func (e *Entity) RecalculateStats() {
 	e.LifestealBonus = pctLifesteal
 	e.AllResistBonus = pctAllResist
 
-	if e.Mana > e.MaxMana {
-		e.Mana = e.MaxMana
-	}
-
 	// Apply Buffs/Debuffs
 	if e.BerserkerModeActive {
 		e.Damage = int(float64(e.Damage) * 1.5)
@@ -886,6 +890,8 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		Rotation:               e.Rotation,
 		Health:                 e.Health,
 		MaxHealth:              e.MaxHealth,
+		WellRestedSeconds:      e.WellRestedSeconds,
+		SafeZoneID:             e.SafeZoneID,
 		Mana:                   e.Mana,
 		MaxMana:                e.MaxMana,
 		Level:                  e.Level,
@@ -1070,6 +1076,8 @@ func (w *World) copyEntity(v *Entity) *Entity {
 		Rotation:          v.Rotation,
 		Health:            v.Health,
 		MaxHealth:         v.MaxHealth,
+		WellRestedSeconds: v.WellRestedSeconds,
+		SafeZoneID:        v.SafeZoneID,
 		Level:             v.Level,
 		State:             v.State,
 		LastMoveSequence:  v.LastMoveSequence,
@@ -1170,6 +1178,8 @@ func (w *World) copyEntity(v *Entity) *Entity {
 			e.TalentRanks = newRanks
 		}
 		e.BaseStats = v.BaseStats
+		e.WellRestedSeconds = v.WellRestedSeconds
+		e.SafeZoneID = v.SafeZoneID
 		e.Stats = v.Stats
 		e.Damage = v.Damage
 		e.Defense = v.Defense

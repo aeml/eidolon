@@ -2,12 +2,35 @@ package main
 
 import (
 	"fmt"
+	"math"
 
 	"eidolon-server/internal/database"
 	"eidolon-server/internal/game"
 )
 
 const characterResourcesVersion = 1
+
+func wellRestedSnapshot(entity *game.Entity) *database.CharacterWellRested {
+	if entity.WellRestedSeconds == 0 {
+		return nil
+	}
+	return &database.CharacterWellRested{Version: 1, RemainingSeconds: entity.WellRestedSeconds}
+}
+
+// Restore before derived maxima are calculated. No wall-clock adjustment: the
+// rest bank neither earns nor expires while the character is logged out.
+func restoreCharacterWellRested(entity *game.Entity, saved *database.CharacterWellRested) error {
+	if saved == nil {
+		entity.WellRestedSeconds = 0
+		return nil
+	}
+	if saved.Version != 1 || saved.RemainingSeconds < 0 || saved.RemainingSeconds > game.MaxWellRestedSeconds ||
+		math.IsNaN(saved.RemainingSeconds) || math.IsInf(saved.RemainingSeconds, 0) {
+		return fmt.Errorf("unsupported or invalid Well Rested snapshot")
+	}
+	entity.WellRestedSeconds = saved.RemainingSeconds
+	return nil
+}
 
 // The caller supplies the same detached entity copy used for the rest of the
 // character save. Do not read HP and mana independently from a live actor.

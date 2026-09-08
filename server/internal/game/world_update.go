@@ -10,6 +10,9 @@ import (
 )
 
 func (w *World) Update(dt float64) {
+	if dt <= 0 || !finiteCoordinate(dt) {
+		return
+	}
 	w.UpdatePvP(time.Now())
 	// Note: We do NOT hold w.Mu during the main update loop to allow parallelism.
 	// However, we need to snapshot the entity list safely.
@@ -33,7 +36,9 @@ func (w *World) Update(dt float64) {
 		regenNow := time.Now()
 		for _, e := range w.Entities {
 			e.Mu.Lock()
-			e.regenerateLocked(regenNow)
+			if e.Type != TypePlayer {
+				e.regenerateLocked(regenNow)
+			}
 			e.Mu.Unlock()
 		}
 	}
@@ -44,9 +49,12 @@ func (w *World) Update(dt float64) {
 
 	for _, e := range w.Entities {
 		allEntities = append(allEntities, e)
-		e.Mu.RLock()
+		e.Mu.Lock()
+		if e.Type == TypePlayer {
+			e.updateSafeZoneRestLocked(dt, w.SafeZoneAt(e.InstanceID, e.X, e.Z), time.Now())
+		}
 		isActivePlayer := e.Type == TypePlayer && e.State != "DEAD" && !e.Disconnected
-		e.Mu.RUnlock()
+		e.Mu.Unlock()
 		if isActivePlayer {
 			players = append(players, e)
 		}
@@ -159,7 +167,7 @@ func (w *World) processHazardDamage(dt float64, players []*Entity) {
 		}
 
 		// Players in town are safe (Town: X -100 to 100, Z 100 to 300)
-		if px >= -100 && px <= 100 && pz >= 100 && pz <= 300 {
+		if w.SafeZoneAt(instanceID, px, pz) != "" {
 			delete(w.PlayerHazardTicks, playerID)
 			continue
 		}

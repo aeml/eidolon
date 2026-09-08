@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const CurrentSchemaVersion = 8
+const CurrentSchemaVersion = 9
 
 type schemaMigration struct {
 	Version int
@@ -61,6 +61,9 @@ var schemaMigrations = []schemaMigration{
 		Apply:   applyGuildDungeonLeaderboardIndexes,
 	},
 	{Version: 8, Name: "auction_bid_operations", Apply: applyAuctionBidOperationIndexes},
+	// No backfill: a legacy character begins with zero rest and earns it online.
+	// The marker prevents a schema8 full-character writer from dropping new rest.
+	{Version: 9, Name: "well_rested_character_state", Apply: func(context.Context, *DB) error { return nil }},
 }
 
 // RunMigrations applies every missing migration in ascending version order.

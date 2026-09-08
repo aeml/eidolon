@@ -242,6 +242,9 @@ message Entity {
   // Active Spirit Guardians cast snapshot, independent of private build data.
   float spirit_radius = 114;
   string spirit_rune = 115;
+  // Server-owned rest bank; replicated for local/remote UI and aura state.
+  double well_rested_seconds = 116;
+  string safe_zone_id = 117;
 
   // Authoritative jump replication
   float jump_start_x = 81;
