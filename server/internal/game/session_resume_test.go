@@ -9,11 +9,13 @@ import (
 
 func newPlayerEntity(id string) *Entity {
 	return &Entity{
-		ID:   id,
-		Type: TypePlayer,
-		X:    10,
-		Y:    0,
-		Z:    20,
+		ID:        id,
+		Type:      TypePlayer,
+		Health:    100,
+		MaxHealth: 100,
+		X:         10,
+		Y:         0,
+		Z:         20,
 	}
 }
 

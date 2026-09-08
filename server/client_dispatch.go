@@ -551,8 +551,17 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 
 		entity.RecalculateStats()
+		if err := restoreCharacterResources(entity, char.Resources); err != nil {
+			c.sendError("Unable to restore character resources; please contact support.")
+			log.Printf("Cannot restore resources for %s: %v", c.username, err)
+			return
+		}
 		if progression.PendingLevels > 0 {
-			entity.Health = entity.MaxHealth
+			// Preserve the existing earned-level migration reward for living
+			// characters, without reviving a saved death or refilling mana.
+			if entity.State != "DEAD" {
+				entity.Health = entity.MaxHealth
+			}
 		}
 		world.AddEntity(entity)
 

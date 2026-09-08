@@ -29,7 +29,7 @@ func regenerateResource(current, maximum int, rate float64, remainder *float64) 
 
 // Caller holds the entity lock; this represents one existing one-second tick.
 func (e *Entity) regenerateLocked(now time.Time) {
-	if e.State == "DEAD" || e.Health <= 0 {
+	if e.Disconnected || e.State == "DEAD" || e.Health <= 0 {
 		e.hpRegenRemainder, e.manaRegenRemainder = 0, 0
 		return
 	}

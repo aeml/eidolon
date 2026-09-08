@@ -1292,9 +1292,16 @@ func (w *World) SetEntityDisconnected(id string, at time.Time) bool {
 	if !ok {
 		return false
 	}
+	e.Mu.Lock()
+	defer e.Mu.Unlock()
 	e.Disconnected = true
 	e.DisconnectedAt = at
-	e.State = "IDLE"
+	if e.State == "DEAD" || e.Health <= 0 {
+		e.State = "DEAD"
+	} else {
+		e.State = "IDLE"
+	}
+	e.hpRegenRemainder, e.manaRegenRemainder = 0, 0
 	e.TargetX = e.X
 	e.TargetZ = e.Z
 	e.QAHazardInspectionEndTime = time.Time{}
@@ -1313,7 +1320,12 @@ func (w *World) ClearEntityDisconnected(id string) (*Entity, bool) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 	e, ok := w.Entities[id]
-	if !ok || !e.Disconnected {
+	if !ok {
+		return nil, false
+	}
+	e.Mu.Lock()
+	defer e.Mu.Unlock()
+	if !e.Disconnected {
 		return nil, false
 	}
 	e.Disconnected = false

@@ -181,6 +181,7 @@ func characterSnapshot(username string, entity *game.Entity, savedAt time.Time) 
 
 	// Update DB character
 	char := &database.Character{
+		Resources:          resourceSnapshot(entity),
 		Name:               username,
 		Class:              entity.SubType,
 		Level:              entity.Level,
