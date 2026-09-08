@@ -120,6 +120,7 @@ qa_allowlist="${QA_USERNAME_BASE},${QA_USERNAME_BASE}-healing,${QA_USERNAME_BASE
 qa_allowlist+=",${QA_USERNAME_BASE}-duration,${QA_USERNAME_BASE}-forge,${QA_USERNAME_BASE}-whip,${QA_USERNAME_BASE}-ground"
 qa_allowlist+=",${QA_USERNAME_BASE}-cleanse"
 qa_allowlist+=",${QA_USERNAME_BASE}-cleanse-retry1"
+qa_allowlist+=",${QA_USERNAME_BASE}-economy-retry1"
 qa_allowlist+=",${QA_USERNAME_BASE}-guardian"
 qa_allowlist+=",${QA_USERNAME_BASE}-holy"
 qa_allowlist+=",${QA_USERNAME_BASE}-support-area"
@@ -253,7 +254,7 @@ run_forge_guide() {
 
 run_talent_economy() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-economy" EIDOLON_E2E_CLASS=Wizard \
-    npx playwright test tests/e2e/talent-economy-gameplay.spec.js
+    npx playwright test tests/e2e/talent-economy-gameplay.spec.js "$@"
 }
 
 run_talent_healing() {
@@ -430,6 +431,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   talent-economy)
     run_talent_economy
+    ;;
+  talent-economy-retry)
+    EIDOLON_E2E_ECONOMY_RETRY_PROBE=1 run_talent_economy --retries=1
     ;;
   talent-healing)
     run_talent_healing
