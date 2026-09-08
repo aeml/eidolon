@@ -1463,43 +1463,37 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		// - Otherwise, pick nearest valid player.
 		nearestDist := math.MaxFloat64
 		var nearestPlayer *Entity
+		var nearestX, nearestZ float64
 		maxThreat := 0.0
 		threatDist := math.MaxFloat64
 		var threatPlayer *Entity
+		var threatX, threatZ float64
 
 		for _, p := range players {
-			p.Mu.RLock()
-			// The tick's player list can predate a scene change/disconnect/death.
-			// Read and revalidate mutable membership under the actor lock.
-			if p.InstanceID != enemyInstanceID || p.Disconnected || p.State == "DEAD" {
-				p.Mu.RUnlock()
+			candidate := w.snapshotEnemyTarget(p)
+			if !candidate.active || candidate.instanceID != enemyInstanceID {
 				continue
 			}
-			if pursuitRadius > 0 && math.Hypot(p.X-spawnX, p.Z-spawnZ) > pursuitRadius {
-				p.Mu.RUnlock()
+			if pursuitRadius > 0 && math.Hypot(candidate.x-spawnX, candidate.z-spawnZ) > pursuitRadius {
 				continue
 			}
 			// Check Safe Zone
-			if p.X > -100 && p.X < 100 && p.Z > 100 && p.Z < 300 {
-				p.Mu.RUnlock()
+			if candidate.x > -100 && candidate.x < 100 && candidate.z > 100 && candidate.z < 300 {
 				continue
 			}
 			// Check Stealth
-			if p.StealthActive {
-				if time.Now().Before(p.StealthEndTime) {
-					p.Mu.RUnlock()
-					continue
-				}
+			if candidate.hidden {
+				continue
 			}
-			dx := p.X - ex
-			dz := p.Z - ez
-			pid := p.ID
-			p.Mu.RUnlock()
+			dx := candidate.x - ex
+			dz := candidate.z - ez
+			pid := candidate.id
 
 			dist := math.Sqrt(dx*dx + dz*dz)
 			if dist < nearestDist {
 				nearestDist = dist
 				nearestPlayer = p
+				nearestX, nearestZ = candidate.x, candidate.z
 			}
 
 			thr := 0.0
@@ -1511,17 +1505,21 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					maxThreat = thr
 					threatDist = dist
 					threatPlayer = p
+					threatX, threatZ = candidate.x, candidate.z
 				}
 			}
 		}
 
+		var targetX, targetZ float64
 		if threatPlayer != nil {
 			target = threatPlayer
+			targetX, targetZ = threatX, threatZ
 			minDist = threatDist
 			// Attacking a starter enemy still provokes its full response range.
 			sightRange = EnemySightRange
 		} else {
 			target = nearestPlayer
+			targetX, targetZ = nearestX, nearestZ
 			minDist = nearestDist
 		}
 
@@ -1654,9 +1652,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				}
 			} else {
 				// Chase
-				target.Mu.RLock()
-				tx, tz := target.X, target.Z
-				target.Mu.RUnlock()
+				tx, tz := targetX, targetZ
 
 				// Anti-stacking steering:
 				// Many enemies converging on the exact player position causes them to overlap.

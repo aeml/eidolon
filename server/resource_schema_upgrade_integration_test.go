@@ -182,7 +182,10 @@ func TestResourceActualSchemaUpgradeRefusalAndRecovery(t *testing.T) {
 		if err != nil || saved.Resources.Mana != 0 || saved.Resources.Health != 100 || saved.Gold != 1184 || saved.Level != 31 || saved.XP != 17 ||
 			len(saved.Inventory) != 0 || !reflect.DeepEqual(saved.Equipment, legacy.Equipment) ||
 			!reflect.DeepEqual(saved.GoldCreditReceipts, expected.GoldCreditReceipts) || !reflect.DeepEqual(saved.ItemDeliveryReceipts, expected.ItemDeliveryReceipts) {
-			t.Fatal("compatible recovery lost progress, zero mana, escrow or receipts", err)
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Fatalf("compatible recovery mismatch: resources=%+v expectedResources=%+v gold=%d level=%d xp=%d bag=%d equipmentMatch=%t goldReceiptsMatch=%t itemReceiptsMatch=%t", saved.Resources, expected.Resources, saved.Gold, saved.Level, saved.XP, len(saved.Inventory), reflect.DeepEqual(saved.Equipment, legacy.Equipment), reflect.DeepEqual(saved.GoldCreditReceipts, expected.GoldCreditReceipts), reflect.DeepEqual(saved.ItemDeliveryReceipts, expected.ItemDeliveryReceipts))
 		}
 		if retained, err := journal.Read(name); err != nil || retained != nil {
 			t.Fatal("recovered journal not acknowledged", err)
