@@ -1,6 +1,6 @@
 # Resource persistence implementation candidate — not release-ready
 
-## Refund implementation and latest acceptance — September 8, 17:23 UTC
+## Refund implementation and latest acceptance — September 8, 17:26 UTC
 
 Implemented d1e2839661e6b51ed44c6cbb093dbe35cb7c24dd, snapshot race correction
 09b56932b5482b50a8d45da83eec3e6358203b7c. Still inherits55 metadata, no56
@@ -73,12 +73,15 @@ shutdown completion. Exact owned Mongo
 `eidolon-resource-refund-repeat-20260908-1720` and anonymous volumes removed by
 EXIT trap and independently absent. No production player data touched.
 
-Full Go race **83776 is freshly ACTIVE**, log
-`/tmp/eidolon-resource-refund-full-race.log`, frozen09b5693. Root22.691s and
-database1.156s pass; game package remains running, not a whole-suite pass.
-Re-poll the exact handle; do not edit runtime sources until terminal or restart
-because observation timed out. No owned local browser or actual-Mongo process
-remains.47 CI34248491147 is the external wait (final live four-class QA active).
+Full Go race **83776 CLOSED PASS normal0**, log
+`/tmp/eidolon-resource-refund-full-race.log`, frozen09b5693: root22.691s/
+database1.156s/game365.813s, other packages cached/no tests. No owned local test,
+browser or actual-Mongo process remains.47 CI34248491147 completed SUCCESS with
+final live QA at17:23:30. Fresh exact public identity passed afterward; clean
+queued48 was normally fast-forward pushed as7a9869d639659cd6f6173dca16c12ba2487e3221.
+48 CI34257070035 (Client/Server Tests running) is the verified external wait;
+49 cannot publish before the full48 live gate. Resource candidate stays separate
+and unreleased. Full recovery regression does not close the remaining boundaries.
 
 ### Required remaining persistence work, not closed by this slice
 
