@@ -391,6 +391,7 @@ class UIManagerFeedbackMethods {
         if (!intent) return '';
         return [
             intent.entityId || '',
+            intent.targetLevel ?? '',
             intent.status || '',
             Math.round((intent.distance || 0) * 10) / 10,
             intent.preview?.basicAttack ?? '',
@@ -510,11 +511,16 @@ class UIManagerFeedbackMethods {
 
         const distanceLabel = `${(intent.distance || 0).toFixed(1)}m`;
         const typeLabel = intent.targetType || 'Enemy';
+        const levelLabel = Number.isInteger(intent.targetLevel) && intent.targetLevel > 0
+            ? `Level ${intent.targetLevel} • ` : '';
         const preview = intent.preview || {};
 
         this.combatIntentPanel.style.display = 'block';
-        if (this.combatIntentName) this.combatIntentName.textContent = intent.name || 'Enemy';
-        if (this.combatIntentMeta) this.combatIntentMeta.textContent = `${typeLabel} • ${distanceLabel}`;
+        // Phone cards hide the metadata row: keep the level at the start of
+        // their visible title so long names cannot truncate the level away.
+        if (this.combatIntentName) this.combatIntentName.textContent =
+            `${this.isMobile ? levelLabel : ''}${intent.name || 'Enemy'}`;
+        if (this.combatIntentMeta) this.combatIntentMeta.textContent = `${levelLabel}${typeLabel} • ${distanceLabel}`;
         if (this.combatIntentStatus) {
             this.combatIntentStatus.textContent = this.formatCombatIntentStatus(intent.status);
             this.combatIntentStatus.className = `combat-intent__status ${this.getCombatIntentStatusClass(intent.status)}`;

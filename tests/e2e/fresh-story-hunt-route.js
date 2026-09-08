@@ -4,7 +4,7 @@ import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { createEarnedClassCombat } from './earned-class-combat.js';
 import { recoverEarnedDeath } from './earned-death-recovery.js';
 import { earnedCheckpoint } from './earned-checkpoint.js';
-import { chooseExpeditionCombatTarget } from '../expeditionCombatTargets.js';
+import { chooseExpeditionCombatTarget, levelAppropriateExpeditionTargets } from '../expeditionCombatTargets.js';
 import { equipEarnedEmptySlots } from './earned-equipment.js';
 import { openDungeonGuide } from './dungeon-guide.js';
 import { prepareEarnedClass } from './fresh-ready-route.js';
@@ -39,11 +39,14 @@ const combatSnapshot = page => page.evaluate(() => {
 // Read replicated enemies and approach through ordinary movement. No encounter
 // waypoints, teleport commands, entity moves or progression grants are used.
 async function findExpeditionTarget(page, hunt) {
-    const fallback = hunt.enemy === 'Skeleton' ? { x: 125, z: -150 } :
+    // The original Skeleton fallback lay in level-ten territory. Walk back
+    // toward the authored starter band if streaming shows no appropriate foe.
+    const fallback = hunt.enemy === 'Skeleton'
+        ? (hunt.minEnemyLevel < 10 ? { x: 175, z: 200 } : { x: 125, z: -150 }) :
         hunt.enemy === 'Imp' ? { x: -300, z: 200 } : { x: 300, z: 200 };
     for (let step = 0; step < 100; step++) {
         expect((await readPlayerState(page)).state, 'Ordinary expedition travel must be survivable').not.toBe('DEAD');
-        const candidates = await page.evaluate(hunt => {
+        const observed = await page.evaluate(hunt => {
             const game = window.game;
             return [...game.remotePlayers.values()].filter(enemy => enemy.isActive && enemy.state !== 'DEAD' &&
                 (enemy.subType || enemy.constructor.name) === hunt.enemy && enemy.level >= hunt.minEnemyLevel &&
@@ -51,6 +54,8 @@ async function findExpeditionTarget(page, hunt) {
                 x: enemy.position.x, z: enemy.position.z, rendered: game.activeEntitiesCache.includes(enemy),
                 distance: game.player.position.distanceTo(enemy.position) })).sort((a, b) => a.distance - b.distance);
         }, hunt);
+        const candidates = levelAppropriateExpeditionTargets(observed, hunt.minEnemyLevel,
+            (await readPlayerState(page)).level);
         for (const enemy of candidates.slice(0, 6)) {
             if (!enemy.rendered) continue;
             const point = await projectEntity(page, enemy.id);

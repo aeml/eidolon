@@ -1,4 +1,19 @@
-import { chooseExpeditionCombatTarget } from './expeditionCombatTargets.js';
+import { chooseExpeditionCombatTarget, levelAppropriateExpeditionTargets } from './expeditionCombatTargets.js';
+
+test('quest travel seeks an appropriate fight rather than the closest much stronger enemy', () => {
+    const candidates = Object.freeze([
+        Object.freeze({ level: 7, distance: 3 }), Object.freeze({ level: 3, distance: 10 }),
+        Object.freeze({ level: 1, distance: 2 }), Object.freeze({ level: 4, distance: 6 })
+    ]);
+    expect(levelAppropriateExpeditionTargets(candidates, 3, 3)).toEqual([candidates[3], candidates[1]]);
+    expect(candidates[0].level).toBe(7);
+});
+
+test('level-aware travel never lowers the server quest minimum', () => {
+    expect(levelAppropriateExpeditionTargets([{ level: 9 }, { level: 10, distance: 5 }], 10, 3))
+        .toEqual([{ level: 10, distance: 5 }]);
+    expect(levelAppropriateExpeditionTargets([{ level: 7, distance: 3 }], 3, 3)).toEqual([]);
+});
 
 const target = Object.freeze({ id: 'quest-skeleton', level: 3, alive: true, distance: 15 });
 test('nearby lower-level pursuer can be fought without changing quest eligibility', () => {

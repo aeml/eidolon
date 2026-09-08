@@ -163,6 +163,22 @@ describe('Combat intent HUD', () => {
         expect(document.getElementById('combat-intent-preview-ability').textContent).toBe('~63');
     });
 
+    test('target level is readable and refreshes without a new target or distance', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        const intent = { entityId: 'same', targetType: 'Skeleton', targetLevel: 7,
+            distance: 4, status: 'in_range' };
+        ui.updateCombatIntent(intent);
+        expect(ui.combatIntentMeta.textContent).toBe('Level 7 • Skeleton • 4.0m');
+        ui.isMobile = true;
+        ui.updateCombatIntent({ ...intent, targetLevel: 3 });
+        expect(ui.combatIntentMeta.textContent).toBe('Level 3 • Skeleton • 4.0m');
+        expect(ui.combatIntentName.textContent).toBe('Level 3 • Enemy');
+        ui.updateCombatIntent({ ...intent, targetLevel: -1 });
+        expect(ui.combatIntentMeta.textContent).toBe('Skeleton • 4.0m');
+        ui.clearCombatIntent();
+    });
+
     test('clearCombatIntent hides the panel and clears text', () => {
         buildDom();
         const ui = new UIManager(false);
