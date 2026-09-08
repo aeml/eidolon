@@ -5,7 +5,68 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 18:45 UTC
+## Current checkpoint — September 8, 19:01 UTC
+
+Previous goal turn was PROGRESS (bid acceptance and48 failure diagnosis).
+This turn is PROGRESS: accepted Seraph route correction, fresh-world verification,
+ordered inheritance through49–55 and normal fast-forward48 correction push.
+Full1.1–1.10 remains active/incomplete. No milestone gate was reduced.
+
+Actual19295 CLOSED FAIL1 on9dedb2a: the service menu could open during movement,
+before readiness. f28e797c3babc3d8a16da66aea98dde55b819a6a now closes the
+confirmed menu via its visible control around navigation, retrying only a
+GroundInputUnavailableError with no attempted input and a confirmed modal.
+Issued movement failures still fail. Existing ordinary zoom and proved facade
+exit/observed-Titan navigation are retained; no runtime/gameplay changes.
+
+Actual69668 CLOSED PASS0/1.7m; fresh-world repeat1 normal script completion1.8m
+(set-e wrapper proceeds and archives evidence). Repeat2 also passes rendered
+assertions1.9m, but outer67120 ends143 afterward before archiving it. Do not
+count that whole wrapper as a normal success or infer the signal's cause.
+Additional standalone57904 CLOSED PASS0, explicit QA_SCRIPT_EXIT=0/1.7m.
+These preserve15/16.5s lifetimes,288 baseline and345 trained/saved smites,
+talent persistence and ordinary dungeon recall cleanup. Full lint61600 PASS0.
+All owned Seraph containers/data cleaned, independently absent; scans pass.
+No owned local test handle remains active.
+
+Logs `/tmp/eidolon-release48-seraph-{walk,repeat-1,repeat-2,final}.log`.
+Reviewed evidence `/tmp/eidolon-seraph48-walk-evidence-VUj5lP/{first,repeat-1}`;
+additional evidence `/tmp/eidolon-seraph48-third-evidence-s4Mf9e/{rendered-pass-wrapper143,final-normal}`.
+Source acceptance document `docs/plans/2026-09-08-release48-seraph-recovery.md`
+retains earlier failures and the pacing watchdog qualification.
+
+Recovery546391c5af5193ba6456db9f4802d4c8f58208c9 was fast-forward carried to
+canonical48 WT, then sequentially merged into49–55 without conflicts. Every
+merge changes ONLY Seraph QA and its evidence document; identical test blob
+210ee51b56bfefe7a21d6e07738e3a3940a28409, own version/login/patch notes verified.
+Earlier release runtime and functional acceptance evidence remains unchanged.
+
+| Release | Current queued SHA |
+|---|---|
+|48|546391c5af5193ba6456db9f4802d4c8f58208c9|
+|49|9342ac074a29831e9dea54a0e2ad6eff890b6a3f|
+|50|1e2eb11f85dc37cb50940d122a5431d21eb9c10e|
+|51|5db01591b81bf2b248cf7130377a7ea71bf2fd6e|
+|52|59621797fd39e4322b4df057883579943081dafd|
+|53|882b96cc22f957b245bd54d49f7cd50f6ea06319|
+|54|60a42b60179f8192f33f73aeac7e21538e88b695|
+|55|9f92f985e6857edcdb99863b99d823af9196b4af|
+
+Clean source, exact head, remote still7a9869d and ancestry checked before normal
+push8658 CLOSED0 published ONLY48/546391c to master. Remote SHA independently
+confirmed. **48 CI34266379714 ACTIVE** on this exact SHA; prior34257070035 remains
+failed. Fresh public release/health still match healthy47/6925c5113ee6acdf698713f3332f80dcf546bd76,
+database ready. No48 live/pass claim;49 waits on the entire new48 CI/finalLiveQA
+and fresh client/server identity. Root staged52/ledger was NOT pushed.
+
+Resource candidate37e01a1 remains separate/unreleased55 metadata, fullrace and
+actual bid acceptance closed below. It has not yet inherited the new55 QA-only
+merge. Next resource work: durable buyout/item, listing deposit and seller
+payout/return operations with enforced rollback compatibility. Full campaign,
+first-hour pacing, physical phones, dungeon/raid groups and remaining roadmap
+milestones are still open. No56 approval or goal completion implied.
+
+## Historical checkpoint — September 8, 18:45 UTC
 
 Previous regeneration-only turn was NO ROADMAP PROGRESS; this resumed turn is
 PROGRESS (actual bid acceptance, test corrections, committed evidence and48
