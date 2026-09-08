@@ -67,7 +67,7 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Alpha 1.0.49 (only the fragments you need)');
         expect(indexHtml.match(/data-version="1\.0\.49"/g)).toHaveLength(1);
         expect(indexHtml.indexOf('data-version="1.0.49"')).toBeLessThan(indexHtml.indexOf('data-version="1.0.48"'));
-        for (const heading of ['A personal fragment budget', 'Pick them up, then return to Ilyra', 'Bad luck stays protected', 'Your contract stays yours']) expect(indexHtml).toContain(heading);
+        for (const heading of ['A personal fragment budget', 'No glowing box after respawn', 'Pick them up, then return to Ilyra', 'Bad luck stays protected', 'Your contract stays yours']) expect(indexHtml).toContain(heading);
     });
     test('adds earned Forge progression notes while retaining collection history', () => {
         expect(indexHtml).toContain('Alpha 1.0.48 (every shard counts)');
