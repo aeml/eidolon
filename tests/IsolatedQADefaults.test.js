@@ -1,5 +1,12 @@
 import { readFileSync } from 'node:fs';
 
+test('fresh collection allows explicit four-class comparisons while keeping Wizard as the default', () => {
+    const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
+    expect(script).toContain('local fresh_class="${EIDOLON_E2E_FRESH_CLASS:-Wizard}"');
+    expect(script).toContain('Wizard|Fighter|Rogue|Cleric) ;;');
+    expect(script).toContain('EIDOLON_E2E_CLASS="${fresh_class}"');
+});
+
 test('early gear/stat comparison is opt-in and preserves the unprepared release baseline', () => {
     const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
     const early = readFileSync('tests/e2e/early-earned-preparation.js', 'utf8');

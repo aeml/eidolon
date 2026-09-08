@@ -1,5 +1,36 @@
 # Basic-attack cadence — isolated experiment, not released
 
+## Original-campaign collection comparison passed
+
+76763 completed normally with exit0 on clean d72f7df: Wizard opening32seconds,
+then15 observed target deaths,8/8 seeds, no player deaths and470seconds in the
+collection phase (8.4minutes total test). Ordinary manual Ilyra turn-in consumed
+the seeds, awarded100gold/8000XP, preserved the next accepted quest and saved
+progress across login, and correctly explained the level30 dungeon gate.
+Artifact credential scan0 and independent container absence passed. This was
+the original15-chapter/current-curve comparison, not the31-chapter campaign.
+Opening reward/relogin was retained; this does not establish an uninterrupted
+first hour. The handoff was level17: the gap to30 and excessive payout remain
+open progression work, not solved by faster attacks.
+
+After the run closed, bfd2d7d merged release46's QA-only recovery correction
+86609cd. Production cadence is unchanged. The existing fresh-collection route
+now supports an explicit EIDOLON_E2E_FRESH_CLASS override for all four classes,
+retaining Wizard by default and the same isolated account/retry/death bounds.
+46510 passed27 client checks/.913s plus full lint/bash/diff.32798 passed focused
+race2.624s, including new haste and actual four-class PvP impact/consent checks.
+
+Source review: Lucky/critical opportunities and Executioner damage scale with
+the increased number of basic hits; no proc chance or per-hit modifier changed.
+Poison Coating refreshes the same status rather than stacking extra per-hit
+ticks; tickPoisonLocked retains a one-second clock (covered by the race run).
+PvP retains65% per-hit scaling and35% target-health burst cap; unchanged caps do
+not establish unchanged sustained PvP damage. Zeal and Time Warp still multiply
+attack frequency after the base formula, as the new regression confirms.
+Therefore the one-second floor below is the **unbuffed Dexterity floor**, not an
+absolute limit while haste buffs are active. All-class earned comparison and
+actual PvP/encounter pacing still need verification before a final selection.
+
 ## Rebased comparison on the original campaign, September 8
 
 9505325 applies only the existing0bbc945 cadence commit to the current starter
@@ -76,5 +107,5 @@ rewards or reconnect refills to hide weak combat pacing.
 
 Proposed patch-note text, pending verification and packaging: “Basic attacks are
 more responsive for new heroes, giving each class a useful fallback between
-abilities. Dexterity still improves attack frequency, up to one attack per second.
+abilities. Dexterity still improves unbuffed attack frequency, up to one attack per second.
 Ability cooldowns, enemy attacks and passive regeneration are unchanged.”

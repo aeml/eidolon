@@ -293,7 +293,12 @@ run_shield_training() {
 }
 
 run_fresh_collection() {
-  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-first-grove" EIDOLON_E2E_CLASS=Wizard \
+  local fresh_class="${EIDOLON_E2E_FRESH_CLASS:-Wizard}"
+  case "${fresh_class}" in
+    Wizard|Fighter|Rogue|Cleric) ;;
+    *) echo "EIDOLON_E2E_FRESH_CLASS must be Wizard, Fighter, Rogue or Cleric." >&2; return 1 ;;
+  esac
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-first-grove" EIDOLON_E2E_CLASS="${fresh_class}" \
     EIDOLON_E2E_FRESH_COLLECTION=1 npx playwright test tests/e2e/fresh-opening-gameplay.spec.js
 }
 

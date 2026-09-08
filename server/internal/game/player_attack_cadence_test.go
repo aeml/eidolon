@@ -66,3 +66,52 @@ func TestPlayerBasicAttackCadenceStillRejectsEarlyAttackRequests(t *testing.T) {
 		t.Fatal("repeat input double-attacked")
 	}
 }
+
+func TestPlayerBasicAttackCadencePreservesExistingHasteMultipliers(t *testing.T) {
+	for _, dex := range []int{10, 200} {
+		for _, buff := range []struct {
+			zeal, warp bool
+			factor     float64
+		}{{true, false, 1.3}, {false, true, 1.5}, {true, true, 1.3 * 1.5}} {
+			p := newTestPlayer("cadence-haste", "Cleric")
+			p.BaseStats = Stats{Strength: 10, Dexterity: dex, Intelligence: 10, Wisdom: 10, Vitality: 10}
+			p.Health, p.Mana = 1, 1
+			p.ZealActive, p.TimeWarpActive = buff.zeal, buff.warp
+			p.RecalculateStats()
+			want := playerBasicAttackInterval(dex) / buff.factor
+			if math.Abs(p.AttackSpeed-want) > 1e-9 || math.Abs(p.AttackCooldown.Seconds()-want) > 1e-8 {
+				t.Fatalf("haste no longer applies after base cadence: %v vs %v", p.AttackSpeed, want)
+			}
+			if p.Health != 1 || p.Mana != 1 || p.HpRegen != .1 || p.ManaRegen != .1 {
+				t.Fatal("haste changed resources or passive recovery")
+			}
+		}
+	}
+}
+
+func TestPlayerBasicAttackCadencePreservesPerHitPvPDamageAndConsent(t *testing.T) {
+	for _, class := range []string{"Wizard", "Fighter", "Rogue", "Cleric"} {
+		t.Run(class, func(t *testing.T) {
+			p := newTestPlayer("cadence-pvp-source", class)
+			p.BaseStats = Stats{Strength: 400, Dexterity: 400, Intelligence: 400, Wisdom: 400, Vitality: 10}
+			p.RecalculateStats()
+			p.X, p.Z = 300, 200
+			target := newTestPlayer("cadence-pvp-target", "Fighter")
+			target.X, target.Z, target.Defense = 302, 200, 0
+			w := newPvPTestWorld(p, target)
+			w.applyAttackImpact(p.ID, target.ID, "", nil, 0)
+			if target.Health != 500 {
+				t.Fatal("unconsented basic attack caused damage")
+			}
+			for _, id := range []string{p.ID, target.ID} {
+				if err := w.SetOpenWorldPvP(id, true); err != nil {
+					t.Fatal(err)
+				}
+			}
+			w.applyAttackImpact(p.ID, target.ID, "", nil, 0)
+			if p.Damage != 100 || target.Health != 435 {
+				t.Fatalf("cadence changed the actual 65%% PvP impact: base%d targetHP%d", p.Damage, target.Health)
+			}
+		})
+	}
+}
