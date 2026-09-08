@@ -5,7 +5,66 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 06:30 UTC
+## Current checkpoint — September 8, 06:55 UTC
+
+The prior short user turn reverified existing0.01 regeneration (six client tests
+and focused server tests passed), but added no implementation. This continuation
+makes progress: closes stale release/earned handles, fixes uninterrupted test
+navigation, obtains a new earlier pacing failure, and starts a prepared Wizard
+diagnostic. Full1.1–1.10 remains active/incomplete; no goal status change applies.
+
+**45 failed, not live:** fresh `gh run view34192659636` confirms failure on exact
+45b4b831a85c96992cd396344610cd1fb9175fd6. Client/server/anonymous browser passed;
+predeploy Character QA failed, all four remaining jobs skipped. Public client
+release.json freshly returns Alpha1.0.44 /847d454a94a7424ab303f6339c875ab170bff36e.
+No push this turn. Do not retry unchanged CI or push46/root master. The existing
+46–52 queue below remains locally staged, not published.
+
+**Earned candidate terminal results:**51389 failed6.4m at9/40 Watch credit after
+three deaths, exceeding the two-respawn bound; actual first two respawns restored
+both bars. Its reconnecting opening/diary checkpoints cannot prove uninterrupted
+resource pacing. New a26f7d1 uninterrupted mode skips those logins and retains
+the final persistence check. Full43054 passed226 client suites/3361 tests/
+160.389s; Go source remains identical to passing31046. Browser2755 failed37.9s
+because the opening quest window blocked the next movement click. The old30895
+handle is missing, so its result is not assumed. Fresh83836 passed ten checkpoint
+tests and route lint.8855589 closes the window through its normal button before
+travel, without changing gameplay, counts, deaths or deadlines.
+
+**Corrected uninterrupted33414 FAILED2.0m, closed:** opening32s/no deaths/one
+retreat; checkpoint retained125/125HP and11/115mana without reconnecting. Travel
+passed the previously blocked click, then the level2 Wizard died clearing the
+diary site before inspection. Viewed screenshot shows0/125HP and20/115mana;
+archived `/tmp/eidolon-uninterrupted-diary-evidence-3mszUV/combat-failure-mara_diary.png`.
+Log `/tmp/eidolon-earned-watch-close.log`. Scan/owned cleanup passed; no owned QA
+containers remained before starting the separate dungeon run. Candidate now clean
+fa20e50 in `/tmp/eidolon-earned-story-TZuGpp`. No Watch completion or fresh pacing
+approval. Its investigation driver currently stands and fights nearby enemies;
+unlike the Watch driver it does not use ordinary ranged retreats. This limits
+any inference about all viable player strategies, but does not erase the failure.
+
+**45 diagnostic candidate1af1ef0**, worktree
+`/tmp/eidolon-release45-wizard-ZLnqjH`, branch work/release45-wizard-preparation.
+The failed prepared fixture configured Fighter skills/runes but left Wizard
+Fireball untrained. A new helper buys up to five Mastery ranks from already
+available points and selects level-unlocked Empowered through the real build UI.
+No gameplay damage changes, resource/gear grants, extra levels, reconnects,
+deadline changes or weakened survival/spawn assertions.0.01 stays unchanged.
+This is prepared functional coverage, not a substitute for earned-entry balance.
+New actual-dispatch server test plus passive-regeneration race4500 passed3.063s;
+preparation-policy15 tests/lint20741 passed. Untrained spell258 versus prepared618
+raw damage both cost30mana, with1s versus2.5s effective cooldown. Canonical maximum
+mana is1685; CI's1205 was current mana, not maximum. See candidate evidence doc.
+
+**One owned browser61816 ACTIVE:** source1af1ef0 frozen, route verdant,
+run ID release45-wizard, API/Mongo/web18465/18466/18467. Log
+`/tmp/eidolon-release45-wizard.log`. Actual process polled live06:55, disposable
+services ready and one test started. No result yet. Do not edit/restart its source
+or launch another owned browser until terminal. All other owned handles closed.
+No new potion/rest mechanic or basic-attack multiplier was introduced; the
+optional recovery preference remains unanswered. Broader roadmap gates stay open.
+
+## Historical checkpoint — September 8, 06:30 UTC
 
 Previous goal turn was progress (52 packaged and actual browser recovery passed).
 This continuation closes all full checks, integrates verified52 locally, and
