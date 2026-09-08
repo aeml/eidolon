@@ -42,8 +42,8 @@ func TestExperienceCrossesCapIntoResonanceWithoutOverflow(t *testing.T) {
 	if player.ResonanceXP != 75 {
 		t.Fatalf("overflow resonance XP = %d, want 75", player.ResonanceXP)
 	}
-	if player.MaxExperience <= int(^uint32(0)>>1) {
-		t.Fatalf("cap XP requirement %d does not exercise int64 protocol range", player.MaxExperience)
+	if legacyExperienceRequiredForLevel(100) <= int(^uint32(0)>>1) {
+		t.Fatal("legacy save migration must still cover XP beyond int32")
 	}
 }
 

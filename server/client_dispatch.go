@@ -133,13 +133,14 @@ func (c *Client) dispatchMessage(msg Message) {
 		} else {
 			// Create new character
 			char = &database.Character{
-				Name:  c.username, // Simple name
-				Class: payload.Type,
-				Level: 1,
-				XP:    0,
-				X:     -1.25, // Lanternhold center aisle
-				Y:     0,
-				Z:     200, // Town Center Z
+				Name:               c.username, // Simple name
+				Class:              payload.Type,
+				Level:              1,
+				XP:                 0,
+				ProgressionVersion: game.CurrentProgressionVersion,
+				X:                  -1.25, // Lanternhold center aisle
+				Y:                  0,
+				Z:                  200, // Town Center Z
 				Stats: database.Stats{
 					Strength:     10,
 					Dexterity:    10,
@@ -163,6 +164,13 @@ func (c *Client) dispatchMessage(msg Message) {
 				c.sendError("Failed to create character")
 				return
 			}
+		}
+
+		progression, err := game.MigrateSavedProgression(char.Level, char.XP, char.ProgressionVersion)
+		if err != nil {
+			c.sendError("Unable to restore character progression; please contact support.")
+			log.Printf("Cannot restore progression for %s: %v", c.username, err)
+			return
 		}
 
 		// Create player entity from DB character
@@ -249,6 +257,7 @@ func (c *Client) dispatchMessage(msg Message) {
 			UnlockedSkills: []string{},
 		}
 		entity.NormalizeResonanceProgress()
+		entity.ApplySavedProgression(progression)
 
 		// Passive talents: ranked map. Migrate legacy unlocked_talents (rank=1) if needed.
 		if char.TalentRanks != nil {

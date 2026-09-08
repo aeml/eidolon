@@ -2,7 +2,6 @@ package game
 
 import (
 	"fmt"
-	"math"
 )
 
 const (
@@ -22,10 +21,7 @@ type EndgameProgress struct {
 }
 
 func experienceRequiredForLevel(level int) int {
-	if level <= 1 {
-		return 100
-	}
-	return int(100 * math.Pow(1.2, float64(level-1)))
+	return progressionRequirement(CurrentProgressionVersion, level)
 }
 
 func ExperienceRequiredForLevel(level int) int {
@@ -155,11 +151,10 @@ func (player *Entity) addResonanceExperienceLocked(amount int) {
 		return
 	}
 	player.ResonanceXP += amount
-	for player.ResonanceXP >= ResonanceXPPerLevel {
-		player.ResonanceXP -= ResonanceXPPerLevel
-		player.ResonanceLevel++
-		player.ResonancePoints++
-	}
+	earned := player.ResonanceXP / ResonanceXPPerLevel
+	player.ResonanceXP %= ResonanceXPPerLevel
+	player.ResonanceLevel += earned
+	player.ResonancePoints += earned
 }
 
 func (w *World) SpendResonancePoint(playerID, trait string) (*Entity, error) {
