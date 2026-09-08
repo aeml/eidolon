@@ -2,6 +2,7 @@ package game
 
 import (
 	"eidolon-server/internal/database"
+	"eidolon-server/internal/lifecycle"
 	"fmt"
 	"log"
 	"sort"
@@ -46,10 +47,11 @@ type Auction struct {
 }
 
 type TradingSystem struct {
-	mu       sync.RWMutex
-	Auctions map[string]*Auction
-	db       *database.DB
-	economy  *EconomyTelemetry
+	backgroundWork lifecycle.Group
+	mu             sync.RWMutex
+	Auctions       map[string]*Auction
+	db             *database.DB
+	economy        *EconomyTelemetry
 }
 
 func NewTradingSystem(db *database.DB) *TradingSystem {
@@ -515,7 +517,7 @@ func (ts *TradingSystem) BidAuction(auctionID string, bidder *Entity, bidAmount 
 		}
 	}
 	if previousBidderID != "" {
-		go refundFunc(previousBidderID, previousBidderName, previousBid)
+		ts.backgroundWork.Go(func() { refundFunc(previousBidderID, previousBidderName, previousBid) })
 	}
 
 	return nil

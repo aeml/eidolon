@@ -2,6 +2,7 @@ package game
 
 import (
 	"eidolon-server/internal/database"
+	"eidolon-server/internal/lifecycle"
 	"fmt"
 	"hash/fnv"
 	"log"
@@ -113,19 +114,23 @@ func (sm *SpatialMap) Nearby(x, z, radius float64, instanceID string) []*Entity 
 }
 
 type World struct {
-	Entities        map[string]*Entity
-	Parties         map[string]*Party
-	Trading         *TradingSystem
-	Grid            *SpatialMap
-	InstanceLayouts map[string]*DungeonInstance
-	InstanceMu      sync.RWMutex
-	DirectTrades    map[string]*DirectTrade
-	TradeByPlayer   map[string]string
-	Economy         *EconomyTelemetry
-	PvP             *PvPSystem
-	CrystalRepairs  map[string]*CrystalRepairState
-	RepairMu        sync.RWMutex
-	Mu              sync.RWMutex
+	backgroundWork     lifecycle.Group
+	backgroundStopInit sync.Once
+	backgroundStopOnce sync.Once
+	backgroundStop     chan struct{}
+	Entities           map[string]*Entity
+	Parties            map[string]*Party
+	Trading            *TradingSystem
+	Grid               *SpatialMap
+	InstanceLayouts    map[string]*DungeonInstance
+	InstanceMu         sync.RWMutex
+	DirectTrades       map[string]*DirectTrade
+	TradeByPlayer      map[string]string
+	Economy            *EconomyTelemetry
+	PvP                *PvPSystem
+	CrystalRepairs     map[string]*CrystalRepairState
+	RepairMu           sync.RWMutex
+	Mu                 sync.RWMutex
 
 	// Elite Spawning
 	EliteSpawnTimer time.Time

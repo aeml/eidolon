@@ -49,7 +49,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 		if spawnX == 0 && spawnZ == 0 && (target.X != 0 || target.Z != 0) {
 			spawnX, spawnZ = target.X, target.Z
 		}
-		go w.markDungeonRoomClearedIfDefeated(instanceID, defeatedEnemyID, spawnX, spawnZ)
+		w.runBackground(func() { w.markDungeonRoomClearedIfDefeated(instanceID, defeatedEnemyID, spawnX, spawnZ) })
 	}
 
 	// === ON-KILL EFFECTS (Unique Effects & Set Bonuses) ===
@@ -140,7 +140,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 		attackerPartyID := attacker.PartyID
 		attacker.Mu.Unlock()
 
-		go func() {
+		w.runBackground(func() {
 			if tInstanceID != "" {
 				w.markDungeonRoomClearedIfDefeated(tInstanceID, tID, tSpawnX, tSpawnZ)
 			}
@@ -449,7 +449,8 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 
 					if isBoss && w.OnEvent != nil {
 						weeklyRaid := weeklyRaidBoss
-						go func(pid string, summary RewardSummaryEvent, sendSummary, weekly bool) {
+						pid, summary, sendSummary, weekly := memberID, rewardSummary, hasRewardSummary, weeklyRaid
+						w.runBackground(func() {
 							w.OnEvent("inventory_update", pid)
 							if sendSummary {
 								w.OnEvent("reward_summary", summary)
@@ -457,7 +458,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 							if weekly {
 								w.OnEvent("weekly_raid_complete", WeeklyRaidCompletionEvent{PlayerID: pid, InstanceID: tInstanceID})
 							}
-						}(memberID, rewardSummary, hasRewardSummary, weeklyRaid)
+						})
 					}
 				}
 			} else {
@@ -550,7 +551,8 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 
 				if isBoss && w.OnEvent != nil {
 					weeklyRaid := weeklyRaidBoss
-					go func(pid string, summary RewardSummaryEvent, sendSummary, weekly bool) {
+					pid, summary, sendSummary, weekly := attackerID, rewardSummary, hasRewardSummary, weeklyRaid
+					w.runBackground(func() {
 						w.OnEvent("inventory_update", pid)
 						if sendSummary {
 							w.OnEvent("reward_summary", summary)
@@ -558,7 +560,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 						if weekly {
 							w.OnEvent("weekly_raid_complete", WeeklyRaidCompletionEvent{PlayerID: pid, InstanceID: tInstanceID})
 						}
-					}(attackerID, rewardSummary, hasRewardSummary, weeklyRaid)
+					})
 				}
 			}
 
@@ -610,7 +612,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				}
 				w.Mu.Unlock()
 			}
-		}()
+		})
 
 	}
 }

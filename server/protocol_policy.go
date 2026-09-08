@@ -142,6 +142,11 @@ var inboundMessagePolicies = map[string]messagePolicy{
 }
 
 func (c *Client) handleMessage(msg Message) {
+	done, admitted := serverAdmission.Begin()
+	if !admitted {
+		return
+	}
+	defer done()
 	if c.transportClosed.Load() {
 		return
 	}

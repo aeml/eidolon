@@ -66,13 +66,18 @@ func savePlayerNow(client *Client) {
 	saveCharacterDB(client, entity)
 }
 
-func saveCharacterDB(client *Client, entity *game.Entity) error {
-	char := characterSnapshot(client.username, entity, time.Now())
+func characterSnapshotForSave(username string, entity *game.Entity) *database.Character {
+	char := characterSnapshot(username, entity, time.Now())
 	if entity.InstanceID != "" {
 		if snapshot, ok := world.GetDungeonResumeSnapshot(entity.InstanceID); ok {
 			char.DungeonProgress = dungeonResumeToDatabase(snapshot)
 		}
 	}
+	return char
+}
+
+func saveCharacterDB(client *Client, entity *game.Entity) error {
+	char := characterSnapshotForSave(client.username, entity)
 	if err := persistCharacterSnapshot(client.username, char); err != nil {
 		log.Printf("Failed to save character for %s: %v", client.username, err)
 		return err

@@ -251,8 +251,10 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 				playerID := player.ID
 				instanceID := player.InstanceID
 				x, z := player.X, player.Z
-				go func() {
-					time.Sleep(time.Second)
+				w.runBackground(func() {
+					if !w.waitBackground(time.Second) {
+						return
+					}
 					w.Mu.Lock()
 					defer w.Mu.Unlock()
 					owner := w.Entities[playerID]
@@ -260,7 +262,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 						return
 					}
 					w.damageEarthshakerArea(owner, x, z, targetX, targetZ, 3.5, damage/2, time.Second, false)
-				}()
+				})
 			}
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 12*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)

@@ -23,6 +23,8 @@ services:
       start_period: 20s
 
   api:
+    # Permit admission closure, earned-work drain and durable final snapshots.
+    stop_grace_period: 60s
     build:
       context: .
       dockerfile: Dockerfile

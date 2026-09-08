@@ -1,6 +1,9 @@
 package main
 
-import "sync"
+import (
+	"eidolon-server/internal/lifecycle"
+	"sync"
+)
 
 // Serialize a character's handoff, commands and persistence without holding the
 // shared sessions/hub lock during IO. Entries exist only while in use/queued.
@@ -13,7 +16,7 @@ var characterWork = struct {
 	sync.Mutex
 	entries map[string]*characterWorkEntry
 }{entries: make(map[string]*characterWorkEntry)}
-var backgroundCharacterWork sync.WaitGroup
+var backgroundCharacterWork = &lifecycle.Group{}
 
 func lockCharacterWork(username string) func() {
 	characterWork.Lock()
@@ -37,11 +40,7 @@ func lockCharacterWork(username string) func() {
 }
 
 func scheduleCharacterWork(work func()) {
-	backgroundCharacterWork.Add(1)
-	go func() {
-		defer backgroundCharacterWork.Done()
-		work()
-	}()
+	backgroundCharacterWork.Go(work)
 }
 
 // Caller holds character work lock. A stale socket may neither issue commands

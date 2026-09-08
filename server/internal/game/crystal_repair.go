@@ -75,12 +75,17 @@ func (w *World) StartCrystalRepair(instanceID, raidType string, participants []s
 	w.emitCrystalRepair(state, "ritual_start", 0, 0, definition.Crystal+" Repair Vigil",
 		"Maelin: The raid opened the chamber. I can restore the crystal, but Malachar's corruption will answer in three waves.",
 		"Defend Maelin and clear every attacker. The ritual pauses until each wave is defeated.")
-	go w.runCrystalRepair(state)
+	w.runBackground(func() { w.runCrystalRepair(state) })
 	return true
 }
 
 func (w *World) runCrystalRepair(state *CrystalRepairState) {
 	for wave := 1; wave <= 3; wave++ {
+		select {
+		case <-w.backgroundDone():
+			return
+		default:
+		}
 		if _, exists := w.getDungeonInstance(state.InstanceID); !exists {
 			return
 		}
@@ -165,7 +170,11 @@ func (w *World) waitForCrystalRepairWave(instanceID string, enemyIDs []string) b
 		if allDefeated {
 			return true
 		}
-		<-ticker.C
+		select {
+		case <-w.backgroundDone():
+			return false
+		case <-ticker.C:
+		}
 	}
 }
 

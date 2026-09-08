@@ -5,6 +5,7 @@ import (
 	crand "crypto/rand"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -405,23 +406,20 @@ func main() {
 
 	world = game.NewWorld(db)
 	startEconomyMetrics(world, *economyMetricsFilePath)
+	loops := newServerLoops()
 
 	// Sweep goroutine: remove disconnected player entities whose resume window
 	// has expired. Runs every 30 seconds.
-	go func() {
-		ticker := time.NewTicker(30 * time.Second)
-		defer ticker.Stop()
-		for range ticker.C {
-			expired := world.CollectExpiredDisconnectedPlayers(resumeWindow)
-			for _, e := range expired {
-				log.Printf("Session resume window expired for player %s (%s); entity removed", e.Name, e.ID)
-				// Clean up party membership now that the entity is gone (0.37.1).
-				if e.PartyID != "" {
-					world.RemoveExpiredMemberFromParty(e.ID, e.PartyID)
-				}
+	loops.Every(30*time.Second, func() {
+		expired := world.CollectExpiredDisconnectedPlayers(resumeWindow)
+		for _, e := range expired {
+			log.Printf("Session resume window expired for player %s (%s); entity removed", e.Name, e.ID)
+			// Clean up party membership now that the entity is gone (0.37.1).
+			if e.PartyID != "" {
+				world.RemoveExpiredMemberFromParty(e.ID, e.PartyID)
 			}
 		}
-	}()
+	})
 
 	// Set up World Event Callback
 	world.OnEvent = func(eventType string, data interface{}) {
@@ -433,14 +431,14 @@ func main() {
 			}
 			payload, _ := json.Marshal(evt)
 			message := createMessage("chronicle_advance", payload)
-			go func() {
+			scheduleCharacterWork(func() {
 				client := getClientByPlayerID(evt.PlayerID)
 				if client == nil {
 					return
 				}
 				client.sendSafe(message)
 				savePlayer(client)
-			}()
+			})
 		case "raid_phase":
 			evt, ok := data.(game.RaidPhaseEvent)
 			if !ok {
@@ -797,7 +795,7 @@ func main() {
 			if !ok {
 				return
 			}
-			go func() {
+			scheduleCharacterWork(func() {
 				claimed, err := db.ClaimWeeklyRaidReward(evt.PlayerID, time.Now().UTC())
 				if err != nil {
 					log.Printf("weekly raid lockout for %s: %v", evt.PlayerID, err)
@@ -820,13 +818,13 @@ func main() {
 					sendEndgameState(client)
 					savePlayer(client)
 				}
-			}()
+			})
 		case "dungeon_complete":
 			evt, ok := data.(game.DungeonCompletionEvent)
 			if !ok {
 				return
 			}
-			go recordGuildDungeonCompletion(evt)
+			scheduleCharacterWork(func() { recordGuildDungeonCompletion(evt) })
 		}
 	}
 
@@ -853,65 +851,43 @@ func main() {
 		}
 	}
 	world.OnPvPMatchComplete = func(result game.PvPMatchResult) {
-		go persistPvPMatchResult(result)
+		scheduleCharacterWork(func() { persistPvPMatchResult(result) })
 	}
 	world.OnPvPMatchUpdate = func(match *game.PvPMatch) {
 		go sendPvPMatchState(match)
 	}
 
 	// Game Loop
-	go func() {
-		ticker := time.NewTicker(33 * time.Millisecond) // 30 TPS
-		for range ticker.C {
-			world.Update(0.033)
-			broadcastState()
-		}
-	}()
+	loops.Every(33*time.Millisecond, func() {
+		world.Update(0.033)
+		broadcastState()
+	})
 
 	// Party Update Loop (Every 1 second)
-	go func() {
-		ticker := time.NewTicker(1 * time.Second)
-		for range ticker.C {
-			parties := world.GetAllParties()
-			for _, party := range parties {
-				broadcastPartyUpdate(party)
-			}
+	loops.Every(time.Second, func() {
+		parties := world.GetAllParties()
+		for _, party := range parties {
+			broadcastPartyUpdate(party)
 		}
-	}()
+	})
 
 	// Time Sync Loop (Every 1 second)
-	go func() {
-		ticker := time.NewTicker(1 * time.Second)
-		for range ticker.C {
-			broadcastTime()
-		}
-	}()
+	loops.Every(time.Second, broadcastTime)
 
 	// Hub
 	go runHub()
 
 	// Periodic Save Loop (Every 1 minute)
-	go func() {
-		ticker := time.NewTicker(1 * time.Minute)
-		for range ticker.C {
-			saveAllPlayers()
-			world.Trading.CleanupExpired()
-		}
-	}()
-
-	// Graceful Shutdown
-	stop := make(chan os.Signal, 1)
-	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
-	go func() {
-		<-stop
-		log.Println("Shutting down server...")
+	loops.Every(time.Minute, func() {
 		saveAllPlayers()
-		backgroundCharacterWork.Wait()
-		os.Exit(0)
-	}()
+		world.Trading.CleanupExpired()
+	})
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/healthz", healthHandler(func(ctx context.Context) error {
+		if serverStopping.Load() {
+			return errors.New("server is shutting down")
+		}
 		if db == nil {
 			return fmt.Errorf("database is not initialized")
 		}
@@ -930,13 +906,32 @@ func main() {
 		ErrorLog:          httpErrLogger,
 		ReadHeaderTimeout: 5 * time.Second,
 	}
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
+	defer signal.Stop(stop)
+	shutdownDone := make(chan struct{})
+	go func() {
+		<-stop
+		log.Println("Shutting down server...")
+		drainServer(loops)
+		if err := shutdownHTTPServer(srv); err != nil {
+			log.Printf("HTTP shutdown: %v", err)
+		}
+		close(shutdownDone)
+	}()
 
 	log.Printf("Server started on %s", *addr)
+	var serveErr error
 	if *certFile != "" && *keyFile != "" {
 		log.Printf("Serving with SSL/TLS")
-		log.Fatal(srv.ListenAndServeTLS(*certFile, *keyFile))
+		serveErr = srv.ListenAndServeTLS(*certFile, *keyFile)
 	} else {
 		log.Printf("Serving without SSL (HTTP)")
-		log.Fatal(srv.ListenAndServe())
+		serveErr = srv.ListenAndServe()
 	}
+	if !errors.Is(serveErr, http.ErrServerClosed) {
+		log.Fatal(serveErr)
+	}
+	<-shutdownDone
+	db.Close(context.Background())
 }

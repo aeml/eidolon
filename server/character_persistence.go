@@ -33,8 +33,22 @@ func noteCharacterSaveFailure(username string, failed bool) {
 // All callers hold the per-account work lock. Journal before the database;
 // acknowledge only after its atomic save receipt is confirmed.
 func persistCharacterSnapshot(username string, character *database.Character) error {
+	pending, err := journalCharacterSnapshot(username, character)
+	if err == nil {
+		err = commitPendingCharacterSave(pending)
+	}
+	noteCharacterSaveFailure(username, err != nil)
+	if err != nil {
+		log.Printf("Character save pending for %s: %v", username, err)
+	}
+	return err
+}
+
+// Also used for the shutdown journal-all-before-database pass. A slow database
+// must not prevent the remaining characters from reaching durable local storage.
+func journalCharacterSnapshot(username string, character *database.Character) (*database.PendingCharacterSave, error) {
 	if characterSaveJournal == nil || characterSaveCommitter == nil {
-		return errors.New("character persistence is not initialized")
+		return nil, errors.New("character persistence is not initialized")
 	}
 	// Pin before filesystem IO: an expiry sweep must not remove the last live
 	// copy while a slow/failed local write is still in flight.
@@ -45,14 +59,7 @@ func persistCharacterSnapshot(username string, character *database.Character) er
 	if world != nil {
 		world.SetEntityUnjournaledSave("player-"+username, err != nil)
 	}
-	if err == nil {
-		err = commitPendingCharacterSave(pending)
-	}
-	noteCharacterSaveFailure(username, err != nil)
-	if err != nil {
-		log.Printf("Character save pending for %s: %v", username, err)
-	}
-	return err
+	return pending, err
 }
 
 func commitPendingCharacterSave(pending *database.PendingCharacterSave) error {

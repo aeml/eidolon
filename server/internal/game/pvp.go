@@ -440,17 +440,21 @@ func (w *World) ResolvePvPDeath(targetID, attackerID string) {
 		w.OnPvPMatchUpdate(match)
 	}
 	if complete {
-		go func() {
-			time.Sleep(2 * time.Second)
+		w.runBackground(func() {
+			if !w.waitBackground(2 * time.Second) {
+				return
+			}
 			w.completePvPMatch(match.ID, false)
-		}()
+		})
 		return
 	}
 	if match.RoundPending {
-		go func() {
-			time.Sleep(3 * time.Second)
+		w.runBackground(func() {
+			if !w.waitBackground(3 * time.Second) {
+				return
+			}
 			w.resetPvPRound(match.ID, match.Round)
-		}()
+		})
 	}
 }
 
@@ -549,6 +553,27 @@ func (system *PvPSystem) removeFromQueuesLocked(playerID string) {
 			}
 		}
 		system.Queues[size] = filtered
+	}
+}
+
+// Call after gameplay admission, ticks and delayed tasks have stopped. Preserve
+// decided wins, but do not award a random winner/deserter penalty for maintenance.
+func (w *World) FinishPvPForShutdown() {
+	if w.PvP == nil {
+		return
+	}
+	w.PvP.mu.Lock()
+	ids := make([]string, 0, len(w.PvP.Matches))
+	for id, match := range w.PvP.Matches {
+		if match.Status != PvPMatchComplete {
+			match.WinnerIDs = nil
+			match.Status = PvPMatchComplete
+		}
+		ids = append(ids, id)
+	}
+	w.PvP.mu.Unlock()
+	for _, id := range ids {
+		w.completePvPMatch(id, false)
 	}
 }
 

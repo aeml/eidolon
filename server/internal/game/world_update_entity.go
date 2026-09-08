@@ -1605,8 +1605,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						}
 
 						// Schedule AoE damage after the telegraph delay
-						go func(x, z, radius float64, delay time.Duration, dmg int, instID, srcID string) {
-							time.Sleep(delay)
+						x, z, radius, delay, dmg, instID, srcID := slamX, slamZ, slamRadius, time.Duration(slamDelay*float64(time.Second)), bossDamage, instanceID, bossID
+						w.runBackground(func() {
+							if !w.waitBackground(delay) {
+								return
+							}
 
 							w.Mu.Lock()
 							defer w.Mu.Unlock()
@@ -1638,7 +1641,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 								}
 								p.Mu.Unlock()
 							}
-						}(slamX, slamZ, slamRadius, time.Duration(slamDelay*float64(time.Second)), bossDamage, instanceID, bossID)
+						})
 					} else {
 						e.Mu.Unlock() // Unlock self before interaction
 						w.PerformAttack(e.ID, target.ID)

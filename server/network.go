@@ -16,6 +16,18 @@ import (
 func runHub() {
 	for {
 		select {
+		case reply := <-hubQuiesce:
+			closing := make([]*Client, 0, len(clients))
+			for client := range clients {
+				client.transportClosed.Store(true)
+				if client.conn != nil {
+					client.conn.Close()
+				}
+				client.closeSendQueues()
+				closing = append(closing, client)
+				delete(clients, client)
+			}
+			reply <- closing
 		case client := <-register:
 			clients[client] = true
 		case client := <-unregister:
@@ -139,7 +151,7 @@ func sendInitialPlayerState(c *Client, entity *game.Entity, instanceID string) {
 	hydratePvPProfile(c.playerID)
 	sendPvPState(c)
 	sendEndgameState(c)
-	go touchAndBroadcastGuildPresence(c.playerID, time.Now())
+	scheduleCharacterWork(func() { touchAndBroadcastGuildPresence(c.playerID, time.Now()) })
 }
 
 // Recovery state survives a transport reconnect but is not persisted across a
@@ -169,7 +181,9 @@ func cleanupClientLocked(client *Client) {
 	if world == nil {
 		return
 	}
-	world.ForfeitPvP(client.playerID)
+	if !serverStopping.Load() {
+		world.ForfeitPvP(client.playerID)
+	}
 	// 1. Return any direct-trade escrow before snapshotting persistent state.
 	if trade := world.CancelDirectTradesForPlayer(client.playerID); trade != nil {
 		sendDirectTradeUpdate(trade, "cancelled")
@@ -201,8 +215,8 @@ func cleanupClientLocked(client *Client) {
 
 	// 5. Notify online friends that this player has gone offline (0.38.1).
 	if client.username != "" {
-		go notifyFriendsPresence(client.username, false)
-		go touchAndBroadcastGuildPresence(client.playerID, time.Now())
+		scheduleCharacterWork(func() { notifyFriendsPresence(client.username, false) })
+		scheduleCharacterWork(func() { touchAndBroadcastGuildPresence(client.playerID, time.Now()) })
 	}
 
 	// 6. Save before releasing character ownership. This function runs outside
@@ -215,6 +229,12 @@ func cleanupClientLocked(client *Client) {
 }
 
 func serveWs(w http.ResponseWriter, r *http.Request) {
+	done, admitted := serverAdmission.Begin()
+	if !admitted {
+		http.Error(w, "server is shutting down", http.StatusServiceUnavailable)
+		return
+	}
+	defer done()
 	if !websocket.IsWebSocketUpgrade(r) {
 		logSuspicious(r, "non-websocket request to /ws", nil)
 		http.Error(w, "websocket upgrade required", http.StatusBadRequest)

@@ -479,9 +479,11 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					playerID := player.ID
 					px, pz := targetX, targetZ
 					instanceID := player.InstanceID
-					go func() {
+					w.runBackground(func() {
 						for i := 0; i < 5; i++ {
-							time.Sleep(1 * time.Second)
+							if !w.waitBackground(time.Second) {
+								return
+							}
 							w.Mu.Lock()
 							owner := w.Entities[playerID]
 							if owner == nil {
@@ -523,7 +525,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 							w.Mu.Unlock()
 							w.fireTelegraphEvent(playerID, apocProj.X, apocProj.Z, visualAbilityRadius("Meteor Drop", apocProj.Radius), impactDelay)
 						}
-					}()
+					})
 				}
 			}
 

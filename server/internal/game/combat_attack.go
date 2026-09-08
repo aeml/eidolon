@@ -109,10 +109,12 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 		})
 	}
 
-	go func() {
-		time.Sleep(delay)
+	w.runBackground(func() {
+		if !w.waitBackground(delay) {
+			return
+		}
 		w.applyAttackImpact(attackerID, targetID, attackerInstanceID, walkRects, missChance)
-	}()
+	})
 	return 0, true
 }
 
