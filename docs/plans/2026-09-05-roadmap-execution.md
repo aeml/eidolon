@@ -5,7 +5,76 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 07:34 UTC
+## Current checkpoint — September 8, 07:50 UTC
+
+The previous user-triggered turn verified the requested 0.01 regeneration and
+polled the active release45 CI; it did not deploy another release. This goal
+continuation makes progress through final47 suite results, an actual collection
+survival failure, bounded test-driver corrections and new uninterrupted diary
+evidence. Full1.1–1.10 remains active and incomplete; no goal status change.
+
+**45 CI34198772605 remains ACTIVE** for exact64df5fbd4fb7a1b66f1f9e5ccf5dc6a20911898e.
+Client/server/browser smoke passed; predeploy has reached disposable full-character
+gameplay. Neither deployment nor live QA is claimed. Fresh public manifest and
+backend checks this turn still match44/847d454a94a7424ab303f6339c875ab170bff36e;
+backend healthy/database ready.46 remains clean verified87ed21c and must wait for
+all eight45 jobs and independent exact public verification before publication.
+Do not alter CI's runner/browser/services or push root's staged52 master.
+
+**47 combined full suites closed successfully:** handles95541/38409 both terminal0.
+Source206fac5 passes218 client suites/3226 tests/199.594s and full server race
+(root17.468s/database1.048s/game337.916s). Actual fresh collection26108 then
+**FAILED4.7m**, exceeding the unchanged two-respawn bound. Opening43s/zero deaths/
+four retreats, followed by the existing500XP claim and persistence reconnect.
+Collection reached six of eight fragments at level6 after five observed target
+deaths (not all incidental AoE kills); the third later death ends the test.
+Scan0sanitizations and disposable cleanup passed; exact owned containers absent.
+No completion/turn-in or failure screenshot exists for that first run. Failure
+and constraints committed878e1c9 in47's collection plan. Logs
+`/tmp/eidolon-release47-runes-{client,server,gameplay}.log`.
+
+47's collection driver was missing the ordinary Wizard spacing used by hunts.
+Test-only candidate **a6a91dc**, worktree `/tmp/eidolon-release47-runes-98cUsP`,
+branch release/47-with-regen-and-soak-isolation, now connects that existing driver
+and records read-only combat/resource/death/recovery diagnostics and an in-world
+failure screenshot. No runtime, rewards, regeneration, target rules, grants,
+skill purchases, reconnects, deadlines or allowed-death changes. Other classes
+keep their existing inputs. Handle17883 terminalPASS247tests/four suites/3.216s,
+changed-file lint and diff checks. **Revised47 gameplay has not started**; no
+owned47 process is active. Wait for the one owned browser below, then run the
+fresh-collection route on this clean candidate.47 is not ready to ship and is
+not integrated into root.48–52 refs remain unchanged, awaiting final predecessor
+inheritance and verification.
+
+**Uninterrupted expanded story candidate bd16d5c**, isolated worktree
+`/tmp/eidolon-earned-story-TZuGpp`, adds the same normal Wizard defense to its
+formerly stationary diary combat helper. Tests preserve death checks and ensure
+defensive casts do not issue extra attacks.26focused tests/2.356s plus41spacing/
+input tests/1.966s and changed-file lint pass; handles24797/92757 are terminal.
+An initial Jest/Playwright mock-message incompatibility was corrected, not a
+runtime defect. No game coefficients or quest/count/reconnect changes.
+
+**36108 ACTIVE — the only owned browser**, frozen bd16d5c, isolated route
+fresh-story-uninterrupted, runID earned-diary-spacing, API18485/Mongo18486/web18487.
+Log `/tmp/eidolon-earned-diary-spacing.log`. Actual opening100s/one death/44retreats;
+real death-button recovery restores100HP/100mana. Opening checkpoint does not
+reconnect and retains125HP/70mana. Diary approach engages two targets in4.719s;
+actual lore inspection and manual25gold/200XP turn-in complete at153s/level3.
+Diary checkpoint also does not reconnect and retains150HP/46mana. Watch starts
+level3 with47/130mana and the unchanged0.01 rates; no hunt completion yet.
+Do not edit, restart or launch another owned browser while36108 is live.
+
+Actual earned-diary PNG viewed and copied to
+`/tmp/eidolon-diary-spacing-evidence-ufNDIa/earned-mara_diary.png`. It shows the
+authored record, manual ready objective and journal; it does not establish broad
+visual/performance approval (the capture's overlay reads15FPS/2216calls). Opening
+already needed one respawn, so this is not a zero-death first-hour pacing pass.
+The candidate still retains the old curve/catalog until coordinated activation;
+full earned progression, class/recovery balance, physical-phone and later-roadmap
+gates remain open. Continue36108 rather than re-running the earlier failed diary
+source or treating this partial success as final campaign verification.
+
+## Historical checkpoint — September 8, 07:34 UTC
 
 Previous goal turn was progress: corrected45 passed locally and was pushed. This
 continuation integrates and revalidates46, integrates that verified source into
