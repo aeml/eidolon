@@ -161,10 +161,22 @@ test(`phone returning character earns both ${realm} investigations with touch tr
         await expect.poll(async () => (await quest()).accepted).toBe(true);
         await page.locator('#btn-close-quest').tap();
         await recallChronicleByTouch(page);
-        for (const [x, z] of routes[realm]) await walkChronicleByTouch(page, context, x, z);
-        if (realm === 'earth' && chapter.sites[0].z < 100) await walkChronicleByTouch(page, context, 145, 80);
+        const travel = async (x, z) => {
+            try {
+                await walkChronicleByTouch(page, context, x, z, 180_000, {
+                    onThreat: position => fightAtSite(page, context, {
+                        id: `${realm}-travel`, entityId: 'travel-not-a-discovery', kind: 'travel', ...position
+                    }, chapter)
+                });
+            } catch (error) {
+                await capture(`${chapter.id}-travel-failure`);
+                throw error;
+            }
+        };
+        for (const [x, z] of routes[realm]) await travel(x, z);
+        if (realm === 'earth' && chapter.sites[0].z < 100) await travel(145, 80);
         for (const site of chapter.sites) {
-            await walkChronicleByTouch(page, context, site.x + (site.kind === 'combat' ? 18 : 0), site.z + (site.kind === 'combat' ? 18 : 3));
+            await travel(site.x + (site.kind === 'combat' ? 18 : 0), site.z + (site.kind === 'combat' ? 18 : 3));
             try { await fightAtSite(page, context, site, chapter); }
             catch (error) { await capture(`${site.id}-combat-failure`); throw error; }
             if (site.kind !== 'combat') {

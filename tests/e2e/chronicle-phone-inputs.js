@@ -4,18 +4,31 @@ import { openPhoneNavigation } from './mobile-helpers.js';
 
 // Real joystick contacts only. No coordinate assignment, waypoint command,
 // keyboard fallback, collision override or granted interaction credit.
-export async function walkChronicleByTouch(page, context, x, z, timeout = 90_000) {
+export async function walkChronicleByTouch(page, context, x, z, timeout = 90_000, { onThreat } = {}) {
     const cdp = await context.newCDPSession(page);
     const box = await page.locator('#joystick-zone').boundingBox();
     expect(box, 'The phone movement control must be visible').not.toBeNull();
     let started = false;
     try {
         await expect.poll(async () => {
-            const state = await page.evaluate(({ x, z }) => {
-                const player = window.game.player;
-                return { x: x - player.position.x, z: z - player.position.z, dead: player.state === 'DEAD' };
-            }, { x, z });
+            const state = await page.evaluate(({ x, z, watchThreats }) => {
+                const game = window.game, player = game.player;
+                return { x: x - player.position.x, z: z - player.position.z, dead: player.state === 'DEAD',
+                    position: { x: player.position.x, z: player.position.z },
+                    threatened: watchThreats && (game.activeEntitiesCache || []).some(enemy =>
+                        game.isHostileActorTarget(enemy) && player.position.distanceTo(enemy.position) < 12) };
+            }, { x, z, watchThreats: Boolean(onThreat) });
             expect(state.dead, 'Phone investigation travel must remain survivable').toBe(false);
+            if (state.threatened) {
+                // Release the movement finger before ordinary taps/retreats.
+                // Combat has no travel callback, so this cannot recurse.
+                if (started) {
+                    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+                    started = false;
+                }
+                await onThreat(state.position);
+                return false;
+            }
             const distance = Math.hypot(state.x, state.z);
             if (distance < 2) return true;
             const jx = state.x - state.z, jy = state.x + state.z, length = Math.hypot(jx, jy);
@@ -27,6 +40,18 @@ export async function walkChronicleByTouch(page, context, x, z, timeout = 90_000
             started = true;
             return false;
         }, { timeout, intervals: [100], message: `Reach investigation waypoint ${x},${z} by joystick` }).toBe(true);
+    } catch (error) {
+        console.log('[phone-lore-travel-failure]', JSON.stringify({ destination: { x, z },
+            ...await page.evaluate(() => {
+                const game = window.game, p = game.player;
+                return { position: p.position.toArray(), state: p.state, hp: p.stats.hp,
+                    maxHp: p.stats.maxHp, shieldHP: p.shieldHP, mana: p.stats.mana,
+                    casts: window.__phoneLoreCombat?.counts,
+                    nearby: (game.activeEntitiesCache || []).filter(enemy => game.isHostileActorTarget(enemy) &&
+                        p.position.distanceTo(enemy.position) < 30).map(enemy => ({ type: enemy.constructor.name,
+                        level: enemy.level, hp: enemy.stats?.hp, position: enemy.position.toArray() })) };
+            }) }));
+        throw error;
     } finally {
         try {
             if (started) await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
