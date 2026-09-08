@@ -5,7 +5,63 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 20:08 UTC
+## Current checkpoint — September 8, 20:30 UTC
+
+Previous turn was PROGRESS (atomic buyouts). This turn is PROGRESS: buyout
+acceptance closed, listing escrow implemented,48 fully verified live and49
+published to the ordered CI queue. Full1.1–1.10 goal remains active/incomplete.
+
+48 CI34266379714 on546391c CLOSED SUCCESS across the entire pipeline, including
+Live Release and Character QA. Fresh independent public checks20:27:25 confirm
+release manifest, backend commit/version, healthy/database ready, versioned main
+entry and login label all match48/546391c.49's clean canonical tree9342ac0 has
+48 ancestry and matching package/server/workflow/login/patch notes. Normal
+fast-forward push91492 CLOSED0; remote master independently confirmed9342ac0.
+**49 CI34274941211 ACTIVE** on9342ac074a29831e9dea54a0e2ad6eff890b6a3f.
+No50 push until the whole49 pipeline/finalLiveQA/freshidentity pass.50 remains
+1e2eb11 in `/tmp/eidolon-release50-final49-XhZNjw`; later queue refs remain in
+19:01 checkpoint. Root staged52 must not be pushed. Live last verified48.
+
+Buyout481c3d0 full83710 CLOSED PASS0 (root26.628/database1.131/game379.886s).
+Actual73205 CLOSED PASS0/329.789s, TWO combined repetitions; all88 child logs
+independently clean (12 intended kills,76 normal drained shutdowns). Exact owned
+Mongo eidolon-auction-buyout-proof-20260908-2007 and volumes removed/absent.
+Logs `/tmp/eidolon-auction-buyout-{full-race,sessions}.log`.
+
+Listing runtime0908438119e0fded426176b148f061b5c95b2f15 now saves current
+ownership before the immutable listing decision, then journals item removal+
+deposit debit+paired receipts before publishing under a unique auction ID.
+Recovery permits a missing auction only for a valid listing decision and checks
+an existing inserted listing matches exactly. Additional stack units remain in
+the bag; changed/missing/ambiguous selected items and insufficient funds cannot
+partially escrow. Replay checks receipt identity before current bag/balance.
+Persistent legacy CreateAuction is blocked. The deposit is mathematically5%
+(buyout/20, minimum1); listing terms/time remain frozen at request preparation.
+
+Initial95070 focused PASS; race44437 PASS root5.134/database1.053/game1.437;
+expanded99500 PASS2.927/1.059/1.503. Tests cover terms, duplicate requests,
+invisibility before escrow, stack preservation, missing/changed/ambiguous items,
+receipt replay after reacquisition/spending and journal failure/retry.
+
+**Full34429 ACTIVE**, frozen0908438, log `/tmp/eidolon-auction-listing-full-race.log`.
+**Actual39545 ACTIVE**, exact binary, TWO repetitions of six normal/rejected
+listing modes, seven SIGKILL boundaries, competing buyouts and normal seller
+payout. First normal set PASS32.08s; first seven crash cuts have passed. Tests
+start with legacy inventory and a Fireball without an intervening disconnect
+save, requiring durable normalization/current70mana, exact escrow and one
+listing through restarts. Whole run not terminal. Owned Mongo
+eidolon-auction-listing-proof-20260908-2027 has EXIT cleanup. Actual log
+`/tmp/eidolon-auction-listing-sessions.log`. Poll these exact handles before
+editing source. Resource tree remains `/tmp/eidolon-resource-persistence-c6E17J`,
+with evidence16deb7d after runtime; unpublished55 metadata, not release-approved.
+
+Next after verification: bind client listing selection to expected item identity/
+quantity (current wire payload has only slotIndex/prices/duration, allowing stale
+slots to select replacements); review delayed-publication expiry fairness; enforce
+compatible rollback/receipt handling before publication. These are open work,
+not completed protections. Wider phone/campaign/raid/major-version gates persist.
+
+## Historical checkpoint — September 8, 20:08 UTC
 
 Previous goal turn was PROGRESS (durable item claims/returns). This continuation
 is PROGRESS: that acceptance closed and atomic buyouts are implemented with
