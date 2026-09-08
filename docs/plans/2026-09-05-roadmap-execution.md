@@ -5,7 +5,51 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 10:08 UTC
+## Current checkpoint — September 8, 10:24 UTC
+
+This turn is progress:45 now fully verified live,46 pushed separately, crowd-name
+production candidate passes full client/rendered checks. Full1.1–1.10 remains
+active and incomplete;47 collection and expanded first-hour balance remain open.
+
+**45CI34208478475 all eight jobs PASS**, terminal. Fresh post-terminal public
+manifest/login/versioned-main/backend checks exactly match
+**83d8f083538fc92b03878c9eb7cb1a46c8847da7 / Alpha1.0.45 / ok / ready**.
+Main bytes match the source transformed by the unchanged version-pages-runtime
+rewriter; its two imports carry the expected release query. Raw Git/source hash
+differs only due to this normal publication transform, not an unexplained build.
+The public regeneration module confirms0.01. This is now live verification,
+not merely observed deployment. Prior seven-job checkpoint is superseded.
+
+Normal explicit push40357 **PASS**: remote83d8f08 →
+**b2016ef0af471eeec8a1106f6c88ce144b1c77a7**, Alpha1.0.46 with its own login
+label/patch notes. Independent remote head matches. New **CI34215073108 ACTIVE**,
+client/server running. Do not push47 before all eight46 jobs and fresh exact
+public checks pass. Root's staged52 master was not pushed.
+
+Nameplate full25258 **PASS224suites/3270tests/170.666s**, closed, on899c957;
+production remains89f690e. Six rendered cases90998 and75focused tests pass as
+recorded below. Actual25513 on9b58245 **1PASS/2FAIL /2.4m**: desktop's ordinary
+town interaction/label/marker/frame assertions pass10.0s. Its account-free image
+viewed and archived `/tmp/eidolon-nameplate-town-evidence-gGh3DL/desktop-first-pass.png`.
+Phone cases failed the desktop approach's mouse-hover prerequisite before label
+assertions. Scan0 and cleanup/independent exact-container absence passed.
+
+Corrected **f00814a** is clean in `/tmp/eidolon-nameplate-readability-HDHgN2`.
+It uses proper touch/mobile contexts and the unchanged joystick/tap Ilyra route
+extracted from mobile-quest-gameplay into a shared helper. Desktop retains mouse
+interaction; phones no longer require hover. No production source changed.
+Final40025 lint/diff and commit PASS; no full-client rerun needed for this purely
+E2E helper extraction, but actual touch verification remains required.
+
+A fresh isolated nameplate-world run has just started on frozen f00814a:
+runID nameplate-town-touch, API18625/Mongo18626/web18627; log
+`/tmp/eidolon-nameplate-world-touch.log`. It is the only owned browser; poll the
+handle recorded with this launch and do not modify that tree or start another
+owned browser until terminal. All previous local handles are closed.
+The nameplate candidate is still unversioned on staged52; full-world touch closure
+and proper release packaging/CI inclusion remain due, not a1.2 completion claim.
+
+## Historical checkpoint — September 8, 10:08 UTC
 
 Previous goal turn was progress (tested actual-target input correction). This
 turn closes its failing real run, implements and renders crowd-name readability,
