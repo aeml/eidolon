@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 12:26 UTC
+## Current checkpoint — September 8, 12:31 UTC
 
 Previous goal work was progress: four-class collection evidence, CI shard
 configuration and expanded-story pursuit verification changed the next actions.
@@ -37,10 +37,22 @@ rank acknowledgement and never retrying rejected purchases.39 tests/lint passed
 `/tmp/eidolon-release46-wizard-clearance.log`,
 `/tmp/eidolon-release46-wizard-paced.log`.
 
-**35020 ACTIVE**, sole owned browser route, frozen8ac2e95, run ID
-release46-wizard-paced, API18635/Mongo18636/web18637. Poll this exact handle;
-do not edit its worktree until terminal. No new push occurred. Actual prepared
-combat must pass before deciding whether the survival correction is sufficient.
+**35020 PASS**, normal exit0 on clean8ac2e95:3.7minutes, generator2
+seed1587624703800339911, all15 purchases, both bosses killed through actual
+inputs, later mobs, cleared-room/gold assertions and town return. Periodic
+combat HP remained2575/2575; last Matron sample613mana. No added combat refill
+or reconnect. Scan0 and independent exact-container absence passed.44129
+passed258 version/preparation/defense tests/1.470s plus bash/diff; lint passed.
+All local46 handles are closed. This is prepared two-boss functional evidence,
+not a full/fresh dungeon balance approval.
+
+51809 normal-fast-forward pushed **6e556c4a67cb1fd901d93fe2c3a35a79c519b09d**
+from the isolated46 branch after clean/ancestry/exact-remote checks. New
+**CI34226360903 is in progress**, freshly observed client/server jobs running.
+Existing46 patch notes/version retained; no game/server runtime changed from
+86609cd. Latest independent public release.json and ready healthz still agree
+on45 /83d8f083538fc92b03878c9eb7cb1a46c8847da7. Neither46 live nor47 release
+approval is established.
 
 ### Four-class collection closes; duel integration needs repair
 
@@ -59,6 +71,15 @@ missing explicit PvP scene handoff/generation paths; candidate QA now observes
 wire/scene receipts before changing production. Do not claim PvP cadence passed.
 Log `/tmp/eidolon-starter-cadence-duels-gameplay.log`; details in the cadence
 worktree's `docs/plans/2026-09-08-basic-attack-cadence.md`.
+
+7a9f76f adds receipt observations only.542870d then merges the published46 QA
+correction into47, preserving both its optional healthy-collection threshold/
+ordinary collision checks and the new scaled enemy clearance.43 merged focused
+tests/0.664s plus lint/diff passed. **14835 ACTIVE**, sole owned browser route,
+frozen542870d5db669bee49974ca9ede7e7cc51771587, run ID starter-duel-scenes,
+API18635/Mongo18636/web18637, log `/tmp/eidolon-starter-duel-scenes.log`.
+Poll this exact handle; do not edit the cadence worktree until terminal. This
+local diagnostic does not replace or interfere with CI34226360903.
 
 57a762a adds three GitHub-hosted anonymous-browser shards and is merged into
 47. Installed Playwright inventory proves an exact76-test union without duplicates
