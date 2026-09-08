@@ -5,7 +5,62 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 11:06 UTC
+## Current checkpoint — September 8, 11:23 UTC
+
+Previous goal turn was progress (54 packaged, prior collection run closed).
+This turn adds a level-appropriate preparation comparison, validates the isolated
+cadence backport, and corrects46's newly observed deployment-gate failure. Full
+1.1–1.10 remains active/incomplete, not blocked. No new release was pushed.
+
+**46CI34215073108 TERMINAL FAILED** at Predeploy Character QA. Client/server/
+anonymous browser PASS; validation, Pages/server deploy and live QA all skipped.
+45 remains last independently verified live. Failure log
+`/tmp/eidolon-release46-ci-failure.log` downloaded by5465 (closed): recovery test
+failed both generator2 seeds214149699972850271/1425612774346219180, no new input
+issued while an earlier move continued about10units. Earlier Verdant talent
+purchase flake (expected1remaining, observed2) passed retry and is separately open.
+
+New clean **86609cdc08f6cc032d6a40f1887242f88c96d4d6** in
+`/tmp/eidolon-release46-recovery-C5EHfe`, work/release46-recovery-input, directly
+on b2016ef. QA-only correction lets each movement settle before reprojecting and
+ends approach on actual incoming damage. Death/Recall rejection/Respawn/same
+unfinished-run assertions and all deadlines remain.73327 full lint/diff PASS.
+
+Actual34012 reports **1PASS/38.2s** (test35.9s), seed4016897494389185029, exact
+86609cd/clean; scan0 and independent exact-container absence PASS. However tool
+terminal exit was143 after the complete success/cleanup log, not0. Do not silently
+call that a normal script exit. **63224 ACTIVE** explicit-shell-status repeat on
+same frozen86609cd, runIDrelease46-recovery-repeat, API18625/Mongo18626/web18627,
+log `/tmp/eidolon-release46-recovery-repeat.log`. Only owned browser/test active.
+Poll this exact handle; on clean success review/push this explicit46 branch as
+normal FF, not root master; then require new all-job CI and exact live identity.
+
+Prepared comparison0d05dcc used shared regular inventory inputs, preserving
+unprepared/default route and advanced level10 specialization.44045 PASS48tests/
+1.610s plus lint/bash/diff. Actual32039 **FAILED9.0m**, opening40s/no deaths;
+preparation0gear/0allocatedpoints; collection6observedtarget deaths/2seeds/1death,
+then120s encounter timeout. Scan0/cleanup/container absence PASS; image inspected
+and archived `/tmp/eidolon-starter-prepared-evidence-Ob4X7M/failed-collection.png`.
+Crucial source finding: online growth is automatic and manual attribute allocation
+is intentionally hidden/disabled. Do not prescribe offline-only points as the
+missing online preparation. Worktree now clean docs-closure9bf76b2, no active run.
+
+Independent **9505325** backports ONLY0bbc945's existing player-only attack-cadence
+prototype onto0d05dcc in `/tmp/eidolon-starter-cadence-xCyOrR`, branch
+work/starter-cadence-20260908; docs closure **d72f7df1402f301531bb12b69c7efde2c8d5e75a**,
+clean. No31-chapter story/futurecurve/death-mana/54damage-parity imports. .01regen,
+per-hit damage and enemy cadence stay unchanged; player starting interval1.905s
+instead of4.167s, same1s floor. This is not a released balance selection.
+15042 PASS31focused/3.055s plus lint/diff.61045 full server PASSroot5.352s/
+database0.024s/game88.516s.10812 full client PASS226suites/3292tests/153.923s.
+All three handles closed; fresh actual comparison remains due after46 recovery.
+On-hit/PvP/PvE pacing review remains required before shipping faster attacks.
+
+53/874b8fc,54/8f7f60a and expanded31-chapter6c2a81a remain separate queued work.
+Never push root master; propagate final46 correction and then final47 through
+the queue only after their respective verification gates. Goal scope unchanged.
+
+## Historical checkpoint — September 8, 11:06 UTC
 
 Previous goal turn was progress (damage parity implemented, pursuit QA corrected).
 This turn packages verified54 and closes the failed collection playthrough.
