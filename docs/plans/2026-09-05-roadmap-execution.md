@@ -5,7 +5,39 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, combined-check results
+## Current checkpoint — September 8, fresh Earth and reward-stack verification
+
+Fresh expanded Earth **26283 PASS / one / 3.1m** on **95faafc**. QA clears
+nearby enemies with normal basic/class attacks before reading; runtime priority,
+credit, ranges and enemy strength stay unchanged. Opening saves 100 XP/100 gold
+at level 2 / 31s; diary completes manually at level 7; collection earns eight
+seeds after 15 observed target deaths, zero deaths, three equipment pieces worth
+80 gold **unsold**. All scar records/manual fresh handoffs and reconnect pass.
+Collection pays its split 6,000 XP/50 gold. Final level 16 still locks the level-
+30 Bastion. No full progression approval. Images preserved and diary/claim images
+inspected at `/tmp/eidolon-fresh-investigations-earned-tOr1n8/`. Scan/cleanup pass.
+Isolated investigation clean **29555b5**; no expansion/root merge or 51 package.
+
+Root **221132f** adds a production [stacked reward audit](2026-09-08-stacked-dungeon-rewards.md):
+Normal's four boss payouts plus two manual daily claims grant 16,001,240 XP,
+prepared level 30 → 54 → 57; Heroic/Mythic at 100 grant 26,008,080 / 31,016,160
+Resonance XP. Excludes trash, room clears, story and sales. Exact receipt/state
+reconciliation and no automatic/duplicate claims pass. **59924 PASS / 1.548s**;
+three race repeats **69408 PASS / 3.042s**. Both closed. No reward changes here.
+
+43 software Chromium before correction **11275 PASS / four / 3.3m**, admitting
+16.5 seconds in about 70 wall seconds. It reproduces slow rendering, not CI's
+exact second-hit failure. QA **d1f182b** uses an 800×450 production-rendered
+component view, captures the first real smite, then checks at least ten genuine
+84-damage owner-attributed hits at 1.5–1.55 admitted-second intervals across the
+unaltered lifetime. It removes the separate second-hit wall deadline without
+dropping repeated-combat coverage. **80356 software PASS / four / 1.9m**;
+native expiry 32.942 wall seconds, delayed-frame expiry 44.6385, both 16.5
+admitted / 11 hits. Native system-Chrome **63682 active**, sole owned browser;
+freeze the entire release43 timing worktree. All other owned handles closed.
+Still no new push; remote ed5/failed CI and public 42/bfbbc remain current.
+
+## Historical checkpoint — September 8, combined-check results
 
 Corrected 43 **ed5b4e4 / CI 34175827810 FAIL**: client/server pass;
 anonymous browser **61 pass / two fail / 10.2m**. Both native and 8fps summon

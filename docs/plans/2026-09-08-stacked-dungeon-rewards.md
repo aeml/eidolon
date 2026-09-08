@@ -31,6 +31,10 @@ the first observed combined gold totals were 16,769 / 40,832 / 56,208. They are
 one observation, not expected income or tuning targets. Each run reconciles its
 own exact payments without asserting a fixed random outcome.
 
+Three repeated race-enabled runs also pass **3.042s**, log
+`/tmp/eidolon-progression-reward-stack-repeat.log`. XP/level results remain the
+same; randomized gold reconciles separately on every repetition.
+
 No XP, gold, gate, contract or Resonance policy changes in this audit. The full
 balance decision still needs the non-daily realm path, a replacement progression
 curve, source/sink budgets and preservation of accepted reward quotes. In
