@@ -171,3 +171,11 @@ just a predicted local refill. No health/mana grant command is used. Opening
 failure logs now read real resource fields. Existing combat deadlines, death
 allowances, quest counts and manual claims remain unchanged. A new full check
 and earned run remain required; neither spacing nor recovery proves full pacing.
+
+Combined653357c server31046 **PASS** root22.084s/database cached/game366.158s.
+Client65703 **FAILED** one of225 suites (3350 tests passed, one failed,
+225.515s): ProgressionCurve's fixture reader passed JSDOM's global URL to Node
+readFileSync. The test now explicitly imports Node's URL, as other filesystem
+fixture tests already do. No threshold, expected fixture value or gameplay
+assertion is changed. Both handles are closed. Corrected full client and earned
+browser checks remain required; server source is unchanged by this test fix.

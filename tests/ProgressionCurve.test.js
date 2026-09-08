@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
 import { readFileSync } from 'node:fs';
+import { URL } from 'node:url';
 import { Fighter } from '../src/entities/Fighter.js';
 import { Rogue } from '../src/entities/Rogue.js';
 import { Wizard } from '../src/entities/Wizard.js';
