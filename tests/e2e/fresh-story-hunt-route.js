@@ -23,7 +23,7 @@ const combatSnapshot = page => page.evaluate(() => {
     return { hp: p.stats.hp, maxHP: p.stats.maxHp, mana: p.stats.mana,
         maxMana: p.stats.maxMana, hpRegen: p.stats.hpRegen, manaRegen: p.stats.manaRegen,
         x: p.position.x, z: p.position.z,
-        nearbyEnemies: [...game.remotePlayers.values()].filter(enemy => enemy.isActive &&
+        nearbyEnemies: [...game.remotePlayers.values()].filter(enemy => game.isHostileActorTarget(enemy) && enemy.isActive &&
             enemy.state !== 'DEAD' && (enemy.health ?? enemy.stats?.hp) > 0 &&
             game.player.position.distanceTo(enemy.position) < 18).map(enemy => ({
             type: enemy.subType || enemy.constructor.name, level: enemy.level,

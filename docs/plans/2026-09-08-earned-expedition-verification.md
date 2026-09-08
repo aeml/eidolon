@@ -116,3 +116,34 @@ volatile health/mana/rates and nearby enemy levels separately from its exact
 saved-state assertions. No gear, levels or recovery are granted and the
 two-death bound remains. A new earned run is required; later hunts and level30
 pacing are still unapproved and must be measured using the new eligibility.
+
+## Level-three route closure and starter encounter spacing
+
+Run66228, source e74a658, **failed /4.3m**, with three deaths at Watch3/40.
+Opening41s/no deaths; diary100s/level4. The first Watch death at(188.11,322.99)
+had three level30 Demon Orcs within16 units. Later deaths had eleven nearby
+level1–4 Skeletons; final health0/175, mana28/145, level4/169XP/493gold,
+three occupied bag slots and10gold of unsold equipment. Screenshot inspected
+and archived `/tmp/eidolon-earned-watch-three-evidence-jvQixH/failed-watch.png`;
+log `/tmp/eidolon-earned-watch-level-three.log`. Scan/owned cleanup passed and
+the handle is terminal. Lower eligibility alone did not establish playability.
+
+Source inspection finds level20/30 neighbors can spawn at x±200 while early
+roads reach x±185; enemies detect players at45 units and roam10 from spawn.
+New Imp/Demon Orc spawns within160 units of the town rectangle are omitted,
+with their one-per-sector elite placed on the safe inner edge instead. Existing
+sectors, combat stats, rewards, respawn origins, pursuit and dungeon behavior
+remain intact. This is spawn spacing, not an invisible immunity boundary.
+
+Unprovoked overworld Skeletons at levels1–9 now detect at12+3×level units
+(15–39), reaching the normal45 at level10. Attacked enemies still retaliate
+through the full45-unit range. It does not adapt to player level, change other
+families, or soften dungeon enemies. This addresses measured crowd acquisition;
+it does not claim the unresolved resource economy or whole hunt is balanced.
+
+Regression94476 race PASS /4.190s covers authored detection bands, actual
+production AI retaliation, an exhaustive fixed-grid replay of the first death's
+location with idle-roam margin, constructor output, and existing hunt/regen
+contracts. Lint57878 PASS. Full server regression and fresh playability evidence
+are still required. The diagnostic filter now excludes friendly NPCs using the
+game's actual hostility predicate. No recovery mechanics or player grants added.

@@ -992,6 +992,10 @@ func (w *World) spawnEliteInRect(level int, minX, maxX, minZ, maxZ float64) {
 	if subType == "Skeleton" {
 		x, z = lanternholdElitePosition(x, z)
 	}
+	if !lanternholdAdvancedSpawnAllowed(subType, x, z) {
+		// Keep the one elite per sector, outside the introductory roads.
+		x = math.Copysign(100+lanternholdAdvancedSpawnDistance, x)
+	}
 	profile := overworldEnemyCombatProfile(subType, level, true)
 
 	elite := &Entity{
@@ -1199,6 +1203,9 @@ func (w *World) spawnEnemyRect(subType string, count int, minX, maxX, minZ, maxZ
 			continue // Skip spawn inside town
 		}
 
+		if !lanternholdAdvancedSpawnAllowed(subType, x, z) {
+			continue
+		}
 		spawnLevel := level
 		if subType == "Skeleton" {
 			if nearAuthoredStarterEncounter(x, z) {

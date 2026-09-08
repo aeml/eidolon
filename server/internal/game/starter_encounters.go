@@ -15,6 +15,31 @@ func starterSkeletonID(index int) string {
 	return fmt.Sprintf("Skeleton-lanternhold-%d", index)
 }
 
+// Starter road wardens should not acquire a new traveler from the same distance
+// as endgame enemies. A provoked enemy still uses the full retaliation range.
+// This depends on the enemy's authored level, never the approaching player's.
+func unprovokedEnemySightRange(enemy *Entity) float64 {
+	if enemy.InstanceID == "" && enemy.SubType == "Skeleton" &&
+		enemy.Level >= 1 && enemy.Level < 10 {
+		return float64(12 + 3*enemy.Level)
+	}
+	return EnemySightRange
+}
+
+// Level-three roads extend 85 units past the town edge. Reserve enough space
+// for a higher-level neighbor's 45-unit sight and 10-unit idle roam, plus a
+// reaction margin. This affects initial spawns, not combat pursuit or immunity.
+const lanternholdAdvancedSpawnDistance = 160.0
+
+func lanternholdAdvancedSpawnAllowed(subType string, x, z float64) bool {
+	if subType != "Imp" && subType != "DemonOrc" {
+		return true
+	}
+	dx := math.Max(0, math.Abs(x)-100)
+	dz := math.Max(0, math.Abs(z-200)-100)
+	return math.Hypot(dx, dz) >= lanternholdAdvancedSpawnDistance
+}
+
 func lanternholdSkeletonLevel(x, z float64) int {
 	// Distance outside the town rectangle, not distance from its center: all
 	// gates start gently, and the existing level-ten profile resumes farther out.
