@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
+	"math"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -79,15 +80,47 @@ func TestResourceActualSavedSessions(t *testing.T) {
 			if err != nil || actual == nil || !actual.LastLogout.After(joinedAt) {
 				t.Fatalf("phase%d fixture%d: no fresh persisted disconnect", phase, index)
 			}
-			if !reflect.DeepEqual(actual.Resources, fixture.Resources) {
-				t.Fatalf("phase%d fixture%d: resources got%+v want%+v", phase, index, actual.Resources, fixture.Resources)
+			// These remain ordinary town sessions. Account for the requested
+			// recovery exactly from the independently persisted rest-time delta;
+			// never suppress town healing or move the fixtures to a fake sanctuary.
+			beforeBank, afterBank := 0.0, 0.0
+			if fixture.WellRested != nil {
+				beforeBank = fixture.WellRested.RemainingSeconds
+			}
+			if actual.WellRested != nil {
+				if actual.WellRested.Version != 1 {
+					t.Fatal("wrong saved rest version")
+				}
+				afterBank = actual.WellRested.RemainingSeconds
+			}
+			elapsed := afterBank - beforeBank
+			if math.IsNaN(elapsed) || math.IsInf(elapsed, 0) || elapsed < 0 || elapsed > time.Since(joinedAt).Seconds()+.1 || afterBank >= 7200 {
+				t.Fatalf("phase%d fixture%d: rest interval not confined to this online session: %f", phase, index, elapsed)
+			}
+			want := *fixture.Resources
+			if want.Dead {
+				if elapsed != 0 {
+					t.Fatal("corpse accrued town rest")
+				}
+			} else if elapsed > 0 {
+				// These prepared builds have 30 Vitality and 40 Intelligence
+				// after equipment, plus five pool points per level after level1.
+				maxHP := int(math.Floor(float64(300+(fixture.Level-1)*5)*1.1 + 1e-9))
+				maxMP := int(math.Floor(float64(400+(fixture.Level-1)*5)*1.1 + 1e-9))
+				want.Health = min(maxHP, want.Health+int(math.Floor(float64(maxHP)*.1*elapsed+1e-9)))
+				want.Mana = min(maxMP, want.Mana+int(math.Floor(float64(maxMP)*.1*elapsed+1e-9)))
+			}
+			if !reflect.DeepEqual(actual.Resources, &want) {
+				t.Fatalf("phase%d fixture%d: resources got%+v want%+v after exactly %fs town recovery", phase, index, actual.Resources, &want, elapsed)
 			}
 			if actual.Gold != fixture.Gold || actual.Level != fixture.Level ||
+				!reflect.DeepEqual(actual.Stats, fixture.Stats) ||
 				!reflect.DeepEqual(actual.Equipment, fixture.Equipment) {
 				t.Fatalf("phase%d fixture%d: unrelated progression/equipment changed", phase, index)
 			}
+			fixtures[index] = actual // Next fresh process must start from this exact save.
 		}
 		stop()
 	}
-	t.Logf("144 real saved resource sessions passed across four classes, three levels, partial/full/zero/dead bars and three server processes")
+	t.Logf("144 real saved resource sessions passed across four classes, three levels, partial/full/zero/dead bars and three server processes, with exact requested town recovery and no offline refill")
 }

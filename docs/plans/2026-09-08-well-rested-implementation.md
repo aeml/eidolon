@@ -61,6 +61,40 @@ four-class stats and device/aura acceptance remain required.
 
 ## Development acceptance — September 8, 23:30 UTC
 
+Latest additional acceptance, **September8 23:51UTC**:
+
+- Adapted the existing144-session resource matrix without moving characters
+  out of town or suppressing recovery. Expected integer HP/MP now use the exact
+  newly persisted rest-time delta, independent known fixture maxima, fractional
+  truncation and caps. Reject pre-login/offline time, corpse accrual, unexpected
+  refills, permanent boosted base stats, changed equipment/gold/level. Each next
+  fresh process starts from the preceding exact save. **50838 PASS150.264s**,
+  all144 sessions, four classes/three levels/three processes. Logs854628412,
+  3602368113 and2500519429 independently clean with normal drains. Owned Mongo
+  `eidolon-rest-resource-matrix-20260908-2346` and volumes removed/absent.
+- New real-disconnect/token-resume/authenticated live-handoff test **27724
+  PASS7.468s**. A1.5s actual disconnected interval earns/spends/heals nothing;
+  rotated token restores bank and exact bars from online time only; replacing
+  an active connection does not rewind/double bank credit. Log4181622292 clean
+  with normal drain; owned Mongo2350/volumes removed/absent.
+- New real north-gate network movement **54493 PASS9.298s**. Prepared save begins
+  at(0,100.25); subsequent quarter-unit movements use ordinary server-issued
+  context and sequence acknowledgements. Inclusive Z100 remains safe; Z99.75
+  spends bank and stops max-pool healing; living expiry removes the stat bonus;
+  return reactivates it once and resumes exact recovery. No warp/QA mutation,
+  disabled enemies, combat immunity or accelerated time. This is actual server
+  movement-protocol acceptance, not browser pointer/joystick or earned combat
+  acceptance. Log1447624681 clean with normal drain; owned Mongo2353/volumes
+  removed/absent.
+
+These tests used the already verified exact production race binaryd650c72; no
+production behavior changed this turn. Logs `/tmp/eidolon-rest-resource-matrix.log`,
+`/tmp/eidolon-rest-resume.log`, `/tmp/eidolon-rest-boundary.log`. All owned local
+handles are closed. Remaining older resource tests still include pre-rest town
+assumptions (cast/Recall/Respawn, shutdown, journal/auction and schema upgrade);
+do not call the whole persistence gate adapted yet. Browser-integrated travel/
+reconnect/scene visuals and earned rested/unrested balance remain open.
+
 - Focused server/race protocol/reward tests passed (root1.438s/game3.929s);
   kill-only party rewards and level100 resonance conversion retain quest/gold
   exclusions. Generated JavaScript protobuf contract:12 tests passed.
