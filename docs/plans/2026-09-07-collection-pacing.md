@@ -115,3 +115,100 @@ This package is locally integrated, not already published. Do not
 publish ahead of the earlier sequential CI/live release gates. Broader
 XP/loot tuning, surplus uncollected world drops, physical-phone review and the
 eight investigation quests remain open; no completion claim is made for them.
+
+## Revalidation with 0.01 regeneration — September 8
+
+Combined source `206fac5cf35408b87d251088267624e9228289d4` inherits corrected
+45 and verified 46 without changing the eight-fragment rules or legacy promises.
+Full client checks pass **218 suites / 3,226 tests / 199.594s**. Full server race
+passes (root **17.468s**, database **1.048s**, game **337.916s**, other packages
+also successful). Focused version/regeneration/prepared-build checks and lint
+passed before the full runs. Handles 95541 and 38409 are terminal success.
+
+Actual fresh collection handle **26108 FAILED / 4.7m**. The level-one Wizard
+reports 0.1 HP/mana per second for ten starting stat points, confirming the
+0.01 coefficient. Opening takes 43 seconds with no deaths and four retreats,
+then its existing 500-XP claim and persistence reconnect produce level 5.
+Collection reaches six physical fragment credits and level 6 after five observed
+target deaths (incidental area kills are not included in that counter). It then
+exceeds the unchanged two-respawn bound: the third observed death fails the run.
+No completed collection, manual payout, final reconnect or ready-screen image
+is claimed. Old higher-regeneration gameplay evidence does not validate this
+combined package. **47 is not ready for publication.**
+
+Log `/tmp/eidolon-release47-runes-gameplay.log`; client and server logs share
+that prefix. Artifact scan passed with zero sanitizations, disposable cleanup
+finished and exact API/Mongo container absence was independently confirmed.
+There is no failure screenshot because this credentialed route disables automatic
+captures; the error context proves the assertion but not the cause of the deaths.
+
+Inspection finds the collection combat driver, unlike the opening/hunt driver,
+issues repeated attacks without the existing ordinary Wizard spacing strategy.
+Recovery does click the real death-respawn button and verifies town arrival;
+it does not grant resources or reconnect. This is a concrete strategy discrepancy,
+not yet proof that adding spacing resolves the failure. Gather combat/resource
+and death evidence in the next bounded run, preserve the requested regeneration,
+and do not relax death or encounter limits to approve the release.
+
+The next test-only candidate connects the existing Wizard hunt spacing driver
+to collection combat and retains every target/count/death/deadline requirement.
+It records bounded read-only resource, enemy and defense observations, each
+actual death and post-button recovery, and captures a failure screenshot after
+entering the world (not account forms). No game runtime, regeneration, new skill
+purchase, grant or reconnect changes. Other classes keep their existing inputs.
+Focused checks pass **247 tests / four suites / 3.216s**, changed-file lint and
+diff checks pass. Actual revised gameplay and any required follow-up remain open.
+
+### Revised spacing run and starter-road correction
+
+Test-only a6a91dc passes the full client suite (219suites/3231tests/168.981s)
+and full lint, handle37593 terminal0. Its actual fresh route23856 **FAILED2.8m**:
+five of eight fragment credits, two real deaths, then a blocked ordinary retreat
+against the east town wall at x103.25,z228. The target was not declared dead and
+the route was not completed. The viewed final capture shows185/200HP,8/160mana,
+5/8 and multiple Skeletons outside that wall. Snapshot/log evidence also records
+level30 enemies within3.7–6.1units during earlier deaths around x219–222,z203–215.
+Death-button recovery restores health but retains the depleted mana on47; later
+52's separate dead-only mana correction is not part of this candidate.
+
+Log `/tmp/eidolon-release47-spacing-gameplay.log`; image
+`/tmp/eidolon-release47-spacing-evidence-xOXgLv/failed-collection.png`.
+Artifact scan passed with2sanitizations; cleanup and exact owned container absence
+passed. No browser handle from that run remains active.
+
+The separate work/release47-starter-spacing candidate backports the existing
+5398395 starter-awareness/advanced-spawn behavior, without its expanded story or
+test graph. Imp/DemonOrc initial spawns remain160units outside the town rectangle;
+low-level unprovoked overworld Skeleton sight is12+3*level, with full45-unit
+retaliation after provocation. Dungeon/enemy combat profiles, levels, progression,
+0.01 regeneration and ordinary pursuit are unchanged.47 patch notes describe the
+road spacing. This is not immunity throughout the neighboring level30 sector.
+
+The test driver additionally queries detached positions along candidate retreat
+paths against actual collision, rejecting a clear-looking endpoint beyond a
+wall. It does not remove collisions, teleport, extend deadlines or raise allowed
+deaths. Three repeated starter/profile/regeneration race sets pass8.884s;
+production-population, all-family and retaliation probes are included.250client
+checks/four suites/2.666s and full lint pass. Full revised suites and actual
+collection gameplay are still required before integration or publication.
+
+### Prepared dependency retry — still fails the opening
+
+Source6fd84af passes full219client suites/3234tests/139.360s and full server
+race(root11.573s/game260.976s/all packages). Its first browser30168 failed before
+authentication because this new worktree lacked generated vendor assets; an
+independent request returned404. After normal `npm run prepare:client`, merged
+a457262 inherits final46/ad16790's paid-cast/retry test corrections. No
+src/server/index changes versus6fd84af;267focused tests/2.004s and full lint pass.
+
+Actual prepared-assets retry29343 **FAILED2.5m** on a457262. The opening earned
+two kills at22/24seconds with full health, then two permitted respawns. The
+unchanged120-second credit watchdog expired before the third kill. First death
+was against a level-two target reduced40→24HP; the second target30→12HP. No
+collection acceptance or completed opening is claimed. Artifact scan passed with
+zero sanitizations; the script's disposable cleanup completed. Log
+`/tmp/eidolon-release47-starter-ready-gameplay.log`. Neither repeated playtest
+failure justifies calling starter spacing a complete first-hour fix or increasing
+regeneration.47 remains unpublished and not ready for integration into the
+release branch. The separate expanded-story candidate is now investigating the
+slow4.167-second starting basic-attack interval while retaining0.01 regeneration.

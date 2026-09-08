@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createProceduralPvPArena } from '../art/ProceduralPvPArena.js';
 import { buildDungeonSurfaceUnion } from './dungeonSurfaceUnion.js';
 import { getLanternholdWalkCollider } from '../art/ProceduralLanternholdArchitecture.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
@@ -34,6 +35,10 @@ const TEMP_PART_MAT4 = new THREE.Matrix4();
 const TEMP_UP = new THREE.Vector3(0, 1, 0);
 
 export class WorldGenerator {
+    createPvPArena(layout) {
+        this.scene.add(createProceduralPvPArena(layout));
+    }
+
     constructor(scene, collisionManager) {
         this.scene = scene;
         this.collisionManager = collisionManager;
