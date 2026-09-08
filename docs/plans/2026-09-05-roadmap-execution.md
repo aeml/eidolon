@@ -5,7 +5,60 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 19:29 UTC
+## Current checkpoint — September 8, 19:39 UTC
+
+Previous goal turn was PROGRESS (auction snapshots and observed Tripwire fixture
+correction). This turn is PROGRESS: full verification closed and ordinary seller
+payout acknowledgement/latest-cast persistence acceptance added. Full roadmap
+remains active, with no release push or major-version completion claim.
+
+Fullrace70943 CLOSED PASS0 on frozen8a5dc32: root19.160s/game402.487s, unchanged
+database/lifecycle cached. Actual6487 CLOSED PASS0/155.808s on the same runtime:
+two repetitions of seller crash boundaries and ordinary bid raises/contention,
+44 independently clean logs (12 intended kills,32 normal completed drains).
+Owned Mongo eidolon-auction-snapshot-proof-20260908-1930/volumes removed;
+exact container independently absent. Logs
+`/tmp/eidolon-auction-payout-corrected-full-race.log` and
+`/tmp/eidolon-auction-snapshot-sessions.log`.
+
+Separate test-only tree `/tmp/eidolon-auction-claim-next-7DZgQ3`, branch
+work/auction-claim-next-20260908, was created from frozen8a5dc32. aad0229 adds
+normal seller collection with an unsaved ordinary Fireball immediately before
+the collection input. Actual64864 FAILED16.446s because its later locked-skill
+probe landed inside the valid500ms global cooldown; immediate durable payout
+and70mana assertions had passed.2b80416 delays only that later probe to550ms
+after cast acknowledgement, preserving the immediate durability check. No
+runtime or acceptance assertion weakened. Initial wrong-directory format/stage
+commands were corrected;30251 compiled but skipped the opt-in session body.
+
+Corrected91065 CLOSED PASS0/26.968s THREE repetitions: Collected100gold means
+Mongo already holds1334gold/17HP/70mana/one receipt plus SellerClaimed and no
+operation. Same-connection/restarted claims reject duplicates; exact gear/XP/
+inventory and the buyer's unclaimed item remain unchanged. All six normal child
+logs clean/completed drains; three initial failed-run logs also clean/drained.
+Owned Mongo auction-payout-normal-20260908-1936/1938 (eidolon- prefix) and volumes
+removed, exact containers independently absent. Logs
+`/tmp/eidolon-auction-payout-{normal,normal-corrected}-sessions.log`.
+Test continuation merged into resource candidate59c0338, followed by evidence
+docs; no runtime change since accepted8a5dc32. No owned local test handles remain.
+
+Next implementation: durable exact item receipt/full-character delivery for
+buyer claims and seller returns, then combined buyout debit/item and listing
+escrow. Inspection confirms current item claims finalize before the handler's
+grant, and full bag/stash can drop nonpersistent ground loot. These are known
+unfinished paths, not covered by accepted seller-gold recovery. Preserve whole
+item metadata/quantity, make full-capacity failure all-or-nothing, replay receipt
+before capacity checks, and guard old-writer rollback before release. Details in
+the candidate operation-recovery plan. Wider dungeon/raid/device/campaign gates
+are unchanged and remain open.
+
+48 CI34266379714 freshly ACTIVE: client/server/three smoke shards PASS,
+predeployment disposable full-character gameplay running. Fresh public release
+and health19:33:44 both match47/6925c51, healthy/database ready. No49 push until
+whole48 CI/final live QA and fresh exact public identity pass. Root staged52
+must not be pushed; queued49–55 references remain in19:01 checkpoint.
+
+## Historical checkpoint — September 8, 19:29 UTC
 
 This turn is PROGRESS: payout crash evidence closed, auction response aliasing
 fixed, and an observed unrelated full-suite fixture failure corrected. Full
