@@ -5,7 +5,51 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 22:08 UTC
+## Current checkpoint — September 8, 22:12 UTC
+
+PROGRESS continues: complete corrected49 ancestry is now carried through50–56
+and integrated into the pending resource candidate.49 CI34284099182 on
+0c6d0cc remains ACTIVE (clientPASS, server in progress). No50 push before the
+entire49/finalLiveQA/freshidentity gate. Last verified live48; do not push root.
+
+Final ordered queue, existing canonical paths unchanged:
+50=b7b86f51bf7a9ce64a426861846095d3e91aedb4;
+51=144b0eb7eb082b55c9926f92f74cbf2e237fe700;
+52=beaee77c4d91872471efbdd8b50b8052d52565dc;
+53=4797d8e73985cc5d28903a5dc0da28c23561194f;
+54=8049332bdba7040a9a6543b24f53607eb789fcd4;
+55=b887c7396fb6ca647870d8729c304bfc43660e85;
+56=b2f81ad7eee2640f062b76fbe5fe1aa660948638 (bridge tree).
+These now include final49's isolated Tripwire fixture.56 full merged client83306
+CLOSED PASS0:239 suites/3394 tests169.27s, lintPASS; subsequent final49 ancestry
+adds only the already-verified Go fixture, no client/runtime changes.
+
+Resource tree nowec9c7f7f653a3c8236857f6735e544f3689eb7ce, merged final56 ancestry.
+Still an unpublished persistence candidate, now carrying56 metadata, NOT another
+approved56 release and not yet assigned its own future version. Resolve this
+before packaging/publishing. Merge retains resource transportClosed/retired flags,
+deferred character-work cleanup, bound identity, state locking, resource snapshots,
+schema8 and durable auction protections. Both distinct queue concurrency tests
+are retained. Anonymous CI keeps BOTH trading-selection and respawn-appearance.
+Direct comparison against4321e69 confirms server runtime differs only in build
+version: no behavior was lost in resolving the bridge queue conflicts.
+
+Combined focused15380 PASS250 client checks; server full race91688 CLOSED PASS0:
+root19.217s, game/database/lifecycle cached from the accepted runtime. Actual64223
+CLOSED PASS0/14.628s against a fresh owned database, race binary
+`/tmp/eidolon-resource-final56-proof-3tjsUy/ec9c7f7f653a3c8236857f6735e544f3689eb7ce`.
+Entire schema7 save→schema8 casts/listings→pending escrow journal/SIGKILL→refused7→
+two recovered8 sessions passed with preserved resources, gold, items and receipts.
+Four child logs independently clean:1 intended kill,1 verified legacy save/normal
+exit,2 resource drains; expected old-version refusal exits1 before admission.
+Exact owned Mongo2211 and volumes removed/independently absent. Log
+`/tmp/eidolon-resource-final56-actual.log`. Full merged client/lint74006 ACTIVE;
+lint already passed and Jest progressing. Source frozen pending completion; log
+`/tmp/eidolon-resource-final56-{client,lint}.log`. Supported recovery/deployment
+documentation and ordered packaging remain before publishing the resource format.
+Well Rested and all remaining major roadmap gates are still open.
+
+## Historical checkpoint — September 8, 22:08 UTC
 
 Previous turn was PROGRESS (respawn visual fix and expanded rest scope). This
 turn is PROGRESS: real dungeon recovery and Rogue respawn acceptance completed,
