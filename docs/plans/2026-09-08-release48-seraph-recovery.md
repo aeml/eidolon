@@ -17,15 +17,15 @@ unchanged. Do not count a local route pass as full CI or live-deployment approva
   placed the fight beside the entrance facade. The movement helper returns after
   initial displacement, not arrival at its nominal20-unit target. Counting a few
   clicks therefore did not establish exit or search randomized enemy placement.
--2054707 verifies Z>=240 and navigates toward observed live Titans while still
+- 2054707 verifies Z>=240 and navigates toward observed live Titans while still
   requiring rendered target acquisition. Actual93472 failed on an unavailable
   backward ground projection; no pointer input was issued. It was not a pass.
--6a4ed8e uses normal mouse-wheel zoom before approach. Actual88533 failed when
+- 6a4ed8e uses normal mouse-wheel zoom before approach. Actual88533 failed when
   an approach opened the dungeon menu and its modal backdrop intercepted the
   readiness chat click. Baseline smites passed, but the whole route did not.
--9dedb2a closed that menu at readiness; actual19295 failed earlier, during
+- 9dedb2a closed that menu at readiness; actual19295 failed earlier, during
   approach. Closing only at cast time was too late.
--f28e797c3babc3d8a16da66aea98dde55b819a6a also checks menu state around each
+- f28e797c3babc3d8a16da66aea98dde55b819a6a also checks menu state around each
   navigation step. It closes the actual visible menu normally and waits for its
   backdrop to disappear. A retry is allowed only for a GroundInputUnavailableError
   (no input issued) with a confirmed open menu; issued movement failures still
