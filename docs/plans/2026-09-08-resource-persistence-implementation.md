@@ -1,5 +1,49 @@
 # Resource persistence implementation candidate — not release-ready
 
+## Durable exact item claims — September 8, 19:52 UTC
+
+Runtime0c847a81f4bf39c0b2c213fcc648a58988d0a756 implements buyer item claims
+and expired/cancelled seller returns. The existing unique-per-auction decision
+now supports item_claim with immutable JSON item payload and original claim
+status. Amount/fee must be zero; malformed/oversized payloads and invalid kinds
+fail closed. Gold bid/payout records reject unexpected item fields.
+
+Preparation checks authorization/capacity without delivery. Under account work
+ordering, recovery flushes the newest prior full snapshot, atomically grants the
+exact item and SHA256 payload receipt under World→Entity locks, and pins the live
+recipient until the complete character is journaled. Offline recovery preserves
+existing gear without triggering unrelated stat rescaling. Inventory, stash and
+receipt commit together before the guarded item claim marker; returning a seller
+item also finalizes SellerClaimed. Public snapshots do not expose receipts, and
+full saves/hydration/detached copies preserve them.
+
+Storage planning uses detached data and requires capacity for the entire item.
+Compatible stacks match all properties except ID/quantity, not just display name.
+Full storage rejection leaves partial stacks/claim/receipt unchanged, creates no
+ground loot, and releases an unapplied reservation so the user can free space.
+Receipt replay precedes capacity checks. Persistent legacy direct item claims
+are rejected, preventing bypass; ordinary collection no longer grants twice in
+the handler. Claim responses serialize detached inventory/stash snapshots.
+
+Focused63426 PASS root1.266/game0.130/database0.016 before new tests.73366 had
+test compilation errors from an incorrect Entity.GetCopy reference; corrected to
+World.GetEntityCopy, not counted as acceptance.57785 corrected race PASS
+root2.583/game1.305/database1.096;85095 expanded PASS3.237/1.401/1.056;52907
+capacity-change/offline-preservation PASS2.243/1.221/1.054. Logs
+`/tmp/eidolon-auction-item-{focused-initial,focused,focused-corrected,final-focused,capacity-focused}.log`.
+
+Frozen-source fullrace54188 ACTIVE, log `/tmp/eidolon-auction-item-full-race.log`.
+Actual85368 ACTIVE on the exact built commit, two repetitions of normal buyer,
+expired/cancelled return, stash/full-capacity paths and six buyer item SIGKILL
+boundaries, plus prior normal seller payout and bid raises/contention. Tests
+assert one exact item/receipt, unchanged gold/gear/resources, no premature claim,
+and replay across two fresh processes. These are pending assertions, not passes.
+Log `/tmp/eidolon-auction-item-sessions.log`; owned Mongo
+eidolon-auction-item-proof-20260908-1952 with normal EXIT cleanup. Poll those
+exact handles before changing candidate source. Buyout debit+item, listing
+escrow, receipt retention/rollback guards and wider gameplay acceptance remain
+open. No new release number assigned and no publication approval implied.
+
 ## Corrected candidate closure — September 8, 19:36 UTC
 
 Fullrace70943 CLOSED PASS0 on8a5dc32: root19.160s/game402.487s, database and

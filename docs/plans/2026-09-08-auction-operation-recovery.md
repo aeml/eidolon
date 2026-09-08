@@ -116,7 +116,18 @@ This is implementation direction, not a completed design proof or replacement
 for the full roadmap. Validate each state transition against the actual code and
 real failure evidence as it is implemented.
 
-### Next implementation cut: exact item delivery
+### Exact item delivery implementation (acceptance pending)
+
+0c847a8 implements item_claim operations for buyer claims and seller returns,
+with immutable payload/original status, full-character item receipts, complete
+storage-capacity planning, and account-ordered live/offline delivery before
+claim finalization. Capacity failure is atomic, and replay checks the receipt
+before storage. Focused race tests pass; full54188 and actual85368 are running.
+See the implementation evidence for the exact pending scenarios. Buyout and
+listing paths are not converted yet, and old writers remain unsafe rollback
+targets. The following inspection/design records why this work was needed.
+
+### Historical item-delivery inspection — September8, 19:39
 
 September8 inspection confirms persistent BuyoutAuction saves ItemClaimed before
 debiting/granting the item in memory; CollectAuction finalizes the claim before
