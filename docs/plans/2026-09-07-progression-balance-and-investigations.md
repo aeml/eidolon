@@ -2,6 +2,14 @@
 
 Requested September 7, 2026. Status: **implementation active; full pass open**.
 
+September8 addition: the requested [Well Rested system](2026-09-08-safe-zone-well-rested.md)
+adds10% all stats and25% enemy-kill XP while earned rest duration remains, plus
+safe-zone10% maximum HP/MP recovery per second. This is planned, not active.
+Final first-hour, collection, dungeon and campaign pacing must measure rested
+and unrested play; preserve kill-only bonus eligibility and avoid compensating
+by silently weakening accepted quest rewards. Earlier no-rest evidence is not
+final acceptance for this expanded balance scope.
+
 Latest isolated reward candidate **a14351b** now replaces the million-XP story/
 daily catalogs and reduces the weekly cache, with gold budgeted independently
 and accepted promises preserved. Its exact production-function receipts and
