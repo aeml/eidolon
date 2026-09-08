@@ -36,34 +36,50 @@ chmod +x deploy/deploy_linux.sh deploy/restore_mongo_archive.sh deploy/setup_ngi
 ./deploy/deploy_linux.sh
 ```
 
-Manual equivalent commands:
+Read-only checks after deployment:
 
 ```bash
-set -a
-source .env
-set +a
-docker compose build api
-docker compose up -d --no-recreate --wait mongo
-docker compose run --rm --no-deps -T api --check-schema --mongo-uri="${MONGO_URI}"
-# Continue only if the compatibility check succeeds.
-docker compose up -d
 docker compose ps
 docker compose logs --tail=100 api
 curl -fsS http://127.0.0.1:${APP_HOST_PORT:-18082}/healthz
 ```
 
-Use the deployment script for fail-closed execution. When running commands
+Use the deployment script for fail-closed execution. When handling deployment
 manually, **stop on any error**; do not run `up -d` after a rejected preflight.
 The preflight starts Mongo only if necessary, does not recreate an existing
 Mongo container, and leaves the API running. It reads the schema marker without
 opening logs, creating a save journal, applying migrations, or admitting players.
 Database failure also aborts deployment. Normal startup repeats the compatibility
-check; preflight does not replace startup validation or serialize deployments.
+check. Starting with 1.0.57, the script holds `logs/deploy.lock` to refuse another
+deployment through this script while it is active. Manual/older deployment tools
+do not share that protection and must not run concurrently.
+
+Deployment validates that the API's URI points to the same `mongo:27017` service
+that the backup captures. Remote database URIs fail closed; they require a
+separately verified backup workflow rather than an unrelated local archive.
+
+For a save-format increase, the script runs `backup_before_upgrade.sh` after
+preflight and before target startup. This stops the old API, archives its immutable
+image and the complete `eidolon` Mongo database, and includes private pending
+saves through a read-only mount of `logs/`. Archives, image identity and SHA-256
+checksums are stored under private, git-ignored `server/backups/save-upgrade-*`
+directories. A `COMPLETE` marker is written only after compression/checksum checks
+and filesystem synchronization. An incomplete backup is retained, never treated
+as a restore point. If backup fails before migration, the script attempts to
+restart the unchanged previous API and aborts deployment. A fresh installation
+without a previous API still backs up available data but has no previous image.
+
+These local backups are not off-machine disaster recovery and have no automatic
+retention deletion. Monitor disk capacity and copy verified recovery points to
+durable off-machine storage using the deployment operator's approved process.
+Same-format releases do not take this upgrade snapshot automatically. A manual
+upgrade must also run the backup script after a successful preflight and before
+`up -d`, with no concurrent deployment or game writer.
 
 ## Save-format upgrades and recovery
 
 Alpha 1.0.56 is the schema-7 compatibility bridge. Deploy and verify it before
-the separately versioned schema-8 resource/auction-persistence release. This
+Alpha 1.0.57, the schema-8 resource/auction-persistence release. This
 bridge alone does not deliver the resource-persistence feature.
 
 - Deploy one release at a time through the ordered CI and live-verification gate.
@@ -96,6 +112,14 @@ bridge alone does not deliver the resource-persistence feature.
   real-input smoke tests; retain the recovery evidence in the release ledger.
 
 ## 3) Restore Mongo data from existing archive
+
+**Destructive, Mongo-only legacy helper:** this runs `mongorestore --drop` and can
+partially replace data even if it fails. Stop all game writers first and explicitly
+approve the restore target and loss of subsequent progress. For schema-8 recovery,
+do not use this helper alone: restore the corresponding private journal and use
+the matching compatible server as described above. A local `COMPLETE` marker
+checks archive integrity; it does not authorize a restore or prove that an
+arbitrary image can read the saved format.
 
 If archive is in `server/` root:
 

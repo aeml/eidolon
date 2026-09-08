@@ -52,8 +52,9 @@ set -e
 
 if [ ${restore_exit} -ne 0 ]; then
   echo "mongorestore failed. This can happen if Mongo root credentials mismatch an existing mongo_data volume." >&2
-  echo "No destructive action was taken." >&2
-  echo "If you want to reset data volume, confirm explicitly before running any 'docker compose down -v'." >&2
+  echo "The restore uses --drop and may already have replaced or removed data before failing." >&2
+  echo "Keep all game writers stopped; preserve the original backup and pending-save journal while investigating." >&2
+  echo "Do not delete Docker volumes or migration markers to bypass this failure." >&2
   exit ${restore_exit}
 fi
 

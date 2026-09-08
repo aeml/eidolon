@@ -17,7 +17,7 @@ fi
 if [ -z "${EIDOLON_BUILD_COMMIT:-}" ] && [ -n "${REPO_ROOT:-}" ]; then
   EIDOLON_BUILD_COMMIT="$(git -C "${REPO_ROOT}" rev-parse HEAD)"
 fi
-EIDOLON_BUILD_VERSION="${EIDOLON_BUILD_VERSION:-Alpha 1.0.56}"
+EIDOLON_BUILD_VERSION="${EIDOLON_BUILD_VERSION:-Alpha 1.0.57}"
 export EIDOLON_BUILD_COMMIT EIDOLON_BUILD_VERSION
 
 if ! command -v docker >/dev/null 2>&1; then
@@ -52,7 +52,20 @@ for key in "${required_vars[@]}"; do
   fi
 done
 
+if [[ ! "${MONGO_URI}" =~ ^mongodb://([^/@]*@)?mongo:27017(/[^?]*)?(\?.*)?$ ]]; then
+  echo "Deployment requires the API's database URI to target this stack's mongo:27017." >&2
+  echo "A remote database needs its own verified backup workflow; refusing to back up a different database." >&2
+  exit 1
+fi
+
 mkdir -p logs
+
+if ! command -v flock >/dev/null 2>&1; then
+  echo "flock is required to serialize deployments" >&2
+  exit 1
+fi
+exec 9>logs/deploy.lock
+flock -n 9 || { echo "Another deployment is active; refusing overlap." >&2; exit 1; }
 
 if [ "${CLEAN_SERVER_TREE:-false}" = "true" ] && git rev-parse --show-toplevel >/dev/null 2>&1; then
   echo "Cleaning untracked files under server/ before build..."
@@ -72,7 +85,18 @@ docker compose build api
 echo "Preparing database for read-only compatibility check..."
 docker compose up -d --no-recreate --wait mongo
 echo "Checking target server compatibility before replacing the live API..."
-docker compose run --rm --no-deps -T api --check-schema --mongo-uri="${MONGO_URI}"
+schema_preflight="$(docker compose run --rm --no-deps -T api --check-schema --mongo-uri="${MONGO_URI}")"
+printf '%s\n' "${schema_preflight}"
+if [[ ! "${schema_preflight}" =~ database=([0-9]+)\ supported=([0-9]+) ]]; then
+  echo "Target preflight did not report a valid schema contract." >&2
+  exit 1
+fi
+database_schema="${BASH_REMATCH[1]}"
+target_schema="${BASH_REMATCH[2]}"
+if (( database_schema < target_schema )); then
+  echo "Save-format upgrade ${database_schema} -> ${target_schema}: preserving a consistent recovery point..."
+  bash ./deploy/backup_before_upgrade.sh
+fi
 
 echo "Starting stack..."
 docker compose up -d

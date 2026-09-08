@@ -87,6 +87,12 @@ jobs:
         working-directory: server
         run: go test -race ./...
 
+      - name: Verify disposable upgrade backup and restore
+        working-directory: server
+        env:
+          EIDOLON_DEPLOY_BACKUP_DISPOSABLE: '1'
+        run: go test -race . -run '^TestDeployUpgradeBackupPreservesPrivateStateAndRestartsOnFailure$' -count=1 -v
+
       - name: Run server hot-path benchmarks
         working-directory: server
         run: go test -run='^$' -bench=. -benchmem -benchtime=250ms ./...
@@ -279,7 +285,7 @@ jobs:
           cp -r index.html assets src vendor public/
           cp sw.js public/
           node scripts/version-pages-runtime.mjs public "${GITHUB_SHA}"
-          printf '{"commit":"%s","version":"Alpha 1.0.56"}\n' "${GITHUB_SHA}" > public/release.json
+          printf '{"commit":"%s","version":"Alpha 1.0.57"}\n' "${GITHUB_SHA}" > public/release.json
           
           # Create coverage directory
           mkdir -p public/coverage/client public/coverage/server
@@ -461,7 +467,7 @@ jobs:
           chmod --reference=.env "${qa_env_tmp}"
           mv "${qa_env_tmp}" .env
           trap - EXIT
-          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.0.56" bash ./deploy/deploy_linux.sh
+          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.0.57" bash ./deploy/deploy_linux.sh
           EOF
 
   post-deploy-browser:

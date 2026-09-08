@@ -15,7 +15,7 @@ func TestDeploySchemaPreflightPrecedesLiveReplacement(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, scenario := range []string{"compatible", "future-schema", "database-unavailable"} {
+	for _, scenario := range []string{"compatible", "upgrade", "backup-failed", "future-schema", "database-unavailable", "missing-contract", "foreign-mongo"} {
 		t.Run(scenario, func(t *testing.T) {
 			root := t.TempDir()
 			for _, dir := range []string{"deploy", "bin"} {
@@ -25,20 +25,33 @@ func TestDeploySchemaPreflightPrecedesLiveReplacement(t *testing.T) {
 			}
 			files := map[string]string{
 				"deploy/deploy_linux.sh": string(script),
-				".env":                   "MONGO_INITDB_ROOT_USERNAME=fixture\nMONGO_INITDB_ROOT_PASSWORD=fixture\nMONGO_URI=mongodb://fixture\n",
-				"bin/git":                "#!/bin/sh\nexit 1\n",
-				"bin/curl":               "#!/bin/sh\nprintf '%s' '{\"commit\":\"fixture-commit\",\"database\":\"ready\"}'\n",
+				"deploy/backup_before_upgrade.sh": `#!/bin/sh
+printf '%s\n' backup >> "$PREFLIGHT_COMMANDS"
+if [ "$PREFLIGHT_SCENARIO" = backup-failed ]; then exit 1; fi
+`,
+				".env":     "MONGO_INITDB_ROOT_USERNAME=fixture\nMONGO_INITDB_ROOT_PASSWORD=fixture\nMONGO_URI=mongodb://mongo:27017\n",
+				"bin/git":  "#!/bin/sh\nexit 1\n",
+				"bin/curl": "#!/bin/sh\nprintf '%s' '{\"commit\":\"fixture-commit\",\"database\":\"ready\"}'\n",
 				"bin/docker": `#!/bin/bash
 printf '%s\n' "$*" >> "$PREFLIGHT_COMMANDS"
 case "$*" in
   'compose up -d --no-recreate --wait mongo')
     if [ "$PREFLIGHT_SCENARIO" = database-unavailable ]; then exit 1; fi ;;
-  'compose run --rm --no-deps -T api --check-schema --mongo-uri=mongodb://fixture')
-    if [ "$PREFLIGHT_SCENARIO" = future-schema ]; then exit 1; fi ;;
+  'compose run --rm --no-deps -T api --check-schema --mongo-uri=mongodb://mongo:27017')
+    if [ "$PREFLIGHT_SCENARIO" = future-schema ]; then exit 1; fi
+    if [ "$PREFLIGHT_SCENARIO" = missing-contract ]; then exit 0; fi
+    if [ "$PREFLIGHT_SCENARIO" = upgrade ] || [ "$PREFLIGHT_SCENARIO" = backup-failed ]; then
+      echo 'Schema preflight passed: database=7 supported=8 commit=fixture-commit'
+    else
+      echo 'Schema preflight passed: database=8 supported=8 commit=fixture-commit'
+    fi ;;
   'compose up -d') printf '%s' replaced > "$PREFLIGHT_LIVE_STATE" ;;
 esac
 `,
 				"live-state": "healthy-previous-release",
+			}
+			if scenario == "foreign-mongo" {
+				files[".env"] = "MONGO_INITDB_ROOT_USERNAME=fixture\nMONGO_INITDB_ROOT_PASSWORD=fixture\nMONGO_URI=mongodb://remote.example:27017\n"
 			}
 			for name, content := range files {
 				if err := os.WriteFile(filepath.Join(root, name), []byte(content), 0700); err != nil {
@@ -59,7 +72,7 @@ esac
 			if err != nil {
 				t.Fatal(err)
 			}
-			if scenario != "compatible" {
+			if scenario != "compatible" && scenario != "upgrade" {
 				if runErr == nil || string(state) != "healthy-previous-release" || strings.Contains(string(commands), "compose up -d\n") {
 					t.Fatalf("failed preflight replaced live API: %v\n%s\n%s", runErr, commands, output)
 				}
@@ -68,7 +81,13 @@ esac
 			if runErr != nil || string(state) != "replaced" {
 				t.Fatalf("compatible deployment failed: %v\n%s", runErr, output)
 			}
-			expected := "compose build api\ncompose up -d --no-recreate --wait mongo\ncompose run --rm --no-deps -T api --check-schema --mongo-uri=mongodb://fixture\ncompose up -d\n"
+			expected := "compose build api\ncompose up -d --no-recreate --wait mongo\ncompose run --rm --no-deps -T api --check-schema --mongo-uri=mongodb://mongo:27017\n"
+			if scenario == "upgrade" {
+				expected += "backup\n"
+			} else if strings.Contains(string(commands), "backup\n") {
+				t.Fatal("same-format deployment unnecessarily stopped for an upgrade backup")
+			}
+			expected += "compose up -d\n"
 			if !strings.Contains(string(commands), expected) {
 				t.Fatalf("deployment did not preflight before replacement:\n%s", commands)
 			}
