@@ -54,3 +54,15 @@ MsgUnlockTalent permits10 requests per10s. Prepared input now waits1100ms before
 each purchase, including the first when earlier tests may have spent the burst.
 Point/rank acknowledgement remains mandatory; no automatic retry or runtime
 limiter change. A regression reads the real server policy to catch drift.
+
+35020 on clean8ac2e95 completed normally with exit0: actual Verdant route PASS
+3.7minutes, generator2 seed1587624703800339911. All15 purchases and Empowered
+selection were acknowledged. Rootbound Warden15000HP and Briar Matron16800HP
+died to actual inputs; later mobs, cleared-room/gold assertions and normal town
+return passed. Periodic combat samples remained2575/2575HP; the last Matron
+sample had613mana. No combat resource refill/reconnect was added. This is the
+prepared two-boss functional gate, not a full/fresh dungeon balance approval.
+Credential scan0 and independent exact-container absence passed. Final44129
+passed258 version/preparation/defense tests in1.470s; lint/bash/diff passed.
+Both test handles are closed. Candidate retains46's existing patch notes and
+version identity; only QA and this evidence changed from the failed86609cd.
