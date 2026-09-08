@@ -224,6 +224,27 @@ func isDailyQuest(q Quest) bool {
 }
 
 func copyQuestDefinition(progress Quest, definition Quest) Quest {
+	if progress.Accepted || progress.Completed {
+		// Never rewrite an accepted payout during catalog refresh. A nonzero
+		// legacy amount is also evidence of a quote for in-memory old callers.
+		// Missing BSON fields may acquire catalog defaults; explicit zero may not.
+		if progress.RewardXPQuoted || progress.RewardXP != 0 {
+			definition.RewardXP = progress.RewardXP
+		}
+		if progress.RewardGoldQuoted || progress.RewardGold != 0 {
+			definition.RewardGold = progress.RewardGold
+		}
+		if definition.Type == "KILL" && progress.MaxCount > 0 {
+			if definition.MaxCount != progress.MaxCount {
+				definition.ObjectiveText = progress.ObjectiveText
+				if definition.ObjectiveText == "" {
+					definition.ObjectiveText = fmt.Sprintf("Defeat %d %s.", progress.MaxCount, splitQuestTarget(definition.Target))
+				}
+			}
+			definition.MaxCount = progress.MaxCount
+		}
+	}
+	definition.RewardXPQuoted, definition.RewardGoldQuoted = true, true
 	if definition.ID == "chronicle_01_bell_below" && (progress.Accepted || progress.Completed) {
 		// The smaller opening reward applies to new offers, never to an already
 		// accepted promise or historical receipt, including an explicit zero quote.
@@ -402,6 +423,7 @@ func (w *World) PerformAcceptQuest(playerID, questID string) (*Entity, bool) {
 				return nil, false
 			}
 			q.Accepted = true
+			q.RewardXPQuoted, q.RewardGoldQuoted = true, true
 			return player, true
 		}
 	}

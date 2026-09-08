@@ -159,6 +159,8 @@ type Quest struct {
 	LegacyOptional     bool   `bson:"legacy_optional,omitempty"`
 	RewardXP           int    `bson:"reward_xp"`
 	RewardGold         int    `bson:"reward_gold"`
+	RewardXPQuoted     bool   `bson:"-"`
+	RewardGoldQuoted   bool   `bson:"-"`
 	GrantedGold        int    `bson:"granted_gold,omitempty"`
 	GrantedXP          int    `bson:"granted_xp,omitempty"`
 	GrantedResonanceXP int    `bson:"granted_resonance_xp,omitempty"`

@@ -40,6 +40,8 @@ type Quest struct {
 	LegacyOptional     bool   `json:"legacyOptional,omitempty"`
 	RewardXP           int    `json:"rewardXP"`
 	RewardGold         int    `json:"rewardGold"`
+	RewardXPQuoted     bool   `json:"-"`
+	RewardGoldQuoted   bool   `json:"-"`
 	GrantedGold        int    `json:"grantedGold,omitempty"`
 	GrantedXP          int    `json:"grantedXP,omitempty"`
 	GrantedResonanceXP int    `json:"grantedResonanceXP,omitempty"`

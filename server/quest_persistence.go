@@ -14,6 +14,7 @@ func questFromDatabase(q database.Quest) game.Quest {
 		InvestigationMask: q.InvestigationMask,
 		LegacyOptional:    q.LegacyOptional,
 		RewardXP:          q.RewardXP, RewardGold: q.RewardGold, GrantedGold: q.GrantedGold,
+		RewardXPQuoted: q.RewardXPQuoted, RewardGoldQuoted: q.RewardGoldQuoted,
 		GrantedXP: q.GrantedXP, GrantedResonanceXP: q.GrantedResonanceXP,
 		Completed: q.Completed, Accepted: q.Accepted, Title: q.Title,
 		Description: q.Description, Lore: q.Lore, Category: q.Category,

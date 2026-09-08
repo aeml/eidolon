@@ -71,8 +71,11 @@ migration/progression race repetitions **24607 PASS / root 1.091s / game
 13.567s**, log `/tmp/eidolon-coordinated-xp-login-followup.log`. Actual reconnect
 validation remains open. All owned handles are terminal.
 
-Next: preserve accepted reward quotes using actual BSON field presence (explicit
-zero is not a missing promise), tune overlapping quest/source budgets and add
+Accepted reward/kill requirement protection is now implemented and passes
+targeted production/BSON checks; see [the quote record](2026-09-08-accepted-quest-quotes.md).
+Actual database sessions and full regression remain separate gates.
+
+Next: tune overlapping quest/source budgets and add
 authored realm preparation. Do not use today's million-XP quest catalog with the
 new curve as a playable balance result. Validate the compatibility bridge before
 any release that can write curve-2 saves.

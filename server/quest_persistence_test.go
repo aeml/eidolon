@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"sync"
 	"testing"
 	"time"
@@ -10,6 +11,78 @@ import (
 	"eidolon-server/internal/game"
 	"go.mongodb.org/mongo-driver/bson"
 )
+
+func TestAcceptedRewardQuoteBSONRefreshClaimAndReload(t *testing.T) {
+	for _, xp := range []int{0, 1234} {
+		t.Run(fmt.Sprintf("XP=%d", xp), func(t *testing.T) {
+			// Raw old-document shape: no new metadata flags, but both reward
+			// fields are present. The ready eight-kill contract predates the
+			// current hundred-kill offer and must remain claimable unchanged.
+			raw, err := bson.Marshal(bson.M{"id": "daily_skeleton", "type": "KILL", "target": "Skeleton",
+				"accepted": true, "count": 8, "max_count": 8, "reward_xp": xp, "reward_gold": 0,
+				"objective_text": "Defeat eight sentries."})
+			if err != nil {
+				t.Fatal(err)
+			}
+			var saved database.Quest
+			if err := bson.Unmarshal(raw, &saved); err != nil {
+				t.Fatal(err)
+			}
+			player := newLevelCommandPlayer("quoted-daily")
+			player.Level, player.Experience, player.MaxExperience = 100, 245125, 245125
+			player.X, player.Z, player.Gold = -20, 200, 731
+			player.LastDailyQuest = time.Now()
+			player.Quests = []game.Quest{questFromDatabase(saved)}
+			w := game.NewWorld(nil)
+			w.AddEntity(player)
+			find := func(p *game.Entity) game.Quest {
+				for _, q := range p.Quests {
+					if q.ID == "daily_skeleton" {
+						return q
+					}
+				}
+				t.Fatal("daily disappeared")
+				return game.Quest{}
+			}
+			for i := 0; i < 2; i++ {
+				w.GenerateDailyQuests(player.ID)
+				q := find(player)
+				if q.RewardXP != xp || q.RewardGold != 0 || q.Count != 8 || q.MaxCount != 8 || q.Completed || !q.Accepted || q.ObjectiveText != "Defeat eight sentries." {
+					t.Fatalf("quote changed on catalog refresh: %+v", q)
+				}
+			}
+			if _, ok := w.PerformCompleteQuest(player.ID, "daily_skeleton"); !ok {
+				t.Fatal("ready legacy contract no longer claimable")
+			}
+			q := find(player)
+			if !q.Completed || q.GrantedGold != 0 || q.GrantedXP != 0 || q.GrantedResonanceXP != xp || player.Gold != 731 || player.ResonanceXP != xp {
+				t.Fatalf("wrong quoted cap reward: quest=%+v gold=%d resonance=%d", q, player.Gold, player.ResonanceXP)
+			}
+			encoded, err := bson.Marshal(characterSnapshot("quote-save", player, time.Now()))
+			if err != nil {
+				t.Fatal(err)
+			}
+			var stored database.Character
+			if err := bson.Unmarshal(encoded, &stored); err != nil {
+				t.Fatal(err)
+			}
+			player.Quests = nil
+			for _, entry := range stored.Quests {
+				player.Quests = append(player.Quests, questFromDatabase(entry))
+			}
+			w.GenerateDailyQuests(player.ID)
+			if reloaded := find(player); reloaded != q {
+				t.Fatalf("saved receipt changed: %+v -> %+v", q, reloaded)
+			}
+			if _, ok := w.PerformCompleteQuest(player.ID, "daily_skeleton"); ok {
+				t.Fatal("duplicate claim after reload")
+			}
+			if player.Gold != 731 || player.ResonanceXP != xp {
+				t.Fatal("duplicate reward after reload")
+			}
+		})
+	}
+}
 
 func TestOpeningQuotedRewardSurvivesDatabaseAndDailyRefresh(t *testing.T) {
 	for _, xp := range []int{0, 100, 500} {
