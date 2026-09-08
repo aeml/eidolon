@@ -60,4 +60,9 @@ versus old30→54→57. Each combined daily payout is less than25% of actual bos
 XP. Combat gold is randomized and separately reconciled exactly, not represented
 by the daily-gold column. These are actual reward functions, not earned wins.
 They exclude trash, room clears, story claims, equipment sales and weekly caches;
-they cannot establish full-run pacing. Full server regression is still required.
+they cannot establish full-run pacing.
+
+Full server race regression **95183 PASS** on **a14351b**: root17.651s,
+database1.042s, game336.997s; log `/tmp/eidolon-reward-budget-full-server.log`.
+The subsequent deliberate-inspection fix and earned23-chapter route are recorded
+in [the nearby-inspection evidence](2026-09-08-nearby-story-inspection.md).

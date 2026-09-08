@@ -27,3 +27,27 @@ diff check passes. The fresh route retains a real pointer inspection for the
 diary and uses native E for the scar records, with unchanged server-acknowledged
 journal/mask/manual-turn-in checks. Full client and real earned rerun remain
 required; this code is not release-packaged.
+
+## Earned rerun closure
+
+Source **762e4de** passes the fresh Wizard route: **one test /5.2m**, artifact
+credential scan and isolated cleanup pass. Log:
+`/tmp/eidolon-nearby-inspection-earned.log`. The tool handle was lost during
+context truncation; terminal test/cleanup messages and exit of the exact owned
+parent process **2898447** were subsequently verified, without starting a
+duplicate browser. Full client also passes **222 suites /3,329 tests /191.911s**,
+log `/tmp/eidolon-nearby-inspection-full-client.log`.
+
+Opening: three kills, zero deaths, three retreats, level2 and100XP/100gold in50s.
+Diary: normal pointer inspection and manual200XP/25gold, level3 by115s.
+Collection:14 observed target deaths, eight Seeds, zero deaths, level5 before
+manual1200XP/50gold claim. Combat gold292→763; nine equipment pieces with170gold
+vendor value remain **unsold**. All three scar records use native E, with server
+acknowledgement, manual claim and reconnect retaining gear/quest state. Final
+level7 correctly leaves the level30 Bastion locked. This is evidence of an
+unresolved preparation gap, not a full campaign balance approval.
+
+Images archived at `/tmp/eidolon-balanced-earth-earned-RpmDV8/`; the collection
+ready image was inspected and shows8/8,50gold/1200XP and an explicit Complete
+Quest button. This route is the **23-chapter** reward candidate, before the
+eight new hunt chapters; it does not validate those hunts or their pacing.
