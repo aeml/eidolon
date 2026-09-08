@@ -2,6 +2,8 @@ import { expect } from '@playwright/test';
 import { chronicleHunts } from '../../src/data/chronicleHunts.generated.js';
 import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { createEarnedClassCombat } from './earned-class-combat.js';
+import { openDungeonGuide } from './dungeon-guide.js';
+import { prepareEarnedClass } from './fresh-ready-route.js';
 import { loginAndEnterWorld, moveByGroundClick, projectEntity, readPlayerState,
     returnToTown, setAutoLootThroughSettings } from './helpers.js';
 
@@ -48,6 +50,13 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady }
     expect(hunt?.huntingRealm, 'This earned driver currently covers Earth expeditions only').toBe('earth');
     const started = Date.now();
     const before = await snapshot(page);
+    if (before.level >= 10) {
+        // Higher expeditions use equipment and training already earned through
+        // the story. No new items, levels or points are granted by preparation.
+        await openDungeonGuide(page);
+        await prepareEarnedClass(page, credentials, { label: `before-${id}` });
+        await page.locator('#btn-close-dungeon-menu').click();
+    }
     await openIlyra(page);
     await expect(page.locator('.quest-dialogue h3')).toHaveText(hunt.title);
     expect((await readChronicleChapter(page, id))?.accepted).toBe(false);

@@ -58,7 +58,9 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     expect(process.env.EIDOLON_E2E_REGISTER).toBe('1');
     test.setTimeout(process.env.EIDOLON_E2E_FRESH_STORY_HUNT === '1' ? 1_800_000 :
         process.env.EIDOLON_E2E_FRESH_HUNT === '1' ? 3_600_000 :
-        process.env.EIDOLON_E2E_FRESH_COLLECTION === '1' ? 1_200_000 : 600_000);
+        // The expanded Earth route now includes150 required expedition kills,
+        // not just the former diary/collection/scar sequence.
+        process.env.EIDOLON_E2E_FRESH_COLLECTION === '1' ? 3_600_000 : 600_000);
     const started = Date.now();
     const failures = collectBrowserFailures(page, baseURL);
     const preparedEarlier = process.env.EIDOLON_E2E_FRESH_EARLY_PREPARATION === '1';
