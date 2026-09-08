@@ -2,8 +2,9 @@ import { expect } from '@playwright/test';
 import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { openDungeonGuide } from './dungeon-guide.js';
 import { createFreshCollectionCombat, observeCollectionCombatReceipts, readFreshCollectionCombat,
-    readCollectionTarget, selectCollectionTargetThroughInput } from './fresh-collection-combat.js';
-import { loginAndEnterWorld, moveByGroundClick, projectEntity, readPlayerState,
+    readCollectionTarget, selectCollectionTargetThroughInput,
+    reacquireDisengagedCollectionTarget } from './fresh-collection-combat.js';
+import { loginAndEnterWorld, moveByGroundClick, projectEntity, projectNearestHostile, readPlayerState,
     returnToTown, setAutoLootThroughSettings } from './helpers.js';
 
 const collection = 'chronicle_02_seeds_first_grove';
@@ -60,6 +61,15 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
             const afterDefense = await readCollectionTarget(page, target.id);
             expect(afterDefense, 'Target remains observable after defensive input').not.toBeNull();
             if (afterDefense.state === 'DEAD' || afterDefense.hp <= 0) { defeated = afterDefense; break; }
+            const nearby = await reacquireDisengagedCollectionTarget(page, target,
+                () => projectNearestHostile(page, 'Skeleton'));
+            const previousAfterReacquisition = await readCollectionTarget(page, target.id);
+            expect(previousAfterReacquisition, 'Target remains observable across reacquisition').not.toBeNull();
+            if (previousAfterReacquisition.state === 'DEAD' || previousAfterReacquisition.hp <= 0) {
+                defeated = previousAfterReacquisition;
+                break;
+            }
+            target = nearby;
             const point = await projectEntity(page, target.id);
             if (point?.visible) {
                 const selected = await selectCollectionTargetThroughInput(page, target, point);

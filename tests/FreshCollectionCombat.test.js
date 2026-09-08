@@ -3,9 +3,44 @@ import { jest } from '@jest/globals';
 const createDefense = jest.fn();
 jest.unstable_mockModule('./e2e/earned-wizard-defense.js', () => ({ createEarnedWizardDefense: createDefense }));
 const { createFreshCollectionCombat, readFreshCollectionCombat, readSelectedCollectionTarget,
-    readCollectionTarget, selectCollectionTargetThroughInput } = await import('./e2e/fresh-collection-combat.js');
+    readCollectionTarget, selectCollectionTargetThroughInput,
+    reacquireDisengagedCollectionTarget } = await import('./e2e/fresh-collection-combat.js');
 
 beforeEach(() => jest.resetAllMocks());
+
+test('reacquisition preserves missing-target evidence and does not invent a nearby enemy', async () => {
+    const target = { id: 'old' }, findNearby = jest.fn().mockResolvedValue(null);
+    window.game = { remotePlayers: new Map(), player: { position: { distanceTo: () => 47 } },
+        isHostileActorTarget: () => false, getBasicAttackRangeForEntity: () => 16 };
+    const page = { evaluate: (fn, arg) => fn(arg) };
+    try {
+        expect(await reacquireDisengagedCollectionTarget(page, target, findNearby)).toBe(target);
+        expect(findNearby).not.toHaveBeenCalled();
+        window.game.remotePlayers.set(target.id, { health: 28, state: 'IDLE', position: {} });
+        expect(await reacquireDisengagedCollectionTarget(page, target, findNearby)).toBe(target);
+        expect(findNearby).toHaveBeenCalledTimes(1);
+    } finally { delete window.game; }
+});
+
+test.each([
+    { distance: 47, selected: false, state: 'IDLE', expected: true },
+    { distance: 47, selected: true, state: 'MOVING', expected: false },
+    { distance: 12, selected: false, state: 'IDLE', expected: false },
+    { distance: 47, selected: false, state: 'DEAD', expected: false }
+])('only a living distant disengaged target can be replaced: %j', async scenario => {
+    const target = { id: 'old' }, nearby = { id: 'nearby' };
+    const enemy = Object.freeze({ state: scenario.state, health: 28, position: {} });
+    window.game = { remotePlayers: new Map([[target.id, enemy]]),
+        player: { position: { distanceTo: () => scenario.distance } },
+        isHostileActorTarget: () => scenario.selected, getBasicAttackRangeForEntity: () => 16 };
+    const findNearby = jest.fn().mockResolvedValue(nearby);
+    try {
+        const result = await reacquireDisengagedCollectionTarget({ evaluate: (fn, arg) => fn(arg) }, target, findNearby);
+        expect(result).toBe(scenario.expected ? nearby : target);
+        expect(findNearby).toHaveBeenCalledTimes(scenario.expected ? 1 : 0);
+        expect(enemy.health).toBe(28);
+    } finally { delete window.game; }
+});
 
 test('Wizard collection retains defense but allows healthy ordinary combat', async () => {
     const page = { evaluate: jest.fn().mockResolvedValue('Wizard') }, defend = jest.fn();

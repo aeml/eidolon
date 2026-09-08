@@ -44,3 +44,13 @@ overall survival or pacing improvement. The route needs to handle a disengaged
 target rather than remaining attached to an out-of-range ID. Combat balance is
 still open. Scan0/cleanup/independent exact-container absence pass. No unchanged
 rerun or release approval. Both38499 and92956 are closed.
+
+QA follow-up retains the production62791a5 pursuit change. After a retreat, a
+living enemy outside basic range+2 with no active hostile auto-attack/chase can
+be replaced by a currently visible Skeleton, acquired with an ordinary click.
+Missing/dead targets remain available to the existing explicit failure/death
+checks; no nearby replacement preserves the old target. Actual quest progress,
+manual turn-in and120-second/two-respawn limits are unchanged. Collection rechecks
+the previous target for delayed death before changing its observation.44250
+passes35tests/three suites and lint; final missing-target/no-candidate coverage
+and fresh actual verification follow. No direct targeting or movement writes.

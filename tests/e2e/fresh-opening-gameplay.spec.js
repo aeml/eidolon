@@ -2,7 +2,8 @@ import { expect, test } from '@playwright/test';
 import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { earnFreshCollectionAndInspectHandoff } from './fresh-collection-route.js';
 import { createFreshCollectionCombat, observeCollectionCombatReceipts,
-    readFreshCollectionCombat, selectCollectionTargetThroughInput } from './fresh-collection-combat.js';
+    readFreshCollectionCombat, selectCollectionTargetThroughInput,
+    reacquireDisengagedCollectionTarget } from './fresh-collection-combat.js';
 import { earnFreshHunt, earnFreshSkeletonHunt } from './fresh-hunt-route.js';
 import { earnFreshDungeonReadiness, prepareEarnedClass } from './fresh-ready-route.js';
 import { createEarnedClassCombat } from './earned-class-combat.js';
@@ -129,6 +130,8 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
             retreats = await page.evaluate(() => window.__freshWizardDefense?.counts.retreats || 0);
             if ((await readPlayerState(page)).state === 'DEAD') continue;
             if ((await readChronicleChapter(page, chapter)).count > before) break;
+            target = await reacquireDisengagedCollectionTarget(page, target,
+                () => projectNearestHostile(page, 'Skeleton'));
             const point = await projectEntity(page, target.id);
             if (point?.visible) {
                 target = await selectCollectionTargetThroughInput(page, target, point);

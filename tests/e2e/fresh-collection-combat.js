@@ -46,6 +46,18 @@ export async function selectCollectionTargetThroughInput(page, target, point) {
     return await readSelectedCollectionTarget(page) || target;
 }
 
+export async function reacquireDisengagedCollectionTarget(page, target, findNearby) {
+    const disengaged = await page.evaluate(id => {
+        const game = window.game, enemy = game.remotePlayers.get(id);
+        // Let the caller observe death/missing-target errors. Never replace a
+        // live auto-attack/chase merely because another enemy is nearer.
+        if (!enemy || enemy.state === 'DEAD' || (enemy.health ?? enemy.stats?.hp) <= 0 ||
+            game.isHostileActorTarget(game.pendingInteraction)) return false;
+        return game.player.position.distanceTo(enemy.position) > game.getBasicAttackRangeForEntity(enemy) + 2;
+    }, target.id);
+    return disengaged ? await findNearby() || target : target;
+}
+
 // Read-only diagnostic: never include account details or general game payloads.
 export async function readFreshCollectionCombat(page, targetId) {
     return page.evaluate(id => {
