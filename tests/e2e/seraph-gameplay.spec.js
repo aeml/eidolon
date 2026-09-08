@@ -59,8 +59,16 @@ test('Seraph training persists, changes actual smites and lifetime, and cleans u
     }
 
     async function ready() {
+        // A moving camera can bring the entrance under the last ground click.
+        // Dismiss the resulting real service menu through its visible control
+        // before using chat; never force a click through its modal backdrop.
+        const dungeonClose = page.locator('#btn-close-dungeon-menu');
+        if (await dungeonClose.isVisible()) {
+            await dungeonClose.click();
+            await expect(page.locator('#dungeon-menu-backdrop')).toBeHidden();
+        }
         const sequence = await page.evaluate(() => window.game.animationQAReadySequence || 0);
-        await page.locator('#chat-tab-chat').click();
+        await page.locator('#chat-tab-chat').click({ timeout: 5_000 });
         await page.locator('#chat-input').click();
         await page.locator('#chat-input').fill('/qa-animation-ready');
         await page.locator('#chat-input').press('Enter');
