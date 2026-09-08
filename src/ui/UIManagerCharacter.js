@@ -331,14 +331,14 @@ class UIManagerCharacterMethods {
                 if (className === 'Rogue') desc += " Increases Dagger ability damage.";
                 break;
             case 'vitality':
-                desc = "Increases Max HP (+10 per point) and HP Regeneration (+0.1 per point).";
+                desc = "Increases Max HP (+10 per point) and HP Regeneration (+0.01 per second per point).";
                 break;
             case 'intelligence':
                 desc = "Increases Max Mana (+10 per point) and Cooldown Reduction (+0.5% per point, max 50%).";
                 if (className === 'Wizard') desc += " Increases Fireball ability damage.";
                 break;
             case 'wisdom':
-                desc = "Increases Mana Regeneration (+0.1 per point) and Cast Speed (+0.2% per point).";
+                desc = "Increases Mana Regeneration (+0.01 per second per point) and Cast Speed (+0.2% per point).";
                 if (className === 'Cleric') desc += " Increases Spirit ability damage.";
                 break;
         }

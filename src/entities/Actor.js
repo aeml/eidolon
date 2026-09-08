@@ -4,6 +4,7 @@ import { calculateSetBonuses, getEquippedUniqueEffects, getGemStats, UNIQUE_EFFE
 import { isEquippableItem, isActiveEquipment } from '../core/EquipmentSlots.js';
 import { getAbilityManaCost, getAbilityCooldown } from '../core/AbilityEconomy.js';
 import { updateOfflineHealingLight } from '../core/AbilityHealing.js';
+import { PASSIVE_REGEN_PER_STAT } from '../core/Regeneration.js';
 import { rollOfflineCriticalDamage } from '../core/AbilityCritical.js';
 import { applyOfflineStatus, clearOfflineStatus, updateOfflineDamageOverTime } from '../core/OfflineDamageOverTime.js';
 import { CONSTANTS } from '../core/Constants.js';
@@ -87,8 +88,8 @@ export class Actor extends Entity {
             speed: 3 + (this.baseStats.dexterity * 0.5),
             damage: this.baseStats.strength * 2,
             defense: 0,
-            hpRegen: this.baseStats.vitality * 0.5,
-            manaRegen: this.baseStats.wisdom * 0.5,
+            hpRegen: this.baseStats.vitality * PASSIVE_REGEN_PER_STAT,
+            manaRegen: this.baseStats.wisdom * PASSIVE_REGEN_PER_STAT,
             attackSpeed: 1 + (this.baseStats.dexterity / 5) * 0.05,
             cooldownReduction: Math.min(0.5, this.baseStats.intelligence * 0.01),
             manaCostReduction: 0, 
@@ -1260,7 +1261,7 @@ export class Actor extends Entity {
         }
 
         // Regeneration Logic (1 second tick)
-        if (this.state !== 'DEAD' && !this.isMultiplayer && !this.isRemote) {
+        if (this.state !== 'DEAD' && this.stats.hp > 0 && !this.isMultiplayer && !this.isRemote) {
             this.regenTimer += dt;
             if (this.regenTimer >= 1.0) {
                 this.regenTimer -= 1.0;
@@ -1871,7 +1872,7 @@ export class Actor extends Entity {
         }
         
         this.stats.maxHp = baseMaxHp;
-        this.stats.hpRegen = totalStats.vitality * 0.5;
+        this.stats.hpRegen = totalStats.vitality * PASSIVE_REGEN_PER_STAT;
         
         // Apply regenerative unique effect
         if (this.activeUniqueEffects) {
@@ -1964,7 +1965,7 @@ export class Actor extends Entity {
         this.stats.attackSpeed = cooldown;
 
         // Wisdom: Mana regen and cast speed
-        this.stats.manaRegen = totalStats.wisdom * 0.5;
+        this.stats.manaRegen = totalStats.wisdom * PASSIVE_REGEN_PER_STAT;
         if (bonusStats.manaRegen > 0) {
             this.stats.manaRegen *= (1 + (bonusStats.manaRegen / 100));
         }

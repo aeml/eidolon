@@ -306,14 +306,14 @@ func TestEntityRecalculateStats(t *testing.T) {
 		t.Errorf("Expected MaxMana 100, got %d", e.MaxMana)
 	}
 
-	// HpRegen = vitality * 0.5 = 5
-	if e.HpRegen != 5.0 {
-		t.Errorf("Expected HpRegen 5.0, got %f", e.HpRegen)
+	// HpRegen = vitality * 0.01 = 0.1
+	if e.HpRegen != 0.1 {
+		t.Errorf("Expected HpRegen 0.1, got %f", e.HpRegen)
 	}
 
-	// ManaRegen = wisdom * 0.5 = 5
-	if e.ManaRegen != 5.0 {
-		t.Errorf("Expected ManaRegen 5.0, got %f", e.ManaRegen)
+	// ManaRegen = wisdom * 0.01 = 0.1
+	if e.ManaRegen != 0.1 {
+		t.Errorf("Expected ManaRegen 0.1, got %f", e.ManaRegen)
 	}
 
 	// CDR = min(0.5, intelligence * 0.01) = 0.1
