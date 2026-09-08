@@ -70,8 +70,17 @@ func (db *DB) RunMigrations(ctx context.Context) error {
 	if db == nil || db.migrations == nil {
 		return fmt.Errorf("migration collection is not initialized")
 	}
+	// Read compatibility before even creating indexes. In particular, a rollback
+	// binary must not start an old full-character writer on a newer save format.
+	version, err := db.SchemaVersion(ctx)
+	if err != nil {
+		return fmt.Errorf("read schema compatibility: %w", err)
+	}
+	if err := validateSupportedSchema(version); err != nil {
+		return err
+	}
 
-	_, err := db.migrations.Indexes().CreateOne(ctx, mongo.IndexModel{
+	_, err = db.migrations.Indexes().CreateOne(ctx, mongo.IndexModel{
 		Keys:    bson.D{{Key: "version", Value: 1}},
 		Options: options.Index().SetName("version_1").SetUnique(true),
 	})
@@ -105,6 +114,16 @@ func (db *DB) RunMigrations(ctx context.Context) error {
 		if err != nil && !mongo.IsDuplicateKeyError(err) {
 			return fmt.Errorf("record schema migration %d: %w", migration.Version, err)
 		}
+	}
+	return nil
+}
+
+func validateSupportedSchema(version int) error {
+	if version < 0 {
+		return fmt.Errorf("invalid database schema version %d", version)
+	}
+	if version > CurrentSchemaVersion {
+		return fmt.Errorf("database schema %d is newer than this server supports (%d); refusing startup before writes; deploy a compatible server, do not downgrade the database", version, CurrentSchemaVersion)
 	}
 	return nil
 }
