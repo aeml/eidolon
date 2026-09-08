@@ -8,6 +8,7 @@ import (
 	"sort"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/google/uuid"
@@ -48,13 +49,18 @@ type Auction struct {
 }
 
 type TradingSystem struct {
-	refundMu       sync.Mutex
-	deliverRefund  func(database.AuctionRefund) error
-	backgroundWork lifecycle.Group
-	mu             sync.RWMutex
-	Auctions       map[string]*Auction
-	db             *database.DB
-	economy        *EconomyTelemetry
+	refundMu         sync.Mutex
+	refundStopping   atomic.Bool
+	refundScheduled  bool // Protected by mu; coalesce bursts into one worker.
+	refundRetryAfter time.Time
+	refundCursor     string
+	loadError        error
+	deliverRefund    func(database.AuctionRefund) error
+	backgroundWork   lifecycle.Group
+	mu               sync.RWMutex
+	Auctions         map[string]*Auction
+	db               *database.DB
+	economy          *EconomyTelemetry
 }
 
 func NewTradingSystem(db *database.DB) *TradingSystem {
@@ -69,14 +75,18 @@ func NewTradingSystem(db *database.DB) *TradingSystem {
 }
 
 func (ts *TradingSystem) loadAuctions() {
-	auctions, err := ts.db.LoadAuctions()
+	ts.loadAuctionSnapshot(ts.db.LoadAuctions)
+}
+
+func (ts *TradingSystem) loadAuctionSnapshot(load func() ([]*database.Auction, error)) {
+	auctions, err := load()
+	ts.mu.Lock()
+	defer ts.mu.Unlock()
+	ts.loadError = err
 	if err != nil {
 		log.Printf("Failed to load auctions: %v", err)
 		return
 	}
-
-	ts.mu.Lock()
-	defer ts.mu.Unlock()
 
 	count := 0
 	for _, dbAuction := range auctions {
@@ -87,6 +97,14 @@ func (ts *TradingSystem) loadAuctions() {
 		count++
 	}
 	log.Printf("Loaded %d auctions from database", count)
+}
+
+// Startup must not silently publish an empty market after losing access to its
+// durable auctions/refund outbox. A nil database is reserved for local/unit play.
+func (ts *TradingSystem) ReadinessError() error {
+	ts.mu.RLock()
+	defer ts.mu.RUnlock()
+	return ts.loadError
 }
 
 func (ts *TradingSystem) toDBAuction(a *Auction) *database.Auction {

@@ -109,6 +109,7 @@ func saveFinalCharacters() error {
 
 func drainServer(loops *serverLoops) {
 	serverStopping.Store(true)
+	world.Trading.StopRefundDelivery()
 	serverAdmission.CloseAndWait()
 	loops.Stop()
 	world.StopBackground()

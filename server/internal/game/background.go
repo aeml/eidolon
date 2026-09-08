@@ -32,6 +32,7 @@ func (w *World) StopBackground() {
 	w.backgroundDone()
 	w.backgroundStopOnce.Do(func() { close(w.backgroundStop) })
 	if w.Trading != nil {
+		w.Trading.StopRefundDelivery()
 		w.Trading.backgroundWork.SealWhenIdle()
 	}
 	w.backgroundWork.SealWhenIdle()

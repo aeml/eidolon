@@ -135,6 +135,27 @@ func TestResourceActualOutbidRefundSurvivesSaveAndAcknowledgementFailure(t *test
 				return a.BidderID == "player-"+bidder.Name && a.Bid == 50 && len(a.PendingRefunds) == 1
 			})
 			refund := pendingAuction.PendingRefunds[0]
+			if fault == "refund_ack" {
+				// Shutdown now seals new refund admission. Observe the intended
+				// post-payment fault boundary before stopping; do not assume a
+				// merely queued delivery has already committed the recipient.
+				paid := false
+				deadline := time.Now().Add(10 * time.Second)
+				for time.Now().Before(deadline) {
+					current, err := repo.GetCharacter(fixture.Name, fixture.Name)
+					if err != nil {
+						t.Fatal(err)
+					}
+					if current.Gold == 1234 && current.GoldCreditReceipts[refund.ID] == 43 {
+						paid = true
+						break
+					}
+					time.Sleep(25 * time.Millisecond)
+				}
+				if !paid {
+					t.Fatal("refund acknowledgement fault never reached the durable-payment boundary")
+				}
+			}
 			// Shutdown drains the ordinary queued refund/save work while the fault
 			// stays active. Failed writes must leave both recovery records intact.
 			stop()

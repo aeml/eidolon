@@ -405,6 +405,9 @@ func main() {
 	rand.Seed(time.Now().UnixNano())
 
 	world = game.NewWorld(db)
+	if err := world.Trading.ReadinessError(); err != nil {
+		log.Fatalf("Cannot load durable auction state; refusing an empty market: %v", err)
+	}
 	world.Trading.SetRefundDelivery(deliverAuctionRefund)
 	if err := world.Trading.RetryPendingRefunds(); err != nil {
 		log.Printf("Startup auction refunds remain pending: %v", err)
@@ -885,10 +888,10 @@ func main() {
 	loops.Every(time.Minute, func() {
 		saveAllPlayers()
 		world.Trading.CleanupExpired()
-		if err := world.Trading.RetryPendingRefunds(); err != nil {
-			log.Printf("Periodic auction refunds remain pending: %v", err)
-		}
 	})
+	// Independent bounded retry passes: an outage must not multiply timeouts
+	// across a large outbox or queue redundant workers behind one delivery.
+	loops.Every(game.RefundRetryInterval, world.Trading.ScheduleRefundDelivery)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/healthz", healthHandler(func(ctx context.Context) error {
