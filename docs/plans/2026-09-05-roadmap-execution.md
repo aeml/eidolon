@@ -5,7 +5,94 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 17:47 UTC
+## Current checkpoint — September 8, 18:36 UTC
+
+This goal turn remains PROGRESS.48 CI34257070035 is now terminal FAILURE:
+client/server/three smoke shards passed, Predeploy Character QA failed both
+Seraph attempts at acquisition of a visible InfernoTitan, before summon combat.
+The fresh-opening collection also exceeded its120s encounter bound on its first
+attempt, then passed retry (27 target deaths, zero player deaths,561s collection).
+Neither deployment ran;49 cannot advance. Fresh public release/health remain
+exact47/6925c5113ee6acdf698713f3332f80dcf546bd76, database ready.
+Failure log `/tmp/eidolon-release48-ci34257070035-failed.log`.
+
+New isolated48 recovery WT `/tmp/eidolon-release48-seraph-recovery-Pjflp1`,
+branch work/release48-seraph-recovery-20260908, starts at exact7a9869d.
+Diagnostic-only8d5f281 actual93423 CLOSED PASS0/1.6m:15s/16.5s lifetimes,
+baseline288 and trained/saved345 smites, ordinary dungeon recall cleanup. The
+reviewed trained-combat screenshot still puts combat beside the entrance facade.
+Inspection confirms moveByGroundClick returns after initial >1-unit movement,
+not arrival at its nominal20-unit destination; counting clicks does not prove
+exit or meaningful search through a randomized population. This is a route
+defect/inference from code and image, not proof of the exact failed CI world seed.
+Diagnostic Mongo/API cleaned and independently absent.
+
+Test-only2054707665ea6373d10e7de2dca3a3a3ca87aa08 now proves Z>=240 before
+combat and navigates toward observed live Titans, retaining rendered acquisition
+and unchanged damage/lifetime/persistence assertions. Focused ESLint/diff check
+passed. Actual93472 ACTIVE, log `/tmp/eidolon-release48-seraph-route.log`.
+Do not change this source until terminal. No correction pushed or48 pass claimed.
+
+Resource fullrace1501 CLOSED PASS0 on030ec67: root20.900/database1.129/
+game367.539s. Combined repeat15368 CLOSED FAIL1/252.707s: one final-reply fault
+hit a character save rather than the required auction boundary. All66 server
+logs independently clean (12 deliberate kills/54 normal shutdowns) plus two
+expected startup rejection logs; that does NOT make the run pass. Owned Mongo
+and volumes removed/absent. Test-onlya09ac6684f24be5347ef72e2d1918abfb1c1d160
+replaces global skip-two-update targeting with Mongo7's namespace filter and
+adds ordinary same-bidder raises, repeated requests and simultaneous equal bids,
+with exact funds/receipts/resources/gear/XP and fresh-process recovery assertions.
+No production runtime change from030ec67. Focusedrace37287 PASS1.312s before
+formatting; initial gofmt command used wrong relative paths and was corrected.
+
+Corrected actual37895 ACTIVE on frozena09ac66, THREE combined repetitions:
+log `/tmp/eidolon-auction-bid-corrected-sessions.log`, binary
+`/tmp/eidolon-auction-bid-corrected-proof-8Qkotn/a09ac6684f24be5347ef72e2d1918abfb1c1d160`.
+Owned disposable Mongo eidolon-auction-bid-corrected-20260908-1829. Earlier
+repetitions currently pass; wait for whole-run terminal result and log audit.
+Buyout/item/payout operations, rollback and broader roadmap acceptance remain open.
+
+## Historical checkpoint — September 8, 18:23 UTC
+
+The intervening regeneration-only turn was NO ROADMAP PROGRESS: existing .01
+rates and focused tests were reconfirmed, without implementation or release
+changes. This resumed turn is PROGRESS: recovered the authoritative completed
+bid crash-test result and independently audited all18 server logs. Full roadmap
+scope stays active; no release gate is reduced.
+
+Resource candidate030ec6769353d3f4e71409e9d371499375ae1b80 implements a durable
+bid decision before a receipted character debit, then an atomic auction advance
+and previous-bid refund append. Schema8 uses a separate auction_bid_operations
+collection with a unique active operation per auction, not the earlier proposed
+auction-local field. Reservations block competing mutations; account-ordered
+recovery runs before startup admission and affected gameplay commands. Lost
+write replies retain the same operation ID rather than rolling back blindly.
+
+Actual4216 handle is now absent, but its authoritative completed log
+`/tmp/eidolon-auction-bid-sessions.log` ends PASS/root73.117s. Six observed
+boundaries: rejected decision, committed decision with failed reply, before
+debit, journaled debit with rejected Mongo save, committed debit before rejected
+auction finalization, and committed auction finalization with failed reply.
+Each deliberately SIGKILLs its owned process, then verifies two fresh-process
+ordinary logins, exact funds/receipts/resources/equipment and refund recovery.
+All18 server logs independently clean: six expected kills and12 normal shutdowns.
+Owned Mongo/volumes cleanup recorded and independently absent. This does not
+prove durability of unsaved combat ticks, buyout items or seller payouts.
+
+Frozen-source full Go race1501 and combined actual repeat15368 are ACTIVE;
+logs `/tmp/eidolon-auction-bid-{full-race,repeat-sessions}.log`. The latter repeats
+all six bid boundaries plus existing offline/refund-save/refund-ack/backlog/load
+failure cases twice against owned disposable Mongo. Do not edit tested sources
+until their exact handles are terminal. Candidate remains55 metadata/unreleased.
+
+48 CI34257070035 freshly remains Predeploy Character QA ACTIVE; client/server
+and all three smoke shards passed.49 still waits on the entire48 CI/final live
+QA and fresh public identity. No push this turn; root is never a release source.
+Next: close these checks, add actual same-bidder/competing-bid acceptance, then
+durable item/payout operations and enforced rollback compatibility. Broader
+campaign, dungeon/raid, phone and remaining1.1–1.10 acceptance remain open.
+
+## Historical checkpoint — September 8, 17:47 UTC
 
 Previous goal turn was PROGRESS (durable refund implementation, verified47 live
 gate and ordered48 push). This turn is PROGRESS: bounded/coalesced outage retries,

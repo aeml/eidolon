@@ -3,7 +3,16 @@
 Status: confirmed defect with an unreleased implementation candidate, not yet
 release-ready or assigned a published patch. Preserve .01 passive regen.
 
-Latest17:47: runtime8b68f56 coalesces/bounds refund retries and outage backoff,
+Latest18:23: runtime030ec67 adds durable bid decisions in a unique-per-auction
+operation collection (schema8), signed character debit receipts and atomic
+auction/refund finalization. First actual six-boundary SIGKILL recovery run
+PASS73.117s; all18 logs independently clean, six expected kills/12 normal exits.
+Original decision rejection preserves prior funds; other five boundaries recover
+one debit and one preceding escrow refund across two fresh logins. No unsaved
+combat-tick/buyout-item/seller-payout durability claim. Fullrace1501 and repeated
+combined actual15368 remain active on frozen sources. No release approval.
+
+Historical17:47: runtime8b68f56 coalesces/bounds refund retries and outage backoff,
 seals new delivery on shutdown and refuses unreadable auction startup. Actual
 53929 PASS96.202s across two repetitions: a100-intent backlog makes one500ms
 delayed rejected update, preserves its journal/intents on shutdown, then all100
