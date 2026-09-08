@@ -2,7 +2,7 @@ import { expect } from '@playwright/test';
 import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { openDungeonGuide } from './dungeon-guide.js';
 import { createFreshCollectionCombat, observeCollectionCombatReceipts, readFreshCollectionCombat,
-    readSelectedCollectionTarget } from './fresh-collection-combat.js';
+    readCollectionTarget, selectCollectionTargetThroughInput } from './fresh-collection-combat.js';
 import { loginAndEnterWorld, moveByGroundClick, projectEntity, readPlayerState,
     returnToTown, setAutoLootThroughSettings } from './helpers.js';
 
@@ -46,12 +46,7 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
                 respawned = true;
                 break;
             }
-            const enemy = await page.evaluate(id => {
-                const game = window.game;
-                const enemy = game.remotePlayers.get(id);
-                return enemy ? { hp: enemy.health ?? enemy.stats?.hp, state: enemy.state,
-                    x: enemy.position.x, z: enemy.position.z } : null;
-            }, target.id);
+            const enemy = await readCollectionTarget(page, target.id);
             expect(enemy, 'Collection target disappeared without an observed death').not.toBeNull();
             if (enemy.state === 'DEAD' || enemy.hp <= 0) { defeated = enemy; break; }
             if (Date.now() >= nextDiagnostic) {
@@ -62,11 +57,18 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
             // A normal retreat can itself take damage. Let the existing death
             // handler observe that before issuing another attack.
             if ((await readPlayerState(page)).state === 'DEAD') continue;
+            const afterDefense = await readCollectionTarget(page, target.id);
+            expect(afterDefense, 'Target remains observable after defensive input').not.toBeNull();
+            if (afterDefense.state === 'DEAD' || afterDefense.hp <= 0) { defeated = afterDefense; break; }
             const point = await projectEntity(page, target.id);
             if (point?.visible) {
-                await page.mouse.click(point.x, point.y);
-                const selected = await readSelectedCollectionTarget(page);
-                if (selected) target = selected;
+                const selected = await selectCollectionTargetThroughInput(page, target, point);
+                const previous = await readCollectionTarget(page, target.id);
+                expect(previous, 'Target remains observable across attack input').not.toBeNull();
+                // A delayed hit can finish the old target during retreat or
+                // reacquisition. Observe that death before following another ID.
+                if (previous.state === 'DEAD' || previous.hp <= 0) { defeated = previous; break; }
+                target = selected;
                 if (await page.evaluate(() => window.game.player.abilityCooldown <= 0)) {
                     await page.mouse.click(point.x, point.y, { button: 'right' });
                 }

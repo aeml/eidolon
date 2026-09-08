@@ -23,3 +23,22 @@ Focused22496 passes30tests/four suites/2.201s plus full lint/diff checks. New te
 cover actual hostile selection without state mutation, healthy trading, injured
 retreat, shield priority and preservation of default hunt spacing. An actual run
 is required after40009 has closed; no collection or broader pacing approval yet.
+
+Actual82761 ona47dc7d failed5.4m: five observed target deaths,2/8 seeds, zero
+deaths, then120s encounter timeout. Scan0/cleanup passed; its image was viewed
+and archived at `/tmp/eidolon-release47-input-evidence-pMenOr/failed-collection.png`.
+The input correction did not establish pacing; below80% health repeated retreat
+still spreads the fight into more enemies. No unchanged retry is approved.
+
+Source inspection confirms GameEngineRuntime already retains a clicked target
+for automatic cooldown-driven attacks. Collection now leaves that valid pending
+interaction intact instead of replacing it every250ms. It reacquires through an
+ordinary click only after that interaction changes/cancels. Actual state is also
+rechecked after defensive movement and across reacquisition, before changing the
+observed ID, so a delayed killing hit cannot be silently skipped there. These are
+test inputs/observations, not grants or direct target assignments;120s, two deaths,
+20m, real loot and manual turn-in remain unchanged.
+
+Initial62305 failed one unsupported Jest matcher (32 other tests passed); the
+same assertion is expressed as separate count/argument checks. Corrected81770
+PASS33tests/four suites/1.451s plus full lint/diff checks. Actual play is due.

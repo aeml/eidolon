@@ -29,6 +29,23 @@ export async function readSelectedCollectionTarget(page) {
     });
 }
 
+export async function readCollectionTarget(page, id) {
+    return page.evaluate(id => {
+        const enemy = window.game.remotePlayers.get(id);
+        return enemy ? { hp: enemy.health ?? enemy.stats?.hp, state: enemy.state,
+            x: enemy.position.x, z: enemy.position.z } : null;
+    }, id);
+}
+
+export async function selectCollectionTargetThroughInput(page, target, point) {
+    const selected = await readSelectedCollectionTarget(page);
+    // A normal click already owns cooldown-driven auto-attack/chase. Repeated
+    // clicks at a moving silhouette can select another overlapping enemy.
+    if (selected?.id === target.id) return target;
+    await page.mouse.click(point.x, point.y);
+    return await readSelectedCollectionTarget(page) || target;
+}
+
 // Read-only diagnostic: never include account details or general game payloads.
 export async function readFreshCollectionCombat(page, targetId) {
     return page.evaluate(id => {

@@ -2,7 +2,8 @@ import { jest } from '@jest/globals';
 
 const createDefense = jest.fn();
 jest.unstable_mockModule('./e2e/earned-wizard-defense.js', () => ({ createEarnedWizardDefense: createDefense }));
-const { createFreshCollectionCombat, readFreshCollectionCombat, readSelectedCollectionTarget } = await import('./e2e/fresh-collection-combat.js');
+const { createFreshCollectionCombat, readFreshCollectionCombat, readSelectedCollectionTarget,
+    readCollectionTarget, selectCollectionTargetThroughInput } = await import('./e2e/fresh-collection-combat.js');
 
 beforeEach(() => jest.resetAllMocks());
 
@@ -32,6 +33,39 @@ test.each(['Fighter', 'Rogue', 'Cleric'])('%s keeps its existing collection inpu
     const page = { evaluate: jest.fn().mockResolvedValue(className) };
     expect(await (await createFreshCollectionCombat(page))()).toBe(false);
     expect(createDefense).not.toHaveBeenCalled();
+});
+
+test('a valid auto-attack target is retained without another click', async () => {
+    const target = Object.freeze({ id: 'skeleton' });
+    window.game = { pendingInteraction: target, isHostileActorTarget: () => true };
+    const page = { evaluate: fn => fn(), mouse: { click: jest.fn() } };
+    try {
+        expect(await selectCollectionTargetThroughInput(page, target, { x: 12, y: 34 })).toBe(target);
+        expect(page.mouse.click).not.toHaveBeenCalled();
+        expect(window.game.pendingInteraction).toBe(target);
+    } finally { delete window.game; }
+});
+
+test('a canceled attack is reacquired through input and follows its actual selection', async () => {
+    const target = { id: 'skeleton' }, front = { id: 'front-skeleton' };
+    window.game = { pendingInteraction: null, isHostileActorTarget: () => true };
+    const page = { evaluate: fn => fn(), mouse: { click: jest.fn(async () => { window.game.pendingInteraction = front; }) } };
+    try {
+        expect(await selectCollectionTargetThroughInput(page, target, { x: 12, y: 34 })).toEqual(front);
+        expect(page.mouse.click).toHaveBeenCalledTimes(1);
+        expect(page.mouse.click).toHaveBeenCalledWith(12, 34);
+    } finally { delete window.game; }
+});
+
+test('death observations preserve the actual drop position without inventing missing targets', async () => {
+    const enemy = Object.freeze({ state: 'DEAD', health: 0, position: Object.freeze({ x: 7, z: 9 }) });
+    window.game = { remotePlayers: new Map([['skeleton', enemy]]) };
+    const page = { evaluate: (fn, arg) => fn(arg) };
+    try {
+        expect(await readCollectionTarget(page, 'skeleton')).toEqual({ hp: 0, state: 'DEAD', x: 7, z: 9 });
+        expect(await readCollectionTarget(page, 'missing')).toBeNull();
+        expect(window.game.remotePlayers.get('skeleton')).toBe(enemy);
+    } finally { delete window.game; }
 });
 
 test('diagnostics record dead/empty resources without granting recovery or serializing account data', async () => {
