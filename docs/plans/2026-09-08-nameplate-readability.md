@@ -35,3 +35,13 @@ under `/tmp/eidolon-nameplate-initial-evidence-U3SoO2/`. The corrected component
 scene moves only its prepared NPC outside that overlap, using the phone's actual
 projection to keep the full name in frame. Both label and marker assertions stay.
 No runtime changes followed89f690e; a corrected rendered run remains required.
+
+Corrected rendered90998 on2a66ffa PASS6/29.3s: desktop1280x720, portrait390x844,
+landscape844x390 each High/Low. All labels retain22CSS-pixel sprite height,
+visible labels do not overlap, selecting another enemy promotes its name, and
+repeated frames leave models/quest marker unchanged. Desktop before/after and
+both phone after images viewed and archived at
+`/tmp/eidolon-nameplate-evidence-BunTb1/`. Labels are clearly readable; the fixture
+still has deliberately packed tiny models and an empty ground plane. This is
+component evidence, not full-world/physical-phone/model-composition approval.
+Full client integration and versioned packaging remain required.
