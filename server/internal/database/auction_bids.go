@@ -13,6 +13,8 @@ import (
 // One durable active decision per auction. The unique auction index reserves
 // the auction independently of an ambiguous insert reply; retry the SAME ID.
 type AuctionBidOperation struct {
+	Kind               string    `bson:"kind,omitempty"`
+	Fee                int       `bson:"fee,omitempty"`
 	ID                 string    `bson:"id"`
 	AuctionID          string    `bson:"auction_id"`
 	PlayerID           string    `bson:"player_id"`
@@ -25,10 +27,23 @@ type AuctionBidOperation struct {
 	RefundID           string    `bson:"refund_id"`
 }
 
+const AuctionOperationSellerPayout = "seller_payout"
+
 func (op AuctionBidOperation) Valid() bool {
-	return op.ID != "" && op.AuctionID != "" && op.CharacterName != "" &&
+	base := op.ID != "" && op.AuctionID != "" && op.CharacterName != "" &&
 		op.PlayerID == "player-"+op.CharacterName && op.Amount > 0 && op.PreviousBid >= 0 &&
-		!op.EndTime.IsZero() && (op.PreviousBidderID == "" || op.PreviousBidderName != "" && op.RefundID != "")
+		!op.EndTime.IsZero()
+	if !base {
+		return false
+	}
+	switch op.Kind {
+	case "": // Original durable bid records omit the kind field.
+		return op.Fee == 0 && (op.PreviousBidderID == "" || op.PreviousBidderName != "" && op.RefundID != "")
+	case AuctionOperationSellerPayout:
+		return op.Fee >= 0 && op.PreviousBid == 0 && op.PreviousBidderID == "" && op.PreviousBidderName == "" && op.RefundID == ""
+	default:
+		return false
+	}
 }
 
 func applyAuctionBidOperationIndexes(ctx context.Context, db *DB) error {
@@ -103,7 +118,11 @@ func (db *DB) CommitAuctionBidOperation(op AuctionBidOperation) (*Auction, error
 	set := bson.M{"bid": op.Amount, "bidder_id": bson.M{"$literal": op.PlayerID},
 		"bidder_name": bson.M{"$literal": op.CharacterName}, "end_time": op.EndTime,
 		"last_bid_operation_id": bson.M{"$literal": op.ID}}
-	if op.PreviousBidderID != "" && op.PreviousBid > 0 {
+	if op.Kind == AuctionOperationSellerPayout {
+		filter = bson.M{"id": op.AuctionID, "status": "SOLD", "seller_id": op.PlayerID,
+			"seller_claimed": bson.M{"$ne": true}, "last_bid_operation_id": bson.M{"$ne": op.ID}}
+		set = bson.M{"seller_claimed": true, "last_bid_operation_id": bson.M{"$literal": op.ID}}
+	} else if op.PreviousBidderID != "" && op.PreviousBid > 0 {
 		refund := AuctionRefund{ID: op.RefundID, PlayerID: op.PreviousBidderID,
 			CharacterName: op.PreviousBidderName, Amount: op.PreviousBid}
 		set["pending_refunds"] = bson.M{"$concatArrays": bson.A{

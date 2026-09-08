@@ -22,6 +22,15 @@ func deliverAuctionRefund(refund database.AuctionRefund) error {
 	}
 	unlock := lockCharacterWork(username)
 	defer unlock()
+	return deliverAuctionRefundLocked(refund)
+}
+
+// The caller already owns account ordering (ordinary auction commands do).
+func deliverAuctionRefundLocked(refund database.AuctionRefund) error {
+	username := refund.CharacterName
+	if username == "" || refund.PlayerID != "player-"+username {
+		return errors.New("auction credit account mismatch")
+	}
 	// Flush/replay the newest full snapshot before applying a new credit. Never
 	// increment an older Mongo document beneath an uncommitted pending snapshot.
 	if err := retryPendingCharacterSaveLocked(username); err != nil {

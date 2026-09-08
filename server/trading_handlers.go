@@ -230,7 +230,26 @@ func handleMsgTradingCollect(c *Client, msg Message) {
 		return
 	}
 
-	result, err := world.Trading.CollectAuction(payload.AuctionID, player)
+	var result interface{}
+	var err error
+	if db != nil {
+		op, prepareErr := world.Trading.PrepareAuctionSellerPayout(payload.AuctionID, player)
+		if prepareErr != nil {
+			c.sendError(prepareErr.Error())
+			return
+		}
+		if op != nil {
+			if err := completePendingAuctionBidLocked(*op); err != nil {
+				c.sendError("Your auction payout is awaiting recovery. Please try again shortly.")
+				return
+			}
+			result = op.Amount
+		} else {
+			result, err = world.Trading.CollectAuction(payload.AuctionID, player)
+		}
+	} else {
+		result, err = world.Trading.CollectAuction(payload.AuctionID, player)
+	}
 	if err != nil {
 		c.sendError(err.Error())
 		return

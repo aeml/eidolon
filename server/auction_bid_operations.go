@@ -16,7 +16,14 @@ func completePendingAuctionBidLocked(op database.AuctionBidOperation) error {
 	if err := world.Trading.EnsureBidDecision(op); err != nil {
 		return err
 	}
-	if err := debitAuctionBidLocked(op); err != nil {
+	var err error
+	if op.Kind == database.AuctionOperationSellerPayout {
+		err = deliverAuctionRefundLocked(database.AuctionRefund{ID: "seller-payout:" + op.ID,
+			PlayerID: op.PlayerID, CharacterName: op.CharacterName, Amount: op.Amount})
+	} else {
+		err = debitAuctionBidLocked(op)
+	}
+	if err != nil {
 		if errors.Is(err, database.ErrInsufficientGold) {
 			if abortErr := world.Trading.AbortUnfundedAuctionBid(op); abortErr != nil {
 				return abortErr

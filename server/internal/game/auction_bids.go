@@ -3,6 +3,7 @@ package game
 import (
 	"errors"
 	"fmt"
+	"math"
 	"sort"
 	"time"
 
@@ -11,6 +12,48 @@ import (
 )
 
 var ErrAuctionBidPending = errors.New("auction bid is still being saved; please retry shortly")
+
+// A nil operation means this is not an unclaimed seller-gold collection; the
+// caller must still use the ordinary authorization/item-collection path.
+func (ts *TradingSystem) PrepareAuctionSellerPayout(auctionID string, seller *Entity) (*database.AuctionBidOperation, error) {
+	ts.mu.Lock()
+	defer ts.mu.Unlock()
+	if ts.loadError != nil {
+		return nil, ts.loadError
+	}
+	if _, reserved := ts.pendingBids[auctionID]; reserved {
+		return nil, ErrAuctionBidPending
+	}
+	a := ts.Auctions[auctionID]
+	if a == nil || seller == nil {
+		return nil, errors.New("auction or seller not found")
+	}
+	seller.Mu.RLock()
+	defer seller.Mu.RUnlock()
+	if a.SellerID != seller.ID || a.Status != AuctionSold || a.SellerClaimed {
+		return nil, nil
+	}
+	price := a.SalePrice
+	if price <= 0 {
+		price = a.Bid
+	}
+	fee := int(float64(price) * TradingSalesFeePercent)
+	if price <= 0 || a.Deposit < 0 || fee < 0 || fee > price || a.Deposit > math.MaxInt-(price-fee) {
+		return nil, errors.New("invalid auction payout")
+	}
+	amount := price - fee + a.Deposit
+	if seller.Gold < 0 || seller.Gold > math.MaxInt-amount {
+		return nil, errors.New("auction payout exceeds gold capacity")
+	}
+	op := database.AuctionBidOperation{Kind: database.AuctionOperationSellerPayout,
+		ID: uuid.NewString(), AuctionID: auctionID, PlayerID: seller.ID, CharacterName: seller.Name,
+		Amount: amount, Fee: fee, EndTime: a.EndTime.UTC().Truncate(time.Millisecond)}
+	if !op.Valid() {
+		return nil, errors.New("invalid auction seller identity")
+	}
+	ts.pendingBids[auctionID] = op
+	return &op, nil
+}
 
 func (ts *TradingSystem) bidWithoutDatabase(auctionID string, bidder *Entity, amount int) error {
 	if ts.db != nil {
@@ -154,7 +197,9 @@ func (ts *TradingSystem) CompleteAuctionBid(op database.AuctionBidOperation) err
 		original.PendingRefunds = append([]database.AuctionRefund(nil), original.PendingRefunds...)
 		ts.mu.RUnlock()
 		saved = &original
-		if saved.LastBidOperationID != op.ID {
+		if op.Kind == database.AuctionOperationSellerPayout {
+			saved.SellerClaimed, saved.LastBidOperationID = true, op.ID
+		} else if saved.LastBidOperationID != op.ID {
 			saved.Bid, saved.BidderID, saved.BidderName, saved.EndTime, saved.LastBidOperationID = op.Amount, op.PlayerID, op.CharacterName, op.EndTime, op.ID
 			if op.PreviousBidderID != "" && op.PreviousBid > 0 {
 				saved.PendingRefunds = append(saved.PendingRefunds, database.AuctionRefund{ID: op.RefundID, PlayerID: op.PreviousBidderID, CharacterName: op.PreviousBidderName, Amount: op.PreviousBid})
@@ -173,6 +218,9 @@ func (ts *TradingSystem) CompleteAuctionBid(op database.AuctionBidOperation) err
 	}
 	ts.Auctions[op.AuctionID] = saved
 	delete(ts.pendingBids, op.AuctionID)
+	if op.Kind == database.AuctionOperationSellerPayout && ts.economy != nil {
+		ts.economy.RecordSink("trading_house_fee", op.Fee)
+	}
 	ts.scheduleRefundDeliveryLocked()
 	return nil
 }

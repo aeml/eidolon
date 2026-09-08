@@ -408,7 +408,6 @@ func (ts *TradingSystem) BuyoutAuction(auctionID string, buyer *Entity, w *World
 	}
 
 	if time.Now().After(auction.EndTime) {
-		auction.Status = AuctionExpired
 		return nil, fmt.Errorf("auction expired")
 	}
 
@@ -504,6 +503,9 @@ func (ts *TradingSystem) CollectAuction(auctionID string, player *Entity) (inter
 	// Case 1: Seller collecting Gold (Sold) or Item (Expired/Cancelled)
 	if auction.SellerID == player.ID {
 		if auction.Status == AuctionSold && !auction.SellerClaimed {
+			if ts.db != nil {
+				return nil, fmt.Errorf("persistent payouts require a journaled account operation")
+			}
 			// Collect Gold
 			gold := auction.SalePrice
 			if gold <= 0 {
@@ -584,6 +586,14 @@ func (ts *TradingSystem) persistOrDeleteClaimedAuction(auctionID string, auction
 
 // CleanupExpired checks for expired auctions
 func (ts *TradingSystem) CleanupExpired() {
+	var persist func(*database.Auction) error
+	if ts.db != nil {
+		persist = ts.db.UpdateAuction
+	}
+	ts.cleanupExpiredWithPersistence(persist)
+}
+
+func (ts *TradingSystem) cleanupExpiredWithPersistence(persist func(*database.Auction) error) {
 	ts.mu.Lock()
 	defer ts.mu.Unlock()
 
@@ -592,20 +602,31 @@ func (ts *TradingSystem) CleanupExpired() {
 		if _, pending := ts.pendingBids[auction.ID]; pending {
 			continue
 		}
-		if auction.Status == AuctionActive && now.After(auction.EndTime) {
-			if auction.BidderID != "" {
-				auction.Status = AuctionSold
-				auction.BuyerID = auction.BidderID
-				auction.SalePrice = auction.Bid
-			} else {
-				auction.Status = AuctionExpired
+		if auction.Status != AuctionActive && auction.ItemClaimed && auction.SellerClaimed && len(auction.PendingRefunds) == 0 {
+			if err := ts.persistOrDeleteClaimedAuction(auction.ID, auction); err != nil {
+				log.Printf("Completed auction cleanup remains pending: %v", err)
 			}
-			// Save to DB
-			if ts.db != nil {
-				if err := ts.db.UpdateAuction(ts.toDBAuction(auction)); err != nil {
+			continue
+		}
+		if auction.Status == AuctionActive && now.After(auction.EndTime) {
+			updated := *auction
+			if auction.BidderID != "" {
+				updated.Status = AuctionSold
+				updated.BuyerID = auction.BidderID
+				updated.SalePrice = auction.Bid
+			} else {
+				updated.Status = AuctionExpired
+			}
+			// Publish eligibility for collection only after the sale is durable.
+			// An errored reply retains an expired-by-time ACTIVE record, which
+			// cannot accept bids/buyouts and will reconcile on the next pass.
+			if persist != nil {
+				if err := persist(ts.toDBAuction(&updated)); err != nil {
 					log.Printf("Failed to update expired auction: %v", err)
+					continue
 				}
 			}
+			*auction = updated
 		}
 	}
 }
