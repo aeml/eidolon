@@ -5,7 +5,44 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 08:35 UTC
+## Current checkpoint — September 8, 08:45 UTC
+
+This goal continuation made progress: recovered and closed the cadence full
+suites, completed an actual uninterrupted story test, reproduced an enemy-impact
+bug with failing tests and implemented its bounded correction. Goal remains active.
+
+**66259 is now terminal FAILED4.9m**, Watch5/40 on its third hunt death. Earlier
+opening40s and diary95s remain valid limited evidence, not full first-hour signoff.
+Third death: player at(1.36,108.11), four enemies12–16.6units away. Scan0 and
+owned cleanup passed; independent container absence confirmed. Actual failure
+image viewed, archived with diary PNG at
+`/tmp/eidolon-basic-cadence-evidence-6bUo5T/`. No owned browser remains active.
+
+The isolated candidate is now clean **aa905ae5e4274d0740f8ae3a498a88d0347b9b1d**.
+New actual-impact test45201 FAILED four escaped-target cases before correction:
+a Skeleton at15units still hit for10damage after wind-up. Enemy basic impact now
+rechecks the same reach used at admission. Large bodies and DwarfSalesman reach
+are retained; player basic attacks, projectile/telegraphed abilities, pursuit,
+regen and rewards are unchanged. Focused race36341 PASS7.813s (new reach cases,
+dungeon walls, shield absorption, cadence and regeneration). This fixes a concrete
+combat defect; it does not yet prove the crowd-pressure or first-hour gate solved.
+Candidate doc retains proposed patch notes and separate cadence/impact scope.
+
+**69976 ACTIVE — full server race** on frozenaa905ae, log
+`/tmp/eidolon-enemy-impact-reach-server.log`. Poll this handle before source edits
+or declaring broad regression success. Client runtime unchanged from0bbc945's
+full3397-test pass. After server closure, run the new actual uninterrupted route;
+do not repeat the failed cadence-only source. Revisit pursuit/encounter separation
+if still needed. No47 backport or release approval yet.
+
+Fresh08:45 public release manifest and backend health both still match
+44/847d454a94a7424ab303f6339c875ab170bff36e, healthy/database ready. Release45
+CI34203281024 is confirmed ACTIVE in disposable full-character gameplay after
+client/server/browser/gallery success. No later jobs yet. Hold46/ad16790 until
+all eight45 jobs and independent public manifest/login/main/backend identity pass.
+Root has only ledger changes this turn; never push its staged52 master.
+
+## Historical checkpoint — September 8, 08:35 UTC
 
 The preceding user turn freshly verified the requested0.01 regeneration on both
 client (six tests/1.844s) and server (four focused tests/0.308s); it made no new
