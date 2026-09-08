@@ -104,3 +104,43 @@ fast-forward of remote45b4b83, never root's staged52. Production CI and fresh
 exact public client/backend checks are still required before calling45 live or
 publishing46. The requested0.01 rates and actual45 rune correction notes are
 included; later version identities are not imported into this package.
+
+## Phone talent observation correction — September 8, 08:12 UTC
+
+CI34198772605 on64df5fb failed predeployment; all deployment and live jobs were
+skipped. Client/server/browser smoke passed. The actual prepared Verdant run
+defeated Rootbound Warden and Briar Matron; the later phone talent-economy route
+failed waiting30seconds for a full mana bar after login. Its automatic retry
+then expected an untrained30mana cast on the reused, already-trained character
+and observed21. These are distinct test failures, not proof of a failed deploy.
+
+Test-only source **42522f055151539ac15a7a2dadd839edff7210ef** waits for sufficient
+mana, measures the actual pre-input mana (not maximum capacity), and bounds only
+possible intervening regeneration ticks when checking the server receipt.
+Full-bar casts still require exact payment; undercharging, no charge and invalid
+observations are covered. Retry uses its own allowlisted fresh character and
+asserts both relevant talent ranks start at zero. A deliberately failed probe
+after purchases proves the subsequent retry can pass its untrained baseline.
+No runtime/server/src/login/patch-note content or regeneration coefficient changes.
+
+Focused238tests/2.879s; final resource/retry checks15tests/1.210s; full client
+**218suites/3221tests/137.186s**, full lint, shell syntax and diff checks all pass.
+Current production server code is identical to64df5fb; targeted actual talent
+cost and passive regeneration race tests pass3.992s. Full Go is not claimed
+rerun for this test-only correction (the same server passed CI).
+
+Actual phone cast route passes **11.6s /14.4s total**:30mana before training,
+21after training,21after saved login. Crucially, that login restores1191/1685mana,
+not a full bar, with1.09mana/second recovery; waiting30seconds to fill the missing
+494mana is an invalid requirement. This finding does not change login recovery
+policy or approve earned progression. The retry-isolation probe deliberately
+fails its first attempt after purchases, then passes its fresh retry in11.1s;
+the reporter correctly labels that intentional probe "1 flaky". Both scans
+pass0sanitizations, both disposable cleanups and independent container absence
+pass. Handle72433 terminal0; full client/lint93578 and server46965 terminal0.
+
+Logs `/tmp/eidolon-release45-cast-observation-{client,lint,gameplay,retry}.log`.
+Do not rerun the unchanged failed64df5fb CI. This corrected45 must fast-forward
+the remote64df5fb, then pass the complete CI and independent public gates. Later
+46–52 candidates must inherit this correction before publication. Full roadmap
+and first-hour balance remain open; no45 live success is claimed here.
