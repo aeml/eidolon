@@ -228,12 +228,14 @@ export class QuestUI {
             AbyssalWellBoss: 'Abyssal Well Boss'
         };
 
-        const label = targetMap[target] || target;
+        const label = targetMap[target] || String(target || 'target')
+            .replace(/([a-z\d])([A-Z])/g, '$1 $2');
         if (maxCount === 1) return label;
         if (label.includes('Boss')) {
             return label.replace('Boss', 'Bosses');
         }
-        if (label.endsWith('s')) return label;
+        if (label.endsWith('s') || label.endsWith('Djinn')) return label;
+        if (/[^aeiou]y$/i.test(label)) return `${label.slice(0, -1)}ies`;
         return `${label}s`;
     }
 
@@ -1087,6 +1089,7 @@ export class QuestUI {
         const repeatableLadder = this.buildRepeatableLadderSummary(quests);
         if (repeatableLadder) {
             const ladder = document.createElement('div');
+            ladder.className = 'quest-repeatable-ladder';
             ladder.style.background = 'linear-gradient(180deg, rgba(29, 35, 46, 0.95), rgba(18, 22, 29, 0.95))';
             ladder.style.border = '1px solid rgba(143, 176, 217, 0.35)';
             ladder.style.padding = '10px';
@@ -1112,11 +1115,13 @@ export class QuestUI {
 
             repeatableLadder.topEntries.forEach((entry) => {
                 const row = document.createElement('div');
+                row.className = 'quest-ladder-row';
                 row.style.display = 'flex';
+                row.style.flexDirection = this.ctx.isMobile ? 'column' : 'row';
                 row.style.justifyContent = 'space-between';
-                row.style.gap = '10px';
+                row.style.gap = this.ctx.isMobile ? '4px' : '10px';
                 row.style.fontSize = '12px';
-                row.style.alignItems = 'baseline';
+                row.style.alignItems = this.ctx.isMobile ? 'stretch' : 'baseline';
 
                 const left = this.createMessage(
                     `${entry.label}${entry.completed ? ' • Ready' : entry.accepted ? ' • Active' : ' • Available'}`,
@@ -1126,6 +1131,8 @@ export class QuestUI {
                     `${entry.progressText} • ${entry.rewardLabel}`,
                     { color: '#8fd3ff' }
                 );
+                left.classList.add('quest-ladder-row__label');
+                right.classList.add('quest-ladder-row__value');
 
                 row.appendChild(left);
                 row.appendChild(right);
