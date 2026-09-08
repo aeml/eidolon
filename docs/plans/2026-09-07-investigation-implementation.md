@@ -48,6 +48,32 @@ pass **3.144s**. All these handles are closed; the expanded graph backend passes
 
 ### World integration checkpoint
 
+September 8 Air follow-up: first phone **93402 FAIL / 50.1s** dies before the
+first diary during blind outbound travel. **11e345d** adds normal defensive
+combat en route and detailed failure observation. Retry **72801 FAIL / 6.0m**
+then times out reaching (900,200): actual position (699.75,128.02), full
+**2,575 HP**, **199 accepted Fireballs / ten accepted Gravity Wells**, with
+12 nearby Inferno Titans. It has not reached Air's diary. Repeatedly stopping
+to clear every nearby pack while retreating drifts off-route; this is not an
+unrendered/unaccepted Fireball diagnosis or an earned kill-count claim. Both
+logs/failed results are retained and credential scan/cleanup pass.
+
+QA **4e14b06** separates travel from site-clearing: healthy characters keep the
+waypoint, use the actual available shield when needed, and stop to fight only
+when badly hurt. The joystick is released only for an actual planned response;
+site/anchor combat retains its full checks. No gear, HP, damage, enemy density,
+discovery or survival bound changes. Strategy unit checks **31 / 0.408s PASS**,
+lint/diff pass. Logs `/tmp/eidolon-investigations-phone-air{,-defended}.log` and
+`/tmp/eidolon-investigations-travel-defense-unit.log`. No Air success claimed.
+The corrected release-43 clock QA is merged at **cee15fc** without runtime
+changes; the next phone route must use that clean combined source.
+
+The preceding fresh-handoff runtime **cdfdcd5** additionally passes full client
+**10494 / 219 suites / 3,299 tests / 82.376s** and three repeated race-enabled
+Chronicle/investigation checks **97734 / root 2.277s / game 20.037s**. Logs
+`/tmp/eidolon-investigations-handoffs-{client,server}.log`. All owned handles
+listed in this checkpoint are closed.
+
 Fire touch **64268 PASS / one / 2.4m** (2.3m test) on clean **ae9d8a5**:
 both investigations, all four records read in both orientations, explicit
 retrospective turn-ins/rewards and saved rereading. Normal touch combat observes
