@@ -5,7 +5,55 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 05:35 UTC
+## Current checkpoint — September 8, 05:50 UTC
+
+The previous short regeneration-confirmation turn reverified existing code but
+added no implementation. This continuation makes new progress: it closes the
+failed earned run from authoritative output and changes the first expedition's
+enemy eligibility in the isolated candidate, with regression coverage.
+The full1.1–1.10 scope remains active and incomplete.
+
+**44 deployed, final live gate active:** CI34187405437 at05:49 reports seven
+jobs passed, including both deployments and predeploy character QA. Live Release
+and Character QA is still in progress. Remote master remains exact
+847d454a94a7424ab303f6339c875ab170bff36e.45 has not been pushed; all eight44
+jobs plus a fresh independent exact public identity check remain its prerequisite.
+The45–51 queue and local verification below are unchanged. Never push root master.
+
+**Earned low-regeneration66368 FAILED and closed:** source dfd3cbd, opening48s
+without deaths, diary109s/level3; Watch then produced three deaths at only1/40
+credit, level4/97XP/283gold/no bag equipment. The inspected image shows0/175HP,
+22/145mana and several Skeletons nearby. This is evidence of an early-story
+playability failure, not proof that mana alone caused it. Artifact scan and owned
+cleanup passed. Log `/tmp/eidolon-earned-earth-low-regen-crowd.log`; preserved
+image `/tmp/eidolon-earned-low-regen-evidence-J2vCTX/failed-watch.png`.
+
+**Candidate correction e74a6586f93016c779cf9c185664365e0d8b6691:** first hunt
+now admits level3+ rather than8+ Skeletons, matching the actual level reached
+through preceding chapters. Ilyra directs the player to near roads. Count40,
+reward budget, manual claim, later gates and requested0.01 regeneration remain
+unchanged; accepted progress and higher-level kill eligibility are preserved.
+Server production-death regression now exercises level2 rejection/level3 credit;
+client/server catalog tests verify the threshold and unchanged count/budget.
+Client99987 PASS /two suites/16 tests/2.411s and lint PASS; server33384 race
+PASS /5.469s. Both handles closed. This is not campaign pacing approval.
+
+**One owned browser66228 ACTIVE:** frozen clean candidate above in
+`/tmp/eidolon-earned-story-TZuGpp`; route fresh-story-hunt; run ID
+earth-watch-level-three; API/Mongo/web18465/18466/18467. Log
+`/tmp/eidolon-earned-watch-level-three.log`. Fresh Wizard starts at level1
+with100HP and basic damage2. The driver now records volatile health/mana/rates
+and nearby enemy levels separately from exact persisted-state assertions.
+It still grants no gear, levels, recovery or objective credit, and permits
+at most two ordinary deaths. Do not edit or restart this source while it runs.
+
+An optional asynchronous user question asks whether longer-adventure recovery
+should use limited dropped/purchased potions, interruptible out-of-combat rest,
+or existing recovery only. No new recovery mechanic has been implemented and
+the explicit0.01 passive rate will remain whichever option is chosen. There is
+other in-scope work; this question is not a goal blocker.
+
+## Historical checkpoint — September 8, 05:35 UTC
 
 Previous goal turn was progress. This continuation packages the requested
 regeneration fix into45, verifies actual progression/gear rollback sessions,
