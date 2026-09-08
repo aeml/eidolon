@@ -1,4 +1,28 @@
-# Readable crowd names — unversioned visual candidate
+# Readable crowd names — queued Alpha 1.0.53
+
+## Versioned package, September 8
+
+Packaged as **Alpha1.0.53 (names above the crowd)** with a matching login label,
+manifest, package/container/backend/deployment defaults, and new patch notes
+retaining52 and all earlier history. Six rendered checks now run in browser CI;
+the actual town route is included in the isolated all-route AND chain, so its
+addition cannot mask a preceding failure.
+
+Versioned verification:92974 PASS291tests/four suites/3.117s;38775 PASS11HUD
+tests;63271 full lint and shell syntax/diff pass;86916 PASS6rendered/13.7s.
+Initial67690 had291passing tests but failed because the requested HUD filename
+did not exist;38775 uses the actual GameEngineHudUpdateThrottle suite. Server
+root48399 PASS1.893s. Production source is unchanged from the prior full3270-test
+pass; packaging only changes versions, patch notes and CI routing.
+
+Actual7404 **PASS3/22.8s** on the frozen versioned package: desktop9.0s,
+portrait5.7s, landscape5.8s. Artifact scan0, cleanup and independent exact-container
+absence pass. Both phone captures inspected: legible Ilyra label, clear marker,
+unchanged visible characters. These are town/browser checks, not physical-phone
+or full combat approval. This remains queued after46–52 and must inherit final47
+before publication. No push or live53 claim.
+
+## Development history
 
 Actual collection images showed tiny overlapping names over packed enemies.
 This implements part of the roadmap's combat/phone readability scope; it does
