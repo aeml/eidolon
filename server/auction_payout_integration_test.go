@@ -12,6 +12,76 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+// Unlike the interruption fixtures, this checks the success acknowledgement
+// itself and a cast which has not first been saved by disconnecting.
+func TestAuctionSellerPayoutActualNormalCollection(t *testing.T) {
+	repo, uri, binary := resourceJournalIntegration(t)
+	seller, password := resourceJournalFixture(t, repo)
+	auction := resourceRefundAuction(seller)
+	auction.SellerID, auction.SellerName = "player-"+seller.Name, seller.Name
+	auction.BidderID, auction.BidderName, auction.BuyerID = "player-prepared-winner", "prepared-winner", "player-prepared-winner"
+	auction.Status, auction.Bid, auction.SalePrice, auction.Deposit = "SOLD", 100, 100, 5
+	if err := repo.CreateAuction(auction); err != nil {
+		t.Fatal(err)
+	}
+	dir := t.TempDir()
+	address, stop := compatStartServer(t, binary, uri, 124, "-save-journal-dir", dir)
+	connection := resourceOpenCharacter(t, address, seller.Name, password)
+	baseline := resourceCloseAndWait(t, repo, connection, seller.Name)
+	connection = resourceOpenCharacter(t, address, seller.Name, password)
+	resourceSend(t, connection, MsgAbility, AbilityPayload{SkillName: "Fireball"})
+	var cast game.AbilityResult
+	resourceReadMessage(t, connection, MsgAbilityResult, &cast)
+	if !cast.Accepted || cast.Mana != 70 {
+		t.Fatal("ordinary pre-collection cast failed")
+	}
+	resourceSend(t, connection, MsgTradingCollect, TradingCollectPayload{AuctionID: auction.ID})
+	var reply string
+	resourceReadMessage(t, connection, MsgError, &reply)
+	if reply != "Collected 100 gold" {
+		t.Fatalf("normal payout acknowledgement=%q", reply)
+	}
+	verify := func() {
+		t.Helper()
+		saved, err := repo.GetCharacter(seller.Name, seller.Name)
+		if err != nil {
+			t.Fatal(err)
+		}
+		current, err := repo.GetAuction(auction.ID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if saved.Gold != 1334 || saved.Resources == nil || saved.Resources.Health != 17 || saved.Resources.Mana != 70 || saved.Resources.Dead ||
+			!current.SellerClaimed || current.LastBidOperationID == "" || saved.GoldCreditReceipts["seller-payout:"+current.LastBidOperationID] != 100 ||
+			len(saved.GoldCreditReceipts) != 1 || pendingAuctionBid(t, repo, auction.ID) != nil {
+			t.Fatal("normal acknowledgement/retry did not retain exactly one durable payout and current resources")
+		}
+		if current.ItemClaimed || current.BuyerID != auction.BuyerID || current.Bid != 100 || len(current.PendingRefunds) != 0 || !reflect.DeepEqual(current.Item, auction.Item) {
+			t.Fatal("normal seller collection changed the outstanding buyer item/escrow")
+		}
+		if !reflect.DeepEqual(saved.Equipment, baseline.Equipment) || !reflect.DeepEqual(saved.Inventory, baseline.Inventory) ||
+			saved.XP != baseline.XP || saved.Level != baseline.Level {
+			t.Fatal("normal seller collection changed gear/inventory/progression")
+		}
+	}
+	verify() // Success must mean the character/claim are durable already.
+	for phase := 124; phase < 126; phase++ {
+		if phase == 125 {
+			address, stop = compatStartServer(t, binary, uri, phase, "-save-journal-dir", dir)
+			connection = resourceOpenCharacter(t, address, seller.Name, password)
+		}
+		resourceProbe(t, connection, 70, false)
+		resourceSend(t, connection, MsgTradingCollect, TradingCollectPayload{AuctionID: auction.ID})
+		resourceReadMessage(t, connection, MsgError, &reply)
+		if reply != "nothing to collect" {
+			t.Fatalf("settled seller claim accepted again: %q", reply)
+		}
+		resourceCloseAndWait(t, repo, connection, seller.Name)
+		verify()
+		stop()
+	}
+}
+
 // Starting sale/deposit are explicit fixtures. Collection, saved cast, crash
 // recovery and repeated claims all use ordinary production sessions/handlers.
 func TestAuctionSellerPayoutActualCrashBoundaries(t *testing.T) {
