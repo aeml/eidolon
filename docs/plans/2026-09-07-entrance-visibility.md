@@ -125,3 +125,12 @@ into46. No src/server/index changes versus87ed21c; the above actual entrance
 runtime evidence is unchanged, not rerun. Five focused suites pass260tests/
 2.617s and full lint/diff checks pass (handle21098 terminal0).46 remains queued,
 not published, until every new45 CI/live job and exact public checks pass.
+# September8: observed shield-approach carry-forward
+
+Mergeecd0600 inherits pushed45/83d8f08's verified test-only approach correction.
+The shield-test merge preserves this release's explicit entrance-cutaway assertion
+before using the observed enemy approach. No src/server/index changes versus
+ad16790. Initial integration1664 correctly failed lint on unresolved conflict
+markers; after resolution,29678 passes238tests/four suites/2.212s, full lint and
+diff checks. Existing entrance rendering evidence remains applicable, not rerun.
+Release46 still waits for new45 CI34208478475 and independent public identity.
