@@ -48,3 +48,13 @@ rank/rune/point equality remain. The observer is restored in finally.
 Focused84841 PASS25tests/4.667s plus full lint/diff. No gameplay/version/patch-note
 change; actual successor and full client verification remain required. After
 passing, propagate this QA-only correction through48–55 and the resource branch.
+
+Successor3551c66 actual79912 CLOSED PASS2/5.2m, QA_SCRIPT_EXIT=0: prepared reuse
+36.3s, then Verdant4.5m, seed4222344601024940264/gen2/normal30/Wizard100. Both
+bosses/later enemies/rooms/town verified; last Matron2749HP, player2037HP/548mana
+before confirmed kill. Full client76579 CLOSED PASS232suites/3314tests/281.705s,
+normal0. Both ran frozen source. Credential scan0 and independent exact owned
+container/image absence PASS. Logs `/tmp/eidolon-release47-server-cast-gameplay.log`
+and `/tmp/eidolon-release47-server-cast-client.log`. No runtime change from the
+previous full-Go-tested47. This closes the observed fixture timing defect, not
+the1.1 campaign/phone/balance scope or the full release deployment/live gate.
