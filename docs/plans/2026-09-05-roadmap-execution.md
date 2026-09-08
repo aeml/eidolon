@@ -5,7 +5,53 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 13:42 UTC
+## Current checkpoint — September 8, 13:48 UTC
+
+Previous turn was progress:51 save-bridge integration and100 actual save cycles
+closed, with52 carried onto that baseline. This turn closes52 full suites and
+integrates/verifies53's nameplate candidate. The full roadmap remains active.
+
+52/95abaae2c72a56f351f477e57ca9459af7e8c863:2601 prepare/lint/full client closed
+PASS234suites/3333tests/134.73s, normal0.63516 focused race PASS root1.216s/
+game2.617s, then fullGo PASS root2.560s/database0.009s/game74.011s, normal0.
+All52 source stayed frozen. Actual death-resource browser verification on this
+inherited baseline remains due after the existing50 browser route closes.
+
+New `/tmp/eidolon-release53-final52-aGmk4j`, release/53-with-final52, starts from
+retained53/874b8fc and merges52/95abaae at1858629. Resolve conflicts by preserving
+all three anonymous shards, running the six nameplate render tests once on shard1,
+retaining the full AND-gated death-resource/PvP/nameplate-world routes, and keeping
+both old/new isolation assertions. All three shards still gate predeployment;
+no scene, recovery, visibility or version history is discarded. Runtime diff
+from52 is the existing nameplate presentation/render integration; supporting
+docs and an existing reward-stack audit test also carry, without activating
+their proposed rewards/expanded campaign.
+
+73517 initial focused run failed only the new CI regression's fs reference
+(250PASS/1FAIL); the file already imports readFileSync directly. Corrected this
+test-only name, no runtime/gate change.10147 passed251tests/2.289s plus lint,
+bash syntax and diff. Committed **888e4b27cf564749ea739bc272e7ee8f56429303**.
+Frozen74119 full client PASS235suites/3344tests/138.707s, normal0;77794 fullGo
+PASS game77.137s/database0.023s and all packages, normal0. Logs
+`/tmp/eidolon-release53-final52-{client,server}.log`. All53 handles closed.
+Actual High/Low rendered nameplate comparisons and the three-size real-town
+mouse/touch routes on this ancestry remain due after52 death recovery. Physical
+phone/model/full-combat readability gates remain open, not implied by unit passes.
+
+**49406 remains ACTIVE**, sole owned local browser in frozen50/77c1155,
+runID release50-final49, API18635/Mongo18636/web18637, log
+`/tmp/eidolon-release50-final49-gameplay.log`. Last17 observed target deaths/
+6seeds/0deaths. Repeated retreats lengthen the earned route; preserve this as
+pacing evidence, not a claim of pleasant balance or a reason to restart. Poll
+this same handle until terminal, inspect/archive ready evidence, verify cleanup,
+then run52 death recovery and53 rendered/town coverage in sequence.52/53 are
+clean and have no running checks.54/55 still need inherited ancestry.
+
+CI34232562890 on46/ed5f64a remains freshly active in Browser Smoke after green
+client/server jobs. No push this turn. Keep its complete final-live gate before
+47 publication, then the subsequent ordered releases with their own notes.
+
+## Historical checkpoint — September 8, 13:42 UTC
 
 Previous turn was progress:46 QA correction pushed and47 deployed-safe defense
 implemented. This turn closes47 actual dungeon and51 full/save-cycle validation,
