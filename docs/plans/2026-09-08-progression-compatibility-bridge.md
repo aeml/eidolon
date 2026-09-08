@@ -59,3 +59,12 @@ relative path and did not stage/commit. The unchanged diff hash was verified
 before closure (`35a772f19f58913fa0552f7a5f8026cf6d99a82cce32906110285a3fdb9e37ad`).
 No duplicate check was started on an observation timeout. Actual isolated
 database/login/rollback sessions remain the next verification gate.
+
+An opt-in actual-session harness is now drafted in
+`server/progression_session_integration_test.go`. It is designed to launch
+explicit bridge/candidate binaries on owned loopback ports against an explicitly
+disposable Mongo, log in and join through WebSocket, wait for real disconnect
+snapshots, then cycle1→2→1→2→2 across four classes and five save cases. It also
+checks zero-reward promises and unknown future discovery records. Compile-only
+run83002 passes with the integration intentionally skipped; **no actual session
+success is claimed**. Work paused for the user's new regeneration-rate fix.
