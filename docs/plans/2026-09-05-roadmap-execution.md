@@ -5,7 +5,77 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 15:44 UTC
+## Current checkpoint — September 8, 16:09 UTC
+
+Previous focused regeneration turn was NO ROADMAP PROGRESS: it reconfirmed the
+already implemented .01 health/mana coefficient and passing focused tests, but
+changed no release or roadmap state. This resumed goal turn is PROGRESS:46 final
+live gate passed,47 was published in order, and durable failed-save recovery was
+implemented and verified through real Mongo/server restarts. Full1.1–1.10 remains
+active and incomplete; no milestone scope has been reduced.
+
+46 CI34238194283 on6f7e4a7 completed SUCCESS including final Live Release and
+Character QA at15:49:01. Fresh checks after that completion confirmed public
+release.json and backend healthz exact6f7e4a72a774a9d2106c26fc6a98f81a1e535c7c /
+Alpha1.0.46, database ready, and index login/patch notes/exact main.js identity.
+Remote master was still6f7e4a7 and ancestry/clean47 worktree were checked before
+normal fast-forward push65956 CLOSED0: **6925c5113ee6acdf698713f3332f80dcf546bd76**
+to master.47 retains its own patch notes/login version. CI **34248491147** now
+PASSES Client/Server; all3 Browser Smoke shards ACTIVE. No47 deployment/live-pass
+claim yet. Do not publish48 until the full47 gate and fresh public identity pass.
+Root staged52/ledger branch remains local only; never push it.
+
+Resource worktree `/tmp/eidolon-resource-persistence-c6E17J` now clean runtime/test
+commit **5cf6acb794785ede185a7187e5ea53516c76e6e6**, still no56 assignment or release
+approval. One private per-account BSON journal retains the newest attempted
+complete snapshot before Mongo IO; atomic Mongo receipt prevents duplicate replay
+from overwriting later gold-only credits. Startup replays before accepting logins;
+autosave retries and expired-character login refuses stale hydration while a save
+is pending. Local journal failure pins the live entity against resume expiry;
+durable journal success permits normal expiry even if Mongo remains unavailable.
+The journal defaults to logs/character-saves, within the existing persistent
+Compose logs bind mount. This is single-writer per-account ordering, NOT a general
+multi-server monotonic/CAS protocol or protection against every trading race.
+
+Recovered previous focused command had no live process and terminal log PASS
+root0.024s/database0.300s. New focused97355 CLOSED PASS root1.533s/database1.114s;
+expanded9285 CLOSED PASS root1.700s/database1.139s, log
+`/tmp/eidolon-journal-expanded-focused.log`. These include durable reopen,
+detachment, stale acknowledgement protection, corruption preservation, failed
+database retry, newest-live snapshot preference, real filesystem-path failure,
+expiry pin/unpin and fail-closed missing-state checks.
+
+Actual race-built33010 CLOSED PASS45.783s on exact5cf6acb: ordinary handoff5.53s;
+real Fireball/disconnect with Mongo validator rejecting the save, retained file
+through shutdown, fresh-server replay and ordinary login6.67s; precommitted
+unacknowledged receipt plus later43gold credit/dead0HP0mana login3.58s; all8
+four-class alive/dead token/resume/recovery cases28.95s. Failure injection is a
+real rejected Mongo write, NOT a network outage or disk-full process crash.
+Exact complete pending snapshot matched Mongo before recovered server readiness.
+Log `/tmp/eidolon-resource-journal-actual-sessions.log`; binary
+`/tmp/eidolon-resource-journal-proof-qcfth6/5cf6acb794785ede185a7187e5ea53516c76e6e6`.
+Five server evidence dirs3793709616/795464650/168276058/2545814512/3148458027 under
+`/tmp/eidolon-compat-session-*` have normal exits and independent clean race/panic/
+fatal and credential-marker scans. Exact owned journal-proof Mongo container and
+its disposable volumes removed; independently absent. Production data untouched.
+
+ACTIVE local handles on that frozen source: full Go race **75477**, log
+`/tmp/eidolon-resource-journal-full-race.log` (root17.115s/database1.149s PASS,
+game still active);144 real saved-session matrix **30872**, log
+`/tmp/eidolon-resource-journal-matrix-sessions.log`, owned disposable Mongo
+`eidolon-resource-journal-matrix-20260908-1608` with exact cleanup trap. No owned
+browser route active. Re-poll these handles; do not restart on observation timeout.
+
+Open resource acceptance: shutdown must stop admission/game mutations before
+final save/drain (existing WaitGroup admission race not fixed); interrupted
+dungeon/PvP recovery; compatible rollback and broader browser/device acceptance;
+delayed network/storage failures and pending-save versus offline auction-credit
+ordering. Do not claim arbitrary crash durability or deploy this slice alone.
+48–55 refs/validation unchanged below;31chapter campaign and full phone gate
+remain incomplete. Next actions are finish exact local handles and continue the
+remaining resource gates while47 proceeds through its own release pipeline.
+
+## Historical checkpoint — September 8, 15:44 UTC
 
 Previous turn was PROGRESS (real races fixed, stricter harness and47 fixture
 correction). This turn is PROGRESS:47 local acceptance completed, its QA fix
