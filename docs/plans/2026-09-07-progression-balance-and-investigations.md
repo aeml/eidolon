@@ -2,6 +2,14 @@
 
 Requested September 7, 2026. Status: **implementation active; full pass open**.
 
+The [room-XP correction](2026-09-08-room-xp-progression.md) now uses the common
+level-up/cap-overflow path with unchanged reward amounts; full server race and
+all-class boundary regressions pass. It is root-integrated but not versioned or
+published. The [coordinated progression candidate](2026-09-08-coordinated-progression-candidate.md)
+defines the next bounded-curve experiment, encounter-sized source budgets,
+authored preparation needs and save-migration gates. Its numeric values are not
+active, and arithmetic sketches do not establish an earned route.
+
 September 8 update: the isolated expanded story now passes an earned fresh
 Earth route with the 100-XP opening, diary, eight-fragment collection and linked
 evidence, plus manual handoffs and reconnect. Source **95faafc**, browser

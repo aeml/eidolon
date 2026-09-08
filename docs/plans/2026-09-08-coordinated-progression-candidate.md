@@ -3,7 +3,7 @@
 Status: **prototype design, not active balance or release approval**. Keep the
 full [balance scope](2026-09-07-progression-balance-and-investigations.md): XP,
 gold, drops, useful upgrades, authored progression, solo/party and endgame.
-The room-XP correction removes a inconsistent award path but does not tune it.
+The room-XP correction removes an inconsistent award path but does not tune it.
 
 ## Constraints carried forward
 

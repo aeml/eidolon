@@ -5,7 +5,49 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 01:52 UTC
+## Current checkpoint — September 8, 02:12 UTC
+
+Previous goal turn was progress: fresh expanded Earth proof, stacked reward
+measurement and corrected43 publication. This turn makes concrete progress by
+fixing room-earned level transitions, verifying the complete server suite and
+advancing the release gate. Full roadmap/balance completion remains unproven.
+
+**43/39620a0 / CI 34178050891** now passes client, server and anonymous browser
+smoke. **Predeploy Character QA is in progress**, confirmed by the current CI
+API; deployment/live jobs are not complete. No 44 publication. Queue remains
+`with-smite-cadence`, next **44/e3a349f** only after all43 jobs and fresh exact
+public identity pass. Last exact public verification remains 42/bfbbc before
+this43 push, not an assertion that43 has deployed.
+
+Room XP now uses the complete shared level-up/cap path, with unchanged payouts.
+All-class red **6966 FAIL / 1.239s** reproduces eight lower-level/cap-transition
+failures. Expanded targeted checks first expose an outdated level-55 fixture
+using a level-one threshold (**13099 FAIL / 3.501s**); six room fixtures now
+use their canonical thresholds without weakening reward/resource assertions.
+Four-class 29/39/99/100 immediate stats/skills/talents/healing/overflow and
+duplicate checks, room hooks/final-enemy clear, cap and reward-stack checks pass
+three race repetitions **24435 / 11.575s**. Full server **33425 PASS / root
+17.500s / game 286.052s**, other packages pass, on **caf08cf**. These handles
+are closed. See [the correction record](2026-09-08-room-xp-progression.md).
+
+Isolated room branch `/tmp/eidolon-room-xp-bZib8R` clean **aa0f290**. Root merges
+it as **ce41bef**, expanded investigation as **9d9b894**. Room correction is
+unversioned; expanded23/opening100 remains isolated, no51 package. Combined
+expanded room/Chronicle/investigation/stack checks **28456 active**, log
+`/tmp/eidolon-expanded-room-xp-integration.log`; freeze that entire investigation
+worktree until terminal. No owned browser is running. External CI browser is
+separate and must not be disturbed.
+
+Root **cae2770** records the next [coordinated progression candidate](2026-09-08-coordinated-progression-candidate.md):
+bounded quadratic thresholds, content-level encounter budgets, coupled daily/
+story payouts and authored preparation, existing entry levels and explicit
+save-version/accepted-quote preservation. **Not active tuning or a playable
+campaign**. The rejected 5%-kill arithmetic sketch still reaches only26 before
+the30 gate even with two80-kill hunts; it is not evidence of acceptable pacing.
+Next substantial implementation must change sources/curve/objectives together
+and verify the whole earned path, not ship only another global multiplier.
+
+## Historical checkpoint — September 8, 01:52 UTC
 
 Current turn makes substantive progress: combined fresh Earth verification,
 stacked reward measurements and a second tested release-43 QA correction.
