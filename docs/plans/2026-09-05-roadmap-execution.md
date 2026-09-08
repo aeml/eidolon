@@ -5,7 +5,71 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 19:16 UTC
+## Current checkpoint — September 8, 19:29 UTC
+
+This turn is PROGRESS: payout crash evidence closed, auction response aliasing
+fixed, and an observed unrelated full-suite fixture failure corrected. Full
+roadmap remains active/incomplete; no new release published in this turn.
+
+Resource candidate8a5dc32 (work/resource-persistence-20260908 in
+`/tmp/eidolon-resource-persistence-c6E17J`) is committed and clean. Auction list
+responses now detach scalar state and nested item stats/gems/forge basis/refunds
+under the trading read lock before network serialization. Three old-path tests
+80715 failed as expected. Concurrent serialization and detached mutation tests
+now cover search, seller and buyer results.
+
+Original fullrace65216 FAILED334.950s; unchanged100-repetition Tripwire76053
+also FAILED31.371s. Diagnostic41843 FAILED35.987s explicitly recorded
+Skeleton-159:true rather than the intended enemy: a random overworld enemy
+consumed the single-use trap. The fixture now isolates its actors in a scene,
+requires an intended-target hit receipt/damage, and retains the same three-second
+root/immunity assertions. Corrected10978 PASS36.891s/100 repetitions of all
+three snapshot/Tripwire tests under race detection; no runtime trap change.
+
+**Fullrace70943 ACTIVE** on frozen8a5dc32, log
+`/tmp/eidolon-auction-payout-corrected-full-race.log`.
+**Actual6487 ACTIVE** on the same exact binary, two repetitions of seller payout
+crash boundaries plus ordinary bid raises/contention, log
+`/tmp/eidolon-auction-snapshot-sessions.log`. Owned disposable Mongo
+eidolon-auction-snapshot-proof-20260908-1930 with EXIT cleanup. Poll these exact
+handles; do not edit candidate source until terminal. Prior3bd5df4 actual78070
+PASS337.931s/98 clean child logs remains separately scoped evidence, not an
+assumed pass for this changed candidate. Seller normal success acknowledgement,
+actual expiry faults, buyout/item/listing recovery and rollback guard remain open.
+
+48 CI34266379714 freshly ACTIVE at predeploy character QA; client/server/three
+smoke shards PASS. No49 push until whole48 CI and fresh exact public identity.
+Root remains staged52 and must not be pushed. Queue refs in19:01 remain current.
+
+## Historical checkpoint — September 8, 19:24 UTC
+
+The preceding direct-request turn verified the existing0.01 regeneration rate
+with61 selected client tests and the server regeneration tests; no runtime edit
+was needed. This continuation closes the pending payout evidence and investigates
+the full-suite failure. Full roadmap remains active; no release gate waived.
+
+Actual78070 is CLOSED PASS0/337.931s on3bd5df4: two repetitions of seller and
+bid crash boundaries, ordinary raises/contention and prior refund-save/ack cases.
+All98 child server logs independently scanned:24 expected SIGKILLs,74 normal
+shutdowns with completed drains, no race/panic/fatal. Owned Mongo
+eidolon-auction-payout-proof-20260908-1915 and volumes were removed by the normal
+EXIT trap; exact container independently absent. This does not prove durable
+buyout/item claims/listing deposits or compatible rollback, which remain open.
+
+Fullrace65216 CLOSED FAIL1/game334.950s: Tripwire ordinary-enemy root assertion
+failed (rooted=false), with no race report. Preserve
+`/tmp/eidolon-auction-payout-full-race.log`; this is not a full-suite pass.
+Unchanged focused20 repetitions91667 PASS; unchanged100 repetitions76053 ACTIVE,
+log `/tmp/eidolon-tripwire-reproduction-100.log`. Source inspection finds this
+test uses a populated random overworld for a single-target trap assertion;
+interception is a lead, not yet an observed cause. Do not edit candidate sources
+until this exact handle is terminal.
+
+48 CI34266379714 freshly ACTIVE: client/server/all three browser shards PASS,
+predeployment character QA running. No49 push until the complete48 pipeline and
+fresh client/server identity checks pass. Candidate/root are not release refs.
+
+## Historical checkpoint — September 8, 19:16 UTC
 
 Previous goal turn was PROGRESS (accepted Seraph correction and ordered48 push).
 This turn is PROGRESS: durable seller payout and confirmed-expiry ordering
