@@ -30,3 +30,28 @@ coefficients and point budget remain unchanged. Theoretical full-bar raw output
 spending and enemy interaction still matter). Empty-to-one-cast passive wait is
 27.52s at109Wisdom. Existing preparation-policy15 tests and helper lint20741 pass.
 An actual browser run on this frozen candidate is required before integration.
+
+## Starting-ability rune authorization correction
+
+Browser61816 on1af1ef0 failed20.8s while equipping Empowered, before dungeon
+combat. All five ordinary Mastery purchases were acknowledged, but the rune
+remained unset. Log `/tmp/eidolon-release45-wizard.log`; scan/owned cleanup
+passed and the handle closed. Source inspection found an actual UI/server
+mismatch: the UI treats Tier1 as unlocked, and casting permits the class's base
+ability without specialization, but rune authorization only checked the empty
+UnlockedSkills list. Choosing a branch incidentally populated that list.
+
+Shared IsBaseClassSkill now supplies the same class-owned starting-ability rule
+to casting and rune authorization. No new ability, specialization, damage,
+cooldown or recovery is granted. Rune/skill matching and rune-level gates still
+run first; other skills still require their explicit unlock. Actual45 notes now
+describe this correction without replacing earlier history or changing identity.
+
+New real-message regression covers all three base runes for each of four classes,
+rejection one level before each unlock, acceptance at its level, unequip,
+rejection of unselected branch skills and foreign-class skills. Initial27192
+failed because a long sequence exhausted the normal per-client message burst;
+each independent authorization case now has its own normal request client rather
+than changing or disabling the production limiter. Corrected95910 passed root
+race1.863s and broader game ability/rune/passive-regeneration race37.052s.
+The corrected actual browser and full release regressions remain required.
