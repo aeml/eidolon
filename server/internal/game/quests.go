@@ -44,7 +44,7 @@ func chronicleQuestCatalog() []Quest {
 func classicChronicleQuestCatalog() []Quest {
 	quests := []Quest{
 		{
-			ID: "chronicle_01_bell_below", Type: "KILL", Target: "Skeleton", MaxCount: 3, RewardXP: 500,
+			ID: "chronicle_01_bell_below", Type: "KILL", Target: "Skeleton", MaxCount: 3, RewardXP: 100,
 			Title: "The Bell That Rang Below", Category: QuestCategoryChronicle, Chapter: 1,
 			ObjectiveText: "Defeat 3 risen dead beyond Lanternhold's east gate and recover their dissonant echoes.",
 			Description:   "I am Ilyra, keeper of the Fourfold Chronicle. Last night I heard a bell beneath Lanternhold that has no living ringer. The four crystals are faltering, and my wards cannot reach their buried sanctums. I need your help to save Eidolon. Begin just beyond the east gate: my wards still weaken the newly risen near our walls, but their strength returns farther out. Bring me the echoes bound inside three of them; together we can trace the wound.",
@@ -224,6 +224,11 @@ func isDailyQuest(q Quest) bool {
 }
 
 func copyQuestDefinition(progress Quest, definition Quest) Quest {
+	if definition.ID == "chronicle_01_bell_below" && (progress.Accepted || progress.Completed) {
+		// The smaller opening reward applies to new offers, never to an already
+		// accepted promise or historical receipt, including an explicit zero quote.
+		definition.RewardXP, definition.RewardGold = progress.RewardXP, progress.RewardGold
+	}
 	if definition.Category == QuestCategoryChronicle && definition.Type == "COLLECT" && (progress.Accepted || progress.Completed) {
 		// An already accepted contract keeps its quoted payout as well as its
 		// requirements when the new investigations divide future realm budgets.

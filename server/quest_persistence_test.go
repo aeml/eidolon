@@ -11,6 +11,37 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+func TestOpeningQuotedRewardSurvivesDatabaseAndDailyRefresh(t *testing.T) {
+	for _, xp := range []int{0, 100, 500} {
+		p := newLevelCommandPlayer("opening-save")
+		p.Quests = []game.Quest{{ID: "chronicle_01_bell_below", Type: "KILL", Target: "Skeleton",
+			Category: game.QuestCategoryChronicle, Accepted: true, Count: 2, MaxCount: 3,
+			RewardXP: xp, RewardGold: 100}}
+		snapshot := characterSnapshot("opening-save", p, time.Now())
+		encoded, err := bson.Marshal(snapshot)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var stored database.Character
+		if err := bson.Unmarshal(encoded, &stored); err != nil {
+			t.Fatal(err)
+		}
+		loaded := newLevelCommandPlayer("opening-loaded")
+		for _, q := range stored.Quests {
+			loaded.Quests = append(loaded.Quests, questFromDatabase(q))
+		}
+		w := game.NewWorld(nil)
+		w.AddEntity(loaded)
+		for i := 0; i < 2; i++ {
+			w.GenerateDailyQuests(loaded.ID)
+			q := loaded.Quests[0]
+			if q.RewardXP != xp || q.RewardGold != 100 || q.Count != 2 || q.MaxCount != 3 || !q.Accepted || q.Completed {
+				t.Fatalf("save/refresh changed an accepted %d-XP opening quote: %+v", xp, q)
+			}
+		}
+	}
+}
+
 func TestCollectionRequestDuringCombatUsesStableQuestSnapshot(t *testing.T) {
 	previousWorld, previousDB := world, db
 	defer func() { world, db = previousWorld, previousDB }()
