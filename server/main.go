@@ -801,12 +801,13 @@ func main() {
 					}
 					return
 				}
-				if !world.GrantWeeklyRaidReward(evt.PlayerID) {
+				receipt, granted := world.GrantWeeklyRaidRewardWithReceipt(evt.PlayerID)
+				if !granted {
 					log.Printf("weekly raid reward player missing: %s", evt.PlayerID)
 					return
 				}
 				if client != nil {
-					client.sendSystemChat("Weekly Umbra cache: +50,000 gold, +1 Resonance level, and an endgame unique.")
+					client.sendSystemChat(weeklyRaidRewardMessage(receipt))
 					sendInventoryForPlayer(evt.PlayerID)
 					sendEndgameState(client)
 					savePlayer(client)

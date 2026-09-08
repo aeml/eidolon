@@ -20,12 +20,13 @@ func TestWeeklyRaidEconomyIncludesFullBagCompensation(t *testing.T) {
 				}
 			}
 			w.AddEntity(player)
-			if !w.GrantWeeklyRaidReward(player.ID) {
+			receipt, granted := w.GrantWeeklyRaidRewardWithReceipt(player.ID)
+			if !granted {
 				t.Fatal("weekly reward rejected")
 			}
-			wantGold := 50_000
+			wantGold := 15_000
 			if fullBag {
-				wantGold += 10_000
+				wantGold += 5_000
 			}
 			if got := player.Gold - 123; got != wantGold {
 				t.Fatalf("gold gained=%d want=%d", got, wantGold)
@@ -33,8 +34,11 @@ func TestWeeklyRaidEconomyIncludesFullBagCompensation(t *testing.T) {
 			if got := w.Economy.Drain(time.Now()).Sources["weekly_raid"]; got != wantGold {
 				t.Fatalf("weekly source records %d gold, but player received %d", got, wantGold)
 			}
-			if player.ResonanceLevel != 1 || player.ResonanceXP != 0 {
-				t.Fatal("resonance reward changed")
+			if player.ResonanceLevel != 0 || player.ResonanceXP != 1_000_000 || player.ResonancePoints != 0 {
+				t.Fatal("weekly reward does not match the candidate Resonance budget")
+			}
+			if receipt.Gold != wantGold || receipt.ResonanceXP != 1_000_000 || receipt.ItemGranted == fullBag {
+				t.Fatalf("incorrect grant receipt: %+v", receipt)
 			}
 			if fullBag {
 				for i, item := range player.Inventory {

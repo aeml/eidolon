@@ -96,6 +96,22 @@ func TestProgressionPacingAuditOverlappingBossDailies(t *testing.T) {
 				t.Fatalf("stack mismatch: actual XP/gold %d/%d, receipts %d/%d", actualXP,
 					player.Gold-startGold, bossXP+questXP, bossGold+questGold)
 			}
+			// All matching fresh generic/regional/difficulty contracts are
+			// included above. Their combined XP is a bonus, not the run's main
+			// reward; keep the bound against actual production boss receipts.
+			if questXP*4 > bossXP {
+				t.Fatalf("overlapping dailies exceed 25%% of boss XP: daily=%d boss=%d", questXP, bossXP)
+			}
+			wantQuestXP, wantQuestGold := 6760, 960
+			if difficulty == DifficultyHeroic {
+				wantQuestXP, wantQuestGold = 85200, 4160
+			}
+			if difficulty == DifficultyMythic {
+				wantQuestXP, wantQuestGold = 163640, 7360
+			}
+			if questXP != wantQuestXP || questGold != wantQuestGold {
+				t.Fatalf("wrong stacked budget: XP=%d gold=%d", questXP, questGold)
+			}
 			t.Logf("BOSS_DAILY_STACK difficulty=%v start=%d after_bosses=%d after_claims=%d boss_xp=%d daily_xp=%d total_xp=%d boss_gold=%d daily_gold=%d total_gold=%d contracts=%d",
 				difficulty, level, levelAfterBosses, player.Level, bossXP, questXP, bossXP+questXP,
 				bossGold, questGold, bossGold+questGold, len(ids))
