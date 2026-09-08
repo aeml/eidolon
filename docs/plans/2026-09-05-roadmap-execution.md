@@ -5,7 +5,29 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 01:30 UTC
+## Current checkpoint — September 8, combined-check results
+
+Corrected 43 **ed5b4e4 / CI 34175827810 FAIL**: client/server pass;
+anonymous browser **61 pass / two fail / 10.2m**. Both native and 8fps summon
+cases observe only one hit during the 15-second second-hit poll, including
+retries. This is earlier than the previously repaired expiry assertion; its
+cause is not yet established. Deployment/live jobs skip. Do not publish 44.
+Failure log: `/tmp/eidolon-release43-corrected-ci-failed.log`.
+An exact bundled-Chromium/software-path reproduction is running as **11275**,
+the sole owned browser, in the release43 timing worktree. Freeze that worktree.
+
+Combined expanded-story/opening source **3bf6a50**: full client **63890 PASS /
+220 suites / 3,305 tests / 78.747s**; full server race **37061 PASS / root
+11.362s / game 202.149s**, other packages pass. Fresh browser **66320 FAIL /
+1.3m**: opening earns and saves exactly 100 XP/100 gold, reaches level 2 in
+29s without deaths, then fails to hover Mara's diary. The actual hit stack
+contains four Skeletons before the site; hostile priority prevents inspection.
+No diary/collection success on this combined source is claimed. All three
+handles are terminal; the investigation worktree is no longer frozen.
+The earlier passing prepared-veteran touch routes remain valid but do not
+establish fresh desktop interaction or full leveling balance.
+
+## Historical checkpoint — September 8, 01:30 UTC
 
 Air detour **32730 PASS / one / 2.5m** on clean ab95837: both quests, all four
 records read in both orientations, actual manual retrospective replies/rewards,
