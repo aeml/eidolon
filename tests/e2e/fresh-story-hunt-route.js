@@ -4,6 +4,7 @@ import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { createEarnedClassCombat } from './earned-class-combat.js';
 import { recoverEarnedDeath } from './earned-death-recovery.js';
 import { earnedCheckpoint } from './earned-checkpoint.js';
+import { chooseExpeditionCombatTarget } from '../expeditionCombatTargets.js';
 import { openDungeonGuide } from './dungeon-guide.js';
 import { prepareEarnedClass } from './fresh-ready-route.js';
 import { moveByGroundClick, projectEntity, readPlayerState,
@@ -108,8 +109,25 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady }
             if ((await readPlayerState(page)).state === 'DEAD') {
                 await recover(); respawned = true; break;
             }
-            if (await beforeCombat(page, enemy)) continue;
-            const point = await projectEntity(page, enemy.id);
+            const observed = await page.evaluate(id => {
+                const game = window.game;
+                const describe = target => target ? { id: target.id,
+                    alive: game.isHostileActorTarget(target) && target.state !== 'DEAD' &&
+                        (target.health ?? target.stats?.hp) > 0,
+                    distance: game.player.position.distanceTo(target.position) } : null;
+                return { goal: describe(game.remotePlayers.get(id)),
+                    nearby: [...game.remotePlayers.values()].filter(target => game.isHostileActorTarget(target))
+                        .map(describe) };
+            }, enemy.id);
+            const combatTarget = chooseExpeditionCombatTarget(observed.goal, observed.nearby);
+            if (!combatTarget) {
+                // Any credit still comes from normal server deaths. Do not
+                // spend the watchdog repeatedly clicking an already-dead actor.
+                await page.waitForTimeout(250);
+                continue;
+            }
+            if (await beforeCombat(page, combatTarget)) continue;
+            const point = await projectEntity(page, combatTarget.id);
             if (point?.visible) {
                 await page.mouse.click(point.x, point.y);
                 if (await page.evaluate(() => window.game.player.abilityCooldown <= 0)) {

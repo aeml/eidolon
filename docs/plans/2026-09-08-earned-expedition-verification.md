@@ -254,3 +254,29 @@ assertion message; the mock now forwards only the value and the death regression
 also requires that defense was reached, preventing an unrelated error from
 passing that test. This is a test-driver correction, not proof that the fresh
 diary/Watch route now survives. Actual uninterrupted gameplay remains required.
+
+Candidate **bd16d5c**, browser **36108 FAILED / 7.1m**: diary inspection and
+manual25gold/200XP completion did work after4.719s of site combat. Opening100s
+needed one death-button recovery; neither the opening nor diary checkpoint
+reconnected. Diary completed at153s/level3 and retained46/130mana at its
+checkpoint. This proves that route's actual diary handoff, not the whole route.
+
+Watch then failed at4/40 credit on its third death. Death snapshots show zero,
+two and four credits,27/130,17/145 and4/145mana respectively, with four to six
+nearby Skeletons. Some are below the level-three quest-credit floor. Both
+permitted actual death-button recoveries restored full bars; they did not make
+the first hunt viable under this strategy. Scan0sanitizations/owned cleanup
+passed and exact owned containers are absent. Log
+`/tmp/eidolon-earned-diary-spacing.log`. Actual diary and failure PNGs were viewed
+and retained in `/tmp/eidolon-diary-spacing-evidence-ufNDIa/`; the final image
+confirms4/40 and0/175HP,4/145mana. No fresh pacing approval.
+
+Follow-up test strategy: fight an immediate pursuer within8units when it is
+more than3units closer than the quest target. The former driver kept clicking
+the same quest-eligible target after retreats even with closer low-level enemies
+around it. Selection is read-only and does not change server eligibility, enemy
+levels, count40, payouts, allowed deaths or the120s credit watchdog. Uncredited
+defensive kills are not counted as quest progress. Dead actors are not clicked
+again; the same watchdog still requires actual server credit. Five pure selection
+checks plus class/checkpoint checks pass24tests/1.346s. Actual gameplay remains
+required after final lint; do not call this a production balance correction.
