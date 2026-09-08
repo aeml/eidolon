@@ -1,6 +1,6 @@
 import { devices, expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld,
-    moveByGroundClick, projectNearestHostile, returnToTown } from './helpers.js';
+    moveByGroundClick, returnToTown } from './helpers.js';
 
 test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true,
     userAgent: devices['Pixel 7'].userAgent, actionTimeout: 12_000,
@@ -123,11 +123,18 @@ test('Shield mastery increases actual saved absorption, renders and expires thro
         const p = window.game.player.position;
         return Math.hypot(p.x - 800, p.z - 200);
     }), { timeout: 30_000 }).toBeLessThan(3);
-    let target;
-    for (let step = 0; !target && step < 12; step++) {
-        await moveByGroundClick(page, 0, 12);
-        target = await projectNearestHostile(page, 'InfernoTitan');
-    }
+    const observeTarget = () => page.evaluate(async () => {
+        const { nearestObservedHostile } = await import('/tests/observedHostileApproach.js');
+        const game = window.game, p = game.player.position;
+        return nearestObservedHostile(p, [...game.remotePlayers.values()].map(enemy => ({
+            id: enemy.id, subtype: enemy.subType || enemy.constructor?.name,
+            active: enemy.isActive && game.isHostileActorTarget(enemy),
+            alive: enemy.state !== 'DEAD' && (enemy.health ?? enemy.stats?.hp) > 0,
+            x: enemy.position.x, z: enemy.position.z
+        })), 'InfernoTitan');
+    });
+    await expect.poll(observeTarget, { message: 'Observe a real Inferno Titan before approaching it' }).not.toBeNull();
+    const target = await observeTarget();
     expect(target).not.toBeNull();
     for (let step = 0; step < 15; step++) {
         const offset = await page.evaluate(id => {
@@ -140,6 +147,10 @@ test('Shield mastery increases actual saved absorption, renders and expires thro
         const scale = Math.min(7, distance - 2) / distance;
         await moveByGroundClick(page, offset.x * scale, offset.z * scale);
     }
+    expect(await page.evaluate(id => {
+        const game = window.game, enemy = game.remotePlayers.get(id);
+        return enemy ? game.player.position.distanceTo(enemy.position) : Infinity;
+    }, target.id), 'Ordinary movement must reach the observed enemy before removing protection').toBeLessThan(3);
     const capacity = await cast(5, 'before-hostile-hit');
     await command('/qa-protection off');
     await expect.poll(() => page.evaluate(capacity => window.__shieldQA.snapshots.some(s => s.active && s.hp > 0 && s.hp < capacity), capacity), { timeout: 12_000 }).toBe(true);
