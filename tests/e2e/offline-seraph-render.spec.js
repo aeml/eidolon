@@ -4,10 +4,10 @@ import { collectBrowserFailures } from './helpers.js';
 // This exercises the offline fallback with production actors, meshes, chunk
 // updates and collision. Normal login is multiplayer; this is deliberately a
 // prepared component scene, not earned progression or an offline login mode.
-async function scene(page, mode) {
+async function scene(page, mode, frameIntervalMs = 0) {
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.goto('/', { waitUntil: 'networkidle' });
-    await page.evaluate(async mode => {
+    await page.evaluate(async ({ mode, frameIntervalMs }) => {
         const THREE = await import('three');
         const { RenderSystem } = await import('/src/core/RenderSystem.js');
         const { GameEngine } = await import('/src/core/GameEngine.js');
@@ -64,6 +64,8 @@ async function scene(page, mode) {
         addButton('Summon fallback ally', () => {
             owner.useAbility(owner.position, engine, 'Avenging Seraph');
             qa.summon = [...(owner.offlineSeraphs || [])][0]; qa.casts++;
+            qa.summonElapsed = 0; qa.castAt = performance.now();
+            qa.duration = qa.summon?.summonRemaining;
         });
         addButton('Move owner', () => owner.move(new THREE.Vector3(0, 0, 8)));
         addButton('Leave fixture instance', () => { engine.currentInstanceId = ''; });
@@ -71,8 +73,19 @@ async function scene(page, mode) {
         render.setCameraTarget(new THREE.Vector3(4, 0, 0)); render.setZoom(15);
         let previous = performance.now();
         function frame(now) {
+            // Optional deliberately slow component rendering. This does not
+            // change the actor clock or advance its state outside chunk updates.
+            if (now - previous < frameIntervalMs) {
+                qa.frame = requestAnimationFrame(frame); return;
+            }
             const dt = Math.min(.05, (now-previous)/1000); previous = now;
+            const active = qa.summon?.isActive, beforeRemaining = qa.summon?.summonRemaining;
+            if (active) qa.summonElapsed += dt;
             engine.chunkManager.update(owner, dt, engine.collisionManager, engine.floatingTextManager, engine);
+            if (active && !qa.summon.isActive) qa.expiry = {
+                elapsed: qa.summonElapsed, step: dt, beforeRemaining,
+                afterRemaining: qa.summon.summonRemaining, wallMs: now - qa.castAt
+            };
             for (const entity of engine.chunkManager.getActiveEntities()) entity.render(1);
             for (const effect of engine.effects) effect.update(dt);
             engine.effects = engine.effects.filter(effect => effect.isActive);
@@ -81,12 +94,13 @@ async function scene(page, mode) {
             qa.frame = requestAnimationFrame(frame);
         }
         window.__offlineSeraph = qa; qa.frame = requestAnimationFrame(frame);
-    }, mode);
+    }, { mode, frameIntervalMs });
 }
 
-test('offline summon renders actual smites and expires through normal chunk updates', async ({ page, baseURL }, testInfo) => {
+for (const frameIntervalMs of [0, 125]) {
+test(`offline summon renders actual smites and expires through chunk updates (${frameIntervalMs ? '8fps' : 'native'})`, async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
-    await scene(page, 'combat');
+    await scene(page, 'combat', frameIntervalMs);
     await page.getByRole('button', { name: 'Summon fallback ally' }).click();
     await expect.poll(() => page.evaluate(() => window.__offlineSeraph.hits.length)).toBeGreaterThan(1);
     expect(await page.evaluate(() => window.__offlineSeraph.hits.every(hit => hit.amount === 84 && hit.owner))).toBe(true);
@@ -96,13 +110,23 @@ test('offline summon renders actual smites and expires through normal chunk upda
         return Boolean(q.summon?.mesh?.visible && q.summon.mesh.parent === q.engine.renderSystem.entityGroup);
     })).toBe(true);
     await page.screenshot({ path: testInfo.outputPath('offline-seraph-smite.png') });
-    await expect.poll(() => page.evaluate(() => window.__offlineSeraph.summon.isActive), { timeout: 22_000 }).toBe(false);
+    try {
+        await expect.poll(() => page.evaluate(() => window.__offlineSeraph.summon.isActive), { timeout: 22_000 }).toBe(false);
+    } catch (error) {
+        console.log('[offline-seraph-expiry]', JSON.stringify(await page.evaluate(() => {
+            const q = window.__offlineSeraph;
+            return { duration: q.duration, elapsed: q.summonElapsed, remaining: q.summon.summonRemaining,
+                wallMs: performance.now() - q.castAt, active: q.summon.isActive, hits: q.hits.length };
+        })));
+        throw error;
+    }
     expect(await page.evaluate(() => {
         const q = window.__offlineSeraph;
         return { owned: q.owner.offlineSeraphs.size, chunk: q.engine.chunkManager.getActiveEntities().includes(q.summon), attached: Boolean(q.summonMesh.parent) };
     })).toEqual({ owned: 0, chunk: false, attached: false });
     expect(failures, failures.join('\n')).toEqual([]);
 });
+}
 
 test('offline summon cannot smite across disconnected dungeon floor', async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
