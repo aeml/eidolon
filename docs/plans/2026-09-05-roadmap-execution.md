@@ -5,7 +5,27 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 05:04 UTC
+## Current checkpoint — September 8, 05:08 UTC
+
+Requested regeneration fix closes full checks: **67493 PASS /219 client suites /
+3,225 tests /182.603s** and **24799 PASS /server race /root21.275s /
+database1.072s /game448.952s**, both handles closed on frozen8aa6ae0. Root
+cherry-pick **2580ac2** integrates the exact runtime/tests; no root push.
+See [regeneration change and release caveat](2026-09-08-passive-regeneration.md).
+The base coefficient is0.01 on server/offline, fractional server ticks work,
+and stat tooltips agree. The actual old coefficient was0.5, not its0.1 tooltip.
+Broader economy/31-chapter pacing remains open and needs fresh validation with
+this user-requested rate. No earned browser or regeneration checks remain active.
+
+44 CI34187405437 still has predeploy character QA active at the latest read;
+server/client/anonymous browser pass. No45 push, regen release packaging or
+deployment claim. The next release should carry this verified requested fix
+and the verified nightly-soak isolation, preserve old queue refs, update its
+actual patch notes, and pass all normal gates. Do not push root master.
+Bridge opt-in session harness is committeda2f9d1b but actual-session evidence
+remains unverified. The full1.1–1.10 roadmap goal remains active and incomplete.
+
+## Historical checkpoint — September 8, 05:04 UTC
 
 User added an explicit health/mana regeneration fix: final per-stat0.01 rather
 than the displayed0.1. Actual old authoritative/offline code was0.5; discrepancy
