@@ -33,22 +33,7 @@ func (w *World) Update(dt float64) {
 		regenNow := time.Now()
 		for _, e := range w.Entities {
 			e.Mu.Lock()
-			// Prevent regen if dead or effectively dead (<= 0 HP)
-			if e.State != "DEAD" && e.Health > 0 {
-				qaHealthRegenPaused := regenNow.Before(e.QAHealthRegenPausedUntil)
-				if e.Health < e.MaxHealth && !qaHealthRegenPaused {
-					e.Health += int(e.HpRegen)
-					if e.Health > e.MaxHealth {
-						e.Health = e.MaxHealth
-					}
-				}
-				if e.Mana < e.MaxMana {
-					e.Mana += int(e.ManaRegen)
-					if e.Mana > e.MaxMana {
-						e.Mana = e.MaxMana
-					}
-				}
-			}
+			e.regenerateLocked(regenNow)
 			e.Mu.Unlock()
 		}
 	}
