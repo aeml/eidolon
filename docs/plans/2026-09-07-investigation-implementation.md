@@ -48,11 +48,35 @@ pass **3.144s**. All these handles are closed; the expanded graph backend passes
 
 ### World integration checkpoint
 
+Fire touch **64268 PASS / one / 2.4m** (2.3m test) on clean **ae9d8a5**:
+both investigations, all four records read in both orientations, explicit
+retrospective turn-ins/rewards and saved rereading. Normal touch combat observes
+the live command anchor die after the ash discovery and before the ember is
+recorded. Four targets are engaged at each combat stage, not eight proven distinct
+kills. The prepared common-staff veteran is not earned leveling. All eight images
+are preserved in `/tmp/eidolon-phone-fire-earned-MUBXxS/`; portrait ember and
+landscape anchor records are inspected. Log `/tmp/eidolon-investigations-phone-fire.log`;
+scan/cleanup pass and 64268 is closed. Air touch remains open.
+
+Fresh story review also finds handoffs left over from the shorter chain: three
+diary replies skip the intervening collection, and all four collection replies
+directly point at their dungeon. Regression **four fail / 21 pass / 0.654s**
+confirms the missing collection/investigation directions. Authored diary replies
+now introduce the actual next material objective, and collection replies name
+the linked investigation and its reachable steps before the dungeon. Air's
+marker recognizes the pattern learned from the pinions already entrusted to
+Ilyra, rather than implying consumed quest items remain in the bag. Generated
+client/server text stays matched. Optional retrospective replies, reward values,
+requirements, discovery validation and raid access are unchanged. Focused
+conversation/content checks pass **28 / 0.730s**; logs
+`/tmp/eidolon-investigations-handoffs-{before,after}.log`. Broader verification
+and an Air phone route on this corrected narrative are still required.
+
 Corrected Water touch **86161 PASS / one / 2.3m** on clean **a8f1e91**:
 both chapters, all four actual discoveries read in portrait and landscape,
 manual Ilyra retrospective conversations/rewards, reconnect masks 1/7 and
 full saved journal rereading. Four targets are engaged at the moving pool;
-this is not a audited kill count or earned leveling proof. Bell-reading images
+this is not an audited kill count or earned leveling proof. Bell-reading images
 in both orientations are inspected; all eight images are preserved at
 `/tmp/eidolon-phone-water-earned-sMAYIC/`. Log
 `/tmp/eidolon-investigations-phone-water-readable.log`. Credential scan finds

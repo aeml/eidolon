@@ -81,6 +81,21 @@ test('all fifteen chapters have distinct substantial completion dialogue', () =>
     expect(ILYRA_REPLIES.every((reply) => reply.length > 180)).toBe(true);
 });
 
+test.each([
+    ['chronicle_earth_keepers_house', 'Memory Seeds', 'chronicle_02_seeds_first_grove', 'The Scar That Grows Back'],
+    ['chronicle_water_flood_shelter', 'Moon-Tide Pearls', 'chronicle_04_pearls_without_tides', 'A Reflection Out of Time'],
+    ['chronicle_fire_cold_kiln', 'Cinderheart Ore', 'chronicle_06_ash_refuses_cool', 'An Ember That Obeys'],
+    ['chronicle_air_weatherkeeper', 'Stormglass Pinions', 'chronicle_08_feathers_thunder', 'The Stolen Horizon']
+])('fresh %s dialogue directs collection before its linked investigation', (diaryId, material, collectionId, nextTitle) => {
+    const diary = chronicleInvestigations.find(chapter => chapter.id === diaryId);
+    expect(diary.beforeQuestId).toBe(collectionId);
+    expect(getIlyraCompletionReply({ id: diaryId })).toContain(material);
+    expect(getIlyraCompletionReply({ id: collectionId })).toContain(nextTitle);
+    // Veteran replies remain retrospective; missing lore must not demand
+    // resubmitting already-consumed collection items.
+    expect(getIlyraCompletionReply({ id: diaryId, legacyOptional: true })).toBe(diary.catchupCompletion);
+});
+
 test('completion dialogue follows stable quest identity after chapters are inserted', () => {
     expect(getIlyraCompletionReply(story({ chapter: 23 }))).toBe(ILYRA_REPLIES[0]);
     expect(getIlyraCompletionReply({ id: 'chronicle_15_dark_king', chapter: 23 })).toBe(ILYRA_REPLIES[14]);

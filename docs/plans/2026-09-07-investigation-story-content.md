@@ -2,9 +2,10 @@
 
 Content draft for the eight investigations in the
 [balance and campaign plan](2026-09-07-progression-balance-and-investigations.md).
-These conversations and discoveries are authored here for implementation; the
-sites, interaction code and expanded quest chain are **not yet in the game**.
-Names describe proposed places, not existing reachable world coordinates.
+These conversations and discoveries are the source for the generated client/server
+catalogs. The expanded quest chain and world sites are implemented on the isolated
+investigation branch, **not released or active on root**. Current playthrough and
+remaining release evidence lives in the investigation implementation record.
 
 ## Narrative and interaction rules
 
@@ -165,8 +166,10 @@ him again, perhaps the wood will remember. His name is Tovin. He is not a debt.�
 as though the people had asked for their own chains.
 
 “Dain understood Neris better than the author of that charter ever will. A
-promise cannot be kept by erasing the person to whom it was made. There are two
-echo pools near the shelter. Find which memory still holds Tovin's name.”
+promise cannot be kept by erasing the person to whom it was made. First bring me
+Moon-Tide Pearls from the troubled creatures of Water. Their living rhythm will
+help us distinguish the two echo pools near the shelter, and find which memory
+still holds Tovin's name.”
 
 **Ilyra — optional catch-up acceptance**
 
@@ -179,7 +182,7 @@ echo pools near the shelter. Find which memory still holds Tovin's name.”
 “The charter tried to turn a rescue into consent. Dain's account refuses that bargain. Whatever lies ahead, we must never measure protection by how completely people depend on its keeper.”
 
 Journal summary: A false charter is rewriting rescued people as sworn servants.
-Compare the echo pools and find the surviving record of Tovin.
+Recover Moon-Tide Pearls before comparing the echo pools for Tovin's true memory.
 
 ## Water: A Reflection Out of Time
 
@@ -263,8 +266,9 @@ fire belonged to me.”
 was enough for the trap to take hold.
 
 “The command is making the land dependent, then offering dependence as the cure.
-An obedient ember still burns above the kiln's exhaust vents. Find the anchors
-feeding it before it turns another frightened person into a jailer.”
+First recover Cinderheart Ore from Fire's troubled creatures and bring it to me.
+We need a record of freely given flame before we study the obedient ember beyond
+the kiln and break the relay that feeds it.”
 
 **Ilyra — optional catch-up acceptance**
 
@@ -278,6 +282,7 @@ feeding it before it turns another frightened person into a jailer.”
 
 Journal summary: Hessa accepted a controlled flame to help her neighbors, then
 broke its token when it made the valley dependent on one person's commands.
+Recover Cinderheart Ore before investigating the command relay beyond the kiln.
 
 ## Fire: An Ember That Obeys
 
@@ -361,8 +366,10 @@ answers when one answer would be simpler.
 The messenger learned every road between the spirits, then decided that the
 roads should lead only to him.
 
-“Selen found a seam he could not close. Take her record to the stationary storm.
-We need to hear the command beneath its thunder, and find what still refuses it.”
+“Selen found a seam he could not close. First bring me Stormglass Pinions from
+Air's troubled creatures. I will help you learn their separate rhythms before
+you carry Selen's record into the stationary storm. We need to hear the command
+beneath its thunder, and find what still refuses it.”
 
 **Ilyra — optional catch-up acceptance**
 
@@ -375,7 +382,8 @@ We need to hear the command beneath its thunder, and find what still refuses it.
 “Her charts preserve the change in Malachar's seal: four voices bent toward one command. We will keep her discovery alongside her escape. Seeing the trap and refusing it belong to the same history.”
 
 Journal summary: Selen identified Malachar's old courier seal and escaped the
-repeating storm by remembering what its cycle tried to erase.
+repeating storm by remembering what its cycle tried to erase. Recover Stormglass
+Pinions before following her evidence into the stationary storm.
 
 ## Air: The Stolen Horizon
 
@@ -395,7 +403,7 @@ Maelin can preserve when she reaches the Skyglass lattice.”
   one need choose again.” Behind the promise, every direction is named forbidden.
 - Trapped updraft: the harpy beats against the same gust. Between repetitions,
   an answering note rises from above—not an order, but an invitation to turn.
-- Free horizon marker: the pinions resonate with that interval. For one breath,
+- Free horizon marker: the interval answers the pattern you learned from the pinions. For one breath,
   the harpy takes a different current. The false horizon splits, exposing the
   command's path through Tempest Spire to the separate Skyglass Eyrie.
 
