@@ -48,6 +48,14 @@ pass **3.144s**. All these handles are closed; the expanded graph backend passes
 
 ### World integration checkpoint
 
+September 8: the separately full-server-verified room-XP correction merges as
+**9d9b894**. Room payouts now apply normal level transitions and cap overflow
+immediately; XP/gold amounts, story requirements and accepted quotes do not
+change. Three race repetitions of expanded room, Chronicle, investigation and
+stacked-reward checks **28456 PASS / 45.647s**, log
+`/tmp/eidolon-expanded-room-xp-integration.log`. All owned handles are closed.
+No new browser/earned-leveling claim follows from this server integration check.
+
 Combined opening/expanded source **3bf6a50** passes full client **63890 / 220
 suites / 3,305 tests / 78.747s** and full server race **37061 / root 11.362s /
 game 202.149s**. Initial fresh browser **66320 FAIL / 1.3m** stops at Mara's
