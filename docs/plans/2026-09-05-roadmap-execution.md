@@ -5,7 +5,60 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 03:03 UTC
+## Current checkpoint — September 8, 03:19 UTC
+
+Previous turn was progress; this turn closes the complete core server gate,
+implements coordinated quest/weekly budgets with exact receipts, and advances
+the diagnostic release attempt. Full roadmap and earned balance remain open.
+
+Core **6076da6 / 78923 PASS** full server race: root15.726s/game334.140s,
+database/loadtest cached. Core worktree clean **5dc79ec** with closure docs.
+New reward worktree `/tmp/eidolon-reward-budgets-bBZvmD`, branch
+`work/reward-budgets-20260908`, clean **a14351b**. All23 story and26 daily
+offers now use explicit bounded XP/independent gold budgets; accepted promises
+remain protected. Weekly cache uses1M Resonance XP/15k gold/unique, with5k
+full-bag compensation; production chat formats the actual grant receipt.
+Three race repeats **11135 PASS / root3.225s / database1.050s / game54.148s**
+include all Chronicle/quest/daily/weekly checks, 15 solo/party boss scenarios
+and all overlapping Verdant contracts. Normal boss+daily36,332XP gives30→31,
+not old30→57. This excludes trash/rooms/story/sales and is not earned pacing.
+See [budgets and limitations](2026-09-08-coordinated-reward-budgets.md).
+
+Full reward server race **95183 ACTIVE** on frozena14351b, log
+`/tmp/eidolon-reward-budget-full-server.log`. No owned browser. Do not modify
+its source while the check runs. Runtime remains isolated/unpackaged: authored
+hunts/full earned gates, independent economy/sink review, actual migration/
+rollback sessions and the compatibility bridge still need work. Room gold/XP,
+combat gold and material/boss drops are not blindly reduced by this pass.
+
+**43/79a93b131b7192a3a3bc6b2ca355c257585d7d60 pushed**, normal descendant
+push **71125 SUCCESS**, diagnostic-only; asserts/timeouts/gameplay unchanged.
+This is a CI-side reproduction/evidence attempt after two local passing matrices,
+not a claim of a diagnosed runtime fix. Old CI34178050891 rechecked terminal
+predeploy failure. Previous42 CI34171247520 rechecked all eight jobsSUCCESS;
+fresh public manifest/login/versioned-entry/backend all HTTP200 exact42/bfbbc,
+backendok/ready immediately before push. New **CI34182920134 in progress**,
+client/server jobs active at latest read; no deployment/live result yet.
+
+Queue `with-presentation-diagnostics` (all older refs preserved):
+
+| Version | Commit |
+|---|---|
+| 43, pushed | 79a93b131b7192a3a3bc6b2ca355c257585d7d60 |
+| 44, next | 847d454a94a7424ab303f6339c875ab170bff36e |
+| 45 | 2244325699d32c6f3c8db677c5476ff8172dd73e |
+| 46 | 8aec8934af0521db3a03a5495d8a5cef23e5a5ac |
+| 47 | acd461f24a83b61e65e48f1b80efeda897701d0c |
+| 48 | 98fa8f62c256a8e5874da352c987486a200ac2f9 |
+| 49 | 96abf00b2aa2aa8d4e739f23bfca409a479cb9eb |
+| 50 | 186551e372bbcea2c1182213e835bca072a08588 |
+
+Staging worktree clean186551e. Root merge **a89e7dc** integrates only the new
+QA instrumentation (diagnostic doc already identical). Runtime/version/notes
+unchanged in the diagnostic update. No44 until all43 CI/deploy/live gates and
+fresh exact public identity pass. No51 package yet.
+
+## Historical checkpoint — September 8, 03:03 UTC
 
 Current turn progress: accepted quest promise/requirements protection, complete
 first server regression (failed with specific findings), corrected migration

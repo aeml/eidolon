@@ -46,3 +46,9 @@ Three repeated race checks **66300 PASS** include every Chronicle test, daily
 generation, status kill attribution and all quoted-reward/receipt migrations.
 Log `/tmp/eidolon-coordinated-quotes-regression-fixed.log`. A full corrected
 server rerun is still required; the failed full run is not a passing gate.
+
+Corrected full server race **78923 PASS** on clean **6076da6**, root15.726s,
+game334.140s; database/loadtest cached passes. Log
+`/tmp/eidolon-coordinated-xp-quotes-full-server-corrected.log`. Handle closed.
+This closes the server regression gate for the progression/quote core, not
+reward tuning, real login/rollback sessions or earned campaign approval.

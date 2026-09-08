@@ -2,6 +2,14 @@
 
 Requested September 7, 2026. Status: **implementation active; full pass open**.
 
+Latest isolated reward candidate **a14351b** now replaces the million-XP story/
+daily catalogs and reduces the weekly cache, with gold budgeted independently
+and accepted promises preserved. Its exact production-function receipts and
+three race repeats pass; full regression/earned pacing remain open. See
+[the coordinated reward budgets](2026-09-08-coordinated-reward-budgets.md).
+This supersedes the earlier core-only candidate's incompatible old catalog;
+it does not yet provide authored hunts or a proven complete leveling route.
+
 September 8 coordinated candidate update: isolated **0e8600f** implements a
 bounded client/server XP curve, content-level combat budgets, stored-curve
 migration and accepted-quest promise protection. Existing zero-valued quotes,

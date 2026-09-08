@@ -75,6 +75,12 @@ Accepted reward/kill requirement protection is now implemented and passes
 targeted production/BSON checks; see [the quote record](2026-09-08-accepted-quest-quotes.md).
 Actual database sessions and full regression remain separate gates.
 
+Full corrected server race **78923 PASS** on6076da6 (root15.726s,
+game334.140s) after the failures/corrections recorded in the quote report.
+Actual database sessions/bridge and earned gameplay remain open. All core
+validation handles are now terminal; subsequent reward tuning has its own
+isolated worktree and evidence.
+
 Next: tune overlapping quest/source budgets and add
 authored realm preparation. Do not use today's million-XP quest catalog with the
 new curve as a playable balance result. Validate the compatibility bridge before
