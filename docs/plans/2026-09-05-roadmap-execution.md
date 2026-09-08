@@ -5,7 +5,60 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 05:50 UTC
+## Current checkpoint — September 8, 06:00 UTC
+
+Previous goal turn was progress: first-hunt eligibility and regression coverage
+changed. This continuation closes its failed playtest, implements measured
+starter encounter spacing/awareness corrections, and advances the release queue.
+The full1.1–1.10 roadmap remains active and incomplete.
+
+**44 fully verified;45 pushed:** CI34187405437 completed successfully with all
+eight jobs passed. Fresh independent public checks returned HTTP200 for client
+manifest, login, versioned main module and backend health. Client/runtime/server
+all matched exact847d454a94a7424ab303f6339c875ab170bff36e and Alpha1.0.44;
+backend statusok/databaseready. Then explicit fast-forward push87217 succeeded
+from release45 (not root master) to origin/master at exact
+45b4b831a85c96992cd396344610cd1fb9175fd6. Remote ref independently confirmed.
+**45 CI34192659636 active:** client tests passed; server tests running at05:59.
+Requested0.01 regeneration/patch notes are in this release, but45 is not yet
+verified live.46 requires all eight45 jobs and fresh exact public identity.
+The unchanged46–51 queue below remains behind its sequential gates.
+
+**Earned66228 FAILED /4.3m, closed:** source e74a658. Opening41s/no deaths;
+diary100s/level4; Watch3/40 and three deaths. First death had level30 Demon Orcs
+within16 units at(188.11,322.99); later deaths had eleven nearby Skeletons.
+Final level4/169XP/493gold, health0/175, mana28/145, three bag slots/10gold
+unsold equipment. Screenshot inspected/archived
+`/tmp/eidolon-earned-watch-three-evidence-jvQixH/failed-watch.png`; log
+`/tmp/eidolon-earned-watch-level-three.log`. Artifact scan/owned cleanup passed.
+Neither lower eligibility nor the unchanged low regeneration is pacing-approved.
+
+**Candidate5398395f1e42cc3e5ecfe9d963598c079ccdec9f:** new Imp/Demon Orc
+spawns must stay160 units beyond town's rectangle, outside early roads plus
+normal sight/idle-roam margin. Normal nearby spawns are omitted; their rare
+sector elite is placed on the safe inner edge. Early overworld Skeletons now
+acquire unprovoked targets at12+3×enemy-level units (15–39 at levels1–9), with
+normal45-unit retaliation when attacked. Level10+, other families, dungeon
+combat, stats, rewards and the requested0.01 recovery are unchanged. No hidden
+immunity/leash or player grants were introduced. Diagnostics use actual hostile
+target filtering, excluding friendly NPCs. Targeted server94476 race PASS4.190s
+(including actual AI retaliation/constructor and fixed-grid failed-position
+replay), lint57878 PASS. Both handles closed. Full checks remain pending.
+
+Two owned handles on frozen clean candidate `/tmp/eidolon-earned-story-TZuGpp`:
+
+- **26246 ACTIVE:** full `go test -race ./...`; root18.567s/database1.040s
+  already pass, game package still running. Do not interpret partial output as
+  full success or restart the process.
+- **82247 ACTIVE:** fresh Wizard watch route, run ID earth-watch-spaced,
+  API/Mongo/web18465/18466/18467; log `/tmp/eidolon-earned-watch-spaced.log`.
+  Disposable server is ready and Playwright has started one test. No result yet.
+
+Do not edit this candidate until both handles are terminal. The optional
+recovery-system preference remains unanswered; no potions/rest mechanic was
+added. There is no goal blocker and no full campaign/roadmap completion claim.
+
+## Historical checkpoint — September 8, 05:50 UTC
 
 The previous short regeneration-confirmation turn reverified existing code but
 added no implementation. This continuation makes new progress: it closes the
