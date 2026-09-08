@@ -47,6 +47,7 @@ for (const className of ['Fighter', 'Rogue', 'Wizard', 'Cleric']) {
         try {
             await loginAndEnterWorld(page, primary);
             await loginAndEnterWorld(opponent, secondary);
+            console.log('[duel-phase]', JSON.stringify({ className, phase: 'both-entered-world' }));
             for (const actorPage of [page, opponent]) await actorPage.evaluate(() => {
                 const game = window.game, handle = game.handleServerMessage.bind(game);
                 window.__duelScene = { enterMessages: 0, ownPvPState: false, ownPvPDelta: false };
@@ -91,12 +92,13 @@ for (const className of ['Fighter', 'Rogue', 'Wizard', 'Cleric']) {
                 throw error;
             }
             const ids = await Promise.all([page, opponent].map(p => p.evaluate(() => window.game.player.id)));
+            console.log('[duel-phase]', JSON.stringify({ className, phase: 'both-entered-arena' }));
             for (const actorPage of [page, opponent]) {
                 await expect.poll(() => actorPage.evaluate(() => Boolean(
                     window.game.getInstanceEnvironmentGroup().getObjectByName('PvPArena')))).toBe(true);
                 expect(await actorPage.evaluate(() => window.game.currentInstanceType)).toBe('pvp_arena');
             }
-            if (className === 'Fighter') await page.locator('canvas').first().screenshot({ path: testInfo.outputPath('arena-entry.png') });
+            if (className === 'Fighter') await page.locator('body > canvas').screenshot({ path: testInfo.outputPath('arena-entry.png'), timeout: 15_000 });
             await observeBasicReceipts(page); await observeBasicReceipts(opponent);
             for (const [actorPage, targetId] of [[page, ids[1]], [opponent, ids[0]]]) {
                 let point;
@@ -109,7 +111,7 @@ for (const className of ['Fighter', 'Rogue', 'Wizard', 'Cleric']) {
             await expect.poll(async () => Math.min(...await Promise.all([page, opponent].map(p =>
                 p.evaluate(() => window.__duelCadence.hits.length)))), { timeout: 35_000 }).toBeGreaterThanOrEqual(5);
             const during = await Promise.all([snapshot(page), snapshot(opponent)]);
-            if (className === 'Fighter') await page.locator('canvas').first().screenshot({ path: testInfo.outputPath('arena-combat.png') });
+            if (className === 'Fighter') await page.locator('body > canvas').screenshot({ path: testInfo.outputPath('arena-combat.png'), timeout: 15_000 });
             for (const [i, actorPage] of [page, opponent].entries()) {
                 const receipts = await actorPage.evaluate(() => window.__duelCadence);
                 expect(receipts.attacks.length).toBeGreaterThanOrEqual(5);

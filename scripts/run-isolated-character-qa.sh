@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# A new worktree may share node_modules without running npm's postinstall.
+# Fail before creating disposable services if the browser imports would be 404s.
+for runtime_file in vendor/manifest.json vendor/three/build/three.module.js vendor/protobuf/protobuf.min.js; do
+  if [[ ! -f "${runtime_file}" ]]; then
+    echo "Missing browser runtime ${runtime_file}; run npm run prepare:client first." >&2
+    exit 1
+  fi
+done
+
 readonly QA_RUN_ID="${EIDOLON_ISOLATED_QA_RUN_ID:-$(openssl rand -hex 5)}"
 readonly MONGO_CONTAINER="eidolon-isolated-qa-mongo-${QA_RUN_ID}"
 readonly API_CONTAINER="eidolon-isolated-qa-api-${QA_RUN_ID}"

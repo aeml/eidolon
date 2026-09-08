@@ -34,3 +34,17 @@ departure-position verification and inspected screenshots remain required.
 This is not yet a release, ranked/party/disconnect acceptance, physical-phone
 sign-off or a broad PvP balance conclusion. Preserve the full1.1–1.10 roadmap;
 release46 CI34226360903 remains ahead of this candidate.
+
+59684 on d011b8a was interrupted with SIGINT/exit130 after a confirmed local
+setup failure: the new worktree shared node_modules but its untracked vendor
+runtime was absent; the served Three.js module returned404. The first two
+class cases timed out without reaching the world. This is not combat evidence
+or a passing route. Do not infer a screenshot-step failure from its silence.
+The exact Playwright PID was verified before interrupting this invalid run;
+wait/cleanup completed before preparing dependencies or changing source.
+
+The isolated driver now checks its browser runtime before starting any containers
+and gives an actionable prepare:client instruction. The probe records world/
+arena milestones without account data and screenshots the actual direct-body
+game canvas, excluding nested preview/minimap canvases. A prepared rerun remains
+required; full runtime regression above still applies to unchanged game/server.
