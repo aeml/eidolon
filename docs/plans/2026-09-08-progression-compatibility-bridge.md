@@ -42,3 +42,20 @@ database/login/rollback sessions are still required. The new31-chapter curve2
 candidate must deliberately activate version2 when eventually integrated;
 the bridge's version1 assertion must not accidentally keep the old curve then.
 Neither this bridge nor the balancing candidate is release-packaged or live.
+
+Full server **31499 FAILED /game336.059s**, one test: the older partial daily-
+catalog fixture expected an accepted10-kill/1XP contract to be overwritten with
+100kills/50,000XP. The assertion now checks metadata/missing-gold repair while
+retaining the accepted terms, matching the already-tested candidate policy.
+The existing new-character daily test still checks fresh catalog requirements.
+No runtime behavior or promised-reward protection is relaxed. A fresh full
+server regression is required after this test-only correction.
+
+Corrected daily checks **80043 PASS /three race repeats /2.578s** and full
+server **18636 PASS /game335.929s**, other packages cached from the previous
+run (root17.340s/database1.042s). Handle closed. That full check ran on96143fc
+plus the known test/doc correction because a pre-run git command used the wrong
+relative path and did not stage/commit. The unchanged diff hash was verified
+before closure (`35a772f19f58913fa0552f7a5f8026cf6d99a82cce32906110285a3fdb9e37ad`).
+No duplicate check was started on an observation timeout. Actual isolated
+database/login/rollback sessions remain the next verification gate.
