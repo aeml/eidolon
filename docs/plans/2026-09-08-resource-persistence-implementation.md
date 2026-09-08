@@ -133,6 +133,15 @@ Focused26959 PASS1.308s compiles this harness and existing resource tests under
 race detection; real execution remains due. Expected error checks require the
 specific token/death-recovery rejection, not just any server error.
 
+First actual58400 onb2478ab FAILED20.121s: handoff passed6.29s; all eight token
+cases reached the expected replay rejection, then the test decoded the existing
+string error payload as an object. Inspection of sendError confirms the string
+wire contract. The fixture now decodes that string while retaining the specific
+rejection assertions; no runtime or recovery requirement changed. Logs
+`/tmp/eidolon-resource-token-sessions.log` and
+`/tmp/eidolon-compat-session-{3037911991,3260200571}/server.log`. Actual corrected
+execution remains required; owned disposable Mongo removed by the wrapper.
+
 ## Required work still open — do not publish this slice alone
 
 - Verify the implemented immediate-login, duplicate-session and repeated-Join

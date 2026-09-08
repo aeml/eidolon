@@ -117,12 +117,10 @@ func TestResourceActualTokenResumeAndDeathRecovery(t *testing.T) {
 				}
 				t.Cleanup(func() { replay.Close() })
 				resourceSend(t, replay, MsgResumeSession, map[string]string{"token": token})
-				var rejection struct {
-					Message string `json:"message"`
-				}
+				var rejection string
 				resourceReadMessage(t, replay, MsgError, &rejection)
-				if !strings.Contains(rejection.Message, "Session token invalid or expired") {
-					t.Fatalf("replay rejected for wrong reason: %s", rejection.Message)
+				if !strings.Contains(rejection, "Session token invalid or expired") {
+					t.Fatalf("replay rejected for wrong reason: %s", rejection)
 				}
 				replay.Close()
 				resourceProbe(t, resumed, 0, dead)
@@ -138,8 +136,8 @@ func TestResourceActualTokenResumeAndDeathRecovery(t *testing.T) {
 				resourceSend(t, third, MsgRecall, TownRecoveryPayload{})
 				if dead {
 					resourceReadMessage(t, third, MsgError, &rejection)
-					if !strings.Contains(rejection.Message, "use Respawn") {
-						t.Fatalf("dead recall rejected for wrong reason: %s", rejection.Message)
+					if !strings.Contains(rejection, "use Respawn") {
+						t.Fatalf("dead recall rejected for wrong reason: %s", rejection)
 					}
 					resourceProbe(t, third, 0, true)
 					resourceSend(t, third, MsgRespawn, TownRecoveryPayload{})
