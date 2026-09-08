@@ -5,7 +5,54 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 19:54 UTC
+## Current checkpoint — September 8, 20:08 UTC
+
+Previous goal turn was PROGRESS (durable item claims/returns). This continuation
+is PROGRESS: that acceptance closed and atomic buyouts are implemented with
+focused coverage and actual/full runs in progress. Full roadmap remains active.
+
+Item runtime0c847a8: fullrace54188 CLOSED PASS0, root18.154/database1.136/
+game336.821s. Actual85368 CLOSED PASS0/229.306s, TWO combined repetitions.
+All68 child logs independently clean:12 intended SIGKILLs,56 normal completed
+drains. Owned Mongo eidolon-auction-item-proof-20260908-1952 and volumes removed,
+exact container independently absent. Logs `/tmp/eidolon-auction-item-{full-race,sessions}.log`.
+
+Buyout runtime481c3d08c919fd062d368881233e03fe3c90ab05 now journals the exact
+item, price and displaced escrow identity. Live/offline account-ordered purchase
+commits debit+delivery and both receipts in one full character snapshot before
+finalizing SOLD/BuyerID/SalePrice/ItemClaimed and one previous-bid refund. Pair
+validation fails closed on an incomplete receipt pair or changed price/payload;
+replay does not charge/grant after the player spends gold or moves the item.
+Full capacity or insufficient funds changes neither side. Legacy persistent
+buyouts are blocked, disabled buyout prices reject rather than grant for free,
+and successful handlers send detached inventory/stash with no second item grant.
+
+Initial37463 compile failed for a missing database import, fixed before tests.
+Focusedrace71182 PASS root3.712/database1.047/game1.569; expanded24093 PASS
+3.275/1.058/1.667; final47240 PASS4.372/1.041/1.628. Test-only redundant password
+nonempty check removed before commit; real login/input assertions unchanged.
+Logs `/tmp/eidolon-auction-buyout-{initial-focused,focused,expanded-focused,final-focused}.log`.
+
+**Fullrace83710 ACTIVE** on frozen481c3d0,
+`/tmp/eidolon-auction-buyout-full-race.log`. **Actual73205 ACTIVE** on exact
+binary: TWO repetitions of ordinary/same-bidder/stash/full/insufficient/disabled
+buyouts, six purchase SIGKILL cuts, two simultaneous buyers, previous item
+claims/returns/capacity and normal seller payouts. First six ordinary modes
+PASS58.97s; whole run not terminal. Log `/tmp/eidolon-auction-buyout-sessions.log`.
+Owned Mongo eidolon-auction-buyout-proof-20260908-2007 with EXIT cleanup. Poll
+the same handles before editing source. Resource candidate at
+`/tmp/eidolon-resource-persistence-c6E17J` has only evidence commit3a2b3f5 after
+the tested runtime, remains unreleased55 metadata and is not publication-ready.
+Next: close actual/full buyout acceptance, implement durable listing item/deposit
+escrow, enforce compatible rollback, then wider campaign/instance/device gates.
+
+48 CI34266379714 freshly ACTIVE in predeploy full-character gameplay, with
+client/server/all smoke shards PASS. Fresh public manifest/health20:08 still
+match healthy47/6925c51/database ready. No push this turn.49 stays gated on the
+whole48 pipeline/finalLiveQA/freshidentity; root staged52 must not be pushed.
+Queue49–55 references remain in19:01 checkpoint. Full1.1–1.10 scope unchanged.
+
+## Historical checkpoint — September 8, 19:54 UTC
 
 Previous turn was PROGRESS (full race closure and normal seller payout evidence).
 This turn is PROGRESS: durable exact buyer item claims and expired/cancelled
