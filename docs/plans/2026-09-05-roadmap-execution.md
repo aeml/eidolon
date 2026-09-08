@@ -5,20 +5,24 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 17:23 UTC
+## Current checkpoint — September 8, 17:26 UTC
 
 Previous goal turn was PROGRESS (verified dungeon/2v2 recovery and documentation).
 This turn is PROGRESS: durable refund outbox/character receipt implementation,
 actual fault/restart acceptance and a newly exposed Fireball snapshot race fix.
 Full1.1–1.10 remains active/incomplete; no scope or release gate reduced.
 
-47 CI34248491147 on6925c5113ee6acdf698713f3332f80dcf546bd76 now passes predeploy,
-production inputs and BOTH deployments. Fresh public release.json and healthz
-match healthy/database-ready Alpha1.0.47/exact6925c51. Final Live Release and
-Character QA remains freshly ACTIVE: matching-release wait and live anonymous/
-persistent-character QA passed; four-class/remote-animation QA running. No full
-47 gate pass claimed, no48 push.48–55 refs/validation unchanged below. Never
-push root's local staged52/ledger branch or the resource candidate over the queue.
+47 CI34248491147 on6925c5113ee6acdf698713f3332f80dcf546bd76 completed SUCCESS,
+including final Live Release and Character QA at17:23:30. Fresh checks AFTER
+completion confirmed release.json/healthz exact47 commit/version/database ready,
+plus index login/patch notes/exact main.js identity. Clean48 worktree, ancestry,
+own48 patch notes/login/version and remote master still47 were checked. Normal
+fast-forward push97594 CLOSED0 published
+**7a9869d639659cd6f6173dca16c12ba2487e3221** to master; independently confirmed
+remote SHA. **48 CI34257070035 is now freshly ACTIVE**, Client Tests and Server
+Tests running. No48 deployment/pass claimed.49 remains gated on the entire48
+CI/finalLiveQA/freshpublicidentity pass.49–55 refs/validation unchanged below.
+Never push root's local staged52/ledger branch or resource over the release queue.
 
 Resource WT `/tmp/eidolon-resource-persistence-c6E17J`: implementation
 d1e2839661e6b51ed44c6cbb093dbe35cb7c24dd persists refund IDs/amounts/recipients
@@ -60,13 +64,13 @@ with shutdown completion. Owned Mongo
 `eidolon-resource-refund-repeat-20260908-1720` and volumes removed/independently
 absent. No production data touched. Candidate still55 metadata; no56 approval.
 
-**Full Go race83776 freshly ACTIVE** on frozen09b5693, log
-`/tmp/eidolon-resource-refund-full-race.log`. Root22.691s/database1.156s passed;
-game package still running. Re-poll exact handle, no restart on observation
-timeout and no runtime edit until terminal. No local browser/actual-Mongo handle
-remains. External47CI final live gate remains active.
+**Full Go race83776 CLOSED PASS normal0** on frozen09b5693, log
+`/tmp/eidolon-resource-refund-full-race.log`: root22.691s/database1.156s/
+game365.813s, other packages cached/no tests. No local owned test/browser/Mongo
+handle remains.48 CI34257070035 is the verified external wait. No resource56
+assignment or release approval follows from these narrower recovery tests.
 
-Next: close this exact full race handle, then whole-auction interruption/ambiguous
+Next: whole-auction interruption/ambiguous
 write ordering (bidder debit, item delivery and seller payout still cross docs),
 bounded/coalesced refund retries under outages and shutdown grace, failed auction
 load recovery and compatible rollback.55's old full-character replacement drops

@@ -3,7 +3,7 @@
 Status: confirmed defect with an unreleased implementation candidate, not yet
 release-ready or assigned a published patch. Preserve .01 passive regen.
 
-Latest17:23: refund candidate d1e2839 adds durable auction intents and private
+Latest17:26: refund candidate d1e2839 adds durable auction intents and private
 character gold receipts, pending-save-before-credit ordering and atomic expiry
 pinning. Actual first run29305 FAIL72.457s exposed Fireball versus snapshot races;
 09b5693 keeps world/entity read locks through the copy. Focused26034 PASS and
@@ -11,7 +11,8 @@ corrected actual18314 PASS118.569s for three repetitions of pending offline
 snapshot/refund, rejected character save and rejected refund acknowledgement
 across fresh server processes. Exact bars/gear/gold and single payment preserved;
 all27 corrected child logs/normal exits clean, disposable services removed.
-Fullrace83776 remains ACTIVE. Whole-auction debit/item/payout crash atomicity,
+Fullrace83776 CLOSED PASS normal0 (root22.691/database1.156/game365.813s).
+Whole-auction debit/item/payout crash atomicity,
 ambiguous auction updates, bounded outage retries, old-writer rollback and broader
 instance/device acceptance remain open. No56 release approved. Earlier slices:
 
