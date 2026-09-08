@@ -61,3 +61,14 @@ XP. Combat gold is randomized and separately reconciled exactly, not represented
 by the daily-gold column. These are actual reward functions, not earned wins.
 They exclude trash, room clears, story claims, equipment sales and weekly caches;
 they cannot establish full-run pacing. Full server regression is still required.
+
+Full server race **95183 PASS** on clean **a14351b**, root17.651s,
+database1.042s/game336.997s. Log `/tmp/eidolon-reward-budget-full-server.log`;
+handle closed. A first owned fresh Wizard attempt **55451 FAILED before login**
+at runtime readiness: the new worktree lacked the ignored/generated `vendor/`
+browser dependencies. Filesystem inspection confirmed they were absent. No
+earned gameplay is claimed from that attempt. The regular `prepare:client`
+generator now supplies them from the existing installed dependencies; no source
+or test assertions changed. Corrected same-route browser **80057 is active**,
+log `/tmp/eidolon-reward-budget-fresh-collection-prepared.log`. Keep a14351b
+frozen until that browser exits. No more than one owned browser is active.

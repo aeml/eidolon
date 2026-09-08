@@ -5,7 +5,34 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 03:19 UTC
+## Current checkpoint — September 8, 03:27 UTC
+
+Current turn remains progress: coordinated quest/weekly budgets are implemented
+and now pass full server race regression **95183 / root17.651s /
+database1.042s / game336.997s** on clean **a14351b**. Handle closed. This is
+still an isolated candidate, not a full earned campaign or release approval.
+
+Fresh Wizard collection/investigation browser **55451 FAILED before login**
+because the new worktree lacked generated browser `vendor/` dependencies;
+runtime-readiness assertion remained intact, no character progression happened.
+The missing directory was verified after owned cleanup, then the standard
+`npm run prepare:client` populated dependencies. Source/tests unchanged.
+Corrected same-route browser **80057 ACTIVE**, single owned browser, source
+a14351b FROZEN at `/tmp/eidolon-reward-budgets-bBZvmD`. Log
+`/tmp/eidolon-reward-budget-fresh-collection-prepared.log`. This route uses a
+new Wizard, ordinary movement/combat/manual claims and reconnects, without
+level/item/quest/encounter grants. Its outcome remains unproven. No edits until
+it exits; inspect failures or screenshots/earned receipts before moving on.
+
+CI **34182920134 /43/79a93b1** passes client and server; anonymous browser
+was active at the latest API read. Deployment and exact live43 are NOT verified.
+No44 publication. Queue/previous42 gate evidence remain as recorded below.
+Next: close80057, then author and earned-test the main preparation hunts and
+complete source/sink/migration bridge work. Do not replace the full goal with
+only passing reward calculations; full1.1–1.10 and per-version release gates
+remain required.
+
+## Historical checkpoint — September 8, 03:19 UTC
 
 Previous turn was progress; this turn closes the complete core server gate,
 implements coordinated quest/weekly budgets with exact receipts, and advances
