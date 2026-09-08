@@ -3,7 +3,32 @@
 Status: confirmed defect with an unreleased implementation candidate, not yet
 release-ready or assigned a published patch. Preserve .01 passive regen.
 
-## Latest implementation checkpoint — September 8, 21:40 UTC
+## Latest implementation checkpoint — September 8, 22:30 UTC
+
+The [execution ledger](2026-09-05-roadmap-execution.md) records the authoritative
+queue and evidence. Bridge56 is9aec835; resource candidate is7886278, still
+unpublished and carrying inherited56 metadata, not a separately approved release.
+The full merged client passed240 suites/3404 tests; both final server race suites
+pass. Two fresh actual schema7→8/crash/refused7/recovered8 sequences pass with
+all eight child logs clean. The earlier combined run exposed a bridge Join/world
+snapshot race, now corrected and reverified; that failed run remains recorded.
+
+The target binary now provides a read-only `--check-schema` preflight, invoked
+before the deployment script replaces the live API. Actual schema7/8 preflight
+tests accept compatible databases and reject future formats without save/index/
+file writes. Deployment documentation specifies supported roll-forward targets,
+one writer, and consistent Mongo plus pending-journal backups; it explicitly
+rejects forcing older writers by deleting migration markers. Startup still
+checks independently. Preflight is not a multi-deployment lock or a substitute
+for compatible-writer and backup/restore verification.
+
+49 CI is in predeploy gameplay with Go/Jest/three browser shards passing; live
+client/server remain48. Remaining publication work: the ordered CI/live gates,
+separate resource version/notes packaging, and the documented pre-upgrade backup
+and exact compatible recovery target. Broader instance/device/raid/roadmap
+acceptance and Well Rested remain open. Passive regen stays .01.
+
+## Historical implementation checkpoint — September 8, 21:40 UTC
 
 Staged bridge56/dff080b and resource288b623 (test4321e69) now pass TWO complete
 actual schema7→8/crash/refused7/recovered8 sequences with preserved zero mana,

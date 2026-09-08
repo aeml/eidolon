@@ -5,7 +5,73 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 22:12 UTC
+## Current checkpoint — September 8, 22:30 UTC
+
+PROGRESS: read-only predeployment schema checks, recovery instructions and an
+actual-session join-race correction are implemented and verified locally.
+Previous direct-request turn closed the live74006 test handle successfully;
+its full resource client result is240 suites/3404 tests/183.641s, lintPASS.
+That result covered ec9c7f7, before the following server-only work and note edits.
+
+Bridge56 is now **9aec835f8b9950dfdb2391dce85d1dde5f90fb90** in the canonical
+`/tmp/eidolon-schema-compatibility-bridge-ehsEZY` tree (fast-forwarded after its
+prior frozen test completed). Auxiliary join-fix tree
+`/tmp/eidolon-schema56-join-fix-IcrDyp` holds the same clean commit. Queued50–55
+are unchanged from the22:12 list. Resource candidate now
+**7886278c0f53483d42578a9c7a646c97ac11df48** in its existing tree, clean and still
+unpublished with inherited56 metadata; give it its own version before packaging.
+
+f5d70e4 adds `--check-schema` before logging/database initialization/journaling.
+It reads compatibility without applying migrations. Deployment builds its target,
+starts only Mongo if needed without recreating it, then checks the target before
+replacing the live API. Startup still rechecks; this is not a deployment lock.
+Real-script/fake-command tests prove rejection/database failure skip replacement;
+they do not claim a real Docker replacement test. Actual binary/database tests
+1502 PASS4.083s (schema7/future8),72690 PASS4.213s (schema8/future9) prove fresh/
+compatible acceptance and future rejection without migration indexes, new
+collections, changed protected BSON, log/journal files or admission. Owned Mongo
+containers/volumes removed and independently absent. Deployment README and56
+notes now explain preflight and supported roll-forward, not marker downgrades.
+
+The first combined actual97400 FAILED16.810s: bridge phase170 raced its Join
+playerID assignment with snapshot-recipient selection. Evidence
+`/tmp/eidolon-compat-session-4002784332/server.log`; failure retained, not passed.
+9aec835 publishes immutable character identity under sessionsMu, serializes rejoin
+snapshot resets/broadcasts, and rejects switching accounts on a bound connection.
+Repeated queue/binding/reset/preflight99117 PASS4.802s (10 repetitions). Resource
+merge7886278 preserves account-work locks, current live entities, pending-save/
+auction recovery, retired/transport flags and both distinct queue tests. Its only
+new runtime differences from3c06314 are conditional username assignment and the
+equivalent locked reset helper; no resource or auction behavior was removed.
+
+Full race: preflight93164 PASS(game381.901s); corrected root48751 PASS20.279s;
+final bridge85724 PASS(root21.787s/game cached); final resource44715 PASS(root
+24.822s/game/database/lifecycle cached). Final231 version checks43219 PASS5.034s;
+lint passed. Earlier45288 used plain Jest without the project's ESM wrapper and
+failed to load; corrected `npm test`98375 and43219 pass. A dirty pre-commit binary
+under `/tmp/eidolon-schema56-join-proof-5Etr4z` was NOT used as acceptance evidence.
+
+Combined actual55609 **PASS twice**, two fresh Mongo databases,16.886s/18.133s:
+schema7 save→8 casts/listings→rejected full escrow save/journal→SIGKILL→refused7→
+two recovered8 sessions, with resources/gold/items/receipts preserved once.
+Race binaries:
+`/tmp/eidolon-schema56-fixed-join-proof-sRZ11L/9aec835f8b9950dfdb2391dce85d1dde5f90fb90`
+and `/tmp/eidolon-resource-final-join-proof-VUOmF8/7886278c0f53483d42578a9c7a646c97ac11df48`.
+Logs `/tmp/eidolon-resource-final-join-actual-{1,2}.log`; all8 child logs audited
+clean:2 intended kills,2 verified legacy saves/normal exits,4 resource shutdown
+drains. Both incompatible startups exit1 before admission. Owned Mongo2230 and
+volumes removed/independently absent. No owned local test handles remain.
+
+49 CI34284099182 on0c6d0cc remains ACTIVE: Go/Jest/all3 browser shards PASS,
+predeploy animation gallery PASS and disposable full-character gameplay running.
+Fresh public manifest/backend both48/546391c, healthy/database ready at22:30.
+Do not push50 before whole49/finalLiveQA/freshidentity. Never push staged root.
+Next: finish the ordered release gate and package resource separately, retaining
+the documented pre-upgrade consistent Mongo/journal backup and compatible target
+requirements before schema8 publication. Well Rested and full major roadmap
+acceptance remain open; the entire goal stays active.
+
+## Historical checkpoint — September 8, 22:12 UTC
 
 PROGRESS continues: complete corrected49 ancestry is now carried through50–56
 and integrated into the pending resource candidate.49 CI34284099182 on
