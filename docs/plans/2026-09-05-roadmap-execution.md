@@ -5,7 +5,72 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 22:30 UTC
+## Current checkpoint — September 8, 22:54 UTC
+
+PROGRESS: resource persistence now has its own staged **Alpha1.0.57** release,
+versioned login/manifest/deployment metadata, cumulative player notes and an
+automated, tested pre-upgrade recovery point. Candidate
+**7ab559b02624f9b76f010bed2289849444911ea9**, clean in
+`/tmp/eidolon-resource-persistence-c6E17J`. It must follow verified56/9aec835;
+it is NOT live, and no ordered release was skipped or pushed this turn.
+
+Deployment now holds a flock, rejects a URI pointing anywhere other than its
+Compose Mongo service, and backs up only on a schema increase after read-only
+preflight. Backup stops the exact preceding API, saves its immutable image,
+the entire eidolon database, and private pending-journal/log bytes through a
+narrow read-only mount; validates gzip and SHA256, synchronizes the filesystem,
+then marks COMPLETE. Failed backup before migration attempts to restart the
+unchanged prior API; partial archives stay unmarked and retained. Private
+server/backups is git-ignored and no automatic retention deletion is introduced.
+This is local recovery, NOT off-machine disaster recovery or a multi-writer
+database fence. The legacy Mongo-only restore helper's false "no destructive
+action" error was corrected, and paired-restore/data-loss instructions clarified.
+
+Actual backup35696 FAILED13.652s before exercising backup: fixture health became
+ready during Mongo's temporary initialization process. Test health now requires
+final mongod as PID1. Corrected1476 PASS281.214s, two independent projects:
+real archive restore retains zero mana/HP/gold/receipts/schema marker/indexes,
+private journal bytes and UID65532; injected dump failure restarts the exact
+preceding API. These first runs waited60s for the placeholder's default PID1
+signal handling. The final fixture handles SIGTERM, keeping the real60s game
+shutdown allowance unchanged. Final46416 **PASS55.742s**, two more independent
+projects26.13s/28.56s, now also exercising no previous API container. This is a
+placeholder/backup component proof, not a replacement for game shutdown tests.
+All5 owned projects and volumes independently checked absent one by one. Logs:
+`/tmp/eidolon-resource57-backup-{actual,corrected,final}.log`.
+The final disposable backup/restore test is included in57's Go CI job.
+
+Seven real-script/fake-command preflight scenarios4339 PASS1.370s, including
+foreign Mongo, absent compatibility contract, rejected schema, unavailable DB,
+failed backup, schema upgrade and same-format deployment. No whole Docker-stack
+deployment claim from those mocked command tests. Bash syntax and diff checks
+pass. Full server race54766 PASS23.997s; final98314 PASS21.250s root, other
+accepted game/database/lifecycle packages cached. Full client77560 **PASS240
+suites/3405tests216.457s**, lintPASS, final version232 checks40768 PASS2.625s.
+Final rendered anonymous34960 **PASS2/12.4s**, local Chrome, desktop/mobile login
+credit plus manifest/login/latest-notes agreement.57 note screenshot inspected at
+`/tmp/eidolon-resource57-rendered-notes/anonymous-anonymous-releas-013fd-cies-and-server-are-healthy/patch-notes.png`.
+
+Exact committed57 actual98198 **PASS14.834s**: schema7 saved character→schema8
+casts/listings→rejected escrow save/pending journal→SIGKILL→refused7→two recovered8
+sessions. Final race binary
+`/tmp/eidolon-resource57-final-proof-DhDv22/7ab559b02624f9b76f010bed2289849444911ea9`,
+bridge remains9aec835. Four logs independently clean:1 expected kill,1 legacy
+saved normal exit,2 resource drains; refusal exits1 before writes/admission.
+Log `/tmp/eidolon-resource57-final-actual.log`; exact owned Mongo2253/volumes
+removed and independently absent. No owned local test handles remain active.
+
+49 CI34284099182 on0c6d0cc remains ACTIVE: Go/Jest/all3 browser shards and
+predeploy gallery PASS; full-character gameplay began22:29 and is still running.
+This is a verified wait, not a failed/stopped job. Last fresh public manifest and
+backend both48/546391c, healthy/database ready at22:51. No50 push until the entire
+49/finalLiveQA/freshidentity gate.50–56 queue remains unchanged from22:30; only57
+is newly packaged. Never push staged root. Next: continue the ordered release
+gate;57 still requires preceding CI/live gates and its own live deployment backup
+receipt/identity/gameplay acceptance. Well Rested and all major roadmap gates
+remain open; the full objective stays active.
+
+## Historical checkpoint — September 8, 22:30 UTC
 
 PROGRESS: read-only predeployment schema checks, recovery instructions and an
 actual-session join-race correction are implemented and verified locally.

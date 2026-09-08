@@ -1,9 +1,35 @@
 # Resource reconnect defect — required before 1.1 acceptance
 
-Status: confirmed defect with an unreleased implementation candidate, not yet
-release-ready or assigned a published patch. Preserve .01 passive regen.
+Status: unreleased Alpha1.0.57 candidate, locally verified but still awaiting the
+ordered publication and live acceptance gates. Preserve .01 passive regen.
 
-## Latest implementation checkpoint — September 8, 22:30 UTC
+## Latest implementation checkpoint — September 8, 22:54 UTC
+
+Candidate7ab559b now has its own57 version/login/manifest and cumulative notes;
+the bridge remains56/9aec835. Full client240 suites/3405 tests, full server race,
+232 version checks, lint and rendered local anonymous notes checks pass. One
+additional exact-commit schema7→8/crash/refused7/recovered8 session sequence
+passes with all four child logs clean. Earlier two-pass7886278 acceptance remains
+recorded for the preceding unchanged resource behavior.
+
+Save-format upgrades now take a paired private Mongo/journal/previous-image
+backup before replacement, verify hashes/compression and sync files, and attempt
+to restart the unchanged API on backup failure before migration. The deployment
+script holds a lock and refuses to back up a different Mongo than the API uses.
+Two final disposable backup/restore repetitions pass26.13s/28.56s, preserving
+resources, receipts, schema, indexes, private-file bytes/ownership and checking
+failed-dump recovery and no-previous-API handling. The check is in57's CI. Earlier
+fixture readiness failure and two slower successful repetitions remain recorded
+in the execution ledger; no actual production restore was performed.
+
+All owned local tests are closed and disposable services/volumes removed.49 CI
+is still running its predeploy gameplay gate; public client/backend remain48.
+57 is not published: preceding ordered gates, its own CI, actual upgrade backup
+receipt, live identity and real-input gameplay acceptance remain. Local backups
+are not off-machine disaster recovery. Well Rested and the full instance/device/
+raid/roadmap requirements remain separate and incomplete.
+
+## Historical implementation checkpoint — September 8, 22:30 UTC
 
 The [execution ledger](2026-09-05-roadmap-execution.md) records the authoritative
 queue and evidence. Bridge56 is9aec835; resource candidate is7886278, still
