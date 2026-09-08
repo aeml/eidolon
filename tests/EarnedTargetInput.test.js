@@ -1,11 +1,27 @@
 import { jest } from '@jest/globals';
 import { readFileSync } from 'node:fs';
 import { URL } from 'node:url';
-import { readEarnedAttackTarget, selectEarnedAttackTarget } from './e2e/earned-target-input.js';
+import { readEarnedAttackTarget, selectEarnedAttackTarget, reacquireEarnedAttackTarget } from './e2e/earned-target-input.js';
 
 afterEach(() => { delete window.game; });
 const enemy = Object.freeze({ id: 'skeleton', health: 20, state: 'ATTACK', isActive: true });
 const page = () => ({ evaluate: fn => fn(), mouse: { click: jest.fn() } });
+
+test.each([
+    [30, false, 'MOVING', true], [30, true, 'MOVING', false],
+    [12, false, 'MOVING', false], [30, false, 'DEAD', false]
+])('reacquire only a distant disengaged living target (%s/%s/%s)', async (distance, selected, state, expected) => {
+    const target = { id: 'old' }, nearby = { id: 'near' };
+    const actor = Object.freeze({ state, health: 20, position: {} });
+    window.game = { remotePlayers: new Map([[target.id, actor]]),
+        player: { position: { distanceTo: () => distance } },
+        isHostileActorTarget: () => selected, getBasicAttackRangeForEntity: () => 16 };
+    const find = jest.fn().mockResolvedValue(nearby);
+    const result = await reacquireEarnedAttackTarget({ evaluate: (fn, arg) => fn(arg) }, target, find);
+    expect(result).toBe(expected ? nearby : target);
+    expect(find).toHaveBeenCalledTimes(expected ? 1 : 0);
+    expect(actor.health).toBe(20);
+});
 
 test('retains a living selected enemy without repeated clicks or state writes', async () => {
     window.game = { pendingInteraction: enemy, isHostileActorTarget: () => true };

@@ -46,3 +46,15 @@ attack/chase are reacquired through level-appropriate real travel under the same
 27-test call had two signature-expectation failures; a new test also needed the
 existing Jest-only Playwright mock. Both are corrected, no assertion removed.
 Actual follow-up remains required; no gameplay runtime changed.
+
+Third actual60075 on a4632b5 CLOSED FAILED2.5m in the opening before the modified
+Watch strategy ran. Two kills passed25s, then the same120s watchdog failed with
+85HP/22mana, living Skeleton22HP at29.76distance. Log
+`/tmp/eidolon-story-healthy-combat-gameplay.log`; scan0/exact-container absence
+confirmed. It neither validates nor disproves the new healthy Watch strategy.
+
+The opening now also uses the already verified collection-route disengagement
+rule: retain active attack/chase, but reacquire a living distant target when no
+attack is selected. Normal bounded travel shares the existing deadline. Four
+new direct helper tests preserve near/selected/dead observations;72focused tests
+PASS1.959s with full lint/diff (18213). Actual successor remains to run.

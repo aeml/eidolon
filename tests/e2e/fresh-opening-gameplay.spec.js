@@ -8,7 +8,7 @@ import { earnFreshDungeonReadiness, prepareEarnedClass } from './fresh-ready-rou
 import { createEarnedClassCombat } from './earned-class-combat.js';
 import { clearEarnedVerdant } from './fresh-dungeon-route.js';
 import { earnFreshStoryHunt } from './fresh-story-hunt-route.js';
-import { selectEarnedAttackTarget } from './earned-target-input.js';
+import { selectEarnedAttackTarget, reacquireEarnedAttackTarget } from './earned-target-input.js';
 import { recoverEarnedDeath } from './earned-death-recovery.js';
 import { earnedCheckpoint, uninterruptedEarnedMode } from './earned-checkpoint.js';
 import { collectBrowserFailures, credentialsFromEnvironment, jumpByGroundClick,
@@ -20,8 +20,8 @@ const chapter = 'chronicle_01_bell_below';
 
 // Deliberately does not use findOverworldTarget: that functional QA helper may
 // teleport to an encounter. Every movement here is an ordinary player input.
-async function findHostileThroughTravel(page, subtype = 'Skeleton') {
-    for (let step = 0; step < 24; step++) {
+async function findHostileThroughTravel(page, subtype = 'Skeleton', deadline = Infinity) {
+    for (let step = 0; step < 24 && Date.now() < deadline; step++) {
         const target = await projectNearestHostile(page, subtype);
         if (target) return target;
         const offset = await page.evaluate(subtype => {
@@ -149,6 +149,8 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
                 }
                 retreats++;
             }
+            target = await reacquireEarnedAttackTarget(page, target,
+                () => findHostileThroughTravel(page, 'Skeleton', deadline));
             const point = await projectEntity(page, target.id);
             if (point?.visible) {
                 target = await selectEarnedAttackTarget(page, target, point);

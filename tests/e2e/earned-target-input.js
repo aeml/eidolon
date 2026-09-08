@@ -17,3 +17,13 @@ export async function selectEarnedAttackTarget(page, target, point) {
     // The actual ray hit owns selection, not our previously projected ID.
     return await readEarnedAttackTarget(page) || target;
 }
+
+export async function reacquireEarnedAttackTarget(page, target, findNearby) {
+    const disengaged = await page.evaluate(id => {
+        const game = window.game, enemy = game.remotePlayers.get(id);
+        if (!enemy || enemy.state === 'DEAD' || (enemy.health ?? enemy.stats?.hp) <= 0 ||
+            game.isHostileActorTarget(game.pendingInteraction)) return false;
+        return game.player.position.distanceTo(enemy.position) > game.getBasicAttackRangeForEntity(enemy) + 2;
+    }, target.id);
+    return disengaged ? await findNearby() || target : target;
+}
