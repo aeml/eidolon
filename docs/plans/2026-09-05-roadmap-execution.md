@@ -41,13 +41,17 @@ interaction; phones no longer require hover. No production source changed.
 Final40025 lint/diff and commit PASS; no full-client rerun needed for this purely
 E2E helper extraction, but actual touch verification remains required.
 
-**86108 ACTIVE** — fresh isolated nameplate-world on frozen f00814a:
+**86108 subsequently PASS3/25.7s**, terminal, on frozen f00814a:
 runID nameplate-town-touch, API18625/Mongo18626/web18627; log
-`/tmp/eidolon-nameplate-world-touch.log`. It is the only owned browser; poll
-86108 and do not modify that tree or start another
-owned browser until terminal. All previous local handles are closed.
-The nameplate candidate is still unversioned on staged52; full-world touch closure
-and proper release packaging/CI inclusion remain due, not a1.2 completion claim.
+`/tmp/eidolon-nameplate-world-touch.log`. Desktop9.0s, portrait6.7s and landscape
+7.5s pass actual level-one town entry, mouse/joystick Ilyra dialogue,22px label,
+gold marker and ongoing frames. Scan0, cleanup and independent exact-container
+absence pass. Both phone images viewed; all three retained under
+`/tmp/eidolon-nameplate-town-evidence-gGh3DL/`. No owned browser/test remains
+active. Nameplate source is no longer frozen and has a docs-only closure commit.
+The candidate remains unversioned on staged52; proper release packaging/CI
+inclusion remains due. This is town/component verification, not physical-device,
+full-combat or1.2 completion. Only external46 CI remains active.
 
 ## Historical checkpoint — September 8, 10:08 UTC
 
