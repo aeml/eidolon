@@ -5,7 +5,50 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 18:40 UTC
+## Current checkpoint — September 8, 18:45 UTC
+
+Previous regeneration-only turn was NO ROADMAP PROGRESS; this resumed turn is
+PROGRESS (actual bid acceptance, test corrections, committed evidence and48
+deployment-failure diagnosis). Full1.1–1.10 remains active and incomplete.
+No push this turn, no live48 or49 advancement. Remote master independently
+remains7a9869d639659cd6f6173dca16c12ba2487e3221; healthy public client/server
+remain47/6925c5113ee6acdf698713f3332f80dcf546bd76.48 CI34257070035 is terminal
+failure, not a wait; all deployment jobs were skipped.
+
+Resource acceptance closed as detailed below: runtime030ec67, testsa09ac66,
+docs37e01a1. Fullrace1501 PASS; corrected actual37895 PASS439.525s, three
+repetitions,115 clean server logs plus three expected startup failures. No local
+resource handle/service remains. Candidate unreleased55 metadata; buyout items,
+listing deposits, seller payouts/returns, rollback and wider acceptance open.
+
+48 route88533 CLOSED FAIL1 on6a4ed8e, after baseline288 smites and15s/16.5s
+lifetime checks. The actual call log identifies dungeon-menu-backdrop intercepting
+the readiness chat click during trained combat, consuming the240s test budget.
+The baseline screenshot was reviewed and showed visible combat outside the
+facade. No trained/saved route pass is claimed. Log
+`/tmp/eidolon-release48-seraph-zoom.log`; owned previous API/Mongo cleaned up.
+
+Latest test-only9dedb2adf69773f833bf309f20d6255a0480d730 dismisses an opened
+dungeon menu via its visible Close button before chat readiness, waits for the
+backdrop to hide and bounds that chat click5s. This is ordinary menu recovery,
+not forced pointer input or a relaxed summon assertion. Focused ESLint/diff
+check passed. **Actual19295 ACTIVE**, freshly polled while building this exact
+source; `/tmp/eidolon-release48-seraph-menu.log`. Worktree
+`/tmp/eidolon-release48-seraph-recovery-Pjflp1`, branch
+work/release48-seraph-recovery-20260908. Owned run48-seraph-menu-1844, API18931,
+Mongo18932, web4293. Freeze this source until the exact handle is terminal;
+observation expiry is not permission to restart. No other owned local run active.
+
+Next: close19295, inspect screenshots and repeat the entire Seraph route on
+fresh randomized populations before accepting48 correction. Preserve15/16.5s
+lifetimes,288/345 actual smites, saved talents and ordinary dungeon cleanup.
+Then propagate accepted48 QA changes through ordered49–55 and normal-FF publish
+only48 correction, with its existing patch notes/version intact. Never push root
+or resource over that queue. Keep the first-opening120s/two-respawn watchdog
+failure in pacing work; a retry pass did not close its root cause. Full campaign,
+phone, dungeon/raid and remaining roadmap requirements remain open.
+
+## Historical checkpoint — September 8, 18:40 UTC
 
 This turn is PROGRESS: durable bid acceptance closed and48 predeploy failure
 diagnosed with a corrected browser route under test. Full roadmap remains active.
