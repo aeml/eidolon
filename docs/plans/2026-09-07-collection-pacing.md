@@ -112,3 +112,37 @@ This package is ready for root integration, not already published. Do not
 publish ahead of the earlier sequential CI/live release gates. Broader
 XP/loot tuning, surplus uncollected world drops, physical-phone review and the
 eight investigation quests remain open; no completion claim is made for them.
+
+## Revalidation with 0.01 regeneration — September 8
+
+Combined source `206fac5cf35408b87d251088267624e9228289d4` inherits corrected
+45 and verified 46 without changing the eight-fragment rules or legacy promises.
+Full client checks pass **218 suites / 3,226 tests / 199.594s**. Full server race
+passes (root **17.468s**, database **1.048s**, game **337.916s**, other packages
+also successful). Focused version/regeneration/prepared-build checks and lint
+passed before the full runs. Handles 95541 and 38409 are terminal success.
+
+Actual fresh collection handle **26108 FAILED / 4.7m**. The level-one Wizard
+reports 0.1 HP/mana per second for ten starting stat points, confirming the
+0.01 coefficient. Opening takes 43 seconds with no deaths and four retreats,
+then its existing 500-XP claim and persistence reconnect produce level 5.
+Collection reaches six physical fragment credits and level 6 after five observed
+target deaths (incidental area kills are not included in that counter). It then
+exceeds the unchanged two-respawn bound: the third observed death fails the run.
+No completed collection, manual payout, final reconnect or ready-screen image
+is claimed. Old higher-regeneration gameplay evidence does not validate this
+combined package. **47 is not ready for publication.**
+
+Log `/tmp/eidolon-release47-runes-gameplay.log`; client and server logs share
+that prefix. Artifact scan passed with zero sanitizations, disposable cleanup
+finished and exact API/Mongo container absence was independently confirmed.
+There is no failure screenshot because this credentialed route disables automatic
+captures; the error context proves the assertion but not the cause of the deaths.
+
+Inspection finds the collection combat driver, unlike the opening/hunt driver,
+issues repeated attacks without the existing ordinary Wizard spacing strategy.
+Recovery does click the real death-respawn button and verifies town arrival;
+it does not grant resources or reconnect. This is a concrete strategy discrepancy,
+not yet proof that adding spacing resolves the failure. Gather combat/resource
+and death evidence in the next bounded run, preserve the requested regeneration,
+and do not relax death or encounter limits to approve the release.
