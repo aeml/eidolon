@@ -149,12 +149,13 @@ export class TradingUI {
                 this.handleSearch();
             }
         } else {
-            this.selectedTradingItem = null;
+            this.clearSelection();
         }
     }
 
     /** Close the trading house if open. */
     close() {
+        this.clearSelection();
         if (this.tradingHouseScreen) {
             this.tradingHouseScreen.style.display = 'none';
         }
@@ -209,6 +210,7 @@ export class TradingUI {
     }
 
     handleCreate() {
+        if (!this.validateSelection(this.ctx.getLastPlayer())) return;
         if (!this.selectedTradingItem) {
             if (this.ctx.addChatMessage) this.ctx.addChatMessage("System", "Select an item to sell first.");
             return;
@@ -229,17 +231,36 @@ export class TradingUI {
         }
 
         if (this.onTradingCreate) {
-            this.onTradingCreate(this.selectedTradingItem.slot, bid, buyout, duration);
-            this.selectedTradingItem = null;
-            this.tradingSellSlot.replaceChildren();
-            const addIcon = document.createElement('span');
-            addIcon.style.fontSize = '30px';
-            addIcon.style.color = '#444';
-            addIcon.textContent = '+';
-            this.tradingSellSlot.appendChild(addIcon);
-            this.tradingSellSlot.style.backgroundImage = 'none';
+            const selected = this.selectedTradingItem;
+            this.onTradingCreate(selected.slot, bid, buyout, duration, selected.id, selected.stack);
+            this.clearSelection();
             this.switchTab('my');
         }
+    }
+
+    clearSelection() {
+        this.selectedTradingItem = null;
+        if (!this.tradingSellSlot) return;
+        const addIcon = document.createElement('span');
+        addIcon.style.fontSize = '30px';
+        addIcon.style.color = '#444';
+        addIcon.textContent = '+';
+        this.tradingSellSlot.replaceChildren(addIcon);
+        this.tradingSellSlot.style.backgroundImage = 'none';
+        this.tradingSellSlot.style.border = '';
+    }
+
+    validateSelection(player) {
+        const selected = this.selectedTradingItem;
+        if (!selected) return true;
+        const current = player?.inventory?.[selected.slot];
+        if (selected.id && Number.isInteger(selected.stack) && selected.stack > 0 &&
+            current?.id === selected.id && current.stack === selected.stack) return true;
+        this.clearSelection();
+        const message = 'Your selected item or quantity changed. Select the item again before listing it.';
+        this.updateTradingGuidance(message);
+        this.ctx.addChatMessage?.('System', message);
+        return false;
     }
 
     // ================================================================
@@ -247,6 +268,7 @@ export class TradingUI {
     // ================================================================
 
     updateInventory(player) {
+        this.validateSelection(player);
         if (!this.tradingInventoryList) return;
         this.tradingInventoryList.innerHTML = '';
 

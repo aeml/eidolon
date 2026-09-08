@@ -116,7 +116,7 @@ func verifyListingState(t *testing.T, repo *database.DB, baseline *database.Char
 
 func TestAuctionListingActualNormalAndRejections(t *testing.T) {
 	repo, uri, binary := resourceJournalIntegration(t)
-	for _, mode := range []string{"gear", "stack", "legacy", "insufficient", "bound", "invalid_price"} {
+	for _, mode := range []string{"gear", "stack", "legacy", "insufficient", "bound", "invalid_price", "stale_item", "stale_stack", "missing_selection"} {
 		t.Run(mode, func(t *testing.T) {
 			p, password, item := auctionListingFixture(t, repo, mode)
 			dir := t.TempDir()
@@ -132,7 +132,15 @@ func TestAuctionListingActualNormalAndRejections(t *testing.T) {
 						t.Fatal("ordinary cast failed")
 					}
 				}
-				payload := TradingCreatePayload{SlotIndex: 0, Bid: 100, Buyout: 500, Duration: 24}
+				payload := TradingCreatePayload{SlotIndex: 0, Bid: 100, Buyout: 500, Duration: 24, ExpectedItemID: item.ID, ExpectedStack: item.Stack}
+				switch mode {
+				case "stale_item":
+					payload.ExpectedItemID = "previously-selected-item"
+				case "stale_stack":
+					payload.ExpectedStack++
+				case "missing_selection":
+					payload.ExpectedItemID, payload.ExpectedStack = "", 0
+				}
 				if mode == "invalid_price" {
 					payload.Bid = 501
 				}
@@ -158,6 +166,8 @@ func TestAuctionListingActualNormalAndRejections(t *testing.T) {
 						want = "Chronicle artifacts are soulbound"
 					case "invalid_price":
 						want = "invalid price"
+					case "stale_item", "stale_stack", "missing_selection":
+						want = game.ErrAuctionListingItemUnavailable.Error()
 					}
 					if reply != want {
 						t.Fatal("unexpected listing rejection", reply, want)
@@ -243,7 +253,7 @@ func TestAuctionListingActualCrashBoundaries(t *testing.T) {
 			}
 			t.Cleanup(func() { configure(false) })
 			configure(true)
-			resourceSend(t, connection, MsgTradingCreate, TradingCreatePayload{SlotIndex: 0, Bid: 100, Buyout: 500, Duration: 24})
+			resourceSend(t, connection, MsgTradingCreate, TradingCreatePayload{SlotIndex: 0, Bid: 100, Buyout: 500, Duration: 24, ExpectedItemID: item.ID, ExpectedStack: item.Stack})
 			var reply string
 			resourceReadMessage(t, connection, MsgError, &reply)
 			if reply != "Your auction listing is awaiting recovery. Please try again shortly." {
@@ -313,7 +323,7 @@ func TestAuctionListingActualCrashBoundaries(t *testing.T) {
 				connection := resourceOpenCharacter(t, address, p.Name, password)
 				resourceProbe(t, connection, 70, false)
 				if !rejected {
-					resourceSend(t, connection, MsgTradingCreate, TradingCreatePayload{SlotIndex: 0, Bid: 100, Buyout: 500, Duration: 24})
+					resourceSend(t, connection, MsgTradingCreate, TradingCreatePayload{SlotIndex: 0, Bid: 100, Buyout: 500, Duration: 24, ExpectedItemID: item.ID, ExpectedStack: item.Stack})
 					resourceReadMessage(t, connection, MsgError, &reply)
 					if reply != "No item in slot" {
 						t.Fatal("recovered escrow item listed twice", reply)

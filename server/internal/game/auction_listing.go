@@ -88,7 +88,7 @@ func (w *World) ApplyDurablePlayerAuctionListing(playerID, id, payload string, d
 	return true, nil
 }
 
-func (ts *TradingSystem) PrepareAuctionListing(seller *Entity, slot, bid, buyout, hours int) (*database.AuctionBidOperation, error) {
+func (ts *TradingSystem) PrepareAuctionListing(seller *Entity, slot, bid, buyout, hours int, expectedItemID string, expectedStack int) (*database.AuctionBidOperation, error) {
 	ts.mu.Lock()
 	defer ts.mu.Unlock()
 	if ts.loadError != nil {
@@ -110,6 +110,11 @@ func (ts *TradingSystem) PrepareAuctionListing(seller *Entity, slot, bid, buyout
 	item := seller.Inventory[slot]
 	if item.ID == "" {
 		return nil, errors.New("No item in slot")
+	}
+	// Validate the selection while holding the same lock used to freeze escrow.
+	// Missing expectations (old clients) fail closed, never retarget a bag slot.
+	if expectedItemID == "" || expectedStack <= 0 || item.ID != expectedItemID || item.Stack != expectedStack {
+		return nil, ErrAuctionListingItemUnavailable
 	}
 	if IsChronicleQuestItem(item) {
 		return nil, errors.New("Chronicle artifacts are soulbound")

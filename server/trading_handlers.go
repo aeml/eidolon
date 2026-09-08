@@ -80,6 +80,11 @@ func handleMsgTradingCreate(c *Client, msg Message) {
 		c.sendError("No item in slot")
 		return
 	}
+	if payload.ExpectedItemID == "" || payload.ExpectedStack <= 0 || item.ID != payload.ExpectedItemID || item.Stack != payload.ExpectedStack {
+		player.Mu.Unlock()
+		c.sendError(game.ErrAuctionListingItemUnavailable.Error())
+		return
+	}
 
 	// Clear only the selected slot so listing does not shrink the player's
 	// fixed-capacity inventory over time.

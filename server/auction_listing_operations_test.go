@@ -28,7 +28,7 @@ func TestAuctionListingSaveFailureRetainsEscrowAndUnpublishedDecision(t *testing
 	p := &game.Entity{ID: "player-seller", Name: "seller", Type: game.TypePlayer, SubType: "Wizard", Level: 30, Gold: 1234, Health: 17, Mana: 0, State: "IDLE", Inventory: make([]game.Item, game.MaxInventorySize)}
 	p.Inventory[8] = game.Item{ID: "earned-item", Name: "Earned", Stack: 1, MaxStack: 1, StatScaleVersion: game.ItemStatScaleVersion}
 	world.AddEntity(p)
-	op, err := world.Trading.PrepareAuctionListing(p, 8, 100, 500, 24)
+	op, err := world.Trading.PrepareAuctionListing(p, 8, 100, 500, 24, "earned-item", 1)
 	if err != nil || op == nil {
 		t.Fatal("prepare failed", err)
 	}

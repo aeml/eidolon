@@ -183,7 +183,10 @@ class UIManagerCharacterMethods {
 
     updateEquipSlot(id, item, placeholder, serverSlotName) { this.inventory.updateEquipSlot(id, item, placeholder, serverSlotName); }
 
-    updateInventory(player) { this.inventory.updateInventory(player); }
+    updateInventory(player) {
+        this.inventory.updateInventory(player);
+        if (this.trading?.isOpen) this.trading.updateInventory(player);
+    }
 
     updateStash(player) { this.inventory.updateStash(player); }
 

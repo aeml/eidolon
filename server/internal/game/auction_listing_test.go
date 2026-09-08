@@ -66,15 +66,51 @@ func TestAuctionListingChangedOrAmbiguousItemDoesNotCharge(t *testing.T) {
 	}
 }
 
+func TestAuctionListingRejectsStaleSelectionBeforeDecision(t *testing.T) {
+	for _, mode := range []string{"replacement", "more", "fewer", "missing_id", "missing_stack", "negative_stack"} {
+		t.Run(mode, func(t *testing.T) {
+			ts := NewTradingSystem(nil)
+			p := &Entity{ID: "player-seller", Name: "seller", Gold: 1234,
+				Inventory: []Item{{ID: "current-item", Name: "Current", Stack: 3, MaxStack: 10}}}
+			id, stack := "current-item", 3
+			switch mode {
+			case "replacement":
+				id = "selected-earlier"
+			case "more":
+				stack++
+			case "fewer":
+				stack--
+			case "missing_id":
+				id = ""
+			case "missing_stack":
+				stack = 0
+			case "negative_stack":
+				stack = -1
+			}
+			before := cloneItems(p.Inventory)
+			op, err := ts.PrepareAuctionListing(p, 0, 100, 500, 24, id, stack)
+			if op != nil || !errors.Is(err, ErrAuctionListingItemUnavailable) {
+				t.Fatal("stale listing accepted", op, err)
+			}
+			if p.Gold != 1234 || !reflect.DeepEqual(before, p.Inventory) || len(ts.pendingBids) != 0 || len(ts.Auctions) != 0 || len(p.GoldCreditReceipts) != 0 || len(p.ItemDeliveryReceipts) != 0 {
+				t.Fatal("rejected selection changed ownership or created decision")
+			}
+			if _, err := ts.PrepareAuctionListing(p, 0, 100, 500, 24, "current-item", 3); err != nil {
+				t.Fatal("explicit reselection blocked", err)
+			}
+		})
+	}
+}
+
 func TestAuctionListingStaysInvisibleUntilEscrowCompletes(t *testing.T) {
 	ts := NewTradingSystem(nil)
 	p := &Entity{ID: "player-seller", Name: "seller", Gold: 1234, Inventory: make([]Item, MaxInventorySize)}
 	p.Inventory[8] = Item{ID: "earned", Name: "Earned", Stack: 1, MaxStack: 1, StatScaleVersion: ItemStatScaleVersion}
-	op, err := ts.PrepareAuctionListing(p, 8, 100, 500, 24)
+	op, err := ts.PrepareAuctionListing(p, 8, 100, 500, 24, "earned", 1)
 	if err != nil || op == nil || !op.Valid() || len(ts.Auctions) != 0 || p.Gold != 1234 || p.Inventory[8].ID != "earned" {
 		t.Fatal("listing preparation changed owner/market", err)
 	}
-	if _, err := ts.PrepareAuctionListing(p, 8, 100, 500, 24); !errors.Is(err, ErrAuctionBidPending) {
+	if _, err := ts.PrepareAuctionListing(p, 8, 100, 500, 24, "earned", 1); !errors.Is(err, ErrAuctionBidPending) {
 		t.Fatal("duplicate request bypassed pending listing")
 	}
 	if err := p.ApplyAuctionListing(op.ID, op.ItemPayload, op.Amount); err != nil {
@@ -87,7 +123,7 @@ func TestAuctionListingStaysInvisibleUntilEscrowCompletes(t *testing.T) {
 	if a == nil || a.Status != AuctionActive || a.SellerID != p.ID || a.Bid != 100 || a.Buyout != 500 || a.Deposit != 25 || a.Item.ID != "earned" || a.LastBidOperationID != op.ID || p.Gold != 1209 || p.Inventory[8].ID != "" || len(p.Inventory) != MaxInventorySize {
 		t.Fatal("listing lost escrow metadata or shrank bag")
 	}
-	if _, err := ts.PrepareAuctionListing(p, 8, 100, 500, 24); err == nil {
+	if _, err := ts.PrepareAuctionListing(p, 8, 100, 500, 24, "earned", 1); err == nil {
 		t.Fatal("empty slot listed again")
 	}
 	bad := *op

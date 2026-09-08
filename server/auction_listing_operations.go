@@ -9,7 +9,7 @@ import (
 )
 
 func handleDurableTradingCreate(c *Client, player *game.Entity, payload TradingCreatePayload) {
-	op, err := world.Trading.PrepareAuctionListing(player, payload.SlotIndex, payload.Bid, payload.Buyout, payload.Duration)
+	op, err := world.Trading.PrepareAuctionListing(player, payload.SlotIndex, payload.Bid, payload.Buyout, payload.Duration, payload.ExpectedItemID, payload.ExpectedStack)
 	if err != nil {
 		c.sendError(err.Error())
 		return

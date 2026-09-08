@@ -494,10 +494,12 @@ type TradingSearchPayload struct {
 }
 
 type TradingCreatePayload struct {
-	SlotIndex int `json:"slotIndex"`
-	Bid       int `json:"bid"`
-	Buyout    int `json:"buyout"`
-	Duration  int `json:"duration"`
+	ExpectedItemID string `json:"expectedItemId"`
+	ExpectedStack  int    `json:"expectedStack"`
+	SlotIndex      int    `json:"slotIndex"`
+	Bid            int    `json:"bid"`
+	Buyout         int    `json:"buyout"`
+	Duration       int    `json:"duration"`
 }
 
 type TradeRequestPayload struct {

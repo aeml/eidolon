@@ -64,8 +64,8 @@ export class UIBindings {
         ui.trading.onTradingSearch = (filters) => {
 			engine.network.send('trading_search', filters);
         };
-        ui.trading.onTradingCreate = (slotIndex, bid, buyout, duration) => {
-            engine.network.send('trading_create', { slotIndex, bid, buyout, duration });
+        ui.trading.onTradingCreate = (slotIndex, bid, buyout, duration, expectedItemId, expectedStack) => {
+            engine.network.send('trading_create', { slotIndex, bid, buyout, duration, expectedItemId, expectedStack });
         };
         ui.trading.onTradingMyAuctions = () => {
             engine.network.send('trading_my_auctions', {});

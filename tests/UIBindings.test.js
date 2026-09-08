@@ -88,6 +88,17 @@ describe('UIBindings', () => {
         expect(engine.worldMap.toggle).toHaveBeenCalled();
     });
 
+    test('listing forwards the frozen selection, not the current inventory slot', () => {
+        const engine = createEngine();
+        new UIBindings(engine).bindConstructorCallbacks();
+        engine.player.inventory[0] = { id: 'replacement', stack: 9 };
+        engine.uiManager.trading.onTradingCreate(0, 100, 500, 24, 'selected-earlier', 3);
+        expect(engine.network.send).toHaveBeenCalledWith('trading_create', {
+            slotIndex: 0, bid: 100, buyout: 500, duration: 24,
+            expectedItemId: 'selected-earlier', expectedStack: 3
+        });
+    });
+
     test('sell-all only forwards merchant equipment slots of the requested rarity and skips gems/materials/relics', () => {
         const engine = createEngine();
         engine.player.inventory = [
