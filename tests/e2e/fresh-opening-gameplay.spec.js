@@ -77,6 +77,7 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
             primaryAbility: player.abilityName };
     }))}`);
     await openIlyra(page);
+    await expect(page.locator('.quest-dialogue__reward')).toContainText('Reward: 100 gold · 100 XP');
     await page.locator('#quest-window').getByRole('button', { name: 'Accept Quest', exact: true }).click();
     await expect.poll(async () => (await readChronicleChapter(page, chapter))?.accepted).toBe(true);
     await page.locator('#btn-close-quest').click();
@@ -159,11 +160,23 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     }
     expect((await readChronicleChapter(page, chapter)).completed).toBe(false);
     await openIlyra(page);
+    const readRewardState = () => page.evaluate(() => {
+        const p = window.game.player;
+        return { level: p.level, xp: p.xp, next: p.xpToNextLevel, gold: p.gold };
+    });
+    const beforeReward = await readRewardState();
+    await expect(page.locator('.quest-dialogue__reward')).toContainText('Reward: 100 gold · 100 XP');
     await page.locator('#quest-window').getByRole('button', { name: 'Complete Quest', exact: true }).click();
     await expect.poll(async () => (await readChronicleChapter(page, chapter)).completed).toBe(true);
     const rewarded = await readChronicleChapter(page, chapter);
-    expect(rewarded.grantedGold).toBeGreaterThan(0);
-    expect(rewarded.grantedXP).toBeGreaterThan(0);
+    expect(rewarded.grantedGold).toBe(100);
+    expect(rewarded.grantedXP).toBe(100);
+    expect(rewarded.grantedResonanceXP || 0).toBe(0);
+    await expect(page.locator('.quest-dialogue__reward')).toContainText('Reward received · 100 gold · 100 XP');
+    await expect.poll(async () => (await readRewardState()).gold).toBe(beforeReward.gold + 100);
+    const afterReward = await readRewardState();
+    expect([beforeReward.level, beforeReward.level + 1]).toContain(afterReward.level);
+    expect(afterReward.xp - beforeReward.xp + (afterReward.level > beforeReward.level ? beforeReward.next : 0)).toBe(100);
     await page.locator('#quest-window').getByRole('button', { name: 'Continue conversation', exact: true }).click();
     expect((await readChronicleChapter(page, 'chronicle_earth_keepers_house')).accepted).toBe(false);
     const earnedLevel = (await readPlayerState(page)).level;
@@ -171,6 +184,8 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     await loginAndEnterWorld(page, credentials);
     expect((await readPlayerState(page)).level).toBe(earnedLevel);
     expect((await readChronicleChapter(page, chapter)).completed).toBe(true);
+    expect((await readChronicleChapter(page, chapter)).grantedXP).toBe(100);
+    expect((await readChronicleChapter(page, chapter)).grantedGold).toBe(100);
     console.log(`[fresh-opening] completed ${JSON.stringify({ level: earnedLevel, deaths, retreats, grantedGold: rewarded.grantedGold, grantedXP: rewarded.grantedXP, elapsedSeconds: Math.round((Date.now() - started) / 1000) })}`);
     await earnEarthInvestigation(page, 'chronicle_earth_keepers_house', openIlyra,
         (site, phase) => page.screenshot({ path: testInfo.outputPath(`${phase}-${site.id}.png`) }));
