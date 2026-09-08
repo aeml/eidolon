@@ -26,3 +26,12 @@ staged52; no new release number, push or live approval is implied.
 
 Proposed patch-note content when packaged: readable crowd names; highlighted
 selected-enemy label; uncluttered party/NPC names; quest markers remain clear.
+
+Final46603 PASS75tests/2.064s and lint20387 PASS. Initial rendered12443 failed
+all six cases: the test required Ilyra's name beside the selected label even
+though their projected boxes overlapped. The intentionally higher-priority
+selected label won. Failure landscape image viewed; desktop/landscape preserved
+under `/tmp/eidolon-nameplate-initial-evidence-U3SoO2/`. The corrected component
+scene moves only its prepared NPC outside that overlap, using the phone's actual
+projection to keep the full name in frame. Both label and marker assertions stay.
+No runtime changes followed89f690e; a corrected rendered run remains required.

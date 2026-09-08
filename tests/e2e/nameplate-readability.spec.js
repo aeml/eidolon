@@ -20,7 +20,9 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
                 document.body.appendChild(render.renderer.domElement);
                 render.setGraphicsQuality(quality);
                 const hero = new Wizard('nameplate-hero'); hero.name = 'Wanderer'; hero.position.set(-4, 0, 3);
-                const npc = new QuestNPC('nameplate-ilyra', { story: true }); npc.position.set(6, 0, 1);
+                // Keep this independent NPC outside the pack's screen-space
+                // label bounds; a selected overlapping enemy legitimately wins.
+                const npc = new QuestNPC('nameplate-ilyra', { story: true }); npc.position.set(11, 0, -6);
                 npc.markerSymbol = '!';
                 const enemies = Array.from({ length: 20 }, (_, i) => {
                     const enemy = new Skeleton(`crowd-${i}`);
