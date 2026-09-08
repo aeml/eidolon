@@ -5,7 +5,44 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, fresh Earth and reward-stack verification
+## Current checkpoint — September 8, 01:52 UTC
+
+Current turn makes substantive progress: combined fresh Earth verification,
+stacked reward measurements and a second tested release-43 QA correction.
+The full balance/roadmap goal remains active and materially unfinished.
+
+System/hardware summon **63682 PASS / four / 1.3m**, slow-case actual-smite
+image inspected. Software/hardware evidence and exact cadence assertions are
+recorded in [the repeated-smite correction](2026-09-08-release43-repeated-smites.md).
+All owned browser/server/client handles are terminal. Full42 CI **34171247520**
+is rechecked: all eight jobs succeed. Immediately before publication, fresh
+manifest/login/versioned-main/backend checks all return HTTP 200, exact
+**Alpha 1.0.42 / bfbbc87374682bb80c825ce96543012a08841735 / ok / ready**.
+
+Normal descendant push **21004 SUCCESS**: ed5 → **39620a056c3405f8587b92a3b4ec0f7bc464288e**,
+still Alpha 1.0.43, QA/docs only. New **CI 34178050891 in progress**. No 43
+deployment or live approval yet; no 44 publication until all jobs and fresh exact
+public identity pass. All old refs preserved. Current queue `with-smite-cadence`:
+
+| Version | Commit |
+|---|---|
+| 43, pushed | 39620a056c3405f8587b92a3b4ec0f7bc464288e |
+| 44, next | e3a349fa9fe7d5e3c4bf7c77243537bb53ae069b |
+| 45 | b2b5bf1f1addedf96eefd1db25929bd9d491a1e1 |
+| 46 | f4bbd230cb15b08105ba85283169356409211693 |
+| 47 | 945fc218e367aa8add08b6e7bca10490412e0d27 |
+| 48 | fb6a25f821a02d5e1e1eaf6671f945aee14613c4 |
+| 49 | efcdd01c8b2ed5f0825e590493abfa2d460e9212 |
+| 50 | 7fb3d74d04c9f0028b12dee30f264ef98e2701fb |
+
+Root merges QA-only50 as **dd8ceee**; investigation as **c549192**. Expanded
+23-chapter runtime/opening100 remains isolated; root retains its 15-chapter
+runtime and local50. No 51 package. Next substantial balance work must address
+the documented early gate gap and excessive stacked sources together, preserving
+earned levels, accepted contracts and existing access. Prepared veteran touch
+success and isolated payout probes do not establish a balanced full campaign.
+
+## Historical checkpoint — September 8, fresh Earth and reward-stack verification
 
 Fresh expanded Earth **26283 PASS / one / 3.1m** on **95faafc**. QA clears
 nearby enemies with normal basic/class attacks before reading; runtime priority,
