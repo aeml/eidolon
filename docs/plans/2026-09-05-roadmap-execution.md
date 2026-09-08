@@ -5,7 +5,36 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 08:17 UTC
+## Current checkpoint — September 8, 08:35 UTC
+
+The preceding user turn freshly verified the requested0.01 regeneration on both
+client (six tests/1.844s) and server (four focused tests/0.308s); it made no new
+runtime change. This continuation recovers authoritative results rather than
+restarting lost observation handles. Full1.1–1.10 remains incomplete.
+
+Release45 CI34203281024 now has successful client, server and browser-smoke jobs.
+Predeploy Character QA101991716325 is actively running its animation gallery.
+Deployment and independent public verification remain due; do not push46 yet.
+
+The prepared-assets47 starter-spacing run29343 is terminal FAILED after2.5m:
+two opening kills, two deaths, then its unchanged120s credit watchdog. It never
+reached fragment collection. Scan0sanitizations and script cleanup passed;
+independent Docker inspection now confirms both exact owned containers absent.
+Its worktree is clean1049d6e, including the retained failure report. Starter
+spacing alone does not establish first-hour playability.
+
+Isolated earned-story candidate is clean0bbc945 in
+`/tmp/eidolon-earned-story-TZuGpp`. It prototypes player basic-attack intervals
+of1.905s at starting Dexterity instead of4.167s, with the existing1s floor at
+200Dexterity. Damage per hit, enemies, ability costs and0.01 regeneration are
+unchanged. This is an experiment, not release approval. Full client result is
+230suites/3397tests PASS/195.519s. Full server race PID1266996 is still confirmed
+live; its game-package result is not yet available. Do not restart or edit the
+candidate while that process runs. Logs are
+`/tmp/eidolon-basic-cadence-{client,server}.log`. Earned uninterrupted gameplay,
+all-class pacing and wider combat-balance gates remain open.
+
+## Historical checkpoint — September 8, 08:17 UTC
 
 Previous goal turn was progress (collection diagnostics and actual uninterrupted
 diary evidence). This continuation closes failed playtests, implements a starter
