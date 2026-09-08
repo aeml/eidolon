@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -53,6 +54,35 @@ func TestSchemaCompatibilityFutureDatabaseIsNotModified(t *testing.T) {
 	if err != nil || len(collections) != 0 {
 		t.Fatal("requires a fresh empty owned database", collections, err)
 	}
+	checkPreflight := func(wantVersion int, wantSuccess bool) {
+		t.Helper()
+		version, checkErr := CheckSchemaCompatibility(ctx, uri)
+		if version != wantVersion || (checkErr == nil) != wantSuccess {
+			t.Fatalf("read-only check: version=%d err=%v", version, checkErr)
+		}
+		processCtx, stop := context.WithTimeout(ctx, 5*time.Second)
+		defer stop()
+		command := exec.CommandContext(processCtx, binary, "--check-schema", "--mongo-uri", uri)
+		command.Dir = t.TempDir()
+		output, runErr := command.CombinedOutput()
+		if wantSuccess {
+			if runErr != nil || !strings.Contains(string(output), fmt.Sprintf("Schema preflight passed: database=%d supported=%d", wantVersion, CurrentSchemaVersion)) {
+				t.Fatalf("compatible CLI preflight failed: %v\n%s", runErr, output)
+			}
+		} else if exitErr, ok := runErr.(*exec.ExitError); !ok || exitErr.ExitCode() != 1 || !strings.Contains(string(output), "refusing startup before writes") {
+			t.Fatalf("incompatible CLI preflight did not refuse: %v\n%s", runErr, output)
+		}
+		files, err := os.ReadDir(command.Dir)
+		if err != nil || len(files) != 0 || strings.Contains(string(output), "Server started") {
+			t.Fatal("preflight opened logging/journal files or admitted players", files, err, string(output))
+		}
+		t.Logf("owned read-only schema preflight: %s", output)
+	}
+	checkPreflight(0, true)
+	collections, err = raw.ListCollectionNames(ctx, bson.M{})
+	if err != nil || len(collections) != 0 {
+		t.Fatal("fresh preflight performed migrations", collections, err)
+	}
 	future := bson.M{"version": CurrentSchemaVersion + 1, "name": "future_save_format", "applied_at": time.Now().UTC().Truncate(time.Millisecond)}
 	inserted, err := raw.Collection("schema_migrations").InsertOne(ctx, future)
 	if err != nil {
@@ -69,6 +99,7 @@ func TestSchemaCompatibilityFutureDatabaseIsNotModified(t *testing.T) {
 		t.Fatal(err)
 	}
 	for attempt := 0; attempt < 2; attempt++ {
+		checkPreflight(CurrentSchemaVersion+1, false)
 		db, err := New(uri)
 		if db != nil || err == nil || !strings.Contains(err.Error(), "refusing startup before writes") {
 			t.Fatal("future schema opened by older writer", db, err)
@@ -113,4 +144,5 @@ func TestSchemaCompatibilityFutureDatabaseIsNotModified(t *testing.T) {
 	if err := db.RunMigrations(ctx); err != nil {
 		t.Fatal("compatible repeated startup refused", err)
 	}
+	checkPreflight(CurrentSchemaVersion, true)
 }

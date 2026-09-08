@@ -67,6 +67,13 @@ fi
 echo "Building api image..."
 docker compose build api
 
+# Leave an existing database container and the live API untouched during preflight.
+# On a fresh installation this starts only Mongo and waits for its health check.
+echo "Preparing database for read-only compatibility check..."
+docker compose up -d --no-recreate --wait mongo
+echo "Checking target server compatibility before replacing the live API..."
+docker compose run --rm --no-deps -T api --check-schema --mongo-uri="${MONGO_URI}"
+
 echo "Starting stack..."
 docker compose up -d
 

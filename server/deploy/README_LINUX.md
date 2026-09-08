@@ -1,6 +1,7 @@
 # Eidolon Linux Deployment (Mendola-style)
 
 This deploys:
+
 - Go API in Docker
 - MongoDB in Docker with auth + persistent volume
 - Nginx on host (ports 80/443) reverse-proxying to API on localhost upstream port
@@ -38,12 +39,61 @@ chmod +x deploy/deploy_linux.sh deploy/restore_mongo_archive.sh deploy/setup_ngi
 Manual equivalent commands:
 
 ```bash
+set -a
+source .env
+set +a
 docker compose build api
+docker compose up -d --no-recreate --wait mongo
+docker compose run --rm --no-deps -T api --check-schema --mongo-uri="${MONGO_URI}"
+# Continue only if the compatibility check succeeds.
 docker compose up -d
 docker compose ps
 docker compose logs --tail=100 api
 curl -fsS http://127.0.0.1:${APP_HOST_PORT:-18082}/healthz
 ```
+
+Use the deployment script for fail-closed execution. When running commands
+manually, **stop on any error**; do not run `up -d` after a rejected preflight.
+The preflight starts Mongo only if necessary, does not recreate an existing
+Mongo container, and leaves the API running. It reads the schema marker without
+opening logs, creating a save journal, applying migrations, or admitting players.
+Database failure also aborts deployment. Normal startup repeats the compatibility
+check; preflight does not replace startup validation or serialize deployments.
+
+## Save-format upgrades and recovery
+
+Alpha 1.0.56 is the schema-7 compatibility bridge. Deploy and verify it before
+the separately versioned schema-8 resource/auction-persistence release. This
+bridge alone does not deliver the resource-persistence feature.
+
+- Deploy one release at a time through the ordered CI and live-verification gate.
+  Keep the exact verified source commit/image for each supported recovery target.
+  Do not run two character-writing API instances against the same database.
+- Before a save-format upgrade, stop admission and allow the old API to shut down
+  fully. Take a consistent backup of Mongo **and** the private `logs/` volume
+  (including `character-saves/` when present) while no writer is running. Retain
+  the release identity with that backup; neither pending saves nor transaction
+  receipts may be discarded independently.
+- Once schema 8 is recorded, the schema-7 bridge is **not** a rollback target.
+  Its preflight refuses before replacing the running API, and its startup fence
+  refuses before migrations or character writes. Releases before 1.0.56 do not
+  contain these safeguards and are **unsupported** against upgraded saves.
+- Recover by rolling forward to the verified schema-8 release or a tested fix
+  that understands the same character resources, journals and auction receipts.
+  A passing schema check is necessary, not proof that an arbitrary custom binary
+  understands those contracts. Before publication, identify the exact supported
+  schema-8 commit and validate its crash/replay behavior on an isolated copy.
+- Never edit/delete migration markers to force an older writer to start. Do not
+  delete journals, receipts, auction-operation records or Docker volumes to clear
+  a startup error. Preserve the failing data and logs, keep the service unavailable
+  if necessary, and repair with a compatible writer.
+- Restoring an older backup is a separate, explicitly approved data-loss recovery:
+  stop all writers and restore the matching Mongo/journal/release set together.
+  It discards progress after that snapshot and is not a normal release rollback.
+- Verify the recovered API's exact commit, database readiness, character resources
+  (including zero mana), inventory, gold and pending market operations before
+  reopening admission. Complete public client/server release-identity checks and
+  real-input smoke tests; retain the recovery evidence in the release ledger.
 
 ## 3) Restore Mongo data from existing archive
 

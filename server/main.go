@@ -49,6 +49,7 @@ const (
 var addr = flag.String("addr", ":8080", "http service address")
 var mongoURI = flag.String("mongo-uri", "mongodb://localhost:27017", "MongoDB connection URI")
 var characterJournalDir = flag.String("save-journal-dir", "logs/character-saves", "Persistent private pending-character journal directory")
+var checkSchema = flag.Bool("check-schema", false, "Read-only database compatibility check; exit without logging files, migrations or admission")
 var certFile = flag.String("cert", "", "Path to SSL certificate file")
 var keyFile = flag.String("key", "", "Path to SSL key file")
 
@@ -377,6 +378,17 @@ func setupLogging() ([]io.Closer, error) {
 
 func main() {
 	flag.Parse()
+	if *checkSchema {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		version, err := database.CheckSchemaCompatibility(ctx, *mongoURI)
+		cancel()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Schema preflight failed: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("Schema preflight passed: database=%d supported=%d commit=%s\n", version, database.CurrentSchemaVersion, buildCommit)
+		return
+	}
 	qaUsernames = parseQAUsernames(*qaUsernamesFlag)
 	closers, err := setupLogging()
 	if err != nil {
