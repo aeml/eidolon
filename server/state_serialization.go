@@ -692,6 +692,8 @@ func broadcastState() {
 		wg.Add(1)
 		go func(c *Client) {
 			defer wg.Done()
+			c.stateMu.Lock()
+			defer c.stateMu.Unlock()
 			defer func() {
 				if r := recover(); r != nil {
 					// Client likely disconnected

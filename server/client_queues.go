@@ -30,3 +30,26 @@ func (c *Client) sendState(data []byte) bool {
 		return false
 	}
 }
+
+// Publish once under the same lock used to select joined snapshot recipients.
+// Once observed by a reader, the character binding must remain immutable.
+func (c *Client) bindPlayerID(id string) {
+	sessionsMu.Lock()
+	defer sessionsMu.Unlock()
+	if c.playerID == "" {
+		c.playerID = id
+	}
+}
+
+func (c *Client) boundPlayerID() string {
+	sessionsMu.Lock()
+	defer sessionsMu.Unlock()
+	return c.playerID
+}
+
+func (c *Client) resetSnapshotHistory() {
+	c.stateMu.Lock()
+	defer c.stateMu.Unlock()
+	c.seenIDs = make(map[string]bool)
+	c.lastState = make(map[string]*EntitySnapshot)
+}

@@ -27,3 +27,41 @@ func TestClientQueuesSerializeDisconnectAndBroadcast(t *testing.T) {
 		}
 	}
 }
+
+func TestClientPlayerBindingIsPublishedOnce(t *testing.T) {
+	c := &Client{}
+	var group sync.WaitGroup
+	for i := 0; i < 50; i++ {
+		group.Add(1)
+		go func() { defer group.Done(); c.bindPlayerID("player-test"); _ = c.boundPlayerID() }()
+	}
+	group.Wait()
+	c.bindPlayerID("player-other")
+	if c.boundPlayerID() != "player-test" {
+		t.Fatal("published character identity changed")
+	}
+}
+
+func TestClientSnapshotResetSerializesWithBroadcast(t *testing.T) {
+	c := &Client{}
+	c.resetSnapshotHistory()
+	var group sync.WaitGroup
+	for worker := 0; worker < 4; worker++ {
+		group.Add(1)
+		go func() {
+			defer group.Done()
+			for i := 0; i < 1000; i++ {
+				c.resetSnapshotHistory()
+				c.stateMu.Lock()
+				c.seenIDs["player-test"] = true
+				c.lastState["player-test"] = &EntitySnapshot{}
+				c.stateMu.Unlock()
+			}
+		}()
+	}
+	group.Wait()
+	c.resetSnapshotHistory()
+	if len(c.seenIDs) != 0 || len(c.lastState) != 0 {
+		t.Fatal("rejoin did not reset snapshot history")
+	}
+}

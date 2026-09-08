@@ -38,7 +38,13 @@ func (c *Client) dispatchMessage(msg Message) {
 			c.sendError("Invalid credentials")
 			return
 		}
-		c.username = payload.Username
+		if c.username != "" && c.username != payload.Username {
+			c.sendError("Use a new connection to switch accounts.")
+			return
+		}
+		if c.username == "" {
+			c.username = payload.Username
+		}
 
 		// Enforce single session
 		sessionsMu.Lock()
@@ -108,8 +114,7 @@ func (c *Client) dispatchMessage(msg Message) {
 		if c.playerID != "" {
 			log.Printf("Re-join detected for %s (old playerID: %s) – removing stale entity", c.username, c.playerID)
 			world.RemoveEntity(c.playerID)
-			c.seenIDs = make(map[string]bool)
-			c.lastState = make(map[string]*EntitySnapshot)
+			c.resetSnapshotHistory()
 		}
 
 		log.Printf("Player joining: %s (Class: %s)", c.username, payload.Type)
@@ -175,7 +180,7 @@ func (c *Client) dispatchMessage(msg Message) {
 
 		// Create player entity from DB character
 		playerID := "player-" + c.username
-		c.playerID = playerID
+		c.bindPlayerID(playerID)
 
 		// Check if player was in an instance and logged out more than 15 minutes ago
 		spawnX := char.X
@@ -731,6 +736,10 @@ func (c *Client) dispatchMessage(msg Message) {
 			c.sendError("Session token invalid or expired. Please log in again.")
 			return
 		}
+		if c.username != "" && c.username != username {
+			c.sendError("Use a new connection to switch accounts.")
+			return
+		}
 
 		// Clear the disconnected flag; this also returns the live entity pointer.
 		playerID := "player-" + username
@@ -742,8 +751,10 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 
 		// Bind this new client to the existing entity.
-		c.username = username
-		c.playerID = playerID
+		if c.username == "" {
+			c.username = username
+		}
+		c.bindPlayerID(playerID)
 
 		sessionsMu.Lock()
 		// Kick any stale session for this username (shouldn't exist, but be safe).
