@@ -48,6 +48,32 @@ pass **3.144s**. All these handles are closed; the expanded graph backend passes
 
 ### World integration checkpoint
 
+Combined opening/expanded source **3bf6a50** passes full client **63890 / 220
+suites / 3,305 tests / 78.747s** and full server race **37061 / root 11.362s /
+game 202.149s**. Initial fresh browser **66320 FAIL / 1.3m** stops at Mara's
+diary: four Skeletons cover its hit stack. The screenshot is inspected; the
+visible book has nearby enemies, not missing world geometry. No credit, range
+or hostile-priority rule is changed to bypass this.
+
+QA **95faafc** clears the immediate approach through ordinary basic/class
+attacks before inspecting. **26283 PASS / one / 3.1m**, log
+`/tmp/eidolon-investigations-opening-cleared-earned.log`: genuinely fresh Wizard,
+100-XP/100-gold opening with saved receipt (level 2 / 31s); diary through actual
+inspection and manual Ilyra turn-in (level 7); eight seeds after 15 observed
+collection-target deaths, no deaths, then all three scar records, correct fresh
+dialogue, manual rewards and saved handoff. Diary combat engages two targets;
+scar approach one. Engaged targets and selected target deaths do not count all
+possible AoE kills. Collection combat yields three equipment items, 80 gold
+**unsold** value, six occupied slots and gold 188 → 415. Its split claim is
+6,000 XP / 50 gold. Final level 16 still locks the level-30 Bastion; no viable
+full leveling path is claimed. Other realm progression is not earned by this run.
+
+Scan/cleanup pass; all three screenshots are preserved at
+`/tmp/eidolon-fresh-investigations-earned-tOr1n8/`. Earned diary and collection
+claim images are inspected. All these handles are closed. This adds fresh
+Earth proof to the four prepared-veteran phone routes; the expansion remains
+isolated, unversioned and unpublished while broader balancing continues.
+
 Air detour **32730 PASS / one / 2.5m** on clean **ab95837**: two actual
 investigations, all four earned records in both orientations, manual retrospective
 replies/rewards, masks 1/7 after reconnect and full saved rereading. Six targets
