@@ -167,6 +167,28 @@ No enemy kills/earned progression claims or in-run resource grants are used to
 mask reconnect behavior. Lint96349 passed before the final synchronized HUD
 assertion; full corrected lint and actual browser remain due at this entry.
 
+On28ebabc, final lint70508 PASS; full Go race71467 PASS root16.156s/other packages
+cached. First browser preflight returned1 before any service creation because
+this new worktree shared node_modules but lacked generated vendor assets. Ran
+the repository's prepare:client (86528 PASS); only ignored vendor files created,
+tracked tree unchanged. This was not a gameplay failure or an observation timeout.
+
+Corrected launch11931 CLOSED PASS1/34.3s (test29.6s), QA_SCRIPT_EXIT=0. Actual
+town Fireball left70mana, ordinary fresh login4.505s retained100HP/70mana; real
+hostile death followed by login3.877s retained0HP/70mana/DEAD and showed the death
+screen; normal death-button recovery returned100HP/100mana; another real cast,
+living Recall and login5.211s retained100HP/70mana. HUD matched server-derived
+stats. No recovery allowance was needed in observed values, though bounded
+elapsed regeneration remains allowed for living actors. Credential scan0 and
+independent exact-container/image absence confirmed. Log
+`/tmp/eidolon-resource-login-death-prepared-gameplay.log`; first preflight log
+`/tmp/eidolon-resource-login-death-gameplay.log`. No browser handles remain live.
+
+This is desktop Wizard ordinary login/death/Recall proof with an explicit
+near-death fixture followed by real damage, not four-class browser combat,
+physical-phone play, PvP or unfinished-instance recovery. Those broader scopes,
+shutdown/save-failure behavior and a tested compatible rollback remain open.
+
 ## Required work still open — do not publish this slice alone
 
 - Verify the implemented immediate-login, duplicate-session and repeated-Join
