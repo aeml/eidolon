@@ -1,5 +1,51 @@
 # Resource persistence implementation candidate — not release-ready
 
+## Selection acceptance closed — September 8, 20:52 UTC
+
+Go57c97c1 full77182 PASS0: root17.736/game415.255s, database/lifecycle cached.
+Corrected actual31382 PASS0/232.806s: TWO repetitions, nine normal/rejected modes
+and seven SIGKILL boundaries each. Independently audited78 child logs:14 intended
+kills,64 normal clean drains, no races/panics or skipped tests. Owned corrected
+Mongo2046/volumes removed/absent. Initial55659 is a failed launcher run, not proof.
+
+Client69597 PASS238 suites/3388 tests219.707s. Client-only tooltip cleanup then
+passes60 focused tests. Prepared browser fixture corrected unknown item names
+to real catalog entries.21690 found a legitimate new-item hover violated an
+overly strict hidden-tooltip check;41095 required a visible element even when
+correctly hidden. Final test rejects any visible OLD tooltip, then checks hiding
+after normal pointer movement.21323 PASS4 cases32.6s, two repetitions across
+desktop1280x900 andphone390x844. Both screenshots viewed; no stale tooltip and
+chat remains visible. Added this regression to the normal anonymous browser CI
+script. No claim of physical-phone/full-mobile acceptance. All Go/actual/browser
+handles closed; final lint16643 CLOSED PASS0 after the last test correction.
+Client-only follow-up is committed as1886cee; Go source unchanged from57c97c1.
+
+Logs `/tmp/eidolon-listing-selection-{full-race,sessions-corrected}.log` and
+`/tmp/eidolon-listing-selection-browser-{final,pointer,accepted}.log`. Publication
+timing and compatible rollback remain open; still unpublished55 metadata.
+
+## Stale listing selection candidate — September 8, 20:48 UTC
+
+Listing0908438 full34429 CLOSED PASS0, root12.001/database1.088/game286.630s.
+New57c97c1 binds the ordinary UI request to selected ID/quantity, rejects stale
+or missing expectations under the seller lock before decision/escrow, refreshes
+open listing inventory and requires explicit reselection. Frozen scalar selection
+is forwarded, never replaced by whatever now occupies that slot.
+
+Focused Go race9864 PASS; full client69597 PASS238 suites/3388 tests219.707s;
+lint passed. Browser48658 failed prepared unknown-name icons, corrected33513
+PASS2 cases21.8s. Reviewing both screenshots revealed a stale tooltip; the
+client-only follow-up clears it with selection. Final focused60 tests pass,
+browser21690 ACTIVE. Full Go race77182 ACTIVE on unchanged Go source.
+
+Initial actual55659 FAIL158.414s: launcher binary basename failed exact commit
+health identity and omitted failpoint opt-in, so no actual acceptance. Owned2045
+Mongo/volumes removed/absent. Corrected31382 ACTIVE, exact57c97c1 binary correctly
+named, failpoints enabled, two repetitions of nine normal/rejected listing cases
+and seven crashes. First normal set passed. Logs
+`/tmp/eidolon-listing-selection-{full-race,sessions-corrected}.log`.
+Publication-time fairness and compatible rollback still open; not release-ready.
+
 ## Listing actual-session closure — September 8, 20:31 UTC
 
 Actual39545 CLOSED PASS0/202.614s on0908438, TWO combined repetitions. All74

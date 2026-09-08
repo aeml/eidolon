@@ -1,8 +1,34 @@
-# Auction operation recovery — bids implemented, remaining transfers open
+# Auction operation recovery — implementation and remaining release gates
 
-The refund outbox and recoverable bid decisions are implemented. Item transfers,
-listing deposits and seller payouts still need their own durable operation
-contract. Do not release the resource candidate on the strength of bid-only QA.
+The refund outbox, recoverable bids, seller payouts, item claims/returns, buyouts
+and listing escrow are implemented, with their acceptance evidence below and in
+the resource implementation ledger. Stale client selection binding is added in
+57c97c1. This remains an unpublished candidate: delayed listing-publication
+duration fairness and enforced compatible-writer/rollback protection are open.
+
+## Selection acceptance — September 8, 20:51 UTC
+
+57c97c1 requires expected item ID and exact selected stack count in ordinary
+listing requests. Both are checked under the seller lock before reserving the
+decision. Old/missing expectations fail closed. The UI stores the selection's
+scalar identity/quantity and forwards those values; it does not reinterpret a
+stale slot as its replacement. Open inventory refresh and submission invalidate
+stale selections; explicit reselection permits listing the new item.
+
+Full race77182 PASS0, root17.736/game415.255s (database/lifecycle cached).
+Actual31382 PASS0/232.806s, TWO repetitions of nine normal/rejected listing
+cases and seven SIGKILL boundaries. Independently checked78 child logs:14
+intended crashes,64 clean normal drains, no races/panics. Owned corrected
+Mongo2046/volumes removed/absent. Exact Go source unchanged from57c97c1.
+Initial actual55659 failed its launcher's binary-basename identity setup and
+skipped non-enabled failpoint cases; it provides no acceptance. Keep its log.
+
+Next duration correction must preserve the paid listing's full advertised window
+from first successful publication, not spend that window while escrow/publication
+is unavailable. Preserve the unique auction/operation/item/deposit identity;
+ambiguous insert recovery must reuse the already-published start/end, never
+extend an existing listing on retry. Current timestamps still come from request
+preparation. This paragraph is a required design constraint, not implemented code.
 
 ## Original gap, now addressed for bids
 
