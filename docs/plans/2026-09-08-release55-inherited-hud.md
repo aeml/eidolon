@@ -21,3 +21,16 @@ Rendered desktop/portrait/landscape checks on the inherited55 runtime remain
 due, alongside earlier52 recovery and53 nameplate world checks. Earlier55
 component images are not a new inherited-runtime capture or physical-phone proof.
 Keep the full sequential46→55 CI/live gates; no55 publication is claimed.
+
+## Inherited rendered closure
+
+After50/52 documentation carry atc62e42f033032556d897f7813fc18d27ae66260b,
+21633 rendered checks PASS3/7.1s, normal0:1280×720,390×844,844×390. The
+presentation fixture shows0/160 with zero blue fill, then updates to1mana in
+place. All three captures inspected and archived at
+`/tmp/eidolon-hud55-carried-evidence-VUybnc/rendered/`; log
+`/tmp/eidolon-release55-final54-rendered.log`. This is component presentation
+evidence, not a real cast, complete gameplay session or physical-phone approval.
+53's newly completed rendered/town closure is carried afterward with no source
+change.52's actual hostile-death/Recall route is separately documented and does
+not substitute for a full55 earned campaign. All local55 handles are closed.
