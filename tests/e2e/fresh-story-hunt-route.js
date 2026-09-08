@@ -2,10 +2,11 @@ import { expect } from '@playwright/test';
 import { chronicleHunts } from '../../src/data/chronicleHunts.generated.js';
 import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { createEarnedClassCombat } from './earned-class-combat.js';
+import { recoverEarnedDeath } from './earned-death-recovery.js';
 import { openDungeonGuide } from './dungeon-guide.js';
 import { prepareEarnedClass } from './fresh-ready-route.js';
 import { loginAndEnterWorld, moveByGroundClick, projectEntity, readPlayerState,
-    returnToTown, setAutoLootThroughSettings } from './helpers.js';
+    setAutoLootThroughSettings } from './helpers.js';
 
 const snapshot = page => page.evaluate(() => {
     const p = window.game.player;
@@ -89,7 +90,7 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady }
         deaths++;
         console.log(`[story-hunt] death ${JSON.stringify({ id, deaths, credit, ...await snapshot(page), combat: await combatSnapshot(page) })}`);
         expect(deaths, 'Expedition exceeded two ordinary respawns').toBeLessThanOrEqual(2);
-        await returnToTown(page);
+        await recoverEarnedDeath(page);
         expect((await readChronicleChapter(page, id)).count).toBeGreaterThanOrEqual(credit);
     };
     while ((await readChronicleChapter(page, id)).count < hunt.count) {

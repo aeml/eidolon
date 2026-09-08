@@ -147,3 +147,27 @@ location with idle-roam margin, constructor output, and existing hunt/regen
 contracts. Lint57878 PASS. Full server regression and fresh playability evidence
 are still required. The diagnostic filter now excludes friendly NPCs using the
 game's actual hostility predicate. No recovery mechanics or player grants added.
+
+## Spaced encounter run and death resource recovery
+
+Full server26246 PASS on5398395: root18.567s/database1.040s/game276.898s;
+the handle is closed. Earned browser82247 **failed /2.5m** at the opening's
+third kill: two prior kills, one death, then the unchanged120s combat deadline.
+No Watch pacing result exists for this source. The opening route disables
+screenshots; its old diagnostic read nonexistent player.health instead of
+player.stats.hp, so that failure has no usable resource-bar snapshot. Log:
+`/tmp/eidolon-earned-watch-spaced.log`. Artifact scan/owned cleanup passed.
+
+The production respawn path restores health but not mana. This also explains
+why the prior run's death mana18→23→28 stayed depleted across ordinary respawns.
+Source6371b3c integrates the separate dead-only mana-recovery fix7440ccd, not
+a passive regeneration increase or a new potion/rest system. Living unstuck
+and recall cannot refill mana; PvP restrictions and cooldowns remain intact.
+See the death-resource evidence document for focused tests.
+
+The earned opening/Watch driver now observes actual state/delta messages around
+the ordinary death-button click and requires a full-mana server receipt, not
+just a predicted local refill. No health/mana grant command is used. Opening
+failure logs now read real resource fields. Existing combat deadlines, death
+allowances, quest counts and manual claims remain unchanged. A new full check
+and earned run remain required; neither spacing nor recovery proves full pacing.

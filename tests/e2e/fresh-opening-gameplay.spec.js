@@ -8,6 +8,7 @@ import { earnFreshDungeonReadiness, prepareEarnedClass } from './fresh-ready-rou
 import { createEarnedClassCombat } from './earned-class-combat.js';
 import { clearEarnedVerdant } from './fresh-dungeon-route.js';
 import { earnFreshStoryHunt } from './fresh-story-hunt-route.js';
+import { recoverEarnedDeath } from './earned-death-recovery.js';
 import { collectBrowserFailures, credentialsFromEnvironment, jumpByGroundClick,
     loginAndEnterWorld, moveByGroundClick, projectEntity, projectNearestHostile,
     readPlayerState, returnToTown } from './helpers.js';
@@ -109,9 +110,11 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
             if (player.state === 'DEAD') {
                 deaths++;
                 console.log(`[fresh-opening] death ${JSON.stringify({ deaths, count: before, level: player.level,
-                    targetStartHP, targetLowestHP, target: targetState })}`);
+                    targetStartHP, targetLowestHP, target: targetState,
+                    resources: await page.evaluate(() => ({ hp: window.game.player.stats.hp,
+                        mana: window.game.player.stats.mana, maxMana: window.game.player.stats.maxMana })) })}`);
                 expect(deaths, 'Bounded opening route exceeded two normal respawns').toBeLessThanOrEqual(2);
-                await returnToTown(page);
+                await recoverEarnedDeath(page);
                 expect((await readChronicleChapter(page, chapter)).count, 'Death must not erase earned quest credit').toBe(before);
                 await leaveTown(page);
                 target = await findSkeletonThroughTravel(page);
@@ -154,7 +157,8 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
         }
         const diagnostic = await page.evaluate(id => {
             const game = window.game, enemy = game.remotePlayers.get(id);
-            return { playerHP: game.player.health, enemyHP: enemy?.health,
+            return { playerHP: game.player.stats.hp, playerMana: game.player.stats.mana,
+                enemyHP: enemy?.health ?? enemy?.stats?.hp,
                 enemyState: enemy?.state, hoveredType: game.hoveredEntity?.constructor?.name,
                 distance: enemy ? game.player.position.distanceTo(enemy.position) : null };
         }, target.id);
