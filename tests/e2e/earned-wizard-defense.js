@@ -4,7 +4,11 @@ import { planWizardCrowdControl } from '../wizardHuntControls.js';
 
 // Only observes replicated state and chooses ordinary keys/ground clicks.
 // Reinstall after fresh login, which destroys the previous browser observer.
-export async function createEarnedWizardDefense(page, { allowJumpFallback = false, useCrowdControl = false } = {}) {
+export function createEarnedWizardDefense(page, options) {
+    return createEarnedRangedDefense(page, options);
+}
+
+export async function createEarnedRangedDefense(page, { allowJumpFallback = false, useCrowdControl = false } = {}) {
     await page.evaluate(() => {
         const game = window.game, original = game.handleServerMessage.bind(game);
         window.__freshWizardDefense = { lastAcceptedAt: 0, counts: { retreats: 0, crowdJumps: 0, shields: 0, rejectedShields: 0, wells: 0, rejectedWells: 0, fireballs: 0, rejectedFireballs: 0 } };
@@ -41,9 +45,9 @@ export async function createEarnedWizardDefense(page, { allowJumpFallback = fals
                     p.position.distanceTo(enemy.position) < 18).map(enemy => ({ x: enemy.position.x, z: enemy.position.z, radius: enemy.radius })) };
         });
         const plan = await page.evaluate(async ({ state, encounter }) => {
-            const { planWizardHuntStep, isEarnedRetreatPathClear } = await import('/tests/wizardHuntControls.js');
+            const { planRangedHuntStep, isEarnedRetreatPathClear } = await import('/tests/wizardHuntControls.js');
             const game = window.game;
-            return planWizardHuntStep({ ...state, encounter,
+            return planRangedHuntStep({ ...state, encounter,
                 canRetreat: delta => isEarnedRetreatPathClear(game.collisionManager,
                     game.player.position, state.radius || 1.25, delta) });
         }, { state, encounter });

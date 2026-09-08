@@ -57,12 +57,16 @@ export function planWizardCrowdControl(state) {
 // Read-only strategy for earned-route QA. It chooses ordinary inputs, never
 // grants progress, changes positions or relaxes the hunt's death bound.
 export function planWizardHuntStep(state) {
-    if (state.className !== 'Wizard' || state.dead || !state.threats?.length) return null;
+    return state.className === 'Wizard' ? planRangedHuntStep(state) : null;
+}
+
+export function planRangedHuntStep(state) {
+    if (!['Wizard', 'Rogue'].includes(state.className) || state.dead || !state.threats?.length) return null;
     const threats = state.threats.map(enemy => ({ ...enemy,
         distance: Math.hypot(state.x - enemy.x, state.z - enemy.z) })).sort((a, b) => a.distance - b.distance);
     const nearest = threats[0];
     const shieldIndex = (state.hotbar || []).indexOf('Arcane Shield');
-    if (nearest.distance < 9 && state.healthRatio < 0.8 && state.shieldHP <= 0 &&
+    if (state.className === 'Wizard' && nearest.distance < 9 && state.healthRatio < 0.8 && state.shieldHP <= 0 &&
         shieldIndex >= 0 && shieldIndex < 4 && state.unlockedSkills?.includes('Arcane Shield') && state.mana >= state.shieldCost &&
         (state.cooldowns?.['Arcane Shield'] || 0) <= 0 && state.sinceCastMs >= 550) {
         return { action: 'shield', key: String(shieldIndex + 1) };

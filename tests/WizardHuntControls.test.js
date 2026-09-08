@@ -1,6 +1,16 @@
 import * as THREE from 'three';
 import { CollisionManager } from '../src/core/CollisionManager.js';
-import { isEarnedRetreatPathClear, retreatCrossesActorBody, planWizardCrowdControl, planWizardHuntStep, planWizardTravelDefense } from './wizardHuntControls.js';
+import { isEarnedRetreatPathClear, retreatCrossesActorBody, planWizardCrowdControl, planWizardHuntStep, planRangedHuntStep, planWizardTravelDefense } from './wizardHuntControls.js';
+
+test('Rogue uses ordinary ranged spacing but never a Wizard shield', () => {
+    const rogue = { className: 'Rogue', x: 0, z: 0, healthRatio: .2, shieldHP: 0,
+        hotbar: ['Arcane Shield'], unlockedSkills: ['Arcane Shield'], mana: 100,
+        shieldCost: 40, sinceCastMs: 1000, threats: [{ x: 3, z: 0 }] };
+    expect(planRangedHuntStep(rogue)).toMatchObject({ action: 'retreat' });
+    expect(planWizardHuntStep(rogue)).toBeNull();
+    expect(planRangedHuntStep({ ...rogue, canRetreat: () => false })).toBeNull();
+    expect(planRangedHuntStep({ ...rogue, dead: true })).toBeNull();
+});
 
 const state = { className: 'Wizard', dead: false, x: 0, z: 0, healthRatio: 0.7,
     shieldHP: 0, mana: 50, shieldCost: 40, hotbar: ['Teleport', 'Arcane Shield'],

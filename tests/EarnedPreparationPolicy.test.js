@@ -47,5 +47,19 @@ test.each(['Wizard', 'Fighter'])('%s profile points to its real mastery talent',
         ? earnedWizardPreparationBudget(state) : earnedFighterPreparationBudget(state));
 });
 test('unsupported earned classes are not silently given Wizard stats', () => {
-    expect(() => earnedPreparationBudget('Rogue', state)).toThrow('No earned dungeon preparation');
+    expect(() => earnedPreparationBudget('Unknown', state)).toThrow('No earned dungeon preparation');
+});
+
+test.each(['Rogue', 'Cleric'])('%s uses its own real mastery and earned branch unlocks', className => {
+    const profile = earnedPreparationProfile(className);
+    expect(CONSTANTS.PASSIVE_TALENTS[className].find(talent => talent.id === profile.mastery))
+        .toMatchObject({ name: profile.masteryLabel, maxRank: 5 });
+    expect(earnedPreparationBudget(className, state)).toMatchObject({ statAllocations: 5,
+        masteryPurchases: 3, currentMastery: 0,
+        expectedSkills: [className === 'Rogue' ? 'Smoke Bomb' : 'Healing Light'] });
+    expect(earnedPreparationBudget(className, { ...state, level: 40, statPoints: 0,
+        talentRanks: { [profile.mastery]: 5 } })).toMatchObject({ statAllocations: 0,
+        masteryPurchases: 0, currentMastery: 5 });
+    expect(earnedPreparationBudget(className, { ...state, level: 40 }).expectedSkills).toHaveLength(4);
+    expect(() => earnedPreparationBudget(className, { ...state, level: 9 })).toThrow('level 10');
 });

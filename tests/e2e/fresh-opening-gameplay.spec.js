@@ -129,7 +129,7 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
             const retreat = await page.evaluate(id => {
                 const game = window.game;
                 const enemy = game.remotePlayers.get(id);
-                if (!enemy || game.player.constructor?.name !== 'Wizard') return null;
+                if (!enemy || !['Wizard', 'Rogue'].includes(game.player.constructor?.name)) return null;
                 const dx = game.player.position.x - enemy.position.x;
                 const dz = game.player.position.z - enemy.position.z;
                 const distance = Math.hypot(dx, dz);

@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
 import { projectEntity, readPlayerState } from './helpers.js';
-import { createEarnedWizardDefense } from './earned-wizard-defense.js';
+import { createEarnedClassCombat } from './earned-class-combat.js';
 
 // The fresh reader brings ordinary roaming enemies to a site. Clear its
 // immediate approach with earned basic/class attacks before trying to read;
@@ -12,7 +12,7 @@ export async function clearFreshInvestigationApproach(page, site) {
     // hunts, not stand still and absorb every pursuer while attempting to read.
     // This does not buy skills, refill resources or alter the death bound.
     const className = await page.evaluate(() => window.game.player.constructor.name);
-    const defend = className === 'Wizard' ? await createEarnedWizardDefense(page) : null;
+    const defend = await createEarnedClassCombat(page, className);
     for (let attempt = 0; attempt < 160; attempt++) {
         const player = await readPlayerState(page);
         expect(player.state, 'Fresh investigation combat must remain survivable').not.toBe('DEAD');
@@ -32,7 +32,7 @@ export async function clearFreshInvestigationApproach(page, site) {
             return;
         }
         engaged.add(target);
-        if (defend && await defend()) continue;
+        if (await defend(page, { id: target })) continue;
         expect((await readPlayerState(page)).state,
             'Fresh investigation retreat must remain survivable').not.toBe('DEAD');
         const point = await projectEntity(page, target);
