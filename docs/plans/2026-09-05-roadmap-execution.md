@@ -5,7 +5,59 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 19:39 UTC
+## Current checkpoint — September 8, 19:54 UTC
+
+Previous turn was PROGRESS (full race closure and normal seller payout evidence).
+This turn is PROGRESS: durable exact buyer item claims and expired/cancelled
+seller returns implemented. Full roadmap remains active and incomplete.
+
+Resource runtime0c847a81f4bf39c0b2c213fcc648a58988d0a756 introduces item_claim
+operations with immutable JSON payload/original claim status. Authorization and
+complete capacity are checked before reserving. Account-ordered recovery first
+flushes the latest pending snapshot, then atomically grants the item plus private
+SHA256 receipt and pins the entity until its full character save is journaled.
+Only after delivery commit does the guarded auction update mark ItemClaimed (and
+SellerClaimed for returns). Offline conversion preserves unrelated legacy gear;
+all save/hydration/snapshot paths retain and privately copy the new receipt map.
+
+Detached placement preserves every item property and only merges stacks whose
+properties match apart from ID/quantity. Insufficient inventory+stash capacity
+does not partially change stacks or drop ground loot; the unapplied reservation
+is released and collection can be retried after freeing space. A matching receipt
+is checked before capacity, so recovery cannot duplicate an item already moved
+or consumed. Persistent legacy direct item claims are blocked; the handler does
+not perform a second grant and serializes detached final inventory/stash state.
+Buyouts/listing escrow are NOT converted yet; compatible rollback remains open.
+
+Focused63426 PASS; initial73366 test compilation FAILED (Entity.GetCopy does
+not exist), corrected to World.GetEntityCopy. Corrected57785/expanded85095/
+capacity52907 PASS under race detection; final root2.243s/game1.221s. Database
+package compiled with no matching tests in those filtered runs; item-operation
+validation runs in the new game tests. Journal failure/retry, private receipts,
+exact metadata, partial stack rejection, capacity changed after reservation,
+retry after freeing space and non-rescaling offline conversion are covered.
+Candidate docs contain logs and limitations, and no acceptance assertion removed.
+
+**Fullrace54188 ACTIVE**, frozen0c847a8, log
+`/tmp/eidolon-auction-item-full-race.log`. **Actual85368 ACTIVE**, exact built
+commit, TWO repetitions, log `/tmp/eidolon-auction-item-sessions.log`. First
+normal buyer/expired/cancelled/stash/full-capacity set PASS31.30s; first six
+SIGKILL boundaries PASS49.18s. Whole run not yet terminal. Also includes prior
+normal seller payout and same-bidder/competing requests. Owned Mongo
+eidolon-auction-item-proof-20260908-1952 has EXIT cleanup. Poll the same handles;
+do not edit candidate source until terminal. Resource branch stays
+work/resource-persistence-20260908 at `/tmp/eidolon-resource-persistence-c6E17J`,
+with only evidence commits after tested runtime. No release number assigned.
+
+48 CI34266379714 freshly ACTIVE in predeployment full-character gameplay;
+client/server/three smoke shards PASS. No push this turn.49 remains gated on
+the complete48 pipeline/finalLiveQA/fresh exact public identity. Last public
+client/backend47/6925c51 healthy/ready at19:33:44. Root staged52 must not be
+pushed; ordered49–55 queue remains in19:01 checkpoint. Next: audit item actual/
+full results, then combined durable buyout debit+item and listing escrow; broader
+phone/campaign/raid/rollback milestones remain open.
+
+## Historical checkpoint — September 8, 19:39 UTC
 
 Previous goal turn was PROGRESS (auction snapshots and observed Tripwire fixture
 correction). This turn is PROGRESS: full verification closed and ordinary seller
