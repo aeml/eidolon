@@ -5,7 +5,80 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 16:13 UTC
+## Current checkpoint — September 8, 16:36 UTC
+
+Previous goal turn was PROGRESS (47 publication plus durable journal implementation
+and real recovery evidence). This turn is PROGRESS: shutdown admission/timer/
+earned-work draining and journal-all final snapshots implemented, focused/full
+race suites pass, and the real matrix passes; the new live-socket shutdown test
+needed a cooldown-aware test correction and its repeated acceptance is running.
+Full1.1–1.10 remains active and incomplete. No version scope has been reduced.
+
+47 CI **34248491147**, exact6925c5113ee6acdf698713f3332f80dcf546bd76, now PASSES
+client/server/all3 browser-smoke shards. Predeploy Character QA is freshly ACTIVE.
+No deployment/live47 success claimed and no new push this turn.48 remains gated
+on the complete47 CI/live/public-identity pass.48–55 refs and prior validation
+unchanged in earlier checkpoints. Never push root's staged52/ledger branch.
+
+Resource candidate `/tmp/eidolon-resource-persistence-c6E17J`, branch
+work/resource-persistence-20260908: runtime **3efad53dbf4a26622c137a2ed066b84fd425697b**,
+test correction **a837acb9d9c35f082f3c93e32f76608648290015**. Only its implementation
+evidence document is currently dirty. Still no56 metadata or release approval.
+New lifecycle group closes external admission before waiting; earned task trees
+can finish nested completions before atomically sealing at idle. Main joins
+gameplay/save/expiry ticks, cancels pending attacks/aftershocks/meteors/slams/PvP
+timers/vigils, drains world rewards/refunds, settles decided PvP results and cancels
+unfinished matches without maintenance forfeits/deserter penalties using existing
+exit recovery, then retires hub clients and drains server completion/save workers.
+Every final player, including disconnected late-reward recipients, is journaled
+BEFORE any final Mongo attempt. Stop further final DB attempts after one failure,
+retaining all pending files for startup. Local journal failure keeps admission
+closed and retries rather than falsely reporting safe exit. HTTP closes after
+drain; normal main return closes DB/logging. Compose grace60s. Forced kill,
+permanent storage loss and cross-document reward transactions are not guaranteed.
+
+Focused40384 PASS root0.245/lifecycle0.009/game0.032; race67491 PASS1.459/1.030/1.566;
+expanded54309 PASS1.917/1.038/1.703; final43001 PASS2.171/1.041/1.650. Last log
+`/tmp/eidolon-shutdown-final-focused.log`. Full race **21550 CLOSED PASS normal0**:
+root20.592s/game403.942s/lifecycle1.069s/databasecached. Log
+`/tmp/eidolon-resource-shutdown-full-race.log`. Covers new admission races, active
+tick drain, nested reward completion, real delayed-attack/vigil cancellation,
+decided/unfinished PvP results, disconnected late rewards, unwritable journal and
+all8 journals preceding the first database call.
+
+Actual **90112 CLOSED FAIL normal1/275.094s**, not a whole-run pass. On3efad53:
+handoff6.33s, real rejected-save/restart6.70s, committed receipt/later gold3.46s,
+all8 class/death tokens28.62s, and144 real saved sessions217.47s PASSED. The new
+live-socket shutdown test FAILED12.46s before its intended8-socket SIGINT step:
+after accepted Fireball/70mana, an immediate unknown-skill probe expected locked
+but correctly received global_cooldown. Test correctiona837acb uses the accepted
+cast acknowledgement itself for that living Wizard; other probes and all final
+snapshot/restart/death assertions remain unchanged. No runtime change or extra
+grants/waits. Focused92471 CLOSED PASS; log
+`/tmp/eidolon-shutdown-cast-ack-focused.log`.
+
+Initial actual log `/tmp/eidolon-resource-shutdown-actual-sessions.log`, binary
+`/tmp/eidolon-resource-shutdown-proof-ruYRdB/3efad53dbf4a26622c137a2ed066b84fd425697b`.
+Nine strict/independently clean normal-exit/race/panic/fatal/credential log dirs
+1303028052/1993578100/494283604/2329653674/3054342950/1409691725/2034676435/1967588618/
+1707152549 in `/tmp/eidolon-compat-session-*`. The failed test's cleanup reached
+the explicit shutdown-drain-complete log, but that is not the missing8-case pass.
+Exact original owned Mongo/volumes removed and independently absent; no production
+data touched.
+
+ACTIVE **49137**: three consecutive corrected eight-live-socket shutdown/restart
+tests on race-built a837acb, log `/tmp/eidolon-resource-shutdown-repeat-sessions.log`.
+Owned Mongo `eidolon-resource-shutdown-repeat-20260908-1636`, exact cleanup trap;
+binary directory emitted by the same handle. Runtime sources frozen until its
+actual terminal result. No owned local browser;47 CI is the external verified
+wait. Do not restart any handle because of an observation timeout.
+
+Next: finish49137, then actual unfinished dungeon/PvP resource recovery and
+remaining pending-save/offline-credit/expiry ordering, delayed IO, rollback and
+broader browser/device acceptance.31chapter earned campaign and complete phone
+gate remain open; neither this shutdown work nor47 closes1.1 or the full roadmap.
+
+## Historical checkpoint — September 8, 16:13 UTC
 
 Previous focused regeneration turn was NO ROADMAP PROGRESS: it reconfirmed the
 already implemented .01 health/mana coefficient and passing focused tests, but
