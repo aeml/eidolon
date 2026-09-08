@@ -142,6 +142,31 @@ rejection assertions; no runtime or recovery requirement changed. Logs
 `/tmp/eidolon-compat-session-{3037911991,3260200571}/server.log`. Actual corrected
 execution remains required; owned disposable Mongo removed by the wrapper.
 
+Correctedea5d539 actual95842 CLOSED PASS25.988s: handoff4.79s, all eight token/
+recovery cases21.18s. Race-built server, strict log/normal-exit checks, exact saved
+resources for alive/dead four-class cases, token rotation/replay rejection and
+ordinary Recall/Respawn assertions passed. Evidence
+`/tmp/eidolon-resource-token-corrected-sessions.log` and
+`/tmp/eidolon-compat-session-{834156718,867286699}/server.log`; independently
+scanned clean of race/panic/fatal markers. Both token proof Mongo containers
+removed with disposable volumes and independently absent. Binary
+`/tmp/eidolon-resource-token-corrected-proof-0vZpDN/ea5d539612d651b93c310968bcdf8473702a4641`.
+
+Merge2e61665 inherits55/8df7dd4 and the exact47 accepted-cast QA correction, only
+two QA/evidence files changed. Queued releases retain their own versions and
+publication gates. This branch still has no assigned resource-release version.
+
+Browser acceptance now extends the existing disposable death-resource route:
+ordinary town Fireball, normal credentialed reload with spent mana preserved,
+allowlisted near-death fixture followed by real hostile damage, reload while
+dead with the death screen still shown and unchanged0HP/mana, normal Respawn
+button, another cast and living Recall/reload without mana refill. Living reload
+bounds allow only observed elapsed regeneration plus one fractional-boundary
+point; dead resources must remain exact. The HUD must agree with current stats.
+No enemy kills/earned progression claims or in-run resource grants are used to
+mask reconnect behavior. Lint96349 passed before the final synchronized HUD
+assertion; full corrected lint and actual browser remain due at this entry.
+
 ## Required work still open — do not publish this slice alone
 
 - Verify the implemented immediate-login, duplicate-session and repeated-Join
