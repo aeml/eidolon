@@ -64,3 +64,12 @@ on its single floor, with no new stacked floor geometry or collision change.
 Release47 notes describe the verified practice-duel repair, not ranked/party
 sign-off. Later nameplate/action-label polish remains open (queued53 is not in
 this branch). A versioned textured-court rerun/capture is required before merge.
+
+60074 on clean e9b1b2b reports4PASS/1.7minutes (23.4/24.1/24.8/26.6s), with
+the same entry/combat/return/reward assertions and scan0. Both paved screenshots
+were inspected: one coherent cobblestone floor, visible heroes and low boundaries.
+The command handle returned143 after the complete success/cleanup log, not0;
+retain this wrapper anomaly rather than claiming a clean exit. The next final
+run explicitly records the shell's script exit status. The full CI route now
+retains the same four-class practice-duel function as focused QA.243 version/
+scene/preflight/material checks passed2.951s plus lint/diff before e9b1b2b.

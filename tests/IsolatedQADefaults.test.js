@@ -1,5 +1,12 @@
 import { readFileSync } from 'node:fs';
 
+test('the full gate retains the same four-class practice-duel route as focused QA', () => {
+    const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
+    expect(script).toContain('&& run_pvp_cadence && run_animation_classes');
+    expect(script).toContain('pvp-cadence)\n    run_pvp_cadence');
+    expect(script).toContain('run_pvp_cadence() {\n  npx playwright test tests/e2e/pvp-cadence-gameplay.spec.js');
+});
+
 test('fresh collection allows explicit four-class comparisons while keeping Wizard as the default', () => {
     const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
     expect(script).toContain('local fresh_class="${EIDOLON_E2E_FRESH_CLASS:-Wizard}"');
