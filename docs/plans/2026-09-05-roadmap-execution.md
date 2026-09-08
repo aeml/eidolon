@@ -5,7 +5,53 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 09:12 UTC
+## Current checkpoint — September 8, 09:38 UTC
+
+The direct regeneration request was verified against current source: both
+coefficients already0.01; client27636 passes six tests and server95457 passes
+the four passive-regeneration tests. No further rate reduction was made.
+This continuation makes progress through corrected full client verification and
+an instrumented reproduction, not a claim that the roadmap or first hour is done.
+
+45CI34208478475 remains ACTIVE at a fresh check: client/server/browser PASS,
+predeploy gallery PASS and full-character gameplay running. Public manifest and
+backend still44/847d454, healthy/database ready. No46 push until all eight45 jobs
+and independent exact manifest/login/versioned-main/backend checks pass. Queued46
+remains cleanb2016ef. Root stays staged52 and must not be pushed.
+
+47 now inherits final46 through d2a8c98. Actual25621 FAILED3.2m because no clear
+retreat input could be issued. Test-only acb8211 distinguishes unissued movement
+from a failed issued click/key; only the former falls back to combat, not counted
+as a successful retreat. Focused58906 passes31tests plus full lint.
+Actual21067 onacb8211 FAILED5.0m at2/8fragments, seven selected-target deaths,
+zero player deaths. Next target stayed alive past120s as107retreats carried the
+player north into stronger mobs. Scan0 and owned cleanup passed. Image viewed:
+the selected card shows a Demon Orc while the test still waits for a Skeleton.
+Archive `/tmp/eidolon-release47-clear-input-evidence-K0vasm/failed-collection.png`.
+
+47candidate **d31334a2c104f48f4c6de976e3bfd45354ef2601** adds read-only local
+server attack/damage counters per target, pending/hovered IDs and nearby HP.
+Focused38478 PASS13tests/four suites/1.666s plus full lint. **40009 ACTIVE** is
+the only owned browser: fresh-collection, runID release47-combat-receipts,
+API18585/Mongo18586/web18587, frozen work/release47-starter-spacing in
+`/tmp/eidolon-release47-starter-FHKAMJ`. Poll the same handle; no edits there or
+second owned browser until terminal. Log
+`/tmp/eidolon-release47-combat-receipts-gameplay.log`. Opening currently42s,
+zero deaths,500XP/level5; collection result not yet available. No production
+change since enemy-impact fix, no faster cadence or expanded story in this47.
+
+Expanded candidate **6c2a81a** in `/tmp/eidolon-earned-story-TZuGpp` is clean.
+ba4cc72 adds actual Rogue ranged defense and Cleric affordable/unlocked healing
+inputs, class-specific earned preparation, and all-class investigation handling.
+Full10683 failed one stale unit mock; d9af0d2 fixes that mock, retaining class,
+target, input-order and death assertions. Focused64317 PASS82tests plus full lint.
+Corrected full16810 **PASS231suites/3418tests/199.326s**, closed; docs6c2a81a.
+Details in its `2026-09-08-four-class-earned-controls.md`. Actual Rogue/Cleric,
+appropriate-level uninterrupted campaign and broad balance approval remain due.
+It retains experimental player cadence and31chapters; do not conflate its
+evidence with47's original15chapters/cadence. No production merge/publication.
+
+## Historical checkpoint — September 8, 09:12 UTC
 
 This continuation is progress, with all owned local handles now closed. The
 full roadmap goal remains active; no first-hour or major-version completion claim.
