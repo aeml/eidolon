@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"reflect"
+	"strings"
 	"testing"
 	"time"
 
@@ -36,13 +37,17 @@ func resourceWaitPvPStatus(t *testing.T, connection *websocket.Conn, wanted func
 func TestResourceActualPvPForfeitAndShutdownRecovery(t *testing.T) {
 	repo, uri, binary := resourceJournalIntegration(t)
 	for _, route := range []string{"duel_disconnect", "arena_disconnect", "arena_shutdown"} {
-		for _, classes := range [][2]string{{"Fighter", "Wizard"}, {"Rogue", "Cleric"}} {
-			t.Run(fmt.Sprintf("%s/%s_%s", route, classes[0], classes[1]), func(t *testing.T) {
+		for _, classes := range [][]string{{"Fighter", "Wizard"}, {"Rogue", "Cleric"}, {"Fighter", "Wizard", "Rogue", "Cleric"}} {
+			teamSize := len(classes) / 2
+			if route == "duel_disconnect" && teamSize != 1 {
+				continue // Practice duels are strictly one versus one.
+			}
+			t.Run(fmt.Sprintf("%s/%s", route, strings.Join(classes, "_")), func(t *testing.T) {
 				dir := t.TempDir()
 				address, stop := compatStartServer(t, binary, uri, 60, "-save-journal-dir", dir)
-				var fixtures [2]*database.Character
-				var passwords [2]string
-				var connections [2]*websocket.Conn
+				fixtures := make([]*database.Character, len(classes))
+				passwords := make([]string, len(classes))
+				connections := make([]*websocket.Conn, len(classes))
 				for i, class := range classes {
 					fixture, password := resourceJournalFixture(t, repo)
 					fixture.Class, fixture.Resources.Mana = class, 0
@@ -60,14 +65,23 @@ func TestResourceActualPvPForfeitAndShutdownRecovery(t *testing.T) {
 					})
 					resourceSend(t, connections[1], MsgDuelRespond, DuelRespondPayload{RequesterID: "player-" + fixtures[0].Name, Accept: true})
 				} else {
-					resourceSend(t, connections[0], MsgArenaQueue, ArenaQueuePayload{TeamSize: 1})
-					resourceWaitPvPStatus(t, connections[0], func(status resourcePvPStatus) bool { return status.Queued == 1 })
-					resourceSend(t, connections[1], MsgArenaQueue, ArenaQueuePayload{TeamSize: 1})
+					if teamSize == 2 {
+						for _, leader := range []int{0, 2} {
+							resourceFormParty(t, connections[leader], connections[leader+1], fixtures[leader].Name, fixtures[leader+1].Name)
+						}
+					}
+					resourceSend(t, connections[0], MsgArenaQueue, ArenaQueuePayload{TeamSize: teamSize})
+					resourceWaitPvPStatus(t, connections[0], func(status resourcePvPStatus) bool { return status.Queued == teamSize })
+					resourceSend(t, connections[teamSize], MsgArenaQueue, ArenaQueuePayload{TeamSize: teamSize})
 				}
 				firstScene := resourceReadScene(t, connections[0])
-				secondScene := resourceReadScene(t, connections[1])
-				if firstScene.Type != "pvp_arena" || firstScene.InstanceID == "" || secondScene.InstanceID != firstScene.InstanceID {
-					t.Fatal("ordinary PvP admission did not bind both players to one arena")
+				if firstScene.Type != "pvp_arena" || firstScene.InstanceID == "" {
+					t.Fatal("ordinary PvP admission did not enter an arena")
+				}
+				for _, connection := range connections[1:] {
+					if scene := resourceReadScene(t, connection); scene.Type != "pvp_arena" || scene.InstanceID != firstScene.InstanceID {
+						t.Fatal("ordinary PvP admission did not bind every teammate/opponent to one arena")
+					}
 				}
 				for i, connection := range connections {
 					resourceProbe(t, connection, 445, false)
@@ -95,10 +109,12 @@ func TestResourceActualPvPForfeitAndShutdownRecovery(t *testing.T) {
 				}
 				if route != "arena_shutdown" {
 					resourceCloseAndWait(t, repo, connections[0], fixtures[0].Name)
-					if scene := resourceReadScene(t, connections[1]); scene.InstanceID != "" || scene.Type != "overworld" {
-						t.Fatal("forfeit did not restore the surviving player's scene")
+					for i := 1; i < len(connections); i++ {
+						if scene := resourceReadScene(t, connections[i]); scene.InstanceID != "" || scene.Type != "overworld" {
+							t.Fatal("forfeit did not restore every teammate/opponent's scene")
+						}
+						resourceCloseAndWait(t, repo, connections[i], fixtures[i].Name)
 					}
-					resourceCloseAndWait(t, repo, connections[1], fixtures[1].Name)
 				}
 				stop()
 				for _, fixture := range fixtures {
@@ -123,7 +139,7 @@ func TestResourceActualPvPForfeitAndShutdownRecovery(t *testing.T) {
 					}
 					wantRating, wantWins, wantLosses, wantHonor, wantPoints := 1000, 0, 0, 0, 0
 					if route == "arena_disconnect" {
-						if i == 0 {
+						if i < teamSize {
 							wantRating, wantLosses, wantHonor, wantPoints = 980, 1, 15, 1
 						} else {
 							wantRating, wantWins, wantHonor, wantPoints = 1025, 1, 50, 3
@@ -134,6 +150,45 @@ func TestResourceActualPvPForfeitAndShutdownRecovery(t *testing.T) {
 					}
 				}
 			})
+		}
+	}
+}
+
+// Exercise the same invitation/acceptance flow players use, not direct party
+// injection. Wait for the complete membership before the leader queues 2v2.
+func resourceFormParty(t *testing.T, leader, member *websocket.Conn, leaderName, memberName string) {
+	t.Helper()
+	resourceSend(t, leader, MsgPartyInvite, PartyInvitePayload{TargetName: memberName})
+	var invite PartyRequestPayload
+	resourceReadMessage(t, member, MsgPartyRequest, &invite)
+	if invite.TargetName != leaderName {
+		t.Fatal("party invitation came from the wrong player")
+	}
+	resourceSend(t, member, MsgPartyResponse, PartyResponsePayload{InviterName: leaderName, Accepted: true})
+	for _, connection := range []*websocket.Conn{leader, member} {
+		deadline := time.Now().Add(10 * time.Second)
+		joined := false
+		for time.Now().Before(deadline) {
+			var party struct {
+				LeaderID string `json:"leaderId"`
+				Members  []struct {
+					ID string `json:"id"`
+				} `json:"members"`
+			}
+			resourceReadMessage(t, connection, MsgPartyUpdate, &party)
+			if party.LeaderID == "player-"+leaderName && len(party.Members) == 2 {
+				ids := map[string]bool{}
+				for _, participant := range party.Members {
+					ids[participant.ID] = true
+				}
+				joined = ids["player-"+leaderName] && ids["player-"+memberName]
+				if joined {
+					break
+				}
+			}
+		}
+		if !joined {
+			t.Fatal("accepted invitation did not form the expected two-player party")
 		}
 	}
 }
