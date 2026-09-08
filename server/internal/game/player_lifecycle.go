@@ -34,9 +34,17 @@ func (w *World) PerformRespawn(playerID string, contexts ...string) error {
 	}()
 
 	// Allow respawn even if not dead (unstuck)
+	wasDead := player.State == "DEAD" || player.Health <= 0
 	player.State = "IDLE"
 	player.LastRespawnTime = time.Now()
 	player.Health = player.MaxHealth
+	player.hpRegenRemainder = 0
+	if wasDead {
+		// Death recovery must not strand a caster with the empty resource bar
+		// that caused the wipe. Living unstuck requests are not mana refills.
+		player.Mana = player.MaxMana
+		player.manaRegenRemainder = 0
+	}
 	player.QAHealthRegenPausedUntil = time.Time{}
 	player.QAHazardInspectionEndTime = time.Time{}
 	delete(w.PlayerHazardTicks, playerID)
