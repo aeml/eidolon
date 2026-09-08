@@ -1,5 +1,29 @@
 import { readFileSync } from 'node:fs';
 
+test('the full gate retains the same four-class practice-duel route as focused QA', () => {
+    const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
+    expect(script).toContain('&& run_pvp_cadence && run_animation_classes');
+    expect(script).toContain('pvp-cadence)\n    run_pvp_cadence');
+    expect(script).toContain('run_pvp_cadence() {\n  npx playwright test tests/e2e/pvp-cadence-gameplay.spec.js');
+});
+
+test('fresh collection allows explicit four-class comparisons while keeping Wizard as the default', () => {
+    const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
+    expect(script).toContain('local fresh_class="${EIDOLON_E2E_FRESH_CLASS:-Wizard}"');
+    expect(script).toContain('Wizard|Fighter|Rogue|Cleric) ;;');
+    expect(script).toContain('EIDOLON_E2E_CLASS="${fresh_class}"');
+});
+
+test('early gear/stat comparison is opt-in and preserves the unprepared release baseline', () => {
+    const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
+    const early = readFileSync('tests/e2e/early-earned-preparation.js', 'utf8');
+    expect(script).toContain('fresh-collection-prepared)\n    EIDOLON_E2E_PREPARED_COLLECTION=1 run_fresh_collection');
+    expect(script).toContain('fresh-collection)\n    run_fresh_collection');
+    expect(early).not.toContain('network.send');
+    expect(early).not.toContain('page.reload');
+    expect(early).toContain("'branch', 'talents', 'unlocked', 'hotbar'");
+});
+
 test('the full release gate retains an earned fresh collection and a genuinely fresh retry', () => {
     const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
     const route = readFileSync('tests/e2e/fresh-opening-gameplay.spec.js', 'utf8');

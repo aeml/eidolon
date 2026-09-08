@@ -85,8 +85,18 @@ describe('version presentation', () => {
         expect(indexHtml.indexOf('data-version="1.0.48"')).toBeLessThan(indexHtml.indexOf('data-version="1.0.47"'));
         for (const heading of ['Small gains stay earned', 'The same levels, the same price', 'Your gear keeps its history', 'Safer work at the anvil']) expect(indexHtml).toContain(heading);
     });
+    test('release47 explains responsive basic attacks and preserves full release verification', () => {
+        expect(indexHtml).toContain('A real place to duel');
+        expect(indexHtml).toContain('Practice matches still award no ranked rewards');
+        expect(indexHtml).toContain('A steadier basic attack');
+        expect(indexHtml).toContain('one-second unbuffed minimum');
+        expect(indexHtml).toContain('Parallel release checks');
+        expect(indexHtml).toContain('a complete pass required before deployment');
+    });
     test('adds collection pacing notes without replacing entrance visibility history', () => {
         expect(indexHtml).toContain('Alpha 1.0.47 (fragments worth finding)');
+        expect(indexHtml).toContain('A road patrol, not an endless pursuit');
+        expect(indexHtml).toContain('walk back without healing or becoming immune');
         expect(indexHtml.match(/data-version="1\.0\.47"/g)).toHaveLength(1);
         expect(indexHtml.indexOf('data-version="1.0.47"')).toBeLessThan(indexHtml.indexOf('data-version="1.0.46"'));
         for (const heading of ['A longer search for the crystals', 'Bad luck has a limit', 'Your accepted quest stays yours', 'Safer progress and honest totals']) expect(indexHtml).toContain(heading);

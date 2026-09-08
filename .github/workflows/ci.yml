@@ -109,9 +109,13 @@ jobs:
           retention-days: 7
 
   browser-smoke:
-    name: Browser Smoke (Playwright)
+    name: Browser Smoke (Playwright ${{ matrix.shard }}/3)
     needs: [client-tests, server-tests]
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
     steps:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -129,15 +133,17 @@ jobs:
 
       - name: Run anonymous real-browser smoke
         run: |
-          npm run test:e2e:anonymous
-          npm run test:e2e:nameplates
-          npm run test:e2e:resource-hud
+          npm run test:e2e:anonymous -- --shard=${{ matrix.shard }}/3
+          if [ "${{ matrix.shard }}" = 1 ]; then
+            npm run test:e2e:nameplates
+            npm run test:e2e:resource-hud
+          fi
 
       - name: Upload browser failure evidence
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: predeploy-browser-evidence
+          name: predeploy-browser-evidence-${{ matrix.shard }}
           path: |
             playwright-report/
             test-results/
