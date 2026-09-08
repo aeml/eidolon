@@ -5,7 +5,81 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 05:08 UTC
+## Current checkpoint — September 8, 05:36 UTC
+
+Previous goal turn was progress. This continuation packages the requested
+regeneration fix into45, verifies actual progression/gear rollback sessions,
+packages the save bridge as51, and integrates the verified runtime locally.
+The full1.1–1.10 roadmap remains incomplete; no goal status change is justified.
+
+**45 locally verified, not pushed:** `/tmp/eidolon-release45-regen-tphNrl`,
+branch `release/45-with-regen-and-soak-isolation`, clean45b4b831a85c96992cd396344610cd1fb9175fd6.
+Includes requested0.01 regeneration, compact phone status UI, owned nightly
+soak isolation, exact45 identities and expanded actual patch notes. Full server
+race40404 PASS /root22.153s /database1.144s /game437.640s. Fresh Wizard18393
+PASS /one /4.7m: opening59s/500XP/100gold/level5/no deaths; four Seeds after8
+observed target deaths/no deaths/216s; explicit8000XP/100gold handoff reaches17
+and retains the level30 entry gate. This is current15-chapter/old-curve content,
+not proof of the expanded campaign. Scan/owned cleanup pass. Full client22164
+initially fails one stale patch-title expectation; corrected53736 PASS /216
+suites/3193 tests/134.506s; lint96968 PASS. All45 handles closed, no runtime or
+earned assertions changed after passing runs.
+
+**Bridge actual sessions closed:** source38d4a9a35318 PASS /100 cycles/57.00s;
+expanded source41d09ad23737 PASS /100 cycles/38.60s. Four classes/five save cases
+use actual WebSocket login/join/disconnect and Mongo snapshots across1→2→1→2→2.
+Expanded fixtures retain equipped/bag/stash/buyback gear and Forge basis as well
+as progression, stats, spent points, gold, Resonance, zero-reward contracts and
+unknown future discoveries. Owned Mongo fixture data cleaned up; logs/evidence
+retained. Bridge worktree now cleand301047. See its evidence document.
+
+**51 packaged and locally verified:** `/tmp/eidolon-release51-bridge-Tmu199`,
+branch `release/51-progression-save-bridge`, clean2ed3375. Base50 inherits new
+regen/soak; integrates immediate earned room-XP level-ups and version1 save
+bridge, but NOT curve2/31-chapter activation. Actual51 login/patch/build/deploy
+versions and notes are aligned. On frozenf929c33: full client39001 PASS /219
+suites/3226 tests/178.082s; full server55684 PASS /root19.835s /database1.085s /
+game422.193s; lint34233 PASS; packaged-server actual sessions9057 PASS /100
+cycles/37.92s with full gear fixtures. All handles closed.51 remains behind the
+45–50 release gates; it is not live. See release51 evidence.
+
+Root merged the queue history asbeba703 and tested51 as6c321a6. Runtime/build/
+client source exactly matches packaged51; the only code/test delta is root's
+extra reward-stack audit. Root presentation/regeneration35069 PASS /230 tests,
+extra stack race41593 PASS /2.162s. Root is localAlpha1.0.51, never push root
+master. No new release was pushed this turn.44 CI34187405437 still reports
+predeploy character QA active; server/client/anonymous browser pass.45 must
+wait for all eight44 jobs AND fresh exact44 public identity before pushing.
+
+Current sequential queue (old refs preserved):
+
+-45 `45b4b831a85c96992cd396344610cd1fb9175fd6`
+-46 `90e2a13f7af89221c93ab8190a1304a118625427`
+-47 `bd0395655c29974599ab85bdb32b5f3e25f8c0f2`
+-48 `f0cf612e78870f5322b855c2d732bb08990c0baf`
+-49 `2f0350770e13d7419729ba958e245525c5864c47`
+-50 `774d8176b6859357066449b6b65f50d5b6ae4874`
+-51 `2ed3375` (`release/51-progression-save-bridge`)
+
+45–50 use `release/<number>-with-regen-and-soak-isolation`. Staging worktree
+`/tmp/eidolon-release37-targeting-lT3Mdt` is clean50/774d817. One VersionPresentation
+merge conflict was resolved retaining both46 history and revised45 assertions.
+No old ref was reset or deleted; these unpushed descendants require their own gates.
+
+**One owned browser66368 ACTIVE:** `/tmp/eidolon-earned-story-TZuGpp`, frozen
+dfd3cbdc785aafd705a8ff919aae28ac568e5c26; log
+`/tmp/eidolon-earned-earth-low-regen-crowd.log`. Candidate now includes requested
+0.01 regen. Failed prior screenshot showed39/40 Watch and tight body crowd
+(periodic log last36); auto-loot inspection does not show automatic travel.
+Driver now uses ordinary Ctrl-click jumps when a proposed retreat crosses actor
+bodies, while retaining static-wall/full-path checks, actual six-unit landing
+distance and two-death bound. Strategy4570 PASS /63 tests, lint5850 PASS; prior
+image inspected/archived `/tmp/eidolon-earned-watch-crowd-evidence-NFT1nJ/`.
+No claim every old failure has the same cause. New full Earth run currently
+earns opening100XP/100gold in48s, no deaths, and reaches diary investigation;
+full result remains unproven. Do not edit or restart this active worktree.
+
+## Historical checkpoint — September 8, 05:08 UTC
 
 Requested regeneration fix closes full checks: **67493 PASS /219 client suites /
 3,225 tests /182.603s** and **24799 PASS /server race /root21.275s /
