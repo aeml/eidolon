@@ -45,3 +45,18 @@ test-driver correction, not a collision fix or a successful collection claim.
 Removed an unused requireClearPath option from this older helper call; the
 planner still queries the actual collision manager. Focused58906 passes31tests/
 four suites/1.327s and full lint. A corrected actual run remains required.
+
+Actual21067 onacb8211 FAILED5.0m: seven selected-target deaths,2/8 fragments,
+zero player deaths. The next selected level-two Skeleton remained alive after
+120seconds while repeated retreats carried the player north into higher-level
+mobs. The last diagnostic has107 retreats,200/200HP and24/160mana. Scan0 and
+owned cleanup passed; archived/viewed failure image is
+`/tmp/eidolon-release47-clear-input-evidence-K0vasm/failed-collection.png`.
+It shows a Demon Orc selected despite the watchdog still waiting for a Skeleton.
+This suggests target interference, but does not prove how many attacks hit it.
+
+Read-only QA now counts authoritative local attack/damage receipts per target
+and records current pending/hovered targets plus nearby IDs/HP. Payloads and
+account data are not copied. Input strategy, deadlines and production remain
+unchanged for this diagnostic. Focused38478 passes13tests/four suites/1.666s
+and full lint; actual receipt evidence is still required.

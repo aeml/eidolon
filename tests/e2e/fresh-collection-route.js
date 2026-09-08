@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test';
 import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { openDungeonGuide } from './dungeon-guide.js';
-import { createFreshCollectionCombat, readFreshCollectionCombat } from './fresh-collection-combat.js';
+import { createFreshCollectionCombat, observeCollectionCombatReceipts, readFreshCollectionCombat } from './fresh-collection-combat.js';
 import { loginAndEnterWorld, moveByGroundClick, projectEntity, readPlayerState,
     returnToTown, setAutoLootThroughSettings } from './helpers.js';
 
@@ -24,6 +24,7 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
     await setAutoLootThroughSettings(page, true);
     await returnToTown(page);
     const beforeCombat = await createFreshCollectionCombat(page);
+    await observeCollectionCombatReceipts(page);
     await leaveTown();
     let observedTargetDeaths = 0, deaths = 0;
     for (let encounter = 0; encounter < required * 5 + 2 && (await readChronicleChapter(page, collection)).count < required; encounter++) {

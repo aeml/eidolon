@@ -1,5 +1,17 @@
 import { createEarnedWizardDefense } from './earned-wizard-defense.js';
 
+export async function observeCollectionCombatReceipts(page) {
+    await page.evaluate(async () => {
+        const { recordCollectionCombatReceipt } = await import('/tests/collectionCombatReceipts.js');
+        const game = window.game, original = game.handleServerMessage.bind(game);
+        window.__collectionCombatReceipts = {};
+        game.handleServerMessage = message => {
+            recordCollectionCombatReceipt(window.__collectionCombatReceipts, message, game.player?.id);
+            return original(message);
+        };
+    });
+}
+
 // Same ordinary spacing/earned shield inputs as the hunt route. No grants,
 // skill purchases, recovery commands or changes to collection/death limits.
 export async function createFreshCollectionCombat(page) {
@@ -15,11 +27,15 @@ export async function readFreshCollectionCombat(page, targetId) {
         return { level: p.level, state: p.state, hp: p.stats.hp, maxHP: p.stats.maxHp,
             mana: p.stats.mana, maxMana: p.stats.maxMana, x: p.position.x, z: p.position.z,
             defense: window.__freshWizardDefense?.counts || null,
-            target: target ? { type: target.subType, level: target.level,
+            receipts: window.__collectionCombatReceipts || null,
+            pendingTarget: game.pendingInteraction?.id || null,
+            hoveredTarget: game.hoveredEntity?.id || null,
+            target: target ? { id, type: target.subType, level: target.level,
                 hp: target.health ?? target.stats?.hp, state: target.state,
                 distance: p.position.distanceTo(target.position) } : null,
             nearby: [...game.remotePlayers.values()].filter(enemy => game.isHostileActorTarget(enemy) &&
                 p.position.distanceTo(enemy.position) < 18).map(enemy => ({ type: enemy.subType,
+                id: enemy.id, hp: enemy.health ?? enemy.stats?.hp,
                 level: enemy.level, distance: p.position.distanceTo(enemy.position) })) };
     }, targetId);
 }
