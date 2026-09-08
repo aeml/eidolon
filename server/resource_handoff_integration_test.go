@@ -31,7 +31,7 @@ func resourceReadMessage(t *testing.T, conn *websocket.Conn, wanted string, payl
 		if err := json.Unmarshal(data, &message); err != nil {
 			t.Fatal(err)
 		}
-		if message.Type == MsgError {
+		if message.Type == MsgError && wanted != MsgError {
 			t.Fatalf("ordinary resource session rejected: %s", message.Payload)
 		}
 		if message.Type == wanted {
@@ -53,6 +53,11 @@ func resourceSend(t *testing.T, conn *websocket.Conn, kind string, payload any) 
 }
 
 func resourceOpenCharacter(t *testing.T, address, username, password string) *websocket.Conn {
+	conn, _ := resourceLoginCharacter(t, address, username, password, "Wizard")
+	return conn
+}
+
+func resourceLoginCharacter(t *testing.T, address, username, password, class string) (*websocket.Conn, string) {
 	t.Helper()
 	conn, _, err := websocket.DefaultDialer.Dial("ws://"+address+"/ws", nil)
 	if err != nil {
@@ -60,10 +65,16 @@ func resourceOpenCharacter(t *testing.T, address, username, password string) *we
 	}
 	t.Cleanup(func() { conn.Close() })
 	resourceSend(t, conn, MsgLogin, map[string]string{"username": username, "password": password})
-	resourceReadMessage(t, conn, "login_success", nil)
-	resourceSend(t, conn, MsgJoin, JoinPayload{Type: "Wizard"})
+	var login struct {
+		ResumeToken string `json:"resumeToken"`
+	}
+	resourceReadMessage(t, conn, "login_success", &login)
+	if login.ResumeToken == "" {
+		t.Fatal("login omitted resume token")
+	}
+	resourceSend(t, conn, MsgJoin, JoinPayload{Type: class})
 	resourceReadMessage(t, conn, MsgQuestUpdate, nil)
-	return conn
+	return conn, login.ResumeToken
 }
 
 // Real sockets and the production server; zero Wisdom isolates resource

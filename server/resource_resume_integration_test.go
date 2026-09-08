@@ -1,0 +1,161 @@
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+	"path/filepath"
+	"reflect"
+	"regexp"
+	"strings"
+	"testing"
+	"time"
+
+	"eidolon-server/internal/database"
+	"eidolon-server/internal/game"
+	"github.com/gorilla/websocket"
+)
+
+func resourceCloseAndWait(t *testing.T, repo *database.DB, conn *websocket.Conn, username string) *database.Character {
+	t.Helper()
+	prior, err := repo.GetCharacter(username, username)
+	if err != nil {
+		t.Fatal(err)
+	}
+	closedAt := time.Now()
+	conn.Close()
+	deadline := time.Now().Add(10 * time.Second)
+	for time.Now().Before(deadline) {
+		saved, err := repo.GetCharacter(username, username)
+		if err == nil && resourceFreshDisconnect(saved, prior.LastLogout, closedAt) {
+			return saved
+		}
+		time.Sleep(25 * time.Millisecond)
+	}
+	t.Fatal("no fresh saved disconnect after ordinary resource session")
+	return nil
+}
+
+func resourceProbe(t *testing.T, conn *websocket.Conn, mana int, dead bool) {
+	t.Helper()
+	resourceSend(t, conn, MsgAbility, AbilityPayload{SkillName: "not-an-unlocked-skill"})
+	var result game.AbilityResult
+	resourceReadMessage(t, conn, MsgAbilityResult, &result)
+	want := "locked"
+	if dead {
+		want = "dead"
+	}
+	if result.Accepted || result.Reason != want || result.Mana != mana {
+		t.Fatalf("resource/death probe got%+v want mana%d reason%s", result, mana, want)
+	}
+}
+
+// Prepared saves, ordinary login/token resume/replay rejection/Recall/Respawn.
+// Level30 with zero Vitality/Wisdom supplies valid level-derived capacity while
+// isolating exact resource preservation from elapsed passive regeneration.
+func TestResourceActualTokenResumeAndDeathRecovery(t *testing.T) {
+	if os.Getenv("EIDOLON_RESOURCE_DISPOSABLE_DATABASE") != "1" {
+		t.Skip("requires explicitly disposable loopback Mongo and built server")
+	}
+	uri, binary := os.Getenv("EIDOLON_RESOURCE_MONGO_URI"), os.Getenv("EIDOLON_RESOURCE_BINARY")
+	if !regexp.MustCompile(`^mongodb://127\.0\.0\.1:[0-9]+/?$`).MatchString(uri) || !filepath.IsAbs(binary) {
+		t.Fatal("requires isolated loopback Mongo URI and absolute binary path")
+	}
+	repo, err := database.New(uri)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer repo.Close(context.Background())
+	address, stop := compatStartServer(t, binary, uri, 20)
+	defer stop()
+	for _, class := range []string{"Fighter", "Rogue", "Wizard", "Cleric"} {
+		for _, dead := range []bool{false, true} {
+			t.Run(fmt.Sprintf("%s/dead=%v", class, dead), func(t *testing.T) {
+				name := fmt.Sprintf("resource-resume-%s-%d", class, time.Now().UnixNano())
+				password := name + "-prepared-only"
+				hp := 17
+				if dead {
+					hp = 0
+				}
+				fixture := &database.Character{Name: name, Class: class, Level: 30,
+					ProgressionVersion: game.CurrentProgressionVersion, X: -1.25, Z: 200, Gold: 1234,
+					LastDailyQuest: time.Now(), Stats: database.Stats{Strength: 10, Dexterity: 10, Intelligence: 10},
+					Resources: &database.CharacterResources{Version: 1, Health: hp, Mana: 0, Dead: dead}}
+				if err := repo.CreateUser(name, name+"@example.invalid", password); err != nil {
+					t.Fatal(err)
+				}
+				if err := repo.SetFirstCharacter(name, fixture); err != nil {
+					t.Fatal(err)
+				}
+				first, token := resourceLoginCharacter(t, address, name, password, class)
+				resourceProbe(t, first, 0, dead)
+				initialSave := resourceCloseAndWait(t, repo, first, name)
+				if !reflect.DeepEqual(initialSave.Resources, fixture.Resources) {
+					t.Fatalf("first disconnect changed resources: %+v", initialSave.Resources)
+				}
+
+				resumed, _, err := websocket.DefaultDialer.Dial("ws://"+address+"/ws", nil)
+				if err != nil {
+					t.Fatal(err)
+				}
+				t.Cleanup(func() { resumed.Close() })
+				resourceSend(t, resumed, MsgResumeSession, map[string]string{"token": token})
+				var reply struct {
+					PlayerID    string `json:"playerID"`
+					ResumeToken string `json:"resumeToken"`
+				}
+				resourceReadMessage(t, resumed, MsgResumeSession, &reply)
+				if reply.PlayerID != "player-"+name || reply.ResumeToken == "" || reply.ResumeToken == token {
+					t.Fatal("resume did not bind character and rotate token")
+				}
+				resourceReadMessage(t, resumed, MsgQuestUpdate, nil)
+				resourceProbe(t, resumed, 0, dead)
+
+				replay, _, err := websocket.DefaultDialer.Dial("ws://"+address+"/ws", nil)
+				if err != nil {
+					t.Fatal(err)
+				}
+				t.Cleanup(func() { replay.Close() })
+				resourceSend(t, replay, MsgResumeSession, map[string]string{"token": token})
+				var rejection struct {
+					Message string `json:"message"`
+				}
+				resourceReadMessage(t, replay, MsgError, &rejection)
+				if !strings.Contains(rejection.Message, "Session token invalid or expired") {
+					t.Fatalf("replay rejected for wrong reason: %s", rejection.Message)
+				}
+				replay.Close()
+				resourceProbe(t, resumed, 0, dead)
+				resumedSave := resourceCloseAndWait(t, repo, resumed, name)
+				if !reflect.DeepEqual(resumedSave.Resources, fixture.Resources) {
+					t.Fatalf("token resume changed resources: %+v", resumedSave.Resources)
+				}
+
+				// A subsequent ordinary login remains dead/empty until the normal
+				// recovery command; living Recall is never a mana refill.
+				third, _ := resourceLoginCharacter(t, address, name, password, class)
+				resourceProbe(t, third, 0, dead)
+				resourceSend(t, third, MsgRecall, TownRecoveryPayload{})
+				if dead {
+					resourceReadMessage(t, third, MsgError, &rejection)
+					if !strings.Contains(rejection.Message, "use Respawn") {
+						t.Fatalf("dead recall rejected for wrong reason: %s", rejection.Message)
+					}
+					resourceProbe(t, third, 0, true)
+					resourceSend(t, third, MsgRespawn, TownRecoveryPayload{})
+				}
+				resourceReadMessage(t, third, MsgMovementContext, nil)
+				mana := 0
+				if dead {
+					hp, mana = 145, 245
+				}
+				resourceProbe(t, third, mana, false)
+				final := resourceCloseAndWait(t, repo, third, name)
+				want := &database.CharacterResources{Version: 1, Health: hp, Mana: mana}
+				if !reflect.DeepEqual(final.Resources, want) || final.Level != 30 || final.Gold != 1234 || final.InstanceID != "" {
+					t.Fatalf("ordinary recovery saved wrong state: resources=%+v level%d gold%d instance%s", final.Resources, final.Level, final.Gold, final.InstanceID)
+				}
+			})
+		}
+	}
+}

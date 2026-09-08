@@ -116,6 +116,23 @@ and independently absent. This closes the observed queue/ID races and the
 timestamp-test follow-up at their verified scopes, not the remaining release
 acceptance list. No resource release/version was assigned or deployed.
 
+## Token-resume and ordinary recovery acceptance
+
+New opt-in TestResourceActualTokenResumeAndDeathRecovery covers four classes,
+each alive17HP/0mana and dead0HP/0mana. Prepared level30/zero Vitality/Wisdom
+isolates exact resource state from elapsed regeneration while level bonuses
+supply valid maxima. Each case logs in, disconnects with a fresh Mongo save,
+resumes using the issued token, verifies rotation and rejection of token replay,
+then proves the legitimate resumed connection still works. A second disconnect
+must save unchanged HP/mana/death. A subsequent ordinary login must still require
+Respawn for dead actors; dead Recall is rejected. Normal Respawn returns145HP/
+245mana, while living Recall leaves17HP/0mana. Final saved level/gold/location
+remain unchanged. No browser or natural-combat death claim is implied.
+
+Focused26959 PASS1.308s compiles this harness and existing resource tests under
+race detection; real execution remains due. Expected error checks require the
+specific token/death-recovery rejection, not just any server error.
+
 ## Required work still open — do not publish this slice alone
 
 - Verify the implemented immediate-login, duplicate-session and repeated-Join
