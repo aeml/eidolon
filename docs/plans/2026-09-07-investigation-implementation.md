@@ -48,6 +48,40 @@ pass **3.144s**. All these handles are closed; the expanded graph backend passes
 
 ### World integration checkpoint
 
+September 8 phone reading follow-up: Water **72001 FAIL / 2.8m** earns all four
+discoveries and reads the bell record in portrait, then fails its landscape
+ending check. The bell route engages 11 actual targets; this is not an audited
+kill count. The old reader only swipes upward and provides no failure geometry,
+so neither overscrolling nor player death is established as the cause. Log
+`/tmp/eidolon-investigations-phone-water.log`; credential scan/cleanup pass.
+
+QA **fea7b03**, finalized at **291bfe2**, navigates toward the actual ending in
+either direction through native touch, waits for scrolling to settle, and captures
+reading geometry, the hit-tested element, player state/HP and a failure image.
+It retains the final-text visibility requirement, all four records and both
+orientations; no runtime combat, reward or interaction rules change. Explicit
+layout coverage recovers a later ending from below and an earlier ending from
+above the scrollport in both orientations, plus the held-touch refresh check.
+Three setup failures are retained: the first two lacked a recognized daily ladder,
+and the third's last record was still visible at maximum scroll. The final fixture
+asserts actual ladder rows and genuinely offscreen text rather than weakening
+the visibility check. Logs `/tmp/eidolon-investigations-bidirectional-*.log`.
+
+Runtime **8318e55** (independent **748711e**) makes phone repeatable reward rows
+full-width/stacked and humanizes joined enemy names, including Storm Harpies and
+Sandstorm Djinn. Desktop columns, reward values and quest state are unchanged.
+Unit baseline **seven fail / 33 pass / 0.978s**, corrected **40 / 0.683s PASS**.
+Standalone layout **18637 PASS / four / 11.6s** covers portrait, landscape,
+320px with 20px text and desktop; narrow/landscape images inspected. Combined
+full client **92909 PASS / 219 suites / 3,295 tests / 75.027s**, lint/diff pass.
+Final combined browser **35956 PASS / five / 25.2s** on 291bfe2, including real
+bidirectional gestures. Both recovered-ending images are inspected and preserved
+in `/tmp/eidolon-readable-journal-proof-WhBThb/`. Logs
+`/tmp/eidolon-investigations-readable-rewards-client.log` and
+`/tmp/eidolon-investigations-bidirectional-final-layout.log`. All these owned
+handles are closed. A new earned Water route is still required; layout fixtures
+do not prove world playability. Broader XP/gold tuning remains open.
+
 Expanded touch routes now exist for both investigations in every realm. They
 reuse the guarded returning-character fixture, but use actual phone build/target/
 Attack/Skill/hotbar controls, joystick travel and USE; no desktop key or ground-
