@@ -42,3 +42,17 @@ test inputs/observations, not grants or direct target assignments;120s, two deat
 Initial62305 failed one unsupported Jest matcher (32 other tests passed); the
 same assertion is expressed as separate count/argument checks. Corrected81770
 PASS33tests/four suites/1.451s plus full lint/diff checks. Actual play is due.
+# Opening-route follow-through
+
+The bb36a64 collection run13265 failed before collection: two opening Skeleton
+kills, zero deaths, then the unchanged120-second encounter deadline. Cleanup
+and an independent container-absence check passed. The opening still used the
+older unconditional8-unit retreat and repeated target clicks, so it did not
+exercise the corrected collection controls. This is not collection approval.
+
+The opening now shares ordinary health-aware defense and retained auto-attack
+selection with collection. Actual quest credit, manual turn-in, two-respawn
+limit,120-second encounter and overall deadline are unchanged. Read-only combat
+receipts now cover opening failures, including actual stats.hp and target IDs.
+Focused48431 passes35tests/four suites; full lint10527 passes. A fresh actual run
+is required; no production combat or reward values changed in this correction.

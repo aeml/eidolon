@@ -1,6 +1,8 @@
 import { expect, test } from '@playwright/test';
 import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { earnFreshCollectionAndInspectHandoff } from './fresh-collection-route.js';
+import { createFreshCollectionCombat, observeCollectionCombatReceipts,
+    readFreshCollectionCombat, selectCollectionTargetThroughInput } from './fresh-collection-combat.js';
 import { earnFreshHunt, earnFreshSkeletonHunt } from './fresh-hunt-route.js';
 import { earnFreshDungeonReadiness, prepareEarnedClass } from './fresh-ready-route.js';
 import { createEarnedClassCombat } from './earned-class-combat.js';
@@ -88,6 +90,8 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     await page.locator('#btn-close-quest').click();
     await returnToTown(page);
     await leaveTown(page);
+    const beforeOpeningCombat = await createFreshCollectionCombat(page);
+    await observeCollectionCombatReceipts(page);
     let deaths = 0;
     let retreats = 0;
     while ((await readChronicleChapter(page, chapter)).count < 3) {
@@ -119,45 +123,22 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
                 targetLowestHP = target.health;
                 continue;
             }
-            // Use the ranged class as a ranged player: retreat through ordinary
-            // movement when approached. No state writes, healing or protection.
-            const retreat = await page.evaluate(id => {
-                const game = window.game;
-                const enemy = game.remotePlayers.get(id);
-                if (!enemy || game.player.constructor?.name !== 'Wizard') return null;
-                const dx = game.player.position.x - enemy.position.x;
-                const dz = game.player.position.z - enemy.position.z;
-                const distance = Math.hypot(dx, dz);
-                return distance < 5 ? { x: dx / Math.max(0.1, distance) * 8,
-                    z: dz / Math.max(0.1, distance) * 8 } : null;
-            }, target.id);
-            if (retreat) {
-                try {
-                    await moveByGroundClick(page, retreat.x, retreat.z);
-                } catch (error) {
-                    // Combat continues during movement. A normal death belongs
-                    // to the bounded respawn path above; retain other movement
-                    // failures instead of hiding collision/input defects.
-                    if ((await readPlayerState(page)).state === 'DEAD') continue;
-                    throw error;
-                }
-                retreats++;
-            }
+            // Share the collection route's ordinary defensive inputs instead
+            // of interrupting every healthy attack with another retreat.
+            if (await beforeOpeningCombat()) continue;
+            retreats = await page.evaluate(() => window.__freshWizardDefense?.counts.retreats || 0);
+            if ((await readPlayerState(page)).state === 'DEAD') continue;
+            if ((await readChronicleChapter(page, chapter)).count > before) break;
             const point = await projectEntity(page, target.id);
             if (point?.visible) {
-                await page.mouse.click(point.x, point.y);
+                target = await selectCollectionTargetThroughInput(page, target, point);
                 if (await page.evaluate(() => window.game.player.abilityCooldown <= 0)) {
                     await page.mouse.click(point.x, point.y, { button: 'right' });
                 }
             }
             await page.waitForTimeout(250);
         }
-        const diagnostic = await page.evaluate(id => {
-            const game = window.game, enemy = game.remotePlayers.get(id);
-            return { playerHP: game.player.health, enemyHP: enemy?.health,
-                enemyState: enemy?.state, hoveredType: game.hoveredEntity?.constructor?.name,
-                distance: enemy ? game.player.position.distanceTo(enemy.position) : null };
-        }, target.id);
+        const diagnostic = await readFreshCollectionCombat(page, target.id);
         expect((await readChronicleChapter(page, chapter)).count,
             `Opening combat deadline: ${JSON.stringify(diagnostic)}`).toBeGreaterThan(before);
         const player = await readPlayerState(page);
