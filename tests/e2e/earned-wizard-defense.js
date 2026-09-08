@@ -1,4 +1,5 @@
 import { moveByGroundClick, readPlayerState } from './helpers.js';
+import { GroundInputUnavailableError } from '../groundInputFailure.js';
 
 // Only observes replicated state and chooses ordinary keys/ground clicks.
 // Reinstall after fresh login, which destroys the previous browser observer.
@@ -44,9 +45,18 @@ export async function createEarnedWizardDefense(page) {
         }
         try {
             await moveByGroundClick(page, plan.x, plan.z, { minimumDistance: 6, allowJumpFallback: false,
-                requireClearPath: true, timeout: 2500 });
+                timeout: 2500 });
         } catch (error) {
             if ((await readPlayerState(page)).state === 'DEAD') return true;
+            if (error instanceof GroundInputUnavailableError) {
+                await page.evaluate(() => {
+                    const counts = window.__freshWizardDefense.counts;
+                    counts.blockedRetreats = (counts.blockedRetreats || 0) + 1;
+                });
+                // No click/key was issued. Fight from here, preserving the
+                // caller's unchanged combat deadline and death bounds.
+                return false;
+            }
             throw error;
         }
         await page.evaluate(() => window.__freshWizardDefense.counts.retreats++);
