@@ -179,3 +179,34 @@ readFileSync. The test now explicitly imports Node's URL, as other filesystem
 fixture tests already do. No threshold, expected fixture value or gameplay
 assertion is changed. Both handles are closed. Corrected full client and earned
 browser checks remain required; server source is unchanged by this test fix.
+
+## Combined recovery closure and uninterrupted pacing mode
+
+Corrected candidatea584ec8 client75691 **PASS225 suites/3351 tests/227.420s**;
+server code remains identical to the passing31046 run. All full handles closed.
+Earned51389 **FAILED6.4m**: opening49s/no deaths, diary107s/level3. Watch
+deaths at3,6,9 credits with mana15,16,2. The first two ordinary death recoveries
+received actual full server bars (150HP/130mana, then175HP/145mana). The third
+death exceeds the unchanged two-death limit. Final level4/107XP/406gold, two
+bag slots/60gold unsold equipment. The last death had three Skeletons and a
+level20 Imp nearby; this is not proof every death has one cause. Scan/owned
+cleanup passed, handle closed. Screenshot inspected/archived
+`/tmp/eidolon-earned-watch-recovery-evidence-6RSZBb/failed-watch.png`; log
+`/tmp/eidolon-earned-watch-recovery.log`. Death recovery works; pacing does not
+pass. No new resource mechanic or grant is justified by the screenshot alone.
+
+The existing opening and diary persistence checkpoints reconnect. Login builds
+health/mana from base stats (`server/client_dispatch.go`), and DB Character does
+not store bars. That makes this a valid persistence route but not uninterrupted
+resource pacing. New explicit `fresh-story-uninterrupted` mode keeps the opening,
+diary and first Watch in one session, with a final post-hunt reconnect only.
+The default mode retains every existing reconnect. Resource bars are logged
+before/after checkpoints, and unsupported mixed routes fail before login so
+another helper cannot silently refill a supposedly uninterrupted adventure.
+No gameplay stats, rewards, counts, death limit or deadline change.
+
+Focused90713 **PASS33 tests/three suites/1.551s**, lint and shell syntax pass.
+Tests prove default reconnects, skipped mid-route logins, mandatory final login,
+resource logging without credentials, and rejection of mixed route flags.
+The uninterrupted browser run and corrected full client suite remain required.
+This only separates two kinds of evidence; it does not make the hunt balanced.

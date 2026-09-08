@@ -519,6 +519,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   fresh-hunt)
     EIDOLON_E2E_FRESH_COLLECTION=1 EIDOLON_E2E_FRESH_HUNT=1 npx playwright test tests/e2e/fresh-opening-gameplay.spec.js
     ;;
+  fresh-story-uninterrupted)
+    EIDOLON_E2E_UNINTERRUPTED=1 EIDOLON_E2E_FRESH_STORY_HUNT=1 npx playwright test tests/e2e/fresh-opening-gameplay.spec.js
+    ;;
   fresh-story-hunt)
     EIDOLON_E2E_FRESH_STORY_HUNT=1 npx playwright test tests/e2e/fresh-opening-gameplay.spec.js
     ;;
@@ -619,7 +622,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     echo "Trained cone/Beacon/Mass Revival verification: EIDOLON_ISOLATED_QA_ROUTE=cleric-final-area" >&2
     echo "Trained Spirit Guardians verification: EIDOLON_ISOLATED_QA_ROUTE=spirit-area" >&2
     echo "Forge/material refresh and guide verification: EIDOLON_ISOLATED_QA_ROUTE=forge-guide" >&2
-    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, inventory, equipment-recovery, talent-economy, talent-healing, talent-duration, extended, portal, dungeons, verdant, dungeon-full, chronicle-earth, chronicle-collection, fresh-opening, fresh-collection, fresh-hunt, fresh-hunt-npc, fresh-ready, fresh-dungeon, dungeon-recovery, direct-skills, projectile-walls, movement-walls, ground-walls, beam-walls, whip-shape, whirlwind, phone, phone-combat, phone-party, phone-inventory, phone-quests, phone-build, phone-settings, or phone-adventure." >&2
+    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, inventory, equipment-recovery, talent-economy, talent-healing, talent-duration, extended, portal, dungeons, verdant, dungeon-full, chronicle-earth, chronicle-collection, fresh-opening, fresh-collection, fresh-story-hunt, fresh-story-uninterrupted, fresh-hunt, fresh-hunt-npc, fresh-ready, fresh-dungeon, dungeon-recovery, direct-skills, projectile-walls, movement-walls, ground-walls, beam-walls, whip-shape, whirlwind, phone, phone-combat, phone-party, phone-inventory, phone-quests, phone-build, phone-settings, or phone-adventure." >&2
     exit 1
     ;;
 esac

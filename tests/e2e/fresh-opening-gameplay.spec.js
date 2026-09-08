@@ -9,6 +9,7 @@ import { createEarnedClassCombat } from './earned-class-combat.js';
 import { clearEarnedVerdant } from './fresh-dungeon-route.js';
 import { earnFreshStoryHunt } from './fresh-story-hunt-route.js';
 import { recoverEarnedDeath } from './earned-death-recovery.js';
+import { earnedCheckpoint, uninterruptedEarnedMode } from './earned-checkpoint.js';
 import { collectBrowserFailures, credentialsFromEnvironment, jumpByGroundClick,
     loginAndEnterWorld, moveByGroundClick, projectEntity, projectNearestHostile,
     readPlayerState, returnToTown } from './helpers.js';
@@ -57,6 +58,7 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     if (testInfo.retry) credentials.username += `-retry${testInfo.retry}`;
     test.skip(!credentials.username || !credentials.password, 'Requires a disposable QA character');
     expect(process.env.EIDOLON_E2E_REGISTER).toBe('1');
+    uninterruptedEarnedMode(); // Fail unsupported combinations before creating a character.
     test.setTimeout(process.env.EIDOLON_E2E_FRESH_STORY_HUNT === '1' ? 1_800_000 :
         process.env.EIDOLON_E2E_FRESH_HUNT === '1' ? 3_600_000 :
         // The expanded Earth route now includes150 required expedition kills,
@@ -189,8 +191,7 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     await page.locator('#quest-window').getByRole('button', { name: 'Continue conversation', exact: true }).click();
     expect((await readChronicleChapter(page, 'chronicle_earth_keepers_house')).accepted).toBe(false);
     const earnedLevel = (await readPlayerState(page)).level;
-    await page.reload({ waitUntil: 'networkidle' });
-    await loginAndEnterWorld(page, credentials);
+    await earnedCheckpoint(page, credentials, { label: 'opening' });
     expect((await readPlayerState(page)).level).toBe(earnedLevel);
     expect((await readChronicleChapter(page, chapter)).completed).toBe(true);
     expect((await readChronicleChapter(page, chapter)).grantedXP).toBe(100);
@@ -201,8 +202,7 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
         { beforeInspect: site => clearFreshInvestigationApproach(page, site) });
     const afterDiary = await readChronicleChapter(page, 'chronicle_earth_keepers_house');
     const diaryLevel = (await readPlayerState(page)).level;
-    await page.reload({ waitUntil: 'networkidle' });
-    await loginAndEnterWorld(page, credentials);
+    await earnedCheckpoint(page, credentials, { label: 'diary' });
     expect((await readPlayerState(page)).level).toBe(diaryLevel);
     expect((await readChronicleChapter(page, 'chronicle_earth_keepers_house')).completed).toBe(true);
     console.log(`[fresh-diary] ${JSON.stringify({ level: diaryLevel, reward: afterDiary, elapsedSeconds: Math.round((Date.now() - started) / 1000) })}`);

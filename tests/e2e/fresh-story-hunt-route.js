@@ -3,9 +3,10 @@ import { chronicleHunts } from '../../src/data/chronicleHunts.generated.js';
 import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { createEarnedClassCombat } from './earned-class-combat.js';
 import { recoverEarnedDeath } from './earned-death-recovery.js';
+import { earnedCheckpoint } from './earned-checkpoint.js';
 import { openDungeonGuide } from './dungeon-guide.js';
 import { prepareEarnedClass } from './fresh-ready-route.js';
-import { loginAndEnterWorld, moveByGroundClick, projectEntity, readPlayerState,
+import { moveByGroundClick, projectEntity, readPlayerState,
     setAutoLootThroughSettings } from './helpers.js';
 
 const snapshot = page => page.evaluate(() => {
@@ -154,8 +155,7 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady }
     await page.locator('#btn-close-quest').click();
     await setAutoLootThroughSettings(page, previousAutoLoot);
     const earned = await snapshot(page);
-    await page.reload({ waitUntil: 'networkidle' });
-    await loginAndEnterWorld(page, credentials);
+    await earnedCheckpoint(page, credentials, { label: id, final: true });
     expect(await snapshot(page)).toEqual(earned);
     expect(await readChronicleChapter(page, id)).toEqual(receipt);
     expect((await readChronicleChapter(page, hunt.beforeQuestId))?.accepted).toBe(false);
