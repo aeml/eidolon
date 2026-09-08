@@ -68,8 +68,8 @@ func completedChronicleThrough(player *Entity, chapter int) {
 
 func TestChronicleCatalogIsDeepOrderedAndOfferedByWizard(t *testing.T) {
 	catalog := chronicleQuestCatalog()
-	if len(catalog) != 23 {
-		t.Fatalf("expected 23 Chronicle chapters, got %d", len(catalog))
+	if len(catalog) != 31 {
+		t.Fatalf("expected 31 Chronicle chapters, got %d", len(catalog))
 	}
 	for i, quest := range catalog {
 		if quest.Category != QuestCategoryChronicle || quest.Chapter != i+1 {
@@ -79,13 +79,19 @@ func TestChronicleCatalogIsDeepOrderedAndOfferedByWizard(t *testing.T) {
 			t.Fatalf("chapter %d is missing authored narrative depth: %+v", i+1, quest)
 		}
 	}
-	if catalog[4].Target != "HollowSentinel" || catalog[8].Target != "Thalorath" ||
-		catalog[12].Target != "LordInfernax" || catalog[16].Target != "Zephyrion" ||
-		catalog[21].Target != "EidolonDevourer" || catalog[22].Target != "UmbraPrime" {
-		t.Fatal("Chronicle does not connect all four crystal bosses to the Dark Realm finale")
+	catalogPlayer := &Entity{Quests: catalog}
+	for id, target := range map[string]string{
+		ChronicleEarthDungeonID: "HollowSentinel", ChronicleWaterDungeonID: "Thalorath",
+		ChronicleFireDungeonID: "LordInfernax", ChronicleAirDungeonID: "Zephyrion",
+		ChronicleGateOpenedID: "EidolonDevourer", ChronicleDarkKingID: "UmbraPrime",
+	} {
+		if questByID(t, catalogPlayer, id).Target != target {
+			t.Fatalf("Chronicle milestone %s does not connect to %s", id, target)
+		}
 	}
+	repairIDs := []string{ChronicleEarthRestoredID, ChronicleWaterRestoredID, ChronicleFireRestoredID, ChronicleAirRestoredID}
 	for index, target := range []string{"EarthCrystal", "WaterCrystal", "FireCrystal", "AirCrystal"} {
-		quest := catalog[17+index]
+		quest := questByID(t, catalogPlayer, repairIDs[index])
 		if quest.Type != "REPAIR" || quest.Target != target || !strings.Contains(quest.ObjectiveText, "3 repair waves") {
 			t.Fatalf("chapter %d is not a defended raid repair: %+v", quest.Chapter, quest)
 		}
@@ -144,6 +150,19 @@ func TestChronicleRequiresManualTurnInForKillAndCollectionChapters(t *testing.T)
 	if _, ok := w.PerformCompleteQuest(player.ID, diary.ID); !ok {
 		t.Fatal("could not turn in the diary")
 	}
+	hunt := ChronicleHuntCatalog()[0]
+	if _, ok := w.PerformAcceptQuest(player.ID, hunt.ID); !ok {
+		t.Fatal("could not accept required watch expedition")
+	}
+	for i := 0; i < hunt.Count; i++ {
+		w.updateChronicleHuntKillLocked(player, hunt.Enemy, hunt.MinEnemyLevel, "", 300, 200)
+	}
+	if questByID(t, player, hunt.ID).Completed {
+		t.Fatal("hunt auto-completed")
+	}
+	if _, ok := w.PerformCompleteQuest(player.ID, hunt.ID); !ok {
+		t.Fatal("could not manually turn in the watch expedition")
+	}
 	collection := questByID(t, player, "chronicle_02_seeds_first_grove")
 	if collection.Accepted || collection.Completed {
 		t.Fatalf("second chapter was accepted without asking: %+v", collection)
@@ -171,20 +190,20 @@ func TestChronicleRequiresManualTurnInForKillAndCollectionChapters(t *testing.T)
 	if _, ok := w.PerformCompleteQuest(player.ID, "chronicle_02_seeds_first_grove"); !ok {
 		t.Fatal("collection turn-in failed")
 	}
-	if next := questByID(t, player, "chronicle_earth_returning_scar"); next.Accepted {
-		t.Fatalf("Earth investigation was auto-accepted: %+v", next)
+	if next := questByID(t, player, "chronicle_earth_walking_ink"); next.Accepted {
+		t.Fatalf("Earth expedition was auto-accepted: %+v", next)
 	}
 	for _, item := range player.Inventory {
 		if item.Name == "Verdant Memory Seed" {
 			t.Fatal("Ilyra did not take the collected repair materials")
 		}
 	}
-	if len(events) != 3 || events[2].NextID != "chronicle_earth_returning_scar" {
-		t.Fatalf("expected three manual advances leading to the scar, got %+v", events)
+	if len(events) != 4 || events[3].NextID != "chronicle_earth_walking_ink" {
+		t.Fatalf("expected four manual advances leading to Walking Ink, got %+v", events)
 	}
 }
 
-func TestChronicleCanAdvanceAcrossAllTwentyThreeChaptersInOrder(t *testing.T) {
+func TestChronicleCanAdvanceAcrossAllThirtyOneChaptersInOrder(t *testing.T) {
 	w := NewWorld(nil)
 	w.spawnChronicleInvestigationSites()
 	player := &Entity{
@@ -253,8 +272,8 @@ func TestChronicleCanAdvanceAcrossAllTwentyThreeChaptersInOrder(t *testing.T) {
 		}
 	}
 
-	if len(advances) != 23 || !advances[len(advances)-1].Finale {
-		t.Fatalf("expected twenty-three ordered advances ending in the finale, got %+v", advances)
+	if len(advances) != 31 || !advances[len(advances)-1].Finale {
+		t.Fatalf("expected thirty-one ordered advances ending in the finale, got %+v", advances)
 	}
 	for index, event := range advances {
 		if event.CompletedID != chronicleQuestCatalog()[index].ID {
@@ -339,7 +358,7 @@ func TestChroniclePartyGateRequiresEveryMember(t *testing.T) {
 	if err := w.RequirePartyChronicleQuest(party.ID, ChronicleEarthDungeonID); err == nil || !strings.Contains(err.Error(), "Member") {
 		t.Fatalf("expected member-specific story gate, got %v", err)
 	}
-	quest := chronicleQuestCatalog()[4]
+	quest := *questByID(t, member, ChronicleEarthDungeonID)
 	quest.Accepted, quest.Completed, quest.Count = true, true, quest.MaxCount
 	*questByID(t, member, quest.ID) = quest
 	if err := w.RequirePartyChronicleQuest(party.ID, ChronicleEarthDungeonID); err != nil {

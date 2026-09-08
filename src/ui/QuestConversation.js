@@ -1,4 +1,8 @@
 import { getChronicleInvestigation, getCurrentChronicleQuest } from '../core/ChronicleInvestigation.js';
+import { chronicleHunts } from '../data/chronicleHunts.generated.js';
+
+const huntsById = new Map(chronicleHunts.map(hunt => [hunt.id, hunt]));
+const huntHandoffs = new Map(chronicleHunts.map(hunt => [hunt.previousQuestId, hunt.handoff]));
 
 export const ILYRA_REPLIES = [
     'Listen—the bell has lost a note. These echoes bear Malachar’s binding, a signature I hoped never to hear again. I once called him a fellow keeper. He learned the roads between the sanctums from our own maps. We will begin where his wound runs deepest: the Rootheart.',
@@ -44,6 +48,9 @@ function ilyraGreeting(quests) {
 }
 
 export function getIlyraCompletionReply(quest) {
+    const hunt = huntsById.get(quest?.id);
+    if (hunt) return quest.legacyOptional ? hunt.catchupCompletion : hunt.completion;
+    if (!quest?.legacyOptional && huntHandoffs.has(quest?.id)) return huntHandoffs.get(quest.id);
     const investigation = getChronicleInvestigation(quest?.id);
     return (quest?.legacyOptional ? investigation?.catchupCompletion : investigation?.completion) || repliesById.get(quest?.id)
         || 'Thank you. I have recorded your work in the Fourfold Chronicle. Speak to me when you are ready to continue.';
@@ -120,10 +127,11 @@ export function renderQuestConversation(ui, quests) {
     }
     const ready = selected.accepted && selected.maxCount > 0 && selected.count >= selected.maxCount;
     const detail = text('section', '', 'quest-dialogue');
-    detail.append(text('div', story ? `${selected.legacyOptional ? 'OPTIONAL LORE' : `CHAPTER ${selected.chapter}`} · ${speaker}` : 'DAILY CONTRACT', 'quest-dialogue__eyebrow'));
+    const optionalLabel = huntsById.has(selected.id) ? 'OPTIONAL EXPEDITION' : 'OPTIONAL LORE';
+    detail.append(text('div', story ? `${selected.legacyOptional ? optionalLabel : `CHAPTER ${selected.chapter}`} · ${speaker}` : 'DAILY CONTRACT', 'quest-dialogue__eyebrow'));
     detail.append(text('h3', ui.getQuestTitle(selected)));
     const description = story && selected.legacyOptional
-        ? getChronicleInvestigation(selected.id)?.catchupAcceptance || selected.description
+        ? huntsById.get(selected.id)?.catchupAcceptance || getChronicleInvestigation(selected.id)?.catchupAcceptance || selected.description
         : selected.description;
     detail.append(text('p', description || 'Help keep the roads around Eidolon safe.', 'quest-dialogue__speech'));
     if (story && selected.lore && selected.type !== 'INVESTIGATE') {

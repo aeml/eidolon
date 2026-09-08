@@ -706,7 +706,7 @@ export class QuestUI {
                         rewardXP: q.rewardXP || 0,
                         rewardLabel: this.getQuestRewardLabel(q),
                         completed: Boolean(q.completed || ((q.count || 0) >= (q.maxCount || 0))),
-                        badge: isChronicle ? q.legacyOptional ? 'Story · Optional lore' : `Story ${q.chapter || ''}`.trim() : 'Daily',
+                        badge: isChronicle ? q.legacyOptional ? q.type === 'INVESTIGATE' ? 'Story · Optional lore' : 'Story · Optional expedition' : `Story ${q.chapter || ''}`.trim() : 'Daily',
                         badgeClass: isChronicle ? 'is-objective' : '',
                         routeTone: isChronicle ? 'warning' : 'neutral',
                         hint: q.maxCount > 0 && q.count >= q.maxCount
@@ -935,6 +935,7 @@ export class QuestUI {
         const completed = chronicle.filter((quest) => quest.completed);
         const current = getCurrentChronicleQuest(chronicle);
         const optional = chronicle.filter(quest => quest.legacyOptional && !quest.completed);
+        const optionalKind = optional.some(quest => quest.type !== 'INVESTIGATE') ? 'story chapters' : 'investigations';
         const section = document.createElement('section');
         section.className = 'chronicle-journal';
 
@@ -942,7 +943,7 @@ export class QuestUI {
             color: '#dfb5ff', fontSize: '14px', fontWeight: 'bold', letterSpacing: '0.08em', textTransform: 'uppercase'
         }));
         section.appendChild(this.createMessage(
-            `${completed.length} of ${CHRONICLE_CHAPTER_COUNT} chapters complete${optional.length ? ` • ${optional.length} earlier investigations optional` : ''} • Earth → Water → Fire → Air → Dark Realm`,
+            `${completed.length} of ${CHRONICLE_CHAPTER_COUNT} chapters complete${optional.length ? ` • ${optional.length} earlier ${optionalKind} optional` : ''} • Earth → Water → Fire → Air → Dark Realm`,
             { color: '#aab8d0', fontSize: '11px' }
         ));
 
@@ -1004,7 +1005,7 @@ export class QuestUI {
         }
         if (optional.length) {
             const catchup = document.createElement('section');
-            catchup.append(this.createMessage('Optional earlier investigations', { color: '#dfb5ff', fontWeight: 'bold' }));
+            catchup.append(this.createMessage(`Optional earlier ${optionalKind}`, { color: '#dfb5ff', fontWeight: 'bold' }));
             catchup.append(this.createMessage('Your completed dungeon and raid access is unchanged. Ask Ilyra about these discoveries when you wish.'));
             for (const quest of optional) {
                 catchup.append(this.createMessage(this.getQuestTitle(quest)));

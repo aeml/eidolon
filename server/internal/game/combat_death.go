@@ -323,6 +323,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 
 					// Update Quests for all party members
 					w.UpdateQuestProgress(member, tSubType)
+					w.updateChronicleHuntKillLocked(member, tSubType, tLevel, tInstanceID, tSpawnX, tSpawnZ)
 					if isDungeonBoss {
 						w.UpdateQuestProgress(member, "DungeonBoss")
 						if instanceDifficulty == DifficultyHeroic {
@@ -421,6 +422,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				attackerRewardItems := []*Item{}
 				// Update Quests
 				w.UpdateQuestProgress(attacker, tSubType)
+				w.updateChronicleHuntKillLocked(attacker, tSubType, tLevel, tInstanceID, tSpawnX, tSpawnZ)
 				if isDungeonBoss {
 					w.UpdateQuestProgress(attacker, "DungeonBoss")
 					if instanceDifficulty == DifficultyHeroic {

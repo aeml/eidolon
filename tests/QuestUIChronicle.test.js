@@ -25,7 +25,7 @@ function chronicleQuest(overrides = {}) {
 test('optional earlier lore does not replace the current chapter and tracks independently', () => {
     buildDom();
     const ui = new QuestUI({ getLastPlayer: () => ({ level: 70, position: { x: 200, z: 200 } }) });
-    const optional = chronicleQuest({ id: 'chronicle_earth_keepers_house', title: 'An earlier diary', legacyOptional: true, chapter: 2 });
+    const optional = chronicleQuest({ id: 'chronicle_earth_keepers_house', type: 'INVESTIGATE', title: 'An earlier diary', legacyOptional: true, chapter: 2 });
     const current = chronicleQuest({ id: 'chronicle_07_crown_of_embers', title: 'The Crown of Embers', chapter: 13 });
     ui.updateJournal([optional, current]);
     expect(ui.buildObjectiveSummary([optional, current])[0].id).toBe(current.id);
@@ -154,7 +154,7 @@ describe('QuestUI Fourfold Chronicle', () => {
 
         const journal = document.getElementById('journal-list');
         expect(journal.textContent).toContain('The Fourfold Chronicle');
-        expect(journal.textContent).toContain('1 of 23');
+        expect(journal.textContent).toContain('1 of 31');
         expect(journal.textContent).toContain('Chapter 2: Seeds of the First Grove');
         expect(journal.textContent).toContain('The Rootheart is forgetting every forest');
         expect(journal.textContent).toContain('Recover 4 Verdant Memory Seeds');

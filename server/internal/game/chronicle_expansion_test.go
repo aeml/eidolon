@@ -38,7 +38,7 @@ func TestChronicleCatchupDescriptionsRemainRetrospectiveAcrossRefresh(t *testing
 }
 
 func TestChronicleExpansionSharesRealmRewardsInsteadOfInflatingThem(t *testing.T) {
-	classic, expanded := classicChronicleQuestCatalog(), chronicleQuestCatalog()
+	classic, expanded := classicChronicleQuestCatalog(), expandChronicleInvestigations(classicChronicleQuestCatalog())
 	oldXP, oldGold, newXP, newGold := 0, 0, 0, 0
 	for _, q := range classic {
 		oldXP += q.RewardXP

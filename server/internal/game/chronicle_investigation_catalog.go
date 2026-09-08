@@ -45,6 +45,11 @@ var chronicleCatchupAcceptances = func() map[string]string {
 }()
 
 func withChronicleCatchupDescription(quest Quest) Quest {
+	if quest.LegacyOptional {
+		if hunt, ok := chronicleHuntByID(quest.ID); ok {
+			quest.Description = hunt.CatchupAcceptance
+		}
+	}
 	if quest.LegacyOptional && quest.Type == "INVESTIGATE" {
 		if description := chronicleCatchupAcceptances[quest.ID]; description != "" {
 			quest.Description = description

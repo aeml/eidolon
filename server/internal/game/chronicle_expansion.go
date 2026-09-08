@@ -40,7 +40,7 @@ func expandChronicleInvestigations(classic []Quest) []Quest {
 func hasSatisfiedChroniclePrerequisite(player *Entity, questID string) bool {
 	for _, quest := range player.Quests {
 		if quest.ID == questID {
-			return quest.Completed || (quest.Type == "INVESTIGATE" && quest.LegacyOptional)
+			return quest.Completed || (isOptionalChronicleAddition(quest) && quest.LegacyOptional)
 		}
 	}
 	return false

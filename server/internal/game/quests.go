@@ -38,7 +38,7 @@ type ChronicleAdvanceEvent struct {
 }
 
 func chronicleQuestCatalog() []Quest {
-	quests := expandChronicleInvestigations(classicChronicleQuestCatalog())
+	quests := expandChronicleHunts(expandChronicleInvestigations(classicChronicleQuestCatalog()))
 	for i := range quests {
 		quests[i].RewardXPQuoted, quests[i].RewardGoldQuoted = true, true
 	}
@@ -277,7 +277,7 @@ func copyQuestDefinition(progress Quest, definition Quest) Quest {
 	definition.GrantedGold = progress.GrantedGold
 	definition.GrantedXP = progress.GrantedXP
 	definition.GrantedResonanceXP = progress.GrantedResonanceXP
-	definition.LegacyOptional = progress.LegacyOptional && definition.Type == "INVESTIGATE"
+	definition.LegacyOptional = progress.LegacyOptional && isOptionalChronicleAddition(definition)
 	if definition.Type == "INVESTIGATE" {
 		definition.InvestigationMask = progress.InvestigationMask & ((1 << definition.MaxCount) - 1)
 		definition.Count = bits.OnesCount32(definition.InvestigationMask)
@@ -311,21 +311,18 @@ func ensureChronicleLocked(player *Entity) bool {
 		}
 		indices[definition.ID] = i
 	}
-	// Missing investigations behind an already accepted/completed classic
-	// milestone become optional catch-up lore, not retroactively completed quests.
-	// Only newly inserted records are classified; a fresh character's required
-	// investigation must never become optional on a later metadata refresh.
+	// Missing authored additions behind an accepted/completed saved milestone
+	// become optional catch-up chapters, never retroactively completed quests.
+	// Expanded investigation milestones count too. Only newly inserted records
+	// are classified; a fresh character's required chapters remain required.
 	lastLegacyMilestone := -1
 	for index, definition := range catalog {
-		if definition.Type == "INVESTIGATE" {
-			continue
-		}
 		if saved, exists := indices[definition.ID]; exists && (player.Quests[saved].Accepted || player.Quests[saved].Completed) {
 			lastLegacyMilestone = index
 		}
 	}
 	for index, definition := range catalog {
-		if index >= lastLegacyMilestone || definition.Type != "INVESTIGATE" {
+		if index >= lastLegacyMilestone || !isOptionalChronicleAddition(definition) {
 			continue
 		}
 		if _, exists := indices[definition.ID]; exists {

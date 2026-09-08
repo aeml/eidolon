@@ -45,6 +45,18 @@ func TestCollectionTurnInDispatchRefreshesBagBeforeQuestCompletion(t *testing.T)
 			if _, ok := world.PerformCompleteQuest(player.ID, diary.ID); !ok {
 				t.Fatal("diary manual turn-in failed")
 			}
+			// Prepared objective credit keeps this a bag-receipt dispatch test;
+			// real qualifying enemy deaths are covered by the hunt pipeline test.
+			hunt := game.ChronicleHuntCatalog()[0]
+			if _, ok := world.PerformAcceptQuest(player.ID, hunt.ID); !ok {
+				t.Fatal("watch acceptance failed")
+			}
+			for i := 0; i < hunt.Count; i++ {
+				world.UpdateQuestProgress(player, "ChronicleHunt:"+hunt.ID)
+			}
+			if _, ok := world.PerformCompleteQuest(player.ID, hunt.ID); !ok {
+				t.Fatal("watch manual turn-in failed")
+			}
 			world.PerformAcceptQuest(player.ID, collection)
 			required := 0
 			for _, quest := range player.Quests {
