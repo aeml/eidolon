@@ -149,8 +149,10 @@ func TestGenerateDailyQuestsRepairsPartialSameDayCatalogWithoutResettingProgress
 			if quest.Count != 42 || !quest.Accepted || quest.Completed {
 				t.Fatalf("catalog repair reset today's starter progress: %+v", quest)
 			}
-			if quest.Type != "KILL" || quest.MaxCount != 100 || quest.RewardXP != 50000 {
-				t.Fatalf("catalog repair did not restore the starter definition: %+v", quest)
+			// Repair type/category and missing gold, not the already accepted
+			// requirement or quoted XP. Unaccepted offers use today's catalog.
+			if quest.Type != "KILL" || quest.Category != QuestCategoryDaily || quest.RewardGold != 100 || quest.MaxCount != 10 || quest.RewardXP != 1 {
+				t.Fatalf("catalog repair changed accepted terms or failed to restore metadata: %+v", quest)
 			}
 			return
 		}

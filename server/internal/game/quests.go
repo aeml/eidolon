@@ -38,7 +38,11 @@ type ChronicleAdvanceEvent struct {
 }
 
 func chronicleQuestCatalog() []Quest {
-	return expandChronicleInvestigations(classicChronicleQuestCatalog())
+	quests := expandChronicleInvestigations(classicChronicleQuestCatalog())
+	for i := range quests {
+		quests[i].RewardXPQuoted, quests[i].RewardGoldQuoted = true, true
+	}
+	return quests
 }
 
 func classicChronicleQuestCatalog() []Quest {
@@ -201,6 +205,7 @@ func dailyQuestCatalog() []Quest {
 	for i := range quests {
 		quests[i].RewardGold = questGoldReward(quests[i].RewardXP)
 		quests[i].Category = QuestCategoryDaily
+		quests[i].RewardXPQuoted, quests[i].RewardGoldQuoted = true, true
 		quests[i].Title = fmt.Sprintf("Daily Hunt: %s", splitQuestTarget(quests[i].Target))
 		quests[i].ObjectiveText = fmt.Sprintf("Defeat %d %s.", quests[i].MaxCount, splitQuestTarget(quests[i].Target))
 		quests[i].Description = "A repeatable contract from Lanternhold's quest giver. Daily hunts reset at midnight Eastern Time."
