@@ -50,3 +50,10 @@ func (c *Client) boundPlayerID() string {
 	defer sessionsMu.Unlock()
 	return c.playerID
 }
+
+func (c *Client) resetSnapshotHistory() {
+	c.stateMu.Lock()
+	defer c.stateMu.Unlock()
+	c.seenIDs = make(map[string]bool)
+	c.lastState = make(map[string]*EntitySnapshot)
+}

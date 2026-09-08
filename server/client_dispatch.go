@@ -47,7 +47,9 @@ func (c *Client) dispatchMessage(msg Message) {
 		if c.transportClosed.Load() {
 			return
 		}
-		c.username = payload.Username
+		if c.username == "" {
+			c.username = payload.Username
+		}
 		c.retired.Store(false)
 		sessionsMu.Lock()
 		previous := activeSessions[c.username]
@@ -117,10 +119,7 @@ func (c *Client) dispatchMessage(msg Message) {
 		if existing := world.GetEntityCopy("player-" + c.username); existing != nil {
 			c.bindPlayerID(existing.ID)
 			world.ClearEntityDisconnected(existing.ID)
-			c.stateMu.Lock()
-			c.seenIDs = make(map[string]bool)
-			c.lastState = make(map[string]*EntitySnapshot)
-			c.stateMu.Unlock()
+			c.resetSnapshotHistory()
 			world.GenerateDailyQuests(c.playerID)
 			refreshChatBlocks(c.username)
 			existing = world.GetEntityCopy(c.playerID)
@@ -797,7 +796,9 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 
 		// Bind this new client to the existing entity.
-		c.username = username
+		if c.username == "" {
+			c.username = username
+		}
 		c.bindPlayerID(playerID)
 		c.retired.Store(false)
 
