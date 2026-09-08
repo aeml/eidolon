@@ -24,7 +24,11 @@ fixture now has valid base stats. Corrected three-race46937 passes11.513s,
 including actual World.Update ticks, fractional sequences, caps, dead actors,
 paused health and equipment modifiers. No runtime checks were relaxed.
 
-Full regressions, versioned packaging and deployment verification remain due.
+Full regressions now pass on8aa6ae0: client67493 **219 suites /3,225 tests /
+182.603s**; server race24799 **root21.275s /database1.072s /game448.952s**.
+Both handles closed; no source changes during either check. The longer server
+run was allowed to finish, not restarted. Root-integrated as2580ac2 with the
+same runtime/test source. Versioned packaging and deployment remain due.
 The in-flight31-chapter Earth browser uses its frozen older regeneration and
 cannot establish combat pacing for this new rate. Re-run earned class/campaign
 checks after integrating the requested reduction into that candidate.
