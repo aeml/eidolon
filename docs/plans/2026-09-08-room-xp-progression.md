@@ -35,8 +35,12 @@ assertions remain unchanged. New near-threshold cases test healing separately.
 Three race-enabled repetitions of the new progression cases, existing room
 hooks/loot/expiry, real final-enemy room clearance, class-to-cap progression,
 cap overflow and overlapping boss/daily audit pass **24435 / 11.575s**. Log
-`/tmp/eidolon-room-xp-final.log`. Full server verification is still required.
+`/tmp/eidolon-room-xp-final.log`. Full server race **33425 PASS / root 17.500s /
+game 286.052s**, other packages pass, on clean runtime **caf08cf**. Log
+`/tmp/eidolon-room-xp-full-server.log`. All owned handles are closed. No client
+runtime/protocol changes; server reward state is covered through the production
+room-clear path, not a new browser playthrough.
 
-This work is isolated and unversioned. Integrate with the expanded story/balance
-candidate after full verification; do not push root or bypass the sequential
+This work is verified but unversioned. Integrate with the expanded story/balance
+candidate; do not push root or bypass the sequential
 release gate. It does not establish a balanced first hour or endgame economy.
