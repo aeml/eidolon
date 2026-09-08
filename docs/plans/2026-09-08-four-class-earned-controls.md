@@ -23,3 +23,10 @@ suites/1.206s and full lint/diff checks, including class separation, locked/free
 heal prevention, cooldown/mana gates and earned preparation boundaries.
 Full client regression and actual all-class opening/hunt/dungeon play remain due.
 No production source, patch number, combat balance or0.01 regeneration changed.
+
+Full client10683 ended with230 suites/3411 tests passing and one suite failing:
+FreshInvestigationCombat still mocked the replaced Wizard-only factory. Its mock
+now uses the actual class factory and asserts the class plus target passed to
+defense before ordinary attacks. Corrected64317 passes82 tests/five suites in
+2.166s, plus full lint. A fresh full regression is required on this correction;
+the failed full run is not recorded as a pass.

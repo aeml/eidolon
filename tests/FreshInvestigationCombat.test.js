@@ -4,7 +4,7 @@ const readPlayerState = jest.fn(), projectEntity = jest.fn();
 const createDefense = jest.fn(), defend = jest.fn();
 jest.unstable_mockModule('@playwright/test', () => ({ expect: value => expect(value) }));
 jest.unstable_mockModule('./e2e/helpers.js', () => ({ readPlayerState, projectEntity }));
-jest.unstable_mockModule('./e2e/earned-wizard-defense.js', () => ({ createEarnedWizardDefense: createDefense }));
+jest.unstable_mockModule('./e2e/earned-class-combat.js', () => ({ createEarnedClassCombat: createDefense }));
 const { clearFreshInvestigationApproach } = await import('./e2e/fresh-investigation-combat.js');
 
 beforeEach(() => {
@@ -26,8 +26,9 @@ test('Wizard defends before ordinary basic and class attacks', async () => {
     const page = makePage();
     defend.mockResolvedValue(false);
     await clearFreshInvestigationApproach(page, { id: 'diary', x: 150, z: 215 });
-    expect(createDefense).toHaveBeenCalledWith(page);
+    expect(createDefense).toHaveBeenCalledWith(page, 'Wizard');
     expect(defend).toHaveBeenCalledTimes(1);
+    expect(defend).toHaveBeenCalledWith(page, { id: 'skeleton' });
     expect(defend.mock.invocationCallOrder[0]).toBeLessThan(projectEntity.mock.invocationCallOrder[0]);
     expect(page.mouse.click.mock.calls).toEqual([[100, 120], [100, 120, { button: 'right' }]]);
 });
@@ -49,10 +50,11 @@ test('death during a retreat remains a failure and cannot be followed by attacks
     expect(page.mouse.click).not.toHaveBeenCalled();
 });
 
-test.each(['Fighter', 'Rogue', 'Cleric'])('%s retains its existing ordinary attacks', async className => {
+test.each(['Fighter', 'Rogue', 'Cleric'])('%s uses its class defense before ordinary attacks', async className => {
     const page = makePage(className);
     await clearFreshInvestigationApproach(page, { id: 'diary' });
-    expect(createDefense).not.toHaveBeenCalled();
+    expect(createDefense).toHaveBeenCalledWith(page, className);
+    expect(defend).toHaveBeenCalledWith(page, { id: 'skeleton' });
     expect(page.mouse.click).toHaveBeenCalledTimes(2);
 });
 
