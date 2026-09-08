@@ -254,11 +254,89 @@ independently absent. Both ran frozen source5cf6acb; logs
 `/tmp/eidolon-resource-journal-matrix-sessions.log`. All owned local test handles
 are closed at16:12 UTC. These successes do not close the remaining gates below.
 
+## Shutdown admission and earned-work drain — September 8
+
+Implemented in3efad53dbf4a26622c137a2ed066b84fd425697b; test-only correctiona837acb
+retains the accepted cast acknowledgement. Full race and corrected actual
+shutdown acceptance now pass at16:39 UTC. No release number assigned.
+
+The old signal path saved active sockets while commands and world updates kept
+running, then called Wait on a WaitGroup that could still receive new Add calls.
+Stopping the main loop alone was insufficient: attack wind-ups, boss slams,
+Earthshaker/Meteor timers, PvP timers, crystal vigils, death rewards and auction
+refund callbacks were independently asynchronous. The new zero-value lifecycle
+group distinguishes closed external admission from completion-tree draining:
+already-admitted parents may enqueue earned child work until atomically sealed
+at zero. All detached world mutations/refunds now use tracked work; only Update's
+already-joined parallel workers remain plain world goroutines.
+
+Signal handling now marks readiness unavailable and closes/joins command and
+WebSocket admission, stops/joins recurring gameplay/save/expiry loops, cancels
+unfinished world timers/vigils, and waits for earned world/refund completions.
+Completed PvP results resolve normally; unfinished matches cancel without ranked
+rewards/deserter penalties, using existing PvP exit resource restoration. The hub
+closes transports and retires its clients before queued cleanup/save/weekly/guild/
+PvP completion workers drain. Final snapshots include disconnected characters,
+since a late earned reward may have changed one since its disconnect save.
+
+Crucially, all final character snapshots reach their private durable journal
+before the first final Mongo attempt. A database failure stops further final
+commit attempts, leaving files for startup replay instead of repeating a timeout
+for every remaining player. Local journal failure keeps the server quiescent and
+retrying, not knowingly reporting successful exit with the newest state only in
+RAM. HTTP shutdown and normal main return follow the durable final pass. Compose
+gets60s grace for this work. This does not guarantee survival of forced SIGKILL,
+power loss before the journal write, permanent storage loss, or unfinished
+cross-document auction/weekly-reward transactions.
+
+Initial40384 CLOSED PASS focused root0.245s/lifecycle0.009s/game0.032s. Lifecycle
+race67491 CLOSED PASS root1.459s/lifecycle1.030s/game1.566s; expanded54309 PASS
+root1.917s/lifecycle1.038s/game1.703s. Final focused43001 CLOSED PASS root2.171s/
+lifecycle1.041s/game1.650s, `/tmp/eidolon-shutdown-final-focused.log`. Tests cover
+concurrent admission closure, waiting for an active tick, nested earned work,
+rejected late command/upgrade, cancelled actual attack/vigil, preserving decided
+PvP results without maintenance forfeits, disconnected late-reward final saves,
+unwritable journal refusal and all8 journals preceding the first database call.
+
+Initial actual handle90112 ran all TestResourceActual cases against race-built binary
+`/tmp/eidolon-resource-shutdown-proof-ruYRdB/3efad53dbf4a26622c137a2ed066b84fd425697b`
+and explicit disposable Mongo `eidolon-resource-shutdown-proof-20260908-1629`.
+Its exact cleanup trap removed only that owned container/volumes. Log
+`/tmp/eidolon-resource-shutdown-actual-sessions.log`: handoff6.33s, rejected save/
+restart6.70s, committed receipt/later credit3.46s and8 token/recovery cases28.62s
+passed, as did144 sessions217.47s. The new live-socket test FAILED12.46s before
+its eight-socket SIGINT step: its immediate unknown-skill probe after accepted
+Fireball expected locked, but legitimately received global_cooldown with70mana.
+Thus90112 CLOSED FAIL1/275.094s, not a whole-run pass. Nine child logs (dirs in the
+execution ledger) have clean normal exits/race/panic/fatal/credential scans; the
+owned Mongo/volumes are independently absent. Full Go race21550 CLOSED PASS0:
+root20.592s/game403.942s/lifecycle1.069s/databasecached, log
+`/tmp/eidolon-resource-shutdown-full-race.log`.
+
+Correctiona837acb changes only the new test: the accepted Fireball acknowledgement
+already proves living state and exact70mana, so do not immediately probe again
+inside its valid global cooldown. All other probes and exact final persistence/
+fresh-login assertions remain. No gameplay change, added grants or wait padding.
+Focused92471 CLOSED PASS1.705s, `/tmp/eidolon-shutdown-cast-ack-focused.log`.
+
+Corrected49137 CLOSED PASS0/82.378s: **three consecutive** eight-live-socket SIGINT
+and fresh-process login runs28.20s/27.25s/25.89s, four classes each alive/dead.
+Real living Wizard Fireball100→70mana; other living/dead0mana, exact17HP/0HP,
+gold1234/level30. Every final Mongo snapshot was fresh after shutdown began;
+healthy shutdown left no pending files, and ordinary logins in a new process
+preserved each snapshot. Binary
+`/tmp/eidolon-resource-shutdown-corrected-proof-F8f5F1/a837acb9d9c35f082f3c93e32f76608648290015`,
+log `/tmp/eidolon-resource-shutdown-repeat-sessions.log`. Six server evidence dirs
+4027541671/3472769833/322527122/3880982149/3016411499/2985687568 under
+`/tmp/eidolon-compat-session-*` have strict normal exits, explicit drain-complete
+logs and independent clean race/panic/fatal/credential scans. Exact owned repeat
+Mongo and disposable volumes removed and independently absent; production data
+untouched. All owned local test/browser handles are closed. This is controlled
+SIGINT proof, not abrupt-kill or general storage/network-fault durability.
+
 ## Required work still open — do not publish this slice alone
 
-- Audit shutdown admission and
-  world-mutation stopping before final snapshots/worker drain: the current
-  WaitGroup alone does not prevent new work during shutdown. Verify delayed IO,
+- Verify remaining delayed IO,
   storage failure boundaries and pending-save versus offline auction-credit
   ordering; a matched receipt alone does not protect every concurrent credit.
 - Verify actual PvP forfeit/entry/exit and unfinished-dungeon save/recovery.
