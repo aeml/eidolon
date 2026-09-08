@@ -121,7 +121,7 @@ func TestResourceActualLiveHandoff(t *testing.T) {
 		t.Fatal("missing character credit accepted")
 	}
 
-	address, stop := compatStartServer(t, binary, uri, 10)
+	address, stop := compatStartServer(t, binary, uri, 10, "-save-journal-dir", t.TempDir())
 	defer stop()
 	first := resourceOpenCharacter(t, address, name, password)
 	resourceSend(t, first, MsgAbility, AbilityPayload{SkillName: "Fireball", TargetX: -1.25, TargetZ: 220})

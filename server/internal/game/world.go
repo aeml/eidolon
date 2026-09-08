@@ -1342,7 +1342,7 @@ func (w *World) CollectExpiredDisconnectedPlayers(window time.Duration) []*Entit
 	defer w.Mu.Unlock()
 	var expired []*Entity
 	for _, e := range w.Entities {
-		if e.Type != TypePlayer || !e.Disconnected {
+		if e.Type != TypePlayer || !e.Disconnected || e.UnjournaledSave {
 			continue
 		}
 		if now.Sub(e.DisconnectedAt) > window {
@@ -1358,6 +1358,19 @@ func (w *World) CollectExpiredDisconnectedPlayers(window time.Duration) []*Entit
 		}
 	}
 	return expired
+}
+
+// A local-journal failure must not let the resume sweep remove the last copy.
+// Once a complete snapshot is durable, normal expiry is safe even if Mongo is
+// temporarily unavailable: startup/login will replay the pending journal first.
+func (w *World) SetEntityUnjournaledSave(id string, pending bool) {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+	if entity := w.Entities[id]; entity != nil {
+		entity.Mu.Lock()
+		entity.UnjournaledSave = pending
+		entity.Mu.Unlock()
+	}
 }
 
 func (w *World) UpdateEntityPosition(id string, x, y, z, rotation float64) {

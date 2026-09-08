@@ -63,7 +63,7 @@ func TestResourceActualSavedSessions(t *testing.T) {
 		}
 	}
 	for phase := 0; phase < 3; phase++ {
-		address, stop := compatStartServer(t, binary, uri, phase)
+		address, stop := compatStartServer(t, binary, uri, phase, "-save-journal-dir", t.TempDir())
 		for index, fixture := range fixtures {
 			joinedAt := time.Now()
 			compatLoginAndDisconnect(t, address, fixture.Name, password, fixture.Class)

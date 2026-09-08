@@ -214,7 +214,7 @@ func compatExpected(before *database.Character, version int) *database.Character
 	return &after
 }
 
-func compatStartServer(t *testing.T, binary, uri string, phase int) (string, func()) {
+func compatStartServer(t *testing.T, binary, uri string, phase int, extraArgs ...string) (string, func()) {
 	t.Helper()
 	listener, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
@@ -231,8 +231,9 @@ func compatStartServer(t *testing.T, binary, uri string, phase int) (string, fun
 	if err != nil {
 		t.Fatal(err)
 	}
-	command := exec.Command(binary, "-addr", address, "-mongo-uri", uri,
-		"-log-file", "", "-suspicious-log-file", "", "-economy-metrics-file", "")
+	args := []string{"-addr", address, "-mongo-uri", uri,
+		"-log-file", "", "-suspicious-log-file", "", "-economy-metrics-file", ""}
+	command := exec.Command(binary, append(args, extraArgs...)...)
 	command.Stdout, command.Stderr = logFile, logFile
 	if err := command.Start(); err != nil {
 		logFile.Close()

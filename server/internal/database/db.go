@@ -58,6 +58,7 @@ type Auction struct {
 }
 
 type Character struct {
+	LastSaveID         string              `bson:"last_save_id,omitempty"`
 	Resources          *CharacterResources `bson:"resources,omitempty"`
 	Name               string              `bson:"name"`
 	Class              string              `bson:"class"` // Fighter, Wizard, etc.

@@ -47,6 +47,7 @@ const (
 
 var addr = flag.String("addr", ":8080", "http service address")
 var mongoURI = flag.String("mongo-uri", "mongodb://localhost:27017", "MongoDB connection URI")
+var characterJournalDir = flag.String("save-journal-dir", "logs/character-saves", "Persistent private pending-character journal directory")
 var certFile = flag.String("cert", "", "Path to SSL certificate file")
 var keyFile = flag.String("key", "", "Path to SSL key file")
 
@@ -389,6 +390,14 @@ func main() {
 	db, err = database.New(*mongoURI)
 	if err != nil {
 		log.Fatal(err)
+	}
+	characterSaveCommitter = db
+	characterSaveJournal, err = database.OpenCharacterSaveJournal(*characterJournalDir)
+	if err != nil {
+		log.Fatalf("Character save journal unavailable: %v", err)
+	}
+	if err := retryPendingCharacterSaves(); err != nil {
+		log.Fatalf("Cannot recover pending character saves; refusing stale logins: %v", err)
 	}
 
 	// Seed the random number generator

@@ -129,6 +129,10 @@ func (c *Client) dispatchMessage(msg Message) {
 			return
 		}
 
+		if err := retryPendingCharacterSaveLocked(c.username); err != nil {
+			c.sendError("Your latest character save is awaiting recovery. Please try again later.")
+			return
+		}
 		log.Printf("Player joining: %s (Class: %s)", c.username, payload.Type)
 
 		// Load user from DB to check for existing character

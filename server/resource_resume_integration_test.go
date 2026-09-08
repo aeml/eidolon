@@ -66,7 +66,7 @@ func TestResourceActualTokenResumeAndDeathRecovery(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer repo.Close(context.Background())
-	address, stop := compatStartServer(t, binary, uri, 20)
+	address, stop := compatStartServer(t, binary, uri, 20, "-save-journal-dir", t.TempDir())
 	defer stop()
 	for _, class := range []string{"Fighter", "Rogue", "Wizard", "Cleric"} {
 		for _, dead := range []bool{false, true} {

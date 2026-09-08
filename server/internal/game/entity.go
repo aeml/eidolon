@@ -288,8 +288,9 @@ type Entity struct {
 	GuildTag     string `json:"guildTag,omitempty"`
 
 	// Reconnect / session resume
-	Disconnected   bool      `json:"-"`
-	DisconnectedAt time.Time `json:"-"`
+	Disconnected    bool      `json:"-"`
+	DisconnectedAt  time.Time `json:"-"`
+	UnjournaledSave bool      `json:"-"` // Do not expire the only copy after local persistence failure.
 
 	// Unique Effect: swift - Speed boost after skill use
 	SwiftActive  bool      `json:"swiftActive,omitempty"`

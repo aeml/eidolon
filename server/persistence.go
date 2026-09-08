@@ -35,6 +35,9 @@ func saveAllPlayers() {
 	for _, client := range clientsToSave {
 		savePlayerNow(client)
 	}
+	if err := retryPendingCharacterSaves(); err != nil {
+		log.Printf("Character save retry remains pending: %v", err)
+	}
 }
 
 func savePlayer(client *Client) {
@@ -63,18 +66,20 @@ func savePlayerNow(client *Client) {
 	saveCharacterDB(client, entity)
 }
 
-func saveCharacterDB(client *Client, entity *game.Entity) {
+func saveCharacterDB(client *Client, entity *game.Entity) error {
 	char := characterSnapshot(client.username, entity, time.Now())
 	if entity.InstanceID != "" {
 		if snapshot, ok := world.GetDungeonResumeSnapshot(entity.InstanceID); ok {
 			char.DungeonProgress = dungeonResumeToDatabase(snapshot)
 		}
 	}
-	if err := db.SaveCharacter(client.username, char); err != nil {
+	if err := persistCharacterSnapshot(client.username, char); err != nil {
 		log.Printf("Failed to save character for %s: %v", client.username, err)
+		return err
 	} else {
 		log.Printf("Saved character for %s (Inv: %d, Equip: %d)", client.username, len(char.Inventory), len(char.Equipment))
 	}
+	return nil
 }
 
 func dungeonResumeToDatabase(snapshot game.DungeonResumeSnapshot) *database.CharacterDungeonResume {
