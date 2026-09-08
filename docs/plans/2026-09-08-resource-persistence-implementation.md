@@ -1,5 +1,60 @@
 # Resource persistence implementation candidate — not release-ready
 
+## Listing escrow candidate — September 8, 20:29 UTC
+
+Buyout481c3d0 acceptance is closed: fullrace83710 PASS0 (root26.628/database
+1.131/game379.886s); actual73205 PASS0/329.789s, TWO repetitions. All88 child
+logs independently clean:12 intended kills,76 normal drained shutdowns. Exact
+owned Mongo eidolon-auction-buyout-proof-20260908-2007 and volumes removed;
+container independently absent. Logs `/tmp/eidolon-auction-buyout-{full-race,sessions}.log`.
+
+Listing runtime0908438119e0fded426176b148f061b5c95b2f15 adds immutable listing
+terms/item/deposit decisions without making an auction visible in memory first.
+Before persisting the decision, save the complete current bag so offline recovery
+sees the exact owned item and any login normalization. Then remove the intended
+quantity and debit the deposit together with the two private receipts in one
+full-character save. Replay precedes searching the bag or checking current gold;
+additional stack units remain owned. Missing/changed/ambiguous items or
+insufficient gold cannot cause partial escrow and allow a proven clean abort.
+
+Only confirmed escrow publishes the auction under its unique ID. A duplicate
+insert must read back exactly the same listing before being acknowledged. Startup
+allows a missing auction only for a valid pending listing decision, then recovers
+escrow/publication before admission. Persistent legacy CreateAuction is blocked;
+the ordinary handler no longer removes/restores the item outside that protocol.
+Deposit remains mathematically5% (integer buyout/20, minimum1). Duration and
+start/end are currently frozen at request preparation; review long-outage expiry
+fairness before release rather than assuming publication-delay behavior is done.
+
+95070 initial focused PASS1.169/database0.021/game0.125. Focusedrace44437 PASS
+root5.134/database1.053/game1.437; expanded99500 PASS2.927/1.059/1.503. Logs
+`/tmp/eidolon-auction-listing-{initial-focused,focused,expanded-focused}.log`.
+Tests cover atomic deposit/item failure, preserving extra stack units, replay
+after reacquisition/spending, invisibility before escrow, duplicate requests,
+changed/ambiguous items, term validation and failed full-save recovery.
+
+Frozen-source full34429 ACTIVE, `/tmp/eidolon-auction-listing-full-race.log`.
+Actual39545 ACTIVE on the exact binary, TWO repetitions of six normal/rejected
+listing modes and seven SIGKILL boundaries plus competing buyouts and normal
+seller payout. First normal set PASS32.08s. Crash inputs intentionally use legacy
+inventory and a just-cast Fireball without a prior disconnect save. Tests require
+saved normalization/current70mana, exact item/deposit receipts and one immutable
+listing after restart. Boundaries include rejected preflight/decision, lost
+decision reply, rejected pre-escrow save, journaled escrow, failed publication,
+and lost publication reply. The pre-escrow fault skips one update scoped to the
+users namespace, and asserts that the intended decision/save boundary was hit.
+Whole actual/full runs are not yet terminal. Owned Mongo
+eidolon-auction-listing-proof-20260908-2027 with EXIT cleanup; actual log
+`/tmp/eidolon-auction-listing-sessions.log`. Do not change candidate sources until
+both exact handles are terminal.
+
+Additional inspection: the existing client/server listing request carries only
+slotIndex, prices and duration. It does not bind the request to the item selected
+by the user. Add expected item identity/quantity validation and selection refresh
+before release, so a stale slot cannot list a replacement item. No client change
+is implemented yet. Enforced rollback/receipt compatibility and wider gameplay
+acceptance remain open; candidate retains unpublished55 metadata.
+
 ## Atomic buyout candidate — September 8, 20:08 UTC
 
 Previous item runtime0c847a8 is verified: fullrace54188 CLOSED PASS0

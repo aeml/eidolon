@@ -135,6 +135,12 @@ targets. The following inspection/design records why this work was needed.
 
 ### Historical item-delivery inspection — September8, 19:39
 
+Update20:29: buyout full83710 and actual73205 PASS,88 clean child logs.
+Listing0908438 now persists current ownership before the decision, then journals
+deposit+item escrow before idempotent publication. Focused tests pass; full34429
+and actual39545 remain active. Stale listing-slot identity binding, delayed
+publication/expiry fairness and enforced old-writer rollback are still open.
+
 September8 inspection confirms persistent BuyoutAuction saves ItemClaimed before
 debiting/granting the item in memory; CollectAuction finalizes the claim before
 the handler adds the item. Neither path yet includes an item receipt in a full
