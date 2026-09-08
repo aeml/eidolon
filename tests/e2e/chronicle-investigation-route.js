@@ -32,7 +32,7 @@ export async function earnEarthInvestigation(page, id, openIlyra, capture, optio
     return earnInvestigation(page, id, openIlyra, capture, options);
 }
 
-export async function earnInvestigation(page, id, openIlyra, capture, { waypoints, selectChapter, beforeInspect, defeatSite } = {}) {
+export async function earnInvestigation(page, id, openIlyra, capture, { waypoints, selectChapter, beforeInspect, defeatSite, inspectWithKeyboard = false } = {}) {
     const chapter = chronicleInvestigations.find(chapter => chapter.id === id);
     await openIlyra(page);
     if (selectChapter) await selectChapter(chapter);
@@ -69,6 +69,12 @@ export async function earnInvestigation(page, id, openIlyra, capture, { waypoint
             await walkTo(page, site.x, site.z + 3);
         }
         if (capture) await capture(site, 'approach');
+        if (inspectWithKeyboard) {
+            // Ordinary E input reaches nearby evidence even if a hostile
+            // covers its visible geometry. Server acknowledgement below is
+            // still mandatory; no quest state or request is injected here.
+            await page.keyboard.press('e');
+        } else {
         let point;
         let candidate = 0;
         try { await expect.poll(async () => {
@@ -105,6 +111,7 @@ export async function earnInvestigation(page, id, openIlyra, capture, { waypoint
             throw error;
         }
         await page.mouse.click(point.x, point.y);
+        }
         const evidence = page.locator(`#journal-list details[data-discovery-id="${site.id}"]`);
         await expect(evidence).toHaveAttribute('open', '');
         await expect(evidence).toContainText(site.title);

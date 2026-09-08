@@ -48,6 +48,7 @@ export class InputManager {
             onQuest: [], // New callback for Quest Journal
             onChat: [], // New callback for Chat
             onInteract: [], // New callback for Mobile "USE" button
+            onInspect: [], // Deliberate nearby Chronicle inspection (E)
             onManualMovement: [], // Joystick crosses its movement dead zone
             onSocial: [], // New callback for Social Window
             onSkills: [], // New callback for Skill Tree
@@ -311,6 +312,10 @@ export class InputManager {
         }
 
         const key = e.key.toLowerCase();
+        if (key === 'e' && !e.repeat && !e.ctrlKey && !e.altKey && !e.metaKey &&
+            !activeElement?.closest('button, [role="button"], select, a[href], [contenteditable="true"]')) {
+            this.callbacks.onInspect.forEach(cb => cb());
+        }
         if (Object.prototype.hasOwnProperty.call(this.keys, key)) {
             this.keys[key] = true;
         }

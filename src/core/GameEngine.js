@@ -5,6 +5,7 @@ import { ChunkManager, isAlwaysResidentEntityType } from './ChunkManager.js';
 import { CollisionManager } from './CollisionManager.js';
 import { getLanternholdWalkCollider } from '../art/ProceduralLanternholdArchitecture.js';
 import { ChronicleSite } from '../entities/ChronicleSite.js';
+import { requestNearbyChronicleInspection } from './ChronicleInspection.js';
 import { NetworkManager } from './NetworkManager.js';
 import { AbilityController } from './AbilityController.js';
 import { CONSTANTS } from './Constants.js';
@@ -1206,6 +1207,10 @@ export class GameEngine {
             this.interactWithNearbyEntity();
         });
 
+        this.inputManager.subscribe('onInspect', () => {
+            requestNearbyChronicleInspection(this);
+        });
+
         this.inputManager.subscribe('onEscape', () => {
             const escMenuWasOpen = this.uiManager.isEscMenuOpen;
             this.uiManager.handleEscape();
@@ -1609,7 +1614,7 @@ export class GameEngine {
             }
         } else if (interactableType === 'ChronicleSite') {
             promptLabel = inRange
-                ? 'Inspect this discovery. Recovered evidence is saved in your journal.'
+                ? 'Click or press E to inspect this discovery. Recovered evidence is saved in your journal.'
                 : 'Move closer to inspect this discovery.';
         } else if (interactableType === 'QuestNPC') {
             promptLabel = inRange
