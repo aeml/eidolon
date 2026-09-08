@@ -6,6 +6,26 @@ import (
 	"time"
 )
 
+// Shared admission/impact reach, including the visible bodies of large actors.
+func basicAttackReach(kind EntityType, subtype string, scale, targetScale float64) float64 {
+	reach := 3.0
+	if kind == TypePlayer {
+		reach = 4
+		if subtype == "Wizard" || subtype == "Rogue" {
+			reach = 16
+		}
+	} else if subtype == "DwarfSalesman" {
+		reach = 6
+	}
+	if scale > 1 {
+		reach += (scale - 1) * 1.5
+	}
+	if targetScale > 1 {
+		reach += (targetScale - 1) * 1.5
+	}
+	return reach
+}
+
 func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
@@ -57,25 +77,7 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 	dz := attackerZ - targetZ
 	dist := math.Sqrt(dx*dx + dz*dz)
 
-	attackRange := 3.0 // Default enemy melee range
-	if attackerType == TypePlayer {
-		attackRange = 4.0
-		if attackerSubType == "Wizard" || attackerSubType == "Rogue" {
-			attackRange = 16.0
-		}
-	} else if attackerSubType == "DwarfSalesman" {
-		attackRange = 6.0
-	}
-
-	// Adjust the selected base range for large attackers and targets.
-	if attackerScale > 1.0 {
-		attackRange += (attackerScale - 1.0) * 1.5
-	}
-
-	// Also adjust range for target's scale (allows melee to hit large bosses)
-	if targetScale > 1.0 {
-		attackRange += (targetScale - 1.0) * 1.5
-	}
+	attackRange := basicAttackReach(attackerType, attackerSubType, attackerScale, targetScale)
 
 	if dist > attackRange {
 		return 0, false
@@ -138,7 +140,7 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 		att.Mu.Unlock()
 		return
 	}
-	impactX, impactZ := att.X, att.Z
+	impactX, impactZ, impactScale := att.X, att.Z, att.Scale
 	cloakBonus := att.CloakNextAttackBonus
 	if att.Type == TypePlayer && cloakBonus > 0 {
 		att.CloakNextAttackBonus = 0
@@ -154,6 +156,15 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 	// Lock target for modification
 	tgt.Mu.Lock()
 	if tgt.State == "DEAD" || tgt.InstanceID != attackerInstanceID {
+		tgt.Mu.Unlock()
+		return
+	}
+	// Enemy melee is avoidable during its wind-up. A legal attack start must
+	// not reserve damage against a player who has since escaped its reach.
+	// Player attacks, projectiles and separately telegraphed boss abilities
+	// retain their existing resolution rules.
+	if attackerSnapshot.Type == TypeEnemy && math.Hypot(tgt.X-impactX, tgt.Z-impactZ) >
+		basicAttackReach(attackerSnapshot.Type, attackerSnapshot.SubType, impactScale, tgt.Scale) {
 		tgt.Mu.Unlock()
 		return
 	}
