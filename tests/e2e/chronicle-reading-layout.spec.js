@@ -25,7 +25,7 @@ test('a later field record survives refresh and remains reachable by touch in ei
         document.body.classList.add('mobile-mode');
         document.getElementById('start-screen').style.display = 'none';
         const ui = new UIManager(true);
-        ui.lastPlayerRef = { id: 'reading-layout', level: 60, quests };
+        ui.lastPlayerRef = { id: 'reading-layout', level: 100, quests };
         ui.showHUD(); ui.toggleChat(true); ui.quest.toggleJournal();
         window.__readingLayout = { ui, quests };
     });
