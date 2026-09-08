@@ -405,6 +405,10 @@ func main() {
 	rand.Seed(time.Now().UnixNano())
 
 	world = game.NewWorld(db)
+	world.Trading.SetRefundDelivery(deliverAuctionRefund)
+	if err := world.Trading.RetryPendingRefunds(); err != nil {
+		log.Printf("Startup auction refunds remain pending: %v", err)
+	}
 	startEconomyMetrics(world, *economyMetricsFilePath)
 	loops := newServerLoops()
 
@@ -881,6 +885,9 @@ func main() {
 	loops.Every(time.Minute, func() {
 		saveAllPlayers()
 		world.Trading.CleanupExpired()
+		if err := world.Trading.RetryPendingRefunds(); err != nil {
+			log.Printf("Periodic auction refunds remain pending: %v", err)
+		}
 	})
 
 	mux := http.NewServeMux()

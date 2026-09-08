@@ -38,26 +38,28 @@ type User struct {
 }
 
 type Auction struct {
-	ID            string    `bson:"id"`
-	SellerID      string    `bson:"seller_id"`
-	SellerName    string    `bson:"seller_name"`
-	Item          Item      `bson:"item"`
-	Bid           int       `bson:"bid"`
-	Buyout        int       `bson:"buyout"`
-	Duration      int       `bson:"duration"`
-	StartTime     time.Time `bson:"start_time"`
-	EndTime       time.Time `bson:"end_time"`
-	Status        string    `bson:"status"`
-	BuyerID       string    `bson:"buyer_id"`
-	BidderID      string    `bson:"bidder_id"`
-	BidderName    string    `bson:"bidder_name"`
-	Deposit       int       `bson:"deposit"`
-	SalePrice     int       `bson:"sale_price,omitempty"`
-	ItemClaimed   bool      `bson:"item_claimed,omitempty"`
-	SellerClaimed bool      `bson:"seller_claimed,omitempty"`
+	PendingRefunds []AuctionRefund `bson:"pending_refunds"`
+	ID             string          `bson:"id"`
+	SellerID       string          `bson:"seller_id"`
+	SellerName     string          `bson:"seller_name"`
+	Item           Item            `bson:"item"`
+	Bid            int             `bson:"bid"`
+	Buyout         int             `bson:"buyout"`
+	Duration       int             `bson:"duration"`
+	StartTime      time.Time       `bson:"start_time"`
+	EndTime        time.Time       `bson:"end_time"`
+	Status         string          `bson:"status"`
+	BuyerID        string          `bson:"buyer_id"`
+	BidderID       string          `bson:"bidder_id"`
+	BidderName     string          `bson:"bidder_name"`
+	Deposit        int             `bson:"deposit"`
+	SalePrice      int             `bson:"sale_price,omitempty"`
+	ItemClaimed    bool            `bson:"item_claimed,omitempty"`
+	SellerClaimed  bool            `bson:"seller_claimed,omitempty"`
 }
 
 type Character struct {
+	GoldCreditReceipts map[string]int      `bson:"gold_credit_receipts,omitempty"`
 	LastSaveID         string              `bson:"last_save_id,omitempty"`
 	Resources          *CharacterResources `bson:"resources,omitempty"`
 	Name               string              `bson:"name"`
@@ -408,8 +410,14 @@ func (db *DB) UpdateAuction(auction *Auction) error {
 	filter := bson.M{"id": auction.ID}
 	update := bson.M{"$set": auction}
 
-	_, err := db.auctions.UpdateOne(ctx, filter, update)
-	return err
+	result, err := db.auctions.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return err
+	}
+	if result.MatchedCount != 1 {
+		return errors.New("auction not found for update")
+	}
+	return nil
 }
 
 func (db *DB) DeleteAuction(auctionID string) error {

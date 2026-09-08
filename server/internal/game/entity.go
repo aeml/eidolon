@@ -1,6 +1,7 @@
 package game
 
 import (
+	"maps"
 	"math"
 	"sync"
 	"time"
@@ -68,28 +69,29 @@ type Stats struct {
 // ---------------------------------------------------------------------------
 
 type Entity struct {
-	Mu              sync.RWMutex   // Protects concurrent access
-	ID              string         `json:"id"`
-	InstanceID      string         `json:"instanceId"`
-	Name            string         `json:"name"`
-	Type            EntityType     `json:"type"`
-	SubType         string         `json:"subType"` // e.g., "Fighter", "Skeleton"
-	X               float64        `json:"x"`
-	Y               float64        `json:"y"`
-	Z               float64        `json:"z"`
-	Rotation        float64        `json:"rotation"` // Y-axis rotation in radians
-	Health          int            `json:"health"`
-	MaxHealth       int            `json:"maxHealth"`
-	Mana            int            `json:"mana"`
-	MaxMana         int            `json:"maxMana"`
-	Level           int            `json:"level"`
-	Experience      int            `json:"experience"`
-	MaxExperience   int            `json:"maxExperience"`
-	ResonanceLevel  int            `json:"resonanceLevel,omitempty"`
-	ResonanceXP     int            `json:"resonanceXp,omitempty"`
-	ResonancePoints int            `json:"resonancePoints,omitempty"`
-	ResonanceRanks  map[string]int `json:"resonanceRanks,omitempty"`
-	Gold            int            `json:"gold"`
+	Mu                 sync.RWMutex   // Protects concurrent access
+	ID                 string         `json:"id"`
+	InstanceID         string         `json:"instanceId"`
+	Name               string         `json:"name"`
+	Type               EntityType     `json:"type"`
+	SubType            string         `json:"subType"` // e.g., "Fighter", "Skeleton"
+	X                  float64        `json:"x"`
+	Y                  float64        `json:"y"`
+	Z                  float64        `json:"z"`
+	Rotation           float64        `json:"rotation"` // Y-axis rotation in radians
+	Health             int            `json:"health"`
+	MaxHealth          int            `json:"maxHealth"`
+	Mana               int            `json:"mana"`
+	MaxMana            int            `json:"maxMana"`
+	Level              int            `json:"level"`
+	Experience         int            `json:"experience"`
+	MaxExperience      int            `json:"maxExperience"`
+	ResonanceLevel     int            `json:"resonanceLevel,omitempty"`
+	ResonanceXP        int            `json:"resonanceXp,omitempty"`
+	ResonancePoints    int            `json:"resonancePoints,omitempty"`
+	ResonanceRanks     map[string]int `json:"resonanceRanks,omitempty"`
+	Gold               int            `json:"gold"`
+	GoldCreditReceipts map[string]int `json:"-"`
 
 	// Inventory
 	Inventory         []Item          `json:"-"`
@@ -890,6 +892,7 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		ResonanceXP:            e.ResonanceXP,
 		ResonancePoints:        e.ResonancePoints,
 		Gold:                   e.Gold,
+		GoldCreditReceipts:     maps.Clone(e.GoldCreditReceipts),
 		LastDailyQuest:         e.LastDailyQuest,
 		BaseStats:              e.BaseStats,
 		Stats:                  e.Stats,

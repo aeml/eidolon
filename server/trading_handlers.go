@@ -3,8 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
-	"strings"
 
 	"eidolon-server/internal/game"
 )
@@ -139,28 +137,7 @@ func handleMsgTradingBid(c *Client, msg Message) {
 		return
 	}
 
-	refundFunc := func(targetID, targetName string, amount int) {
-		// Try to find online player
-		world.Mu.Lock()
-		target, ok := world.Entities[targetID]
-		world.Mu.Unlock()
-
-		if ok {
-			target.Mu.Lock()
-			target.Gold += amount
-			target.Mu.Unlock()
-
-			// We could try to notify them if we had the client, but gold update is enough for now.
-			// Next time they check inventory it will be there.
-		} else {
-			// Offline refund
-			if err := db.CreditCharacterGold(strings.TrimPrefix(targetID, "player-"), targetName, amount); err != nil {
-				log.Printf("Failed offline auction refund: %v", err)
-			}
-		}
-	}
-
-	err := world.Trading.BidAuction(payload.AuctionID, player, payload.Amount, refundFunc)
+	err := world.Trading.BidAuction(payload.AuctionID, player, payload.Amount)
 	if err != nil {
 		c.sendError(err.Error())
 		return
