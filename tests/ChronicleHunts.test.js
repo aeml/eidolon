@@ -11,6 +11,13 @@ test('all eight hunts share exact authored server/client content and count towar
     expect(() => execFileSync(process.execPath, ['scripts/generate-chronicle-hunts.mjs', '--check'])).not.toThrow();
 });
 
+test('first hunt sends new adventurers to the near roads without reducing the objective or reward budget', () => {
+    const hunt = chronicleHunts.find(hunt => hunt.id === 'chronicle_earth_kept_watch');
+    expect(hunt).toMatchObject({ minEnemyLevel: 3, count: 40, contentLevel: 10 });
+    expect(hunt.acceptance).toContain('level 3 or higher');
+    expect(hunt.acceptance).toContain('just beyond Lanternhold');
+});
+
 test.each(chronicleHunts)('$id has earned and retrospective replies and a correctly ordered invitation', hunt => {
     expect(getIlyraCompletionReply({id:hunt.id})).toBe(hunt.completion);
     expect(getIlyraCompletionReply({id:hunt.id,legacyOptional:true})).toBe(hunt.catchupCompletion);

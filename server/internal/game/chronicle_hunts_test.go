@@ -38,6 +38,21 @@ func TestChronicleHuntsOrderAndBudgets(t *testing.T) {
 	}
 }
 
+func TestFirstChronicleHuntAcceptsEarlyRoadWardens(t *testing.T) {
+	hunt, ok := chronicleHuntByID("chronicle_earth_kept_watch")
+	if !ok || hunt.MinEnemyLevel != 3 || hunt.Count != 40 || hunt.ContentLevel != 10 {
+		t.Fatal("first expedition must admit level-three road wardens without changing its count or reward budget")
+	}
+	for _, level := range []int{3, 4, 8, 10} {
+		if !huntKillMatches(hunt, "Skeleton", level, "", 300, 200) {
+			t.Fatalf("road warden level %d rejected", level)
+		}
+	}
+	if huntKillMatches(hunt, "Skeleton", 2, "", 300, 200) {
+		t.Fatal("weakened tutorial enemies must remain distinct")
+	}
+}
+
 func TestChronicleHuntsMigrateAllPriorExpandedMilestones(t *testing.T) {
 	oldCatalog := expandChronicleInvestigations(classicChronicleQuestCatalog())
 	for milestone, active := range oldCatalog {
@@ -117,7 +132,7 @@ func TestChronicleHuntProductionDeathCreditsOnceWithoutCompleting(t *testing.T) 
 	}
 	updates := make(chan []Quest, 4)
 	w.OnQuestUpdate = func(_ string, quests []Quest) { updates <- quests }
-	for i, level := range []int{1, 8} {
+	for i, level := range []int{2, 3} {
 		e := &Entity{ID: fmt.Sprintf("hunt-target-%d", i), Type: TypeEnemy, SubType: "Skeleton", Level: level, Health: 1, MaxHealth: 1, State: "IDLE", X: 302, Z: 200, SpawnX: 302, SpawnZ: 200}
 		w.AddEntity(e)
 		e.Mu.Lock()

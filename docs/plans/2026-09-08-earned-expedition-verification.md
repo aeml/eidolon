@@ -93,3 +93,26 @@ Source762a46b integrates the user's requested0.01 regeneration into this31-
 chapter candidate. Earlier0.5-rate playthroughs do not establish its new pacing.
 The next earned run uses this real rate and the crowd-jump strategy; no XP,
 equipment, mana, health, movement or objective credit is granted.
+
+## Requested low-regeneration run and first-hunt correction
+
+Run66368, source dfd3cbd, **failed** after three ordinary deaths at Watch1/40.
+The opening took48s, no deaths; the diary left the Wizard at level3 after109s.
+All three Watch deaths occurred at level4/97XP/283gold, with no equipment in
+the bag. The inspected failure image shows0/175HP,22/145mana and several
+nearby Skeletons. This establishes a playable-onramp failure, but a death
+screenshot alone cannot distinguish mana starvation from incoming crowd damage.
+Artifact scan and owned cleanup passed; the run is terminal, not waiting.
+Image: `/tmp/eidolon-earned-low-regen-evidence-J2vCTX/failed-watch.png`.
+Log: `/tmp/eidolon-earned-earth-low-regen-crowd.log`.
+
+The first expedition now admits level3+ Skeletons instead of level8+, matching
+the actual level reached through the preceding chapters. Ilyra explicitly
+directs the player to the near roads. The40-kill objective, authored reward
+budget, manual handoff, later dungeon gate and requested0.01 regeneration are
+unchanged. Existing higher-level kills still qualify. This widens eligibility;
+it does not erase accepted progress or alter quoted rewards. The driver records
+volatile health/mana/rates and nearby enemy levels separately from its exact
+saved-state assertions. No gear, levels or recovery are granted and the
+two-death bound remains. A new earned run is required; later hunts and level30
+pacing are still unapproved and must be measured using the new eligibility.

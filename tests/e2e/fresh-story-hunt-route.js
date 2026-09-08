@@ -16,6 +16,22 @@ const snapshot = page => page.evaluate(() => {
             .reduce((sum, item) => sum + (item.value || 0), 0) };
 });
 
+// Volatile combat evidence is deliberately separate from the exact saved
+// progression snapshot: natural regeneration and login recovery are not grants.
+const combatSnapshot = page => page.evaluate(() => {
+    const game = window.game, p = game.player;
+    return { hp: p.stats.hp, maxHP: p.stats.maxHp, mana: p.stats.mana,
+        maxMana: p.stats.maxMana, hpRegen: p.stats.hpRegen, manaRegen: p.stats.manaRegen,
+        x: p.position.x, z: p.position.z,
+        nearbyEnemies: [...game.remotePlayers.values()].filter(enemy => enemy.isActive &&
+            enemy.state !== 'DEAD' && (enemy.health ?? enemy.stats?.hp) > 0 &&
+            game.player.position.distanceTo(enemy.position) < 18).map(enemy => ({
+            type: enemy.subType || enemy.constructor.name, level: enemy.level,
+            hp: enemy.health ?? enemy.stats?.hp,
+            distance: Math.round(game.player.position.distanceTo(enemy.position) * 10) / 10
+        })) };
+});
+
 // Read replicated enemies and approach through ordinary movement. No encounter
 // waypoints, teleport commands, entity moves or progression grants are used.
 async function findExpeditionTarget(page, hunt) {
@@ -66,11 +82,12 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady }
     const previousAutoLoot = await page.evaluate(() => window.game.autoLootEnabled);
     await setAutoLootThroughSettings(page, true);
     const beforeCombat = await createEarnedClassCombat(page);
+    console.log(`[story-hunt] start ${JSON.stringify({ id, ...before, combat: await combatSnapshot(page) })}`);
     let deaths = 0, lastReported = 0;
     const recover = async () => {
         const credit = (await readChronicleChapter(page, id)).count;
         deaths++;
-        console.log(`[story-hunt] death ${JSON.stringify({ id, deaths, credit, ...await snapshot(page) })}`);
+        console.log(`[story-hunt] death ${JSON.stringify({ id, deaths, credit, ...await snapshot(page), combat: await combatSnapshot(page) })}`);
         expect(deaths, 'Expedition exceeded two ordinary respawns').toBeLessThanOrEqual(2);
         await returnToTown(page);
         expect((await readChronicleChapter(page, id)).count).toBeGreaterThanOrEqual(credit);
@@ -113,7 +130,7 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady }
         if (count >= lastReported + 5 || count === hunt.count) {
             lastReported = count;
             console.log(`[story-hunt] ${JSON.stringify({ id, creditedKills: count, required: hunt.count,
-                deaths, ...await snapshot(page), seconds: Math.round((Date.now() - started) / 1000) })}`);
+                deaths, ...await snapshot(page), combat: await combatSnapshot(page), seconds: Math.round((Date.now() - started) / 1000) })}`);
         }
     }
     const ready = await readChronicleChapter(page, id);
