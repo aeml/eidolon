@@ -1,14 +1,44 @@
 # Progression balance and realm investigations
 
 Requested September 7, 2026. Status: **implementation active; full pass open**.
+
+September 8 update: the isolated expanded story now passes an earned fresh
+Earth route with the 100-XP opening, diary, eight-fragment collection and linked
+evidence, plus manual handoffs and reconnect. Source **95faafc**, browser
+**26283 PASS / 3.1m**, zero deaths, 15 observed collection-target deaths (not all
+AoE kills), three equipment drops worth 80 gold **unsold**. It ends at level 16,
+with the existing level-30 dungeon gate correctly locked. All four realm phone
+investigation routes also pass on their recorded prepared-veteran sources.
+This is not a viable full leveling route or a published expansion yet.
+
+The [stacked boss/daily audit](2026-09-08-stacked-dungeon-rewards.md) additionally
+measures **16,001,240 XP** from four Normal Verdant boss payouts plus two daily
+claims: prepared level 30 → 54 → 57, before trash, rooms, story or sale income.
+Quest and encounter budgets must be tuned together. No full replacement curve
+or final source/sink approval has been selected.
+
+The following sections retain their original staged scope; isolated expanded
+runtime is tracked separately from the root-integrated foundation and releases.
 The locally verified, root-integrated 1.0.47 candidate implements eight-fragment
 collections, reduced ordinary drop rates, saved bad-luck protection and
 legacy-contract migration. It is queued, not published. The
 [personal fragment budget](2026-09-07-personal-fragment-budget.md) additionally
-prevents simultaneous kills from creating surplus quest fragments; its runtime
-is root-integrated and the separate 1.0.49 package is in final local verification.
-XP/equipment/gold tuning
-and playable investigations remain open. The
+prevents simultaneous kills from creating surplus quest fragments; its 1.0.49
+package is locally verified and root-integrated, but not published.
+The [routine equipment budget](2026-09-07-routine-equipment-budget.md), locally
+verified and root-integrated as 1.0.50, reduces ordinary equipment frequency by
+40% and caps non-boss elites at one equipment piece while preserving material
+rolls, boss rewards and owned gear. Its full browser and earned collection/
+preparation checks pass; its publication remains in the sequential release queue.
+XP/gold tuning, equipment power/usefulness and playable investigations remain
+open. The
+[opening reward candidate](2026-09-08-opening-reward.md) reduces new tutorial
+offers from 500 to 100 XP, keeps 100 gold and honors accepted promises. Full
+server race checks and a fresh earned Wizard opening/collection playthrough
+pass; runtime remains isolated and unpublished. The same playthrough exposes
+the remaining collection reward jump from level 5 to 16. This small opening
+correction does not select a replacement XP curve or close campaign pacing.
+The
 [loot/Forge baseline](2026-09-07-loot-and-forge-baseline.md) now measures combined
 material/equipment sources and actual transactions; the
 [Forge precision correction](2026-09-07-forge-earned-scaling.md) is locally
@@ -20,8 +50,27 @@ The [investigation foundation](2026-09-07-investigation-implementation.md) now
 compiles this text into matching catalogs, validates personal discoveries, saves
 individual evidence and selects Ilyra's replies by stable quest ID. It is locally
 tested and integrated, but world interactions and the expanded quest graph are
-not yet active. Authored text and recording tests are not evidence of reachable
-world locations or completed playable quests.
+not yet active on root or released builds. An isolated 23-chapter implementation
+has actual Earth and prepared returning-character Water, Fire and Air playthrough
+evidence, including manual rewards and saved discoveries. Fire additionally
+proves the ordered anchor defeat and released ember visual; Fire/Air verify
+retrospective replies and full saved journal rereading. The fresh full campaign,
+broader touch/continuity/pacing and expansion-release gates remain open.
+The latest isolated phone follow-up verifies readable stacked reward rows and
+saved diary controls, including native scrolling in either direction after
+rotation. After correcting fresh diary/collection/investigation dialogue handoffs,
+combined client checks pass **219 suites / 3,299 tests**, and five layout/real-touch
+browser checks pass. Earned Earth, Water, Fire and Air touch routes pass, including
+Fire's actual anchor death before ember credit. Air needs an ordinary walking
+detour around the solid Bastion entrance; the corrected route passes after the
+recorded failures. The smaller opening payout is now integrated into the isolated
+expansion, with combined full suites and a fresh Earth route running.
+These UI checks neither validate the XP economy nor make
+the expansion live. New chapters redistribute their realm's existing reward
+budget; they do not add eight full-size payouts. Selected purposeful combat
+belongs in those investigations, not an automatic increase to 100-kill dailies.
+Authored text and recording tests alone are
+not evidence of reachable world locations or completed playable quests.
 This expands the active full-roadmap goal. Ship verified excessive-reward fixes
 in suitable 1.0.x patches; establish progression pacing in 1.1, deliver the
 expanded Chronicle in 1.4, finish the economy pass in 1.5 and revalidate raid

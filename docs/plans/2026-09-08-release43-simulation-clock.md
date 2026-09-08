@@ -1,5 +1,17 @@
 # Release 43 — verify the summon against its simulation clock
 
+## Corrected CI result
+
+Corrected source **ed5b4e4**, CI **34175827810**, still fails: **61 browser
+passes / two failures / 10.2m**. Native and 8fps cases each see only one hit
+within the 15-second second-hit poll, including retries. They do not reach the
+expiry assertion. Client/server pass; all deployment/live jobs skip. Log:
+`/tmp/eidolon-release43-corrected-ci-failed.log`. Exact bundled-Chromium
+reproduction is in progress; do not assume that increasing the expiry timeout
+resolved the whole rendering test. Release 44 remains gated.
+
+## First failure and local correction
+
 CI **34174381235**, source **f955608**, fails anonymous browser smoke:
 **61 pass / one fails / 8.2m**, including the expiry test's retry. All deployment
 and live jobs are skipped. The public release remains verified 42/bfbbc87.

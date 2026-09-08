@@ -5,7 +5,774 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 21:31 UTC
+## Current checkpoint — September 8, 01:52 UTC
+
+Current turn makes substantive progress: combined fresh Earth verification,
+stacked reward measurements and a second tested release-43 QA correction.
+The full balance/roadmap goal remains active and materially unfinished.
+
+System/hardware summon **63682 PASS / four / 1.3m**, slow-case actual-smite
+image inspected. Software/hardware evidence and exact cadence assertions are
+recorded in [the repeated-smite correction](2026-09-08-release43-repeated-smites.md).
+All owned browser/server/client handles are terminal. Full42 CI **34171247520**
+is rechecked: all eight jobs succeed. Immediately before publication, fresh
+manifest/login/versioned-main/backend checks all return HTTP 200, exact
+**Alpha 1.0.42 / bfbbc87374682bb80c825ce96543012a08841735 / ok / ready**.
+
+Normal descendant push **21004 SUCCESS**: ed5 → **39620a056c3405f8587b92a3b4ec0f7bc464288e**,
+still Alpha 1.0.43, QA/docs only. New **CI 34178050891 in progress**. No 43
+deployment or live approval yet; no 44 publication until all jobs and fresh exact
+public identity pass. All old refs preserved. Current queue `with-smite-cadence`:
+
+| Version | Commit |
+|---|---|
+| 43, pushed | 39620a056c3405f8587b92a3b4ec0f7bc464288e |
+| 44, next | e3a349fa9fe7d5e3c4bf7c77243537bb53ae069b |
+| 45 | b2b5bf1f1addedf96eefd1db25929bd9d491a1e1 |
+| 46 | f4bbd230cb15b08105ba85283169356409211693 |
+| 47 | 945fc218e367aa8add08b6e7bca10490412e0d27 |
+| 48 | fb6a25f821a02d5e1e1eaf6671f945aee14613c4 |
+| 49 | efcdd01c8b2ed5f0825e590493abfa2d460e9212 |
+| 50 | 7fb3d74d04c9f0028b12dee30f264ef98e2701fb |
+
+Root merges QA-only50 as **dd8ceee**; investigation as **c549192**. Expanded
+23-chapter runtime/opening100 remains isolated; root retains its 15-chapter
+runtime and local50. No 51 package. Next substantial balance work must address
+the documented early gate gap and excessive stacked sources together, preserving
+earned levels, accepted contracts and existing access. Prepared veteran touch
+success and isolated payout probes do not establish a balanced full campaign.
+
+## Historical checkpoint — September 8, fresh Earth and reward-stack verification
+
+Fresh expanded Earth **26283 PASS / one / 3.1m** on **95faafc**. QA clears
+nearby enemies with normal basic/class attacks before reading; runtime priority,
+credit, ranges and enemy strength stay unchanged. Opening saves 100 XP/100 gold
+at level 2 / 31s; diary completes manually at level 7; collection earns eight
+seeds after 15 observed target deaths, zero deaths, three equipment pieces worth
+80 gold **unsold**. All scar records/manual fresh handoffs and reconnect pass.
+Collection pays its split 6,000 XP/50 gold. Final level 16 still locks the level-
+30 Bastion. No full progression approval. Images preserved and diary/claim images
+inspected at `/tmp/eidolon-fresh-investigations-earned-tOr1n8/`. Scan/cleanup pass.
+Isolated investigation clean **29555b5**; no expansion/root merge or 51 package.
+
+Root **221132f** adds a production [stacked reward audit](2026-09-08-stacked-dungeon-rewards.md):
+Normal's four boss payouts plus two manual daily claims grant 16,001,240 XP,
+prepared level 30 → 54 → 57; Heroic/Mythic at 100 grant 26,008,080 / 31,016,160
+Resonance XP. Excludes trash, room clears, story and sales. Exact receipt/state
+reconciliation and no automatic/duplicate claims pass. **59924 PASS / 1.548s**;
+three race repeats **69408 PASS / 3.042s**. Both closed. No reward changes here.
+
+43 software Chromium before correction **11275 PASS / four / 3.3m**, admitting
+16.5 seconds in about 70 wall seconds. It reproduces slow rendering, not CI's
+exact second-hit failure. QA **d1f182b** uses an 800×450 production-rendered
+component view, captures the first real smite, then checks at least ten genuine
+84-damage owner-attributed hits at 1.5–1.55 admitted-second intervals across the
+unaltered lifetime. It removes the separate second-hit wall deadline without
+dropping repeated-combat coverage. **80356 software PASS / four / 1.9m**;
+native expiry 32.942 wall seconds, delayed-frame expiry 44.6385, both 16.5
+admitted / 11 hits. Native system-Chrome **63682 active**, sole owned browser;
+freeze the entire release43 timing worktree. All other owned handles closed.
+Still no new push; remote ed5/failed CI and public 42/bfbbc remain current.
+
+## Historical checkpoint — September 8, combined-check results
+
+Corrected 43 **ed5b4e4 / CI 34175827810 FAIL**: client/server pass;
+anonymous browser **61 pass / two fail / 10.2m**. Both native and 8fps summon
+cases observe only one hit during the 15-second second-hit poll, including
+retries. This is earlier than the previously repaired expiry assertion; its
+cause is not yet established. Deployment/live jobs skip. Do not publish 44.
+Failure log: `/tmp/eidolon-release43-corrected-ci-failed.log`.
+An exact bundled-Chromium/software-path reproduction is running as **11275**,
+the sole owned browser, in the release43 timing worktree. Freeze that worktree.
+
+Combined expanded-story/opening source **3bf6a50**: full client **63890 PASS /
+220 suites / 3,305 tests / 78.747s**; full server race **37061 PASS / root
+11.362s / game 202.149s**, other packages pass. Fresh browser **66320 FAIL /
+1.3m**: opening earns and saves exactly 100 XP/100 gold, reaches level 2 in
+29s without deaths, then fails to hover Mara's diary. The actual hit stack
+contains four Skeletons before the site; hostile priority prevents inspection.
+No diary/collection success on this combined source is claimed. All three
+handles are terminal; the investigation worktree is no longer frozen.
+The earlier passing prepared-veteran touch routes remain valid but do not
+establish fresh desktop interaction or full leveling balance.
+
+## Historical checkpoint — September 8, 01:30 UTC
+
+Air detour **32730 PASS / one / 2.5m** on clean ab95837: both quests, all four
+records read in both orientations, actual manual retrospective replies/rewards,
+saved masks 1/7 and full journal rereading. Six targets engaged at the horizon,
+not an audited kill count. Both horizon images inspected; all eight preserved
+at `/tmp/eidolon-phone-air-earned-NBRO3Y/`. Scan/cleanup pass; 32730 is closed.
+Each realm now has a passing two-chapter touch route on its recorded source.
+Prepared-veteran success does not prove fresh leveling, physical phones or raids.
+
+The opening runtime and exact earned-receipt test cherry-pick cleanly into the
+expanded branch as **50b7724 / 3f2cd1d**. Clean **3bf6a50** records integration.
+Generated content/lint/diff pass. Combined full client **63890**, full server
+race **37061**, and actual fresh Earth opening/diary/collection/evidence/handoff
+browser **66320** are active; logs
+`/tmp/eidolon-investigations-opening-combined-{client,server,earned}.log`.
+**66320 is the sole owned browser; freeze the entire investigation worktree**
+until all three checks are terminal. Other owned handles are closed. Root retains
+the 15-chapter/local-50 runtime; no 51 package or expansion publication yet.
+Corrected 43 **ed5b4e4 / CI 34175827810** still awaits its complete deployment/
+live gate; next publisher remains **44/8694c19 with-seraph-clock** after all
+jobs and fresh exact identity succeed. Full balance and roadmap remain open.
+
+## Historical checkpoint — September 8, 01:24 UTC
+
+Previous turn was progress: release 43 publication, Water/Fire phone proof and
+fresh story handoff corrections. This turn repairs 43's failed browser gate,
+implements/verifies a smaller opening reward, and identifies Air's obstructed
+walking route. The complete 1.1–1.10 scope is still open.
+
+43 **f955608 / CI 34174381235 FAIL**: client/server pass; browser **61 pass /
+one fails / 8.2m**, including its retry; deployment/live jobs skip. The offline
+fixture admits at most 50ms per frame but assumed 22 wall seconds was enough
+for 16.5 simulated seconds. **69010 red / 27.6s** reproduces at 8fps: 25.88 wall,
+9.70 admitted, 6.80 remaining, seven real smites. QA **c3264c3** checks actual
+expiry boundaries and cleanup, with 90 wall seconds for slow rendering. Native,
+8fps, wall and follow/departure checks **88992 PASS / four / 1.2m**; slow expiry
+16.5 simulated / 43.8697 wall seconds. Image inspected. Full client **34919 PASS /
+213 / 3,166 / 76.949s**, lint/diff pass. Runtime/server/version/notes unchanged.
+See [the correction record](2026-09-08-release43-simulation-clock.md).
+
+Fresh public manifest/login/main/backend remain **HTTP 200 / Alpha 1.0.42 /
+bfbbc87374682bb80c825ce96543012a08841735 / ok / ready** before normal corrected-43
+push **92167 SUCCESS**, f955 → **ed5b4e444a6746426d5032e2ee55578d3849ff16**.
+New **CI 34175827810**: client/server pass, browser active; no 43 deployment/live
+approval. All old refs are retained. Queue suffix is now **`with-seraph-clock`**:
+
+| Version | Commit |
+|---|---|
+| 43, pushed | ed5b4e444a6746426d5032e2ee55578d3849ff16 |
+| 44, next | 8694c193407555190d0075313831a908c5e70a34 |
+| 45 | 1f020f7723d181a29250fb909edac35dd2574867 |
+| 46 | 92e4103cd2ec4b2456996f791a45dd3cdecc1354 |
+| 47 | e828d71c0c685a6ca87dccd55daf47c57536602d |
+| 48 | d9601953274140a93216f42e66f38b6e70647a94 |
+| 49 | 34dc949d6dffad778ef2d6b5d921cb2276e900cb |
+| 50 | 35535e6034ca7832caaa0a7ed046cc17ba3b5b94 |
+
+Publish 44 only after every corrected-43 job and fresh exact public identity
+succeed. Root merges test-only 50 at **3c2c280**; investigation at **cee15fc**.
+
+Independent [opening reward](2026-09-08-opening-reward.md), runtime **d911162**,
+reduces new offers from 500 to 100 XP, retaining 100 gold and all accepted/ready/
+completed quotes, including zero. Three repeated targeted server race passes;
+full **82436 PASS / root 9.147s / game 211.826s**, other packages pass. Actual
+fresh Wizard **89727 PASS / 1.8m** verifies displayed quote, exact manual payout,
+saved receipt and subsequent eight-fragment collection with no grants/deaths.
+Opening: level 2 in 30s. Collection: 12 observed target deaths / 76s, level 5
+before unchanged 8,000 XP → level 16; Guide still locks level 30. The remaining
+large reward jump is explicitly unresolved. Clean isolated **353e465**, worktree
+`/tmp/eidolon-opening-reward-FinvXg`; docs copied to root, runtime not merged or
+packaged. Integration with expanded story and broader pacing remain required.
+
+Air **72801 FAIL / 6.0m** stays at full HP but drifts fighting toward (900,200).
+**57049 FAIL / 57.7s** subsequently dies near (755.68,187.52) after accepted
+Shield/Well/Fireballs. Image inspected; failures retained. Geometry proves the
+old direct route crosses the real Bastion entrance at (800,200). QA **0296d48**
+walks north around it; geometry red **one fail / four pass / 0.441s**, corrected
+route/defense **36 / 0.524s PASS**, lint/diff pass. No world collision/strength
+change. **32730 is the sole owned browser**, Air detour on clean **ab95837**, log
+`/tmp/eidolon-investigations-phone-air-detour.log`; freeze that entire worktree.
+All other owned handles above are closed. No Air/expansion success claimed.
+Opening XP is a local isolated candidate, not full XP/gold/campaign approval.
+
+## Historical checkpoint — September 8, 00:54 UTC
+
+Previous goal turn made progress: phone reward rows/diary scrolling were verified
+and the earned Water retry started. This turn closes Water **86161 PASS / 2.3m**
+on a8f1e91 and Fire **64268 PASS / 2.4m** (2.3m test) on ae9d8a5. Each earns
+both chapters/all four records through touch, reads both orientations, manually
+claims retrospective replies/rewards and reopens saved masks 1/7/full text. Fire
+observes actual anchor death after ash and before ember credit. Prepared veteran
+fixtures are not earned leveling. Eight images each are preserved in
+`/tmp/eidolon-phone-water-earned-sMAYIC/` and
+`/tmp/eidolon-phone-fire-earned-MUBXxS/`; Water bell both orientations and Fire
+ember portrait/anchor landscape are inspected. Scan/cleanup pass.
+
+Story review fixes misleading handoffs in **cdfdcd5**: diaries introduce the
+next collection, all four collection replies introduce their linked investigation
+before the dungeon, and Air recognizes the learned pinion pattern rather than
+implying consumed items remain in the bag. Optional replies/rewards/access stay
+unchanged. Red **four fail / 21 pass / 0.654s**, focused green **28 / 0.730s**;
+full client **10494 PASS / 219 / 3,299 / 82.376s**; Chronicle/investigation server
+race checks three times **97734 PASS / root 2.277s / game 20.037s**. Generated
+content/lint/diff pass.
+
+Air **93402 FAIL / 50.1s** dies on outbound travel before the diary; the helper
+ignores enemies between waypoints and lacks failure position/HP diagnostics.
+QA **11e345d** now releases movement when threatened, uses normal touch combat,
+then resumes travel. Failure diagnostics/image are added; the survival requirement,
+kit, quest rules and enemy strength are unchanged. Lint/diff pass. **72801 is the
+sole owned browser**, Air retry on clean 11e345d, log
+`/tmp/eidolon-investigations-phone-air-defended.log`; freeze its entire worktree
+until terminal. All other owned handles above are closed. Air, fresh campaign/
+XP/gold, physical devices and expansion publication remain open; root retains
+15 chapters/local 50, not a published story expansion.
+
+Corrected 42 **bfbbc87 / CI 34171247520** passes every CI/deployment/live gate
+with terminal SUCCESS. Fresh manifest/login/main/backend reads **36161 PASS**:
+all HTTP 200, exact **Alpha 1.0.42 / bfbbc87374682bb80c825ce96543012a08841735**,
+backend `ok`, DB `ready`. Clean staging, remote bfbbc and forward ancestry are
+confirmed before explicit **release/43-with-portal-pointer / f9556081a533db4b74ae52f7428a3520c1263acb**
+pushes normally to origin/master (**94818 SUCCESS**, closed), with Seraph patch
+notes/login/package version present. New **CI 34174381235** passes client/server;
+browser smoke is active. No 43 deployment/live approval yet. Next is explicit
+**release/44-with-portal-pointer / 67a431566e2f476eb33dffb1ed9f4f0f107f02c2** only
+after all 43 jobs and fresh exact public identity succeed. Full roadmap remains open.
+
+## Historical checkpoint — September 8, 00:38 UTC
+
+The requested balancing/story scope remains in the dedicated plan: coordinated
+XP/gold/drop budgets, longer bounded collections, purposeful combat and two
+authored investigations per realm. No replacement XP curve, gold budget or
+dungeon-entry level change is selected here. Local 47/49/50 changes are queued,
+not advertised as live; the 23-chapter expansion remains isolated.
+
+Water phone **72001 FAIL / 2.8m**, closed: all four discoveries and portrait bell
+reading succeed, then landscape ending visibility fails. Eleven targets are
+engaged at the bell, not an audited kill count. The upward-only test lacks
+failure geometry, so the cause is not established. QA **fea7b03 → 291bfe2** adds
+bounded bidirectional native swipes, settled scrolling and failure geometry,
+hit-testing, HP/state and image capture without relaxing final-text visibility.
+Three layout-fixture setup failures are retained before the corrected actual
+daily-ladder/offscreen-record case passes.
+
+Independent phone reward UI **748711e**, worktree
+`/tmp/eidolon-phone-journal-AH5VCv`, makes reward rows full-width/stacked and
+humanizes enemy names. Rewards/status remain unchanged. Unit red seven fail /
+33 pass; green **40 / 0.683s**. Standalone browser **18637 PASS / four / 11.6s**;
+narrow/landscape images inspected. Cherry-pick **8318e55** integrates it only
+into investigations. Combined full client **92909 PASS / 219 / 3,295 / 75.027s**,
+lint/diff pass. Combined browser **35956 PASS / five / 25.2s**, including native
+scroll recovery in both directions/orientations and held-touch journal refresh.
+Both recovered-ending images inspected, preserved at
+`/tmp/eidolon-readable-journal-proof-WhBThb/`. No Go runtime change.
+
+Clean investigation **a8f1e91** records all evidence. **86161 is the sole owned
+browser**, earned Water touch retry; log
+`/tmp/eidolon-investigations-phone-water-readable.log`. Freeze its entire
+worktree until terminal. All other owned handles are closed. Phone Water/Fire/
+Air, fresh campaign pacing, physical devices and expansion release remain open.
+
+Corrected 42 **bfbbc87 / CI 34171247520** now passes client/server/browser,
+predeploy character QA, production input validation and both deployments;
+**live release/character QA remains active**. No full live approval or 43 push.
+Next publisher remains explicit **release/43-with-portal-pointer / f955608**
+only after all corrected-42 jobs and fresh exact public identity succeed.
+
+## Historical checkpoint — September 8, 00:16 UTC
+
+Earth touch **47303 FAIL / 39.8s** reaches both manual quest completions and all
+field-reading steps, then exposes a record detached during saved rereading. The
+journal rebuilt its controls on updates. Runtime **4d1ad74** preserves actual
+valid record nodes; removed evidence/session clearing still removes old nodes.
+Regression before: **two fail / seven pass / 0.661s** (14626 closed). After:
+journal/objective **40 / 0.824s PASS** (65125); actual landscape reading and
+finger-held-across-refresh **33218 PASS / one / 4.5s**; full client **57553 PASS /
+219 suites / 3,286 tests / 87.725s**. Lint/diff pass. Go runtime is unchanged.
+
+Corrected Earth phone **25892 PASS / one / 42.7s** (41.4s test) on clean 4d1ad74:
+two chapters, all four discoveries read in both orientations, actual manual
+retrospective replies/rewards, saved masks 1/7 and complete journal rereading.
+This run engages no nearby hostiles, so it is not a new combat-difficulty proof.
+All eight earned images are preserved in `/tmp/eidolon-phone-earth-earned-Uw4xQ4/`;
+marked stone portrait/landscape and new growth portrait are inspected. Credential
+scan/cleanup pass. It also exposes cramped repeatable-ladder columns/joined enemy
+labels on the max-level phone journal: retain that presentation follow-up.
+
+Clean investigation **c6c569b** records the proof. **72001 is the sole owned
+browser**, phone Water investigations on c6c569b, log
+`/tmp/eidolon-investigations-phone-water.log`. Freeze its entire worktree until
+terminal. All older owned handles are closed, including 47303; no failed run is
+counted as success. Phone Water/Fire/Air and physical phones remain open.
+
+Corrected 42 **bfbbc87 / CI 34171247520** remains predeploy-character-active after
+client/server/browser success. No new deployment/live approval; next publisher
+is still **release/43-with-portal-pointer / f955608**, gated on all corrected-42
+jobs and fresh exact public identity. Root remains local 50/15 chapters; expanded
+23-chapter source is isolated. XP/gold/realm pacing and full roadmap remain open.
+
+## Historical checkpoint — September 8, 00:05 UTC
+
+Corrected 42 **bfbbc87 / CI 34171247520** passes client, server and browser smoke;
+predeploy character QA is active. Next remains explicit 43/f955608 only after all
+42 deployment/live gates and fresh exact public identity. No 43 push or live
+approval yet. Previous goal turn was progress: corrected 42 publication, preserved
+queue integration and combined first-diary phone gameplay proof.
+
+Investigation QA **f04d38e** adds opt-in two-chapter touch routes for all four
+realms, sharing the original guarded empty-account veteran fixture. It uses
+actual joystick travel, visible phone build/actions, target taps/Attack/Skill/
+hotbar skills, bounded ordinary retreat, USE, both orientations' earned record
+reading, explicit optional Ilyra replies/rewards and saved evidence. Fire retains
+ash → live anchor/observed death → ember ordering; no investigation credit,
+invulnerability, gear, travel or damage grant is added. The prepared level-100
+common-staff fixture is not earned progression. Desktop fixture extraction is
+mechanical. Lint, shell syntax, test discovery and diff checks pass (75191 closed).
+
+First Earth phone **83848 FAIL / 31.7s** genuinely earns the diary and severed
+root, then exposes a no-op movement cleanup error: CDP rejects TouchEnd when
+the character already stands at the requested point and no TouchStart occurred.
+Scan/cleanup pass; log `/tmp/eidolon-investigations-phone-earth.log`. QA-only
+**2b5f073** releases a gesture only if started, always detaches the session, and
+passes lint/diff (52450 closed). No runtime interaction or difficulty change.
+
+**47303 is the sole owned browser**, same Earth phone route against clean
+2b5f073, log `/tmp/eidolon-investigations-phone-earth-noop.log`. Freeze the entire
+investigation worktree until terminal; other owned handles are closed. No all-
+realm touch success is claimed. XP/gold/realm pacing, physical phones, expansion
+release and the complete roadmap remain unfinished.
+
+## Historical checkpoint — September 7, 23:53 UTC
+
+Corrected **42 / bfbbc87374682bb80c825ce96543012a08841735** is pushed normally
+through explicit `release/42-with-portal-pointer → origin/master` (47491 closed).
+Fresh predecessor manifest/login/main/backend all match healthy Alpha 42 ea565
+before push. New **CI 34171247520**: client passes, server active. No deployment
+or live success yet. Previous failed CI remains preserved. The
+[repair record](2026-09-07-release42-portal-pointer.md) contains the actual red,
+portal **11.9s**, Water/Verdant **two / 4.7m** and final full client **212 suites /
+3,134 tests / 72.867s** evidence. All of those owned handles are closed.
+
+Only tests/docs change from ea565; game runtime and existing 42 notes/version
+remain unchanged. Corrected QA ancestry is merged cleanly into newly named queue
+refs; old refs remain intact. All use suffix **`-with-portal-pointer`**:
+
+| Next release | Commit |
+|---|---|
+| 43 | f9556081a533db4b74ae52f7428a3520c1263acb |
+| 44 | 67a431566e2f476eb33dffb1ed9f4f0f107f02c2 |
+| 45 | cc9061daed673dd77faf1d3cab484511de555b4d |
+| 46 | 2ef800edb341606077b1610095a277f0ab676619 |
+| 47 | a9352defb446acfb07ef308da352782fef4283f3 |
+| 48 | 5d5f3f04c17d9c95249fd7ab79cad2d897c7d106 |
+| 49 | 72ab5288bed2dc6aab4b0f7537eb5e417cc9b357 |
+| 50 | 4a04eab94f42ae236a9266afe548c7b324a33f4c |
+
+Next publisher is **43/f955608**, strictly after every corrected-42 CI/deploy/
+live gate and fresh exact public identity. Root merges new local 50 at **7481a0f**;
+targeting/feedback/version/runtime contracts **265 / 1.56s PASS** (39479 closed).
+Investigation merges the same QA ancestry at clean **144aac1745db45d67d60128f0e81b898910ca7f1**;
+generated eight/16 checks pass; no investigation runtime changes. Latest combined
+phone **49124 PASS / one test / 50.3s** (48.9s): actual combat/joystick/USE,
+explicit rewards/reply, both orientations' real diary-ending swipes and saved
+rereading. Both earned phone images are inspected and preserved in
+`/tmp/eidolon-phone-combined-proof-YTqlQw/`; log
+`/tmp/eidolon-investigations-phone-combined.log`, scan/cleanup pass. Clean
+investigation **c775f9d** records the proof. **All owned handles are closed**;
+CI 34171247520 remains client-pass/server-active. The other seven investigations'
+touch routes, physical phones, XP/gold/realm pacing and complete roadmap
+remain open; no 51 package or expansion/root integration yet.
+
+## Historical checkpoint — September 7, 23:42 UTC
+
+Corrected portal **11052 SUCCESS / one test / 11.9s** (10.6s test) against clean
+**f94ea72**. It uses actual exposed-pointer acquisition, re-entry and town recall
+during a real jump; credential scan (zero sanitizations) and cleanup pass.
+Log `/tmp/eidolon-release42-portal-exposed.log`. The old driver failure remains
+recorded; no production targeting rule is changed.
+
+Full client **77557 FAIL / 211 suites pass, one fails / 3,131 tests pass, one
+fails / 82.161s** on the same source. Failure is the existing
+`GameEngineCombatFeedbackVisuals` matching-kind throttle test: its second bleed
+call unexpectedly returns true. It uses real `Date.now()` around an 80ms
+production throttle and assumes adjacent assertions execute inside that window.
+Replace that scheduling assumption with a controlled clock and explicit
+before/at/after-boundary cases; do not change production throttling or silently
+count the failed suite as passed. No source edit during the current browser.
+Log `/tmp/eidolon-release42-portal-client.log`.
+
+**72220 is the sole owned browser**, corrected Water/Verdant routes against clean
+f94ea72 in `/tmp/eidolon-release42-portal-QoFLrB`, log
+`/tmp/eidolon-release42-portal-dungeons.log`. Water passes **15.9s**; Verdant earns
+ordinary kills and has reached Rootbound Warden. Resume this handle; freeze the
+entire repair worktree until terminal. All other owned handles are closed.
+Investigation branch stays clean **4bfa0e7** with no active checks; root has only
+documentation changes after its verified local 50 integration. Remote/public
+remain 42 ea565, live gate failed, next 43 still withheld. No corrected 42 push,
+43 publication or all-roadmap completion. All-realm touch and coordinated XP/
+gold/access pacing still require work; the dungeon-level preference remains
+unanswered and non-blocking.
+
+## Historical checkpoint — September 7, 23:38 UTC
+
+Air **59545 SUCCESS / one test / 5.1m** against **fa9feaa** (test 5.0m): Selen's
+journal, all three horizon markers, both manual optional speeches/rewards,
+reconnect and all four full saved records pass. Seven/eight engaged pursuers
+are observed targets, not audited kill counts. Actual observatory/updraft/earned
+journal screenshots are inspected and preserved in
+`/tmp/eidolon-air-earned-proof-U6GbWV/`; credential scan and cleanup pass. Clean
+investigation head **4bfa0e7** records the proof, with no runtime changes after
+the fully tested 0036656. No active investigation handles. All four realms have
+earned functionality on the recorded checkpoints; fresh full-campaign pacing,
+broader touch and expansion publication remain open.
+
+Public HTTP 200 manifest/login/main/backend all match **Alpha 1.0.42 / ea565ebf…**,
+backend `ok` / database `ready` at 23:33; this does not override failed live QA.
+Local diagnostic **77714 FAIL** on exact 42 plus observers **ad21d93** reproduces
+the failure: actual before/after/pending click target is a live Inferno Titan
+at (804.8,205.9), ray stack also contains the entrance, **zero dungeon-status
+requests/responses**. Canvas input correctly attacks a covering enemy; this is
+not an unresponsive server or evidence that the portal itself rejects clicks.
+Log `/tmp/eidolon-release42-portal-observation.log`, scan (two sanitized files)
+and cleanup pass. Existing live artifacts remain preserved.
+
+QA-only correction **f94ea72** keeps enemy priority, waits for actual camera
+settling and samples exposed entrance mesh points with normal hover checks.
+The fresh click must still select the portal. No game/runtime/server changes.
+Real-geometry desktop/touch checks preserve both enemy and exposed portal clicks:
+**11 tests / 0.591s**, lint/diff pass (17516 closed). Isolated corrected portal
+and full client checks are starting against the clean diagnostic worktree; no
+new publication, successful correction run, or 43 gate is claimed yet.
+
+## Historical checkpoint — September 7, 23:31 UTC
+
+Investigation runtime **0036656** passes full client **219 suites / 3,279 tests /
+174.009s** plus lint (86062 closed), and full server race root **22.755s**, game
+**455.511s**, other packages green (1610 closed). Fire control-kit run **26226**
+fails after **8.9m** with full 2,575 HP: 120 Fireballs, six Gravity Wells and five
+Shields are accepted, zero rejected. It drifts away from the anchor while
+fighting unrelated Djinn. This is not evidence of failed abilities or a kill.
+
+Bounded ordinary retreat strategy **24d51e5** changes QA only, passes 30 control
+tests / 0.465s and lint. Actual Fire **3159 SUCCESS / one test / 4.4m**: cold ash
+earned, actual anchor death observed, mask 1 → 3 before ember inspection, then
+manual catch-up completion/rewards, reconnect and earned journal rereading.
+Inspected combat/released hearth/sprout/record images are preserved in
+`/tmp/eidolon-fire-earned-proof-5ElOA2/`; scan/cleanup pass. Explicit level-100
+common-staff veteran fixture, not earned leveling or average-difficulty proof.
+Isolated source **fa9feaa** adds only the proof record over 24d51e5.
+
+**59545 is the sole owned browser**, Air earned investigations against clean
+fa9feaa, log `/tmp/eidolon-investigations-air-earned.log`. Freeze its entire
+worktree until terminal. Root still retains locally verified 50 / 15 chapters;
+the 23-chapter expansion is not root-merged or published.
+
+42 **ea565ebf… / CI 34166841477** deploys successfully but **live QA FAILS**:
+six tests pass; focused Verdant entry and Verdant combat route both time out
+waiting for the entrance menu, including their retries. Client/server/browser/
+predeploy and both deploy jobs pass. Live four-class/remote-animation checks
+are not run after the failure. Last fully verified public release remains 41.
+Do not publish 43 or count deployed 42 as signed off. Artifacts are preserved in
+`/tmp/eidolon-42-live-failure-DIViBh/`. Separate diagnostic worktree
+`/tmp/eidolon-release42-portal-QoFLrB`, branch `work/release42-portal-20260907`,
+starts from exact 42 with read-only click/request observations; no runtime fix or
+reproduction claimed yet. No blind CI rerun or skipped gate. Broader XP/reward
+balance, all-realm/phone proof and full roadmap remain unfinished.
+
+## Historical checkpoint — September 7, 23:08 UTC
+
+Combined 170c53f verification closes: full client **30280 SUCCESS / 219 suites /
+3,258 tests / 173.048s**, lint passes; full server **19540 SUCCESS**, root
+**24.250s**, game **416.594s**, remaining packages green. Fire **53097** closes
+**FAIL / 4.2m** before cold ash: nine actual hostiles nearby when the unarmored
+common-staff fixture dies. Actual death screenshot is inspected; scan/cleanup
+pass. No ordered-anchor completion or comfortable realm-pacing claim. Both
+pointer-driver limitations and the prepared fixture's limited skill use are
+kept distinct from unproven enemy-density conclusions.
+
+Investigation source **0036656448ca78c3a53a235dd90b298481e6ce76** adds:
+
+- Authored retrospective acceptance/completion for all eight optional chapters,
+  generated into matching catalogs. Server initial migration/refresh supplies
+  those descriptions; client conversation and manual reply use the same source.
+  Fresh required speeches stay separate. Fire correctly says Ilyra holds the
+  ore already handed in. Counts, rewards, evidence and access are unchanged.
+- Player-specific native bound/released ember states. Actual anchor evidence
+  replaces shackles with hearth embers and a sprout; counts alone and another
+  player's progress cannot release it. Completed evidence restores the visual
+  after reload. Browser visual inspection of this latest model is still pending.
+- Optional prepared-fixture Gravity Well against real nearby clusters through
+  the available hotbar, mana and cooldowns. Existing fresh-hunt baselines retain
+  their shield/retreat-only controls. Added accepted/rejected Fireball/Well
+  counters distinguish attempted inputs from accepted abilities. No damage,
+  gear, talent, immunity, teleport-to-site or discovery grants.
+- The realm browser checks the two ember states and actual manual catch-up
+  speeches. Full Fire/Air play and broader touch/continuity/pacing remain open.
+
+Catch-up regressions reproduce before routing changes: client **8 failed / 13
+passed / 1.761s** (43316 closed), server **FAIL / 0.034s** (81109 closed). After:
+client **24 / 1.487s** (26807), server discovery/expansion/catch-up three race
+repetitions **6.302s** (12968); both pass. Combined model/content/conversation/
+control checks pass **81 / 2.386s** (42660), then final lint/generated/diff checks
+pass before clean commit 0036656 (29619). No failed run is counted as a pass.
+
+Latest combined checks are active against clean **0036656**:
+
+- **86062**, full client then lint, `/tmp/eidolon-investigations-catchup-client.log`.
+- **1610**, full server race, `/tmp/eidolon-investigations-catchup-server.log`.
+- **26226**, actual Fire with available control kit,
+  `/tmp/eidolon-investigations-fire-control-kit.log`.
+
+**26226 is the sole owned browser. Freeze the entire investigation worktree until
+these checks are terminal; resume the same handles.** All older owned handles
+are closed. Source remains isolated; root stays verified local 50 / 15 chapters.
+42 **ea565ebf… / CI 34166841477** remains in predeploy character QA after successful
+client/server/browser. Last fully verified public build is 41. Next publisher
+stays 43, after all 42 deployment/live gates and fresh exact public identity.
+Entry-level design preference remains unanswered and non-blocking. Full roadmap,
+coordinated XP/gold/rarity/affordability and expansion release remain unfinished.
+
+## Historical checkpoint — September 7, 22:45 UTC
+
+Fire **1309** closes **FAIL / 5.2m**. Normal jump retreats clear fourteen actual
+pursuers and the cold ash is genuinely inspected/recorded (mask 1); its actual
+earned journal screenshot is inspected and copied to
+`/tmp/eidolon-fire-earned-cold-ash.png`. The prepared character subsequently dies
+in the anchor fight. Scan/cleanup pass. This is not ordered-combat completion or
+evidence that Fire is comfortably balanced. That driver only attacked when the
+anchor itself won the hover test; other covering enemies could leave it without
+offense. New **0e6820c** allows normal attacks on actual covering hostiles, retains
+the required ash → observed anchor death → ember checks, and adds attack/health/
+position/mask diagnostics plus a combat-failure screenshot. Lint/diff checks pass
+(9811 closed). No runtime difficulty or credit requirements are weakened.
+
+The isolated investigation branch now merges the locally verified 50 release at
+**170c53f8651987f8bb4f31e094f752a5e77709d5**. Merge is clean; generated eight
+chapters/sixteen discoveries, shell syntax and diff checks pass. This aligns its
+23-chapter story with current personal-fragment and reduced-equipment runtime
+before further playtesting; **it is not the released 1.0.50 package or merged to
+root**. Root remains locally verified 50 with the dormant investigation foundation.
+
+Combined verification is active against clean 170c53f:
+
+- **30280**, full client then lint, `/tmp/eidolon-investigations-50-client.log`.
+- **19540**, full server race, `/tmp/eidolon-investigations-50-server.log`.
+- **53097**, actual Fire route with ordinary crowd combat,
+  `/tmp/eidolon-investigations-fire-combined-50.log`.
+
+**53097 is the sole owned browser. Freeze the entire investigation worktree while
+these checks run; resume these handles rather than starting duplicates.** No Air
+run yet. Remaining narrative review includes retrospective optional chapter
+instructions and Fire's completion line telling the player to keep ore already
+entrusted to Ilyra; these have not been changed during the frozen tests.
+
+42 **ea565ebf… / CI 34166841477** passes client/server/browser and is in predeploy
+character QA. Last fully verified public release remains 41; next publisher stays
+43 only after every 42 deployment/live gate and fresh exact public identity.
+User has been asked asynchronously whether dungeon entry levels may be adjusted
+to remove the Earth→Water preparation gap; no response yet. This is a pending
+design preference for coordinated XP pacing, not a blocker to the current tests
+or the overall goal. Full roadmap and broader balance/expansion remain active.
+
+## Historical checkpoint — September 7, 22:35 UTC
+
+Alpha **1.0.50** is locally verified and root-integrated as merge **93b62cc**.
+Release ref **`release/50-routine-equipment-budget`** points to
+**9f475e903aad06ebf54dbd20d1b906bccc15b695** (documentation-only final commit over
+tested clean **4212e54e5347ba7a10f379f7634f970fc27e06b1**). Root runtime/package
+matches that release; only execution-ledger documentation differs before the
+latest plan status update. Root integration contracts pass **251 / 3.221s**,
+handle **89224** closed. No 50 publication or public verification yet.
+
+Exact-package fresh collection **18500** closes **SUCCESS / 1 / 2.2m**, test
+2.1m. Actual local login and backend return HTTP 200 / Alpha 1.0.50 / clean
+4212e54, backend `ok` / database `ready`. The route earns eight fragments with
+**18 observed target deaths / zero deaths**, three gear drops worth **230 unsold
+vendor gold** and 442 gold before turn-in. The inspected actual ready screenshot
+shows 8/8 and a deliberate Complete Quest button. Claim/reconnect retains the
+actual gear IDs/rarities/stats/value, manual 8,000 XP/100 gold leaves level 17 /
+542 gold, and level-30 Guide remains locked. Collection/handoff takes 91 seconds.
+Credential scan/cleanup pass. Small-run Common/Uncommon/Legendary observations
+are not rarity-distribution estimates or a complete pacing approval.
+
+Fire normal-jump investigation **1309** is active against clean **409da01**,
+log `/tmp/eidolon-investigations-fire-jump-route.log`. This is the **sole owned
+browser; freeze the entire investigation worktree until terminal**. All prior
+Fire handles are closed. Full client on that source already passes 219 / 3,256 /
+131.314s; full ordered Fire play and Air remain open. Root retains the original
+15-chapter story with dormant investigation foundation, not the isolated 23 graph.
+
+42 **ea565ebf… / CI 34166841477** remains active (client pass, server running).
+Last fully verified public build is 41. Next remains 43, gated on all 42 jobs and
+fresh exact public identity. The full roadmap, broader coordinated XP/gold curve,
+non-daily leveling, rarity power and late-forge affordability are unfinished.
+
+## Historical checkpoint — September 7, 22:30 UTC
+
+41 **9c6eb9d… / CI 34163174335** closes **SUCCESS**, including both deployments
+and live character/four-class/remote-animation QA. Fresh public manifest, login
+label/versioned main asset and backend all return **HTTP 200 / Alpha 1.0.41 /
+9c6eb9d20ad5171a5bb18240612b0998aba25d28**, health `ok` / database `ready`.
+Staging is clean, remote master matches that SHA, and ancestry to 42 is checked.
+Explicit **release/42-with-forge-pointer → origin/master** push **1718** succeeds;
+new CI **34166841477 / ea565ebfdedb52fff7841e0fd4d650febd3d20da** is active.
+Next publisher is **43 / 7523d0bb…**, strictly gated on all 42 CI/deploy/live jobs
+and a fresh exact public 42 identity check. No root/master or later version pushed.
+
+50 final anonymous **38023** closes **SUCCESS / 75 / 8.6m**, log
+`/tmp/eidolon-50-final-anonymous.log`. Final exact-package fresh-collection run is
+started against clean **4212e54**; log
+`/tmp/eidolon-50-final-fresh-collection.log`. It is the sole owned browser; freeze
+loot-frequency worktree while active. Final evidence/ref/root integration remain
+pending; prior 14.2m earned readiness and full runtime tests remain unchanged.
+
+Investigation browser controls/diagnostics commit **5554f5b** passes lint; no
+new Fire/Air browser run yet. Added Ilyra greeting continuity **409da01** reflects
+completed repair/portal/finale IDs instead of treating returning optional-lore
+players as if they had not saved the world. Empty/unclaimed quest state does not
+declare victory. Four regressions fail before the fix **1.427s**, all 13 relevant
+tests pass afterward **1.447s**, lint passes. Full client **63085** closes
+**SUCCESS / 219 suites / 3,256 tests / 131.314s**, log
+`/tmp/eidolon-investigations-continuity-client.log`. Runtime/graph remain isolated.
+Historic catch-up acceptance/completion speeches still need continuity review;
+the greeting fix is not completion of that wider review.
+
+## Historical checkpoint — September 7, 22:24 UTC
+
+Routine equipment is packaged locally as **Alpha 1.0.50 / 4212e54**, isolated
+`work/loot-frequency-20260907`. Patch notes and active version fields agree.
+Package verification passes **251 contracts / 2.387s**, full client **217 suites /
+3,213 tests / 137.407s**, lint and root server **17.940s**. Full runtime race checks
+previously pass root **15.507s**, game **360.700s**. A new production party pickup
+test passes three race repetitions **1.846s**: personal fragments remain separate,
+one elite gear drop retains master-looter ownership, failed/full-bag pickups keep
+the world item and successful pickup cannot duplicate it. Final package anonymous
+browser **38023** is active, log `/tmp/eidolon-50-final-anonymous.log`; **sole owned
+browser, freeze loot-frequency worktree until terminal**. No final release ref,
+root merge or public 50 deployment yet.
+
+Earned `fresh-ready` **58746** closes **SUCCESS / 1 / 14.2m** with credential scan
+and cleanup passing. Collection yields exactly eight fragments, 12 observed
+target deaths, five picked-up equipment items worth 80 unsold vendor gold and no
+deaths; explicit turn-in/reconnect retains gear rolls and leaves level 17 with
+the level-30 Guide locked. Optional Skeleton and Imp hunts then earn level 34
+and unlock the Guide, with **three player deaths** across both hunts. Real
+preparation uses common earned equipment, Control & Utility, Fireball mastery,
+Arcane Shield and kiting. The 50,000/150,000 XP daily rewards cause large level
+jumps (18→27 / 29→34); these remain balancing work, not a sign-off. This is not
+required non-daily leveling or a new-player duration estimate.
+
+Investigation head **cf4125d** generalizes the Water route for Fire/Air and adds
+saved journal rereading. Fire **35656** fails **3.7m** after earning Hessa's ledger,
+dying before cold-ash inspection. Removing a test-only restriction on fighting
+the command anchor leads to **48744**, which closes **FAIL / 3.6m**: player alive
+at 2,071/2,575 HP, but the walking-only retreat helper rejects all ground targets
+covered by hostile models. Actual screenshot is inspected/preserved at
+`/tmp/eidolon-fire-covered-retreat.png`; both runs pass credential scan/cleanup.
+Next prepared test allows the same ordinary Ctrl-click jump as travel and reads
+the actor's actual `stats.hp` for the anchor death/respawn check. No difficulty,
+damage, discovery grants or live-player state changes. Fire/Air remain unverified;
+23-chapter runtime remains isolated. Water 6.6m evidence remains valid and copied
+to `/tmp/eidolon-water-proof-hiXbJx` before subsequent browser artifacts replace it.
+
+41 **9c6eb9d… / CI 34163174335** has passed both deployments and is running live
+gameplay QA. Next publisher remains **42 / ea565ebf…**, gated on every 41 job
+passing and fresh exact manifest/login/backend identity. Last fully verified
+public release is 40. Full roadmap and coordinated XP/gold/pacing, rarity and
+late-forge affordability remain open.
+
+## Historical checkpoint — September 7, 21:55 UTC
+
+Water's prepared desktop route **6729** closes **SUCCESS / 1 / 6.6m**. Both
+investigations are accepted, earned through normal travel/field interactions,
+manually rewarded and saved across reconnect with masks **1 / 7**, gold and
+cap-only Resonance. Prior dungeon completion remains and the first raid is not
+completed. All actual earned screenshots are inspected; credential scan/cleanup
+pass. Ordinary defensive play engages eight pursuers near the moving pool and
+twelve near the bell; these are engaged targets, not audited death totals.
+The eight-damage common-staff fixture and actual Control & Utility selection/
+Arcane Shield/kiting are the successful route. Ten-second normal enemy respawns
+and pressure while reading remain fresh-player pacing concerns. Post-reconnect
+Water journal opening and Fire/Air's four chapters/ordered Fire fight remain open.
+Water proof/helpers are committed **fc50cfc**, isolated investigation tree clean,
+lint/diff checks pass (83438 closed). Root still does not activate the 23-chapter
+graph. All investigation browser handles are closed.
+
+Routine equipment candidate full backend **60005** closes **SUCCESS**, root
+**15.507s**, game **360.700s**, other packages green. Added exact enumeration of
+**54,872 elite-pool combinations** confirms **2.84210526 → 0.99985421** equipment
+per elite with both material candidate totals unchanged at **4,332**. Three
+repetitions of these and the production/boundary tests pass **30598 / 2.639s**;
+log `/tmp/eidolon-routine-loot-exhaustive.log`. Runtime/design evidence is committed
+**aaecc0180444459931216216daf66dff8c4e3bdb**, still isolated and not versioned.
+
+An earned-route measurement/reconnect check is committed as **49ac0c7**. It logs
+actual bag equipment, rarity/stat/value rolls, occupied slots and unspent gold;
+reported vendor values are not sale income. `node_modules` links to root and
+client assets are prepared. Lint/diff checks pass. Actual **fresh-ready** run
+**58746** is active against clean candidate 49ac0c7, log
+`/tmp/eidolon-routine-loot-earned-readiness.log`. **This is the sole owned browser;
+freeze the loot-frequency worktree until terminal.** Collection/handoff portion
+already passes: eight exact fragments, 12 observed target deaths, no player deaths,
+five equipment pickups worth 80 vendor gold (not sold), saved gear rolls intact;
+manual 8,000 XP/100 gold leaves level 17 with level-30 Guide correctly locked.
+Collection/handoff portion is 74 seconds. Longer earned hunt/preparation checks
+are still running. This route uses optional daily hunts; even a pass does not
+prove the required non-daily leveling path or complete economy balance.
+
+41 **9c6eb9d… / CI 34163174335** remains in predeploy character QA after successful
+client/server/browser checks. Do not publish 42 before every 41 deployment/live
+job and fresh exact identity pass. Last fully verified public build is 40.
+Full roadmap, XP/gold tuning, equipment usefulness/affordability, rarity power,
+late potency and all remaining story/release gates stay open.
+
+## Historical checkpoint — September 7, 21:48 UTC
+
+This turn makes concrete progress: actual Water discovery/encounter evidence and
+an isolated routine-equipment frequency candidate, with a reproduced production
+loot excess and passing repeated regressions. The full roadmap remains active.
+
+Water **59985** closes failure after **3.3m**: the actual flood-shelter diary is
+reached, inspected and earned; its approach/reading images are inspected. The
+following still pool is physically present/in range, but three pursuing Mountain
+Trolls cover its clickable geometry (actual hover/hit-list diagnostic). Preserve
+`/tmp/eidolon-water-first-earned-ledger.png` and
+`/tmp/eidolon-water-covered-pool.png`. No hostile-priority bypass is introduced.
+The next route **7160** adds ordinary left-click/basic and right-click/Fireball
+combat before inspection, then fails because the character dies. Both failed
+runs finish credential scan/cleanup; logs
+`/tmp/eidolon-investigations-water-earned.log` and
+`/tmp/eidolon-investigations-water-field-combat.log`.
+
+Third actual Water run **6729** is active, log
+`/tmp/eidolon-investigations-water-defensive-route.log`. It selects Control &
+Utility through the real Skills UI, uses actual Arcane Shield and ordinary
+kiting, and corrects the fixture's staff from an arbitrary 100 damage to the
+current common level-100 formula **round(12 × 16 / 25) = 8**. Canonical level-100
+base stats and the nine explicitly seeded old milestones remain; it is not fresh
+leveling or a claim of earned initial gear. Investigation branch 0262488 has two
+uncommitted browser-helper/test changes, lint passing. **Freeze this worktree;
+6729 is the sole owned browser.** The reading fix c14388b stays intact. Remaining
+Water completion, Fire/Air chapters, actual ordered Fire fight and wider placement
+quality remain unverified.
+
+New isolated worktree **`/tmp/eidolon-loot-frequency-V09L3M`**, branch
+`work/loot-frequency-20260907`, starts from root deede2e. Candidate retains 60%
+of ordinary equipment candidates (40% fewer gear drops) and at most the first
+equipment result from a non-boss elite. It preserves every material candidate,
+dedicated material/gem rolls, personal quest drops and all recognized boss
+rewards. Retained gear is not rerolled for rarity and existing inventory is not
+changed. Current pool expectations: equipment **0.47368 → 0.28421** ordinary,
+**2.84211 → 0.99985** elite; 25 empty bag slots imply approximately **53 → 88**
+ordinary or **9 → 25** elite kills for gear alone. Material supply stays unchanged.
+Exact accounting/design and open gates are in that worktree's
+`docs/plans/2026-09-07-routine-equipment-budget.md` (not yet root-integrated).
+
+The actual asynchronous production death test reproduces **57 equipment from 20
+elite kills** before tuning, using 20 personal guaranteed-fragment publications
+as its completion barrier. Red run **45706** closes **FAIL / 0.415s** as expected;
+log `/tmp/eidolon-routine-loot-before.log`. After filtering before world publication,
+the same route yields one QA-guaranteed gear piece per kill. Boundary, deterministic
+10,000-roll, material/boss/QA, personal-fragment and pickup/instance checks pass
+three race repetitions **49754 / 5.726s**, log `/tmp/eidolon-routine-loot-after.log`.
+Full race **60005** is active, log `/tmp/eidolon-routine-loot-server.log`, root
+package already passing **15.507s**. **Freeze that candidate's runtime/tests while
+it runs.** Source/docs remain uncommitted and unpublished; further distributions,
+earned gearing/affordability, packaging and sequential gates are required. This
+does not close XP, gold, rarity power, late potency or the broader economy pass.
+
+41 **9c6eb9d… / CI 34163174335** now has client/server/browser success;
+predeploy character QA is active at last poll. Next publisher remains 42 only
+after every 41 CI/deploy/live job and a fresh exact public-41 identity pass.
+Last fully verified public build remains **Alpha 1.0.40 / 008ee7d…**. Root's locally
+verified 49 package is not permission to skip the queued releases.
+
+## Historical checkpoint — September 7, 21:31 UTC
 
 Phone earned reading run **84495** now closes **SUCCESS / 1 test / 48.8s**
 (test 47.4s), including actual landscape swipes until the final diary line is
