@@ -31,3 +31,14 @@ up to six actual units per step (less near contact), within the same15-step and
 240s bounds. The explicit under3 contact assertion is retained, not relaxed.
 Initial observed distance is now logged. Scan0/cleanup/container absence passed
 for the failed attempt; do not repeat its unchanged source2e45825.
+
+Final d864474 passes11 focused movement/selection tests/1.083s, full lint and
+diff checks. Actual43571 PASS40.6s/43.3s total. Nearest observed InfernoTitan-210
+began34.318units away; the existing bounded ground-click path reached under3.
+After waypoint protection was removed, the real enemy hit consumed310 of the
+834-point shield, leaving524 with its attached visual still active. Baseline695,
+trained834, saved expiry and town return all passed. Artifact scan0sanitizations,
+script cleanup and independent exact-container absence passed. No production
+source change; the earlier full CI client/server passes remain applicable to
+runtime, while this new test-only correction will receive a fresh CI attempt.
+Log `/tmp/eidolon-release45-shield-movement-gameplay.log`; handle closed.
