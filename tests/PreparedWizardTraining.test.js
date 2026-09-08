@@ -1,4 +1,13 @@
-import { preparedWizardTraining } from './preparedWizardTraining.js';
+import { readFileSync } from 'node:fs';
+import { URL } from 'node:url';
+import { preparedWizardTraining, PREPARED_TALENT_INPUT_INTERVAL_MS } from './preparedWizardTraining.js';
+
+test('prepared purchases leave a refill margin within the actual server talent-input budget', () => {
+    const policy = readFileSync(new URL('../server/protocol_policy.go', import.meta.url), 'utf8');
+    const [, burst, seconds] = policy.match(/MsgUnlockTalent:\s+policy\(accessCharacter, 2<<10, (\d+), (\d+)\*time.Second\)/);
+    expect(PREPARED_TALENT_INPUT_INTERVAL_MS).toBeGreaterThan(1000 * Number(seconds) / Number(burst));
+    expect(PREPARED_TALENT_INPUT_INTERVAL_MS).toBeLessThanOrEqual(1200);
+});
 
 test('prepared build uses damage, general efficiency and Fireball efficiency within existing points', () => {
     expect(preparedWizardTraining({ talentPoints: 20 })).toEqual([

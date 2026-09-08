@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { preparedWizardTraining } from '../preparedWizardTraining.js';
+import { preparedWizardTraining, PREPARED_TALENT_INPUT_INTERVAL_MS } from '../preparedWizardTraining.js';
 import { CONSTANTS } from '../../src/core/Constants.js';
 
 // Prepared functional QA, not fresh-character balance evidence. Like Fighter's
@@ -41,6 +41,7 @@ export async function prepareDungeonWizard(page) {
     let purchased = 0;
     for (const talent of training) {
         for (let i = 0; i < talent.purchases; i++) {
+            await page.waitForTimeout(PREPARED_TALENT_INPUT_INTERVAL_MS);
             await skills.locator('.skill-node').filter({ has: page.locator('.skill-node-title', { hasText: talent.name }) }).click();
             purchased++;
             try {

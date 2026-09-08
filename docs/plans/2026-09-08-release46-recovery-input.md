@@ -45,3 +45,12 @@ errors on failure, without retrying a purchase, relaxing acknowledgement checks
 or writing character state. The cause of the intermittent lost purchase remains
 unproven; optimistic desktop rank mutation and DOM replacement are leads, not a
 confirmed fix. Do not publish this candidate solely on unit-test evidence.
+
+Actual isolated95930 on clean97a53ba failed before combat. Diagnostic showed
+13 attempts, all13 outgoing requests, a rate-limit error, only12 accepted ranks
+and8points remaining (expected7). Credential scan0 and driver cleanup completed;
+this is now a reproduced transport-budget failure, not an assumed lost click.
+MsgUnlockTalent permits10 requests per10s. Prepared input now waits1100ms before
+each purchase, including the first when earlier tests may have spent the burst.
+Point/rank acknowledgement remains mandatory; no automatic retry or runtime
+limiter change. A regression reads the real server policy to catch drift.
