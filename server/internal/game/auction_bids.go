@@ -192,7 +192,7 @@ func (ts *TradingSystem) CompleteAuctionBid(op database.AuctionBidOperation) err
 		}
 		saved = ts.fromDBAuction(value)
 	} else if op.Kind == database.AuctionOperationListing {
-		value, err := database.AuctionFromListingOperation(op)
+		value, err := database.AuctionFromListingOperation(op, time.Now())
 		if err != nil {
 			return err
 		}

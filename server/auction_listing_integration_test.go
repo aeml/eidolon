@@ -334,8 +334,99 @@ func TestAuctionListingActualCrashBoundaries(t *testing.T) {
 				if !rejected && (a.ID != op.AuctionID || a.LastBidOperationID != op.ID) {
 					t.Fatal("recovery changed immutable listing identity")
 				}
+				if boundary == "final_reply_lost" && (!a.StartTime.Equal(auctions[0].StartTime) || !a.EndTime.Equal(auctions[0].EndTime)) {
+					t.Fatal("acknowledgement recovery extended the already-published listing")
+				}
 				stop()
 			}
 		})
+	}
+}
+
+func TestAuctionListingActualDelayedPublication(t *testing.T) {
+	repo, uri, binary := resourceJournalIntegration(t)
+	admin := resourceRefundAdmin(t, uri)
+	p, password, item := auctionListingFixture(t, repo, "legacy")
+	dir := t.TempDir()
+	address, crash := compatStartServerWithCrash(t, binary, uri, 160, true, "-save-journal-dir", dir)
+	connection := resourceOpenCharacter(t, address, p.Name, password)
+	resourceSend(t, connection, MsgAbility, AbilityPayload{SkillName: "Fireball"})
+	var cast game.AbilityResult
+	resourceReadMessage(t, connection, MsgAbilityResult, &cast)
+	if !cast.Accepted || cast.Mana != 70 {
+		t.Fatal("ordinary pre-listing cast failed")
+	}
+	configure := func(blocked bool) {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		validator := bson.M{}
+		if blocked {
+			validator["deliberate_rejection"] = true
+		}
+		if err := admin.Database("eidolon").RunCommand(ctx, bson.D{{Key: "collMod", Value: "auctions"},
+			{Key: "validator", Value: validator}, {Key: "validationLevel", Value: "strict"}, {Key: "validationAction", Value: "error"}}).Err(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	t.Cleanup(func() { configure(false) })
+	configure(true)
+	resourceSend(t, connection, MsgTradingCreate, TradingCreatePayload{SlotIndex: 0, Bid: 100, Buyout: 500, Duration: 24,
+		ExpectedItemID: item.ID, ExpectedStack: item.Stack})
+	var reply string
+	resourceReadMessage(t, connection, MsgError, &reply)
+	if reply != "Your auction listing is awaiting recovery. Please try again shortly." {
+		t.Fatal("publication failure missed", reply)
+	}
+	op := listingDecision(t, repo, p.Name)
+	if op == nil || op.Kind != database.AuctionOperationListing || !op.Valid() || len(listingAuctions(t, repo, p.Name)) != 0 {
+		t.Fatal("failed publication lost its pending decision or published early")
+	}
+	before, err := repo.GetCharacter(p.Name, p.Name)
+	if err != nil || before.Gold != 1209 || len(before.Inventory) != 0 || before.Resources.Mana != 70 ||
+		before.GoldCreditReceipts["listing:"+op.ID] != -25 || before.ItemDeliveryReceipts[op.ID] == "" {
+		t.Fatal("delayed publication did not retain exact committed escrow", err)
+	}
+	crash()
+
+	// Prepared age fixture: simulate a three-day outage without a three-day test
+	// sleep. Only the immutable decision's two preparation timestamps are aged,
+	// after the real request, escrow save and process crash. No auction exists.
+	op.ListingStart = op.ListingStart.Add(-72 * time.Hour)
+	op.EndTime = op.EndTime.Add(-72 * time.Hour)
+	if !op.Valid() || !op.EndTime.Before(time.Now()) {
+		t.Fatal("aged decision fixture is not valid and overdue")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	result, err := admin.Database("eidolon").Collection("auction_bid_operations").UpdateOne(ctx,
+		bson.M{"id": op.ID, "auction_id": op.AuctionID},
+		bson.M{"$set": bson.M{"listing_start": op.ListingStart, "end_time": op.EndTime}})
+	if err != nil || result.MatchedCount != 1 {
+		t.Fatal("could not prepare aged durable decision", err)
+	}
+	configure(false)
+	publicationFloor := time.Now().UTC().Truncate(time.Millisecond)
+	var published *database.Auction
+	for phase := 161; phase < 163; phase++ {
+		address, stop := compatStartServer(t, binary, uri, phase, "-save-journal-dir", dir)
+		a := verifyListingState(t, repo, p, item, true)
+		if a.ID != op.AuctionID || a.LastBidOperationID != op.ID || a.StartTime.Before(publicationFloor) ||
+			a.StartTime.After(time.Now()) || a.EndTime.Before(time.Now().Add(23*time.Hour)) || listingDecision(t, repo, p.Name) != nil {
+			t.Fatal("publication consumed the paid window during the simulated outage")
+		}
+		if published != nil && (!a.StartTime.Equal(published.StartTime) || !a.EndTime.Equal(published.EndTime)) {
+			t.Fatal("restart extended published duration")
+		}
+		published = a
+		connection := resourceOpenCharacter(t, address, p.Name, password)
+		resourceSend(t, connection, "trading_my_auctions", struct{}{})
+		var list []game.Auction
+		resourceReadMessage(t, connection, "trading_my_list", &list)
+		if len(list) != 1 || list[0].ID != a.ID || !list[0].StartTime.Equal(a.StartTime) || !list[0].EndTime.Equal(a.EndTime) {
+			t.Fatal("ordinary market view did not expose the recovered full-duration listing")
+		}
+		resourceCloseAndWait(t, repo, connection, p.Name)
+		verifyListingState(t, repo, p, item, true)
+		stop()
 	}
 }
