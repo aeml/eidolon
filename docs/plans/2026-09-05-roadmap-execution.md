@@ -5,7 +5,49 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 20:52 UTC
+## Current checkpoint — September 8, 21:06 UTC
+
+Previous goal turn was PROGRESS (stale selection). This turn is PROGRESS: paid
+listing duration now starts at first publication, and an independent compatibility
+bridge is implemented. Full1.1–1.10 scope remains active/incomplete.
+
+Resource46ea06975f90a80423fd00d4ea3400e2ab6d1575 preserves the full listing
+window after delayed publication while matching the first stored start/end on
+replay. Original operation preparation times stay immutable. Existing earlier
+publication timestamps remain recoverable; backwards clocks clamp to preparation.
+Focused78922 PASS root1.451/database1.057/game1.042s. Full64867 CLOSED PASS0:
+root22.355/database1.172/game417.161s. Actual32868 CLOSED PASS0/262.172s, TWO
+repetitions of nine normal/rejected modes, seven crash boundaries and delayed
+publication. The three-day outage is an explicitly prepared timestamp-age fixture
+after a real request, escrow commit and SIGKILL, not three days of elapsed QA.
+Ordinary market messages expose a fresh24-hour window; restart and lost-reply
+recovery do not extend it. All84 child logs independently clean:16 deliberate
+kills,68 normal drains. Owned Mongo2057/volumes removed/absent. Logs
+`/tmp/eidolon-listing-publication-{full-race,sessions}.log`. Resource tree remains
+unpublished55 metadata at `/tmp/eidolon-resource-persistence-c6E17J`.
+
+Independent bridge `/tmp/eidolon-schema-compatibility-bridge-ehsEZY`, branch
+`work/schema-compatibility-bridge-20260908`, based on canonical55/9f92f98:
+runtimef2238ce506c4961fbd8cc117b706a885ba45dc0f reads schema compatibility BEFORE
+any migration/index write and refuses future versions before server admission.
+Focused45306/72751 PASS. Actual52120 CLOSED PASS0/1.903s: two real schema7-server
+processes refuse prepared schema8; raw character BSON with zero mana, gold1209,
+receipt-25 and unknown future fields stays identical, no collections/indexes
+added. Compatible fresh/repeated migration still works. Owned Mongo2103/volumes
+removed/absent. Full17140 remains ACTIVE, log
+`/tmp/eidolon-schema-bridge-full-race.log`; source frozen. Actual log
+`/tmp/eidolon-schema-bridge-actual.log`. No new release number assigned yet.
+
+Bridge must be verified/published after55 and BEFORE the resource format change,
+then integrated into that candidate and tested across actual upgrade/refused-old-
+writer/roll-forward recovery. This is not a distributed writer lease or retroactive
+protection for unmodified55 or older; supported target restrictions remain required.
+
+49 CI34274941211 on9342ac0 remains ACTIVE in Predeploy Character QA; preceding
+server/client/browser smoke passed. Last independently verified live48. No50 push
+before full49/finalLiveQA/fresh public identity. Root staged52 must not be pushed.
+
+## Historical checkpoint — September 8, 20:52 UTC
 
 This turn is PROGRESS: stale listing-slot protection and acceptance completed.
 The full roadmap remains active/incomplete. Resource Go runtime57c97c1 full

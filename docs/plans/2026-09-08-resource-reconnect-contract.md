@@ -3,7 +3,26 @@
 Status: confirmed defect with an unreleased implementation candidate, not yet
 release-ready or assigned a published patch. Preserve .01 passive regen.
 
-Latest18:40: corrected bid acceptance37895 CLOSED PASS0/439.525s, THREE
+## Latest implementation checkpoint — September 8, 21:06 UTC
+
+The authoritative release/test state is in
+[the roadmap execution ledger](2026-09-05-roadmap-execution.md). Bids, refunds,
+seller payouts, item claims/returns, buyouts, listing escrow, stale selection and
+publication-delay duration handling now have actual recovery acceptance in the
+unpublished resource candidate.46ea069's full race and two combined listing
+recovery repetitions passed;84 child processes were independently audited.
+These results supersede earlier open-item statements below for those slices.
+
+Compatible rollout/rollback remains open. A separate schema7 bridgef2238ce based
+on canonical queued55 now refuses schema8 before migration/index writes and
+server admission; its actual refusal proof passed and its full race suite is
+active. It is not yet released or integrated into the resource candidate.
+Broader dungeon/raid/device and full roadmap gates remain open; no resource
+release is assigned and .01 per-stat regeneration is unchanged.
+
+## Historical checkpoints
+
+Historical18:40: corrected bid acceptance37895 CLOSED PASS0/439.525s, THREE
 repetitions of six actual SIGKILL boundaries, ordinary same-bidder raises,
 simultaneous equal bids/repeated requests and all earlier refund fault/lifecycle
 cases. All115 child logs independently clean:18 intentional kills/97 normal
