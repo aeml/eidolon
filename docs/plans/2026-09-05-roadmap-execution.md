@@ -5,14 +5,14 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 12:43 UTC
+## Current checkpoint — September 8, 12:51 UTC
 
 Previous turn was progress:6e556c4 was verified locally and pushed. This turn
 confirms the actual duel scene bug and implements a production repair in an
 isolated candidate. The full1.1–1.10 goal remains active/incomplete.
 
-CI34226360903 on6e556c4 is freshly in progress: client/server jobs PASS, Browser
-Smoke running.45 remains last independently verified live. Do not publish47
+CI34226360903 on6e556c4 is freshly in progress: client/server/Browser Smoke jobs
+PASS, Predeploy Character QA running.45 remains last independently verified live. Do not publish47
 before46's complete CI and live-identity gates.
 
 14835 closed exit1 on clean542870d: all four class pairs received active duel
@@ -36,14 +36,28 @@ game61.596s. Full39044 clientPASS228suites/3304tests/106.310s. All terminal.
 Evidence: candidate `docs/plans/2026-09-08-pvp-scene-handoff.md` and
 `/tmp/eidolon-pvp-scenes-{client,server}.log`.
 
-**59684 ACTIVE**, sole owned browser route, frozen d011b8a, run ID
-pvp-scenes-corrected, API18635/Mongo18636/web18637, log
-`/tmp/eidolon-pvp-scenes-gameplay.log`. Actual four-class admission, rendered
-arena, basic attacks, practice forfeits and departure-position assertions run
-before approval. Capture inspection remains due. Do not edit that worktree until
-this exact handle is terminal. Candidate47 in the other worktree remains542870d;
-the repair is not merged, packaged or published yet. Ranked/party/disconnect/
-physical-phone acceptance and broader balance remain open.
+59684 on d011b8a was explicitly interrupted (exit130) after a confirmed missing
+vendor-runtime setup: local Three.js module HTTP404, first two cases timed out
+in openGame before world entry. This is NOT arena/combat failure or proof of
+a screenshot-step problem. Exact Playwright PID3583923 was checked before SIGINT;
+scan0 and exact-container cleanup completed. Log `/tmp/eidolon-pvp-scenes-gameplay.log`.
+Do not restart solely on timeouts: this interruption followed a concrete404.
+
+634c20c adds an isolated-driver preflight that rejects missing vendor imports
+before Docker/credentials, plus explicit world/arena milestones and the direct-body
+canvas capture selector. Ran npm run prepare:client in this worktree.33 focused
+checks/1.564s plus lint/bash/diff passed; missing-runtime test invokes the real
+shell entrypoint with no external commands available. Runtime remains d011b8a.
+
+**65494 ACTIVE**, sole owned browser route, frozen
+634c20c873a851234fc46dd5616da7ee19f3ff37, run ID pvp-scenes-prepared,
+API18635/Mongo18636/web18637, log `/tmp/eidolon-pvp-scenes-prepared-gameplay.log`.
+Actual four-class admission, rendered arena, basic attacks, practice forfeits
+and departure-position assertions run before approval. Capture inspection remains
+due. Do not edit that worktree until this exact handle is terminal. Candidate47
+in the other worktree remains542870d; the repair is not merged, packaged or
+published yet. Ranked/party/disconnect/physical-phone acceptance and broader
+balance remain open.
 
 ## Historical checkpoint — September 8, 12:31 UTC
 
