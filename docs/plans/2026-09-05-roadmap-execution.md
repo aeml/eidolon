@@ -5,7 +5,40 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 13:17 UTC
+## Current checkpoint — September 8, 13:21 UTC
+
+This goal turn is progress:49 now inherits final48/47, with full client/server
+and focused race validation. Publication46 also advanced through both deploys.
+The full goal remains active; neither49 gameplay nor46's final live QA is closed.
+
+CI34226360903 freshly reports success for client, server, anonymous browser,
+predeploy character QA, production-input validation, Pages deploy and server
+deploy. **Live Release and Character QA is in progress.** Independent no-cache
+public checks now agree on46/6e556c4a67cb1fd901d93fe2c3a35a79c519b09d:
+release.json, ready server healthz, login Alpha1.0.46 and the versioned main.js
+import. This proves deployed identity, not final gameplay acceptance.47 remains
+unpushed pending that final CI gate. Remote master is still exactly6e556c4;
+clean47/3a68c03 is a verified descendant, with its own notes/defaults intact.
+
+In frozen49/7a6c8a7,58358 prepare/lint closed0,76279 focused Chronicle/quest/
+pickup/regen/Forge race closed0 (root2.344s/game14.309s). Full79297 client
+closed0:231suites/3323tests/151.745s. Full91979 Go closed0:root3.396s/database
+0.016s/game85.457s, all packages green. No source changes during these checks.
+
+**51936 ACTIVE**, sole owned local browser route in
+`/tmp/eidolon-release49-final48-0cNQN9`, branch release/49-with-final48, frozen
+7a6c8a7b5825ec02af5d22596d904a0b18d0e436. Run ID release49-final48,
+API18635/Mongo18636/web18637, system Chrome, ordinary fresh Wizard collection.
+Log `/tmp/eidolon-release49-final48-gameplay.log`; wrapper prints QA_SCRIPT_EXIT.
+Last observed opening manual turn-in42s, collection7 target deaths/4seeds/
+0deaths, normal scarce mana/basic attacks. These are intermediate observations,
+not a passing route. Preserve the exact required-fragment assertion and manual
+turn-in/save/gate assertions. Poll this same handle until terminal and freeze
+this worktree. Do not touch external CI containers or restart on observation
+timeouts. After clean closure inspect/archive its ready capture, record49
+evidence, then carry ancestry into50 or resume expanded earned story play.
+
+## Historical checkpoint — September 8, 13:17 UTC
 
 Previous goal turn made progress: the final duel repeat closed normally, full47
 validation passed, and48 inherited final47 with full tests and actual Forge QA.
