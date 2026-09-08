@@ -155,3 +155,36 @@ entering the world (not account forms). No game runtime, regeneration, new skill
 purchase, grant or reconnect changes. Other classes keep their existing inputs.
 Focused checks pass **247 tests / four suites / 3.216s**, changed-file lint and
 diff checks pass. Actual revised gameplay and any required follow-up remain open.
+
+### Revised spacing run and starter-road correction
+
+Test-only a6a91dc passes the full client suite (219suites/3231tests/168.981s)
+and full lint, handle37593 terminal0. Its actual fresh route23856 **FAILED2.8m**:
+five of eight fragment credits, two real deaths, then a blocked ordinary retreat
+against the east town wall at x103.25,z228. The target was not declared dead and
+the route was not completed. The viewed final capture shows185/200HP,8/160mana,
+5/8 and multiple Skeletons outside that wall. Snapshot/log evidence also records
+level30 enemies within3.7–6.1units during earlier deaths around x219–222,z203–215.
+Death-button recovery restores health but retains the depleted mana on47; later
+52's separate dead-only mana correction is not part of this candidate.
+
+Log `/tmp/eidolon-release47-spacing-gameplay.log`; image
+`/tmp/eidolon-release47-spacing-evidence-xOXgLv/failed-collection.png`.
+Artifact scan passed with2sanitizations; cleanup and exact owned container absence
+passed. No browser handle from that run remains active.
+
+The separate work/release47-starter-spacing candidate backports the existing
+5398395 starter-awareness/advanced-spawn behavior, without its expanded story or
+test graph. Imp/DemonOrc initial spawns remain160units outside the town rectangle;
+low-level unprovoked overworld Skeleton sight is12+3*level, with full45-unit
+retaliation after provocation. Dungeon/enemy combat profiles, levels, progression,
+0.01 regeneration and ordinary pursuit are unchanged.47 patch notes describe the
+road spacing. This is not immunity throughout the neighboring level30 sector.
+
+The test driver additionally queries detached positions along candidate retreat
+paths against actual collision, rejecting a clear-looking endpoint beyond a
+wall. It does not remove collisions, teleport, extend deadlines or raise allowed
+deaths. Three repeated starter/profile/regeneration race sets pass8.884s;
+production-population, all-family and retaliation probes are included.250client
+checks/four suites/2.666s and full lint pass. Full revised suites and actual
+collection gameplay are still required before integration or publication.

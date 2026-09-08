@@ -1440,6 +1440,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		var threatSnapshot map[string]float64
 		e.Mu.RLock()
 		ex, ez := e.X, e.Z
+		sightRange = unprovokedEnemySightRange(e)
 		if len(e.Threat) > 0 {
 			threatSnapshot = make(map[string]float64, len(e.Threat))
 			for k, v := range e.Threat {
@@ -1507,6 +1508,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		if threatPlayer != nil {
 			target = threatPlayer
 			minDist = threatDist
+			// Attacking a starter enemy still provokes its full response range.
+			sightRange = EnemySightRange
 		} else {
 			target = nearestPlayer
 			minDist = nearestDist

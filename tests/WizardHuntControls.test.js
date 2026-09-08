@@ -1,4 +1,5 @@
-import { planWizardHuntStep } from './wizardHuntControls.js';
+import { Vector3 } from 'three';
+import { isEarnedRetreatPathClear, planWizardHuntStep } from './wizardHuntControls.js';
 
 const state = { className: 'Wizard', dead: false, x: 0, z: 0, healthRatio: 0.7,
     shieldHP: 0, mana: 50, shieldCost: 40, hotbar: ['Teleport', 'Arcane Shield'],
@@ -45,4 +46,24 @@ test('does not choose a reachable-looking endpoint across a floor gap', () => {
     const plan = planWizardHuntStep({ ...state, healthRatio: 1, radius: 1.25,
         walkRects: [{ x: 0, z: 0, width: 8, height: 8 }, { x: -9, z: 0, width: 8, height: 8 }] });
     expect(plan).toBeNull();
+});
+
+test('a clear-looking endpoint beyond a town wall is not a valid retreat', () => {
+    const position = new Vector3(106.25, 0, 228);
+    const manager = { checkCollision: point => point.x < 103.25 && point.x > 102
+        ? new Vector3(103.25, 0, point.z) : point };
+    expect(isEarnedRetreatPathClear(manager, position, 1.25, { x: -9, z: 0 })).toBe(false);
+    expect(isEarnedRetreatPathClear(manager, position, 1.25, { x: 0, z: 9 })).toBe(true);
+    expect(position.toArray()).toEqual([106.25, 0, 228]);
+});
+
+test('ordinary collision can select a sideways retreat instead of a wall', () => {
+    const plan = planWizardHuntStep({ ...state, healthRatio: 1,
+        canRetreat: delta => Math.abs(delta.x) < .01 && delta.z > 0 });
+    expect(plan?.action).toBe('retreat');
+    expect(plan.z).toBeCloseTo(9);
+});
+
+test('a fully blocked ordinary path leaves actual combat running', () => {
+    expect(planWizardHuntStep({ ...state, healthRatio: 1, canRetreat: () => false })).toBeNull();
 });

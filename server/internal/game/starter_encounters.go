@@ -15,6 +15,28 @@ func starterSkeletonID(index int) string {
 	return fmt.Sprintf("Skeleton-lanternhold-%d", index)
 }
 
+// Authored starter awareness, never scaled to the approaching player.
+// Provoked enemies retain the normal retaliation range.
+func unprovokedEnemySightRange(enemy *Entity) float64 {
+	if enemy.InstanceID == "" && enemy.SubType == "Skeleton" && enemy.Level >= 1 && enemy.Level < 10 {
+		return float64(12 + 3*enemy.Level)
+	}
+	return EnemySightRange
+}
+
+// Keep advanced initial spawns beyond the level-three roads plus their normal
+// sight/idle-roam reach. This is not a pursuit leash or player immunity.
+const lanternholdAdvancedSpawnDistance = 160.0
+
+func lanternholdAdvancedSpawnAllowed(subType string, x, z float64) bool {
+	if subType != "Imp" && subType != "DemonOrc" {
+		return true
+	}
+	dx := math.Max(0, math.Abs(x)-100)
+	dz := math.Max(0, math.Abs(z-200)-100)
+	return math.Hypot(dx, dz) >= lanternholdAdvancedSpawnDistance
+}
+
 func lanternholdSkeletonLevel(x, z float64) int {
 	// Distance outside the town rectangle, not distance from its center: all
 	// gates start gently, and the existing level-ten profile resumes farther out.
