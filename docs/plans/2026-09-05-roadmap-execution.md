@@ -5,7 +5,86 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 11:23 UTC
+## Current checkpoint — September 8, 11:45 UTC
+
+Previous turn was progress: recovery repeat 63224 reached a normal exit, clearing
+the next publication action. This continuation pushes that correction, completes
+the first passing current-campaign cadence comparison, and implements a confirmed
+empty-mana display bug. The full 1.1–1.10 objective remains active and incomplete.
+
+### Release 46 pushed; deployment gates remain active
+
+63224 completed with explicit shell exit 0: recovery gameplay passed in 38.5s,
+generator 2 seed 3275436958928923678, clean 86609cd. Enemy-caused death, rejected
+dead Recall, explicit Respawn and same unfinished-run re-entry all passed.
+Credential scan 0 and independent exact-container absence passed. The earlier
+34012 wrapper exit 143 is retained as an anomaly, not silently relabeled.
+
+43506 pushed exact **86609cdc08f6cc032d6a40f1887242f88c96d4d6** as a normal
+fast-forward to origin/master from `/tmp/eidolon-release46-recovery-C5EHfe`.
+No root-master or later-release push occurred. New **CI 34220869395** is freshly
+in progress: server and client jobs passed; Browser Smoke is running. Require
+all jobs and exact independent public identity before declaring 46 live or
+publishing 47. Alpha 1.0.45 / 83d8f08 remains the last verified live release.
+
+### Current-campaign Wizard collection passed; Fighter comparison active
+
+**76763 passed**, normal exit 0, on clean d72f7df in
+`/tmp/eidolon-starter-cadence-xCyOrR`. Opening 32s, collection 470s, total test
+8.4 minutes: 15 observed target deaths, 8/8 seeds, no player deaths. Manual Ilyra
+turn-in consumed eight seeds and granted 100 gold / 8,000 XP. Saved completion,
+next acceptance and the level-30 dungeon restriction survived login. Scan 0 and
+independent exact-container absence passed. This does not establish a complete
+first hour: opening reward/relogin remains, the handoff is level 17, and both
+the excessive payout and level-30 gap remain open.
+
+After closure, bfd2d7d merged only 46's recovery QA correction into the candidate.
+**a38b535c3f3227cfcb0979e97020204854cb6f38** adds existing-haste and actual
+four-class PvP impact/consent regressions, plus explicit four-class selection for
+fresh collection (`EIDOLON_E2E_FRESH_CLASS`, Wizard default). 46510 passed 27
+client tests / 0.913s plus lint/bash/diff; 32798 passed focused race / 2.624s.
+Prior same-runtime 64716 race passed 2.999s. All are closed.
+
+Source review preserves per-hit proc chances, one-second poison ticks and PvP's
+65% scale / 35%-health per-hit cap; these do not prove sustained PvP balance.
+The one-second Dexterity floor is unbuffed: existing Zeal/Time Warp apply after
+it. No regen, resource, per-hit damage or enemy cadence changes were added.
+
+**52647 ACTIVE**, the sole owned browser/test: frozen a38b535, run ID
+`starter-cadence-fighter`, API 18635 / Mongo 18636 / web 18637, log
+`/tmp/eidolon-starter-cadence-fighter-gameplay.log`. Actual baseline confirms
+Fighter with 0.01-per-stat regeneration, not an accidentally repeated Wizard.
+Poll this exact handle to terminal; do not edit that worktree during the run.
+Rogue, Cleric and actual PvP/encounter pacing remain due before final selection.
+
+### Alpha 1.0.55 queued: empty means empty
+
+New clean **8df510ae4adbb61d465dd6b9f40997dbb203fe20** in
+`/tmp/eidolon-resource-hud-N2fXGI`, work/resource-hud-20260908, also preserved as
+release/55-honest-resource-hud. Runtime bfde53b fixes `mana || 100`, which really
+displayed 100/160 when mana was zero. The initial 69063 reproduced eight boundary
+failures. Shared presentation now preserves zero, bounds bar/text values and
+does not mutate resources. Health/mana rounding and 0.01 regen remain intact.
+
+24585 passed 42 focused tests / 2.540s plus lint. Full 65671 passed 225 suites /
+3,302 tests / 108.318s. Versioned 22993 passed 260 tests / 2.331s plus lint/bash/
+diff; 91989 server root passed 1.734s. 89061 rendered fixtures passed desktop,
+portrait and landscape, 3 tests / 7.7s. Desktop and portrait images inspected;
+all archived at `/tmp/eidolon-resource-hud-evidence-ZPk14d/`. These are explicit
+presentation fixtures, not earned casts or physical-phone evidence. Final 55297
+passed 229 version/history/default tests / 1.311s plus lint/diff. All closed.
+
+55 has its own patch notes, aligned login/package/backend/deploy defaults and
+retained rendered CI coverage. It is based on queued 54, not final 47; inherit
+the final earlier releases and publish in order. It is not pushed or live.
+
+New source-confirmed follow-up: the target-intent Fireball estimate uses an
+arbitrary 1.5 × basic damage, showing about 5 versus the level-five base spell's
+48. Other skills have similar placeholder estimates. Replace these with actual
+formulas/modifiers; do not describe the current numbers as reliable. This is
+recorded in the resource-HUD candidate document and remains unimplemented.
+
+## Historical checkpoint — September 8, 11:23 UTC
 
 Previous goal turn was progress (54 packaged, prior collection run closed).
 This turn adds a level-appropriate preparation comparison, validates the isolated
