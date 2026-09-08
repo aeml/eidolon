@@ -5,7 +5,71 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 07:20 UTC
+## Current checkpoint — September 8, 07:34 UTC
+
+Previous goal turn was progress: corrected45 passed locally and was pushed. This
+continuation integrates and revalidates46, integrates that verified source into
+the main working copy, and starts combined47 checks. Full1.1–1.10 remains active
+and incomplete. No new version is pushed this turn;45 still owns the live gate.
+
+**45 CI34198772605 ACTIVE**, exact64df5fbd4fb7a1b66f1f9e5ccf5dc6a20911898e:
+client and server jobs passed; browser smoke is running at the last check.
+No deployment/live success yet. Do not push46 before all eight45 jobs and fresh
+independent public client/backend identity checks succeed. Do not touch CI's
+runner processes, browser or services. Current public verification remains the
+07:20 exact44 result below, not evidence of45 deployment.
+
+**46 locally reverified and closed:** branch release/46-with-regen-and-soak-isolation,
+worktree `/tmp/eidolon-release46-runes-CEXpIs`, source merge
+d9c64bbd197ba7cb5985dc7bc4b52d546dad47bd combines prior90e2a13 with actual45/64df5fb.
+Documentation closure **87ed21c8063e6ea9eb88754b81db089a7bbbeeb7**. Its runtime/login/
+package/deployment version remains46; the new45 rune notes and0.01 rates remain.
+No src/ runtime change versus prior46. Game-server code is identical to verified45;
+remaining server differences are46 version defaults. Focused19804 PASS254 tests/
+four suites/3.147s, full lint/diff checks passed. Full client85309 PASS218 suites/
+3224 tests/236.474s; full backend-root74775 race PASS19.365s. All handles closed.
+
+46 browser41130 PASS10 rendered checks/1.2m, then PASS actual isolated gameplay/
+one test53.6s/reported58.7s. Screenshots viewed for all four entrance families,
+Verdant portrait before/after and landscape, plus the actual landscape gameplay
+capture. The hero is revealed through a small bounded window; architecture,
+camera and gameplay bounds remain unchanged. Actual Shield mastery is saved,
+834capacity absorbs310damage with524remaining, expiry works, and ordinary town
+recall restores original material identities. Scan/owned cleanup passed and
+container absence independently confirmed. This is not physical-phone sign-off.
+Logs `/tmp/eidolon-release46-runes-{client,server-root,rendered,gameplay}.log`;
+rendered evidence `/tmp/eidolon-release46-runes-rendered-gBEWSD`.
+
+**Main working copy integrated:** merge da6f351380e8f372aad50e1c17b35771f7d57e8c
+brings verified46 ancestry/fixes into the existing locally staged52, without
+reducing its version or losing death recovery/bridge changes. Root92129 PASS310
+tests/five suites/7.021s covering version, prepared training, passive recovery,
+dead-only resources and real client respawn handling. Root79536 race PASS2.400s
+and game3.884s for base-rune receipts, respawn and regeneration/ability budgets.
+Both closed. Main master is still a local staged52 and must never be pushed.
+
+**47 combined source206fac5cf35408b87d251088267624e9228289d4**, branch
+release/47-with-regen-and-soak-isolation, worktree
+`/tmp/eidolon-release47-runes-98cUsP`: merges final46/87ed21c into priorbd03956.
+Version47 and collection rules remain: new8fragments/35% plus fifth-miss guarantee;
+accepted legacy count/rate/reward promises preserved. Focused99020 PASS253 tests/
+four suites/4.743s, full lint/diff checks passed. Source is frozen for:
+
+- **95541 ACTIVE:** full server race, log
+  `/tmp/eidolon-release47-runes-server.log`; root17.468s/database1.048s already
+  passed, game package still running. Partial output is not full success.
+- **38409 ACTIVE:** full client suite, log
+  `/tmp/eidolon-release47-runes-client.log`.
+
+No owned browser is running or queued.47's fresh earned eight-fragment playtest
+under the combined0.01 build remains required; old higher-regeneration evidence
+does not cover it. Do not edit/restart47 until both handles are terminal.
+Remaining48–52 release refs are unchanged and must inherit final47 sequentially
+before their own verification/publication. The31-chapter candidate stays parked
+at fa20e50 with the known uninterrupted diary failure; broader progression,
+economy, all-class and roadmap gates remain open.
+
+## Historical checkpoint — September 8, 07:20 UTC
 
 Previous goal turn was progress: starting-ability rune authorization was corrected
 and full checks launched. This continuation closes those checks, records actual
