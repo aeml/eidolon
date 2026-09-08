@@ -1,7 +1,8 @@
 import { expect } from '@playwright/test';
 import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { openDungeonGuide } from './dungeon-guide.js';
-import { createFreshCollectionCombat, observeCollectionCombatReceipts, readFreshCollectionCombat } from './fresh-collection-combat.js';
+import { createFreshCollectionCombat, observeCollectionCombatReceipts, readFreshCollectionCombat,
+    readSelectedCollectionTarget } from './fresh-collection-combat.js';
 import { loginAndEnterWorld, moveByGroundClick, projectEntity, readPlayerState,
     returnToTown, setAutoLootThroughSettings } from './helpers.js';
 
@@ -28,7 +29,7 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
     await leaveTown();
     let observedTargetDeaths = 0, deaths = 0;
     for (let encounter = 0; encounter < required * 5 + 2 && (await readChronicleChapter(page, collection)).count < required; encounter++) {
-        const target = await findTarget();
+        let target = await findTarget();
         const deadline = Date.now() + 120_000;
         let nextDiagnostic = 0;
         let defeated = null, respawned = false;
@@ -64,6 +65,8 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
             const point = await projectEntity(page, target.id);
             if (point?.visible) {
                 await page.mouse.click(point.x, point.y);
+                const selected = await readSelectedCollectionTarget(page);
+                if (selected) target = selected;
                 if (await page.evaluate(() => window.game.player.abilityCooldown <= 0)) {
                     await page.mouse.click(point.x, point.y, { button: 'right' });
                 }

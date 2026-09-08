@@ -2,15 +2,30 @@ import { jest } from '@jest/globals';
 
 const createDefense = jest.fn();
 jest.unstable_mockModule('./e2e/earned-wizard-defense.js', () => ({ createEarnedWizardDefense: createDefense }));
-const { createFreshCollectionCombat, readFreshCollectionCombat } = await import('./e2e/fresh-collection-combat.js');
+const { createFreshCollectionCombat, readFreshCollectionCombat, readSelectedCollectionTarget } = await import('./e2e/fresh-collection-combat.js');
 
 beforeEach(() => jest.resetAllMocks());
 
-test('Wizard collection uses the same ordinary defense driver as hunts', async () => {
+test('Wizard collection retains defense but allows healthy ordinary combat', async () => {
     const page = { evaluate: jest.fn().mockResolvedValue('Wizard') }, defend = jest.fn();
     createDefense.mockResolvedValue(defend);
     expect(await createFreshCollectionCombat(page)).toBe(defend);
-    expect(createDefense).toHaveBeenCalledWith(page);
+    expect(createDefense).toHaveBeenCalledWith(page, { retreatBelowHealthRatio: .8 });
+});
+
+test('follows only the actual hostile selected by normal input, without mutating it', async () => {
+    const enemy = Object.freeze({ id: 'front-skeleton', password: 'not-copied' });
+    const game = { pendingInteraction: enemy, isHostileActorTarget: target => target === enemy };
+    window.game = game;
+    const page = { evaluate: fn => fn() };
+    try {
+        expect(await readSelectedCollectionTarget(page)).toEqual({ id: 'front-skeleton' });
+        expect(game.pendingInteraction).toBe(enemy);
+        game.pendingInteraction = { id: 'loot' };
+        expect(await readSelectedCollectionTarget(page)).toBeNull();
+        game.pendingInteraction = null;
+        expect(await readSelectedCollectionTarget(page)).toBeNull();
+    } finally { delete window.game; }
 });
 
 test.each(['Fighter', 'Rogue', 'Cleric'])('%s keeps its existing collection input', async className => {

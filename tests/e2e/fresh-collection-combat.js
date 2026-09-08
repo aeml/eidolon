@@ -16,7 +16,17 @@ export async function observeCollectionCombatReceipts(page) {
 // skill purchases, recovery commands or changes to collection/death limits.
 export async function createFreshCollectionCombat(page) {
     const className = await page.evaluate(() => window.game.player.constructor.name);
-    return className === 'Wizard' ? createEarnedWizardDefense(page) : async () => false;
+    return className === 'Wizard' ? createEarnedWizardDefense(page, { retreatBelowHealthRatio: .8 }) : async () => false;
+}
+
+// Observe the result of an ordinary click, not the originally projected ID.
+// Moving/overlapping enemies can change which actual hitbox receives the click.
+export async function readSelectedCollectionTarget(page) {
+    return page.evaluate(() => {
+        const game = window.game, target = game.pendingInteraction;
+        if (!target || !game.isHostileActorTarget(target)) return null;
+        return { id: target.id };
+    });
 }
 
 // Read-only diagnostic: never include account details or general game payloads.

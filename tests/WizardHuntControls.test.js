@@ -67,3 +67,11 @@ test('ordinary collision can select a sideways retreat instead of a wall', () =>
 test('a fully blocked ordinary path leaves actual combat running', () => {
     expect(planWizardHuntStep({ ...state, healthRatio: 1, canRetreat: () => false })).toBeNull();
 });
+
+test('collection health threshold stops needless full-health retreat without changing default spacing', () => {
+    const healthy = { ...state, healthRatio: .9, hotbar: [] };
+    expect(planWizardHuntStep(healthy)?.action).toBe('retreat');
+    expect(planWizardHuntStep({ ...healthy, retreatBelowHealthRatio: .8 })).toBeNull();
+    expect(planWizardHuntStep({ ...healthy, healthRatio: .79, retreatBelowHealthRatio: .8 })?.action).toBe('retreat');
+    expect(planWizardHuntStep({ ...state, retreatBelowHealthRatio: .8 })?.action).toBe('shield');
+});

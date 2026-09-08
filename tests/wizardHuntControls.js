@@ -30,6 +30,11 @@ export function planWizardHuntStep(state) {
         return { action: 'shield', key: String(shieldIndex + 1) };
     }
     if (nearest.distance >= 6) return null;
+    // Optional collection strategy: healthy characters can trade ordinary hits
+    // instead of continuously dragging the pack into unrelated stronger areas.
+    // Existing hunt/dungeon callers retain their unconditional spacing policy.
+    if (Number.isFinite(state.retreatBelowHealthRatio) &&
+        state.healthRatio >= state.retreatBelowHealthRatio) return null;
     const angle = Math.atan2(state.z - nearest.z, state.x - nearest.x);
     const inDungeon = state.walkRects?.length > 0;
     // Dungeon corners can require turning back toward the room interior. Retain

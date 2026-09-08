@@ -3,7 +3,7 @@ import { GroundInputUnavailableError } from '../groundInputFailure.js';
 
 // Only observes replicated state and chooses ordinary keys/ground clicks.
 // Reinstall after fresh login, which destroys the previous browser observer.
-export async function createEarnedWizardDefense(page) {
+export async function createEarnedWizardDefense(page, { retreatBelowHealthRatio } = {}) {
     await page.evaluate(() => {
         const game = window.game, original = game.handleServerMessage.bind(game);
         window.__freshWizardDefense = { lastAcceptedAt: 0, counts: { retreats: 0, shields: 0, rejectedShields: 0 } };
@@ -36,7 +36,7 @@ export async function createEarnedWizardDefense(page) {
             const game = window.game;
             return planWizardHuntStep({ ...state, canRetreat: delta =>
                 isEarnedRetreatPathClear(game.collisionManager, game.player.position, state.radius || 1.25, delta) });
-        }, state);
+        }, { ...state, retreatBelowHealthRatio });
         if (!plan) return false;
         if (plan.action === 'shield') {
             await page.keyboard.press(plan.key);
