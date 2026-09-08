@@ -5,7 +5,56 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 14:00 UTC
+## Current checkpoint — September 8, 14:22 UTC
+
+Previous goal work made progress (local47–55 closures); the intervening regen
+request reconfirmed both .01-per-stat formulas with11client tests and all four
+server passive-regeneration tests. This continuation produces new failure
+evidence and two QA corrections. The full1.1–1.10 goal remains active/incomplete.
+
+46 CI34232562890 oned5f64a is terminal FAILED before either deployment. Server,
+client/Browser Smoke passed; predeploy6/7, Verdant failed. Actual seed
+-2919309235239002724 entered with1216/1685mana after preceding independent tests.
+Warden died; Matron16800→1995 at last sample, player1338HP/2mana, then the
+120-second encounter deadline. Retry clicked the already-equipped Empowered
+rune OFF and failed its authoritative selection check. Log
+`/tmp/eidolon-release46-predeploy-failure.log`. Do not rerun unchanged or push47.
+
+46 successor **45df969247e8694554f84202605e8fe92002b684**, same recovery worktree:
+explicit existing allowlisted level100 fixture at prepared-route start, fresh
+system acknowledgement/full bars, no refill during the dungeon; canonical QA
+base stats/XP/points reset is intentional and recorded, never used on earned
+routes. Wizard/Fighter rune setup skips an already selected rune and otherwise
+retains real input plus acknowledgement.25focused tests/lint/bash/diff PASS
+(93404,1.053s), server TestSetPlayerLevel RACE PASS1.508s(60849). Sole owned
+browser **22302 ACTIVE**, prepared-fixture reuse followed by Verdant on the same
+QA character, hostAPI18645/Mongo18646/web18647; source frozen. Log
+`/tmp/eidolon-release46-prepared-fixture-gameplay.log`. Full client **10846 ACTIVE**,
+log `/tmp/eidolon-release46-prepared-fixture-client.log`. Actual browser has
+confirmed its first level1→100 fixture but no completed test yet at this entry.
+No push this turn;47–55 must later inherit this QA-only correction and retain
+their own separate deployment gates. Ability preview investigation found the
+old arbitrary multipliers but produced no56 implementation or release claim.
+
+Expanded-story85183 on6c81285 is CLOSED FAILED11.9m, QA_SCRIPT_EXIT=1. Important
+source clarification: it ALREADY uses progression version2,100XPopening,
+200XPdiary and31chapters. Do not replace it with curve1/15chapter candidates.
+Opening passed67s/no deaths; diary120s, neither reconnected/refilled mana. Watch
+reached6/40 with one death; last state alive175HP atx-278/z187, original Skeleton
+no longer streamed, hovered Imp;178retreats/14acceptedFireballs. No credit within
+120s caused failure. Scan0 and independent exact-container/network absence PASS.
+Log `/tmp/eidolon-story-pursuit-current-gameplay.log`. Pacing/campaign not approved.
+
+New isolated successor `/tmp/eidolon-story-target-input-ATbtXC`, branch
+work/story-target-input-20260908, clean **2ae3849**: retain ordinary click-owned
+attack and observe actual ray-selected actors; prioritize immediate defense;
+reacquire lost targets through real movement within the SAME watchdog. No
+requirements/rewards/regen/runtime changes. Final16selection/target tests
+PASS1.199s plus full lint/diff;31660 closed normally. Actual browser pending
+after22302 closes. It remains experimental Alpha1.0.50 metadata, not the queued
+release50 or a55 successor, and must not be published wholesale.
+
+## Historical checkpoint — September 8, 14:00 UTC
 
 Previous turn was progress:52/53 inherited suites passed. This turn closes the
 long50 earned route, actual52 recovery,53 rendered/town and55 HUD checks, and
