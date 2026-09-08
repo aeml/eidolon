@@ -48,6 +48,24 @@ pass **3.144s**. All these handles are closed; the expanded graph backend passes
 
 ### World integration checkpoint
 
+Air detour **32730 PASS / one / 2.5m** on clean **ab95837**: two actual
+investigations, all four earned records in both orientations, manual retrospective
+replies/rewards, masks 1/7 after reconnect and full saved rereading. Six targets
+are engaged at the free horizon; this is not an audited kill count. No earlier
+failed route is reclassified as a pass. All eight earned images are preserved
+at `/tmp/eidolon-phone-air-earned-NBRO3Y/`; both horizon images are inspected.
+Log `/tmp/eidolon-investigations-phone-air-detour.log`; scan/cleanup pass and
+32730 is closed. Earth, Water, Fire and Air now each have passing two-chapter
+touch routes on the revisions recorded here. These prepared-veteran routes do
+not prove fresh campaign leveling, physical-device performance or the full raids.
+
+The separately verified opening reward is cherry-picked as **50b7724** with
+earned quote/receipt coverage **3f2cd1d**: new opening offers give 100 XP/100 gold,
+accepted old promises remain intact. Both patches merge cleanly with the 23-
+chapter graph and its collection budget split. Combined full suites and a fresh
+Earth opening → diary → collection → evidence → dungeon-handoff route are the
+next checks. Root still uses the 15-chapter graph; no expansion release yet.
+
 Air travel **57049 FAIL / 57.7s** on b2c353d: actual death at (755.68,187.52),
 one accepted Shield, one Well and two Fireballs; eight nearby Titans. The failed
 portrait is inspected and preserved at `/tmp/eidolon-phone-air-travel-failure-VOLfC0/`;
