@@ -5,7 +5,52 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 13:00 UTC
+## Current checkpoint — September 8, 13:17 UTC
+
+Previous goal turn made progress: the final duel repeat closed normally, full47
+validation passed, and48 inherited final47 with full tests and actual Forge QA.
+The intervening direct regeneration check reconfirmed0.01 on both sides with
+six client and four server tests passing; no second reduction is needed.
+The full1.1–1.10 goal remains active and incomplete.
+
+90204 is terminal PASS4/1.5m, explicit QA_SCRIPT_EXIT=0, normal exit0 on8945856.
+Credential scan and exact-container cleanup passed. PvP repair and its retained
+full-predeploy route are merged into47. Current47 is clean3a68c03 in
+`/tmp/eidolon-starter-cadence-xCyOrR`; runtime85296ee passed full17075 client
+229suites/3306tests/128.203s and full50135 server race root10.867s/database1.025s/
+game257.014s. Both closed exit0; later changes are documentation only.
+
+Current48 is clean08e2071 in `/tmp/eidolon-release48-final47-Fl4I8Y`, branch
+release/48-with-final47. Frozen merge3ab4b86 passed full89281 client230suites/
+3317tests/137.178s, full30663 Go root4.441s/database0.016s/game80.683s, focused
+83823 Forge race root1.488s/game7.829s, and55543 focused246tests plus lint.
+Actual73465 Forge/guide PASS1/21.9s, explicit QA_SCRIPT_EXIT=0 and terminal0:
+normal upgrades/potency update the open UI, accumulated damage46/preview50,
+exact item/basis survive reconnect, and guide70+/60+ families are correct.
+Credential scan and independently checked cleanup passed. Desktop screenshot
+inspected and archived at `/tmp/eidolon-forge48-carried-evidence-1RCj6Y/`.
+This prepared fixture does not prove earned economy or physical-phone play.
+Detailed receipts are in the47/48 final-validation/inheritance documents.
+
+CI34226360903 on46/6e556c4 is freshly active in Predeploy Character QA;
+client/server/anonymous browser jobs PASS.45/83d8f08 remains last independently
+verified live. Do not publish47 until46's complete CI and fresh live-identity
+gates pass; preserve sequential47→48→49 publication afterward.
+
+New isolated `/tmp/eidolon-release49-final48-0cNQN9`, branch
+release/49-with-final48, merges retained49/2f03507 with current48/08e2071
+without conflicts at **7a6c8a7b5825ec02af5d22596d904a0b18d0e436**. Its distinct
+49 personal-fragment notes and all prior notes/version tests remain. Diff from
+48 contains the existing personal-drop budget and inactive investigation
+support, not an activated31-chapter campaign. Browser vendor dependencies are
+prepared. Source is frozen for active checks:58358 prepare/lint,76279 focused
+Chronicle/quest/pickup/regen/Forge race,79297 full client. Logs are
+`/tmp/eidolon-release49-final48-{race,client}.log`. Poll these exact handles.
+No owned local browser route is active yet.49–55 are not published;50 onward
+still need this ancestry carried forward. Broader balance/story/PvP/phone
+acceptance and the rest of the roadmap remain open.
+
+## Historical checkpoint — September 8, 13:00 UTC
 
 Previous turn was progress:6e556c4 was verified locally and pushed. This turn
 confirms the actual duel scene bug and implements a production repair in an
