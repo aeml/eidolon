@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 05:36 UTC
+## Current checkpoint — September 8, 05:35 UTC
 
 Previous goal turn was progress. This continuation packages the requested
 regeneration fix into45, verifies actual progression/gear rollback sessions,
@@ -53,13 +53,13 @@ wait for all eight44 jobs AND fresh exact44 public identity before pushing.
 
 Current sequential queue (old refs preserved):
 
--45 `45b4b831a85c96992cd396344610cd1fb9175fd6`
--46 `90e2a13f7af89221c93ab8190a1304a118625427`
--47 `bd0395655c29974599ab85bdb32b5f3e25f8c0f2`
--48 `f0cf612e78870f5322b855c2d732bb08990c0baf`
--49 `2f0350770e13d7419729ba958e245525c5864c47`
--50 `774d8176b6859357066449b6b65f50d5b6ae4874`
--51 `2ed3375` (`release/51-progression-save-bridge`)
+- 45 `45b4b831a85c96992cd396344610cd1fb9175fd6`
+- 46 `90e2a13f7af89221c93ab8190a1304a118625427`
+- 47 `bd0395655c29974599ab85bdb32b5f3e25f8c0f2`
+- 48 `f0cf612e78870f5322b855c2d732bb08990c0baf`
+- 49 `2f0350770e13d7419729ba958e245525c5864c47`
+- 50 `774d8176b6859357066449b6b65f50d5b6ae4874`
+- 51 `2ed3375` (`release/51-progression-save-bridge`)
 
 45–50 use `release/<number>-with-regen-and-soak-isolation`. Staging worktree
 `/tmp/eidolon-release37-targeting-lT3Mdt` is clean50/774d817. One VersionPresentation
