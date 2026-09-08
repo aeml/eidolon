@@ -43,8 +43,15 @@ pending levels once, and preserves quest quotes/requirements/optional records.
 Initial17577 failed because the copied test oracle overflowed two large legacy
 factors; runtime already returned correct identity. Corrected expanded **57208
 PASS /three race repeats /root9.106s /database1.096s /game77.036s**. Full server
-race **31499 ACTIVE**, freeze bridge source; log
-`/tmp/eidolon-progression-bridge-full-server.log`. Actual isolated database/login/
+race **31499 FAIL /game336.059s**, handle closed. One old GenerateDaily fixture
+expected an accepted10-kill/1XP contract to become100kills/50kXP. It now checks
+the promised terms while still requiring repaired metadata/missing gold. Focused
+three-race **80043 PASS /2.578s**. Corrected full server **18636 ACTIVE**, log
+`/tmp/eidolon-progression-bridge-full-server-corrected.log`. Freeze bridge files.
+The pre-run commit command used root-relative paths from the server directory
+and failed before staging; this run is **96143fc plus exactly the test/doc
+correction**, not a clean new commit. Do not start another run for that reason;
+commit the unchanged correction after this check closes. Actual isolated database/login/
 rollback sessions and release packaging remain required. See
 [bridge scope and evidence](2026-09-08-progression-compatibility-bridge.md).
 
