@@ -136,6 +136,7 @@ test('Shield mastery increases actual saved absorption, renders and expires thro
     await expect.poll(observeTarget, { message: 'Observe a real Inferno Titan before approaching it' }).not.toBeNull();
     const target = await observeTarget();
     expect(target).not.toBeNull();
+    console.log('[shield-approach]', JSON.stringify({ target: target.id, initialDistance: target.distance }));
     for (let step = 0; step < 15; step++) {
         const offset = await page.evaluate(id => {
             const enemy = window.game.remotePlayers.get(id), p = window.game.player;
@@ -145,7 +146,10 @@ test('Shield mastery increases actual saved absorption, renders and expires thro
         const distance = Math.hypot(offset.x, offset.z);
         if (distance < 3) break;
         const scale = Math.min(7, distance - 2) / distance;
-        await moveByGroundClick(page, offset.x * scale, offset.z * scale);
+        // The generic helper normally returns after just one unit. Here each
+        // planned seven-unit step must substantially finish before replanning.
+        await moveByGroundClick(page, offset.x * scale, offset.z * scale,
+            { minimumDistance: Math.min(6, Math.max(1, (distance - 3) * 0.5)) });
     }
     expect(await page.evaluate(id => {
         const game = window.game, enemy = game.remotePlayers.get(id);

@@ -22,3 +22,12 @@ Focused13178 passes12tests/two suites/1.123s, full lint and diff checks. This is
 test-only; src/server/index are unchanged from0ed54b2. Actual corrected absorption
 and clean artifact/cleanup evidence remain required before publication. Existing
 release45 patch notes still accurately describe its unchanged production code.
+
+First corrected actual45665 failed42.5s after capacity/expiry checks: it found
+an enemy but remained21.77units away after15 movement calls. The movement helper
+returns once one unit is observed by default, so repeated seven-unit commands
+were being replanned before their intended travel completed. Approach now requires
+up to six actual units per step (less near contact), within the same15-step and
+240s bounds. The explicit under3 contact assertion is retained, not relaxed.
+Initial observed distance is now logged. Scan0/cleanup/container absence passed
+for the failed attempt; do not repeat its unchanged source2e45825.
