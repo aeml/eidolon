@@ -1,5 +1,70 @@
 # Resource persistence implementation candidate — not release-ready
 
+## Latest acceptance — September 8, 17:05 UTC
+
+Runtime bb11f9bf1da174371fb27d3c75c50f0620ad2b92 fixes two races exposed by
+the new actual dungeon/PvP tests (cbc79758a0ca097f13846bb5884d590114a03321).
+Party membership mutations now take the entity lock under the world lock.
+Enemy targeting snapshots its scene and reads each player's scene while holding
+the player lock, rechecking disconnected/dead state against potentially stale
+tick player lists. Focused race53093 PASS11.636s includes concurrent party
+mutation/copy, scene/disconnect targeting and disconnected-actor attack rejection.
+
+Initial actual16263 FAILED110.162s on cbc7975: the gameplay assertions passed,
+but six child processes reported races (CreateParty versus GetEntityCopy, and
+arena entry/exit versus enemy targeting). This is not a passing run. Log
+`/tmp/eidolon-resource-instance-actual-sessions.log`; bad server evidence dirs
+1705177692/1499972318/366519660/3838784945/1789184511/1642187709 under
+`/tmp/eidolon-compat-session-*`. Its owned Mongo and volumes were removed.
+
+Corrected actual51943 CLOSED PASS normal0/254.335s, two complete repetitions:
+four classes alive/dead in Verdant dungeon, plus practice duel/ranked1v1 forfeit
+and maintenance shutdown for both class pairs. Log
+`/tmp/eidolon-resource-instance-repeat-sessions.log`; binary
+`/tmp/eidolon-resource-instance-corrected-proof-znuMxu/bb11f9bf1da174371fb27d3c75c50f0620ad2b92`.
+All56 server processes have strict normal exits and independently clean
+race/panic/fatal/credential-marker scans and explicit shutdown-drain completion.
+The exact disposable Mongo/volumes were removed and independently absent.
+Full Go race26408 CLOSED PASS normal0: root22.706s/game413.453s, other packages
+cached/no tests. Log `/tmp/eidolon-resource-instance-full-race.log`.
+
+Dungeon coverage uses ordinary entry and real generated geometry, saves depleted
+resources, restarts, checks identical instance/seed/layout/full room progress,
+then living Recall or dead Recall rejection followed by Respawn and town save.
+The cleared/rewarded room and death are explicitly prepared after the first
+server stops, NOT earned boss-clear or party-wipe evidence. Gold/XP/equipment
+must not change. Other dungeon families and raid-group/crystal events remain open.
+
+Test-only f064c197297c533eb049c0c4eab288c5f6e13afd adds four-player 2v2 to the
+same recovery contract. Ordinary invitations and acceptance form two exact
+parties before their leaders queue. All four must enter one arena, repeated
+Join cannot escape/refill, Wizard's real cast consumes445→415mana, one teammate's
+disconnect restores all four and awards the losing/winning teams exactly once.
+Maintenance gives neither team a win. Fresh-process credential logins preserve
+145HP/445mana town recovery, original gold/gear and exact ranked profiles.
+This is recovery evidence, not an earned complete 2v2 fight or normalization test.
+
+Focused compile90032 PASS1.046s (actual opt-in skipped; initial invocation from
+worktree root lacked go.mod and was corrected in server/). Actual91101 CLOSED
+PASS normal0/111.671s: three repetitions of 2v2 forfeit and maintenance recovery,
+36.55/37.01/37.07s. Binary
+`/tmp/eidolon-resource-2v2-proof-o6uBQX/f064c197297c533eb049c0c4eab288c5f6e13afd`;
+log `/tmp/eidolon-resource-2v2-sessions.log`. All12 strict normal-exit server logs
+independently clean including shutdown completion. Owned disposable Mongo
+`eidolon-resource-2v2-proof-20260908-1705` and anonymous volumes removed by EXIT
+trap and independently absent. No production player data touched. No owned
+local test/browser handles remain. No56 version assigned or publication approved.
+
+Next persistence implementation: auction refunds currently mutate a disconnected
+entity after its last save without journaling, or increment Mongo without ordering
+against pending full snapshots. Account work ordering, expiry safety, durable
+refund delivery and idempotent retry must be addressed together. Merely switching
+to gold-only Mongo updates or confirming an already-committed receipt is not
+proof that a never-committed older snapshot cannot erase a later refund. Audit
+the auction/user cross-document failure window rather than hiding it with retry
+logs. Delayed IO, rollback compatibility and broader browser/device/raid play
+remain required, as do the whole 1.1–1.10 roadmap and ordered release gates.
+
 Base6009917 includes queued55 and the inherited46 prepared-fixture fixes. This
 work has no new published version and must not be pushed over the release queue.
 The root roadmap resource-reconnect contract remains the full acceptance scope.
