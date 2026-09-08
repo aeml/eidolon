@@ -1,6 +1,8 @@
 import { expect, test } from '@playwright/test';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
 import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
+import { prepareDungeonWizard } from './prepared-dungeon-wizard.js';
+import { createEarnedWizardDefense } from './earned-wizard-defense.js';
 import { prepareEarthChronicleThroughPlay, verifyEarthDungeonChronicleTurnIn } from './chronicle-earth-route.js';
 import {
     collectBrowserFailures, credentialsFromEnvironment, ensureDungeonReadyLevel,
@@ -59,6 +61,7 @@ test(fullRun ? `${playthrough.name} complete ${fallbackRun ? 'fallback' : 'gener
     await loginAndEnterWorld(page, credentials);
     await ensureDungeonReadyLevel(page);
     await prepareFighterSkills(page);
+    await prepareDungeonWizard(page);
     if (chronicleEarth) await prepareEarthChronicleThroughPlay(page);
     if (fallbackRun) {
         await returnToTown(page);
@@ -68,7 +71,8 @@ test(fullRun ? `${playthrough.name} complete ${fallbackRun ? 'fallback' : 'gener
         await chat.press('Enter');
         await expect(page.locator('#chat-messages')).toContainText('Next fresh dungeon will use its complete fallback route');
     }
-    await playDungeonThroughInputs(page, { playthrough, fullRun, fallbackRun, useTownGuide: false });
+    const beforeCombat = await createEarnedWizardDefense(page);
+    await playDungeonThroughInputs(page, { playthrough, fullRun, fallbackRun, useTownGuide: false, beforeCombat });
     if (chronicleEarth) await verifyEarthDungeonChronicleTurnIn(page, credentials);
     expect(failures, failures.join('\n')).toEqual([]);
 });

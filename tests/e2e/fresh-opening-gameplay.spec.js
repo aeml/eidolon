@@ -1,9 +1,13 @@
 import { expect, test } from '@playwright/test';
 import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { earnFreshCollectionAndInspectHandoff } from './fresh-collection-route.js';
+import { createFreshCollectionCombat, observeCollectionCombatReceipts,
+    readFreshCollectionCombat, selectCollectionTargetThroughInput,
+    reacquireDisengagedCollectionTarget } from './fresh-collection-combat.js';
 import { earnFreshHunt, earnFreshSkeletonHunt } from './fresh-hunt-route.js';
 import { earnFreshDungeonReadiness, prepareEarnedClass } from './fresh-ready-route.js';
 import { createEarnedClassCombat } from './earned-class-combat.js';
+import { prepareEarlyEarnedCharacter } from './early-earned-preparation.js';
 import { clearEarnedVerdant } from './fresh-dungeon-route.js';
 import { collectBrowserFailures, credentialsFromEnvironment, jumpByGroundClick,
     loginAndEnterWorld, moveByGroundClick, projectEntity, projectNearestHostile,
@@ -56,6 +60,8 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     test.setTimeout(process.env.EIDOLON_E2E_FRESH_HUNT === '1' ? 3_600_000 :
         process.env.EIDOLON_E2E_FRESH_COLLECTION === '1' ? 1_200_000 : 600_000);
     const started = Date.now();
+    const prepareCollection = process.env.EIDOLON_E2E_PREPARED_COLLECTION === '1';
+    if (prepareCollection) expect(process.env.EIDOLON_E2E_FRESH_COLLECTION).toBe('1');
     const failures = collectBrowserFailures(page, baseURL);
     const preparedEarlier = process.env.EIDOLON_E2E_FRESH_EARLY_PREPARATION === '1';
     if (preparedEarlier) {
@@ -88,6 +94,8 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     await page.locator('#btn-close-quest').click();
     await returnToTown(page);
     await leaveTown(page);
+    const beforeOpeningCombat = await createFreshCollectionCombat(page);
+    await observeCollectionCombatReceipts(page);
     let deaths = 0;
     let retreats = 0;
     while ((await readChronicleChapter(page, chapter)).count < 3) {
@@ -119,45 +127,24 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
                 targetLowestHP = target.health;
                 continue;
             }
-            // Use the ranged class as a ranged player: retreat through ordinary
-            // movement when approached. No state writes, healing or protection.
-            const retreat = await page.evaluate(id => {
-                const game = window.game;
-                const enemy = game.remotePlayers.get(id);
-                if (!enemy || game.player.constructor?.name !== 'Wizard') return null;
-                const dx = game.player.position.x - enemy.position.x;
-                const dz = game.player.position.z - enemy.position.z;
-                const distance = Math.hypot(dx, dz);
-                return distance < 5 ? { x: dx / Math.max(0.1, distance) * 8,
-                    z: dz / Math.max(0.1, distance) * 8 } : null;
-            }, target.id);
-            if (retreat) {
-                try {
-                    await moveByGroundClick(page, retreat.x, retreat.z);
-                } catch (error) {
-                    // Combat continues during movement. A normal death belongs
-                    // to the bounded respawn path above; retain other movement
-                    // failures instead of hiding collision/input defects.
-                    if ((await readPlayerState(page)).state === 'DEAD') continue;
-                    throw error;
-                }
-                retreats++;
-            }
+            // Share the collection route's ordinary defensive inputs instead
+            // of interrupting every healthy attack with another retreat.
+            if (await beforeOpeningCombat()) continue;
+            retreats = await page.evaluate(() => window.__freshWizardDefense?.counts.retreats || 0);
+            if ((await readPlayerState(page)).state === 'DEAD') continue;
+            if ((await readChronicleChapter(page, chapter)).count > before) break;
+            target = await reacquireDisengagedCollectionTarget(page, target,
+                () => projectNearestHostile(page, 'Skeleton'));
             const point = await projectEntity(page, target.id);
             if (point?.visible) {
-                await page.mouse.click(point.x, point.y);
+                target = await selectCollectionTargetThroughInput(page, target, point);
                 if (await page.evaluate(() => window.game.player.abilityCooldown <= 0)) {
                     await page.mouse.click(point.x, point.y, { button: 'right' });
                 }
             }
             await page.waitForTimeout(250);
         }
-        const diagnostic = await page.evaluate(id => {
-            const game = window.game, enemy = game.remotePlayers.get(id);
-            return { playerHP: game.player.health, enemyHP: enemy?.health,
-                enemyState: enemy?.state, hoveredType: game.hoveredEntity?.constructor?.name,
-                distance: enemy ? game.player.position.distanceTo(enemy.position) : null };
-        }, target.id);
+        const diagnostic = await readFreshCollectionCombat(page, target.id);
         expect((await readChronicleChapter(page, chapter)).count,
             `Opening combat deadline: ${JSON.stringify(diagnostic)}`).toBeGreaterThan(before);
         const player = await readPlayerState(page);
@@ -179,10 +166,16 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     expect((await readChronicleChapter(page, chapter)).completed).toBe(true);
     console.log(`[fresh-opening] completed ${JSON.stringify({ level: earnedLevel, deaths, retreats, grantedGold: rewarded.grantedGold, grantedXP: rewarded.grantedXP, elapsedSeconds: Math.round((Date.now() - started) / 1000) })}`);
     if (process.env.EIDOLON_E2E_FRESH_COLLECTION === '1') {
-        await earnFreshCollectionAndInspectHandoff(page, credentials, {
-            findTarget: () => findSkeletonThroughTravel(page), leaveTown: () => leaveTown(page),
-            captureReady: () => page.screenshot({ path: testInfo.outputPath('earned-collection-ready.png') })
-        });
+        try {
+            await earnFreshCollectionAndInspectHandoff(page, credentials, {
+                findTarget: () => findSkeletonThroughTravel(page), leaveTown: () => leaveTown(page),
+                prepare: prepareCollection ? () => prepareEarlyEarnedCharacter(page) : undefined,
+                captureReady: () => page.screenshot({ path: testInfo.outputPath('earned-collection-ready.png') })
+            });
+        } catch (error) {
+            await page.screenshot({ path: testInfo.outputPath('failed-collection.png') });
+            throw error;
+        }
     }
     if (process.env.EIDOLON_E2E_FRESH_HUNT === '1') {
         const hunt = {

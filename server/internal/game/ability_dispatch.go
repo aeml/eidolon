@@ -112,12 +112,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 	}
 	// Fallback: Always allow base skills if UnlockedSkills is empty or not found
 	if !isUnlocked {
-		if (player.SubType == "Fighter" && skillName == "Charge") ||
-			(player.SubType == "Rogue" && skillName == "Piercing Throw") ||
-			(player.SubType == "Wizard" && skillName == "Fireball") ||
-			(player.SubType == "Cleric" && skillName == "Spirit Guardians") {
-			isUnlocked = true
-		}
+		isUnlocked = IsBaseClassSkill(player.SubType, skillName)
 	}
 
 	if !isUnlocked {

@@ -49,6 +49,7 @@ func handleMsgDuelRespond(client *Client, message Message) {
 		sendPvPState(client)
 		return
 	}
+	sendPvPEntry(match)
 	sendPvPMatchState(match)
 }
 
@@ -69,6 +70,7 @@ func handleMsgArenaQueue(client *Client, message Message) {
 		sendPvPState(client)
 		return
 	}
+	sendPvPEntry(match)
 	sendPvPMatchState(match)
 }
 
@@ -145,6 +147,33 @@ func sendPvPMatchState(match *game.PvPMatch) {
 	}
 }
 
+// Match/score snapshots do not load a world. Send the same explicit scene
+// contract used by dungeons at initial admission, never on elimination updates.
+func sendPvPEntry(match *game.PvPMatch) {
+	if match == nil {
+		return
+	}
+	layout, exists := world.GetInstanceLayout(match.ID)
+	if !exists {
+		return
+	}
+	for _, id := range append(append([]string(nil), match.TeamA...), match.TeamB...) {
+		client, player := getClientByPlayerID(id), world.GetEntityCopy(id)
+		if client == nil || player == nil || player.InstanceID != match.ID {
+			continue
+		}
+		sendPvPScene(client, player, "pvp_arena", &layout)
+	}
+}
+
+func sendPvPScene(client *Client, player *game.Entity, sceneType string, layout *game.DungeonLayout) {
+	payload, _ := json.Marshal(map[string]interface{}{
+		"instanceId": player.InstanceID, "type": sceneType, "layout": layout,
+		"spawn": map[string]float64{"x": player.X, "y": player.Y, "z": player.Z},
+	})
+	client.sendSafe(createMessage(MsgEnterInstance, payload))
+}
+
 func persistPvPMatchResult(result game.PvPMatchResult) {
 	for _, profile := range result.Profiles {
 		err := db.SavePvPProfile(database.PvPProfile{
@@ -159,6 +188,11 @@ func persistPvPMatchResult(result game.PvPMatchResult) {
 	// needs the cleared match state and a result message.
 	for _, playerID := range append(append([]string(nil), result.WinnerIDs...), result.LoserIDs...) {
 		if client := getClientByPlayerID(playerID); client != nil {
+			// Completion callbacks can arrive after another action. Never replace
+			// a newer dungeon or arena with a stale overworld result scene.
+			if player := world.GetEntityCopy(playerID); player != nil && player.InstanceID == "" && !world.HasPvPMatch(playerID) {
+				sendPvPScene(client, player, "overworld", nil)
+			}
 			if len(result.WinnerIDs) == 0 {
 				client.sendSystemChat("PvP match cancelled. No ranked rewards or rating changes.")
 			} else if result.Mode == game.PvPModeDuel {

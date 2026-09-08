@@ -5,6 +5,7 @@ import { isEquippableItem, isActiveEquipment } from '../core/EquipmentSlots.js';
 import { getAbilityManaCost, getAbilityCooldown } from '../core/AbilityEconomy.js';
 import { updateOfflineHealingLight } from '../core/AbilityHealing.js';
 import { PASSIVE_REGEN_PER_STAT } from '../core/Regeneration.js';
+import { basicAttackInterval, usesPlayerAttackCadence } from '../core/BasicAttackCadence.js';
 import { rollOfflineCriticalDamage } from '../core/AbilityCritical.js';
 import { applyOfflineStatus, clearOfflineStatus, updateOfflineDamageOverTime } from '../core/OfflineDamageOverTime.js';
 import { CONSTANTS } from '../core/Constants.js';
@@ -89,7 +90,9 @@ export class Actor extends Entity {
             defense: 0,
             hpRegen: this.baseStats.vitality * PASSIVE_REGEN_PER_STAT,
             manaRegen: this.baseStats.wisdom * PASSIVE_REGEN_PER_STAT,
-            attackSpeed: 1 + (this.baseStats.dexterity / 5) * 0.05,
+            attackSpeed: usesPlayerAttackCadence(this.constructor.name)
+                ? basicAttackInterval(this.baseStats.dexterity, this.constructor.name)
+                : 1 + (this.baseStats.dexterity / 5) * 0.05,
             cooldownReduction: Math.min(0.5, this.baseStats.intelligence * 0.01),
             manaCostReduction: 0, 
             castSpeed: 1 + (this.baseStats.wisdom / 5) * 0.01,
@@ -1961,13 +1964,9 @@ export class Actor extends Entity {
             this.stats.speed = maxSpeed;
         }
 
-        // Attack Speed (Seconds Per Attack)
-        // Base 5.0s, scales down with Dex, min 1.0s
-        const speedMult = 1.0 + (totalStats.dexterity * 0.02);
-        let cooldown = 5.0 / speedMult;
-        if (cooldown < 1.0) cooldown = 1.0;
-        
-        this.stats.attackSpeed = cooldown;
+        // Hero fallback cadence matches the authoritative player formula;
+        // enemy recalculation retains its existing five-second base curve.
+        this.stats.attackSpeed = basicAttackInterval(totalStats.dexterity, this.constructor.name);
 
         // Wisdom: Mana regen and cast speed
         this.stats.manaRegen = totalStats.wisdom * PASSIVE_REGEN_PER_STAT;
