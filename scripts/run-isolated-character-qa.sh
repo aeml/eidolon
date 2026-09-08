@@ -117,6 +117,7 @@ fi
 # casts when the animation matrix is intentionally restricted to one class.
 qa_allowlist="${QA_USERNAME_BASE},${QA_USERNAME_BASE}-healing,${QA_USERNAME_BASE}-economy,${QA_USERNAME_BASE}-legacy,${QA_USERNAME_BASE}-recovery,${QA_USERNAME_BASE}-spin,${QA_USERNAME_BASE}-phone,${QA_USERNAME_BASE}-phone-combat,${QA_USERNAME_BASE}-phone-bag,${QA_USERNAME_BASE}-phone-quests,${QA_USERNAME_BASE}-phone-build,${QA_USERNAME_BASE}-phone-settings,${QA_USERNAME_BASE}-phone-adventure,${QA_USERNAME_BASE}-fighter,${QA_USERNAME_BASE}-rogue,${QA_USERNAME_BASE}-wizard,${QA_USERNAME_BASE}-cleric"
 
+qa_allowlist+=",${QA_USERNAME_BASE}-death-resources"
 qa_allowlist+=",${QA_USERNAME_BASE}-duration,${QA_USERNAME_BASE}-forge,${QA_USERNAME_BASE}-whip,${QA_USERNAME_BASE}-ground"
 qa_allowlist+=",${QA_USERNAME_BASE}-cleanse"
 qa_allowlist+=",${QA_USERNAME_BASE}-cleanse-retry1"
@@ -139,7 +140,7 @@ mongo_password="$(openssl rand -hex 24)"
 docker build \
   --build-arg GO_VERSION=1.24.5 \
   --build-arg "BUILD_COMMIT=${qa_build_commit}" \
-  --build-arg "BUILD_VERSION=Alpha 1.0.51" \
+  --build-arg "BUILD_VERSION=Alpha 1.0.52" \
   --tag "${SERVER_IMAGE}" server >/dev/null
 image_created=true
 
@@ -387,6 +388,11 @@ run_dungeon_recovery() {
     npx playwright test tests/e2e/dungeon-wipe-recovery-gameplay.spec.js
 }
 
+run_death_resource_recovery() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-death-resources" EIDOLON_E2E_CLASS=Wizard \
+    npx playwright test tests/e2e/death-resource-recovery-gameplay.spec.js
+}
+
 run_direct_target_classes() {
   for class_name in Rogue Cleric; do
     EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-$(printf '%s' "${class_name}" | tr '[:upper:]' '[:lower:]')" \
@@ -411,7 +417,7 @@ run_animation_multiplayer() {
 set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   all)
-    npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js && run_whip_shape && run_ground_shape && run_purifying_area && run_guardian_area && run_consecrated_area && run_cleric_area && run_spirit_area && run_whirlwind && run_phone && run_phone_combat && run_phone_party && run_phone_inventory && run_equipment_recovery && run_forge_guide && run_fresh_collection && run_talent_economy && run_talent_healing && run_talent_duration && run_seraph && run_shield_training && run_entrance_visibility && run_phone_quests && run_phone_build && run_phone_settings && run_phone_adventure && run_dungeon_recovery && run_direct_target_classes && npm run test:e2e:movement && run_animation_classes && run_animation_multiplayer
+    npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js && run_whip_shape && run_ground_shape && run_purifying_area && run_guardian_area && run_consecrated_area && run_cleric_area && run_spirit_area && run_whirlwind && run_phone && run_phone_combat && run_phone_party && run_phone_inventory && run_equipment_recovery && run_forge_guide && run_fresh_collection && run_talent_economy && run_talent_healing && run_talent_duration && run_seraph && run_shield_training && run_entrance_visibility && run_phone_quests && run_phone_build && run_phone_settings && run_phone_adventure && run_dungeon_recovery && run_death_resource_recovery && run_direct_target_classes && npm run test:e2e:movement && run_animation_classes && run_animation_multiplayer
     ;;
   animations)
     run_animation_classes
@@ -421,6 +427,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   movement)
     npm run test:e2e:movement
+    ;;
+  death-resources)
+    run_death_resource_recovery
     ;;
   smoke)
     npx playwright test tests/e2e/authenticated.spec.js --grep "logs in, enters the world"
