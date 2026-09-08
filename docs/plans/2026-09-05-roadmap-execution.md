@@ -5,7 +5,45 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 02:12 UTC
+## Current checkpoint — September 8, 02:55 UTC
+
+Substantive progress: isolated coordinated progression core and accepted quest
+quote protection; release43 predeploy failure remains unresolved. Full roadmap
+and earned balance approval are still materially incomplete.
+
+**43/39620a0 / CI 34178050891 FAILED Predeploy Character QA**. Client, server
+and anonymous browser passed; deployment/live jobs were skipped. First full
+character attempt logged network-change asset failures; the retry failed the
+Wizard real-input presentation matrix (Inferno Cataclysm then Dragonfire Lance
+on its own retry). Do not attribute these to one cause without evidence. Last
+exact public check remains42/bfbbc. No44 publication or gate bypass.
+
+Release worktree `/tmp/eidolon-release43-timing-lYCtAm` has diagnostic-only
+changes on39620a0; runtime/assertions/timeouts unchanged. Isolated Wizard
+**18831 PASS / 1.3m**, sanitized artifacts and owned cleanup pass; this does not
+reproduce or solve CI. Full four-class sequence **96050 active** on this frozen
+worktree, log `/tmp/eidolon-release43-allclass-diagnostic.log`.
+
+Candidate `/tmp/eidolon-coordinated-xp-RKNlYr`, branch
+`work/coordinated-xp-20260908`, **0e8600f**: expanded23/opening100/room fix plus
+bounded XP core, stored-curve migration, authoritative/offline thresholds and
+content-level combat budgets. Core implementation **7dc401c**, login points/
+pending-level healing **d1e02a3**. Full client **90196 PASS / 221 suites / 3318
+tests / 142.350s** predates the server-only followups. See
+[core evidence and limitations](2026-09-08-progression-core-implementation.md).
+
+Accepted quest quote/kill requirement protection **0e8600f** uses actual BSON
+field presence, preserves explicit zero, partial legacy saves and historical
+receipts. Three race repeats **3728 PASS / root6.878s / database1.113s /
+game6.922s**, including production claim/reload/duplicate checks. See
+[quote evidence](2026-09-08-accepted-quest-quotes.md). Full server race suite
+**55919 active** on frozen0e8600f, log
+`/tmp/eidolon-coordinated-xp-quotes-full-server.log`. No candidate source changes
+while running. Candidate is NOT root-merged, packaged or published: old million-XP
+quest/weekly budgets remain incompatible with its new curve. Compatibility
+bridge and actual login/earned campaign verification are still required.
+
+## Historical checkpoint — September 8, 02:12 UTC
 
 Previous goal turn was progress: fresh expanded Earth proof, stacked reward
 measurement and corrected43 publication. This turn makes concrete progress by
