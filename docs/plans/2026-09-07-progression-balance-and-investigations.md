@@ -1,6 +1,24 @@
 # Progression balance and realm investigations
 
 Requested September 7, 2026. Status: **implementation active; full pass open**.
+
+September 8 update: the isolated expanded story now passes an earned fresh
+Earth route with the 100-XP opening, diary, eight-fragment collection and linked
+evidence, plus manual handoffs and reconnect. Source **95faafc**, browser
+**26283 PASS / 3.1m**, zero deaths, 15 observed collection-target deaths (not all
+AoE kills), three equipment drops worth 80 gold **unsold**. It ends at level 16,
+with the existing level-30 dungeon gate correctly locked. All four realm phone
+investigation routes also pass on their recorded prepared-veteran sources.
+This is not a viable full leveling route or a published expansion yet.
+
+The [stacked boss/daily audit](2026-09-08-stacked-dungeon-rewards.md) additionally
+measures **16,001,240 XP** from four Normal Verdant boss payouts plus two daily
+claims: prepared level 30 → 54 → 57, before trash, rooms, story or sale income.
+Quest and encounter budgets must be tuned together. No full replacement curve
+or final source/sink approval has been selected.
+
+The following sections retain their original staged scope; isolated expanded
+runtime is tracked separately from the root-integrated foundation and releases.
 The locally verified, root-integrated 1.0.47 candidate implements eight-fragment
 collections, reduced ordinary drop rates, saved bad-luck protection and
 legacy-contract migration. It is queued, not published. The
