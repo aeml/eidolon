@@ -38,3 +38,12 @@ and Cleric support; Wizard evidence must not become an all-class approval.
 
 Proposed patch note, pending packaging: “Target cards now show enemy levels,
 helping you judge a fight before committing.”
+
+Final af82670 verification: focused14389 passes24tests/2.238s, full lint and
+diff checks. Full client35898 passes230suites/3401tests/151.663s. Actual component
+browser74979 passes three desktop/portrait/landscape cases in10.9s. All three
+card PNGs were viewed and retained in `/tmp/eidolon-target-level-evidence-tBVMI9/`.
+Phone metadata is hidden by existing CSS, so phone titles prefix the enemy level;
+desktop retains it in metadata. This is rendered component evidence, not physical
+phone testing or an actual earned-route success. All these handles are closed.
+The changed travel selection still needs its next actual uninterrupted run.
