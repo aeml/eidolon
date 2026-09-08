@@ -37,8 +37,9 @@ Scoped three-race compatibility **10372 PASS /game48.126s**; actual-death
 party/solo hunt checks **17722 PASS /three /8.233s**. Corrected dialogue/UI
 **43508 PASS /44 /1.796s**. Initial failures were retained and corrected:
 old23-chapter indices, old handoff fixtures and dialogue assumptions. Final
-lint **81312 PASS**. Combined full client **49961 ACTIVE** and full server
-race **95004 ACTIVE** on771c08c: freeze that entire worktree until both exit.
+lint **81312 PASS**. Combined full client **49961 PASS /223 suites /3,339
+tests /163.232s**, handle closed. Full server race **95004 ACTIVE** on771c08c:
+freeze that entire worktree until it exits.
 Logs `/tmp/eidolon-story-hunts-full-client.log` and
 `/tmp/eidolon-story-hunts-full-server.log`. No owned browser is active.
 
