@@ -5,7 +5,77 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 14:46 UTC
+## Current checkpoint — September 8, 15:09 UTC
+
+This turn is PROGRESS: implemented per-account session/save ordering and proved
+real Fireball/repeated-Join/duplicate-login resource preservation against Mongo,
+including a race-built server. The preceding regeneration-only reply confirmed
+an already-existing change; it did not advance roadmap implementation. Current
+state was revalidated before proceeding. Full1.1–1.10 remains active, not closed.
+
+46 CI34238194283 on6f7e4a7 is freshly ACTIVE in Predeploy Character QA. Client,
+server and Browser Smoke PASS. No push this turn.47/93ab09c stays next only after
+the entire46 pipeline including final Live QA passes and fresh exact public
+release.json/healthz/login/runtime identities agree.48–55 retain the sequential
+refs recorded below; never push root's staged52/ledger branch over this queue.
+
+Resource candidate `/tmp/eidolon-resource-persistence-c6E17J`, branch
+work/resource-persistence-20260908, clean **603cd588430269321980d70b01b5fcfbbd6f9c8d**,
+has no56 metadata or publication approval. Per-account locks serialize commands,
+login/resume, cleanup and snapshots; global hub schedules IO outside its loop.
+Retired sockets cannot affect newer owners. Repeated Join/ordinary login reuse
+the live entity, disconnect freezes before capture, and queued saves capture
+only under ownership. Level-command saves use a complete snapshot; offline
+trading refunds update only gold and cannot replace resources/equipment.
+
+Initial snapshot corrected full race53548 CLOSED PASS root16.082s/game359.606s/
+database cached. Prior handoff focused handle77475 was missing on revisit and is
+not claimed; fresh74977 CLOSED PASS1.440s. Further focused7298 PASS0.180s after
+adding the actual-handoff test. A wrong-directory gofmt invocation was corrected
+from the worktree root before603cd588 commit; diff check passed.
+
+**57781 CLOSED PASS**, normal0: actual handoff3.32s plus144saved sessions26.86s,
+total30.197s. Fireball costs30 from100mana; two repeated Joins retain70mana and
+active cooldown, replacement login retains70, late old disconnect does not retire
+the new owner, subsequent command works, and final fresh Mongo save retains70.
+Prepared fixture uses zero Wisdom to separate this from elapsed regeneration;
+HP remains within its separately allowed single-point recovery. Gold-only
+credit1277 and exact equipped chest also persist. These are prepared fixtures,
+not earned progression/browser/device evidence. Binary
+`/tmp/eidolon-resource-handoff-proof-YHy9RO/603cd588430269321980d70b01b5fcfbbd6f9c8d`;
+log `/tmp/eidolon-resource-handoff-real-sessions.log`; server evidence dirs
+`/tmp/eidolon-compat-session-{1006656768,2220074175,3716352015,2546734315}`.
+
+**78650 CLOSED PASS** actual same handoff against race-built server5.65s, total
+5.676s. Independent scan of its server log finds no WARNING: DATA RACE, panic,
+fatal error or race summary. Binary
+`/tmp/eidolon-resource-handoff-race-proof-X1Ktwh/603cd588430269321980d70b01b5fcfbbd6f9c8d`;
+log `/tmp/eidolon-resource-handoff-race-sessions.log`; server log
+`/tmp/eidolon-compat-session-2152415797/server.log`. Both explicitly owned Mongo
+containers eidolon-resource-handoff-proof / eidolon-resource-handoff-race-proof
+removed by trap and independently absent. Their disposable volumes were removed;
+no persistent player data involved. Evidence/binaries retained.
+
+**92756 ACTIVE** full `go test -race ./...` on603cd588, log
+`/tmp/eidolon-resource-handoff-full-race.log`; root24.822s and database1.065s PASS,
+game still pending. Freeze candidate source until this exact handle is terminal.
+Remaining work: shutdown admission/drain (WaitGroup alone is insufficient),
+recheck transport closure after credential validation/account-lock acquisition,
+late/delayed-save failure tests, actual token resume/death/dungeon/PvP/browser,
+and compatible rollback. Old55 full-character replacement still discards unknown
+resource snapshots. Do not publish until a tested compatible rollback path is
+defined; no rollback automation or live schema mutation was performed here.
+
+Sole owned browser **66825 remains ACTIVE**, source5959689 frozen in
+`/tmp/eidolon-story-target-input-ATbtXC`; same runID/ports/log as below. Actual
+uninterrupted opening68s/zero deaths, diary118s, Earth Watch now20/40kills with
+zero deaths at1178s; level5/236XP,134/200HP,23/160mana,5occupied bag slots and
+350unsold equipment value. No reconnect or reward/grant shortcut. This is not a
+completed hunt/campaign or pacing approval. Preserve30minute whole-route limit,
+120second target watchdog,40kills and death cap; do not restart for observation
+timeout. No other owned local handles remain active besides92756 and66825.
+
+## Historical checkpoint — September 8, 14:46 UTC
 
 This turn is PROGRESS: all queued48–55 inherit46's verified prepared fixture/rune
 fix, the resource-persistence implementation passes144actual saved sessions,

@@ -1,7 +1,17 @@
 # Resource reconnect defect — required before 1.1 acceptance
 
-Status: confirmed source defect and observed prepared-login resource change;
-not implemented, not assigned a published patch. Preserve .01 passive regen.
+Status: confirmed defect with an unreleased implementation candidate, not yet
+release-ready or assigned a published patch. Preserve .01 passive regen.
+
+Candidate `work/resource-persistence-20260908` at603cd588 implements versioned
+resource restoration and per-account session/save ordering. Actual Mongo/server
+checks pass144 saved sessions, plus ordinary Fireball/two repeated Joins/
+overlapping login/old cleanup/new-owner command/final save. A race-built server
+also passes that handoff route with no race/panic/fatal log findings. This does
+not close the entire acceptance list below: shutdown admission/drain, delayed
+save failures, PvP/instance/browser death recovery and rollback remain open.
+Execution details and exact handles are in the roadmap execution ledger and
+the candidate's `2026-09-08-resource-persistence-implementation.md`.
 
 On release46/45df969, actual fixture reuse had2575HP/1685mana before disconnect.
 The next normal login returned2080HP/1190mana with the SAME2575/1685maxima.
