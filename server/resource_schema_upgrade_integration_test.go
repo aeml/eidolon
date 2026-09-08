@@ -46,6 +46,7 @@ func TestResourceActualSchemaUpgradeRefusalAndRecovery(t *testing.T) {
 	second := item
 	second.ID = "bridge-item-two"
 	legacy := &database.Character{Name: name, Class: "Wizard", Level: 31, XP: 17, Gold: 1234,
+		SelectedBranch: "C", UnlockedSkills: []string{"Fireball", "Arcane Shield"},
 		ProgressionVersion: game.CurrentProgressionVersion, X: -1.25, Z: 200, LastDailyQuest: time.Now().Truncate(time.Millisecond),
 		Stats: database.Stats{Strength: 10, Dexterity: 10, Intelligence: 10}, Inventory: []database.Item{item, second},
 		Equipment: map[string]database.Item{"chest": {ID: "bridge-chest", Name: "Robes", Type: "ARMOR", Slot: "chest", Rarity: "RARE",
@@ -88,20 +89,21 @@ func TestResourceActualSchemaUpgradeRefusalAndRecovery(t *testing.T) {
 	}
 	address, crash := compatStartServerWithCrash(t, binary, uri, 171, true, "-save-journal-dir", dir)
 	connection = resourceOpenCharacter(t, address, name, password)
-	// Zero Wisdom/Vitality isolates persistence from elapsed regen. The prepared
-	// level/build yields300 mana; ten ordinary30-mana casts consume it exactly.
-	cast := func(want int) {
-		resourceSend(t, connection, MsgAbility, AbilityPayload{SkillName: "Fireball"})
+	// Zero Wisdom/Vitality isolates persistence from elapsed regen. Legacy login
+	// preserves its100-mana baseline, not the larger derived capacity. Ordinary
+	// Fireball30 + Fireball30 + Arcane Shield40 consume that baseline exactly.
+	cast := func(skill string, want int) {
+		resourceSend(t, connection, MsgAbility, AbilityPayload{SkillName: skill})
 		var result game.AbilityResult
 		resourceReadMessage(t, connection, MsgAbilityResult, &result)
 		if !result.Accepted || result.Mana != want {
 			t.Fatal("ordinary cast did not consume the expected mana", result, want)
 		}
 	}
-	for remaining := 270; remaining >= 30; remaining -= 30 {
-		cast(remaining)
-		time.Sleep(2050 * time.Millisecond) // Respect the real Fireball cooldown.
-	}
+	cast("Fireball", 70)
+	time.Sleep(2050 * time.Millisecond) // Respect the real Fireball cooldown.
+	cast("Fireball", 40)
+	time.Sleep(550 * time.Millisecond) // Respect the global cooldown before the shield.
 	resourceSend(t, connection, MsgTradingCreate, TradingCreatePayload{SlotIndex: 0, Bid: 100, Buyout: 500, Duration: 24,
 		ExpectedItemID: item.ID, ExpectedStack: 1})
 	var listings []game.Auction
@@ -110,7 +112,7 @@ func TestResourceActualSchemaUpgradeRefusalAndRecovery(t *testing.T) {
 		t.Fatal("first ordinary listing failed")
 	}
 	first := listings[0]
-	cast(0)
+	cast("Arcane Shield", 0)
 	configureFault := func(enabled bool) {
 		faultCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
 		defer cancel()
@@ -177,7 +179,7 @@ func TestResourceActualSchemaUpgradeRefusalAndRecovery(t *testing.T) {
 			t.Fatal("recovery admitted before finishing pending auction")
 		}
 		saved, err := repo.GetCharacter(name, name)
-		if err != nil || saved.Resources.Mana != 0 || saved.Resources.Health != 150 || saved.Gold != 1184 || saved.Level != 31 || saved.XP != 17 ||
+		if err != nil || saved.Resources.Mana != 0 || saved.Resources.Health != 100 || saved.Gold != 1184 || saved.Level != 31 || saved.XP != 17 ||
 			len(saved.Inventory) != 0 || !reflect.DeepEqual(saved.Equipment, legacy.Equipment) ||
 			!reflect.DeepEqual(saved.GoldCreditReceipts, expected.GoldCreditReceipts) || !reflect.DeepEqual(saved.ItemDeliveryReceipts, expected.ItemDeliveryReceipts) {
 			t.Fatal("compatible recovery lost progress, zero mana, escrow or receipts", err)
