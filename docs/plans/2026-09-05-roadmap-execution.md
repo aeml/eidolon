@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 12:51 UTC
+## Current checkpoint — September 8, 13:00 UTC
 
 Previous turn was progress:6e556c4 was verified locally and pushed. This turn
 confirms the actual duel scene bug and implements a production repair in an
@@ -49,15 +49,33 @@ canvas capture selector. Ran npm run prepare:client in this worktree.33 focused
 checks/1.564s plus lint/bash/diff passed; missing-runtime test invokes the real
 shell entrypoint with no external commands available. Runtime remains d011b8a.
 
-**65494 ACTIVE**, sole owned browser route, frozen
-634c20c873a851234fc46dd5616da7ee19f3ff37, run ID pvp-scenes-prepared,
-API18635/Mongo18636/web18637, log `/tmp/eidolon-pvp-scenes-prepared-gameplay.log`.
-Actual four-class admission, rendered arena, basic attacks, practice forfeits
-and departure-position assertions run before approval. Capture inspection remains
-due. Do not edit that worktree until this exact handle is terminal. Candidate47
-in the other worktree remains542870d; the repair is not merged, packaged or
-published yet. Ranked/party/disconnect/physical-phone acceptance and broader
-balance remain open.
+65494 PASS4/1.5m, normal exit0 on clean634c20c: each side entered the rendered
+arena, delivered5 positive one-damage hits with mean interval1.913–1.917s versus
+1.90476s stats, retained mana, lost health, forfeited and returned within1unit
+of the recorded departure, preserving ranked profile/XP/gold. Scan0 and exact
+container absence passed. Both entry/combat captures inspected and archived at
+`/tmp/eidolon-pvp-entry-evidence-bG4RCB/`. They include UI because element
+screenshots clip rather than isolate DOM layers; no claim they exclude labels.
+
+Inspection prompted a single-floor cobblestone material using existing procedural
+Lanternhold paving. e9b1b2b also adds practice-duel notes to47 without claiming
+ranked/party sign-off;243 focused/version checks/2.951s plus lint/diff passed.
+60074 reports4PASS/1.7m on clean e9b1b2b (23.4/24.1/24.8/26.6s), same assertions,
+scan0 and cleanup. However its tool handle returned143 after the complete success
+log, not0. Retain the wrapper anomaly. Paved entry/combat captures inspected and
+archived at `/tmp/eidolon-pvp-paving-evidence-jHAITJ/`. Existing oversized combat
+labels remain a visual follow-up; this is not final visual/phone sign-off.
+
+89458566d883566abc2c55444055c4cc78b33e6f retains the same four-class duel function
+in the full predeploy route.68622 PASS236 tests/2.488s plus lint/bash/diff.
+**90204 ACTIVE**, sole owned browser route, frozen8945856 in the PvP worktree,
+run ID pvp-scenes-final, API18635/Mongo18636/web18637, log
+`/tmp/eidolon-pvp-scenes-final-gameplay.log`. This wrapper explicitly prints
+QA_SCRIPT_EXIT before returning it. Poll this exact handle and freeze source
+until terminal. Candidate47 in the other worktree remains542870d; merge after
+clean closure, then retain full versioned publication gates behind46. The repair
+is not published. Ranked/party/disconnect/physical-phone acceptance and broader
+balance remain open. CI34226360903 remains freshly active in predeploy gameplay.
 
 ## Historical checkpoint — September 8, 12:31 UTC
 
