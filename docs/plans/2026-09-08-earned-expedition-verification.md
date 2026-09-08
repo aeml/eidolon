@@ -210,3 +210,17 @@ Tests prove default reconnects, skipped mid-route logins, mandatory final login,
 resource logging without credentials, and rejection of mixed route flags.
 The uninterrupted browser run and corrected full client suite remain required.
 This only separates two kinds of evidence; it does not make the hunt balanced.
+
+The a26f7d1 full client run43054 passed226 suites/3361 tests/160.389s.
+Uninterrupted browser2755 failed after37.9s because the opening conversation
+remained open and blocked the next ground click. Its opening checkpoint retained
+125/125HP and11/115mana without reconnecting; the opening took34s with no death.
+This is a navigation failure, not a completed uninterrupted pacing measurement.
+Log `/tmp/eidolon-earned-watch-continuous.log`; artifact scan and owned cleanup
+passed. The old test handle30895 is unavailable, so no result is inferred from it.
+
+The route now closes the conversation with its ordinary Close button before the
+checkpoint and requires the panel to be hidden. No resources, counts, deadlines
+or permitted deaths changed. Fresh focused rerun83836 passed all10 checkpoint
+tests and route lint. A new uninterrupted browser run is required to verify the
+navigation correction and obtain an actual uninterrupted Watch result.

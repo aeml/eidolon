@@ -190,6 +190,8 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     expect(afterReward.xp - beforeReward.xp + (afterReward.level > beforeReward.level ? beforeReward.next : 0)).toBe(100);
     await page.locator('#quest-window').getByRole('button', { name: 'Continue conversation', exact: true }).click();
     expect((await readChronicleChapter(page, 'chronicle_earth_keepers_house')).accepted).toBe(false);
+    await page.locator('#btn-close-quest').click();
+    await expect(page.locator('#quest-window')).toBeHidden();
     const earnedLevel = (await readPlayerState(page)).level;
     await earnedCheckpoint(page, credentials, { label: 'opening' });
     expect((await readPlayerState(page)).level).toBe(earnedLevel);
