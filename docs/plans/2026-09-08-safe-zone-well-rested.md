@@ -18,6 +18,14 @@ rendered checks pass; screenshot inspection also corrected timer label wrapping.
 Detailed contract/evidence live in that branch's
 `docs/plans/2026-09-08-well-rested-implementation.md`.
 
+Additional23:52 checkpoint, development commit97977a9: the existing144-session
+matrix passes with exact requested town recovery across three fresh processes;
+new actual token-resume/live-handoff and north-gate movement/expiry/return tests
+pass. No disabled town healing or fake movement/warp commands. All tests used
+owned loopback Mongo and the exact d650c72 race binary; projects removed after
+clean normal drains. Other older resource workflow assumptions and integrated
+browser/earned-play gates are still open.
+
 This is not a versioned/staged release. It follows staged57, requires schema9,
 and must not publish inherited57 metadata. Existing town-based resource tests,
 normal boundary travel, reconnect variations, offline parity decision and

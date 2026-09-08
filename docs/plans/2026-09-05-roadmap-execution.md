@@ -5,7 +5,40 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 23:43 UTC
+## Current checkpoint — September 8, 23:52 UTC
+
+PROGRESS this continuation: Well Rested test/integration commit
+**97977a9845aaf75491b5b44fffb532b2ac8ec243**, clean development tree
+`/tmp/eidolon-well-rested-ZL0PZY`. No production feature changes or release push
+this turn. Existing144-session resource matrix now retains town placement and
+uses exact persisted rest-time delta/independent known maxima to expect only
+requested recovery; rejects offline/pre-login credit, corpse accrual, altered
+equipment/gold/level or permanent boosted base stats. **50838 PASS150.264s**, all
+four classes/three levels/three fresh processes. New actual token resume/live
+handoff **27724 PASS7.468s**: disconnected interval gives no credit, bars match
+online recovery, replacing a live socket neither rewinds nor doubles the bank.
+New actual north-gate sequenced movement **54493 PASS9.298s**: inclusive edge,
+outside countdown/no town healing, living expiry, return/unstacked reactivation.
+These are real server protocol tests with prepared starting saves, not browser
+pointer/joystick or earned combat acceptance. They used exact d650c72 race binary
+already documented below; only tests/docs changed.
+
+All5 child logs independently clean with normal drains:854628412,3602368113,
+2500519429(matrix),4181622292(resume),1447624681(boundary). Owned loopback Mongo
+projects2346/2350/2353 and volumes removed, independently checked absent. Logs
+`/tmp/eidolon-rest-resource-matrix.log`, `/tmp/eidolon-rest-resume.log`,
+`/tmp/eidolon-rest-boundary.log`. All local check handles closed.
+
+50 CI34290705218 now has Go/Jest/ALL3 browser shards PASS and **predeploy character
+QA ACTIVE**. Browser1 was completing evidence upload, not a failed/stopped test.
+Do not restart it or push51 before the whole50/liveQA/public identity gate passes.
+Public remains verified49/0c6d0cc with healthy DB. Older resource cast/Recall/
+Respawn, shutdown, journal/auction and schema-upgrade tests still need adaptation;
+browser-integrated boundary/reconnect/scene presentation, offline parity decision
+and earned rested/unrested balance also remain open. Well Rested is NOT staged
+or live; full1.1–1.10 roadmap goal remains active and incomplete.
+
+### Earlier September8 checkpoint context
 
 PROGRESS: **49/0c6d0cc is fully verified live**. CI34284099182 completed SUCCESS,
 including predeploy full gameplay, deployment and final live four-class/remote
