@@ -46,6 +46,10 @@ func TestProgressionActualLoginRollback(t *testing.T) {
 		t.Fatal(err)
 	}
 	password := hex.EncodeToString(secret)
+	runID := make([]byte, 8)
+	if _, err := rand.Read(runID); err != nil {
+		t.Fatal(err)
+	}
 	type fixture struct {
 		name  string
 		saved *database.Character
@@ -59,7 +63,7 @@ func TestProgressionActualLoginRollback(t *testing.T) {
 			{100, compatRequirement(1, 100), 0},
 			{99, compatRequirement(1, 99) + 321, 1},
 		} {
-			name := fmt.Sprintf("compat-%s-%d-%d", password[:10], classIndex, caseIndex)
+			name := fmt.Sprintf("compat-%s-%d-%d", hex.EncodeToString(runID), classIndex, caseIndex)
 			if err := db.CreateUser(name, name+"@example.invalid", password); err != nil {
 				t.Fatal(err)
 			}
@@ -184,7 +188,12 @@ func compatStartServer(t *testing.T, binary, uri string, phase int) (string, fun
 	}
 	address := listener.Addr().String()
 	listener.Close()
-	logFile, err := os.Create(filepath.Join(t.TempDir(), "server.log"))
+	evidence, err := os.MkdirTemp("", "eidolon-compat-session-")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("COMPAT phase=%d owned_server_evidence=%s", phase, evidence)
+	logFile, err := os.Create(filepath.Join(evidence, "server.log"))
 	if err != nil {
 		t.Fatal(err)
 	}
