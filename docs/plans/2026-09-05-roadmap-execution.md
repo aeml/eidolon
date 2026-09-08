@@ -5,7 +5,30 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 01:24 UTC
+## Current checkpoint — September 8, 01:30 UTC
+
+Air detour **32730 PASS / one / 2.5m** on clean ab95837: both quests, all four
+records read in both orientations, actual manual retrospective replies/rewards,
+saved masks 1/7 and full journal rereading. Six targets engaged at the horizon,
+not an audited kill count. Both horizon images inspected; all eight preserved
+at `/tmp/eidolon-phone-air-earned-NBRO3Y/`. Scan/cleanup pass; 32730 is closed.
+Each realm now has a passing two-chapter touch route on its recorded source.
+Prepared-veteran success does not prove fresh leveling, physical phones or raids.
+
+The opening runtime and exact earned-receipt test cherry-pick cleanly into the
+expanded branch as **50b7724 / 3f2cd1d**. Clean **3bf6a50** records integration.
+Generated content/lint/diff pass. Combined full client **63890**, full server
+race **37061**, and actual fresh Earth opening/diary/collection/evidence/handoff
+browser **66320** are active; logs
+`/tmp/eidolon-investigations-opening-combined-{client,server,earned}.log`.
+**66320 is the sole owned browser; freeze the entire investigation worktree**
+until all three checks are terminal. Other owned handles are closed. Root retains
+the 15-chapter/local-50 runtime; no 51 package or expansion publication yet.
+Corrected 43 **ed5b4e4 / CI 34175827810** still awaits its complete deployment/
+live gate; next publisher remains **44/8694c19 with-seraph-clock** after all
+jobs and fresh exact identity succeed. Full balance and roadmap remain open.
+
+## Historical checkpoint — September 8, 01:24 UTC
 
 Previous turn was progress: release 43 publication, Water/Fire phone proof and
 fresh story handoff corrections. This turn repairs 43's failed browser gate,

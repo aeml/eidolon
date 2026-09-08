@@ -42,9 +42,11 @@ The latest isolated phone follow-up verifies readable stacked reward rows and
 saved diary controls, including native scrolling in either direction after
 rotation. After correcting fresh diary/collection/investigation dialogue handoffs,
 combined client checks pass **219 suites / 3,299 tests**, and five layout/real-touch
-browser checks pass. Earned Earth, Water and Fire touch routes pass, including
-Fire's actual anchor death before ember credit. Air's first attempt dies while
-traveling; a retry using normal defensive combat between waypoints remains open.
+browser checks pass. Earned Earth, Water, Fire and Air touch routes pass, including
+Fire's actual anchor death before ember credit. Air needs an ordinary walking
+detour around the solid Bastion entrance; the corrected route passes after the
+recorded failures. The smaller opening payout is now integrated into the isolated
+expansion, with combined full suites and a fresh Earth route running.
 These UI checks neither validate the XP economy nor make
 the expansion live. New chapters redistribute their realm's existing reward
 budget; they do not add eight full-size payouts. Selected purposeful combat
