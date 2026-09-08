@@ -28,11 +28,26 @@ Isolated earned-story candidate is clean0bbc945 in
 of1.905s at starting Dexterity instead of4.167s, with the existing1s floor at
 200Dexterity. Damage per hit, enemies, ability costs and0.01 regeneration are
 unchanged. This is an experiment, not release approval. Full client result is
-230suites/3397tests PASS/195.519s. Full server race PID1266996 is still confirmed
-live; its game-package result is not yet available. Do not restart or edit the
-candidate while that process runs. Logs are
+230suites/3397tests PASS/195.519s. Full server race PID1266996 has now finished:
+all packages pass, root16.946s/game368.374s. The PID is independently absent.
+Logs are
 `/tmp/eidolon-basic-cadence-{client,server}.log`. Earned uninterrupted gameplay,
 all-class pacing and wider combat-balance gates remain open.
+
+08:41 follow-up: **66259 ACTIVE, only owned browser**, frozen0bbc945, route
+fresh-story-uninterrupted, runID earned-basic-cadence, API18515/Mongo18516/web18517.
+Log `/tmp/eidolon-earned-basic-cadence-gameplay.log`. Opening completed40s with
+zero deaths/retreats; diary completed95s. No checkpoint reconnect; actual mana
+was11/115 after opening and17/130 after diary. That is useful low-resource
+evidence, not an isolated causal comparison of attack speed against random spawns.
+Watch currently5/40 after two normal respawns. First death had seven nearby
+Skeletons; second had six. Normal earned-item equipping succeeded after the second
+death (maximum HP150→160, mana130→140 without filling the added capacity).
+No hunt-clear or first-hour approval yet. Poll66259, preserving its source and
+unchanged death bound until terminal. Source inspection finds generic enemy
+pursuit gated by distance from the player but no spawn-distance leash while a
+target stays in range. Review encounter separation/pursuit next if this run fails;
+do not assume quicker attacks alone solve the observed crowd pressure.
 
 ## Historical checkpoint — September 8, 08:17 UTC
 
