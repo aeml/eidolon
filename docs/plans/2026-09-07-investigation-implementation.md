@@ -48,6 +48,18 @@ pass **3.144s**. All these handles are closed; the expanded graph backend passes
 
 ### World integration checkpoint
 
+Corrected Water touch **86161 PASS / one / 2.3m** on clean **a8f1e91**:
+both chapters, all four actual discoveries read in portrait and landscape,
+manual Ilyra retrospective conversations/rewards, reconnect masks 1/7 and
+full saved journal rereading. Four targets are engaged at the moving pool;
+this is not a audited kill count or earned leveling proof. Bell-reading images
+in both orientations are inspected; all eight images are preserved at
+`/tmp/eidolon-phone-water-earned-sMAYIC/`. Log
+`/tmp/eidolon-investigations-phone-water-readable.log`. Credential scan finds
+zero sanitizations and disposable cleanup succeeds. This closes that route's
+repeat, not the original failure's precise cause; Fire/Air touch and the
+fresh-campaign/pacing/physical-device/release gates remain open.
+
 September 8 phone reading follow-up: Water **72001 FAIL / 2.8m** earns all four
 discoveries and reads the bell record in portrait, then fails its landscape
 ending check. The bell route engages 11 actual targets; this is not an audited
