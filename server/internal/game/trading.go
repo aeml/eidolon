@@ -250,6 +250,9 @@ func (ts *TradingSystem) fromDBItem(i database.Item) Item {
 }
 
 func (ts *TradingSystem) CreateAuction(seller *Entity, item Item, bid, buyout, duration int) (*Auction, error) {
+	if ts.db != nil {
+		return nil, fmt.Errorf("persistent listings require a journaled account operation")
+	}
 	ts.mu.Lock()
 	defer ts.mu.Unlock()
 

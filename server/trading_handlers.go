@@ -62,6 +62,10 @@ func handleMsgTradingCreate(c *Client, msg Message) {
 	if !ok {
 		return
 	}
+	if db != nil {
+		handleDurableTradingCreate(c, player, payload)
+		return
+	}
 
 	player.Mu.Lock()
 	if payload.SlotIndex < 0 || payload.SlotIndex >= len(player.Inventory) {

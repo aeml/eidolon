@@ -14,6 +14,14 @@ func completePendingAuctionBidLocked(op database.AuctionBidOperation) error {
 	if !op.Valid() {
 		return errors.New("invalid pending auction bid")
 	}
+	// Listing escrow removes an existing item. Save the current full bag before
+	// recording the decision, so offline recovery sees the exact earned item
+	// (including any legacy normalization already performed on login).
+	if op.Kind == database.AuctionOperationListing {
+		if err := retryPendingCharacterSaveLocked(op.CharacterName); err != nil {
+			return err
+		}
+	}
 	if err := world.Trading.EnsureBidDecision(op); err != nil {
 		return err
 	}
@@ -21,13 +29,13 @@ func completePendingAuctionBidLocked(op database.AuctionBidOperation) error {
 	if op.Kind == database.AuctionOperationSellerPayout {
 		err = deliverAuctionRefundLocked(database.AuctionRefund{ID: "seller-payout:" + op.ID,
 			PlayerID: op.PlayerID, CharacterName: op.CharacterName, Amount: op.Amount})
-	} else if op.Kind == database.AuctionOperationItemClaim || op.Kind == database.AuctionOperationBuyout {
+	} else if op.Kind == database.AuctionOperationItemClaim || op.Kind == database.AuctionOperationBuyout || op.Kind == database.AuctionOperationListing {
 		err = deliverAuctionItemLocked(op)
 	} else {
 		err = debitAuctionBidLocked(op)
 	}
 	if err != nil {
-		if errors.Is(err, database.ErrInsufficientGold) || errors.Is(err, game.ErrAuctionStorageFull) {
+		if errors.Is(err, database.ErrInsufficientGold) || errors.Is(err, game.ErrAuctionStorageFull) || errors.Is(err, game.ErrAuctionListingItemUnavailable) {
 			if abortErr := world.Trading.AbortUnfundedAuctionBid(op); abortErr != nil {
 				return abortErr
 			}
@@ -75,7 +83,7 @@ func recoverAccountAuctionBidsLocked(username string) error {
 		return nil
 	}
 	for _, op := range world.Trading.PendingBidOperations("player-" + username) {
-		if err := completePendingAuctionBidLocked(op); err != nil && !errors.Is(err, database.ErrInsufficientGold) && !errors.Is(err, game.ErrAuctionStorageFull) {
+		if err := completePendingAuctionBidLocked(op); err != nil && !errors.Is(err, database.ErrInsufficientGold) && !errors.Is(err, game.ErrAuctionStorageFull) && !errors.Is(err, game.ErrAuctionListingItemUnavailable) {
 			return err
 		}
 	}

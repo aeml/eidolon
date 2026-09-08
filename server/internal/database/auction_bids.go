@@ -14,6 +14,10 @@ import (
 // One durable active decision per auction. The unique auction index reserves
 // the auction independently of an ambiguous insert reply; retry the SAME ID.
 type AuctionBidOperation struct {
+	ListingBid         int       `bson:"listing_bid,omitempty"`
+	ListingBuyout      int       `bson:"listing_buyout,omitempty"`
+	ListingHours       int       `bson:"listing_hours,omitempty"`
+	ListingStart       time.Time `bson:"listing_start,omitempty"`
 	ItemPayload        string    `bson:"item_payload,omitempty"`
 	ClaimStatus        string    `bson:"claim_status,omitempty"`
 	Kind               string    `bson:"kind,omitempty"`
@@ -33,6 +37,9 @@ type AuctionBidOperation struct {
 const AuctionOperationSellerPayout = "seller_payout"
 const AuctionOperationItemClaim = "item_claim"
 const AuctionOperationBuyout = "buyout"
+const AuctionOperationListing = "listing"
+
+func AuctionListingDeposit(buyout int) int { return max(1, buyout/20) }
 
 func ValidAuctionItemPayload(payload string) bool {
 	if len(payload) == 0 || len(payload) > 65536 {
@@ -52,6 +59,9 @@ func (op AuctionBidOperation) Valid() bool {
 	if !base {
 		return false
 	}
+	if op.Kind != AuctionOperationListing && (op.ListingBid != 0 || op.ListingBuyout != 0 || op.ListingHours != 0 || !op.ListingStart.IsZero()) {
+		return false
+	}
 	switch op.Kind {
 	case "": // Original durable bid records omit the kind field.
 		return op.Amount > 0 && op.ItemPayload == "" && op.ClaimStatus == "" && op.Fee == 0 && (op.PreviousBidderID == "" || op.PreviousBidderName != "" && op.RefundID != "")
@@ -63,6 +73,11 @@ func (op AuctionBidOperation) Valid() bool {
 	case AuctionOperationBuyout:
 		return op.Amount > 0 && op.Fee == 0 && op.ClaimStatus == "" && ValidAuctionItemPayload(op.ItemPayload) &&
 			(op.PreviousBidderID == "" || op.PreviousBidderName != "" && op.RefundID != "")
+	case AuctionOperationListing:
+		return op.Fee == 0 && op.ClaimStatus == "" && op.PreviousBid == 0 && op.PreviousBidderID == "" && op.PreviousBidderName == "" && op.RefundID == "" &&
+			op.ListingBid > 0 && op.ListingBuyout >= op.ListingBid && op.ListingBuyout <= 1_000_000_000 && op.ListingHours >= 1 && op.ListingHours <= 168 &&
+			!op.ListingStart.IsZero() && op.EndTime.Equal(op.ListingStart.Add(time.Duration(op.ListingHours)*time.Hour)) &&
+			op.Amount == AuctionListingDeposit(op.ListingBuyout) && ValidAuctionItemPayload(op.ItemPayload)
 	default:
 		return false
 	}
@@ -113,6 +128,7 @@ func (db *DB) EnsureAuctionBidOperation(op AuctionBidOperation) error {
 	}
 	// Compare immutable intent, with BSON's millisecond time precision.
 	existing.EndTime, op.EndTime = existing.EndTime.UTC().Truncate(time.Millisecond), op.EndTime.UTC().Truncate(time.Millisecond)
+	existing.ListingStart, op.ListingStart = existing.ListingStart.UTC().Truncate(time.Millisecond), op.ListingStart.UTC().Truncate(time.Millisecond)
 	if existing != op {
 		return errors.New("auction is reserved by a different bid operation")
 	}
@@ -132,6 +148,9 @@ func (db *DB) GetAuction(id string) (*Auction, error) {
 func (db *DB) CommitAuctionBidOperation(op AuctionBidOperation) (*Auction, error) {
 	if !op.Valid() {
 		return nil, errors.New("invalid auction bid operation")
+	}
+	if op.Kind == AuctionOperationListing {
+		return db.commitAuctionListing(op)
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

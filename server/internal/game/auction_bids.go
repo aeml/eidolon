@@ -82,7 +82,7 @@ func (ts *TradingSystem) loadBidOperations() {
 		return
 	}
 	for _, op := range ops {
-		if ts.Auctions[op.AuctionID] == nil {
+		if ts.Auctions[op.AuctionID] == nil && op.Kind != database.AuctionOperationListing {
 			ts.loadError = errors.New("pending bid references a missing auction")
 			return
 		}
@@ -187,6 +187,12 @@ func (ts *TradingSystem) CompleteAuctionBid(op database.AuctionBidOperation) err
 	var saved *Auction
 	if ts.db != nil {
 		value, err := ts.db.CommitAuctionBidOperation(op)
+		if err != nil {
+			return err
+		}
+		saved = ts.fromDBAuction(value)
+	} else if op.Kind == database.AuctionOperationListing {
+		value, err := database.AuctionFromListingOperation(op)
 		if err != nil {
 			return err
 		}

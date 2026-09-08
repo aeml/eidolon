@@ -18,6 +18,8 @@ func deliverAuctionItemLocked(op database.AuctionBidOperation) error {
 	var err error
 	if op.Kind == database.AuctionOperationBuyout {
 		live, err = world.ApplyDurablePlayerAuctionPurchase(op.PlayerID, op.ID, op.ItemPayload, op.Amount)
+	} else if op.Kind == database.AuctionOperationListing {
+		live, err = world.ApplyDurablePlayerAuctionListing(op.PlayerID, op.ID, op.ItemPayload, op.Amount)
 	} else {
 		live, err = world.ApplyDurablePlayerItemDelivery(op.PlayerID, op.ID, op.ItemPayload)
 	}
@@ -47,6 +49,8 @@ func deliverAuctionItemLocked(op database.AuctionBidOperation) error {
 	}
 	if op.Kind == database.AuctionOperationBuyout {
 		err = entity.ApplyAuctionPurchase(op.ID, op.ItemPayload, op.Amount)
+	} else if op.Kind == database.AuctionOperationListing {
+		err = entity.ApplyAuctionListing(op.ID, op.ItemPayload, op.Amount)
 	} else {
 		err = entity.ApplyAuctionItemDelivery(op.ID, op.ItemPayload)
 	}
