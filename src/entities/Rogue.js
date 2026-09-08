@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { restoreActorStealthAppearance } from './ActorStealthAppearance.js';
 import { Actor } from './Actor.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
@@ -529,13 +530,6 @@ export class Rogue extends Actor {
         this.speedBoostFactor = 0;
         this.traps.forEach((trap) => releaseProceduralProjectileVisual(trap.mesh));
         this.traps.length = 0;
-        this.mesh?.traverse?.((child) => {
-            if (!child.isMesh || !child.material) return;
-            const materials = Array.isArray(child.material) ? child.material : [child.material];
-            materials.forEach((material) => {
-                material.opacity = 1;
-                material.transparent = false;
-            });
-        });
+        restoreActorStealthAppearance(this);
     }
 }
