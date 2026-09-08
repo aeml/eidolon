@@ -35,12 +35,18 @@ test('ordinary dungeon death requires respawn and preserves the unfinished run o
             };
         });
         const route = buildDungeonTraversalRoutes(layout)[0];
+        console.log(`[dungeon-recovery] approach route ${JSON.stringify(route)}`);
         const walkDeadline = Date.now() + 90_000;
+        let nextWalkReport = 0;
         approach: for (const destination of route) {
             while ((await readPlayerState(page)).state !== 'DEAD') {
                 if (await page.evaluate(() => window.__dungeonRecoveryHits > 0)) break approach;
                 const player = await readPlayerState(page);
                 const distance = Math.hypot(destination.x - player.x, destination.z - player.z);
+                if (Date.now() >= nextWalkReport) {
+                    console.log(`[dungeon-recovery] approach ${JSON.stringify({ destination, player, distance })}`);
+                    nextWalkReport = Date.now() + 5_000;
+                }
                 if (distance < 3) break;
                 if (Date.now() > walkDeadline) throw new Error('Could not reach the first encounter through its normal corridor');
                 const scale = Math.min(1, 12 / distance);
