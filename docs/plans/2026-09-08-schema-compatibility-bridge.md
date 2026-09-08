@@ -2,8 +2,44 @@
 
 Based on canonical queued55/9f92f985e6857edcdb99863b99d823af9196b4af.
 Worktree `/tmp/eidolon-schema-compatibility-bridge-ehsEZY`, branch
-`work/schema-compatibility-bridge-20260908`. Runtimef2238ce506c4961fbd8cc117b706a885ba45dc0f.
-No new release version is assigned yet; metadata remains55.
+`work/schema-compatibility-bridge-20260908`. Schema fence f2238ce, final runtime
+dff080bfe03069d74748ed806cfe746f7b34acdf. Staged Alpha1.0.56, not published.
+Version/package/server/deployment/login metadata and cumulative patch notes agree.
+
+## Current acceptance — September 8, 21:37 UTC
+
+Actual old-to-new crash recovery exposed a send/close race in the bridge's
+world-state broadcasts. dff080b synchronizes all queue producers and shutdown;
+its concurrency regression passes with the race detector. Patch notes include
+the disconnect fix. Full race7903 CLOSED PASS0: root19.664s, other packages
+cached from the earlier full run (game378.604s). Version231 checks and lint pass.
+Full client21761 previously passed237 suites/3379 tests before the queue-only
+runtime/patch-note addition. Updated rendered notes92857 CLOSED PASS0: two
+browser cases6.4s; screenshot inspected with all four56 headings readable.
+
+Resource candidate includes the fence as153fbcb and fixes an actual AI cast-state
+race as288b623. Its full race9898 completed: root18.942/game298.014s, other
+packages passed/cached. Test4321e69 compares preserved legacy HP rather than
+incorrectly assuming full health. The fixture deliberately has legacy HP1/MP100;
+two ordinary Fireballs plus Arcane Shield leave MP0.
+
+Actual complete sequences60645 and48290 BOTH CLOSED PASS0,16.795s/12.545s,
+each against a fresh disposable database. Bridge normal login/save/schema7 →
+resource schema8 → first ordinary listing → second listing's pending escrow
+journal → SIGKILL → bridge startup refusal without any writes → two normal
+resource recoveries. Resources/XP/gold/equipment/receipts stay exact, both listings
+appear once and the first publication deadline is unchanged. Eight child logs
+independently clean: two expected kills, two legacy normal exits with verified
+disconnect saves, four completed resource shutdown drains. Two older-server
+refusals exit1 before admission. Owned Mongo containers and volumes removed and
+independently absent. Logs `/tmp/eidolon-schema-fixed-{actual,repeat}.log`.
+Bridge binary `/tmp/eidolon-schema56-fixed-proof-nt5ouG/dff080bfe03069d74748ed806cfe746f7b34acdf`;
+resource binary `/tmp/eidolon-schema-ai-proof-uuKVhP/288b623acb53c6548a1bcf350b6dd6bccc490d5b`.
+
+Earlier actual attempts5518/84072/81661/40736 failed and are not acceptance:
+incorrect legacy resource assumptions, the real AI race, then the real bridge
+queue race. Both runtime defects and fixture assumptions were corrected, not
+suppressed. Remaining publication and supported-target gates below stay open.
 
 ## Purpose and behavior
 
@@ -39,17 +75,16 @@ Exact owned Mongo `eidolon-schema-bridge-proof-20260908-2103` and volumes remove
 by EXIT cleanup; container independently absent. Log
 `/tmp/eidolon-schema-bridge-actual.log`; binary
 `/tmp/eidolon-schema-bridge-proof-1ZQbf4/f2238ce506c4961fbd8cc117b706a885ba45dc0f`.
-Full race17140 remains ACTIVE, `/tmp/eidolon-schema-bridge-full-race.log`.
+Full race17140 CLOSED PASS0, root20.033/database1.072/game378.604s,
+`/tmp/eidolon-schema-bridge-full-race.log`.
 
 ## Remaining release gates
 
-1. Close full race verification, assign the next ordered patch after55, update
-   all version/login/patch-note metadata and verify the normal release checks.
+1. Retain all normal ordered release CI gates; local rendered notes are verified.
 2. Deploy and independently verify the bridge before publishing the resource/
    auction persistence candidate. Do not skip intervening49–55 release gates.
-3. Carry this fence into the schema8 resource candidate. Exercise the actual
-   bridge → resource candidate → refused bridge → compatible recovery sequence
-   against preserved characters, resources, receipts, operations and journal.
+3. Preserve the now-verified schema8 fence and round-trip test when integrating
+   the final ordered release ancestry into the resource candidate.
 4. Document/enforce supported deployment targets so unguarded55 or older are not
    used after the format boundary; preserve backups and require roll-forward
    recovery when the bridge deliberately refuses a future schema.
