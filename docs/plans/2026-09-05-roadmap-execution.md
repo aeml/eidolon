@@ -5,7 +5,57 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 06:00 UTC
+## Current checkpoint — September 8, 06:10 UTC
+
+Previous goal turn was progress (starter encounters implemented and45 pushed).
+This continuation closes both prior checks, fixes an independently confirmed
+death-resource recovery issue, and starts full verification of the combination.
+Full1.1–1.10 scope remains active/incomplete; no status change is justified.
+
+**45 CI34192659636 still active:** client/server jobs passed; anonymous browser
+smoke running at the last read. No new push.45 is not yet verified live;46 must
+wait for all eight45 jobs and a fresh exact independent public identity check.
+Remote master was last confirmed45b4b831a85c96992cd396344610cd1fb9175fd6.
+
+**Prior frozen5398395 checks closed:** full server26246 PASS root18.567s /
+database1.040s /game276.898s. Browser82247 FAILED2.5m at the opening's third
+kill: two kills, one death, then the unchanged120s deadline. It never reached
+Watch. Log `/tmp/eidolon-earned-watch-spaced.log`; scan/owned cleanup passed.
+That opening route disabled screenshots and its old failure diagnostic read
+nonexistent player.health; no valid failure resource snapshot exists for it.
+This is not earned pacing approval despite full server regression passing.
+
+**Dead-only mana recovery implemented:** dedicated clean worktree
+`/tmp/eidolon-death-mana-CtD3Wv`, branch work/death-mana-recovery-20260908,
+commit7440ccd. Source inspection proves normal respawn restored health only,
+leaving the mana depletion observed across prior Watch deaths intact. An
+authoritative DEAD state or zero health now restores both bars; living unstuck
+retains existing health behavior without a mana refill. Recall, rejected
+contexts, PvP gates, cooldowns, training, assets and passive0.01 stay unchanged.
+Offline/predicted respawn matches the dead-only rule. No new potions/rest system
+was added; that optional preference remains unanswered. See its evidence doc.
+
+Focused11998 PASS eight client tests/1.507s and lint; server62828 race PASS
+5.108s; expanded37607 race PASS2.395s adds positive-health/dead-state and PvP
+mana rejection checks. All handles closed. Dedicated source has not been
+merged into root, version-packaged or published; combined full checks pending.
+
+Candidate cherry-pick6371b3c integrates this fix. QA commit
+**653357c9fb35fc2279782880faadc9f26e804e1f** observes actual state/delta mana
+after ordinary death-button clicks in the opening and Watch. It requires a full
+server resource receipt, not only a predicted refill. Opening diagnostics read
+real hp/mana fields. No grants, relaxed deadlines, deaths or counts. Lint97509
+PASS. Current clean candidate `/tmp/eidolon-earned-story-TZuGpp` is frozen:
+
+- **65703 ACTIVE:** full client suite; partial passes are not completion.
+- **31046 ACTIVE:** full server race suite; no terminal result yet.
+
+No owned browser is active. Next: finish these exact handles, address genuine
+failures if any, then run the fresh Watch route on this exact combined source
+without concurrent edits. Do not restart checks just because an observation
+window ends. All broader campaign/economy/device/roadmap gates remain open.
+
+## Historical checkpoint — September 8, 06:00 UTC
 
 Previous goal turn was progress: first-hunt eligibility and regression coverage
 changed. This continuation closes its failed playtest, implements measured
