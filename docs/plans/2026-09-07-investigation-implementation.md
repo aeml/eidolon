@@ -48,6 +48,24 @@ pass **3.144s**. All these handles are closed; the expanded graph backend passes
 
 ### World integration checkpoint
 
+Air travel **57049 FAIL / 57.7s** on b2c353d: actual death at (755.68,187.52),
+one accepted Shield, one Well and two Fireballs; eight nearby Titans. The failed
+portrait is inspected and preserved at `/tmp/eidolon-phone-air-travel-failure-VOLfC0/`;
+log `/tmp/eidolon-investigations-phone-air-travel.log`, scan/cleanup pass. No
+Air discovery was earned. Source inspection then identifies a concrete route
+defect: the straight (500,200) → (900,200) leg crosses the production Bastion
+entrance at (800,200). `WorldGenerator` registers its circular collider from
+`DUNGEON_ENTRANCE_DEFINITIONS`, so this is not an unobstructed walking path.
+
+QA **0296d48** walks north around that footprint through (700,130)/(900,130),
+then returns through the Air realm fence's actual opening. Real-geometry route
+regression **one fails / four pass / 0.441s** before, combined route/defense
+checks **36 / 0.524s PASS** after. The old straight leg remains a negative control.
+Other realm waypoints, actual movement/collisions/enemies and site requirements
+are unchanged. Lint/diff pass. Logs
+`/tmp/eidolon-investigations-air-route-{before,after}.log`. A fresh earned Air
+playthrough remains necessary; geometry alone does not prove survival/playability.
+
 September 8 Air follow-up: first phone **93402 FAIL / 50.1s** dies before the
 first diary during blind outbound travel. **11e345d** adds normal defensive
 combat en route and detailed failure observation. Retry **72801 FAIL / 6.0m**
