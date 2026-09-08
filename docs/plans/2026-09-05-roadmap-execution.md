@@ -5,7 +5,39 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 00:05 UTC
+## Current checkpoint — September 8, 00:16 UTC
+
+Earth touch **47303 FAIL / 39.8s** reaches both manual quest completions and all
+field-reading steps, then exposes a record detached during saved rereading. The
+journal rebuilt its controls on updates. Runtime **4d1ad74** preserves actual
+valid record nodes; removed evidence/session clearing still removes old nodes.
+Regression before: **two fail / seven pass / 0.661s** (14626 closed). After:
+journal/objective **40 / 0.824s PASS** (65125); actual landscape reading and
+finger-held-across-refresh **33218 PASS / one / 4.5s**; full client **57553 PASS /
+219 suites / 3,286 tests / 87.725s**. Lint/diff pass. Go runtime is unchanged.
+
+Corrected Earth phone **25892 PASS / one / 42.7s** (41.4s test) on clean 4d1ad74:
+two chapters, all four discoveries read in both orientations, actual manual
+retrospective replies/rewards, saved masks 1/7 and complete journal rereading.
+This run engages no nearby hostiles, so it is not a new combat-difficulty proof.
+All eight earned images are preserved in `/tmp/eidolon-phone-earth-earned-Uw4xQ4/`;
+marked stone portrait/landscape and new growth portrait are inspected. Credential
+scan/cleanup pass. It also exposes cramped repeatable-ladder columns/joined enemy
+labels on the max-level phone journal: retain that presentation follow-up.
+
+Clean investigation **c6c569b** records the proof. **72001 is the sole owned
+browser**, phone Water investigations on c6c569b, log
+`/tmp/eidolon-investigations-phone-water.log`. Freeze its entire worktree until
+terminal. All older owned handles are closed, including 47303; no failed run is
+counted as success. Phone Water/Fire/Air and physical phones remain open.
+
+Corrected 42 **bfbbc87 / CI 34171247520** remains predeploy-character-active after
+client/server/browser success. No new deployment/live approval; next publisher
+is still **release/43-with-portal-pointer / f955608**, gated on all corrected-42
+jobs and fresh exact public identity. Root remains local 50/15 chapters; expanded
+23-chapter source is isolated. XP/gold/realm pacing and full roadmap remain open.
+
+## Historical checkpoint — September 8, 00:05 UTC
 
 Corrected 42 **bfbbc87 / CI 34171247520** passes client, server and browser smoke;
 predeploy character QA is active. Next remains explicit 43/f955608 only after all
