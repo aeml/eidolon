@@ -10,8 +10,29 @@ SIGKILLs,32 normal completed drains. Owned Mongo
 eidolon-auction-snapshot-proof-20260908-1930 and volumes removed and exact
 container independently absent. Log `/tmp/eidolon-auction-snapshot-sessions.log`.
 
-Normal-success acceptance is being added in a separate test-only continuation
-worktree so the frozen full-run source stayed unchanged. This candidate remains
+Normal-success acceptance was added in a separate test-only continuation
+worktree so the frozen full-run source stayed unchanged. Actual64864 FAILED
+16.446s on aad0229: immediate payout/saved-resource assertions passed, but its
+later locked-skill probe ran within the production500ms global cooldown. No
+runtime defect or lost mana was observed.2b80416 waits until550ms after the cast
+receipt only before this later probe, retaining immediate collection and its
+durability assertion. Initial wrong-directory format/stage commands did not
+edit/commit anything; corrected before either actual run.30251 compiled the new
+test but skipped its opt-in body; do not count that as session acceptance.
+
+Corrected actual91065 CLOSED PASS0/26.968s, three repetitions on2b80416.
+Ordinary Fireball100→70 immediately followed by collection returns Collected100
+gold only after the full character1334gold/17HP/70mana/one receipt and seller
+claim are in Mongo, with no pending operation. Repeated claims on the same
+connection and after a new process are rejected. Exact gear/inventory/XP and
+the buyer's unclaimed item/escrow remain unchanged. Unlike the crash fixtures,
+this cast is not first saved by disconnecting. All six normal server logs clean
+with completed drains; the three failed-run server logs also drained cleanly.
+Both exact owned Mongo containers (auction-payout-normal-20260908-1936 and1938)
+and volumes removed and independently absent. Logs
+`/tmp/eidolon-auction-payout-{normal,normal-corrected}-sessions.log`.
+Accepted test-only continuation merged into the resource candidate; no runtime
+change since the full-race and44-session8a5dc32 passes. This candidate remains
 unreleased; item delivery/listing recovery and compatible rollback are not done.
 
 ## Detached auction responses and Tripwire fixture — September 8, 19:29 UTC

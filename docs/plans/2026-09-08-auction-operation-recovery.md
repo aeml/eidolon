@@ -115,3 +115,24 @@ and limitations. This does not complete seller item returns or buyouts.
 This is implementation direction, not a completed design proof or replacement
 for the full roadmap. Validate each state transition against the actual code and
 real failure evidence as it is implemented.
+
+### Next implementation cut: exact item delivery
+
+September8 inspection confirms persistent BuyoutAuction saves ItemClaimed before
+debiting/granting the item in memory; CollectAuction finalizes the claim before
+the handler adds the item. Neither path yet includes an item receipt in a full
+character commit. Inventory/stash overflow currently falls back to nonpersistent
+ground loot. These paths are not protected by the accepted seller-gold work.
+
+Implement buyer claims and seller returns with an immutable item payload and
+operation identity, a full-character delivery receipt and atomic inventory/stash
+mutation under the existing world/entity/account ordering. Replay the receipt
+before examining capacity, so a full bag after successful delivery cannot cause
+a second grant or block finalization. If the entire item cannot fit before any
+delivery, keep it collectible and leave bag/stash/claim unchanged, rather than
+partially delivering and dropping an unjournaled remainder. Preserve every stat,
+gem, potency, forge basis, icon and stack quantity. Buyouts must subsequently
+commit the debit and exact item delivery together, before finalizing SOLD/claim
+and previous-bid refund. Listing removal/deposit uses the matching escrow side.
+Extend save/hydration/journal round-trip coverage for any new receipt fields;
+old-writer rollback must be explicitly guarded before publication.
