@@ -5,7 +5,56 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 22:54 UTC
+## Current checkpoint — September 8, 23:39 UTC
+
+PROGRESS: **49/0c6d0cc is fully verified live**. CI34284099182 completed SUCCESS,
+including predeploy full gameplay, deployment and final live four-class/remote
+animation QA. Fresh public client and server both reported exact
+0c6d0cced85f3ebd0391eaac5f105b04e3b40be1/Alpha1.0.49; database ready. Only then
+pushed the clean canonical50 tree `/tmp/eidolon-release50-final49-XhZNjw`,
+**b7b86f51bf7a9ce64a426861846095d3e91aedb4** via normal fast-forward push46451.
+50 CI**34290705218** ACTIVE: Go/Jest/browser2 PASS, browser1/3 still running.
+Do not push51 until the complete50/liveQA/public identity gate passes.51–57
+canonical queue below is unchanged; root master must never be pushed wholesale.
+
+Well Rested now has a local development implementation in
+`/tmp/eidolon-well-rested-ZL0PZY`, branch `work/well-rested-20260908`:
+foundation af7ed63 and elapsed-clock correction d650c72. Authoritative scene
+registry,10% max HP/MP/sec recovery,1:1 rest bank capped7200, paused inside and
+offline, final10% stat bonus and enemy-kill-only25% XP, fractional save/journal
+state/schema9, protobuf replication, readable buff text, and original golden/
+elemental High/Low aura. Aura lifecycle includes expiry/death/respawn and hides
+in stealth; no actor material/hitbox mutations. No release metadata changed and
+this feature is NOT staged/live; it must follow57 under its own future version.
+
+Foundation full Go race76164 PASS(root16.905s/game266.589s), full Jest44598 PASS
+242suites/3415tests121.714s. Focused presentation61PASS and generated wire12PASS.
+Initial actual78308 FAILED43.834s: fixed simulation steps made town recovery
+slower than elapsed time on the loaded/race server. Do not extend its20s
+full-recovery wait. Corrected production path uses a per-actor monotonic elapsed
+clock independently of fixed physics, with fresh admission/disconnect/resume
+baselines. Focused70080 PASS. Corrected exact d650c72 actual61870 **PASS31.984s**:
+four-class recovery, cap/full healing, corpse pause/outside expiry, fractional
+saved bank and unboosted base stats, fresh-process exact bank/death/zero MP.
+Logs2749074430 and101665801 clean with normal drains; failed523788755 likewise
+clean. Both owned Mongo2332 and2337/volumes removed and independently absent.
+Proof binary `/tmp/eidolon-well-rested-clock-proof-q57aue/d650c72b2013434d393a350fb2197be25874ba25`.
+
+Gallery81816 failed startup because new worktree lacked vendor runtime; after
+existing prepare:client, corrected52814 PASS1/7.8s across High/local Low/remote
+statuses, aura screenshot inspected. Phone69181 PASS3/8.0s did not catch ugly
+vertical wrapping; screenshot inspection led to full-width named timer layout.
+Corrected47419 PASS6/15.1s includes existing compact status screens, inspected
+390x844/568x320 images. Current development has final UI/doc edits to commit.
+Final full Go12580 and lint26098 remain active; retain and observe these handles.
+
+Still required for Well Rested: adapt prior exact town-resource fixtures to the
+new intentional recovery, actual safe-zone boundary travel and live reconnect
+variations, offline behavior/parity decision, final rendered/live integration and
+rested/unrested earned progression/balance. Existing future1.1–1.10, physical phone
+and actual group-raid requirements remain open. Full goal is PROGRESS, not complete.
+
+## Previous checkpoint — September 8, 22:54 UTC
 
 PROGRESS: resource persistence now has its own staged **Alpha1.0.57** release,
 versioned login/manifest/deployment metadata, cumulative player notes and an

@@ -1,8 +1,27 @@
 # Safe-zone recovery and Well Rested
 
-Requested September 8, 2026. Status: planned, not implemented or live.
+Requested September 8, 2026. Status: implementation in progress, NOT live.
 Part of the active full-roadmap goal: implement as a coordinated 1.0.x feature
 after urgent blockers, and include it in 1.1 recovery and progression acceptance.
+
+Development branch `work/well-rested-20260908` in
+`/tmp/eidolon-well-rested-ZL0PZY` now implements the server registry, recovery,
+persisted fractional bank, final stat modifier, enemy-kill-only XP multiplier,
+protobuf replication, desktop/phone timer and High/Low golden-elemental aura.
+Initial foundation af7ed63 passed full Go race/Jest, but its first real-process
+test found fixed simulation ticks slowed recovery under load. Corrected d650c72
+uses per-player elapsed monotonic server time, retaining fixed combat/movement
+steps and resetting the clock on disconnect/resume. The corrected actual
+four-class recovery/cap/death/expiry/restart test passed31.984s on owned local
+Mongo; no production data was involved. Hardware Chrome gallery and phone
+rendered checks pass; screenshot inspection also corrected timer label wrapping.
+Detailed contract/evidence live in that branch's
+`docs/plans/2026-09-08-well-rested-implementation.md`.
+
+This is not a versioned/staged release. It follows staged57, requires schema9,
+and must not publish inherited57 metadata. Existing town-based resource tests,
+normal boundary travel, reconnect variations, offline parity decision and
+rested/unrested earned gameplay/balance remain open before its release gate.
 
 ## Requested behavior
 
