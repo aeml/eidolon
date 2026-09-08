@@ -58,7 +58,7 @@ test('Seraph training persists, changes actual smites and lifetime, and cleans u
         });
     }
 
-    async function ready() {
+    async function closeApproachedDungeonMenu() {
         // A moving camera can bring the entrance under the last ground click.
         // Dismiss the resulting real service menu through its visible control
         // before using chat; never force a click through its modal backdrop.
@@ -66,7 +66,26 @@ test('Seraph training persists, changes actual smites and lifetime, and cleans u
         if (await dungeonClose.isVisible()) {
             await dungeonClose.click();
             await expect(page.locator('#dungeon-menu-backdrop')).toBeHidden();
+            return true;
         }
+        return false;
+    }
+
+    async function walk(deltaX, deltaZ, options) {
+        await closeApproachedDungeonMenu();
+        try {
+            await moveByGroundClick(page, deltaX, deltaZ, options);
+        } catch (error) {
+            // Only a planner that issued no input may retry after removing a
+            // confirmed modal. Never suppress an issued movement failure.
+            if (error.name !== 'GroundInputUnavailableError' || !await closeApproachedDungeonMenu()) throw error;
+            await moveByGroundClick(page, deltaX, deltaZ, options);
+        }
+        await closeApproachedDungeonMenu();
+    }
+
+    async function ready() {
+        await closeApproachedDungeonMenu();
         const sequence = await page.evaluate(() => window.game.animationQAReadySequence || 0);
         await page.locator('#chat-tab-chat').click({ timeout: 5_000 });
         await page.locator('#chat-input').click();
@@ -99,7 +118,7 @@ test('Seraph training persists, changes actual smites and lifetime, and cleans u
         const duration = 15*(1+.02*rank);
         // Separate the summoned silhouette from its owner after the birth
         // flash, using normal movement rather than repositioning either actor.
-        await moveByGroundClick(page, 0, -7);
+        await walk(0, -7);
         await expect.poll(() => page.evaluate(id => {
             const game = window.game, summon = game.remotePlayers.get(id);
             return summon ? summon.position.distanceTo(game.player.position) : 100;
@@ -131,7 +150,7 @@ test('Seraph training persists, changes actual smites and lifetime, and cleans u
         for (let step = 0; step < 20; step++) {
             const z = await page.evaluate(() => window.game.player.position.z);
             if (z >= 240) break;
-            await moveByGroundClick(page, 0, 10, { minimumDistance: 5, timeout: 3_000 });
+            await walk(0, 10, { minimumDistance: 5, timeout: 3_000 });
         }
         expect(await page.evaluate(() => window.game.player.position.z),
             'Seraph combat must leave the Verdant entrance facade').toBeGreaterThanOrEqual(240);
@@ -151,7 +170,7 @@ test('Seraph training persists, changes actual smites and lifetime, and cleans u
                 const scale = Math.min(10, Math.hypot(dx, dz))/Math.max(1, Math.hypot(dx, dz));
                 return { x: dx*scale, z: dz*scale };
             });
-            await moveByGroundClick(page, offset.x, offset.z);
+            await walk(offset.x, offset.z);
             target = await projectNearestHostile(page, 'InfernoTitan');
         }
         if (!target) {
@@ -179,7 +198,7 @@ test('Seraph training persists, changes actual smites and lifetime, and cleans u
             const distance = Math.hypot(offset.x, offset.z);
             if (distance < 10) break;
             const scale = Math.min(8, distance-7)/distance;
-            await moveByGroundClick(page, offset.x*scale, offset.z*scale);
+            await walk(offset.x*scale, offset.z*scale);
         }
         const expected = await page.evaluate(rank => {
             const p = window.game.player;
