@@ -709,11 +709,14 @@
                     </ul>
                 </div>
                 <div class="patch-note-entry" data-version="1.0.45">
-                    <h3 class="patch-note-entry__title">Alpha 1.0.45 (room beneath the ward)</h3>
+                    <h3 class="patch-note-entry__title">Alpha 1.0.45 (room to recover)</h3>
                     <ul class="patch-note-entry__list">
+                        <li><strong>Slower passive recovery:</strong> Health and mana regeneration now grant 0.01 points per second for each point of Vitality or Wisdom. The old tooltips advertised 0.1, but the actual formulas used 0.5; both the server and offline game now use the requested 0.01 rate.</li>
+                        <li><strong>Small amounts still count:</strong> The server retains fractional regeneration between ticks, so 10 Vitality or Wisdom restores one point over ten seconds instead of rounding every tick down to zero. Full or dead characters cannot bank unused recovery. Active healing and separately described equipment effects are unchanged.</li>
                         <li><strong>Read an effect, keep your view:</strong> Phone status details now fit short lists instead of stretching a mostly empty window over your character. Empty panels stay small, and a single shield leaves the center of portrait play visible.</li>
                         <li><strong>More effects, not smaller text:</strong> Long buff and debuff lists remain independently scrollable within a bounded panel. Full names and descriptions keep their readable size; effect type and remaining time share a compact row.</li>
                         <li><strong>Controls stay within reach:</strong> Portrait and short landscape retain their thumb-control space, a full-size Close button and permanent chat access. Shield values and timers still follow the server.</li>
+                        <li><strong>Independent overnight checks:</strong> Multiplayer soak checks now use isolated ports, binaries and evidence, and verify their own server before sending load. Other projects' services are left alone; the 100-client and resource-usage checks remain required.</li>
                         <li><strong>Still being refined:</strong> This improves the status panel, not the entire phone interface. Entrance scenery can still obscure combat, and physical-phone ergonomics and performance testing remain open.</li>
                     </ul>
                 </div>
