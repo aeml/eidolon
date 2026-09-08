@@ -72,18 +72,19 @@ func TestAuctionBidActualCrashBoundaries(t *testing.T) {
 				if failpoint {
 					var mode any = "off"
 					command := "insert"
+					namespace := "eidolon.auction_bid_operations"
 					if enabled {
 						mode = "alwaysOn"
 					}
 					if boundary == "final_reply_lost" {
 						command = "update"
-						if enabled {
-							mode = bson.M{"skip": 2}
-						}
+						namespace = "eidolon.auctions"
 					}
+					// Mongo 7 supports namespace filtering. Counting unrelated
+					// updates is not a reliable way to select the final write.
 					if err := admin.Database("admin").RunCommand(ctx, bson.D{
 						{Key: "configureFailPoint", Value: "failCommand"}, {Key: "mode", Value: mode},
-						{Key: "data", Value: bson.M{"failCommands": []string{command}, "writeConcernError": bson.M{"code": 64, "errmsg": "prepared bid acknowledgement failure"}}},
+						{Key: "data", Value: bson.M{"failCommands": []string{command}, "namespace": namespace, "writeConcernError": bson.M{"code": 64, "errmsg": "prepared bid acknowledgement failure"}}},
 					}).Err(); err != nil {
 						t.Fatal(err)
 					}
@@ -145,7 +146,7 @@ func TestAuctionBidActualCrashBoundaries(t *testing.T) {
 			}
 			current, err := repo.GetAuction(auction.ID)
 			if err != nil || before.Gold != wantGold || current.Bid != wantBid {
-				t.Fatal("fault did not reach the intended debit/auction boundary")
+				t.Fatalf("fault missed intended boundary: gold=%d want=%d bid=%d want=%d auctionError=%v", before.Gold, wantGold, current.Bid, wantBid, err)
 			}
 			if wantGold == 1184 && before.GoldCreditReceipts["bid:"+op.ID] != -50 {
 				t.Fatal("committed debit has no receipt")
