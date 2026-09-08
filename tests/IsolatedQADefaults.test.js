@@ -9,6 +9,15 @@ test('the full release gate retains an earned fresh collection and a genuinely f
     expect(route).toContain('expect((await readPlayerState(page)).level).toBe(1)');
 });
 
+test('talent economy retries cannot reuse purchased ranks', () => {
+    const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
+    const probe = readFileSync('tests/e2e/talent-economy-gameplay.spec.js', 'utf8');
+    expect(script).toContain('${QA_USERNAME_BASE}-economy-retry1');
+    expect(script).toContain('EIDOLON_E2E_ECONOMY_RETRY_PROBE=1 run_talent_economy --retries=1');
+    expect(probe).toContain('credentials.username += `-retry${testInfo.retry}`');
+    expect(probe).not.toContain('stats.mana >= window.game.player.stats.maxMana');
+});
+
 test('anonymous CI retains exact cast aiming and covered-loot pointer regressions', () => {
     const commands = JSON.parse(readFileSync('package.json', 'utf8')).scripts;
     expect(commands['test:e2e:anonymous']).toContain('tests/e2e/ground-aim.spec.js');

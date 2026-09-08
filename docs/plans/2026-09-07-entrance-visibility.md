@@ -114,3 +114,14 @@ phone-view checks do not establish physical-phone ergonomics/performance.
 46 is locally verified after inheritance, not pushed/live.45 CI34198772605 must
 pass every job and fresh independent public identity checks first. Preserve
 sequential ancestry when integrating this final46 source into47 and later builds.
+
+### Carry forward the phone talent CI correction
+
+CI34198772605 subsequently failed on the phone talent-economy full-mana wait
+and reused retry character, after the prepared Verdant run passed. Verified45
+correction0ed54b2 is pushed; new CI34203281024 owns the publication gate now.
+Merge55ea35ba3a95e3643d4f591d0924129d42a51a2b carries that test-only correction
+into46. No src/server/index changes versus87ed21c; the above actual entrance
+runtime evidence is unchanged, not rerun. Five focused suites pass260tests/
+2.617s and full lint/diff checks pass (handle21098 terminal0).46 remains queued,
+not published, until every new45 CI/live job and exact public checks pass.
