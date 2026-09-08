@@ -5,7 +5,85 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 13:48 UTC
+## Current checkpoint — September 8, 14:00 UTC
+
+Previous turn was progress:52/53 inherited suites passed. This turn closes the
+long50 earned route, actual52 recovery,53 rendered/town and55 HUD checks, and
+integrates/verifies54/55. Full1.1–1.10 remains active and materially incomplete.
+**All owned local test/build/browser handles are now terminal.**
+
+49406 on50/77c1155 PASS1/14.5m, explicit QA_SCRIPT_EXIT=0, normal0. Opening76s;
+collection/handoff792s,24 observed target deaths/exactly8seeds/0deaths. Combat
+reached8, manual100gold/8000XP left17 with the30 guide correctly locked. Before
+collection143gold/empty bag; after combat586gold/seven gear pieces/320 unsold
+vendor value/12slots. Three Common/three Uncommon/one Rare, no weapon observed.
+Exact item IDs/stats/rarities/values and completed quest survive reconnect. This
+is functional evidence, not pleasant pacing or statistical loot-rate approval;
+repeated retreat/travel remains visible. Scan0/independent cleanup PASS. Ready
+capture inspected/archived `/tmp/eidolon-release50-carried-evidence-RPC8It/`.
+50 clean **2eb7958**, new carried-earned-loot document;51 carries it at
+**86723ddd51c0d797bd40f489d7946197ff86599b** without runtime change.
+
+73905 on52/95abaae PASS1/10.0s (test7.9s), explicit QA_SCRIPT_EXIT=0, normal0.
+Normal cast to70mana, deliberately prepared one-HP fixture, real hostile death,
+ordinary death button gets100HP/100mana. Second cast/living Recall leaves mana
+depleted. Scan0/independent cleanup PASS. Log
+`/tmp/eidolon-release52-final51-gameplay.log`.52 now clean **5a0a2440eb8cb7befb8cbf74a809b15927743fd0**
+with own complete carried-recovery document and50 closure. This is prepared
+functional evidence, not an earned full campaign or phone check.
+
+53's runtime888e4b2 was unchanged by52/50 doc carry at0b8b211.46660 rendered
+PASS6/12.2s, normal0, High/Low desktop1280×720/portrait390×844/landscape844×390.
+22CSS-pixel sprites, crowd overlap suppression, selected name/marker clearances
+and unchanged actors remain asserted. Desktop before/after and both phone after
+captures inspected.37911 actual town PASS3/21.3s (8.1/5.5/5.6s), explicit
+QA_SCRIPT_EXIT=0/normal0. Fresh level1 ordinary mouse/joystick/tap Ilyra dialogue,
+gold marker/readable labels/live frames; all three captures inspected. Scan0 and
+independent cleanup PASS. World captures intentionally hide DOM/account labels;
+they do not approve the complete phone HUD or physical ergonomics. Archive
+`/tmp/eidolon-names53-carried-evidence-bclDwb/{rendered,town}/`, logs
+`/tmp/eidolon-release53-final52-{rendered,world}.log`.53 current clean
+**ebbde1815bb894f058f616aaf801a315a3e772d7**, carried-nameplates closure.
+
+New54 `/tmp/eidolon-release54-final53-oZ3nK4`, release/54-with-final53, merges
+retained8f7f60a and53 atb57bdcf32cfcdb8bd74b061ae0e54cc55ebe164f. Resolve the sole
+Actor import conflict by retaining BOTH damage and cadence helpers; constructor/
+recalculation and dead-only mana recovery preserved.54858 prepare/lint/full client
+PASS236suites/3365tests/148.429s including four actual delayed offline hit callbacks;
+20097 fullGo PASS root3.521s/database0.021s/game85.032s. Both normal0. Shared server
+formula fixture remains; server damage unchanged. Later doc carries/current54
+**b3c348ccb746b7f8065b7ced19a4a5a90c8fe991** contain complete inherited parity and53
+visual closures, no runtime change. Logs `/tmp/eidolon-release54-final53-{client,server}.log`.
+
+New55 `/tmp/eidolon-release55-final54-UVV7t3`, release/55-with-final54, merges
+retained8df510a and54 at a019fc254b546e1681873627597ceabb55f1b4bb. Resolve CI conflict
+by retaining three required anonymous shards and BOTH nameplate/resource rendered
+suites once on shard1; regression asserts both.70624 prepare/lint/full client
+PASS236suites/3375tests/124.165s;40694 fullGo PASS root3.541s/database0.009s/
+game74.927s, normal0. Runtime only changes resource presentation, not stats/regen.
+After doc-only carries,21633 on c62e42f PASS3rendered/7.1s, normal0. Desktop/
+portrait/landscape show0/160 with no fill, later1mana updates in place. All three
+images inspected/archived `/tmp/eidolon-hud55-carried-evidence-VUybnc/rendered/`.
+Component fixture, not actual-cast/full-game/physical-phone evidence. Current55
+clean **6116baacf9ddbdc6fd981e212a4bfd3ab121348c** carries53/54 closures and its own
+inherited-HUD document. Logs `/tmp/eidolon-release55-final54-{client,server,rendered}.log`.
+
+CI34232562890 on46/ed5f64a is freshly active: client/server/Browser Smoke PASS,
+Predeploy Character QA running. No push this turn.47/ea213c6 remains the next
+publishable candidate only AFTER complete46 CI and independently matching public
+release/health/login/runtime identity; then each47–55 has its own release gate.
+Root master is staged52 plus ledger, never the branch to push over this queue.
+
+Next useful local work while CI runs: resume the expanded31-chapter earned story
+in `/tmp/eidolon-earned-story-TZuGpp` (last6c81285), carrying necessary verified
+QA/combat corrections without replacing its authored chapters/counts with the
+old15-chapter catalog. Its uninterrupted route, coordinated XP/reward activation,
+non-daily level gates and full realm/raid story remain unverified. The fake
+ability-intent damage multipliers also remain open; no56 package exists yet.
+Do not mistake the now locally validated47–55 hotfix queue for1.1 completion or
+the rest of the1.1–1.10 roadmap, physical-phone/PvP/group/season scope.
+
+## Historical checkpoint — September 8, 13:48 UTC
 
 Previous turn was progress:51 save-bridge integration and100 actual save cycles
 closed, with52 carried onto that baseline. This turn closes52 full suites and
