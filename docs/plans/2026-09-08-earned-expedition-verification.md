@@ -280,3 +280,12 @@ defensive kills are not counted as quest progress. Dead actors are not clicked
 again; the same watchdog still requires actual server credit. Five pure selection
 checks plus class/checkpoint checks pass24tests/1.346s. Actual gameplay remains
 required after final lint; do not call this a production balance correction.
+
+The fresh Watch also previously left all collected equipment unused until
+level10. Its next test candidate equips level-eligible owned items into empty
+slots through actual inventory clicks at the town handoff and after ordinary
+death recovery. It does not replace occupied gear, buy or grant items, allocate
+stats, Recall for healing or reconnect. Eight selection checks cover owned and
+level-eligible equipment, material exclusion and ring/trinket slots; together
+with target/checkpoint checks,23tests pass1.567s and changed-file lint passes.
+Actual combined earned-equipment/defensive-target gameplay remains unrun.

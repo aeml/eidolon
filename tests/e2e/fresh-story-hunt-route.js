@@ -5,6 +5,7 @@ import { createEarnedClassCombat } from './earned-class-combat.js';
 import { recoverEarnedDeath } from './earned-death-recovery.js';
 import { earnedCheckpoint } from './earned-checkpoint.js';
 import { chooseExpeditionCombatTarget } from '../expeditionCombatTargets.js';
+import { equipEarnedEmptySlots } from './earned-equipment.js';
 import { openDungeonGuide } from './dungeon-guide.js';
 import { prepareEarnedClass } from './fresh-ready-route.js';
 import { moveByGroundClick, projectEntity, readPlayerState,
@@ -82,6 +83,11 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady }
     await page.getByRole('button', { name: 'Accept Quest', exact: true }).click();
     await expect.poll(async () => (await readChronicleChapter(page, id))?.accepted).toBe(true);
     await page.locator('#btn-close-quest').click();
+    if (before.level < 10) {
+        const equipped = await equipEarnedEmptySlots(page);
+        console.log('[story-hunt] earned equipment', JSON.stringify({ equipped,
+            combat: await combatSnapshot(page) }));
+    }
     const previousAutoLoot = await page.evaluate(() => window.game.autoLootEnabled);
     await setAutoLootThroughSettings(page, true);
     const beforeCombat = await createEarnedClassCombat(page);
@@ -93,6 +99,9 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady }
         console.log(`[story-hunt] death ${JSON.stringify({ id, deaths, credit, ...await snapshot(page), combat: await combatSnapshot(page) })}`);
         expect(deaths, 'Expedition exceeded two ordinary respawns').toBeLessThanOrEqual(2);
         await recoverEarnedDeath(page);
+        const equipped = await equipEarnedEmptySlots(page);
+        console.log('[story-hunt] recovery equipment', JSON.stringify({ equipped,
+            combat: await combatSnapshot(page) }));
         expect((await readChronicleChapter(page, id)).count).toBeGreaterThanOrEqual(credit);
     };
     while ((await readChronicleChapter(page, id)).count < hunt.count) {
