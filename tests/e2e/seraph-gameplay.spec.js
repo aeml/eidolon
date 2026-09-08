@@ -122,6 +122,21 @@ test('Seraph training persists, changes actual smites and lifetime, and cleans u
             await moveByGroundClick(page, 0, 20);
             target = await projectNearestHostile(page, 'InfernoTitan');
         }
+        if (!target) {
+            console.log('[seraph-target-search]', JSON.stringify(await page.evaluate(() => {
+                const game = window.game, p = game.player;
+                return { player: { x: p.position.x, z: p.position.z, state: p.state },
+                    activeCount: game.activeEntitiesCache?.length,
+                    nearby: [...game.remotePlayers.values()]
+                        .filter(e => (e.subType || e.constructor?.name) === 'InfernoTitan')
+                        .map(e => ({ id: e.id, x: e.position.x, z: e.position.z,
+                            distance: e.position.distanceTo(p.position), state: e.state,
+                            hp: e.health ?? e.stats?.hp, active: e.isActive,
+                            rendered: Boolean(e.mesh?.parent), cached: game.activeEntitiesCache?.includes(e) }))
+                        .sort((a, b) => a.distance-b.distance).slice(0, 8) };
+            })));
+            await page.screenshot({ path: testInfo.outputPath(`seraph-target-search-${label}.png`) });
+        }
         expect(target).not.toBeNull();
         for (let step = 0; step < 15; step++) {
             const offset = await page.evaluate(id => {
