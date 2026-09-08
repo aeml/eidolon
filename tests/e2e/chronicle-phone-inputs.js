@@ -28,8 +28,11 @@ export async function walkChronicleByTouch(page, context, x, z, timeout = 90_000
             return false;
         }, { timeout, intervals: [100], message: `Reach investigation waypoint ${x},${z} by joystick` }).toBe(true);
     } finally {
-        await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
-        await cdp.detach();
+        try {
+            if (started) await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+        } finally {
+            await cdp.detach();
+        }
     }
     await expect.poll(() => page.evaluate(() => window.game.inputManager.joystickVector.lengthSq())).toBe(0);
 }
