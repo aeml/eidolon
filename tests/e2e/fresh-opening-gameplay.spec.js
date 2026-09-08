@@ -7,6 +7,7 @@ import { createFreshCollectionCombat, observeCollectionCombatReceipts,
 import { earnFreshHunt, earnFreshSkeletonHunt } from './fresh-hunt-route.js';
 import { earnFreshDungeonReadiness, prepareEarnedClass } from './fresh-ready-route.js';
 import { createEarnedClassCombat } from './earned-class-combat.js';
+import { prepareEarlyEarnedCharacter } from './early-earned-preparation.js';
 import { clearEarnedVerdant } from './fresh-dungeon-route.js';
 import { collectBrowserFailures, credentialsFromEnvironment, jumpByGroundClick,
     loginAndEnterWorld, moveByGroundClick, projectEntity, projectNearestHostile,
@@ -59,6 +60,8 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     test.setTimeout(process.env.EIDOLON_E2E_FRESH_HUNT === '1' ? 3_600_000 :
         process.env.EIDOLON_E2E_FRESH_COLLECTION === '1' ? 1_200_000 : 600_000);
     const started = Date.now();
+    const prepareCollection = process.env.EIDOLON_E2E_PREPARED_COLLECTION === '1';
+    if (prepareCollection) expect(process.env.EIDOLON_E2E_FRESH_COLLECTION).toBe('1');
     const failures = collectBrowserFailures(page, baseURL);
     const preparedEarlier = process.env.EIDOLON_E2E_FRESH_EARLY_PREPARATION === '1';
     if (preparedEarlier) {
@@ -166,6 +169,7 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
         try {
             await earnFreshCollectionAndInspectHandoff(page, credentials, {
                 findTarget: () => findSkeletonThroughTravel(page), leaveTown: () => leaveTown(page),
+                prepare: prepareCollection ? () => prepareEarlyEarnedCharacter(page) : undefined,
                 captureReady: () => page.screenshot({ path: testInfo.outputPath('earned-collection-ready.png') })
             });
         } catch (error) {

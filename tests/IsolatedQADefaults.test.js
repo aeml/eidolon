@@ -1,5 +1,15 @@
 import { readFileSync } from 'node:fs';
 
+test('early gear/stat comparison is opt-in and preserves the unprepared release baseline', () => {
+    const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
+    const early = readFileSync('tests/e2e/early-earned-preparation.js', 'utf8');
+    expect(script).toContain('fresh-collection-prepared)\n    EIDOLON_E2E_PREPARED_COLLECTION=1 run_fresh_collection');
+    expect(script).toContain('fresh-collection)\n    run_fresh_collection');
+    expect(early).not.toContain('network.send');
+    expect(early).not.toContain('page.reload');
+    expect(early).toContain("'branch', 'talents', 'unlocked', 'hotbar'");
+});
+
 test('the full release gate retains an earned fresh collection and a genuinely fresh retry', () => {
     const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
     const route = readFileSync('tests/e2e/fresh-opening-gameplay.spec.js', 'utf8');

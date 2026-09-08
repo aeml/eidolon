@@ -70,3 +70,21 @@ it requires level10 specialization and expects an open dungeon menu; opening end
 at5. A level-appropriate preparation path must not grant ranks, bypass a branch
 gate, or discard the unprepared baseline. The observed opening reward remains
 500XP→5 in this15-chapter candidate, unlike the expanded31-chapter worktree.
+
+## Optional level-appropriate preparation comparison
+
+New fresh-collection-prepared route keeps the unprepared/default route intact.
+Before leaving town for collection, shared ordinary inventory clicks fill only
+empty slots from eligible already-owned items and spend up to five earned primary
+stat points. There is no level10 specialization, talent purchase, reload, resource
+grant or extra recovery. The shared inventory helper is extracted from the existing
+advanced preparation route; that route still owns its own specialization gates.
+Early snapshots assert unchanged level/XP/gold/quest state, branch, talents,
+unlocks, hotbar, existing gear and unrelated base stats. Point debit and equipped
+item counts must match actual UI actions. No new equipment is guaranteed.
+
+44045 PASS48tests/four suites/1.610s, full lint, shell syntax and diff checks.
+Coverage retains the advanced budget policy and adds all four primary-stat
+budgets, zero/insufficient points, invalid requests and opt-in route preservation.
+Actual preparation/collection remains required; this QA extension changes no
+production balance, regeneration or rewards.

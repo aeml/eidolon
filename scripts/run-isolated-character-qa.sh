@@ -520,6 +520,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   fresh-collection)
     run_fresh_collection
     ;;
+  fresh-collection-prepared)
+    EIDOLON_E2E_PREPARED_COLLECTION=1 run_fresh_collection
+    ;;
   fresh-hunt)
     EIDOLON_E2E_FRESH_COLLECTION=1 EIDOLON_E2E_FRESH_HUNT=1 npx playwright test tests/e2e/fresh-opening-gameplay.spec.js
     ;;

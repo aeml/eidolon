@@ -14,7 +14,7 @@ const seedsInBag = page => page.evaluate(() => window.game.player.inventory.redu
 
 // Extends the genuinely earned opening. Callbacks use only ordinary canvas
 // movement; no level, item, quest, protection or encounter-waypoint commands.
-export async function earnFreshCollectionAndInspectHandoff(page, credentials, { findTarget, leaveTown, captureReady }) {
+export async function earnFreshCollectionAndInspectHandoff(page, credentials, { findTarget, leaveTown, captureReady, prepare }) {
     const started = Date.now();
     await openIlyra(page);
     await page.getByRole('button', { name: 'Accept Quest', exact: true }).click();
@@ -25,6 +25,11 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
     const previousAutoLoot = await page.evaluate(() => window.game.autoLootEnabled);
     await setAutoLootThroughSettings(page, true);
     await returnToTown(page);
+    if (prepare) {
+        const questBefore = await readChronicleChapter(page, collection);
+        await prepare();
+        expect(await readChronicleChapter(page, collection)).toEqual(questBefore);
+    }
     const beforeCombat = await createFreshCollectionCombat(page);
     await observeCollectionCombatReceipts(page);
     await leaveTown();
