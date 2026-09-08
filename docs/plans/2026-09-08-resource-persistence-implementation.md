@@ -1,5 +1,70 @@
 # Resource persistence implementation candidate — not release-ready
 
+## Bounded refund lifecycle — September 8, 17:39 UTC
+
+Runtime8b68f5610a9b382efd6be82c130523213e66ac2c adds one coalesced automatic
+worker,10s automatic outage backoff, nonblocking overlapping retry admission,
+32-item pass limit and a2s soft budget checked between bounded IO calls. One
+failed delivery/ack stops the pass instead of multiplying database timeouts by
+the backlog. A sorted round-robin cursor advances even on failure so a bad
+recipient cannot permanently starve later accounts. Remaining work stays in
+the durable outbox; periodic10s scheduling is separate from autosave. Explicit
+RetryPendingRefunds attempts one bounded pass; automatic scheduling honors backoff.
+
+Shutdown seals refund admission before joining commands/loops; an already
+in-flight delivery completes, while the rest remain unpaid for recovery.
+World.StopBackground also seals admission before draining the worker group.
+Auction load errors are retained as readiness errors and main refuses startup
+before HTTP admission instead of exposing an empty market. This bounds admitted
+work, NOT arbitrary filesystem/OS stalls inside a single delivery.
+
+Focused35917 PASS root2.378/game1.834; expanded17477 PASS2.332/2.151; final10726
+PASS2.018/1.731, all race-enabled. Logs
+`/tmp/eidolon-refund-lifecycle-{focused,expanded,final-focused}.log`. Includes
+1000-intent first-error/fairness/backoff,100-intent finite healthy passes,
+100 concurrent scheduling calls while one delivery is blocked, shutdown waiting
+for only that in-flight credit, and unreadable-load readiness rejection. The
+existing acknowledgement-failure actual test now waits for the committed gold/
+receipt before stopping; shutdown no longer guarantees merely queued work starts.
+That preserves the intended fault boundary and does not weaken payment assertions.
+
+Actual53929 CLOSED PASS normal0/96.202s on8b68f56, TWO complete repetitions of
+the previous offline/failed-save/failed-ack tests plus two new lifecycle cases.
+100 prepared one-gold intents with a test-only Mongo failCommand blocking updates
+500ms then rejecting them produce exactly ONE failed update before readiness
+(under5s); normal SIGINT preserves100 intents and a1235gold/one-receipt pending
+character journal over1234gold Mongo. With the failpoint disabled, four bounded
+fresh-server passes clear every intent; ordinary login verifies1334gold,100
+receipts and unchanged17HP/100mana. Backlog cases12.18s and17.07s. This is delayed
+rejected Mongo IO, not a physical power loss or an interrupted full auction.
+
+Unreadable-auction cases3.36s/3.29s insert an explicitly malformed refund-array
+fixture into disposable Mongo. Server exits1 with the expected auction-load guard,
+not a race/panic; removing ONLY that fixture allows ordinary startup and the
+independent valid43gold refund to recover once. Two expected startup-rejection
+logs `/tmp/eidolon-expected-startup-failure-{112593399,2412962488}/server.log`.
+All32 normal server processes have strict normal exits and independent clean
+race/panic/fatal/credential scans with shutdown completion; both intentional
+startup failures independently show the expected rejection and clean scans.
+Binary `/tmp/eidolon-refund-lifecycle-proof-fvmjUz/8b68f5610a9b382efd6be82c130523213e66ac2c`;
+log `/tmp/eidolon-refund-lifecycle-sessions.log`. Exact owned Mongo
+`eidolon-refund-lifecycle-proof-20260908-1736` and anonymous volumes removed by
+EXIT trap, independently absent. Failpoints were enabled only on this loopback
+disposable container. No production player data touched.
+
+Full race **4474 freshly ACTIVE** on frozen8b68f56, log
+`/tmp/eidolon-refund-lifecycle-full-race.log`: root14.226s passed; database cached;
+game package still running. No whole-suite pass claimed. Re-poll exact handle;
+do not restart on observation timeout or edit runtime before terminal. No other
+owned local test/browser/Mongo handle remains.48 CI34257070035 remains active:
+client/server and browser2/3 pass; browser1/3 and3/3 running at last check.
+
+Next after that exact suite: [durable auction operation recovery](2026-09-08-auction-operation-recovery.md),
+starting with pending bid decision → receipted debit → atomic auction/refund
+transition and real interruption tests. Buyer items/seller payouts and ambiguous
+auction writes are still not atomic; rollout/rollback compatibility and broader
+instance/device/campaign acceptance remain open. No56 metadata or release approval.
+
 ## Refund implementation and latest acceptance — September 8, 17:26 UTC
 
 Implemented d1e2839661e6b51ed44c6cbb093dbe35cb7c24dd, snapshot race correction
