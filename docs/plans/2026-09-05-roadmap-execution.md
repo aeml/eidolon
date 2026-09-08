@@ -5,7 +5,80 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 14:27 UTC
+## Current checkpoint — September 8, 14:46 UTC
+
+This turn is PROGRESS: all queued48–55 inherit46's verified prepared fixture/rune
+fix, the resource-persistence implementation passes144actual saved sessions,
+and story input follow-ups are tested against concrete failures. Full roadmap
+remains active, no1.1/1.10 completion or new runtime deployment claim.
+
+46 CI34238194283 on6f7e4a7 remains freshly ACTIVE Browser Smoke; client/server
+PASS. No push this turn.47/93ab09c remains next only after complete46 CI/live
+gate and fresh matching public identities. Clean sequential no-conflict QA-only
+merges:48 **5438ada**,49 **f869909**,50 **f64b38d**,51 **51b3b4c**,52 **e2a3d8b**,
+53 **e58e814**,54 **37c9a78**,55 **600991719addf7c00d2263cac798f65a490c28d2**.
+Each adds the same eight QA/evidence files, no runtime/version/three-shard
+changes. All previous branches/evidence retained. Latest inherited280client
+tests PASS3.663s on the new resource branch based on55; each release still needs
+its own exact final deployment/live gate, never publish root's staged52 ledger.
+
+New `/tmp/eidolon-resource-persistence-c6E17J`, work/resource-persistence-20260908,
+clean **6cba1eb5fe30133980ecedcf95e4ea460d744d43** is an UNRELEASED initial slice
+based on55, no56 version assigned. Optional version1 BSON currentHP/mana/death
+snapshot from the same detached entity; restore after complete build/maxima;
+zero != legacy, clamp real capacity reductions, reject invalid/future versions,
+preserve old baseline once for legacy data. Disconnected actors stop passive
+regen/fraction banking; dead state survives disconnect/resume under entity locks.
+Full implementation/remaining work in its `2026-09-08-resource-persistence-implementation.md`.
+
+First scoped87396 PASS. Full server race85670 CLOSED FAIL300.843s game with ONE
+failure: old alive-session fixture had zeroHP and assertedIDLE. Root17.364s and
+database1.039s passed, no race warning. Test fixture now explicitly alive100HP;
+new zero/dead tests retained. Corrected scoped race91755 PASS root1.187s/game
+14.827s. Corrected full race **53548 ACTIVE**, source frozen, log
+`/tmp/eidolon-resource-persistence-server-race-corrected.log`. First full log
+`/tmp/eidolon-resource-persistence-server-race.log`. Inherited client53881 initially
+failed a nonexistent HUD test path; corrected97234 CLOSED PASS280tests/3.663s,
+log `/tmp/eidolon-resource-persistence-inherited-client-corrected.log`.
+
+Actual resource harness **92435 CLOSED PASS144sessions /19.09s**, normal0 on
+6cba1eb: four classes×levels1/30/100×partial/full/zero/dead×three fresh server
+processes; real Mongo, ordinary WebSocketlogin/join/disconnect and verified
+persistence, exact resource snapshots plus unchanged gold/level/equipped gear.
+Source gear modifies maxima. Loopback Mongo18651 owned container
+eidolon-resource-session-proof removed by trap; independent absence confirmed.
+Binary `/tmp/eidolon-resource-session-proof-FVsFu3/6cba1eb5fe30133980ecedcf95e4ea460d744d43`.
+Log `/tmp/eidolon-resource-persistence-sessions.log`; server evidence dirs
+`/tmp/eidolon-compat-session-{1528739573,671743272,4215027106}`.
+This does NOT close immediate/concurrent login, delayed disconnect-save ordering,
+duplicate/repeated Join, PvP/instance/death-browser or rollback. Existing
+asynchronous cleanup can write stale state; repeatedJoin removes live entity
+before DBload; older binaries overwrite the whole record and lose unknown
+resources. Resolve these BEFORE release/version/patch-note assignment. Do not
+block the global hub on Mongo IO while repairing ordering. No browser proof of
+resource persistence yet, and no claim this narrow session matrix closes1.1.
+
+Story42789 on2ae3849 CLOSED FAILED5.3m: opening113s/one death, diary165s, Watch
+2/40 then player150HP while original Skeleton27HP70.44units away.18retreats,
+two crowd jumps/noFireballs; scan0/cleanup verified. Follow-up a4632b5 allows
+healthy ranged basic combat until below80%HP (same verified collection strategy),
+retains other caller defaults/shields, and reacquires distant disengaged targets
+within samewatchdog;68tests/lint PASS. Actual60075 CLOSED FAILED2.5m in the
+opening BEFORE Watch: two kills25s, then85HP/22mana vsSkeleton22HP29.76units away.
+Scan0/owned-container absence confirmed. Logs
+`/tmp/eidolon-story-{retained-target,healthy-combat}-gameplay.log`.
+
+Story current clean **5959689** in `/tmp/eidolon-story-target-input-ATbtXC` also
+uses verified collection-style reacquisition in the opening, sharing its existing
+deadline.72focused tests PASS1.959s/lint/diff (18213closed0). Sole owned browser
+**66825 ACTIVE**, log `/tmp/eidolon-story-opening-reacquire-gameplay.log`, host
+API18635/Mongo18636/web18637, runIDstory-opening-reacquire. Keep source frozen;
+currently building. Still31chapters/curve2/.01regen, all counts/rewards/death
+limits unchanged. Do not replace this with old15chapter release or publish its
+historical experimentalAlpha1.0.50 metadata. No other owned handles remain live
+besides53548 and66825; poll exact handles, never restart for observation timeout.
+
+## Historical checkpoint — September 8, 14:27 UTC
 
 This turn is PROGRESS: corrected/reproduced prepared fixture and rune reuse,
 published the46 QA correction to the normal deployment pipeline, preserved the
