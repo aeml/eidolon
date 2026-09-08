@@ -33,10 +33,11 @@ are closed. See [the correction record](2026-09-08-room-xp-progression.md).
 Isolated room branch `/tmp/eidolon-room-xp-bZib8R` clean **aa0f290**. Root merges
 it as **ce41bef**, expanded investigation as **9d9b894**. Room correction is
 unversioned; expanded23/opening100 remains isolated, no51 package. Combined
-expanded room/Chronicle/investigation/stack checks **28456 active**, log
-`/tmp/eidolon-expanded-room-xp-integration.log`; freeze that entire investigation
-worktree until terminal. No owned browser is running. External CI browser is
-separate and must not be disturbed.
+expanded room/Chronicle/investigation/stack checks **28456 PASS / three race
+repetitions / 45.647s**, log `/tmp/eidolon-expanded-room-xp-integration.log`.
+28456 is closed; all owned handles are terminal and the investigation worktree
+is unfrozen. No owned browser is running. External CI browser is separate and
+must not be disturbed.
 
 Root **cae2770** records the next [coordinated progression candidate](2026-09-08-coordinated-progression-candidate.md):
 bounded quadratic thresholds, content-level encounter budgets, coupled daily/
