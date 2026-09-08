@@ -152,12 +152,18 @@ func TestResourceActualLiveHandoff(t *testing.T) {
 	if cast.Accepted || cast.Mana != 70 {
 		t.Fatalf("old cleanup changed new owner: %+v", cast)
 	}
+	beforeClose, err := repo.GetCharacter(name, name)
+	if err != nil {
+		t.Fatal(err)
+	}
 	closedAt := time.Now()
 	second.Close()
 	deadline := time.Now().Add(10 * time.Second)
+	var lastSaved *database.Character
 	for time.Now().Before(deadline) {
 		saved, err := repo.GetCharacter(name, name)
-		if err == nil && saved.LastLogout.After(closedAt) {
+		lastSaved = saved
+		if err == nil && resourceFreshDisconnect(saved, beforeClose.LastLogout, closedAt) {
 			if saved.Resources == nil || saved.Resources.Mana != 70 || saved.Resources.Dead || saved.Resources.Health < 17 || saved.Resources.Health > 18 || saved.Gold != 1277 || !reflect.DeepEqual(saved.Equipment, fixture.Equipment) {
 				t.Fatalf("handoff saved wrong state: resources=%+v gold=%d", saved.Resources, saved.Gold)
 			}
@@ -166,5 +172,39 @@ func TestResourceActualLiveHandoff(t *testing.T) {
 		}
 		time.Sleep(25 * time.Millisecond)
 	}
-	t.Fatal("replacement owner did not persist fresh disconnect")
+	t.Fatalf("replacement owner did not persist fresh disconnect: prior=%s closed=%s last=%+v", beforeClose.LastLogout.Format(time.RFC3339Nano), closedAt.Format(time.RFC3339Nano), lastSaved)
+}
+
+// BSON DateTime stores milliseconds. A save immediately after socket closure
+// can therefore round down before the nanosecond local timestamp. Require a
+// strictly newer persisted save AND the closure time at storage precision.
+func resourceFreshDisconnect(saved *database.Character, previous, closedAt time.Time) bool {
+	return saved != nil && saved.LastLogout.After(previous) &&
+		!saved.LastLogout.Before(closedAt.Truncate(time.Millisecond))
+}
+
+func TestResourceFreshDisconnectUsesBSONPrecisionWithoutAcceptingOldSave(t *testing.T) {
+	closedAt := time.Unix(100, 123456789)
+	previous := closedAt.Add(-time.Second).Truncate(time.Millisecond)
+	for _, tc := range []struct {
+		name         string
+		saved, prior time.Time
+		want         bool
+	}{
+		{"same storage millisecond", closedAt.Truncate(time.Millisecond), previous, true},
+		{"later save", closedAt.Add(time.Millisecond).Truncate(time.Millisecond), previous, true},
+		{"earlier millisecond", closedAt.Truncate(time.Millisecond).Add(-time.Millisecond), previous, false},
+		{"unchanged previous save", previous, previous, false},
+		{"unchanged in closure millisecond", closedAt.Truncate(time.Millisecond), closedAt.Truncate(time.Millisecond), false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			actual := resourceFreshDisconnect(&database.Character{LastLogout: tc.saved}, tc.prior, closedAt)
+			if actual != tc.want {
+				t.Fatalf("fresh=%v want=%v", actual, tc.want)
+			}
+		})
+	}
+	if resourceFreshDisconnect(nil, previous, closedAt) {
+		t.Fatal("missing save accepted")
+	}
 }

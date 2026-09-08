@@ -86,6 +86,26 @@ log markers, rather than ignoring child status. Re-run the real race matrix on
 the correction, then full regressions. Token resume/death recovery, shutdown
 drain, delayed-save failures and compatible rollback remain required.
 
+On follow-upa9f5960, full server race67975 PASS root15.786s, other packages cached.
+The stricter actual race run22795 CLOSED FAIL213.857s because its handoff test
+did not recognize the fresh timestamp; the separate144session matrix PASSED
+199.30s with clean normal server shutdown and no race/panic/fatal log findings
+in any phase. All four server logs were independently scanned. Evidence dirs
+`/tmp/eidolon-compat-session-{1242217804,2876537283,3948687136,2628873907}`;
+log `/tmp/eidolon-resource-queue-race-sessions.log`. Disposable Mongo removed and
+independently absent. Race binary
+`/tmp/eidolon-resource-queue-race-proof-CsK4vU/a9f5960bf3e1176423f90e1256d5bc33fd2adc35`.
+
+Read-only inspection before cleanup confirmed the handoff save existed with
+17HP/70mana/alive,1277gold and LastLogout15:17:47.104Z. The local Mongo driver's
+DateTime conversion truncates to milliseconds, while the test compared against
+a nanosecond clock taken immediately before closing the socket. The corrected
+test requires BOTH a strictly newer save than its pre-close Mongo baseline and
+a timestamp at or after closure at BSON precision. New tests reject older,
+unchanged and missing saves, including unchanged saves in the same millisecond.
+This corrects test precision, not runtime persistence or acceptance scope.
+Actual handoff revalidation remains due at this entry.
+
 ## Required work still open — do not publish this slice alone
 
 - Verify the implemented immediate-login, duplicate-session and repeated-Join
