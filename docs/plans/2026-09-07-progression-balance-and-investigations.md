@@ -31,6 +31,15 @@ evidence, including manual rewards and saved discoveries. Fire additionally
 proves the ordered anchor defeat and released ember visual; Fire/Air verify
 retrospective replies and full saved journal rereading. The fresh full campaign,
 broader touch/continuity/pacing and expansion-release gates remain open.
+The latest isolated phone follow-up verifies readable stacked reward rows and
+saved diary controls, including native scrolling in either direction after
+rotation. Combined client checks pass **219 suites / 3,295 tests**, and five
+layout/real-touch browser checks pass. The earned Earth touch route passes;
+Water needs a repeat after a landscape reading failure, and Fire/Air touch
+routes remain open. These UI checks neither validate the XP economy nor make
+the expansion live. New chapters redistribute their realm's existing reward
+budget; they do not add eight full-size payouts. Selected purposeful combat
+belongs in those investigations, not an automatic increase to 100-kill dailies.
 Authored text and recording tests alone are
 not evidence of reachable world locations or completed playable quests.
 This expands the active full-roadmap goal. Ship verified excessive-reward fixes

@@ -5,7 +5,47 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 00:16 UTC
+## Current checkpoint — September 8, 00:38 UTC
+
+The requested balancing/story scope remains in the dedicated plan: coordinated
+XP/gold/drop budgets, longer bounded collections, purposeful combat and two
+authored investigations per realm. No replacement XP curve, gold budget or
+dungeon-entry level change is selected here. Local 47/49/50 changes are queued,
+not advertised as live; the 23-chapter expansion remains isolated.
+
+Water phone **72001 FAIL / 2.8m**, closed: all four discoveries and portrait bell
+reading succeed, then landscape ending visibility fails. Eleven targets are
+engaged at the bell, not an audited kill count. The upward-only test lacks
+failure geometry, so the cause is not established. QA **fea7b03 → 291bfe2** adds
+bounded bidirectional native swipes, settled scrolling and failure geometry,
+hit-testing, HP/state and image capture without relaxing final-text visibility.
+Three layout-fixture setup failures are retained before the corrected actual
+daily-ladder/offscreen-record case passes.
+
+Independent phone reward UI **748711e**, worktree
+`/tmp/eidolon-phone-journal-AH5VCv`, makes reward rows full-width/stacked and
+humanizes enemy names. Rewards/status remain unchanged. Unit red seven fail /
+33 pass; green **40 / 0.683s**. Standalone browser **18637 PASS / four / 11.6s**;
+narrow/landscape images inspected. Cherry-pick **8318e55** integrates it only
+into investigations. Combined full client **92909 PASS / 219 / 3,295 / 75.027s**,
+lint/diff pass. Combined browser **35956 PASS / five / 25.2s**, including native
+scroll recovery in both directions/orientations and held-touch journal refresh.
+Both recovered-ending images inspected, preserved at
+`/tmp/eidolon-readable-journal-proof-WhBThb/`. No Go runtime change.
+
+Clean investigation **a8f1e91** records all evidence. **86161 is the sole owned
+browser**, earned Water touch retry; log
+`/tmp/eidolon-investigations-phone-water-readable.log`. Freeze its entire
+worktree until terminal. All other owned handles are closed. Phone Water/Fire/
+Air, fresh campaign pacing, physical devices and expansion release remain open.
+
+Corrected 42 **bfbbc87 / CI 34171247520** now passes client/server/browser,
+predeploy character QA, production input validation and both deployments;
+**live release/character QA remains active**. No full live approval or 43 push.
+Next publisher remains explicit **release/43-with-portal-pointer / f955608**
+only after all corrected-42 jobs and fresh exact public identity succeed.
+
+## Historical checkpoint — September 8, 00:16 UTC
 
 Earth touch **47303 FAIL / 39.8s** reaches both manual quest completions and all
 field-reading steps, then exposes a record detached during saved rereading. The
