@@ -5,7 +5,56 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 03:27 UTC
+## Current checkpoint — September 8, 03:59 UTC
+
+This turn implements eight preparation expeditions and closes the earned23-
+chapter reward route, not the entire balance or1.1–1.10 roadmap. All release
+and migration gates remain in force. No balance runtime is merged to root or
+published; no51 package exists.
+
+Fresh browser80057 FAILED at a correctly positioned new-growth prop obscured
+by Skeletons. Corrective **762e4de** adds deliberate nearby E inspection through
+the existing server-validated path; attacks, damage, range and manual completion
+are unchanged. Its real fresh Wizard rerun **PASS /one /5.2m**, with native
+pointer diary, eight earned Seeds after14 observed collection-target deaths,
+all scar records, manual claims and reconnect. Zero deaths; finallevel7 still
+locks the level30 Bastion. Nine actual gear pieces remain unsold (170gold vendor
+value), collection combat gold292→763. Image inspected and archived at
+`/tmp/eidolon-balanced-earth-earned-RpmDV8/`. Full client **222 suites /3,329
+tests /191.911s PASS**, artifact scan/cleanup pass. The output-truncated launch
+handles were not recovered; terminal logs and exit of exact owned parent
+2898447 were verified instead, without duplicate jobs. See
+[inspection evidence](2026-09-08-nearby-story-inspection.md).
+
+Reward worktree is clean **c9fcc98**, no active handles. New hunt worktree
+`/tmp/eidolon-story-hunts-6VEzV6`, branch `work/story-hunts-20260908`, authored
+**85995cb** then cherry-picks tested inspection/docs to clean **771c08c**.
+It contains31 chapters, eight new minimum-level/regional hunts, authored Ilyra
+handoffs and veteran optional catch-up protection. See
+[expedition scope and limitations](2026-09-08-chronicle-preparation-hunts.md).
+
+Scoped three-race compatibility **10372 PASS /game48.126s**; actual-death
+party/solo hunt checks **17722 PASS /three /8.233s**. Corrected dialogue/UI
+**43508 PASS /44 /1.796s**. Initial failures were retained and corrected:
+old23-chapter indices, old handoff fixtures and dialogue assumptions. Final
+lint **81312 PASS**. Combined full client **49961 ACTIVE** and full server
+race **95004 ACTIVE** on771c08c: freeze that entire worktree until both exit.
+Logs `/tmp/eidolon-story-hunts-full-client.log` and
+`/tmp/eidolon-story-hunts-full-server.log`. No owned browser is active.
+
+Next: close those full checks, adapt earned browser handoffs to31 chapters and
+play the new hunts without grants. Their counts are not yet approved pacing.
+Three new Earth hunts model189,879 solo XP at minimum enemy levels, before
+opening/collections/exploration; level30 needs195,750 totalXP. That arithmetic
+does not prove low-level survivability or party pacing. Gold/material sinks,
+late-game progression and the rollback-compatible bridge remain open.
+
+Latest CI read **34182920134 /43/79a93b1**: client, server and anonymous browser
+pass; predeployment character QA remains active. No deployment/live43 approval
+and no44 push. Exact queue and previous42 live evidence remain below. Root
+changes in this checkpoint are docs only, not the isolated curve/story runtime.
+
+## Historical checkpoint — September 8, 03:27 UTC
 
 Current turn remains progress: coordinated quest/weekly budgets are implemented
 and now pass full server race regression **95183 / root17.651s /
