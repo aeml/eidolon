@@ -30,3 +30,8 @@ now uses the actual class factory and asserts the class plus target passed to
 defense before ordinary attacks. Corrected64317 passes82 tests/five suites in
 2.166s, plus full lint. A fresh full regression is required on this correction;
 the failed full run is not recorded as a pass.
+
+Corrected full client16810 on d9af0d2 now PASS:231 suites/3418 tests/199.326s.
+Source was frozen for the run and the handle is terminal. Log:
+`/tmp/eidolon-four-class-earned-client-corrected.log`. Actual Rogue/Cleric and
+appropriate-level uninterrupted campaign verification remain open.
