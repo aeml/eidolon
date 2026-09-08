@@ -106,6 +106,13 @@ existing compact-status layouts; portrait390x844 and short568x320 screenshots
 inspected. Evidence `/tmp/eidolon-well-rested-ui-readable`; the short sheet scrolls
 for the detailed explanation while preserving readable title/timer and controls.
 
+Final regression12580 PASS: full Go race root14.545s/game238.808s, unchanged
+database/lifecycle packages cached. Final lint26098 PASS. Final targeted client
+24492 PASS3suites/18tests1.397s (the requested Minimap.test.js pattern matches no
+file; actual desktop minimap coverage is the rendered test above). Functional
+development HEAD2d19834; all local check handles closed. Full user/roadmap goal
+remains open and the feature is not published.
+
 Not a staged release: inherited1.0.57 metadata is unchanged and this branch must
 not be published as57. Schema9 protects saved rest state from schema8 full-save
 writers. Required before versioning: real sessions, existing resource acceptance
