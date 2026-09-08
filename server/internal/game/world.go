@@ -1305,6 +1305,7 @@ func (w *World) SetEntityDisconnected(id string, at time.Time) bool {
 	e.Mu.Lock()
 	defer e.Mu.Unlock()
 	e.Disconnected = true
+	e.restTickAt = time.Time{}
 	e.DisconnectedAt = at
 	if e.State == "DEAD" || e.Health <= 0 {
 		e.State = "DEAD"
@@ -1339,6 +1340,7 @@ func (w *World) ClearEntityDisconnected(id string) (*Entity, bool) {
 		return nil, false
 	}
 	e.Disconnected = false
+	e.restTickAt = time.Now()
 	e.DisconnectedAt = time.Time{}
 	return e, true
 }

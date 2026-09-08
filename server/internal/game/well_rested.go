@@ -53,6 +53,22 @@ func wellRestedKillXP(player *Entity, xp int) int {
 	return int(math.Floor(float64(xp) * WellRestedKillXPMultiplier))
 }
 
+// Caller holds Entity.Mu. A newly admitted entity starts its clock here instead
+// of receiving time from before login; disconnected ticks and resume reset it.
+func (e *Entity) updateSafeZoneRestAtLocked(zoneID string, now time.Time) {
+	e.SafeZoneID = zoneID
+	if e.restTickAt.IsZero() || e.Disconnected {
+		e.restTickAt = now
+		return
+	}
+	if !now.After(e.restTickAt) {
+		return
+	}
+	elapsed := now.Sub(e.restTickAt).Seconds()
+	e.restTickAt = now
+	e.updateSafeZoneRestLocked(elapsed, zoneID, now)
+}
+
 // Caller holds Entity.Mu. Time comes from the server simulation, never a client
 // timestamp. Split expiry ticks so a long update cannot extend boosted regen.
 func (e *Entity) updateSafeZoneRestLocked(dt float64, zoneID string, now time.Time) {

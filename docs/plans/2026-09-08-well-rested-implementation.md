@@ -76,6 +76,17 @@ four-class stats and device/aura acceptance remain required.
 - New opt-in real-session/restart test compiles; default run skips the external
   process test. It has NOT yet supplied actual-session acceptance.
 
+Actual af7ed63/78308 FAILED43.834s: all four-class arithmetic checks passed,
+but the capped player's full-recovery wait exceeded20s. Evidence
+`/tmp/eidolon-compat-session-523788755/server.log` has no race/panic and a clean
+shutdown drain; owned Mongo2332/volumes removed and independently absent.
+The production loop passed a fixed0.033 to recovery despite slow race-instrumented
+frames. Fixed rest/recovery to use a per-actor monotonic elapsed clock via
+UpdateRealtime while preserving the fixed physics/combat step. Newly admitted
+actors do not inherit time from before login; disconnect/resume resets the clock.
+Simulated Update(dt) remains deterministic for unit probes. Corrected actual
+session acceptance is still pending; do not weaken the full-recovery deadline.
+
 Not a staged release: inherited1.0.57 metadata is unchanged and this branch must
 not be published as57. Schema9 protects saved rest state from schema8 full-save
 writers. Required before versioning: real sessions, existing resource acceptance

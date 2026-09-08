@@ -14,6 +14,61 @@ func restTestPlayer(class string) *Entity {
 	return e
 }
 
+func TestWellRestedUsesElapsedServerTimeWithoutOfflineCatchup(t *testing.T) {
+	e, start := restTestPlayer("Wizard"), time.Now()
+	e.updateSafeZoneRestAtLocked("lanternhold", start)
+	if e.WellRestedSeconds != 0 || e.Health != 1 {
+		t.Fatal("new login received pre-admission time")
+	}
+	// Only two simulation callbacks occur over ten elapsed seconds. Rest and
+	// recovery still represent ten seconds, not two fixed 33ms physics steps.
+	e.updateSafeZoneRestAtLocked("lanternhold", start.Add(4*time.Second))
+	e.updateSafeZoneRestAtLocked("lanternhold", start.Add(10*time.Second))
+	if e.WellRestedSeconds != 10 || e.Health != 110 || e.Mana != 110 {
+		t.Fatalf("delayed ticks slowed recovery: %+v", e)
+	}
+	e.updateSafeZoneRestAtLocked("lanternhold", start.Add(9*time.Second))
+	if e.WellRestedSeconds != 10 {
+		t.Fatal("backward clock awarded time")
+	}
+	e.updateSafeZoneRestAtLocked("", start.Add(12*time.Second))
+	if e.WellRestedSeconds != 8 {
+		t.Fatal("outside real-time countdown wrong")
+	}
+	e.Disconnected = true
+	e.updateSafeZoneRestAtLocked("lanternhold", start.Add(100*time.Second))
+	if e.WellRestedSeconds != 8 {
+		t.Fatal("disconnected time awarded rest")
+	}
+	e.Disconnected = false
+	e.updateSafeZoneRestAtLocked("lanternhold", start.Add(101*time.Second))
+	if e.WellRestedSeconds != 9 {
+		t.Fatal("offline interval carried into next online tick")
+	}
+}
+
+func TestWellRestedResumeStartsAFreshElapsedClock(t *testing.T) {
+	w := newTestWorld()
+	e := restTestPlayer("Wizard")
+	e.WellRestedSeconds = 123
+	w.AddEntity(e)
+	w.SetEntityDisconnected(e.ID, time.Now().Add(-time.Hour))
+	if !e.restTickAt.IsZero() {
+		t.Fatal("disconnect kept elapsed clock")
+	}
+	before := time.Now()
+	if _, ok := w.ClearEntityDisconnected(e.ID); !ok {
+		t.Fatal("resume failed")
+	}
+	if e.restTickAt.Before(before) || e.WellRestedSeconds != 123 {
+		t.Fatal("resume backdated rest or changed bank")
+	}
+	e.updateSafeZoneRestAtLocked("lanternhold", e.restTickAt.Add(time.Second))
+	if e.WellRestedSeconds != 124 {
+		t.Fatal("resume earned offline time")
+	}
+}
+
 func TestSafeZoneRegistryBoundariesAndFutureScenes(t *testing.T) {
 	w := &World{SafeZones: NewSafeZoneRegistry()}
 	for _, point := range [][2]float64{{-100, 100}, {100, 300}, {100, 100}, {-100, 300}, {0, 200}} {

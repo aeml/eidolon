@@ -93,6 +93,7 @@ type Entity struct {
 	Gold                 int               `json:"gold"`
 	WellRestedSeconds    float64           `json:"wellRestedSeconds"`
 	SafeZoneID           string            `json:"safeZoneId"`
+	restTickAt           time.Time         // Process-local monotonic clock, never persisted or replicated.
 	GoldCreditReceipts   map[string]int    `json:"-"`
 	ItemDeliveryReceipts map[string]string `json:"-"`
 

@@ -10,6 +10,16 @@ import (
 )
 
 func (w *World) Update(dt float64) {
+	w.updateFrame(dt, time.Time{})
+}
+
+// Production recovery uses elapsed monotonic time independently of the fixed
+// movement/combat timestep. Delayed simulation frames must not slow rest time.
+func (w *World) UpdateRealtime(dt float64, now time.Time) {
+	w.updateFrame(dt, now)
+}
+
+func (w *World) updateFrame(dt float64, restNow time.Time) {
 	if dt <= 0 || !finiteCoordinate(dt) {
 		return
 	}
@@ -51,7 +61,12 @@ func (w *World) Update(dt float64) {
 		allEntities = append(allEntities, e)
 		e.Mu.Lock()
 		if e.Type == TypePlayer {
-			e.updateSafeZoneRestLocked(dt, w.SafeZoneAt(e.InstanceID, e.X, e.Z), time.Now())
+			zoneID := w.SafeZoneAt(e.InstanceID, e.X, e.Z)
+			if restNow.IsZero() {
+				e.updateSafeZoneRestLocked(dt, zoneID, time.Now())
+			} else {
+				e.updateSafeZoneRestAtLocked(zoneID, restNow)
+			}
 		}
 		isActivePlayer := e.Type == TypePlayer && e.State != "DEAD" && !e.Disconnected
 		e.Mu.Unlock()

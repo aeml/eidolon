@@ -881,7 +881,7 @@ func main() {
 
 	// Game Loop
 	loops.Every(33*time.Millisecond, func() {
-		world.Update(0.033)
+		world.UpdateRealtime(0.033, time.Now())
 		broadcastState()
 	})
 

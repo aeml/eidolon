@@ -73,7 +73,7 @@ export class PhoneStatusUI {
         }
         this.playerId = playerId;
         const active = (buffs || []).filter(buff => buff?.id && Number(buff.remainingSeconds) > 0);
-        const signature = JSON.stringify(active.map(buff => [buff.id, buff.name, buff.detail, buff.timeLabel, Boolean(buff.isDebuff), Number(buff.remainingSeconds).toFixed(1)]));
+        const signature = JSON.stringify(active.map(buff => [buff.id, buff.name, buff.detail, buff.timeLabel, Boolean(buff.isDebuff), buff.timeLabel ? '' : Number(buff.remainingSeconds).toFixed(1)]));
         if (signature === this.lastSignature) return;
         this.lastSignature = signature;
         const debuffs = active.filter(buff => buff.isDebuff).length;

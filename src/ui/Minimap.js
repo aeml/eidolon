@@ -280,8 +280,8 @@ export class Minimap {
             buff?.detail || '',
             buff?.timeLabel || '',
             buff?.isDebuff ? 1 : 0,
-            Number(buff?.remainingSeconds || 0).toFixed(1),
-            Number(buff?.durationSeconds || 0).toFixed(0)
+            buff?.timeLabel ? '' : Number(buff?.remainingSeconds || 0).toFixed(1),
+            buff?.timeLabel ? '' : Number(buff?.durationSeconds || 0).toFixed(0)
         ].join(':')).join('|');
         this.buffList.style.display = buffs.length > 0 ? 'flex' : 'none';
         if (buffs.length === 0) {
