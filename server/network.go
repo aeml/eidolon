@@ -22,10 +22,7 @@ func runHub() {
 			if _, ok := clients[client]; ok {
 				cleanupClient(client)
 				delete(clients, client)
-				close(client.send)
-				if client.prioritySend != nil {
-					close(client.prioritySend)
-				}
+				client.closeSendQueues()
 			}
 		case message := <-broadcast:
 			for client := range clients {
@@ -40,23 +37,14 @@ func runHub() {
 				if message.Type == MsgState || message.Type == "time" {
 					// Non-blocking send for state/time updates
 					// If channel is full, drop the message instead of disconnecting
-					select {
-					case client.send <- message.Data:
-					default:
-						// Drop message, client is too slow
-					}
+					client.sendState(message.Data)
 				} else {
 					// Critical messages (Chat, Damage, etc.)
 					// Try to send, if full, we might have to disconnect or risk blocking
-					select {
-					case client.send <- message.Data:
-					default:
+					if !client.sendSafe(message.Data) {
 						cleanupClient(client)
 						delete(clients, client)
-						close(client.send)
-						if client.prioritySend != nil {
-							close(client.prioritySend)
-						}
+						client.closeSendQueues()
 					}
 				}
 			}

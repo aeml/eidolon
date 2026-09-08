@@ -805,20 +805,14 @@ func broadcastState() {
 			data = append(data, stateProtoWireVersion)
 			data = append(data, payload...)
 
-			select {
-			case c.send <- data:
-			default:
-			}
+			c.sendState(data)
 
 			if playerEntity != nil && playerEntity.InstanceID != "" {
 				if roomState, ok := world.GetDungeonRoomSummary(playerEntity.InstanceID, c.playerID); ok {
 					payloadBytes, _ := json.Marshal(roomState)
 					roomStateMsg := Message{Type: MsgDungeonRoomState, Payload: payloadBytes}
 					if roomStateData, err := json.Marshal(roomStateMsg); err == nil {
-						select {
-						case c.send <- roomStateData:
-						default:
-						}
+						c.sendState(roomStateData)
 					}
 				}
 			}

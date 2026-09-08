@@ -92,6 +92,8 @@ type EntitySnapshot struct {
 
 // Client represents a connected player
 type Client struct {
+	sendMu       sync.RWMutex
+	sendClosed   bool
 	conn         *websocket.Conn
 	send         chan []byte
 	prioritySend chan []byte
