@@ -16,3 +16,7 @@ export function preparedWizardTraining({ talentPoints, talentRanks = {} }) {
         return { id, name: talent.name, initialRank, purchases };
     });
 }
+// MsgUnlockTalent allows ten requests per ten seconds, shared with earlier
+// actions on this connection. Leave a small refill margin even for the first
+// purchase; do not raise the server limit or retry a rejected rank blindly.
+export const PREPARED_TALENT_INPUT_INTERVAL_MS = 1100;

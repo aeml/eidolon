@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { preparedWizardTraining } from '../preparedWizardTraining.js';
+import { preparedWizardTraining, PREPARED_TALENT_INPUT_INTERVAL_MS } from '../preparedWizardTraining.js';
 import { CONSTANTS } from '../../src/core/Constants.js';
 
 // Prepared functional QA, not fresh-character balance evidence. Like Fighter's
@@ -21,15 +21,40 @@ export async function prepareDungeonWizard(page) {
     const skills = page.locator('#skill-tree-window');
     await expect(skills).toBeVisible();
     await skills.getByRole('button', { name: 'Talents', exact: true }).click();
+    await page.evaluate(() => {
+        const game = window.game, send = game.network.send.bind(game.network);
+        const handle = game.handleServerMessage.bind(game);
+        window.__preparedTalentInput = { sent: [], errors: [] };
+        game.network.send = (type, payload) => {
+            if (type === 'unlockTalent') window.__preparedTalentInput.sent.push(payload.talentId);
+            return send(type, payload);
+        };
+        game.handleServerMessage = message => {
+            if (message.type === 'error') {
+                // Classify without recording arbitrary chat/account text.
+                const text = JSON.stringify(message.payload).toLowerCase();
+                window.__preparedTalentInput.errors.push(text.includes('rate limit') ? 'rate-limit' : 'other-server-error');
+            }
+            return handle(message);
+        };
+    });
     let purchased = 0;
     for (const talent of training) {
         for (let i = 0; i < talent.purchases; i++) {
+            await page.waitForTimeout(PREPARED_TALENT_INPUT_INTERVAL_MS);
             await skills.locator('.skill-node').filter({ has: page.locator('.skill-node-title', { hasText: talent.name }) }).click();
             purchased++;
-            await expect.poll(() => page.evaluate(() => window.game.player.talentPoints))
-                .toBe(before.talentPoints - purchased);
-            await expect.poll(() => page.evaluate(id => window.game.player.talentRanks[id], talent.id))
-                .toBe(talent.initialRank + i + 1);
+            try {
+                await expect.poll(() => page.evaluate(() => window.game.player.talentPoints))
+                    .toBe(before.talentPoints - purchased);
+                await expect.poll(() => page.evaluate(id => window.game.player.talentRanks[id], talent.id))
+                    .toBe(talent.initialRank + i + 1);
+            } catch (error) {
+                const diagnostic = await page.evaluate(() => ({ ...window.__preparedTalentInput,
+                    points: window.game.player.talentPoints, ranks: window.game.player.talentRanks }));
+                console.log('[prepared-talent-input]', JSON.stringify({ attempted: purchased, ...diagnostic }));
+                throw error;
+            }
         }
     }
     if (before.level >= rune.unlockLevel) {

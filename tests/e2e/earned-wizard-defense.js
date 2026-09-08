@@ -1,9 +1,10 @@
 import { moveByGroundClick, readPlayerState } from './helpers.js';
-import { planWizardHuntStep } from '../wizardHuntControls.js';
+import { GroundInputUnavailableError } from '../groundInputFailure.js';
+import { planReachableWizardStep } from './earned-retreat-plan.js';
 
 // Only observes replicated state and chooses ordinary keys/ground clicks.
 // Reinstall after fresh login, which destroys the previous browser observer.
-export async function createEarnedWizardDefense(page) {
+export async function createEarnedWizardDefense(page, { retreatBelowHealthRatio } = {}) {
     await page.evaluate(() => {
         const game = window.game, original = game.handleServerMessage.bind(game);
         window.__freshWizardDefense = { lastAcceptedAt: 0, counts: { retreats: 0, shields: 0, rejectedShields: 0 } };
@@ -29,9 +30,12 @@ export async function createEarnedWizardDefense(page) {
                 unlockedSkills: p.unlockedSkills,
                 sinceCastMs: Date.now() - window.__freshWizardDefense.lastAcceptedAt,
                 threats: (game.activeEntitiesCache || []).filter(enemy => game.isHostileActorTarget(enemy) &&
-                    p.position.distanceTo(enemy.position) < 18).map(enemy => ({ x: enemy.position.x, z: enemy.position.z })) };
+                    p.position.distanceTo(enemy.position) < 30).map(enemy => ({ x: enemy.position.x, z: enemy.position.z,
+                    // Server PerformAttack uses 3 + scaled attacker/target reach.
+                    meleeReach: (enemy.subType === 'DwarfSalesman' ? 6 : 3) +
+                        Math.max(0, (enemy.scale || 1) - 1) * 1.5 + Math.max(0, (p.scale || 1) - 1) * 1.5 })) };
         });
-        const plan = planWizardHuntStep(state);
+        const plan = await planReachableWizardStep(page, { ...state, retreatBelowHealthRatio });
         if (!plan) return false;
         if (plan.action === 'shield') {
             await page.keyboard.press(plan.key);
@@ -39,9 +43,19 @@ export async function createEarnedWizardDefense(page) {
             return true;
         }
         try {
-            await moveByGroundClick(page, plan.x, plan.z, { minimumDistance: 6, allowJumpFallback: false, timeout: 2500 });
+            await moveByGroundClick(page, plan.x, plan.z, { minimumDistance: 6, allowJumpFallback: false,
+                timeout: 2500 });
         } catch (error) {
             if ((await readPlayerState(page)).state === 'DEAD') return true;
+            if (error instanceof GroundInputUnavailableError) {
+                await page.evaluate(() => {
+                    const counts = window.__freshWizardDefense.counts;
+                    counts.blockedRetreats = (counts.blockedRetreats || 0) + 1;
+                });
+                // No click/key was issued. Fight from here, preserving the
+                // caller's unchanged combat deadline and death bounds.
+                return false;
+            }
             throw error;
         }
         await page.evaluate(() => window.__freshWizardDefense.counts.retreats++);

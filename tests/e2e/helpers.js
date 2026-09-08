@@ -1,4 +1,5 @@
 import { expect } from '@playwright/test';
+import { movementFailure } from '../groundInputFailure.js';
 import { inventoryQuantity, pickupReceipt } from './lootPickupEvidence.js';
 import {
     isBenignCanceledAssetRequest,
@@ -486,9 +487,10 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
             deathScreenVisible: game?.uiManager?.deathScreen?.style?.display !== 'none'
         };
     });
-    throw new Error(
+    throw movementFailure(
         `No real input established ${options.minimumDistance || 1} units toward (${deltaX}, ${deltaZ}): ` +
-        JSON.stringify({ before, maximumDisplacement, attempts, ...diagnostic })
+        JSON.stringify({ before, maximumDisplacement, attempts, ...diagnostic }),
+        attempts.length > 0, mobileMovement
     );
 }
 
