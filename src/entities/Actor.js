@@ -1716,6 +1716,8 @@ export class Actor extends Entity {
     }
 
     respawn(x, z) {
+        const wasDead = this.state === 'DEAD' || this.stats.hp <= 0;
+        if (wasDead) this.stats.mana = this.stats.maxMana;
         this.position.set(x, 0, z);
         this.stats.hp = this.stats.maxHp;
         this.state = 'IDLE';
