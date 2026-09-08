@@ -27,15 +27,41 @@ HUD file and failed, corrected invocation uses actual UIManagerHudDiffing suite.
 New opt-in144-session Mongo/real-server harness covers four classes, levels1/30/
 100, partial/full/zero/dead resources, gear-modified maxima and three process
 starts. Default tests skip external services; explicit disposable loopback URI
-and absolute built binary required. Actual execution remains due at this entry.
+and absolute built binary required. Actual execution on6cba1eb passed all144
+sessions in19.09s, including three fresh server processes. The corrected full
+race suite53548 passed root16.082s/game359.606s/database cached. The owned Mongo
+container was removed and independently confirmed absent.
+
+## Session handoff implementation — September8 follow-up
+
+Per-account work locks now order commands, login/resume replacement, disconnect
+and saves. The global hub schedules cleanup outside its loop; Mongo IO never
+holds the global sessions lock. Queued saves capture live state only after
+acquiring account ownership, and retired sockets cannot mutate or save a newer
+owner's entity. Repeated Join and ordinary login reuse authoritative live state
+instead of replacing it from Mongo. Disconnect freezes before snapshot capture.
+Transport closure is published atomically; account switching requires a new
+socket. Explicit level-command saves use the same complete resource snapshot.
+Offline trading refunds update only gold, never replace resource/build fields.
+
+Focused handoff race74977 passed1.440s before the new real-socket test; subsequent
+focused non-race7298 passed0.180s including compilation of that test. Initial
+gofmt invocation used paths relative to the wrong directory; corrected from the
+worktree root, with no behavioral changes. A previous focused race handle77475
+was missing when revisited and is not claimed as evidence.
+
+New opt-in TestResourceActualLiveHandoff exercises ordinary Fireball, two repeated
+joins, overlapping login, late old-socket cleanup, new-owner input and final
+resource save; it also checks atomic gold credit preserves equipment/resources.
+Actual execution and final full race validation remain required at this entry.
+The shutdown drain still needs an admission/worker lifecycle audit before this
+candidate can be release-ready; a WaitGroup alone does not establish safe drain.
 
 ## Required work still open — do not publish this slice alone
 
-- Immediate login, duplicate-session replacement and repeated Join can race the
-  existing asynchronous disconnect save. Re-join currently removes live state
-  before loading the database; old cleanup can affect a new binding. Preserve
-  authoritative live resources and serialize handoff/save ordering WITHOUT
-  blocking the global hub on Mongo IO or introducing a reconnect heal.
+- Verify the implemented immediate-login, duplicate-session and repeated-Join
+  ownership paths with actual concurrent sessions, delayed saves and race checks.
+  Preserve live resources without blocking the global hub or reconnect healing.
 - Audit all direct repository saves, autosave, resume-window expiry and actual
   resource/death restoration. Verify PvP forfeit/entry/exit and unfinished dungeon
   recovery. Real browser cast/damage/reconnect/death-button acceptance remains.

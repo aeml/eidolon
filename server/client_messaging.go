@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"eidolon-server/internal/database"
 	"eidolon-server/internal/game"
 
 	"github.com/gorilla/websocket"
@@ -52,24 +51,10 @@ func (c *Client) handleChatCommand(raw string) bool {
 		}
 
 		if db != nil {
-			char, err := db.GetCharacter(c.username, c.username)
-			if err == nil && char != nil {
-				char.Level = player.Level
-				char.XP = player.Experience
-				char.ProgressionVersion = game.CurrentProgressionVersion
-				char.SkillPoints = player.SkillPoints
-				char.SelectedBranch = player.SelectedBranch
-				char.UnlockedSkills = append([]string(nil), player.UnlockedSkills...)
-				char.Stats = database.Stats{
-					Vitality:     player.BaseStats.Vitality,
-					Strength:     player.BaseStats.Strength,
-					Dexterity:    player.BaseStats.Dexterity,
-					Intelligence: player.BaseStats.Intelligence,
-					Wisdom:       player.BaseStats.Wisdom,
-				}
-				if err := db.SaveCharacter(c.username, char); err != nil {
-					log.Printf("Failed to persist /level for %s: %v", c.username, err)
-				}
+			// Same authoritative snapshot as ordinary persistence, including the
+			// explicit QA resource reset. Never write stale pre-command bars.
+			if snapshot := world.GetEntityCopy(c.playerID); snapshot != nil {
+				saveCharacterDB(c, snapshot)
 			}
 		}
 

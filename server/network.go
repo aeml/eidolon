@@ -20,7 +20,8 @@ func runHub() {
 			clients[client] = true
 		case client := <-unregister:
 			if _, ok := clients[client]; ok {
-				cleanupClient(client)
+				client.transportClosed.Store(true)
+				scheduleCharacterWork(func() { cleanupClient(client) })
 				delete(clients, client)
 				close(client.send)
 				if client.prioritySend != nil {
@@ -51,7 +52,8 @@ func runHub() {
 					select {
 					case client.send <- message.Data:
 					default:
-						cleanupClient(client)
+						client.transportClosed.Store(true)
+						scheduleCharacterWork(func() { cleanupClient(client) })
 						delete(clients, client)
 						close(client.send)
 						if client.prioritySend != nil {
@@ -162,6 +164,23 @@ func sendMovementContext(c *Client) {
 }
 
 func cleanupClient(client *Client) {
+	if client == nil || client.username == "" {
+		return
+	}
+	unlock := lockCharacterWork(client.username)
+	defer unlock()
+	cleanupClientLocked(client)
+}
+
+// Caller holds the per-character work lock, never the global hub/session lock.
+func cleanupClientLocked(client *Client) {
+	if !currentCharacterConnection(client) {
+		return
+	}
+	client.retired.Store(true)
+	if world == nil {
+		return
+	}
 	world.ForfeitPvP(client.playerID)
 	// 1. Return any direct-trade escrow before snapshotting persistent state.
 	if trade := world.CancelDirectTradesForPlayer(client.playerID); trade != nil {
@@ -170,13 +189,8 @@ func cleanupClient(client *Client) {
 		sendInventoryForPlayer(trade.PlayerBID)
 	}
 
-	// 2. Get state (fast, in-memory)
-	var entity *game.Entity
-	if client.playerID != "" {
-		entity = world.GetEntityCopy(client.playerID)
-	}
-
-	// 3. Mark entity as disconnected instead of removing it immediately.
+	// 2. Mark entity as disconnected before capturing resources: a world tick
+	// between capture and marking must not grant unsaved regeneration.
 	//    The entity remains in the world during the resume window so a
 	//    reconnecting client can pick up where it left off.
 	if client.playerID != "" {
@@ -184,6 +198,10 @@ func cleanupClient(client *Client) {
 			// Entity was already gone (e.g. removed by the sweep); nothing to do.
 			log.Printf("cleanupClient: entity %s not found in world", client.playerID)
 		}
+	}
+	var entity *game.Entity
+	if client.playerID != "" {
+		entity = world.GetEntityCopy(client.playerID)
 	}
 
 	// 4. Cleanup session (fast)
@@ -199,11 +217,12 @@ func cleanupClient(client *Client) {
 		go touchAndBroadcastGuildPresence(client.playerID, time.Now())
 	}
 
-	// 6. Save to DB (slow, do async)
+	// 6. Save before releasing character ownership. This function runs outside
+	// the network hub; new login waits here without blocking other accounts.
 	if entity != nil {
-		go func(c *Client, e *game.Entity) {
-			saveCharacterDB(c, e)
-		}(client, entity)
+		if db != nil {
+			saveCharacterDB(client, entity)
+		}
 	}
 }
 
@@ -235,6 +254,7 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 
 func (c *Client) readPump() {
 	defer func() {
+		c.transportClosed.Store(true)
 		unregister <- c
 		c.conn.Close()
 	}()

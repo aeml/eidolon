@@ -38,25 +38,29 @@ func (c *Client) dispatchMessage(msg Message) {
 			c.sendError("Invalid credentials")
 			return
 		}
+		if c.username != "" && c.username != payload.Username {
+			c.sendError("Use a new connection to switch accounts.")
+			return
+		}
+		unlockCharacter := lockCharacterWork(payload.Username)
+		defer unlockCharacter()
 		c.username = payload.Username
+		c.retired.Store(false)
+		sessionsMu.Lock()
+		previous := activeSessions[c.username]
+		sessionsMu.Unlock()
+		if previous != nil && previous != c {
+			cleanupClientLocked(previous)
+			go func() {
+				previous.sendError("Logged in from another location")
+				if previous.conn != nil {
+					previous.conn.Close()
+				}
+			}()
+		}
 
 		// Enforce single session
 		sessionsMu.Lock()
-		if oldClient, ok := activeSessions[c.username]; ok && oldClient != c {
-			// Kick old client
-			// Use a goroutine to avoid blocking and potential deadlocks if oldClient is stuck
-			go func(clientToKick *Client) {
-				defer func() {
-					if r := recover(); r != nil {
-						log.Printf("Recovered from kick panic: %v", r)
-					}
-				}()
-				clientToKick.sendError("Logged in from another location")
-				// Give a small delay for the message to be sent before closing
-				time.Sleep(100 * time.Millisecond)
-				clientToKick.conn.Close()
-			}(oldClient)
-		}
 		activeSessions[c.username] = c
 		sessionsMu.Unlock()
 
@@ -104,12 +108,20 @@ func (c *Client) dispatchMessage(msg Message) {
 			return
 		}
 
-		// Defensive re-join: clean up previous entity if this client already joined
-		if c.playerID != "" {
-			log.Printf("Re-join detected for %s (old playerID: %s) – removing stale entity", c.username, c.playerID)
-			world.RemoveEntity(c.playerID)
+		// A full login can follow a transport loss before its DB save completes.
+		// Keep the authoritative live entity, including resources/cooldowns/death,
+		// rather than replacing it with an older persisted snapshot.
+		if existing := world.GetEntityCopy("player-" + c.username); existing != nil {
+			c.playerID = existing.ID
+			world.ClearEntityDisconnected(existing.ID)
 			c.seenIDs = make(map[string]bool)
 			c.lastState = make(map[string]*EntitySnapshot)
+			world.GenerateDailyQuests(c.playerID)
+			refreshChatBlocks(c.username)
+			existing = world.GetEntityCopy(c.playerID)
+			sendInitialPlayerState(c, existing, existing.InstanceID)
+			go notifyFriendsPresence(c.username, true)
+			return
 		}
 
 		log.Printf("Player joining: %s (Class: %s)", c.username, payload.Type)
@@ -740,6 +752,22 @@ func (c *Client) dispatchMessage(msg Message) {
 			c.sendError("Session token invalid or expired. Please log in again.")
 			return
 		}
+		if c.username != "" && c.username != username {
+			c.sendError("Use a new connection to switch accounts.")
+			return
+		}
+		unlockCharacter := lockCharacterWork(username)
+		defer unlockCharacter()
+		sessionsMu.Lock()
+		owner := activeSessions[username]
+		sessionsMu.Unlock()
+		if owner != nil && owner != c {
+			if !owner.transportClosed.Load() {
+				c.sendError("A newer login owns this character. Please log in again.")
+				return
+			}
+			cleanupClientLocked(owner)
+		}
 
 		// Clear the disconnected flag; this also returns the live entity pointer.
 		playerID := "player-" + username
@@ -753,6 +781,7 @@ func (c *Client) dispatchMessage(msg Message) {
 		// Bind this new client to the existing entity.
 		c.username = username
 		c.playerID = playerID
+		c.retired.Store(false)
 
 		sessionsMu.Lock()
 		// Kick any stale session for this username (shouldn't exist, but be safe).

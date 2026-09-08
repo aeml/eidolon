@@ -142,6 +142,19 @@ var inboundMessagePolicies = map[string]messagePolicy{
 }
 
 func (c *Client) handleMessage(msg Message) {
+	if c.transportClosed.Load() {
+		return
+	}
+	// Login/resume acquire the authenticated account's lock after credentials
+	// or token validation. Other messages already have a stable account binding.
+	if c.username != "" && msg.Type != MsgLogin && msg.Type != MsgResumeSession {
+		unlock := lockCharacterWork(c.username)
+		defer unlock()
+		if !currentCharacterConnection(c) {
+			c.sendError("This connection has been replaced; please reconnect.")
+			return
+		}
+	}
 	if err := c.acceptInboundMessage(msg, time.Now()); err != nil {
 		c.sendError(err.Error())
 		return

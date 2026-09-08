@@ -3,6 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+	"strings"
 
 	"eidolon-server/internal/game"
 )
@@ -152,10 +154,8 @@ func handleMsgTradingBid(c *Client, msg Message) {
 			// Next time they check inventory it will be there.
 		} else {
 			// Offline refund
-			char, err := db.GetCharacter(targetID, targetName)
-			if err == nil {
-				char.Gold += amount
-				db.SaveCharacter(targetID, char)
+			if err := db.CreditCharacterGold(strings.TrimPrefix(targetID, "player-"), targetName, amount); err != nil {
+				log.Printf("Failed offline auction refund: %v", err)
 			}
 		}
 	}

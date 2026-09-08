@@ -897,6 +897,7 @@ func main() {
 		<-stop
 		log.Println("Shutting down server...")
 		saveAllPlayers()
+		backgroundCharacterWork.Wait()
 		os.Exit(0)
 	}()
 

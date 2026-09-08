@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"sync"
+	"sync/atomic"
 
 	"github.com/gorilla/websocket"
 )
@@ -92,16 +93,18 @@ type EntitySnapshot struct {
 
 // Client represents a connected player
 type Client struct {
-	conn         *websocket.Conn
-	send         chan []byte
-	prioritySend chan []byte
-	playerID     string
-	username     string
-	lastState    map[string]*EntitySnapshot // Track last sent state per entity
-	seenIDs      map[string]bool            // Track which entities client knows about
-	qaDisconnect func()                     // Optional test hook for the allowlisted reconnect fault.
-	policyMu     sync.Mutex
-	messageRates map[string]*messageRateBucket
+	retired         atomic.Bool
+	transportClosed atomic.Bool
+	conn            *websocket.Conn
+	send            chan []byte
+	prioritySend    chan []byte
+	playerID        string
+	username        string
+	lastState       map[string]*EntitySnapshot // Track last sent state per entity
+	seenIDs         map[string]bool            // Track which entities client knows about
+	qaDisconnect    func()                     // Optional test hook for the allowlisted reconnect fault.
+	policyMu        sync.Mutex
+	messageRates    map[string]*messageRateBucket
 }
 
 // Message types

@@ -33,12 +33,26 @@ func saveAllPlayers() {
 	sessionsMu.Unlock()
 
 	for _, client := range clientsToSave {
-		savePlayer(client)
+		savePlayerNow(client)
 	}
 }
 
 func savePlayer(client *Client) {
+	// Command handlers may hold this character's work lock. Capture only once
+	// this queued save owns that lock, never enqueue an already-stale snapshot.
+	if db == nil || world == nil || client == nil || client.username == "" {
+		return
+	}
+	scheduleCharacterWork(func() { savePlayerNow(client) })
+}
+
+func savePlayerNow(client *Client) {
 	if db == nil || world == nil || client == nil || client.playerID == "" || client.username == "" {
+		return
+	}
+	unlock := lockCharacterWork(client.username)
+	defer unlock()
+	if !currentCharacterConnection(client) {
 		return
 	}
 
