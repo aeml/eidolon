@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, ensureDungeonReadyLevel,
     enterAndExitDungeon, loginAndEnterWorld, moveByGroundClick, projectNearestHostile,
-    returnToTown, useVerdantQAWaypoint } from './helpers.js';
+    returnToTown, useVerdantQAWaypoint, zoomOutForPortal } from './helpers.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 
@@ -113,6 +113,9 @@ test('Seraph training persists, changes actual smites and lifetime, and cleans u
     async function attack(rank, label) {
         await useVerdantQAWaypoint(page);
         await page.waitForTimeout(1100);
+        // Keep the approach ground inside the canvas rather than projecting
+        // eight-unit backward steps beneath the bottom HUD at close zoom.
+        await zoomOutForPortal(page);
         // Leave the entrance facade before fighting so the model and impacts
         // can actually be inspected, not merely counted behind architecture.
         // moveByGroundClick returns after initial movement, not arrival at the
