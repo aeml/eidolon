@@ -117,23 +117,25 @@ type Entity struct {
 	// BaseSpeed preserves authored enemy/NPC locomotion through temporary stat
 	// recalculations such as slows. Players leave it at zero and derive speed
 	// from Dexterity as before.
-	BaseSpeed         float64 `json:"-"`
-	Speed             float64 `json:"speed"`
-	AttackSpeed       float64 `json:"attackSpeed"`
-	CooldownReduction float64 `json:"cooldownReduction"`
-	HpRegen           float64 `json:"hpRegen"`
-	ManaRegen         float64 `json:"manaRegen"`
-	CastSpeed         float64 `json:"castSpeed"`
-	Scale             float64 `json:"scale,omitempty"`        // Visual scale multiplier
-	BodyRadius        float64 `json:"bodyRadius,omitempty"`   // Derived replication metadata, not a model's decorative bounds.
-	ImpactRadius      float64 `json:"impactRadius,omitempty"` // Resolved projectile footprint for new observers.
-	CritChanceBonus   float64 `json:"-"`
-	FireDamageBonus   float64 `json:"-"`
-	PoisonDamageBonus float64 `json:"-"`
-	HolyDamageBonus   float64 `json:"-"`
-	HealingDoneBonus  float64 `json:"-"`
-	LifestealBonus    float64 `json:"-"`
-	AllResistBonus    float64 `json:"-"`
+	BaseSpeed          float64 `json:"-"`
+	Speed              float64 `json:"speed"`
+	AttackSpeed        float64 `json:"attackSpeed"`
+	CooldownReduction  float64 `json:"cooldownReduction"`
+	HpRegen            float64 `json:"hpRegen"`
+	ManaRegen          float64 `json:"manaRegen"`
+	hpRegenRemainder   float64
+	manaRegenRemainder float64
+	CastSpeed          float64 `json:"castSpeed"`
+	Scale              float64 `json:"scale,omitempty"`        // Visual scale multiplier
+	BodyRadius         float64 `json:"bodyRadius,omitempty"`   // Derived replication metadata, not a model's decorative bounds.
+	ImpactRadius       float64 `json:"impactRadius,omitempty"` // Resolved projectile footprint for new observers.
+	CritChanceBonus    float64 `json:"-"`
+	FireDamageBonus    float64 `json:"-"`
+	PoisonDamageBonus  float64 `json:"-"`
+	HolyDamageBonus    float64 `json:"-"`
+	HealingDoneBonus   float64 `json:"-"`
+	LifestealBonus     float64 `json:"-"`
+	AllResistBonus     float64 `json:"-"`
 
 	TargetX  float64 `json:"-"`
 	TargetZ  float64 `json:"-"`
@@ -684,7 +686,7 @@ func (e *Entity) RecalculateStats() {
 	e.MaxHealth = (totalVit * 10) + levelBonus
 	e.HpRegen = 0
 	if e.Type == TypePlayer {
-		e.HpRegen = float64(totalVit) * 0.5
+		e.HpRegen = float64(totalVit) * PassiveRegenPerStat
 	}
 
 	e.MaxMana = (totalInt * 10) + levelBonus
@@ -754,7 +756,7 @@ func (e *Entity) RecalculateStats() {
 
 	e.ManaRegen = 0
 	if e.Type == TypePlayer {
-		e.ManaRegen = float64(totalWis) * 0.5
+		e.ManaRegen = float64(totalWis) * PassiveRegenPerStat
 	}
 	if pctManaRegen != 0 {
 		e.ManaRegen *= (1.0 + pctManaRegen)

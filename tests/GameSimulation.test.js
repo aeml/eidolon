@@ -150,13 +150,13 @@ describe('Actor System', () => {
         });
 
         test('HP regen is calculated from vitality', () => {
-            // hpRegen = vitality * 0.5 = 5
-            expect(actor.stats.hpRegen).toBe(5);
+            // hpRegen = vitality * 0.01 = 0.1
+            expect(actor.stats.hpRegen).toBe(0.1);
         });
 
         test('Mana regen is calculated from wisdom', () => {
-            // manaRegen = wisdom * 0.5 = 5
-            expect(actor.stats.manaRegen).toBe(5);
+            // manaRegen = wisdom * 0.01 = 0.1
+            expect(actor.stats.manaRegen).toBe(0.1);
         });
 
         test('Cooldown reduction is calculated from intelligence', () => {

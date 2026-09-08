@@ -73,7 +73,7 @@ func TestRecalculateStatsAppliesSocketedGemBonuses(t *testing.T) {
 	if e.CooldownReduction <= 0.1 {
 		t.Fatalf("expected cdr bonus to increase cooldown reduction, got %f", e.CooldownReduction)
 	}
-	if e.ManaRegen <= 5.0 {
+	if e.ManaRegen <= 0.1 {
 		t.Fatalf("expected mana regen bonus, got %f", e.ManaRegen)
 	}
 	if e.Speed <= 9.6 {

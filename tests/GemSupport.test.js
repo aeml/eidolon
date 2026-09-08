@@ -47,7 +47,7 @@ describe('gem client support', () => {
         expect(actor.stats.lifestealBonus).toBeGreaterThan(0);
         expect(actor.stats.allResistBonus).toBeGreaterThan(0);
         expect(actor.stats.cooldownReduction).toBeGreaterThan(0.1);
-        expect(actor.stats.manaRegen).toBeGreaterThan(actor.baseStats.wisdom * 0.5);
+        expect(actor.stats.manaRegen).toBeGreaterThan(actor.baseStats.wisdom * 0.01);
         expect(actor.stats.speed).toBeGreaterThan((3 + (actor.baseStats.dexterity * 0.5)) * 1.2);
     });
 });
