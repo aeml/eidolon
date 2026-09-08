@@ -343,7 +343,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.55</span>
+                <span class="start-version-row__label">Alpha 1.0.56</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -669,6 +669,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.56">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.56 (guarding the Chronicle)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Protecting newer saves:</strong> The server now checks the database format before startup. If a newer release has upgraded that format, this release refuses to run instead of risking your characters with an older save writer.</li>
+                        <li><strong>A safer recovery path:</strong> An incompatible server reports the problem before opening the game or changing database indexes. Recovery requires a compatible server; changing or deleting the database version is not a safe downgrade.</li>
+                        <li><strong>The same adventure today:</strong> This prepares for later persistence improvements. It does not yet change reconnect resource behavior, auction transactions, rewards or the 0.01 passive regeneration rate.</li>
+                    </ul>
+                </div>
+
                 <div class="patch-note-entry" data-version="1.0.55">
                     <h3 class="patch-note-entry__title">Alpha 1.0.55 (empty means empty)</h3>
                     <ul class="patch-note-entry__list">
