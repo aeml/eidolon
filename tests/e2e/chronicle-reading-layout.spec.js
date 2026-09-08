@@ -19,7 +19,7 @@ test('a later field record survives refresh and remains reachable by touch in ei
             count: 1, maxCount: 1, investigationMask: 1
         }));
         quests.push(...Array.from({ length: 8 }, (_, index) => ({
-            id: `daily-layout-${index}`, target: 'PhoenixSentinel', accepted: false,
+            id: `daily_layout_${index}`, target: 'PhoenixSentinel', accepted: false,
             count: 0, maxCount: 100, rewardGold: 20000, rewardXP: 10000000
         })));
         document.body.classList.add('mobile-mode');
@@ -30,6 +30,7 @@ test('a later field record survives refresh and remains reachable by touch in ei
         window.__readingLayout = { ui, quests };
     });
     const journal = page.locator('#journal-list');
+    await expect(journal.locator('.quest-ladder-row')).toHaveCount(3);
     const records = journal.locator('details[data-discovery-id]');
     await expect(records).toHaveCount(2);
     await records.last().locator('summary').scrollIntoViewIfNeeded();
