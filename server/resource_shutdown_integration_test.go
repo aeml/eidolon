@@ -51,8 +51,11 @@ func TestResourceActualShutdownWithLiveCharacters(t *testing.T) {
 					t.Fatalf("real pre-shutdown cast failed: %+v", result)
 				}
 				character.Resources.Mana = 70
+				// The accepted cast already proves alive state and exact mana.
+				// An immediate second probe legitimately hits global cooldown.
+			} else {
+				resourceProbe(t, connection, character.Resources.Mana, dead)
 			}
-			resourceProbe(t, connection, character.Resources.Mana, dead)
 			fixtures = append(fixtures, prepared{character, password})
 		}
 	}
