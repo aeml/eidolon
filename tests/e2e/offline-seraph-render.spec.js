@@ -111,7 +111,10 @@ test(`offline summon renders actual smites and expires through chunk updates (${
     })).toBe(true);
     await page.screenshot({ path: testInfo.outputPath('offline-seraph-smite.png') });
     try {
-        await expect.poll(() => page.evaluate(() => window.__offlineSeraph.summon.isActive), { timeout: 22_000 }).toBe(false);
+        // The fixture admits at most 50ms per rendered frame. Slow software
+        // rendering therefore needs more wall time to deliver the same actor
+        // lifetime. Verify the simulated boundary below, not a GPU-speed limit.
+        await expect.poll(() => page.evaluate(() => window.__offlineSeraph.summon.isActive), { timeout: 90_000 }).toBe(false);
     } catch (error) {
         console.log('[offline-seraph-expiry]', JSON.stringify(await page.evaluate(() => {
             const q = window.__offlineSeraph;
@@ -120,6 +123,18 @@ test(`offline summon renders actual smites and expires through chunk updates (${
         })));
         throw error;
     }
+    const timing = await page.evaluate(() => {
+        const q = window.__offlineSeraph;
+        return { duration: q.duration, ...q.expiry };
+    });
+    expect(timing.duration).toBeCloseTo(16.5, 8);
+    expect(timing.beforeRemaining).toBeGreaterThan(0);
+    expect(timing.beforeRemaining).toBeLessThanOrEqual(timing.step + 1e-8);
+    expect(timing.afterRemaining).toBeLessThanOrEqual(0);
+    expect(timing.elapsed).toBeGreaterThanOrEqual(timing.duration - 1e-8);
+    expect(timing.elapsed).toBeLessThanOrEqual(timing.duration + timing.step + 1e-8);
+    if (frameIntervalMs) expect(timing.wallMs).toBeGreaterThan(timing.duration * 2000);
+    console.log('[offline-seraph-expired]', JSON.stringify(timing));
     expect(await page.evaluate(() => {
         const q = window.__offlineSeraph;
         return { owned: q.owner.offlineSeraphs.size, chunk: q.engine.chunkManager.getActiveEntities().includes(q.summon), attached: Boolean(q.summonMesh.parent) };
