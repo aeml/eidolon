@@ -343,7 +343,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.54</span>
+                <span class="start-version-row__label">Alpha 1.0.55</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -669,6 +669,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.55">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.55 (empty means empty)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>No phantom mana refill:</strong> Spending your last mana now shows an empty bar and zero mana, instead of incorrectly displaying 100.</li>
+                        <li><strong>Bars that stay within bounds:</strong> Health and mana displays handle empty, missing and over-cap values without overflowing or showing invalid numbers. Normal recovery refreshes the same HUD on desktop and phone.</li>
+                        <li><strong>Your resources stay yours:</strong> This fixes the display only. Mana costs, health, saved progress and the 0.01 passive regeneration rate are unchanged.</li>
+                    </ul>
+                </div>
+
                 <div class="patch-note-entry" data-version="1.0.54">
                     <h3 class="patch-note-entry__title">Alpha 1.0.54 (know your strength)</h3>
                     <ul class="patch-note-entry__list">

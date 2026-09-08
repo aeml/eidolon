@@ -17,8 +17,22 @@ mana downward. Input stats are never changed. Existing HUD diffing and later
 normal recovery remain functional. Passive regeneration stays 0.01 per stat.
 
 24585 passes all 42 focused HUD, runtime-diffing and passive-regeneration tests
-in 2.540 seconds, full lint and diff checks. Full client validation and release
-packaging remain due. This isolated candidate is based on queued 54, not final
+in 2.540 seconds, full lint and diff checks. Full65671 passed225suites/3302tests
+in108.318seconds on bfde53b. Version55 adds its own "empty means empty" notes,
+keeps54 and all prior history, and aligns login/package/backend/deploy defaults.
+22993 passes260version/HUD/regen tests in2.331s plus lint/bash/diff.91989 server
+root tests pass1.734s after the version update.
+
+89061 rendered presentation fixtures pass3cases/7.7s at1280x720,390x844 and
+844x390. Zero mana has visibly zero fill and text0/160; a later1mana snapshot
+updates that same HUD. This is a component presentation fixture, not an earned
+cast or physical-phone session. Desktop and portrait captures were inspected;
+all three are archived at `/tmp/eidolon-resource-hud-evidence-ZPk14d/`.
+The rendered route is retained in the anonymous CI step through its own npm
+command. Final55297 packaging checks pass229version/history/default tests in
+1.311s, full lint and diff. The55 candidate is locally verified, not published.
+
+This isolated candidate is based on queued 54, not final
 47/cadence; it is not deployed and must inherit final earlier releases in order.
 
 Separate observed issue, not fixed here: the target-intent Fireball preview uses
