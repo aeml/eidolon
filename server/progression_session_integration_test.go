@@ -18,6 +18,8 @@ import (
 	"time"
 
 	"eidolon-server/internal/database"
+	"eidolon-server/internal/forging"
+	"eidolon-server/internal/game"
 	"github.com/gorilla/websocket"
 )
 
@@ -84,6 +86,17 @@ func TestProgressionActualLoginRollback(t *testing.T) {
 						Accepted: true, Count: 7, MaxCount: 11, RewardXP: 0, RewardGold: 0},
 				},
 			}
+			gear := database.Item{ID: "compat-earned-chest", Name: "Compatibility Chest", Type: "ARMOR", Slot: "chest",
+				Rarity: "RARE", Level: 30, Potency: 2, Value: 789, Stack: 1, MaxStack: 1,
+				Stats: map[string]int{"vitality": 7, "wisdom": 3}, StatScaleVersion: game.ItemStatScaleVersion,
+				ForgeBasis: &forging.Basis{Level: 20, Potency: 1, Value: 600, Stats: map[string]int{"vitality": 5, "wisdom": 2}}}
+			character.Equipment = map[string]database.Item{"chest": gear}
+			gear.ID = "compat-bag-chest"
+			character.Inventory = []database.Item{gear}
+			gear.ID = "compat-stash-chest"
+			character.Stash = []database.Item{gear}
+			gear.ID = "compat-buyback-chest"
+			character.Buyback = []database.Item{gear}
 			if err := db.SetFirstCharacter(name, character); err != nil {
 				t.Fatal(err)
 			}
@@ -121,6 +134,26 @@ func TestProgressionActualLoginRollback(t *testing.T) {
 				actual.ResonanceLevel != expected.ResonanceLevel || actual.ResonanceXP != expected.ResonanceXP ||
 				actual.ResonancePoints != expected.ResonancePoints || !reflect.DeepEqual(actual.ResonanceRanks, expected.ResonanceRanks) {
 				t.Fatalf("phase%d fixture%d: progression/assets changed unexpectedly (level%d XP%d version%d)", phase, i, actual.Level, actual.XP, actual.ProgressionVersion)
+			}
+			if !reflect.DeepEqual(actual.Equipment, expected.Equipment) {
+				t.Fatalf("phase%d fixture%d: equipped earned gear changed", phase, i)
+			}
+			for _, container := range []struct {
+				name             string
+				actual, expected []database.Item
+			}{
+				{"bag", actual.Inventory, expected.Inventory}, {"stash", actual.Stash, expected.Stash},
+				{"buyback", actual.Buyback, expected.Buyback},
+			} {
+				items := []database.Item{}
+				for _, item := range container.actual {
+					if item.ID != "" {
+						items = append(items, item)
+					}
+				}
+				if !reflect.DeepEqual(items, container.expected) {
+					t.Fatalf("phase%d fixture%d: %s earned items or Forge precision changed", phase, i, container.name)
+				}
 			}
 			for _, promised := range f.saved.Quests[:3] {
 				var found *database.Quest
