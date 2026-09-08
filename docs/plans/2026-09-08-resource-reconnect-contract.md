@@ -3,15 +3,15 @@
 Status: confirmed defect with an unreleased implementation candidate, not yet
 release-ready or assigned a published patch. Preserve .01 passive regen.
 
-Latest17:39: runtime8b68f56 coalesces/bounds refund retries and outage backoff,
+Latest17:47: runtime8b68f56 coalesces/bounds refund retries and outage backoff,
 seals new delivery on shutdown and refuses unreadable auction startup. Actual
 53929 PASS96.202s across two repetitions: a100-intent backlog makes one500ms
 delayed rejected update, preserves its journal/intents on shutdown, then all100
 pay once across bounded recovery passes; an explicitly corrupt auction produces
 the expected startup exit1, followed by recovery after removing only that owned
 fixture. All32 normal child logs/exits and two intentional rejection logs clean.
-Focused race checks pass; fullrace4474 remains ACTIVE, root14.226s passed/game
-running. Whole-auction operation/debit/item/payout and ambiguous-write recovery,
+Focused race checks pass; fullrace4474 CLOSED PASS normal0, root14.226s/
+game245.257s. Whole-auction operation/debit/item/payout and ambiguous-write recovery,
 rollback and broader acceptance remain open. Earlier slices follow.
 
 Latest17:26: refund candidate d1e2839 adds durable auction intents and private

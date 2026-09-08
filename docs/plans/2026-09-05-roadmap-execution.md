@@ -5,15 +5,15 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 17:39 UTC
+## Current checkpoint — September 8, 17:47 UTC
 
 Previous goal turn was PROGRESS (durable refund implementation, verified47 live
 gate and ordered48 push). This turn is PROGRESS: bounded/coalesced outage retries,
 shutdown admission and explicit auction-load startup failure implemented and
 tested against real delayed Mongo writes/restarts. Full1.1–1.10 stays active and
 incomplete; no gate/scope reduced. No push this turn.48 CI34257070035 on exact
-7a9869d639659cd6f6173dca16c12ba2487e3221 freshly has client/server/browser2/3 PASS;
-browser1/3 and3/3 ACTIVE. No48 deployment/pass claim;49 still waits on the entire48
+7a9869d639659cd6f6173dca16c12ba2487e3221 freshly has client/server/all3 browser
+shards PASS; Predeploy Character QA ACTIVE. No48 deployment/pass claim;49 waits on the entire48
 CI/finalLiveQA/freshpublicidentity gate. Root staged52/ledger is local only.
 
 Resource WT `/tmp/eidolon-resource-persistence-c6E17J`, runtime
@@ -48,13 +48,12 @@ log `/tmp/eidolon-refund-lifecycle-sessions.log`. Owned Mongo
 `eidolon-refund-lifecycle-proof-20260908-1736` and volumes removed/independently
 absent; test failpoints enabled only on that disposable loopback container.
 
-**Full race4474 freshly ACTIVE** on frozen8b68f56, log
-`/tmp/eidolon-refund-lifecycle-full-race.log`: root14.226s passed/databasecached;
-game still running. Re-poll exact handle, do not restart on timeout or edit
-runtime before terminal. No other owned local test/browser/Mongo handle remains.
+**Full race4474 CLOSED PASS normal0** on frozen8b68f56, log
+`/tmp/eidolon-refund-lifecycle-full-race.log`: root14.226s/game245.257s, other
+packages cached/no tests. No owned local test/browser/Mongo handle remains.
 48 CI34257070035 is the external wait. Candidate remains55 metadata, no56 approval.
 
-Next after closing the exact suite: durable pending bid decision, atomic
+Next: durable pending bid decision, atomic
 character debit receipt, then auction/refund transition with interruption tests.
 Candidate `docs/plans/2026-09-08-auction-operation-recovery.md` records concrete
 cut points and lock ownership. Whole-auction debit/item/payout/ambiguous writes,
