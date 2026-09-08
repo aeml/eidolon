@@ -29,7 +29,9 @@ Focused63426 PASS root1.266/game0.130/database0.016 before new tests.73366 had
 test compilation errors from an incorrect Entity.GetCopy reference; corrected to
 World.GetEntityCopy, not counted as acceptance.57785 corrected race PASS
 root2.583/game1.305/database1.096;85095 expanded PASS3.237/1.401/1.056;52907
-capacity-change/offline-preservation PASS2.243/1.221/1.054. Logs
+capacity-change/offline-preservation PASS2.243/1.221/1.054. The database package
+in these latter filtered runs compiled but had no matching tests; item operation
+validation was exercised by the game package's new tests. Logs
 `/tmp/eidolon-auction-item-{focused-initial,focused,focused-corrected,final-focused,capacity-focused}.log`.
 
 Frozen-source fullrace54188 ACTIVE, log `/tmp/eidolon-auction-item-full-race.log`.
