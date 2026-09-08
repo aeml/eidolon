@@ -44,6 +44,9 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 		unlockCharacter := lockCharacterWork(payload.Username)
 		defer unlockCharacter()
+		if c.transportClosed.Load() {
+			return
+		}
 		c.username = payload.Username
 		c.retired.Store(false)
 		sessionsMu.Lock()
@@ -112,10 +115,12 @@ func (c *Client) dispatchMessage(msg Message) {
 		// Keep the authoritative live entity, including resources/cooldowns/death,
 		// rather than replacing it with an older persisted snapshot.
 		if existing := world.GetEntityCopy("player-" + c.username); existing != nil {
-			c.playerID = existing.ID
+			c.bindPlayerID(existing.ID)
 			world.ClearEntityDisconnected(existing.ID)
+			c.stateMu.Lock()
 			c.seenIDs = make(map[string]bool)
 			c.lastState = make(map[string]*EntitySnapshot)
+			c.stateMu.Unlock()
 			world.GenerateDailyQuests(c.playerID)
 			refreshChatBlocks(c.username)
 			existing = world.GetEntityCopy(c.playerID)
@@ -187,7 +192,7 @@ func (c *Client) dispatchMessage(msg Message) {
 
 		// Create player entity from DB character
 		playerID := "player-" + c.username
-		c.playerID = playerID
+		c.bindPlayerID(playerID)
 
 		// Check if player was in an instance and logged out more than 15 minutes ago
 		spawnX := char.X
@@ -758,6 +763,9 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 		unlockCharacter := lockCharacterWork(username)
 		defer unlockCharacter()
+		if c.transportClosed.Load() {
+			return
+		}
 		sessionsMu.Lock()
 		owner := activeSessions[username]
 		sessionsMu.Unlock()
@@ -780,7 +788,7 @@ func (c *Client) dispatchMessage(msg Message) {
 
 		// Bind this new client to the existing entity.
 		c.username = username
-		c.playerID = playerID
+		c.bindPlayerID(playerID)
 		c.retired.Store(false)
 
 		sessionsMu.Lock()

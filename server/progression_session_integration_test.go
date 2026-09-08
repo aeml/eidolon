@@ -14,6 +14,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"regexp"
+	"strings"
 	"testing"
 	"time"
 
@@ -247,12 +248,26 @@ func compatStartServer(t *testing.T, binary, uri string, phase int) (string, fun
 		stopped = true
 		command.Process.Signal(os.Interrupt)
 		select {
-		case <-done:
+		case err := <-done:
+			if err != nil {
+				t.Errorf("phase%d owned server shutdown failed: %v (evidence %s)", phase, err, evidence)
+			}
 		case <-time.After(5 * time.Second):
 			command.Process.Kill()
 			<-done
+			t.Errorf("phase%d owned server required forced shutdown (evidence %s)", phase, evidence)
 		}
 		logFile.Close()
+		contents, err := os.ReadFile(filepath.Join(evidence, "server.log"))
+		if err != nil {
+			t.Error(err)
+			return
+		}
+		for _, marker := range []string{"WARNING: DATA RACE", "panic:", "fatal error:", "Worker panic:", "Recovered from panic in Update:"} {
+			if strings.Contains(string(contents), marker) {
+				t.Errorf("phase%d owned server contains %q (evidence %s)", phase, marker, evidence)
+			}
+		}
 	}
 	t.Cleanup(stop)
 	client := &http.Client{Timeout: time.Second}

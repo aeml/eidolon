@@ -247,6 +247,11 @@ func (c *Client) sendSystemChat(message string) {
 }
 
 func (c *Client) sendSafe(data []byte) (delivered bool) {
+	c.sendMu.RLock()
+	defer c.sendMu.RUnlock()
+	if c.sendClosed {
+		return false
+	}
 	defer func() {
 		if r := recover(); r != nil {
 			// Channel closed, client disconnected

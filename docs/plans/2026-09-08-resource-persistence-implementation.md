@@ -57,6 +57,35 @@ Actual execution and final full race validation remain required at this entry.
 The shutdown drain still needs an admission/worker lifecycle audit before this
 candidate can be release-ready; a WaitGroup alone does not establish safe drain.
 
+## Live race matrix found defects despite green unit tests
+
+On603cd588, full race92756 CLOSED PASS root24.822s/database1.065s/game450.687s.
+Actual normal-server handoff and144sessions57781 PASS30.197s; race-built handoff
+78650 PASS5.676s with an independently clean server log. These scopes remain
+valid, but they were not sufficient to establish race-free live sessions.
+
+The broader race-built144session matrix77433 returned test-process0/176.281s,
+but its three server logs show DATA RACE and race-exit summaries: asynchronous
+state sends versus hub queue closure (all three phases), plus Join's playerID
+assignment versus the broadcast reader (phase1). Treat this as FAILED race
+acceptance, not a green result. Logs are
+`/tmp/eidolon-compat-session-{3776921393,4283576186,2711711528}/server.log` and
+`/tmp/eidolon-resource-matrix-race-sessions.log`. Its disposable Mongo container
+was removed and independently confirmed absent.
+
+Follow-up serializes every outbound producer with queue closure, publishes a
+write-once player binding under sessionsMu, and guards state-cache resets against
+broadcast snapshots. Critical hub messages use the priority lane; state/time
+remain lossy and nonblocking. Login/resume recheck transport closure after their
+potentially delayed authentication/account-lock work. Focused race70558 passes
+1.502s, including concurrent close/send and identity publication tests. An initial
+test invocation from the repository root had no go.mod; corrected in server/.
+
+The actual-session harness now FAILS on abnormal/forced server exit or race/panic
+log markers, rather than ignoring child status. Re-run the real race matrix on
+the correction, then full regressions. Token resume/death recovery, shutdown
+drain, delayed-save failures and compatible rollback remain required.
+
 ## Required work still open — do not publish this slice alone
 
 - Verify the implemented immediate-login, duplicate-session and repeated-Join

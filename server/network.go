@@ -23,16 +23,13 @@ func runHub() {
 				client.transportClosed.Store(true)
 				scheduleCharacterWork(func() { cleanupClient(client) })
 				delete(clients, client)
-				close(client.send)
-				if client.prioritySend != nil {
-					close(client.prioritySend)
-				}
+				client.closeSendQueues()
 			}
 		case message := <-broadcast:
 			for client := range clients {
 				// Filter by InstanceID
 				if message.InstanceID != "" {
-					clientInstance := world.GetPlayerInstance(client.playerID)
+					clientInstance := world.GetPlayerInstance(client.boundPlayerID())
 					if clientInstance != message.InstanceID {
 						continue
 					}
@@ -41,24 +38,15 @@ func runHub() {
 				if message.Type == MsgState || message.Type == "time" {
 					// Non-blocking send for state/time updates
 					// If channel is full, drop the message instead of disconnecting
-					select {
-					case client.send <- message.Data:
-					default:
-						// Drop message, client is too slow
-					}
+					client.sendState(message.Data)
 				} else {
 					// Critical messages (Chat, Damage, etc.)
 					// Try to send, if full, we might have to disconnect or risk blocking
-					select {
-					case client.send <- message.Data:
-					default:
+					if !client.sendSafe(message.Data) {
 						client.transportClosed.Store(true)
 						scheduleCharacterWork(func() { cleanupClient(client) })
 						delete(clients, client)
-						close(client.send)
-						if client.prioritySend != nil {
-							close(client.prioritySend)
-						}
+						client.closeSendQueues()
 					}
 				}
 			}

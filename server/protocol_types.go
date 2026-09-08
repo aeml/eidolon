@@ -95,6 +95,9 @@ type EntitySnapshot struct {
 type Client struct {
 	retired         atomic.Bool
 	transportClosed atomic.Bool
+	sendMu          sync.RWMutex
+	sendClosed      bool
+	stateMu         sync.Mutex
 	conn            *websocket.Conn
 	send            chan []byte
 	prioritySend    chan []byte

@@ -47,12 +47,12 @@ func savePlayer(client *Client) {
 }
 
 func savePlayerNow(client *Client) {
-	if db == nil || world == nil || client == nil || client.playerID == "" || client.username == "" {
+	if db == nil || world == nil || client == nil || client.username == "" {
 		return
 	}
 	unlock := lockCharacterWork(client.username)
 	defer unlock()
-	if !currentCharacterConnection(client) {
+	if !currentCharacterConnection(client) || client.playerID == "" {
 		return
 	}
 
