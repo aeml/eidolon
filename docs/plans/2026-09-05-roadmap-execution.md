@@ -5,7 +5,63 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 17:26 UTC
+## Current checkpoint — September 8, 17:39 UTC
+
+Previous goal turn was PROGRESS (durable refund implementation, verified47 live
+gate and ordered48 push). This turn is PROGRESS: bounded/coalesced outage retries,
+shutdown admission and explicit auction-load startup failure implemented and
+tested against real delayed Mongo writes/restarts. Full1.1–1.10 stays active and
+incomplete; no gate/scope reduced. No push this turn.48 CI34257070035 on exact
+7a9869d639659cd6f6173dca16c12ba2487e3221 freshly has client/server/browser2/3 PASS;
+browser1/3 and3/3 ACTIVE. No48 deployment/pass claim;49 still waits on the entire48
+CI/finalLiveQA/freshpublicidentity gate. Root staged52/ledger is local only.
+
+Resource WT `/tmp/eidolon-resource-persistence-c6E17J`, runtime
+8b68f5610a9b382efd6be82c130523213e66ac2c. One automatic worker coalesces bursts,
+backs off10s after errors, skips overlap, caps passes32 items/2s soft budget
+between IO calls, and stops at the first error. Round-robin cursor prevents a
+permanently bad recipient starving later refunds. Periodic10s work is separate
+from autosave. Shutdown seals new delivery before joining commands/loops and
+finishes only in-flight work; durable intents survive. Failed auction loading
+now refuses startup before HTTP admission rather than exposing an empty market.
+
+Focused race35917 PASS root2.378/game1.834; expanded17477 PASS2.332/2.151;
+final10726 PASS2.018/1.731. Includes1000-intent outage/backoff/fairness,
+100-item healthy batch recovery,100 concurrent scheduling requests and an
+in-flight shutdown barrier. Prior actual ack-failure test now waits for the
+saved payment/receipt before stopping, preserving that precise fault boundary.
+
+Actual53929 CLOSED PASS normal0/96.202s on8b68f56: two repetitions of previous
+offline/failed-save/failed-ack recovery plus new100-refund delayed-write backlog
+and corrupt-auction startup refusal/recovery. Mongo test failpoint blocks updates
+500ms then rejects: exactly ONE attempted update before readiness under5s;
+normal stop keeps100 intents and1235gold/one-receipt journal over1234gold Mongo.
+Four healthy bounded startup passes recover1334gold/100receipts/17HP/100mana.
+Malformed disposable auction produces expected exit1/load-guard message; only
+that fixture is removed, then independent valid43gold refund recovers normally.
+Backlog cases12.18s/17.07s; corrupt-load3.36s/3.29s. Not power-loss/full-auction
+atomicity proof. All32 normal server logs strict normal exits and independent
+clean scans/shutdown completion; two intentional startup rejection logs likewise
+clean and show expected guard. No production player data touched.
+Binary `/tmp/eidolon-refund-lifecycle-proof-fvmjUz/8b68f5610a9b382efd6be82c130523213e66ac2c`;
+log `/tmp/eidolon-refund-lifecycle-sessions.log`. Owned Mongo
+`eidolon-refund-lifecycle-proof-20260908-1736` and volumes removed/independently
+absent; test failpoints enabled only on that disposable loopback container.
+
+**Full race4474 freshly ACTIVE** on frozen8b68f56, log
+`/tmp/eidolon-refund-lifecycle-full-race.log`: root14.226s passed/databasecached;
+game still running. Re-poll exact handle, do not restart on timeout or edit
+runtime before terminal. No other owned local test/browser/Mongo handle remains.
+48 CI34257070035 is the external wait. Candidate remains55 metadata, no56 approval.
+
+Next after closing the exact suite: durable pending bid decision, atomic
+character debit receipt, then auction/refund transition with interruption tests.
+Candidate `docs/plans/2026-09-08-auction-operation-recovery.md` records concrete
+cut points and lock ownership. Whole-auction debit/item/payout/ambiguous writes,
+enforced rollback compatibility, broader instance/device play,31chapter earned
+campaign, full phone gate and remaining1.1–1.10 milestones stay open.
+
+## Historical checkpoint — September 8, 17:26 UTC
 
 Previous goal turn was PROGRESS (verified dungeon/2v2 recovery and documentation).
 This turn is PROGRESS: durable refund outbox/character receipt implementation,
