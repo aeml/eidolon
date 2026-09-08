@@ -5,7 +5,74 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 08:45 UTC
+## Current checkpoint — September 8, 09:08 UTC
+
+Previous goal turn was progress (reproduced and fixed enemy impact reach).
+This continuation completes both server integrations, tests the real story
+route, implements and renders target-level information, and corrects the newly
+failed45 CI approach fixture. Full1.1–1.10 remains active and incomplete.
+
+**45 CI34203281024 FAILED**, not still running. Client/server/browser/gallery
+passed; corrected talent economy passed30→21mana and saved-login21mana. Shield
+training passed695→834capacity and saved expiry, but both attempts failed to
+find a projected Inferno Titan after fixed northward travel through random
+spawns. All deployment/live jobs skipped. Earlier retry logs also contain
+ERR_NETWORK_CHANGED; no claim that the approach fix resolves host networking.
+Raw failed log `/tmp/eidolon-release45-ci34203281024-failed.log`.
+
+45 correction worktree `/tmp/eidolon-release45-wizard-ZLnqjH` now clean
+**d864474272983f85fdf0bfa598544268233c810a**, not pushed. First test-only change
+2e45825 selects a real observed nearest living Inferno Titan instead of requiring
+screen projection before approaching. Actual45665 FAILED42.5s: remaining21.77
+units after15 calls. Generic movement waits for one unit by default; new d864474
+waits for up to six actual units of each planned seven-unit step before replanning.
+Same15-step/240s limits, explicit under3 contact, protection removal and real-hit
+absorption assertions retained. No src/server/index change from0ed54b2.
+Focused13178 passes12tests/1.123s; final34310 passes11tests/1.083s, full lint/diff
+checks. Failed45665 scan0/cleanup/independent exact-container absence passed.
+
+**43571 ACTIVE — only owned browser**, frozen d864474, route shield-training,
+runID release45-shield-movement, API18555/Mongo18556/web18557. Log
+`/tmp/eidolon-release45-shield-movement-gameplay.log`; earlier failed attempt
+`/tmp/eidolon-release45-shield-approach-gameplay.log`. Poll43571; no source edits
+or another owned browser until terminal. Only after actual absorption/cleanup
+passes, carry this correction into release45, push its explicit fast-forward
+commit, and monitor a new CI. Hold46 until all eight45 jobs and public identity
+checks pass. Do not rerun unchanged failed CI or push root's staged52 master.
+
+**47 impact backport now871926a59e3db5f53ad50d23ff7f9198fbee6b1d**, clean in
+`/tmp/eidolon-release47-starter-FHKAMJ`, branch work/release47-starter-spacing.
+Runtime8f4c452 copies only enemy reach correction/tests, not faster player cadence
+or expanded story. Adds47 patch note. Focused server10861 PASS9.881s; client66704
+PASS226tests/4.555s. Full server33511 PASSroot16.790s/game291.657s/all packages.
+All handles closed. Needs actual47 collection play, then release-branch integration
+and sequential48–52 inheritance. Original release47 branch remains a6a91dc.
+
+**Expanded aa905ae full server69976 PASS**root18.490s/game417.772s/all packages.
+Actual18050 FAILED6.1m at Watch2/40 on120s credit watchdog, with zero deaths.
+Opening86s/zero deaths, diary138s, no reconnect; mana15/115 then21/130. Final
+level3 player122/150HP19/130MP, selected level7 Skeleton26HP,92retreats/two
+accepted Fireballs. All actual evidence closed, scan0/cleanup/container absence
+passed. Viewed failure and diary PNGs archived at
+`/tmp/eidolon-impact-reach-evidence-64LFWU/`. Survival is not first-hour approval.
+
+Expanded worktree `/tmp/eidolon-earned-story-TZuGpp` now clean
+**23ea926e8b5361d17cb9b5969b48462e534b576d**, docs closure of tested af82670.
+Target cards now show real enemy levels (desktop metadata, phone title prefix).
+Both caches update on level changes; invalid levels omitted. The earned driver
+seeks quest-eligible targets no more than one level above the player (never below
+the quest minimum) and returns toward starter territory for early Skeleton hunts;
+immediate dangerous pursuers still permit defensive attacks. No server eligibility,
+count, mana, damage, timing, respawn or grant changes. Wider pursuit/encounter and
+Rogue/Cleric earned-driver coverage remain open.
+Final14389 PASS24tests/2.238s +full lint/diff; full client35898 PASS230suites/
+3401tests/151.663s. Render74979 PASS3cases/10.9s at1280x900/390x844/844x390;
+all three actual card images viewed/archived in
+`/tmp/eidolon-target-level-evidence-tBVMI9/`. Component rendering is not physical
+phone or earned-play approval. All handles closed. Next actual uninterrupted
+play must use this new selection/card source, not the failed aa905ae baseline.
+
+## Historical checkpoint — September 8, 08:45 UTC
 
 This goal continuation made progress: recovered and closed the cadence full
 suites, completed an actual uninterrupted story test, reproduced an enemy-impact
