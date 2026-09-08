@@ -104,7 +104,7 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
     await page.getByRole('button', { name: 'Continue conversation', exact: true }).click();
     await page.locator('#btn-close-quest').click();
     await earnEarthInvestigation(page, 'chronicle_earth_returning_scar', openIlyra, null,
-        { beforeInspect: site => clearFreshInvestigationApproach(page, site) });
+        { beforeInspect: site => clearFreshInvestigationApproach(page, site), inspectWithKeyboard: true });
     await openIlyra(page);
     await expect(page.locator('#quest-window')).toContainText('The Dungeon Guide requires level 30 for the Bastion');
     await expect(page.locator('#quest-window')).toContainText('Daily contracts are optional');
