@@ -5,7 +5,68 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 07:01 UTC
+## Current checkpoint — September 8, 07:15 UTC
+
+Previous goal turn was progress: starting-ability rune authorization was corrected
+and full checks launched. This continuation closes those checks, records actual
+second-boss failure, improves the prepared build using existing efficiency talents,
+and audits the distinct fresh/prepared stat profiles. Full1.1–1.10 remains active
+and incomplete.45 is not deployed; no new push or release-queue integration yet.
+
+**c812eee full checks passed:** client28151 completed216 suites/3193 tests/
+187.655s before launching its browser. Server57721 completed successfully:
+root14.155s/database1.071s/game330.668s. Both old handles are now terminal.
+
+**c812eee browser28151 FAILED5.0m:** actual normal UI bought five Mastery ranks
+and successfully equipped Empowered without a specialization, proving the rune
+correction. Rootbound Warden15000HP was defeated and later Skeletons spawned and
+died. Briar Matron16800HP then outlasted the unchanged120s encounter limit. Last
+periodic sample:1261boss HP, player300/2575HP and29mana (not an exact final sample).
+Log `/tmp/eidolon-release45-base-runes-browser.log`. Artifact scan/owned cleanup
+passed. This is not a completed functional run or a fresh-entry balance result.
+
+**New frozen prepared candidate d176b62**, branch work/release45-wizard-preparation,
+worktree `/tmp/eidolon-release45-wizard-ZLnqjH`: after Mastery, use existing
+Efficient Casting and Fireball Technique (up to five ranks each), spending only
+available points through actual UI/server acknowledgements. Pure planner guards
+against overspending, malformed budgets/ranks and overwriting existing training.
+At level100 this spends15/20points; it neither allocates offline-only attribute
+points nor changes production combat coefficients. Real-dispatch test9238 passed
+1.636s:618raw damage,21mana,2.125s cooldown, basic29, unchanged0.01 regeneration.
+Client59067 passed236 tests/two suites/2.554s; final NaN guard rerun88089 passed
+19 planner tests/1.030s and helper lint before commit/browser launch.
+
+Source diff c812eee→d176b62 has only QA helpers/tests and documentation; production
+server source is byte-identical to the passing full race build. The expanded Go
+test passed separately. The correct latest full client/browser results remain due:
+
+- **88089 ACTIVE:** only owned browser, corrected Verdant run, run ID
+  release45-efficient, API/Mongo/web18465/18466/18467, log
+  `/tmp/eidolon-release45-efficient-browser.log`. Ordinary training is acknowledged
+  and initial mobs defeated; no final result yet.
+- **46538 ACTIVE:** full client suite on the same frozen d176b62, log
+  `/tmp/eidolon-release45-efficient-client.log`.
+
+Do not edit/restart this worktree or start another owned browser until terminal.
+Do not restore0.5 regeneration, alter deadlines, grant resources or call the fresh
+campaign balanced because a prepared fixture passes. No potion/rest system added.
+
+**Integration preview only:** `git merge-tree --write-tree` succeeds without
+conflicts for d176b62 into each staged46–52 and root. No branch refs were moved.
+After45 is verified, merge sequentially (updated45→46→47→…→52) so each published
+commit remains a fast-forward descendant of its actual predecessor, with its own
+version/notes and checks. Do not push root master or push46 before all45 live gates.
+
+New read-only [starting-stat audit](2026-09-08-starting-stat-baselines.md) separates
+online all10 new saves, prepared class-primary20 fixtures and the third offline
+distribution. No starting stats or existing saves were changed. The prepared
+helper's name is not proof of the intended new-save balance. Online has no server
+attribute-point allocation; the UI deliberately hides offline-only controls.
+The balance plan now requires an explicit baseline/save-compatibility decision.
+Earned31-chapter candidate fa20e50 remains parked with its real uninterrupted
+diary failure; no claims of Watch completion or full first-hour approval.
+
+## Historical checkpoint — September 8, 07:01 UTC
 
 The prior short user turn reverified existing0.01 regeneration (six client tests
 and focused server tests passed), but added no implementation. This continuation
