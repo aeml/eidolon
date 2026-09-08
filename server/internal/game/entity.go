@@ -857,13 +857,15 @@ func (e *Entity) RecalculateStats() {
 
 func (w *World) GetEntityCopy(id string) *Entity {
 	w.Mu.RLock()
+	// Ability/scene mutations serialize on World.Mu; tick/background changes
+	// also use Entity.Mu. Hold both through the detached copy, in that order.
+	// Releasing World.Mu early lets an ability mutate fields while we read them.
+	defer w.Mu.RUnlock()
 	e, ok := w.Entities[id]
 	if !ok {
-		w.Mu.RUnlock()
 		return nil
 	}
 	e.Mu.RLock()
-	w.Mu.RUnlock()
 	defer e.Mu.RUnlock()
 
 	// Manual copy to avoid copying the.Mutex
