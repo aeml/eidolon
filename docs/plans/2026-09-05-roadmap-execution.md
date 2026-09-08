@@ -5,7 +5,34 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 04:48 UTC
+## Current checkpoint — September 8, 05:04 UTC
+
+User added an explicit health/mana regeneration fix: final per-stat0.01 rather
+than the displayed0.1. Actual old authoritative/offline code was0.5; discrepancy
+was explained to the user. Isolated `/tmp/eidolon-regen-rate-Jc7euj`, clean
+**8aa6ae0**, now sets requested0.01 consistently, fixes integer server loss of
+fractional ticks, and updates tooltips. Other healing/room/unique effects are
+unchanged. Three focused client suites/62 tests45690 pass; lint23899 passes;
+corrected server three-race46937 passes11.513s. Initial world-tick test had
+invalid above-max health from empty base stats, corrected without relaxing checks.
+Full server **24799 ACTIVE**, `/tmp/eidolon-regen-full-server.log`; full client
+**67493 ACTIVE**, `/tmp/eidolon-regen-full-client.log`. Freeze regen source.
+Not yet root-integrated, version-packaged or deployed. See candidate regen doc.
+
+Prior full earned Earth rerun **75518 FAILED /8.8m**, frozen3f4d6d2, now closed
+with scan/owned cleanup passed. It earned Watch36/40 with two deaths then another
+six-unit retreat failed near(-15.87,-38.51); paths passed static collision queries
+but ordinary clicks produced ATTACKING or under0.35 movement. Root cause is not
+yet established; no movement/death assertion relaxed. No owned browser active.
+This old-regen run cannot validate the new requested rate's campaign pacing.
+
+Bridge has an opt-in actual-session integration harness draft.83002 confirms
+compile/skip only, not actual Mongo/login/rollback success; that gate remains
+open and work is paused while completing the requested regeneration change.
+44 CI34187405437 passes server/client/anonymous browser; predeploy QA active.
+No45 push. All prior full-roadmap and release gates remain in force.
+
+## Historical checkpoint — September 8, 04:48 UTC
 
 Release43 CI34182920134 closed with all eight jobs successful. Fresh public
 manifest/login/runtime/versioned entry/backend all returned HTTP200 and exact
