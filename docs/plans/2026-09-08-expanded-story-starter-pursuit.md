@@ -19,7 +19,9 @@ expeditions, investigations, dungeon/raid gates and manual Ilyra conversations
 remain. The current XP curve is not silently replaced by the curve2 prototype.
 
 24805 focused server race passed3.696s, covering starter behavior, base cadence,
-passive regeneration and matching enemy-impact tests. Full server regression
-and a new uninterrupted earned story route remain required. The separate
+passive regeneration and matching enemy-impact tests. Full70191 server regression
+passed: root2.264s, database0.015s, game66.308s and all other packages, normal
+exit0 on clean cf6875c. A new uninterrupted earned story route remains required.
+Client runtime is unchanged from the existing3418-test full regression. The separate
 15-chapter Wizard/Fighter collection passes do not establish that this expanded
 campaign is playable or that its full leveling route reaches every entry gate.
