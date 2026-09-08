@@ -5,7 +5,44 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 09:08 UTC
+## Current checkpoint — September 8, 09:12 UTC
+
+This continuation is progress, with all owned local handles now closed. The
+full roadmap goal remains active; no first-hour or major-version completion claim.
+
+**Corrected45 pushed83d8f083538fc92b03878c9eb7cb1a46c8847da7.** Push17090
+terminal success, independent remote head matches. New CI **34208478475 ACTIVE**,
+client/server running at latest check. Old34203281024 failed as documented below;
+do not rerun it unchanged. Fresh public09:08 manifest/backend still44/847d454,
+healthy/database ready; no45 live claim. Wait for all eight new CI jobs plus
+independent exact manifest/login/versioned-main/backend checks before46 push.
+
+Actual corrected shield43571 PASS40.6s/43.3s total on d864474. Observed enemy
+started34.318units away, real movement reached under3, then actual hostile hit
+absorbed310 of834shield, leaving524. Baseline695/trained834/saved expiry/town
+return passed. Scan0sanitizations and owned cleanup/independent container absence
+passed. Actual absorption PNG viewed: entrance architecture still occludes much
+of the hero, an existing46 visibility issue; do not call this broad visual signoff.
+Both45 worktrees now clean83d8f08 with docs closure. Runtime remains identical
+to0ed54b2. No production buffs or weakened absorption checks were introduced.
+
+**Queued46 nowb2016ef0af471eeec8a1106f6c88ce144b1c77a7**, clean. Mergeecd0600
+inherits corrected45 and resolves a shield-test conflict by retaining both the
+46cutaway assertion and observed approach. Initial1664 lint failed on conflict
+markers; corrected29678 passes238tests/four suites/2.212s and full lint/diff.
+No src/server/index differences versus ad16790; existing actual entrance evidence
+remains applicable. Root merges this as1bd6892;236focused tests/three suites/
+1.636s and diff checks pass76179. Root remains staged52: never push its master.
+
+47candidate remains clean871926a (full server integration passed), and expanded
+target-level candidate remains clean23ea926 (full client and three rendered cards
+passed), as detailed below. Neither is published. Next owned browser can verify
+47fresh-collection or the expanded appropriate-target uninterrupted route; keep
+their evidence distinct. Original release47 and queued48–52 still need final
+candidate/46 inheritance before their own publication. No owned browser or test
+process is active now; only confirmed external CI34208478475 is being awaited.
+
+## Historical checkpoint — September 8, 09:08 UTC
 
 Previous goal turn was progress (reproduced and fixed enemy impact reach).
 This continuation completes both server integrations, tests the real story
