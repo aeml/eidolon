@@ -236,3 +236,21 @@ Log `/tmp/eidolon-earned-watch-close.log`. No owned QA containers remain.
 This closes the navigation reproduction, not the fresh pacing gate. Do not rerun
 the same source expecting a resource fix, restore checkpoint logins, grant bars,
 or call the later Watch balanced from this failed earlier chapter.
+
+### Investigation input strategy correction
+
+Inspection of the failed diary route found that its site-clearing helper did
+not call the normal Wizard defense/spacing driver used by earned hunts. It
+stood still and issued attacks. The helper now invokes that existing ordinary
+movement/shield strategy before targeting, retains death assertions (including
+after a retreat), and skips extra attacks during a defensive cast. No resource
+refills, quest credit, skill purchases, combat coefficients, attempt bounds or
+checkpoint reconnects change. Other classes retain their existing inputs.
+
+Focused checks pass 26 tests across investigation input, earned class combat and
+uninterrupted checkpoints (2.356s); changed-file lint and diff checks pass. The
+initial unit run exposed a Jest mock incompatibility with Playwright's optional
+assertion message; the mock now forwards only the value and the death regression
+also requires that defense was reached, preventing an unrelated error from
+passing that test. This is a test-driver correction, not proof that the fresh
+diary/Watch route now survives. Actual uninterrupted gameplay remains required.
