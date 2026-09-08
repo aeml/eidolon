@@ -36,8 +36,9 @@ test('ordinary dungeon death requires respawn and preserves the unfinished run o
         });
         const route = buildDungeonTraversalRoutes(layout)[0];
         const walkDeadline = Date.now() + 90_000;
-        for (const destination of route) {
+        approach: for (const destination of route) {
             while ((await readPlayerState(page)).state !== 'DEAD') {
+                if (await page.evaluate(() => window.__dungeonRecoveryHits > 0)) break approach;
                 const player = await readPlayerState(page);
                 const distance = Math.hypot(destination.x - player.x, destination.z - player.z);
                 if (distance < 3) break;
@@ -46,7 +47,16 @@ test('ordinary dungeon death requires respawn and preserves the unfinished run o
                 try {
                     await moveByGroundClick(page, (destination.x - player.x) * scale, (destination.z - player.z) * scale,
                         { allowJumpFallback: false });
+                    // The input helper confirms the first unit of travel, not
+                    // arrival. Let that ordinary step finish before projecting
+                    // another relative click from a moving camera/player.
+                    await expect.poll(() => page.evaluate(() => {
+                        const p = window.game.player;
+                        return p.state === 'DEAD' || window.__dungeonRecoveryHits > 0 ||
+                            (!p.targetPosition && p.state !== 'MOVING');
+                    }), { timeout: 5_000, message: 'The issued recovery approach step must settle' }).toBe(true);
                 } catch (error) {
+                    if (await page.evaluate(() => window.__dungeonRecoveryHits > 0)) break approach;
                     if ((await readPlayerState(page)).state !== 'DEAD') throw error;
                 }
             }

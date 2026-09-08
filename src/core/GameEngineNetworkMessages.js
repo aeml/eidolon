@@ -12,7 +12,7 @@ import {
 import { installPrototypeMethods } from './PrototypeInstaller.js';
 
 class GameEngineNetworkMessageMethods {
-    async enterInstance(instanceId, type, layout, roomState = null) {
+    async enterInstance(instanceId, type, layout, roomState = null, spawn = null) {
         console.log(`Entering instance: ${instanceId} (${type})`);
         // Any scenery job started for the prior scene must not add meshes or
         // colliders after the instance transition has cleared that scene.
@@ -118,6 +118,7 @@ class GameEngineNetworkMessageMethods {
                 || type === 'water_crystal_raid'
                 || type === 'fire_crystal_raid'
                 || type === 'air_crystal_raid'
+                || type === 'pvp_arena'
             )
         );
 
@@ -130,7 +131,9 @@ class GameEngineNetworkMessageMethods {
         // Generate new world
         const worldGen = new WorldGenerator(this.getInstanceEnvironmentGroup(), this.collisionManager);
         this.activeWorldGenerator = worldGen;
-        if (type === 'crypt') {
+        if (type === 'pvp_arena') {
+            worldGen.createPvPArena(layout);
+        } else if (type === 'crypt') {
             await worldGen.createDungeon(0, 0, 100, { shouldAttach: isCurrentTransition });
         } else if (type === 'verdant_bastion_catacombs') {
             await worldGen.createVerdantBastionCatacombs(0, 0, layout);
@@ -182,6 +185,12 @@ class GameEngineNetworkMessageMethods {
              startZ = 200;
         }
 
+        // PvP carries each team's spawn and the exact departure point on return.
+        // Other instances retain their established first-room/default placement.
+        if (Number.isFinite(spawn?.x) && Number.isFinite(spawn?.z)) {
+            startX = spawn.x;
+            startZ = spawn.z;
+        }
         this.player.position.set(startX, 0.5, startZ);
         this.player.targetPosition = null; // Clear any pending movement target
 
@@ -838,7 +847,7 @@ class GameEngineNetworkMessageMethods {
         } else if (msg.type === 'enter_instance') {
             const instanceData = msg.payload;
             console.log(`GameEngine: Received enter_instance. ID: ${instanceData.instanceId}, Type: ${instanceData.type}`);
-            void this.enterInstance(instanceData.instanceId, instanceData.type, instanceData.layout, instanceData.roomState || null)
+            void this.enterInstance(instanceData.instanceId, instanceData.type, instanceData.layout, instanceData.roomState || null, instanceData.spawn || null)
                 .catch(e => console.error('Failed to enter instance:', e));
         } else if (msg.type === 'dungeon_room_state') {
             const previousDungeonRoomState = this.currentDungeonRoomState;

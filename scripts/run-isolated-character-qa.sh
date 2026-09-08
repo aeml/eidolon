@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# A new worktree may share node_modules without running npm's postinstall.
+# Fail before creating disposable services if the browser imports would be 404s.
+for runtime_file in vendor/manifest.json vendor/three/build/three.module.js vendor/protobuf/protobuf.min.js; do
+  if [[ ! -f "${runtime_file}" ]]; then
+    echo "Missing browser runtime ${runtime_file}; run npm run prepare:client first." >&2
+    exit 1
+  fi
+done
+
 readonly QA_RUN_ID="${EIDOLON_ISOLATED_QA_RUN_ID:-$(openssl rand -hex 5)}"
 readonly MONGO_CONTAINER="eidolon-isolated-qa-mongo-${QA_RUN_ID}"
 readonly API_CONTAINER="eidolon-isolated-qa-api-${QA_RUN_ID}"
@@ -121,6 +130,7 @@ qa_allowlist+=",${QA_USERNAME_BASE}-death-resources"
 qa_allowlist+=",${QA_USERNAME_BASE}-duration,${QA_USERNAME_BASE}-forge,${QA_USERNAME_BASE}-whip,${QA_USERNAME_BASE}-ground"
 qa_allowlist+=",${QA_USERNAME_BASE}-cleanse"
 qa_allowlist+=",${QA_USERNAME_BASE}-cleanse-retry1"
+qa_allowlist+=",${QA_USERNAME_BASE}-economy-retry1"
 qa_allowlist+=",${QA_USERNAME_BASE}-guardian"
 qa_allowlist+=",${QA_USERNAME_BASE}-holy"
 qa_allowlist+=",${QA_USERNAME_BASE}-support-area"
@@ -255,7 +265,7 @@ run_forge_guide() {
 
 run_talent_economy() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-economy" EIDOLON_E2E_CLASS=Wizard \
-    npx playwright test tests/e2e/talent-economy-gameplay.spec.js
+    npx playwright test tests/e2e/talent-economy-gameplay.spec.js "$@"
 }
 
 run_talent_healing() {
@@ -293,7 +303,12 @@ run_shield_training() {
 }
 
 run_fresh_collection() {
-  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-first-grove" EIDOLON_E2E_CLASS=Wizard \
+  local fresh_class="${EIDOLON_E2E_FRESH_CLASS:-Wizard}"
+  case "${fresh_class}" in
+    Wizard|Fighter|Rogue|Cleric) ;;
+    *) echo "EIDOLON_E2E_FRESH_CLASS must be Wizard, Fighter, Rogue or Cleric." >&2; return 1 ;;
+  esac
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-first-grove" EIDOLON_E2E_CLASS="${fresh_class}" \
     EIDOLON_E2E_FRESH_COLLECTION=1 npx playwright test tests/e2e/fresh-opening-gameplay.spec.js
 }
 
@@ -414,16 +429,23 @@ run_animation_multiplayer() {
     npx playwright test tests/e2e/multiplayer.spec.js
 }
 
+run_pvp_cadence() {
+  npx playwright test tests/e2e/pvp-cadence-gameplay.spec.js
+}
+
 set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   all)
-    npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js && run_whip_shape && run_ground_shape && run_purifying_area && run_guardian_area && run_consecrated_area && run_cleric_area && run_spirit_area && run_whirlwind && run_phone && run_phone_combat && run_phone_party && run_phone_inventory && run_equipment_recovery && run_forge_guide && run_fresh_collection && run_talent_economy && run_talent_healing && run_talent_duration && run_seraph && run_shield_training && run_entrance_visibility && run_phone_quests && run_phone_build && run_phone_settings && run_phone_adventure && run_dungeon_recovery && run_death_resource_recovery && run_direct_target_classes && npm run test:e2e:movement && run_animation_classes && run_animation_multiplayer
+    npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js && run_whip_shape && run_ground_shape && run_purifying_area && run_guardian_area && run_consecrated_area && run_cleric_area && run_spirit_area && run_whirlwind && run_phone && run_phone_combat && run_phone_party && run_phone_inventory && run_equipment_recovery && run_forge_guide && run_fresh_collection && run_talent_economy && run_talent_healing && run_talent_duration && run_seraph && run_shield_training && run_entrance_visibility && run_phone_quests && run_phone_build && run_phone_settings && run_phone_adventure && run_dungeon_recovery && run_death_resource_recovery && run_direct_target_classes && npm run test:e2e:movement && run_pvp_cadence && run_animation_classes && run_animation_multiplayer
     ;;
   animations)
     run_animation_classes
     ;;
   multiplayer)
     run_animation_multiplayer
+    ;;
+  pvp-cadence)
+    run_pvp_cadence
     ;;
   movement)
     npm run test:e2e:movement
@@ -445,6 +467,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   talent-economy)
     run_talent_economy
+    ;;
+  talent-economy-retry)
+    EIDOLON_E2E_ECONOMY_RETRY_PROBE=1 run_talent_economy --retries=1
     ;;
   talent-healing)
     run_talent_healing
@@ -524,6 +549,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   fresh-collection)
     run_fresh_collection
+    ;;
+  fresh-collection-prepared)
+    EIDOLON_E2E_PREPARED_COLLECTION=1 run_fresh_collection
     ;;
   fresh-hunt)
     EIDOLON_E2E_FRESH_COLLECTION=1 EIDOLON_E2E_FRESH_HUNT=1 npx playwright test tests/e2e/fresh-opening-gameplay.spec.js

@@ -27,6 +27,7 @@ jest.unstable_mockModule('../src/world/WorldGenerator.js', () => ({
             this.createMoltenCore = jest.fn().mockResolvedValue();
             this.createTempestSpire = jest.fn().mockResolvedValue();
             this.createAbyssalWell = jest.fn().mockResolvedValue();
+            this.createPvPArena = jest.fn();
             this.createTown = jest.fn().mockResolvedValue();
             this.createOverworldStructures = jest.fn().mockResolvedValue();
             worldGeneratorInstances.push(this);
@@ -197,6 +198,23 @@ beforeEach(() => {
 });
 
 describe('GameEngine dungeon containment wiring', () => {
+    test('PvP entry builds the arena and uses the authoritative team spawn', async () => {
+        const engine = createEngineHarness();
+        const layout = { rooms: [{ x: 0, z: 0, width: 50.5, height: 34.5 }],
+            walkRects: [{ x: 0, z: 0, width: 50.5, height: 34.5 }] };
+        await engine.enterInstance('pvp-match', 'pvp_arena', layout, null, { x: 8, y: 0, z: -3 });
+        expect(worldGeneratorInstances[0].createPvPArena).toHaveBeenCalledWith(layout);
+        expect(worldGeneratorInstances[0].createTown).not.toHaveBeenCalled();
+        expect(engine.collisionManager.setDungeonWalkableGeometry).toHaveBeenCalledWith(layout.walkRects);
+        expect(engine.player.position.toArray()).toEqual([8, 0.5, -3]);
+    });
+
+    test('PvP return restores the departure point instead of a guessed town spawn', async () => {
+        const engine = createEngineHarness();
+        await engine.enterInstance('', 'overworld', null, null, { x: 12, y: 0, z: 205 });
+        expect(engine.player.position.toArray()).toEqual([12, 0.5, 205]);
+    });
+
     test.each([
         ['verdant_bastion_catacombs', 'createVerdantBastionCatacombs'],
         ['molten_core', 'createMoltenCore'],
