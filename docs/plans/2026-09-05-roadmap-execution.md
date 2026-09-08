@@ -5,7 +5,69 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 13:33 UTC
+## Current checkpoint — September 8, 13:42 UTC
+
+Previous turn was progress:46 QA correction pushed and47 deployed-safe defense
+implemented. This turn closes47 actual dungeon and51 full/save-cycle validation,
+and carries the current ancestry into52. Full1.1–1.10 remains active/incomplete.
+
+35359 closed PASS1/3.9m, test3.8m, explicit QA_SCRIPT_EXIT=0, normal0 on47/c2e8513.
+Seed8562987465605148137/gen2/normalLv30Wizard100, all15 paced purchases/rune,
+both bosses/later mobs/cleared-room/gold/town return passed. Last Matron190HP,
+player2575HP/600mana before confirmed death. Scan0/independent cleanup passed.
+47 clean **ea213c6**, new `2026-09-08-release47-live-planner.md` closure.
+QA ancestry and that document now carried into48/3fcc1b7,49/79e9339,
+50/77c1155 and51 below. No gameplay source was changed by those carries.
+
+CI34232562890 on46/ed5f64a is freshly active: client/server jobs PASS, Browser
+Smoke running. No further push.46/6e556c4 remains last independently checked
+deployed identity, with its previous final-live QA failure documented. Require
+the current complete CI/live gate before47's publication.
+
+New51 `/tmp/eidolon-release51-final50-DizHn0`, release/51-with-final50,
+frozen45593779f361175229c8f4d69503d11e524f474d includes current50 and c2e8513.
+88588 prepare/lint/full client PASS233suites/3330tests/130.739s, normal0.
+28965 fullGoRACE PASS root15.841s/database1.057s/game236.252s and all packages,
+normal0. The inactive version1 save bridge and room-XP transition fix remain
+its only runtime delta from50; this does not activate curve2 or31chapters.
+
+Built the bridge from4559377 and rebuilt historical curve2 fixture762a46b in
+detached `/tmp/eidolon-compat51-carried-gI9val/candidate-source`. Initial16664
+actual sessions failed21.40s before login: supplied binary basenames bridge/
+candidate did not equal their health build IDs, as the existing harness requires.
+The server did start; identity checking correctly refused it. No source/assertion
+change. Corrected binary names to45593779f361175229c8f4d69503d11e524f474d and
+762a46b.29912 real sessions PASS28.46s/process29.488s, normal0,100 real login/
+disconnect snapshots across4classes×5cases×5phases1→2→1→2→2. Tested progression,
+stats/spent points, gold/Resonance, all gear containers/Forge basis, zero-reward
+promises and future discoveries survived. Both owned Mongo attempts/fixture
+data removed and exact absence confirmed. No production data was involved.
+Logs `/tmp/eidolon-release51-final50-sessions{,-matched}.log`; binaries and
+historical source remain in `/tmp/eidolon-compat51-carried-gI9val/`.
+51 current clean **c13055c363136990130194be76f51242d704fe8b** adds complete
+carried-save-verification evidence after doc-only47 closure merge7ea86d9.
+
+**49406 ACTIVE**, sole owned browser, frozen50/77c1155024a09446a827f79419b0c99daee6f723
+in `/tmp/eidolon-release50-final49-XhZNjw`. RunID release50-final49,
+API18635/Mongo18636/web18637, fresh ordinary Wizard collection with actual
+equipment receipt/saved-roll checks. Log `/tmp/eidolon-release50-final49-gameplay.log`;
+explicit QA_SCRIPT_EXIT wrapper. Last5 observed kills/2seeds/0deaths, not PASS.
+Poll same handle; preserve source. No owned database-session harness remains.
+
+New52 `/tmp/eidolon-release52-final51-zuht4H`, release/52-with-final51,
+merges retainede097cc4 and51 atb9894d1; sole conflict was full QA command list.
+Keep BOTH death-resource and PvP-cadence routes. Actor retains new basic cadence
+plus dead-only mana refill.51 evidence carried at frozen
+**95abaae2c72a56f351f477e57ca9459af7e8c863**. No living Recall refill, XP curve
+activation or regen change. **2601 ACTIVE** prepare/lint/full client; **63516
+ACTIVE** focused race then fullGo. Focused race already reports game2.617s PASS;
+full process not yet closed. Logs `/tmp/eidolon-release52-final51-{client,
+focused-race,server}.log`. Freeze52, poll exact handles, then actual death-resource
+route after50 browser closes.53–55 still need updated ancestry. No release
+publication is implied by these local validations; broader balance/expanded
+campaign/phone/PvP and remaining roadmap gates are unchanged.
+
+## Historical checkpoint — September 8, 13:33 UTC
 
 97726 closed PASS1/4.3m, explicit QA_SCRIPT_EXIT=0, normal0 on46/af8f88a.
 Both bosses/later mobs/cleared-room/gold/town-return passed, final observed
