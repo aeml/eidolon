@@ -1,6 +1,7 @@
 import { expect } from '@playwright/test';
 import { preparedWizardTraining, PREPARED_TALENT_INPUT_INTERVAL_MS } from '../preparedWizardTraining.js';
 import { CONSTANTS } from '../../src/core/Constants.js';
+import { selectPreparedRune } from './prepared-rune-input.js';
 
 // Prepared functional QA, not fresh-character balance evidence. Like Fighter's
 // rune selection, this uses the ordinary build UI after the explicit level
@@ -58,9 +59,7 @@ export async function prepareDungeonWizard(page) {
         }
     }
     if (before.level >= rune.unlockLevel) {
-        await skills.getByRole('button', { name: 'Runes', exact: true }).click();
-        await skills.getByText(rune.skill, { exact: true }).locator('..')
-            .getByText(rune.name, { exact: true }).click();
+        await selectPreparedRune(page, skills, rune);
         await expect.poll(() => page.evaluate(skill => window.game.player.skillRunes?.[skill], rune.skill))
             .toBe(rune.id);
     }
