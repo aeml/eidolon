@@ -162,22 +162,6 @@ func (player *Entity) addResonanceExperienceLocked(amount int) {
 	}
 }
 
-func awardRoomExperienceLocked(player *Entity, amount int) {
-	if player == nil || amount <= 0 {
-		return
-	}
-	if player.Level >= MaxPlayerLevel {
-		player.Level = MaxPlayerLevel
-		player.MaxExperience = experienceRequiredForLevel(MaxPlayerLevel)
-		player.Experience = player.MaxExperience
-		player.addResonanceExperienceLocked(amount)
-		return
-	}
-	// Room rewards historically accumulate toward the next level while boss,
-	// combat, and quest completion own the actual level-up transition.
-	player.Experience += amount
-}
-
 func (w *World) SpendResonancePoint(playerID, trait string) (*Entity, error) {
 	if _, ok := resonanceTraits[trait]; !ok {
 		return nil, fmt.Errorf("unknown resonance trait")

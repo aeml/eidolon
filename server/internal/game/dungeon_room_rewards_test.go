@@ -11,7 +11,7 @@ func TestMarkDungeonRoomClearedAwardsNonBossRoomsOnce(t *testing.T) {
 		ID:            "player-1",
 		Type:          TypePlayer,
 		Level:         40,
-		MaxExperience: 100,
+		MaxExperience: experienceRequiredForLevel(40),
 	}
 	w.AddEntity(player)
 
@@ -93,7 +93,7 @@ func TestMarkDungeonRoomClearedEmitsEventRewardsForEliteAndNormalRooms(t *testin
 		ID:            "player-1",
 		Type:          TypePlayer,
 		Level:         60,
-		MaxExperience: 100,
+		MaxExperience: experienceRequiredForLevel(60),
 	}
 	w.AddEntity(player)
 
@@ -155,7 +155,7 @@ func TestMarkDungeonRoomClearedAppliesHookRewardsAndHints(t *testing.T) {
 		MaxHealth:     1000,
 		Mana:          120,
 		MaxMana:       300,
-		MaxExperience: 100,
+		MaxExperience: experienceRequiredForLevel(55),
 	}
 	w.AddEntity(player)
 
@@ -235,7 +235,7 @@ func TestMarkDungeonRoomClearedHookLootRewardsPopulateCountsAndInventory(t *test
 		MaxHealth:     1000,
 		Mana:          250,
 		MaxMana:       300,
-		MaxExperience: 100,
+		MaxExperience: experienceRequiredForLevel(65),
 		Inventory:     make([]Item, MaxInventorySize),
 	}
 	w.AddEntity(player)
@@ -301,7 +301,7 @@ func TestMarkDungeonRoomClearedLongRunHookCadenceRepeatsRewardAndAmbushBeats(t *
 		MaxHealth:     1000,
 		Mana:          260,
 		MaxMana:       300,
-		MaxExperience: 100,
+		MaxExperience: experienceRequiredForLevel(75),
 		Inventory:     make([]Item, MaxInventorySize),
 	}
 	w.AddEntity(player)
@@ -380,7 +380,7 @@ func TestMarkDungeonRoomClearedShrineBuffExpiresAfterDuration(t *testing.T) {
 		MaxHealth:     1000,
 		Mana:          200,
 		MaxMana:       300,
-		MaxExperience: 100,
+		MaxExperience: experienceRequiredForLevel(55),
 		InstanceID:    "instance-shrine-buff-expiry",
 		State:         "IDLE",
 	}
