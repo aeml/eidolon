@@ -5,7 +5,45 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 09:38 UTC
+## Current checkpoint — September 8, 09:49 UTC
+
+Previous goal turn was progress: full client closure and observed combat receipts.
+This continuation implements a tested input correction. Full roadmap goal stays
+active; no first-hour, major-version or live-release completion claim.
+
+**40009 TERMINAL FAILED9.5m** on d31334a. Six selected-target deaths,3/8 fragments,
+one death; next encounter exceeded120s. Receipts prove attacks spread across
+Skeletons and level30DemonOrcs instead of the originally watched target. Scan0,
+script cleanup and independent exact-container absence pass. Failure image viewed
+and archived `/tmp/eidolon-release47-receipts-evidence-BjrG9Y/failed-collection.png`:
+large overlapping mob pack with Demon Orc selected, level6 hero,3/8 tracker.
+This proves test-strategy interference, not a fixed production targeting defect.
+
+Correction **a47dc7d03909109a7f502385f7b501365aea678c** is clean in new worktree
+`/tmp/eidolon-release47-target-input-PKvcZq`, branch work/release47-target-input.
+Created from frozen d31334a while40009 ran; the old tree/source stayed unchanged.
+Collection follows the actual hostile pending interaction after a normal click,
+without assigning any runtime target or resetting the encounter deadline. It
+opts into retreat only below80% health; default hunt/dungeon defense stays as-is.
+Existing actual-death, loot, manual turn-in,120s encounter/two-respawn/20m route
+checks remain. No src/server/index changes. Focused22496 **PASS30tests/four
+suites/2.201s** plus full lint/diff. Client dependencies prepared57230, closed.
+See candidate `2026-09-08-release47-collection-input.md` for scope/limitations.
+
+**82761 ACTIVE — only owned browser**, frozen a47dc7d, fresh-collection,
+runID release47-observed-input, API18595/Mongo18596/web18597. Log
+`/tmp/eidolon-release47-observed-input-gameplay.log`. Poll same handle; no edits
+in that worktree or second owned browser until terminal. No actual result yet.
+Old starter tree d31334a and expanded6c2a81a remain clean; latter's full231/3418
+client pass stands, actual all-class/campaign checks remain open.
+
+External45CI34208478475 rechecked: client/server/browser PASS, predeploy gameplay
+still ACTIVE. Do not publish46 until all eight45 jobs and fresh independent
+manifest/login/versioned-main/backend identity checks pass. Queue46 remains
+b2016ef; root staged52 must not be pushed. Last independently checked public
+manifest/backend remain44/847d454 healthy/ready; no45 live assertion.
+
+## Historical checkpoint — September 8, 09:38 UTC
 
 The direct regeneration request was verified against current source: both
 coefficients already0.01; client27636 passes six tests and server95457 passes
