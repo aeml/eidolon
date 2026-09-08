@@ -40,6 +40,15 @@ second owned browser until terminal. Log
 zero deaths,500XP/level5; collection result not yet available. No production
 change since enemy-impact fix, no faster cadence or expanded story in this47.
 
+09:42 update:40009 remains live. Receipts prove attacks landing on other IDs
+while the watchdog tracks Skeleton-95: its attacks stop at six while several
+Skeletons and level30DemonOrcs receive later admitted attacks/damage. Retreats
+leave the starter area; one death and normal respawn are observed. This now
+supports correcting the playtest's target tracking/input strategy, not weakening
+its120second encounter or two-respawn bounds. Do not claim a production targeting
+fix from these observations. Let40009 close before modifying its source. External
+45 predeploy remains in progress at the same fresh check.
+
 Expanded candidate **6c2a81a** in `/tmp/eidolon-earned-story-TZuGpp` is clean.
 ba4cc72 adds actual Rogue ranged defense and Cleric affordable/unlocked healing
 inputs, class-specific earned preparation, and all-class investigation handling.
