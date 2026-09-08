@@ -73,3 +73,23 @@ normal nine-unit directions or keeps fighting if none fit; it does not move
 the actor, grant progress, relax the movement assertion or increase the death
 allowance. Regression26911 passes67 tests across three collision/strategy
 suites; lint93211 passes. A new full earned run is required.
+
+The static-wall rerun75518 failed8.8m at a different position(-15.87,-38.51).
+Its last periodic log reported Watch36/40; the inspected failure screenshot
+shows39/40 and a tight surrounding crowd. Three retreat clicks gave ATTACKING
+or under0.35 displacement despite static path clearance. Auto-loot inspection
+shows it only requests nearby pickups, not automatic travel. The evidence
+supports checking actor-body obstruction, not changing town collision again.
+
+The driver now detects an actor body's intersection with a proposed retreat
+and can use the existing ordinary desktop Ctrl-click jump, provided the player
+is not already jumping or movement-disabled. Static full-path/floor constraints
+still apply. It waits for landing and retains the six-unit distance assertion;
+ordinary death recovery and its two-death allowance are unchanged. Two strategy/
+collision suites4570 pass63 tests, lint5850 passes. This is an explicit strategy
+change, not proof that every former failed click had the same cause.
+
+Source762a46b integrates the user's requested0.01 regeneration into this31-
+chapter candidate. Earlier0.5-rate playthroughs do not establish its new pacing.
+The next earned run uses this real rate and the crowd-jump strategy; no XP,
+equipment, mana, health, movement or objective credit is granted.

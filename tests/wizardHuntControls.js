@@ -16,6 +16,17 @@ export function isEarnedRetreatPathClear(manager, position, radius, delta) {
     return true;
 }
 
+export function retreatCrossesActorBody(state, delta) {
+    const lengthSquared = delta.x * delta.x + delta.z * delta.z;
+    if (lengthSquared <= 0) return false;
+    return (state.threats || []).some(enemy => {
+        const offsetX = enemy.x - state.x, offsetZ = enemy.z - state.z;
+        const t = Math.max(0, Math.min(1, (offsetX * delta.x + offsetZ * delta.z) / lengthSquared));
+        return Math.hypot(offsetX - t * delta.x, offsetZ - t * delta.z) <
+            (state.radius || 1.25) + (enemy.radius || 1.25);
+    });
+}
+
 // Traveling through a realm is not an instruction to clear every spawn along
 // the road. Use the real shield when needed, fight only to recover from danger,
 // and otherwise continue toward the waypoint. Site combat retains its own plan.
@@ -80,5 +91,6 @@ export function planWizardHuntStep(state) {
     // A constrained player may need to keep fighting; do not invent a successful
     // retreat or require a ground click into a wall. Combat watchdogs still apply.
     if (!options.length) return null;
-    return { action: 'retreat', x: options[0].x, z: options[0].z };
+    return { action: 'retreat', x: options[0].x, z: options[0].z,
+        ...(state.canJump && retreatCrossesActorBody(state, options[0]) ? { useJump: true } : {}) };
 }

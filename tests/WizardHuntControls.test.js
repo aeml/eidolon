@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { CollisionManager } from '../src/core/CollisionManager.js';
-import { isEarnedRetreatPathClear, planWizardCrowdControl, planWizardHuntStep, planWizardTravelDefense } from './wizardHuntControls.js';
+import { isEarnedRetreatPathClear, retreatCrossesActorBody, planWizardCrowdControl, planWizardHuntStep, planWizardTravelDefense } from './wizardHuntControls.js';
 
 const state = { className: 'Wizard', dead: false, x: 0, z: 0, healthRatio: 0.7,
     shieldHP: 0, mana: 50, shieldCost: 40, hotbar: ['Teleport', 'Arcane Shield'],
@@ -8,6 +8,18 @@ const state = { className: 'Wizard', dead: false, x: 0, z: 0, healthRatio: 0.7,
 
 const crowd = { ...state, mana: 100, wellCost: 60, hotbar: ['Teleport', 'Arcane Shield', 'Gravity Well'],
     unlockedSkills: ['Gravity Well'], threats: [{ x: 5, z: 0 }, { x: 6, z: 0 }, { x: 7, z: 0 }] };
+
+test('crowd escape uses ordinary jumping only across actor bodies, never through static walls', () => {
+    expect(retreatCrossesActorBody({ ...state, threats: [{ x: -4, z: 0, radius: 1.25 }] }, { x: -9, z: 0 })).toBe(true);
+    expect(retreatCrossesActorBody({ ...state, threats: [{ x: 4, z: 0, radius: 1.25 }] }, { x: -9, z: 0 })).toBe(false);
+    const surrounded = { ...state, healthRatio: 1, canJump: true, radius: 1.25,
+        threats: Array.from({ length: 8 }, (_, i) => ({
+            x: Math.cos(i * Math.PI / 4) * 2, z: Math.sin(i * Math.PI / 4) * 2, radius: 1.25 })) };
+    expect(planWizardHuntStep(surrounded).useJump).toBe(true);
+    expect(planWizardHuntStep({ ...surrounded, canJump: false }).useJump).toBeUndefined();
+    expect(planWizardHuntStep({ ...surrounded, canRetreat: () => false })).toBeNull();
+    expect(planWizardHuntStep({ ...surrounded, walkRects: [{ x: 0, z: 0, width: 8, height: 8 }] })).toBeNull();
+});
 
 test('earned west-wall replay rejects blocked full paths without moving the player', () => {
     const manager = new CollisionManager();
