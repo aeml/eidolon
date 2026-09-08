@@ -5,7 +5,36 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 13:31 UTC
+## Current checkpoint — September 8, 13:33 UTC
+
+97726 closed PASS1/4.3m, explicit QA_SCRIPT_EXIT=0, normal0 on46/af8f88a.
+Both bosses/later mobs/cleared-room/gold/town-return passed, final observed
+Matron1629HP with player2408HP/484mana before its confirmed death. Scan0 and
+independent exact-container absence passed. Detailed closure committed at
+**ed5f64ab0f24441ed460e3de0d88165d6aea86c6**.45480 normal-fast-forward pushed
+this QA-only46 correction from6e556c4 after exact-remote/clean/ancestry checks.
+New **CI34232562890 is freshly in progress on ed5f64a**. Do not mistake failed
+older34226360903 for the current run. Deployed identity remains6e556c4 until
+new deployment is independently verified; full46 live acceptance still due.
+
+9479 full client closed PASS231suites/3311tests/117.458s on frozen47/be38d69,
+normal0.46's documentation closure merged into47 at
+**c2e85137c798fc5f97352607b29e1644ccab0548**, no further runtime/QA change.
+**35359 ACTIVE**, sole owned local browser route, frozen c2e8513 in
+`/tmp/eidolon-starter-cadence-xCyOrR`, runID release47-live-planner,
+API18635/Mongo18636/web18637, prepared Verdant using the import-free collision
+planner. Log `/tmp/eidolon-release47-live-planner-gameplay.log`; explicit
+QA_SCRIPT_EXIT wrapper. Poll this exact handle; keep source frozen until
+terminal. All other owned local handles this turn are closed.
+
+49/4996695 and50/61939da full validation/49 earned closure remain recorded
+below, but48→49→50 still need c2e8513 ancestry and47's new QA evidence carried
+after this run.50's new earned equipment comparison remains due.47 still needs
+the full new46 CI/live gate before its own publication. This turn made concrete
+progress in49/50 integration, final-live diagnosis, QA implementation and46 push;
+the full1.1–1.10 objective remains materially incomplete and active.
+
+## Historical checkpoint — September 8, 13:31 UTC
 
 Previous turn was progress:49 inherited48 and passed its full suites while46
 deployed. This turn closes49 gameplay, integrates/verifies50, and repairs the
