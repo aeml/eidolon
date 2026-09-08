@@ -2,10 +2,12 @@ import { expect, test } from '@playwright/test';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
 import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
 import { prepareDungeonWizard } from './prepared-dungeon-wizard.js';
+import { initializePreparedDungeonFixture } from './prepared-dungeon-fixture.js';
+import { selectPreparedRune } from './prepared-rune-input.js';
 import { createEarnedWizardDefense } from './earned-wizard-defense.js';
 import { prepareEarthChronicleThroughPlay, verifyEarthDungeonChronicleTurnIn } from './chronicle-earth-route.js';
 import {
-    collectBrowserFailures, credentialsFromEnvironment, ensureDungeonReadyLevel,
+    collectBrowserFailures, credentialsFromEnvironment,
     loginAndEnterWorld, returnToTown
 } from './helpers.js';
 
@@ -40,9 +42,7 @@ async function prepareFighterSkills(page) {
             ['Shield Slam', 'shieldslam_fortify', 'Fortify'],
             ['Iron Fortress', 'ironfortress_extended', 'Extended']
         ]) {
-            await skills.getByRole('button', { name: 'Runes', exact: true }).click();
-            const card = skills.getByText(skill, { exact: true }).locator('..');
-            await card.getByText(name, { exact: true }).click();
+            await selectPreparedRune(page, skills, { skill, id, name });
             await expect.poll(() => page.evaluate(skill => window.game.player.skillRunes?.[skill], skill)).toBe(id);
         }
     }
@@ -59,7 +59,7 @@ test(fullRun ? `${playthrough.name} complete ${fallbackRun ? 'fallback' : 'gener
     test.setTimeout(fullRun ? 2_400_000 : 1_500_000);
     const failures = collectBrowserFailures(page, baseURL);
     await loginAndEnterWorld(page, credentials);
-    await ensureDungeonReadyLevel(page);
+    await initializePreparedDungeonFixture(page);
     await prepareFighterSkills(page);
     await prepareDungeonWizard(page);
     if (chronicleEarth) await prepareEarthChronicleThroughPlay(page);
