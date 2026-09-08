@@ -5,6 +5,9 @@ import { collectBrowserFailures } from './helpers.js';
 // updates and collision. Normal login is multiplayer; this is deliberately a
 // prepared component scene, not earned progression or an offline login mode.
 async function scene(page, mode, frameIntervalMs = 0) {
+    // A component scene needs readable actors, not a desktop-sized fill-rate
+    // benchmark. Keep production rendering enabled on software Chromium too.
+    await page.setViewportSize({ width: 800, height: 450 });
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.goto('/', { waitUntil: 'networkidle' });
     await page.evaluate(async ({ mode, frameIntervalMs }) => {
@@ -50,7 +53,7 @@ async function scene(page, mode, frameIntervalMs = 0) {
         const hits = [];
         const takeDamage = enemy.takeDamage.bind(enemy);
         enemy.takeDamage = (amount, attacker) => {
-            hits.push({ amount, owner: attacker === owner, at: performance.now() });
+            hits.push({ amount, owner: attacker === owner, at: performance.now(), elapsed: qa.summonElapsed });
             return takeDamage(amount, attacker);
         };
         const controls = document.createElement('div');
@@ -102,7 +105,10 @@ test(`offline summon renders actual smites and expires through chunk updates (${
     const failures = collectBrowserFailures(page, baseURL);
     await scene(page, 'combat', frameIntervalMs);
     await page.getByRole('button', { name: 'Summon fallback ally' }).click();
-    await expect.poll(() => page.evaluate(() => window.__offlineSeraph.hits.length)).toBeGreaterThan(1);
+    // Capture a real smite while the mesh is still present. Repeated attacks
+    // are checked against admitted simulation time after the complete lifetime,
+    // not against an unrelated 15-second software-rendering deadline.
+    await expect.poll(() => page.evaluate(() => window.__offlineSeraph.hits.length)).toBeGreaterThan(0);
     expect(await page.evaluate(() => window.__offlineSeraph.hits.every(hit => hit.amount === 84 && hit.owner))).toBe(true);
     expect(await page.evaluate(() => window.__offlineSeraph.owner.stats.mana)).toBe(940);
     await expect.poll(() => page.evaluate(() => {
@@ -133,8 +139,19 @@ test(`offline summon renders actual smites and expires through chunk updates (${
     expect(timing.afterRemaining).toBeLessThanOrEqual(0);
     expect(timing.elapsed).toBeGreaterThanOrEqual(timing.duration - 1e-8);
     expect(timing.elapsed).toBeLessThanOrEqual(timing.duration + timing.step + 1e-8);
+    const hits = await page.evaluate(() => window.__offlineSeraph.hits);
+    expect(hits.length).toBeGreaterThanOrEqual(10);
+    expect(hits.every(hit => hit.amount === 84 && hit.owner)).toBe(true);
+    expect(hits[0].elapsed).toBeGreaterThan(0);
+    expect(hits[0].elapsed).toBeLessThanOrEqual(.05 + 1e-8);
+    for (let index = 1; index < hits.length; index++) {
+        const interval = hits[index].elapsed - hits[index - 1].elapsed;
+        expect(interval).toBeGreaterThanOrEqual(1.5 - 1e-8);
+        expect(interval).toBeLessThanOrEqual(1.55 + 1e-8);
+    }
     if (frameIntervalMs) expect(timing.wallMs).toBeGreaterThan(timing.duration * 2000);
-    console.log('[offline-seraph-expired]', JSON.stringify(timing));
+    console.log('[offline-seraph-expired]', JSON.stringify({ ...timing, hits: hits.length,
+        firstHit: hits[0].elapsed, lastHit: hits.at(-1).elapsed }));
     expect(await page.evaluate(() => {
         const q = window.__offlineSeraph;
         return { owned: q.owner.offlineSeraphs.size, chunk: q.engine.chunkManager.getActiveEntities().includes(q.summon), attached: Boolean(q.summonMesh.parent) };
