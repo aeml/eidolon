@@ -17,6 +17,7 @@ import {
     POINTER_RAYCAST_INTERVAL
 } from './GameEngineRuntimeConstants.js';
 import { installPrototypeMethods } from './PrototypeInstaller.js';
+import { NameplatePresentation } from './NameplatePresentation.js';
 
 class GameEngineRuntimeMethods {
     loop(time) {
@@ -883,6 +884,12 @@ class GameEngineRuntimeMethods {
 
         this.renderSystem.setSceneryFocus?.(this.player && this.player.isActive !== false
             ? this.player.mesh?.position || this.player.position : null);
+        this.nameplatePresentation ||= new NameplatePresentation();
+        this.nameplatePresentation.update(activeEntities, {
+            camera: this.renderSystem.camera, width: window.innerWidth, height: window.innerHeight,
+            player: this.player, target: (this.isMobile ? this.mobileCombatTarget : null) || this.pendingInteraction || this.hoveredEntity,
+            isInteractable: entity => this.isInteractableEntity?.(entity), mobile: this.isMobile
+        });
         this.renderSystem.render();
 
         if (this.player) {

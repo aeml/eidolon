@@ -15,6 +15,7 @@ export class Entity {
         this._transformHistoryReady = false;
         this.isActive = true;
         this.mesh = null;
+        this.nameTag = null;
         this.meshType = null;
         this.isMeshLoading = false;
         this.scale = 1.0;
@@ -86,6 +87,7 @@ export class Entity {
     
     setMesh(mesh) {
         this.mesh = mesh;
+        this.nameTag = null;
         this.resetTransformInterpolation();
         this.mesh.userData.entityId = this.id;
         
@@ -274,9 +276,11 @@ export class Entity {
         sprite.scale.set(scaleWidth, scaleHeight, 1); 
         
         this.mesh.add(sprite);
+        this.nameTag = sprite;
     }
 
     dispose() {
+        this.nameTag = null;
         this.clearWalkCollider?.();
         this.clearWalkCollider = null;
         if (this.mesh) {

@@ -7,6 +7,8 @@ export async function captureGameplayVisual(page, testInfo, label) {
             if (!game?.player?.mesh || game.isDestroyed) throw new Error('World capture requires an entered game');
             const hidden = [];
             window.__visualCaptureHiddenTags = hidden;
+            window.__visualCaptureNameplateSuspended = game.nameplatePresentation?.suspended;
+            if (game.nameplatePresentation) game.nameplatePresentation.suspended = true;
             game.renderSystem.scene.traverse((object) => {
                 if (object.name === 'NameTag') {
                     hidden.push([object, object.visible]);
@@ -26,6 +28,10 @@ export async function captureGameplayVisual(page, testInfo, label) {
         await page.evaluate(() => {
             for (const [object, visible] of window.__visualCaptureHiddenTags || []) object.visible = visible;
             delete window.__visualCaptureHiddenTags;
+            if (window.game?.nameplatePresentation) {
+                window.game.nameplatePresentation.suspended = window.__visualCaptureNameplateSuspended === true;
+            }
+            delete window.__visualCaptureNameplateSuspended;
         });
     }
 }
