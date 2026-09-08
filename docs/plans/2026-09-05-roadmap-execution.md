@@ -5,7 +5,38 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 18:36 UTC
+## Current checkpoint — September 8, 18:40 UTC
+
+This turn is PROGRESS: durable bid acceptance closed and48 predeploy failure
+diagnosed with a corrected browser route under test. Full roadmap remains active.
+
+Resource corrected actual37895 CLOSED PASS0/439.525s, THREE combined repetitions
+on a09ac66: six precise SIGKILL boundaries, same-bidder43→50→60 raises,
+simultaneous equal bids, repeated requests, offline pending-save/refund ordering,
+refund-save/ack failures and delayed backlog/unreadable-auction startup cases.
+All115 normal/crash server logs independently clean (18 intended kills/97 normal
+shutdowns), plus three expected startup rejection logs. Owned Mongo and anonymous
+volumes removed/independently absent. No owned resource test handle remains.
+Fullrace1501 PASS on runtime030ec67 as recorded below. Candidate37e01a1 commits
+updated architecture and acceptance docs; no56 assignment/release approval.
+Auction items/listing deposits/seller payouts and rollback remain open.
+
+48 corrected-route93472 CLOSED FAIL1 on2054707: leaving the entrance now proves
+Z242.73 and a visible Titan is found, but its backward approach point and both
+alternatives project outside available canvas (GroundInputUnavailableError,
+zero attempted clicks and zero displacement). This is a stronger, different
+failure than the original no-target search and is not counted as a pass.
+Test-only6a4ed8e82ef298871e36ee41557ac190a6d31085 uses the existing normal-wheel
+zoom helper before the approach; no damage/lifetime/persistence or movement
+assertion removed. Focused ESLint/diff check passed. Actual88533 ACTIVE, frozen
+source, log `/tmp/eidolon-release48-seraph-zoom.log`; baseline288 smites currently
+pass. No release correction pushed.49 stays gated; public release/health last
+freshly verified healthy47. Next close/repeat this route and inspect rendered
+combat, then propagate any accepted48 correction through queued49–55 before
+ordered publication. Fresh-opening encounter watchdog failure also remains in
+the pacing/route backlog; do not remove120s/two-respawn limits to clear CI.
+
+## Historical checkpoint — September 8, 18:36 UTC
 
 This goal turn remains PROGRESS.48 CI34257070035 is now terminal FAILURE:
 client/server/three smoke shards passed, Predeploy Character QA failed both

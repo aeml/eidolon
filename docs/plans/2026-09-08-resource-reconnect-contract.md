@@ -3,7 +3,21 @@
 Status: confirmed defect with an unreleased implementation candidate, not yet
 release-ready or assigned a published patch. Preserve .01 passive regen.
 
-Latest18:23: runtime030ec67 adds durable bid decisions in a unique-per-auction
+Latest18:40: corrected bid acceptance37895 CLOSED PASS0/439.525s, THREE
+repetitions of six actual SIGKILL boundaries, ordinary same-bidder raises,
+simultaneous equal bids/repeated requests and all earlier refund fault/lifecycle
+cases. All115 child logs independently clean:18 intentional kills/97 normal
+shutdowns, plus three expected startup rejection logs. Owned Mongo/volumes gone.
+Fullrace1501 PASS on runtime030ec67 (root20.900/database1.129/game367.539s).
+Test correctiona09ac66 targets Mongo write faults by namespace after combined
+15368 correctly failed an intended-boundary assertion; that failed run remains
+recorded, not counted as success. Candidate docs now at37e01a1, still unreleased55
+metadata. No local resource test handles remain. Bid recovery does not close
+buyout items, listing deposits, seller payouts/returns, rollback or broader
+instance/device acceptance.48 CI34257070035 failed predeploy Seraph acquisition;
+no deployment ran and public client/server still match healthy47.
+
+Historical18:23: runtime030ec67 adds durable bid decisions in a unique-per-auction
 operation collection (schema8), signed character debit receipts and atomic
 auction/refund finalization. First actual six-boundary SIGKILL recovery run
 PASS73.117s; all18 logs independently clean, six expected kills/12 normal exits.
