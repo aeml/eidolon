@@ -17,6 +17,7 @@ type DB struct {
 	client       *mongo.Client
 	users        *mongo.Collection
 	auctions     *mongo.Collection
+	auctionBids  *mongo.Collection
 	friendships  *mongo.Collection
 	migrations   *mongo.Collection
 	characters   CharacterRepository
@@ -38,24 +39,25 @@ type User struct {
 }
 
 type Auction struct {
-	PendingRefunds []AuctionRefund `bson:"pending_refunds"`
-	ID             string          `bson:"id"`
-	SellerID       string          `bson:"seller_id"`
-	SellerName     string          `bson:"seller_name"`
-	Item           Item            `bson:"item"`
-	Bid            int             `bson:"bid"`
-	Buyout         int             `bson:"buyout"`
-	Duration       int             `bson:"duration"`
-	StartTime      time.Time       `bson:"start_time"`
-	EndTime        time.Time       `bson:"end_time"`
-	Status         string          `bson:"status"`
-	BuyerID        string          `bson:"buyer_id"`
-	BidderID       string          `bson:"bidder_id"`
-	BidderName     string          `bson:"bidder_name"`
-	Deposit        int             `bson:"deposit"`
-	SalePrice      int             `bson:"sale_price,omitempty"`
-	ItemClaimed    bool            `bson:"item_claimed,omitempty"`
-	SellerClaimed  bool            `bson:"seller_claimed,omitempty"`
+	LastBidOperationID string          `bson:"last_bid_operation_id"`
+	PendingRefunds     []AuctionRefund `bson:"pending_refunds"`
+	ID                 string          `bson:"id"`
+	SellerID           string          `bson:"seller_id"`
+	SellerName         string          `bson:"seller_name"`
+	Item               Item            `bson:"item"`
+	Bid                int             `bson:"bid"`
+	Buyout             int             `bson:"buyout"`
+	Duration           int             `bson:"duration"`
+	StartTime          time.Time       `bson:"start_time"`
+	EndTime            time.Time       `bson:"end_time"`
+	Status             string          `bson:"status"`
+	BuyerID            string          `bson:"buyer_id"`
+	BidderID           string          `bson:"bidder_id"`
+	BidderName         string          `bson:"bidder_name"`
+	Deposit            int             `bson:"deposit"`
+	SalePrice          int             `bson:"sale_price,omitempty"`
+	ItemClaimed        bool            `bson:"item_claimed,omitempty"`
+	SellerClaimed      bool            `bson:"seller_claimed,omitempty"`
 }
 
 type Character struct {
@@ -263,6 +265,7 @@ func New(uri string) (*DB, error) {
 		client:       client,
 		users:        db.Collection("users"),
 		auctions:     db.Collection("auctions"),
+		auctionBids:  db.Collection("auction_bid_operations"),
 		friendships:  db.Collection("friendships"),
 		migrations:   db.Collection("schema_migrations"),
 		reports:      db.Collection("reports"),

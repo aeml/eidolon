@@ -15,6 +15,7 @@ import (
 	"reflect"
 	"regexp"
 	"strings"
+	"syscall"
 	"testing"
 	"time"
 
@@ -216,6 +217,11 @@ func compatExpected(before *database.Character, version int) *database.Character
 
 func compatStartServer(t *testing.T, binary, uri string, phase int, extraArgs ...string) (string, func()) {
 	t.Helper()
+	return compatStartServerWithCrash(t, binary, uri, phase, false, extraArgs...)
+}
+
+func compatStartServerWithCrash(t *testing.T, binary, uri string, phase int, intentionalCrash bool, extraArgs ...string) (string, func()) {
+	t.Helper()
 	listener, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
 		t.Fatal(err)
@@ -227,6 +233,9 @@ func compatStartServer(t *testing.T, binary, uri string, phase int, extraArgs ..
 		t.Fatal(err)
 	}
 	t.Logf("COMPAT phase=%d owned_server_evidence=%s", phase, evidence)
+	if intentionalCrash {
+		t.Logf("owned_expected_crash=%s", evidence)
+	}
 	logFile, err := os.Create(filepath.Join(evidence, "server.log"))
 	if err != nil {
 		t.Fatal(err)
@@ -247,10 +256,19 @@ func compatStartServer(t *testing.T, binary, uri string, phase int, extraArgs ..
 			return
 		}
 		stopped = true
-		command.Process.Signal(os.Interrupt)
+		if intentionalCrash {
+			command.Process.Kill()
+		} else {
+			command.Process.Signal(os.Interrupt)
+		}
 		select {
 		case err := <-done:
-			if err != nil {
+			if intentionalCrash {
+				status, ok := command.ProcessState.Sys().(syscall.WaitStatus)
+				if err == nil || !ok || !status.Signaled() || status.Signal() != syscall.SIGKILL {
+					t.Errorf("phase%d expected intentional SIGKILL, got %v", phase, err)
+				}
+			} else if err != nil {
 				t.Errorf("phase%d owned server shutdown failed: %v (evidence %s)", phase, err, evidence)
 			}
 		case <-time.After(5 * time.Second):

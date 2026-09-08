@@ -164,6 +164,12 @@ func (c *Client) handleMessage(msg Message) {
 		c.sendError(err.Error())
 		return
 	}
+	if c.username != "" && msg.Type != MsgLogin && msg.Type != MsgResumeSession {
+		if err := recoverAccountAuctionBidsLocked(c.username); err != nil {
+			c.sendError("Your pending auction bid is awaiting recovery. Please try again shortly.")
+			return
+		}
+	}
 	if handler := messageHandlers[msg.Type]; handler != nil {
 		handler(c, msg)
 		return

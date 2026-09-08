@@ -108,7 +108,9 @@ func TestResourceActualOutbidRefundSurvivesSaveAndAcknowledgementFailure(t *test
 				t.Fatal("ordinary pre-refund Fireball failed")
 			}
 			bidConnection := resourceOpenCharacter(t, address, bidder.Name, bidderPassword)
-			collection, validator := "users", bson.M{"refund_fault_probe": bson.M{"$exists": true}}
+			collection, validator := "users", bson.M{"$or": bson.A{
+				bson.M{"username": bson.M{"$ne": fixture.Name}}, bson.M{"refund_fault_probe": bson.M{"$exists": true}},
+			}}
 			if fault == "refund_ack" {
 				collection, validator = "auctions", bson.M{"pending_refunds.0": bson.M{"$exists": true}}
 			}

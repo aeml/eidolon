@@ -137,9 +137,13 @@ func handleMsgTradingBid(c *Client, msg Message) {
 		return
 	}
 
-	err := world.Trading.BidAuction(payload.AuctionID, player, payload.Amount)
+	op, err := world.Trading.PrepareAuctionBid(payload.AuctionID, player, payload.Amount)
 	if err != nil {
 		c.sendError(err.Error())
+		return
+	}
+	if err := completePendingAuctionBidLocked(op); err != nil {
+		c.sendError("Your bid is awaiting recovery. Please try again shortly.")
 		return
 	}
 

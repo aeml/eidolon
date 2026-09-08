@@ -92,6 +92,9 @@ func (ts *TradingSystem) RetryPendingRefunds() (result error) {
 	cursor := ts.refundCursor
 	var pending []delivery
 	for id, auction := range ts.Auctions {
+		if _, reserved := ts.pendingBids[id]; reserved {
+			continue
+		}
 		for _, refund := range auction.PendingRefunds {
 			pending = append(pending, delivery{id, refund})
 		}
@@ -122,6 +125,10 @@ func (ts *TradingSystem) RetryPendingRefunds() (result error) {
 		}
 		ts.mu.Lock()
 		auction := ts.Auctions[task.auctionID]
+		if _, reserved := ts.pendingBids[task.auctionID]; reserved {
+			ts.mu.Unlock()
+			continue
+		}
 		if auction != nil {
 			previous := auction.PendingRefunds
 			remaining := make([]database.AuctionRefund, 0, len(previous))

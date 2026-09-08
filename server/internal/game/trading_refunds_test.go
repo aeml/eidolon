@@ -23,6 +23,7 @@ func TestTradingRefundOutboxRetainsFailedDeliveryAndSurvivesRoundTrip(t *testing
 	if err := ts.BidAuction(a.ID, bidder, 50); err != nil {
 		t.Fatal(err)
 	}
+	a = ts.Auctions[a.ID]
 	if len(a.PendingRefunds) != 1 || a.PendingRefunds[0].Amount != 43 || a.BidderID != bidder.ID || bidder.Gold != 50 {
 		t.Fatal("bid failed to preserve prior escrow intent")
 	}

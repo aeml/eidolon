@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const CurrentSchemaVersion = 7
+const CurrentSchemaVersion = 8
 
 type schemaMigration struct {
 	Version int
@@ -60,6 +60,7 @@ var schemaMigrations = []schemaMigration{
 		Name:    "guild_dungeon_leaderboard_indexes",
 		Apply:   applyGuildDungeonLeaderboardIndexes,
 	},
+	{Version: 8, Name: "auction_bid_operations", Apply: applyAuctionBidOperationIndexes},
 }
 
 // RunMigrations applies every missing migration in ascending version order.

@@ -28,24 +28,25 @@ const (
 )
 
 type Auction struct {
-	PendingRefunds []database.AuctionRefund `json:"-"`
-	ID             string                   `json:"id"`
-	SellerID       string                   `json:"sellerId"`
-	SellerName     string                   `json:"sellerName"`
-	Item           Item                     `json:"item"`
-	Bid            int                      `json:"currentBid"`
-	Buyout         int                      `json:"buyoutPrice"`
-	Duration       int                      `json:"duration"` // Hours
-	StartTime      time.Time                `json:"startTime"`
-	EndTime        time.Time                `json:"endTime"`
-	Status         AuctionStatus            `json:"status"`
-	BuyerID        string                   `json:"buyerId"`
-	BidderID       string                   `json:"bidderId"`
-	BidderName     string                   `json:"bidderName"`
-	Deposit        int                      `json:"deposit"`
-	SalePrice      int                      `json:"salePrice,omitempty"`
-	ItemClaimed    bool                     `json:"itemClaimed,omitempty"`
-	SellerClaimed  bool                     `json:"sellerClaimed,omitempty"`
+	LastBidOperationID string                   `json:"-"`
+	PendingRefunds     []database.AuctionRefund `json:"-"`
+	ID                 string                   `json:"id"`
+	SellerID           string                   `json:"sellerId"`
+	SellerName         string                   `json:"sellerName"`
+	Item               Item                     `json:"item"`
+	Bid                int                      `json:"currentBid"`
+	Buyout             int                      `json:"buyoutPrice"`
+	Duration           int                      `json:"duration"` // Hours
+	StartTime          time.Time                `json:"startTime"`
+	EndTime            time.Time                `json:"endTime"`
+	Status             AuctionStatus            `json:"status"`
+	BuyerID            string                   `json:"buyerId"`
+	BidderID           string                   `json:"bidderId"`
+	BidderName         string                   `json:"bidderName"`
+	Deposit            int                      `json:"deposit"`
+	SalePrice          int                      `json:"salePrice,omitempty"`
+	ItemClaimed        bool                     `json:"itemClaimed,omitempty"`
+	SellerClaimed      bool                     `json:"sellerClaimed,omitempty"`
 }
 
 type TradingSystem struct {
@@ -59,17 +60,22 @@ type TradingSystem struct {
 	backgroundWork   lifecycle.Group
 	mu               sync.RWMutex
 	Auctions         map[string]*Auction
+	pendingBids      map[string]database.AuctionBidOperation
 	db               *database.DB
 	economy          *EconomyTelemetry
 }
 
 func NewTradingSystem(db *database.DB) *TradingSystem {
 	ts := &TradingSystem{
-		Auctions: make(map[string]*Auction),
-		db:       db,
+		Auctions:    make(map[string]*Auction),
+		pendingBids: make(map[string]database.AuctionBidOperation),
+		db:          db,
 	}
 	if db != nil {
 		ts.loadAuctions()
+		if ts.loadError == nil {
+			ts.loadBidOperations()
+		}
 	}
 	return ts
 }
@@ -109,24 +115,25 @@ func (ts *TradingSystem) ReadinessError() error {
 
 func (ts *TradingSystem) toDBAuction(a *Auction) *database.Auction {
 	return &database.Auction{
-		PendingRefunds: append([]database.AuctionRefund(nil), a.PendingRefunds...),
-		ID:             a.ID,
-		SellerID:       a.SellerID,
-		SellerName:     a.SellerName,
-		Item:           ts.toDBItem(a.Item),
-		Bid:            a.Bid,
-		Buyout:         a.Buyout,
-		Duration:       a.Duration,
-		StartTime:      a.StartTime,
-		EndTime:        a.EndTime,
-		Status:         string(a.Status),
-		BuyerID:        a.BuyerID,
-		BidderID:       a.BidderID,
-		BidderName:     a.BidderName,
-		Deposit:        a.Deposit,
-		SalePrice:      a.SalePrice,
-		ItemClaimed:    a.ItemClaimed,
-		SellerClaimed:  a.SellerClaimed,
+		LastBidOperationID: a.LastBidOperationID,
+		PendingRefunds:     append([]database.AuctionRefund(nil), a.PendingRefunds...),
+		ID:                 a.ID,
+		SellerID:           a.SellerID,
+		SellerName:         a.SellerName,
+		Item:               ts.toDBItem(a.Item),
+		Bid:                a.Bid,
+		Buyout:             a.Buyout,
+		Duration:           a.Duration,
+		StartTime:          a.StartTime,
+		EndTime:            a.EndTime,
+		Status:             string(a.Status),
+		BuyerID:            a.BuyerID,
+		BidderID:           a.BidderID,
+		BidderName:         a.BidderName,
+		Deposit:            a.Deposit,
+		SalePrice:          a.SalePrice,
+		ItemClaimed:        a.ItemClaimed,
+		SellerClaimed:      a.SellerClaimed,
 	}
 }
 
@@ -188,24 +195,25 @@ func fromDBSocketedGems(gems []database.SocketedGem) []SocketedGem {
 
 func (ts *TradingSystem) fromDBAuction(a *database.Auction) *Auction {
 	return &Auction{
-		PendingRefunds: append([]database.AuctionRefund(nil), a.PendingRefunds...),
-		ID:             a.ID,
-		SellerID:       a.SellerID,
-		SellerName:     a.SellerName,
-		Item:           ts.fromDBItem(a.Item),
-		Bid:            a.Bid,
-		Buyout:         a.Buyout,
-		Duration:       a.Duration,
-		StartTime:      a.StartTime,
-		EndTime:        a.EndTime,
-		Status:         AuctionStatus(a.Status),
-		BuyerID:        a.BuyerID,
-		BidderID:       a.BidderID,
-		BidderName:     a.BidderName,
-		Deposit:        a.Deposit,
-		SalePrice:      a.SalePrice,
-		ItemClaimed:    a.ItemClaimed,
-		SellerClaimed:  a.SellerClaimed,
+		LastBidOperationID: a.LastBidOperationID,
+		PendingRefunds:     append([]database.AuctionRefund(nil), a.PendingRefunds...),
+		ID:                 a.ID,
+		SellerID:           a.SellerID,
+		SellerName:         a.SellerName,
+		Item:               ts.fromDBItem(a.Item),
+		Bid:                a.Bid,
+		Buyout:             a.Buyout,
+		Duration:           a.Duration,
+		StartTime:          a.StartTime,
+		EndTime:            a.EndTime,
+		Status:             AuctionStatus(a.Status),
+		BuyerID:            a.BuyerID,
+		BidderID:           a.BidderID,
+		BidderName:         a.BidderName,
+		Deposit:            a.Deposit,
+		SalePrice:          a.SalePrice,
+		ItemClaimed:        a.ItemClaimed,
+		SellerClaimed:      a.SellerClaimed,
 	}
 }
 
@@ -386,6 +394,9 @@ func (ts *TradingSystem) GetPlayerAuctions(playerID string) []*Auction {
 func (ts *TradingSystem) BuyoutAuction(auctionID string, buyer *Entity, w *World) (*Item, error) {
 	ts.mu.Lock()
 	defer ts.mu.Unlock()
+	if _, pending := ts.pendingBids[auctionID]; pending {
+		return nil, ErrAuctionBidPending
+	}
 
 	auction, ok := ts.Auctions[auctionID]
 	if !ok {
@@ -475,87 +486,15 @@ func (ts *TradingSystem) BuyoutAuction(auctionID string, buyer *Entity, w *World
 }
 
 func (ts *TradingSystem) BidAuction(auctionID string, bidder *Entity, bidAmount int) error {
-	ts.mu.Lock()
-	defer ts.mu.Unlock()
-
-	auction, ok := ts.Auctions[auctionID]
-	if !ok {
-		return fmt.Errorf("auction not found")
-	}
-
-	if auction.Status != AuctionActive {
-		return fmt.Errorf("auction is not active")
-	}
-
-	if time.Now().After(auction.EndTime) {
-		auction.Status = AuctionExpired
-		return fmt.Errorf("auction expired")
-	}
-
-	if bidder.ID == auction.SellerID {
-		return fmt.Errorf("cannot bid on your own auction")
-	}
-
-	// Minimum bid increment (e.g. 5% or 1 gold)
-	minBid := auction.Bid + int(float64(auction.Bid)*0.05)
-	if minBid < auction.Bid+1 {
-		minBid = auction.Bid + 1
-	}
-
-	// If no bids yet, the bidAmount must be at least the starting bid
-	if auction.BidderID == "" {
-		minBid = auction.Bid
-	}
-
-	if bidAmount < minBid {
-		return fmt.Errorf("bid too low (minimum: %d)", minBid)
-	}
-
-	if auction.Buyout > 0 && bidAmount >= auction.Buyout {
-		return fmt.Errorf("bid exceeds buyout, use buyout instead")
-	}
-
-	bidder.Mu.Lock()
-	if bidder.Gold < bidAmount {
-		bidder.Mu.Unlock()
-		return fmt.Errorf("insufficient gold")
-	}
-	bidder.Gold -= bidAmount
-	bidder.Mu.Unlock()
-
-	previousBid, previousBidderID, previousBidderName, previousEnd := auction.Bid, auction.BidderID, auction.BidderName, auction.EndTime
-	previousRefunds := len(auction.PendingRefunds)
-	ts.appendBidRefundLocked(auction)
-	auction.Bid = bidAmount
-	auction.BidderID = bidder.ID
-	auction.BidderName = bidder.Name
-
-	// Extend auction if near end? (Anti-sniping)
-	if time.Until(auction.EndTime) < 5*time.Minute {
-		auction.EndTime = auction.EndTime.Add(5 * time.Minute)
-	}
-
-	// Save to DB
-	if ts.db != nil {
-		if err := ts.db.UpdateAuction(ts.toDBAuction(auction)); err != nil {
-			auction.Bid, auction.BidderID, auction.BidderName, auction.EndTime = previousBid, previousBidderID, previousBidderName, previousEnd
-			auction.PendingRefunds = auction.PendingRefunds[:previousRefunds]
-			bidder.Mu.Lock()
-			bidder.Gold += bidAmount
-			bidder.Mu.Unlock()
-			return fmt.Errorf("failed to persist auction bid")
-		}
-	}
-	if previousBidderID != "" {
-		ts.scheduleRefundDeliveryLocked()
-	}
-
-	return nil
+	return ts.bidWithoutDatabase(auctionID, bidder, bidAmount)
 }
 
 func (ts *TradingSystem) CollectAuction(auctionID string, player *Entity) (interface{}, error) {
 	ts.mu.Lock()
 	defer ts.mu.Unlock()
+	if _, pending := ts.pendingBids[auctionID]; pending {
+		return nil, ErrAuctionBidPending
+	}
 
 	auction, ok := ts.Auctions[auctionID]
 	if !ok {
@@ -623,6 +562,9 @@ func (ts *TradingSystem) CollectAuction(auctionID string, player *Entity) (inter
 }
 
 func (ts *TradingSystem) persistOrDeleteClaimedAuction(auctionID string, auction *Auction) error {
+	if _, pending := ts.pendingBids[auctionID]; pending {
+		return ErrAuctionBidPending
+	}
 	if auction.ItemClaimed && auction.SellerClaimed && len(auction.PendingRefunds) == 0 {
 		if ts.db != nil {
 			if err := ts.db.DeleteAuction(auctionID); err != nil {
@@ -647,6 +589,9 @@ func (ts *TradingSystem) CleanupExpired() {
 
 	now := time.Now()
 	for _, auction := range ts.Auctions {
+		if _, pending := ts.pendingBids[auction.ID]; pending {
+			continue
+		}
 		if auction.Status == AuctionActive && now.After(auction.EndTime) {
 			if auction.BidderID != "" {
 				auction.Status = AuctionSold
@@ -668,6 +613,9 @@ func (ts *TradingSystem) CleanupExpired() {
 func (ts *TradingSystem) RemoveAuction(auctionID string) {
 	ts.mu.Lock()
 	defer ts.mu.Unlock()
+	if _, pending := ts.pendingBids[auctionID]; pending {
+		return
+	}
 	if auction := ts.Auctions[auctionID]; auction != nil && len(auction.PendingRefunds) == 0 {
 		delete(ts.Auctions, auctionID)
 	}
@@ -676,6 +624,9 @@ func (ts *TradingSystem) RemoveAuction(auctionID string) {
 func (ts *TradingSystem) CancelAuction(auctionID string, player *Entity, w *World) error {
 	ts.mu.Lock()
 	defer ts.mu.Unlock()
+	if _, pending := ts.pendingBids[auctionID]; pending {
+		return ErrAuctionBidPending
+	}
 
 	auction, ok := ts.Auctions[auctionID]
 	if !ok {

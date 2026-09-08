@@ -783,6 +783,10 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 
 		// Clear the disconnected flag; this also returns the live entity pointer.
+		if err := recoverAccountAuctionBidsLocked(username); err != nil {
+			c.sendError("Your pending auction bid is awaiting recovery. Please log in again shortly.")
+			return
+		}
 		playerID := "player-" + username
 		entity, ok := world.ClearEntityDisconnected(playerID)
 		if !ok {

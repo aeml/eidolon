@@ -2,6 +2,29 @@ package database
 
 import "testing"
 
+func TestDurableGoldDebitChecksReceiptBeforeBalance(t *testing.T) {
+	gold := 50
+	var receipts map[string]int
+	if err := ApplyGoldDebit(&gold, &receipts, "bid:one", 50); err != nil {
+		t.Fatal(err)
+	}
+	if gold != 0 || receipts["bid:one"] != -50 {
+		t.Fatal("debit and receipt disagree")
+	}
+	if err := ApplyGoldDebit(&gold, &receipts, "bid:one", 50); err != nil || gold != 0 {
+		t.Fatal("replay charged again or rejected already paid debit")
+	}
+	if err := ApplyGoldDebit(&gold, &receipts, "bid:two", 1); err != ErrInsufficientGold || receipts["bid:two"] != 0 {
+		t.Fatal("unfunded debit accepted")
+	}
+	if err := ApplyGoldDebit(&gold, &receipts, "bid:one", 49); err == nil {
+		t.Fatal("conflicting debit accepted")
+	}
+	if err := ApplyGoldCredit(&gold, &receipts, "bid:one", 50); err == nil {
+		t.Fatal("credit reused debit identity")
+	}
+}
+
 func TestDurableGoldCreditIsIdempotentAndRejectsConflicts(t *testing.T) {
 	gold := 10
 	var receipts map[string]int
