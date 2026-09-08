@@ -32,7 +32,10 @@ test('anonymous release surface, runtime dependencies, and server are healthy', 
     const response = await openGame(page, { waitUntil: 'networkidle' });
 
     expect(response?.status()).toBe(200);
-    await expect(page.locator('.start-version-row__label')).toContainText('Alpha');
+    const displayedRelease = await getJSONWithRetry(request, `${baseURL}/release.json`,
+        json => typeof json?.version === 'string' && /^Alpha \d+\.\d+\.\d+$/.test(json.version),
+        'displayed release version');
+    await expect(page.locator('.start-version-row__label')).toHaveText(displayedRelease.version);
 
     expect(await page.evaluate(() => typeof globalThis.protobuf)).toBe('object');
     const vendorManifest = await getJSONWithRetry(
@@ -48,6 +51,10 @@ test('anonymous release surface, runtime dependencies, and server are healthy', 
 
     await page.locator('#login-patch-notes-link').click();
     await expect(page.locator('#patch-notes-screen')).toBeVisible();
+    const latestNotes = page.locator('#patch-notes-history .patch-note-entry').first();
+    await expect(latestNotes).toHaveAttribute('data-version', displayedRelease.version.replace('Alpha ', ''));
+    await expect(latestNotes.locator('h3')).toContainText(displayedRelease.version);
+    await page.screenshot({ path: test.info().outputPath('patch-notes.png') });
     await page.keyboard.press('Escape');
     await expect(page.locator('#patch-notes-screen')).toBeHidden();
 
