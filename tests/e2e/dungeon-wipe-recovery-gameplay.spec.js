@@ -102,6 +102,11 @@ test('ordinary dungeon death requires respawn and preserves the unfinished run o
     } });
     expect((await readPlayerState(page)).state).not.toBe('DEAD');
     expect(await page.evaluate(() => window.game.player.stats.hp)).toBeGreaterThan(0);
+    await expect.poll(() => page.evaluate(() => {
+        const box = window.game.player.mesh?.getObjectByName('ActorInteractionHitbox');
+        return box && { opacity: box.material.opacity, colorWrite: box.material.colorWrite };
+    })).toEqual({ opacity: 0, colorWrite: false });
+    await page.screenshot({ path: test.info().outputPath('town-after-respawn.png') });
     await enterAndExitDungeon(page, { useTownGuide: true, beforeExit: async () => {
         expect(await page.evaluate(() => window.game.currentDungeonLayout.generationSeed)).toBe(seed);
         expect(await page.evaluate(() => window.game.currentDungeonRoomState.rooms.map(room => room.cleared))).toEqual(cleared);
