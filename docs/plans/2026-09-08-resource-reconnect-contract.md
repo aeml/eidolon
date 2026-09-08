@@ -3,7 +3,7 @@
 Status: confirmed defect with an unreleased implementation candidate, not yet
 release-ready or assigned a published patch. Preserve .01 passive regen.
 
-Candidate `work/resource-persistence-20260908` at3a7d756 (tested runtime5cf6acb,
+Candidate `work/resource-persistence-20260908` atac53b2c (tested runtime3efad53,
 browser-tested28ebabc,
 token-tested ea5d539, runtimea9f5960) implements versioned resource restoration and per-account
 session/save ordering. Broader live tests found and fixed close/send and character
@@ -22,8 +22,18 @@ with a later gold credit pass, as do the repeated handoff/token cases. This is
 not arbitrary crash/network-outage or concurrent offline-credit proof. Full Go
 race75477 passed (game342.717s) and144-session matrix30872 passed210.581s on5cf6acb,
 both normal0 with actual child exit/log checks enforced. No owned local test
-handles remain active at16:13 UTC.
-Shutdown admission/drain, delayed network/storage failures, pending-save versus
+handles from that journal slice remain active.
+Shutdown now closes/joins admission and gameplay loops, cancels unfinished timers,
+drains earned completion trees, avoids maintenance PvP forfeits, and journals ALL
+final players before the first Mongo attempt. Full race21550 passes(game403.942s).
+Actual90112 passes prior handoff/journal/token/144 sessions but fails the new
+shutdown test on a global-cooldown probe assumption; no whole-run success implied.
+Test-only correctiona837acb uses the already accepted Fireball/70mana reply.
+Actual49137 passes three consecutive eight-live-socket SIGINT/fresh-process login
+runs82.378s, four classes alive/dead with exact resources and gold retained.
+All actual child exits/logs are checked; no owned local handles remain at16:40 UTC.
+This controlled shutdown proof does not establish forced-kill/network/storage
+failure safety. Delayed network/storage failures, pending-save versus
 offline-credit ordering, PvP/instance recovery, broader device/class play and
 rollback still remain open; the whole acceptance list is not closed.
 Execution details and exact handles are in the roadmap execution ledger and

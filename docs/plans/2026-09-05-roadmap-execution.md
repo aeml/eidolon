@@ -5,13 +5,13 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 16:36 UTC
+## Current checkpoint — September 8, 16:40 UTC
 
 Previous goal turn was PROGRESS (47 publication plus durable journal implementation
 and real recovery evidence). This turn is PROGRESS: shutdown admission/timer/
 earned-work draining and journal-all final snapshots implemented, focused/full
 race suites pass, and the real matrix passes; the new live-socket shutdown test
-needed a cooldown-aware test correction and its repeated acceptance is running.
+needed a cooldown-aware test correction and then passed three consecutive runs.
 Full1.1–1.10 remains active and incomplete. No version scope has been reduced.
 
 47 CI **34248491147**, exact6925c5113ee6acdf698713f3332f80dcf546bd76, now PASSES
@@ -22,8 +22,8 @@ unchanged in earlier checkpoints. Never push root's staged52/ledger branch.
 
 Resource candidate `/tmp/eidolon-resource-persistence-c6E17J`, branch
 work/resource-persistence-20260908: runtime **3efad53dbf4a26622c137a2ed066b84fd425697b**,
-test correction **a837acb9d9c35f082f3c93e32f76608648290015**. Only its implementation
-evidence document is currently dirty. Still no56 metadata or release approval.
+test correction **a837acb9d9c35f082f3c93e32f76608648290015**, clean docs closure
+**ac53b2cb06c9d409773b6d9407b244b07daa818f**. Still no56 metadata or release approval.
 New lifecycle group closes external admission before waiting; earned task trees
 can finish nested completions before atomically sealing at idle. Main joins
 gameplay/save/expiry ticks, cancels pending attacks/aftershocks/meteors/slams/PvP
@@ -54,7 +54,7 @@ after accepted Fireball/70mana, an immediate unknown-skill probe expected locked
 but correctly received global_cooldown. Test correctiona837acb uses the accepted
 cast acknowledgement itself for that living Wizard; other probes and all final
 snapshot/restart/death assertions remain unchanged. No runtime change or extra
-grants/waits. Focused92471 CLOSED PASS; log
+grants/waits. Focused92471 CLOSED PASS1.705s; log
 `/tmp/eidolon-shutdown-cast-ack-focused.log`.
 
 Initial actual log `/tmp/eidolon-resource-shutdown-actual-sessions.log`, binary
@@ -66,14 +66,22 @@ the explicit shutdown-drain-complete log, but that is not the missing8-case pass
 Exact original owned Mongo/volumes removed and independently absent; no production
 data touched.
 
-ACTIVE **49137**: three consecutive corrected eight-live-socket shutdown/restart
-tests on race-built a837acb, log `/tmp/eidolon-resource-shutdown-repeat-sessions.log`.
-Owned Mongo `eidolon-resource-shutdown-repeat-20260908-1636`, exact cleanup trap;
-binary directory emitted by the same handle. Runtime sources frozen until its
-actual terminal result. No owned local browser;47 CI is the external verified
-wait. Do not restart any handle because of an observation timeout.
+**49137 CLOSED PASS normal0/82.378s**: three consecutive corrected eight-live-socket
+shutdown/restart tests28.20s/27.25s/25.89s on race-built a837acb. Four classes each
+alive/dead; living Wizard real cast100→70mana, others0mana, exact17HP/0HP/gold1234/
+level30. Every final Mongo snapshot was fresh after shutdown began, healthy final
+journals empty, and ordinary fresh-process logins retained all exact bars/death.
+Log `/tmp/eidolon-resource-shutdown-repeat-sessions.log`, binary
+`/tmp/eidolon-resource-shutdown-corrected-proof-F8f5F1/a837acb9d9c35f082f3c93e32f76608648290015`.
+Six server evidence dirs4027541671/3472769833/322527122/3880982149/3016411499/
+2985687568 have strict normal exits, explicit drain-complete logs and independent
+clean race/panic/fatal/credential scans. Exact owned Mongo
+`eidolon-resource-shutdown-repeat-20260908-1636` and its disposable volumes removed,
+independently absent; production data untouched. All owned local test/browser
+handles closed.47 CI is the only verified external wait. Do not restart any
+handle because of an observation timeout.
 
-Next: finish49137, then actual unfinished dungeon/PvP resource recovery and
+Next: actual unfinished dungeon/PvP resource recovery and
 remaining pending-save/offline-credit/expiry ordering, delayed IO, rollback and
 broader browser/device acceptance.31chapter earned campaign and complete phone
 gate remain open; neither this shutdown work nor47 closes1.1 or the full roadmap.
