@@ -35,6 +35,8 @@
 .mobile-mode .quest-journal-entry__progress { height: 22px !important; }
 .mobile-mode .quest-journal-entry__count { font-size: 14px !important; line-height: 22px !important; }
 .mobile-mode .quest-journal-entry > div:last-child { font-size: 16px !important; }
+.mobile-mode .quest-ladder-row { border-top: 1px solid #8fb0d933; padding-top: 8px; }
+.mobile-mode .quest-ladder-row > .quest-copy { min-width: 0; }
 
 /* The summary itself opens the journal; no second full-height navigation row.
    Keep every selected quest reachable through the separate thumb-sized Next. */
