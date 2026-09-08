@@ -27,6 +27,9 @@ for (const [width, height, mobile] of [[1280, 800, false], [390, 844, true], [56
             await expect(panel).toBeVisible();
             await expect(panel).toContainText('1h 01m / 2h');
             await expect(panel).toContainText('+25% enemy-kill XP only');
+            const kind = await panel.locator('.phone-status-kind').boundingBox();
+            expect(kind.height, 'Buff label must never wrap vertically into individual letters').toBeLessThan(22);
+            await expect(panel.getByRole('heading', { name: 'Well Rested', exact: true })).toBeInViewport();
             const bounds = await panel.boundingBox();
             expect(bounds.x).toBeGreaterThanOrEqual(0);
             expect(bounds.y).toBeGreaterThanOrEqual(0);

@@ -87,6 +87,25 @@ actors do not inherit time from before login; disconnect/resume resets the clock
 Simulated Update(dt) remains deterministic for unit probes. Corrected actual
 session acceptance is still pending; do not weaken the full-recovery deadline.
 
+Corrected **d650c72/61870 PASS31.984s** on a fresh owned Mongo: four-class
+real-time HP/MP arithmetic, capped7200 bank with recovery to full within the
+unchanged20s wait, safe-zone corpse pause, outside corpse expiry with stat reset,
+ordinary saves preserving fractional time/unboosted base stats, and a fresh
+process restoring exact123.456789 bank/zero HP/zero MP/death. No accelerated time
+or altered gameplay allowances. Evidence logs2749074430 and101665801 both clean
+with normal character shutdown drains. Mongo2337/volumes removed and independently
+absent. Exact race binary:
+`/tmp/eidolon-well-rested-clock-proof-q57aue/d650c72b2013434d393a350fb2197be25874ba25`.
+Log `/tmp/eidolon-well-rested-actual-clock-session.log`.
+
+Elapsed-clock focused server70080 passed(root1.448s/game3.341s). Desktop/phone
+rendered69181 passed3/8.0s, but screenshot inspection caught a vertically wrapped
+Buff label beside the long timer. The phone row now gives named bank timers their
+own full-width line below the title. Corrected47419 passed6/15.1s including the
+existing compact-status layouts; portrait390x844 and short568x320 screenshots
+inspected. Evidence `/tmp/eidolon-well-rested-ui-readable`; the short sheet scrolls
+for the detailed explanation while preserving readable title/timer and controls.
+
 Not a staged release: inherited1.0.57 metadata is unchanged and this branch must
 not be published as57. Schema9 protects saved rest state from schema8 full-save
 writers. Required before versioning: real sessions, existing resource acceptance

@@ -93,6 +93,7 @@ export class PhoneStatusUI {
                 this.rows.set(buff.id, row); this.body.append(row.root);
             }
             row.root.classList.toggle('is-debuff', Boolean(buff.isDebuff));
+            row.root.classList.toggle('has-time-label', Boolean(buff.timeLabel));
             setText(row.kind, buff.isDebuff ? 'Debuff' : 'Buff');
             setText(row.name, buff.name || 'Unnamed effect');
             setText(row.remaining, buff.timeLabel || `${Number(buff.remainingSeconds).toFixed(1)}s left`);

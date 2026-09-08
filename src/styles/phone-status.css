@@ -25,13 +25,16 @@
 .phone-status-header h2 { margin: 0; font-size: 1em; color: var(--color-gold); }
 .phone-status-header button { min-width: 52px; min-height: 44px; padding: 6px; color: var(--color-gold); background: #202a35; border: 1px solid #b99b6288; border-radius: 6px; font: inherit; touch-action: manipulation; }
 .phone-status-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; padding: 10px; }
-.phone-status-effect { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 8px; border: 1px solid #8bc7b255; border-left: 3px solid #8bc7b2; padding: 10px; border-radius: 6px; margin-bottom: 10px; overflow-wrap: anywhere; }
+.phone-status-effect { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 8px; border: 1px solid #8bc7b255; border-left: 3px solid #8bc7b2; padding: 10px; border-radius: 6px; margin-bottom: 10px; overflow-wrap: anywhere; }
 .phone-status-effect:last-child { margin-bottom: 0; }
 .phone-status-effect.is-debuff { border-color: #ee978866; border-left-color: #ee9788; }
 .phone-status-effect h3 { grid-column: 1 / -1; margin: 6px 0; font-size: 1em; line-height: 1.35; }
 .phone-status-kind { color: #a9decd; font-size: .875em; }
 .phone-status-effect.is-debuff .phone-status-kind { color: #ffb2a5; }
 .phone-status-remaining { display: block; color: #e0cfad; font-variant-numeric: tabular-nums; text-align: right; }
+.phone-status-effect.has-time-label .phone-status-kind { grid-row: 1; }
+.phone-status-effect.has-time-label h3 { grid-row: 2; }
+.phone-status-effect.has-time-label .phone-status-remaining { grid-column: 1 / -1; grid-row: 3; text-align: left; font-size: .875em; line-height: 1.4; margin-bottom: 8px; }
 .phone-status-detail { grid-column: 1 / -1; }
 .phone-status-detail, .phone-status-empty { margin: 0; line-height: 1.5; }
 .phone-status-panel [hidden] { display: none !important; }
