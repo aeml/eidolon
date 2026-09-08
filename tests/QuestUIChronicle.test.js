@@ -56,9 +56,36 @@ test('the journal reveals only recorded evidence and preserves an open page acro
     journal.scrollTop = 123;
     ui.updateJournal([quest]);
     const restored = journal.querySelector(`details[data-discovery-id="${record.dataset.discoveryId}"]`);
+    expect(restored).toBe(record);
     expect(restored.open).toBe(true);
     expect(document.activeElement).toBe(restored.querySelector('summary'));
     expect(journal.scrollTop).toBe(123);
+});
+
+test('retains earned record nodes when evidence changes, but never reuses revoked or another session records', () => {
+    buildDom();
+    const ui = new QuestUI({ getLastPlayer: () => ({ level: 30 }) });
+    const chapter = chronicleInvestigations[1];
+    const quest = chronicleQuest({ id: chapter.id, type: 'INVESTIGATE', investigationMask: 1 });
+    const find = index => document.querySelector(`details[data-discovery-id="${chapter.sites[index].id}"]`);
+    ui.updateJournal([quest]);
+    const first = find(0), heading = first.querySelector('summary');
+    ui.updateJournal([{ ...quest, investigationMask: 3, count: 2 }]);
+    expect(find(0)).toBe(first);
+    expect(find(0).querySelector('summary')).toBe(heading);
+    const second = find(1);
+    expect(second).not.toBeNull();
+    ui.updateJournal([{ ...quest, investigationMask: 2 }]);
+    expect(find(0)).toBeNull();
+    expect(first.isConnected).toBe(false);
+    expect(find(1)).toBe(second);
+    ui.updateJournal([{ ...quest, investigationMask: 3 }]);
+    expect(find(0)).not.toBe(first);
+    expect(find(1)).toBe(second);
+    ui.updateJournal([]);
+    expect(document.querySelector('details[data-discovery-id]')).toBeNull();
+    ui.updateJournal([{ ...quest, investigationMask: 3 }]);
+    expect(find(1)).not.toBe(second);
 });
 
 test('an acknowledged inspection opens its recorded journal page, never undiscovered text', () => {

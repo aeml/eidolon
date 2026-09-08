@@ -923,7 +923,7 @@ export class QuestUI {
     // QUEST JOURNAL
     // ================================================================
 
-    renderChronicleSection(quests) {
+    renderChronicleSection(quests, existingRecords = new Map()) {
         const chronicle = Array.isArray(quests)
             ? quests.filter((q) => q?.category === 'chronicle' || q?.id?.startsWith('chronicle_'))
                 .sort((left, right) => (Number(left.chapter) || 0) - (Number(right.chapter) || 0))
@@ -1019,12 +1019,17 @@ export class QuestUI {
             const records = document.createElement('section');
             records.append(this.createMessage(`Field records · ${this.getQuestTitle(quest)}`, { color: '#ffd36f', fontWeight: 'bold' }));
             for (const site of discoveries) {
-                const record = document.createElement('details');
-                record.dataset.discoveryId = site.id;
-                const heading = document.createElement('summary');
-                heading.textContent = site.title;
-                record.append(heading);
-                for (const paragraph of site.text.split(/\n\s*\n/)) record.append(this.createMessage(paragraph, { lineHeight: '1.6' }));
+                // Authored evidence is immutable within this client session.
+                // Keep its actual controls/text nodes across reward/countdown
+                // refreshes so an in-flight reading gesture retains its target.
+                const record = existingRecords.get(site.id) || document.createElement('details');
+                if (!record.dataset.discoveryId) {
+                    record.dataset.discoveryId = site.id;
+                    const heading = document.createElement('summary');
+                    heading.textContent = site.title;
+                    record.append(heading);
+                    for (const paragraph of site.text.split(/\n\s*\n/)) record.append(this.createMessage(paragraph, { lineHeight: '1.6' }));
+                }
                 records.append(record);
             }
             section.append(records);
@@ -1034,6 +1039,8 @@ export class QuestUI {
     }
 
     updateJournal(quests) {
+        const existingRecords = new Map([...this.journalList?.querySelectorAll('details[data-discovery-id]') || []]
+            .map(record => [record.dataset.discoveryId, record]));
         const scroll = this.journalList?.scrollTop || 0;
         const archiveOpen = Boolean(this.journalList?.querySelector('details')?.open);
         const archiveFocused = document.activeElement === this.journalList?.querySelector('details > summary');
@@ -1075,7 +1082,7 @@ export class QuestUI {
         trackingHint.className = 'quest-tracking-hint';
         this.journalList.appendChild(trackingHint);
 
-        const hasActiveChronicle = this.renderChronicleSection(quests);
+        const hasActiveChronicle = this.renderChronicleSection(quests, existingRecords);
 
         const repeatableLadder = this.buildRepeatableLadderSummary(quests);
         if (repeatableLadder) {

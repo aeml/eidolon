@@ -3,7 +3,7 @@ import { collectBrowserFailures } from './helpers.js';
 
 test.use({ hasTouch: true, isMobile: true, viewport: { width: 844, height: 390 } });
 
-test('a later expanded field record keeps its reading position across journal rebuilds', async ({ page, baseURL }) => {
+test('a later expanded field record keeps its reading position across journal rebuilds', async ({ page, context, baseURL }) => {
     const failures = collectBrowserFailures(page, baseURL);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.goto('/', { waitUntil: 'networkidle' });
@@ -37,14 +37,37 @@ test('a later expanded field record keeps its reading position across journal re
     await records.last().locator(':scope > :last-child').evaluate(el => el.scrollIntoView({ block: 'end' }));
     const scroll = await journal.evaluate(el => el.scrollTop);
     expect(scroll).toBeGreaterThan(100);
+    await records.last().evaluate(el => { window.__readingLayout.record = el; });
     for (let update = 0; update < 3; update++) {
         await page.evaluate(() => {
             const { ui, quests } = window.__readingLayout;
             ui.quest.updateJournal(quests);
         });
         await expect(records.last()).toHaveAttribute('open', '');
+        expect(await records.last().evaluate(el => el === window.__readingLayout.record)).toBe(true);
         expect(await journal.evaluate(el => el.scrollTop)).toBeCloseTo(scroll, 0);
     }
+    // A real finger remains down while an ordinary quest update arrives.
+    // Retaining only `open` and scroll values is insufficient if the control
+    // receiving this gesture is replaced before touch release.
+    const summary = records.first().locator('summary');
+    await summary.scrollIntoViewIfNeeded();
+    expect(await records.first().getAttribute('open')).toBeNull();
+    const box = await summary.boundingBox();
+    const cdp = await context.newCDPSession(page);
+    try {
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [
+            { id: 89, x: box.x + box.width / 2, y: box.y + box.height / 2 }
+        ] });
+        await page.evaluate(() => {
+            const { ui, quests } = window.__readingLayout;
+            ui.quest.updateJournal(quests);
+        });
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+    } finally {
+        await cdp.detach();
+    }
+    await expect(records.first()).toHaveAttribute('open', '');
     await page.locator('#btn-close-journal').tap();
     await expect(page.locator('#quest-journal')).not.toBeVisible();
     await page.evaluate(() => window.__readingLayout.ui.characterPreview.dispose());
