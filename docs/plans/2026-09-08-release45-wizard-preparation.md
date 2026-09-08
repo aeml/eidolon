@@ -55,3 +55,30 @@ each independent authorization case now has its own normal request client rather
 than changing or disabling the production limiter. Corrected95910 passed root
 race1.863s and broader game ability/rune/passive-regeneration race37.052s.
 The corrected actual browser and full release regressions remain required.
+
+## Full closure and resource-efficient prepared build
+
+Frozen c812eee full client28151 passed216 suites/3193 tests/187.655s before
+starting its browser. Full server57721 passed (root14.155s/database1.071s/
+game330.668s), terminal. Browser28151 **FAILED5.0m**, terminal, scan/owned
+cleanup passed. All five normal Mastery purchases and unbranched Empowered
+selection were acknowledged. Rootbound Warden was defeated through real attacks,
+later Skeleton encounters spawned and died, then Briar Matron outlasted the
+unchanged120s limit. The last periodic sample showed1261HP remaining and the
+player300/2575HP with29mana. It is not the exact final snapshot. Logs:
+`/tmp/eidolon-release45-base-runes-client.log`,
+`/tmp/eidolon-release45-base-runes-server.log`,
+`/tmp/eidolon-release45-base-runes-browser.log`. No owned containers remain.
+
+The next prepared build also buys existing Efficient Casting and Fireball
+Technique, each up to five ranks, after Mastery. A pure planner validates the
+available point budget, respects existing ranks/caps, and never resets a build
+or grants points. The browser clicks the actual talent nodes and requires each
+server point/rank acknowledgement. At level100 this uses15 of20 available points.
+No production combat numbers changed. The same real-dispatch test now includes
+this build:618raw Fireball damage costs21mana with2.125s effective cooldown,
+5points remain, basic damage29 and both regeneration rates are unchanged.
+Focused server9238 passed1.636s; client59067 passed236 tests/two suites/2.554s
+and helper lint. A subsequent tiny planner guard rejects NaN ranks explicitly;
+its new regression and the next full client/browser checks remain required.
+This still does not approve a fresh level30 clear or uninterrupted campaign.
