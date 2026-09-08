@@ -30,11 +30,14 @@ describe('version presentation', () => {
         expect(indexHtml.indexOf('data-version="1.0.46"')).toBeLessThan(indexHtml.indexOf('data-version="1.0.45"'));
         for (const heading of ['Keep your hero in sight', 'The landmark stays grounded', 'Visibility, not a shortcut']) expect(indexHtml).toContain(heading);
     });
-    test('adds compact status notes without replacing shield history', () => {
-        expect(indexHtml).toContain('Alpha 1.0.45 (room beneath the ward)');
+    test('adds recovery and compact status notes without replacing shield history', () => {
+        expect(indexHtml).toContain('Alpha 1.0.45 (room to recover)');
         expect(indexHtml.match(/data-version="1\.0\.45"/g)).toHaveLength(1);
         expect(indexHtml.indexOf('data-version="1.0.45"')).toBeLessThan(indexHtml.indexOf('data-version="1.0.44"'));
         for (const heading of ['Read an effect, keep your view', 'More effects, not smaller text', 'Controls stay within reach']) expect(indexHtml).toContain(heading);
+        for (const heading of ['Slower passive recovery', 'Small amounts still count', 'Independent overnight checks']) expect(indexHtml).toContain(heading);
+        expect(indexHtml).toContain('0.01 points per second');
+        expect(indexHtml).toContain('actual formulas used 0.5');
     });
     test('adds shield mastery notes without replacing summon history', () => {
         expect(indexHtml).toContain('Alpha 1.0.44 (a ward worth training)');
