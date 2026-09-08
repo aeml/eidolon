@@ -1,5 +1,49 @@
 # Resource persistence implementation candidate — not release-ready
 
+## Durable bid decisions — September 8, 18:38 UTC
+
+Runtime030ec6769353d3f4e71409e9d371499375ae1b80 implements schema8 durable
+bid operations, signed debit receipts in the full character journal/save,
+reserved auction transitions and an atomic final marker/refund append.
+Startup and affected ordinary commands reconcile operations before permitting
+stale balances to be spent. Ambiguous replies keep the same immutable operation
+and receipt; account/world/entity lock ordering and expiry pins are retained.
+See [the operation contract](2026-09-08-auction-operation-recovery.md).
+
+First actual4216's handle was absent on resumption; its authoritative log ends
+PASS73.117s. Six observed SIGKILL boundaries and two fresh-process recoveries each;
+all18 logs clean (six expected kills/12 normal shutdowns). Full Go race1501
+CLOSED PASS0, root20.900/database1.129/game367.539s, log
+`/tmp/eidolon-auction-bid-full-race.log`.
+
+Combined repeat15368 CLOSED FAIL1/252.707s. One intended final-auction reply
+failure hit a character save instead; the precise boundary assertion correctly
+failed. All66 child logs clean, two startup rejection logs clean, owned Mongo
+and volumes removed. Not a whole-run pass. Test-onlya09ac6684f24be5347ef72e2d1918abfb1c1d160
+replaces global skip-count fault selection with namespace targeting, and adds
+ordinary same-bidder raises, simultaneous equal bids and repeated requests.
+Focused race37287 PASS1.312s; a gofmt invocation with wrong relative paths was
+corrected before committing and building the actual tested binary.
+
+Corrected actual37895 CLOSED PASS0/439.525s, THREE combined repetitions: all
+six bid cut points, raise/contention/repeat cases, previous offline/refund-save/
+refund-ack cases and delayed-backlog/unreadable-auction lifecycle cases. Same
+bidder43→50→60 yields1174gold plus60escrow and four signed receipts; competing
+50gold bids accept one winner, leave loser funds unchanged and refund43 once.
+Ordinary new-process logins retain exact receipts/resources/equipment/XP.
+All115 server logs independently clean:18 intended SIGKILLs,97 normal shutdowns;
+three expected startup rejection logs also clean. No production data touched.
+Binary `/tmp/eidolon-auction-bid-corrected-proof-8Qkotn/a09ac6684f24be5347ef72e2d1918abfb1c1d160`;
+log `/tmp/eidolon-auction-bid-corrected-sessions.log`. Exact owned Mongo
+`eidolon-auction-bid-corrected-20260908-1829` and anonymous volumes removed and
+independently absent. No local resource test handle remains active.
+
+Candidate still inherits55 metadata; no56 assignment/release approval. Bids are
+not the entire auction contract: buyout/item delivery, listing deposits,
+seller payouts/returns, old-writer rollback and wider instance/device acceptance
+remain open.48 CI34257070035 failed predeploy Seraph target acquisition; neither
+deployment ran. Public release/health still match healthy47, and49 stays queued.
+
 ## Bounded refund lifecycle — September 8, 17:47 UTC
 
 Runtime8b68f5610a9b382efd6be82c130523213e66ac2c adds one coalesced automatic

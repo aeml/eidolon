@@ -1,12 +1,12 @@
-# Auction operation recovery — required next, not implemented
+# Auction operation recovery — bids implemented, remaining transfers open
 
-The refund outbox is implemented and tested separately. It does not make bid
-debits, item transfers or seller payouts atomic with the auction document.
-Do not assign/release the resource candidate on the strength of refund-only QA.
+The refund outbox and recoverable bid decisions are implemented. Item transfers,
+listing deposits and seller payouts still need their own durable operation
+contract. Do not release the resource candidate on the strength of bid-only QA.
 
-## Confirmed gap
+## Original gap, now addressed for bids
 
-`TradingSystem.BidAuction` subtracts the new bid from the live entity, then saves
+The former `TradingSystem.BidAuction` subtracted the bid from the live entity, then saved
 the changed auction. The actor's full character save is a different operation.
 A process interruption between those writes can retain an auction bid without
 its debit. An ambiguous auction write error currently rolls memory back even
@@ -14,13 +14,15 @@ though Mongo may have committed the transition; a later full auction update
 can overwrite that committed state, including a refund intent. Buyout and
 collection similarly persist claimed flags separately from item/gold delivery.
 
-## Next implementation: durable bid operation first
+## Implemented bid sequence — runtime030ec67, test correctiona09ac66
 
-Use an auction-local pending operation as the durable decision record. Give it
-an immutable ID, actor/account, amount, original bid/escrow identity and intended
-next bid. Do not replace the active bid or issue its preceding-bid refund until
-the new debit is durably receipted. Reserve the auction against competing
-mutations while this operation is unresolved.
+Schema8 uses a separate `auction_bid_operations` collection, not the earlier
+proposed auction-local field. Unique indexes on operation ID and auction ID
+allow one immutable decision per auction. It records actor/account, amount,
+original escrow, refund ID and a once-computed anti-sniping deadline. This avoids
+an ambiguous decision insert being overwritten by later full-auction saves.
+In-memory reservations block competing bids, buyout, claims, cancellation,
+expiry and refund acknowledgements while the operation is unresolved.
 
 1. Persist the pending bid operation before any character debit. An ambiguous
    reply is an unresolved decision, not permission to revert and overwrite.
@@ -30,8 +32,11 @@ mutations while this operation is unresolved.
    already applied debit before checking the current balance. Insufficient funds
    may abort only when the debit receipt is provably absent.
 3. Atomically advance the auction, append the preceding bidder's refund intent,
-   and clear the pending operation in the same auction update. Retry/reconcile
-   an ambiguous result without charging the actor again or losing the intent.
+   and set `last_bid_operation_id` in one guarded pipeline update. Read that
+   marker to recognize replay, then delete ONLY the matching operation ID and
+   auction ID. The reservation remains until deletion is confirmed. A failed
+   reply at either stage retains recoverable intent; it does not revert memory
+   and overwrite an ambiguously committed transition.
 
 Startup must recover pending operations before affected accounts can log in and
 spend stale balances. Ordinary commands already hold the account work lock, so
@@ -46,7 +51,7 @@ including local write failure pinning, expiry, reconnect and final shutdown.
 Do not implement a debit as an unrelated Mongo increment underneath a pending
 full snapshot. Do not manufacture funds to get recovery through an error.
 
-## Required bid acceptance
+## Bid acceptance and remaining cases
 
 | Interrupted boundary | Required recovered result |
 |---|---|
@@ -62,6 +67,29 @@ acceptable if labeled. Include same-bidder raises, concurrent competing bidders,
 insufficient funds, repeated reconnects, failed local journal, delayed/rejected
 Mongo writes, and actual interruption at each boundary. Keep receipt/intent,
 equipment, resources, XP and both participants' gold assertions explicit.
+
+Actual corrected run37895 PASS439.525s, three repetitions on a09ac66:
+six SIGKILL cut points plus same-bidder raises, repeated accepted requests and
+simultaneous equal bids. Exact full-character resources/gear/XP and signed
+receipt checks survive fresh-process logins. Same-bidder43→50→60 leaves1174
+wallet gold plus60 escrow from initial1234 wealth; competing50 bids produce one
+winner at1184, unchanged loser1234 and previous bidder refunded to1234. Current
+same-bidder policy still requires the full new bid in the wallet before refund.
+
+The same run repeats prior offline pending-save ordering, refund save/ack
+failures, delayed100-intent backlogs and corrupt auction startup refusal.
+All115 server logs independently clean:18 intended kills and97 normal shutdowns,
+plus three expected startup rejections. Disposable Mongo/volumes removed.
+Log `/tmp/eidolon-auction-bid-corrected-sessions.log`.
+
+Earlier combined15368 FAIL252.707s is retained: global skip-two-update failpoint
+selection hit a character save rather than the requested final auction write.
+a09ac66 scopes the fault by namespace; the exact Mongo7.0.14 implementation
+supports this filter in [commands.cpp](https://github.com/mongodb/mongo/blob/r7.0.14/src/mongo/db/commands.cpp).
+No assertion was relaxed. Full Go race1501 PASS on the unchanged runtime030ec67
+(root20.900/database1.129/game367.539s). Separate failed local journal, malformed
+operation and rollback acceptance must still be extended; this is not arbitrary
+unsaved-tick/power-loss/multiple-server-writer proof.
 
 ## Then extend the same recovery contract
 
