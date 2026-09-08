@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { projectEntity } from './helpers.js';
+import { projectEntity, waitForTouchScrollSettled } from './helpers.js';
 import { openPhoneNavigation } from './mobile-helpers.js';
 
 // Real joystick contacts only. No coordinate assignment, waypoint command,
@@ -56,34 +56,65 @@ export async function openIlyraByTouch(page, context, chapter) {
     await offer.tap();
 }
 
-export async function swipeChronicleJournal(page, context) {
+export async function swipeChronicleJournal(page, context, { direction = 'up', distance = Infinity } = {}) {
     const box = await page.locator('#journal-list').boundingBox();
     expect(box.height).toBeGreaterThan(60);
     const cdp = await context.newCDPSession(page);
+    let started = false;
     try {
-        const x = box.x + box.width / 2, start = box.y + box.height - 16;
+        const x = box.x + box.width / 2;
+        const start = direction === 'down' ? box.y + 16 : box.y + box.height - 16;
+        const travel = Math.min(box.height - 32, Math.max(24, distance)) * (direction === 'down' ? 1 : -1);
         await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ id: 88, x, y: start }] });
+        started = true;
         for (let step = 1; step <= 8; step++) {
             await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [
-                { id: 88, x, y: start - (box.height - 32) * step / 8 }
+                { id: 88, x, y: start + travel * step / 8 }
             ] });
             await page.waitForTimeout(30);
         }
+        // Stop moving before release so a long fling does not skip the ending.
+        await page.waitForTimeout(120);
     } finally {
-        await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
-        await cdp.detach();
+        try {
+            if (started) await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+        } finally {
+            await cdp.detach();
+        }
     }
-    await page.waitForTimeout(150);
+    await waitForTouchScrollSettled(page.locator('#journal-list'));
+}
+
+export async function chronicleReadingMetrics(record) {
+    return record.evaluate(el => {
+        const paragraph = el.lastElementChild, text = paragraph?.lastChild;
+        if (text?.nodeType !== Node.TEXT_NODE) return { readable: false, reason: 'missing final text' };
+        const range = document.createRange();
+        range.setStart(text, Math.max(0, text.length - 12)); range.setEnd(text, text.length);
+        const scrollable = el.closest('#journal-list');
+        const line = range.getBoundingClientRect(), body = scrollable.getBoundingClientRect();
+        const hit = document.elementFromPoint(line.x + line.width / 2, line.y + line.height / 2);
+        return {
+            readable: line.height > 0 && line.top >= body.top && line.bottom <= body.bottom && paragraph.contains(hit),
+            delta: (line.top + line.bottom - body.top - body.bottom) / 2,
+            line: { top: line.top, bottom: line.bottom }, body: { top: body.top, bottom: body.bottom },
+            scrollTop: scrollable.scrollTop, hit: hit ? { tag: hit.tagName, id: hit.id, className: String(hit.className) } : null
+        };
+    });
 }
 
 export async function chronicleEndingReadable(record) {
-    return record.evaluate(el => {
-        const paragraph = el.lastElementChild, text = paragraph?.lastChild;
-        if (text?.nodeType !== Node.TEXT_NODE) return false;
-        const range = document.createRange();
-        range.setStart(text, Math.max(0, text.length - 12)); range.setEnd(text, text.length);
-        const line = range.getBoundingClientRect(), body = el.closest('#journal-list').getBoundingClientRect();
-        return line.height > 0 && line.top >= body.top && line.bottom <= body.bottom &&
-            paragraph.contains(document.elementFromPoint(line.x + line.width / 2, line.y + line.height / 2));
-    });
+    return (await chronicleReadingMetrics(record)).readable;
+}
+
+export async function revealChronicleEndingByTouch(page, context, record) {
+    for (let swipe = 0; swipe < 20; swipe++) {
+        const metrics = await chronicleReadingMetrics(record);
+        if (metrics.readable) return;
+        expect(Number.isFinite(metrics.delta), JSON.stringify(metrics)).toBe(true);
+        await swipeChronicleJournal(page, context, {
+            direction: metrics.delta < 0 ? 'down' : 'up', distance: Math.abs(metrics.delta)
+        });
+    }
+    await expect.poll(() => chronicleEndingReadable(record), { message: 'Read the record ending through native touch' }).toBe(true);
 }

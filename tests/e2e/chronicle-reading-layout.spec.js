@@ -1,9 +1,10 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
+import { chronicleEndingReadable, chronicleReadingMetrics, revealChronicleEndingByTouch } from './chronicle-phone-inputs.js';
 
 test.use({ hasTouch: true, isMobile: true, viewport: { width: 844, height: 390 } });
 
-test('a later expanded field record keeps its reading position across journal rebuilds', async ({ page, context, baseURL }) => {
+test('a later field record survives refresh and remains reachable by touch in either scroll direction', async ({ page, context, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.goto('/', { waitUntil: 'networkidle' });
@@ -17,6 +18,10 @@ test('a later expanded field record keeps its reading position across journal re
             objectiveText: chapter.directions,
             count: 1, maxCount: 1, investigationMask: 1
         }));
+        quests.push(...Array.from({ length: 8 }, (_, index) => ({
+            id: `daily-layout-${index}`, target: 'PhoenixSentinel', accepted: false,
+            count: 0, maxCount: 100, rewardGold: 20000, rewardXP: 10000000
+        })));
         document.body.classList.add('mobile-mode');
         document.getElementById('start-screen').style.display = 'none';
         const ui = new UIManager(true);
@@ -68,6 +73,22 @@ test('a later expanded field record keeps its reading position across journal re
         await cdp.detach();
     }
     await expect(records.first()).toHaveAttribute('open', '');
+    // Explicit starting positions in a layout fixture, not earned travel or
+    // reading evidence. Recovery itself must use actual native finger swipes.
+    for (const viewport of [{ width: 390, height: 844 }, { width: 844, height: 390 }]) {
+        await page.setViewportSize(viewport);
+        await journal.evaluate(el => { el.scrollTop = 0; });
+        expect((await chronicleReadingMetrics(records.last())).delta).toBeGreaterThan(0);
+        expect(await chronicleEndingReadable(records.last())).toBe(false);
+        await revealChronicleEndingByTouch(page, context, records.last());
+        expect(await chronicleEndingReadable(records.last())).toBe(true);
+        await journal.evaluate(el => { el.scrollTop = el.scrollHeight; });
+        expect((await chronicleReadingMetrics(records.last())).delta).toBeLessThan(0);
+        expect(await chronicleEndingReadable(records.last())).toBe(false);
+        await revealChronicleEndingByTouch(page, context, records.last());
+        expect(await chronicleEndingReadable(records.last())).toBe(true);
+        await page.screenshot({ path: testInfo.outputPath(`recovered-ending-${viewport.width}.png`) });
+    }
     await page.locator('#btn-close-journal').tap();
     await expect(page.locator('#quest-journal')).not.toBeVisible();
     await page.evaluate(() => window.__readingLayout.ui.characterPreview.dispose());

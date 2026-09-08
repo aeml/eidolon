@@ -4,8 +4,8 @@ import { openPhoneNavigation } from './mobile-helpers.js';
 import { seedReturningCharacter } from './chronicle-returning-fixture.js';
 import { chronicleInvestigations } from '../../src/data/chronicleInvestigations.generated.js';
 import { planWizardCrowdControl, planWizardHuntStep } from '../wizardHuntControls.js';
-import { chronicleEndingReadable, openIlyraByTouch, recallChronicleByTouch,
-    swipeChronicleJournal, walkChronicleByTouch } from './chronicle-phone-inputs.js';
+import { chronicleReadingMetrics, openIlyraByTouch, recallChronicleByTouch,
+    revealChronicleEndingByTouch, walkChronicleByTouch } from './chronicle-phone-inputs.js';
 
 test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true,
     userAgent: devices['Pixel 7'].userAgent, actionTimeout: 12_000,
@@ -100,8 +100,16 @@ async function readRecordByTouch(page, context, site, capture) {
         await page.setViewportSize(viewport);
         await expect(page.locator('#btn-close-journal')).toBeInViewport();
         expect(await record.evaluate(el => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
-        for (let swipe = 0; !await chronicleEndingReadable(record) && swipe < 20; swipe++) await swipeChronicleJournal(page, context);
-        await expect.poll(() => chronicleEndingReadable(record), { message: `Read the ending of ${site.id} through touch` }).toBe(true);
+        try {
+            await revealChronicleEndingByTouch(page, context, record);
+        } catch (error) {
+            await capture(`${site.id}-reading-failure-${viewport.width}`);
+            console.log('[phone-lore-reading-failure]', JSON.stringify({ site: site.id, viewport,
+                metrics: await chronicleReadingMetrics(record),
+                player: await page.evaluate(() => ({ state: window.game.player.state, hp: window.game.player.stats.hp,
+                    position: window.game.player.position.toArray() })) }));
+            throw error;
+        }
         await capture(`${site.id}-phone-${viewport.width}`);
     }
     await page.locator('#btn-close-journal').tap();
