@@ -19,6 +19,14 @@ type Party struct {
 	Mu               sync.RWMutex
 }
 
+// Caller holds World.Mu. Character snapshots release that lock while retaining
+// the entity read lock, so membership writes must also take the entity lock.
+func setPartyMembershipLocked(player *Entity, partyID string) {
+	player.Mu.Lock()
+	player.PartyID = partyID
+	player.Mu.Unlock()
+}
+
 func (w *World) CreateParty(leaderID string) *Party {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
@@ -44,7 +52,7 @@ func (w *World) CreateParty(leaderID string) *Party {
 	}
 
 	w.Parties[partyID] = party
-	leader.PartyID = partyID
+	setPartyMembershipLocked(leader, partyID)
 	return party
 }
 
@@ -78,7 +86,7 @@ func (w *World) JoinParty(partyID, playerID string) error {
 		party.Ready = make(map[string]bool)
 	}
 	party.Ready[playerID] = false
-	player.PartyID = partyID
+	setPartyMembershipLocked(player, partyID)
 	return nil
 }
 
@@ -98,7 +106,7 @@ func (w *World) LeaveParty(playerID string) (*Party, error) {
 	partyID := player.PartyID
 	party, exists := w.Parties[partyID]
 	if !exists {
-		player.PartyID = ""
+		setPartyMembershipLocked(player, "")
 		return nil, nil
 	}
 
@@ -113,7 +121,7 @@ func (w *World) LeaveParty(playerID string) (*Party, error) {
 	}
 	party.Members = newMembers
 	delete(party.Ready, playerID)
-	player.PartyID = ""
+	setPartyMembershipLocked(player, "")
 
 	if len(party.Members) == 0 {
 		delete(w.Parties, partyID)
@@ -171,7 +179,7 @@ func (w *World) KickPartyMember(leaderID, targetID string) (*Party, error) {
 	if party.MasterLooterID == targetID {
 		party.MasterLooterID = party.LeaderID
 	}
-	target.PartyID = ""
+	setPartyMembershipLocked(target, "")
 
 	return party, nil
 }
@@ -237,7 +245,7 @@ func (w *World) RejoinParty(playerID, partyID string) error {
 	// that ID must restore the entity link without duplicating the member row.
 	for _, memberID := range party.Members {
 		if memberID == playerID {
-			player.PartyID = partyID
+			setPartyMembershipLocked(player, partyID)
 			return nil
 		}
 	}
@@ -247,7 +255,7 @@ func (w *World) RejoinParty(playerID, partyID string) error {
 	}
 
 	party.Members = append(party.Members, playerID)
-	player.PartyID = partyID
+	setPartyMembershipLocked(player, partyID)
 	return nil
 }
 
@@ -281,7 +289,7 @@ func (w *World) RejoinOrRestoreParty(playerID, partyID string) error {
 	defer party.Mu.Unlock()
 	for _, memberID := range party.Members {
 		if memberID == playerID {
-			player.PartyID = partyID
+			setPartyMembershipLocked(player, partyID)
 			return nil
 		}
 	}
@@ -290,7 +298,7 @@ func (w *World) RejoinOrRestoreParty(playerID, partyID string) error {
 	}
 	party.Members = append(party.Members, playerID)
 	party.Ready[playerID] = false
-	player.PartyID = partyID
+	setPartyMembershipLocked(player, partyID)
 	return nil
 }
 

@@ -1440,6 +1440,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		var threatSnapshot map[string]float64
 		e.Mu.RLock()
 		ex, ez := e.X, e.Z
+		enemyInstanceID := e.InstanceID
 		sightRange = unprovokedEnemySightRange(e)
 		pursuitRadius := starterPursuitRadius(e)
 		spawnX, spawnZ := e.SpawnX, e.SpawnZ
@@ -1467,10 +1468,13 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		var threatPlayer *Entity
 
 		for _, p := range players {
-			if p.InstanceID != e.InstanceID {
+			p.Mu.RLock()
+			// The tick's player list can predate a scene change/disconnect/death.
+			// Read and revalidate mutable membership under the actor lock.
+			if p.InstanceID != enemyInstanceID || p.Disconnected || p.State == "DEAD" {
+				p.Mu.RUnlock()
 				continue
 			}
-			p.Mu.RLock()
 			if pursuitRadius > 0 && math.Hypot(p.X-spawnX, p.Z-spawnZ) > pursuitRadius {
 				p.Mu.RUnlock()
 				continue
