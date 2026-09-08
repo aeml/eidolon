@@ -327,7 +327,7 @@ class UIManagerCharacterMethods {
                 if (className === 'Fighter') desc += " Increases Charge ability damage.";
                 break;
             case 'dexterity':
-                desc = "Increases Movement Speed (+1.2 per point) and Attack Speed (+0.2% per point).";
+                desc = "Increases Movement Speed and basic attack frequency (+0.5% of base per point, down to one attack per second).";
                 if (className === 'Rogue') desc += " Increases Dagger ability damage.";
                 break;
             case 'vitality':

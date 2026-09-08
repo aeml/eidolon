@@ -750,6 +750,9 @@ func (e *Entity) RecalculateStats() {
 	if cooldown < 1.0 {
 		cooldown = 1.0
 	}
+	if e.Type == TypePlayer {
+		cooldown = playerBasicAttackInterval(totalDex)
+	}
 	e.AttackSpeed = cooldown
 	e.AttackCooldown = time.Duration(cooldown * float64(time.Second))
 
