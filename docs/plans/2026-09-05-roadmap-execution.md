@@ -5,7 +5,76 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 17:05 UTC
+## Current checkpoint — September 8, 17:23 UTC
+
+Previous goal turn was PROGRESS (verified dungeon/2v2 recovery and documentation).
+This turn is PROGRESS: durable refund outbox/character receipt implementation,
+actual fault/restart acceptance and a newly exposed Fireball snapshot race fix.
+Full1.1–1.10 remains active/incomplete; no scope or release gate reduced.
+
+47 CI34248491147 on6925c5113ee6acdf698713f3332f80dcf546bd76 now passes predeploy,
+production inputs and BOTH deployments. Fresh public release.json and healthz
+match healthy/database-ready Alpha1.0.47/exact6925c51. Final Live Release and
+Character QA remains freshly ACTIVE: matching-release wait and live anonymous/
+persistent-character QA passed; four-class/remote-animation QA running. No full
+47 gate pass claimed, no48 push.48–55 refs/validation unchanged below. Never
+push root's local staged52/ledger branch or the resource candidate over the queue.
+
+Resource WT `/tmp/eidolon-resource-persistence-c6E17J`: implementation
+d1e2839661e6b51ed44c6cbb093dbe35cb7c24dd persists refund IDs/amounts/recipients
+inside the auction update that displaces escrow. Outbid/buyout/cancel/final-claim
+paths retain unpaid intents. Serialized delivery/retry acknowledges only after
+gold and a private idempotency receipt commit together. Startup/periodic retry,
+per-account pending-save-before-credit ordering and an atomic live-credit/expiry
+pin close the identified one-shot refund gap. Full snapshots/login retain
+receipts; same-ID retries do not pay twice. Overflow/conflicting credits reject.
+Offline delivery uses the journal, not an increment under a stale pending save.
+
+Focused98138 PASS2.869/1.058/15.724; expanded89762 PASS3.357/1.047/15.514;
+final57054 PASS3.508/1.051/15.344 for root/database/game. Compile errors (existing
+guild credit method name collision, then missing fmt import) were corrected and
+are not counted as passing checks. Tests cover expiry pin, failed filesystem
+write/retry, receipt detachment, outbox retention and idempotence.
+
+Actual29305 CLOSED FAIL normal1/72.457s on d1e2839: gold/receipt/resource
+assertions pass in both repetitions, but one of18 server logs reports three
+Fireball mana/state/time races against GetEntityCopy. Evidence
+`/tmp/eidolon-compat-session-1663948313/server.log`, actual log
+`/tmp/eidolon-resource-refund-sessions.log`. Initial owned Mongo/volumes removed
+and independently absent. Do not count this as a whole-run pass.
+
+Correction09b56932b5482b50a8d45da83eec3e6358203b7c holds World.RLock then
+Entity.RLock throughout detached copying; previously the early World unlock
+allowed world-locked abilities to race the copy. Focused26034 PASS3.628/1.122/
+16.079 with200 real prepared Fireball dispatches against concurrent snapshots.
+Corrected actual18314 CLOSED PASS normal0/118.569s, THREE repetitions: offline
+never-committed pending900gold/dead0/0 snapshot then43refund yields943; ordinary
+outbid with real Fireball and either rejected user save or rejected auction
+acknowledgement recovers1234gold/17HP/70mana/one43receipt across two fresh server
+logins, exact gear preserved, new bidder debit1184 preserved. Controlled SIGINT
+and Mongo validators, not network/power-loss/atomic whole-auction proof.
+Binary `/tmp/eidolon-resource-refund-corrected-proof-smCf6M/09b56932b5482b50a8d45da83eec3e6358203b7c`;
+log `/tmp/eidolon-resource-refund-repeat-sessions.log`. All27 server logs strict
+normal exits and independently clean race/panic/fatal/credential markers, all
+with shutdown completion. Owned Mongo
+`eidolon-resource-refund-repeat-20260908-1720` and volumes removed/independently
+absent. No production data touched. Candidate still55 metadata; no56 approval.
+
+**Full Go race83776 freshly ACTIVE** on frozen09b5693, log
+`/tmp/eidolon-resource-refund-full-race.log`. Root22.691s/database1.156s passed;
+game package still running. Re-poll exact handle, no restart on observation
+timeout and no runtime edit until terminal. No local browser/actual-Mongo handle
+remains. External47CI final live gate remains active.
+
+Next: close this exact full race handle, then whole-auction interruption/ambiguous
+write ordering (bidder debit, item delivery and seller payout still cross docs),
+bounded/coalesced refund retries under outages and shutdown grace, failed auction
+load recovery and compatible rollback.55's old full-character replacement drops
+unknown resources/receipts, so rollback is not safe without a bridge or enforced
+restriction. Broader raid/device play,31chapter earned campaign and full phone/
+1.1–1.10 scope remain open. Full details in candidate implementation document.
+
+## Historical checkpoint — September 8, 17:05 UTC
 
 The intervening regeneration-only turn was NO ROADMAP PROGRESS: existing .01
 client/server coefficients and focused tests were reconfirmed without changing
