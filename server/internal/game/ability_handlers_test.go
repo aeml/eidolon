@@ -670,22 +670,37 @@ func TestTripwireRootsForThreeSecondsAndRespectsCCImmunity(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			w := newTestWorld()
 			rogue := newTestPlayer("rogue-tripwire", "Rogue")
+			// NewWorld includes random overworld enemies. A single-use trap
+			// may legitimately hit one first; isolate this duration/immunity
+			// contract without changing production collision selection.
+			rogue.InstanceID = "tripwire-contract"
 			enemy := &Entity{
 				ID: "enemy-tripwire", Type: TypeEnemy, Health: 200, MaxHealth: 200,
-				State: "IDLE", CCImmune: test.ccImmune, Scale: 1,
+				InstanceID: rogue.InstanceID,
+				State:      "IDLE", CCImmune: test.ccImmune, Scale: 1,
 			}
 			w.AddEntity(rogue)
 			w.AddEntity(enemy)
 			w.performRogueAbility(rogue, 0, 0, "", "Tripwire", func(time.Duration) {})
 
+			var trap *Entity
 			for _, entity := range w.Entities {
 				if entity.SubType == "Tripwire" {
+					trap = entity
 					w.updateEntity(entity, 0.016, nil, &deferredActions{})
 					break
 				}
 			}
+			if trap == nil || !trap.HitList[enemy.ID] || enemy.Health >= 200 {
+				t.Fatal("tripwire did not hit the intended enemy")
+			}
 
 			if enemy.Rooted != test.rooted {
+				for _, entity := range w.Entities {
+					if entity.SubType == "Tripwire" {
+						t.Logf("tripwire collision receipts: %+v", entity.HitList)
+					}
+				}
 				t.Fatalf("rooted=%v, want %v", enemy.Rooted, test.rooted)
 			}
 			if test.rooted {
