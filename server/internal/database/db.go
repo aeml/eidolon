@@ -58,31 +58,32 @@ type Auction struct {
 }
 
 type Character struct {
-	Name            string            `bson:"name"`
-	Class           string            `bson:"class"` // Fighter, Wizard, etc.
-	Level           int               `bson:"level"`
-	XP              int               `bson:"xp"`
-	ResonanceLevel  int               `bson:"resonance_level,omitempty"`
-	ResonanceXP     int               `bson:"resonance_xp,omitempty"`
-	ResonancePoints int               `bson:"resonance_points,omitempty"`
-	ResonanceRanks  map[string]int    `bson:"resonance_ranks,omitempty"`
-	Gold            int               `bson:"gold"`
-	X               float64           `bson:"x"`
-	Y               float64           `bson:"y"`
-	Z               float64           `bson:"z"`
-	InstanceID      string            `bson:"instance_id"`
-	LastLogout      time.Time         `bson:"last_logout"`
-	Stats           Stats             `bson:"stats"`
-	Inventory       []Item            `bson:"inventory"`
-	Stash           []Item            `bson:"stash"`
-	Buyback         []Item            `bson:"buyback"`
-	Equipment       map[string]Item   `bson:"equipment"`
-	Quests          []Quest           `bson:"quests"`
-	LastDailyQuest  time.Time         `bson:"last_daily_quest"`
-	SkillPoints     int               `bson:"skill_points"`
-	SelectedBranch  string            `bson:"selected_branch"`
-	UnlockedSkills  []string          `bson:"unlocked_skills"`
-	SkillRunes      map[string]string `bson:"skill_runes,omitempty"` // skill name -> rune ID
+	Name               string            `bson:"name"`
+	Class              string            `bson:"class"` // Fighter, Wizard, etc.
+	Level              int               `bson:"level"`
+	XP                 int               `bson:"xp"`
+	ProgressionVersion int               `bson:"progression_version"`
+	ResonanceLevel     int               `bson:"resonance_level,omitempty"`
+	ResonanceXP        int               `bson:"resonance_xp,omitempty"`
+	ResonancePoints    int               `bson:"resonance_points,omitempty"`
+	ResonanceRanks     map[string]int    `bson:"resonance_ranks,omitempty"`
+	Gold               int               `bson:"gold"`
+	X                  float64           `bson:"x"`
+	Y                  float64           `bson:"y"`
+	Z                  float64           `bson:"z"`
+	InstanceID         string            `bson:"instance_id"`
+	LastLogout         time.Time         `bson:"last_logout"`
+	Stats              Stats             `bson:"stats"`
+	Inventory          []Item            `bson:"inventory"`
+	Stash              []Item            `bson:"stash"`
+	Buyback            []Item            `bson:"buyback"`
+	Equipment          map[string]Item   `bson:"equipment"`
+	Quests             []Quest           `bson:"quests"`
+	LastDailyQuest     time.Time         `bson:"last_daily_quest"`
+	SkillPoints        int               `bson:"skill_points"`
+	SelectedBranch     string            `bson:"selected_branch"`
+	UnlockedSkills     []string          `bson:"unlocked_skills"`
+	SkillRunes         map[string]string `bson:"skill_runes,omitempty"` // skill name -> rune ID
 	// Passive talents
 	UnlockedTalents []string       `bson:"unlocked_talents"` // legacy: treated as rank 1 per id
 	TalentRanks     map[string]int `bson:"talent_ranks,omitempty"`
@@ -155,8 +156,11 @@ type Quest struct {
 	CollectionVersion  int    `bson:"collection_version,omitempty"`
 	DropMisses         int    `bson:"drop_misses,omitempty"`
 	InvestigationMask  uint32 `bson:"investigation_mask,omitempty"`
+	LegacyOptional     bool   `bson:"legacy_optional,omitempty"`
 	RewardXP           int    `bson:"reward_xp"`
 	RewardGold         int    `bson:"reward_gold"`
+	RewardXPQuoted     bool   `bson:"-"`
+	RewardGoldQuoted   bool   `bson:"-"`
 	GrantedGold        int    `bson:"granted_gold,omitempty"`
 	GrantedXP          int    `bson:"granted_xp,omitempty"`
 	GrantedResonanceXP int    `bson:"granted_resonance_xp,omitempty"`

@@ -56,6 +56,7 @@ func (c *Client) handleChatCommand(raw string) bool {
 			if err == nil && char != nil {
 				char.Level = player.Level
 				char.XP = player.Experience
+				char.ProgressionVersion = game.CurrentProgressionVersion
 				char.SkillPoints = player.SkillPoints
 				char.SelectedBranch = player.SelectedBranch
 				char.UnlockedSkills = append([]string(nil), player.UnlockedSkills...)
