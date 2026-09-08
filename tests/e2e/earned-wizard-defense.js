@@ -1,5 +1,5 @@
 import { moveByGroundClick, projectGroundOffset, readPlayerState } from './helpers.js';
-import { planWizardCrowdControl, planWizardHuntStep } from '../wizardHuntControls.js';
+import { planWizardCrowdControl } from '../wizardHuntControls.js';
 
 // Only observes replicated state and chooses ordinary keys/ground clicks.
 // Reinstall after fresh login, which destroys the previous browser observer.
@@ -38,7 +38,13 @@ export async function createEarnedWizardDefense(page, { allowJumpFallback = fals
                 threats: (game.activeEntitiesCache || []).filter(enemy => game.isHostileActorTarget(enemy) &&
                     p.position.distanceTo(enemy.position) < 18).map(enemy => ({ x: enemy.position.x, z: enemy.position.z })) };
         });
-        const plan = planWizardHuntStep({ ...state, encounter });
+        const plan = await page.evaluate(async ({ state, encounter }) => {
+            const { planWizardHuntStep, isEarnedRetreatPathClear } = await import('/tests/wizardHuntControls.js');
+            const game = window.game;
+            return planWizardHuntStep({ ...state, encounter,
+                canRetreat: delta => isEarnedRetreatPathClear(game.collisionManager,
+                    game.player.position, state.radius || 1.25, delta) });
+        }, { state, encounter });
         if (plan?.action === 'shield') {
             await page.keyboard.press(plan.key);
             await page.waitForTimeout(550);
@@ -56,7 +62,8 @@ export async function createEarnedWizardDefense(page, { allowJumpFallback = fals
         }
         if (!plan) return false;
         try {
-            await moveByGroundClick(page, plan.x, plan.z, { minimumDistance: 6, allowJumpFallback, timeout: 2500 });
+            await moveByGroundClick(page, plan.x, plan.z, { minimumDistance: 6, allowJumpFallback,
+                requireClearPath: true, timeout: 2500 });
         } catch (error) {
             if ((await readPlayerState(page)).state === 'DEAD') return true;
             throw error;

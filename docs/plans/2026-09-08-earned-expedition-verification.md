@@ -54,3 +54,22 @@ preparation before harder expeditions; it never grants a build. The lower-level
 watch baseline is unchanged. The whole Earth timeout is60m to cover the newly
 added150 kills and travel, rather than the old20m three-objective route.
 Actual completion time is still measured and is not approved by that ceiling.
+
+## Full Earth attempt and wall-navigation correction
+
+Full Earth **57004 FAILED /10.8m**, source a7cbd99; artifact scan and owned
+cleanup passed. Watch earned40 credits with two deaths and manually reached
+level12. Eight Seeds took11 observed target deaths without another death.
+The ordinary build UI equipped eight actually earned items and trained two
+Fireball Mastery ranks. Walking Ink reached5/60 credits, level14, with no Ink
+death before the driver's retreat ran into Lanternhold's west wall at
+(-105.55617685,269.11594458). Maximum displacement2.31572 failed the unchanged
+six-unit movement assertion. This is not a completed Earth pacing result.
+
+The driver now queries the actual client collision manager on detached vectors
+along each proposed retreat, including alternative clicks. Walls, rotated
+buildings, circular props and instance floors remain solid. It selects among
+normal nine-unit directions or keeps fighting if none fit; it does not move
+the actor, grant progress, relax the movement assertion or increase the death
+allowance. Regression26911 passes67 tests across three collision/strategy
+suites; lint93211 passes. A new full earned run is required.

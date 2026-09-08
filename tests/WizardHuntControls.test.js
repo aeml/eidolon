@@ -1,4 +1,6 @@
-import { planWizardCrowdControl, planWizardHuntStep, planWizardTravelDefense } from './wizardHuntControls.js';
+import * as THREE from 'three';
+import { CollisionManager } from '../src/core/CollisionManager.js';
+import { isEarnedRetreatPathClear, planWizardCrowdControl, planWizardHuntStep, planWizardTravelDefense } from './wizardHuntControls.js';
 
 const state = { className: 'Wizard', dead: false, x: 0, z: 0, healthRatio: 0.7,
     shieldHP: 0, mana: 50, shieldCost: 40, hotbar: ['Teleport', 'Arcane Shield'],
@@ -6,6 +8,39 @@ const state = { className: 'Wizard', dead: false, x: 0, z: 0, healthRatio: 0.7,
 
 const crowd = { ...state, mana: 100, wellCost: 60, hotbar: ['Teleport', 'Arcane Shield', 'Gravity Well'],
     unlockedSkills: ['Gravity Well'], threats: [{ x: 5, z: 0 }, { x: 6, z: 0 }, { x: 7, z: 0 }] };
+
+test('earned west-wall replay rejects blocked full paths without moving the player', () => {
+    const manager = new CollisionManager();
+    manager.addCollider(new THREE.Box3(new THREE.Vector3(-102, -5, 200), new THREE.Vector3(-98, 20, 300)));
+    const position = new THREE.Vector3(-105.55617685, 0, 269.11594458);
+    const original = position.clone();
+    const canRetreat = delta => isEarnedRetreatPathClear(manager, position, 1.25, delta);
+    expect(canRetreat({ x: 7.0513, z: -5.5927 })).toBe(false);
+    // An endpoint outside the wall is insufficient: the segment crosses it.
+    expect(canRetreat({ x: 12.022655, z: .675 })).toBe(false);
+    const plan = planWizardHuntStep({ ...state, healthRatio: 1,
+        x: position.x, z: position.z, canRetreat,
+        threats: [{ x: position.x - 3, z: position.z }] });
+    expect(plan.action).toBe('retreat');
+    expect(canRetreat(plan)).toBe(true);
+    expect(Math.hypot(plan.x, plan.z)).toBeCloseTo(9);
+    expect(position.equals(original)).toBe(true);
+    expect(planWizardHuntStep({ ...state, healthRatio: 1, canRetreat: () => false })).toBeNull();
+});
+
+test('retreat queries honor circular and rotated building collision too', () => {
+    const manager = new CollisionManager();
+    const position = new THREE.Vector3(0, 0, 0);
+    manager.addCircularCollider(4, 0, 1);
+    expect(isEarnedRetreatPathClear(manager, position, 1.25, { x: 9, z: 0 })).toBe(false);
+    expect(isEarnedRetreatPathClear(manager, position, 1.25, { x: 0, z: 9 })).toBe(true);
+    manager.clear();
+    const matrix = new THREE.Matrix4().makeRotationY(Math.PI / 4);
+    matrix.setPosition(4, 0, 0);
+    manager.addOrientedCollider({ matrix, inverse: matrix.clone().invert(),
+        box: new THREE.Box3(new THREE.Vector3(-1, -5, -4), new THREE.Vector3(1, 5, 4)) });
+    expect(isEarnedRetreatPathClear(manager, position, 1.25, { x: 9, z: 0 })).toBe(false);
+});
 
 test('travel does not repeatedly clear mobs or retreat off-route while healthy', () => {
     expect(planWizardTravelDefense({ ...state, healthRatio: 1 })).toBeNull();

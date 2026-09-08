@@ -1,5 +1,21 @@
 import { clipDungeonEffectSegment } from '../src/skills/dungeonEffectGeometry.js';
 
+// Query the real collision manager with detached vectors. Checking the whole
+// segment also rejects a clear-looking endpoint on the far side of a wall.
+export function isEarnedRetreatPathClear(manager, position, radius, delta) {
+    const steps = Math.ceil(Math.hypot(delta.x, delta.z) / .25);
+    let previous = position.clone();
+    for (let step = 1; step <= steps; step++) {
+        const point = position.clone();
+        point.x += delta.x * step / steps;
+        point.z += delta.z * step / steps;
+        const corrected = manager.checkCollision(point, radius, previous);
+        if (corrected && corrected.distanceTo(point) > .00001) return false;
+        previous = point;
+    }
+    return true;
+}
+
 // Traveling through a realm is not an instruction to clear every spawn along
 // the road. Use the real shield when needed, fight only to recover from danger,
 // and otherwise continue toward the waypoint. Site combat retains its own plan.
@@ -46,7 +62,7 @@ export function planWizardHuntStep(state) {
     const encounter = state.encounter;
     // Dungeon corners can require turning back toward the room interior. Retain
     // the open-world strategy, but reject full paths through walls in instances.
-    const offsets = inDungeon || encounter ? Array.from({ length: 16 }, (_, i) => i * Math.PI / 8)
+    const offsets = inDungeon || encounter || state.canRetreat ? Array.from({ length: 16 }, (_, i) => i * Math.PI / 8)
         : [0, Math.PI / 4, -Math.PI / 4, Math.PI / 2, -Math.PI / 2];
     const radius = Number.isFinite(state.radius) ? state.radius : 1.25;
     const floors = inDungeon ? state.walkRects.map(rect => ({ ...rect,
@@ -59,6 +75,7 @@ export function planWizardHuntStep(state) {
         state.z + option.z - encounter.z) <= encounter.radius)
         .filter(option => !inDungeon || !clipDungeonEffectSegment(floors, state,
         { x: state.x + option.x, z: state.z + option.z }).blocked)
+        .filter(option => !state.canRetreat || state.canRetreat(option))
         .sort((a, b) => b.clearance - a.clearance);
     // A constrained player may need to keep fighting; do not invent a successful
     // retreat or require a ground click into a wall. Combat watchdogs still apply.
