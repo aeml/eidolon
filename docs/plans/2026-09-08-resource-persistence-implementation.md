@@ -1,5 +1,18 @@
 # Resource persistence implementation candidate — not release-ready
 
+## Listing actual-session closure — September 8, 20:31 UTC
+
+Actual39545 CLOSED PASS0/202.614s on0908438, TWO combined repetitions. All74
+child server logs independently clean:14 intended SIGKILLs,60 normal completed
+drains. Exact owned Mongo eidolon-auction-listing-proof-20260908-2027 and volumes
+removed; container independently absent. Normal listing/rejection, seven crash
+cuts, competing buyouts and normal seller payout all pass. This includes
+normalizing the prepared legacy item100→4 and preserving a just-cast70mana
+without an intervening disconnect before listing. No duplicated auction/item
+or deposit through two recovery processes. Full34429 still ACTIVE; keep the
+tested source frozen. Stale-slot binding, publication timing and rollback remain
+open. Log `/tmp/eidolon-auction-listing-sessions.log`.
+
 ## Listing escrow candidate — September 8, 20:29 UTC
 
 Buyout481c3d0 acceptance is closed: fullrace83710 PASS0 (root26.628/database
