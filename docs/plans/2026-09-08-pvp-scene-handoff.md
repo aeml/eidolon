@@ -73,3 +73,13 @@ retain this wrapper anomaly rather than claiming a clean exit. The next final
 run explicitly records the shell's script exit status. The full CI route now
 retains the same four-class practice-duel function as focused QA.243 version/
 scene/preflight/material checks passed2.951s plus lint/diff before e9b1b2b.
+
+90204 final verification on clean8945856 PASS4/1.5m, with explicit
+QA_SCRIPT_EXIT=0 and terminal exit0. Fighter20.6s, Rogue21.5s, Wizard23.4s,
+Cleric21.8s; same rendered arena, combat, normal-forfeit, exact departure and
+unchanged reward/profile assertions. Scan0 and independent exact-container
+absence passed. This closes the wrapper ambiguity for the final candidate;
+the earlier143 is retained as historical evidence, not relabeled. Final68622
+version/preflight/retained-route/material checks passed236/2.488s plus lint/bash/
+diff. All local duel handles are closed. Carry this into47 and run its complete
+versioned regression; do not publish over46's still-active CI gate.
