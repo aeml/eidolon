@@ -24,6 +24,27 @@ ranked/party/disconnect or physical-phone sign-off. Oversized existing combat
 labels also remain in the later visual queue. These are not silently removed
 from the1.1–1.10 goal.
 
-Do not publish over active46 CI34226360903. Require its full success and fresh
+Do not publish over active46 CI34238194283. Require its full success and fresh
 matching public frontend/backend identity, then publish this47 candidate with
 its own complete CI/live gate. Never push root master or an older47 branch.
+
+## Exact inherited-fixture check — September8
+
+On93ab09c, actual12646 CLOSED FAILED overall6.2m: prepared reuse FAILED36.9s,
+following Verdant PASSED5.4m with both bosses, later spawns, cleared rooms and
+town return. Matron last663HP with player1672HP/420mana before confirmed kill.
+Log `/tmp/eidolon-release47-inherited-fixture-gameplay.log`; credential scan0,
+independent exact-container/image absence confirmed. No gameplay refill or
+relaxed encounter requirement. This is not a combined pass.
+
+Reuse waited for a local mana dip, then separately captured `depleted` as1685
+(full) before the subsequent fixture initializer observed1664. It consequently
+asserted1685 >1685. Local prediction and authoritative state can change between
+those reads. The successor observes the actual Fireball ability_result, requires
+accepted=true and lower returned mana, and uses that server value for the reset
+comparison. Ordinary mouse cast, explicit starting-fixture reset and exact
+rank/rune/point equality remain. The observer is restored in finally.
+
+Focused84841 PASS25tests/4.667s plus full lint/diff. No gameplay/version/patch-note
+change; actual successor and full client verification remain required. After
+passing, propagate this QA-only correction through48–55 and the resource branch.
