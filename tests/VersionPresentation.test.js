@@ -20,6 +20,8 @@ const versionedRuntimeFiles = [
 describe('version presentation', () => {
     test('adds collection pacing notes without replacing entrance visibility history', () => {
         expect(indexHtml).toContain('Alpha 1.0.47 (fragments worth finding)');
+        expect(indexHtml).toContain('A road patrol, not an endless pursuit');
+        expect(indexHtml).toContain('walk back without healing or becoming immune');
         expect(indexHtml.match(/data-version="1\.0\.47"/g)).toHaveLength(1);
         expect(indexHtml.indexOf('data-version="1.0.47"')).toBeLessThan(indexHtml.indexOf('data-version="1.0.46"'));
         for (const heading of ['A longer search for the crystals', 'Bad luck has a limit', 'Your accepted quest stays yours', 'Safer progress and honest totals']) expect(indexHtml).toContain(heading);
