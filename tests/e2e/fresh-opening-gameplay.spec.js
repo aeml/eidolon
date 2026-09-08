@@ -179,10 +179,15 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     expect((await readChronicleChapter(page, chapter)).completed).toBe(true);
     console.log(`[fresh-opening] completed ${JSON.stringify({ level: earnedLevel, deaths, retreats, grantedGold: rewarded.grantedGold, grantedXP: rewarded.grantedXP, elapsedSeconds: Math.round((Date.now() - started) / 1000) })}`);
     if (process.env.EIDOLON_E2E_FRESH_COLLECTION === '1') {
-        await earnFreshCollectionAndInspectHandoff(page, credentials, {
-            findTarget: () => findSkeletonThroughTravel(page), leaveTown: () => leaveTown(page),
-            captureReady: () => page.screenshot({ path: testInfo.outputPath('earned-collection-ready.png') })
-        });
+        try {
+            await earnFreshCollectionAndInspectHandoff(page, credentials, {
+                findTarget: () => findSkeletonThroughTravel(page), leaveTown: () => leaveTown(page),
+                captureReady: () => page.screenshot({ path: testInfo.outputPath('earned-collection-ready.png') })
+            });
+        } catch (error) {
+            await page.screenshot({ path: testInfo.outputPath('failed-collection.png') });
+            throw error;
+        }
     }
     if (process.env.EIDOLON_E2E_FRESH_HUNT === '1') {
         const hunt = {

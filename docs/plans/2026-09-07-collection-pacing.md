@@ -146,3 +146,12 @@ it does not grant resources or reconnect. This is a concrete strategy discrepanc
 not yet proof that adding spacing resolves the failure. Gather combat/resource
 and death evidence in the next bounded run, preserve the requested regeneration,
 and do not relax death or encounter limits to approve the release.
+
+The next test-only candidate connects the existing Wizard hunt spacing driver
+to collection combat and retains every target/count/death/deadline requirement.
+It records bounded read-only resource, enemy and defense observations, each
+actual death and post-button recovery, and captures a failure screenshot after
+entering the world (not account forms). No game runtime, regeneration, new skill
+purchase, grant or reconnect changes. Other classes keep their existing inputs.
+Focused checks pass **247 tests / four suites / 3.216s**, changed-file lint and
+diff checks pass. Actual revised gameplay and any required follow-up remain open.

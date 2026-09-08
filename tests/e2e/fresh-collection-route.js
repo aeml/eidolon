@@ -1,6 +1,7 @@
 import { expect } from '@playwright/test';
 import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { openDungeonGuide } from './dungeon-guide.js';
+import { createFreshCollectionCombat, readFreshCollectionCombat } from './fresh-collection-combat.js';
 import { loginAndEnterWorld, moveByGroundClick, projectEntity, readPlayerState,
     returnToTown, setAutoLootThroughSettings } from './helpers.js';
 
@@ -22,18 +23,23 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
     const previousAutoLoot = await page.evaluate(() => window.game.autoLootEnabled);
     await setAutoLootThroughSettings(page, true);
     await returnToTown(page);
+    const beforeCombat = await createFreshCollectionCombat(page);
     await leaveTown();
     let observedTargetDeaths = 0, deaths = 0;
     for (let encounter = 0; encounter < required * 5 + 2 && (await readChronicleChapter(page, collection)).count < required; encounter++) {
         const target = await findTarget();
         const deadline = Date.now() + 120_000;
+        let nextDiagnostic = 0;
         let defeated = null, respawned = false;
         while (Date.now() < deadline) {
             const player = await readPlayerState(page);
             if (player.state === 'DEAD') {
                 deaths++;
+                console.log('[fresh-collection-death]', JSON.stringify({ deaths,
+                    ...await readFreshCollectionCombat(page, target.id) }));
                 expect(deaths, 'Fresh collection exceeded two ordinary respawns').toBeLessThanOrEqual(2);
                 await returnToTown(page);
+                console.log('[fresh-collection-recovery]', JSON.stringify(await readFreshCollectionCombat(page, target.id)));
                 await leaveTown();
                 respawned = true;
                 break;
@@ -46,6 +52,14 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
             }, target.id);
             expect(enemy, 'Collection target disappeared without an observed death').not.toBeNull();
             if (enemy.state === 'DEAD' || enemy.hp <= 0) { defeated = enemy; break; }
+            if (Date.now() >= nextDiagnostic) {
+                console.log('[fresh-collection-combat]', JSON.stringify(await readFreshCollectionCombat(page, target.id)));
+                nextDiagnostic = Date.now() + 15_000;
+            }
+            if (await beforeCombat()) continue;
+            // A normal retreat can itself take damage. Let the existing death
+            // handler observe that before issuing another attack.
+            if ((await readPlayerState(page)).state === 'DEAD') continue;
             const point = await projectEntity(page, target.id);
             if (point?.visible) {
                 await page.mouse.click(point.x, point.y);
