@@ -5,6 +5,7 @@ import { isEquippableItem, isActiveEquipment } from '../core/EquipmentSlots.js';
 import { getAbilityManaCost, getAbilityCooldown } from '../core/AbilityEconomy.js';
 import { updateOfflineHealingLight } from '../core/AbilityHealing.js';
 import { PASSIVE_REGEN_PER_STAT } from '../core/Regeneration.js';
+import { applyActorStealthAppearance, restoreActorStealthAppearance } from './ActorStealthAppearance.js';
 import { basicAttackInterval, usesPlayerAttackCadence } from '../core/BasicAttackCadence.js';
 import { rollOfflineCriticalDamage } from '../core/AbilityCritical.js';
 import { applyOfflineStatus, clearOfflineStatus, updateOfflineDamageOverTime } from '../core/OfflineDamageOverTime.js';
@@ -382,6 +383,7 @@ export class Actor extends Entity {
     }
 
     setMesh(mesh) {
+        restoreActorStealthAppearance(this);
         super.setMesh(mesh);
 
         // Equipment state commonly arrives before an asynchronous class mesh.
@@ -413,6 +415,7 @@ export class Actor extends Entity {
                 visible: true,
                 transparent: true,
                 opacity: 0,
+                colorWrite: false,
                 depthWrite: false
             });
             hitbox = new THREE.Mesh(hitGeo, hitMat);
@@ -1042,24 +1045,10 @@ export class Actor extends Entity {
         
         if (this.stealthTimer > 0) {
             this.stealthTimer -= dt;
-            if (this.mesh) {
-                this.mesh.traverse(child => {
-                    if (child.isMesh) {
-                        child.material.transparent = true;
-                        child.material.opacity = 0.3;
-                    }
-                });
-            }
-            if (this.stealthTimer <= 0) {
-                // Restore opacity
-                if (this.mesh) {
-                    this.mesh.traverse(child => {
-                        if (child.isMesh) {
-                            child.material.opacity = 1.0;
-                        }
-                    });
-                }
-            }
+            if (this.stealthTimer > 0) applyActorStealthAppearance(this);
+            else restoreActorStealthAppearance(this);
+        } else {
+            restoreActorStealthAppearance(this);
         }
 
 
@@ -1544,6 +1533,8 @@ export class Actor extends Entity {
 
     die() {
         if (this.state === 'DEAD') return;
+        this.stealthTimer = 0;
+        restoreActorStealthAppearance(this);
         this.state = 'DEAD';
         this.currentAbilityAnimation = null;
         this.targetPosition = null;
@@ -1718,6 +1709,8 @@ export class Actor extends Entity {
     }
 
     respawn(x, z) {
+        this.stealthTimer = 0;
+        restoreActorStealthAppearance(this);
         const wasDead = this.state === 'DEAD' || this.stats.hp <= 0;
         if (wasDead) this.stats.mana = this.stats.maxMana;
         this.position.set(x, 0, z);
@@ -2082,6 +2075,7 @@ export class Actor extends Entity {
     }
 
     dispose() {
+        restoreActorStealthAppearance(this);
         this.clearManagedTimers();
         this.clearAnimationFinishedHandler();
         this.cancelAbilities?.();
