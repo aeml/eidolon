@@ -54,3 +54,19 @@ manual turn-in and120-second/two-respawn limits are unchanged. Collection rechec
 the previous target for delayed death before changing its observation.44250
 passes35tests/three suites and lint; final missing-target/no-candidate coverage
 and fresh actual verification follow. No direct targeting or movement writes.
+
+Final79654 PASS36tests/1.986s and full lint/diff;3deaede committed. Actual23203
+**FAILED4.0m**, terminal: opening3kills/no deaths and manual reward/login pass
+45seconds, level5. Collection observed3target deaths/0seeds/0deaths, then a120s
+encounter deadline.34retreats spread basic hits across several targets; final
+readable receipt151HP/16mana, nearby one level1Skeleton. No unchanged rerun.
+Scan0/cleanup/independent exact-container absence PASS. Failure capture viewed
+and saved at `/tmp/eidolon-starter-reacquire-evidence-3d2EmT/failed-collection.png`.
+This proves opening completion on this run, not collection or first-hour approval.
+
+Next compare use of normally earned eligible equipment and stat points before
+further enemy changes. Existing prepareEarnedClass is NOT directly usable here:
+it requires level10 specialization and expects an open dungeon menu; opening ends
+at5. A level-appropriate preparation path must not grant ranks, bypass a branch
+gate, or discard the unprepared baseline. The observed opening reward remains
+500XP→5 in this15-chapter candidate, unlike the expanded31-chapter worktree.
