@@ -14,7 +14,7 @@ ActorInteractionHitbox after death. Regression48124 failed opacity0 vs1 before
 the fix. Stealth now owns isolated temporary material copies, restores only its
 changes on expiry/cancel/death/respawn/disposal/mesh replacement, and preserves
 translucency/shared pooled originals. Interaction boxes also disable color writes
-while retaining raycasting. Focused53282 PASS53 tests; final lint12975 PASS.
+while retaining raycasting. Focused53282 PASS75 tests; final lint12975 PASS.
 Rendered79896 PASS1/8.4s, prepared real Rogue/model lifecycle scene; screenshot
 inspected without cube after repeated respawns and expiry. This is not multiplayer
 earned-death proof. Full client39229 CLOSED PASS0:235 suites/3339 tests142.466s.
