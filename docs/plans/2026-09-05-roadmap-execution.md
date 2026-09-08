@@ -5,7 +5,56 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 10:50 UTC
+## Current checkpoint — September 8, 10:59 UTC
+
+Previous goal turn was progress (production pursuit implementation and tests).
+This continuation commits that candidate, closes its real failure, corrects
+disengaged-target QA, and implements reproduced four-class damage parity.
+Full1.1–1.10 remains active/incomplete, not blocked.
+
+**46CI34215073108 freshly in_progress**: client/server/browser smoke PASS,
+Predeploy Character QA still live.45 is still last independently verified live
+release; no47 or later push and no root-master push.
+
+Starter full92956 **PASS**, terminal: root4.235s/database0.035s/game119.618s.
+Actual38499 **FAILED2.5m** before collection: opening2kills/zero deaths,73HP/
+22mana/36retreats at(185.88,142.46). Final receipt has no Orc/starter train, but
+the watched level1Skeleton is idle47.19units away with28HP; pending/hovered null,
+one level3Skeleton5.69units away. Do not infer overall pacing improvement from
+this single run. Scan0 and independent exact-container absence PASS; both handles
+closed. Production pursuit is committed **62791a50fe27142b73bccd7d5bcba387619e05b6**.
+
+QA follow-up **3deaede81d43fe3821d35420936274eaebc26fa3**, clean/frozen in
+`/tmp/eidolon-starter-pursuit-VB2m7S`, permits a currently visible Skeleton to be
+acquired through normal input when the old living target is outside basic range+2
+and no hostile auto-attack/chase remains. Active chases, missing/dead evidence and
+the120-second/two-respawn bounds are retained. Collection rechecks delayed death.
+44250 PASS35tests/lint; final79654 PASS36tests/1.986s plus lint/diff.
+**23203 ACTIVE** actual fresh-collection on3deaede, runIDstarter-pursuit-reacquire,
+API18635/Mongo18636/web18637; log `/tmp/eidolon-starter-pursuit-reacquire.log`.
+Only owned browser; poll exact handle, keep source frozen until terminal.
+
+Independent **8dfd9a4eaa705ac539fe8e283ec22e3184627c93** damage-parity candidate
+in `/tmp/eidolon-basic-damage-parity-kpmlMA`, work/basic-damage-parity-20260908,
+clean/frozen on queued53. Reproduced all four hero constructors using Strength×2
+instead of the server's integer class-primary/4. Constructor/recalculation now
+match existing authoritative hero scaling plus flat equipment damage; non-hero
+actors retain Strength×2. No server formula/cadence/regen/save/reward change.
+It does not fix online server pacing. Needs later versioning, not a53 live claim.
+
+8044 reproduced4fail/8pass. Shared unequal-stat/equipment JSON runs in Go and
+client;90787Go PASS0.007s. Initial62021 fixture reader failed on jsdom URL; fixed
+repository-relative path.26852 PASS72tests/three suites/2.066s and full lint.
+**12730 ACTIVE** full client regression on8dfd9a4; log
+`/tmp/eidolon-basic-damage-parity-client.log`. No terminal result yet. Keep source
+frozen and poll this handle, do not restart on observation timeout. This and23203
+are the only owned running checks. All other named handles this checkpoint closed.
+
+Queued53/874b8fc remains clean/verified and expanded31-chapter6c2a81a remains
+separate, with actual all-class/campaign approval still due. Next close12730 and
+23203; act on their evidence before publication/inheritance. Goal scope unchanged.
+
+## Historical checkpoint — September 8, 10:50 UTC
 
 Previous goal turn was progress (versioned53 committed; opening QA corrected).
 This continuation closes the failed opening run and implements a production
