@@ -5,7 +5,54 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 19:01 UTC
+## Current checkpoint — September 8, 19:16 UTC
+
+Previous goal turn was PROGRESS (accepted Seraph correction and ordered48 push).
+This turn is PROGRESS: durable seller payout and confirmed-expiry ordering
+implemented in the separate resource candidate. Full roadmap remains active.
+
+Runtime3bd5df48ce0e104c638590fab54e5d26614b9cc1 adds an explicit seller_payout
+kind and frozen fee/amount to the existing unique-per-auction operation record.
+Ordinary seller collection reserves/persists its decision, commits a complete
+character credit plus private seller-payout receipt under account ordering, then
+marks the auction claimed. Startup/command recovery reuses the same ID. Persistent
+seller collection can no longer use the old direct gold increment. Buyer item
+state/escrow are not modified; fully settled auctions are eligible for later
+cleanup only after no operation/refund remains. Unknown new kinds fail closed
+in the new reader. Older unpublished readers are NOT compatible rollback targets;
+an enforced bridge/roll-forward guard is still required before release.
+
+Expiry now publishes SOLD/EXPIRED in memory only after its update is confirmed.
+A failed save retains an expired-by-time ACTIVE record, rejecting bids/buyouts
+and allowing a later expiry retry. An expired buyout request no longer changes
+it to EXPIRED and discards a legitimate winning bidder. Unit injection checks
+that unconfirmed expiry cannot enable a seller payout; successful retry can.
+
+Focusedrace57922 PASS root3.827/database1.057/game1.124; expanded73151 PASS
+2.970/1.040/1.165; final expiry54090 PASS2.233/1.085/1.208. Logs
+`/tmp/eidolon-auction-payout-{focused,expanded-focused,expiry-focused}.log`.
+The first Go invocation used the repository root rather than the server module
+and failed immediately; corrected before these passes. No assertion removed.
+
+Frozen-source **fullrace65216 ACTIVE**, log
+`/tmp/eidolon-auction-payout-full-race.log`; **actual78070 ACTIVE**, log
+`/tmp/eidolon-auction-payout-sessions.log`. Actual suite repeats six new seller
+SIGKILL boundaries, six previous bid boundaries, same-bidder/contention/repeat
+requests and prior offline/refund-save/refund-ack cases twice. Prepared sale100,
+fee5/deposit5 owes100gold; ordinary saved Fireball/reconnect/collect then intended
+kill/restarts must preserve1334gold,70mana,17HP, one receipt and the unclaimed
+buyer item. These are assertions under test, not yet whole-run passes. Exact
+owned Mongo eidolon-auction-payout-proof-20260908-1915; do not edit tested sources
+until both exact handles are terminal. Candidate remains unreleased55 metadata.
+
+48 CI34266379714 on546391c is freshly ACTIVE: client/server/smoke shards2 and3
+PASS, shard1 running. No further push this turn, no48 live claim;49 stays gated
+on the entire48 CI/finalLiveQA/freshidentity. Queue refs remain in19:01 checkpoint.
+Public client/server last match healthy47. Next: close payout acceptance,
+address remaining durable item/listing operations and rollback; auction list
+snapshot detachment also needs review. Broader campaign/phone/raid gates remain.
+
+## Historical checkpoint — September 8, 19:01 UTC
 
 Previous goal turn was PROGRESS (bid acceptance and48 failure diagnosis).
 This turn is PROGRESS: accepted Seraph route correction, fresh-world verification,
