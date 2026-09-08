@@ -5,7 +5,97 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 07:50 UTC
+## Current checkpoint — September 8, 08:17 UTC
+
+Previous goal turn was progress (collection diagnostics and actual uninterrupted
+diary evidence). This continuation closes failed playtests, implements a starter
+road correction, fixes and republishes45's CI observation failure, and carries
+that verified correction into46/root. Full1.1–1.10 remains active and incomplete.
+
+**Corrected45 is pushed: 0ed54b248fd37883cb20fdba5e2f97f377a31f44.** Push2430
+finished successfully and independent remote-head lookup matches. New CI
+**34203281024 ACTIVE**, client passed/server running at latest check. Old CI
+34198772605 failed phone talent QA after the prepared Verdant bosses passed;
+deploy/live jobs were skipped. The phone test wrongly waited30s for a full bar
+after login, then reused purchased ranks on retry. Actual corrected route shows
+1191/1685mana after login, making that full-bar deadline invalid at1.09/sec.
+No production code or0.01 coefficient changed in this CI correction.
+
+Tested45 source42522f0 passes full218client suites/3221tests/137.186s, full lint,
+syntax and diff checks. Actual phone test11.6s/14.4s total proves30→21mana and
+saved-login21mana cast using current-resource observations with bounded tick
+allowance. Deliberate post-purchase retry probe fails once as designed and its
+fresh untrained retry passes11.1s. Both scans0sanitizations/owned cleanup and
+independent container absence pass. Targeted server talent/regen race3.992s;
+runtime identical to64df5fb, whose server CI passed. Handles93578/72433/46965
+closed. Logs `/tmp/eidolon-release45-cast-observation-{client,lint,gameplay,retry}.log`.
+Both45 worktrees are clean0ed54b2. Do not rerun old failed CI or push46 before
+every new45 job and independent exact public identity checks pass. Fresh public
+checks this turn still show44/847d454a94a7424ab303f6339c875ab170bff36e, backend
+healthy/database ready;45 is not confirmed live.
+
+**46 now ad16790b27f9950b30d0fc6e4e060982bc1204dc**, clean queued release branch.
+Merge55ea35b inherits corrected45; no src/server/index differences versus prior
+verified87ed21c. Focused260tests/five suites/2.617s plus full lint pass21098.
+Its existing actual entrance evidence remains applicable, not newly rerun.
+Root merges this as **f14d28e**, preserving staged52 and both fresh-collection/
+talent-retry contracts after resolving an additive test-file conflict. Root60346
+passes250tests/five suites/1.740s and diff checks. Never push root's staged52.
+
+**47 spacing-only test a6a91dc failed** actual23856/2.8m:5/8fragments, two deaths
+with level30 enemies nearby, then a blocked retreat into the east town wall.
+It previously passed219client suites/3231tests/168.981s and lint37593. Actual
+failure image viewed/retained at
+`/tmp/eidolon-release47-spacing-evidence-xOXgLv/failed-collection.png`; it shows
+185/200HP,8/160mana and5/8 beside the wall. Scan2sanitizations/owned cleanup and
+container absence passed. Both handles closed. The original release47 branch
+and worktree `/tmp/eidolon-release47-runes-98cUsP` remain clean a6a91dc.
+
+**New47 runtime candidate**, branch work/release47-starter-spacing, worktree
+`/tmp/eidolon-release47-starter-FHKAMJ`: source6fd84af backports existing5398395
+starter awareness and advanced-spawn spacing, adds explicit47 patch notes, and
+makes the QA retreat planner check actual walking collisions. Initial Imp/DemonOrc
+spawns stay160units outside town; low-level unprovoked Skeleton sight12+3*level,
+normal45-unit retaliation retained. No stats, dungeon profiles, quest rules or
+0.01 changes. It is not a leash or immunity throughout the neighboring sector.
+Three repeated targeted server sets8.884s pass18559; full server race24430 passes
+root11.573s/game260.976s/all packages. Full client28173 passes219suites/3234tests/
+139.360s; focused250/2.666s and full lint91552 pass. All closed.
+
+First browser30168 failed before gameplay because this new worktree lacked its
+generated vendor assets; direct vendor URL returned404. Scan/cleanup passed.
+`npm run prepare:client` now builds the pinned dependencies. Merge
+**a45726277fe36b4b3d4b46131703ee053bcb29e6** then inherits final46/ad16790;
+both additive QA contracts are preserved. No server/src/index changes versus
+6fd84af; focused267tests/six suites/2.004s and full lint69551 pass. No runtime
+approval inferred from the failed bootstrap or the integration-only checks.
+
+**29343 ACTIVE — only owned browser**, frozen clean a457262, fresh-collection,
+runID release47-starter-ready, API18505/Mongo18506/web18507. Log
+`/tmp/eidolon-release47-starter-ready-gameplay.log`. The earlier bootstrap log is
+`/tmp/eidolon-release47-starter-gameplay.log`. Poll29343; do not edit/restart or
+launch another owned browser until it is terminal. If verified, merge this
+candidate back to the release47 branch, then inherit47 sequentially through48–52.
+Those later release refs and root's47 runtime remain unchanged for now.
+
+**Expanded story bd16d5c failed** uninterrupted36108/7.1m at Watch4/40 on its
+third hunt death. Diary had completed at153s/level3 with no checkpoint reconnect;
+opening had one earlier actual death. Watch deaths at0/2/4credit show4–6nearby
+Skeletons, including lower-level pursuers. Both permitted death-button recoveries
+restore full bars. Scan0/cleanup/container absence passed; viewed diary/failure
+PNGs retained in `/tmp/eidolon-diary-spacing-evidence-ufNDIa/`. Handle closed.
+
+That isolated candidate is now clean **3420051**: test-only immediate-pursuer
+selection (without changing server hunt eligibility) and normal equipping of
+already-earned, level-eligible items into empty slots before the early hunt/after
+respawn. No equipment purchases/grants, occupied-slot replacement, stat allocation,
+Recall healing or checkpoint reconnects. Target/class/checkpoint24tests/1.346s
+and equipment/target/checkpoint23tests/1.567s plus changed-file lint pass. No new
+browser is started there; combined earned behavior remains unverified. Broader
+first-hour balance, recovery policy, all-class, physical-phone and roadmap gates
+remain open. Keep all existing saved assets and the user's0.01 rate intact.
+
+## Historical checkpoint — September 8, 07:50 UTC
 
 The previous user-triggered turn verified the requested 0.01 regeneration and
 polled the active release45 CI; it did not deploy another release. This goal
