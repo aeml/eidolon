@@ -3,8 +3,24 @@
 The refund outbox, recoverable bids, seller payouts, item claims/returns, buyouts
 and listing escrow are implemented, with their acceptance evidence below and in
 the resource implementation ledger. Stale client selection binding is added in
-57c97c1. This remains an unpublished candidate: delayed listing-publication
-duration fairness and enforced compatible-writer/rollback protection are open.
+57c97c1;46ea069 closes publication-delay duration fairness. This remains an
+unpublished candidate: enforced compatible-writer/rollback protection is open.
+
+## Publication acceptance — September 8, 21:04 UTC
+
+46ea069 starts the paid duration at first successful publication. Retries match
+the existing listing's stored start/end and exact item/terms/owner/receipt, never
+extend an acknowledged-lost publication. Earlier preparation-time publications
+remain recoverable. Full64867 PASS root22.355/database1.172/game417.161s;
+actual32868 PASS262.172s, TWO repetitions including an aged three-day decision
+after a real failed publication/crash. First recovery grants a fresh24-hour
+window and subsequent restart keeps it.84 child logs clean:16 intentional kills,
+68 normal drains. Owned disposable Mongo2057/volumes removed/absent.
+
+The schema7 compatibility bridgef2238ce is separate and unpublished. It refuses
+schema8 before index/migration writes; actual binary refusal preserves unknown
+character fields and zero mana. It still needs its full verification, ordered
+release, integration here, and actual format-crossing/roll-forward acceptance.
 
 ## Selection acceptance — September 8, 20:51 UTC
 
@@ -23,12 +39,12 @@ Mongo2046/volumes removed/absent. Exact Go source unchanged from57c97c1.
 Initial actual55659 failed its launcher's binary-basename identity setup and
 skipped non-enabled failpoint cases; it provides no acceptance. Keep its log.
 
-Next duration correction must preserve the paid listing's full advertised window
+Historical duration requirement (now implemented in46ea069): preserve the paid listing's full advertised window
 from first successful publication, not spend that window while escrow/publication
 is unavailable. Preserve the unique auction/operation/item/deposit identity;
 ambiguous insert recovery must reuse the already-published start/end, never
-extend an existing listing on retry. Current timestamps still come from request
-preparation. This paragraph is a required design constraint, not implemented code.
+extend an existing listing on retry. The decision still stores preparation times;
+the published auction now stores the actual publication window.
 
 ## Original gap, now addressed for bids
 

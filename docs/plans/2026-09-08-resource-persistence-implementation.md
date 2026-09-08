@@ -1,5 +1,36 @@
 # Resource persistence implementation candidate — not release-ready
 
+## Publication timing acceptance closed — September 8, 21:04 UTC
+
+Runtime46ea06975f90a80423fd00d4ea3400e2ab6d1575 starts a listing's full paid
+window at first database publication, after committed escrow. Request timestamps
+remain immutable in the pending decision. Duplicate/acknowledgement-lost inserts
+match exact terms/item/owner/receipt against the first stored start/end, never
+extend an already-published listing. Existing preparation-time listings remain
+recoverable. A backwards clock cannot put publication before preparation.
+
+Focused78922 PASS root1.451/database1.057/game1.042s. Full64867 CLOSED PASS0:
+root22.355/database1.172/game417.161s. Actual32868 CLOSED PASS0/262.172s, TWO
+combined repetitions of nine normal/rejected modes, seven crash boundaries and
+the delayed-publication case. Its three-day outage is simulated by aging ONLY
+the two preparation timestamps after a real listing request, committed escrow
+and SIGKILL, with no auction yet published. Recovery exposes a fresh full24-hour
+window through the normal market message; later restart does not extend it.
+Lost-publication-reply cases now explicitly assert unchanged stored start/end.
+
+All84 child logs independently clean:16 intended kills,68 normal drains. Owned
+Mongo `eidolon-listing-publication-proof-20260908-2057`/volumes removed, container
+independently absent. Logs `/tmp/eidolon-listing-publication-{full-race,sessions}.log`.
+Binary `/tmp/eidolon-listing-publication-proof-S6nZy7/46ea06975f90a80423fd00d4ea3400e2ab6d1575`.
+
+Next compatibility bridge is separate, based on canonical55/9f92f98 at
+`/tmp/eidolon-schema-compatibility-bridge-ehsEZY`, runtimef2238ce. It refuses
+future schema versions before migration/index writes; two real schema7-server
+processes already refused prepared schema8 without altering data. Its full17140
+is still active. This fence is NOT yet integrated here or deployed; unguarded55
+remains unsafe. Full rollout/rollback sequence, broader gameplay/device gates
+and actual publication remain open. This resource tree still has55 metadata.
+
 ## Selection acceptance closed — September 8, 20:52 UTC
 
 Go57c97c1 full77182 PASS0: root17.736/game415.255s, database/lifecycle cached.
