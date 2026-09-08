@@ -14,7 +14,13 @@ func deliverAuctionItemLocked(op database.AuctionBidOperation) error {
 	if err := retryPendingCharacterSaveLocked(username); err != nil {
 		return err
 	}
-	live, err := world.ApplyDurablePlayerItemDelivery(op.PlayerID, op.ID, op.ItemPayload)
+	var live bool
+	var err error
+	if op.Kind == database.AuctionOperationBuyout {
+		live, err = world.ApplyDurablePlayerAuctionPurchase(op.PlayerID, op.ID, op.ItemPayload, op.Amount)
+	} else {
+		live, err = world.ApplyDurablePlayerItemDelivery(op.PlayerID, op.ID, op.ItemPayload)
+	}
 	if err != nil {
 		return err
 	}
@@ -32,16 +38,23 @@ func deliverAuctionItemLocked(op database.AuctionBidOperation) error {
 	if err != nil {
 		return err
 	}
-	entity := &game.Entity{ItemDeliveryReceipts: cloneItemDeliveryReceipts(character.ItemDeliveryReceipts)}
+	entity := &game.Entity{Gold: character.Gold, GoldCreditReceipts: cloneGoldCreditReceipts(character.GoldCreditReceipts), ItemDeliveryReceipts: cloneItemDeliveryReceipts(character.ItemDeliveryReceipts)}
 	for _, item := range character.Inventory {
 		entity.Inventory = append(entity.Inventory, gameItemFromDatabaseExact(item))
 	}
 	for _, item := range character.Stash {
 		entity.Stash = append(entity.Stash, gameItemFromDatabaseExact(item))
 	}
-	if err := entity.ApplyAuctionItemDelivery(op.ID, op.ItemPayload); err != nil {
+	if op.Kind == database.AuctionOperationBuyout {
+		err = entity.ApplyAuctionPurchase(op.ID, op.ItemPayload, op.Amount)
+	} else {
+		err = entity.ApplyAuctionItemDelivery(op.ID, op.ItemPayload)
+	}
+	if err != nil {
 		return err
 	}
+	character.Gold = entity.Gold
+	character.GoldCreditReceipts = cloneGoldCreditReceipts(entity.GoldCreditReceipts)
 	character.Inventory = databaseItems(entity.Inventory, true)
 	character.Stash = databaseItems(entity.Stash, false)
 	character.ItemDeliveryReceipts = cloneItemDeliveryReceipts(entity.ItemDeliveryReceipts)

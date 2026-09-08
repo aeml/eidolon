@@ -32,6 +32,7 @@ type AuctionBidOperation struct {
 
 const AuctionOperationSellerPayout = "seller_payout"
 const AuctionOperationItemClaim = "item_claim"
+const AuctionOperationBuyout = "buyout"
 
 func ValidAuctionItemPayload(payload string) bool {
 	if len(payload) == 0 || len(payload) > 65536 {
@@ -59,6 +60,9 @@ func (op AuctionBidOperation) Valid() bool {
 	case AuctionOperationItemClaim:
 		return op.Amount == 0 && op.Fee == 0 && op.PreviousBid == 0 && op.PreviousBidderID == "" && op.PreviousBidderName == "" && op.RefundID == "" &&
 			(op.ClaimStatus == "SOLD" || op.ClaimStatus == "EXPIRED" || op.ClaimStatus == "CANCELLED") && ValidAuctionItemPayload(op.ItemPayload)
+	case AuctionOperationBuyout:
+		return op.Amount > 0 && op.Fee == 0 && op.ClaimStatus == "" && ValidAuctionItemPayload(op.ItemPayload) &&
+			(op.PreviousBidderID == "" || op.PreviousBidderName != "" && op.RefundID != "")
 	default:
 		return false
 	}
@@ -136,7 +140,11 @@ func (db *DB) CommitAuctionBidOperation(op AuctionBidOperation) (*Auction, error
 	set := bson.M{"bid": op.Amount, "bidder_id": bson.M{"$literal": op.PlayerID},
 		"bidder_name": bson.M{"$literal": op.CharacterName}, "end_time": op.EndTime,
 		"last_bid_operation_id": bson.M{"$literal": op.ID}}
-	if op.Kind == AuctionOperationSellerPayout {
+	if op.Kind == AuctionOperationBuyout {
+		filter["buyout"] = op.Amount
+		set = bson.M{"status": "SOLD", "buyer_id": bson.M{"$literal": op.PlayerID}, "sale_price": op.Amount,
+			"item_claimed": true, "last_bid_operation_id": bson.M{"$literal": op.ID}}
+	} else if op.Kind == AuctionOperationSellerPayout {
 		filter = bson.M{"id": op.AuctionID, "status": "SOLD", "seller_id": op.PlayerID,
 			"seller_claimed": bson.M{"$ne": true}, "last_bid_operation_id": bson.M{"$ne": op.ID}}
 		set = bson.M{"seller_claimed": true, "last_bid_operation_id": bson.M{"$literal": op.ID}}
@@ -150,7 +158,8 @@ func (db *DB) CommitAuctionBidOperation(op AuctionBidOperation) (*Auction, error
 			filter["seller_id"] = op.PlayerID
 			set["seller_claimed"] = true
 		}
-	} else if op.PreviousBidderID != "" && op.PreviousBid > 0 {
+	}
+	if (op.Kind == "" || op.Kind == AuctionOperationBuyout) && op.PreviousBidderID != "" && op.PreviousBid > 0 {
 		refund := AuctionRefund{ID: op.RefundID, PlayerID: op.PreviousBidderID,
 			CharacterName: op.PreviousBidderName, Amount: op.PreviousBid}
 		set["pending_refunds"] = bson.M{"$concatArrays": bson.A{

@@ -21,7 +21,7 @@ func completePendingAuctionBidLocked(op database.AuctionBidOperation) error {
 	if op.Kind == database.AuctionOperationSellerPayout {
 		err = deliverAuctionRefundLocked(database.AuctionRefund{ID: "seller-payout:" + op.ID,
 			PlayerID: op.PlayerID, CharacterName: op.CharacterName, Amount: op.Amount})
-	} else if op.Kind == database.AuctionOperationItemClaim {
+	} else if op.Kind == database.AuctionOperationItemClaim || op.Kind == database.AuctionOperationBuyout {
 		err = deliverAuctionItemLocked(op)
 	} else {
 		err = debitAuctionBidLocked(op)

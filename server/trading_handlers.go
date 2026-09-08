@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"eidolon-server/internal/database"
 	"eidolon-server/internal/game"
 )
 
@@ -188,13 +189,34 @@ func handleMsgTradingBuyout(c *Client, msg Message) {
 		return
 	}
 
-	_, err := world.Trading.BuyoutAuction(payload.AuctionID, player, world)
-	if err != nil {
+	if db != nil {
+		op, err := world.Trading.PrepareAuctionBuyout(payload.AuctionID, player)
+		if err != nil {
+			c.sendError(err.Error())
+			return
+		}
+		if err := completePendingAuctionBidLocked(*op); err != nil {
+			if errors.Is(err, database.ErrInsufficientGold) || errors.Is(err, game.ErrAuctionStorageFull) {
+				c.sendError(err.Error())
+			} else {
+				c.sendError("Your auction purchase is awaiting recovery. Please try again shortly.")
+			}
+			return
+		}
+	} else if _, err := world.Trading.BuyoutAuction(payload.AuctionID, player, world); err != nil {
 		c.sendError(err.Error())
 		return
 	}
-
-	invPayload, _ := json.Marshal(player.Inventory)
+	snapshot := world.GetEntityCopy(c.playerID)
+	if snapshot == nil {
+		return
+	}
+	if db != nil {
+		stashPayload, _ := json.Marshal(snapshot.Stash)
+		stashMessage, _ := json.Marshal(Message{Type: MsgStash, Payload: stashPayload})
+		c.sendSafe(stashMessage)
+	}
+	invPayload, _ := json.Marshal(snapshot.Inventory)
 	resp := Message{
 		Type:    MsgInventory,
 		Payload: invPayload,

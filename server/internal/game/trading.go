@@ -401,6 +401,9 @@ func (ts *TradingSystem) GetPlayerAuctions(playerID string) []*Auction {
 }
 
 func (ts *TradingSystem) BuyoutAuction(auctionID string, buyer *Entity, w *World) (*Item, error) {
+	if ts.db != nil {
+		return nil, fmt.Errorf("persistent buyouts require a journaled account operation")
+	}
 	ts.mu.Lock()
 	defer ts.mu.Unlock()
 	if _, pending := ts.pendingBids[auctionID]; pending {
@@ -422,6 +425,9 @@ func (ts *TradingSystem) BuyoutAuction(auctionID string, buyer *Entity, w *World
 
 	if buyer.ID == auction.SellerID {
 		return nil, fmt.Errorf("cannot buy your own auction")
+	}
+	if auction.Buyout <= 0 {
+		return nil, fmt.Errorf("auction has no buyout price")
 	}
 
 	buyer.Mu.Lock()

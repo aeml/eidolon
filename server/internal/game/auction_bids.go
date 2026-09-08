@@ -197,7 +197,13 @@ func (ts *TradingSystem) CompleteAuctionBid(op database.AuctionBidOperation) err
 		original.PendingRefunds = append([]database.AuctionRefund(nil), original.PendingRefunds...)
 		ts.mu.RUnlock()
 		saved = &original
-		if op.Kind == database.AuctionOperationSellerPayout {
+		if op.Kind == database.AuctionOperationBuyout {
+			saved.Status, saved.BuyerID, saved.SalePrice = AuctionSold, op.PlayerID, op.Amount
+			saved.ItemClaimed, saved.LastBidOperationID = true, op.ID
+			if op.PreviousBidderID != "" && op.PreviousBid > 0 {
+				saved.PendingRefunds = append(saved.PendingRefunds, database.AuctionRefund{ID: op.RefundID, PlayerID: op.PreviousBidderID, CharacterName: op.PreviousBidderName, Amount: op.PreviousBid})
+			}
+		} else if op.Kind == database.AuctionOperationSellerPayout {
 			saved.SellerClaimed, saved.LastBidOperationID = true, op.ID
 		} else if op.Kind == database.AuctionOperationItemClaim {
 			saved.ItemClaimed, saved.LastBidOperationID = true, op.ID
