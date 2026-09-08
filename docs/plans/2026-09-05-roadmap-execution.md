@@ -5,7 +5,43 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 10:59 UTC
+## Current checkpoint — September 8, 11:06 UTC
+
+Previous goal turn was progress (damage parity implemented, pursuit QA corrected).
+This turn packages verified54 and closes the failed collection playthrough.
+Full1.1–1.10 remains active/incomplete; no blocked or completion claim.
+
+**46CI34215073108 freshly live/in_progress**: server/client/browser smoke PASS,
+Predeploy Character QA running.45 is still last independently verified live;
+no47 or later push, and never push root's staged master over the release queue.
+
+**12730 PASS225suites/3288tests/203.525s**, terminal, damage-parity8dfd9a4.
+Versioned **54 committed8f7f60aa19119bbe75c123f05150e2820c65b4ea**, clean in
+`/tmp/eidolon-basic-damage-parity-kpmlMA`, preserved release/54-basic-damage-parity.
+Own notes “know your strength”, matching login/package/backend/deploy defaults,
+and all53/prior history retained.63440 PASS244tests/4.229s plus lint/bash/diff;
+additional real delayed-hit callbacks for all four heroes verified by19848
+PASS248tests/7.152s plus lint/diff.29318 server/root health0.031s and shared
+fixture0.033s PASS. Runtime unchanged from full-suite8dfd9a4. All handles closed.
+Queued54 requires final47 inheritance and sequential46–53 publication, not live.
+
+**23203 FAILED4.0m**, terminal on3deaede: opening3kills/0deaths and manual
+reward/relogin PASS45seconds, level5. Collection3observedtarget deaths/0seeds/
+0deaths, then120s encounter timeout.34retreats spread basic damage across several
+Skeletons; final receipt151HP/16mana with one level1 enemy nearby. Scan0, cleanup
+and independent exact-container absence PASS. Failure image inspected/archive
+`/tmp/eidolon-starter-reacquire-evidence-3d2EmT/failed-collection.png`.
+Pursuit worktree has a docs-only closure atop3deaede; no new runtime or actual
+rerun. This is an opening pass, not collection/first-hour acceptance.
+
+Next compare normal use of eligible earned gear/stat points at level5 before
+further enemy tuning. Existing prepareEarnedClass requires level10 and an open
+dungeon menu, so do not call it blindly or grant a specialization. Preserve the
+unprepared baseline and existing deadlines/rewards. All owned browser/test
+handles are now closed; only external46CI remains running.53/874b8fc and the
+expanded31-chapter6c2a81a remain separate and unchanged.
+
+## Historical checkpoint — September 8, 10:59 UTC
 
 Previous goal turn was progress (production pursuit implementation and tests).
 This continuation commits that candidate, closes its real failure, corrects
