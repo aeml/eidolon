@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { earnEarthInvestigation } from './chronicle-investigation-route.js';
+import { clearFreshInvestigationApproach } from './fresh-investigation-combat.js';
 import { earnFreshCollectionAndInspectHandoff } from './fresh-collection-route.js';
 import { earnFreshHunt, earnFreshSkeletonHunt } from './fresh-hunt-route.js';
 import { earnFreshDungeonReadiness, prepareEarnedClass } from './fresh-ready-route.js';
@@ -188,7 +189,8 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     expect((await readChronicleChapter(page, chapter)).grantedGold).toBe(100);
     console.log(`[fresh-opening] completed ${JSON.stringify({ level: earnedLevel, deaths, retreats, grantedGold: rewarded.grantedGold, grantedXP: rewarded.grantedXP, elapsedSeconds: Math.round((Date.now() - started) / 1000) })}`);
     await earnEarthInvestigation(page, 'chronicle_earth_keepers_house', openIlyra,
-        (site, phase) => page.screenshot({ path: testInfo.outputPath(`${phase}-${site.id}.png`) }));
+        (site, phase) => page.screenshot({ path: testInfo.outputPath(`${phase}-${site.id}.png`) }),
+        { beforeInspect: site => clearFreshInvestigationApproach(page, site) });
     const afterDiary = await readChronicleChapter(page, 'chronicle_earth_keepers_house');
     const diaryLevel = (await readPlayerState(page)).level;
     await page.reload({ waitUntil: 'networkidle' });

@@ -27,9 +27,9 @@ async function walkTo(page, x, z) {
 
 // Ordinary ground/jump clicks, prop clicks and explicit Ilyra turn-ins only. No
 // teleport-to-site, quest-state writes, credit messages or invulnerability.
-export async function earnEarthInvestigation(page, id, openIlyra, capture) {
+export async function earnEarthInvestigation(page, id, openIlyra, capture, options) {
     expect(chronicleInvestigations.find(chapter => chapter.id === id).realm).toBe('earth');
-    return earnInvestigation(page, id, openIlyra, capture);
+    return earnInvestigation(page, id, openIlyra, capture, options);
 }
 
 export async function earnInvestigation(page, id, openIlyra, capture, { waypoints, selectChapter, beforeInspect, defeatSite } = {}) {
