@@ -72,11 +72,14 @@ must yield a full-mana server receipt, and another cast plus Recall must retain
 depletion. Included in the full disposable predeploy route. This is functional
 recovery QA, not earned campaign pacing. No result claimed yet.
 
-Frozen52 has **26858 ACTIVE** full server race and **2218 ACTIVE** browser
-death-resources (one owned browser), run ID release52-death-resources, ports
-18465/18466/18467, log `/tmp/eidolon-release52-death-resources.log`.
-Full52 client suite still needs running. Do not edit/restart either frozen
-worktree. After this browser closes, run earned Watch when corrected candidate
+Frozen52 has **26858 ACTIVE** full server race (root25.527s/database1.046s
+passed) and **79048 ACTIVE** full client suite. Browser2218 **PASS one/20.0s,
+process25.6s**, closed: an ordinary cast depleted mana to70 before hostile
+death; the server receipt restored100/100HP and100/100mana. A second cast plus
+Recall retained depletion. Scan passed and owned containers/data were removed
+(absence independently checked). Log `/tmp/eidolon-release52-death-resources.log`.
+No owned browser remains. Do not edit/restart either frozen
+worktree. Run earned Watch when corrected candidate
 client passes. Finish52 checks before local integration; publication remains
 behind45–51. All broader campaign/economy/device/roadmap gates remain open.
 
