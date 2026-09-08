@@ -112,6 +112,11 @@ func TestResourceActualSchemaUpgradeRefusalAndRecovery(t *testing.T) {
 		t.Fatal("first ordinary listing failed")
 	}
 	first := listings[0]
+	firstSaved, err := repo.GetCharacter(name, name)
+	if err != nil || firstSaved.Resources == nil || firstSaved.Resources.Mana != 40 || firstSaved.Resources.Health <= 0 || firstSaved.Gold != 1209 {
+		t.Fatal("first listing did not save the actual legacy resource baseline", err)
+	}
+	baselineHealth := firstSaved.Resources.Health
 	cast("Arcane Shield", 0)
 	configureFault := func(enabled bool) {
 		faultCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
@@ -139,7 +144,7 @@ func TestResourceActualSchemaUpgradeRefusalAndRecovery(t *testing.T) {
 		t.Fatal("missing pending full-character journal", err)
 	}
 	expected, err := pending.Character()
-	if err != nil || expected.Resources == nil || expected.Resources.Mana != 0 || expected.Gold != 1184 ||
+	if err != nil || expected.Resources == nil || expected.Resources.Mana != 0 || expected.Resources.Health != baselineHealth || expected.Gold != 1184 ||
 		len(expected.Inventory) != 0 || len(expected.ItemDeliveryReceipts) != 2 || len(expected.GoldCreditReceipts) != 2 {
 		t.Fatal("journal separated zero mana, items, deposits or receipts", err)
 	}
@@ -179,7 +184,7 @@ func TestResourceActualSchemaUpgradeRefusalAndRecovery(t *testing.T) {
 			t.Fatal("recovery admitted before finishing pending auction")
 		}
 		saved, err := repo.GetCharacter(name, name)
-		if err != nil || saved.Resources.Mana != 0 || saved.Resources.Health != 100 || saved.Gold != 1184 || saved.Level != 31 || saved.XP != 17 ||
+		if err != nil || !reflect.DeepEqual(saved.Resources, expected.Resources) || saved.Gold != 1184 || saved.Level != 31 || saved.XP != 17 ||
 			len(saved.Inventory) != 0 || !reflect.DeepEqual(saved.Equipment, legacy.Equipment) ||
 			!reflect.DeepEqual(saved.GoldCreditReceipts, expected.GoldCreditReceipts) || !reflect.DeepEqual(saved.ItemDeliveryReceipts, expected.ItemDeliveryReceipts) {
 			if err != nil {
