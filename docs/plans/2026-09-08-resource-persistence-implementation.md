@@ -1,5 +1,19 @@
 # Resource persistence implementation candidate — not release-ready
 
+## Corrected candidate closure — September 8, 19:36 UTC
+
+Fullrace70943 CLOSED PASS0 on8a5dc32: root19.160s/game402.487s, database and
+lifecycle cached. Log `/tmp/eidolon-auction-payout-corrected-full-race.log`.
+Actual6487 CLOSED PASS0/155.808s: two repetitions of six seller crash boundaries
+and ordinary raises/contention. All44 child logs independently clean:12 intended
+SIGKILLs,32 normal completed drains. Owned Mongo
+eidolon-auction-snapshot-proof-20260908-1930 and volumes removed and exact
+container independently absent. Log `/tmp/eidolon-auction-snapshot-sessions.log`.
+
+Normal-success acceptance is being added in a separate test-only continuation
+worktree so the frozen full-run source stayed unchanged. This candidate remains
+unreleased; item delivery/listing recovery and compatible rollback are not done.
+
 ## Detached auction responses and Tripwire fixture — September 8, 19:29 UTC
 
 Search, seller and buyer auction lists now copy the complete record under the
