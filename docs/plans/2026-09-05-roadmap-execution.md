@@ -5,7 +5,56 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 10:24 UTC
+## Current checkpoint — September 8, 10:42 UTC
+
+The preceding regeneration response reverified existing code (6client/4server
+tests) but did not advance the roadmap. This continuation is concrete progress:
+versioned53 is committed with release checks, and47's opening input is corrected.
+The full1.1–1.10 goal remains active and incomplete.
+
+**46CI34215073108 remains live/in_progress**, freshly queried: client/server
+PASS, Browser Smoke running. No terminal/deployment approval; no47 push.45 remains
+the last independently verified live release. Root's staged52 master is not pushed.
+
+**13265 TERMINAL FAILED2.5m** on bb36a64: opening2kills/zero deaths then120s
+encounter deadline, before collection. The opening still had old unconditional
+retreat/repeated-click controls. Scan0 and independent container absence passed.
+No collection pacing conclusion is supported by this failure.
+
+New **ba5b7ae08cbfafbde26220ec48e9179b1408f371**, clean in
+`/tmp/eidolon-release47-target-input-PKvcZq`, shares collection's ordinary
+health-aware defense and retained target input through opening, with read-only
+receipts and actual stats diagnostics. All quest/respawn/deadline gates remain.
+48431 PASS35tests/four suites/1.004s;10527 full lint PASS.
+**5909 ACTIVE** actual fresh-collection, same frozen ba5b7ae source, runID
+release47-opening-input, API18635/Mongo18636/web18637; log
+`/tmp/eidolon-release47-opening-input.log`. Poll this exact handle until terminal;
+do not restart on observation timeout. Only owned browser currently active.
+
+**53 packaged and committed874b8fc3851ff468e5d5b8bb2cf66b5c8bc9871b**, clean in
+`/tmp/eidolon-nameplate-readability-HDHgN2`, also preserved as
+release/53-readable-crowd-names. Login/manifest/package/backend/deploy versions
+match53 and its own notes retain all prior history. Rendered name checks run in
+browser CI; actual town checks are appended to the isolated all-route AND chain.
+No53 push: inherit final47 and publish only after prior46–52 releases pass/live.
+
+53focused92974 PASS291tests/four suites/3.117s;38775 PASS11HUDtests;63271 lint,
+shell syntax and diff pass; server root48399 PASS1.893s. Initial67690 selected a
+nonexistent HUD filename (291tests passed but suite failure); corrected38775 used
+the actual file.86916 PASS6rendered/13.7s. Production still matches the previously
+verified3270-test source; version/notes/CI packaging only changed this turn.
+**7404 PASS3actual/22.8s** on frozen53 package: desktop9.0s, portrait5.7s,
+landscape5.8s; scan0, cleanup and independent exact-container absence pass.
+Both phone captures inspected; all three preserved under
+`/tmp/eidolon-nameplate53-evidence-5EQBJt/`. These are town/browser checks, not
+physical-phone or full-combat approval. Every53 test handle is closed.
+
+Expanded31-chapter/all-class6c2a81a is unchanged and still needs actual earned
+campaign pacing verification; do not conflate it with47's15-chapter/current-curve
+runtime. Next: close5909, inspect actual combat receipts; continue46's exact CI
+handle and independent public identity checks before the next sequential push.
+
+## Historical checkpoint — September 8, 10:24 UTC
 
 This turn is progress:45 now fully verified live,46 pushed separately, crowd-name
 production candidate passes full client/rendered checks. Full1.1–1.10 remains
