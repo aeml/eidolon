@@ -1,6 +1,107 @@
 # Resource persistence implementation candidate — not release-ready
 
-## Latest acceptance — September 8, 17:05 UTC
+## Refund implementation and latest acceptance — September 8, 17:23 UTC
+
+Implemented d1e2839661e6b51ed44c6cbb093dbe35cb7c24dd, snapshot race correction
+09b56932b5482b50a8d45da83eec3e6358203b7c. Still inherits55 metadata, no56
+assignment or permission to publish over the ordered queue.
+
+Auction records now retain PendingRefunds in the same Mongo document update
+that displaces the preceding bid. Ordinary outbids, buyouts and cancellations
+create a unique refund ID/recipient/amount; final collection cannot delete an
+auction carrying unpaid intents. Refund workers serialize outside trading/world
+locks, retain failures, and acknowledge/remove an intent only after the character
+gold and matching receipt commit. Startup and periodic saves retry the outbox.
+UpdateAuction now rejects a missing target instead of claiming successful IO.
+
+GoldCreditReceipts is private persistence state on both Character and Entity,
+detached in GetEntityCopy, saved with gold/resources and restored at login.
+Same-ID same-amount delivery is a no-op; conflicting amounts, invalid amounts
+and integer overflow reject. Receipts are retained, not prematurely pruned.
+Delivery holds the per-account work lock, flushes/replays the newest pending
+snapshot before credit, and journals the complete credited snapshot. The live
+world lookup, mutation and UnjournaledSave pin occur atomically against expiry.
+Offline delivery loads only after pending replay and uses the same full journal,
+not a gold-only increment beneath an older pending full save. Failed local IO
+retains the credited live entity; failed Mongo retains its journal and auction
+intent. This fixes the identified one-shot refund and disconnected expiry gap.
+
+Focused98138 PASS root2.869/database1.058/game15.724; expanded89762 PASS3.357/
+1.047/15.514; final57054 PASS3.508/1.051/15.344. Logs under
+`/tmp/eidolon-refund-{focused,expanded-focused,final-focused}.log`. Initial
+compile59146 found a name collision with the existing guild credit method;
+the new method is ApplyDurablePlayerGoldCredit. A later compile found fmt was
+not imported; corrected to the existing errors.New. Neither failed invocation
+is counted as validation. Tests cover outbox persistence round-trip, failed
+delivery retention, idempotence, final-claim/buyout/cancel retention, receipt
+snapshot detachment, expiry pin/unpin, and a real filesystem rename after the
+pre-credit save: Mongo retains100, RAM143 is pinned, restored IO commits143
+once with zero mana intact.
+
+Actual29305 CLOSED FAIL normal1/72.457s on d1e2839. All gold/receipt/resource
+assertions passed across both repetitions of the three scenarios, but phase74
+in evidence `/tmp/eidolon-compat-session-1663948313/server.log` reported three
+races: Fireball mana/state and LastAbilityTime writes under World.Mu versus
+GetEntityCopy reads after it prematurely released World.Mu. The other17 child
+logs were clean; all included shutdown completion. Log
+`/tmp/eidolon-resource-refund-sessions.log`, binary
+`/tmp/eidolon-resource-refund-proof-XupKah/d1e2839661e6b51ed44c6cbb093dbe35cb7c24dd`.
+Owned disposable Mongo/volumes removed and independently absent. Not a full pass.
+
+Correction09b5693 retains World.RLock then Entity.RLock throughout the detached
+copy, synchronizing both world-only ability writes and entity-locked tick/work
+writes. No IO/callback is performed under the extended snapshot lock. New
+regression runs200 real Fireball dispatches against concurrent copying, with
+explicit prepared cooldown/resources. Focused26034 PASS root3.628/database1.122/
+game16.079; log `/tmp/eidolon-refund-snapshot-focused.log`.
+
+Corrected actual18314 CLOSED PASS normal0/118.569s, three repetitions on09b5693.
+Offline prepared900gold/dead0HP0mana pending snapshot replays before43 refund,
+yielding943 across three fresh-process credential logins. Ordinary real outbid
+tests start from prepared1191gold previous escrow, cast Fireball100→70mana, bid
+50 using a second ordinary session, and inject actual Mongo validator rejection:
+either users cannot save, or the auction cannot acknowledge an emptied outbox
+after a successful credit. The server stops with the fault still active; fresh
+startup recovers1234gold/17HP/70mana/one43receipt, preserves exact gear and new
+bidder1184gold, clears the intent, and a second fresh-process login pays nothing
+extra. These are rejected Mongo writes and controlled SIGINT, NOT a network
+outage, forced kill, fully earned escrow or atomic whole-auction proof.
+Binary `/tmp/eidolon-resource-refund-corrected-proof-smCf6M/09b56932b5482b50a8d45da83eec3e6358203b7c`;
+log `/tmp/eidolon-resource-refund-repeat-sessions.log`. All27 strict normal-exit
+child logs independently clean of race/panic/fatal/credential markers, all with
+shutdown completion. Exact owned Mongo
+`eidolon-resource-refund-repeat-20260908-1720` and anonymous volumes removed by
+EXIT trap and independently absent. No production player data touched.
+
+Full Go race **83776 is freshly ACTIVE**, log
+`/tmp/eidolon-resource-refund-full-race.log`, frozen09b5693. Root22.691s and
+database1.156s pass; game package remains running, not a whole-suite pass.
+Re-poll the exact handle; do not edit runtime sources until terminal or restart
+because observation timed out. No owned local browser or actual-Mongo process
+remains.47 CI34248491147 is the external wait (final live four-class QA active).
+
+### Required remaining persistence work, not closed by this slice
+
+- Whole-auction atomicity: bidder debit, buyer item and seller payout still cross
+  auction and character documents. In particular an ambiguous UpdateAuction
+  acknowledgement can leave a committed new bid while the old code rolls RAM
+  back; a later auction write could overwrite that state/intent. Need durable
+  operation/escrow ordering and recovery, not a claim that refund receipts solve
+  every transaction or forced-kill window. Test interruption at each boundary.
+- Bound/coalesce retry work under large outboxes and database outages. Current
+  workers serialize but can spend repeated5s timeouts across many recipients;
+  check shutdown grace and startup availability. Failed auction loading currently
+  logs and leaves an empty in-memory market; audit fail-closed/recovery behavior.
+- Receipts and journal are incompatible with legacy full-character writers.
+  Verified55 CharacterRepository SaveCharacter replaces `characters.$`, dropping
+  unrecognized Resources/LastSaveID/GoldCreditReceipts; older auction updates
+  can also interfere with pending intents. Require a verified compatibility
+  bridge or enforceable roll-forward-only restriction before publication.
+- Timed network/storage faults, full instance/raid/device play and broader
+  resource/browser regression remain open. The .01 coefficient is unchanged.
+  Neither this slice nor47 closes the full1.1–1.10 roadmap or earned campaign.
+
+## Previous acceptance — September 8, 17:05 UTC
 
 Runtime bb11f9bf1da174371fb27d3c75c50f0620ad2b92 fixes two races exposed by
 the new actual dungeon/PvP tests (cbc79758a0ca097f13846bb5884d590114a03321).
