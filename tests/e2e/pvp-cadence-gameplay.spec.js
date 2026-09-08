@@ -47,6 +47,22 @@ for (const className of ['Fighter', 'Rogue', 'Wizard', 'Cleric']) {
         try {
             await loginAndEnterWorld(page, primary);
             await loginAndEnterWorld(opponent, secondary);
+            for (const actorPage of [page, opponent]) await actorPage.evaluate(() => {
+                const game = window.game, handle = game.handleServerMessage.bind(game);
+                window.__duelScene = { enterMessages: 0, ownPvPState: false, ownPvPDelta: false };
+                game.handleServerMessage = message => {
+                    const diagnostic = window.__duelScene;
+                    if (message.type === 'enter_instance') diagnostic.enterMessages++;
+                    if (message.type === 'state' || message.type === 'delta') {
+                        const updates = message.type === 'state' ? message.payload : message.payload.u;
+                        const self = Object.values(updates || {}).find(entity => entity.id === game.player.id);
+                        if (self?.instanceId?.startsWith('pvp-')) {
+                            diagnostic[message.type === 'state' ? 'ownPvPState' : 'ownPvPDelta'] = true;
+                        }
+                    }
+                    return handle(message);
+                };
+            });
             for (const actorPage of [page, opponent]) {
                 await openPvP(actorPage);
                 await actorPage.getByRole('button', { name: 'Close PvP window', exact: true }).click();
@@ -59,10 +75,21 @@ for (const className of ['Fighter', 'Rogue', 'Wizard', 'Cleric']) {
             await openPvP(opponent);
             await opponent.locator('#pvp-window').getByRole('button', { name: 'Accept', exact: true }).click();
             await opponent.getByRole('button', { name: 'Close PvP window', exact: true }).click();
-            await expect.poll(async () => {
-                const state = await Promise.all([snapshot(page), snapshot(opponent)]);
-                return state[0].instance.startsWith('pvp-') && state[0].instance === state[1].instance;
-            }).toBe(true);
+            try {
+                await expect.poll(async () => {
+                    const state = await Promise.all([snapshot(page), snapshot(opponent)]);
+                    return state[0].instance.startsWith('pvp-') && state[0].instance === state[1].instance;
+                }).toBe(true);
+            } catch (error) {
+                const scenes = await Promise.all([page, opponent].map(p => p.evaluate(() => ({
+                    ...window.__duelScene, clientInPvP: Boolean(window.game.currentInstanceId?.startsWith('pvp-')),
+                    matchStatus: window.game.uiManager.pvp.state.match?.status || null,
+                    matchMode: window.game.uiManager.pvp.state.match?.mode || null,
+                    opponents: window.game.uiManager.pvp.state.opponents?.length || 0
+                }))));
+                console.log('[duel-scene]', JSON.stringify({ className, scenes }));
+                throw error;
+            }
             const ids = await Promise.all([page, opponent].map(p => p.evaluate(() => window.game.player.id)));
             await observeBasicReceipts(page); await observeBasicReceipts(opponent);
             for (const [actorPage, targetId] of [[page, ids[1]], [opponent, ids[0]]]) {

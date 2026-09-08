@@ -1,5 +1,22 @@
 # Basic-attack cadence — isolated experiment, not released
 
+## Actual duel admission failed; no PvP cadence approval
+
+81208 on clean6881053 returned terminal exit1: all four classes failed the same
+15-second shared-PvP-instance gate, before any attack measurements. Credential
+scan passed with0sanitizations; the driver completed. Log
+`/tmp/eidolon-starter-cadence-duels-gameplay.log`. Do not weaken the scene gate
+or count this as sustained-combat evidence.
+
+Source review finds that sendPvPMatchState only sends pvp_update, whereas dungeon
+entry sends enter_instance; the client's delta path does not apply instanceId
+as a scene transition. There is also no explicit PvP arena generation branch.
+These are concrete missing integration paths, but the original failure lacks
+wire/scene receipts. The next probe observes own full/delta instance identity,
+enter-message counts and match mode/status without logging accounts or writing
+state. Verify admission/return/reconnect and rendered arena before balancing
+cadence in PvP; component/profile tests alone did not cover this path.
+
 ## Four-class collection comparison closed; practice-duel probe next
 
 All original-campaign comparisons passed with ordinary inputs and the same
