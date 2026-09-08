@@ -5,7 +5,80 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 15:29 UTC
+## Current checkpoint — September 8, 15:44 UTC
+
+Previous turn was PROGRESS (real races fixed, stricter harness and47 fixture
+correction). This turn is PROGRESS:47 local acceptance completed, its QA fix
+propagated through48–55, four-class token/death saved sessions and actual desktop
+browser resource/death logins passed. Full1.1–1.10 remains active/incomplete.
+
+46 CI34238194283 on6f7e4a7 now PASSES client/server/browser/predeploy/QA-inputs/
+both deployment jobs; **final Live Release and Character QA remains ACTIVE**.
+Fresh public release.json and backend healthz both identify
+**6f7e4a72a774a9d2106c26fc6a98f81a1e535c7c / Alpha1.0.46**, backend DBready.
+Public index also has Alpha1.0.46 login/patch notes and exact versioned main.js
+entry. These checks were15:39; repeat them AFTER final live QA passes before
+publishing47. No push this turn. Never push root's staged52/ledger branch.
+
+47 actual79912 on3551c66 CLOSED PASS2/5.2m, normal0: corrected server-confirmed
+cast/reuse36.3s and Verdant4.5m, seed4222344601024940264/gen2/normal30/Wizard100;
+both bosses/later enemies/rooms/town. Last Matron2749HP/player2037HP/548mana before
+kill. Full client76579 CLOSED PASS232suites/3314tests/281.705s. Lint/focused checks
+as below; credential scan0/exact-container/image absence PASS. Clean closure47
+**6925c5113ee6acdf698713f3332f80dcf546bd76**. Logs
+`/tmp/eidolon-release47-server-cast-{gameplay,client}.log`.
+
+Validated-clean, no-conflict sequential merges propagate ONLY two QA/evidence
+files; no runtime/version/patch-note changes:48 **7a9869d**,49 **bb41de0**,
+50 **79f458c**,51 **e2fbd2b**,52 **10c0fb6**,53 **cc2a99b**,54 **cb3fe45**,
+55 **8df7dd472bf890f101104b124fa241a17420dd35**. Same worktrees/branches as below.
+Each still needs its own sequential CI/deployment/live gate. Old refs/evidence
+remain recoverable in ancestry. Resource branch merged55 as2e61665, same2files.
+
+Resource candidate `/tmp/eidolon-resource-persistence-c6E17J`, branch
+work/resource-persistence-20260908, clean **431d7613f96e32e5fce5cae34f168a60d7ac6e83**
+(docs closure of tested28ebabc), still no56 version or publication approval.
+New four-class alive/dead token test verifies initial login/zero mana, fresh
+disconnect persistence, token resume/rotation, rejection of old-token replay,
+continued authority of legitimate resumed socket, unchanged saved death/HP/mana,
+subsequent password login and normal Recall/Respawn. Prepared level30 with zero
+Vitality/Wisdom isolates exact bars using145HP/245mana level-based maxima.
+
+Focused26959 PASS1.308s. Initial actual58400/b2478ab CLOSED FAILED20.121s:
+handoff6.29s passed; token cases expected an object but existing error wire payload
+is a string. Corrected test retains specific rejection assertions. Actual95842/
+ea5d539 CLOSED PASS25.988s: handoff4.79s plus all8token/death cases21.18s, race-built
+server, strict normal-exit/log checks. Independently clean logs
+`/tmp/eidolon-compat-session-{834156718,867286699}/server.log`;
+`/tmp/eidolon-resource-token-corrected-sessions.log`. Binary
+`/tmp/eidolon-resource-token-corrected-proof-0vZpDN/ea5d539612d651b93c310968bcdf8473702a4641`.
+Both explicit disposable token-proof Mongo containers/volumes removed and absent.
+
+Browser test28ebabc extends existing death-resources route, no gameplay change.
+Full lint70508 PASS, full Go race71467 PASS root16.156s/other packages cached.
+First launch stopped at preflight because vendor assets were missing; no services
+created. Existing prepare:client86528 PASS generated ignored dependencies only.
+Corrected11931 CLOSED PASS1/34.3s (test29.6s), normal0. Actual Wizard town cast:
+100HP/70mana survives login4.505s exactly. Real hostile death:0HP/70mana/DEAD
+survives login3.877s exactly, visible death screen. Normal death button returns
+100HP/100mana. Another cast, living Recall and login5.211s retain100HP/70mana.
+HUD matches current stats. Living assertions allow only elapsed regen plus one
+fractional-boundary point; dead values exact. Explicit near-death fixture before
+the hostile hit is not earned-death/class-balance proof. Credential scan0 and
+exact owned-container/image absence PASS. Log
+`/tmp/eidolon-resource-login-death-prepared-gameplay.log`; first preflight log
+`/tmp/eidolon-resource-login-death-gameplay.log`.
+
+NO owned local test/browser handles remain active. Final46 CI is the only
+verified external wait. Resource remaining work includes shutdown admission/
+worker drain, save-failure/expiry behavior, actual unfinished dungeon/PvP resource
+handoff, compatible rollback and broader device/class browser acceptance. Current
+PvP code explicitly refills on entry/exit; preserve that existing policy while
+checking saved state, do not reinterpret normal match recovery as reconnect regen.
+The stalled31chapter story run remains at its21/40 failure described below; no
+story success, pacing acceptance, physical-phone sign-off or1.1 closure implied.
+
+## Historical checkpoint — September 8, 15:29 UTC
 
 Previous goal turn was PROGRESS (session ownership implementation and actual
 handoff checks). This turn is also PROGRESS: the broader real race matrix found

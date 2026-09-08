@@ -3,16 +3,20 @@
 Status: confirmed defect with an unreleased implementation candidate, not yet
 release-ready or assigned a published patch. Preserve .01 passive regen.
 
-Candidate `work/resource-persistence-20260908` at4390f30 (tested source69d7978,
-runtimea9f5960) implements versioned resource restoration and per-account
+Candidate `work/resource-persistence-20260908` at431d761 (browser-tested28ebabc,
+token-tested ea5d539, runtimea9f5960) implements versioned resource restoration and per-account
 session/save ordering. Broader live tests found and fixed close/send and character
 ID publication races that a green unit suite missed. The corrected race-built
 server passes144 saved sessions and five consecutive ordinary Fireball/two
 repeated Joins/overlapping login/old cleanup/new-owner command/final-save runs.
 The harness now fails on abnormal child exit or race/panic log markers and checks
-fresh saves at BSON timestamp precision against a pre-close baseline. This does
-not close the entire acceptance list below: shutdown admission/drain, delayed
-save failures, PvP/instance/browser death recovery and rollback remain open.
+fresh saves at BSON timestamp precision against a pre-close baseline. All eight
+four-class alive/dead token-resume and ordinary recovery cases pass. Actual
+desktop Wizard browser casts, ordinary password logins, hostile death/death-screen
+login, Respawn button and living Recall also pass with depleted/dead bars retained.
+This does not close the entire acceptance list below: shutdown admission/drain,
+delayed save failures, PvP/instance recovery, broader device/class play and rollback
+remain open.
 Execution details and exact handles are in the roadmap execution ledger and
 the candidate's `2026-09-08-resource-persistence-implementation.md`.
 
