@@ -44,14 +44,16 @@ invisibility before escrow, stack preservation, missing/changed/ambiguous items,
 receipt replay after reacquisition/spending and journal failure/retry.
 
 **Full34429 ACTIVE**, frozen0908438, log `/tmp/eidolon-auction-listing-full-race.log`.
-**Actual39545 ACTIVE**, exact binary, TWO repetitions of six normal/rejected
+**Actual39545 CLOSED PASS0/202.614s**, exact binary, TWO repetitions of six normal/rejected
 listing modes, seven SIGKILL boundaries, competing buyouts and normal seller
 payout. First normal set PASS32.08s; first seven crash cuts have passed. Tests
 start with legacy inventory and a Fireball without an intervening disconnect
 save, requiring durable normalization/current70mana, exact escrow and one
-listing through restarts. Whole run not terminal. Owned Mongo
-eidolon-auction-listing-proof-20260908-2027 has EXIT cleanup. Actual log
-`/tmp/eidolon-auction-listing-sessions.log`. Poll these exact handles before
+listing through restarts. All74 child logs independently clean:14 intended kills,
+60 normal completed drains. Owned Mongo
+eidolon-auction-listing-proof-20260908-2027 and volumes removed; exact container
+independently absent. Actual log
+`/tmp/eidolon-auction-listing-sessions.log`. Poll remaining full34429 before
 editing source. Resource tree remains `/tmp/eidolon-resource-persistence-c6E17J`,
 with evidence16deb7d after runtime; unpublished55 metadata, not release-approved.
 
