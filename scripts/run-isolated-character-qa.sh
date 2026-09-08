@@ -150,7 +150,7 @@ mongo_password="$(openssl rand -hex 24)"
 docker build \
   --build-arg GO_VERSION=1.24.5 \
   --build-arg "BUILD_COMMIT=${qa_build_commit}" \
-  --build-arg "BUILD_VERSION=Alpha 1.0.55" \
+  --build-arg "BUILD_VERSION=Alpha 1.0.56" \
   --tag "${SERVER_IMAGE}" server >/dev/null
 image_created=true
 
@@ -396,9 +396,11 @@ run_phone_adventure() {
 
 run_dungeon_recovery() {
   # A separate new actor has no earlier waypoint protection or combat buffs.
+  local recovery_class="${EIDOLON_RECOVERY_QA_CLASS:-Wizard}"
+  case "$recovery_class" in Wizard|Rogue|Fighter|Cleric) ;; *) echo "Unsupported recovery QA class" >&2; return 1 ;; esac
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-recovery" \
     EIDOLON_E2E_PASSWORD="${QA_PASSWORD}" \
-    EIDOLON_E2E_CLASS="Wizard" \
+    EIDOLON_E2E_CLASS="$recovery_class" \
     EIDOLON_E2E_REGISTER=1 \
     npx playwright test tests/e2e/dungeon-wipe-recovery-gameplay.spec.js
 }

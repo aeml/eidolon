@@ -343,7 +343,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.55</span>
+                <span class="start-version-row__label">Alpha 1.0.56</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -669,6 +669,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.56">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.56 (guarding the Chronicle)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Protecting newer saves:</strong> The server now checks the database format before startup. If a newer release has upgraded that format, this release refuses to run instead of risking your characters with an older save writer.</li>
+                        <li><strong>A safer recovery path:</strong> An incompatible server reports the problem before opening the game or changing database indexes. Recovery requires a compatible server; changing or deleting the database version is not a safe downgrade.</li>
+                        <li><strong>Clean disconnects:</strong> Closing a player's connection is now synchronized with outgoing world updates and important messages, preventing a send/close race during disconnect.</li>
+                        <li><strong>The same adventure today:</strong> This prepares for later persistence improvements. It does not yet change reconnect resource behavior, auction transactions, rewards or the 0.01 passive regeneration rate.</li>
+                    </ul>
+                </div>
+
                 <div class="patch-note-entry" data-version="1.0.55">
                     <h3 class="patch-note-entry__title">Alpha 1.0.55 (empty means empty)</h3>
                     <ul class="patch-note-entry__list">
@@ -731,6 +741,7 @@
                     <h3 class="patch-note-entry__title">Alpha 1.0.49 (only the fragments you need)</h3>
                     <ul class="patch-note-entry__list">
                         <li><strong>A personal fragment budget:</strong> Collection drops now count your matching fragments already waiting on the ground. Defeating a crowd or fighting in a party cannot generate many surplus fragments for the same missing objective.</li>
+                        <li><strong>No glowing box after respawn:</strong> Rogue death and stealth cleanup no longer make the invisible character-selection box opaque. Respawning and leaving stealth preserve the original appearance of your character and translucent equipment effects without requiring a relog.</li>
                         <li><strong>Pick them up, then return to Ilyra:</strong> World drops still require pickup, and quests still require manual completion. A full bag leaves your fragments on the ground without awarding false progress.</li>
                         <li><strong>Bad luck stays protected:</strong> When enough personal fragments are already waiting, further kills do not spend or change your saved bad-luck counter. Removed or despawned fragments release that budget automatically.</li>
                         <li><strong>Your contract stays yours:</strong> Accepted legacy requirements, rewards and owned items are unchanged. Other players' fragments do not block your drops. Personal fragments left in another instance remain reserved until picked up or removed by the normal loot lifecycle.</li>
