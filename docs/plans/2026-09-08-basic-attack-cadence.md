@@ -51,3 +51,39 @@ Proposed patch-note text, pending verification and packaging: “Basic attacks a
 more responsive for new heroes, giving each class a useful fallback between
 abilities. Dexterity still improves attack frequency, up to one attack per second.
 Ability cooldowns, enemy attacks and passive regeneration are unchanged.”
+
+## Actual cadence result and distinct enemy-impact correction
+
+Frozen0bbc945 passed230client suites/3397tests/195.519s and full server race
+(root16.946s/game368.374s/all packages). Actual uninterrupted66259 then FAILED
+after4.9m at Watch5/40 on the third hunt death. Opening completed40s with no
+deaths; diary completed95s. Checkpoints did not reconnect: mana11/115 then17/130.
+First two hunt deaths had seven and six nearby Skeletons. One earned item was
+equipped through the normal inventory after respawn, increasing capacity without
+refilling it. Faster cadence is therefore not first-hour approval. No quest,
+death-bound, mana or reward changes were made to obtain a pass.
+
+Browser scan0sanitizations and cleanup passed; exact owned containers are absent.
+Failure PNG was viewed and retained with the diary image in
+`/tmp/eidolon-basic-cadence-evidence-6bUo5T/`. Log:
+`/tmp/eidolon-earned-basic-cadence-gameplay.log`. All owned browser handles closed.
+
+The third death snapshot places the player inside the town edge with four enemies
+12–16.6units away. That snapshot alone cannot attribute every damage event, but
+source inspection found an independently reproducible bug: enemy melee only
+checks distance at admission, then hits after wind-up regardless of distance.
+New synchronous actual-impact tests failed four escaped-target cases, including
+an ordinary Skeleton hitting from15units away (HP100→90 and a damage event).
+
+The follow-up shares existing attack reach between admission and enemy impact.
+Enemy basic attacks now miss if the target escaped that reach during wind-up;
+large attacker/target bodies and DwarfSalesman's existing reach remain supported.
+Player attacks, projectile abilities and separately telegraphed boss attacks are
+unchanged. No chase leash or new resource mechanic was added. This is separate
+from the cadence experiment and must remain independently reviewable/backportable.
+Focused race36341 PASS7.813s covers the eight new impact cases, existing dungeon
+walls/scene changes, Arcane Shield absorption, cadence and passive regeneration.
+Full server regression and a new actual route remain required for the correction.
+
+Proposed additional patch note, not yet packaged: “Enemy melee swings no longer
+hit after you have moved beyond their reach during the wind-up.”
