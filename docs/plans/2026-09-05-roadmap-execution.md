@@ -5,15 +5,15 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 06:10 UTC
+## Current checkpoint — September 8, 06:20 UTC
 
-Previous goal turn was progress (starter encounters implemented and45 pushed).
-This continuation closes both prior checks, fixes an independently confirmed
-death-resource recovery issue, and starts full verification of the combination.
+Previous goal turn was progress (dead-only mana recovery implemented).
+This continuation closes combined checks, fixes a test-fixture portability
+failure, and packages52 with patch notes and a dedicated browser regression.
 Full1.1–1.10 scope remains active/incomplete; no status change is justified.
 
-**45 CI34192659636 still active:** client/server jobs passed; anonymous browser
-smoke running at the last read. No new push.45 is not yet verified live;46 must
+**45 CI34192659636 still active:** client/server/anonymous browser jobs passed;
+predeploy character QA running at06:18. No new push.45 is not yet verified live;46 must
 wait for all eight45 jobs and a fresh exact independent public identity check.
 Remote master was last confirmed45b4b831a85c96992cd396344610cd1fb9175fd6.
 
@@ -38,22 +38,47 @@ was added; that optional preference remains unanswered. See its evidence doc.
 Focused11998 PASS eight client tests/1.507s and lint; server62828 race PASS
 5.108s; expanded37607 race PASS2.395s adds positive-health/dead-state and PvP
 mana rejection checks. All handles closed. Dedicated source has not been
-merged into root, version-packaged or published; combined full checks pending.
+merged into root or published;52 packaging and combined checks are below.
 
 Candidate cherry-pick6371b3c integrates this fix. QA commit
 **653357c9fb35fc2279782880faadc9f26e804e1f** observes actual state/delta mana
 after ordinary death-button clicks in the opening and Watch. It requires a full
 server resource receipt, not only a predicted refill. Opening diagnostics read
 real hp/mana fields. No grants, relaxed deadlines, deaths or counts. Lint97509
-PASS. Current clean candidate `/tmp/eidolon-earned-story-TZuGpp` is frozen:
+PASS. Combined server31046 PASS root22.084s/database cached/game366.158s.
+Client65703 FAILED one of225 suites (3350 tests passed/one failed/225.515s):
+ProgressionCurve fixture passed JSDOM's global URL to Node readFileSync. Both
+handles closed. The test now imports Node's URL explicitly; no thresholds or
+assertions changed. Focused98308 PASS13 tests/1.098s. Current clean candidate
+**a584ec83b4261b73fbcc4b83cfd05707e0c7ee34** is frozen in
+`/tmp/eidolon-earned-story-TZuGpp`: **75691 ACTIVE**, corrected full client
+suite. Server source is identical to the passing combined run. Fresh earned
+Watch remains pending; it has not passed the new encounter/resource combination.
 
-- **65703 ACTIVE:** full client suite; partial passes are not completion.
-- **31046 ACTIVE:** full server race suite; no terminal result yet.
+**52 packaged, not pushed:** clean **31d13132fb02a53f37a173400df1e1e2cfd80d4f**,
+branch release/52-death-resource-recovery, worktree
+`/tmp/eidolon-release52-death-recovery-Y5bRfW`. Base51/2ed3375 plus dead-only
+recovery991c2bf (same7440ccd runtime). All login/package/build/deploy/QA
+versions are52 and actual notes preserve51 history, unchanged0.01, no living
+mana refill and no new potion/rest mechanic. Curve2/31 chapters/starter encounter
+tuning are NOT included. Focused84093 PASS233 tests/three suites/2.935s and
+lint; dependency preparation/lint/shell syntax42302 and final61619 PASS.
 
-No owned browser is active. Next: finish these exact handles, address genuine
-failures if any, then run the fresh Watch route on this exact combined source
-without concurrent edits. Do not restart checks just because an observation
-window ends. All broader campaign/economy/device/roadmap gates remain open.
+New death-resources browser regression uses a distinct disposable Wizard suffix,
+not the existing dungeon-recovery character. Existing allowlisted readiness
+sets one HP; an ordinary Fireball spends mana under waypoint protection, a
+real hostile hit after protection is disabled causes death, the death button
+must yield a full-mana server receipt, and another cast plus Recall must retain
+depletion. Included in the full disposable predeploy route. This is functional
+recovery QA, not earned campaign pacing. No result claimed yet.
+
+Frozen52 has **26858 ACTIVE** full server race and **2218 ACTIVE** browser
+death-resources (one owned browser), run ID release52-death-resources, ports
+18465/18466/18467, log `/tmp/eidolon-release52-death-resources.log`.
+Full52 client suite still needs running. Do not edit/restart either frozen
+worktree. After this browser closes, run earned Watch when corrected candidate
+client passes. Finish52 checks before local integration; publication remains
+behind45–51. All broader campaign/economy/device/roadmap gates remain open.
 
 ## Historical checkpoint — September 8, 06:00 UTC
 
