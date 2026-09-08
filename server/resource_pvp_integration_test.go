@@ -1,0 +1,139 @@
+package main
+
+import (
+	"fmt"
+	"reflect"
+	"testing"
+	"time"
+
+	"eidolon-server/internal/database"
+	"eidolon-server/internal/game"
+	"github.com/gorilla/websocket"
+)
+
+type resourcePvPStatus struct {
+	Queued    int                 `json:"queued"`
+	Challenge *game.DuelChallenge `json:"challenge"`
+	Match     *game.PvPMatch      `json:"match"`
+}
+
+func resourceWaitPvPStatus(t *testing.T, connection *websocket.Conn, wanted func(resourcePvPStatus) bool) {
+	t.Helper()
+	deadline := time.Now().Add(10 * time.Second)
+	for time.Now().Before(deadline) {
+		var status resourcePvPStatus
+		resourceReadMessage(t, connection, MsgPvPUpdate, &status)
+		if wanted(status) {
+			return
+		}
+	}
+	t.Fatal("expected authoritative PvP state never arrived")
+}
+
+// Prepared level30 saves; ordinary consent/queue, scene entry, repeat Join,
+// disconnect-forfeit or controlled restart and fresh credential logins. Arena
+// entry/exit intentionally restores resources under the existing game policy.
+func TestResourceActualPvPForfeitAndShutdownRecovery(t *testing.T) {
+	repo, uri, binary := resourceJournalIntegration(t)
+	for _, route := range []string{"duel_disconnect", "arena_disconnect", "arena_shutdown"} {
+		for _, classes := range [][2]string{{"Fighter", "Wizard"}, {"Rogue", "Cleric"}} {
+			t.Run(fmt.Sprintf("%s/%s_%s", route, classes[0], classes[1]), func(t *testing.T) {
+				dir := t.TempDir()
+				address, stop := compatStartServer(t, binary, uri, 60, "-save-journal-dir", dir)
+				var fixtures [2]*database.Character
+				var passwords [2]string
+				var connections [2]*websocket.Conn
+				for i, class := range classes {
+					fixture, password := resourceJournalFixture(t, repo)
+					fixture.Class, fixture.Resources.Mana = class, 0
+					if err := repo.SaveCharacter(fixture.Name, fixture); err != nil {
+						t.Fatal(err)
+					}
+					fixtures[i], passwords[i] = fixture, password
+					connections[i], _ = resourceLoginCharacter(t, address, fixture.Name, password, class)
+					resourceProbe(t, connections[i], 0, false)
+				}
+				if route == "duel_disconnect" {
+					resourceSend(t, connections[0], MsgDuelRequest, GuildTargetPayload{Username: fixtures[1].Name})
+					resourceWaitPvPStatus(t, connections[1], func(status resourcePvPStatus) bool {
+						return status.Challenge != nil && status.Challenge.RequesterID == "player-"+fixtures[0].Name
+					})
+					resourceSend(t, connections[1], MsgDuelRespond, DuelRespondPayload{RequesterID: "player-" + fixtures[0].Name, Accept: true})
+				} else {
+					resourceSend(t, connections[0], MsgArenaQueue, ArenaQueuePayload{TeamSize: 1})
+					resourceWaitPvPStatus(t, connections[0], func(status resourcePvPStatus) bool { return status.Queued == 1 })
+					resourceSend(t, connections[1], MsgArenaQueue, ArenaQueuePayload{TeamSize: 1})
+				}
+				firstScene := resourceReadScene(t, connections[0])
+				secondScene := resourceReadScene(t, connections[1])
+				if firstScene.Type != "pvp_arena" || firstScene.InstanceID == "" || secondScene.InstanceID != firstScene.InstanceID {
+					t.Fatal("ordinary PvP admission did not bind both players to one arena")
+				}
+				for i, connection := range connections {
+					resourceProbe(t, connection, 445, false)
+					mana := 445
+					if classes[i] == "Wizard" {
+						resourceSend(t, connection, MsgAbility, AbilityPayload{SkillName: "Fireball", TargetX: 0, TargetZ: 12})
+						var cast game.AbilityResult
+						resourceReadMessage(t, connection, MsgAbilityResult, &cast)
+						if !cast.Accepted || cast.Mana != 415 {
+							t.Fatalf("ordinary arena cast failed: %+v", cast)
+						}
+						mana = 415
+					}
+					resourceSend(t, connection, MsgJoin, JoinPayload{Type: classes[i]})
+					resourceReadMessage(t, connection, MsgQuestUpdate, nil)
+					if scene := resourceReadScene(t, connection); scene.InstanceID != firstScene.InstanceID {
+						t.Fatal("repeat Join escaped PvP")
+					}
+					resourceSend(t, connection, MsgAbility, AbilityPayload{SkillName: "not-an-unlocked-skill"})
+					var probe game.AbilityResult
+					resourceReadMessage(t, connection, MsgAbilityResult, &probe)
+					if probe.Accepted || (probe.Reason != "locked" && probe.Reason != "global_cooldown") || probe.Mana != mana {
+						t.Fatalf("repeat Join changed arena resources or skill authority: %+v", probe)
+					}
+				}
+				if route != "arena_shutdown" {
+					resourceCloseAndWait(t, repo, connections[0], fixtures[0].Name)
+					if scene := resourceReadScene(t, connections[1]); scene.InstanceID != "" || scene.Type != "overworld" {
+						t.Fatal("forfeit did not restore the surviving player's scene")
+					}
+					resourceCloseAndWait(t, repo, connections[1], fixtures[1].Name)
+				}
+				stop()
+				for _, fixture := range fixtures {
+					saved, err := repo.GetCharacter(fixture.Name, fixture.Name)
+					if err != nil || !reflect.DeepEqual(saved.Resources, &database.CharacterResources{Version: 1, Health: 145, Mana: 445}) || saved.InstanceID != "" ||
+						saved.X != fixture.X || saved.Z != fixture.Z || saved.Gold != fixture.Gold || !reflect.DeepEqual(saved.Equipment, fixture.Equipment) {
+						t.Fatal("PvP exit/shutdown failed existing recovery policy or changed unrelated state")
+					}
+				}
+				address, stopRecovered := compatStartServer(t, binary, uri, 61, "-save-journal-dir", dir)
+				defer stopRecovered()
+				for i, fixture := range fixtures {
+					connection, _ := resourceLoginCharacter(t, address, fixture.Name, passwords[i], classes[i])
+					resourceProbe(t, connection, 445, false)
+					saved := resourceCloseAndWait(t, repo, connection, fixture.Name)
+					if saved.Resources.Health != 145 || saved.Resources.Mana != 445 || saved.InstanceID != "" {
+						t.Fatal("fresh-process login changed resolved arena resources")
+					}
+					profile, err := repo.GetPvPProfile("player-" + fixture.Name)
+					if err != nil {
+						t.Fatal(err)
+					}
+					wantRating, wantWins, wantLosses, wantHonor, wantPoints := 1000, 0, 0, 0, 0
+					if route == "arena_disconnect" {
+						if i == 0 {
+							wantRating, wantLosses, wantHonor, wantPoints = 980, 1, 15, 1
+						} else {
+							wantRating, wantWins, wantHonor, wantPoints = 1025, 1, 50, 3
+						}
+					}
+					if profile.Rating != wantRating || profile.Wins != wantWins || profile.Losses != wantLosses || profile.Honor != wantHonor || profile.SeasonPoints != wantPoints {
+						t.Fatalf("wrong or duplicated %s PvP result after reconnect: %+v", route, profile)
+					}
+				}
+			})
+		}
+	}
+}
