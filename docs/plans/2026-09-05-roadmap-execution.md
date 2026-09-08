@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 15:25 UTC
+## Current checkpoint — September 8, 15:29 UTC
 
 Previous goal turn was PROGRESS (session ownership implementation and actual
 handoff checks). This turn is also PROGRESS: the broader real race matrix found
@@ -66,15 +66,29 @@ Log `/tmp/eidolon-story-opening-reacquire-gameplay.log`. Story branch now
 watchdogs or claim pacing approval. Further diagnosis must separate non-credit
 threats, retreat/leash resets and travel; preserve artifacts before the next run.
 
-Sole owned browser **12646 ACTIVE** on exact clean47/**93ab09c** in
-`/tmp/eidolon-starter-cadence-xCyOrR`, runIDrelease47-prepared-inherited,
-hostAPI18635/Mongo18636/web18637, routeprepared-dungeon-fixture. Log
-`/tmp/eidolon-release47-inherited-fixture-gameplay.log`. Its first reuse test
-FAILED36.9s; following Verdant is still running (Warden killed, Matron6718HP at
-last observation). I initially misread transition to the second test as the first
-passing and promptly corrected the user update. No combined-pass claim. Keep47
-source frozen until this exact handle is terminal, then inspect full failure and
-cleanup. Any correction must propagate through48–55 before sequential publishing.
+47 actual12646 on93ab09c CLOSED FAILED overall6.2m, QA_SCRIPT_EXIT=1: first reuse
+test FAILED36.9s, following Verdant PASSED5.4m (both bosses/later enemies/rooms/
+town; last Matron663HP, player1672HP/420mana before confirmed kill). I initially
+misread transition to the second test as the first passing and promptly corrected
+the user update. No combined-pass claim. Credential scan0, independent exact
+container/image absence PASS. Log `/tmp/eidolon-release47-inherited-fixture-gameplay.log`;
+archived test-results `/tmp/eidolon-release47-inherited-fixture-evidence-f1QAHR/`.
+
+The reuse test polled a local predicted mana dip, then its separate `depleted`
+read returned full1685 before the initializer observed1664. Reset correctly
+returned1685, failing1685>1685. QA-only successor observes Fireball ability_result,
+requires accepted=true and server-reported mana reduction, then compares that
+authoritative value after explicit setup. No extra casts/grants/rank/rune changes;
+observer restored in finally. Focused84841 PASS25tests/4.667s and full lint/diff.
+
+Current47 clean **3551c66cc8b4843ea77db487249314d44b27500d**, same worktree/branch,
+has TWO owned live handles: **79912** sole browser, runIDrelease47-server-cast,
+hostAPI18635/Mongo18636/web18637, routeprepared-dungeon-fixture, log
+`/tmp/eidolon-release47-server-cast-gameplay.log`; **76579** full client regression,
+log `/tmp/eidolon-release47-server-cast-client.log`. Keep source frozen until both
+exact handles are terminal. No resource runs or other owned browser remains live.
+After validation this correction MUST propagate through48–55 and the resource
+candidate before sequential publication; queued refs below still predate3551c66.
 
 ## Historical checkpoint — September 8, 15:09 UTC
 

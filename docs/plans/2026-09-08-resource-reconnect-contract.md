@@ -3,11 +3,14 @@
 Status: confirmed defect with an unreleased implementation candidate, not yet
 release-ready or assigned a published patch. Preserve .01 passive regen.
 
-Candidate `work/resource-persistence-20260908` at603cd588 implements versioned
-resource restoration and per-account session/save ordering. Actual Mongo/server
-checks pass144 saved sessions, plus ordinary Fireball/two repeated Joins/
-overlapping login/old cleanup/new-owner command/final save. A race-built server
-also passes that handoff route with no race/panic/fatal log findings. This does
+Candidate `work/resource-persistence-20260908` at4390f30 (tested source69d7978,
+runtimea9f5960) implements versioned resource restoration and per-account
+session/save ordering. Broader live tests found and fixed close/send and character
+ID publication races that a green unit suite missed. The corrected race-built
+server passes144 saved sessions and five consecutive ordinary Fireball/two
+repeated Joins/overlapping login/old cleanup/new-owner command/final-save runs.
+The harness now fails on abnormal child exit or race/panic log markers and checks
+fresh saves at BSON timestamp precision against a pre-close baseline. This does
 not close the entire acceptance list below: shutdown admission/drain, delayed
 save failures, PvP/instance/browser death recovery and rollback remain open.
 Execution details and exact handles are in the roadmap execution ledger and
