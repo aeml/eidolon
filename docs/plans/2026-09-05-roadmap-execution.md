@@ -5,7 +5,78 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 15:09 UTC
+## Current checkpoint — September 8, 15:25 UTC
+
+Previous goal turn was PROGRESS (session ownership implementation and actual
+handoff checks). This turn is also PROGRESS: the broader real race matrix found
+two missed races, both were fixed, the harness now rejects bad server exits/logs,
+and corrected real sessions pass. Whole1.1–1.10 remains active and incomplete.
+46 CI34238194283 on6f7e4a7 remains freshly ACTIVE Predeploy Character QA; client,
+server and Browser Smoke PASS. No push or new live identity claim this turn.
+Never publish47 until the whole46 final Live QA/public-identity gate passes.
+
+Resource `/tmp/eidolon-resource-persistence-c6E17J`, work/resource-persistence-20260908,
+clean **4390f30** (docs closure; tested source69d7978, runtimea9f5960), still has
+no56 metadata or publication approval. Actual matrix77433 on603cd588 returned
+process0/176.281s but was FAILED race acceptance: server logs found close/send
+races in all three phases and Join's playerID write versus broadcast read in
+phase1. Evidence `/tmp/eidolon-resource-matrix-race-sessions.log` and
+`/tmp/eidolon-compat-session-{3776921393,4283576186,2711711528}/server.log`.
+Full unit race92756 nonetheless PASSED root24.822s/database1.065s/game450.687s;
+this demonstrates why unit green alone was insufficient. Both handles terminal.
+
+Correctiona9f5960 serializes every output producer against queue closure,
+publishes a write-once player binding under sessionsMu, guards state-cache resets,
+and rechecks closed transport after credential/account-lock delays. Priority
+traffic stays nonblocking and state/time stays lossy. The actual-session harness
+now fails on abnormal/forced child exit and race/panic/fatal log markers.
+Focused70558 PASS1.502s; full race67975 PASS root15.786s/other packages cached.
+Log `/tmp/eidolon-resource-queue-full-race.log`. No game-runtime change in this
+follow-up, so the game-package cache is valid evidence at that scope.
+
+Actual corrected race22795 CLOSED FAIL213.857s: separate144session matrix PASSED
+199.30s with clean exits/logs, but handoff freshness assertion FAILED14.55s.
+Read-only disposable Mongo inspection found correct17HP/70mana/alive,1277gold,
+LastLogout15:17:47.104Z. The BSON driver stores milliseconds, while this immediate
+disconnect test compared nanoseconds.69d7978 now requires both a strictly newer
+save than its pre-close DB baseline AND closure time at BSON precision; tests
+reject unchanged, earlier and missing saves. Focused18465 PASS1.111s.
+22795 evidence `/tmp/eidolon-resource-queue-race-sessions.log`, server dirs
+`/tmp/eidolon-compat-session-{1242217804,2876537283,3948687136,2628873907}`;
+all four independently scanned clean of race/panic/fatal markers.
+
+Corrected actual13939 CLOSED PASS **five consecutive race-built handoffs/23.314s**,
+normal0, strict server log/exit checks enabled. Binary
+`/tmp/eidolon-resource-freshness-proof-6rWCkw/69d7978a4022822467451214c9676dd6532c81c3`;
+log `/tmp/eidolon-resource-freshness-sessions.log`, server dirs
+`/tmp/eidolon-compat-session-{3660727112,3316864897,770392881,341862235,4179048338}`.
+All three resource proof containers used this turn were explicitly disposable,
+removed with owned volumes by trap, independently absent; no player data removed.
+No resource tests remain running. Still open: token resume/death/browser/instance/
+PvP, shutdown admission/drain, delayed-save failures, compatible rollback. Full
+roadmap resource acceptance is NOT closed by this matrix or five handoffs.
+
+Story66825 CLOSED FAILED25.1m at21/40 Watch credits, zero deaths. Opening68s and
+diary118s uninterrupted passed. Last player level5/75HP at x20.68/z328.59;
+original level6 Skeleton15HP103.62units away, hovered Skeleton-28;314retreats,
+two jumps/12Fireballs. Near20credits immediate threats were three level1 Skeletons
+below the hunt's3minimum. Credential scan0, exact-container/image absence PASS.
+Log `/tmp/eidolon-story-opening-reacquire-gameplay.log`. Story branch now
+**92d2bc7**, docs-only closure after tested5959689. Do not reduce counts, extend
+watchdogs or claim pacing approval. Further diagnosis must separate non-credit
+threats, retreat/leash resets and travel; preserve artifacts before the next run.
+
+Sole owned browser **12646 ACTIVE** on exact clean47/**93ab09c** in
+`/tmp/eidolon-starter-cadence-xCyOrR`, runIDrelease47-prepared-inherited,
+hostAPI18635/Mongo18636/web18637, routeprepared-dungeon-fixture. Log
+`/tmp/eidolon-release47-inherited-fixture-gameplay.log`. Its first reuse test
+FAILED36.9s; following Verdant is still running (Warden killed, Matron6718HP at
+last observation). I initially misread transition to the second test as the first
+passing and promptly corrected the user update. No combined-pass claim. Keep47
+source frozen until this exact handle is terminal, then inspect full failure and
+cleanup. Any correction must propagate through48–55 before sequential publishing.
+
+## Historical checkpoint — September 8, 15:09 UTC
 
 This turn is PROGRESS: implemented per-account session/save ordering and proved
 real Fireball/repeated-Join/duplicate-login resource preservation against Mongo,
