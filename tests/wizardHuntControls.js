@@ -5,15 +5,18 @@ import { clipDungeonEffectSegment } from '../src/skills/dungeonEffectGeometry.js
 export function planWizardHuntStep(state) {
     if (state.className !== 'Wizard' || state.dead || !state.threats?.length) return null;
     const threats = state.threats.map(enemy => ({ ...enemy,
-        distance: Math.hypot(state.x - enemy.x, state.z - enemy.z) })).sort((a, b) => a.distance - b.distance);
+        meleeReach: Number.isFinite(enemy.meleeReach) ? Math.max(3, enemy.meleeReach) : 3,
+        distance: Math.hypot(state.x - enemy.x, state.z - enemy.z) }))
+        .sort((a, b) => (a.distance - a.meleeReach) - (b.distance - b.meleeReach));
     const nearest = threats[0];
+    const clearance = nearest.distance - nearest.meleeReach;
     const shieldIndex = (state.hotbar || []).indexOf('Arcane Shield');
-    if (nearest.distance < 9 && state.healthRatio < 0.8 && state.shieldHP <= 0 &&
+    if (clearance < 6 && state.healthRatio < 0.8 && state.shieldHP <= 0 &&
         shieldIndex >= 0 && shieldIndex < 4 && state.unlockedSkills?.includes('Arcane Shield') && state.mana >= state.shieldCost &&
         (state.cooldowns?.['Arcane Shield'] || 0) <= 0 && state.sinceCastMs >= 550) {
         return { action: 'shield', key: String(shieldIndex + 1) };
     }
-    if (nearest.distance >= 6) return null;
+    if (clearance >= 3) return null;
     const angle = Math.atan2(state.z - nearest.z, state.x - nearest.x);
     const inDungeon = state.walkRects?.length > 0;
     // Dungeon corners can require turning back toward the room interior. Retain
@@ -25,7 +28,8 @@ export function planWizardHuntStep(state) {
         width: rect.width - 2 * radius, height: rect.height - 2 * radius })) : null;
     const options = offsets.map(offset => {
         const x = Math.cos(angle + offset) * 9, z = Math.sin(angle + offset) * 9;
-        const clearance = Math.min(...threats.map(enemy => Math.hypot(state.x + x - enemy.x, state.z + z - enemy.z)));
+        const clearance = Math.min(...threats.map(enemy =>
+            Math.hypot(state.x + x - enemy.x, state.z + z - enemy.z) - enemy.meleeReach));
         return { x, z, clearance };
     }).filter(option => !inDungeon || !clipDungeonEffectSegment(floors, state,
         { x: state.x + option.x, z: state.z + option.z }).blocked)
