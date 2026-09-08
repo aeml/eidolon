@@ -5,7 +5,47 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 12:31 UTC
+## Current checkpoint — September 8, 12:43 UTC
+
+Previous turn was progress:6e556c4 was verified locally and pushed. This turn
+confirms the actual duel scene bug and implements a production repair in an
+isolated candidate. The full1.1–1.10 goal remains active/incomplete.
+
+CI34226360903 on6e556c4 is freshly in progress: client/server jobs PASS, Browser
+Smoke running.45 remains last independently verified live. Do not publish47
+before46's complete CI and live-identity gates.
+
+14835 closed exit1 on clean542870d: all four class pairs received active duel
+state and own PvP-instance deltas but zero enter_instance messages; both clients
+remained outside PvP. Scan0 and independent exact-container absence passed.
+This confirms missing scene integration, not a test-property typo. Detailed
+receipts: `/tmp/eidolon-starter-duel-scenes.log`.
+
+New isolated `/tmp/eidolon-pvp-scenes-4TVWZ4`, work/pvp-scenes-20260908,
+clean **d011b8a138ff612a6ec6062fa1c70c7a1cc14f34**, sends explicit initial arena
+entry and authoritative departure positions on completion, without reloading
+ordinary score updates. Only real active matches expose fresh arena layouts.
+The low-walled court uses server center bounds plus standard body footprint;
+client containment, scene generation and team spawns now agree. Existing damage,
+rewards, match scoring, boundaries and disconnect-forfeit rules are unchanged.
+
+50649 reproduced missing server scene/layout tests;34564 reproduced2 client
+arena/return failures (17pass).29154 focused21PASS/1.197s plus lint;92326 focused
+racePASS root1.484s/game14.346s. Full6505 serverPASS root1.698s/database0.006s/
+game61.596s. Full39044 clientPASS228suites/3304tests/106.310s. All terminal.
+Evidence: candidate `docs/plans/2026-09-08-pvp-scene-handoff.md` and
+`/tmp/eidolon-pvp-scenes-{client,server}.log`.
+
+**59684 ACTIVE**, sole owned browser route, frozen d011b8a, run ID
+pvp-scenes-corrected, API18635/Mongo18636/web18637, log
+`/tmp/eidolon-pvp-scenes-gameplay.log`. Actual four-class admission, rendered
+arena, basic attacks, practice forfeits and departure-position assertions run
+before approval. Capture inspection remains due. Do not edit that worktree until
+this exact handle is terminal. Candidate47 in the other worktree remains542870d;
+the repair is not merged, packaged or published yet. Ranked/party/disconnect/
+physical-phone acceptance and broader balance remain open.
+
+## Historical checkpoint — September 8, 12:31 UTC
 
 Previous goal work was progress: four-class collection evidence, CI shard
 configuration and expanded-story pursuit verification changed the next actions.
