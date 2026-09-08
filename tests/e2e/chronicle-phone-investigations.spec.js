@@ -2,6 +2,7 @@ import { devices, expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, openGame, projectEntity } from './helpers.js';
 import { openPhoneNavigation } from './mobile-helpers.js';
 import { seedReturningCharacter } from './chronicle-returning-fixture.js';
+import { chroniclePhoneRoutes as routes } from './chronicle-phone-routes.js';
 import { chronicleInvestigations } from '../../src/data/chronicleInvestigations.generated.js';
 import { planWizardCrowdControl, planWizardHuntStep, planWizardTravelDefense } from '../wizardHuntControls.js';
 import { chronicleReadingMetrics, openIlyraByTouch, recallChronicleByTouch,
@@ -12,12 +13,6 @@ test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true
     trace: 'off', screenshot: 'off', video: 'off' });
 
 const realm = process.env.EIDOLON_E2E_INVESTIGATION_REALM || 'earth';
-const routes = {
-    earth: [[0, 230], [55, 230], [80, 200], [125, 200]],
-    water: [[0, 230], [55, 230], [80, 200], [125, 200], [145, -200], [145, -550], [0, -575], [0, -625]],
-    fire: [[0, 230], [-55, 230], [-80, 200], [-125, 200], [-500, 200], [-900, 200], [-1030, 200], [-1130, 245]],
-    air: [[0, 230], [55, 230], [80, 200], [125, 200], [500, 200], [900, 200], [1030, 200], [1110, 245]]
-};
 if (!Object.hasOwn(routes, realm)) throw new Error('Unknown phone investigation realm');
 
 async function fightAtSite(page, context, site, chapter) {
