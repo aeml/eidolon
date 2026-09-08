@@ -23,3 +23,7 @@ this47 candidate's collection pacing.
 Focused backport checks pass: server race10861/9.881s and client66704,
 226tests/two suites/4.555s (version/patch-note presentation and regeneration).
 Diff checks pass. Full server integration and actual collection remain open.
+
+Full backport server race33511 now passes all packages (root16.790s/game291.657s)
+on8f4c452. Handle closed; no source changes during the check. Actual47 collection
+remains required, and publication still waits for45 then46 to clear live gates.
