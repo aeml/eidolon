@@ -16,7 +16,7 @@ function setup() {
     const player = { inventory: [item, null] };
     const chat = jest.fn();
     const ui = new TradingUI({ getLastPlayer: () => player, getItemIconPath: () => '/ore.png',
-        getRarityColor: () => '#123456', addChatMessage: chat });
+        getRarityColor: () => '#123456', addChatMessage: chat, hideTooltips: jest.fn() });
     ui.onTradingCreate = jest.fn();
     ui.updateInventory(player);
     document.querySelector('#trading-inventory-list .inv-slot').click();
@@ -43,6 +43,7 @@ test.each(['replacement', 'larger', 'smaller', 'moved', 'missing'])('submit reje
     expect(ui.onTradingCreate).not.toHaveBeenCalled();
     expect(ui.selectedTradingItem).toBeNull();
     expect(chat).toHaveBeenCalledWith('System', expect.stringContaining('Select the item again'));
+    expect(ui.ctx.hideTooltips).toHaveBeenCalled();
 });
 
 test('ordinary inventory refresh invalidates selection and allows explicit reselection', () => {

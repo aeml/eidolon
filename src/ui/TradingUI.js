@@ -240,6 +240,7 @@ export class TradingUI {
 
     clearSelection() {
         this.selectedTradingItem = null;
+        this.ctx.hideTooltips?.();
         if (!this.tradingSellSlot) return;
         const addIcon = document.createElement('span');
         addIcon.style.fontSize = '30px';

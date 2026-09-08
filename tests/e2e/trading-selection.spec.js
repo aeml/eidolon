@@ -17,7 +17,7 @@ for (const [width, height] of [[1280, 900], [390, 844]]) {
             const base = BASE_ITEMS.find(item => item.slot === 'mainHand');
             const player = { level: 30, gold: 1234, xp: 0, xpToNextLevel: 100,
                 stats: { hp: 17, maxHp: 100, mana: 70, maxMana: 100 }, baseStats: {}, equipment: {},
-                inventory: [{ ...base, id: 'selected-item', name: 'Selected Staff', stack: 1, rarity: RARITY.RARE }, ...Array(24).fill(null)] };
+                inventory: [{ ...base, id: 'selected-item', level: 30, stack: 1, rarity: RARITY.RARE }, ...Array(24).fill(null)] };
             ui.lastPlayerRef = player;
             ui.showHUD();
             ui.toggleChat(true);
@@ -32,16 +32,21 @@ for (const [width, height] of [[1280, 900], [390, 844]]) {
         await page.locator('#trading-input-buyout').fill('500');
         await page.evaluate(() => {
             const { ui, player } = window.__listingSelection;
-            player.inventory[0] = { ...player.inventory[0], id: 'replacement-item', name: 'Replacement Staff' };
+            player.inventory[0] = { ...player.inventory[0], id: 'replacement-item', name: 'Wooden Staff' };
             ui.updateInventory(player);
         });
         await expect(page.locator('#trading-sell-slot')).toHaveText('+');
         await expect(page.locator('#trading-house-guidance')).toContainText('Select the item again');
+        // The pointer can still be over the newly rendered slot. Its new tooltip
+        // is valid; the removed item's tooltip must never remain visible.
+        await expect(page.locator('#stat-tooltip:visible').filter({ hasText: 'Iron Sword' })).toHaveCount(0);
+        await page.locator('#trading-input-bid').hover();
+        await expect(page.locator('#stat-tooltip')).toBeHidden();
         await page.locator('#btn-trading-create').click();
         expect(await page.evaluate(() => window.__listingSelection.calls)).toEqual([]);
         await page.screenshot({ path: `/tmp/eidolon-trading-selection-${width}.png` });
         await page.locator('#trading-inventory-list .inv-slot').first().click();
-        await expect(page.locator('#trading-house-guidance')).toContainText('Replacement Staff');
+        await expect(page.locator('#trading-house-guidance')).toContainText('Wooden Staff');
         const duration = await page.locator('#trading-input-duration').inputValue();
         await page.locator('#btn-trading-create').click();
         expect(await page.evaluate(() => window.__listingSelection.calls)).toEqual([
