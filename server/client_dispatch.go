@@ -252,7 +252,7 @@ func (c *Client) dispatchMessage(msg Message) {
 				Wisdom:       char.Stats.Wisdom,
 				Vitality:     char.Stats.Vitality,
 			},
-			SkillPoints:    0,
+			SkillPoints:    max(0, char.SkillPoints),
 			SelectedBranch: char.SelectedBranch,
 			UnlockedSkills: []string{},
 		}
@@ -551,6 +551,9 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 
 		entity.RecalculateStats()
+		if progression.PendingLevels > 0 {
+			entity.Health = entity.MaxHealth
+		}
 		world.AddEntity(entity)
 
 		// Attempt to rejoin the persisted party (0.37.1).

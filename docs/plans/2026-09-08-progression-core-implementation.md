@@ -22,6 +22,9 @@ The active root/release branches still use the old curve.
   Base-stat growth adds only that delta; earned levels/allocations/gold/spending
   survive. Current-version reloads are identity. Capped bar sentinels are never
   additional Resonance. Genuine pending cap overflow remains an award.
+  Login also retains nonnegative saved unspent skill points instead of resetting
+  them to zero, and heals a previously pending level-up after gear/stat loading.
+  Actual session/reconnect verification remains a separate gate.
 - Both curve formats are understood for forward migration and rollback. A bridge
   release retaining curve 1 **must ship before curve 2 activates**; deploying this
   candidate directly would leave the older server unable to read curve-2 saves
@@ -59,6 +62,14 @@ Corrected three-repeat suite **42999 PASS / root 1.090s / game 25.912s**,
 log `/tmp/eidolon-coordinated-xp-compat-final.log`. Full lint **98373 PASS** and
 diff check pass. All those handles are closed. Full client/server and real login/earned
 campaign checks are still required; targeted passes do not approve activation.
+
+Full client **90196 PASS / 221 suites / 3,318 tests / 142.350s** on clean
+**3de3ea4** (runtime **7dc401c**), log
+`/tmp/eidolon-coordinated-xp-full-client.log`. No browser/earned progression is
+claimed. Subsequent login point/healing changes are server-only; three compile/
+migration/progression race repetitions **24607 PASS / root 1.091s / game
+13.567s**, log `/tmp/eidolon-coordinated-xp-login-followup.log`. Actual reconnect
+validation remains open. All owned handles are terminal.
 
 Next: preserve accepted reward quotes using actual BSON field presence (explicit
 zero is not a missing promise), tune overlapping quest/source budgets and add
