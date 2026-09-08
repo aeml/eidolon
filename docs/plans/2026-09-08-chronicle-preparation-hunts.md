@@ -74,3 +74,9 @@ the31-chapter catalog, and play the new hunts without grants. Measure all-class
 survivability, actual quest times, gear/inventory pressure, gold sinks and the
 70–100 endgame approach. A rollback-compatible progression bridge and staged
 release/patch notes remain prerequisites to activation. Nothing here is live.
+
+Subsequent combined regression passes: full client223 suites/3339 tests and
+full server race game498.132s. The first actual40-kill expedition also passes
+without grants, with two deaths and a retained manual receipt after reconnect.
+See [earned expedition evidence](2026-09-08-earned-expedition-verification.md).
+Full Earth and all-class pacing remain separate pending gates.

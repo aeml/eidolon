@@ -28,7 +28,9 @@ The active root/release branches still use the old curve.
 - Both curve formats are understood for forward migration and rollback. A bridge
   release retaining curve 1 **must ship before curve 2 activates**; deploying this
   candidate directly would leave the older server unable to read curve-2 saves
-  safely during rollback. The bridge release is not implemented/verified yet.
+  safely during rollback. A [bridge candidate](2026-09-08-progression-compatibility-bridge.md)
+  is now implemented and passes focused migration/save checks, but is not yet
+  session-verified, release-packaged or deployed.
 - Offline XP now applies every earned level in an award, stops at 100, and sends
   only overflow/new capped awards into Resonance. Authoritative/remote actors
   reject local XP and level-up calls. Invalid/fractional/unsafe numeric awards

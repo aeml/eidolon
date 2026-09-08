@@ -5,7 +5,56 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 03:59 UTC
+## Current checkpoint — September 8, 04:23 UTC
+
+Previous goal turn was progress; this turn closes the full31-chapter regression,
+earns the first new expedition in real play, implements a save-format bridge,
+and observes the43 deployment advance. The full1.1–1.10 roadmap and balance
+approval remain materially unfinished; do not mark the goal complete or blocked.
+
+Combined story source **771c08c**: full server race **95004 PASS /root24.039s /
+database1.049s /game498.132s**, handle closed. Full client49961 already passes
+223 suites/3339 tests; no active handles remain in the hunt worktree.
+
+New earned worktree `/tmp/eidolon-earned-story-TZuGpp`, branch
+`work/earned-story-20260908`: source **906057e** fresh Wizard **49775 PASS /
+one /8.9m**, scan/cleanup pass, handle closed. Opening manual100XP/100gold at
+level2/46s; diary200XP/25gold at level4/107s. First new Watch earns40 qualifying
+server credits with two deaths, retains credit, manually claims1593XP/100gold,
+and reconnects at level11/2590XP/3512gold. Eight occupied slots/270gold unsold
+equipment value. Watch426s including claim/reconnect. Ready image inspected
+and archived at `/tmp/eidolon-earned-watch-evidence-kgJbKH/`. This is one class,
+not all-class pacing approval. See [earned evidence](2026-09-08-earned-expedition-verification.md).
+
+Current earned source **a7cbd99** adds ordinary earned build preparation for
+level10+ expeditions, retaining the initial low-level Watch baseline. Full lint
+**51712 PASS**. New full Earth browser **57004 ACTIVE**, single owned browser;
+freeze the entire earned worktree. Log `/tmp/eidolon-earned-earth-expeditions.log`.
+The route includes all three Earth hunts, collections, evidence, manual claims
+and reconnect; its result remains unproven. Updated60m ceiling covers150 added
+kills/travel, not an approved target time. A stale collection-gating test was
+also corrected to select the actual collection by ID, not the new hunt's index;
+expansion race check25352 passes.
+
+New bridge worktree `/tmp/eidolon-progression-bridge-RluwqP`, branch
+`work/progression-bridge-20260908`, clean **96143fc**. It keeps curve1 and
+unchanged fresh budgets, understands0/1/2 saves, writes active versions, restores
+pending levels once, and preserves quest quotes/requirements/optional records.
+Initial17577 failed because the copied test oracle overflowed two large legacy
+factors; runtime already returned correct identity. Corrected expanded **57208
+PASS /three race repeats /root9.106s /database1.096s /game77.036s**. Full server
+race **31499 ACTIVE**, freeze bridge source; log
+`/tmp/eidolon-progression-bridge-full-server.log`. Actual isolated database/login/
+rollback sessions and release packaging remain required. See
+[bridge scope and evidence](2026-09-08-progression-compatibility-bridge.md).
+
+CI **34182920134 /43/79a93b1** now passes predeployment QA, production-input
+validation and **both deployment jobs**. Final Live Release and Character QA
+is active; exact public43 gate is not yet closed. Do not publish44 until all
+eight jobs pass and a fresh exact manifest/login/versioned-entry/backend check
+succeeds. Queue unchanged below. No balance runtime/root merge or51 package.
+
+## Historical checkpoint — September 8, 03:59 UTC
 
 This turn implements eight preparation expeditions and closes the earned23-
 chapter reward route, not the entire balance or1.1–1.10 roadmap. All release
