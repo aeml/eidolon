@@ -5,7 +5,38 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 7, 23:53 UTC
+## Current checkpoint — September 8, 00:05 UTC
+
+Corrected 42 **bfbbc87 / CI 34171247520** passes client, server and browser smoke;
+predeploy character QA is active. Next remains explicit 43/f955608 only after all
+42 deployment/live gates and fresh exact public identity. No 43 push or live
+approval yet. Previous goal turn was progress: corrected 42 publication, preserved
+queue integration and combined first-diary phone gameplay proof.
+
+Investigation QA **f04d38e** adds opt-in two-chapter touch routes for all four
+realms, sharing the original guarded empty-account veteran fixture. It uses
+actual joystick travel, visible phone build/actions, target taps/Attack/Skill/
+hotbar skills, bounded ordinary retreat, USE, both orientations' earned record
+reading, explicit optional Ilyra replies/rewards and saved evidence. Fire retains
+ash → live anchor/observed death → ember ordering; no investigation credit,
+invulnerability, gear, travel or damage grant is added. The prepared level-100
+common-staff fixture is not earned progression. Desktop fixture extraction is
+mechanical. Lint, shell syntax, test discovery and diff checks pass (75191 closed).
+
+First Earth phone **83848 FAIL / 31.7s** genuinely earns the diary and severed
+root, then exposes a no-op movement cleanup error: CDP rejects TouchEnd when
+the character already stands at the requested point and no TouchStart occurred.
+Scan/cleanup pass; log `/tmp/eidolon-investigations-phone-earth.log`. QA-only
+**2b5f073** releases a gesture only if started, always detaches the session, and
+passes lint/diff (52450 closed). No runtime interaction or difficulty change.
+
+**47303 is the sole owned browser**, same Earth phone route against clean
+2b5f073, log `/tmp/eidolon-investigations-phone-earth-noop.log`. Freeze the entire
+investigation worktree until terminal; other owned handles are closed. No all-
+realm touch success is claimed. XP/gold/realm pacing, physical phones, expansion
+release and the complete roadmap remain unfinished.
+
+## Historical checkpoint — September 7, 23:53 UTC
 
 Corrected **42 / bfbbc87374682bb80c825ce96543012a08841735** is pushed normally
 through explicit `release/42-with-portal-pointer → origin/master` (47491 closed).
