@@ -5,7 +5,54 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 14:22 UTC
+## Current checkpoint — September 8, 14:27 UTC
+
+This turn is PROGRESS: corrected/reproduced prepared fixture and rune reuse,
+published the46 QA correction to the normal deployment pipeline, preserved the
+next release ancestry, and produced a story-target successor and a confirmed
+resource-login defect. Full1.1–1.10 remains active; no milestone completion claim.
+
+46 actual22302 CLOSED PASS2/4.5m, QA_SCRIPT_EXIT=0, normal0 on45df969. Fixture
+reuse29.2s includes real mana spend and unchanged equipped rune/ranks/points
+after repeated setup; following Verdant3.9m, seed3243300853383481175/gen2normal30
+Wizard100, bothbosses/laterenemies/clearedrooms/gold/town PASS. Last Matron953HP,
+player2450HP/483mana before confirmed death. No in-run refill. Scan0/exact owned
+container/network/image absence PASS. Full client10846 CLOSED PASS223suites/
+3251tests/174.985s, normal0; focused race60849/1.508s and25tests/lint as below.
+Closure46 **6f7e4a72a774a9d2106c26fc6a98f81a1e535c7c** was normalFFpushed
+ed5f64a→6f7e4a7 (69982 closed0). CI **34238194283 freshly ACTIVE**, client/server
+running. Current public deployment is NOT verified as this new SHA yet; do not
+push47 until entire CI including final live QA and fresh independent public
+release.json/healthz/login/runtime-entry exact identity PASS.
+
+47 clean **93ab09c** merges6f7e4a7 into prior ea213c6 with no conflicts, only
+the eight QA/evidence files changed.251focused version/preparation/entry tests
+PASS2.805s plus full lint/bash/diff (6911 closed0). No runtime/version/cadence/
+three-shard change. Earlier full/runtime/browser evidence remains in its docs;
+this exact new inherited fixture has not yet had an actual47 browser run.
+48–55 still have their older refs and MUST inherit the new47 QA correction
+sequentially before their own publication. Never push root's staged52 ledger.
+
+Sole owned local live handle **42789**, actual uninterrupted story on clean
+2ae384924b27f09cff0305b9a60f2fbbf682d72a in
+`/tmp/eidolon-story-target-input-ATbtXC`; host API18635/Mongo18636/web18637.
+Log `/tmp/eidolon-story-retained-target-gameplay.log`. Prepared client/vendor
+generator76730 completed0; gameplay is building at this checkpoint. Keep source
+frozen and poll this exact handle; do not restart for an observation timeout.
+Prior85183 failure/31chapter curve2 evidence below remains authoritative.
+
+Resource deficit diagnosis is refined: actual second login returned2080/2575HP
+and1190/1685mana, both495short, exactly the level100 flat bonus. client_dispatch
+reconstructs current bars from base stats×10; Character persists no HP/mana.
+This is NOT merely preceding tests casting. New confirmed defect/acceptance
+contract `2026-09-08-resource-reconnect-contract.md` is linked into the1.1roadmap
+by7df16e0. It remains unimplemented. Preserve real depleted/zero/dead resources,
+legacy migration, same-snapshot save locking and rollback; do not simply fill
+bars on each login and claim the .01-regeneration or persistence issue resolved.
+This gameplay defect is a better next runtime priority than cosmetic fake
+ability-preview multipliers; neither has a56 implementation yet.
+
+## Historical checkpoint — September 8, 14:22 UTC
 
 Previous goal work made progress (local47–55 closures); the intervening regen
 request reconfirmed both .01-per-stat formulas with11client tests and all four
