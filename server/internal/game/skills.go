@@ -1,5 +1,16 @@
 package game
 
+// Starting abilities are usable without choosing a specialization. Keep rune
+// validation and cast admission consistent with that class-owned unlock.
+func IsBaseClassSkill(classType, skillName string) bool {
+	for _, skill := range getSkillsForBranch(classType, "") {
+		if skill == skillName {
+			return true
+		}
+	}
+	return false
+}
+
 func (w *World) PerformSelectBranch(playerID, branch string) (*Entity, bool) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
