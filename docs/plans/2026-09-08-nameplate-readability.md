@@ -52,3 +52,17 @@ entry, ordinary Ilyra approach/dialogue, readable label/marker and ongoing frame
 in three viewport sizes, without grants. Its screenshot hides player-class names
 and DOM transcripts while leaving NPC labels visible. This new actual-world
 route and final packaging are not yet verified.
+
+Actual25513 on9b58245 ended1PASS/2FAIL in2.4m. Desktop town interaction and all
+label/marker/frame assertions passed10.0s; its account-free screenshot was viewed
+and saved at `/tmp/eidolon-nameplate-town-evidence-gGh3DL/desktop-first-pass.png`.
+Both narrow cases failed the desktop approach's hover prerequisite before label
+assertions. Scan0 and cleanup/independent container absence passed. They did not
+use a proper touch browser/joystick route, so this is not a phone gameplay pass.
+
+The correction uses touch/mobile browser contexts (including landscape UA) and
+the unchanged joystick/tap Ilyra approach extracted from mobile-quest-gameplay
+into a shared helper. Desktop retains its real mouse path; phone checks do not
+require nonexistent touch hover. Label height, marker, level-one, live frames and
+dialogue checks remain. No production source changed after89f690e. Lint61719
+passed; the corrected actual route remains required.

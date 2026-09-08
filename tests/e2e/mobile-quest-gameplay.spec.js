@@ -1,40 +1,11 @@
 import { devices, expect, test } from '@playwright/test';
-import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, projectEntity } from './helpers.js';
+import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld } from './helpers.js';
 import { approachEncounter, selectLiveTarget } from './mobile-helpers.js';
+import { walkToIlyra } from './mobile-ilyra.js';
 
 test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true,
     userAgent: devices['Pixel 7'].userAgent, actionTimeout: 12_000,
     trace: 'off', screenshot: 'off', video: 'off' });
-
-async function walkToIlyra(page, context) {
-    const cdp = await context.newCDPSession(page);
-    const box = await page.locator('#joystick-zone').boundingBox();
-    let started = false;
-    try {
-        await expect.poll(async () => {
-            const delta = await page.evaluate(() => {
-                const player = window.game.player.position;
-                return { x: 17 - player.x, z: 215 - player.z };
-            });
-            if (Math.hypot(delta.x, delta.z) < 1.5) return true;
-            const jx = delta.x - delta.z, jy = delta.x + delta.z;
-            const length = Math.hypot(jx, jy);
-            await cdp.send('Input.dispatchTouchEvent', { type: started ? 'touchMove' : 'touchStart', touchPoints: [
-                { id: 81, x: box.x + box.width / 2 + 32 * jx / length, y: box.y + box.height / 2 + 32 * jy / length }
-            ] });
-            started = true;
-            return false;
-        }, { timeout: 20_000, intervals: [100] }).toBe(true);
-    } finally {
-        await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
-        await cdp.detach();
-    }
-    await expect.poll(() => page.evaluate(() => window.game.inputManager.joystickVector.lengthSq())).toBe(0);
-    const point = await projectEntity(page, 'story-wizard-1');
-    expect(point?.visible, 'Ilyra is visible at the default phone camera framing').toBe(true);
-    await page.touchscreen.tap(point.x, point.y);
-    await expect(page.locator('#quest-window')).toBeVisible();
-}
 
 test('phone player earns the first Chronicle objective and explicitly claims Ilyra’s reward', async ({ page, context, baseURL }) => {
     const credentials = credentialsFromEnvironment();
