@@ -118,6 +118,12 @@ real failure evidence as it is implemented.
 
 ### Exact item delivery implementation (acceptance pending)
 
+Update20:08:0c847a8 fullrace54188 and two-repetition actual85368 now PASS,
+with68 independently clean logs. Buyout481c3d0 is implemented on top: debit and
+item receipts commit with the full character before the guarded final sale and
+previous-bid refund append. Initial focused tests pass; full83710 and actual73205
+remain ACTIVE. Listing/deposit escrow and compatible rollback are still open.
+
 0c847a8 implements item_claim operations for buyer claims and seller returns,
 with immutable payload/original status, full-character item receipts, complete
 storage-capacity planning, and account-ordered live/offline delivery before

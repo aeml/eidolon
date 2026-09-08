@@ -1,5 +1,52 @@
 # Resource persistence implementation candidate — not release-ready
 
+## Atomic buyout candidate — September 8, 20:08 UTC
+
+Previous item runtime0c847a8 is verified: fullrace54188 CLOSED PASS0
+(root18.154/database1.136/game336.821s). Actual85368 CLOSED PASS0/229.306s,
+TWO repetitions of claims/returns/capacity, six item crash cuts, normal seller
+payout and bid raises/contention. All68 child logs independently clean:12
+intended kills,56 normal completed drains. Owned Mongo
+eidolon-auction-item-proof-20260908-1952 and volumes removed; exact container
+independently absent. Logs `/tmp/eidolon-auction-item-{full-race,sessions}.log`.
+
+New runtime481c3d08c919fd062d368881233e03fe3c90ab05 adds buyout decisions with
+the immutable item, price and previous escrow/refund identity. The entity plans
+payment and complete placement on detached data, then commits gold/inventory/
+stash and both debit+delivery receipts together under World→Entity/account
+ordering. A half-present receipt pair fails closed. Replays validate the same
+price/payload before touching current funds or capacity. Full storage or
+insufficient gold cannot leave a partial purchase. Offline full saves use the
+same operation and retain unrelated resources/gear.
+
+Only after that complete character commit does the guarded auction pipeline
+set SOLD, buyer, SalePrice, ItemClaimed, final operation marker and one previous
+bid refund. Refund delivery remains durable and account ordered, including a
+buyer buying out their own existing bid. Persistent direct legacy buyouts are
+blocked. Zero/negative disabled buyout prices now reject on both paths rather
+than becoming free purchases. Ordinary success retains Auction bought! and sends
+detached inventory/stash updates, with no second item grant or ground overflow.
+
+Initial37463 failed compilation for a missing database import, corrected before
+acceptance. Focusedrace71182 PASS root3.712/database1.047/game1.569s; expanded
+24093 PASS3.275/1.058/1.667; final47240 PASS4.372/1.041/1.628. Logs
+`/tmp/eidolon-auction-buyout-{initial-focused,focused,expanded-focused,final-focused}.log`.
+Tests cover atomic capacity/funds failures, receipt replay after spending/moving
+the item, changed price/payload and incomplete receipt rejection, reservations,
+sale/refund finalization, disabled/own-auction refusal and failed journal commit
+recovery. A redundant test-only password nonempty check was removed before the
+final commit; real login and purchase assertions remain.
+
+Frozen-source fullrace83710 ACTIVE, log `/tmp/eidolon-auction-buyout-full-race.log`.
+Actual73205 ACTIVE on the exact binary, TWO repetitions of six ordinary buyout
+modes, six purchase SIGKILL boundaries, simultaneous buyers, previous normal
+item claims/returns/capacity and seller payout. First six ordinary buyout modes
+PASS58.97s, but the whole run remains pending. Owned disposable Mongo
+eidolon-auction-buyout-proof-20260908-2007, normal EXIT cleanup; log
+`/tmp/eidolon-auction-buyout-sessions.log`. Do not edit source until both handles
+are terminal. Listing item/deposit escrow, enforced rollback and broader
+campaign/instance/device verification still block release approval.
+
 ## Durable exact item claims — September 8, 19:52 UTC
 
 Runtime0c847a81f4bf39c0b2c213fcc648a58988d0a756 implements buyer item claims
