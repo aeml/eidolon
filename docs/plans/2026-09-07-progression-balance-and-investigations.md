@@ -14,6 +14,13 @@ rolls, boss rewards and owned gear. Its full browser and earned collection/
 preparation checks pass; its publication remains in the sequential release queue.
 XP/gold tuning, equipment power/usefulness and playable investigations remain
 open. The
+[opening reward candidate](2026-09-08-opening-reward.md) reduces new tutorial
+offers from 500 to 100 XP, keeps 100 gold and honors accepted promises. Full
+server race checks and a fresh earned Wizard opening/collection playthrough
+pass; runtime remains isolated and unpublished. The same playthrough exposes
+the remaining collection reward jump from level 5 to 16. This small opening
+correction does not select a replacement XP curve or close campaign pacing.
+The
 [loot/Forge baseline](2026-09-07-loot-and-forge-baseline.md) now measures combined
 material/equipment sources and actual transactions; the
 [Forge precision correction](2026-09-07-forge-earned-scaling.md) is locally

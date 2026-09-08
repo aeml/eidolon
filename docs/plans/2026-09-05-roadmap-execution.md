@@ -5,7 +5,68 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 00:54 UTC
+## Current checkpoint — September 8, 01:24 UTC
+
+Previous turn was progress: release 43 publication, Water/Fire phone proof and
+fresh story handoff corrections. This turn repairs 43's failed browser gate,
+implements/verifies a smaller opening reward, and identifies Air's obstructed
+walking route. The complete 1.1–1.10 scope is still open.
+
+43 **f955608 / CI 34174381235 FAIL**: client/server pass; browser **61 pass /
+one fails / 8.2m**, including its retry; deployment/live jobs skip. The offline
+fixture admits at most 50ms per frame but assumed 22 wall seconds was enough
+for 16.5 simulated seconds. **69010 red / 27.6s** reproduces at 8fps: 25.88 wall,
+9.70 admitted, 6.80 remaining, seven real smites. QA **c3264c3** checks actual
+expiry boundaries and cleanup, with 90 wall seconds for slow rendering. Native,
+8fps, wall and follow/departure checks **88992 PASS / four / 1.2m**; slow expiry
+16.5 simulated / 43.8697 wall seconds. Image inspected. Full client **34919 PASS /
+213 / 3,166 / 76.949s**, lint/diff pass. Runtime/server/version/notes unchanged.
+See [the correction record](2026-09-08-release43-simulation-clock.md).
+
+Fresh public manifest/login/main/backend remain **HTTP 200 / Alpha 1.0.42 /
+bfbbc87374682bb80c825ce96543012a08841735 / ok / ready** before normal corrected-43
+push **92167 SUCCESS**, f955 → **ed5b4e444a6746426d5032e2ee55578d3849ff16**.
+New **CI 34175827810**: client/server pass, browser active; no 43 deployment/live
+approval. All old refs are retained. Queue suffix is now **`with-seraph-clock`**:
+
+| Version | Commit |
+|---|---|
+| 43, pushed | ed5b4e444a6746426d5032e2ee55578d3849ff16 |
+| 44, next | 8694c193407555190d0075313831a908c5e70a34 |
+| 45 | 1f020f7723d181a29250fb909edac35dd2574867 |
+| 46 | 92e4103cd2ec4b2456996f791a45dd3cdecc1354 |
+| 47 | e828d71c0c685a6ca87dccd55daf47c57536602d |
+| 48 | d9601953274140a93216f42e66f38b6e70647a94 |
+| 49 | 34dc949d6dffad778ef2d6b5d921cb2276e900cb |
+| 50 | 35535e6034ca7832caaa0a7ed046cc17ba3b5b94 |
+
+Publish 44 only after every corrected-43 job and fresh exact public identity
+succeed. Root merges test-only 50 at **3c2c280**; investigation at **cee15fc**.
+
+Independent [opening reward](2026-09-08-opening-reward.md), runtime **d911162**,
+reduces new offers from 500 to 100 XP, retaining 100 gold and all accepted/ready/
+completed quotes, including zero. Three repeated targeted server race passes;
+full **82436 PASS / root 9.147s / game 211.826s**, other packages pass. Actual
+fresh Wizard **89727 PASS / 1.8m** verifies displayed quote, exact manual payout,
+saved receipt and subsequent eight-fragment collection with no grants/deaths.
+Opening: level 2 in 30s. Collection: 12 observed target deaths / 76s, level 5
+before unchanged 8,000 XP → level 16; Guide still locks level 30. The remaining
+large reward jump is explicitly unresolved. Clean isolated **353e465**, worktree
+`/tmp/eidolon-opening-reward-FinvXg`; docs copied to root, runtime not merged or
+packaged. Integration with expanded story and broader pacing remain required.
+
+Air **72801 FAIL / 6.0m** stays at full HP but drifts fighting toward (900,200).
+**57049 FAIL / 57.7s** subsequently dies near (755.68,187.52) after accepted
+Shield/Well/Fireballs. Image inspected; failures retained. Geometry proves the
+old direct route crosses the real Bastion entrance at (800,200). QA **0296d48**
+walks north around it; geometry red **one fail / four pass / 0.441s**, corrected
+route/defense **36 / 0.524s PASS**, lint/diff pass. No world collision/strength
+change. **32730 is the sole owned browser**, Air detour on clean **ab95837**, log
+`/tmp/eidolon-investigations-phone-air-detour.log`; freeze that entire worktree.
+All other owned handles above are closed. No Air/expansion success claimed.
+Opening XP is a local isolated candidate, not full XP/gold/campaign approval.
+
+## Historical checkpoint — September 8, 00:54 UTC
 
 Previous goal turn made progress: phone reward rows/diary scrolling were verified
 and the earned Water retry started. This turn closes Water **86161 PASS / 2.3m**

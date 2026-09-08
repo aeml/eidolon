@@ -1,8 +1,11 @@
 # Alpha 1.0.43 — an ally that answers
 
-Published to origin/master September 8 as **f9556081a533db4b74ae52f7428a3520c1263acb**
-after corrected 42's complete CI/live success and fresh exact public verification.
-**CI 34174381235 is active; 43 deployment/live approval is not established.**
+Initially published as **f9556081a533db4b74ae52f7428a3520c1263acb** after corrected
+42's complete CI/live success and fresh exact public verification. CI
+**34174381235 fails browser expiry QA; no deployment occurs**. The
+[simulation-clock correction](2026-09-08-release43-simulation-clock.md) republishes
+43 normally as **ed5b4e444a6746426d5032e2ee55578d3849ff16**. **CI 34175827810 is
+active; corrected 43 deployment/live approval is not established.**
 Preserves every earlier patch-note entry and the sequential deployment gates. Login, package/lockfile,
 manifest, server/container/deploy/CI and isolated-QA version defaults advance
 together. Version/default checks pass **219 / 1.635s**; shell syntax and
