@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 16:09 UTC
+## Current checkpoint — September 8, 16:13 UTC
 
 Previous focused regeneration turn was NO ROADMAP PROGRESS: it reconfirmed the
 already implemented .01 health/mana coefficient and passing focused tests, but
@@ -21,12 +21,13 @@ Alpha1.0.46, database ready, and index login/patch notes/exact main.js identity.
 Remote master was still6f7e4a7 and ancestry/clean47 worktree were checked before
 normal fast-forward push65956 CLOSED0: **6925c5113ee6acdf698713f3332f80dcf546bd76**
 to master.47 retains its own patch notes/login version. CI **34248491147** now
-PASSES Client/Server; all3 Browser Smoke shards ACTIVE. No47 deployment/live-pass
+PASSES Client/Server and Browser Smoke2/3; Browser Smoke1/3 and3/3 ACTIVE. No47 deployment/live-pass
 claim yet. Do not publish48 until the full47 gate and fresh public identity pass.
 Root staged52/ledger branch remains local only; never push it.
 
-Resource worktree `/tmp/eidolon-resource-persistence-c6E17J` now clean runtime/test
-commit **5cf6acb794785ede185a7187e5ea53516c76e6e6**, still no56 assignment or release
+Resource worktree `/tmp/eidolon-resource-persistence-c6E17J` now clean docs closure
+**3a7d756755e272426c2913b58a6b56a60f2236bc**, tested runtime/source
+**5cf6acb794785ede185a7187e5ea53516c76e6e6**, still no56 assignment or release
 approval. One private per-account BSON journal retains the newest attempted
 complete snapshot before Mongo IO; atomic Mongo receipt prevents duplicate replay
 from overwriting later gold-only credits. Startup replays before accepting logins;
@@ -59,12 +60,16 @@ Five server evidence dirs3793709616/795464650/168276058/2545814512/3148458027 un
 fatal and credential-marker scans. Exact owned journal-proof Mongo container and
 its disposable volumes removed; independently absent. Production data untouched.
 
-ACTIVE local handles on that frozen source: full Go race **75477**, log
-`/tmp/eidolon-resource-journal-full-race.log` (root17.115s/database1.149s PASS,
-game still active);144 real saved-session matrix **30872**, log
-`/tmp/eidolon-resource-journal-matrix-sessions.log`, owned disposable Mongo
-`eidolon-resource-journal-matrix-20260908-1608` with exact cleanup trap. No owned
-browser route active. Re-poll these handles; do not restart on observation timeout.
+Full Go race **75477 CLOSED PASS normal0**, log
+`/tmp/eidolon-resource-journal-full-race.log`: root17.115s/database1.149s/
+game342.717s.144 actual saved-session matrix **30872 CLOSED PASS normal0/210.581s**
+(test209.55s), log `/tmp/eidolon-resource-journal-matrix-sessions.log`; four classes,
+levels1/30/100 and partial/full/zero/dead bars across three fresh server processes.
+Evidence dirs4089778075/1507303130/1092665031 have strict and independent clean
+normal-exit/race/panic/fatal/credential scans. Exact owned disposable Mongo
+`eidolon-resource-journal-matrix-20260908-1608` and volumes removed and independently
+absent. No owned local test/browser handles remain active.47 CI is the verified
+external wait; re-poll its exact handle without restarting on observation timeout.
 
 Open resource acceptance: shutdown must stop admission/game mutations before
 final save/drain (existing WaitGroup admission race not fixed); interrupted
@@ -72,8 +77,8 @@ dungeon/PvP recovery; compatible rollback and broader browser/device acceptance;
 delayed network/storage failures and pending-save versus offline auction-credit
 ordering. Do not claim arbitrary crash durability or deploy this slice alone.
 48–55 refs/validation unchanged below;31chapter campaign and full phone gate
-remain incomplete. Next actions are finish exact local handles and continue the
-remaining resource gates while47 proceeds through its own release pipeline.
+remain incomplete. Next actions are shutdown admission/drain and outstanding
+resource boundaries while47 proceeds through its own release pipeline.
 
 ## Historical checkpoint — September 8, 15:44 UTC
 

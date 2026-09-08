@@ -3,7 +3,8 @@
 Status: confirmed defect with an unreleased implementation candidate, not yet
 release-ready or assigned a published patch. Preserve .01 passive regen.
 
-Candidate `work/resource-persistence-20260908` at5cf6acb (browser-tested28ebabc,
+Candidate `work/resource-persistence-20260908` at3a7d756 (tested runtime5cf6acb,
+browser-tested28ebabc,
 token-tested ea5d539, runtimea9f5960) implements versioned resource restoration and per-account
 session/save ordering. Broader live tests found and fixed close/send and character
 ID publication races that a green unit suite missed. The corrected race-built
@@ -19,7 +20,9 @@ before stale hydration and pins the live copy if local journaling fails. Actual
 race-built Mongo rejection/restart recovery and already-committed receipt replay
 with a later gold credit pass, as do the repeated handoff/token cases. This is
 not arbitrary crash/network-outage or concurrent offline-credit proof. Full Go
-race75477 and144-session matrix30872 on5cf6acb remain active at16:09 UTC.
+race75477 passed (game342.717s) and144-session matrix30872 passed210.581s on5cf6acb,
+both normal0 with actual child exit/log checks enforced. No owned local test
+handles remain active at16:13 UTC.
 Shutdown admission/drain, delayed network/storage failures, pending-save versus
 offline-credit ordering, PvP/instance recovery, broader device/class play and
 rollback still remain open; the whole acceptance list is not closed.
