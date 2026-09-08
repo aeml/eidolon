@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 06:55 UTC
+## Current checkpoint — September 8, 07:01 UTC
 
 The prior short user turn reverified existing0.01 regeneration (six client tests
 and focused server tests passed), but added no implementation. This continuation
@@ -56,11 +56,40 @@ preparation-policy15 tests/lint20741 passed. Untrained spell258 versus prepared6
 raw damage both cost30mana, with1s versus2.5s effective cooldown. Canonical maximum
 mana is1685; CI's1205 was current mana, not maximum. See candidate evidence doc.
 
-**One owned browser61816 ACTIVE:** source1af1ef0 frozen, route verdant,
-run ID release45-wizard, API/Mongo/web18465/18466/18467. Log
-`/tmp/eidolon-release45-wizard.log`. Actual process polled live06:55, disposable
-services ready and one test started. No result yet. Do not edit/restart its source
-or launch another owned browser until terminal. All other owned handles closed.
+**61816 FAILED20.8s, closed:** all five Mastery purchases acknowledged, but
+Empowered remained unset before any dungeon combat. Scan/owned cleanup passed.
+Log `/tmp/eidolon-release45-wizard.log`. This revealed an actual authorization
+mismatch: the UI and cast admission permit the starting ability without a
+specialization, while rune selection rejected it because UnlockedSkills was empty.
+
+**Corrected frozen candidatec812eee:** shared IsBaseClassSkill now supplies the
+same class-owned starting-ability rule to casting and rune selection. Other
+skill unlocks, matching rune/skill and level requirements remain unchanged. No
+unrequested resource or damage adjustment. Actual1.0.45 notes describe the fix;
+version identity/history remain intact. New real-message tests cover all three
+base runes per class, exact level boundaries, unequip, unselected branch skills
+and foreign-class rejection. Initial27192 exhausted the normal transport burst
+with many authorization cases; cases now use independent normal request clients,
+without changing production limits. Corrected95910 PASS root race1.863s and
+broader game ability/rune/passive-regeneration race37.052s. Client87099 PASS239
+tests/three suites/2.338s plus full lint. All these handles closed.
+
+Two owned checks now run on frozen clean c812eee in
+`/tmp/eidolon-release45-wizard-ZLnqjH`:
+
+- **28151 ACTIVE:** full client suite logs to
+  `/tmp/eidolon-release45-base-runes-client.log`; only on success does this same
+  handle start the corrected Verdant browser (run ID release45-base-runes,
+  API/Mongo/web18465/18466/18467), logging separately to
+  `/tmp/eidolon-release45-base-runes-browser.log`. A queued browser is not yet a
+  running/passing browser. Do not launch another owned browser alongside it.
+- **57721 ACTIVE:** full `go test -race ./...`, log
+  `/tmp/eidolon-release45-base-runes-server.log`.
+
+Do not edit/restart the frozen candidate until both handles are terminal.
+Fresh07:00 remote master remains45b4b83; backend health isok/databaseready,
+still exact44/847d454a94a7424ab303f6339c875ab170bff36e, matching the earlier
+fresh client manifest. No publication/integration of this correction yet.
 No new potion/rest mechanic or basic-attack multiplier was introduced; the
 optional recovery preference remains unanswered. Broader roadmap gates stay open.
 
