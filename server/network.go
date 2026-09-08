@@ -131,6 +131,9 @@ func sendInitialPlayerState(c *Client, entity *game.Entity, instanceID string) {
 				"type":       world.GetInstanceType(instanceID),
 				"layout":     layout,
 			}
+			if world.GetInstanceType(instanceID) == "pvp_arena" {
+				resp["spawn"] = map[string]float64{"x": entity.X, "y": entity.Y, "z": entity.Z}
+			}
 			if roomState, ok := world.GetDungeonRoomSummary(instanceID, c.playerID); ok {
 				resp["roomState"] = roomState
 			}

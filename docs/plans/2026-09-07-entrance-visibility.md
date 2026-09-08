@@ -80,3 +80,57 @@ local package verification is not deployment evidence.
 Physical-phone performance, other world scenery, wider enemy visibility and
 the broader collision/playability audit remain open. This localized cutaway is
 not proof those gates are complete.
+
+## September8 — inherit corrected45 and revalidate46
+
+Merge d9c64bbd197ba7cb5985dc7bc4b52d546dad47bd incorporates actual pushed45
+64df5fbd4fb7a1b66f1f9e5ccf5dc6a20911898e into release46, preserving46 version
+identities, entrance notes and prior-version history. The0.01 recovery and base
+skill rune authorization correction remain intact. No src/ runtime file changed
+relative to the previous46 branch90e2a13. Game-server code is identical to45's
+fully race-tested runtime; the only server differences are46 version defaults.
+
+Focused19804 **PASS254 tests/four suites/3.147s**, full lint and diff checks pass.
+Full client85309 **PASS218 suites/3224 tests/236.474s**. Backend-root74775 race
+**PASS19.365s**. All handles are closed; no source changes during these checks.
+
+Browser41130 first passed all10 actual GPU cutaway checks (1.2m), covering every
+entrance at High/Low desktop quality and Verdant phone portrait/landscape. Hero
+pixels match the same unobstructed reference and the bounded-window/depth/material
+assertions remain unchanged. Captures were viewed for all four entrance families,
+including Verdant portrait before/after and landscape. Evidence is retained in
+`/tmp/eidolon-release46-runes-rendered-gBEWSD`; log
+`/tmp/eidolon-release46-runes-rendered.log`.
+
+The same handle then passed the isolated actual gameplay route: one test53.6s,
+reported run58.7s. The normal Wizard receives the entrance cutaway, buys/saves
+Shield training, renders834capacity, absorbs310actual damage with524remaining,
+and recalls to town, restoring original landmark materials. Its actual landscape
+capture was viewed with the revealed hero, enemies, thumb controls and chat still
+present. Artifact scan and owned cleanup passed; container absence independently
+confirmed. Log `/tmp/eidolon-release46-runes-gameplay.log`. These desktop Chrome
+phone-view checks do not establish physical-phone ergonomics/performance.
+
+46 is locally verified after inheritance, not pushed/live.45 CI34198772605 must
+pass every job and fresh independent public identity checks first. Preserve
+sequential ancestry when integrating this final46 source into47 and later builds.
+
+### Carry forward the phone talent CI correction
+
+CI34198772605 subsequently failed on the phone talent-economy full-mana wait
+and reused retry character, after the prepared Verdant run passed. Verified45
+correction0ed54b2 is pushed; new CI34203281024 owns the publication gate now.
+Merge55ea35ba3a95e3643d4f591d0924129d42a51a2b carries that test-only correction
+into46. No src/server/index changes versus87ed21c; the above actual entrance
+runtime evidence is unchanged, not rerun. Five focused suites pass260tests/
+2.617s and full lint/diff checks pass (handle21098 terminal0).46 remains queued,
+not published, until every new45 CI/live job and exact public checks pass.
+# September8: observed shield-approach carry-forward
+
+Mergeecd0600 inherits pushed45/83d8f08's verified test-only approach correction.
+The shield-test merge preserves this release's explicit entrance-cutaway assertion
+before using the observed enemy approach. No src/server/index changes versus
+ad16790. Initial integration1664 correctly failed lint on unresolved conflict
+markers; after resolution,29678 passes238tests/four suites/2.212s, full lint and
+diff checks. Existing entrance rendering evidence remains applicable, not rerun.
+Release46 still waits for new45 CI34208478475 and independent public identity.

@@ -604,8 +604,8 @@ func TestEntityAttackSpeedCalculation(t *testing.T) {
 
 	e.RecalculateStats()
 
-	// Attack Speed = 5.0 / (1 + dex*0.02) = 5.0 / 1.2 ≈ 4.17
-	expectedAttackSpeed := 5.0 / 1.2
+	// Player fallback interval = 2 / (1 + dex*0.005), about 1.90s at ten Dex.
+	expectedAttackSpeed := 2.0 / 1.05
 	diff := e.AttackSpeed - expectedAttackSpeed
 	if diff < -0.01 || diff > 0.01 {
 		t.Errorf("Expected AttackSpeed %f, got %f", expectedAttackSpeed, e.AttackSpeed)

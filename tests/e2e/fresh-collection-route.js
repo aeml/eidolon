@@ -1,7 +1,10 @@
 import { expect } from '@playwright/test';
 import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { openDungeonGuide } from './dungeon-guide.js';
-import { loginAndEnterWorld, moveByGroundClick, projectEntity, readPlayerState,
+import { createFreshCollectionCombat, observeCollectionCombatReceipts, readFreshCollectionCombat,
+    readCollectionTarget, selectCollectionTargetThroughInput,
+    reacquireDisengagedCollectionTarget } from './fresh-collection-combat.js';
+import { loginAndEnterWorld, moveByGroundClick, projectEntity, projectNearestHostile, readPlayerState,
     returnToTown, setAutoLootThroughSettings } from './helpers.js';
 
 const collection = 'chronicle_02_seeds_first_grove';
@@ -11,7 +14,7 @@ const seedsInBag = page => page.evaluate(() => window.game.player.inventory.redu
 
 // Extends the genuinely earned opening. Callbacks use only ordinary canvas
 // movement; no level, item, quest, protection or encounter-waypoint commands.
-export async function earnFreshCollectionAndInspectHandoff(page, credentials, { findTarget, leaveTown, captureReady }) {
+export async function earnFreshCollectionAndInspectHandoff(page, credentials, { findTarget, leaveTown, captureReady, prepare }) {
     const started = Date.now();
     await openIlyra(page);
     await page.getByRole('button', { name: 'Accept Quest', exact: true }).click();
@@ -22,33 +25,65 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
     const previousAutoLoot = await page.evaluate(() => window.game.autoLootEnabled);
     await setAutoLootThroughSettings(page, true);
     await returnToTown(page);
+    if (prepare) {
+        const questBefore = await readChronicleChapter(page, collection);
+        await prepare();
+        expect(await readChronicleChapter(page, collection)).toEqual(questBefore);
+    }
+    const beforeCombat = await createFreshCollectionCombat(page);
+    await observeCollectionCombatReceipts(page);
     await leaveTown();
     let observedTargetDeaths = 0, deaths = 0;
     for (let encounter = 0; encounter < required * 5 + 2 && (await readChronicleChapter(page, collection)).count < required; encounter++) {
-        const target = await findTarget();
+        let target = await findTarget();
         const deadline = Date.now() + 120_000;
+        let nextDiagnostic = 0;
         let defeated = null, respawned = false;
         while (Date.now() < deadline) {
             const player = await readPlayerState(page);
             if (player.state === 'DEAD') {
                 deaths++;
+                console.log('[fresh-collection-death]', JSON.stringify({ deaths,
+                    ...await readFreshCollectionCombat(page, target.id) }));
                 expect(deaths, 'Fresh collection exceeded two ordinary respawns').toBeLessThanOrEqual(2);
                 await returnToTown(page);
+                console.log('[fresh-collection-recovery]', JSON.stringify(await readFreshCollectionCombat(page, target.id)));
                 await leaveTown();
                 respawned = true;
                 break;
             }
-            const enemy = await page.evaluate(id => {
-                const game = window.game;
-                const enemy = game.remotePlayers.get(id);
-                return enemy ? { hp: enemy.health ?? enemy.stats?.hp, state: enemy.state,
-                    x: enemy.position.x, z: enemy.position.z } : null;
-            }, target.id);
+            const enemy = await readCollectionTarget(page, target.id);
             expect(enemy, 'Collection target disappeared without an observed death').not.toBeNull();
             if (enemy.state === 'DEAD' || enemy.hp <= 0) { defeated = enemy; break; }
+            if (Date.now() >= nextDiagnostic) {
+                console.log('[fresh-collection-combat]', JSON.stringify(await readFreshCollectionCombat(page, target.id)));
+                nextDiagnostic = Date.now() + 15_000;
+            }
+            if (await beforeCombat()) continue;
+            // A normal retreat can itself take damage. Let the existing death
+            // handler observe that before issuing another attack.
+            if ((await readPlayerState(page)).state === 'DEAD') continue;
+            const afterDefense = await readCollectionTarget(page, target.id);
+            expect(afterDefense, 'Target remains observable after defensive input').not.toBeNull();
+            if (afterDefense.state === 'DEAD' || afterDefense.hp <= 0) { defeated = afterDefense; break; }
+            const nearby = await reacquireDisengagedCollectionTarget(page, target,
+                () => projectNearestHostile(page, 'Skeleton'));
+            const previousAfterReacquisition = await readCollectionTarget(page, target.id);
+            expect(previousAfterReacquisition, 'Target remains observable across reacquisition').not.toBeNull();
+            if (previousAfterReacquisition.state === 'DEAD' || previousAfterReacquisition.hp <= 0) {
+                defeated = previousAfterReacquisition;
+                break;
+            }
+            target = nearby;
             const point = await projectEntity(page, target.id);
             if (point?.visible) {
-                await page.mouse.click(point.x, point.y);
+                const selected = await selectCollectionTargetThroughInput(page, target, point);
+                const previous = await readCollectionTarget(page, target.id);
+                expect(previous, 'Target remains observable across attack input').not.toBeNull();
+                // A delayed hit can finish the old target during retreat or
+                // reacquisition. Observe that death before following another ID.
+                if (previous.state === 'DEAD' || previous.hp <= 0) { defeated = previous; break; }
+                target = selected;
                 if (await page.evaluate(() => window.game.player.abilityCooldown <= 0)) {
                     await page.mouse.click(point.x, point.y, { button: 'right' });
                 }
