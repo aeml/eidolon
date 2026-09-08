@@ -5,7 +5,75 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 11:45 UTC
+## Current checkpoint — September 8, 12:26 UTC
+
+Previous goal work was progress: four-class collection evidence, CI shard
+configuration and expanded-story pursuit verification changed the next actions.
+The direct regeneration follow-up confirms both coefficients remain0.01, with
+six client and four server tests passing; do not reduce them again. The full
+1.1–1.10 goal remains active and incomplete.
+
+### Release46 failed; a concrete talent-input cause is now reproduced
+
+Fresh GitHub inspection confirms CI34220869395 on86609cd is terminal FAILED.
+Server/client/anonymous browser jobs passed; predeploy character QA failed and
+both deployments/live QA were skipped.45 /83d8f08 remains last verified live.
+The first Verdant attempt stalled on a rank purchase; retry died against Briar
+Matron after real damage reduced16800HP to the last sample962HP, mana7.
+Failure log: `/tmp/eidolon-release46-recovery-ci-failure.log`.
+
+In `/tmp/eidolon-release46-recovery-C5EHfe`,97a53ba adds prepared-Wizard normal
+defensive inputs and scales retreat clearance to enemy melee reach (7.5 for the
+observed large boss, previously fixed six-unit center threshold). All damage,
+resources, survival assertions, walls and deadlines remain.38 focused tests/lint
+passed. No game/server runtime changed.
+
+Actual95930 failed before combat on clean97a53ba. New observation proves13
+outgoing talent requests,12 accepted ranks,8points instead of7, and an explicit
+rate-limit error. The10-per10s server policy is unchanged. Candidate8ac2e95 now
+paces each normal purchase at1100ms, preserving individual authoritative point/
+rank acknowledgement and never retrying rejected purchases.39 tests/lint passed
+(an initial test-only jsdom/Node URL mismatch was corrected). Logs:
+`/tmp/eidolon-release46-wizard-clearance.log`,
+`/tmp/eidolon-release46-wizard-paced.log`.
+
+**35020 ACTIVE**, sole owned browser route, frozen8ac2e95, run ID
+release46-wizard-paced, API18635/Mongo18636/web18637. Poll this exact handle;
+do not edit its worktree until terminal. No new push occurred. Actual prepared
+combat must pass before deciding whether the survival correction is sufficient.
+
+### Four-class collection closes; duel integration needs repair
+
+Fighter52647 PASS5.0m: opening95s, collection200s,13 observed kills,8seeds,0deaths.
+Rogue92922 PASS7.8m: opening32s, collection435s,25kills,8seeds,0deaths.
+Cleric30263 PASS5.7m: opening34s, collection303s,22kills,8seeds,1death.
+All used a38b535 and retain ordinary manual turn-in, consumed quest items,
+saved handoff and the correctly locked level30 entry. Credential scans and
+cleanup passed. Together with Wizard76763 this closes the original-campaign
+comparison, not an uninterrupted first hour or a class-DPS benchmark. The
+8000XP reward/level17-to30 gap and expanded campaign remain open.
+
+81208 on6881053 is terminal FAILED: all four mirror-duel cases timed out before
+combat waiting for the shared instance. Scan0 completed. Source review finds
+missing explicit PvP scene handoff/generation paths; candidate QA now observes
+wire/scene receipts before changing production. Do not claim PvP cadence passed.
+Log `/tmp/eidolon-starter-cadence-duels-gameplay.log`; details in the cadence
+worktree's `docs/plans/2026-09-08-basic-attack-cadence.md`.
+
+57a762a adds three GitHub-hosted anonymous-browser shards and is merged into
+47. Installed Playwright inventory proves an exact76-test union without duplicates
+(28/23/25); all-shards-success remains required. Historical timing redistribution
+suggests a shorter critical path but is NOT a measured CI speedup. No sharded
+CI has run yet. See `/tmp/eidolon-browser-shards-dwDlTC/docs/plans/2026-09-08-browser-smoke-shards.md`.
+
+Expanded31-chapter candidate in `/tmp/eidolon-earned-story-TZuGpp` is clean6c81285
+(runtimecf6875c). Starter pursuit port passed focused race24805/3.696s and full
+Go70191 (root2.264s/database0.015s/game66.308s). No15-chapter catalog, reward,
+quest counts or curve copied over it. Uninterrupted actual story verification
+remains due. Queued48–55 are unchanged; publish sequentially after46/47 gates,
+never push staged root master over the release branch.
+
+## Historical checkpoint — September 8, 11:45 UTC
 
 Previous turn was progress: recovery repeat 63224 reached a normal exit, clearing
 the next publication action. This continuation pushes that correction, completes
