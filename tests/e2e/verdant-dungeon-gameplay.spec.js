@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
 import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
+import { prepareDungeonWizard } from './prepared-dungeon-wizard.js';
 import { prepareEarthChronicleThroughPlay, verifyEarthDungeonChronicleTurnIn } from './chronicle-earth-route.js';
 import {
     collectBrowserFailures, credentialsFromEnvironment, ensureDungeonReadyLevel,
@@ -59,6 +60,7 @@ test(fullRun ? `${playthrough.name} complete ${fallbackRun ? 'fallback' : 'gener
     await loginAndEnterWorld(page, credentials);
     await ensureDungeonReadyLevel(page);
     await prepareFighterSkills(page);
+    await prepareDungeonWizard(page);
     if (chronicleEarth) await prepareEarthChronicleThroughPlay(page);
     if (fallbackRun) {
         await returnToTown(page);

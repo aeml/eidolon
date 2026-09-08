@@ -29,7 +29,7 @@ describe('version presentation', () => {
         expect(indexHtml.match(/data-version="1\.0\.45"/g)).toHaveLength(1);
         expect(indexHtml.indexOf('data-version="1.0.45"')).toBeLessThan(indexHtml.indexOf('data-version="1.0.44"'));
         for (const heading of ['Read an effect, keep your view', 'More effects, not smaller text', 'Controls stay within reach']) expect(indexHtml).toContain(heading);
-        for (const heading of ['Slower passive recovery', 'Small amounts still count', 'Independent overnight checks']) expect(indexHtml).toContain(heading);
+        for (const heading of ['Slower passive recovery', 'Small amounts still count', 'Starting-ability runes', 'Independent overnight checks']) expect(indexHtml).toContain(heading);
         expect(indexHtml).toContain('0.01 points per second');
         expect(indexHtml).toContain('actual formulas used 0.5');
     });
