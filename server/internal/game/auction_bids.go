@@ -199,6 +199,11 @@ func (ts *TradingSystem) CompleteAuctionBid(op database.AuctionBidOperation) err
 		saved = &original
 		if op.Kind == database.AuctionOperationSellerPayout {
 			saved.SellerClaimed, saved.LastBidOperationID = true, op.ID
+		} else if op.Kind == database.AuctionOperationItemClaim {
+			saved.ItemClaimed, saved.LastBidOperationID = true, op.ID
+			if op.ClaimStatus != "SOLD" {
+				saved.SellerClaimed = true
+			}
 		} else if saved.LastBidOperationID != op.ID {
 			saved.Bid, saved.BidderID, saved.BidderName, saved.EndTime, saved.LastBidOperationID = op.Amount, op.PlayerID, op.CharacterName, op.EndTime, op.ID
 			if op.PreviousBidderID != "" && op.PreviousBid > 0 {
@@ -218,6 +223,9 @@ func (ts *TradingSystem) CompleteAuctionBid(op database.AuctionBidOperation) err
 	}
 	ts.Auctions[op.AuctionID] = saved
 	delete(ts.pendingBids, op.AuctionID)
+	if op.Kind == database.AuctionOperationItemClaim && op.ClaimStatus != "SOLD" && ts.economy != nil {
+		ts.economy.RecordSink("trading_house_deposit", saved.Deposit)
+	}
 	if op.Kind == database.AuctionOperationSellerPayout && ts.economy != nil {
 		ts.economy.RecordSink("trading_house_fee", op.Fee)
 	}
@@ -225,7 +233,8 @@ func (ts *TradingSystem) CompleteAuctionBid(op database.AuctionBidOperation) err
 	return nil
 }
 
-// Only call when a missing debit receipt and insufficient funds are proven.
+// Only call when a missing receipt and unapplied debit/delivery are proven
+// (insufficient funds or all-or-nothing storage capacity rejection).
 func (ts *TradingSystem) AbortUnfundedAuctionBid(op database.AuctionBidOperation) error {
 	if !ts.ownsBidOperation(op) {
 		return ErrAuctionBidPending

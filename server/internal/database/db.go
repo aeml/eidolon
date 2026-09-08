@@ -61,35 +61,36 @@ type Auction struct {
 }
 
 type Character struct {
-	GoldCreditReceipts map[string]int      `bson:"gold_credit_receipts,omitempty"`
-	LastSaveID         string              `bson:"last_save_id,omitempty"`
-	Resources          *CharacterResources `bson:"resources,omitempty"`
-	Name               string              `bson:"name"`
-	Class              string              `bson:"class"` // Fighter, Wizard, etc.
-	Level              int                 `bson:"level"`
-	XP                 int                 `bson:"xp"`
-	ProgressionVersion int                 `bson:"progression_version"`
-	ResonanceLevel     int                 `bson:"resonance_level,omitempty"`
-	ResonanceXP        int                 `bson:"resonance_xp,omitempty"`
-	ResonancePoints    int                 `bson:"resonance_points,omitempty"`
-	ResonanceRanks     map[string]int      `bson:"resonance_ranks,omitempty"`
-	Gold               int                 `bson:"gold"`
-	X                  float64             `bson:"x"`
-	Y                  float64             `bson:"y"`
-	Z                  float64             `bson:"z"`
-	InstanceID         string              `bson:"instance_id"`
-	LastLogout         time.Time           `bson:"last_logout"`
-	Stats              Stats               `bson:"stats"`
-	Inventory          []Item              `bson:"inventory"`
-	Stash              []Item              `bson:"stash"`
-	Buyback            []Item              `bson:"buyback"`
-	Equipment          map[string]Item     `bson:"equipment"`
-	Quests             []Quest             `bson:"quests"`
-	LastDailyQuest     time.Time           `bson:"last_daily_quest"`
-	SkillPoints        int                 `bson:"skill_points"`
-	SelectedBranch     string              `bson:"selected_branch"`
-	UnlockedSkills     []string            `bson:"unlocked_skills"`
-	SkillRunes         map[string]string   `bson:"skill_runes,omitempty"` // skill name -> rune ID
+	ItemDeliveryReceipts map[string]string   `bson:"item_delivery_receipts,omitempty"`
+	GoldCreditReceipts   map[string]int      `bson:"gold_credit_receipts,omitempty"`
+	LastSaveID           string              `bson:"last_save_id,omitempty"`
+	Resources            *CharacterResources `bson:"resources,omitempty"`
+	Name                 string              `bson:"name"`
+	Class                string              `bson:"class"` // Fighter, Wizard, etc.
+	Level                int                 `bson:"level"`
+	XP                   int                 `bson:"xp"`
+	ProgressionVersion   int                 `bson:"progression_version"`
+	ResonanceLevel       int                 `bson:"resonance_level,omitempty"`
+	ResonanceXP          int                 `bson:"resonance_xp,omitempty"`
+	ResonancePoints      int                 `bson:"resonance_points,omitempty"`
+	ResonanceRanks       map[string]int      `bson:"resonance_ranks,omitempty"`
+	Gold                 int                 `bson:"gold"`
+	X                    float64             `bson:"x"`
+	Y                    float64             `bson:"y"`
+	Z                    float64             `bson:"z"`
+	InstanceID           string              `bson:"instance_id"`
+	LastLogout           time.Time           `bson:"last_logout"`
+	Stats                Stats               `bson:"stats"`
+	Inventory            []Item              `bson:"inventory"`
+	Stash                []Item              `bson:"stash"`
+	Buyback              []Item              `bson:"buyback"`
+	Equipment            map[string]Item     `bson:"equipment"`
+	Quests               []Quest             `bson:"quests"`
+	LastDailyQuest       time.Time           `bson:"last_daily_quest"`
+	SkillPoints          int                 `bson:"skill_points"`
+	SelectedBranch       string              `bson:"selected_branch"`
+	UnlockedSkills       []string            `bson:"unlocked_skills"`
+	SkillRunes           map[string]string   `bson:"skill_runes,omitempty"` // skill name -> rune ID
 	// Passive talents
 	UnlockedTalents []string       `bson:"unlocked_talents"` // legacy: treated as rank 1 per id
 	TalentRanks     map[string]int `bson:"talent_ranks,omitempty"`

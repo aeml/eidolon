@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"time"
 
@@ -13,6 +14,8 @@ import (
 // One durable active decision per auction. The unique auction index reserves
 // the auction independently of an ambiguous insert reply; retry the SAME ID.
 type AuctionBidOperation struct {
+	ItemPayload        string    `bson:"item_payload,omitempty"`
+	ClaimStatus        string    `bson:"claim_status,omitempty"`
 	Kind               string    `bson:"kind,omitempty"`
 	Fee                int       `bson:"fee,omitempty"`
 	ID                 string    `bson:"id"`
@@ -28,19 +31,34 @@ type AuctionBidOperation struct {
 }
 
 const AuctionOperationSellerPayout = "seller_payout"
+const AuctionOperationItemClaim = "item_claim"
+
+func ValidAuctionItemPayload(payload string) bool {
+	if len(payload) == 0 || len(payload) > 65536 {
+		return false
+	}
+	var item struct {
+		ID              string
+		Stack, MaxStack int
+	}
+	return json.Unmarshal([]byte(payload), &item) == nil && item.ID != "" && item.Stack > 0 && item.MaxStack >= item.Stack
+}
 
 func (op AuctionBidOperation) Valid() bool {
 	base := op.ID != "" && op.AuctionID != "" && op.CharacterName != "" &&
-		op.PlayerID == "player-"+op.CharacterName && op.Amount > 0 && op.PreviousBid >= 0 &&
+		op.PlayerID == "player-"+op.CharacterName && op.PreviousBid >= 0 &&
 		!op.EndTime.IsZero()
 	if !base {
 		return false
 	}
 	switch op.Kind {
 	case "": // Original durable bid records omit the kind field.
-		return op.Fee == 0 && (op.PreviousBidderID == "" || op.PreviousBidderName != "" && op.RefundID != "")
+		return op.Amount > 0 && op.ItemPayload == "" && op.ClaimStatus == "" && op.Fee == 0 && (op.PreviousBidderID == "" || op.PreviousBidderName != "" && op.RefundID != "")
 	case AuctionOperationSellerPayout:
-		return op.Fee >= 0 && op.PreviousBid == 0 && op.PreviousBidderID == "" && op.PreviousBidderName == "" && op.RefundID == ""
+		return op.Amount > 0 && op.ItemPayload == "" && op.ClaimStatus == "" && op.Fee >= 0 && op.PreviousBid == 0 && op.PreviousBidderID == "" && op.PreviousBidderName == "" && op.RefundID == ""
+	case AuctionOperationItemClaim:
+		return op.Amount == 0 && op.Fee == 0 && op.PreviousBid == 0 && op.PreviousBidderID == "" && op.PreviousBidderName == "" && op.RefundID == "" &&
+			(op.ClaimStatus == "SOLD" || op.ClaimStatus == "EXPIRED" || op.ClaimStatus == "CANCELLED") && ValidAuctionItemPayload(op.ItemPayload)
 	default:
 		return false
 	}
@@ -122,6 +140,16 @@ func (db *DB) CommitAuctionBidOperation(op AuctionBidOperation) (*Auction, error
 		filter = bson.M{"id": op.AuctionID, "status": "SOLD", "seller_id": op.PlayerID,
 			"seller_claimed": bson.M{"$ne": true}, "last_bid_operation_id": bson.M{"$ne": op.ID}}
 		set = bson.M{"seller_claimed": true, "last_bid_operation_id": bson.M{"$literal": op.ID}}
+	} else if op.Kind == AuctionOperationItemClaim {
+		filter = bson.M{"id": op.AuctionID, "status": op.ClaimStatus,
+			"item_claimed": bson.M{"$ne": true}, "last_bid_operation_id": bson.M{"$ne": op.ID}}
+		set = bson.M{"item_claimed": true, "last_bid_operation_id": bson.M{"$literal": op.ID}}
+		if op.ClaimStatus == "SOLD" {
+			filter["buyer_id"] = op.PlayerID
+		} else {
+			filter["seller_id"] = op.PlayerID
+			set["seller_claimed"] = true
+		}
 	} else if op.PreviousBidderID != "" && op.PreviousBid > 0 {
 		refund := AuctionRefund{ID: op.RefundID, PlayerID: op.PreviousBidderID,
 			CharacterName: op.PreviousBidderName, Amount: op.PreviousBid}

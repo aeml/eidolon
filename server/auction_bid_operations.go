@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"eidolon-server/internal/database"
+	"eidolon-server/internal/game"
 )
 
 // Caller holds the actor's account work lock, including ordinary bid handlers.
@@ -20,11 +21,13 @@ func completePendingAuctionBidLocked(op database.AuctionBidOperation) error {
 	if op.Kind == database.AuctionOperationSellerPayout {
 		err = deliverAuctionRefundLocked(database.AuctionRefund{ID: "seller-payout:" + op.ID,
 			PlayerID: op.PlayerID, CharacterName: op.CharacterName, Amount: op.Amount})
+	} else if op.Kind == database.AuctionOperationItemClaim {
+		err = deliverAuctionItemLocked(op)
 	} else {
 		err = debitAuctionBidLocked(op)
 	}
 	if err != nil {
-		if errors.Is(err, database.ErrInsufficientGold) {
+		if errors.Is(err, database.ErrInsufficientGold) || errors.Is(err, game.ErrAuctionStorageFull) {
 			if abortErr := world.Trading.AbortUnfundedAuctionBid(op); abortErr != nil {
 				return abortErr
 			}
@@ -72,7 +75,7 @@ func recoverAccountAuctionBidsLocked(username string) error {
 		return nil
 	}
 	for _, op := range world.Trading.PendingBidOperations("player-" + username) {
-		if err := completePendingAuctionBidLocked(op); err != nil && !errors.Is(err, database.ErrInsufficientGold) {
+		if err := completePendingAuctionBidLocked(op); err != nil && !errors.Is(err, database.ErrInsufficientGold) && !errors.Is(err, game.ErrAuctionStorageFull) {
 			return err
 		}
 	}

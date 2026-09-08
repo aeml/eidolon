@@ -205,23 +205,24 @@ func characterSnapshot(username string, entity *game.Entity, savedAt time.Time) 
 
 	// Update DB character
 	char := &database.Character{
-		GoldCreditReceipts: cloneGoldCreditReceipts(entity.GoldCreditReceipts),
-		Resources:          resourceSnapshot(entity),
-		Name:               username,
-		Class:              entity.SubType,
-		Level:              entity.Level,
-		XP:                 entity.Experience,
-		ProgressionVersion: game.CurrentProgressionVersion,
-		ResonanceLevel:     entity.ResonanceLevel,
-		ResonanceXP:        entity.ResonanceXP,
-		ResonancePoints:    entity.ResonancePoints,
-		ResonanceRanks:     resonanceRanks,
-		Gold:               entity.Gold,
-		X:                  entity.X,
-		Y:                  entity.Y,
-		Z:                  entity.Z,
-		InstanceID:         entity.InstanceID,
-		LastLogout:         savedAt,
+		GoldCreditReceipts:   cloneGoldCreditReceipts(entity.GoldCreditReceipts),
+		ItemDeliveryReceipts: cloneItemDeliveryReceipts(entity.ItemDeliveryReceipts),
+		Resources:            resourceSnapshot(entity),
+		Name:                 username,
+		Class:                entity.SubType,
+		Level:                entity.Level,
+		XP:                   entity.Experience,
+		ProgressionVersion:   game.CurrentProgressionVersion,
+		ResonanceLevel:       entity.ResonanceLevel,
+		ResonanceXP:          entity.ResonanceXP,
+		ResonancePoints:      entity.ResonancePoints,
+		ResonanceRanks:       resonanceRanks,
+		Gold:                 entity.Gold,
+		X:                    entity.X,
+		Y:                    entity.Y,
+		Z:                    entity.Z,
+		InstanceID:           entity.InstanceID,
+		LastLogout:           savedAt,
 		Stats: database.Stats{
 			Vitality:     entity.BaseStats.Vitality,
 			Strength:     entity.BaseStats.Strength,
@@ -319,6 +320,14 @@ func databaseItem(item game.Item) database.Item {
 }
 
 func gameItemFromDatabase(item database.Item) game.Item {
+	converted := gameItemFromDatabaseExact(item)
+	game.NormalizeItemStatScale(&converted)
+	return converted
+}
+
+// Delivery recovery must not rescale unrelated saved items during an offline
+// full-character commit. Ordinary hydration retains its existing normalization.
+func gameItemFromDatabaseExact(item database.Item) game.Item {
 	converted := game.Item{
 		ID:               item.ID,
 		Name:             item.Name,
@@ -342,6 +351,5 @@ func gameItemFromDatabase(item database.Item) game.Item {
 		StatScaleVersion: item.StatScaleVersion,
 		ForgeBasis:       item.ForgeBasis.Clone(),
 	}
-	game.NormalizeItemStatScale(&converted)
 	return converted
 }

@@ -542,6 +542,9 @@ func (ts *TradingSystem) CollectAuction(auctionID string, player *Entity) (inter
 
 			return payout, nil
 		} else if (auction.Status == AuctionExpired || auction.Status == AuctionCancelled) && !auction.ItemClaimed {
+			if ts.db != nil {
+				return nil, fmt.Errorf("persistent item returns require a journaled account operation")
+			}
 			if ts.economy != nil {
 				ts.economy.RecordSink("trading_house_deposit", auction.Deposit)
 			}
@@ -561,6 +564,9 @@ func (ts *TradingSystem) CollectAuction(auctionID string, player *Entity) (inter
 
 	// Case 2: Buyer collecting Item (Won via Bid)
 	if auction.Status == AuctionSold && auction.BuyerID == player.ID && !auction.ItemClaimed {
+		if ts.db != nil {
+			return nil, fmt.Errorf("persistent item claims require a journaled account operation")
+		}
 		auction.ItemClaimed = true
 		if err := ts.persistOrDeleteClaimedAuction(auctionID, auction); err != nil {
 			auction.ItemClaimed = false

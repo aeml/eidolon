@@ -9,6 +9,9 @@ import (
 )
 
 func cloneGoldCreditReceipts(receipts map[string]int) map[string]int { return maps.Clone(receipts) }
+func cloneItemDeliveryReceipts(receipts map[string]string) map[string]string {
+	return maps.Clone(receipts)
+}
 
 // Auction outbox owns retry. A returned error retains its intent; a committed
 // receipt makes repeated delivery harmless even after expiry or process restart.

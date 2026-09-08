@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	"eidolon-server/internal/game"
@@ -245,7 +246,24 @@ func handleMsgTradingCollect(c *Client, msg Message) {
 			}
 			result = op.Amount
 		} else {
-			result, err = world.Trading.CollectAuction(payload.AuctionID, player)
+			claim, prepareErr := world.Trading.PrepareAuctionItemClaim(payload.AuctionID, player)
+			if prepareErr != nil {
+				c.sendError(prepareErr.Error())
+				return
+			}
+			if claim == nil {
+				c.sendError("nothing to collect")
+				return
+			}
+			if err := completePendingAuctionBidLocked(*claim); err != nil {
+				if errors.Is(err, game.ErrAuctionStorageFull) {
+					c.sendError(err.Error())
+				} else {
+					c.sendError("Your auction item is awaiting recovery. Please try again shortly.")
+				}
+				return
+			}
+			result = true // Already durably delivered; never run the legacy grant below.
 		}
 	} else {
 		result, err = world.Trading.CollectAuction(payload.AuctionID, player)
@@ -257,6 +275,8 @@ func handleMsgTradingCollect(c *Client, msg Message) {
 
 	if gold, ok := result.(int); ok {
 		c.sendError(fmt.Sprintf("Collected %d gold", gold))
+	} else if delivered, ok := result.(bool); ok && delivered {
+		c.sendError("Item collected into your inventory or stash")
 	} else if item, ok := result.(game.Item); ok {
 		player.Mu.Lock()
 		remaining := player.AddItemToInventory(item)
@@ -292,7 +312,16 @@ func handleMsgTradingCollect(c *Client, msg Message) {
 		}
 	}
 
-	invPayload, _ := json.Marshal(player.Inventory)
+	collectedSnapshot := world.GetEntityCopy(c.playerID)
+	if collectedSnapshot == nil {
+		return
+	}
+	if delivered, ok := result.(bool); ok && delivered {
+		stashPayload, _ := json.Marshal(collectedSnapshot.Stash)
+		stashMessage, _ := json.Marshal(Message{Type: MsgStash, Payload: stashPayload})
+		c.sendSafe(stashMessage)
+	}
+	invPayload, _ := json.Marshal(collectedSnapshot.Inventory)
 	resp := Message{
 		Type:    MsgInventory,
 		Payload: invPayload,
