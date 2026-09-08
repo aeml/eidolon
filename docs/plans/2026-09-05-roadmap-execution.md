@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 23:39 UTC
+## Current checkpoint — September 8, 23:43 UTC
 
 PROGRESS: **49/0c6d0cc is fully verified live**. CI34284099182 completed SUCCESS,
 including predeploy full gameplay, deployment and final live four-class/remote
@@ -45,8 +45,11 @@ existing prepare:client, corrected52814 PASS1/7.8s across High/local Low/remote
 statuses, aura screenshot inspected. Phone69181 PASS3/8.0s did not catch ugly
 vertical wrapping; screenshot inspection led to full-width named timer layout.
 Corrected47419 PASS6/15.1s includes existing compact status screens, inspected
-390x844/568x320 images. Current development has final UI/doc edits to commit.
-Final full Go12580 and lint26098 remain active; retain and observe these handles.
+390x844/568x320 images. Final functional development commit **2d19834** is clean.
+Final full Go12580 PASS(root14.545s/game238.808s; other unchanged packages cached),
+lint26098 PASS, targeted client24492 PASS3suites/18tests1.397s. All owned local
+check handles closed. Only50's remote CI remains active; do not restart it or
+push the next release while it is running. Root ledger commits remain local.
 
 Still required for Well Rested: adapt prior exact town-resource fixtures to the
 new intentional recovery, actual safe-zone boundary travel and live reconnect
