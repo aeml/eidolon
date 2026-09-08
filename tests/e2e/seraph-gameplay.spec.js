@@ -115,11 +115,32 @@ test('Seraph training persists, changes actual smites and lifetime, and cleans u
         await page.waitForTimeout(1100);
         // Leave the entrance facade before fighting so the model and impacts
         // can actually be inspected, not merely counted behind architecture.
-        await moveByGroundClick(page, 0, 20);
-        await moveByGroundClick(page, 0, 20);
+        // moveByGroundClick returns after initial movement, not arrival at the
+        // clicked point. Prove the exit coordinate instead of counting clicks.
+        for (let step = 0; step < 20; step++) {
+            const z = await page.evaluate(() => window.game.player.position.z);
+            if (z >= 240) break;
+            await moveByGroundClick(page, 0, 10, { minimumDistance: 5, timeout: 3_000 });
+        }
+        expect(await page.evaluate(() => window.game.player.position.z),
+            'Seraph combat must leave the Verdant entrance facade').toBeGreaterThanOrEqual(240);
         let target = await projectNearestHostile(page, 'InfernoTitan');
         for (let step = 0; !target && step < 12; step++) {
-            await moveByGroundClick(page, 0, 20);
+            // The population is randomized. Navigate toward an observed live
+            // Titan, then require ordinary rendered acquisition; do not assume
+            // twelve short movements along +Z will bring one onto the canvas.
+            const offset = await page.evaluate(() => {
+                const game = window.game, player = game.player;
+                const nearest = [...game.remotePlayers.values()]
+                    .filter(e => (e.subType || e.constructor?.name) === 'InfernoTitan' &&
+                        e.state !== 'DEAD' && (e.health ?? e.stats?.hp ?? 0) > 0)
+                    .sort((a, b) => a.position.distanceTo(player.position)-b.position.distanceTo(player.position))[0];
+                if (!nearest) return { x: 0, z: 10 };
+                const dx = nearest.position.x-player.position.x, dz = nearest.position.z-player.position.z;
+                const scale = Math.min(10, Math.hypot(dx, dz))/Math.max(1, Math.hypot(dx, dz));
+                return { x: dx*scale, z: dz*scale };
+            });
+            await moveByGroundClick(page, offset.x, offset.z);
             target = await projectNearestHostile(page, 'InfernoTitan');
         }
         if (!target) {
