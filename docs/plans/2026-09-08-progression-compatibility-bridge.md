@@ -67,4 +67,39 @@ disposable Mongo, log in and join through WebSocket, wait for real disconnect
 snapshots, then cycle1→2→1→2→2 across four classes and five save cases. It also
 checks zero-reward promises and unknown future discovery records. Compile-only
 run83002 passes with the integration intentionally skipped; **no actual session
-success is claimed**. Work paused for the user's new regeneration-rate fix.
+success is claimed** at that draft checkpoint. Work paused for the user's new
+regeneration-rate fix before the actual runs below.
+
+## Actual login, save, rollback and reactivation closure
+
+Initial real session35318 **PASS /57.00s /test process58.150s** with source38d4a9a
+and candidate762a46b (the31-chapter curve2 candidate now includes the requested
+0.01 passive regeneration). Twenty characters cover four classes and five
+saved-progress cases: pre-versioned fractional progress, version1 pending levels,
+version2 progress, an old capped-bar sentinel, and99→100 genuine overflow.
+Five freshly started server phases1→2→1→2→2 use ordinary WebSocket login/join,
+disconnect and actual Mongo snapshot writes, not in-memory resume/conversion.
+All100 cycles preserve the expected level/fraction, base stats, zero unspent
+skill points, gold, Resonance, accepted zero-reward promises, and unknown future
+diary/hunt records. Discovery masks and optional flags survive every cycle.
+
+Expanded source41d09ad adds equipped, bag, stash and buyback gear including its
+earned stats/value/potency and retained Forge basis. Real session23737 **PASS /
+38.60s /test process39.634s**, another100 cycles with exact nonempty item and
+equipped-map comparisons. Runtime binaries were reused unchanged from the first
+run; the new source is test-only. Test processes used the race detector; these
+standalone server binaries were ordinary builds, with the separate full server
+race evidence documented above. No all-class earned gameplay is inferred.
+
+The two owned disposable Mongo containers and their fixture data were removed
+after successful completion. No production data or unrelated services were
+changed. Credentials use independent random account identities and are not
+logged. Binaries remain in `/tmp/eidolon-compat-live-E2VoZe/`; logs are
+`/tmp/eidolon-compat-actual-sessions.log` and `/tmp/eidolon-compat-assets-sessions.log`.
+Each log lists the retained per-phase server evidence directory.
+
+This closes the tested actual-session gate, not deployment or full campaign
+pacing. When packaging the bridge, inherit the then-current release's0.01
+regeneration and other fixes; its older base is not a whole-tree replacement.
+Version1 must still ship before activating version2, and both need normal
+sequential CI/live gates and explicit versioned patch notes.
