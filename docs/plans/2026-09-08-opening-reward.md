@@ -30,8 +30,22 @@ packages pass. Logs `/tmp/eidolon-opening-reward-{before,after,full-server}.log`
 All handles are closed. Source is gofmt/diff clean. QA-only release ancestry is
 merged at **c46a43f** without changing this runtime.
 
-Still required: earned fresh opening/collection and actual displayed quote/
-receipt/reconnect checks, review of the modest later progress difference,
+Earned Wizard opening plus collection **89727 PASS / one / 1.8m** on clean
+**571bf86**, with zero deaths and no level/gear/quest grants. The opening earns
+three actual quest kills, shows **100 gold · 100 XP** before acceptance and
+turn-in, credits exactly those amounts, presents the receipt and preserves it
+after fresh login. Opening finishes at **level 2 / 30s / two normal retreats**.
+Collection then earns eight fragments after **12 observed target deaths**
+(area attacks can defeat additional enemies), reaches level 5 through combat,
+and manually receives the still-unchanged 8,000 XP/100 gold, reaching level 16.
+Its actual Guide still correctly locks level-30 entry. Collection takes 76s.
+Five earned gear pieces have 170 total vendor value **not realized sale income**;
+gold moves 135 → 471 through combat. The ready-conversation screenshot is
+inspected. Log `/tmp/eidolon-opening-reward-earned-collection.log`; credential
+scan finds zero sanitizations and disposable cleanup passes. This demonstrates
+the remaining large collection jump, not approval of overall pacing.
+
+Still required: broader class/pacing review of the modest later progress difference,
 integration with the expansion's reward split, release packaging/patch notes
 and sequential CI/live verification. Do not advertise this as live or as the
 complete first-hour/campaign balance pass.
