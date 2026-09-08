@@ -84,10 +84,13 @@ test('a later field record survives refresh and remains reachable by touch in ei
         await revealChronicleEndingByTouch(page, context, records.last());
         expect(await chronicleEndingReadable(records.last())).toBe(true);
         await journal.evaluate(el => { el.scrollTop = el.scrollHeight; });
-        expect((await chronicleReadingMetrics(records.last())).delta).toBeLessThan(0);
-        expect(await chronicleEndingReadable(records.last())).toBe(false);
-        await revealChronicleEndingByTouch(page, context, records.last());
-        expect(await chronicleEndingReadable(records.last())).toBe(true);
+        // The earlier record has a complete later diary and reward rows below
+        // it, so its ending is genuinely outside even the tall portrait viewport.
+        expect((await chronicleReadingMetrics(records.first())).line.bottom)
+            .toBeLessThan((await chronicleReadingMetrics(records.first())).body.top);
+        expect(await chronicleEndingReadable(records.first())).toBe(false);
+        await revealChronicleEndingByTouch(page, context, records.first());
+        expect(await chronicleEndingReadable(records.first())).toBe(true);
         await page.screenshot({ path: testInfo.outputPath(`recovered-ending-${viewport.width}.png`) });
     }
     await page.locator('#btn-close-journal').tap();
