@@ -41,10 +41,10 @@ interaction; phones no longer require hover. No production source changed.
 Final40025 lint/diff and commit PASS; no full-client rerun needed for this purely
 E2E helper extraction, but actual touch verification remains required.
 
-A fresh isolated nameplate-world run has just started on frozen f00814a:
+**86108 ACTIVE** — fresh isolated nameplate-world on frozen f00814a:
 runID nameplate-town-touch, API18625/Mongo18626/web18627; log
-`/tmp/eidolon-nameplate-world-touch.log`. It is the only owned browser; poll the
-handle recorded with this launch and do not modify that tree or start another
+`/tmp/eidolon-nameplate-world-touch.log`. It is the only owned browser; poll
+86108 and do not modify that tree or start another
 owned browser until terminal. All previous local handles are closed.
 The nameplate candidate is still unversioned on staged52; full-world touch closure
 and proper release packaging/CI inclusion remain due, not a1.2 completion claim.
