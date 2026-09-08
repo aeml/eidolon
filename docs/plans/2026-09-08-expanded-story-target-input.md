@@ -58,3 +58,19 @@ rule: retain active attack/chase, but reacquire a living distant target when no
 attack is selected. Normal bounded travel shares the existing deadline. Four
 new direct helper tests preserve near/selected/dead observations;72focused tests
 PASS1.959s with full lint/diff (18213). Actual successor remains to run.
+
+Fourth actual66825 on5959689 CLOSED FAILED25.1m, QA_SCRIPT_EXIT=1. Opening68s
+and diary118s passed uninterrupted with zero deaths; Watch reached21/40 kills,
+still zero deaths, before the unchanged120s credit watchdog failed. Last player
+level5/75HP at x20.68/z328.59; original Skeleton-83 level6/15HP was103.62units
+away, hovered Skeleton-28.314retreats/two crowd jumps/12accepted Fireballs. At
+20credits, three immediate Skeletons were level1, below the hunt's level3 minimum.
+Log `/tmp/eidolon-story-opening-reacquire-gameplay.log`; credential scan0 and
+independent exact-container/image absence confirmed after the wrapper finished.
+
+This longer run proves the input changes improved progress but not that the
+whole hunt is dependable or enjoyable. No success claim, lowered quest count,
+regeneration change, replenishment or extended watchdog is justified by this run.
+Next diagnosis must separate fighting immediate non-credit threats, excessive
+retreat/leash resets and normal travel time. Preserve this evidence before any
+new browser run overwrites test-results. The sole owned browser slot is now free.
