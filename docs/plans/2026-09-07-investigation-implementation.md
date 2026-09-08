@@ -48,6 +48,43 @@ pass **3.144s**. All these handles are closed; the expanded graph backend passes
 
 ### World integration checkpoint
 
+Expanded touch routes now exist for both investigations in every realm. They
+reuse the guarded returning-character fixture, but use actual phone build/target/
+Attack/Skill/hotbar controls, joystick travel and USE; no desktop key or ground-
+click fallback grants access. They read each earned record in both orientations,
+manually claim Ilyra's authored retrospective reply/rewards and reopen saved
+records. These are opt-in `phone-<realm>-investigations` isolated routes, not
+proof of fresh leveling or physical-device performance.
+
+Earth's first attempt **83848 FAIL / 31.7s** exposes a no-op joystick cleanup
+error after actual diary/root credit: TouchEnd was sent without TouchStart.
+QA-only **2b5f073** fixes that condition. The next attempt **47303 FAIL / 39.8s**
+earns both quests and their field-reading steps, but saved rereading encounters
+a real journal rebuild replacing the record node during interaction. Both
+failure logs (`/tmp/eidolon-investigations-phone-earth*.log`) remain recorded;
+credential scanning/cleanup pass. Neither failed run is counted as a pass.
+
+Runtime **4d1ad74** retains the actual earned record controls/text nodes across
+journal updates. Only currently valid evidence is reused; removed evidence and
+cleared sessions cannot retain stale records. Unit identity regressions fail
+**two / seven pass / 0.661s** before; journal/objective checks pass **40 / 0.824s**
+after. Actual landscape browser **33218 PASS / one / 4.5s** (3.0s test) preserves
+node identity, reading position and a real touch held across an intervening
+journal rebuild; releasing it opens the intended record. Full client **57553
+PASS / 219 suites / 3,286 tests / 87.725s**, lint/diff pass. No Go runtime change.
+Logs `/tmp/eidolon-investigations-record-{identity-before,identity-after,touch-refresh,full-client}.log`.
+
+Earth's corrected phone route **25892 PASS / one / 42.7s** (41.4s test) on clean
+4d1ad74 earns both chapters/all four records, deliberate replies/rewards, masks
+1/7 after reconnect and full saved text. This particular run engages no nearby
+hostiles and is not new combat-difficulty evidence. All eight earned images are
+preserved in `/tmp/eidolon-phone-earth-earned-Uw4xQ4/`; marked stone in both
+orientations and new growth portrait are inspected. Scan/cleanup pass; log
+`/tmp/eidolon-investigations-phone-earth-stable-records.log`. Phone Water/Fire/Air
+remain unverified. The images also expose cramped endgame repeatable-ladder
+columns/raw joined enemy labels; functional lore success does not close that
+remaining phone presentation work. All owned runs above are closed.
+
 The combined branch merges the verified portal-pointer QA ancestry at **144aac1**
 without changing investigation runtime. Latest phone route **49124 SUCCESS /
 one test / 50.3s** (test 48.9s): three ordinary touch-combat kills, explicit
