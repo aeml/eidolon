@@ -5,13 +5,13 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 07:15 UTC
+## Current checkpoint — September 8, 07:20 UTC
 
 Previous goal turn was progress: starting-ability rune authorization was corrected
 and full checks launched. This continuation closes those checks, records actual
 second-boss failure, improves the prepared build using existing efficiency talents,
 and audits the distinct fresh/prepared stat profiles. Full1.1–1.10 remains active
-and incomplete.45 is not deployed; no new push or release-queue integration yet.
+and incomplete. Corrected45 is now pushed; final deployment gates are still due.
 
 **c812eee full checks passed:** client28151 completed216 suites/3193 tests/
 187.655s before launching its browser. Server57721 completed successfully:
@@ -38,18 +38,35 @@ Client59067 passed236 tests/two suites/2.554s; final NaN guard rerun88089 passed
 
 Source diff c812eee→d176b62 has only QA helpers/tests and documentation; production
 server source is byte-identical to the passing full race build. The expanded Go
-test passed separately. The correct latest full client/browser results remain due:
+test passed separately. The latest full client/browser results now close successfully:
 
-- **88089 ACTIVE:** only owned browser, corrected Verdant run, run ID
+- **88089 PASS**, closed: corrected Verdant run, run ID
   release45-efficient, API/Mongo/web18465/18466/18467, log
-  `/tmp/eidolon-release45-efficient-browser.log`. Ordinary training is acknowledged
-  and initial mobs defeated; no final result yet.
-- **46538 ACTIVE:** full client suite on the same frozen d176b62, log
+  `/tmp/eidolon-release45-efficient-browser.log`. One test4.6m, reported run4.7m,
+  seed1356581529728746808. Fifteen ordinary talent purchases and unbranched
+  Empowered selection acknowledged. Rootbound Warden and Briar Matron defeated,
+  later generated enemies spawned and died, both boss rooms cleared, gold
+  increased and normal exit succeeded. Last Matron sample364HP, player1015/2575HP
+  and336mana before confirmed death. Scan/owned cleanup passed; container absence
+  independently checked. No new grants, reconnects or relaxed encounter gates.
+- **46538 PASS**, closed:217 client suites/3212 tests/206.821s on d176b62, log
   `/tmp/eidolon-release45-efficient-client.log`.
 
-Do not edit/restart this worktree or start another owned browser until terminal.
+All owned local handles are terminal; no owned browser remains.
 Do not restore0.5 regeneration, alter deadlines, grant resources or call the fresh
 campaign balanced because a prepared fixture passes. No potion/rest system added.
+
+**45 correction published to source control, not yet verified live:** candidate
+documentation closure64df5fbd4fb7a1b66f1f9e5ccf5dc6a20911898e was fast-forwarded
+into release/45-with-regen-and-soak-isolation in
+`/tmp/eidolon-release45-regen-tphNrl`. Explicit push83828 of that SHA→origin/master
+succeeded; remote ref independently matches64df5fb. Root master was not pushed.
+**CI34198772605 ACTIVE** for that exact SHA, verified07:20: client/server jobs
+running. All eight pipeline jobs plus fresh independent public identity checks
+remain required before declaring45 live or pushing46. Fresh public manifest and
+healthy backend still match44/847d454a94a7424ab303f6339c875ab170bff36e.
+Original failed45 CI34192659636 remains preserved evidence. Later46–52 refs are
+unchanged and still await sequential inheritance of this fix.
 
 **Integration preview only:** `git merge-tree --write-tree` succeeds without
 conflicts for d176b62 into each staged46–52 and root. No branch refs were moved.
