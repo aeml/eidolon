@@ -1,5 +1,56 @@
 # Resource persistence implementation candidate — not release-ready
 
+## Detached auction responses and Tripwire fixture — September 8, 19:29 UTC
+
+Search, seller and buyer auction lists now copy the complete record under the
+trading read lock, including item stats, gem stats, forge basis and refund slice.
+Previously they returned live pointers for network serialization after unlock.
+New detachment tests80715 fail on all three old paths; concurrent serialization
+and nested mutation tests cover the corrected path.
+
+Tripwire diagnostic41843 FAILED35.987s with receipt Skeleton-159:true instead
+of enemy-tripwire, confirming random overworld interception. The single-target
+duration/immunity test now places its actors in one isolated scene and explicitly
+requires the intended collision receipt and damage in both cases. Production
+target selection and the original three-second/immunity assertions are unchanged.
+Corrected10978 PASS0/36.891s for100 repetitions of Tripwire and both auction
+snapshot tests under the race detector. Logs
+`/tmp/eidolon-auction-snapshot-tripwire-{diagnostic,corrected}.log`.
+This focused pass does not replace the required corrected full server race run.
+
+## Durable seller payout acceptance — September 8, 19:24 UTC
+
+Runtime3bd5df48ce0e104c638590fab54e5d26614b9cc1 adds seller_payout operations
+to the existing unique-per-auction decision journal. Persist the decision,
+credit the exact full-character snapshot with a seller-payout receipt, then
+finalize SellerClaimed. Recovery repeats the same immutable operation ID rather
+than granting more gold. Buyer identity, bid, item and pending refunds remain
+unchanged. Expiry publishes SOLD/EXPIRED only after a confirmed database write;
+an expired buyout request cannot discard the winning bid.
+
+Actual78070 CLOSED PASS0/337.931s, two repetitions covering six payout SIGKILL
+cuts plus six bid cuts, ordinary raises/contention and previous refund ordering/
+save/ack failures. Prepared SOLD auction100 with5deposit/5fee pays100 once:
+seller1234→1334,17HP/70mana and exact gear/inventory/XP preserved through two
+fresh process logins. Rejected decisions leave1234 and no claim/receipt. The
+Fireball baseline is explicitly saved before the crash: not unsaved-tick proof.
+All98 server logs independently clean,24 intended kills and74 normal drained
+shutdowns. Exact disposable Mongo eidolon-auction-payout-proof-20260908-1915
+and volumes removed; container independently absent. Log
+`/tmp/eidolon-auction-payout-sessions.log`; binary
+`/tmp/eidolon-auction-payout-proof-mjJD54/3bd5df48ce0e104c638590fab54e5d26614b9cc1`.
+
+Fullrace65216 CLOSED FAIL1/game334.950s: ordinary-enemy Tripwire root assertion,
+not a race report. Unchanged20 focused repetitions pass; unchanged100 repetitions
+reproduce two failures. That test's random overworld can provide other trap
+targets; collision receipts are being inspected before attributing the cause.
+Keep the failed full-run log `/tmp/eidolon-auction-payout-full-race.log`.
+
+Candidate remains unreleased with55 metadata. Seller happy-path browser/actual
+success acknowledgement, actual expired-sale write faults, buyout/item delivery,
+listing deposits/returns and an enforced compatible rollback contract remain
+open. Old readers ignore the new Kind field and are unsafe rollback targets.
+
 ## Durable bid decisions — September 8, 18:38 UTC
 
 Runtime030ec6769353d3f4e71409e9d371499375ae1b80 implements schema8 durable

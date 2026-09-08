@@ -93,6 +93,14 @@ unsaved-tick/power-loss/multiple-server-writer proof.
 
 ## Then extend the same recovery contract
 
+Seller gold collection is implemented in3bd5df4 and the two-repetition actual
+crash suite78070 passes337.931s. A seller_payout kind freezes amount/fee, shares
+the per-auction reservation, credits through the account-ordered full-character
+journal with receipt seller-payout:<operationID>, then finalizes only the seller
+claim. All98 bid/payout/refund session logs are clean (24 intended kills,74
+normal drained shutdowns). See the implementation evidence for exact boundaries
+and limitations. This does not complete seller item returns or buyouts.
+
 - Buyout: reserve operation, debit once, deliver the exact item once, create any
   previous-bid refund, and finalize sold/claimed state without lost items.
 - Seller collection/cancellation: durable payout/item-return operation and

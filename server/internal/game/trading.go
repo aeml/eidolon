@@ -318,6 +318,15 @@ type AuctionSearchFilter struct {
 	MaxLevel int
 }
 
+// List responses outlive the trading lock while the network serializes them.
+// Detach nested item data and private refund state as well as scalar fields.
+func auctionSnapshot(auction *Auction) *Auction {
+	snapshot := *auction
+	snapshot.Item = cloneItem(auction.Item)
+	snapshot.PendingRefunds = append([]database.AuctionRefund(nil), auction.PendingRefunds...)
+	return &snapshot
+}
+
 func (ts *TradingSystem) SearchAuctionsFiltered(filter AuctionSearchFilter) []*Auction {
 	ts.mu.RLock()
 	defer ts.mu.RUnlock()
@@ -355,7 +364,7 @@ func (ts *TradingSystem) SearchAuctionsFiltered(filter AuctionSearchFilter) []*A
 		if filter.MaxLevel > 0 && auction.Item.Level > filter.MaxLevel {
 			continue
 		}
-		results = append(results, auction)
+		results = append(results, auctionSnapshot(auction))
 	}
 
 	// Sort by time remaining (soonest first)
@@ -373,10 +382,10 @@ func (ts *TradingSystem) GetPlayerAuctions(playerID string) []*Auction {
 	var results []*Auction
 	for _, auction := range ts.Auctions {
 		if auction.SellerID == playerID && !auction.SellerClaimed {
-			results = append(results, auction)
+			results = append(results, auctionSnapshot(auction))
 		} else if auction.BuyerID == playerID && auction.Status == AuctionSold && !auction.ItemClaimed {
 			// Include won auctions so I can collect them
-			results = append(results, auction)
+			results = append(results, auctionSnapshot(auction))
 		}
 	}
 
