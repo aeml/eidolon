@@ -1,7 +1,9 @@
 # Alpha 1.0.43 — an ally that answers
 
-Local candidate after corrected 1.0.42, not published. Preserves every earlier
-patch-note entry and the sequential deployment gates. Login, package/lockfile,
+Published to origin/master September 8 as **f9556081a533db4b74ae52f7428a3520c1263acb**
+after corrected 42's complete CI/live success and fresh exact public verification.
+**CI 34174381235 is active; 43 deployment/live approval is not established.**
+Preserves every earlier patch-note entry and the sequential deployment gates. Login, package/lockfile,
 manifest, server/container/deploy/CI and isolated-QA version defaults advance
 together. Version/default checks pass **219 / 1.635s**; shell syntax and
 whitespace checks pass.

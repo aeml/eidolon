@@ -5,7 +5,51 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 00:38 UTC
+## Current checkpoint — September 8, 00:54 UTC
+
+Previous goal turn made progress: phone reward rows/diary scrolling were verified
+and the earned Water retry started. This turn closes Water **86161 PASS / 2.3m**
+on a8f1e91 and Fire **64268 PASS / 2.4m** (2.3m test) on ae9d8a5. Each earns
+both chapters/all four records through touch, reads both orientations, manually
+claims retrospective replies/rewards and reopens saved masks 1/7/full text. Fire
+observes actual anchor death after ash and before ember credit. Prepared veteran
+fixtures are not earned leveling. Eight images each are preserved in
+`/tmp/eidolon-phone-water-earned-sMAYIC/` and
+`/tmp/eidolon-phone-fire-earned-MUBXxS/`; Water bell both orientations and Fire
+ember portrait/anchor landscape are inspected. Scan/cleanup pass.
+
+Story review fixes misleading handoffs in **cdfdcd5**: diaries introduce the
+next collection, all four collection replies introduce their linked investigation
+before the dungeon, and Air recognizes the learned pinion pattern rather than
+implying consumed items remain in the bag. Optional replies/rewards/access stay
+unchanged. Red **four fail / 21 pass / 0.654s**, focused green **28 / 0.730s**;
+full client **10494 PASS / 219 / 3,299 / 82.376s**; Chronicle/investigation server
+race checks three times **97734 PASS / root 2.277s / game 20.037s**. Generated
+content/lint/diff pass.
+
+Air **93402 FAIL / 50.1s** dies on outbound travel before the diary; the helper
+ignores enemies between waypoints and lacks failure position/HP diagnostics.
+QA **11e345d** now releases movement when threatened, uses normal touch combat,
+then resumes travel. Failure diagnostics/image are added; the survival requirement,
+kit, quest rules and enemy strength are unchanged. Lint/diff pass. **72801 is the
+sole owned browser**, Air retry on clean 11e345d, log
+`/tmp/eidolon-investigations-phone-air-defended.log`; freeze its entire worktree
+until terminal. All other owned handles above are closed. Air, fresh campaign/
+XP/gold, physical devices and expansion publication remain open; root retains
+15 chapters/local 50, not a published story expansion.
+
+Corrected 42 **bfbbc87 / CI 34171247520** passes every CI/deployment/live gate
+with terminal SUCCESS. Fresh manifest/login/main/backend reads **36161 PASS**:
+all HTTP 200, exact **Alpha 1.0.42 / bfbbc87374682bb80c825ce96543012a08841735**,
+backend `ok`, DB `ready`. Clean staging, remote bfbbc and forward ancestry are
+confirmed before explicit **release/43-with-portal-pointer / f9556081a533db4b74ae52f7428a3520c1263acb**
+pushes normally to origin/master (**94818 SUCCESS**, closed), with Seraph patch
+notes/login/package version present. New **CI 34174381235** passes client/server;
+browser smoke is active. No 43 deployment/live approval yet. Next is explicit
+**release/44-with-portal-pointer / 67a431566e2f476eb33dffb1ed9f4f0f107f02c2** only
+after all 43 jobs and fresh exact public identity succeed. Full roadmap remains open.
+
+## Historical checkpoint — September 8, 00:38 UTC
 
 The requested balancing/story scope remains in the dedicated plan: coordinated
 XP/gold/drop budgets, longer bounded collections, purposeful combat and two
