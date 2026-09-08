@@ -5,6 +5,7 @@ import { isEquippableItem, isActiveEquipment } from '../core/EquipmentSlots.js';
 import { getAbilityManaCost, getAbilityCooldown } from '../core/AbilityEconomy.js';
 import { updateOfflineHealingLight } from '../core/AbilityHealing.js';
 import { PASSIVE_REGEN_PER_STAT } from '../core/Regeneration.js';
+import { getBasicAttackDamage } from '../core/BasicAttackDamage.js';
 import { rollOfflineCriticalDamage } from '../core/AbilityCritical.js';
 import { applyOfflineStatus, clearOfflineStatus, updateOfflineDamageOverTime } from '../core/OfflineDamageOverTime.js';
 import { CONSTANTS } from '../core/Constants.js';
@@ -85,7 +86,7 @@ export class Actor extends Entity {
             maxMana: this.baseStats.intelligence * 10,
             mana: this.baseStats.intelligence * 10,
             speed: 3 + (this.baseStats.dexterity * 0.5),
-            damage: this.baseStats.strength * 2,
+            damage: getBasicAttackDamage(this.constructor.name, this.baseStats),
             defense: 0,
             hpRegen: this.baseStats.vitality * PASSIVE_REGEN_PER_STAT,
             manaRegen: this.baseStats.wisdom * PASSIVE_REGEN_PER_STAT,
@@ -1894,9 +1895,9 @@ export class Actor extends Entity {
         this.stats.maxMana = (totalStats.intelligence * 10) + levelBonus;
         this.stats.cooldownReduction = Math.min(0.5, (totalStats.intelligence * 0.01) + (bonusStats.cdr / 100));
 
-        // Strength: Melee damage increase
-        // Base Damage from Stats + Weapon Damage
-        this.stats.damage = (totalStats.strength * 2) + totalStats.damage;
+        // Hero primary-stat scaling must match the authoritative server.
+        // Enemies/NPCs retain their existing Strength formula.
+        this.stats.damage = getBasicAttackDamage(this.constructor.name, totalStats, totalStats.damage);
         
         // Apply berserker unique effect (checked during combat, but flag here)
         this.hasBerserkerEffect = false;

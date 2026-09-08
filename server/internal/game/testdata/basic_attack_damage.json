@@ -1,0 +1,6 @@
+[
+  {"className":"Fighter","stats":{"strength":19,"dexterity":27,"intelligence":39,"wisdom":47},"flatDamage":17,"damage":21},
+  {"className":"Rogue","stats":{"strength":19,"dexterity":27,"intelligence":39,"wisdom":47},"flatDamage":17,"damage":23},
+  {"className":"Wizard","stats":{"strength":19,"dexterity":27,"intelligence":39,"wisdom":47},"flatDamage":17,"damage":26},
+  {"className":"Cleric","stats":{"strength":19,"dexterity":27,"intelligence":39,"wisdom":47},"flatDamage":17,"damage":28}
+]
