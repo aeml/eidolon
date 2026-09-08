@@ -1780,7 +1780,8 @@ func (c *Client) dispatchMessage(msg Message) {
 				return
 			}
 			// Verify player has this skill unlocked
-			hasSkill := false
+			// Base abilities do not require specialization, just as for casting.
+			hasSkill := game.IsBaseClassSkill(player.SubType, payload.Skill)
 			for _, s := range player.UnlockedSkills {
 				if s == payload.Skill {
 					hasSkill = true
