@@ -30,3 +30,19 @@ Logs: `/tmp/eidolon-quest-quotes-initial.log` and
 `/tmp/eidolon-quest-quotes-roundtrip.log`. These are real production-function
 and BSON tests, not a live Mongo login or an earned browser playthrough. Full
 server regression and actual session/bridge validation remain required.
+
+Full server race **55919 FAIL**, game395.928s; root24.722s/database1.093s
+pass. The expanded-story tests find a real idempotence error: newly inserted
+investigation offers acquired quote flags only on their second refresh. Both
+live catalogs now initialize the flags before insertion. Existing unchanged
+retrospective/all-legacy-milestone tests exercise the correction. Other failures
+were exact pre-curve expectations: status deaths expected20XP rather than10,
+a promised500XP opening expected136 remaining rather than75 after the new
+100+125+200 thresholds, and old catalog repair expected accepted10-kill/1XP
+terms to be overwritten with100-kill/50000XP terms. Expectations now enforce
+the new budget/preservation contracts, not looser reward checks.
+
+Three repeated race checks **66300 PASS** include every Chronicle test, daily
+generation, status kill attribution and all quoted-reward/receipt migrations.
+Log `/tmp/eidolon-coordinated-quotes-regression-fixed.log`. A full corrected
+server rerun is still required; the failed full run is not a passing gate.

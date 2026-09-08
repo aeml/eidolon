@@ -5,7 +5,44 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 02:55 UTC
+## Current checkpoint — September 8, 03:03 UTC
+
+Current turn progress: accepted quest promise/requirements protection, complete
+first server regression (failed with specific findings), corrected migration
+idempotence and repeated passing targeted checks. Goal remains active/open.
+
+Candidate `/tmp/eidolon-coordinated-xp-RKNlYr` is clean **6076da6**. Full server
+**55919 FAILED / game395.928s**, root24.722s/database1.093s passed. Failure
+analysis identified newly inserted investigation quote flags changing on a
+second refresh; catalogs now initialize them. Existing Chronicle migration
+assertions remain intact. Four other tests expected old status XP, old curve
+remainders or replacement of accepted quest terms; they now assert the new
+exact contracts. All Chronicle/daily/status/quote checks pass three race repeats
+**66300 / root6.286s / database1.035s / game28.670s**. See
+[the failure/correction record](2026-09-08-accepted-quest-quotes.md).
+
+Corrected full server race **78923 ACTIVE** on frozen6076da6, log
+`/tmp/eidolon-coordinated-xp-quotes-full-server-corrected.log`. A preceding
+invocation from the repo root exited without tests because the Go module is in
+`server`;78923 uses the correct module. No full corrected server pass yet.
+No owned browser is active. No balance/runtime merge to root or release.
+
+Release43 diagnostics now clean **79a93b1**, QA-only descendant of39620a0, NOT
+pushed/requeued. Wizard-only **18831 PASS / 1.3m** and full class sequence
+**96050 PASS** (Fighter1.3m/Rogue1.7m/Wizard1.3m/Cleric1.4m), owned cleanup and
+artifact scan pass. Final indentation-only cleanup plus targeted ESLint/diff
+pass. See [diagnostic evidence](2026-09-08-release43-wizard-diagnostic.md).
+CI34178050891 predeploy failure remains unresolved; local passes do not prove a
+fix. No CI rerun, no44 publication, no live43 claim. Last exact public evidence
+remains42/bfbbc. Current release queue still `with-smite-cadence`.
+
+Next: close78923 without changing its source, then tune all remaining quest/
+room/weekly/Vigil XP and independent gold budgets, authored preparation and
+compatibility bridge before activation. New curve plus old million-XP catalog
+is still explicitly not a playable result. Full earned campaign/group/device
+and deployment gates remain open, as does the full1.1–1.10 roadmap.
+
+## Historical checkpoint — September 8, 02:55 UTC
 
 Substantive progress: isolated coordinated progression core and accepted quest
 quote protection; release43 predeploy failure remains unresolved. Full roadmap

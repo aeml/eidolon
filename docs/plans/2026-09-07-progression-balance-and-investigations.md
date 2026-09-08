@@ -2,6 +2,16 @@
 
 Requested September 7, 2026. Status: **implementation active; full pass open**.
 
+September 8 coordinated candidate update: isolated **0e8600f** implements a
+bounded client/server XP curve, content-level combat budgets, stored-curve
+migration and accepted-quest promise protection. Existing zero-valued quotes,
+partial legacy reward fields, ready kill requirements and completed receipts
+survive BSON/save/refresh tests. See [core scope and evidence](2026-09-08-progression-core-implementation.md)
+and [accepted quest guarantees](2026-09-08-accepted-quest-quotes.md). This is
+not active balance: old million-XP quest and weekly rewards still need coupled
+tuning, the authored route must earn its entry levels, and a save-compatible
+bridge must precede curve activation. No curve-only release is approved.
+
 The [room-XP correction](2026-09-08-room-xp-progression.md) now uses the common
 level-up/cap-overflow path with unchanged reward amounts; full server race and
 all-class boundary regressions pass. It is root-integrated but not versioned or
