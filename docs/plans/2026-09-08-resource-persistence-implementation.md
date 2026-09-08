@@ -106,6 +106,16 @@ unchanged and missing saves, including unchanged saves in the same millisecond.
 This corrects test precision, not runtime persistence or acceptance scope.
 Actual handoff revalidation remains due at this entry.
 
+Corrected69d7978: focused timestamp/queue/binding race18465 PASS1.111s. Actual
+race-built handoff13939 CLOSED PASS five consecutive runs/23.314s, normal0,
+including strict child-exit/log checks and a fresh pre-close Mongo baseline each
+time. No gameplay runtime changed from the144session race-tested a9f5960.
+Binary `/tmp/eidolon-resource-freshness-proof-6rWCkw/69d7978a4022822467451214c9676dd6532c81c3`;
+log `/tmp/eidolon-resource-freshness-sessions.log`. Owned Mongo removed by trap
+and independently absent. This closes the observed queue/ID races and the
+timestamp-test follow-up at their verified scopes, not the remaining release
+acceptance list. No resource release/version was assigned or deployed.
+
 ## Required work still open — do not publish this slice alone
 
 - Verify the implemented immediate-login, duplicate-session and repeated-Join
