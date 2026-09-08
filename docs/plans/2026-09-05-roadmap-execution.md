@@ -5,7 +5,57 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 09:49 UTC
+## Current checkpoint — September 8, 10:08 UTC
+
+Previous goal turn was progress (tested actual-target input correction). This
+turn closes its failing real run, implements and renders crowd-name readability,
+and verifies that45 has deployed. Full roadmap and first-hour gates remain open.
+
+**45CI34208478475: seven jobs PASS; Live Release and Character QA ACTIVE.**
+Fresh public manifest/backend10:07 both report exact
+**83d8f083538fc92b03878c9eb7cb1a46c8847da7 / Alpha1.0.45**, backend ok/database
+ready. Login displays45, its versioned main URL points to that commit, and the
+public versioned regeneration module contains0.01. Deployment is now observed;
+final live gameplay approval remains pending. Do not push46/b2016ef until the
+eighth job and fresh independent identity checks pass. Root remains staged52,
+never push its master over the queue.
+
+**82761 TERMINAL FAILED5.4m** on a47dc7d. Five observed target deaths,2/8 seeds,
+zero player deaths; another120s encounter timeout. Actual-target tracking and
+healthy trading did not establish collection pacing. Once below80% health,
+retreats still carried the pack north; the final diagnostic shows50retreats,
+131/200HP27/160mana and a selected level1 Skeleton with3HP. Scan0 and cleanup/
+independent exact-container absence pass. Failure PNG viewed/archive:
+`/tmp/eidolon-release47-input-evidence-pMenOr/failed-collection.png`.
+47candidate a47dc7d remains clean and unapproved; no unchanged rerun. Its runtime
+is still original15chapters/cadence, distinct from the expanded candidate.
+
+New visual candidate **899c957** (runtime89f690e) in
+`/tmp/eidolon-nameplate-readability-HDHgN2`, branch work/nameplate-readability-20260908,
+is clean and unversioned on staged52. Production names have22CSS-pixel sprite
+height independent of zoom/parent scale, bounded non-overlapping labels, selected
+target tint/priority, NPC/party priority and quest-marker clearance. Only name
+sprites change, not models, markers, collision or combat. World-only captures
+suspend presentation while hiding account labels. Details in candidate
+`2026-09-08-nameplate-readability.md`; no1.2/1.3 completion claim.
+
+Focused46603 **PASS75tests/four suites/2.064s**, lint20387/59373 pass. First rendered
+12443 failed all six because the prepared NPC's label overlapped the selected
+target and was correctly suppressed. Test-only2a66ffa places the NPC outside
+that overlap, retaining both-label/marker assertions. Corrected90998 **PASS6/
+29.3s**, covering desktop1280x720 and both phone orientations in High/Low.
+Desktop before/after and portrait/landscape after images viewed/archive
+`/tmp/eidolon-nameplate-evidence-BunTb1/`; labels are readable, while deliberately
+packed tiny models/empty ground remain a component fixture, not world approval.
+
+**25258 ACTIVE — full nameplate client regression**, source899c957 frozen in
+the nameplate worktree. Log `/tmp/eidolon-nameplate-client.log`. No owned browser
+is currently running; every rendered/collection handle above is closed. Keep
+that source frozen until25258 terminal; then inspect full result and plan proper
+versioned packaging/full-world checks. Expanded6c2a81a still has its separate
+231suite/3418test pass; actual all-class/uninterrupted campaign checks remain due.
+
+## Historical checkpoint — September 8, 09:49 UTC
 
 Previous goal turn was progress: full client closure and observed combat receipts.
 This continuation implements a tested input correction. Full roadmap goal stays
