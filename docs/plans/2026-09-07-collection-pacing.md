@@ -188,3 +188,24 @@ deaths. Three repeated starter/profile/regeneration race sets pass8.884s;
 production-population, all-family and retaliation probes are included.250client
 checks/four suites/2.666s and full lint pass. Full revised suites and actual
 collection gameplay are still required before integration or publication.
+
+### Prepared dependency retry — still fails the opening
+
+Source6fd84af passes full219client suites/3234tests/139.360s and full server
+race(root11.573s/game260.976s/all packages). Its first browser30168 failed before
+authentication because this new worktree lacked generated vendor assets; an
+independent request returned404. After normal `npm run prepare:client`, merged
+a457262 inherits final46/ad16790's paid-cast/retry test corrections. No
+src/server/index changes versus6fd84af;267focused tests/2.004s and full lint pass.
+
+Actual prepared-assets retry29343 **FAILED2.5m** on a457262. The opening earned
+two kills at22/24seconds with full health, then two permitted respawns. The
+unchanged120-second credit watchdog expired before the third kill. First death
+was against a level-two target reduced40→24HP; the second target30→12HP. No
+collection acceptance or completed opening is claimed. Artifact scan passed with
+zero sanitizations; the script's disposable cleanup completed. Log
+`/tmp/eidolon-release47-starter-ready-gameplay.log`. Neither repeated playtest
+failure justifies calling starter spacing a complete first-hour fix or increasing
+regeneration.47 remains unpublished and not ready for integration into the
+release branch. The separate expanded-story candidate is now investigating the
+slow4.167-second starting basic-attack interval while retaining0.01 regeneration.
