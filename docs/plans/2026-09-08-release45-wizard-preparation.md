@@ -82,3 +82,25 @@ Focused server9238 passed1.636s; client59067 passed236 tests/two suites/2.554s
 and helper lint. A subsequent tiny planner guard rejects NaN ranks explicitly;
 its new regression and the next full client/browser checks remain required.
 This still does not approve a fresh level30 clear or uninterrupted campaign.
+
+## Corrected local release gate passed
+
+Frozen d176b62 full client46538 **PASS217 suites/3212 tests/206.821s**.
+Corrected actual browser88089 **PASS one/4.6m test/4.7m reported run**, terminal.
+Ordinary UI bought15 talent ranks from20 points and equipped Empowered. The
+Wizard defeated Rootbound Warden15000HP and Briar Matron16800HP, along with
+the intervening generated encounters. The last Matron sample showed364boss HP
+with player1015/2575HP and336mana before the confirmed death. The unchanged
+route verified both cleared boss rooms, increased gold, and dungeon exit.
+No death, deadline extension, resource grant or reconnect was added. Artifact
+credential scan and owned cleanup passed; absence of the owned containers was
+independently checked. Log `/tmp/eidolon-release45-efficient-browser.log`.
+All owned test handles are closed. Latest server runtime remains identical to
+the passing c812eee full race run; its added training test passed separately.
+
+This closes the local prepared functional gate, not the first-hour or full
+four-dungeon/raid campaign balance gates. Publish this explicit45 branch as a
+fast-forward of remote45b4b83, never root's staged52. Production CI and fresh
+exact public client/backend checks are still required before calling45 live or
+publishing46. The requested0.01 rates and actual45 rune correction notes are
+included; later version identities are not imported into this package.
