@@ -1441,6 +1441,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		e.Mu.RLock()
 		ex, ez := e.X, e.Z
 		sightRange = unprovokedEnemySightRange(e)
+		pursuitRadius := starterPursuitRadius(e)
+		spawnX, spawnZ := e.SpawnX, e.SpawnZ
 		if len(e.Threat) > 0 {
 			threatSnapshot = make(map[string]float64, len(e.Threat))
 			for k, v := range e.Threat {
@@ -1470,6 +1472,10 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			}
 			p.Mu.RLock()
 			// Check Safe Zone
+			if pursuitRadius > 0 && math.Hypot(p.X-spawnX, p.Z-spawnZ) > pursuitRadius {
+				p.Mu.RUnlock()
+				continue
+			}
 			if p.X > -100 && p.X < 100 && p.Z > 100 && p.Z < 300 {
 				p.Mu.RUnlock()
 				continue
@@ -1697,6 +1703,10 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			}
 		} else {
 			// Roam
+			// Return at ordinary speed without healing, immunity or teleporting.
+			if pursuitRadius > 0 && math.Hypot(e.X-e.SpawnX, e.Z-e.SpawnZ) > roamRadius {
+				e.TargetX, e.TargetZ = e.SpawnX, e.SpawnZ
+			}
 			dx := e.TargetX - e.X
 			dz := e.TargetZ - e.Z
 			distToTarget := math.Sqrt(dx*dx + dz*dz)
