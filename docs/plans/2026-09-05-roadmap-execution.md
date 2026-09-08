@@ -5,7 +5,52 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 10:42 UTC
+## Current checkpoint — September 8, 10:50 UTC
+
+Previous goal turn was progress (versioned53 committed; opening QA corrected).
+This continuation closes the failed opening run and implements a production
+starter-pursuit candidate. Full1.1–1.10 remains active, not achieved or blocked.
+
+**46CI34215073108 freshly in_progress**: server/client/browser smoke PASS;
+Predeploy Character QA running. No new publication or live approval;45 remains
+last independently verified live release. Do not push47 until46 fully passes
+and fresh public identity checks match its exact b2016ef commit.
+
+**5909 TERMINAL FAILED2.7m** on ba5b7ae. Opening2kills/zero deaths, then120s
+encounter deadline at(261,-26),37HP/22mana/53retreats. Receipts show damage spread
+across Skeletons and level30DemonOrcs; starter Skeletons from the town gate still
+followed the player. Scan0 and independent exact-container absence pass. No
+collection result: the run never reached it. ba5b7ae stays clean and unapproved.
+
+Inspection confirms no spawn-relative pursuit boundary and stale chase targets
+retained during lost-target roaming. New independent candidate branch
+**work/starter-pursuit-20260908**, `/tmp/eidolon-starter-pursuit-VB2m7S`, based
+on ba5b7ae, has **owned uncommitted edits and is frozen during tests**. Level1–9
+ordinary overworld Skeletons acquire targets within60units of home; when no
+eligible target remains outside their10unit patrol, they walk home at ordinary
+speed. No healing, immunity, teleport, player stat or reward change. Elites,
+bosses, summons, other families/levels and instances are excluded.47candidate
+patch notes explain the behavior. No claim that this alone fixes pacing.
+
+16963 PASS6pursuit/spacing checks0.314s;36777 PASS7including continuous60-second
+retreat regression0.273s.8406 PASS226version/regen tests3.857s.28200 full lint and
+diff PASS. Candidate doc `2026-09-08-starter-pursuit.md` records scope/evidence.
+
+**92956 ACTIVE** full server `go test ./...`, log
+`/tmp/eidolon-starter-pursuit-server.log`: root4.235s/database0.035s already PASS;
+game package remains running. **38499 ACTIVE** fresh actual collection, runID
+starter-pursuit, API18635/Mongo18636/web18637; log
+`/tmp/eidolon-starter-pursuit-gameplay.log`. Both use the same frozen candidate;
+do not edit/commit its source until both terminate.38499 is the only owned
+browser. Poll these exact handles, never restart due to observation timeout.
+No source mutations or process interference with external46CI.
+
+Queued53/874b8fc is unchanged, clean and locally verified as below; expanded31
+chapters/all-class6c2a81a remains separately unapproved by actual campaign play.
+Next inspect full server and fresh-play results before committing/inheriting
+the pursuit change or moving47 forward. Root master stays unpushed.
+
+## Historical checkpoint — September 8, 10:42 UTC
 
 The preceding regeneration response reverified existing code (6client/4server
 tests) but did not advance the roadmap. This continuation is concrete progress:
