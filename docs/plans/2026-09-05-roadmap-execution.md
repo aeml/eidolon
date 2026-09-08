@@ -5,15 +5,15 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 06:20 UTC
+## Current checkpoint — September 8, 06:30 UTC
 
-Previous goal turn was progress (dead-only mana recovery implemented).
-This continuation closes combined checks, fixes a test-fixture portability
-failure, and packages52 with patch notes and a dedicated browser regression.
+Previous goal turn was progress (52 packaged and actual browser recovery passed).
+This continuation closes all full checks, integrates verified52 locally, and
+starts the earned Watch on the corrected combined candidate.
 Full1.1–1.10 scope remains active/incomplete; no status change is justified.
 
 **45 CI34192659636 still active:** client/server/anonymous browser jobs passed;
-predeploy character QA running at06:18. No new push.45 is not yet verified live;46 must
+predeploy character QA running at06:28. No new push.45 is not yet verified live;46 must
 wait for all eight45 jobs and a fresh exact independent public identity check.
 Remote master was last confirmed45b4b831a85c96992cd396344610cd1fb9175fd6.
 
@@ -37,8 +37,8 @@ was added; that optional preference remains unanswered. See its evidence doc.
 
 Focused11998 PASS eight client tests/1.507s and lint; server62828 race PASS
 5.108s; expanded37607 race PASS2.395s adds positive-health/dead-state and PvP
-mana rejection checks. All handles closed. Dedicated source has not been
-merged into root or published;52 packaging and combined checks are below.
+mana rejection checks. All handles closed. Verified52 integrates this source
+into root as49ad2a8; it is not published. Full package checks are below.
 
 Candidate cherry-pick6371b3c integrates this fix. QA commit
 **653357c9fb35fc2279782880faadc9f26e804e1f** observes actual state/delta mana
@@ -51,11 +51,12 @@ ProgressionCurve fixture passed JSDOM's global URL to Node readFileSync. Both
 handles closed. The test now imports Node's URL explicitly; no thresholds or
 assertions changed. Focused98308 PASS13 tests/1.098s. Current clean candidate
 **a584ec83b4261b73fbcc4b83cfd05707e0c7ee34** is frozen in
-`/tmp/eidolon-earned-story-TZuGpp`: **75691 ACTIVE**, corrected full client
-suite. Server source is identical to the passing combined run. Fresh earned
-Watch remains pending; it has not passed the new encounter/resource combination.
+`/tmp/eidolon-earned-story-TZuGpp`: **75691 PASS**, all225 client suites/
+3351 tests/227.420s, handle closed. Server source is identical to the passing
+combined run. Fresh earned Watch51389 is active on this frozen source.
 
-**52 packaged, not pushed:** clean **31d13132fb02a53f37a173400df1e1e2cfd80d4f**,
+**52 verified locally, not pushed:** clean **e097cc4bc9a934c923e2a574a34fb328ea119991**
+(documentation closure of tested31d13132fb02a53f37a173400df1e1e2cfd80d4f),
 branch release/52-death-resource-recovery, worktree
 `/tmp/eidolon-release52-death-recovery-Y5bRfW`. Base51/2ed3375 plus dead-only
 recovery991c2bf (same7440ccd runtime). All login/package/build/deploy/QA
@@ -70,18 +71,36 @@ sets one HP; an ordinary Fireball spends mana under waypoint protection, a
 real hostile hit after protection is disabled causes death, the death button
 must yield a full-mana server receipt, and another cast plus Recall must retain
 depletion. Included in the full disposable predeploy route. This is functional
-recovery QA, not earned campaign pacing. No result claimed yet.
+recovery QA, not earned campaign pacing. Actual result is below.
 
-Frozen52 has **26858 ACTIVE** full server race (root25.527s/database1.046s
-passed) and **79048 ACTIVE** full client suite. Browser2218 **PASS one/20.0s,
+52 full server26858 **PASS** root25.527s/database1.046s/game411.844s;
+full client79048 **PASS220 suites/3229 tests/208.394s**, both handles closed.
+Browser2218 **PASS one/20.0s,
 process25.6s**, closed: an ordinary cast depleted mana to70 before hostile
 death; the server receipt restored100/100HP and100/100mana. A second cast plus
 Recall retained depletion. Scan passed and owned containers/data were removed
 (absence independently checked). Log `/tmp/eidolon-release52-death-resources.log`.
-No owned browser remains. Do not edit/restart either frozen
-worktree. Run earned Watch when corrected candidate
-client passes. Finish52 checks before local integration; publication remains
-behind45–51. All broader campaign/economy/device/roadmap gates remain open.
+Root merge49ad2a8 integrates the verified52 package. Runtime/build/client source
+matches52 exactly; only root's extra reward-stack audit differs. Root233
+presentation/resource tests86967 PASS5.650s, death/context/PvP race75198 PASS
+3.815s, exact extra audit22479 PASS2.138s. All handles closed. Root is locally
+Alpha1.0.52; never push root master. Publication remains behind45–51.
+
+**One owned browser51389 ACTIVE:** candidatea584ec8, route fresh-story-hunt,
+run ID earned-watch-recovery, ports18465/18466/18467; log
+`/tmp/eidolon-earned-watch-recovery.log`. Opening49s/no deaths, diary107s/
+level3. First Watch death at3 credits/mana15; actual ordinary respawn receipt
+restores150/150HP and130/130mana. At154s Watch is5/40, one death, level4,
+175HP/70mana/301gold, one bag slot/20gold unsold equipment. No full result yet;
+do not edit or restart this source until the handle is terminal.
+
+Pacing limitation requiring follow-up: current opening/diary helpers reconnect
+after each claim. `client_dispatch.go` initializes login health/mana from base
+stats; the DB Character has no saved resource bars. These persistence checks
+therefore restore resources and cannot prove uninterrupted adventure pacing.
+After the active run closes, add an uninterrupted route while retaining separate
+persistence assertions. No login behavior or resource-policy change is made here.
+All broader campaign/economy/device/roadmap gates remain open.
 
 ## Historical checkpoint — September 8, 06:00 UTC
 
