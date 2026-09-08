@@ -54,6 +54,12 @@ is active; exact public43 gate is not yet closed. Do not publish44 until all
 eight jobs pass and a fresh exact manifest/login/versioned-entry/backend check
 succeeds. Queue unchanged below. No balance runtime/root merge or51 package.
 
+Fresh public read at this checkpoint returns HTTP200 for manifest, login,
+versioned main entry and backend: exact **Alpha1.0.43 /
+79a93b131b7192a3a3bc6b2ca355c257585d7d60** in manifest/login/runtime/backend;
+backendstatus `ok`, database `ready`. This confirms deployed identity, not final
+live-gameplay success. Recheck both final CI and public identity before44.
+
 ## Historical checkpoint — September 8, 03:59 UTC
 
 This turn implements eight preparation expeditions and closes the earned23-
