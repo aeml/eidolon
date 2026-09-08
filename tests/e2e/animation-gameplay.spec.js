@@ -240,14 +240,35 @@ async function castThroughInput(page, className, skillName, key, presentation, o
         await page.keyboard.press(key);
     }
 
-    await expect.poll(() => page.evaluate(({ expectedSkill, previous }) => {
-        const record = window.game?.player?.lastAbilityPresentation;
-        return Boolean(record?.skillName === expectedSkill && record.timestamp > previous);
-    }, { expectedSkill: skillName, previous: previousTimestamp }), {
-        message: `${className}/${skillName} must create its production presentation through real input`,
-        timeout: 8_000,
-        intervals: [25, 50, 100, 200]
-    }).toBe(true);
+    try {
+        await expect.poll(() => page.evaluate(({ expectedSkill, previous }) => {
+            const record = window.game?.player?.lastAbilityPresentation;
+            return Boolean(record?.skillName === expectedSkill && record.timestamp > previous);
+        }, { expectedSkill: skillName, previous: previousTimestamp }), {
+            message: `${className}/${skillName} must create its production presentation through real input`,
+            timeout: 8_000,
+            intervals: [25, 50, 100, 200]
+        }).toBe(true);
+    } catch (error) {
+        const diagnostic = await page.evaluate(() => {
+            const game = window.game;
+            const player = game?.player;
+            return {
+                state: player?.state,
+                health: player?.stats?.hp,
+                mana: player?.stats?.mana,
+                abilityCooldown: player?.abilityCooldown,
+                cooldowns: player?.cooldowns,
+                hotbar: player?.hotbar,
+                presentation: player?.lastAbilityPresentation,
+                activeElement: document.activeElement?.id || document.activeElement?.tagName,
+                pendingInteraction: game?.pendingInteraction?.id,
+                animation: player?.currentAnimationName,
+                readinessSequence: game?.animationQAReadySequence
+            };
+        });
+        throw new Error(`${className}/${skillName} input presentation failure: ${JSON.stringify(diagnostic)}`, { cause: error });
+    }
 
     const snapshot = await page.evaluate(() => {
         const game = window.game;
