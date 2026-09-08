@@ -11,7 +11,7 @@ async function openPvP(page) {
 const snapshot = page => page.evaluate(() => {
     const game = window.game, p = game.player, profile = game.uiManager.pvp.state.profile || {};
     return { hp: p.stats.hp, mana: p.stats.mana, interval: p.stats.attackSpeed,
-        level: p.level, xp: p.xp, gold: p.gold, instance: game.currentInstanceId || '',
+        level: p.level, xp: p.xp, gold: p.gold, x: p.position.x, z: p.position.z, instance: game.currentInstanceId || '',
         profile: Object.fromEntries(['rating', 'wins', 'losses', 'honor', 'seasonPoints']
             .map(key => [key, profile[key] ?? (key === 'rating' ? 1000 : 0)])) };
 });
@@ -91,6 +91,12 @@ for (const className of ['Fighter', 'Rogue', 'Wizard', 'Cleric']) {
                 throw error;
             }
             const ids = await Promise.all([page, opponent].map(p => p.evaluate(() => window.game.player.id)));
+            for (const actorPage of [page, opponent]) {
+                await expect.poll(() => actorPage.evaluate(() => Boolean(
+                    window.game.getInstanceEnvironmentGroup().getObjectByName('PvPArena')))).toBe(true);
+                expect(await actorPage.evaluate(() => window.game.currentInstanceType)).toBe('pvp_arena');
+            }
+            if (className === 'Fighter') await page.locator('canvas').first().screenshot({ path: testInfo.outputPath('arena-entry.png') });
             await observeBasicReceipts(page); await observeBasicReceipts(opponent);
             for (const [actorPage, targetId] of [[page, ids[1]], [opponent, ids[0]]]) {
                 let point;
@@ -103,6 +109,7 @@ for (const className of ['Fighter', 'Rogue', 'Wizard', 'Cleric']) {
             await expect.poll(async () => Math.min(...await Promise.all([page, opponent].map(p =>
                 p.evaluate(() => window.__duelCadence.hits.length)))), { timeout: 35_000 }).toBeGreaterThanOrEqual(5);
             const during = await Promise.all([snapshot(page), snapshot(opponent)]);
+            if (className === 'Fighter') await page.locator('canvas').first().screenshot({ path: testInfo.outputPath('arena-combat.png') });
             for (const [i, actorPage] of [page, opponent].entries()) {
                 const receipts = await actorPage.evaluate(() => window.__duelCadence);
                 expect(receipts.attacks.length).toBeGreaterThanOrEqual(5);
@@ -119,6 +126,14 @@ for (const className of ['Fighter', 'Rogue', 'Wizard', 'Cleric']) {
             await page.locator('#pvp-window').getByRole('button', { name: 'Forfeit', exact: true }).click();
             await expect.poll(async () => (await Promise.all([snapshot(page), snapshot(opponent)]))
                 .every(p => p.instance === '')).toBe(true);
+            for (const [i, actorPage] of [page, opponent].entries()) {
+                await expect.poll(async () => {
+                    const after = await snapshot(actorPage);
+                    return Math.hypot(after.x - before[i].x, after.z - before[i].z);
+                }).toBeLessThan(1);
+                expect(await actorPage.evaluate(() => Boolean(
+                    window.game.getInstanceEnvironmentGroup().getObjectByName('PvPArena')))).toBe(false);
+            }
             const after = await Promise.all([snapshot(page), snapshot(opponent)]);
             for (let i = 0; i < 2; i++) for (const field of ['profile', 'level', 'xp', 'gold']) {
                 expect(after[i][field]).toEqual(before[i][field]);
