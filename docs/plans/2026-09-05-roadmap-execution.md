@@ -5,7 +5,52 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 21:06 UTC
+## Current checkpoint — September 8, 21:40 UTC
+
+The previous regen-only turn verified the already-implemented .01 rate without
+roadmap implementation changes. This continuation is PROGRESS: bridge queue
+race fixed, actual upgrade/crash/refused-old-writer/recovery acceptance closed,
+and49's terminal CI failure identified. Full1.1–1.10 remains active/incomplete.
+
+Bridge staged Alpha1.0.56 in `/tmp/eidolon-schema-compatibility-bridge-ehsEZY`,
+runtime dff080bfe03069d74748ed806cfe746f7b34acdf. Version93ddad5 and browser
+checkc47257e synchronize package/server/deployment/login/notes. Actual roundtrip
+exposed a bridge send/close race; dff080b locks all queue producers and closes,
+with a concurrency test and Clean disconnects notes. Focused queue race passes;
+full7903 CLOSED PASS0: root19.664s, game/database cached from earlier passing
+full17140 (game378.604s). Final version231 checks/lint pass; full client21761
+PASS237 suites/3379 tests before queue-only code/notes addition. Rendered92857
+PASS2 cases6.4s and screenshot inspected. No56 publication yet.
+
+Resource `/tmp/eidolon-resource-persistence-c6E17J` includes schema fence153fbcb;
+288b623 fixes an actual AI reader racing World-owned cast state by snapshotting
+under World→Entity locks before taking the enemy lock. Full9898 completed PASS:
+root18.942/game298.014s. Test4321e69 preserves actual legacy HP1/MP100 baseline,
+not an invented full-capacity login. Corrected actual60645 and48290 CLOSED PASS0
+16.795s/12.545s on two fresh databases: schema7 ordinary save → schema8 gameplay,
+two listings/zero mana → pending journal and SIGKILL → old-server refusal with
+unchanged BSON/journal/operation → two resource recoveries. Exact gold1184,
+XP17, level31, equipment, paired receipts, zero mana and two once-only listings;
+first deadline unchanged. Eight child logs audited clean:2 kills,2 verified
+legacy disconnect saves/normal exits,4 resource drains. Expected refused starts
+exit1 before admission. Owned Mongo/volumes removed/absent. Logs
+`/tmp/eidolon-schema-fixed-{actual,repeat}.log`. Earlier attempts5518/84072/81661/
+40736 are failures, not proof: legacy-baseline assumptions, AI race, queue race.
+Resource remains unpublished55 metadata; supported deployment restrictions and
+ordered final ancestry still required before its format-changing release.
+
+49 CI34274941211 CLOSED FAILURE21:26:59 on9342ac0. Earlier server/client/browser
+smoke succeeded; Predeploy Character QA failed first-corridor navigation in
+`dungeon-wipe-recovery-gameplay.spec.js` twice (seeds -4300462428721345317 and
+6904159723364978605). Deployments/finalLiveQA skipped. No50 push. Evidence
+downloaded `/tmp/eidolon-release49-failure-8rMABN`. Dedicated49 descendant
+`/tmp/eidolon-release49-navigation-dqbOBW`,95acbd6, adds approach-coordinate
+diagnostics only. Initial27440 PASS41.5s on seed2159278409556713907; this does
+not disprove the CI defect. Two further fresh runs98013 ACTIVE. Do not simply
+rerun failed CI or weaken corridor/death/respawn assertions without diagnosis.
+Last independently verified live48; root staged52 must not be pushed.
+
+## Historical checkpoint — September 8, 21:06 UTC
 
 Previous goal turn was PROGRESS (stale selection). This turn is PROGRESS: paid
 listing duration now starts at first publication, and an independent compatibility

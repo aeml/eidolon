@@ -3,7 +3,22 @@
 Status: confirmed defect with an unreleased implementation candidate, not yet
 release-ready or assigned a published patch. Preserve .01 passive regen.
 
-## Latest implementation checkpoint — September 8, 21:06 UTC
+## Latest implementation checkpoint — September 8, 21:40 UTC
+
+Staged bridge56/dff080b and resource288b623 (test4321e69) now pass TWO complete
+actual schema7→8/crash/refused7/recovered8 sequences with preserved zero mana,
+HP/XP/gold/equipment/receipts/journal and once-only listings. Details, failed
+attempts and exact evidence are in the roadmap ledger. Both full race suites
+pass; actual runs uncovered and fixed the resource AI state reader race and
+bridge send/close race. Bridge final version231 checks, lint and rendered notes
+also pass. The bridge fence is integrated into resource as153fbcb.
+
+Neither candidate is published. Ordered49 CI has failed dungeon-recovery
+navigation, and later releases must wait. Supported deployment-target restrictions
+and final queue ancestry remain open; no resource patch number is assigned.
+This does not close broader gameplay/device/raid/roadmap acceptance.
+
+## Historical implementation checkpoint — September 8, 21:06 UTC
 
 The authoritative release/test state is in
 [the roadmap execution ledger](2026-09-05-roadmap-execution.md). Bids, refunds,
