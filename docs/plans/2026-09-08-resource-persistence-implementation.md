@@ -189,14 +189,82 @@ near-death fixture followed by real damage, not four-class browser combat,
 physical-phone play, PvP or unfinished-instance recovery. Those broader scopes,
 shutdown/save-failure behavior and a tested compatible rollback remain open.
 
+## Durable failed-save journal — September 8, tested source5cf6acb
+
+The prior implementation logged failed Mongo writes but allowed disconnected
+entities to expire five minutes later, losing the only newest snapshot. The
+candidate now writes a complete detached BSON snapshot to one private file per
+account before Mongo IO: random receipt, payload checksum, version/size checks,
+0600 temporary file, file sync, atomic rename and directory sync. Filenames hash
+the account name. Older acknowledgements cannot delete a newer pending record.
+Mongo atomically stores the character and receipt; replay of an already committed
+receipt does not replace a later gold-only credit. Callers serialize by account
+and use its newest durable entry; this is NOT arbitrary-old-receipt rejection,
+cross-server CAS or a multi-writer design.
+
+Startup replays the journal before exposing readiness or accepting logins. The
+existing periodic save pass retries pending users. Expired-entity hydration must
+replay first or fail closed. Retry captures a newer live character instead of
+replaying an older disk snapshot. The world pins the live entity before journal
+IO and leaves it pinned on local write failure; successful local durability
+unpins it even when Mongo fails. Confirmed Mongo commits with failed local
+acknowledgement cleanup are logged, not misclassified as missing character state:
+a surviving file replays idempotently. Corrupt/unsupported files are retained and
+startup recovery fails closed; no automatic deletion or stale-login fallback.
+
+`-save-journal-dir` defaults to `logs/character-saves`. In the existing production
+Compose layout this is `/app/logs/character-saves`, backed by `./logs:/app/logs`.
+Keep that private directory persistent across container replacement and include
+it in recovery planning alongside Mongo. Do not delete pending files to make a
+failed startup appear healthy, point two active writers at one journal, or roll
+back to a binary that silently ignores the pending files. This candidate has not
+been deployed; no production journal has been created by this work.
+
+Focused race97355 PASS root1.533s/database1.114s; expanded9285 PASS root1.700s/
+database1.139s. Tests cover detached complete saves/reopen, safe filenames/mode,
+new receipt identity, stale acknowledgements, corruption retained untouched,
+failed database retry, newest live state, actual missing-directory write failure,
+expiry pin/unpin, and missing-latest-state hydration refusal. Pure directory
+renaming is not a physical disk-full or power-loss test.
+
+Actual race-built33010 on5cf6acb794785ede185a7187e5ea53516c76e6e6 CLOSED PASS45.783s.
+Ordinary handoff5.53s; rejected-save/restart6.67s; committed receipt/later credit
+3.58s; eight four-class alive/dead token/resume/recovery cases28.95s. An explicitly
+owned disposable Mongo validator rejected real production writes while leaving
+reads available: ordinary Fireball100→70mana, disconnect journal retained through
+failed shutdown retry, then a new process recovered the exact complete snapshot
+before readiness and ordinary login preserved17HP/70mana/gear/gold. This is a
+rejected-write test, not a delayed network outage. A separate precommitted pending
+receipt plus subsequent43gold credit replayed without losing the credit; a dead
+0HP/0mana character remained dead/empty through ordinary login and save.
+
+Log `/tmp/eidolon-resource-journal-actual-sessions.log`; binary
+`/tmp/eidolon-resource-journal-proof-qcfth6/5cf6acb794785ede185a7187e5ea53516c76e6e6`.
+Five server evidence dirs3793709616/795464650/168276058/2545814512/3148458027 in
+`/tmp/eidolon-compat-session-*` passed strict normal exit/log checks plus independent
+race/panic/fatal/credential scans. Exact owned Mongo container/volumes removed and
+independently absent; production data untouched. Full Go race75477 CLOSED PASS
+normal0: root17.115s/database1.149s/game342.717s. Actual144 saved-session30872 also
+CLOSED PASS normal0/210.581s (test209.55s), four classes/levels1,30,100/partial,
+full, zero and dead bars across three new processes. Its evidence dirs4089778075/
+1507303130/1092665031 passed strict and independent normal-exit/race/panic/fatal/
+credential checks. Exact owned matrix Mongo and disposable volumes removed and
+independently absent. Both ran frozen source5cf6acb; logs
+`/tmp/eidolon-resource-journal-full-race.log` and
+`/tmp/eidolon-resource-journal-matrix-sessions.log`. All owned local test handles
+are closed at16:12 UTC. These successes do not close the remaining gates below.
+
 ## Required work still open — do not publish this slice alone
 
-- Verify the implemented immediate-login, duplicate-session and repeated-Join
-  ownership paths with actual concurrent sessions, delayed saves and race checks.
-  Preserve live resources without blocking the global hub or reconnect healing.
-- Audit all direct repository saves, autosave, resume-window expiry and actual
-  resource/death restoration. Verify PvP forfeit/entry/exit and unfinished dungeon
-  recovery. Real browser cast/damage/reconnect/death-button acceptance remains.
+- Audit shutdown admission and
+  world-mutation stopping before final snapshots/worker drain: the current
+  WaitGroup alone does not prevent new work during shutdown. Verify delayed IO,
+  storage failure boundaries and pending-save versus offline auction-credit
+  ordering; a matched receipt alone does not protect every concurrent credit.
+- Verify actual PvP forfeit/entry/exit and unfinished-dungeon save/recovery.
+  Preserve existing explicit PvP recovery policy, not reconnect healing. Desktop
+  Wizard cast/death/login/Recall evidence exists above; broader class/device
+  browser acceptance remains open.
 - Old binaries do not understand this field and replace whole character records;
   rollback could discard snapshots. Define and verify a compatible rollback plan
   before assigning a release version, patch notes and sequential publication.
