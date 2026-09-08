@@ -3,7 +3,7 @@ import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld,
 import { openPhoneNavigation } from './mobile-helpers.js';
 import { seedReturningCharacter } from './chronicle-returning-fixture.js';
 import { chronicleInvestigations } from '../../src/data/chronicleInvestigations.generated.js';
-import { planWizardCrowdControl, planWizardHuntStep } from '../wizardHuntControls.js';
+import { planWizardCrowdControl, planWizardHuntStep, planWizardTravelDefense } from '../wizardHuntControls.js';
 import { chronicleReadingMetrics, openIlyraByTouch, recallChronicleByTouch,
     revealChronicleEndingByTouch, walkChronicleByTouch } from './chronicle-phone-inputs.js';
 
@@ -164,9 +164,27 @@ test(`phone returning character earns both ${realm} investigations with touch tr
         const travel = async (x, z) => {
             try {
                 await walkChronicleByTouch(page, context, x, z, 180_000, {
-                    onThreat: position => fightAtSite(page, context, {
-                        id: `${realm}-travel`, entityId: 'travel-not-a-discovery', kind: 'travel', ...position
-                    }, chapter)
+                    onThreat: async position => {
+                        const state = await page.evaluate(() => {
+                            const game = window.game, p = game.player;
+                            return { className: p.constructor.name, dead: p.state === 'DEAD',
+                                x: p.position.x, z: p.position.z, healthRatio: p.stats.hp / p.stats.maxHp,
+                                shieldHP: p.shieldHP || 0, mana: p.stats.mana, shieldCost: 40,
+                                hotbar: p.hotbar, cooldowns: p.cooldowns, unlockedSkills: p.unlockedSkills,
+                                sinceCastMs: Date.now() - window.__phoneLoreCombat.lastAccepted,
+                                threats: (game.activeEntitiesCache || []).filter(enemy => game.isHostileActorTarget(enemy) &&
+                                    p.position.distanceTo(enemy.position) < 12).map(enemy => ({ x: enemy.position.x, z: enemy.position.z })) };
+                        });
+                        const plan = planWizardTravelDefense(state);
+                        if (plan?.action === 'shield') return async () => {
+                            await page.locator(`.hotbar-slot[data-slot="${Number(plan.key) - 1}"]`).tap();
+                            await page.waitForTimeout(550);
+                        };
+                        if (plan?.action === 'fight') return () => fightAtSite(page, context, {
+                            id: `${realm}-travel`, entityId: 'travel-not-a-discovery', kind: 'travel', ...position
+                        }, chapter);
+                        return null;
+                    }
                 });
             } catch (error) {
                 await capture(`${chapter.id}-travel-failure`);

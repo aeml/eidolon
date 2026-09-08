@@ -1,4 +1,4 @@
-import { planWizardCrowdControl, planWizardHuntStep } from './wizardHuntControls.js';
+import { planWizardCrowdControl, planWizardHuntStep, planWizardTravelDefense } from './wizardHuntControls.js';
 
 const state = { className: 'Wizard', dead: false, x: 0, z: 0, healthRatio: 0.7,
     shieldHP: 0, mana: 50, shieldCost: 40, hotbar: ['Teleport', 'Arcane Shield'],
@@ -6,6 +6,16 @@ const state = { className: 'Wizard', dead: false, x: 0, z: 0, healthRatio: 0.7,
 
 const crowd = { ...state, mana: 100, wellCost: 60, hotbar: ['Teleport', 'Arcane Shield', 'Gravity Well'],
     unlockedSkills: ['Gravity Well'], threats: [{ x: 5, z: 0 }, { x: 6, z: 0 }, { x: 7, z: 0 }] };
+
+test('travel does not repeatedly clear mobs or retreat off-route while healthy', () => {
+    expect(planWizardTravelDefense({ ...state, healthRatio: 1 })).toBeNull();
+    expect(planWizardTravelDefense({ ...state, healthRatio: .5, shieldHP: 100 })).toBeNull();
+    expect(planWizardTravelDefense(state)).toEqual({ action: 'shield', key: '2' });
+    expect(planWizardTravelDefense({ ...state, healthRatio: .3, mana: 0 })).toEqual({ action: 'fight' });
+    expect(planWizardTravelDefense({ ...state, healthRatio: .3 })).toEqual({ action: 'shield', key: '2' });
+    expect(planWizardTravelDefense({ ...state, healthRatio: .3, dead: true })).toBeNull();
+    expect(planWizardTravelDefense({ ...state, healthRatio: .3, threats: [] })).toBeNull();
+});
 
 test('prepared crowd control uses the actual unlocked hotbar and an in-range cluster', () => {
     expect(planWizardCrowdControl(crowd)).toEqual({ action: 'gravity-well', key: '3', x: 6, z: 0 });

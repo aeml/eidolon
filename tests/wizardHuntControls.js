@@ -1,5 +1,15 @@
 import { clipDungeonEffectSegment } from '../src/skills/dungeonEffectGeometry.js';
 
+// Traveling through a realm is not an instruction to clear every spawn along
+// the road. Use the real shield when needed, fight only to recover from danger,
+// and otherwise continue toward the waypoint. Site combat retains its own plan.
+export function planWizardTravelDefense(state) {
+    if (state.className !== 'Wizard' || state.dead || !state.threats?.length) return null;
+    const defensive = planWizardHuntStep(state);
+    if (defensive?.action === 'shield') return defensive;
+    return state.healthRatio < .35 ? { action: 'fight' } : null;
+}
+
 // Optional full-kit strategy for prepared investigation fixtures. Ordinary
 // fresh-hunt baselines keep their existing shield/retreat-only strategy.
 export function planWizardCrowdControl(state) {

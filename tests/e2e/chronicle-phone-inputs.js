@@ -19,14 +19,15 @@ export async function walkChronicleByTouch(page, context, x, z, timeout = 90_000
                         game.isHostileActorTarget(enemy) && player.position.distanceTo(enemy.position) < 12) };
             }, { x, z, watchThreats: Boolean(onThreat) });
             expect(state.dead, 'Phone investigation travel must remain survivable').toBe(false);
-            if (state.threatened) {
+            const response = state.threatened ? await onThreat(state.position) : null;
+            if (response) {
                 // Release the movement finger before ordinary taps/retreats.
                 // Combat has no travel callback, so this cannot recurse.
                 if (started) {
                     await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
                     started = false;
                 }
-                await onThreat(state.position);
+                await response();
                 return false;
             }
             const distance = Math.hypot(state.x, state.z);
