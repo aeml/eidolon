@@ -5,7 +5,42 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 21:40 UTC
+## Current checkpoint — September 8, 21:52 UTC
+
+PROGRESS: user-reported respawn cube reproduced and fixed in49 descendant
+`/tmp/eidolon-release49-navigation-dqbOBW`, commit e56b4c8 (after diagnostic95acbd6).
+Rogue.cancelAbilities previously made every material opaque, exposing the invisible
+ActorInteractionHitbox after death. Regression48124 failed opacity0 vs1 before
+the fix. Stealth now owns isolated temporary material copies, restores only its
+changes on expiry/cancel/death/respawn/disposal/mesh replacement, and preserves
+translucency/shared pooled originals. Interaction boxes also disable color writes
+while retaining raycasting. Focused53282 PASS53 tests; final lint12975 PASS.
+Rendered79896 PASS1/8.4s, prepared real Rogue/model lifecycle scene; screenshot
+inspected without cube after repeated respawns and expiry. This is not multiplayer
+earned-death proof. Full client39229 CLOSED PASS0:235 suites/3339 tests142.466s.
+49 cumulative notes include the fix; anonymous CI now includes the visual test.
+No release push yet because dungeon acceptance below still fails.
+
+Navigation98013 CLOSED FAIL1 on first repetition (second never started): no
+clear pointer candidate near the occupied encounter center, seed-1687759325318940866.
+Further instrumented36130 CLOSED FAIL1, `/tmp/eidolon-route49-2145.log`,
+seed-2357726041626336347. Actor repeatedly circles center because Skeleton
+silhouettes cover intended destination; no hostile damage received. This does
+not yet establish whether an AI or navigation/test defect is responsible.
+Ground/input diagnostics remain uncommitted in49 tree, separate from the visual
+fix. Both original CI seeds were replayed through production generation/validation
+successfully via TestReportedDungeonSeed; valid geometry alone is not combat proof.
+Fresh public client/server checks21:41 still match healthy48/546391c.
+
+User's new safe-zone/Well Rested feature is recorded in its linked plan and both
+main roadmap and balance plan (root952dff0):10% maximum HP/MP/sec in safe zones,
+one buff second earned per second there, cap7200, countdown only outside,
+10% all stats/25% enemy-kill XP and particle aura. Planned, not implemented/live.
+Explicit stat mapping and offline policy remain implementation design decisions;
+proposed offline pause earns/spends nothing. Outside .01 regen unchanged.
+Full1.1–1.10 scope remains active. Root staged52 must not be pushed.
+
+## Historical checkpoint — September 8, 21:40 UTC
 
 The previous regen-only turn verified the already-implemented .01 rate without
 roadmap implementation changes. This continuation is PROGRESS: bridge queue
