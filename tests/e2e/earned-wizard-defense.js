@@ -44,7 +44,7 @@ export async function createEarnedWizardDefense(page, { retreatBelowHealthRatio 
         }
         try {
             await moveByGroundClick(page, plan.x, plan.z, { minimumDistance: 6, allowJumpFallback: false,
-                timeout: 2500 });
+                allowAlternatePaths: false, timeout: 2500 });
         } catch (error) {
             if ((await readPlayerState(page)).state === 'DEAD') return true;
             if (error instanceof GroundInputUnavailableError) {

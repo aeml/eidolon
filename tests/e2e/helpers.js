@@ -360,7 +360,9 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
     const sideDistance = Math.max(8, magnitude * 0.4);
     const sideX = -deltaZ / magnitude * sideDistance;
     const sideZ = deltaX / magnitude * sideDistance;
-    const candidates = [
+    // Collision-aware callers have checked one complete path. A nearby vector
+    // is not equivalent evidence: it can cross a wall the planned path avoids.
+    const candidates = options.allowAlternatePaths === false ? [[deltaX, deltaZ]] : [
         [deltaX, deltaZ],
         [deltaX + sideX, deltaZ + sideZ],
         [deltaX - sideX, deltaZ - sideZ]
