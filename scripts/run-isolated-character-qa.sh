@@ -447,6 +447,9 @@ run_well_rested() {
 
 set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
+  phone-stash-entry)
+    npx playwright test tests/e2e/phone-stash-entry.spec.js
+    ;;
   all)
     npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js && run_whip_shape && run_ground_shape && run_purifying_area && run_guardian_area && run_consecrated_area && run_cleric_area && run_spirit_area && run_whirlwind && run_phone && run_phone_combat && run_phone_party && run_phone_inventory && run_equipment_recovery && run_forge_guide && run_fresh_collection && run_talent_economy && run_talent_healing && run_talent_duration && run_seraph && run_shield_training && run_entrance_visibility && run_phone_quests && run_phone_build && run_phone_settings && run_phone_adventure && run_dungeon_recovery && run_death_resource_recovery && run_direct_target_classes && npm run test:e2e:movement && run_pvp_cadence && run_animation_classes && run_animation_multiplayer && npx playwright test tests/e2e/nameplate-world.spec.js && run_well_rested
     ;;
