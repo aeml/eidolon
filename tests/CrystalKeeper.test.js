@@ -63,6 +63,24 @@ test('Maelin has actual moving ritual tracks and resets her pose when reused', a
     MeshFactory.releaseMesh('CrystalKeeper', reused);
 });
 
+test('joining during a ritual starts Channel after the actual mesh finishes loading', async () => {
+    const keeper = new CrystalKeeper('maelin-late-mesh');
+    // This lifecycle unit test has no real 2D canvas. The browser comparison
+    // separately renders the actual labels; leave mesh/mixer loading intact.
+    keeper.updateNameTag = () => {};
+    keeper.isRemote = true;
+    keeper.updateState('CHANNELING');
+    keeper.update(1 / 60, null, null, []);
+    await keeper.ensureMesh();
+    keeper.update(1 / 60, null, null, []);
+    expect(keeper.currentAction.getClip().name).toBe('Channel');
+    keeper.updateState('IDLE');
+    for (let frame = 0; frame < 45; frame++) keeper.update(1 / 60, null, null, []);
+    expect(keeper.currentAction.getClip().name).toBe('Idle');
+    expect(Math.abs(keeper.mesh.getObjectByName('Rig_UpperArmRight').rotation.x)).toBeLessThan(0.2);
+    keeper.dispose();
+});
+
 test('actual Spirit Guardians retain their summoned angel model', () => {
     const engine = Object.create(GameEngine.prototype);
     const guardian = engine.createRemotePlayer('NPC', 'seraph-owner-1', 'AvengingSeraph');
