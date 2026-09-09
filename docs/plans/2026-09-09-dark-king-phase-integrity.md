@@ -66,6 +66,8 @@ use synchronized event capture for concurrent combat. Logs
 `/tmp/eidolon-dark-king-actual-damage-paths-after.log` and
 `/tmp/eidolon-dark-king-explosion-chain-race.log`.
 
-The new explosion runtime change still requires a fresh complete server race
-run. None of these fixtures establishes player-controlled raid pacing, visible
-phase quality, or a production release. This work remains excluded from58.
+Complete Go1.24.5 race repeat51326 PASSED on clean ce6780e: root24.632s,
+game354.984s, database/lifecycle/loadtest passed from cache; remaining packages
+have no tests. Log `/tmp/eidolon-dark-king-explosion-full-race.log`.
+None of these fixtures establishes player-controlled raid pacing, visible phase
+quality, or a production release. This work remains excluded from58.
