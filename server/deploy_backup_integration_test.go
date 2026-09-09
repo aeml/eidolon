@@ -26,6 +26,10 @@ func TestDeployUpgradeBackupPreservesPrivateStateAndRestartsOnFailure(t *testing
 	if err != nil {
 		t.Fatal(err)
 	}
+	pinScript, err := os.ReadFile("deploy/pin_previous_image.sh")
+	if err != nil {
+		t.Fatal(err)
+	}
 	dockerPath, err := exec.LookPath("docker")
 	if err != nil {
 		t.Fatal(err)
@@ -41,6 +45,7 @@ func TestDeployUpgradeBackupPreservesPrivateStateAndRestartsOnFailure(t *testing
 	journal := []byte("private pending snapshot fixture: health=17 mana=0 gold=1184\n")
 	files := map[string][]byte{
 		"deploy/backup_before_upgrade.sh":   script,
+		"deploy/pin_previous_image.sh":      pinScript,
 		"logs/character-saves/pending.json": journal,
 		"compose.yml": []byte(fmt.Sprintf(`name: %s
 services:
@@ -67,13 +72,13 @@ services:
       timeout: 5s
       retries: 40
   api:
-    image: alpine:3.22
+    image: %s:current
     volumes: [./logs:/app/logs]
     command: [sh, -c, "trap 'exit 0' TERM; chown 65532:65532 /app/logs/character-saves/pending.json; while :; do sleep 1 & wait $$!; done"]
 volumes:
   mongo_data:
   restore_data:
-`, project)),
+`, project, project)),
 		"bin/docker": []byte(`#!/bin/sh
 case "$*" in
   *mongodump*) if [ "$BACKUP_TEST_REJECT_DUMP" = 1 ]; then echo 'owned injected dump failure' >&2; exit 1; fi ;;
@@ -86,7 +91,7 @@ exec "$BACKUP_TEST_REAL_DOCKER" "$@"
 			t.Fatal(err)
 		}
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
+	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Minute)
 	defer cancel()
 	env := append(os.Environ(), "COMPOSE_PROJECT_NAME="+project, "COMPOSE_FILE="+filepath.Join(root, "compose.yml"))
 	run := func(input io.Reader, args ...string) []byte {
@@ -103,6 +108,7 @@ exec "$BACKUP_TEST_REAL_DOCKER" "$@"
 		t.Fatal("refusing to reuse an existing Compose project")
 	}
 	// Exact unique project only; preserve backups as evidence until TempDir cleanup.
+	rollbackTag := ""
 	t.Cleanup(func() {
 		cleanupCtx, stop := context.WithTimeout(context.Background(), 30*time.Second)
 		defer stop()
@@ -111,10 +117,37 @@ exec "$BACKUP_TEST_REAL_DOCKER" "$@"
 		if output, err := command.CombinedOutput(); err != nil {
 			t.Errorf("owned project cleanup failed: %v\n%s", err, output)
 		}
+		images := []string{project + ":current"}
+		if rollbackTag != "" {
+			images = append(images, rollbackTag)
+		}
+		command = exec.CommandContext(cleanupCtx, dockerPath, append([]string{"image", "rm"}, images...)...)
+		if output, err := command.CombinedOutput(); err != nil {
+			t.Errorf("owned fixture image cleanup failed: %v\n%s", err, output)
+		}
 	})
+	buildFixture := func(version string) {
+		t.Helper()
+		// Only this unique test tag is replaced, never the shared base image tag.
+		run(strings.NewReader(fmt.Sprintf("FROM alpine:3.22\nLABEL eidolon.backup.proof=%s-%s\n", project, version)), "build", "--tag", project+":current", "-")
+	}
+	buildFixture("previous")
 	run(nil, "compose", "up", "-d", "--wait", "mongo", "api")
 	apiID := string(run(nil, "compose", "ps", "-q", "api"))
 	imageID := string(run(nil, "inspect", "--format", "{{.Image}}", apiID))
+	rollbackTag = "eidolon-api:rollback-" + strings.TrimPrefix(imageID, "sha256:")
+	pin := exec.CommandContext(ctx, "bash", filepath.Join(root, "deploy/pin_previous_image.sh"))
+	pin.Dir, pin.Env = root, env
+	if output, err := pin.CombinedOutput(); err != nil {
+		t.Fatalf("pinning exact previous image failed: %v\n%s", err, output)
+	}
+	buildFixture("replacement")
+	if string(run(nil, "image", "inspect", "--format", "{{.Id}}", rollbackTag)) != imageID {
+		t.Fatal("replacing the build tag lost the pinned previous image")
+	}
+	if string(run(nil, "image", "inspect", "--format", "{{.Id}}", project+":current")) == imageID {
+		t.Fatal("fixture did not actually replace the mutable build tag")
+	}
 	if _, err := os.ReadFile(filepath.Join(root, "logs/character-saves/pending.json")); err == nil && os.Geteuid() != 0 {
 		t.Fatal("private journal fixture is unexpectedly readable by the host user")
 	}
@@ -229,4 +262,48 @@ exec "$BACKUP_TEST_REAL_DOCKER" "$@"
 		t.Fatal("missing explicit no-previous-image identity")
 	}
 	t.Log("owned backup restored zero mana, health, gold and receipts; private journal retained; failed dump restarted the exact previous API")
+}
+
+func TestDeployBuildContextExcludesPrivateRecoveryFiles(t *testing.T) {
+	if os.Getenv("EIDOLON_DEPLOY_BACKUP_DISPOSABLE") != "1" {
+		t.Skip("requires explicitly disposable Docker build-context verification")
+	}
+	ignore, err := os.ReadFile(".dockerignore")
+	if err != nil {
+		t.Fatal(err)
+	}
+	root := t.TempDir()
+	for _, directory := range []string{"backups", "logs"} {
+		if err := os.Mkdir(filepath.Join(root, directory), 0700); err != nil {
+			t.Fatal(err)
+		}
+	}
+	files := map[string][]byte{
+		".dockerignore":               ignore,
+		".env":                        []byte("owned private environment fixture"),
+		"backups/previous-api.tar.gz": []byte("owned private archive fixture"),
+		"logs/pending.json":           []byte("owned private journal fixture"),
+		"Dockerfile":                  []byte("FROM alpine:3.22\nCOPY . /context\nRUN test ! -e /context/backups && test ! -e /context/logs && test ! -e /context/.env && test -f /context/Dockerfile\n"),
+	}
+	for name, content := range files {
+		if err := os.WriteFile(filepath.Join(root, name), content, 0600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	tag := fmt.Sprintf("eidolon-backup-context-proof:%d", time.Now().UnixNano())
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+	command := exec.CommandContext(ctx, "docker", "build", "--tag", tag, root)
+	output, err := command.CombinedOutput()
+	if err != nil {
+		t.Fatalf("private files entered the build context: %v\n%s", err, output)
+	}
+	t.Cleanup(func() {
+		cleanupCtx, stop := context.WithTimeout(context.Background(), 15*time.Second)
+		defer stop()
+		if output, err := exec.CommandContext(cleanupCtx, "docker", "image", "rm", tag).CombinedOutput(); err != nil {
+			t.Errorf("owned context image cleanup: %v\n%s", err, output)
+		}
+	})
+	t.Log("actual Docker COPY excludes private archives, journals and environment")
 }

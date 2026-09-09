@@ -152,7 +152,7 @@ mongo_password="$(openssl rand -hex 24)"
 docker build \
   --build-arg GO_VERSION=1.24.5 \
   --build-arg "BUILD_COMMIT=${qa_build_commit}" \
-  --build-arg "BUILD_VERSION=Alpha 1.0.57" \
+  --build-arg "BUILD_VERSION=Alpha 1.0.58" \
   --tag "${SERVER_IMAGE}" server >/dev/null
 image_created=true
 
@@ -250,7 +250,7 @@ run_phone_inventory() {
     EIDOLON_E2E_PASSWORD="${QA_PASSWORD}" \
     EIDOLON_E2E_CLASS="Fighter" \
     EIDOLON_E2E_REGISTER=1 \
-    npx playwright test tests/e2e/mobile-inventory-gameplay.spec.js
+    npx playwright test tests/e2e/mobile-inventory-gameplay.spec.js tests/e2e/phone-stash-entry.spec.js
 }
 
 run_equipment_recovery() {
@@ -441,8 +441,21 @@ run_pvp_cadence() {
   npx playwright test tests/e2e/pvp-cadence-gameplay.spec.js
 }
 
+run_well_rested() {
+  # Separate ordinary registrations: never reuse a progressed gate character.
+  # The expiry test appends its own -expiry suffix to the first base name.
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-rest" EIDOLON_E2E_CLASS=Wizard \
+    EIDOLON_E2E_REGISTER=1 npx playwright test --output=test-results/well-rested-journey tests/e2e/well-rested-gameplay.spec.js \
+      tests/e2e/well-rested-expiry-gameplay.spec.js || return $?
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-rest-party" EIDOLON_E2E_CLASS=Wizard \
+    EIDOLON_E2E_REGISTER=1 npx playwright test --output=test-results/well-rested-party tests/e2e/well-rested-party-gameplay.spec.js
+}
+
 set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
+  phone-stash-entry)
+    npx playwright test tests/e2e/phone-stash-entry.spec.js
+    ;;
   all)
     run_qa_stage authenticated npm run test:e2e:authenticated &&
     run_qa_stage dungeons-and-inventory npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js &&
@@ -478,7 +491,8 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     run_qa_stage pvp-cadence run_pvp_cadence &&
     run_qa_stage animation-classes run_animation_classes &&
     run_qa_stage animation-multiplayer run_animation_multiplayer &&
-    run_qa_stage nameplate-world npx playwright test tests/e2e/nameplate-world.spec.js
+    run_qa_stage nameplate-world npx playwright test tests/e2e/nameplate-world.spec.js &&
+    run_qa_stage well-rested run_well_rested
     ;;
   animations)
     run_animation_classes
@@ -488,6 +502,10 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   pvp-cadence)
     run_pvp_cadence
+    ;;
+  recovery-tail)
+    # Focused suffix rehearsal; does not replace the complete all-route gate.
+    run_pvp_cadence && run_animation_classes && run_animation_multiplayer && npx playwright test tests/e2e/nameplate-world.spec.js && run_well_rested
     ;;
   movement-fast)
     EIDOLON_E2E_MOVEMENT_MAX_LEVEL=1 npx playwright test tests/e2e/movement-smoothness.spec.js
@@ -619,6 +637,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   well-rested)
     npx playwright test tests/e2e/well-rested-gameplay.spec.js
+    ;;
+  well-rested-all)
+    run_well_rested
     ;;
   live-recovery-rehearsal)
     EIDOLON_E2E_BASE_URL="http://127.0.0.1:${EIDOLON_E2E_WEB_PORT:-4173}" \

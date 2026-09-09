@@ -84,6 +84,7 @@ async function leaveTown(page) {
 }
 
 test('fresh level-one character earns and manually turns in the opening Chronicle without grants', async ({ page, baseURL }, testInfo) => {
+    earnedTownRecoveryEnabled(); // Reject malformed diagnostics before creating a character.
     const credentials = credentialsFromEnvironment();
     expect(testInfo.retry).toBeLessThanOrEqual(1);
     if (testInfo.retry) credentials.username += `-retry${testInfo.retry}`;

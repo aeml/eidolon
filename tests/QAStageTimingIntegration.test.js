@@ -42,7 +42,8 @@ const commands = [
     "run_pvp_cadence",
     "run_animation_classes",
     "run_animation_multiplayer",
-    "npx playwright test tests/e2e/nameplate-world.spec.js"
+    "npx playwright test tests/e2e/nameplate-world.spec.js",
+    "run_well_rested"
 ];
 const stages = [
     "authenticated",
@@ -79,7 +80,8 @@ const stages = [
     "pvp-cadence",
     "animation-classes",
     "animation-multiplayer",
-    "nameplate-world"
+    "nameplate-world",
+    "well-rested"
 ];
 const events = (output, prefix) => output.split('\n')
     .filter(line => line.startsWith(prefix)).map(line => line.slice(prefix.length));

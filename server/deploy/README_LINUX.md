@@ -58,6 +58,15 @@ Deployment validates that the API's URI points to the same `mongo:27017` service
 that the backup captures. Remote database URIs fail closed; they require a
 separately verified backup workflow rather than an unrelated local archive.
 
+Before building, `pin_previous_image.sh` retains the previous container's exact
+image with a digest-derived `eidolon-api:rollback-*` tag. This happens under the
+deployment lock and does not stop the running API. Docker's containerd image
+store can otherwise lose an old image reference when a build replaces the shared
+Compose tag, even while its container still runs. A missing image or conflicting
+rollback tag aborts before building; recover the exact image before retrying.
+Rollback tags are retained, not automatically deleted. Private `backups/` and
+`logs/` are excluded from the Docker build context as well as Git.
+
 For a save-format increase, the script runs `backup_before_upgrade.sh` after
 preflight and before target startup. This stops the old API, archives its immutable
 image and the complete `eidolon` Mongo database, and includes private pending

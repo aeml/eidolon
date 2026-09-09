@@ -15,7 +15,7 @@ func TestDeploySchemaPreflightPrecedesLiveReplacement(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, scenario := range []string{"compatible", "upgrade", "backup-failed", "future-schema", "database-unavailable", "missing-contract", "foreign-mongo"} {
+	for _, scenario := range []string{"compatible", "upgrade", "backup-failed", "future-schema", "database-unavailable", "missing-contract", "foreign-mongo", "missing-previous-image"} {
 		t.Run(scenario, func(t *testing.T) {
 			root := t.TempDir()
 			for _, dir := range []string{"deploy", "bin"} {
@@ -25,6 +25,10 @@ func TestDeploySchemaPreflightPrecedesLiveReplacement(t *testing.T) {
 			}
 			files := map[string]string{
 				"deploy/deploy_linux.sh": string(script),
+				"deploy/pin_previous_image.sh": `#!/bin/sh
+printf '%s\n' pin-previous-image >> "$PREFLIGHT_COMMANDS"
+if [ "$PREFLIGHT_SCENARIO" = missing-previous-image ]; then exit 1; fi
+`,
 				"deploy/backup_before_upgrade.sh": `#!/bin/sh
 printf '%s\n' backup >> "$PREFLIGHT_COMMANDS"
 if [ "$PREFLIGHT_SCENARIO" = backup-failed ]; then exit 1; fi
@@ -76,12 +80,15 @@ esac
 				if runErr == nil || string(state) != "healthy-previous-release" || strings.Contains(string(commands), "compose up -d\n") {
 					t.Fatalf("failed preflight replaced live API: %v\n%s\n%s", runErr, commands, output)
 				}
+				if scenario == "missing-previous-image" && strings.Contains(string(commands), "compose build api") {
+					t.Fatal("missing previous image must stop deployment before replacing its tag")
+				}
 				return
 			}
 			if runErr != nil || string(state) != "replaced" {
 				t.Fatalf("compatible deployment failed: %v\n%s", runErr, output)
 			}
-			expected := "compose build api\ncompose up -d --no-recreate --wait mongo\ncompose run --rm --no-deps -T api --check-schema --mongo-uri=mongodb://mongo:27017\n"
+			expected := "pin-previous-image\ncompose build api\ncompose up -d --no-recreate --wait mongo\ncompose run --rm --no-deps -T api --check-schema --mongo-uri=mongodb://mongo:27017\n"
 			if scenario == "upgrade" {
 				expected += "backup\n"
 			} else if strings.Contains(string(commands), "backup\n") {

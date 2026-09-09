@@ -17,7 +17,7 @@ fi
 if [ -z "${EIDOLON_BUILD_COMMIT:-}" ] && [ -n "${REPO_ROOT:-}" ]; then
   EIDOLON_BUILD_COMMIT="$(git -C "${REPO_ROOT}" rev-parse HEAD)"
 fi
-EIDOLON_BUILD_VERSION="${EIDOLON_BUILD_VERSION:-Alpha 1.0.57}"
+EIDOLON_BUILD_VERSION="${EIDOLON_BUILD_VERSION:-Alpha 1.0.58}"
 export EIDOLON_BUILD_COMMIT EIDOLON_BUILD_VERSION
 
 if ! command -v docker >/dev/null 2>&1; then
@@ -76,6 +76,8 @@ if ! docker info >/dev/null 2>&1; then
   echo "docker daemon is not reachable for the current user" >&2
   exit 1
 fi
+
+bash ./deploy/pin_previous_image.sh
 
 echo "Building api image..."
 docker compose build api
