@@ -16,7 +16,51 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 12:33 UTC
+## Current checkpoint — September 9, 12:48 UTC
+
+This continuation made PROGRESS: implemented dedicated Maelin art and fixed the
+reproduced serverCHANNELING→clientIdle presentation defect, then verified actual
+rendered behavior in hardware and CI-mode browsers.58remains unchanged/accepted.
+
+Primary clean/frozen **117fffe1bdd399431e210db097c25ed49533d4c0** carries c60d374
+dedicated CrystalKeeper model/recipe, role-specific remote resting-animation hook,
+server-owned facing toward the crystal, and Idle/Channel animation loops. The
+model reuses the adult NPC rig/caches but adds tailored workwear, open face/braided
+hair/goggles, toolkit, four vials and tuning fork; not player Wizard/quest giver/
+angel summon. Existing town actors and true Spirit Guardians remain unchanged.
+08923bbadds actual late-mesh-load regression. New test:e2e:crystal-art is included
+in this later candidate's anonymous CI shard2. No import or publication into58.
+
+Red `/tmp/eidolon-maelin-channel-before.log` reproduced absent mesh/channel;
+72187focused35/3/1.02+lint passed;1819serverrace5.024s passed including real NPC
+spawn/facing and snapshot/resume.77351hardware browser PASS10/30.3s onc60d374,
+archive `/tmp/eidolon-maelin-artificer-proof-hbZO36`,scan0. Inspected desktop and
+portrait Highchannel plus desktopLowreturnIdle model comparisons.67581late-mesh
+unit initially failed on its absent 2DcanvasmeasureText; only that unit's name-tag
+paint endpoint was stubbed (real labels covered in browser), not mesh/mixer/state.
+Finalfocused36/3/0.955+lint passed.33566CI-mode bundledChromium PASS10/52.0s,
+retries0, archive `/tmp/eidolon-maelin-ci-proof-vMum07`,scan0/port41961clean.
+Logs `/tmp/eidolon-maelin-{artificer-browser,artificer-ci-browser,channel-after,
+channel-complete-focused-r2,channel-complete-lint-r2,facing-server}.log`.
+Detailed evidence/pending player patch notes in candidate
+`docs/plans/2026-09-09-maelin-channel-and-model.md`.
+
+**28798full primary regression ACTIVE** on117fffe: Node24fullclient thenlint then
+freshfullGo-race. Logs `/tmp/eidolon-primary-maelin-final-{client,lint,server}.log`.
+No owned browser remains; do not modify primary during this compound run or
+restart it because a poll is quiet. Prior full47504passed onaa4f0f1but predates
+the latest model/hook/server-facing change. Full group combat/rejoin transport,
+earned31chapter progression/class/party balancing, broader mobile/interior/polish
+acceptance remain incomplete; neither gallery fixtures nor fullunit pass replace
+those gates. Next free earned browser priority remains fresh-story-ready after
+urgent recovery delivery needs are satisfied.
+
+57CI34347504351 remains ACTIVE in predeploy characterQA (started12:09:17), all
+precedingserver/client/backup-restore/browserjobs passed. No cancellations or new
+deployment. Must finish57production backup/deploy/final liveQA/exactpublicidentity
+before normally publishing accepted58e73be3a. Root is ledger-only, never push it.
+
+## Earlier checkpoint — September 9, 12:33 UTC
 
 Final update: **47504 TERMINAL0/PASS** on aa4f0f1. Fullclient273/3909/83.194 plus
 lint, then fresh fullGo-race: root19.472s/internal-game243.181s/database1.295s.
