@@ -16,7 +16,65 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 10:23 UTC
+## Current checkpoint — September 9, 10:29 UTC
+
+This goal turn made PROGRESS: completed the recovery-tail rehearsal, reproduced
+and fixed the56scenery-clock failure, passed its real CI-mode browser replay and
+full client regression, pushed corrected56, carried final ancestry, and started
+the complete58 rerun. Whole roadmap/recovery production acceptance remain open.
+
+**69623 recovery tail TERMINAL0/PASS** on5cc8849. Four duels1.9m, four class
+animation matrices, multiplayer2.2m, three town nameplates23.8s, native recovery/
+expiry2tests1.2m, phone-party1test24.5s (test22.8s). High19/Low10meshes per actual
+party member; joystick and readable status checks passed. Original82037 full run
+remains FAILED; this suffix does not replace it. Credential scan0 and exact
+runrest58-tail-0909-1012API/Mongo/image/network/ports absent after terminal cleanup.
+Archive **`/tmp/eidolon-rest58-corrected-tail-proof-J7LHvs`**, full log
+`/tmp/eidolon-rest58-corrected-tail.log`. Standalone73515cb records closure and
+fixes a documentation typo only; no runtime change from that evidence source.
+
+**24706 corrected56 full client/lint TERMINAL0** on56cfc79:
+240suites/3413tests/116.552s. **64638 actual bundled Chromium CI-mode browser
+TERMINAL0/PASS1/47.3s**: original MoltenCore/High/1280×720 test, unchanged15second
+predicate and zero retries. Same0→74/76hero pixels, outside changes0, unchanged
+camera/bounds, all original materials restored. Owned process confirmed bundled
+chromium_headless_shell-1228. Viewed before/revealed captures: actual Wizard
+reappears through a localized dither window; no final-device performance claim.
+Archive **`/tmp/eidolon-release56-scenery-clock-proof-mdne4o`** (current test-results
+and logs, not a stale prior HTML report). Log
+`/tmp/eidolon-release56-scenery-browser-ci-r2.log`. Port41956 free after terminal.
+Earlier5147 CLI invocation selected no tests due an over-anchored grep, exited1;
+corrected CLI first discovered exactly one case. Not a browser failure/pass.
+
+Corrected56 **31c7d9fc3bedce839b2f83b4146060ddaa5875aa PUSHED**, normal fast-forward
+77408 TERMINAL0; remote master independently matches. Before push,55CI34328735856
+rechecked TERMINAL SUCCESS and fresh10:27:14 public manifest/login/runtime/server
+all exactly matched55/c5ce9dc, statusok/databaseready. New **CI34340328283 ACTIVE**,
+server/client running. Original56CI34337271486 remains failed; no deployment was
+made by that run. Wait for complete corrected56CI/deploy/live and fresh matching
+public identities before pushing57. Root remains ledger-only/unpushed.
+
+Clean final56 ancestry/runtime/notes merge through:
+
+- 57 `/tmp/eidolon-resource-persistence-c6E17J`: **1f8c7be21bc8a2699c69417347abd51e2ff513dd**;
+- 58 `/tmp/eidolon-standalone-town-recovery-QJ6Drv`: **028f23b737210d4db0e467429e376bbc8f4dda77**;
+- primary `/tmp/eidolon-primary-town-recovery-lAKY3k`: **2505b36918ab0e2cc4b0dc788efd3c65ae27bb62**.
+
+Each merge changed only the shared visual clock, its tests/notes and evidence
+document; no server/gameplay/persistence changes and versions retained.
+**58087/61861 focused final57/primary PASSED246tests/2suites1.333s/1.624s plus lint**;
+logs `/tmp/eidolon-{release57,primary}-final-scenery-{focused,lint}.log`.
+
+**49970 complete58 all-route ACTIVE**, frozen028f23b, only owned local browser.
+Runrest58-all24-r11-0909-1028, ports18560/18561/41960, log
+`/tmp/eidolon-rest58-all-node24-rerun-1028.log`. **93957 full client/lint ACTIVE**,
+same frozen source, Node24.18.0,
+`/tmp/eidolon-rest58-final-scenery-full-{client,lint}.log`.
+Do not edit/restart while active; preserve failure evidence and exact cleanup.
+Primary is clean/idle with expanded-story earned readiness still due. Separate
+raid fixes/campaign labels remain out of58. Production recovery is NOT yet live.
+
+## Previous checkpoint — September 9, 10:23 UTC
 
 Previous turn made PROGRESS (diagnosed/corrected duel mana expectations). This
 turn made PROGRESS: corrected58 full client passed, its tail progressed through

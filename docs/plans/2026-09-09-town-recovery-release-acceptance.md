@@ -1,5 +1,18 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update10:29UTC:69623 complete corrected tail PASSED, including all class duels,
+animations, multiplayer, town nameplates and native rest/expiry/phone-party;
+scan0/exact cleanup verified. Archive
+`/tmp/eidolon-rest58-corrected-tail-proof-J7LHvs`. Not a full all-route pass.
+Corrected56/31c7d9f passed full client and the original CI-mode MoltenCore visual
+test47.3s, then was normally pushed after fresh exact55public identities.
+New56CI34340328283 ACTIVE. Final ancestry/visual fix/notes merged through57and58;
+current frozen58 **028f23b737210d4db0e467429e376bbc8f4dda77**.
+**49970 complete all-route ACTIVE**, `/tmp/eidolon-rest58-all-node24-rerun-1028.log`;
+**93957 full client/lint ACTIVE**, `...rest58-final-scenery-full-{client,lint}.log`.
+Only this local browser runs. Complete regression and ordered production/live
+gates remain required. No57/58push or town-recovery-live claim.
+
 Update10:23UTC:98816 full client/lint PASSED251suites/3535tests/157.667s on5cc8849.
 69623 tail is still ACTIVE: all four corrected duels, class matrices, multiplayer
 and town nameplates passed; native recovery/expiry/party suffix running. Not a
