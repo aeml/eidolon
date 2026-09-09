@@ -67,6 +67,21 @@ class GameEngineMovementMethods {
             return true;
         }
 
+        // A deliberate move-only gesture must not turn into an interaction
+        // when a silhouette, discovery or loot crosses the cursor. Keep normal
+        // walking/collision/server authority; this is not a jump or teleport.
+        if (event?.shiftKey || this.inputManager?.keys?.shift) {
+            const point = event && this.inputManager?.getGroundIntersectionFromEvent
+                ? this.inputManager.getGroundIntersectionFromEvent(event)
+                : this.inputManager.getGroundIntersection();
+            if (!point) return false;
+            this.pendingInteraction = null;
+            this.abilityController.pendingAbilityTarget = null;
+            this.abilityController.pendingAbilitySkill = null;
+            this.player.move(point);
+            return true;
+        }
+
         if (this.hoveredEntity && this.hoveredEntity !== this.player) {
             this.moveToAndInteract(this.hoveredEntity);
             return true;

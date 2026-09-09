@@ -88,3 +88,36 @@ After corrected full checks: verify generated protocol parity, ordinary persiste
 curve1→2/rested saves, fresh uninterrupted and honestly labeled town-rest routes,
 manual investigation/hunt/collection rewards and all-class/realm progression.
 Only then package version/patch notes and follow ordered CI plus exact live checks.
+
+## September 9, 03:23 UTC — move-only input and retained route failure
+
+Actual uninterrupted72341 on clean17a4dba FAILED in5.2m. Opening and diary
+manual rewards and no-reconnect checkpoints passed; Watch stopped at3/40,
+level4,50HP/8MP with zero deaths. An issued walking retreat moved only2.46
+units against the unchanged6-unit requirement. Its end position was within
+interaction range of New Growth and the screenshot showed that marker hovered.
+This suggests click interception during camera movement, but the original run
+did not capture the click recipient; it does not establish the unique cause.
+Sanitized evidence: `/tmp/eidolon-story-rest-failure-dxIDjf/test-results`;
+log `/tmp/eidolon-story-rest-uninterrupted-0303.log`. Owned disposable API,
+Mongo and image were cleaned and independently absent. No pacing approval.
+
+Added a visible, player-facing desktop Shift-click move-only control. It resolves
+ground through enemies, discoveries and loot, clears pending interactions and
+uses ordinary walking/collision/server movement. Normal clicks, mobile taps and
+Ctrl-click jump priority remain unchanged. Help explains the gesture. Ranged
+retreat QA now uses real Shift input; no shorter minimum, longer timeout,
+alternate route, extra rest stop, automatic jump or free resource was introduced.
+Movement failures now include read-only click-intent/collision diagnostics.
+
+New production-control tests first failed5/8 before implementation. Corrected
+control/raycast checks passed39tests; helper/failure-policy checks passed23tests.
+Native pointer fixture37171 PASS1/5.2s: the same rendered lore marker accepts
+ordinary interaction, Shift-click ground movement, then ordinary interaction
+again. This fixture records movement intent, not server displacement or earned
+combat; screenshot inspected and archived under the failure directory's
+`move-only-input` subdirectory. Full client73607 PASS257suites/3655tests153.217s;
+final lint17253 and diff checks pass. Logs `/tmp/eidolon-move-only-full-client.log`,
+`/tmp/eidolon-move-only-browser.log`, `/tmp/eidolon-move-only-lint-final.log`.
+Backend unchanged since its corrected full race pass. The same uninterrupted
+earned route must now run on the committed new control; its outcome is pending.

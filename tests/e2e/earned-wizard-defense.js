@@ -78,7 +78,7 @@ export async function createEarnedRangedDefense(page, { allowJumpFallback = fals
                 await page.evaluate(() => window.__freshWizardDefense.counts.crowdJumps++);
             } else {
                 await moveByGroundClick(page, plan.x, plan.z, { minimumDistance: 6, allowJumpFallback,
-                    allowAlternatePaths: false, requireClearPath: true, timeout: 2500 });
+                    moveOnly: true, allowAlternatePaths: false, requireClearPath: true, timeout: 2500 });
             }
         } catch (error) {
             if ((await readPlayerState(page)).state === 'DEAD') return true;

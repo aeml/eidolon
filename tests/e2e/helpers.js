@@ -393,20 +393,29 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
         // an animation or movement regression.
         await page.waitForTimeout(75);
         const isClearGround = await page.evaluate(() => !window.game?.hoveredEntity);
-        if (!isClearGround && options.allowJumpFallback === false) continue;
-        const useCoveredJump = !isClearGround;
+        const useMoveOnly = options.moveOnly === true;
+        if (!isClearGround && !useMoveOnly && options.allowJumpFallback === false) continue;
+        const useCoveredJump = !isClearGround && !useMoveOnly;
         const attempt = { candidateX, candidateZ, screenX: target.x, screenY: target.y,
-            mode: useCoveredJump ? 'covered-ground-jump' : 'walk' };
+            mode: useMoveOnly ? 'move-only-walk' : useCoveredJump ? 'covered-ground-jump' : 'walk' };
         attempts.push(attempt);
         // Control-click resolves ground before entity interactions in production.
         // The existing optional jump fallback must also be reachable when loot
         // or an actor covers every otherwise-visible ground point.
-        if (useCoveredJump) await page.keyboard.down('Control');
+        const modifier = useMoveOnly ? 'Shift' : useCoveredJump ? 'Control' : null;
+        if (modifier) await page.keyboard.down(modifier);
         try {
             await page.mouse.click(target.x, target.y);
         } finally {
-            if (useCoveredJump) await page.keyboard.up('Control');
+            if (modifier) await page.keyboard.up(modifier);
         }
+        attempt.intent = await page.evaluate(() => {
+            const game = window.game, p = game.player;
+            return { interactionId: game.pendingInteraction?.id || null,
+                interactionType: game.pendingInteraction?.type || null,
+                target: p.targetPosition ? { x: p.targetPosition.x, z: p.targetPosition.z } : null,
+                blockedStops: p.movementMetrics?.blockedStops || 0 };
+        });
         try {
             await expect.poll(async () => {
                 const after = await readPlayerState(page);
@@ -476,6 +485,11 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
             pendingType: game?.pendingInteraction?.constructor?.name || null,
             pendingSubtype: game?.pendingInteraction?.subType ||
                 game?.pendingInteraction?.constructor?.name || null,
+            movement: { ...player?.movementMetrics,
+                blockedTarget: player?.blockedTargetPosition
+                    ? { x: player.blockedTargetPosition.x, z: player.blockedTargetPosition.z } : null,
+                serverAdjustments: game?.movementTelemetry?.serverAdjustments || 0,
+                hardCorrections: game?.movementTelemetry?.hardCorrections || 0 },
             skeletons: (game?.activeEntitiesCache || [])
                 .filter((entity) => entity?.isActive &&
                     (entity.subType || entity.constructor?.name) === 'Skeleton')

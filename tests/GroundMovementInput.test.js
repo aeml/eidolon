@@ -22,7 +22,7 @@ function movementPage(covered, mobile = false) {
         }),
         mouse: { move: jest.fn(), click: jest.fn(async () => {
             // A normal entity-covered click must not be treated as movement.
-            if (!covered || keys.has('Control')) x += 10;
+            if (!covered || keys.has('Control') || keys.has('Shift')) x += 10;
         }) },
         keyboard: { down: jest.fn(async key => keys.add(key)), up: jest.fn(async key => keys.delete(key)) },
         waitForTimeout: jest.fn()
@@ -70,4 +70,25 @@ test('an issued checked-path click that cannot move still fails', async () => {
     })).rejects.toThrow('No real input established 6 units');
     expect(page.mouse.click).toHaveBeenCalledTimes(1);
     expect(page.keyboard.down).not.toHaveBeenCalled();
+});
+
+test('move-only walking ignores covered ground without using a jump', async () => {
+    const page = movementPage(true);
+    expect((await moveByGroundClick(page, 9, 0, { moveOnly: true,
+        allowJumpFallback: false, allowAlternatePaths: false, minimumDistance: 6 })).x).toBe(10);
+    expect(page.keyboard.down).toHaveBeenCalledWith('Shift');
+    expect(page.keyboard.up).toHaveBeenCalledWith('Shift');
+    expect(page.keyboard.down).not.toHaveBeenCalledWith('Control');
+    expect(page.mouse.click).toHaveBeenCalledTimes(1);
+});
+
+test('move-only walking still fails real movement failure and always releases Shift', async () => {
+    const page = movementPage(true);
+    page.mouse.click.mockImplementation(async () => {});
+    await expect(moveByGroundClick(page, 9, 0, { moveOnly: true,
+        allowJumpFallback: false, allowAlternatePaths: false, minimumDistance: 6 }))
+        .rejects.toThrow('No real input established 6 units');
+    expect(page.mouse.click).toHaveBeenCalledTimes(1);
+    expect(page.keyboard.up).toHaveBeenCalledWith('Shift');
+    expect(page.keyboard.down).not.toHaveBeenCalledWith('Control');
 });
