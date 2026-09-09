@@ -16,7 +16,27 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 13:56 UTC
+## Current checkpoint — September 9, 14:04 UTC
+
+This turn made PROGRESS: reproduced58predeploy stash failure in97427 on
+51e3f30, entry5/8. Old orientation camera generated stale tap261.41,209.11;
+settledportrait chest381.72,289.63. Actualhover/pending/hitstackempty, actor
+remainedatspawn. Screenshotviewed; archive
+`/tmp/eidolon-rest58-stash-entry-failure-XKKRDY`, scan0/exactcleanup.
+Corrected58d0a129c observes rendered/stableprojection before tap, retains30s
+actualopen/wholeitem savedtransfer assertions. Fullgate now includes8fresh
+orientationentrychecks. Natural gear setup allows32encounters within original
+420s instead of unsupported8-kill guarantee (~6.9%none at authored28.4%drop).
+No gameplay/server/reward/version/notes diff vs fb8db754. Diagnostics remain.
+36862PASS2/1.5m fullbag/storage plus8freshentries, archive
+`/tmp/eidolon-rest58-phone-fixed-proof-PsJZGP`, scan0/ownedports+containersclean.
+94314lintPASS;4886fullclient/lintACTIVE, log
+`/tmp/eidolon-rest58-phone-fix-full-{client,lint}.log`. NO correctionpushyet.
+Next finish4886; recordverifiedcode, normalpushcanonical58only; fullCI/predeploy/
+productionbackup/deploy/nativehealing+rest+expiry+party/exactpublic58proof due.
+Original34355888468failed, public57unchanged; primary75e30ebexcluded. Rootneverpush.
+
+## Previous checkpoint — September 9, 13:56 UTC
 
 Previous status turn made PROGRESS: discovered authoritative58CI failure and
 inspected failed predeploy logs, changing the next action from monitor to diagnose.

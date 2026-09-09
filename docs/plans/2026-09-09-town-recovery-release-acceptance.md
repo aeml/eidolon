@@ -1,5 +1,17 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update14:04UTC: stash failure REPRODUCED by dedicated51e3f30 entry/orientation
+test97427 (failed5/8). It projected the old landscape camera into new portrait
+dimensions and tapped empty space:261.41,209.11 vs settled381.72,289.63;
+empty hover/hit stack/pending, actor stayed at spawn. Screenshot inspected;
+archive `/tmp/eidolon-rest58-stash-entry-failure-XKKRDY`, scan0/exactcleanup.
+Correctedd0a129c waits for rendered stable projection; no runtime changes.
+Also budgets32 natural loot encounters instead of unsupported8-kill guarantee;
+same420s deadline, no grants/drop change. All8stashentries plus fullbag/storage
+PASSED36862/2tests1.5m; `/tmp/eidolon-rest58-phone-fixed-proof-PsJZGP`, scan0/
+exactcleanup. Lint94314PASS. Fullclient/lint4886 ACTIVE. CorrectionNOTpushedyet;
+fullCI/predeploy/deploy/nativepublicrecovery remain required. No healing live claim.
+
 Update 13:56 UTC: CI34355888468 TERMINAL FAILED at 13:51:52 in predeploy
 phone inventory. First attempt obtained no usable gear after eight ordinary
 kills; retry passed both orientation bag actions, then failed opening stash.
