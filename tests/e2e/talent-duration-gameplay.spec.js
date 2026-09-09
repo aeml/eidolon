@@ -99,7 +99,14 @@ test('phone shield duration training changes server timers and visible expiry', 
                 window.game.player.shieldHP === 0 && !window.game.player.attachedStatusEffects.has('arcane_shield'))).toBe(true);
             await expect(badge).toHaveCount(0);
             await expect(panel).toBeVisible();
-            await expect(panel.locator('.phone-status-empty')).toBeVisible();
+            // The shield expired, not the independently earned sanctuary buff.
+            await expect.poll(() => page.evaluate(() => window.game.player.safeZoneId === 'lanternhold' &&
+                window.game.player.wellRestedSeconds > 0)).toBe(true);
+            const rested = panel.locator('[data-buff-id="well_rested"]');
+            await expect(rested).toBeVisible();
+            await expect(rested.locator('h3')).toHaveText('Well Rested');
+            await expect(rested.locator('.phone-status-remaining')).toContainText('Resting');
+            await expect(panel.locator('.phone-status-empty')).toBeHidden();
         }
         // The reading panel is non-modal: the ordinary Skill button still reaches
         // the server while it is open. No timer or combat state is modified.
