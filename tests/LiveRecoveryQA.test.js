@@ -91,3 +91,10 @@ test('disposable rehearsal runs the same live wrapper without changing the defau
     expect(route).not.toContain('EIDOLON_QA_USERNAMES');
     expect(route).not.toContain('npx');
 });
+
+test('the live party observer uses the same scoped backend routing as the primary browser', () => {
+    const party = readFileSync('tests/e2e/well-rested-party-gameplay.spec.js', 'utf8');
+    const launch = party.split('const second = await browser.browserType().launch(')[1].split('});')[0];
+    expect(launch).toContain('...hardwareWebGLBrowserArgs()');
+    expect(launch).toContain('...backendOriginBrowserArgs(process.env.EIDOLON_E2E_BACKEND_ORIGIN_IP)');
+});

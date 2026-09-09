@@ -31,7 +31,7 @@ sanitation/upload gate remains mandatory as well. No secrets are placed in CLI
 arguments or printed by this wrapper.
 
 The shell harness executes the real wrapper with stubbed browser/scanner commands:
-13 checks cover all routes and arguments, fresh/max-length identities, mandatory
+14 checks cover all routes and arguments, fresh/max-length identities, mandatory
 workflow ordering, missing/invalid input, stop-on-failure and sanitation failure.
 The initial harness had a JavaScript template syntax error (zero tests executed),
 then was corrected; this was not a browser/runtime failure. Focused tests and lint
@@ -39,3 +39,11 @@ pass. The opt-in isolated route `live-recovery-rehearsal` runs this exact wrappe
 against the disposable loopback services, without expanding their QA allowlist
 or changing the default full gate. Actual browser rehearsal and live checks remain
 required; shell mocks and prior native-test passes do not establish live delivery.
+
+The first complete primary regression on9fa4638 passed268suites/3818tests/
+170.675s plus lint. Subsequent source review found the party observer launch
+omitted the existing scoped backend-origin routing that the primary browser and
+other live multiplayer tests already use. Add that same validated mapping to
+the observer; no configured origin still means no override. A source guard fails
+on the old launch and passes with the corrected policy. This is preventive live
+QA wiring, not a claimed diagnosis of an observed production failure.
