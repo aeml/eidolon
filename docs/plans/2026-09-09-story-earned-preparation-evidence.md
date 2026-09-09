@@ -33,6 +33,15 @@ route helper. GREEN:38tests/5suites1.197s and lint passed in71991, logs
 and remaining story-only Earth playthrough still require a fresh browser run.
 Recovery58 remains unchanged and excluded from these edits.
 
+Integrated fullclient25041 on0527fb7 FAILED one existing source-contract
+assertion (275suites/3941tests passed). It still demanded the removed
+distance-only acquisition guard from before218a0b7.479f302 now asserts the
+visible/living helper is used and the old no-input guard is absent; the behavioral
+acquisition suite plus retained-input suite passed29tests/2suites0.81s and lint.
+All retained deadlines, death bounds and actual credit assertions are unchanged.
+Log `/tmp/eidolon-story-acquisition-contract.log`; original failed full log is
+`/tmp/eidolon-story-milestone-integrated-client.log`. Full rerun remains required.
+
 The prior a4ea4cc run failed in the level20+ Imp hunt, starting at level9 and
 only training when a hunt started at10+. It did not log unspent points or actual
 damage targets. Preserve `/tmp/eidolon-story-ready-imp-failure-mptII0`; do not

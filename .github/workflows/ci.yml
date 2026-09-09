@@ -147,7 +147,7 @@ jobs:
           if [ "${{ matrix.shard }}" = 2 ]; then
             npm run test:e2e:crystal-art
             npm run test:e2e:journal
-            npx playwright test tests/e2e/combat-action-preview.spec.js
+            npx playwright test tests/e2e/combat-action-preview.spec.js tests/e2e/desktop-action-readability.spec.js
           fi
 
       - name: Upload browser failure evidence
