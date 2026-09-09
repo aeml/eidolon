@@ -38,3 +38,8 @@ categories/empty equipment slots, minimum-value/stack quotes, exact minimum sale
 selection and invalid targets. Wiring checks preserve ordinary inputs and
 unchanged watchdog/no-rest policy. Fullclient and actual fresh-story merchant/
 collection/training/Imp/wholeEarth playthrough remain required before promotion.
+
+Fullclient6072 on9900cd2 passed279suites3958tests102.934s and lint. Logs
+`/tmp/eidolon-earned-bag-full-{client,lint}.log`. Server source is unchanged from
+the accepted-primary merge's completed fullGo-race run90945. Actual fresh-story
+bag/merchant/collection/training proof remains pending; no successor published.
