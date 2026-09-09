@@ -16,7 +16,57 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 09:54 UTC
+## Current checkpoint — September 9, 10:03 UTC
+
+The previous goal turn made PROGRESS (verified55, pushed56, fixed explosive kill
+deadlock). This turn also made PROGRESS: final57 client regression and separate
+complete explosion race finished successfully; integrated the raid fixes into
+the primary campaign candidate and corrected misleading campaign callout labels.
+The full roadmap and production recovery remain open, not blocked or complete.
+
+**59024 canonical57 full client/lint TERMINAL0**, clean6babef5:241suites/
+3420tests/115.32s, Node24.18.0. Logs
+`/tmp/eidolon-release57-final-queue-full-{client,lint}.log`.57 remains unpublished
+and must wait for all56CI/deployment/live gates and fresh public identities.
+56CI34337271486 server/client passed; browser shards are running (shard2 passed).
+
+**51326 separate explosion full Go1.24.5race TERMINAL0** on ce6780e:root24.632s,
+game354.984s; database/lifecycle/loadtest cached passes, remaining packages no
+tests. Log `/tmp/eidolon-dark-king-explosion-full-race.log`. Separate worktree
+now clean d3e2120 after documenting this result. No actual browser raid/phase
+pacing proof or production publication is inferred.
+
+Primary516a4cf corrects story callouts that described already-applied Eidolon aid
+as "Incoming in8s"/Boss Telegraph, marked phase4 as victory before the kill, and
+labeled Neris/Aeral dialogue as Dark King. Added explicit phase/element and aid
+labels, live Vigil wave/restored-crystal return-to-Ilyra metadata, and confirmed
+manual turn-in metadata; normal threat countdowns/timers remain unchanged.
+78695 initial regression failed6/73; three were valid original semantics failures,
+three were incomplete new fixtures lacking player identity.25966 after code fix
+still failed those three fixtures; corrected80664 PASSED73/2/1.22s plus lint.
+Logs `/tmp/eidolon-campaign-callout-labels-{before,after,fixed-fixture,lint}.log`.
+No rendered phone/group-readability claim: secondary metadata is already hidden
+by the existing phone layout; full visual acceptance remains open.
+
+Primary then cleanly cherry-picked ca662fd/a5405fa/ce6780e/d3e2120 as6995bb1/
+e6af6c4/dd888dc/**8b863b7**. This preserves eec5db9's manual Vigil hint and all
+expanded Chronicle/balance work. **81309 full client/lint ACTIVE**, Node24,
+`/tmp/eidolon-primary-raid-integrated-full-{client,lint}.log`;
+**12028 full Go1.24.5race ACTIVE**,
+`/tmp/eidolon-primary-raid-integrated-full-server.log`. Freeze primary8b863b7
+until both terminal. Inherited1.0.57metadata is NOT permission to publish; choose
+the later coordinated version/notes only after urgent58 delivery and its gates.
+
+**82037 recovery58 full gameplay remains ACTIVE**, frozen1fd0d35, same exact
+run/ports/log. Fresh Wizard collection and subsequent Seraph/shield/phone quest
+and build cases passed so far; remaining gameplay still running. This is the
+only owned local browser invocation. Do not restart/edit on elapsed time or
+launch another.58 excludes all the new raid/callout work and is NOT live.
+Next free browser priority remains recovery closure, then ordinary earned
+primary story-only Earth readiness; prepared raid fixtures and aura batching
+cannot substitute for those proofs.14:00–17:00UTC recovery ETA stays conditional.
+
+## Previous checkpoint — September 9, 09:54 UTC
 
 09:56 follow-up:56CI34337271486 client PASSED, server ACTIVE. Recovery82037
 remains active in fresh Wizard collection, with repeated actual town mana
