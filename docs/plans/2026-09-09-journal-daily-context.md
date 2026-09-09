@@ -1,5 +1,10 @@
 # Daily contracts should support the story journal
 
+Release59 note: the history below describes the primary prototype. This release
+ports only independent daily/lore presentation and phone rows, using the existing
+Seeds chapter fixture, not new diary rendering. Its actual release evidence is
+in [the59 acceptance record](2026-09-09-release59-interface-acceptance.md).
+
 Unpublished UI follow-up based on the actual fresh Wizard diary screenshots
 captured during story-only readiness2268 on primarya4ea4cc. Progress images:
 `/tmp/eidolon-story-ready-progress-GEWgC6/{approach,earned}-mara_diary.png`.

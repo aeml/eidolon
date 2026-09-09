@@ -1,5 +1,9 @@
 # Honest combat-card information
 
+Release59 note: the prototype history below is retained for provenance. The
+accepted58-based port includes its target-level UI dependency; current full
+test/render/release status is in [the59 acceptance record](2026-09-09-release59-interface-acceptance.md).
+
 Separate prototype based on primarybd8a347, excluded from recovery58.
 The old card invented spell damage using class multipliers of basic attack
 power (Fireball1.5×), unrelated to authoritative spell formulas. It also showed

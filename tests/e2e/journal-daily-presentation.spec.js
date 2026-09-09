@@ -16,7 +16,8 @@ for (const [width, height] of [[1280, 720], [390, 844]]) {
             const quests = [
                 { id: 'chronicle_01', category: 'chronicle', chapter: 1, title: 'A promise remembered', completed: true, lore: 'The four keepers chose to protect one another.' },
                 { id: 'chronicle_02_seeds_first_grove', category: 'chronicle', chapter: 2, title: 'Seeds of the First Grove',
-                    accepted: true, count: 0, maxCount: 8, target: 'Verdant Memory Seed',
+                    type: 'COLLECT', accepted: true, count: 0, maxCount: 8, target: 'Verdant Memory Seed',
+                    objectiveText: "Recover 8 Verdant Memory Seeds from Earth-realm creatures and return to Ilyra to prepare the Rootheart's future repair.",
                     description: 'Collect Verdant Memory Seeds.', rewardXP: 200, rewardGold: 25 },
                 { id: 'daily_phoenix', target: 'PhoenixSentinel', count: 0, maxCount: 100, rewardXP: 396250, rewardGold: 900 },
                 { id: 'daily_skeleton', target: 'Skeleton', count: 0, maxCount: 100, rewardXP: 18250, rewardGold: 100 },
@@ -33,6 +34,8 @@ for (const [width, height] of [[1280, 720], [390, 844]]) {
         const dailies = journal.locator('details.quest-repeatable-ladder');
         const summary = dailies.locator(':scope > summary');
         await expect(journal).toBeVisible();
+        await expect(journal).toContainText("Recover 8 Verdant Memory Seeds from Earth-realm creatures and return to Ilyra to prepare the Rootheart's future repair.");
+        await expect(journal).not.toContainText('Defeat 8 Verdant Memory Seeds');
         await summary.scrollIntoViewIfNeeded();
         await expect(dailies).not.toHaveAttribute('open', '');
         await expect(dailies.locator('.quest-ladder-row').first()).toBeHidden();
