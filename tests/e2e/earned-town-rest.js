@@ -3,17 +3,13 @@ import { collectionRestReason } from '../collectionRestPolicy.js';
 import { returnToTown } from './helpers.js';
 
 const resources = page => page.evaluate(async () => {
-    const p = window.game.player;
-    const { getAbilityManaCost } = await import('/src/core/AbilityEconomy.js');
-    return { hp: p.stats.hp, maxHP: p.stats.maxHp, mana: p.stats.mana, maxMana: p.stats.maxMana,
-        dead: p.state === 'DEAD', castCost: getAbilityManaCost(p, p.abilityName, 30),
-        bank: p.wellRestedSeconds, zone: p.safeZoneId, level: p.level };
+    const { earnedRestResources } = await import('/tests/earnedRecoveryPolicy.js');
+    return earnedRestResources(window.game.player);
 });
 
-// Opt-in earned-play comparison. Call only between completed encounters: no
+// Normal earned expedition recovery. Call only between completed encounters: no
 // mid-fight timer reset, fake recovery, progression grant or death bypass.
 export async function recoverBetweenCollectionEncounters(page, leaveTown) {
-    expect(await page.evaluate(() => window.game.player.constructor.name)).toBe('Wizard');
     const before = await resources(page);
     const reason = collectionRestReason(before);
     if (!reason) return false;

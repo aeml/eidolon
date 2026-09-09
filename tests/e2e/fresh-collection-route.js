@@ -2,6 +2,7 @@ import { expect } from '@playwright/test';
 import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { openDungeonGuide } from './dungeon-guide.js';
 import { recoverBetweenCollectionEncounters } from './earned-town-rest.js';
+import { earnedTownRecoveryEnabled } from '../earnedRecoveryPolicy.js';
 import { createFreshCollectionCombat, observeCollectionCombatReceipts, readFreshCollectionCombat,
     readCollectionTarget, selectCollectionTargetThroughInput,
     reacquireDisengagedCollectionTarget } from './fresh-collection-combat.js';
@@ -47,7 +48,7 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
     await leaveTown();
     let observedTargetDeaths = 0, deaths = 0;
     for (let encounter = 0; encounter < required * 5 + 2 && (await readChronicleChapter(page, collection)).count < required; encounter++) {
-        if (process.env.EIDOLON_E2E_REST_RECOVERY === '1') {
+        if (earnedTownRecoveryEnabled()) {
             await recoverBetweenCollectionEncounters(page, leaveTown);
         }
         let target = await findTarget();
