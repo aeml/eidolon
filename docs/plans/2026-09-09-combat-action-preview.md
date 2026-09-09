@@ -21,4 +21,9 @@ Tests cover normal/overridden skill, talent+equipment rounding, zero/unknown cos
 UI+engine refresh and absence of invented hit estimates.
 `combat-action-preview.spec.js` prepares real controller/UI/CSS desktop and
 phone-card fixtures; it is presentation evidence, not a server-cast playthrough.
-Browser and fullclient validation are pending; no production change/acceptance.
+Browser93717 PASSED2/6.6s on fdcccb2, log
+`/tmp/eidolon-combat-preview-browser.log`, archive
+`/tmp/eidolon-combat-preview-proof-nHkrnp`. Desktop and phone screenshots viewed:
+desktop explicitly shows Attack power5 / Fireball27MP, phone retains its compact
+level/status/clear-target card. Neither claims spell hit damage. Fullclient
+validation and integration are still pending; no production change/acceptance.
