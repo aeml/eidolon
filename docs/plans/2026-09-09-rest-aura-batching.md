@@ -52,7 +52,27 @@ Required before promotion:
 No second local browser is started while the canonical recovery gameplay run
 owns the browser slot. Physical-phone performance remains an open roadmap gate.
 
-## Prepared GPU comparison (not yet executed)
+## GPU comparison — completed September 9, 14:57 UTC
+
+Run7912 on59be536 PASSED1/4.9s under Node24/system Chrome with
+ANGLE AMD Vulkan1.4.318 / RADV RENOIR. Log
+`/tmp/eidolon-rest-aura-gpu-comparison.log`; full report/images archive
+`/tmp/eidolon-rest-aura-gpu-proof-EVNdVm`, scanner0, browser port41960 closed.
+Viewed both quality screenshots: ground rings and rising motes remain visible,
+with no enclosing cube. The fixture is a prepared Wizard, not an earned buff.
+
+At elapsed0.37/1.8/4.2s the High incremental draw calls were9/10/10 versus
+37/38/38 in the expanded reference; Low was8 versus20 at every phase. RGB
+difference was exactly0 in all six256px render-target comparisons, with nonzero
+reference signal14277–20988. This proves the controlled aura contribution uses
+fewer draws on this renderer without changing these captured pixels; it is not
+an FPS measurement, group-scene proof or physical-phone result.
+
+Populated groups, steady frame times, actual stealth/death/scene/quality/reconnect
+transitions and inherited native gameplay gates remain required before promotion.
+No integration into primary or58, no release pipeline changes, no publication.
+
+## Comparison method and earlier preparation
 
 `tests/e2e/well-rested-batching.spec.js` renders a real Wizard and ground plane
 with no aura, an expanded-mesh reference, and the instanced aura at identical
@@ -68,6 +88,6 @@ Node24.18.0 focused tests passed12/2suites/1.791s, lint passed, and Playwright
 discovered the one comparison test. Logs:
 `/tmp/eidolon-rest-aura-pixel-final-{tests,lint,discovery}.log`.
 The process handle77576 is now absent; these terminal log summaries, not the
-missing handle itself, establish the checks above. There is no GPU result yet.
+missing handle itself, establish those earlier checks. GPU results are above.
 This prepared fixture does not establish earned gameplay, party transitions,
 frame-time improvements or phone performance, and is not a release gate yet.
