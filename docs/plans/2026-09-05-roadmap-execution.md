@@ -16,7 +16,49 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 05:30 UTC
+## Current checkpoint — September 9, 05:36 UTC
+
+PROGRESS: **69597 unchanged Wizard Node24 repeat TERMINAL PASS1/4.7m** on
+5a17be147ce527bae556663cc452ecae10e87785. Opening68s/3retreats/zero deaths,
+collection213s/19observed target deaths/8earned seeds/zero deaths; manual
+8000XP100gold, level7→17,9gear items/230unsold value retained across reconnect,
+level30 dungeon still locked. Four normal town recoveries83.664s including
+travel, all observed stops full pools. Preclaim462gold/17occupied bag slots.
+Final console/network assertion passed without filtering, weakening or changed
+input policy. Scan0 and exact owned container/image absence confirmed. Ready-
+claim8/8 capture inspected; archive
+`/tmp/eidolon-rest58-wizard24-proof-c7jLU7/test-results`, log
+`/tmp/eidolon-rest58-wizard-node24-rerun-0528.log`. Preserve failed97055 and its
+archive as separate evidence; this repeat does not establish the earlier cause.
+
+Network monitor captured214lines of virtual-interface/link/route activity during
+the passing repeat, including interface creation on two bridges around05:30.
+Exact bridge IDs resolve to unrelated `seo-tool_backend`/`seo-tool_renderer`
+networks. Their workloads/configuration were NOT inspected beyond network-name
+resolution and NOT changed/stopped. This is a concrete environmental lead, not
+proof that those events caused the earlier failure; that window had no monitor.
+Docker's queried network event history was empty despite observed netlink events.
+Keep `/tmp/eidolon-rest58-network-watch-0528.log` for the evidence distinction.
+
+**32071 monitor TERMINAL143**, intentionally stopped after browser completion.
+Ctrl-C did not end it; exact process names/start times/parent were revalidated
+(timeout76214/ip76215, both started05:28:08), then SIGTERM sent only to owned
+ip76215. Handle closed and exact process-pattern absence confirmed. No lingering
+monitor or owned regression process remains.
+
+**58871 Fighter Node24 repeat ACTIVE — only owned local process/browser**,
+same frozen5a17be1, fresh-collection, projectrest58-fighter24-0909-0535,
+API18560/Mongo18561/web41960; log
+`/tmp/eidolon-rest58-fighter-node24-0535.log`. Baseline/first kill41s at05:36,
+no completed collection result yet. Poll exact handle; no edits/restart/cleanup
+while active. After terminal archive/review/exact cleanup, complete Rogue24 and
+native rest/expiry/party24, retaining the original supplementary evidence.
+
+53CI34312290353 remains ACTIVE in full disposable gameplay at05:35. Do not
+push54 before all53CI/finalLiveQA and fresh public identities. Last verified
+live52; standalone58notpublished. Whole roadmap goal remains active/unfulfilled.
+
+## Previous checkpoint — September 9, 05:30 UTC
 
 PROGRESS: **97055 Wizard Node24 repeat TERMINAL FAILED** after complete earned
 gameplay:23observed deaths/8seeds/zero player deaths, manual8000XP100gold,
