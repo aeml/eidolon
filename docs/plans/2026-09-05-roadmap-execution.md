@@ -16,7 +16,47 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 07:18 UTC
+## Current checkpoint — September 9, 07:31 UTC
+
+Previous turn made PROGRESS: stronger actual HP/MP recovery proof passed and
+complete58 restarted after a diagnosed/corrected duration failure. This turn
+also made PROGRESS: primary full regression closed and a separate substantive
+aura-rendering optimization was implemented/tested without altering recovery58.
+
+**73598 primary full client/lint TERMINAL0**, clean640c9ce/Node24.18.0:
+266suites/3798tests/170.031s, logs
+`/tmp/eidolon-primary-public-proof-full-{client,lint}.log`. This exact source
+includes Construct navigation, public-ready observation and shield/rest fixes.
+No primary process/browser active; actual earned full Earth/four-class readiness
+still due. Server unchanged from full-race-passedd9cc0ed.
+
+Separate visual/performance prototype worktree
+**`/tmp/eidolon-rest-aura-batching-k1vBvU`**, branch
+work/rest-aura-batching-20260909, clean **e21a0989adf4249382d418fc9b9f23fa2eec4255**,
+based on58/ee8a713. This is NOT canonical58 and must NOT be pushed as58 or added
+to its current release gate. Actor-owned InstancedMeshes batch all16/8 sparks
+into two opacity groups while preserving colors/phases/positions/fade/scales.
+Including existing rings: visible meshes19→5 High and10→4 Low; this is NOT a
+measured draw-call or FPS improvement. Fixed full-cycle bounds retain culling;
+per-actor matrices remain independent; disposal frees instance buffers once,
+not cached geometry/materials. No stat/clock/reward/authority change.
+
+Baseline21996 reproduced3fail/2pass (old motion/color parity still passed).
+Corrected25638 passed33tests/3suites2.214s/lint/diff: all authored motes across
+six phases and both qualities, vertex bounds, shared resources, independent
+matrices and disposal. Logs `/tmp/eidolon-rest-aura-batching-{before,after,lint}.log`.
+Candidate requirements in `2026-09-09-rest-aura-batching.md`; controlled rendered
+comparison, actual device/frame-time measurements and native transitions still
+required before future versioning/promotion. No new browser launched for it.
+**10604 prototype prepare-client/full-client/lint ACTIVE**, frozene21a098,
+logs `/tmp/eidolon-rest-aura-batching-{prepare,full-client,full-lint}.log`.
+
+**65093 complete58 gameplay ACTIVE**, unchangedee8a713/project/ports/log below,
+only owned local browser. **54CI34320477081 predeploy ACTIVE**, all prior checks
+passed; no deployment/finalLiveQA yet, no55push. Public last verified53.
+Keep actual recovery delivery first; whole roadmap remains active/unfulfilled.
+
+## Previous checkpoint — September 9, 07:18 UTC
 
 This continuation made PROGRESS: full58 duration failure diagnosed/corrected,
 stronger public-ready recovery journey implemented and actually passed,
