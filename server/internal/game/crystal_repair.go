@@ -178,9 +178,25 @@ func (w *World) waitForCrystalRepairWave(instanceID string, enemyIDs []string) b
 	}
 }
 
+// hasFinishedCrystalVigil reads saved objective completion, not just claimed
+// rewards. The caller holds the player's lock. This does not grant chapter
+// completion or unlock the Dark Realm; those still require Ilyra's turn-in.
+func hasFinishedCrystalVigil(player *Entity, definition ElementalRaidDefinition) bool {
+	if player == nil {
+		return false
+	}
+	for _, quest := range player.Quests {
+		if quest.ID == definition.RestoredQuest {
+			return quest.Completed || (quest.Accepted && quest.Type == "REPAIR" &&
+				quest.Target == definition.RepairTarget && quest.MaxCount > 0 && quest.Count >= quest.MaxCount)
+		}
+	}
+	return false
+}
+
 // ensureRestoredCrystalRepair restarts an interrupted Vigil when a persisted
-// elemental raid has a cleared guardian room but its repair chapter is not yet
-// complete. Wave progress intentionally restarts so no player can receive
+// elemental raid has a cleared guardian room but its repair objective is not yet
+// finished. Wave progress intentionally restarts so no player can receive
 // restoration credit without defending a complete three-wave ritual.
 func (w *World) ensureRestoredCrystalRepair(instanceID, enteringPlayerID string) {
 	instance, ok := w.getDungeonInstance(instanceID)
@@ -218,7 +234,7 @@ func (w *World) ensureRestoredCrystalRepair(instanceID, enteringPlayerID string)
 			continue
 		}
 		player.Mu.RLock()
-		completed := HasCompletedChronicleQuest(player, definition.RestoredQuest)
+		completed := hasFinishedCrystalVigil(player, definition)
 		player.Mu.RUnlock()
 		if !completed {
 			allRestored = false
