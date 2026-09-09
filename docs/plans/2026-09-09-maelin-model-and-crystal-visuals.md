@@ -23,7 +23,10 @@ This is an identity correction, not a claim of a finished bespoke Maelin model.
 Focused29362 passed54tests/4suites/2.727s plus lint under Node24.18.0, including
 actual mesh-factory construction and unrelated NPC/King/site regressions.
 Logs: `/tmp/eidolon-maelin-model-{after,lint}.log`.
-Full client regression and a real rendered comparison remain due at this entry.
+Full client63743 PASSED270suites/3857tests/155.615s plus lint on f3bbe43,
+Node24.18.0. Logs `/tmp/eidolon-primary-maelin-full-{client,lint}.log`.
+A real rendered comparison remains due. The later moving-cast diagnostic import
+changes browser evidence only, not the NPC implementation tested here.
 No server/gameplay changes, production deployment or full-raid acceptance claimed.
 
 ## Open crystal/world presentation work
