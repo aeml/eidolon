@@ -30,5 +30,7 @@ controlled before comparison.49710 lint/discovery passed, two cases discovered;
 neither baseline nor corrected browser scene has run yet. A component fixture is
 not live PvP/group readability or physical-device acceptance.
 
-Full client regression, actual rendered comparison and broader party/raid visual
-review remain due. Do not import this into58 or publish inherited1.0.57metadata.
+42844 full client regression PASSED on9b168be:269suites/3855tests/84.206s plus
+lint. Logs `/tmp/eidolon-primary-desktop-action-full-{client,lint}.log`.
+Actual rendered comparison and broader party/raid visual review remain due.
+Do not import this into58 or publish inherited1.0.57metadata.
