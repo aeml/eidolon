@@ -18,6 +18,15 @@ declares go1.24.5 and `go version` inside server confirms automatic1.24.5 select
 
 ## Current checkpoint — September 9, 12:33 UTC
 
+Final update: **47504 TERMINAL0/PASS** on aa4f0f1. Fullclient273/3909/83.194 plus
+lint, then fresh fullGo-race: root19.472s/internal-game243.181s/database1.295s.
+All three logs retained at `/tmp/eidolon-primary-crystal-full-{client,lint,server}.log`.
+Primary source freeze is lifted; no owned browser or local regression remains.
+This closes full local regression for the ready-unclaimed Vigil fix, crystal
+snapshot contract, visual consumer and lighting/glare work, not live/group/story
+acceptance. Maelin channel gap is the next reproduced presentation defect.
+57CI remains active predeploy;58still waits, no push/live claim.
+
 This continuation made PROGRESS by accepting the completed full-client component
 and reproducing Maelin's missing ritual animation through an actual remote actor
 tick.47504 remains ACTIVE on unchanged primaryaa4f0f1: fullclient273suites/3909tests/
