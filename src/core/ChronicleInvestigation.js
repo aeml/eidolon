@@ -1,6 +1,13 @@
 import { chronicleInvestigations } from '../data/chronicleInvestigations.generated.js';
+import { chronicleHunts } from '../data/chronicleHunts.generated.js';
 
 const chaptersById = new Map(chronicleInvestigations.map(chapter => [chapter.id, chapter]));
+export const CHRONICLE_CHAPTER_COUNT = 15 + chronicleInvestigations.length + chronicleHunts.length;
+
+export function getCurrentChronicleQuest(quests) {
+    return (quests || []).filter(quest => (quest?.category === 'chronicle' || quest?.id?.startsWith('chronicle_')) && !quest.completed && !quest.legacyOptional)
+        .sort((left, right) => (left.chapter || 0) - (right.chapter || 0))[0] || null;
+}
 
 export function getChronicleInvestigation(questId) {
     return chaptersById.get(questId) || null;

@@ -11,14 +11,15 @@ import (
 )
 
 func TestBridgeRetainsFutureStoryRecordsAndZeroQuotesAcrossSaveAndRefresh(t *testing.T) {
-	// These records belong to the expanded catalog. An older content catalog
-	// must round-trip them, including optional status and evidence already read.
+	// Unknown future content must round-trip unchanged, including optional status
+	// and evidence already read. The Earth diary/Watch are now known definitions;
+	// use genuinely unknown IDs to retain this forward-compatibility contract.
 	future := []database.Quest{
-		{ID: "chronicle_earth_keepers_house", Type: "INVESTIGATE", Category: "chronicle",
+		{ID: "chronicle_future_keepers_house", Type: "INVESTIGATE", Category: "chronicle",
 			Chapter: 2, Accepted: true, Count: 1, MaxCount: 1, InvestigationMask: 1,
 			LegacyOptional: true, RewardXP: 200, RewardGold: 25, Title: "The Keeper's Empty House"},
-		{ID: "chronicle_earth_kept_watch", Type: "KILL", Category: "chronicle", Chapter: 3,
-			Target: "ChronicleHunt:chronicle_earth_kept_watch", Accepted: true, Count: 12, MaxCount: 40,
+		{ID: "chronicle_future_kept_watch", Type: "KILL", Category: "chronicle", Chapter: 3,
+			Target: "ChronicleHunt:chronicle_future_kept_watch", Accepted: true, Count: 12, MaxCount: 40,
 			LegacyOptional: true, RewardXP: 1593, RewardGold: 100, Title: "Those Who Kept the Watch"},
 		{ID: "daily_skeleton", Type: "KILL", Category: "daily", Accepted: true,
 			Count: 3, MaxCount: 12, RewardXP: 0, RewardGold: 0},
@@ -75,7 +76,7 @@ func TestBridgeRetainsFutureStoryRecordsAndZeroQuotesAcrossSaveAndRefresh(t *tes
 		if err := bson.Unmarshal(encoded, &saved); err != nil {
 			t.Fatal(err)
 		}
-		if saved.ProgressionVersion != 1 || saved.Gold != 731 || saved.SkillPoints != 2 {
+		if saved.ProgressionVersion != game.CurrentProgressionVersion || saved.Gold != 731 || saved.SkillPoints != 2 {
 			t.Fatal("bridge snapshot changed earned state or omitted active curve version")
 		}
 		again, err := game.MigrateSavedProgression(saved.Level, saved.XP, saved.ProgressionVersion)

@@ -1,8 +1,10 @@
-import { jest } from '@jest/globals';
+import { jest, expect as jestExpect } from '@jest/globals';
 import { GroundInputUnavailableError } from './groundInputFailure.js';
 
 const move = jest.fn(), read = jest.fn();
-jest.unstable_mockModule('./e2e/helpers.js', () => ({ moveByGroundClick: move, readPlayerState: read }));
+jest.unstable_mockModule('@playwright/test', () => ({ expect: jestExpect }));
+jest.unstable_mockModule('./e2e/helpers.js', () => ({ moveByGroundClick: move, readPlayerState: read,
+    jumpByGroundClick: jest.fn(), projectGroundOffset: jest.fn() }));
 const { createEarnedWizardDefense } = await import('./e2e/earned-wizard-defense.js');
 beforeEach(() => { jest.clearAllMocks(); read.mockResolvedValue({ state: 'IDLE' }); });
 

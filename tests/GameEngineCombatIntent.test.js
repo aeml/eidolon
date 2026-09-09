@@ -75,6 +75,17 @@ function createEngineHarness() {
 }
 
 describe('GameEngine combat intent', () => {
+    test('replicated target level reaches the card and invalidates its cache', () => {
+        const engine = createEngineHarness();
+        engine.hoveredEntity = { ...createActorLike({ id: 'level-target' }), level: 7 };
+        const first = engine.buildCombatIntentState();
+        expect(first.targetLevel).toBe(7);
+        engine.hoveredEntity.level = 8;
+        expect(engine.serializeCombatIntent(engine.buildCombatIntentState()))
+            .not.toBe(engine.serializeCombatIntent(first));
+        engine.hoveredEntity.level = NaN;
+        expect(engine.buildCombatIntentState().targetLevel).toBeNull();
+    });
     test('builds move-into-range state for hovered hostile targets outside cast range', () => {
         const engine = createEngineHarness();
         engine.hoveredEntity = createActorLike({

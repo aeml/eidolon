@@ -314,6 +314,7 @@ type Quest struct {
 	GrantedXp          int32                  `protobuf:"varint,17,opt,name=granted_xp,json=grantedXp,proto3" json:"granted_xp,omitempty"`
 	GrantedResonanceXp int32                  `protobuf:"varint,18,opt,name=granted_resonance_xp,json=grantedResonanceXp,proto3" json:"granted_resonance_xp,omitempty"`
 	InvestigationMask  uint32                 `protobuf:"varint,19,opt,name=investigation_mask,json=investigationMask,proto3" json:"investigation_mask,omitempty"`
+	LegacyOptional     bool                   `protobuf:"varint,20,opt,name=legacy_optional,json=legacyOptional,proto3" json:"legacy_optional,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
@@ -479,6 +480,13 @@ func (x *Quest) GetInvestigationMask() uint32 {
 		return x.InvestigationMask
 	}
 	return 0
+}
+
+func (x *Quest) GetLegacyOptional() bool {
+	if x != nil {
+		return x.LegacyOptional
+	}
+	return false
 }
 
 type SocketedGem struct {
@@ -1834,7 +1842,7 @@ const file_state_proto_rawDesc = "" +
 	"\tdexterity\x18\x02 \x01(\x05R\tdexterity\x12\"\n" +
 	"\fintelligence\x18\x03 \x01(\x05R\fintelligence\x12\x16\n" +
 	"\x06wisdom\x18\x04 \x01(\x05R\x06wisdom\x12\x1a\n" +
-	"\bvitality\x18\x05 \x01(\x05R\bvitality\"\xba\x04\n" +
+	"\bvitality\x18\x05 \x01(\x05R\bvitality\"\xe3\x04\n" +
 	"\x05Quest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04type\x18\x02 \x01(\tR\x04type\x12\x16\n" +
@@ -1857,7 +1865,8 @@ const file_state_proto_rawDesc = "" +
 	"\n" +
 	"granted_xp\x18\x11 \x01(\x05R\tgrantedXp\x120\n" +
 	"\x14granted_resonance_xp\x18\x12 \x01(\x05R\x12grantedResonanceXp\x12-\n" +
-	"\x12investigation_mask\x18\x13 \x01(\rR\x11investigationMask\"\xb2\x01\n" +
+	"\x12investigation_mask\x18\x13 \x01(\rR\x11investigationMask\x12'\n" +
+	"\x0flegacy_optional\x18\x14 \x01(\bR\x0elegacyOptional\"\xb2\x01\n" +
 	"\vSocketedGem\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x12\x18\n" +
 	"\aquality\x18\x02 \x01(\tR\aquality\x12;\n" +

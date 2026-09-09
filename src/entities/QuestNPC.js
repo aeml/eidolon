@@ -1,9 +1,14 @@
 import * as THREE from 'three';
 import { Actor } from './Actor.js';
+import { getCurrentChronicleQuest } from '../core/ChronicleInvestigation.js';
 
 export function questMarkerState(quests, story = false) {
-    const relevant = (quests || []).filter((quest) =>
+    let relevant = (quests || []).filter((quest) =>
         (quest.category === 'chronicle' || Boolean(quest.id?.startsWith('chronicle_'))) === story && !quest.completed);
+    if (story) {
+        const current = getCurrentChronicleQuest(relevant);
+        relevant = relevant.filter(quest => quest.legacyOptional || quest.id === current?.id);
+    }
     if (relevant.some((quest) => quest.accepted && quest.maxCount > 0 && quest.count >= quest.maxCount)) return '?';
     return relevant.some((quest) => !quest.accepted) ? '!' : '';
 }

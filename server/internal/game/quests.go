@@ -38,107 +38,115 @@ type ChronicleAdvanceEvent struct {
 }
 
 func chronicleQuestCatalog() []Quest {
+	quests := expandChronicleHunts(expandChronicleInvestigations(classicChronicleQuestCatalog()))
+	for i := range quests {
+		quests[i].RewardXPQuoted, quests[i].RewardGoldQuoted = true, true
+	}
+	return quests
+}
+
+func classicChronicleQuestCatalog() []Quest {
 	quests := []Quest{
 		{
-			ID: "chronicle_01_bell_below", Type: "KILL", Target: "Skeleton", MaxCount: 3, RewardXP: 500,
+			ID: "chronicle_01_bell_below", Type: "KILL", Target: "Skeleton", MaxCount: 3,
 			Title: "The Bell That Rang Below", Category: QuestCategoryChronicle, Chapter: 1,
 			ObjectiveText: "Defeat 3 risen dead beyond Lanternhold's east gate and recover their dissonant echoes.",
 			Description:   "I am Ilyra, keeper of the Fourfold Chronicle. Last night I heard a bell beneath Lanternhold that has no living ringer. The four crystals are faltering, and my wards cannot reach their buried sanctums. I need your help to save Eidolon. Begin just beyond the east gate: my wards still weaken the newly risen near our walls, but their strength returns farther out. Bring me the echoes bound inside three of them; together we can trace the wound.",
 			Lore:          "Eidolon was not named for a kingdom. It was named for the four great spirits who dreamed matter into covenant: Orun of Root and Stone, Neris of Tide and Memory, Pyralis of Flame and Will, and Aeral of Sky and Freedom. Their crystals do not create the elements—they keep the elements willing to shelter mortal lands.",
 		},
 		{
-			ID: "chronicle_02_seeds_first_grove", Type: "COLLECT", Target: "Verdant Memory Seed", MaxCount: 8, RewardXP: 8000,
+			ID: "chronicle_02_seeds_first_grove", Type: "COLLECT", Target: "Verdant Memory Seed", MaxCount: 8,
 			Title: "Seeds of the First Grove", Category: QuestCategoryChronicle, Chapter: 2,
 			ObjectiveText: "Recover 8 Verdant Memory Seeds from Earth-realm creatures and return to Ilyra to prepare the Rootheart's future repair.",
 			Description:   "The echoes name the first wound: the Rootheart Crystal beneath the Verdant Bastion is forgetting every forest it ever sustained. Creatures touched by its failing pulse carry fragments of those memories. Gather enough to remind the crystal what it was.",
 			Lore:          "A Verdant Memory Seed is not truly a seed. It is a moment made solid: rain on the first leaf, roots splitting ancient rock, the patience of mountains. When the Rootheart weakens, such memories fall loose and lodge in living things.",
 		},
 		{
-			ID: ChronicleEarthDungeonID, Type: "KILL", Target: "HollowSentinel", MaxCount: 1, RewardXP: 250000,
+			ID: ChronicleEarthDungeonID, Type: "KILL", Target: "HollowSentinel", MaxCount: 1,
 			Title: "When the Roots Remember", Category: QuestCategoryChronicle, Chapter: 3,
 			ObjectiveText: "Clear the Verdant Bastion Catacombs and defeat the Hollow Sentinel to uncover the road to the Rootheart sanctum.",
 			Description:   "Carry the restored memories through the entire Bastion. The Hollow Sentinel guards an old root-road rather than the crystal itself; break the shadow command inside it and the sealed path to Orun's deeper raid sanctum will open. The Dungeon Guide requires level 30 for the Bastion; an open Chronicle chapter is not permission to enter its dungeon yet. Explore Earth, check your earned equipment, and spend available skill and talent points before descending. Daily contracts are optional ways to earn gold and experience, not a requirement for my story. Return to Lanternhold to prepare, then ask the Guide to lead you below.",
 			Lore:          "Orun hid the Rootheart beyond a living labyrinth so no passing army could touch it. The Dark King corrupted the outer Sentinel, but even he could not enter the inner sanctum without first forcing a mortal hand to open the way.",
 		},
 		{
-			ID: "chronicle_04_pearls_without_tides", Type: "COLLECT", Target: "Moon-Tide Pearl", MaxCount: 8, RewardXP: 500000,
+			ID: "chronicle_04_pearls_without_tides", Type: "COLLECT", Target: "Moon-Tide Pearl", MaxCount: 8,
 			Title: "Pearls Without Tides", Category: QuestCategoryChronicle, Chapter: 4,
 			ObjectiveText: "Recover 8 Moon-Tide Pearls from Water-realm creatures and return to Ilyra to prepare the Tidestar's future repair.",
 			Description:   "With the Rootheart raid-road uncovered for the coming Vigils, a second voice reaches you through wells and rain. The Tidestar has lost the pull that lets water remember its way home. Hunt the warped creatures of the Water realm; pieces of the stolen tide gleam inside them.",
 			Lore:          "Neris keeps every promise spoken beside water. Sailors once cast Moon-Tide Pearls into unknown seas so even a shipwrecked vow could find its shore. Now the pearls are motionless, severed from moon and memory alike.",
 		},
 		{
-			ID: ChronicleWaterDungeonID, Type: "KILL", Target: "Thalorath", MaxCount: 1, RewardXP: 2000000,
+			ID: ChronicleWaterDungeonID, Type: "KILL", Target: "Thalorath", MaxCount: 1,
 			Title: "The Drowned Name", Category: QuestCategoryChronicle, Chapter: 5,
 			ObjectiveText: "Clear the Abyssal Well and defeat Thalorath to reveal the submerged way into the Tidestar Confluence raid.",
 			Description:   "Thalorath swallowed the route-name leading to Neris's hidden Confluence and chained the dungeon to an endless undertow. Clear the full Abyssal Well and reclaim that name so the water itself can carry your raid to the crystal.",
 			Lore:          "Water survives by yielding without surrender. The Dark King could not command Neris, so he taught Thalorath to consume names. A nameless thing cannot remember where it belongs—and a nameless ocean will drown every border.",
 		},
 		{
-			ID: "chronicle_06_ash_refuses_cool", Type: "COLLECT", Target: "Cinderheart Ore", MaxCount: 8, RewardXP: 5000000,
+			ID: "chronicle_06_ash_refuses_cool", Type: "COLLECT", Target: "Cinderheart Ore", MaxCount: 8,
 			Title: "Ash That Refuses to Cool", Category: QuestCategoryChronicle, Chapter: 6,
 			ObjectiveText: "Recover 8 pieces of Cinderheart Ore from Fire-realm creatures and return to Ilyra to prepare the Ember Crown's future repair.",
 			Description:   "The Ember Crown still burns, but its flame gives no warmth and leaves no fertile ash. Fire has been reduced to hunger. Find Cinderheart Ore in the realm's corrupted creatures—the metal remembers that flame must illuminate, transform, and finally release.",
 			Lore:          "Pyralis gave mortals the first forge on one condition: every weapon must outlive the anger that shaped it. Cinderheart Ore carries that compact. It glows brightest when a bearer chooses purpose over appetite.",
 		},
 		{
-			ID: ChronicleFireDungeonID, Type: "KILL", Target: "LordInfernax", MaxCount: 1, RewardXP: 8000000,
+			ID: ChronicleFireDungeonID, Type: "KILL", Target: "LordInfernax", MaxCount: 1,
 			Title: "The Crown of Embers", Category: QuestCategoryChronicle, Chapter: 7,
 			ObjectiveText: "Clear the Molten Core and defeat Lord Infernax to seize the furnace-key to the Ember Crown Crucible raid.",
 			Description:   "Lord Infernax feeds the dungeon an empire's worth of imagined wars. Clear his Molten Core and take the furnace-key he guards. Only that living flame can breach the separate Crucible fortress built around the Ember Crown.",
 			Lore:          "The Dark King promised Infernax an eternal victory. He neglected to say that eternal victory requires an eternal war. Beneath the tyrant's boasting is a prisoner who has forgotten the difference between conquest and flame.",
 		},
 		{
-			ID: "chronicle_08_feathers_thunder", Type: "COLLECT", Target: "Stormglass Pinion", MaxCount: 8, RewardXP: 5000000,
+			ID: "chronicle_08_feathers_thunder", Type: "COLLECT", Target: "Stormglass Pinion", MaxCount: 8,
 			Title: "Feathers of Captured Thunder", Category: QuestCategoryChronicle, Chapter: 8,
 			ObjectiveText: "Recover 8 Stormglass Pinions from Air-realm creatures and return to Ilyra to prepare the Skyglass Crystal's future repair.",
 			Description:   "Three raid-roads lie open, but their crystals still await Maelin's Vigils. Now we must trace the silence above them. The Skyglass Crystal has been caged inside a single repeating storm. Its shattered pinions drift through the creatures trapped in that loop. Gather them so we can prepare to give the wind a future again.",
 			Lore:          "Aeral refuses temples with doors. The wind Eidolon taught that freedom is not the absence of bonds, but the power to choose them. Stormglass forms where lightning makes that choice in an instant and leaves its decision behind.",
 		},
 		{
-			ID: ChronicleAirDungeonID, Type: "KILL", Target: "Zephyrion", MaxCount: 1, RewardXP: 8000000,
+			ID: ChronicleAirDungeonID, Type: "KILL", Target: "Zephyrion", MaxCount: 1,
 			Title: "The Sky Answers", Category: QuestCategoryChronicle, Chapter: 9,
 			ObjectiveText: "Clear the Tempest Spire and defeat Zephyrion to expose the wind-road into the Skyglass Eyrie raid.",
 			Description:   "Zephyrion has mistaken endless motion for freedom. Clear the full Spire and shatter his repeating storm. In the instant the loop breaks, Aeral can hold open a wind-road to the separate Eyrie where the crystal is imprisoned.",
 			Lore:          "The four crystals were separated so no mortal ruler could command the whole resonance. They were never meant to be isolated. Their oldest song says: stone gives water a bed, water tempers fire, fire raises wind, and wind carries seed back to stone.",
 		},
 		{
-			ID: ChronicleEarthRestoredID, Type: "REPAIR", Target: "EarthCrystal", MaxCount: 1, RewardXP: 750000,
+			ID: ChronicleEarthRestoredID, Type: "REPAIR", Target: "EarthCrystal", MaxCount: 1,
 			Title: "The Rootheart Vigil", Category: QuestCategoryChronicle, Chapter: 10,
 			ObjectiveText: "Complete the Rootheart Sanctum raid, then defend Artificer Maelin through all 3 repair waves.",
 			Description:   "All four raid-roads are now known. Return first to the Rootheart Sanctum, where Malachar's Graven Colossus commands an occupying host. Clear the full raid, then hold the ritual circle through three counterattacks while Maelin sets the Memory Seeds into the crystal.",
 			Lore:          "A crystal cannot be repaired by force. A mortal artificer aligns the physical facets, an Eidolon supplies elemental memory, and defenders preserve the few unbroken seconds in which both may agree. This rite is called a Vigil, never a conquest.",
 		},
 		{
-			ID: ChronicleWaterRestoredID, Type: "REPAIR", Target: "WaterCrystal", MaxCount: 1, RewardXP: 3500000,
+			ID: ChronicleWaterRestoredID, Type: "REPAIR", Target: "WaterCrystal", MaxCount: 1,
 			Title: "The Tidestar Vigil", Category: QuestCategoryChronicle, Chapter: 11,
 			ObjectiveText: "Complete the Tidestar Confluence raid, then defend Artificer Maelin through all 3 repair waves.",
 			Description:   "Follow the reclaimed route-name into Neris's Confluence, break the Tidebound Tyrant's siege, and secure the crystal chamber. Maelin must tune each Moon-Tide Pearl while three waves rise from the dark water to silence the repair.",
 			Lore:          "The Tidestar is a compass for more than ships. It teaches every river, tear, and vein how to move without losing itself. During its Vigil, Neris remembers the defenders as part of that returning current.",
 		},
 		{
-			ID: ChronicleFireRestoredID, Type: "REPAIR", Target: "FireCrystal", MaxCount: 1, RewardXP: 10000000,
+			ID: ChronicleFireRestoredID, Type: "REPAIR", Target: "FireCrystal", MaxCount: 1,
 			Title: "The Ember Crown Vigil", Category: QuestCategoryChronicle, Chapter: 12,
 			ObjectiveText: "Complete the Ember Crown Crucible raid, then defend Artificer Maelin through all 3 repair waves.",
 			Description:   "Use Infernax's key to assault the Crucible and defeat the Ashen Imperator. Then protect Maelin as the Cinderheart Ore is forged into the crystal's broken circuit. Each repair wave is a final temptation to turn purposeful flame back into hunger.",
 			Lore:          "Pyralis does not bless destruction; Pyralis blesses the courage to change. When the Ember Crown accepts a repair, every defender sees one thing they must release and one thing worth carrying through the fire.",
 		},
 		{
-			ID: ChronicleAirRestoredID, Type: "REPAIR", Target: "AirCrystal", MaxCount: 1, RewardXP: 10000000,
+			ID: ChronicleAirRestoredID, Type: "REPAIR", Target: "AirCrystal", MaxCount: 1,
 			Title: "The Skyglass Vigil", Category: QuestCategoryChronicle, Chapter: 13,
 			ObjectiveText: "Complete the Skyglass Eyrie raid, then defend Artificer Maelin through all 3 repair waves.",
 			Description:   "Ride Aeral's wind-road into the Eyrie and bring down the Tempest Sovereign. In the open crystal chamber, hold three converging storm-waves away from Maelin while each pinion is returned to the Skyglass lattice.",
 			Lore:          "The Skyglass does not predict a single future. It preserves the fact that another direction is always possible. Its repaired song will provide the final overtone needed to aim all four crystals beyond the known world.",
 		},
 		{
-			ID: ChronicleGateOpenedID, Type: "KILL", Target: "EidolonDevourer", MaxCount: 1, RewardXP: 12000000,
+			ID: ChronicleGateOpenedID, Type: "KILL", Target: "EidolonDevourer", MaxCount: 1,
 			Title: "The Fifth Note", Category: QuestCategoryChronicle, Chapter: 14,
 			ObjectiveText: "Enter the Umbral Nexus and defeat the Eidolon Devourer so the four restored crystals can open the Dark Realm gate.",
 			Description:   "Only after all four raid Vigils are complete can Rootheart, Tidestar, Ember Crown, and Skyglass resonate. Their chord exposes a fifth note hidden between them: the Umbral Nexus. Defeat the Devourer there so the resonance can hold a portal into the Dark Realm.",
 			Lore:          "Shadow is not a fifth element. It is the distance between a thing and the truth it refuses to face. The Dark King built his realm from that distance, then fed it with every fear the four guardians buried in silence.",
 		},
 		{
-			ID: ChronicleDarkKingID, Type: "KILL", Target: "UmbraPrime", MaxCount: 1, RewardXP: 25000000,
+			ID: ChronicleDarkKingID, Type: "KILL", Target: "UmbraPrime", MaxCount: 1,
 			Title: "The King Beyond Shadow", Category: QuestCategoryChronicle, Chapter: 15,
 			ObjectiveText: "Lead a raid through the opened Dark Realm portal and defeat Malachar, the Dark King.",
 			Description:   "The resonance holds. Beyond the portal waits Malachar, architect of the crystal wounds. He means to make every element dependent on his command, then offer Eidolon a choice between obedience and extinction. Enter his court and let the four spirits answer him in battle.",
@@ -153,8 +161,8 @@ func chronicleQuestCatalog() []Quest {
 		if quests[i].Type == "COLLECT" {
 			quests[i].CollectionVersion = 2
 		}
-		quests[i].RewardGold = questGoldReward(quests[i].RewardXP)
-		quests[i].RewardXPQuoted, quests[i].RewardGoldQuoted = true, true
+		budget := chronicleRewardBudget(quests[i].ID)
+		quests[i].RewardXP, quests[i].RewardGold = budget.XP, budget.Gold
 		if dungeonType, ok := dungeonChapters[quests[i].ID]; ok {
 			quests[i].ObjectiveText = fmt.Sprintf("Level %d required — %s", supportedDungeonTypes[dungeonType], quests[i].ObjectiveText)
 		}
@@ -162,43 +170,40 @@ func chronicleQuestCatalog() []Quest {
 	return quests
 }
 
-// Initial quest gold tuning follows reward tiers, with a useful starter floor
-// and a ceiling matching the existing 50,000-gold weekly raid reward.
-func questGoldReward(xp int) int { return max(100, min(50_000, xp/500)) }
-
 func dailyQuestCatalog() []Quest {
 	quests := []Quest{
-		{ID: "daily_skeleton", Type: "KILL", Target: "Skeleton", MaxCount: 100, RewardXP: 50000},
-		{ID: "daily_imp", Type: "KILL", Target: "Imp", MaxCount: 100, RewardXP: 150000},
-		{ID: "daily_demonorc", Type: "KILL", Target: "DemonOrc", MaxCount: 100, RewardXP: 300000},
-		{ID: "daily_construct", Type: "KILL", Target: "Construct", MaxCount: 100, RewardXP: 500000},
-		{ID: "daily_infernotitan", Type: "KILL", Target: "InfernoTitan", MaxCount: 100, RewardXP: 800000},
-		{ID: "daily_mountaintroll", Type: "KILL", Target: "MountainTroll", MaxCount: 100, RewardXP: 1200000},
-		{ID: "daily_aquagolem", Type: "KILL", Target: "AquaGolem", MaxCount: 100, RewardXP: 1600000},
-		{ID: "daily_siren", Type: "KILL", Target: "Siren", MaxCount: 100, RewardXP: 2200000},
-		{ID: "daily_frostguardian", Type: "KILL", Target: "FrostGuardian", MaxCount: 100, RewardXP: 3000000},
-		{ID: "daily_sandstormdjinn", Type: "KILL", Target: "SandstormDjinn", MaxCount: 100, RewardXP: 4000000},
-		{ID: "daily_magmagolem", Type: "KILL", Target: "MagmaGolem", MaxCount: 100, RewardXP: 5000000},
-		{ID: "daily_scorchedwraith", Type: "KILL", Target: "ScorchedWraith", MaxCount: 100, RewardXP: 6500000},
-		{ID: "daily_infernalbehemoth", Type: "KILL", Target: "InfernalBehemoth", MaxCount: 100, RewardXP: 8000000},
-		{ID: "daily_phoenixsentinel", Type: "KILL", Target: "PhoenixSentinel", MaxCount: 100, RewardXP: 10000000},
-		{ID: "daily_stormharpy", Type: "KILL", Target: "StormHarpy", MaxCount: 100, RewardXP: 4000000},
-		{ID: "daily_cloudelemental", Type: "KILL", Target: "CloudElemental", MaxCount: 100, RewardXP: 5000000},
-		{ID: "daily_thunderroc", Type: "KILL", Target: "ThunderRoc", MaxCount: 100, RewardXP: 6500000},
-		{ID: "daily_tempestgiant", Type: "KILL", Target: "TempestGiant", MaxCount: 100, RewardXP: 8000000},
-		{ID: "daily_cycloneavatar", Type: "KILL", Target: "CycloneAvatar", MaxCount: 100, RewardXP: 10000000},
-		{ID: "daily_dungeon_bosses", Type: "KILL", Target: "DungeonBoss", MaxCount: 4, RewardXP: 5000000},
-		{ID: "daily_verdant_bastion_bosses", Type: "KILL", Target: "VerdantBastionBoss", MaxCount: 4, RewardXP: 3000000},
-		{ID: "daily_abyssal_well_bosses", Type: "KILL", Target: "AbyssalWellBoss", MaxCount: 5, RewardXP: 6000000},
-		{ID: "daily_molten_core_bosses", Type: "KILL", Target: "MoltenCoreBoss", MaxCount: 5, RewardXP: 9000000},
-		{ID: "daily_tempest_spire_bosses", Type: "KILL", Target: "TempestSpireBoss", MaxCount: 5, RewardXP: 9000000},
-		{ID: "daily_dungeon_bosses_heroic", Type: "KILL", Target: "DungeonBossHeroic", MaxCount: 4, RewardXP: 10000000},
-		{ID: "daily_dungeon_bosses_mythic", Type: "KILL", Target: "DungeonBossMythic", MaxCount: 4, RewardXP: 15000000},
+		{ID: "daily_skeleton", Type: "KILL", Target: "Skeleton", MaxCount: 100},
+		{ID: "daily_imp", Type: "KILL", Target: "Imp", MaxCount: 100},
+		{ID: "daily_demonorc", Type: "KILL", Target: "DemonOrc", MaxCount: 100},
+		{ID: "daily_construct", Type: "KILL", Target: "Construct", MaxCount: 100},
+		{ID: "daily_infernotitan", Type: "KILL", Target: "InfernoTitan", MaxCount: 100},
+		{ID: "daily_mountaintroll", Type: "KILL", Target: "MountainTroll", MaxCount: 100},
+		{ID: "daily_aquagolem", Type: "KILL", Target: "AquaGolem", MaxCount: 100},
+		{ID: "daily_siren", Type: "KILL", Target: "Siren", MaxCount: 100},
+		{ID: "daily_frostguardian", Type: "KILL", Target: "FrostGuardian", MaxCount: 100},
+		{ID: "daily_sandstormdjinn", Type: "KILL", Target: "SandstormDjinn", MaxCount: 100},
+		{ID: "daily_magmagolem", Type: "KILL", Target: "MagmaGolem", MaxCount: 100},
+		{ID: "daily_scorchedwraith", Type: "KILL", Target: "ScorchedWraith", MaxCount: 100},
+		{ID: "daily_infernalbehemoth", Type: "KILL", Target: "InfernalBehemoth", MaxCount: 100},
+		{ID: "daily_phoenixsentinel", Type: "KILL", Target: "PhoenixSentinel", MaxCount: 100},
+		{ID: "daily_stormharpy", Type: "KILL", Target: "StormHarpy", MaxCount: 100},
+		{ID: "daily_cloudelemental", Type: "KILL", Target: "CloudElemental", MaxCount: 100},
+		{ID: "daily_thunderroc", Type: "KILL", Target: "ThunderRoc", MaxCount: 100},
+		{ID: "daily_tempestgiant", Type: "KILL", Target: "TempestGiant", MaxCount: 100},
+		{ID: "daily_cycloneavatar", Type: "KILL", Target: "CycloneAvatar", MaxCount: 100},
+		{ID: "daily_dungeon_bosses", Type: "KILL", Target: "DungeonBoss", MaxCount: 4},
+		{ID: "daily_verdant_bastion_bosses", Type: "KILL", Target: "VerdantBastionBoss", MaxCount: 4},
+		{ID: "daily_abyssal_well_bosses", Type: "KILL", Target: "AbyssalWellBoss", MaxCount: 5},
+		{ID: "daily_molten_core_bosses", Type: "KILL", Target: "MoltenCoreBoss", MaxCount: 5},
+		{ID: "daily_tempest_spire_bosses", Type: "KILL", Target: "TempestSpireBoss", MaxCount: 5},
+		{ID: "daily_dungeon_bosses_heroic", Type: "KILL", Target: "DungeonBossHeroic", MaxCount: 4},
+		{ID: "daily_dungeon_bosses_mythic", Type: "KILL", Target: "DungeonBossMythic", MaxCount: 4},
 	}
 	for i := range quests {
-		quests[i].RewardGold = questGoldReward(quests[i].RewardXP)
-		quests[i].RewardXPQuoted, quests[i].RewardGoldQuoted = true, true
+		budget := dailyRewardBudget(quests[i].Target, quests[i].MaxCount)
+		quests[i].RewardXP, quests[i].RewardGold = budget.XP, budget.Gold
 		quests[i].Category = QuestCategoryDaily
+		quests[i].RewardXPQuoted, quests[i].RewardGoldQuoted = true, true
 		quests[i].Title = fmt.Sprintf("Daily Hunt: %s", splitQuestTarget(quests[i].Target))
 		quests[i].ObjectiveText = fmt.Sprintf("Defeat %d %s.", quests[i].MaxCount, splitQuestTarget(quests[i].Target))
 		quests[i].Description = "A repeatable contract from Lanternhold's quest giver. Daily hunts reset at midnight Eastern Time."
@@ -243,6 +248,8 @@ func copyQuestDefinition(progress Quest, definition Quest) Quest {
 	}
 	definition.RewardXPQuoted, definition.RewardGoldQuoted = true, true
 	if definition.Category == QuestCategoryChronicle && definition.Type == "COLLECT" && (progress.Accepted || progress.Completed) {
+		// Payouts above retain explicit quotes, including zero, while genuinely
+		// missing legacy fields receive the current catalog defaults.
 		// Accepted contracts retain their requirements and drop rules. A missing
 		// version identifies a pre-balance save, not a newly accepted chapter.
 		count := max(1, progress.MaxCount)
@@ -263,11 +270,12 @@ func copyQuestDefinition(progress Quest, definition Quest) Quest {
 	definition.GrantedGold = progress.GrantedGold
 	definition.GrantedXP = progress.GrantedXP
 	definition.GrantedResonanceXP = progress.GrantedResonanceXP
+	definition.LegacyOptional = progress.LegacyOptional && isOptionalChronicleAddition(definition)
 	if definition.Type == "INVESTIGATE" {
 		definition.InvestigationMask = progress.InvestigationMask & ((1 << definition.MaxCount) - 1)
 		definition.Count = bits.OnesCount32(definition.InvestigationMask)
 	}
-	return definition
+	return withChronicleCatchupDescription(definition)
 }
 
 // ensureChronicleLocked repairs metadata and offers only the next unfinished
@@ -296,10 +304,33 @@ func ensureChronicleLocked(player *Entity) bool {
 		}
 		indices[definition.ID] = i
 	}
+	// Missing authored additions behind an accepted/completed saved milestone
+	// become optional catch-up chapters, never retroactively completed quests.
+	// Expanded investigation milestones count too. Only newly inserted records
+	// are classified; a fresh character's required chapters remain required.
+	lastLegacyMilestone := -1
+	for index, definition := range catalog {
+		if saved, exists := indices[definition.ID]; exists && (player.Quests[saved].Accepted || player.Quests[saved].Completed) {
+			lastLegacyMilestone = index
+		}
+	}
+	for index, definition := range catalog {
+		if index >= lastLegacyMilestone || !isOptionalChronicleAddition(definition) {
+			continue
+		}
+		if _, exists := indices[definition.ID]; exists {
+			continue
+		}
+		definition.LegacyOptional = true
+		definition = withChronicleCatchupDescription(definition)
+		indices[definition.ID] = len(player.Quests)
+		player.Quests = append(player.Quests, definition)
+		changed = true
+	}
 	nextIndex := 0
 	for nextIndex < len(catalog) {
 		idx, exists := indices[catalog[nextIndex].ID]
-		if !exists || !player.Quests[idx].Completed {
+		if !exists || (!player.Quests[idx].Completed && !player.Quests[idx].LegacyOptional) {
 			break
 		}
 		nextIndex++
@@ -444,7 +475,7 @@ func (w *World) canDiscussQuestLocked(player *Entity, quest Quest) bool {
 			if definition.ID == quest.ID {
 				break
 			}
-			if !HasCompletedChronicleQuest(player, definition.ID) {
+			if !quest.LegacyOptional && !hasSatisfiedChroniclePrerequisite(player, definition.ID) {
 				return false
 			}
 		}
@@ -471,14 +502,18 @@ func (w *World) advanceChronicleLocked(player *Entity, questIndex int) Chronicle
 	event := ChronicleAdvanceEvent{PlayerID: player.ID, CompletedID: quest.ID, CompletedTitle: quest.Title}
 	ensureChronicleLocked(player)
 	for _, next := range player.Quests {
-		if next.Category == QuestCategoryChronicle && !next.Completed {
+		if next.Category == QuestCategoryChronicle && !next.Completed && !next.LegacyOptional && (event.NextID == "" || next.Chapter < nextChapterNumber(player, event.NextID)) {
 			event.NextID = next.ID
 			event.NextTitle = next.Title
 			event.NextLore = next.Lore
-			break
+			// An investigation's summary is its conclusion, not an invitation.
+			// Do not broadcast discoveries before the player has earned them.
+			if next.Type == "INVESTIGATE" {
+				event.NextLore = ""
+			}
 		}
 	}
-	event.Finale = event.NextID == ""
+	event.Finale = event.NextID == "" && event.CompletedID == ChronicleDarkKingID
 	return event
 }
 

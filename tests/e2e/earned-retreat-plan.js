@@ -1,10 +1,10 @@
-import { planWizardHuntStep } from '../wizardHuntControls.js';
+import { planRangedHuntStep } from '../wizardHuntControls.js';
 
 // The deployed site serves game modules, not /tests. Keep strategy in Node and
 // send only detached candidate vectors to the browser's real collision manager.
 export async function planReachableWizardStep(page, state) {
     const options = [];
-    const initial = planWizardHuntStep({ ...state, canRetreat: delta => {
+    const initial = planRangedHuntStep({ ...state, canRetreat: delta => {
         options.push(delta);
         return true;
     } });
@@ -26,6 +26,6 @@ export async function planReachableWizardStep(page, state) {
             return true;
         });
     }, { options, radius: state.radius || 1.25 });
-    return planWizardHuntStep({ ...state, canRetreat: delta => options.some((option, index) =>
+    return planRangedHuntStep({ ...state, canRetreat: delta => options.some((option, index) =>
         clear[index] && option.x === delta.x && option.z === delta.z) });
 }

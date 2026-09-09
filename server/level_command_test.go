@@ -116,7 +116,7 @@ func TestHandleMessageLevelCommandSetsPlayerLevelAndResponds(t *testing.T) {
 	if updated.Experience != 0 {
 		t.Fatalf("expected experience reset to 0, got %d", updated.Experience)
 	}
-	expectedMaxXP := int(100 * math.Pow(1.2, float64(30-1)))
+	expectedMaxXP := 21125 // Coordinated curve, independently checked at level 30.
 	if updated.MaxExperience != expectedMaxXP {
 		t.Fatalf("expected max experience %d, got %d", expectedMaxXP, updated.MaxExperience)
 	}

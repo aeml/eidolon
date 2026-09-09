@@ -70,7 +70,9 @@ func TestEnemyBleedKillCreditsOwnerOnce(t *testing.T) {
 		}
 		time.Sleep(time.Millisecond)
 	}
-	if xp != 20 {
-		t.Fatalf("kill credit missing or duplicated: XP=%d, want 20", xp)
+	// A level-one ordinary enemy pays 10% of its 100-XP threshold,
+	// regardless of whether direct damage or a status delivers the last hit.
+	if xp != 10 {
+		t.Fatalf("kill credit missing or duplicated: XP=%d, want 10", xp)
 	}
 }

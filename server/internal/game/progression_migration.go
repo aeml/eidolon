@@ -5,9 +5,9 @@ import (
 	"math"
 )
 
-// Compatibility bridge: keep the live exponential curve while understanding
-// version-2 saves. Deploy and verify this before activating the balanced curve.
-const CurrentProgressionVersion = 1
+// This curve is experimental until sources and the authored campaign are tuned
+// together. The candidate worktree must not be released as a curve-only patch.
+const CurrentProgressionVersion = 2
 const MaxSupportedProgressionVersion = 2
 
 type SavedProgression struct {

@@ -40,7 +40,7 @@ func TestQuestActionsRequireCorrectGiverAndRewardOnlyOnce(t *testing.T) {
 	if _, ok := w.PerformCompleteQuest(player.ID, id); ok || player.Level != level || player.Experience != xp {
 		t.Fatal("duplicate turn-in rewarded")
 	}
-	if questByID(t, player, "chronicle_02_seeds_first_grove").Accepted {
+	if questByID(t, player, "chronicle_earth_keepers_house").Accepted {
 		t.Fatal("next quest auto-accepted")
 	}
 	player.X, player.Z = -20, 200

@@ -14,6 +14,33 @@ function buildQuestDom() {
 }
 
 describe('QuestUI objectives panel', () => {
+    test.each([
+        ['PhoenixSentinel', 100, 'Phoenix Sentinels'],
+        ['CycloneAvatar', 100, 'Cyclone Avatars'],
+        ['MountainTroll', 1, 'Mountain Troll'],
+        ['StormHarpy', 100, 'Storm Harpies'],
+        ['SandstormDjinn', 100, 'Sandstorm Djinn'],
+        ['Verdant Memory Seed', 8, 'Verdant Memory Seeds'],
+        ['DungeonBossMythic', 4, 'Dungeon Bosses (Mythic)']
+    ])('formats quest target %s for %s objectives as %s', (target, count, label) => {
+        buildQuestDom();
+        const ui = new QuestUI({ getLastPlayer: () => ({ level: 100 }) });
+        expect(ui.formatQuestTarget(target, count)).toBe(label);
+    });
+
+    test.each([false, true])('repeatable rewards keep complete labels and values (mobile=%s)', isMobile => {
+        buildQuestDom();
+        const ui = new QuestUI({ isMobile, getLastPlayer: () => ({ level: 100 }) });
+        ui.updateJournal([{ id: 'daily_phoenix', target: 'PhoenixSentinel', count: 67, maxCount: 100,
+            accepted: true, completed: false, rewardXP: 10000000, rewardGold: 20000 }]);
+        const row = document.querySelector('.quest-ladder-row');
+        expect(row).not.toBeNull();
+        expect(row.style.flexDirection).toBe(isMobile ? 'column' : 'row');
+        expect(row.style.alignItems).toBe(isMobile ? 'stretch' : 'baseline');
+        expect(row.querySelector('.quest-ladder-row__label').textContent).toBe('Phoenix Sentinels • Active');
+        expect(row.querySelector('.quest-ladder-row__value').textContent).toBe('67 / 100 • 20,000 gold · 10,000,000 Resonance XP');
+    });
+
     test('tracking remains usable with blocked storage and preserves checkbox focus', () => {
         buildQuestDom();
         const quest = { id: 'daily_storage', target: 'Skeleton', accepted: true, maxCount: 1 };

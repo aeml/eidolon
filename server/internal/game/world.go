@@ -305,6 +305,7 @@ func (w *World) initWorld() {
 	w.spawnFireRealm()
 	w.spawnAirRealm()
 	w.spawnEnvironmentalHazards()
+	w.spawnChronicleInvestigationSites()
 }
 
 func (w *World) spawnFence() {
@@ -1002,6 +1003,7 @@ func (w *World) spawnEliteInRect(level int, minX, maxX, minZ, maxZ float64) {
 		x, z = lanternholdElitePosition(x, z)
 	}
 	if !lanternholdAdvancedSpawnAllowed(subType, x, z) {
+		// Keep the one elite per sector, outside the introductory roads.
 		x = math.Copysign(100+lanternholdAdvancedSpawnDistance, x)
 	}
 	profile := overworldEnemyCombatProfile(subType, level, true)

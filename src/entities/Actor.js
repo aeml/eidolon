@@ -11,6 +11,7 @@ import { basicAttackInterval, usesPlayerAttackCadence } from '../core/BasicAttac
 import { rollOfflineCriticalDamage } from '../core/AbilityCritical.js';
 import { applyOfflineStatus, clearOfflineStatus, updateOfflineDamageOverTime } from '../core/OfflineDamageOverTime.js';
 import { CONSTANTS } from '../core/Constants.js';
+import { awardOfflineExperience, experienceRequiredForLevel, PLAYER_LEVEL_CAP } from '../core/ProgressionCurve.js';
 import {
     exponentialSmoothingFactor,
     horizontalDistanceSquared,
@@ -1731,20 +1732,14 @@ export class Actor extends Entity {
     }
 
     gainXp(amount) {
-        if (this.isMultiplayer || this.isRemote) return;
-        this.xp += amount;
-        console.log(`${this.id} gained ${amount} XP. Total: ${this.xp}/${this.xpToNextLevel}`);
-        
-        if (this.xp >= this.xpToNextLevel) {
-            this.levelUp();
-        }
+        return awardOfflineExperience(this, amount);
     }
 
     levelUp() {
+        if (this.isMultiplayer || this.isRemote || this.level >= PLAYER_LEVEL_CAP) return;
         this.level++;
         this.xp -= this.xpToNextLevel;
-        // Match server exponential curve (1.2)
-        this.xpToNextLevel = Math.floor(100 * Math.pow(1.2, this.level - 1));
+        this.xpToNextLevel = experienceRequiredForLevel(this.level);
         
         this.statPoints += 3;
         

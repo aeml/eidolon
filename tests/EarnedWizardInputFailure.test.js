@@ -1,8 +1,10 @@
-import { jest } from '@jest/globals';
+import { jest, expect as jestExpect } from '@jest/globals';
 import { GroundInputUnavailableError } from './groundInputFailure.js';
 
 const move = jest.fn(), read = jest.fn();
-jest.unstable_mockModule('./e2e/helpers.js', () => ({ moveByGroundClick: move, readPlayerState: read }));
+jest.unstable_mockModule('@playwright/test', () => ({ expect: jestExpect }));
+jest.unstable_mockModule('./e2e/helpers.js', () => ({ moveByGroundClick: move, readPlayerState: read,
+    jumpByGroundClick: jest.fn(), projectGroundOffset: jest.fn() }));
 jest.unstable_mockModule('./e2e/earned-retreat-plan.js', () => ({
     planReachableWizardStep: async () => ({ action: 'retreat', x: -9, z: 0 })
 }));

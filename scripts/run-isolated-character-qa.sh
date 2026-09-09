@@ -576,6 +576,12 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   well-rested-party)
     npx playwright test tests/e2e/well-rested-party-gameplay.spec.js
     ;;
+  fresh-story-uninterrupted)
+    EIDOLON_E2E_UNINTERRUPTED=1 EIDOLON_E2E_FRESH_STORY_HUNT=1 npx playwright test tests/e2e/fresh-opening-gameplay.spec.js
+    ;;
+  fresh-story-hunt)
+    EIDOLON_E2E_FRESH_STORY_HUNT=1 npx playwright test tests/e2e/fresh-opening-gameplay.spec.js
+    ;;
   fresh-hunt-npc)
     npx playwright test tests/e2e/fresh-hunt-npc.spec.js
     ;;
@@ -635,6 +641,21 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   phone-quests)
     run_phone_quests
     ;;
+  phone-earth-investigations|phone-water-investigations|phone-fire-investigations|phone-air-investigations)
+    investigation_realm="${EIDOLON_ISOLATED_QA_ROUTE#phone-}"
+    investigation_realm="${investigation_realm%-investigations}"
+    EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-${investigation_realm}-touch-lore" EIDOLON_E2E_CLASS=Wizard \
+      EIDOLON_E2E_INVESTIGATION_REALM="${investigation_realm}" \
+      EIDOLON_E2E_INVESTIGATION_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_INVESTIGATION_MONGO_PORT="${mongo_port}" \
+      npx playwright test tests/e2e/chronicle-phone-investigations.spec.js
+    ;;
+  water-investigations|fire-investigations|air-investigations)
+    investigation_realm="${EIDOLON_ISOLATED_QA_ROUTE%-investigations}"
+    EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-${investigation_realm}-lore" EIDOLON_E2E_CLASS=Wizard \
+      EIDOLON_E2E_INVESTIGATION_REALM="${investigation_realm}" \
+      EIDOLON_E2E_INVESTIGATION_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_INVESTIGATION_MONGO_PORT="${mongo_port}" \
+      npx playwright test tests/e2e/chronicle-realm-investigations.spec.js
+    ;;
   phone-build)
     run_phone_build
     ;;
@@ -659,7 +680,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     echo "Trained cone/Beacon/Mass Revival verification: EIDOLON_ISOLATED_QA_ROUTE=cleric-final-area" >&2
     echo "Trained Spirit Guardians verification: EIDOLON_ISOLATED_QA_ROUTE=spirit-area" >&2
     echo "Forge/material refresh and guide verification: EIDOLON_ISOLATED_QA_ROUTE=forge-guide" >&2
-    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, inventory, equipment-recovery, talent-economy, talent-healing, talent-duration, extended, portal, dungeons, verdant, dungeon-full, chronicle-earth, chronicle-collection, fresh-opening, fresh-collection, fresh-hunt, fresh-hunt-npc, fresh-ready, fresh-dungeon, dungeon-recovery, direct-skills, projectile-walls, movement-walls, ground-walls, beam-walls, whip-shape, whirlwind, phone, phone-combat, phone-party, phone-inventory, phone-quests, phone-build, phone-settings, or phone-adventure." >&2
+    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, quests, inventory, equipment-recovery, talent-economy, talent-healing, talent-duration, extended, portal, dungeons, verdant, dungeon-full, chronicle-earth, chronicle-collection, fresh-opening, fresh-collection, fresh-story-hunt, fresh-story-uninterrupted, fresh-hunt, fresh-hunt-npc, fresh-ready, fresh-dungeon, dungeon-recovery, direct-skills, projectile-walls, movement-walls, ground-walls, beam-walls, whip-shape, whirlwind, phone, phone-combat, phone-party, phone-inventory, phone-quests, phone-build, phone-settings, or phone-adventure." >&2
     exit 1
     ;;
 esac

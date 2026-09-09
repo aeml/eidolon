@@ -1453,6 +1453,9 @@ func (c *Client) dispatchMessage(msg Message) {
 			c.sendSystemChat("Could not withdraw that item. Check bag space and select the item again.")
 		}
 
+	case MsgChronicleInspect:
+		c.handleChronicleInspection(msg.Payload)
+
 	case MsgRequestQuests:
 		if c.playerID == "" {
 			return

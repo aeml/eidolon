@@ -2,7 +2,6 @@ package game
 
 import (
 	"fmt"
-	"math"
 )
 
 const (
@@ -22,10 +21,7 @@ type EndgameProgress struct {
 }
 
 func experienceRequiredForLevel(level int) int {
-	if level <= 1 {
-		return 100
-	}
-	return int(100 * math.Pow(1.2, float64(level-1)))
+	return progressionRequirement(CurrentProgressionVersion, level)
 }
 
 func ExperienceRequiredForLevel(level int) int {
@@ -155,11 +151,10 @@ func (player *Entity) addResonanceExperienceLocked(amount int) {
 		return
 	}
 	player.ResonanceXP += amount
-	for player.ResonanceXP >= ResonanceXPPerLevel {
-		player.ResonanceXP -= ResonanceXPPerLevel
-		player.ResonanceLevel++
-		player.ResonancePoints++
-	}
+	earned := player.ResonanceXP / ResonanceXPPerLevel
+	player.ResonanceXP %= ResonanceXPPerLevel
+	player.ResonanceLevel += earned
+	player.ResonancePoints += earned
 }
 
 func (w *World) SpendResonancePoint(playerID, trait string) (*Entity, error) {
@@ -222,29 +217,45 @@ func (w *World) EndgameProgressForPlayer(playerID string) (EndgameProgress, bool
 	}, true
 }
 
+type WeeklyRaidRewardReceipt struct {
+	Gold, ResonanceXP int
+	ItemGranted       bool
+}
+
 func (w *World) GrantWeeklyRaidReward(playerID string) bool {
+	_, granted := w.GrantWeeklyRaidRewardWithReceipt(playerID)
+	return granted
+}
+
+// The database weekly claim remains the idempotency gate. Return the actual
+// grant so full-bag compensation and partial Resonance ranks are described
+// correctly instead of announcing a unique or a whole rank that was not given.
+func (w *World) GrantWeeklyRaidRewardWithReceipt(playerID string) (WeeklyRaidRewardReceipt, bool) {
 	w.Mu.RLock()
 	player := w.Entities[playerID]
 	w.Mu.RUnlock()
 	if player == nil {
-		return false
+		return WeeklyRaidRewardReceipt{}, false
 	}
 	player.Mu.Lock()
 	defer player.Mu.Unlock()
 	if player.Level < MaxPlayerLevel {
-		return false
+		return WeeklyRaidRewardReceipt{}, false
 	}
-	player.addResonanceExperienceLocked(ResonanceXPPerLevel)
-	goldReward := 50_000
+	player.addResonanceExperienceLocked(1_000_000)
+	goldReward := 15_000
+	itemGranted := false
 	if item := GenerateGuaranteedUniqueEquipment(MaxPlayerLevel); item != nil {
 		if player.AddItemToInventory(*item) > 0 {
 			// Never burn a weekly lockout because the inventory was full.
-			goldReward += 10_000
+			goldReward += 5_000
+		} else {
+			itemGranted = true
 		}
 	}
 	player.Gold += goldReward
 	if w.Economy != nil {
 		w.Economy.RecordSource("weekly_raid", goldReward)
 	}
-	return true
+	return WeeklyRaidRewardReceipt{Gold: goldReward, ResonanceXP: 1_000_000, ItemGranted: itemGranted}, true
 }

@@ -10,7 +10,7 @@ import (
 //go:embed testdata/progression_v2.json
 var progressionV2Fixture []byte
 
-func TestProgressionBridgeSupportsFutureClientFixture(t *testing.T) {
+func TestProgressionCandidateMatchesSharedClientFixture(t *testing.T) {
 	var fixture struct {
 		Version      int
 		Requirements []int
@@ -18,21 +18,21 @@ func TestProgressionBridgeSupportsFutureClientFixture(t *testing.T) {
 	if err := json.Unmarshal(progressionV2Fixture, &fixture); err != nil {
 		t.Fatal(err)
 	}
-	if fixture.Version != MaxSupportedProgressionVersion || len(fixture.Requirements) != MaxPlayerLevel {
+	if fixture.Version != CurrentProgressionVersion || len(fixture.Requirements) != MaxPlayerLevel {
 		t.Fatal("invalid shared curve fixture")
 	}
 	for index, value := range fixture.Requirements {
-		if progressionRequirement(2, index+1) != value {
+		if experienceRequiredForLevel(index+1) != value {
 			t.Fatalf("shared curve differs at level %d", index+1)
 		}
 	}
 }
 
-func TestProgressionBridgeSupportedVersionTwoThresholds(t *testing.T) {
+func TestBoundedProgressionCandidateThresholds(t *testing.T) {
 	total := 0
 	for level := 1; level <= 100; level++ {
 		want := 100 + 25*(level-1)*(level-1)
-		if progressionRequirement(2, level) != want {
+		if experienceRequiredForLevel(level) != want {
 			t.Fatalf("level %d threshold does not match the bounded candidate", level)
 		}
 		if level < 100 {
@@ -50,9 +50,7 @@ func TestProgressionMigrationPreservesEveryLevelAndFractionOnce(t *testing.T) {
 		for _, xp := range []int{0, oldMax / 4, oldMax / 2, oldMax - 1} {
 			for _, version := range []int{0, 1} {
 				migrated, err := MigrateSavedProgression(level, xp, version)
-				// The bridge retains curve1: reconnect is exact identity. Avoid
-				// overflowing the test oracle by multiplying two legacy values.
-				wantXP := xp
+				wantXP := int(int64(xp) * int64(experienceRequiredForLevel(level)) / int64(oldMax))
 				if err != nil || migrated.Level != level || migrated.XP != wantXP || migrated.PendingLevels != 0 || migrated.ResonanceXP != 0 {
 					t.Fatalf("level=%d xp=%d version=%d: %+v / %v", level, xp, version, migrated, err)
 				}

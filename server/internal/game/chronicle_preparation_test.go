@@ -39,7 +39,7 @@ func TestChronicleFirstDungeonExplainsPreparationWithoutChangingObjective(t *tes
 			t.Fatalf("first dungeon handoff omits %q", phrase)
 		}
 	}
-	if chapter.Target != "HollowSentinel" || chapter.MaxCount != 1 || chapter.RewardXP != 250000 {
+	if chapter.Target != "HollowSentinel" || chapter.MaxCount != 1 || chapter.RewardXP != 10562 || chapter.RewardGold != 300 {
 		t.Fatal("preparation guidance changed the dungeon objective or reward")
 	}
 	old := Quest{ID: chapter.ID, Accepted: true, Count: 1, GrantedGold: 12}

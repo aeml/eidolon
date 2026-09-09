@@ -179,60 +179,6 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 			}
 			_, _, lootMult, xpMult := DifficultyMultipliers(instanceDifficulty)
 
-			// XP - Base XP scales with level
-			baseXpReward := tLevel*10 + 10
-
-			// Water Realm enemies (Lv 50-70)
-			if tSubType == "InfernoTitan" {
-				baseXpReward *= 3
-			}
-			if tSubType == "Siren" {
-				baseXpReward *= 3
-			}
-			if tSubType == "FrostGuardian" {
-				baseXpReward *= 3
-			}
-			if tSubType == "MountainTroll" {
-				baseXpReward *= 2
-			}
-			if tSubType == "AquaGolem" {
-				baseXpReward *= 2
-			}
-
-			// Fire Realm enemies (Lv 70-95) - Higher XP multipliers
-			if tSubType == "SandstormDjinn" {
-				baseXpReward *= 4
-			}
-			if tSubType == "MagmaGolem" {
-				baseXpReward *= 5
-			}
-			if tSubType == "ScorchedWraith" {
-				baseXpReward *= 6
-			}
-			if tSubType == "InfernalBehemoth" {
-				baseXpReward *= 7
-			}
-			if tSubType == "PhoenixSentinel" {
-				baseXpReward *= 8
-			}
-
-			// Air Realm enemies (Lv 70-95) - Higher XP multipliers
-			if tSubType == "StormHarpy" {
-				baseXpReward *= 4
-			}
-			if tSubType == "CloudElemental" {
-				baseXpReward *= 5
-			}
-			if tSubType == "ThunderRoc" {
-				baseXpReward *= 6
-			}
-			if tSubType == "TempestGiant" {
-				baseXpReward *= 7
-			}
-			if tSubType == "CycloneAvatar" {
-				baseXpReward *= 8
-			}
-
 			// Gold
 			baseGold := 0
 			if tLevel > 0 {
@@ -286,6 +232,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 			// Loot
 			// Check if Elite
 			isElite := strings.HasPrefix(tID, "elite-")
+			baseXpReward := combatExperienceBudget(tLevel, runLevel, isBoss, isElite)
 
 			// 1. Mixed-pool candidates. Equipment is bounded separately below;
 			// retain all original material candidates rather than nerfing Forge
@@ -357,15 +304,10 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				// Calculate Bonus
 				bonusMultiplier := 1.0 + (float64(len(partyMembers)) * 0.10)
 				// Apply difficulty multipliers
-				totalXP := int(float64(baseXpReward) * bonusMultiplier * xpMult)
 				totalGold := int(float64(baseGold) * bonusMultiplier * lootMult)
 
-				xpPerMember := totalXP / len(partyMembers)
+				xpPerMember := recipientCombatExperience(baseXpReward, isBoss, len(partyMembers), xpMult)
 				goldPerMember := totalGold / len(partyMembers)
-
-				if isBoss && !weeklyRaidBoss {
-					xpPerMember += 2000000
-				}
 
 				for _, member := range partyMembers {
 					member.Mu.Lock()
@@ -381,6 +323,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 
 					// Update Quests for all party members
 					w.UpdateQuestProgress(member, tSubType)
+					w.updateChronicleHuntKillLocked(member, tSubType, tLevel, tInstanceID, tSpawnX, tSpawnZ)
 					if isDungeonBoss {
 						w.UpdateQuestProgress(member, "DungeonBoss")
 						if instanceDifficulty == DifficultyHeroic {
@@ -466,10 +409,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				attacker.Mu.Lock()
 
 				// Apply difficulty multipliers
-				finalXp := int(float64(baseXpReward) * xpMult)
-				if isBoss && !weeklyRaidBoss {
-					finalXp += 2000000
-				}
+				finalXp := recipientCombatExperience(baseXpReward, isBoss, 1, xpMult)
 				finalGold := int(float64(baseGold) * lootMult)
 				rewardMultiplier := resonanceRewardMultiplier(attacker)
 				finalXp = wellRestedKillXP(attacker, int(float64(finalXp)*rewardMultiplier))
@@ -483,6 +423,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				attackerRewardItems := []*Item{}
 				// Update Quests
 				w.UpdateQuestProgress(attacker, tSubType)
+				w.updateChronicleHuntKillLocked(attacker, tSubType, tLevel, tInstanceID, tSpawnX, tSpawnZ)
 				if isDungeonBoss {
 					w.UpdateQuestProgress(attacker, "DungeonBoss")
 					if instanceDifficulty == DifficultyHeroic {
@@ -573,6 +514,14 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 			}
 			if IsElementalRaidBoss(instanceType, tSubType) {
 				w.StartCrystalRepair(tInstanceID, instanceType, participants, tX, tZ)
+			}
+			// Only actual death-pipeline recipients can receive the anchor's
+			// combat evidence. Each still needs their own accepted quest and ash
+			// discovery. Ordinary kills do not parse the investigation catalog.
+			if strings.HasPrefix(tID, "chronicle-site-") {
+				for _, playerID := range participants {
+					w.RecordChronicleInvestigationKill(playerID, tID)
+				}
 			}
 			if finalDungeonBoss && w.OnEvent != nil && !instanceCreatedAt.IsZero() {
 				w.OnEvent("dungeon_complete", DungeonCompletionEvent{

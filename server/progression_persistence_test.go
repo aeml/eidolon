@@ -38,7 +38,7 @@ func TestProgressionCurveVersionAndMigratedFractionSurviveSnapshotBSON(t *testin
 		BaseStats: game.Stats{Strength: saved.Stats.Strength, Intelligence: saved.Stats.Intelligence, Vitality: saved.Stats.Vitality}}
 	player.NormalizeResonanceProgress()
 	player.ApplySavedProgression(progress)
-	if player.Level != 30 || player.Experience != 9890 || player.Gold != 732 {
+	if player.Level != 30 || player.Experience != 10561 || player.Gold != 732 {
 		t.Fatalf("incorrect saved fraction conversion: %+v", progress)
 	}
 	for iteration := 0; iteration < 3; iteration++ {

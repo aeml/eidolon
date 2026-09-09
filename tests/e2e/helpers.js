@@ -369,6 +369,12 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
     ];
 
     for (const [candidateX, candidateZ] of candidates) {
+        if (options.requireClearPath && !await page.evaluate(async ({ x, z }) => {
+            const { isEarnedRetreatPathClear } = await import('/tests/wizardHuntControls.js');
+            const game = window.game;
+            return isEarnedRetreatPathClear(game.collisionManager, game.player.position,
+                game.player.radius || 1.25, { x, z });
+        }, { x: candidateX, z: candidateZ })) continue;
         let target = null;
         try {
             await expect.poll(async () => {

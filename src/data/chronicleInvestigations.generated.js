@@ -19,8 +19,10 @@ export const chronicleInvestigations = [
     ],
     "title": "The Keeper's Empty House",
     "acceptance": "“Mara Fen kept the first grove beyond Lanternhold. When the roots shifted, she sent me a pressed leaf with no veins. I answered with a warning to leave. She answered with a list of families who could not.\n\n“Her house has gone quiet. Find her planting table and the diary she kept beneath it. I need to know what she saw before we ask the land for anything more.”",
-    "completion": "“She got them out. That matters more than a perfect ward or a brave last stand.\n\n“And she found the distinction I missed. This is not simply a loss of strength. Someone is diverting the Rootheart's protection toward a command. Mara describes a seal at the old stone circle. We must learn what the roots were made to forget.”",
-    "summary": "Mara evacuated her neighbors after a stranger's seal began redirecting the grove's protection. Investigate the blighted stone circle."
+    "completion": "“She got them out. That matters more than a perfect ward or a brave last stand.\n\n“And she found the distinction I missed. This is not simply a loss of strength. Someone is diverting the Rootheart's protection toward a command. Mara describes a seal at the old stone circle. First, bring me Memory Seeds from the grove's troubled creatures; their living memories will let us distinguish a scar from new growth when we study that circle.”",
+    "catchupAcceptance": "“There is a gap in our account of the first grove. Mara Fen kept a diary beneath her planting table. Return to her abandoned house and bring me her words. We are recovering a missing history, not asking you to repeat the road you have already opened.”",
+    "catchupCompletion": "“Mara left the door open. Even after the roots withdrew, she refused to make shelter something people must earn by kneeling.\n\n“We will keep her name beside the account of the Rootheart. A chronicle that remembers only guardians and battles would miss the courage that gave those battles a purpose.”",
+    "summary": "Mara evacuated her neighbors after a stranger's seal began redirecting the grove's protection. Ilyra needs Memory Seeds before the stone circle's altered roots can be understood."
   },
   {
     "id": "chronicle_earth_returning_scar",
@@ -62,6 +64,8 @@ export const chronicleInvestigations = [
     "title": "The Scar That Grows Back",
     "acceptance": "“A damaged root tries to heal. If the scar returns, something is repeating the wound. Compare the old root with its new growth, then examine the stone between them. Do not tear out the mark before you understand what it is holding apart.”",
     "completion": "“Orun's covenant remembers care passing from one life to another. This mark replaces that exchange with a single master. Each time the grove grows, it is told the false story again.\n\n“The Memory Seeds you brought preserve what the mark cannot rewrite. I will keep them safe; Maelin will need that truth at the crystal itself. First, the Bastion's outer guardian must fall. Its road is the way in, not the place of repair.”",
+    "catchupAcceptance": "“The old stone circle still holds traces of the wound. Compare the severed root, its altered growth and the marked stone. Preserve the difference between what the grove remembered and what it was ordered to remember. Your earned passage through the Chronicle will not change.”",
+    "catchupCompletion": "“Two hands planted that tree. The command tried to erase one of them, as if care could only come from a master.\n\n“This record names the wound: not weakness, but a stolen relationship. I will place it beside the Memory Seeds' account, so no future keeper mistakes obedience for the covenant's strength.”",
     "summary": "The wound repeats a false oath. Memory Seeds preserve the original covenant; the Bastion guards the road to the deeper crystal raid."
   },
   {
@@ -83,8 +87,10 @@ export const chronicleInvestigations = [
     ],
     "title": "The House Beneath the Tide",
     "acceptance": "“The shelter bells have been ringing at low tide. No one remains there to pull the ropes. Dain kept a record of every crossing, including passengers who could not pay. Find that ledger. Neris keeps promises in water; a record of who was carried home may tell us which promise has been broken.”",
-    "completion": "“Mara's grove was taught to obey. Here, obedience is being written into the past, as though the people had asked for their own chains.\n\n“Dain understood Neris better than the author of that charter ever will. A promise cannot be kept by erasing the person to whom it was made. There are two echo pools near the shelter. Find which memory still holds Tovin's name.”",
-    "summary": "A false charter is rewriting rescued people as sworn servants. Compare the echo pools and find the surviving record of Tovin."
+    "completion": "“Mara's grove was taught to obey. Here, obedience is being written into the past, as though the people had asked for their own chains.\n\n“Dain understood Neris better than the author of that charter ever will. A promise cannot be kept by erasing the person to whom it was made. First bring me Moon-Tide Pearls from the troubled creatures of Water. Their living rhythm will help us distinguish the two echo pools near the shelter, and find which memory still holds Tovin's name.”",
+    "catchupAcceptance": "“Our record of the tide is missing a ferryman's voice. Dain kept a crossing ledger in the abandoned flood shelter, including names no passenger could pay to have remembered. Recover its last entry. We are filling a gap in the Chronicle, not surrendering any progress you have earned.”",
+    "catchupCompletion": "“Tovin. I will write his name here, exactly as Dain did. Not a servant or an entry in a debt, but a child for whom someone made room.\n\n“The charter tried to turn a rescue into consent. Dain's account refuses that bargain. Whatever lies ahead, we must never measure protection by how completely people depend on its keeper.”",
+    "summary": "A false charter is rewriting rescued people as sworn servants. Recover Moon-Tide Pearls before comparing the echo pools for Tovin's true memory."
   },
   {
     "id": "chronicle_water_false_reflection",
@@ -126,6 +132,8 @@ export const chronicleInvestigations = [
     "title": "A Reflection Out of Time",
     "acceptance": "“Listen to both pools before you touch the bell. A lie can sound calmer than the truth. We are looking for a memory that can change when another person enters it, not one that repeats its answer perfectly.”",
     "completion": "“The true memory was untidy. People spoke over one another. Someone was afraid, and someone else helped. That is what the false charter cannot allow: a promise made freely, with no certainty that the world will obey it.\n\n“The Moon-Tide Pearls will carry that living rhythm into Maelin's ritual. To reach the Tidestar, we first need the route-name Thalorath has taken. Clear the Well; do not mistake recovering a road for restoring its destination.”",
+    "catchupAcceptance": "“Two echo pools near the shelter still hold different accounts of one crossing. Listen to both, then examine the mooring bell. The contrast belongs in our history of the Tidestar's wound. Recording it will not require you to repeat a dungeon or repair you have already completed.”",
+    "catchupCompletion": "“The false echo was perfect because no one in it was allowed to answer differently. The true crossing had fear, confusion and a stranger steadying a child.\n\n“We will preserve that untidy kindness. The broken seal explains the route-name's imprisonment; Dain and Tovin explain why reclaiming a route mattered at all.”",
     "summary": "The moving echo preserves a freely kept promise. Thalorath holds the route-name needed to reach Neris's separate crystal sanctum."
   },
   {
@@ -147,8 +155,10 @@ export const chronicleInvestigations = [
     ],
     "title": "The Cold Kiln",
     "acceptance": "“Hessa's kiln once fired every pot in its valley. The messengers now speak only of furnaces and weapons, as though fire had no other purpose. Find what she was making when the warmth failed. Small unfinished things often tell the truth that rulers leave out of their histories.”",
-    "completion": "“Hessa did not want an empire. She wanted a warm house for someone else. That was enough for the trap to take hold.\n\n“The command is making the land dependent, then offering dependence as the cure. An obedient ember still burns above the kiln's exhaust vents. Find the anchors feeding it before it turns another frightened person into a jailer.”",
-    "summary": "Hessa accepted a controlled flame to help her neighbors, then broke its token when it made the valley dependent on one person's commands."
+    "completion": "“Hessa did not want an empire. She wanted a warm house for someone else. That was enough for the trap to take hold.\n\n“The command is making the land dependent, then offering dependence as the cure. First recover Cinderheart Ore from Fire's troubled creatures and bring it to me. We need a record of freely given flame before we study the obedient ember beyond the kiln and break the relay that feeds it.”",
+    "catchupAcceptance": "“The histories of Fire are crowded with furnaces and weapons. I am looking for a cooking pot. Hessa's last ledger remains at the abandoned communal kiln. Find what she was making when the warmth failed. Her account belongs in the Chronicle even if your journey has carried you beyond that chapter.”",
+    "catchupCompletion": "“She signed because people were cold. When she understood the price, she broke the token and left her tools for anyone who needed them.\n\n“I will record both decisions. If we remember only the mistake, we repeat Malachar's belief that a frightened person can never choose again. Hessa's refusal is part of this world's answer to him.”",
+    "summary": "Hessa accepted a controlled flame to help her neighbors, then broke its token when it made the valley dependent on one person's commands. Recover Cinderheart Ore before investigating the command relay beyond the kiln."
   },
   {
     "id": "chronicle_fire_obedient_ember",
@@ -191,7 +201,9 @@ export const chronicleInvestigations = [
     ],
     "title": "An Ember That Obeys",
     "acceptance": "“Pyralis gave fire a purpose beyond hunger: to change what it touches, then let it go. This ember has been forbidden to finish. Study its ash, break the anchor that restrains it, and watch what it chooses when no one gives an order.”",
-    "completion": "“It chose a hearth, not a throne. And then it ended. There is more courage in that small ending than in all of Infernax's promises of eternal victory.\n\n“Keep the Cinderheart Ore for the Crucible. It remembers that bargain between purpose and release. The furnace-key is still inside the full Molten Core; without it, Maelin cannot reach the circuit that keeps the Ember Crown bound.”",
+    "completion": "“It chose a hearth, not a throne. And then it ended. There is more courage in that small ending than in all of Infernax's promises of eternal victory.\n\n“The Cinderheart Ore you entrusted to me is safe for the Crucible. It remembers that bargain between purpose and release. The furnace-key is still inside the full Molten Core; without it, Maelin cannot reach the circuit that keeps the Ember Crown bound.”",
+    "catchupAcceptance": "“One of the kiln's old relays still holds an unfinished ember. Study the cold ash, break its command anchor, then record what the ember does when it is free. Small bindings can outlast the road that fed them. This investigates that lingering wound; it does not replace any crystal's Vigil.”",
+    "catchupCompletion": "“A hearth, then ash, then a seed. The command demanded an endless flame; the ember chose work that could finish.\n\n“Your record explains why release belongs beside strength in Pyralis's covenant. I will keep it with our account of the Cinderheart Ore and the Ember Crown, without confusing this small relay with the crystal itself.”",
     "summary": "The command prevents fire from completing its work. Freeing one relay reveals why the furnace-key and the later Crucible repair are needed."
   },
   {
@@ -213,8 +225,10 @@ export const chronicleInvestigations = [
     ],
     "title": "The Last Weatherkeeper",
     "acceptance": "“Selen measured the weather without pretending to own it. Her last chart shows the same storm on seven successive sheets, down to a bird caught beside the same tower. Find her journal. If the sky is repeating itself, she would have noticed what was being left out.”",
-    "completion": "“Now we have more than the Dark King's mark. We have the history of his method. The messenger learned every road between the spirits, then decided that the roads should lead only to him.\n\n“Selen found a seam he could not close. Take her record to the stationary storm. We need to hear the command beneath its thunder, and find what still refuses it.”",
-    "summary": "Selen identified Malachar's old courier seal and escaped the repeating storm by remembering what its cycle tried to erase."
+    "completion": "“Now we have more than the Dark King's mark. We have the history of his method. The messenger learned every road between the spirits, then decided that the roads should lead only to him.\n\n“Selen found a seam he could not close. First bring me Stormglass Pinions from Air's troubled creatures. I will help you learn their separate rhythms before you carry Selen's record into the stationary storm. We need to hear the command beneath its thunder, and find what still refuses it.”",
+    "catchupAcceptance": "“Selen's observatory contains an account our maps cannot give us: what it felt like to notice the sky repeating. Recover her final journal from the abandoned weatherkeeping station. We are preserving a witness, not resetting your passage through Air or the roads beyond it.”",
+    "catchupCompletion": "“One loose strand showed her that the storm's account was not the whole truth. She trusted that small contradiction and carried it beyond the loop.\n\n“Her charts preserve the change in Malachar's seal: four voices bent toward one command. We will keep her discovery alongside her escape. Seeing the trap and refusing it belong to the same history.”",
+    "summary": "Selen identified Malachar's old courier seal and escaped the repeating storm by remembering what its cycle tried to erase. Recover Stormglass Pinions before following her evidence into the stationary storm."
   },
   {
     "id": "chronicle_air_stolen_horizon",
@@ -249,13 +263,15 @@ export const chronicleInvestigations = [
         "x": 1186,
         "z": 135,
         "title": "Free horizon marker",
-        "text": "the pinions resonate with that interval. For one breath, the harpy takes a different current. The false horizon splits, exposing the command's path through Tempest Spire to the separate Skyglass Eyrie.",
+        "text": "the interval answers the pattern you learned from the pinions. For one breath, the harpy takes a different current. The false horizon splits, exposing the command's path through Tempest Spire to the separate Skyglass Eyrie.",
         "entityId": "chronicle-site-free_horizon"
       }
     ],
     "title": "The Stolen Horizon",
     "acceptance": "“Listen where the wind has stopped, where it is trapped, and where it can still leave. Do not try to overpower the whole storm. We need one true interval that Maelin can preserve when she reaches the Skyglass lattice.”",
     "completion": "“That is his promised peace: nothing can be lost because nothing may change. Earth without shared shelter. Water without remembered names. Fire without release. Air without another direction.\n\n“And now we know how to answer. Maelin must restore the Rootheart's memory, the Tidestar's true rhythm, the Ember Crown's release and the Skyglass interval. Your fragments carry those truths. Your discoveries explain why they matter.\n\n“One outer road remains. Clear Tempest Spire. Then we can plan the four raids and defend Maelin while she gives the crystals back their freedom to protect us.”",
+    "catchupAcceptance": "“There is one more gap in our account of the false horizon. Compare the silent vane, the trapped updraft and the free marker. Record both the promise beneath the thunder and the answer it could not silence. This earlier evidence will not take away any dungeon, raid or portal access you have earned.”",
+    "catchupCompletion": "“No roof would fall, he promised, because no one would ever be allowed to choose another road. The harpy's different current exposed the cost of that promise.\n\n“This belongs beside the four Vigils: memory, true rhythm, release and an open interval. Each answers a different wound. None asks the living world to become a perfect, motionless possession.”",
     "summary": "Malachar offers safety through absolute control. The four Vigils must reverse four different wounds before the crystals can resonate."
   }
 ];

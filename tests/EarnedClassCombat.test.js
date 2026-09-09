@@ -1,7 +1,10 @@
 import { jest } from '@jest/globals';
 
 const wizardDefense = jest.fn();
-jest.unstable_mockModule('./e2e/earned-wizard-defense.js', () => ({ createEarnedWizardDefense: wizardDefense }));
+const rangedDefense = jest.fn();
+jest.unstable_mockModule('./e2e/helpers.js', () => ({ projectGroundOffset: jest.fn() }));
+jest.unstable_mockModule('./e2e/earned-wizard-defense.js', () => ({ createEarnedWizardDefense: wizardDefense,
+    createEarnedRangedDefense: rangedDefense }));
 const { createEarnedClassCombat } = await import('./e2e/earned-class-combat.js');
 
 beforeEach(() => jest.clearAllMocks());
@@ -11,13 +14,36 @@ test('Wizard retains its existing spacing and shield driver', async () => {
     const page = {}, driver = jest.fn();
     wizardDefense.mockResolvedValue(driver);
     expect(await createEarnedClassCombat(page, 'Wizard')).toBe(driver);
-    expect(wizardDefense).toHaveBeenCalledWith(page);
+    expect(wizardDefense).toHaveBeenCalledWith(page, undefined);
 });
 
 test('unsupported classes fail without installing an observer or granting anything', async () => {
     const page = { evaluate: jest.fn() };
-    await expect(createEarnedClassCombat(page, 'Rogue')).rejects.toThrow('No earned combat driver');
+    await expect(createEarnedClassCombat(page, 'Unknown')).rejects.toThrow('No earned combat driver');
     expect(page.evaluate).not.toHaveBeenCalled();
+});
+
+test('Rogue receives ranged movement without becoming a Wizard', async () => {
+    const page = {}, driver = jest.fn();
+    rangedDefense.mockResolvedValue(driver);
+    expect(await createEarnedClassCombat(page, 'Rogue')).toBe(driver);
+    expect(rangedDefense).toHaveBeenCalledWith(page, undefined);
+    expect(wizardDefense).not.toHaveBeenCalled();
+});
+
+test.each(['Wizard', 'Rogue'])('%s receives the explicit healthy-combat strategy without changing other classes', async className => {
+    const page = {}, options = { retreatBelowHealthRatio: .8 };
+    await createEarnedClassCombat(page, className, options);
+    expect(className === 'Wizard' ? wizardDefense : rangedDefense).toHaveBeenCalledWith(page, options);
+});
+
+test('a fresh Cleric never tries to cast a locked heal', async () => {
+    const page = { evaluate: jest.fn().mockResolvedValue({ className: 'Cleric',
+        healthRatio: .1, mana: 100, healCost: 25, hotbar: [], unlockedSkills: [] }),
+    keyboard: { press: jest.fn() } };
+    const driver = await createEarnedClassCombat(page, 'Cleric');
+    expect(await driver(page)).toBe(false);
+    expect(page.keyboard.press).not.toHaveBeenCalled();
 });
 
 test('Fighter uses ordinary earned hotbar input and throttles attempts', async () => {

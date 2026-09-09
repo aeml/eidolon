@@ -105,7 +105,7 @@ func TestGenerateDailyQuestsGivesLevelOneStarterCatalog(t *testing.T) {
 			continue
 		}
 		foundStarter = true
-		if quest.Target != "Skeleton" || quest.MaxCount != 100 || quest.RewardXP != 50000 {
+		if quest.Target != "Skeleton" || quest.MaxCount != 100 || quest.RewardXP != 4250 || quest.RewardGold != 100 {
 			t.Fatalf("unexpected starter daily: %+v", quest)
 		}
 		if quest.Accepted || quest.Completed || quest.Count != 0 {

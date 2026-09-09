@@ -1,14 +1,18 @@
-import { getChronicleInvestigation } from '../core/ChronicleInvestigation.js';
+import { getChronicleInvestigation, getCurrentChronicleQuest } from '../core/ChronicleInvestigation.js';
+import { chronicleHunts } from '../data/chronicleHunts.generated.js';
+
+const huntsById = new Map(chronicleHunts.map(hunt => [hunt.id, hunt]));
+const huntHandoffs = new Map(chronicleHunts.map(hunt => [hunt.previousQuestId, hunt.handoff]));
 
 export const ILYRA_REPLIES = [
     'Listen—the bell has lost a note. These echoes bear Malachar’s binding, a signature I hoped never to hear again. I once called him a fellow keeper. He learned the roads between the sanctums from our own maps. We will begin where his wound runs deepest: the Rootheart.',
-    'There is rain inside this seed, and a forest older than language. I will keep these memories safe for Maelin’s Vigil. They are repair materials, not a cure by themselves. First you must reach the root-road beneath the Bastion; the Sentinel has forgotten whom it guards.',
+    'There is rain inside this seed, and a forest older than language. I will keep these memories safe for Maelin’s Vigil. They are repair materials, not a cure by themselves. Next we must study The Scar That Grows Back: compare the severed root, its new growth and the marked stone. Their differences will tell us what has been changed before we seek the Bastion’s root-road.',
     'The Sentinel’s oath is free, and Orun has shown us the raid-road. Do not mistake an open door for a healed crystal. Its inner sanctum is still occupied. We must uncover the other three roads before Maelin can carry out the four Vigils without the broken crystals tearing one another apart.',
-    'The pearls are beginning to turn in my palm. Neris remembers every promise made beside water—including the oath Malachar broke. I will preserve their rhythm until Maelin can fit them into the Tidestar. Now we need the route-name Thalorath swallowed.',
+    'The pearls are beginning to turn in my palm. Neris remembers every promise made beside water—including the oath Malachar broke. I will preserve their rhythm until Maelin can fit them into the Tidestar. Next comes A Reflection Out of Time: compare the two echo pools, then inspect the mooring bell. Find which memory keeps Tovin’s name before we seek the route-name Thalorath swallowed.',
     'You have given the Confluence its name again. Malachar thought a thing stripped of its name could be made his possession. Neris has answered him: memory can be wounded, but not owned. The second raid-road is ours. Fire is calling next.',
-    'This ore warms the hand without burning it. That is the old compact: flame must serve a purpose beyond hunger. Maelin can forge it into a new circuit, but only within the Crucible. Infernax guards the furnace-key beneath his endless war.',
+    'This ore warms the hand without burning it. That is the old compact: flame must serve a purpose beyond hunger. I will keep it for Maelin’s work within the Crucible. First investigate An Ember That Obeys beyond the kiln: study the cold ash, break the command anchor and record the released ember. We must understand the relay before facing Infernax for the furnace-key.',
     'The furnace-key has gone quiet. Infernax called an endless battle victory; Malachar taught him that lie. We now have three paths to the crystal chambers. One remains above us, where Aeral’s wind repeats a single stolen moment.',
-    'Each pinion holds a different thunderclap. The storm was never meant to speak with one voice. I will bind these fragments for Maelin, not imprison them. Break Zephyrion’s loop and let Aeral choose a direction again.',
+    'Each pinion holds a different thunderclap. Listen until you can tell their separate rhythms apart; I will keep the fragments safe for Maelin. Next investigate The Stolen Horizon: compare the silent vane, the trapped updraft and the free marker. You will recognize the interval the storm tried to erase. Then we can confront Zephyrion’s loop without repeating its command.',
     'All four raid-roads are open. Now comes the work no solitary spell can do. Maelin will align the facets while the Eidolons restore their memories. You must clear each occupying raid and defend every Vigil. Begin at the Rootheart; stone must carry the first returning note.',
     'Orun’s pulse has reached the roots beneath this tower. You and Maelin have truly restored the Rootheart—not merely driven away its captors. Its steady note will shelter the next repair. Take the Moon-Tide Pearls to the Confluence and give Neris her returning current.',
     'The wells have begun to sing again. Neris remembers the names of everyone who stood at the Vigil. Earth and Water can now hold the circuit while Maelin reforges the Ember Crown. Carry their patience into the Crucible; purposeful flame must not become vengeance.',
@@ -29,8 +33,26 @@ const originalChapterIds = [
 ];
 const repliesById = new Map(originalChapterIds.map((id, index) => [id, ILYRA_REPLIES[index]]));
 
+function ilyraGreeting(quests) {
+    const completed = new Set((quests || []).filter(quest => quest.completed).map(quest => quest.id));
+    if (completed.has('chronicle_15_dark_king')) {
+        return '“Eidolon is free. Now we must remember more than the battles. Bring me the stories we passed along the way; the people in them helped hold this world together.”';
+    }
+    if (completed.has('chronicle_14_resonance_gate')) {
+        return '“The portal is open, and the four Eidolons stand with us. Malachar waits beyond it. The records you recover remind us why his promised peace must never become our answer.”';
+    }
+    if (originalChapterIds.slice(9, 13).every(id => completed.has(id))) {
+        return '“The four crystals sing again. You and Maelin have given them back their voices. Now their resonance must carry us to the source of the wound.”';
+    }
+    return '“The crystals cannot heal themselves. Let me guide you, and together we will save Eidolon.”';
+}
+
 export function getIlyraCompletionReply(quest) {
-    return getChronicleInvestigation(quest?.id)?.completion || repliesById.get(quest?.id)
+    const hunt = huntsById.get(quest?.id);
+    if (hunt) return quest.legacyOptional ? hunt.catchupCompletion : hunt.completion;
+    if (!quest?.legacyOptional && huntHandoffs.has(quest?.id)) return huntHandoffs.get(quest.id);
+    const investigation = getChronicleInvestigation(quest?.id);
+    return (quest?.legacyOptional ? investigation?.catchupCompletion : investigation?.completion) || repliesById.get(quest?.id)
         || 'Thank you. I have recorded your work in the Fourfold Chronicle. Speak to me when you are ready to continue.';
 }
 
@@ -56,7 +78,7 @@ export function renderQuestConversation(ui, quests) {
     };
     const redraw = () => { ui.questWindowSignature = ''; ui.updateQuestWindow(quests); };
     const intro = text('p', story
-        ? '“The crystals cannot heal themselves. Let me guide you, and together we will save Eidolon.”'
+        ? ilyraGreeting(quests)
         : '“Lanternhold needs steady hands. Choose your contracts, then return to me when the work is done.”', 'quest-conversation__intro');
     ui.questList.appendChild(intro);
     if (ui.completedDialogue) {
@@ -77,9 +99,23 @@ export function renderQuestConversation(ui, quests) {
     }
     const offered = (quests || []).filter((quest) =>
         (quest.category === 'chronicle' || Boolean(quest.id?.startsWith('chronicle_'))) === story && !quest.completed);
-    const selected = offered.find((quest) => quest.id === ui.selectedQuestId) || (story ? offered[0] : null);
+    const current = story ? getCurrentChronicleQuest(offered) : null;
+    const eligible = story ? offered.filter(quest => quest.legacyOptional || quest.id === current?.id) : offered;
+    const selected = eligible.find((quest) => quest.id === ui.selectedQuestId) || (story ? current || eligible[0] : null);
+    const catchup = story ? offered.filter(quest => quest.legacyOptional) : [];
+    if (catchup.length) {
+        const list = text('details', '', 'quest-dialogue__lore');
+        list.append(text('summary', `Other discoveries (${catchup.length}) · Optional catch-up lore`));
+        list.append(text('p', 'These earlier investigations do not block your current story or change your earned dungeon and raid access.'));
+        for (const quest of catchup) list.append(button(ui.getQuestTitle(quest), () => { ui.selectedQuestId = quest.id; redraw(); }, 'quest-contract'));
+        ui.questList.append(list);
+    }
     if (!selected) {
-        if (!offered.length) ui.questList.appendChild(text('p', story ? '“The four crystals sing freely. You will always be welcome here, friend of Eidolon.”' : 'No contracts remain today. New contracts arrive at the daily reset.', 'quest-dialogue__speech'));
+        if (!offered.length) ui.questList.appendChild(text('p', story
+            ? quests?.some(quest => quest.id === 'chronicle_15_dark_king' && quest.completed)
+                ? '“You will always be welcome here, friend of Eidolon.”'
+                : 'No Chronicle task is available here right now.'
+            : 'No contracts remain today. New contracts arrive at the daily reset.', 'quest-dialogue__speech'));
         offered.forEach((quest) => {
             const ready = quest.accepted && quest.count >= quest.maxCount;
             const status = ready ? '?' : quest.accepted ? '·' : '!';
@@ -91,10 +127,14 @@ export function renderQuestConversation(ui, quests) {
     }
     const ready = selected.accepted && selected.maxCount > 0 && selected.count >= selected.maxCount;
     const detail = text('section', '', 'quest-dialogue');
-    detail.append(text('div', story ? `CHAPTER ${selected.chapter} · ${speaker}` : 'DAILY CONTRACT', 'quest-dialogue__eyebrow'));
+    const optionalLabel = huntsById.has(selected.id) ? 'OPTIONAL EXPEDITION' : 'OPTIONAL LORE';
+    detail.append(text('div', story ? `${selected.legacyOptional ? optionalLabel : `CHAPTER ${selected.chapter}`} · ${speaker}` : 'DAILY CONTRACT', 'quest-dialogue__eyebrow'));
     detail.append(text('h3', ui.getQuestTitle(selected)));
-    detail.append(text('p', selected.description || 'Help keep the roads around Eidolon safe.', 'quest-dialogue__speech'));
-    if (story && selected.lore) {
+    const description = story && selected.legacyOptional
+        ? huntsById.get(selected.id)?.catchupAcceptance || getChronicleInvestigation(selected.id)?.catchupAcceptance || selected.description
+        : selected.description;
+    detail.append(text('p', description || 'Help keep the roads around Eidolon safe.', 'quest-dialogue__speech'));
+    if (story && selected.lore && selected.type !== 'INVESTIGATE') {
         const lore = text('details', '', 'quest-dialogue__lore');
         lore.append(text('summary', 'Ask Ilyra about the history'), text('p', selected.lore));
         detail.appendChild(lore);
@@ -122,5 +162,6 @@ export function renderQuestConversation(ui, quests) {
         detail.append(error);
     }
     if (!story) detail.append(button('Back to contracts', () => { ui.selectedQuestId = null; redraw(); }));
+    if (story && selected.legacyOptional && current) detail.append(button('Return to main story', () => { ui.selectedQuestId = null; redraw(); }));
     ui.questList.appendChild(detail);
 }

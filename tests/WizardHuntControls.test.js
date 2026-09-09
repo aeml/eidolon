@@ -1,9 +1,93 @@
 import { Vector3 } from 'three';
-import { isEarnedRetreatPathClear, planWizardHuntStep } from './wizardHuntControls.js';
+import * as THREE from 'three';
+import { CollisionManager } from '../src/core/CollisionManager.js';
+import { isEarnedRetreatPathClear, retreatCrossesActorBody, planWizardCrowdControl, planWizardHuntStep, planRangedHuntStep, planWizardTravelDefense } from './wizardHuntControls.js';
+
+test('Rogue uses ordinary ranged spacing but never a Wizard shield', () => {
+    const rogue = { className: 'Rogue', x: 0, z: 0, healthRatio: .2, shieldHP: 0,
+        hotbar: ['Arcane Shield'], unlockedSkills: ['Arcane Shield'], mana: 100,
+        shieldCost: 40, sinceCastMs: 1000, threats: [{ x: 3, z: 0 }] };
+    expect(planRangedHuntStep(rogue)).toMatchObject({ action: 'retreat' });
+    expect(planWizardHuntStep(rogue)).toBeNull();
+    expect(planRangedHuntStep({ ...rogue, canRetreat: () => false })).toBeNull();
+    expect(planRangedHuntStep({ ...rogue, dead: true })).toBeNull();
+});
 
 const state = { className: 'Wizard', dead: false, x: 0, z: 0, healthRatio: 0.7,
     shieldHP: 0, mana: 50, shieldCost: 40, hotbar: ['Teleport', 'Arcane Shield'],
     cooldowns: {}, unlockedSkills: ['Teleport', 'Arcane Shield'], sinceCastMs: 1000, threats: [{ x: 3, z: 0 }] };
+
+const crowd = { ...state, mana: 100, wellCost: 60, hotbar: ['Teleport', 'Arcane Shield', 'Gravity Well'],
+    unlockedSkills: ['Gravity Well'], threats: [{ x: 5, z: 0 }, { x: 6, z: 0 }, { x: 7, z: 0 }] };
+
+test('crowd escape uses ordinary jumping only across actor bodies, never through static walls', () => {
+    expect(retreatCrossesActorBody({ ...state, threats: [{ x: -4, z: 0, radius: 1.25 }] }, { x: -9, z: 0 })).toBe(true);
+    expect(retreatCrossesActorBody({ ...state, threats: [{ x: 4, z: 0, radius: 1.25 }] }, { x: -9, z: 0 })).toBe(false);
+    const surrounded = { ...state, healthRatio: 1, canJump: true, radius: 1.25,
+        threats: Array.from({ length: 8 }, (_, i) => ({
+            x: Math.cos(i * Math.PI / 4) * 2, z: Math.sin(i * Math.PI / 4) * 2, radius: 1.25 })) };
+    expect(planWizardHuntStep(surrounded).useJump).toBe(true);
+    expect(planWizardHuntStep({ ...surrounded, canJump: false }).useJump).toBeUndefined();
+    expect(planWizardHuntStep({ ...surrounded, canRetreat: () => false })).toBeNull();
+    expect(planWizardHuntStep({ ...surrounded, walkRects: [{ x: 0, z: 0, width: 8, height: 8 }] })).toBeNull();
+});
+
+test('earned west-wall replay rejects blocked full paths without moving the player', () => {
+    const manager = new CollisionManager();
+    manager.addCollider(new THREE.Box3(new THREE.Vector3(-102, -5, 200), new THREE.Vector3(-98, 20, 300)));
+    const position = new THREE.Vector3(-105.55617685, 0, 269.11594458);
+    const original = position.clone();
+    const canRetreat = delta => isEarnedRetreatPathClear(manager, position, 1.25, delta);
+    expect(canRetreat({ x: 7.0513, z: -5.5927 })).toBe(false);
+    // An endpoint outside the wall is insufficient: the segment crosses it.
+    expect(canRetreat({ x: 12.022655, z: .675 })).toBe(false);
+    const plan = planWizardHuntStep({ ...state, healthRatio: 1,
+        x: position.x, z: position.z, canRetreat,
+        threats: [{ x: position.x - 3, z: position.z }] });
+    expect(plan.action).toBe('retreat');
+    expect(canRetreat(plan)).toBe(true);
+    expect(Math.hypot(plan.x, plan.z)).toBeCloseTo(9);
+    expect(position.equals(original)).toBe(true);
+    expect(planWizardHuntStep({ ...state, healthRatio: 1, canRetreat: () => false })).toBeNull();
+});
+
+test('retreat queries honor circular and rotated building collision too', () => {
+    const manager = new CollisionManager();
+    const position = new THREE.Vector3(0, 0, 0);
+    manager.addCircularCollider(4, 0, 1);
+    expect(isEarnedRetreatPathClear(manager, position, 1.25, { x: 9, z: 0 })).toBe(false);
+    expect(isEarnedRetreatPathClear(manager, position, 1.25, { x: 0, z: 9 })).toBe(true);
+    manager.clear();
+    const matrix = new THREE.Matrix4().makeRotationY(Math.PI / 4);
+    matrix.setPosition(4, 0, 0);
+    manager.addOrientedCollider({ matrix, inverse: matrix.clone().invert(),
+        box: new THREE.Box3(new THREE.Vector3(-1, -5, -4), new THREE.Vector3(1, 5, 4)) });
+    expect(isEarnedRetreatPathClear(manager, position, 1.25, { x: 9, z: 0 })).toBe(false);
+});
+
+test('travel does not repeatedly clear mobs or retreat off-route while healthy', () => {
+    expect(planWizardTravelDefense({ ...state, healthRatio: 1 })).toBeNull();
+    expect(planWizardTravelDefense({ ...state, healthRatio: .5, shieldHP: 100 })).toBeNull();
+    expect(planWizardTravelDefense(state)).toEqual({ action: 'shield', key: '2' });
+    expect(planWizardTravelDefense({ ...state, healthRatio: .3, mana: 0 })).toEqual({ action: 'fight' });
+    expect(planWizardTravelDefense({ ...state, healthRatio: .3 })).toEqual({ action: 'shield', key: '2' });
+    expect(planWizardTravelDefense({ ...state, healthRatio: .3, dead: true })).toBeNull();
+    expect(planWizardTravelDefense({ ...state, healthRatio: .3, threats: [] })).toBeNull();
+});
+
+test('prepared crowd control uses the actual unlocked hotbar and an in-range cluster', () => {
+    expect(planWizardCrowdControl(crowd)).toEqual({ action: 'gravity-well', key: '3', x: 6, z: 0 });
+    expect(planWizardCrowdControl({ ...crowd, hotbar: ['Gravity Well'] }).key).toBe('1');
+});
+
+test.each([{ dead: true }, { className: 'Fighter' }, { mana: 59 }, { sinceCastMs: 200 },
+    { cooldowns: { 'Gravity Well': 1 } }, { hotbar: [] }, { unlockedSkills: [] },
+    { hotbar: ['', '', '', '', 'Gravity Well'] }, { threats: [{ x: 4, z: 0 }] },
+    { threats: [{ x: 4, z: 0 }, { x: -4, z: 0 }, { x: 0, z: 12 }] },
+    { threats: [{ x: 30, z: 0 }, { x: 31, z: 0 }, { x: 32, z: 0 }] }])(
+    'does not invent unavailable or unsuitable crowd control: %j', change => {
+        expect(planWizardCrowdControl({ ...crowd, ...change })).toBeNull();
+    });
 
 test('uses the available shield through its actual hotbar key', () => {
     expect(planWizardHuntStep(state)).toEqual({ action: 'shield', key: '2' });
@@ -92,4 +176,24 @@ test('collection health threshold stops needless full-health retreat without cha
     expect(planWizardHuntStep({ ...healthy, retreatBelowHealthRatio: .8 })).toBeNull();
     expect(planWizardHuntStep({ ...healthy, healthRatio: .79, retreatBelowHealthRatio: .8 })?.action).toBe('retreat');
     expect(planWizardHuntStep({ ...state, retreatBelowHealthRatio: .8 })?.action).toBe('shield');
+});
+
+test('objective combat retreats stay near the anchor rather than chasing new crowds across Fire', () => {
+    const encounter = { x: -1192, z: 145, radius: 32 };
+    const player = { ...state, healthRatio: 1, x: -1221, z: 145, encounter,
+        threats: [{ x: -1218, z: 145 }] };
+    const unconstrained = planWizardHuntStep({ ...player, encounter: undefined });
+    expect(Math.hypot(player.x + unconstrained.x - encounter.x,
+        player.z + unconstrained.z - encounter.z)).toBeGreaterThan(32);
+    const bounded = planWizardHuntStep(player);
+    expect(bounded.action).toBe('retreat');
+    expect(Math.hypot(player.x + bounded.x - encounter.x,
+        player.z + bounded.z - encounter.z)).toBeLessThanOrEqual(32);
+    expect(Math.hypot(bounded.x, bounded.z)).toBeCloseTo(9);
+});
+
+test('objective bounds do not pretend a retreat exists or override dungeon collision planning', () => {
+    expect(planWizardHuntStep({ ...state, healthRatio: 1, encounter: { x: 0, z: 0, radius: 2 } })).toBeNull();
+    expect(planWizardHuntStep({ ...state, healthRatio: 1, encounter: { x: 0, z: 0, radius: 32 },
+        radius: 1.25, walkRects: [{ x: 0, z: 0, width: 8, height: 8 }] })).toBeNull();
 });

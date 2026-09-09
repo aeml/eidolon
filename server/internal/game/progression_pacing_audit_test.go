@@ -68,6 +68,12 @@ func TestProgressionPacingAuditBossRewards(t *testing.T) {
 						if player == nil || reward.XP <= 0 {
 							t.Fatal("missing recipient or reward")
 						}
+						// The candidate's Normal boss budget is personal per eligible
+						// recipient; no flat bonus or ordinary-party pool can stack on it.
+						wantXP := (100 + 25*(level-1)*(level-1)) * 35 / 100
+						if reward.XP != wantXP {
+							t.Fatalf("production boss XP=%d, want personal content budget %d", reward.XP, wantXP)
+						}
 						player.Mu.RLock()
 						gotXP := player.Experience
 						for earnedLevel := level; earnedLevel < player.Level; earnedLevel++ {

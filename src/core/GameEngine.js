@@ -5,6 +5,8 @@ import { InputManager } from './InputManager.js';
 import { ChunkManager, isAlwaysResidentEntityType } from './ChunkManager.js';
 import { CollisionManager } from './CollisionManager.js';
 import { getLanternholdWalkCollider } from '../art/ProceduralLanternholdArchitecture.js';
+import { ChronicleSite } from '../entities/ChronicleSite.js';
+import { requestNearbyChronicleInspection } from './ChronicleInspection.js';
 import { NetworkManager } from './NetworkManager.js';
 import { AbilityController } from './AbilityController.js';
 import { CONSTANTS } from './Constants.js';
@@ -1204,32 +1206,11 @@ export class GameEngine {
 
 
         this.inputManager.subscribe('onInteract', () => {
-            if (!this.player || !this.isMobile) return;
+            this.interactWithNearbyEntity();
+        });
 
-            const activeEntities = this.chunkManager.getActiveEntities();
-            let nearestLoot = null;
-            let nearestNPC = null;
-            let lootDist = 2.5;
-            let npcDist = 4.0;
-
-            activeEntities.forEach(e => {
-                if (!e.isActive) return;
-                const d = this.player.position.distanceTo(e.position);
-
-                if (e instanceof LootDrop && d < lootDist) {
-                    nearestLoot = e;
-                    lootDist = d;
-                } else if (e instanceof DwarfSalesman && d < npcDist) {
-                    nearestNPC = e;
-                    npcDist = d;
-                }
-            });
-
-            if (nearestLoot) {
-                this.pickupLoot(nearestLoot.id);
-            } else if (nearestNPC) {
-                this.uiManager.toggleShop();
-            }
+        this.inputManager.subscribe('onInspect', () => {
+            requestNearbyChronicleInspection(this);
         });
 
         this.inputManager.subscribe('onEscape', () => {
@@ -1464,6 +1445,7 @@ export class GameEngine {
 
         const type = entity.constructor?.name || entity.type || entity.meshType || entity.name || '';
         return entity instanceof DwarfSalesman
+            || entity instanceof ChronicleSite
             || entity instanceof QuestNPC
             || entity instanceof RespecNPC
             || entity instanceof DungeonNPC
@@ -1471,12 +1453,36 @@ export class GameEngine {
             || entity instanceof Forge
             || entity instanceof TradingHouse
             || type === 'DwarfSalesman'
+            || type === 'ChronicleSite'
             || type === 'QuestNPC'
             || type === 'RespecNPC'
             || type === 'DungeonNPC'
             || type === 'Stash'
             || type === 'Forge'
             || type === 'TradingHouse';
+    }
+
+    interactWithNearbyEntity() {
+        if (!this.player || !this.isMobile || this.player.state === 'DEAD') return false;
+        let nearestLoot = null, nearestInteractable = null;
+        let lootDistance = 2.5, interactionDistance = Infinity;
+        for (const entity of this.chunkManager.getActiveEntities()) {
+            if (!entity.isActive || entity === this.player || (entity.state === 'DEAD' && !(entity instanceof LootDrop))) continue;
+            const distance = Math.hypot(entity.position.x - this.player.position.x, entity.position.z - this.player.position.z);
+            if (entity instanceof LootDrop && distance < lootDistance) {
+                nearestLoot = entity;
+                lootDistance = distance;
+            } else if (this.isInteractableEntity(entity) && distance < interactionDistance && distance <= this.getInteractionRangeForEntity(entity)) {
+                nearestInteractable = entity;
+                interactionDistance = distance;
+            }
+        }
+        // Keep nearby loot priority, then use the same normal interaction path
+        // as a prop/NPC click. USE must not turn every service into a shop.
+        if (nearestLoot) this.pickupLoot(nearestLoot.id);
+        else if (nearestInteractable) this.moveToAndInteract(nearestInteractable);
+        else return false;
+        return true;
     }
 
     isPlayerClassEntity(entity) {
@@ -1608,6 +1614,10 @@ export class GameEngine {
                     ? 'Click to open the dungeon portal.'
                     : 'Move closer to interact with this dungeon portal.';
             }
+        } else if (interactableType === 'ChronicleSite') {
+            promptLabel = inRange
+                ? 'Click or press E to inspect this discovery. Recovered evidence is saved in your journal.'
+                : 'Move closer to inspect this discovery.';
         } else if (interactableType === 'QuestNPC') {
             promptLabel = inRange
                 ? 'Click to speak about quests. Blue marks daily contracts; gold marks Ilyra’s story.'
@@ -1719,6 +1729,7 @@ export class GameEngine {
         if (!intent) return '';
         return [
             intent.entityId || '',
+            intent.targetLevel ?? '',
             intent.status || '',
             Math.round((intent.distance || 0) * 10) / 10,
             intent.inBasicRange ? 1 : 0,
@@ -1754,6 +1765,7 @@ export class GameEngine {
             entityId: entity.id || null,
             name: entity.name || entity.displayName || entity.subType || entity.constructor?.name || 'Enemy',
             targetType: entity.subType || entity.type || entity.constructor?.name || 'Enemy',
+            targetLevel: Number.isInteger(entity.level) && entity.level > 0 ? entity.level : null,
             distance,
             basicAttackRange,
             abilityRange,
@@ -2269,7 +2281,9 @@ export class GameEngine {
 
         // If type is NPC, handle it
         if (type === 'NPC') {
-            if (subType === 'DwarfSalesman') {
+            if (subType === 'ChronicleSite') {
+                p = new ChronicleSite(id);
+            } else if (subType === 'DwarfSalesman') {
                 p = new DwarfSalesman(id);
             } else if (subType === 'QuestNPC') {
                 p = new QuestNPC(id);

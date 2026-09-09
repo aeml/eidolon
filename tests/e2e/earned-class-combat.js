@@ -1,11 +1,14 @@
-import { createEarnedWizardDefense } from './earned-wizard-defense.js';
+import { createEarnedWizardDefense, createEarnedRangedDefense } from './earned-wizard-defense.js';
+import { createEarnedClericCombat } from './earned-cleric-combat.js';
 import { selectFighterDungeonSkill } from '../dungeonCombatControls.js';
 
 // Observes accepted server casts; all actions are ordinary player hotbar keys.
 // The dungeon driver already owns melee hotbar input, so do not double-cast there.
-export async function createEarnedClassCombat(page, className) {
+export async function createEarnedClassCombat(page, className, options) {
     className ??= await page.evaluate(() => window.game.player.constructor.name);
-    if (className === 'Wizard') return createEarnedWizardDefense(page);
+    if (className === 'Wizard') return createEarnedWizardDefense(page, options);
+    if (className === 'Rogue') return createEarnedRangedDefense(page, options);
+    if (className === 'Cleric') return createEarnedClericCombat();
     if (className !== 'Fighter') throw new Error(`No earned combat driver for ${className}`);
     await page.evaluate(() => {
         const game = window.game, original = game.handleServerMessage.bind(game);

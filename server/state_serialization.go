@@ -912,6 +912,7 @@ func questsToProto(qs []game.Quest) []*statepb.Quest {
 			GrantedXp:          int32(q.GrantedXP),
 			GrantedResonanceXp: int32(q.GrantedResonanceXP),
 			InvestigationMask:  q.InvestigationMask,
+			LegacyOptional:     q.LegacyOptional,
 			Completed:          q.Completed,
 			Accepted:           q.Accepted,
 			Title:              q.Title,

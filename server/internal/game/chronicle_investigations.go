@@ -29,8 +29,8 @@ func investigationSite(entityID string) (ChronicleInvestigation, ChronicleDiscov
 	return ChronicleInvestigation{}, ChronicleDiscovery{}, 0, false
 }
 
-// This registration remains separate from initWorld until the rendered sites,
-// interaction protocol and migration-safe quest graph are integrated together.
+// Stable world identities are shared with native client landmarks. Combat
+// discoveries retain ordinary enemy AI, damage, party credit and respawning.
 func (w *World) spawnChronicleInvestigationSites() {
 	for _, chapter := range ChronicleInvestigationCatalog() {
 		for _, site := range chapter.Sites {
@@ -128,6 +128,9 @@ func (w *World) recordChronicleDiscovery(playerID, entityID string, combat bool)
 		}
 		quest.InvestigationMask = (quest.InvestigationMask | bit) & ((1 << len(chapter.Sites)) - 1)
 		quest.Count = bits.OnesCount32(quest.InvestigationMask)
+		if combat {
+			w.publishQuestProgress(player, true)
+		}
 		// Deliberate discovery records evidence only. Ilyra's existing manual
 		// completion path will be the sole place to grant the quest reward.
 		return ChronicleDiscoveryReceipt{QuestID: quest.ID, SiteID: site.ID, Recorded: true, Count: quest.Count, Mask: quest.InvestigationMask}, nil

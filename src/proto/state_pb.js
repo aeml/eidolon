@@ -1431,6 +1431,7 @@ export const eidolon = $root.eidolon = (() => {
              * @property {number|null} [grantedXp] Quest grantedXp
              * @property {number|null} [grantedResonanceXp] Quest grantedResonanceXp
              * @property {number|null} [investigationMask] Quest investigationMask
+             * @property {boolean|null} [legacyOptional] Quest legacyOptional
              * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
              */
 
@@ -1615,6 +1616,14 @@ export const eidolon = $root.eidolon = (() => {
             Quest.prototype.investigationMask = 0;
 
             /**
+             * Quest legacyOptional.
+             * @member {boolean} legacyOptional
+             * @memberof eidolon.state.Quest
+             * @instance
+             */
+            Quest.prototype.legacyOptional = false;
+
+            /**
              * Creates a new Quest instance using the specified properties.
              * @function create
              * @memberof eidolon.state.Quest
@@ -1684,6 +1693,8 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 18, wireType 0 =*/144).int32(message.grantedResonanceXp);
                 if (message.investigationMask != null && $Object.hasOwnProperty.call(message, "investigationMask") && message.investigationMask !== 0)
                     writer.uint32(/* id 19, wireType 0 =*/152).uint32(message.investigationMask);
+                if (message.legacyOptional != null && $Object.hasOwnProperty.call(message, "legacyOptional") && message.legacyOptional !== false)
+                    writer.uint32(/* id 20, wireType 0 =*/160).bool(message.legacyOptional);
                 if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
                     for (let i = 0; i < message.$unknowns.length; ++i)
                         writer.raw(message.$unknowns[i]);
@@ -1902,6 +1913,15 @@ export const eidolon = $root.eidolon = (() => {
                                 delete message.investigationMask;
                             continue;
                         }
+                    case 20: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.legacyOptional = value;
+                            else
+                                delete message.legacyOptional;
+                            continue;
+                        }
                     }
                     reader.skipType(wireType, _depth, tag);
                     if (!reader.discardUnknown) {
@@ -2002,6 +2022,9 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.investigationMask != null && $Object.hasOwnProperty.call(message, "investigationMask"))
                     if (!$util.isInteger(message.investigationMask))
                         return "investigationMask: integer expected";
+                if (message.legacyOptional != null && $Object.hasOwnProperty.call(message, "legacyOptional"))
+                    if (typeof message.legacyOptional !== "boolean")
+                        return "legacyOptional: boolean expected";
                 return null;
             };
 
@@ -2080,6 +2103,9 @@ export const eidolon = $root.eidolon = (() => {
                 if (object.investigationMask != null)
                     if ($Number(object.investigationMask) !== 0)
                         message.investigationMask = object.investigationMask >>> 0;
+                if (object.legacyOptional != null)
+                    if (object.legacyOptional)
+                        message.legacyOptional = $Boolean(object.legacyOptional);
                 return message;
             };
 
@@ -2120,6 +2146,7 @@ export const eidolon = $root.eidolon = (() => {
                     object.grantedXp = 0;
                     object.grantedResonanceXp = 0;
                     object.investigationMask = 0;
+                    object.legacyOptional = false;
                 }
                 if (message.id != null && $Object.hasOwnProperty.call(message, "id"))
                     object.id = message.id;
@@ -2159,6 +2186,8 @@ export const eidolon = $root.eidolon = (() => {
                     object.grantedResonanceXp = message.grantedResonanceXp;
                 if (message.investigationMask != null && $Object.hasOwnProperty.call(message, "investigationMask"))
                     object.investigationMask = message.investigationMask;
+                if (message.legacyOptional != null && $Object.hasOwnProperty.call(message, "legacyOptional"))
+                    object.legacyOptional = message.legacyOptional;
                 return object;
             };
 
