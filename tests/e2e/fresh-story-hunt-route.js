@@ -11,12 +11,16 @@ import { equipEarnedEmptySlots } from './earned-equipment.js';
 import { selectEarnedAttackTarget } from './earned-target-input.js';
 import { openDungeonGuide } from './dungeon-guide.js';
 import { prepareEarnedClass } from './fresh-ready-route.js';
+import { prepareEarlyEarnedCharacter } from './early-earned-preparation.js';
+import { storyHuntTrainingDue } from '../storyHuntPreparationPolicy.js';
+import { installStoryHuntCombatObserver, readStoryHuntCombatEvidence } from './story-hunt-combat-observer.js';
 import { moveByGroundClick, projectEntity, readPlayerState,
-    setAutoLootThroughSettings } from './helpers.js';
+    returnToTown, setAutoLootThroughSettings } from './helpers.js';
 
 const snapshot = page => page.evaluate(() => {
     const p = window.game.player;
     return { level: p.level, xp: p.xp, nextXP: p.xpToNextLevel, gold: p.gold,
+        statPoints: p.statPoints, baseStats: { ...p.baseStats }, talentPoints: p.talentPoints,
         occupiedSlots: p.inventory.filter(item => item?.id).length,
         unsoldEquipmentValue: p.inventory.filter(item => item?.id &&
             ['WEAPON', 'ARMOR', 'ACCESSORY', 'NECK', 'GLOVES'].includes(item.type))
@@ -76,31 +80,36 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady, 
     expect(hunt?.huntingRealm, 'This earned driver currently covers Earth expeditions only').toBe('earth');
     const started = Date.now();
     const before = await snapshot(page);
-    if (before.level >= 10) {
-        // Higher expeditions use equipment and training already earned through
-        // the story. No new items, levels or points are granted by preparation.
-        await openDungeonGuide(page);
-        await prepareEarnedClass(page, credentials, { label: `before-${id}` });
-        await page.locator('#btn-close-dungeon-menu').click();
-    }
+    const prepare = async label => {
+        const current = await snapshot(page);
+        // An explicit ordinary-build baseline: use earned primary-stat points,
+        // empty-slot gear and available mastery, never new rewards or items.
+        if (current.level >= 10) {
+            await openDungeonGuide(page);
+            await prepareEarnedClass(page, credentials, { label, statBudget: current.statPoints });
+            await page.locator('#btn-close-dungeon-menu').click();
+        } else {
+            await returnToTown(page);
+            await prepareEarlyEarnedCharacter(page, { statBudget: current.statPoints });
+        }
+        console.log('[story-hunt] preparation receipt', JSON.stringify({ label, before: current, after: await snapshot(page) }));
+        return current.level;
+    };
+    let preparedLevel = await prepare(`before-${id}`);
     await openIlyra(page);
     await expect(page.locator('.quest-dialogue h3')).toHaveText(hunt.title);
     expect((await readChronicleChapter(page, id))?.accepted).toBe(false);
     await page.getByRole('button', { name: 'Accept Quest', exact: true }).click();
     await expect.poll(async () => (await readChronicleChapter(page, id))?.accepted).toBe(true);
     await page.locator('#btn-close-quest').click();
-    if (before.level < 10) {
-        const equipped = await equipEarnedEmptySlots(page);
-        console.log('[story-hunt] earned equipment', JSON.stringify({ equipped,
-            combat: await combatSnapshot(page) }));
-    }
     const previousAutoLoot = await page.evaluate(() => window.game.autoLootEnabled);
     await setAutoLootThroughSettings(page, true);
     // As in the verified collection route, allow a healthy ranged character to
     // finish ordinary basic attacks; permanent retreat resets starter leashes.
-    const beforeCombat = await createEarnedClassCombat(page, undefined, { retreatBelowHealthRatio: .8 });
+    let beforeCombat = await createEarnedClassCombat(page, undefined, { retreatBelowHealthRatio: .8 });
+    await installStoryHuntCombatObserver(page);
     console.log(`[story-hunt] start ${JSON.stringify({ id, ...before, combat: await combatSnapshot(page) })}`);
-    let deaths = 0, lastReported = 0, restStops = 0;
+    let deaths = 0, lastReported = 0, restStops = 0, trainingStops = 0;
     const recover = async () => {
         const credit = (await readChronicleChapter(page, id)).count;
         deaths++;
@@ -115,6 +124,16 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady, 
     while ((await readChronicleChapter(page, id)).count < hunt.count) {
         const credit = (await readChronicleChapter(page, id)).count;
         let enemy;
+        if (storyHuntTrainingDue(preparedLevel, (await snapshot(page)).level)) {
+            expect(typeof leaveTown, 'Milestone training must resume through ordinary town departure').toBe('function');
+            console.log('[story-hunt] pre-training combat evidence', JSON.stringify(await readStoryHuntCombatEvidence(page)));
+            preparedLevel = await prepare(`earned-milestone-${id}`);
+            trainingStops++;
+            await leaveTown();
+            beforeCombat = await createEarnedClassCombat(page, undefined, { retreatBelowHealthRatio: .8 });
+            await installStoryHuntCombatObserver(page);
+            expect((await readChronicleChapter(page, id)).count).toBe(credit);
+        }
         if (await recoverBetweenHuntEncounters(page, {
             enabled: earnedTownRecoveryEnabled(), creditedKills: credit, leaveTown
         })) restStops++;
@@ -143,6 +162,7 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady, 
             }, enemy.id);
             const combatTarget = chooseExpeditionCombatTarget(
                 observed.selected?.alive ? observed.selected : observed.goal, observed.nearby);
+            await page.evaluate(id => { window.__storyHuntCombatEvidence.requestedId = id; }, combatTarget?.id || null);
             if (!combatTarget || (!observed.selected?.alive && combatTarget.id === observed.goal?.id &&
                 combatTarget.distance > observed.basicRange + 2)) {
                 // Retreat/leash can stream out the original target. Seek a
@@ -167,20 +187,24 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady, 
             const game = window.game, target = game.remotePlayers.get(id);
             return { player: { level: game.player.level, hp: game.player.stats.hp,
                 maxHP: game.player.stats.maxHp, mana: game.player.stats.mana, maxMana: game.player.stats.maxMana,
+                statPoints: game.player.statPoints, baseStats: game.player.baseStats,
+                talentPoints: game.player.talentPoints, talents: game.player.talentRanks,
                 restBank: game.player.wellRestedSeconds, safeZone: game.player.safeZoneId,
                 x: game.player.position.x, z: game.player.position.z },
             target: target ? { id, level: target.level, hp: target.health ?? target.stats?.hp,
                 state: target.state, distance: game.player.position.distanceTo(target.position) } : null,
-            hovered: game.hoveredEntity?.id, defense: window.__freshWizardDefense?.counts || window.__freshFighterCombat?.counts };
+            hovered: game.hoveredEntity?.id, defense: window.__freshWizardDefense?.counts || window.__freshFighterCombat?.counts,
+            damageEvidence: window.__storyHuntCombatEvidence };
         }, enemy.id))}`);
         expect(count, `Ordinary ${hunt.enemy} combat must earn server hunt credit`).toBeGreaterThan(credit);
         if (count >= lastReported + 5 || count === hunt.count) {
             lastReported = count;
             console.log(`[story-hunt] ${JSON.stringify({ id, creditedKills: count, required: hunt.count,
-                deaths, restStops, ...await snapshot(page), combat: await combatSnapshot(page), seconds: Math.round((Date.now() - started) / 1000) })}`);
+                deaths, restStops, trainingStops, ...await snapshot(page), combat: await combatSnapshot(page), seconds: Math.round((Date.now() - started) / 1000) })}`);
         }
     }
     const ready = await readChronicleChapter(page, id);
+    console.log('[story-hunt] final combat evidence', JSON.stringify(await readStoryHuntCombatEvidence(page)));
     expect(ready.completed).toBe(false);
     expect(ready.grantedXP || 0).toBe(0);
     expect(ready.grantedGold || 0).toBe(0);
@@ -204,6 +228,6 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady, 
     expect(await snapshot(page)).toEqual(earned);
     expect(await readChronicleChapter(page, id)).toEqual(receipt);
     expect((await readChronicleChapter(page, hunt.beforeQuestId))?.accepted).toBe(false);
-    console.log(`[story-hunt] complete ${JSON.stringify({ id, before, beforeClaim, earned, receipt, deaths, restStops,
+    console.log(`[story-hunt] complete ${JSON.stringify({ id, before, beforeClaim, earned, receipt, deaths, restStops, trainingStops,
         seconds: Math.round((Date.now() - started) / 1000), note: 'Unsold vendor values are not income; quest count is server credit, not a separate count of selected-target deaths.' })}`);
 }

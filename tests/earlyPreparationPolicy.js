@@ -5,5 +5,5 @@ export function earlyPreparationPlan(className, statPoints, requested = 5) {
     if (!Number.isInteger(statPoints) || statPoints < 0 || !Number.isInteger(requested) || requested < 0) {
         throw new Error('Early preparation requires nonnegative integer point budgets');
     }
-    return { stat: primary[className], statAllocations: Math.min(5, requested, statPoints) };
+    return { stat: primary[className], statAllocations: Math.min(requested, statPoints) };
 }

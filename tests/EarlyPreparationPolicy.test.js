@@ -6,6 +6,8 @@ test.each([['Fighter', 'strength'], ['Rogue', 'dexterity'], ['Wizard', 'intellig
         expect(earlyPreparationPlan(name, 3)).toEqual({ stat, statAllocations: 3 });
         expect(earlyPreparationPlan(name, 20)).toEqual({ stat, statAllocations: 5 });
         expect(earlyPreparationPlan(name, 20, 1)).toEqual({ stat, statAllocations: 1 });
+        expect(earlyPreparationPlan(name, 20, 20)).toEqual({ stat, statAllocations: 20 });
+        expect(earlyPreparationPlan(name, 20, 25)).toEqual({ stat, statAllocations: 20 });
     });
 test.each([-1, 1.5, NaN, Infinity])('rejects invalid point budget %p', points => {
     expect(() => earlyPreparationPlan('Wizard', points)).toThrow();

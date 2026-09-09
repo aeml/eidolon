@@ -13,9 +13,9 @@ const snapshot = page => page.evaluate(() => {
 
 // Called in town after an earned opening. No branch/rank purchase, reload,
 // recovery command, or grant; the level-10 specialization path is independent.
-export async function prepareEarlyEarnedCharacter(page) {
+export async function prepareEarlyEarnedCharacter(page, { statBudget = 5 } = {}) {
     const before = await snapshot(page);
-    const plan = earlyPreparationPlan(before.className, before.statPoints);
+    const plan = earlyPreparationPlan(before.className, before.statPoints, statBudget);
     const result = await equipEarnedGearAndStats(page, plan);
     const after = await snapshot(page);
     for (const key of ['className', 'level', 'xp', 'gold', 'branch', 'talents', 'unlocked', 'hotbar']) {
@@ -29,5 +29,6 @@ export async function prepareEarlyEarnedCharacter(page) {
     for (const [slot, id] of Object.entries(before.gear)) expect(after.gear[slot]).toBe(id);
     expect(Object.keys(after.gear)).toHaveLength(Object.keys(before.gear).length + result.equipped);
     console.log('[fresh-early-preparation]', JSON.stringify({ className: after.className,
-        level: after.level, stat: plan.stat, ...result, remainingPoints: after.statPoints }));
+        level: after.level, stat: plan.stat, ...result, remainingPoints: after.statPoints,
+        before, after }));
 }
