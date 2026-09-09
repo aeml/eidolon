@@ -5,7 +5,55 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 00:36 UTC
+## Current checkpoint — September 9, 00:40 UTC
+
+PROGRESS: exact50 **51ec73edadcf38f59278eee76151257a86d47e68** fresh collection
+7029 is terminal **PASS1/6.6m**. Ordinary opening/manual reward/relogin and all8
+seeds/pickup/manual completion passed with0 deaths; collection observed16 target
+deaths, finallevel6. Source unchanged during the run. Full client236/3,353 pass
+remains valid; credential scan/owned container cleanup passed. Log
+`/tmp/eidolon-release50-movement-collection-0029.log`. This proves this earned
+route, not final pacing or a definitive attribution of the earlier missing-target
+failure. The controlled stalled-movement reproduction and correction remain below.
+
+Rendered login credit95918 PASS1/3.7s and actual release/notes99305 PASS1/4.1s;
+the notes screenshot is inspected, showing50 and the movement fix. Evidence
+`/tmp/eidolon-release50-rendered-notes-0037`. Exact public49/0c6d0cc and healthy
+database verified before publishing; prior49 CI34284099182 terminalSUCCESS
+rechecked, remote masterb7b86f5 and ancestry checked. Only
+`release/50-with-final49:master` pushed,27296SUCCESS. Remote now exact51ec73e.
+New CI**34295826450** is ACTIVE in Go/Jest at latest poll. Old failed50 run
+34290705218 is historical, not the current gate. Do not push51 before the entire
+new50 CI/deploy/finalLiveQA succeeds and fresh public identities match exact50.
+Public frontend/backend at00:40 still exact49/0c6d0cc, health/database ready.
+
+Merged the exact50 fix forward, preserving real ancestry and separate versions;
+all trees were clean before merges, no conflicts or external pushes. Current
+canonical queue (paths unchanged from preceding checkpoints):
+
+-51 `/tmp/eidolon-release51-final50-DizHn0`: **55712b9c747056041b05fa4e475c4aee094028bc**
+-52 `/tmp/eidolon-release52-final51-zuht4H`: **a36d1e7d66333e8f6cf707ff115947b340c9a46c**
+-53 `/tmp/eidolon-release53-final52-aGmk4j`: **ce330b3e2a576d07d159b964563f12f031dff3d5**
+-54 `/tmp/eidolon-release54-final53-oZ3nK4`: **805ba0daf14f34cd59097a9b14efaa6a3d7b5c91**
+-55 `/tmp/eidolon-release55-final54-UVV7t3`: **6d8f717d06ea92da0e8ae2624cd455c9bf6b81ea**
+-56 `/tmp/eidolon-schema-compatibility-bridge-ehsEZY`: **67a73e00f1da1a09e90f51bd9e8ea2506f60b4f5**
+-57 `/tmp/eidolon-resource-persistence-c6E17J`: **cc6e419ed54b0331cbd218028d6ba0278e001857**
+-Well Rested `/tmp/eidolon-well-rested-ZL0PZY`: **8e21d49af116573f5de110e6899e52a1df827de0**
+
+Each predecessor ancestry/diff check passed. VersionPresentation, full/delta
+state, movement and ground-input checks PASS on all8 trees:4 suites each,
+308/309/311/312/313/314/315/315 tests respectively,2.084–2.492s. Logs
+`/tmp/eidolon-propagated-{51,52,53,54,55,56,57,rested}-checks.log`; all8 handles
+closed successfully. Prior backend evidence remains for unchanged backend code;
+these new merge SHAs are not yet deployed/full-gate verified. Old auxiliary56
+tree/head is stale, not the publisher. Root/master is still not a publisher.
+
+All local handles closed. Only current external wait is50 CI34295826450.
+Next useful local work remains other Well Rested auction flows/schema recovery,
+browser-integrated/aura and earned balance, followed by its own versioning gate.
+Full1.1–1.10 scope remains active and incomplete; no goal completion/block claim.
+
+## Previous checkpoint — September 9, 00:36 UTC
 
 PROGRESS: seller-payout recovery acceptance now committed in Well Rested
 **3121fa4483834b2833408b157b6bcc26e315be6f**, clean development tree. Normal

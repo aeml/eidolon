@@ -56,6 +56,11 @@ unchanged payment/receipt/claim/item checks. Final normal resource-probe follow-
 passes8.357s; full root race suite13.757s. All22 child logs clean;6 intentional
 kills documented, other processes drained normally. Owned Mongo/volumes removed.
 
+September9 00:40 checkpoint: development8e21d49 now includes the verified local
+50 movement fix through the ordered51–57 ancestry. Version/state/movement/input
+checks pass4 suites/315 tests. No backend code changed in this merge; existing
+d650c72 backend acceptance is unchanged. Feature remains unpublished.
+
 This is not a versioned/staged release. It follows staged57, requires schema9,
 and must not publish inherited57 metadata. Remaining gates include the other
 auction flows (listing, bids/contention, buyout and item delivery) and schema-upgrade recovery,
