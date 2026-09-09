@@ -1,5 +1,12 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update14:28UTC:34361293407 client/server/ALL3browsergroups PASSED.
+Predeploy job102506533929 ACTIVE, deterministicHigh/Lowgallery currentstep.
+Freshpublicmanifest/backendstill57/8af54f2/ready. ef9a638 remains frozen.
+Fullpredeploygameplay/pairedproductionbackup/deploy/finalnativepublicrecovery/
+exact58identities stilldue. Localprimary20538 reached10/40Skeletoncredits,
+0deaths/4normalreststops; it is ACTIVE and not production58proof.
+
 Update14:24UTC:34361293407 ACTIVE on frozenef9a638. Server/client and browser
 shards2/3,3/3 PASSED;1/3 still ACTIVE. Predeploy/backup/deploy/nativepublicrecovery
 remain due. No successor push, no live58claim. Separateprimary218a0b7 earned

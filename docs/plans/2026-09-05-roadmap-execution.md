@@ -16,7 +16,24 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 14:24 UTC
+## Current checkpoint — September 9, 14:28 UTC
+
+Previous goal turn made PROGRESS (earnedroute and combatcard changes). This
+continuation is a VERIFIEDWAIT on34361293407 and20538, with new evidence:
+58server/client/ALLthreebrowsergroups PASSED; predeployjob102506533929 ACTIVE,
+currentHigh/Lowgallery. Frozenreleaseef9a638 unchanged; fresh14:28publicmanifest/
+backend57/8af54f2/ready. Stillrequiresfullpredeploygameplay, actualschema8→9paired
+backup, deploy, nativepublichealing/rest/expiry/party and exact58identities.
+
+Primary218a0b7 storyreplay20538 ACTIVE, sameownedrun/ports/logbelow, nowpastits
+previousfirst-hunt failure:10/40servercredits,0deaths,4normalresource-reststops,
+level4/gold492/6occupiedslots/260unsoldvalue at159s huntelapsed. Ordinary town
+mana10→159andrestbankgrowth observed. No fullstory/readiness claim or Impresult
+yet, no cancellation/restart. Oneownedbrowserstillrunning; noheavyownedtest
+concurrency. Combatcarde37bab6 fullclient/integration remains pending; no further
+mutations/pushes beyond rootledger checkpoint. Fullroadmap remainsopen.
+
+## Previous checkpoint — September 9, 14:24 UTC
 
 Previous goal turn made PROGRESS: repaired/replayed phone predeploy failures,
 passed localfullchecks and pushed58ef9a638. This turn also made PROGRESS:
