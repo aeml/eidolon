@@ -16,6 +16,35 @@ jest.unstable_mockModule('../src/proto/state_pb.js', () => {
 
 const { GameEngine } = await import('../src/core/GameEngine.js');
 
+test.each(['state', 'delta'])('a late basic-attack %s cannot strand a ground-click destination', type => {
+    const engine = createEngineHarness();
+    engine.player.state = 'MOVING';
+    engine.player.stats.hp = 100;
+    engine.pendingInteraction = null;
+    const destination = engine.player.targetPosition;
+    const packet = state => ({ id: 'player-1', state, health: 100 });
+    for (const state of ['ATTACKING', 'IDLE']) {
+        const actor = packet(state);
+        engine.handleServerMessage({ type, payload: type === 'state' ? { 'player-1': actor }
+            : { u: { 'player-1': actor }, r: [] } });
+        expect(engine.player.state).toBe('MOVING');
+        expect(engine.player.targetPosition).toBe(destination);
+    }
+});
+
+test.each(['state', 'delta'])('a server-owned charge %s still overrides ground-click prediction', type => {
+    const engine = createEngineHarness();
+    engine.player.state = 'MOVING';
+    engine.player.stats.hp = 100;
+    engine.player.currentAbilityAnimation = { skillName: 'Fireball' };
+    engine.pendingInteraction = null;
+    const actor = { id: 'player-1', state: 'ATTACKING', health: 100, isCharging: true };
+    engine.handleServerMessage({ type, payload: type === 'state' ? { 'player-1': actor }
+        : { u: { 'player-1': actor }, r: [] } });
+    expect(engine.player.state).toBe('ATTACKING');
+    expect(engine.player.isCharging).toBe(true);
+});
+
 function createEngineHarness() {
     const engine = Object.create(GameEngine.prototype);
 

@@ -206,6 +206,7 @@ describe('GameEngine ordered movement transport', () => {
         const engine = movementHarness();
         engine.player.state = 'MOVING';
         engine.player.targetPosition = new THREE.Vector3(12, 0, 0);
+        engine.pendingInteraction = { id: 'chased-enemy' };
 
         expect(engine.shouldPreservePredictedPlayerMovement('IDLE')).toBe(true);
         expect(engine.shouldPreservePredictedPlayerMovement('ATTACKING')).toBe(false);

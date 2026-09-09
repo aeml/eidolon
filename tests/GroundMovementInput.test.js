@@ -50,3 +50,24 @@ test('clear ground continues through a normal click without a jump', async () =>
     expect((await moveByGroundClick(page, 15, 0)).x).toBe(10);
     expect(page.keyboard.down).not.toHaveBeenCalled();
 });
+
+test('a checked retreat never substitutes an unchecked sideways path', async () => {
+    const page = movementPage(true);
+    await expect(moveByGroundClick(page, 9, 0, {
+        allowJumpFallback: false, allowAlternatePaths: false, minimumDistance: 6
+    })).rejects.toThrow('No real input established 6 units');
+    const projections = page.evaluate.mock.calls.filter(([, args]) => args?.deltaX !== undefined);
+    expect(projections.map(([, args]) => args)).toEqual([{ deltaX: 9, deltaZ: 0 }]);
+    expect(page.mouse.click).not.toHaveBeenCalled();
+    expect(page.keyboard.down).not.toHaveBeenCalled();
+});
+
+test('an issued checked-path click that cannot move still fails', async () => {
+    const page = movementPage(false);
+    page.mouse.click.mockImplementation(async () => {});
+    await expect(moveByGroundClick(page, 9, 0, {
+        allowJumpFallback: false, allowAlternatePaths: false, minimumDistance: 6
+    })).rejects.toThrow('No real input established 6 units');
+    expect(page.mouse.click).toHaveBeenCalledTimes(1);
+    expect(page.keyboard.down).not.toHaveBeenCalled();
+});
