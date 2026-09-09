@@ -97,7 +97,10 @@ export class SceneryVisibility {
 
     update(group, camera, focus, now) {
         if (!Number.isFinite(now) || !camera) return;
-        const dt = this.previousTime === null ? 1 / 60 : Math.max(0, Math.min(.1, now - this.previousTime));
+        // This exponential visual transition is stable for any elapsed time.
+        // A simulation-style cap makes a short fade linger for many seconds
+        // when rendering is slow; preserve its wall-clock duration instead.
+        const dt = this.previousTime === null ? 1 / 60 : Math.max(0, now - this.previousTime);
         this.previousTime = now;
         const roots = new Set((group?.children || []).filter(root => root.visible && root.userData.proceduralDungeonEntrance));
         for (const [root, entry] of this.entries) {

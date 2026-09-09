@@ -32,7 +32,7 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Alpha 1.0.56 (guarding the Chronicle)');
         expect(indexHtml.match(/data-version="1\.0\.56"/g)).toHaveLength(1);
         expect(indexHtml.indexOf('data-version="1.0.56"')).toBeLessThan(indexHtml.indexOf('data-version="1.0.55"'));
-        for (const heading of ['Protecting newer saves', 'A safer recovery path', 'Clean disconnects', 'The same adventure today']) {
+        for (const heading of ['Protecting newer saves', 'A safer recovery path', 'Clean disconnects', 'Scenery settles promptly', 'The same adventure today']) {
             expect(indexHtml).toContain(heading);
         }
         expect(indexHtml).toContain('does not yet change reconnect resource behavior');

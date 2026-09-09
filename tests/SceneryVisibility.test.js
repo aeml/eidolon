@@ -115,3 +115,19 @@ test('losing the player restores scenery and scene teardown clears private mater
     expect(s.controller.entries.size).toBe(0);
     expect(render.sceneryFocus).toBeNull();
 });
+
+test.each([.25, .5, 1, 2])('restoration follows elapsed time even with %ss render frames', interval => {
+    const s = scene('molten_core');
+    advance(s);
+    const entry = s.controller.entries.get(s.root);
+    expect(entry.opacity).toBeLessThan(.005);
+    expect(entry.parts.some(part => part.mesh.material !== part.material)).toBe(true);
+    s.focus = null;
+    // One second is longer than the normal roughly0.67s restore. Slow frames
+    // must not turn it into seven or more expensive renders of a stale cutaway.
+    for (let elapsed = interval; elapsed <= Math.max(1, interval) + 1e-9; elapsed += interval) {
+        s.controller.update(s.group, s.camera, s.focus, 1.5 + elapsed);
+    }
+    expect(entry.opacity).toBe(1);
+    expect(entry.parts.every(part => part.mesh.material === part.material && part.mesh.castShadow === part.castShadow)).toBe(true);
+});
