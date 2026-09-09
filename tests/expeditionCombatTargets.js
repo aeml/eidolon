@@ -28,3 +28,10 @@ export function chooseExpeditionCombatTarget(questTarget, threats) {
     if (closest && (!questTarget?.alive || closest.distance + 3 < questTarget.distance)) return closest;
     return questTarget?.alive ? questTarget : closest || null;
 }
+
+export function canEngageExpeditionTarget(target, projectedVisible) {
+    // A normal click can start pursuit and a ranged spell can reach beyond the
+    // basic-attack radius. Distance alone must not send an already visible foe
+    // back through the same search loop without ever selecting it.
+    return Boolean(target?.alive && projectedVisible && Number.isFinite(target.distance) && target.distance >= 0);
+}

@@ -12,6 +12,7 @@ import { createEarnedClassCombat } from './earned-class-combat.js';
 import { prepareEarlyEarnedCharacter } from './early-earned-preparation.js';
 import { clearEarnedVerdant } from './fresh-dungeon-route.js';
 import { earnFreshStoryHunt } from './fresh-story-hunt-route.js';
+import { readStoryHuntFailureEvidence } from './story-hunt-combat-observer.js';
 import { earnedTownRecoveryEnabled } from '../earnedRecoveryPolicy.js';
 import { storyOnlyReadinessEnabled } from '../storyReadinessPolicy.js';
 import { verifyStoryOnlyEarthReadiness } from './story-readiness.js';
@@ -22,6 +23,15 @@ import { collectBrowserFailures, credentialsFromEnvironment, jumpByGroundClick,
     readPlayerState, returnToTown } from './helpers.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off', actionTimeout: 20_000 });
+test.afterEach(async ({ page }, testInfo) => {
+    if (testInfo.status === testInfo.expectedStatus || page.isClosed()) return;
+    const evidence = await readStoryHuntFailureEvidence(page);
+    if (!evidence) return;
+    await testInfo.attach('story-combat-failure', { body: JSON.stringify(evidence), contentType: 'application/json' });
+    console.log('[story-hunt] failure receipt', JSON.stringify({ player: evidence.player,
+        outgoing: evidence.combat.outgoing, incoming: evidence.combat.incoming,
+        requestedId: evidence.combat.requestedId, selected: evidence.selected, nearby: evidence.nearby }));
+});
 const chapter = 'chronicle_01_bell_below';
 
 // Deliberately does not use findOverworldTarget: that functional QA helper may

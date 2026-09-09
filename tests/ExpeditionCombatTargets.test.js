@@ -1,4 +1,4 @@
-import { chooseExpeditionCombatTarget, earthExpeditionSearchAnchor, levelAppropriateExpeditionTargets } from './expeditionCombatTargets.js';
+import { canEngageExpeditionTarget, chooseExpeditionCombatTarget, earthExpeditionSearchAnchor, levelAppropriateExpeditionTargets } from './expeditionCombatTargets.js';
 import { chronicleHunts } from '../src/data/chronicleHunts.generated.js';
 
 test.each([
@@ -39,6 +39,16 @@ test('level-aware travel never lowers the server quest minimum', () => {
 });
 
 const target = Object.freeze({ id: 'quest-skeleton', level: 3, alive: true, distance: 15 });
+test('a visible living target outside basic range can be selected for normal chase/casting', () => {
+    expect(canEngageExpeditionTarget({ ...target, distance: 30 }, true)).toBe(true);
+    expect(canEngageExpeditionTarget(target, true)).toBe(true);
+});
+test('seek a missing, dead, hidden or invalid target without issuing a blind click', () => {
+    expect(canEngageExpeditionTarget(null, true)).toBe(false);
+    expect(canEngageExpeditionTarget({ ...target, alive: false }, true)).toBe(false);
+    expect(canEngageExpeditionTarget(target, false)).toBe(false);
+    expect(canEngageExpeditionTarget({ ...target, distance: NaN }, true)).toBe(false);
+});
 test('nearby lower-level pursuer can be fought without changing quest eligibility', () => {
     const blocker = Object.freeze({ id: 'pursuer', level: 1, alive: true, distance: 5 });
     expect(chooseExpeditionCombatTarget(target, Object.freeze([blocker]))).toBe(blocker);

@@ -6,16 +6,15 @@ import { recoverEarnedDeath } from './earned-death-recovery.js';
 import { earnedCheckpoint } from './earned-checkpoint.js';
 import { recoverBetweenHuntEncounters } from './earned-hunt-rest.js';
 import { earnedTownRecoveryEnabled } from '../earnedRecoveryPolicy.js';
-import { chooseExpeditionCombatTarget, earthExpeditionSearchAnchor, levelAppropriateExpeditionTargets } from '../expeditionCombatTargets.js';
+import { canEngageExpeditionTarget, chooseExpeditionCombatTarget, earthExpeditionSearchAnchor, levelAppropriateExpeditionTargets } from '../expeditionCombatTargets.js';
 import { equipEarnedEmptySlots } from './earned-equipment.js';
 import { selectEarnedAttackTarget } from './earned-target-input.js';
 import { openDungeonGuide } from './dungeon-guide.js';
 import { prepareEarnedClass } from './fresh-ready-route.js';
-import { prepareEarlyEarnedCharacter } from './early-earned-preparation.js';
 import { storyHuntTrainingDue } from '../storyHuntPreparationPolicy.js';
 import { installStoryHuntCombatObserver, readStoryHuntCombatEvidence } from './story-hunt-combat-observer.js';
 import { moveByGroundClick, projectEntity, readPlayerState,
-    returnToTown, setAutoLootThroughSettings } from './helpers.js';
+    setAutoLootThroughSettings } from './helpers.js';
 
 const snapshot = page => page.evaluate(() => {
     const p = window.game.player;
@@ -82,15 +81,14 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady, 
     const before = await snapshot(page);
     const prepare = async label => {
         const current = await snapshot(page);
-        // An explicit ordinary-build baseline: use earned primary-stat points,
-        // empty-slot gear and available mastery, never new rewards or items.
+        // Online attributes grow automatically; there are no spendable stat
+        // points. Equip earned empty slots and train earned branch/mastery.
         if (current.level >= 10) {
             await openDungeonGuide(page);
             await prepareEarnedClass(page, credentials, { label, statBudget: current.statPoints });
             await page.locator('#btn-close-dungeon-menu').click();
         } else {
-            await returnToTown(page);
-            await prepareEarlyEarnedCharacter(page, { statBudget: current.statPoints });
+            await equipEarnedEmptySlots(page);
         }
         console.log('[story-hunt] preparation receipt', JSON.stringify({ label, before: current, after: await snapshot(page) }));
         return current.level;
@@ -156,18 +154,18 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady, 
                     distance: game.player.position.distanceTo(target.position) } : null;
                 return { goal: describe(game.remotePlayers.get(id)),
                     selected: describe(game.pendingInteraction),
-                    basicRange: game.getBasicAttackRangeForEntity(game.remotePlayers.get(id)),
                     nearby: [...game.remotePlayers.values()].filter(target => game.isHostileActorTarget(target))
                         .map(describe) };
             }, enemy.id);
             const combatTarget = chooseExpeditionCombatTarget(
                 observed.selected?.alive ? observed.selected : observed.goal, observed.nearby);
             await page.evaluate(id => { window.__storyHuntCombatEvidence.requestedId = id; }, combatTarget?.id || null);
-            if (!combatTarget || (!observed.selected?.alive && combatTarget.id === observed.goal?.id &&
-                combatTarget.distance > observed.basicRange + 2)) {
+            const acquisitionPoint = combatTarget && await projectEntity(page, combatTarget.id);
+            if (!canEngageExpeditionTarget(combatTarget, acquisitionPoint?.visible)) {
                 // Retreat/leash can stream out the original target. Seek a
                 // visible appropriate enemy through ordinary travel, without
-                // resetting the deadline or manufacturing quest credit.
+                // resetting the deadline or manufacturing quest credit. A
+                // visible living enemy can be clicked to start normal pursuit.
                 enemy = await findExpeditionTarget(page, hunt, deadline);
                 continue;
             }

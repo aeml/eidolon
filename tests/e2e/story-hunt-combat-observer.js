@@ -15,3 +15,22 @@ export async function installStoryHuntCombatObserver(page) {
 export async function readStoryHuntCombatEvidence(page) {
     return page.evaluate(() => window.__storyHuntCombatEvidence || null);
 }
+
+export async function readStoryHuntFailureEvidence(page) {
+    return page.evaluate(() => {
+        const game = window.game, p = game?.player;
+        if (!p || !window.__storyHuntCombatEvidence) return null;
+        const describe = target => target ? { id: target.id, level: target.level,
+            type: target.subType || target.constructor.name, state: target.state,
+            hp: target.health ?? target.stats?.hp, position: target.position?.toArray(),
+            distance: p.position.distanceTo(target.position) } : null;
+        return { player: { level: p.level, hp: p.stats.hp, mana: p.stats.mana,
+            stats: { ...p.stats }, baseStats: { ...p.baseStats }, statPoints: p.statPoints,
+            talentPoints: p.talentPoints, talents: p.talentRanks, branch: p.selectedBranch,
+            position: p.position.toArray(), safeZone: p.safeZoneId, rest: p.wellRestedSeconds },
+        selected: describe(game.pendingInteraction), hovered: describe(game.hoveredEntity),
+        nearby: [...game.remotePlayers.values()].filter(e => game.isHostileActorTarget(e) &&
+            p.position.distanceTo(e.position) < 50).map(describe),
+        combat: window.__storyHuntCombatEvidence };
+    });
+}
