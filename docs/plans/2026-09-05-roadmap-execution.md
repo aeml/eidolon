@@ -16,7 +16,36 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 05:36 UTC
+## Current checkpoint — September 9, 05:44 UTC
+
+Previous goal turn was a verified wait: exact53CI and Fighter58871 were polled;
+fresh public client/server identities both remained52/a36d1e7 at05:42.
+
+PROGRESS: Fighter58871 is now terminal: complete wrapper log reports PASS1/6.7m,
+credential scan0 and normal cleanup. The old handle is missing; exact owned
+containers/image are absent, not a reason to restart. Frozen58/5a17be1 with
+Node24.18.0: opening110s/zero deaths; collection289s/17observed target deaths,
+8earned seeds/zero player deaths. Four normal town stops86.038s including travel,
+all full pools; first HP162/200 and MP1/160 recovered to rested220/220 and176/176.
+Manual8000XP100gold produced level17; reconnect and locked level30 dungeon passed.
+Six earned gear items/90unsold value/9occupied slots, preclaim426gold. This is
+unchanged legacy reward evidence, NOT a completed balance pass. The 8/8 ready
+claim image was inspected and all artifacts archived before another run:
+`/tmp/eidolon-rest58-fighter24-proof-h4p5PS/test-results`. Log
+`/tmp/eidolon-rest58-fighter-node24-0535.log` retains the complete result.
+
+**34088 Rogue Node24 ACTIVE**, only owned local browser/process; frozen5a17be1,
+projectrest58-rogue24-0909-0545 (suffix is an identifier, not actual start time),
+API18560/Mongo18561/web41960. Log
+`/tmp/eidolon-rest58-rogue-node24-0545.log`; ordinary opening has reached two
+kills/zero deaths. After terminal, archive/inspect/exact cleanup then run native
+well-rested-all24 on this unchanged candidate. No source edits during the run.
+
+53CI34312290353 remains active in full predeploy gameplay. No successor push
+before whole53CI/final live QA plus fresh exact public identities. Standalone58
+remains unpublished; expanded story/balance and the full roadmap remain required.
+
+## Previous checkpoint — September 9, 05:36 UTC
 
 PROGRESS: **69597 unchanged Wizard Node24 repeat TERMINAL PASS1/4.7m** on
 5a17be147ce527bae556663cc452ecae10e87785. Opening68s/3retreats/zero deaths,
