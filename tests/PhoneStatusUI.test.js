@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
 import { PhoneStatusUI } from '../src/ui/PhoneStatusUI.js';
+import { wellRestedBuff } from '../src/core/WellRested.js';
 
 const buff = { id: 'arcane_shield', name: 'Arcane Shield', remainingSeconds: 24.8, detail: 'Absorbs 500 damage.' };
 let ui;
@@ -49,6 +50,21 @@ test('expired effects disappear while the open reading surface stays available',
     expect(ui.isOpen).toBe(true); expect(ui.rows.size).toBe(0);
     expect(ui.empty.hidden).toBe(false);
     expect(ui.launcher.getAttribute('aria-label')).toBe('Status effects: 0 buffs, 0 debuffs');
+});
+
+test('shield expiry preserves the earned resting row instead of showing an empty panel', () => {
+    const rested = { ...wellRestedBuff({ wellRestedSeconds: 30, safeZoneId: 'lanternhold' }), remainingSeconds: 30 };
+    ui.update([buff, rested], true, 'player');
+    ui.open();
+    const row = ui.rows.get('well_rested').root;
+    ui.update([{ ...buff, remainingSeconds: 0 }, rested], true, 'player');
+    expect(ui.rows.has('arcane_shield')).toBe(false);
+    expect(ui.rows.size).toBe(1);
+    expect(ui.rows.get('well_rested').root).toBe(row);
+    expect(row.textContent).toContain('Resting');
+    expect(ui.isOpen).toBe(true);
+    expect(ui.empty.hidden).toBe(true);
+    expect(ui.launcher.getAttribute('aria-label')).toBe('Status effects: 1 buffs, 0 debuffs');
 });
 
 test('debuffs have text labels, and untrusted names/details stay literal', () => {
