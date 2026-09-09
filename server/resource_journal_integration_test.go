@@ -84,11 +84,16 @@ func TestResourceActualRejectedSaveRecoversAfterRestart(t *testing.T) {
 	}
 	address, stop := compatStartServer(t, binary, uri, 30, "-save-journal-dir", dir)
 	connection := resourceOpenCharacter(t, address, fixture.Name, password)
+	beforeCast := townFixtureRead(t, connection, fixture, 0)
 	resourceSend(t, connection, MsgAbility, AbilityPayload{SkillName: "Fireball"})
 	var cast game.AbilityResult
 	resourceReadMessage(t, connection, MsgAbilityResult, &cast)
-	if !cast.Accepted || cast.Mana != 70 {
+	if !cast.Accepted {
 		t.Fatalf("ordinary cast failed: %+v", cast)
+	}
+	afterCast := townFixtureRead(t, connection, fixture, 30)
+	if cast.Mana < int(beforeCast.Mana)-30 || cast.Mana > int(afterCast.Mana) || cast.Mana+30 >= int(afterCast.MaxMana) {
+		t.Fatalf("cast cost outside exact town recovery interval, or pre-cast cap invalidates oracle: %+v", cast)
 	}
 	setValidator(bson.M{"journal_fault_probe": bson.M{"$exists": true}})
 	t.Cleanup(func() { setValidator(bson.M{}) })
@@ -118,10 +123,10 @@ func TestResourceActualRejectedSaveRecoversAfterRestart(t *testing.T) {
 		t.Fatal("failed save lost on process exit")
 	}
 	expected, err := pending.Character()
-	if err != nil || expected.Resources.Mana != 70 || expected.Resources.Health != 17 ||
-		!reflect.DeepEqual(expected.Equipment, fixture.Equipment) {
+	if err != nil || !reflect.DeepEqual(expected.Equipment, fixture.Equipment) {
 		t.Fatal("pending snapshot did not capture cast/resources/equipment together")
 	}
+	assertTownFixtureSave(t, fixture, expected, 30)
 	setValidator(bson.M{})
 	address, stopRecovered := compatStartServer(t, binary, uri, 31, "-save-journal-dir", dir)
 	defer stopRecovered()
@@ -134,9 +139,10 @@ func TestResourceActualRejectedSaveRecoversAfterRestart(t *testing.T) {
 		t.Fatal("recovered snapshot not acknowledged")
 	}
 	connection = resourceOpenCharacter(t, address, fixture.Name, password)
-	resourceProbe(t, connection, 70, false)
+	townFixtureProbe(t, connection, expected)
 	final := resourceCloseAndWait(t, repo, connection, fixture.Name)
-	if final.Resources.Health != 17 || final.Resources.Mana != 70 || final.Gold != 1234 || !reflect.DeepEqual(final.Equipment, fixture.Equipment) {
+	assertTownFixtureSave(t, expected, final, 0)
+	if final.Gold != 1234 || !reflect.DeepEqual(final.Equipment, fixture.Equipment) {
 		t.Fatal("ordinary post-restart session changed recovered state")
 	}
 	t.Log("real Fireball/disconnect, rejected Mongo save, durable shutdown, new-process replay, ordinary login and exact resource/gear persistence passed")
@@ -148,6 +154,7 @@ func TestResourceActualCommittedJournalReplayPreservesLaterCredit(t *testing.T) 
 	repo, uri, binary := resourceJournalIntegration(t)
 	fixture, password := resourceJournalFixture(t, repo)
 	fixture.Resources = &database.CharacterResources{Version: 1, Health: 0, Mana: 0, Dead: true}
+	fixture.WellRested = &database.CharacterWellRested{Version: 1, RemainingSeconds: 123.456789}
 	dir := t.TempDir()
 	journal, err := database.OpenCharacterSaveJournal(dir)
 	if err != nil {
@@ -180,7 +187,7 @@ func TestResourceActualCommittedJournalReplayPreservesLaterCredit(t *testing.T) 
 	connection := resourceOpenCharacter(t, address, fixture.Name, password)
 	resourceProbe(t, connection, 0, true)
 	final := resourceCloseAndWait(t, repo, connection, fixture.Name)
-	if !reflect.DeepEqual(final.Resources, fixture.Resources) || final.Gold != 1277 {
+	if !reflect.DeepEqual(final.Resources, fixture.Resources) || !reflect.DeepEqual(final.WellRested, fixture.WellRested) || final.Gold != 1277 {
 		t.Fatal("post-replay dead login lost resources/credit")
 	}
 	t.Log("already-committed receipt survives restart without losing later gold; ordinary dead/zero-mana login remains dead and empty")

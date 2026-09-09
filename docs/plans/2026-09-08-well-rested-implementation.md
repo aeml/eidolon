@@ -61,6 +61,33 @@ four-class stats and device/aura acceptance remain required.
 
 ## Development acceptance — September 8, 23:30 UTC
 
+Latest additional acceptance, **September9 00:27UTC**:
+
+- Actual PvP8-case matrix now covers four classes in ordinary consent duels,
+  1v1/2v2 queue/party flows, repeated Join, forfeit, shutdown and fresh login.
+  Disconnect routes consume their town bank to zero before exact cast/resource
+  checks; shutdown routes retain a prepared60-second bank and verify outside
+  consumption and buffed current-maxima recovery. Existing rating/win/loss/honor/
+  season-point exact-once checks remain unchanged. Town return and fresh login
+  use independent timed recovery arithmetic, not disabled healing.
+- Initial20960 failed79.651s only in the active-bank shutdown cases: the scene
+  admission snapshot precedes the first world rest tick and still carries the
+  old town label. Expiry/forfeit cases passed. Corrected synchronization waits
+  for the actual empty safe-zone label under the same20s limit; runtime unchanged.
+- Actual rejected-Mongo-save recovery retains real Fireball cost, exact town
+  bank/resources in the journal, exact full snapshot replay before readiness,
+  and later ordinary login/save. Already-committed journal replay additionally
+  retains a dead character's123.456789 bank without losing later gold credit.
+- Corrected1639 **PASS91.871s**: rejected-save5.39s, committed-replay2.60s,
+  PvP82.86s/all8 cases. Exact production race binary remainsd650c72, unchanged
+  runtime. Log `/tmp/eidolon-rest-workflows-0025.log` lists all19 child evidence
+  directories; independently checked clean of races/panics with normal drains.
+  Owned Mongo `eidolon-rest-workflows-20260909-0025`/volumes removed and absent;
+  the earlier failed run's Mongo `eidolon-rest-pvp-20260909-0030` is also absent.
+
+Still open: auction failpoint and schema-upgrade integrations, browser-integrated
+travel/reconnect/aura and earned rested/unrested balance. Not staged or live.
+
 Latest additional acceptance, **September9 00:12UTC**:
 
 - Existing four-class dungeon restart/recovery matrix now distinguishes bounded

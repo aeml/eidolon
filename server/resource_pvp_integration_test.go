@@ -9,6 +9,7 @@ import (
 
 	"eidolon-server/internal/database"
 	"eidolon-server/internal/game"
+	statepb "eidolon-server/internal/proto"
 	"github.com/gorilla/websocket"
 )
 
@@ -46,17 +47,22 @@ func TestResourceActualPvPForfeitAndShutdownRecovery(t *testing.T) {
 				dir := t.TempDir()
 				address, stop := compatStartServer(t, binary, uri, 60, "-save-journal-dir", dir)
 				fixtures := make([]*database.Character, len(classes))
+				keepRested := route == "arena_shutdown"
+				entryBanks := make([]float64, len(classes))
 				passwords := make([]string, len(classes))
 				connections := make([]*websocket.Conn, len(classes))
 				for i, class := range classes {
 					fixture, password := resourceJournalFixture(t, repo)
 					fixture.Class, fixture.Resources.Mana = class, 0
+					if keepRested {
+						fixture.WellRested = &database.CharacterWellRested{Version: 1, RemainingSeconds: 60}
+					}
 					if err := repo.SaveCharacter(fixture.Name, fixture); err != nil {
 						t.Fatal(err)
 					}
 					fixtures[i], passwords[i] = fixture, password
 					connections[i], _ = resourceLoginCharacter(t, address, fixture.Name, password, class)
-					resourceProbe(t, connections[i], 0, false)
+					townFixtureProbe(t, connections[i], fixture)
 				}
 				if route == "duel_disconnect" {
 					resourceSend(t, connections[0], MsgDuelRequest, GuildTargetPayload{Username: fixtures[1].Name})
@@ -84,16 +90,33 @@ func TestResourceActualPvPForfeitAndShutdownRecovery(t *testing.T) {
 					}
 				}
 				for i, connection := range connections {
-					resourceProbe(t, connection, 445, false)
-					mana := 445
+					// Disconnect routes spend the small, genuinely earned town bank
+					// in real time. Shutdown retains a prepared one-minute bank.
+					// All four classes exercise both current-maxima exit policies.
+					settled := wellRestedReadActorAfter(t, connection, fixtures[i].Name, time.Now(), func(e *statepb.Entity) bool {
+						return e.InstanceId == firstScene.InstanceID && e.SafeZoneId == "" && (keepRested || e.WellRestedSeconds == 0)
+					})
+					maxHP, maxMP := 145, 445
+					if keepRested {
+						maxHP, maxMP = 159, 489
+						if settled.WellRestedSeconds <= 0 {
+							t.Fatal("prepared bank expired before the active-rest shutdown check")
+						}
+					}
+					entryBanks[i] = settled.WellRestedSeconds
+					if settled.SafeZoneId != "" || int(settled.MaxHealth) != maxHP || int(settled.Health) != maxHP || int(settled.MaxMana) != maxMP || int(settled.Mana) != maxMP {
+						t.Fatalf("arena admission/expiry must use current maxima without safe-zone healing: %+v", settled)
+					}
+					resourceProbe(t, connection, maxMP, false)
+					mana := maxMP
 					if classes[i] == "Wizard" {
 						resourceSend(t, connection, MsgAbility, AbilityPayload{SkillName: "Fireball", TargetX: 0, TargetZ: 12})
 						var cast game.AbilityResult
 						resourceReadMessage(t, connection, MsgAbilityResult, &cast)
-						if !cast.Accepted || cast.Mana != 415 {
+						if !cast.Accepted || cast.Mana != mana-30 {
 							t.Fatalf("ordinary arena cast failed: %+v", cast)
 						}
-						mana = 415
+						mana -= 30
 					}
 					resourceSend(t, connection, MsgJoin, JoinPayload{Type: classes[i]})
 					resourceReadMessage(t, connection, MsgQuestUpdate, nil)
@@ -117,22 +140,35 @@ func TestResourceActualPvPForfeitAndShutdownRecovery(t *testing.T) {
 					}
 				}
 				stop()
-				for _, fixture := range fixtures {
+				for i, fixture := range fixtures {
 					saved, err := repo.GetCharacter(fixture.Name, fixture.Name)
-					if err != nil || !reflect.DeepEqual(saved.Resources, &database.CharacterResources{Version: 1, Health: 145, Mana: 445}) || saved.InstanceID != "" ||
+					if err != nil || saved == nil {
+						t.Fatalf("missing resolved PvP save: %v", err)
+					}
+					if keepRested {
+						if saved.WellRested == nil || saved.WellRested.RemainingSeconds <= 0 || saved.WellRested.RemainingSeconds >= entryBanks[i] ||
+							!reflect.DeepEqual(saved.Resources, &database.CharacterResources{Version: 1, Health: 159, Mana: 489}) {
+							t.Fatal("arena shutdown lost outside rest consumption or current-maxima recovery")
+						}
+					} else {
+						returned := *fixture
+						returned.WellRested = nil
+						returned.Resources = &database.CharacterResources{Version: 1, Health: 145, Mana: 445}
+						assertTownFixtureSave(t, &returned, saved, 0)
+					}
+					if saved.InstanceID != "" ||
 						saved.X != fixture.X || saved.Z != fixture.Z || saved.Gold != fixture.Gold || !reflect.DeepEqual(saved.Equipment, fixture.Equipment) {
 						t.Fatal("PvP exit/shutdown failed existing recovery policy or changed unrelated state")
 					}
+					fixtures[i] = saved
 				}
 				address, stopRecovered := compatStartServer(t, binary, uri, 61, "-save-journal-dir", dir)
 				defer stopRecovered()
 				for i, fixture := range fixtures {
 					connection, _ := resourceLoginCharacter(t, address, fixture.Name, passwords[i], classes[i])
-					resourceProbe(t, connection, 445, false)
+					townFixtureProbe(t, connection, fixture)
 					saved := resourceCloseAndWait(t, repo, connection, fixture.Name)
-					if saved.Resources.Health != 145 || saved.Resources.Mana != 445 || saved.InstanceID != "" {
-						t.Fatal("fresh-process login changed resolved arena resources")
-					}
+					assertTownFixtureSave(t, fixture, saved, 0)
 					profile, err := repo.GetPvPProfile("player-" + fixture.Name)
 					if err != nil {
 						t.Fatal(err)
