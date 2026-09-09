@@ -5,7 +5,49 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 00:40 UTC
+## Current checkpoint — September 9, 00:50 UTC
+
+PROGRESS: previous turn published corrected50 and propagated/verified the ordered
+queue. This continuation closes Well Rested listing and item-delivery recovery
+acceptance, without changing production rules or the release order.
+
+Well Rested **f2a6ad8423e4d12034d1b2858421223532b92122** committed clean in its
+existing development tree. Listing9 normal/rejection cases,7 crash boundaries
+and delayed-publication after an aged decision all retain exact town rest/resource
+arithmetic and real Fireball cost alongside unchanged item/deposit/receipt,
+legacy scaling, immutable identity and paid-duration checks. Actual54724
+**PASS92.422s**:44.39s/41.41s/5.61s;42 child logs independently clean,34 normal
+drains/8 explicit intentional kills. Owned Mongo0044/volumes removed and absent.
+Evidence `/tmp/eidolon-rest-listing-0044.log`.
+
+Item delivery5 ordinary/capacity cases and6 crash boundaries retain the complete
+earned item (including Forge basis), one-copy/receipt counts, stash fallback,
+full-storage rejection and original gold/equipment/progression. Before fresh
+login, exact durable database/journal health/mana/rest must match; only subsequent
+connected town time adds recovery. Initial78268 **PASS69.162s**,28 clean child
+logs (22 normal drains/6 expected kills). Added explicit startup comparison to
+original gold/equipment/progression, separate from the new resource baseline;
+final crash91858 **PASS40.684s**,18 clean logs(12 normal/6 kills). Both owned
+Mongo0047/0048/volumes removed and checked absent. Logs
+`/tmp/eidolon-rest-item-0047.log`, `/tmp/eidolon-rest-item-final-0048.log`.
+Final root Go race76334 **PASS11.365s**. Only tests/docs changed; production server
+code remains the previously exercised exactd650c72 binary.
+
+Full merged-feature client/lint66914 remains ACTIVE (log
+`/tmp/eidolon-rested-merged-client.log`, then
+`/tmp/eidolon-rested-merged-lint.log`). Poll this handle; do not replace it or edit
+client/runtime while active. No other owned local process remains. Feature still
+unversioned/not live. Remaining recovery work: bid/contention/refund and buyout
+flows, schema upgrade; then integrated browser/aura and earned balance.
+
+50 CI**34295826450** ACTIVE: Go/Jest and browser2/3 passed, browser1/3 and3/3
+still running at00:49. No timeout/restart or successor push. Do not publish51
+until every50 job, including final live QA, passes and fresh exact public50
+identity is verified. Canonical51–57 hashes are unchanged from00:40 below;
+only Well Rested development advanced. Root remains a ledger, not a publisher.
+Full1.1–1.10 objective remains active and incomplete.
+
+## Previous checkpoint — September 9, 00:40 UTC
 
 PROGRESS: exact50 **51ec73edadcf38f59278eee76151257a86d47e68** fresh collection
 7029 is terminal **PASS1/6.6m**. Ordinary opening/manual reward/relogin and all8

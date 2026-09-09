@@ -61,9 +61,17 @@ September9 00:40 checkpoint: development8e21d49 now includes the verified local
 checks pass4 suites/315 tests. No backend code changed in this merge; existing
 d650c72 backend acceptance is unchanged. Feature remains unpublished.
 
+September9 00:50 checkpoint: developmentf2a6ad8 closes listing and item-delivery
+recovery acceptance. Listing9 normal/rejection cases,7 crash boundaries and
+delayed publication pass92.422s. Item5 capacity/collection cases and6 crash
+boundaries pass69.162s; stricter original-gold/equipment startup guard follow-up
+passes40.684s. All88 child logs clean, intentional kills documented, other
+processes drained; owned Mongo/volumes removed. Full root race11.365s.
+Merged client/lint sweep66914 still running; no feature deployment.
+
 This is not a versioned/staged release. It follows staged57, requires schema9,
 and must not publish inherited57 metadata. Remaining gates include the other
-auction flows (listing, bids/contention, buyout and item delivery) and schema-upgrade recovery,
+auction flows (bids/contention/refunds and buyout) and schema-upgrade recovery,
 integrated browser travel/reconnect/aura and rested/unrested earned balance.
 
 ## Requested behavior
