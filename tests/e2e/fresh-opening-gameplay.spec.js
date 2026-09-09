@@ -177,7 +177,6 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     await page.locator('#quest-window').getByRole('button', { name: 'Continue conversation', exact: true }).click();
     expect((await readChronicleChapter(page, 'chronicle_02_seeds_first_grove')).accepted).toBe(false);
     const earnedLevel = (await readPlayerState(page)).level;
-    await page.reload({ waitUntil: 'networkidle' });
     await loginAndEnterWorld(page, credentials);
     expect((await readPlayerState(page)).level).toBe(earnedLevel);
     expect((await readChronicleChapter(page, chapter)).completed).toBe(true);

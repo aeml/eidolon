@@ -67,7 +67,7 @@ test('phone talent purchases reduce real cast cost and cooldown, including after
     if (process.env.EIDOLON_E2E_ECONOMY_RETRY_PROBE === '1' && testInfo.retry === 0) {
         throw new Error('Intentional retry-isolation probe after saved talent purchases');
     }
-    await page.reload({ waitUntil: 'networkidle' }); await loginAndEnterWorld(page, credentials);
+    await loginAndEnterWorld(page, credentials);
     expect(await page.evaluate(() => ({ technique: window.game.player.talentRanks.WIZ_02, efficiency: window.game.player.talentRanks.WIZ_27 })))
         .toEqual({ technique: 5, efficiency: 5 });
     await page.setViewportSize({ width: 844, height: 390 });

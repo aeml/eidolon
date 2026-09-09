@@ -139,7 +139,7 @@ test('Cleric cone, Beacon and normal Mass Revival casts render their accepted tr
         await page.screenshot({path:testInfo.outputPath(`cleric-final-area-rank${rank}.png`)});
         await observer.screenshot({path:testInfo.outputPath(`cleric-final-observer-rank${rank}.png`)});
     }
-    await page.reload({waitUntil:'networkidle'});await loginAndEnterWorld(page,credentials);
+    await loginAndEnterWorld(page,credentials);
     expect(await page.evaluate(()=>window.game.player.talentRanks?.CLR_34)).toBe(5);
     expect(observerFailures,observerFailures.join('\n')).toEqual([]);
     expect(failures,failures.join('\n')).toEqual([]);

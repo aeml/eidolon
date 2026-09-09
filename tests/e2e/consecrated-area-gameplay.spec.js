@@ -73,7 +73,7 @@ test('holy ground training and its expanded rune match the persistent server zon
     await expect.poll(()=>page.evaluate(()=>window.game.player.skillRunes?.['Consecrated Ground'])).toBe('consecratedground_expanded');
     await page.locator('#btn-close-skills').tap();
     await cast(8.625,'high','expanded');
-    await page.reload({waitUntil:'networkidle'}); await loginAndEnterWorld(page,credentials);
+    await loginAndEnterWorld(page,credentials);
     expect(await page.evaluate(()=>window.game.player.talentRanks?.CLR_34)).toBe(5);
     expect(await page.evaluate(()=>window.game.player.skillRunes?.['Consecrated Ground'])).toBe('consecratedground_expanded');
     expect(failures,failures.join('\n')).toEqual([]);

@@ -125,7 +125,6 @@ test('phone bag equips, drops and stores server-owned items with saved retrieval
         await expect.poll(ownsItem).toBe(true);
         console.log(`[phone-inventory] ${width}x${height}: authoritative equip, unequip, cancelled drop, confirmed drop and manual recovery passed`);
     }
-    await page.reload();
     await loginAndEnterWorld(page, credentials);
     expect(await page.evaluate(id => window.game.player.inventory.some(item => item?.id === id), itemId)).toBe(true);
     await verifyPhoneStash(page, credentials, itemId);

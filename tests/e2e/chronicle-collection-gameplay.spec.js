@@ -19,7 +19,6 @@ test('earned Chronicle collection turn-in refreshes the bag before the next chap
     const remainingSeeds = () => page.evaluate(() => window.game.player.inventory.reduce((sum, item) =>
         sum + (item?.name === 'Verdant Memory Seed' ? item.stack || 1 : 0), 0));
     const beforeReload = await remainingSeeds();
-    await page.reload({ waitUntil: 'networkidle' });
     await loginAndEnterWorld(page, credentials);
     expect(await remainingSeeds()).toBe(beforeReload);
     expect((await readChronicleChapter(page, 'chronicle_02_seeds_first_grove')).completed).toBe(true);

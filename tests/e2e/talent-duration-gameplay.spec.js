@@ -146,7 +146,7 @@ test('phone shield duration training changes server timers and visible expiry', 
     }
     await page.locator('#btn-close-skills').tap();
     await verifyShield(5, 'portrait-trained', true);
-    await page.reload({ waitUntil: 'networkidle' }); await loginAndEnterWorld(page, credentials);
+    await loginAndEnterWorld(page, credentials);
     await page.setViewportSize({ width: 844, height: 390 });
     await verifyShield(5, 'landscape-saved');
     expect(failures, failures.join('\n')).toEqual([]);

@@ -27,7 +27,7 @@ export async function verifyPhoneStash(page, credentials, itemId) {
         await page.locator('#phone-item-stash').tap();
         await expect.poll(ownership).toEqual({ bag: null, stash: original });
         await page.locator('#btn-close-stash').tap();
-        await page.reload({ waitUntil: 'networkidle' }); await loginAndEnterWorld(page, credentials);
+        await loginAndEnterWorld(page, credentials);
         expect(await ownership()).toEqual({ bag: null, stash: original });
         await openStash(); await page.locator('#phone-stash-stored-tab').tap();
         await row.scrollIntoViewIfNeeded(); await row.tap();
@@ -35,7 +35,7 @@ export async function verifyPhoneStash(page, credentials, itemId) {
         await page.locator('#phone-item-withdraw').tap();
         await expect.poll(ownership).toEqual({ bag: original, stash: null });
         await page.locator('#btn-close-stash').tap();
-        await page.reload({ waitUntil: 'networkidle' }); await loginAndEnterWorld(page, credentials);
+        await loginAndEnterWorld(page, credentials);
         expect(await ownership()).toEqual({ bag: original, stash: null });
         console.log(`[phone-stash] ${width}x${height}: ordinary town interaction, explicit store/withdraw and saved complete item passed`);
     }
