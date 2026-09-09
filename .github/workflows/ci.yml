@@ -139,14 +139,10 @@ jobs:
 
       - name: Run anonymous real-browser smoke
         run: |
-          npm run test:e2e:anonymous -- --shard=${{ matrix.shard }}/3
           if [ "${{ matrix.shard }}" = 1 ]; then
-            npm run test:e2e:nameplates
-            npm run test:e2e:resource-hud
+            node scripts/verify-browser-smoke-partition.mjs
           fi
-          if [ "${{ matrix.shard }}" = 2 ]; then
-            npm run test:e2e:interface
-          fi
+          node scripts/run-browser-smoke.mjs ${{ matrix.shard }}
 
       - name: Upload browser failure evidence
         if: ${{ !cancelled() }}

@@ -1,24 +1,28 @@
 import { readFileSync } from 'node:fs';
+import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const workflow = readFileSync('.github/workflows/ci.yml', 'utf8');
 const browser = workflow.split('  browser-smoke:\n')[1].split('\n  predeploy-character:')[0];
 const predeploy = workflow.split('  predeploy-character:\n')[1].split('\n  release-inputs:')[0];
 
 test('nameplate and resource render coverage run once inside the required browser gate', () => {
-    expect(browser).toContain('if [ "${{ matrix.shard }}" = 1 ]; then\n            npm run test:e2e:nameplates\n            npm run test:e2e:resource-hud\n          fi');
-    expect(browser.match(/npm run test:e2e:nameplates/g)).toHaveLength(1);
-    expect(browser.match(/npm run test:e2e:resource-hud/g)).toHaveLength(1);
+    expect(browser.match(/node scripts\/run-browser-smoke.mjs/g)).toHaveLength(1);
+    const manifest = JSON.parse(readFileSync('package.json', 'utf8'));
+    const names = [1, 2, 3].flatMap(shard => buildBrowserSmokePlan(manifest, shard).map(stage => stage.name));
+    expect(names.filter(name => name === 'nameplates')).toHaveLength(1);
+    expect(names.filter(name => name === 'resource-hud')).toHaveLength(1);
     const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
     expect(script).toContain('&& run_death_resource_recovery && run_direct_target_classes');
     expect(script).toContain('&& run_pvp_cadence && run_animation_classes');
     expect(script).toContain('&& run_animation_multiplayer && npx playwright test tests/e2e/nameplate-world.spec.js');
 });
 
-test('all three hosted browser shards keep the complete anonymous command and independent evidence', () => {
+test('all three hosted browser shards require coverage verification and independent evidence', () => {
     expect(browser).toContain('runs-on: ubuntu-latest');
     expect(browser).toContain('fail-fast: false');
     expect(browser).toContain('shard: [1, 2, 3]');
-    expect(browser).toContain('npm run test:e2e:anonymous -- --shard=${{ matrix.shard }}/3');
+    expect(browser).toContain('node scripts/run-browser-smoke.mjs ${{ matrix.shard }}');
+    expect(browser).toContain('node scripts/verify-browser-smoke-partition.mjs');
     expect(browser).toContain('name: predeploy-browser-evidence-${{ matrix.shard }}');
     expect(browser).not.toContain('continue-on-error');
     expect(browser).not.toContain('--grep');
