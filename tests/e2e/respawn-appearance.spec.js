@@ -1,13 +1,17 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
+import { createVisualActorClock } from '../visualLifecycleClock.js';
 
 // Prepared visual lifecycle scene using the real class/model/update paths.
 // This is not earned combat or a multiplayer respawn acceptance test.
 test('Rogue respawn and stealth expiry keep the rendered interaction box invisible', async ({ page, baseURL }) => {
     const failures = collectBrowserFailures(page, baseURL);
+    // A self-contained fixture helper, available even when a live deployment
+    // does not publish test modules. Never replace the production game clock.
+    await page.addInitScript({ content: `window.__createVisualActorClock = (${createVisualActorClock.toString()});` });
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.goto('/', { waitUntil: 'networkidle' });
-    await page.evaluate(async () => {
+    const rendererName = await page.evaluate(async () => {
         const THREE = await import('three');
         const { Rogue } = await import('/src/entities/Rogue.js');
         const { RenderSystem } = await import('/src/core/RenderSystem.js');
@@ -20,6 +24,7 @@ test('Rogue respawn and stealth expiry keep the rendered interaction box invisib
         render.scene.add(actor.mesh);
         render.setCameraTarget(actor.position);
         render.setZoom(10);
+        const advance = window.__createVisualActorClock(actor, performance.now());
         const panel = document.createElement('div');
         panel.style.cssText = 'position:fixed;top:12px;left:12px;z-index:9999';
         for (const [label, action] of [
@@ -30,15 +35,18 @@ test('Rogue respawn and stealth expiry keep the rendered interaction box invisib
             const button = document.createElement('button');
             button.textContent = label;
             button.style.cssText = 'min-height:44px;padding:12px;font-size:16px';
-            button.onclick = action;
+            button.onclick = () => {
+                // Charge time before this click to the old state, not to an
+                // effect started by the action between slow rendered frames.
+                advance(performance.now());
+                action();
+            };
             panel.appendChild(button);
         }
         document.body.appendChild(panel);
-        let previous = performance.now();
         const qa = { actor, render };
         function frame(now) {
-            actor.update(Math.min(.05, (now - previous) / 1000), null, null, null);
-            previous = now;
+            advance(now);
             actor.render(1);
             render.render();
             qa.frame = requestAnimationFrame(frame);
@@ -50,7 +58,11 @@ test('Rogue respawn and stealth expiry keep the rendered interaction box invisib
         ground.rotation.x = -Math.PI / 2;
         ground.position.y = -.1;
         render.scene.add(ground);
+        const gl = render.renderer.getContext();
+        const debug = gl.getExtension('WEBGL_debug_renderer_info');
+        return debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : 'unavailable';
     });
+    console.log('[respawn-appearance-renderer]', rendererName);
     for (let cycle = 0; cycle < 3; cycle++) {
         if (cycle > 0) await page.getByRole('button', { name: 'Stealth', exact: true }).click();
         await page.getByRole('button', { name: 'Die', exact: true }).click();
