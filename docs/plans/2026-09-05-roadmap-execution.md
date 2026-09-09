@@ -16,7 +16,55 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 06:30 UTC
+## Current checkpoint — September 9, 06:38 UTC
+
+**54CI34317808528 TERMINAL FAILURE** before deployment. Server/Client/browser1/2
+passed; browser3 failed twice in respawn-appearance's0.6s stealth-expiry wait at
+the120s total test deadline (timer0.2/0.35). All three respawn opacity/colorWrite
+assertions passed before that wait. Deploy/predeploy/finalLiveQA were skipped;
+production remains last-verified53. Original job102359036241 log
+`/tmp/eidolon-release54-browser3-failure.log`; downloaded original screenshots/
+videos/traces in `/tmp/eidolon-release54-browser3-proof-OtLhz9`. Failed screenshot
+was viewed and showed no enclosing cube. Do not claim the failed run passed.
+
+Source fixture discarded elapsed time with Math.min(.05, frameDelta). A prepared
+visual-clock helper reproduced6fail/3pass39186; fixed249tests/4suites1.726s plus
+lint5203, including real ActorStealthAppearance and version/sharding. The helper
+consumes elapsed time in <=.05s actor substeps, settles time before button actions,
+and ignores duplicate/backward RAF timestamps without rewinding the clock. It
+does not change any production timer or extend120s/relax the invisible-box checks.
+
+Canonical54 `/tmp/eidolon-release54-final53-oZ3nK4` has owned UNCOMMITTED QA-only
+changes (respawn spec, new visualLifecycleClock.js and its tests). Freeze while
+**89804 bundled-Chromium CI-mode respawn browser ACTIVE — only owned browser**,
+web41960, log`/tmp/eidolon-release54-respawn-software-browser.log`, and **37920
+full54client/lint ACTIVE**, log`/tmp/eidolon-release54-visual-clock-full-client.log`.
+Both explicit Node24.18.0. Validate actual renderer output before claiming a
+software-rendering result. Do not edit/restart/launch another browser while active.
+After terminal evidence/cleanup and checks, commit/resubmit failed54 normally,
+then carry its final ancestry through55–58/primary. Never push root or skip55gate.
+
+Standalone58 **97572 focused legacy gem recovery TERMINAL0/PASS1/13.3s**
+(test11.7s) on7f066a4: base10/rested11, full-bag rejection, legal sword equip,
+exact18+5=23, rejected loose-gem equip, actual saved Mongo and reconnect all pass.
+Scan0/exact container/image absence. Log`/tmp/eidolon-rest58-gem-rest-browser-0630.log`,
+result metadata archive`/tmp/eidolon-rest58-gem24-proof-wjeDn3/test-results`.
+No58process/browser active now. Complete58 gameplay still needs a fresh full
+rerun after this correction; prior complete failure12130 remains retained.
+
+Primary now **e9c837602d3583ce3cfc94577b47256834f26986**, clean cherry-pick of
+gem QA correction after full76262 closed. Runtime unchanged; prior265/3780
+full pass is exact01eef1d evidence. Story-only readiness still required before
+coordinated activation, not proven by first40-hunt passes. Production catalog
+audit26771 TERMINAL0 under Go1.24.5, log
+`/tmp/eidolon-primary-story-quest-budget-audit.log`: current Seed chapter1200XP,
+first Watch1593, Walking Ink6843, Borrowed Oath15843. Do not use legacy50000/
+150000 daily quotes as current-budget acceptance. No new primary gameplay run.
+
+Whole roadmap remains active/unfulfilled. Both the temporary CI failure and
+ordinary local test corrections admit concrete next actions; not a blocked goal.
+
+## Previous checkpoint — September 9, 06:30 UTC
 
 Previous goal turn was PROGRESS: verified live53 after complete CI, pushed54,
 fixed/verified two QA pointer observations, and started the exact58 full run.
