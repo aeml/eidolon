@@ -12,6 +12,8 @@ for (const [width, height] of [[1280, 720], [390, 844]]) {
         await page.evaluate(async mobile => {
             const { UIManager } = await import('/src/ui/UIManager.js');
             const { AbilityController } = await import('/src/core/AbilityController.js');
+            const { GameEngine } = await import('/src/core/GameEngine.js');
+            const { Vector3 } = await import('three');
             document.getElementById('start-screen').style.display = 'none';
             const ui = Object.create(UIManager.prototype);
             Object.assign(ui, { isMobile: mobile,
@@ -22,11 +24,14 @@ for (const [width, height] of [[1280, 720], [390, 844]]) {
                 combatIntentPreviewBasic: document.getElementById('combat-intent-preview-basic'),
                 combatIntentPreviewAbility: document.getElementById('combat-intent-preview-ability'),
                 combatIntentPreviewAbilityLabel: document.getElementById('combat-intent-preview-ability-label') });
-            const player = { constructor: { name: 'Wizard' }, abilityName: 'Fireball', stats: { damage: 5 } };
+            const player = { constructor: { name: 'Wizard' }, abilityName: 'Fireball', stats: { damage: 5 },
+                position: new Vector3(0, 0, 200), safeZoneId: '' };
             const controller = new AbilityController({ player });
-            const intent = { entityId: 'imp', name: 'Imp', targetType: 'Imp', targetLevel: 20,
-                distance: 11.2, status: 'in_range' };
-            const refresh = () => ui.updateCombatIntent({ ...intent, preview: controller.buildCombatActionPreview({ id: 'imp' }) });
+            const target = { id: 'imp', name: 'Imp', subType: 'Imp', level: 20,
+                constructor: { name: 'Imp' }, position: new Vector3(11.2, 0, 200) };
+            const engine = Object.create(GameEngine.prototype);
+            Object.assign(engine, { player, abilityController: controller, getEffectiveCombatTarget: () => target });
+            const refresh = () => ui.updateCombatIntent(engine.buildCombatIntentState());
             window.__combatPreview = { player, refresh, ui };
             refresh();
         }, width < 600);
@@ -45,6 +50,18 @@ for (const [width, height] of [[1280, 720], [390, 844]]) {
         expect(bounds.x + bounds.width).toBeLessThanOrEqual(width);
         expect(bounds.y + bounds.height).toBeLessThanOrEqual(height);
         await page.screenshot({ path: testInfo.outputPath('combat-card.png') });
+        await page.evaluate(() => {
+            window.__combatPreview.player.safeZoneId = 'lanternhold';
+            window.__combatPreview.refresh();
+        });
+        await expect(page.locator('#combat-intent-status')).toHaveText('Leave the safe zone');
+        await expect(page.locator('#combat-intent-status')).not.toHaveClass(/is-in-range/);
+        await page.screenshot({ path: testInfo.outputPath('safe-zone-warning.png') });
+        await page.evaluate(() => {
+            window.__combatPreview.player.safeZoneId = '';
+            window.__combatPreview.refresh();
+        });
+        await expect(page.locator('#combat-intent-status')).toHaveText('In Range');
         await page.evaluate(() => window.__combatPreview.ui.clearCombatIntent());
         await expect(page.locator('#combat-intent-panel')).toBeHidden();
         expect(failures, failures.join('\n')).toEqual([]);

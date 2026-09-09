@@ -376,12 +376,14 @@ class UIManagerFeedbackMethods {
     }
 
     formatCombatIntentStatus(status) {
+        if (status === 'leave_safe_zone') return 'Leave the safe zone';
         if (status === 'in_range') return 'In Range';
         if (status === 'move_into_range') return 'Move Into Range';
         return 'Invalid';
     }
 
     getCombatIntentStatusClass(status) {
+        if (status === 'leave_safe_zone') return 'is-move-into-range';
         if (status === 'in_range') return 'is-in-range';
         if (status === 'move_into_range') return 'is-move-into-range';
         return 'is-invalid';

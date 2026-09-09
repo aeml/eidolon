@@ -152,6 +152,16 @@ describe('Combat intent HUD', () => {
         expect(ui.combatIntentPreviewAbility.textContent).toBe('0 MP');
         ui.clearCombatIntent();
     });
+    test('safe-zone restriction renders an actionable warning in the normal card', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        ui.updateCombatIntent({ entityId: 'skeleton', name: 'Skeleton', distance: 8, status: 'leave_safe_zone' });
+        expect(ui.combatIntentStatus.textContent).toBe('Leave the safe zone');
+        expect(ui.combatIntentStatus.classList.contains('is-in-range')).toBe(false);
+        expect(ui.combatIntentStatus.classList.contains('is-move-into-range')).toBe(true);
+        ui.clearCombatIntent();
+    });
+
     test('renders target name, distance, status, and previews', () => {
         buildDom();
         const ui = new UIManager(false);
