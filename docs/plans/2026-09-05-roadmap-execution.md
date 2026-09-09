@@ -16,7 +16,62 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 10:13 UTC
+## Current checkpoint — September 9, 10:23 UTC
+
+Previous turn made PROGRESS (diagnosed/corrected duel mana expectations). This
+turn made PROGRESS: corrected58 full client passed, its tail progressed through
+all duels/class matrices/multiplayer/nameplates, and failed56CI exposed a real
+visual clock issue which was reproduced and corrected. Production recovery and
+the full roadmap remain incomplete, with concrete work active.
+
+**56CI34337271486 TERMINAL FAILURE**, browser shard1 failed; server/client and
+browser2/3 passed. Predeploy/deployment/live jobs SKIPPED. No deployment occurred;
+last verified live remains55/c5ce9dc. DO NOT push57 through this failed release.
+`gh --log` returned empty files, so retained artifact10098975954 was downloaded
+to **`/tmp/eidolon-release56-browser-failure-inyorR`** and its embedded report JSON
+and actual trace inspected. One initial guessed job-ID lookup returned404; the
+correct failed job102421053977 was subsequently resolved from authoritative job
+metadata. No missing/empty-log result was treated as proof of cause.
+
+Both MoltenCore/High/1280×720 attempts failed the unchanged material-restoration
+predicate after15seconds,107.130s/105.982s total. Attempt0 trace proves hero
+reveal74/76pixels, outside-cutaway changed pixels0, camera/bounds unchanged.
+Focus clear ended305902.292ms, restore polls311161.482false/316449.956false/
+321670.666true: restoration happened too late, not a permanent material leak.
+Individual JS evaluations cost roughly3.4s. Visual SceneryVisibility elapsed
+time was capped at0.1 PER RENDER, stretching a roughly0.67s fade over slow frames.
+
+Canonical56 WT switched to **release/56-scenery-wall-clock** from clean9f41111.
+19058 four slow-frame0.25/0.5/1/2s unit cases all FAILED on old code; original ten
+passed. Fix uses nonnegative actual elapsed time in the exponential visual fade;
+no physics/combat clock, collider, shader, threshold, retry or timeout change.
+Added player-facing "Scenery settles promptly" note to still-unreleased1.0.56.
+**8952 focused PASSED245tests/2suites/1.349s plus lint**. Logs
+`/tmp/eidolon-release56-scenery-wall-clock-{before,after,lint}.log`.
+Current clean/frozen **56cfc79a18cf8074a5e1876639316076eba269ca**;
+**24706 full client/lint ACTIVE**, Node24,
+`/tmp/eidolon-release56-scenery-full-{client,lint}.log`.
+Next available browser must replay MoltenCore/High in bundled Chromium CI-mode
+without additional retries/timeouts, before corrected56 push and a fresh CI.
+
+Recovery **98816 full client/lint TERMINAL0** on frozen5cc8849:
+251suites/3535tests/157.667s plus lint. Logs
+`/tmp/eidolon-rest58-duel-corrected-full-{client,lint}.log`.
+**69623 tail remains ACTIVE**, same source/run/ports/log below and only owned
+local browser. Four actual duels passed1.9m with current-max mana, full scene
+return/forfeit and no ranked/economic rewards. Fighter53.3s/Rogue1.1m/Wizard56.2s/
+Cleric57.4s animation matrices passed, followed by multiplayer and three actual
+town nameplate/NPC checks23.8s. Native rest suffix currently active; expiry35.3s
+passed14.323→0bank/110→100maxima/aura off, then normal town recovery restored them.
+Not a terminal tail pass or full all-route pass. Original82037 remains failed.
+
+Next: finish/archive/clean69623, replay56 correction, complete24706, then normal
+corrected56push with fresh55public identity checks. Carry its final ancestry/
+scenery fix/notes through57–58 and primary after active tests are terminal; do
+not lose their versions or unrelated campaign work. Complete58 all-route rerun
+is still required. Primary23a4df2 idle; earned Earth readiness remains due.
+
+## Previous checkpoint — September 9, 10:13 UTC
 
 Previous goal turn made PROGRESS (integrated raid fixes and campaign labels).
 This turn made PROGRESS: primary full client/server finished successfully;

@@ -1,5 +1,14 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update10:23UTC:98816 full client/lint PASSED251suites/3535tests/157.667s on5cc8849.
+69623 tail is still ACTIVE: all four corrected duels, class matrices, multiplayer
+and town nameplates passed; native recovery/expiry/party suffix running. Not a
+complete tail/all-route pass. Separately56CI34337271486 FAILED before deployment
+on a slow-render scenery-restoration timeout. A reproduced visual elapsed-time
+fix is staged56cfc79 with patch notes; focused245tests/lint pass, full client24706
+active and CI-mode browser proof due. Ordered releases remain blocked on that
+corrected56 acceptance; no57/58push or town-recovery-live claim.
+
 Update10:13UTC:82037 full gameplay FAILED four PvP mana comparisons after earlier
 dungeon/phone/resource/movement passes. Diagnostic16108 reproduced all four:
 110/110 with bank>0 became100/100 with bank0 during each real duel. The old test
