@@ -146,7 +146,7 @@ export function createProceduralCrystalSanctum(raidType) {
         root.userData.progress = progress * 100;
         crystalMaterial.color.copy(corruptedColor).lerp(healthyColor, progress);
         crystalMaterial.emissive.copy(crystalMaterial.color);
-        crystalMaterial.emissiveIntensity = 0.25 + progress * 0.65;
+        crystalMaterial.emissiveIntensity = 0.1 + progress * 0.2;
         ritual.visible = stage === 'repairing';
         return true;
     };

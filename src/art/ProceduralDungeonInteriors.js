@@ -232,6 +232,7 @@ function createShapes() {
         cone6: new THREE.ConeGeometry(0.5, 1, 6),
         torus: new THREE.TorusGeometry(0.5, 0.075, 6, 24),
         ring: new THREE.RingGeometry(0.34, 0.5, 24),
+        vigilInlay: new THREE.RingGeometry(0.486, 0.5, 48),
         octahedron: new THREE.OctahedronGeometry(0.5, 0)
     });
 }
@@ -577,7 +578,16 @@ function buildRoomDressing(dungeonType, room, roomIndex, shapes, materials) {
         addPart(root, 'boss:buried-dais', shapes.cylinder8, materials.shadow, {
             position: [0, 0.16, 0], scale: [radius * 1.45, 0.32, radius * 1.45]
         });
-        addFloorRing(root, shapes, materials.spirit, 'boss:soul-circuit', radius * 0.42, 0.35);
+        if (room.hook === 'crystal_vigil') {
+            // The old broad, emissive boss disc overwhelms Maelin/the crystal
+            // under bloom. This is decorative inlay, not a combat telegraph.
+            addPart(root, 'boss:crystal-vigil-inlay', shapes.vigilInlay, materials.metal, {
+                position: [0, 0.35, 0], rotation: [-Math.PI / 2, 0, 0],
+                scale: [radius * 0.84, radius * 0.84, 1], castShadow: false, receiveShadow: false
+            });
+        } else {
+            addFloorRing(root, shapes, materials.spirit, 'boss:soul-circuit', radius * 0.42, 0.35);
+        }
         for (let i = 0; i < 6; i += 1) {
             const angle = (i / 6) * Math.PI * 2;
             addPylon(root, shapes, materials, `boss:vigil:${i}`, Math.cos(angle) * radius, Math.sin(angle) * radius, 5.2);

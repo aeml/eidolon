@@ -8,6 +8,7 @@ import {
 import { WorldGenerator } from '../src/world/WorldGenerator.js';
 import { decorateDungeonRoomState } from '../src/utils/dungeonRoomMetadata.js';
 import { installGameEngineNetworkMessages } from '../src/core/GameEngineNetworkMessages.js';
+import { createProceduralDungeonInteriorKit } from '../src/art/ProceduralDungeonInteriors.js';
 
 const raids = Object.keys(CRYSTAL_SANCTUM_DEFINITIONS);
 const snapshotFor = (raidType, stage = 'fractured', progress = 0) => ({
@@ -145,4 +146,18 @@ test('each realm uses its own silhouette and material instances', () => {
     roots[0].applySnapshot({ stage: 'restored' });
     expect(first.color.equals(second.color)).toBe(false);
     roots.forEach(disposeCrystalSanctum);
+});
+
+test('crystal Vigil dressing replaces only decorative boss glare with a thin non-emissive inlay', () => {
+    const kit = createProceduralDungeonInteriorKit('molten_core');
+    const room = { x: 0, z: 0, width: 270, height: 250, type: 'boss' };
+    const normal = kit.createRoomDressing(room, 0, { optimized: false });
+    const vigil = kit.createRoomDressing({ ...room, hook: 'crystal_vigil' }, 0, { optimized: false });
+    expect(normal.getObjectByName('boss:soul-circuit')).toBeDefined();
+    expect(vigil.getObjectByName('boss:soul-circuit')).toBeUndefined();
+    const inlay = vigil.getObjectByName('boss:crystal-vigil-inlay');
+    expect(inlay.geometry.parameters.innerRadius / inlay.geometry.parameters.outerRadius).toBeGreaterThan(0.97);
+    expect(inlay.material.emissiveIntensity).toBe(0);
+    expect(vigil.getObjectByName('DungeonObjectiveHalo')).toBeDefined();
+    expect(vigil.getObjectByName('DungeonClearedSigil')).toBeDefined();
 });
