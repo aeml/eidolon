@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"eidolon-server/internal/database"
-	"eidolon-server/internal/game"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -29,12 +28,8 @@ func TestAuctionSellerPayoutActualNormalCollection(t *testing.T) {
 	connection := resourceOpenCharacter(t, address, seller.Name, password)
 	baseline := resourceCloseAndWait(t, repo, connection, seller.Name)
 	connection = resourceOpenCharacter(t, address, seller.Name, password)
-	resourceSend(t, connection, MsgAbility, AbilityPayload{SkillName: "Fireball"})
-	var cast game.AbilityResult
-	resourceReadMessage(t, connection, MsgAbilityResult, &cast)
-	if !cast.Accepted || cast.Mana != 70 {
-		t.Fatal("ordinary pre-collection cast failed")
-	}
+	townFixtureFireball(t, connection, baseline)
+	manaSpent := 30
 	// The later locked-skill resource probe must run after the production
 	// 500ms global cooldown, but do not delay collection or its durability check.
 	probeReady := time.Now().Add(550 * time.Millisecond)
@@ -54,7 +49,8 @@ func TestAuctionSellerPayoutActualNormalCollection(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if saved.Gold != 1334 || saved.Resources == nil || saved.Resources.Health != 17 || saved.Resources.Mana != 70 || saved.Resources.Dead ||
+		assertTownMarketResources(t, baseline, saved, manaSpent)
+		if saved.Gold != 1334 || saved.Resources == nil || saved.Resources.Dead ||
 			!current.SellerClaimed || current.LastBidOperationID == "" || saved.GoldCreditReceipts["seller-payout:"+current.LastBidOperationID] != 100 ||
 			len(saved.GoldCreditReceipts) != 1 || pendingAuctionBid(t, repo, auction.ID) != nil {
 			t.Fatal("normal acknowledgement/retry did not retain exactly one durable payout and current resources")
@@ -76,15 +72,16 @@ func TestAuctionSellerPayoutActualNormalCollection(t *testing.T) {
 			address, stop = compatStartServer(t, binary, uri, phase, "-save-journal-dir", dir)
 			connection = resourceOpenCharacter(t, address, seller.Name, password)
 		}
-		resourceProbe(t, connection, 70, false)
+		townFixtureProbeSpent(t, connection, baseline, manaSpent)
 		resourceSend(t, connection, MsgTradingCollect, TradingCollectPayload{AuctionID: auction.ID})
 		resourceReadMessage(t, connection, MsgError, &reply)
 		if reply != "nothing to collect" {
 			t.Fatalf("settled seller claim accepted again: %q", reply)
 		}
-		resourceCloseAndWait(t, repo, connection, seller.Name)
+		saved := resourceCloseAndWait(t, repo, connection, seller.Name)
 		verify()
 		stop()
+		baseline, manaSpent = saved, 0
 	}
 }
 
@@ -109,15 +106,11 @@ func TestAuctionSellerPayoutActualCrashBoundaries(t *testing.T) {
 			dir := t.TempDir()
 			address, crash := compatStartServerWithCrash(t, binary, uri, 120, true, "-save-journal-dir", dir)
 			connection := resourceOpenCharacter(t, address, seller.Name, password)
-			resourceSend(t, connection, MsgAbility, AbilityPayload{SkillName: "Fireball"})
-			var cast game.AbilityResult
-			resourceReadMessage(t, connection, MsgAbilityResult, &cast)
-			if !cast.Accepted || cast.Mana != 70 {
-				t.Fatal("ordinary pre-payout cast failed")
-			}
+			townFixtureFireball(t, connection, seller)
 			baseline := resourceCloseAndWait(t, repo, connection, seller.Name)
+			assertTownMarketResources(t, seller, baseline, 30)
 			connection = resourceOpenCharacter(t, address, seller.Name, password)
-			resourceProbe(t, connection, 70, false)
+			townFixtureProbe(t, connection, baseline)
 			collection, validator := "", bson.M{}
 			command, namespace := "", ""
 			switch boundary {
@@ -198,6 +191,23 @@ func TestAuctionSellerPayoutActualCrashBoundaries(t *testing.T) {
 			if wantGold == 1334 && before.GoldCreditReceipts["seller-payout:"+op.ID] != 100 {
 				t.Fatal("committed payout lacks matching receipt")
 			}
+			assertTownMarketResources(t, baseline, before, 0)
+			durable := before
+			journal, err := database.OpenCharacterSaveJournal(dir)
+			if err != nil {
+				t.Fatal(err)
+			}
+			pending, err := journal.Read(seller.Name)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if pending != nil && pending.SaveID != before.LastSaveID {
+				durable, err = pending.Character()
+				if err != nil {
+					t.Fatal(err)
+				}
+				assertTownMarketResources(t, baseline, durable, 0)
+			}
 			if boundary == "credit_journal" {
 				journal, err := database.OpenCharacterSaveJournal(dir)
 				if err != nil {
@@ -219,8 +229,12 @@ func TestAuctionSellerPayoutActualCrashBoundaries(t *testing.T) {
 				if pendingAuctionBid(t, repo, auction.ID) != nil {
 					t.Fatal("startup admitted players before reconciling payout")
 				}
+				restored, err := repo.GetCharacter(seller.Name, seller.Name)
+				if err != nil || !reflect.DeepEqual(restored.Resources, durable.Resources) || !reflect.DeepEqual(restored.WellRested, durable.WellRested) {
+					t.Fatal("payout restart changed durable rest/resources before login")
+				}
 				connection := resourceOpenCharacter(t, address, seller.Name, password)
-				resourceProbe(t, connection, 70, false)
+				townFixtureProbe(t, connection, restored)
 				if boundary != "decision_rejected" {
 					resourceSend(t, connection, MsgTradingCollect, TradingCollectPayload{AuctionID: auction.ID})
 					resourceReadMessage(t, connection, MsgError, &reply)
@@ -229,6 +243,7 @@ func TestAuctionSellerPayoutActualCrashBoundaries(t *testing.T) {
 					}
 				}
 				saved := resourceCloseAndWait(t, repo, connection, seller.Name)
+				assertTownMarketResources(t, restored, saved, 0)
 				current, err := repo.GetAuction(auction.ID)
 				if err != nil {
 					t.Fatal(err)
@@ -244,11 +259,12 @@ func TestAuctionSellerPayoutActualCrashBoundaries(t *testing.T) {
 				if current.ItemClaimed || current.BuyerID != auction.BuyerID || current.Bid != 100 || len(current.PendingRefunds) != 0 || !reflect.DeepEqual(current.Item, auction.Item) {
 					t.Fatal("seller payout changed the outstanding buyer item/escrow")
 				}
-				if !reflect.DeepEqual(saved.Resources, baseline.Resources) || !reflect.DeepEqual(saved.Equipment, baseline.Equipment) ||
+				if !reflect.DeepEqual(saved.Equipment, baseline.Equipment) ||
 					!reflect.DeepEqual(saved.Inventory, baseline.Inventory) || saved.XP != baseline.XP || saved.Level != baseline.Level {
 					t.Fatal("seller payout changed saved resources/equipment/inventory/progression")
 				}
 				stop()
+				durable = saved
 			}
 		})
 	}

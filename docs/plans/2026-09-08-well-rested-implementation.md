@@ -61,6 +61,32 @@ four-class stats and device/aura acceptance remain required.
 
 ## Development acceptance — September 8, 23:30 UTC
 
+Latest additional acceptance, **September9 00:35UTC**:
+
+- Adapted seller-payout normal acknowledgement/retry and six actual crash
+  boundaries to retain requested town healing/rest. Independent arithmetic
+  checks each durable snapshot against online rest-bank delta and actual30-mana
+  Fireball; no capped pre-cast regeneration may invalidate that calculation.
+  Exact gold, receipt counts, seller claim, outstanding buyer item, escrow,
+  equipment/inventory and progression assertions remain separate and unchanged.
+- Before each crash, inspect the database plus any uncommitted character journal.
+  Both fresh-process recoveries must retain exactly that durable health/mana/rest
+  before login; only subsequent connected town time may add recovery. Faults
+  remain decision rejection/lost reply, before credit, credit journal, before
+  finalize and lost final reply. No failure fixture touches shared/live data.
+- Actual55487 **PASS55.267s** (normal7.95s, six crash boundaries46.29s).
+  `/tmp/eidolon-rest-payout-0033.log` lists20 child directories: all independently
+  checked clean,14 normal drains and6 explicitly intentional kills. Owned
+  Mongo `eidolon-rest-payout-20260909-0033`/volumes removed and absent.
+- Retained the original normal-session locked-skill check after the real cast
+  using the same exact arithmetic with the known mana cost. Final normal
+  follow-up9286 **PASS8.357s**; two logs clean with normal drains; owned Mongo
+  `eidolon-rest-payout-probe-20260909-0034`/volumes removed and absent. Evidence
+  `/tmp/eidolon-rest-payout-probe-0034.log`. Production binary remainsd650c72.
+
+Other auction flows (listing, bids/contention, buyout and item delivery), schema
+upgrade, integrated browser/aura and earned rested/unrested balance remain open.
+
 Latest additional acceptance, **September9 00:27UTC**:
 
 - Actual PvP8-case matrix now covers four classes in ordinary consent duels,

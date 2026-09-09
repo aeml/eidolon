@@ -74,11 +74,16 @@ func townFixtureRead(t *testing.T, conn *websocket.Conn, before *database.Charac
 // a stale pre-healing value or an arbitrary full bar.
 func townFixtureProbe(t *testing.T, conn *websocket.Conn, before *database.Character) {
 	t.Helper()
-	first := townFixtureRead(t, conn, before, 0)
+	townFixtureProbeSpent(t, conn, before, 0)
+}
+
+func townFixtureProbeSpent(t *testing.T, conn *websocket.Conn, before *database.Character, manaSpent int) {
+	t.Helper()
+	first := townFixtureRead(t, conn, before, manaSpent)
 	resourceSend(t, conn, MsgAbility, AbilityPayload{SkillName: "not-an-unlocked-skill"})
 	var result game.AbilityResult
 	resourceReadMessage(t, conn, MsgAbilityResult, &result)
-	last := townFixtureRead(t, conn, before, 0)
+	last := townFixtureRead(t, conn, before, manaSpent)
 	reason := "locked"
 	if before.Resources.Dead {
 		reason = "dead"
@@ -86,6 +91,32 @@ func townFixtureProbe(t *testing.T, conn *websocket.Conn, before *database.Chara
 	if result.Accepted || result.Reason != reason || result.Mana < int(first.Mana) || result.Mana > int(last.Mana) {
 		t.Fatalf("town ability rejection outside valid interval: %+v expected%s mana[%d,%d]", result, reason, first.Mana, last.Mana)
 	}
+}
+
+// One real Fireball, retaining exact recovery arithmetic. Enforce the no-cap
+// precondition rather than pretending discarded pre-cast healing is observable.
+func townFixtureFireball(t *testing.T, conn *websocket.Conn, before *database.Character) {
+	t.Helper()
+	first := townFixtureRead(t, conn, before, 0)
+	resourceSend(t, conn, MsgAbility, AbilityPayload{SkillName: "Fireball"})
+	var cast game.AbilityResult
+	resourceReadMessage(t, conn, MsgAbilityResult, &cast)
+	if !cast.Accepted {
+		t.Fatalf("ordinary town Fireball failed: %+v", cast)
+	}
+	last := townFixtureRead(t, conn, before, 30)
+	if cast.Mana < int(first.Mana)-30 || cast.Mana > int(last.Mana) || cast.Mana+30 >= int(last.MaxMana) {
+		t.Fatalf("Fireball response outside exact recovery interval or capped before cast: %+v", cast)
+	}
+}
+
+// Market tests assert exact gold/receipt effects separately. This adapter allows
+// only that gold change while retaining the same independent resource oracle.
+func assertTownMarketResources(t *testing.T, before, saved *database.Character, manaSpent int) {
+	t.Helper()
+	expected := *before
+	expected.Gold = saved.Gold
+	assertTownFixtureSave(t, &expected, saved, manaSpent)
 }
 
 func assertTownFixtureSave(t *testing.T, before, saved *database.Character, manaSpent int) {
