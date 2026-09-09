@@ -16,7 +16,36 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 06:55 UTC
+## Current checkpoint — September 9, 07:00 UTC
+
+This continuation made PROGRESS: primary daily diagnostics corrected, full client
+and full server race completed, latest successful pipeline timing measured.
+**95459 full primary Go race TERMINAL0** on cleand9cc0ed/Go1.24.5:
+root29.646s, game352.006s, database1.133s, lifecycle1.040s. Log
+`/tmp/eidolon-primary-current-daily-full-server.log`. No primary process/browser
+active. Client full21409/3789tests is parent4e9cad5; subsequentd9cc0ed test-only
+correction passed focused61tests/lint and targeted Go budget race, as below.
+
+**54CI34320477081 ACTIVE: client/server and browser shards2/3 PASSED**;
+only browser1 still running before predeploy. The previously failing shard3
+now succeeds on5e22b74. Entire CI/deploy/finalLiveQA still outstanding; do not
+push55 or claim54live from this intermediate result. Public last verified53.
+
+**1416 complete58 gameplay ACTIVE**, frozen6e85547, only owned local browser,
+same project/ports/log below. All7 dungeon/inventory checks passed, including
+Verdant ordinary encounters/firstboss/later spawns4.5m and Water recall/reentry;
+shape/support areas/Spirit Guardians/Whirlwind passed, now phone combat. Still
+not a full-chain pass. No source edits/restarts/second local browser while active.
+Preserve final artifacts, verify scan/exact cleanup when terminal, then continue
+remaining earned primary first-hour/full Earth/four-class story-readiness work.
+
+Latest successful53CI measured independently from exact GitHub job timestamps:
+first job04:46:47 to final live06:08:15 =81m28s. Predeploy48m25s,
+browserstage13m17s, finalLive12m17s, deployments32/36s. Recorded in
+`2026-09-09-release-pipeline-timing.md`; not an SLA or reason to weaken gates.
+Whole roadmap active/unfulfilled; standalone recovery58 remains not live.
+
+## Previous checkpoint — September 9, 06:55 UTC
 
 Previous goal turn was PROGRESS: pushed corrected54 and carried ancestry;
 current turn also PROGRESS: primary full client closed, production reward audits
