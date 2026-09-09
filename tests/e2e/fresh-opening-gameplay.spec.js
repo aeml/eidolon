@@ -38,7 +38,21 @@ async function findHostileThroughTravel(page, subtype = 'Skeleton') {
         }, subtype);
         await moveByGroundClick(page, offset.x, offset.z);
     }
-    throw new Error(`No visible ${subtype} after bounded ordinary travel`);
+    const diagnostic = await page.evaluate(subtype => {
+        const game = window.game, p = game.player;
+        const enemies = [...game.remotePlayers.values()].filter(entity =>
+            (entity.subType || entity.constructor?.name) === subtype)
+            .sort((a, b) => p.position.distanceTo(a.position) - p.position.distanceTo(b.position));
+        return { player: { x: p.position.x, y: p.position.y, z: p.position.z, state: p.state },
+            nearest: enemies.slice(0, 8).map(entity => ({
+                id: entity.id, x: entity.position.x, z: entity.position.z,
+                hp: entity.health ?? entity.stats?.hp, state: entity.state,
+                active: entity.isActive, hostile: game.isHostileActorTarget(entity),
+                cached: (game.activeEntitiesCache || []).includes(entity),
+                mesh: Boolean(entity.mesh), attached: Boolean(entity.mesh?.parent)
+            })) };
+    }, subtype);
+    throw new Error(`No visible ${subtype} after bounded ordinary travel: ${JSON.stringify(diagnostic)}`);
 }
 
 const findSkeletonThroughTravel = page => findHostileThroughTravel(page);
