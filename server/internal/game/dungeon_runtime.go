@@ -419,14 +419,20 @@ func (w *World) GetDungeonRoomSummary(instanceID string, playerID string) (Dunge
 		return DungeonRoomSummary{}, false
 	}
 	inst.Mu.RLock()
-	defer inst.Mu.RUnlock()
 	if inst.RoomState == nil {
+		inst.Mu.RUnlock()
 		return DungeonRoomSummary{}, false
 	}
-	if summary, ok := inst.PlayerRoomSummary[playerID]; ok {
-		return withDungeonSummaryContext(summary, inst.Difficulty, inst.RunLevel), true
+	summary, cached := inst.PlayerRoomSummary[playerID]
+	if !cached {
+		summary = inst.RoomState.Summary(0, 0)
 	}
-	return withDungeonSummaryContext(inst.RoomState.Summary(0, 0), inst.Difficulty, inst.RunLevel), true
+	summary = withDungeonSummaryContext(summary, inst.Difficulty, inst.RunLevel)
+	inst.Mu.RUnlock()
+	// Release the instance lock before inspecting live repair/party/entity
+	// state. Never cache ritual progress in the movement-only room summary.
+	summary.Crystal = w.crystalSanctumSnapshot(instanceID, playerID)
+	return summary, true
 }
 
 func fallbackDungeonLayout(dungeonType string) DungeonLayout {

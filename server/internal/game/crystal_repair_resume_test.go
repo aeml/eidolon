@@ -40,6 +40,14 @@ func TestCrystalRepairResumeChecksEveryRaidMember(t *testing.T) {
 			instance.Mu.Lock()
 			instance.RoomState.Rooms[len(instance.RoomState.Rooms)-1].Cleared = true
 			instance.Mu.Unlock()
+			before := readCrystalSanctumWire(t, w, instanceID, party.LeaderID)
+			wantStage := "fractured"
+			if mode == "all-defended" {
+				wantStage = "restored"
+			}
+			if before == nil || before["stage"] != wantStage {
+				t.Fatalf("shared crystal disagrees with party readiness: %+v, want %s", before, wantStage)
+			}
 			if err := w.EnterInstance(party.LeaderID, instanceID); err != nil {
 				t.Fatal(err)
 			}
@@ -48,6 +56,13 @@ func TestCrystalRepairResumeChecksEveryRaidMember(t *testing.T) {
 			w.RepairMu.RUnlock()
 			if restarted != (mode != "all-defended") {
 				t.Fatalf("restarted=%v for %s", restarted, mode)
+			}
+			after := readCrystalSanctumWire(t, w, instanceID, party.LeaderID)
+			if restarted {
+				wantStage = "repairing"
+			}
+			if after == nil || after["stage"] != wantStage {
+				t.Fatalf("entry snapshot disagrees with actual ritual: %+v, want %s", after, wantStage)
 			}
 		})
 	}
@@ -139,6 +154,10 @@ func TestRestoredRaidPreservesReadyUnclaimedCrystalRepair(t *testing.T) {
 						w.RepairMu.RUnlock()
 						if repair != nil {
 							t.Fatal("completed defense restarted solely because its reward was not claimed")
+						}
+						crystal := readCrystalSanctumWire(t, w, instanceID, player.ID)
+						if crystal == nil || crystal["stage"] != "restored" || crystal["progress"] != float64(100) {
+							t.Fatalf("reconstructed world lost the completed crystal: %+v", crystal)
 						}
 					}
 					if player.Gold != 0 || player.Experience != 0 || player.Quests[0] != quest {

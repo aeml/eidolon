@@ -31,6 +31,10 @@ No server/gameplay changes, production deployment or full-raid acceptance claime
 
 ## Open crystal/world presentation work
 
+Update12:04UTC: the authoritative server snapshot contract is implemented and
+focused race-tested; see `2026-09-09-crystal-sanctum-snapshot.md`. Actual crystal
+rendering, bespoke sanctums/Maelin and full transport/group acceptance remain open.
+
 Source inspection found elemental raids reuse their region's dungeon scenery.
 `crystal_repair` currently drives callouts/chat; the server changes Maelin from
 CHANNELING to IDLE and credits the repair objective after the waves. No authored

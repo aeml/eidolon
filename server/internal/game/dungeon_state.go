@@ -42,6 +42,7 @@ type DungeonRoomSummaryEntry struct {
 }
 
 type DungeonRoomSummary struct {
+	Crystal            *CrystalSanctumSnapshot   `json:"crystal,omitempty"`
 	Rooms              []DungeonRoomSummaryEntry `json:"rooms"`
 	CurrentRoomIndex   int                       `json:"currentRoomIndex"`
 	ObjectiveRoomIndex int                       `json:"objectiveRoomIndex"`

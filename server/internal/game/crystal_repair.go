@@ -13,6 +13,7 @@ type CrystalRepairState struct {
 	RepairTarget string
 	NPCID        string
 	Wave         int
+	ClearedWaves int
 	WaveEnemyIDs []string
 	Participants []string
 	CenterX      float64
@@ -101,6 +102,9 @@ func (w *World) runCrystalRepair(state *CrystalRepairState) {
 		if !w.waitForCrystalRepairWave(state.InstanceID, enemyIDs) {
 			return
 		}
+		w.RepairMu.Lock()
+		state.ClearedWaves = wave
+		w.RepairMu.Unlock()
 		w.emitCrystalRepair(state, "wave_clear", wave, wave*33,
 			fmt.Sprintf("Wave %d Cleared", wave),
 			fmt.Sprintf("Maelin: Facet %d holds. The %s is remembering.", wave, state.Crystal),
@@ -219,7 +223,16 @@ func (w *World) ensureRestoredCrystalRepair(instanceID, enteringPlayerID string)
 		return
 	}
 
-	participants := []string{enteringPlayerID}
+	participants, allRestored := w.crystalVigilPartyReadiness(partyID, enteringPlayerID, definition)
+	if !allRestored {
+		w.StartCrystalRepair(instanceID, definition.Type, participants, centerX, centerZ)
+	}
+}
+
+// Both restart behavior and the visual snapshot use the same saved proof. A
+// missing or unfinished member must never make a shared raid appear restored.
+func (w *World) crystalVigilPartyReadiness(partyID, fallbackPlayerID string, definition ElementalRaidDefinition) ([]string, bool) {
+	participants := []string{fallbackPlayerID}
 	w.Mu.RLock()
 	if party := w.Parties[partyID]; party != nil {
 		party.Mu.RLock()
@@ -241,9 +254,7 @@ func (w *World) ensureRestoredCrystalRepair(instanceID, enteringPlayerID string)
 		}
 	}
 	w.Mu.RUnlock()
-	if !allRestored {
-		w.StartCrystalRepair(instanceID, definition.Type, participants, centerX, centerZ)
-	}
+	return participants, allRestored
 }
 
 func (w *World) completeCrystalRepair(state *CrystalRepairState) {
