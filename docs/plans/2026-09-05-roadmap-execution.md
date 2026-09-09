@@ -16,7 +16,64 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 08:50 UTC
+## Current checkpoint — September 9, 09:01 UTC
+
+This goal turn made PROGRESS: retained completed regressions and implemented a
+missing publication-specific recovery gate in the separate primary candidate.
+It also verified ongoing canonical58 gameplay52270 and55CI34328735856; neither
+is terminal, and no newer release was pushed.
+
+Read-only workflow review showed the existing final-live gate did not execute
+the native town recovery/expiry/party tests. Primary **6226fc1** adds a mandatory
+post-identity-check live step and `scripts/run-live-recovery-qa.sh`. The wrapper
+uses four ordinary fresh accounts under a dedicated QA prefix with a random
+48-bit suffix, no grants/deletion, no test retry on a now-nonfresh character,
+separate screenshot roots, and EXIT sanitation preserving failure status.
+It reuses actual combat depletion/Recall/full HP+MP/rejoin, natural buff expiry,
+and real two-player High/Low phone aura/status routes. It does not claim physical
+phone performance. No wrapper browser rehearsal or live pass has happened yet.
+
+**9fa4638** adds the opt-in isolated `live-recovery-rehearsal` route. It invokes
+the exact wrapper against loopback services without altering the default full
+gate or granting the random accounts QA privileges. Focused26tests/3suites/
+1.476s plus lint passed; full **26774 TERMINAL0**,268suites/3818tests/170.675s
+plus lint, Node24. Logs
+`/tmp/eidolon-live-recovery-rehearsal-{tests,lint}.log` and
+`/tmp/eidolon-primary-live-recovery-full-{client,lint}.log`.
+
+Further source review found the rest party observer omitted the validated
+backend-origin routing used by the primary browser/other live multiplayer tests.
+Primary **4172dfa** applies the same existing policy; empty configuration still
+means no override. A source guard failed on the older launch, and focused
+**55135 TERMINAL0**,20tests/2suites/1.15s plus lint passed. Logs
+`/tmp/eidolon-live-recovery-origin-{before,after,lint}.log`. The earlier initial
+wrapper harness syntax error ran zero tests and was fixed before these proofs.
+This is preventive QA wiring, not an observed production network diagnosis.
+Primary4172dfa is clean/idle, unpublished. Detailed acceptance is in that
+worktree's `docs/plans/2026-09-09-live-town-recovery-gate.md`.
+
+**NEXT:** keep standalone58 **45797ee** unchanged until **52270** completes.
+Then retain/sanitize/archive its full results and verify exact cleanup. After
+that, import the three isolated live-gate commits6226fc1,9fa4638,4172dfa into58
+(check conflicts; do not import expanded campaign/balance), verify wiring/lint,
+and run the exact `live-recovery-rehearsal` against disposable services before
+publication. Full runtime regression evidence must remain tied to source; no
+pass may be inferred from this wrapper's shell mocks.
+
+At09:01 **52270 is ACTIVE**, log
+`/tmp/eidolon-rest58-all-node24-rerun-0843.log`. Authentication3 and dungeon7
+passed; spell/Guardian/Spirit/phone party/inventory/quest routes have continued
+passing. Fresh Wizard collection is actively fighting and making ordinary town
+mana-rest stops. Later full-chain stages and final native rest routes remain
+unproven. This is still the only owned local browser invocation.
+
+**55CI34328735856 ACTIVE in disposable full-character predeploy QA**; all preceding
+unit/browser jobs passed. No56push until complete55/finalLive and fresh exact
+public identities.54 remains last independently verified production;56–58 are
+not delivered. The whole roadmap remains open, with town recovery priority and
+the conditional14:00–17:00UTC estimate unchanged.
+
+## Previous checkpoint — September 9, 08:50 UTC
 
 The preceding status turn was a VERIFIED WAIT on gameplay52270 and CI34328735856;
 it also established primary regression45785 terminal success. Recovery is still

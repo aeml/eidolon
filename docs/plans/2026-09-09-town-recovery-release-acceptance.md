@@ -1,5 +1,16 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update09:01UTC: **52270 full gameplay remains ACTIVE on frozen45797ee**.
+Dungeon7 and subsequent spell/phone flows have passed; fresh Wizard collection
+is underway with real town recovery stops. No full-pass/live claim.
+Separate primary4172dfa prepares a mandatory post-deployment native recovery,
+expiry and party gate plus an isolated rehearsal route. Full primary regression
+on9fa4638 passed268/3818/170.675s plus lint; subsequent observer-routing correction
+passed20 focused checks plus lint. This gate is NOT yet imported into58 and has
+NOT yet had its exact wrapper browser rehearsal. Finish/archive current52270
+first, then integrate only6226fc1/9fa4638/4172dfa and rehearse; see execution ledger.
+55 remains in active predeploy gameplay. No release queue advancement yet.
+
 Update08:50UTC: unpublished candidate **45797ee24167071312e53bc9d015394fc39e4391**.
 Previous53012 finished FAILED on module errors from a redundant reconnect load;
 retained evidence and exact cleanup are recorded in the execution ledger.
