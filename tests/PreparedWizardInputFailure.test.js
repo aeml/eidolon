@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { GroundInputUnavailableError } from './groundInputFailure.js';
+import { GroundInputUnavailableError, GroundPointerInterceptedError } from './groundInputFailure.js';
 
 const move = jest.fn(), read = jest.fn();
 jest.unstable_mockModule('./e2e/helpers.js', () => ({ moveByGroundClick: move, readPlayerState: read }));
@@ -11,9 +11,9 @@ const pageForRetreat = () => ({ evaluate: jest.fn().mockResolvedValueOnce(undefi
         threats: [{ x: 2, z: 0 }] })
     .mockImplementation(async (_, data) => data?.options?.map(() => true)) });
 
-test('unavailable ground selects combat without claiming successful movement', async () => {
+test.each([GroundInputUnavailableError, GroundPointerInterceptedError])('unavailable/intercepted ground never claims movement (%#)', async ErrorType => {
     const page = pageForRetreat();
-    move.mockRejectedValue(new GroundInputUnavailableError('no input available'));
+    move.mockRejectedValue(new ErrorType('no movement requested'));
     const defend = await createEarnedWizardDefense(page);
     expect(await defend()).toBe(false);
     expect(move).toHaveBeenCalledWith(page, -9, expect.any(Number), expect.objectContaining({ minimumDistance: 6 }));
