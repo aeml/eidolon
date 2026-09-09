@@ -82,3 +82,12 @@ test('post-deployment recovery is mandatory after matching identity and before a
     expect(step).not.toContain('continue-on-error');
     expect(step).not.toContain('if:');
 });
+
+test('disposable rehearsal runs the same live wrapper without changing the default full gate', () => {
+    const isolated = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
+    const route = isolated.split('  live-recovery-rehearsal)')[1].split('    ;;')[0];
+    expect(route).toContain('EIDOLON_E2E_BASE_URL="http://127.0.0.1:${EIDOLON_E2E_WEB_PORT:-4173}"');
+    expect(route).toContain('EIDOLON_EXPECTED_COMMIT="${QA_SOURCE_COMMIT}" bash scripts/run-live-recovery-qa.sh');
+    expect(route).not.toContain('EIDOLON_QA_USERNAMES');
+    expect(route).not.toContain('npx');
+});
