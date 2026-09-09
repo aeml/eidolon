@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test';
 import { movementFailure } from '../groundInputFailure.js';
+import { isHostilePointerInterception } from '../primaryClickEvidence.js';
 import { inventoryQuantity, pickupReceipt } from './lootPickupEvidence.js';
 import { hasFreshEntranceHover } from './entrance-pointer.js';
 import { readLootPointerTarget } from './loot-pointer-observation.js';
@@ -357,6 +358,7 @@ export async function projectGroundOffset(page, deltaX, deltaZ) {
 }
 
 export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
+    await observeEntranceClick(page);
     const before = await readPlayerState(page);
     expect(before).not.toBeNull();
     const attempts = [];
@@ -402,9 +404,17 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
         // or an actor covers every otherwise-visible ground point.
         if (useCoveredJump) await page.keyboard.down('Control');
         try {
+            await page.evaluate(() => { window.__entranceClickProbe.click = null; });
             await page.mouse.click(target.x, target.y);
         } finally {
             if (useCoveredJump) await page.keyboard.up('Control');
+        }
+        attempt.clickProbe = await page.evaluate(() => window.__entranceClickProbe?.click);
+        if (isHostilePointerInterception(attempt.clickProbe)) {
+            // The real click attacked the new foreground enemy, not ground.
+            // Do not call that an ignored movement command or a successful move.
+            console.log('[ground-pointer-intercepted]', JSON.stringify(attempt.clickProbe));
+            continue;
         }
         try {
             await expect.poll(async () => {
@@ -497,7 +507,7 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
     throw movementFailure(
         `No real input established ${options.minimumDistance || 1} units toward (${deltaX}, ${deltaZ}): ` +
         JSON.stringify({ before, maximumDisplacement, attempts, ...diagnostic }),
-        attempts.length > 0, mobileMovement
+        attempts.length > 0, mobileMovement, attempts
     );
 }
 
@@ -1711,6 +1721,7 @@ async function observeEntranceClick(page) {
         if (window.__entranceClickProbeInstalled) return;
         window.__entranceClickProbeInstalled = true;
         const describe = entity => entity ? {
+            id: entity.id || null, hostile: game.isHostileActorTarget(entity),
             type: entity.name === 'DungeonEntrance' ? entity.name : entity.constructor?.name,
             state: entity.state, active: entity.isActive,
             position: entity.position ? { x: entity.position.x, z: entity.position.z } : null
@@ -1722,7 +1733,7 @@ async function observeEntranceClick(page) {
             window.__entranceClickProbe.click = {
                 before, after: describe(this.hoveredEntity), pending: describe(this.pendingInteraction),
                 player: { x: this.player.position.x, z: this.player.position.z },
-                state: this.player.state, dom: event?.target?.tagName, result,
+                state: this.player.state, dom: event?.target?.tagName, result, mobile: Boolean(this.isMobile),
                 stack: (this.raycastHitEntities || []).map(describe)
             };
             return result;
@@ -1756,6 +1767,7 @@ export async function enterAndExitDungeon(page, { beforeExit, resetRun = false,
     let entered = false;
     let pendingReset = resetRun;
     let verifyReset = false;
+    let interceptedPortalClick = false;
     for (let attempt = 0; attempt < 3 && !entered; attempt += 1) {
         if (viaGuide) {
             const { openDungeonGuide } = await import('./dungeon-guide.js');
@@ -1765,14 +1777,14 @@ export async function enterAndExitDungeon(page, { beforeExit, resetRun = false,
             // A projected entrance point may share its ray with a live enemy.
             // Wait for the real camera, then sample other exposed mesh points;
             // never restore the old entrance-over-enemy targeting override.
-            await expect.poll(() => page.evaluate(() => {
+            await expect.poll(() => page.evaluate(allowAttacking => {
                 const game = window.game;
-                return game.player.state === 'IDLE' && !game.player.targetPosition &&
+                return (game.player.state === 'IDLE' || (allowAttacking && game.player.state === 'ATTACKING')) && !game.player.targetPosition &&
                     Math.hypot(game.renderSystem.cameraTarget.x - game.player.position.x,
                         game.renderSystem.cameraTarget.z - game.player.position.z) < .05;
-            }), { timeout: 20_000 }).toBe(true);
+            }, interceptedPortalClick), { timeout: 20_000 }).toBe(true);
             let entrance = null;
-            let candidate = 0;
+            let candidate = attempt * 7;
             await expect.poll(async () => {
                 entrance = await projectVerdantEntrance(page, candidate++);
                 if (!entrance?.visible) return false;
@@ -1787,6 +1799,11 @@ export async function enterAndExitDungeon(page, { beforeExit, resetRun = false,
             const clickProbe = await page.evaluate(() => window.__entranceClickProbe);
             if (clickProbe.click?.after?.type !== 'DungeonEntrance') {
                 console.log('[entrance-click-selection]', JSON.stringify(clickProbe));
+            }
+            if (isHostilePointerInterception(clickProbe.click)) {
+                expect(clickProbe.requested, 'An enemy click must not open a covered portal').toBe(0);
+                interceptedPortalClick = true;
+                continue; // Same three-attempt bound; actual portal entry is still required.
             }
             expect(clickProbe.click?.after?.type,
                 'Fresh click raycast must select the portal, not a covering enemy').toBe('DungeonEntrance');
