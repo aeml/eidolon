@@ -28,6 +28,21 @@ Version remains the still-unreleased1.0.56; its patch notes explicitly include
 the visual correction. Focused8952 PASSED245tests/2suites/1.349s and lint, logs
 `/tmp/eidolon-release56-scenery-wall-clock-{after,lint}.log`.
 
-Remaining: actual bundled-Chromium CI-mode reproduction, full client regression,
-fresh predecessor public identities, normal corrected56 push and complete new
-CI/deployment/live verification. Do not promote57/58 through this failed release.
+24706 complete client PASSED240suites/3413tests/116.552s plus lint on56cfc79.
+64638 actual bundled Chromium CI-mode browser replay PASSED1/47.3s, same original
+MoltenCore/High/1280×720 case, original15second predicate and zero retries. It
+retained0→74/76hero pixels, zero outside changes, unchanged bounds/camera, and
+actual restoration of every original material. Owned browser process confirmed
+the bundled chromium_headless_shell-1228 executable. No physical-device or
+hardware-renderer performance result is implied. Log
+`/tmp/eidolon-release56-scenery-browser-ci-r2.log`; full client logs
+`/tmp/eidolon-release56-scenery-full-{client,lint}.log`. Port41956 free after exit.
+
+An earlier CLI invocation5147 used an over-anchored grep and selected no tests;
+it exited1, not a browser proof. The corrected expression first discovered the
+single intended case, then ran it. That CLI error remains separately logged at
+`/tmp/eidolon-release56-scenery-browser-ci.log`.
+
+Remaining: fresh predecessor public identities, normal corrected56 push and
+complete new CI/deployment/live verification. Do not promote57/58 through the
+original failed release.
