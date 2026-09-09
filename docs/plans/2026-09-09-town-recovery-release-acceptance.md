@@ -1,6 +1,6 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
-Status at September 9, 06:11 UTC: **unpublished candidate**, not delivered.
+Status at September 9, 06:14 UTC: **unpublished candidate**, not delivered.
 Candidate worktree `/tmp/eidolon-standalone-town-recovery-QJ6Drv`, current source
 `a7ef83c287d828af51f68ee4d32821d00b45a015`, includes canonical57/cc6e419 ancestry.
 Production runtime is unchanged from previously tested
@@ -141,11 +141,16 @@ and exact coincident front/back loot. These fixtures do not establish a server
 pickup; the full route must still do that. Details in candidate
 `docs/plans/2026-09-09-overlapping-loot-observation.md`.
 
-**33950 full client/lint ACTIVE**, log
+**33950 full client/lint passed**, terminal0,247suites/3481tests/121.961s; log
 `/tmp/eidolon-rest58-loot-observation-full-client.log`; **12130 complete gameplay
 ACTIVE**, only owned local browser, frozena7ef83c/Node24.18.0,
 projectrest58-all24-r2-0909-0610/API18560/Mongo18561/web41960; log
-`/tmp/eidolon-rest58-all-node24-rerun-0610.log`. No source edits while active.
+`/tmp/eidolon-rest58-all-node24-rerun-0610.log`. Initial3authenticated tests all
+passed55.3s, including item-specific manual pickup and reconnect, real portal
+reentry/jump-Recall. Scorch Beam and three ground-spell wall/reachable-floor
+checks also passed in the next batch. This is not a complete gameplay pass.
+No source edits while active. Independent git diff confirms production runtime,
+metadata, workflows and scripts unchanged from5a17be1.
 
 ## Remaining delivery gates
 

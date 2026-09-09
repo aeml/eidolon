@@ -16,7 +16,40 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 06:11 UTC
+## Current checkpoint — September 9, 06:14 UTC
+
+PROGRESS: **33950 full58 client/lint TERMINAL0** on frozen
+a7ef83c287d828af51f68ee4d32821d00b45a015/Node24.18.0:
+247suites/3481tests/121.961s plus lint. Full output retained in
+`/tmp/eidolon-rest58-loot-observation-full-client.log` and corresponding-lint.
+Independent git diff confirms no production src/server/index/package/release/
+workflow/script change from the four-class/native-tested5a17be1; the two newer
+commits only correct QA observations and document evidence. Clean candidate.
+
+**12130 complete58 gameplay remains ACTIVE — only owned local process/browser**,
+same frozena7ef83c, projectrest58-all24-r2-0909-0610,
+API18560/Mongo18561/web41960. All3 initial authenticated tests PASS55.3s,
+including actual manual item quantity0→1 persisted across reconnect (this run
+selected the originally intended drop), real portal/reentry/jump-Recall. The
+seven-test dungeon batch has passed Scorch Beam48.4s and three ground-spell
+wall/reachable-floor placements15.9s. Log
+`/tmp/eidolon-rest58-all-node24-rerun-0610.log`. This is not a complete-route pass.
+Poll exact handle; no edit/restart/second local browser while active. Archive
+evidence and independently verify exact cleanup after terminal, preserve failures.
+
+Primary42a6082 focused70815 TERMINAL0:258tests/4suites/2.474s plus lint/diff;
+logs`/tmp/eidolon-primary-loot-observation-{tests,lint}.log`. No primary process
+remains active. Its prior full3731 run remains older-source evidence; a future
+full regression must include both new observer test suites. Expanded story/
+balance/timing still preserved and required, no new runtime change frome1c4132.
+
+54CI34317808528 ACTIVE at06:13 on805ba0d: Client Tests PASS, Server Tests running.
+Live53 was independently verified after complete53CI at06:08. No55push until
+entire54CI/deployment/finalLiveQA and fresh public identities. Canonical55–57
+unchanged. Root ledger commits must never be pushed. Recovery58notlive; entire
+roadmap remains active/unfulfilled, not blocked.
+
+## Previous checkpoint — September 9, 06:11 UTC
 
 PROGRESS: **53CI34312290353 TERMINAL SUCCESS**, all10jobs including finalLiveQA.
 Independent06:08 public manifest, login53, loaded main.js release query and
