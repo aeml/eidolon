@@ -1,5 +1,15 @@
 # Release pipeline timing baseline
 
+## September9, recovery58 browser-stage diagnosis
+
+Completed browser jobs of34361293407 give a concrete spec-level bottleneck:
+anonymous29/26/25cases took11.8m/2.1m/6.9m. Ten entrancevisibility cases alone
+occupied550.5s onshard1. A pinned-version dry discovery withfully-parallel
+stillplaces allten onshard1, despite equalizing testcounts27/27/26. No speedup
+claim or currentworkflowchange. See
+[cost distribution and coverage-preserving follow-up](2026-09-09-browser-smoke-cost-distribution.md).
+Current58predeploy is active; this is not a completed-release timing baseline.
+
 ## Latest completed release — September9, Alpha1.0.56
 
 [Run34340328283](https://github.com/aeml/eidolon/actions/runs/34340328283), exact
