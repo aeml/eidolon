@@ -16,7 +16,36 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 22:12 UTC
+## Current checkpoint — September 9, 22:17 UTC
+
+58 remains FULLY ACCEPTED/live as recorded below; no successor push. Primary
+now clean **51704bd**, actual merge of acceptedef9 ancestry into941ecf6, inherited
+58metadata and still UNPUBLISHED expanded-roadmap work. Reviewed7conflicts:
+preserve expandedstory/earned checkpoints/crowd controls/one observer wrapper;
+preserve phone-stash/stabletap +deployment-image pin/build-context protection;
+keep Docker releaseARGs afterdependencies/update inherited58version. Add accepted
+native rest/expiry/party stage to timed fullgate, retain focused suffix/allrest
+routes.36-stage failure/cleanup harness now covers the added stage. Removed
+automatic-merge duplicate policy import and pointerobservation block.
+313focused/8suites2.664s+lint+shellsyntax27848PASS. Primary doc
+`2026-09-09-accepted-recovery-primary-integration.md` records decisions and scope.
+
+**26781 ACTIVE** fullprimaryclient/lint; **90945 ACTIVE** fullprimaryGo-race,
+logs `/tmp/eidolon-primary-accepted58-full-{client,lint,server}.log`. No owned
+browser active; don't alter these test sources until terminal. Next ordinary
+bag-management correction is still required before story-ready replay: last
+fullbagfailure11948 had25/25slots atcollection start and actualseeds onground,
+not missingquestdrops. No inventorymanagement fix or Imptraining/fullEarth proof
+has been claimed yet.
+
+CIprototype82632 fullFAILED two old VersionPresentation source-literal assertions;
+277suites3955tests passed. Preservedfullclientlog. Corrected assertions now prove
+runner invocation +exactone nameplate/resource stage in actual plan;29078GREEN
+250/4/1.765s+lint. Prototype latestcommit records this; fullrerun, prepareassets,
+all3CI-modebrowsergroups and measuredruntime/remoteCI stilldue. NOTintegrated or
+pushed; no actualspeedup claim. Rootledger-only. Full1.1–1.10 goal remainsopen.
+
+## Previous checkpoint — September 9, 22:12 UTC
 
 This continuation made PROGRESS. Clock advanced from15:05 to22:07 across a
 continuation; rechecked actual terminal state rather than assuming handles lived.
