@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"reflect"
 	"testing"
 	"time"
 
@@ -20,6 +19,7 @@ func TestResourceActualShutdownWithLiveCharacters(t *testing.T) {
 	type prepared struct {
 		character *database.Character
 		password  string
+		manaSpent int
 	}
 	var fixtures []prepared
 	for _, class := range []string{"Fighter", "Rogue", "Wizard", "Cleric"} {
@@ -43,29 +43,43 @@ func TestResourceActualShutdownWithLiveCharacters(t *testing.T) {
 				t.Fatal(err)
 			}
 			connection, _ := resourceLoginCharacter(t, address, name, password, class)
+			manaSpent := 0
 			if !dead && class == "Wizard" {
+				beforeCast := townFixtureRead(t, connection, character, 0)
 				resourceSend(t, connection, MsgAbility, AbilityPayload{SkillName: "Fireball"})
 				var result game.AbilityResult
 				resourceReadMessage(t, connection, MsgAbilityResult, &result)
-				if !result.Accepted || result.Mana != 70 {
+				if !result.Accepted {
 					t.Fatalf("real pre-shutdown cast failed: %+v", result)
 				}
-				character.Resources.Mana = 70
+				manaSpent = 30
+				afterCast := townFixtureRead(t, connection, character, manaSpent)
+				if result.Mana < int(beforeCast.Mana)-30 || result.Mana > int(afterCast.Mana) {
+					t.Fatalf("cast response mana outside exact recovery interval: %+v", result)
+				}
+				// The independent final formula subtracts the actual integer cost
+				// from all online healing. It is valid only if no recovery was
+				// discarded at the cap before this cast; enforce that precondition.
+				if result.Mana+30 >= int(afterCast.MaxMana) {
+					t.Fatal("prepared Wizard reached the mana cap before the cast; cannot infer discarded regen")
+				}
 				// The accepted cast already proves alive state and exact mana.
 				// An immediate second probe legitimately hits global cooldown.
 			} else {
-				resourceProbe(t, connection, character.Resources.Mana, dead)
+				townFixtureProbe(t, connection, character)
 			}
-			fixtures = append(fixtures, prepared{character, password})
+			fixtures = append(fixtures, prepared{character, password, manaSpent})
 		}
 	}
 	stoppingAt := time.Now().Truncate(time.Millisecond)
 	stop()
-	for _, fixture := range fixtures {
+	for index, fixture := range fixtures {
 		actual, err := repo.GetCharacter(fixture.character.Name, fixture.character.Name)
-		if err != nil || actual.LastLogout.Before(stoppingAt) || !reflect.DeepEqual(actual.Resources, fixture.character.Resources) || actual.Gold != 1234 || actual.Level != 30 {
+		if err != nil || actual == nil || actual.LastLogout.Before(stoppingAt) {
 			t.Fatalf("shutdown lost live %s resources or final save: err=%v actual=%+v", fixture.character.Class, err, actual)
 		}
+		assertTownFixtureSave(t, fixture.character, actual, fixture.manaSpent)
+		fixtures[index].character = actual
 	}
 	journal, err := database.OpenCharacterSaveJournal(dir)
 	if err != nil {
@@ -79,11 +93,9 @@ func TestResourceActualShutdownWithLiveCharacters(t *testing.T) {
 	for _, fixture := range fixtures {
 		character := fixture.character
 		connection, _ := resourceLoginCharacter(t, address, character.Name, fixture.password, character.Class)
-		resourceProbe(t, connection, character.Resources.Mana, character.Resources.Dead)
+		townFixtureProbe(t, connection, character)
 		actual := resourceCloseAndWait(t, repo, connection, character.Name)
-		if !reflect.DeepEqual(actual.Resources, character.Resources) || actual.Gold != 1234 {
-			t.Fatal("fresh-process login lost final live shutdown state")
-		}
+		assertTownFixtureSave(t, character, actual, 0)
 	}
 	t.Log("eight live four-class alive/dead sockets drained at SIGINT; real cast, exact final Mongo resources and ordinary post-restart logins passed")
 }

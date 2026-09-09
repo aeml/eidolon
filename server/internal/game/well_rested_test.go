@@ -14,6 +14,45 @@ func restTestPlayer(class string) *Entity {
 	return e
 }
 
+func TestWellRestedPvPExitUsesCurrentStatsAfterExpiry(t *testing.T) {
+	for _, class := range []string{"Fighter", "Rogue", "Wizard", "Cleric"} {
+		t.Run(class, func(t *testing.T) {
+			a, b := restTestPlayer(class), restTestPlayer("Fighter")
+			a.ID, b.ID = "rest-arena-a", "rest-arena-b"
+			a.X, a.Z, b.X, b.Z = 1, 200, 3, 200
+			a.WellRestedSeconds, b.WellRestedSeconds = 2, 10
+			a.RecalculateStats()
+			b.RecalculateStats()
+			w := newPvPTestWorld(a, b)
+			match := startTestPvPMatch(w, PvPModeArena1v1, []string{a.ID}, []string{b.ID})
+			if a.InstanceID != match.ID || w.SafeZoneAt(a.InstanceID, a.X, a.Z) != "" {
+				t.Fatal("arena inherited overworld sanctuary")
+			}
+			for _, player := range []*Entity{a, b} {
+				player.Mu.Lock()
+				player.updateSafeZoneRestLocked(3, w.SafeZoneAt(player.InstanceID, player.X, player.Z), time.Now())
+				player.Mu.Unlock()
+			}
+			if a.WellRestedSeconds != 0 || a.MaxHealth != 100 || b.WellRestedSeconds != 7 || b.MaxHealth != 110 {
+				t.Fatal("arena did not consume the separate rest banks")
+			}
+			w.ForfeitPvP(a.ID)
+			if a.InstanceID != "" || a.Z != 200 || a.MaxHealth != 100 || a.Health != 100 || a.Stats.Strength != 10 {
+				t.Fatal("match restoration revived expired stats")
+			}
+			if b.WellRestedSeconds != 7 || b.MaxHealth != 110 || b.Health != 110 {
+				t.Fatal("match exit changed surviving rest bank")
+			}
+			a.Mu.Lock()
+			a.updateSafeZoneRestLocked(.5, w.SafeZoneAt(a.InstanceID, a.X, a.Z), time.Now())
+			a.Mu.Unlock()
+			if a.WellRestedSeconds != .5 || a.MaxHealth != 110 || a.Health != 105 || a.Stats.Strength != 11 {
+				t.Fatal("town return stacked or refilled the reactivated bonus")
+			}
+		})
+	}
+}
+
 func TestWellRestedUsesElapsedServerTimeWithoutOfflineCatchup(t *testing.T) {
 	e, start := restTestPlayer("Wizard"), time.Now()
 	e.updateSafeZoneRestAtLocked("lanternhold", start)

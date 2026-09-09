@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"reflect"
 	"regexp"
 	"strings"
 	"testing"
@@ -51,8 +50,8 @@ func resourceProbe(t *testing.T, conn *websocket.Conn, mana int, dead bool) {
 }
 
 // Prepared saves, ordinary login/token resume/replay rejection/Recall/Respawn.
-// Level30 with zero Vitality/Wisdom supplies valid level-derived capacity while
-// isolating exact resource preservation from elapsed passive regeneration.
+// Level30 fixtures retain ordinary town recovery. Exact bars are derived from
+// each online bank interval, rather than treating requested healing as a refill.
 func TestResourceActualTokenResumeAndDeathRecovery(t *testing.T) {
 	if os.Getenv("EIDOLON_RESOURCE_DISPOSABLE_DATABASE") != "1" {
 		t.Skip("requires explicitly disposable loopback Mongo and built server")
@@ -88,11 +87,9 @@ func TestResourceActualTokenResumeAndDeathRecovery(t *testing.T) {
 					t.Fatal(err)
 				}
 				first, token := resourceLoginCharacter(t, address, name, password, class)
-				resourceProbe(t, first, 0, dead)
+				townFixtureProbe(t, first, fixture)
 				initialSave := resourceCloseAndWait(t, repo, first, name)
-				if !reflect.DeepEqual(initialSave.Resources, fixture.Resources) {
-					t.Fatalf("first disconnect changed resources: %+v", initialSave.Resources)
-				}
+				assertTownFixtureSave(t, fixture, initialSave, 0)
 
 				resumed, _, err := websocket.DefaultDialer.Dial("ws://"+address+"/ws", nil)
 				if err != nil {
@@ -109,7 +106,7 @@ func TestResourceActualTokenResumeAndDeathRecovery(t *testing.T) {
 					t.Fatal("resume did not bind character and rotate token")
 				}
 				resourceReadMessage(t, resumed, MsgQuestUpdate, nil)
-				resourceProbe(t, resumed, 0, dead)
+				townFixtureProbe(t, resumed, initialSave)
 
 				replay, _, err := websocket.DefaultDialer.Dial("ws://"+address+"/ws", nil)
 				if err != nil {
@@ -123,36 +120,31 @@ func TestResourceActualTokenResumeAndDeathRecovery(t *testing.T) {
 					t.Fatalf("replay rejected for wrong reason: %s", rejection)
 				}
 				replay.Close()
-				resourceProbe(t, resumed, 0, dead)
+				townFixtureProbe(t, resumed, initialSave)
 				resumedSave := resourceCloseAndWait(t, repo, resumed, name)
-				if !reflect.DeepEqual(resumedSave.Resources, fixture.Resources) {
-					t.Fatalf("token resume changed resources: %+v", resumedSave.Resources)
-				}
+				assertTownFixtureSave(t, initialSave, resumedSave, 0)
 
 				// A subsequent ordinary login remains dead/empty until the normal
 				// recovery command; living Recall is never a mana refill.
 				third, _ := resourceLoginCharacter(t, address, name, password, class)
-				resourceProbe(t, third, 0, dead)
+				townFixtureProbe(t, third, resumedSave)
 				resourceSend(t, third, MsgRecall, TownRecoveryPayload{})
 				if dead {
 					resourceReadMessage(t, third, MsgError, &rejection)
 					if !strings.Contains(rejection, "use Respawn") {
 						t.Fatalf("dead recall rejected for wrong reason: %s", rejection)
 					}
-					resourceProbe(t, third, 0, true)
+					townFixtureProbe(t, third, resumedSave)
 					resourceSend(t, third, MsgRespawn, TownRecoveryPayload{})
 				}
 				resourceReadMessage(t, third, MsgMovementContext, nil)
-				mana := 0
+				expected := *resumedSave
 				if dead {
-					hp, mana = 145, 245
+					expected.Resources = &database.CharacterResources{Version: 1, Health: 145, Mana: 245}
 				}
-				resourceProbe(t, third, mana, false)
+				townFixtureProbe(t, third, &expected)
 				final := resourceCloseAndWait(t, repo, third, name)
-				want := &database.CharacterResources{Version: 1, Health: hp, Mana: mana}
-				if !reflect.DeepEqual(final.Resources, want) || final.Level != 30 || final.Gold != 1234 || final.InstanceID != "" {
-					t.Fatalf("ordinary recovery saved wrong state: resources=%+v level%d gold%d instance%s", final.Resources, final.Level, final.Gold, final.InstanceID)
-				}
+				assertTownFixtureSave(t, &expected, final, 0)
 			})
 		}
 	}

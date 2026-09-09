@@ -61,6 +61,39 @@ four-class stats and device/aura acceptance remain required.
 
 ## Development acceptance — September 8, 23:30 UTC
 
+Latest additional acceptance, **September9 00:02UTC**:
+
+- Adapted existing token-resume/death-recovery and eight-live-socket shutdown
+  tests while keeping town placement, token replay rejection, dead Recall
+  rejection, normal Respawn, and an actual Wizard Fireball. Living Recall is
+  checked against only earned town recovery, not an unconditional mana refill.
+- New independent level30 fixture arithmetic derives exact integer HP/MP from
+  saved bank delta and known un-rested145/245 (rested159/269) maxima. The cast
+  path accounts for its30 mana cost and enforces that the prepared character
+  did not already cap before casting, so no discarded regeneration is hidden.
+  Shutdown and fresh-process saved bars remain exact, including corpse zeros.
+- Rejected-ability mana replies are bounded by two independently validated
+  state frames, not a stale pre-healing bar. A loopback-only timestamp filter
+  discards state queued before the action acknowledgement. No production
+  protocol or gameplay changed for these tests.
+- Actual**25653 PASS47.589s**: recovery24.78s(all8 alive/dead class cases),
+  shutdown/restart21.78s. Exact d650c72 production race binary. Logs1466942589,
+  3161073359,1082969551 independently clean with normal drains. Owned Mongo
+  `eidolon-rest-recovery-20260908-2359` and volumes removed/checked absent.
+  Evidence `/tmp/eidolon-rest-recovery.log`.
+- New four-class arena/forfeit unit regression verifies that banks expire
+  outside sanctuary, match restoration uses current maxima rather than stale
+  boosted stats, and returning to town reactivates once without instant refill.
+  Focused server/race87427 PASS(root1.421s/game1.910s).
+- Full server-package race26178 PASS11.608s; independent fixture-arithmetic
+  unit32917 PASS1.017s. The arithmetic helper explicitly rejects other levels,
+  Vitality/Wisdom/Intelligence values or equipped builds instead of silently
+  applying these fixture maxima elsewhere. All owned local check handles closed.
+
+Still open: older dungeon/PvP resource integrations, journal/auction failure
+flows and schema-upgrade expectations, browser-integrated travel/reconnect/scene
+effects and earned balance. The full lifecycle gate is not declared complete.
+
 Latest additional acceptance, **September8 23:51UTC**:
 
 - Adapted the existing144-session resource matrix without moving characters

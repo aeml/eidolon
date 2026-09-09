@@ -15,6 +15,10 @@ import (
 )
 
 func wellRestedReadActor(t *testing.T, conn *websocket.Conn, name string, predicate func(*statepb.Entity) bool) *statepb.Entity {
+	return wellRestedReadActorAfter(t, conn, name, time.Time{}, predicate)
+}
+
+func wellRestedReadActorAfter(t *testing.T, conn *websocket.Conn, name string, after time.Time, predicate func(*statepb.Entity) bool) *statepb.Entity {
 	t.Helper()
 	conn.SetReadDeadline(time.Now().Add(20 * time.Second))
 	for {
@@ -35,6 +39,12 @@ func wellRestedReadActor(t *testing.T, conn *websocket.Conn, name string, predic
 		var envelope statepb.StateEnvelope
 		if err := proto.Unmarshal(data[5:], &envelope); err != nil {
 			t.Fatal(err)
+		}
+		// These explicitly loopback tests share the server's wall clock. Reject
+		// queued state from before an action acknowledgement rather than mistaking
+		// an older lossy state frame for the action's authoritative result.
+		if !after.IsZero() && envelope.ServerTimeMs <= uint64(after.UnixMilli()) {
+			continue
 		}
 		entities := envelope.GetFull().GetEntities()
 		if envelope.GetDelta() != nil {
