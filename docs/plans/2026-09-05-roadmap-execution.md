@@ -16,7 +16,65 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, casino scope addition
+## Current checkpoint — September 9, 22:57 UTC
+
+This continuation made PROGRESS: corrected two earned-story driver failures,
+completed local release59 validation, and normally pushed the accepted58-based
+interface successor. The full goal, including the new casino requirement,
+remains active. Root is documentation-only and NEVER pushed.
+
+**Alpha1.0.59 PUSHED e236b37c6110f0307985ecb29574bbcdaec7d0f0** from canonical
+`/tmp/eidolon-interface-release59-S4ykfn`, branch
+`release/59-quest-and-combat-interface`, clean. Push45965 TERMINAL0; remote master
+independently matches. **CI34414624304 ACTIVE**, server102676618626 and client
+102676618794 in progress. No deployment/live59 claim: all later browser/full
+predeploy/deploy/final native live gates and exact public identity checks remain
+due. Do not publish a successor or alter this candidate before terminal review.
+Previous58 CI34361293407 freshly confirmed ALLTEN SUCCESS; fresh public client/
+backend remained58/ef9/ready before59push. Recovery58 remains accepted/live.
+
+59 includes independent daily disclosure/ready-first ordering, archive/focus
+preservation, phone reward rows and readable labels; target levels, honest attack
+power/configuredMP card and bounded long desktop action labels. Ports9b168be,
+4bb3bd1, c854f8e plus only necessary UI dependencies. NO expanded investigations,
+new curve/quest requirements/rewards/drop rules/raid art or casino runtime.
+Server diff against58 is version defaults only. Casino plan and corrected live
+recovery status are now also carried on the canonical release branch. Login,
+package, manifest, build/deploy defaults and retained-history patch notes all59.
+
+59 full71211 PASS253/3595/122.349s+lint+prepare; full98362 Go-race PASS root19.679/
+game331.636/database1.122/lifecycle1.043. Logs
+`/tmp/eidolon-release59-full-{client,lint,server}.log`. Focused97511 PASS128/5,
+version40528 PASS234/1. Actual browser97435 PASS6/19.6; inspected screenshots
+exposed incomplete collection fixture objective, fixed only fixture/type/copy
+and added regression assertion. Final67774 PASS6/19.9+lint. Archive
+`/tmp/eidolon-release59-interface-proof-xvxcgY`, scanner0/port41961absent;
+desktop/phone cards+journals and1280/1920labels viewed. Original proof retained
+`/tmp/eidolon-release59-first-interface-proof-z5L3I1`. These are presentation
+fixtures, not earned-world or physical-phone proof. Candidate acceptance record
+is `docs/plans/2026-09-09-release59-interface-acceptance.md` in canonical worktree.
+
+Primary now clean **0691772**, codee530999, UNPUBLISHED expanded work. Diary
+reading fix1ff8e2a recognizes already-open exact evidence after ordinary combat;
+keeps server credit/manualclaim assertions and captures future reading failures.
+Full87041 PASS280/3963/115.831s+lint. Replay30264 TERMINAL FAILED2.5m BEFORE diary:
+opening was already3/3 but credit arrived during target acquisition; driver used
+before=3 and waited120s for impossible fourth credit. Archive
+`/tmp/eidolon-story-opening-credit-race-Dfdn0o`, scanner0/exactownedcleanup.
+No merchant/diary/readiness pass inferred. Correctede530999 checks credit before
+and after target acquisition, leaving manual turn-in intact. Focused45762 PASS
+14/2/.711+lint; full94963 PASS281/3972/137.488+lint. Logs
+`/tmp/eidolon-opening-credit-race-{focused,lint,full-client,full-lint}.log`.
+
+**47584 ACTIVE**, only owned local browser, freshWizard story-only on0691772:
+run `story-ready-race-0909-2257`, API18560/Mongo18561/web41960, Node24 inside
+sg render, log `/tmp/eidolon-story-ready-race-2257.log`. Source frozen until
+terminal; preserve artifacts/exactcleanup afterward, no heavy owned tests or
+second local browser alongside. This is the next actual diary/bag/merchant/
+collection/training/Imp/wholeEarth proof, not yet a pass. Other prototypes stay
+separate; full roadmap1.1–1.10 acceptance remains open.
+
+## Previous checkpoint — September 9, casino scope addition
 
 User added a fully functional two-floor main-town casino to the existing **1.10
 completion** goal, explicitly for later implementation. Updated the canonical
