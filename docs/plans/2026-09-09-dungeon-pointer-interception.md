@@ -1,5 +1,17 @@
 # Fresh pointer evidence in moving dungeon scenes
 
+Closure11:44UTC:70313 completed successfully on cbb158c. Full client253suites/
+3570tests/80.203s plus lint, followed by all seven dungeon cases6.3m. Verdant
+defeated RootboundWarden and BriarMatron through actual combat (case4.3m); wall
+movement/projectiles, ground/beam abilities, bag/tracking and Water recall/rejoin
+also passed. No interception/no-input diagnostic fired in this successful replay;
+do not claim it reproduced the earlier moving-pointer timing or used the new
+reobservation branch. Deterministic policy regressions cover those branches.
+Archive `/tmp/eidolon-rest58-dungeon-input-proof-eu9B5K`, scan0/exact cleanup.
+Logs `/tmp/eidolon-rest58-navigation-full-{client,lint}.log` and
+`/tmp/eidolon-rest58-dungeon-navigation-replay.log`. Prior failed runs stay failed.
+Complete all-route regression and ordered production/live verification remain due.
+
 Follow-up11:34UTC:33035 seven-test replay FAILED1/7; six cases passed5.2m,
 including both previously failed portal/wall cases. Verdant cleared RootboundWarden
 and later enemies, then its traversal helper found no exposed ground and issued
