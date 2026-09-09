@@ -6,7 +6,7 @@ import { recoverEarnedDeath } from './earned-death-recovery.js';
 import { earnedCheckpoint } from './earned-checkpoint.js';
 import { recoverBetweenHuntEncounters } from './earned-hunt-rest.js';
 import { earnedTownRecoveryEnabled } from '../earnedRecoveryPolicy.js';
-import { chooseExpeditionCombatTarget, levelAppropriateExpeditionTargets } from '../expeditionCombatTargets.js';
+import { chooseExpeditionCombatTarget, earthExpeditionSearchAnchor, levelAppropriateExpeditionTargets } from '../expeditionCombatTargets.js';
 import { equipEarnedEmptySlots } from './earned-equipment.js';
 import { selectEarnedAttackTarget } from './earned-target-input.js';
 import { openDungeonGuide } from './dungeon-guide.js';
@@ -44,9 +44,7 @@ const combatSnapshot = page => page.evaluate(() => {
 async function findExpeditionTarget(page, hunt, deadline = Infinity) {
     // The original Skeleton fallback lay in level-ten territory. Walk back
     // toward the authored starter band if streaming shows no appropriate foe.
-    const fallback = hunt.enemy === 'Skeleton'
-        ? (hunt.minEnemyLevel < 10 ? { x: 175, z: 200 } : { x: 125, z: -150 }) :
-        hunt.enemy === 'Imp' ? { x: -300, z: 200 } : { x: 300, z: 200 };
+    const fallback = earthExpeditionSearchAnchor(hunt);
     for (let step = 0; step < 100 && Date.now() < deadline; step++) {
         expect((await readPlayerState(page)).state, 'Ordinary expedition travel must be survivable').not.toBe('DEAD');
         const observed = await page.evaluate(hunt => {

@@ -1,4 +1,27 @@
-import { chooseExpeditionCombatTarget, levelAppropriateExpeditionTargets } from './expeditionCombatTargets.js';
+import { chooseExpeditionCombatTarget, earthExpeditionSearchAnchor, levelAppropriateExpeditionTargets } from './expeditionCombatTargets.js';
+import { chronicleHunts } from '../src/data/chronicleHunts.generated.js';
+
+test.each([
+    ['Skeleton', 3, { x: 175, z: 200 }],
+    ['Skeleton', 10, { x: 125, z: -150 }],
+    ['Imp', 20, { x: -300, z: 200 }],
+    ['DemonOrc', 30, { x: 300, z: 200 }],
+    ['Construct', 40, { x: -800, z: 200 }]
+])('Earth %s level%s search points into its authored sector', (enemy, minEnemyLevel, point) => {
+    expect(earthExpeditionSearchAnchor({ huntingRealm: 'earth', enemy, minEnemyLevel })).toEqual(point);
+});
+
+test('the missing-ferry chapter searches western Earth, even though it belongs to Water story', () => {
+    const hunt = chronicleHunts.find(hunt => hunt.id === 'chronicle_water_missing_ferry');
+    expect(hunt.realm).toBe('water');
+    expect(hunt.huntingRealm).toBe('earth');
+    expect(earthExpeditionSearchAnchor(hunt)).toEqual({ x: -800, z: 200 });
+});
+
+test('unsupported realms or enemies never silently search the Demon Orc sector', () => {
+    expect(() => earthExpeditionSearchAnchor({ huntingRealm: 'water', enemy: 'MountainTroll' })).toThrow();
+    expect(() => earthExpeditionSearchAnchor({ huntingRealm: 'earth', enemy: 'Unknown' })).toThrow();
+});
 
 test('quest travel seeks an appropriate fight rather than the closest much stronger enemy', () => {
     const candidates = Object.freeze([
