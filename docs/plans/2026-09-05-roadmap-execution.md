@@ -16,7 +16,57 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 23:23 UTC
+## Current checkpoint — September 9, 23:35 UTC
+
+This continuation made PROGRESS through standalone fix preparation and new earned
+collection/bag evidence, with VERIFIED WAIT on exact live12121 and34414624304.
+Previous user-facing casino turn verified its existing committed roadmap; it did
+not implement casino runtime or finish the full goal. Root stays ledger-only and
+must NEVER be pushed. Recovered prior root checkpoint commit2bd9805 successfully.
+
+Release59 remains cleane236b37 in its frozen canonical interface worktree.
+CI34414624304 all client/server/browser jobs SUCCESS; exact predeploy102681209941
+still ACTIVE in disposable full-character gameplay, with its gallery passed.
+Deployment, final native live QA and fresh public59 identity still required;
+accepted recovery58 remains the last accepted production release. No new push.
+
+Primary7fab2eb remains clean/frozen, **12121 ACTIVE**, same
+`story-safe-exit-0909-2322` API18560/Mongo18561/web41960 and log
+`/tmp/eidolon-story-safe-exit-2322.log`. The first hunt now passed40/40, manual
+1593XP/100gold, completion conversation and reconnect in459s,0deaths13town rests,
+reaching level8/xp251/gold1480 with18occupied slots. Actual receipt observer logged
+91outgoing hits/3006damage and one incoming hit/8damage, not just cast acceptance.
+
+Collection then passed all8Seeds after18observed target deaths,0player deaths,
+manual turn-in and exact8-item consumption before entering the Imp hunt atlevel9,
+xp348/gold1814. Do not mistake this partial chain for the final reconnect/dungeon
+readiness gate, which is still later. At4free bag slots, the actual bag helper
+equipped9already-earned items and reached13free slots in15.896s, preservinggold1676.
+Its sales array was EMPTY: no merchant visit/sale is proved despite the helper's
+generic "Verified merchant proceeds" note. The actual sale branch remains due.
+Observed normal Imp-stage recovery restored HP279/352 and MP108/286 to bothfull
+before ordinary departure. Imp completion, earned level10 training, later hunt,
+scar/full Earth readiness and class/group balance remain unproven. Keep the only
+owned browser running; no heavy owned tests or second browser alongside it.
+
+Prepared a separate unpublished interface-only port in
+`/tmp/eidolon-safe-zone-release-preview-gCLEaT`, branch
+`work/safe-zone-release-preview-20260909`, clean **1555109**, based on59e236b37.
+Only engine/UI sanctuary warning plus direct Go/Jest/card-browser regressions from
+primary28057a5 were imported. No expanded campaign/earned helpers, combat/economy
+change, version bump or push. Focused60020 PASS12tests/2suites1.451s+lint onNode24.
+New local plan `2026-09-09-safe-zone-release-preview.md` includes a draft patch
+note and explicit remaining gates. Full client/server, exact browser/native proof,
+accepted59 prerequisite, synchronized successor identity/notes and entire release
+pipeline remain required. Do not borrow primary acceptance for this candidate.
+
+Next: poll the same12121/34414624304 handles; retain/sanitize actual test artifacts
+and perform exact cleanup only after terminal state. Once the browser slot is
+free, complete prepared functional Earth actual-play coverage and/or standalone
+feedback verification in order; never overlap owned browser runs. Casino remains
+plan-only for later1.5/1.8/1.9/1.10 stages. Entire full-roadmap goal remains active.
+
+## Previous checkpoint — September 9, 23:23 UTC
 
 This continuation made PROGRESS: completed first-hunt earned proof, diagnosed
 safe-zone collection failure, fixed actual misleading combat feedback, completed
