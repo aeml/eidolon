@@ -1478,7 +1478,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				continue
 			}
 			// Check Safe Zone
-			if candidate.x > -100 && candidate.x < 100 && candidate.z > 100 && candidate.z < 300 {
+			if w.SafeZoneAt(candidate.instanceID, candidate.x, candidate.z) != "" {
 				continue
 			}
 			// Check Stealth
@@ -1622,10 +1622,14 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							}
 
 							for _, p := range w.Entities {
-								if p.Type != TypePlayer || p.InstanceID != instID || p.State == "DEAD" {
+								if p.Type != TypePlayer {
 									continue
 								}
 								p.Mu.Lock()
+								if p.InstanceID != instID || p.State == "DEAD" || p.Disconnected || !w.CanDamage(src, p) {
+									p.Mu.Unlock()
+									continue
+								}
 								dx := p.X - x
 								dz := p.Z - z
 								if math.Sqrt(dx*dx+dz*dz) <= radius {
@@ -1693,7 +1697,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						newZ = constrainedZ
 					}
 
-					if newX > -100 && newX < 100 && newZ > 100 && newZ < 300 {
+					if w.SafeZoneAt(e.InstanceID, newX, newZ) != "" {
 						e.State = "IDLE"
 					} else {
 						e.X = newX
@@ -1744,7 +1748,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					newZ = constrainedZ
 				}
 
-				if newX > -100 && newX < 100 && newZ > 100 && newZ < 300 {
+				if w.SafeZoneAt(e.InstanceID, newX, newZ) != "" {
 					e.TargetX = e.SpawnX
 					e.TargetZ = e.SpawnZ
 				} else {
