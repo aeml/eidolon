@@ -993,18 +993,23 @@ class GameEngineMovementMethods {
         return null;
     }
 
-    shouldPreservePredictedPlayerMovement(serverState) {
+    shouldPreservePredictedPlayerMovement(serverState, snapshot = {}) {
         if (this.player?.state !== 'MOVING' || !this.player?.targetPosition) return false;
+        if (snapshot.isCharging ?? this.player.isCharging) return false;
 
         // IDLE snapshots can trail a newly sent click-to-move packet. Let the
         // active local path finish instead of inserting a one-frame stop that
         // is immediately undone by the next acknowledged MOVING snapshot.
         if (serverState === 'IDLE') return true;
 
-        // Ordinary casts are presentation-only and must not interrupt their
-        // active path. Server-owned actions (including Charge) do not create a
-        // local ability-animation lock and therefore remain authoritative.
-        return serverState === 'ATTACKING' && Boolean(this.player.currentAbilityAnimation);
+        // A ground click cancels the interaction that owned the previous basic
+        // attack. Its delayed ATTACKING snapshot must not replace MOVING and
+        // strand the new destination when the following IDLE snapshot arrives.
+        // A chase still yields to its authoritative attack, while ordinary
+        // cast presentation can coexist with movement. Charge is handled above
+        // using this snapshot, not the previous frame's charging flag.
+        const manualPath = !this.pendingInteraction && !this.abilityController?.pendingAbilityTarget;
+        return serverState === 'ATTACKING' && (manualPath || Boolean(this.player.currentAbilityAnimation));
     }
 
     getMovementMetrics() {

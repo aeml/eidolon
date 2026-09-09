@@ -25,3 +25,24 @@ failure diagnostics for those state distinctions. Root cause remains open.
 Original artifacts retained at `/tmp/eidolon-release50-predeploy-failure-0019`,
 log `/tmp/eidolon-release50-failure.log`. Actual fresh collection rerun is required
 before deciding whether this candidate can return to CI. Nothing is published.
+
+## Actual movement reproduction and candidate repair — September9 00:28UTC
+
+Exact6c5059e collection run31536 FAILED: even the sole collision-checked path
+failed to move at(170.562,289.334), destination(174.522,297.418), zero measured
+displacement, finalIDLE with target still set. No acquisition failure reproduced
+in this run. Credential scan and disposable cleanup passed. Log
+`/tmp/eidolon-release50-fresh-collection-0023.log` preserves the failure.
+
+Controlled full/delta state replay reproduces the matching client defect:
+MOVING with a ground destination -> lateATTACKING -> IDLE strands that target.
+The existing prediction guard protected only IDLE and ability-animation attacks,
+not ordinary basic attacks. Preserve a manual path once interaction/ability chase
+is canceled; retain authoritative chase attacks and use the current snapshot's
+Charge flag to override prediction. Death/jump remain authoritative.
+
+Four new full/delta regressions fail before the repair; afterward4 suites/121
+tests pass1.831s, including Charge and jump coverage. This is a controlled client
+reproduction consistent with the live-input failure, not yet proof of the full
+earned route. Added the gameplay fix to50's patch notes. Full client/lint and a
+new exact-version fresh collection run remain required. No publication yet.
