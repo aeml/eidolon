@@ -32,6 +32,11 @@ approval. Runtime remainsdb3bbb7; current primaryf3f33e1 adds only evidence and
 unversioned player-facing release-note draft. Fighter comparison62895 is ACTIVE
 under the same normal town-recovery rules.52 remains in predeploy QA; not live.
 
+04:13 follow-up: Fighter62895 remains active at10/40 with one counted death,
+ordinary respawn and five real town stops. Both health-driven and mana-driven
+recovery are observed using the Fighter's actual20mana primary cost. Its slower
+early pacing is evidence to retain, not yet a diagnosis or all-class approval.
+
 03:54 follow-up: fullclient45516 passes260suites/3682tests244.675s on primary
 db3bbb7. Actual default-recovery1469 remains active after opening/diary and10/40
 hunt credit, zero deaths; final error/reward/persistence checks are pending.

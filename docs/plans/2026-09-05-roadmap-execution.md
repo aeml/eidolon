@@ -5,7 +5,33 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 04:02 UTC
+## Current checkpoint — September 9, 04:13 UTC
+
+PROGRESS / VERIFIED WAIT: exact62895 Fighter handle remains ACTIVE, confirmed
+04:12. Opening105s and diary141s cumulative passed without intermediate logins.
+Watch5/40 at272s with4town stops, then one counted death atcredit5: level4,
+0HP/6MP, three nearby Skeletons(level2/19HP,level3/17HP,level4/4HP). Ordinary
+Respawn restored192HP/159MP and2earned items were equipped. Continued to10/40
+at425s,1death/5rest stops, level4/214XP/538gold. First recovery exercised health
+80/165→165/165 and mana46/143→143/143; later stops use actual Fighter20mana
+cost. No skipped death, changed limits or full-class pass. Runtime/source still
+frozenf3f33e1; poll62895, do not restart or clean its owned project while active.
+
+Measured the previous successful51 CI34300606161 from authoritative GitHub job
+timestamps:78m53s total,49m41s predeploy QA,12m20s final live QA; deployment
+jobs each under1m. New document `2026-09-09-release-pipeline-timing.md` in
+rootec8c314 records evidence, limits and a scoped next step to profile individual
+routes before changing concurrency. Filtered prior-job log read84070 ended with
+no matching sub-route timings; do not invent an internal bottleneck. No pipeline
+or queued-release mutation.52 CI34305897736 rechecked04:12 remains ACTIVE in
+predeploy, initial Go/Jest/all3browsergroups passed. Its current duration alone
+does not establish a hang or authorize skipping/restarting the gate.
+
+Primaryf3f33e1 clean, Wizard1469/fullclient45516 terminalPASS as below. Root is
+ledger-only; no53 push before entire52CI/deploy/finalLiveQA and fresh exact52.
+The whole goal remains active with further class/realm/balance/release work.
+
+## Previous checkpoint — September 9, 04:02 UTC
 
 PROGRESS: actual default-rested Wizard1469 on cleandb3bbb7 terminatedPASS1/
 11.2m, including final console/network error check. Opening52s/diary92s
