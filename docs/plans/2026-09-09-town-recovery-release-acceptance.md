@@ -1,5 +1,13 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update13:13UTC:58 regression94121 PASSED/TERMINAL0 on cleanfb8db754:
+253suites3570tests78.957s+lint, fresh fullGo-race root12.522s/game230.497s.
+Actual production57 image archive normal Docker-load PASS with exact old8754f0b8;
+current server untouched/healthy.57final live job102475487008 still ACTIVE.
+Next: only after entire57success and fresh public identities, publishfb8db754
+through normal master fast-forward from canonical58worktree (never ledger root).
+Then all58CI/backup/deploy/native live recovery gates remain required.
+
 Update13:08UTC:57predeploy PASSED, then production backup FAILED because Docker
 lost the old image reference when building the shared tag. Old56 restarted
 successfully; no schema upgrade on that failed attempt. Recovered the exact old

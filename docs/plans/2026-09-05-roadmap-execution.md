@@ -16,7 +16,24 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 13:08 UTC
+## Current checkpoint — September 9, 13:13 UTC
+
+58 full regression94121 is TERMINAL0/PASS on unchanged cleanfb8db754:
+253client suites3570tests78.957s, lint, fresh fullGo-race root12.522s/
+game230.497s/database1.090s. All prior source/readiness restrictions still apply.
+57 final live job102475487008 remains ACTIVE, not failed/timed out/cancelled.
+Fresh HTML has57 login label and exact8af54f2 release-keyed main.js.
+
+The actual57 production backup's `previous-api.tar.gz` was also loaded with the
+normal unfiltered Docker load command, successfully restoring exact8754f0b8.
+Archive metadata was checked first: no repository tags to overwrite. Current
+57 container/image and backend health stayed unchanged. This validates image
+archive usability, not permission to restore historical player data.
+
+Primary doc-only closure **a4ea4cc** records its117fffe full Maelin regression.
+No additional story runtime/visual changes and no owned local browser.
+
+## Previous checkpoint — September 9, 13:08 UTC
 
 This continuation made PROGRESS: diagnosed and recovered57's actual production
 backup failure without bypassing backup/migration gates or replacing player data,
