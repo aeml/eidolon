@@ -18,6 +18,19 @@ declares go1.24.5 and `go version` inside server confirms automatic1.24.5 select
 
 ## Current checkpoint — September 9, 09:54 UTC
 
+09:56 follow-up:56CI34337271486 client PASSED, server ACTIVE. Recovery82037
+remains active in fresh Wizard collection, with repeated actual town mana
+refills/rest-bank growth and resumed fighting; no complete-run claim.
+Canonical57 already includes exact56 ancestry: clean/frozen
+**6babef5fd131da38fd9a0b0360bc6cdee863dfee**. **59024 final merged full-client/lint
+ACTIVE** under Node24.18.0, logs
+`/tmp/eidolon-release57-final-queue-full-{client,lint}.log`. No57browser or push.
+Its schema8 deployment preflight/consistent backup/unsupported downgrade guards
+were reread; no production data change made. Separate51326 full server race
+still ACTIVE on ce6780e; do not edit that worktree until terminal. Next: finish
+these exact invocations, preserve any failure evidence, and advance57 only after
+complete56 release/live acceptance. Recovery58 remains the delivery priority.
+
 The preceding status turn was a VERIFIED WAIT:34328735856 was live, as was the
 owned recovery gameplay process. This turn made PROGRESS:55 passed its complete
 live gate, fresh public identity was independently verified, and canonical56 was
