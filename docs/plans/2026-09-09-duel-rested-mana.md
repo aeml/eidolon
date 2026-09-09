@@ -23,12 +23,22 @@ retrospectively passed. Diagnostic scan0 and exact cleanup verified.
 
 d96ab83 (primary23a4df2) now requires full mana before combat, the expected current
 level-one maximum100/110 for the observed rested state, and full CURRENT mana
-during the duel. Attack counts/intervals, real positive hit receipts, damage,+scene entry/exit, forfeit, saved rating and zero ranked/economic rewards remain
+during the duel. Attack counts/intervals, real positive hit receipts, damage,
+scene entry/exit, forfeit, saved rating and zero ranked/economic rewards remain
 unchanged. No buff, PvP, clock, retry, timeout or gameplay change was made.
 
 4c2654e adds an opt-in recovery-tail rehearsal containing the exact final five
 steps of the unchanged full route. Harness58502 passed18tests/4suites/0.889s,
 lint and shell syntax. Logs `/tmp/eidolon-rest58-duel-tail-{harness,lint}.log`.
+69623 corrected tail PASSED on5cc8849: four ordinary class duels1.9m; all four
+class animation matrices; multiplayer2.2m; three town-nameplate cases23.8s;
+native recovery/expiry two tests1.2m and real phone party24.5s. Archive
+`/tmp/eidolon-rest58-corrected-tail-proof-J7LHvs`; log
+`/tmp/eidolon-rest58-corrected-tail.log`. Credential scan0 and exact temporary
+containers/image/network/ports cleanup verified.98816 full client/lint also
+passed251suites/3535tests/157.667s on that source.
+
 This shorter rehearsal is diagnostic preparation, NOT a replacement for the full
-all-route acceptance. Corrected real browser replay, complete full regression,
-ordered releases56–58 and exact live recovery verification remain due.
+all-route acceptance. Complete full regression, ordered releases56–58 and exact
+live recovery verification remain due. A newly corrected56 visual clock change
+must be integrated through the ordered ancestry before the final58 full repeat.
