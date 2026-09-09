@@ -35,6 +35,13 @@ running.51 remains last verified live. No53 push before entire52CI/deploy/final
 live QA and fresh exact public52. Root remains ledger-only;53–57 canonical queue
 unchanged. Rest/story candidate unversioned, not live, no full pacing approval.
 
+03:26 follow-up:24785 remains ACTIVE. Opening passed97s,3 credited kills/zero
+deaths/5retreats, manual100XP100gold. Diary passed136s cumulative, manual200XP/
+25gold; no checkpoint reconnects. Watch starts level3/121XP/180gold,165HP143MP
+with no equipped gear; hunt is pending. Fresh public client/backend both51/
+55712b9 at03:25, healthOK/databaseReady. Canonical53 prepush77806 passed239
+version/nameplate/sharding tests2.915s on cleance330b3; no push while52 is active.
+
 ## Previous checkpoint — September 9, 03:08 UTC
 
 PROGRESS: **51 fully live and verified**. CI34300606161 terminalSUCCESS,
