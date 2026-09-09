@@ -25,6 +25,10 @@ import {
     createProceduralDungeonInteriorKit
 } from '../art/ProceduralDungeonInteriors.js';
 import { createProceduralTerrainTexture } from '../art/ProceduralRealmTerrain.js';
+import {
+    CRYSTAL_SANCTUM_DEFINITIONS,
+    createProceduralCrystalSanctum
+} from '../art/ProceduralCrystalSanctums.js';
 
 // Shared temp objects to reduce allocations during instancing
 const TEMP_POS = new THREE.Vector3();
@@ -39,7 +43,7 @@ export class WorldGenerator {
         this.scene.add(createProceduralPvPArena(layout));
     }
 
-    constructor(scene, collisionManager) {
+    constructor(scene, collisionManager, options = {}) {
         this.scene = scene;
         this.collisionManager = collisionManager;
 
@@ -48,6 +52,11 @@ export class WorldGenerator {
         this.dungeonInteriorKit = null;
         this.dungeonRoomPresentations = new Map();
         this.dungeonPresentationElapsed = 0;
+        this.instanceId = options.instanceId || '';
+        this.instanceType = options.instanceType || '';
+        this.crystalChamber = options.layout?.rooms?.at(-1) || null;
+        this.graphicsQuality = options.graphicsQuality || 'high';
+        this.crystalSanctum = null;
     }
 
     async preloadTextures() {
@@ -1127,6 +1136,7 @@ export class WorldGenerator {
     }
 
     updateDungeonRoomState(summary = null) {
+        this.updateCrystalSanctum(summary?.crystal || null);
         const rooms = Array.isArray(summary?.rooms) ? summary.rooms : [];
         for (const [roomIndex, presentation] of this.dungeonRoomPresentations.entries()) {
             const roomState = rooms.find((room) => room?.index === roomIndex) || null;
@@ -1134,8 +1144,33 @@ export class WorldGenerator {
         }
     }
 
-    updateDungeonPresentation(dt = 0) {
+    updateCrystalSanctum(snapshot) {
+        const definition = CRYSTAL_SANCTUM_DEFINITIONS[this.instanceType];
+        if (!definition || !this.instanceId || this.crystalChamber?.type !== 'boss') return;
+        if (!snapshot) {
+            if (this.crystalSanctum) this.crystalSanctum.visible = false;
+            return;
+        }
+        // A queued old-scene update must never replace the current raid's
+        // crystal. Presentation cannot infer restoration from chat or quests.
+        if (snapshot.instanceId !== this.instanceId || snapshot.raidType !== this.instanceType ||
+            snapshot.element !== definition.element || !Number.isFinite(snapshot.x) || !Number.isFinite(snapshot.z) ||
+            snapshot.x !== this.crystalChamber.x || snapshot.z !== this.crystalChamber.z ||
+            !['fractured', 'repairing', 'restored'].includes(snapshot.stage)) return;
+        if (!this.crystalSanctum) {
+            this.crystalSanctum = createProceduralCrystalSanctum(this.instanceType);
+            this.crystalSanctum.position.set(snapshot.x, 0, snapshot.z);
+            this.scene.add(this.crystalSanctum);
+        }
+        this.crystalSanctum.visible = true;
+        this.crystalSanctum.applySnapshot(snapshot);
+        this.crystalSanctum.animate(this.dungeonPresentationElapsed, this.graphicsQuality);
+    }
+
+    updateDungeonPresentation(dt = 0, graphicsQuality = this.graphicsQuality) {
         this.dungeonPresentationElapsed += Math.max(0, Number(dt) || 0);
+        this.graphicsQuality = graphicsQuality || this.graphicsQuality;
+        this.crystalSanctum?.animate(this.dungeonPresentationElapsed, this.graphicsQuality);
         for (const presentation of this.dungeonRoomPresentations.values()) {
             animateDungeonRoomStatePresentation(presentation, this.dungeonPresentationElapsed);
         }

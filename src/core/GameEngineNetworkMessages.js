@@ -129,7 +129,9 @@ class GameEngineNetworkMessageMethods {
         }
 
         // Generate new world
-        const worldGen = new WorldGenerator(this.getInstanceEnvironmentGroup(), this.collisionManager);
+        const worldGen = new WorldGenerator(this.getInstanceEnvironmentGroup(), this.collisionManager, {
+            instanceId, instanceType: type, layout, graphicsQuality: this.renderSystem.graphicsQuality
+        });
         this.activeWorldGenerator = worldGen;
         if (type === 'pvp_arena') {
             worldGen.createPvPArena(layout);

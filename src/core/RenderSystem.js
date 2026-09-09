@@ -20,6 +20,13 @@ import {
 } from '../art/ProceduralRealmTerrain.js';
 
 const DUNGEON_THEME_KEY_SET = new Set(DUNGEON_THEME_KEYS);
+const RAID_ENVIRONMENT_THEMES = Object.freeze({
+    earth_crystal_raid: 'verdant_bastion_catacombs',
+    water_crystal_raid: 'abyssal_well',
+    fire_crystal_raid: 'molten_core',
+    air_crystal_raid: 'tempest_spire',
+    weekly_raid: 'umbral_nexus'
+});
 
 export class RenderSystem {
     constructor(isMobile = false) {
@@ -503,7 +510,10 @@ export class RenderSystem {
     }
 
     setEnvironmentContext(context = null, position = null, immediate = true) {
-        const dungeonTheme = DUNGEON_THEME_KEY_SET.has(context) ? context : null;
+        // Remote raid coordinates are allocation slots, not overworld realm
+        // coordinates. Preserve each raid's authored lighting and atmosphere.
+        const sceneTheme = RAID_ENVIRONMENT_THEMES[context] || context;
+        const dungeonTheme = DUNGEON_THEME_KEY_SET.has(sceneTheme) ? sceneTheme : null;
         this.environmentThemeOverride = dungeonTheme;
         const realm = this.getRealmForPosition(position || this.cameraTarget);
         this.currentRealm = realm;

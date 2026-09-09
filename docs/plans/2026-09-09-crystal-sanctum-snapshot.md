@@ -55,6 +55,11 @@ rendering and earned group progression remain required before release.
 
 ## Next visual work
 
+Update12:19UTC: the first matching-instance presentation consumer and four
+procedural reliquaries are implemented with focused tests; see
+`2026-09-09-crystal-sanctum-presentation.md`. Actual GPU/browser inspection and
+full gameplay acceptance remain due, so this does not close the visual gate.
+
 Consume this state in four distinct crystal sanctums, with a bespoke clothed
 Maelin and readable ritual animation. Test desktop/phone High/Low views, scene
 cleanup, missed callouts, reconnect during and after repair, and all four full

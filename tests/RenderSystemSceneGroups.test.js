@@ -3,6 +3,20 @@ import { jest } from '@jest/globals';
 import { RenderSystem } from '../src/core/RenderSystem.js';
 
 describe('RenderSystem scene groups', () => {
+    test.each([
+        ['earth_crystal_raid', 'verdant_bastion_catacombs'],
+        ['water_crystal_raid', 'abyssal_well'],
+        ['fire_crystal_raid', 'molten_core'],
+        ['air_crystal_raid', 'tempest_spire'],
+        ['weekly_raid', 'umbral_nexus']
+    ])('%s uses its authored realm atmosphere at remote instance coordinates', (raidType, theme) => {
+        const renderSystem = new RenderSystem(false);
+        const position = new THREE.Vector3(80000, 0, 19280);
+        expect(renderSystem.setEnvironmentContext(raidType, position, true)).toBe(theme);
+        expect(renderSystem.environmentThemeOverride).toBe(theme);
+        expect(renderSystem.getRealmForPosition(position)).toBe(theme);
+    });
+
     test('initializes dedicated environment, entity, and effect groups on the root scene', () => {
         const renderSystem = new RenderSystem(false);
 
