@@ -12,13 +12,22 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-// Independent arithmetic for the level30, 0 Vitality/Wisdom and 10 Intelligence
-// recovery fixtures, optionally wearing the declared journal-test chest. This
-// does not call the production regeneration/stat code it is checking.
+// Independent arithmetic for explicitly declared recovery and handoff fixtures.
+// This does not call the production regeneration/stat code it is checking.
 func townFixturePools(t *testing.T, before *database.Character) (int, int) {
 	t.Helper()
-	if before.Level != 30 || before.Stats.Vitality != 0 || before.Stats.Wisdom != 0 || before.Stats.Intelligence != 10 {
-		t.Fatal("town resource oracle requires its declared level30 fixture; do not reuse it for other builds")
+	if before.Stats.Vitality != 0 || before.Stats.Wisdom != 0 || before.Stats.Intelligence != 10 {
+		t.Fatal("town resource oracle requires its declared base attributes; do not reuse it for other builds")
+	}
+	if before.Level == 1 {
+		chest, ok := before.Equipment["chest"]
+		if !ok || len(before.Equipment) != 1 || chest.ID != "handoff-chest" || chest.Type != "ARMOR" || chest.Level != 1 || chest.Potency != 0 || len(chest.Gems) != 0 || chest.SetID != "" || chest.UniqueEffect != "" || !reflect.DeepEqual(chest.Stats, map[string]int{"vitality": 20}) {
+			t.Fatal("level1 town oracle requires the declared unmodified handoff chest")
+		}
+		return 200, 100
+	}
+	if before.Level != 30 {
+		t.Fatal("town resource oracle requires its declared level1 or level30 fixture")
 	}
 	if len(before.Equipment) == 0 {
 		return 145, 245
@@ -162,5 +171,17 @@ func TestTownResourceAcceptanceJournalEquipment(t *testing.T) {
 	}
 	if got := townFixtureResources(t, before, 20, 0); got.Health != 159 || got.Mana != 489 {
 		t.Fatalf("equipped fixture maxima: %+v", got)
+	}
+}
+
+func TestTownResourceAcceptanceHandoffEquipment(t *testing.T) {
+	before := &database.Character{Level: 1, Stats: database.Stats{Intelligence: 10},
+		Resources: &database.CharacterResources{Version: 1, Health: 17, Mana: 100},
+		Equipment: map[string]database.Item{"chest": {ID: "handoff-chest", Type: "ARMOR", Level: 1, Stats: map[string]int{"vitality": 20}}}}
+	if got := townFixtureResources(t, before, .25, 30); got.Health != 22 || got.Mana != 72 {
+		t.Fatalf("handoff fixture exact post-cast recovery: %+v", got)
+	}
+	if got := townFixtureResources(t, before, 20, 30); got.Health != 220 || got.Mana != 110 {
+		t.Fatalf("handoff fixture recovery caps: %+v", got)
 	}
 }

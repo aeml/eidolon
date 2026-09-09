@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"reflect"
 	"strings"
 	"testing"
 	"time"
@@ -35,6 +36,10 @@ func TestResourceActualRefundBacklogBoundsDelayedDatabaseFailure(t *testing.T) {
 	}
 	admin := resourceRefundAdmin(t, uri)
 	fixture, password := resourceJournalFixture(t, repo)
+	fixture.WellRested = &database.CharacterWellRested{Version: 1, RemainingSeconds: 123.456789}
+	if err := repo.SaveCharacter(fixture.Name, fixture); err != nil {
+		t.Fatal(err)
+	}
 	auction := resourceRefundAuction(fixture)
 	auction.BidderID, auction.BidderName, auction.Bid = "player-next", "next", 50
 	for i := 0; i < 100; i++ {
@@ -105,10 +110,15 @@ func TestResourceActualRefundBacklogBoundsDelayedDatabaseFailure(t *testing.T) {
 	}
 	address, stopRecovered := compatStartServer(t, binary, uri, 91, "-save-journal-dir", dir)
 	defer stopRecovered()
+	restored, err := repo.GetCharacter(fixture.Name, fixture.Name)
+	if err != nil || !reflect.DeepEqual(restored.Resources, fixture.Resources) || !reflect.DeepEqual(restored.WellRested, fixture.WellRested) {
+		t.Fatal("offline backlog recovery changed resources or earned/spent rest")
+	}
 	connection := resourceOpenCharacter(t, address, fixture.Name, password)
-	resourceProbe(t, connection, 100, false)
+	townFixtureProbe(t, connection, restored)
 	saved = resourceCloseAndWait(t, repo, connection, fixture.Name)
-	if saved.Gold != 1334 || len(saved.GoldCreditReceipts) != 100 || saved.Resources.Health != 17 || saved.Resources.Mana != 100 {
+	assertTownMarketResources(t, restored, saved, 0)
+	if saved.Gold != 1334 || len(saved.GoldCreditReceipts) != 100 {
 		t.Fatal("backlog recovery lost/duplicated refunds or changed resources")
 	}
 }
@@ -119,6 +129,10 @@ func TestResourceActualUnreadableAuctionRefusesStartupAndRecovers(t *testing.T) 
 	repo, uri, binary := resourceJournalIntegration(t)
 	admin := resourceRefundAdmin(t, uri)
 	fixture, password := resourceJournalFixture(t, repo)
+	fixture.WellRested = &database.CharacterWellRested{Version: 1, RemainingSeconds: 123.456789}
+	if err := repo.SaveCharacter(fixture.Name, fixture); err != nil {
+		t.Fatal(err)
+	}
 	auction := resourceRefundAuction(fixture)
 	auction.PendingRefunds = []database.AuctionRefund{{ID: "valid-pending-" + auction.ID, PlayerID: "player-" + fixture.Name, CharacterName: fixture.Name, Amount: 43}}
 	if err := repo.CreateAuction(auction); err != nil {
@@ -166,9 +180,14 @@ func TestResourceActualUnreadableAuctionRefusesStartupAndRecovers(t *testing.T) 
 	address, stop := compatStartServer(t, binary, uri, 92, "-save-journal-dir", dir)
 	defer stop()
 	resourceWaitRefundAuction(t, repo, auction.ID, func(a *database.Auction) bool { return len(a.PendingRefunds) == 0 })
+	restored, err := repo.GetCharacter(fixture.Name, fixture.Name)
+	if err != nil || !reflect.DeepEqual(restored.Resources, fixture.Resources) || !reflect.DeepEqual(restored.WellRested, fixture.WellRested) {
+		t.Fatal("startup refusal/repair changed offline resources or rest")
+	}
 	connection := resourceOpenCharacter(t, address, fixture.Name, password)
-	resourceProbe(t, connection, 100, false)
+	townFixtureProbe(t, connection, restored)
 	saved := resourceCloseAndWait(t, repo, connection, fixture.Name)
+	assertTownMarketResources(t, restored, saved, 0)
 	if saved.Gold != 1277 || saved.GoldCreditReceipts[auction.PendingRefunds[0].ID] != 43 {
 		t.Fatal("repairing unreadable fixture lost or duplicated independent refund")
 	}

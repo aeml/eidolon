@@ -61,6 +61,35 @@ four-class stats and device/aura acceptance remain required.
 
 ## Development acceptance — September 8, 23:30 UTC
 
+Latest additional acceptance, **September9 01:16UTC**:
+
+- Actual standalone refunds/refund lifecycle pass43.100s: offline pending
+  corpse snapshots, outbid recipient save and refund-acknowledgement failures,
+  bounded100-refund backlog recovery, and unreadable-auction startup refusal.
+  Exact saved bank/resources survive offline work; connected healing is derived
+  independently from earned rest time. Original gold/receipt/equipment and
+  failure/retry bounds remain enforced.16 normal child processes drained cleanly;
+  the separate deliberately malformed-record process refused startup as expected.
+  Owned Mongo0102 and its volume were removed and checked absent. Evidence:
+  `/tmp/eidolon-rest-refunds-0102.log`.
+- Original actual live-handoff/cooldown flow now passes8.066s, preserving a real
+  Fireball, two repeated joins, overlapping authenticated login, late old-socket
+  cleanup, new-owner commands and fresh disconnect persistence. The level1
+  vitality-chest fixture has an independent exact pool/recovery oracle.
+  Two initial test-assumption failures are retained in0107/0115 logs: a cast can
+  precede the first rest tick, and disconnect intentionally clears transient
+  fractional healing. The final check validates exact old-session recovery at
+  the handoff's fresh durable save, then exact new-session recovery from there;
+  no production rules or cooldown checks were weakened. Final evidence:
+  `/tmp/eidolon-rest-handoff-0119.log`. All three processes drained cleanly;
+  their owned Mongo containers/volumes were removed and checked absent.
+- Final full server-package race suite passes12.590s; evidence
+  `/tmp/eidolon-rest-refund-handoff-final-root.log`. All owned handles closed.
+  Production server source remains unchanged from the exercised d650c72 binary.
+  Schema-upgrade recovery, integrated browser travel/reconnect/group aura and
+  rested/unrested earned-play pacing remain open. Feature is still unversioned
+  and not live.
+
 Latest additional acceptance, **September9 00:57UTC**:
 
 - Full merged client66914 **PASS242 suites/3,425 tests93.429s**, lint also passes.

@@ -77,8 +77,8 @@ func resourceLoginCharacter(t *testing.T, address, username, password, class str
 	return conn, login.ResumeToken
 }
 
-// Real sockets and the production server; zero Wisdom isolates resource
-// preservation from elapsed regeneration. No gameplay balance is changed.
+// Real sockets and the production server. Retain town recovery, exact resource
+// arithmetic, the active cooldown and overlapping live socket ownership.
 func TestResourceActualLiveHandoff(t *testing.T) {
 	if os.Getenv("EIDOLON_RESOURCE_DISPOSABLE_DATABASE") != "1" {
 		t.Skip("requires explicitly disposable loopback Mongo and built server")
@@ -127,10 +127,17 @@ func TestResourceActualLiveHandoff(t *testing.T) {
 	resourceSend(t, first, MsgAbility, AbilityPayload{SkillName: "Fireball", TargetX: -1.25, TargetZ: 220})
 	var cast game.AbilityResult
 	resourceReadMessage(t, first, MsgAbilityResult, &cast)
-	if !cast.Accepted || cast.Mana != 70 {
+	if !cast.Accepted {
 		t.Fatalf("prepared ordinary cast: %+v", cast)
 	}
-	// Repeated Join must keep live mana/cooldowns even while the saved bar is100.
+	// An immediate pre-rest-tick cast spends 30 from the unchanged 100 mana.
+	// Later casts must occur below the boosted cap so no prior healing was
+	// discarded; otherwise the bank cannot independently predict recovery.
+	afterCast := townFixtureRead(t, first, credited, 30)
+	if cast.Mana < 70 || cast.Mana > int(afterCast.Mana) || (cast.Mana != 70 && cast.Mana+30 >= int(afterCast.MaxMana)) {
+		t.Fatalf("cast outside exact recovery interval or pre-cast cap: %+v", cast)
+	}
+	// Repeated Join must retain the active cooldown and only normal town healing.
 	for i := 0; i < 2; i++ {
 		resourceSend(t, first, MsgJoin, JoinPayload{Type: "Wizard"})
 		var cooldowns struct {
@@ -141,28 +148,41 @@ func TestResourceActualLiveHandoff(t *testing.T) {
 			t.Fatal("repeated Join lost active cooldown")
 		}
 		resourceReadMessage(t, first, MsgQuestUpdate, nil)
+		beforeProbe := townFixtureRead(t, first, credited, 30)
 		resourceSend(t, first, MsgAbility, AbilityPayload{SkillName: "Fireball"})
 		resourceReadMessage(t, first, MsgAbilityResult, &cast)
-		if cast.Accepted || cast.Reason != "cooldown" || cast.Mana != 70 {
+		afterProbe := townFixtureRead(t, first, credited, 30)
+		if cast.Accepted || cast.Reason != "cooldown" || cast.Mana < int(beforeProbe.Mana) || cast.Mana > int(afterProbe.Mana) {
 			t.Fatalf("repeated Join changed mana/cooldown: %+v", cast)
 		}
 	}
 	// Login from a second socket while the first remains open. The first must
 	// lose authority, and its later transport cleanup may not retire the second.
+	handoffStarted := time.Now()
 	second := resourceOpenCharacter(t, address, name, password)
-	first.Close()
-	resourceSend(t, second, MsgAbility, AbilityPayload{SkillName: "not-an-unlocked-skill"})
-	resourceReadMessage(t, second, MsgAbilityResult, &cast)
-	if cast.Accepted || cast.Mana != 70 {
-		t.Fatalf("replacement login changed mana: %+v", cast)
+	// Authenticated replacement retires/saves the old owner before admitting
+	// the new one. Disconnect intentionally clears transient regen fractions.
+	// Validate both sessions exactly, separated by that durable snapshot.
+	handoff, err := repo.GetCharacter(name, name)
+	if err != nil || !resourceFreshDisconnect(handoff, credited.LastLogout, handoffStarted) {
+		t.Fatal("replacement login omitted the prior owner's fresh durable save")
 	}
+	assertTownFixtureSave(t, credited, handoff, 30)
+	first.Close()
+	probeReplacement := func() {
+		t.Helper()
+		before := townFixtureRead(t, second, handoff, 0)
+		resourceSend(t, second, MsgAbility, AbilityPayload{SkillName: "not-an-unlocked-skill"})
+		resourceReadMessage(t, second, MsgAbilityResult, &cast)
+		after := townFixtureRead(t, second, handoff, 0)
+		if cast.Accepted || (cast.Reason != "locked" && cast.Reason != "global_cooldown") || cast.Mana < int(before.Mana) || cast.Mana > int(after.Mana) {
+			t.Fatalf("replacement owner lost authority or exact resources: %+v", cast)
+		}
+	}
+	probeReplacement()
 	// Give old transport cleanup time to run, then prove the new owner still works.
 	time.Sleep(200 * time.Millisecond)
-	resourceSend(t, second, MsgAbility, AbilityPayload{SkillName: "not-an-unlocked-skill"})
-	resourceReadMessage(t, second, MsgAbilityResult, &cast)
-	if cast.Accepted || cast.Mana != 70 {
-		t.Fatalf("old cleanup changed new owner: %+v", cast)
-	}
+	probeReplacement()
 	beforeClose, err := repo.GetCharacter(name, name)
 	if err != nil {
 		t.Fatal(err)
@@ -175,7 +195,8 @@ func TestResourceActualLiveHandoff(t *testing.T) {
 		saved, err := repo.GetCharacter(name, name)
 		lastSaved = saved
 		if err == nil && resourceFreshDisconnect(saved, beforeClose.LastLogout, closedAt) {
-			if saved.Resources == nil || saved.Resources.Mana != 70 || saved.Resources.Dead || saved.Resources.Health < 17 || saved.Resources.Health > 18 || saved.Gold != 1277 || !reflect.DeepEqual(saved.Equipment, fixture.Equipment) {
+			assertTownFixtureSave(t, handoff, saved, 0)
+			if saved.Resources == nil || saved.Resources.Dead || saved.Gold != 1277 || !reflect.DeepEqual(saved.Equipment, fixture.Equipment) {
 				t.Fatalf("handoff saved wrong state: resources=%+v gold=%d", saved.Resources, saved.Gold)
 			}
 			t.Log("real cast, two repeated joins, overlapping login, late old disconnect, new-owner command and final resource save passed")

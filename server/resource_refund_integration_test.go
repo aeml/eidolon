@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"eidolon-server/internal/database"
-	"eidolon-server/internal/game"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -52,6 +51,7 @@ func TestResourceActualOfflineRefundOrdersPendingSnapshot(t *testing.T) {
 	}
 	fixture.Gold = 900
 	fixture.Resources = &database.CharacterResources{Version: 1, Dead: true}
+	fixture.WellRested = &database.CharacterWellRested{Version: 1, RemainingSeconds: 123.456789}
 	if _, err := journal.Write(fixture.Name, fixture); err != nil {
 		t.Fatal(err)
 	}
@@ -69,7 +69,7 @@ func TestResourceActualOfflineRefundOrdersPendingSnapshot(t *testing.T) {
 		resourceProbe(t, connection, 0, true)
 		saved := resourceCloseAndWait(t, repo, connection, fixture.Name)
 		if saved.Gold != 943 || saved.GoldCreditReceipts[refund.ID] != 43 ||
-			!reflect.DeepEqual(saved.Resources, fixture.Resources) || !reflect.DeepEqual(saved.Equipment, fixture.Equipment) {
+			!reflect.DeepEqual(saved.Resources, fixture.Resources) || !reflect.DeepEqual(saved.WellRested, fixture.WellRested) || !reflect.DeepEqual(saved.Equipment, fixture.Equipment) {
 			t.Fatal("offline refund lost/duplicated credit or overwrote pending dead/resource/gear snapshot")
 		}
 		stop()
@@ -101,12 +101,7 @@ func TestResourceActualOutbidRefundSurvivesSaveAndAcknowledgementFailure(t *test
 			dir := t.TempDir()
 			address, stop := compatStartServer(t, binary, uri, 74, "-save-journal-dir", dir)
 			connection := resourceOpenCharacter(t, address, fixture.Name, password)
-			resourceSend(t, connection, MsgAbility, AbilityPayload{SkillName: "Fireball"})
-			var cast game.AbilityResult
-			resourceReadMessage(t, connection, MsgAbilityResult, &cast)
-			if !cast.Accepted || cast.Mana != 70 {
-				t.Fatal("ordinary pre-refund Fireball failed")
-			}
+			townFixtureFireball(t, connection, fixture)
 			bidConnection := resourceOpenCharacter(t, address, bidder.Name, bidderPassword)
 			collection, validator := "users", bson.M{"$or": bson.A{
 				bson.M{"username": bson.M{"$ne": fixture.Name}}, bson.M{"refund_fault_probe": bson.M{"$exists": true}},
@@ -175,24 +170,56 @@ func TestResourceActualOutbidRefundSurvivesSaveAndAcknowledgementFailure(t *test
 			if fault == "refund_ack" && (before.Gold != 1234 || before.GoldCreditReceipts[refund.ID] != 43) {
 				t.Fatal("ack failure did not occur after durable credit")
 			}
+			durable := before
+			journal, err := database.OpenCharacterSaveJournal(dir)
+			if err != nil {
+				t.Fatal(err)
+			}
+			pending, err := journal.Read(fixture.Name)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if pending != nil && pending.SaveID != before.LastSaveID {
+				durable, err = pending.Character()
+				if err != nil {
+					t.Fatal(err)
+				}
+			}
+			assertTownMarketResources(t, fixture, durable, 30)
+			bidDurable, err := repo.GetCharacter(bidder.Name, bidder.Name)
+			if err != nil {
+				t.Fatal(err)
+			}
+			assertTownMarketResources(t, bidder, bidDurable, 0)
 			setValidator(bson.M{})
 			for phase := 75; phase < 77; phase++ {
 				address, stopRecovered := compatStartServer(t, binary, uri, phase, "-save-journal-dir", dir)
 				resourceWaitRefundAuction(t, repo, auction.ID, func(a *database.Auction) bool { return len(a.PendingRefunds) == 0 })
+				restored, err := repo.GetCharacter(fixture.Name, fixture.Name)
+				if err != nil || !reflect.DeepEqual(restored.Resources, durable.Resources) || !reflect.DeepEqual(restored.WellRested, durable.WellRested) {
+					t.Fatal("refund recovery changed exact durable resources/rest before login")
+				}
+				bidRestored, err := repo.GetCharacter(bidder.Name, bidder.Name)
+				if err != nil || !reflect.DeepEqual(bidRestored.Resources, bidDurable.Resources) || !reflect.DeepEqual(bidRestored.WellRested, bidDurable.WellRested) {
+					t.Fatal("refund recovery changed winning bidder's offline resources/rest")
+				}
 				connection := resourceOpenCharacter(t, address, fixture.Name, password)
-				resourceProbe(t, connection, 70, false)
+				townFixtureProbe(t, connection, restored)
 				saved := resourceCloseAndWait(t, repo, connection, fixture.Name)
-				if saved.Gold != 1234 || saved.GoldCreditReceipts[refund.ID] != 43 || saved.Resources.Health != 17 ||
+				assertTownMarketResources(t, restored, saved, 0)
+				if saved.Gold != 1234 || saved.GoldCreditReceipts[refund.ID] != 43 || saved.Level != fixture.Level || saved.XP != fixture.XP ||
 					!reflect.DeepEqual(saved.Equipment, fixture.Equipment) {
 					t.Fatal("recovered outbid refund duplicated/lost gold or resources/gear")
 				}
 				bidConnection := resourceOpenCharacter(t, address, bidder.Name, bidderPassword)
-				resourceProbe(t, bidConnection, 100, false)
+				townFixtureProbe(t, bidConnection, bidRestored)
 				bidSaved := resourceCloseAndWait(t, repo, bidConnection, bidder.Name)
+				assertTownMarketResources(t, bidRestored, bidSaved, 0)
 				if bidSaved.Gold != 1184 {
 					t.Fatal("winning bid debit changed across controlled restart")
 				}
 				stopRecovered()
+				durable, bidDurable = saved, bidSaved
 			}
 		})
 	}
