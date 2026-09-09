@@ -5,6 +5,7 @@ import { createEarnedClassCombat } from './earned-class-combat.js';
 import { recoverEarnedDeath } from './earned-death-recovery.js';
 import { earnedCheckpoint } from './earned-checkpoint.js';
 import { recoverBetweenHuntEncounters } from './earned-hunt-rest.js';
+import { earnedTownRecoveryEnabled } from '../earnedRecoveryPolicy.js';
 import { chooseExpeditionCombatTarget, levelAppropriateExpeditionTargets } from '../expeditionCombatTargets.js';
 import { equipEarnedEmptySlots } from './earned-equipment.js';
 import { selectEarnedAttackTarget } from './earned-target-input.js';
@@ -117,7 +118,7 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady, 
         const credit = (await readChronicleChapter(page, id)).count;
         let enemy;
         if (await recoverBetweenHuntEncounters(page, {
-            enabled: process.env.EIDOLON_E2E_STORY_REST_RECOVERY === '1', creditedKills: credit, leaveTown
+            enabled: earnedTownRecoveryEnabled(), creditedKills: credit, leaveTown
         })) restStops++;
         try { enemy = await findExpeditionTarget(page, hunt); } catch (error) {
             if ((await readPlayerState(page)).state !== 'DEAD') throw error;
@@ -167,6 +168,8 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady, 
         if (count <= credit) console.log(`[story-hunt] stalled ${JSON.stringify(await page.evaluate(id => {
             const game = window.game, target = game.remotePlayers.get(id);
             return { player: { level: game.player.level, hp: game.player.stats.hp,
+                maxHP: game.player.stats.maxHp, mana: game.player.stats.mana, maxMana: game.player.stats.maxMana,
+                restBank: game.player.wellRestedSeconds, safeZone: game.player.safeZoneId,
                 x: game.player.position.x, z: game.player.position.z },
             target: target ? { id, level: target.level, hp: target.health ?? target.stats?.hp,
                 state: target.state, distance: game.player.position.distanceTo(target.position) } : null,

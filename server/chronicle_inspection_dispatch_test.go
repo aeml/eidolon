@@ -69,3 +69,32 @@ func TestChronicleInspectionDispatchCannotClaimCombatCredit(t *testing.T) {
 		t.Fatal("client claimed an anchor kill")
 	}
 }
+
+func TestChronicleInspectionUsesPrecedingValidatedMovement(t *testing.T) {
+	previousWorld := world
+	defer func() { world = previousWorld }()
+	world = game.NewWorld(nil)
+	client := newLevelCommandClient()
+	player := newLevelCommandPlayer(client.playerID)
+	chapter := game.ChronicleInvestigationCatalog()[0]
+	site := chapter.Sites[0]
+	player.X, player.Z = site.X, site.Z+5.05
+	player.Quests = []game.Quest{{ID: chapter.ID, Type: "INVESTIGATE", Category: game.QuestCategoryChronicle, Accepted: true, MaxCount: 1}}
+	world.AddEntity(player)
+	world.AddEntity(&game.Entity{ID: site.EntityID, Type: game.TypeNPC, SubType: "ChronicleSite", X: site.X, Z: site.Z})
+	inspect, _ := json.Marshal(map[string]string{"entityId": site.EntityID})
+	client.handleMessage(Message{Type: MsgChronicleInspect, Payload: inspect})
+	if messages := drainSentMessages(client.send); len(messages) != 1 || messages[0].Type != MsgError {
+		t.Fatalf("out-of-range request must still be rejected: %+v", messages)
+	}
+	move, _ := json.Marshal(MovePayload{X: site.X, Z: site.Z + 4.95, State: "IDLE", Sequence: 1})
+	client.handleMessage(Message{Type: MsgMove, Payload: move})
+	client.handleMessage(Message{Type: MsgChronicleInspect, Payload: inspect})
+	messages := drainSentMessages(client.send)
+	if len(messages) != 2 || messages[0].Type != MsgQuestUpdate || messages[1].Type != MsgChronicleDiscovery {
+		t.Fatalf("preceding ordinary movement must reach inspection before range check: %+v", messages)
+	}
+	if player.Quests[0].Count != 1 || player.Quests[0].Completed {
+		t.Fatal("inspection must record one discovery without automatic completion")
+	}
+}

@@ -558,6 +558,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   fresh-collection)
     run_fresh_collection
     ;;
+  fresh-collection-no-rest)
+    EIDOLON_E2E_REST_RECOVERY=0 run_fresh_collection
+    ;;
   fresh-collection-prepared)
     EIDOLON_E2E_PREPARED_COLLECTION=1 run_fresh_collection
     ;;
@@ -579,8 +582,12 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   fresh-story-uninterrupted)
     EIDOLON_E2E_UNINTERRUPTED=1 EIDOLON_E2E_FRESH_STORY_HUNT=1 npx playwright test tests/e2e/fresh-opening-gameplay.spec.js
     ;;
+  fresh-story-no-rest-uninterrupted)
+    EIDOLON_E2E_UNINTERRUPTED=1 EIDOLON_E2E_FRESH_STORY_HUNT=1 EIDOLON_E2E_REST_RECOVERY=0 \
+      npx playwright test tests/e2e/fresh-opening-gameplay.spec.js
+    ;;
   fresh-rested-story-uninterrupted)
-    EIDOLON_E2E_UNINTERRUPTED=1 EIDOLON_E2E_FRESH_STORY_HUNT=1 EIDOLON_E2E_STORY_REST_RECOVERY=1 \
+    EIDOLON_E2E_UNINTERRUPTED=1 EIDOLON_E2E_FRESH_STORY_HUNT=1 EIDOLON_E2E_REST_RECOVERY=1 \
       npx playwright test tests/e2e/fresh-opening-gameplay.spec.js
     ;;
   fresh-story-hunt)

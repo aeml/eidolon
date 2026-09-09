@@ -884,7 +884,7 @@ class GameEngineMovementMethods {
         return this.movementNetworkState;
     }
 
-    sendPlayerMovementIfNeeded(dt) {
+    sendPlayerMovementIfNeeded(dt, { flush = false } = {}) {
         if (!this.isMultiplayer || !this.player || !this.network?.send ||
             this.player.state === 'DEAD' || this.player.state === 'JUMPING') return false;
 
@@ -909,7 +909,7 @@ class GameEngineMovementMethods {
         // interval from occasionally stretching to three frames (20 Hz).
         const heartbeat = elapsed + 1e-9 >= 1;
         const cadenceReady = elapsed + 1e-9 >= (1 / 30);
-        if (!stateChanged && !heartbeat && (!(positionChanged || rotationChanged) || !cadenceReady)) {
+        if (!stateChanged && !heartbeat && (!(positionChanged || rotationChanged) || (!cadenceReady && !flush))) {
             return false;
         }
 

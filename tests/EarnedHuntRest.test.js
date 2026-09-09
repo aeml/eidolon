@@ -7,7 +7,7 @@ jest.unstable_mockModule('./e2e/earned-town-rest.js', () => ({ recoverBetweenCol
 const { recoverBetweenHuntEncounters } = await import('./e2e/earned-hunt-rest.js');
 beforeEach(() => jest.clearAllMocks());
 
-test('the default route never invokes town recovery', async () => {
+test('an explicitly disabled diagnostic never invokes town recovery', async () => {
     expect(await recoverBetweenHuntEncounters({}, { enabled: false, creditedKills: 2 })).toBe(false);
     expect(recover).not.toHaveBeenCalled();
 });
@@ -35,7 +35,7 @@ test('enabled comparison cannot silently omit ordinary departure', async () => {
     await expect(recoverBetweenHuntEncounters({}, { enabled: true, creditedKills: 2 }))
         .rejects.toThrow('ordinary town departure');
 });
-test('rest is outside the unchanged credit watchdog and default CI route', () => {
+test('normal rest is outside the unchanged credit watchdog; no-rest diagnostics are explicit', () => {
     const route = readFileSync(new URL('./e2e/fresh-story-hunt-route.js', import.meta.url), 'utf8');
     const loop = route.slice(route.indexOf('while ((await readChronicleChapter'));
     expect(loop.indexOf('recoverBetweenHuntEncounters(')).toBeGreaterThan(-1);
@@ -43,6 +43,8 @@ test('rest is outside the unchanged credit watchdog and default CI route', () =>
     expect(loop.indexOf('recoverBetweenHuntEncounters(')).toBeLessThan(loop.indexOf('const deadline = Date.now() + 120_000'));
     expect(loop.slice(loop.indexOf('const deadline = Date.now() + 120_000'))).not.toContain('recoverBetweenHuntEncounters(');
     const shell = readFileSync(new URL('../scripts/run-isolated-character-qa.sh', import.meta.url), 'utf8');
-    expect(shell.match(/fresh-story-uninterrupted\)[\s\S]*?;;/)[0]).not.toContain('STORY_REST_RECOVERY');
-    expect(shell.match(/fresh-rested-story-uninterrupted\)[\s\S]*?;;/)[0]).toContain('EIDOLON_E2E_STORY_REST_RECOVERY=1');
+    expect(route).toContain('enabled: earnedTownRecoveryEnabled()');
+    expect(shell.match(/fresh-story-uninterrupted\)[\s\S]*?;;/)[0]).not.toContain('EIDOLON_E2E_REST_RECOVERY=0');
+    expect(shell.match(/fresh-rested-story-uninterrupted\)[\s\S]*?;;/)[0]).toContain('EIDOLON_E2E_REST_RECOVERY=1');
+    expect(shell.match(/fresh-story-no-rest-uninterrupted\)[\s\S]*?;;/)[0]).toContain('EIDOLON_E2E_REST_RECOVERY=0');
 });

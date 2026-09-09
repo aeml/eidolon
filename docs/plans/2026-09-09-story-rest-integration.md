@@ -153,3 +153,47 @@ explicit node:url import. Final97700 PASS4suites/41tests1.345s plus lint, shell
 syntax and diff checks. Logs `/tmp/eidolon-rested-story-policy{,-final}.log` and
 `/tmp/eidolon-rested-story-lint-final.log`. No production runtime changes since
 0a3e1c0/fullclient3655; actual managed-hunt comparison is still pending.
+
+## September 9, 03:47 UTC — intended recovery loop and inspection ordering
+
+The player explicitly confirmed that town HP/MP recovery and rest are the normal
+expedition loop. No-rest sustainability is diagnostic, not a release requirement.
+Normal collection/hunt QA now defaults to genuine town recovery for all four
+classes; explicit no-rest routes remain available. The shared observation reads
+each primary skill's actual configured cost and ordinary gear/talent modifiers,
+including zero-cost builds, instead of hardcoding Wizard/30mana. Later Earth
+hunts receive the same ordinary departure callback. No production recovery,
+reward, quota, deadline or death-limit changes. Focused94740 PASS6suites/68tests
+5.927s; lint and shell/diff checks pass. Candidate is now developed separately at
+`/tmp/eidolon-primary-town-recovery-lAKY3k`, branchwork/primary-town-recovery-20260909,
+from8564500; the old integration tree remained frozen during actual play.
+
+Actual53523 on clean8564500 terminatedFAILED9.3m, but the entire earned Watch,
+manual payout and final saved-progress checks completed:40/40 at468s hunt time,
+0deaths/11real town stops, level6 before claim;1593XP/100gold manually awarded
+tolevel8/174XP/1495gold.15 occupied bag slots/650 unsold gear value retained.
+Opening33s/diary73s cumulative had no intermediate reconnects. Normal town
+recovery visibly refilled spent pools and banked rest; expiry also occurred
+naturally outside. This is one Wizard route, not all-class/full-campaign balance.
+
+The final browser-console assertion caught one earlier server rejection:
+`Move closer to investigate`. Do not suppress the error or relabel the full
+test green. Log `/tmp/eidolon-story-rest-managed-0332.log`; credential scan passed
+and exact owned containers/image independently absent. Sanitized captures at
+`/tmp/eidolon-story-rest-managed-proof-C6uixz/test-results`; inspected ready-to-claim
+image confirms readable Ilyra text,40/40,1593XP/100gold and explicit Complete Quest.
+
+Source diagnosis found interaction executes before the frame's movement send.
+A client within5m can inspect while the server still sees the preceding >5m
+position. New regression49807 FAILED2/3 cases (moving/just-stopped). Inspection
+now flushes changed ordinary sequenced movement before its request; no enlarged
+server radius, bypassed movement validation or local credit. Unchanged rereads
+do not flood movement. Corrected70105 PASS5suites/66tests3.444s; independent
+server dispatch4933 PASSrace1.734s confirms before-move rejection and after-move
+acknowledgement without auto-completion. This establishes an ordering bug that
+can cause the observed rejection, not a captured unique cause of that earlier
+request. Logs `/tmp/eidolon-chronicle-move-order-{before,after,server}.log`.
+
+Final prepare/lint90207 and diff checks pass. Full client regression and a fresh
+actual default-rested route on the corrected source remain required. No new
+version/live publication; canonical release order is unchanged.

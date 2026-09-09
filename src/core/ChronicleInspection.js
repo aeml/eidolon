@@ -29,6 +29,10 @@ export function requestChronicleInspection(engine, entity) {
     if (!engine.isMultiplayer || !player || player.state === 'DEAD' || engine.currentInstanceId || !entity?.isActive || entity.type !== 'ChronicleSite') return false;
     const distance = Math.hypot(player.position.x - entity.position.x, player.position.z - entity.position.z);
     if (!Number.isFinite(distance) || distance > 5) return false;
+    // Interaction runs before the frame's ordinary movement send. Deliver the
+    // latest predicted step first so the server can validate it before checking
+    // inspection range; do not enlarge the range or grant local discovery credit.
+    engine.sendPlayerMovementIfNeeded?.(0, { flush: true });
     engine.pendingChronicleInspection = {
         entityId: entity.id, playerId: player.id, instanceId: '', expiresAt: Date.now() + 5000
     };

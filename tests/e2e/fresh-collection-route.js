@@ -5,6 +5,7 @@ import { clearFreshInvestigationApproach } from './fresh-investigation-combat.js
 import { earnFreshStoryHunt } from './fresh-story-hunt-route.js';
 import { openDungeonGuide } from './dungeon-guide.js';
 import { recoverBetweenCollectionEncounters } from './earned-town-rest.js';
+import { earnedTownRecoveryEnabled } from '../earnedRecoveryPolicy.js';
 import { createFreshCollectionCombat, observeCollectionCombatReceipts, readFreshCollectionCombat,
     readCollectionTarget, selectCollectionTargetThroughInput,
     reacquireDisengagedCollectionTarget } from './fresh-collection-combat.js';
@@ -50,7 +51,7 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
     await leaveTown();
     let observedTargetDeaths = 0, deaths = 0;
     for (let encounter = 0; encounter < required * 5 + 2 && (await readChronicleChapter(page, collection)).count < required; encounter++) {
-        if (process.env.EIDOLON_E2E_REST_RECOVERY === '1') {
+        if (earnedTownRecoveryEnabled()) {
             await recoverBetweenCollectionEncounters(page, leaveTown);
         }
         let target = await findTarget();
@@ -143,10 +144,10 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
     expect(reward.grantedXP).toBeGreaterThan(0);
     await page.getByRole('button', { name: 'Continue conversation', exact: true }).click();
     await page.locator('#btn-close-quest').click();
-    await earnFreshStoryHunt(page, credentials, 'chronicle_earth_walking_ink');
+    await earnFreshStoryHunt(page, credentials, 'chronicle_earth_walking_ink', { leaveTown });
     await earnEarthInvestigation(page, 'chronicle_earth_returning_scar', openIlyra, null,
         { beforeInspect: site => clearFreshInvestigationApproach(page, site), inspectWithKeyboard: true });
-    await earnFreshStoryHunt(page, credentials, 'chronicle_earth_borrowed_oath');
+    await earnFreshStoryHunt(page, credentials, 'chronicle_earth_borrowed_oath', { leaveTown });
     await openIlyra(page);
     await expect(page.locator('#quest-window')).toContainText('The Dungeon Guide requires level 30 for the Bastion');
     await expect(page.locator('#quest-window')).toContainText('Daily contracts are optional');
