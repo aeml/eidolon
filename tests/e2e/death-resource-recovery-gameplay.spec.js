@@ -1,15 +1,18 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld,
     projectGroundOffset, readPlayerState, returnToTown, useEncounterQAWaypoint } from './helpers.js';
+import { freshRestedResources, observeRestedResources } from './rested-resource-observation.js';
+import { sanctuaryRecoveryBounds } from '../castResourceBounds.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off', actionTimeout: 15_000 });
 
-test('login preserves spent resources and death; only dead Respawn refills mana', async ({ page, baseURL }) => {
+test('login preserves resources and death; town recovery and dead Respawn remain distinct', async ({ page, baseURL }) => {
     test.setTimeout(240_000);
     test.skip(process.env.EIDOLON_E2E_REGISTER !== '1', 'Requires disposable recovery QA');
     const failures = collectBrowserFailures(page, baseURL);
     const credentials = credentialsFromEnvironment();
     await loginAndEnterWorld(page, credentials);
+    await observeRestedResources(page);
     expect(await page.evaluate(() => window.game.player.constructor.name)).toBe('Wizard');
     let lastCommandAt = 0;
     async function command(value, confirmation) {
@@ -66,36 +69,48 @@ test('login preserves spent resources and death; only dead Respawn refills mana'
         const player = window.game.player;
         return { hp: player.stats.hp, maxHP: player.stats.maxHp, mana: player.stats.mana,
             maxMana: player.stats.maxMana, hpRegen: player.stats.hpRegen,
-            manaRegen: player.stats.manaRegen, state: player.state };
+            manaRegen: player.stats.manaRegen, state: player.state,
+            bank: player.wellRestedSeconds, zone: player.safeZoneId,
+            level: player.level, gear: Object.values(player.equipment).filter(item => item?.id).length };
     });
     async function verifyFreshLogin(label, dead) {
-        const before = await resources(), started = Date.now();
+        const before = dead ? await resources() : await freshRestedResources(page), started = Date.now();
         expect(before.mana).toBeLessThan(before.maxMana);
         await page.reload({ waitUntil: 'domcontentloaded' });
         await loginAndEnterWorld(page, credentials);
-        const after = await resources(), seconds = (Date.now() - started) / 1000;
-        expect(after.maxHP).toBe(before.maxHP);
-        expect(after.maxMana).toBe(before.maxMana);
-        // Only elapsed online regeneration is allowed. An extra point covers
-        // the existing fractional tick at the two observation boundaries.
-        const hpAllowance = dead ? 0 : Math.ceil(before.hpRegen * seconds) + 1;
-        const manaAllowance = dead ? 0 : Math.ceil(before.manaRegen * seconds) + 1;
-        expect(after.hp).toBeGreaterThanOrEqual(before.hp);
-        expect(after.hp).toBeLessThanOrEqual(Math.min(after.maxHP, before.hp + hpAllowance));
-        expect(after.mana).toBeGreaterThanOrEqual(before.mana);
-        expect(after.mana).toBeLessThanOrEqual(Math.min(after.maxMana, before.mana + manaAllowance));
-        expect(after.mana).toBeLessThan(after.maxMana);
+        await observeRestedResources(page);
+        const after = dead ? await resources() : await freshRestedResources(page);
+        const seconds = (Date.now() - started) / 1000;
         if (dead) {
+            // This route never levels or equips the fresh Wizard. Rest expiry
+            // may legitimately lower its100-point baseline pools from110.
+            expect(before.level).toBe(1); expect(after.level).toBe(1);
+            expect(before.gear).toBe(0); expect(after.gear).toBe(0);
+            expect(after.maxHP).toBe(after.bank > 0 ? 110 : 100);
+            expect(after.maxMana).toBe(after.bank > 0 ? 110 : 100);
+            expect(after.mana).toBe(Math.min(before.mana, after.maxMana));
+            expect(after.bank).toBeLessThanOrEqual(before.bank);
             expect(after.state).toBe('DEAD');
             expect(after.hp).toBe(0);
             await expect(page.locator('#death-screen')).toBeVisible();
-        } else expect(after.state).not.toBe('DEAD');
+        } else {
+            expect(after.state).not.toBe('DEAD');
+            expect(before.zone).toBe('lanternhold'); expect(after.zone).toBe(before.zone);
+            expect(before.bank).toBeGreaterThan(0); expect(after.bank).toBeLessThan(7200);
+            expect(after.maxHP).toBe(before.maxHP); expect(after.maxMana).toBe(before.maxMana);
+            const earned = after.bank - before.bank;
+            for (const [resource, maximum] of [['hp', 'maxHP'], ['mana', 'maxMana']]) {
+                const bounds = sanctuaryRecoveryBounds(before[resource], before[maximum], earned, 1);
+                expect(after[resource]).toBeGreaterThanOrEqual(bounds.minimum);
+                expect(after[resource]).toBeLessThanOrEqual(bounds.maximum);
+            }
+        }
         await expect.poll(() => page.evaluate(() => {
             const stats = window.game.player.stats;
             return document.getElementById('player-mana-text').textContent ===
                 `${Math.floor(stats.mana)} / ${stats.maxMana}`;
         })).toBe(true);
-        console.log('[resource-fresh-login]', JSON.stringify({ label, before, after, seconds, hpAllowance, manaAllowance }));
+        console.log('[resource-fresh-login]', JSON.stringify({ label, before, after, seconds }));
         await installObserver();
     }
     // This first cast/reload is in town, before any prepared death fixture.
@@ -118,8 +133,18 @@ test('login preserves spent resources and death; only dead Respawn refills mana'
     expect(receipt.hp).toBe(receipt.maxHP);
     expect(receipt.mana).toBe(receipt.maxMana);
     await spendMana();
+    const beforeRecall = await freshRestedResources(page);
     await returnToTown(page);
-    expect(await page.evaluate(() => window.game.player.stats.mana)).toBeLessThan(receipt.maxMana);
+    const afterRecall = await freshRestedResources(page);
+    expect(afterRecall.zone).toBe(beforeRecall.zone);
+    expect(afterRecall.maxMana).toBe(beforeRecall.maxMana);
+    const recallBounds = sanctuaryRecoveryBounds(beforeRecall.mana, beforeRecall.maxMana,
+        afterRecall.bank - beforeRecall.bank);
+    expect(afterRecall.mana).toBeGreaterThanOrEqual(recallBounds.minimum);
+    expect(afterRecall.mana).toBeLessThanOrEqual(recallBounds.maximum);
+    // Spend again after normal town recovery during Recall. The next
+    // login check must still start with a genuinely depleted resource pool.
+    await spendMana();
     await verifyFreshLogin('living-recall', false);
     console.log(`[death-resource-recovery] ${JSON.stringify({ depleted, receipt,
         fixture: 'allowlisted near-death readiness; ordinary cast, hostile hit, death button and Recall' })}`);

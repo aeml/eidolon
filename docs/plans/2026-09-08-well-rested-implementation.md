@@ -61,6 +61,38 @@ four-class stats and device/aura acceptance remain required.
 
 ## Development acceptance — September 8, 23:30 UTC
 
+Latest additional acceptance, **September9 01:40UTC**:
+
+- Phone talent-economy actual31044 **PASS1/14.4s**. Actual normal touch rank
+  purchases reduce Fireball30→21 and skill cooldown, including fresh login in
+  landscape. New read-only complete resource observations require the explicit
+  owned loopback server and fresh server timestamps. Exact earned-bank delta,
+  stable capacity and sanctuary identity bound intervening recovery; no inflated
+  wall-clock or ordinary-regen allowance. All three actual casts started naturally
+  full and therefore proved exact payment1853→1823/1832, without a full-bar wait.
+  Evidence `/tmp/eidolon-rest-talent-0137.log`; credential scan passed, owned
+  containers/data removed and absent.
+- Death/recovery actual92590 **PASS1/24.8s**. Living fresh login restored80→86
+  mana using only0.5343 earned seconds across3.108s wall time. Hostile death with
+  expired bank retained0HP/70MP across3.497s login. Dead Respawn reached full
+  resources; living Recall used only timed town mana recovery. Final depleted
+  login73→79 used0.5703 earned seconds across3.370s wall time. Existing allowlisted
+  near-death/encounter fixture is retained; ordinary casts, hostile death, death
+  button and Recall are unchanged. `/tmp/eidolon-rest-recovery-0143.log`; owned
+  project/data removed and absent, credential scan passed.
+- Independent recovery bounds account for at most one whole point discarded
+  by the two fractional segments across one disconnect, not arbitrary refill
+  tolerance. Focused arithmetic **23 tests PASS0.803s**. Added a null-frame guard
+  to the observer for control messages arriving before any fresh state.
+- Fresh-opening baseline now expects the unchanged .01 per-stat regeneration
+  with exactly1.10 modifier while the authoritative rest bank is active. Its
+  actual no-grant opening/collection47973 is running. Full client/lint88014 is
+  terminal: **242 suites/3,440 tests PASS153.658s**, lint passes. Logs
+  `/tmp/eidolon-rest-recovery-client-full.log` and
+  `/tmp/eidolon-rest-recovery-lint.log`. No fresh collection pass claimed yet.
+  No production rules changed; integrated expiry/group/phone aura and broader
+  rested/unrested progression remain open.
+
 Latest additional acceptance, **September9 01:24UTC**:
 
 - Actual schema7→8→9 upgrade/refusal/recovery passes12.916s. Uses exact bridge

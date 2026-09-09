@@ -1,6 +1,7 @@
 import { devices, expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld } from './helpers.js';
-import { castResourceBounds } from '../castResourceBounds.js';
+import { restedCastResourceBounds } from '../castResourceBounds.js';
+import { freshRestedResources, observeRestedResources } from './rested-resource-observation.js';
 
 test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true,
     userAgent: devices['Pixel 7'].userAgent, actionTimeout: 12_000,
@@ -21,6 +22,7 @@ test('phone talent purchases reduce real cast cost and cooldown, including after
     await page.locator('#chat-mobile-toggle').tap();
 
     async function verifyCast(expectedCost, skillMultiplier) {
+        await observeRestedResources(page);
         await page.evaluate(() => {
             window.__talentCastResults = [];
             if (window.__talentCastObserver) return;
@@ -35,19 +37,17 @@ test('phone talent purchases reduce real cast cost and cooldown, including after
         });
         await expect.poll(() => page.evaluate(cost => window.game.player.stats.mana >= cost, expectedCost), { timeout: 30_000 }).toBe(true);
         await expect.poll(() => page.evaluate(() => (window.game.player.cooldowns.Fireball || 0) <= 0)).toBe(true);
-        const before = await page.evaluate(() => ({ mana: window.game.player.stats.mana,
-            maxMana: window.game.player.stats.maxMana, manaRegen: window.game.player.stats.manaRegen,
-            cdr: window.game.player.stats.cooldownReduction }));
-        const castStarted = Date.now();
+        const before = await freshRestedResources(page);
         await page.locator('#btn-mobile-ability').tap();
         await expect.poll(() => page.evaluate(() => window.__talentCastResults.length)).toBeGreaterThan(0);
         const result = await page.evaluate(() => window.__talentCastResults.at(-1));
         expect(result.accepted).toBe(true);
-        const bounds = castResourceBounds(before, expectedCost, Date.now() - castStarted);
+        const after = await freshRestedResources(page);
+        const bounds = restedCastResourceBounds(before, after, expectedCost);
         expect(result.mana).toBeGreaterThanOrEqual(bounds.minimum);
         expect(result.mana).toBeLessThanOrEqual(bounds.maximum);
         expect(result.cooldownRemaining).toBeCloseTo(2 * (1 - before.cdr) * skillMultiplier, 5);
-        console.log('[talent-economy-cast]', JSON.stringify({ expectedCost, before, receivedMana: result.mana, bounds }));
+        console.log('[talent-economy-cast]', JSON.stringify({ expectedCost, before, after, receivedMana: result.mana, bounds }));
     }
     expect(await page.evaluate(() => [window.game.player.talentRanks?.WIZ_02 || 0,
         window.game.player.talentRanks?.WIZ_27 || 0])).toEqual([0, 0]);

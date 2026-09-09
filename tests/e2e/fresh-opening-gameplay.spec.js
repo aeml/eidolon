@@ -90,9 +90,10 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     expect((await readPlayerState(page)).level).toBe(1);
     await expect.poll(() => page.evaluate(() => {
         const player = window.game.player;
+        const expected = player.wellRestedSeconds > 0 ? .11 : .1;
         return [player.stats.hpRegen, player.stats.manaRegen]
-            .every(rate => Math.abs(rate - 0.1) < 1e-6); // protobuf float precision
-    }), { message: 'Fresh authoritative character must use the new 0.01 per-stat regeneration' })
+            .every(rate => Math.abs(rate - expected) < 1e-6); // protobuf float precision
+    }), { message: 'Fresh character retains .01 per-stat regeneration, with exactly10% while rested' })
         .toBe(true);
     console.log(`[fresh-opening] baseline ${JSON.stringify(await page.evaluate(() => {
         const player = window.game.player;
