@@ -5,7 +5,34 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 00:58 UTC
+## Current checkpoint — September 9, 01:16 UTC
+
+PROGRESS: Well Rested development **b409d83** committed clean. Refund/refund-lifecycle actual30254 is terminal
+**PASS43.100s**. Offline corpse/pending snapshot, recipient save/ack failures,
+100-refund bounded backlog and unreadable-auction startup refusal retain exact
+rest/resources plus original receipt/gold/gear invariants.16 normal child logs
+clean with completed drains; separate expected startup-refusal evidence retained.
+Owned Mongo0102 removed and absent. `/tmp/eidolon-rest-refunds-0102.log`.
+
+Original live-handoff/cooldown15524 terminal **PASS8.066s**, including real
+Fireball, two repeated joins, overlapping login, late prior-socket cleanup and
+fresh final persistence. Initial0107/0115 test failures identified pre-first-tick
+casts and intentional fractional-healing reset at disconnect. Final independent
+oracle checks each side of the fresh durable handoff save exactly, with no
+production change or relaxed cooldown/resource bounds. All3 child logs clean
+and drained; owned Mongo/volumes removed and absent. Final evidence
+`/tmp/eidolon-rest-handoff-0119.log`. Full root race7303 passed13.398s before
+the final test-only handoff correction; final rerun2172 **PASS12.590s** in
+`/tmp/eidolon-rest-refund-handoff-final-root.log`. All owned handles closed.
+
+50 CI34295826450 still ACTIVE in predeploy character QA at01:15; Go/Jest/all3
+browser groups passed. Fresh public client/backend remain exact49/0c6d0cc,
+healthOK/databaseReady. No successor push or restart. Canonical51–57 hashes
+unchanged. Feature is not versioned/staged/live. Remaining Well Rested work:
+schema upgrade, integrated browser travel/reconnect/group aura, earned balance
+and ordered notes/CI/live gates. Full roadmap goal remains active and incomplete.
+
+## Previous checkpoint — September 9, 00:58 UTC
 
 PROGRESS: Well Rested **fdf023b4fdaa8571a19122d166f6c0571ed7124b** committed
 clean. Bid crash6-boundary acceptance79841 **PASS54.506s**, preserves both the

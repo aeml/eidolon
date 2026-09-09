@@ -79,9 +79,19 @@ race12.077s; merged client242 suites/3,425 tests93.429s and lint pass.
 
 This is not a versioned/staged release. It follows staged57, requires schema9,
 and must not publish inherited57 metadata. Remaining persistence gates include
-standalone refund/refund-lifecycle, original live-session handoff/cooldown and
 schema-upgrade recovery,
 integrated browser travel/reconnect/aura and rested/unrested earned balance.
+
+September9 01:16 checkpoint, developmentb409d83: standalone refund/refund-lifecycle acceptance passes
+43.100s, retaining exact offline bank/resources and online recovery through
+recipient save/acknowledgement failures, bounded backlog and deliberate malformed
+auction startup refusal. Original live-session handoff/cooldown passes8.066s:
+real Fireball, repeated joins, overlapping login and late transport cleanup.
+Its exact recovery checks now respect the existing disconnect boundary that
+clears transient fractional healing, with each session independently validated
+against the fresh handoff save. No production code changed. All owned test
+containers/volumes removed; normal child logs drained cleanly. This closes those
+two persistence gates, not schema upgrade or integrated earned-play/aura gates.
 
 ## Requested behavior
 
