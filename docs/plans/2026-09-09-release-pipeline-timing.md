@@ -1,5 +1,30 @@
 # Release pipeline timing baseline
 
+## Latest completed release — September9, Alpha1.0.53
+
+Rechecked [run34312290353](https://github.com/aeml/eidolon/actions/runs/34312290353),
+exactce330b3e2a576d07d159b964563f12f031dff3d5: all ten jobs succeeded.
+GitHub timestamps show first job04:46:47UTC through final live completion
+06:08:15UTC, **81m28s** (creation to final run update81m32s).
+
+| Stage | Observed elapsed time |
+|---|---:|
+| Client/server tests, parallel | Server6m35s critical path; client1m35s |
+| Browser stage, three required shards | 13m17s span; individual13m16s,2m38s,8m19s |
+| Predeploy character QA | 48m25s |
+| Backend/Pages deployment, parallel | 32s / 36s |
+| Final live release/character QA | 12m17s |
+
+The persistent long stage is the full gameplay gate, not artifact publication.
+The browser shards are also uneven in this run; the job-level durations alone
+do not identify which individual specs dominate or prove a safe new partition.
+This second successful baseline is consistent with51's roughly79-minute gate,
+but is not an SLA for recovery58 or the larger expanded campaign. Corrected54
+is running under34320477081; its failed predecessor34317808528 is not a timing
+baseline for a successful deployment. Existing gates remain intact.
+
+## Earlier baseline — Alpha1.0.51
+
 Measured September9 from the completed successful
 [Alpha1.0.51 run](https://github.com/aeml/eidolon/actions/runs/34300606161),
 exact55712b9c747056041b05fa4e475c4aee094028bc. Source: GitHub job start/end
