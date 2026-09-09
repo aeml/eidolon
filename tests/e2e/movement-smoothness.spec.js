@@ -129,6 +129,8 @@ async function sampleMovementFrames(page, durationMs) {
             if (player?.position && player.mesh?.position) {
                 frames.push({
                     t: now - startedAt,
+                    speed: player.stats?.speed,
+                    wellRestedSeconds: player.wellRestedSeconds,
                     x: player.position.x,
                     z: player.position.z,
                     renderX: player.mesh.position.x,
@@ -390,6 +392,13 @@ test.describe('real-input movement smoothness', () => {
             sustainedDirection.dx,
             sustainedDirection.dz
         );
+        await testInfo.attach('sustained-movement-samples', {
+            body: Buffer.from(JSON.stringify({ renderer, frames: sustained.frames,
+                analysis: sustainedAnalysis, transport: afterLong.local }, null, 2)),
+            contentType: 'application/json'
+        });
+        console.log('[movement-sustained]', JSON.stringify({ renderer, analysis: sustainedAnalysis,
+            speeds: [...new Set(sustained.frames.map(frame => frame.speed))] }));
 
         expect(sustainedAnalysis.logicalTravel).toBeGreaterThan(6);
         expect(sustainedAnalysis.renderTravel).toBeGreaterThan(6);
@@ -440,6 +449,11 @@ test.describe('real-input movement smoothness', () => {
             outsideDirection.dx,
             outsideDirection.dz
         );
+        await testInfo.attach('outside-movement-samples', {
+            body: Buffer.from(JSON.stringify({ renderer, frames: outside.frames,
+                analysis: outsideAnalysis, transport: afterOutside.local }, null, 2)),
+            contentType: 'application/json'
+        });
 
         expect(outsideAnalysis.logicalTravel).toBeGreaterThan(6);
         expect(outsideAnalysis.renderTravel).toBeGreaterThan(6);
