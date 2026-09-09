@@ -16,7 +16,47 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 07:34 UTC
+## Current checkpoint — September 9, 07:47 UTC
+
+Previous status turn was a VERIFIED WAIT: exact54CI34320477081 was confirmed
+in progress and the current58 gameplay log was advancing. This continuation
+made PROGRESS by committing the separate controlled GPU-comparison fixture;
+it did not modify or restart canonical58.
+
+Separate aura prototype is clean **59be536**, in the existing
+`/tmp/eidolon-rest-aura-batching-k1vBvU`. New comparison helper, seven unit cases
+and one prepared browser test compare visible aura pixels and incremental actual
+draw calls at identical phases. The expanded GPU reference is not an independent
+copy of the original production effect; authored-formula unit parity remains
+required alongside it. Pixel metrics normalize against aura contribution, so
+removing detail cannot pass because most scenery pixels are unchanged.
+Final focused log confirms12tests/2suites/1.791s, lint and one-test discovery.
+Handle77576 is absent; no GPU/browser execution or frame-rate gain is claimed.
+Logs `/tmp/eidolon-rest-aura-pixel-final-{tests,lint,discovery}.log`.
+Its inherited58 version remains non-publishable; this is later visual work only.
+
+**65093 complete58 gameplay confirmed ACTIVE**, frozen ee8a713, same isolated
+run/ports/log below. It has now passed gem/Forge, ordinary quest collection,
+talent mana/healing/duration, Seraph combat/lifetime, shield absorption/expiry,
+entrance visibility/Recall and phone manual quest turn-in. Later routes and
+native rest gates remain; do not count the complete run as passed yet. No second
+local browser was started, and no source was edited in its worktree.
+
+**54CI34320477081 predeploy still ACTIVE**, all client/server/browser checks
+passed; no successor push. Fresh public client/server reads at07:44 both report
+**Alpha1.0.53/ce330b3**, server healthy/database ready. Town recovery is NOT LIVE.
+User ETA remains a conditional September9 14:00–17:00UTC, based on the ordered
+queue and observed roughly80-minute pipelines, not a promised completion time.
+Candidate58 login/history notes were inspected and describe10% pool recovery,
+1:1 rest up to two hours,10% stats/25% enemy-kill XP, online/death/stealth rules,
+and unchanged outside0.01 regeneration and separate future balancing work.
+
+Next: retain the active58 run uninterrupted through terminal evidence and exact
+cleanup; advance55 only after complete54CI/deploy/finalLiveQA and exact fresh
+public identities. Primary story-only Earth readiness and the whole roadmap
+remain open. No root push, no goal completion or blocked status.
+
+## Previous checkpoint — September 9, 07:34 UTC
 
 This turn made PROGRESS: primary client full pass and a separately committed
 rendering optimization with focused/full client evidence. It did not change
