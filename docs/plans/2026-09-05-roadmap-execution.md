@@ -16,7 +16,34 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 11:05 UTC
+## Current checkpoint — September 9, 11:13 UTC
+
+Previous goal turn made PROGRESS on Maelin and preserved/replayed the Cleric
+frame failure. This turn made PROGRESS on the later crystal-repair resume gate.
+Full roadmap remains open; no new production claim or successor publication.
+
+Primary clean **ed95214a6249d108b2135cb28d78c9c6ee28c83b** preserves an already
+defended, ready/unclaimed crystal objective across a restored raid entry.
+Original readiness recognized only claimed chapters and restarted completed
+defenses before Ilyra's manual turn-in.55030 reproduced all four realms after
+new-world dungeon snapshot restoration and JSON quest roundtrip.73457 focused
+racePASS3.814s;87252 expanded racePASS4.948s adds five-member all-defended,
+one-unfinished and one-missing cases. Accepted exact REPAIR target/positive count
+required; incomplete/missing members still restart; rewards/next chapter/portal
+still depend on manual turn-in. Logs
+`/tmp/eidolon-crystal-ready-resume-{before,after,party}.log`.
+Detailed scope in primary `docs/plans/2026-09-09-crystal-vigil-ready-resume.md`.
+**Full server regression remains due**; avoid heavy local regression alongside
+the remaining recovery browser acceptance. No causal host-load diagnosis claimed.
+No client/schema/58 changes. Actual saved group/raid and visible crystal work
+remain open, as do the pending Maelin/desktop-label rendered comparisons.
+
+**2466 full58all remains ACTIVE**, frozen c5e3204, only owned browser, unchanged
+r12run/ports/1107log below. Current Verdant route has reached RootboundWarden;
+no full pass yet.56CI34340328283 is still in predeploy gameplay.57 stays clean
+1f8c7be/unpublished. Only2466 and external56CI are active; primary is idle.
+
+## Previous checkpoint — September 9, 11:05 UTC
 
 11:08 follow-up:95652 TERMINAL0/PASS, complete Cleric matrix1.0m. Added evidence
 records25frames, hardware AMD RADV, continuous MOVING and Spirit Guardians cast;
