@@ -25,6 +25,21 @@ has taken several tens of minutes.
 
 ## Next performance work
 
+**04:19 queue diagnosis:**52 completed both deployments and both public endpoints
+reported exacta36d1e7/Alpha1.0.52 with a healthy database. Final live QA is queued.
+The repository runner API reports the sole `eidolon-codex-chrome` runner online
+and busy. The active [nightly soak](https://github.com/aeml/eidolon/actions/runs/34307306192)
+started04:15:52 and is running the100-client soak on the same required
+`eidolon-live-browser` label. The workflow's scheduled default is24h. This is
+concrete runner contention, separate from the earlier50-minute predeploy stage.
+Asked the player asynchronously for permission to cancel this just-started soak
+and prevent future scheduling conflicts. No cancellation or scheduling mutation
+has been performed; local gameplay work can continue while approval is pending.
+
+An inactive per-stage timing helper with12passing tests has now been developed
+separately in the primary candidate. Integration waits for its currently running
+Fighter playthrough to finish; see candidate `2026-09-09-qa-stage-timing.md`.
+
 Before changing concurrency, collect per-route timings within disposable QA,
 including success/failure and cleanup. The job-level baseline cannot identify
 which character route dominates. The attempted filtered job-log read provided

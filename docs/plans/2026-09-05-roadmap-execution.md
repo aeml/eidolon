@@ -5,7 +5,42 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 04:13 UTC
+## Current checkpoint — September 9, 04:23 UTC
+
+PROGRESS: **52 deployed**, both public endpoints independently returned exact
+**a36d1e7d66333e8f6cf707ff115947b340c9a46c / Alpha1.0.52** at04:17, backend
+healthOK/databaseReady. CI34305897736 passed initial tests, predeploy, production
+input validation and BOTH deployment jobs. **Final live QA is QUEUED, not passed**.
+Do not push53 yet;51 remains the last release with complete final QA acceptance.
+
+Confirmed queue cause: sole repo runner `eidolon-codex-chrome` online/busy with
+scheduled **Nightly Multiplayer Soak34307306192**, started04:15:52,100-client
+soak step ACTIVE. Its scheduled default is24h and it shares the required
+`eidolon-live-browser` label. This is separate from the earlier~50m predeploy
+runtime. At04:19 asked user via async input for permission to cancel this new
+soak and fix future scheduling; **no reply/approval, cancellation, workflow or
+runner change yet**. Rechecked04:23:52queued/soakrunning. Do not treat automatic
+goal continuation as approval. Local roadmap work can continue; not a whole-goal
+impasse. Detailed diagnosis appended to `2026-09-09-release-pipeline-timing.md`.
+
+Added inactive timing helper/test/document in primary, now clean
+**29d7feb9f48f1b12f0ec469e477c7d90b2a542aa**. It logs safe stage labels, elapsed
+seconds and exact status without arguments/credentials. Initial30498 test setup
+failed before discovery due Node override/canvas setup; corrected96999 PASS12
+tests2.113s. Final lint95966, shell/diff checks pass. Logs
+`/tmp/eidolon-qa-stage-timing-tests{,-fixed}.log` and
+`/tmp/eidolon-qa-stage-timing-lint-final.log`. Not part of earlier full3682 count.
+Helper NOT yet sourced: wait for active isolated runner to end before wiring
+its AND-chain. No existing runtime/active wrapper changed; current Fighter still
+records original cleanf3f33e1. Candidate doc `2026-09-09-qa-stage-timing.md`.
+
+**62895 Fighter ACTIVE**, exact handle revalidated04:23:25/40 at957s hunt time,
+1counted death/12rest stops, level5/345XP/1064gold,10slots/420 unsold gear value;
+another real recovery followed. No weaker limits or full-class claim. Only owned
+local handle running; poll62895, do not relaunch/cleanup. Logs/project as below.
+Root is ledger-only; canonical53–57 queue unchanged. Whole goal remains active.
+
+## Previous checkpoint — September 9, 04:13 UTC
 
 PROGRESS / VERIFIED WAIT: exact62895 Fighter handle remains ACTIVE, confirmed
 04:12. Opening105s and diary141s cumulative passed without intermediate logins.

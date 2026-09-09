@@ -37,6 +37,13 @@ ordinary respawn and five real town stops. Both health-driven and mana-driven
 recovery are observed using the Fighter's actual20mana primary cost. Its slower
 early pacing is evidence to retain, not yet a diagnosis or all-class approval.
 
+04:23 follow-up: Fighter62895 still active at25/40 with one counted death and
+twelve town stops. New primary29d7feb adds only an inactive QA timing helper,
+its12passing tests and documentation; game runtime remainsdb3bbb7.52 is now
+deployed/healthy at both public endpoints, but final live QA is queued behind
+the24h nightly soak on the sole runner. User approval to cancel that soak was
+requested; none received or acted on. This feature remains unreleased.
+
 03:54 follow-up: fullclient45516 passes260suites/3682tests244.675s on primary
 db3bbb7. Actual default-recovery1469 remains active after opening/diary and10/40
 hunt credit, zero deaths; final error/reward/persistence checks are pending.
