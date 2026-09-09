@@ -16,7 +16,50 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 07:14 UTC
+## Current checkpoint — September 9, 07:18 UTC
+
+This continuation made PROGRESS: full58 duration failure diagnosed/corrected,
+stronger public-ready recovery journey implemented and actually passed,
+client regression closed, complete gameplay restarted only after terminal
+failure, corrections, focused passes, retained artifacts and exact cleanup.
+
+**48279 duration replay TERMINAL0/PASS1/1.1m** on ee8a713, Node24.18.0:
+baseline20s, trained25s/natural expiry, persistent Well Rested row, saved
+landscape25s and ordinary touch casts all pass. Scan0/exact owned API/Mongo/
+image absence+free ports. Archive `/tmp/eidolon-rest58-duration24-proof-Sei3x7`;
+log `/tmp/eidolon-rest58-duration-rest-browser-0713.log`.
+
+**37941 full58client/lint TERMINAL0**, sameee8a713:248suites/3492tests/157.555s,
+logs `/tmp/eidolon-rest58-public-proof-full-{client,lint}.log`.
+
+**99620 strengthened ordinary recovery journey TERMINAL0/PASS1/38.7s**
+(test36.5s), same source/Node24. Actual hostile dealt2damage:HP110→108;
+accepted FireballMP110→80, actual42spell damage plus2basic. Normal Recall
+returnedHP110/110 MP95/110; before reconnect both110/110, then both retained
+full after reconnect. Rest bank5.280start/13.860departure/9.560beforecast/
+10.167return/12.177beforelogin/13.202rejoin, aura19meshes visible. All/tests
+requests blocked during this successful browser route; no unpublished module
+or shared localhost clock needed. This is still an isolated run, NOT production.
+**Scope correction:** route `well-rested` runs only journey; this invocation did
+not run expiry/party. `well-rested-all` or complete `all` runs all three; older
+81669 remains their supported native evidence pending the current complete run.
+Scan0/exact cleanup confirmed. Archive
+`/tmp/eidolon-rest58-public-recovery-proof-HWZkIN`; log
+`/tmp/eidolon-rest58-public-proof-browser-0716.log`. Rejoined screenshot viewed:
+full bars/aura, FPS11 under concurrent work. Not sustained performance acceptance
+or proof of aura-caused slowness; physical-phone/performance gates remain open.
+
+**65093 COMPLETE58 GAMEPLAY ACTIVE — only owned local browser**, frozen clean
+ee8a713d6d6daef1caa5d319c63c2089fdf37771, Node24 inside sg render,
+projectrest58-all24-r4-0909-0718 (label; actual start07:17),
+API18560/Mongo18561/web41960; log
+`/tmp/eidolon-rest58-all-node24-rerun-0718.log`. Every existing stage plus native
+journey/expiry/party retained. No source edit/restart/second local browser while
+active; preserve artifacts and verify exact cleanup when terminal. Primary640c9ce
+clean/idle with the same QA corrections. Whole roadmap active/unfulfilled.
+54CI34320477081 remains predeploy-active; no55push, public last verified53.
+
+## Previous checkpoint — September 9, 07:14 UTC
 
 Previous goal turn was PROGRESS (Construct search fixed,54 entered predeploy).
 This continuation is also PROGRESS: full58 failure diagnosed, shield/rest

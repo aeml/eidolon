@@ -1,6 +1,6 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
-Status at September 9, 07:16 UTC: **unpublished candidate**, not delivered.
+Status at September 9, 07:18 UTC: **unpublished candidate**, not delivered.
 Candidate worktree `/tmp/eidolon-standalone-town-recovery-QJ6Drv`, current source
 `ee8a713d6d6daef1caa5d319c63c2089fdf37771`, includes canonical57/6babef5 ancestry.
 Production runtime is unchanged from previously tested
@@ -185,11 +185,20 @@ boundary locally. It additionally requires actual hostile damage, living HP
 below maximum, accepted Fireball/spent mana, Recall and full recovery of both
 pools. No shared localhost wall clock, grants or longer test deadline is used.
 Focused26tests/lint/discovery passed; that is not actual public gameplay proof.
-**99620 stronger native rest/expiry/party ACTIVE**, only owned local browser,
-projectrest58-public24-0909-0716/API18560/Mongo18561/web41960, frozenee8a713;
-log `/tmp/eidolon-rest58-public-proof-browser-0716.log`.
-**37941 full client/lint ACTIVE**, same source, logs
+**99620 stronger native journey PASSED1/38.7s** (test36.5s), exactee8a713:
+actual hostile damageHP110→108, accepted FireballMP110→80, ordinary Recall
+returnedHP110 andMP95, then both110/110 before and after reconnect. Earned
+rest/aura retained, with all/tests network requests blocked. Scan0/exact cleanup;
+log `/tmp/eidolon-rest58-public-proof-browser-0716.log`, archive
+`/tmp/eidolon-rest58-public-recovery-proof-HWZkIN`. Rejoined screenshot viewed.
+Its11FPS under concurrent work is not sustained performance approval or a causal
+diagnosis. This invocation used `well-rested`, which runs ONLY the journey;
+expiry/party were not rerun here. Complete `all` retains all three native tests.
+**37941 full client/lint PASSED248suites/3492tests/157.555s**, same source, logs
 `/tmp/eidolon-rest58-public-proof-full-{client,lint}.log`.
+**65093 complete gameplay ACTIVE**, only owned local browser, frozenee8a713,
+projectrest58-all24-r4-0909-0718/API18560/Mongo18561/web41960, log
+`/tmp/eidolon-rest58-all-node24-rerun-0718.log`.
 Preserve artifacts/verify exact cleanup when terminal. Complete gameplay still
 needs a new full pass; no failure above is retroactively changed to success.
 
