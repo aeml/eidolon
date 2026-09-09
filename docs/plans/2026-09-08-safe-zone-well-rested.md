@@ -16,6 +16,15 @@ NOT live:52has now fully passed live QA,53is in CI. Detailed candidate location,
 source, handles and logs are in the execution ledger. Do not re-label old tests
 as actual sessions on this candidate or call the broader balance pass complete.
 
+September9 05:03: candidate5a17be1 passes full client245suites3466tests165.48s
+and full Go race (root23.243s/game327.779s). Native expiry/combat/reconnect and
+two-player phone High/Low routes passed with both output sets retained/reviewed.
+Normal Wizard collection passes4.8m,24observed kills/8seeds/no deaths/five full
+town recoveries; manual legacy8000XP100gold/gear/reconnect/dungeon-lock checks
+remain intact. Fighter28852 is now running; Rogue/Cleric and ordered58live
+acceptance still required. Existing high quest rewards remain separate balancing
+work. Detailed source/log/artifact identities are in the execution ledger.
+
 September9 04:29 live report: player still sees no town healing/Well Rested.
 Both public endpoints confirmed Alpha1.0.52/a36d1e7, and the exact deployed
 source contains neither feature. This is unpublished functionality, not evidence

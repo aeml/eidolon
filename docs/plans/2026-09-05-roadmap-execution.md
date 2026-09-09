@@ -5,7 +5,46 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 04:55 UTC
+## Current checkpoint — September 9, 05:03 UTC
+
+PROGRESS: standalone58 full **75384 Go race TERMINAL PASS** (root23.243s,
+game327.779s) and **93155 client TERMINAL PASS245suites3466tests165.48s**, frozen
+5a17be147ce527bae556663cc452ecae10e87785. Logs
+`/tmp/eidolon-rest58-full-{server,client}.log`. These are current-source full
+regressions, not replacements for live/class/physical-device acceptance.
+
+**20280 Wizard normal collection TERMINAL PASS1/4.8m**, same5a17be1, actual
+fresh registration/opening3kills/manual500XP100gold in36s, no grants. Collection
+24observed target deaths/8earned seeds/zero player deaths, completed247s; manual
+8000XP100gold retained existing level7→17 outcome and consumed8seeds. Five
+ordinary town recoveries totaled99.724s including travel; every observed stop
+restored both pools. First mana28→176, bank accrued inside and normal departure
+resumed the hunt.5earned gear items/140unsold vendor value survived reconnect,
+and level30 dungeon entry remained locked for the resulting17character.
+The large existing reward remains a known balancing issue, not a reason to claim
+balancing done or silently activate curve2 inside the recovery-only release.
+
+Credential scan0, exact owned containers/image absent, ready-claim image inspected
+(8/8,8000XP100gold, explicit Complete Quest). Archive
+`/tmp/eidolon-rest58-wizard-proof-sp9Lku/test-results`; log
+`/tmp/eidolon-rest58-wizard-collection-0457.log`. This is one class's collection
+proof, not four-class/full-campaign acceptance. Both whole regressions are closed.
+
+**28852 Fighter ACTIVE — only owned local process/browser**, fresh-collection
+on frozen5a17be1, projectrest58-fighter-0909-0503/API18560/Mongo18561/web41960,
+log `/tmp/eidolon-rest58-fighter-collection-0503.log`. Uses
+EIDOLON_E2E_FRESH_CLASS=Fighter (the wrapper's actual collection-class selector),
+normal recovery/no grants and unchanged bounds. Poll exact handle; no edits to
+active candidate/runtime or restart/cleanup while running. After terminal,
+archive/inspect/verify exact cleanup before Rogue then Cleric on the same source.
+
+**53CI34312290353 ACTIVE**: initial client/server and browser shards2/3passed;
+shard1 still running at05:03. Do not push54 before all53CI/finalLiveQA and fresh
+public identity checks. Last fully accepted live release is52. Roadmap explicitly
+records recovery58 as standalone without dropping later story/balancing work.
+Root ledger-only, never push it. Full roadmap goal remains active.
+
+## Previous checkpoint — September 9, 04:55 UTC
 
 PROGRESS: standalone58 now clean **5a17be147ce527bae556663cc452ecae10e87785** in
 `/tmp/eidolon-standalone-town-recovery-QJ6Drv`. First23579 native route passed
