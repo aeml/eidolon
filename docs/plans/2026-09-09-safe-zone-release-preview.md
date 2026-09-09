@@ -39,3 +39,12 @@ Its full campaign, class/group balancing and physical-device gates remain open.
 
 Local focused session60020 passed both engine/UI suites (12 tests, 1.451s) and
 lint on Node24.18.0. This is not browser rendering or full release acceptance.
+
+Extended the existing native well-rested journey, rather than adding a duplicate
+login/combat route: ordinary movement stops just inside the east boundary, a real
+mouse hover must show the warning using replicated membership, and the same enemy
+must regain normal range feedback after ordinary departure. Retains all original
+earned combat, depleted-pool healing, aura, bank and reconnect assertions. Added
+screenshots for both boundary states. No game-state assignment or QA teleport.
+Focused59653 PASS28tests/4suites1.574s+lint, including existing local/live gate
+wiring. The extended real-server journey has NOT RUN and is not acceptance yet.

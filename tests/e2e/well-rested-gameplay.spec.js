@@ -18,6 +18,22 @@ const restState = page => page.evaluate(() => {
         aura: Boolean(aura?.group.parent), meshes, state: player.state };
 });
 
+async function hoverEnemyCardThroughInput(page, targetId = null) {
+    let hoveredId;
+    await expect.poll(async () => {
+        const id = targetId || (await projectNearestHostile(page, 'Skeleton'))?.id;
+        if (!id) return false;
+        const point = await projectEntity(page, id);
+        if (!point?.visible) return false;
+        await page.mouse.move(point.x, point.y);
+        const selected = await page.evaluate(id => window.game.hoveredEntity?.id === id &&
+            window.game.combatIntent?.entityId === id, id);
+        if (selected) hoveredId = id;
+        return selected;
+    }, { timeout: 10_000, message: 'The real enemy hover must populate the combat card' }).toBe(true);
+    return hoveredId;
+}
+
 // Fresh registration and ordinary canvas/Recall/login input only. No actor,
 // inventory, clock, buff or safe-zone mutation and no QA encounter teleport.
 test('earned sanctuary rest follows real travel, combat and a fresh login', async ({ page, baseURL }, testInfo) => {
@@ -43,12 +59,32 @@ test('earned sanctuary rest follows real travel, combat and a fresh login', asyn
         .toHaveAttribute('aria-label', /Resting/);
     await page.screenshot({ path: testInfo.outputPath('rested-town.png') });
 
+    // Stop inside the real east boundary, then hover an ordinary enemy outside
+    // it. Read replicated membership; never assign the zone, target or card.
+    for (let step = 0; (await readPlayerState(page)).x < 94 && step < 12; step++) {
+        const position = await readPlayerState(page);
+        await jumpByGroundClick(page, Math.min(25, 95 - position.x), Math.max(-8, Math.min(8, 200 - position.z)));
+    }
+    const insidePosition = await readPlayerState(page);
+    expect(insidePosition.x).toBeGreaterThanOrEqual(94);
+    expect(insidePosition.x).toBeLessThan(100);
+    await expect.poll(async () => (await restState(page)).zone).toBe('lanternhold');
+    const boundaryTarget = await hoverEnemyCardThroughInput(page);
+    await expect(page.locator('#combat-intent-status')).toHaveText('Leave the safe zone');
+    await expect(page.locator('#combat-intent-status')).not.toHaveClass(/is-in-range/);
+    await page.screenshot({ path: testInfo.outputPath('native-safe-zone-warning.png') });
+
     for (let step = 0; (await readPlayerState(page)).x < 115 && step < 20; step++) {
         const position = await readPlayerState(page);
         await jumpByGroundClick(page, 25, Math.max(-8, Math.min(8, 200 - position.z)));
     }
     expect((await readPlayerState(page)).x).toBeGreaterThanOrEqual(115);
     await expect.poll(async () => (await restState(page)).zone).toBe('');
+    await hoverEnemyCardThroughInput(page, boundaryTarget);
+    await expect(page.locator('#combat-intent-status')).toHaveText(/^(In Range|Move Into Range)$/);
+    await page.screenshot({ path: testInfo.outputPath('native-safe-zone-departure.png') });
+    console.log('[native-safe-zone-feedback]', JSON.stringify({ target: boundaryTarget,
+        insidePosition, outsidePosition: await readPlayerState(page), zone: (await restState(page)).zone }));
     const departed = await restState(page);
     expect(departed.bank).toBeGreaterThan(2);
     await expect.poll(async () => (await restState(page)).bank).toBeLessThan(departed.bank - 1);
