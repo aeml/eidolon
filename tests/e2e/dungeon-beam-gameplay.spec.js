@@ -19,6 +19,13 @@ test('ordinary and trained Scorch Beam casts match server endpoints and save ran
         const destinationZ = start.z + start.height / 2 - 8;
         const deadline = Date.now() + 45_000;
         while (Date.now() < deadline) {
+            // Ground input returns once movement is observed, not on arrival.
+            // Judge proximity only after the current path has settled; a moving
+            // actor can cross the two-unit band and leave it before the next read.
+            await expect.poll(() => page.evaluate(() => {
+                const player = window.game.player;
+                return player.state === 'IDLE' && !player.targetPosition;
+            }), { timeout: Math.min(15_000, Math.max(1, deadline - Date.now())) }).toBe(true);
             const player = await readPlayerState(page);
             if (Math.abs(destinationZ - player.z) < 2) break;
             await moveByGroundClick(page, 0, Math.max(-12, Math.min(12, destinationZ - player.z)), {
