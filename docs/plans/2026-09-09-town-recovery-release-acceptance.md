@@ -1,5 +1,9 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update10:34UTC:93957 final client/lint PASSED251suites/3539tests/117.45s on
+028f23b. Complete gameplay49970 remains ACTIVE, currently in Verdant boss combat.
+Corrected56CI34340328283 client passed/server running; no57/58push or live claim.
+
 Update10:29UTC:69623 complete corrected tail PASSED, including all class duels,
 animations, multiplayer, town nameplates and native rest/expiry/phone-party;
 scan0/exact cleanup verified. Archive

@@ -18,6 +18,18 @@ declares go1.24.5 and `go version` inside server confirms automatic1.24.5 select
 
 ## Current checkpoint — September 9, 10:29 UTC
 
+10:34 follow-up: **93957 TERMINAL0/PASS**, final frozen028f23b client251suites/
+3539tests/117.45s plus lint. Logs
+`/tmp/eidolon-rest58-final-scenery-full-{client,lint}.log`.
+**49970 remains ACTIVE** on that same source; initial auth and beam/ground checks
+passed, current Verdant route has reached actual RootboundWarden combat.
+56CI34340328283 client passed, server still active. No successor push or live58
+claim. Primary2505b3 remains clean/idle. Rechecked the next `fresh-story-ready`
+route: all seven pre-Earth chapters, no accepted dailies/grants, actual earned
+level30, accepted uncleared dungeon and sealed raid are required; the existing
+one-hour route budget is not proof that the new progression fits or is balanced.
+It remains unrun and must wait for recovery's owned browser invocation to finish.
+
 This goal turn made PROGRESS: completed the recovery-tail rehearsal, reproduced
 and fixed the56scenery-clock failure, passed its real CI-mode browser replay and
 full client regression, pushed corrected56, carried final ancestry, and started
