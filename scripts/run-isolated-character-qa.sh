@@ -567,6 +567,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   well-rested)
     npx playwright test tests/e2e/well-rested-gameplay.spec.js
     ;;
+  well-rested-party)
+    npx playwright test tests/e2e/well-rested-party-gameplay.spec.js
+    ;;
   fresh-hunt-npc)
     npx playwright test tests/e2e/fresh-hunt-npc.spec.js
     ;;

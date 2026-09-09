@@ -61,6 +61,29 @@ four-class stats and device/aura acceptance remain required.
 
 ## Development acceptance — September 8, 23:30 UTC
 
+Latest additional acceptance, **September9 01:56UTC**:
+
+- Two actual party members, normal registration/invitation/acceptance and native
+  joystick movement: final browser68967 **PASS1/13.4s**. Both local and remote
+  rested auras follow the correct actors with transparent non-box geometry.
+  Normal graphics-menu changes yield19 visible parts per actor at High and10
+  at Low; Low intentionally retains reusable cached geometry while hiding extras.
+  Status text and aura checks cover390×844,844×390,568×320. Small landscape uses
+  a scrollable status body. This proves two-player rendering, not full-raid load
+  or physical iOS/Android performance.
+- Final route waits for the hero to align with the layout-owned clear encounter
+  region between phone controls, not the geometric screen center. Separate
+  open-panel/world screenshots retained in `/tmp/eidolon-rest-party-final-CBdw9R`
+  and visually inspected. Evidence `/tmp/eidolon-rest-party-0158.log`, final lint
+  passes (`/tmp/eidolon-rest-party-final-lint.log`), credential scan passes;
+  all owned local handles terminal and test projects removed/absent.
+- Prior0149/0151 failures were test assumptions about an already-closed Resume
+  menu and allocated-versus-visible mesh counts.0153 passed10.9s;0155's additional
+  camera check incorrectly expected viewport centering. Final0158 uses the
+  explicit existing phone encounter-region contract. No production changes.
+  Native buff expiry and the failed full collection/earned balance gate remain
+  open; do not mark Well Rested versioned, staged or live.
+
 Latest additional acceptance, **September9 01:40UTC**:
 
 - Phone talent-economy actual31044 **PASS1/14.4s**. Actual normal touch rank
@@ -89,7 +112,18 @@ Latest additional acceptance, **September9 01:40UTC**:
   actual no-grant opening/collection47973 is running. Full client/lint88014 is
   terminal: **242 suites/3,440 tests PASS153.658s**, lint passes. Logs
   `/tmp/eidolon-rest-recovery-client-full.log` and
-  `/tmp/eidolon-rest-recovery-lint.log`. No fresh collection pass claimed yet.
+  `/tmp/eidolon-rest-recovery-lint.log`.
+- Fresh collection47973 is terminal **FAIL6.4m**. Opening completed normally
+  in62s with3 kills,0 deaths and manual500XP/100gold reward. Collection reached
+  12 observed deaths,3/8 fragments,level6,0 player deaths, then failed the existing
+  120-second encounter deadline after prolonged low-mana retreat/reacquisition.
+  Retained8-item requirement/drop rate/death bound/timeout. No production change
+  or fabricated progression. Evidence `/tmp/eidolon-rest-fresh-0146.log`, retained
+  sanitized artifacts `/tmp/eidolon-rest-fresh-failure-Q1oxlk`; owned project/data
+  removed and checked absent. This is an open earned-play gate, not a pass.
+  Investigate the ordinary resource-management route and defensive input behavior;
+  using the requested town recovery between encounters is a relevant player
+  workflow to verify, but has not yet been implemented/tested in this route.
   No production rules changed; integrated expiry/group/phone aura and broader
   rested/unrested progression remain open.
 
