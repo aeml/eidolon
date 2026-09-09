@@ -5,7 +5,41 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 8, 23:52 UTC
+## Current checkpoint — September 9, 00:05 UTC
+
+PROGRESS: Well Rested development **e9c5de560b81d33cf68dfa84188e86f38b1b334c**,
+clean in `/tmp/eidolon-well-rested-ZL0PZY`. Adapted the existing four-class
+token-resume/death-recovery and eight-live-socket shutdown tests to exact town
+healing. Kept token replay rejection, dead Recall rejection, normal Respawn,
+living Recall's no-mana-refill rule, an actual Wizard Fireball and exact final
+saved bars after SIGINT/fresh login. Independent known-fixture arithmetic uses
+the bank delta and enforces its limited build assumptions; response mana is
+checked between independently validated fresh state frames. A loopback-only
+server timestamp filter rejects queued pre-action snapshots, not legitimate
+new healing. No production code or release metadata changed this turn.
+
+Actual**25653 PASS47.589s**: recovery24.78s(all8 living/dead class cases), shutdown
+and fresh process21.78s. Exact production race binary remainsd650c72 from below.
+Logs1466942589,3161073359,1082969551 independently clean with normal character
+drains. Owned Mongo `eidolon-rest-recovery-20260908-2359` and volumes removed and
+checked absent. Evidence `/tmp/eidolon-rest-recovery.log`. New four-class PvP
+forfeit regression confirms that outside expiry removes the bonus, match exit
+uses current maxima, and town reactivation does not stack/refill. Focused87427
+PASS(root1.421s/game1.910s), full server-package26178 PASS11.608s, independent
+arithmetic32917 PASS1.017s. All owned local check handles closed.
+
+50 CI**34290705218** remains live/ACTIVE at predeploy character QA; Go/Jest/all3
+browser shards passed. No observation timeout or restart this turn. Fresh public
+client/server at00:03 both still exact49/0c6d0cc, health/database ready. Do not
+push51 until complete50 pipeline, final live QA and fresh identities pass. Queue
+51–57 unchanged; root ledger commits must not be pushed wholesale.
+
+Remaining Well Rested work: older dungeon/PvP resource integrations, journal/
+auction failure paths and schema upgrade, browser-integrated scene/travel/
+reconnect visuals, offline parity decision and earned rested/unrested balance.
+The feature is not staged/live. Full1.1–1.10 goal is active, not complete.
+
+## Previous checkpoint — September 8, 23:52 UTC
 
 PROGRESS this continuation: Well Rested test/integration commit
 **97977a9845aaf75491b5b44fffb532b2ac8ec243**, clean development tree

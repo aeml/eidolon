@@ -26,6 +26,14 @@ owned loopback Mongo and the exact d650c72 race binary; projects removed after
 clean normal drains. Other older resource workflow assumptions and integrated
 browser/earned-play gates are still open.
 
+September9 00:05 checkpoint, development e9c5de5: adapted and passed the existing
+four-class token replay/Recall/Respawn and eight-live-socket shutdown/restart
+checks with exact timed town healing, retaining a real Wizard cast. Added a
+four-class PvP expiry/forfeit/return regression; full server-package race check
+passed. No production changes this turn. Remaining resource adaptation now
+centers on dungeon/PvP integrations and journal/auction/schema-upgrade flows;
+browser-integrated and earned balance gates remain open.
+
 This is not a versioned/staged release. It follows staged57, requires schema9,
 and must not publish inherited57 metadata. Existing town-based resource tests,
 normal boundary travel, reconnect variations, offline parity decision and
