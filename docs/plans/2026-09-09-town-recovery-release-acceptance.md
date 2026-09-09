@@ -1,5 +1,23 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update13:08UTC:57predeploy PASSED, then production backup FAILED because Docker
+lost the old image reference when building the shared tag. Old56 restarted
+successfully; no schema upgrade on that failed attempt. Recovered the exact old
+linux/amd64 image from verified BuildKit history (not a replacement rebuild).
+Only failed CI jobs rerun. Server deployment now PASSED; actual production backup
+`save-upgrade-20260909T130106Z-boTz4I` COMPLETE and all checksums/gzip independently
+PASS. Public client and backend57/8af54f2 now match; final live class QA still
+ACTIVE34347504351/job102475487008. Full live acceptance still required before58.
+
+58 supplements accepted e73be3a with deployment-only preventionfix **fb8db754**:
+pin previous exact image before build under the deployment lock, fail closed
+before downtime if unavailable, exclude private backups from build context.
+No game runtime changes. One extra58 patch-note bullet and disposable CI tests.
+Focused race1.253s and actual owned replacement→backup/restore15.20s + actual
+Docker-context confidentiality1.21s PASS. Final fullclient/lint/Go94121 ACTIVE.
+Accepted earlier fullgameplay evidence remains scoped to unchanged game runtime,
+not proof of production delivery. Root roadmap ledger has exact logs/receipt.
+
 Update12:28UTC: **19624 fullall PASSED/TERMINAL0** on unchanged/clean
 e73be3acb195dbd87c20108fc1619f9457c4c5df. Archive
 `/tmp/eidolon-rest58-full-proof-veHaDo`; scan0 and exactr13containers/image/network/

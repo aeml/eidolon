@@ -16,7 +16,60 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 12:48 UTC
+## Current checkpoint — September 9, 13:08 UTC
+
+This continuation made PROGRESS: diagnosed and recovered57's actual production
+backup failure without bypassing backup/migration gates or replacing player data,
+then added/tested58's prevention fix. Previous goal turn yielded the terminal
+failure and changed the next action; it was evidence-producing progress.
+
+57CI34347504351 attempt1 passed all tests/predeploy but failed server deployment
+12:50:58: replacing the shared build tag made old image8754f0b8 unresolvable in
+Docker's containerd image store. Backup's trap restarted the exact old container.
+Public client was57/8af54f2 while healthy backend remained56/31c7d9f. No acceptance.
+
+Read-only BuildKit historytb7d6phk6ub40cq5ojdqgn0xp retained the exact original
+production56 index/config/runtime layers. All retrieved bytes were verified
+against their original SHA256/length. An optional attestation payload was missing;
+two initial reconstruction/load attempts failed safely. Including attestation
+manifest metadata and explicitly loading linux/amd64 restored EXACT8754f0b8 and
+runtime manifest89e88940. No container/data replacement. Normal image-save then
+succeeded. Retained `eidolon-api:rollback-31c7d9fc-20260909` tag prevents re-loss.
+Archive `/tmp/eidolon-exact-image-VoQmYX/previous-exact-image.tar`, operational
+script `/tmp/eidolon-image-recovery-tools-GB6y7J/recover.mjs`. A separate diagnostic
+old-source rebuild differed in identity and was NOT substituted for the original.
+
+Only FAILED jobs of34347504351 were rerun, unchanged57/8af54f2. Serverdeploy job
+102475331106 PASSED. Actual production recovery receipt
+`/home/aeml/eidolon/server/backups/save-upgrade-20260909T130106Z-boTz4I/COMPLETE`
+names8af54f2/13:01:08UTC and prior8754f0b8. Independently rechecked all four SHA256
+and all three gzip archives, all PASS. Public manifest/backend now57/8af54f2.
+Final liveQA job102475487008 remains ACTIVE: release-identity and anonymous/
+persistent-character steps PASS; four-class/remote-animation still running.
+
+58 clean/frozen **fb8db75412adaf38bf13ce2e0304bdd16c951bea**, canonical
+`/tmp/eidolon-standalone-town-recovery-QJ6Drv`, supplements accepted e73be3a ONLY
+with pre-build exact-image retention, private-backup Docker-context exclusion,
+deployment tests/CI wiring/docs and one patch-note bullet. No game/client runtime,
+schema, quest, reward, aura or recovery policy changes. Before build under the
+existing lock, pin old digest to an immutable-name rollback tag; fail closed on
+missing/invalid/multiple identity, collision or tag failure without downtime.
+Original preflight regression RED3; focused race PASS1.253s. Actual owned build
+tag-replacement + backup/restore PASS15.20s; actual Docker COPY proves private
+backups/logs/.env excluded PASS1.21s, combined17.433s. Logs
+`/tmp/eidolon-deploy-image-pin-{focused,disposable,disposable-r2}.log`.
+94121 ACTIVE Node24 fullclient→lint→fullGo-race on frozenfb8db75; logs
+`/tmp/eidolon-rest58-image-pin-full-{client,lint,server}.log`. No owned browser.
+Do not push58 until57 full live acceptance and new58 source checks finish.
+
+Primary **117fffe** full28798 now TERMINAL0/PASS:273client suites3912tests87.23s,
+lint, full fresh Go-race root18.393s/game224.339s/database1.086s. Logs
+`/tmp/eidolon-primary-maelin-final-{client,lint,server}.log`. This covers latest
+dedicated Maelin model/Channel dispatch/server-facing. Still not actual full
+earned group Vigil/transport or Dark King encounter acceptance. Larger roadmap
+remains open/unpublished. Root remains LEDGER ONLY; never push it.
+
+## Previous checkpoint — September 9, 12:48 UTC
 
 This continuation made PROGRESS: implemented dedicated Maelin art and fixed the
 reproduced serverCHANNELING→clientIdle presentation defect, then verified actual
