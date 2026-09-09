@@ -16,7 +16,64 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 07:05 UTC
+## Current checkpoint — September 9, 07:14 UTC
+
+Previous goal turn was PROGRESS (Construct search fixed,54 entered predeploy).
+This continuation is also PROGRESS: full58 failure diagnosed, shield/rest
+expectation corrected, and public recovery evidence strengthened without
+changing production runtime. Whole roadmap remains active/unfulfilled.
+
+**1416 complete58 gameplay TERMINAL1/FAILED** on6e85547. Opening/collection,
+equipment/Forge/Guide and talent economy/healing passed, then duration expected
+the phone panel empty after Arcane Shield expired. Server expiry/HP/mesh/badge
+checks had passed; error context shows one legitimate resting Well Rested row.
+Log `/tmp/eidolon-rest58-all-node24-rerun-0650.log`, archive
+`/tmp/eidolon-rest58-duration-rest-failure-ATQ2N9`. Scan0, exact run-specific
+API/Mongo/image absence and free18560/18561/41960 confirmed. Trained portrait
+viewed; do not claim full-run success or confuse the older shield snapshot
+with the later error-context-only expired state.
+
+Fresh Wizard within that full run: opening65s, zero deaths, manual500XP/100gold;
+collection248s,21observed target deaths, zero player deaths, eight seeds,
+manual8000XP/100gold,7→17, locked30Guide. Actual town recovery logs include
+MP14→192/192, positive earned rest, full unchanged maxima and resumed expedition.
+Eight equipment pieces130unsold vendor value; not sale income or full kill census.
+
+58 **3ec3112** corrects only shield-expiry QA: expired shield must disappear,
+earned resting row remain, and empty placeholder remain hidden. New actual
+PhoneStatusUI coexistence regression. Initial80993 used nonexistent
+WellRestedStats filename;50285 omitted normalized remainingSeconds in fixture.
+Both failures retained, not production failures. Corrected37500 passed19tests/
+2suites1.333s plus lint. Logs `/tmp/eidolon-rest58-duration-rest-{tests,
+corrected-tests,final-tests,final-lint}.log`; candidate document
+`2026-09-09-rested-shield-expiry-panel.md`.
+
+Public proof review: Pages does not publish/tests, but native journey's combat
+observer imported/tests/collectionCombatReceipts.js. Primary0da1d65 injects the
+trusted self-contained read-only counter instead. Native journey blocks/tests
+requests, requires real hostile damage+living HP deficit (not a changed maximum),
+accepted Fireball/spent mana, normal Recall/full HP and MP, earned rest/aura and
+reconnect. No localhost/shared-wall-clock predicate, grants or timeout extension.
+25663 passed26tests1.565s/lint/Playwright discovery. Actual stronger browser
+proof still due; discovery is not gameplay. Documentation
+`2026-09-09-public-town-recovery-proof.md`, logs
+`/tmp/eidolon-primary-public-rest-{tests,lint,discovery}.log`.
+
+58 now clean **ee8a713d6d6daef1caa5d319c63c2089fdf37771** after cherry-picking
+0da1d65 onto3ec3112; independent diff confirms runtime/server/version/scripts/
+workflow unchanged from6e85547. Primary clean **640c9cea4ad5ff63a15a17fdb482367dfa0b775d**
+after carrying the shield correction. No primary process active.
+
+**48279 focused58 duration browser ACTIVE — only owned local browser** on
+ee8a713, Node24 inside sg render, projectrest58-duration24-0909-0713,
+API18560/Mongo18561/web41960; log
+`/tmp/eidolon-rest58-duration-rest-browser-0713.log`. **37941 same-source
+full58client/lint ACTIVE**, logs `/tmp/eidolon-rest58-public-proof-full-{client,lint}.log`.
+Freeze source until terminal; preserve artifacts/
+exact cleanup, then run stronger native proof and resume complete58 gameplay.
+54CI34320477081 still predeploy-active; public last verified53, no55push.
+
+## Previous checkpoint — September 9, 07:05 UTC
 
 Previous goal turn made PROGRESS (primary full server race and corrected54
 browser3 completed). This continuation also made PROGRESS: fixed a concrete
