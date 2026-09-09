@@ -14,6 +14,7 @@ const restState = page => page.evaluate(() => {
     aura?.group.traverse(part => { if (part.isMesh) meshes++; });
     return { bank: player.wellRestedSeconds, zone: player.safeZoneId,
         hp: player.health ?? player.stats.hp, mana: player.mana ?? player.stats.mana,
+        maxHP: player.stats.maxHp, maxMana: player.stats.maxMana,
         aura: Boolean(aura?.group.parent), meshes, state: player.state };
 });
 
@@ -26,8 +27,14 @@ test('earned sanctuary rest follows real travel, combat and a fresh login', asyn
     expect(credentials.characterClass).toBe('Wizard');
     test.setTimeout(300_000);
     const failures = collectBrowserFailures(page, baseURL);
+    // Exercise the same asset boundary as Pages, even on a local QA server.
+    await page.route('**/tests/**', route => route.abort());
     await loginAndEnterWorld(page, credentials);
     await expect.poll(async () => (await restState(page)).bank).toBeGreaterThanOrEqual(5);
+    await expect.poll(async () => {
+        const p = await restState(page);
+        return p.hp === p.maxHP && p.mana === p.maxMana;
+    }).toBe(true);
     const rested = await restState(page);
     expect(rested.zone).toBe('lanternhold');
     expect(rested.aura).toBe(true);
@@ -65,6 +72,21 @@ test('earned sanctuary rest follows real travel, combat and a fresh login', asyn
     }
     expect(target, 'A hostile must be reached through normal travel').toBeTruthy();
     await observeCollectionCombatReceipts(page);
+    await page.evaluate(() => {
+        const game = window.game, original = game.handleServerMessage.bind(game);
+        const evidence = window.__restJourneyEvidence = { incomingDamage: 0, cast: null };
+        game.handleServerMessage = message => {
+            const data = message.payload;
+            if (message.type === 'damage' && data?.targetId === game.player.id && data.amount > 0 &&
+                game.isHostileActorTarget(game.remotePlayers.get(data.sourceId))) {
+                evidence.incomingDamage += data.amount;
+            }
+            if (message.type === 'ability_result' && data?.skillName === 'Fireball') {
+                evidence.cast = { accepted: data.accepted, mana: data.mana };
+            }
+            return original(message);
+        };
+    });
     const selectionPoint = await projectEntity(page, target.id);
     expect(selectionPoint?.visible).toBe(true);
     target = await selectCollectionTargetThroughInput(page, target, selectionPoint);
@@ -74,7 +96,6 @@ test('earned sanctuary rest follows real travel, combat and a fresh login', asyn
         // live stats object. A confirmed DEAD actor has no remaining health.
         return actor ? actor.state === 'DEAD' ? 0 : actor.health ?? actor.stats?.hp : null;
     }, target.id);
-    const beforeHP = await targetHP();
     console.log('[well-rested-combat-selection]', JSON.stringify(await readFreshCollectionCombat(page, target.id)));
     // A visible target can be beyond projectile range. The ordinary left-click
     // owns chase/auto-attack; retain that input while approaching it.
@@ -82,12 +103,24 @@ test('earned sanctuary rest follows real travel, combat and a fresh login', asyn
         const combat = await readFreshCollectionCombat(page, target.id);
         return combat.target?.distance ?? Infinity;
     }, { timeout: 15_000 }).toBeLessThan(12);
+    // Let the ordinary hostile attack before finishing it. A reduced maximum
+    // at buff expiry is not evidence that combat depleted actual health.
+    await expect.poll(() => page.evaluate(() => window.__restJourneyEvidence.incomingDamage),
+        { timeout: 15_000 }).toBeGreaterThan(0);
+    const beforeCast = await restState(page);
+    expect(beforeCast.hp).toBeGreaterThan(0);
+    expect(beforeCast.hp).toBeLessThan(beforeCast.maxHP);
+    const beforeHP = await targetHP();
+    expect(beforeHP).toBeGreaterThan(0);
     const point = await projectEntity(page, target.id);
     expect(point?.visible).toBe(true);
     await page.mouse.click(point.x, point.y, { button: 'right' });
     await expect.poll(targetHP, { timeout: 15_000 }).toBeLessThan(beforeHP);
     await expect.poll(async () => (await readFreshCollectionCombat(page, target.id))
         .receipts[target.id]?.hits || 0).toBeGreaterThan(0);
+    await expect.poll(() => page.evaluate(() => window.__restJourneyEvidence.cast?.accepted)).toBe(true);
+    const evidence = await page.evaluate(() => window.__restJourneyEvidence);
+    expect(evidence.cast.mana).toBeLessThanOrEqual(beforeCast.maxMana - 30);
     console.log('[well-rested-combat-hit]', JSON.stringify(await readFreshCollectionCombat(page, target.id)));
     expect((await restState(page)).state).not.toBe('DEAD');
 
@@ -95,6 +128,10 @@ test('earned sanctuary rest follows real travel, combat and a fresh login', asyn
     await expect.poll(async () => (await restState(page)).zone).toBe('lanternhold');
     const returned = await restState(page);
     await expect.poll(async () => (await restState(page)).bank).toBeGreaterThan(returned.bank + 1);
+    await expect.poll(async () => {
+        const p = await restState(page);
+        return p.state !== 'DEAD' && p.hp === p.maxHP && p.mana === p.maxMana;
+    }, { timeout: 15_000, message: 'ordinary town recovery must fill both combat-depleted pools' }).toBe(true);
     expect((await restState(page)).aura).toBe(true);
     const beforeLogin = await restState(page);
     await loginAndEnterWorld(page, credentials);
@@ -103,6 +140,6 @@ test('earned sanctuary rest follows real travel, combat and a fresh login', asyn
     expect(rejoined.zone).toBe('lanternhold');
     expect(rejoined.bank).toBeGreaterThanOrEqual(beforeLogin.bank);
     await page.screenshot({ path: testInfo.outputPath('rested-rejoined.png') });
-    console.log('[well-rested-gameplay]', JSON.stringify({ rested, departed, returned, rejoined }));
+    console.log('[well-rested-gameplay]', JSON.stringify({ rested, departed, beforeCast, evidence, returned, beforeLogin, rejoined }));
     expect(failures, failures.join('\n')).toEqual([]);
 });
