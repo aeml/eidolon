@@ -16,7 +16,48 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 05:21 UTC
+## Current checkpoint — September 9, 05:30 UTC
+
+PROGRESS: **97055 Wizard Node24 repeat TERMINAL FAILED** after complete earned
+gameplay:23observed deaths/8seeds/zero player deaths, manual8000XP100gold,
+collection244s/level17/dungeon30gate/reconnect all reached. Final unchanged
+console/network assertion failed on numerous localhost module requests reporting
+`net::ERR_NETWORK_CHANGED`. Do not call the entire route passed or ignore those
+errors. Credential scan0, exact owned containers/image absent; archive
+`/tmp/eidolon-rest58-wizard-network-proof-8YseTj/test-results`, original log
+`/tmp/eidolon-rest58-wizard-node24-0521.log` includes failure context and URLs.
+
+Read-only Docker network events0520–0526 returned no entries. Runtime services
+already use host networking; cause of Chrome's notification remains unconfirmed.
+No network/workflow/runner mutation or assertion filtering was performed.
+**69597 unchanged Wizard Node24 repeat ACTIVE**, same frozen5a17be1, fresh
+projectrest58-wiz24-r1-0528/API18560/Mongo18561/web41960, log
+`/tmp/eidolon-rest58-wizard-node24-rerun-0528.log`. Opening68s/manual500XP100gold,
+three retreats/zero deaths at05:29. Poll exact handle, no edits/restarts/cleanup.
+
+**32071 read-only network monitor ACTIVE**, owned TTY running
+`timeout 600s ip -ts monitor link address route`, log
+`/tmp/eidolon-rest58-network-watch-0528.log` (zero lines at05:29). Monitor only;
+does not reconfigure interfaces or alter browser behavior. Stop this exact owned
+monitor with Ctrl-C after the browser finishes, or collect its normal600s timeout;
+do not leave it running indefinitely. One browser and this monitor are the only
+owned local processes. Preserve both logs and all failed evidence. No whole-goal
+impasse; do not mark blocked for an expected CI wait or this investigable failure.
+
+Additional supported preflights on clean canonical56/57:56/92386 PASS231version
+tests2.216s;57/37743 PASS232version tests1.974s, Node24.18.0. Go56/21018 PASS
+future-version rejection unit1.043s and57/4145 PASS3resource snapshot/validation/
+max-clamping tests1.108s (four-class/three-level/five-cycle BSON coverage). No
+skips in these selected tests. They do not replace the separate actual Mongo/
+old-writer/crash acceptance documented earlier. Logs
+`/tmp/eidolon-release56-prepush-{node24,schema}.log` and
+`/tmp/eidolon-release57-prepush-{node24,resources}.log`. No queued source changed.
+
+53CI34312290353 still ACTIVE in full disposable character gameplay at05:29.
+Do not publish54 until whole53CI/finalLiveQA and fresh public identities pass.
+Last verified live52; rest58candidate not live. Entire roadmap scope remains open.
+
+## Previous checkpoint — September 9, 05:21 UTC
 
 PROGRESS: supported **Node24.18.0** reruns completed: standalone58/57780
 TERMINAL PASS245suites3466tests187.057s plus lint, exact frozen5a17be1; primary/
