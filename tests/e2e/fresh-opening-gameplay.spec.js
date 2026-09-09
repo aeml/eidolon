@@ -219,6 +219,7 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     if (process.env.EIDOLON_E2E_FRESH_STORY_HUNT === '1' || process.env.EIDOLON_E2E_FRESH_COLLECTION === '1') {
         try {
             await earnFreshStoryHunt(page, credentials, 'chronicle_earth_kept_watch', {
+                leaveTown: () => leaveTown(page),
                 captureReady: () => page.screenshot({ path: testInfo.outputPath('earned-watch-ready.png') })
             });
         } catch (error) {

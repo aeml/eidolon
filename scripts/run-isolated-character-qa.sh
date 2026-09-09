@@ -579,6 +579,10 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   fresh-story-uninterrupted)
     EIDOLON_E2E_UNINTERRUPTED=1 EIDOLON_E2E_FRESH_STORY_HUNT=1 npx playwright test tests/e2e/fresh-opening-gameplay.spec.js
     ;;
+  fresh-rested-story-uninterrupted)
+    EIDOLON_E2E_UNINTERRUPTED=1 EIDOLON_E2E_FRESH_STORY_HUNT=1 EIDOLON_E2E_STORY_REST_RECOVERY=1 \
+      npx playwright test tests/e2e/fresh-opening-gameplay.spec.js
+    ;;
   fresh-story-hunt)
     EIDOLON_E2E_FRESH_STORY_HUNT=1 npx playwright test tests/e2e/fresh-opening-gameplay.spec.js
     ;;

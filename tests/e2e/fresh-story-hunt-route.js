@@ -4,6 +4,7 @@ import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { createEarnedClassCombat } from './earned-class-combat.js';
 import { recoverEarnedDeath } from './earned-death-recovery.js';
 import { earnedCheckpoint } from './earned-checkpoint.js';
+import { recoverBetweenHuntEncounters } from './earned-hunt-rest.js';
 import { chooseExpeditionCombatTarget, levelAppropriateExpeditionTargets } from '../expeditionCombatTargets.js';
 import { equipEarnedEmptySlots } from './earned-equipment.js';
 import { selectEarnedAttackTarget } from './earned-target-input.js';
@@ -71,7 +72,7 @@ async function findExpeditionTarget(page, hunt, deadline = Infinity) {
     throw new Error(`No reachable ${hunt.enemy} level ${hunt.minEnemyLevel}+ after bounded ordinary travel`);
 }
 
-export async function earnFreshStoryHunt(page, credentials, id, { captureReady } = {}) {
+export async function earnFreshStoryHunt(page, credentials, id, { captureReady, leaveTown } = {}) {
     const hunt = chronicleHunts.find(hunt => hunt.id === id);
     expect(hunt?.huntingRealm, 'This earned driver currently covers Earth expeditions only').toBe('earth');
     const started = Date.now();
@@ -100,7 +101,7 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady }
     // finish ordinary basic attacks; permanent retreat resets starter leashes.
     const beforeCombat = await createEarnedClassCombat(page, undefined, { retreatBelowHealthRatio: .8 });
     console.log(`[story-hunt] start ${JSON.stringify({ id, ...before, combat: await combatSnapshot(page) })}`);
-    let deaths = 0, lastReported = 0;
+    let deaths = 0, lastReported = 0, restStops = 0;
     const recover = async () => {
         const credit = (await readChronicleChapter(page, id)).count;
         deaths++;
@@ -115,6 +116,9 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady }
     while ((await readChronicleChapter(page, id)).count < hunt.count) {
         const credit = (await readChronicleChapter(page, id)).count;
         let enemy;
+        if (await recoverBetweenHuntEncounters(page, {
+            enabled: process.env.EIDOLON_E2E_STORY_REST_RECOVERY === '1', creditedKills: credit, leaveTown
+        })) restStops++;
         try { enemy = await findExpeditionTarget(page, hunt); } catch (error) {
             if ((await readPlayerState(page)).state !== 'DEAD') throw error;
             await recover();
@@ -172,7 +176,7 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady }
         if (count >= lastReported + 5 || count === hunt.count) {
             lastReported = count;
             console.log(`[story-hunt] ${JSON.stringify({ id, creditedKills: count, required: hunt.count,
-                deaths, ...await snapshot(page), combat: await combatSnapshot(page), seconds: Math.round((Date.now() - started) / 1000) })}`);
+                deaths, restStops, ...await snapshot(page), combat: await combatSnapshot(page), seconds: Math.round((Date.now() - started) / 1000) })}`);
         }
     }
     const ready = await readChronicleChapter(page, id);
@@ -199,6 +203,6 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady }
     expect(await snapshot(page)).toEqual(earned);
     expect(await readChronicleChapter(page, id)).toEqual(receipt);
     expect((await readChronicleChapter(page, hunt.beforeQuestId))?.accepted).toBe(false);
-    console.log(`[story-hunt] complete ${JSON.stringify({ id, before, beforeClaim, earned, receipt, deaths,
+    console.log(`[story-hunt] complete ${JSON.stringify({ id, before, beforeClaim, earned, receipt, deaths, restStops,
         seconds: Math.round((Date.now() - started) / 1000), note: 'Unsold vendor values are not income; quest count is server credit, not a separate count of selected-target deaths.' })}`);
 }

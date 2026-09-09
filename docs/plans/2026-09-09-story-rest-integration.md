@@ -121,3 +121,35 @@ final lint17253 and diff checks pass. Logs `/tmp/eidolon-move-only-full-client.l
 `/tmp/eidolon-move-only-browser.log`, `/tmp/eidolon-move-only-lint-final.log`.
 Backend unchanged since its corrected full race pass. The same uninterrupted
 earned route must now run on the committed new control; its outcome is pending.
+
+## September 9, 03:32 UTC — uninterrupted result and explicit recovery comparison
+
+Actual24785 on clean0a3e1c0 FAILED4.8m, after opening97s and diary136s
+cumulative passed without reconnects/deaths. Watch stalled at2/40 against the
+unchanged120s credit watchdog: level3,115/150HP,0/130MP, target level3/14HP
+20.43 units away. Defense totals39retreats/1crowd jump/18Fireballs. No issued
+movement failure occurred in this run. Screenshot inspected; it confirms zero
+mana, not a complete diagnosis of combat balance. Retain this as failed no-rest
+earned play, not proof that Shift-click makes the campaign pass. Log
+`/tmp/eidolon-story-rest-uninterrupted-0324.log`; sanitized images/context archived
+under `/tmp/eidolon-story-rest-move-proof-sI5HiW/test-results`. Owned project
+story-rest-20260909-0324 containers/image are independently absent after cleanup.
+
+Added a separate opt-in `fresh-rested-story-uninterrupted` route. It starts the
+same fresh opening/diary/40-kill Watch, skips the same intermediate logins, and
+retains the final persistence check. Between credited encounters only, the
+existing real-resource recovery policy may Recall, wait for actual safe-zone
+full HP/MP, and leave through normal input. No pre-first-kill extra rest, no
+mid-encounter deadline reset, no new grants or changed quotas/rewards. Recovery
+failures remain failures; rest stops are counted in hunt evidence. The original
+route and CI defaults are not replaced. This comparison measures the requested
+town-recovery loop, not uninterrupted no-rest combat acceptance.
+
+New helper tests cover disabled/default behavior, no first-encounter stop,
+delegation/failure propagation, malformed credit and required ordinary departure;
+source boundary check retains the120s deadline and distinct opt-in shell route.
+Initial63450 failed one test because jsdom's URL was passed to Node fs; corrected
+explicit node:url import. Final97700 PASS4suites/41tests1.345s plus lint, shell
+syntax and diff checks. Logs `/tmp/eidolon-rested-story-policy{,-final}.log` and
+`/tmp/eidolon-rested-story-lint-final.log`. No production runtime changes since
+0a3e1c0/fullclient3655; actual managed-hunt comparison is still pending.
