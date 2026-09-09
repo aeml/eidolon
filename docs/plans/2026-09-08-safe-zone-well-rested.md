@@ -4,6 +4,14 @@ Requested September 8, 2026. Status: implementation in progress, NOT live.
 Part of the active full-roadmap goal: implement as a coordinated 1.0.x feature
 after urgent blockers, and include it in 1.1 recovery and progression acceptance.
 
+September9 03:33 checkpoint: new move-only0a3e1c0 uninterrupted route FAILED4.8m
+at Watch2/40, zero deaths,115/150HP and0/130MP after repeated retreats; no
+issued movement failure. Evidence retained, not pacing approval. Separate
+8564500 comparison uses real town recovery only between credited encounters,
+without changing deadlines, counts, rewards or default CI. Policy41tests/lint
+pass; actual53523 is ACTIVE. Feature/campaign remains unversioned and NOT live.
+52 passed all initial test groups and is in predeploy gameplay QA; queue unchanged.
+
 September9 03:24 checkpoint: the uninterrupted17a4dba route FAILED5.2m at
 Watch3/40 with zero deaths: an issued retreat displaced2.46 of the required6
 units near New Growth. Marker interception is a lead, not established cause.

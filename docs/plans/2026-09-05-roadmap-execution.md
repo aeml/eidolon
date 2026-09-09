@@ -5,7 +5,42 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 03:24 UTC
+## Current checkpoint — September 9, 03:33 UTC
+
+PROGRESS: fresh uninterrupted24785 on clean0a3e1c0 terminatedFAILED4.8m.
+Opening97s/diary136s cumulative passed without deaths/reconnects. Watch stalled
+at2/40 against unchanged120s credit watchdog: level3,115/150HP,0/130MP,
+level3 Skeleton14HP/20.43units away,39retreats/1crowdjump/18Fireballs. No
+issued movement failure this run. Screenshot inspected; zero mana confirmed,
+not proof of the complete cause. Sanitized evidence archived
+`/tmp/eidolon-story-rest-move-proof-sI5HiW/test-results`; log
+`/tmp/eidolon-story-rest-uninterrupted-0324.log`. Exact owned project containers/
+image independently absent after normal cleanup. This no-rest gate remains failed.
+
+Added explicitly separate `fresh-rested-story-uninterrupted` comparison on clean
+**8564500b3ef0d872d0361befafc4f2c64b0fe175** in integrated worktree. After
+credited encounters only, existing resource policy can perform ordinary Recall,
+real town full-pool recovery and native departure. No extra first-encounter rest,
+no mid-fight deadline reset, no grants, changed quotas/rewards, ignored failure
+or replacement of default/CI no-rest route. Retains no intermediate logins and
+mandatory final persistence check; reports rest-stop count. Production runtime
+unchanged from0a3e1c0/fullclient3655. Initial63450 test-only Node/jsdom URL mismatch
+fixed by explicit node:url import. Final97700 PASS4suites/41tests1.345s, lint,
+shell/diff checks pass. Logs `/tmp/eidolon-rested-story-policy{,-final}.log`.
+
+**53523 ACTIVE**, owned projectstory-rest-managed-0909-0332, API18560/web41960,
+log `/tmp/eidolon-story-rest-managed-0332.log`. Revalidated actual handle03:32;
+clean exact source build running. This is the only owned local check running.
+Poll53523, do not relaunch or clean while active. Comparison is pending and
+cannot be relabeled uninterrupted no-rest acceptance even if it passes.
+
+**52 CI34305897736 ACTIVE**: server/client/all3browsergroups SUCCESS,
+predeploy character QA running.51 is last independently verified live. No53
+push before complete52CI/deploy/finalLiveQA plus fresh exact public52.53 prepush
+239tests passed as recorded below; canonical53–57 unchanged. Whole roadmap and
+earned balance gates remain open. Root is a ledger, NEVER a release publisher.
+
+## Previous checkpoint — September 9, 03:24 UTC
 
 PROGRESS: integrated17a4dba uninterrupted72341 terminatedFAILED5.2m. Opening
 and diary passed; Watch3/40, level4/50HP/8MP, zero deaths. Issued retreat moved
