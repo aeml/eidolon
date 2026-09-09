@@ -34,10 +34,19 @@ passed. No production changes this turn. Remaining resource adaptation now
 centers on dungeon/PvP integrations and journal/auction/schema-upgrade flows;
 browser-integrated and earned balance gates remain open.
 
+September9 00:23 checkpoint, development cebd17f: actual four-class dungeon
+restart/recovery matrix passes52.653s, all8 living/dead cases and16 processes.
+Retains exact dungeon resources after real rest expiry, real Fireball cost,
+room/layout progress and recovery without grants. All logs clean with normal
+drains; owned Mongo/volumes removed and checked absent. Client authority checks
+pass2 suites/15 tests: render time cannot grant healing or earn/spend rest.
+There is no playable offline progression entry; current client explicitly uses
+server authority, so no independent client rest clock is needed.
+
 This is not a versioned/staged release. It follows staged57, requires schema9,
-and must not publish inherited57 metadata. Existing town-based resource tests,
-normal boundary travel, reconnect variations, offline parity decision and
-rested/unrested earned gameplay/balance remain open before its release gate.
+and must not publish inherited57 metadata. Remaining gates include actual PvP
+resource integration, journal/auction failures and schema-upgrade recovery,
+integrated browser travel/reconnect/aura and rested/unrested earned balance.
 
 ## Requested behavior
 

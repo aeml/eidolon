@@ -5,7 +5,43 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 00:05 UTC
+## Current checkpoint — September 9, 00:23 UTC
+
+PROGRESS: Well Rested development **cebd17fdf9d954b59bcea6e73285fca65e925988**
+is committed and clean, still unversioned/unpublished. Actual dungeon restart
+matrix passes52.653s:8 living/dead class cases,16 processes, exact resources
+after real-time rest expiry, actual Wizard Fireball and preserved room/layout/
+equipment/reward state. All16 logs clean with normal drains; owned loopback
+Mongo0010 and volumes removed and checked absent. Client authority checks pass
+2 suites/15 tests1.01s. The production client forces multiplayer; no playable
+offline progression entry exists, so an independent client clock is unnecessary.
+Feature evidence remains in its branch's implementation document. PvP actual
+integration, journal/auction/schema failures, integrated browser visuals and
+earned rested/unrested balance remain open.
+
+50 CI**34290705218** is terminal **FAILURE** in predeploy character QA.
+Go/Jest/all3 browser shards passed; every deployment/live job was SKIPPED.
+Fresh public metadata and health at00:19 remain exact49/0c6d0cc, database ready.
+No51 push and no successor release gate is satisfied.
+
+50 candidate **6c5059eaf0926c8d631a26ddb4fe8d3555721933** fixes a proven test
+helper mismatch: a collision-checked retreat could be replaced with an unchecked
+sideways path.3 red regressions become5 suites/37 green tests1.177s; lint/diff
+checks pass. Issued movement failure still fails, no-input remains no-input, and
+ordinary travel alternatives are unchanged. Retry1's later target-acquisition
+failure remains unexplained; screenshot shows Skeleton models but lacks their
+selection-time active/hostile state. Added bounded read-only diagnostics. Original
+log `/tmp/eidolon-release50-failure.log`, artifacts
+`/tmp/eidolon-release50-predeploy-failure-0019`. Fresh isolated collection rerun
+launched from exact clean6c5059e; log
+`/tmp/eidolon-release50-fresh-collection-0023.log`, owned project
+`rest50-20260909-0023`, API18550/browser41950. Freeze this candidate while running.
+Do not call50 fixed or push it until its remaining failure is addressed with
+actual acceptance.51–57 still descend from oldb7b86f5; propagate any final50 fix
+through that ordered queue before future publishing. Root/master is not a
+release publisher. Full1.1–1.10 goal remains active and incomplete.
+
+## Previous checkpoint — September 9, 00:05 UTC
 
 PROGRESS: Well Rested development **e9c5de560b81d33cf68dfa84188e86f38b1b334c**,
 clean in `/tmp/eidolon-well-rested-ZL0PZY`. Adapted the existing four-class
