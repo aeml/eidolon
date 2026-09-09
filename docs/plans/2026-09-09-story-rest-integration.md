@@ -64,11 +64,25 @@ the new full regression started. Regenerating Go/JS protobufs exactly matched
 the merged outputs (7d2c3ec9 /75eec1c5); final lint31593 and shell/diff checks pass.
 Normal prepare:client92314 finished; ignored vendor assets are present.
 
-At02:30UTC, corrected full Go race23067 and full client98874 are ACTIVE on
-1816738. Logs `/tmp/eidolon-story-rest-integrated-full-server.log` and
-`/tmp/eidolon-story-rest-integrated-full-client.log`. Poll these exact handles;
-do not restart an active check or call it passed based on partial output. No
-owned browser workflow has been started for the combined candidate yet.
+Corrected full Go race23067 PASS(root27.543s/game437.789s) and full client98874
+PASS256 suites/3645tests240.706s on production1816738. Both handles confirmed
+terminal at03:02UTC; logs `/tmp/eidolon-story-rest-integrated-full-server.log`
+and `/tmp/eidolon-story-rest-integrated-full-client.log`. No race report.
+
+Additional26402 PASSrace7.460s:8 combined durable-data cases (four classes,
+living/dead), each3 BSON/catalog/full-snapshot/private-journal reload cycles.
+Legacy level30/9890XP on curve1 becomes level30/10561XP on curve2 once; the
+accepted500XP opening receipt,8000XP five-item collection promise and explicit
+zero-payout known diary survive, including count/evidence/optional state. Base
+stats/currency, exact123.456789 rest, zero mana and living1HP/dead0HP survive.
+Log `/tmp/eidolon-story-rest-combined-save.log`. This new test was added after
+the full suite started; its separate focused result is required evidence, not
+part of the earlier full test count. No production change or actual-socket claim.
+
+Next actual browser route: `fresh-story-uninterrupted`, ordinary opening→diary→
+forty-kill Watch with no checkpoint logins, extra rest stops or grants. Preserve
+the120s credit watchdog, two-respawn limit and30m route limit. This is new
+combined-runtime acceptance, not a rerun of unchanged failed historical source.
 
 After corrected full checks: verify generated protocol parity, ordinary persisted
 curve1→2/rested saves, fresh uninterrupted and honestly labeled town-rest routes,
