@@ -61,6 +61,24 @@ four-class stats and device/aura acceptance remain required.
 
 ## Development acceptance — September 8, 23:30 UTC
 
+Additional **September9 02:28UTC** correction: enemy AI still used three old
+town-coordinate checks despite the new damage/rest registry. New actual update
+tests failed at the inclusive fence, future shrine acquisition, matching dungeon
+coordinates and shrine roaming. Acquisition, chase and roaming now query the
+scene-scoped registry. A separate actual two-second boss-slam regression failed
+because entering the shrine during wind-up still lost10HP; impact now rechecks
+combat eligibility, scene, death and disconnect under the target lock. Ordinary
+outside slam damage remains10. These are production fixes, not test-only changes.
+
+Final focused race25833 PASS8.000s covers6 acquisition,4 movement and2 actual
+slam cases, plus existing enemy-target concurrency and registry/rest protection.
+Logs `/tmp/eidolon-safe-zone-ai-before.log`, `/tmp/eidolon-safe-zone-slam-before.log`
+retain the failures; `/tmp/eidolon-safe-zone-ai-final.log` is the final focused
+pass. The initial formatting command used the wrong relative path; corrected
+gofmt/diff checks pass. Full current-source regression and live packaging remain
+due. Older d650c72 persistence/browser results describe that earlier binary;
+do not relabel them as actual sessions on this newly changed AI runtime.
+
 Latest additional acceptance, **September9 02:12UTC**:
 
 - New explicit `fresh-rested-collection` route uses ordinary Recall, actual
