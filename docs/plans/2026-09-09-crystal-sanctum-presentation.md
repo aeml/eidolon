@@ -7,6 +7,15 @@ still stands in for bespoke Maelin.
 
 ## Rendered inspection — September9,12:27UTC
 
+Full regression47504 subsequently PASSED on aa4f0f1: client273suites/3909tests/
+83.194s plus lint, then fresh fullGo-race root19.472s/game243.181s/database1.295s.
+Logs `/tmp/eidolon-primary-crystal-full-{client,lint,server}.log`. Full local
+regression is complete for this code, but earned group/rejoin/live gates remain.
+A read-only actual remote CrystalKeeper tick additionally reproduced the missing
+ritual pose: stateCHANNELING requestsIdle. Log
+`/tmp/eidolon-maelin-channel-source-probe.log`; fix is still pending, with bespoke
+Maelin. The visual fixture above did not claim to prove a channel animation.
+
 66202actual browser PASS8cases/22.5s on3587363; each captured three states in
 High/Low at desktop and portrait phone sizes. Archive
 `/tmp/eidolon-crystal-visual-first-proof-EfFXcC`; log
