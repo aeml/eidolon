@@ -1,8 +1,40 @@
 # Crystal sanctum presentation candidate
 
 Status: implemented in the later story worktree; excluded from Alpha 1.0.58.
-Not yet visually approved or deployed. Full regression and rendered inspection
-remain required. The existing clothed Wizard rig still stands in for bespoke Maelin.
+Not deployed. Initial rendered inspection is complete, but final art/gameplay
+approval and full regression remain required. The existing clothed Wizard rig
+still stands in for bespoke Maelin.
+
+## Rendered inspection — September9,12:27UTC
+
+66202actual browser PASS8cases/22.5s on3587363; each captured three states in
+High/Low at desktop and portrait phone sizes. Archive
+`/tmp/eidolon-crystal-visual-first-proof-EfFXcC`; log
+`/tmp/eidolon-crystal-sanctum-browser.log`. All eight restored captures inspected.
+The elemental shapes rendered, but the pre-existing broad spirit-material boss
+ring overwhelmed Maelin and the crystal under bloom. Passing pixel checks did
+not make that acceptable presentation.
+
+d81c9c7 replaces only `crystal_vigil`'s decorative boss ring with a narrow metal
+inlay and lowers crystal emission to retain visible facets. Ordinary boss dressing
+and objective/clear state markers remain.20130initial focused failed on the
+new ninth shared shape count and an incorrectly assumed boss exit-portal fixture;
+both assertions were corrected (entry rooms own that portal). Final focused
+PASS42tests/3suites/1.625s plus lint; logs
+`/tmp/eidolon-crystal-visual-glare-{focused-r2,lint-r2}.log`.
+
+64594actual corrected browser PASS8cases/22.3s; all48state/quality screenshots
+retained at `/tmp/eidolon-crystal-visual-glare-proof-FVvi7I`, scan0 and port41961
+cleanup verified. Log `/tmp/eidolon-crystal-sanctum-browser-r2.log`.
+Inspected corrected Earth/Air desktop restored, Fire desktop fractured, and Water
+phone Low repairing: ring glare is gone, cracked versus aligned facets are visible,
+the ritual thread is thin and Maelin is no longer covered by the bloom ring.
+This is controlled GPU/scene proof, not full earned group progression.
+
+Open visual refinements include bespoke Maelin/ritual pose, quieter repeating
+floor patterns and fuller sanctum architecture beyond the new reliquaries. Test
+actual player-camera scale and encounter telegraphs with a full raid, plus durable
+rejoin transport. Those are not closed by these overview presentation fixtures.
 
 ## Implemented
 
@@ -41,7 +73,7 @@ message dispatch into real WorldGenerator/art and existing dungeon containment.
 Logs `/tmp/eidolon-crystal-visual-expanded{,-lint}.log`.
 
 8603lint/discovery passed for eight browser cases in
-`tests/e2e/crystal-sanctum-presentation.spec.js`. **Browser cases NOT RUN yet**.
+`tests/e2e/crystal-sanctum-presentation.spec.js`; subsequent runs are recorded above.
 They use actual regional room generation, RenderSystem, the snapshot consumer and
 CrystalKeeper actor, and capture each state at1280x720and390x844inHigh/Low. An actual
 GPU hidden/visible comparison must prove the crystal contributes pixels, not just
