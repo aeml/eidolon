@@ -2,6 +2,7 @@ import { expect } from '@playwright/test';
 import { chronicleInvestigations } from '../../src/data/chronicleInvestigations.generated.js';
 import { getIlyraCompletionReply } from '../../src/ui/QuestConversation.js';
 import { moveByGroundClick, readPlayerState, returnToTown } from './helpers.js';
+import { resumeInvestigationReading } from './investigation-reading-state.js';
 
 async function walkTo(page, x, z) {
     for (let step = 0; step < 50; step++) {
@@ -67,8 +68,11 @@ export async function earnInvestigation(page, id, openIlyra, capture, { waypoint
                 if (capture) await capture(site, 'combat-failure');
                 throw error;
             }
-            await walkTo(page, site.x, site.z + 3);
         }
+        const evidence = page.locator(`#journal-list details[data-discovery-id="${site.id}"]`);
+        try {
+        const reading = await resumeInvestigationReading(page, evidence, async () => {
+        if (beforeInspect) await walkTo(page, site.x, site.z + 3);
         if (capture) await capture(site, 'approach');
         if (inspectWithKeyboard) {
             // Ordinary E input reaches nearby evidence even if a hostile
@@ -113,11 +117,16 @@ export async function earnInvestigation(page, id, openIlyra, capture, { waypoint
         }
         await page.mouse.click(point.x, point.y);
         }
-        const evidence = page.locator(`#journal-list details[data-discovery-id="${site.id}"]`);
+        });
+        console.log('[investigation-reading]', JSON.stringify({ site: site.id, reading }));
         await expect(evidence).toHaveAttribute('open', '');
         await expect(evidence).toContainText(site.title);
         if (capture) await capture(site, 'earned');
         await page.locator('#btn-close-journal').click();
+        } catch (error) {
+            if (capture) await capture(site, 'reading-failure');
+            throw error;
+        }
     }
     const before = await page.evaluate(id => window.game.player.quests.find(q => q.id === id), id);
     expect(before.count).toBe(chapter.sites.length);
