@@ -64,9 +64,9 @@ server still validates movement, distance and earned discovery credit.
 
 ## Publication checks still required
 
-- Confirm the complete corrected actual-gameplay route, including its error
-  check, manual rewards and saved progress. A prior Wizard completed40/40 with
-  town recovery but the overall run failed an earlier inspection console error.
+- The corrected Wizard opening/diary/40-kill route passes, including the error
+  check, manual rewards and saved progress. Keep that evidence alongside the
+  earlier inspection-error failure; complete the remaining class/realm routes.
 - Finish earned class/realm progression, party and economy checks. One Wizard's
   successful hunt is not full-campaign, physical-phone or balance approval.
 - Reconcile this copy against the exact release diff; retain any documented

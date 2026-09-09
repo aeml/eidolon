@@ -197,3 +197,28 @@ request. Logs `/tmp/eidolon-chronicle-move-order-{before,after,server}.log`.
 Final prepare/lint90207 and diff checks pass. Full client regression and a fresh
 actual default-rested route on the corrected source remain required. No new
 version/live publication; canonical release order is unchanged.
+
+## September 9, 04:01 UTC — corrected Wizard route passes
+
+Full client45516 on cleandb3bbb7 PASS260suites/3682tests244.675s. Actual default
+town-recovery1469 on that same source PASS1/11.2m, including the final browser
+error check. Opening52s and diary92s cumulative passed without intermediate
+reconnects. Watch40/40 at559s hunt time; manual1593XP/100gold and final saved
+progress passed at574s. No deaths,13real town stops totaling265.077s including
+travel (18.944–22.107s each). Every observed recovery restored both pools to
+their actual maxima; rest naturally expired outside and accumulated in town.
+
+Before claim:level6/270XP/1326gold; after:level8/138XP/1426gold,14occupied bag
+slots/320 unsold gear value retained. The ready-to-claim capture was inspected:
+readable Ilyra text,40/40 and an explicit1593XP/100gold claim. This is a single
+Wizard's full opening/diary/Watch route, not the full Earth campaign, all-class
+balance, phone-device or raid approval. Earlier failed routes remain preserved.
+
+Logs `/tmp/eidolon-primary-recovery-full-client.log` and
+`/tmp/eidolon-primary-recovery-story-0348.log`; sanitized evidence archived at
+`/tmp/eidolon-primary-wizard-proof-M7KhR6/test-results`. Credential scan passed;
+owned primary-rest-0909-0348 containers/image independently absent. All local
+handles are terminal at this checkpoint. Runtime remains unchanged; next actual
+class comparison is Fighter, using the same default rest and earned-input rules.
+Unversioned player-facing release-note draft is carried with this candidate;
+publication still requires wider earned progression and the ordered release gate.
