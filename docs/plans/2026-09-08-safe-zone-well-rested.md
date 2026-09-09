@@ -4,6 +4,21 @@ Requested September 8, 2026. Status: implementation in progress, NOT live.
 Part of the active full-roadmap goal: implement as a coordinated 1.0.x feature
 after urgent blockers, and include it in 1.1 recovery and progression acceptance.
 
+Player clarification, September9 03:37UTC: returning to town to restore HP/MP
+and earn Well Rested before fighting again is the intended resource loop, not
+an exceptional workaround. Balance and primary earned-play acceptance must use
+ordinary safe-zone recovery. A long no-rest hunt is diagnostic comparison data,
+not a release blocker merely because a depleted character cannot sustain it.
+Retain .01 outside regeneration; do not raise it to make no-rest play sustainable.
+Keep actual movement/combat/death/persistence checks and genuine recovery timing.
+Once the current frozen playthrough finishes, carry this policy into the combined
+candidate's main earned collection/hunt QA, including its full CI route. Older
+canonical releases51–57 do not contain Well Rested and retain their own gates.
+
+Current managed route53523 has reached10/40 kills with zero deaths and3 actual
+town stops. This is partial evidence only; final quest rewards and saved progress
+are pending. The test was already exercising the newly confirmed intended loop.
+
 September9 03:33 checkpoint: new move-only0a3e1c0 uninterrupted route FAILED4.8m
 at Watch2/40, zero deaths,115/150HP and0/130MP after repeated retreats; no
 issued movement failure. Evidence retained, not pacing approval. Separate

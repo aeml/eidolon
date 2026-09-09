@@ -5,7 +5,25 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 03:33 UTC
+## Current checkpoint — September 9, 03:37 UTC
+
+USER CLARIFICATION: returning to town to replenish HP/MP and build Well Rested
+is the intended normal loop. Adopt earned town recovery as the combined feature's
+primary progression/CI policy after the frozen current run; do not make indefinite
+no-rest sustainability a release requirement or raise .01 outside regeneration.
+Retain actual resource timers, movement, combat deadlines, death accounting,
+manual payouts and saved progress. Preserve failed no-rest evidence as diagnostic
+comparison, NOT a standalone pacing blocker. Canonical51–57 gates unchanged.
+
+Actual **53523 remains ACTIVE**, last confirmed via exact handle03:36, on clean
+8564500. At144s hunt time:10/40,0deaths,3real recovery stops (~20s each), level4,
+192HP/99MP,3bag slots/170 unsold equipment value. Town snapshots show genuine
+24/40MP→159MP and184→192HP, with earned rest bank, no grants. Opening33s and
+diary73s cumulative passed with no intermediate reconnects. Final hunt/payout/
+persistence pending; poll53523 and keep its runtime frozen. Log and owned project
+as below.52 CI34305897736 still in predeploy gameplay; no53 publication.
+
+## Previous checkpoint — September 9, 03:33 UTC
 
 PROGRESS: fresh uninterrupted24785 on clean0a3e1c0 terminatedFAILED4.8m.
 Opening97s/diary136s cumulative passed without deaths/reconnects. Watch stalled
