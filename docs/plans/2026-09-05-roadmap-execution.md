@@ -18,6 +18,17 @@ declares go1.24.5 and `go version` inside server confirms automatic1.24.5 select
 
 ## Current checkpoint — September 9, 11:05 UTC
 
+11:08 follow-up:95652 TERMINAL0/PASS, complete Cleric matrix1.0m. Added evidence
+records25frames, hardware AMD RADV, continuous MOVING and Spirit Guardians cast;
+all later assertions passed. Original10-frame failure's cause remains unproven.
+Archive `/tmp/eidolon-rest58-cleric-frame-proof-8ORFWQ`, scan0/exact cleanup.
+58nowclean/frozen **c5e32047e34c1fcb548c5ef0952a4a731c52e6ba** (diagnostic plus
+closure doc; no runtime change). **2466 fullall ACTIVE**, only owned local browser,
+runrest58-all24-r12-0909-1107/API18560/Mongo18561/web41960, Node24.18.0, log
+`/tmp/eidolon-rest58-all-node24-rerun-1107.log`. No reduced/replaced gate.56 remains
+predeploy;57 remains unpublished1f8c7be. Primary0379fe3 is clean/idle, no other
+local tests active. Do not edit the recovery candidate until2466 is terminal.
+
 Previous turn was a VERIFIED WAIT on exact56CI and58browser handles. This turn
 made PROGRESS on an independently reproduced Maelin model mismatch and retained
 a newly terminal58 failure. The whole roadmap remains active and incomplete.

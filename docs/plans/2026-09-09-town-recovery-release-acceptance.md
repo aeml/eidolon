@@ -1,5 +1,13 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update11:08UTC:95652 Cleric-only matrix PASSED1.0m with unchanged assertions;
+25frames in diagnostic attachment, actual hardware renderer and moving cast.
+Original10-frame sample cause remains unknown, not retrospectively passed.
+Archive `/tmp/eidolon-rest58-cleric-frame-proof-8ORFWQ`, scan0/exact cleanup.
+Current clean/frozen58c5e3204, **2466 complete all-route ACTIVE**, only owned browser,
+`/tmp/eidolon-rest58-all-node24-rerun-1107.log`, r12sameports18560/18561/41960.
+56CI remains predeploy; no57/58push or recovery-live claim.
+
 Update11:05UTC:49970 fullall TERMINAL1/FAILED on028f23b. All duels and first three
 class matrices passed; Cleric moving-cast sample had10frames in650ms against>10.
 Remaining Cleric/multiplayer/nameplate/native-rest suffix did not run. Archive
