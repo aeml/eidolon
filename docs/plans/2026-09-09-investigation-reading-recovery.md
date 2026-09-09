@@ -18,3 +18,18 @@ Focused83791 passed15tests/3suites0.59s and lint. Full87041 passed280suites3963t
 The exact/open, unrelated/closed/hidden, no-journal and propagated-failure branches
 are covered. Actual corrected story/merchant/collection/readiness proof remains
 pending. Server source and production release58 are unchanged.
+
+Replay30264 on1ff8e2a FAILED2.5m before reaching the diary. Actual opening count
+was already3/3, but credit arrived during target selection and the driver then
+waited for count>3 until its120s watchdog. This is a distinct test completion race,
+not evidence that the player's third quest kill failed. No fourth credit can be
+awarded after the quest's cap. Archive `/tmp/eidolon-story-opening-credit-race-Dfdn0o`
+retains report/context/log; scanner0 and exact owned containers/ports cleaned up.
+
+Target selection now checks objective progress before and after ordinary target
+acquisition. A ready objective returns to the existing manual-claim path instead
+of starting another encounter; unfinished work snapshots the new count and still
+requires earned progress within the unchanged watchdog. Invalid counts and input
+failures propagate, with no quest credit/reward injection. Focused45762 passed
+14tests/2suites0.711s and lint; `/tmp/eidolon-opening-credit-race-{focused,lint}.log`.
+Full regression and actual earned replay remain due for this follow-up.

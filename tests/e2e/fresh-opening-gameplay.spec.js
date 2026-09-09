@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { selectUnfinishedObjectiveTarget } from '../earnedObjectiveEncounter.js';
 import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { earnEarthInvestigation } from './chronicle-investigation-route.js';
 import { clearFreshInvestigationApproach } from './fresh-investigation-combat.js';
@@ -140,10 +141,14 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     let deaths = 0;
     let retreats = 0;
     while ((await readChronicleChapter(page, chapter)).count < 3) {
-        let target = await findSkeletonThroughTravel(page);
+        const encounter = await selectUnfinishedObjectiveTarget(
+            async () => (await readChronicleChapter(page, chapter)).count,
+            () => findSkeletonThroughTravel(page), 3);
+        if (!encounter) break;
+        let { target } = encounter;
         let targetStartHP = target.health;
         let targetLowestHP = target.health;
-        const before = (await readChronicleChapter(page, chapter)).count;
+        const before = encounter.before;
         const deadline = Date.now() + 120_000;
         while (Date.now() < deadline && (await readChronicleChapter(page, chapter)).count === before) {
             const player = await readPlayerState(page);
