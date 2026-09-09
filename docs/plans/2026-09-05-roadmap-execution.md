@@ -16,7 +16,60 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 08:29 UTC
+## Current checkpoint — September 9, 08:50 UTC
+
+The preceding status turn was a VERIFIED WAIT on gameplay52270 and CI34328735856;
+it also established primary regression45785 terminal success. Recovery is still
+unpublished. The user's ETA remains conditional September9 14:00–17:00UTC.
+
+Earlier full recovery53012 TERMINAL1: inventory ownership/tracking assertions
+passed, but raw reconnect navigation recorded state_pb.js/three.core.js
+ERR_NETWORK_CHANGED. Six other dungeon-batch tests passed; this is not a full
+gameplay pass. Original evidence remains at
+`/tmp/eidolon-rest58-reconnect-network-failure-MDj0Il`, with full log
+`/tmp/eidolon-rest58-all-node24-rerun-0828.log`; scan0 and exact cleanup were
+verified before the successor started. No host-network cause is established.
+
+Canonical58 is now clean/frozen **45797ee24167071312e53bc9d015394fc39e4391**.
+QA removes34 redundant raw reloads immediately preceding same-page login; login
+already owns a fresh document navigation and bounded runtime readiness. Primary
+61e18de made the corresponding37 removals. Existing reconnect ownership/resource
+assertions remain, with no production change, new error filter or retry budget.
+A seven-case source guard rejects this adjacent double-navigation pattern.
+
+Real browser fault proof84624 PASSED4/1m, including a failing raw-reload control,
+fresh-document recovery, persistent failure retention and preservation of earlier
+unrelated errors. It deliberately injects CONNECTION_RESET, not a claim to
+reproduce the host's NETWORK_CHANGED cause. Log
+`/tmp/eidolon-rest58-reconnect-fault-browser.log`; archive
+`/tmp/eidolon-rest58-reconnect-fault-proof-ah0ADD`.
+Actual inventory48756 PASSED1/19.3s, manual drop/pickup and saved ownership/
+tracking/reconnect, log `/tmp/eidolon-rest58-single-navigation-inventory.log`,
+archive `/tmp/eidolon-rest58-single-navigation-inventory-proof-k2dH4a`; scan0,
+exact disposable resources removed. Full client1520 PASSED249suites/3499tests/
+123.612s plus lint, Node24, logs
+`/tmp/eidolon-rest58-single-navigation-full-{client,lint}.log`.
+
+**52270 complete58 gameplay ACTIVE**, frozen45797ee, run
+rest58-all24-r8-0909-0843 (actual start08:41:57), API18560/Mongo18561/web41960.
+Log `/tmp/eidolon-rest58-all-node24-rerun-0843.log`. Authentication3tests passed
+44.6s; dungeon batch is actively fighting bosses. Only owned local browser;
+do not edit/restart this candidate while active. Full-game/rest gate remains open.
+
+Primary36559 full regression failed only two stale checkpoint mock expectations
+for the now-removed redundant reload (266suites/3803tests passed). Follow-up
+**f8723bcf9f1af0b8886163603478a62cbb5d4da9** preserves login invocation and saved
+progress assertions while expecting no extra raw reload. Focused17 passed;
+**45785 full rerun TERMINAL0**,267suites/3805tests/107.828s plus lint, logs
+`/tmp/eidolon-primary-single-navigation-r2-full-{client,lint}.log`.
+Primary remains clean, unpublished, and separate from standalone58.
+
+**55CI34328735856 ACTIVE**: client/server/all3browser shards passed; predeploy
+character QA started08:44:53.54 remains last independently verified production.
+No56push until complete55 deployment/final live QA and fresh exact identities.
+Whole1.1–1.10 roadmap remains active, with no completion claim.
+
+## Previous checkpoint — September 9, 08:29 UTC
 
 This turn made PROGRESS: **55264 focused beam replay TERMINAL0/PASS1/53.1s**
 (test51.6) on canonical58 **07283d077757ce42ba6d07ba1c8768ef7f822ce5**. All eight

@@ -1,5 +1,17 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update08:50UTC: unpublished candidate **45797ee24167071312e53bc9d015394fc39e4391**.
+Previous53012 finished FAILED on module errors from a redundant reconnect load;
+retained evidence and exact cleanup are recorded in the execution ledger.
+QA now uses login's existing fresh navigation without a preceding raw reload.
+Real injected-failure browser proof passed4tests; actual inventory/reconnect
+passed1/19.3s. Full client1520 passed249suites/3499tests/123.612s plus lint.
+**52270 complete gameplay ACTIVE**, frozen45797ee, log
+`/tmp/eidolon-rest58-all-node24-rerun-0843.log`; initial3authentication tests pass,
+dungeon encounters underway. No full regression or live delivery claim.
+55CI34328735856 has all unit/browser jobs passed and predeploy QA running.
+56–58 still queued. See the ledger for precise artifacts and failure history.
+
 Update08:29UTC: **07283d077757ce42ba6d07ba1c8768ef7f822ce5** focused beam replay
 55264 PASSED1/53.1s, all eight actual beam endpoint cases plus saved rank.
 Current full client46700 PASSED248suites/3492tests/112.724s plus lint underNode24.
