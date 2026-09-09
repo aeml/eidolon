@@ -1,5 +1,10 @@
 # Crystal sanctum presentation candidate
 
+Update12:47UTC: bespoke Maelin and her server-driven ritual loop now have focused
+and actual rendered proof; see `2026-09-09-maelin-channel-and-model.md`. Earlier
+pending-model statements below are historical. Full group/transport/live gates
+and further room/floor art refinement remain open.
+
 Status: implemented in the later story worktree; excluded from Alpha 1.0.58.
 Not deployed. Initial rendered inspection is complete, but final art/gameplay
 approval and full regression remain required. The existing clothed Wizard rig

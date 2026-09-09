@@ -4,6 +4,12 @@ Status: later story candidate only; excluded from standalone Alpha 1.0.58.
 The inherited version label is not publication permission. Recovery retains
 priority and its frozen browser build is unchanged.
 
+Update12:47UTC: the dedicated artificer model and actual channel/idle loop are now
+implemented and rendered in hardware and CI-mode browsers. See
+`2026-09-09-maelin-channel-and-model.md`. This original document records the
+earlier Wizard-rig bridge, not the current model. Full group/live acceptance
+remains open; the newer model's full regression is being repeated.
+
 ## Reproduced model mismatch
 
 The actual remote-entity factory mapped `NPC/CrystalKeeper` to `AvengingSeraph`.
