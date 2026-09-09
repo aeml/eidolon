@@ -1,14 +1,15 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
-Status at September 9, 06:14 UTC: **unpublished candidate**, not delivered.
+Status at September 9, 06:47 UTC: **unpublished candidate**, not delivered.
 Candidate worktree `/tmp/eidolon-standalone-town-recovery-QJ6Drv`, current source
-`a7ef83c287d828af51f68ee4d32821d00b45a015`, includes canonical57/cc6e419 ancestry.
+`6e855470ee01cd16d69fcc6cd2e005dbd3f4ba0f`, includes canonical57/6babef5 ancestry.
 Production runtime is unchanged from previously tested
-`5a17be147ce527bae556663cc452ecae10e87785`; the new commit changes QA only.
+`5a17be147ce527bae556663cc452ecae10e87785`; subsequent corrections change QA only.
 53CI34312290353 completed successfully, including all final live checks. Public
 manifest, login version, loaded runtime URL and server health independently match
-53/ce330b3 at06:08. Canonical54/805ba0d was then pushed successfully; remote/master
-verified and54CI34317808528 is active. No55push until the complete54 release gate.
+53/ce330b3 at06:08; client/server rechecked06:43. First54CI34317808528 failed
+before deployment on a prepared visual timer. Corrected54/5e22b74 is pushed,
+remote verified, new54CI34320477081 active. No55push until the complete54 gate.
 The complete roadmap remains open. Expanded story and coordinated balance are
 separate preserved work, not removed or declared complete by this release.
 
@@ -142,21 +143,33 @@ pickup; the full route must still do that. Details in candidate
 `docs/plans/2026-09-09-overlapping-loot-observation.md`.
 
 **33950 full client/lint passed**, terminal0,247suites/3481tests/121.961s; log
-`/tmp/eidolon-rest58-loot-observation-full-client.log`; **12130 complete gameplay
-ACTIVE**, only owned local browser, frozena7ef83c/Node24.18.0,
-projectrest58-all24-r2-0909-0610/API18560/Mongo18561/web41960; log
-`/tmp/eidolon-rest58-all-node24-rerun-0610.log`. Initial3authenticated tests all
-passed55.3s, including item-specific manual pickup and reconnect, real portal
-reentry/jump-Recall. Scorch Beam and three ground-spell wall/reachable-floor
-checks also passed in the next batch. This is not a complete gameplay pass.
-No source edits while active. Independent git diff confirms production runtime,
-metadata, workflows and scripts unchanged from5a17be1.
+`/tmp/eidolon-rest58-loot-observation-full-client.log`. **12130 complete gameplay
+FAILED** on a7ef83c: authentication, dungeon/inventory, area abilities and phone
+movement/combat/party/inventory passed, then legacy gem recovery expected base
+Intelligence10 instead of legitimate rested total11. Original log
+`/tmp/eidolon-rest58-all-node24-rerun-0610.log`; sanitized archive
+`/tmp/eidolon-rest58-gem-rest-failure-e5EF2M/test-results`, scan0/exact cleanup.
+
+QA correction7f066a4 requires base10, rested11, positive bank and Lanternhold
+before and after reconnect. Unsupported+999 gem bonuses still fail; full-bag
+rejection, legal sword equip, exact18+5 gems, rejected loose-gem equip and actual
+Mongo/reconnect remain required. Focused97572 passed1/13.3s; scan0/exact cleanup.
+Log `/tmp/eidolon-rest58-gem-rest-browser-0630.log`; metadata archive
+`/tmp/eidolon-rest58-gem24-proof-wjeDn3/test-results`.
+
+Current6e85547 also inherits54's corrected prepared respawn fixture clock through
+the canonical release chain. No production/version/script changes were imported.
+**1416 full gameplay ACTIVE**, only owned local browser; Node24.18.0,
+projectrest58-all24-r3-0909-0650/API18560/Mongo18561/web41960; log
+`/tmp/eidolon-rest58-all-node24-rerun-0650.log`. **81287 full client/lint ACTIVE**,
+logs `/tmp/eidolon-rest58-finalclock-full-{client,lint}.log`. Freeze source until
+terminal outcomes; these are not complete passes yet.
 
 ## Remaining delivery gates
 
 - Finish the complete unchanged58 isolated gameplay chain, including all prior
   dungeon/combat/equipment/phone/animation checks and the added native rest routes.
-- Publish each preceding53–57 only after its complete CI/deploy/final live QA
+- 53 is delivered; publish each remaining predecessor54–57 only after its complete CI/deploy/final live QA
   and independent exact client manifest, runtime script and server identities.
 - Publish58 through that same gate, with its existing58 login/patch notes.
 - Independently verify public58 identities, then use fresh dedicated ordinary

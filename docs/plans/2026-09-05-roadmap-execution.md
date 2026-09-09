@@ -16,7 +16,52 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 06:38 UTC
+## Current checkpoint — September 9, 06:47 UTC
+
+Previous status turn produced new evidence: public client/server still53/ce330b3,
+and both owned54 corrections had passed. This continuation is PROGRESS:
+54 correction committed/pushed and canonical ancestry carried forward.
+
+**54 new CI34320477081 ACTIVE**, exact pushed/remote
+`5e22b74701ecfca474132cf952c0d6725c25091b`; prior34317808528 remains failed.
+89804 TERMINAL0: actual bundled Chromium CI-mode respawn passed1/1.4m;
+renderer reported ANGLE/Vulkan SwiftShader. Screenshot viewed: no enclosing box.
+37920 TERMINAL0: full240suites/3398tests/131.848s plus lint, explicit Node24.
+Archive `/tmp/eidolon-release54-clock-proof-UqjXiD`; candidate closure in
+`docs/plans/2026-09-09-respawn-fixture-clock.md`. No production clock change.
+Before push: predecessor53 CI34312290353 terminal success; exact public client/
+server53 at06:43, remote805ba0d. Push97873 terminal0; remote5e22b74 verified.
+Do not push55 until new54 full CI/deploy/finalLiveQA and fresh public identities.
+
+Clean merges carry the final54 test-only correction and ancestry through:
+
+- 55 `/tmp/eidolon-release55-final54-UVV7t3`: c5ce9dc25a9554da55ef1e823e0d63ff04b6676d.
+- 56 `/tmp/eidolon-schema-compatibility-bridge-ehsEZY`: 9f41111133b4a9aaafa4d4c9a1674ec443a4652c.
+- 57 `/tmp/eidolon-resource-persistence-c6E17J`: 6babef5fd131da38fd9a0b0360bc6cdee863dfee.
+- 58 `/tmp/eidolon-standalone-town-recovery-QJ6Drv`: 6e855470ee01cd16d69fcc6cd2e005dbd3f4ba0f.
+- Primary `/tmp/eidolon-primary-town-recovery-lAKY3k`: 4e9cad5a920040e9b55ef222e9429678e5886198
+  (merged final57, not standalone58 metadata).
+
+Each merge independently showed zero runtime/server/version/workflow/script
+changes. All55–58 unpublished. Primary remains expanded-story work, not58.
+
+**1416 complete58 gameplay ACTIVE — only owned local browser**, frozen6e85547,
+explicit Node24 inside sg render. Run suffixrest58-all24-r3-0909-0650 (label;
+actual start06:45), API18560/Mongo18561/web41960; log
+`/tmp/eidolon-rest58-all-node24-rerun-0650.log`. Exact ports were free before
+start. Full chain unchanged, with corrected legacy gem expectation and native
+rest/expiry/party stages retained. No edits/restarts/second local browser while
+active. **81287 full58client/lint ACTIVE**, logs
+`/tmp/eidolon-rest58-finalclock-full-{client,lint}.log`, same frozen source.
+After terminal preserve artifacts, verify credential scan and exact cleanup;
+do not claim a complete pass from intermediate stages.
+
+Primary catalog audit confirms current Skeleton daily4250XP and Imp18250XP,
+not the old50000/150000 quoted in optional fresh-hunt/fresh-ready diagnostics.
+Those diagnostics are not the new story-only gate. Actual full Earth and
+four-class story-only readiness remain required; no new primary browser run.
+
+## Previous checkpoint — September 9, 06:38 UTC
 
 **54CI34317808528 TERMINAL FAILURE** before deployment. Server/Client/browser1/2
 passed; browser3 failed twice in respawn-appearance's0.6s stealth-expiry wait at
