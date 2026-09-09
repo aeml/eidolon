@@ -12,6 +12,7 @@
     "postinstall": "npm run prepare:client",
     "serve": "node scripts/serve-static.mjs",
     "test:e2e:crystal-art": "playwright test tests/e2e/crystal-sanctum-presentation.spec.js tests/e2e/maelin-artificer-presentation.spec.js",
+    "test:e2e:journal": "playwright test tests/e2e/journal-daily-presentation.spec.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
     "test:smoke": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runTestsByPath tests/CollisionManager.test.js tests/ItemSystem.test.js",

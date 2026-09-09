@@ -11,11 +11,15 @@ for (const [width, height] of [[1280, 720], [390, 844]]) {
         await page.goto('/', { waitUntil: 'networkidle' });
         await page.evaluate(async mobile => {
             const { QuestUI } = await import('/src/ui/QuestUI.js');
+            const { chronicleInvestigations } = await import('/src/data/chronicleInvestigations.generated.js');
+            const diary = chronicleInvestigations.find(chapter => chapter.id === 'chronicle_earth_keepers_house');
             document.getElementById('start-screen').style.display = 'none';
             document.body.classList.toggle('mobile-mode', mobile);
             const quests = [
                 { id: 'chronicle_01', category: 'chronicle', chapter: 1, title: 'A promise remembered', completed: true, lore: 'The four keepers chose to protect one another.' },
-                { id: 'chronicle_02', category: 'chronicle', chapter: 2, title: "The Keeper's Empty House", accepted: true, count: 0, maxCount: 1, description: "Find Mara's diary and learn why the house was abandoned.", rewardXP: 200, rewardGold: 25 },
+                { id: diary.id, category: 'chronicle', chapter: 2, type: 'INVESTIGATE', title: diary.title,
+                    accepted: true, count: 0, maxCount: diary.sites.length, description: diary.acceptance,
+                    objectiveText: diary.directions, rewardXP: 200, rewardGold: 25 },
                 { id: 'daily_phoenix', target: 'PhoenixSentinel', count: 0, maxCount: 100, rewardXP: 396250, rewardGold: 900 },
                 { id: 'daily_skeleton', target: 'Skeleton', count: 0, maxCount: 100, rewardXP: 18250, rewardGold: 100 },
                 { id: 'daily_imp', target: 'Imp', count: 0, maxCount: 100, rewardXP: 20000, rewardGold: 150 }
