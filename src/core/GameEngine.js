@@ -1737,8 +1737,8 @@ export class GameEngine {
             Math.round((intent.distance || 0) * 10) / 10,
             intent.inBasicRange ? 1 : 0,
             intent.inAbilityRange ? 1 : 0,
-            intent.preview?.basicAttack ?? '',
-            intent.preview?.ability ?? '',
+            intent.preview?.attackPower ?? '',
+            intent.preview?.manaCost ?? '',
             intent.preview?.abilityName ?? ''
         ].join('|');
     }
@@ -1756,11 +1756,10 @@ export class GameEngine {
             || 0;
         const inBasicRange = distance <= basicAttackRange;
         const inAbilityRange = distance <= abilityRange;
-        const preview = this.abilityController?.buildSoftDamagePreview?.(entity, skillName) || {
-            basicAttack: Math.max(0, Math.round(player?.stats?.damage || 0)),
-            ability: Math.max(0, Math.round(player?.stats?.damage || 0)),
-            abilityName: skillName || 'Ability',
-            isEstimate: true
+        const preview = this.abilityController?.buildCombatActionPreview?.(entity, skillName) || {
+            attackPower: Number.isFinite(player?.stats?.damage) ? Math.max(0, Math.round(player.stats.damage)) : null,
+            manaCost: null,
+            abilityName: skillName || 'Ability'
         };
 
         return {

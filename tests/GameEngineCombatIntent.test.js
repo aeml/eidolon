@@ -57,7 +57,7 @@ function createEngineHarness() {
         getAbilityIntentSkillName: () => 'Fireball',
         getAbilityIntentRange: () => 12,
         getAbilityCastRange: () => 12,
-        buildSoftDamagePreview: () => ({ basicAttack: 30, ability: 45, abilityName: 'Fireball' })
+        buildCombatActionPreview: () => ({ attackPower: 30, manaCost: 30, abilityName: 'Fireball' })
     };
     engine.isHostileActorTarget = (entity) => Boolean(entity?.hostile && entity?.isActive && entity?.state !== 'DEAD');
     engine.getBasicAttackRangeForPlayer = GameEngine.prototype.getBasicAttackRangeForPlayer;
@@ -75,6 +75,18 @@ function createEngineHarness() {
 }
 
 describe('GameEngine combat intent', () => {
+    test('cast cost and attack power changes invalidate the same-target engine cache', () => {
+        const engine = createEngineHarness();
+        const first = { entityId: 'same', preview: { attackPower: 5, manaCost: 30, abilityName: 'Fireball' } };
+        expect(engine.serializeCombatIntent(first)).not.toBe(engine.serializeCombatIntent({
+            ...first, preview: { ...first.preview, manaCost: 27 } }));
+        expect(engine.serializeCombatIntent(first)).not.toBe(engine.serializeCombatIntent({
+            ...first, preview: { ...first.preview, attackPower: 7 } }));
+        engine.hoveredEntity = createActorLike({ id: 'missing-controller' });
+        delete engine.abilityController.buildCombatActionPreview;
+        expect(engine.buildCombatIntentState().preview.manaCost).toBeNull();
+        expect(engine.buildCombatIntentState().preview).not.toHaveProperty('ability');
+    });
     test('replicated target level reaches the card and invalidates its cache', () => {
         const engine = createEngineHarness();
         engine.hoveredEntity = { ...createActorLike({ id: 'level-target' }), level: 7 };
