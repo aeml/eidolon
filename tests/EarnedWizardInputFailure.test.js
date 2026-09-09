@@ -1,5 +1,5 @@
 import { jest, expect as jestExpect } from '@jest/globals';
-import { GroundInputUnavailableError } from './groundInputFailure.js';
+import { GroundInputUnavailableError, GroundPointerInterceptedError } from './groundInputFailure.js';
 
 const move = jest.fn(), read = jest.fn();
 jest.unstable_mockModule('@playwright/test', () => ({ expect: jestExpect }));
@@ -11,10 +11,10 @@ jest.unstable_mockModule('./e2e/earned-retreat-plan.js', () => ({
 const { createEarnedWizardDefense } = await import('./e2e/earned-wizard-defense.js');
 beforeEach(() => { jest.clearAllMocks(); read.mockResolvedValue({ state: 'IDLE' }); });
 
-test('no clear ground falls back to combat without counting a successful retreat', async () => {
+test.each([GroundInputUnavailableError, GroundPointerInterceptedError])('unavailable/intercepted ground falls back without claiming a retreat (%#)', async ErrorType => {
     const page = { evaluate: jest.fn().mockResolvedValueOnce(undefined).mockResolvedValueOnce({})
         .mockResolvedValue(undefined) };
-    move.mockRejectedValue(new GroundInputUnavailableError('no input available'));
+    move.mockRejectedValue(new ErrorType('no movement requested'));
     const defend = await createEarnedWizardDefense(page);
     expect(await defend()).toBe(false);
     expect(move).toHaveBeenCalledWith(page, -9, 0, expect.objectContaining({ minimumDistance: 6,
