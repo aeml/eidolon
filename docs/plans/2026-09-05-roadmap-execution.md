@@ -16,7 +16,54 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 05:55 UTC
+## Current checkpoint — September 9, 06:11 UTC
+
+PROGRESS: **53CI34312290353 TERMINAL SUCCESS**, all10jobs including finalLiveQA.
+Independent06:08 public manifest, login53, loaded main.js release query and
+healthy/database-ready server all matchedce330b3e2a576d07d159b964563f12f031dff3d5.
+Only then canonical54/805ba0daf14f34cd59097a9b14efaa6a3d7b5c91 was pushed from
+`/tmp/eidolon-release54-final53-oZ3nK4`;34782 terminal0, remote/master independently
+matched805. Clean worktree, ce330 ancestry, diff and earlier supported24 preflight
+252tests/4.063s revalidated. **54CI34317808528 ACTIVE**. Do not push55 until all54
+CI/deployment/finalLiveQA and fresh exact public identities. Root is ledger only.
+
+58's first complete route57389 TERMINAL1: two authenticated tests passed, third
+clicked InfernoTitan rather than the entrance. Source showed a stale-hover test
+gap when new pointer sampling was deferred. Four-failure/two-pass deterministic
+baseline reproduced it; QA-only51c9bf7 requires completed on-canvas sampling,
+retains15s deadline/real click/portal assertions and logs mismatches. No runtime
+priority changes. Supported full12405 PASS246/3472/136.825s plus lint; actual
+focused portal97047 PASS1/20.1s, real reentry/jump-Recall included, scan0/exact
+cleanup. Original failed evidence remains retained.
+
+Full rerun92856 TERMINAL1 failed a different manual-loot assertion: two drops
+shared the ray and the helper insisted on the covered drop. Login/portal passed.
+QA-onlya7ef83c explicit general-pickup opt-in follows the actual active front
+drop only in that same ray stack, preserving strict specific-item defaults and
+actual selected-item quantity/reconnect receipts. Six-failure/three-pass baseline;
+22244 corrected26tests/3suites/1.112s/lint;62614 actual geometry/input2tests/8.3s
+retains hostile priority and proves coincident-front selection. No server-pickup
+claim from that fixture. All failure logs/artifacts and exact cleanup are in
+[58 acceptance](2026-09-09-town-recovery-release-acceptance.md).
+
+**33950 full client/lint ACTIVE**, frozen58/a7ef83c287d828af51f68ee4d32821d00b45a015,
+log`/tmp/eidolon-rest58-loot-observation-full-client.log` and corresponding-lint.
+**12130 complete58 gameplay ACTIVE — only owned local browser**, same source,
+Node24.18.0 inside sg, projectrest58-all24-r2-0909-0610,
+API18560/Mongo18561/web41960; log
+`/tmp/eidolon-rest58-all-node24-rerun-0610.log`. No edits/restarts/second browser
+while active. Poll exact handles; retain artifacts and independently verify exact
+cleanup after terminal. The earlier four-class/native passes remain exact5a17be1
+evidence; production runtime and metadata have not changed since that source.
+
+Both QA corrections also cleanly cherry-picked into primary expanded-story
+candidate, now42a60824219a4607b8b902c52580d9d6dcb44159 (via5d84838), no production
+change. First primary focused93686 PASS249tests/3suites/3.197s and lint; latest
+loot-inclusive focused check active, log`/tmp/eidolon-primary-loot-observation-tests.log`.
+Expanded story/balance/timing remain intact and unpublished. Whole roadmap goal
+is active, not complete or blocked. Current live53; recovery58notdelivered.
+
+## Previous checkpoint — September 9, 05:55 UTC
 
 PROGRESS: all four58 ordinary earned-class routes now pass on frozen5a17be1
 under explicit Node24.18.0. Rogue34088 TERMINAL0/PASS1/4.2m: opening38s,

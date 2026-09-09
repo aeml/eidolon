@@ -1,9 +1,14 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
-Status at September 9, 05:55 UTC: **unpublished candidate**, not delivered.
-Candidate worktree `/tmp/eidolon-standalone-town-recovery-QJ6Drv`, frozen source
-`5a17be147ce527bae556663cc452ecae10e87785`, includes canonical57/cc6e419 ancestry.
-Public client/server last independently verified52/a36d1e7 at05:42;53CI is active.
+Status at September 9, 06:11 UTC: **unpublished candidate**, not delivered.
+Candidate worktree `/tmp/eidolon-standalone-town-recovery-QJ6Drv`, current source
+`a7ef83c287d828af51f68ee4d32821d00b45a015`, includes canonical57/cc6e419 ancestry.
+Production runtime is unchanged from previously tested
+`5a17be147ce527bae556663cc452ecae10e87785`; the new commit changes QA only.
+53CI34312290353 completed successfully, including all final live checks. Public
+manifest, login version, loaded runtime URL and server health independently match
+53/ce330b3 at06:08. Canonical54/805ba0d was then pushed successfully; remote/master
+verified and54CI34317808528 is active. No55push until the complete54 release gate.
 The complete roadmap remains open. Expanded story and coordinated balance are
 separate preserved work, not removed or declared complete by this release.
 
@@ -17,7 +22,7 @@ game327.779s; server/go.mod selects Go1.24.5. Logs:
 `/tmp/eidolon-rest58-node24-lint.log`,
 `/tmp/eidolon-rest58-full-server.log`.
 
-All four ordinary fresh-class routes passed on the frozen source, with no grants,
+All four ordinary fresh-class routes passed on5a17be1, with no grants,
 forced kills, extended encounter deadlines or removed console/network assertions.
 The existing eight-seed collection, manual turn-in, saved earned gear and locked
 level30 dungeon were checked. The wrappers removed their exact temporary
@@ -92,11 +97,55 @@ captures show higher rates under concurrent CI load: this is not sustained
 performance approval or proof that the aura caused a slowdown. Physical-device
 and sustained gameplay performance remain open roadmap gates.
 
-**57389 complete58 isolated gameplay ACTIVE** on unchanged5a17be1/Node24.18.0,
-projectrest58-all24-0909-0554, API18560/Mongo18561/web41960; log
-`/tmp/eidolon-rest58-all-node24-0554.log`. No second owned local browser or source
-edit while this runs. The complete inherited command chain plus native rest
-routes is being exercised, not a shortened subset.
+**57389 complete58 isolated gameplay FAILED**, terminal1: two authenticated
+tests passed, but the third actual entrance click selected InfernoTitan rather
+than DungeonEntrance. The assertion remains strict. Scan0 and exact owned
+cleanup confirmed. Log `/tmp/eidolon-rest58-all-node24-0554.log`, archive
+`/tmp/eidolon-rest58-full-portal-failure-U24ntr/test-results`.
+
+Source inspection and a deterministic4fail/2pass baseline exposed a test-helper
+freshness gap: it accepted old hover while the new pointer raycast was deferred.
+The helper now observes `needsRaycast === false` and the actual on-canvas pointer
+before accepting a matching entrance. No forced raycast or hover assignment;
+production priority,15s deadline, candidate sampling, final click and real dungeon
+assertions remain unchanged. A mismatching click now logs the existing public
+probe before failing. This does not prove every potential moving-enemy overlap
+comes from the stale-hover gap.
+
+New source51c9bf7 focused91607 passed239observation/version tests1.273s plus lint;
+67666 passed17observation/actual GameEngineRaycastPriority tests1.089s. Original
+bare-Jest invocation failed ESM discovery; supported baseline used `npm test`.
+See candidate `docs/plans/2026-09-09-entrance-pointer-observation.md` for details.
+
+12405 full client/lint passed246suites/3472tests/136.825s on51c9bf7. Log
+`/tmp/eidolon-rest58-fresh-pointer-full-client.log`. Focused actual portal97047
+passed1/20.1s including real reentry/jump-Recall (test18.1s), scan0/exact cleanup;
+log `/tmp/eidolon-rest58-portal-node24-0601.log`, result metadata archive
+`/tmp/eidolon-rest58-portal24-proof-fKJOtg/test-results`.
+
+Full rerun92856 then failed a different assertion: two LootDrop hitboxes overlapped,
+and manual pickup QA insisted on the covered drop while the real pointer selected
+the front one. Login and portal tests passed. Original log
+`/tmp/eidolon-rest58-all-node24-rerun-0602.log`, sanitized archive
+`/tmp/eidolon-rest58-full-loot-failure-sKrdfS/test-results`; terminal1, scan0/exact
+cleanup. This failed complete run remains failed, not superseded retroactively.
+
+New a7ef83c adds explicit general-pickup opt-in to follow the actual front loot
+only when both active drops share the raycast stack. Strict specific-item callers
+stay strict; stale/off-canvas/hostile/unrelated/no-item targets are rejected. The
+actual picked item's quantity and reconnect receipt remain mandatory. No runtime
+change, direct pickup, fake grant, slot-count proof or deadline extension.
+Baseline58464 reproduced6fail/3pass; corrected22244 passed26tests/3suites/1.112s
+plus lint. Browser geometry62614 passed2/8.3s: enemy-covered center/exposed edge
+and exact coincident front/back loot. These fixtures do not establish a server
+pickup; the full route must still do that. Details in candidate
+`docs/plans/2026-09-09-overlapping-loot-observation.md`.
+
+**33950 full client/lint ACTIVE**, log
+`/tmp/eidolon-rest58-loot-observation-full-client.log`; **12130 complete gameplay
+ACTIVE**, only owned local browser, frozena7ef83c/Node24.18.0,
+projectrest58-all24-r2-0909-0610/API18560/Mongo18561/web41960; log
+`/tmp/eidolon-rest58-all-node24-rerun-0610.log`. No source edits while active.
 
 ## Remaining delivery gates
 
