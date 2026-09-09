@@ -1,7 +1,18 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update09:30UTC: exact live-wrapper rehearsal58189 PASSED on disposable loopback
+services, NOT production: expiry/journey2tests1.3m plus actual party1test27.9s.
+Real combat depletedHP/MP, town filled both, reconnect preserved bank/resources,
+natural expiry removed bonuses and Recall restored them;High19/Low10aura parts.
+Scan0 and exact cleanup verified; archive
+`/tmp/eidolon-rest58-live-rehearsal-proof-8GN3fo`. PortraitHigh status/shortLow world
+captures inspected; physical-device/performance acceptance remains separate.
+**1035 complete gameplay ACTIVE** on clean1fd0d35, log
+`/tmp/eidolon-rest58-all-node24-rerun-0928.log`. Initial3checks passed54.8s;
+dungeon batch underway.55stillpredeploy; no live recovery or full-run pass claim.
+
 Update09:26UTC: both actual movement replays PASSED on1fd0d35: max-speed31.68
-49283/25.2s and ordinary fresh-speed10.5668919/24.9s. Both enforce2updates,
+49283/25.2s and ordinary fresh-speed10.56 (68919/24.9s). Both enforce2updates,
 speed-proportional distance, no backtracking/camera/correction failures; scan0
 and exact cleanup verified. Archives/logs in execution ledger. Full client26873
 PASSED251suites/3534tests/172.663s plus lint. **58189 exact live-wrapper rehearsal

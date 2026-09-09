@@ -16,7 +16,52 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 09:26 UTC
+## Current checkpoint — September 9, 09:30 UTC
+
+**58189 exact live-wrapper rehearsal TERMINAL0/PASS** on frozen standalone58
+**1fd0d35683d973e99dc01c7fadbcbfe9f47e1202**: native expiry/journey2tests1.3m,
+real party1test27.9s. The wrapper's success text says "Live", but these endpoints
+were disposable loopback services; this is NOT production verification.
+Expiry14.851s→0 outside changed strength11→10/max110→100/aura off; Recall earned
+rest and restored stats/aura. Journey recorded real2hostile damage and accepted
+30mana Fireball, returned at110HP/93MP, recovered both110, and rejoined110/110
+with earned bank retained. Two real party members rendered19visible parts atHigh,
+10atLow, with actual joystick movement and portrait/landscape status checks.
+Both artifact scans0; exact API/Mongo/image absent and portsfree before successor.
+Archive **`/tmp/eidolon-rest58-live-rehearsal-proof-8GN3fo`**, full log
+`/tmp/eidolon-rest58-live-recovery-rehearsal-0925.log`. Inspected portrait390High
+status and short568Low world captures: readable buff text, visible golden auras,
+no enclosing opaque box.49/52FPS in those captures is not sustained/device QA.
+
+**1035 complete58 gameplay ACTIVE**, same clean/frozen1fd0d35, only owned local
+browser, runrest58-all24-r9-0909-0928, API18560/Mongo18561/web41960. Log
+`/tmp/eidolon-rest58-all-node24-rerun-0928.log`. Initial3authentication/UI/loot/
+portal/persistence checks PASSED54.8s; seven-test dungeon batch underway.
+Do not edit/restart until terminal evidence. Earlier complete-run failures remain
+failed even though the exact movement cause is now explained and focused replay
+passes. Full current recovery client/lint251/3534 passed as below.
+
+Primary **10766 full client/lint TERMINAL0**, clean d7cd47f,
+269suites/3840tests/171.517s, Node24; logs
+`/tmp/eidolon-primary-speed-budget-full-{client,lint}.log`. Primary now idle.
+
+Separate Dark King **23814 full race TERMINAL1/FAILED**, game435.855s, only four
+UmbraPrime body-contact fixtures failed because they never ran the world phase
+hook before attacking phase0. Root38.966s/database1.206s/lifecycle1.075s passed;
+no race warning found. Original full log retained. Candidate **a5405fa** initializes
+the real phase hook in those contact-only fixtures and asserts phase1, retaining
+actual accepted attacks/health reduction for all four classes; no forced phase
+assignment or relaxed damage test. Focused dark-king/contact race PASSED1.855s,
+`/tmp/eidolon-dark-king-contact-phase-tests.log`. **28054 full race repeat ACTIVE**,
+`/tmp/eidolon-dark-king-phase-integrity-full-race-r2.log`, clean/frozen separate
+worktree. This code is NOT in58 and is not a completed raid-quality/live gate.
+
+**55CI34328735856 remains ACTIVE**, predeploy full-character gameplay. No56push
+until full55 deployment/finalLive and fresh exact identities. Production recovery
+is still unproven; conditional14:00–17:00UTC estimate unchanged. Whole roadmap
+remains active; next browser work follows1035 terminal/archive/cleanup.
+
+## Previous checkpoint — September 9, 09:26 UTC
 
 **49283 maximum-speed movement TERMINAL0/PASS1/25.2s** (test22.7) on clean
 standalone58 **1fd0d35683d973e99dc01c7fadbcbfe9f47e1202**. Actual speed31.68,
