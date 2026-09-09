@@ -16,7 +16,42 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 05:18 UTC
+## Current checkpoint — September 9, 05:21 UTC
+
+PROGRESS: supported **Node24.18.0** reruns completed: standalone58/57780
+TERMINAL PASS245suites3466tests187.057s plus lint, exact frozen5a17be1; primary/
+3409 TERMINAL PASS262suites3731tests200.053s plus lint, cleane1c4132 (runtime96a).
+Logs `/tmp/eidolon-rest58-node24-{full-client,lint}.log` and
+`/tmp/eidolon-primary-node24-{full-client,lint}.log`. These supersede the recent
+Node18 runs for supported-toolchain acceptance; no source/assertions changed.
+No owned full regression remains active. Go1.24.5 full75384 already passed.
+
+**21402 Cleric TERMINAL PASS1/3.7m** on frozen5a17be1 with Node24.18.0 printed
+in its log. Opening45s/manual500XP100gold, collection174s/20observed target
+deaths/8earned seeds/zero player deaths. Two full-pool town recoveries39.157s
+including travel, actual Cleric40mana primary cost. Manual8000XP100gold consumed
+8seeds, level7→17,4gear items/170unsold value retained across reconnect; locked
+level30 dungeon remained locked. Preclaim522gold/8occupied bag slots. Credential
+scan0, exact owned containers/image absent, ready-claim8/8 image inspected.
+Archive `/tmp/eidolon-rest58-cleric-proof-TKN8ET/test-results`, log
+`/tmp/eidolon-rest58-cleric-collection-0515.log`. Other classes have passed real
+Chrome/Go gameplay with Node18 controllers; do not relabel those as24 evidence.
+
+**97055 Wizard Node24 repeat ACTIVE — only owned local process/browser**,
+same5a17be1, fresh-collection, projectrest58-wizard24-0909-0521,
+API18560/Mongo18561/web41960; log
+`/tmp/eidolon-rest58-wizard-node24-0521.log`. Prefix the Node24toolcache inside
+sg render as above, and preserve the logged runtime. No grants/changed limits,
+no source edits. Poll this exact handle; archive/review/exact-cleanup after
+terminal, then repeat Fighter/Rogue and real-rest routes under24 for a consistent
+supported-controller evidence set. Preserve original runs as supplementary data.
+
+53CI34312290353 remains ACTIVE in full disposable gameplay; last inspected
+05:19. Do not push54 before whole53CI/finalLiveQA and independent matching public
+identities. Last fully verified live52; standalone58notpublished. Primary story
+and all later roadmap requirements remain active, not dropped by the release split.
+
+## Previous checkpoint — September 9, 05:18 UTC
 
 PROGRESS: **35080 Rogue TERMINAL PASS1/3.2m**, standalone58frozen5a17be1.
 Opening36s/manual500XP100gold, collection155s/20observed target deaths/8earned
