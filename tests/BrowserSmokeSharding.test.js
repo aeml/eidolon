@@ -9,9 +9,9 @@ test('nameplate and resource render coverage run once inside the required browse
     expect(browser.match(/npm run test:e2e:nameplates/g)).toHaveLength(1);
     expect(browser.match(/npm run test:e2e:resource-hud/g)).toHaveLength(1);
     const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
-    expect(script).toContain('&& run_death_resource_recovery && run_direct_target_classes');
-    expect(script).toContain('&& run_pvp_cadence && run_animation_classes');
-    expect(script).toContain('&& run_animation_multiplayer && npx playwright test tests/e2e/nameplate-world.spec.js');
+    expect(script).toContain('&&\n    run_qa_stage death-resource-recovery run_death_resource_recovery &&\n    run_qa_stage direct-target-classes run_direct_target_classes');
+    expect(script).toContain('&&\n    run_qa_stage pvp-cadence run_pvp_cadence &&\n    run_qa_stage animation-classes run_animation_classes');
+    expect(script).toContain('&&\n    run_qa_stage animation-multiplayer run_animation_multiplayer &&\n    run_qa_stage nameplate-world npx playwright test tests/e2e/nameplate-world.spec.js');
 });
 
 test('all three hosted browser shards keep the complete anonymous command and independent evidence', () => {

@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 
 test('the full gate retains the same four-class practice-duel route as focused QA', () => {
     const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
-    expect(script).toContain('&& run_pvp_cadence && run_animation_classes');
+    expect(script).toContain('&&\n    run_qa_stage pvp-cadence run_pvp_cadence &&\n    run_qa_stage animation-classes run_animation_classes');
     expect(script).toContain('pvp-cadence)\n    run_pvp_cadence');
     expect(script).toContain('run_pvp_cadence() {\n  npx playwright test tests/e2e/pvp-cadence-gameplay.spec.js');
 });
@@ -27,7 +27,7 @@ test('early gear/stat comparison is opt-in and preserves the unprepared release 
 test('the full release gate retains an earned fresh collection and a genuinely fresh retry', () => {
     const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
     const route = readFileSync('tests/e2e/fresh-opening-gameplay.spec.js', 'utf8');
-    expect(script).toContain('&& run_forge_guide && run_fresh_collection && run_talent_economy');
+    expect(script).toContain('&&\n    run_qa_stage forge-guide run_forge_guide &&\n    run_qa_stage fresh-collection run_fresh_collection &&\n    run_qa_stage talent-economy run_talent_economy');
     expect(script).toContain('${QA_USERNAME_BASE}-first-grove-retry1');
     expect(route).toContain('credentials.username += `-retry${testInfo.retry}`');
     expect(route).toContain('expect((await readPlayerState(page)).level).toBe(1)');
@@ -80,7 +80,7 @@ test('phone chat coverage and Purifying retry keep the real player path', () => 
 test('the full release gate retains Seraph gameplay and rendered fallback checks', () => {
     const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
     const commands = JSON.parse(readFileSync('package.json', 'utf8')).scripts;
-    expect(script).toContain('&& run_talent_duration && run_seraph &&');
+    expect(script).toContain('&&\n    run_qa_stage talent-duration run_talent_duration &&\n    run_qa_stage seraph run_seraph &&');
     expect(script).toContain('${QA_USERNAME_BASE}-seraph-retry1');
     expect(commands['test:e2e:anonymous']).toContain('tests/e2e/offline-seraph-render.spec.js');
     expect(commands['test:e2e:anonymous']).toContain('tests/e2e/summon-action-readability.spec.js');
@@ -88,7 +88,7 @@ test('the full release gate retains Seraph gameplay and rendered fallback checks
 
 test('the full release gate retains saved Shield training and hostile absorption', () => {
     const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
-    expect(script).toContain('&& run_seraph && run_shield_training &&');
+    expect(script).toContain('&&\n    run_qa_stage seraph run_seraph &&\n    run_qa_stage shield-training run_shield_training &&');
     expect(script).toContain('${QA_USERNAME_BASE}-shield-retry1');
     expect(script).toContain('npx playwright test tests/e2e/shield-training-gameplay.spec.js');
 });
@@ -103,7 +103,7 @@ test('the release gate retains rendered entrance cutaways and normal gameplay re
     const commands = JSON.parse(readFileSync('package.json', 'utf8')).scripts;
     const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
     expect(commands['test:e2e:anonymous']).toContain('tests/e2e/entrance-visibility.spec.js');
-    expect(script).toContain('&& run_shield_training && run_entrance_visibility &&');
+    expect(script).toContain('&&\n    run_qa_stage shield-training run_shield_training &&\n    run_qa_stage entrance-visibility run_entrance_visibility &&');
     expect(script).toContain('${QA_USERNAME_BASE}-sight-retry1');
     expect(script).toContain('EIDOLON_E2E_SCENERY_VISIBILITY=1 npx playwright test tests/e2e/shield-training-gameplay.spec.js');
 });

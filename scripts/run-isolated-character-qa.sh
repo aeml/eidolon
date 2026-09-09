@@ -10,6 +10,8 @@ for runtime_file in vendor/manifest.json vendor/three/build/three.module.js vend
   fi
 done
 
+source "${BASH_SOURCE[0]%/*}/qa-stage-timing.sh"
+
 readonly QA_RUN_ID="${EIDOLON_ISOLATED_QA_RUN_ID:-$(openssl rand -hex 5)}"
 readonly MONGO_CONTAINER="eidolon-isolated-qa-mongo-${QA_RUN_ID}"
 readonly API_CONTAINER="eidolon-isolated-qa-api-${QA_RUN_ID}"
@@ -438,7 +440,41 @@ run_pvp_cadence() {
 set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   all)
-    npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js && run_whip_shape && run_ground_shape && run_purifying_area && run_guardian_area && run_consecrated_area && run_cleric_area && run_spirit_area && run_whirlwind && run_phone && run_phone_combat && run_phone_party && run_phone_inventory && run_equipment_recovery && run_forge_guide && run_fresh_collection && run_talent_economy && run_talent_healing && run_talent_duration && run_seraph && run_shield_training && run_entrance_visibility && run_phone_quests && run_phone_build && run_phone_settings && run_phone_adventure && run_dungeon_recovery && run_death_resource_recovery && run_direct_target_classes && npm run test:e2e:movement && run_pvp_cadence && run_animation_classes && run_animation_multiplayer && npx playwright test tests/e2e/nameplate-world.spec.js
+    run_qa_stage authenticated npm run test:e2e:authenticated &&
+    run_qa_stage dungeons-and-inventory npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js &&
+    run_qa_stage whip-shape run_whip_shape &&
+    run_qa_stage ground-shape run_ground_shape &&
+    run_qa_stage purifying-area run_purifying_area &&
+    run_qa_stage guardian-area run_guardian_area &&
+    run_qa_stage consecrated-area run_consecrated_area &&
+    run_qa_stage cleric-area run_cleric_area &&
+    run_qa_stage spirit-area run_spirit_area &&
+    run_qa_stage whirlwind run_whirlwind &&
+    run_qa_stage phone run_phone &&
+    run_qa_stage phone-combat run_phone_combat &&
+    run_qa_stage phone-party run_phone_party &&
+    run_qa_stage phone-inventory run_phone_inventory &&
+    run_qa_stage equipment-recovery run_equipment_recovery &&
+    run_qa_stage forge-guide run_forge_guide &&
+    run_qa_stage fresh-collection run_fresh_collection &&
+    run_qa_stage talent-economy run_talent_economy &&
+    run_qa_stage talent-healing run_talent_healing &&
+    run_qa_stage talent-duration run_talent_duration &&
+    run_qa_stage seraph run_seraph &&
+    run_qa_stage shield-training run_shield_training &&
+    run_qa_stage entrance-visibility run_entrance_visibility &&
+    run_qa_stage phone-quests run_phone_quests &&
+    run_qa_stage phone-build run_phone_build &&
+    run_qa_stage phone-settings run_phone_settings &&
+    run_qa_stage phone-adventure run_phone_adventure &&
+    run_qa_stage dungeon-recovery run_dungeon_recovery &&
+    run_qa_stage death-resource-recovery run_death_resource_recovery &&
+    run_qa_stage direct-target-classes run_direct_target_classes &&
+    run_qa_stage movement npm run test:e2e:movement &&
+    run_qa_stage pvp-cadence run_pvp_cadence &&
+    run_qa_stage animation-classes run_animation_classes &&
+    run_qa_stage animation-multiplayer run_animation_multiplayer &&
+    run_qa_stage nameplate-world npx playwright test tests/e2e/nameplate-world.spec.js
     ;;
   animations)
     run_animation_classes

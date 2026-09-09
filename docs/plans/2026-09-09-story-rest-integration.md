@@ -27,6 +27,23 @@ Existing canonical 51–57 releases and their deployment order are untouched.
 
 ## Evidence and remaining work
 
+September9 04:29: Fighter62895 TERMINAL PASS1/25.5m on original cleanf3f33e1
+(same production gameplay as db3bbb7). Opening105s, diary141s cumulative;
+Watch40/40 at1370s hunt time, manual claim and final reconnect complete1388s.
+One counted death,17 ordinary town stops totaling380.361s including travel
+(20.338–24.759s each); every observed stop restored both actual maximum pools.
+No intermediate logins, granted gear/progress or weakened watchdog/death bounds.
+Before claim level6/301XP/1566gold became level8/169XP/1666gold; receipt1593XP
+and100gold,17occupied slots and560unsold gear value retained. Final reconnect
+HP302→302 and MP189→203 occurred in the healing town; this volatile-resource
+change is not an exact-zero persistence test or evidence of offline healing.
+Console/network assertions and artifact credential scan passed, and exact owned
+containers/image were independently absent. Archive
+`/tmp/eidolon-primary-fighter-proof-TsBql3/test-results`, log
+`/tmp/eidolon-primary-fighter-story-0402.log`; ready-claim image inspected.
+Together with the Wizard pass this covers two classes through the first hunt,
+not all classes, all Earth chapters, later realms or overall balance acceptance.
+
 The merge compiled all Go packages and passed lint/shell syntax checks before
 full regression. Full client93503 FAILED4 suites/3tests (252 suites/3638tests
 passed),216.551s: older source-name checks and test mocks assumed the previous
