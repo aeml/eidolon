@@ -136,6 +136,22 @@ function buildDom() {
 }
 
 describe('Combat intent HUD', () => {
+    test('mana and power changes refresh an unchanged target; missing costs are not zero', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        const intent = { entityId: 'same', name: 'Imp', distance: 4, status: 'in_range',
+            preview: { attackPower: 5, manaCost: 30, abilityName: 'Fireball' } };
+        ui.updateCombatIntent(intent);
+        ui.updateCombatIntent({ ...intent, preview: { ...intent.preview, attackPower: 7, manaCost: 27 } });
+        expect(ui.combatIntentPreviewBasic.textContent).toBe('7');
+        expect(ui.combatIntentPreviewAbility.textContent).toBe('27 MP');
+        ui.updateCombatIntent({ ...intent, preview: { manaCost: null } });
+        expect(ui.combatIntentPreviewBasic.textContent).toBe('—');
+        expect(ui.combatIntentPreviewAbility.textContent).toBe('—');
+        ui.updateCombatIntent({ ...intent, preview: { manaCost: 0 } });
+        expect(ui.combatIntentPreviewAbility.textContent).toBe('0 MP');
+        ui.clearCombatIntent();
+    });
     test('renders target name, distance, status, and previews', () => {
         buildDom();
         const ui = new UIManager(false);
@@ -147,8 +163,8 @@ describe('Combat intent HUD', () => {
             distance: 9.38,
             status: 'move_into_range',
             preview: {
-                basicAttack: 42,
-                ability: 63,
+                attackPower: 42,
+                manaCost: 30,
                 abilityName: 'Fireball'
             }
         });
@@ -158,9 +174,25 @@ describe('Combat intent HUD', () => {
         expect(document.getElementById('combat-intent-meta').textContent).toContain('Skeleton');
         expect(document.getElementById('combat-intent-meta').textContent).toContain('9.4m');
         expect(document.getElementById('combat-intent-status').textContent).toBe('Move Into Range');
-        expect(document.getElementById('combat-intent-preview-basic').textContent).toBe('~42');
+        expect(document.getElementById('combat-intent-preview-basic').textContent).toBe('42');
         expect(document.getElementById('combat-intent-preview-ability-label').textContent).toBe('Fireball');
-        expect(document.getElementById('combat-intent-preview-ability').textContent).toBe('~63');
+        expect(document.getElementById('combat-intent-preview-ability').textContent).toBe('30 MP');
+    });
+
+    test('target level is readable and refreshes without a new target or distance', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        const intent = { entityId: 'same', targetType: 'Skeleton', targetLevel: 7,
+            distance: 4, status: 'in_range' };
+        ui.updateCombatIntent(intent);
+        expect(ui.combatIntentMeta.textContent).toBe('Level 7 • Skeleton • 4.0m');
+        ui.isMobile = true;
+        ui.updateCombatIntent({ ...intent, targetLevel: 3 });
+        expect(ui.combatIntentMeta.textContent).toBe('Level 3 • Skeleton • 4.0m');
+        expect(ui.combatIntentName.textContent).toBe('Level 3 • Enemy');
+        ui.updateCombatIntent({ ...intent, targetLevel: -1 });
+        expect(ui.combatIntentMeta.textContent).toBe('Skeleton • 4.0m');
+        ui.clearCombatIntent();
     });
 
     test('clearCombatIntent hides the panel and clears text', () => {
@@ -174,8 +206,8 @@ describe('Combat intent HUD', () => {
             distance: 4,
             status: 'in_range',
             preview: {
-                basicAttack: 42,
-                ability: 63,
+                attackPower: 42,
+                manaCost: 30,
                 abilityName: 'Fireball'
             }
         });

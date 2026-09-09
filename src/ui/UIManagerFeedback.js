@@ -391,10 +391,11 @@ class UIManagerFeedbackMethods {
         if (!intent) return '';
         return [
             intent.entityId || '',
+            intent.targetLevel ?? '',
             intent.status || '',
             Math.round((intent.distance || 0) * 10) / 10,
-            intent.preview?.basicAttack ?? '',
-            intent.preview?.ability ?? '',
+            intent.preview?.attackPower ?? '',
+            intent.preview?.manaCost ?? '',
             intent.preview?.abilityName ?? ''
         ].join('|');
     }
@@ -510,18 +511,24 @@ class UIManagerFeedbackMethods {
 
         const distanceLabel = `${(intent.distance || 0).toFixed(1)}m`;
         const typeLabel = intent.targetType || 'Enemy';
+        const levelLabel = Number.isInteger(intent.targetLevel) && intent.targetLevel > 0
+            ? `Level ${intent.targetLevel} • ` : '';
         const preview = intent.preview || {};
 
         this.combatIntentPanel.style.display = 'block';
-        if (this.combatIntentName) this.combatIntentName.textContent = intent.name || 'Enemy';
-        if (this.combatIntentMeta) this.combatIntentMeta.textContent = `${typeLabel} • ${distanceLabel}`;
+        // Phone cards hide metadata, so retain the level in the visible title.
+        if (this.combatIntentName) this.combatIntentName.textContent =
+            `${this.isMobile ? levelLabel : ''}${intent.name || 'Enemy'}`;
+        if (this.combatIntentMeta) this.combatIntentMeta.textContent = `${levelLabel}${typeLabel} • ${distanceLabel}`;
         if (this.combatIntentStatus) {
             this.combatIntentStatus.textContent = this.formatCombatIntentStatus(intent.status);
             this.combatIntentStatus.className = `combat-intent__status ${this.getCombatIntentStatusClass(intent.status)}`;
         }
-        if (this.combatIntentPreviewBasic) this.combatIntentPreviewBasic.textContent = `~${preview.basicAttack ?? 0}`;
+        if (this.combatIntentPreviewBasic) this.combatIntentPreviewBasic.textContent =
+            Number.isFinite(preview.attackPower) ? String(preview.attackPower) : '—';
         if (this.combatIntentPreviewAbilityLabel) this.combatIntentPreviewAbilityLabel.textContent = preview.abilityName || 'Ability';
-        if (this.combatIntentPreviewAbility) this.combatIntentPreviewAbility.textContent = `~${preview.ability ?? 0}`;
+        if (this.combatIntentPreviewAbility) this.combatIntentPreviewAbility.textContent =
+            Number.isFinite(preview.manaCost) ? `${preview.manaCost} MP` : '—';
     }
 
     clearCombatIntent() {
