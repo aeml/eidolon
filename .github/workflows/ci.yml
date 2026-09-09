@@ -91,7 +91,7 @@ jobs:
         working-directory: server
         env:
           EIDOLON_DEPLOY_BACKUP_DISPOSABLE: '1'
-        run: go test -race . -run '^TestDeployUpgradeBackupPreservesPrivateStateAndRestartsOnFailure$' -count=1 -v
+        run: go test -race . -run '^TestDeploy(UpgradeBackupPreservesPrivateStateAndRestartsOnFailure|BuildContextExcludesPrivateRecoveryFiles)$' -count=1 -v
 
       - name: Run server hot-path benchmarks
         working-directory: server
