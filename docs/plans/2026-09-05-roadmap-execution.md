@@ -16,7 +16,35 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 07:56 UTC
+## Current checkpoint — September 9, 08:06 UTC
+
+The preceding continuation and this turn are VERIFIED WAITS, with safe release
+preflight checks; no new production fix is claimed. Exact **88641 complete58
+rerun remains ACTIVE** on frozenf6f420d and the same run/ports/log below. It has
+passed authentication, all seven dungeon/inventory routes and moved into ability
+shape/support checks. No source edit, restart or second owned browser.
+
+**54CI34320477081 predeploy remains ACTIVE**. Read-only process inspection found
+the current `tests/e2e/multiplayer.spec.js` process1369492, then traced its parent
+chain through the full-QA wrapper/npm/sg to **Runner.Worker877604**. This is the
+late multiplayer stage, not evidence of a queued idle runner. The longer elapsed
+time is not a completed timing baseline or proof of a hang. No cancellation or
+runner/workflow change. Process cwd links were unavailable; the process ancestry,
+not those links, established runner ownership. No environment values were read
+or printed. The unrelated local dungeon/ability tests remained separate.
+
+Preflight reconfirmed clean55/c5ce9dc,56/9f41111,57/6babef5, each with the exact
+preceding canonical ancestor and matching login/history/backend/deployment
+version labels. Existing55 focused275tests/lint logs retained; no new full pass
+claimed.57's deployment still checks schema compatibility and invokes the
+pre-upgrade backup for a format increase. Remote/master remains54/5e22b74.
+None of55–58 is pushed. After54 full success, recheck public client/login/runtime/
+server exact54 identity before pushing55 from its canonical worktree, never root.
+
+Primary4519c0c and aura59be536 remain clean, with outstanding earned-story and
+GPU/device checks. Whole roadmap active; town recovery still not delivered.
+
+## Previous checkpoint — September 9, 07:56 UTC
 
 Previous turn made PROGRESS (committed separate aura comparison). This turn
 also made PROGRESS: a primary story-budget audit exposed concrete handoff risks;
