@@ -1,5 +1,14 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update09:39UTC:1035 terminated143 during dungeon QA; source unchanged. Signal
+sender unknown. Partial evidence at `/tmp/eidolon-rest58-interrupted-r9-S6GCe7`,
+scan0; exact orphan web process/API/Mongo/image cleanup verified. **82037 unchanged
+complete repeat ACTIVE**, frozen1fd0d35, log
+`/tmp/eidolon-rest58-all-node24-rerun-0935.log`. No bypassed tests or signals.
+55has now deployed with matching public identities/database ready, but its final
+live QA is still ACTIVE.56full-client prepush check79982active; no56push yet.
+Town recovery is NOT live; all prior partial/focused evidence remains scoped.
+
 Update09:30UTC: exact live-wrapper rehearsal58189 PASSED on disposable loopback
 services, NOT production: expiry/journey2tests1.3m plus actual party1test27.9s.
 Real combat depletedHP/MP, town filled both, reconnect preserved bank/resources,

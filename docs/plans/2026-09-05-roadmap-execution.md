@@ -16,7 +16,64 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 09:30 UTC
+## Current checkpoint — September 9, 09:39 UTC
+
+This turn made PROGRESS:55 deployed and fresh public identities matched; a
+terminated owned recovery probe was preserved/cleaned and restarted unchanged;
+the separate Dark King full race passed, and misleading Vigil turn-in copy was
+reproduced/corrected. The full roadmap and town recovery live gate remain open.
+
+**1035 TERMINAL143**, not a gameplay pass: recovery r9 stopped during the dungeon
+batch after several passing beam/wall/input cases. Its signal sender is unknown.
+The wrapper/Playwright processes were absent; orphan web PID2091538 and its parent
+serve shells remained, together with the exact r9API/Mongo. Using `sg render`,
+verified PID cwd, inherited exact run ID, WS18560 and scan credentials without
+printing them; credential scan0. Partial artifacts/log archived at
+**`/tmp/eidolon-rest58-interrupted-r9-S6GCe7`**. The isolated API/Mongo reported
+no OOM, and accessible kernel logs did not establish a cause. Repository search
+found no broad pkill/killall command explaining it. No unrelated host/network
+workload was modified and no attribution is claimed.
+
+Only verified orphan2091538 receivedTERM; its parent shells exited. Exact
+rest58-all24-r9-0909-0928API/Mongo were stopped and removed with their temporary
+data, and that run's tagged image removed. Cleanup29138 TERMINAL0; process family,
+containers/image and18560/18561/41960absence independently confirmed. Evidence is
+retained; no production data removed. **82037 complete58 unchanged repeat ACTIVE**,
+clean/frozen **1fd0d35683d973e99dc01c7fadbcbfe9f47e1202**, only owned local browser,
+runrest58-all24-r10-0909-0935 (actual start09:34), same ports, log
+`/tmp/eidolon-rest58-all-node24-rerun-0935.log`. No ignored signals, extra retries,
+test removal or candidate edit. Current dungeon batch is actively progressing.
+
+**55CI34328735856** predeploy PASSED09:35:51 (50m58s); Pages/server deployments
+PASSED09:36:42/09:36:27 (42s/28s). **FinalLiveQA ACTIVE since09:36:44**. Independent
+public manifest/login/runtime URL/serverhealth at09:38 all match
+**c5ce9dc25a9554da55ef1e823e0d63ff04b6676d / Alpha1.0.55**, database ready.55 is
+deployed, but its complete live gate is not yet finished. DO NOT push56 until
+terminal55success and another fresh exact public check.
+
+Canonical56 clean **9f41111133b4a9aaafa4d4c9a1674ec443a4652c**, verified exact55
+ancestry and package/login/notes/server/deployment1.0.56 with schema7. **79982 full
+client/lint ACTIVE**, Node24, logs
+`/tmp/eidolon-release56-final-queue-full-{client,lint}.log`. No56push yet.
+
+Separate Dark King **28054 full race TERMINAL0**, clean **a5405fa**;
+game390.582s, other packages passed/cached. Log
+`/tmp/eidolon-dark-king-phase-integrity-full-race-r2.log`. The prior four contact
+fixture failures remain retained, not retrospectively relabeled. Actual
+player-controlled burst/reflection/explosion/party and presentation gates remain
+open; this is NOT included in58 or a published campaign milestone.
+
+Primary **eec5db9** corrects the Vigil event hint: it said the next realm chapter
+had begun even though server progression correctly awaited manual Ilyra turn-in.
+Behavioral baseline46708 FAILED that exact hint after correcting an initial
+wrong test field name. **82464 focused Go1.24.5race PASSED1.946s**; logs
+`/tmp/eidolon-vigil-manual-copy-{before,after}.log`. The existing regression still
+requires ready/not-completed state, no pre-turn-in XP/gold, successful manual
+completion, and an offered/not-auto-accepted next Vigil. Only copy/test changed;
+not imported into58. Primary idle/clean; previous full client evidence on d7cd47f
+remains as below. Conditional production-recovery ETA14:00–17:00UTC unchanged.
+
+## Previous checkpoint — September 9, 09:30 UTC
 
 **58189 exact live-wrapper rehearsal TERMINAL0/PASS** on frozen standalone58
 **1fd0d35683d973e99dc01c7fadbcbfe9f47e1202**: native expiry/journey2tests1.3m,
