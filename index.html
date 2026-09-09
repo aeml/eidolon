@@ -699,6 +699,7 @@
                         <li><strong>Protecting newer saves:</strong> The server now checks the database format before startup. If a newer release has upgraded that format, this release refuses to run instead of risking your characters with an older save writer.</li>
                         <li><strong>A safer recovery path:</strong> Deployment checks compatibility before replacing the running game server. An incompatible release leaves that server running and reports the problem without changing saves or database indexes. Recovery requires a compatible server; changing or deleting the database version is not a safe downgrade.</li>
                         <li><strong>Clean disconnects:</strong> Joining, rejoining and closing a player's connection now synchronize character identity, snapshot history and outgoing messages with world updates, preventing connection-state races.</li>
+                        <li><strong>Scenery settles promptly:</strong> Dungeon-entrance cutaways now follow elapsed time, so restoring the landmark does not linger when rendering slows down. Collisions, shadows and combat timing are unchanged.</li>
                         <li><strong>The same adventure today:</strong> This prepares for later persistence improvements. It does not yet change reconnect resource behavior, auction transactions, rewards or the 0.01 passive regeneration rate.</li>
                     </ul>
                 </div>
