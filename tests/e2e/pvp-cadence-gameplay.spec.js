@@ -10,7 +10,8 @@ async function openPvP(page) {
 
 const snapshot = page => page.evaluate(() => {
     const game = window.game, p = game.player, profile = game.uiManager.pvp.state.profile || {};
-    return { hp: p.stats.hp, mana: p.stats.mana, interval: p.stats.attackSpeed,
+    return { hp: p.stats.hp, maxHP: p.stats.maxHp, mana: p.stats.mana, maxMana: p.stats.maxMana,
+        rest: p.wellRestedSeconds, safeZone: p.safeZoneId, interval: p.stats.attackSpeed,
         level: p.level, xp: p.xp, gold: p.gold, x: p.position.x, z: p.position.z, instance: game.currentInstanceId || '',
         profile: Object.fromEntries(['rating', 'wins', 'losses', 'honor', 'seasonPoints']
             .map(key => [key, profile[key] ?? (key === 'rating' ? 1000 : 0)])) };
@@ -111,6 +112,9 @@ for (const className of ['Fighter', 'Rogue', 'Wizard', 'Cleric']) {
             await expect.poll(async () => Math.min(...await Promise.all([page, opponent].map(p =>
                 p.evaluate(() => window.__duelCadence.hits.length)))), { timeout: 35_000 }).toBeGreaterThanOrEqual(5);
             const during = await Promise.all([snapshot(page), snapshot(opponent)]);
+            // Capture the resource maximum and rested clock before assertions:
+            // a bank expiring in the arena can change a full mana bar's number.
+            console.log('[duel-resources]', JSON.stringify({ className, before, during }));
             if (className === 'Fighter') await page.locator('body > canvas').screenshot({ path: testInfo.outputPath('arena-combat.png'), timeout: 15_000 });
             for (const [i, actorPage] of [page, opponent].entries()) {
                 const receipts = await actorPage.evaluate(() => window.__duelCadence);
