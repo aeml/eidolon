@@ -36,3 +36,11 @@ still required; the pending59 release is untouched by this unpublished change.
 Focused server-race46016 passed1.800s, covering exact observed town position,
 scene boundaries, ordinary departure, enemy acquisition and consented duels.
 `/tmp/eidolon-safe-zone-combat-server.log`. No server production code changed.
+
+Integrated51eeaa8 full37716 PASS283suites3983tests97.767s+lint;
+`/tmp/eidolon-safe-functional-integrated-{client,lint}.log`. Focused hardware
+browser14323 PASS2/6.9s. Both inspected desktop/phone screenshots show the amber
+LEAVE THE SAFE ZONE warning; leaving restores In Range. Archive
+`/tmp/eidolon-safe-zone-warning-proof-kqqx2s`, scanner0/port41961absent; log
+`/tmp/eidolon-safe-zone-combat-browser.log`. This is real engine/UI presentation
+evidence, not yet a native gameplay departure or fresh-story completion pass.
