@@ -1,5 +1,13 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update13:15UTC:57 FULLY ACCEPTED,34347504351 all10jobs SUCCESS. Actual backup
+receipt/integrity/load proof recorded below. Fresh13:14:37 public client manifest,
+login, actualruntimeGET20019736bytes and readybackend all57/8af54f2.
+58clean **fb8db754 PUSHED** from canonical58worktree,19119TERMINAL0 and remote
+master independently matches. CI **34355888468** QUEUED/starting. No production
+healing/rest claim yet. Must complete58wholeCI, schema8→9 production backup,
+deploy, final native live journey/expiry/party and fresh exactpublic identities.
+
 Update13:13UTC:58 regression94121 PASSED/TERMINAL0 on cleanfb8db754:
 253suites3570tests78.957s+lint, fresh fullGo-race root12.522s/game230.497s.
 Actual production57 image archive normal Docker-load PASS with exact old8754f0b8;

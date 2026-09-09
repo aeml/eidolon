@@ -16,7 +16,34 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 13:13 UTC
+## Current checkpoint — September 9, 13:15 UTC
+
+57 is now FULLY ACCEPTED:34347504351 all10 jobs SUCCESS after failed-job-only
+retry. Final live QA8tests4.5m, allfourclass routes and actual remote-animation
+passed, evidence scan sanitized2. Actual production backup receipt/integrity and
+normal image-archive loading verified below. Fresh13:14:37 public manifest/login/
+actualrelease-keyed main.jsGET20019736bytes/backend all57/8af54f2/database ready.
+Original attempt1 remains failed; no test/backup/production gate was bypassed.
+
+58 **fb8db75412adaf38bf13ce2e0304bdd16c951bea PUSHED** with normal fast-forward
+from canonical `/tmp/eidolon-standalone-town-recovery-QJ6Drv`; exact19119
+TERMINAL0 and independent remote masterfb8db754. Root was NOT pushed.
+CI **34355888468** is QUEUED/starting for exactfb8db754. No claim it has passed
+or that town recovery is live. Watch all client/server/disposable-context+backup/
+browser/predeploy gates, actual production schema8→9 recovery receipt/deploy,
+final live native healing/rest/expiry/party QA, then fresh public58 identities.
+Do not publish a successor before all these finish. Source is clean/frozen;
+latest full local regression94121 PASS and full accepted game-runtime all-route
+19624 PASS on e73be3a (fb8db754 changes deployment only), as recorded below.
+
+No local browser or full regression remains active. Primary a4ea4cc is clean,
+unpublished, and must later merge accepted58 ancestry without overwriting its
+expanded QA/story helpers. Pending major work still includes actual earned
+fresh-story-ready allclasses, investigations/reward pacing, fullgroup Vigils/
+transport/rejoin and Dark King fourphase encounter, desktop action-width rendered
+comparison, wider visuals/mobile/roadmap milestones. Recovery remains priority.
+
+## Previous checkpoint — September 9, 13:13 UTC
 
 58 full regression94121 is TERMINAL0/PASS on unchanged cleanfb8db754:
 253client suites3570tests78.957s, lint, fresh fullGo-race root12.522s/
