@@ -5,7 +5,48 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 02:14 UTC
+## Current checkpoint — September 9, 02:31 UTC
+
+PROGRESS: Well Rested **badd0cf** fixes three old rectangle-based enemy AI checks
+and delayed boss-slam sanctuary bypass. New regressions first FAILED inclusive
+town fence/future shrine acquisition, dungeon-coordinate targeting and shrine
+roaming. A separate real2s slam still caused10damage after entering safety.
+Fixed acquisition/chase/roam use the scene registry; impact rechecks eligibility,
+death/disconnect/scene under target lock. Final focused25833 PASSrace8.000s,
+6 acquisition/4 movement/2 real impact cases plus existing target concurrency and
+protection. Logs `/tmp/eidolon-safe-zone-{ai-before,slam-before,ai-final}.log`.
+Older d650c72 actual-session results remain evidence of that older binary, not
+fresh proof of this changed AI runtime. Rest branch clean; not versioned/live.
+
+Created isolated **work/story-rest-integration-20260909** at
+`/tmp/eidolon-story-rest-integration-yEVp9B`: merge28dd5a1 combines rest1c7537f
+and story92d2bc7, then1816738 imports badd0cf. Includes31 authored chapters,
+coordinated curve2/reward budgets, schema9 resource/rest/receipt persistence and
+current movement/stealth protections. Canonical releases and root untouched by
+runtime changes; curve2 is LOCAL ONLY. No direct candidate publication allowed.
+
+Initial full client93503 FAILED4suites/3tests216.551s (252/3638passed): helper
+import/evaluation/source-name assumptions. Corrected input20772 PASS77tests.
+Initial full Go62050 FAILEDroot23.411s/game391.274s, two failures: old assertion
+that curve1 remains active and now-known Earth records treated as unknown catalog
+entries. Preserve legacy threshold/explicit2→1 rollback tests and full unknown
+future round-trip with genuinely unknown IDs; corrected85228 PASSroot1.407s/
+game10.894s. No race report. Full original failures retained, not relabeled green.
+
+Generated Go/JS protocol output matches the merge byte-for-byte. Lint31593,
+shell syntax/diff checks pass; prepare:client92314 finished. On frozen runtime
+**1816738**, corrected full **Go23067 ACTIVE** and **client98874 ACTIVE** at02:30.
+Logs `/tmp/eidolon-story-rest-integrated-full-{server,client}.log`. Poll these
+exact handles; all other owned handles terminal. No owned browser currently
+running. After full checks, run actual uninterrupted opening→diary→40-kill Watch
+on this new combined source, preserving limits and prior failures. Detailed
+merge/proof contract in candidate `docs/plans/2026-09-09-story-rest-integration.md`.
+
+CI51/34300606161 remains ACTIVE at02:29 with Go/Jest/all3browser groups passing,
+predeploy full-character QA running. No52 push. Last verified live50/51ec73e;
+do not claim51 live. Full roadmap and earned balance/deployment gates remain open.
+
+## Previous checkpoint — September 9, 02:14 UTC
 
 Well Rested development **1c7537f** committed clean. New explicitly opt-in
 `fresh-rested-collection` actual49772 PASS1/4.4m:8/8 fragments,14 observed target

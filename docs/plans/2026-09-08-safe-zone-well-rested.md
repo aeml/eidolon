@@ -4,6 +4,15 @@ Requested September 8, 2026. Status: implementation in progress, NOT live.
 Part of the active full-roadmap goal: implement as a coordinated 1.0.x feature
 after urgent blockers, and include it in 1.1 recovery and progression acceptance.
 
+September9 02:31 checkpoint, developmentbadd0cf: corrected enemy acquisition,
+chase and roam to use the scene-scoped sanctuary registry, plus delayed boss
+slams rechecking safety at impact. Regressions first reproduced the failures;
+final focused race passes8.000s (including12 new cases). This changes production
+AI, so older d650c72 session proofs are not relabeled as new-runtime acceptance.
+Integrated with31-chapter story/coordinated rewards in isolated1816738, where
+corrected full client/server checks are currently running. Neither branch is
+versioned/live, and canonical deployment order remains unchanged.
+
 September9 02:14 checkpoint, development1c7537f: native real-time expiry and
 reentry now pass in an ordinary registered browser session; stats/maxima,
 icon and aura expire together and return only on earned rest. Screenshots
