@@ -16,7 +16,42 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 13:23 UTC
+## Current checkpoint — September 9, 13:32 UTC
+
+This continuation made PROGRESS: verified ongoing58CI/story handles, obtained
+new earned hunt/collection evidence, and implemented a bounded future journal
+presentation fix in a SEPARATE worktree without mutating either frozen candidate.
+
+58CI **34355888468** ACTIVE fb8db754: server/client and browsers2/3,3/3 PASSED;
+browser1/3 still ACTIVE. Required predeploy/production backup/deploy/final native
+recovery gates remain. No release59/other successor push and no live58 claim.
+
+Primary **2268 remains ACTIVE**, sameclean a4ea4cc/source/ports/runid below,
+only owned browser. First authored40killhunt completed manually: fromlevel3 to
+level8 after1593XP/100gold claim,0deaths,16ordinarytownstops,566s. Final preclaim
+gold1541/18occupiedslots/1120unsoldvendorvalue; vendorvalue is NOT received income.
+Collection now6/8seeds after17selected-target death observations (not a separate
+count of every eligible/AoE kill or a statistical drop-rate estimate). Whole
+seven-chapter readiness remains UNKNOWN. Do not cancel/restart for elapsed time.
+
+New separate branchwork/journal-daily-context-20260909, WT
+`/tmp/eidolon-journal-daily-context-PYTpq7`, clean **b03e8d4**:
+QuestUI replaces the unconditional reward-sorted ladder with native Daily contracts
+disclosure. Ready claims/accepted work sort ahead of unaccepted offers. No
+unsupported fastest-XP advice, false level locks or reward/eligibility changes.
+Defaultclosed beside currentstory when noaccepted daily, preservesuser open/focus
+acrossrefresh,44px summary,existingmobile16px/fullstackedrewardrows. Explicit lore
+archive selector prevents daily disclosure from corrupting lore open/focus state.
+Three initial regressions failed; final53tests/2suites/.924s+lint PASS. Logs
+`/tmp/eidolon-journal-daily-context-{before,after,lint,final-focused,final-lint}.log`.
+New2viewport actualQuestUI/DOM/CSS browserfixture DISCOVERED but NOT EXECUTED;
+`tests/e2e/journal-daily-presentation.spec.js`. It must wait for owned2268terminal.
+Still requires actual rendered desktop/phone acceptance, fullclient regression
+and eventualCI wiring/integration. No acceptance/publish claim; planned notes in
+`docs/plans/2026-09-09-journal-daily-context.md`. This is not a replacement for
+the still-required broader economy/level suitability and environmental art work.
+
+## Previous checkpoint — September 9, 13:23 UTC
 
 Previous goal turn made PROGRESS: recovered/accepted57 and pushed58. This turn
 verified live58 CI handles and began the required actual story-only readiness

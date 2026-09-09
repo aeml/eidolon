@@ -1,5 +1,11 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update13:32UTC:58CI34355888468 client/server and browser2/3,3/3 PASSED;
+browser1/3 ACTIVE. Published source remains cleanfb8db754, no changes. Required
+predeploy, schema8→9productionbackup/deploy/nativepublicrecovery gates remain.
+Primary2268earnedstory test and separateb03e8d4journal UI prototype are excluded
+from58. Neither is production healing proof.
+
 Update13:23UTC:58CI34355888468 client/server jobs PASSED; allthreebrowser shards
 ACTIVE on exactfb8db754. No production58 claim. Remaining predeploy/backup/deploy/
 native live recovery gates unchanged. Separate primary fresh-story-ready Wizard
