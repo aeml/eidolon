@@ -57,7 +57,6 @@ test('bag drag-out creates recoverable ground loot and Journal tracking survives
     await expect(story).toBeVisible();
     await story.uncheck();
     await expect(page.locator('#objectives-list .objective-entry__badge').filter({ hasText: 'Story' })).toHaveCount(0);
-    await page.reload();
     await loginAndEnterWorld(page, credentials);
     expect(await page.evaluate(id => window.game.player.inventory.some(item => item?.id === id), equipped)).toBe(true);
     await page.keyboard.press('j');

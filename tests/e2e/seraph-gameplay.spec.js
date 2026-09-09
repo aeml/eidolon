@@ -233,7 +233,6 @@ test('Seraph training persists, changes actual smites and lifetime, and cleans u
     await page.locator('#btn-close-skills').click();
     await lifetime(5);
     await attack(5, 'trained');
-    await page.reload({ waitUntil: 'networkidle' });
     await loginAndEnterWorld(page, credentials);
     expect(await page.evaluate(() => [window.game.player.talentRanks?.CLR_17, window.game.player.talentRanks?.CLR_18])).toEqual([5, 5]);
     await observe();

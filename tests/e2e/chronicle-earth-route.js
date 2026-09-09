@@ -169,7 +169,7 @@ export async function verifyEarthDungeonChronicleTurnIn(page, credentials) {
     await expect(page.locator('[data-raid-type="earth_crystal_raid"]').getByRole('button', { name: 'Enter Rootheart Sanctum', exact: true })).toBeEnabled();
     await page.locator('#btn-close-dungeon-menu').click();
     const { loginAndEnterWorld } = await import('./helpers.js');
-    await page.reload({ waitUntil: 'networkidle' }); await loginAndEnterWorld(page, credentials);
+    await loginAndEnterWorld(page, credentials);
     expect((await readChronicleChapter(page, EARTH_DUNGEON_CHAPTER)).completed).toBe(true);
     await openDungeonGuide(page);
     await page.getByRole('tab', { name: 'Raids', exact: true }).click();

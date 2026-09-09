@@ -191,7 +191,6 @@ export async function earnFreshHunt(page, credentials, {
     await setAutoLootThroughSettings(page, previousAutoLoot);
     const earned = await snapshot(page);
     expect(earned.gold).toBe(beforeReward.gold + reward.grantedGold);
-    await page.reload({ waitUntil: 'networkidle' });
     await loginAndEnterWorld(page, credentials);
     expect(await snapshot(page)).toEqual(earned);
     expect((await readChronicleChapter(page, daily)).completed).toBe(true);

@@ -73,7 +73,7 @@ test('phone build actions receive authoritative confirmation and survive reconne
         console.log(`[phone-build] ${width}x${height}: branch, one talent rank and rune confirmed by server`);
         await page.locator('#btn-close-skills').tap();
     }
-    await page.reload({ waitUntil: 'networkidle' }); await loginAndEnterWorld(page, credentials);
+    await loginAndEnterWorld(page, credentials);
     expect(await page.evaluate(() => window.game.player.selectedBranch)).toBe('A');
     expect(await page.evaluate(id => window.game.player.talentRanks?.[id], lastRank.id)).toBe(lastRank.rank);
     expect(await page.evaluate(skill => window.game.player.skillRunes?.[skill], lastRune.skill)).toBe(lastRune.runeId);

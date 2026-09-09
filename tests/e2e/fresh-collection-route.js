@@ -157,7 +157,6 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
     await setAutoLootThroughSettings(page, previousAutoLoot);
     const earnedLevel = (await readPlayerState(page)).level;
     const retainedGear = (await equipmentSnapshot(page)).gear;
-    await page.reload({ waitUntil: 'networkidle' });
     await loginAndEnterWorld(page, credentials);
     expect((await equipmentSnapshot(page)).gear, 'Earned gear, rolls and vendor values survive reconnect unchanged').toEqual(retainedGear);
     expect((await readPlayerState(page)).level).toBe(earnedLevel);

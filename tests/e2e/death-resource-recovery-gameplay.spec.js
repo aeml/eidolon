@@ -76,7 +76,6 @@ test('login preserves resources and death; town recovery and dead Respawn remain
     async function verifyFreshLogin(label, dead) {
         const before = dead ? await resources() : await freshRestedResources(page), started = Date.now();
         expect(before.mana).toBeLessThan(before.maxMana);
-        await page.reload({ waitUntil: 'domcontentloaded' });
         await loginAndEnterWorld(page, credentials);
         await observeRestedResources(page);
         const after = dead ? await resources() : await freshRestedResources(page);

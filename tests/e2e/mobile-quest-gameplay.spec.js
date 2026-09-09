@@ -159,7 +159,6 @@ test('phone player earns the first Chronicle objective and explicitly claims Ily
     await expect(page.getByRole('button', { name: 'Accept Quest', exact: true })).toBeVisible();
     console.log('[phone-quests] landscape manual turn-in acknowledged with gold, XP, Ilyra’s reply and next chapter');
     await page.locator('#btn-close-quest').tap();
-    await page.reload({ waitUntil: 'networkidle' });
     await loginAndEnterWorld(page, credentials);
     expect((await questState()).completed).toBe(true);
     // Recovery context must also survive a resumed transport (or reset cleanly
@@ -231,7 +230,6 @@ test('phone player earns the first Chronicle objective and explicitly claims Ily
     await page.getByRole('button', { name: 'Complete Quest', exact: true }).tap();
     await expect.poll(async () => (await diary()).completed).toBe(true);
     await page.locator('#btn-close-quest').tap();
-    await page.reload({ waitUntil: 'networkidle' });
     await loginAndEnterWorld(page, credentials);
     expect((await diary()).investigationMask).toBe(1);
     expect((await diary()).completed).toBe(true);

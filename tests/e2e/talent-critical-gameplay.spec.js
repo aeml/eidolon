@@ -121,7 +121,6 @@ test('ordinary critical-talent purchases persist and retain real targeted combat
     await page.locator('#btn-close-skills').click();
     await verifyCombat('trained');
     await returnToTown(page);
-    await page.reload({ waitUntil: 'networkidle' });
     await loginAndEnterWorld(page, credentials);
     for (const [id] of config.talents) {
         await expect.poll(() => page.evaluate(id => window.game.player.talentRanks?.[id], id)).toBe(5);

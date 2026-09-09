@@ -179,7 +179,6 @@ test(`returning character earns ${realm} records through ordinary travel and man
                 }
             });
     }
-    await page.reload({ waitUntil: 'networkidle' });
     await loginAndEnterWorld(page, credentials);
     for (const id of ids) {
         const quest = await page.evaluate(id => window.game.player.quests.find(q => q.id === id), id);

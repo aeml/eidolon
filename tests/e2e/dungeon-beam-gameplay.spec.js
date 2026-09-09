@@ -119,7 +119,6 @@ test('ordinary and trained Scorch Beam casts match server endpoints and save ran
             }
         }
     } });
-    await page.reload({ waitUntil: 'networkidle' });
     await loginAndEnterWorld(page, credentials);
     await expect.poll(() => page.evaluate(() => window.game.player.talentRanks?.WIZ_35 || 0)).toBe(5);
     expect(failures, failures.join('\n')).toEqual([]);

@@ -73,7 +73,7 @@ test('normal Cleric support training matches accepted High and Low spell boundar
         await expect.poll(()=>page.evaluate(()=>window.game.uiManager.skillTree.mobile.pending===null)).toBe(true);
     }
     await page.locator('#btn-close-skills').tap();await casts(5,'low');await casts(5,'high');
-    await page.reload({waitUntil:'networkidle'});await loginAndEnterWorld(page,credentials);
+    await loginAndEnterWorld(page,credentials);
     expect(await page.evaluate(()=>window.game.player.talentRanks?.CLR_34)).toBe(5);
     expect(failures,failures.join('\n')).toEqual([]);
 });

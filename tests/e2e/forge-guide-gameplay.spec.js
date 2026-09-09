@@ -116,7 +116,6 @@ test('forge purchases refresh the open selection and guide choices match dungeon
     const savedItem = await page.evaluate(() => JSON.parse(JSON.stringify(window.game.player.equipment.mainHand)));
     await page.locator('#btn-close-forge').click();
     await page.keyboard.press('Escape');
-    await page.reload({ waitUntil: 'networkidle' });
     await loginAndEnterWorld(page, credentials);
     expect(await page.evaluate(() => JSON.parse(JSON.stringify(window.game.player.equipment.mainHand)))).toEqual(savedItem);
     expect(await page.evaluate(() => window.game.player.inventory.filter(Boolean))).toEqual([]);

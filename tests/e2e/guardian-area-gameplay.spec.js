@@ -97,7 +97,7 @@ test('trained Guardian Embrace heals on the server and shows its persistent radi
         expect(observerFailures,observerFailures.join('\n')).toEqual([]);
         console.log('[guardian-area] late rank-private observer received persistent radius and watched normal expiry');
     } finally { await secondBrowser.close(); }
-    await page.reload({waitUntil:'networkidle'}); await loginAndEnterWorld(page,credentials);
+    await loginAndEnterWorld(page,credentials);
     expect(await page.evaluate(()=>window.game.player.talentRanks?.CLR_34)).toBe(5);
     expect(failures,failures.join('\n')).toEqual([]);
 });

@@ -220,7 +220,6 @@ test(`phone returning character earns both ${realm} investigations with touch tr
         await page.getByRole('button', { name: 'Continue conversation', exact: true }).tap();
         await page.locator('#btn-close-quest').tap();
     }
-    await page.reload({ waitUntil: 'networkidle' });
     await loginAndEnterWorld(page, credentials);
     await openPhoneNavigation(page, 'btn-mobile-quest');
     for (const chapter of chapters) {

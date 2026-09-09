@@ -84,7 +84,7 @@ test('trained spirit rings preserve cherubs and reach a late observer without pr
         expect(observerFailures,observerFailures.join('\n')).toEqual([]);
         console.log('[spirit-area] late observer reconstructed trained boost/rune and saw normal expiry');
     }finally{await second.close();}
-    await page.reload({waitUntil:'networkidle'});await loginAndEnterWorld(page,credentials);
+    await loginAndEnterWorld(page,credentials);
     expect(await page.evaluate(()=>window.game.player.talentRanks?.CLR_34)).toBe(5);
     expect(await page.evaluate(()=>window.game.player.skillRunes?.['Spirit Guardians'])).toBe('spirits_expanded');
     expect(failures,failures.join('\n')).toEqual([]);

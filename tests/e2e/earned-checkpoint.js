@@ -22,7 +22,6 @@ export async function earnedCheckpoint(page, credentials, { label, final = false
     const reconnect = !uninterruptedEarnedMode(env) || final;
     const before = await resources(page);
     if (reconnect) {
-        await page.reload({ waitUntil: 'networkidle' });
         await loginAndEnterWorld(page, credentials);
     }
     const after = await resources(page);

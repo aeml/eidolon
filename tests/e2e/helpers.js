@@ -241,6 +241,9 @@ export async function getJSONWithRetry(request, url, validate, label = 'live end
 }
 
 export async function loginAndEnterWorld(page, credentials) {
+    // This helper always navigates to a fresh document through openGame. Do not
+    // precede it with a redundant reload: failures from that extra document
+    // fall outside this navigation's bounded readiness/recovery scope.
     let authenticated = false;
     for (let pageAttempt = 0; pageAttempt < 3 && !authenticated; pageAttempt += 1) {
         const failureStart = browserFailureState.get(page)?.length || 0;
@@ -1913,7 +1916,6 @@ export async function returnToTown(page) {
 }
 
 export async function verifyPersistenceAfterFreshLogin(page, credentials, receipt) {
-    await page.reload({ waitUntil: 'domcontentloaded' });
     await loginAndEnterWorld(page, credentials);
     const restored = await readPlayerState(page);
     expect(restored.level).toBeGreaterThanOrEqual(100);
