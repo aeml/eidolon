@@ -5,7 +5,24 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 03:48 UTC
+## Current checkpoint — September 9, 03:54 UTC
+
+PROGRESS: fullclient45516 on clean primarydb3bbb7 terminatedPASS260suites/
+3682tests244.675s. Log `/tmp/eidolon-primary-recovery-full-client.log`.
+No runtime changes. Actual1469 remains ACTIVE on that same frozen source:
+opening52s and diary92s cumulative passed without deaths or intermediate logins;
+Watch10/40 at134s,0deaths,3rest stops then a fourth real recovery. The final
+console-error, reward and persistence checks remain pending; no full-route pass
+claimed. Only owned local handle still running is1469; poll it, do not relaunch
+or clean while active. Log/project as below. Preceding53523 failure retained.
+
+52 CI34305897736 still ACTIVE at03:53 in predeploy full-character gameplay,
+initial Go/Jest/all3browsergroups passed. No53 push; exact-live52 gate remains
+mandatory. Last independently verified live51. Root remains ledger-only.
+Previous turn was progress; this turn completed full corrected client regression
+and revalidated the specific actual/CI waits, not a blocker or roadmap completion.
+
+## Previous checkpoint — September 9, 03:48 UTC
 
 PROGRESS:53523 on clean8564500 terminatedFAILED9.3m, but the entire managed
 Watch completed:40/40 at468s, manual1593XP/100gold and final saved-progress

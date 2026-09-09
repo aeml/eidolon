@@ -25,6 +25,10 @@ bug without changing the server range. Focused tests/lint pass; fullclient45516
 and actual default-rested1469 are ACTIVE. Details and exact paths in the ledger.
 This feature is still not versioned or live;52 remains in predeploy gameplay QA.
 
+03:54 follow-up: fullclient45516 passes260suites/3682tests244.675s on primary
+db3bbb7. Actual default-recovery1469 remains active after opening/diary and10/40
+hunt credit, zero deaths; final error/reward/persistence checks are pending.
+
 September9 03:33 checkpoint: new move-only0a3e1c0 uninterrupted route FAILED4.8m
 at Watch2/40, zero deaths,115/150HP and0/130MP after repeated retreats; no
 issued movement failure. Evidence retained, not pacing approval. Separate
