@@ -1,5 +1,11 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update14:36UTC:34361293407 predeploy102506533929 ACTIVE; gallerypassed and
+full disposablegameplay running. ef9a638 frozen/no new releasepush. Primary20538
+has completedfirst40killstoryhunt/manualclaim/persistence with0deaths and15normal
+townreststops; MemorySeedcollection active. This does not prove production58.
+CIcostanalysisplan is ledger-only and does not alter this active pipeline.
+
 Update14:28UTC:34361293407 client/server/ALL3browsergroups PASSED.
 Predeploy job102506533929 ACTIVE, deterministicHigh/Lowgallery currentstep.
 Freshpublicmanifest/backendstill57/8af54f2/ready. ef9a638 remains frozen.

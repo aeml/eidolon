@@ -16,7 +16,39 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 14:28 UTC
+## Current checkpoint — September 9, 14:36 UTC
+
+This continuation made PROGRESS through new completedCI timing evidence and
+actualfirststoryhunt/manualclaim/persistence proof, while verifying both live
+handles.58CI34361293407 exactef9a638 ACTIVE predeploy102506533929; galleryPASS,
+full disposablegameplay current. No release mutation/push; lastfreshpublic14:28
+57/8af54f2/ready. Remaining58productionbackup/deploy/nativepublicproof unchanged.
+
+Primary218a0b7 **20538 ACTIVE**, sameownedrun/ports/log. Firststoryhunt40/40
+completed594s; manual1593XP100gold +persistence verified607s, level6→8,
+beforeclaim1287gold→1387,15occupiedslots/490unsoldvendorvalue.0deaths/15ordinary
+townrecovery stops, no training milestone yet. Serverdamage observer89outgoing
+events/reportedamount2885,2incoming/reported20; retainedFireball samples50–52,
+separatefromacceptedcasts. Do notinterpret summedreportedamount as netHPdrained
+or an independentkillcount. Viewedreadyquestwindow correctmanualbutton/lore/
+rewardcopy; progressimagecopy`/tmp/eidolon-story-acquire-watch-proof-2WniHT`.
+Memorycollectionnowactive:3/8seeds after9selected-targetdeathobservations,
+no deaths. WholeEarthreadiness/Imp result stillnotproved; no restart.
+
+CIanonymouscostdiagnosis: completedjobs102501457840/814/596 ran29/26/25cases
+in11.8m/2.1m/6.9m. Tenentrancevisibilitycasesoccupied550.5s onshard1.
+Read-onlypinnedPlaywright1.61.1 discovery75592PASS(no browser): fully-parallel
+equalizescounts27/27/26 butkeepsalltenentrancecases onshard1. Thereforeflagalone
+isnotan evidencedfix. Newrootplan`2026-09-09-browser-smoke-cost-distribution.md`
+recordsprimarylogs/officialdocs, render-familyredistribution proposal, exactcase
+union+separateartifact+actualtimingacceptance. NOTimplemented or shippingin58.
+
+Hostread-onlycheck14:33:16logicalCPUs/load35.35/15GBavailableRAM; unrelated
+workloadspresent. Noauthorityinferredtochangethem, no claimthiscausedpriorfailures.
+No additionalheavyownedtestlaunched; combatcarde37bab6 fullclient/integration
+stillpendingafter20538terminal. Rootledgeronly; allbroaderroadmapgates remainopen.
+
+## Previous checkpoint — September 9, 14:28 UTC
 
 Previous goal turn made PROGRESS (earnedroute and combatcard changes). This
 continuation is a VERIFIEDWAIT on34361293407 and20538, with new evidence:
