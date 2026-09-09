@@ -1,4 +1,13 @@
 import { recordCollectionCombatReceipt } from './collectionCombatReceipts.js';
+import { runInNewContext } from 'node:vm';
+
+test('the deployed-browser counter is self-contained and does not need published test modules', () => {
+    const receipts = {};
+    const record = runInNewContext(`(${recordCollectionCombatReceipt.toString()})`);
+    record(receipts, { type: 'damage', payload: { sourceId: 'hero', targetId: 'foe', amount: 7 } }, 'hero');
+    record(receipts, { type: 'damage', payload: { sourceId: 'other', targetId: 'foe', amount: 99 } }, 'hero');
+    expect(receipts).toEqual({ foe: { attacks: 0, hits: 1, damage: 7 } });
+});
 
 test('separates admitted attacks and actual damage by authoritative target', () => {
     const receipts = {};

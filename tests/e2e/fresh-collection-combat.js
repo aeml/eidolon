@@ -1,15 +1,18 @@
 import { createEarnedWizardDefense } from './earned-wizard-defense.js';
+import { recordCollectionCombatReceipt } from '../collectionCombatReceipts.js';
 
 export async function observeCollectionCombatReceipts(page) {
-    await page.evaluate(async () => {
-        const { recordCollectionCombatReceipt } = await import('/tests/collectionCombatReceipts.js');
+    // Public builds do not ship /tests. Inject only this trusted, self-contained
+    // read-only counter; never require test assets from the deployed game.
+    await page.evaluate(`(() => {
+        const recordCollectionCombatReceipt = (${recordCollectionCombatReceipt.toString()});
         const game = window.game, original = game.handleServerMessage.bind(game);
         window.__collectionCombatReceipts = {};
         game.handleServerMessage = message => {
             recordCollectionCombatReceipt(window.__collectionCombatReceipts, message, game.player?.id);
             return original(message);
         };
-    });
+    })()`);
 }
 
 // Same ordinary spacing/earned shield inputs as the hunt route. No grants,
