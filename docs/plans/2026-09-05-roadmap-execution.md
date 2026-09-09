@@ -16,7 +16,62 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 23:35 UTC
+## Current checkpoint — September 9, 23:49 UTC
+
+This continuation made PROGRESS: verified earned milestone training, diagnosed
+an incidental dialogue blocking travel, corrected the shared travel gesture, and
+passed real native sanctuary-card/recovery gameplay. Previous turn was PROGRESS
+as well. Full goal remains active; root ledger-only, NEVER push root.
+
+CI34414624304 remains ACTIVE, exact predeploy102681209941 full-character gameplay.
+Client/server/allthree browser jobs and predeploy gallery passed; canonical59e236b37
+remains frozen. No deployment/final native live/public59 acceptance yet; no new
+push. Recovery58 remains the last accepted release. Continue polling exact job.
+
+Primary12121 TERMINAL FAILED14.6m on7fab2eb. Retains the prior successful opening,
+diary,40hunt/manual/reconnect and8Seeds/manual/consumption/equipping-only proof.
+New actual milestone: level10 earned build branchC/WIZ_01rank2 (2→0talentpoints),
+no stat allocation/grants, then resumed combat and reachedlevel11. Failure occurred
+in findExpeditionTarget ordinary travel at(-15.17,199.29), full407HP/319MP,9freebag
+slots, inside town. GroundInputUnavailableError had0attempts and quest-windowopen.
+Viewed screenshot shows daily DemonOrc offer blocking canvas. Exact prior opening
+click was not captured; do not claim a recorded click race or full Imp count.
+Archive `/tmp/eidolon-story-travel-dialogue-failure-G3M8F7`, original scanner2files
+sanitized, archive rescan0; wrapper's exact containers/18560/18561/41960 absent.
+
+Primary **9d01157**, code **bac74f9**, clean. Shared expedition search now uses
+existing real Shift-click move-only travel to avoid incidental NPC interactions;
+retains authoritative movement/collisions/optional jump fallback and bounds.
+Added actual QuestNPC regression, quest counts to read-only failure receipts and
+accurate equipping-only bag note (no misleading sale-proof claim). Focused59919
+PASS37/5/0.835+lint. Full82812 PASS283suites3984tests101.714s+lint, logs
+`/tmp/eidolon-expedition-move-only-full-{client,lint}.log`. New explanation in
+`2026-09-09-expedition-travel-dialogue-recovery.md`; integrated functional coverage
+document reconciled, no runtime/campaign/economy rule changes.
+
+Standalone sanctuary preview clean **63343d2**, code **95e3f28**, same
+`/tmp/eidolon-safe-zone-release-preview-gCLEaT`. Extended existing native recovery
+journey with actual hover atx94.985 inside → sameenemy hover atx119.929 outside.
+Focused59653 PASS28/4/1.574+lint. Card62768 PASS2/6.5 desktop+phone, bothscreens
+viewed; archive `/tmp/eidolon-safe-release-card-proof-N7eOTh`, scanner0/41961absent.
+Native25868 PASS1/35.9: correctwarning→InRange, real outgoing damage, incominghit,
+FireballMP110→80, RecallHP106→110/MP80→93→110, bank17.624→17.998acrosslogin/aura.
+Both whole-world boundaryscreens viewed; archive
+`/tmp/eidolon-safe-release-native-proof-py0yzm`, scanner0/exactcleanup. Logs
+`/tmp/eidolon-safe-release-card-2343.log`, `/tmp/eidolon-safe-card-native-2344.log`.
+Preview still needs full client/server on exactbase, accepted59 prerequisite,
+successor version/patchnotes and entire deployment/live gates. NOT published.
+
+**39733 ACTIVE**, only owned local browser: actual prepared functional Earth route
+on primary9d01157, `earth-functional-0909-2346`, API18560/Mongo18561/web41960,
+`/tmp/eidolon-earth-functional-2346.log`, routechronicle-collection. Diary inspection
+logged; full authored hunts/Seeds/manualclaims/reconnect/raidseal still pending.
+This level-prepared route is NOT fresh-level balance proof. Primary frozen until
+terminal; no heavy owned tests or second local browser. Preserve/sanitize/exact
+cleanup only afterterminal. Later rerun full fresh earned readiness and complete
+remaining class/group/physical-phone/raid gates. Casino stays later roadmap only.
+
+## Previous checkpoint — September 9, 23:35 UTC
 
 This continuation made PROGRESS through standalone fix preparation and new earned
 collection/bag evidence, with VERIFIED WAIT on exact live12121 and34414624304.
