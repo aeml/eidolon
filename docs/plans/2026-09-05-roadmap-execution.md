@@ -16,7 +16,76 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 09:01 UTC
+## Current checkpoint — September 9, 09:21 UTC
+
+The preceding turn was a VERIFIED WAIT. This turn made PROGRESS: completed58
+run52270 reached a reproducible movement failure with retained frame evidence,
+diagnosed the obsolete speed assumption, integrated the prepared live-recovery
+gate, and started targeted high-speed/full-client verification. A separate Dark
+King phase defect was also reproduced and fixed for later campaign work.
+
+**52270 TERMINAL1/FAILED** on45797ee. The full route passed the dungeon batch,
+spell/phone/Forge/guide, fresh Wizard collection, talent, death-resource and
+direct-target stages before failing movement's original `<1` world-unit step
+assertion. Fresh Wizard collection took281s (whole test5.5m),27 observed target
+deaths,0 player deaths,8 collected seeds, manual8000XP/100gold claim to17 and
+saved progress. These legacy payouts remain a separate balance issue. Later
+movement assertions/PvP/animations/final native rest routes did not execute.
+Full log `/tmp/eidolon-rest58-all-node24-rerun-0843.log`; scanned evidence archive
+**`/tmp/eidolon-rest58-movement-speed-failure-rlccng`**. Exact r8API/Mongo/image
+absence and free18560/18561/41960 verified after terminal evidence. No live or
+unrelated resources were removed.
+
+The75-frame attachment proves speed31.68000030517578, maximum step
+1.0560000101725278, and exactly TWO simulation updates at each largest step.
+Server speed caps at28.8 before the requested1.10 rested multiplier;2/60 seconds
+at31.68 is1.056. The original fixed-distance QA assumption no longer matches
+intended boosted speed. This is evidence unavailable for the earlier failure,
+not a conjectured GPU/network cause. No runtime movement/recovery/timing changes.
+
+Primary **d7cd47f** (standalone **1fd0d35683d973e99dc01c7fadbcbfe9f47e1202**)
+replaces only that distance bound with actual-speed/actual-update distance budget,
+at most2updates, numeric excess<1e-5 and valid evidence. All other movement,
+camera, backtracking, correction, arrival and acknowledgement checks remain.
+Retained frames replay at2updates,0invalid,1.7763568394002505e-15maximum excess.
+Synthetic cases reject0.7unit at10.56 (which old<1allowed),1.2at31.68, extra ticks
+and malformed evidence. A Jest array-table mistake initially failed6fixtures;
+corrected, focused36checks/3suites/1.261s plus lint passed in primary.
+Details in candidate `docs/plans/2026-09-09-rested-movement-budget.md`.
+
+Standalone imported **05c3bb0/dc757d5/fe41722** for the mandatory live native
+recovery gate and exact disposable rehearsal. The one wrapper cherry-pick
+conflict was resolved by preserving BOTH existing`well-rested-all` and new
+`live-recovery-rehearsal`; the full gate was not shortened. Dark King/expanded
+campaign changes were NOT imported. Current standalone1fd0d35 is clean/frozen.
+**26873 full client/lint ACTIVE**, logs
+`/tmp/eidolon-rest58-speed-budget-{tests,lint,full-client,full-lint}.log`.
+**49283 focused maximum-speed browser ACTIVE**, runrest58-fast24-r1-0909-0921,
+API18560/Mongo18561/web41960, route`movement-fast`, log
+`/tmp/eidolon-rest58-fast-movement-0921.log`. This uses existing authorized QA
+level100 preparation and explicitly requires31.68speed; it is not earned-level
+evidence. Only owned local browser. Next: archive/clean after terminal, ordinary
+fresh-speed movement, exact live-recovery rehearsal, then complete58 rerun.
+
+Separate campaign worktree **`/tmp/eidolon-dark-king-phase-integrity-QL6Zl4`**,
+branchwork/dark-king-phase-integrity-20260909, clean **ca662fd**, based4172dfa.
+Regression38428 failed:600damage skipped Neris;800skipped Neris/Pyralis entirely.
+Candidate gates incoming burst/DoT/explosion/reflection damage at each active
+quarter until its handoff, advances overshot snapshots in order, follows announced
+modifiers and excludes dead/disconnected/nonplayer aid recipients. Focused
+9224Go1.24.5race PASSED1.299s, including32concurrent hits. Original/after logs
+`/tmp/eidolon-dark-king-phase-integrity-{before,after}.log`.
+**23814 full server race ACTIVE**, `/tmp/eidolon-dark-king-phase-integrity-full-race.log`.
+Full ordinary combat, actual burst raid presentation/party and release gates
+remain open. Inherited1.0.57 metadata is NOT publish permission; do not import
+this fix into urgent58. Primaryd7cd47f remains clean/idle separately.
+
+**55CI34328735856 ACTIVE in predeploy full-character gameplay**; earlier unit/
+browser jobs passed.54 remains last independently verified production. No56push
+until complete55/finalLive plus fresh exact identities. Town recovery is not
+live; conditional14:00–17:00UTC estimate and full roadmap scope remain unchanged.
+
+## Previous checkpoint — September 9, 09:01 UTC
 
 This goal turn made PROGRESS: retained completed regressions and implemented a
 missing publication-specific recovery gate in the separate primary candidate.

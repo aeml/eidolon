@@ -1,5 +1,17 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update09:21UTC:52270 TERMINAL FAILED at the original movement distance bound.
+This time retained75-frame evidence proves the1.056step equals exactly two1/60s
+updates at31.68 rested speed (28.8 ×1.10), not extra simulation catch-up.
+Archive `/tmp/eidolon-rest58-movement-speed-failure-rlccng`; exact cleanup verified.
+Current clean candidate **1fd0d35683d973e99dc01c7fadbcbfe9f47e1202** includes the
+prepared live-recovery gate and speed-aware QA correction. It preserves the
+two-update limit and all other movement assertions; no runtime speed/timing or
+rest/stat changes. Original full run remains failed, not retrospectively passed.
+**26873 full client ACTIVE** and **49283 maximum-speed movement ACTIVE**; see
+execution ledger for logs and later ordinary-speed/live-wrapper/full-rerun gates.
+Separate Dark King phase work is explicitly excluded from58.55 still predeploy.
+
 Update09:01UTC: **52270 full gameplay remains ACTIVE on frozen45797ee**.
 Dungeon7 and subsequent spell/phone flows have passed; fresh Wizard collection
 is underway with real town recovery stops. No full-pass/live claim.
