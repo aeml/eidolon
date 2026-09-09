@@ -5,7 +5,45 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 04:23 UTC
+## Current checkpoint — September 9, 04:35 UTC
+
+PROGRESS: user explicitly approved cancelling the blocking soak. Revalidated exact
+Nightly Multiplayer Soak34307306192 on a36d1e7 before cancellation; GitHub now
+reports TERMINAL CANCELLED (not a passed24h soak). No schedule, runner or release
+workflow was changed. **52CI34305897736 final live QA is now IN_PROGRESS**;
+matching-release check passed and live anonymous/persistent-character QA is
+running. Do not push53 until the entire final live gate passes and public
+identities are independently rechecked. Remote/master remains exacta36d1e7.
+The player's missing town healing/rest report was verified against live52:
+the feature is absent from that deployed source, not a confirmed account bug.
+Do not tell the player it is live or suggest relogging as its fix.
+
+Fighter62895 TERMINAL PASS1/25.5m on original cleanf3f33e1 (gameplaydb3bbb7).
+Opening105s/diary141s cumulative, Watch40/40 at1370s, manual claim/save1388s.
+One counted death,17normal town stops totaling380.361s including travel, all
+observed stops fully restored both pools. Claim1593XP/100gold: level6/301XP/
+1566gold→level8/169XP/1666gold;17slots/560unsold gear value retained. Final
+town reconnect HP302→302/MP189→203 is ongoing healing, not exact-zero save proof.
+Console/network/credential scan passed. Exact owned containers/image absent.
+Ready-claim screenshot inspected; archived before further browsers at
+`/tmp/eidolon-primary-fighter-proof-TsBql3/test-results`; original log
+`/tmp/eidolon-primary-fighter-story-0402.log`. Wizard and Fighter first-hunt passes
+do not close all classes, full Earth, later realms or broader balancing.
+
+After Fighter ended, wired35 safe timing stages into the existing full QA chain
+on primary, clean **8b6b1d34d704fd3d1ce716c5fb6d8ee730010878**. Every prior command
+and argument retained. New shell harness executes actual chain/final-scan logic
+with harmless stubs, verifies complete command order and every35 failure position
+preserving status/scan/EXIT-hook execution. Focused64142 PASS6suites80tests2.341s;
+initial lint65347 caught literal regex spaces; corrected58516 PASS37tests1.513s,
+final lint/shell/diff pass. Logs `/tmp/eidolon-qa-timing-wired-*`.
+**95095 full client ACTIVE**, log `/tmp/eidolon-primary-timing-full-client.log`;
+poll exact handle, do not restart or edit tested source. No owned local browser
+currently running. Next: class coverage with Rogue/Cleric and full Earth under
+normal rest, preserving deadlines and earned-play/manual-claim requirements.
+Root remains ledger-only, never push it; canonical53–57 queue unchanged.
+
+## Previous checkpoint — September 9, 04:23 UTC
 
 PROGRESS: **52 deployed**, both public endpoints independently returned exact
 **a36d1e7d66333e8f6cf707ff115947b340c9a46c / Alpha1.0.52** at04:17, backend

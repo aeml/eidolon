@@ -4,6 +4,19 @@ Requested September 8, 2026. Status: implementation in progress, NOT live.
 Part of the active full-roadmap goal: implement as a coordinated 1.0.x feature
 after urgent blockers, and include it in 1.1 recovery and progression acceptance.
 
+September9 04:29 live report: player still sees no town healing/Well Rested.
+Both public endpoints confirmed Alpha1.0.52/a36d1e7, and the exact deployed
+source contains neither feature. This is unpublished functionality, not evidence
+of a per-character failure. Explicitly informed the player; relogging is not a
+fix. The blocked release runner was subsequently freed by user-approved soak
+cancellation, and52finalQA is running. Rest still must pass its own ordered
+publication gate before any live-delivery claim.
+
+Local Fighter62895 passed25.5m, first40-kill story hunt plus opening/diary/manual
+claim/reconnect, one death and17genuine full-pool town recoveries. Wizard had
+already passed11.2m with13stops/zero deaths. Two-class opening evidence supports
+the intended town-return loop but does not close full-campaign/class balancing.
+
 Player clarification, September9 03:37UTC: returning to town to restore HP/MP
 and earn Well Rested before fighting again is the intended resource loop, not
 an exceptional workaround. Balance and primary earned-play acceptance must use

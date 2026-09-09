@@ -25,6 +25,20 @@ has taken several tens of minutes.
 
 ## Next performance work
 
+**04:35 update:** the user explicitly approved cancelling the blocking soak.
+Revalidated34307306192/head a36d1e7, requested cancellation and confirmed
+GitHub TERMINAL CANCELLED. This is not a successful24h soak. No runner,
+schedule or workflow modification was made. The formerly queued52finalLiveQA
+is now IN_PROGRESS and its matching-release step passed; all remaining final
+live stages must pass before53 may be pushed.
+
+Fighter ended successfully, so the primary candidate now wires35 safe timing
+stages into the unchanged full required command chain (8b6b1d3). Shell harness
+tests cover all35 failure points and retained command arguments/order, scanning
+and EXIT-hook behavior. Focused80tests, final37test rerun/lint pass; fullclient
+95095 is active. Actual per-route duration measurements still remain required;
+the new instrumentation is unpublished and does not alter the current52gate.
+
 **04:19 queue diagnosis:**52 completed both deployments and both public endpoints
 reported exacta36d1e7/Alpha1.0.52 with a healthy database. Final live QA is queued.
 The repository runner API reports the sole `eidolon-codex-chrome` runner online
