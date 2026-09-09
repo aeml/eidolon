@@ -40,6 +40,15 @@ copy of the JSON manifest.15unit cases/2suites0.941s and lint passed; logs
 `/tmp/eidolon-browser-cost-partition-discovery.log`.
 Workflow contract RED2failures in `/tmp/eidolon-browser-cost-workflow-before.log`.
 
+Workflow-focused94828 passed18cases/3suites plus lint and committed2b7ba71.
+Full82632 FAILED two older VersionPresentation source checks which searched for
+literal npm commands now delegated to the planner;277suites3955tests passed.
+Preserved `/tmp/eidolon-browser-cost-full-client.log`. Those checks now assert
+the workflow invokes the runner and the actual plan includes the nameplate/HUD
+stage exactly once.250focused cases/4suites1.765s and lint passed29078; logs
+`/tmp/eidolon-browser-cost-contract-{green,lint}.log`. Full rerun/assetprepare
+and actual CI-mode browser groups remain pending. No published workflow change.
+
 Required before promotion: completed workflow-focused/fullclient checks, prepare
 locked browser assets, run all three proposed groups in CI's bundled-browser mode
 with independent retained artifacts, inspect rendering, measure actual duration,
