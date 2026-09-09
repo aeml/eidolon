@@ -16,7 +16,65 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 23:04 UTC
+## Current checkpoint — September 9, 23:23 UTC
+
+This continuation made PROGRESS: completed first-hunt earned proof, diagnosed
+safe-zone collection failure, fixed actual misleading combat feedback, completed
+missing functional Earth hunt coverage, and verified integrated client/render
+checks. Full objective remains active. Root documentation-only, NEVER pushed.
+
+Release59 e236b37 remains frozen/clean in canonical interface worktree.
+CI34414624304 client/server/ALL3browser groups SUCCESS. **Predeploy102681209941
+ACTIVE** since23:15:26; High/Low gallery passed, disposable full-character gameplay
+running. Actual deployment/final native live/exact public59 identity remain due.
+No successor pushed; last fully accepted release remains recovery58/ef9.
+
+Primary47584 TERMINAL FAILED14.1m on0691772. Opening and diary passed as below;
+first40hunt/manual1593XP100gold/reconnect passed573s,0deaths15reststops→level8,
+14occupiedslots. Collection observed3target deaths and0/8Seeds before timeout.
+Failure had11free slots, so NOT the prior full-bag issue. At83.51,296.40 with
+server safeZone=lanternhold, character kept casting from inside town. Viewed
+failed-collection.png shows hero behind fence and card falsely saying IN RANGE.
+Server PvE CombatRelationship is neutral in safety; fence geometry can also block
+shots. Archive `/tmp/eidolon-story-safe-zone-combat-failure-2jkvBl`, scanner0 and
+exact containers/ports cleaned up. Bag/merchant/collection/Imp readiness still
+unproven. Do not recycle this failed result as a successful full-story playthrough.
+
+Primary now clean **7fab2eb** (integrated code51eeaa8), unpublished/inherited58.
+28057a5 uses replicated safeZoneId to show LEAVE THE SAFE ZONE for PvE instead of
+claiming an in-range attack; preserves duel rules, healing, protection and combat
+formulas. Earned opening/collection/hunt loops now leave through normal input and
+wait for replicated departure when travel crosses into town, without resetting
+the combat watchdog or granting progress. Focused31432 PASS16/3/1.366+lint;
+server-race46016 PASS1.800 for observed point/fence/departure/scene/duel/acquisition.
+No server production code changes. Document `2026-09-09-safe-zone-combat-feedback.md`.
+
+Functional Earth correction prepared separately in
+`/tmp/eidolon-functional-earth-chain-2zZuXD`, branchwork/functional-earth-chain-20260909,
+clean644076d; integrated into primary6d9d8de after47584 ended. Dispatches allthree
+required hunts from authored BeforeQuestID, checks predecessor/manualclaim, uses
+shared ordinary subtype/level target acquisition and conservative bag management.
+Original prepared-level/waypoint provenance and600s budget remain; no quest grants
+or reduced requirements. Moved unchanged selector into shared module, correcting
+one old source-location test assertion. Focused37542 PASS67/4/1.314+lint;
+separatefull57496 PASS282/3976/94.532+lint. Actual prepared functional route still
+NOTRUN. Primary integration also retains normal sanctuary departure in this loop.
+
+Integrated full37716 PASS283suites3983tests97.767s+lint; logs
+`/tmp/eidolon-safe-functional-integrated-{client,lint}.log`. Browser14323 PASS2/6.9s
+using real engine/card/controller: desktop+phone warning and restored In Range
+after departure. Both screenshots inspected; archive
+`/tmp/eidolon-safe-zone-warning-proof-kqqx2s`, scanner0/port41961absent. These are
+presentation fixtures, not yet actual gameplay departure proof.
+
+**12121 ACTIVE**, only owned local browser, freshWizard story-only on7fab2eb:
+run `story-safe-exit-0909-2322`, API18560/Mongo18561/web41960, Node24 inside
+sg render, log `/tmp/eidolon-story-safe-exit-2322.log`. Source frozen until terminal;
+preserve artifacts/exactcleanup afterward. No heavy owned tests/second local
+browser alongside. Continue exact59 predeploy monitoring and this earned run;
+full roadmap/casino/physical-device/group/other prototype gates remain open.
+
+## Previous checkpoint — September 9, 23:04 UTC
 
 This continuation made PROGRESS through new earned opening/diary evidence and a
 static coverage finding, and VERIFIED WAIT on exact live47584/CI34414624304.
