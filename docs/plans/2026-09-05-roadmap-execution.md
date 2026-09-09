@@ -16,7 +16,31 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 07:31 UTC
+## Current checkpoint — September 9, 07:34 UTC
+
+This turn made PROGRESS: primary client full pass and a separately committed
+rendering optimization with focused/full client evidence. It did not change
+canonical58 or its required recovery/gameplay checks.
+
+**10604 aura prototype prepare/full-client/lint TERMINAL0**, exacte21a098,
+Node24.18.0:249suites/3497tests/146.96s. Existing prepare-client generated vendor
+assets; no dependency/global-toolchain change. Logs
+`/tmp/eidolon-rest-aura-batching-{prepare,full-client,full-lint}.log`.
+Prototype now clean **7b383be3d776dbe1e4306d7a0ed314d83f49441b** (documentation-only
+closure after tested e21a098) in `/tmp/eidolon-rest-aura-batching-k1vBvU`.
+No prototype process/browser active. Still requires rendered visual parity,
+actual WebGL/frame-time/device measurements and native transitions before
+promotion. Do not put it into recovery58 or claim FPS gains from mesh counts.
+
+**65093 complete58 gameplay re-polled ACTIVE**, same frozen ee8a713/run/ports/log
+below, only owned local browser. It is through dungeon/shape/support/Whirlwind
+and phone movement/combat, now party/inventory progression. Do not edit/restart
+or begin another local browser until terminal and exact cleanup/artifact review.
+**54CI34320477081 rechecked predeploy ACTIVE**, all prior tests passed.
+No55push until full54CI/deploy/finalLiveQA+fresh exact public identities. Public
+last verified53; recovery58 remains not live. Whole roadmap active/unfulfilled.
+
+## Previous checkpoint — September 9, 07:31 UTC
 
 Previous turn made PROGRESS: stronger actual HP/MP recovery proof passed and
 complete58 restarted after a diagnosed/corrected duration failure. This turn
