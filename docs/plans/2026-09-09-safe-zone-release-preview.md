@@ -27,8 +27,8 @@ an apparently usable in-range attack."
 ## Remaining release gates
 
 - [ ] Full client/lint and server regression on this exact candidate.
-- [ ] Actual desktop/phone card rendering with inspected retained screenshots.
-- [ ] Native membership departure feedback and preserved town recovery behavior.
+- [x] Actual desktop/phone card rendering with inspected retained screenshots.
+- [x] Native membership departure feedback and preserved town recovery behavior.
 - [ ] Finished release59 acceptance before selecting and synchronizing successor
   version, login text, release identity, build defaults and actual patch notes.
 - [ ] Normal canonical push, all CI/predeploy/deploy/live checks and fresh public
@@ -47,4 +47,25 @@ must regain normal range feedback after ordinary departure. Retains all original
 earned combat, depleted-pool healing, aura, bank and reconnect assertions. Added
 screenshots for both boundary states. No game-state assignment or QA teleport.
 Focused59653 PASS28tests/4suites1.574s+lint, including existing local/live gate
-wiring. The extended real-server journey has NOT RUN and is not acceptance yet.
+wiring. Actual journey evidence follows; full release gates still remain open.
+
+## Local rendering and native proof on95e3f28
+
+62768 passed both desktop1280x720 and phone390x844 card cases in6.5s, using the
+real engine/controller/UI and default render styles. Both warning screenshots
+were inspected and retained at `/tmp/eidolon-safe-release-card-proof-N7eOTh`;
+scanner0, web41961 absent after terminal. Log `/tmp/eidolon-safe-release-card-2343.log`.
+
+25868 passed the extended native journey in35.9s (test34.6s). No preparation or
+progression grants: fresh level1Wizard hovered Skeleton-lanternhold-1 at real
+x94.985/z200.010 inside town, then atx119.929/z199.969 outside. Replicated membership
+and the same target card changed from the sanctuary warning to normal range.
+Both complete-world screenshots inspected. The ordinary subsequent Fireball was
+accepted, MP110→80, and actual outgoing damage receipts arrived; incoming enemy
+damage was observed separately. Recall restored HP106→110 and MP80→93→110, with
+the earned bank17.624→17.998 and attached aura surviving fresh login.
+
+Native archive `/tmp/eidolon-safe-release-native-proof-py0yzm`, scanner0;
+log `/tmp/eidolon-safe-card-native-2344.log`. Exact disposable containers and
+API18560/Mongo18561/web41960 absent after terminal cleanup. This is local native
+proof, not production delivery, full-server regression or physical-phone sign-off.
