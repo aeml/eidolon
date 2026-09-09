@@ -51,6 +51,7 @@ func auctionItemFixture(t *testing.T, repo *database.DB, status, storage string)
 
 func verifyAuctionItemCharacter(t *testing.T, saved, baseline *database.Character, item database.Item, copies int) {
 	t.Helper()
+	assertTownFixtureSave(t, baseline, saved, 0)
 	count := 0
 	for _, items := range [][]database.Item{saved.Inventory, saved.Stash} {
 		for _, candidate := range items {
@@ -63,7 +64,7 @@ func verifyAuctionItemCharacter(t *testing.T, saved, baseline *database.Characte
 		}
 	}
 	if count != copies || len(saved.ItemDeliveryReceipts) != copies || saved.Gold != baseline.Gold || saved.XP != baseline.XP || saved.Level != baseline.Level ||
-		!reflect.DeepEqual(saved.Resources, baseline.Resources) || !reflect.DeepEqual(saved.Equipment, baseline.Equipment) || !reflect.DeepEqual(saved.GoldCreditReceipts, baseline.GoldCreditReceipts) {
+		!reflect.DeepEqual(saved.Equipment, baseline.Equipment) || !reflect.DeepEqual(saved.GoldCreditReceipts, baseline.GoldCreditReceipts) {
 		t.Fatal("item delivery/replay changed quantity, receipt, resources, gear or gold")
 	}
 }
@@ -86,15 +87,12 @@ func TestAuctionItemActualCollectionAndCapacity(t *testing.T) {
 				address, stop := compatStartServer(t, binary, uri, phase, "-save-journal-dir", dir)
 				connection := resourceOpenCharacter(t, address, p.Name, password)
 				if phase == 130 {
-					resourceSend(t, connection, MsgAbility, AbilityPayload{SkillName: "Fireball"})
-					var cast game.AbilityResult
-					resourceReadMessage(t, connection, MsgAbilityResult, &cast)
-					if !cast.Accepted || cast.Mana != 70 {
-						t.Fatal("ordinary cast failed")
-					}
+					townFixtureFireball(t, connection, p)
 					baseline = resourceCloseAndWait(t, repo, connection, p.Name)
+					assertTownFixtureSave(t, p, baseline, 30)
 					connection = resourceOpenCharacter(t, address, p.Name, password)
 				}
+				townFixtureProbe(t, connection, baseline)
 				resourceSend(t, connection, MsgTradingCollect, TradingCollectPayload{AuctionID: a.ID})
 				var reply string
 				resourceReadMessage(t, connection, MsgError, &reply)
@@ -127,8 +125,10 @@ func TestAuctionItemActualCollectionAndCapacity(t *testing.T) {
 				if mode == "stash" && (len(saved.Stash) != 1 || saved.Stash[0].ID != a.Item.ID) {
 					t.Fatal("full bag did not use stash")
 				}
-				resourceCloseAndWait(t, repo, connection, p.Name)
+				final := resourceCloseAndWait(t, repo, connection, p.Name)
+				verifyAuctionItemCharacter(t, final, baseline, a.Item, copies)
 				stop()
+				baseline = final
 			}
 		})
 	}
@@ -146,13 +146,9 @@ func TestAuctionItemActualCrashBoundaries(t *testing.T) {
 			dir := t.TempDir()
 			address, crash := compatStartServerWithCrash(t, binary, uri, 134, true, "-save-journal-dir", dir)
 			connection := resourceOpenCharacter(t, address, p.Name, password)
-			resourceSend(t, connection, MsgAbility, AbilityPayload{SkillName: "Fireball"})
-			var cast game.AbilityResult
-			resourceReadMessage(t, connection, MsgAbilityResult, &cast)
-			if !cast.Accepted || cast.Mana != 70 {
-				t.Fatal("ordinary cast failed")
-			}
+			townFixtureFireball(t, connection, p)
 			baseline := resourceCloseAndWait(t, repo, connection, p.Name)
+			assertTownFixtureSave(t, p, baseline, 30)
 			connection = resourceOpenCharacter(t, address, p.Name, password)
 			collection, validator := "", bson.M{}
 			command, namespace := "", ""
@@ -224,6 +220,22 @@ func TestAuctionItemActualCrashBoundaries(t *testing.T) {
 			if err != nil || current.ItemClaimed != (boundary == "final_reply_lost") {
 				t.Fatal("fault missed requested claim boundary")
 			}
+			durable := before
+			journal, err := database.OpenCharacterSaveJournal(dir)
+			if err != nil {
+				t.Fatal(err)
+			}
+			pending, err := journal.Read(p.Name)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if pending != nil && pending.SaveID != before.LastSaveID {
+				durable, err = pending.Character()
+				if err != nil {
+					t.Fatal(err)
+				}
+				assertTownFixtureSave(t, baseline, durable, 0)
+			}
 			if boundary == "delivery_journal" {
 				journal, err := database.OpenCharacterSaveJournal(dir)
 				if err != nil {
@@ -246,7 +258,16 @@ func TestAuctionItemActualCrashBoundaries(t *testing.T) {
 				if pendingAuctionBid(t, repo, a.ID) != nil {
 					t.Fatal("startup admitted before item recovery")
 				}
+				restored, err := repo.GetCharacter(p.Name, p.Name)
+				if err != nil || !reflect.DeepEqual(restored.Resources, durable.Resources) || !reflect.DeepEqual(restored.WellRested, durable.WellRested) {
+					t.Fatal("item recovery changed durable resources/rest before login")
+				}
+				if restored.Gold != baseline.Gold || restored.XP != baseline.XP || restored.Level != baseline.Level ||
+					!reflect.DeepEqual(restored.Equipment, baseline.Equipment) || !reflect.DeepEqual(restored.GoldCreditReceipts, baseline.GoldCreditReceipts) {
+					t.Fatal("item recovery changed the original gold, equipment or progression")
+				}
 				connection := resourceOpenCharacter(t, address, p.Name, password)
+				townFixtureProbe(t, connection, restored)
 				if boundary != "decision_rejected" {
 					resourceSend(t, connection, MsgTradingCollect, TradingCollectPayload{AuctionID: a.ID})
 					resourceReadMessage(t, connection, MsgError, &reply)
@@ -259,12 +280,13 @@ func TestAuctionItemActualCrashBoundaries(t *testing.T) {
 				if boundary == "decision_rejected" {
 					copies = 0
 				}
-				verifyAuctionItemCharacter(t, saved, baseline, a.Item, copies)
+				verifyAuctionItemCharacter(t, saved, restored, a.Item, copies)
 				current, err := repo.GetAuction(a.ID)
 				if err != nil || current.ItemClaimed != (copies == 1) || current.SellerClaimed || !reflect.DeepEqual(current.Item, a.Item) {
 					t.Fatal("recovery changed claim/auction metadata")
 				}
 				stop()
+				durable = saved
 			}
 		})
 	}

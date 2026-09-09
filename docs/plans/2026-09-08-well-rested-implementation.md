@@ -61,6 +61,41 @@ four-class stats and device/aura acceptance remain required.
 
 ## Development acceptance — September 8, 23:30 UTC
 
+Latest additional acceptance, **September9 00:49UTC**:
+
+- Listing acknowledgement/rejection and restart tests now retain exact timed
+  town recovery and actual Fireball cost. Original item metadata/legacy scaling,
+  stack/selection/bound-item/full deposit checks remain intact. Seven actual
+  crash boundaries compare the durable database or uncommitted journal to both
+  fresh-process restores before login. Rejected preflight preserves the older
+  database; its journal retains the unsaved cast and new rest/resources.
+- Delayed-publication test still ages only the prepared auction decision after
+  the real request/escrow/crash. Recovery preserves rest/resources, immutable
+  listing identity and the full paid publication window without extending it
+  again on the next restart.
+- Listing54724 **PASS92.422s**:9 normal/rejection cases44.39s,7 crash cases41.41s,
+  delayed publication5.61s. `/tmp/eidolon-rest-listing-0044.log` lists42 child
+  directories, all checked clean;34 normal drains and8 explicit expected kills.
+  Owned Mongo `eidolon-rest-listing-20260909-0044`/volumes removed and absent.
+- Item delivery retains exact earned item metadata, including Forge basis,
+  one-copy/receipt counts, original gold/equipment/progression, buyer/seller claim
+  state, stash fallback and full-storage rejection. Five ordinary/capacity cases
+  and six crash boundaries verify online-only recovery and exact saved bank/bars
+  before each fresh login; a delivery journal cannot separate item from resources.
+- Initial78268 **PASS69.162s** (capacity28.91s/crash39.23s);28 logs clean,22 normal
+  drains and6 intentional kills. Added an explicit original-gold/equipment/
+  progression comparison at startup, separate from the recovered resource baseline.
+  Final crash91858 **PASS40.684s**;18 logs clean,12 normal drains/6 expected kills.
+  Evidence `/tmp/eidolon-rest-item-0047.log` and
+  `/tmp/eidolon-rest-item-final-0048.log`; both owned Mongo projects/volumes removed
+  and checked absent. Final root race76334 **PASS11.365s**.
+
+Runtime remainsd650c72 server code; all changes here are test/docs. Merged client
+now includes50's attack-to-walk fix. Its full client/lint sweep66914 is running
+(`/tmp/eidolon-rested-merged-{client,lint}.log`); do not edit client/runtime while
+active. Still required: bid/contention/refund and buyout recovery, schema upgrade,
+integrated browser/aura and earned rested/unrested balance. Not staged/live.
+
 Latest additional acceptance, **September9 00:35UTC**:
 
 - Adapted seller-payout normal acknowledgement/retry and six actual crash

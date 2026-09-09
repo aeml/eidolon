@@ -78,7 +78,7 @@ func listingDecision(t *testing.T, repo *database.DB, name string) *database.Auc
 	return found
 }
 
-func verifyListingState(t *testing.T, repo *database.DB, baseline *database.Character, item database.Item, published bool) *database.Auction {
+func verifyListingState(t *testing.T, repo *database.DB, baseline *database.Character, item database.Item, published bool, resources *database.Character, manaSpent int) *database.Auction {
 	t.Helper()
 	saved, err := repo.GetCharacter(baseline.Name, baseline.Name)
 	if err != nil {
@@ -88,7 +88,8 @@ func verifyListingState(t *testing.T, repo *database.DB, baseline *database.Char
 	if published {
 		gold -= 25
 	}
-	if saved.Gold != gold || saved.Resources == nil || saved.Resources.Health != 17 || saved.Resources.Mana != 70 || saved.Resources.Dead ||
+	assertTownMarketResources(t, resources, saved, manaSpent)
+	if saved.Gold != gold || saved.Resources == nil || saved.Resources.Dead ||
 		saved.XP != baseline.XP || saved.Level != baseline.Level || !reflect.DeepEqual(saved.Equipment, baseline.Equipment) {
 		t.Fatal("listing changed resources/gear/progression or deposit")
 	}
@@ -121,16 +122,16 @@ func TestAuctionListingActualNormalAndRejections(t *testing.T) {
 			p, password, item := auctionListingFixture(t, repo, mode)
 			dir := t.TempDir()
 			published := mode == "gear" || mode == "stack" || mode == "legacy"
+			resources := p
 			for phase := 150; phase < 152; phase++ {
 				address, stop := compatStartServer(t, binary, uri, phase, "-save-journal-dir", dir)
 				connection := resourceOpenCharacter(t, address, p.Name, password)
+				manaSpent := 0
 				if phase == 150 {
-					resourceSend(t, connection, MsgAbility, AbilityPayload{SkillName: "Fireball"})
-					var cast game.AbilityResult
-					resourceReadMessage(t, connection, MsgAbilityResult, &cast)
-					if !cast.Accepted || cast.Mana != 70 {
-						t.Fatal("ordinary cast failed")
-					}
+					townFixtureFireball(t, connection, resources)
+					manaSpent = 30
+				} else {
+					townFixtureProbe(t, connection, resources)
 				}
 				payload := TradingCreatePayload{SlotIndex: 0, Bid: 100, Buyout: 500, Duration: 24, ExpectedItemID: item.ID, ExpectedStack: item.Stack}
 				switch mode {
@@ -151,7 +152,7 @@ func TestAuctionListingActualNormalAndRejections(t *testing.T) {
 					if len(list) != 1 {
 						t.Fatal("ordinary listing response missing")
 					}
-					a := verifyListingState(t, repo, p, item, true) // Reply requires already-durable latest cast and escrow.
+					a := verifyListingState(t, repo, p, item, true, resources, manaSpent) // Reply requires already-durable latest cast and escrow.
 					if list[0].ID != a.ID {
 						t.Fatal("response refers to wrong listing")
 					}
@@ -173,12 +174,13 @@ func TestAuctionListingActualNormalAndRejections(t *testing.T) {
 						t.Fatal("unexpected listing rejection", reply, want)
 					}
 				}
-				resourceCloseAndWait(t, repo, connection, p.Name)
-				verifyListingState(t, repo, p, item, published)
+				saved := resourceCloseAndWait(t, repo, connection, p.Name)
+				verifyListingState(t, repo, p, item, published, resources, manaSpent)
 				if listingDecision(t, repo, p.Name) != nil {
 					t.Fatal("completed request retained decision")
 				}
 				stop()
+				resources = saved
 			}
 		})
 	}
@@ -196,12 +198,7 @@ func TestAuctionListingActualCrashBoundaries(t *testing.T) {
 			dir := t.TempDir()
 			address, crash := compatStartServerWithCrash(t, binary, uri, 154, true, "-save-journal-dir", dir)
 			connection := resourceOpenCharacter(t, address, p.Name, password)
-			resourceSend(t, connection, MsgAbility, AbilityPayload{SkillName: "Fireball"})
-			var cast game.AbilityResult
-			resourceReadMessage(t, connection, MsgAbilityResult, &cast)
-			if !cast.Accepted || cast.Mana != 70 {
-				t.Fatal("ordinary cast failed")
-			}
+			townFixtureFireball(t, connection, p)
 			collection, validator := "", bson.M{}
 			command, namespace := "", ""
 			skip := false
@@ -282,8 +279,13 @@ func TestAuctionListingActualCrashBoundaries(t *testing.T) {
 			if before.Gold != gold || len(before.Inventory) != inventoryCount || len(before.ItemDeliveryReceipts) != 1-inventoryCount || len(before.GoldCreditReceipts) != 1-inventoryCount {
 				t.Fatal("fault missed escrow boundary")
 			}
-			if boundary != "preflight_rejected" && (before.Resources.Mana != 70 || !escrowed && !reflect.DeepEqual(before.Inventory[0], item)) {
-				t.Fatal("decision preceded complete current-bag save")
+			if boundary != "preflight_rejected" {
+				assertTownMarketResources(t, p, before, 30)
+				if !escrowed && !reflect.DeepEqual(before.Inventory[0], item) {
+					t.Fatal("decision preceded complete current-bag save")
+				}
+			} else if !reflect.DeepEqual(before.Resources, p.Resources) || !reflect.DeepEqual(before.WellRested, p.WellRested) {
+				t.Fatal("rejected preflight changed the older durable resources")
 			}
 			auctions := listingAuctions(t, repo, p.Name)
 			wantListings := 0
@@ -293,6 +295,7 @@ func TestAuctionListingActualCrashBoundaries(t *testing.T) {
 			if len(auctions) != wantListings {
 				t.Fatal("uncommitted escrow became a visible listing")
 			}
+			durable := before
 			if boundary == "escrow_journal" || boundary == "preflight_rejected" {
 				journal, err := database.OpenCharacterSaveJournal(dir)
 				if err != nil {
@@ -306,9 +309,8 @@ func TestAuctionListingActualCrashBoundaries(t *testing.T) {
 				if err != nil {
 					t.Fatal(err)
 				}
-				if saved.Resources.Mana != 70 {
-					t.Fatal("listing snapshot lost unsaved cast")
-				}
+				assertTownMarketResources(t, p, saved, 30)
+				durable = saved
 				if boundary == "escrow_journal" && (saved.Gold != 1209 || len(saved.Inventory) != 0 || saved.GoldCreditReceipts["listing:"+op.ID] != -25 || saved.ItemDeliveryReceipts[op.ID] == "") {
 					t.Fatal("journal separated item/deposit escrow")
 				}
@@ -320,8 +322,12 @@ func TestAuctionListingActualCrashBoundaries(t *testing.T) {
 				if listingDecision(t, repo, p.Name) != nil {
 					t.Fatal("startup admitted before listing recovery")
 				}
+				restored, err := repo.GetCharacter(p.Name, p.Name)
+				if err != nil || !reflect.DeepEqual(restored.Resources, durable.Resources) || !reflect.DeepEqual(restored.WellRested, durable.WellRested) {
+					t.Fatal("listing recovery changed durable resources/rest before login")
+				}
 				connection := resourceOpenCharacter(t, address, p.Name, password)
-				resourceProbe(t, connection, 70, false)
+				townFixtureProbe(t, connection, restored)
 				if !rejected {
 					resourceSend(t, connection, MsgTradingCreate, TradingCreatePayload{SlotIndex: 0, Bid: 100, Buyout: 500, Duration: 24, ExpectedItemID: item.ID, ExpectedStack: item.Stack})
 					resourceReadMessage(t, connection, MsgError, &reply)
@@ -329,8 +335,8 @@ func TestAuctionListingActualCrashBoundaries(t *testing.T) {
 						t.Fatal("recovered escrow item listed twice", reply)
 					}
 				}
-				resourceCloseAndWait(t, repo, connection, p.Name)
-				a := verifyListingState(t, repo, p, item, !rejected)
+				saved := resourceCloseAndWait(t, repo, connection, p.Name)
+				a := verifyListingState(t, repo, p, item, !rejected, restored, 0)
 				if !rejected && (a.ID != op.AuctionID || a.LastBidOperationID != op.ID) {
 					t.Fatal("recovery changed immutable listing identity")
 				}
@@ -338,6 +344,7 @@ func TestAuctionListingActualCrashBoundaries(t *testing.T) {
 					t.Fatal("acknowledgement recovery extended the already-published listing")
 				}
 				stop()
+				durable = saved
 			}
 		})
 	}
@@ -350,12 +357,7 @@ func TestAuctionListingActualDelayedPublication(t *testing.T) {
 	dir := t.TempDir()
 	address, crash := compatStartServerWithCrash(t, binary, uri, 160, true, "-save-journal-dir", dir)
 	connection := resourceOpenCharacter(t, address, p.Name, password)
-	resourceSend(t, connection, MsgAbility, AbilityPayload{SkillName: "Fireball"})
-	var cast game.AbilityResult
-	resourceReadMessage(t, connection, MsgAbilityResult, &cast)
-	if !cast.Accepted || cast.Mana != 70 {
-		t.Fatal("ordinary pre-listing cast failed")
-	}
+	townFixtureFireball(t, connection, p)
 	configure := func(blocked bool) {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
@@ -382,10 +384,11 @@ func TestAuctionListingActualDelayedPublication(t *testing.T) {
 		t.Fatal("failed publication lost its pending decision or published early")
 	}
 	before, err := repo.GetCharacter(p.Name, p.Name)
-	if err != nil || before.Gold != 1209 || len(before.Inventory) != 0 || before.Resources.Mana != 70 ||
+	if err != nil || before.Gold != 1209 || len(before.Inventory) != 0 ||
 		before.GoldCreditReceipts["listing:"+op.ID] != -25 || before.ItemDeliveryReceipts[op.ID] == "" {
 		t.Fatal("delayed publication did not retain exact committed escrow", err)
 	}
+	assertTownMarketResources(t, p, before, 30)
 	crash()
 
 	// Prepared age fixture: simulate a three-day outage without a three-day test
@@ -407,9 +410,14 @@ func TestAuctionListingActualDelayedPublication(t *testing.T) {
 	configure(false)
 	publicationFloor := time.Now().UTC().Truncate(time.Millisecond)
 	var published *database.Auction
+	durable := before
 	for phase := 161; phase < 163; phase++ {
 		address, stop := compatStartServer(t, binary, uri, phase, "-save-journal-dir", dir)
-		a := verifyListingState(t, repo, p, item, true)
+		restored, err := repo.GetCharacter(p.Name, p.Name)
+		if err != nil || !reflect.DeepEqual(restored.Resources, durable.Resources) || !reflect.DeepEqual(restored.WellRested, durable.WellRested) {
+			t.Fatal("delayed publication changed durable resources/rest before login")
+		}
+		a := verifyListingState(t, repo, p, item, true, restored, 0)
 		if a.ID != op.AuctionID || a.LastBidOperationID != op.ID || a.StartTime.Before(publicationFloor) ||
 			a.StartTime.After(time.Now()) || a.EndTime.Before(time.Now().Add(23*time.Hour)) || listingDecision(t, repo, p.Name) != nil {
 			t.Fatal("publication consumed the paid window during the simulated outage")
@@ -425,8 +433,9 @@ func TestAuctionListingActualDelayedPublication(t *testing.T) {
 		if len(list) != 1 || list[0].ID != a.ID || !list[0].StartTime.Equal(a.StartTime) || !list[0].EndTime.Equal(a.EndTime) {
 			t.Fatal("ordinary market view did not expose the recovered full-duration listing")
 		}
-		resourceCloseAndWait(t, repo, connection, p.Name)
-		verifyListingState(t, repo, p, item, true)
+		saved := resourceCloseAndWait(t, repo, connection, p.Name)
+		verifyListingState(t, repo, p, item, true, restored, 0)
 		stop()
+		durable = saved
 	}
 }
