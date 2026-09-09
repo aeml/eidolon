@@ -15,7 +15,8 @@ test('no clear ground falls back to combat without counting a successful retreat
     move.mockRejectedValue(new GroundInputUnavailableError('no input available'));
     const defend = await createEarnedWizardDefense(page);
     expect(await defend()).toBe(false);
-    expect(move).toHaveBeenCalledWith(page, -9, 0, expect.objectContaining({ minimumDistance: 6 }));
+    expect(move).toHaveBeenCalledWith(page, -9, 0, expect.objectContaining({ minimumDistance: 6,
+        allowJumpFallback: false, allowAlternatePaths: false }));
     window.__freshWizardDefense = { counts: { retreats: 0 } };
     try {
         page.evaluate.mock.calls.at(-1)[0]();
