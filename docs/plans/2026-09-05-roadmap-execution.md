@@ -16,7 +16,54 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 06:14 UTC
+## Current checkpoint — September 9, 06:30 UTC
+
+Previous goal turn was PROGRESS: verified live53 after complete CI, pushed54,
+fixed/verified two QA pointer observations, and started the exact58 full run.
+
+**12130 complete58 gameplay TERMINAL1** on a7ef83c: initial3authenticated,
+seven dungeon/inventory routes, area/shape casts and phone movement/combat/party/
+inventory passed, then legacy gem recovery failed its old Intelligence10 check
+because earned Well Rested correctly produced11 in town. It is a failed full run,
+not acceptance. Scan0/exact temporary containers/image absence confirmed; original
+log`/tmp/eidolon-rest58-all-node24-rerun-0610.log`, failure archive
+`/tmp/eidolon-rest58-gem-rest-failure-e5EF2M/test-results`.
+
+QA-only fix **7f066a4768d8695d4a696db7edf2c8e602fa664b** in standalone58 asserts
+base Intelligence10, rested total11, positive earned bank and Lanternhold both
+before recovery and after reconnect. Unsupported gem's+999 remains invalid;
+full-bag rejection, legal equip, exact18+5=23, actual Mongo save and reconnect
+checks unchanged. Lint20494 terminal0 and diff pass, no production change.
+**97572 focused actual equipment-recovery ACTIVE — only owned local browser**,
+same source, Node24.18.0, projectrest58-gem24-0909-0630,
+API18560/Mongo18561/web41960; log`/tmp/eidolon-rest58-gem-rest-browser-0630.log`.
+After terminal archive/exact cleanup, resume complete58 gameplay; do not edit
+the active candidate or start another local browser meanwhile.
+
+Parallel main-goal progress: primary **01eef1dc8285223a26f8b50a604deacb26749c18**
+adds a story-only readiness gate. Old fresh-ready diagnostics use daily contracts
+and obsolete quoted rewards; they cannot prove the optional-daily requirement.
+The stronger release stage runs the whole existing Earth route, requires all7
+pre-dungeon chapters manually complete, no accepted/completed daily, actually
+earned level30 and Normal30 Guide entry enabled, with raid access still sealed.
+It fails an underlevel authored route instead of filling it with a legacy daily.
+Same35 stage positions; the collection slot calls the stronger wrapper. All35
+failure positions retain status/scan/EXIT tests; four actual shell-wrapper tests
+verify class/mode flags and propagated19. Existing focused diagnostics remain
+available but are not current readiness acceptance.
+
+Primary93563 PASS326tests1.995s; final27802 PASS330/5suites2.538s/lint/shell/diff.
+Full76262 **TERMINAL0/PASS265suites3780tests116.667s plus lint**, Node24.18.0,
+frozen01eef1d. Logs`/tmp/eidolon-primary-story-readiness-{final-tests,final-lint,full-client,full-lint}.log`.
+Actual full Earth/readiness still unverified: older Wizard/Fighter runs proved
+only opening/diary/first40-hunt. New source does not make the campaign balanced
+or live. Primary production gameplay/rewards unchanged by this gate.
+
+54CI34317808528 remains active; Server/Client and browser2 passed, browser1/3
+still running at06:25. Do not push55 until complete54CI/finalLiveQA and exact
+public identities. Last verified live53. Full roadmap remains active/unfulfilled.
+
+## Previous checkpoint — September 9, 06:14 UTC
 
 PROGRESS: **33950 full58 client/lint TERMINAL0** on frozen
 a7ef83c287d828af51f68ee4d32821d00b45a015/Node24.18.0:
