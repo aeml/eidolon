@@ -16,7 +16,48 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 14:50 UTC
+## Current checkpoint — September 9, 14:59 UTC
+
+This continuation made PROGRESS: completed desktop visual comparison, full
+integrated client regression and first actual GPU aura-batching comparison;
+started the corrected earned story replay. Previous status turn was a VERIFIED
+WAIT on34361293407. Release58 ef9a638 remains frozen and ACTIVE in full predeploy
+gameplay; fresh14:58 public client/backend remain57/8af54f2/ready. No successor
+push or production mutation. Actual backup/deploy/native live recovery still due.
+
+Primary now clean **941ecf6**, unpublished/inherited57metadata.25041 failed one
+stale source assertion requiring the pre218a0b7 distance-only target guard;
+479f302 asserts the correct visible-target helper and absence of that guard,
+retaining encounter/death/credit checks. Focused29/2/.81s+lint35486PASS.
+Integrated full42881 oncb80d65 PASSED276suites3942tests129.103s+lint, logs
+`/tmp/eidolon-primary-visual-story-full-{client,lint}.log`;941ecf6 docs-only closure.
+
+Desktop actual-rendered baseline46843 FAILED2/2 as expected: old2505b369 dispatch
+produced614.074px-wide labels at1280/1920. Fixed95533 PASS2/7.1s, <=216px/full
+accessible identity/min16px/viewport bounds/pointer transparency/lifecycle;
+both fixed screenshots and baseline1280 viewed. Archives
+`/tmp/eidolon-desktop-action-baseline-proof-7eDYEr` and
+`/tmp/eidolon-desktop-action-fixed-proof-dvLaWX`, scans0/portclosed. cb80d65 adds
+fixed spec to successor combat-card CI command. Fixture proof, not multiplayer.
+
+Aura separateWT `/tmp/eidolon-rest-aura-batching-k1vBvU` now5fefc38 docs-only,
+code59be536 unchanged. GPU7912 PASS1/4.9s, AMD Vulkan1.4.318 RADV RENOIR:
+High9/10/10 incremental draws vs37/38/38; Low8 vs20 at0.37/1.8/4.2s. Pixel
+difference0 in all six256px comparisons with visible reference signal. Log
+`/tmp/eidolon-rest-aura-gpu-comparison.log`, archive
+`/tmp/eidolon-rest-aura-gpu-proof-EVNdVm`, scan0/both quality screenshots viewed.
+Not integrated/pushed; populated party, steady frame times, lifecycle/native
+rested gameplay and physical-phone results remain required. No FPS claim.
+
+**11948 ACTIVE**, only owned local browser, primary941ecf6 fullstory-only Wizard.
+Run `story-ready-train-0909-1458`, API18560/Mongo18561/web41960, Node24 inside
+sg render, log `/tmp/eidolon-story-ready-training-wizard.log`. Isolated services
+ready and fresh level1 baseline entered. Source frozen until terminal; do not
+restart for elapsed time. No additional heavy owned test while it is running.
+Next poll same11948 and34361293407 handles, preserve terminal artifacts; continue
+actual milestone training/Imp/wholeEarth readiness. Full1.1–1.10 goal remains open.
+
+## Previous checkpoint — September 9, 14:50 UTC
 
 Previous ETA turn was a VERIFIED WAIT: exact34361293407 still active, fresh
 14:44 public client/backend57/8af54f2/ready. This continuation made PROGRESS.

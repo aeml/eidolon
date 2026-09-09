@@ -1,5 +1,11 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update14:59UTC: exact34361293407/ef9a638 still ACTIVE in full predeploy gameplay.
+Fresh14:58 client/backend both57/8af54f2/ready. No candidate changes or successor
+publication. Separate primary fullclient and desktop proof passed; fresh11948
+story replay active. Separate aura prototype GPU draw-call/pixel proof passed,
+but is not included in58. Full production recovery acceptance remains pending.
+
 Update14:50UTC:34361293407 ef9a638 remains ACTIVE in full predeploy gameplay;
 all earlier server/client/browser/gallery checks passed. Fresh14:44 public client
 and ready backend still57/8af54f2. No release/source mutation. Actual production
