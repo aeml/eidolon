@@ -161,9 +161,10 @@ Current6e85547 also inherits54's corrected prepared respawn fixture clock throug
 the canonical release chain. No production/version/script changes were imported.
 **1416 full gameplay ACTIVE**, only owned local browser; Node24.18.0,
 projectrest58-all24-r3-0909-0650/API18560/Mongo18561/web41960; log
-`/tmp/eidolon-rest58-all-node24-rerun-0650.log`. **81287 full client/lint ACTIVE**,
+`/tmp/eidolon-rest58-all-node24-rerun-0650.log`. **81287 full client/lint PASSED**,
+248suites/3490tests/125.305s, terminal0, exact6e85547/Node24.18.0;
 logs `/tmp/eidolon-rest58-finalclock-full-{client,lint}.log`. Freeze source until
-terminal outcomes; these are not complete passes yet.
+the gameplay outcome; a complete gameplay pass is still outstanding.
 
 ## Remaining delivery gates
 

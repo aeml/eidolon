@@ -16,7 +16,30 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 06:47 UTC
+## Current checkpoint — September 9, 06:50 UTC
+
+This goal continuation made PROGRESS: corrected54 pushed/new CI active, final
+ancestry merged cleanly into55–58 and primary, fresh58 full client/lint passed.
+**81287 TERMINAL0: 248suites/3490tests/125.305s plus lint** on frozen6e85547,
+Node24.18.0. Logs `/tmp/eidolon-rest58-finalclock-full-{client,lint}.log`.
+**1416 complete58 gameplay still ACTIVE** (same source/run/ports/log below),
+only owned local browser; initial3authenticated tests passed56.5s and current
+dungeon wall/beam/movement checks passing. This is not a full-chain pass.
+
+Final-ancestry prepush client/version/clock regressions plus lint/diff all passed:
+55/c5ce9dc handle40751: 275tests/4suites/4.987s;
+56/9f41111 handle45349: 240tests/2suites/2.082s;
+57/6babef5 handle24273: 241tests/2suites/1.994s.
+Logs `/tmp/eidolon-release{55,56,57}-finalclock-{prepush,lint}.log`.
+These do not replace their backend persistence evidence or release/live gates.
+
+54CI34320477081 rechecked active: client job passed, server job running.
+No55push yet; public last verified53. **21409 primary full client/lint ACTIVE** on
+clean4e9cad5, logs `/tmp/eidolon-primary-finalclock-full-{client,lint}.log`.
+No primary browser, source frozen until
+terminal. Actual earned story-only readiness remains unproven.
+
+## Previous checkpoint — September 9, 06:47 UTC
 
 Previous status turn produced new evidence: public client/server still53/ce330b3,
 and both owned54 corrections had passed. This continuation is PROGRESS:
