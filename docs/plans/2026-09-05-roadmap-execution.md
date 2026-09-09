@@ -16,7 +16,53 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 13:15 UTC
+## Current checkpoint — September 9, 13:23 UTC
+
+Previous goal turn made PROGRESS: recovered/accepted57 and pushed58. This turn
+verified live58 CI handles and began the required actual story-only readiness
+route, obtaining new earned opening/diary/hunt evidence. Full objective remains
+unchanged; no successor publication or production recovery claim.
+
+58CI **34355888468** ACTIVE exactfb8db754: client and server jobs PASSED;
+allthreebrowser smoke shards ACTIVE. Still needs predeploy, actual schema8→9
+production backup, deploy and mandatory native public recovery/expiry/party checks.
+Canonical58 is clean/frozen. Last accepted public release remains57/8af54f2.
+
+**2268 ACTIVE**, the only owned local browser, on frozen/clean primary
+**a4ea4ccea2adbf1e1a4d756e1b453566b47bc96a**. Exact isolated project suffix
+`story-ready-w-0909-1319`, API18560/Mongo18561/web41960, Node24 inside `sg render`.
+Invocation `EIDOLON_ISOLATED_QA_ROUTE=fresh-story-ready`,
+`EIDOLON_E2E_FRESH_CLASS=Wizard`, log
+`/tmp/eidolon-story-ready-wizard-0909-1319.log`. Do not cancel/restart merely for
+elapsed time; poll2268 through terminal and preserve/sanitize artifacts before
+another browser. No heavy local fullclient/server work while this browser owns
+the candidate. External CI is separate. Do not modify primary source mid-route.
+
+Route verified by inspection: fresh ordinary registration, no grant helpers,
+seven manually completed pre-dungeon chapters, all150 authored hunt kills,
+collection/investigations and normal town recovery. Explicit policy rejects
+daily/comparison/prepared shortcuts. Final requires living earned level≥30,
+accepted uncleared Earth dungeon count0, Normal30 entry enabled and raid sealed.
+The1h test limit is not approval of pacing. Rogue/Fighter/Cleric and realparty
+readiness remain separately required. Never conceal a shortfall with daily XP.
+
+Observed so far: opening3kills118s/no deaths/24retreats, manual reward100XP/100gold,
+saved/rejoined level2 at126s; diary manually completed at171s→level3,200XP/25gold.
+First40killhunt underway:5credited/40 at93s, level4/no deaths,2townstops.
+Actual depletedMP10→town28→159/159, saved rest bank grew while safe; ordinary
+return to combat, not a prepared resource grant. Full route outcome UNKNOWN.
+
+Viewed actual diary approach and recovered-lore journal snapshots. Reading text
+is legible and manual turn-in remains explicit. Progress-only copies retained
+at `/tmp/eidolon-story-ready-progress-GEWgC6`; full terminal archive still due.
+Visual follow-ups within existing polish scope: keeper-house art remains sparse
+(low cutaway walls/book table without much environmental storytelling); journal
+shows highest-value endgame dailies to this level2 player under a claimed
+“fastest XP” ladder. SourceQuestUI sorts reward totals, not measured time/level
+suitability. This is an observed guidance/presentation issue, not a proven quest
+eligibility defect or permission to alter58 economy. Keep it for later UI polish.
+
+## Previous checkpoint — September 9, 13:15 UTC
 
 57 is now FULLY ACCEPTED:34347504351 all10 jobs SUCCESS after failed-job-only
 retry. Final live QA8tests4.5m, allfourclass routes and actual remote-animation

@@ -1,5 +1,10 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update13:23UTC:58CI34355888468 client/server jobs PASSED; allthreebrowser shards
+ACTIVE on exactfb8db754. No production58 claim. Remaining predeploy/backup/deploy/
+native live recovery gates unchanged. Separate primary fresh-story-ready Wizard
+2268 is active (only owned browser) and does not alter the release candidate.
+
 Update13:15UTC:57 FULLY ACCEPTED,34347504351 all10jobs SUCCESS. Actual backup
 receipt/integrity/load proof recorded below. Fresh13:14:37 public client manifest,
 login, actualruntimeGET20019736bytes and readybackend all57/8af54f2.
