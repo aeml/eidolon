@@ -16,7 +16,44 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 11:13 UTC
+## Current checkpoint — September 9, 11:27 UTC
+
+Previous turn made PROGRESS on crystal-ready resume. This turn preserved a new
+terminal recovery failure and corrected QA's distinction between a prior hover
+and an actual fresh click. Full roadmap/recovery delivery remain open.
+
+**2466 fullall TERMINAL1/FAILED** onc5e3204: first seven-test dungeon batch3failed/
+4passed5.8m. Two portal clicks selected InfernoTitan; the actual fresh stack and
+pending target agree, with zero portal requests. The prior hover was not a promise
+of an unchanged click target. Verdant retreat had zero displacement/BriarMatron
+pending, but lacks click-time evidence; its original cause remains unproven.
+Archive `/tmp/eidolon-rest58-verdant-r12-failure-P1ap9x` retains log/HTML/test-results;
+wrapper sanitized2files, exact r12API/Mongo/image/network/ports absent afterterminal.
+No later all-route tests ran. Original failed run is not retrospectively passed.
+
+58 **8b9073b** adds a strict observer/classifier: successful desktop canvas click,
+same active hostileID first in fresh stack/selected/pending. Missing/mixed/ignored
+or keyboard movement remains a hard failure. All-click interception is a distinct
+error, never successful movement or no-input; combat caller keeps deadlines/death
+bounds. Portal interception must issue zero requests; reacquisition uses the same
+three-attempt bound and final actual menu/entry remains mandatory. No runtime,
+raycast priority, grants, movement clock, retries or frame thresholds changed.
+68828focusedPASS30/.686+lint;99520expandedPASS39/.736+lint.
+**34455 fullclient/lint PASS252suites/3564tests/87.123s** on8b9073b/Node24.18.0.
+Logs `/tmp/eidolon-rest58-pointer-evidence-{focused,expanded,lint,expanded-lint}.log`
+and `/tmp/eidolon-rest58-pointer-full-{client,lint}.log`.
+
+Current58clean/frozen **b5abc2a89f6172eea2b2efed1f3232b96a543f52** adds documented
+optional dungeon-inputs route: exact seven-test batch from all, not a replacement
+for complete acceptance. **33035 replay ACTIVE**, only owned local browser,
+runrest58-pointer-0909-1126/API18560/Mongo18561/web41960, log
+`/tmp/eidolon-rest58-dungeon-pointer-replay.log`. Finish/archive exact outcome,
+then require completeall. Do not edit/restart over active33035.
+56CI34340328283 stillpredeploy;57clean1f8c7be/unpublished. Primaryed95214 remains
+clean/idle with full server regression due and these pointer QA changes not yet
+carried; carry after replay evidence. Root remains ledger-only and must not push.
+
+## Previous checkpoint — September 9, 11:13 UTC
 
 Previous goal turn made PROGRESS on Maelin and preserved/replayed the Cleric
 frame failure. This turn made PROGRESS on the later crystal-repair resume gate.

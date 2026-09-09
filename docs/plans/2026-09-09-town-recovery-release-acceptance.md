@@ -1,5 +1,15 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update11:27UTC:2466 fullall FAILED3/7dungeon cases; two fresh portal clicks selected
+the covering InfernoTitan, plus a Verdant retreat with no movement/pendingMatron.
+Archive `/tmp/eidolon-rest58-verdant-r12-failure-P1ap9x`; sanitized2/exact cleanup.
+58b5abc2a includes strict click-time interception evidence, preserving actual
+failed movement, portal entry, deadlines and runtime priorities. Fullclient34455
+PASS252suites/3564tests/87.123+lint on8b9073b; extra b5case/doc only.33035 exact
+seven-test dungeon replay ACTIVE, `/tmp/eidolon-rest58-dungeon-pointer-replay.log`,
+only owned browser on18560/18561/41960. Completeall and ordered live gates still
+required.56CI remains predeploy; no57/58push. Primary story fixes remain excluded.
+
 Update11:08UTC:95652 Cleric-only matrix PASSED1.0m with unchanged assertions;
 25frames in diagnostic attachment, actual hardware renderer and moving cast.
 Original10-frame sample cause remains unknown, not retrospectively passed.
