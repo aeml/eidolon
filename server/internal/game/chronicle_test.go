@@ -409,6 +409,12 @@ func TestElementalRaidsUnlockFromDungeonsAndContainCrystalVigils(t *testing.T) {
 
 func TestCrystalRepairCompletionAdvancesRaidVigilAndNextRaid(t *testing.T) {
 	w := NewWorld(nil)
+	var completion CrystalRepairEvent
+	w.OnEvent = func(kind string, data interface{}) {
+		if kind == "crystal_repair" {
+			completion = data.(CrystalRepairEvent)
+		}
+	}
 	player := &Entity{ID: "hero", Type: TypePlayer, InstanceID: "earth-raid", Inventory: make([]Item, MaxInventorySize)}
 	completedChronicleThrough(player, 9)
 	ensureChronicleLocked(player)
@@ -423,6 +429,13 @@ func TestCrystalRepairCompletionAdvancesRaidVigilAndNextRaid(t *testing.T) {
 	w.completeCrystalRepair(state)
 	if q := questByID(t, player, ChronicleEarthRestoredID); q.Completed || q.Count != q.MaxCount {
 		t.Fatal("repair should be ready, awaiting report to Ilyra")
+	}
+	if completion.Stage != "complete" || !strings.Contains(completion.Hint, "Ilyra") ||
+		!strings.Contains(completion.Hint, "Lanternhold") || !strings.Contains(completion.Hint, "claim") {
+		t.Fatal("Vigil feedback must explain the still-required manual town turn-in", completion.Hint)
+	}
+	if player.Gold != 0 || player.Experience != 0 {
+		t.Fatal("Vigil granted the quest reward before manual turn-in", player.Gold, player.Experience)
 	}
 	player.InstanceID, player.X, player.Z = "", 20, 215
 	if _, ok := w.PerformCompleteQuest(player.ID, ChronicleEarthRestoredID); !ok {

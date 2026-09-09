@@ -260,7 +260,7 @@ func (w *World) completeCrystalRepair(state *CrystalRepairState) {
 	}
 	w.emitCrystalRepair(state, "complete", 3, 100, state.Crystal+" Restored",
 		"Maelin: The fracture is closed. Listen—the Eidolon is answering through us, not above us.",
-		"The next realm chapter has begun. Open the Journal to read the recovered lore.")
+		"Return to Archmage Ilyra in Lanternhold to complete this chapter, claim your reward, and discuss the crystal's recovered lore.")
 
 	if instance, ok := w.getDungeonInstance(state.InstanceID); ok && w.OnEvent != nil {
 		instance.Mu.RLock()
