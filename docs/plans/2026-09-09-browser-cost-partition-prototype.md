@@ -55,3 +55,9 @@ with independent retained artifacts, inspect rendering, measure actual duration,
 then verify a complete remote release run. Current discovery and mocked exit-code
 tests do not prove all browser commands, fixture independence in execution, FPS
 or an end-to-end CI improvement. Preserve accepted58 ancestry during integration.
+
+Full rerun81238 on126877c passed278suites3957tests100.895s, lint and locked
+browser asset preparation. Logs `/tmp/eidolon-browser-cost-final-full-{client,lint}.log`
+and `/tmp/eidolon-browser-cost-prepare.log`. Actual three bundled-browser groups,
+rendered report retention/timing and complete remote CI remain pending. Source
+still predates the primary's accepted58 merge; do not publish this branch as-is.
