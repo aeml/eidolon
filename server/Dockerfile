@@ -1,9 +1,6 @@
 ARG GO_VERSION=1.24.5
 FROM golang:${GO_VERSION}-alpine AS builder
 
-ARG BUILD_COMMIT=development
-ARG BUILD_VERSION="Alpha 1.0.57"
-
 WORKDIR /src
 
 RUN apk add --no-cache ca-certificates tzdata
@@ -12,6 +9,11 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
+
+# Release identity changes on every deployment. Keep it out of dependency-layer
+# cache keys, while still relinking the executable with the exact release values.
+ARG BUILD_COMMIT=development
+ARG BUILD_VERSION="Alpha 1.0.57"
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath \
     -ldflags="-s -w -X 'main.buildCommit=${BUILD_COMMIT}' -X 'main.buildVersion=${BUILD_VERSION}'" \
