@@ -540,6 +540,18 @@ jobs:
           EIDOLON_E2E_PASSWORD: ${{ secrets.EIDOLON_E2E_PASSWORD }}
         run: sg render -c 'npm run test:e2e:live-animations'
 
+      - name: Run live town recovery and Well Rested QA
+        env:
+          EIDOLON_E2E_BASE_URL: https://eidolon.mendola.tech
+          EIDOLON_E2E_WS_URL: wss://eserver.mendola.tech/ws
+          EIDOLON_E2E_HEALTH_URL: https://eserver.mendola.tech/healthz
+          EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
+          EIDOLON_E2E_BACKEND_ORIGIN_IP: ${{ secrets.EIDOLON_E2E_BACKEND_ORIGIN_IP }}
+          EIDOLON_EXPECTED_COMMIT: ${{ github.sha }}
+          EIDOLON_E2E_USERNAME: ${{ secrets.EIDOLON_E2E_USERNAME }}
+          EIDOLON_E2E_PASSWORD: ${{ secrets.EIDOLON_E2E_PASSWORD }}
+        run: sg render -c 'bash scripts/run-live-recovery-qa.sh'
+
       - name: Sanitize live browser evidence
         id: sanitize_evidence
         if: ${{ always() }}
