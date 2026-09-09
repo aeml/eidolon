@@ -34,3 +34,38 @@ calls the production phase hook after adding its living raider and asserts phase
 before the original accepted-attack and actual-health-loss checks. No forced
 RaidPhase/health assignment or reduced attack assertion; the runtime gate remains.
 Focused and full repeat results must be recorded separately, not inferred here.
+
+## September 9 actual damage-path follow-up
+
+Contact fixture correction a5405fa passed the complete race repeat28054:
+game390.582s, other packages passed/cached. Log
+`/tmp/eidolon-dark-king-phase-integrity-full-race-r2.log`.
+
+The next three tests use actual post-wind-up attack impacts to exercise reflected
+damage, explosive Arcane Shield and explosive unique gear. The original run15137
+deadlocked in the gear case: `handleDeath` held the corpse mutex and its nearby
+explosion loop tried to lock that same corpse before checking its identity.
+An explicit SIGQUIT to the verified owned test PID2209338 captured this stack;
+the run exited1 and is NOT a pass. Log
+`/tmp/eidolon-dark-king-actual-damage-paths.log`. This signal was diagnosis of the
+established lock cycle, not cancellation of any recovery or CI test.
+
+The fix finishes the death, temporarily releases its corpse lock to propagate
+the explosion, and restores the caller's lock contract on return. Propagation
+skips the corpse before acquiring any mutex, skips already dead targets, and
+does not hold ancestor corpse locks during chained deaths. No extra goroutines
+or lost on-kill effects are introduced. Phase damage floors and full ordinary
+enemy damage remain enforced; only enemies in the captured death instance are
+affected.
+
+Initial three actual damage tests passed2.014s after the fix. Expanded focused
+race19725 passed25.608s: five tests repeated20times, including three cascading
+deaths, isolation from a different instance, exact one explosion per death,
+and eight simultaneous killing attempts. Tests drain earned background work and
+use synchronized event capture for concurrent combat. Logs
+`/tmp/eidolon-dark-king-actual-damage-paths-after.log` and
+`/tmp/eidolon-dark-king-explosion-chain-race.log`.
+
+The new explosion runtime change still requires a fresh complete server race
+run. None of these fixtures establishes player-controlled raid pacing, visible
+phase quality, or a production release. This work remains excluded from58.
