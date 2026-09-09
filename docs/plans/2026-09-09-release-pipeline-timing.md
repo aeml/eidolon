@@ -1,5 +1,15 @@
 # Release pipeline timing baseline
 
+## Latest completed release — September9, Alpha1.0.58
+
+[Run34361293407](https://github.com/aeml/eidolon/actions/runs/34361293407), exact
+ef9a638b1478f59df9a8b68021f2fc58f11b2b22, allten jobsSUCCESS. Firstjob14:05:21
+through finallive15:28:04:82m43s. Predeploy14:26:21–15:12:45:46m24s. Final
+live15:13:57–15:28:04:14m07s, now including actual native townhealing/rest/expiry/
+reentry/reconnect and2memberpartyHighLow/phone. Production58 was independently
+verified22:08, including actualbackupintegrity/exactpreviousimage archive-load.
+No successor partitionprototype included; these are original58pipeline timings.
+
 ## September9, recovery58 browser-stage diagnosis
 
 Completed browser jobs of34361293407 give a concrete spec-level bottleneck:

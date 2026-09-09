@@ -1,5 +1,35 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+## ACCEPTED — September 9, independently verified22:09UTC
+
+Exactef9a638b1478f59df9a8b68021f2fc58f11b2b22, CI34361293407 completed all
+ten jobs SUCCESS. Predeploy102506533929 passed15:12:45; Pages15:13:33 and
+server15:13:55; final live102524597899 passed15:28:04. Fresh22:08–22:09 public
+manifest, login label, actual release-key main.js GET200/19736bytes and healthy
+database-ready backend all match58/ef9a638. This is production delivery, not
+only local implementation. The full1.1–1.10 roadmap remains open.
+
+Actual live native receipts: accepted Fireball spent110→80mana, ordinary enemy
+hit110→108HP; Recall restored both110 in town, bank survived reconnect. Natural
+outside expiry14.65s→0 removed aura and10% stats (strength11→10/max110→100);
+town reentry bank1.748 restored aura/stats. Two actual party members showed
+High19/Low10 aura meshes and successful phone joystick movement. Journey+expiry
+passed2/1.2m, party1/15.5s. Live screenshots of town and Low portrait party viewed.
+Full artifact `/tmp/eidolon-rest58-live-proof-r5G5Oq`, scanner0. Logs
+`/tmp/eidolon-rest58-final-live-job.log` and
+`/tmp/eidolon-rest58-production-deploy-job.log`.
+
+Actual schema8→9 production backup COMPLETE:
+`/home/aeml/eidolon/server/backups/save-upgrade-20260909T151351Z-AEyj2J`,
+created15:13:53Z for exactef9. Old57 imageca6d47c69e9b47b051d960db86108fec67e38fcde2263dcffcf7830b7cdaf10b
+was pinned before build. All four SHA256 entries and all three gzip archives
+independently PASS. Archive manifest RepoTags=null; normal unfiltered Docker
+image-load PASS returned exactoldca6d47c6, without retagging current production.
+No old player data restored or current server restarted during this validation.
+
+Acceptance permits preparing a successor from this ancestry; it does not permit
+publishing unverified expanded-story/curve/visual prototypes under58's identity.
+
 Update14:59UTC: exact34361293407/ef9a638 still ACTIVE in full predeploy gameplay.
 Fresh14:58 client/backend both57/8af54f2/ready. No candidate changes or successor
 publication. Separate primary fullclient and desktop proof passed; fresh11948

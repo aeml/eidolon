@@ -16,7 +16,44 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 14:59 UTC
+## Current checkpoint — September 9, 22:12 UTC
+
+This continuation made PROGRESS. Clock advanced from15:05 to22:07 across a
+continuation; rechecked actual terminal state rather than assuming handles lived.
+**58 FULLY ACCEPTED** exactef9a638, CI34361293407 alltenSUCCESS, full predeploy
+15:12:45, Pages/server15:13:33/55, final live15:28:04. Fresh22:08 manifest/login/
+actualruntimeGET20019736bytes/readybackend all58/ef9. Finalnative healing/rest/
+naturalexpiry/reentry/persistence/2memberpartyHighLow/phone allPASS; actualbackup
+SHA256/gzip/exactoldimage-loadPASS. Full details in acceptance doc. User notified
+healing and Well Rested are live. No successor published; root neverpushed.
+
+Primary11948 TERMINAL FAILED14.6m on941ecf6. First40hunt/manualclaim/persistence
+passed469s,0deaths14townvisits→level8,25occupiedslots/670unsoldvalue. Collection
+then0/8 after42observedtargetdeaths. Viewed failure screenshot: INVENTORY FULL
+and actualMemorySeeds onground; this is not evidence of missing quest drops.
+Full archive `/tmp/eidolon-story-collection-inventory-failure-OkOJvh`, scan0 and
+exactownedcontainers/image/portsabsent. Need ordinary earnedinventory management
+before/through long route, not grants/lowerrequirements/discarded player gear.
+No corrected training/Imp readiness result yet. Primaryclean941ecf6.
+
+CI-cost prototype separateWT `/tmp/eidolon-browser-cost-partition-rcKAR6`, branch
+work/browser-cost-partition-20260909, **2b7ba71**, based941ecf6, NOTintegrated/pushed.
+New safe runner splits ordinary files and two independentrenderfamilies across
+same3hostedjobs/oneworker, retains eachstage'sreports/status. Actualdiscovery55018
+PASS exact107-case union/noomissions/duplicates/emptygroups: layout22/21/21,
+entrance4/3/3,effects3/3/2; extras9on1/16on2. No actualspeedup orbrowserproof yet.
+Focused15/2/.941s+lint, workflowRED2fail then94828GREEN/commit. **82632 ACTIVE**
+fullclient/lint/assetprepare, logs `/tmp/eidolon-browser-cost-{full-client,full-lint,prepare}.log`.
+No owned browser active. Prototype doc records all outstanding CI-mode groups,
+actualtiming/rendering/fullremote proof. No active/released workflow changed.
+
+Read-only merge-tree primary941ecf6 +accepted58 ef9 identifies7conflicted files
+(QA runner,Dockerfile,recovery policy tests,earned/prepared input tests,ranged
+defense,openingroute). Worktree stillclean: merge not yet begun. Next integrate
+accepted58 ancestry preserving expandedstory/QA and both sets of proved fixes,
+resolve and validate before new sourceplaythrough. Full1.1–1.10 remainsopen.
+
+## Previous checkpoint — September 9, 14:59 UTC
 
 This continuation made PROGRESS: completed desktop visual comparison, full
 integrated client regression and first actual GPU aura-batching comparison;
