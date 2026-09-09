@@ -5,7 +5,60 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 05:10 UTC
+## Local toolchain — do not use the login-shell Node default
+
+The login shell resolves `/usr/bin/node`18.19.1, below the required Node24.
+For every local npm/Playwright invocation explicitly prepend
+`/home/aeml/.local/share/eidolon-actions-runner/_work/_tool/node/24.18.0/x64/bin`
+to PATH. With `sg render`, export that PATH **inside** its quoted command before
+running the wrapper. Print `node --version` to verify24.18.0; do not change the
+global Node installation. CI already explicitly installs24. The server module
+declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
+(root-directory system go1.22.2 is not the module's selected compiler).
+
+## Current checkpoint — September 9, 05:18 UTC
+
+PROGRESS: **35080 Rogue TERMINAL PASS1/3.2m**, standalone58frozen5a17be1.
+Opening36s/manual500XP100gold, collection155s/20observed target deaths/8earned
+seeds/zero deaths. Two normal town recoveries43.918s total including travel,
+both pools full; correct Rogue15mana primary cost. Manual8000XP100gold consumed
+8seeds, level7→17,9gear items/290unsold value retained across reconnect; dungeon
+entry still correctly locked below30. Scan0, exact owned containers/image absent.
+Ready-claim8/8 image inspected; archive
+`/tmp/eidolon-rest58-rogue-proof-AQt3Ql/test-results`, log
+`/tmp/eidolon-rest58-rogue-collection-0510.log`. A read-only summary parser had
+an incorrect prefix-length literal; rerunning with prefix.length confirmed
+preclaimgold461/9gear/290value/12slots. No gameplay rerun or source change.
+
+Toolchain audit discovered that these recent local JS/Playwright invocations
+used the login-shell Node18 default. Preserve their actual Chrome/Go gameplay
+evidence, but do not label them Node24 acceptance. Reinstated the explicit existing
+Node24.18.0 toolcache prefix above. No global installation or active test changed.
+Go75384 result stands: verified go1.24.5 inside the actual server module.
+
+**21402 Cleric ACTIVE — sole owned local browser**, frozen5a17be1 with explicit
+Node24.18.0 recorded in log. fresh-collection, projectrest58-cleric-0909-0515,
+API18560/Mongo18561/web41960; log
+`/tmp/eidolon-rest58-cleric-collection-0515.log`. Opening45s/zero deaths,5/8seeds
+at05:17. Poll exact handle; no edits/restart/cleanup until terminal. Supported
+Node24 repeats of the earlier class/recovery routes remain appropriate before
+calling their controller/toolchain acceptance complete; retain original evidence.
+
+**57780 standalone58 Node24 fullclient/lint ACTIVE**, same5a17be1, logs
+`/tmp/eidolon-rest58-node24-{full-client,lint}.log`. **3409 primary Node24
+fullclient/lint ACTIVE**, cleane1c4132 (production96a2236), logs
+`/tmp/eidolon-primary-node24-{full-client,lint}.log`. These are the only other
+owned local processes. Poll exact handles, no source edits while testing.
+
+Supported Node24 preflights already pass:54/69531 PASS252tests4.063s and
+55/33471 PASS266tests5.869s, logs `/tmp/eidolon-release{54,55}-prepush-node24.log`.
+Canonical54/55 remain clean/unchanged. Earlier55/18839 passed266tests8.432s
+under18 and is supplementary, not the supported-runtime result.
+**53CI34312290353 ACTIVE**, full disposable character gameplay at05:17.
+Do not push54 before all53CI/finalLiveQA and fresh public identities pass.
+Last verified live52; recovery58NOTpublished. Full roadmap goal remains active.
+
+## Previous checkpoint — September 9, 05:10 UTC
 
 PROGRESS: **28852 Fighter TERMINAL PASS1/5.4m** on unchanged standalone58
 5a17be147ce527bae556663cc452ecae10e87785. Opening91s/manual500XP100gold,
