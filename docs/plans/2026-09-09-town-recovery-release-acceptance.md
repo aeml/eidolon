@@ -1,5 +1,18 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update12:28UTC: **19624 fullall PASSED/TERMINAL0** on unchanged/clean
+e73be3acb195dbd87c20108fc1619f9457c4c5df. Archive
+`/tmp/eidolon-rest58-full-proof-veHaDo`; scan0 and exactr13containers/image/network/
+ports cleanup verified. Full dungeon/phone/combat/resource/animation/multiplayer/
+nameplate chain plus native recovery/expiry2/1.1m and actual restedparty1/12.4s
+passed. Real combatHP110→108, acceptedFireballMP110→80, townfull110both/reconnect
+bank preserved; natural expiry/reentry confirmed. Native town image inspected,
+golden rings/no enclosing cube. Prior failed/interrupted runs remain failed.
+57allserver/client/backup-restore/browserchecks passed; predeployCI34347504351still
+ACTIVE. Must finish57production backup/deploy/final liveQA/public identities
+before58push. NO production town recovery claim. Separate primary crystal visual
+work remains excluded; full regression47504active there, no owned local browser.
+
 Update12:05UTC:57CI34347504351 server/client/disposable backup-restore and two
 browser shards PASSED; remaining shard ACTIVE. Complete predeploy/deploy/production
 backup receipt/final live QA and public57 identities still required.58full19624
@@ -422,8 +435,8 @@ needs a new full pass; no failure above is retroactively changed to success.
 
 ## Remaining delivery gates
 
-- Finish the complete unchanged58 isolated gameplay chain, including all prior
-  dungeon/combat/equipment/phone/animation checks and the added native rest routes.
+- The complete unchanged58 isolated gameplay chain PASSED as recorded above;
+  preserve exact accepted source e73be3a and its evidence until publication.
 - 53–56 are delivered and57 is published. Before publishing58, require57's
   complete CI/deploy/final live QA, production backup receipt, and independent
   exact client manifest, runtime script and server identities.

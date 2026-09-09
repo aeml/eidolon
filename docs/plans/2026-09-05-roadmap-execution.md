@@ -16,7 +16,58 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 12:05 UTC
+## Current checkpoint — September 9, 12:28 UTC
+
+This continuation made PROGRESS: the entire standalone58 all-route passed and
+was archived/cleaned, and later-story crystal visuals received actual GPU proof
+and a screenshot-driven glare correction. The full roadmap remains active.
+
+**58 COMPLETE LOCAL ALL-ROUTE PASS**:19624 TERMINAL0 on unchanged clean
+**e73be3acb195dbd87c20108fc1619f9457c4c5df**. Archive
+`/tmp/eidolon-rest58-full-proof-veHaDo`, log
+`/tmp/eidolon-rest58-all-node24-rerun-1149.log`. Wrapper credential scan0; exact
+r13API/Mongo/image/network and18560/18561/41960ports verified absent after normal
+cleanup. No cancellation or test bypass. Seven dungeon cases5.5m, all spell/phone/
+fresh-story/resource/movement checks, four duels1.8m, all class matrices, actual
+multiplayer1.8m, town nameplates3/19.9s and native recovery/expiry2/1.1m plus actual
+rested party1/12.4s passed. The strict fresh hostile-interception evidence branch
+was observed in the Cleric matrix, which completed54.6s; no claim that the original
+dungeon failure timing was reproduced. Real fresh combat reducedHP110→108 and
+acceptedFireballMP110→80; Recall/town restoredboth110, reconnect preservedbank.
+Natural expiry removed110maxima/stat/aura to100, and reentry earned them again.
+PartyHigh19/Low10parts. Inspected retained native town screenshot: golden rings,
+no enclosing white cube. All original interrupted/failed runs remain failed.
+
+**57 CI34347504351 still ACTIVE**,8af54f2: server/client/backup-restore and all
+three browser shards PASSED; predeploy character QA ACTIVE.57production backup
+receipt, deployment, final live QA and exact public identities still required
+before58publication.58 login/patch notes and mandatory native postdeploy recovery
+gate independently rechecked. NO58push yet; town recovery is NOT production.
+
+**Primary clean/frozen aa4f0f1d3fe4caffe40dd4bbc9f40da70840edd3** now includes
+3587363four elemental reliquaries plus exact-instance snapshot consumer and raid
+lighting aliases; d81c9c7screenshot-driven decorative glare correction; aa4docs.
+84focusedtests/6suites/3.025+lint passed; initial actual raid lighting failed all
+five alias cases before correction. First8browserPASS22.5s on3587363, archive
+`/tmp/eidolon-crystal-visual-first-proof-EfFXcC`. All eight restored screens viewed;
+old generic boss spirit ring overwhelmed Maelin. Replaced onlycrystal_vigil's
+decorative ring with thin metal inlay, preserved objective/clear markers and
+ordinary boss dressing, lowered crystal emission to preserve facets. Final
+42focused/3/1.625+lint; **64594corrected8browserPASS22.3s** ond81c9c7; archive
+`/tmp/eidolon-crystal-visual-glare-proof-FVvi7I`,scan0/port41961clean. Inspected
+corrected Earth/Air restored, Fire fractured, Water phoneLowrepairing. Actual GPU
+visibility/HighLow/state fixtures, not earned group or transport-rejoin proof.
+Docs `2026-09-09-crystal-sanctum-presentation.md` in candidate contain evidence,
+pending patch notes and open bespokeMaelin/floor-pattern/full-architecture gates.
+
+**47504 primary full regression ACTIVE** on clean aa4f0f1, Node24: fullclient then
+lint then freshfullGo-race; logs `/tmp/eidolon-primary-crystal-full-{client,lint,server}.log`.
+Server has not started unless preceding client/lint succeeded; poll exact47504.
+No owned local browser remains; CI's separate browser is expected. Preserve
+primary source until this compound run terminates. No import into58 or primary
+publication authorization from its inherited1.0.57metadata. Root remains ledger-only.
+
+## Earlier checkpoint — September 9, 12:05 UTC
 
 Previous user-status turn was a VERIFIED WAIT on exact live19624 and
 CI34347504351, with fresh public56 manifest/backend evidence. This continuation
