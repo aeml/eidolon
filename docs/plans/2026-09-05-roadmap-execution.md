@@ -16,7 +16,43 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 06:50 UTC
+## Current checkpoint — September 9, 06:55 UTC
+
+Previous goal turn was PROGRESS: pushed corrected54 and carried ancestry;
+current turn also PROGRESS: primary full client closed, production reward audits
+completed, obsolete optional-daily diagnostic expectations corrected/committed.
+
+**21409 primary full client/lint TERMINAL0**, exact4e9cad5/Node24.18.0:
+266suites/3789tests/144.949s, logs
+`/tmp/eidolon-primary-finalclock-full-{client,lint}.log`.
+**16755 production progression audits TERMINAL0**, Go1.24.5/1.305s on4e9cad5;
+log `/tmp/eidolon-primary-finalclock-progression-audits.log`. Each realm's
+2000 seeded eight-fragment simulations: mean20.08 eligible ordinary kills,
+p9026 (simulation, not actual travel/combat or four-realm acceptance).
+Prepared four-boss+overlapping-daily reward accounting passed Normal/Heroic/
+Mythic; duplicate claim rejection and combined dailyXP<=25%bossXP retained.
+Excludes trash, rooms, story and sales; do not call it full-run income.
+
+Primary now clean **d9cc0edecd8c96a15e6d0c630661c9714281312f**: optional
+Skeleton/Imp diagnostic expected XP4250/18250 replaces obsolete50000/150000;
+gold now exact100/200. Go content-budget test adds explicit Imp case. Production
+rewards/legacy quotes/requirements/runtime/versions/scripts unchanged. Diagnostic
+readiness explicitly labeled optional-daily comparison, never story-only proof.
+Actual full Earth story-only/four-class route remains due; do not claim these
+corrected expectations constitute a passing100-kill browser diagnostic.
+68709 lint+61tests/3suites1.009s and16702 two Go budget tests/race1.038s passed.
+Logs `/tmp/eidolon-primary-daily-diagnostics-{tests,lint,server}.log`.
+Candidate documentation `docs/plans/2026-09-09-current-daily-diagnostics.md`.
+
+**95459 PRIMARY FULL SERVER RACE ACTIVE**, exactd9cc0ed, Go1.24.5,
+log `/tmp/eidolon-primary-current-daily-full-server.log`. Freeze primary until
+terminal; no primary browser. **1416 complete58 gameplay ACTIVE**, frozen
+6e85547, same isolated project/ports/log below, only owned local browser.
+54CI34320477081 has client/server tests passed, all three browser shards
+running. No55push until complete54CI/deploy/finalLiveQA+fresh exact identities.
+Last verified live53;58 not live; whole roadmap remains active and unfulfilled.
+
+## Previous checkpoint — September 9, 06:50 UTC
 
 This goal continuation made PROGRESS: corrected54 pushed/new CI active, final
 ancestry merged cleanly into55–58 and primary, fresh58 full client/lint passed.
