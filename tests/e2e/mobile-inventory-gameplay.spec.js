@@ -69,7 +69,12 @@ test('phone bag equips, drops and stores server-owned items with saved retrieval
     }, id);
     // Setup uses the level-prepared character and existing allowlisted waypoint,
     // not granted items, a forced kill or a guaranteed-loot command.
-    for (let attempt = 0; !itemId && attempt < 8; attempt++) {
+    // The ordinary loot rule yields equipment on ~28.4% of kills: eight kills
+    // still have ~6.9% probability of no gear. Allow a bounded 32 encounters,
+    // retaining the 420s route deadline and every real kill/ownership assertion.
+    // Stop as soon as usable equipment is earned; never grant an item or alter
+    // drop rates to satisfy this inventory-action setup.
+    for (let attempt = 0; !itemId && attempt < 32; attempt++) {
         await approachEncounter(page);
         const target = await selectLiveTarget(page);
         console.log('[phone-inventory] ordinary combat setup', JSON.stringify(await combatSnapshot(target.id)));

@@ -3,8 +3,19 @@ import { loginAndEnterWorld, projectEntity } from './helpers.js';
 import { readPhoneInventoryState } from './phone-inventory-observation.js';
 
 export async function openPhoneStash(page) {
-    let target;
-    await expect.poll(async () => { target = await projectEntity(page, 'stash-1'); return target?.visible; }).toBe(true);
+    let target, previous, stableSamples = 0;
+    // setViewportSize can return before resize/ResizeObserver has updated the
+    // orthographic camera. A visible projection from the previous orientation
+    // is not yet a usable tap coordinate. Observe rendered, stable projections;
+    // do not force a camera update, raycast, interaction or player position.
+    await expect.poll(async () => {
+        await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+        target = await projectEntity(page, 'stash-1');
+        stableSamples = target?.visible && previous?.visible &&
+            Math.hypot(target.x - previous.x, target.y - previous.y) < 0.5 ? stableSamples + 1 : 0;
+        previous = target;
+        return stableSamples >= 2;
+    }, { intervals: [50], message: 'The rendered stash projection must settle before a real tap' }).toBe(true);
     await page.touchscreen.tap(target.x, target.y);
     console.log('[phone-stash] tap receipt', JSON.stringify({ target, state: await readPhoneInventoryState(page) }));
     await expect(page.locator('#stash-screen'), 'Normal town stash interaction must open storage').toBeVisible({ timeout: 30_000 });

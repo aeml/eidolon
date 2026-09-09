@@ -248,7 +248,7 @@ run_phone_inventory() {
     EIDOLON_E2E_PASSWORD="${QA_PASSWORD}" \
     EIDOLON_E2E_CLASS="Fighter" \
     EIDOLON_E2E_REGISTER=1 \
-    npx playwright test tests/e2e/mobile-inventory-gameplay.spec.js
+    npx playwright test tests/e2e/mobile-inventory-gameplay.spec.js tests/e2e/phone-stash-entry.spec.js
 }
 
 run_equipment_recovery() {
