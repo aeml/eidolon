@@ -459,6 +459,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   pvp-cadence)
     run_pvp_cadence
     ;;
+  movement-fast)
+    EIDOLON_E2E_MOVEMENT_MAX_LEVEL=1 npx playwright test tests/e2e/movement-smoothness.spec.js
+    ;;
   movement)
     npm run test:e2e:movement
     ;;
