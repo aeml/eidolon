@@ -16,7 +16,46 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 10:29 UTC
+## Current checkpoint — September 9, 10:42 UTC
+
+Previous continuation completed final58client evidence and verified its active
+gameplay/CI waits. This turn made PROGRESS on later visual polish without changing
+the frozen recovery build: long desktop action labels now reuse the existing
+bounded identity/action card. Full roadmap remains active and incomplete.
+
+Primary **9b168be** changes only action-label dispatch plus regressions/visual QA.
+The retained actual duel image showed a long QA name/action stretching across
+combatants. Names in that fixture are unusually long, not evidence of universal
+clutter. Labels>32UTF-16 units now use the existing192px/1.12-pop compact card;
+complete source stays in DOM/accessibility text, visible source ellipsizes, local
+long feedback omits redundant source row. Short desktop labels, phones, Seraphs,
+numeric damage, event throttles/expiry, networking and gameplay remain unchanged.
+
+47586 behavioral baseline FAILED four new dispatch cases,68 existing checks
+passed.9427 corrected plus32/33boundary cases PASSED74tests/2suites/1.275s and
+lint. Logs `/tmp/eidolon-desktop-long-action-{before,after,lint}.log`.
+Prepared actual-component browser comparison at1280×720/1920×1080, with optional
+exact2505b3baseline dispatch and bounds/screenshot attachments before assertions.
+49710 lint/discovery PASSED2cases. **Browser baseline/fixed comparison NOT RUN**;
+these fixtures do not establish live PvP/party/device quality.
+
+**42844 primary full client/lint TERMINAL0/PASS** on9b168be:
+269suites/3855tests/84.206s, Node24.18.0. Logs
+`/tmp/eidolon-primary-desktop-action-full-{client,lint}.log`.
+Primary now has a documentation-only closure commit and is clean/idle; refer to
+its HEAD and `docs/plans/2026-09-09-desktop-action-width.md`. This change is NOT in
+58 or live; inherited1.0.57metadata is not publication permission.
+
+**49970 complete58 gameplay remains ACTIVE**, frozen028f23b, only owned local
+browser, same run/ports/log below. Dungeon and spell batches passed; phone combat,
+party and inventory flows are progressing. Do not restart/edit on elapsed time.
+56CI34340328283 server/client passed; browser2 passed and1/3still running. No57
+push until complete56CI/deploy/finalLiveQA and fresh exact public identities.
+57 stays1f8c7be and58 stays028f23b. Town recovery is not live yet. Next free
+browser work must retain recovery acceptance first, then the pending ordinary
+earned-story readiness and scoped visual comparisons; no goal scope is closed.
+
+## Previous checkpoint — September 9, 10:29 UTC
 
 10:34 follow-up: **93957 TERMINAL0/PASS**, final frozen028f23b client251suites/
 3539tests/117.45s plus lint. Logs
