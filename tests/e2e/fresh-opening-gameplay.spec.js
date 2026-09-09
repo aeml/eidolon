@@ -13,6 +13,8 @@ import { prepareEarlyEarnedCharacter } from './early-earned-preparation.js';
 import { clearEarnedVerdant } from './fresh-dungeon-route.js';
 import { earnFreshStoryHunt } from './fresh-story-hunt-route.js';
 import { earnedTownRecoveryEnabled } from '../earnedRecoveryPolicy.js';
+import { storyOnlyReadinessEnabled } from '../storyReadinessPolicy.js';
+import { verifyStoryOnlyEarthReadiness } from './story-readiness.js';
 import { recoverEarnedDeath } from './earned-death-recovery.js';
 import { earnedCheckpoint, uninterruptedEarnedMode } from './earned-checkpoint.js';
 import { collectBrowserFailures, credentialsFromEnvironment, jumpByGroundClick,
@@ -79,6 +81,7 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     expect(process.env.EIDOLON_E2E_REGISTER).toBe('1');
     uninterruptedEarnedMode(); // Fail unsupported combinations before creating a character.
     earnedTownRecoveryEnabled();
+    const storyOnlyReadiness = storyOnlyReadinessEnabled();
     test.setTimeout(process.env.EIDOLON_E2E_FRESH_STORY_HUNT === '1' ? 1_800_000 :
         process.env.EIDOLON_E2E_FRESH_HUNT === '1' ? 3_600_000 :
         // The expanded Earth route now includes150 required expedition kills,
@@ -241,6 +244,7 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
             throw error;
         }
     }
+    if (storyOnlyReadiness) await verifyStoryOnlyEarthReadiness(page);
     if (process.env.EIDOLON_E2E_FRESH_HUNT === '1') {
         const hunt = {
             findTarget: () => findSkeletonThroughTravel(page), leaveTown: () => leaveTown(page)

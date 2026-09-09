@@ -62,6 +62,6 @@ test('the full progression path uses the shared policy and passes ordinary depar
     expect(collection).toContain("'chronicle_earth_borrowed_oath', { leaveTown }");
     expect(opening.indexOf('earnedTownRecoveryEnabled();')).toBeGreaterThan(-1);
     expect(opening.indexOf('earnedTownRecoveryEnabled();')).toBeLessThan(opening.indexOf('await loginAndEnterWorld('));
-    expect(script).toContain('&&\n    run_qa_stage forge-guide run_forge_guide &&\n    run_qa_stage fresh-collection run_fresh_collection &&\n    run_qa_stage talent-economy run_talent_economy');
+    expect(script).toContain('&&\n    run_qa_stage forge-guide run_forge_guide &&\n    run_qa_stage fresh-collection run_fresh_story_ready &&\n    run_qa_stage talent-economy run_talent_economy');
     expect(script.match(/fresh-collection-no-rest\)[\s\S]*?;;/)[0]).toContain('EIDOLON_E2E_REST_RECOVERY=0');
 });

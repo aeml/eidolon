@@ -5,7 +5,8 @@ import path from 'node:path';
 const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
 const all = script.match(/\n {2}all\)\n([\s\S]*?)\n {4};;/)[1];
 const finish = script.slice(script.indexOf('\nqa_status=$?'));
-// Exact pre-instrumentation commands: retain coverage, argument order and gates.
+// Exact required commands: story readiness strengthens the original complete
+// Earth collection stage without dropping any other command or changing order.
 const commands = [
     "npm run test:e2e:authenticated",
     "npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js",
@@ -23,7 +24,7 @@ const commands = [
     "run_phone_inventory",
     "run_equipment_recovery",
     "run_forge_guide",
-    "run_fresh_collection",
+    "run_fresh_story_ready",
     "run_talent_economy",
     "run_talent_healing",
     "run_talent_duration",
@@ -106,7 +107,7 @@ function runGate(failureIndex = 0) {
     { encoding: 'utf8', timeout: 5000 });
 }
 
-test('full gate retains every original command once, in order, with distinct timings', () => {
+test('full gate retains every required command once, in order, with distinct timings', () => {
     const result = runGate();
     expect(result.status).toBe(0);
     expect(events(result.stdout, '[qa-command] ')).toEqual(commands);

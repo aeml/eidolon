@@ -27,7 +27,7 @@ test('early gear/stat comparison is opt-in and preserves the unprepared release 
 test('the full release gate retains an earned fresh collection and a genuinely fresh retry', () => {
     const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
     const route = readFileSync('tests/e2e/fresh-opening-gameplay.spec.js', 'utf8');
-    expect(script).toContain('&&\n    run_qa_stage forge-guide run_forge_guide &&\n    run_qa_stage fresh-collection run_fresh_collection &&\n    run_qa_stage talent-economy run_talent_economy');
+    expect(script).toContain('&&\n    run_qa_stage forge-guide run_forge_guide &&\n    run_qa_stage fresh-collection run_fresh_story_ready &&\n    run_qa_stage talent-economy run_talent_economy');
     expect(script).toContain('${QA_USERNAME_BASE}-first-grove-retry1');
     expect(route).toContain('credentials.username += `-retry${testInfo.retry}`');
     expect(route).toContain('expect((await readPlayerState(page)).level).toBe(1)');

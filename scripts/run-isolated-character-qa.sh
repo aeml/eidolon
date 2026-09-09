@@ -314,6 +314,10 @@ run_fresh_collection() {
     EIDOLON_E2E_FRESH_COLLECTION=1 npx playwright test tests/e2e/fresh-opening-gameplay.spec.js
 }
 
+run_fresh_story_ready() {
+  EIDOLON_E2E_FRESH_STORY_READY=1 run_fresh_collection
+}
+
 run_entrance_visibility() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-sight" EIDOLON_E2E_CLASS=Wizard \
     EIDOLON_E2E_SCENERY_VISIBILITY=1 npx playwright test tests/e2e/shield-training-gameplay.spec.js
@@ -456,7 +460,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     run_qa_stage phone-inventory run_phone_inventory &&
     run_qa_stage equipment-recovery run_equipment_recovery &&
     run_qa_stage forge-guide run_forge_guide &&
-    run_qa_stage fresh-collection run_fresh_collection &&
+    run_qa_stage fresh-collection run_fresh_story_ready &&
     run_qa_stage talent-economy run_talent_economy &&
     run_qa_stage talent-healing run_talent_healing &&
     run_qa_stage talent-duration run_talent_duration &&
@@ -593,6 +597,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   fresh-collection)
     run_fresh_collection
+    ;;
+  fresh-story-ready)
+    run_fresh_story_ready
     ;;
   fresh-collection-no-rest)
     EIDOLON_E2E_REST_RECOVERY=0 run_fresh_collection
