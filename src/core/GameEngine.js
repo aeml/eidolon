@@ -347,6 +347,7 @@ import { FrostGuardian } from '../entities/FrostGuardian.js';
 import { QuestNPC } from '../entities/QuestNPC.js';
 import { RespecNPC } from '../entities/RespecNPC.js';
 import { DungeonNPC } from '../entities/DungeonNPC.js';
+import { CrystalKeeper } from '../entities/CrystalKeeper.js';
 import { Stash } from '../entities/Stash.js';
 import { Forge } from '../entities/Forge.js';
 import { RootboundWarden } from '../entities/RootboundWarden.js';
@@ -2299,7 +2300,7 @@ export class GameEngine {
                 console.log(`GameEngine: Creating AvengingSeraph ${id}`);
                 p = new AvengingSeraph(id);
             } else if (subType === 'CrystalKeeper') {
-                p = new AvengingSeraph(id);
+                p = new CrystalKeeper(id);
             } else {
                 p = new DwarfSalesman(id); // Default NPC
             }
