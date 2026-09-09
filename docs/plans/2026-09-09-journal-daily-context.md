@@ -52,7 +52,13 @@ diary title, acceptance and directions instead.96559 replay PASS2/7.4s, archive
 `/tmp/eidolon-journal-diary-proof-Of6uSy`,scan0. Logs
 `/tmp/eidolon-journal-daily-browser{,-r2}.log`. These are presentation fixtures,
 NOT earned gameplay. CIshard2 now runs `npm run test:e2e:journal` in future releases.
-Full client regression remains pending before integration.
+Full client regression95282 PASSED onca674c6:273suites3916tests79.928s plus lint,
+logs `/tmp/eidolon-journal-daily-full-{client,lint}.log`. After the original story
+run reached terminal and its artifacts were archived, the two verified commits
+were imported into primary as c854f8e/f180ccb. Client/tests/scripts/package/CI
+trees match the tested branch exactly; additional primary differences are docs.
+Corrected authored-diary desktop screenshot inspected as well. This closes local
+verification of this UI change, not the broader story or public release.
 
 This branch is separate from frozen primary readiness source and published58.
 Do not cherry-pick into either while their runs are active. Integrate only into a
