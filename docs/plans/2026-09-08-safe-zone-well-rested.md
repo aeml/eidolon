@@ -25,6 +25,13 @@ bug without changing the server range. Focused tests/lint pass; fullclient45516
 and actual default-rested1469 are ACTIVE. Details and exact paths in the ledger.
 This feature is still not versioned or live;52 remains in predeploy gameplay QA.
 
+04:02 update: corrected actual Wizard1469 passes the full opening/diary/40-kill
+Watch, including final error check, manual1593XP/100gold and saved progress.
+Zero deaths/13real town recoveries; one class/early route, not full balance
+approval. Runtime remainsdb3bbb7; current primaryf3f33e1 adds only evidence and
+unversioned player-facing release-note draft. Fighter comparison62895 is ACTIVE
+under the same normal town-recovery rules.52 remains in predeploy QA; not live.
+
 03:54 follow-up: fullclient45516 passes260suites/3682tests244.675s on primary
 db3bbb7. Actual default-recovery1469 remains active after opening/diary and10/40
 hunt credit, zero deaths; final error/reward/persistence checks are pending.

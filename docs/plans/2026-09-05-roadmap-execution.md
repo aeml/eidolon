@@ -5,7 +5,44 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 03:54 UTC
+## Current checkpoint — September 9, 04:02 UTC
+
+PROGRESS: actual default-rested Wizard1469 on cleandb3bbb7 terminatedPASS1/
+11.2m, including final console/network error check. Opening52s/diary92s
+cumulative, Watch40/40 at559s hunt time and manual1593XP/100gold plus final
+saved progress at574s.0deaths/13real town visits,265.077s total including travel
+(18.944–22.107s each); every observed visit fully recovered both actual pools.
+Rest expired naturally outside and rebuilt in safety. Level6/270XP/1326gold
+before claim→level8/138XP/1426gold;14occupied slots/320 unsold gear value retained.
+No intermediate logins or grants. Ready-claim image inspected. This closes one
+Wizard opening/diary/Watch gate, not full Earth/all-class/phone/raid balance.
+
+Fullclient45516 PASS260suites/3682tests244.675s already recorded. Logs
+`/tmp/eidolon-primary-recovery-{full-client,story-0348}.log`; sanitized images
+archived `/tmp/eidolon-primary-wizard-proof-M7KhR6/test-results`. Scan passed;
+exact primary-rest-0909-0348 containers/image independently absent. Earlier
+53523 console-error failure and no-rest diagnostics are retained, not relabeled.
+
+Player-facing draft `docs/plans/2026-09-09-chronicle-rest-release-notes.md`
+created in rootca5f837 and carried into primaryad057b3. Evidence-only closure
+**f3f33e1c606a461d1219d0c0ea3f55ede6a7bbfb** is current clean primary HEAD at
+`/tmp/eidolon-primary-town-recovery-lAKY3k`; runtime unchanged fromdb3bbb7.
+No release version assigned or advertised live. Main candidate evidence document
+records the complete pass and wider remaining gates.
+
+**62895 Fighter fresh-story-uninterrupted ACTIVE**, started04:02 on cleanf3f33e1,
+same default recovery/quest/death/deadline rules, EIDOLON_E2E_CLASS=Fighter.
+Owned projectprimary-fighter-0909-0402 API18560/web41960, log
+`/tmp/eidolon-primary-fighter-story-0402.log`. Only owned local handle running.
+Poll62895; never restart/cleanup while active. Old1469/45516 handles terminal.
+
+**52 CI34305897736 ACTIVE** at04:02, predeploy full-character gameplay;
+Go/Jest/all3browsergroups passed. No53 publication before complete52 deployment/
+finalLiveQA and fresh exact public52.51 is last independently verified live.
+Canonical53–57 unchanged; root is ledger-only, never a release publisher. Whole
+roadmap still active, with concrete progress and no genuine blocker.
+
+## Previous checkpoint — September 9, 03:54 UTC
 
 PROGRESS: fullclient45516 on clean primarydb3bbb7 terminatedPASS260suites/
 3682tests244.675s. Log `/tmp/eidolon-primary-recovery-full-client.log`.
