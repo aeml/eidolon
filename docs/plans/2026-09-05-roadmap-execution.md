@@ -16,7 +16,53 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 09:39 UTC
+## Current checkpoint — September 9, 09:54 UTC
+
+The preceding status turn was a VERIFIED WAIT:34328735856 was live, as was the
+owned recovery gameplay process. This turn made PROGRESS:55 passed its complete
+live gate, fresh public identity was independently verified, and canonical56 was
+normally pushed. Separate actual combat tests exposed and corrected an explosion
+deadlock; the full roadmap remains active and town recovery is not live yet.
+
+**55CI34328735856 TERMINAL SUCCESS**, all ten jobs. Final live QA finished09:52:34
+(15m50s); first job08:22:20→completion **90m14s**. At09:53:39 fresh no-cache public
+manifest, login label, release-keyed main.js and backend health all matched
+**c5ce9dc25a9554da55ef1e823e0d63ff04b6676d / Alpha1.0.55**, database ready.
+
+**56/9f41111133b4a9aaafa4d4c9a1674ec443a4652c PUSHED**, normal fast-forward from
+canonical `/tmp/eidolon-schema-compatibility-bridge-ehsEZY` only, after confirming
+clean state, exact predecessor ancestry and remote55. Push81380 TERMINAL0;
+independent remote master matches. New **CI34337271486 ACTIVE**. No57push until
+all56CI/deployment/live checks and fresh public identities pass. Root stays
+ledger-only and was not pushed. Prepush79982 full client PASSED240suites/
+3409tests/173.072s plus lint; logs
+`/tmp/eidolon-release56-final-queue-full-{client,lint}.log`.
+
+**82037 complete recovery58 gameplay remains ACTIVE**, frozen1fd0d35, same
+run/ports/log as below. Dungeon, ability, phone combat/inventory/stash and earned
+equipment recovery batches have passed so far; ordinary fresh Wizard collection
+is underway. Partial successes are not a full-run pass or live recovery claim.
+
+Separate Dark King candidate **ce6780e** fixes a newly reproduced explosive-gear
+deadlock. Actual impact tests15137 hung because handleDeath held its corpse mutex
+then the explosion loop locked that same corpse before checking identity.
+SIGQUIT to verified owned test PID2209338 captured the exact self-lock stack;
+original run TERMINAL1/102.930s, log
+`/tmp/eidolon-dark-king-actual-damage-paths.log`. This was focused lock diagnosis,
+not cancellation of a recovery/CI/soak job. The fix finishes each death before
+propagating without ancestor corpse locks, restoring the caller's lock afterward.
+
+Three actual reflection/shield/gear impact tests passed2.014s. Expanded **19725
+focused race PASSED25.608s**, five tests repeated20times, adding a three-death
+chain, exact single explosions, instance isolation, and eight simultaneous
+killing attempts. Logs `...actual-damage-paths-after.log` and
+`/tmp/eidolon-dark-king-explosion-chain-race.log`. New **51326 full Go1.24.5 race
+ACTIVE**, clean/frozen ce6780e, log
+`/tmp/eidolon-dark-king-explosion-full-race.log`; root package passed24.632s,
+game still running. This separate work is NOT in58 or production, and server
+fixtures do not prove real-group raid pacing/presentation.
+
+## Previous checkpoint — September 9, 09:39 UTC
 
 This turn made PROGRESS:55 deployed and fresh public identities matched; a
 terminated owned recovery probe was preserved/cleaned and restarted unchanged;

@@ -1,6 +1,19 @@
 # Release pipeline timing baseline
 
-## Latest completed release — September9, Alpha1.0.54
+## Latest completed release — September9, Alpha1.0.55
+
+[Run34328735856](https://github.com/aeml/eidolon/actions/runs/34328735856), exact
+c5ce9dc25a9554da55ef1e823e0d63ff04b6676d, passed all ten jobs. First job08:22:20
+to final live completion09:52:34UTC: **90m14s**. Server/client stages6m28s/1m55s;
+browser stage spanned15m59s. Predeploy08:44:53–09:35:51 took50m58s. Pages/server
+deployments42s/28s; final live09:36:44–09:52:34 took15m50s.
+
+Fresh public manifest/login/runtime/server identities matched55 with database
+ready at09:53. Canonical56 was pushed only after this terminal success and
+independent check. CI34337271486 is active. These are observed release durations,
+not an SLA; neither the long gameplay gate nor its variance has been removed.
+
+## Earlier completed release — September9, Alpha1.0.54
 
 Corrected54 run34320477081/head5e22b747 completed successfully, all ten jobs.
 First job06:45:00UTC to final live completion08:21:18UTC: **96m18s**.

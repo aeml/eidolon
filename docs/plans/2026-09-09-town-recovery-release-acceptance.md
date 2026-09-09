@@ -1,5 +1,14 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update09:54UTC:55CI34328735856 PASSED all ten jobs; fresh09:53 public manifest,
+login/runtime and healthy backend exactly matched55/c5ce9dc. Canonical56/9f41111
+was normally pushed and CI34337271486 is ACTIVE. Prepush full client79982 passed
+240suites/3409tests/173.072s plus lint.57–58 remain unpublished.
+82037 complete recovery gameplay is still ACTIVE on frozen1fd0d35; ordinary
+fresh Wizard collection now underway after passing earlier dungeon/ability/phone
+and equipment batches. Not a complete regression or production recovery claim.
+Separate explosive-gear deadlock work is explicitly excluded from58.
+
 Update09:39UTC:1035 terminated143 during dungeon QA; source unchanged. Signal
 sender unknown. Partial evidence at `/tmp/eidolon-rest58-interrupted-r9-S6GCe7`,
 scan0; exact orphan web process/API/Mongo/image cleanup verified. **82037 unchanged
