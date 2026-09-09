@@ -6,6 +6,7 @@ import { earnEarthInvestigation } from './chronicle-investigation-route.js';
 import { findExpeditionTarget } from './earned-expedition-target.js';
 import { earnEarthHuntsBefore } from '../earthFunctionalPrerequisites.js';
 import { maintainEarnedInventory } from './earned-inventory-management.js';
+import { leaveEarnedCombatSafety } from './earned-safe-zone-combat.js';
 
 export const EARTH_DUNGEON_CHAPTER = 'chronicle_03_roots_remember';
 const FIRST_CHAPTER = 'chronicle_01_bell_below';
@@ -99,6 +100,7 @@ async function defeatOrdinaryEarthEnemy(page, hunt = null) {
             }
             return;
         }
+        if (await leaveEarnedCombatSafety(page, () => leaveTownForFunctionalHunt(page))) continue;
         const point = await projectEntity(page, target.id);
         if (point?.visible) {
             await page.mouse.move(point.x, point.y);

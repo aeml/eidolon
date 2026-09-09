@@ -27,3 +27,10 @@ no unrelated/non-Earth dispatch and actual route wiring/manualclaim/Seed checks.
 
 Full client regression and actual prepared functional run remain required before
 integration/release acceptance. No server/runtime/currency/quest-rule changes.
+
+Separate full57496 on644076d passed282suites3976tests94.532s and lint;
+`/tmp/eidolon-functional-earth-full-{client,lint}.log`. Integrated into primary as
+6d9d8de after its previous browser47584 terminated and artifacts were preserved.
+The prepared combat loop also uses the new real-input safe-zone departure guard;
+this does not turn its QA level/waypoint preparation into earned-level evidence.
+Full integrated client regression and actual functional gameplay remain pending.

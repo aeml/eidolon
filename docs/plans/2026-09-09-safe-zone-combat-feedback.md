@@ -32,3 +32,7 @@ transitions at desktop and phone size. Added server relationship tests for exact
 failure coordinates, fence, departure and same coordinates in another instance.
 Actual focused browser, full integrated regression and fresh earned replay are
 still required; the pending59 release is untouched by this unpublished change.
+
+Focused server-race46016 passed1.800s, covering exact observed town position,
+scene boundaries, ordinary departure, enemy acquisition and consented duels.
+`/tmp/eidolon-safe-zone-combat-server.log`. No server production code changed.

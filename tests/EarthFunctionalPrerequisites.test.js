@@ -45,5 +45,6 @@ test('the actual functional route invokes each prerequisite before its formerly 
     expect(source).toContain('target = await findExpeditionTarget(page, hunt)');
     expect(source).toContain('await claimChapterAndContinue(page, hunt.id)');
     expect(source).toContain('await maintainEarnedInventory(page');
+    expect(source).toContain('await leaveEarnedCombatSafety(page');
     expect(source).toContain('seedsBeforeTurnIn - required');
 });
