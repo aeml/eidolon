@@ -1231,7 +1231,7 @@ export class Actor extends Entity {
                     this.syncMovementAnimationSpeed();
                 }
             } else {
-                this.playAnimation('Idle');
+                this.playAnimation(this.getRemoteRestAnimationName?.() || 'Idle');
             }
 
             if (this.mixer) {

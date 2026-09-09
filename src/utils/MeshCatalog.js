@@ -4,6 +4,11 @@ const PRELOAD_MODEL_PATHS = [];
 
 export class MeshCatalog {
     static recipes = {
+        CrystalKeeper: {
+            type: 'npc',
+            source: 'procedural Lanternhold field artificer',
+            animations: ['Idle', 'Channel']
+        },
         Skeleton: {
             type: 'enemy',
             source: 'procedural Gloamwood ossuary rig',

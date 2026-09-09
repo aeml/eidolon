@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createTailoredTorsoGeometry, createPairedEyesGeometry } from './ProceduralGarmentGeometry.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -749,6 +750,79 @@ export function createProceduralDungeonNPC() {
 
 export function createProceduralRespecNPC() {
     return createProceduralTownActor('RespecNPC');
+}
+
+// A raid artificer shares the established adult rig and resource caches, not
+// the four town-service identities or the player's Wizard equipment/model.
+export function createProceduralCrystalKeeper() {
+    const definition = {
+        hipsY: 1.72, chestY: 0.35, headY: 1.38, shoulderX: 0.61,
+        torsoWidth: 0.98, torsoHeight: 1.45, focusSwing: 0.07,
+        bounds: Object.freeze({ radius: 1.5, height: 4.5, origin: 'feet' }),
+        palette: { cloth: 0xd2c4a5, clothDark: 0x24565a, leather: 0x513e30,
+            metal: 0x665b49, trim: 0xbba16b, skin: 0xb48b70, hair: 0xc5c3b4, glow: 0x8abdc5 }
+    };
+    const materials = createMaterials('CrystalKeeper', definition.palette);
+    const root = new THREE.Group();
+    root.name = 'ProceduralCrystalKeeper';
+    const rig = addBaseActor(root, 'CrystalKeeper', definition, materials);
+    for (const name of ['ServicePlinth', 'ServiceSigil', 'Cowl', 'Brow', 'Eyes', 'Breastplate']) {
+        root.getObjectByName(`CrystalKeeper_${name}`)?.removeFromParent();
+    }
+    const torso = root.getObjectByName('CrystalKeeper_Torso');
+    torso.geometry = geometry('maelin-tailored-coat', () => createTailoredTorsoGeometry(0.43, 0.5, 1, 0.19));
+    addMesh(rig.head, 'Maelin_HairCap', geometry('maelin-hair-cap', () => new THREE.SphereGeometry(0.35, 10, 6, 0, Math.PI * 2, 0, Math.PI * 0.48)), materials.hair,
+        { position: [0, 0.24, -0.04], scale: [0.92, 0.66, 0.96] });
+    addMesh(rig.head, 'Maelin_BraidedBun', geometry('maelin-hair-bun', () => new THREE.TorusGeometry(0.18, 0.09, 5, 10)), materials.hair,
+        { position: [0, 0.19, -0.31], rotation: [0.2, 0, 0], scale: [1, 0.9, 0.8] });
+    addMesh(rig.head, 'Maelin_Eyes', geometry('maelin-paired-eyes', () => createPairedEyesGeometry(0.055, 0.025, 0.17)), materials.clothDark,
+        { position: [0, 0.14, 0.32], castShadow: false });
+    const goggles = geometry('maelin-goggles', () => new THREE.TorusGeometry(0.075, 0.017, 5, 12));
+    for (const side of [-1, 1]) {
+        addMesh(rig.head, `Maelin_ForeheadLens:${side}`, goggles, materials.trim, { position: [side * 0.09, 0.33, 0.25] });
+        addMesh(rig.chest, `Maelin_CoatLapel:${side}`, geometry('maelin-lapel', () => new THREE.BoxGeometry(0.095, 0.74, 0.06)), materials.trim,
+            { position: [side * 0.17, 0.65, 0.35], rotation: [0, 0, side * -0.25] });
+    }
+    const apron = root.getObjectByName('CrystalKeeper_Tabard');
+    apron.name = 'Maelin_WorkApron';
+    apron.scale.set(1.25, 1.2, 1);
+    addMesh(rig.hips, 'Maelin_FieldToolkit', geometry('maelin-toolkit', () => new THREE.BoxGeometry(0.4, 0.43, 0.31)), materials.leather,
+        { position: [0.61, -0.02, -0.08], rotation: [0, 0, -0.12] });
+    addMesh(rig.hips, 'Maelin_ToolkitClasp', geometry('maelin-toolkit-clasp', () => new THREE.BoxGeometry(0.09, 0.13, 0.025)), materials.trim,
+        { position: [0.62, 0.02, 0.088] });
+    const vial = geometry('maelin-resonance-vial', () => new THREE.CylinderGeometry(0.045, 0.045, 0.22, 6));
+    for (const [index, color] of [0x76b98e, 0x70b3c9, 0xd78c51, 0xb5bce0].entries()) {
+        addMesh(rig.hips, `Maelin_ElementVial:${index}`, vial, material(`maelin-vial-${index}`, color, { roughness: 0.35, metalness: 0.2 }),
+            { position: [-0.35 + index * 0.11, 0.19, 0.47] });
+    }
+    const focus = addPivot(rig.rightForearm, 'Rig_ServiceFocus', [0, -0.61, 0.02]);
+    addMesh(focus, 'Maelin_TuningFork', geometry('maelin-tuning-handle', () => new THREE.CylinderGeometry(0.045, 0.065, 0.72, 6)), materials.trim,
+        { position: [0, 0.22, 0] });
+    for (const side of [-1, 1]) {
+        addMesh(focus, `Maelin_TuningProng:${side}`, geometry('maelin-tuning-prong', () => new THREE.BoxGeometry(0.045, 0.46, 0.045)), materials.metal,
+            { position: [side * 0.105, 0.63, 0], rotation: [0, 0, side * -0.08] });
+    }
+    addMesh(focus, 'Maelin_ResonanceLens', geometry('maelin-resonance-lens', () => new THREE.OctahedronGeometry(0.08)),
+        material('maelin-soft-lens', 0x8abdc5, { emissive: 0x619aa3, emissiveIntensity: 0.25, roughness: 0.35 }), { position: [0, 0.65, 0] });
+    const times = [0, 0.6, 1.2, 1.8, 2.4];
+    const track = (path, values) => new THREE.NumberKeyframeTrack(path, times, values);
+    const channel = new THREE.AnimationClip('Channel', 2.4, [
+        track('Rig_UpperArmRight.rotation[x]', [-1.08, -1.16, -1.08, -1.02, -1.08]),
+        track('Rig_UpperArmRight.rotation[z]', [0.26, 0.3, 0.26, 0.22, 0.26]),
+        track('Rig_ForearmRight.rotation[x]', [-0.64, -0.72, -0.64, -0.58, -0.64]),
+        track('Rig_UpperArmLeft.rotation[x]', [-0.85, -0.92, -0.85, -0.8, -0.85]),
+        track('Rig_UpperArmLeft.rotation[z]', [-0.25, -0.3, -0.25, -0.22, -0.25]),
+        track('Rig_ForearmLeft.rotation[x]', [-1.0, -1.08, -1.0, -0.92, -1.0]),
+        track('Rig_Head.rotation[x]', [0.08, 0.11, 0.08, 0.05, 0.08]),
+        track('Rig_ServiceFocus.rotation[z]', [0, 0.12, 0, -0.12, 0])
+    ]);
+    root.userData = {
+        proceduralActorType: 'CrystalKeeper', artStyle: 'Lanternhold field artificer',
+        sharedGeometry: true, bounds: definition.bounds,
+        animations: [createIdleClip(definition), channel]
+    };
+    installRestPoseReset(root);
+    return root;
 }
 
 export function getProceduralTownActorCacheMetrics() {

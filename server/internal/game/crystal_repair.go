@@ -2,6 +2,7 @@ package game
 
 import (
 	"fmt"
+	"math"
 	"time"
 )
 
@@ -69,7 +70,7 @@ func (w *World) StartCrystalRepair(instanceID, raidType string, participants []s
 
 	artificer := &Entity{
 		ID: state.NPCID, InstanceID: instanceID, Name: "Maelin, Resonance Artificer", Type: TypeNPC, SubType: "CrystalKeeper",
-		X: centerX, Y: 0, Z: centerZ, SpawnX: centerX, SpawnZ: centerZ, State: "CHANNELING",
+		X: centerX, Y: 0, Z: centerZ, SpawnX: centerX, SpawnZ: centerZ, Rotation: math.Pi, State: "CHANNELING",
 		Level: definition.RequiredLevel, Health: 1000000, MaxHealth: 1000000, Scale: 1.15, CreatedAt: time.Now(),
 	}
 	w.AddEntity(artificer)

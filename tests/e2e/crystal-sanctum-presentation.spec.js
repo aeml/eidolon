@@ -33,6 +33,8 @@ for (const [width, height] of [[1280, 720], [390, 844]]) {
                 });
                 await generator[generate](0, 0, layout);
                 const maelin = new CrystalKeeper('presentation-maelin');
+                maelin.isRemote = true;
+                maelin.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI);
                 await maelin.ensureMesh();
                 maelin.mesh.position.set(0, 0, 0);
                 render.entityGroup.add(maelin.mesh);
@@ -46,12 +48,14 @@ for (const [width, height] of [[1280, 720], [390, 844]]) {
                 for (const quality of ['high', 'low']) {
                     for (const [stage, progress] of [['fractured', 0], ['repairing', 66], ['restored', 100]]) {
                         const metrics = await page.evaluate(({ raidType, element, stage, progress, quality }) => {
-                            const { render, generator, THREE } = window.__crystalPresentation;
+                            const { render, generator, maelin, THREE } = window.__crystalPresentation;
                             render.setGraphicsQuality(quality);
                             generator.updateDungeonRoomState({ rooms: [], crystal: {
                                 instanceId: 'presentation-raid', raidType, element, stage, progress, wave: 3, totalWaves: 3, x: 0, z: 0
                             } });
                             generator.updateDungeonPresentation(0, quality);
+                            maelin.updateState(stage === 'repairing' ? 'CHANNELING' : 'IDLE');
+                            for (let frame = 0; frame < 30; frame++) maelin.update(1 / 60, null, null, []);
                             const root = generator.crystalSanctum;
                             const target = new THREE.WebGLRenderTarget(256, 256);
                             const visible = new Uint8Array(256 * 256 * 4), hidden = new Uint8Array(visible.length);
@@ -74,7 +78,8 @@ for (const [width, height] of [[1280, 720], [390, 844]]) {
                             render.render();
                             return { stage: root.userData.stage, quality, changedPixels, visibleMeshes,
                                 center: center.toArray(), motes: root.getObjectByName('CrystalResonanceMotes').count,
-                                theme: render.environmentThemeOverride, maelinType: window.__crystalPresentation.maelin.type };
+                                theme: render.environmentThemeOverride, maelinType: maelin.type,
+                                maelinAnimation: maelin.currentAction?.getClip()?.name };
                         }, { raidType, element, stage, progress, quality });
                         evidence.push(metrics);
                         await testInfo.attach(`${quality}-${stage}`, { body: JSON.stringify(metrics), contentType: 'application/json' });
@@ -85,6 +90,7 @@ for (const [width, height] of [[1280, 720], [390, 844]]) {
                         expect(Math.abs(metrics.center[1])).toBeLessThan(0.9);
                         expect(metrics.motes).toBe(quality === 'low' ? 6 : 12);
                         expect(metrics.maelinType).toBe('CrystalKeeper');
+                        expect(metrics.maelinAnimation).toBe(stage === 'repairing' ? 'Channel' : 'Idle');
                     }
                 }
                 const high = evidence.find(row => row.quality === 'high' && row.stage === 'restored');

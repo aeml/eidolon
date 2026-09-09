@@ -12,7 +12,8 @@ import {
     createProceduralDwarfSalesman,
     createProceduralQuestNPC,
     createProceduralDungeonNPC,
-    createProceduralRespecNPC
+    createProceduralRespecNPC,
+    createProceduralCrystalKeeper
 } from '../art/ProceduralTownActors.js';
 import { createProceduralAvengingSeraph } from '../art/ProceduralSummons.js';
 import {
@@ -716,6 +717,7 @@ export class MeshFactory {
         if (pooled) return pooled;
 
         if (type === 'UmbraPrime') return createProceduralDarkKing();
+        if (type === 'CrystalKeeper') return createProceduralCrystalKeeper();
 
         const aliasedType = PROCEDURAL_MESH_ALIASES[type];
         if (aliasedType) {

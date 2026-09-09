@@ -1,6 +1,7 @@
 package game
 
 import (
+	"math"
 	"strings"
 	"testing"
 	"time"
@@ -460,6 +461,9 @@ func TestCrystalRepairSpawnsPersonalNPCAndThreeEscalatingWaveRules(t *testing.T)
 	artificer := w.GetEntity("crystal-artificer-missing-instance")
 	if artificer == nil || artificer.SubType != "CrystalKeeper" || artificer.Name != "Maelin, Resonance Artificer" || artificer.State != "CHANNELING" {
 		t.Fatalf("repair NPC was not spawned and channeling: %+v", artificer)
+	}
+	if artificer.Rotation != math.Pi {
+		t.Fatal("Maelin must face the reliquary behind the defense center")
 	}
 	if len(events) != 1 || events[0].Stage != "ritual_start" || events[0].TotalWaves != 3 {
 		t.Fatalf("repair start was not presented as a three-wave defense: %+v", events)

@@ -144,6 +144,9 @@ jobs:
             npm run test:e2e:nameplates
             npm run test:e2e:resource-hud
           fi
+          if [ "${{ matrix.shard }}" = 2 ]; then
+            npm run test:e2e:crystal-art
+          fi
 
       - name: Upload browser failure evidence
         if: ${{ !cancelled() }}
