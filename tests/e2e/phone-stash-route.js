@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test';
 import { loginAndEnterWorld, projectEntity } from './helpers.js';
+import { readPhoneInventoryState } from './phone-inventory-observation.js';
 
 export async function verifyPhoneStash(page, credentials, itemId) {
     const ownership = () => page.evaluate(id => {
@@ -14,6 +15,7 @@ export async function verifyPhoneStash(page, credentials, itemId) {
         let target;
         await expect.poll(async () => { target = await projectEntity(page, 'stash-1'); return target?.visible; }).toBe(true);
         await page.touchscreen.tap(target.x, target.y);
+        console.log('[phone-stash] tap receipt', JSON.stringify({ target, state: await readPhoneInventoryState(page) }));
         await expect(page.locator('#stash-screen'), 'Normal town stash interaction must open storage').toBeVisible({ timeout: 30_000 });
         await expect(page.locator('#inventory-screen')).toBeHidden();
     }

@@ -2,9 +2,21 @@ import { devices, expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld } from './helpers.js';
 import { approachEncounter, openPhoneNavigation, selectLiveTarget } from './mobile-helpers.js';
 import { verifyPhoneStash } from './phone-stash-route.js';
+import { readPhoneInventoryState } from './phone-inventory-observation.js';
 
 test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, userAgent: devices['Pixel 7'].userAgent,
     actionTimeout: 12_000, trace: 'off', screenshot: 'off', video: 'off' });
+
+test.afterEach(async ({ page }, testInfo) => {
+    if (testInfo.status === testInfo.expectedStatus || page.isClosed()) return;
+    const state = await readPhoneInventoryState(page);
+    if (!state) return;
+    console.log('[phone-inventory] failure state', JSON.stringify(state));
+    // Only capture an entered world, never login fields or credentials.
+    if (await page.locator('#btn-mobile-attack').isVisible()) {
+        await page.screenshot({ path: testInfo.outputPath('failed-phone-inventory.png') });
+    }
+});
 
 test('phone bag equips, drops and stores server-owned items with saved retrieval', async ({ page, baseURL }) => {
     test.setTimeout(420_000);
@@ -73,6 +85,7 @@ test('phone bag equips, drops and stores server-owned items with saved retrieval
         }
         await page.waitForTimeout(1_100);
         itemId = await findItem();
+        console.log('[phone-inventory] post-combat loot', JSON.stringify(await readPhoneInventoryState(page)));
     }
     expect(itemId, 'Normal combat must yield a usable owned item for the bag route').toBeTruthy();
     const ownsItem = () => page.evaluate(id => window.game.player.inventory.some(item => item?.id === id), itemId);
