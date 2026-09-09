@@ -5,7 +5,57 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 03:37 UTC
+## Current checkpoint — September 9, 03:48 UTC
+
+PROGRESS:53523 on clean8564500 terminatedFAILED9.3m, but the entire managed
+Watch completed:40/40 at468s, manual1593XP/100gold and final saved-progress
+checks at483s hunt time,0deaths/11normal town stops (224.005s total including
+travel). Level6/306XP/1395gold before claim→level8/174XP/1495gold after;
+15 occupied slots/650 unsold equipment value retained. Opening33s/diary73s
+cumulative passed with no checkpoint reconnects. Readable manual-claim capture
+inspected. One earlier console error `Move closer to investigate` failed the
+final error check; do not suppress it or call the full route green. Sanitized
+artifacts `/tmp/eidolon-story-rest-managed-proof-C6uixz/test-results`; log
+`/tmp/eidolon-story-rest-managed-0332.log`. Exact owned project containers/image
+independently absent after cleanup. This supports one Wizard's intended recovery
+loop, not all-class, all-realm or full-campaign balance approval.
+
+New primary development tree **/tmp/eidolon-primary-town-recovery-lAKY3k**,
+branchwork/primary-town-recovery-20260909 from8564500, clean committed
+**db3bbb73b5b8ffba83a780c0faf46bc796635fda**. Old integration tree untouched
+during actual run. Implements user clarification: normal collection/hunt QA
+defaults to real town recovery; explicitly named no-rest diagnostics opt out.
+All four classes use their configured primary cost and actual gear/talent
+modifiers, including zero-cost builds; later hunts receive ordinary departure.
+Policy94740 PASS6suites/68tests5.927s, lint/shell/diff pass. No production
+regen, reward, count, timer or death-rule changes.
+
+Also found a production ordering bug: Chronicle interaction executes before the
+frame's movement send. New49807 regression FAILED2/3 with client4.95m/server
+5.05m, both moving and just stopped. Inspection now flushes changed sequenced
+movement before requesting inspection; server validation/range unchanged,
+stationary rereads do not flood movement. Corrected70105 PASS66tests3.444s;
+independent server dispatch4933 PASSrace1.734s proves before-move rejection /
+after-move acknowledgement, no auto-completion. This proves a possible cause,
+not the uniquely captured cause of the prior actual error. Logs
+`/tmp/eidolon-chronicle-move-order-{before,after,server}.log`. Backend production
+unchanged from prior full race pass; new dispatch test is separate evidence.
+
+On frozendb3bbb7: **45516 fullclient ACTIVE**, log
+`/tmp/eidolon-primary-recovery-full-client.log`; **1469 actual default-rested
+fresh-story-uninterrupted ACTIVE**, owned projectprimary-rest-0909-0348,
+API18560/web41960, log `/tmp/eidolon-primary-recovery-story-0348.log`.
+Poll these exact handles; no restart/cleanup while live. Final prepare/lint90207
+passed. These are the only owned local checks running. No further runtime edits
+over them. Candidate detailed evidence: `docs/plans/2026-09-09-story-rest-integration.md`.
+
+**52 CI34305897736 ACTIVE** at03:48: Go/Jest/all3browsergroups SUCCESS,
+predeploy full-character gameplay running.51 remains last independently verified
+live; no53 push before full52CI/deploy/finalLiveQA plus fresh exact public52.
+Canonical53–57 unchanged; root is ledger-only, NEVER push it as a release.
+Whole roadmap remains active; no blocker, no completion claim.
+
+## Previous checkpoint — September 9, 03:37 UTC
 
 USER CLARIFICATION: returning to town to replenish HP/MP and build Well Rested
 is the intended normal loop. Adopt earned town recovery as the combined feature's

@@ -15,9 +15,15 @@ Once the current frozen playthrough finishes, carry this policy into the combine
 candidate's main earned collection/hunt QA, including its full CI route. Older
 canonical releases51–57 do not contain Well Rested and retain their own gates.
 
-Current managed route53523 has reached10/40 kills with zero deaths and3 actual
-town stops. This is partial evidence only; final quest rewards and saved progress
-are pending. The test was already exercising the newly confirmed intended loop.
+September9 03:48 update: managed53523 completed40/40 with zero deaths and11
+actual town stops. Manual1593XP/100gold and final saved-progress checks passed;
+the full test still FAILED on an earlier investigation-range console error.
+The requested recovery loop worked in this one Wizard route, not a full balance
+approval. New primary branchdb3bbb7 makes recovery normal in collection/hunt QA
+for all four classes and fixes a reproduced movement-before-inspection ordering
+bug without changing the server range. Focused tests/lint pass; fullclient45516
+and actual default-rested1469 are ACTIVE. Details and exact paths in the ledger.
+This feature is still not versioned or live;52 remains in predeploy gameplay QA.
 
 September9 03:33 checkpoint: new move-only0a3e1c0 uninterrupted route FAILED4.8m
 at Watch2/40, zero deaths,115/150HP and0/130MP after repeated retreats; no
