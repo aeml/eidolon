@@ -5,7 +5,44 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 01:16 UTC
+## Current checkpoint — September 9, 01:30 UTC
+
+PROGRESS: Well Rested development **4b407b3** committed clean. Actual schema
+upgrade63337 **PASS12.916s**: exact schema7 bridge9aec835→schema8 resource7ab559
+real Fireball/Fireball/Shield zero-mana depletion, two listings, failed escrow
+save and intentional crash→schema9 restd650c72 recovery. Schema7 refuses8 and
+schema8 refuses9 before writes/admission, with exact raw user BSON/journal/op
+retained. Two fresh9 processes recover zero mana then allow only connected town
+healing/earned rest; listings/deposits/receipts/gear/XP unchanged. All4 child logs
+clean (1 explicit crash, legacy disconnect-save proof,2 normal9 drains). Owned
+Mongo0122/volume removed and absent. `/tmp/eidolon-rest-schema-0122.log`.
+Full root race29300 **PASS13.222s**, focused arithmetic1.041s, full lint88512PASS.
+
+Actual fresh-character browser17880 **PASS1/32.3s**: earns5.346s rest in town,
+ordinary Ctrl-click travel outside, observes countdown, selects/chases a real
+enemy, records local damage30→28 and mana110→80, Recalls and logs in again with
+bank and19-mesh aura intact. No progression/buff/encounter grants. Evidence
+`/tmp/eidolon-rest-browser-0131.log`; screenshots retained/inspected in
+`/tmp/eidolon-rest-browser-proof-nXFcKk`. Prior0126/0128 health-only observations
+failed; final test recognizes DEAD snapshots and requires actual local damage
+receipts. Those failures lack enough post-cast state to claim unique causation.
+All3 owned browser projects cleaned, absent, credential scans passed. Production
+source unchanged; browser built b409d83-dirty (test/docs changes only), backend
+integration still exactd650c72. All owned local handles terminal/closed.
+
+Remaining Well Rested gates: old browser assumptions in fresh-opening's .1 stat
+regen, death-resource-recovery town login/Recall allowances and phone talent
+castResourceBounds; integrated expiry, phone/group aura and rested/unrested earned
+balance; own version/patch notes and ordered CI/live. Do not publish inherited57
+metadata. Full roadmap remains active/incomplete.
+
+50 CI34295826450 revalidated ACTIVE in disposable full-character predeploy QA
+at01:29 after one transient GitHub timeout (no restart). Go/Jest/all3 browser
+groups passed. Fresh public frontend/backend still49/0c6d0cc at01:30,
+healthOK/databaseReady.51–57 queue unchanged; no successor push before complete
+50 CI/finalLiveQA and exact public50 identity. Root remains ledger-only.
+
+## Previous checkpoint — September 9, 01:16 UTC
 
 PROGRESS: Well Rested development **b409d83** committed clean. Refund/refund-lifecycle actual30254 is terminal
 **PASS43.100s**. Offline corpse/pending snapshot, recipient save/ack failures,

@@ -78,9 +78,9 @@ kills documented; other processes drained. Owned Mongo/volumes removed. Root
 race12.077s; merged client242 suites/3,425 tests93.429s and lint pass.
 
 This is not a versioned/staged release. It follows staged57, requires schema9,
-and must not publish inherited57 metadata. Remaining persistence gates include
-schema-upgrade recovery,
-integrated browser travel/reconnect/aura and rested/unrested earned balance.
+and must not publish inherited57 metadata. Remaining gates include browser
+recovery/talent expectations, integrated expiry/phone/group aura and
+rested/unrested earned balance.
 
 September9 01:16 checkpoint, developmentb409d83: standalone refund/refund-lifecycle acceptance passes
 43.100s, retaining exact offline bank/resources and online recovery through
@@ -92,6 +92,16 @@ clears transient fractional healing, with each session independently validated
 against the fresh handoff save. No production code changed. All owned test
 containers/volumes removed; normal child logs drained cleanly. This closes those
 two persistence gates, not schema upgrade or integrated earned-play/aura gates.
+
+September9 01:30 checkpoint, development4b407b3: actual schema7→8→9 upgrade
+passes12.916s, including real old-server zero-mana casts, failed auction escrow
+save/crash, old-writer refusals before writes and two new-process recoveries.
+Full root race13.222s/lint pass. Fresh-character hardware Chrome travel/combat/
+Recall/relogin route passes1/32.3s with earned bank, countdown, local damage
+receipt and transparent19-mesh aura; screenshots inspected. All owned local
+processes ended and disposable data removed. This does not close earned balance,
+phone/group/expiry or older browser assumptions that must reflect town healing.
+Detailed evidence remains in the implementation branch contract.
 
 ## Requested behavior
 
