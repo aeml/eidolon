@@ -1773,7 +1773,11 @@ export class GameEngine {
             abilityRange,
             inBasicRange,
             inAbilityRange,
-            status: inAbilityRange ? 'in_range' : 'move_into_range',
+            // Server PvE relationships are neutral while the player is in a
+            // sanctuary. Range alone must not advertise a valid attack there.
+            // Town duels are a separate player-vs-player rule and stay intact.
+            status: player.safeZoneId && !this.isPlayerClassEntity(entity)
+                ? 'leave_safe_zone' : inAbilityRange ? 'in_range' : 'move_into_range',
             preview
         };
     }

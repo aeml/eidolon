@@ -3,6 +3,7 @@ import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { earnEarthInvestigation } from './chronicle-investigation-route.js';
 import { clearFreshInvestigationApproach } from './fresh-investigation-combat.js';
 import { earnFreshStoryHunt } from './fresh-story-hunt-route.js';
+import { leaveEarnedCombatSafety } from './earned-safe-zone-combat.js';
 import { openDungeonGuide } from './dungeon-guide.js';
 import { recoverBetweenCollectionEncounters } from './earned-town-rest.js';
 import { earnedTownRecoveryEnabled } from '../earnedRecoveryPolicy.js';
@@ -76,6 +77,7 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
             const enemy = await readCollectionTarget(page, target.id);
             expect(enemy, 'Collection target disappeared without an observed death').not.toBeNull();
             if (enemy.state === 'DEAD' || enemy.hp <= 0) { defeated = enemy; break; }
+            if (await leaveEarnedCombatSafety(page, leaveTown)) continue;
             if (Date.now() >= nextDiagnostic) {
                 console.log('[fresh-collection-combat]', JSON.stringify(await readFreshCollectionCombat(page, target.id)));
                 nextDiagnostic = Date.now() + 15_000;

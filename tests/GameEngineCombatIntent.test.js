@@ -75,6 +75,26 @@ function createEngineHarness() {
 }
 
 describe('GameEngine combat intent', () => {
+    test('safe-zone PvE explains protection instead of advertising an in-range attack', () => {
+        const engine = createEngineHarness();
+        engine.hoveredEntity = createActorLike({ id: 'outside-skeleton', position: new THREE.Vector3(8, 0, 0) });
+        engine.player.safeZoneId = 'future-sanctuary';
+        const protectedIntent = engine.buildCombatIntentState();
+        expect(protectedIntent.status).toBe('leave_safe_zone');
+        expect(protectedIntent.inAbilityRange).toBe(true);
+        engine.player.safeZoneId = '';
+        const outside = engine.buildCombatIntentState();
+        expect(outside.status).toBe('in_range');
+        expect(engine.serializeCombatIntent(outside)).not.toBe(engine.serializeCombatIntent(protectedIntent));
+    });
+
+    test('the PvE sanctuary hint does not override a valid town duel target', () => {
+        const engine = createEngineHarness();
+        engine.player.safeZoneId = 'lanternhold';
+        engine.hoveredEntity = { ...createActorLike({ id: 'duelist', position: new THREE.Vector3(8, 0, 0) }),
+            constructor: { name: 'Fighter' } };
+        expect(engine.buildCombatIntentState().status).toBe('in_range');
+    });
     test('cast cost and attack power changes invalidate the same-target engine cache', () => {
         const engine = createEngineHarness();
         const first = { entityId: 'same', preview: { attackPower: 5, manaCost: 30, abilityName: 'Fireball' } };

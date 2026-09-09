@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test';
 import { chronicleHunts } from '../../src/data/chronicleHunts.generated.js';
+import { leaveEarnedCombatSafety } from './earned-safe-zone-combat.js';
 import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { createEarnedClassCombat } from './earned-class-combat.js';
 import { recoverEarnedDeath } from './earned-death-recovery.js';
@@ -141,6 +142,7 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady, 
             if ((await readPlayerState(page)).state === 'DEAD') {
                 await recover(); respawned = true; break;
             }
+            if (await leaveEarnedCombatSafety(page, leaveTown)) continue;
             const observed = await page.evaluate(id => {
                 const game = window.game;
                 const describe = target => target ? { id: target.id,

@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { selectUnfinishedObjectiveTarget } from '../earnedObjectiveEncounter.js';
+import { leaveEarnedCombatSafety } from './earned-safe-zone-combat.js';
 import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { earnEarthInvestigation } from './chronicle-investigation-route.js';
 import { clearFreshInvestigationApproach } from './fresh-investigation-combat.js';
@@ -177,6 +178,7 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
             }
             // Share the collection route's ordinary defensive inputs instead
             // of interrupting every healthy attack with another retreat.
+            if (await leaveEarnedCombatSafety(page, () => leaveTown(page))) continue;
             if (await beforeOpeningCombat()) continue;
             retreats = await page.evaluate(() => window.__freshWizardDefense?.counts.retreats || 0);
             if ((await readPlayerState(page)).state === 'DEAD') continue;
