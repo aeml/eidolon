@@ -103,7 +103,13 @@ test('legacy gem recovery rejects a full bag, conserves stacks and persists norm
     await loginAndEnterWorld(page, credentials);
     const bagGemQuantity = () => page.evaluate(() => window.game.player.inventory.reduce((sum, item) =>
         sum + (item?.name === 'Chipped Sapphire' ? item.stack || 1 : 0), 0));
-    expect(await page.evaluate(() => window.game.player.stats.intelligence)).toBe(10);
+    const expectUnmodifiedBaseWithTownRest = () => expect.poll(() => page.evaluate(() => {
+        const p = window.game.player;
+        return { baseIntelligence: p.baseStats.intelligence, intelligence: p.stats.intelligence,
+            rested: p.wellRestedSeconds > 0, zone: p.safeZoneId };
+    }), { message: 'Only the earned 10% town-rest bonus may affect the legacy base; the unsupported +999 gem must not' })
+        .toEqual({ baseIntelligence: 10, intelligence: 11, rested: true, zone: 'lanternhold' });
+    await expectUnmodifiedBaseWithTownRest();
     expect(await bagGemQuantity()).toBe(18);
     await page.keyboard.press('i');
     const recovery = page.locator('#inventory-recovery');
@@ -132,7 +138,7 @@ test('legacy gem recovery rejects a full bag, conserves stacks and persists norm
     expect(await bagGemQuantity()).toBe(23);
     expect(await page.evaluate(() => Boolean(window.game.player.equipment.gem))).toBe(false);
     expect(await page.evaluate(() => window.game.player.equipment.mainHand?.id)).toBe('legacy-sword-24');
-    expect(await page.evaluate(() => window.game.player.stats.intelligence)).toBe(10);
+    await expectUnmodifiedBaseWithTownRest();
     expect(failures, failures.join('\n')).toEqual([]);
     console.log('[equipment-recovery] full-bag rejection, legal equip, exact 18+5 gem recovery, rejected gem equip and fresh-login persistence passed');
 });
