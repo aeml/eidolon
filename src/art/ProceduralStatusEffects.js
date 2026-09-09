@@ -162,6 +162,53 @@ function shapeGeometry(shape) {
     return geometry('status-relic', () => new THREE.DodecahedronGeometry(0.19, 0));
 }
 
+const restingMoteTransform = new THREE.Object3D();
+
+function updateRestingMoteBatch(batch, elapsed) {
+    for (let slot = 0; slot < batch.count; slot++) {
+        const index = batch.userData.moteIndices[slot], phase = index / 16;
+        const rise = (elapsed * 0.2 + phase) % 1;
+        const angle = phase * Math.PI * 8 + elapsed * 0.45;
+        const radius = 0.85 + (index % 3) * 0.2, fade = Math.sin(rise * Math.PI);
+        restingMoteTransform.position.set(Math.cos(angle) * radius, 0.15 + rise * 2.6, Math.sin(angle) * radius);
+        restingMoteTransform.rotation.set(0, angle, 0);
+        restingMoteTransform.scale.set(0.18 * fade, 0.32 * fade, 0.18 * fade);
+        restingMoteTransform.updateMatrix();
+        batch.setMatrixAt(slot, restingMoteTransform.matrix);
+    }
+    batch.instanceMatrix.needsUpdate = true;
+}
+
+function addRestingMotes(root, statusKey, materials) {
+    const colors = [0x93d58b, 0xc8efff, 0xff985c, 0x72caff];
+    const visible = Array.from({ length: 16 }, (_, index) => index)
+        .filter(index => root.userData.quality !== 'low' || index % 2 === 0);
+    // Separate opacity groups preserve the old gold/elemental brightness.
+    // Additive sparks need no per-instance depth sorting or material mutation.
+    for (const elemental of [false, true]) {
+        const indices = visible.filter(index => (index % 4 === 0) === elemental);
+        const mat = elemental ? material(statusKey, 'element-batch', 0xffffff, { opacity: 0.72 }) : materials.accent;
+        const batch = new THREE.InstancedMesh(shapeGeometry('crystal'), mat, indices.length);
+        batch.name = `${statusKey}:SanctuaryMotes:${elemental ? 'elements' : 'gold'}`;
+        batch.castShadow = false;
+        batch.receiveShadow = false;
+        Object.assign(batch.userData, { proceduralStatusPart: true, statusKey,
+            motion: 'rest-rise-batch', moteIndices: indices });
+        batch.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+        // Covers the entire orbit and rising cycle, including crystal vertices.
+        // Keeping a stable conservative bound avoids both off-screen draws and
+        // a first-frame bounding sphere that clips later animation positions.
+        batch.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 1.45, 0), 2);
+        if (elemental) {
+            const color = new THREE.Color();
+            indices.forEach((index, slot) => batch.setColorAt(slot, color.setHex(colors[index / 4])));
+            batch.instanceColor.needsUpdate = true;
+        }
+        updateRestingMoteBatch(batch, 0);
+        root.add(batch);
+    }
+}
+
 function orbit(parent, statusKey, name, shape, count, radius, height, materials, options = {}) {
     for (let index = 0; index < count; index += 1) {
         const phase = (index / count) * Math.PI * 2;
@@ -209,16 +256,7 @@ function buildStatus(root, statusKey, def, materials) {
         case 'lantern-resonance': {
             // A clear silhouette: thin ground light and small rising sparks,
             // never a body shell, solid enclosure, or interaction mesh.
-            const colors = [0x93d58b, 0xc8efff, 0xff985c, 0x72caff];
-            for (let index = 0; index < 16; index++) {
-                const phase = index / 16;
-                addPart(root, statusKey, `SanctuaryMote${index}`, shapeGeometry('crystal'),
-                    index % 4 === 0 ? material(statusKey, `element-${index / 4}`, colors[index / 4], { opacity: 0.72 }) : materials.accent, {
-                        scale: [0.18, 0.32, 0.18], motion: 'rest-rise', phase,
-                        orbitRadius: 0.85 + (index % 3) * 0.2,
-                        highQualityOnly: index % 2 === 1
-                    });
-            }
+            addRestingMotes(root, statusKey, materials);
             ring(root, statusKey, 'SanctuaryThread', radius * 0.74, materials.accent,
                 { thickness: 0.018, y: 0.065, motion: 'counter-seal' });
             break;
@@ -407,6 +445,10 @@ export function updateProceduralStatusEffect(root, elapsed, dt) {
     root.traverse((child) => {
         const motion = child.userData?.motion;
         if (!motion) return;
+        if (motion === 'rest-rise-batch') {
+            updateRestingMoteBatch(child, elapsed);
+            return;
+        }
         const phase = Number(child.userData.phase || 0);
         const baseScale = child.userData.baseScale || [1, 1, 1];
         const basePosition = child.userData.basePosition || [0, 0, 0];
@@ -463,6 +505,8 @@ export function updateProceduralStatusEffect(root, elapsed, dt) {
 export function releaseProceduralStatusEffect(root) {
     if (!root) return;
     root.parent?.remove(root);
+    // Instance buffers are actor-owned; geometry and materials remain cached.
+    root.traverse(child => { if (child.isInstancedMesh) child.dispose(); });
     root.clear();
     root.userData.released = true;
 }
