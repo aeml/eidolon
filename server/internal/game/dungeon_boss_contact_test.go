@@ -34,6 +34,15 @@ func TestDungeonBossBodyContactAllowsRealBasicAttacks(t *testing.T) {
 						damage <- struct{}{}
 					}
 				}
+				if bossType == "UmbraPrime" {
+					// This contact-only fixture does not run the world loop. Open
+					// the encounter through its real phase hook before attacking;
+					// do not bypass the new gate by assigning RaidPhase or health.
+					w.updateDarkKingPhase(boss, []*Entity{player})
+					if boss.RaidPhase != 1 {
+						t.Fatal("living raider did not open the Dark King encounter")
+					}
+				}
 				if _, accepted := w.PerformAttack(player.ID, boss.ID); !accepted {
 					t.Fatal("basic attack rejected at the replicated collision boundary")
 				}

@@ -25,3 +25,12 @@ ordinary combat/explosion/reflection paths and four-browser phase progression,
 readable phase presentation under burst damage, and ordered version/notes/live
 delivery with the wider campaign gate. Do not claim four meaningful, paced raid
 phases solely from these isolated mechanics tests.
+
+Full race23814 FAILED435.855s in game: the four UmbraPrime contact-only fixtures
+attacked an unannounced phase0 boss without running any world update. Other
+packages passed; no race warning was reported. Original full log
+`/tmp/eidolon-dark-king-phase-integrity-full-race.log` retained. The fixture now
+calls the production phase hook after adding its living raider and asserts phase1
+before the original accepted-attack and actual-health-loss checks. No forced
+RaidPhase/health assignment or reduced attack assertion; the runtime gate remains.
+Focused and full repeat results must be recorded separately, not inferred here.
