@@ -56,9 +56,12 @@ NPC substitution or a claim that the old release has the new behavior.
   `/tmp/eidolon-maelin-artificer-ci-browser.log`.
 
 The previous full primary regression onaa4f0f1 predates this model, actor hook and
-server-facing change. Run fullclient/lint and freshfullGo-race again before
-publication. Actual group combat, durable reconnect transport and story pacing
-remain separate, incomplete acceptance gates.
+server-facing change. The required fresh full regression28798 on frozen117fffe
+is now TERMINAL0/PASS:273client suites3912tests87.23s plus lint, full Go-race
+root18.393s/game224.339s/database1.086s. Logs
+`/tmp/eidolon-primary-maelin-final-{client,lint,server}.log`.
+Actual group combat, durable reconnect transport and story pacing remain separate,
+incomplete acceptance gates. This is local verification, not published story art.
 
 ## Planned patch notes
 
