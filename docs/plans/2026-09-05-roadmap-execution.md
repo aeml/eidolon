@@ -5,7 +5,39 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 05:03 UTC
+## Current checkpoint — September 9, 05:10 UTC
+
+PROGRESS: **28852 Fighter TERMINAL PASS1/5.4m** on unchanged standalone58
+5a17be147ce527bae556663cc452ecae10e87785. Opening91s/manual500XP100gold,
+collection226s/17observed target deaths/8earned seeds/zero deaths. Three actual
+town stops totaled65.460s including travel and restored both pools. First stop:
+HP184/200 andMP21/160 outside→220/220HP and176/176MP in rested town, correct
+Fighter20mana primary cost, real elapsed bank accrued and normal departure.
+Manual8000XP100gold consumed8seeds, level7→17,7earned gear items/360unsold
+vendor value survived reconnect, level30 dungeon gate remained locked. As with
+Wizard, legacy rewards are explicitly not accepted as the finished balance pass.
+Credential scan0, exact owned containers/image absent, ready-claim8/8 image
+inspected. Archive `/tmp/eidolon-rest58-fighter-proof-LuU7Gn/test-results`, log
+`/tmp/eidolon-rest58-fighter-collection-0503.log`. Two classes' full collection
+routes now pass; this is not all-class/full-campaign or physical-device proof.
+
+**35080 Rogue ACTIVE — only owned local browser/process**, same frozen5a17be1,
+fresh-collection, EIDOLON_E2E_FRESH_CLASS=Rogue, projectrest58-rogue-0909-0510,
+API18560/Mongo18561/web41960; log
+`/tmp/eidolon-rest58-rogue-collection-0510.log`. Poll the exact handle; do not
+restart, edit the active candidate/runtime or clean its resources while live.
+After terminal archive/review/exact-cleanup checks, continue Cleric. No owned
+full regression remains active; their completed results stand as below.
+
+Canonical54 prepush65184 PASS3suites252tests2.978s (VersionPresentation,
+BasicAttackDamage, BrowserSmokeSharding); clean805ba0d remains unchanged and
+descends from53ce330b3. Log `/tmp/eidolon-release54-prepush-checks.log`.
+**53CI34312290353 ACTIVE**: all3browser shards passed; predeploy character QA
+is running its deterministic High/Low gallery at05:09. Still no54push until
+whole53CI/finalLiveQA and fresh public identities pass. Last verified live52.
+Root ledger-only; whole roadmap goal remains active and unfulfilled.
+
+## Previous checkpoint — September 9, 05:03 UTC
 
 PROGRESS: standalone58 full **75384 Go race TERMINAL PASS** (root23.243s,
 game327.779s) and **93155 client TERMINAL PASS245suites3466tests165.48s**, frozen
