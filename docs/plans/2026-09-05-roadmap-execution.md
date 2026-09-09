@@ -16,7 +16,34 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 12:28 UTC
+## Current checkpoint — September 9, 12:33 UTC
+
+This continuation made PROGRESS by accepting the completed full-client component
+and reproducing Maelin's missing ritual animation through an actual remote actor
+tick.47504 remains ACTIVE on unchanged primaryaa4f0f1: fullclient273suites/3909tests/
+83.194s plus lint PASSED; freshfullGo race is running. Root server package passed
+19.472s/database1.295s; internal/game is not yet terminal. Same logs as below.
+Do not edit the candidate or start an owned browser beside this heavy regression.
+
+Read-only Node24 probe constructed the real CrystalKeeper, set isRemote=true,
+called updateState("CHANNELING") then actual update(1/60), observing only the
+animation-dispatch endpoint. Result: stateCHANNELING requestedAnimations["Idle"].
+Log `/tmp/eidolon-maelin-channel-source-probe.log`. This is an actual remote tick,
+not a rendered channel-pose acceptance. Source Actor.js remote animation fallback
+has no CHANNELING case, and current Maelin still uses the Wizard mesh. Next staged
+art task should give the dedicated actor a real Channel loop and bespoke clothed
+artificer model, retain server-owned state/no quest marker/no summon lifecycle,
+and test entry mid-ritual, completion, mesh-load timing and pool reset. Preserve
+other actors' state/animation behavior and true Spirit Guardians.
+
+57CI34347504351 is still ACTIVE in predeploy character QA; all preceding jobs
+passed. No elapsed-time restart/cancellation. Read-only git check-ignore verifies
+server/backups/ and server/logs/ are ignored; existing git clean -fd does not use
+-x, so those private recovery paths are preserved. This is source-level safeguard
+inspection, not the still-due production backup receipt.58accepted e73be3a remains
+clean/unpublished; no new production recovery claim or primary import.
+
+## Earlier checkpoint — September 9, 12:28 UTC
 
 This continuation made PROGRESS: the entire standalone58 all-route passed and
 was archived/cleaned, and later-story crystal visuals received actual GPU proof
