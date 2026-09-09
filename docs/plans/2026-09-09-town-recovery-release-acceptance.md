@@ -1,15 +1,16 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
-Status at September 9, 06:47 UTC: **unpublished candidate**, not delivered.
+Status at September 9, 07:16 UTC: **unpublished candidate**, not delivered.
 Candidate worktree `/tmp/eidolon-standalone-town-recovery-QJ6Drv`, current source
-`6e855470ee01cd16d69fcc6cd2e005dbd3f4ba0f`, includes canonical57/6babef5 ancestry.
+`ee8a713d6d6daef1caa5d319c63c2089fdf37771`, includes canonical57/6babef5 ancestry.
 Production runtime is unchanged from previously tested
 `5a17be147ce527bae556663cc452ecae10e87785`; subsequent corrections change QA only.
 53CI34312290353 completed successfully, including all final live checks. Public
 manifest, login version, loaded runtime URL and server health independently match
 53/ce330b3 at06:08; client/server rechecked06:43. First54CI34317808528 failed
 before deployment on a prepared visual timer. Corrected54/5e22b74 is pushed,
-remote verified, new54CI34320477081 active. No55push until the complete54 gate.
+remote verified, new54CI34320477081 has all client/server/browser jobs passed
+and is in predeploy gameplay. No55push until the complete54 gate.
 The complete roadmap remains open. Expanded story and coordinated balance are
 separate preserved work, not removed or declared complete by this release.
 
@@ -159,12 +160,38 @@ Log `/tmp/eidolon-rest58-gem-rest-browser-0630.log`; metadata archive
 
 Current6e85547 also inherits54's corrected prepared respawn fixture clock through
 the canonical release chain. No production/version/script changes were imported.
-**1416 full gameplay ACTIVE**, only owned local browser; Node24.18.0,
+**1416 full gameplay FAILED**, Node24.18.0,
 projectrest58-all24-r3-0909-0650/API18560/Mongo18561/web41960; log
 `/tmp/eidolon-rest58-all-node24-rerun-0650.log`. **81287 full client/lint PASSED**,
 248suites/3490tests/125.305s, terminal0, exact6e85547/Node24.18.0;
-logs `/tmp/eidolon-rest58-finalclock-full-{client,lint}.log`. Freeze source until
-the gameplay outcome; a complete gameplay pass is still outstanding.
+logs `/tmp/eidolon-rest58-finalclock-full-{client,lint}.log`.
+
+1416 passed the corrected gem case, Forge/Guide, ordinary opening/collection,
+and talent economy/healing, then failed the duration test's obsolete expectation
+that the panel be empty after shield expiry. Server shield timer/HP/effect/badge
+removal checks passed; the error snapshot shows earned Well Rested still active.
+Archive `/tmp/eidolon-rest58-duration-rest-failure-ATQ2N9`; scan0/exact cleanup.
+The corrected assertion requires the shield gone and the resting row retained;
+a PhoneStatusUI coexistence regression covers it. Focused19tests/lint passed.
+Actual duration replay48279 passed1/1.1m on currentee8a713, including natural
+ranked expiry and saved landscape cast; scan0/exact cleanup. Archive
+`/tmp/eidolon-rest58-duration24-proof-Sei3x7`, log
+`/tmp/eidolon-rest58-duration-rest-browser-0713.log`.
+
+Public-proof review found the native journey imported a test module that Pages
+does not publish. The current observer injects only its trusted self-contained
+read-only counter; the journey blocks/tests network access to enforce that
+boundary locally. It additionally requires actual hostile damage, living HP
+below maximum, accepted Fireball/spent mana, Recall and full recovery of both
+pools. No shared localhost wall clock, grants or longer test deadline is used.
+Focused26tests/lint/discovery passed; that is not actual public gameplay proof.
+**99620 stronger native rest/expiry/party ACTIVE**, only owned local browser,
+projectrest58-public24-0909-0716/API18560/Mongo18561/web41960, frozenee8a713;
+log `/tmp/eidolon-rest58-public-proof-browser-0716.log`.
+**37941 full client/lint ACTIVE**, same source, logs
+`/tmp/eidolon-rest58-public-proof-full-{client,lint}.log`.
+Preserve artifacts/verify exact cleanup when terminal. Complete gameplay still
+needs a new full pass; no failure above is retroactively changed to success.
 
 ## Remaining delivery gates
 
