@@ -31,5 +31,16 @@ usable gear, retains420s outer deadline and every normal kill/ownership check.
 No item grants, loot boosts or guaranteed-loot commands. Read-only loot/target
 receipts and entered-world-only failure screenshots improve future diagnosis.
 
-Corrected focused browser and full client/lint validation are pending. Original
-failures remain failed. No production acceptance or full-roadmap completion.
+Corrected d0a129c focused browser PASSED36862: full phone bag/equip/drop/storage
+with complete saved item equality and all eight fresh town-entry/orientation
+journeys,2tests1.5m. Log `/tmp/eidolon-rest58-phone-corrected.log`, archive
+`/tmp/eidolon-rest58-phone-fixed-proof-PsJZGP`, credential scan0; exact disposable
+containers/image and18560/18561/41960 listeners absent after normal cleanup.
+
+Full client/lint PASSED4886:253suites/3570tests93.511s, logs
+`/tmp/eidolon-rest58-phone-fix-full-{client,lint}.log`. Earlier focused lint94314
+also passed. Game client, server, version metadata and player patch notes have
+no changes against pushedfb8db754; its full Go proof still applies to the
+identical server tree. The complete remote CI/predeploy/deploy/live gates must
+run for the corrected candidate. Original failures remain failed. No production
+acceptance or full-roadmap completion is claimed by these local results.
