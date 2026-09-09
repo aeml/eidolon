@@ -564,6 +564,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   fresh-hunt)
     EIDOLON_E2E_FRESH_COLLECTION=1 EIDOLON_E2E_FRESH_HUNT=1 npx playwright test tests/e2e/fresh-opening-gameplay.spec.js
     ;;
+  well-rested)
+    npx playwright test tests/e2e/well-rested-gameplay.spec.js
+    ;;
   fresh-hunt-npc)
     npx playwright test tests/e2e/fresh-hunt-npc.spec.js
     ;;
@@ -633,6 +636,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     run_phone_adventure
     ;;
   *)
+    echo "Earned rest, real travel/combat and reconnect verification: EIDOLON_ISOLATED_QA_ROUTE=well-rested" >&2
     echo "Trained ground-spell geometry verification: EIDOLON_ISOLATED_QA_ROUTE=ground-shape" >&2
     echo "Trained cleanse-area verification: EIDOLON_ISOLATED_QA_ROUTE=purifying-area" >&2
     echo "Trained persistent support-area verification: EIDOLON_ISOLATED_QA_ROUTE=guardian-area" >&2

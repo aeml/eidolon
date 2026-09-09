@@ -61,6 +61,54 @@ four-class stats and device/aura acceptance remain required.
 
 ## Development acceptance — September 8, 23:30 UTC
 
+Latest additional acceptance, **September9 01:24UTC**:
+
+- Actual schema7→8→9 upgrade/refusal/recovery passes12.916s. Uses exact bridge
+  9aec835 and resource7ab559 binaries for prior-version behavior, then d650c72
+  for Well Rested. Keeps the legacy level31 intelligence-chest fixture, real
+  Fireball/Fireball/Shield depletion to zero mana, two25-gold listing deposits,
+  rejected escrow save and actual schema8 process crash. The schema7 writer
+  refuses schema8; after migration the schema8 writer refuses schema9. Both
+  refusals occur before admission/writes; raw user BSON, journal and pending
+  operation remain unchanged. Two fresh schema9 processes recover listings,
+  exact resources and rest, then ordinary town login heals only online time.
+  This tests the actual upcoming8→9 boundary without disabling town recovery
+  or fabricating a zero-mana state in the new server.
+- Read-only raw observations before stopping old writers avoid running current
+  migrations too early. The integration additionally requires absolute
+  `EIDOLON_RESOURCE_PRE_REST_BINARY`, alongside existing bridge/current binary
+  and disposable loopback/failpoint opt-ins. No production database involved.
+  All four server logs are free of race/panic/fatal failures; schema8 kill was
+  intentional, bridge disconnect save verified before legacy shutdown, both
+  schema9 processes completed normal drains. Owned Mongo0122/volume removed
+  and absent. Evidence `/tmp/eidolon-rest-schema-0122.log`.
+- Full server-package race sweep passes13.222s; focused independent recovery
+  oracle tests pass. `/tmp/eidolon-rest-schema-root.log`. Production unchanged.
+- Added an isolated real-input browser route (`EIDOLON_ISOLATED_QA_ROUTE=well-rested`)
+  for fresh registration, earned rest, ordinary travel, an enemy hit, Recall
+  and fresh login with aura/timer checks. Final actual17880 passes1/32.3s:
+  bank5.346s in town,12.574s after crossing out,9.738s after combat/Recall,
+  12.099s after fresh login.19 aura meshes remained attached; cast reduced
+  mana110→80, actual local damage receipt hit the selected enemy, and town
+  recovery raised mana93→110 across the return/relogin interval. This is a
+  functional travel/combat/reconnect check, not exact XP or first-hour balance.
+  Evidence `/tmp/eidolon-rest-browser-0131.log`; artifact credential scan passed,
+  owned containers/volumes/image removed and container absence checked.
+  Town/relogin screenshots retained in `/tmp/eidolon-rest-browser-proof-nXFcKk`
+  and visually inspected; original transparent gold rings/motes, no opaque box.
+  Full lint passes (`/tmp/eidolon-rest-schema-browser-lint.log`).
+- Initial browser0126/0128 attempts failed their health-only target check.
+  The final route establishes ordinary target selection/chase, requires a local
+  server damage receipt and recognizes authoritative DEAD state (the renderer
+  does not refresh its live HP field on a death snapshot). Prior attempts lack
+  post-cast state evidence, so do not claim a definitive individual cause.
+  Final hit had an observed HP reduction30→28 as well as the damage receipt.
+- Group/phone aura, expiry and rested/unrested earned pacing still need evidence.
+  Source audit also identified old browser assumptions in fresh-opening's exact
+  .1 stat regen, death-resource-recovery's town login/Recall bounds and phone
+  talent-economy's castResourceBounds. Adapt those to explicit authoritative
+  rest/safe-zone state; do not disable recovery or inflate unexplained allowances.
+
 Latest additional acceptance, **September9 01:16UTC**:
 
 - Actual standalone refunds/refund lifecycle pass43.100s: offline pending

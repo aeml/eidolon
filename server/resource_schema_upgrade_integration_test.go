@@ -18,14 +18,17 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Real schema7 bridge -> schema8 gameplay/crash -> refused bridge -> schema8
-// recovery. Starts with a prepared legacy character, not earned leveling/gear.
+// Real schema7 bridge -> schema8 gameplay/crash -> refused bridge -> schema9
+// migration/refused schema8 writer -> rested recovery. Starts with a prepared
+// legacy character, not earned leveling/gear. No test-side migration runs while
+// an older writer is alive.
 func TestResourceActualSchemaUpgradeRefusalAndRecovery(t *testing.T) {
 	if os.Getenv("EIDOLON_RESOURCE_DISPOSABLE_DATABASE") != "1" || os.Getenv("EIDOLON_RESOURCE_FAILPOINTS") != "1" {
 		t.Skip("requires explicitly disposable loopback Mongo with failpoints")
 	}
 	uri, binary, bridge := os.Getenv("EIDOLON_RESOURCE_MONGO_URI"), os.Getenv("EIDOLON_RESOURCE_BINARY"), os.Getenv("EIDOLON_SCHEMA_BRIDGE_BINARY")
-	if !regexp.MustCompile(`^mongodb://127\.0\.0\.1:[0-9]+/?$`).MatchString(uri) || !filepath.IsAbs(binary) || !filepath.IsAbs(bridge) {
+	preRest := os.Getenv("EIDOLON_RESOURCE_PRE_REST_BINARY")
+	if !regexp.MustCompile(`^mongodb://127\.0\.0\.1:[0-9]+/?$`).MatchString(uri) || !filepath.IsAbs(binary) || !filepath.IsAbs(bridge) || !filepath.IsAbs(preRest) {
 		t.Fatal("requires isolated loopback Mongo and absolute owned binary paths")
 	}
 	admin := resourceRefundAdmin(t, uri)
@@ -77,17 +80,29 @@ func TestResourceActualSchemaUpgradeRefusalAndRecovery(t *testing.T) {
 		t.Fatal("normal bridge session changed legacy progress or did not save")
 	}
 	stopBridge() // Never migrate while the older writer is still running.
-	repo, err := database.New(uri)
-	if err != nil {
-		t.Fatal(err)
+	// Read-only raw observations avoid opening the current migration runner
+	// before the schema8 process has shut down.
+	readDecision := func() *database.AuctionBidOperation {
+		cursor, err := raw.Collection("auction_bid_operations").Find(ctx, bson.M{"player_id": "player-" + name})
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer cursor.Close(ctx)
+		var operations []database.AuctionBidOperation
+		if err := cursor.All(ctx, &operations); err != nil || len(operations) > 1 {
+			t.Fatal("invalid prepared listing decisions", err)
+		}
+		if len(operations) == 0 {
+			return nil
+		}
+		return &operations[0]
 	}
-	defer repo.Close(context.Background())
 	dir := t.TempDir()
 	journal, err := database.OpenCharacterSaveJournal(dir)
 	if err != nil {
 		t.Fatal(err)
 	}
-	address, crash := compatStartServerWithCrash(t, binary, uri, 171, true, "-save-journal-dir", dir)
+	address, crash := compatStartServerWithCrash(t, preRest, uri, 171, true, "-save-journal-dir", dir)
 	connection = resourceOpenCharacter(t, address, name, password)
 	// Zero Wisdom/Vitality isolates persistence from elapsed regen. Legacy login
 	// preserves its100-mana baseline, not the larger derived capacity. Ordinary
@@ -112,8 +127,8 @@ func TestResourceActualSchemaUpgradeRefusalAndRecovery(t *testing.T) {
 		t.Fatal("first ordinary listing failed")
 	}
 	first := listings[0]
-	firstSaved, err := repo.GetCharacter(name, name)
-	if err != nil || firstSaved.Resources == nil || firstSaved.Resources.Mana != 40 || firstSaved.Resources.Health <= 0 || firstSaved.Gold != 1209 {
+	firstSaved := readLegacy()
+	if firstSaved.Resources == nil || firstSaved.Resources.Mana != 40 || firstSaved.Resources.Health <= 0 || firstSaved.Gold != 1209 {
 		t.Fatal("first listing did not save the actual legacy resource baseline", err)
 	}
 	baselineHealth := firstSaved.Resources.Health
@@ -148,9 +163,9 @@ func TestResourceActualSchemaUpgradeRefusalAndRecovery(t *testing.T) {
 		len(expected.Inventory) != 0 || len(expected.ItemDeliveryReceipts) != 2 || len(expected.GoldCreditReceipts) != 2 {
 		t.Fatal("journal separated zero mana, items, deposits or receipts", err)
 	}
-	op := listingDecision(t, repo, name)
-	saved, err := repo.GetCharacter(name, name)
-	if err != nil || op == nil || saved.Gold != 1209 || saved.Resources.Mana != 0 || len(saved.Inventory) != 1 || saved.Inventory[0].ID != second.ID {
+	op := readDecision()
+	saved := readLegacy()
+	if op == nil || saved.Gold != 1209 || saved.Resources.Mana != 0 || len(saved.Inventory) != 1 || saved.Inventory[0].ID != second.ID {
 		t.Fatal("fault missed the intended committed-decision/uncommitted-escrow boundary", err)
 	}
 	crash()
@@ -175,8 +190,36 @@ func TestResourceActualSchemaUpgradeRefusalAndRecovery(t *testing.T) {
 		t.Fatal("refused bridge changed the newer character", err)
 	}
 	retained, err := journal.Read(name)
-	if err != nil || !reflect.DeepEqual(retained, pending) || !reflect.DeepEqual(listingDecision(t, repo, name), op) {
+	if err != nil || !reflect.DeepEqual(retained, pending) || !reflect.DeepEqual(readDecision(), op) {
 		t.Fatal("refused bridge changed pending journal/operation", err)
+	}
+	// The new migration adds a fence, not offline healing or a rest backfill.
+	repo, err := database.New(uri)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer repo.Close(context.Background())
+	version, err := repo.SchemaVersion(ctx)
+	if err != nil || version != 9 {
+		t.Fatal("rest migration did not reach schema9", version, err)
+	}
+	refusalCtx, cancel = context.WithTimeout(ctx, 10*time.Second)
+	command = exec.CommandContext(refusalCtx, preRest, "-addr", "127.0.0.1:0", "-mongo-uri", uri,
+		"-log-file", "", "-suspicious-log-file", "", "-economy-metrics-file", "")
+	output, refused = command.CombinedOutput()
+	cancel()
+	exitErr, exited = refused.(*exec.ExitError)
+	if !exited || exitErr.ExitCode() != 1 || !strings.Contains(string(output), "database schema 9") ||
+		!strings.Contains(string(output), "refusing startup before writes") || strings.Contains(string(output), "Server started") {
+		t.Fatalf("schema8 writer did not refuse before admission: %v\n%s", refused, output)
+	}
+	t.Logf("owned_expected_schema8_startup_refusal: %s", output)
+	if err := raw.Collection("users").FindOne(ctx, bson.M{"username": name}).Decode(&after); err != nil || !reflect.DeepEqual(protected, after) {
+		t.Fatal("rest migration/refused schema8 writer changed the character", err)
+	}
+	retained, err = journal.Read(name)
+	if err != nil || !reflect.DeepEqual(retained, pending) || !reflect.DeepEqual(readDecision(), op) {
+		t.Fatal("rest migration/refused schema8 writer changed the pending operation", err)
 	}
 	for phase := 172; phase < 174; phase++ {
 		address, stop := compatStartServer(t, binary, uri, phase, "-save-journal-dir", dir)
@@ -184,7 +227,7 @@ func TestResourceActualSchemaUpgradeRefusalAndRecovery(t *testing.T) {
 			t.Fatal("recovery admitted before finishing pending auction")
 		}
 		saved, err := repo.GetCharacter(name, name)
-		if err != nil || !reflect.DeepEqual(saved.Resources, expected.Resources) || saved.Gold != 1184 || saved.Level != 31 || saved.XP != 17 ||
+		if err != nil || !reflect.DeepEqual(saved.Resources, expected.Resources) || !reflect.DeepEqual(saved.WellRested, expected.WellRested) || saved.Gold != 1184 || saved.Level != 31 || saved.XP != 17 ||
 			len(saved.Inventory) != 0 || !reflect.DeepEqual(saved.Equipment, legacy.Equipment) ||
 			!reflect.DeepEqual(saved.GoldCreditReceipts, expected.GoldCreditReceipts) || !reflect.DeepEqual(saved.ItemDeliveryReceipts, expected.ItemDeliveryReceipts) {
 			if err != nil {
@@ -209,8 +252,10 @@ func TestResourceActualSchemaUpgradeRefusalAndRecovery(t *testing.T) {
 			}
 		}
 		connection = resourceOpenCharacter(t, address, name, password)
-		resourceProbe(t, connection, 0, false)
-		resourceCloseAndWait(t, repo, connection, name)
+		townFixtureProbe(t, connection, saved)
+		connectedSave := resourceCloseAndWait(t, repo, connection, name)
+		assertTownFixtureSave(t, saved, connectedSave, 0)
 		stop()
+		expected = connectedSave
 	}
 }

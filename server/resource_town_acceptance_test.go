@@ -26,8 +26,15 @@ func townFixturePools(t *testing.T, before *database.Character) (int, int) {
 		}
 		return 200, 100
 	}
+	if before.Level == 31 {
+		chest, ok := before.Equipment["chest"]
+		if !ok || len(before.Equipment) != 1 || chest.ID != "bridge-chest" || chest.Type != "ARMOR" || chest.Level != 1 || chest.Potency != 0 || len(chest.Gems) != 0 || chest.SetID != "" || chest.UniqueEffect != "" || !reflect.DeepEqual(chest.Stats, map[string]int{"intelligence": 5}) {
+			t.Fatal("level31 town oracle requires the declared unmodified bridge chest")
+		}
+		return 150, 300
+	}
 	if before.Level != 30 {
-		t.Fatal("town resource oracle requires its declared level1 or level30 fixture")
+		t.Fatal("town resource oracle requires its declared level1, level30 or level31 fixture")
 	}
 	if len(before.Equipment) == 0 {
 		return 145, 245
@@ -183,5 +190,17 @@ func TestTownResourceAcceptanceHandoffEquipment(t *testing.T) {
 	}
 	if got := townFixtureResources(t, before, 20, 30); got.Health != 220 || got.Mana != 110 {
 		t.Fatalf("handoff fixture recovery caps: %+v", got)
+	}
+}
+
+func TestTownResourceAcceptanceSchemaUpgradeEquipment(t *testing.T) {
+	before := &database.Character{Level: 31, Stats: database.Stats{Intelligence: 10},
+		Resources: &database.CharacterResources{Version: 1, Health: 100, Mana: 0},
+		Equipment: map[string]database.Item{"chest": {ID: "bridge-chest", Type: "ARMOR", Level: 1, Stats: map[string]int{"intelligence": 5}}}}
+	if got := townFixtureResources(t, before, .5, 0); got.Health != 108 || got.Mana != 16 {
+		t.Fatalf("schema upgrade exact recovery from zero mana: %+v", got)
+	}
+	if got := townFixtureResources(t, before, 20, 0); got.Health != 165 || got.Mana != 330 {
+		t.Fatalf("schema upgrade recovery caps: %+v", got)
 	}
 }
