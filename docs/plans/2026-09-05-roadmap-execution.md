@@ -16,7 +16,24 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 08:23 UTC
+## Current checkpoint — September 9, 08:25 UTC
+
+**70373 complete58 TERMINAL1/FAILED**: seven-test dungeon batch finished with
+the one pre-cast beam-position failure and6passes/6.1m. Scan0; exact
+rest58-all24-r6-0909-0817 API/Mongo/image absent and all three ports free.
+Archive **`/tmp/eidolon-rest58-beam-approach-failure-qY89aQ`** includes report,
+error context and full log. The later full-chain stages did not execute.
+Only after terminal evidence/cleanup, canonical58 cherry-picked the prepared
+settled-approach QA fix as **07283d0**, now frozen/clean. **55264 focused actual
+beam replay ACTIVE**, routebeam-walls, runrest58-beam24-r1-0909-0825,
+API18560/Mongo18561/web41960, log `/tmp/eidolon-rest58-beam-settled-0825.log`.
+No success claim yet, no threshold/deadline or production-runtime change.
+
+**55CI34328735856 ACTIVE**, client tests passed, server tests running. Public54
+fully verified as below; do not push56 until complete55/live gate. Primary1389f7e
+and aura59be536 remain clean, idle and unpublished. Whole roadmap active.
+
+## Previous checkpoint — September 9, 08:23 UTC
 
 This continuation made PROGRESS:54 fully delivered/verified,55 pushed, observer
 readiness corrected and tested, a separate build-cache fix proved with real

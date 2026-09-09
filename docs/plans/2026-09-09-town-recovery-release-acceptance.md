@@ -1,5 +1,11 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update08:25UTC: full70373 finished FAILED (one beam-approach failure, six other
+dungeon batch tests passed). Evidence archived and exact cleanup verified.
+Canonical58 **07283d0** now includes the prepared settled-approach QA correction;
+**55264 focused beam-walls replay ACTIVE**, `/tmp/eidolon-rest58-beam-settled-0825.log`.
+No production change or actual replay pass is claimed yet.55CI34328735856 is active.
+
 Latest September9 08:23UTC: **d5d04cc5e128616982d97b0f8d0997b6c3e7798b** is the
 unpublished recovery candidate. Full run88641 ended FAILED on late-observer
 module requests with ERR_NETWORK_CHANGED; original evidence retained and exact
