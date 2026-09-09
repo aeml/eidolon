@@ -29,7 +29,10 @@ export async function findExpeditionTarget(page, hunt, deadline = Infinity) {
         const player = await readPlayerState(page);
         const dx = target.x - player.x, dz = target.z - player.z;
         const scale = Math.min(1, 12 / Math.max(1, Math.hypot(dx, dz)));
-        await moveByGroundClick(page, dx * scale, dz * scale);
+        // Ordinary travel can cross town while seeking the authored band. Use
+        // the real move-only gesture so a newly hovered NPC cannot open a
+        // conversation between the ground projection and the actual click.
+        await moveByGroundClick(page, dx * scale, dz * scale, { moveOnly: true });
     }
     throw new Error(`No reachable ${hunt.enemy} level ${hunt.minEnemyLevel}+ after bounded ordinary travel`);
 }

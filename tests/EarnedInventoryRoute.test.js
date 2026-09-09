@@ -5,14 +5,17 @@ import { readStoryHuntFailureEvidence } from './e2e/story-hunt-combat-observer.j
 
 test('collection failure retains bag evidence even after a login cleared the hunt observer', async () => {
     const seed = { id: 'chronicle-item-seed', name: 'Verdant Memory Seed', type: 'QUEST', stack: 2 };
+    const quest = Object.freeze({ id: 'chronicle_earth_walking_ink', accepted: true,
+        completed: false, count: 4, maxCount: 60 });
     window.game = { player: { level: 8, stats: { hp: 100, mana: 20 }, position: new Vector3(),
-        inventory: [seed, null], baseStats: {}, talentRanks: {} }, remotePlayers: new Map() };
+        inventory: [seed, null], quests: [quest], baseStats: {}, talentRanks: {} }, remotePlayers: new Map() };
     delete window.__storyHuntCombatEvidence;
     try {
         const evidence = await readStoryHuntFailureEvidence({ evaluate: callback => callback() });
         expect(evidence.combat).toBeNull();
         expect(evidence.player).toMatchObject({ inventoryCapacity: 2, freeSlots: 1,
-            inventory: [expect.objectContaining(seed)] });
+            inventory: [expect.objectContaining(seed)], quests: [quest] });
+        expect(window.game.player.quests).toEqual([quest]);
     } finally { delete window.game; }
 });
 

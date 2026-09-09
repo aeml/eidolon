@@ -84,6 +84,8 @@ export async function maintainEarnedInventory(page, { leaveTown }) {
     console.log('[earned-bag-management]', JSON.stringify({ equipped, sales,
         before: { level: before.level, gold: before.gold, freeSlots: earnedBagFreeSlots(before.inventory) },
         after: { level: after.level, gold: after.gold, freeSlots: earnedBagFreeSlots(after.inventory) },
-        seconds: (Date.now() - started) / 1000, note: 'Verified merchant proceeds, not vendor estimates or granted gold.' }));
+        seconds: (Date.now() - started) / 1000, note: sales.length
+            ? 'Verified merchant proceeds, not vendor estimates or granted gold.'
+            : 'Equipped earned items to free space; no merchant sale was needed or verified.' }));
     return true;
 }

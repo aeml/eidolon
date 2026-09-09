@@ -28,6 +28,8 @@ export async function readStoryHuntFailureEvidence(page) {
             stats: { ...p.stats }, baseStats: { ...p.baseStats }, statPoints: p.statPoints,
             talentPoints: p.talentPoints, talents: p.talentRanks, branch: p.selectedBranch,
             position: p.position.toArray(), safeZone: p.safeZoneId, rest: p.wellRestedSeconds,
+            quests: (p.quests || []).map(q => ({ id: q.id, accepted: q.accepted,
+                completed: q.completed, count: q.count, maxCount: q.maxCount })),
             inventoryCapacity: p.inventory.length, freeSlots: p.inventory.filter(item => !item?.id).length,
             inventory: p.inventory.filter(item => item?.id).map(item => ({ id: item.id, name: item.name,
                 type: item.type, slot: item.slot, level: item.level, stack: item.stack, rarity: item.rarity, value: item.value })) },
