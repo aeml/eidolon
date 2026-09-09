@@ -2,12 +2,15 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"reflect"
 	"strings"
 	"testing"
+	"time"
 
 	"eidolon-server/internal/database"
 	"eidolon-server/internal/game"
+	statepb "eidolon-server/internal/proto"
 	"github.com/gorilla/websocket"
 )
 
@@ -43,6 +46,8 @@ func TestResourceActualDungeonRestartAndTownRecovery(t *testing.T) {
 				dir := t.TempDir()
 				address, stop := compatStartServer(t, binary, uri, 50, "-save-journal-dir", dir)
 				connection, _ := resourceLoginCharacter(t, address, fixture.Name, password, class)
+				entryStarted := time.Now()
+				beforeEntry := townFixtureRead(t, connection, fixture, 0)
 				resourceSend(t, connection, MsgGetDungeonStatus, map[string]string{"dungeonType": "verdant_bastion_catacombs"})
 				resourceReadMessage(t, connection, MsgGetDungeonStatus, nil) // Ordinary solo-party creation.
 				resourceSend(t, connection, MsgEnterDungeon, map[string]any{"dungeonType": "verdant_bastion_catacombs", "difficulty": "normal", "runLevel": 30})
@@ -50,21 +55,39 @@ func TestResourceActualDungeonRestartAndTownRecovery(t *testing.T) {
 				if !strings.HasPrefix(initialScene.InstanceID, "dungeon_") || initialScene.Type != "verdant_bastion_catacombs" || len(initialScene.Layout.Rooms) < 3 || initialScene.Layout.GenerationSeed == "" {
 					t.Fatal("ordinary entry did not create a real regional dungeon")
 				}
-				mana := 0
+				entered := wellRestedReadActorAfter(t, connection, fixture.Name, time.Now(), func(e *statepb.Entity) bool { return e.InstanceId == initialScene.InstanceID && e.SafeZoneId == "" })
+				// Portal latency permits only bounded ordinary town healing before
+				// departure. A rest expiry can clamp a pool to its lower maximum.
+				elapsed := time.Since(entryStarted).Seconds()
+				for _, pool := range [][4]float64{{float64(beforeEntry.Health), float64(entered.Health), float64(entered.MaxHealth), 159}, {float64(beforeEntry.Mana), float64(entered.Mana), float64(entered.MaxMana), 489}} {
+					lower := math.Min(pool[0], pool[2])
+					upper := math.Min(pool[2], pool[0]+math.Ceil(pool[3]*.1*elapsed)+1)
+					if pool[1] < lower || pool[1] > upper {
+						t.Fatalf("portal altered resources beyond possible town recovery: %v interval[%f,%f]", pool, lower, upper)
+					}
+				}
+				// Zero Vitality/Wisdom means exactly no passive regeneration here.
+				// Wait for the small legitimately earned town bank to expire using
+				// real server time, then assert exact bars and real cast costs.
+				settled := wellRestedReadActorAfter(t, connection, fixture.Name, time.Now().Add(300*time.Millisecond), func(e *statepb.Entity) bool { return e.WellRestedSeconds == 0 })
+				if settled.SafeZoneId != "" || settled.MaxHealth != 145 || settled.MaxMana != 445 || settled.Health != min(entered.Health, 145) || settled.Mana != min(entered.Mana, 445) {
+					t.Fatal("dungeon healed resources or failed to expire/clamp rested maxima")
+				}
+				health, mana := int(settled.Health), int(settled.Mana)
 				if class == "Wizard" {
 					start := initialScene.Layout.Rooms[0]
 					resourceSend(t, connection, MsgAbility, AbilityPayload{SkillName: "Fireball", TargetX: start.X + 1, TargetZ: start.Z})
 					var cast game.AbilityResult
 					resourceReadMessage(t, connection, MsgAbilityResult, &cast)
-					if !cast.Accepted || cast.Mana != 70 {
+					if !cast.Accepted || cast.Mana != mana-30 {
 						t.Fatalf("ordinary dungeon Fireball failed: %+v", cast)
 					}
-					mana = 70
+					mana -= 30
 				} else {
-					resourceProbe(t, connection, 0, false)
+					resourceProbe(t, connection, mana, false)
 				}
 				saved := resourceCloseAndWait(t, repo, connection, fixture.Name)
-				if saved.Resources.Health != 17 || saved.Resources.Mana != mana || saved.InstanceID != initialScene.InstanceID || saved.DungeonProgress == nil {
+				if saved.Resources.Health != health || saved.Resources.Mana != mana || saved.WellRested != nil || saved.InstanceID != initialScene.InstanceID || saved.DungeonProgress == nil {
 					t.Fatal("ordinary dungeon disconnect changed resources or lost its resume snapshot")
 				}
 				stop()
@@ -115,13 +138,14 @@ func TestResourceActualDungeonRestartAndTownRecovery(t *testing.T) {
 				if town.InstanceID != "" || town.Type != "overworld" {
 					t.Fatal("normal recovery did not return to the overworld")
 				}
-				want := &database.CharacterResources{Version: 1, Health: 17, Mana: mana}
+				expected := *restored
 				if dead {
-					want.Health, want.Mana = 145, 445
+					expected.Resources = &database.CharacterResources{Version: 1, Health: 145, Mana: 445}
 				}
-				resourceProbe(t, connection, want.Mana, false)
+				townFixtureProbe(t, connection, &expected)
 				final := resourceCloseAndWait(t, repo, connection, fixture.Name)
-				if !reflect.DeepEqual(final.Resources, want) || final.InstanceID != "" || final.DungeonProgress != nil || final.X != -1.25 || final.Z != 200 ||
+				assertTownFixtureSave(t, &expected, final, 0)
+				if final.InstanceID != "" || final.DungeonProgress != nil || final.X != -1.25 || final.Z != 200 ||
 					final.Gold != saved.Gold || final.XP != saved.XP || !reflect.DeepEqual(final.Equipment, saved.Equipment) {
 					t.Fatal("town recovery changed rewards/equipment or violated normal Recall/Respawn resource rules")
 				}

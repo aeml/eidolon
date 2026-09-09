@@ -19,6 +19,23 @@ test('authoritative rest fields preserve partial updates and accept explicit exp
     expect(actor.wellRestedSeconds).toBe(7200);
 });
 
+test.each([[0, 'lanternhold'], [100, 'lanternhold'], [100, ''], [7200, 'lanternhold']])(
+    'multiplayer render ticks cannot earn/spend rest or heal without server snapshots (%s, %s)', (bank, zone) => {
+        const actor = new Fighter('rest-authority');
+        actor.isMultiplayer = true;
+        actor.stats.hp = 17;
+        actor.stats.mana = 0;
+        syncWellRested(actor, { wellRestedSeconds: bank, safeZoneId: zone });
+        for (let tick = 0; tick < 60; tick++) actor.update(1, null, null, null);
+        expect(actor.wellRestedSeconds).toBe(bank);
+        expect(actor.stats.hp).toBe(17);
+        expect(actor.stats.mana).toBe(0);
+        syncWellRested(actor, { wellRestedSeconds: 2.5, safeZoneId: '' });
+        expect(actor.wellRestedSeconds).toBe(2.5);
+        actor.dispose();
+    }
+);
+
 test('tracked buff states explain bank, cap, paused death and kill-only bonus without a wall-clock expiry', () => {
     const engine = Object.create(GameEngine.prototype);
     engine.player = { wellRestedSeconds: 123.4, safeZoneId: 'lanternhold' };

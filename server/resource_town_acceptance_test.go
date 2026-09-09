@@ -12,14 +12,27 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-// Independent arithmetic for the level30, unequipped, 0 Vitality/Wisdom and
-// 10 Intelligence recovery fixtures. Their un-rested maxima are145/245. This
+// Independent arithmetic for the level30, 0 Vitality/Wisdom and 10 Intelligence
+// recovery fixtures, optionally wearing the declared journal-test chest. This
 // does not call the production regeneration/stat code it is checking.
+func townFixturePools(t *testing.T, before *database.Character) (int, int) {
+	t.Helper()
+	if before.Level != 30 || before.Stats.Vitality != 0 || before.Stats.Wisdom != 0 || before.Stats.Intelligence != 10 {
+		t.Fatal("town resource oracle requires its declared level30 fixture; do not reuse it for other builds")
+	}
+	if len(before.Equipment) == 0 {
+		return 145, 245
+	}
+	chest, ok := before.Equipment["chest"]
+	if !ok || len(before.Equipment) != 1 || chest.ID != "journal-chest" || chest.Type != "ARMOR" || chest.Level != 1 || chest.Potency != 0 || len(chest.Gems) != 0 || chest.SetID != "" || chest.UniqueEffect != "" || !reflect.DeepEqual(chest.Stats, map[string]int{"intelligence": 20}) {
+		t.Fatal("town resource oracle requires the declared unmodified journal chest")
+	}
+	return 145, 445
+}
+
 func townFixtureResources(t *testing.T, before *database.Character, bank float64, manaSpent int) database.CharacterResources {
 	t.Helper()
-	if before.Level != 30 || before.Stats.Vitality != 0 || before.Stats.Wisdom != 0 || before.Stats.Intelligence != 10 || len(before.Equipment) != 0 {
-		t.Fatal("town resource oracle requires its declared bare level30 fixture; do not reuse it for other builds")
-	}
+	maxHP, maxMP := townFixturePools(t, before)
 	prior := 0.0
 	if before.WellRested != nil {
 		prior = before.WellRested.RemainingSeconds
@@ -35,9 +48,9 @@ func townFixtureResources(t *testing.T, before *database.Character, bank float64
 		}
 		return want
 	}
-	maxHP, maxMP := 145, 245
 	if bank > 0 {
-		maxHP, maxMP = 159, 269
+		maxHP = int(math.Floor(float64(maxHP)*1.1 + 1e-9))
+		maxMP = int(math.Floor(float64(maxMP)*1.1 + 1e-9))
 	}
 	want.Health = min(maxHP, want.Health+int(math.Floor(float64(maxHP)*.1*elapsed+1e-9)))
 	want.Mana = min(maxMP, want.Mana-manaSpent+int(math.Floor(float64(maxMP)*.1*elapsed+1e-9)))
@@ -106,5 +119,17 @@ func TestTownResourceAcceptanceArithmetic(t *testing.T) {
 	before.Resources = &database.CharacterResources{Version: 1, Dead: true}
 	if got := townFixtureResources(t, before, 10, 0); got.Health != 0 || got.Mana != 0 || !got.Dead {
 		t.Fatalf("corpse arithmetic: %+v", got)
+	}
+}
+
+func TestTownResourceAcceptanceJournalEquipment(t *testing.T) {
+	before := &database.Character{Level: 30, Stats: database.Stats{Intelligence: 10},
+		Resources: &database.CharacterResources{Version: 1, Health: 17, Mana: 100},
+		Equipment: map[string]database.Item{"chest": {ID: "journal-chest", Type: "ARMOR", Level: 1, Stats: map[string]int{"intelligence": 20}}}}
+	if got := townFixtureResources(t, before, 1, 0); got.Health != 32 || got.Mana != 148 {
+		t.Fatalf("equipped fixture recovery: %+v", got)
+	}
+	if got := townFixtureResources(t, before, 20, 0); got.Health != 159 || got.Mana != 489 {
+		t.Fatalf("equipped fixture maxima: %+v", got)
 	}
 }

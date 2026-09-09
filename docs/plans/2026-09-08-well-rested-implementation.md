@@ -61,6 +61,38 @@ four-class stats and device/aura acceptance remain required.
 
 ## Development acceptance — September 8, 23:30 UTC
 
+Latest additional acceptance, **September9 00:12UTC**:
+
+- Existing four-class dungeon restart/recovery matrix now distinguishes bounded
+  legitimate town healing during portal admission from exact no-passive-regeneration
+  bars inside these zero-Vitality/Wisdom fixtures. It waits in real server time
+  for the small town-earned bank to expire, checks exact lower maxima and no
+  dungeon healing, then verifies actual Fireball cost and disconnect resources.
+  Same-seed/layout and explicit partial-room/death fixtures still survive fresh
+  processes without duplicate rewards; normal Recall/Respawn back to town uses
+  exact rest-delta recovery. Known journal-chest fixture maxima145/445 and159/489
+  have their own guarded independent arithmetic test; no arbitrary equipment
+  builds are silently accepted by this oracle.
+- Actual**67378 PASS52.653s**, all8 class/living/dead cases and16 fresh server
+  processes, exact production race binaryd650c72. Every child log independently
+  checked clean with a normal drain:2188294785,2461958979,2947461422,4043686394,
+  3688029872,607370852,106456909,2650884940,54121508,2733231826,3839608658,
+  3858867010,3319377111,2512730731,3591180787,217045687. Owned Mongo
+  `eidolon-rest-dungeon-20260909-0010`/volumes removed and checked absent.
+  Log `/tmp/eidolon-rest-dungeon.log`; focused arithmetic/compile77101 PASS1.053s.
+- Offline scope resolved by inspecting actual entry code: src/main.js sets
+  isMultiplayer=true; GameEngine unconditionally keeps both engine and actor
+  multiplayer. The released game has no offline-play entry. Keep server-owned
+  rest and resources; disconnected time neither earns nor spends the bank.
+  Gallery/offline actor simulations are previews, not a separate character
+  progression mode. Added actual Actor.update regression across four bank/zone
+  states:60 simulated render seconds cannot earn/spend rest or heal multiplayer
+  actors absent authoritative snapshots. Client96687 PASS2suites/15tests1.01s.
+
+All local check handles closed. Still open: PvP integration adaptation,
+journal/auction/schema-upgrade flows, browser-integrated presentation and earned
+balance. No runtime, metadata or deployment changes in this checkpoint.
+
 Latest additional acceptance, **September9 00:02UTC**:
 
 - Adapted existing token-resume/death-recovery and eight-live-socket shutdown
