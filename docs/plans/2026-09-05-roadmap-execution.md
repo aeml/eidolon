@@ -16,7 +16,38 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 09:21 UTC
+## Current checkpoint — September 9, 09:26 UTC
+
+**49283 maximum-speed movement TERMINAL0/PASS1/25.2s** (test22.7) on clean
+standalone58 **1fd0d35683d973e99dc01c7fadbcbfe9f47e1202**. Actual speed31.68,
+sustained106frames/outside83frames; max2updates, raw maxstep1.056 in both,
+distance excess1.55e-15/0, no invalid frames/backtracking/camera gaps/corrections.
+All arrival and acknowledgement checks passed. Archive
+`/tmp/eidolon-rest58-fast-movement-proof-XGR9zy`; log
+`/tmp/eidolon-rest58-fast-movement-0921.log`. This is explicitly prepared
+level100 QA, not earned progression or a physical-phone performance claim.
+
+**68919 ordinary fresh movement TERMINAL0/PASS1/24.9s** (test22.1), same source,
+speed10.56, max2updates/maxstep0.352/maxexcess3.33e-16, no corrections or camera
+errors. Archive `/tmp/eidolon-rest58-fresh-movement-proof-a1St1J`; log
+`/tmp/eidolon-rest58-fresh-movement-0923.log`. Both scans0; exact respective
+API/Mongo/images independently absent and18560/18561/41960free before successors.
+
+**26873 full recovery client/lint TERMINAL0**,251suites/3534tests/172.663s,
+Node24. Logs `/tmp/eidolon-rest58-speed-budget-full-{client,lint}.log`.
+**58189 exact live-wrapper rehearsal ACTIVE**, frozen1fd0d35, only owned browser,
+runrest58-live24-r1-0909-0925, API18560/Mongo18561/web41960, route
+`live-recovery-rehearsal`, log
+`/tmp/eidolon-rest58-live-recovery-rehearsal-0925.log`. Native expiry started.
+After terminal evidence/archive/cleanup, run complete58 again; do not infer
+whole-game or production success from the two focused movement passes.
+
+Primaryd7cd47f **10766 full client/lint ACTIVE**, logs
+`/tmp/eidolon-primary-speed-budget-full-{client,lint}.log`. Separate Dark King
+ca662fd **23814 full server race ACTIVE** as below. Keep both candidates frozen.
+55CI34328735856 still in predeploy gameplay; no successor push or new live claim.
+
+## Previous checkpoint — September 9, 09:21 UTC
 
 The preceding turn was a VERIFIED WAIT. This turn made PROGRESS: completed58
 run52270 reached a reproducible movement failure with retained frame evidence,

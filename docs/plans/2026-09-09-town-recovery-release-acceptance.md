@@ -1,5 +1,13 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update09:26UTC: both actual movement replays PASSED on1fd0d35: max-speed31.68
+49283/25.2s and ordinary fresh-speed10.5668919/24.9s. Both enforce2updates,
+speed-proportional distance, no backtracking/camera/correction failures; scan0
+and exact cleanup verified. Archives/logs in execution ledger. Full client26873
+PASSED251suites/3534tests/172.663s plus lint. **58189 exact live-wrapper rehearsal
+ACTIVE**, `/tmp/eidolon-rest58-live-recovery-rehearsal-0925.log`.
+Complete gameplay rerun and ordered production/live verification remain due.
+
 Update09:21UTC:52270 TERMINAL FAILED at the original movement distance bound.
 This time retained75-frame evidence proves the1.056step equals exactly two1/60s
 updates at31.68 rested speed (28.8 ×1.10), not extra simulation catch-up.
