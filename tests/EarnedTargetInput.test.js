@@ -73,7 +73,11 @@ test('both uninterrupted story combat loops use ordinary retained-target input',
     expect(hunt).toContain('const deadline = Date.now() + 120_000');
     expect(hunt).toContain('enemy = await findExpeditionTarget(page, hunt, deadline)');
     expect(hunt).toContain('step < 100 && Date.now() < deadline');
-    expect(hunt).toContain('combatTarget.distance > observed.basicRange + 2');
+    // A visible distant foe must receive normal click/chase input, not loop
+    // back to the search that returned it. Behavioral cases live alongside
+    // canEngageExpeditionTarget in ExpeditionCombatTargets.test.js.
+    expect(hunt).toContain('canEngageExpeditionTarget(combatTarget, acquisitionPoint?.visible)');
+    expect(hunt).not.toContain('combatTarget.distance > observed.basicRange + 2');
     expect(hunt).toContain('retreatBelowHealthRatio: .8');
     expect(hunt).toContain('toBeGreaterThan(credit)');
 });
