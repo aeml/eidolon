@@ -16,7 +16,22 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 13:49 UTC
+## Current checkpoint — September 9, 13:56 UTC
+
+Previous status turn made PROGRESS: discovered authoritative58CI failure and
+inspected failed predeploy logs, changing the next action from monitor to diagnose.
+CI34355888468 failed13:51:52 on phone inventory: no gear after8kills firstattempt;
+retry earnedgear/passed portrait+landscape bag actions then stash hidden30s.
+Deploy skipped; public57/8af54f2 healthy at13:53. Downloaded original evidence
+`/tmp/eidolon-rest58-mobile-failure-Hpj06F`; no CI restart.
+Local58 fee85d2 adds read-only diagnostics, NOT runtime changes or pushed.
+Owned focused35143 ACTIVE; run rest58-phone-diag-0909-1400 on18560/18561/41960,
+log `/tmp/eidolon-rest58-phone-diagnostic.log`. Exact gear rule ~28.4%/ordinarykill
+does not guarantee gear in8kills; stash cause unproven. Preserve original failure,
+fix evidenced cause, verify focused/fullrequiredgates before publishing correction.
+Primary75e30eb/journal/story evidence unchanged and excluded. Root ledger only.
+
+## Previous checkpoint — September 9, 13:49 UTC
 
 This turn made PROGRESS: actual earned story run reached a retained failure that
 changes the next investigation, and the journal polish passed rendered/fullclient

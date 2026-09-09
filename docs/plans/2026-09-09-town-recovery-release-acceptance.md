@@ -1,5 +1,18 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update 13:56 UTC: CI34355888468 TERMINAL FAILED at 13:51:52 in predeploy
+phone inventory. First attempt obtained no usable gear after eight ordinary
+kills; retry passed both orientation bag actions, then failed opening stash.
+No deploy jobs ran. Fresh13:53 public manifest/backend remain57/8af54f2/ready.
+Original artifact retained at `/tmp/eidolon-rest58-mobile-failure-Hpj06F`.
+Candidate now local diagnostic-only fee85d2 (NOT pushed): read-only loot/target/
+stash receipts and entered-world-only failure screenshot. Owned focused route
+35143 ACTIVE, run rest58-phone-diag-0909-1400, API18560/Mongo18561/web41960,
+log `/tmp/eidolon-rest58-phone-diagnostic.log`. Source loot rule is approximately
+28.4% equipment per ordinary kill, so an eight-kill guarantee is unsupported;
+stash cause is still unknown. No increased drops, granted items, skipped gates,
+blind CI rerun or success claim. Full goal remains active.
+
 Update13:49UTC:58CI34355888468 allclient/server/threebrowser shards PASSED;
 Predeploy Character QA ACTIVE, current disposablefullgameplay (gallerypassed).
 Public client/backend fresh13:48 still57/8af54f2/ready.58notlive, no bypass.
