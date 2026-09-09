@@ -32,10 +32,14 @@ Node24.18.0 regression evidence:
   transformed vertices stay inside the batch bound. Actor buffers remain
   independent and disposal leaves cached shape/materials untouched.
 - Logs `/tmp/eidolon-rest-aura-batching-{after,lint}.log`.
+- Full client regression on e21a098:249 suites/3,497 tests passed in146.96s,
+  followed by lint, under Node24.18.0. Runtime assets were prepared with the
+  existing prepare-client script. Logs
+  `/tmp/eidolon-rest-aura-batching-{prepare,full-client,full-lint}.log`.
 
 Required before promotion:
 
-- Complete client regression on this exact candidate.
+- Retain the completed client regression above and rerun after any further code change.
 - Controlled rendered comparison of original/instanced aura at identical phases,
   including actual characters, populated party scenes and both quality settings.
 - Measure actual renderer draw calls and steady-state frame times on documented
