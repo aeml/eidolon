@@ -45,3 +45,9 @@ actual command remained in its original final position, covered by the executabl
 35-stage harness. Updated that assertion to the exact timed AND-chain call;
 no release metadata, command, route, runtime or failure behavior changed.
 Original full failure retained at `/tmp/eidolon-primary-timing-full-client.log`.
+
+Correction96a2236 focused54306 PASS269tests3.027s/lint/diff; corrected40749 full
+client TERMINAL PASS262suites3731tests180.151s. Log
+`/tmp/eidolon-primary-timing-full-client-fixed.log`. This is the combined story
+candidate's timing/command regression, not the separate recovery58 candidate's
+client count or an actual full-CLI timing profile.
