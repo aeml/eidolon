@@ -124,7 +124,12 @@ for (const className of ['Fighter', 'Rogue', 'Wizard', 'Cleric']) {
                 expect(meanInterval).toBeLessThan(during[i].interval + .75);
                 expect(receipts.hits.every(amount => amount === 1)).toBe(true);
                 expect(during[i].hp).toBeLessThan(before[i].hp);
-                expect(during[i].mana).toBe(before[i].mana);
+                expect(before[i].mana).toBe(before[i].maxMana);
+                // Level-one, unequipped actors have100 base mana, or110 while
+                // rested. Basic attacks must leave the CURRENT bar full even
+                // if the earned rest bank expires during this actual duel.
+                expect(during[i].maxMana).toBe(during[i].rest > 0 ? 110 : 100);
+                expect(during[i].mana).toBe(during[i].maxMana);
                 console.log('[duel-cadence]', JSON.stringify({ className, side: i, interval: during[i].interval,
                     meanInterval, attacks: receipts.attacks.length, hits: receipts.hits.length, hp: during[i].hp }));
             }
