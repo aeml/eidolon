@@ -4,6 +4,15 @@ Requested September 8, 2026. Status: implementation in progress, NOT live.
 Part of the active full-roadmap goal: implement as a coordinated 1.0.x feature
 after urgent blockers, and include it in 1.1 recovery and progression acceptance.
 
+September9 03:08 checkpoint: integrated production1816738 passes full server
+race and256 client suites/3645tests. Additional combined save regression passes
+all four classes living/dead through3 BSON/journal/catalog reloads each, keeping
+legacy promises, exact rest and zero mana/death through curve migration. Current
+candidate17a4dba is running the ordinary uninterrupted opening/diary/40-kill Watch;
+opening and diary passed without deaths or reconnects, hunt still in progress.
+Not a pacing approval or live release. Production51 is fully verified;52 is now
+in CI, preserving the ordered queue before this feature can be published.
+
 September9 02:31 checkpoint, developmentbadd0cf: corrected enemy acquisition,
 chase and roam to use the scene-scoped sanctuary registry, plus delayed boss
 slams rechecking safety at impact. Regressions first reproduced the failures;

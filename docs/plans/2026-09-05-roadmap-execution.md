@@ -5,7 +5,42 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 02:31 UTC
+## Current checkpoint — September 9, 03:08 UTC
+
+PROGRESS: **51 fully live and verified**. CI34300606161 terminalSUCCESS,
+including final live four-class/remote QA. Fresh no-cache public client/backend
+both51/55712b9c747056041b05fa4e475c4aee094028bc, healthOK/databaseReady.
+Canonical52/a36d1e7 clean, exact51 ancestor and remote/master exact51 before
+ordinary push; prepush version/recovery1062 PASS228tests4.128s. Push34885
+succeeded; remote/master independently verified
+**a36d1e7d66333e8f6cf707ff115947b340c9a46c**. **52 CI34305897736 ACTIVE**.
+Do not push53/ce330b3 before complete52CI/finalLiveQA and fresh exact public52.
+Root is a ledger, never a release publisher.53–57 canonical queue unchanged.
+
+Combined-story production1816738 full Go23067 PASS(root27.543s/game437.789s)
+and full client98874 PASS256 suites/3645tests240.706s. Handles confirmed terminal;
+logs `/tmp/eidolon-story-rest-integrated-full-{server,client}.log`.
+New combined-save26402 PASSrace7.460s:four classes living/dead,3 BSON/catalog/
+snapshot/private-journal reload cycles each. Old curve1 level30/9890 becomes
+curve2 level30/10561 once; legacy opening receipt500, accepted five-item8000XP
+collection terms and explicit zero quoted diary remain exact, with counts,
+evidence/optional state, base stats/gold, zero mana,1HP/dead0HP and fractional
+123.456789rest preserved. This is a durable-data test, not actual socket play;
+added after full tests began and verified separately. Log
+`/tmp/eidolon-story-rest-combined-save.log`. Committed clean **17a4dba**.
+
+Actual integrated `fresh-story-uninterrupted` **72341 ACTIVE** on frozen17a4dba,
+owned projectstory-rest-20260909-0303 API18560/web41960. Log
+`/tmp/eidolon-story-rest-uninterrupted-0303.log`. Opening passed133s,3 credited
+kills/zero deaths/25retreats/manual100XP100gold tolevel2. Diary passed173s
+cumulative, manual200XP25gold tolevel3. No checkpoint reconnects or added rest
+stops/grants. Hunt begins level3/150XP/233gold,165HP143mana,0 equipped drops;
+40-kill Watch is still running, not passed. Preserve120s credit watchdog,
+two-respawn bound and30m route limit. Poll72341; do not relaunch or clean its
+owned services while active. This is the only owned local check still running.
+Feature/campaign still unversioned and NOT live; whole roadmap remains open.
+
+## Previous checkpoint — September 9, 02:31 UTC
 
 PROGRESS: Well Rested **badd0cf** fixes three old rectangle-based enemy AI checks
 and delayed boss-slam sanctuary bypass. New regressions first FAILED inclusive
