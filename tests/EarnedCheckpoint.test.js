@@ -35,7 +35,9 @@ test.each([
     const page = { evaluate: jest.fn().mockResolvedValueOnce(before).mockResolvedValueOnce(after), reload: jest.fn() };
     const credentials = { username: 'test-only', password: 'not-a-real-credential' };
     expect(await earnedCheckpoint(page, credentials, settings)).toBe(settings.reconnect);
-    expect(page.reload).toHaveBeenCalledTimes(settings.reconnect ? 1 : 0);
+    // The real login helper owns fresh navigation; the checkpoint must not
+    // add a second reload outside that helper's readiness/failure scope.
+    expect(page.reload).not.toHaveBeenCalled();
     expect(login).toHaveBeenCalledTimes(settings.reconnect ? 1 : 0);
     if (settings.reconnect) expect(login).toHaveBeenCalledWith(page, credentials);
     expect(console.log).toHaveBeenCalledWith(expect.stringContaining(`"reconnect":${settings.reconnect}`));
