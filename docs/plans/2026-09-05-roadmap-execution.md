@@ -16,7 +16,44 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 22:17 UTC
+## Current checkpoint — September 9, 22:29 UTC
+
+This continuation made PROGRESS. Primary merge51704bd fullclient26781 PASSED
+277suites3946tests128.14s+lint; fullGo-race90945 PASSED root22.394/game318.255/
+database1.097. Logs `/tmp/eidolon-primary-accepted58-full-{client,lint,server}.log`.
+No server files changed while later client-only bag tests were prepared. Recovery58
+remains accepted/live; fresh22:27 backend58/ef9/ready. No successor publication.
+
+Primary now clean **cf9f2cc** (code9900cd2), still unpublished/inherited58metadata.
+New ordinary test-driver bag management addresses observed25/25fullbag: below5
+free slots, pauseauto-loot viaSettings, Recall, equip eligibleempty slots, then
+sell onlyneeded spareCommon/Uncommon gear viaactual merchant/rightclick to reach8
+free slots. Protectquest/material/gem/relic/Rare+/futurelevel/wornitems; insufficient
+eligiblegear fails explicitly. Re-resolve IDs aftercompaction, verify eachsalegold,
+allunsolditems/equipment/questprogress/level preserved, log actualmerchantproceeds
+and visitduration, ordinarydeparture. No game auto-selling/inventory/drop changes.
+Runsbetweenencounters before120swatchdog; explicitno-restdiagnostics unchanged.
+Allstoryfailure receipts now include bag state even withoutthehuntobserver.
+Focused24502 PASS28/4/.945s+lint; full6072 PASS279/3958/102.934s+lint on9900cd2.
+Logs `/tmp/eidolon-earned-bag-{final-focused,final-lint,full-client,full-lint}.log`.
+
+**38966 ACTIVE**, only owned local browser, freshstory-only Wizard oncf9f2cc:
+run `story-bag-wizard-0909-2228`, API18560/Mongo18561/web41960, Node24 inside
+sg render, log `/tmp/eidolon-story-bag-wizard.log`. This is the next actual
+merchant/collection/milestone/Imp/wholeEarth proof, not completed yet. Source
+frozen until terminal; preserve artifacts and exactcleanup afterward. No heavy
+owned test/browser alongside it. Prior11948 failure remains archived/failed.
+
+Separate CI-cost prototype now clean **080e175** (code126877c); full81238 PASSED
+278suites3957tests100.895s+lint+prepare:client. Logs
+`/tmp/eidolon-browser-cost-final-full-{client,lint}.log` and
+`/tmp/eidolon-browser-cost-prepare.log`. Actual107-case discovery/coverage already
+passed, but allthree bundled-browser groups, reportretention/rendering/duration
+and remoteCI proof remain PENDING. NOTintegrated/pushed; its ancestry predates
+accepted58merge, so do not publishas-is or claim measuredspeedup. Aura GPUprototype
+also remains separate with party/lifecycle/FPS proof pending. Full1.1–1.10open.
+
+## Previous checkpoint — September 9, 22:17 UTC
 
 58 remains FULLY ACCEPTED/live as recorded below; no successor push. Primary
 now clean **51704bd**, actual merge of acceptedef9 ancestry into941ecf6, inherited
