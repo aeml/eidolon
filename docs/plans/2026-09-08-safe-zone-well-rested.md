@@ -50,9 +50,15 @@ Rejected-save and already-committed journal replay retain exact resources/rest
 and later gold. Combined actual workflows pass91.871s; all19 child logs clean,
 owned disposable Mongo removed. Full root race suite passes11.467s.
 
+September9 00:36 checkpoint, development3121fa4: seller-payout normal collection
+and all6 crash boundaries pass55.267s with exact durable rest/resources and
+unchanged payment/receipt/claim/item checks. Final normal resource-probe follow-up
+passes8.357s; full root race suite13.757s. All22 child logs clean;6 intentional
+kills documented, other processes drained normally. Owned Mongo/volumes removed.
+
 This is not a versioned/staged release. It follows staged57, requires schema9,
-and must not publish inherited57 metadata. Remaining gates include auction
-failure workflows and schema-upgrade recovery,
+and must not publish inherited57 metadata. Remaining gates include the other
+auction flows (listing, bids/contention, buyout and item delivery) and schema-upgrade recovery,
 integrated browser travel/reconnect/aura and rested/unrested earned balance.
 
 ## Requested behavior

@@ -5,7 +5,38 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 00:30 UTC
+## Current checkpoint — September 9, 00:36 UTC
+
+PROGRESS: seller-payout recovery acceptance now committed in Well Rested
+**3121fa4483834b2833408b157b6bcc26e315be6f**, clean development tree. Normal
+acknowledgement/retry and all6 crash boundaries preserve exact bank/resources
+alongside unchanged gold/receipt/claim/item/inventory/progression checks. Durable
+database/journal snapshots are inspected before each intentional crash; both
+new-process recoveries must preserve their exact rest/resources before login.
+No accelerated clock or suppression of requested town healing. Added reusable
+known-fixture real Fireball/probe arithmetic; market helper permits only gold
+changes asserted separately by each transaction check.
+
+55487 **PASS55.267s** (normal7.95s/crash46.29s), log
+`/tmp/eidolon-rest-payout-0033.log`:20 child logs independently clean,14 normal
+drains and6 explicit expected kills. Final ordinary locked-skill probe after
+the cast also retained: follow-up9286 **PASS8.357s**, two clean normal drains,
+log `/tmp/eidolon-rest-payout-probe-0034.log`. Both owned Mongo containers and
+volumes removed and checked absent. Full server-package race34954 PASS13.757s.
+Exact runtime remainsd650c72; this is test/docs development, not publication.
+Other auction flows (listing,bids/contention,buyout,item delivery), schema upgrade,
+integrated browser/aura and rested/unrested earned balance remain required.
+
+50 candidate51ec73e full client20368 now terminal **PASS236 suites/3,353 tests,
+131.517s**, log `/tmp/eidolon-release50-attack-move-full-client.log`. Actual
+fresh collection7029 remains running from this exact clean candidate: latest
+observed5/8 seeds,13 target deaths,0 player deaths, with retreating now observed.
+This is progress, not yet route acceptance. Keep the same handle/log/project
+from the previous checkpoint; do not restart or edit its source while active.
+No push and no successor advanced. Remote50 CI34290705218 remains failed at
+predeploy; public49 was last independently verified as recorded below.
+
+## Previous checkpoint — September 9, 00:30 UTC
 
 PROGRESS: previous turn changed authoritative code/evidence (not merely a wait).
 This continuation reproduces and repairs a client attack-to-walk defect and
