@@ -5,7 +5,48 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 04:48 UTC
+## Current checkpoint — September 9, 04:55 UTC
+
+PROGRESS: standalone58 now clean **5a17be147ce527bae556663cc452ecae10e87785** in
+`/tmp/eidolon-standalone-town-recovery-QJ6Drv`. First23579 native route passed
+all3checks on1929d91, but its second CLI invocation replaced the first passing
+journey/expiry screenshots. Retained functional logs, archived available party
+images `/tmp/eidolon-rest58-first-proof-wCdgJI/test-results`, inspected portrait
+High aura/buff text, independently verified exact owned containers/image absent.
+Do not claim visual review of the overwritten first-run journey screenshots.
+
+After23579 terminal, corrected output retention only: distinct
+`test-results/well-rested-journey` and `test-results/well-rested-party` directories.
+Focused83263 PASS234tests1.834s/lint/shell/diff; no gameplay assertions changed.
+New **57869 TERMINAL PASS** on5a17be1: expiry36.6s, ordinary travel/combat/Recall/
+reconnect30.5s (firstCLI2tests1.2m), native two-player phone party18.5s (21.1sCLI).
+Rest14.686562s→0 outside, strength11→10/maxima110→100/aura removed; ordinary
+Recall rebuilt1.684826s/strength11/maxima110/aura. Actual combat damage receipt
+and30mana use observed (not every attempted projectile is claimed as a hit).
+High19/Low10 visible aura parts on both party members, native joystick movement.
+Credential scan0 and exact owned containers/image absence independently verified.
+
+Only this run's two output subfolders archived at
+`/tmp/eidolon-rest58-retained-proof-2P0A1G/{well-rested-journey,well-rested-party}`;
+older top-level party artifacts were not relabelled. Inspected expiry, re-earned,
+rejoined desktop and landscape Low phone buff captures: readable explanation,
+golden ground aura, no enclosing cube. A rejoin screenshot has23FPS during
+concurrent Go regression; these snapshots are not a sustained performance or
+physical-phone approval. Log `/tmp/eidolon-rest58-real-rest-0452.log`.
+
+**75384 full Go race ACTIVE** on frozen5a17be1, log
+`/tmp/eidolon-rest58-full-server.log`; root passed23.243s, game package still
+pending. **93155 full client ACTIVE**, log `/tmp/eidolon-rest58-full-client.log`.
+Poll exact handles; do not restart/edit tested source. No owned local browser
+currently running. Next run normal full collection across classes on this same
+standalone feature baseline, preserving bounds/manual rewards and honest legacy
+reward disclosure. Broader story/balance candidate remains preserved in primary.
+
+**53CI34312290353 ACTIVE**: client and server passed, all3browser shards running
+at04:54.52 remains the last verified live release. Do not push54 until whole53
+CI/final live gate and fresh public identities pass. Root ledger-only; goal active.
+
+## Previous checkpoint — September 9, 04:48 UTC
 
 PROGRESS: **52CI34305897736 TERMINAL SUCCESS**, including full final live QA.
 Independent04:45 public manifest/backend/login/versioned main all matched
