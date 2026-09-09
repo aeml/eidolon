@@ -394,8 +394,8 @@ class UIManagerFeedbackMethods {
             intent.targetLevel ?? '',
             intent.status || '',
             Math.round((intent.distance || 0) * 10) / 10,
-            intent.preview?.basicAttack ?? '',
-            intent.preview?.ability ?? '',
+            intent.preview?.attackPower ?? '',
+            intent.preview?.manaCost ?? '',
             intent.preview?.abilityName ?? ''
         ].join('|');
     }
@@ -525,9 +525,11 @@ class UIManagerFeedbackMethods {
             this.combatIntentStatus.textContent = this.formatCombatIntentStatus(intent.status);
             this.combatIntentStatus.className = `combat-intent__status ${this.getCombatIntentStatusClass(intent.status)}`;
         }
-        if (this.combatIntentPreviewBasic) this.combatIntentPreviewBasic.textContent = `~${preview.basicAttack ?? 0}`;
+        if (this.combatIntentPreviewBasic) this.combatIntentPreviewBasic.textContent =
+            Number.isFinite(preview.attackPower) ? String(preview.attackPower) : '—';
         if (this.combatIntentPreviewAbilityLabel) this.combatIntentPreviewAbilityLabel.textContent = preview.abilityName || 'Ability';
-        if (this.combatIntentPreviewAbility) this.combatIntentPreviewAbility.textContent = `~${preview.ability ?? 0}`;
+        if (this.combatIntentPreviewAbility) this.combatIntentPreviewAbility.textContent =
+            Number.isFinite(preview.manaCost) ? `${preview.manaCost} MP` : '—';
     }
 
     clearCombatIntent() {

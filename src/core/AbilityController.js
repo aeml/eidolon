@@ -99,61 +99,27 @@ export class AbilityController {
         return origin.distanceTo(target.position);
     }
 
-    buildSoftDamagePreview(target = null, skillNameOverride = null) {
+    getConfiguredManaCost(skillName) {
         const player = this.engine.player;
-        const className = player && player.constructor ? player.constructor.name : '';
+        const classConfig = CONSTANTS.ABILITY_CONFIG?.[player?.constructor?.name];
+        const skillConfig = classConfig?.skills?.[skillName];
+        const baseCost = typeof skillConfig?.mana === 'number' ? skillConfig.mana
+            : typeof classConfig?.default?.mana === 'number' ? classConfig.default.mana : player?.abilityManaCost;
+        return player ? getAbilityManaCost(player, skillName, baseCost) : NaN;
+    }
+
+    buildCombatActionPreview(target = null, skillNameOverride = null) {
+        const player = this.engine.player;
         const abilityName = this.getAbilityIntentSkillName(skillNameOverride);
-        const basicAttack = Math.max(0, Math.round(player?.stats?.damage || 0));
-
-        const previewMultipliers = {
-            Fighter: {
-                default: 1.2,
-                skills: {
-                    Charge: 1.35,
-                    'Piercing Throw': 1.2
-                }
-            },
-            Rogue: {
-                default: 1.3,
-                skills: {
-                    'Piercing Throw': 1.25,
-                    'Shadow Lunge': 1.45,
-                    'Shadow Strike': 1.35,
-                    Backstab: 1.4
-                }
-            },
-            Wizard: {
-                default: 1.4,
-                skills: {
-                    Fireball: 1.5,
-                    Blizzard: 1.6,
-                    Meteor: 1.75,
-                    Teleport: 0
-                }
-            },
-            Cleric: {
-                default: 1.25,
-                skills: {
-                    Smite: 1.35,
-                    'Spirit Guardians': 1.5
-                }
-            }
-        };
-
-        const classPreview = previewMultipliers[className] || {};
-        const abilityMultiplier = abilityName && classPreview.skills && Object.prototype.hasOwnProperty.call(classPreview.skills, abilityName)
-            ? classPreview.skills[abilityName]
-            : (classPreview.default || 1.25);
-        const ability = abilityMultiplier === 0
-            ? 0
-            : Math.max(basicAttack, Math.round(basicAttack * abilityMultiplier));
-
+        const power = player?.stats?.damage;
+        const cost = abilityName ? this.getConfiguredManaCost(abilityName) : NaN;
+        // Attack power is a character stat, not a target-adjusted hit estimate.
+        // Spell costs share the real cast path; damage still resolves on server.
         return {
             targetId: target?.id || null,
-            basicAttack,
-            ability,
-            abilityName: abilityName || 'Ability',
-            isEstimate: true
+            attackPower: Number.isFinite(power) ? Math.max(0, Math.round(power)) : null,
+            manaCost: Number.isFinite(cost) ? cost : null,
+            abilityName: abilityName || 'Ability'
         };
     }
 
@@ -397,19 +363,8 @@ export class AbilityController {
         }
 
         // Mana Check
-        const className = player && player.constructor ? player.constructor.name : '';
-        const classAbilityConfig = CONSTANTS.ABILITY_CONFIG ? CONSTANTS.ABILITY_CONFIG[className] : null;
-        const defaultAbilityConfig = classAbilityConfig ? classAbilityConfig.default : null;
         const castSkillName = skillNameOverride || player.abilityName;
-        const skillAbilityConfig = (classAbilityConfig && classAbilityConfig.skills && castSkillName)
-            ? classAbilityConfig.skills[castSkillName]
-            : null;
-        const manaCostBase = (skillAbilityConfig && typeof skillAbilityConfig.mana === 'number')
-            ? skillAbilityConfig.mana
-            : (defaultAbilityConfig && typeof defaultAbilityConfig.mana === 'number')
-                ? defaultAbilityConfig.mana
-                : player.abilityManaCost;
-        const cost = getAbilityManaCost(player, castSkillName, manaCostBase);
+        const cost = this.getConfiguredManaCost(castSkillName);
         if (player.stats.mana < cost) {
             engine.showReadabilityFeedback?.(
                 `ability-mana-${skillNameOverride || player.abilityName || 'primary'}`,

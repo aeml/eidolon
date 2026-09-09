@@ -93,7 +93,7 @@ describe('Ability range interaction', () => {
         expect(player.targetPosition.x).toBeCloseTo(78.4, 5);
     });
 
-    test('buildSoftDamagePreview returns deterministic estimated basic and ability damage', () => {
+    test('combat preview shows attack power and cast cost, not fabricated hit damage', () => {
         const player = {
             constructor: { name: 'Wizard' },
             abilityName: 'Fireball',
@@ -101,12 +101,26 @@ describe('Ability range interaction', () => {
         };
         const controller = new AbilityController({ player });
 
-        const preview = controller.buildSoftDamagePreview({ id: 'enemy-1' });
+        const preview = controller.buildCombatActionPreview({ id: 'enemy-1' });
 
-        expect(preview.basicAttack).toBe(40);
+        expect(preview.attackPower).toBe(40);
         expect(preview.abilityName).toBe('Fireball');
-        expect(preview.ability).toBe(60);
-        expect(preview.isEstimate).toBe(true);
+        expect(preview.manaCost).toBe(30);
+        expect(preview).not.toHaveProperty('ability');
+        expect(preview).not.toHaveProperty('isEstimate');
+    });
+
+    test('combat preview uses cast-path equipment/talent discounts and explicit skill override', () => {
+        const player = { constructor: { name: 'Wizard' }, abilityName: 'Fireball',
+            stats: { damage: 5, manaCostReduction: .1 }, talentRanks: { WIZ_04: 5 } };
+        const controller = new AbilityController({ player });
+        expect(controller.buildCombatActionPreview(null, 'Flame Whip')).toMatchObject({
+            abilityName: 'Flame Whip', manaCost: 27, attackPower: 5 });
+        expect(controller.buildCombatActionPreview(null, 'Teleport').manaCost).toBe(36);
+        player.abilityName = 'Unknown'; player.constructor.name = 'Unknown';
+        expect(controller.buildCombatActionPreview().manaCost).toBeNull();
+        player.abilityManaCost = 0;
+        expect(controller.buildCombatActionPreview().manaCost).toBe(0);
     });
 
     test('basic attacks play miss cue and do not send when the target is out of range', () => {
