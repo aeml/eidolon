@@ -16,7 +16,100 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 08:06 UTC
+## Current checkpoint — September 9, 08:23 UTC
+
+This continuation made PROGRESS:54 fully delivered/verified,55 pushed, observer
+readiness corrected and tested, a separate build-cache fix proved with real
+images, and a later beam-approach QA correction prepared. Full roadmap remains
+active/unfulfilled; none of these closes the recovery or expanded-story gates.
+
+**54CI34320477081 TERMINAL SUCCESS**, all10jobs, exact5e22b74701ecfca474132cf952c0d6725c25091b.
+Predeploy completed08:06:24; Pages/server deployments08:07:25/08:07:08;
+finalLiveQA08:21:18. Independent08:22 public manifest/login/main.js release URL/
+serverhealth all matchAlpha1.0.54/5e22b747; database ready. **27820 normal55push
+TERMINAL0**, cleancanonical `/tmp/eidolon-release55-final54-UVV7t3`,
+**c5ce9dc25a9554da55ef1e823e0d63ff04b6676d**, remote/master exact verified.
+New **55CI34328735856 ACTIVE**. No56push until complete55CI/deploy/finalLiveQA
+plus fresh exact public identities.56/9f41111 and57/6babef5 remain clean queued.
+
+**88641 complete58 TERMINAL1/FAILED** onf6f420d: Guardian Embrace's late observer
+loaded many modules with `net::ERR_NETWORK_CHANGED`. Its preceding real cast/
+healing/radius/late snapshot/expiry checks passed, then the request-failure gate
+failed. Full log `/tmp/eidolon-rest58-all-node24-rerun-0755.log`; archive
+**`/tmp/eidolon-rest58-network-failure-3SgGce`**, including report and three primary
+cast pictures. Scan0, exact run API/Mongo/image absent, ports18560/18561/41960 free.
+The rank5High picture was inspected; it is not a picture of the failing observer.
+No network-cause attribution to another workload is established.
+
+**d2ceb0e QA correction:** Guardian/Spirit second-browser contexts now have
+explicitbaseURL and warm up through existing bounded `openGame`, not extra raw
+`goto(baseURL)`. Source inspection showed that extra warm-up preceded login's
+failure scope and bypassed runtime readiness. Existing navigation recovery,
+failure assertions, counts, timeouts and gameplay thresholds are unchanged.
+No new ignored network error and no production code modification.
+
+**60593 Guardian TERMINAL0/PASS1/48.7s** (test46.9),
+`/tmp/eidolon-rest58-observer-guardian-0811.log`, archive
+**`/tmp/eidolon-rest58-observer-guardian-proof-ybAGaz`**.
+**88066 Spirit TERMINAL0/PASS1/52.3s** (test50.9),
+`/tmp/eidolon-rest58-observer-spirit-0813.log`, archive
+**`/tmp/eidolon-rest58-observer-spirit-proof-DCIubN`**.
+Both retained actual late rank-private reconstruction and natural expiry;
+Guardian radius10/11.5 and healing280, Spirit16/18.4/27.6/34.5 and3/5cherubs.
+Both scans0/exact cleanup independently verified. GuardianLow and boosted
+SpiritLow pictures inspected: phone range/effect presentation, not physical-phone
+or sustained-FPS approval (the captures show49/22FPS under current conditions).
+
+**78044 fault-injection browser TERMINAL0/PASS2/38.3s**, current
+**d5d04cc5e128616982d97b0f8d0997b6c3e7798b**, Node24/lint passed. New anonymous
+`runtime-readiness-recovery.spec.js` intentionally aborts Actor.js with
+CONNECTION_RESET: a later successful runtime recovers within2attempts while an
+earlier unrelated error remains; a persistent failure with1attempt remains
+reported/not ready. This validates existing readiness behavior, not the origin
+of host NETWORK_CHANGED or a production outage fix. Log
+`/tmp/eidolon-rest58-readiness-fault-browser.log`, archive
+**`/tmp/eidolon-rest58-readiness-fault-proof-dzSTVv`**, free web port confirmed.
+
+**70373 complete58 rerun ACTIVE**, frozen cleand5d04cc, only owned local browser.
+Runrest58-all24-r6-0909-0817/API18560/Mongo18561/web41960; log
+`/tmp/eidolon-rest58-all-node24-rerun-0817.log`. Actual start08:16.
+Authentication passed. The first test of the subsequent seven-test batch,
+Scorch Beam, FAILED after13s *before casting*: pre-cast position error2.1826155
+versus<2units. Error details in active `test-results/dungeon-beam-.../error-context.md`
+were read without input values. The other tests are still running; preserve them
+and collect terminal evidence/cleanup before editing or restarting the candidate.
+Ground/movement/projectile/inventory/Water routes passed; Verdant currently active.
+This run cannot be counted as a full pass even if those later routes pass.
+
+Primary now **1389f7e** (clean), precedingde3a6be includes all17movement-diagnostic
+lines plus observer/fault-test cherry-picks. **89981 focusedNode24 PASS257/3/3.402s
++lint**, logs `/tmp/eidolon-primary-observer-build-{tests,lint}.log`.
+Separate **cea4a9b build cache fix** moves BUILD_COMMIT/VERSION after dependency
+installation/sourcecopy, retains exact linker metadata and version defaults.
+83571 baseline ordering test FAILED both old declarations;85935 corrected
+Go1.24.5 race cache/preflight PASS1.367s. **17816 two real Docker builds PASS**;
+second reuses APK/mod/source layers but relinks21.4s. Distinct extracted binaries
+contain their own probe commit/version strings, Go metadata confirms target/toolchain.
+Archive **`/tmp/eidolon-docker-cache-proof-tjeq3D`**, logs
+`/tmp/eidolon-docker-cache-{before,after,build-a,build-b}.log`. Exact two never-started
+extraction containers and probe image tags inspected/removed/absence confirmed;
+binaries/logs retained. No shared cache/server/database/unrelated cleanup.
+This build-only fix is NOT in55–58 and is not an hour-scale CI speedup claim.
+
+Primary **1389f7e** prepares a minimal beam QA fix: wait for IDLE/no target before
+each approach-distance observation, retaining45s approach budget,12unit input
+steps and2unit tolerance. The old loop could break while passing through the
+band, before motion settled. That is a source-confirmed race opportunity, not
+captured proof of the failed actor's exact state. **42046 lint/discovery/diff
+TERMINAL0**, logs `/tmp/eidolon-primary-beam-settled-{lint,discovery}.log`.
+No actual replay yet. After70373 terminal/archive/scan/cleanup, cherry-pick1389f7e
+into canonical58 and run **EIDOLON_ISOLATED_QA_ROUTE=beam-walls** before a full rerun.
+Keep movement's earlier unproven failure and all thresholds/diagnostics intact.
+
+Primary earned Earth/four-class/party readiness and aura59be536's initial GPU
+comparison remain outstanding. Root is ledger-only and was NOT pushed.
+
+## Previous checkpoint — September 9, 08:06 UTC
 
 The preceding continuation and this turn are VERIFIED WAITS, with safe release
 preflight checks; no new production fix is claimed. Exact **88641 complete58

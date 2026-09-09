@@ -1,6 +1,27 @@
 # Release pipeline timing baseline
 
-## Latest completed release — September9, Alpha1.0.53
+## Latest completed release — September9, Alpha1.0.54
+
+Corrected54 run34320477081/head5e22b747 completed successfully, all ten jobs.
+First job06:45:00UTC to final live completion08:21:18UTC: **96m18s**.
+Predeploy gameplay/gallery lasted61m58s (07:04:26–08:06:24), longer than53's
+48m25s. Final live QA lasted13m49s; Pages/server deployments51s/36s. Client/server
+jobs took1m56s/6m04s and the browser stage spanned13m17s. This is observed timing,
+not a guarantee for later releases. Current measurements do not isolate why the
+gameplay stage grew; do not attribute it to a renderer or workload without evidence.
+
+Read-only inspection near its end traced the multiplayer test to Runner.Worker,
+confirming active late-stage work rather than a queued idle process.54's failed
+earlier run remains failed.55/c5ce9dc was pushed only after full54 success and
+fresh matching public identities; new run34328735856 is active.
+
+A separate primary build-only fix moves release ARG declarations after dependency
+installation. Two actual Docker builds with distinct metadata reused APK/Go module
+layers on the second build and relinked distinct binaries. This saved those layers'
+work in the probe (first2.2s/3.4s, second cached), not the hour-long gameplay stage.
+It is not in55–58 and must not be described as a measured full-CI speedup.
+
+## Earlier completed release — September9, Alpha1.0.53
 
 Rechecked [run34312290353](https://github.com/aeml/eidolon/actions/runs/34312290353),
 exactce330b3e2a576d07d159b964563f12f031dff3d5: all ten jobs succeeded.

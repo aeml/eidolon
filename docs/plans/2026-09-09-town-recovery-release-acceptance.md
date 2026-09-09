@@ -1,5 +1,26 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Latest September9 08:23UTC: **d5d04cc5e128616982d97b0f8d0997b6c3e7798b** is the
+unpublished recovery candidate. Full run88641 ended FAILED on late-observer
+module requests with ERR_NETWORK_CHANGED; original evidence retained and exact
+cleanup verified. Guardian/Spirit observer warm-up now uses existing bounded
+`openGame` readiness instead of an extra raw navigation. Both actual routes pass,
+as do two injected module-failure recovery/preservation checks. No new error
+filter, retry budget, timeout or gameplay-threshold change.
+
+**70373 full rerun ACTIVE** (`/tmp/eidolon-rest58-all-node24-rerun-0817.log`), but
+its first dungeon beam test already failed pre-cast positioning:2.1826 versus
+the required<2units. Remaining tests in that invocation are still collecting
+evidence; do not count the full run as passed or restart it while active.
+A test-only settled-approach correction is prepared in primary1389f7e, not yet
+imported/replayed in this active candidate. Movement's earlier intermittent
+failure remains unproven; its limits and added diagnostics remain intact.
+
+54/5e22b747 has now passed its complete CI/deployment/live gate and fresh public
+identities.55/c5ce9dc is pushed under active CI34328735856.56–58 remain queued;
+town healing/Well Rested is NOT in production. See the execution ledger's08:23
+checkpoint for exact artifacts, source identities and next actions.
+
 Latest September9 07:56UTC: candidate **f6f420d6f5f3f03665c075042160e20c1c2acf07**
 remains UNPUBLISHED. Complete58 run65093 failed movement's unchanged one-unit
 render-step bound (1.056 observed), after earlier combat/phone/resource routes
