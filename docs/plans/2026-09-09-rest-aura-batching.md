@@ -51,3 +51,23 @@ Required before promotion:
 
 No second local browser is started while the canonical recovery gameplay run
 owns the browser slot. Physical-phone performance remains an open roadmap gate.
+
+## Prepared GPU comparison (not yet executed)
+
+`tests/e2e/well-rested-batching.spec.js` renders a real Wizard and ground plane
+with no aura, an expanded-mesh reference, and the instanced aura at identical
+phases. It checks both qualities at three times, measuring incremental WebGL
+draw calls and RGB differences against the aura's own visible contribution.
+An empty aura cannot pass by hiding its difference in a mostly unchanged scene.
+The expanded reference uses the same instance transforms; the separate authored
+formula unit tests remain necessary to establish original-motion parity.
+
+Pixel arrays remain in the browser; only metrics cross the automation boundary.
+The pure comparison is injected as source rather than downloaded from `/tests`.
+Node24.18.0 focused tests passed12/2suites/1.791s, lint passed, and Playwright
+discovered the one comparison test. Logs:
+`/tmp/eidolon-rest-aura-pixel-final-{tests,lint,discovery}.log`.
+The process handle77576 is now absent; these terminal log summaries, not the
+missing handle itself, establish the checks above. There is no GPU result yet.
+This prepared fixture does not establish earned gameplay, party transitions,
+frame-time improvements or phone performance, and is not a release gate yet.
