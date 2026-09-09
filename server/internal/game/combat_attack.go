@@ -285,13 +285,14 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 
 					if (edx*edx + edz*edz) <= explosionRadius*explosionRadius {
 						et.Mu.Lock()
-						et.Health -= explosionDamage
+						appliedExplosion := damageWithinDarkKingPhase(et, explosionDamage)
+						et.Health -= appliedExplosion
 						et.LastDamageType = "arcane"
 						isDead := et.Health <= 0
 						et.Mu.Unlock()
 
 						if w.OnEvent != nil {
-							w.OnEvent("damage", DamageEvent{TargetID: et.ID, SourceID: shieldOwnerID, Amount: explosionDamage, Kind: "arcane", InstanceID: shieldInstanceID})
+							w.OnEvent("damage", DamageEvent{TargetID: et.ID, SourceID: shieldOwnerID, Amount: appliedExplosion, Kind: "arcane", InstanceID: shieldInstanceID})
 						}
 						if isDead {
 							et.Mu.Lock()
@@ -352,6 +353,7 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 	}
 	if pendingReflectDamage > 0 {
 		att.Mu.Lock()
+		pendingReflectDamage = damageWithinDarkKingPhase(att, pendingReflectDamage)
 		att.Health -= pendingReflectDamage
 		att.LastDamageType = "physical"
 		attackerDied := att.Health <= 0

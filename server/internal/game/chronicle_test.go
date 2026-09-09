@@ -547,17 +547,20 @@ func TestDarkKingFourPhasesApplyEidolonAid(t *testing.T) {
 
 	attacker := &Entity{Type: TypePlayer}
 	boss.Health = 500
+	boss.RaidPhase = 3
 	damage, _ := CalculateFinalDamage(attacker, boss, 100, "physical")
 	if damage != 125 {
 		t.Fatalf("Pyralis phase should amplify damage to 125, got %d", damage)
 	}
 	boss.Health = 250
+	boss.RaidPhase = 4
 	damage, _ = CalculateFinalDamage(attacker, boss, 100, "physical")
 	if damage != 135 {
 		t.Fatalf("Aeral phase should amplify damage to 135, got %d", damage)
 	}
 	player.Health = 100
 	boss.Health = 1000
+	boss.RaidPhase = 1
 	damage, _ = CalculateFinalDamage(boss, player, 100, "physical")
 	if damage != 80 {
 		t.Fatalf("Orun phase should reduce Dark King damage to 80, got %d", damage)

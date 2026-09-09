@@ -68,10 +68,11 @@ func calculateFinalDamageWithCritical(attacker, target *Entity, baseDamage int, 
 	isCrit := false
 
 	// The four restored Eidolons take an active role in Malachar's encounter.
-	// Health-derived phases make the modifier apply consistently to melee,
-	// projectiles, zones, and every class ability that uses this damage funnel.
+	// Use the announced phase, not health already at its next boundary: aid must
+	// not activate before that Eidolon's intervention. All ordinary damage paths
+	// share this calculation for melee, projectiles, zones and class abilities.
 	if attacker.SubType == "UmbraPrime" && target != nil && target.Type == TypePlayer {
-		switch darkKingPhase(attacker.Health, attacker.MaxHealth) {
+		switch max(1, attacker.RaidPhase) {
 		case 1:
 			finalDamage = finalDamage * 80 / 100 // Orun shelters the raid.
 		case 2:
@@ -79,7 +80,7 @@ func calculateFinalDamageWithCritical(attacker, target *Entity, baseDamage int, 
 		}
 	}
 	if target != nil && target.SubType == "UmbraPrime" && attacker.Type == TypePlayer {
-		switch darkKingPhase(target.Health, target.MaxHealth) {
+		switch max(1, target.RaidPhase) {
 		case 3:
 			finalDamage = finalDamage * 125 / 100 // Pyralis exposes the false king.
 		case 4:

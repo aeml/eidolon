@@ -30,6 +30,27 @@ func darkKingPhase(health, maxHealth int) int {
 	}
 }
 
+// Caller holds the target lock. A hit may finish the current quarter of the
+// encounter, but cannot consume the next Eidolon's phase before its update/event.
+// Every raw damage path must use this, including DoTs, reflection and explosions.
+// Ordinary enemies and phase-four lethal damage retain their existing behavior.
+func damageWithinDarkKingPhase(target *Entity, damage int) int {
+	if target == nil || target.Type != TypeEnemy || target.SubType != "UmbraPrime" ||
+		target.MaxHealth < 4 || damage <= 0 || target.RaidPhase >= 4 {
+		return damage
+	}
+	floor := target.MaxHealth
+	switch target.RaidPhase {
+	case 1:
+		floor = target.MaxHealth * 3 / 4
+	case 2:
+		floor = target.MaxHealth / 2
+	case 3:
+		floor = target.MaxHealth / 4
+	}
+	return min(damage, max(0, target.Health-floor))
+}
+
 func raidPhaseStory(phase int) RaidPhaseEvent {
 	switch phase {
 	case 1:
@@ -72,7 +93,8 @@ func (w *World) updateDarkKingPhase(boss *Entity, players []*Entity) {
 	hasRaider := false
 	for _, player := range players {
 		player.Mu.RLock()
-		eligible := player.InstanceID == instanceID && player.State != "DEAD"
+		eligible := player.Type == TypePlayer && player.InstanceID == instanceID &&
+			player.State != "DEAD" && player.Health > 0 && !player.Disconnected
 		player.Mu.RUnlock()
 		if eligible {
 			hasRaider = true
@@ -85,12 +107,17 @@ func (w *World) updateDarkKingPhase(boss *Entity, players []*Entity) {
 
 	boss.Mu.Lock()
 	phase := darkKingPhase(boss.Health, boss.MaxHealth)
+	// Recover an already-overshot snapshot in order as well. Health must never
+	// cause the opening dialogue or an intervening Eidolon's aid to disappear.
+	phase = min(phase, boss.RaidPhase+1)
 	if phase <= boss.RaidPhase || boss.State == "DEAD" {
 		boss.Mu.Unlock()
 		return
 	}
 	boss.RaidPhase = phase
 	if phase == 3 {
+		// Eidolon aid cannot kill the boss, but still applies if an older
+		// snapshot had already crossed a phase boundary before this update.
 		boss.Health -= max(1, boss.MaxHealth*8/100)
 		if boss.Health < 1 {
 			boss.Health = 1
@@ -100,7 +127,8 @@ func (w *World) updateDarkKingPhase(boss *Entity, players []*Entity) {
 
 	for _, player := range players {
 		player.Mu.Lock()
-		if player.InstanceID != instanceID || player.State == "DEAD" {
+		if player.Type != TypePlayer || player.InstanceID != instanceID || player.State == "DEAD" ||
+			player.Health <= 0 || player.Disconnected {
 			player.Mu.Unlock()
 			continue
 		}

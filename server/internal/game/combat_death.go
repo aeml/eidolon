@@ -107,7 +107,8 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 					nearby.Mu.Unlock()
 					continue
 				}
-				nearby.Health -= explosionDamage
+				appliedExplosion := damageWithinDarkKingPhase(nearby, explosionDamage)
+				nearby.Health -= appliedExplosion
 				nearby.LastDamageType = "physical"
 				nearbyID := nearby.ID
 				isDead := nearby.Health <= 0
@@ -116,7 +117,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				}
 				nearby.Mu.Unlock()
 				if w.OnEvent != nil {
-					w.OnEvent("damage", DamageEvent{TargetID: nearbyID, SourceID: attackerID, Amount: explosionDamage, Kind: "physical", InstanceID: attackerInstanceID})
+					w.OnEvent("damage", DamageEvent{TargetID: nearbyID, SourceID: attackerID, Amount: appliedExplosion, Kind: "physical", InstanceID: attackerInstanceID})
 				}
 			}
 		}
