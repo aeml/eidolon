@@ -5,7 +5,35 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 01:56 UTC
+## Current checkpoint — September 9, 02:14 UTC
+
+Well Rested development **1c7537f** committed clean. New explicitly opt-in
+`fresh-rested-collection` actual49772 PASS1/4.4m:8/8 fragments,14 observed target
+deaths, zero player deaths, three ordinary town recovery stops between finished
+encounters. No grants, fake clock, reduced objectives or extended combat limit.
+Manual turn-in consumes8 and survives login. **Not a balance approval:** the
+unchanged8000XP reward raises level6→17. Default no-rest47973 failure remains
+open and the default CI route is unchanged. Log `/tmp/eidolon-rest-managed-0201.log`.
+
+Native expiry90628 PASS1/40.4s: actual earned14.916003931 bank expires outside
+the east gate; strength11→10 and maxima110→100, aura/icon removed. Ordinary
+Recall earns rest again and restores bonus/aura. Both screenshots inspected:
+no enclosing cube, golden foot-ring/motes only while active. Evidence
+`/tmp/eidolon-rest-expiry-0206.log` and `/tmp/eidolon-rest-expiry-proof-sdOBHt`.
+Both owned browser projects removed/independently absent; credential scans pass.
+Full client10673 PASS243 suites/3449tests220.497s, policy9 tests pass, final
+lint96797/shell syntax/diff checks pass. No production code changes this turn;
+all owned local handles closed. Feature still unversioned and NOT live.
+
+CI34300606161 for exact51/55712b9 remains ACTIVE at02:13: Go/Jest/all3 browser
+groups successful; predeploy full-character QA running. No52 push and no51
+live claim. Last verified live remains50/51ec73e. Root is ledger only.
+Next: resolve default earned combat and rebalanced expanded-story integration,
+then own feature version/notes/ordered CI/live gates. Story branch92d2bc7 was
+read-only inspected; no curve2 activation or branch merge performed. The full
+roadmap remains active/incomplete.
+
+## Previous checkpoint — September 9, 01:56 UTC
 
 PROGRESS: **50 is fully live and verified**. CI34295826450 completed SUCCESS,
 including final live four-class/remote QA. Fresh no-cache public client/backend

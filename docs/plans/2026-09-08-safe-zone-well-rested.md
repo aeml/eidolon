@@ -4,6 +4,18 @@ Requested September 8, 2026. Status: implementation in progress, NOT live.
 Part of the active full-roadmap goal: implement as a coordinated 1.0.x feature
 after urgent blockers, and include it in 1.1 recovery and progression acceptance.
 
+September9 02:14 checkpoint, development1c7537f: native real-time expiry and
+reentry now pass in an ordinary registered browser session; stats/maxima,
+icon and aura expire together and return only on earned rest. Screenshots
+inspected with no enclosing cube. An explicit earned-town-recovery collection
+route also passes8/8 fragments with3 real rest stops and no player deaths.
+The default no-rest combat failure remains open; its CI route is unchanged.
+The8000XP collection payout still causes level6→17 and is not balanced yet.
+Full client243 suites/3449tests and lint pass. Exact logs, owned cleanup and
+limitations are recorded in the development contract and execution ledger.
+Remaining release gates include earned-play balance and ordered versioning/
+deployment; this is not a live-feature announcement.
+
 Development branch `work/well-rested-20260908` in
 `/tmp/eidolon-well-rested-ZL0PZY` now implements the server registry, recovery,
 persisted fractional bank, final stat modifier, enemy-kill-only XP multiplier,
