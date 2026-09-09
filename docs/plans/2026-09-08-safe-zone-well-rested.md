@@ -78,9 +78,8 @@ kills documented; other processes drained. Owned Mongo/volumes removed. Root
 race12.077s; merged client242 suites/3,425 tests93.429s and lint pass.
 
 This is not a versioned/staged release. It follows staged57, requires schema9,
-and must not publish inherited57 metadata. Remaining gates include browser
-recovery/talent expectations, integrated expiry/phone/group aura and
-rested/unrested earned balance.
+and must not publish inherited57 metadata. Remaining gates include integrated
+expiry and rested/unrested earned balance, plus release-specific verification.
 
 September9 01:16 checkpoint, developmentb409d83: standalone refund/refund-lifecycle acceptance passes
 43.100s, retaining exact offline bank/resources and online recovery through
@@ -102,6 +101,18 @@ receipt and transparent19-mesh aura; screenshots inspected. All owned local
 processes ended and disposable data removed. This does not close earned balance,
 phone/group/expiry or older browser assumptions that must reflect town healing.
 Detailed evidence remains in the implementation branch contract.
+
+September9 01:56 checkpoint, development1d68888: phone talent costs/cooldown and
+death/Recall/login recovery pass actual browser checks using fresh authoritative
+rest time. Full client242 suites/3,440 tests and lint pass. Two real party members
+pass native joystick plus local/remote aura checks across High/Low and three
+phone layouts; screenshots inspected. Visible particle parts reduce19→10 at Low.
+These are Chrome-emulated phones/two players, not physical-device/full-raid proof.
+The full collection playthrough failed its unchanged120-second encounter bound
+at3/8 fragments after low-mana retreat/reacquisition; opening passed normally.
+Keep that earned-play failure open and investigate ordinary resource management
+and defensive input. Feature remains unpublished. All owned local tests ended,
+disposable data removed; ordered release50 is now live and51 is in CI.
 
 ## Requested behavior
 

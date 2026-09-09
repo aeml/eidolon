@@ -5,7 +5,54 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 01:30 UTC
+## Current checkpoint — September 9, 01:56 UTC
+
+PROGRESS: **50 is fully live and verified**. CI34295826450 completed SUCCESS,
+including final live four-class/remote QA. Fresh no-cache public client/backend
+both50/51ec73e, healthOK/databaseReady. Canonical51 worktree55712b9 clean,
+descends from exact50, version/notes suite225tests PASS1.198s and remote master
+was exact50 before ordinary push. Push9923 succeeded; remote master verified
+**55712b9c747056041b05fa4e475c4aee094028bc**. **51 CI34300606161 ACTIVE**, Go/Jest
+passed and all3 browser groups running at01:55. Do not push52/a36d1e7 until
+complete51 CI/finalLiveQA and fresh exact public51.52–57 queue unchanged.
+Root remains a ledger, never a release publisher.
+
+Well Rested development **1d68888** clean (follows aa5ebf5). Phone talent31044
+PASS1/14.4s: normal touch purchases, exact Fireball30→21 payment/cooldown and
+fresh landscape login, using authoritative bank delta between fresh loopback
+server snapshots rather than ordinary-regen/wall-clock guesses. Death/recovery
+92590 PASS1/24.8s: living town login80→86MP with0.5343s bank delta over3.108s
+wall time, actual hostile corpse0HP70MP retained across login, explicit Respawn
+and live Recall separation, then73→79MP with0.5703s earned time.23 arithmetic
+tests pass; full client88014 PASS242 suites/3,440 tests153.658s and lint pass.
+Evidence `/tmp/eidolon-rest-{talent-0137,recovery-0143}.log` and
+`/tmp/eidolon-rest-recovery-client-full.log`. Owned projects removed/absent.
+
+Fresh no-grant opening/collection47973 **FAIL6.4m**. Opening passed62s,0 deaths,
+manual500XP100gold. Collection reached12 observed target deaths,3/8 seeds,level6,
+0 player deaths before the unchanged120-second combat timeout after low-mana
+retreat/reacquisition. No reduced quantities, drop-rate change, grants or timeout
+increase. Retained `/tmp/eidolon-rest-fresh-0146.log`, sanitized artifacts
+`/tmp/eidolon-rest-fresh-failure-Q1oxlk`; owned project/data removed and absent.
+This remains an earned-play failure. Investigate normal resource-management and
+defensive input, including actual town rest between encounters, without hiding
+the failed route or changing combat/drop bounds merely to pass.
+
+Two-real-player phone party/aura final68967 **PASS1/13.4s**: ordinary party setup,
+native joystick, local/remote ownership/following, High19→Low10 visible parts,
+three viewport sizes, status panel and separate world screenshots. Camera proof
+uses the layout-owned clear encounter region. Screenshots visually inspected
+and retained `/tmp/eidolon-rest-party-final-CBdw9R`; log
+`/tmp/eidolon-rest-party-0158.log`; final lint49376PASS. Earlier attempts exposed
+test assumptions about already-closed menu, cached hidden meshes and viewport
+versus encounter-region centering, not production defects. All owned local
+handles closed; all disposable projects cleaned/absent and credential scans pass.
+No production source changes this turn. This is two-player desktop Chrome phone
+emulation, not full-raid/physical-phone performance. Remaining Well Rested gates:
+native expiry, failed collection/broader rested-unrested earned balance, own
+version/notes/ordered deployment. Full roadmap goal remains active/incomplete.
+
+## Previous checkpoint — September 9, 01:30 UTC
 
 PROGRESS: Well Rested development **4b407b3** committed clean. Actual schema
 upgrade63337 **PASS12.916s**: exact schema7 bridge9aec835→schema8 resource7ab559
