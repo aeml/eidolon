@@ -16,7 +16,46 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 11:27 UTC
+## Current checkpoint — September 9, 11:39 UTC
+
+Previous turn made PROGRESS on strict pointer evidence. This turn retained a
+new exact-batch failure, corrected its no-input navigation caller and completed
+full client regression. Whole roadmap and recovery production gate stay open.
+
+**56 reached production**: predeploy completed11:30:10, server deploy11:30:46,
+Pages also completed and **Live Release and Character QA remains ACTIVE** in
+four-class/remote-animation checks. Fresh11:31 public manifest and healthy backend
+both31c7d9f/Alpha1.0.56. Final whole-CI success plus fresh exact login/runtime/
+manifest/server proof still required before normally pushing57/1f8c7be. Do not
+treat the current live56identity as completion of its final acceptance gate.
+
+**33035 exact dungeon replay TERMINAL1/FAILED**,6passed/1failed5.2m. Both previous
+portal/wall cases passed. Verdant cleared RootboundWarden and later enemies, then
+found no exposed ground for navigation: attempts[], no click, initialMOVING and
+laterIDLE roughly10units away, pendingnull. This is GroundInputUnavailableError,
+not the original unproven clicked-retreat failure. Archive
+`/tmp/eidolon-rest58-pointer-replay-failure-7QbgHX`; sanitized2files/exact cleanup.
+
+58nowclean/frozen **cbb158c3927b17c80c703cbaeba48a926502cfb8** adds navigation
+caller policy only: unavailable/intercepted ground rereads the world on its
+existing loop, without a successful-step claim, new retries, extended deadline,
+jump or direct movement. Other errors still throw.5347focusedPASS38/.665+lint.
+**70313 composite ACTIVE**: full client already PASSED253suites/3570tests/80.203s
+plus lint on cbb158c/Node24.18.0; now only owned browser runs exact seven-case
+dungeon-inputs replay. Runrest58-nav-0909-1136/API18560/Mongo18561/web41960;
+log `/tmp/eidolon-rest58-dungeon-navigation-replay.log`. Six cases passed so far;
+Verdant still running. Client logs
+`/tmp/eidolon-rest58-navigation-full-{client,lint}.log`, focused logs
+`/tmp/eidolon-rest58-navigation-input-{focused,lint}.log`.
+Do not edit/restart over70313. Preserve exact terminal evidence, then completeall
+remains required. No57/58push or town-recovery-live claim.
+
+Primary staysclean/idleed95214 with full server regression due. Carry8b9073b,
+b5abc2a,cbb158c QA changes there after accepted replay evidence; these are not
+currently in primary. Maelin, crystal-ready resume, visible restoration, earned
+story/party pacing and other roadmap requirements remain distinct later work.
+
+## Previous checkpoint — September 9, 11:27 UTC
 
 Previous turn made PROGRESS on crystal-ready resume. This turn preserved a new
 terminal recovery failure and corrected QA's distinction between a prior hover

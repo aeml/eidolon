@@ -1,5 +1,15 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update11:39UTC:56public manifest/backend now31c7d9f/1.0.56; final live QA remains
+ACTIVE, so57cannotpushyet.33035 replay FAILED1/7 on a no-click navigation step,
+not the original clicked retreat; archive
+`/tmp/eidolon-rest58-pointer-replay-failure-7QbgHX`, sanitized2/exact cleanup.
+58cbb158c handles unavailable/intercepted navigation inside unchanged deadlines;
+actual failed movement remains fatal.70313 fullclientPASS253/3570/80.203+lint,
+now exact seven-test browser replay ACTIVE, sixpassed/Verdant ongoing.
+Log `/tmp/eidolon-rest58-dungeon-navigation-replay.log`, only owned browser with
+same18560/18561/41960ports. Completeall and ordered live58 verification remain due.
+
 Update11:27UTC:2466 fullall FAILED3/7dungeon cases; two fresh portal clicks selected
 the covering InfernoTitan, plus a Verdant retreat with no movement/pendingMatron.
 Archive `/tmp/eidolon-rest58-verdant-r12-failure-P1ap9x`; sanitized2/exact cleanup.
