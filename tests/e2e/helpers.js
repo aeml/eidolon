@@ -2,6 +2,7 @@ import { expect } from '@playwright/test';
 import { movementFailure } from '../groundInputFailure.js';
 import { isHostilePointerInterception } from '../primaryClickEvidence.js';
 import { inventoryQuantity, pickupReceipt } from './lootPickupEvidence.js';
+import { hasFreshEntranceHover } from './entrance-pointer.js';
 import {
     isBenignCanceledAssetRequest,
     isIgnoredBrowserRequest
@@ -1779,8 +1780,10 @@ export async function enterAndExitDungeon(page, { beforeExit, resetRun = false,
                 entrance = await projectVerdantEntrance(page, candidate++);
                 if (!entrance?.visible) return false;
                 await page.mouse.move(entrance.x, entrance.y);
-                return page.evaluate(() => window.game?.hoveredEntity?.name === 'DungeonEntrance' &&
-                    window.game.hoveredEntity.userData?.dungeonType === 'verdant_bastion_catacombs');
+                // Pointer sampling has a 20Hz budget. A deferred new sample
+                // must not be accepted just because the previous ray hit the
+                // entrance; wait for the ordinary loop, without forcing it.
+                return hasFreshEntranceHover(page, 'verdant_bastion_catacombs');
             }, { timeout: 15_000, intervals: [100], message: 'Acquire an actual exposed Verdant entrance pointer' }).toBe(true);
             expect(entrance, 'Verdant Bastion entrance must be loaded').not.toBeNull();
             await page.mouse.click(entrance.x, entrance.y);
