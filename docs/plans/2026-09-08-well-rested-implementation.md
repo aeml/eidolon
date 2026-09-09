@@ -61,6 +61,38 @@ four-class stats and device/aura acceptance remain required.
 
 ## Development acceptance — September 8, 23:30 UTC
 
+Latest additional acceptance, **September9 02:12UTC**:
+
+- New explicit `fresh-rested-collection` route uses ordinary Recall, actual
+  full-pool town recovery and native travel only between completed encounters.
+  Resource policy has9 passing unit tests; it never resets the existing120s
+  encounter deadline, grants resources, skips a death or changes drops/quotas.
+  Actual49772 PASS1/4.4m: collection173s,14 observed target deaths,8/8 fragments,
+  zero player deaths and3 real recovery stops (18.950/19.366/22.445s). Exact8
+  fragments consumed by manual turn-in; progression/gear survive login and the
+  level30 dungeon gate remains. Log `/tmp/eidolon-rest-managed-0201.log`,
+  sanitized evidence `/tmp/eidolon-rest-managed-proof-ktptdM`.
+- This is a functional managed-resource pass, NOT a balance approval. The
+  unchanged collection reward8000XP still advances level6→17. The earlier
+  default no-rest collection47973 failure remains open; default CI route is
+  unchanged. Do not silently replace its gate with the new opt-in route.
+  Observed target deaths are not an exact server kill census/drop-rate estimate.
+- Native real-time expiry90628 PASS1/40.4s: ordinary fresh level1 registration,
+  Ctrl-click east-gate exit with14.916003931 earned seconds, real expiry to0,
+  strength11→10, maxima110→100 with bounded living pools, icon and aura removal;
+  ordinary Recall earns1.914007922 seconds and restores strength11/maxima110 and
+  the aura. No fake clock, status writes, resource grants or prepared invulnerability.
+  Log `/tmp/eidolon-rest-expiry-0206.log`; both screenshots visually inspected in
+  `/tmp/eidolon-rest-expiry-proof-sdOBHt`: no expired aura, clear golden foot-ring/
+  mote effect on reentry and no enclosing cube. This closes native expiry only.
+- Full client10673 PASS243 suites/3449tests220.497s; lint passes, final lint96797
+  and shell syntax/diff checks pass after both routes. No production changes.
+  Both owned browser projects were removed and independently absent; credential
+  scans pass and all owned handles are closed. No physical-phone/raid claim.
+
+Still unversioned and unpublished: earned-play balance, the default combat stall
+and ordered release/version/patch-note gates remain open.
+
 Latest additional acceptance, **September9 01:56UTC**:
 
 - Two actual party members, normal registration/invitation/acceptance and native
