@@ -922,7 +922,7 @@ class GameEngineNetworkMessageMethods {
                         const nextHp = pData.health !== undefined ? pData.health : this.player.stats?.hp;
                         const hasPredictedJump = !!this.playerJumpState && !this.playerJumpState.serverDriven;
                         const hasPredictedAttack = this.shouldPreservePredictedPlayerAttack(pData.state);
-                        const hasPredictedMovement = this.shouldPreservePredictedPlayerMovement(pData.state);
+                        const hasPredictedMovement = this.shouldPreservePredictedPlayerMovement(pData.state, pData);
                         if (pData.state !== undefined) {
                             if (this.player.state !== 'DEAD' && (pData.state === 'DEAD' || (nextHp !== undefined && nextHp <= 0))) {
                                 this.handlePlayerDeathTransition();
@@ -1215,7 +1215,7 @@ class GameEngineNetworkMessageMethods {
                         const nextHp = pData.health !== undefined ? pData.health : this.player.stats.hp;
                         const hasPredictedJump = !!this.playerJumpState && !this.playerJumpState.serverDriven;
                         const hasPredictedAttack = this.shouldPreservePredictedPlayerAttack(pData.state);
-                        const hasPredictedMovement = this.shouldPreservePredictedPlayerMovement(pData.state);
+                        const hasPredictedMovement = this.shouldPreservePredictedPlayerMovement(pData.state, pData);
                         if (pData.state !== undefined) {
                             if (this.player.state !== 'DEAD' && (pData.state === 'DEAD' || (nextHp !== undefined && nextHp <= 0))) {
                                 this.handlePlayerDeathTransition();
