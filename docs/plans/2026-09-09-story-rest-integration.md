@@ -55,10 +55,20 @@ level30 DemonOrcs. The opt-in three-rest-stop route passed but its old8000XP
 turn-in produced level6→17. Neither result validates this new reward curve or
 the forty-kill Watch. Actual integrated earned gameplay is still required.
 
-Review also found enemy target acquisition still checks the old town rectangle,
-although damage protection/rest already use the new safe-zone registry. Add a
-regression for registered future sanctuaries and town boundary/instance identity
-before correcting acquisition. Do not confuse protected damage with correct AI.
+Review found enemy target acquisition/movement still used the old town rectangle,
+and delayed slams could damage a player entering safety during wind-up. Independently
+reproduced and corrected in Well Rested badd0cf:6 target,4 movement,2 actual impact
+cases plus existing concurrency/protection tests pass race8.000s. Integrated as
+1816738 after the main28dd5a1 story merge. No production source changed after
+the new full regression started. Regenerating Go/JS protobufs exactly matched
+the merged outputs (7d2c3ec9 /75eec1c5); final lint31593 and shell/diff checks pass.
+Normal prepare:client92314 finished; ignored vendor assets are present.
+
+At02:30UTC, corrected full Go race23067 and full client98874 are ACTIVE on
+1816738. Logs `/tmp/eidolon-story-rest-integrated-full-server.log` and
+`/tmp/eidolon-story-rest-integrated-full-client.log`. Poll these exact handles;
+do not restart an active check or call it passed based on partial output. No
+owned browser workflow has been started for the combined candidate yet.
 
 After corrected full checks: verify generated protocol parity, ordinary persisted
 curve1→2/rested saves, fresh uninterrupted and honestly labeled town-rest routes,
