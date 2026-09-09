@@ -1,5 +1,12 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update14:50UTC:34361293407 ef9a638 remains ACTIVE in full predeploy gameplay;
+all earlier server/client/browser/gallery checks passed. Fresh14:44 public client
+and ready backend still57/8af54f2. No release/source mutation. Actual production
+backup, deploy and final live recovery verification remain required. Separate
+primary story test terminated with a training-route failure and was preserved;
+its correction and combat-card integration are unpublished and not part of58.
+
 Update14:36UTC:34361293407 predeploy102506533929 ACTIVE; gallerypassed and
 full disposablegameplay running. ef9a638 frozen/no new releasepush. Primary20538
 has completedfirst40killstoryhunt/manualclaim/persistence with0deaths and15normal

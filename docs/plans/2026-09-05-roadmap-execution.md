@@ -16,7 +16,43 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 14:36 UTC
+## Current checkpoint — September 9, 14:50 UTC
+
+Previous ETA turn was a VERIFIED WAIT: exact34361293407 still active, fresh
+14:44 public client/backend57/8af54f2/ready. This continuation made PROGRESS.
+58 frozenef9a638 still in full predeploy gameplay, all earlier jobs passed.
+No production58 claim, successor push, cancellation or production mutation.
+
+Primary20538 TERMINAL FAILED16.0m on218a0b7. Preserved sanitized complete
+report/images/log at `/tmp/eidolon-story-milestone-travel-failure-OV9pLT`, scan0,
+exact owned containers/image and18560/18561/41960 listeners absent. Viewed
+failed-collection.png: level10, Imp2/60, x-183/z211. First40hunt/manualclaim/
+persistence passed (607s,0deaths,15town visits);8Seeds/19selected-death observations
+manually consumed→level9. Imp segment23 outgoing events/reported775, actual60fire/
+5physical hits; these are not netHP-drained totals. Failure is milestone training
+calling the nearby-guide helper from the field, without first returning to town.
+
+Primary506ed57 adds ordinary verified Recall before earned guide/training and
+behavioral order/failure tests. Also reproduced and fixed duplicate ranged/Fighter
+diagnostic counters on repeated same-game installation: reset segment, one wrapper
+per game, unchanged forwarded messages. RED3suites; GREEN38/5/1.197s+lint71991.
+Logs `/tmp/eidolon-story-milestone-{before,after,lint}.log`. No combat deadline,
+death allowance, rewards, stats, requirements or runtime damage changed. Fresh
+actual training/fullEarth replay remains required; old failures remain failures.
+
+Combat-card prototypee37bab6 fullclient/lint83764 PASSED275/3935/125.323s,
+logs `/tmp/eidolon-combat-preview-full-{client,lint}.log`. Integrated into primary
+as4bb3bd1/8dfabd5; doc0527fb7. **25041 ACTIVE** integrated fullclient/lint,
+logs `/tmp/eidolon-story-milestone-integrated-{client,lint}.log`. No local browser
+active. Primary remains unpublished/inherited57metadata; never publish it before
+58 fully accepted and successor packaging/verification. Root remains ledger-only.
+
+Next: complete25041, actual pending desktop long-label baseline/fixed browser proof,
+then fresh corrected story-only route.58 full predeploy/paired production backup/
+deploy/native public journey+expiry+party/exact public identities still required.
+All full roadmap gates remain intact and open.
+
+## Previous checkpoint — September 9, 14:36 UTC
 
 This continuation made PROGRESS through new completedCI timing evidence and
 actualfirststoryhunt/manualclaim/persistence proof, while verifying both live
