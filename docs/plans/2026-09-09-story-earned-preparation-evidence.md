@@ -40,7 +40,13 @@ visible/living helper is used and the old no-input guard is absent; the behavior
 acquisition suite plus retained-input suite passed29tests/2suites0.81s and lint.
 All retained deadlines, death bounds and actual credit assertions are unchanged.
 Log `/tmp/eidolon-story-acquisition-contract.log`; original failed full log is
-`/tmp/eidolon-story-milestone-integrated-client.log`. Full rerun remains required.
+`/tmp/eidolon-story-milestone-integrated-client.log`.
+
+Full integrated rerun42881 oncb80d65 PASSED276suites3942tests129.103s and lint,
+logs `/tmp/eidolon-primary-visual-story-full-{client,lint}.log`. This includes the
+combat-card integration, acquisition/training/counter changes and desktop label
+CI coverage. The earlier failed run remains failed. Fresh actual story-only
+training and Earth readiness are still required; no production successor pushed.
 
 The prior a4ea4cc run failed in the level20+ Imp hunt, starting at level9 and
 only training when a hunt started at10+. It did not log unspent points or actual

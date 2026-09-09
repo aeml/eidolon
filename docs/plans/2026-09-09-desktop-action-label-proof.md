@@ -20,4 +20,6 @@ rendered fixtures on the real renderer, not a live multiplayer encounter.
 Log `/tmp/eidolon-desktop-action-fixed.log`; full archive
 `/tmp/eidolon-desktop-action-fixed-proof-dvLaWX` (scanner0). Port41960 is closed
 after browser termination. Added the fixed cases to the unpublished successor's
-existing combat-card CI command. Full integrated regression remains required.
+existing combat-card CI command. Full integrated regression42881 oncb80d65
+passed276suites3942tests129.103s and lint; logs
+`/tmp/eidolon-primary-visual-story-full-{client,lint}.log`. No production claim.

@@ -32,3 +32,8 @@ Separate prototype e37bab6 fullclient/lint PASSED83764:275suites3935tests,
 Imported as4bb3bd1/8dfabd5 into the unpublished primary after its story browser
 terminated and the failure evidence was archived. Integrated fullclient and
 fresh story replay remain required. Not part of58; no production acceptance.
+
+Integrated rerun42881 oncb80d65 passed276suites3942tests129.103s and lint;
+logs `/tmp/eidolon-primary-visual-story-full-{client,lint}.log`. Earlier25041
+failed an outdated acquisition source assertion, preserved separately and fixed
+in479f302. Actual fresh story-only replay remains required.
