@@ -1,8 +1,11 @@
 import { expect } from '@playwright/test';
-import { moveByGroundClick, projectEntity, projectNearestHostile, readPlayerState,
+import { jumpByGroundClick, moveByGroundClick, projectEntity, projectNearestHostile, readPlayerState,
     returnToTown, setAutoLootThroughSettings, useCombatQAWaypoint, useEncounterQAWaypoint } from './helpers.js';
 import { openDungeonGuide } from './dungeon-guide.js';
 import { earnEarthInvestigation } from './chronicle-investigation-route.js';
+import { findExpeditionTarget } from './earned-expedition-target.js';
+import { earnEarthHuntsBefore } from '../earthFunctionalPrerequisites.js';
+import { maintainEarnedInventory } from './earned-inventory-management.js';
 
 export const EARTH_DUNGEON_CHAPTER = 'chronicle_03_roots_remember';
 const FIRST_CHAPTER = 'chronicle_01_bell_below';
@@ -63,10 +66,16 @@ async function claimChapterAndContinue(page, id) {
     await page.locator('#quest-window').getByRole('button', { name: 'Continue conversation', exact: true }).click();
 }
 
-async function defeatOrdinaryEarthEnemy(page) {
-    await useEncounterQAWaypoint(page);
+async function defeatOrdinaryEarthEnemy(page, hunt = null) {
     let target;
-    await expect.poll(async () => { target = await projectNearestHostile(page); return Boolean(target); }).toBe(true);
+    if (hunt) {
+        // A nearest-enemy QA waypoint does not select the required subtype or
+        // level. Share ordinary authored-hunt acquisition, including its bounds.
+        target = await findExpeditionTarget(page, hunt);
+    } else {
+        await useEncounterQAWaypoint(page);
+        await expect.poll(async () => { target = await projectNearestHostile(page); return Boolean(target); }).toBe(true);
+    }
     const deadline = Date.now() + 90_000;
     let lastPosition;
     while (Date.now() < deadline) {
@@ -104,13 +113,22 @@ async function defeatOrdinaryEarthEnemy(page) {
     throw new Error(`Ordinary Earth combat timed out: ${JSON.stringify(lastPosition)}`);
 }
 
-async function earnObjective(page, id) {
-    await useCombatQAWaypoint(page);
+async function leaveTownForFunctionalHunt(page) {
+    for (let step = 0; (await readPlayerState(page)).x < 115 && step < 20; step++) {
+        const position = await readPlayerState(page);
+        await jumpByGroundClick(page, 25, Math.max(-8, Math.min(8, 200 - position.z)));
+    }
+    expect((await readPlayerState(page)).x).toBeGreaterThanOrEqual(115);
+}
+
+async function earnObjective(page, id, hunt = null) {
+    if (!hunt) await useCombatQAWaypoint(page);
     const maxEncounters = Math.max(30, (await readChronicleChapter(page, id)).maxCount * 5);
     for (let kills = 0; kills < maxEncounters; kills++) {
         const quest = await readChronicleChapter(page, id);
         if (quest.count >= quest.maxCount) return;
-        await defeatOrdinaryEarthEnemy(page);
+        await maintainEarnedInventory(page, { leaveTown: () => leaveTownForFunctionalHunt(page) });
+        await defeatOrdinaryEarthEnemy(page, hunt);
     }
     throw new Error(`No complete objective after ${maxEncounters} normal Earth encounters: ${JSON.stringify(await readChronicleChapter(page, id))}`);
 }
@@ -120,12 +138,24 @@ export async function prepareEarthChronicleThroughPlay(page) {
     // not grant quests, items, kills or access; encounter waypoints are explicit
     // QA travel/protection, so this is not fresh-character balance evidence.
     const previousAutoLoot = await page.evaluate(() => window.game.uiManager.getAutoLootEnabled());
+    const earnRequiredHunts = nextChapter => earnEarthHuntsBefore(nextChapter, async hunt => {
+        expect((await readChronicleChapter(page, hunt.previousQuestId))?.completed,
+            `${hunt.title} requires its actual preceding chapter`).toBe(true);
+        await openIlyra(page);
+        await acceptOfferedChapter(page, hunt.id);
+        await setAutoLootThroughSettings(page, true);
+        await leaveTownForFunctionalHunt(page);
+        await earnObjective(page, hunt.id, hunt);
+        await claimChapterAndContinue(page, hunt.id);
+        await page.locator('#btn-close-quest').click();
+    });
     await openIlyra(page); await acceptOfferedChapter(page, FIRST_CHAPTER);
     await setAutoLootThroughSettings(page, true);
     await earnObjective(page, FIRST_CHAPTER);
     await claimChapterAndContinue(page, FIRST_CHAPTER);
     await page.locator('#btn-close-quest').click();
     await earnEarthInvestigation(page, 'chronicle_earth_keepers_house', openIlyra);
+    await earnRequiredHunts(SEED_CHAPTER);
     await openIlyra(page); await acceptOfferedChapter(page, SEED_CHAPTER);
     await earnObjective(page, SEED_CHAPTER);
     const required = (await readChronicleChapter(page, SEED_CHAPTER)).maxCount;
@@ -140,7 +170,9 @@ export async function prepareEarthChronicleThroughPlay(page) {
     await claimChapterAndContinue(page, SEED_CHAPTER);
     expect(await seedsInBag()).toBe(seedsBeforeTurnIn - required);
     await page.locator('#btn-close-quest').click();
+    await earnRequiredHunts('chronicle_earth_returning_scar');
     await earnEarthInvestigation(page, 'chronicle_earth_returning_scar', openIlyra);
+    await earnRequiredHunts(EARTH_DUNGEON_CHAPTER);
     await openIlyra(page);
     await acceptOfferedChapter(page, EARTH_DUNGEON_CHAPTER);
     await setAutoLootThroughSettings(page, previousAutoLoot);
