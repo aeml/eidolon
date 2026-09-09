@@ -434,7 +434,7 @@ class UIManagerFeedbackMethods {
             this.combatIntentPreviewAbility.textContent = '';
         }
         if (this.combatIntentPreviewAbilityLabel) {
-            this.combatIntentPreviewAbilityLabel.textContent = tone === 'boss' ? 'Boss Telegraph' : 'Threat Warning';
+            this.combatIntentPreviewAbilityLabel.textContent = callout.label || (tone === 'boss' ? 'Boss Telegraph' : 'Threat Warning');
         }
     }
 

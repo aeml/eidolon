@@ -6,14 +6,31 @@ installUIManagerFeedback(Feedback);
 let ui;
 beforeEach(() => {
     jest.useFakeTimers();
-    document.body.innerHTML = '<div id="panel"><span id="name"></span><span id="status"></span></div>';
+    document.body.innerHTML = '<div id="panel"><span id="name"></span><span id="status"></span><span id="meta"></span><span id="label"></span></div>';
     ui = new Feedback();
     ui.combatIntentPanel = document.getElementById('panel');
     ui.combatIntentName = document.getElementById('name');
     ui.combatIntentStatus = document.getElementById('status');
+    ui.combatIntentMeta = document.getElementById('meta');
+    ui.combatIntentPreviewAbilityLabel = document.getElementById('label');
 });
 afterEach(() => { jest.clearAllTimers(); jest.useRealTimers(); });
 const intent = { entityId: 'enemy', name: 'Skeleton', status: 'in_range', distance: 2 };
+
+test('active narrative aid uses its own label and metadata without claiming an incoming attack', () => {
+    ui.showCombatCallout({ title: 'The Tide Remembers', duration: 8,
+        tone: 'boss', metaText: 'Phase 2 of 4 · Water', label: 'Eidolon Aid' });
+    expect(ui.combatIntentMeta.textContent).toBe('Phase 2 of 4 · Water');
+    expect(ui.combatIntentPreviewAbilityLabel.textContent).toBe('Eidolon Aid');
+    jest.advanceTimersByTime(8000);
+    expect(ui.combatIntentPanel.style.display).toBe('none');
+});
+
+test('ordinary threat telegraphs keep their countdown and warning label', () => {
+    ui.showCombatCallout({ title: 'Meteor', tone: 'boss', duration: 2 });
+    expect(ui.combatIntentMeta.textContent).toBe('Incoming in 2.0s');
+    expect(ui.combatIntentPreviewAbilityLabel.textContent).toBe('Boss Telegraph');
+});
 
 test('a level-up notice expires without another target or movement update', () => {
     ui.showCombatCallout({ title: 'Level 30 Reached', duration: 2.8 });

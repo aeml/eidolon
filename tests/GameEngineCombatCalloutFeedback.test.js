@@ -94,11 +94,37 @@ describe('GameEngine encounter callouts', () => {
         });
 
         expect(engine.uiManager.showCombatCallout).toHaveBeenCalledWith(expect.objectContaining({
-            title: 'Phase III · The Will to Burn', subtitle: expect.stringContaining('Pyralis'), tone: 'danger'
+            title: 'Phase III · The Will to Burn', subtitle: expect.stringContaining('Pyralis'), tone: 'boss',
+            metaText: 'Phase 3 of 4 · Fire', label: 'Eidolon Aid'
         }));
-        expect(engine.uiManager.addGameMessage).toHaveBeenCalledWith('Dark King', 'Malachar reveals his plan.');
+        expect(engine.uiManager.addGameMessage).toHaveBeenCalledWith('Fourfold Covenant', 'Malachar reveals his plan.');
         expect(engine.uiManager.addGameMessage).toHaveBeenCalledWith('Resonance', 'Malachar takes 25% more damage.');
         expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('Fire: Pyralis', engine.player.position, '#ff7b3d', '26px');
+    });
+
+    test('Aeral joining the final phase is active aid, not a claim that Malachar is defeated', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.player = { id: 'player-1' };
+        engine.uiManager = { showCombatCallout: jest.fn(), addGameMessage: jest.fn() };
+        engine.handleServerMessage({ type: 'raid_phase', payload: {
+            phase: 4, eidolon: 'Aeral', element: 'Air', title: 'The Unbound Sky',
+            dialogue: 'Aeral: No crown can own the wind.', effect: 'All mana restored.'
+        } });
+        expect(engine.uiManager.showCombatCallout).toHaveBeenCalledWith(expect.objectContaining({
+            tone: 'boss', metaText: 'Phase 4 of 4 · Air', label: 'Eidolon Aid'
+        }));
+        expect(engine.uiManager.addGameMessage).toHaveBeenCalledWith('Fourfold Covenant', 'Aeral: No crown can own the wind.');
+    });
+
+    test.each([
+        [{ stage: 'wave_start', wave: 2, totalWaves: 3 }, 'Wave 2 of 3', 'Crystal Vigil', 'danger'],
+        [{ stage: 'complete', wave: 3, totalWaves: 3 }, 'Return to Ilyra to claim your reward', 'Crystal Restored', 'victory']
+    ])('crystal repair distinguishes a live wave from a completed ritual: %j', (payload, metaText, label, tone) => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.player = { id: 'player-1' };
+        engine.uiManager = { showCombatCallout: jest.fn(), addGameMessage: jest.fn() };
+        engine.handleServerMessage({ type: 'crystal_repair', payload });
+        expect(engine.uiManager.showCombatCallout).toHaveBeenCalledWith(expect.objectContaining({ metaText, label, tone }));
     });
 
     test('announces server-confirmed Chronicle completion after a quest turn-in', () => {
@@ -113,7 +139,8 @@ describe('GameEngine encounter callouts', () => {
         });
 
         expect(engine.uiManager.showCombatCallout).toHaveBeenCalledWith(expect.objectContaining({
-            title: 'CHAPTER COMPLETE · When the Roots Remember', subtitle: 'New chapter: Pearls Without Tides'
+            title: 'CHAPTER COMPLETE · When the Roots Remember', subtitle: 'New chapter: Pearls Without Tides',
+            metaText: 'Manual turn-in confirmed', label: 'Fourfold Chronicle'
         }));
         expect(engine.uiManager.addGameMessage).toHaveBeenCalledWith('Recovered Lore', 'Neris remembers every promise.');
     });

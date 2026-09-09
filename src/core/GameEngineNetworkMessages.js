@@ -1486,10 +1486,12 @@ class GameEngineNetworkMessageMethods {
             this.uiManager?.showCombatCallout?.({
                 title: phase.title || `Resonance Phase ${phase.phase || ''}`,
                 subtitle: `${phase.eidolon || 'An Eidolon'} · ${phase.effect || 'The resonance answers.'}`,
-                tone: phase.phase >= 4 ? 'victory' : phase.phase >= 3 ? 'danger' : 'boss',
+                metaText: `Phase ${phase.phase || '?'} of 4 · ${phase.element || 'Resonance'}`,
+                label: 'Eidolon Aid',
+                tone: 'boss',
                 duration: 8
             });
-            this.uiManager?.addGameMessage?.('Dark King', phase.dialogue || 'The Dark Realm trembles.');
+            this.uiManager?.addGameMessage?.('Fourfold Covenant', phase.dialogue || 'The Dark Realm trembles.');
             this.uiManager?.addGameMessage?.('Resonance', phase.effect || 'The Eidolons answer your call.');
             if (this.player?.position && this.floatingTextManager) {
                 this.floatingTextManager.spawn(`${phase.element || 'Resonance'}: ${phase.eidolon || 'Eidolon'}`, this.player.position, phase.color || '#dfb5ff', '26px');
@@ -1500,6 +1502,9 @@ class GameEngineNetworkMessageMethods {
             this.uiManager?.showCombatCallout?.({
                 title: repair.title || `${repair.crystal || repair.element || 'Crystal'} Repair`,
                 subtitle: repair.hint || repair.dialogue || 'Defend the ritual circle.',
+                metaText: completed ? 'Return to Ilyra to claim your reward'
+                    : repair.wave > 0 ? `Wave ${repair.wave} of ${repair.totalWaves || 3}` : 'Maelin is preparing the ritual',
+                label: completed ? 'Crystal Restored' : 'Crystal Vigil',
                 tone: completed ? 'victory' : repair.stage === 'wave_start' ? 'danger' : 'boss',
                 duration: completed ? 8 : 5
             });
@@ -1515,6 +1520,8 @@ class GameEngineNetworkMessageMethods {
                 subtitle: finale
                     ? 'Malachar has fallen. The four crystals sing as one.'
                     : `New chapter: ${chapter.nextTitle || 'The resonance continues'}`,
+                metaText: 'Manual turn-in confirmed',
+                label: 'Fourfold Chronicle',
                 tone: finale ? 'victory' : 'boss',
                 duration: 6
             });
