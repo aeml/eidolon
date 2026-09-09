@@ -1,5 +1,14 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update11:05UTC:49970 fullall TERMINAL1/FAILED on028f23b. All duels and first three
+class matrices passed; Cleric moving-cast sample had10frames in650ms against>10.
+Remaining Cleric/multiplayer/nameplate/native-rest suffix did not run. Archive
+`/tmp/eidolon-rest58-cleric-frame-failure-02mQPZ`, scan0/exact cleanup verified.
+58e5d7bd4 adds JSON frame diagnostics only before unchanged assertions/durations.
+95652 Cleric-only replay ACTIVE, `/tmp/eidolon-rest58-cleric-frame-diagnostic.log`;
+only owned browser, same18560/18561/41960ports. Fullall stillrequired.56CI remains
+predeploy; no57/58push. Separate Maelin NPC fix stays excluded from58.
+
 Update10:50UTC:56CI34340328283 server/client and all three browser shards PASSED;
 predeploy character QA ACTIVE. Fresh10:47 public manifest/backend still55/c5ce9dc.
 58all-route49970 remains ACTIVE on unchanged028f23b; ordinary fresh Wizard

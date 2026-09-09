@@ -16,7 +16,48 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 10:50 UTC
+## Current checkpoint — September 9, 11:05 UTC
+
+Previous turn was a VERIFIED WAIT on exact56CI and58browser handles. This turn
+made PROGRESS on an independently reproduced Maelin model mismatch and retained
+a newly terminal58 failure. The whole roadmap remains active and incomplete.
+
+**49970 full58 gameplay TERMINAL1/FAILED** on028f23b. Earlier dungeon, resources,
+phone, fresh collection, movement, all four duels and Fighter/Rogue/Wizard class
+matrices passed. Cleric stopped12.6s into its matrix: moving-cast sample collected
+10frames in650ms versus the unchanged requirement>10. Subsequent movement
+assertions, remaining Cleric abilities and multiplayer/nameplate/native-rest
+suffix did NOT run. This is not a complete gameplay pass or proof of its cause.
+Archive `/tmp/eidolon-rest58-cleric-frame-failure-02mQPZ` contains original log,
+test-results and HTML. Wrapper credential scan0; exact r11API/Mongo/image/network
+and18560/18561/41960listeners absent after terminal cleanup. No cancellation.
+
+58nowclean/frozen **e5d7bd434c3411bf7be96de255e760baff12e1f0** adds diagnostic JSON
+frame timings/positions/renderer before the original assertion. No threshold,
+sample duration, retry or game/runtime change. **95652 Cleric-only replay ACTIVE**,
+runrest58-cleric-0909-1105/API18560/Mongo18561/web41960, routeanimations with
+EIDOLON_ANIMATION_QA_CLASS=Cleric, Node24.18.0. Log
+`/tmp/eidolon-rest58-cleric-frame-diagnostic.log`; lint passed at
+`/tmp/eidolon-rest58-moving-cast-diagnostic-lint.log`. This is the only owned local
+browser. Finish/preserve exact evidence before another run; fullall pass remains
+required regardless of focused outcome.56CI34340328283 stillpredeploy; no57push.
+
+Later primary **f3bbe43** fixes actual NPC/CrystalKeeper routing from AvengingSeraph
+to a dedicated CrystalKeeper using the existing clothed Wizard rig, preserving
+radius1.5 and server ownership without quest-marker/summon lifecycle inheritance.
+True summons unchanged.91969red proved factory mismatch;29362PASS54tests/4suites/
+2.727+lint. **63743 fullclientPASS270suites/3857tests/155.615+lint**. Logs
+`/tmp/eidolon-maelin-model-{before,after,lint}.log` and
+`/tmp/eidolon-primary-maelin-full-{client,lint}.log`.
+Primary nowclean **0379fe3**, including diagnostic833b175 and documentation closure.
+Actual rendered NPC comparison remains due; no server/58/live change. Source
+review also found the visible crystal-restoration gate still open: active repair
+messages drive callouts/Maelin state, not a durable authored crystal visual.
+Required authoritative rejoin/restoration contract and bespoke art are recorded
+in primary `docs/plans/2026-09-09-maelin-model-and-crystal-visuals.md`; the mage-rig
+correction does not substitute for that full story/raid requirement.
+
+## Previous checkpoint — September 9, 10:50 UTC
 
 Previous user-status turn was a VERIFIED WAIT: exact CI34340328283 and local
 browser49970 were polled live. This continuation rechecked both handles; neither
