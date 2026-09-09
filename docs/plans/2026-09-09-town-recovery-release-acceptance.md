@@ -1,5 +1,15 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update11:52UTC:56allCI/liveSUCCESS; fresh11:44public manifest/login/runtime/server
+exact31c7d9f/56ready.57normallyPUSHED8af54f2 after clean244/3461/69.222+lint;
+CI34347504351 ACTIVE.70313 seven-case replayPASSED6.3m, archive
+`/tmp/eidolon-rest58-dungeon-input-proof-eu9B5K`, scan0/exact cleanup. No observed
+interception/no-input branch in this pass; original failures remain failed.
+Final57ancestrymerged58e73be3a, treeidenticalto9ea7213 (replaycode+closure doc).
+19624 completeall ACTIVE, only owned browser, r13/18560/18561/41960,
+`/tmp/eidolon-rest58-all-node24-rerun-1149.log`. Fullall,57CI/backup/livecompletion,
+then58CI/deploy/native live recovery remain required. Town recovery NOT live.
+
 Update11:39UTC:56public manifest/backend now31c7d9f/1.0.56; final live QA remains
 ACTIVE, so57cannotpushyet.33035 replay FAILED1/7 on a no-click navigation step,
 not the original clicked retreat; archive
@@ -406,7 +416,7 @@ needs a new full pass; no failure above is retroactively changed to success.
 
 - Finish the complete unchanged58 isolated gameplay chain, including all prior
   dungeon/combat/equipment/phone/animation checks and the added native rest routes.
-- 53–55 are delivered; publish each remaining predecessor56–57 only after its complete CI/deploy/final live QA
+- 53–56 are delivered; publish the remaining predecessor57 only after its complete CI/deploy/final live QA
   and independent exact client manifest, runtime script and server identities.
 - Publish58 through that same gate, with its existing58 login/patch notes.
 - Independently verify public58 identities, then use fresh dedicated ordinary

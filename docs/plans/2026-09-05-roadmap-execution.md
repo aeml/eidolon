@@ -16,7 +16,54 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 11:39 UTC
+## Current checkpoint — September 9, 11:52 UTC
+
+This turn made PROGRESS:56completed all CI/live gates,57was normally published,
+the seven-case recovery replay passed, and final-ancestry full58regression began.
+Whole roadmap remains active; town recovery is not yet live.
+
+**56 COMPLETE**,31c7d9fc3bedce839b2f83b4146060ddaa5875aa, CI34340328283 all ten
+SUCCESS; final11:42:39. Fresh11:44 manifest, login label, release-keyedmain.js
+(HTTP200/19736bytes) and healthy database-ready server exactly matched56/31c7d9f;
+manifest/backend rechecked11:48. Total74m54s, predeploy43m43s, final live11m20s.
+
+**57 PUSHED**, clean **8af54f2744fa206abba0e49f76fee50b9c8f6363** from canonical
+`/tmp/eidolon-resource-persistence-c6E17J`.72892normalpushTERMINAL0; remoteHEAD
+independently matched8af54f2. **CI34347504351 ACTIVE**, clientalreadypassed/server
+running. Final57carries tested frame/pointer/navigation QA plus fresh-hover
+prerequisite51c9bf7; onlytests/scripts/docs differ from prior1f8c7be, no runtime,
+schema or version changes.20254clean fullclientPASS244suites/3461tests/69.222+lint:
+`/tmp/eidolon-release57-final-pointer-full-{client,lint}-r2.log`.
+Initial43179failed because the shell continued into tests after a cherry-pick
+conflict; its log is retained without a pass claim at
+`/tmp/eidolon-release57-final-pointer-full-client.log`. Conflicts resolved before
+20254; subsequent mutation/test command sequences use fail-fast guards.
+
+**70313 completed PASS** on cbb158c:253/3570/80.203+lint, all7dungeon cases6.3m,
+Verdant4.3m with actual RootboundWarden/BriarMatron deaths. Archive
+`/tmp/eidolon-rest58-dungeon-input-proof-eu9B5K`, scan0/exact cleanup. No interception
+or no-input diagnostic fired here; unit regressions, not this run, exercise those
+branches. Prior failures remain failed.58docclosure9ea7213 records scope.
+
+Final57merged into58 as clean/frozen **e73be3acb195dbd87c20108fc1619f9457c4c5df**.
+Resolved duplicate QA/doc conflicts preserving58's loot observer and latest
+closure. Tree119453175a0a3235b37dadfb9ecdcf1d6d9d249a matches9ea7213 EXACTLY;
+no source changes from the accepted replay except the already-recorded doc.
+**19624 fullall ACTIVE**, only owned local browser, runrest58-all24-r13-0909-1149,
+API18560/Mongo18561/web41960, Node24.18.0, log
+`/tmp/eidolon-rest58-all-node24-rerun-1149.log`. Do not edit/restart over19624.
+58must await fullall plus57's complete CI/deploy/backup receipt/final live and
+fresh public identities before publishing. New-schema backup remains mandatory.
+
+Primary QA carried as3aa13fb/ed16753/6d38ad7/ce7160d, preserving its existing
+ranged defense/crowd-control, force-ground option, intent diagnostics and Jest
+mocks when resolving conflicts. Currentclean **ce7160d**, idle.49546focused
+PASS50tests/7suites/.921+lint, logs
+`/tmp/eidolon-primary-pointer-carried-{focused,lint}.log`. Fullprimaryserver
+regression for crystal-ready resume and fullintegratedclient remain due; no
+Maelin/story/curve/visual work was imported into58. No other local test is active.
+
+## Previous checkpoint — September 9, 11:39 UTC
 
 Previous turn made PROGRESS on strict pointer evidence. This turn retained a
 new exact-batch failure, corrected its no-input navigation caller and completed

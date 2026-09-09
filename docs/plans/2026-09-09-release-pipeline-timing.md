@@ -1,6 +1,20 @@
 # Release pipeline timing baseline
 
-## Latest completed release — September9, Alpha1.0.55
+## Latest completed release — September9, Alpha1.0.56
+
+[Run34340328283](https://github.com/aeml/eidolon/actions/runs/34340328283), exact
+31c7d9fc3bedce839b2f83b4146060ddaa5875aa, passed all ten jobs. First job10:27:45
+to final live completion11:42:39UTC: **74m54s**. Predeploy10:46:27–11:30:10 took
+43m43s; Pages/server deployments56s/28s; final live11:31:19–11:42:39 took11m20s.
+The browser stage spanned12m06s. These are observed durations, not an SLA or
+evidence isolating why this run was shorter. No release gate was removed.
+
+Fresh11:44 public manifest/login/runtime/server identities exactly matched56
+with database ready. Final57/8af54f2 was normally pushed afterward; its new
+CI34347504351 is active. Original failed56run34337271486 remains failed and is
+not a successful-pipeline timing baseline. Root workspace remains ledger-only.
+
+## Earlier completed release — September9, Alpha1.0.55
 
 [Run34328735856](https://github.com/aeml/eidolon/actions/runs/34328735856), exact
 c5ce9dc25a9554da55ef1e823e0d63ff04b6676d, passed all ten jobs. First job08:22:20
