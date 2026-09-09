@@ -16,7 +16,42 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 07:00 UTC
+## Current checkpoint — September 9, 07:05 UTC
+
+Previous goal turn made PROGRESS (primary full server race and corrected54
+browser3 completed). This continuation also made PROGRESS: fixed a concrete
+later-campaign QA search error, and verified54 advanced into predeploy.
+
+**54CI34320477081 ACTIVE: client/server and ALL THREE browser shards PASSED**;
+Predeploy Character QA now running. No deployment/finalLiveQA yet, no55push.
+The earlier failed54 run remains failed. Last public identity verified53/ce330b3.
+
+**1416 complete58 gameplay ACTIVE**, unchanged6e85547, same project/ports/log
+below, only owned local browser. Phone combat/party/inventory passed; legacy gem
+recovery passed12.6s within the full chain (base/rested distinction, exact18+5,
+full-bag rejection and saved reconnect retained). Forge/Guide passed21.1s.
+Fresh ordinary Wizard opening manually paid500XP/100gold at65s with zero deaths;
+collection still running with real town-recovery loop. Do not count partial
+stages as a full pass or edit/restart this active source.
+
+Primary now clean **b692a24cbe6e13cf1e9a08035c87ac93fc029448**. Source inspection
+found the generic Earth search fallback sent Constructs east toDemonOrcs(x300),
+despite production placing level40Constructs in x[-1000,-600]. Explicit Earth
+search helper now usesx-800,z200 for them, preserves other existing anchors,
+and fails unsupported enemies/realms instead of silently going east. Actual
+generated missing-ferry chapter test distinguishes storyrealmWater from
+huntingrealmEarth. No gameplay/runtime/requirements/deadlines/grants changed;
+Water/Fire/Air earned travel still not implemented or claimed by this helper.
+Baseline98385 reproduced3fail/11pass; corrected7305 passed63tests/3suites0.998s,
+lint/diff. Actual Playwright route discovery27460 terminal0; not browser play.
+Logs `/tmp/eidolon-primary-construct-search-{before,after,lint,discovery}.log`;
+candidate document `docs/plans/2026-09-09-earth-expedition-search.md`.
+No primary process/browser active. Parentd9cc0ed full server race remains valid
+for unchanged production server; exact new helper has focused evidence above.
+Next earned primary work waits for the owned58 browser to close and artifacts/
+exact cleanup verification, not for an invented blocker. Whole roadmap active.
+
+## Previous checkpoint — September 9, 07:00 UTC
 
 This continuation made PROGRESS: primary daily diagnostics corrected, full client
 and full server race completed, latest successful pipeline timing measured.
