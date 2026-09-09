@@ -13,8 +13,13 @@ export function createEarnedWizardDefense(page, options) {
 export async function createEarnedRangedDefense(page, { allowJumpFallback = false, useCrowdControl = false,
     retreatBelowHealthRatio = Infinity } = {}) {
     await page.evaluate(() => {
-        const game = window.game, original = game.handleServerMessage.bind(game);
+        const game = window.game;
         window.__freshWizardDefense = { lastAcceptedAt: 0, counts: { retreats: 0, crowdJumps: 0, shields: 0, rejectedShields: 0, wells: 0, rejectedWells: 0, fireballs: 0, rejectedFireballs: 0 } };
+        // Collection and successive hunts can reuse the same game. Reset the
+        // evidence segment, but install only one observer on this game object.
+        if (game.__freshWizardDefenseObserverInstalled) return;
+        game.__freshWizardDefenseObserverInstalled = true;
+        const original = game.handleServerMessage.bind(game);
         game.handleServerMessage = message => {
             if (message.type === 'ability_result') {
                 const state = window.__freshWizardDefense;

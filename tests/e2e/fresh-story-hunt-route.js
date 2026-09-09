@@ -9,8 +9,7 @@ import { earnedTownRecoveryEnabled } from '../earnedRecoveryPolicy.js';
 import { canEngageExpeditionTarget, chooseExpeditionCombatTarget, earthExpeditionSearchAnchor, levelAppropriateExpeditionTargets } from '../expeditionCombatTargets.js';
 import { equipEarnedEmptySlots } from './earned-equipment.js';
 import { selectEarnedAttackTarget } from './earned-target-input.js';
-import { openDungeonGuide } from './dungeon-guide.js';
-import { prepareEarnedClass } from './fresh-ready-route.js';
+import { prepareStoryHuntBuild } from './story-hunt-preparation.js';
 import { storyHuntTrainingDue } from '../storyHuntPreparationPolicy.js';
 import { installStoryHuntCombatObserver, readStoryHuntCombatEvidence } from './story-hunt-combat-observer.js';
 import { moveByGroundClick, projectEntity, readPlayerState,
@@ -83,13 +82,7 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady, 
         const current = await snapshot(page);
         // Online attributes grow automatically; there are no spendable stat
         // points. Equip earned empty slots and train earned branch/mastery.
-        if (current.level >= 10) {
-            await openDungeonGuide(page);
-            await prepareEarnedClass(page, credentials, { label, statBudget: current.statPoints });
-            await page.locator('#btn-close-dungeon-menu').click();
-        } else {
-            await equipEarnedEmptySlots(page);
-        }
+        await prepareStoryHuntBuild(page, credentials, current, label);
         console.log('[story-hunt] preparation receipt', JSON.stringify({ label, before: current, after: await snapshot(page) }));
         return current.level;
     };

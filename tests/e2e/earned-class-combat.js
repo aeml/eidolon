@@ -11,8 +11,11 @@ export async function createEarnedClassCombat(page, className, options) {
     if (className === 'Cleric') return createEarnedClericCombat();
     if (className !== 'Fighter') throw new Error(`No earned combat driver for ${className}`);
     await page.evaluate(() => {
-        const game = window.game, original = game.handleServerMessage.bind(game);
+        const game = window.game;
         window.__freshFighterCombat = { lastAcceptedAt: 0, counts: { accepted: {}, rejected: {} } };
+        if (game.__freshFighterCombatObserverInstalled) return;
+        game.__freshFighterCombatObserverInstalled = true;
+        const original = game.handleServerMessage.bind(game);
         game.handleServerMessage = message => {
             if (message.type === 'ability_result' && message.payload?.skillName) {
                 const state = window.__freshFighterCombat, { accepted, skillName } = message.payload;

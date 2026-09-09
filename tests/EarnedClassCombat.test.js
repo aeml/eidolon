@@ -99,6 +99,24 @@ test.each([null, undefined, '', 'overworld'])('fresh overworld marker %s reaches
     }
 });
 
+test('reinstalling Fighter combat starts one new evidence segment, not another counting wrapper', async () => {
+    const original = jest.fn();
+    window.game = { handleServerMessage: original };
+    const page = { evaluate: jest.fn(callback => callback()) };
+    try {
+        await createEarnedClassCombat(page, 'Fighter');
+        await createEarnedClassCombat(page, 'Fighter');
+        const accepted = { type: 'ability_result', payload: { skillName: 'Whirlwind', accepted: true } };
+        window.game.handleServerMessage(accepted);
+        expect(window.__freshFighterCombat.counts.accepted).toEqual({ Whirlwind: 1 });
+        expect(original).toHaveBeenCalledTimes(1);
+        expect(original).toHaveBeenCalledWith(accepted);
+    } finally {
+        delete window.game;
+        delete window.__freshFighterCombat;
+    }
+});
+
 test('a real dungeon still leaves melee input to the dungeon driver', async () => {
     const getTarget = jest.fn();
     window.game = { currentInstanceType: 'verdant_bastion_catacombs', player: { state: 'IDLE' },

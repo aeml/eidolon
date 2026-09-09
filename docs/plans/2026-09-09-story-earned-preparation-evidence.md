@@ -1,5 +1,38 @@
 # Story-only Earth readiness: earned preparation baseline
 
+## September 9, 14:48 — acquisition replay and milestone travel
+
+218a0b7 run20538 completed with a FAILURE after16.0m, not a full readiness
+pass. Preserved complete report, images and sanitized log at
+`/tmp/eidolon-story-milestone-travel-failure-OV9pLT`; scanner0 and exact owned
+containers/image/ports absent. Viewed failed-collection.png: level10, Imp quest
+2/60, character still in the western field. No production resources were touched.
+
+The first40-kill hunt passed, including manual1593XP/100gold claim and exact
+saved progression (0deaths,15town visits,607s through claim). Eight Memory Seeds
+were collected after19selected-target death observations, then manually consumed
+for the reward, reaching level9. These observations are not a statistical drop
+rate sample. The Imp segment produced23 outgoing damage events/reported775 and
+reached level10. Retained receipts show actual60fire/5physical hits, independently
+of ability acceptance. Do not count reported damage as net enemyHP drained.
+
+The level-ten preparation path called openDungeonGuide from the field; its four
+short approach steps cannot replace cross-world travel. It failed the existing
+20s visibility check near x-183,z211. Preparation now performs ordinary Recall
+and verifies town arrival before the guide approach and existing earned training.
+No input teleport, grant, relaxed encounter watchdog or reduced hunt requirement.
+
+Repeated ranged/Fighter driver installation also reproduced duplicate diagnostic
+cast counts in unit tests (one accepted result counted twice). Each now resets
+its segment while installing one wrapper per game object; messages are forwarded
+unchanged. This does not retroactively establish exact cast totals in old runs.
+
+RED:3suites failed, including both duplicate-count assertions and the new missing
+route helper. GREEN:38tests/5suites1.197s and lint passed in71991, logs
+`/tmp/eidolon-story-milestone-{before,after,lint}.log`. Actual corrected training
+and remaining story-only Earth playthrough still require a fresh browser run.
+Recovery58 remains unchanged and excluded from these edits.
+
 The prior a4ea4cc run failed in the level20+ Imp hunt, starting at level9 and
 only training when a hunt started at10+. It did not log unspent points or actual
 damage targets. Preserve `/tmp/eidolon-story-ready-imp-failure-mptII0`; do not
