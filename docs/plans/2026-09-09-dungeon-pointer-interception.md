@@ -1,5 +1,24 @@
 # Fresh pointer evidence in moving dungeon scenes
 
+Follow-up11:34UTC:33035 seven-test replay FAILED1/7; six cases passed5.2m,
+including both previously failed portal/wall cases. Verdant cleared RootboundWarden
+and later enemies, then its traversal helper found no exposed ground and issued
+zero clicks. The character was still completing prior movement: initial MOVING
+(19919.69,19298.83), later IDLE(19921.85,19308.57), no pending interaction.
+This was GroundInputUnavailableError, not the original unproven retreat failure.
+Archive `/tmp/eidolon-rest58-pointer-replay-failure-7QbgHX`; sanitized2files and
+exact temporary cleanup verified. Do not label this replay a pass.
+
+The dungeon traversal/approach caller now recognizes unavailable/intercepted
+input and rereads the world on its existing loop. It does not count a successful
+step, reset/extend the walking/combat deadline, retry inside the policy helper,
+jump, move directly or grant anything. Ordinary errors still propagate; actual
+entry, boss damage/deaths, cleared rooms and later spawns remain mandatory.
+5347 focusedPASS38tests/4suites/.665s+lint, including one-call/non-success and
+ignored-movement/network/death hard-failure cases. Logs
+`/tmp/eidolon-rest58-navigation-input-{focused,lint}.log`.
+Full client plus a new exact seven-test replay remain required, followed by all.
+
 2466 complete recovery run on c5e3204 failed its first seven-test dungeon batch:
 two entrance clicks selected InfernoTitan, and a Verdant retreat produced no
 movement with BriarMatron pending. Four other cases passed5.8m. Original log,
