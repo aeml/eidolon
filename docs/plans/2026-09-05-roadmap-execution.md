@@ -16,7 +16,63 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 13:32 UTC
+## Current checkpoint — September 9, 13:49 UTC
+
+This turn made PROGRESS: actual earned story run reached a retained failure that
+changes the next investigation, and the journal polish passed rendered/fullclient
+verification and was integrated into primary. Goal remains fully open.
+
+58CI **34355888468** ACTIVE exactfb8db754: all client/server/disposablebackup/
+threebrowser shards PASSED. Predeploy Character QA now runs its disposable full
+gameplay step (gallery already passed). Do not cancel/restart for elapsed time.
+Fresh13:48 public manifest/backend still healthy57/8af54f2.58notlive. Still requires
+completepredeploy, actual schema8→9 production backup/deploy and final mandatory
+native public healing/rest/expiry/party tests plus exactpublic58identity.
+
+Primary story-only Wizard **2268 TERMINAL1/FAILED after17.7m**, not a fullpass.
+Same a4ea4cc source: opening/diary/first40hunt and8seed collection manually earned;
+collection completed after21selected-target deathobservations/no deaths. Next
+InkThatWalks startedlevel9 with11earnedpieces equipped, required60level20+Imps.
+Only1credit reached, then unchanged120s kill-credit watchdog failed. Finallevel10,
+HP288/365,MP8/265,restBank0,outside; targetImp20hp51,eliteImp hovered,69retreats/
+20acceptedFireballs. Exactperhittargets/unspenttrainingpoints were not captured.
+Townhealing hadworkedearlier; driver only schedules rest between creditedkills
+and only trains at hunt START ifalready≥10. Level9→20authored content gap and
+preparation/strategy need coordinated investigation; do NOT claim human combat
+impossible or silently change XP/death/deadline rules to erase this result.
+Archive **`/tmp/eidolon-story-ready-imp-failure-mptII0`**,scan0, all exactrun
+containers/image/ports absent. Failure screenshot viewed. No ownedbrowser remains.
+Detailed primarydoc`2026-09-09-earth-ready-imp-failure.md` preserves facts/limits.
+
+Separate confirmed presentation defect exposed by that screenshot: Fireball~8
+is from AbilityController.buildSoftDamagePreview's arbitrary1.5×basicdamage table,
+NOTserver Fireball's20+2Intelligence/training/effects calculation. Do not use
+the hover number as damage/balance evidence. Needs source-backed estimates or
+honest cast information, not new arbitrary ratios. No spell-damage change made.
+
+Journal prototype browser1832 PASS2/7.2s, archive
+`/tmp/eidolon-journal-daily-proof-uTs1qn`,scan0. Viewed desktopcompact and phone
+accepted-first; fixture omittedobjective metadata and showedgenericDefeat1target.
+Corrected fixture now imports actualdiary title/acceptance/directions.96559 replay
+PASS2/7.4s, archive **`/tmp/eidolon-journal-diary-proof-Of6uSy`**,scan0/port41961clean;
+actualcorrecteddesktop diarycapture inspected. NativeEnter toggle,44pxsummary,
+viewportbounds,independentlore/dailyfocus,ready-first ordering passed. No earned
+quest/progression claim from this controlledUIfixture.
+95282fullclient PASS273suites3916tests79.928s+lint onca674c6. Logs
+`/tmp/eidolon-journal-daily-{browser,browser-r2,full-client,full-lint}.log`.
+CIshard2future`npm run test:e2e:journal` wired. Imported b03e8d4/ca674c6 intoprimary
+as c854f8e/f180ccb AFTER2268terminal; source trees matchtestedclient/script/CI.
+Primary clean **75e30ebafa115dd89ee9a7fd7add2be39f3ff73d** includesdocclosures.
+SeparatejournalWT remainsclean ca674c6, no active handle. No need repeat its
+alreadycompleted UI proof; broaderstory/newsource verification remains due.
+
+Next priorities: monitor58deployment to actualnativeproduction recovery; then
+record/use an ordinary earned preparation baseline and actualperhitreceipts for
+the Imp handoff before coordinatedallclass/party progression decisions. Preserve
+the full originalroadmap (remaining raids/DarkKing/art/mobile/balance etc.).
+No successor publication before58accepted; root remains ledger-only/neverpush.
+
+## Previous checkpoint — September 9, 13:32 UTC
 
 This continuation made PROGRESS: verified ongoing58CI/story handles, obtained
 new earned hunt/collection evidence, and implemented a bounded future journal

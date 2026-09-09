@@ -1,5 +1,12 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update13:49UTC:58CI34355888468 allclient/server/threebrowser shards PASSED;
+Predeploy Character QA ACTIVE, current disposablefullgameplay (gallerypassed).
+Public client/backend fresh13:48 still57/8af54f2/ready.58notlive, no bypass.
+Separateprimary2268story-only run TERMINALFAILED in Imp hunt; preserved evidence
+and exactcleanup. It neither changes nor invalidates the unchanged58candidate.
+Separatelyverifiedjournal UI integratedonlyintounpublishedprimary75e30eb.
+
 Update13:32UTC:58CI34355888468 client/server and browser2/3,3/3 PASSED;
 browser1/3 ACTIVE. Published source remains cleanfb8db754, no changes. Required
 predeploy, schema8→9productionbackup/deploy/nativepublicrecovery gates remain.
