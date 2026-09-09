@@ -16,7 +16,33 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 08:25 UTC
+## Current checkpoint — September 9, 08:29 UTC
+
+This turn made PROGRESS: **55264 focused beam replay TERMINAL0/PASS1/53.1s**
+(test51.6) on canonical58 **07283d077757ce42ba6d07ba1c8768ef7f822ce5**. All eight
+rank0/5 × High/Low × wall/open casts matched authoritative endpoints; saved
+rank/reconnect checks passed. The2unit approach tolerance,45s budget, actual
+input and beam geometry checks stayed unchanged. Scan0; exact probe API/Mongo/
+image absent and18560/18561/41960 free. Archive
+**`/tmp/eidolon-rest58-beam-settled-proof-ls2Jmp`**, log
+`/tmp/eidolon-rest58-beam-settled-0825.log`. Prior complete-run failure stays failed.
+
+**46700 current full client/lint TERMINAL0**, Node24.18.0,248suites/3492tests/
+112.724s, logs `/tmp/eidolon-rest58-settled-full-{client,lint}.log`. Exact source
+07283d0 remained unchanged during this check. Server runtime remains unchanged
+from the earlier full Go race proof; no new server/full-game pass is implied.
+
+**53012 complete58 gameplay ACTIVE**, same frozen07283d0, only owned local
+browser. Runrest58-all24-r7-0909-0828 (actual start08:27), API18560/Mongo18561/
+web41960, log `/tmp/eidolon-rest58-all-node24-rerun-0828.log`. All three actual
+authentication/UI/loot/portal checks passed53.7s; dungeon batch underway.
+Do not edit/restart or start another owned browser until terminal evidence.
+
+**55CI34328735856 ACTIVE**, client/server PASS and all3browser shards running.
+Public54 fully verified below. No56push until complete55CI/deploy/finalLiveQA
+and fresh exact public identities. Whole roadmap still open;58 not live.
+
+## Previous checkpoint — September 9, 08:25 UTC
 
 **70373 complete58 TERMINAL1/FAILED**: seven-test dungeon batch finished with
 the one pre-cast beam-position failure and6passes/6.1m. Scan0; exact

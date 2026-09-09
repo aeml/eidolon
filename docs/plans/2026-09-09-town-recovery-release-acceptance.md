@@ -1,5 +1,12 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update08:29UTC: **07283d077757ce42ba6d07ba1c8768ef7f822ce5** focused beam replay
+55264 PASSED1/53.1s, all eight actual beam endpoint cases plus saved rank.
+Current full client46700 PASSED248suites/3492tests/112.724s plus lint underNode24.
+Full gameplay **53012 ACTIVE**, `/tmp/eidolon-rest58-all-node24-rerun-0828.log`;
+authentication passed, dungeon batch underway. Earlier failures remain retained.
+55CI34328735856 has client/server passed and browser shards running.58 NOT LIVE.
+
 Update08:25UTC: full70373 finished FAILED (one beam-approach failure, six other
 dungeon batch tests passed). Evidence archived and exact cleanup verified.
 Canonical58 **07283d0** now includes the prepared settled-approach QA correction;
