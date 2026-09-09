@@ -16,7 +16,62 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 10:03 UTC
+## Current checkpoint — September 9, 10:13 UTC
+
+Previous goal turn made PROGRESS (integrated raid fixes and campaign labels).
+This turn made PROGRESS: primary full client/server finished successfully;
+recovery's full gameplay failed a stale mana assertion, which was independently
+reproduced/diagnosed and corrected. Full roadmap and production recovery stay open.
+
+**82037 full58 TERMINAL1/FAILED** on1fd0d35. Earlier dungeon, phone, resources,
+collection and movement batches passed, including the actual31.68speed/2-update
+movement boundary. Then all four normal practice-duel cases failed: expected
+town mana110, observed arena100. These four tests were PvP cadence, NOT the class
+animation matrix; the subsequent animation/multiplayer/nameplate/rest suffix did
+not execute. Earlier commentary describing animations underway was premature.
+Full log `/tmp/eidolon-rest58-all-node24-rerun-0935.log`; archived report/results
+at **`/tmp/eidolon-rest58-duel-mana-failure-BMUpaP`**. Scan0 and exact API/Mongo/
+image/network cleanup and free18560/18561/41960 verified after terminal failure.
+No production or user data was removed; diagnostic evidence retained.
+
+Diagnostic-only standalone **f3b944f** captures maxima/rest clocks before the
+unchanged assertion. **16108 TERMINAL1**, all four reproduced: every side showed
+mana110/max110 with2.28–6.60s bank before, then mana100/max100/bank0 during combat.
+This establishes intended expiry/clamping, not a basic-attack mana cost. Log
+`/tmp/eidolon-rest58-duel-diagnostic.log`; archive
+**`/tmp/eidolon-rest58-duel-expiry-proof-SeqVF5`**. Scan0/exact cleanup verified.
+Viewed original fighter arena-combat image: actual fight and100/100 mana visible;
+85FPS snapshot is not sustained performance or final visual sign-off.
+
+Primary2079ac4 imports diagnostics; **23a4df2** fixes the assertion to require full
+mana before combat, current max100/110 matching level-one rested state, and full
+current mana during the duel. All attack-count/interval/hit/scene/forfeit/rating/
+economy checks remain; no runtime/time/retry change.98009 lint/discovery PASS,
+four real tests discovered. Standalone cherry-pick is **d96ab83**.
+
+Standalone **4c2654e** adds optional `recovery-tail`, the exact final five steps of
+the unchanged full route (PvP, all class animations, multiplayer, nameplates,
+native rest/expiry/party). It is diagnostic preparation, NOT full acceptance.
+**58502 harness PASSED18tests/4suites/0.889s**, lint/shell syntax passed;
+`/tmp/eidolon-rest58-duel-tail-{harness,lint}.log`. Evidence doc5cc8849; current
+clean/frozen **5cc8849**. **69623 corrected tail ACTIVE**, only owned local browser,
+runrest58-tail-0909-1012, ports18560/18561/41960,
+`/tmp/eidolon-rest58-corrected-tail.log`.
+**98816 full client/lint ACTIVE** underNode24.18.0,
+`/tmp/eidolon-rest58-duel-corrected-full-{client,lint}.log`. Do not edit until both
+terminal; archive/sanitize/verify exact cleanup before any successor browser.
+Complete all-route repeat remains due even if this focused suffix succeeds.
+
+Primary full checks on **8b863b7** both PASSED:
+**81309 client269suites/3845tests/122.093s plus lint**;
+**12028 Go1.24.5race root22.474s/game354.017s**, other tested packages cached.
+Logs `/tmp/eidolon-primary-raid-integrated-full-{client,lint,server}.log`.
+Primary is now clean/idle23a4df2 (subsequent changes are duel QA only). Expanded
+Earth earned readiness remains unrun and cannot displace urgent recovery closure.
+56CI34337271486 server/client and browser2/3 passed; browser1 still active.
+57 remains clean6babef5/unpublished; no successor push until complete56livegate.
+
+## Previous checkpoint — September 9, 10:03 UTC
 
 The previous goal turn made PROGRESS (verified55, pushed56, fixed explosive kill
 deadlock). This turn also made PROGRESS: final57 client regression and separate

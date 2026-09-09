@@ -1,5 +1,17 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update10:13UTC:82037 full gameplay FAILED four PvP mana comparisons after earlier
+dungeon/phone/resource/movement passes. Diagnostic16108 reproduced all four:
+110/110 with bank>0 became100/100 with bank0 during each real duel. The old test
+compared a full bar against its expired maximum. Both original failures retained;
+scan0/exact temporary cleanup verified. Archives and detailed evidence in ledger.
+Current frozen **5cc8849** changes QA only: full-current-mana checks preserve all
+other duel assertions; optional recovery-tail rehearses the exact unchanged full
+gate suffix. **69623 tail ACTIVE**, `/tmp/eidolon-rest58-corrected-tail.log`;
+**98816 full client/lint ACTIVE**, `...duel-corrected-full-{client,lint}.log`.
+Complete all-route repeat and ordered56–58 deployment/live verification remain
+required.56 is in browser QA;57/58 remain unpublished. No recovery-live claim.
+
 Update09:54UTC:55CI34328735856 PASSED all ten jobs; fresh09:53 public manifest,
 login/runtime and healthy backend exactly matched55/c5ce9dc. Canonical56/9f41111
 was normally pushed and CI34337271486 is ACTIVE. Prepush full client79982 passed
