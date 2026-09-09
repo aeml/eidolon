@@ -16,7 +16,40 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 11:52 UTC
+## Current checkpoint — September 9, 12:05 UTC
+
+Previous user-status turn was a VERIFIED WAIT on exact live19624 and
+CI34347504351, with fresh public56 manifest/backend evidence. This continuation
+made PROGRESS on the later story's missing crystal-state contract while preserving
+the only owned recovery browser. No cancellation, new local browser or root push.
+
+57CI34347504351 remains ACTIVE on8af54f2: server/client, disposable backup/restore
+and browser shards2/3 and3/3 PASSED; shard1/3 still ACTIVE. Production backup,
+predeploy/full deployment/final live QA and exact public57 identities remain due.
+58full19624 is ACTIVE on clean/frozene73be3a, log
+`/tmp/eidolon-rest58-all-node24-rerun-1149.log`, same18560/18561/41960ports. Seven
+dungeon cases passed5.5m, later ability/phone checks passed, ordinary fresh Wizard
+collection ongoing with real mana recovery/rest banking in Lanternhold. This is
+partial local evidence, NOT full regression or production recovery. Public56
+was freshly confirmed this turn; user ETA remains14:00–17:00UTC conditional on
+all remaining gates. Do not publish58 before57's entire acceptance completes.
+
+Primary clean **13a55fddc8f45263951675192edf7e125ff7f0ef** adds server-owned crystal
+identity/position/stage/wave/progress to the existing room-state wire contract.
+No save-schema/client visual/quest reward change. Shared restart/readiness helper
+keeps exact completed defenses distinct from manual Ilyra turn-in. All four initial
+raid identities, live three-wave worker, every-member readiness and reconstructed
+ready/claimed raid snapshots tested. Red98986 reproduced absent wire state;
+15817racePASS4.192,26468expandedracePASS7.332,68366actual entry serializerPASS1.564.
+Logs `/tmp/eidolon-crystal-snapshot-{before,after,expanded,protocol}.log`.
+Detailed candidate doc `docs/plans/2026-09-09-crystal-sanctum-snapshot.md`.
+The worker test explicitly clears its spawned enemies as a server fixture, not
+earned group combat. Full server/client regression, actual reconnect/update
+transport, authored crystals/sanctums/bespoke Maelin and rendered group progression
+remain open. NO import into58. Avoid heavy regression beside19624; full primary
+Go remains due for both prior ed95214 and this13a55fd contract.
+
+## Earlier checkpoint — September 9, 11:52 UTC
 
 This turn made PROGRESS:56completed all CI/live gates,57was normally published,
 the seven-case recovery replay passed, and final-ancestry full58regression began.

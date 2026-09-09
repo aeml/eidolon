@@ -1,5 +1,13 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update12:05UTC:57CI34347504351 server/client/disposable backup-restore and two
+browser shards PASSED; remaining shard ACTIVE. Complete predeploy/deploy/production
+backup receipt/final live QA and public57 identities still required.58full19624
+remains ACTIVE on unchanged/clean e73be3a, r13sameports18560/18561/41960. Seven
+dungeon cases passed5.5m; later spell/phone checks passed and fresh collection is
+exercising actual town mana refills/rest banking. Not a full pass or live recovery.
+Separate primary13a55fd crystal-state work is excluded from58. No cancellations.
+
 Update11:52UTC:56allCI/liveSUCCESS; fresh11:44public manifest/login/runtime/server
 exact31c7d9f/56ready.57normallyPUSHED8af54f2 after clean244/3461/69.222+lint;
 CI34347504351 ACTIVE.70313 seven-case replayPASSED6.3m, archive
@@ -416,8 +424,9 @@ needs a new full pass; no failure above is retroactively changed to success.
 
 - Finish the complete unchanged58 isolated gameplay chain, including all prior
   dungeon/combat/equipment/phone/animation checks and the added native rest routes.
-- 53–56 are delivered; publish the remaining predecessor57 only after its complete CI/deploy/final live QA
-  and independent exact client manifest, runtime script and server identities.
+- 53–56 are delivered and57 is published. Before publishing58, require57's
+  complete CI/deploy/final live QA, production backup receipt, and independent
+  exact client manifest, runtime script and server identities.
 - Publish58 through that same gate, with its existing58 login/patch notes.
 - Independently verify public58 identities, then use fresh dedicated ordinary
   QA characters against the public client and WebSocket. Verify actual combat
