@@ -4,6 +4,16 @@ Requested September 8, 2026. Status: implementation in progress, NOT live.
 Part of the active full-roadmap goal: implement as a coordinated 1.0.x feature
 after urgent blockers, and include it in 1.1 recovery and progression acceptance.
 
+September9 03:24 checkpoint: the uninterrupted17a4dba route FAILED5.2m at
+Watch3/40 with zero deaths: an issued retreat displaced2.46 of the required6
+units near New Growth. Marker interception is a lead, not established cause.
+New integrated0a3e1c0 adds player-facing Shift-click move-only input, preserving
+ordinary walking/collisions and normal interaction. Full client257suites/3655tests,
+lint and native marker-pointer fixture pass. Fresh actual uninterrupted24785 is
+ACTIVE on that clean source, with unchanged quest counts, timeouts and recovery
+rules. Evidence and limitations are in the candidate integration document.
+Feature is still NOT live;52 CI remains active and53 must wait for its full gate.
+
 September9 03:08 checkpoint: integrated production1816738 passes full server
 race and256 client suites/3645tests. Additional combined save regression passes
 all four classes living/dead through3 BSON/journal/catalog reloads each, keeping

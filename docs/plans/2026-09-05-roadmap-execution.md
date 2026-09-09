@@ -5,7 +5,37 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 03:08 UTC
+## Current checkpoint — September 9, 03:24 UTC
+
+PROGRESS: integrated17a4dba uninterrupted72341 terminatedFAILED5.2m. Opening
+and diary passed; Watch3/40, level4/50HP/8MP, zero deaths. Issued retreat moved
+2.46 of required6 units near New Growth. Hover/range evidence suggests marker
+interception but lacks the click recipient; do not assert a unique cause.
+Sanitized artifacts archived `/tmp/eidolon-story-rest-failure-dxIDjf/test-results`,
+log `/tmp/eidolon-story-rest-uninterrupted-0303.log`. Owned services/image absent.
+
+New production Shift-click move-only control resolves ground before interactions,
+clears pending intent and retains ordinary collision/server walking. Visible help
+updated. Real-input retreat helper uses Shift and now records read-only intent/
+collision diagnostics; minimum6,2.5s deadline, clear path, no alternate paths,
+no default jump, resource rules and quest counts unchanged. Baseline control
+tests failed5/8, corrected focused39 and helper/policy23 passed. Native rendered
+pointer fixture37171 PASS1/5.2s, screenshot inspected/archived; intent fixture is
+not server displacement or combat acceptance. Full client73607 PASS257suites/
+3655tests153.217s, final lint17253/diff checks pass. Backend unchanged from its
+full race pass. Clean integrated commit **0a3e1c0889d518a2f25875165dd8f0a8016aea96**.
+
+Fresh same-route **24785 ACTIVE**, projectstory-rest-20260909-0324 on
+API18560/web41960. Log `/tmp/eidolon-story-rest-uninterrupted-0324.log`.
+Poll this handle; do not relaunch or clean while active. Only owned local check
+running. Detailed evidence in candidate `docs/plans/2026-09-09-story-rest-integration.md`.
+
+**52 CI34305897736 ACTIVE**: Go/Jest and browser2/3,3/3 passed; browser1/3
+running.51 remains last verified live. No53 push before entire52CI/deploy/final
+live QA and fresh exact public52. Root remains ledger-only;53–57 canonical queue
+unchanged. Rest/story candidate unversioned, not live, no full pacing approval.
+
+## Previous checkpoint — September 9, 03:08 UTC
 
 PROGRESS: **51 fully live and verified**. CI34300606161 terminalSUCCESS,
 including final live four-class/remote QA. Fresh no-cache public client/backend
