@@ -7,14 +7,15 @@ import { recoverEarnedDeath } from './earned-death-recovery.js';
 import { earnedCheckpoint } from './earned-checkpoint.js';
 import { recoverBetweenHuntEncounters } from './earned-hunt-rest.js';
 import { earnedTownRecoveryEnabled } from '../earnedRecoveryPolicy.js';
-import { canEngageExpeditionTarget, chooseExpeditionCombatTarget, earthExpeditionSearchAnchor, levelAppropriateExpeditionTargets } from '../expeditionCombatTargets.js';
+import { canEngageExpeditionTarget, chooseExpeditionCombatTarget } from '../expeditionCombatTargets.js';
+import { findExpeditionTarget } from './earned-expedition-target.js';
 import { equipEarnedEmptySlots } from './earned-equipment.js';
 import { selectEarnedAttackTarget } from './earned-target-input.js';
 import { prepareStoryHuntBuild } from './story-hunt-preparation.js';
 import { maintainEarnedInventory } from './earned-inventory-management.js';
 import { storyHuntTrainingDue } from '../storyHuntPreparationPolicy.js';
 import { installStoryHuntCombatObserver, readStoryHuntCombatEvidence } from './story-hunt-combat-observer.js';
-import { moveByGroundClick, projectEntity, readPlayerState,
+import { projectEntity, readPlayerState,
     setAutoLootThroughSettings } from './helpers.js';
 
 const snapshot = page => page.evaluate(() => {
@@ -42,38 +43,6 @@ const combatSnapshot = page => page.evaluate(() => {
             distance: Math.round(game.player.position.distanceTo(enemy.position) * 10) / 10
         })) };
 });
-
-// Read replicated enemies and approach through ordinary movement. No encounter
-// waypoints, teleport commands, entity moves or progression grants are used.
-async function findExpeditionTarget(page, hunt, deadline = Infinity) {
-    // The original Skeleton fallback lay in level-ten territory. Walk back
-    // toward the authored starter band if streaming shows no appropriate foe.
-    const fallback = earthExpeditionSearchAnchor(hunt);
-    for (let step = 0; step < 100 && Date.now() < deadline; step++) {
-        expect((await readPlayerState(page)).state, 'Ordinary expedition travel must be survivable').not.toBe('DEAD');
-        const observed = await page.evaluate(hunt => {
-            const game = window.game;
-            return [...game.remotePlayers.values()].filter(enemy => enemy.isActive && enemy.state !== 'DEAD' &&
-                (enemy.subType || enemy.constructor.name) === hunt.enemy && enemy.level >= hunt.minEnemyLevel &&
-                (enemy.health ?? enemy.stats?.hp) > 0).map(enemy => ({ id: enemy.id, level: enemy.level,
-                x: enemy.position.x, z: enemy.position.z, rendered: game.activeEntitiesCache.includes(enemy),
-                distance: game.player.position.distanceTo(enemy.position) })).sort((a, b) => a.distance - b.distance);
-        }, hunt);
-        const candidates = levelAppropriateExpeditionTargets(observed, hunt.minEnemyLevel,
-            (await readPlayerState(page)).level);
-        for (const enemy of candidates.slice(0, 6)) {
-            if (!enemy.rendered) continue;
-            const point = await projectEntity(page, enemy.id);
-            if (point?.visible) return enemy;
-        }
-        const target = candidates[0] || fallback;
-        const player = await readPlayerState(page);
-        const dx = target.x - player.x, dz = target.z - player.z;
-        const scale = Math.min(1, 12 / Math.max(1, Math.hypot(dx, dz)));
-        await moveByGroundClick(page, dx * scale, dz * scale);
-    }
-    throw new Error(`No reachable ${hunt.enemy} level ${hunt.minEnemyLevel}+ after bounded ordinary travel`);
-}
 
 export async function earnFreshStoryHunt(page, credentials, id, { captureReady, leaveTown } = {}) {
     const hunt = chronicleHunts.find(hunt => hunt.id === id);
