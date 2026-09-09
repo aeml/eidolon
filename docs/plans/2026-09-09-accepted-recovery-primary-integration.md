@@ -22,7 +22,11 @@ drop or story-content decision is made in this merge.
 
 Focused27848 passed313tests/8suites2.664s plus lint and shell syntax. Source
 includes approved deployment-image retention and confidential build-context
-checks. Full client/server and actual integrated browser proof remain required.
+checks. Fullclient26781 on51704bd passed277suites3946tests128.14s and lint;
+fullGo-race90945 passed (root22.394s/game318.255s/database1.097s). Logs
+`/tmp/eidolon-primary-accepted58-full-{client,lint,server}.log`. Server files stayed
+unchanged while later client-only bag-policy files were prepared. Actual integrated
+browser proof remains required, and subsequent client edits need a new full run.
 Do not promote the separate aura batching or CI partition prototypes implicitly.
 
 The latest prior story run11948 FAILED14.6m: the40kill quest/manual payout and

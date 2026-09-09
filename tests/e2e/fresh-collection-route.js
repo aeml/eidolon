@@ -6,6 +6,7 @@ import { earnFreshStoryHunt } from './fresh-story-hunt-route.js';
 import { openDungeonGuide } from './dungeon-guide.js';
 import { recoverBetweenCollectionEncounters } from './earned-town-rest.js';
 import { earnedTownRecoveryEnabled } from '../earnedRecoveryPolicy.js';
+import { maintainEarnedInventory } from './earned-inventory-management.js';
 import { createFreshCollectionCombat, observeCollectionCombatReceipts, readFreshCollectionCombat,
     readCollectionTarget, selectCollectionTargetThroughInput,
     reacquireDisengagedCollectionTarget } from './fresh-collection-combat.js';
@@ -52,6 +53,7 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
     let observedTargetDeaths = 0, deaths = 0;
     for (let encounter = 0; encounter < required * 5 + 2 && (await readChronicleChapter(page, collection)).count < required; encounter++) {
         if (earnedTownRecoveryEnabled()) {
+            await maintainEarnedInventory(page, { leaveTown });
             await recoverBetweenCollectionEncounters(page, leaveTown);
         }
         let target = await findTarget();

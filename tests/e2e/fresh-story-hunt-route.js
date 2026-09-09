@@ -10,6 +10,7 @@ import { canEngageExpeditionTarget, chooseExpeditionCombatTarget, earthExpeditio
 import { equipEarnedEmptySlots } from './earned-equipment.js';
 import { selectEarnedAttackTarget } from './earned-target-input.js';
 import { prepareStoryHuntBuild } from './story-hunt-preparation.js';
+import { maintainEarnedInventory } from './earned-inventory-management.js';
 import { storyHuntTrainingDue } from '../storyHuntPreparationPolicy.js';
 import { installStoryHuntCombatObserver, readStoryHuntCombatEvidence } from './story-hunt-combat-observer.js';
 import { moveByGroundClick, projectEntity, readPlayerState,
@@ -113,6 +114,7 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady, 
         expect((await readChronicleChapter(page, id)).count).toBeGreaterThanOrEqual(credit);
     };
     while ((await readChronicleChapter(page, id)).count < hunt.count) {
+        if (earnedTownRecoveryEnabled()) await maintainEarnedInventory(page, { leaveTown });
         const credit = (await readChronicleChapter(page, id)).count;
         let enemy;
         if (storyHuntTrainingDue(preparedLevel, (await snapshot(page)).level)) {

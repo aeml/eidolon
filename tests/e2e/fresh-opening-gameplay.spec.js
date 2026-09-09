@@ -29,8 +29,8 @@ test.afterEach(async ({ page }, testInfo) => {
     if (!evidence) return;
     await testInfo.attach('story-combat-failure', { body: JSON.stringify(evidence), contentType: 'application/json' });
     console.log('[story-hunt] failure receipt', JSON.stringify({ player: evidence.player,
-        outgoing: evidence.combat.outgoing, incoming: evidence.combat.incoming,
-        requestedId: evidence.combat.requestedId, selected: evidence.selected, nearby: evidence.nearby }));
+        outgoing: evidence.combat?.outgoing, incoming: evidence.combat?.incoming,
+        requestedId: evidence.combat?.requestedId, selected: evidence.selected, nearby: evidence.nearby }));
 });
 const chapter = 'chronicle_01_bell_below';
 
