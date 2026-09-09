@@ -16,7 +16,33 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 22:29 UTC
+## Current checkpoint — September 9, casino scope addition
+
+User added a fully functional two-floor main-town casino to the existing **1.10
+completion** goal, explicitly for later implementation. Updated the canonical
+roadmap and added [the casino scope and acceptance plan](2026-09-09-town-casino-roadmap.md).
+Stages:1.5 economy/currency boundary,1.8 seated multiplayer/session infrastructure,
+1.9 world layout and games,1.10 complete public+VIP release acceptance. Public
+uses existing Gold; VIP uses a separate future currency whose identity/economics
+remain undefined and require a later design decision. No casino runtime changes,
+new currency, version bump or claim of shipped casino content. Root remains
+documentation-only and is not pushed. The full goal remains active and expanded.
+
+Previous status-only turn rechecked live58/ef9; it did not advance implementation.
+This continuation inspected terminal38966: story run failed at diary approach
+after ordinary combat, with quest-journal open, before the bag helper was reached.
+Archive `/tmp/eidolon-story-diary-input-failure-gOwlye` contains sanitized context,
+HTML report and run log; this failure produced no screenshot. Exact run containers
+and ports18560/18561/41960 are absent. No story/merchant readiness pass is claimed.
+Primarycf9f2cc now has uncommitted test-only reading-state changes: recognize an
+already-visible/open exact diary entry, otherwise close an unrelated journal via
+its normal button before approach; keep evidence, server quest count and manual
+turn-in assertions. Add failure capture around reading/second approach. Focused
+83791 passed15tests/3suites0.59s and lint. Actual browser replay and fullclient are
+still due; no successor release has been created or pushed. Work paused for this
+requested roadmap addition, not abandoned or treated as complete.
+
+## Previous checkpoint — September 9, 22:29 UTC
 
 This continuation made PROGRESS. Primary merge51704bd fullclient26781 PASSED
 277suites3946tests128.14s+lint; fullGo-race90945 PASSED root22.394/game318.255/
