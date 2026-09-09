@@ -5,7 +5,54 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 04:35 UTC
+## Current checkpoint — September 9, 04:48 UTC
+
+PROGRESS: **52CI34305897736 TERMINAL SUCCESS**, including full final live QA.
+Independent04:45 public manifest/backend/login/versioned main all matched
+a36d1e7d66333e8f6cf707ff115947b340c9a46c / Alpha1.0.52, backend healthOK/DBready.
+Only then pushed canonical53 **ce330b3e2a576d07d159b964563f12f031dff3d5** from
+its clean release worktree after predecessor/ancestry/remote checks. Push20414
+completed and independent remote/master matched53. **53CI34312290353 ACTIVE**.
+Do not push54 before complete53CI/finalQA and fresh exact public identity checks.
+The cancelled34307306192 soak remains cancelled, not passed; no scheduling change.
+
+Primary full95095 TERMINAL FAIL169.494s:261suites/3730tests passed, one old
+VersionPresentation assertion expected the original inline nameplate command.
+Its required route was retained and independently covered by the35-stage harness.
+Corrected assertion only; focused54306 PASS269tests3.027s/lint/diff. Committed
+**96a2236**; corrected40749 fullclient PASS262suites3731tests180.151s. Original
+and corrected logs `/tmp/eidolon-primary-timing-full-client{,-fixed}.log`.
+All primary local handles terminal. Story/campaign work remains required there.
+
+Prepared standalone **Alpha1.0.58 candidate** to avoid making the essential town
+recovery feature wait for the expanded story/reward rollout. Existing badd0cf
+production implementation retained, canonical57 ancestry verified. New worktree
+`/tmp/eidolon-standalone-town-recovery-QJ6Drv`, branch
+`work/standalone-town-recovery-20260909`, clean
+**1929d912bbf7125303076553a3114fbc00d8c747**. Main production changes after badd
+are version metadata only; copy the read-only class-aware normal-rest QA policy,
+retain explicit no-rest diagnostic, and add isolated real-rest/expiry/phone-party
+routes after all previous full-gate commands. No expanded hunts/sites or curve2
+activation; balancing remains a later coordinated release, not declared done.
+All58login/package/manifest/backend/deploy versions and honest player notes are
+synchronized;58is a candidate, NOT published. Existing history is intact.
+
+Standalone policy36436 PASS36tests1.352s; version80525 PASS257tests2.787s;
+final gate46459 PASS261tests2.197s, lint/shell/diff pass. Logs
+`/tmp/eidolon-standalone-rest-*`; candidate contract
+`docs/plans/2026-09-09-standalone-town-recovery.md`. Prior archived badd/d650 rest
+evidence remains historical; full current-source regression and actual class
+progression/real-rest verification still required before ordered58publication.
+
+**23579 ACTIVE — only owned local browser project**, well-rested-all on frozen
+1929d91, projectrest58-0909-0448/API18560/Mongo18561/web41960. Log
+`/tmp/eidolon-rest58-real-rest-0448.log`; poll exact handle, no editing that
+candidate's executing files/restarting/cleanup while live. Mainprimary has no
+owned process running. After terminal, archive artifacts/inspect images/verify
+exact owned-container/image absence; then full58client/Go race and class routes.
+Root ledger-only; do not push. Whole roadmap goal active, no completion claim.
+
+## Previous checkpoint — September 9, 04:35 UTC
 
 PROGRESS: user explicitly approved cancelling the blocking soak. Revalidated exact
 Nightly Multiplayer Soak34307306192 on a36d1e7 before cancellation; GitHub now

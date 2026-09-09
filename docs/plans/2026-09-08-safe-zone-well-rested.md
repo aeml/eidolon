@@ -4,6 +4,18 @@ Requested September 8, 2026. Status: implementation in progress, NOT live.
 Part of the active full-roadmap goal: implement as a coordinated 1.0.x feature
 after urgent blockers, and include it in 1.1 recovery and progression acceptance.
 
+September9 04:48: prepared standalone58candidate1929d91 after canonical57,
+preserving badd0cf production rest implementation and giving it its own complete
+login/history/version metadata. Expanded story/curve work remains in primary;
+it is no longer an inherent prerequisite of the recovery feature. The candidate
+keeps normal town recovery as the existing full collection QA policy and appends
+actual native rest/expiry/phone-party checks with independent registrations.
+Focused261tests/lint pass;23579real-rest route is running, full current-source
+client/server and remaining class/ordered live gates still required. Feature is
+NOT live:52has now fully passed live QA,53is in CI. Detailed candidate location,
+source, handles and logs are in the execution ledger. Do not re-label old tests
+as actual sessions on this candidate or call the broader balance pass complete.
+
 September9 04:29 live report: player still sees no town healing/Well Rested.
 Both public endpoints confirmed Alpha1.0.52/a36d1e7, and the exact deployed
 source contains neither feature. This is unpublished functionality, not evidence
