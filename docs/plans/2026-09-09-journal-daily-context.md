@@ -42,9 +42,17 @@ New `tests/e2e/journal-daily-presentation.spec.js` has two discovered viewport c
 (1280x720/390x844), using actual QuestUI/DOM/CSS with controlled quest state. It
 checks collapsed offers,44px target/viewport bounds, Enter toggle and focus after
 refresh, independent recovered-lore reading, honest copy and ready/active ordering.
-Actual browser execution/screenshots are NOT YET RUN. It must wait for the current
-owned story browser to finish; do not interrupt it or claim this fixture as earned
-gameplay. Full client regression and CI wiring follow after rendered acceptance.
+After the owned story browser reached terminal failure,1832 hardware browser PASS
+2/7.2s. Archive `/tmp/eidolon-journal-daily-proof-uTs1qn`,scan0/port41961clean.
+Desktop compact and phone accepted-first snapshots inspected: readable, no width
+overflow, story takes priority. The first controlled fixture omitted objective
+metadata and consequently displayed generic "Defeat1target" copy; this was fixture
+data, not the actual authored diary. The fixture now imports the actual authored
+diary title, acceptance and directions instead.96559 replay PASS2/7.4s, archive
+`/tmp/eidolon-journal-diary-proof-Of6uSy`,scan0. Logs
+`/tmp/eidolon-journal-daily-browser{,-r2}.log`. These are presentation fixtures,
+NOT earned gameplay. CIshard2 now runs `npm run test:e2e:journal` in future releases.
+Full client regression remains pending before integration.
 
 This branch is separate from frozen primary readiness source and published58.
 Do not cherry-pick into either while their runs are active. Integrate only into a
