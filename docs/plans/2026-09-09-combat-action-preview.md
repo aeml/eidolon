@@ -25,5 +25,10 @@ Browser93717 PASSED2/6.6s on fdcccb2, log
 `/tmp/eidolon-combat-preview-browser.log`, archive
 `/tmp/eidolon-combat-preview-proof-nHkrnp`. Desktop and phone screenshots viewed:
 desktop explicitly shows Attack power5 / Fireball27MP, phone retains its compact
-level/status/clear-target card. Neither claims spell hit damage. Fullclient
-validation and integration are still pending; no production change/acceptance.
+level/status/clear-target card. Neither claims spell hit damage.
+
+Separate prototype e37bab6 fullclient/lint PASSED83764:275suites3935tests,
+125.323s; logs `/tmp/eidolon-combat-preview-full-{client,lint}.log`.
+Imported as4bb3bd1/8dfabd5 into the unpublished primary after its story browser
+terminated and the failure evidence was archived. Integrated fullclient and
+fresh story replay remain required. Not part of58; no production acceptance.
