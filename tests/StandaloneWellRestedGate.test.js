@@ -13,4 +13,6 @@ test('standalone recovery adds real earned, expiry and phone-party checks to the
     expect(body).toContain('tests/e2e/well-rested-party-gameplay.spec.js');
     expect(body.match(/EIDOLON_E2E_REGISTER=1/g)).toHaveLength(2);
     expect(body).not.toContain('--grep');
+    expect(body).toContain('--output=test-results/well-rested-journey');
+    expect(body).toContain('--output=test-results/well-rested-party');
 });

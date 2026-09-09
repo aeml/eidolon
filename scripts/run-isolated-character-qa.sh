@@ -439,10 +439,10 @@ run_well_rested() {
   # Separate ordinary registrations: never reuse a progressed gate character.
   # The expiry test appends its own -expiry suffix to the first base name.
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-rest" EIDOLON_E2E_CLASS=Wizard \
-    EIDOLON_E2E_REGISTER=1 npx playwright test tests/e2e/well-rested-gameplay.spec.js \
+    EIDOLON_E2E_REGISTER=1 npx playwright test --output=test-results/well-rested-journey tests/e2e/well-rested-gameplay.spec.js \
       tests/e2e/well-rested-expiry-gameplay.spec.js || return $?
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-rest-party" EIDOLON_E2E_CLASS=Wizard \
-    EIDOLON_E2E_REGISTER=1 npx playwright test tests/e2e/well-rested-party-gameplay.spec.js
+    EIDOLON_E2E_REGISTER=1 npx playwright test --output=test-results/well-rested-party tests/e2e/well-rested-party-gameplay.spec.js
 }
 
 set +e

@@ -46,3 +46,19 @@ clock/resource grants; phone coverage is Chrome emulation, not physical hardware
   across classes and newly wired real-rest routes remain required.
 - Verify ordered53–57 publication, exact58CI/deployment/live identities and
   real live healing/buff behavior before calling this feature delivered.
+
+First versioned23579 real-rest route TERMINAL PASS: natural expiry36.7s,
+combat/Recall/reconnect and party19.6s (second CLI22.4s). Expiry14.786363s→0
+outside removed strength11→10 and110→100maxima/aura; actual Recall rebuilt
+1.617462s and strength11/110pools/aura. Actual Wizard hit consumed30mana and
+server combat receipts registered damage. Two real party members used native
+phone joystick input; both High19/Low10visible aura parts with no solid box.
+Credential scan0, exact owned containers/image independently absent. Log
+`/tmp/eidolon-rest58-real-rest-0448.log`, remaining party artifacts archived at
+`/tmp/eidolon-rest58-first-proof-wCdgJI/test-results`.
+
+Evidence retention issue: the second Playwright invocation used the same root
+output directory, so it removed the first invocation's passing journey/expiry
+screenshots. Their logged functional pass stands, but those pictures were not
+available for visual review. Give each invocation its own test-results subfolder
+and rerun the same unchanged assertions before closing visual acceptance.
