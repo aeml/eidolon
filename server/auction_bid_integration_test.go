@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"eidolon-server/internal/database"
-	"eidolon-server/internal/game"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -51,15 +50,11 @@ func TestAuctionBidActualCrashBoundaries(t *testing.T) {
 			dir := t.TempDir()
 			address, crash := compatStartServerWithCrash(t, binary, uri, 100, true, "-save-journal-dir", dir)
 			connection := resourceOpenCharacter(t, address, bidder.Name, password)
-			resourceSend(t, connection, MsgAbility, AbilityPayload{SkillName: "Fireball"})
-			var cast game.AbilityResult
-			resourceReadMessage(t, connection, MsgAbilityResult, &cast)
-			if !cast.Accepted || cast.Mana != 70 {
-				t.Fatal("ordinary baseline cast failed")
-			}
-			resourceCloseAndWait(t, repo, connection, bidder.Name)
+			townFixtureFireball(t, connection, bidder)
+			baseline := resourceCloseAndWait(t, repo, connection, bidder.Name)
+			assertTownFixtureSave(t, bidder, baseline, 30)
 			connection = resourceOpenCharacter(t, address, bidder.Name, password)
-			resourceProbe(t, connection, 70, false)
+			townFixtureProbe(t, connection, baseline)
 			// Baseline bars were saved normally before the deliberate process kill;
 			// this does not claim durability for arbitrary unsaved combat ticks.
 			collection := ""
@@ -151,6 +146,23 @@ func TestAuctionBidActualCrashBoundaries(t *testing.T) {
 			if wantGold == 1184 && before.GoldCreditReceipts["bid:"+op.ID] != -50 {
 				t.Fatal("committed debit has no receipt")
 			}
+			assertTownMarketResources(t, baseline, before, 0)
+			durable := before
+			journal, err := database.OpenCharacterSaveJournal(dir)
+			if err != nil {
+				t.Fatal(err)
+			}
+			pending, err := journal.Read(bidder.Name)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if pending != nil && pending.SaveID != before.LastSaveID {
+				durable, err = pending.Character()
+				if err != nil {
+					t.Fatal(err)
+				}
+				assertTownMarketResources(t, baseline, durable, 0)
+			}
 			if boundary == "debit_journal" {
 				journal, err := database.OpenCharacterSaveJournal(dir)
 				if err != nil {
@@ -167,17 +179,28 @@ func TestAuctionBidActualCrashBoundaries(t *testing.T) {
 			}
 			crash()
 			configure(false)
+			oldResources := old
 			for phase := 101; phase < 103; phase++ {
 				address, stop := compatStartServer(t, binary, uri, phase, "-save-journal-dir", dir)
 				if pendingAuctionBid(t, repo, auction.ID) != nil {
 					t.Fatal("startup admitted players before recovering the bid decision")
 				}
+				restored, err := repo.GetCharacter(bidder.Name, bidder.Name)
+				if err != nil || !reflect.DeepEqual(restored.Resources, durable.Resources) || !reflect.DeepEqual(restored.WellRested, durable.WellRested) {
+					t.Fatal("bid recovery changed durable resources/rest before login")
+				}
+				oldRestored, err := repo.GetCharacter(old.Name, old.Name)
+				if err != nil || !reflect.DeepEqual(oldRestored.Resources, oldResources.Resources) || !reflect.DeepEqual(oldRestored.WellRested, oldResources.WellRested) {
+					t.Fatal("offline escrow refund changed the previous bidder's resources/rest")
+				}
 				connection := resourceOpenCharacter(t, address, bidder.Name, password)
-				resourceProbe(t, connection, 70, false)
+				townFixtureProbe(t, connection, restored)
 				saved := resourceCloseAndWait(t, repo, connection, bidder.Name)
+				assertTownMarketResources(t, restored, saved, 0)
 				oldConnection := resourceOpenCharacter(t, address, old.Name, oldPassword)
-				resourceProbe(t, oldConnection, 100, false)
+				townFixtureProbe(t, oldConnection, oldRestored)
 				oldSaved := resourceCloseAndWait(t, repo, oldConnection, old.Name)
+				assertTownMarketResources(t, oldRestored, oldSaved, 0)
 				current, err := repo.GetAuction(auction.ID)
 				if err != nil {
 					t.Fatal(err)
@@ -192,10 +215,12 @@ func TestAuctionBidActualCrashBoundaries(t *testing.T) {
 						t.Fatal("recovery duplicated/lost bid debit, preceding escrow refund or final marker")
 					}
 				}
-				if saved.Resources.Health != 17 || saved.Resources.Mana != 70 || !reflect.DeepEqual(saved.Equipment, bidder.Equipment) || !reflect.DeepEqual(oldSaved.Equipment, old.Equipment) {
+				if saved.XP != bidder.XP || saved.Level != bidder.Level || oldSaved.XP != old.XP || oldSaved.Level != old.Level ||
+					!reflect.DeepEqual(saved.Equipment, bidder.Equipment) || !reflect.DeepEqual(oldSaved.Equipment, old.Equipment) {
 					t.Fatal("bid recovery changed saved resources/equipment")
 				}
 				stop()
+				durable, oldResources = saved, oldSaved
 			}
 		})
 	}

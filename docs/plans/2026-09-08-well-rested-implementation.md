@@ -61,6 +61,39 @@ four-class stats and device/aura acceptance remain required.
 
 ## Development acceptance — September 8, 23:30 UTC
 
+Latest additional acceptance, **September9 00:57UTC**:
+
+- Full merged client66914 **PASS242 suites/3,425 tests93.429s**, lint also passes.
+  Logs `/tmp/eidolon-rested-merged-{client,lint}.log`; handle closed. Client source
+  unchanged during this sweep; subsequent work below changes only Go tests/docs.
+- Bid crash recovery now checks the new bidder's exact durable resource/rest
+  snapshot before each fresh login and the displaced bidder's unchanged offline
+  resources alongside the43-gold refund. Ordinary real Fireball, debit/refund
+  receipt identities, rejected decisions and final auction marker remain intact.
+  Actual79841 **PASS54.506s**, all6 boundaries;18 child logs clean,12 normal
+  drains/6 explicit kills. Owned Mongo0053/volumes removed and absent. Evidence
+  `/tmp/eidolon-rest-bid-0053.log`.
+- Ordinary same-bidder raises and simultaneous equal bids retain exactly one
+  accepted winner and exact signed receipt counts, checking each participant's
+  online-only recovery and exact pre-login restart resources/rest.
+- Buyout tests preserve original inventory/equipment/progression and exact
+  purchase/43-gold refund effects separately from the current session's resource
+  baseline. Covers normal/same-bidder/stash/full/insufficient/disabled cases,
+  six real crash boundaries with database/journal replay, duplicate requests,
+  one item receipt, offline previous-bidder preservation and two simultaneous
+  purchases with exactly one winner. No production rules or faults were weakened.
+- Combined4784 **PASS105.677s**: bid raises/contention14.40s, normal/capacity
+  buyout38.49s, crash44.46s, competing buyout7.31s.36 child logs independently
+  clean,30 normal drains and6 explicit kills; owned Mongo0056/volumes removed and
+  absent. Evidence `/tmp/eidolon-rest-purchase-0056.log`. Root race61394
+  **PASS12.077s**. Production binary remains exactd650c72, unchanged server code.
+
+Source audit still finds old no-town-healing assumptions in standalone refund/
+refund-lifecycle integrations and the original live-handoff/cooldown fixture
+(distinct from the already-passing dedicated Well Rested socket-handoff test).
+These, schema-upgrade recovery, integrated browser/aura and earned balance
+remain open. Do not label the feature staged/live or its acceptance complete.
+
 Latest additional acceptance, **September9 00:49UTC**:
 
 - Listing acknowledgement/rejection and restart tests now retain exact timed

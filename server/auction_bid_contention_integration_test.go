@@ -98,10 +98,11 @@ func TestAuctionBidActualRaisesAndCompetingRequests(t *testing.T) {
 				t.Fatalf("repeated request was not rejected: %s", repeated)
 			}
 			var firstSaves []*database.Character
-			check := func(saved, fixture *database.Character, i int) {
+			check := func(saved, fixture, resources *database.Character, i int) {
 				t.Helper()
+				assertTownMarketResources(t, resources, saved, 0)
 				if saved.Gold != wantedGold[i] || len(saved.GoldCreditReceipts) != wantedReceipts[i] ||
-					!reflect.DeepEqual(saved.Resources, fixture.Resources) || !reflect.DeepEqual(saved.Equipment, fixture.Equipment) ||
+					!reflect.DeepEqual(saved.Equipment, fixture.Equipment) ||
 					saved.Level != fixture.Level || saved.XP != fixture.XP {
 					t.Fatalf("%s participant%d lost/duplicated funds, receipts or character state", mode, i)
 				}
@@ -111,16 +112,20 @@ func TestAuctionBidActualRaisesAndCompetingRequests(t *testing.T) {
 			}
 			for i, connection := range connections {
 				saved := resourceCloseAndWait(t, repo, connection, fixtures[i].Name)
-				check(saved, fixtures[i], i)
+				check(saved, fixtures[i], fixtures[i], i)
 				firstSaves = append(firstSaves, saved)
 			}
 			stop()
 			address, stopRecovered := compatStartServer(t, binary, uri, 111, "-save-journal-dir", dir)
 			for i, fixture := range fixtures {
+				restored, err := repo.GetCharacter(fixture.Name, fixture.Name)
+				if err != nil || !reflect.DeepEqual(restored.Resources, firstSaves[i].Resources) || !reflect.DeepEqual(restored.WellRested, firstSaves[i].WellRested) {
+					t.Fatal("contention restart changed durable resources/rest before login")
+				}
 				connection := resourceOpenCharacter(t, address, fixture.Name, passwords[i])
-				resourceProbe(t, connection, 100, false)
+				townFixtureProbe(t, connection, restored)
 				saved := resourceCloseAndWait(t, repo, connection, fixture.Name)
-				check(saved, fixture, i)
+				check(saved, fixture, restored, i)
 				if !reflect.DeepEqual(saved.GoldCreditReceipts, firstSaves[i].GoldCreditReceipts) || !reflect.DeepEqual(saved.Inventory, firstSaves[i].Inventory) {
 					t.Fatal("restart changed receipts or inventory")
 				}

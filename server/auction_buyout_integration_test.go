@@ -47,10 +47,11 @@ func auctionBuyoutFixture(t *testing.T, repo *database.DB, mode string) (*databa
 	return p, password, old, a
 }
 
-func verifyAuctionPurchaseCharacter(t *testing.T, saved, baseline *database.Character, item database.Item, opID string, bought bool, gold int, sameBidder bool) {
+func verifyAuctionPurchaseCharacter(t *testing.T, saved, baseline, resources *database.Character, item database.Item, opID string, bought bool, gold int, sameBidder bool) {
 	t.Helper()
 	expected := *baseline
 	expected.Gold = gold
+	expected.Resources, expected.WellRested = resources.Resources, resources.WellRested
 	copies := 0
 	if bought {
 		copies = 1
@@ -84,21 +85,19 @@ func TestAuctionBuyoutActualNormalAndCapacity(t *testing.T) {
 			p, password, old, a := auctionBuyoutFixture(t, repo, mode)
 			dir := t.TempDir()
 			bought := mode != "full" && mode != "insufficient" && mode != "disabled"
-			var baseline, firstSave *database.Character
+			var baseline, firstSave, resources *database.Character
 			opID := ""
 			for phase := 140; phase < 142; phase++ {
 				address, stop := compatStartServer(t, binary, uri, phase, "-save-journal-dir", dir)
 				connection := resourceOpenCharacter(t, address, p.Name, password)
 				if phase == 140 {
-					resourceSend(t, connection, MsgAbility, AbilityPayload{SkillName: "Fireball"})
-					var cast game.AbilityResult
-					resourceReadMessage(t, connection, MsgAbilityResult, &cast)
-					if !cast.Accepted || cast.Mana != 70 {
-						t.Fatal("ordinary cast failed")
-					}
+					townFixtureFireball(t, connection, p)
 					baseline = resourceCloseAndWait(t, repo, connection, p.Name)
+					assertTownFixtureSave(t, p, baseline, 30)
+					resources = baseline
 					connection = resourceOpenCharacter(t, address, p.Name, password)
 				}
+				townFixtureProbe(t, connection, resources)
 				resourceSend(t, connection, MsgTradingBuyout, TradingBuyoutPayload{AuctionID: a.ID})
 				var reply string
 				resourceReadMessage(t, connection, MsgError, &reply)
@@ -141,7 +140,7 @@ func TestAuctionBuyoutActualNormalAndCapacity(t *testing.T) {
 						wantedGold += 43
 					}
 				}
-				verifyAuctionPurchaseCharacter(t, saved, baseline, a.Item, opID, bought, wantedGold, mode == "same_bidder")
+				verifyAuctionPurchaseCharacter(t, saved, baseline, resources, a.Item, opID, bought, wantedGold, mode == "same_bidder")
 				if mode == "stash" && (len(saved.Stash) != 1 || saved.Stash[0].ID != a.Item.ID) {
 					t.Fatal("purchase not delivered into available stash")
 				}
@@ -158,7 +157,7 @@ func TestAuctionBuyoutActualNormalAndCapacity(t *testing.T) {
 					oldGold = 1234
 					oldReceipts = 1
 				}
-				if oldSaved.Gold != oldGold || len(oldSaved.GoldCreditReceipts) != oldReceipts || !reflect.DeepEqual(oldSaved.Resources, old.Resources) {
+				if oldSaved.Gold != oldGold || len(oldSaved.GoldCreditReceipts) != oldReceipts || !reflect.DeepEqual(oldSaved.Resources, old.Resources) || !reflect.DeepEqual(oldSaved.WellRested, old.WellRested) {
 					t.Fatal("buyout lost or duplicated previous escrow refund")
 				}
 				if bought {
@@ -169,12 +168,14 @@ func TestAuctionBuyoutActualNormalAndCapacity(t *testing.T) {
 					}
 				}
 				saved = resourceCloseAndWait(t, repo, connection, p.Name)
+				verifyAuctionPurchaseCharacter(t, saved, baseline, resources, a.Item, opID, bought, wantedGold, mode == "same_bidder")
 				if phase == 140 {
 					firstSave = saved
 				} else if !reflect.DeepEqual(saved.ItemDeliveryReceipts, firstSave.ItemDeliveryReceipts) || !reflect.DeepEqual(saved.GoldCreditReceipts, firstSave.GoldCreditReceipts) {
 					t.Fatal("restart/repeat request changed receipts")
 				}
 				stop()
+				resources = saved
 			}
 		})
 	}
@@ -192,13 +193,9 @@ func TestAuctionBuyoutActualCrashBoundaries(t *testing.T) {
 			dir := t.TempDir()
 			address, crash := compatStartServerWithCrash(t, binary, uri, 144, true, "-save-journal-dir", dir)
 			connection := resourceOpenCharacter(t, address, p.Name, password)
-			resourceSend(t, connection, MsgAbility, AbilityPayload{SkillName: "Fireball"})
-			var cast game.AbilityResult
-			resourceReadMessage(t, connection, MsgAbilityResult, &cast)
-			if !cast.Accepted || cast.Mana != 70 {
-				t.Fatal("ordinary cast failed")
-			}
+			townFixtureFireball(t, connection, p)
 			baseline := resourceCloseAndWait(t, repo, connection, p.Name)
+			assertTownFixtureSave(t, p, baseline, 30)
 			connection = resourceOpenCharacter(t, address, p.Name, password)
 			collection, validator := "", bson.M{}
 			command, namespace := "", ""
@@ -267,10 +264,26 @@ func TestAuctionBuyoutActualCrashBoundaries(t *testing.T) {
 			if purchased {
 				gold = 734
 			}
-			verifyAuctionPurchaseCharacter(t, before, baseline, a.Item, opID, purchased, gold, false)
+			verifyAuctionPurchaseCharacter(t, before, baseline, baseline, a.Item, opID, purchased, gold, false)
 			current, err := repo.GetAuction(a.ID)
 			if err != nil || current.ItemClaimed != (boundary == "final_reply_lost") {
 				t.Fatal("fault missed final sale boundary")
+			}
+			durable := before
+			journal, err := database.OpenCharacterSaveJournal(dir)
+			if err != nil {
+				t.Fatal(err)
+			}
+			pending, err := journal.Read(p.Name)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if pending != nil && pending.SaveID != before.LastSaveID {
+				durable, err = pending.Character()
+				if err != nil {
+					t.Fatal(err)
+				}
+				assertTownMarketResources(t, baseline, durable, 0)
 			}
 			if boundary == "purchase_journal" {
 				journal, err := database.OpenCharacterSaveJournal(dir)
@@ -285,7 +298,7 @@ func TestAuctionBuyoutActualCrashBoundaries(t *testing.T) {
 				if err != nil {
 					t.Fatal(err)
 				}
-				verifyAuctionPurchaseCharacter(t, saved, baseline, a.Item, opID, true, 734, false)
+				verifyAuctionPurchaseCharacter(t, saved, baseline, baseline, a.Item, opID, true, 734, false)
 			}
 			crash()
 			configure(false)
@@ -298,7 +311,12 @@ func TestAuctionBuyoutActualCrashBoundaries(t *testing.T) {
 				current = resourceWaitRefundAuction(t, repo, a.ID, func(value *database.Auction) bool {
 					return len(value.PendingRefunds) == 0 && (!bought || value.Status == "SOLD")
 				})
+				restored, err := repo.GetCharacter(p.Name, p.Name)
+				if err != nil || !reflect.DeepEqual(restored.Resources, durable.Resources) || !reflect.DeepEqual(restored.WellRested, durable.WellRested) {
+					t.Fatal("purchase recovery changed durable resources/rest before login")
+				}
 				connection := resourceOpenCharacter(t, address, p.Name, password)
+				townFixtureProbe(t, connection, restored)
 				if bought {
 					resourceSend(t, connection, MsgTradingBuyout, TradingBuyoutPayload{AuctionID: a.ID})
 					resourceReadMessage(t, connection, MsgError, &reply)
@@ -311,7 +329,7 @@ func TestAuctionBuyoutActualCrashBoundaries(t *testing.T) {
 				if bought {
 					gold = 734
 				}
-				verifyAuctionPurchaseCharacter(t, saved, baseline, a.Item, opID, bought, gold, false)
+				verifyAuctionPurchaseCharacter(t, saved, baseline, restored, a.Item, opID, bought, gold, false)
 				oldSaved, err := repo.GetCharacter(old.Name, old.Name)
 				if err != nil {
 					t.Fatal(err)
@@ -320,7 +338,7 @@ func TestAuctionBuyoutActualCrashBoundaries(t *testing.T) {
 				if bought {
 					oldGold = 1234
 				}
-				if oldSaved.Gold != oldGold || !reflect.DeepEqual(oldSaved.Resources, old.Resources) {
+				if oldSaved.Gold != oldGold || !reflect.DeepEqual(oldSaved.Resources, old.Resources) || !reflect.DeepEqual(oldSaved.WellRested, old.WellRested) {
 					t.Fatal("previous bidder refund changed through recovery")
 				}
 				if bought && (oldSaved.GoldCreditReceipts[op.RefundID] != 43 || len(oldSaved.GoldCreditReceipts) != 1) {
@@ -330,6 +348,7 @@ func TestAuctionBuyoutActualCrashBoundaries(t *testing.T) {
 					t.Fatal("recovery changed wrong auction fields")
 				}
 				stop()
+				durable = saved
 			}
 		})
 	}
@@ -340,10 +359,17 @@ func TestAuctionBuyoutActualCompetingRequests(t *testing.T) {
 	first, firstPassword, old, a := auctionBuyoutFixture(t, repo, "ordinary")
 	second, secondPassword := resourceJournalFixture(t, repo)
 	players := []*database.Character{first, second}
+	resources := []*database.Character{first, second}
 	dir := t.TempDir()
 	winner := -1
 	for phase := 148; phase < 150; phase++ {
 		address, stop := compatStartServer(t, binary, uri, phase, "-save-journal-dir", dir)
+		for i, player := range players {
+			restored, err := repo.GetCharacter(player.Name, player.Name)
+			if err != nil || !reflect.DeepEqual(restored.Resources, resources[i].Resources) || !reflect.DeepEqual(restored.WellRested, resources[i].WellRested) {
+				t.Fatal("competing purchase restart changed durable resources/rest before login")
+			}
+		}
 		connections := []*websocket.Conn{
 			resourceOpenCharacter(t, address, first.Name, firstPassword), resourceOpenCharacter(t, address, second.Name, secondPassword),
 		}
@@ -384,10 +410,11 @@ func TestAuctionBuyoutActualCompetingRequests(t *testing.T) {
 			if i == winner {
 				gold = 734
 			}
-			verifyAuctionPurchaseCharacter(t, saved, players[i], a.Item, settled.LastBidOperationID, i == winner, gold, false)
+			verifyAuctionPurchaseCharacter(t, saved, players[i], resources[i], a.Item, settled.LastBidOperationID, i == winner, gold, false)
+			resources[i] = saved
 		}
 		oldSaved, err := repo.GetCharacter(old.Name, old.Name)
-		if err != nil || oldSaved.Gold != 1234 || len(oldSaved.GoldCreditReceipts) != 1 {
+		if err != nil || oldSaved.Gold != 1234 || len(oldSaved.GoldCreditReceipts) != 1 || !reflect.DeepEqual(oldSaved.Resources, old.Resources) || !reflect.DeepEqual(oldSaved.WellRested, old.WellRested) {
 			t.Fatal("competing buyouts duplicated/lost escrow refund")
 		}
 		stop()
