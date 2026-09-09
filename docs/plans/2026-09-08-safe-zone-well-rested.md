@@ -69,9 +69,18 @@ passes40.684s. All88 child logs clean, intentional kills documented, other
 processes drained; owned Mongo/volumes removed. Full root race11.365s.
 Merged client/lint sweep66914 still running; no feature deployment.
 
+September9 00:58 checkpoint: developmentfdf023b closes bid/competing-request and
+buyout recovery checks. Bid crash6 cases54.506s; combined same-bidder raises,
+competing bids, buyout capacity/rejections,6 crash cases and competing purchases
+105.677s. Exact one-winner/item, charges/refunds, offline resources/rest and
+original equipment/progression retained. All54 child logs clean with12 intentional
+kills documented; other processes drained. Owned Mongo/volumes removed. Root
+race12.077s; merged client242 suites/3,425 tests93.429s and lint pass.
+
 This is not a versioned/staged release. It follows staged57, requires schema9,
-and must not publish inherited57 metadata. Remaining gates include the other
-auction flows (bids/contention/refunds and buyout) and schema-upgrade recovery,
+and must not publish inherited57 metadata. Remaining persistence gates include
+standalone refund/refund-lifecycle, original live-session handoff/cooldown and
+schema-upgrade recovery,
 integrated browser travel/reconnect/aura and rested/unrested earned balance.
 
 ## Requested behavior

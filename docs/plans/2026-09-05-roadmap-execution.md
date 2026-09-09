@@ -5,7 +5,41 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 00:50 UTC
+## Current checkpoint — September 9, 00:58 UTC
+
+PROGRESS: Well Rested **fdf023b4fdaa8571a19122d166f6c0571ed7124b** committed
+clean. Bid crash6-boundary acceptance79841 **PASS54.506s**, preserves both the
+new bidder's durable bank/resources and displaced bidder's offline resources
+with exact debit/refund receipts.18 child logs clean,12 normal drains/6 intended
+kills; owned Mongo0053/volumes removed and absent. Log
+`/tmp/eidolon-rest-bid-0053.log`.
+
+Combined raises/competing bids and buyouts4784 **PASS105.677s**: bid14.40s,
+normal/capacity buyout38.49s,6 crash boundaries44.46s, competing buyout7.31s.
+Exact one-winner/one-item receipt, signed charges/refunds, stash/full-storage,
+rejected requests, original equipment/inventory/progression and unchanged
+offline previous-bidder state retained. Each new-process recovery compares exact
+durable resources/rest before ordinary login and independently calculated town
+recovery afterward.36 child logs clean,30 normal drains/6 intended kills;
+owned Mongo0056/volumes removed and absent. Evidence
+`/tmp/eidolon-rest-purchase-0056.log`. Root Go race61394 **PASS12.077s**.
+No production server changes; exact d650c72 binary remains the exercised runtime.
+
+Merged client66914 now terminal **PASS242 suites/3,425 tests93.429s**, lint also
+passed. Logs `/tmp/eidolon-rested-merged-{client,lint}.log`. All owned local
+handles closed. Source audit identifies remaining old assumptions in standalone
+refund/refund-lifecycle and original live-handoff/cooldown integrations (not the
+already-passing dedicated Well Rested live-handoff test). These plus schema
+upgrade, integrated browser/aura and rested/unrested earned balance remain open.
+Feature remains unversioned/not staged/live, full1.1–1.10 goal incomplete.
+
+50 CI**34295826450** is ACTIVE in **Predeploy Character QA (System Chrome)**;
+Go/Jest/all3 browser groups passed. No pipeline restart or successor push.
+Before51/55712b9 publishes, require every50 job including finalLiveQA to pass and
+fresh exact client/server50 identities.51–57 canonical hashes remain as00:40
+below. Root/master remains a ledger, not a publisher.
+
+## Previous checkpoint — September 9, 00:50 UTC
 
 PROGRESS: previous turn published corrected50 and propagated/verified the ordered
 queue. This continuation closes Well Rested listing and item-delivery recovery
