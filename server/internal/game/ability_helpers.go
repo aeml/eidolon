@@ -202,6 +202,7 @@ func applyFinalDamageWithCritical(attacker, target *Entity, baseDamage int, dama
 		return 0
 	}
 	finalDamage, _ := calculateFinalDamageWithCritical(attacker, target, baseDamage, damageType, skillName, guaranteedCritical)
+	finalDamage = damageWithinDarkKingPhase(target, finalDamage)
 	target.Health -= finalDamage
 	target.LastDamageType = damageType
 	return finalDamage

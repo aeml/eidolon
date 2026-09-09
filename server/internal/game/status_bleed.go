@@ -24,6 +24,7 @@ func (w *World) tickBleedLocked(e *Entity, now time.Time, deferred *deferredActi
 // Shared damage/death handling keeps poison and bleed attribution, threat and
 // lethal-damage protection identical without duplicating the lock transition.
 func (w *World) applyDamageOverTimeLocked(e *Entity, ownerID string, damage int, kind, damageType string, deferred *deferredActions) {
+	damage = damageWithinDarkKingPhase(e, damage)
 	e.Health -= damage
 	e.LastDamageType = damageType
 	sourceID := ownerID
