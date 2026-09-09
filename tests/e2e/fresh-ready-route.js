@@ -76,13 +76,13 @@ async function leaveWestTown(page) {
 export async function earnFreshDungeonReadiness(page, credentials, { findTarget, preparedEarlier = false }) {
     await prepareEarnedClass(page, credentials, { statBudget: preparedEarlier ? 0 : 5 });
     const beforeCombat = await createEarnedClassCombat(page);
-    await earnFreshHunt(page, credentials, { target: 'Imp', daily: 'daily_imp', rewardXP: 150_000,
+    await earnFreshHunt(page, credentials, { target: 'Imp', daily: 'daily_imp', rewardXP: 18_250, rewardGold: 200,
         findTarget, leaveTown: () => leaveWestTown(page), beforeCombat });
     const p = await readPlayerState(page);
-    expect(p.level, 'Existing earned story and contracts should reach the first dungeon gate').toBeGreaterThanOrEqual(30);
+    expect(p.level, 'Optional daily comparison route should reach the first dungeon gate').toBeGreaterThanOrEqual(30);
     await page.getByRole('tab', { name: 'Dungeons', exact: true }).click();
     await page.locator('#dungeon-type-select').selectOption('verdant_bastion_catacombs');
     await expect(page.locator('#btn-enter-dungeon')).toBeVisible();
     await expect(page.locator('#btn-enter-dungeon')).toBeEnabled();
-    console.log(`[fresh-ready] earned level ${p.level}: Verdant entry available after saved manual rewards`);
+    console.log(`[fresh-ready] optional daily comparison earned level ${p.level}: Verdant entry available after saved manual rewards; not story-only readiness`);
 }

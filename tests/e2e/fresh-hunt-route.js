@@ -89,7 +89,8 @@ export async function earnFreshSkeletonHunt(page, credentials, { findTarget, lea
 }
 
 export async function earnFreshHunt(page, credentials, {
-    findTarget, leaveTown, target = 'Skeleton', daily = 'daily_skeleton', rewardXP = 50_000, beforeCombat
+    findTarget, leaveTown, target = 'Skeleton', daily = 'daily_skeleton',
+    rewardXP = 4_250, rewardGold = 100, beforeCombat
 }) {
     await page.locator('#btn-close-dungeon-menu').click();
     await discussHunt(page, target);
@@ -185,7 +186,7 @@ export async function earnFreshHunt(page, credentials, {
     await expect.poll(async () => (await readChronicleChapter(page, daily)).completed).toBe(true);
     const reward = await readChronicleChapter(page, daily);
     expect(reward.grantedXP).toBe(rewardXP);
-    expect(reward.grantedGold).toBeGreaterThan(0);
+    expect(reward.grantedGold).toBe(rewardGold);
     await page.locator('#btn-close-quest').click();
     await setAutoLootThroughSettings(page, previousAutoLoot);
     const earned = await snapshot(page);
