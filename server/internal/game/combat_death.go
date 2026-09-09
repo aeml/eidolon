@@ -97,29 +97,16 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 			w.fireHealEvent(attackerID, attackerID, actualVampiricHeal, "vampiric", attackerInstanceID)
 		}
 		if explosionDamage > 0 {
-			// Find nearby enemies (not the target itself). Recursive kills keep
-			// their target lock, matching handleDeath's mutation contract, while
-			// the attacker lock is deliberately released to avoid chain deadlock.
-			nearbyTargets := w.Grid.Nearby(target.X, target.Z, 5.0, target.InstanceID)
-			for _, nearby := range nearbyTargets {
-				nearby.Mu.Lock()
-				if nearby.ID == target.ID || nearby.Type != TypeEnemy || nearby.State == "DEAD" {
-					nearby.Mu.Unlock()
-					continue
-				}
-				appliedExplosion := damageWithinDarkKingPhase(nearby, explosionDamage)
-				nearby.Health -= appliedExplosion
-				nearby.LastDamageType = "physical"
-				nearbyID := nearby.ID
-				isDead := nearby.Health <= 0
-				if isDead {
-					w.handleDeath(nearby, attacker, deferred)
-				}
-				nearby.Mu.Unlock()
-				if w.OnEvent != nil {
-					w.OnEvent("damage", DamageEvent{TargetID: nearbyID, SourceID: attackerID, Amount: appliedExplosion, Kind: "physical", InstanceID: attackerInstanceID})
-				}
-			}
+			corpseID, instanceID, x, z := target.ID, target.InstanceID, target.X, target.Z
+			// Finish this death before propagating its explosion. Retaining the
+			// corpse lock deadlocks on itself, ancestors in a chain, or another
+			// simultaneous explosive death. Restore the caller's lock contract
+			// before returning, including when explosion processing panics.
+			defer func() {
+				target.Mu.Unlock()
+				defer target.Mu.Lock()
+				w.applyOnKillExplosion(attacker, corpseID, instanceID, x, z, explosionDamage, deferred)
+			}()
 		}
 	}
 
