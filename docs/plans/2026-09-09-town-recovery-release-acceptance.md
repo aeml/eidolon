@@ -1,6 +1,6 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
-Status at September 9, 05:52 UTC: **unpublished candidate**, not delivered.
+Status at September 9, 05:55 UTC: **unpublished candidate**, not delivered.
 Candidate worktree `/tmp/eidolon-standalone-town-recovery-QJ6Drv`, frozen source
 `5a17be147ce527bae556663cc452ecae10e87785`, includes canonical57/cc6e419 ancestry.
 Public client/server last independently verified52/a36d1e7 at05:42;53CI is active.
@@ -71,16 +71,36 @@ its parent shells exited. The exact run-specific containers, temporary Mongo
 volume and image were removed. Port41960, process family and resources were
 independently confirmed absent. No production data or CI process was touched.
 No matching OOM event was found in the accessible kernel log; termination cause
-remains unknown. **81669 unchanged native24 repeat is active**, project
+remains unknown. **81669 unchanged native24 repeat passed**, project
 rest58-native24-r1-0552, log
-`/tmp/eidolon-rest58-native-node24-rerun-0552.log`.
+`/tmp/eidolon-rest58-native-node24-rerun-0552.log`: expiry36.3s and journey31.0s
+(first CLI2tests/1.1m), actual party24.1s (second CLI1test/25.9s). The wrapper
+exited0, credential scan0, and exact owned containers/image are absent.
+
+Natural expiry14.617466611s→0 removed strength11→10, maxima110→100 and icon/aura;
+ordinary Recall earned1.617247573s and restored them. The journey registered an
+actual42damage Wizard spell hit with30mana spent, then Recall and reconnect:
+returned MP94, rejoined MP110 through normal town recovery. Reconnect bank
+14.744371348s retained/continued legitimate online town earnings. Two actual
+party members moved through the native joystick and rendered19visible parts each
+at High,10each at Low, without opaque box geometry.
+
+Both output folders are archived at `/tmp/eidolon-rest58-native24-proof-n1IyTo/`.
+Desktop reconnect, portrait390 High status/aura and short landscape568 Low status
+were visually inspected. The desktop reconnect capture shows16FPS while other
+captures show higher rates under concurrent CI load: this is not sustained
+performance approval or proof that the aura caused a slowdown. Physical-device
+and sustained gameplay performance remain open roadmap gates.
+
+**57389 complete58 isolated gameplay ACTIVE** on unchanged5a17be1/Node24.18.0,
+projectrest58-all24-0909-0554, API18560/Mongo18561/web41960; log
+`/tmp/eidolon-rest58-all-node24-0554.log`. No second owned local browser or source
+edit while this runs. The complete inherited command chain plus native rest
+routes is being exercised, not a shortened subset.
 
 ## Remaining delivery gates
 
-- Finish the current supported native journey/expiry/two-player High/Low run,
-  preserve both output subdirectories, inspect the rendered evidence and verify
-  exact cleanup. Emulated phone views are not physical-phone performance approval.
-- Run the complete unchanged58 isolated gameplay chain, including all prior
+- Finish the complete unchanged58 isolated gameplay chain, including all prior
   dungeon/combat/equipment/phone/animation checks and the added native rest routes.
 - Publish each preceding53–57 only after its complete CI/deploy/final live QA
   and independent exact client manifest, runtime script and server identities.

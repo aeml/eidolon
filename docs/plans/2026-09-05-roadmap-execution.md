@@ -16,7 +16,50 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 05:44 UTC
+## Current checkpoint — September 9, 05:55 UTC
+
+PROGRESS: all four58 ordinary earned-class routes now pass on frozen5a17be1
+under explicit Node24.18.0. Rogue34088 TERMINAL0/PASS1/4.2m: opening38s,
+collection212s/23observed target deaths/8seeds/zero player deaths. Three normal
+full-pool town stops63.975s including travel; actual15mana Rogue cost. Manual
+8000XP100gold, level8→17,10gear items/360unsold value/17bag slots retained across
+reconnect; level30 dungeon still locked. Preclaim656gold. Scan0/exact cleanup
+confirmed, 8/8 ready screenshot inspected. Archive
+`/tmp/eidolon-rest58-rogue24-proof-mvJ29A/test-results`; log
+`/tmp/eidolon-rest58-rogue-node24-0545.log`.
+
+Native32952 TERMINAL143 after passing expiry37.3s, not a complete pass. Original
+log and scanned partial captures retained; orphan web process248702's candidate
+cwd/start/ancestry were verified before stopping only it, then exact disposable
+API/Mongo/volume/image cleaned. Process family/port/resources confirmed absent.
+No matching OOM event found in accessible kernel log; cause still unknown. No
+CI/production/unrelated workload altered. Details and archives in new
+[58 acceptance evidence](2026-09-09-town-recovery-release-acceptance.md).
+
+Unchanged native repeat81669 TERMINAL0: expiry36.3s and journey31.0s (2tests1.1m),
+party24.1s (1test25.9s). Actual Wizard42damage/30mana hit, Recall/rejoin recovery,
+natural14.617s→0 expiry removes stats/icon/aura, ordinary reentry restores them.
+Real two-player party/native joystick, High19/Low10visible aura parts each.
+Scan0/exact cleanup; both output folders archived at
+`/tmp/eidolon-rest58-native24-proof-n1IyTo/`; selected desktop/portrait/short-
+landscape captures inspected. One desktop capture16FPS is not sustained
+performance approval; physical phones/performance remain open. Log
+`/tmp/eidolon-rest58-native-node24-rerun-0552.log`.
+
+**57389 complete58 isolated gameplay ACTIVE — only owned local process/browser**,
+frozen5a17be147ce527bae556663cc452ecae10e87785, Node24.18.0,
+projectrest58-all24-0909-0554/API18560/Mongo18561/web41960; log
+`/tmp/eidolon-rest58-all-node24-0554.log`. Full inherited command chain plus rest,
+not reduced coverage. Poll exact handle; no source edit/restart/second browser
+while active. Preserve evidence and independently verify cleanup after terminal.
+
+53CI34312290353 remains active in full predeploy gameplay (latest05:53 check).
+Current last verified live52. No54push until all53CI/deployment/finalLiveQA and
+fresh exact public identities. Root commits are ledger only, never push root.
+Standalone58 not delivered; primary expanded story/balance still preserved at
+e1c4132; entire roadmap goal remains active, neither complete nor blocked.
+
+## Previous checkpoint — September 9, 05:44 UTC
 
 Previous goal turn was a verified wait: exact53CI and Fighter58871 were polled;
 fresh public client/server identities both remained52/a36d1e7 at05:42.
