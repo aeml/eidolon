@@ -16,7 +16,36 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 22:57 UTC
+## Current checkpoint — September 9, 23:04 UTC
+
+This continuation made PROGRESS through new earned opening/diary evidence and a
+static coverage finding, and VERIFIED WAIT on exact live47584/CI34414624304.
+No primary/candidate changes or successor push. Release59 canonicale236b37 is
+clean/frozen. CI server102676618626 and client102676618794 now SUCCESS; browser
+groups1/2/3 ACTIVE102678370056/102678370089/102678369971. Full predeploy, deploy,
+native live QA and exact production59 identity remain due. Recovery58 is still
+the last accepted release; do not claim59 delivery from these intermediate passes.
+
+Primary0691772 **47584 still ACTIVE**, same story-ready-race-0909-2257 services
+and `/tmp/eidolon-story-ready-race-2257.log`. Actual opening3kills/manual100XP100gold
+and reconnect passed81s,0deaths4retreats→level2. Diary actual inspection/manual
+200XP25gold/reconnect passed119s→level3; reading branch="inspected". This proves
+that full segment, not reproduction of the prior already-open branch. Current
+first40hunt15/40,0deaths7townreststops,259s,level5xp78,gold548,6occupiedbag slots.
+Bag/merchant, collection, trained Imp and full Earth readiness remain unproven.
+Keep source frozen and one owned browser; no heavy owned tests alongside47584.
+
+New [expanded functional-route audit](2026-09-09-expanded-functional-route-audit.md)
+records a concrete later correction: primary `prepareEarthChronicleThroughPlay`
+still skips the40Skeleton/60Imp/50DemonOrc hunts required between its old chapters.
+Authored insertion graph and shared seven-chapter readiness prefix establish the
+missing coverage; this older prepared functional route was NOT run in this turn.
+Fix after active primary run ends, preserve actual kills/manualclaims/seed use,
+and do not mistake nearest-enemy QA waypoints or level preparation for qualifying
+targets/fresh progression. No test/runtime edits made for this audit. Full goal,
+casino plan and all previously open prototype/physical-device/group gates remain.
+
+## Previous checkpoint — September 9, 22:57 UTC
 
 This continuation made PROGRESS: corrected two earned-story driver failures,
 completed local release59 validation, and normally pushed the accepted58-based
