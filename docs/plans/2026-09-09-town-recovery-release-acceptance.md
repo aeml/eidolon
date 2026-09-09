@@ -1,5 +1,12 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update10:50UTC:56CI34340328283 server/client and all three browser shards PASSED;
+predeploy character QA ACTIVE. Fresh10:47 public manifest/backend still55/c5ce9dc.
+58all-route49970 remains ACTIVE on unchanged028f23b; ordinary fresh Wizard
+opening/collection passed4.7m with earned town refills/rest, followed by ongoing
+talent/Seraph checks. No full-route pass, successor push or production recovery
+claim. Mandatory live recovery/expiry/party wrapper remains in58's workflow.
+
 Update10:34UTC:93957 final client/lint PASSED251suites/3539tests/117.45s on
 028f23b. Complete gameplay49970 remains ACTIVE, currently in Verdant boss combat.
 Corrected56CI34340328283 client passed/server running; no57/58push or live claim.
@@ -362,7 +369,7 @@ needs a new full pass; no failure above is retroactively changed to success.
 
 - Finish the complete unchanged58 isolated gameplay chain, including all prior
   dungeon/combat/equipment/phone/animation checks and the added native rest routes.
-- 53 is delivered; publish each remaining predecessor54–57 only after its complete CI/deploy/final live QA
+- 53–55 are delivered; publish each remaining predecessor56–57 only after its complete CI/deploy/final live QA
   and independent exact client manifest, runtime script and server identities.
 - Publish58 through that same gate, with its existing58 login/patch notes.
 - Independently verify public58 identities, then use fresh dedicated ordinary

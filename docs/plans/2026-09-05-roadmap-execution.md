@@ -16,7 +16,30 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 10:42 UTC
+## Current checkpoint — September 9, 10:50 UTC
+
+Previous user-status turn was a VERIFIED WAIT: exact CI34340328283 and local
+browser49970 were polled live. This continuation rechecked both handles; neither
+is terminal. No cancellation, restart, candidate edits or successor push.
+
+56CI34340328283 now has successful server/client and all three browser shards;
+predeploy character QA is active in its High/Low animation gallery. Complete
+deployment and final live QA remain due. Fresh10:47 public manifest and healthy
+backend still identify55/c5ce9dc, not town recovery.
+
+58all-route49970 remains active on clean028f23b, same1028log/run/ports below.
+Its ordinary fresh Wizard opening/collection passed4.7m with actual town HP/MP
+refills and earned rest; subsequent talent/Seraph checks are underway. This is
+partial gameplay evidence, not full-route or production acceptance.
+
+Read-only deployment review reconfirmed schema-upgrade backup completion before
+new-writer startup and58's mandatory native recovery/expiry/party live wrapper.
+57 remains clean1f8c7be and unpublished;58 remains unpublished. The conditional
+production estimate given to the user is September9 14:00–17:00UTC, contingent
+on remaining gates, not a promise or permission to skip predecessor acceptance.
+The broader roadmap remains active; next browser work retains recovery priority.
+
+## Previous checkpoint — September 9, 10:42 UTC
 
 Previous continuation completed final58client evidence and verified its active
 gameplay/CI waits. This turn made PROGRESS on later visual polish without changing
