@@ -5,7 +5,51 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 9, 00:23 UTC
+## Current checkpoint — September 9, 00:30 UTC
+
+PROGRESS: previous turn changed authoritative code/evidence (not merely a wait).
+This continuation reproduces and repairs a client attack-to-walk defect and
+closes additional Well Rested resource acceptance. Full roadmap remains active.
+
+50 exact6c5059e collection31536 FAILED with zero movement even on the sole checked
+path, at(170.562,289.334), finalIDLE with target still set. This rules out calling
+the helper-only fix sufficient. Failure log
+`/tmp/eidolon-release50-fresh-collection-0023.log`; credential scan/owned cleanup
+passed, no active old process remains. Acquisition failure was not reproduced.
+
+Controlled full/delta snapshots reproduce a matching production defect: late
+ATTACKING overwrites a new manual MOVING path, then IDLE strands its destination.
+50 candidate **51ec73edadcf38f59278eee76151257a86d47e68** preserves manual paths
+while respecting chase attacks, current-snapshot Charge, death and jump.4 red
+regressions become4 suites/121 green tests1.831s, lint/diff pass.50 patch notes
+include the fix; inherited50 version metadata remains correct. Actual earned
+route acceptance is still required; this replay is not full gameplay proof.
+
+Clean candidate51ec73e now frozen for full client20368 (log
+`/tmp/eidolon-release50-attack-move-full-client.log`) and fresh collection7029
+(log `/tmp/eidolon-release50-movement-collection-0029.log`, owned project
+`move50-20260909-0029`, API18550/browser41950). Both launched, not yet terminal
+at this checkpoint. Poll these handles rather than replacing them. No push;
+remote CI34290705218 remains failed/predeploy, public49 last verified below.
+51–57 and Well Rested will need this final50 fix propagated before publication.
+
+Well Rested **10eb246** committed clean:8 actual PvP cases cover four classes,
+ordinary duel/1v1/2v2 party/queue, repeatJoin, real cast, forfeit/shutdown and
+fresh login with unchanged exact rating/honor/result assertions. Real-time expiry
+uses lower current maxima; retained rest uses boosted maxima. Rejected Mongo
+save/journal replay preserves exact bank/resources and real Fireball cost; an
+already-committed dead-player journal retains123.456789 seconds and later gold.
+Initial20960 FAIL79.651s: active-bank cases read admission before the first arena
+rest tick (stale town label). Wait for an actual outside-rest frame using the
+same20s deadline; runtime unchanged. Corrected1639 **PASS91.871s** (journal5.39s,
+receipt2.60s,PvP82.86s). All19 child logs independently clean with normal drains;
+owned Mongo/volumes removed and checked absent. Evidence
+`/tmp/eidolon-rest-workflows-0025.log`. Full root Go race42419 PASS11.467s.
+Feature runtime remains exact d650c72; these commits only change tests/docs.
+Auction failpoints/schema-upgrade, integrated browser/aura and earned balance
+remain open. None of this constitutes staged/live Well Rested or roadmap closure.
+
+## Previous checkpoint — September 9, 00:23 UTC
 
 PROGRESS: Well Rested development **cebd17fdf9d954b59bcea6e73285fca65e925988**
 is committed and clean, still unversioned/unpublished. Actual dungeon restart

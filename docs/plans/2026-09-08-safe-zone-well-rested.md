@@ -43,9 +43,16 @@ pass2 suites/15 tests: render time cannot grant healing or earn/spend rest.
 There is no playable offline progression entry; current client explicitly uses
 server authority, so no independent client rest clock is needed.
 
+September9 00:30 checkpoint, development10eb246:8 real PvP cases now pass across
+four classes, duels,1v1/2v2 parties/queues, forfeit and shutdown. Both real expiry
+and retained-bank exits use current maxima, with exact match rewards unchanged.
+Rejected-save and already-committed journal replay retain exact resources/rest
+and later gold. Combined actual workflows pass91.871s; all19 child logs clean,
+owned disposable Mongo removed. Full root race suite passes11.467s.
+
 This is not a versioned/staged release. It follows staged57, requires schema9,
-and must not publish inherited57 metadata. Remaining gates include actual PvP
-resource integration, journal/auction failures and schema-upgrade recovery,
+and must not publish inherited57 metadata. Remaining gates include auction
+failure workflows and schema-upgrade recovery,
 integrated browser travel/reconnect/aura and rested/unrested earned balance.
 
 ## Requested behavior
