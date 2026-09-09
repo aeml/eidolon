@@ -16,7 +16,62 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 14:05 UTC
+## Current checkpoint — September 9, 14:24 UTC
+
+Previous goal turn made PROGRESS: repaired/replayed phone predeploy failures,
+passed localfullchecks and pushed58ef9a638. This turn also made PROGRESS:
+new earnedbuild/hit evidence, one failedstory replay diagnosed and preserved,
+corrected target acquisition, plus verified combat-card presentation prototype.
+
+58 **CI34361293407 ACTIVE**, frozenef9a638: server/client/browser2/3+3/3 PASS,
+browser1/3 active. Lastfreshpublic14:05 remains57/8af54f2/ready. Needallremaining
+predeploy/pairedproductionbackup/deploy/nativehealing+rest+expiry+party/exactpublic
+58proof. No successor publication or primaryprototype included.
+
+Primary `/tmp/eidolon-primary-town-recovery-lAKY3k` now clean **218a0b7**,
+UNPUBLISHED/inherited57metadata. bd8a347 added earnedmilestone training and actual
+serverdamage receipts, fullclient/lint PASSED275suites3932tests107.303s in79981
+chain. Browser79981 FAILED3.8m beforeImp: firstSkeletonhunt0/40/searchdeadline.
+Archive `/tmp/eidolon-story-preparation-travel-failure-xuRWfI`, scan0/exactcleanup;
+failed-watch imageviewed, finallevel4/HP134/175/MP8/145. Opening3kills26s,
+manualclaim35s, diary80s. Log `/tmp/eidolon-story-ready-prepared-wizard.log`.
+
+Important correction: onlineattributes growautomatically inawardExperienceLocked;
+Actor.increaseStatrejectsmultiplayer/UIhidespoints. Replaylevel3 recorded0points.
+Unused onlineattribute points are NOTthe Imp explanation. Removed speculative
+all-point earlypreparation change in218a0b7; no new onlinepointallocationfeature.
+Earnedbranch/mastery milestone handoff and actualdamage diagnostics retained.
+
+Source exposedvisible-far-target no-inputloop (search returns samevisiblefoe
+instead ofnormalclick/chase).218a0b7 engagesvisiblelivingtargets regardlessbasic
+range, seeksmissing/dead/hidden; keeps120screditwatchdog/2deaths/no grants/dailies.
+Adds failureattachment forALLstoryfailures (prior search error missedhitdump),
+actualdamage source/target/amount/kind separatefromacceptedcasts and100-eventcap.
+Focused41/4/.833s+lintPASS, logs`/tmp/eidolon-expedition-acquisition-{before,after,lint}.log`.
+**20538 ACTIVE** correctedfullstory-onlyWizard, onlyownedbrowser,
+runstory-ready-acquire-0909-1422/API18560/Mongo18561/web41960,
+log`/tmp/eidolon-story-ready-acquisition-wizard.log`. No terminalclaim/restart.
+Doc`2026-09-09-story-earned-preparation-evidence.md` recordslimitsandhistory.
+
+Separatecombatcard WT`/tmp/eidolon-combat-preview-0F3tMN`, branch
+work/combat-preview-20260909, clean **e37bab6** (codefdcccb2), UNPUBLISHED.
+Replaces arbitraryclassmultiplier spelldamage withAttackpower(characterstat) and
+actualconfiguredMPcost, commonrealcastcalculationincltalent/equipmentdiscounts;
+unknowncostdash/free0MP; engine+UIcache refresh. No serverdamagechange.
+RED3failures, GREEN26/4/1.971s+lint. Browser93717PASS2/6.6s, archive
+`/tmp/eidolon-combat-preview-proof-nHkrnp`, correctedNode24scanner0, bothscreens
+viewed (desktop5power/27MP;phonecompactlevel/status). Anonymousfixtureonly,
+notrealservercastproof. CIshard2futuretestwired. **Fullclientverification and
+integration stillpending**; waitfor20538terminalbeforeownedheavy/browserwork.
+Originalmistypedscanner path/Node18invocation failedwithoutchanges; correct
+scripts/sanitize-playwright-artifacts.mjs withNode24 thenpassed.
+
+Next: monitor58CI towardactualproductionrecovery; observe20538terminal, preserve
+itsresults andcontinueclass/party/curve/dungeonreadiness. Thenfullvalidate+integrate
+combatcardprototypewithoutalteringactivebrowsersource. Desktoplonglabelbaseline/
+fixedbrowserproof, fullraid/Vigil/rejoin/phases/1.1–1.10 remainopen. Rootneverpush.
+
+## Previous checkpoint — September 9, 14:05 UTC
 
 58 corrective candidate **ef9a638b1478f59df9a8b68021f2fc58f11b2b22 PUSHED**
 normally from `/tmp/eidolon-standalone-town-recovery-QJ6Drv`, branch

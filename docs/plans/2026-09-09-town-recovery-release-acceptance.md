@@ -1,5 +1,11 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update14:24UTC:34361293407 ACTIVE on frozenef9a638. Server/client and browser
+shards2/3,3/3 PASSED;1/3 still ACTIVE. Predeploy/backup/deploy/nativepublicrecovery
+remain due. No successor push, no live58claim. Separateprimary218a0b7 earned
+story replay20538 ACTIVE; separatecombatcard e37bab6 fixtureproof passed but
+fullclient/integration pending. Neither changes the58candidate.
+
 Update14:05UTC: correction **ef9a638b1478f59df9a8b68021f2fc58f11b2b22 PUSHED**
 normally from canonical58worktree,10849TERMINAL0; remote master independently
 matches. **CI34361293407 ACTIVE**.4886fullclient/lintPASS253/3570/93.511s on
