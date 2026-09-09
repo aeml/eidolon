@@ -16,7 +16,68 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 07:47 UTC
+## Current checkpoint — September 9, 07:56 UTC
+
+Previous turn made PROGRESS (committed separate aura comparison). This turn
+also made PROGRESS: a primary story-budget audit exposed concrete handoff risks;
+the complete58 gameplay failure was retained, its strict focused replay passed,
+and movement diagnostics were added before assertions without changing runtime.
+
+**65093 complete58 TERMINAL1/FAILED** on ee8a713. It passed the earlier listed
+routes plus phone build/settings/adventure, dungeon wipe/reconnect recovery,
+death resource recovery and all four direct-target class tests, then failed
+`movement-smoothness.spec.js` sustained `largestRenderStep < 1`: received
+1.0560000101725315. This is not a complete pass and later PvP/animation/nameplate/
+native rest gates did not execute. Log
+`/tmp/eidolon-rest58-all-node24-rerun-0718.log`, retained failure archive
+**`/tmp/eidolon-rest58-movement-rest-failure-2Qxe5U`**. Artifact scan0; exact
+rest58-all24-r4-0909-0718 API/Mongo/image absent and18560/18561/41960 free.
+The original test attached movement data only after all assertions and had
+video/screenshots disabled, so its failing frames are unavailable. Do not infer
+a proven speed-buff, renderer or host-load cause from the single step value.
+
+**98426 focused movement diagnostic TERMINAL0/PASS1/17.1s** (test15.9) on40aca4f.
+This QA-only commit adds speed/rest/timestamps and attaches frames BEFORE the
+sustained/outside assertions. All original limits and authority/acknowledgement
+checks remain unchanged. Both sustained/outside largest step0.17600000699 at
+actual replicated speed10.5600004196;148/151samples, zero backtracks, camera or
+render-logical gaps and correction frames. Actual renderer AMD RADV RENOIR.
+Sample pairs were read from the embedded report: ordinary16.6–16.7ms movement,
+rest earns in town and spends outside. This focused pass does not explain the
+earlier failure or establish sustained performance. Log
+`/tmp/eidolon-rest58-movement-diagnostic-0753.log`, archive
+**`/tmp/eidolon-rest58-movement-diagnostic-proof-okYxGO`** includes report/samples.
+Scan0 and exact diagnostic-run cleanup/free ports independently confirmed.
+
+Canonical58 now clean **f6f420d6f5f3f03665c075042160e20c1c2acf07**: second QA-only
+commit adds simulation frame/time/accumulator observations to correlate a future
+step anomaly. Only17 lines added to the movement browser spec since ee8a713;
+production runtime, all assertions, release metadata, server and reward rules
+unchanged. Node24 lint/diff passed before each commit. **88641 complete58 rerun
+ACTIVE**, runrest58-all24-r5-0909-0755/API18560/Mongo18561/web41960, log
+`/tmp/eidolon-rest58-all-node24-rerun-0755.log`. Initial actual login passed.
+Only owned local browser; do not edit/restart this candidate while active.
+
+Primary story clean **4519c0c** adds
+`chronicle_readiness_budget_audit_test.go` and diagnostic notes. **7980
+Go1.24.5 race PASS12scenarios/3.348s**, log
+`/tmp/eidolon-primary-earth-budget-audit.log`. Production helpers reconcile
+seven pre-dungeon chapter payouts25,979XP/800gold plus150 authored hunt kills,
+three tutorial kills and8/20 modeled collection kills. Omitted incidental combat;
+minimum eligible Skeleton levels; rest scenarios are none/every kill, not measured
+uptime. Solo ends29 without rest (8,461/8,221XP shortfall),31 with every kill rested;
+two-player ends25/27 and five-player22/23 for none/all rest. These are diagnostic
+bounds, NOT actual victories, a complete party campaign or balanced approval.
+Do not insert optional dailies/grants to hide an earned-readiness failure.
+Primary full actual Earth/four-class/party routes remain due; no production
+reward change was made from the diagnostic and recovery58 is separate.
+
+**54CI34320477081 predeploy still ACTIVE** at07:56 with all prior checks passed.
+No55push until complete54CI/deploy/finalLiveQA+fresh exact public identities.
+Public last verified53 at07:44;58 NOT LIVE. Separate aura59be536 still awaits
+its first GPU run. Whole roadmap remains active; no root push or status closure.
+
+## Previous checkpoint — September 9, 07:47 UTC
 
 Previous status turn was a VERIFIED WAIT: exact54CI34320477081 was confirmed
 in progress and the current58 gameplay log was advancing. This continuation

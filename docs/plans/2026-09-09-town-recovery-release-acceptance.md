@@ -1,5 +1,17 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Latest September9 07:56UTC: candidate **f6f420d6f5f3f03665c075042160e20c1c2acf07**
+remains UNPUBLISHED. Complete58 run65093 failed movement's unchanged one-unit
+render-step bound (1.056 observed), after earlier combat/phone/resource routes
+passed. No failing-frame attachment existed in that older test, so the cause
+remains unproven. Retained log/archive and exact cleanup are in the execution
+ledger's07:56 checkpoint. Focused diagnostic98426 then passed the SAME limits,
+largest sustained/outside steps0.176 at speed10.56, with frame evidence retained.
+QA-only40aca4f/f6f420d attach samples before assertions and include simulation
+frame/time; no production code, threshold or timeout changed. Complete rerun
+**88641 ACTIVE**, `/tmp/eidolon-rest58-all-node24-rerun-0755.log`. This is not a
+completed regression or production delivery. Earlier evidence below is historical.
+
 Status at September 9, 07:18 UTC: **unpublished candidate**, not delivered.
 Candidate worktree `/tmp/eidolon-standalone-town-recovery-QJ6Drv`, current source
 `ee8a713d6d6daef1caa5d319c63c2089fdf37771`, includes canonical57/6babef5 ancestry.
