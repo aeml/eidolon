@@ -398,10 +398,12 @@ import {
 } from '../utils/dungeonRoomMetadata.js';
 
 function spawnActorReadability(engine, entity, action, fullText, color, fontSize) {
-    // A summon repeats its long identity on every smite. Keep that attribution
-    // above its model without a wide, enlarged line across the combatants.
+    // Repeated summon names and long desktop labels can stretch across the
+    // combatants. Reuse the bounded identity/action card without shortening
+    // the underlying name or its accessibility text. Short desktop labels keep
+    // their existing inline treatment.
     const isSeraph = (entity.meshType || entity.subType || entity.constructor?.name) === 'AvengingSeraph';
-    if (!engine.isMobile && !isSeraph) {
+    if (!engine.isMobile && !isSeraph && fullText.length <= 32) {
         engine.floatingTextManager.spawn(fullText, entity.position, color, fontSize);
         return;
     }
