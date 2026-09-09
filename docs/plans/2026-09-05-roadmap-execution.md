@@ -16,7 +16,25 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 14:04 UTC
+## Current checkpoint — September 9, 14:05 UTC
+
+58 corrective candidate **ef9a638b1478f59df9a8b68021f2fc58f11b2b22 PUSHED**
+normally from `/tmp/eidolon-standalone-town-recovery-QJ6Drv`, branch
+work/standalone-town-recovery-20260909.10849TERMINAL0; remote master matches.
+New **CI34361293407 ACTIVE**; original34355888468failed remains failed.
+Fullclient/lint4886PASS253suites/3570tests93.511s on d0a129c; ef9onlyadds
+verifiedclosure doc. Runtime/server/metadata/playernotes identicalfb8db754.
+Correctedphone36862PASS2/1.5m incl8freshentries, scan0/ownedcleanup, asbelow.
+Fresh14:05 publicmanifest/backendremain57/8af54f2/ready.58NOTyetlive.
+Requirednext: monitor34361293407 exacthandle through fullCI/predeploy, actual
+schema8→9pairedproductionbackup, client/serverdeploy, final native healing/rest/
+expiry/party proof, fresh exactef9/58manifest/login/runtimeGET/backendidentities.
+Do not restart for elapsed time, do not push successor before58fullacceptance.
+No local active test/browser sessions. Primary75e30eb excluded and unchanged;
+earnedImpstoryfailure needs preparation/levelgap evidence next; journalcompleted
+locallyonly. Full1.1–1.10goal remains open; root ledger-only and neverpushed.
+
+## Previous checkpoint — September 9, 14:04 UTC
 
 This turn made PROGRESS: reproduced58predeploy stash failure in97427 on
 51e3f30, entry5/8. Old orientation camera generated stale tap261.41,209.11;

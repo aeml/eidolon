@@ -1,5 +1,13 @@
 # Town recovery release acceptance — Alpha 1.0.58
 
+Update14:05UTC: correction **ef9a638b1478f59df9a8b68021f2fc58f11b2b22 PUSHED**
+normally from canonical58worktree,10849TERMINAL0; remote master independently
+matches. **CI34361293407 ACTIVE**.4886fullclient/lintPASS253/3570/93.511s on
+d0a129c; ef9onlydocumentsclosure, game/server trees identicalfb8. Fresh14:05
+publicmanifest/backendstill57/8af54f2/ready. No58liveclaim. New fullCI/predeploy/
+pairedproductionbackup/deploy/nativejourney+expiry+party+fresh58publicidentity
+remain required. No local test/browser handles active; no successor pushed.
+
 Update14:04UTC: stash failure REPRODUCED by dedicated51e3f30 entry/orientation
 test97427 (failed5/8). It projected the old landscape camera into new portrait
 dimensions and tapped empty space:261.41,209.11 vs settled381.72,289.63;
