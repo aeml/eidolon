@@ -33,3 +33,8 @@ requires earned progress within the unchanged watchdog. Invalid counts and input
 failures propagate, with no quest credit/reward injection. Focused45762 passed
 14tests/2suites0.711s and lint; `/tmp/eidolon-opening-credit-race-{focused,lint}.log`.
 Full regression and actual earned replay remain due for this follow-up.
+
+Full94963 on e530999 passed281suites3972tests137.488s and lint;
+`/tmp/eidolon-opening-credit-race-full-{client,lint}.log`. Actual corrected browser
+replay remains required; neither this race fix nor the diary fix has yet reached
+the bag/merchant/whole-Earth readiness checks in a successful earned run.
