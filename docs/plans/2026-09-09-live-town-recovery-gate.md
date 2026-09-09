@@ -31,9 +31,11 @@ sanitation/upload gate remains mandatory as well. No secrets are placed in CLI
 arguments or printed by this wrapper.
 
 The shell harness executes the real wrapper with stubbed browser/scanner commands:
-12 checks cover all routes and arguments, fresh/max-length identities, mandatory
+13 checks cover all routes and arguments, fresh/max-length identities, mandatory
 workflow ordering, missing/invalid input, stop-on-failure and sanitation failure.
 The initial harness had a JavaScript template syntax error (zero tests executed),
 then was corrected; this was not a browser/runtime failure. Focused tests and lint
-pass. Actual browser rehearsal of the wrapper and post-deployment checks remain
+pass. The opt-in isolated route `live-recovery-rehearsal` runs this exact wrapper
+against the disposable loopback services, without expanding their QA allowlist
+or changing the default full gate. Actual browser rehearsal and live checks remain
 required; shell mocks and prior native-test passes do not establish live delivery.

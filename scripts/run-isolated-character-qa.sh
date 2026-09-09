@@ -613,6 +613,10 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   well-rested)
     npx playwright test tests/e2e/well-rested-gameplay.spec.js
     ;;
+  live-recovery-rehearsal)
+    EIDOLON_E2E_BASE_URL="http://127.0.0.1:${EIDOLON_E2E_WEB_PORT:-4173}" \
+      EIDOLON_EXPECTED_COMMIT="${QA_SOURCE_COMMIT}" bash scripts/run-live-recovery-qa.sh
+    ;;
   well-rested-expiry)
     npx playwright test tests/e2e/well-rested-expiry-gameplay.spec.js
     ;;
