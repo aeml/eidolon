@@ -38,3 +38,10 @@ full-route timing breakdown remain distinct from this shell-control-flow proof.
 Final58516 PASS37 integration tests1.513s and lint after the regex-only correction;
 shell syntax and diff checks also pass. Logs
 `/tmp/eidolon-qa-timing-wired-{tests,lint}-final.log`.
+
+Full95095 TERMINAL FAIL169.494s:261 suites/3730 tests passed; one assertion in
+VersionPresentation still expected an untimed inline nameplate command. The
+actual command remained in its original final position, covered by the executable
+35-stage harness. Updated that assertion to the exact timed AND-chain call;
+no release metadata, command, route, runtime or failure behavior changed.
+Original full failure retained at `/tmp/eidolon-primary-timing-full-client.log`.

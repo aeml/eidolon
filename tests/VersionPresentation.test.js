@@ -60,7 +60,7 @@ describe('version presentation', () => {
         expect(versionedRuntimeFiles[0]).toContain('npm run test:e2e:nameplates');
         const isolated = versionedRuntimeFiles[5];
         const allRoute = isolated.split('\n  all)')[1]?.split('\n    ;;')[0];
-        expect(allRoute).toContain('&& npx playwright test tests/e2e/nameplate-world.spec.js');
+        expect(allRoute).toContain('&&\n    run_qa_stage nameplate-world npx playwright test tests/e2e/nameplate-world.spec.js');
     });
     test('adds readable crowd-name notes while retaining all prior release history', () => {
         expect(indexHtml).toContain('Alpha 1.0.53 (names above the crowd)');
