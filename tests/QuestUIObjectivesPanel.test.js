@@ -14,6 +14,65 @@ function buildQuestDom() {
 }
 
 describe('QuestUI objectives panel', () => {
+    test('daily summary puts ready and accepted work before larger unaccepted payouts', () => {
+        buildQuestDom();
+        const ui = new QuestUI({ getLastPlayer: () => ({ level: 2 }) });
+        const entries = [
+            { id: 'daily_high', target: 'PhoenixSentinel', rewardXP: 400000, maxCount: 100 },
+            { id: 'daily_active', target: 'Skeleton', accepted: true, count: 1, maxCount: 100, rewardXP: 100 },
+            { id: 'daily_ready', target: 'Imp', accepted: true, count: 2, maxCount: 2, rewardXP: 50 }
+        ];
+        expect(ui.buildRepeatableLadderSummary(entries).topEntries.map(entry => entry.id))
+            .toEqual(['daily_ready', 'daily_active', 'daily_high']);
+    });
+
+    test('daily disclosure and recovered lore keep independent open and focus state', () => {
+        buildQuestDom();
+        const quests = [
+            { id: 'chronicle_01', category: 'chronicle', chapter: 1, title: 'Recovered chapter', completed: true, lore: 'A remembered promise.' },
+            { id: 'chronicle_02', category: 'chronicle', chapter: 2, title: 'Next chapter', accepted: true, count: 0, maxCount: 1 },
+            { id: 'daily_skeleton', target: 'Skeleton', count: 0, maxCount: 100, rewardXP: 100 }
+        ];
+        const ui = new QuestUI({ getLastPlayer: () => ({ quests }) });
+        ui.updateJournal(quests);
+        document.querySelector('.quest-chronicle-archive').open = true;
+        document.querySelector('.quest-chronicle-archive > summary').focus();
+        ui.updateJournal(quests);
+        expect(document.querySelector('.quest-chronicle-archive').open).toBe(true);
+        expect(document.querySelector('.quest-repeatable-ladder').open).toBe(false);
+        expect(document.activeElement.matches('.quest-chronicle-archive > summary')).toBe(true);
+        document.querySelector('.quest-chronicle-archive').open = false;
+        document.querySelector('.quest-repeatable-ladder').open = true;
+        document.querySelector('.quest-repeatable-ladder > summary').focus();
+        ui.updateJournal(quests);
+        expect(document.querySelector('.quest-chronicle-archive').open).toBe(false);
+        expect(document.querySelector('.quest-repeatable-ladder').open).toBe(true);
+        expect(document.activeElement.matches('.quest-repeatable-ladder > summary')).toBe(true);
+    });
+
+    test.each([false, true])('optional daily offers stay compact beside active story and preserve reading controls (mobile=%s)', isMobile => {
+        buildQuestDom();
+        const quests = [
+            { id: 'chronicle_01', category: 'chronicle', chapter: 1, title: 'The first chapter', accepted: true, count: 0, maxCount: 3 },
+            { id: 'daily_high', target: 'PhoenixSentinel', rewardXP: 400000, count: 0, maxCount: 100 }
+        ];
+        const ui = new QuestUI({ isMobile, getLastPlayer: () => ({ level: 2, quests }) });
+        ui.updateJournal(quests);
+        const offers = document.querySelector('details.quest-repeatable-ladder');
+        expect(offers).not.toBeNull();
+        expect(offers.open).toBe(false);
+        expect(offers.querySelector('summary').textContent).toContain('Daily contracts');
+        expect(offers.querySelector('summary').style.minHeight).toBe('44px');
+        expect(offers.textContent).not.toMatch(/fastest|highest-value/i);
+        offers.open = true;
+        offers.querySelector('summary').focus();
+        ui.updateJournal(quests);
+        expect(document.querySelector('details.quest-repeatable-ladder').open).toBe(true);
+        expect(document.activeElement.matches('.quest-repeatable-ladder > summary')).toBe(true);
+        document.querySelector('details.quest-repeatable-ladder').open = false;
+        ui.updateJournal(quests);
+        expect(document.querySelector('details.quest-repeatable-ladder').open).toBe(false);
+    });
     test.each([
         ['PhoenixSentinel', 100, 'Phoenix Sentinels'],
         ['CycloneAvatar', 100, 'Cyclone Avatars'],
@@ -361,7 +420,7 @@ describe('QuestUI objectives panel', () => {
         expect(list.textContent).toContain('Push Heroic and Mythic runs');
     });
 
-    test('renders a repeatable ladder summary in the journal for the highest-value dailies', () => {
+    test('renders a daily summary in the journal with accurate rewards and reset time', () => {
         buildQuestDom();
         const questUI = new QuestUI({
             getLastPlayer: () => ({ quests: [] }),
@@ -399,7 +458,7 @@ describe('QuestUI objectives panel', () => {
         ]);
 
         const journal = document.getElementById('journal-list');
-        expect(journal.textContent).toContain('Repeatable Ladder');
+        expect(journal.textContent).toContain('Daily contracts');
         expect(journal.textContent).toContain('Accepted now: 2');
         expect(journal.textContent).toContain('Ready to claim: 1');
         expect(journal.textContent).toContain('Daily reset:');
@@ -408,7 +467,8 @@ describe('QuestUI objectives panel', () => {
         expect(journal.textContent).toContain('1 / 4 • 15,000,000 XP');
         expect(journal.textContent).toContain('Dungeon Boss (Heroic) • Available');
         expect(journal.textContent).toContain('Tempest Spire Bosses • Ready');
-        expect(journal.textContent).toContain('Server clock says the daily ladder rolls in 00:29:45');
+        expect(journal.textContent).toContain('Daily contracts reset in 00:29:45');
+        expect(document.querySelector('.quest-repeatable-ladder').open).toBe(true);
     });
 
     test('keeps the repeatable ladder visible even when no dailies are currently accepted', () => {
@@ -431,7 +491,7 @@ describe('QuestUI objectives panel', () => {
         ]);
 
         const journal = document.getElementById('journal-list');
-        expect(journal.textContent).toContain('Repeatable Ladder');
+        expect(journal.textContent).toContain('Daily contracts');
         expect(journal.textContent).toContain('Accepted now: 0');
         expect(journal.textContent).toContain('Molten Core Bosses • Available');
         expect(journal.textContent).toContain('No active quests.');
@@ -457,7 +517,7 @@ describe('QuestUI objectives panel', () => {
 
         const journal = document.getElementById('journal-list');
         expect(journal.textContent).toContain('Daily quests reset at 12:00 AM Eastern Time');
-        expect(journal.textContent).toContain('Highest-value dailies reset tomorrow, so this is the fastest XP ladder to pick back up.');
+        expect(journal.textContent).toContain('Daily contracts award XP and gold. Choose targets suited to your character.');
     });
 
     test('hides objectives panel when there are no accepted quests outside town', () => {

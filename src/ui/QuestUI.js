@@ -280,8 +280,10 @@ export class QuestUI {
             return this.formatQuestTarget(quest?.target, quest?.maxCount);
         };
 
+        const priority = quest => !quest.accepted ? 0 : quest.maxCount > 0 && quest.count >= quest.maxCount ? 2 : 1;
         const topEntries = [...repeatableQuests]
-            .sort((left, right) => (Number(right?.rewardXP) || 0) - (Number(left?.rewardXP) || 0))
+            .sort((left, right) => priority(right) - priority(left) ||
+                (Number(right?.rewardXP) || 0) - (Number(left?.rewardXP) || 0))
             .slice(0, 3)
             .map((quest) => ({
                 id: quest.id,
@@ -306,7 +308,7 @@ export class QuestUI {
         if (!Number.isFinite(serverEpochSeconds) || serverEpochSeconds <= 0) {
             return {
                 statusLine: 'Daily quests reset at 12:00 AM Eastern Time',
-                ladderLine: `Highest-value dailies reset tomorrow, so this is the fastest ${progression} ladder to pick back up.`
+                ladderLine: `Daily contracts award ${progression} and gold. Choose targets suited to your character.`
             };
         }
 
@@ -351,7 +353,7 @@ export class QuestUI {
 
         return {
             statusLine: `Daily reset: ${countdown} remaining (${easternNow})`,
-            ladderLine: `Server clock says the daily ladder rolls in ${countdown}, so this is the fastest ${progression} route still paying before reset.`
+            ladderLine: `Daily contracts reset in ${countdown} and award ${progression} and gold. Choose targets suited to your character.`
         };
     }
 
@@ -982,6 +984,7 @@ export class QuestUI {
 
         if (completed.length > 0) {
             const archive = document.createElement('details');
+            archive.className = 'quest-chronicle-archive';
             const summary = document.createElement('summary');
             summary.textContent = `Recovered Lore (${completed.length})`;
             summary.style.color = '#caa8e7';
@@ -1045,15 +1048,18 @@ export class QuestUI {
         const existingRecords = new Map([...this.journalList?.querySelectorAll('details[data-discovery-id]') || []]
             .map(record => [record.dataset.discoveryId, record]));
         const scroll = this.journalList?.scrollTop || 0;
-        const archiveOpen = Boolean(this.journalList?.querySelector('details')?.open);
-        const archiveFocused = document.activeElement === this.journalList?.querySelector('details > summary');
+        const archiveOpen = Boolean(this.journalList?.querySelector('.quest-chronicle-archive')?.open);
+        const archiveFocused = document.activeElement === this.journalList?.querySelector('.quest-chronicle-archive > summary');
+        const dailyOpen = this.journalList?.querySelector('.quest-repeatable-ladder')?.open;
+        const dailyFocused = document.activeElement === this.journalList?.querySelector('.quest-repeatable-ladder > summary');
         const focusedQuest = this.journalList?.contains(document.activeElement) ? document.activeElement.dataset.questTrack : null;
         const openDiscoveries = new Set([...this.journalList?.querySelectorAll('details[data-discovery-id][open]') || []].map(record => record.dataset.discoveryId));
         const focusedDiscovery = document.activeElement?.closest?.('details[data-discovery-id]')?.dataset.discoveryId;
         const restoreReading = () => {
-            const archive = this.journalList?.querySelector('details');
+            const archive = this.journalList?.querySelector('.quest-chronicle-archive');
             if (archive && archiveOpen) archive.open = true;
             if (archiveFocused) archive?.querySelector('summary')?.focus({ preventScroll: true });
+            if (dailyFocused) this.journalList?.querySelector('.quest-repeatable-ladder > summary')?.focus({ preventScroll: true });
             if (focusedQuest) [...this.journalList.querySelectorAll('[data-quest-track]')]
                 .find(input => input.dataset.questTrack === focusedQuest)?.focus({ preventScroll: true });
             for (const record of this.journalList?.querySelectorAll('details[data-discovery-id]') || []) {
@@ -1089,30 +1095,34 @@ export class QuestUI {
 
         const repeatableLadder = this.buildRepeatableLadderSummary(quests);
         if (repeatableLadder) {
-            const ladder = document.createElement('div');
+            const ladder = document.createElement('details');
             ladder.className = 'quest-repeatable-ladder';
+            ladder.open = dailyOpen ?? (repeatableLadder.acceptedCount > 0 || !hasActiveChronicle);
             ladder.style.background = 'linear-gradient(180deg, rgba(29, 35, 46, 0.95), rgba(18, 22, 29, 0.95))';
             ladder.style.border = '1px solid rgba(143, 176, 217, 0.35)';
             ladder.style.padding = '10px';
             ladder.style.marginBottom = '14px';
-            ladder.style.display = 'flex';
-            ladder.style.flexDirection = 'column';
-            ladder.style.gap = '6px';
-
-            const title = this.createMessage('Repeatable Ladder', {
+            const title = document.createElement('summary');
+            title.textContent = `Daily contracts · ${repeatableLadder.acceptedCount} active · ${repeatableLadder.readyCount} ready`;
+            Object.assign(title.style, {
                 color: '#ffd700',
-                fontSize: '11px',
+                fontSize: '13px',
                 fontWeight: 'bold',
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase'
+                minHeight: '44px',
+                boxSizing: 'border-box',
+                padding: '12px 0',
+                cursor: 'pointer'
             });
+            const content = document.createElement('div');
+            Object.assign(content.style, { display: 'flex', flexDirection: 'column', gap: '6px' });
             const body = this.createMessage(
                 `Accepted now: ${repeatableLadder.acceptedCount} • Ready to claim: ${repeatableLadder.readyCount}. ${resetSnapshot.ladderLine}`,
                 { color: '#d7dfef', fontSize: '12px', lineHeight: '1.5' }
             );
 
             ladder.appendChild(title);
-            ladder.appendChild(body);
+            ladder.appendChild(content);
+            content.appendChild(body);
 
             repeatableLadder.topEntries.forEach((entry) => {
                 const row = document.createElement('div');
@@ -1137,7 +1147,7 @@ export class QuestUI {
 
                 row.appendChild(left);
                 row.appendChild(right);
-                ladder.appendChild(row);
+                content.appendChild(row);
             });
 
             this.journalList.appendChild(ladder);
