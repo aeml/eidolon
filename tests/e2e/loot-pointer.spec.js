@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { acquireLootPointer } from './helpers.js';
 
-test('a covered loot center keeps enemy priority while exposed loot edges remain selectable', async ({ page }) => {
+test.beforeEach(async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' });
     await page.evaluate(async () => {
         const THREE = await import('three');
@@ -21,7 +21,7 @@ test('a covered loot center keeps enemy priority while exposed loot edges remain
         // Geometry/input component fixture: a narrow hostile interaction proxy
         // occludes the real LootDrop hitbox's center, not its exposed sides.
         const game = Object.create(GameEngine.prototype);
-        Object.assign(game, { player: { id: 'owner' }, activeEntitiesCache: [loot, hostile],
+        Object.assign(game, { player: { id: 'owner' }, needsRaycast: false, activeEntitiesCache: [loot, hostile],
             remotePlayers: new Map([['loot', loot]]), renderSystem: { camera, environmentGroup: new THREE.Group() },
             inputManager: new InputManager(camera, new THREE.Scene(), canvas),
             isHostileActorTarget: entity => entity === hostile, isInteractableEntity: () => false,
@@ -29,9 +29,31 @@ test('a covered loot center keeps enemy priority while exposed loot edges remain
         game.inputManager.subscribe('onMouseMove', () => game.performRaycast());
         window.game = game;
     });
+});
+
+test('a covered loot center keeps enemy priority while exposed loot edges remain selectable', async ({ page }) => {
     await page.mouse.move(640, 360);
     await expect.poll(() => page.evaluate(() => window.game.hoveredEntity?.id)).toBe('hostile');
     const point = await acquireLootPointer(page, 'loot', 2000);
     expect(point.visible).toBe(true);
     expect(await page.evaluate(() => window.game.hoveredEntity?.id)).toBe('loot');
+});
+
+test('a coincident loot pile exposes its real front item without changing target priority', async ({ page }) => {
+    await page.evaluate(async () => {
+        const { LootDrop } = await import('/src/entities/LootDrop.js');
+        const game = window.game;
+        const back = game.remotePlayers.get('loot');
+        const front = new LootDrop({ id: 'front-item', name: 'Front sword', slot: 'mainHand', rarity: 'Common' }, 0, 0, 'front');
+        front.mesh.updateMatrixWorld(true);
+        game.activeEntitiesCache = [front, back];
+        game.remotePlayers.set('front', front);
+    });
+    const point = await acquireLootPointer(page, 'loot', 2000, { allowOverlappingLoot: true });
+    expect(point.visible).toBe(true);
+    expect(point.lootId).toBe('front');
+    expect(await page.evaluate(() => ({ hovered: window.game.hoveredEntity.id,
+        intendedStillPresent: window.game.remotePlayers.get('loot').isActive,
+        stack: window.game.raycastHitEntities.map(entity => entity.id) })))
+        .toEqual({ hovered: 'front', intendedStillPresent: true, stack: ['front', 'loot'] });
 });

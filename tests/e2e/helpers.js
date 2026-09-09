@@ -2,6 +2,7 @@ import { expect } from '@playwright/test';
 import { movementFailure } from '../groundInputFailure.js';
 import { inventoryQuantity, pickupReceipt } from './lootPickupEvidence.js';
 import { hasFreshEntranceHover } from './entrance-pointer.js';
+import { readLootPointerTarget } from './loot-pointer-observation.js';
 import {
     isBenignCanceledAssetRequest,
     isIgnoredBrowserRequest
@@ -775,7 +776,7 @@ export async function projectEntity(page, targetId, hitboxPoint = null) {
     }, { id: targetId, hitboxPoint });
 }
 
-export async function acquireLootPointer(page, id, timeout = 10_000) {
+export async function acquireLootPointer(page, id, timeout = 10_000, options = {}) {
     let point;
     let candidate = 0;
     try {
@@ -809,7 +810,8 @@ export async function acquireLootPointer(page, id, timeout = 10_000) {
             // The real hover route is budgeted to 20Hz. Let it sample this
             // pointer before inspecting its result or moving to another edge.
             await page.waitForTimeout(75);
-            return page.evaluate(id => window.game.hoveredEntity?.id === id, id);
+            point.lootId = await readLootPointerTarget(page, id, options);
+            return Boolean(point.lootId);
         }, { timeout, intervals: [75, 100, 150], message: 'A real pointer must acquire the intended loot hitbox' }).toBe(true);
     } catch (error) {
         error.lootPoint = point;
@@ -1498,7 +1500,7 @@ export async function exerciseCombatAndLoot(page) {
         // a living hostile. Never treat an unverified click as a pickup attempt.
         let point;
         try {
-            point = await acquireLootPointer(page, loot.id);
+            point = await acquireLootPointer(page, loot.id, 10_000, { allowOverlappingLoot: true });
         } catch (error) {
             point = error.lootPoint;
             const diagnostic = await page.evaluate(({ id, point }) => {
@@ -1512,7 +1514,11 @@ export async function exerciseCombatAndLoot(page) {
             }, { id: loot.id, point });
             throw new Error(`Manual loot pointer acquisition failed: ${JSON.stringify(diagnostic)}`, { cause: error });
         }
-        const item = await page.evaluate(id => window.game.remotePlayers.get(id)?.item, loot.id);
+        // Coincident loot hitboxes can expose only the front drop. This general
+        // pickup route follows the actual pointer target and proves that exact
+        // item's quantity increase, not an arbitrary back drop or bag-slot count.
+        const pickedLootId = point.lootId;
+        const item = await page.evaluate(id => window.game.remotePlayers.get(id)?.item, pickedLootId);
         expect(item?.id, 'The selected loot must expose an authoritative item').toBeTruthy();
         const beforePickup = await page.evaluate(() => window.game.player.inventory);
         await page.mouse.click(point.x, point.y);
@@ -1532,10 +1538,10 @@ export async function exerciseCombatAndLoot(page) {
                     dropExists: Boolean(drop), dropStack: drop?.item?.stack,
                     distance: drop ? game.player.position.distanceTo(drop.position) : null,
                     playerState: game.player.state };
-            }, loot.id);
+            }, pickedLootId);
             throw new Error(`Manual pickup failed: ${JSON.stringify(diagnostic)}`, { cause: error });
         }
-        console.log(`[loot-pickup] ${JSON.stringify({ earlierManualRequest: false,
+        console.log(`[loot-pickup] ${JSON.stringify({ earlierManualRequest: false, overlappingDrop: pickedLootId !== loot.id,
             stackable: receipt.item.maxStack > 1, before: receipt.previousQuantity, after: receipt.quantity })}`);
         return receipt;
     }
