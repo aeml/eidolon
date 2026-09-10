@@ -1,7 +1,7 @@
 # Earned dungeon coverage for all four classes
 
-Status: isolated QA implementation and focused checks passed. Full regression,
-prepared input confirmation and earned native class playthroughs remain pending.
+Status: isolated QA implementation, full client regression and prepared native
+input confirmation passed. Earned native class playthroughs remain pending.
 No gameplay/server, version, deployment or active Wizard-run source was changed.
 Built separately from primary4b3991ff while its original earned run44188 continues.
 
@@ -31,6 +31,32 @@ and the observer forwards the unchanged message to the actual game handler.
 
 ## Focused evidence
 
+### Full and native acceptance — September 10, 11:41 UTC
+
+On frozen506d1c9a, full42440 TERMINAL0:296suites/4174tests129.636s, then lint
+underNode24.18.0. Logs `/tmp/eidolon-class-support-full-{client,lint}.log`.
+Prepared native32340 TERMINAL0: Rogue1case16.4s, Cleric1case17.0s, serial and
+zero retries. Actual final credential scan0; owned containers and
+API18580/Mongo18581/web41980 listeners absent after cleanup. Archive
+`/tmp/eidolon-prepared-support-proof-9vbe4p` retains both scoped result trees,
+final HTML report, native log and full regression/lint logs. Inspected both PNGs:
+Rogue's coating and Cleric's healing aura/positive heal text are visible. Cleric
+is beside/partly covered by entrance geometry with the cutaway visible; this is
+not a new approval of entrance art, gameplay-size readability or phone rendering.
+
+Rogue paid30mana(1585→1555) for one accepted PoisonCoating. Cleric paid25mana
+for each of two HealingLights and40mana for GuardianEmbrace; healing events
+recorded387direct and258per Embrace tick. No rejected casts. Stale-target and
+active-effect suppression assertions passed using the actual composite drivers.
+This is explicitly prepared level100/protected input evidence, NOT earned class
+progression, poison damage, independent cooldown-only suppression or survival.
+
+Primary earned44188 ended in a second Warden survival failure before this native
+check started. Its eight readiness phases pass, but gear upgrades alone did not
+resolve the boss. Preserve its failure; do not immediately repeat long all-class
+campaigns without resolving the short diagnostic questions in primary's failure
+plan. The geometry diagnostic subsequently added to primary is not in506d1c9a.
+
 Session99031 passed118tests/6suites1.616s followed by lint underNode24.18.0.
 Logs `/tmp/eidolon-earned-dungeon-classes-unit.log` and
 `/tmp/eidolon-earned-dungeon-classes-lint.log`.
@@ -58,7 +84,7 @@ Playwright discovery; `git diff --check` also passed. Logs
 `/tmp/eidolon-class-support-final-{unit,lint,discovery}.log`. This includes the
 native spec's stale-target check before activation, not masked by an active buff.
 
-## Prepared native route (implemented, execution pending)
+## Prepared native route (implemented; initial native acceptance above)
 
 `EIDOLON_ISOLATED_QA_ROUTE=prepared-earned-support` runs separate allowlisted
 Rogue and Cleric accounts, serially with zero retries and separate artifact
@@ -78,19 +104,19 @@ suppression after natural buff expiry, survival and a dungeon clear are NOT
 proven by this case. The cooldown-only negative remains covered by policy tests
 until separate native evidence is added.
 
-Do not execute this route or full regression while primary44188 owns the local
-browser/heavy gate. Discovery and focused contract tests do not clear that gate.
+The original concurrency restriction was honored: the route and full regression
+started only after primary44188 was terminal and its failed evidence preserved.
 
 ## Remaining acceptance, in order
 
-1. Do not merge into the active primary run or compete with its browser/heavy
-   workload. Preserve its result, artifacts and exact source identity first.
-2. Run complete client regression and lint on this candidate; reconcile any new
-   primary fixes without discarding the current failed/passed evidence.
-3. Verify both added drivers against a real isolated server using explicitly
-   prepared, allowlisted class fixtures: actual paid Poison Coating, actual
-   healing/Guardian Embrace, cooldown/active suppression and no invalid targets.
-   Such fixtures prove input semantics, not earned campaign progression.
+1. Integrate with primary's post-failure diagnostics without discarding either
+   native result or original source identity. Re-run merged client regression
+   and lint; the separate candidate's full pass does not cover changed source.
+2. Resolve short Wizard/resource/retreat diagnostics before another long earned
+   replay. Keep all survival, phase, encounter and state-stall limits unchanged.
+3. Add native poison-damage and independent cooldown-only evidence as needed;
+   current prepared acceptance proves paid activation/healing and active-effect
+   suppression, not those additional effects or earned campaign progression.
 4. Complete separate ordinary fresh Rogue and Cleric story/dungeon playthroughs
    under the same original limits. Retain seed, gear, skills, costs, accepted/
    rejected casts, deaths, dungeon clear and manual reward/save/Water receipts.
