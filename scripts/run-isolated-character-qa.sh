@@ -468,6 +468,11 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   multiplayer)
     run_animation_multiplayer
     ;;
+  forge-socket-appearance)
+    EIDOLON_E2E_USERNAME_SECONDARY="${QA_USERNAME_BASE}-wizard" EIDOLON_E2E_PASSWORD_SECONDARY="${QA_PASSWORD}" \
+      EIDOLON_E2E_SOCKET_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_SOCKET_MONGO_PORT="${mongo_port}" \
+      npx playwright test --retries=0 tests/e2e/forge-socket-appearance.spec.js
+    ;;
   pvp-cadence)
     run_pvp_cadence
     ;;
