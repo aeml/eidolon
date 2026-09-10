@@ -43,6 +43,14 @@ test('seven socket palettes render consistently across supported records on all 
         const icons = [document.createElement('img'), document.createElement('img')];
         for (const icon of icons) { icon.width = icon.height = 72; legend.appendChild(icon); }
         document.body.appendChild(legend);
+        const labels = document.createElement('div'); document.body.appendChild(labels);
+        for (const [index, name] of classes.entries()) {
+            const label = document.createElement('div'); label.textContent = name;
+            Object.assign(label.style, { position: 'fixed', zIndex: 1000, color: 'white',
+                background: '#15151be8', padding: '8px', font: '16px sans-serif',
+                left: `${index % 2 * innerWidth / 2 + 16}px`, top: `${Math.floor(index / 2) * innerHeight / 2 + 16}px` });
+            labels.appendChild(label);
+        }
         const target = new THREE.WebGLRenderTarget(768, 432);
         const sword = gem => ({ id: 'same-socketed-sword', name: 'Iron Sword', baseName: 'Iron Sword',
             type: 'WEAPON', slot: 'mainHand', level: 1, rarity: 'Rare', sockets: 1, gems: [gem] });
@@ -57,6 +65,8 @@ test('seven socket palettes render consistently across supported records on all 
         };
         window.__socketPreview = {
             async compare(type, quality) {
+                labels.style.display = 'none'; legend.style.top = '24px'; legend.style.bottom = 'auto';
+                icons.forEach(icon => icon.style.display = '');
                 render.setGraphicsQuality(quality);
                 apply({ type: 'Unknown' }); const neutral = capture();
                 const canonicalGem = { type: GEM_TYPES[type].name, quality: 'Flawed' };
@@ -81,8 +91,37 @@ test('seven socket palettes render consistently across supported records on all 
                         item: actor.mesh.getObjectByName('EquippedVisual_mainHand')?.userData.itemId };
                 }) };
             },
+            closeups() {
+                // Inspect the actual attached weapon in place, not a detached
+                // replacement mesh or enlarged gem. Four cameras face each
+                // socket's local front; only this prepared review view changes.
+                labels.style.display = ''; legend.style.top = 'auto'; legend.style.bottom = '4px';
+                icons.forEach(icon => icon.style.display = 'none');
+                const renderer = render.renderer, size = renderer.getSize(new THREE.Vector2()), views = [];
+                renderer.setScissorTest(true);
+                try {
+                    for (const [index, actor] of actors.entries()) {
+                        actor.mesh.updateMatrixWorld(true);
+                        const item = actor.mesh.getObjectByName('EquippedVisual_mainHand');
+                        const socket = actor.mesh.getObjectByName('Gear_Socket1');
+                        const box = new THREE.Box3().setFromObject(item), center = box.getCenter(new THREE.Vector3());
+                        const extent = box.getSize(new THREE.Vector3());
+                        const front = new THREE.Vector3(0, 0, 1).applyQuaternion(socket.getWorldQuaternion(new THREE.Quaternion()));
+                        const camera = new THREE.PerspectiveCamera(35, size.x / size.y, .01, 100);
+                        camera.position.copy(center).addScaledVector(front, Math.max(.5, extent.length() * 1.8));
+                        camera.lookAt(center); camera.updateMatrixWorld();
+                        const projected = socket.getWorldPosition(new THREE.Vector3()).project(camera);
+                        views.push({ className: classes[index], extent: extent.toArray(), projected: projected.toArray() });
+                        const x = index % 2 * size.x / 2, y = (1 - Math.floor(index / 2)) * size.y / 2;
+                        renderer.setViewport(x, y, size.x / 2, size.y / 2);
+                        renderer.setScissor(x, y, size.x / 2, size.y / 2);
+                        renderer.render(render.scene, camera);
+                    }
+                } finally { renderer.setScissorTest(false); renderer.setViewport(0, 0, size.x, size.y); }
+                return views;
+            },
             dispose() { actors.forEach(actor => actor.dispose()); target.dispose();
-                ground.geometry.dispose(); ground.material.dispose(); render.dispose(); legend.remove(); }
+                ground.geometry.dispose(); ground.material.dispose(); render.dispose(); legend.remove(); labels.remove(); }
         };
         const gl = render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
         return { classes, gems: Object.keys(GEM_TYPES).filter(type => type === type.toUpperCase()),
@@ -107,6 +146,13 @@ test('seven socket palettes render consistently across supported records on all 
                 expect(variant.iconsEqual).toBe(true);
             }
             await page.screenshot({ path: testInfo.outputPath(`sockets-${type.toLowerCase()}-${quality}.png`) });
+            const closeups = await page.evaluate(() => window.__socketPreview.closeups());
+            for (const view of closeups) {
+                expect(view.extent.every(value => Number.isFinite(value) && value > 0)).toBe(true);
+                expect(view.projected.every(value => Number.isFinite(value) && Math.abs(value) < 1)).toBe(true);
+            }
+            results.at(-1).closeups = closeups;
+            await page.screenshot({ path: testInfo.outputPath(`socket-details-${type.toLowerCase()}-${quality}.png`) });
         }
         await testInfo.attach('socket-render-evidence', { body: JSON.stringify({ metadata, results }, null, 2), contentType: 'application/json' });
         expect(failures, failures.join('\n')).toEqual([]);
