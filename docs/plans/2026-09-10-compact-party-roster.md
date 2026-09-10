@@ -25,6 +25,17 @@ Promote remain sibling controls rather than nested buttons, call their original
 handlers, and do not alter the healing selection. No browser has run this source
 yet; the four-role gameplay run still owns that test slot.
 
+Native75590 passed all three menu-layer tests on cleanba481c09 in38.5s, including
+four targets at720p/900p for leader/member, existing ten-member/resized-chat
+reachability and service/dialog layers. The720p leader and900p member captures
+were inspected: four readable HP/role rows, selected-row fill, ellipsized long
+names with full accessible labels, separate K/P controls and clear chat spacing.
+Secondary controls remain below the scroll fold at720p. This proves the compact
+roster layout, not overall game art or physical-phone playability. Archive
+`/tmp/eidolon-compact-party-proof-rKe4nx`; static listener41981 cleaned up.
+Primary integration follows this native pass; full client regression and release
+acceptance remain required.
+
 Proposed patch note: The desktop party roster is more compact, keeping four
 teammates' health and healing targets together on a standard720p display. Role
 information stays with each member, and party reward rules are explained once.
