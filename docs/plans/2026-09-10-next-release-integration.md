@@ -73,6 +73,14 @@ database1.143s, loadtest1.033s, lifecycle1.042s; no race warning. Log
 server acceptance, not client/native/production acceptance. The full client
 and remaining promotion checks below still need current-source results.
 
+At20:47, the full-client log from76117 records275 suites/3827 tests passing
+in132.462s. Its session handle had expired, so its terminal exit was not recovered;
+lint was rerun as72385 and exited0. Fresh focused party eligibility, kill-time
+snapshots, all-class abilities and individual-turn-in race checks70449 passed
+2.862s; the actual overworld XP/quest-credit boundary pipeline92210 passed1.306s.
+These verify the requested sharing policy, not a native four-player clear or
+deployment. No local test remains running from these checks.
+
 On cleanf52f3157,14417 completed343tests/9suites10.299seconds plus lint and exact
 CI-mode Playwright discovery103cases with no omissions/duplicates/empty groups.
 Job1:22layout/4entrances/3effects/6nameplates/3HUD;
@@ -97,7 +105,7 @@ Logs`/tmp/eidolon-next-candidate-stash-gate-{lint,discovery}.log`.
 
 ## Remaining promotion gates
 
-- [ ] Full combined-source regression: Go race passed38875a69; full client and lint pending.
+- [x] Full combined-source regression: Go race passed38875a69; client275 suites/3827 tests passed on883e39e0, with fresh lint exit0.
 - [ ] Execute authenticated smoke with the strengthened stash checks.
 - [ ] Run all three proposed CI-mode bundled-browser groups, retain distinct
   artifacts, inspect rendering and measure real stage durations.
