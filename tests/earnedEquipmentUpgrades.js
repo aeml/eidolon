@@ -13,6 +13,10 @@ const builds = {
     Cleric: { wisdom: 1, healingDone: 1, holyDamage: 1 }
 };
 
+// JSON inventory messages include value:0 and omit empty gems; protobuf equipped
+// items omit zero value and materialize gems:[]. Preserve all non-default data.
+export const canonicalEarnedItem = item => item?.id ? { ...item, value: item.value ?? 0, gems: item.gems ?? [] } : item;
+
 export function earnedGearScore(item, className) {
     if (!builds[className]) throw new Error(`No earned equipment build for ${className}`);
     if (!item?.id) return 0;

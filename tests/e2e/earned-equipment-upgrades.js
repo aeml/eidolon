@@ -1,11 +1,15 @@
 import { expect } from '@playwright/test';
-import { planEarnedEquipmentUpgrade } from '../earnedEquipmentUpgrades.js';
+import { canonicalEarnedItem, planEarnedEquipmentUpgrade } from '../earnedEquipmentUpgrades.js';
 
-export const readEarnedGear = page => page.evaluate(() => {
+export const readEarnedGear = async page => {
+    const state = await page.evaluate(() => {
     const p = window.game.player;
     return { className: p.constructor.name, level: p.level, gold: p.gold, xp: p.xp,
         inventory: p.inventory, equipment: p.equipment };
-});
+    });
+    return { ...state, inventory: state.inventory.map(canonicalEarnedItem),
+        equipment: Object.fromEntries(Object.entries(state.equipment).map(([slot, item]) => [slot, canonicalEarnedItem(item)])) };
+};
 
 const owned = state => [...state.inventory, ...Object.values(state.equipment)]
     .filter(item => item?.id).sort((a, b) => a.id.localeCompare(b.id));
