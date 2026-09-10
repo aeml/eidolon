@@ -1,8 +1,10 @@
 # Recorded earned build: first-boss combat diagnostic
 
-Status: recorded-build native run failed on issued movement, not death/timeout.
-Ground projection correction passes focused/full client/lint; native replay
-remains required. No boss balance, regeneration, rewards or release changes.
+Status: two recorded-build native runs failed on issued movement, not death/timeout.
+Ground projection correction passes focused/full client/lint. The second run
+isolated a separate held-Shift runtime defect, now fixed with focused regression
+coverage; full client and native verification of that fix remain required.
+No boss balance, regeneration, rewards or release changes.
 
 ## Fixture and scope
 
@@ -67,6 +69,32 @@ classification, survival condition or timer was weakened.
  failure dispatch checks.64050 PASS43tests/7suites1.206s+lint.
 -50861 terminal0 onclean0a806ec2:303suites/4215tests129.496s+lintNode24. Logs
  `/tmp/eidolon-ground-projection-verified-full-{client,lint}.log`.
+
+## Exact-ray replay and held-Shift correction
+
+90163 terminal1 on8987d870 retained the recorded build and normal resource rules.
+Warden entry was full1254HP/737MP with2.343352126seconds of Well Rested.
+Last observed Warden10180HP; player1140HP. The failed retreat had identical
+planned and actual ground points, no stun/root/freeze, and zero displacement.
+The initial click returned true with MOVING state but its destination disappeared.
+This is not a completed fight or evidence warranting a boss-health adjustment.
+Archive: `/tmp/eidolon-recorded-ground-failure-0DYeGS`; wrapper sanitized2files,
+additional archived-native-log username redaction sanitized1. Owned services and
+listeners were absent before the next isolated run.
+
+Inspection found that initial Shift-click honored move-only intent while the
+held-left-mouse branch in `GameEngineRuntime.update` did not. A hovered enemy
+could replace the destination with attack/chase behavior before mouse release.
+Two actual-engine-update regression cases reproduce both near and distant
+enemies:16888 RED2failed/9passed. Runtime df07c50f shares the normal
+`movePlayerToPointerGround` path for initial and held Shift, before enemy handling
+but after Control/Meta handling. Collision, movement authority, jump and menu
+guards remain intact; no direct position writes or resource changes.
+
+47241 PASS48tests/4suites1.85s plus lint covers held modifiers, move-only actions,
+input handling and movement smoothness. Logs:
+`/tmp/eidolon-held-shift-{red,focused,lint}.log`.
+Full client regression and a new native recorded-build replay remain pending.
 
 Next repeat this bounded native diagnostic before an hourlong campaign or any
 boss-health adjustment. If movement fails again, use the new ray/status evidence;
