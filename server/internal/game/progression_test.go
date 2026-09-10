@@ -8,7 +8,7 @@ func TestLevelOneToCapProgressionForEveryClass(t *testing.T) {
 			w := NewWorld(nil)
 			player := &Entity{
 				ID: "progression-" + classType, Type: TypePlayer, SubType: classType, Level: 1,
-				MaxExperience: experienceRequiredForLevel(1), BaseStats: canonicalBaseStatsForClass(classType),
+				MaxExperience: experienceRequiredForLevel(1), BaseStats: InitialPlayerStats(),
 			}
 			for player.Level < MaxPlayerLevel {
 				w.awardExperienceLocked(player, player.MaxExperience)
@@ -16,7 +16,7 @@ func TestLevelOneToCapProgressionForEveryClass(t *testing.T) {
 			if player.Level != MaxPlayerLevel || player.Experience != player.MaxExperience {
 				t.Fatalf("progression stopped at level=%d xp=%d/%d", player.Level, player.Experience, player.MaxExperience)
 			}
-			wantStats := applyLevelGrowth(canonicalBaseStatsForClass(classType), MaxPlayerLevel)
+			wantStats := applyLevelGrowth(InitialPlayerStats(), MaxPlayerLevel)
 			if player.BaseStats != wantStats {
 				t.Fatalf("cap stats = %+v, want %+v", player.BaseStats, wantStats)
 			}
@@ -32,7 +32,7 @@ func TestExperienceCrossesCapIntoResonanceWithoutOverflow(t *testing.T) {
 	w := NewWorld(nil)
 	player := &Entity{
 		ID: "cap-transition", Type: TypePlayer, SubType: "Fighter", Level: 99,
-		MaxExperience: experienceRequiredForLevel(99), BaseStats: canonicalBaseStatsForClass("Fighter"),
+		MaxExperience: experienceRequiredForLevel(99), BaseStats: InitialPlayerStats(),
 	}
 	player.Experience = player.MaxExperience - 25
 	w.awardExperienceLocked(player, 100)
@@ -51,7 +51,7 @@ func TestResonanceEarnSpendAndNormalize(t *testing.T) {
 	w := NewWorld(nil)
 	player := &Entity{
 		ID: "resonance", Type: TypePlayer, SubType: "Fighter", Level: MaxPlayerLevel,
-		MaxExperience: experienceRequiredForLevel(MaxPlayerLevel), BaseStats: canonicalBaseStatsForClass("Fighter"),
+		MaxExperience: experienceRequiredForLevel(MaxPlayerLevel), BaseStats: InitialPlayerStats(),
 	}
 	w.AddEntity(player)
 	player.Mu.Lock()

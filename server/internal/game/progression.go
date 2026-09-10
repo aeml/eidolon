@@ -52,19 +52,12 @@ func (player *Entity) NormalizeResonanceProgress() {
 	player.ResonancePoints = max(0, min(player.ResonancePoints, remaining))
 }
 
-func canonicalBaseStatsForClass(classType string) Stats {
-	switch classType {
-	case "Fighter":
-		return Stats{Strength: 20, Dexterity: 10, Intelligence: 10, Wisdom: 10, Vitality: 10}
-	case "Rogue":
-		return Stats{Strength: 10, Dexterity: 20, Intelligence: 10, Wisdom: 10, Vitality: 10}
-	case "Wizard":
-		return Stats{Strength: 10, Dexterity: 10, Intelligence: 20, Wisdom: 10, Vitality: 10}
-	case "Cleric":
-		return Stats{Strength: 10, Dexterity: 10, Intelligence: 10, Wisdom: 20, Vitality: 10}
-	default:
-		return Stats{Strength: 10, Dexterity: 10, Intelligence: 10, Wisdom: 10, Vitality: 10}
-	}
+// InitialPlayerStats is the existing authoritative new-character baseline for
+// every class. Creation and explicit level overrides must share it; prepared
+// QA characters must not receive an extra primary-stat bonus. This does not
+// normalize or replace an existing character's saved stats.
+func InitialPlayerStats() Stats {
+	return Stats{Strength: 10, Dexterity: 10, Intelligence: 10, Wisdom: 10, Vitality: 10}
 }
 
 func applyLevelGrowth(base Stats, level int) Stats {
@@ -92,7 +85,7 @@ func (w *World) SetPlayerLevel(playerID string, level int) (*Entity, bool) {
 		return nil, false
 	}
 
-	player.BaseStats = applyLevelGrowth(canonicalBaseStatsForClass(player.SubType), level)
+	player.BaseStats = applyLevelGrowth(InitialPlayerStats(), level)
 	player.Level = level
 	player.Experience = 0
 	player.MaxExperience = experienceRequiredForLevel(level)

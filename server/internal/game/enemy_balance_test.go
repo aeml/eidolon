@@ -53,7 +53,7 @@ func TestEveryOverworldFamilyFitsPostSquishGearBands(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.subType, func(t *testing.T) {
 			profile := overworldEnemyCombatProfile(testCase.subType, testCase.level, false)
-			basePrimary := canonicalBaseStatsForClass("Wizard").Intelligence + testCase.level - 1
+			basePrimary := InitialPlayerStats().Intelligence + testCase.level - 1
 			lowHit := 20 + basePrimary*2
 			mediumPrimary := basePrimary + int(math.Round(1.75*float64(testCase.level)))
 			mediumHit := 20 + mediumPrimary*2

@@ -18,7 +18,7 @@ func TestDungeonRoomRewardImmediatelyAdvancesProgression(t *testing.T) {
 				if level == MaxPlayerLevel {
 					player.Experience = player.MaxExperience
 				}
-				player.BaseStats = applyLevelGrowth(canonicalBaseStatsForClass(class), level)
+				player.BaseStats = applyLevelGrowth(InitialPlayerStats(), level)
 				player.SelectedBranch = "C"
 				player.recomputeTalentPoints()
 				w.UpdateUnlockedSkills(player)
@@ -55,7 +55,7 @@ func TestDungeonRoomRewardImmediatelyAdvancesProgression(t *testing.T) {
 					t.Fatalf("room XP must advance immediately: got level=%d xp=%d resonance=%d; want %d/%d/%d",
 						player.Level, player.Experience, player.ResonanceXP, wantLevel, wantXP, wantResonance)
 				}
-				if player.BaseStats != applyLevelGrowth(canonicalBaseStatsForClass(class), wantLevel) {
+				if player.BaseStats != applyLevelGrowth(InitialPlayerStats(), wantLevel) {
 					t.Fatal("room level-up did not apply the canonical class growth")
 				}
 				control := newTestPlayer("unlocked-control", class)

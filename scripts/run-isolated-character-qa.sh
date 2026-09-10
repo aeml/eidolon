@@ -146,6 +146,7 @@ qa_allowlist+=",${QA_USERNAME_BASE}-seraph,${QA_USERNAME_BASE}-seraph-retry1"
 qa_allowlist+=",${QA_USERNAME_BASE}-shield,${QA_USERNAME_BASE}-shield-retry1"
 qa_allowlist+=",${QA_USERNAME_BASE}-sight,${QA_USERNAME_BASE}-sight-retry1"
 qa_allowlist+=",${QA_USERNAME_BASE}-retry1,${QA_USERNAME_BASE}-first-grove,${QA_USERNAME_BASE}-first-grove-retry1"
+qa_allowlist+=",${QA_USERNAME_BASE}-baseline-fighter,${QA_USERNAME_BASE}-baseline-rogue,${QA_USERNAME_BASE}-baseline-wizard,${QA_USERNAME_BASE}-baseline-cleric"
 
 mongo_username="qa_root"
 mongo_password="$(openssl rand -hex 24)"
@@ -464,6 +465,9 @@ run_well_rested() {
 
 set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
+  initial-stats)
+    EIDOLON_E2E_INITIAL_STAT_PARITY=1 npx playwright test --retries=0 --output=test-results/initial-stat-parity tests/e2e/initial-stat-parity.spec.js
+    ;;
   phone-stash-entry)
     npx playwright test tests/e2e/phone-stash-entry.spec.js
     ;;

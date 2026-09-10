@@ -18,9 +18,9 @@ func TestWizardPreparedDungeonFireballEconomy(t *testing.T) {
 		efficiency int
 		cost       int
 	}{
-		{"untrained", 0, "", 258, 1, 0, 30},
-		{"mastery_and_empowered", 5, "fireball_empowered", 618, 2.5, 0, 30},
-		{"existing_efficiency_training", 5, "fireball_empowered", 618, 2.125, 5, 21},
+		{"untrained", 0, "", 238, 1, 0, 30},
+		{"mastery_and_empowered", 5, "fireball_empowered", 570, 2.5, 0, 30},
+		{"existing_efficiency_training", 5, "fireball_empowered", 570, 2.125, 5, 21},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			w := newTestWorld()
@@ -43,7 +43,7 @@ func TestWizardPreparedDungeonFireballEconomy(t *testing.T) {
 			if math.Abs(result.CooldownRemaining-tc.cooldown) > 1e-9 {
 				t.Fatalf("rune must retain its cooldown tradeoff: %+v", result)
 			}
-			if p.TalentPoints != 20-tc.rank-2*tc.efficiency || p.Damage != 29 || math.Abs(p.ManaRegen-1.09) > 1e-9 ||
+			if p.TalentPoints != 20-tc.rank-2*tc.efficiency || p.Damage != 27 || math.Abs(p.ManaRegen-1.09) > 1e-9 ||
 				math.Abs(p.HpRegen-2.08) > 1e-9 {
 				t.Fatalf("training changed unrelated stats: points=%d damage=%d hpRegen=%f manaRegen=%f",
 					p.TalentPoints, p.Damage, p.HpRegen, p.ManaRegen)

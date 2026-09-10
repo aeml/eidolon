@@ -76,7 +76,7 @@ func TestProgressionMigrationHonorsPendingOldLevelsAndCapOverflow(t *testing.T) 
 					t.Fatal(err)
 				}
 				player := newTestPlayer("migration", class)
-				player.BaseStats = applyLevelGrowth(canonicalBaseStatsForClass(class), level)
+				player.BaseStats = applyLevelGrowth(InitialPlayerStats(), level)
 				player.BaseStats.Strength += 7 // Preserve a historic allocation too.
 				player.Gold, player.SkillPoints = 987, 3
 				player.ResonanceLevel, player.ResonancePoints, player.ResonanceXP = 4, 1, ResonanceXPPerLevel-50
@@ -86,7 +86,7 @@ func TestProgressionMigrationHonorsPendingOldLevelsAndCapOverflow(t *testing.T) 
 				if player.Level != wantLevel || player.Experience >= player.MaxExperience && wantLevel < 100 {
 					t.Fatalf("invalid migrated XP: %+v", migrated)
 				}
-				wantStats := applyLevelGrowth(canonicalBaseStatsForClass(class), wantLevel)
+				wantStats := applyLevelGrowth(InitialPlayerStats(), wantLevel)
 				wantStats.Strength += 7
 				if player.BaseStats != wantStats || player.Gold != 987 || player.SkillPoints != 3 || player.ResonanceRanks["ward"] != 3 {
 					t.Fatal("migration changed unrelated earned state")
