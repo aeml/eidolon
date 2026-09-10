@@ -1,9 +1,34 @@
 # Resource reconnect defect — required before 1.1 acceptance
 
-Status: unreleased Alpha1.0.57 candidate, locally verified but still awaiting the
-ordered publication and live acceptance gates. Preserve .01 passive regen.
+Status: **core repair shipped in Alpha1.0.57; broader1.1 acceptance remains open**.
+Preserve .01 passive regen outside safe zones.
 
-## Latest implementation checkpoint — September 8, 22:54 UTC
+## Current delivery checkpoint — September 10
+
+Canonical1.0.57/`8af54f2744fa206abba0e49f76fee50b9c8f6363` completed
+[CI34347504351](https://github.com/aeml/eidolon/actions/runs/34347504351), including
+the final live gate. That terminal result and its ancestry in the public
+Alpha1.0.60/`df91bb66` were independently rechecked September10. The execution
+ledger retains the actual production upgrade-backup receipt and exact live
+client/server/runtime identity checks. Earlier queued/unpublished statements
+below describe their original checkpoints, not the current deployment.
+
+Current source retains versioned HP/mana/death snapshots in the character save
+and restores them after full-build maxima are calculated. Valid zero values are
+not treated as missing legacy data; saved death remains death. The resource
+restoration implementation in the next candidate matches public`df91bb66`.
+The actual saved-session, token-handoff, shutdown, instance/PvP and compatible
+schema-recovery results below support this shipped core repair, not a claim of
+all-family, raid, physical-device or earned campaign completion.
+
+Safe-zone healing and Well Rested subsequently shipped in1.0.58 as an explicit
+separate recovery policy. Resource checks must distinguish legitimate online
+town recovery from reconnect-created or offline healing; keep their dedicated
+acceptance in the[recovery plan](2026-09-08-safe-zone-well-rested.md). The broad
+resource/instance/device gate in the roadmap remains open until its full scope
+has direct evidence. No production rollback/restore was performed by this audit.
+
+## Historical implementation checkpoint — September 8, 22:54 UTC
 
 Candidate7ab559b now has its own57 version/login/manifest and cumulative notes;
 the bridge remains56/9aec835. Full client240 suites/3405 tests, full server race,
@@ -185,6 +210,8 @@ offline-credit ordering, PvP/instance recovery, broader device/class play and
 rollback still remain open; the whole acceptance list is not closed.
 Execution details and exact handles are in the roadmap execution ledger and
 the candidate's `2026-09-08-resource-persistence-implementation.md`.
+
+## Original diagnosis — before the1.0.57 repair
 
 On release46/45df969, actual fixture reuse had2575HP/1685mana before disconnect.
 The next normal login returned2080HP/1190mana with the SAME2575/1685maxima.
