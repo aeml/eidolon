@@ -1,7 +1,7 @@
 # Keep earned boss retreat inside the intended room
 
-Status: QA correction implemented; focused checks passed. Full regression,
-prepared native and earned dungeon acceptance remain pending. No gameplay,
+Status: QA correction implemented; focused, full client/lint and prepared
+two-boss native checks passed. Earned dungeon acceptance remains pending. No gameplay,
 server balance, resource, collision, version or deployment change.
 
 ## Evidence
@@ -51,11 +51,48 @@ mock, incompatible optional assertion-message API, then a missing mocked
 world-age observation. Corrected the test adapters/observation sequence without
 removing assertions or changing any gameplay limit; none was a native run.
 
-Next run full client regression/lint on the committed source, then the existing
-isolated `verdant` route (prepared level100, first two bosses/later spawns).
-That is a shorter functional input check, not a substitute for earned31/full
-four-boss/manual-reward/save/Water acceptance. Inspect its coordinate samples
-against the logged rooms and preserve every failure. The original failed44188
-and96530 remain failures regardless of this result. Ordinary between-encounter
-town recovery, appropriate earned kit/resource use and wider class/group balance
-still need investigation before another hour-long fresh campaign replay.
+### Completed full and prepared native checks — September 10, 12:08 UTC
+
+Clean source **23bc0673b9d7ee4ca3842572408cd5c6a4fdec4d** passed all299client
+suites/4187tests in128.334s, followed by lintNode24.18.0. The launch handle was
+lost in truncated output; completed logs and absence of a matching test process
+were revalidated instead of restarting the suite.
+
+Native27282 TERMINAL0: existing isolated `verdant` route, runID
+`bounded-verdant-0910`, one test passed4.0minutes with zero retries. Seed
+-5388765118892393174, generator2/attempt0/no fallback, normal30/preparedWizard100.
+Both RootboundWarden and BriarMatron died, later ordinary/elite enemies spawned
+and died, both boss-room cleared assertions and Gold gain passed, and the route
+completed normal Recall to town. Actual credential scan passed0sanitized files;
+owned API/Mongo containers and18580/18581/41980listeners were absent afterward.
+
+Archive `/tmp/eidolon-bounded-verdant-proof-fWZAtp` contains the report,
+test-results, native log and full client/lint logs. Native stream remains at
+`/tmp/eidolon-bounded-verdant-native.log`. The route disables recordings, so this
+is input/state evidence, not screenshot-based visual acceptance.
+
+All FOUR logged Warden samples fit inside its120×120room centered(20000,19640)
+with the1.25actor margin. All FIVE Matron samples likewise fit inside its room
+centered(20000,19100). These are fifteen-second samples, not a continuous
+trajectory assertion. Warden observed15000→2977thenconfirmeddeath; Matron
+16800→1426thenconfirmeddeath. No death diagnostic was exercised.
+
+The route uses an explicit level100 fixture, normal UI talent/rune purchases
+and the existing five-minute protected entrance waypoint. It is not earned31
+survival/balance, a four-boss clear, manual story reward, save/rejoin or Water
+handoff acceptance. Failed44188 and96530 remain failures.
+
+### Next gate
+
+Verify ordinary town resource recovery and same-run re-entry after real cleared
+encounters, including unchanged seed/difficulty/level, cleared rooms, earned
+Gold/inventory and story state. Capture depleted pools before Recall and actual
+safe-zone restoration; do not substitute a fixture refill, death/respawn, reset,
+new instance or replayed room rewards. Existing recovery checks cover death or
+empty-entry recall, not this entire post-combat resource/progress combination.
+
+Only then integrate justified between-encounter recovery into earned dungeon
+play, preserving traversal, encounter and whole-run deadlines. Appropriate
+earned kit/resource use and wider class/group balance still need investigation
+before another hour-long fresh campaign replay. Full four-boss/manual-reward/
+save/Water requirements remain unchanged.
