@@ -16,7 +16,42 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 02:58 UTC
+## Current checkpoint — September 10, 03:05 UTC
+
+Previous goal turn made PROGRESS (full Watch and first mid-hunt recovery).
+This continuation yielded further actual-play evidence:8Seeds complete and
+5/60Impcredit past the preceding4creditstall, plus predeploy gallery passed.
+No source changes, new push, restart or impasse. Full goal active; root remains
+ledger-only/NEVER pushed.
+
+**CI34430017443 ACTIVE**, canonicalcaab611 frozen. All server/client/browser
+jobs remain SUCCESS. Predeploy102727073506 ACTIVE: deterministic High/Low
+gallery SUCCESS; disposable full-character gameplay now running. No deployment
+or final acceptance yet. Continue same job/workflow and preserve its terminal
+artifacts before claiming any native/release gate. Last knownpublic60/df91bb6.
+
+**22725 ACTIVE**, primarya285fbc frozen, same`fresh-hunt-rest-0910`/18560/18561/
+41960 and `/tmp/eidolon-fresh-hunt-rest-replay.log`. After Watch40manual+save,
+collection earned8Seeds in23observedtargetdeaths/0playerdeaths and proceeded
+through manual turn-in to Imp chapter atlevel9/685XP/1916Gold, full385HP/264MP.
+Actual **unfinished-hunt** mana retreat in Imp: level9/249HP/27MP/rest0 →
+town305HP/66MP → naturallyfull385HP/264MP/bank9.901 → departurebank17.919,
+22.503s, with the same120s absolute encounter deadline. Earned level10 training
+then spent2availabletalentpoints normally; no state grants or dailies.
+
+Latest Imp milestone **5/60**,0deaths,2reststops,1trainingstop,226huntseconds,
+level11/2560XP/2600next/2324Gold. HP370/440,MP43/297,18bagslots/870unsoldvalue.
+This is beyond44940's4creditstall and proves resumed qualifying progress after
+ordinary recovery in this run, NOT complete Imp or wholecampaign/balance proof.
+Keep full60/scars/50Orcs/unchangedlevel30dungeon readiness gates intact. Continue
+sameprocess; no primary source edits, second owned browser or heavy tests until
+terminal, then retain/sanitize artifacts and verify exactcleanup.
+
+Aura remainsa877d46 with full/native/rendered gates pending; CIcost and all other
+class/group/realm/raid/phone/casino and remaining1.1–1.10scope unchanged/open.
+Next same22725 and predeploy102727073506; act on true terminal results, not age.
+
+## Previous checkpoint — September 10, 02:58 UTC
 
 Previous turn made PROGRESS (actualCI respawn proof). This continuation yielded
 new actual-play evidence and a new release stage: first full Watch completion
