@@ -66,8 +66,12 @@ source wiring and prior recovery/inventory/readiness contracts. Reviewed the
 installed Playwright types: `test.step` supports the per-step timeout option.
 Logs `/tmp/eidolon-story-phase-{focused,lint,discovery}.log`.
 
-Full client regression and a fresh native story-only replay are pending. The
-prior partial run is retained, not reclassified as a pass. Run the whole earned
-route with a new isolated identity only after full regression; keep its source
-frozen and preserve its true result. All later classes/groups/realms/dungeons/
-raids/physical-phone/economy and full1.1–1.10 gates remain required.
+Full88926 PASS287suites/4047tests138.029s plus lint on cleanf2ca8e5. This includes
+the prior jump-error cause preservation and its tests. Logs
+`/tmp/eidolon-story-phase-full-{client,lint}.log`.
+
+A fresh native story-only replay is the next gate. The prior partial run is
+retained, not reclassified as a pass. Run the whole earned route with a new
+isolated identity, keep its source frozen and preserve its true result. All
+later classes/groups/realms/dungeons/raids/physical-phone/economy and full1.1–1.10
+gates remain required. This proof update changes documentation only.
