@@ -70,6 +70,8 @@ async function seedActor(page, credentials, character) {
     await loginAndEnterWorld(page, credentials);
     await expect.poll(() => page.evaluate(() => window.game.player.level)).toBe(30);
     expect(await page.evaluate(() => window.game.player.baseStats)).toMatchObject(character.stats);
+    const skills = character.unlocked_skills.slice(1);
+    await expect.poll(() => page.evaluate(() => window.game.player.hotbar)).toEqual(expect.arrayContaining(skills));
     await observeRole(page);
 }
 
@@ -85,6 +87,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
     const credentials = credentialsFromEnvironment(), ownedBrowsers = [], actors = [];
     const playthrough = dungeonPlaythroughOptions({});
     let entered = false;
+    const healerDecisions = [];
     try {
         for (const [index, className] of PARTY_ROLES.entries()) {
             let actorPage = page;
@@ -142,7 +145,19 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                     auraActive: p.guardianEmbraceActive || p.guardianEmbraceTimer > 0 };
             });
             const distance = Math.hypot(hurt.x - states[1].x, hurt.z - states[1].z);
-            if (distance > Math.min(14, available.healRange - .5)) { await follow(healer, hurt, 7); return; }
+            const record = async reason => {
+                const pointer = await healer.page.evaluate(id => ({
+                    targetLoaded: window.game.remotePlayers.has(id),
+                    hoveredType: window.game.hoveredEntity?.constructor?.name || null,
+                    hoveringAlly: window.game.hoveredEntity?.id === id,
+                    focus: document.activeElement?.tagName || null
+                }), hurt.id);
+                healerDecisions.push({ reason, distance, hurtRole: actors[states.indexOf(hurt)].className,
+                    hp: hurt.hp, maxHP: hurt.maxHP, healerX: states[1].x, healerZ: states[1].z,
+                    ...available, ...pointer });
+                if (healerDecisions.length > 20) healerDecisions.shift();
+            };
+            if (distance > Math.min(14, available.healRange - .5)) { await record('approach'); await follow(healer, hurt, 7); return; }
             // Use the unlocked ten-unit healing aura for sustained group
             // damage, but do not delay an available critical direct heal.
             if (distance <= 9 && (hurt.hp / hurt.maxHP >= .55 || available.cooldown > 0) && available.aura >= 0 &&
@@ -150,24 +165,26 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 const self = await projectGroundOffset(healer.page, 0, 0);
                 if (self?.canvas) {
                     await healer.page.mouse.move(self.x, self.y);
+                    await record('aura-key');
                     await healer.page.keyboard.press(String(available.aura + 1));
                     return;
                 }
             }
-            if (available.index < 0 || available.cooldown > 0 || available.mana < 25) return;
+            if (available.index < 0 || available.cooldown > 0 || available.mana < 25) { await record('heal-unavailable'); return; }
             if (hurt.id === states[1].id) {
                 const point = await projectGroundOffset(healer.page, 0, 0);
-                if (!point?.canvas) return;
+                if (!point?.canvas) { await record('self-off-canvas'); return; }
                 await healer.page.mouse.move(point.x, point.y);
                 await healer.page.waitForTimeout(60);
                 const hovered = await healer.page.evaluate(() => window.game.hoveredEntity?.id || null);
-                if (hovered && hovered !== hurt.id) return;
+                if (hovered && hovered !== hurt.id) { await record('self-covered'); return; }
             } else if (!await acquirePartyAllyPointer({
                 project: (id, point) => projectEntity(healer.page, id, point),
                 move: (x, y) => healer.page.mouse.move(x, y),
                 settle: () => healer.page.waitForTimeout(60),
                 hoveredId: () => healer.page.evaluate(() => window.game.hoveredEntity?.id || null)
-            }, hurt.id)) return;
+            }, hurt.id)) { await record('ally-pointer-unavailable'); return; }
+            await record('heal-key');
             await healer.page.keyboard.press(String(available.index + 1));
         }
 
@@ -281,6 +298,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
         for (const actor of actors.slice(1)) await returnToTown(actor.page, { allowRespawn: false });
         for (const actor of actors) expect(actor.failures, `${actor.className} browser failures`).toEqual([]);
     } finally {
+        console.log('[party-healer-decisions]', JSON.stringify(healerDecisions));
         for (const actor of actors) {
             try {
                 const s = await snapshot(actor.page);
