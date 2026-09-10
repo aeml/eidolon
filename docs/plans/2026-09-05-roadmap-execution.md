@@ -27,7 +27,50 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 15:57 UTC
+## Current checkpoint — September 10, 16:36 UTC
+
+The preceding casino-only response was NO PROGRESS toward implementation: it
+confirmed existing required scope. This continuation revalidated the clean worktrees,
+completed stash evidence and actual remote jobs, then started the next changed
+earned campaign. Full1.1–1.10 scope remains active/incomplete; casino stays later work.
+
+- Primary clean98f757f9 documents runtime/test tipbf88aac7 atop e2822138.
+  Ordinary preparation now inspects actual stash contents, withdraws eligible
+  upgrades through the UI, equips them and conserves full item data/Gold/XP.
+  A full bag fails before withdrawal; no invented historic items or disposal.
+  Native73389's three failures exposed delayed stash NPC replication after login;
+  bounded real-stream readiness fixed that, not an arbitrary sleep or NPC grant.
+- Native51782 TERMINAL0: three zero-retry repetitions25.3/29.9/29.8seconds,
+  1.5minutes total, cover full-bag rejection, normal deposit/withdraw/equip and
+  relogin with exact conservation. Fullclient44075 TERMINAL0:308suites4251tests
+  144.768seconds plus lintNode24.18.0. Verified both logs in archive
+  `/tmp/eidolon-stored-upgrades-proof-djIiIl`; original failures retained in
+  `/tmp/eidolon-stored-upgrades-failure-DP52CV`. See primary worktree's
+  `docs/plans/2026-09-10-earned-stash-preparation.md` for scan/cleanup evidence.
+  Server source remains unchanged from the earlier full Go race pass.
+- New native96446 is ACTIVE, confirmed by its actual process handle. Clean
+  primary98f757f9 is frozen. Run`stash-earned-story-0910`, log
+  `/tmp/eidolon-stash-earned-story-native.log`, isolated API18580/Mongo18581/
+  web41980, Node24 inside render group, CIunset/zero retries. The strict fresh
+  Wizard Earth-to-dungeon route has started the opening phase and confirmed a
+  level1 all10 baseline. This is not a dungeon-clear or earned-build result yet.
+  Preserve230minute aggregate/40minute dungeon/8minute encounter/watchdog limits;
+  no dailies, grants, boss nerfs or passive-regen changes. Continue the same
+  handle; do not restart on observation timeout. Archive failures before reuse.
+- Remote recheck16:31: canonicalCI34434837759 remains queued after client/server
+  and all three hosted browser groups passed; predeploy is queued. Exact nightly
+  34433520743/job102733792127 remains inprogress. No cancellation authority has
+  arrived, so no preemption, runner changes or successor push. This turn has not
+  rechecked public deployment identity. Canonical62dc acceptance remains pending.
+
+Socket successor's complete60case isolated`all` proof remains accepted locally
+and must not be repeated as missing. Versioned CI/live acceptance, actual earned
+campaign/manual rewards/save/Water and all classes/groups/realms/raids, balance,
+physical phones and later milestones remain open. Root is documentation-ledger
+only and never pushed. Next: observe96446 and act on its actual evidence; preserve
+the unanswered Normal solo/party policy choice rather than silently changing it.
+
+## Previous checkpoint — September 10, 15:57 UTC
 
 Previous turn was PROGRESS (mandatory initial-stat release gate wiring). This
 turn is PROGRESS: completed the entire socket successor gameplay gate, archived
