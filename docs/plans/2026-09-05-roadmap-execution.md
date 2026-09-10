@@ -5,13 +5,13 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 21:08 UTC
+## Current checkpoint — September 10, 21:12 UTC
 
-Previous goal turn was PROGRESS: native stat/storage acceptance and staged party
-controls. This turn is PROGRESS: all bundled browser groups passed on the prior
-candidate, the new required two-client desktop healing gate passed, and the
-support integration is fast-forwarded into the successor. The revised four-role
-dungeon run is now active. Full roadmap and release gates remain.
+Previous goal turn was PROGRESS: bundled browser/desktop healing acceptance and
+successor integration. This turn is a VERIFIED WAIT on live four-role46761:
+ordinary party setup, same-instance entry, first room and full-party town-rest/
+re-entry checks passed so far. The process remains active, not a completed clear.
+Full roadmap and release gates remain.
 Full roadmap remains active and deployment/1.1 completion is not claimed.
 
 - Full Go race81223 TERMINAL0 on20d9f17d: game381.679s, other tested packages
@@ -195,7 +195,13 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   committed18-unit tank Charge reserve with ordinary party input and unchanged
   level30 common gear/combat/regen/deadlines. This is the sole local heavy gate;
   candidate/staging are idle. No whole dungeon clear/manual persistence claim.
-- Remote rechecked again at~20:49: canonical62dc CI34434837759 remains queued at
+  Re-polled46761 live at21:12. Source remains clean02d30584; replay seed
+ 6042377505425430721, generator2, Normal30, no fallback. Four invitation/roster
+  and same-instance checks passed. First room cleared, all four restored HP/MP
+  in town and resumed with exact seed/rooms/Gold/inventory/quests retained.
+  Pre-rest HP/MP by Fighter/Cleric/Wizard/Rogue:758/364,845/528,756/300,752/404.
+  No boss result yet. Do not restart this still-live process or change its source.
+- Remote rechecked again at~21:10: canonical62dc CI34434837759 remains queued at
   predeploy, after five hosted jobs passed; Nightly34433520743 still in progress.
   No soak interruption, push, new version or production acceptance.
 - Public frontend/backend checked again at~20:53: both Alpha1.0.60/df91bb66,
