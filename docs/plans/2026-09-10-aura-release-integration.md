@@ -1,7 +1,8 @@
 # Unpublished aura integration with the corrected release baseline
 
-Status: local integration with completed full/render checks; native equipment
-acceptance found a further drag-target issue and is being corrected. This is not a deployment,
+Status: full/render/equipment and standalone aura transitions pass locally.
+An uninterrupted combined recovery suffix is still required after two terminated
+attempts. This is not a deployment,
 accepted release60, or a published successor version. Keep release60's canonical
 worktree and active CI unchanged.
 
@@ -163,3 +164,55 @@ existing full-bag/paired-slot/persistence checks in the native rerun. Successful
 integrated equipment+Forge, Well Rested native suffix, final full regression and
 remote/live promotion remain required. Eventual patch notes must also mention
 stable equipment dragging across artwork, once verified.
+
+## Corrected equipment acceptance and recovery execution evidence
+
+Focused26258 passed67tests/5suites17.382s plus lint. On frozen runtimec3305ae7,
+native77847 passed all3equipment cases56.1s and Forge1case22.3s. The new native
+hit assertion, all6ordinary swaps during UI refresh and fresh-login ownership
+checks passed without retries. Actual scan0 and owned18580/18581/41980ports/
+containers cleaned. All4images inspected: readable item art, updated equipment,
+Forge potency+2→+3 and damage46→50. Archive
+`/tmp/eidolon-visual-equipment-hit-proof-sqU6uz`; log
+`/tmp/eidolon-visual-equipment-hit-fixed.log`. The3source/test files were also
+ported to primary25495d95, whose final full regression remains pending.
+
+On SAMEc3305ae7, final63011 passed266suites/3720tests129.789s plus lint under
+Node24.18.0. Logs `/tmp/eidolon-visual-hit-final-{client,lint}.log`. No server
+source differs from canonical62dc2d1. The artwork hit-target fix is now locally
+verified and belongs in the eventual successor notes; no automatic equip feature.
+
+Combined recovery49294 terminated143 during party startup, after journey/expiry
+2cases1.2m passed. A fresh unchanged attempt93245 also terminated143, after
+journey/expiry2cases1.3m, party1case43.4s and death/respawn1case1.4m passed, during
+dungeon rest setup. Cause remains unknown; no relevant kernel OOM evidence was
+found. Neither is a completed suffix or successful final credential scan. Worker
+absence and exact orphan static-server ownership were checked, then only each
+run's server process group and disposable API/Mongo/image were removed; ports
+were verified closed. No nightly/production service was interrupted.
+
+Archives `/tmp/eidolon-visual-rest-interrupted-proof-0sZFVx` and
+`/tmp/eidolon-visual-rest-second-interrupted-9u3pih` retain these partial runs.
+Known-username scans sanitized1file in each archive, but the killed wrappers'
+password environments were unavailable. Do not describe these as full
+credentialed artifact scans. Logs `/tmp/eidolon-visual-rest-native.log` and
+`/tmp/eidolon-visual-rest-second-native.log` remain interruption evidence.
+Inspected second-run portrait/landscape status/world and respawn images. Party
+used2real clients, actual joystick movement and High5/Low4/High5 aura meshes per
+actor; RADV samples median16.7ms, not physical-phone performance acceptance.
+
+Standalone37202 on samec3305ae7 completed both native transitions2.8m with a
+streaming PTY. Actual credentialscan0, ownedcontainers/ports cleaned; archive
+`/tmp/eidolon-visual-transitions-proof-S1htBZ`, log
+`/tmp/eidolon-visual-transitions-native.log`. Hostile death/relogin removed aura
+and kept hitbox opacity0; real Respawn restored full resources and exactly one
+aura. Two guide-entry/dungeon-login/Recall cycles preserved correct aura ownership
+and bank behavior. Inspected second dungeon and town-return images. Prepared
+level30 entry is not an earned dungeon clear or complete dungeon-art acceptance.
+Streaming execution succeeded here; it does not establish the signal's cause.
+
+Next: run the complete unchanged journey/expiry → party → transitions suffix
+to terminal success with its actual credential scan/cleanup. Keep the corrected
+runtime frozen while running. Then reconcile release60's remote/live acceptance
+before assigning/pushing the successor with accurate patch notes. All broader
+campaign, class/group/raid, balance, phone and casino requirements remain open.
