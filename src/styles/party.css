@@ -12,11 +12,11 @@
     box-sizing: border-box;
     width: 220px;
     max-width: calc(100vw - 40px);
-    max-height: min(240px, max(100px, calc(100vh - var(--chat-panel-height, 230px) - var(--chat-panel-bottom, 80px) - 152px)));
+    max-height: min(360px, max(100px, calc(100vh - var(--chat-panel-height, 230px) - var(--chat-panel-bottom, 80px) - 152px)));
     overflow-y: auto;
     overflow-x: hidden;
     display: none; /* Shown when in party */
-    padding: var(--spacing-md);
+    padding: 8px;
     background: var(--bg-dark-medium);
     border: 2px solid var(--border-default);
     border-radius: var(--radius-sm);
@@ -35,8 +35,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
-    padding-bottom: 5px;
+    margin-bottom: 4px;
+    padding-bottom: 4px;
     border-bottom: 1px solid #444;
 }
 
@@ -104,12 +104,13 @@
 }
 
 .party-member {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    flex-direction: column;
-    margin-bottom: var(--spacing-sm);
+    gap: 4px;
+    margin-bottom: 3px;
     background: rgba(255, 255, 255, 0.1);
-    padding: var(--spacing-sm);
+    padding: 0;
     border-radius: 3px;
     font-size: 12px;
 }
@@ -128,10 +129,19 @@
     border: 1px solid transparent;
     border-radius: 4px;
     background: transparent;
-    padding: 5px;
-    min-height: 36px;
+    padding: 4px;
+    min-height: 40px;
+    box-sizing: border-box;
 }
-.party-support-mode { width: 100%; font-size: 12px; color: #c3dace; }
+.party-support-mode {
+    width: 100%;
+    min-height: 28px;
+    font-size: 12px;
+    color: #c3dace;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
 .party-support-target[aria-pressed="true"] { border-color: #83d5ac; background: #294b3c; }
 .party-support-target:disabled { opacity: .55; cursor: default; }
 .party-support-target:focus-visible, .party-support-mode:focus-visible { outline: 2px solid var(--color-gold); }
@@ -141,9 +151,10 @@
     justify-content: space-between;
     align-items: center;
     gap: 8px;
-    margin-top: 6px;
+    margin-top: 0;
     width: 100%;
     font-size: 10px;
+    line-height: 12px;
 }
 
 .party-member-role {
@@ -151,14 +162,14 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-weight: bold;
-}
-
-.party-member-bonus {
-    color: #8fd3ff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .party-name {
     font-weight: bold;
+    line-height: 14px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -168,7 +179,7 @@
     width: 100%;
     height: 4px;
     background: var(--border-dim);
-    margin-top: var(--spacing-xs);
+    margin-top: 2px;
     position: relative;
 }
 
@@ -182,8 +193,10 @@
 .party-actions {
     display: flex;
     gap: var(--spacing-xs);
-    margin-left: var(--spacing-sm);
+    margin-left: 0;
 }
+
+.party-actions .party-btn { min-width: 24px; min-height: 28px; }
 
 .party-btn {
     background: var(--border-default);

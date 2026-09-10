@@ -392,7 +392,7 @@ export class SocialUI {
         clearSupport.type = 'button';
         clearSupport.className = 'party-support-mode';
         clearSupport.dataset.partySupportTarget = '';
-        clearSupport.textContent = selectedSupport ? `Healing: ${selectedSupport.name} · Clear` : 'Healing: cursor aim';
+        clearSupport.textContent = selectedSupport ? `Clear healing target · ${selectedSupport.name}` : 'Healing: cursor aim';
         clearSupport.title = 'Select a party member below to direct Healing Light or Divine Intervention. Clear to use cursor aiming again.';
         if (!this.supportModeButton) {
             clearSupport.addEventListener('click', () => {
@@ -424,7 +424,7 @@ export class SocialUI {
         const maxGoldPoolBonusPct = members.length * 10;
         if (panelGuidance) {
             panelGuidance.title = PARTY_REWARD_DETAILS;
-            panelGuidance.textContent = `${amILeader ? 'Leader view' : 'Party member'} · ${PARTY_REWARD_SUMMARY}`;
+            panelGuidance.textContent = `${amILeader ? 'Leader view' : 'Party member'} · ${PARTY_REWARD_SUMMARY} Up to +${maxGoldPoolBonusPct}% eligible-party Gold pool, not personal XP.`;
         }
 
         members.forEach(member => {
@@ -494,15 +494,8 @@ export class SocialUI {
             role.className = 'party-member-role';
             role.textContent = roleLabel;
 
-            const bonus = document.createElement('span');
-            bonus.className = 'party-member-bonus';
-            bonus.textContent = `Up to +${maxGoldPoolBonusPct}% Gold pool`;
-            bonus.title = 'The shared Gold pool gains 10% per eligible party member before difficulty scaling. '
-                + 'This maximum assumes everyone qualifies; it is not a personal XP bonus. ' + PARTY_REWARD_DETAILS;
-
             metaRow.appendChild(role);
-            metaRow.appendChild(bonus);
-            div.appendChild(metaRow);
+            info.appendChild(metaRow);
 
             if (amILeader && !isMe) {
                 const actions = document.createElement('div');
