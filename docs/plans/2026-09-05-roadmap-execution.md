@@ -27,7 +27,63 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 14:38 UTC
+## Current checkpoint — September 10, 14:59 UTC
+
+Previous user-facing turn only reconfirmed already-recorded casino scope: NO
+PROGRESS on implementation. Revalidated current worktrees, test handle and remote
+queue, then took the next safe release action. This turn is PROGRESS: closed the
+outstanding full client result, retained missing point balances, recovered actual
+preparation evidence, and launched the combined native successor gate. The full
+1.1–1.10 objective and both casino floors remain active/incomplete.
+
+- Primary80072 TERMINAL0 onf1ca0220:304suites/4226tests154.437s plus lintNode24.
+  This verifies the detached dungeon-entry attachment and counterfactual Forge
+  audit source from the preceding work; not a new native campaign clear.
+- Follow-up72143 RED2failed/3passed/.962s confirms missing point balances in that
+  receipt.72281 PASS76tests/4suites1.592s+lint after preserving statPoints and
+  talentPoints with explicit null for unknown balances. Primary cleanf7871753
+  commits the small follow-up and complete preparation/economy evidence in
+  `docs/plans/2026-09-10-recorded-build-dungeon-diagnostic.md` in that worktree.
+  Full304/4226 predates this two-field follow-up; do not relabel it as final-tip
+  full regression. No production gameplay, server, version or deployment change.
+- Forge counterfactuals at31/32 cost239/253shards for all item levels; actual
+  upgrade actions preserve IDs and consume exact supplied fixture materials.
+  Focused77915 PASS.209s;85596 focusedGo race PASS2.316s. Logs
+  `/tmp/eidolon-recorded-forge-economy-{audit,race}.log`. These are not earned
+  resources, boss kills, or an affordable preparation claim.
+- Recovered original failure receipt atlevel32:19Shards,2Hearts,zero stat points,
+  one talent point. This is AFTER the failed encounter, not an exact entry/save
+  snapshot. Preparation logs at10/20/22/30 showzero allocations/available points.
+  Actual new-character creation starts all stats10; canonical level-setting
+  helpers used by prepared audits instead start the class primary stat20.
+  Resolve this baseline discrepancy and save compatibility before changing
+  starting stats. Do not silently use prepared stats as fresh-player evidence.
+  Soloable-Normal versus party-required policy question remains unanswered;
+  no boss-health, regen, reward or watchdog changes were made.
+- Socket clean d3c0fff5 is FROZEN for sole local heavy gate5956, confirmed LIVE
+  at14:59. `all` route is running withNode24 inside`sg render`, systemChrome,
+  CI unset, isolated runID`successor-full-0910`, API18580/Mongo18581/web41980.
+  Ports were verified free and distinct from CI18085/41873 before launch.
+  Log `/tmp/eidolon-successor-full-native.log`. Authenticated3cases passed;
+  current gameplay group has beam, ground, movement-wall, projectile-wall,
+  bag/tracking and Water cases passed. Verdant and remaining chained checks,
+  including final Well Rested and Forge owner/observer suffix, are still pending.
+  Re-poll5956; observation timeout is not failure. Do not start another local
+  heavy/browser gate or change socket sources until terminal. Preserve/sanitize
+  artifacts and verify exact owned-resource cleanup before any rerun.
+
+14:54 GitHub recheck: canonicalCI34434837759 still queued (client/server/three
+browser groups passed; predeploy queued); nightly34433520743 confirmed inprogress.
+No cancellation authority, no preemption, no push. Canonical62dc2d1e must still
+pass before successor promotion. Public identity was last checked14:38, not
+revalidated this turn. Root remains documentation-ledger only, never pushed.
+Next: complete this exact combined gate, act on actual failures if any, then
+ordered version/patch-note/pipeline/live acceptance. In parallel on idle primary,
+resolve preparation/starting-stat parity without inventing earned progress.
+Full earned campaign, all classes/parties, four raids/crystals/Dark King, economy,
+physical phones, casino and later milestones remain open.
+
+## Previous checkpoint — September 10, 14:38 UTC
 
 Previous turn was PROGRESS (real Shift tracking fix and full regression). This
 turn is PROGRESS: completed the recorded-build combat replay, isolated its pacing
