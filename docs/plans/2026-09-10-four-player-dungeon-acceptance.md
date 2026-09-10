@@ -93,3 +93,14 @@ The subsequent [party-credit requirement](2026-09-10-party-kill-credit.md) remov
 the dungeon proximity restriction: all connected party members still in the run
 at the kill count, including downed players. Its prepared reward/ability tests
 are separate from this still-open four-browser clear and earned campaign gate.
+
+Next controller correction uses existing Shift-click move-only walking while
+following: foreground actor models no longer redirect the movement input into
+combat. Physical collision and witnessed displacement remain enforced, with no
+jump fallback. Direct healing now uses its actual cast range with a safety
+margin; the ten-unit aura still requires close proximity. Before an ally heal,
+the driver samples up to six points on the real hitbox and verifies the actual
+hovered entity, instead of mistaking a canvas-visible but boss-covered point
+for the ally. It never assigns hover state or sends ability commands directly.
+Focused84936 passed29 tests across3 suites0.957s plus lint. These changes need
+the next native run; no new clear or improved boss-healing claim yet.

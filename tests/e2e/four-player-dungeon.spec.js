@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture } from '../partyDungeonFixture.js';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
-import { partyFollowStep } from '../partyDungeonControls.js';
+import { acquirePartyAllyPointer, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep } from '../partyDungeonControls.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
@@ -127,7 +127,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             if (!step) return;
             // Same covered-pointer handling as the leader: reread on the next
             // bounded loop, never count a blocked ray as successful movement.
-            await tryDungeonGroundStep(() => moveByGroundClick(actor.page, step.dx, step.dz, { allowJumpFallback: false }));
+            await tryDungeonGroundStep(() => moveByGroundClick(actor.page, step.dx, step.dz, PARTY_FOLLOW_INPUT_OPTIONS));
         }
 
         async function healParty() {
@@ -137,13 +137,15 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             const available = await healer.page.evaluate(() => {
                 const p = window.game.player;
                 return { index: p.hotbar.indexOf('Healing Light'), cooldown: p.cooldowns['Healing Light'] || 0, mana: p.stats.mana,
+                    healRange: window.game.abilityController.getAbilityCastRange('Healing Light'),
                     aura: p.hotbar.indexOf('Guardian Embrace'), auraCooldown: p.cooldowns['Guardian Embrace'] || 0,
                     auraActive: p.guardianEmbraceActive || p.guardianEmbraceTimer > 0 };
             });
-            if (Math.hypot(hurt.x - states[1].x, hurt.z - states[1].z) > 9) { await follow(healer, hurt, 7); return; }
+            const distance = Math.hypot(hurt.x - states[1].x, hurt.z - states[1].z);
+            if (distance > Math.min(14, available.healRange - .5)) { await follow(healer, hurt, 7); return; }
             // Use the unlocked ten-unit healing aura for sustained group
             // damage, but do not delay an available critical direct heal.
-            if ((hurt.hp / hurt.maxHP >= .55 || available.cooldown > 0) && available.aura >= 0 &&
+            if (distance <= 9 && (hurt.hp / hurt.maxHP >= .55 || available.cooldown > 0) && available.aura >= 0 &&
                 available.auraCooldown <= 0 && !available.auraActive && available.mana >= 65) {
                 const self = await projectGroundOffset(healer.page, 0, 0);
                 if (self?.canvas) {
@@ -153,14 +155,23 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 }
             }
             if (available.index < 0 || available.cooldown > 0 || available.mana < 25) return;
-            const point = hurt.id === states[1].id ? await projectGroundOffset(healer.page, 0, 0) : await projectEntity(healer.page, hurt.id);
-            if (!point || !(point.visible || point.canvas)) return;
-            await healer.page.mouse.move(point.x, point.y);
-            await healer.page.waitForTimeout(60);
+            if (hurt.id === states[1].id) {
+                const point = await projectGroundOffset(healer.page, 0, 0);
+                if (!point?.canvas) return;
+                await healer.page.mouse.move(point.x, point.y);
+                await healer.page.waitForTimeout(60);
+                const hovered = await healer.page.evaluate(() => window.game.hoveredEntity?.id || null);
+                if (hovered && hovered !== hurt.id) return;
+            } else if (!await acquirePartyAllyPointer({
+                project: (id, point) => projectEntity(healer.page, id, point),
+                move: (x, y) => healer.page.mouse.move(x, y),
+                settle: () => healer.page.waitForTimeout(60),
+                hoveredId: () => healer.page.evaluate(() => window.game.hoveredEntity?.id || null)
+            }, hurt.id)) return;
             await healer.page.keyboard.press(String(available.index + 1));
         }
 
-        let currentTarget;
+        let currentTarget, bossStart;
         let townRests = 0;
         await playDungeonThroughInputs(tank.page, { playthrough,
             requiredFighterSkills: ['Iron Fortress', 'Whirlwind', 'Shield Slam'],
@@ -210,7 +221,11 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             },
             beforeCombat: async (_page, target) => {
                 // Let the Fighter engage first, then maintain real ally inputs.
-                if (currentTarget !== target.id) { currentTarget = target.id; return false; }
+                if (currentTarget !== target.id) {
+                    currentTarget = target.id;
+                    bossStart = playthrough.bosses.includes(target.type) ? await Promise.all(actors.map(actor => snapshot(actor.page))) : null;
+                    return false;
+                }
                 await Promise.all([healParty(), ...damage.map(async actor => {
                     const enemy = await actor.page.evaluate(id => {
                         const g = window.game, p = g.player, e = g.remotePlayers.get(id);
@@ -227,13 +242,27 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 })]);
                 for (const actor of actors) {
                     const state = await snapshot(actor.page);
+                    if (state.dead) {
+                        const cleric = await snapshot(healer.page);
+                        console.log('[party-clear-death]', JSON.stringify({ role: actor.className, boss: target.type,
+                            healerDistance: Math.hypot(state.x - cleric.x, state.z - cleric.z),
+                            healerMana: cleric.mana, healerCasts: cleric.evidence.casts,
+                            bossAllyHealing: bossStart ? cleric.evidence.allyHealing - bossStart[1].evidence.allyHealing : null }));
+                    }
                     expect(state.dead, `${actor.className} must survive; inspect party evidence if not`).toBe(false);
                     expect(await actor.page.evaluate(() => performance.now() - window.__partyClearEvidence.lastUpdate)).toBeLessThan(10_000);
                 }
                 return false;
             },
             afterEncounter: async (_page, target) => {
-                if (playthrough.bosses.includes(target.type)) console.log(`[party-clear] boss defeated ${target.type}`);
+                if (playthrough.bosses.includes(target.type)) {
+                    const end = await Promise.all(actors.map(actor => snapshot(actor.page)));
+                    console.log('[party-clear-boss]', JSON.stringify({ boss: target.type,
+                        roles: end.map((state, index) => ({ role: actors[index].className,
+                            damage: state.evidence.damageDone - bossStart[index].evidence.damageDone,
+                            taken: state.evidence.damageTaken - bossStart[index].evidence.damageTaken,
+                            allyHealing: state.evidence.allyHealing - bossStart[index].evidence.allyHealing })) }));
+                }
             },
             afterClearedRoute: async () => {
                 for (const actor of actors) {
