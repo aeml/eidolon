@@ -24,7 +24,7 @@ First-pass failures must distinguish fixture/controller defects from game bugs
 and actual party balance. Common-only gear is a conservative baseline, not a
 claim that this is the optimal or required player build.
 
-Pending: native execution, controller validation, full-clear result, individual
+Pending: successful controller validation/full-clear result, individual
 manual turn-in/relogin proof and an earned four-player campaign. This adds no
 production gameplay change and is not a release/deployment receipt.
 
@@ -74,3 +74,22 @@ collision or a boss balance result. Archive
 `/tmp/eidolon-four-role-follow-proof-Y5tJpG`; wrapper scan and copied-log
 sanitization completed, owned services/listeners absent. Focused server race
 checks for concurrent/requester-only resume passed2.423s (87676).
+
+Fourth native49218 TERMINAL1 on7d8fb5bb: all four players entered and two
+whole-party town-rest/re-entry cycles preserved run/content. The Fighter again
+started the Warden at855/855HP and555/555MP. The last reported boss health was
+11344/15000 before the tank died. End combat totals were Fighter5902damage and
+2021taken; Cleric1190effective ally healing, with only two Healing Light and two
+Guardian Embrace casts (all before the boss); Wizard4357damage/30Fireballs;
+Rogue3832damage/36Piercing Throws. The Cleric retained555mana. Repeated covered
+ground-input skips coincided with the absence of boss healing. This supports
+fixing the healer's approach/target controller, not declaring the party balanced
+or nerfing the Warden to accommodate an inactive healer. Do not rerun unchanged.
+Archive `/tmp/eidolon-four-role-spacing-proof-OCCodb` preserves report/results
+and the copied log; both credential checks left zero QA prefixes and owned
+services/listeners were absent after cleanup. No full-clear or final quest claim.
+
+The subsequent [party-credit requirement](2026-09-10-party-kill-credit.md) removes
+the dungeon proximity restriction: all connected party members still in the run
+at the kill count, including downed players. Its prepared reward/ability tests
+are separate from this still-open four-browser clear and earned campaign gate.

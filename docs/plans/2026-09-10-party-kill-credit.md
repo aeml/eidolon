@@ -48,8 +48,8 @@ The delayed-delivery test exercises both timed-impact and ability-dispatch
 lock paths, pausing at an existing room-reward event before final kill payout.
 Prepared reward tests do not constitute a browser dungeon clear or earned story.
 
-Pending: full server regression, integration into primary/current release as
-appropriate, native reward-sharing checks, versioned patch notes and deployment.
+Pending: release integration, native reward-sharing checks, versioned patch
+notes and deployment. Primary development integration follows verification.
 The first full four-player clear remains separately unproven; its healer input
 controller still needs work around large-boss approach/targeting.
 
@@ -66,6 +66,34 @@ The existing bonus badge is explicitly an upper bound for the eligible-party
 Gold pool, not a promised personal XP bonus. Phone has a collapsed reward-rules
 disclosure with a44px minimum touch target. Focused47754 passed114client tests
 across3suites3.9s plus lint; this is not physical-phone/browser layout approval.
+
+## Final server verification
+
+The clean0c86a625 full server attempt9852 failed with an unlocked-mutex panic
+in `TestChronicleWorldDropsCannotExceedRemainingPersonalObjective`: that older
+test called the death handler without owning the target lock. Auditing all
+direct test call sites found the same omission in existing routine-loot,
+progression-pacing, Well Rested and QA-reward fixtures. Commitdecb1693 makes
+those calls honor the existing production lock contract, without weakening any
+reward assertions, and documents that contract. It also updates invitation copy.
+
+Full `go test -race ./...`32932 then passed: root server32.025s, game396.415s,
+other tested packages passed/cached, no race warning. The compiled test set
+preceded the additional tests in5f323d41; production source remained unchanged.
+Those additions exercise actual `PerformAbility` dispatch for Whirlwind,
+Frost Nova, Rain of Arrows and Smite, plus a Smite-triggered explosive chain.
+All four recipients include distant and downed allies, with unclaimed objectives
+and positive XP/Gold. Focused58185 passed three repetitions3.713s; final40190
+repeated the combined eligibility, delayed-reward, real ability, overworld
+death and manual chapter-turn-in tests three times, passing7.262s. Manual
+turn-in assertions now use detached snapshots so a failed assertion cannot
+strand an entity read lock. These are mechanical server proofs, not a clear.
+
+Complete client regression/lint83603 passed on clean5f323d41:311 suites,
+4,272 tests,160.012s, and zero-warning lint. Archive
+`/tmp/eidolon-party-credit-proof-h2Ko7l` contains full server/client/lint and final
+focused race logs. All local test handles are terminal. No push, version
+assignment, native sharing proof or production acceptance is implied.
 
 ## Proposed player-facing patch note
 
