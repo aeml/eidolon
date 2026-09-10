@@ -1,10 +1,10 @@
 # Recorded earned build: first-boss combat diagnostic
 
-Status: three recorded-build native runs failed on issued movement, not death/timeout.
-Ground projection and the held-Shift runtime path are corrected. The third run
-exposed missing production Shift-key tracking hidden by the original mocked key
-state. Actual input-event/engine-update tests now cover that fix and full client
-regression passes; another native replay remains required.
+Status: the fourth recorded-build replay reached the eight-minute encounter
+limit without another input cancellation, but did not kill the Warden. The
+three earlier movement failures remain preserved. Actual input-event coverage,
+full client regression and a server-side economy audit now separate the input
+corrections from this recorded build's remaining preparation/pacing failure.
 No boss balance, regeneration, rewards or release changes.
 
 ## Fixture and scope
@@ -129,7 +129,52 @@ and focused-chat-to-canvas transitions have coverage. 63700 PASS51tests/4suites
 plus lint underNode24.18.0. Logs `/tmp/eidolon-real-shift-{input-red,input-focused,
 input-lint,full-client,full-lint}.log`. No combat, resource or timer changes.
 
-Next repeat this bounded native diagnostic before an hourlong campaign or any
-boss-health adjustment. If movement fails again, use the new ray/status evidence;
-if survival/pacing fails, evaluate earned kit and enemy tuning without undoing
-the requested low regeneration. All wider roadmap and release gates remain open.
+## Completed replay and economy audit — September 10, 14:36 UTC
+
+27194 TERMINAL1 onclean f2c643f2: one case11.6minutes, zero retries,
+seed-547736827228613654/generator2/attempt0/no fallback. Cleared two trash rooms,
+used ordinary town recovery twice, preserved the instance, and earned level32.
+Warden entry was full1165HP/685MP, with the short rested bank already expired.
+The eight-minute combat limit ended with last observed Warden3926HP and player
+1165HP. Attacks dealt damage throughout; no death, movement cancellation or
+stall error occurred. This is not a boss kill, full dungeon clear, reward turn-in
+or fresh campaign acceptance, nor an all-seed movement guarantee.
+
+Archive `/tmp/eidolon-tracked-shift-build-failure-l2rwIf` retains native results
+and full/lint evidence. Credential scan sanitized0files; the redirected native
+log contains no disposable username prefix. Exact owned services and18580/18581/
+41980listeners were absent before later browser checks.
+
+d87d00f2 adds `TestRecordedWizardEconomyAudit`, which reads the same14item record,
+normalizes only the client rarity wrapper, applies actual stats/training and
+emits a real server Fireball. It asserts the native health/mana/basic-damage
+profile and reports actual costs, regeneration and attack timing. Level32 uses
+ordinary one-level growth, not different equipment or bonus stats.
+
+| Unrested recorded gear | Level31 | Level32 |
+|---|---:|---:|
+| Intelligence / Wisdom / Dexterity | 52 / 69 / 52 | 53 / 70 / 53 |
+| HP / mana | 1140 / 670 | 1165 / 685 |
+| Mana per second | .69 | .70 |
+| Basic damage / interval | 22 / 1.5873s | 22 / 1.5810s |
+| Fireball damage / cost / cooldown | 148 / 30 / 1s | 151 / 30 / 1s |
+| Full-bar casts / raw spell damage | 22 / 3256 | 22 / 3322 |
+| Eight-minute stationary raw reference | 11550 | 11822 |
+| Normal level30 Warden HP | 15000 | 15000 |
+
+The reference sums cooldown-limited basics and mana/cooldown-limited Fireballs.
+It excludes crit, variance, mitigation, movement, misses, animation and action
+contention; it is not a maximum-damage proof, combat simulation or balance signoff.
+26189 PASS0.153s;69032 focused race PASS1.990s, retaining existing prepared-Wizard,
+overworld gear-band and dungeon difficulty/rank checks. Logs
+`/tmp/eidolon-recorded-wizard-economy-{audit,race}.log`. No production server change.
+
+Next evaluate ordinary preparation and encounter budgets against this evidence,
+not another unchanged replay or a longer watchdog. The record deliberately has
+an empty bag, so it cannot establish the original run's available Forge materials.
+Inspect upgrade costs and retain material/inventory receipts on the next earned
+route before claiming an available preparation path. Any counterfactual gear
+probe must be labelled, not treated as earned progress. Recheck a justified
+candidate through actual play and retain all-class/party/later-boss comparisons.
+Do not restore high passive regeneration or claim the main campaign is accepted.
+All wider roadmap and release gates remain open.
