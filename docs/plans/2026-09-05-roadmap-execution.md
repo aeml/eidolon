@@ -5,7 +5,62 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 19:04 UTC
+## Current checkpoint — September 10, 19:39 UTC
+
+This turn is PROGRESS: the party-credit requirement remains locally implemented
+and verified, and the actual four-player healer failure has been resolved and
+observed in native gameplay. Full1.1–1.10 remains active, not release-complete.
+
+- Primary `/tmp/eidolon-primary-town-recovery-lAKY3k` is clean d496d6d5, atop
+ 899a8664 and party-credit488e9022. Dungeon/raid connected party members share
+  whole-instance credit, including downed members; overworld uses110 units from
+  the kill. Kill-time recipients are frozen, formulas unchanged, quests manual.
+  The prior full server/client and focused race passes remain valid for that
+  implementation; no new production deployment or native whole-clear claim.
+-44940 is TERMINAL1, not active. All four hotbars were correct. The healer
+  reached7.003 units with555mana and ready skills, but all six projected ally
+  points hovered a Skeleton. Archive`/tmp/eidolon-four-role-heal-evidence-proof-rk0iZK`.
+-793f08a8 adds real desktop roster support-target buttons for Healing Light and
+  Divine Intervention, stable selection/focus, explicit clear and unavailable
+  target feedback. Offensive pointer behavior is unchanged. Focused55389 passed
+ 138 tests/4suites plus lint. Full34232 passed311 suites/4291 tests153.429s plus
+  zero-warning lint.899a8664 adds native selection/clear screenshot preflight.
+-87906 on899a8664 is TERMINAL1. Actual roster preflight, first room clear and
+  one all-four town-rest/re-entry cycle passed. Warden's last report661/15000HP;
+  party wiped. Cleric recorded10842 effective ally healing,17 Healing Light,
+ 8 Guardian Embrace, zero rejected casts, ending14mana. This proves actual heal
+  input, not encounter balance or a full clear. Archive
+ `/tmp/eidolon-four-role-roster-heal-proof-Gh3dOT`; owned services/listeners gone.
+  Screenshot pixels contain disposable QA names; byte scanning does not redact
+  them. Two of four roster rows fit without scrolling: compact layout still open.
+- The driver previously ignored the visible two-second,12.5-unit ROOT QUAKE.
+  d496d6d5 now observes replicated warnings and plans ordinary move-only escapes
+  with full collision/encounter checks, retaining combat/death deadlines. All
+  non-tanks taking3864 damage is consistent with quakes but not per-hit proof.
+  Focused69936 passed66 tests/3suites1.013s plus lint. Browser warning-response
+  proof remains pending; do not rerun unchanged87906 or nerf the boss to pass it.
+- Separate `/tmp/eidolon-explicit-support-OXbqUl` is clean20d9f17d, atopb710b205.
+  Server admission rejects invalid explicit friendly-heal targets before spend;
+  this is not a claim of an atomic whole legacy handler. Focused61779 passed
+  race coverage3reps39.563s. Full15215 TERMINAL1 after391.199s: four old generic
+  contract cases passed enemy IDs to heals and relied on silent self fallback.
+ 20d9f17d supplies a wounded ally at the same coordinates, retaining acceptance
+  and coordinate assertions. Focused7527 passed21.611s. Full Go race81223 is
+  ACTIVE on frozen20d9f17d; log
+ `/tmp/eidolon-explicit-support-full-server-friendly-contracts.log`.
+  A previous root-relative staging command from/server failed before testing;
+  it made no commit. Do not claim that failed command ran a regression.
+- No active browser. After81223 is terminal/pass, integrateb710b205/20d9f17d
+  into primary, then run the updated four-role route on frozen clean source.
+  Remaining gates: full clear, each manual turn-in/relogin, native reward-sharing,
+  earned campaign/balance, combined next-release regression, mobile acceptance,
+  version notes, release/deployment, later roadmap. Root remains ledger-only.
+- Latest remote check at~19:26: canonical62dc CI34434837759 still queued at
+  predeploy; Nightly34433520743 in progress. No authority to cancel this soak.
+  No successor push or canonical acceptance inferred. Public version was last
+  checked~16:46 atAlpha1.0.60/df91bb66, not62dc. Recheck before release decisions.
+
+## Previous checkpoint — September 10, 19:04 UTC
 
 Previous turn was PROGRESS: party-credit implementation, full regression and
 primary integration. This turn is PROGRESS: tested party-controller corrections,
