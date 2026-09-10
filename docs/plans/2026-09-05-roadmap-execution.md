@@ -5,7 +5,37 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 22:54 UTC
+## Current checkpoint — September 10, 23:01 UTC
+
+Previous turn was PROGRESS: terminal party evidence, navigation correction and
+successor server acceptance. This turn is PROGRESS: the follower planner passed
+the failed run's exact production geometry, while current browser77418 remains
+a VERIFIED WAIT on its actual live handle. Full roadmap/clear/live gates remain.
+
+- Primary is clean446de4d4. Existing `TestReportedDungeonSeed`89356 replayed
+ -2339742150727221791/generator2:12rooms,11corridors,29walk rectangles. The new
+  saved formation fixture is checked against the actual generator by Go42904,
+  race PASS1.360s. Client33064 PASS29tests/2suites5.976s plus lint constructs
+  the real Verdant world/collision shapes and walks three full-size followers
+  through every canonical join with the revised planner. Logs
+ `/tmp/eidolon-party-formation-{seed-replay,fixture,geometry,geometry-lint}.log`.
+  This uses idealized arrival; it neither recreates62131's unknown failure
+  position/camera/network timing nor closes native formation/full-clear gates.
+  Only test/fixture/docs changed; gameplay runtime remains full-server-tested.
+- Candidatec27e0847 is frozen under77418, sole local heavy gate. First browser
+  group passed39cases: layout130.5s, entrances23.2s, effects75.8s, nameplates20.4s,
+  resource HUD10.6s (stage wall times). Group2 currently running, no terminal
+  result. Log`/tmp/eidolon-next-current104-browser.log`. Do not overwrite its
+  artifacts/edit candidate/start another heavy gate until termination.
+  Inspected current720p compact-roster capture shows four visible healing rows
+  above chat; phone390x844 expanded chat fits the screen. These are anonymous
+  layout fixtures, not whole-world or physical-phone playability acceptance.
+- Next recover77418's actual outcome and archive/scan its reports. Then continue
+  current candidate required-all/version/remote/live and renewed primary native
+  party acceptance; all existing earned campaign/phone/full-roadmap scope stays.
+  No push, version bump, soak cancellation or deployment. Root never pushes.
+
+## Previous checkpoint — September 10, 22:54 UTC
 
 Terminal update: successor full Go18911 passed root21.272s/game367.122s;
 other tested packages passed/cached, no race warning. Candidatec27e0847 records
