@@ -1,5 +1,10 @@
 # Browser cost partition — unpublished prototype
 
+Historical prototype record. For this current-release-based worktree, see the
+[September10 integration and required remaining proof](2026-09-10-current-browser-partition.md).
+The counts and primary-only content below describe the original source, not the
+current candidate's coverage union or a completed runtime measurement.
+
 Based on primary941ecf6, separate from recovery58 and its completed deployment.
 No production runtime, case assertions, retry/timeout policy or local anonymous
 umbrella command changes. Do not publish before the remaining proof below.

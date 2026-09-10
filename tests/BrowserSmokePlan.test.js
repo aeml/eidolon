@@ -32,11 +32,29 @@ test('file families partition the unchanged local anonymous command exactly once
 
 test('all supplemental coverage stays in exactly one required job', () => {
     const extras = [1, 2, 3].flatMap(shard => buildBrowserSmokePlan(manifest, shard).slice(3));
-    expect(extras.map(stage => stage.name)).toEqual(['nameplates', 'resource-hud', 'crystal-art', 'journal', 'combat-presentation']);
+    expect(extras.map(stage => stage.name)).toEqual(['nameplates', 'resource-hud', 'interface']);
     const supplementalFiles = extras.flatMap(stage => stage.files);
     expect(new Set(supplementalFiles).size).toBe(supplementalFiles.length);
     for (const stage of extras) expect(stage.args.some(arg => arg.startsWith('--shard='))).toBe(false);
     expect(browserSmokeBaselineFiles(manifest).length).toBe(new Set(browserSmokeBaselineFiles(manifest)).size);
+});
+
+test('baseline preserves the complete current release workflow command union', () => {
+    const files = ['anonymous', 'nameplates', 'resource-hud', 'interface']
+        .flatMap(name => manifest.scripts[`test:e2e:${name}`].split(/\s+/).slice(2));
+    expect(browserSmokeBaselineFiles(manifest).slice().sort()).toEqual(files.slice().sort());
+    expect(new Set(files).size).toBe(files.length);
+});
+
+test('interface additions follow the manifest into the sole required interface stage', () => {
+    const changed = { ...manifest, scripts: { ...manifest.scripts } };
+    const added = 'tests/e2e/future-interface-coverage.spec.js';
+    changed.scripts['test:e2e:interface'] += ` ${added}`;
+    const stages = [1, 2, 3].flatMap(shard => buildBrowserSmokePlan(changed, shard));
+    expect(stages.filter(stage => stage.files.includes(added)).map(stage => stage.name)).toEqual(['interface']);
+    expect(browserSmokeBaselineFiles(changed)).toContain(added);
+    delete changed.scripts['test:e2e:interface'];
+    expect(() => buildBrowserSmokePlan(changed, 1)).toThrow('interface');
 });
 
 test.each([0, 4, -1, 1.5, '1', NaN])('invalid shard %p fails closed', shard => {

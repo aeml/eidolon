@@ -37,7 +37,9 @@ describe('version presentation', () => {
             'does not change quest requirements, rewards, leveling or drop rates']) expect(indexHtml).toContain(text);
         const scripts = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).scripts;
         expect(scripts['test:e2e:interface']).toBe('playwright test tests/e2e/journal-daily-presentation.spec.js tests/e2e/combat-action-preview.spec.js tests/e2e/desktop-action-readability.spec.js');
-        expect(versionedRuntimeFiles[0]).toContain('npm run test:e2e:interface');
+        expect(versionedRuntimeFiles[0]).toContain('node scripts/run-browser-smoke.mjs');
+        expect(browserStages.filter(stage => stage.name === 'interface').map(stage => stage.files))
+            .toEqual([scripts['test:e2e:interface'].split(/\s+/).slice(2)]);
     });
     test('adds standalone town recovery notes while preserving the prior persistence release', () => {
         expect(indexHtml).toContain('Alpha 1.0.58 (a reason to come home)');

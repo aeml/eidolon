@@ -1,7 +1,6 @@
 const entrances = ['tests/e2e/entrance-visibility.spec.js'];
 const effects = ['tests/e2e/offline-seraph-render.spec.js',
     'tests/e2e/phone-encounter-composition.spec.js', 'tests/e2e/respawn-appearance.spec.js'];
-const combatPresentation = ['tests/e2e/combat-action-preview.spec.js', 'tests/e2e/desktop-action-readability.spec.js'];
 
 function scriptFiles(manifest, name) {
     const command = manifest.scripts?.[`test:e2e:${name}`];
@@ -19,9 +18,7 @@ function supplemental(manifest) {
     return [
         { name: 'nameplates', shard: 1, files: scriptFiles(manifest, 'nameplates') },
         { name: 'resource-hud', shard: 1, files: scriptFiles(manifest, 'resource-hud') },
-        { name: 'crystal-art', shard: 2, files: scriptFiles(manifest, 'crystal-art') },
-        { name: 'journal', shard: 2, files: scriptFiles(manifest, 'journal') },
-        { name: 'combat-presentation', shard: 2, files: combatPresentation }
+        { name: 'interface', shard: 2, files: scriptFiles(manifest, 'interface') }
     ];
 }
 
