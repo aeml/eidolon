@@ -4,7 +4,9 @@ Status: normalization and held-weapon/socket placement implemented; strengthened
 per-class rendered checks, equipment gallery, full client regression and lint
 passed on85989abc. Native Forge/observer/bag/fresh-login passed onb640e2cf after
 fixing a stale Forge gem-panel refresh. Full integrated regression and lint
-passed on03bb02a7; versioned deployment remains pending. See
+passed on03bb02a7. The later b97a7ea1 move-only input integration has focused
+coverage but still needs full/native release verification; deployment remains
+pending. See
 [held-weapon clearance evidence](2026-09-10-held-weapon-clearance.md) for the
 subsequent fix; the earlier failures below remain historical evidence, not the
 current result. Built separately from the
@@ -66,10 +68,37 @@ No version, patch-note release or production deployment is claimed here.
 - Held blades and their socket inlays sit more clearly outside class garments.
 - The open Forge's gem panels now refresh after server-confirmed changes,
   without requiring the window to be closed and reopened.
+- Hold Shift while clicking to move without attacking or using an object under
+  the pointer. The move-only intent stays consistent while the mouse is held.
 
 These are unpublished draft notes, not shipped patch notes. Combine them with
 the inherited aura/equipment/quest-role changes, assign the next available version
 only after canonical60 acceptance, then verify the complete release and live game.
+
+### Move-only input integration — September 10, 14:10 UTC
+
+b97a7ea1 brings only the initial/held Shift gesture, its input tracking and
+focused tests from primary into this release candidate. No unfinished campaign,
+reward or dungeon-balance changes were imported. Control/Meta jump priority,
+ordinary interactions, mobile taps, menu guards and server/collision authority
+remain unchanged. The opaque-interactable unit case uses existing Forge, not
+the ChronicleSite feature absent from this baseline.
+
+40402 RED9failed/12passed reproduces the missing initial/held behavior on the
+release baseline. First63433 PASS48tests/4suites1.779s+lint still used invented
+held-key state, and did not detect InputManager's missing Shift field. Primary's
+actual native replay95608 failed again on issued movement, not death or timeout.
+The initial mouse event contained Shift, but InputManager only tracks declared
+key fields; Shift was absent. Actual key-event/engine-update tests then reproduced
+4failures on primary. The integration includes that subsequent fix as well.
+
+The held-engine regression now reads production InputManager key state. Window
+keydown/keyup/blur tests cover both Shift keys; a focused-chat-to-canvas test
+covers a Shift keydown deliberately ignored while typing. Left mousedown adopts
+its real modifier snapshot. 82243 TERMINAL0:51tests/4suites2.126s+lint/diff.
+Logs `/tmp/eidolon-release-real-shift-{focused,lint}.log`; preserve the earlier
+red `/tmp/eidolon-release-move-only-red.log`. Full client and native verification
+of this expanded candidate remain pending;03bb02a7's full result is historical.
 
 ## Reproduced behavior
 
