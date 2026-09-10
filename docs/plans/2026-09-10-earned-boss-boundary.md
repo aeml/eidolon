@@ -4,6 +4,10 @@ Status: QA correction implemented; focused, full client/lint and prepared
 two-boss native checks passed. Earned dungeon acceptance remains pending. No gameplay,
 server balance, resource, collision, version or deployment change.
 
+Latest continuation: [between-room town recovery and resumed traversal](2026-09-10-dungeon-expedition-recovery.md)
+also passed prepared native and full client/lint checks. The older next-gate
+sections below describe the sequence of evidence, not missing completed tests.
+
 ## Evidence
 
 Failed44188's exact generator2 seed-1263584004433865125 reconstructs the recorded
