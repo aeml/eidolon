@@ -8,13 +8,18 @@ assertions.poll = callback => ({
 jest.unstable_mockModule('@playwright/test', () => ({ expect: assertions }));
 const { moveByGroundClick } = await import('./e2e/helpers.js');
 
-function movementPage(covered, mobile = false) {
+function movementPage(covered, mobile = false, drift = 0) {
     let x = 0;
+    let ground;
     const keys = new Set();
     return {
         evaluate: jest.fn(async (callback, args) => {
             const code = callback.toString();
-            if (args?.deltaX !== undefined) return { canvas: true, x: 100, y: 100 };
+            if (args?.deltaX !== undefined) {
+                ground = { x: x + args.deltaX, y: 0, z: args.deltaZ };
+                return { canvas: true, x: 100, y: 100, world: ground };
+            }
+            if (code.includes('getGroundIntersectionFromEvent')) return ground && { ...ground, x: ground.x + drift };
             if (code.includes('!window.game?.hoveredEntity')) return !covered;
             if (code.includes('Boolean(window.game?.isMobile)')) return mobile;
             if (code.includes('inventoryCount')) return { x, z: 0, state: 'IDLE', health: 100 };
@@ -57,7 +62,7 @@ test('a checked retreat never substitutes an unchecked sideways path', async () 
         allowJumpFallback: false, allowAlternatePaths: false, minimumDistance: 6
     })).rejects.toThrow('No real input established 6 units');
     const projections = page.evaluate.mock.calls.filter(([, args]) => args?.deltaX !== undefined);
-    expect(projections.map(([, args]) => args)).toEqual([{ deltaX: 9, deltaZ: 0 }]);
+    expect(projections.map(([, args]) => args)).toEqual([{ deltaX: 9, deltaZ: 0, allowScaling: true }]);
     expect(page.mouse.click).not.toHaveBeenCalled();
     expect(page.keyboard.down).not.toHaveBeenCalled();
 });
@@ -91,4 +96,32 @@ test('move-only walking still fails real movement failure and always releases Sh
     expect(page.mouse.click).toHaveBeenCalledTimes(1);
     expect(page.keyboard.up).toHaveBeenCalledWith('Shift');
     expect(page.keyboard.down).not.toHaveBeenCalledWith('Control');
+});
+
+test('strict prevalidated movement projects the entire vector without shrinking it', async () => {
+    const page = movementPage(true);
+    await moveByGroundClick(page, 9, 0, { moveOnly: true, requireClearPath: true,
+        allowJumpFallback: false, allowAlternatePaths: false, minimumDistance: 6 });
+    const projections = page.evaluate.mock.calls.filter(([, args]) => args?.deltaX !== undefined);
+    expect(projections.map(([, args]) => args)).toEqual([{ deltaX: 9, deltaZ: 0, allowScaling: false }]);
+    expect(page.mouse.click).toHaveBeenCalledTimes(1);
+});
+
+test('camera drift invalidates a checked destination before any input is issued', async () => {
+    const page = movementPage(true, false, .4);
+    await expect(moveByGroundClick(page, 9, 0, { moveOnly: true, requireClearPath: true,
+        allowJumpFallback: false, allowAlternatePaths: false, minimumDistance: 6 }))
+        .rejects.toMatchObject({ name: 'GroundInputUnavailableError' });
+    expect(page.mouse.click).not.toHaveBeenCalled();
+    expect(page.keyboard.down).not.toHaveBeenCalled();
+});
+
+test('an issued strict click that really fails movement remains an error', async () => {
+    const page = movementPage(true);
+    page.mouse.click.mockImplementation(async () => {});
+    await expect(moveByGroundClick(page, 9, 0, { moveOnly: true, requireClearPath: true,
+        allowJumpFallback: false, allowAlternatePaths: false, minimumDistance: 6 }))
+        .rejects.toMatchObject({ name: 'Error' });
+    expect(page.mouse.click).toHaveBeenCalledTimes(1);
+    expect(page.keyboard.up).toHaveBeenCalledWith('Shift');
 });
