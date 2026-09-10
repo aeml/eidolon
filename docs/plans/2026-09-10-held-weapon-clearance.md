@@ -47,7 +47,9 @@ affects default and equipped main-hand weapons, not only the prepared sword.
 
 Manual inspection covered all seven IdleHigh socket detail mosaics, RubyIdleLow,
 RubyAttackHigh, RubybindHigh group and all four equippedHigh gallery images.
-Not every Low image was manually inspected. Dark Onyx has small positive signals;
+September10 continuation also inspected all four default-equipment Low gallery
+images: class-specific silhouettes and local/synthetic-replica fit agree in the
+sampled Idle view. Not every Low socket detail was manually inspected. Dark Onyx has small positive signals;
 this is not distant readability, continuous animation or physical-phone proof.
 
 ## Remaining release gates
