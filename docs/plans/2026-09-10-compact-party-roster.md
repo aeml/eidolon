@@ -36,6 +36,12 @@ roster layout, not overall game art or physical-phone playability. Archive
 Primary integration follows this native pass; full client regression and release
 acceptance remain required.
 
+Integrated full client97135 passed on clean4c3a6318:311 suites/4303 tests151.364s
+plus zero-warning lint. This includes the latest party input policy tests and
+roster behavior. Server source remains unchanged from the prior full race pass.
+The next four-browser run still must verify the changed controller and complete
+the dungeon/individual turn-in/relogin route; no deployment is implied.
+
 Proposed patch note: The desktop party roster is more compact, keeping four
 teammates' health and healing targets together on a standard720p display. Role
 information stays with each member, and party reward rules are explained once.
