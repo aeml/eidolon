@@ -5,7 +5,35 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 22:24 UTC
+## Current checkpoint — September 10, 22:39 UTC
+
+Previous goal turn was PROGRESS: full server acceptance and native-party launch.
+This turn began as a VERIFIED WAIT on62131 and now supplies new native PROGRESS:
+the first Warden was defeated with all four roles surviving. This is not the full
+clear, manual quest claim, persistence or release gate. Keep the entire goal active.
+
+-62131 remains ACTIVE on frozen primarya5320d74. Same instance seed
+ -2339742150727221791/generator2/Normal30/no fallback/clean source. The first two
+  rooms cleared; both four-person town recovery and individual guide-resume
+  cycles passed exact rooms/seed/Gold/inventory/quests. First pre-rest HP/MP in
+  Fighter/Cleric/Wizard/Rogue order:792/415,845/516,751/377,810/432. Second:
+ 855/345,845/528,808/230,855/359. All four recovered fully each time.
+- Warden started15000HP; last pre-kill report361HP, tank158/855HP and20MP.
+  Actual `defeated RootboundWarden` and afterEncounter receipt recorded.
+  Boss-only totals: Fighter4603damage/3833taken, Cleric6600effective ally healing
+  /3864taken, Wizard3943damage/736taken, Rogue6461damage/3680taken. All four
+  survived the encounter. This is the first successful Warden in the full-party
+  sequence, not retroactive acceptance of previous failed attempts or a final
+  balance verdict. Remaining bosses/rooms, manual claims and fresh-login checks
+  are still running under unchanged limits. No deaths hidden by recovery.
+- Log`/tmp/eidolon-four-role-defenses-native.log`; same sole heavy handle62131.
+  Do not edit primary, overwrite artifacts or start another heavy gate while it
+  remains live. Archive/scan only after authoritative terminal outcome. Candidate
+ 714c4727 is idle; its fresh full Go and updated104browser/required-all/version/
+  remote/live gates remain pending. No push, new version, soak interruption or
+  deployment this turn. Root remains ledger-only, never push.
+
+## Previous checkpoint — September 10, 22:24 UTC
 
 Previous turn was PROGRESS: slam-defense implementation and role-controller
 corrections. This turn is PROGRESS: full primary server68058 terminated0,
