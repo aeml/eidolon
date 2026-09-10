@@ -16,7 +16,30 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 05:23 UTC
+## Current checkpoint — September 10, 05:26 UTC
+
+Previous goal turn was PROGRESS. This continuation is a VERIFIED WAIT: polled
+the same live13998 and the specific queued release/occupying soak jobs. No
+source mutation, restart, cancellation, push or deployment; full goal remains
+active/incomplete, not at an impasse while the earned playthrough advances.
+
+13998 ACTIVE, only owned browser, primary clean/frozencb348ef, same
+fresh-merchant-0910/18560/18561/41960 and
+`/tmp/eidolon-fresh-merchant-replay.log`. Actual opening three kills/manual
+100Gold100XP/save passed38s with no deaths. Diary/manual25Gold200XP/save passed;
+named opening phase PASS83330ms/600000ms. Watch phase ACTIVE: latest milestone
+5/40 at64s, level4/60XP/341Gold, no deaths, one ordinary town recovery. Mana
+5→170/full, with naturally banked rest and ordinary departure verified. All
+remaining35Watch kills, Seeds, Imps, scars,50Orcs/manual/save/handoff and strict
+level30 readiness are still pending in this attempt. No final campaign pass.
+
+At05:26 CI34434837759/predeploy102741303703 remains QUEUED; scheduled
+soak34433520743 remains in progress. No new cancellation approval. Canonical
+62dc2d1 unchanged; no live release acceptance. Keep observing exact13998 and
+release queue without narrowing class/group/realm/dungeon/raid/phone/aura/
+CIcost/casino or the rest of1.1–1.10 scope. Root ledger-only and NEVER pushed.
+
+## Previous checkpoint — September 10, 05:23 UTC
 
 This continuation made PROGRESS; the full1.1–1.10 goal remains active and
 incomplete. Merchant correction native36179 TERMINAL PASS1/1.2m on1b5a81b,
