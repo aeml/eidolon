@@ -1,6 +1,7 @@
 # Native equipment swaps and missing-icon repair
 
-Status: local, unpublished. This supplements earned-upgrade QA; a prepared
+Status: full client and retained native verification passed locally; unpublished.
+This supplements earned-upgrade QA; a prepared
 inventory fixture is never proof of earned dungeon progression or balance.
 
 ## Findings preserved
@@ -84,6 +85,37 @@ test-results tree. Functional log evidence remains, but complete screenshot
 retention was not achieved. Corrected route uses independent subdirectories
 under the already-scanned test-results root. Real-shell unit checks enforce
 both distinct outputs and fail-fast chaining. Rerun before final acceptance.
+
+## Release-note draft — assign version only during actual release preparation
+
+## Completed local acceptance
+
+Frozen source **f2600a44** passed full client session18794:293suites,4125tests,
+145.015s, followed by lint underNode24.18.0. Logs
+`/tmp/eidolon-equipment-refresh-full-client.log` and
+`/tmp/eidolon-equipment-refresh-full-lint.log`.
+
+Native session41421 on the same source exited0: three independent full-bag
+swap/refresh/login cases53.0s, then actual Forge/guide1case23.2s. Both item swaps
+in each account exercised actual equipment UI refresh during native dragover.
+The final wrapper credential scan passed0sanitized. Both owned containers and
+API18570/Mongo18571/web41970 listeners were absent after cleanup.
+
+All three equipment screenshots remained in `test-results/equipment-upgrades`
+after the second command completed, alongside the Forge screenshot in
+`test-results/forge-guide`. Inspected all four: generic rings have visible
+consistent slot artwork; equipped and displaced items remain visible; the Forge
+shows potency+2→+3, damage46→50 and the disabled insufficient-Hearts action.
+These are desktop appearance/input checks, not physical-phone or FPS acceptance.
+
+Archive **`/tmp/eidolon-equipment-refresh-proof-T4FHu5`** contains both scoped
+artifact trees, final Forge HTML report, native log and full client/lint logs.
+The native log is `/tmp/eidolon-equipment-refresh-retained-native.log`.
+The earlier failed runs and incomplete artifact-retention attempt remain failures
+or qualified evidence as described above; they are not retroactively passed.
+
+This closes these local equipment-change gates, not earned dungeon completion,
+whole-campaign/raid/group/phone acceptance or release CI/live deployment.
 
 ## Release-note draft — assign version only during actual release preparation
 
