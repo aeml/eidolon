@@ -27,7 +27,24 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 12:59 UTC
+## Current checkpoint — September 10, 13:02 UTC
+
+82369 now TERMINAL0: full301suites/4204tests130.817s, followed by lintNode24,
+oncleane7214825 (test-double-only atop native-tested9a48db1c). Logs
+`/tmp/eidolon-dungeon-resume-verified-full-{client,lint}.log` copied into
+`/tmp/eidolon-dungeon-resume-proof-VOLgLL` with35test focused/lint evidence.
+Primary cleanproof4b9baefc adds
+`docs/plans/2026-09-10-dungeon-expedition-recovery.md`; old boss-boundary plan
+links this subsequent acceptance rather than presenting completed gates as open.
+No local heavy/browser process remains active. Do not restart accepted prepared
+recovery gates as missing; next primary task is short earned-level kit/resource/
+combat diagnosis before another long fresh campaign. Earlier earned failures,
+full4boss/reward/save/Water/allclasses/groups/realms/raids acceptance remainopen.
+Socket e3030ef1 remains separate and awaits ordinary Forge/actual observer/login
+and combined aura integration. Canonical60 still precedes successor promotion;
+no new push/deploy/runner change. Full goal stays active; root never pushed.
+
+## Earlier checkpoint — September 10, 12:59 UTC
 
 31572 now TERMINAL0: prepared mid-route rest/resume passed1test4.1minutes,
 zero retries onclean9a48db1c, seed5956274051757442660/generator2/attempt0/no
