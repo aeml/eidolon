@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 20:47 UTC
+## Current checkpoint — September 10, 20:56 UTC
 
 Previous goal turn was PROGRESS: recovered full-client results and freshly
 verified party-credit/overworld boundaries. This turn continues the combined
@@ -88,7 +88,7 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   and ranged casts remain unchanged.73196 passed87 tests/3suites0.94s plus lint.
   No combat, gear, regen or deadline changes. Full clear/manual persistence and
   native proof of this new strategy remain open.
-- Combined successor `/tmp/eidolon-browser-cost-current-RxDWen` is cleanef28abb7
+- Combined successor `/tmp/eidolon-browser-cost-current-RxDWen` is cleanee15e582
   (documentation atop tested38875a69).
   It now includes prepared/ordinary starting-stat parity52ff4513 (from3832b150)
   and mandatory all-class parity gateec401a95 (fromaeff8ab5), retaining the entire
@@ -120,19 +120,49 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
  `...-full-lint.log`. The handle expired before terminal exit recovery, so lint
   was rerun as72385 and exited0. Fresh focused party race70449 passed2.862s;
   actual overworld XP/quest boundary pipeline92210 passed1.306s. All local checks
-  are terminal. Native initial-stat35249 is now ACTIVE on frozenef28abb7,
-  routeinitial-stats, runnext-stats-0910-2050, ports18580/18581/41980; log
- `/tmp/eidolon-next-initial-stats-native.log`. All four ordinary registration/
-  reconnect/explicit-QA-level checks are required; not an earned campaign proof.
-  Previous candidate report archived/sanitized at
- `/tmp/eidolon-next-pre-native-proof-oIKg59`. Primary02d30584 is idle,
+  are terminal. Native initial-stat35249 TERMINAL0 on frozenef28abb7:
+  four classes passed46.4s; ordinary registration/reconnect and explicit QA
+  level30/reconnect retained correct base stats. Not an earned campaign proof.
+  Archive`/tmp/eidolon-next-initial-stats-proof-x13T5B`, log
+ `/tmp/eidolon-next-initial-stats-native.log`. Native stash smoke27316 TERMINAL0
+  on the same source:1case16.6s, initial authoritative array, exact stash after
+  transport resume and fresh document login. New account proves empty storage,
+  not populated-storage transfers. Archive`/tmp/eidolon-next-stash-proof-SY5rVs`,
+  log`/tmp/eidolon-next-stash-native.log`. Both artifact scans passed; owned
+  services/ports cleared. Candidate documentationee15e582 records these passes.
+  Bundled browser27935 is ACTIVE on frozenee15e582, CI mode/system Chrome,
+  port41981, sequential groups1–3; log
+ `/tmp/eidolon-next-bundled-browser-native.log`. Exact discovery proves103cases
+  with no omissions/duplicates. Group1 passed all38cases: layout111.1s,
+  entrances21.7s, effects74.6s, nameplates18.2s, resourceHUD11.1s (stage wall
+  times). Group2 is running; group3 pending. Inspected anonymous captures show
+  reachable phone stash shell/Close, desktop roster/chat separation and visible
+  Seraph smite on disconnected-floor fixture. These are scoped layout/effect
+  observations, not populated-storage or full-world visual/physical-phone proof.
+  This is the only local heavy/browser gate. Primary02d30584 is idle,
   ready for the next revised four-role run. Candidate
   native stat/storage/party/required-all, bundled-browser, version/remote/live
   acceptance remain pending. Do not infer production readiness from focused
   checks or restart a process solely on an observation timeout.
+- Separate staging `/tmp/eidolon-next-party-support-ycLHyw`, branch
+  work/next-party-support-20260910, is clean4bcfb1b5 fromee15e582. It imports
+  desktop healing793 as3e526d1e, admissionb710/20d as0f12ed02/6c23dac3, and
+  compact rosterba481 as43e60e91. Only the incoming primary four-player harness
+  file was excluded (absent candidate dependencies); primary retains it. No
+  changes were made to the candidate's running browser source.
+  Focused24885 passed139client tests/4suites4.017s; lint50055 exited0. Focused
+  Go race90655 passed21.992s, explicit support and legal class/coordinate paths.
+  Discovery50010 passed104cases with no omissions/duplicates, including the new
+  four-visible-targets case. All these checks are terminal. Logs
+ `/tmp/eidolon-next-support-focused-{client,server,lint}.log` and
+ `/tmp/eidolon-next-support-discovery.log`. Full combined regressions/native
+  support/roster and integration remain required before version/promotion.
 - Remote rechecked again at~20:49: canonical62dc CI34434837759 remains queued at
   predeploy, after five hosted jobs passed; Nightly34433520743 still in progress.
   No soak interruption, push, new version or production acceptance.
+- Public frontend/backend checked again at~20:53: both Alpha1.0.60/df91bb66,
+  backend healthy/database ready. This is the existing deployed source, not
+  acceptance or deployment of canonical62dc or the local successor.
 - Next inspect the actual four-role result: distinguish input/positioning bugs
   from real balance, verify all bosses/rooms/rewards and manual persistence, then
   continue earned campaign and the full roadmap/release gates. No boss nerf,
