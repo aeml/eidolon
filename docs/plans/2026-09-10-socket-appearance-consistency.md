@@ -2,13 +2,50 @@
 
 Status: normalization and held-weapon/socket placement implemented; strengthened
 per-class rendered checks, equipment gallery, full client regression and lint
-passed on85989abc. Native Forge and versioned deployment remain pending. See
+passed on85989abc. Native Forge/observer/bag/fresh-login passed onb640e2cf after
+fixing a stale Forge gem-panel refresh; full regression of this additional UI
+change and versioned deployment remain pending. See
 [held-weapon clearance evidence](2026-09-10-held-weapon-clearance.md) for the
 subsequent fix; the earlier failures below remain historical evidence, not the
 current result. Built separately from the
 accepted local aura/equipment candidate71f18922; no active campaign source or
 canonical release was edited. This is an equipment-polish correction within the
 existing1.1–1.10 goal, not completion of the broader visual milestone.
+
+## Native Forge verification — September 10, 13:50 UTC
+
+The explicit isolated `forge-socket-appearance` route uses two real clients and
+new disposable accounts. Only initial level30 equipment and one loose gem are
+seeded; all removal, insertion, unequip/re-equip and login actions use the normal
+UI/server flow. The owner starts with a Ruby-socketed Rare Iron Sword and a loose
+Flawed Sapphire; Gold stays0. This is appearance/persistence verification, not
+earned acquisition, currency costs, phone input or broader campaign acceptance.
+
+-74721 on1a12d02f failed the bag-icon assertion: the test inspected the outer
+ inventory slot instead of its inner artwork. Before that, both actual clients'
+ attached models refreshed after Ruby removal and Sapphire insertion. The Forge
+ icon also remained at its optimistic empty-socket state, exposing a real bug.
+ Archive `/tmp/eidolon-forge-socket-failure-zIfaOQ`; credential scan sanitized0.
+-47351 RED3failed/6passed reproduced missing gem-panel refresh, stale selections
+ and unchanged-state node behavior. f4f0362e adds authoritative gem-panel refresh
+ while retaining the tab/valid equipped selection and avoiding node replacement
+ when equipment/inventory are unchanged.20231 PASS34tests/3suites1.313s+lint.
+-76163 onf4f0362e failed at4minutes because the test toggled an already-visible
+ bag closed before re-equipping. Filled-Sapphire Forge icon and both real-client
+ models passed first. Archive `/tmp/eidolon-forge-refresh-failure-Gly8la`;
+ credential scan sanitized0, owned services/listeners absent. No timeout increase.
+-b640e2cf corrects only the bag visibility precondition and requires visible
+ inventory/slot before inspecting its art or clicking.95175 TERMINAL0: one case
+ 19.3s,20.8s total, zero retries. Actual server-owned removal/insertion, consumed
+ loose gem, same item ID/new model UUIDs on owner and observer, filled-Sapphire
+ Forge and bag icons, normal re-equip and fresh-login equipment all passed.
+ Archive `/tmp/eidolon-forge-socket-proof-S6Uq7N`; credential scan sanitized0,
+ exact disposable containers and18580/18581/41980listeners absent after cleanup.
+
+Full client regression for the Forge addition is still required. Existing
+rendered evidence remains scoped to its inspected poses/quality levels; this
+native test has recordings disabled and does not supply new visual screenshots.
+No version, patch-note release or production deployment is claimed here.
 
 ## Reproduced behavior
 
