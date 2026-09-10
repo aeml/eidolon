@@ -1,6 +1,6 @@
 # Release 60 — settled ground-spell setup and retry isolation
 
-Status: candidate QA correction, native/full regression not yet run. No game,
+Status: native and full client regression passed; new CI/live gates pending. No game,
 spell, movement, geometry, reward, version or patch-note changes.
 
 ## Actual failure
@@ -51,12 +51,21 @@ Expanded1600 passed110tests/7suites2.315s covering movement input, trained shape
 helper behavior, isolated QA defaults/preflight and live-gate wiring. Node24.18.0.
 Logs `/tmp/eidolon-ground-approach-{focused,lint,regression}.log`.
 
-Actual ground-shape replay and full client regression are pending. Primary
-fresh-story22725 still owns the local browser; do not cancel it or overlap owned
-browsers/heavy tests. After its terminal evidence/cleanup, run the existing
-`EIDOLON_ISOLATED_QA_ROUTE=ground-shape` with a unique run ID, isolated ports,
-Node24 inside sg render, prepared vendor assets and retries0 first. This uses
-prepared QA level/skills for geometry verification, not earned progression.
-Inspect genuine state/geometry results and failure images if any, then perform
-full client regression before promoting into canonical60. All new CI/predeploy/
-deployment/final-native/public-identity gates remain required; no new push yet.
+September10,03:49: native7451 TERMINAL PASS1/37.6s (test35.5s), retries0, clean
+d03ecde, Node24.18.0 inside sg render, normal `prepare:client` and isolated run
+`ground-settled-0910` at18560/18561/41960. Started only after primary22725's
+terminal evidence and cleanup. All three actual spells rejected wall placement
+without cooldown and cast on reachable floor; trained radius/High-Low shape
+checks, all five normal talent purchases and rank5 after fresh login passed.
+Prepared QA levels/skills are geometry evidence, not earned progression proof.
+Log `/tmp/eidolon-ground-settled-native.log`; archive
+`/tmp/eidolon-ground-settled-proof-oQXGNa`, wrapper and supplemental scan0.
+Exact owned API/Mongo/image and all three listeners were absent after normal
+cleanup. This successful route emits no scene screenshot; do not claim visual
+image review. Its actual shape/attachment/radius checks remain the evidence.
+
+Full54348 TERMINAL PASS256suites/3618tests151.078s plus lint on unchangedd03ecde.
+Logs `/tmp/eidolon-ground-settled-full-{client,lint}.log`. New CI/predeploy/
+deployment/final-native/public-identity gates remain required after promotion;
+local success alone is not release60 acceptance. This proof update changes
+documentation only; runtime, version, patch notes and workflow remain unchanged.
