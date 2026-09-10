@@ -29,6 +29,15 @@ declares go1.24.5 and `go version` inside server confirms automatic1.24.5 select
 
 ## Current checkpoint — September 10, 08:07 UTC
 
+08:10 continuation: prepared ignored browser runtime assets in the merged aura
+worktree and confirmed actual Playwright discovery of9cases/7files (no browser
+launch). Session25774 exited0; logs `/tmp/eidolon-aura-integration-{prepare,discovery}.log`.
+Proof-only head now **a6aeba8** atope3393aa, clean. Full/integrated native gates
+remain pending. SAME96530 authoritatively re-polled live; latest Imp35/60 with
+zero deaths,14rests,1training, level18/5440XP/6396Gold at1143seconds. Source stays
+frozen626385d; no restart, second browser, push or deployment. This continuation
+completed preparation/discovery and then a verified wait, not native acceptance.
+
 Previous turn was a VERIFIED WAIT/public-health check. This turn makes PROGRESS:
 integrated the verified aura work with the latest corrected release baseline in
 new worktree `/tmp/eidolon-aura-release-integration-gmeNDo`, branch
