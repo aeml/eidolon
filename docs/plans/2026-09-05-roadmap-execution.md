@@ -27,7 +27,35 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 11:03 UTC
+## Current checkpoint — September 10, 11:09 UTC
+
+Previous goal turn was PROGRESS (socket appearance correction253 focused checks).
+This turn is a VERIFIED WAIT on the specific live main handle44188, independently
+polled11:04,11:05,11:06,11:08 and11:09. Its work advanced two required phases;
+there was no restart, source edit, grant or competing browser/heavy test.
+Main remains SAMEclean **4b3991ff**, same primaryWT, runID, ports and persistent
+log recorded below. No test timeout was changed or renewed.
+
+Imps phase now **PASS1507163ms/2700000ms**:60/60server-credited kills, no deaths,
+18town-rest stops, two normal training stops. Manual reward receipt200Gold and
+6843XP; playerlevel22/6425XP/10955Gold after claim. Actual fresh-login resource
+checkpoint retained731/731HP and599/599MP. Scars investigation then
+**PASS36044ms/600000ms**, with inspected severed_root/new_growth/marked_stone.
+Five readiness phases have passed; Orc hunt STARTED,3600000ms original cap.
+After ordinary preparation/relogin: level22,12equipped slots, FireballMastery4,
+branchC, unlockedFireball/Teleport/ArcaneShield,731HP/632MP. New earned trinket1
+replacement verified; prior trinket2/tome upgrades also retained. This remains
+partial campaign evidence, not final readiness, survival against Rootbound
+Warden, full dungeon clear, manual dungeon reward or Water handoff acceptance.
+
+11:04releaseCI34434837759 remainsqueued in predeploy; nightly34433520743 remains
+inprogress. No soak cancellation authority or deployment. Class506d1c9a and
+socketbdf3a2df candidates remain separate and await their broader/native checks
+after this main run ends and its actual artifacts/result are preserved. Aura
+successor71f18922 and canonical60 acceptance ordering unchanged. Full roadmap,
+allclasses/groups/laterrealms/raids, physical phones and casino remain open.
+
+## Previous checkpoint — September 10, 11:03 UTC
 
 Previous goal turn was PROGRESS (native support route and166 focused checks).
 This turn is PROGRESS: reproduced and corrected an equipment socket appearance
