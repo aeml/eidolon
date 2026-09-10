@@ -27,7 +27,43 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 07:48 UTC
+## Current checkpoint — September 10, 07:53 UTC
+
+Previous turn was a VERIFIED WAIT with Watch evidence. This turn makes PROGRESS:
+found and corrected a stale Earth→Water verification contract in the separate
+class-input branch, now clean **4e4d46b** atopc884455 at
+`/tmp/eidolon-collection-class-input-tNuhow`. The actual expanded catalog offers
+`chronicle_water_missing_ferry` immediately after Earth, NOT the flood-shelter
+investigation named in older checkpoints. The shelter comes after that required
+hunt. Server catalog ordering/next-only offering and generated content establish
+the mismatch; no game quest order or reward should be changed to satisfy the old
+test. New read-only verifier requires the correct unaccepted/zero-credit offer
+and no premature shelter, both after manual claim and after normal reconnect.
+Existing dungeon/Rootheart checks remain. Detailed plan:
+`docs/plans/2026-09-10-water-handoff-verification.md` in that separate worktree.
+
+Focused24439 TERMINAL PASS106tests/7suites1.958s plus lint, Node24.18.0. Original
+50529 failed one new Jest array-scenario fixture (empty row interpreted as done
+callback); corrected to named-object rows without dropping cases. Both logs
+retained at `/tmp/eidolon-water-handoff-unit{,-final}.log`; lint-final also passes.
+Full regression and native integrated acceptance remain pending.
+
+SAME native96530 remains live on clean/frozen626385d, independently re-polled this
+turn. Seeds passed161,829ms with8seeds from18observed target deaths and zero player
+deaths; Imps started. Important: its old Water assertion remains stale, so a later
+failure there must be retained as a failure, not retroactively reclassified using
+4e4d46b. Do not edit its source mid-run or restart solely for observation expiry.
+The attempt can still provide actual dungeon gameplay evidence. Continue same
+handle/log/services; no other owned browser/full suite while active. After it
+finishes, preserve/sanitize evidence and cleanup, run the separate branch's full
+regression, integrate deliberately and verify the corrected native route.
+
+No runtime/version/push/deployment change. Last verified release state is07:48:
+34434837759 queued on62dc2d1, scheduled34433520743 in progress, no cancellation
+approval. No new public identity check. Full roadmap/casino/all-class/group/realm/
+raid/balance/phone/visual scope remains active. Root ledger only, never push it.
+
+## Previous checkpoint — September 10, 07:48 UTC
 
 Previous turn made PROGRESS (separate class-input correction). This turn is a
 VERIFIED WAIT with additional partial native evidence: SAME96530 was repeatedly
