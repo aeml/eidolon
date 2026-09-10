@@ -27,7 +27,61 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 16:36 UTC
+## Current checkpoint — September 10, 16:43 UTC
+
+Previous goal turn was PROGRESS: integrated the older browser-cost prototype
+onto the current socket candidate, verified exact discovery and added process
+failure contracts while observing96446. The user's timing question received
+rough planning ranges, not new deadlines or reduced acceptance criteria. This
+continuation is PROGRESS: corrected final lint, finished focused verification
+and committed the integrated candidate and its evidence. Full goal stays active.
+
+- Primary native96446 remains ACTIVE, directly re-polled at16:42; source clean
+ 98f757f9 remains frozen. Opening phase passed87.532seconds; watch phase active.
+  Latest hunt receipt: level6,30/40credited kills,0deaths,13normal town rest
+  stops,478seconds. These are partial progression observations, not first-dungeon
+  acceptance. Same`stash-earned-story-0910` run and private redirected log below;
+  retain original aggregate/encounter/watchdog limits and archive before reuse.
+- Independent worktree`/tmp/eidolon-browser-cost-current-RxDWen`, branch
+  `work/browser-cost-current-20260910`, clean49daea2e based on socket298ecde0.
+  Only CI prototype/contracts imported as6cba0605/b636843c before integration;
+  no old primary story/crystal-art/economy/server changes. Current interface
+  manifest replaces that old branch's absent crystal-art/journal commands.
+  Full exact baseline remains all current anonymous/nameplate/HUD/interface
+  commands. Existing runtime/version and authenticated all evidence unchanged.
+-12853 TERMINAL0 CI-mode pinned Playwright discovery:101cases, no omissions,
+  duplicates or empty groups. Job1 layout22/entrances4/effects3/nameplates6/HUD3;
+  job2 layout23/entrances3/effects3/interface9; job3 layout20/entrances3/effects2.
+  This starts no browser and does not measure a speedup. Locked asset preparation
+  passed. Separate evidence paths, one worker, existing retries/timeouts and
+  predeploy dependency remain intact; no runtime assertions reduced.
+- New17real subprocess tests exercise actual runner/plan with a recording child
+  CLI: all3shards, failure at all12stages retaining exit7 and stopping later
+  launches, child SIGTERM failure, plan-only behavior and invalid arguments.
+  Original33238 failed missing old crystal-art command;92474 failed DOM-dependent
+  shared setup with a needless Node override;44309 tests passed but lint flagged
+  multiline syntax. All retained logs; fixes preserve assertions.
+-81077 TERMINAL0:272tests/5suites7.028seconds plus lint/diff checks. Logs
+  `/tmp/eidolon-browser-cost-current-final-focused.log` and
+  `/tmp/eidolon-browser-cost-current-clean-lint.log`. New doc
+  `docs/plans/2026-09-10-current-browser-partition.md` in that worktree records
+  discovery, failures and pending gates. Fullclient and all3actual bundled-browser
+  groups, timing/render inspection and remote CI remain PENDING; do not run a
+  second local heavy/browser while96446 owns that slot. Do not claim the old
+  primary's107case discovery or current101case listing is execution evidence.
+-16:42 exact remote check: canonicalCI34434837759 still queued for predeploy
+  after hosted tests passed; nightly34433520743 stillinprogress. No new authority
+  to cancel/preempt/relabel, no push or public deployment identity recheck.
+  CI partition cannot fix runner reservation; canonical62dc acceptance still
+  precedes successor publication. Source49da is not release/push acceptance.
+
+Next: continue the same96446 and capture actual outcome before source changes;
+then schedule pending current-partition fullclient/actual browser groups without
+duplicating unchanged authenticated all proof. Root remains ledger-only, never
+pushed. Keep full1.1–1.10, physical-phone, group/class/realm/raid/balance/casino
+requirements and unanswered Normal solo/party choice intact. Not complete/blocked.
+
+## Previous checkpoint — September 10, 16:36 UTC
 
 The preceding casino-only response was NO PROGRESS toward implementation: it
 confirmed existing required scope. This continuation revalidated the clean worktrees,
