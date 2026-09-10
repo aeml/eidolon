@@ -5,7 +5,33 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 23:42 UTC
+## Current checkpoint — September 10, 23:48 UTC
+
+Previous goal turn was PROGRESS: formation regressions fixed and native launch.
+This turn is PROGRESS: the exact native run passed its opening room/recovery
+cycle, and stale balance-plan publication status was corrected from current
+ancestry and terminal remote evidence.99535 also remains a VERIFIED WAIT on
+its re-polled live handle; the full roadmap/clear/release gates are not complete.
+
+- Native99535 ACTIVE, frozen clean229cbdd8, seed6347868825596501926/generator2/
+  Normal30/no fallback. All four setup/party/exact entry passed, two ordinary
+  Skeleton kills and room1 cleared. First all-four town recovery and individual
+  guide-resume cycle passed exact seed/rooms/Gold/inventory/quests. Pre-rest
+  HP/MP Fighter855/387, Cleric845/502, Wizard855/358, Rogue855/432; all recovered
+  fully. No boss/fullclear/manual/relogin result yet. Same log/ports/sole heavy
+  ownership as below; continue this handle, do not edit primary or replace it.
+- Root867cf891 adds a current delivery-status checkpoint to the balance and
+  investigation plan. Ancestor checks confirmed packaged47–50 and58 are in
+  publicdf91bb66; authoritativeCI34295826450/51ec73e and34361293407/ef9a638
+  were independently rechecked terminalSUCCESS. Historical unpublished/planned
+  text is now explicitly historical. Expanded Chronicle/replacement reward curve
+  remain local, and earned pacing/party/phone/economy/full-roadmap gates remain.
+  This is documentation, not a new gameplay release or combined-source proof.
+- Remote rechecked23:43: canonical62dc CI34434837759 stillqueuedpredeploy;
+  Nightly34433520743 stillin_progress. Candidate0c8c4ffe idle. No runner changes,
+  cancellation, version assignment, push or deployment. Root NEVER PUSHES.
+
+## Previous checkpoint — September 10, 23:42 UTC
 
 Previous goal turn was PROGRESS: actor-aware body checks. This turn is PROGRESS:
 two precise precombat formation failures retained, controller concurrency and
