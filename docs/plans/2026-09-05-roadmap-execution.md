@@ -16,7 +16,58 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 01:11 UTC
+## Current checkpoint — September 10, 01:33 UTC
+
+This continuation made PROGRESS: inspected the terminal Earth replay, verified
+its first actual stash transfer, corrected the second-visit occupancy calculation,
+passed full regression and started the next complete replay. Also verified60's
+deployments and exact public identities; final live acceptance is still pending.
+The preceding roadmap-only reply confirmed existing casino scope without new
+implementation. No impasse; full goal stays active, root ledger-only/NEVER pushed.
+
+**60 CI34421323405 ACTIVE**, frozen canonicaldf91bb6. Client/server/all3browser,
+predeploy102701339923/input validation and both deployments SUCCESS. Final live
+**102709210653 ACTIVE**: anonymous/persistent-character checks passed; four-class/
+remote-animation running, native town recovery and upload still due. Public
+manifest/login/patch notes/main-module key/backend match Alpha1.0.60/df91bb6;
+runtime GET200/19736bytes. Server schema9→9 and previous59 rollback image verified.
+See updated `2026-09-10-release60-live-verification.md`. Predeploy archive
+`/tmp/eidolon-release60-predeploy-proof-6jzgOY`, scan0; warning/departure and
+High390party-world screenshots inspected. Predeploy recovery passed on retry
+after one10-second hover timeout, cause unproven; retain this flaky result.
+Do not push a successor before final live results and fresh public checks pass.
+
+Primary **12987 TERMINAL FAILED15.7m** on752c888. Stage1 PASS4.6m: opening,
+diary,40Skeletons and8naturalSeeds/manualconsumption/reconnect. Stage2 PASS6.9m:
+60Imps,all3scar investigations/manual/reconnect. Stage3 reached41/50DemonOrcs.
+One actual normal stash visit preserved entire armor item1606094121388945210,
+all other items/quests/equipment and Gold; only its3sales earned1720Gold. Then
+the second visit failed before deposit: the helper treated a100-entry client
+array padded with99nulls as100occupied slots. Screenshot shows1stored item and
+empty slots; `GameEngineNetworkMessages` confirms padding. This is a test-driver
+error, not full storage or a runtime rejection. No complete chain/save proof yet.
+Archive `/tmp/eidolon-earth-stash-capacity-proof-BDzPFc`, wrapper sanitation0,
+supplemental scan0, screenshot inspected, exact services/18560/18561/41960absent.
+Log `/tmp/eidolon-earth-pickup-0110.log` retained.
+
+Primary now **ef1ca35**, code **299cded**: count actual stash item IDs against
+rendered capacity, fail closed for invalid/impossible observations, record space
+receipt. All item protection/conservation, quest counts, drops, timeouts and
+normal inputs retained. Focused68065 PASS31/3/.691+lint; full77046 PASS286suites/
+4018tests92.011s+lint on814f733. Logs `/tmp/eidolon-stash-padding-full-{client,lint}.log`.
+Historical progression report now explicitly separates old daily-route passes
+from the current story-only gate (root8cb0c9d, primary814f733).
+
+**65010 ACTIVE**, only owned local browser: complete corrected serial Earth,
+run`earth-padding-0910-0133`, API18560/Mongo18561/web41960,
+log`/tmp/eidolon-earth-padding-0133.log`. Primary frozen until terminal; preserve/
+sanitize evidence and verify exact cleanup before another browser. No heavy
+owned tests alongside. Fresh story-only readiness remains next after the full
+prepared-chain pass; no dailies/grants may satisfy its unchanged level30gate.
+Aura4a91c75 and CIcost080e175 remain independent/unpublished. Class/group pacing,
+full dungeons/raids/story, physical phones, casino and all1.1–1.10scope remain open.
+
+## Previous checkpoint — September 10, 01:11 UTC
 
 This turn made PROGRESS: actual replay reached a collection failure, inspected
 current drop authority and retained evidence, corrected incomplete ground-pickup
