@@ -2,7 +2,8 @@ import { jest } from '@jest/globals';
 
 const wizardDefense = jest.fn();
 const rangedDefense = jest.fn();
-jest.unstable_mockModule('./e2e/helpers.js', () => ({ projectGroundOffset: jest.fn() }));
+const projectGround = jest.fn();
+jest.unstable_mockModule('./e2e/helpers.js', () => ({ projectGroundOffset: projectGround }));
 jest.unstable_mockModule('./e2e/earned-wizard-defense.js', () => ({ createEarnedWizardDefense: wizardDefense,
     createEarnedRangedDefense: rangedDefense }));
 const { createEarnedClassCombat } = await import('./e2e/earned-class-combat.js');
@@ -44,6 +45,23 @@ test('a fresh Cleric never tries to cast a locked heal', async () => {
     const driver = await createEarnedClassCombat(page, 'Cleric');
     expect(await driver(page)).toBe(false);
     expect(page.keyboard.press).not.toHaveBeenCalled();
+});
+
+test('an earned Cleric heal aims at the caster and uses normal hotbar input once', async () => {
+    const state = Object.freeze({ className: 'Cleric', healthRatio: .4, mana: 25,
+        healCost: 25, hotbar: ['Healing Light'], unlockedSkills: ['Healing Light'], cooldowns: {} });
+    const page = { evaluate: jest.fn().mockResolvedValue(state),
+        mouse: { move: jest.fn() }, keyboard: { press: jest.fn() }, waitForTimeout: jest.fn() };
+    jest.spyOn(Date, 'now').mockReturnValue(10_000);
+    projectGround.mockResolvedValueOnce({ x: 310, y: 245, canvas: true });
+    const driver = await createEarnedClassCombat(page, 'Cleric');
+    expect(await driver(page, { id: 'skeleton' })).toBe(true);
+    expect(projectGround).toHaveBeenCalledWith(page, 0, 0);
+    expect(page.mouse.move).toHaveBeenCalledWith(310, 245);
+    expect(page.keyboard.press).toHaveBeenCalledWith('1');
+    expect(await driver(page, { id: 'skeleton' })).toBe(false);
+    expect(page.keyboard.press).toHaveBeenCalledTimes(1);
+    expect(state.mana).toBe(25); // Input selection never changes replicated resources.
 });
 
 test('Fighter uses ordinary earned hotbar input and throttles attempts', async () => {

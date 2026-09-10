@@ -8,6 +8,7 @@ import { earnEarthHuntsBefore } from '../earthFunctionalPrerequisites.js';
 import { maintainEarnedInventory } from './earned-inventory-management.js';
 import { leaveEarnedCombatSafety } from './earned-safe-zone-combat.js';
 import { approachEarnedDrop } from '../earnedDropApproach.js';
+import { verifyFreshWaterHandoff } from './chronicle-water-handoff.js';
 
 export const EARTH_DUNGEON_CHAPTER = 'chronicle_03_roots_remember';
 const FIRST_CHAPTER = 'chronicle_01_bell_below';
@@ -230,8 +231,7 @@ export async function verifyEarthDungeonChronicleTurnIn(page, credentials) {
     await expect(page.locator('[data-raid-type="earth_crystal_raid"]')).toHaveAttribute('data-access', 'sealed');
     await page.locator('#btn-close-dungeon-menu').click();
     await claimChapterAndContinue(page, EARTH_DUNGEON_CHAPTER);
-    await expect.poll(() => readChronicleChapter(page, 'chronicle_water_flood_shelter')).not.toBeNull();
-    expect((await readChronicleChapter(page, 'chronicle_water_flood_shelter')).accepted).toBe(false);
+    await verifyFreshWaterHandoff(page);
     await page.locator('#btn-close-quest').click();
     await openDungeonGuide(page);
     await page.getByRole('tab', { name: 'Raids', exact: true }).click();
@@ -241,6 +241,7 @@ export async function verifyEarthDungeonChronicleTurnIn(page, credentials) {
     const { loginAndEnterWorld } = await import('./helpers.js');
     await loginAndEnterWorld(page, credentials);
     expect((await readChronicleChapter(page, EARTH_DUNGEON_CHAPTER)).completed).toBe(true);
+    await verifyFreshWaterHandoff(page);
     await openDungeonGuide(page);
     await page.getByRole('tab', { name: 'Raids', exact: true }).click();
     await expect(page.locator('[data-raid-type="earth_crystal_raid"]')).toHaveAttribute('data-access', 'open');

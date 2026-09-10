@@ -1,7 +1,8 @@
 import { jest } from '@jest/globals';
+import { readFileSync } from 'node:fs';
 
 const createDefense = jest.fn();
-jest.unstable_mockModule('./e2e/earned-wizard-defense.js', () => ({ createEarnedWizardDefense: createDefense }));
+jest.unstable_mockModule('./e2e/earned-class-combat.js', () => ({ createEarnedClassCombat: createDefense }));
 const { createFreshCollectionCombat, readFreshCollectionCombat, readSelectedCollectionTarget,
     readCollectionTarget, selectCollectionTargetThroughInput,
     reacquireDisengagedCollectionTarget } = await import('./e2e/fresh-collection-combat.js');
@@ -42,11 +43,11 @@ test.each([
     } finally { delete window.game; }
 });
 
-test('Wizard collection retains defense but allows healthy ordinary combat', async () => {
-    const page = { evaluate: jest.fn().mockResolvedValue('Wizard') }, defend = jest.fn();
+test.each(['Wizard', 'Fighter', 'Rogue', 'Cleric'])('%s collection uses its earned class driver with healthy combat preserved', async className => {
+    const page = { evaluate: jest.fn().mockResolvedValue(className) }, defend = jest.fn();
     createDefense.mockResolvedValue(defend);
     expect(await createFreshCollectionCombat(page)).toBe(defend);
-    expect(createDefense).toHaveBeenCalledWith(page, { retreatBelowHealthRatio: .8 });
+    expect(createDefense).toHaveBeenCalledWith(page, className, { retreatBelowHealthRatio: .8 });
 });
 
 test('follows only the actual hostile selected by normal input, without mutating it', async () => {
@@ -64,10 +65,19 @@ test('follows only the actual hostile selected by normal input, without mutating
     } finally { delete window.game; }
 });
 
-test.each(['Fighter', 'Rogue', 'Cleric'])('%s keeps its existing collection input', async className => {
-    const page = { evaluate: jest.fn().mockResolvedValue(className) };
-    expect(await (await createFreshCollectionCombat(page))()).toBe(false);
-    expect(createDefense).not.toHaveBeenCalled();
+test('driver setup failure is propagated instead of silently disabling class actions', async () => {
+    const failure = new Error('class driver unavailable');
+    createDefense.mockRejectedValue(failure);
+    await expect(createFreshCollectionCombat({ evaluate: async () => 'Unknown' })).rejects.toBe(failure);
+});
+
+test('opening and seed encounters pass the live page and current target to class input', () => {
+    const opening = readFileSync('tests/e2e/fresh-opening-gameplay.spec.js', 'utf8');
+    const collection = readFileSync('tests/e2e/fresh-collection-route.js', 'utf8');
+    expect(opening).toContain('if (await beforeOpeningCombat(page, target)) continue;');
+    expect(collection).toContain('if (await beforeCombat(page, target)) continue;');
+    expect(opening).not.toContain('await beforeOpeningCombat()');
+    expect(collection).not.toContain('await beforeCombat()');
 });
 
 test('a valid auto-attack target is retained without another click', async () => {
