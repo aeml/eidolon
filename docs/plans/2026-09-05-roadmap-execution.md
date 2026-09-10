@@ -16,7 +16,36 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 05:32 UTC
+## Current checkpoint — September 10, 05:39 UTC
+
+Previous turn was a VERIFIED WAIT; this continuation polled the same live13998
+and observed new Seeds-phase proof. No code change/restart/cancellation/push or
+deployment. Full1.1–1.10 remains active/incomplete with broader scope unchanged.
+
+13998 ACTIVE, only owned local browser, primary clean/frozencb348ef, same
+fresh-merchant-0910/18560/18561/41960/log
+`/tmp/eidolon-fresh-merchant-replay.log`. Seeds8/manual turn-in PASSED188520ms/
+1200000ms,22observed target deaths, zero player deaths. Count stayed7 from the
+11th through21st observation but reached8 normally on22nd; no intervention or
+confirmed pickup defect. During collection, ordinary bag maintenance equipped
+eight earned items, freeing4→12slots and preserving1526Gold. No merchant sale
+or stash deposit was needed/proven by that visit.
+
+Imp phase ACTIVE: first earned milestone atlevel10 purchased2available mastery
+ranks through normal UI, preserving level/XP/Gold. Latest logged5/60 at216s,
+level11/2229XP/2540Gold, zero deaths,2recovery stops,1training stop. Later normal
+recovery atlevel12 restored27→368/full mana. Server receipts show actual Fireball
+hits, not just a cast animation. All60/manual/save, scars,50Orcs/manual/save,
+dungeon handoff and strictstory-onlylevel30 readiness remain pending. No final
+campaign or class/group/realm/dungeon/raid/physical-phone acceptance.
+
+At05:39:19 re-polled CI34434837759/predeploy102741303703: still QUEUED;
+soak34433520743 still in progress. Cancellation approval remains unanswered;
+canonical62dc2d1 unchanged, no new deployment/live acceptance. Root ledger-only
+and NEVER pushed. Continue exact13998 and release queue, retaining all aura,
+CIcost, casino and remaining1.1–1.10 work.
+
+## Previous checkpoint — September 10, 05:32 UTC
 
 Previous goal turn was a VERIFIED WAIT. This continuation kept observing the
 same live13998 and gained complete Watch-phase evidence; no restart or source
