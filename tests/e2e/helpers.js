@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test';
 import { movementFailure } from '../groundInputFailure.js';
+import { projectGroundOffsetInPage } from '../groundInputProjection.js';
 import { isHostilePointerInterception } from '../primaryClickEvidence.js';
 import { inventoryQuantity, pickupReceipt } from './lootPickupEvidence.js';
 import { hasFreshEntranceHover } from './entrance-pointer.js';
@@ -333,28 +334,8 @@ export async function readPlayerState(page) {
     });
 }
 
-export async function projectGroundOffset(page, deltaX, deltaZ) {
-    return page.evaluate(({ deltaX: dx, deltaZ: dz }) => {
-        const game = window.game;
-        if (!game?.player?.position || !game.renderSystem?.camera) return null;
-        let lastProjection = null;
-        for (const scale of [1, 0.75, 0.5, 0.25, 0.125]) {
-            const target = game.player.position.clone();
-            target.x += dx * scale;
-            target.z += dz * scale;
-            const projected = target.project(game.renderSystem.camera);
-            lastProjection = {
-                x: (projected.x + 1) * window.innerWidth / 2,
-                y: (-projected.y + 1) * window.innerHeight / 2,
-                visible: projected.z >= -1 && projected.z <= 1 &&
-                    projected.x >= -1 && projected.x <= 1 && projected.y >= -1 && projected.y <= 1
-            };
-            lastProjection.canvas = lastProjection.visible &&
-                document.elementFromPoint(lastProjection.x, lastProjection.y)?.tagName === 'CANVAS';
-            if (lastProjection.canvas) return lastProjection;
-        }
-        return lastProjection;
-    }, { deltaX, deltaZ });
+export async function projectGroundOffset(page, deltaX, deltaZ, options = {}) {
+    return page.evaluate(projectGroundOffsetInPage, { deltaX, deltaZ, ...options });
 }
 
 export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
@@ -385,7 +366,8 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
         let target = null;
         try {
             await expect.poll(async () => {
-                target = await projectGroundOffset(page, candidateX, candidateZ);
+                target = await projectGroundOffset(page, candidateX, candidateZ,
+                    { allowScaling: !options.requireClearPath });
                 return Boolean(target?.canvas);
             }, { timeout: 1_000 }).toBe(true);
         } catch {
@@ -403,7 +385,17 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
         const useMoveOnly = options.moveOnly === true;
         if (!isClearGround && !useMoveOnly && options.allowJumpFallback === false) continue;
         const useCoveredJump = !isClearGround && !useMoveOnly;
+        // Camera/player interpolation after projection may move the actual ray.
+        // A prevalidated path is valid only for its planned world destination.
+        const groundPoint = await page.evaluate(({ x, y }) => {
+            const game = window.game;
+            const hit = game.inputManager.getGroundIntersectionFromEvent({ clientX: x, clientY: y });
+            return hit ? { x: hit.x, y: hit.y, z: hit.z } : null;
+        }, target);
+        if (options.requireClearPath && (!groundPoint ||
+            Math.hypot(groundPoint.x - target.world.x, groundPoint.z - target.world.z) > .25)) continue;
         const attempt = { candidateX, candidateZ, screenX: target.x, screenY: target.y,
+            plannedGround: target.world, groundPoint,
             mode: useMoveOnly ? 'move-only-walk' : useCoveredJump ? 'covered-ground-jump' : 'walk' };
         attempts.push(attempt);
         // Control-click resolves ground before entity interactions in production.
@@ -492,6 +484,7 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
                 level: player.level,
                 health: player.health ?? player.stats?.hp,
                 state: player.state,
+                stunTimer: player.stunTimer, rootTimer: player.rootTimer, frozenTimer: player.frozenTimer,
                 x: player.position?.x,
                 z: player.position?.z,
                 targetX: player.targetPosition?.x,
