@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture } from '../partyDungeonFixture.js';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
-import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep } from '../partyDungeonControls.js';
+import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyWarningInputPolicy } from '../partyDungeonControls.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
@@ -160,28 +160,31 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 const step = p.state === 'DEAD' ? null : planPartyTelegraphEscape(p.position, warnings, delta =>
                     retreatStaysInEncounter(encounter, { x: p.position.x + delta.x, z: p.position.z + delta.z }, p.radius) &&
                     isEarnedRetreatPathClear(g.collisionManager, p.position, p.radius || 1.25, delta));
-                return { active: warnings.length > 0, step, warnings };
+                return { active: warnings.length > 0, step, warnings,
+                    safe: warnings.every(w => Math.hypot(p.position.x - w.x, p.position.z - w.z) >= w.radius + 1.5) };
             }, encounter);
-            if (!observation.active) return false;
+            if (!observation.active) return partyWarningInputPolicy(observation);
             if (observation.step) {
                 const moved = await tryDungeonGroundStep(() => moveByGroundClick(actor.page,
                     observation.step.x, observation.step.z, { ...PARTY_FOLLOW_INPUT_OPTIONS,
                         allowAlternatePaths: false, requireClearPath: true, timeout: 1500 }));
-                if (moved) await actor.page.evaluate(warnings => {
+                if (moved) observation.safe = await actor.page.evaluate(warnings => {
                     const p = window.game.player.position, e = window.__partyClearEvidence;
                     e.warningMoves++;
-                    if (warnings.every(w => Math.hypot(p.x - w.x, p.z - w.z) >= w.radius + 1.5)) e.warningEscapes++;
+                    const safe = warnings.every(w => Math.hypot(p.x - w.x, p.z - w.z) >= w.radius + 1.5);
+                    if (safe) e.warningEscapes++;
+                    return safe;
                 }, observation.warnings);
             }
             // Do not immediately select the boss and walk back into its warning.
             // The normal combat/death/connection deadlines remain unchanged.
-            return true;
+            return partyWarningInputPolicy(observation);
         }
 
-        async function healParty() {
+        async function healParty({ allowMovement = true } = {}) {
             const states = await Promise.all(actors.map(actor => snapshot(actor.page)));
             const hurt = states.filter(s => !s.dead && s.hp / s.maxHP < .85).sort((a, b) => a.hp / a.maxHP - b.hp / b.maxHP)[0];
-            if (!hurt) { await follow(healer, states[0], 9); return; }
+            if (!hurt) { if (allowMovement) await follow(healer, states[0], 9); return; }
             const available = await healer.page.evaluate(() => {
                 const p = window.game.player;
                 return { index: p.hotbar.indexOf('Healing Light'), cooldown: p.cooldowns['Healing Light'] || 0, mana: p.stats.mana,
@@ -202,7 +205,11 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                     ...available, ...pointer });
                 if (healerDecisions.length > 20) healerDecisions.shift();
             };
-            if (distance > Math.min(14, available.healRange - .5)) { await record('approach'); await follow(healer, hurt, 7); return; }
+            if (distance > Math.min(14, available.healRange - .5)) {
+                await record(allowMovement ? 'approach' : 'warning-hold-out-of-range');
+                if (allowMovement) await follow(healer, hurt, 7);
+                return;
+            }
             // Use the unlocked ten-unit healing aura for sustained group
             // damage, but do not delay an available critical direct heal.
             if (distance <= 9 && (hurt.hp / hurt.maxHP >= .55 || available.cooldown > 0) && available.aura >= 0 &&
@@ -285,9 +292,13 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                     bossStart = playthrough.bosses.includes(target.type) ? await Promise.all(actors.map(actor => snapshot(actor.page))) : null;
                     return false;
                 }
-                const warnings = await Promise.all(actors.map(actor => avoidWarnings(actor, target.encounter)));
-                const avoiding = warnings.some(Boolean);
-                if (!avoiding) await Promise.all([healParty(), ...damage.map(async actor => {
+                const [tankPolicy, healerPolicy, ...damagePolicies] = await Promise.all(actors.map(actor => avoidWarnings(actor, target.encounter)));
+                // Safe ranged players can keep doing their jobs during a
+                // telegraph, but never use an approach input into its circle.
+                await Promise.all([healerPolicy.allowCasts ? healParty({ allowMovement: healerPolicy.allowApproach }) : null,
+                    ...damage.map(async (actor, index) => {
+                    const policy = damagePolicies[index];
+                    if (!policy.allowCasts) return;
                     const enemy = await actor.page.evaluate(id => {
                         const g = window.game, p = g.player, e = g.remotePlayers.get(id);
                         return e && e.state !== 'DEAD' ? { distance: p.position.distanceTo(e.position),
@@ -295,10 +306,13 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                     }, target.id);
                     if (!enemy) return;
                     const point = await projectEntity(actor.page, target.id);
-                    if (!point?.visible) { await follow(actor, await snapshot(tank.page), 8); return; }
+                    if (!point?.visible) {
+                        if (policy.allowApproach) await follow(actor, await snapshot(tank.page), 8);
+                        return;
+                    }
                     await actor.page.mouse.move(point.x, point.y);
                     await actor.page.waitForTimeout(60);
-                    await actor.page.mouse.click(point.x, point.y);
+                    if (policy.allowApproach) await actor.page.mouse.click(point.x, point.y);
                     if (enemy.distance <= enemy.range && enemy.cooldown <= 0) await actor.page.mouse.click(point.x, point.y, { button: 'right' });
                 })]);
                 for (const actor of actors) {
@@ -313,8 +327,8 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                     expect(state.dead, `${actor.className} must survive; inspect party evidence if not`).toBe(false);
                     expect(await actor.page.evaluate(() => performance.now() - window.__partyClearEvidence.lastUpdate)).toBeLessThan(10_000);
                 }
-                if (avoiding) await tank.page.waitForTimeout(60);
-                return avoiding;
+                if (tankPolicy.holdMelee) await tank.page.waitForTimeout(60);
+                return tankPolicy.holdMelee;
             },
             afterEncounter: async (_page, target) => {
                 if (playthrough.bosses.includes(target.type)) {

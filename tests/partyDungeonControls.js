@@ -13,6 +13,10 @@ export function partyFollowStep(state, anchor, spacing = 4) {
 
 export const PARTY_FOLLOW_INPUT_OPTIONS = Object.freeze({ moveOnly: true, allowJumpFallback: false });
 
+export function partyWarningInputPolicy({ active, safe }) {
+    return { holdMelee: active, allowCasts: !active || safe, allowApproach: !active };
+}
+
 // Walking a single unit is evidence that an input worked, not that a follower
 // caught up. Hold the leader at the waypoint until every actual position is in
 // formation. The caller's clock/read/move hooks never mutate game state.

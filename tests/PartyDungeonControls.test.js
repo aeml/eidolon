@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { acquirePartyAllyPointer, gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, planPartyTelegraphEscape } from './partyDungeonControls.js';
+import { acquirePartyAllyPointer, gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyWarningInputPolicy, planPartyTelegraphEscape } from './partyDungeonControls.js';
 
 test('healer stops seven units short of the tank rather than aiming into the boss', () => {
     expect(partyFollowStep({ x: 0, z: 0 }, { x: 0, z: -12 }, 7)).toEqual({ dx: 0, dz: -5 });
@@ -18,6 +18,14 @@ test.each([NaN, Infinity, -1])('invalid spacing fails closed: %s', spacing => {
 
 test('following uses real move-only walking, never a covered-ground jump', () => {
     expect(PARTY_FOLLOW_INPUT_OPTIONS).toEqual({ moveOnly: true, allowJumpFallback: false });
+});
+
+test.each([
+    [{ active: false, safe: true }, { holdMelee: false, allowCasts: true, allowApproach: true }],
+    [{ active: true, safe: true }, { holdMelee: true, allowCasts: true, allowApproach: false }],
+    [{ active: true, safe: false }, { holdMelee: true, allowCasts: false, allowApproach: false }]
+])('warning policy preserves safe ranged casts without permitting a chase: %j', (warning, expected) => {
+    expect(partyWarningInputPolicy(warning)).toEqual(expected);
 });
 
 test('formation waits for observed catch-up instead of counting an issued step as arrival', async () => {

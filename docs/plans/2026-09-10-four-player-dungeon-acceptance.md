@@ -133,6 +133,26 @@ and combat deadlines remain. Focused26340 passed69 tests/3suites1.041s plus lint
 including witnessed catch-up, blocked timeout and death rejection. Native
 formation/quake/full-clear/turn-in verification remains pending.
 
+Native96142 on4c962541 ended TERMINAL1 at the Warden, last reported2676/15000HP.
+The party cleared two rooms and completed two all-four town recovery/resume
+cycles with unchanged run/content. Fighter recorded7855damage/3765taken,
+Cleric4541effective ally healing, Wizard6281damage and Rogue6610damage; all487Gold.
+There were no rejected casts. Warning moves/full-radius escapes were12/7 for
+Fighter,8/6 Cleric,2/2 Wizard and3/3 Rogue. These demonstrate actual escape inputs,
+not universal dodging or a full clear. The tank's final town940HP/610MP are cleanup
+respawn values; its observed-death latch is true. Archive
+`/tmp/eidolon-four-role-gather-proof-jONZ3R`; wrapper/copy0 QA prefixes, owned
+containers/listeners absent after terminal. Screenshots are not pixel-redacted.
+
+The warning controller paused all four roles whenever any warning was active,
+including safe ranged players. The next policy permits healing and in-range
+primary casts from a witnessed safe position, while forbidding follow/chase/basic
+approach inputs until warnings expire. Unsafe actors still prioritize escape and
+the tank still holds melee. Three policy cases plus prior navigation/control
+coverage passed72 tests/3suites1.046s and lint (31312). No combat numbers, gear,
+regeneration, reward formulas or deadlines change. Native verification remains
+pending; this policy is not by itself evidence of encounter balance.
+
 Next controller correction uses existing Shift-click move-only walking while
 following: foreground actor models no longer redirect the movement input into
 combat. Physical collision and witnessed displacement remain enforced, with no
