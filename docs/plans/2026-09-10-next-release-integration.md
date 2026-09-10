@@ -116,7 +116,7 @@ passed, copied initial-stat log had zero QA identifiers, and owned ports cleared
 
 ## Remaining promotion gates
 
-- [x] Full application regression after desktop-support integration: Go race88252 on e7fde8bc and client84456 on46c008ce; later changes are test-only, with focused coverage below. Versioned required-all still applies.
+- [ ] Current full application regression: the earlier desktop-support baseline passed Go race88252 on e7fde8bc and client84456 on46c008ce. Boss-slam runtime correction80140cfb now requires a fresh full Go pass. Client runtime is unchanged, with later test-only changes covered below. Versioned required-all still applies.
 - [x] Execute authenticated smoke with the strengthened stash checks (empty storage).
 - [ ] Run all three proposed CI-mode bundled-browser groups, retain distinct
   artifacts, inspect rendering and measure real stage durations.
@@ -229,3 +229,20 @@ is entry preparation, not earned progress or combat proof. Archive
 and ports cleared. This complements primary59146's same focused acceptance.
 The revised primary full-combat run remains separately required, as do current
 104case browser/required-all/version/remote/live gates and the full roadmap.
+
+## Boss-slam correction — September10 22:24
+
+80140cfb imports the tested primary defensive-ability correction, keeping this
+release's existing reflection/explosion damage rather than importing separate
+Dark King phase-cap work. The real AI wind-up, paid shields and lethal shield
+retaliation with distant/downed party credit pass focused race88780 in17.670s.
+See [the focused evidence and patch-note draft](2026-09-10-boss-slam-defenses.md).
+This changes server runtime, so the older full server acceptance is historical,
+not proof of the current source. Fresh full Go,104case browser bundles,
+required-all/version/remote/live acceptance remain required.
+
+Primary full Go68058 passed on its own server treed3a54d4a (root29.012s,
+game385.718s); it is not substituted for this branch's full regression. The
+primary's renewed native four-role clear62131 is active on a5320d74, with real
+hotbar defensive buffs and improved client-observed warning timing. No full
+dungeon clear or new deployment is claimed.
