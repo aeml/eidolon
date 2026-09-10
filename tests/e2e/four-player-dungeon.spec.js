@@ -292,9 +292,13 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 } catch (error) {
                     const positions = await Promise.all(actors.map(async actor => ({ role: actor.className,
                         ...await actor.page.evaluate(() => {
-                            const p = window.game.player;
+                            const g = window.game, p = g.player;
                             return { x: p.position.x, z: p.position.z, state: p.state,
                                 target: p.targetPosition ? { x: p.targetPosition.x, z: p.targetPosition.z } : null,
+                                meshOffset: Math.hypot(p.mesh.position.x - p.position.x, p.mesh.position.z - p.position.z),
+                                cameraOffset: Math.hypot(g.renderSystem.cameraTarget.x - p.position.x,
+                                    g.renderSystem.cameraTarget.z - p.position.z),
+                                cameraPunch: Boolean(g.renderSystem.cameraPunch),
                                 blockedStops: p.movementMetrics?.blockedStops || 0 };
                         }) })));
                     console.log('[party-formation-failure]', JSON.stringify({ previousAnchor: formationAnchor, positions }));
