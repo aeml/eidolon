@@ -4,6 +4,36 @@ Based on primary941ecf6, separate from recovery58 and its completed deployment.
 No production runtime, case assertions, retry/timeout policy or local anonymous
 umbrella command changes. Do not publish before the remaining proof below.
 
+## Separate release queue constraint — September10,04:12UTC
+
+Actual releaseCI34434837759 on62dc2d1 completed every hosted browser group.
+Group1/102738964490 passed29main cases10.5m,6nameplate49.8s and3resourceHUD6.3s
+without retry; retained log`/tmp/eidolon-release60-ground-ci-browser1.log`.
+Predeploy102741303703 then queued for labels
+`self-hosted,linux,x64,eidolon-live-browser`. Repository runner API returned one
+online runner (id21,`eidolon-codex-chrome`), busy with Nightly Multiplayer Soak
+34433520743/job102733792127. Its load step started03:30:19; the scheduled workflow
+uses the24h default on exactly the same runner labels. This is a verified runner
+reservation bottleneck, not another browser-test failure or proof this partition
+prototype would fix end-to-end deployment latency.
+
+An asynchronous user question requests permission to cancel that specific soak
+to prioritize the queued release. No cancellation, new runner, label change,
+scheduled-duration reduction or automatic preemption policy was authorized or
+implemented by this evidence update. The separate local native84056 remains
+active; no second owned browser or heavy local regression was started here.
+
+Before claiming dependable CI scheduling, resolve and verify long-soak versus
+release runner allocation. Options need an explicit operational choice: separate
+capacity for the non-browser100-client soak, or an approved interruption and
+resumption policy preserving partial evidence and never labeling an interrupted
+run a24h stability pass. Keep the24h/concurrency/error/heap requirements intact;
+shortening the soak or silently moving it to an unsuitable job does not prove
+them. Actual proposed browser-group execution/timing gates below remain required
+independently, and the current release candidate must stay frozen mid-CI.
+
+## Browser partition prototype and evidence
+
 The existing three hosted jobs each run one browser worker. Each job now has
 three separate required groups: ordinary file-sharded cases, independent
 entrance-render cases, and independent Seraph/phone-encounter/respawn-render
