@@ -16,9 +16,11 @@ not silently accepted. Accepted or completed daily quests fail the route.
 
 No prepared levels, quest/item grants, encounter waypoints or fallback layouts
 are permitted. Keep the legacy optional-daily dungeon route distinct; it is not
-evidence of story-only progression. The earned dungeon driver currently supports
-Wizard and Fighter. Rogue, Cleric and cooperative play remain required future
-verification work, not implicitly covered by those drivers.
+evidence of story-only progression. This candidate now routes all four classes:
+Wizard/Fighter retain their previous input drivers; Rogue/Cleric use the
+[additional earned combat support](2026-09-10-earned-dungeon-class-support.md).
+The new class routes still require full regression and native verification.
+No class's earned dungeon clear or cooperative play is implied by driver support.
 
 The original eight readiness phases retain their fixed 185-minute aggregate
 observation ceiling. The new route adds a 40-minute dungeon phase and a separate

@@ -19,9 +19,10 @@ test('story-only dungeon is explicit, requires strict readiness and rejects lega
     for (const name of ['FRESH_HUNT', 'FRESH_READY', 'FRESH_DUNGEON']) {
         expect(() => storyOnlyDungeonEnabled({ ...enabled, [`EIDOLON_E2E_${name}`]: '1' })).toThrow(name);
     }
-    for (const className of ['Rogue', 'Cleric']) {
-        expect(() => storyOnlyDungeonEnabled({ ...enabled, EIDOLON_E2E_CLASS: className })).toThrow('other classes require their own verification');
+    for (const className of ['Wizard', 'Fighter', 'Rogue', 'Cleric']) {
+        expect(storyOnlyDungeonEnabled({ ...enabled, EIDOLON_E2E_CLASS: className })).toBe(true);
     }
+    expect(() => storyOnlyDungeonEnabled({ ...enabled, EIDOLON_E2E_CLASS: 'Unknown' })).toThrow('No earned dungeon driver');
 });
 
 test('new route extends strict readiness and leaves the existing release gate intact', () => {
@@ -37,7 +38,7 @@ test('new route extends strict readiness and leaves the existing release gate in
     expect(opening).toContain("expect(usedDailies, 'Dungeon completion must not introduce daily-quest leveling').toEqual([])");
 });
 
-test.each(['Wizard', 'Fighter'])('story-only dungeon shell route preserves all prerequisite flags for %s', className => {
+test.each(['Wizard', 'Fighter', 'Rogue', 'Cleric'])('story-only dungeon shell route preserves all prerequisite flags for %s', className => {
     const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
     const functions = ['run_fresh_collection', 'run_fresh_story_ready', 'run_fresh_story_dungeon'].map(name =>
         script.match(new RegExp(`${name}\\(\\) \\{\\n[\\s\\S]*?\\n\\}`))[0]);

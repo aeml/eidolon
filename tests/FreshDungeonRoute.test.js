@@ -14,7 +14,7 @@ jest.unstable_mockModule('./e2e/chronicle-earth-route.js', () => ({
     verifyEarthDungeonChronicleTurnIn: verifyTurnIn
 }));
 jest.unstable_mockModule('./e2e/dungeon-playthrough-route.js', () => ({ playDungeonThroughInputs: playDungeon }));
-jest.unstable_mockModule('./e2e/earned-class-combat.js', () => ({ createEarnedClassCombat: createDefense }));
+jest.unstable_mockModule('./e2e/earned-dungeon-combat.js', () => ({ createEarnedDungeonCombat: createDefense }));
 jest.unstable_mockModule('./e2e/earned-equipment-upgrades.js', () => ({ upgradeEarnedEquipment: upgradeGear, readEarnedGear: readGear }));
 const { clearEarnedVerdant } = await import('./e2e/fresh-dungeon-route.js');
 
@@ -65,8 +65,19 @@ test.each([
     expect(verifyTurnIn).toHaveBeenCalledWith(page, {});
 });
 
+test.each(['Rogue', 'Cleric'])('%s uses its earned driver and the same clear/reward requirements', async className => {
+    page.evaluate.mockReset().mockResolvedValueOnce(className).mockResolvedValue({});
+    const defense = jest.fn(); createDefense.mockResolvedValue(defense);
+    await clearEarnedVerdant(page, {});
+    expect(createDefense).toHaveBeenCalledWith(page, className);
+    expect(playDungeon).toHaveBeenCalledWith(page, expect.objectContaining({
+        beforeCombat: defense, fullRun: true, fallbackRun: false, useTownGuide: true
+    }));
+    expect(verifyTurnIn).toHaveBeenCalledWith(page, {});
+});
+
 test('an unsupported earned class fails before starting dungeon combat', async () => {
-    page.evaluate.mockReset().mockResolvedValue('Rogue');
+    page.evaluate.mockReset().mockResolvedValue('Unknown');
     await expect(clearEarnedVerdant(page, {})).rejects.toThrow();
     expect(playDungeon).not.toHaveBeenCalled();
 });
