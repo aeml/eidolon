@@ -1,6 +1,6 @@
 # Respawn visual fixture — release 60 CI timeout investigation
 
-Status: candidate test-harness correction; browser verification pending.
+Status: locally verified test-harness correction; new release pipeline pending.
 No gameplay, renderer quality, viewport, version, deadline or assertion changes.
 
 ## Authoritative failure
@@ -47,12 +47,21 @@ physical-device, earned-combat or multiplayer respawn acceptance.
   `/tmp/eidolon-release60-visual-yield-{focused,lint}.log`.
 - Initial focused run exposed a missing ESM Jest import in the new tests; fixed
   before the passing rerun. Do not count that first attempt as a pass.
-- Full client regression and actual bundled-Chromium/SwiftShader respawn test
-  are NOT RUN. The independent fresh-story browser44940 still owns the local
-  browser slot; preserve its source and let it finish before these checks.
-- Next: exercise the unchanged full respawn scenario with this scheduler under
-  bundled software-rendered Chromium, retries0, same120-second deadline and
-  inspect its screenshot/trace. If successful, run full client regression, merge
-  the verification-only correction into canonical60 and normally push. All CI,
+- Fresh-story44940 ended before the replay began; its separate Imp failure and
+  sanitized archive are retained in the primary story evidence. No overlap of
+  owned browsers or heavy regression with the browser replay.
+- Initial browser67098 failed during module loading because this diagnostic
+  worktree lacked ignored vendor assets; the visual scene never ran. Retained
+  `/tmp/eidolon-visual-yield-startup-proof-AmIcGE`. The mistaken `npm run prepare`
+  command has no script; `npm run prepare:client` then completed successfully.
+- Bundled Chromium/SwiftShader79068 PASS1/34.8s on code f827c80, CI=1, retries0,
+  same120-second deadline and full rendering/assertions. Final PNG inspected:
+  same1280x720 view and visible Rogue, no enclosing cube. Archive
+  `/tmp/eidolon-visual-yield-render-proof-ZM4ryD`, scan0; test web41962 closed.
+  Log `/tmp/eidolon-release60-visual-yield-browser-ready.log`.
+- Full39933 client PASS255suites/3612tests104.772s and lint, Node24.18.0. Logs
+  `/tmp/eidolon-release60-visual-yield-full-{client,lint}.log`.
+- Next: merge the verification-only correction into canonical60 and normally
+  push. All CI,
   deployment, final live QA and exact public identities must pass before60 is
   accepted. No61successor or unverified deployment shortcut.
