@@ -13,11 +13,20 @@ for (const characterClass of ['Fighter', 'Rogue', 'Wizard', 'Cleric']) {
         const failures = collectBrowserFailures(page, baseURL);
         const read = () => page.evaluate(() => ({ className: window.game.player.constructor.name,
             level: window.game.player.level, baseStats: window.game.player.baseStats }));
+        const verifyEmptyStash = async () => {
+            // A genuinely fresh account gets an explicit server snapshot, not
+            // an invented empty value when the stash message never arrived.
+            await expect.poll(() => page.evaluate(() => Array.isArray(window.game.player.stash)),
+                { timeout: 10_000, message: 'Fresh empty stash must be replicated on login' }).toBe(true);
+            expect(await page.evaluate(() => window.game.player.stash)).toEqual(Array(100).fill(null));
+        };
         await loginAndEnterWorld(page, credentials);
+        await verifyEmptyStash();
         const initial = { className: characterClass, level: 1,
             baseStats: { strength: 10, dexterity: 10, intelligence: 10, wisdom: 10, vitality: 10 } };
         expect(await read()).toEqual(initial);
         await loginAndEnterWorld(page, credentials);
+        await verifyEmptyStash();
         expect(await read()).toEqual(initial);
         // Deliberate QA-only level override, not earned leveling or a campaign
         // result. Ordinary XP growth parity is independently tested in Go.
@@ -26,6 +35,7 @@ for (const characterClass of ['Fighter', 'Rogue', 'Wizard', 'Cleric']) {
             baseStats: { strength: 68, dexterity: 39, intelligence: 39, wisdom: 39, vitality: 68 } };
         expect(await read()).toEqual(prepared);
         await loginAndEnterWorld(page, credentials);
+        await verifyEmptyStash();
         expect(await read()).toEqual(prepared);
         console.log('[initial-stat-parity]', JSON.stringify({ initial, prepared, note: 'Explicit QA level override; not earned progression' }));
         expect(failures, failures.join('\n')).toEqual([]);
