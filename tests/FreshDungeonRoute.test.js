@@ -1,4 +1,5 @@
 import { jest } from '@jest/globals';
+import { readEarnedDungeonEntryInPage } from './earnedDungeonEntryReceipt.js';
 
 const readPlayerState = jest.fn();
 const readChronicleChapter = jest.fn();
@@ -51,6 +52,25 @@ test('an unmet earned level gate stops before entry without granting a level', a
     await expect(clearEarnedVerdant(page, {})).rejects.toThrow();
     expect(playDungeon).not.toHaveBeenCalled();
     expect(verifyTurnIn).not.toHaveBeenCalled();
+});
+
+test('entry receipt is retained after earned swaps and before combat, even when combat fails', async () => {
+    const receipt = { schemaVersion: 1, inventory: [{ name: 'Eidolon Shard', stack: 19 }] };
+    page.evaluate.mockImplementation(callback => Promise.resolve(callback === readEarnedDungeonEntryInPage ? receipt : 'Wizard'));
+    const captureEntry = jest.fn();
+    const failure = new Error('Encounter failed');
+    playDungeon.mockRejectedValue(failure);
+    await expect(clearEarnedVerdant(page, {}, { captureEntry })).rejects.toBe(failure);
+    expect(captureEntry).toHaveBeenCalledWith(receipt);
+    expect(upgradeGear.mock.invocationCallOrder[0]).toBeLessThan(captureEntry.mock.invocationCallOrder[0]);
+    expect(captureEntry.mock.invocationCallOrder[0]).toBeLessThan(playDungeon.mock.invocationCallOrder[0]);
+    expect(verifyTurnIn).not.toHaveBeenCalled();
+});
+
+test('failed receipt retention prevents an unrecorded long combat run', async () => {
+    const failure = new Error('Attachment failed');
+    await expect(clearEarnedVerdant(page, {}, { captureEntry: async () => { throw failure; } })).rejects.toBe(failure);
+    expect(playDungeon).not.toHaveBeenCalled();
 });
 
 test.each([

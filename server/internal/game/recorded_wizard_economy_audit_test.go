@@ -1,10 +1,12 @@
 package game
 
 import (
+	"eidolon-server/internal/forging"
 	"encoding/json"
 	"fmt"
 	"math"
 	"os"
+	"sort"
 	"testing"
 )
 
@@ -30,8 +32,12 @@ func TestRecordedWizardEconomyAudit(t *testing.T) {
 	if record.SourceCommit != "4b3991ffea239bb3152ea93263fbc0bbe95c05a3" || record.Level != 31 || len(record.Equipment) != 14 {
 		t.Fatal("audit requires the recorded 14-item level31 build")
 	}
-	for _, level := range []int{31, 32} {
-		t.Run(fmt.Sprintf("level%d", level), func(t *testing.T) {
+	for _, variant := range []struct {
+		level int
+		forge bool
+	}{{31, false}, {32, false}, {31, true}, {32, true}} {
+		level := variant.level
+		t.Run(fmt.Sprintf("level%d/forge_counterfactual=%t", level, variant.forge), func(t *testing.T) {
 			w := newTestWorld()
 			p := newTestPlayer("recorded-economy-audit", "Wizard")
 			w.AddEntity(p)
@@ -70,6 +76,38 @@ func TestRecordedWizardEconomyAudit(t *testing.T) {
 			wantHP, wantMana := 1140+(level-31)*25, 670+(level-31)*15
 			if p.MaxHealth != wantHP || p.MaxMana != wantMana || p.Damage != 22 {
 				t.Fatalf("fixture differs from native profile: hp=%d mana=%d damage=%d", p.MaxHealth, p.MaxMana, p.Damage)
+			}
+			if variant.forge {
+				// Explicit counterfactual: quote normal level upgrades and supply
+				// exactly their cost to this unit fixture. No claim that the
+				// historical character earned or carried these materials.
+				slots := make([]string, 0, len(p.Equipment))
+				totalCost := 0
+				for slot, item := range p.Equipment {
+					if item.Level >= level {
+						continue
+					}
+					slots = append(slots, slot)
+					_, cost := forging.UpgradeCost(item.Level, level-item.Level)
+					totalCost += cost
+				}
+				sort.Strings(slots)
+				p.Inventory = []Item{{ID: "audit-only-shards", Name: "Eidolon Shard", Type: ItemMaterial, Stack: totalCost}}
+				for _, slot := range slots {
+					before := p.Equipment[slot]
+					_, cost := forging.UpgradeCost(before.Level, level-before.Level)
+					_, ok, reason := w.PerformForgeUpgrade(p.ID, slot, level-before.Level)
+					if !ok || p.Equipment[slot].Level != level || p.Equipment[slot].ID != before.ID {
+						t.Fatalf("normal Forge failed for %s: %s", slot, reason)
+					}
+					t.Logf("COUNTERFACTUAL upgrade slot=%s from=%d to=%d shard_cost=%d stats_before=%v stats_after=%v",
+						slot, before.Level, level, cost, before.Stats, p.Equipment[slot].Stats)
+				}
+				if len(p.Inventory) != 0 || p.Gold != 0 || p.Level != level {
+					t.Fatal("Forge must consume exactly the quoted shards without Gold or level changes")
+				}
+				p.Health, p.Mana = p.MaxHealth, p.MaxMana
+				t.Logf("COUNTERFACTUAL total_shards=%d; material availability and earned preparation remain unverified", totalCost)
 			}
 			before := p.Mana
 			result := w.PerformAbility(p.ID, 10, 0, "", "Fireball")

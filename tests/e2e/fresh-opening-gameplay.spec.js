@@ -277,7 +277,10 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     if (storyOnlyReadiness) {
         await runPhase('readiness', () => verifyStoryOnlyEarthReadiness(page));
         if (storyOnlyDungeon) {
-            await clearEarnedVerdant(page, credentials, { runPhase });
+            await clearEarnedVerdant(page, credentials, { runPhase,
+                captureEntry: receipt => testInfo.attach('earned-dungeon-entry', {
+                    body: JSON.stringify(receipt), contentType: 'application/json'
+                }) });
             const usedDailies = await page.evaluate(() => window.game.player.quests.filter(quest =>
                 quest.id?.startsWith('daily_') && (quest.accepted || quest.completed)).map(quest => quest.id));
             expect(usedDailies, 'Dungeon completion must not introduce daily-quest leveling').toEqual([]);

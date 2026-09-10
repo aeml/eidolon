@@ -34,7 +34,8 @@ test('new route extends strict readiness and leaves the existing release gate in
     expect(opening.indexOf('storyOnlyDungeonEnabled();')).toBeLessThan(opening.indexOf('await loginAndEnterWorld('));
     expect(opening).toContain('const storyTimeout = storyOnlyDungeon ? freshStoryDungeonTimeout : freshStoryTimeout;');
     expect(opening).toContain('includeDungeon: storyOnlyDungeon');
-    expect(opening).toContain('await clearEarnedVerdant(page, credentials, { runPhase });');
+    expect(opening).toContain('await clearEarnedVerdant(page, credentials, { runPhase,');
+    expect(opening).toContain("captureEntry: receipt => testInfo.attach('earned-dungeon-entry'");
     expect(opening).toContain("expect(usedDailies, 'Dungeon completion must not introduce daily-quest leveling').toEqual([])");
 });
 
