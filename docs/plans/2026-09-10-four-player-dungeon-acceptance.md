@@ -184,3 +184,36 @@ hovered entity, instead of mistaking a canvas-visible but boss-covered point
 for the ally. It never assigns hover state or sends ability commands directly.
 Focused84936 passed29 tests across3 suites0.957s plus lint. These changes need
 the next native run; no new clear or improved boss-healing claim yet.
+
+## Latest result — guide re-entry, September10 21:29
+
+Charge-reserve run46761 on clean02d30584 ended after7.1minutes at the second
+town return, before the Warden. All four remained alive with477Gold each.
+Fighter3872damage/847taken, Cleric1175effective ally healing/0taken,
+Wizard3167damage/452taken, Rogue3004damage/240taken; no rejected casts and no
+Charge casts in this early segment. The first room and complete four-person
+recovery/resume succeeded; the later guide projection failed for a member at
+dungeon-guide.js:48, called from the per-member resume loop. There is no boss
+strategy or full-clear result. Archive
+`/tmp/eidolon-four-role-charge-reserve-proof-yQ6cln`; scan passed and owned
+services cleared. Final full town resources must not be treated as combat data.
+
+24ef041d corrects an independently demonstrated approach sequencing limitation:
+the generic ground helper witnesses movement, not waypoint arrival. The guide
+controller now finishes each waypoint and camera follow before another step,
+uses ordinary Shift-click walking, retains four steps and actual hover/click
+checks, and records early projection/loaded-NPC/DOM coverage failures. Per-member
+re-entry logs identify class and phase without account identifiers.32 focused
+tests/3suites1.365s and lint passed (35443); route lint/shell/discovery87783 passed.
+This did not prove the previous failure's root cause; its old log lacked those
+early visibility diagnostics. No combat, gear, resources or global deadlines changed.
+
+The separate focused route59146 on clean24ef041d passed2.6minutes: four ordinary
+registrations with explicit QA level30 entry eligibility, real invitations,
+initial group dungeon entry, then three full-party recalls and twelve individual
+guide resumes to the same instance. Both navigation and browser-failure checks
+passed; no combat or earned progression is claimed. Archive
+`/tmp/eidolon-party-guide-reentry-proof-bglqIQ`, log
+`/tmp/eidolon-party-guide-reentry-native.log`; scan passed and owned ports cleared.
+The focused result supports returning to the unchanged full-clear acceptance
+requirements; all bosses, rewards, individual manual turn-ins and relogin remain.
