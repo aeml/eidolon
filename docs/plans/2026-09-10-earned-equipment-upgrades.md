@@ -1,6 +1,6 @@
 # Earned equipment progression in campaign QA
 
-Status: local QA implementation and focused checks passed; full regression and
+Status: local QA implementation, focused checks and full regression passed;
 native swap/clear acceptance remain pending. No runtime, loot, stat, currency,
 boss, version or deployment change. This addresses a verification gap identified
 in the [failed earned Verdant attempt](2026-09-10-earned-verdant-failure.md).
@@ -43,6 +43,13 @@ verification rather than being implied by a passing ordinary-upgrade test.
 
 ## Evidence and remaining gates
 
+Full session41660 on clean54a4df69 exited0:291 suites,4102 tests,136.805s,
+then passing lint. Logs `/tmp/eidolon-earned-upgrades-full-client.log` and
+`/tmp/eidolon-earned-upgrades-full-lint.log`, Node24.18.0. Separate native fixture
+branch44aaf011 adds a loopback-only, new-empty-account seed and actual full-bag
+drags, paired-slot choice, exact item conservation and login verification. Its
+prepared items are explicitly not earned campaign or dungeon evidence.
+
 Focused session17443 exited0:87 tests in7 suites,1.381s and lint, Node24.18.0.
 Logs `/tmp/eidolon-earned-upgrades-unit-integrated.log` and
 `/tmp/eidolon-earned-upgrades-lint-integrated.log`.
@@ -57,7 +64,7 @@ attempted drag, so unrelated setup exceptions cannot satisfy them. Original
 `/tmp/eidolon-earned-upgrades-unit.log` retained. Corrected77-test run94297 passed
 before the final pre-dungeon integration and87-test run above.
 
-Before acceptance, run full client regression; exercise actual inventory drags,
+Before acceptance, exercise actual inventory drags,
 paired-slot swaps and saved ownership in a native browser; then replay earned
 campaign/dungeon progression under unchanged combat/death/phase limits. Capture
 the new full equipped-item and defense/skill diagnostics at entry/death. Do not
