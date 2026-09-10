@@ -133,7 +133,9 @@ func TestRoutineEliteDeathPipelinePublishesAtMostOneEquipmentEach(t *testing.T) 
 		w.AddEntity(p)
 		enemy := &Entity{ID: fmt.Sprintf("elite-routine-%d", i), Type: TypeEnemy, SubType: "InfernoTitan", Level: 1, Health: 1, MaxHealth: 1, State: "IDLE"}
 		w.AddEntity(enemy)
+		enemy.Mu.Lock()
 		w.handleDeath(enemy, p, nil)
+		enemy.Mu.Unlock()
 	}
 	deadline := time.Now().Add(5 * time.Second)
 	for {
@@ -185,7 +187,9 @@ func TestRoutineEliteLootKeepsPartyRulesAndPersonalFragments(t *testing.T) {
 	leader.QAGuaranteedLoot = true
 	enemy := &Entity{ID: "elite-routine-party", Type: TypeEnemy, SubType: "InfernoTitan", Level: 1, Health: 1, MaxHealth: 1, State: "IDLE"}
 	w.AddEntity(enemy)
+	enemy.Mu.Lock()
 	w.handleDeath(enemy, leader, nil)
+	enemy.Mu.Unlock()
 	var gearID, itemID, leaderFragment string
 	deadline := time.Now().Add(5 * time.Second)
 	for {

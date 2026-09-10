@@ -8,6 +8,8 @@ import (
 	"time"
 )
 
+// Caller owns target.Mu, but not w.Mu or attacker.Mu. The target lock is
+// temporarily released for party lookup and chained explosions, then restored.
 func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferredActions) {
 	w.handleDeathWithWorldLock(target, attacker, deferred, false)
 }
