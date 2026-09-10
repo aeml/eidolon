@@ -149,6 +149,12 @@ qa_allowlist+=",${QA_USERNAME_BASE}-retry1,${QA_USERNAME_BASE}-first-grove,${QA_
 mongo_username="qa_root"
 mongo_password="$(openssl rand -hex 24)"
 
+capture_isolated_service_failure() {
+  EIDOLON_QA_MONGO_USERNAME="${mongo_username}" EIDOLON_QA_MONGO_PASSWORD="${mongo_password}" \
+    node scripts/capture-qa-service-diagnostics.mjs "$1" "$2" || \
+    echo "Could not retain startup diagnostics; original readiness failure remains fatal." >&2
+}
+
 docker build \
   --build-arg GO_VERSION=1.24.5 \
   --build-arg "BUILD_COMMIT=${qa_build_commit}" \
@@ -176,6 +182,7 @@ for attempt in $(seq 1 60); do
   fi
   if [ "${attempt}" -eq 60 ]; then
     echo "Isolated Mongo readiness timed out." >&2
+    capture_isolated_service_failure "${MONGO_CONTAINER}" mongo
     exit 1
   fi
   sleep 1
@@ -194,6 +201,7 @@ for attempt in $(seq 1 60); do
   fi
   if [ "${attempt}" -eq 60 ]; then
     echo "Isolated API readiness timed out." >&2
+    capture_isolated_service_failure "${API_CONTAINER}" api
     exit 1
   fi
   sleep 1
