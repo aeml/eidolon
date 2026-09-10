@@ -27,7 +27,59 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 08:55 UTC
+## Current checkpoint — September 10, 09:14 UTC
+
+Previous goal turn was PROGRESS (native failure diagnosis and verified route
+integration). This turn makes PROGRESS: implemented earned gear upgrades through
+actual inventory drags before merchant disposal, at training and dungeon entry,
+plus fuller equipped-item/ability diagnostics. Primary now clean **308510ad**
+atop code54a4df69. Details/assumptions in
+`docs/plans/2026-09-10-earned-equipment-upgrades.md` there. QA class utility is
+explicitly not an optimal-build/DPS/balance model; special set/unique mechanics
+and unknown stats remain unmodeled, not discarded. No runtime/reward/regen/boss
+changes. Full41660 on54a4df69 PASS291suites4102tests136.805s+lint. Focused17443
+PASS87/7/1.381s+lint; original32037 fixture-clone error retained and corrected.
+
+Separate native WT `/tmp/eidolon-earned-upgrade-native-AktTHc`, branch
+`work/earned-upgrade-native-20260910`, clean/frozen **f5b09c70**. Adds a guarded
+new-empty-account/loopback prepared inventory fixture, real full-bag swaps,
+explicit weaker ring2 selection, exact ownership/nonzero value and login checks.
+Prepared items are NOT earned progression evidence. Uses unchanged game runtime.
+
+Native17050 on44aaf011 failed ownership comparison: JSON inventory includes
+value:0/omits empty gems while protobuf equipment omits0/includes gems:[].
+Confirmed in server Item JSON tags and state serialization. ffd0a330 normalizes
+only those defaults; keeps nonzero values, gems/stats/metadata exact. Focused16017
+PASS39/3/0.816s+lint; full regression of this later canonicalization still pending.
+Archive `/tmp/eidolon-upgrade-fixture-failure-KFc4hv`, original run log retained.
+
+Native43863 onffd0a330 failed a15s swap confirmation, no acceptance. Archive
+`/tmp/eidolon-upgrade-wire-failure-oysKtA`. Diagnostic79299 onf3954216 completed
+both swaps and exact login preservation with nonzero item values; failed only
+the final screenshot's assumption that inventory automatically opens the character
+sheet. Archive `/tmp/eidolon-upgrade-diagnostic-failure-NTgTui`. All three actual
+wrapper credential scans passed0sanitized. No failures relabeled as full passes.
+The intermediate timeout remains unexplained. Source inspection shows equipment
+slots are cloned on character-sheet refresh, a possible drag interruption path,
+but its causality has NOT been established; no runtime change made on that theory.
+
+**ACTIVE native session72474** on frozenf5b09c70 corrects the final panel input
+and repeats the fixture3times on distinct accounts, retries0. Continue SAME
+handle, do not edit this WT or overlap another browser/heavy suite. RunID
+`gear-upgrades-repeat-0910`, API18570/Mongo18571/web41970; log
+`/tmp/eidolon-upgrade-native-repeat-run.log`. Source prepared via prepare:client;
+Node24 inside sg render, unsetCI. Lint/bash checks74008 exited0 before start.
+After terminal: inspect failure/events or images, archive/scan/verify cleanup;
+fix any proven issue, full-test canonical changes, integrate only with evidence.
+Then earned dungeon replay/ability/resource investigation still remains.
+
+Fresh09:14 GitHub34434837759 still queued;34433520743 in progress. No current-soak
+cancellation permission, push or deployment. Last public identity08:04 remains
+historical, not reverified here. Aura integrationd9176d0e still needs its full/
+render/native gates. Physical-phone feedback and all remaining1.1–1.10/casino
+requirements stay open. Root ledger is documentation only; never push root.
+
+## Previous checkpoint — September 10, 08:55 UTC
 
 Previous casino-confirmation turn was NO PROGRESS toward implementation (the
 required roadmap already existed). This turn makes PROGRESS through terminal
