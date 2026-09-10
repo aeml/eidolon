@@ -26,7 +26,7 @@ an apparently usable in-range attack."
 
 ## Remaining release gates
 
-- [ ] Full client/lint and server regression on this exact candidate.
+- [x] Full client/lint and server regression on this exact candidate.
 - [x] Actual desktop/phone card rendering with inspected retained screenshots.
 - [x] Native membership departure feedback and preserved town recovery behavior.
 - [ ] Finished release59 acceptance before selecting and synchronizing successor
@@ -69,3 +69,10 @@ Native archive `/tmp/eidolon-safe-release-native-proof-py0yzm`, scanner0;
 log `/tmp/eidolon-safe-card-native-2344.log`. Exact disposable containers and
 API18560/Mongo18561/web41960 absent after terminal cleanup. This is local native
 proof, not production delivery, full-server regression or physical-phone sign-off.
+
+Full11025 on63343d2 completed September10,00:02UTC: client253suites3598tests
+81.541s+lint, server-race all packages passed (root14.220s/game235.846s/database
+1.116s/lifecycle1.032s). Logs `/tmp/eidolon-safe-release-full-{client,lint,server}.log`.
+Release59 is now deployed with matching public identity, but its final native live
+QA remains active. No successor identity, version bump, publication or final
+acceptance is implied by this local regression pass.
