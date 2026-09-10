@@ -5,7 +5,45 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 23:08 UTC
+## Current checkpoint — September 10, 23:16 UTC
+
+Previous turn was PROGRESS: current104browser acceptance and native retry.
+This turn is PROGRESS:1157 produced precise precombat arrival evidence, its
+false movement failure is corrected/tested, and the next exact-source run began.
+Full roadmap/clear/required-all/live gates remain open.
+
+-1157 on edc7503a is TERMINAL1 before combat. Seed6747352009075544054,
+  generator2/Normal30/no fallback/clean. Four setup/roster/instance checks passed;
+  allalive/Gold0/no casts. The Cleric moved0.888125units after an accepted real
+  Shift click, ending4.935units from the tank (already inside the existing
+  five-unit formation bound), but generic movement required>1unit. Recorded
+  target overlapped the Rogue's ordinary body; camera/mesh offsets0, targets
+  cleared, Cleric blockedStops3. This precise failure is not terrain/camera
+  evidence and does not establish62131's old unknown position/cause.
+- Archive`/tmp/eidolon-four-role-corners-proof-83inuh` retained reports/results/
+  log; wrapper scanned2files, copied-log redaction left0QA prefixes. Owned
+ 18580/18581/41980listeners gone. No combat/full-clear/quest claim from this run.
+- Primary04b68c5a adds an explicit optional arrival region for formation inputs.
+  After a real click, observed living arrival may satisfy the formation's actual
+  destination condition despite a short displacement. Ordinary callers retain
+  their original movement threshold; no-input/unachieved/dead/wrong-scene-type
+  arrivals fail, and the group still rereads all actual positions under the same
+  radius/15s limit.28066 passed57tests/4suites1.068s plus lint/discovery, including
+  exact1157 coordinates and ordinary short-movement failure. Logs
+ `/tmp/eidolon-party-arrival-{focused,lint,discovery}.log`. No gameplay changes.
+  Note: the optional helper currently compares scene type, while existing
+  entry/recovery gates verify exact instance identity; it is not a standalone
+  exact-instance assertion. Retain that distinction in acceptance claims.
+- Full native69808 is ACTIVE on clean frozen04b68c5a, sole heavy gate,
+  routeparty-dungeon/runparty-arrival-0910-2317/ports18580/18581/41980. Log
+ `/tmp/eidolon-four-role-arrival-native.log`. Do not edit primary or start another
+  heavy gate until this exact handle terminates. Earlier1157active states below
+  are superseded. Candidate0c8c4ffe idle, full Go/current104browser passed;
+  versioned required-all/canonical/version/patch notes/remote/live pending.
+- No push, version bump, soak interruption or deployment. Root never pushes;
+  whole roadmap and native full-party/manual/relogin proof remain required.
+
+## Previous checkpoint — September 10, 23:08 UTC
 
 Previous goal turn was PROGRESS: exact-seed formation geometry and browser
 progress. This turn is PROGRESS: all104current browser cases passed; reports
