@@ -499,7 +499,8 @@ export class SocialUI {
         if (this.partyInviterName) this.partyInviterName.textContent = inviterName;
         const benefits = document.getElementById('party-request-benefits');
         if (benefits) {
-            benefits.textContent = 'Accept to share nearby kill rewards, dungeon boss credit, and party-led dungeon entry flow.';
+            benefits.textContent = 'Accept to share kill rewards across the whole dungeon or within roughly two screens in the overworld, plus party-led dungeon entry.';
+            benefits.title = PARTY_REWARD_DETAILS;
         }
         this.partyRequestModal.style.display = 'block';
         this.btnAcceptParty?.focus();

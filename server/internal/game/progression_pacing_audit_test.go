@@ -55,7 +55,9 @@ func TestProgressionPacingAuditBossRewards(t *testing.T) {
 				w.AddEntity(boss)
 				// Exercise the real death/reward/party/level-up pipeline. This is an
 				// isolated reward probe, not evidence of winning a boss through play.
+				boss.Mu.Lock()
 				w.handleDeath(boss, players[0], nil)
+				boss.Mu.Unlock()
 				seen := map[string]bool{}
 				for range players {
 					select {

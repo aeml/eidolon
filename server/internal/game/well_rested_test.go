@@ -376,7 +376,9 @@ func TestWellRestedPartyBossKillBoostsOnlyRestedRecipient(t *testing.T) {
 		}
 		boss := &Entity{ID: "rest-boss", Type: TypeEnemy, SubType: "RootboundWarden", Level: level, Health: 1, MaxHealth: 1, State: "IDLE", InstanceID: instanceID}
 		w.AddEntity(boss)
+		boss.Mu.Lock()
 		w.handleDeath(boss, players[0], nil)
+		boss.Mu.Unlock()
 		byPlayer := map[string]RewardSummaryEvent{}
 		for range players {
 			select {
