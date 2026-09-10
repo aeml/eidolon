@@ -27,7 +27,52 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 17:07 UTC
+## Current checkpoint — September 10, 17:15 UTC
+
+Previous turn was PROGRESS (empty-stash runtime/native/full regression and ready
+quest guidance). This turn is PROGRESS: integrated both verified corrections
+into the current successor and strengthened its required authenticated storage
+checks. Full1.1–1.10 remains active/incomplete; no version or deployment change.
+
+- Primary6251 ACTIVE, actual handle re-polled17:14. Clean9b9dfffe frozen;
+  `empty-fixed-story-0910`, log`/tmp/eidolon-empty-fixed-story-native.log`.
+  Opening passed87.260seconds, watch active. Latest receipt level5,20/40kills,
+  0deaths,8town rests,314seconds. No dungeon-clear claim, no budget/regen/grant
+  changes. Continue same handle; this is the sole local heavy/browser run.
+- Current successor worktree`/tmp/eidolon-browser-cost-current-RxDWen`, branch
+  `work/browser-cost-current-20260910`, clean d0be3274. CI-only49daea2e now also
+  includes guidance0741ff11 and its browser followups as34d1de13/e776b4e7/
+  0a7d7911/40568a38, plus empty-stashd70e5acc asf52f3157. No expanded primary
+  story/curve/investigations or starting-stat QA correction imported. Those
+  remain open primary work, not removed from the objective.
+- On cleanf52f3157,14417 TERMINAL0:343tests/9suites10.299seconds plus lint and
+  CI-mode exact discovery103anonymous/interface cases, no omissions/duplicates/
+  empty groups. Distribution same prior101case plan except job2interface11
+  instead of9, adding desktop/phone ready guidance.46148 focused initial-stash
+  Go race PASS1.849seconds. Full integrated regression/browser work still pending.
+- d0be3274 strengthens the existing required authenticated smoke: wait for real
+  stash replication, preserve full contents through normal transport resume,
+  then fresh page login and require the same contents again. No assumed empty
+  fallback, new account or item action.12484 lint/discovery passed all3existing
+  authenticated cases; new checks have NOT yet executed in a browser. Logs
+  `/tmp/eidolon-next-candidate-stash-gate-{lint,discovery}.log`.
+- `docs/plans/2026-09-10-next-release-integration.md` in successor records scope,
+  evidence and remaining combined full Go/client, smoke,3real bundled-browser
+  groups/timings, versioned CI/all/live gates. CI-only record now clearly points
+  to this later source instead of implying its old101case/CI-only scope is current.
+  Original socket all proof is historical source-specific evidence; do not repeat
+  unchanged old source as missing or use it to certify this changed release.
+
+No new remote/public poll since17:07 checkpoint below: canonical62dc release
+still requires acceptance before successor promotion, and no current-soak
+cancellation or runner-policy approval arrived. Root remains ledger-only and
+never pushed. Next: observe6251; execute combined successor gates when the local
+heavy slot is free, preserving failures before reuse. Standalone guidance's
+remaining full regression can be covered by the combined candidate rather than
+duplicating a separate full pass. Allclass/group/realm/raid/balance/physicalphone/
+casino and later roadmap requirements, including Normal policy choice, remain.
+
+## Previous checkpoint — September 10, 17:07 UTC
 
 Previous turn was PROGRESS (current CI partition integration and process proof).
 This continuation is PROGRESS: fresh play exposed missing authoritative empty
