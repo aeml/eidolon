@@ -108,9 +108,9 @@ Separate diagnostic worktree `/tmp/eidolon-release60-hover-diagnostic-V1ICnd`,
 branch`work/release60-hover-diagnostics`, commit6cf157a, adds failure-only actual
 projection/hover/card/rendered-enemy/camera observations and an at-failure world
 screenshot. No runtime change, selection/raycast injection, timeout extension or
-weakened assertion. Focused5576 passed20tests/3suites0.849s+lint. Actual diagnostic
-against fresh ordinary live QA registration is next after primary65010 releases
-the local browser slot. No blind CI rerun, no successor push, no acceptance claim.
+weakened assertion. Focused5576 passed20tests/3suites0.849s+lint. This was the
+initial diagnostic preparation; its subsequent live reproduction, correction and
+verified promotion are recorded above. The old failed workflow remains retained.
 
 ## Required corrected-publication acceptance
 
@@ -118,7 +118,7 @@ the local browser slot. No blind CI rerun, no successor push, no acceptance clai
 - [ ] Both new deployments pass; inspect server schema preflight and rollback evidence.
 - [ ] Final live native/character verification passes; preserve and inspect evidence.
 - [ ] Fresh public manifest, login/patch notes, release-keyed runtime GET and healthy
-  backend all identify the exact60/df91bb6 release after the final live job.
+  backend all identify the exact60/3a139c0 release after the final live job.
 
 This does not complete the broader1.1–1.10 goal, campaign/class/group balance,
 physical-phone playability, full dungeon/raid story or two-floor casino scope.
