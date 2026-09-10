@@ -218,96 +218,8 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 		}
 	}
 
-	// Gameplay invulnerability and allowlisted release-QA protection are
-	// independent clocks; a short class effect must never shorten the latter.
-	damageTime := time.Now()
-	gameplayInvulnerable := !tgt.InvulnerableEndTime.IsZero() && damageTime.Before(tgt.InvulnerableEndTime)
-	qaWaypointProtected := !tgt.QAWaypointProtectionEndTime.IsZero() && damageTime.Before(tgt.QAWaypointProtectionEndTime)
-	if tgt.Type == TypePlayer && (gameplayInvulnerable || qaWaypointProtected) {
-		damage = 0
-	}
-
-	// The two Sanctuary sources have distinct advertised strengths and may
-	// overlap. Use the stronger active reduction rather than an approximation.
-	sanctuaryReduction := 0.0
-	if tgt.SanctuaryDamageReduction && time.Now().Before(tgt.SanctuaryEndTime) {
-		sanctuaryReduction = 0.20
-	}
-	if !tgt.ConsecratedSanctuaryEndTime.IsZero() && time.Now().Before(tgt.ConsecratedSanctuaryEndTime) {
-		sanctuaryReduction = 0.30
-	}
-	if sanctuaryReduction > 0 {
-		damage = int(float64(damage) * (1.0 - sanctuaryReduction))
-	}
-
-	// Divine Intervention Guardian Angel rune: 50% damage reduction
-	if tgt.DivineInterventionGuardian && time.Now().Before(tgt.DivineInterventionGuardTime) {
-		damage = int(float64(damage) * 0.5)
-	}
-
-	// Arcane Shield absorption
-	actualDamage := damage
-	if tgt.Type == TypePlayer && tgt.ArcaneShieldActive && tgt.ArcaneShieldHP > 0 && damage > 0 {
-		absorbed := damage
-		if absorbed > tgt.ArcaneShieldHP {
-			absorbed = tgt.ArcaneShieldHP
-		}
-		tgt.ArcaneShieldHP -= absorbed
-		tgt.ArcaneShieldAbsorbed += absorbed
-		actualDamage = damage - absorbed
-
-		// Reflective rune: reflect 30% of absorbed damage
-		if tgt.ArcaneShieldRuneID == "arcaneshield_reflective" {
-			reflectDamage := absorbed * 30 / 100
-			if reflectDamage > 0 {
-				pendingReflectDamage += reflectDamage
-			}
-		}
-
-		// Shield broken - check for explosive rune
-		if tgt.ArcaneShieldHP <= 0 {
-			if tgt.ArcaneShieldRuneID == "arcaneshield_explosive" {
-				// Explode dealing absorbed amount to nearby enemies
-				explosionDamage := tgt.ArcaneShieldAbsorbed
-				explosionRadius := 6.0
-				shieldX, shieldZ, shieldInstanceID, shieldOwnerID := tgt.X, tgt.Z, tgt.InstanceID, tgt.ID
-				tgt.Mu.Unlock() // Unlock for grid search
-				explosionNearby := w.Grid.Nearby(shieldX, shieldZ, explosionRadius, shieldInstanceID)
-				for _, et := range explosionNearby {
-					et.Mu.RLock()
-					if et.Type != TypeEnemy || et.State == "DEAD" {
-						et.Mu.RUnlock()
-						continue
-					}
-					edx := shieldX - et.X
-					edz := shieldZ - et.Z
-					et.Mu.RUnlock()
-
-					if (edx*edx + edz*edz) <= explosionRadius*explosionRadius {
-						et.Mu.Lock()
-						et.Health -= explosionDamage
-						et.LastDamageType = "arcane"
-						isDead := et.Health <= 0
-						et.Mu.Unlock()
-
-						if w.OnEvent != nil {
-							w.OnEvent("damage", DamageEvent{TargetID: et.ID, SourceID: shieldOwnerID, Amount: explosionDamage, Kind: "arcane", InstanceID: shieldInstanceID})
-						}
-						if isDead {
-							et.Mu.Lock()
-							w.handleDeath(et, tgt, nil)
-							et.Mu.Unlock()
-						}
-					}
-				}
-				tgt.Mu.Lock() // Relock
-			}
-
-			tgt.ArcaneShieldActive = false
-			tgt.ArcaneShieldRuneID = ""
-			tgt.ArcaneShieldAbsorbed = 0
-		}
-	}
+	actualDamage, shieldReflectDamage := w.mitigateImpactDamageLocked(tgt, damage, time.Now(), false)
+	pendingReflectDamage += shieldReflectDamage
 
 	// The allowlisted near-death gate still uses a normal hostile AI swing,
 	// range check, cooldown, and asynchronous damage path. Once its explicit
@@ -350,21 +262,7 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 	if poisonApplied && poisonSpreads {
 		w.spreadPoison(att, tgt, poisonDamage, poisonEndTime)
 	}
-	if pendingReflectDamage > 0 {
-		att.Mu.Lock()
-		att.Health -= pendingReflectDamage
-		att.LastDamageType = "physical"
-		attackerDied := att.Health <= 0
-		att.Mu.Unlock()
-		if w.OnEvent != nil {
-			w.OnEvent("damage", DamageEvent{TargetID: att.ID, SourceID: tgt.ID, Amount: pendingReflectDamage, Kind: "reflect", InstanceID: attackerSnapshot.InstanceID})
-		}
-		if attackerDied {
-			att.Mu.Lock()
-			w.handleDeath(att, tgt, nil)
-			att.Mu.Unlock()
-		}
-	}
+	w.applyImpactReflection(att, tgt, pendingReflectDamage, attackerSnapshot.InstanceID, false)
 
 	if isDead {
 		tgt.Mu.Lock() // Re-lock for death handling
