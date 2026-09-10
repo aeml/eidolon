@@ -27,6 +27,34 @@ Existing canonical 51–57 releases and their deployment order are untouched.
 
 ## Evidence and remaining work
 
+September10: fresh story-only44940 on79e9571/code d47f5c6 TERMINAL FAILED16.9m
+at4/60Imp credit, after successful opening/diary/Watch40/8Seeds and manual
+turn-ins. No death in the completed Watch/collection segments. First hunt took
+527s with14 ordinary town rests and paid the correct100Gold1593XP tolevel8;
+Seeds took10observed target deaths. Imp chapter began atlevel9 and earned
+level10 training naturally before the failure atlevel11.
+
+The120-second encounter watchdog expired without increasing Imp credit above4.
+At failure: HP304/380, MP0/260, rest bank0,58retreats,10acceptedFireballs,
+97outgoing hits/1440damage and4incoming hits/308damage in the current observer
+segment. The intended level20Imp204 remained alive at74HP, distance2.97; the
+actual hovered/requested opponent had become Skeleton168 in a close crowd.
+Recent samples prove actual basic/fire damage against several targets, not an
+unattackable boss or absent ability. They do NOT prove a qualifying Imp died
+without credit. Between-encounter recovery currently runs only after hunt-credit
+progress; the driver can remain in an unfunded retreat/reselection encounter
+without returning to town. Investigate this alongside the real early-level
+difficulty gap rather than asserting a server credit defect or weakening gates.
+No changes to rewards, levels, deadlines or actual combat are justified by this
+single failure alone. Full authored/class/group/readiness acceptance stays open.
+
+Archive `/tmp/eidolon-fresh-imp-credit-proof-qYOiwO`, log
+`/tmp/eidolon-fresh-diary-ack-replay.log`; wrapper and retained scan0, actual
+failed-collection screenshot inspected. Exact ports18560/18561/41960 and owned
+containers were absent after wrapper cleanup. Preserve this evidence before
+another run. The release60 fixture verification gets the next browser slot;
+this source is now terminal and available for a separately verified correction.
+
 September9 04:29: Fighter62895 TERMINAL PASS1/25.5m on original cleanf3f33e1
 (same production gameplay as db3bbb7). Opening105s, diary141s cumulative;
 Watch40/40 at1370s hunt time, manual claim and final reconnect complete1388s.
