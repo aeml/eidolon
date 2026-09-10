@@ -3,6 +3,7 @@ import { buildDungeonTraversalRoutes } from '../dungeonTraversalRoutes.js';
 import { selectFighterDungeonSkill } from '../dungeonCombatControls.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { enterAndExitDungeon, moveByGroundClick, projectEntity, readPlayerState } from './helpers.js';
+import { dungeonSpatialSnapshot } from './dungeon-spatial-snapshot.js';
 
 // Callers own login, earned or fixture preparation, and story turn-in. The safe
 // default enters through the town guide, without grants. Only the legacy prepared
@@ -117,6 +118,7 @@ export async function playDungeonThroughInputs(page, {
             await page.waitForTimeout(350);
             const playerState = await readPlayerState(page);
             if (playerState.state === 'DEAD') {
+                const spatial = await page.evaluate(dungeonSpatialSnapshot, { targetId: target.id });
                 const death = await page.evaluate(() => ({
                     x: window.game.player.position.x, z: window.game.player.position.z,
                     mana: window.game.player.stats.mana, cooldowns: window.game.player.cooldowns,
@@ -125,7 +127,7 @@ export async function playDungeonThroughInputs(page, {
                     defense: window.__freshWizardDefense || window.__freshFighterCombat || null,
                     hotbar: window.game.player.hotbar, unlockedSkills: window.game.player.unlockedSkills
                 }));
-                console.log(`${logPrefix} death diagnostic ${JSON.stringify(death)}`);
+                console.log(`${logPrefix} death diagnostic ${JSON.stringify({ ...death, spatial })}`);
             }
             expect(playerState.state, 'character must survive the encounter').not.toBe('DEAD');
         }
@@ -151,6 +153,8 @@ export async function playDungeonThroughInputs(page, {
                 window.__dungeonSurvivalEvents.push({ time: Math.round(performance.now()), event: message.type,
                     amount: data.amount, kind: data.kind, sourceType: source?.subType || source?.constructor.name ||
                         (String(data.sourceId || '').startsWith('hazard-') ? 'hazard' : 'unresolved'),
+                    playerPosition: { x: game.player.position.x, z: game.player.position.z },
+                    sourcePosition: source?.position ? { x: source.position.x, z: source.position.z } : null,
                     hpBeforePresentation: game.player.stats.hp });
                 if (window.__dungeonSurvivalEvents.length > 80) window.__dungeonSurvivalEvents.shift();
             }

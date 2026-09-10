@@ -1,4 +1,4 @@
-# Earned Verdant attempt — first boss failure
+# Earned Verdant attempts — first boss failures
 
 Status: failed native attempt; dungeon completion remains unaccepted.
 
@@ -49,7 +49,63 @@ The stale Water assertion was never reached and did not cause this failure.
 Corrected runs must earn their own native acceptance; all classes/groups,
 realms, raids, balance and phone gates remain required.
 
-## Current follow-up — September 10
+## Second native attempt — September 10, 11:35 UTC
+
+Session44188 TERMINAL1 on clean/frozen4b3991ffea239bb3152ea93263fbc0bbe95c05a3.
+RunID `earned-upgrade-story-0910`; archive
+`/tmp/eidolon-earned-upgrade-failure-sQmC8N` retains test-results, report and
+`run.log` copied from `/tmp/eidolon-earned-upgrade-story-replay.log`.
+Actual wrapper credential scan passed with0sanitized files; owned containers
+and API18590/Mongo18591/web41990 listeners were absent after completion.
+No boss-fight screenshot was captured; retained PNGs cover earlier story stages.
+
+All8readiness phases passed in3298052ms (~55minutes), without deaths or daily/
+fixture progression. Real earned replacement receipts include mainhand, chest,
+shoulders, legs, offhand and trinkets. Entered normal30 at earned31 with1254HP
+and737mana; ordinary WellRested expiry reduced those boosted maxima. Seed
+**-1263584004433865125**, generator2, attempt0, no fallback. This is a different
+ordinary layout, not a forced reproduction of the original seed.
+
+Three Skeletons and a4130HP DemonOrc were defeated. Warden15000→at most9505
+observed HP before death. Last boss maximumHP1165, basicdamage22. Character
+remained at full health for several minutes while retreating and dealing slow
+low-mana damage, then died to **seven177-damage physical hits in23.533seconds**.
+Death position(20035.233783749074,19771.176993562265), mana12. Dungeon phase
+failed after649337ms on survival, not an eight-minute timeout or world stall.
+Defense counters:187retreats,39acceptedFireballs,0rejectedFireballs,0shields,
+0rejectedShields,0GravityWells,0crowdJumps. Teleport/ArcaneShield/GravityWell were
+unlocked and in the hotbar. Nearly empty mana before the boss is observed; a
+specific terrain trap or optimal-build conclusion is not yet established.
+
+This proves the upgrade helper was used and improved this attempt's observed
+damage/survival, but not that gear alone solves the encounter. The different
+seed also prevents attributing the entire improvement to gear. Both failed
+attempts remain authoritative. No first-boss defeat, later boss spawning, full
+clear, manual dungeon reward/raidaccess/save or Water handoff is accepted.
+
+### Next diagnostic work, before another long fresh run
+
+1. Reproduce recovery and appropriate earned ability use in short explicitly
+   prepared diagnostics. Existing town Recall/dungeon resume are normal game
+   affordances; investigate between-encounter recovery without resetting a run,
+   granting resources or erasing cleared-room/loot/quest state. Do not silently
+   switch the failed run to another strategy or claim it passed.
+2. Inspect retreat reachability and hostile body spacing. The old death receipt
+   lacks final target positions, room/walk geometry and damage-event positions.
+   A new read-only diagnostic now captures those facts on future failures, with
+   detached geometry and no player names/IDs in the spatial snapshot. Focused
+   tests14053 passed13/2suites0.757s plus lintNode24; full/native verification of
+   that instrumentation remains pending. Logs
+   `/tmp/eidolon-dungeon-spatial-{unit,lint}.log`. It does not change combat input,
+   damage, resources, survival or timeout bounds and is not a gameplay fix.
+3. Evaluate resource use, kit/build, observed damage rate and encounter tuning
+   together, including other classes and parties. Do not raise .01 passive
+   regeneration, fabricate gear, weaken a single boss or extend timeouts merely
+   to produce green QA. Town-rest gameplay must retain the user's intended role.
+4. Preserve original full-clear/manual-reward/save/Water requirements. Only run
+   another ordinary fresh campaign after short diagnostics justify the change.
+
+## Historical follow-up preceding the second attempt
 
 Primarybf8d36d6 includes the class-input/required Water-hunt corrections and the
 earned equipment-upgrade helper with fuller equipment/ability/defense receipts.
@@ -68,8 +124,8 @@ actual credential scan and retained artifacts at
 `/tmp/eidolon-visual-equipment-hit-proof-sqU6uz`. The3fileCSS/test correction is
 now ported here in25495d95. Its main-branch full regression is required before
 another long earned replay; release-branch acceptance does not replace that gate.
-Do not count a new replay as already started or the original dungeon failure as
-repaired.
+At that checkpoint no new replay had started and the original failure remained
+unrepaired; the subsequent44188 result is recorded above.
 
 After that regression, rerun the earned route with upgraded equipment and
 complete diagnostics. Preserve the original failed seed receipt and all original
