@@ -5,7 +5,50 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 22:39 UTC
+## Current checkpoint — September 10, 22:54 UTC
+
+Previous goal turn was PROGRESS: first surviving Warden. This turn is PROGRESS:
+preserved the terminal full-party result, corrected a demonstrated unsafe
+formation path, and launched the successor's required full server regression.
+Full roadmap/clear/release acceptance is still open; do not shrink the goal.
+
+-62131 on a5320d74 is TERMINAL1 after23.4minutes. Warden and two rooms cleared;
+  all four survived and completed three full town recovery/individual resume
+  cycles with exact run/progress retained. After the third recovery, travel
+  failed `Party failed to gather before the next pull`, not a combat death.
+  All740Gold. Full-run damage/taken: Fighter7846/4348, Wizard6448/1022,
+  Rogue10833/3920; Cleric7221effective ally healing/3864taken. No deaths/rejected
+  casts. Wizard4Shields/34Fireballs; Rogue8Coatings/51Piercing Throws;
+  Fighter7Charges/4Fortress/15Whirlwind/12Shield Slam; Cleric17Light/8Embrace.
+  Final full resources are recovery/cleanup values, not boss-end reserves.
+- Warning moves/eventual escapes/observed early escapes:23/17/6,18/18/5,
+ 8/8/2,20/18/5 in Fighter/Cleric/Wizard/Rogue order. Damage observations often
+  remain inside the circle near impact; eventual escape is not timely-dodge
+  proof. Client timing is not server-authoritative. Warden boss-only evidence
+  remains below; no subsequent boss/full quest/manual/relogin acceptance.
+- Archive`/tmp/eidolon-four-role-defenses-proof-Mcelgz` contains report/results/
+  log; scan passed, copied-log QA-prefix count0. Owned API/Mongo containers and
+ 18580/18581/41980listeners removed. The old active observations below are superseded.
+- Primary is cleanf6246177. A focused L-hallway case proves the direct follower
+  chord can cross a wall. Planner now checks actual collision, uses the previous
+  settled leader position as an intermediate when necessary, forbids unchecked
+  alternative vectors/jumps, and records role positions/targets/blocked-stop
+  counts before rethrowing a failure. Existing15s and combat/expedition limits
+  unchanged. This is not proof of62131's exact cause; that run lacked failure
+  positions. Final95167 passed56tests/3suites0.852s plus lint/discovery. Logs
+ `/tmp/eidolon-party-corner-final-{focused,lint,discovery}.log`. Native planner
+  acceptance and the whole clear remain pending. No server runtime change here.
+- Successor714c4727 now has full Go race18911 ACTIVE, sole local heavy gate.
+  Root passed21.272s; game still running, others pass/cached/no tests so far.
+  Log`/tmp/eidolon-next-slam-full-server.log`. Poll this exact handle, do not edit
+  candidate server source or start another heavy gate until it terminates.
+  Current104browser bundles/required-all/version/remote/live still pending.
+- Remote rechecked~22:40: canonical62dc CI34434837759 still queued;
+  Nightly34433520743 confirmed in progress. No cancel/push/version/deployment.
+  Root remains ledger-only, never push. After server termination continue the
+  candidate release gates and native full-party acceptance on their exact sources.
+
+## Previous checkpoint — September 10, 22:39 UTC
 
 Previous goal turn was PROGRESS: full server acceptance and native-party launch.
 This turn began as a VERIFIED WAIT on62131 and now supplies new native PROGRESS:
