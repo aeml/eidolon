@@ -1,9 +1,10 @@
 # Recorded earned build: first-boss combat diagnostic
 
-Status: two recorded-build native runs failed on issued movement, not death/timeout.
-Ground projection correction passes focused/full client/lint. The second run
-isolated a separate held-Shift runtime defect, now fixed with focused regression
-coverage and full client regression; native verification of that fix remains required.
+Status: three recorded-build native runs failed on issued movement, not death/timeout.
+Ground projection and the held-Shift runtime path are corrected. The third run
+exposed missing production Shift-key tracking hidden by the original mocked key
+state. Actual input-event/engine-update tests now cover that fix and full client
+regression passes; another native replay remains required.
 No boss balance, regeneration, rewards or release changes.
 
 ## Fixture and scope
@@ -98,6 +99,35 @@ input handling and movement smoothness. Logs:
 passed131.087s followed by lint underNode24.18.0. Logs:
 `/tmp/eidolon-held-shift-full-{client,lint}.log`.
 A new native recorded-build replay remains pending.
+
+## Real input tracking — September 10, 14:13 UTC
+
+95608 TERMINAL1 onclean d918dfc6: one case5.8minutes, zero retries,
+seed7932272933816589379/generator2/attempt0/no fallback. Room1 clear and ordinary
+Recall/rest/re-entry passed: mana14/670→111/737→737/737, bank0→1.319529076→
+10.032322459. Warden entry1254HP/737MP with2.309406338bank; last observed boss
+8344HP/player1140HP. The failed retreat had the correct floor ray,0displacement,
+no stun/root/freeze, blockedStops0/serverAdjustments0. Initial click returned
+true/MOVING; its target disappeared immediately. No death or timeout occurred.
+
+Archive `/tmp/eidolon-held-shift-build-failure-TfsZo0` retains reports, native
+log and prior full/lint evidence. Actual wrapper credential scan sanitized2files,
+additional archived-native username sanitation1file. Exact owned containers and
+18580/18581/41980listeners were absent after cleanup. Prefer the sanitized archive
+over the original redirected native log, which includes disposable identifiers.
+
+InputManager only records keys already declared in its keys object. Shift was
+missing, so the initial mouse event carried shiftKey=true but held frames saw
+no keys.shift. The earlier engine regression directly invented that property;
+its green result did not cover actual input propagation. Updated engine tests
+use real InputManager keydown. 48997 RED4failed/20passed/1.527s confirms the gap.
+
+87dcda4d declares Shift and adopts the real left-click modifier snapshot for a
+key first pressed while chat owned keyboard focus. Both Shift keys, keyup, blur
+and focused-chat-to-canvas transitions have coverage. 63700 PASS51tests/4suites
+2.011s+lint/diff. 29492 TERMINAL0 onclean87dcda4d:303suites/4220tests151.132s
+plus lint underNode24.18.0. Logs `/tmp/eidolon-real-shift-{input-red,input-focused,
+input-lint,full-client,full-lint}.log`. No combat, resource or timer changes.
 
 Next repeat this bounded native diagnostic before an hourlong campaign or any
 boss-health adjustment. If movement fails again, use the new ray/status evidence;
