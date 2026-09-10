@@ -77,3 +77,20 @@ prompt and real range decision in near/far cases; existing portal/combat checks
 pass. No post-change browser image is claimed. Before promotion, inspect both
 quest NPC cards on desktop and phone alongside the integrated gates above, and
 include the role-label change in the successor's eventual patch notes.
+
+The existing required interface spec now includes three role-card presentation
+cases at1280x720,390x844 and844x390. Each constructs the actual QuestNPC, builds
+its hint through GameEngine and renders through UIManager/CSS; checks both roles
+near/far, on-screen bounds, horizontal overflow and clearing; and captures each
+nearby role card. Phone cases explicitly enable the phone layout, not physical
+touch emulation. No pointer-selection or server-interaction proof is claimed.
+These run through the existing `test:e2e:interface` command in browser job2, with
+the two original combat-card cases retained.
+
+Discovery/lint89395 exited0 underNode24.18.0: all5cases in the interface spec
+loaded, no browser started. Focused18414 then passed254tests/2suites3.785s for
+version/workflow presentation and entrance hints. Logs:
+`/tmp/eidolon-role-hint-discovery.log`,
+`/tmp/eidolon-role-hint-browser-lint.log` and
+`/tmp/eidolon-role-hint-wiring-unit.log`. Actual rendered execution and image
+review remain pending behind the active campaign browser; discovery is not a pass.

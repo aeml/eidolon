@@ -1,6 +1,58 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 
+for (const [width, height, mobile] of [[1280, 720, false], [390, 844, true], [844, 390, true]]) {
+    test(`${width}x${height}: quest-giver card names its story or daily role`, async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+        await page.setViewportSize({ width, height });
+        await page.goto('/', { waitUntil: 'networkidle' });
+        // Actual NPC, hint builder, UI and CSS in a presentation fixture. This
+        // does not claim pointer selection, server interaction or physical touch.
+        await page.evaluate(async mobile => {
+            const { UIManager } = await import('/src/ui/UIManager.js');
+            const { GameEngine } = await import('/src/core/GameEngine.js');
+            const { QuestNPC } = await import('/src/entities/QuestNPC.js');
+            const { Vector3 } = await import('three');
+            document.getElementById('start-screen').style.display = 'none';
+            document.body.classList.toggle('mobile-mode', mobile);
+            const ui = Object.create(UIManager.prototype);
+            Object.assign(ui, {
+                dungeonEntranceHint: document.getElementById('dungeon-entrance-hint'),
+                dungeonEntranceHintName: document.getElementById('dungeon-entrance-hint-name'),
+                dungeonEntranceHintStatus: document.getElementById('dungeon-entrance-hint-status'),
+                dungeonEntranceHintPrompt: document.getElementById('dungeon-entrance-hint-prompt')
+            });
+            const engine = Object.create(GameEngine.prototype);
+            engine.player = { position: new Vector3() };
+            window.__questRolePreview = { ui, show: (story, distance) => {
+                const npc = new QuestNPC(`role-preview-${story}`, { story });
+                npc.position.set(distance, 0, 0);
+                ui.updateDungeonEntranceHint(engine.buildDungeonEntranceHint(npc));
+            } };
+        }, mobile);
+        const panel = page.locator('#dungeon-entrance-hint');
+        for (const [story, title, role] of [[true, 'Archmage Ilyra', 'Story quests'], [false, 'Quest Giver', 'Daily contracts']]) {
+            for (const [distance, status] of [[3, 'In range'], [12, 'Move closer']]) {
+                await page.evaluate(({ story, distance }) => window.__questRolePreview.show(story, distance), { story, distance });
+                await expect(panel).toBeVisible();
+                await expect(page.locator('#dungeon-entrance-hint-name')).toHaveText(title);
+                await expect(page.locator('#dungeon-entrance-hint-status')).toHaveText(`${role} • ${status}`);
+                const bounds = await panel.boundingBox();
+                expect(bounds.x).toBeGreaterThanOrEqual(0);
+                expect(bounds.y).toBeGreaterThanOrEqual(0);
+                expect(bounds.x + bounds.width).toBeLessThanOrEqual(width);
+                expect(bounds.y + bounds.height).toBeLessThanOrEqual(height);
+                expect(await panel.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+                if (distance === 3) await panel.screenshot({ path: testInfo.outputPath(story ? 'story-role.png' : 'daily-role.png') });
+            }
+        }
+        await page.evaluate(() => window.__questRolePreview.ui.clearDungeonEntranceHint());
+        await expect(panel).toBeHidden();
+        expect(failures, failures.join('\n')).toEqual([]);
+    });
+}
+
 for (const [width, height] of [[1280, 720], [390, 844]]) {
     test(`${width}x${height}: combat card shows cast cost without invented damage`, async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
