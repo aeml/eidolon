@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { jest } from '@jest/globals';
+import { Fighter } from '../src/entities/Fighter.js';
 import { createProceduralStatusEffect, releaseProceduralStatusEffect,
     updateProceduralStatusEffect } from '../src/art/ProceduralStatusEffects.js';
 
@@ -94,4 +95,84 @@ test('actors share immutable shape/materials, never instance matrices, and relea
     expect(b[0].parent).toBe(second);
     disposeGeometry.mockRestore(); disposeMaterial.mockRestore();
     releaseProceduralStatusEffect(second);
+});
+
+test.each(['high', 'low'])('%s actor scene/quality/lifecycle churn releases only retired instance buffers', quality => {
+    const originalScene = new THREE.Group(), nextScene = new THREE.Group();
+    const makeActor = id => {
+        const actor = new Fighter(id);
+        actor.mesh = new THREE.Group();
+        actor.wellRestedSeconds = 30;
+        actor.gameEngine = { renderSystem: { effectGroup: originalScene, graphicsQuality: quality } };
+        actor.syncAttachedStatusEffects(.1);
+        return actor;
+    };
+    const actor = makeActor('moving-rested-owner'), neighbor = makeActor('unaffected-rested-owner');
+    const neighborEffect = neighbor.attachedStatusEffects.get('well_rested');
+    const neighborBatches = meshes(neighborEffect.group).filter(part => part.isInstancedMesh);
+    const unchangedNeighbor = neighborBatches.map(part => Array.from(part.instanceMatrix.array));
+    const sharedDisposals = [...new Set(neighborBatches.flatMap(part => [part.geometry, part.material]))]
+        .map(resource => jest.spyOn(resource, 'dispose'));
+    const observed = new Map();
+    const record = () => {
+        const effect = actor.attachedStatusEffects.get('well_rested');
+        if (effect && !observed.has(effect)) {
+            const parts = meshes(effect.group).filter(part => part.isInstancedMesh);
+            expect(parts).toHaveLength(2);
+            observed.set(effect, parts.map(part => {
+                const disposed = jest.fn(); part.addEventListener('dispose', disposed); return disposed;
+            }));
+        }
+        return effect;
+    };
+    const verify = () => {
+        const current = record(), scene = actor.gameEngine.renderSystem.effectGroup;
+        const visible = actor.state !== 'DEAD' && actor.isActive !== false &&
+            actor.stealthTimer <= 0 && actor.wellRestedSeconds > 0;
+        expect(Boolean(current)).toBe(visible);
+        if (current) {
+            expect(current.group.parent).toBe(scene);
+            expect(moteInstances(current.group)).toHaveLength(actor.gameEngine.renderSystem.graphicsQuality === 'low' ? 8 : 16);
+            expect(current.group.position.toArray()).toEqual(actor.mesh.position.toArray());
+        }
+        for (const [effect, disposed] of observed) {
+            disposed.forEach(spy => expect(spy).toHaveBeenCalledTimes(effect === current ? 0 : 1));
+            if (effect !== current) expect(effect.group.parent).toBeNull();
+        }
+        expect(neighbor.attachedStatusEffects.get('well_rested')).toBe(neighborEffect);
+        expect(neighborEffect.group.parent).toBe(originalScene);
+        neighborBatches.forEach((part, index) => expect(Array.from(part.instanceMatrix.array)).toEqual(unchangedNeighbor[index]));
+        sharedDisposals.forEach(spy => expect(spy).not.toHaveBeenCalled());
+        for (const candidate of [originalScene, nextScene]) {
+            expect(candidate.children.filter(child => child.name === `AttachedStatusEffect:well_rested:${actor.id}`))
+                .toHaveLength(current && candidate === scene ? 1 : 0);
+        }
+    };
+    try {
+        actor.stealthTimer = 0;
+        record(); verify();
+        for (let cycle = 0; cycle < 3; cycle++) {
+            for (const graphicsQuality of ['low', 'high']) {
+                actor.gameEngine.renderSystem.graphicsQuality = graphicsQuality;
+                actor.syncAttachedStatusEffects(.1); verify();
+            }
+            for (const effectGroup of [nextScene, originalScene]) {
+                actor.gameEngine.renderSystem.effectGroup = effectGroup;
+                actor.mesh.position.set(cycle * 5, 2, -10);
+                actor.syncAttachedStatusEffects(.1); verify();
+            }
+            for (const [field, hidden, restored] of [['stealthTimer', 2, 0], ['state', 'DEAD', 'IDLE'],
+                ['isActive', false, true], ['wellRestedSeconds', 0, 30]]) {
+                actor[field] = hidden; actor.syncAttachedStatusEffects(.1); verify();
+                actor[field] = restored; actor.syncAttachedStatusEffects(.1); verify();
+            }
+            expect(actor.wellRestedSeconds).toBe(30);
+        }
+    } finally {
+        actor.dispose(); neighbor.dispose();
+        sharedDisposals.forEach(spy => spy.mockRestore());
+    }
+    for (const disposed of observed.values()) disposed.forEach(spy => expect(spy).toHaveBeenCalledTimes(1));
+    expect(originalScene.children).toHaveLength(0);
+    expect(nextScene.children).toHaveLength(0);
 });

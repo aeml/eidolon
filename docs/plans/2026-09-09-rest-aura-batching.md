@@ -141,3 +141,23 @@ wiring and version consistency. Full integrated client/server regression and
 actual native/controlled rendering reruns are still due; do not substitute
 older58prototype results for the merged baseline. Do not run a second owned
 browser or heavy tests while the primary Earth journey is active.
+
+## Actor transition buffer ownership — September10
+
+Added an isolated regression using two real Fighter actor instances and actual
+attached-effect synchronization. Across three repeated quality/scene cycles,
+stealth, dead/alive, inactive/active and authoritative rest-expiry/reentry states,
+each retired aura's two instance-buffer dispose events must fire exactly once.
+The replacement retains all16/8 sparks, correct mesh position and exactly one
+owner group; another actor in the old scene keeps its same aura, unchanged
+instance transforms and shared geometry/material resources. Final actor cleanup
+leaves both effect scenes empty. Lifecycle synchronization cannot spend the
+replicated30-second bank.
+
+Focused55010 passed35tests/3suites2.705s under Node24, plus lint. Logs
+`/tmp/eidolon-aura-transition-lifecycle.log` and
+`/tmp/eidolon-aura-transition-lifecycle-lint.log`. Only tests/documentation
+changed; runtime batching remains the existing prototype. This adds ownership
+and disposal-event evidence, not actual WebGL memory measurements, rendered
+scene transitions, native gameplay, FPS improvement or phone acceptance. All
+pending integrated/full/native/rendered promotion gates above remain required.
