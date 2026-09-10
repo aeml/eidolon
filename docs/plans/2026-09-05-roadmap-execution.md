@@ -27,7 +27,66 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 14:59 UTC
+## Current checkpoint — September 10, 15:12 UTC
+
+Previous turn was PROGRESS (entry evidence and combined successor gate launch).
+This turn is PROGRESS: corrected the prepared-character baseline discrepancy,
+verified all-class ordinary-growth and saved-stat invariants, added native
+creation/override coverage, and committed clean primary3832b150. Full roadmap
+scope remains active/incomplete; no push, version bump or deployment occurred.
+
+- Root cause: actual character creation starts all five stats10, whereas the
+  old `canonicalBaseStatsForClass` used by allowlisted `/level` and progression
+  audits started the primary stat20.13079 RED all4class cases atlevel1, game.330s.
+- Primary now shares `game.InitialPlayerStats()` between the extracted actual
+  new-character factory and explicit QA level overrides. Live creation defaults
+  and ordinary growth remain unchanged; no saved-character rewrite/migration.
+  Removed divergent prepared audit helper. Existing expected fixture damage
+  numbers were updated to actual baseline, not combat balance or timer changes.
+- 59062 TERMINAL0 focusedGo race:root1.742s/game3.899s, covering all-class
+  constructor defaults, independent copies, actual XP/override parity through
+  levels1/10/30/60/70/100, historic saved stats, command routing/non-QA rejection,
+  migration, recorded build and actual prepared Fireball budgets.
+  78669 TERMINAL0 updated progression/reward/room/gear-band/rest audits under
+  race:game13.889s. Logs `/tmp/eidolon-initial-stat-parity-final-race.log` and
+  `/tmp/eidolon-initial-stat-audits-race.log`.
+- 44419 TERMINAL0:78client tests/4suites2.133s+lint.44883 TERMINAL0:final lint,
+  shell syntax/diff check and4native cases discovered. Discovery is not native
+  acceptance; full client/server regression on3832b150 remains pending.
+- Fresh opening now asserts and records actual initial base stats/available
+  points. New isolated route`initial-stats` uses4dedicated class accounts, actual
+  registration/relogin and visible `/level 30` followed by relogin, loopback-only,
+  zero retries, own result directory. It is not yet run or wired into required
+  CI; do that during promotion. The override is explicitly not earned progress.
+- Primary implementation/evidence/pending acceptance documented at
+  `/tmp/eidolon-primary-town-recovery-lAKY3k/docs/plans/2026-09-10-starting-stat-parity.md`.
+  The recorded earned Wizard already had real stats; this correction does not
+  fix its Warden pacing failure. Solo/party Normal policy question remains
+  pending, as do affordable preparation and actual fresh full-campaign evidence.
+
+Sole local heavy5956 remains LIVE, re-polled15:11:41 on frozen socketd3c0fff5;
+do not modify that worktree. The combined all-route passed initial authenticated
+and7dungeon/inventory cases (Verdant first boss/later spawns4.1min), then multiple
+spell/support routes and portrait/landscape phone targeting/party healing.
+Current phone inventory passed58.3s; phone-stash-entry has4/8orientation passes.
+These are partial stage results, not a final all-route pass. Log remains
+`/tmp/eidolon-successor-full-native.log`; API18580/Mongo18581/web41980 and runID
+`successor-full-0910` are owned by that wrapper. Re-poll5956, preserve any failure
+before rerun, sanitize/archive artifacts and confirm exact resource cleanup.
+
+15:07 remote check: canonicalCI34434837759 queued, nightly34433520743 inprogress.
+No new cancellation authority; do not preempt the soak or promote past canonical
+62dc2d1e. Public release identity was not revalidated this turn. Root is a local
+documentation ledger only and must never be pushed.
+
+Next after5956 terminal: handle actual result and evidence; then run the primary
+full regressions and new native initial-stats route serially on clean3832b150.
+Do not restore the false QA bonus or lengthen fights to force a pass. Successor
+version/patch-note/pipeline/live verification, earned campaign/class/party/raid
+work, balance, physical-phone acceptance, casino and later milestones remain
+open. Neither complete nor blocked is justified.
+
+## Previous checkpoint — September 10, 14:59 UTC
 
 Previous user-facing turn only reconfirmed already-recorded casino scope: NO
 PROGRESS on implementation. Revalidated current worktrees, test handle and remote
