@@ -33,9 +33,10 @@ scan0, exact disposable services/ports cleaned. Native log
 ## Required public acceptance
 
 [CI34421323405](https://github.com/aeml/eidolon/actions/runs/34421323405) is confirmed
-ACTIVE on the exact canonical commit. Client tests have passed; server tests are
-still running at this checkpoint. Later browser/predeploy/deploy/live stages have
-not been accepted. A successful push or intermediate job is not live delivery.
+ACTIVE on the exact canonical commit. At the00:50checkpoint client/server and all
+three browser groups have passed; predeploy character job102701339923 is running.
+Predeploy/deploy/final live stages have not been accepted. A successful push or
+intermediate job is not live delivery.
 
 - [ ] All client/server/browser/predeploy/input validation jobs pass.
 - [ ] Both deployments pass; inspect server schema preflight and rollback evidence.

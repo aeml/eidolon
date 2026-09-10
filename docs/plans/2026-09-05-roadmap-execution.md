@@ -16,7 +16,57 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 00:33 UTC
+## Current checkpoint — September 10, 00:50 UTC
+
+This continuation made PROGRESS: actual saved Earth stages1and2 passed; final
+stage exposed a conservative sale-only bag limitation, now extended with real
+stash preservation and full client regression. Also strengthened native party
+evidence in the independent aura prototype. Previous turn was PROGRESS, not an
+impasse. Full roadmap goal active; root ledger-only and NEVER pushed.
+
+**60 CI34421323405 ACTIVE** on frozen clean canonicaldf91bb6. All client/server
+and three browser groups SUCCESS. Predeploy character job102701339923 ACTIVE;
+do not restart or push a successor while it runs. Deployment, final native live
+checks, retained artifacts and fresh exact public60identity remain required.
+
+Primary78199 TERMINALFAILED8.8m on e32d37a: stage1 passed2.7m (opening, diary,
+40Skeletons,8naturalSeeds/manualconsumption/reconnect); stage2 passed4.4m
+(60Imps,3scar inspections/manualclaims/reconnect). Stage3 reached19/50DemonOrcs,
+then required3spare low-rarity sales but had only2. Healthy town screenshot
+inspected, not a blocked combat state or another timeout. Three merchant visits
+verified160/720/720Gold; initial equip-only visit freed11slots. Archive
+`/tmp/eidolon-earth-stash-gap-proof-RQhBr1`, sanitation0/exactcleanup passed.
+Log `/tmp/eidolon-earth-stages-0032.log`. No full clear or fresh pacing claim.
+
+Primary now clean **a9678db**, code **4e7bc8d**. After equipping and conservative
+sales, ordinary move-only travel/real stash click/right-click deposits preserve
+spare non-stackable gear, including rare/future upgrades. Quest/crafting/gem
+items remain carried; worn IDs/empty-slot gear excluded. Per-transfer whole-item
+and all remaining bag/stash/Gold/equipment/quest conservation checks; real capacity,
+unchanged5minimum/8targetslots. Serial stage reloads also compare entire stash.
+No runtime/rate/progression change. Focused18225 PASS25/4/0.597+lint; full85092
+PASS284suites3995tests88.258s+lint. Logs
+`/tmp/eidolon-earned-stash-full-{client,lint}.log`; primary plan
+`2026-09-10-earned-stash-preservation.md` retains failure and verification scope.
+
+**17921 ACTIVE**, only owned local browser workflow: corrected full prepared
+Earth serial route, run`earth-stash-0910-0050`, API18560/Mongo18561/web41960,
+log`/tmp/eidolon-earth-stash-0050.log`, primarya9678db frozen. Continue samehandle
+to terminal, preserve/sanitize evidence and check exact wrapper cleanup before
+another browser. No heavy owned tests alongside. Actual stash success, full
+Earth completion, independent fresh story/class/group pacing and dungeon/raid/
+physical-phone/casino gates remain open.
+
+Independent aura WT`/tmp/eidolon-rest-aura-batching-k1vBvU` now clean **54b861f**.
+Existing native two-player phone journey now requires5/4meshes,2batches,16/8sparks,
+one owned group per actor through High→Low→High and fresh login. Reuses actual
+scene profiler for180frames after60warmup, with hardware/viewport/visibility and
+frame/CPU/draw/allocation evidence. No claimed speedup or physical-phone proof.
+Focused83040 PASS18validatorcases0.416s+lint+one-test discovery; full regression,
+native journey/expiry/party and remaining lifecycle/steady-frame gates NOTRUN.
+No runtime change this turn and no integration/publication of the aura prototype.
+
+## Previous checkpoint — September 10, 00:33 UTC
 
 This continuation made PROGRESS: published locally verified60, integrated
 accepted59 into expanded campaign work without dropping requirements, and began
