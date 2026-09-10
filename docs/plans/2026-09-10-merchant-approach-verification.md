@@ -66,4 +66,13 @@ Archive `/tmp/eidolon-merchant-settled-proof-ijYfo8`; log
 `/tmp/eidolon-merchant-settled-native.log`; actual-credential scan passed and
 exact API/Mongo/image plus18560/18561/41960 listeners were absent after cleanup.
 Neither passing route emitted a success screenshot; no inspected rendered
-shop/art quality claim. The whole earned campaign must still be replayed.
+shop/art quality claim.
+
+Subsequent fresh13998 on clean/frozencb348ef PASSED the complete eight-phase
+Earth story-readiness route in52.7m, retries0, with five actual earned merchant
+visits, includinglevel29, and two stash visits. All50Orcs/manual reward/save,
+handoff and strictstory-onlylevel30 readiness passed; finallevel31. See
+[earned readiness proof](2026-09-10-earned-earth-readiness-proof.md) for exact
+receipts, archive, cleanup and boundaries. This supports the correction without
+claiming the original failure's sole cause, production deployment, a dungeon
+clear, all-class/group balance or whole-roadmap completion.

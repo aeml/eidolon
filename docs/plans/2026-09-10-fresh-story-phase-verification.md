@@ -79,7 +79,10 @@ No final handoff/readiness acceptance. Archive
 
 See [merchant approach verification](2026-09-10-merchant-approach-verification.md)
 for the bounded diagnostic, independently confirmed offset timing race, correction
-and native checks. A new full fresh story-only replay remains the next gate;
-retain the previous failure rather than reclassifying it. Keep the next source
-frozen and preserve its true result. All later classes/groups/realms/dungeons/
-raids/physical-phone/economy and full1.1–1.10 gates remain required.
+and native checks. Subsequent13998 on clean/frozencb348ef PASSED all eight
+phases in52.7m, retries0, ending atlevel31 with no daily quests accepted and
+level30dungeon entry enabled. [Full earned proof](2026-09-10-earned-earth-readiness-proof.md)
+records every phase, reward, inventory visit, archive, cleanup and acceptance
+boundary. The previous failures remain failures. Other classes, groups, actual
+dungeon clears, later realms/raids, physical phones, economy tuning and the full
+remaining1.1–1.10 roadmap are not closed by this one fresh Wizard result.
