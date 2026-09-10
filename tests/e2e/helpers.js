@@ -553,7 +553,7 @@ export async function jumpByGroundClick(page, deltaX, deltaZ) {
         await expect.poll(() => page.evaluate(() => window.game?.playerJumpState === null), {
             timeout: 8_000
         }).toBe(true);
-    } catch {
+    } catch (error) {
         const diagnostic = await page.evaluate(() => {
             const game = window.game;
             const jump = game?.playerJumpState;
@@ -577,8 +577,11 @@ export async function jumpByGroundClick(page, deltaX, deltaZ) {
                     displayX: jump.displayPosition?.x
                 } : null
             };
-        });
-        throw new Error(`Real Ctrl-click jump did not land: ${JSON.stringify(diagnostic)}`);
+        }).catch(() => ({ unavailable: true }));
+        // The route deadline can interrupt this shorter landing poll. Preserve
+        // that cause rather than misreporting every interruption as a stuck jump.
+        throw new Error(`Real Ctrl-click jump landing check failed: ${error?.message || String(error)}; ` +
+            `state: ${JSON.stringify(diagnostic)}`, { cause: error });
     }
 }
 

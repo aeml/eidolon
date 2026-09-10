@@ -27,6 +27,44 @@ Existing canonical 51–57 releases and their deployment order are untouched.
 
 ## Evidence and remaining work
 
+September10,03:43: guarded fresh story-only22725 on cleana285fbc is TERMINAL
+FAILED after3600327ms. This is the first actual fresh run to complete the full
+60Imp chapter after ordinary unfinished-encounter recovery. Watch40/manual/save
+passed746s with18 town stops; Seeds8 required23 observed target deaths. Imp60
+passed manual200Gold/6843XP and fresh-login save checks in2169s with zero deaths,
+26 town stops and2 earned training stops. Claim advanced21/9660XP/10411Gold to
+22/6403XP/10611Gold. All three scar investigations then passed manual completion
+(22/6603XP/10636Gold). Orc chapter began naturally and reached4/50; final actor
+was level23 with full770HP/495MP, previous chapters completed and no daily credit.
+The whole Earth route, remaining46Orcs and unchanged level30 readiness did NOT pass.
+
+Archive `/tmp/eidolon-fresh-orc-departure-proof-AlfWPN`, log
+`/tmp/eidolon-fresh-hunt-rest-replay.log`; wrapper and supplemental archive scan0.
+Inspected actual failed-collection PNG (living actor in town, not a death screen)
+and Seeds-ready PNG with8/8,50Gold/1200XP and explicit Complete Quest control.
+Exact18560/18561/41960 listeners and owned fresh-hunt-rest-0910 API/Mongo/image
+were absent after normal wrapper cleanup. No cancellation or source mutation
+during the run. The next owned browser slot went to release60 ground-shape QA.
+
+The retained HTML report establishes the cause: start02:43:18.586; final landing
+poll03:43:17.069 lasted984ms and contains `Test timeout of 3600000ms exceeded`.
+The preceding jump had landed successfully in1975ms. The final1.28s jump was
+observed at98.4% progress, not after its own eight-second landing budget expired.
+The helper swallowed the original assertion and reported only “did not land”.
+Do not misdiagnose this route deadline as a proved stuck-jump game defect.
+The diagnostic-only follow-up retains the original error message/cause and
+captures state without allowing a failed diagnostic read to replace the cause;
+the four-second displacement and eight-second landing limits remain unchanged.
+
+Next fresh-route work must account explicitly for the authored150 kills and
+their observed travel/recovery time, with per-phase progress evidence and bounded
+encounters. Do not reset encounter deadlines, grant progress, accept optional
+dailies as story-only readiness, reduce hunts or silently promote this partial
+result. The broad one-hour session limit cannot establish whether the remaining
+Orcs and level30 handoff are achievable. Full class/group/campaign pace and
+economy acceptance are still open; neither Imp success nor a longer test alone
+establishes good balance. Release60 verification remains the immediate priority.
+
 September10, follow-up to44940: the earned hunt driver now allows ordinary Recall
 inside an unfinished encounter when fewer than one primary cast remains or HP is
 below35%. Between-kill two-cast/80% preparation is unchanged. The same absolute

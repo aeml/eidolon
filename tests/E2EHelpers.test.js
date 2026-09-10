@@ -9,8 +9,47 @@ import {
     hardwareWebGLBrowserArgs
 } from './e2e/browserLaunchPolicy.js';
 
-jest.unstable_mockModule('@playwright/test', () => ({ expect: jest.fn() }));
-const { collectBrowserFailures, returnToTown } = await import('./e2e/helpers.js');
+const playwrightExpect = jest.fn();
+jest.unstable_mockModule('@playwright/test', () => ({ expect: playwrightExpect }));
+const { collectBrowserFailures, returnToTown, jumpByGroundClick } = await import('./e2e/helpers.js');
+
+describe('jump landing failure evidence', () => {
+    afterEach(() => playwrightExpect.mockReset());
+    const attempt = async (cause, diagnosticAvailable = true) => {
+        playwrightExpect.mockReturnValue({ toBe: jest.fn() });
+        playwrightExpect.poll = jest.fn()
+            .mockReturnValueOnce({ toBeGreaterThan: jest.fn().mockResolvedValue(undefined) })
+            .mockReturnValueOnce({ toBe: jest.fn().mockRejectedValue(cause) });
+        const evaluate = jest.fn().mockResolvedValueOnce({ x: 0, z: 0 })
+            .mockResolvedValueOnce({ canvas: true, x: 400, y: 300 });
+        if (diagnosticAvailable) evaluate.mockResolvedValueOnce({ jump: { progress: .984 } });
+        else evaluate.mockRejectedValueOnce(new Error('page closed during diagnostics'));
+        const page = { evaluate, mouse: { move: jest.fn(), click: jest.fn() },
+            keyboard: { down: jest.fn(), up: jest.fn() } };
+        let failure;
+        try { await jumpByGroundClick(page, 25, 0); } catch (error) { failure = error; }
+        expect(failure).toBeInstanceOf(Error);
+        expect(failure.cause).toBe(cause);
+        expect(failure.message).toContain(cause.message);
+        expect(page.keyboard.up).toHaveBeenCalledWith('Control');
+        expect(playwrightExpect.poll.mock.calls.map(call => call[1])).toEqual([
+            { timeout: 4_000 }, { timeout: 8_000 }
+        ]);
+        return failure;
+    };
+    test('an overall route timeout remains distinguishable from a stalled jump', async () => {
+        const failure = await attempt(new Error('Test timeout of 3600000ms exceeded'));
+        expect(failure.message).toContain('"progress":0.984');
+    });
+    test('an actual landing assertion failure still fails with its original cause', async () => {
+        await attempt(new Error('Landing poll timed out after 8000ms'));
+    });
+    test('lost diagnostic access cannot replace the original failure', async () => {
+        const failure = await attempt(new Error('Test timeout of 3600000ms exceeded'), false);
+        expect(failure.message).toContain('"unavailable":true');
+        expect(failure.message).not.toContain('page closed');
+    });
+});
 
 describe('unfinished hunt recall', () => {
     test('a death between the resource observation and Recall cannot become a free rest stop', async () => {
