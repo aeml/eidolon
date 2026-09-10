@@ -5,7 +5,38 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 23:01 UTC
+## Current checkpoint — September 10, 23:08 UTC
+
+Previous goal turn was PROGRESS: exact-seed formation geometry and browser
+progress. This turn is PROGRESS: all104current browser cases passed; reports
+were retained/inspected, and the next exact-source four-role run started.
+Full roadmap, dungeon clear, required-all and live release remain unproven.
+
+- Browser77418 TERMINAL0 on cleanc27e0847:104cases exactly, no failed/flaky
+  result reported. Group1=39cases with stage wall times130.5/23.2/75.8/20.4/10.6s;
+  group2=40 with201.2/18.9/28.9/50.5s; group3=25 with118.3/18.2/19.1s.
+  Archive`/tmp/eidolon-next-current104-proof-EA8Boy` retains separate reports/
+  results/log, scanned;41981 cleared. Log`/tmp/eidolon-next-current104-browser.log`.
+  Source-specific anonymous captures show four720p healing targets above chat,
+  phone chat within390x844, and central844x390 actors outside thumb controls.
+  Not whole-world/physical-phone proof or a hosted-CI timing claim.
+- Candidate is clean0c8c4ffe, documentation atopc27e0847. Current server and
+ 104browser gates closed; versioned required-all, canonical62dc acceptance,
+  version/patch notes/remote/live still pending. No successor version assigned.
+- Primaryedc7503a adds only camera/mesh offsets and camera-punch state to failure
+  diagnostics;92479 lint/discovery passed. Logs
+ `/tmp/eidolon-party-camera-diagnostic-{lint,discovery}.log`. Movement behavior is
+  the prior geometry-tested corner planner. Primary1157 is now ACTIVE on frozen
+  cleanedc7503a, sole local heavy gate: routeparty-dungeon,
+  runparty-corners-0910-2309, ports18580/18581/41980. Log
+ `/tmp/eidolon-four-role-corners-native.log`. Existing62131 report/results were
+  archived/scanned before overwrite. No new native movement or clear result yet.
+  Do not edit primary or start another heavy gate until1157 actually terminates.
+- No push, soak cancellation, version bump or deployment. Root remains
+  ledger-only, never push. Continue exact handle1157, then remaining native
+  campaign/release gates without reducing the whole roadmap scope.
+
+## Previous checkpoint — September 10, 23:01 UTC
 
 Previous turn was PROGRESS: terminal party evidence, navigation correction and
 successor server acceptance. This turn is PROGRESS: the follower planner passed
