@@ -97,8 +97,8 @@ earned kit/resource use and wider class/group balance still need investigation
 before another hour-long fresh campaign replay. Full four-boss/manual-reward/
 save/Water requirements remain unchanged.
 
-The explicit isolated `prepared-dungeon-rest` diagnostic now implements the
-first post-combat check, but has not yet run natively. It observes spent mana
+The explicit isolated `prepared-dungeon-rest` diagnostic implements the
+first post-combat check and passed natively as recorded below. It observes spent mana
 after the existing two-boss/cleared-room/Gold assertions and before Recall,
 waits for normal sanctuary recovery, then uses the actual town guide without a
 reset or new waypoint. Its detached snapshot compares the same instance, seed,
@@ -110,5 +110,34 @@ across login/server restart or normal-level resource pacing.
 Focused22626 passed20tests/3suites0.828s and lintNode24, including snapshot
 detachment, changed-progress detection, explicit-route guards and the actual
 post-clear callback ordering. Logs `/tmp/eidolon-dungeon-town-rest-focused.log`
-and `/tmp/eidolon-dungeon-town-rest-lint.log`. Full regression and the explicit
-native diagnostic remain required before this additional route is accepted.
+and `/tmp/eidolon-dungeon-town-rest-lint.log`.
+
+### Post-combat recovery accepted — September 10, 12:19 UTC
+
+Full99912 TERMINAL0 on clean1740345943c4e3f74a13a00eed6a534ebbffc51d:
+300suites/4195tests128.66s, then lintNode24. Native38977 on SAMEsource TERMINAL0,
+one test4.5minutes/zero retries, runID`dungeon-town-rest-0910`, seed
+-8986048952111327172/generator2/attempt0/no fallback. Both first bosses died
+through normal inputs before the added recovery checks executed.
+
+Mana was454/1685 before Recall,698/1853 after town arrival, then1853/1853 after
+normal sanctuary time. Well Rested bank rose from0 outside to1.320336823seconds
+on arrival and7.625090176seconds at full recovery. The max-pool increase follows
+the ordinary Well Rested stat buff; HP was not depleted by this protected fixture.
+Real guide re-entry preserved instance identity, seed/generator/difficulty/level,
+cleared-room flags, Gold, bag items, character level and quest progress exactly.
+Rooms1–6 stayed cleared; subsequent rooms remained unfinished. No reset, relog,
+new waypoint, resource command or manual quest completion occurred after combat.
+
+Actual credentialscan passed0sanitized files; owned containers and all
+18580/18581/41980listeners were absent after completion. Archive
+`/tmp/eidolon-dungeon-town-rest-proof-ZMJXfj` retains test-results/report and
+native/full/lint logs. Original stream `/tmp/eidolon-dungeon-town-rest-native.log`.
+
+This accepts post-combat mana recovery and same-live-run preservation for the
+prepared two-boss route. Earned-level survival, depleted-HP recovery, returning
+through already-cleared corridors to continue the next encounter, restart/save
+persistence and the full campaign remain separate gates. Next implement ordinary
+between-encounter recovery/resume traversal in earned QA without changing combat
+limits, resources, rewards or actual player controls, then verify it in a short
+diagnostic before another fresh campaign replay.
