@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
-import { acquirePartyAllyPointer, gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyWarningInputPolicy, planPartyTelegraphEscape } from './partyDungeonControls.js';
+import { acquirePartyAllyPointer, gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyFormationStep, partyWarningInputPolicy, planPartyTelegraphEscape } from './partyDungeonControls.js';
+import { clipDungeonEffectSegment } from '../src/skills/dungeonEffectGeometry.js';
 
 test('healer stops seven units short of the tank rather than aiming into the boss', () => {
     expect(partyFollowStep({ x: 0, z: 0 }, { x: 0, z: -12 }, 7)).toEqual({ dx: 0, dz: -5 });
@@ -18,6 +19,36 @@ test.each([NaN, Infinity, -1])('invalid spacing fails closed: %s', spacing => {
 
 test('following uses real move-only walking, never a covered-ground jump', () => {
     expect(PARTY_FOLLOW_INPUT_OPTIONS).toEqual({ moveOnly: true, allowJumpFallback: false });
+});
+
+test('formation follows the walked corner instead of cutting an L-shaped hallway', () => {
+    const floors = [{ x: -10, z: 0, width: 24, height: 4 }, { x: 0, z: 10, width: 4, height: 24 }];
+    const follower = { x: -4, z: 0 }, anchor = { x: 0, z: 14 }, corner = { x: 0, z: 0 };
+    const clear = from => step => !clipDungeonEffectSegment(floors, from,
+        { x: from.x + step.dx, z: from.z + step.dz }).blocked;
+    expect(clear(follower)(partyFollowStep(follower, anchor))).toBe(false);
+    const first = partyFormationStep(follower, anchor, corner, clear(follower));
+    expect(first).toEqual({ dx: 4, dz: 0 });
+    const second = partyFormationStep(corner, anchor, corner, clear(corner));
+    expect(second).toEqual({ dx: 0, dz: 10 });
+});
+test('formation preserves an already-safe direct step and refuses an unverified alternative', () => {
+    const follower = { x: 0, z: 0 }, anchor = { x: 14, z: 0 };
+    expect(partyFormationStep(follower, anchor, null, () => true)).toEqual({ dx: 10, dz: 0 });
+    expect(() => partyFormationStep(follower, anchor, { x: 0, z: 2 }, () => false)).toThrow('no verified walking segment');
+});
+test('a missing safe plan cannot count an out-of-formation member as gathered', async () => {
+    let clock = 0;
+    await expect(gatherPartyFormation({ read: async () => { clock += 1000; return [{ x: 0, z: 0 }, { x: 20, z: 0 }]; },
+        plan: async () => null, move: jest.fn(), now: () => clock, timeout: 2000 })).rejects.toThrow('failed to gather');
+});
+test('arrival between position and planning reads is verified again without a false failure', async () => {
+    const read = jest.fn().mockResolvedValueOnce([{ x: 0, z: 0 }, { x: 6, z: 0 }])
+        .mockResolvedValue([{ x: 0, z: 0 }, { x: 4, z: 0 }]);
+    const move = jest.fn();
+    await gatherPartyFormation({ read, plan: async () => null, move });
+    expect(read).toHaveBeenCalledTimes(2);
+    expect(move).not.toHaveBeenCalled();
 });
 
 test.each([

@@ -13,6 +13,17 @@ export function partyFollowStep(state, anchor, spacing = 4) {
 
 export const PARTY_FOLLOW_INPUT_OPTIONS = Object.freeze({ moveOnly: true, allowJumpFallback: false });
 
+// At a hallway turn, a direct chord to the tank can cross a wall. Every prior
+// gathering ended near the previous anchor; use that already-walked corner as
+// an intermediate destination when the direct segment is not physically clear.
+export function partyFormationStep(state, anchor, previousAnchor, canStep, spacing = 4) {
+    const direct = partyFollowStep(state, anchor, spacing);
+    if (!direct || canStep(direct)) return direct;
+    const via = previousAnchor ? partyFollowStep(state, previousAnchor, 0) : null;
+    if (via && canStep(via)) return via;
+    throw new Error('Party formation has no verified walking segment');
+}
+
 export function partyWarningInputPolicy({ active, safe }) {
     return { holdMelee: active, allowCasts: !active || safe, allowApproach: !active };
 }
@@ -20,13 +31,18 @@ export function partyWarningInputPolicy({ active, safe }) {
 // Walking a single unit is evidence that an input worked, not that a follower
 // caught up. Hold the leader at the waypoint until every actual position is in
 // formation. The caller's clock/read/move hooks never mutate game state.
-export async function gatherPartyFormation({ read, move, now = Date.now, timeout = 15_000, spacing = 4 }) {
+export async function gatherPartyFormation({ read, move, plan, now = Date.now, timeout = 15_000, spacing = 4 }) {
     const deadline = now() + timeout;
     while (now() < deadline) {
         const states = await read();
         if (states.some(s => s.dead)) throw new Error('Party formation cannot hide a death');
-        const steps = states.slice(1).map(state => partyFollowStep(state, states[0], spacing));
-        if (steps.every(step => !step)) return;
+        const needed = states.slice(1).map(state => partyFollowStep(state, states[0], spacing));
+        if (needed.every(step => !step)) return;
+        const steps = await Promise.all(needed.map((step, index) => step && plan
+            ? plan(index + 1, states[index + 1], states[0], spacing) : step));
+        // A member can finish moving between the shared snapshot and its own
+        // browser's planning read. A null plan triggers another actual-position
+        // check; only the distance check above can declare the group gathered.
         await Promise.all(steps.map((step, index) => step ? move(index + 1, step) : undefined));
     }
     throw new Error('Party failed to gather before the next pull');

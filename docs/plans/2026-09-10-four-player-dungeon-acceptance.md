@@ -269,3 +269,53 @@ These are client observations, not server-authoritative proof of dodging.
 Focused26401 passed67tests/3suites1.469s plus lint; discovery37006 found the one
 intended four-player route. Logs`/tmp/eidolon-party-defense-controls-{client,lint,discovery}.log`.
 Native use and full-clear acceptance of these changes remain pending.
+
+## First surviving Warden — terminal navigation failure, September10 22:46
+
+62131 on cleana5320d74 ended TERMINAL1 after23.4minutes. Two opening rooms and
+the Rootbound Warden were cleared with all four alive. Three complete all-four
+town recovery/individual guide-resume cycles retained the same seed/rooms/Gold/
+inventory/quests. Seed-2339742150727221791, generator2, Normal30, no fallback.
+The Warden's last pre-kill report was361HP with the tank158/855HP and20mana;
+the subsequent defeat and boss receipt were recorded. Boss-only totals:
+Fighter4603damage/3833taken, Cleric6600effective ally healing/3864taken,
+Wizard3943damage/736taken, Rogue6461damage/3680taken. This is real four-browser
+combat evidence, not a prepared kill grant or a full dungeon-clear receipt.
+
+The later failure was `Party failed to gather before the next pull` during
+travel after the third recovery. No deaths or rejected casts were observed.
+Run totals: Fighter7846damage/4348taken; Cleric7221effective ally healing/3864
+taken; Wizard6448damage/1022taken; Rogue10833damage/3920taken. All740Gold.
+Wizard used4Arcane Shields/34Fireballs; Rogue8Poison Coatings/51Piercing Throws.
+Fighter used7Charges/4Iron Fortress/15Whirlwind/12Shield Slam; Cleric17Healing
+Light/8Guardian Embrace. Final full resources reflect town recovery/cleanup,
+not the resources remaining immediately after the boss.
+
+Warning moves/eventual escapes/observed early escapes, by the same role order:
+23/17/6,18/18/5,8/8/2,20/18/5. Recent damage records frequently show the player
+inside the circle near its advertised impact time, without an observed early
+escape. These client-timed positions are not server-authoritative dodge proof.
+The old eventual-escape counts substantially overstate observed timely escapes.
+
+Archive`/tmp/eidolon-four-role-defenses-proof-Mcelgz` retains report/results/log;
+artifact scan passed and copied-log remaining QA-prefix count0. Owned API/Mongo
+containers and18580/18581/41980listeners were absent after terminal cleanup.
+No later bosses, full quest claim or fresh-login acceptance was reached.
+
+The formation controller's direct chord can cross an L-shaped hallway corner
+even when the leader used the canonical route. A focused geometric regression
+demonstrates that weakness, but the old failure did not retain positions to
+prove it was the exact cause of62131. The revised planner checks the full real
+collision path; if the direct segment is blocked, it approaches the leader's
+previous settled position first. Formation inputs cannot substitute an unchecked
+side vector or jump. Recovery resets this navigation anchor at the actual resumed
+entrance, not progress/instance state. Failures now record each role's position,
+movement target, blocked-stop count and previous anchor, then rethrow the failure.
+The fifteen-second gathering and all combat/expedition limits remain unchanged.
+
+Focused95228 passed55tests/3suites1.434s plus lint. A subsequent arrival-race check
+ensures a follower that arrives between shared and per-browser reads is checked
+again rather than falsely failed or declared gathered. Final95167 passed56tests/
+3suites0.852s plus lint and single-route discovery. Logs
+`/tmp/eidolon-party-corner-final-{focused,lint,discovery}.log`.
+Native corner-following and full-clear/manual/relogin acceptance remain pending.

@@ -135,6 +135,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             console.log(`[party-clear] prepared ${className}: level30 common gear, rank5 primary mastery, seeded Earth story gate`);
         }
         const [tank, healer, ...damage] = actors;
+        let formationAnchor = null;
         await tank.page.locator('body').press('o');
         await expect(tank.page.locator('#social-window')).toBeVisible();
         for (const actor of actors.slice(1)) {
@@ -264,6 +265,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             afterEntry: async () => {
                 entered = true;
                 const run = await snapshot(tank.page);
+                formationAnchor = { x: run.x, z: run.z };
                 for (const actor of actors) {
                     await expect.poll(async () => (await snapshot(actor.page)).instance).toBe(run.instance);
                     await expect.poll(async () => (await snapshot(actor.page)).seed).toBe(run.seed);
@@ -275,9 +277,31 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 // Finish this waypoint before deciding where followers gather.
                 await expect.poll(() => tank.page.evaluate(() => !window.game.player.targetPosition),
                     { timeout: 5000 }).toBe(true);
-                await gatherPartyFormation({ read: () => Promise.all(actors.map(actor => snapshot(actor.page))),
-                    move: (index, step) => tryDungeonGroundStep(() => moveByGroundClick(actors[index].page,
-                        step.dx, step.dz, PARTY_FOLLOW_INPUT_OPTIONS)) });
+                try {
+                    await gatherPartyFormation({ read: () => Promise.all(actors.map(actor => snapshot(actor.page))),
+                        plan: (index, _state, anchor, spacing) => actors[index].page.evaluate(async ({ anchor, previous, spacing }) => {
+                            const { partyFormationStep } = await import('/tests/partyDungeonControls.js');
+                            const { isEarnedRetreatPathClear } = await import('/tests/wizardHuntControls.js');
+                            const g = window.game, p = g.player;
+                            return partyFormationStep(p.position, anchor, previous, step =>
+                                isEarnedRetreatPathClear(g.collisionManager, p.position, p.radius || 1.25,
+                                    { x: step.dx, z: step.dz }), spacing);
+                        }, { anchor: { x: anchor.x, z: anchor.z }, previous: formationAnchor, spacing }),
+                        move: (index, step) => tryDungeonGroundStep(() => moveByGroundClick(actors[index].page,
+                            step.dx, step.dz, { ...PARTY_FOLLOW_INPUT_OPTIONS, allowAlternatePaths: false, requireClearPath: true })) });
+                } catch (error) {
+                    const positions = await Promise.all(actors.map(async actor => ({ role: actor.className,
+                        ...await actor.page.evaluate(() => {
+                            const p = window.game.player;
+                            return { x: p.position.x, z: p.position.z, state: p.state,
+                                target: p.targetPosition ? { x: p.targetPosition.x, z: p.targetPosition.z } : null,
+                                blockedStops: p.movementMetrics?.blockedStops || 0 };
+                        }) })));
+                    console.log('[party-formation-failure]', JSON.stringify({ previousAnchor: formationAnchor, positions }));
+                    throw error;
+                }
+                const arrived = await snapshot(tank.page);
+                formationAnchor = { x: arrived.x, z: arrived.z };
             },
             recoverAfterRoom: async (_page, { roomIndex, nearbyHostiles }) => {
                 const states = await Promise.all(actors.map(actor => snapshot(actor.page)));
@@ -307,6 +331,8 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                     await expect.poll(() => progress(actor.page)).toEqual(before[index]);
                 }
                 townRests++;
+                const resumed = await snapshot(tank.page);
+                formationAnchor = { x: resumed.x, z: resumed.z };
                 console.log('[party-clear-rest]', JSON.stringify({ roomIndex, townRests,
                     spent: states.map(s => ({ hp: s.hp, mana: s.mana })), allFourRecovered: true,
                     sameSeedRoomsGoldInventoryAndQuests: true }));
