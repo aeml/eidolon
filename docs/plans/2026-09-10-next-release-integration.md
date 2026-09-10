@@ -155,3 +155,38 @@ Historical primary roster75590 and four-role healing evidence are not automatic
 acceptance of this different release source. Expanded story/reward tuning and
 Dark King phase integrity remain outside this branch; they are still required
 later integration, not removed scope. No new version or deployment is claimed.
+
+## Completed browser partition and desktop support evidence
+
+On the prior unchangedee15e582 candidate,27935 passed all103 cases across three
+CI-mode/system-Chrome groups with no failed/flaky result reported. Stage wall
+seconds: group1 layout111.1/entrances21.7/effects74.6/nameplates18.2/resourceHUD11.1;
+group2 layout182.9/entrances17.3/effects26.4/interface49.9;
+group3 layout115.4/entrances36.6/effects15.2. Separate reports are retained in
+`/tmp/eidolon-next-bundled-browser-proof-CBuwWI`; credential scan passed and
+owned listener cleared. Inspected phone encounter/party, stash shell, desktop
+roster/chat and Seraph captures support scoped layout/effect observations, not
+whole visual quality or physical-phone acceptance. This is measured local
+partition evidence, not hosted-CI speedup or acceptance of the later support
+source.50010 independently discovered104 cases after the new compact-roster case,
+with no omissions/duplicates.
+
+3c7cf59e adds a mandatory real two-client desktop support check alongside the
+existing phone check in required-all. It uses isolated ordinary registrations,
+explicit prepared level100/resources, real invitations, roster clicks and hotbar
+keys. It does not claim earned leveling or a dungeon clear.55734 passed9 helper
+tests/2suites0.977s, lint, shell syntax and discovery, including failure propagation.
+Native1272 failed before casts because its Enter-to-chat helper retained focus on
+the accepted-invite button. The existing input policy correctly preserves native
+button activation. Test-onlyb07008d1 clicks the permanently visible chat field;
+lint81375 passed. The failed run is archived separately at
+`/tmp/eidolon-next-desktop-support-focus-proof-Ig2ZIB`.
+
+Native78990 on cleanb07008d1 passed28.4s: Healing Light and Divine Intervention
+each delivered a positive server heal event and actual ally HP increase at720p
+and900p while the pointer aimed at the caster. Caster HP stayed unchanged and
+clear-selection worked at both sizes. Both clients reported no browser failures.
+Log`/tmp/eidolon-next-desktop-support-focus-native.log`; artifact scan passed,
+temporary services removed, owned ports cleared. This proves explicit desktop
+support routing, not actual monster occlusion or full dungeon completion. Combined
+full Go/client and updated104case browser/required-all/version/live gates remain.
