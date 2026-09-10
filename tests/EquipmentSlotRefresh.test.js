@@ -31,6 +31,19 @@ test('unrelated stat refreshes preserve the live equipment drop target and its c
     expect(window.game.sendEquipMessage).toHaveBeenCalledWith(player.inventory[0], 'mainHand');
 });
 
+test('equipment artwork and potency labels leave pointer handling to the stable slot', () => {
+    const styles = document.createElement('style');
+    styles.textContent = readFileSync('src/styles/windows.css', 'utf8');
+    document.head.append(styles);
+    try {
+        refresh({ ...player.equipment.mainHand, potency: 2 });
+        const slot = document.getElementById('slot-mainhand');
+        expect(slot.children.length).toBeGreaterThanOrEqual(2);
+        for (const child of slot.children) expect(getComputedStyle(child).pointerEvents).toBe('none');
+        expect(getComputedStyle(slot).pointerEvents).not.toBe('none');
+    } finally { styles.remove(); }
+});
+
 test('changed equipment updates art and tooltip on the same node without accumulating old handlers', () => {
     refresh(player.equipment.mainHand);
     const slot = document.getElementById('slot-mainhand'), child = slot.firstChild;

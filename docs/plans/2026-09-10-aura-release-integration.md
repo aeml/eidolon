@@ -1,6 +1,7 @@
 # Unpublished aura integration with the corrected release baseline
 
-Status: local integration and focused checks only. This is not a deployment,
+Status: local integration with completed full/render checks; native equipment
+acceptance found a further drag-target issue and is being corrected. This is not a deployment,
 accepted release60, or a published successor version. Keep release60's canonical
 worktree and active CI unchanged.
 
@@ -128,3 +129,37 @@ now show recognizable slot art or a neutral fallback instead of missing images;
 equipment drag targets and keyboard focus survive stat updates while Forge/item
 changes still refresh their display. Retain the aura-batching and quest-role
 notes above. Do not publish under the unchanged base version or bypass60's gate.
+
+## Integrated acceptance and decorative hit-target correction
+
+Frozen30b2dd42 full10444 passed266suites/3719tests135.261s plus lint onNode24.18.0.
+Render1612 exited0: role/combat cards5cases22.7s and aura4cases1.2m. Inspected
+all6story/daily role crops across desktop/portrait/landscape and populated20
+High/Low screenshots. The18single/5/20actor pixel comparisons had zero RGB
+difference; GPU lifecycle released all owned buffers. Controlled20actor High
+draws1541 versus2101reference, Low1501 versus1741. These are not physical-phone
+or native-combat FPS acceptance. Earlier pending-render statements are historical.
+Archive `/tmp/eidolon-visual-integration-render-proof-Cgv0kl` retains the scoped
+role artifacts, independent renderer tree/JSON and full/lint/render logs.
+
+Native86642 on30b2dd42 failed:2equipment cases passed, one ring drop did not
+arrive despite target dragover events; Forge correctly did not execute. Items
+remained intact. Actual scan0, containers/ports cleaned. Failure screenshot
+inspected; archive `/tmp/eidolon-visual-equipment-failure-gDAxRp`, log
+`/tmp/eidolon-visual-equipment-native.log`. Do not treat primary's earlier native
+passes as acceptance for this integrated candidate.
+
+Added a real-browser center hit-test assertion for occupied equipment slots.
+Baseline53132 on5a2c41d0 failed all3cases at that assertion: decorative children
+receive hits rather than the stable slot. This proves a split hit target, not
+by itself every cause of intermittent drag failure. Baseline artifacts/log:
+`/tmp/eidolon-equipment-hit-baseline-proof-faBui9`; scan0 and owned ports cleaned.
+
+The CSS correction makes equipment artwork/potency labels pointer-transparent,
+leaving native hit/drop/click handling on the stable slot. No item/currency/
+server changes, artificial drop events or swap retries. Added a stylesheet-backed
+unit test for icon/potency hit handling; retain the center assertion and all
+existing full-bag/paired-slot/persistence checks in the native rerun. Successful
+integrated equipment+Forge, Well Rested native suffix, final full regression and
+remote/live promotion remain required. Eventual patch notes must also mention
+stable equipment dragging across artwork, once verified.
