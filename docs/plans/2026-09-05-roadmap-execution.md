@@ -16,7 +16,55 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 03:51 UTC
+## Current checkpoint — September 10, 04:05 UTC
+
+Previous goal turn made PROGRESS (ground QA/native/full promotion and actual
+fresh-route deadline diagnosis). This continuation made PROGRESS: implemented
+explicit story-only phase observation, verified focused/full client coverage,
+started a new frozen-source native attempt and observed its first phase pass.
+Full goal active/incomplete, no impasse. Root ledger-only and NEVER pushed.
+
+Primary clean **ea6cdbbca4d8320c7e63747aed1d60e1ec0d2266**, codef2ca8e5 atop
+1f8882e. New `tests/freshCampaignPhases.js` supplies eight ordered Playwright
+steps only for validated story-only readiness. Caps in minutes: opening+diary10,
+Watch30,Seeds20,Imp45,scars10,Orcs60,handoff5,readiness5. Fixed185-minute sum,
+set once; phases have their own deadlines. This explicitly addresses the actual
+one-hour overall timeout, NOT game difficulty or encounter watchdogs. Same150
+kills/8Seeds/3scars,120s encounters,two-death bounds,4s/8s jump checks, ordinary
+recovery, manual claims/exact saves, no grants/dailies and strictlevel30 entry
+remain. Existing shorter/comparison diagnostics retain their old budgets.
+No phase skip/repetition/concurrency or continuation after failure can count as
+success; final readiness cannot be omitted. Phase caps are QA observation limits,
+not approved player-facing pacing. Plan in primary:
+`docs/plans/2026-09-10-fresh-story-phase-verification.md`.
+
+Focused72393 PASS87tests/6suites1.562s+lint+actual Playwright discovery. Full88926
+PASS287suites/4047tests138.029s+lint onclean f2ca8e5, including prior jump-cause
+tests. Logs `/tmp/eidolon-story-phase-{focused,lint,discovery}.log` and
+`/tmp/eidolon-story-phase-full-{client,lint}.log`. Proof-doc-onlyea6cdbb then
+started new native **84056**, still ACTIVE, ONLY owned local browser.
+
+84056: `fresh-phases-0910`, API18560/Mongo18561/web41960, log
+`/tmp/eidolon-fresh-phases-replay.log`; Node24 inside sg render, normal client
+preparation, CI unset/retries0, explicit natural rest, fresh unprepared Wizard.
+Opening3kills/manual100Gold100XP/save passed38s/0deaths. Diary1/manual25Gold200XP/
+save passed86s,level3. Actual new `opening` phase PASS85495ms inside600000ms;
+`watch` phase ACTIVE with1800000ms cap, entered atlevel3/138XP/196Gold,full165HP/
+143MP. Restored mana during reconnect occurred in healing town; not offline
+healing or an uninterrupted pacing claim. Preserve source unchanged until the
+exact process is terminal, then archive/sanitize/verify cleanup. No heavy local
+regression or second owned browser while84056 owns the slot. All remaining
+Watch/Seeds/Imp/scars/Orcs/readiness native gates are still open for this attempt.
+
+**CI34434837759 ACTIVE** on unchanged canonical/diagnostic62dc2d1. Client
+102737643295/server102737643429 SUCCESS; browser2/102738964543 and
+browser3/102738964477 SUCCESS. Browser1/102738964490 ACTIVE. No predeploy,
+deployment/finalnative/public-identity acceptance yet. Last verified public
+remains60/df91bb6; do not claim the new candidate deployed. Continue exactCI and
+84056. Aura/CIcost/physical-phone/class/group/realms/raids/casino and all remaining
+1.1–1.10 requirements remain open and unchanged. No new push this continuation.
+
+## Previous checkpoint — September 10, 03:51 UTC
 
 Previous goal turn was a VERIFIED WAIT. This continuation made PROGRESS:
 preserved exact fresh-story terminal evidence, distinguished overall timeout

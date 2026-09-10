@@ -10,6 +10,12 @@ before60 is accepted; the current push repairs60's verification, not gameplay.
 
 ## Current status — September10, 03:51UTC
 
+04:05 update: sameCI34434837759 on62dc2d1 remains ACTIVE. Client/server both
+SUCCESS; browser2/102738964543 and browser3/102738964477 SUCCESS. Browser1/
+102738964490 remains ACTIVE. No predeploy/deployment/final acceptance yet and
+no new push. Primary's new native84056 owns the local browser on separate
+unversioned ea6cdbb; its changes do not mutate this frozen release candidate.
+
 Normal push35621 succeeded caab611→62dc2d1 from the clean canonical worktree,
 after exact remote-master guard, fast-forward promotion and diff check. Root
 was NOT pushed. New CI34434837759 on exact62dc2d1 is ACTIVE: client102737643295
