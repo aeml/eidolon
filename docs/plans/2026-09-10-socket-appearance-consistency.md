@@ -48,6 +48,25 @@ not mutated. Forge or gameplay stat calculation rules are unchanged.
 
 ## Remaining acceptance and release
 
+### Rendered comparison prepared — September 10, 12:18 UTC
+
+`tests/e2e/socket-gem-render.spec.js` prepares the production renderer and all
+four actual class meshes with the same socketed sword. It compares seven gem
+palettes at High and Low quality, canonical `type` against uppercase `type` and
+both `gemType` forms, using fixed poses/camera and a neutral-socket RGB baseline.
+Assertions require visible rendered color signal, identical equivalent frames,
+no unnecessary equipment rebuild, matching icon sources and actual attached
+socket/item metadata. Four-class screenshots and JSON comparisons are retained.
+
+This is a component visual check, not native Forge, multiplayer, phone, item
+acquisition or balance evidence. Group-frame pixel signal alone does not prove
+each individual tiny socket is readable; inspect the images as well. Production
+source is unchanged from9ef7e1b7/bdf3a2df. Lint13668 and one-case Playwright
+discovery19716 passed underNode24; lint log `/tmp/eidolon-socket-render-lint.log`.
+The rendered test has not run yet: primary's post-combat dungeon-rest native
+gate38977 owns the sole local browser/heavy slot. Wait for its terminal result
+and preserve its artifacts before starting this comparison.
+
 1. Earned44188 is now TERMINAL1 (second Warden survival failure), archived at
    `/tmp/eidolon-earned-upgrade-failure-sQmC8N`. Preserve that result; this visual
    correction is not a fix for its combat failure or evidence of a dungeon clear.
