@@ -16,7 +16,10 @@ test('desktop party selection directs real support casts despite a different cur
         const delay = Math.max(0, 1100 - (Date.now() - (lastCommands.get(target) || 0)));
         if (delay) await target.waitForTimeout(delay);
         lastCommands.set(target, Date.now());
-        await target.locator('body').press('Enter');
+        // Accept/select buttons can retain keyboard focus; Enter correctly
+        // activates those controls instead of opening chat. Use the permanent
+        // visible input directly, as a desktop player can.
+        await target.locator('#chat-input').click();
         await expect(target.locator('#chat-input')).toBeFocused();
         await target.locator('#chat-input').fill(value);
         await target.locator('#chat-input').press('Enter');
