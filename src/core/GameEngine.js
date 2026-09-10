@@ -1558,8 +1558,11 @@ export class GameEngine {
         const distance = this.player.position.distanceTo(entity.position);
         const inRange = distance <= interactionRange;
         const dungeonName = this.getInteractableEntityLabel(entity);
-        const entityLabel = isDungeonEntrance ? 'Dungeon Portal' : dungeonName;
         const interactableType = entity.constructor?.name || entity.type || entity.meshType || entity.name || '';
+        // The card title already names the NPC. Use the subtitle to
+        // explain its role without relying only on quest-marker color.
+        const entityLabel = isDungeonEntrance ? 'Dungeon Portal'
+            : interactableType === 'QuestNPC' ? (entity.story ? 'Story quests' : 'Daily contracts') : dungeonName;
         let promptLabel;
         let statusLabel = inRange ? `${entityLabel} • In range` : `${entityLabel} • Move closer`;
 

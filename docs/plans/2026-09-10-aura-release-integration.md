@@ -54,3 +54,26 @@ substitute for the integrated native gates below.
 5. Run the complete successor pipeline and verify the deployed identity and real
    gameplay. Fixed-pose draw-call reductions are not a physical-phone or native
    combat FPS claim. All wider roadmap gates remain required.
+
+## Small quest-giver card polish — pending rendered verification
+
+Viewed the active primary campaign's `earned-collection-ready.png`: the target
+card repeated “Archmage Ilyra” in both title and subtitle. This branch already
+supports the same quest NPC role flag. Its subtitle now says “Story quests” for
+Ilyra or “Daily contracts” for the daily giver, alongside the unchanged in-range/
+move-closer state. Names, distances, prompts, marker colors and actions remain.
+This adds a textual role cue instead of relying solely on marker color.
+
+The first focused run40047 failed a proposed lore-discovery case: unlike primary,
+this release baseline does not yet support ChronicleSite interactions. Removed
+that unsupported addition from this branch rather than mocking away the missing
+capability. Keep the lore-role improvement for the expanded campaign integration;
+the new two-NPC runtime change does not introduce partially supported story sites.
+Original log `/tmp/eidolon-role-hint-unit.log` retained.
+
+Final59343 PASS92tests/3suites2.045s plus lint, Node24.18.0; logs
+`/tmp/eidolon-role-hint-{unit,lint}-final.log`. Both NPC roles preserve their title,
+prompt and real range decision in near/far cases; existing portal/combat checks
+pass. No post-change browser image is claimed. Before promotion, inspect both
+quest NPC cards on desktop and phone alongside the integrated gates above, and
+include the role-label change in the successor's eventual patch notes.
