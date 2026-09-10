@@ -49,10 +49,19 @@ verified absent before the next browser run. Original full budgets are unchanged
   prefixes. Owned`empty-stash-login-0910` containers/image and18580/18581/41980
   listeners absent after cleanup.
 
+## Full regression follow-up
+
+87108 TERMINAL0 on clean545986aa: full Go race root27.641seconds; game/database/
+loadtest/lifecycle packages passed from cache, other packages have no tests.
+Full client309suites4254tests160.706seconds, followed by lint, passed under
+Node24.18.0. Source stayed frozen and this was the only local heavy gate. Logs
+`/tmp/eidolon-empty-stash-full-{server,client,lint}.log` copied into the native
+proof archive above. No claim that cached packages were re-executed.
+
 ## Remaining acceptance
 
-Full Go race/client regressions after this server change remain pending, followed
-by the strict earned campaign using actual storage and unchanged budgets. No
+The strict earned campaign using actual storage and unchanged budgets remains
+pending after the failed attempt; four-class empty-login proof is not its substitute. No
 new balance values, item grants, passive regeneration or encounter changes.
 Canonical release acceptance, isolated successor integration, versioned patch
 notes/CI and live verification remain separate requirements; nothing deployed.
