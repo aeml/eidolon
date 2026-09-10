@@ -646,6 +646,11 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     EIDOLON_E2E_PREPARED_DUNGEON_REST=1 EIDOLON_E2E_CLASS=Wizard \
       npx playwright test --retries=0 tests/e2e/prepared-dungeon-town-rest.spec.js
     ;;
+  party-dungeon)
+    EIDOLON_E2E_PARTY_DUNGEON=1 EIDOLON_E2E_CLASS=Fighter \
+      EIDOLON_E2E_BUILD_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_BUILD_MONGO_PORT="${mongo_port}" \
+      npx playwright test --retries=0 tests/e2e/four-player-dungeon.spec.js
+    ;;
   recorded-build-dungeon)
     EIDOLON_E2E_EARNED_BUILD_DIAGNOSTIC=1 EIDOLON_E2E_CLASS=Wizard \
       EIDOLON_E2E_BUILD_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_BUILD_MONGO_PORT="${mongo_port}" \

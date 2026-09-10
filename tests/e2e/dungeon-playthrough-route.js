@@ -13,7 +13,7 @@ import { recoverBetweenDungeonRooms } from './dungeon-town-rest.js';
 export async function playDungeonThroughInputs(page, {
     playthrough, fullRun = true, fallbackRun = false, beforeCombat, useTownGuide = true, afterClearedRoute,
     recoverBetweenRooms = false, afterTownRecovery,
-    afterEncounter,
+    afterEncounter, afterEntry, afterGroundStep,
     requiredFighterSkills = ['Iron Fortress', 'Guardian Roar', 'Whirlwind', 'Shield Slam']
 }) {
     const logPrefix = `[dungeon:${playthrough.dungeonType}]`;
@@ -176,6 +176,7 @@ export async function playDungeonThroughInputs(page, {
     });
     let completedRun;
     await enterAndExitDungeon(page, { ...playthrough, useTownGuide, resetRun: true, beforeExit: async () => {
+        if (afterEntry) await afterEntry(page);
         const layout = await page.evaluate(() => window.game.currentDungeonLayout);
         // Preserve replay identity without logging instance IDs/QA usernames.
         console.log(`${logPrefix} replay ${JSON.stringify({ seed: layout.generationSeed,
@@ -221,6 +222,7 @@ export async function playDungeonThroughInputs(page, {
                     const scale = Math.min(1, 14 / distance);
                     await tryDungeonGroundStep(() => moveByGroundClick(page, (destination.x - player.x) * scale,
                         (destination.z - player.z) * scale, { allowJumpFallback: false }));
+                    if (afterGroundStep) await afterGroundStep(page);
                 }
             }
             // Only after traversing a completed room. A living pack or boss
