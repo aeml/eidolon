@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 20:13 UTC
+## Current checkpoint — September 10, 20:15 UTC
 
 Previous goal turn was PROGRESS (full server acceptance, support integration,
 per-member turn-in/relogin assertions and corrected party gathering). This turn
@@ -70,12 +70,16 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   tests passed too. Archive`/tmp/eidolon-compact-party-proof-rKe4nx`;41981 gone.
   Primary cherry-picked it as16168cc8 after96142 finished; doc4c3a6318 records
   proof. This is focused roster acceptance, not whole visual/phone completion.
-- Primary `/tmp/eidolon-primary-town-recovery-lAKY3k` is clean4c3a6318. Full client
-  and lint97135 are ACTIVE on that frozen source; log
- `/tmp/eidolon-compact-party-integrated-full-client.log` and corresponding
- `...-full-lint.log`.19 suites passed/no failures at the latest observation;
-  not a full pass yet. This is the sole local heavy test. Next finish it, then
-  run the revised four-role route; full clear/manual persistence remain open.
+- Full client/lint97135 TERMINAL0 on clean4c3a6318:311 suites/4303 tests151.364s
+  plus zero-warning lint. Logs`/tmp/eidolon-compact-party-integrated-full-client.log`
+  and corresponding`...-full-lint.log`. Primary documentation records this pass;
+  its server tree is still identical to full-race-tested20d9f17d.
+- Browser60485 is ACTIVE on clean frozen primaryce2040fd,
+  runfour-role-safe-casts-0910, log`/tmp/eidolon-four-role-safe-casts-native.log`.
+  Its launch returned a live handle; do not mutate its source or restart merely
+  because an observation times out. No new runtime success is implied yet.
+  This is the sole local heavy/browser gate. It includes compact roster and
+  safe in-range warning casts; full clear/manual persistence remain open.
 - Combined successor worktree is now clean9a71c3e0 (documentation-only atop
   d0be3274). Its stale claim that solo6251 was still active is corrected; no
   additional runtime integration or acceptance is implied. Required combined
