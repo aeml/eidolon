@@ -43,10 +43,18 @@ Primaryf6fcddef adds intended whole-party town recovery after cleared rooms,
 strict per-member progress/inventory/Gold/quest/instance preservation, actual
 entrance re-traversal, legal Guardian Embrace aura alongside direct healing,
 XP acceptance and a death latch. No runtime/balance or fixture stat buff.
-Focused21tests/3suites0.945s plus lint/discovery/diff pass. Native18143 ACTIVE on
-frozenf6fcddef, runID`four-role-rested-0910`, API18580/Mongo18581/web41980;
-raw log `/tmp/eidolon-four-role-rested-native.log`. Only owned browser job.
-No clear/live claim yet; archive before rerunning.
+Focused21tests/3suites0.945s plus lint/discovery/diff pass. Native18143 TERMINAL1:
+opening room cleared, no deaths,666effective Cleric ally healing including legal
+Guardian Embrace. All recovered in town; driver wrongly expected resume to move
+all members. Source explicitly resumes only requester (fresh creation moves
+group). Archive `/tmp/eidolon-four-role-rest-proof-HtoFTA`, wrapper sanitized2,
+copied log sanitized1/0remaining QA prefixes; owned services/listeners absent.
+
+Primary311b1a61 corrects the driver: each remaining member uses the ordinary
+guide to resume, then retains strict per-member content/run checks. Lint/diff
+pass. Native41896 ACTIVE on frozen311b1a61, runID`four-role-resume-0910`,
+API18580/Mongo18581/web41980; `/tmp/eidolon-four-role-resume-native.log`.
+Only owned browser job. No clear/live claim yet; archive before rerunning.
 
 ## Required scope — two-floor town casino
 
