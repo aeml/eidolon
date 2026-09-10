@@ -116,7 +116,7 @@ passed, copied initial-stat log had zero QA identifiers, and owned ports cleared
 
 ## Remaining promotion gates
 
-- [ ] Full combined-source regression after desktop-support integration. Prior Go race passed38875a69; client275 suites/3827 tests passed on883e39e0, with fresh lint exit0.
+- [x] Full application regression after desktop-support integration: Go race88252 on e7fde8bc and client84456 on46c008ce; later changes are test-only, with focused coverage below. Versioned required-all still applies.
 - [x] Execute authenticated smoke with the strengthened stash checks (empty storage).
 - [ ] Run all three proposed CI-mode bundled-browser groups, retain distinct
   artifacts, inspect rendering and measure real stage durations.
@@ -196,3 +196,36 @@ Full combined Go race88252 now passed on cleane7fde8bc: root21.370s,
 game345.858s, remaining tested packages passed/cached, no race warning. Log
 `/tmp/eidolon-next-support-full-server.log`. This verifies the integrated server
 changes; full client, updated browser and required-all/release/live gates remain.
+
+## Guide integration and current acceptance checkpoint
+
+Primary guide sequencing24ef041d is imported as457f49a3, retaining its four-step
+bound, settled waypoints/camera, real NPC hover/click and early visibility
+diagnostics. Only the absent primary full-clear fixture and unrelated incoming
+prepared/recorded-run case context were excluded.46c008ce ports the moveOnly
+option into the older candidate input helper; default and Control behavior remain.
+
+Full client84456 on46c008ce passed277 suites/3854 tests136.407s and lint. Jest
+emitted its one-second cleanup warning, then exited normally; no forced exit.
+Logs`/tmp/eidolon-next-support-full-{client,lint}.log`. The server and src Git
+trees were identical to full-Go-tested e7fde8bc; no application changes followed.
+
+Native88901 failed at test module loading, before gameplay: this older branch
+had only combined enterAndExitDungeon.041d149a exposes the existing entry path,
+preserves combined callback/recall behavior, and honors no-respawn Recall for the
+party diagnostic.89765 passed lint and discovery5cases/3files.93d9c230 adds
+regressions for deliberate Shift walking/release on failure, the standalone
+entry export and rejecting hidden respawn.45349 passed21tests/3suites0.93s and
+lint. Logs`/tmp/eidolon-next-guide-export-{lint,discovery}.log` and
+`/tmp/eidolon-next-guide-adapter-{focused,lint}.log`. Failed-import archive
+`/tmp/eidolon-next-guide-import-proof-uCvkQC`; no game/server behavior changed.
+
+Native79643 on clean93d9c230 passed2.6minutes: four real clients formed a party,
+entered, then completed three Recall cycles and twelve individual guide resumes
+to the same instance without death or browser failures. Explicit level30 setup
+is entry preparation, not earned progress or combat proof. Archive
+`/tmp/eidolon-next-party-guide-proof-oA0FE3`, log
+`/tmp/eidolon-next-party-guide-export-native.log`; scans passed, owned services
+and ports cleared. This complements primary59146's same focused acceptance.
+The revised primary full-combat run remains separately required, as do current
+104case browser/required-all/version/remote/live gates and the full roadmap.
