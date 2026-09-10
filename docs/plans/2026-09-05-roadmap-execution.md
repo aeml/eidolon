@@ -16,7 +16,34 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 05:39 UTC
+## Current checkpoint — September 10, 05:43 UTC
+
+Previous turn was a VERIFIED WAIT. This continuation observed the same live13998
+and obtained actual earned merchant-sale evidence. No source mutation, restart,
+cancellation, push or deployment. Full1.1–1.10 goal stays active/incomplete.
+
+13998 ACTIVE, only owned browser, primary clean/frozencb348ef, same
+fresh-merchant-0910/18560/18561/41960/log
+`/tmp/eidolon-fresh-merchant-replay.log`. Latest Imp milestone20/60 at485s,
+level16/591XP/4370Gold, zero deaths,6ordinary rests,1training stop. Mid-hunt
+resource recovery also passed without resetting the encounter watchdog.
+
+The first actual earned merchant visit PASSED: stopped atx19.4292,z199.9374,
+opened real shop/bag, sold four separate Common items for10Gold each through
+normal right-clicks, exact balance4443→4483Gold and free slots4→8, level16 and
+quest/equipment/item conservation preserved, ordinary departure completed.
+Visit18.375s, no stash deposits. This extends the twelve empty-bag diagnostic
+visits to one actual campaign sale; it does not establish full Orc/readiness
+completion or prove the original late-run failure's sole cause. Continue full
+60Imp/manual/save, scars,50Orcs/manual/save, handoff and strictlevel30 gate.
+
+At05:43:23 re-polled CI34434837759/predeploy102741303703: still QUEUED;
+soak34433520743 still in progress. No cancellation approval; canonical62dc2d1
+unchanged and no new deployment/live acceptance. Root ledger-only and NEVER
+pushed. All class/group/realm/dungeon/raid/phone/aura/CIcost/casino and remaining
+roadmap gates stay open.
+
+## Previous checkpoint — September 10, 05:39 UTC
 
 Previous turn was a VERIFIED WAIT; this continuation polled the same live13998
 and observed new Seeds-phase proof. No code change/restart/cancellation/push or
