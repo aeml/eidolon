@@ -27,7 +27,28 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 08:15 UTC
+## Current checkpoint — September 10, 08:20 UTC
+
+Previous turn made PROGRESS with quest-card role polish. This turn is a VERIFIED
+WAIT yielding two completed native phases: SAME96530 repeatedly polled live on
+unchanged/frozen626385d. Imps passed1,773,261ms with60credits, zero deaths,
+22ordinary rests and2earned training stops. Manual reward200Gold6843XP preserved
+after login; before claimlevel21/9290XP/11147Gold → level22/6033XP/11347Gold.
+Scars passed37,200ms across its three real investigations and manual completion.
+Orcs has started under its existing60minute cap. This is not a full-route or
+dungeon pass, and phase timings are observations rather than approved pacing.
+
+Continue SAME96530/log/runID/services; retain current Water-assertion defect as
+documented rather than editing a running attempt. No other browser/heavy suite
+started. Separate4e4d46b still holds the class/handoff correction; aura integration
+e0c6ef8 still awaits full and rendered/native verification including both NPC
+role cards. No source/version/push/deployment change this turn. Fresh08:20 GitHub
+checks still show34434837759 queued and scheduled34433520743 in progress. Last
+public identity08:04 is unchanged evidence, not a new check. User phone feedback
+and current-soak cancellation permission remain unanswered. Full1.1–1.10 and
+casino scope stays active/incomplete; root documentation is never pushed.
+
+## Previous checkpoint — September 10, 08:15 UTC
 
 Previous turn completed aura asset preparation/discovery and verified waiting.
 This turn makes PROGRESS: inspected actual active-run seed-dialogue and diary
