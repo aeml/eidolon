@@ -5,12 +5,12 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 20:15 UTC
+## Current checkpoint — September 10, 20:29 UTC
 
-Previous goal turn was PROGRESS (full server acceptance, support integration,
-per-member turn-in/relogin assertions and corrected party gathering). This turn
-is PROGRESS: new native room/recovery/escape evidence and a compact desktop
-roster implementation with inspected browser proof and primary integration.
+Previous goal turn was PROGRESS (compact roster browser/full-client acceptance
+and revised safe-warning casts). This turn is PROGRESS: release-candidate stat
+parity/party-credit integration with focused verification, alongside a verified
+wait on the unchanged four-role gameplay source.
 Full roadmap remains active and deployment/1.1 completion is not claimed.
 
 - Full Go race81223 TERMINAL0 on20d9f17d: game381.679s, other tested packages
@@ -47,7 +47,7 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   Wizard2/2, Rogue3/3. No full clear or manual turn-in proof. Tank's final full
   resources are cleanup respawn values; observed death remains latched.
   Archive`/tmp/eidolon-four-role-gather-proof-jONZ3R`, wrapper/copy0 QA prefixes,
-  owned services/listeners gone. No active browser now.
+  owned services/listeners gone.
 -3172294f corrects a remaining test-controller limitation: it paused everyone
   during warnings, even safe ranged actors. Safe actors may now heal/cast primary
   skills in range, without follow/LMB chase; unsafe actors escape and tank holds
@@ -76,14 +76,35 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   its server tree is still identical to full-race-tested20d9f17d.
 - Browser60485 is ACTIVE on clean frozen primaryce2040fd,
   runfour-role-safe-casts-0910, log`/tmp/eidolon-four-role-safe-casts-native.log`.
-  Its launch returned a live handle; do not mutate its source or restart merely
-  because an observation times out. No new runtime success is implied yet.
+  Its actual handle was revalidated live this turn. All four setup/party/roster/
+  instance checks, two rooms and two full-party recovery/re-entry cycles passed.
+  Warden started15000HP/tank855HP555MP; last observed boss12754HP at~20:28.
+  Do not mutate source or restart because an observation times out.
   This is the sole local heavy/browser gate. It includes compact roster and
   safe in-range warning casts; full clear/manual persistence remain open.
-- Combined successor worktree is now clean9a71c3e0 (documentation-only atop
-  d0be3274). Its stale claim that solo6251 was still active is corrected; no
-  additional runtime integration or acceptance is implied. Required combined
-  Go/client/native/partition/version/remote/live gates remain pending.
+- Combined successor `/tmp/eidolon-browser-cost-current-RxDWen` is clean38875a69.
+  It now includes prepared/ordinary starting-stat parity52ff4513 (from3832b150)
+  and mandatory all-class parity gateec401a95 (fromaeff8ab5), retaining the entire
+  old required-all chain including Well Rested transitions and Forge/socket tail.
+  Expanded-story-only incoming fixtures/docs and unrelated stage-timing were
+  excluded; current fresh-opening route retains its extra baseline assertion.
+- Candidate party-credit760d0ff8/0c86a625/decb1693/5f323d41 are imported as
+ 538b5216/ebbd0475/f6978c91/51c63021. Safe kill-time snapshots required porting
+  the corpse-lock release helper for explosive chains. Existing damage/reward
+  formulas remain; primary's separate Dark King phase cap is NOT included or
+  claimed. Sequential/concurrent eight-death chain tests verify exact explosions,
+  cross-instance exclusion and downed/distant party objectives.
+- Backport focused54382 failed only an XP-remainder equality: the old reward
+  curve levels recipients up. The fixture now sums consumed level thresholds
+  plus remaining XP for exact receipt equality, retaining manual/Gold checks.
+  Final26906 passed spatial/snapshot/all-class/manual/stat-parity/explosion race
+  coverage3reps17.309s; root constructor/level commands15160 passed1.119s.
+ 35057 passed117client tests/4suites11.84s, lint and shell syntax. All these short
+  checks are terminal. Logs`/tmp/eidolon-next-party-backport-focused-final.log`,
+ `/tmp/eidolon-next-starting-stat-root.log`, and corresponding backport client/lint.
+  No full combined Go/client or native release pass. Desktop healing/compact
+  roster, expanded story/balance and Dark King phase integrity remain outside
+  this candidate. All planned work and later acceptance still required.
 - Remote rechecked again at~20:13: canonical62dc CI34434837759 remains queued at
   predeploy, after five hosted jobs passed; Nightly34433520743 still in progress.
   No soak interruption, push, new version or production acceptance.
