@@ -27,3 +27,27 @@ claim that this is the optimal or required player build.
 Pending: native execution, controller validation, full-clear result, individual
 manual turn-in/relogin proof and an earned four-player campaign. This adds no
 production gameplay change and is not a release/deployment receipt.
+
+## First native run — informative failure, not a clear
+
+Session20718 TERMINAL1 on080a363b, about5.6minutes. All four level30 clients
+formed a party and entered the same generated run (seed-7981223469871274837).
+The opening normal/elite rooms cleared and the Warden was attackable, reduced
+from15000 to10932HP before the Fighter died. Recorded totals: Fighter5544damage
+and2498damage taken; Cleric1634effective ally healing/13Healing Light casts;
+Wizard3344damage/21Fireballs; Rogue5116damage/43Piercing Throws. All received471
+Gold. No rejected casts. The helper's subsequent ordinary respawn means final
+Fighter940HP/610MP are town values, not survival evidence.
+
+Archive `/tmp/eidolon-four-role-first-proof-ve8uzL` contains report/results/log;
+wrapper credential scan0 and copied-log remaining QA prefixes0. Owned services
+and18580/18581/41980listeners were absent afterward. No later boss/quest claim.
+
+The first controller omitted party town recovery and only used direct Healing
+Light. At Warden entry the Fighter had168/555mana, subsequently falling to6.
+The next controller uses ordinary whole-party Recall/rest/re-entry after a
+cleared room when anyone is below80%HP/MP, checks each member's unchanged
+instance/seed/rooms/inventory/Gold/quests, and rewalks the entrance route. It also
+uses legal Guardian Embrace healing aura within its range, preserving critical
+direct-heal priority, and latches deaths before automatic cleanup can hide them.
+These are player-input strategy corrections; no balance or fixture buffs.

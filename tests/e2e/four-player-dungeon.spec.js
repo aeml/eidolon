@@ -6,7 +6,7 @@ import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
 import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, openGame,
-    moveByGroundClick, projectEntity, projectGroundOffset, returnToTown } from './helpers.js';
+    enterDungeon, moveByGroundClick, projectEntity, projectGroundOffset, returnToTown } from './helpers.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 
@@ -15,7 +15,7 @@ const snapshot = page => page.evaluate(() => {
     return { id: p.id, instance: g.currentInstanceId, seed: g.currentDungeonLayout?.generationSeed,
         x: p.position.x, z: p.position.z, hp: p.stats.hp, maxHP: p.stats.maxHp,
         mana: p.stats.mana, maxMana: p.stats.maxMana, dead: p.state === 'DEAD',
-        gold: p.gold, level: p.level, stats: p.baseStats, hotbar: p.hotbar,
+        gold: p.gold, xp: p.xp, level: p.level, stats: p.baseStats, hotbar: p.hotbar,
         quest: p.quests?.find(q => q.id === 'chronicle_03_roots_remember'),
         rooms: g.currentDungeonRoomState?.rooms, evidence: window.__partyClearEvidence };
 });
@@ -24,7 +24,7 @@ async function observeRole(page) {
     await page.evaluate(() => {
         const game = window.game, original = game.handleServerMessage.bind(game);
         const e = window.__partyClearEvidence = { damageDone: 0, damageTaken: 0, allyHealing: 0,
-            casts: {}, rejected: {}, lastUpdate: performance.now() };
+            casts: {}, rejected: {}, sawDeath: false, lastUpdate: performance.now() };
         game.handleServerMessage = message => {
             const p = message.payload;
             if (message.type === 'state' || message.type === 'delta') e.lastUpdate = performance.now();
@@ -39,7 +39,9 @@ async function observeRole(page) {
                 const counts = p.accepted ? e.casts : e.rejected;
                 counts[p.skillName] = (counts[p.skillName] || 0) + 1;
             }
-            return original(message);
+            const result = original(message);
+            e.sawDeath ||= game.player.state === 'DEAD';
+            return result;
         };
     });
 }
@@ -131,9 +133,22 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             if (!hurt) { await follow(healer, states[0], 9); return; }
             const available = await healer.page.evaluate(() => {
                 const p = window.game.player;
-                return { index: p.hotbar.indexOf('Healing Light'), cooldown: p.cooldowns['Healing Light'] || 0, mana: p.stats.mana };
+                return { index: p.hotbar.indexOf('Healing Light'), cooldown: p.cooldowns['Healing Light'] || 0, mana: p.stats.mana,
+                    aura: p.hotbar.indexOf('Guardian Embrace'), auraCooldown: p.cooldowns['Guardian Embrace'] || 0,
+                    auraActive: p.guardianEmbraceActive || p.guardianEmbraceTimer > 0 };
             });
-            if (Math.hypot(hurt.x - states[1].x, hurt.z - states[1].z) > 12) { await follow(healer, hurt, 10); return; }
+            if (Math.hypot(hurt.x - states[1].x, hurt.z - states[1].z) > 9) { await follow(healer, hurt, 7); return; }
+            // Use the unlocked ten-unit healing aura for sustained group
+            // damage, but do not delay an available critical direct heal.
+            if ((hurt.hp / hurt.maxHP >= .55 || available.cooldown > 0) && available.aura >= 0 &&
+                available.auraCooldown <= 0 && !available.auraActive && available.mana >= 65) {
+                const self = await projectGroundOffset(healer.page, 0, 0);
+                if (self?.canvas) {
+                    await healer.page.mouse.move(self.x, self.y);
+                    await healer.page.keyboard.press(String(available.aura + 1));
+                    return;
+                }
+            }
             if (available.index < 0 || available.cooldown > 0 || available.mana < 25) return;
             const point = hurt.id === states[1].id ? await projectGroundOffset(healer.page, 0, 0) : await projectEntity(healer.page, hurt.id);
             if (!point || !(point.visible || point.canvas)) return;
@@ -143,6 +158,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
         }
 
         let currentTarget;
+        let townRests = 0;
         await playDungeonThroughInputs(tank.page, { playthrough,
             requiredFighterSkills: ['Iron Fortress', 'Whirlwind', 'Shield Slam'],
             afterEntry: async () => {
@@ -157,6 +173,32 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             afterGroundStep: async () => {
                 const anchor = await snapshot(tank.page);
                 await Promise.all(actors.slice(1).map(actor => follow(actor, anchor)));
+            },
+            recoverAfterRoom: async (_page, { roomIndex, nearbyHostiles }) => {
+                const states = await Promise.all(actors.map(actor => snapshot(actor.page)));
+                if (nearbyHostiles || !states[0].rooms.find(room => room.index === roomIndex)?.cleared ||
+                    !states.some(s => s.hp < s.maxHP * .8 || s.mana < s.maxMana * .8)) return false;
+                for (const s of states) expect(s.dead, 'a party rest cannot hide a death').toBe(false);
+                const progress = actorPage => actorPage.evaluate(async () => {
+                    const { dungeonRestSnapshot } = await import('/tests/dungeonRestSnapshot.js');
+                    return dungeonRestSnapshot(window.game);
+                });
+                const before = await Promise.all(actors.map(actor => progress(actor.page)));
+                await Promise.all(actors.map(actor => returnToTown(actor.page, { allowRespawn: false })));
+                for (const actor of actors) await expect.poll(async () => {
+                    const s = await snapshot(actor.page);
+                    return !s.dead && s.hp === s.maxHP && s.mana === s.maxMana;
+                }, { timeout: 15_000 }).toBe(true);
+                await enterDungeon(tank.page, { ...playthrough, useTownGuide: true, resetRun: false });
+                for (const [index, actor] of actors.entries()) {
+                    await expect.poll(async () => (await snapshot(actor.page)).instance).toBe(states[index].instance);
+                    await expect.poll(() => progress(actor.page)).toEqual(before[index]);
+                }
+                townRests++;
+                console.log('[party-clear-rest]', JSON.stringify({ roomIndex, townRests,
+                    spent: states.map(s => ({ hp: s.hp, mana: s.mana })), allFourRecovered: true,
+                    sameSeedRoomsGoldInventoryAndQuests: true }));
+                return true; // Existing driver rewalks the real cleared route.
             },
             beforeCombat: async (_page, target) => {
                 // Let the Fighter engage first, then maintain real ally inputs.
@@ -191,6 +233,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                     const state = await snapshot(actor.page);
                     expect(state.quest.completed, 'manual wizard turn-in must remain unclaimed').toBe(false);
                     expect(state.gold).toBeGreaterThan(actor.initial.gold);
+                    expect(state.level > actor.initial.level || state.xp > actor.initial.xp).toBe(true);
                     expect(state.rooms.every(room => room.cleared || room.type === 'start')).toBe(true);
                 }
                 expect((await snapshot(tank.page)).evidence.damageTaken).toBeGreaterThan(0);

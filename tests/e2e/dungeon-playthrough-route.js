@@ -12,7 +12,7 @@ import { recoverBetweenDungeonRooms } from './dungeon-town-rest.js';
 // caller explicitly opts into the QA entrance waypoint (which grants protection).
 export async function playDungeonThroughInputs(page, {
     playthrough, fullRun = true, fallbackRun = false, beforeCombat, useTownGuide = true, afterClearedRoute,
-    recoverBetweenRooms = false, afterTownRecovery,
+    recoverBetweenRooms = false, afterTownRecovery, recoverAfterRoom,
     afterEncounter, afterEntry, afterGroundStep,
     requiredFighterSkills = ['Iron Fortress', 'Guardian Roar', 'Whirlwind', 'Shield Slam']
 }) {
@@ -228,9 +228,12 @@ export async function playDungeonThroughInputs(page, {
             // Only after traversing a completed room. A living pack or boss
             // keeps its original fight deadline; no recovery within that loop.
             const roomIndex = layout.corridors[routeIndex].toRoomIndex;
-            if (recoverBetweenRooms && roomIndex < bossRooms[lastBoss] &&
-                await recoverBetweenDungeonRooms(page, { playthrough, roomIndex,
-                    nearbyHostiles: (await hostiles(page)).some(entity => entity.distance < 40) })) {
+            const recoveryContext = { playthrough, roomIndex,
+                nearbyHostiles: (await hostiles(page)).some(entity => entity.distance < 40) };
+            const recovered = roomIndex < bossRooms[lastBoss] && (recoverAfterRoom
+                ? await recoverAfterRoom(page, recoveryContext)
+                : recoverBetweenRooms && await recoverBetweenDungeonRooms(page, recoveryContext));
+            if (recovered) {
                 if (afterTownRecovery) await afterTownRecovery(page, { roomIndex });
                 // Rewalk all actual joins from the real entrance. Preserve the
                 // original layout, defeated set, reward baseline and total
