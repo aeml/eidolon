@@ -5,12 +5,12 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 21:49 UTC
+## Current checkpoint — September 10, 21:55 UTC
 
-Previous goal turn was PROGRESS: client acceptance and guide-test integration.
-This turn is PROGRESS: candidate79643 passed all twelve individual guide resumes,
-and primary full-party42295 is running with the verified guide controls and
-previous Charge reserve. Full dungeon clear is not yet proved.
+Previous goal turn was PROGRESS: candidate guide acceptance and the renewed
+full-party run. This turn is a VERIFIED WAIT on live42295: two combat rooms and
+both four-person recovery/resume cycles now passed, including the stage that
+previously failed guide acquisition. No boss or full-clear result yet.
 Full roadmap,
 successful dungeon clear and release gates remain open.
 Full roadmap remains active and deployment/1.1 completion is not claimed.
@@ -283,6 +283,12 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   room cleared and all four completed town recovery plus individual guide resume
   with exact seed/rooms/Gold/inventory/quests retained. Pre-rest HP/MP by
   Fighter/Cleric/Wizard/Rogue:714/336,845/506,756/332,855/392. No boss result yet.
+  Re-polled42295 live at21:55. Second room and all four individual guide resumes
+  now also passed, with exact seed/rooms/Gold/inventory/quests preserved. Second
+  pre-rest HP/MP by the same roles:667/371,845/479,756/301,855/435. No observed
+  terminal failure or boss result; the bounded route is still active. Prefix
+  audit found no additional movement-failure diagnostics hidden by the progress
+  filter. Do not restart based only on time without a new combat log entry.
   Updated104browser/required-all/version/live and primary full clear remain.
   Do not edit candidate or start another heavy gate until it ends.
 - Remote rechecked again at~21:35: canonical62dc CI34434837759 remains queued at
