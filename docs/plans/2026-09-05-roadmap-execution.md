@@ -16,7 +16,51 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, release60 final local verification
+## Current checkpoint — September 10, 00:33 UTC
+
+This continuation made PROGRESS: published locally verified60, integrated
+accepted59 into expanded campaign work without dropping requirements, and began
+the fully earned serial Earth replay after full regression. No impasse; full
+roadmap goal remains active. Root ledger-only and NEVER pushed.
+
+**Release60 PUSHED, not yet accepted live.** Canonical clean **df91bb6** on
+`release/60-sanctuary-combat-feedback`, worktree
+`/tmp/eidolon-safe-zone-release-preview-gCLEaT`. Push82118 succeeded normally from
+e236b37 after all local gates. **CI34421323405 ACTIVE**, exactdf91bb6; client tests
+passed, server102697171693 active at latest observation. Continue this pipeline,
+not a replacement run or successor push. Full browser/predeploy/deploy/native
+live/public identity gates remain. See
+[release60 live verification](2026-09-10-release60-live-verification.md).
+
+Final native88699 TERMINALPASS1case36.4s: actual same-target warning inside town
+and normal range outside, incoming2HP, FireballMP110→80, RecallHP108→110 and
+MP80→92→110, saved bank11.385→11.771 with aura. Both boundary world screenshots
+and rejoined town image inspected. Archive
+`/tmp/eidolon-release60-native-proof-KPv2XQ`, wrapper/supplemental scanner0 and
+exact services18560/18561/41960cleaned. Earlier full33981 and interface70333
+passes remain recorded below; final release commit adds documentation only.
+
+Primary **e32d37a**, clean, includes staged routef3e0fcf and accepted59 merge
+f11d5bc. Conflict resolution preserves the full diary fixture, sanctuary tests,
+crystal/artificer runs, movement/reading coverage, detailed prototype history,
+Docker cache ordering and all casino scope. One duplicate idempotent QuestUI
+class addition from automatic merge removed. Full66813 TERMINALPASS onf11d5bc:
+284suites3991tests87.363s+lint. Logs
+`/tmp/eidolon-primary-staged-earth-full-{client,lint}.log`. New primary docs explain
+stage budgets, integration and accepted59 evidence. Inherited59metadata is not
+authorization to publish expanded content as59 or to bypass60's pipeline.
+
+**78199 ACTIVE**, only owned local browser workflow: actual serial prepared
+Earth route, run`earth-stages-0910-0032`, API18560/Mongo18561/web41960,
+log`/tmp/eidolon-earth-stages-0032.log`. Freeze primary until terminal; preserve
+and sanitize artifacts before another run, then check exact wrapper cleanup.
+No heavy owned tests or second browser alongside. Each of3stages retains600s;
+same actual earned account and saved Seed counts, all150qualifyinghunt kills,
+investigations, manual claims and sealed-raid check. Only firststage prepares
+levels. Full fresh/class/group pacing and actual dungeon/raid completion remain
+separate gates; no claims beyond completed evidence.
+
+## Previous checkpoint — September 10, release60 final local verification
 
 The immediately preceding casino-response turn only reconfirmed existing scope
 (NO PROGRESS toward implementation); this continuation revalidated active work
