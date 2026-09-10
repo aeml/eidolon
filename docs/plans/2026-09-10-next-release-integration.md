@@ -115,7 +115,7 @@ passed, copied initial-stat log had zero QA identifiers, and owned ports cleared
 
 ## Remaining promotion gates
 
-- [x] Full combined-source regression: Go race passed38875a69; client275 suites/3827 tests passed on883e39e0, with fresh lint exit0.
+- [ ] Full combined-source regression after desktop-support integration. Prior Go race passed38875a69; client275 suites/3827 tests passed on883e39e0, with fresh lint exit0.
 - [x] Execute authenticated smoke with the strengthened stash checks (empty storage).
 - [ ] Run all three proposed CI-mode bundled-browser groups, retain distinct
   artifacts, inspect rendering and measure real stage durations.
@@ -133,3 +133,25 @@ The primary dungeon outcome, all-class/group/realm/raid, phone/balance and later
 roadmap acceptance are still open. CI scheduling changes
 must not cancel the running soak or redefine its24hour stability requirement
 without the separately requested operational decision.
+
+## Desktop support and compact roster staging
+
+The separate worktree`/tmp/eidolon-next-party-support-ycLHyw` starts fromee15e582
+while that unchanged candidate runs bundled browser27935. It imports desktop
+support793f08a8 as3e526d1e, server admissionb710b205/20d9f17d as0f12ed02/6c23dac3,
+and compact rosterba481c09 as43e60e91. The incoming primary-only four-player test
+was excluded because this release line does not have its expedition harness or
+expanded-story dependencies. It was not deleted from primary. Existing candidate
+browser tests gain the self-contained four-visible-targets menu-layer case.
+
+Focused24885 passed139 tests/4suites4.017s on43e60e91; lint50055 exited0.
+Focused Go race90655 passed21.992s: unavailable explicit support targets never
+consume or redirect casts, legal self/ally/cursor casts remain valid, and class
+ability/coordinate contracts pass with friendly targets for support skills.
+Logs`/tmp/eidolon-next-support-focused-{client,server,lint}.log`.
+
+This source still needs full combined regressions and native menu/cast checks.
+Historical primary roster75590 and four-role healing evidence are not automatic
+acceptance of this different release source. Expanded story/reward tuning and
+Dark King phase integrity remain outside this branch; they are still required
+later integration, not removed scope. No new version or deployment is claimed.
