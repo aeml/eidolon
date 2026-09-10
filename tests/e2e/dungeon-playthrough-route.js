@@ -4,6 +4,7 @@ import { selectFighterDungeonSkill } from '../dungeonCombatControls.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { enterAndExitDungeon, moveByGroundClick, projectEntity, readPlayerState } from './helpers.js';
 import { dungeonSpatialSnapshot } from './dungeon-spatial-snapshot.js';
+import { dungeonBossEncounter } from '../dungeonCombatEncounter.js';
 
 // Callers own login, earned or fixture preparation, and story turn-in. The safe
 // default enters through the town guide, without grants. Only the legacy prepared
@@ -28,6 +29,7 @@ export async function playDungeonThroughInputs(page, {
 
     async function defeatByMouse(page, target) {
         console.log(`${logPrefix} fighting ${target.type}`);
+        if (target.encounter) console.log(`${logPrefix} boss encounter ${JSON.stringify({ type: target.type, ...target.encounter })}`);
         // Tempest seed -1329185764639002788 reached Zephyrion alive with
         // continuous damage but outlasted six minutes (93,600 starting HP).
         // Allow eight minutes for functional combat; retain the 60s damage-stall
@@ -68,7 +70,8 @@ export async function playDungeonThroughInputs(page, {
                     return { health: enemy?.health ?? enemy?.stats?.hp, distance: enemy?.position.distanceTo(game.player.position),
                         range: game.getBasicAttackRangeForEntity(enemy), playerDamage: game.player.stats?.damage,
                         playerHealth: game.player.stats?.hp, playerMaxHealth: game.player.stats?.maxHp,
-                        playerMana: game.player.stats?.mana };
+                        playerMana: game.player.stats?.mana,
+                        playerPosition: { x: game.player.position.x, z: game.player.position.z } };
                 }, target.id);
                 console.log(`${logPrefix} ${target.type}: ${JSON.stringify(diagnostic)}`);
                 nextReport = Date.now() + 15_000;
@@ -198,7 +201,8 @@ export async function playDungeonThroughInputs(page, {
                     const nearby = (await hostiles(page)).find(entity => entity.distance < 40);
                     if (nearby) {
                         const combatStarted = Date.now();
-                        await defeatByMouse(page, nearby);
+                        await defeatByMouse(page, { ...nearby,
+                            encounter: dungeonBossEncounter(layout, playthrough.bosses, nearby.type) });
                         // Combat has its own deadline; three ordinary encounters
                         // should not consume the independent walking timeout.
                         deadline += Date.now() - combatStarted;

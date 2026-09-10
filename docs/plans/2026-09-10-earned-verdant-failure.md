@@ -85,6 +85,13 @@ clear, manual dungeon reward/raidaccess/save or Water handoff is accepted.
 
 ### Next diagnostic work, before another long fresh run
 
+The first short investigation now confirms that44188's death was313units from
+the Warden's intended room, in the earlier normalroom1. See
+[fixed boss-room context and retreat correction](2026-09-10-earned-boss-boundary.md)
+for the exact generator replay, missing callback context, focused tests and
+still-pending native/earned acceptance. This does not establish room drift as
+the sole cause or close the resource/ability questions below.
+
 1. Reproduce recovery and appropriate earned ability use in short explicitly
    prepared diagnostics. Existing town Recall/dungeon resume are normal game
    affordances; investigate between-encounter recovery without resetting a run,

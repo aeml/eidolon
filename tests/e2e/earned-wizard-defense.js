@@ -37,7 +37,10 @@ export async function createEarnedRangedDefense(page, { allowJumpFallback = fals
             return original(message);
         };
     });
-    const beforeCombat = async ({ encounter } = {}) => {
+    const beforeCombat = async (context = {}, target = {}) => {
+        // Shared dungeon/hunt callbacks receive (page, target); direct callers
+        // can still provide { encounter }. Never read the boundary from page.
+        const encounter = target?.encounter ?? context?.encounter;
         const state = await page.evaluate(async () => {
             const game = window.game, p = game.player;
             const { getAbilityManaCost } = await import('/src/core/AbilityEconomy.js');

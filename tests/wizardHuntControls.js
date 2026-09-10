@@ -60,6 +60,16 @@ export function planWizardHuntStep(state) {
     return state.className === 'Wizard' ? planRangedHuntStep(state) : null;
 }
 
+export function retreatStaysInEncounter(encounter, point, radius = 1.25) {
+    if (!encounter) return true;
+    if (Number.isFinite(encounter.width) && Number.isFinite(encounter.height)) {
+        return Math.abs(point.x - encounter.x) <= encounter.width / 2 - radius &&
+            Math.abs(point.z - encounter.z) <= encounter.height / 2 - radius;
+    }
+    // Preserve circular investigation boundaries used by existing callers.
+    return Math.hypot(point.x - encounter.x, point.z - encounter.z) <= encounter.radius;
+}
+
 export function planRangedHuntStep(state) {
     if (!['Wizard', 'Rogue'].includes(state.className) || state.dead || !state.threats?.length) return null;
     const threats = state.threats.map(enemy => ({ ...enemy,
@@ -95,8 +105,8 @@ export function planRangedHuntStep(state) {
         const clearance = Math.min(...threats.map(enemy =>
             Math.hypot(state.x + x - enemy.x, state.z + z - enemy.z) - enemy.meleeReach));
         return { x, z, clearance };
-    }).filter(option => !encounter || Math.hypot(state.x + option.x - encounter.x,
-        state.z + option.z - encounter.z) <= encounter.radius)
+    }).filter(option => retreatStaysInEncounter(encounter,
+        { x: state.x + option.x, z: state.z + option.z }, radius))
         .filter(option => !inDungeon || !clipDungeonEffectSegment(floors, state,
         { x: state.x + option.x, z: state.z + option.z }).blocked)
         .filter(option => !state.canRetreat || state.canRetreat(option))
