@@ -27,7 +27,51 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 07:08 UTC
+## Current checkpoint — September 10, 07:25 UTC
+
+Previous turn classified PROGRESS: native death/dungeon aura transitions passed.
+This turn adds and rehearses REQUIRED release-pipeline wiring on the separate
+aura branch. Clean head **0d535d6** (proof) atop **c23ef2f** (wiring). Full1.1–1.10
+goal remains active/incomplete; no runtime/server/version/push/deployment change.
+
+Predeploy now requires `npm run test:e2e:rest-render` after gallery and before
+full-character gameplay. It runs four parity/lifecycle/populated tests with
+failure propagation/sanitation and separate uploaded `rest-render-results/`
+JSON/images. The disposable full Well Rested suffix now includes both native
+death/dungeon transitions after journey/expiry and party. Failure stops later
+stages; prepared QA setup is NOT added to ordinary production recovery accounts.
+Focused35tests/3suites1.403s, lint/bash syntax and workflow parsing passed. Full
+29228 TERMINAL PASS260suites3647tests127.063s plus lint underNode24.18.0.
+
+Actual combined68099 TERMINAL PASS on frozen c23ef2f: rendered4/1.3m, journey/
+expiry2/1.3m, two-player1/44.7s, native transitions2/3.0m, retries0. Render JSON
+retains all four results and lifecycle/populated measurement bodies; its checksum
+survives the gameplay suffix unchanged. Actual credential scanner0; exact
+runIDaura-gates-0910 services/image and18560/18561/41960 absent. Full archive
+`/tmp/eidolon-aura-gates-proof-ZXIT6U`; log `/tmp/eidolon-aura-gates-rehearsal.log`.
+Current native images are nested under well-rested-journey/party/transitions;
+loose earlier transition directories in the archive are not this run's evidence.
+
+After preservation,13513 default-output browser replay PASS1/4.6s; hashes of
+EVERY separate render artifact unchanged across actual test-results clearing.
+Its own HTML/results are archived separately; scanner0/41960closed. Viewed
+current nested respawn/dungeon-return images and20actor High rendering. No owned
+browser/heavy test remains active. Detailed scopes/results are in the aura plan.
+This is the added renderer step + five-test recovery suffix, NOT the entire
+full-character predeploy suite, physical-phone proof or remote final acceptance.
+
+Predeploy102741303703 remains QUEUED and scheduled soak34433520743 in progress;
+no cancellation approval, canonical62dc2d1 unchanged, no61promotion before60's
+acceptance. Last public health/identity is07:08 healthy/database-ready60/df91bb6.
+Future aura promotion still needs accepted60 ancestry, versioned notes/identity,
+remote CI and live checks. Meanwhile broader progression work remains available:
+primary3dcb533 proves fresh Wizard story readiness, not an earned dungeon clear.
+Inspected existing fresh-dungeon helper as a possible next route; it has not been
+run this turn and its flags still need reconciliation with story-only readiness.
+Keep full class/group/realm/dungeon/raid/balance/visual/phone/CIcost/casino and all
+remaining milestone scope intact. Root ledger-only, NEVER pushed.
+
+## Previous checkpoint — September 10, 07:08 UTC
 
 Previous turn classified PROGRESS: populated aura comparison/performance evidence
 was added and verified. This turn also made PROGRESS: new isolated native death/
