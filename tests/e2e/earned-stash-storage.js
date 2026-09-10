@@ -1,4 +1,5 @@
 import { expect } from '@playwright/test';
+import { earnedStashFreeSlots } from '../earnedInventoryPolicy.js';
 import { moveByGroundClick, projectEntity, readPlayerState } from './helpers.js';
 
 async function openEarnedStash(page) {
@@ -44,7 +45,9 @@ export async function storeEarnedSpareEquipment(page, planned, readState) {
     await openEarnedStash(page);
     const initial = await readState(page);
     const capacity = await page.locator('#stash-grid .inv-slot').count();
-    expect(capacity - initial.stash.length, 'Real stash capacity must cover the complete deposits').toBeGreaterThanOrEqual(planned.length);
+    const freeSlots = earnedStashFreeSlots(initial.stash, capacity);
+    expect(freeSlots, 'Real stash capacity must cover the complete deposits').toBeGreaterThanOrEqual(planned.length);
+    console.log('[earned-stash-capacity]', JSON.stringify({ capacity, freeSlots, planned: planned.length }));
     const stored = [];
     for (const deposit of planned) {
         const before = await readState(page);

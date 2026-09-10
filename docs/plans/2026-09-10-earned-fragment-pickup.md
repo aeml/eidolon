@@ -1,5 +1,13 @@
 # Finish actual fragment pickups before the next prepared encounter
 
+September10 replay12987 on752c888 verified all8 naturally collected Seeds and
+manual consumption in stage1 (4.6m), then the full Imp/scar stage (6.9m). It
+later failed a second-stash capacity assertion at41/50DemonOrcs, not collection.
+See the [storage follow-up](2026-09-10-earned-stash-preservation.md) for the
+retained evidence, actual first deposit and correction. Full-chain acceptance
+and fresh-player balance remain open; this pass does not retrospectively prove
+which specific fragment was abandoned in the earlier failure.
+
 Run49128 on370f029 reached the game successfully, then failed stage1 after3.5m
 with7/8Seeds after40encounters. Opening, diary and40Skeletons were complete; no
 daily was accepted. One equipping-only visit freed11slots. No stash transfer

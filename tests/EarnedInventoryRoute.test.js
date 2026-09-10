@@ -73,6 +73,8 @@ test('stash fallback uses real storage clicks and checks complete item conservat
     expect(route).toContain('await storeEarnedSpareEquipment(page, storage, snapshot)');
     expect(route).toContain('...prepared.stash.filter(item => item?.id), ...stored');
     expect(stash).toContain("projectEntity(page, 'stash-1')");
+    expect(stash).toContain('earnedStashFreeSlots(initial.stash, capacity)');
+    expect(stash).not.toContain('capacity - initial.stash.length');
     expect(stash).toContain("await expect(page.locator('#shop-screen')).toBeHidden()");
     expect(stash).toContain("nth(index).click({ button: 'right' })");
     expect(stash).toContain('.stash.find(entry => entry?.id === item.id)).toEqual(item)');

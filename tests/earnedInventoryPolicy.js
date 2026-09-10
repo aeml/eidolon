@@ -4,6 +4,17 @@ export const EARNED_BAG_MIN_FREE = 5;
 export const EARNED_BAG_TARGET_FREE = 8;
 export const earnedBagFreeSlots = inventory => inventory.filter(item => !item?.id).length;
 
+// Stash messages pad the client's array with nulls after a transfer. Its length
+// is not occupancy; the rendered grid supplies capacity, actual item IDs usage.
+export function earnedStashFreeSlots(stash, capacity) {
+    if (!Array.isArray(stash) || !Number.isInteger(capacity) || capacity < 0) {
+        throw new Error('Invalid observed stash capacity');
+    }
+    const occupied = stash.filter(item => item?.id).length;
+    if (occupied > capacity) throw new Error('Observed stash exceeds rendered capacity');
+    return capacity - occupied;
+}
+
 // A conservative ordinary-player baseline after filling empty equipment slots.
 // Never dispose of quest fragments, crafting items, rare+ gear or future-level
 // equipment. This is a QA decision policy, not automatic selling in the game.

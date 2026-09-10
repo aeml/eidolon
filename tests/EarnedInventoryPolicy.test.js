@@ -1,8 +1,32 @@
-import { earnedBagFreeSlots, planEarnedBagSales, planEarnedBagStorage } from './earnedInventoryPolicy.js';
+import { earnedBagFreeSlots, earnedStashFreeSlots, planEarnedBagSales, planEarnedBagStorage } from './earnedInventoryPolicy.js';
 
 const gear = (id, changes = {}) => ({ id, type: 'ARMOR', slot: 'head', level: 3,
     rarity: { name: 'Common' }, value: 30, ...changes });
 const equipment = { head: gear('worn'), ring1: gear('ring-one', { slot: 'ring' }) };
+
+test('a second stash visit counts the one stored item, not 99 network padding entries', () => {
+    const item = Object.freeze(gear('stored'));
+    const padded = Object.freeze([item, ...Array(99).fill(null)]);
+    expect(earnedStashFreeSlots(padded, 100)).toBe(99);
+    expect(earnedStashFreeSlots([item], 100)).toBe(99);
+    expect(padded[0]).toBe(item);
+    expect(padded).toHaveLength(100);
+});
+
+test('empty and full stash observations respect the actual rendered capacity', () => {
+    expect(earnedStashFreeSlots([], 100)).toBe(100);
+    expect(earnedStashFreeSlots([null, { id: '' }], 2)).toBe(2);
+    expect(earnedStashFreeSlots([gear('one'), gear('two')], 2)).toBe(0);
+});
+
+test.each([-1, 1.5, NaN, undefined])('invalid stash capacity %s cannot permit deposits', capacity => {
+    expect(() => earnedStashFreeSlots([], capacity)).toThrow();
+});
+
+test('missing storage and occupancy beyond the rendered capacity fail closed', () => {
+    expect(() => earnedStashFreeSlots(undefined, 100)).toThrow();
+    expect(() => earnedStashFreeSlots([gear('one')], 0)).toThrow();
+});
 
 test('full bags first sell only the cheapest ordinary spare equipment required for room', () => {
     const inventory = Object.freeze([gear('uncommon', { rarity: { name: 'Uncommon' }, value: 10 }),

@@ -1,5 +1,37 @@
 # Preserve earned spare gear when conservative sales are insufficient
 
+## September10 follow-up — real transfer passed; second-visit QA check corrected
+
+Replay12987 on752c888 ended FAILED15.7m: stage1 passed4.6m, stage2 passed6.9m,
+stage3 reached41/50DemonOrcs before its second storage visit failed the test's
+capacity assertion. The first visit actually deposited the entire earned
+`item-1606094121388945210` (Agile Plate Mail of the Whale), verified unchanged
+Gold/quests/equipment and conservation of every other bag/stash item, then
+resumed ordinary travel. That visit's three sales alone earned1720Gold
+(18126→19846); bag space increased4→8. It is not a complete saved-chain pass.
+
+The second visit observed100 rendered slots and a100-entry padded stash array,
+but only one occupied item. The helper subtracted array length and reported0
+space. `GameEngineNetworkMessages` deliberately pads stash updates with nulls;
+the inspected failure screenshot shows the stored armor and many empty slots.
+The server still has its ordinary100-slot capacity. This is a QA occupancy
+calculation error, not a full stash or a runtime deposit rejection.
+
+Correct the capacity check to count actual item IDs, accepting either compact
+or padded observations, while retaining the rendered capacity, strict per-item
+conservation and every existing requirement. Record capacity/free/planned counts.
+Tests cover the observed one-item/99-null case, compact equivalence, empty/full
+storage, invalid capacity and impossible over-capacity observations. No game,
+drop, quest, capacity, timeout or item-grant changes.
+
+Focused68065 passed31tests/3suites0.691s+lint. Full regression and a new complete
+replay, including saved-state checks after storage, remain required. Failure
+archive `/tmp/eidolon-earth-stash-capacity-proof-BDzPFc`, wrapper sanitation0files,
+supplemental scan0, exact services/18560/18561/41960absent. Whole-world failure
+image inspected. Original log `/tmp/eidolon-earth-pickup-0110.log` retained.
+
+## Prior failure and initial storage extension
+
 Serial route78199 on e32d37a ended FAILED after8.8minutes: stage1 passed2.7m,
 stage2 passed4.4m, and stage3 reached19/50DemonOrcs before the bag policy stopped.
 All earlier authored objectives, manual claims and phase-boundary saved-state
