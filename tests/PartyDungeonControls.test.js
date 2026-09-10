@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { acquirePartyAllyPointer, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, planPartyTelegraphEscape } from './partyDungeonControls.js';
+import { acquirePartyAllyPointer, gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, planPartyTelegraphEscape } from './partyDungeonControls.js';
 
 test('healer stops seven units short of the tank rather than aiming into the boss', () => {
     expect(partyFollowStep({ x: 0, z: 0 }, { x: 0, z: -12 }, 7)).toEqual({ dx: 0, dz: -5 });
@@ -18,6 +18,29 @@ test.each([NaN, Infinity, -1])('invalid spacing fails closed: %s', spacing => {
 
 test('following uses real move-only walking, never a covered-ground jump', () => {
     expect(PARTY_FOLLOW_INPUT_OPTIONS).toEqual({ moveOnly: true, allowJumpFallback: false });
+});
+
+test('formation waits for observed catch-up instead of counting an issued step as arrival', async () => {
+    const tank = { x: 0, z: 0 };
+    const read = jest.fn().mockResolvedValueOnce([tank, { x: 30, z: 0 }])
+        .mockResolvedValueOnce([tank, { x: 18, z: 0 }]).mockResolvedValueOnce([tank, { x: 4, z: 0 }]);
+    const move = jest.fn();
+    await gatherPartyFormation({ read, move });
+    expect(read).toHaveBeenCalledTimes(3);
+    expect(move).toHaveBeenCalledTimes(2);
+});
+
+test('blocked followers hit the original bounded gathering deadline', async () => {
+    let clock = 0;
+    await expect(gatherPartyFormation({ read: async () => [{ x: 0, z: 0 }, { x: 30, z: 0 }],
+        move: async () => { clock += 1000; }, now: () => clock, timeout: 2000 })).rejects.toThrow('failed to gather');
+});
+
+test('a dead follower fails gathering without moving or disguising a wipe', async () => {
+    const move = jest.fn();
+    await expect(gatherPartyFormation({ read: async () => [{ x: 0, z: 0 }, { x: 30, z: 0, dead: true }], move }))
+        .rejects.toThrow('cannot hide a death');
+    expect(move).not.toHaveBeenCalled();
 });
 
 test('healing pointer skips a boss-covered center and confirms an exposed ally hitbox', async () => {

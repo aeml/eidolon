@@ -112,6 +112,27 @@ healing/warning-response controller are recorded in
 attempt87906 proved real healing but wiped at the first boss; no post-clear
 assertion has yet been reached by the browser party.
 
+Native62541 onf8d9bf2d ended TERMINAL1 after1.8minutes, before the first room
+cleared. Four hotbars, party UI, roster select/clear and same-instance entry
+passed. The tank pulled three Skeletons while the healer was40.024 units away;
+successive approach decisions were28.016 and15.160 units, with tank HP707,
+374 and40. Cleric had610mana, no casts/healing/rejections. Tank took1018 damage
+and died; all Gold remained0. No boss warnings occurred, so this does not test
+the quake response or disprove the previously observed roster healing.
+Archive`/tmp/eidolon-four-role-quake-proof-aahV7A` contains report/results/log;
+wrapper and copied-log scans left0 QA prefixes; owned services/listeners gone.
+
+The traversal callback issued one follower step after the leader's movement
+helper witnessed just one unit, although leader steps could be14 units and
+followers capped at12. Arrival was never synchronized, allowing a gap to grow
+before the opening Charge. The corrected test waits for the leader's actual
+waypoint arrival, then repeatedly reads all positions and uses ordinary inputs
+until every follower is within the four-unit formation margin. Gathering has a
+15-second bound and fails on death or a stalled follower; original expedition
+and combat deadlines remain. Focused26340 passed69 tests/3suites1.041s plus lint,
+including witnessed catch-up, blocked timeout and death rejection. Native
+formation/quake/full-clear/turn-in verification remains pending.
+
 Next controller correction uses existing Shift-click move-only walking while
 following: foreground actor models no longer redirect the movement input into
 combat. Physical collision and witnessed displacement remain enforced, with no

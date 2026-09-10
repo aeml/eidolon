@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture } from '../partyDungeonFixture.js';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
-import { PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep } from '../partyDungeonControls.js';
+import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep } from '../partyDungeonControls.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
@@ -239,8 +239,13 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 console.log('[party-clear] all four entered the same Normal Verdant instance');
             },
             afterGroundStep: async () => {
-                const anchor = await snapshot(tank.page);
-                await Promise.all(actors.slice(1).map(actor => follow(actor, anchor)));
+                // The base movement helper proves displacement, not arrival.
+                // Finish this waypoint before deciding where followers gather.
+                await expect.poll(() => tank.page.evaluate(() => !window.game.player.targetPosition),
+                    { timeout: 5000 }).toBe(true);
+                await gatherPartyFormation({ read: () => Promise.all(actors.map(actor => snapshot(actor.page))),
+                    move: (index, step) => tryDungeonGroundStep(() => moveByGroundClick(actors[index].page,
+                        step.dx, step.dz, PARTY_FOLLOW_INPUT_OPTIONS)) });
             },
             recoverAfterRoom: async (_page, { roomIndex, nearbyHostiles }) => {
                 const states = await Promise.all(actors.map(actor => snapshot(actor.page)));

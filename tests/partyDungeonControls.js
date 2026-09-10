@@ -13,6 +13,21 @@ export function partyFollowStep(state, anchor, spacing = 4) {
 
 export const PARTY_FOLLOW_INPUT_OPTIONS = Object.freeze({ moveOnly: true, allowJumpFallback: false });
 
+// Walking a single unit is evidence that an input worked, not that a follower
+// caught up. Hold the leader at the waypoint until every actual position is in
+// formation. The caller's clock/read/move hooks never mutate game state.
+export async function gatherPartyFormation({ read, move, now = Date.now, timeout = 15_000, spacing = 4 }) {
+    const deadline = now() + timeout;
+    while (now() < deadline) {
+        const states = await read();
+        if (states.some(s => s.dead)) throw new Error('Party formation cannot hide a death');
+        const steps = states.slice(1).map(state => partyFollowStep(state, states[0], spacing));
+        if (steps.every(step => !step)) return;
+        await Promise.all(steps.map((step, index) => step ? move(index + 1, step) : undefined));
+    }
+    throw new Error('Party failed to gather before the next pull');
+}
+
 // Read-only input planning for the replicated warning circles. The caller
 // validates each complete route against real collision and encounter bounds.
 export function planPartyTelegraphEscape(state, warnings, canStep = () => true) {
