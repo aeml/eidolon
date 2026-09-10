@@ -5,6 +5,17 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## Required scope — two-floor town casino
+
+The [casino roadmap](2026-09-09-town-casino-roadmap.md) is part of the current
+1.10 completion goal, not an immediate implementation task. Schedule economy
+and future-currency boundaries in 1.5, physical multiplayer seating/session
+infrastructure in 1.8, the town layout and full games in 1.9, and both floors'
+polish and live acceptance in 1.10. Preserve the Trading House–stash–casino layout,
+in-world entry/seating/camera interactions, Gold-funded public games and distinct
+VIP floor. The VIP currency remains undefined pending its separate design;
+neither Gold substitution nor an inaccessible upstairs placeholder closes scope.
+
 ## Local toolchain — do not use the login-shell Node default
 
 The login shell resolves `/usr/bin/node`18.19.1, below the required Node24.
@@ -16,7 +27,49 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 06:22 UTC
+## Current checkpoint — September 10, 06:44 UTC
+
+Previous goal turn classified PROGRESS: the casino requirement was reaffirmed
+and linked prominently to the active ledger; it remains roadmap-only. This
+continuation also made PROGRESS through completed native/rendered verification
+and a new real-WebGL aura lifecycle regression. Full1.1–1.10 remains active.
+
+Revalidated native28798: handle absent but authoritative log is terminal PASS,
+journey/expiry2/1.3m and real two-player party1/45.8s, retries0 on fdd28a3.
+Actual-credential wrapper scanner0; archive
+`/tmp/eidolon-aura-integrated-native-proof-obM8eG`; exact aura-native-0910
+containers/image and18560/18561/41960 absent. Viewed expiry/reentry and party
+High/Low/status/rejoin captures. Native median16.7ms at390x844/DPR1 on RADV
+RENOIR is an observation, not a physical-phone or matched-baseline speedup claim.
+
+Controlled GPU rerun91295 PASS1/6.5s: six identical RGB comparisons, High9–10
+incremental draws versus37–38 reference and Low8 versus20. Archive
+`/tmp/eidolon-aura-integrated-gpu-proof-L4agNt`, scanner0/port cleanup, both
+quality screenshots inspected. New prepared lifecycle46400 PASS1/9.9s:
+40rendered snapshots,24retired effects' actual GPU buffers deleted, neighbor
+and shared geometry preserved; all remaining owned buffers deleted on cleanup.
+Archive `/tmp/eidolon-aura-gpu-lifecycle-proof-2d7wRR`, scanner0/port cleanup,
+dead/stealth suppression and final restoration captures inspected. This is aura
+state/effect-group evidence, not a complete live death/realm-transition test.
+
+Aura branch clean at **11b7104**, only tests/docs added to fdd28a3 this turn.
+Full61718 TERMINAL PASS257suites3632tests132.882s plus lint, Node24. Previous
+95316 full Go-race PASS was revalidated in the aura plan; server/runtime source
+unchanged. Logs `/tmp/eidolon-aura-gpu-lifecycle-full-{client,lint}.log` and
+the aura plan retain all focused/native/profile details. No owned browser or
+heavy test remains active. Next: equivalent populated-scene reference comparison,
+broader/native transition/performance gates, then eventual pipeline integration;
+physical phones and the rest of the full roadmap are still required.
+
+06:43 public release.json/backend health agree on existing60/df91bb6, statusok
+and database ready. CI34434837759/predeploy102741303703 still QUEUED; scheduled
+soak34433520743 is actively running, no cancellation approval. Canonical62dc2d1
+unchanged; no new push/deployment/final acceptance, and no61promotion yet.
+Primary fresh Earth readiness proof remains clean3dcb533; actual dungeon clears,
+all classes/groups/realms/raids, broader balance/visual/phone/CIcost/casino and
+remaining milestone scope are not closed. Root ledger-only, NEVER pushed.
+
+## Previous checkpoint — September 10, 06:22 UTC
 
 This continuation made PROGRESS: the full fresh Wizard Earth story-readiness
 attempt finished successfully, its evidence was preserved/inspected, and aura

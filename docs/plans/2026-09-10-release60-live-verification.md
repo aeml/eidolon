@@ -8,7 +8,17 @@ predecessor df91bb66e8e8f3b7125aa99412f09ba25898a3ac is deployed but failed fina
 acceptance. Root is ledger-only and is never pushed. Do not push a61successor
 before60 is accepted; the current push repairs60's verification, not gameplay.
 
-## Current status — September10, 06:01UTC
+## Current status — September10, 06:44UTC
+
+06:43 update: exact predeploy102741303703 remains QUEUED and scheduled
+soak34433520743 is in progress; no cancellation approval or operational change.
+Fresh no-cache public release.json and backend health identify existing
+Alpha1.0.60/df91bb66e8e8f3b7125aa99412f09ba25898a3ac, backend statusok and
+database ready. This poll did not inspect the HTML main.js key. Canonical62dc2d1
+is still clean/unchanged and has not deployed or passed final live acceptance.
+Primary's Earth readiness and the separate aura native/rendered checks finished;
+neither replaces this release's required acceptance. No owned local browser is
+active and no successor release has been pushed.
 
 06:01 update: re-polled exactCI34434837759/predeploy102741303703, still QUEUED;
 scheduled soak34433520743 remains in progress. No cancellation approval, new
