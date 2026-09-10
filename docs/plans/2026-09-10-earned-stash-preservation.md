@@ -1,5 +1,27 @@
 # Preserve earned spare gear when conservative sales are insufficient
 
+## Complete prepared Earth replay — September10, 01:50UTC
+
+Run65010 on cleanef1ca35 (code299cded) PASSED all3serial stages in16.2minutes:
+opening/diary/40Skeletons/8naturally collectedSeeds/manualconsumption4.4m;
+60Imps/all3scar readings/manualclaims6.1m;50DemonOrcs/manualclaim/dungeonoffer5.6m.
+The still-uncleared raid remained sealed. All phase login checks passed, including
+exact full stash contents and remaining Seed count after the final reconnect.
+
+Four normal stash visits preserved7earned whole equipment items. The second and
+later capacity receipts correctly observed98,96and95free slots before deposits;
+all per-item Gold/quest/equipment/remaining inventory conservation checks passed.
+No quest/item grants, changed requirements, extra deadline or daily contract.
+This is prepared level100 functional evidence, not fresh-player balance, a
+dungeon clear, raid access or a complete campaign.
+
+Archive `/tmp/eidolon-earth-complete-proof-R5oR8R` retains the successful HTML
+report; this route captured no success screenshot. Log
+`/tmp/eidolon-earth-padding-0133.log`. Wrapper sanitation0files, supplemental0,
+exact owned containers and18560/18561/41960ports absent after normal cleanup.
+The earlier failed run's world screenshot remains retained and inspected above.
+The separate fresh story-only/class/group and dungeon/raid gates remain open.
+
 ## September10 follow-up — real transfer passed; second-visit QA check corrected
 
 Replay12987 on752c888 ended FAILED15.7m: stage1 passed4.6m, stage2 passed6.9m,
@@ -78,7 +100,7 @@ Source checks verify the normal UI path and complete-item conservation assertion
 These are not a substitute for an actual successful storage visit.
 
 - [x] Full client regression after the storage extension.
-- [ ] Actual normal storage transfers and saved items in the complete serial replay.
+- [x] Actual normal storage transfers and saved items in the complete serial replay.
 - [ ] Separate fresh-character/class/group pacing and actual dungeon/raid gates.
 
 Full85092 on4e7bc8d passed284suites3995tests88.258s and lint. Logs

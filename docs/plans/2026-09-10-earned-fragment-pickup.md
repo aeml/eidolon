@@ -1,5 +1,10 @@
 # Finish actual fragment pickups before the next prepared encounter
 
+Complete corrected replay65010 on ef1ca35 PASSED3/16.2m, including8naturalSeeds,
+manual consumption, all150hunt kills, investigations, repeated real storage and
+saved chapter/item state. See the [completed storage evidence](2026-09-10-earned-stash-preservation.md).
+Fresh-character balance and actual dungeon/raid completion remain separate gates.
+
 September10 replay12987 on752c888 verified all8 naturally collected Seeds and
 manual consumption in stage1 (4.6m), then the full Imp/scar stage (6.9m). It
 later failed a second-stash capacity assertion at41/50DemonOrcs, not collection.
@@ -48,7 +53,7 @@ The prepared level and ordinary QA encounter travel remain explicitly labeled;
 this is not a fresh-character balance result.
 
 - [x] Full client/lint after the pickup correction and startup-diagnostic additions.
-- [ ] Complete actual serial replay, including natural collection and stash use.
+- [x] Complete actual serial replay, including natural collection and stash use.
 - [ ] Separate fresh-character readiness, classes/groups and dungeon/raid play.
 
 Focused63729 passed29tests/4suites0.715s+lint. Full same-session regression on
