@@ -46,7 +46,8 @@ The fixed observation ceiling is230minutes (unchanged185 readiness +40 dungeon
 readiness gate is not replaced by an unproven longer route.
 
 Native session **96530** launched at07:36UTC and was authoritatively polled live;
-currently building its isolated API, not yet claiming a browser pass. Source is
+by07:38 the API/Mongo were ready and the browser started the opening phase with
+a real level-one Wizard. Both exact containers are running; no pass yet. Source is
 frozen at626385d. RunID`fresh-story-dungeon-0910`, ports18560/18561/41960,
 route`fresh-story-dungeon`, fresh Wizard, REST_RECOVERY1, CI unset/zero retries,
 Node24.18.0/System Chrome via sg-render. Ports and matching containers were absent
