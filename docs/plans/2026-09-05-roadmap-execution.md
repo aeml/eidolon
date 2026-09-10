@@ -5,6 +5,47 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## Current checkpoint — September 10, 18:23 UTC
+
+Previous goal turn was PROGRESS: real four-role dungeon/recovery evidence and
+tested driver corrections. This turn is PROGRESS: implementing the user's
+instance-wide dungeon and two-screen overworld party kill-credit requirements.
+The full1.1–1.10 objective remains active; no release/completion claim.
+
+- Latest user: all party members inside the dungeon should receive kill credit;
+  overworld sharing should cover two screens. Runtime760d0ff8 on new worktree
+  `/tmp/eidolon-party-quest-credit-TWcbwr`, branch work/party-quest-credit-20260910,
+  introduces same-instance dungeon/raid eligibility and110-unit overworld radius
+  (two default desktop widths≈106.67, rounded up), independent of client zoom.
+  Downed members count; disconnected/different-instance members do not. Existing
+  shared XP/Gold/boss reward formulas remain, and each quest needs manual turn-in.
+- Baseline nearby four-role reward test5059 passed2.080s. Distant/downed variant
+ 77255 RED5.326s (2/4 received); policy51954 PASS1.440s. Current90050 repeated
+  spatial/actual-death/manual-turn-in/kill-time snapshot race tests3times, PASS
+ 3.772s.55402 party/Whirlwind/explosion race coverage PASS5.700s. Kill-time capture
+  freezes recipients before queued payout; leaving afterward retains credit and
+  late arrivals cannot acquire it. Explicit world-lock ownership propagates
+  through ability dispatch, Whirlwind and chained explosions.
+- Full server race49313 ACTIVE, actual handle confirmed18:23. It began on
+ 760d0ff8 with the kill-time changes uncommitted because git staging used a
+  repository-relative path from the server directory and failed; compilation
+  then started. Keep those source bytes frozen until terminal, then commit.
+  Tracked diff SHA2567caa157d489b401cbc4e3371c8ec58947ac390195dc467513a9b42ec58c051fa;
+  new party_kill_snapshot_test.go SHA256cc0f5acc06da4379f290464c913923df9caf4b98a917cbfe5e4ef533a409a308.
+  Log`/tmp/eidolon-party-kill-credit-full-server.log`. This is the only local
+  heavy gate; no active local browser. Pending integration/native/version/live.
+- Four-player49218 is TERMINAL1, not active: two four-member town-rest cycles
+  preserved run/content, but the Fighter died in the Warden fight. Cleric ended
+  with555mana and only its two pre-boss Healing Light/two Guardian Embrace casts;
+  repeated covered approach inputs prevented boss healing. This does not prove
+  dungeon balance or a full clear. Archive`/tmp/eidolon-four-role-spacing-proof-OCCodb`,
+  wrapper scan completed, copied log0QA prefixes, owned services/listeners absent.
+  Next browser work must correct/heavily verify healer approach and target inputs,
+  not nerf the boss to fit an inactive healer. Primary remains clean7d8fb5bb.
+- Remote14255 rechecked canonical62dc CI34434837759: client/server/three browser
+  jobs pass, predeploy queued. Nightly34433520743 remains in progress. Do not
+  cancel/preempt it or publish a successor without the existing release gates.
+
 ## Current user decision — September 10, four-player dungeon acceptance
 
 The user requests a Fighter tank, Cleric healer, Wizard and Rogue DPS party for
@@ -62,9 +103,8 @@ Primary7d8fb5bb fixes desired follower spacing with tested pure input planning,
 no sub-unit movement requests, and the leader's existing typed covered-pointer
 handling. Real movement failures remain fatal; all deadlines unchanged. No
 runtime/balance/fixture buff. Focused21tests/3suites0.944s and lint/diff pass.
-Native49218 ACTIVE on frozen7d8fb5bb, runID`four-role-spacing-0910`,
-API18580/Mongo18581/web41980; `/tmp/eidolon-four-role-spacing-native.log`.
-Only owned browser job. No clear/live claim yet; archive before rerunning.
+Native49218 TERMINAL1; see the current checkpoint above. Its services were
+removed and evidence archived. No full-clear or live claim.
 
 ## Required scope — two-floor town casino
 
@@ -88,7 +128,7 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 17:15 UTC
+## Historical checkpoint — September 10, 17:15 UTC
 
 Previous turn was PROGRESS (empty-stash runtime/native/full regression and ready
 quest guidance). This turn is PROGRESS: integrated both verified corrections
