@@ -5,7 +5,45 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 18:48 UTC
+## Current checkpoint — September 10, 19:04 UTC
+
+Previous turn was PROGRESS: party-credit implementation, full regression and
+primary integration. This turn is PROGRESS: tested party-controller corrections,
+another native failure that narrows the issue, and a new instrumented run. The
+full1.1–1.10 objective remains active; no release or full-clear claim.
+
+- Primary `/tmp/eidolon-primary-town-recovery-lAKY3k` is clean09f137f0, atop
+  party-credit488e9022.4c0d1978 uses the existing Shift-click move-only path for
+  following, actual Healing Light cast range, and verified ally hitbox pointers.
+  Focused84936 passed29 tests/3suites0.957s plus lint;15851 final lint passed.
+  No damage, healing, gear, encounter difficulty or deadline was changed.
+- Native37883 TERMINAL1 on4c0d1978,4.8minutes: all four entered, first room
+  cleared and a whole-party town-rest/re-entry cycle preserved run/content.
+  The Fighter started Warden855HP/555MP, died after the boss reached12956HP
+  in the death diagnostic. Cleric recorded ZERO accepted casts/healing and
+  retained555mana, with no rejected casts or covered-pointer skips. Earlier
+  successful pre-boss healing therefore does not carry over to this attempt.
+  This is still an invalid party-balance test, not evidence to nerf the Warden.
+  Archive`/tmp/eidolon-four-role-move-only-proof-YrLVbn` contains report/results
+  and copied log. Wrapper scan0; copied log had0QA prefixes. Owned containers
+  and18580/18581/41980listeners were absent after terminal cleanup.
+-09f137f0 adds expected-hotbar assertions and a bounded20-entry healer decision
+  record (range/cooldowns, pointer target, focus, attempted action). Final lint
+ 97068 passed. This is additional diagnostic evidence, not a healing fix claim.
+- Native44940 is ACTIVE on frozen09f137f0, runfour-role-heal-evidence-0910,
+  log`/tmp/eidolon-four-role-heal-evidence-native.log`. Its actual handle was
+  confirmed live; all FOUR hotbar checks passed, ruling out missing assignments.
+  Do not restart or edit its source before terminal. Next inspect the bounded
+  `[party-healer-decisions]` evidence, identify the actual skipped-input reason,
+  and correct that cause before another clear attempt. No other local heavy gate.
+- Canonical62dc CI34434837759 freshly remains queued at predeploy, after
+  client/server/three browser jobs passed. Nightly34433520743 remains in progress.
+  Do not cancel/preempt the soak or promote a successor without release gates.
+- Still open: successful four-player clear, individual manual turn-in/relogin,
+  earned full campaign, combined next-release d0be3274 regression/native gates,
+  physical-phone acceptance, balance, all later roadmap work and deployments.
+
+## Previous checkpoint — September 10, 18:48 UTC
 
 Previous goal turn was PROGRESS: real four-role dungeon/recovery evidence and
 tested driver corrections. This turn is PROGRESS: implementing the user's
