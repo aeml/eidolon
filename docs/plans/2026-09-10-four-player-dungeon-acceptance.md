@@ -153,6 +153,27 @@ coverage passed72 tests/3suites1.046s and lint (31312). No combat numbers, gear,
 regeneration, reward formulas or deadlines change. Native verification remains
 pending; this policy is not by itself evidence of encounter balance.
 
+Native60485 once2040fd ended TERMINAL1 after15.7minutes. Two rooms and two
+all-four recovery/resume cycles passed. Warden's last reported health2665/15000,
+tank171HP/10MP; Fighter and Rogue later had observed deaths. Final receipts:
+Fighter7771damage/4701taken, Cleric7764effective ally healing/3976taken,
+Wizard7595damage/2632taken, Rogue8549damage/3352taken; all692Gold, no rejected
+casts. Moves/full-radius warning escapes:18/9 Fighter,14/11 Cleric,8/8 Wizard,
+11/11 Rogue. Cleric ended8mana and its final decisions lacked enough mana to
+heal. Fighter's final town940HP/610MP are cleanup respawn values, not survival.
+Archive`/tmp/eidolon-four-role-safe-casts-proof-rwErPR`; wrapper/copy0 QA prefixes,
+owned services/listeners absent. Full clear and manual turn-ins remain unproven.
+
+Fighter recorded15 Charges at20mana each across the run, including repeated
+returns after warning escapes. The next ordinary-input strategy reserves Charge
+for gaps above18 units (its actual base range is28), retaining normal movement
+for shorter returns from the12.5-unit quake. The shared primary-input selector
+keeps existing default hunt behavior and ranged casts unchanged; only this party
+route opts into the reserve. Five additional policy cases plus existing combat,
+formation and ranged controls passed87 tests/3suites0.94s and lint (73196).
+This does not grant resources, alter combat values or relax deadlines. Its
+native outcome remains pending while the separate release backport runs Go QA.
+
 Next controller correction uses existing Shift-click move-only walking while
 following: foreground actor models no longer redirect the movement input into
 combat. Physical collision and witnessed displacement remain enforced, with no

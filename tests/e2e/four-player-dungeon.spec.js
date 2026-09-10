@@ -235,6 +235,9 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
         let currentTarget, bossStart;
         let townRests = 0;
         await playDungeonThroughInputs(tank.page, { playthrough,
+            // Walk the short return from a12.5-unit quake instead of spending
+            //20mana on Charge every cycle; retain it for real opening gaps.
+            minimumChargeDistance: 18,
             requiredFighterSkills: ['Iron Fortress', 'Whirlwind', 'Shield Slam'],
             afterEntry: async () => {
                 entered = true;

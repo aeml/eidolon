@@ -48,3 +48,13 @@ test('ranged primaries retain close-range casts; cooldown/death/unknown targets 
         expect(shouldUseHuntPrimary({ ...primary, ...override })).toBe(false);
     }
 });
+
+test.each([[14.5, false], [18, false], [21, true], [29, false]])(
+    'party Charge reserve avoids short post-telegraph gaps at %s units', (distance, expected) => {
+        expect(shouldUseHuntPrimary({ ...primary, distance, castRange: 28 }, { minimumChargeDistance: 18 })).toBe(expected);
+    }
+);
+test('party Charge reserve does not suppress ranged casts or alter default hunt decisions', () => {
+    expect(shouldUseHuntPrimary({ ...primary, ability: 'Fireball', distance: 2 }, { minimumChargeDistance: 18 })).toBe(true);
+    expect(shouldUseHuntPrimary(primary)).toBe(true);
+});

@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
 import { buildDungeonTraversalRoutes } from '../dungeonTraversalRoutes.js';
-import { selectFighterDungeonSkill } from '../dungeonCombatControls.js';
+import { selectFighterDungeonSkill, shouldUseHuntPrimary } from '../dungeonCombatControls.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { enterAndExitDungeon, moveByGroundClick, projectEntity, readPlayerState } from './helpers.js';
 import { dungeonSpatialSnapshot } from './dungeon-spatial-snapshot.js';
@@ -13,7 +13,7 @@ import { recoverBetweenDungeonRooms } from './dungeon-town-rest.js';
 export async function playDungeonThroughInputs(page, {
     playthrough, fullRun = true, fallbackRun = false, beforeCombat, useTownGuide = true, afterClearedRoute,
     recoverBetweenRooms = false, afterTownRecovery, recoverAfterRoom,
-    afterEncounter, afterEntry, afterGroundStep,
+    afterEncounter, afterEntry, afterGroundStep, minimumChargeDistance = 0,
     requiredFighterSkills = ['Iron Fortress', 'Guardian Roar', 'Whirlwind', 'Shield Slam']
 }) {
     const logPrefix = `[dungeon:${playthrough.dungeonType}]`;
@@ -85,18 +85,18 @@ export async function playDungeonThroughInputs(page, {
                 await page.mouse.move(point.x, point.y);
                 await page.waitForTimeout(50);
                 await page.mouse.click(point.x, point.y);
-                const shouldCast = await page.evaluate(id => {
+                const primaryState = await page.evaluate(id => {
                     const game = window.game;
                     const player = game.player;
                     const enemy = game.remotePlayers.get(id);
-                    if (!enemy || player.abilityCooldown > 0) return false;
-                    const distance = enemy.position.distanceTo(player.position);
-                    // Charge closes a gap; repeatedly charging at melee contact
-                    // interrupts basic attacks instead of exercising normal combat.
-                    if (player.abilityName === 'Charge' && distance <= game.getBasicAttackRangeForEntity(enemy) + 2) return false;
-                    return distance <= game.abilityController.getAbilityCastRange();
+                    if (!enemy) return null;
+                    return { ability: player.abilityName, cooldown: player.abilityCooldown, dead: player.state === 'DEAD',
+                        distance: enemy.position.distanceTo(player.position), attackRange: game.getBasicAttackRangeForEntity(enemy),
+                        castRange: game.abilityController.getAbilityCastRange() };
                 }, target.id);
-                if (shouldCast) await page.mouse.click(point.x, point.y, { button: 'right' });
+                if (primaryState && shouldUseHuntPrimary(primaryState, { minimumChargeDistance })) {
+                    await page.mouse.click(point.x, point.y, { button: 'right' });
+                }
                 const skillState = await page.evaluate(id => {
                     const game = window.game;
                     const player = game.player;

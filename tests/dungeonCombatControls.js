@@ -16,8 +16,8 @@ export function selectFighterDungeonSkill(state, defensiveBuild = false) {
 }
 
 // Charge is a gap closer, not a replacement for melee contact attacks.
-export function shouldUseHuntPrimary(state) {
+export function shouldUseHuntPrimary(state, { minimumChargeDistance = 0 } = {}) {
     if (state.cooldown > 0 || state.dead || !Number.isFinite(state.distance)) return false;
-    if (state.ability === 'Charge' && state.distance <= state.attackRange + 2) return false;
+    if (state.ability === 'Charge' && state.distance <= Math.max(state.attackRange + 2, minimumChargeDistance)) return false;
     return state.distance <= state.castRange;
 }
