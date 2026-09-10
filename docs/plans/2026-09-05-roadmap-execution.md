@@ -5,13 +5,13 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 19:52 UTC
+## Current checkpoint — September 10, 20:00 UTC
 
-Previous goal turn was PROGRESS (party-credit verification, support-admission
-contract correction, warning-response test strategy). This turn is PROGRESS:
-full server acceptance, primary integration, complete per-member turn-in/relogin
-assertions, and the next actual four-browser playthrough. Full roadmap remains
-active and deployment/1.1 completion is not claimed.
+Previous goal turn was PROGRESS (full server acceptance, support integration,
+per-member turn-in/relogin assertions and corrected party gathering). This turn
+is PROGRESS: new native room/recovery evidence and a compact desktop roster
+implementation with focused checks, kept separate from the running browser.
+Full roadmap remains active and deployment/1.1 completion is not claimed.
 
 - Full Go race81223 TERMINAL0 on20d9f17d: game381.679s, other tested packages
   pass/cached, no race warning. Log
@@ -40,11 +40,26 @@ active and deployment/1.1 completion is not claimed.
   bound, failing on death/stall.26340 passed69 tests/3suites1.041s plus lint.
 - Browser96142 is ACTIVE on frozen4c962541 in
  `/tmp/eidolon-primary-town-recovery-lAKY3k`, runfour-role-gather-0910,
-  log`/tmp/eidolon-four-role-gather-native.log`. Its actual handle was returned
-  live after launch; no formation/room/quake/full-clear success claim yet. No
-  other heavy gate. Do not edit its source or restart on observation timeout.
+  log`/tmp/eidolon-four-role-gather-native.log`. Its actual handle was revalidated
+  live this turn. All four setup/roster/instance checks passed; two DemonOrcs
+  were defeated and two all-four town-rest/re-entry cycles preserved run/content
+  after rooms1/2. No boss/quake/full-clear/turn-in success claim yet. No other
+  heavy gate. Do not edit its source or restart on observation timeout.
   The revised driver retains server admission, warning avoidance and all four
   individual turn-in/relogin assertions; no balance/gear/deadline relaxation.
+- Separate compact-roster worktree `/tmp/eidolon-compact-party-k7pBcl`, branch
+  work/compact-party-roster-20260910, is cleanba481c09 from4c962541. The previous
+  screenshot exposed only two of four members without scrolling. This moves
+  roles inside healing-target rows and leadership actions alongside, shows Gold
+  guidance once below the roster, preserves full accessible names/clear action,
+  and uses more of the existing chat-safe height. Phone's separate UI unchanged.
+ 4271 passed129 tests/3suites12.009s plus lint;49855 lint/discovery passed. New
+  four-member browser layout checks cover1280x720/1440x900, leader/member views,
+  all four targets visible without scrolling, selection/clear and chat clearance.
+ 16417 passed40 SocialUI tests2.702s plus lint, including kick/promote isolation.
+  No browser/rendered proof or full client regression yet. Do not integrate into
+  primary while96142 runs. Run these plus existing menu-layer checks when the
+  sole local heavy/browser slot is free, inspect screenshots, then integrate.
 - Combined successor worktree is now clean9a71c3e0 (documentation-only atop
   d0be3274). Its stale claim that solo6251 was still active is corrected; no
   additional runtime integration or acceptance is implied. Required combined
