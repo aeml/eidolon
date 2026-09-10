@@ -23,6 +23,6 @@ test.each(['high', 'low'])('%s live observation reads the actual owner and visib
 });
 
 test('missing actors or scenes cannot be reported as visible auras', () => {
-    expect(readRestedAura(null, new THREE.Scene())).visibleInScene).toBe(false);
+    expect(readRestedAura(null, new THREE.Scene()).visibleInScene).toBe(false);
     expect(readRestedAura({ attachedStatusEffects: new Map() }, null).visibleInScene).toBe(false);
 });

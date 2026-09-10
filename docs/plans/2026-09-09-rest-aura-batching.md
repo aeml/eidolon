@@ -1,5 +1,52 @@
 # Well Rested aura batching — separate visual/performance prototype
 
+## Authoritative death and dungeon transitions — September10, 07:05UTC
+
+Added `well-rested-transitions-gameplay.spec.js` and the matching isolated route
+`well-rested-transitions`, with exact allowlisted disposable character suffixes.
+The shared read-only observer requires the actual owner group, ancestor visibility,
+all16 sparks/two batches/five High-quality meshes, valid transparent materials,
+matching actor position and invisible interaction hitbox. No rest clock, buff,
+server outcome or character position is patched by the browser observer.
+
+Run23771 TERMINAL PASS2/3.0m, retries0, frozen19284f0, runIDaura-transitions-0910,
+Node24/systemChrome, local API18560/Mongo18561/web41960. Both characters first
+earned at least60seconds of rest through ordinary town time. Death fixture used
+the existing allowlisted encounter waypoint/one-health setup and protection-off
+command, then required a real hostile damage receipt and authoritative DEAD.
+Aura was visible at bank59.591 before death, absent with54.154seconds remaining,
+still absent after dead login with53.034remaining, then present exactly once after
+real Respawn with53.894remaining, full110HP/110MP, and again after fresh login.
+Interaction-hitbox opacity stayed0. This distinguishes death suppression from
+coincidental buff expiry; it does not claim unprepared combat pacing.
+
+Separate level30 Wizard used allowlisted level readiness only, the ordinary town
+guide, actual Verdant instance entry, credentialed login inside that same instance,
+and Recall to town, twice. Both cycles retain one visible positioned aura with
+16sparks and hitbox opacity0. Dungeon entry/relogin banks67.320→65.903 and
+73.790→72.869; returned town banks67.124/74.091. Time spent opening the guide in
+town naturally adds rest before entry. Scene rebuilding may reparent an existing
+effect or dispose/recreate it; both must leave exactly one owner group, not an
+orphaned duplicate. Neither cycle fights/clears the dungeon or proves other realms.
+
+Log `/tmp/eidolon-aura-transitions-native.log`; complete HTML/images archive
+`/tmp/eidolon-aura-transitions-proof-g0YrH7`. Actual-credential wrapper scanner0;
+exact run containers/image and18560/18561/41960 absent after cleanup. Viewed
+hostile-death/real-respawn and both dungeon entry/final town return screenshots.
+Portal test camera framing is for transition inspection, not phone or full
+dungeon visual acceptance. No second owned browser remains active.
+
+Initial focused23379 failed on a parenthesis typo in the new observer unit test;
+lint was not reached. The separate native route was already started and completed
+on its frozen source; no test files were edited during that run. Corrected the
+unit-only expression afterward. Focused28tests/3suites passed1.636s plus lint and
+shell syntax. Original failure retained in `/tmp/eidolon-aura-transitions-unit.log`;
+corrected logs `/tmp/eidolon-aura-transitions-{unit,lint}-fixed.log`.
+Full54110 passed259client suites/3638tests129.459s plus lint underNode24.18.0;
+logs `/tmp/eidolon-aura-transitions-full-{client,lint}.log`. Runtime/server code remains unchanged.
+Keep the broader realm/class/group/physical-phone gates open; next prepare required
+pipeline integration for a later version without bypassing queued60 acceptance.
+
 ## Populated rendering comparison — September10, 06:50UTC
 
 New `well-rested-populated-render.spec.js` verifies5 and20 prepared mixed-class
