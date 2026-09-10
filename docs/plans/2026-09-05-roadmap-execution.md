@@ -16,7 +16,30 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 05:26 UTC
+## Current checkpoint — September 10, 05:32 UTC
+
+Previous goal turn was a VERIFIED WAIT. This continuation kept observing the
+same live13998 and gained complete Watch-phase evidence; no restart or source
+mutation. Full1.1–1.10 goal stays active/incomplete, all broader gates intact.
+
+13998 ACTIVE, only owned local browser, primary clean/frozencb348ef, same
+fresh-merchant-0910/18560/18561/41960/log
+`/tmp/eidolon-fresh-merchant-replay.log`. Watch40/manual100Gold1593XP/save PASSED
+422s, zero deaths,10ordinary town recovery stops, no training stops. Exact claim:
+level6/262XP/1275Gold→level8/130XP/1375Gold;17occupied bag slots,740unsold gear
+value. Named phase PASS421516ms/1800000ms. This is one fresh Wizard attempt;
+shorter duration than prior random runs is not a balance/performance claim.
+Seeds phase ACTIVE, latest1/8 after1observed target death, no deaths. Full8Seeds,
+Imp60/scars/Orc50/manual rewards/save/handoff and strictstory-onlylevel30 remain
+pending. Keep source frozen and preserve the eventual true terminal result.
+
+ReleaseCI34434837759/predeploy102741303703 re-polled and still QUEUED;
+soak34433520743 confirmed in progress. No cancellation approval, new push,
+deployment or final live acceptance. Canonical62dc2d1 unchanged. Root remains
+ledger-only and NEVER pushed. Class/group/realm/dungeon/raid/phone/aura/CIcost/
+casino and the full remaining1.1–1.10 scope remain open.
+
+## Previous checkpoint — September 10, 05:26 UTC
 
 Previous goal turn was PROGRESS. This continuation is a VERIFIED WAIT: polled
 the same live13998 and the specific queued release/occupying soak jobs. No
