@@ -1,0 +1,393 @@
+{
+  "sourceCommit": "4b3991ffea239bb3152ea93263fbc0bbe95c05a3",
+  "sourceRun": "earned-upgrade-story-0910",
+  "note": "Recorded level31 build and story gate; not an exact inventory/save or current earned progression receipt.",
+  "level": 31,
+  "xp": 10652,
+  "gold": 22432,
+  "stats": {
+    "strength": 70,
+    "intelligence": 40,
+    "dexterity": 40,
+    "wisdom": 40,
+    "vitality": 70
+  },
+  "equipment": {
+    "legs": {
+      "stats": {
+        "defense": 2,
+        "dexterity": 8,
+        "wisdom": 8
+      },
+      "gems": [],
+      "id": "item-9169192597047007521",
+      "name": "Agile Silk Skirt of the Eagle",
+      "type": "ARMOR",
+      "rarity": {
+        "name": "Rare",
+        "color": "#0070dd",
+        "multiplier": 2,
+        "statCount": 2
+      },
+      "slot": "legs",
+      "level": 28,
+      "value": 1400,
+      "stack": 1,
+      "maxStack": 1,
+      "statScaleVersion": 1
+    },
+    "feet": {
+      "stats": {
+        "defense": 1,
+        "strength": 1,
+        "vitality": 1
+      },
+      "gems": [],
+      "id": "item-2463989189251028023",
+      "name": "Strong Sandals of the Whale",
+      "type": "ARMOR",
+      "rarity": {
+        "name": "Rare",
+        "color": "#0070dd",
+        "multiplier": 2,
+        "statCount": 2
+      },
+      "slot": "feet",
+      "level": 3,
+      "value": 150,
+      "stack": 1,
+      "maxStack": 1,
+      "statScaleVersion": 1
+    },
+    "belt": {
+      "stats": {
+        "defense": 1,
+        "strength": 1,
+        "wisdom": 1
+      },
+      "gems": [],
+      "id": "item-509009279371947069",
+      "name": "Strong Silk Sash of the Eagle",
+      "type": "ARMOR",
+      "rarity": {
+        "name": "Rare",
+        "color": "#0070dd",
+        "multiplier": 2,
+        "statCount": 2
+      },
+      "slot": "belt",
+      "level": 1,
+      "value": 50,
+      "stack": 1,
+      "maxStack": 1,
+      "statScaleVersion": 1
+    },
+    "trinket2": {
+      "stats": {
+        "intelligence": 5,
+        "dexterity": 3
+      },
+      "gems": [],
+      "id": "item-1080879277483327074",
+      "name": "Brilliant Talisman of Speed",
+      "type": "ACCESSORY",
+      "rarity": {
+        "name": "Uncommon",
+        "color": "#1eff00",
+        "multiplier": 1.5,
+        "statCount": 1
+      },
+      "slot": "trinket",
+      "level": 20,
+      "value": 400,
+      "stack": 1,
+      "maxStack": 1,
+      "statScaleVersion": 1
+    },
+    "shoulders": {
+      "stats": {
+        "defense": 4,
+        "vitality": 8,
+        "strength": 8
+      },
+      "gems": [],
+      "id": "item-4226750103093763333",
+      "name": "Hearty Reinforced Spaulders of the Bear",
+      "type": "ARMOR",
+      "rarity": {
+        "name": "Rare",
+        "color": "#0070dd",
+        "multiplier": 2,
+        "statCount": 2
+      },
+      "slot": "shoulders",
+      "level": 27,
+      "value": 1350,
+      "stack": 1,
+      "maxStack": 1,
+      "statScaleVersion": 1
+    },
+    "ring2": {
+      "stats": {
+        "vitality": 1,
+        "intelligence": 1
+      },
+      "gems": [],
+      "id": "item-6332586178925322005",
+      "name": "Brilliant Gold Ring",
+      "type": "ACCESSORY",
+      "rarity": {
+        "name": "Uncommon",
+        "color": "#1eff00",
+        "multiplier": 1.5,
+        "statCount": 1
+      },
+      "slot": "ring",
+      "level": 1,
+      "value": 20,
+      "stack": 1,
+      "maxStack": 1,
+      "statScaleVersion": 1
+    },
+    "gloves": {
+      "stats": {
+        "defense": 1,
+        "strength": 1,
+        "vitality": 1
+      },
+      "gems": [],
+      "id": "item-1245327470954112594",
+      "name": "Strong Leather Gloves of the Whale",
+      "type": "GLOVES",
+      "rarity": {
+        "name": "Rare",
+        "color": "#0070dd",
+        "multiplier": 2,
+        "statCount": 2
+      },
+      "slot": "gloves",
+      "level": 1,
+      "value": 50,
+      "stack": 1,
+      "maxStack": 1,
+      "statScaleVersion": 1
+    },
+    "neck": {
+      "stats": {
+        "vitality": 1,
+        "dexterity": 1,
+        "wisdom": 1
+      },
+      "gems": [],
+      "id": "item-4832123528923661306",
+      "name": "Agile Pendant of the Eagle",
+      "type": "NECK",
+      "rarity": {
+        "name": "Rare",
+        "color": "#0070dd",
+        "multiplier": 2,
+        "statCount": 2
+      },
+      "slot": "neck",
+      "level": 2,
+      "value": 100,
+      "stack": 1,
+      "maxStack": 1,
+      "statScaleVersion": 1
+    },
+    "mainHand": {
+      "stats": {
+        "damage": 9,
+        "wisdom": 9,
+        "strength": 9
+      },
+      "gems": [],
+      "id": "item-3980809443224599787",
+      "name": "Wise Steel Dagger of the Bear",
+      "type": "WEAPON",
+      "rarity": {
+        "name": "Rare",
+        "color": "#0070dd",
+        "multiplier": 2,
+        "statCount": 2
+      },
+      "slot": "mainHand",
+      "level": 30,
+      "value": 1500,
+      "stack": 1,
+      "maxStack": 1,
+      "statScaleVersion": 1
+    },
+    "head": {
+      "stats": {
+        "defense": 1
+      },
+      "gems": [],
+      "id": "item-249940017462647413",
+      "name": "Leather Cap",
+      "type": "ARMOR",
+      "rarity": {
+        "name": "Common",
+        "color": "#ffffff",
+        "multiplier": 1,
+        "statCount": 0
+      },
+      "slot": "head",
+      "level": 1,
+      "value": 10,
+      "stack": 1,
+      "maxStack": 1,
+      "statScaleVersion": 1
+    },
+    "ring1": {
+      "stats": {
+        "vitality": 1,
+        "wisdom": 1,
+        "intelligence": 1
+      },
+      "gems": [],
+      "id": "item-428014639213513168",
+      "name": "Wise Gold Ring of the Owl",
+      "type": "ACCESSORY",
+      "rarity": {
+        "name": "Rare",
+        "color": "#0070dd",
+        "multiplier": 2,
+        "statCount": 2
+      },
+      "slot": "ring",
+      "level": 1,
+      "value": 50,
+      "stack": 1,
+      "maxStack": 1,
+      "statScaleVersion": 1
+    },
+    "trinket1": {
+      "stats": {
+        "strength": 4,
+        "vitality": 7
+      },
+      "gems": [],
+      "id": "item-5423653086574565887",
+      "name": "Hearty Amulet of Power",
+      "type": "ACCESSORY",
+      "rarity": {
+        "name": "Uncommon",
+        "color": "#1eff00",
+        "multiplier": 1.5,
+        "statCount": 1
+      },
+      "slot": "trinket",
+      "level": 30,
+      "value": 600,
+      "stack": 1,
+      "maxStack": 1,
+      "statScaleVersion": 1
+    },
+    "offHand": {
+      "stats": {
+        "defense": 1,
+        "intelligence": 5
+      },
+      "gems": [],
+      "id": "item-2930058744430901894",
+      "name": "Brilliant Spell Tome",
+      "type": "ARMOR",
+      "rarity": {
+        "name": "Uncommon",
+        "color": "#1eff00",
+        "multiplier": 1.5,
+        "statCount": 1
+      },
+      "slot": "offHand",
+      "level": 20,
+      "value": 400,
+      "stack": 1,
+      "maxStack": 1,
+      "statScaleVersion": 1
+    },
+    "chest": {
+      "stats": {
+        "wisdom": 9,
+        "vitality": 9,
+        "defense": 11
+      },
+      "gems": [],
+      "id": "item-2549477980398868999",
+      "name": "Wise Plate Mail of the Whale",
+      "type": "ARMOR",
+      "rarity": {
+        "name": "Rare",
+        "color": "#0070dd",
+        "multiplier": 2,
+        "statCount": 2
+      },
+      "slot": "chest",
+      "level": 30,
+      "value": 1500,
+      "stack": 1,
+      "maxStack": 1,
+      "statScaleVersion": 1
+    }
+  },
+  "talentRanks": {
+    "WIZ_01": 5
+  },
+  "selectedBranch": "C",
+  "unlockedSkills": [
+    "Fireball",
+    "Teleport",
+    "Arcane Shield",
+    "Gravity Well"
+  ],
+  "quests": [
+    {
+      "id": "chronicle_01_bell_below",
+      "accepted": true,
+      "completed": true,
+      "count": 3
+    },
+    {
+      "id": "chronicle_earth_keepers_house",
+      "accepted": true,
+      "completed": true,
+      "count": 1
+    },
+    {
+      "id": "chronicle_earth_kept_watch",
+      "accepted": true,
+      "completed": true,
+      "count": 40
+    },
+    {
+      "id": "chronicle_02_seeds_first_grove",
+      "accepted": true,
+      "completed": true,
+      "count": 8
+    },
+    {
+      "id": "chronicle_earth_walking_ink",
+      "accepted": true,
+      "completed": true,
+      "count": 60
+    },
+    {
+      "id": "chronicle_earth_returning_scar",
+      "accepted": true,
+      "completed": true,
+      "count": 3
+    },
+    {
+      "id": "chronicle_earth_borrowed_oath",
+      "accepted": true,
+      "completed": true,
+      "count": 50
+    },
+    {
+      "id": "chronicle_03_roots_remember",
+      "accepted": true,
+      "completed": false,
+      "count": 0
+    }
+  ]
+}

@@ -13,6 +13,7 @@ import { recoverBetweenDungeonRooms } from './dungeon-town-rest.js';
 export async function playDungeonThroughInputs(page, {
     playthrough, fullRun = true, fallbackRun = false, beforeCombat, useTownGuide = true, afterClearedRoute,
     recoverBetweenRooms = false, afterTownRecovery,
+    afterEncounter,
     requiredFighterSkills = ['Iron Fortress', 'Guardian Roar', 'Whirlwind', 'Shield Slam']
 }) {
     const logPrefix = `[dungeon:${playthrough.dungeonType}]`;
@@ -211,6 +212,7 @@ export async function playDungeonThroughInputs(page, {
                         // should not consume the independent walking timeout.
                         deadline += Date.now() - combatStarted;
                         defeated.add(nearby.type);
+                        if (afterEncounter) await afterEncounter(page, nearby);
                         continue;
                     }
                     const player = await readPlayerState(page);
