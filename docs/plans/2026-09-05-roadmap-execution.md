@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 21:04 UTC
+## Current checkpoint — September 10, 21:06 UTC
 
 Previous goal turn was PROGRESS: native stat/storage acceptance and staged party
 controls. This turn is PROGRESS: all bundled browser groups passed on the prior
@@ -153,7 +153,7 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   acceptance remain pending. Do not infer production readiness from focused
   checks or restart a process solely on an observation timeout.
 - Separate staging `/tmp/eidolon-next-party-support-ycLHyw`, branch
-  work/next-party-support-20260910, is clean3c7cf59e fromee15e582. It imports
+  work/next-party-support-20260910, is cleanb07008d1 fromee15e582. It imports
   desktop healing793 as3e526d1e, admissionb710/20d as0f12ed02/6c23dac3, and
   compact rosterba481 as43e60e91. Only the incoming primary four-player harness
   file was excluded (absent candidate dependencies); primary retains it. No
@@ -173,9 +173,16 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   support, preserving failure exits and isolated account allowlists.55734 passed
  9helper tests/2suites0.977s, lint, shell syntax and discovery. Logs
  `/tmp/eidolon-desktop-support-gate-{tests,lint,discovery}.log`.
-  Native1272 is ACTIVE on frozen3c7cf59e, route desktop-support,
-  runnext-support-0910-2104, ports18580/18581/41980; log
- `/tmp/eidolon-next-desktop-support-native.log`. This is the only local heavy
+  Native1272 TERMINAL1 on3c7cf59e before casts: the helper expected Enter to
+  focus chat after the ally accepted an invite. InputManager deliberately
+  preserves native Enter on focused buttons; this was a controller assumption,
+  not a rejected heal. Archive
+ `/tmp/eidolon-next-desktop-support-focus-proof-Ig2ZIB`, log
+ `/tmp/eidolon-next-desktop-support-native.log`; scanned and owned ports cleared.
+  b07008d1 uses a real click on the permanent chat input; lint81375 exited0.
+  Native78990 is ACTIVE on frozenb07008d1, route desktop-support,
+  runnext-support-0910-focus, ports18580/18581/41980; log
+ `/tmp/eidolon-next-desktop-support-focus-native.log`. This is the only local heavy
   gate. Do not modify this source or launch another heavy/native job until it
   exits; old103case browser acceptance is not acceptance of these changed bytes.
 - Remote rechecked again at~20:49: canonical62dc CI34434837759 remains queued at
