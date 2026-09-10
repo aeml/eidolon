@@ -1717,8 +1717,15 @@ export class GameEngine {
     }
 
     getMobileSupportTarget() {
+        return this.resolvePartySupportTarget(this.uiManager?.social?.phoneParty?.selectedId);
+    }
+
+    getDesktopSupportTarget() {
+        return this.resolvePartySupportTarget(this.uiManager?.social?.selectedSupportTargetId);
+    }
+
+    resolvePartySupportTarget(id) {
         if (!this.player || this.isPlayerDead()) return null;
-        const id = this.uiManager?.social?.phoneParty?.selectedId;
         if (!id || id === this.player.id) return this.player;
         const members = this.uiManager?.social?.partyData?.members || [];
         if (!members.some(member => member.id === id)) return null;

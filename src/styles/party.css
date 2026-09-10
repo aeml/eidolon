@@ -120,6 +120,22 @@
     overflow: hidden;
 }
 
+.party-support-target, .party-support-mode {
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background: transparent;
+    padding: 5px;
+    min-height: 36px;
+}
+.party-support-mode { width: 100%; font-size: 12px; color: #c3dace; }
+.party-support-target[aria-pressed="true"] { border-color: #83d5ac; background: #294b3c; }
+.party-support-target:disabled { opacity: .55; cursor: default; }
+.party-support-target:focus-visible, .party-support-mode:focus-visible { outline: 2px solid var(--color-gold); }
+
 .party-member-meta {
     display: flex;
     justify-content: space-between;

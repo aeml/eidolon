@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture } from '../partyDungeonFixture.js';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
-import { acquirePartyAllyPointer, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep } from '../partyDungeonControls.js';
+import { PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep } from '../partyDungeonControls.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
@@ -171,19 +171,11 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 }
             }
             if (available.index < 0 || available.cooldown > 0 || available.mana < 25) { await record('heal-unavailable'); return; }
-            if (hurt.id === states[1].id) {
-                const point = await projectGroundOffset(healer.page, 0, 0);
-                if (!point?.canvas) { await record('self-off-canvas'); return; }
-                await healer.page.mouse.move(point.x, point.y);
-                await healer.page.waitForTimeout(60);
-                const hovered = await healer.page.evaluate(() => window.game.hoveredEntity?.id || null);
-                if (hovered && hovered !== hurt.id) { await record('self-covered'); return; }
-            } else if (!await acquirePartyAllyPointer({
-                project: (id, point) => projectEntity(healer.page, id, point),
-                move: (x, y) => healer.page.mouse.move(x, y),
-                settle: () => healer.page.waitForTimeout(60),
-                hoveredId: () => healer.page.evaluate(() => window.game.hoveredEntity?.id || null)
-            }, hurt.id)) { await record('ally-pointer-unavailable'); return; }
+            // Ordinary visible roster selection, then the hotbar key. Enemy
+            // silhouettes must not redirect a deliberately chosen party heal.
+            const targetButton = healer.page.locator(`#party-list [data-party-support-target=${JSON.stringify(hurt.id)}]`);
+            await targetButton.click();
+            await expect(targetButton).toHaveAttribute('aria-pressed', 'true');
             await record('heal-key');
             await healer.page.keyboard.press(String(available.index + 1));
         }
