@@ -30,9 +30,23 @@ base stats, legal specialization/mastery, and seeded Earth quest gates. No
 production runtime changes. Focused9tests/2suites pass0.733s; full lint, shell
 syntax and discovery pass. Production catalog conversion verified all four
 14-slot kits. Setup environment failures were corrected before launching.
-Native20718 ACTIVE on frozen080a363b, runID`four-role-verdant-0910`, owned
-API18580/Mongo18581/web41980. Raw log `/tmp/eidolon-four-role-verdant-native.log`.
-Only owned browser job; no clear or live claim yet. Archive before rerunning.
+Native20718 TERMINAL1 after5.6m on080a363b. All four formed/entered the same
+instance; normal and elite rooms cleared. Warden15000→10932HP, then tank death.
+Fighter5544damage/2498taken; Cleric1634effective ally healing/13Healing Light
+casts; Wizard3344damage/21Fireballs; Rogue5116damage/43Piercing Throws; each471
+Gold. No rejected casts. Final Fighter HP/MP were post-cleanup town values, not
+survival. Archive `/tmp/eidolon-four-role-first-proof-ve8uzL`, wrapper scan0,
+copied log0QA prefixes; exact owned services/listeners absent. No full-clear or
+individual final-quest credit proof.
+
+Primaryf6fcddef adds intended whole-party town recovery after cleared rooms,
+strict per-member progress/inventory/Gold/quest/instance preservation, actual
+entrance re-traversal, legal Guardian Embrace aura alongside direct healing,
+XP acceptance and a death latch. No runtime/balance or fixture stat buff.
+Focused21tests/3suites0.945s plus lint/discovery/diff pass. Native18143 ACTIVE on
+frozenf6fcddef, runID`four-role-rested-0910`, API18580/Mongo18581/web41980;
+raw log `/tmp/eidolon-four-role-rested-native.log`. Only owned browser job.
+No clear/live claim yet; archive before rerunning.
 
 ## Required scope — two-floor town casino
 
