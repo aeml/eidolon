@@ -27,7 +27,59 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 10:30 UTC
+## Current checkpoint — September 10, 10:55 UTC
+
+Previous implementation goal turn was PROGRESS (isolated all-class dungeon
+drivers and focused checks); the intervening casino confirmation made no new
+changes because the requested scope was already recorded. This turn is PROGRESS:
+revalidated the active campaign handle, completed the defensive/support input
+throttle regression and added an opt-in prepared native support route with
+actual shell routing/failure tests. Casino remains required later1.10 scope,
+not immediate implementation; the full goal is unchanged.
+
+Separate class WT `/tmp/eidolon-earned-dungeon-classes-pS86Je`, branch
+`work/earned-dungeon-classes-20260910`, is clean **506d1c9a** atop20925d1d.
+It enables Rogue/Cleric earned dungeon drivers without relaxing story/readiness,
+normal layout, all-four-boss, manual reward/save/Water or survival/time limits.
+Wizard/Fighter retain their existing drivers. No gameplay/server/version change.
+Follow-up support throttling prevents healing/support attempts from alternating
+continuously at the expense of ordinary combat. New prepared native route uses
+separate allowlisted Rogue/Cleric actors, zero retries and scoped artifacts;
+actual server-accepted paid casts/heals are required, not merely input dispatch.
+It is not in the earned or complete release chains and has NOT run in a browser.
+Prepared grants/protection cannot establish earned progression, survival or clear.
+See `docs/plans/2026-09-10-earned-dungeon-class-support.md` in that worktree
+(the candidate document is not yet merged into this ledger branch).
+
+Final candidate26032 TERMINAL0:166tests/11suites2.529s, lintNode24 and one-case
+Playwright discovery, plus diff whitespace check. Logs
+`/tmp/eidolon-class-support-final-{unit,lint,discovery}.log`.
+Earlier final source162/10 and contract84/4 checks also passed; no full regression
+or native support/class-clear claim. Next candidate gates are full regression,
+prepared support execution, then ordinary fresh Rogue/Cleric campaign/dungeon
+playthroughs after the existing main run is terminal and its evidence preserved.
+
+Main **44188** independently polled live10:49 and10:53, on SAME clean/frozen
+**4b3991ff**, primary WT `/tmp/eidolon-primary-town-recovery-lAKY3k`.
+No source edits, competing browser/full suite or restarts. Same runID
+earned-upgrade-story-0910, API18590/Mongo18591/web41990, log
+`/tmp/eidolon-earned-upgrade-story-replay.log`. OpeningPASS86522ms,
+WatchPASS535138ms, SeedsPASS218450ms; Imps active. Latest10:55 receipt:
+20/60credited kills, level16, no deaths,689seconds. Earlier seed-stage actual
+neck/belt upgrade receipts prove earned replacements via ordinary UI; they do
+not yet prove boss survival. Readiness, all-four-boss clear, manual reward/save
+and Water handoff remain pending. Original96530failure remains preserved.
+
+10:49CI34434837759 stillqueued with client/server/3browsergroups green and
+predeploy pending; nightly34433520743 stillinprogress, no cancellation approval.
+10:55public clientrelease/serverhealth remain60/df91bb66e8e8f3b7125aa99412f09ba25898a3ac,
+healthok/database:"ready"; identity is not canonical62dc2d1 acceptance.
+No version/push/deployment this turn. Aura successor71f18922 local gates remain
+complete and await canonical60remote/live acceptance, then its versioned release.
+All-class/group/realms/raids, balance, physical-phone and casino acceptance remain
+open. Root is ledger-only and must not be pushed as the release branch.
+
+## Previous checkpoint — September 10, 10:30 UTC
 
 Previous goal turn was PROGRESS (drag correction and full/local checks). This
 turn is PROGRESS: closed the uninterrupted visual-recovery gate, completed
