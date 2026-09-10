@@ -116,7 +116,7 @@ passed, copied initial-stat log had zero QA identifiers, and owned ports cleared
 
 ## Remaining promotion gates
 
-- [ ] Current full application regression: the earlier desktop-support baseline passed Go race88252 on e7fde8bc and client84456 on46c008ce. Boss-slam runtime correction80140cfb now requires a fresh full Go pass. Client runtime is unchanged, with later test-only changes covered below. Versioned required-all still applies.
+- [x] Current application regression: full Go race18911 on714c4727 passed after the slam correction (root21.272s/game367.122s). Client84456 passed on46c008ce; client runtime is unchanged and later test-only changes have focused coverage below. Versioned required-all still applies.
 - [x] Execute authenticated smoke with the strengthened stash checks (empty storage).
 - [ ] Run all three proposed CI-mode bundled-browser groups, retain distinct
   artifacts, inspect rendering and measure real stage durations.
@@ -246,3 +246,11 @@ game385.718s); it is not substituted for this branch's full regression. The
 primary's renewed native four-role clear62131 is active on a5320d74, with real
 hotbar defensive buffs and improved client-observed warning timing. No full
 dungeon clear or new deployment is claimed.
+
+Full successor Go race18911 subsequently terminated0 at22:54UTC on714c4727:
+root21.272s/game367.122s, other tested packages pass/cached, no race warning.
+Log`/tmp/eidolon-next-slam-full-server.log`. This closes the current server
+regression requirement, not104case browser/required-all/version/remote/live.
+Primary62131 separately ended after23.4minutes: Warden killed/all four survived,
+three recovery cycles passed, then regrouping failed during travel. Its new
+corner-aware controller remains native-unverified; no full clear is claimed.
