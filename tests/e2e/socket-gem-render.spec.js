@@ -4,7 +4,7 @@ import { collectBrowserFailures } from './helpers.js';
 
 // Prepared production-renderer/actor scene, not Forge, network replication,
 // earned equipment or physical-phone evidence. Compare identical fixed poses.
-test('seven socket palettes render consistently across supported records on all four class rigs', async ({ page, baseURL }, testInfo) => {
+for (const pose of ['bind', 'Idle', 'Attack']) test(`${pose}: seven socket palettes render consistently across supported records on all four class rigs`, async ({ page, baseURL }, testInfo) => {
     test.setTimeout(180_000);
     const failures = collectBrowserFailures(page, baseURL);
     await page.setViewportSize({ width: 1280, height: 720 });
@@ -13,7 +13,7 @@ test('seven socket palettes render consistently across supported records on all 
     await page.addInitScript({ content: `window.__compareSocketPixels = (${compareAuraPixels.toString()});` });
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.goto('/', { waitUntil: 'networkidle' });
-    const metadata = await page.evaluate(async () => {
+    const metadata = await page.evaluate(async pose => {
         const THREE = await import('three');
         const { RenderSystem } = await import('/src/core/RenderSystem.js');
         const { applyProceduralEquipment } = await import('/src/art/ProceduralEquipment.js');
@@ -27,6 +27,10 @@ test('seven socket palettes render consistently across supported records on all 
             const Actor = (await import(`/src/entities/${name}.js`))[name];
             const actor = new Actor(`socket-preview-${index}`);
             await actor.ensureMesh();
+            if (pose !== 'bind') {
+                if (!actor.playAnimation(pose, true, true)) throw new Error(`Missing actual ${name} ${pose} animation`);
+                actor.mixer.update(pose === 'Idle' ? .7 : .35);
+            }
             actor.position.set((index - 1.5) * 3.2, 0, 0);
             actor.mesh.position.copy(actor.position);
             render.scene.add(actor.mesh); actors.push(actor);
@@ -133,9 +137,9 @@ test('seven socket palettes render consistently across supported records on all 
                 ground.geometry.dispose(); ground.material.dispose(); render.dispose(); legend.remove(); labels.remove(); }
         };
         const gl = render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
-        return { classes, gems: Object.keys(GEM_TYPES).filter(type => type === type.toUpperCase()),
+        return { classes, pose, gems: Object.keys(GEM_TYPES).filter(type => type === type.toUpperCase()),
             renderer: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER) };
-    });
+    }, pose);
     const results = [];
     try {
         expect(metadata.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
@@ -157,7 +161,7 @@ test('seven socket palettes render consistently across supported records on all 
             await page.screenshot({ path: testInfo.outputPath(`sockets-${type.toLowerCase()}-${quality}.png`) });
             const closeups = await page.evaluate(type => window.__socketPreview.closeups(type), type);
             await page.screenshot({ path: testInfo.outputPath(`socket-details-${type.toLowerCase()}-${quality}.png`) });
-            console.log('[socket-closeup-visibility]', JSON.stringify({ type, quality, closeups }));
+            console.log('[socket-closeup-visibility]', JSON.stringify({ pose, type, quality, closeups }));
             for (const view of closeups) {
                 expect(view.extent.every(value => Number.isFinite(value) && value > 0)).toBe(true);
                 expect(view.projected.every(value => Number.isFinite(value) && Math.abs(value) < 1)).toBe(true);
