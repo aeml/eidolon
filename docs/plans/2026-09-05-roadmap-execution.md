@@ -27,7 +27,44 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 11:09 UTC
+## Current checkpoint — September 10, 11:28 UTC
+
+Previous goal turn was a VERIFIED WAIT on44188 (Orcs15/50, level26, no deaths).
+This turn is a VERIFIED WAIT on the SAMEhandle, repeatedly polled live through
+11:27, yielding completed earned-readiness evidence and the first dungeon
+encounters. No source edits, resets, grants, deadline changes or competing
+browser/heavy tests. The original primary source remains frozen4b3991ff.
+
+All EIGHT readiness phases now PASS,3298052ms total (~55.0minutes):
+opening86522,watch535138,seeds218450,imps1507163,scars36044,orcs901273,
+handoff11534,readiness1928. Final Orc hunt50/50, no deaths,14town-rest stops,
+one in-hunt training stop; manual300Gold/15843XP reward earned level31.
+Normal town/merchant/stash/gear/training/relogin routes completed without daily
+quests or fixture acceleration. Repeated earned upgrades now include chest,
+shoulders, legs, mainhand, offhand and trinkets. MaximumHP at entry1254, MP737,
+basicdamage24 with WellRested; after ordinary expiry1140HP/22basicdamage.
+This strengthens earned-gear/readiness evidence, not full dungeon acceptance.
+
+Dungeon phase STARTED on SAME44188, same runID/log/API18590/Mongo18591/web41990.
+Replay identity: **seed-1263584004433865125**, generator2, attempt0, fallbackfalse,
+fullRuntrue, normal30, Wizard31, source4b3991ffea239bb3152ea93263fbc0bbe95c05a3,
+sourceDirtyfalse. Three opening Skeletons defeated. Now fighting a4130HP
+DemonOrc; latest11:27log866HP, character1140/1140HP,19mana,22basicdamage.
+Damage continues with ordinary spacing/basic attacks at low mana. No boss death,
+all-four-boss clear, dungeon reward/save/raidaccess or Water handoff yet. Keep
+the original40minute dungeon,8minute encounter,60second damage-stall,10second
+world-state and survival bounds; do not renew them or call slow combat a pass.
+Original96530RootboundWarden failure remains retained, not retroactively fixed.
+
+11:15CI34434837759 stillqueued/nightly34433520743 stillinprogress; no soak
+cancellation approval and no deployment this turn. Class506d1c9a and socket
+bdf3a2df remain separate candidates with focused checks only. After main44188
+is authoritatively terminal, preserve its result and actual sanitized artifacts
+before starting their full/native gates. Aura71f18922 local acceptance and
+canonical60remote/live promotion order remain unchanged. All1.1–1.10/class/
+group/realm/raid/phone/casino requirements remain active; root is ledger-only.
+
+## Previous checkpoint — September 10, 11:09 UTC
 
 Previous goal turn was PROGRESS (socket appearance correction253 focused checks).
 This turn is a VERIFIED WAIT on the specific live main handle44188, independently
