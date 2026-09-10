@@ -53,7 +53,8 @@ and evidence, not a production resource/balance fix; actual success still needed
 **22725 ACTIVE**, only owned local browser workflow, Node24 inside sg render,
 primarya285fbc source FROZEN. Run`fresh-hunt-rest-0910`, API18560/Mongo18561/
 web41960, route`fresh-story-ready`, log`/tmp/eidolon-fresh-hunt-rest-replay.log`.
-Build completed; waiting on normal isolated service readiness at latest poll.
+Services became ready and actual play began: two opening kills at27s,0deaths;
+later hunt recovery and full readiness are not yet reached.
 No daily/prepared level/grants; all seven Earth chapters and unchangedlevel30/
 accepted-uncleared dungeon gate remain required. Do not launch another owned
 browser/heavy tests or mutate its source. Preserve/sanitize/exactcleanup only
