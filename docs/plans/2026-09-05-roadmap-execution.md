@@ -5,13 +5,12 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 21:26 UTC
+## Current checkpoint — September 10, 21:32 UTC
 
-Previous goal turn was a VERIFIED WAIT on four-role46761. This turn is PROGRESS:
-its terminal result isolated a second-town-return guide failure, and primary now
-has bounded waypoint-arrival sequencing, visibility diagnostics and a focused
-four-player re-entry route. Candidate full server88252 passed; focused native
-party-guide59146 is active. Full roadmap,
+Previous goal turn was PROGRESS: guide approach correction and candidate server
+acceptance. This turn is PROGRESS: focused four-player guide59146 passed all
+twelve individual re-entries, its test controls were ported into the candidate,
+and combined full client84456 is active. Full roadmap,
 successful dungeon clear and release gates remain open.
 Full roadmap remains active and deployment/1.1 completion is not claimed.
 
@@ -91,7 +90,7 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   and ranged casts remain unchanged.73196 passed87 tests/3suites0.94s plus lint.
   No combat, gear, regen or deadline changes. Full clear/manual persistence and
   native proof of this new strategy remain open.
-- Combined successor `/tmp/eidolon-browser-cost-current-RxDWen` is clean94e66cfc
+- Combined successor `/tmp/eidolon-browser-cost-current-RxDWen` is clean46c008ce
   (fast-forwarded support integration after old browser27935 finished).
   It now includes prepared/ordinary starting-stat parity52ff4513 (from3832b150)
   and mandatory all-class parity gateec401a95 (fromaeff8ab5), retaining the entire
@@ -149,7 +148,7 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   observations, not populated-storage or full-world visual/physical-phone proof.
   Additional phone captures show thumb controls outside the central actors and
   readable scrolling party choices; physical-phone acceptance remains open.
-  Primary24ef041d now runs focused guide re-entry59146 after four-role46761 failed. Candidate
+  Primary24ef041d is idle after focused guide re-entry59146 passed. Candidate
   native stat/storage/party/required-all, bundled-browser, version/remote/live
   acceptance remain pending. Do not infer production readiness from focused
   checks or restart a process solely on an observation timeout.
@@ -225,13 +224,28 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   game345.858s, remaining tested packages passed/cached, no race warning.
   Log`/tmp/eidolon-next-support-full-server.log`; doc94e66cfc records acceptance.
   Full client/updated104browser/required-all/version/live candidate gates remain.
-- Focused native party-guide59146 is ACTIVE on frozen primary24ef041d,
+- Focused native party-guide59146 TERMINAL0 on frozen primary24ef041d,
   routeparty-guide-reentry, runparty-guide-0910-2126, ports18580/18581/41980;
-  log`/tmp/eidolon-party-guide-reentry-native.log`. Three four-client Recall/
-  individual Resume cycles required, normal UI and explicit level30 entry setup,
-  no combat or dungeon-clear claim. This is the only local heavy gate; candidate
-  and staging idle. Verify this route before another full combat attempt. Do not
-  modify primary while it runs or infer a failure cause without its diagnostics.
+  log`/tmp/eidolon-party-guide-reentry-native.log`. All three four-client Recall/
+  individual Resume cycles passed2.6minutes, normal UI and explicit level30
+  entry setup, same instance retained and browser failure lists empty. No combat
+  or dungeon-clear claim. Archive`/tmp/eidolon-party-guide-reentry-proof-bglqIQ`,
+  scan passed; owned services/listeners cleared. This verifies corrected guide
+  input on the focused route; the previous failure's exact cause remains indirect.
+- Candidate imports primary24ef as457f49a3, excluding only the absent primary
+  full-clear fixture and unrelated incoming prepared/recorded-run case context.
+  Guide helper, focused four-player re-entry route and five sequencing tests
+  are retained.46c008ce also imports the small moveOnly option branch because
+  the older candidate movement helper ignored that option; Shift is released
+  in finally, normal/default/Control behavior retained. Lint/shell checks passed;
+  log`/tmp/eidolon-next-guide-import-lint.log`. No game/server changes; server and
+  src Git trees were checked identical to the e7fde8bc support source.
+- Full client/lint84456 is ACTIVE on frozen candidate46c008ce; logs
+ `/tmp/eidolon-next-support-full-client.log` and`...-full-lint.log`. This is the
+  only local heavy gate. Primary24ef041d and staginge7fde8bc are clean/idle.
+  Candidate-native guide/updated104browser/required-all/version/live and primary
+  full dungeon clear still remain. Do not edit candidate or start a browser gate
+  until this check ends.
 - Remote rechecked again at~21:10: canonical62dc CI34434837759 remains queued at
   predeploy, after five hosted jobs passed; Nightly34433520743 still in progress.
   No soak interruption, push, new version or production acceptance.
