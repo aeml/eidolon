@@ -4,7 +4,7 @@ test('focused recovery tail preserves the exact required full-gate suffix', () =
     const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
     const all = script.split('\n  all)')[1].split('\n    ;;')[0];
     const tail = script.split('\n  recovery-tail)')[1].split('\n    ;;')[0];
-    const sequence = 'run_pvp_cadence && run_animation_classes && run_animation_multiplayer && npx playwright test tests/e2e/nameplate-world.spec.js && run_well_rested';
+    const sequence = 'run_pvp_cadence && run_animation_classes && run_animation_multiplayer && npx playwright test tests/e2e/nameplate-world.spec.js && run_well_rested && run_forge_socket_appearance';
     expect(all.trim().endsWith(sequence)).toBe(true);
     expect(tail.trim().endsWith(sequence)).toBe(true);
     expect(tail).not.toMatch(/--grep|--retries|\|\| true/);

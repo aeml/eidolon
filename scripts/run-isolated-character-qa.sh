@@ -485,7 +485,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   recovery-tail)
     # Focused rehearsal of the unchanged full gate's remaining suffix. This
     # does not replace a complete all-route acceptance run.
-    run_pvp_cadence && run_animation_classes && run_animation_multiplayer && npx playwright test tests/e2e/nameplate-world.spec.js && run_well_rested
+    run_pvp_cadence && run_animation_classes && run_animation_multiplayer && npx playwright test tests/e2e/nameplate-world.spec.js && run_well_rested && run_forge_socket_appearance
     ;;
   movement-fast)
     EIDOLON_E2E_MOVEMENT_MAX_LEVEL=1 npx playwright test tests/e2e/movement-smoothness.spec.js
