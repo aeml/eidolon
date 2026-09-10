@@ -1,4 +1,4 @@
-# Alpha1.0.60 — second corrected verification pipeline active
+# Alpha1.0.60 — predeploy setup failed; next correction pending verification
 
 Canonical corrected commit `caab6111f9d6eef1f375f7942a8163cb2d86da6c`, branch
 `release/60-sanctuary-combat-feedback`, worktree
@@ -8,7 +8,35 @@ predecessor df91bb66e8e8f3b7125aa99412f09ba25898a3ac is deployed but failed fina
 acceptance. Root is ledger-only and is never pushed. Do not push a61successor
 before60 is accepted; the current push repairs60's verification, not gameplay.
 
-## Current verification — September10, 02:35UTC
+## Current status — September10, 03:19UTC
+
+CI34430017443 is terminal FAILED at predeploy102727073506. All server/client/
+browser jobs and the High/Low gallery passed. Disposable gameplay passed seven
+initial cases and trained Flame Whip, then the dungeon-ground-area test failed
+before its actual spell assertions. Deployment/input-validation/final-native
+jobs were skipped. Fresh03:16 public client/backend still identify healthy,
+database-ready60/df91bb6; this candidate did not deploy.
+
+First attempt failed a less-than-two-unit waypoint check with2.12694354remaining.
+Its whole attempt lasted less than25s, so the45s approach loop had broken on an
+earlier near-waypoint observation, not reached its deadline. Movement helper
+returns after minimum displacement; the old setup checked distance before
+waiting for IDLE. Retry reused its trained character and failed rank1vsrank5.
+Neither failure establishes wall/ground spell behavior. Retained log
+`/tmp/eidolon-release60-yield-predeploy.log`; artifact10134910275 at
+`/tmp/eidolon-release60-yield-predeploy-proof-KIFTbd`, scan0. Only failure contexts,
+no actual at-failure scene image/trace were available for this test.
+
+Diagnostic branch/worktree now cleand03ecde with settled-character/camera approach
+inside the same45s budget/two-unit tolerance, exact fresh-retry QA allowlisting,
+initial rank0 assertion/allfivepurchases retained, and at-failure scene/state
+capture. Runtime/version/patchnotes unchanged. Focused45367 passed6/1.252s+lint+
+shellsyntax; broader1600 passed110/7suites2.315s. Actual ground-shape browser and
+full client regression pending until primary22725 ends; do not cancel/overlap
+that owned run. Canonicalcaab611 remains unchanged and no new push occurred.
+See diagnostic plan`2026-09-10-ground-spell-approach-verification.md` there.
+
+## Previous verification — September10, 02:35UTC
 
 03:05 update: sameCI34430017443 remains ACTIVE. Server/client/allthreebrowser
 jobs SUCCESS. Browser1 job102724787728 completed29anonymous/10.5m,6nameplate/

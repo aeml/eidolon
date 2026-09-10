@@ -16,7 +16,57 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 03:09 UTC
+## Current checkpoint — September 10, 03:19 UTC
+
+Previous goal turn was a VERIFIED WAIT. This continuation made PROGRESS:
+inspected true terminal predeploy failure, retained artifacts, diagnosed two
+independent QA setup failures, prepared/committed correction with focused tests.
+Full goal active, no impasse or new push. Root ledger-only/NEVER pushed.
+
+**CI34430017443 TERMINAL FAILED**, canonicalcaab611 unchanged. All server/client/
+browser jobs and High/Low gallery passed. Predeploy102727073506 passed initial
+seven native cases and FlameWhip, then failed dungeon-ground-area setup; later
+deployment/validation/final jobs skipped. Fresh public03:16 remains healthy/
+database-ready60/df91bb6. No rollback needed for an undeployed candidate and no
+accepted60claim. Retained log`/tmp/eidolon-release60-yield-predeploy.log`, artifact
+10134910275 at`/tmp/eidolon-release60-yield-predeploy-proof-KIFTbd`,scan0. This
+test's retained evidence has contexts but no failure screenshot/trace.
+
+First attempt <25s duration rules out45s approach deadline exhaustion. It broke
+after observing <2unitdistance, then failed next distance read2.12694354 before
+the old IDLE wait. moveByGroundClick returns after minimum displacement, not
+settled arrival. Retry reused rank5character and expectedrank1. These failures
+precede spell rejection/acceptance assertions; do not call them proved game
+collision/ability regressions or skip their original requirements.
+
+**Diagnostic now cleand03ecde**, `/tmp/eidolon-release60-hover-diagnostic-V1ICnd`,
+branchwork/release60-hover-diagnostics. Adds bounded settled-ground helper:
+IDLE/no target/settledcamera before distance or next click, sameabsolute45s,
+strict<2units and12unitsteps. Captures room/destination/state+image at failure
+before automatic town exit. Retry getsfresh -retry1character and exact-ground
+allowlist; assertsrank0 then allfivepurchases, retained3spells/wallrejection/
+cooldown/shape/quality/savedrank assertions. No runtime/version/workflow/notes
+change; onlyQA/helper/tests/plan. Focused45367 PASS6/1.252s+lint+shellsyntax;
+expanded1600 PASS110/7/2.315s. Logs`/tmp/eidolon-ground-approach-{focused,lint,regression}.log`.
+FULL CLIENT/NATIVE NOTRUN. Plan`2026-09-10-ground-spell-approach-verification.md`.
+
+Next owned browser priority AFTER22725terminal/preservation/cleanup: existing
+`ground-shape` route in diagnosticWT, uniqueisolatedrunID/ports, Node24 inside
+sg render, normalprepare:client, retries0 first. It trains prepared QA geometry,
+not earned progression. Preserve actual spell/failure evidence; full client
+regression before canonicalmerge/normalpush. Then allnewCI/deploy/finalgates.
+Canonicalcaab611 is not advanced merely because focusedtests passed.
+
+**22725 ACTIVE**, onlyownedlocalbrowser, primarya285fbc frozen. Samefresh-hunt-rest-
+0910/18560/18561/41960, log`/tmp/eidolon-fresh-hunt-rest-replay.log`. Latest Imp
+milestone25/60,0deaths,12townstops,1trainingstop,944s;level17/885XP/6500next/4648Gold,
+605maxHP/396maxMP,17bag slots/2110unsoldgearvalue. Recovery remains natural;
+60Imp/manual/scars/50Orcs/unchangedlevel30readiness stillopen. Keep samehandle;
+do not mutate source/cancel for age/overlap another browser or heavytests.
+Aura remainsa877d46, unpublished with full/native/rendered gates. All broader
+class/group/story/raid/phone/CIcost/casino and1.1–1.10scope stays open.
+
+## Previous checkpoint — September 10, 03:09 UTC
 
 Previous goal turn made PROGRESS (8Seeds and progress past the Imp stall).
 This continuation is a VERIFIED WAIT: same22725 and predeploy102727073506 were
