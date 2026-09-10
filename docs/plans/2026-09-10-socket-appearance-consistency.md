@@ -4,9 +4,9 @@ Status: normalization and held-weapon/socket placement implemented; strengthened
 per-class rendered checks, equipment gallery, full client regression and lint
 passed on85989abc. Native Forge/observer/bag/fresh-login passed onb640e2cf after
 fixing a stale Forge gem-panel refresh. Full integrated regression and lint
-passed on03bb02a7. The later b97a7ea1 move-only input integration has focused
-coverage but still needs full/native release verification; deployment remains
-pending. See
+passed on03bb02a7. The later b97a7ea1 move-only input integration now also passes
+full client/lint, native browser-input cases and the actual Forge lifecycle on
+47b465c1. Full predeploy/promotion/live acceptance remain pending. See
 [held-weapon clearance evidence](2026-09-10-held-weapon-clearance.md) for the
 subsequent fix; the earlier failures below remain historical evidence, not the
 current result. Built separately from the
@@ -15,6 +15,32 @@ canonical release was edited. This is an equipment-polish correction within the
 existing1.1–1.10 goal, not completion of the broader visual milestone.
 
 ## Native Forge verification — September 10, 13:50 UTC
+
+### Final integrated verification — September 10, 14:35 UTC
+
+47b465c1 adds three native browser input cases to the existing required anonymous
+ground-aim suite: near enemy, distant enemy and Shift first pressed while chat
+has focus. Native keyboard/mouse events feed production InputManager and
+GameEngine.update across five animation frames while the mouse remains held.
+Checks require the real floor destination, no attack/interaction, held key state,
+release cleanup and ordinary interaction afterward. The hovered actor is fixed
+and the player records destinations; this isolates input ownership, not actual
+collision, physical movement, rendering quality or server combat.
+
+6014 lint/discovery passed all4cases (the exact-ground aiming case is retained).
+31538 TERMINAL0 under system Chrome:4cases/12.3s/zero retries. Archive
+`/tmp/eidolon-browser-move-only-proof-qgkTCC`;41980listener absent afterward.
+83064 TERMINAL0 onclean47b465c1:270suites/3775tests137.978s plus lintNode24.18.0.
+Logs `/tmp/eidolon-move-only-release-full-{client,lint}.log`.
+
+46506 TERMINAL0 on the same clean47b465c1: dedicated socket-owner/socket-observer
+helper now exercised against actual disposable services, one case29.0s/30.8s
+total/zero retries. Normal Forge changes, both clients' models, filled UI/bag
+icons, re-equip and fresh-login equipment all passed. Archive
+`/tmp/eidolon-forge-release-input-proof-Ks2YYI`; credential scan sanitized0 and
+exact owned18580/18581/41980services/listeners absent. Full predeploy and its
+expanded recovery suffix have not been run as a complete sequence on this tip.
+No new version or deployment; inherited release acceptance remains required.
 
 The explicit isolated `forge-socket-appearance` route uses two real clients and
 new disposable accounts. Only initial level30 equipment and one loose gem are
