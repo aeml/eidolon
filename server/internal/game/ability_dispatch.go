@@ -120,6 +120,23 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 		return result
 	}
 
+	// Explicit support intent must survive the trip from the client. Reject an
+	// ally already unavailable at command admission before mana, cooldowns or
+	// combo state can change; only an empty target ID requests cursor fallback.
+	if player.SubType == "Cleric" && targetID != "" && (skillName == "Healing Light" || skillName == "Divine Intervention") {
+		target := w.Entities[targetID]
+		valid := false
+		if target != nil {
+			target.Mu.RLock()
+			valid = target.Health > 0 && !target.Disconnected && validDirectAbilityTarget(w, player, target, 15, TypePlayer, TypeNPC)
+			target.Mu.RUnlock()
+		}
+		if !valid {
+			result.Reason = "requirements_not_met"
+			return result
+		}
+	}
+
 	// Combo System: Check if this skill completes a combo
 	now := time.Now()
 	previousCombo := player.ActiveCombo
