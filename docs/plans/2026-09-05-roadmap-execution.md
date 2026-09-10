@@ -27,7 +27,36 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 12:52 UTC
+## Current checkpoint — September 10, 12:59 UTC
+
+31572 now TERMINAL0: prepared mid-route rest/resume passed1test4.1minutes,
+zero retries onclean9a48db1c, seed5956274051757442660/generator2/attempt0/no
+fallback. After Warden death atroom2, mana1266/1685→1498/1853townarrival→
+1853/1853full; bank0→1.254262286→3.333802335seconds. Actual guide resumed
+the exact same instance/progress/bag/Gold/quest snapshot; walked all prior
+corridors, killed later mobs and BriarMatron, then second normal town rest and
+same-run re-entry passed. PostMatron1075/1685→1319/1853→1853/1853; bank
+0→1.319983535→4.520987801. Rooms1–4cleared/laterroomsunfinished. Protected100,
+not earned31 balance, depleted-HP, full4boss clear/manualreward/save/Water proof.
+Actual artifact credentialscan passed0; ownedAPI/Mongo and18580/18581/41980
+listeners absent. Archive `/tmp/eidolon-dungeon-resume-proof-VOLgLL`.
+
+87157 first full TERMINAL1:300suitesPASS/one suite failedtoload,4196testsPASS,
+127.773s. Existing DungeonPlaythroughEntry Jest helper mock lacked new recovery
+imports. Preserved log inarchive `failed-first-full-client.log`; lint did not run
+after this failure. Test-double-only e7214825 adds enterDungeon/returnToTown;
+27102 TERMINAL0:35tests/4suites0.997s+lint. Actual browser/runtime files identical
+to native-tested9a48db1c.82369 is now the sole active heavy gate: full client
+then lint onclean e7214825, logs
+`/tmp/eidolon-dungeon-resume-verified-full-{client,lint}.log`. Do not edit primary
+until terminal. No browser is active; native completed evidence is not missing.
+
+Socket cleanproof e3030ef1 adds manual inspection of all4default-equipment Low
+gallery images to earlier proof712c8074; runtime85989abc unchanged.12:53public
+GETs confirm client/server Alpha1.0.60/df91bb66, backend healthy/database ready.
+No push/deploy/current-soak cancellation; all wider roadmap requirements stayopen.
+
+## Earlier checkpoint — September 10, 12:52 UTC
 
 Previous user-request turn was NO PROGRESS toward implementation: it confirmed
 the already-recorded casino scope. This continuation is PROGRESS: verified the
