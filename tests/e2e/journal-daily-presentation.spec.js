@@ -37,8 +37,23 @@ for (const [width, height] of [[1280, 720], [390, 844]]) {
             await expect(primary.locator('.objective-entry__title')).toHaveText('Seeds of the First Grove');
             await expect(primary.locator('.objective-entry__status')).toHaveText('Ready');
             const hint = primary.locator('.objective-entry__hint');
-            await expect(hint).toBeVisible();
             await expect(hint).toContainText('Speak to Archmage Ilyra in town and click Complete Quest');
+            if (width < 600) {
+                // Phone HUD deliberately stays one compact, thumb-sized row;
+                // the existing journal is the readable detail view.
+                await expect(hint).toBeHidden();
+                expect((await primary.boundingBox()).height).toBeGreaterThanOrEqual(44);
+                await primary.click();
+                const journal = page.locator('#quest-journal');
+                await expect(journal).toBeVisible();
+                await expect(journal).toContainText('Ready to complete — return to Archmage Ilyra');
+                await page.screenshot({ path: testInfo.outputPath(`ready-journal-${reason}.png`) });
+                await page.locator('#btn-close-journal').click();
+                await expect(journal).toBeHidden();
+                await expect(primary).toBeVisible();
+            } else {
+                await expect(hint).toBeVisible();
+            }
             await expect(panel).not.toContainText(/Re-orient after recalling|Recover in town and re-orient/);
             expect(await page.evaluate(() => window.__readyGuidance.quest.completed)).toBe(false);
             const bounds = await primary.boundingBox();
