@@ -319,3 +319,18 @@ again rather than falsely failed or declared gathered. Final95167 passed56tests/
 3suites0.852s plus lint and single-route discovery. Logs
 `/tmp/eidolon-party-corner-final-{focused,lint,discovery}.log`.
 Native corner-following and full-clear/manual/relogin acceptance remain pending.
+
+The subsequent geometry check replays62131's exact production seed with the
+existing `TestReportedDungeonSeed` command (89356 passed; log
+`/tmp/eidolon-party-formation-seed-replay.log`). The saved layout contains12rooms,
+11corridors and29walk rectangles. A Go companion prevents the saved fixture
+drifting from the production generator:42904 race passed1.360s, log
+`/tmp/eidolon-party-formation-fixture.log`.
+
+Client33064 passed29tests/2suites5.976s plus lint. The new case builds the actual
+Verdant world/collision shapes, then verifies three full-size followers through
+every canonical join of this seed with the revised planner. Log
+`/tmp/eidolon-party-formation-geometry.log` and corresponding`...-lint.log`.
+This is a deterministic geometry check with idealized arrival, not a recreation
+of the unknown failure position, network/camera timing or complete native party
+movement. It must not be used to claim62131's exact cause or a full-clear pass.

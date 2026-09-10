@@ -12,6 +12,24 @@ import (
 
 var replayDungeonTypes = []string{"verdant_bastion_catacombs", "molten_core", "tempest_spire", "abyssal_well", "umbral_nexus"}
 
+func TestPartyFormationReplayFixtureMatchesProduction(t *testing.T) {
+	w := NewWorld(nil)
+	defer w.StopBackground()
+	layout := w.generateDungeonLayoutWithSeed("dungeon_report_replay", DifficultyNormal, "verdant_bastion_catacombs", -2339742150727221791)
+	assignDungeonRoomHooks(&layout)
+	data, err := os.ReadFile("../../../tests/fixtures/party-formation-layout.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var saved DungeonLayout
+	if err := json.Unmarshal(data, &saved); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(layout, saved) {
+		t.Fatal("party formation replay fixture differs from the production generator")
+	}
+}
+
 func TestReportedDungeonSeed(t *testing.T) {
 	seedText := os.Getenv("EIDOLON_REPLAY_SEED")
 	if seedText == "" {
