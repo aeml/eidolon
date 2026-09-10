@@ -11,7 +11,7 @@ Run `EIDOLON_ISOLATED_QA_ROUTE=fresh-story-dungeon` through the disposable
 character QA wrapper, with ordinary town recovery enabled. A new character must
 earn the entire Earth story, clear all four Verdant bosses through real inputs,
 manually claim Ilyra's dungeon reward, unlock Rootheart raid access and retain
-that progress after login. The next Water investigation must be offered but
+that progress after login. The next required Water hunt must be offered but
 not silently accepted. Accepted or completed daily quests fail the route.
 
 No prepared levels, quest/item grants, encounter waypoints or fallback layouts
@@ -45,11 +45,11 @@ Logs: `/tmp/eidolon-story-dungeon-unit-final.log`,
 
 ## Next action and remaining scope
 
-Freeze the committed source and run the native route once using System Chrome,
-Node 24 and a fresh isolated server/database. Retain phase receipts, complete
-results and screenshots, scan artifacts using the actual QA credentials, and
-verify cleanup of only that run's services. A passing unit suite is not proof of
-dungeon completion, progression pacing or production behavior.
+The first frozen native attempt has now failed at Rootbound Warden after all
+eight readiness phases passed. See the [failure evidence and next diagnostic
+action](2026-09-10-earned-verdant-failure.md). Resolve the earned-gear/ability
+verification gaps before repeating the long route. Retain the original failed
+result; passing units are not dungeon or production acceptance.
 
 The preceding fresh Wizard readiness proof is documented in
 [earned Earth readiness](2026-09-10-earned-earth-readiness-proof.md). It completed
