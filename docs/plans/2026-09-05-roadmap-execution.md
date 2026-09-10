@@ -27,7 +27,69 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 11:28 UTC
+## Current checkpoint — September 10, 11:46 UTC
+
+Previous goal turn was a VERIFIED WAIT (earned readiness passed/dungeon active).
+This turn is PROGRESS: retained the second failed dungeon attempt, completed full
+and actual prepared-native class support acceptance, merged those QA helpers with
+new spatial failure diagnostics, and completed the socket visual full regression.
+Full1.1–1.10 scope, including casino, remains active and unaccepted as a whole.
+
+**Main44188 TERMINAL1 at11:35**, sourceclean4b3991ff, seed-1263584004433865125,
+generator2/attempt0/no fallback/normal30/earnedWizard31. All8readiness phases
+PASS3298052ms, but dungeon phase FAIL649337ms on survival, not timeout/stall.
+Three Skeletons and a4130HP DemonOrc defeated; Warden15000→lastobserved9505HP.
+After several minutes atfullHP, seven177physical hits over23.533seconds killed
+the character. Deathposition(20035.233783749074,19771.176993562265),mana12;
+lastbossmaxHP1165/basicdamage22. Defense187retreats/39acceptedFireballs/
+0rejections/0shields/0wells/0crowdJumps; earnedTeleport/Shield/Well were unlocked.
+Better gear was actually equipped but did not solve survival. Different seed
+prevents attributing all improvement to gear. No boss kill/laterroom/fullclear/
+dungeon reward/raidaccess/save/Water acceptance. Original96530 remains failed.
+
+Archive `/tmp/eidolon-earned-upgrade-failure-sQmC8N` retains test-results,
+report andrun.log. Actual credentialscan0; owned containers and all
+18590/18591/41990listeners absent after wrapper completion. Existing PNGs cover
+earlier story only; NO boss-fight screenshot was captured. Do NOT poll44188 as
+active or repeat the hour-long route before short resource/retreat diagnostics.
+Primary's failure plan records gaps and the existing ordinary town/resume option;
+no regen increase, enemy nerf, granted gear or timeout extension was made.
+
+Class full42440 on506d1c9a TERMINAL0:296suites/4174tests129.636s then lintNode24.
+Prepared native32340 SAMEsource TERMINAL0: Rogue1case16.4s, Cleric1case17.0s,
+serial/zeroretries; actual credentialscan0 and owned18580/18581/41980closed.
+Archive `/tmp/eidolon-prepared-support-proof-9vbe4p`:bothscopedtrees/finalHTML/
+native/full/lint logs. Inspected both screenshots. Rogue paid30mana for accepted
+PoisonCoating. Cleric paid25mana each for2HealingLights and40forEmbrace; actual
+387direct/258perEmbrace-tick heals, no rejected casts. Stale-target/active-buff
+suppression assertions passed. Prepared100/protected evidence is NOT an earned
+clear, poison-damage or independent cooldown-only proof; the Cleric screenshot
+also does not establish entrance-art/phone acceptance.
+
+Primary f980d070 adds read-only detached spatial death snapshots (geometry,
+positions/radii/scales/cache membership) and source/player positions on damage
+events;13focusedtests/2suites0.757s+lint passed. It changes no game behavior and
+has no native failure-capture proof yet. Class proofdoc a0851cc0 and runtime506
+are merged locally into primary **51dcc97d8642c3f5847f1ab8f0d56e0fb576282e**.
+**Active49403** is now the ONLY local heavy gate: full client/lint on SAMEclean,
+frozen51dcc97d, primaryWT `/tmp/eidolon-primary-town-recovery-lAKY3k`, logs
+`/tmp/eidolon-merged-dungeon-support-full-{client,lint}.log`. Re-poll this handle;
+do not edit source or start competing browser/heavy tests before terminal.
+
+Socket full21864 onbdf3a2df TERMINAL0:267suites/3741tests121.725s+lintNode24,
+logs `/tmp/eidolon-socket-visual-full-{client,lint}.log`. SocketWT nowclean
+**9ef7e1b7**, proof-only atoptestedbdf3a2df. Rendered7gem/canonical-enum/allclass
+comparison and nativeForge/local/observer/save still pending; no release version
+assigned. Aura71f18922 prior local acceptance remains scoped to its source.
+
+11:43canonicalCI34434837759 stillqueued/nightly34433520743 stillinprogress;
+no cancellation approval, runner alteration, push or deployment this turn.
+Canonical62dc2d1 remote/live acceptance remains ahead of successor publication.
+After49403: short Wizard recovery/retreat diagnostics and visual native gates,
+then justified earned replay/all-class/group/realm/raid/phone acceptance. Do not
+replace these requirements with the prepared passes. Root is ledger-only.
+
+## Previous checkpoint — September 10, 11:28 UTC
 
 Previous goal turn was a VERIFIED WAIT on44188 (Orcs15/50, level26, no deaths).
 This turn is a VERIFIED WAIT on the SAMEhandle, repeatedly polled live through
