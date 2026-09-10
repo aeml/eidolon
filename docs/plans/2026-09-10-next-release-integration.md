@@ -99,14 +99,24 @@ cannot pass by retaining the prior client's array. This adds no inventory action
 grants, account mutation or extra registered account. Existing users may have
 nonempty storage; the isolated wrapper's new account covers empty storage.
 
-12484 passed lint and discovered all three existing authenticated cases; the
-new checks have NOT yet executed in a browser. Discovery is not smoke acceptance.
-Logs`/tmp/eidolon-next-candidate-stash-gate-{lint,discovery}.log`.
+12484 passed lint and discovered all three existing authenticated cases.
+Native27316 now passed the strengthened login/menu/movement/reconnect case16.6s
+on cleanef28abb7, through the isolated smoke route with system Chrome. It checked
+actual initial stash replication, transport resume and fresh-page login. This
+ordinary new account covers empty storage, not a populated-stash transfer test.
+Log`/tmp/eidolon-next-stash-native.log`; disposable services were removed normally.
+
+On the same source, native35249 passed all four starting-stat cases46.4s:
+ordinary creation/relogin retains the all-ten baseline, explicit QA level30
+and relogin match ordinary growth. No earned-progression claim. Archive
+`/tmp/eidolon-next-initial-stats-proof-x13T5B`, log
+`/tmp/eidolon-next-initial-stats-native.log`; both checks exited0, credential scans
+passed, copied initial-stat log had zero QA identifiers, and owned ports cleared.
 
 ## Remaining promotion gates
 
 - [x] Full combined-source regression: Go race passed38875a69; client275 suites/3827 tests passed on883e39e0, with fresh lint exit0.
-- [ ] Execute authenticated smoke with the strengthened stash checks.
+- [x] Execute authenticated smoke with the strengthened stash checks (empty storage).
 - [ ] Run all three proposed CI-mode bundled-browser groups, retain distinct
   artifacts, inspect rendering and measure real stage durations.
 - [ ] Complete the changed versioned candidate's required predeploy/authenticated
@@ -117,9 +127,8 @@ Logs`/tmp/eidolon-next-candidate-stash-gate-{lint,discovery}.log`.
   frontend/backend identities and the affected gameplay after deployment.
 
 The primary solo campaign6251 is terminal130 after the player's explicit switch
-to four-role dungeon verification. The primary party route owns the current
-heavy/browser slot; consult the root execution ledger for its live handle and
-frozen source. No parallel heavy/native check was started for this candidate.
+to four-role dungeon verification. Consult the root execution ledger for current
+heavy/browser ownership; candidate and primary native checks run sequentially.
 The primary dungeon outcome, all-class/group/realm/raid, phone/balance and later
 roadmap acceptance are still open. CI scheduling changes
 must not cancel the running soak or redefine its24hour stability requirement
