@@ -1,4 +1,4 @@
-# Alpha1.0.60 — corrected verification pipeline pending
+# Alpha1.0.60 — corrected pipeline failed before deployment
 
 Canonical corrected commit `3a139c0179221f06e7f027218e15fea63c561842`, branch
 `release/60-sanctuary-combat-feedback`, worktree
@@ -8,10 +8,31 @@ predecessor df91bb66e8e8f3b7125aa99412f09ba25898a3ac is deployed but failed fina
 acceptance. Root is ledger-only and is never pushed. Do not push a61successor
 before60 is accepted; the current push repairs60's verification, not gameplay.
 
-## Corrected release verification — September10, 02:02UTC
+## Latest CI result — September10, 02:28UTC
+
+CI34427816379 is terminal FAILED on3a139c0. Client/server and browser groups1/2
+passed; group3 failed its respawn visual fixture twice at120 seconds, with24
+other tests passed. Predeploy/deploy/final live jobs were skipped. This push
+did not replace the previously deployed df91bb6 runtime.
+
+Both recorded traces show all three respawn visibility assertions and stealth
+expiry passed; screenshot completed, disposal evaluation was unfinished at the
+deadline. Ordinary button clicks took roughly10.4s each under SwiftShader.
+Inspected the retained PNG: no enclosing glowing cube. Artifact10133758335 at
+`/tmp/eidolon-release60-browser3-failure-akHxw8`, log
+`/tmp/eidolon-release60-corrected-browser3.log`. This is not evidence of a new
+runtime appearance regression or permission to bypass the failed gate.
+
+The independent hover-diagnostic worktree now has a candidate fixture-only50ms
+post-draw yield, retaining quality/viewport/real elapsed-time updates and all
+assertions/deadlines. Focused77789 passed15tests/2suites0.746s+lint. Actual
+bundled-Chromium respawn replay and full regression are pending until fresh-story
+browser44940 ends. Canonical3a139c0 remains unchanged; no new push yet.
+
+## Corrected release verification — September10, 02:02UTC (historical)
 
 New [CI34427816379](https://github.com/aeml/eidolon/actions/runs/34427816379) is
-ACTIVE on exact3a139c0 after a normal non-force push. Previous failed run remains
+started on exact3a139c0 after a normal non-force push. Previous failed run remains
 retained below. No src/server/login/version/manifest/package/workflow changes
 versusdf91bb6; existing60patch notes remain accurate. The correction uses real
 canvas-wheel zoom to expose live wandering enemies before the existing hover

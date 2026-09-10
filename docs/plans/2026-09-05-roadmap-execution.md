@@ -16,7 +16,46 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 02:20 UTC
+## Current checkpoint — September 10, 02:28 UTC
+
+Previous user-facing roadmap confirmation was NO PROGRESS toward implementation:
+it verified already-recorded casino scope without new edits. This continuation
+made PROGRESS: revalidated actual handles, inspected terminal CI failure and both
+traces, prepared a bounded fixture correction and passed its focused tests/lint.
+Full goal remains active; no impasse. Root is ledger-only and NEVER pushed.
+
+**Corrected60 CI34427816379 TERMINAL FAILED**, canonical3a139c0 unchanged. Server,
+client and browser1/2 passed. Browser3 job102718128498 failed respawn-appearance
+twice at120s;24other tests passed. Predeploy/deploy/final jobs skipped. Both
+traces prove all three respawn visibility checks and stealth expiry passed, with
+the final PNG captured before timing out at disposal. Each normal button click
+took~10.4s under SwiftShader. PNG inspected, no enclosing cube. Artifact10133758335
+at`/tmp/eidolon-release60-browser3-failure-akHxw8`, log
+`/tmp/eidolon-release60-corrected-browser3.log`. This differs from the old54clock
+failure; do not claim a new appearance regression or accepted release.
+
+Candidate in `/tmp/eidolon-release60-hover-diagnostic-V1ICnd`: fixture-only50ms
+post-draw idle before next RAF, actual elapsed actor clock retained, same120s
+deadline, quality, viewport, three cycles and assertions. Cancel frame+timer on
+stop, ignore late callbacks, propagate draw errors. New helper/tests and plan
+`2026-09-10-respawn-fixture-render-yield.md`; focused77789 PASS15/2/.746+lint after
+fixing missing ESM Jest import. FULL CLIENT/BROWSER NOTRUN. Next owned browser
+priority after44940 terminal: bundled Chromium/SwiftShader respawn with retries0,
+then full regression; only merge/push canonical60 if verified. No successor yet.
+
+**44940 ACTIVE**, confirmed handle, primary79e9571/code d47f5c6 unchanged/frozen.
+Run`fresh-diary-ack-0910`, ports18560/18561/41960, log
+`/tmp/eidolon-fresh-diary-ack-replay.log`. Opening+diary manual/reconnect passed.
+First hunt40/40 completed527s/0deaths/14town rests, manually claimed100Gold1593XP
+tolevel8. Eight Seeds earned in10observed target deaths/0deaths, then story
+progressed to Imp hunt atlevel9. Latest earned preparation reachedlevel10 and
+spent2earned talent points; full60Imp count/turn-in, scars, Orcs and unchanged
+level30dungeon readiness remain unproven. No daily or state grants. Preserve
+source until terminal, sanitize/retain artifacts and exactcleanup before another
+owned browser or heavy tests. Group/class/fullstory/raid/physicalphone/aura/casino
+and all remaining1.1–1.10 gates stay open.
+
+## Previous checkpoint — September 10, 02:20 UTC
 
 This continuation is a VERIFIED WAIT: re-polled exact live44940 and corrected60
 CI34427816379; neither is terminal. Previous turn made PROGRESS. No impasse,
