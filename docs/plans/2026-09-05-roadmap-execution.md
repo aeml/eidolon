@@ -5,12 +5,13 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 21:35 UTC
+## Current checkpoint — September 10, 21:40 UTC
 
 Previous goal turn was PROGRESS: guide approach correction and candidate server
 acceptance. This turn is PROGRESS: focused four-player guide59146 passed all
 twelve individual re-entries, its test controls were ported into the candidate,
-and combined full client84456 passed. Candidate-native guide88901 is active.
+and combined full client84456 passed. Candidate-native guide88901 exposed a
+missing test-helper export; that integration gap is corrected and79643 is active.
 Full roadmap,
 successful dungeon clear and release gates remain open.
 Full roadmap remains active and deployment/1.1 completion is not claimed.
@@ -91,7 +92,7 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   and ranged casts remain unchanged.73196 passed87 tests/3suites0.94s plus lint.
   No combat, gear, regen or deadline changes. Full clear/manual persistence and
   native proof of this new strategy remain open.
-- Combined successor `/tmp/eidolon-browser-cost-current-RxDWen` is clean46c008ce
+- Combined successor `/tmp/eidolon-browser-cost-current-RxDWen` is clean93d9c230
   (fast-forwarded support integration after old browser27935 finished).
   It now includes prepared/ordinary starting-stat parity52ff4513 (from3832b150)
   and mandatory all-class parity gateec401a95 (fromaeff8ab5), retaining the entire
@@ -249,11 +250,24 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   client check is complete. Primary documentationfad742f1 records the failed
   full combat attempt and successful focused guide proof; test/runtime source
   remains24ef041d. Primary and staginge7fde8bc are clean/idle.
-- Native candidate guide88901 is ACTIVE on frozen46c008ce, routeparty-guide-reentry,
-  runnext-guide-0910-2135, ports18580/18581/41980;
-  log`/tmp/eidolon-next-party-guide-native.log`. It verifies the candidate's
-  older movement helper plus imported moveOnly option, rather than assuming
-  primary's native pass transfers automatically. This is the sole heavy gate.
+- Native candidate guide88901 TERMINAL1 before gameplay: the older candidate
+  helper had no standalone enterDungeon export. Archive
+ `/tmp/eidolon-next-guide-import-proof-uCvkQC`, log
+ `/tmp/eidolon-next-party-guide-native.log`; scan passed and owned ports cleared.
+ 041d149a extracts its existing entry code unchanged and retains the old
+  enterAndExit callback/recall behavior; it also ports the no-respawn option
+  required by the party diagnostic.89765 passed lint and discovered5cases across
+  party guide/authenticated/regional entry files.93d9c230 adds adapter regressions
+  for Shift walking/release, standalone entry export and rejected hidden respawn.
+ 45349 passed21tests/3suites0.93s and lint. Logs
+ `/tmp/eidolon-next-guide-export-{lint,discovery}.log` and
+ `/tmp/eidolon-next-guide-adapter-{focused,lint}.log`. Game/server source unchanged.
+- Native candidate guide79643 is ACTIVE on frozen93d9c230,
+  runnext-guide-0910-export, routeparty-guide-reentry, ports18580/18581/41980;
+  log`/tmp/eidolon-next-party-guide-export-native.log`. It verifies the candidate's
+  older helper with all needed imports instead of assuming primary proof transfers.
+  This is the sole heavy gate; primaryfad742f1 is idle, ready for its full party
+  combat run once this targeted integration check passes.
   Updated104browser/required-all/version/live and primary full clear remain.
   Do not edit candidate or start another heavy gate until it ends.
 - Remote rechecked again at~21:35: canonical62dc CI34434837759 remains queued at
