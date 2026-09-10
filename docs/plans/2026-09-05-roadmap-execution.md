@@ -16,7 +16,33 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 05:43 UTC
+## Current checkpoint — September 10, 05:50 UTC
+
+Previous turn was a VERIFIED WAIT. This continuation observed the same live13998
+through Imp40 and a second actual merchant sale. No source edits, restart,
+cancellation, push or deployment. Full1.1–1.10 remains active/incomplete.
+
+13998 ACTIVE, only owned browser, primary clean/frozencb348ef, same
+fresh-merchant-0910/18560/18561/41960/log
+`/tmp/eidolon-fresh-merchant-replay.log`. Latest Imp40/60 at894s, level19/
+3841XP/6942Gold, zero deaths,11ordinary town rests,1earned training stop,
+17occupied slots/3090unsold gear value. Full60/manual/save, scars,50Orcs/manual/
+save/handoff and strictstory-onlylevel30 remain pending. No final campaign pass.
+
+Second actual merchant visit PASSED atlevel18: ordinary approach again stopped
+atx19.4292,z199.9374 and opened shop/bag. Four sales10+10+170+20Gold produced
+exact5941→6151Gold, free slots4→8; level/quests/equipment/item conservation and
+ordinary departure passed in18.757s. No stash deposits. Together with the first
+visit, two earned sales now back the corrected approach; this is still partial
+campaign evidence, not proof of all late-run merchant scenarios.
+
+Re-polled CI34434837759/predeploy102741303703: still QUEUED; soak34433520743
+confirmed in progress. Cancellation approval still unanswered. Canonical62dc2d1
+unchanged; no new deployment/final live acceptance. Root ledger-only and NEVER
+pushed. All class/group/realm/dungeon/raid/phone/aura/CIcost/casino and remaining
+roadmap gates remain open. Continue exact13998 and exact release queue.
+
+## Previous checkpoint — September 10, 05:43 UTC
 
 Previous turn was a VERIFIED WAIT. This continuation observed the same live13998
 and obtained actual earned merchant-sale evidence. No source mutation, restart,
