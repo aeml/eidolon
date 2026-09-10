@@ -34,7 +34,7 @@ function setupDOM() {
 function createSocialUI() {
     setupDOM();
     const ctx = {
-        getLastPlayer: () => null,
+        getLastPlayer: jest.fn(() => null),
         addChatMessage: jest.fn(),
         openManagedWindow: jest.fn(),
         closeManagedWindow: jest.fn(),
@@ -59,6 +59,52 @@ test.each([null, { partyId: 'group', leaderId: 'self', members: [{ id: 'self', n
         expect(guidance.title).toContain('completes their own quests');
     }
 );
+
+describe('desktop party support selection', () => {
+    const data = () => ({ partyId: 'group', leaderId: 'self', members: [
+        { id: 'self', name: 'Healer', hp: 100, maxHp: 100 },
+        { id: 'ally', name: 'Tank', hp: 50, maxHp: 100 }
+    ] });
+    test('selecting the visible roster persists through refreshes, preserves focus and can be cleared', () => {
+        const { ui, ctx } = createSocialUI();
+        ctx.getLastPlayer.mockReturnValue({ id: 'self' });
+        ui.updateParty(data());
+        const target = () => ui.partyList.querySelector('[data-party-support-target="ally"]');
+        const originalButton = target();
+        target().focus();
+        target().click();
+        expect(ui.selectedSupportTargetId).toBe('ally');
+        ui.updateParty(data());
+        expect(target().getAttribute('aria-pressed')).toBe('true');
+        expect(target()).toBe(originalButton);
+        expect(document.activeElement).toBe(target());
+        ui.partyList.querySelector('.party-support-mode').click();
+        expect(ui.selectedSupportTargetId).toBeNull();
+    });
+    test.each(['departure', 'party', 'character'])('%s clears stale selection', reason => {
+        const { ui, ctx } = createSocialUI();
+        ctx.getLastPlayer.mockReturnValue({ id: 'self' });
+        const party = data();
+        ui.updateParty(party);
+        ui.partyList.querySelector('[data-party-support-target="ally"]').click();
+        if (reason === 'departure') party.members.pop();
+        if (reason === 'party') party.partyId = 'other-group';
+        if (reason === 'character') ctx.getLastPlayer.mockReturnValue({ id: 'other-character' });
+        ui.updateParty(party);
+        expect(ui.selectedSupportTargetId).toBeNull();
+    });
+    test('downed selection is visibly disabled without silently switching heals to another player', () => {
+        const { ui, ctx } = createSocialUI();
+        ctx.getLastPlayer.mockReturnValue({ id: 'self' });
+        const party = data();
+        ui.updateParty(party);
+        ui.partyList.querySelector('[data-party-support-target="ally"]').click();
+        party.members[1].hp = 0;
+        ui.updateParty(party);
+        expect(ui.partyList.querySelector('[data-party-support-target="ally"]').disabled).toBe(true);
+        expect(ui.selectedSupportTargetId).toBe('ally');
+    });
+});
 
 describe('SocialUI.updateFriendList', () => {
     test('stores friendEntries and pendingUsernames', () => {

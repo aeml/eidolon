@@ -45,3 +45,49 @@ test('an out-of-range ally requires movement without auto-chasing or spending ma
     expect(engine.network.send).not.toHaveBeenCalled();expect(player.useSkill).not.toHaveBeenCalled();
     expect(engine.pendingInteraction).toBeNull();
 });
+
+describe('desktop explicit party healing selection', () => {
+    beforeEach(() => {
+        engine.isMobile = false;
+        engine.uiManager.social.selectedSupportTargetId = ally.id;
+        engine.hoveredEntity = enemy;
+        engine.inputManager.getGroundIntersection = () => enemy.position;
+    });
+    test.each(['Healing Light', 'Divine Intervention'])('%s ignores the enemy covering an explicitly selected ally', skill => {
+        player.hotbar = [skill];
+        engine.abilityController.performHotbarAbility(0);
+        expect(engine.network.send).toHaveBeenCalledWith('ability', expect.objectContaining({ targetId: ally.id, skillName: skill }));
+        expect(engine.hoveredEntity).toBe(enemy);
+    });
+    test('self selection explicitly targets the caster', () => {
+        engine.uiManager.social.selectedSupportTargetId = player.id;
+        player.hotbar = ['Healing Light'];
+        engine.abilityController.performHotbarAbility(0);
+        expect(engine.network.send).toHaveBeenCalledWith('ability', expect.objectContaining({ targetId: player.id }));
+    });
+    test.each(['dead', 'departed', 'missing', 'hostile', 'range'])('unavailable %s selection neither spends mana nor chases or silently retargets', condition => {
+        if (condition === 'dead') ally.stats.hp = 0;
+        if (condition === 'departed') engine.uiManager.social.partyData.members = [];
+        if (condition === 'missing') engine.chunkManager.getActiveEntities = () => [player, enemy];
+        if (condition === 'hostile') engine.isHostileActorTarget = entity => entity === ally || entity === enemy;
+        if (condition === 'range') ally.position.x = 100;
+        player.hotbar = ['Healing Light'];
+        engine.abilityController.performHotbarAbility(0);
+        expect(engine.network.send).not.toHaveBeenCalled();
+        expect(player.useSkill).not.toHaveBeenCalled();
+        expect(engine.abilityController.pendingAbilityTarget).toBeNull();
+        expect(engine.showReadabilityFeedback).toHaveBeenCalledWith(condition === 'range' ? 'party-cast-range' : 'party-ally-unavailable', expect.any(Object), 700);
+    });
+    test('clearing the selection restores cursor targeting', () => {
+        engine.uiManager.social.selectedSupportTargetId = null;
+        engine.hoveredEntity = ally;
+        player.hotbar = ['Healing Light'];
+        engine.abilityController.performHotbarAbility(0);
+        expect(engine.network.send).toHaveBeenCalledWith('ability', expect.objectContaining({ targetId: ally.id }));
+    });
+    test('healing selection never redirects an offensive hotbar skill', () => {
+        player.hotbar = ['Radiant Strike'];
+        engine.abilityController.performHotbarAbility(0);
+        expect(engine.network.send).toHaveBeenCalledWith('ability', expect.objectContaining({ targetId: enemy.id }));
+    });
+});
