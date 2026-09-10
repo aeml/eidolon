@@ -3,7 +3,6 @@ package game
 import (
 	"fmt"
 	"log"
-	"math"
 	"math/rand"
 	"strings"
 	"time"
@@ -274,11 +273,11 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 					for _, mid := range memberIDs {
 						member := w.GetEntity(mid)
 						if member != nil {
-							// Check distance (e.g., 200 units) to share XP
+							// Dungeon presence is instance-wide; overworld sharing
+							// uses a stable two-screen world radius.
 							member.Mu.RLock()
-							dx := member.X - tX
-							dz := member.Z - tZ
-							eligible := member.State != "DEAD" && member.InstanceID == tInstanceID && math.Sqrt(dx*dx+dz*dz) <= 200.0
+								eligible := eligibleForPartyKillCredit(member, tInstanceID,
+									partyKillUsesDungeonPresence(instanceType), tX, tZ)
 							member.Mu.RUnlock()
 							if eligible {
 								partyMembers = append(partyMembers, member)
