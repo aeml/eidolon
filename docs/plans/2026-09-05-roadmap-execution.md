@@ -16,7 +16,39 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 05:50 UTC
+## Current checkpoint — September 10, 05:56 UTC
+
+Previous turn was a VERIFIED WAIT. This continuation observed new complete Imp
+and scar-phase evidence from the same live13998. Full1.1–1.10 remains active/
+incomplete; no source edits, restart, cancellation, push or deployment.
+
+13998 ACTIVE, only owned browser, primary clean/frozencb348ef, same
+fresh-merchant-0910/18560/18561/41960/log
+`/tmp/eidolon-fresh-merchant-replay.log`. Imp60/manual200Gold6843XP/save PASSED
+1228s, zero deaths,14ordinary rests,2earned training stops. Exactclaim21/
+9316XP/10062Gold→22/6059XP/10262Gold;20occupied slots/5280unsold gear value.
+Actual namedimps phase PASS1227707ms/2700000ms; exact saved progress retained
+after real login. Shorter timing than earlier random runs is not a runtime
+performance or all-class balance claim.
+
+Third earned merchant visit also PASSED: four sales200+20+340+360Gold,
+8423→9343Gold, free slots4→8, level21/quest/equipment/item conservation and
+ordinary departure checked,19.067s; no stash deposits. Three actual campaign
+visits now verify the corrected approach; late Orc and stash use remain open.
+
+All three scar investigations/manual completion PASSED35531ms/600000ms.
+Orc phase ACTIVE, starts22/6284XP/10318Gold, full742HP533MP,20occupied slots/
+5280unsold gear value. All50/manual/save, handoff and strictstory-onlylevel30
+readiness remain pending. Keep source frozen through terminal preservation/
+sanitation/cleanup; the previous Orc37failure remains a failed attempt.
+
+CI34434837759/predeploy102741303703 re-polled and still QUEUED; scheduled
+soak34433520743 still in progress. No cancellation approval, canonical62dc2d1
+unchanged, no new deployment/final live acceptance. Root ledger-only and NEVER
+pushed. All class/group/realm/dungeon/raid/phone/aura/CIcost/casino and remaining
+roadmap gates stay open. Continue exact13998 and release queue.
+
+## Previous checkpoint — September 10, 05:50 UTC
 
 Previous turn was a VERIFIED WAIT. This continuation observed the same live13998
 through Imp40 and a second actual merchant sale. No source edits, restart,
