@@ -40,6 +40,10 @@ storage eligibility, future-upgrade preservation, target bounds and input purity
 Source checks verify the normal UI path and complete-item conservation assertions.
 These are not a substitute for an actual successful storage visit.
 
-- [ ] Full client regression after the storage extension.
+- [x] Full client regression after the storage extension.
 - [ ] Actual normal storage transfers and saved items in the complete serial replay.
 - [ ] Separate fresh-character/class/group pacing and actual dungeon/raid gates.
+
+Full85092 on4e7bc8d passed284suites3995tests88.258s and lint. Logs
+`/tmp/eidolon-earned-stash-full-{client,lint}.log`. The corrected complete serial
+replay is next; no successful stash visit is claimed from these unit checks.

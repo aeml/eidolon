@@ -42,3 +42,9 @@ rewards, progression or any fresh-character/class/group/dungeon completion gate.
 - [x] Full client regression after the refactor and accepted59 integration.
 - [ ] Actual three-stage route, saved-state checks and retained terminal evidence.
 - [ ] Separate full fresh-character readiness and actual dungeon completion.
+
+Actual staged78199 passed the first two phases, then reached19/50DemonOrcs before
+the conservative sale-only bag routine had insufficient eligible spare gear.
+This was not another stage timeout. Retained evidence and the ordinary stash
+follow-up are in [earned stash preservation](2026-09-10-earned-stash-preservation.md).
+The full three-stage completion gate remains open.
