@@ -56,7 +56,7 @@ async function acceptOfferedChapter(page, id) {
     await page.locator('#btn-close-quest').click();
 }
 
-async function claimChapterAndContinue(page, id) {
+export async function claimChapterAndContinue(page, id) {
     const quest = await readChronicleChapter(page, id);
     expect(quest?.count).toBe(quest?.maxCount);
     expect(quest?.completed, 'Ordinary progress must not auto-complete the chapter').toBe(false);

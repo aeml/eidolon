@@ -94,6 +94,24 @@ the dungeon proximity restriction: all connected party members still in the run
 at the kill count, including downed players. Its prepared reward/ability tests
 are separate from this still-open four-browser clear and earned campaign gate.
 
+## Current post-clear contract
+
+The four-role route now continues after the full clear with each character's
+ordinary Ilyra Complete Quest and Continue conversation buttons. Every turn-in
+must grant Gold and offer the first Water expedition without auto-accepting it;
+remaining party members must still have unclaimed Earth completion. After all
+four individual claims, each reconnects in a fresh document. The exact chapter
+receipt and Gold balance must persist without duplicate rewards, and the Water
+offer must remain unchanged. Combat metrics are saved before those page reloads.
+The existing shared manual-turn-in helper is exported, not duplicated or bypassed.
+
+Lint and Playwright discovery67718 passed for this extension; these are not
+native turn-in/relogin evidence. Later native attempts and the corrected desktop
+healing/warning-response controller are recorded in
+[desktop party healing](2026-09-10-desktop-party-healing.md). The latest completed
+attempt87906 proved real healing but wiped at the first boss; no post-clear
+assertion has yet been reached by the browser party.
+
 Next controller correction uses existing Shift-click move-only walking while
 following: foreground actor models no longer redirect the movement input into
 combat. Physical collision and witnessed displacement remain enforced, with no

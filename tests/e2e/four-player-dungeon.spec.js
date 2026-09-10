@@ -7,6 +7,8 @@ import { PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep } from '../partyDungeonCont
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
+import { claimChapterAndContinue, EARTH_DUNGEON_CHAPTER, readChronicleChapter } from './chronicle-earth-route.js';
+import { verifyFreshWaterHandoff } from './chronicle-water-handoff.js';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, openGame,
     enterDungeon, moveByGroundClick, projectEntity, projectGroundOffset, returnToTown } from './helpers.js';
 
@@ -334,6 +336,26 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             }
         });
         for (const actor of actors.slice(1)) await returnToTown(actor.page, { allowRespawn: false });
+        for (const [index, actor] of actors.entries()) {
+            actor.combatEvidence = (await snapshot(actor.page)).evidence;
+            await claimChapterAndContinue(actor.page, EARTH_DUNGEON_CHAPTER);
+            await verifyFreshWaterHandoff(actor.page);
+            await actor.page.locator('#btn-close-quest').click();
+            actor.claimedChapter = await readChronicleChapter(actor.page, EARTH_DUNGEON_CHAPTER);
+            actor.claimedGold = (await snapshot(actor.page)).gold;
+            for (const waiting of actors.slice(index + 1)) {
+                expect((await readChronicleChapter(waiting.page, EARTH_DUNGEON_CHAPTER)).completed,
+                    'Another member turning in must not claim this player’s reward').toBe(false);
+            }
+            console.log(`[party-clear-turn-in] ${actor.className}: manual reward and Water offer verified`);
+        }
+        for (const actor of actors) {
+            await loginAndEnterWorld(actor.page, actor.login);
+            expect(await readChronicleChapter(actor.page, EARTH_DUNGEON_CHAPTER)).toEqual(actor.claimedChapter);
+            expect((await snapshot(actor.page)).gold, 'Relogging must neither lose nor duplicate the reward').toBe(actor.claimedGold);
+            await verifyFreshWaterHandoff(actor.page);
+            console.log(`[party-clear-relogin] ${actor.className}: personal chapter, reward and Water offer persisted`);
+        }
         for (const actor of actors) expect(actor.failures, `${actor.className} browser failures`).toEqual([]);
     } finally {
         console.log('[party-healer-decisions]', JSON.stringify(healerDecisions));
@@ -341,7 +363,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             try {
                 const s = await snapshot(actor.page);
                 console.log('[party-clear-result]', JSON.stringify({ class: actor.className, entered, level: s.level,
-                    hp: s.hp, mana: s.mana, dead: s.dead, gold: s.gold, quest: s.quest, evidence: s.evidence }));
+                    hp: s.hp, mana: s.mana, dead: s.dead, gold: s.gold, quest: s.quest, evidence: s.evidence || actor.combatEvidence }));
             } catch { /* Browser may already have closed on interruption. */ }
         }
         await Promise.all(ownedBrowsers.map(extra => extra.close()));
