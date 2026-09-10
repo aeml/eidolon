@@ -27,14 +27,15 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 12:05 UTC
+## Current checkpoint — September 10, 12:12 UTC
 
 Previous goal turn was NO PROGRESS toward implementation: it verified that the
 requested casino scope was already recorded, without starting casino work. This
-turn is PROGRESS: revalidated the completed boss-boundary regression and started
-the next isolated native input gate. The full roadmap remains active.
+turn is PROGRESS: revalidated the completed boss-boundary regression, passed the
+prepared two-boss native gate and implemented the next post-combat town-rest/
+same-run recovery diagnostic. The full roadmap remains active.
 
-Primary is clean/frozen **23bc0673b9d7ee4ca3842572408cd5c6a4fdec4d** in
+The accepted boundary runtime is **23bc0673b9d7ee4ca3842572408cd5c6a4fdec4d** in
 `/tmp/eidolon-primary-town-recovery-lAKY3k`. The full client log now reports
 299suites/4187tests PASS128.334s; the subsequent lint log contains no errors.
 Logs `/tmp/eidolon-boss-boundary-full-{client,lint}.log`. The original launch
@@ -51,22 +52,43 @@ in the driver, not the sole cause of death or proof of a gameplay/balance fix.
 Focused85tests/7suites plus production-generator replay passed before the full
 regression. See primary's `docs/plans/2026-09-10-earned-boss-boundary.md`.
 
-**Active27282** is the sole local browser/heavy gate: isolated `verdant`, runID
-`bounded-verdant-0910`, API18580/Mongo18581/web41980, streamed log
-`/tmp/eidolon-bounded-verdant-native.log`. It has entered generated normal30
-Verdant on seed-5388765118892393174, generator2/attempt0/no fallback, and started
-the first Skeleton fight. Source is clean23bc0673. This is explicitly prepared
-level100 with normal UI talent/rune selection and the existing protected entrance
-waypoint, first TWO bosses only. It is NOT earned-level/full-clear/manual-reward/
-Water acceptance. Re-poll27282; preserve source and artifacts until terminal.
-Neither failed96530 nor44188 becomes a pass if this prepared check succeeds.
+**27282 TERMINAL0**, isolated `verdant`, runID`bounded-verdant-0910`, passed1test
+in4.0minutes on SAMEclean23bc0673. Seed-5388765118892393174, generator2/attempt0/
+no fallback. Warden and Matron died, later enemies spawned/died, both boss-room
+cleared and Gold-gain assertions passed, and Recall returned to town. All4Warden
+and5Matron coordinate samples were inside their respective120×120rooms with
+1.25actor margins; this is sampled evidence, not a continuous trajectory check.
+Actual credentialscan0; owned containers/18580/18581/41980listeners absent.
+Archive `/tmp/eidolon-bounded-verdant-proof-fWZAtp` retains test-results, report,
+native/full/lintlogs; stream `/tmp/eidolon-bounded-verdant-native.log`.
+Prepared100/normal UI talents and rune/protected entrance/first TWO bosses only:
+NOT earned survival/balance/full-clear/manual-reward/save/Water acceptance.
+Failed96530 and44188 remain failures. Proofdoc commit6160d8be records limits.
+
+New primary **17403459** implements opt-in `prepared-dungeon-rest`: post-clear
+inspection runs after all original room/reward assertions and captures spent
+mana before Recall. Normal sanctuary recovery and real guide re-entry compare
+same instance/seed/generator/difficulty/runlevel, cleared rooms, Gold, inventory,
+level and quest progress. No in-run fixture refill, reset or new waypoint. This
+does not claim depleted-HP recovery, restart persistence or earned pacing.
+Focused22626 TERMINAL0:20tests/3suites0.828s+lintNode24. Logs
+`/tmp/eidolon-dungeon-town-rest-focused.log` and
+`/tmp/eidolon-dungeon-town-rest-lint.log`.
+
+**Active99912** is now the sole local heavy gate: full client/lint on clean,
+frozen17403459 in primaryWT, logs
+`/tmp/eidolon-dungeon-town-rest-full-{client,lint}.log`. Re-poll99912; do not edit
+source or start another browser/heavy gate before terminal. If it passes, run
+the explicit prepared-dungeon-rest native route with a unique runID and free
+ports; no repeat of the accepted baseline as though it were missing.
 
 12:02canonicalCI34434837759 remainsqueued: client/server/threebrowsergroups
 passed, predeployQA queued; nightly34433520743 confirmedinprogress. No new
 cancellation authority, runner changes, push or deployment. Canonical62dc2d1
-live acceptance remains ahead of successor publication. After27282, inspect
-room-coordinate evidence and archive results, then investigate ordinary dungeon
-town recovery/resume and earned resource/kit use before another long campaign.
+live acceptance remains ahead of successor publication. No game/stat/version
+changes or production release occurred. Complete the recovery gate, then
+investigate earned resource/kit use before another long campaign. All other
+class/group/realm/raid/phone/casino and visual-release requirements remain open.
 
 ## Previous checkpoint — September 10, 11:46 UTC
 
