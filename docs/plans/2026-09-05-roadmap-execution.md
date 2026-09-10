@@ -5,11 +5,12 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 20:56 UTC
+## Current checkpoint — September 10, 21:04 UTC
 
-Previous goal turn was PROGRESS: recovered full-client results and freshly
-verified party-credit/overworld boundaries. This turn continues the combined
-candidate's native stat/storage release checks on disposable local services.
+Previous goal turn was PROGRESS: native stat/storage acceptance and staged party
+controls. This turn is PROGRESS: all bundled browser groups passed on the prior
+candidate; the new required two-client desktop healing gate is now running on
+the separate support integration source. Full roadmap and release gates remain.
 Full roadmap remains active and deployment/1.1 completion is not claimed.
 
 - Full Go race81223 TERMINAL0 on20d9f17d: game381.679s, other tested packages
@@ -130,22 +131,29 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   not populated-storage transfers. Archive`/tmp/eidolon-next-stash-proof-SY5rVs`,
   log`/tmp/eidolon-next-stash-native.log`. Both artifact scans passed; owned
   services/ports cleared. Candidate documentationee15e582 records these passes.
-  Bundled browser27935 is ACTIVE on frozenee15e582, CI mode/system Chrome,
+  Bundled browser27935 TERMINAL0 on frozenee15e582, CI mode/system Chrome,
   port41981, sequential groups1–3; log
  `/tmp/eidolon-next-bundled-browser-native.log`. Exact discovery proves103cases
   with no omissions/duplicates. Group1 passed all38cases: layout111.1s,
   entrances21.7s, effects74.6s, nameplates18.2s, resourceHUD11.1s (stage wall
-  times). Group2 is running; group3 pending. Inspected anonymous captures show
+  times). Group2 passed40cases: layout182.9s, entrances17.3s, effects26.4s,
+  interface49.9s. Group3 passed25cases: layout115.4s, entrances36.6s, effects15.2s.
+  All103cases passed, no failures/flaky result reported; separate group reports
+  retained. Archive`/tmp/eidolon-next-bundled-browser-proof-CBuwWI` scanned clean,
+  owned41981 listener cleared. Timings are local evidence, not a hosted speedup.
+  Inspected anonymous captures show
   reachable phone stash shell/Close, desktop roster/chat separation and visible
   Seraph smite on disconnected-floor fixture. These are scoped layout/effect
   observations, not populated-storage or full-world visual/physical-phone proof.
-  This is the only local heavy/browser gate. Primary02d30584 is idle,
+  Additional phone captures show thumb controls outside the central actors and
+  readable scrolling party choices; physical-phone acceptance remains open.
+  Primary02d30584 is idle,
   ready for the next revised four-role run. Candidate
   native stat/storage/party/required-all, bundled-browser, version/remote/live
   acceptance remain pending. Do not infer production readiness from focused
   checks or restart a process solely on an observation timeout.
 - Separate staging `/tmp/eidolon-next-party-support-ycLHyw`, branch
-  work/next-party-support-20260910, is clean4bcfb1b5 fromee15e582. It imports
+  work/next-party-support-20260910, is clean3c7cf59e fromee15e582. It imports
   desktop healing793 as3e526d1e, admissionb710/20d as0f12ed02/6c23dac3, and
   compact rosterba481 as43e60e91. Only the incoming primary four-player harness
   file was excluded (absent candidate dependencies); primary retains it. No
@@ -157,6 +165,19 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
  `/tmp/eidolon-next-support-focused-{client,server,lint}.log` and
  `/tmp/eidolon-next-support-discovery.log`. Full combined regressions/native
   support/roster and integration remain required before version/promotion.
+-3c7cf59e adds a two-client native desktop support gate: ordinary registrations,
+  real invites/roster selection/hotbar keys, both support abilities at720p/900p,
+  authoritative ally-heal events/HP gains while aiming at the caster, plus clear
+  selection. Prepared level100/QA resource setup is explicit; no earned combat
+  or boss-occlusion claim. The required-all sequence now runs phone then desktop
+  support, preserving failure exits and isolated account allowlists.55734 passed
+ 9helper tests/2suites0.977s, lint, shell syntax and discovery. Logs
+ `/tmp/eidolon-desktop-support-gate-{tests,lint,discovery}.log`.
+  Native1272 is ACTIVE on frozen3c7cf59e, route desktop-support,
+  runnext-support-0910-2104, ports18580/18581/41980; log
+ `/tmp/eidolon-next-desktop-support-native.log`. This is the only local heavy
+  gate. Do not modify this source or launch another heavy/native job until it
+  exits; old103case browser acceptance is not acceptance of these changed bytes.
 - Remote rechecked again at~20:49: canonical62dc CI34434837759 remains queued at
   predeploy, after five hosted jobs passed; Nightly34433520743 still in progress.
   No soak interruption, push, new version or production acceptance.
