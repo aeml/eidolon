@@ -5,12 +5,12 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 20:00 UTC
+## Current checkpoint — September 10, 20:13 UTC
 
 Previous goal turn was PROGRESS (full server acceptance, support integration,
 per-member turn-in/relogin assertions and corrected party gathering). This turn
-is PROGRESS: new native room/recovery evidence and a compact desktop roster
-implementation with focused checks, kept separate from the running browser.
+is PROGRESS: new native room/recovery/escape evidence and a compact desktop
+roster implementation with inspected browser proof and primary integration.
 Full roadmap remains active and deployment/1.1 completion is not claimed.
 
 - Full Go race81223 TERMINAL0 on20d9f17d: game381.679s, other tested packages
@@ -33,20 +33,26 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   Archive`/tmp/eidolon-four-role-quake-proof-aahV7A`; wrapper and copied-log
   checks0QA prefixes; owned containers/listeners absent. Screenshots still need
   pixel-level privacy handling before external sharing.
-- Primary is now clean4c962541. Leader steps could be14 units while followers
+- Primary4c962541 corrected formation. Leader steps could be14 units while followers
   capped at12; callbacks ran after just one unit of witnessed movement and never
   waited for arrival. The corrected controller waits for leader arrival, then
   gathers all actual follower positions within four-unit spacing under a15-second
   bound, failing on death/stall.26340 passed69 tests/3suites1.041s plus lint.
-- Browser96142 is ACTIVE on frozen4c962541 in
- `/tmp/eidolon-primary-town-recovery-lAKY3k`, runfour-role-gather-0910,
-  log`/tmp/eidolon-four-role-gather-native.log`. Its actual handle was revalidated
-  live this turn. All four setup/roster/instance checks passed; two DemonOrcs
-  were defeated and two all-four town-rest/re-entry cycles preserved run/content
-  after rooms1/2. No boss/quake/full-clear/turn-in success claim yet. No other
-  heavy gate. Do not edit its source or restart on observation timeout.
-  The revised driver retains server admission, warning avoidance and all four
-  individual turn-in/relogin assertions; no balance/gear/deadline relaxation.
+- Browser96142 on4c962541 is TERMINAL1: all four setup/roster/instance checks,
+  two rooms and two full-party town-rest/re-entry cycles passed. Warden started
+ 15000HP, tank855HP/555MP, then tank died at last boss report2676HP. Totals:
+  Fighter7855damage/3765taken, Cleric4541effective ally healing/3312taken,
+  Wizard6281damage/1454taken, Rogue6610damage/1840taken; all487Gold, no rejected
+  casts. Actual warning moves/full-radius escapes: Fighter12/7, Cleric8/6,
+  Wizard2/2, Rogue3/3. No full clear or manual turn-in proof. Tank's final full
+  resources are cleanup respawn values; observed death remains latched.
+  Archive`/tmp/eidolon-four-role-gather-proof-jONZ3R`, wrapper/copy0 QA prefixes,
+  owned services/listeners gone. No active browser now.
+-3172294f corrects a remaining test-controller limitation: it paused everyone
+  during warnings, even safe ranged actors. Safe actors may now heal/cast primary
+  skills in range, without follow/LMB chase; unsafe actors escape and tank holds
+  melee.31312 passed72 tests/3suites1.046s plus lint. This policy is not native
+  proof or a balance verdict; no combat/gear/regen/deadline change.
 - Separate compact-roster worktree `/tmp/eidolon-compact-party-k7pBcl`, branch
   work/compact-party-roster-20260910, is cleanba481c09 from4c962541. The previous
   screenshot exposed only two of four members without scrolling. This moves
@@ -57,14 +63,24 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   four-member browser layout checks cover1280x720/1440x900, leader/member views,
   all four targets visible without scrolling, selection/clear and chat clearance.
  16417 passed40 SocialUI tests2.702s plus lint, including kick/promote isolation.
-  No browser/rendered proof or full client regression yet. Do not integrate into
-  primary while96142 runs. Run these plus existing menu-layer checks when the
-  sole local heavy/browser slot is free, inspect screenshots, then integrate.
+  Native75590 TERMINAL0 onba481c09: all3 menu-layer cases passed38.5s. Inspected
+ 720p leader/900p member captures show four readable health/role rows, selected
+  fill and chat clearance; long names truncate but full accessible labels remain.
+  Secondary controls scroll at720p. Existing10-member/resized-chat/service/modal
+  tests passed too. Archive`/tmp/eidolon-compact-party-proof-rKe4nx`;41981 gone.
+  Primary cherry-picked it as16168cc8 after96142 finished; doc4c3a6318 records
+  proof. This is focused roster acceptance, not whole visual/phone completion.
+- Primary `/tmp/eidolon-primary-town-recovery-lAKY3k` is clean4c3a6318. Full client
+  and lint97135 are ACTIVE on that frozen source; log
+ `/tmp/eidolon-compact-party-integrated-full-client.log` and corresponding
+ `...-full-lint.log`.19 suites passed/no failures at the latest observation;
+  not a full pass yet. This is the sole local heavy test. Next finish it, then
+  run the revised four-role route; full clear/manual persistence remain open.
 - Combined successor worktree is now clean9a71c3e0 (documentation-only atop
   d0be3274). Its stale claim that solo6251 was still active is corrected; no
   additional runtime integration or acceptance is implied. Required combined
   Go/client/native/partition/version/remote/live gates remain pending.
-- Remote rechecked this turn: canonical62dc CI34434837759 remains queued at
+- Remote rechecked again at~20:13: canonical62dc CI34434837759 remains queued at
   predeploy, after five hosted jobs passed; Nightly34433520743 still in progress.
   No soak interruption, push, new version or production acceptance.
 - Next inspect the actual four-role result: distinguish input/positioning bugs
