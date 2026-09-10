@@ -66,8 +66,9 @@ it uses its own earlier source and does not verify these changes. When it ends,
 preserve its evidence and owned-resource cleanup. Run full regressions and the
 new `initial-stats` route on a clean primary tip, then retain any native failures
 and address them without restoring inflated fixture stats or enlarging timers.
-Integrate the creation/parity check into the required release sequence when
-promoting this candidate; the direct route alone is not a required CI gate yet.
+The creation/parity check is now the first required stage of this candidate's
+`all` release sequence, using the same helper as the focused route. It has not
+been published or run natively yet. The existing recovery suffix stays intact.
 Revalidate prepared combat after the baseline change before publishing it.
 
 The original earned Wizard fixture was already at the real baseline. This fix
@@ -78,3 +79,14 @@ acceptance and ordered version/patch-note/live deployment remain open.
 Unpublished QA patch-note draft: prepared test characters now use the same base
 stats as newly created players; additional checks cover all-class creation and
 relogin. Ordinary character stats and saved progression are unchanged.
+
+### Required gate wiring — September 10, 15:15 UTC
+
+17790 RED41failed/1passed/1.853s before adding the required shared helper and
+stage.13270 TERMINAL0:56tests/4suites2.381s plus lint, shell syntax and diff check.
+Logs `/tmp/eidolon-initial-stat-gate-{red,unit,lint}.log`. Executed bash fixtures
+verify opt-in flag, zero retries, artifact location and exact exit propagation;
+the complete timed-sequence regression injects a failure at every stage and
+requires later stages to stop while artifact scanning and cleanup still run.
+All four exact account suffixes are checked. These are executable orchestration
+checks, not substitutes for the pending actual browser cases or full regression.

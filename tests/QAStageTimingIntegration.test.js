@@ -8,6 +8,7 @@ const finish = script.slice(script.indexOf('\nqa_status=$?'));
 // Exact required commands: story readiness strengthens the original complete
 // Earth collection stage without dropping any other command or changing order.
 const commands = [
+    "run_initial_stats",
     "npm run test:e2e:authenticated",
     "npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js",
     "run_whip_shape",
@@ -46,6 +47,7 @@ const commands = [
     "run_well_rested"
 ];
 const stages = [
+    "initial-stats",
     "authenticated",
     "dungeons-and-inventory",
     "whip-shape",

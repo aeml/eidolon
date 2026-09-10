@@ -463,6 +463,10 @@ run_pvp_cadence() {
   npx playwright test tests/e2e/pvp-cadence-gameplay.spec.js
 }
 
+run_initial_stats() {
+  EIDOLON_E2E_INITIAL_STAT_PARITY=1 npx playwright test --retries=0 --output=test-results/initial-stat-parity tests/e2e/initial-stat-parity.spec.js
+}
+
 run_well_rested() {
   # Separate ordinary registrations: never reuse a progressed gate character.
   # The expiry test appends its own -expiry suffix to the first base name.
@@ -476,12 +480,13 @@ run_well_rested() {
 set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   initial-stats)
-    EIDOLON_E2E_INITIAL_STAT_PARITY=1 npx playwright test --retries=0 --output=test-results/initial-stat-parity tests/e2e/initial-stat-parity.spec.js
+    run_initial_stats
     ;;
   phone-stash-entry)
     npx playwright test tests/e2e/phone-stash-entry.spec.js
     ;;
   all)
+    run_qa_stage initial-stats run_initial_stats &&
     run_qa_stage authenticated npm run test:e2e:authenticated &&
     run_qa_stage dungeons-and-inventory npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js &&
     run_qa_stage whip-shape run_whip_shape &&
