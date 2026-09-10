@@ -75,7 +75,7 @@ async function seedActor(page, credentials, character) {
     await observeRole(page);
 }
 
-test('four level30 roles clear Normal Verdant through real party inputs and receive individual credit', async ({ page, browser, baseURL }) => {
+test('four level30 roles clear Normal Verdant through real party inputs and receive individual credit', async ({ page, browser, baseURL }, testInfo) => {
     test.skip(process.env.EIDOLON_E2E_PARTY_DUNGEON !== '1', 'Explicit disposable four-player diagnostic only');
     test.setTimeout(2_700_000);
     requireIsolatedPartyFixture(process.env);
@@ -123,6 +123,14 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             actor.initial = await snapshot(actor.page);
         }
         console.log('[party-clear] four-member party formed through invitation UI');
+        const tankSelection = healer.page.locator(`#party-list [data-party-support-target=${JSON.stringify(tank.initial.id)}]`);
+        await tankSelection.click();
+        await expect(tankSelection).toHaveAttribute('aria-pressed', 'true');
+        await expect.poll(() => healer.page.evaluate(() => window.game.getDesktopSupportTarget()?.id)).toBe(tank.initial.id);
+        await healer.page.screenshot({ path: testInfo.outputPath('desktop-party-healing.png') });
+        await healer.page.locator('#party-list .party-support-mode').click();
+        expect(await healer.page.evaluate(() => window.game.uiManager.social.selectedSupportTargetId)).toBeNull();
+        console.log('[party-clear] visible desktop roster selection and clear verified before combat');
 
         async function follow(actor, anchor, distance = 4) {
             const state = await snapshot(actor.page);

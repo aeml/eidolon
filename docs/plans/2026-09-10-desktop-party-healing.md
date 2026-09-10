@@ -38,7 +38,13 @@ equipment/difficulty/deadlines and all clear/reward checks. Pending full client
 regression, native roster/cast/render proof, successful four-player clear,
 manual turn-in/relogin, release integration, version notes and deployment.
 
-Proposed patch note: Desktop party portraits can now select the recipient of
+Full client34232 passed on clean793f08a8:311 suites/4,291 tests153.429s plus
+zero-warning lint. This does not yet prove rendered or native input behavior.
+The native route additionally checks visible selection/clear in town and captures
+the actual roster before combat. The image may show disposable QA usernames;
+the ordinary artifact byte scanner does not redact pixels.
+
+Proposed patch note: Desktop party roster rows can now select the recipient of
 Healing Light and Divine Intervention, so enemies covering a teammate no longer
 intercept a deliberately targeted party heal. Clear the selection to return to
 normal cursor aiming.
