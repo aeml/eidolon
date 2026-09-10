@@ -7,6 +7,16 @@ the whole goal. Started September 5, 2026.
 
 ## Current checkpoint — September 10, 22:54 UTC
 
+Terminal update: successor full Go18911 passed root21.272s/game367.122s;
+other tested packages passed/cached, no race warning. Candidatec27e0847 records
+this after714c4727's exact-source run. Its current104case bundled browser77418
+is now ACTIVE on frozenc27e0847, sole local heavy gate, CI mode/System Chrome,
+port41981, groups1–3 sequential. Log`/tmp/eidolon-next-current104-browser.log`.
+Prior candidate guide artifacts already retained in
+`/tmp/eidolon-next-party-guide-proof-oA0FE3`. Do not edit candidate or start
+another heavy gate until77418 terminates. The active18911 statements below
+are superseded; all native full-party/required-all/version/live limits remain.
+
 Previous goal turn was PROGRESS: first surviving Warden. This turn is PROGRESS:
 preserved the terminal full-party result, corrected a demonstrated unsafe
 formation path, and launched the successor's required full server regression.
