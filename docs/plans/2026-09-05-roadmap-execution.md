@@ -5,12 +5,13 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 21:24 UTC
+## Current checkpoint — September 10, 21:26 UTC
 
 Previous goal turn was a VERIFIED WAIT on four-role46761. This turn is PROGRESS:
 its terminal result isolated a second-town-return guide failure, and primary now
 has bounded waypoint-arrival sequencing, visibility diagnostics and a focused
-four-player re-entry route. Candidate full server88252 is active. Full roadmap,
+four-player re-entry route. Candidate full server88252 passed; focused native
+party-guide59146 is active. Full roadmap,
 successful dungeon clear and release gates remain open.
 Full roadmap remains active and deployment/1.1 completion is not claimed.
 
@@ -90,7 +91,7 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   and ranged casts remain unchanged.73196 passed87 tests/3suites0.94s plus lint.
   No combat, gear, regen or deadline changes. Full clear/manual persistence and
   native proof of this new strategy remain open.
-- Combined successor `/tmp/eidolon-browser-cost-current-RxDWen` is cleane7fde8bc
+- Combined successor `/tmp/eidolon-browser-cost-current-RxDWen` is clean94e66cfc
   (fast-forwarded support integration after old browser27935 finished).
   It now includes prepared/ordinary starting-stat parity52ff4513 (from3832b150)
   and mandatory all-class parity gateec401a95 (fromaeff8ab5), retaining the entire
@@ -148,7 +149,7 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   observations, not populated-storage or full-world visual/physical-phone proof.
   Additional phone captures show thumb controls outside the central actors and
   readable scrolling party choices; physical-phone acceptance remains open.
-  Primary24ef041d is now idle after four-role46761 failed. Candidate
+  Primary24ef041d now runs focused guide re-entry59146 after four-role46761 failed. Candidate
   native stat/storage/party/required-all, bundled-browser, version/remote/live
   acceptance remain pending. Do not infer production readiness from focused
   checks or restart a process solely on an observation timeout.
@@ -219,14 +220,18 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
  35443 passed32tests/3suites1.365s plus lint.87783 passed lint/shell/discovery for
   a separate four-client three-cycle Recall/individual Resume test, without
   combat or any full-clear claim. Logs`/tmp/eidolon-guide-approach-{focused,lint}.log`
-  and`/tmp/eidolon-party-guide-reentry-{lint,discovery}.log`. Primary is clean/idle;
-  run focused routeparty-guide-reentry after the server gate finishes, then full
-  dungeon only when its re-entry path is verified. No runtime/balance change.
-- Candidate full Go race88252 is ACTIVE on frozene7fde8bc, started~21:18;
-  log`/tmp/eidolon-next-support-full-server.log`. Root21.370s and some packages
-  have passed, but game/full terminal result remains pending. This is the only
-  local heavy gate. Full client/updated104browser/required-all/version/live
-  candidate acceptance remains open. Do not modify the running candidate source.
+  and`/tmp/eidolon-party-guide-reentry-{lint,discovery}.log`. No runtime/balance change.
+- Candidate full Go race88252 TERMINAL0 on frozene7fde8bc: root21.370s,
+  game345.858s, remaining tested packages passed/cached, no race warning.
+  Log`/tmp/eidolon-next-support-full-server.log`; doc94e66cfc records acceptance.
+  Full client/updated104browser/required-all/version/live candidate gates remain.
+- Focused native party-guide59146 is ACTIVE on frozen primary24ef041d,
+  routeparty-guide-reentry, runparty-guide-0910-2126, ports18580/18581/41980;
+  log`/tmp/eidolon-party-guide-reentry-native.log`. Three four-client Recall/
+  individual Resume cycles required, normal UI and explicit level30 entry setup,
+  no combat or dungeon-clear claim. This is the only local heavy gate; candidate
+  and staging idle. Verify this route before another full combat attempt. Do not
+  modify primary while it runs or infer a failure cause without its diagnostics.
 - Remote rechecked again at~21:10: canonical62dc CI34434837759 remains queued at
   predeploy, after five hosted jobs passed; Nightly34433520743 still in progress.
   No soak interruption, push, new version or production acceptance.
