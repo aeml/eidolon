@@ -25,3 +25,48 @@ func eligibleForPartyKillCredit(member *Entity, instanceID string, dungeon bool,
 	}
 	return math.Hypot(member.X-x, member.Z-z) <= OverworldPartyRewardRadius
 }
+
+// Take the recipient snapshot before queuing reward work. Ability dispatch
+// already owns w.Mu; timed attacks and world ticks do not. No actor lock may be
+// held by the caller. The unlocked path releases the world read lock before
+// reading actors, preserving the update loop's fine-grained locking order.
+func (w *World) snapshotPartyKillRecipients(partyID, instanceID string, x, z float64, worldLocked bool) []*Entity {
+	if partyID == "" {
+		return nil
+	}
+	var candidates []*Entity
+	var instance *DungeonInstance
+	func() {
+		if !worldLocked {
+			w.Mu.RLock()
+			defer w.Mu.RUnlock()
+		}
+		party := w.Parties[partyID]
+		if party == nil {
+			return
+		}
+		_, _, ids := party.GetSnapshot()
+		for _, id := range ids {
+			if member := w.Entities[id]; member != nil {
+				candidates = append(candidates, member)
+			}
+		}
+		instance = w.InstanceLayouts[instanceID]
+	}()
+	dungeon := false
+	if instance != nil {
+		instance.Mu.RLock()
+		dungeon = partyKillUsesDungeonPresence(instance.DungeonType)
+		instance.Mu.RUnlock()
+	}
+	var eligible []*Entity
+	for _, member := range candidates {
+		member.Mu.RLock()
+		include := eligibleForPartyKillCredit(member, instanceID, dungeon, x, z)
+		member.Mu.RUnlock()
+		if include {
+			eligible = append(eligible, member)
+		}
+	}
+	return eligible
+}

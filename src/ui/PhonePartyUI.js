@@ -1,3 +1,5 @@
+import { PARTY_REWARD_DETAILS } from './PartyRewardGuidance.js';
+
 const node = (tag, text = '', className = '') => {
     const el = document.createElement(tag); el.textContent = text; el.className = className; return el;
 };
@@ -25,6 +27,8 @@ export class PhonePartyUI {
         this.body.tabIndex = 0; this.body.setAttribute('aria-label', 'Party members and actions');
         this.selection = node('p', 'Healing target: yourself.');
         this.hint = node('p', 'Select an ally, then cast Healing Light or Divine Intervention. Attacks keep your enemy target.');
+        this.rewardRules = node('details');
+        this.rewardRules.append(node('summary', 'Shared kill rewards'), node('p', PARTY_REWARD_DETAILS));
         this.memberList = node('div', '', 'phone-party-members');
         this.empty = node('p', 'Invite another adventurer to form a party.');
         this.ready = this.button('Ready', () => social.onPartyReady?.(!this.myReady));
@@ -39,7 +43,7 @@ export class PhonePartyUI {
         this.invite.setAttribute('aria-label', 'Player to invite'); this.invite.autocomplete = 'off';
         const inviteButton = this.button('Invite', () => { const name = this.invite.value.trim(); if (name) social.onPartyInvite?.(name); });
         this.leave = this.button('Leave party', () => social.onPartyLeave?.());
-        this.body.append(this.selection,this.hint,this.empty,this.memberList,this.check,this.ready,this.readyStatus,
+        this.body.append(this.selection,this.hint,this.rewardRules,this.empty,this.memberList,this.check,this.ready,this.readyStatus,
             node('label','Loot rule'),this.loot,this.invite,inviteButton,this.leave);
         this.root.append(header,this.body);host.append(this.launcher,this.root);
         this.onKey = event => { if (event.key === 'Escape') { event.preventDefault();event.stopImmediatePropagation();this.close(); } };

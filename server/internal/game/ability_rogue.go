@@ -87,7 +87,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				w.fireDamageEvent(player, strikeTarget.ID, finalDamage, "physical", player.InstanceID)
 				if isDead {
 					strikeTarget.Mu.Lock()
-					w.handleDeath(strikeTarget, player, nil)
+					w.handleDeathWorldLocked(strikeTarget, player, nil)
 					strikeTarget.Mu.Unlock()
 				}
 
@@ -278,7 +278,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 						addThreatLocked(target, player.ID, float64(finalDamage))
 						w.fireDamageEvent(player, target.ID, finalDamage, "physical", player.InstanceID)
 						if target.Health <= 0 {
-							w.handleDeath(target, player, nil)
+							w.handleDeathWorldLocked(target, player, nil)
 						}
 					}
 				}
@@ -516,7 +516,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				w.fireDamageEvent(player, bestTarget.ID, finalDamage, "physical", player.InstanceID)
 				if isDead {
 					bestTarget.Mu.Lock()
-					w.handleDeath(bestTarget, player, nil)
+					w.handleDeathWorldLocked(bestTarget, player, nil)
 					bestTarget.Mu.Unlock()
 				}
 			}
@@ -633,7 +633,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					w.fireDamageEvent(player, bestTarget.ID, cloneDamage, "physical", player.InstanceID)
 					if isDead {
 						bestTarget.Mu.Lock()
-						w.handleDeath(bestTarget, player, nil)
+						w.handleDeathWorldLocked(bestTarget, player, nil)
 						bestTarget.Mu.Unlock()
 					}
 				}
@@ -759,7 +759,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					w.fireDamageEvent(player, target.ID, finalDamage, "physical", player.InstanceID)
 					if isDead {
 						target.Mu.Lock()
-						w.handleDeath(target, player, nil)
+						w.handleDeathWorldLocked(target, player, nil)
 						target.Mu.Unlock()
 					}
 				} else {

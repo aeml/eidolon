@@ -9,6 +9,16 @@ import (
 )
 
 func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferredActions) {
+	w.handleDeathWithWorldLock(target, attacker, deferred, false)
+}
+
+// Ability dispatch owns the world lock; timed impacts/world ticks do not.
+// Both entry points retain the caller's target lock across the operation.
+func (w *World) handleDeathWorldLocked(target *Entity, attacker *Entity, deferred *deferredActions) {
+	w.handleDeathWithWorldLock(target, attacker, deferred, true)
+}
+
+func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, deferred *deferredActions, worldLocked bool) {
 	// Prevent destruction of static objects
 	if target.Type == TypeForge || target.Type == TypeStash {
 		target.Health = target.MaxHealth
@@ -96,28 +106,16 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 			w.fireHealEvent(attackerID, attackerID, actualVampiricHeal, "vampiric", attackerInstanceID)
 		}
 		if explosionDamage > 0 {
-			// Find nearby enemies (not the target itself). Recursive kills keep
-			// their target lock, matching handleDeath's mutation contract, while
-			// the attacker lock is deliberately released to avoid chain deadlock.
-			nearbyTargets := w.Grid.Nearby(target.X, target.Z, 5.0, target.InstanceID)
-			for _, nearby := range nearbyTargets {
-				nearby.Mu.Lock()
-				if nearby.ID == target.ID || nearby.Type != TypeEnemy || nearby.State == "DEAD" {
-					nearby.Mu.Unlock()
-					continue
-				}
-				nearby.Health -= explosionDamage
-				nearby.LastDamageType = "physical"
-				nearbyID := nearby.ID
-				isDead := nearby.Health <= 0
-				if isDead {
-					w.handleDeath(nearby, attacker, deferred)
-				}
-				nearby.Mu.Unlock()
-				if w.OnEvent != nil {
-					w.OnEvent("damage", DamageEvent{TargetID: nearbyID, SourceID: attackerID, Amount: explosionDamage, Kind: "physical", InstanceID: attackerInstanceID})
-				}
-			}
+			corpseID, instanceID, x, z := target.ID, target.InstanceID, target.X, target.Z
+			// Finish this death before propagating its explosion. Retaining the
+			// corpse lock deadlocks on itself, ancestors in a chain, or another
+			// simultaneous explosive death. Restore the caller's lock contract
+			// before returning, including when explosion processing panics.
+			defer func() {
+				target.Mu.Unlock()
+				defer target.Mu.Lock()
+				w.applyOnKillExplosion(attacker, corpseID, instanceID, x, z, explosionDamage, deferred, worldLocked)
+			}()
 		}
 	}
 
@@ -138,6 +136,17 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 		attackerID := attacker.ID
 		attackerPartyID := attacker.PartyID
 		attacker.Mu.Unlock()
+
+		var partyMembers []*Entity
+		if attackerPartyID != "" {
+			// The corpse is already dead. Release its mutex during recipient
+			// lookup, then restore ownership even if snapshotting panics.
+			target.Mu.Unlock()
+			func() {
+				defer target.Mu.Lock()
+				partyMembers = w.snapshotPartyKillRecipients(attackerPartyID, tInstanceID, tX, tZ, worldLocked)
+			}()
+		}
 
 		w.runBackground(func() {
 			if tInstanceID != "" {
@@ -326,32 +335,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				lootItems = append(lootItems, gem)
 			}
 
-			// Party Logic
-			var partyMembers []*Entity
-
-			// We need to access Party, which requires w.Mu.RLock via GetParty
-			// Since we are in a goroutine and not holding any locks, this is safe.
-			if attackerPartyID != "" {
-				party := w.GetParty(attackerPartyID)
-				if party != nil {
-					_, _, memberIDs := party.GetSnapshot()
-					for _, mid := range memberIDs {
-						member := w.GetEntity(mid)
-						if member != nil {
-							// Dungeon presence is instance-wide; overworld sharing
-							// uses a stable two-screen world radius.
-							member.Mu.RLock()
-								eligible := eligibleForPartyKillCredit(member, tInstanceID,
-									partyKillUsesDungeonPresence(instanceType), tX, tZ)
-							member.Mu.RUnlock()
-							if eligible {
-								partyMembers = append(partyMembers, member)
-							}
-						}
-					}
-				}
-			}
-
+			// Use kill-time recipients, never a later position/party lookup.
 			if len(partyMembers) > 0 {
 				// Calculate Bonus
 				bonusMultiplier := 1.0 + (float64(len(partyMembers)) * 0.10)
@@ -460,7 +444,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 						})
 					}
 				}
-			} else {
+			} else if attackerPartyID == "" {
 				// Solo Logic
 				attacker.Mu.Lock()
 
@@ -563,7 +547,10 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				}
 			}
 
-			participants := []string{attackerID}
+			var participants []string
+			if attackerPartyID == "" {
+				participants = []string{attackerID}
+			}
 			if len(partyMembers) > 0 {
 				participants = make([]string, 0, len(partyMembers))
 				for _, member := range partyMembers {

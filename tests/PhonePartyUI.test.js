@@ -12,6 +12,14 @@ beforeEach(()=>{
     ui=new PhonePartyUI(social);ui.update(social.partyData);
 });
 afterEach(()=>ui.dispose());
+test('shared reward rules are readable on demand without expanding the roster by default',()=>{
+    expect(ui.rewardRules.open).toBe(false);
+    expect(ui.rewardRules.querySelector('summary').textContent).toBe('Shared kill rewards');
+    expect(ui.rewardRules.textContent).toContain('anywhere inside the same dungeon');
+    expect(ui.rewardRules.textContent).toContain('two normal screens');
+    expect(ui.rewardRules.textContent).toContain('Downed allies count');
+    expect(ui.rewardRules.textContent).toContain('completes their own quests');
+});
 test('party snapshots never automatically open a roster over the world',()=>{
     expect(ui.root.hidden).toBe(true);expect(ui.launcher.textContent).toBe('Party 2');
     ui.update(social.partyData);expect(ui.root.hidden).toBe(true);

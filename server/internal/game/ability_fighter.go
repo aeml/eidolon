@@ -138,7 +138,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 
 					if isDead {
 						target.Mu.Lock()
-						w.handleDeath(target, player, nil)
+						w.handleDeathWorldLocked(target, player, nil)
 						target.Mu.Unlock()
 					}
 				} else {
@@ -319,7 +319,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 				w.fireDamageEvent(player, target.ID, finalDamage, "physical", player.InstanceID)
 				if isDead {
 					target.Mu.Lock()
-					w.handleDeath(target, player, nil)
+					w.handleDeathWorldLocked(target, player, nil)
 					target.Mu.Unlock()
 				}
 			}
@@ -448,7 +448,7 @@ func (w *World) damageFighterCone(player *Entity, targetX, targetZ, radius, half
 		w.fireDamageEvent(player, target.ID, finalDamage, "physical", player.InstanceID)
 		if isDead {
 			target.Mu.Lock()
-			w.handleDeath(target, player, nil)
+			w.handleDeathWorldLocked(target, player, nil)
 			target.Mu.Unlock()
 		}
 	}
@@ -488,7 +488,7 @@ func (w *World) damageEarthshakerArea(player *Entity, originX, originZ, targetX,
 		w.fireDamageEvent(player, target.ID, finalDamage, "physical", player.InstanceID)
 		if isDead {
 			target.Mu.Lock()
-			w.handleDeath(target, player, nil)
+			w.handleDeathWorldLocked(target, player, nil)
 			target.Mu.Unlock()
 		}
 	}
