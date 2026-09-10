@@ -125,6 +125,7 @@ export async function playDungeonThroughInputs(page, {
                     events: window.__dungeonSurvivalEvents,
                     equipment: window.game.player.equipment,
                     defense: window.__freshWizardDefense || window.__freshFighterCombat || null,
+                    earnedDungeonCasts: window.__earnedDungeonCasts || null,
                     hotbar: window.game.player.hotbar, unlockedSkills: window.game.player.unlockedSkills
                 }));
                 console.log(`${logPrefix} death diagnostic ${JSON.stringify({ ...death, spatial })}`);

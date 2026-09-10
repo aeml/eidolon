@@ -2,7 +2,7 @@ import { expect } from '@playwright/test';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
 import { EARTH_DUNGEON_CHAPTER, readChronicleChapter, verifyEarthDungeonChronicleTurnIn } from './chronicle-earth-route.js';
 import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
-import { createEarnedClassCombat } from './earned-class-combat.js';
+import { createEarnedDungeonCombat } from './earned-dungeon-combat.js';
 import { earnedFighterPreparationBudget } from '../earnedPreparationPolicy.js';
 import { readPlayerState } from './helpers.js';
 import { upgradeEarnedEquipment, readEarnedGear } from './earned-equipment-upgrades.js';
@@ -14,7 +14,7 @@ export async function clearEarnedVerdant(page, credentials, { runPhase = (_id, b
     expect(player.level).toBeGreaterThanOrEqual(30);
     expect(player.state).not.toBe('DEAD');
     const className = await page.evaluate(() => window.game.player.constructor.name);
-    expect(['Wizard', 'Fighter']).toContain(className);
+    expect(['Wizard', 'Fighter', 'Rogue', 'Cleric']).toContain(className);
     const chapter = await readChronicleChapter(page, EARTH_DUNGEON_CHAPTER);
     expect(chapter?.accepted).toBe(true);
     expect(chapter?.completed).toBe(false);
@@ -22,7 +22,7 @@ export async function clearEarnedVerdant(page, credentials, { runPhase = (_id, b
     await page.locator('#btn-close-dungeon-menu').click();
     await upgradeEarnedEquipment(page);
     const gear = await readEarnedGear(page);
-    const beforeCombat = await createEarnedClassCombat(page, className);
+    const beforeCombat = await createEarnedDungeonCombat(page, className);
     const started = Date.now();
     console.log(`[fresh-dungeon] earned entry ${JSON.stringify({ level: player.level,
         health: (await readPlayerState(page)).health, equipment: gear.equipment,
@@ -34,7 +34,10 @@ export async function clearEarnedVerdant(page, credentials, { runPhase = (_id, b
             level: player.level, statPoints: 0, talentPoints: 0 }).expectedSkills } : {})
     }));
     await runPhase('dungeon-turn-in', async () => {
-        const defense = await page.evaluate(() => window.__freshFighterCombat?.counts || window.__freshWizardDefense?.counts);
+        const defense = await page.evaluate(() => ({
+            movement: window.__freshFighterCombat?.counts || window.__freshWizardDefense?.counts,
+            casts: window.__earnedDungeonCasts || null
+        }));
         await verifyEarthDungeonChronicleTurnIn(page, credentials);
         const rewarded = await readChronicleChapter(page, EARTH_DUNGEON_CHAPTER);
         expect(rewarded.grantedGold).toBeGreaterThan(0);

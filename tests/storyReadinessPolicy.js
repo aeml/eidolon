@@ -13,8 +13,8 @@ export function storyOnlyDungeonEnabled(env = process.env) {
     if (flag !== undefined && flag !== '0' && flag !== '1') throw new Error('EIDOLON_E2E_FRESH_STORY_DUNGEON must be 0 or 1');
     if (flag !== '1') return false;
     if (!storyOnlyReadinessEnabled(env)) throw new Error('Story-only dungeon requires strict story-only readiness first');
-    if (!['Wizard', 'Fighter'].includes(env.EIDOLON_E2E_CLASS || 'Wizard')) {
-        throw new Error('Earned dungeon driver currently supports Wizard or Fighter; other classes require their own verification');
+    if (!['Wizard', 'Fighter', 'Rogue', 'Cleric'].includes(env.EIDOLON_E2E_CLASS || 'Wizard')) {
+        throw new Error('No earned dungeon driver for the requested class');
     }
     return true;
 }

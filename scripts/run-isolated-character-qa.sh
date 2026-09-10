@@ -345,6 +345,15 @@ run_guardian_area() {
     npx playwright test tests/e2e/guardian-area-gameplay.spec.js
 }
 
+run_prepared_earned_support() {
+  # Dedicated allowlisted actors; never mix these grants with fresh progression.
+  for support_class in Rogue Cleric; do
+    EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-${support_class,,}" EIDOLON_E2E_CLASS="${support_class}" \
+      EIDOLON_E2E_PREPARED_SUPPORT=1 npx playwright test --retries=0 \
+      --output="test-results/prepared-support-${support_class,,}" tests/e2e/prepared-earned-support.spec.js || return $?
+  done
+}
+
 run_consecrated_area() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-holy" EIDOLON_E2E_CLASS=Cleric \
     npx playwright test tests/e2e/consecrated-area-gameplay.spec.js
@@ -626,6 +635,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   prepared-dungeon-fixture)
     npx playwright test tests/e2e/prepared-dungeon-fixture.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js
+    ;;
+  prepared-earned-support)
+    run_prepared_earned_support
     ;;
   dungeon-full)
     EIDOLON_E2E_FULL_DUNGEON=1 npx playwright test tests/e2e/verdant-dungeon-gameplay.spec.js
