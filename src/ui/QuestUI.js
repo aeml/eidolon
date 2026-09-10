@@ -1144,7 +1144,6 @@ export class QuestUI {
                 );
                 left.classList.add('quest-ladder-row__label');
                 right.classList.add('quest-ladder-row__value');
-
                 row.appendChild(left);
                 row.appendChild(right);
                 content.appendChild(row);
