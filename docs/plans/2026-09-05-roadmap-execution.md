@@ -5,7 +5,46 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 19:39 UTC
+## Current checkpoint — September 10, 19:47 UTC
+
+Previous goal turn was PROGRESS (party-credit verification, support-admission
+contract correction, warning-response test strategy). This turn is PROGRESS:
+full server acceptance, primary integration, complete per-member turn-in/relogin
+assertions, and the next actual four-browser playthrough. Full roadmap remains
+active and deployment/1.1 completion is not claimed.
+
+- Full Go race81223 TERMINAL0 on20d9f17d: game381.679s, other tested packages
+  pass/cached, no race warning. Log
+ `/tmp/eidolon-explicit-support-full-server-friendly-contracts.log`.
+  Primary cherry-pickedb710b205/20d9f17d as7b6b0afa/bba5a1bb; the entire server
+  tree was verified identical to the tested source. Documentationf8d9bf2d records
+  the pass. Separate support worktree remains clean20d9f17d.
+- Primary038e7d06 extends the four-role clear through each real Ilyra manual
+  claim, ensuring teammates' claims remain untouched, then reconnects every
+  character and checks exact chapter receipt, Gold and fresh Water offer.
+ 67718 passed lint/discovery, not native claims. The helper export is shared;
+  no direct grant, auto-completion or account manipulation was added.
+- Browser62541 is ACTIVE on clean frozenf8d9bf2d in
+ `/tmp/eidolon-primary-town-recovery-lAKY3k`, runfour-role-quake-0910,
+  log`/tmp/eidolon-four-role-quake-native.log`. Build completed and the test
+  started; no room, boss, warning escape or post-clear success claim yet.
+  Do not mutate its source or restart on an observation timeout. It uses the
+  tested warning controllerd496d6d5 plus server admission and turn-in additions.
+  Ports18580/18581/41980 were verified free before launch; prior87906 artifacts
+  already archived. No other local heavy gate is running.
+- Combined successor worktree is now clean9a71c3e0 (documentation-only atop
+  d0be3274). Its stale claim that solo6251 was still active is corrected; no
+  additional runtime integration or acceptance is implied. Required combined
+  Go/client/native/partition/version/remote/live gates remain pending.
+- Remote rechecked this turn: canonical62dc CI34434837759 remains queued at
+  predeploy, after five hosted jobs passed; Nightly34433520743 still in progress.
+  No soak interruption, push, new version or production acceptance.
+- Next inspect the actual four-role result: distinguish input/positioning bugs
+  from real balance, verify all bosses/rooms/rewards and manual persistence, then
+  continue earned campaign and the full roadmap/release gates. No boss nerf,
+  regeneration restoration, overpowered gear or timer relaxation to force a pass.
+
+## Previous checkpoint — September 10, 19:39 UTC
 
 This turn is PROGRESS: the party-credit requirement remains locally implemented
 and verified, and the actual four-player healer failure has been resolved and
