@@ -27,7 +27,42 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 08:46 UTC
+## Current checkpoint — September 10, 08:55 UTC
+
+Previous casino-confirmation turn was NO PROGRESS toward implementation (the
+required roadmap already existed). This turn makes PROGRESS through terminal
+native evidence, full regression and integration. Session96530 exited1: all
+eight readiness phases passed, then the dungeon survival assertion failed at
+Rootbound Warden after243,140ms. Three Skeletons died; Warden15000→14513 proves
+damage in this run, not a kill or subsequent room progression. Five183-damage
+physical hits killed the character with almost no mana. The stale Water assertion
+was never reached. Actual wrapper credential scan passed0sanitized; owned API
+and Mongo containers are absent. Preserve, do not restart or reclassify, this run.
+
+Archive `/tmp/eidolon-fresh-story-dungeon-failure-6JR0iz`; original log unchanged.
+Primary failure plan `2026-09-10-earned-verdant-failure.md` records evidence and
+the next diagnostic gap: earned equipment helpers never replace occupied slots,
+so the route does not exercise normal gear upgrades. Dungeon Wizard control also
+defaults crowd control off. Capture full equipped stats/defense counts and test
+appropriate earned upgrades/abilities through normal UI before balance conclusions.
+No proof that a specific spare item is better or that upgrading alone solves it.
+Do not relax death/deadline limits, grant gear, raise regen or nerf bosses for QA.
+
+Full class-input/handoff regression88068 on clean4e4d46b1 TERMINAL PASS289suites,
+4074tests137.043s and lint, Node24.18.0. Logs
+`/tmp/eidolon-class-handoff-full-{client,lint}.log`. Proof78d251cf merged without
+conflicts into primary, now clean **b983c719**; difference from tested4e4d46b1 is
+only three documentation files. Runtime/test sources match that tested tree.
+Primary includes failure documentation474cdc45 and both corrections; no active
+local test remains. Native corrected clear still unproven. Aura integration
+d9176d0e still needs full/render/native gates; no runtime release/version changed.
+
+Fresh08:55 GitHub:34434837759 queued;34433520743 in progress. No current-soak
+cancellation authority, no push/deployment this turn; public identity last08:04.
+Physical-phone feedback outstanding. Full1.1–1.10 including both casino floors
+remains active/incomplete. Root ledger is documentation only; never push root.
+
+## Previous checkpoint — September 10, 08:46 UTC
 
 Recent turns are VERIFIED WAITS with new native progression evidence. SAME96530
 remains live on clean/frozen626385d. Orcs passed1,407,337ms:50credits, zero deaths,
