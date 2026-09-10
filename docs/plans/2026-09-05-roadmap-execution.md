@@ -5,6 +5,35 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
+## Current user decision — September 10, four-player dungeon acceptance
+
+The user requests a Fighter tank, Cleric healer, Wizard and Rogue DPS party for
+the dungeon-clear test. This replaces a solo clear as the primary dungeon
+viability gate; solo diagnostics do not justify weakening encounters or restoring
+passive regeneration. First prove Normal Verdant with explicitly prepared,
+level-appropriate disposable characters and ordinary inputs. Verify actual
+tanking, effective ally healing, both damage roles, all bosses/rooms, shared
+instance continuity, rewards and individual quest credit. Prepared fixtures are
+not earned-campaign evidence; earned progression and later full group campaign
+remain separate gates.
+
+Solo session6251 is TERMINAL130, intentionally interrupted for this change,
+not a gameplay failure. Archive `/tmp/eidolon-solo-party-pivot-GVgwK4` preserves
+the report/results and sanitized copied log; exact owned services/listeners were
+removed. The first two story phases passed; no dungeon was entered. Four-client
+test implementation is next, on primary9b9dfffe with corrected initial stats.
+The older checkpoint below describing6251 as active is superseded.
+
+Primary080a363b adds an explicit isolated `party-dungeon` route: four browser
+processes, UI invitations, Common level30 production-generated gear, canonical
+base stats, legal specialization/mastery, and seeded Earth quest gates. No
+production runtime changes. Focused9tests/2suites pass0.733s; full lint, shell
+syntax and discovery pass. Production catalog conversion verified all four
+14-slot kits. Setup environment failures were corrected before launching.
+Native20718 ACTIVE on frozen080a363b, runID`four-role-verdant-0910`, owned
+API18580/Mongo18581/web41980. Raw log `/tmp/eidolon-four-role-verdant-native.log`.
+Only owned browser job; no clear or live claim yet. Archive before rerunning.
+
 ## Required scope — two-floor town casino
 
 The [casino roadmap](2026-09-09-town-casino-roadmap.md) is part of the current
