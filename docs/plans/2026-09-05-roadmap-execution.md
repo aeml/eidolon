@@ -27,7 +27,72 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 15:18 UTC
+## Current checkpoint — September 10, 15:57 UTC
+
+Previous turn was PROGRESS (mandatory initial-stat release gate wiring). This
+turn is PROGRESS: completed the entire socket successor gameplay gate, archived
+and inspected evidence, then completed full primary regressions and actual
+four-class browser parity. All handles below are terminal; no local heavy or
+browser gate is active. Full1.1–1.10 scope remains active/incomplete.
+
+- Socket5956 TERMINAL0 on clean d3c0fff5b2d364deda327baa95ceebbc2a9de6de:
+ 60passed cases/0skips, approximately49minutes including build/setup. Complete
+  `all` chain includes dungeon/input/wall checks, phone flows, Forge, fresh
+  collection/manual reward, abilities/talents, death/recovery, four-class PvP
+  and animation, multiplayer, nameplates, rest and final Forge sockets.
+  Final rest transitions passed1.4min death/Respawn and1.5min repeated dungeon
+  entry/relogin/Recall; Forge sockets28.7s/30.4s total on actual owner/observer.
+- Archive `/tmp/eidolon-successor-full-proof-sUeFSL` retains available report/
+  result trees, native log and earlier3775-test full-client/lint evidence.
+  Actual wrapper credential scan0; redirected log had34 occurrences of one
+  disposable username prefix, additionally sanitized in the archive using the
+  existing scanner (one file changed, zero remaining matches). Prefer archived
+  log to the original private redirected log. Exact owned containers/image for
+  `successor-full-0910` and18580/18581/41980listeners absent after cleanup.
+  Manually viewed High390/Low844 party-world captures: visible aura rings/effects;
+  long QA names crowd labels and QA performance overlay remains. Not physical
+  phone/full mobile-polish approval. Socket clean298ecde0 records this proof.
+- Primary56611 TERMINAL0 on clean aeff8ab53ee5e2e45c9429a4728ddf962ef7a7eb:
+  full Go race root29.617s/game401.028s; other packages passed/cached. Then
+  305client suites/4231tests151.563s plus lintNode24.18.0. Kept one local heavy
+  at a time and primary source frozen throughout. Logs
+  `/tmp/eidolon-initial-stat-full-{server,client,lint}.log`.
+- Primary37432 TERMINAL0 on the same clean tip: actual4class initial-stats
+  cases50.4s total, zero retries/skips. Each verifies ordinary creation/relogin,
+  visible allowlisted `/level 30`, expected ordinary-growth base stats and
+  another login. The explicit QA override is not earned leveling/campaign proof;
+  historic custom saved stats have Go invariants, not a native legacy-save case.
+  Archive `/tmp/eidolon-initial-stat-proof-h9RCZ0`; actual credential scan0,
+  redirected log has0username prefixes, exact `initial-parity-0910` containers/
+  image and18580/18581/41980listeners absent. Primary clean83c734a8 records proof
+  in `docs/plans/2026-09-10-starting-stat-parity.md` in that worktree.
+
+Read-only preparation follow-up: original run has8bag-management receipts.
+It stored Agile Necklace of the Bear and Agile Plated Girdle of the Bear at26,
+Talisman of Speed at28 and Wise Plate Mail of the Whale at29. Current preparation
+compares only carried inventory; storage supports deposits but no retrieval of
+later-eligible upgrades. Earlier gear receipts do not reconstruct these four
+items' full stats/levels, so their actual usefulness is UNKNOWN. This does not
+prove a cause of the Warden failure. No retrieval policy was implemented here.
+Next useful primary work is ordinary stash-aware preparation/complete observed
+storage receipts, with item/Gold/XP conservation and real withdrawal/equip/relogin
+checks, before claiming a reasonable earned build or repeating an unchanged
+failed boss fight. Preserve all original encounter/watchdog and economy limits.
+Normal solo/party policy question remains unanswered; no boss/regen/reward change.
+
+15:47–15:48 remote recheck: canonicalCI34434837759 queued (client/server/three
+browser groups passed; predeploy queued), nightly34433520743 confirmed inprogress.
+Public frontend and healthy/database-ready backend both remain Alpha1.0.60 at
+df91bb66e8e8f3b7125aa99412f09ba25898a3ac. No cancellation authority, no push,
+version assignment or deployment occurred. Canonical62dc2d1e acceptance still
+precedes successor promotion. Root remains local documentation-ledger only,
+never pushed. Do not redo the completed unchanged socket `all` gate as missing.
+Versioned CI/patch-note/live acceptance, primary prepared-combat revalidation,
+full earned campaign/all classes/parties/raids/crystal events/Dark King, balance,
+physical phones, casino and all later milestones remain open. Do not mark the
+goal complete or blocked.
+
+## Previous checkpoint — September 10, 15:18 UTC
 
 Previous turn was PROGRESS (starting-stat parity implementation). This turn is
 PROGRESS: required the native all-class parity check in the primary release
