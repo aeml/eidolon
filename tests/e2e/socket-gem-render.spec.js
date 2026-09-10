@@ -97,8 +97,9 @@ for (const pose of ['bind', 'Idle', 'Attack']) test(`${pose}: seven socket palet
             },
             closeups(type) {
                 // Inspect the actual attached weapon in place, not a detached
-                // replacement mesh or enlarged gem. Four cameras face each
-                // socket's local front; only this prepared review view changes.
+                // replacement mesh or enlarged gem. Four above-ground front
+                // cameras inspect each item; do not follow a pitched socket's
+                // local normal downward through the floor.
                 labels.style.display = ''; legend.style.top = 'auto'; legend.style.bottom = '4px';
                 icons.forEach(icon => icon.style.display = 'none');
                 const renderer = render.renderer, size = renderer.getSize(new THREE.Vector2()), views = [];
@@ -110,7 +111,7 @@ for (const pose of ['bind', 'Idle', 'Attack']) test(`${pose}: seven socket palet
                         const socket = actor.mesh.getObjectByName('Gear_Socket1');
                         const box = new THREE.Box3().setFromObject(item), center = box.getCenter(new THREE.Vector3());
                         const extent = box.getSize(new THREE.Vector3());
-                        const front = new THREE.Vector3(0, 0, 1).applyQuaternion(socket.getWorldQuaternion(new THREE.Quaternion()));
+                        const front = new THREE.Vector3(0, .3, 1).normalize();
                         const camera = new THREE.PerspectiveCamera(35, size.x / size.y, .01, 100);
                         camera.position.copy(center).addScaledVector(front, Math.max(.5, extent.length() * 1.8));
                         camera.lookAt(center); camera.updateMatrixWorld();
