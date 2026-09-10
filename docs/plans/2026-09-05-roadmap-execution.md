@@ -27,7 +27,53 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 12:27 UTC
+## Current checkpoint — September 10, 12:56 UTC
+
+Previous user-request turn was NO PROGRESS toward implementation: it confirmed
+the already-recorded casino scope. This continuation is PROGRESS: verified the
+pending full weapon gate and implemented ordinary dungeon recovery/resume QA.
+The complete roadmap/casino/class/realm/raid/phone/balance scope remains active.
+
+Socket runtime85989abc now has terminal92572 PASS268suites/3754tests117.094s plus
+lintNode24.18.0, logs `/tmp/eidolon-held-weapon-full-{client,lint}.log`. Combined
+60-degree main-hand pitch and centerline/two-sided blade sockets resolve the
+stronger individual-class signals, without brighter/larger stones or weaker
+assertions. Final15983 PASS252focused/4suites+lint;64916 PASS3native tests30.6s,
+126equivalent-record zero-RGB comparisons and168positive individual signals
+over bind/sampledIdle/Attack×7gems×HighLow. Archive
+`/tmp/eidolon-blade-inlays-proof-Jva1QU`.80608 PASS2gallery tests20.0s onSAMEsource,
+all4classes/5states/HighLow and36families/14loadouts; archive
+`/tmp/eidolon-held-weapon-gallery-proof-C9kiYG`. Full evidence and preserved
+94881/25924 failures in socketWT
+`docs/plans/2026-09-10-held-weapon-clearance.md`, cleanproof712c8074.
+Ordinary Forge/actual observer/login and combined aura integration remain open;
+gallery/sampled poses are not continuous gameplay or physical-phone acceptance.
+
+Primary nowclean9a48db1c23695ef8cfdfa7d01a05e2e2c5f91552. Extracted entry-only
+helper; new cleared-room recovery uses ordinary Recall,10% town recovery and
+guide re-entry, asserts identical run/progress/bag/Gold/quests, then rewalks
+actual corridor joins from the entrance. Default earned route enables it;
+legacy prepared routes opt in explicitly. It never rests inside a live fight,
+allows no respawn/grants/reset and retains combat/stall/world-update limits and
+a single40minute expedition deadline including recovery. Dungeon QA prepares
+spent pools below80% at fully cleared room boundaries with no nearby hostile;
+this is a driver policy, not a gameplay economy/stat change.
+93899 and final92545 PASS27tests/3suites+lint (first0.814s); finallogs
+`/tmp/eidolon-dungeon-resume-final-{focused,lint}.log`.
+31572 is the sole active local heavy gate, explicit isolated native
+prepared-dungeon-rest on9a48db1c,runIDdungeon-resume-0910/ports18580,18581,41980.
+Log `/tmp/eidolon-dungeon-resume-native.log`. It must demonstrate mid-route
+recovery and onward walking/second-boss death, not merely re-entry. Do not edit
+the frozen primary or start another browser/heavy gate until terminal. Full
+regression remains pending for this source; previous174 full/native results
+remain valid only for that older source. Earned96530/44188 deaths remain failures.
+
+12:48canonicalCI34434837759 confirmedqueued (client/server/3browsergroupsPASS,
+predeployQAqueued), nightly34433520743 confirmedinprogress. No current-soak
+cancellation authority. Canonical62dc2d1 acceptance remains first; no successor
+version/push/deploy this turn. Root remains documentation-only, never pushed.
+
+## Previous checkpoint — September 10, 12:27 UTC
 
 Previous goal turn was PROGRESS (bounded two-boss proof and new recovery test).
 This turn is PROGRESS: full/native post-combat recovery passed; added rendered
