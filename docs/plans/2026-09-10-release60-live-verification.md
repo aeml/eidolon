@@ -8,7 +8,19 @@ predecessor df91bb66e8e8f3b7125aa99412f09ba25898a3ac is deployed but failed fina
 acceptance. Root is ledger-only and is never pushed. Do not push a61successor
 before60 is accepted; the current push repairs60's verification, not gameplay.
 
-## Current status — September10, 08:04UTC
+## Current status — September10, 10:27UTC
+
+Fresh no-cache public release.json, HTML main.js release key and backend health
+all still identify Alpha1.0.60/df91bb66e8e8f3b7125aa99412f09ba25898a3ac.
+Backend reports status:"ok" and database:"ready" (the health field is database,
+not databaseReady/database_ready). Re-polled10:28:CI34434837759 remains queued,
+nightly34433520743 remains in progress. No cancellation authority, new deployment
+or acceptance of canonical62dc2d1. The visual successor's completed local gates
+do not replace this remote/live prerequisite. Original earned campaign96530
+failed; a new earned-upgrade replay44188 is separate local evidence in progress.
+Physical-phone feedback/acceptance remains outstanding.
+
+## Previous status — September10, 08:04UTC
 
 08:04 update: fresh no-cache public release.json, HTML main.js release key and
 backend health all identify existing60/df91bb66e8e8f3b7125aa99412f09ba25898a3ac.

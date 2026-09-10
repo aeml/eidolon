@@ -27,7 +27,55 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 10:19 UTC
+## Current checkpoint — September 10, 10:28 UTC
+
+Previous goal turn was PROGRESS (drag correction and full/local checks). This
+turn is PROGRESS: closed the uninterrupted visual-recovery gate, completed
+primary's final regression, and started a fresh earned campaign/dungeon replay.
+
+Combined26206 on cleanc78f29e6 TERMINAL0:journey/expiry2cases1.3m, real-party
+1case48.8s and death/dungeon2cases2.9m. Actual final credentialscan0; ownedAPI/
+Mongo/web18580/18581/41980 absent after cleanup. Archive
+`/tmp/eidolon-visual-recovery-complete-proof-JgdGF2` retains all3scopedtrees,
+finalHTML and `/tmp/eidolon-visual-rest-stream-native.log`. Inspected current
+portraitHigh/landscapeLow status, realRespawn and second dungeon-return images.
+Both prior143interruptions remain preserved, not retroactively accepted. No
+signal-cause claim. Local integrated suffix is now accepted; prepared level30
+transitions are NOT earned dungeon-clear, raid or physical-phone acceptance.
+
+Aura WT now clean **71f18922**, proof-only atopc78f29e6; runtime/tests still match
+full-testedc3305ae7. Source plan reconciles the completed gate and remaining
+version/pipeline/live promotion. Do not rerun the completed suffix as though it
+were still missing; broader successorCI/live acceptance remains required.
+
+Primary final23725 on frozen **4b3991ff** TERMINAL0:293suites/4126tests141.53s,
+then lintNode24.18.0. Logs `/tmp/eidolon-primary-hit-final-{client,lint}.log`.
+4b3991ff differs from25495d95 only in the updated failure/replay plan: original
+seed receipt is retained; the next ordinary dungeon generates/records its own
+seed, not a falsely claimed forced original. Runtime/test changes are the narrow
+verified decorative equipment hit-target correction from the prior turn.
+
+Active **44188** is now the ONLY local browser/heavy gate, on SAMEfrozen4b3991ff,
+primary WT `/tmp/eidolon-primary-town-recovery-lAKY3k`. Streaming PTY, runID
+earned-upgrade-story-0910, API18590/Mongo18591/web41990, routefresh-story-dungeon,
+Wizard, REST_RECOVERY=1, CIunset/retries0. Log
+`/tmp/eidolon-earned-upgrade-story-replay.log`. Re-poll SAMEhandle; do not edit
+frozen primary, launch competing browser/heavy gates, or restart on observation
+timeouts. New ordinary registration must earn Earth, upgrade eligible collected
+gear, clear all4Verdantbosses, manually claim/relogin and verify required Water
+handoff without accepting dailies. All existing230minute phase/death/encounter
+limits remain. No grants, fixture levels/items, fallback layouts, resource or
+boss nerfs. Original96530failure remains authoritative for its attempt; no new
+readiness/clear/hand-off result exists yet.
+
+10:26–10:27public release.json/HTMLmainkey/backend all60/df91bb66e8e8f3b7125aa99412f09ba25898a3ac,
+healthok/database:"ready". Fresh10:28CI34434837759 queued/nightly34433520743
+inprogress, no cancellation authority. Canonical62dc2d1 still pending remote/
+live acceptance; no version/push/deployment this turn. Phone feedback missing.
+Full1.1–1.10/class/group/allrealms/raids/balance/visual/mobile/casino scope remains
+active/incomplete. Root is ledger-only: never push root.
+
+## Previous checkpoint — September 10, 10:19 UTC
 
 This goal turn is PROGRESS: corrected native equipment hit targeting, completed
 equipment/Forge and standalone recovery transitions, and final full regression.
