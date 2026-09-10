@@ -126,9 +126,13 @@ test('ordinary Forge gem replacement updates local and observer sockets, bag ico
         await page.keyboard.press('c');
         await page.locator('#slot-mainhand').click();
         await expect.poll(() => page.evaluate(() => window.game.player.inventory.some(item => item?.id === 'socket-appearance-sword'))).toBe(true);
-        await page.keyboard.press('i');
+        // The bag can already be open as a companion window. Do not toggle it
+        // closed before the actual re-equip interaction.
+        if (!await page.locator('#inventory-screen').isVisible()) await page.keyboard.press('i');
+        await expect(page.locator('#inventory-screen')).toBeVisible();
         const index = await page.evaluate(() => window.game.player.inventory.findIndex(item => item?.id === 'socket-appearance-sword'));
         const bagSlot = page.locator('#inventory-grid .inv-slot').nth(index);
+        await expect(bagSlot).toBeVisible();
         await expect.poll(() => bagSlot.locator(':scope > div').first().evaluate(el => el.style.backgroundImage)).toBe(newIcon);
         await bagSlot.click();
         await expectSocket(page, 0x315fc5, 'Sapphire');
