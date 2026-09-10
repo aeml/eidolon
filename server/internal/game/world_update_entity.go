@@ -1617,7 +1617,14 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							defer w.Mu.Unlock()
 
 							src := w.Entities[srcID]
-							if src == nil || src.State == "DEAD" {
+							if src == nil {
+								return
+							}
+							src.Mu.RLock()
+							sourceUnavailable := src.State == "DEAD" || src.InstanceID != instID
+							sourceSnapshot := snapshotCombatAttackerLocked(src)
+							src.Mu.RUnlock()
+							if sourceUnavailable {
 								return
 							}
 
@@ -1626,7 +1633,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 									continue
 								}
 								p.Mu.Lock()
-								if p.InstanceID != instID || p.State == "DEAD" || p.Disconnected || !w.CanDamage(src, p) {
+								if p.InstanceID != instID || p.State == "DEAD" || p.Disconnected || !w.CanDamage(sourceSnapshot, p) {
 									p.Mu.Unlock()
 									continue
 								}
@@ -1637,13 +1644,23 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 									if damage < 1 {
 										damage = 1
 									}
+									reflected := 0
+									if p.IronFortressActive && p.IronFortressThorns {
+										reflected = damage / 5
+									}
+									var shieldReflect int
+									damage, shieldReflect = w.mitigateImpactDamageLocked(p, damage, time.Now(), true)
+									reflected += shieldReflect + ApplyDamageReflect(sourceSnapshot, p, damage)
 									p.Health -= damage
 									if w.OnEvent != nil {
 										w.OnEvent("damage", DamageEvent{TargetID: p.ID, SourceID: srcID, Amount: damage, Kind: "physical", InstanceID: instID})
 									}
 									if p.Health <= 0 {
-										w.handleDeath(p, src, nil)
+										w.handleDeathWorldLocked(p, src, nil)
 									}
+									p.Mu.Unlock()
+									w.applyImpactReflection(src, p, reflected, instID, true)
+									continue
 								}
 								p.Mu.Unlock()
 							}
