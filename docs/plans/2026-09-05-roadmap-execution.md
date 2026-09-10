@@ -27,7 +27,32 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 13:20 UTC
+## Current checkpoint — September 10, 13:26 UTC
+
+98271 first projection full was TERMINAL1:302suitesPASS/one existing test failed
+because expected projection args omitted newallowScaling;4211passed/onefailed,
+127.8s. No lint afterfailure. Test-only0a806ec2 updates that assertion and adds
+strict-vector/camera-drift/issued-failure dispatch tests.64050 TERMINAL0:
+43tests/7suites1.206s+lint.50861 finalfull TERMINAL0 onclean0a806ec2:
+303suites/4215tests129.496s+lintNode24. Logs
+`/tmp/eidolon-ground-projection-verified-full-{client,lint}.log`.
+
+Primary nowclean proof8987d870 atop0a806ec2/1eb1cbcc; native/browser source
+unchanged by proofdoc `docs/plans/2026-09-10-recorded-build-dungeon-diagnostic.md`.
+90163 is the sole active heavy/browser gate: same explicit isolated recorded
+level31 build, corrected ground projection and new actual/planned click/status
+evidence. RunIDrecorded-ground-0910,18580/18581/41980, zero retries, log
+`/tmp/eidolon-recorded-ground-native.log`. Poll THIShandle; do not restart from
+an observation timeout, edit frozenprimary or run competing browser/heavy tests.
+Previous29121 was realinputfailure5.6m (lastWarden7320HP/player1140HP), notdeath
+or timeout; do not relabel as balance failure or erase its redacted archive.
+No boss health/damage/regeneration change or eight-minute limit relaxation.
+Fullcampaign/manualreward/save/Water/classes/groups/raids/mobile/casino and
+remaining roadmap scope stays active; no version/push/deployment change.
+Canonical60stillfirst; no new CI/public check since timestamps recorded below.
+Root remains documentation-only, never pushed.
+
+## Earlier checkpoint — September 10, 13:20 UTC
 
 Previous goal turn was PROGRESS (ordinary dungeon recovery/resume acceptance).
 This turn is PROGRESS: implemented a bounded recorded earned-build diagnostic,
