@@ -27,7 +27,44 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 06:44 UTC
+## Current checkpoint — September 10, 06:55 UTC
+
+Previous turn classified PROGRESS: native/lifecycle aura checks passed and were
+committed. This continuation adds verified5/20actor mixed-class reference
+comparisons and fixed-pose frame workloads, without changing runtime or narrowing
+the full1.1–1.10 goal. Aura branch is clean **d730097** in its existing worktree.
+
+Rendered35411 TERMINAL PASS2/1.1m, retries0, RADV RENOIR/systemChrome149,
+1280x720/DPR1. All12 High/Low phase comparisons had0RGB difference. With20actors,
+incremental draws199–200 versus759–760 High,160 versus400 Low. Repeated
+batched/reference/batched samples retain equal allocation counts; the static
+render workload is not animated combat, live raid concurrency, native FPS gains
+or physical-phone acceptance. Archive `/tmp/eidolon-aura-populated-proof-gnlHRf`,
+anonymous scanner0, port41960 closed; viewed5actor High and20actor High/Low PNGs.
+Detailed profiles/methodology remain in the aura plan and
+`/tmp/eidolon-aura-populated-native.log`.
+
+Focused17tests/3suites plus lint passed. Full6784 terminated143 before summary,
+Node4012607 absent; cause unestablished, partial log retained and NOT a pass.
+Unchanged rerun41005 TERMINAL PASS258suites3635tests129.694s plus lint, Node24;
+logs `/tmp/eidolon-aura-populated-full-{client,lint}-rerun.log`. No owned browser
+or heavy test remains active. Tests/docs only; no version/pipeline/push change.
+
+Next aura gates: native death/world-transition rendering and eventual pipeline
+integration/versioned acceptance; physical-phone/full-scene work remains open.
+Existing disposable `death-resource-recovery-gameplay.spec.js` covers prepared
+near-death + authoritative hostile death/Respawn, but does not yet assert aura
+rendering; authenticated portal-only route covers real dungeon entry/exit after
+allowlisted readiness. These were inspected as possible extension points, not
+executed or changed this turn. Do not claim their aura gates are already closed.
+
+Release62dc2d1 remains unchanged. Exact predeploy102741303703 was re-polled
+QUEUED; scheduled soak34433520743 in progress, no cancellation approval. No
+deployment/final acceptance or61successor. Last public health/identity remains
+06:43 existing60/df91bb6. Full class/group/campaign/dungeon/raid/balance/visual/
+phone/CIcost/casino and all other roadmap scope stays active. Root NEVER pushed.
+
+## Previous checkpoint — September 10, 06:44 UTC
 
 Previous goal turn classified PROGRESS: the casino requirement was reaffirmed
 and linked prominently to the active ledger; it remains roadmap-only. This
