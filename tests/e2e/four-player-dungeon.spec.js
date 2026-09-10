@@ -280,14 +280,18 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 try {
                     await gatherPartyFormation({ read: () => Promise.all(actors.map(actor => snapshot(actor.page))),
                         plan: (index, _state, anchor, spacing) => actors[index].page.evaluate(async ({ anchor, previous, spacing }) => {
-                            const { partyFormationStep } = await import('/tests/partyDungeonControls.js');
+                            const { partyFormationStep, partyPathAvoidsActors } = await import('/tests/partyDungeonControls.js');
                             const { isEarnedRetreatPathClear } = await import('/tests/wizardHuntControls.js');
                             const g = window.game, p = g.player;
+                            const bodies = [...g.remotePlayers.values()].filter(other => other !== p && other.id !== p.id &&
+                                other.isActive && other.stats && other.state !== 'DEAD' && other.position)
+                                .map(other => ({ x: other.position.x, z: other.position.z, radius: other.radius || 1.25 }));
                             const step = partyFormationStep(p.position, anchor, previous, step =>
                                 isEarnedRetreatPathClear(g.collisionManager, p.position, p.radius || 1.25,
-                                    { x: step.dx, z: step.dz }), spacing);
-                            return step && { ...step, arrival: { x: anchor.x, z: anchor.z, radius: spacing + 1 } };
-                        }, { anchor: { x: anchor.x, z: anchor.z }, previous: formationAnchor, spacing }),
+                                    { x: step.dx, z: step.dz }) &&
+                                partyPathAvoidsActors(p.position, step, bodies, p.radius || 1.25), spacing);
+                            return step && { ...step, arrival: { x: anchor.x, z: anchor.z, radius: spacing + 1, instanceId: anchor.instance } };
+                        }, { anchor: { x: anchor.x, z: anchor.z, instance: anchor.instance }, previous: formationAnchor, spacing }),
                         move: (index, step) => tryDungeonGroundStep(() => moveByGroundClick(actors[index].page,
                             step.dx, step.dz, { ...PARTY_FOLLOW_INPUT_OPTIONS, allowAlternatePaths: false,
                                 requireClearPath: true, arrival: step.arrival })) });
@@ -301,6 +305,10 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                                 cameraOffset: Math.hypot(g.renderSystem.cameraTarget.x - p.position.x,
                                     g.renderSystem.cameraTarget.z - p.position.z),
                                 cameraPunch: Boolean(g.renderSystem.cameraPunch),
+                                nearbyActors: [...g.remotePlayers.values()].filter(other => other.isActive && other.stats &&
+                                    other.state !== 'DEAD' && other.position && other.position.distanceTo(p.position) < 24)
+                                    .map(other => ({ role: other.constructor.name, x: other.position.x, z: other.position.z,
+                                        radius: other.radius || 1.25 })),
                                 blockedStops: p.movementMetrics?.blockedStops || 0 };
                         }) })));
                     console.log('[party-formation-failure]', JSON.stringify({ previousAnchor: formationAnchor, positions }));

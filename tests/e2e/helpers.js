@@ -330,6 +330,7 @@ export async function readPlayerState(page) {
             x: player.position?.x,
             y: player.position?.y,
             z: player.position?.z,
+            instanceId: window.game?.currentInstanceId || '',
             instanceType: window.game?.currentInstanceType || 'overworld'
         } : null;
     });

@@ -368,3 +368,37 @@ wrong scene and real Shift input are covered.28066 passed57tests/4suites1.068s
 plus lint and single-route discovery. Logs
 `/tmp/eidolon-party-arrival-{focused,lint,discovery}.log`.
 This changes test inputs/evidence only; native full-party acceptance remains open.
+
+## Actor-aware formation follow-up —69808
+
+69808 on clean04b68c5a ended TERMINAL1 after1.1minutes, before combat, with
+seed-5640445871472287783/generator2/Normal30/no fallback. Setup, visible party
+and same-instance entry passed. Its arrival predicate correctly did not accept
+the failed Wizard step: requested12units, observed0.712units, remaining about
+17.77units from the tank. Camera/mesh offsets0, no pending movement target,
+Wizard blockedStops4. Two preceding no-clear-input observations were retained.
+This was not the already-within-formation1157 case, and is not a combat verdict.
+
+Archive`/tmp/eidolon-four-role-arrival-proof-t2IlWC` retains reports/results/log;
+wrapper scanned2files, copied log sanitized with0QA prefixes remaining, owned
+18580/18581/41980listeners cleared. Its failure captured each player's own
+position, not all collision actors as seen by the Wizard. Do not claim a proven
+specific blocker or camera cause from that missing observation.
+
+Static walking checks omit actor capsules. The planner now also checks the
+client's active living actor bodies, permits separation from an existing overlap
+without walking deeper into it, and tries checked gathering-circle alternatives
+before a short checked lateral detour. No unchecked vector/jump is allowed.
+Coincident spawn positions can separate. Failure diagnostics now include nearby
+actor positions/radii as seen by each affected client, without account IDs.
+The exact instance ID now accompanies arrival regions; the group also rejects
+cross-instance positions even if their coordinates match. This supersedes the
+earlier helper's scene-type-only guard without changing ordinary displacement
+checks, fifteen-second gathering, combat/expedition limits or gameplay collision.
+
+Initial69300 passed55tests/4suites5.097s plus lint. Final87372 passed64tests/
+5suites5.104s plus lint and single-route discovery, including occupied gathering
+points, a checked side step around a nearby body, coincident/overlapping actors,
+the recorded production floor geometry, exact-instance arrival and ordinary
+movement failures. Logs`/tmp/eidolon-party-body-final2-{focused,lint,discovery}.log`.
+Full client regression and native formation/full-clear acceptance remain pending.

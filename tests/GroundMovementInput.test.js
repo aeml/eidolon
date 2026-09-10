@@ -22,7 +22,7 @@ function movementPage(covered, mobile = false, drift = 0, displacement = 10) {
             if (code.includes('getGroundIntersectionFromEvent')) return ground && { ...ground, x: ground.x + drift };
             if (code.includes('!window.game?.hoveredEntity')) return !covered;
             if (code.includes('Boolean(window.game?.isMobile)')) return mobile;
-            if (code.includes('inventoryCount')) return { x, z: 0, state: 'IDLE', health: 100, instanceType: 'dungeon' };
+            if (code.includes('inventoryCount')) return { x, z: 0, state: 'IDLE', health: 100, instanceType: 'dungeon', instanceId: 'dungeon-test' };
             return {};
         }),
         mouse: { move: jest.fn(), click: jest.fn(async () => {
@@ -129,13 +129,13 @@ test('an issued strict click that really fails movement remains an error', async
 test('a real short formation click can finish inside its required arrival region', async () => {
     const page = movementPage(true, false, 0, .888);
     const result = await moveByGroundClick(page, 1.805, 0, { moveOnly: true, requireClearPath: true,
-        allowJumpFallback: false, allowAlternatePaths: false, arrival: { x: 5.8, z: 0, radius: 5 } });
+        allowJumpFallback: false, allowAlternatePaths: false, arrival: { x: 5.8, z: 0, radius: 5, instanceId: 'dungeon-test' } });
     expect(result.x).toBe(.888);
     expect(page.mouse.click).toHaveBeenCalledTimes(1);
     expect(page.keyboard.down).toHaveBeenCalledWith('Shift');
 });
 test('the same short movement still fails without an explicit reached arrival region', async () => {
-    for (const arrival of [undefined, { x: 6, z: 0, radius: 5 }]) {
+    for (const arrival of [undefined, { x: 6, z: 0, radius: 5, instanceId: 'dungeon-test' }]) {
         const page = movementPage(true, false, 0, .888);
         await expect(moveByGroundClick(page, 1.805, 0, { moveOnly: true, requireClearPath: true,
             allowJumpFallback: false, allowAlternatePaths: false, arrival })).rejects.toThrow('No real input established 1 units');

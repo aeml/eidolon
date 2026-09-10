@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { acquirePartyAllyPointer, gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyFormationStep, partyWarningInputPolicy, planPartyTelegraphEscape } from './partyDungeonControls.js';
+import { acquirePartyAllyPointer, gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyFormationStep, partyPathAvoidsActors, partyWarningInputPolicy, planPartyTelegraphEscape } from './partyDungeonControls.js';
 import { clipDungeonEffectSegment } from '../src/skills/dungeonEffectGeometry.js';
 
 test('healer stops seven units short of the tank rather than aiming into the boss', () => {
@@ -28,9 +28,42 @@ test('formation follows the walked corner instead of cutting an L-shaped hallway
         { x: from.x + step.dx, z: from.z + step.dz }).blocked;
     expect(clear(follower)(partyFollowStep(follower, anchor))).toBe(false);
     const first = partyFormationStep(follower, anchor, corner, clear(follower));
-    expect(first).toEqual({ dx: 4, dz: 0 });
+    expect(clear(follower)(first)).toBe(true);
     const second = partyFormationStep(corner, anchor, corner, clear(corner));
     expect(second).toEqual({ dx: 0, dz: 10 });
+});
+
+test('a teammate occupying the straight gathering destination gets a verified alternative', () => {
+    const follower = { x: 0, z: 5.8 }, tank = { x: 0, z: 0 };
+    const bodies = [{ ...tank, radius: 1.25 }, { x: 0, z: 2.5, radius: 1.25 }];
+    const clear = step => partyPathAvoidsActors(follower, step, bodies);
+    expect(clear(partyFollowStep(follower, tank))).toBe(false);
+    const step = partyFormationStep(follower, tank, null, clear);
+    expect(clear(step)).toBe(true);
+    expect(Math.abs(step.dx)).toBeGreaterThan(1);
+});
+test('a nearby blocking body can be passed using a checked lateral step', () => {
+    const follower = { x: 0, z: 18 }, tank = { x: 0, z: 0 };
+    const bodies = [{ x: 0, z: 15, radius: 1.25 }];
+    const clear = from => step => partyPathAvoidsActors(from, step, bodies);
+    const side = partyFormationStep(follower, tank, { x: 0, z: 14 }, clear(follower));
+    expect(Math.abs(side.dx)).toBe(3);
+    expect(Math.abs(side.dz)).toBeLessThan(.001);
+    const moved = { x: follower.x + side.dx, z: follower.z + side.dz };
+    const advance = partyFormationStep(moved, tank, { x: 0, z: 14 }, clear(moved));
+    expect(clear(moved)(advance)).toBe(true);
+    expect(Math.hypot(moved.x + advance.dx, moved.z + advance.dz)).toBeLessThan(Math.hypot(moved.x, moved.z));
+});
+test('already-overlapping actors can separate, but not walk through one another', () => {
+    const from = { x: 0, z: 0 }, bodies = [{ x: 1, z: 0, radius: 1.25 }];
+    expect(partyPathAvoidsActors(from, { dx: -3, dz: 0 }, bodies)).toBe(true);
+    expect(partyPathAvoidsActors(from, { dx: 0, dz: 3 }, bodies)).toBe(true);
+    expect(partyPathAvoidsActors(from, { dx: 3, dz: 0 }, bodies)).toBe(false);
+    expect(partyPathAvoidsActors(from, { dx: 0, dz: 0 }, bodies)).toBe(false);
+});
+
+test('coincident spawn positions can separate instead of trapping every planned direction', () => {
+    expect(partyPathAvoidsActors({ x: 0, z: 0 }, { dx: 3, dz: 0 }, [{ x: 0, z: 0, radius: 1.25 }])).toBe(true);
 });
 test('formation preserves an already-safe direct step and refuses an unverified alternative', () => {
     const follower = { x: 0, z: 0 }, anchor = { x: 14, z: 0 };
@@ -79,6 +112,14 @@ test('a dead follower fails gathering without moving or disguising a wipe', asyn
     const move = jest.fn();
     await expect(gatherPartyFormation({ read: async () => [{ x: 0, z: 0 }, { x: 30, z: 0, dead: true }], move }))
         .rejects.toThrow('cannot hide a death');
+    expect(move).not.toHaveBeenCalled();
+});
+
+test('matching coordinates in different instances cannot satisfy formation', async () => {
+    const move = jest.fn();
+    await expect(gatherPartyFormation({ read: async () => [
+        { x: 0, z: 0, instance: 'run-a' }, { x: 0, z: 0, instance: 'run-b' }
+    ], move })).rejects.toThrow('cannot cross instances');
     expect(move).not.toHaveBeenCalled();
 });
 

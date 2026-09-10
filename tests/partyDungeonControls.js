@@ -13,14 +13,46 @@ export function partyFollowStep(state, anchor, spacing = 4) {
 
 export const PARTY_FOLLOW_INPUT_OPTIONS = Object.freeze({ moveOnly: true, allowJumpFallback: false });
 
+// The static floor query does not include actors. Check the same logical
+// circles used by entity collision, allowing movement away from an existing
+// overlap but never a new intersection or deeper penetration.
+export function partyPathAvoidsActors(state, step, actors, radius = 1.25) {
+    const lengthSquared = step.dx ** 2 + step.dz ** 2;
+    if (!Number.isFinite(lengthSquared) || lengthSquared <= 0) return false;
+    return actors.every(actor => {
+        const x = actor.x - state.x, z = actor.z - state.z;
+        const separation = radius + (actor.radius || 1.25) + .1;
+        const startSquared = x * x + z * z;
+        const dot = x * step.dx + z * step.dz;
+        if (startSquared < separation * separation) return dot <= 0;
+        const t = Math.max(0, Math.min(1, dot / lengthSquared));
+        return (x - t * step.dx) ** 2 + (z - t * step.dz) ** 2 >= separation * separation;
+    });
+}
+
 // At a hallway turn, a direct chord to the tank can cross a wall. Every prior
 // gathering ended near the previous anchor; use that already-walked corner as
 // an intermediate destination when the direct segment is not physically clear.
 export function partyFormationStep(state, anchor, previousAnchor, canStep, spacing = 4) {
     const direct = partyFollowStep(state, anchor, spacing);
     if (!direct || canStep(direct)) return direct;
+    // Do not aim every follower at the same occupied point on the gathering
+    // circle. Nearby alternatives retain the same formation radius.
+    const angle = Math.atan2(state.z - anchor.z, state.x - anchor.x);
+    for (const offset of [.5, -.5, 1, -1, 1.5, -1.5, Math.PI]) {
+        const destination = { x: anchor.x + Math.cos(angle + offset) * spacing,
+            z: anchor.z + Math.sin(angle + offset) * spacing };
+        const alternative = partyFollowStep(state, destination, 0);
+        if (alternative && canStep(alternative)) return alternative;
+    }
     const via = previousAnchor ? partyFollowStep(state, previousAnchor, 0) : null;
     if (via && canStep(via)) return via;
+    // A nearby body can block every longer approach. Take a short lateral
+    // step first, only if its complete floor/body path is verified clear.
+    for (const distance of [3, -3, 4.5, -4.5]) {
+        const side = { dx: -Math.sin(angle) * distance, dz: Math.cos(angle) * distance };
+        if (canStep(side)) return side;
+    }
     throw new Error('Party formation has no verified walking segment');
 }
 
@@ -36,6 +68,7 @@ export async function gatherPartyFormation({ read, move, plan, now = Date.now, t
     while (now() < deadline) {
         const states = await read();
         if (states.some(s => s.dead)) throw new Error('Party formation cannot hide a death');
+        if (states.some(s => s.instance !== states[0].instance)) throw new Error('Party formation cannot cross instances');
         const needed = states.slice(1).map(state => partyFollowStep(state, states[0], spacing));
         if (needed.every(step => !step)) return;
         const steps = await Promise.all(needed.map((step, index) => step && plan
