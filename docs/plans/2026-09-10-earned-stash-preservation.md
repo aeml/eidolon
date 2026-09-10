@@ -30,6 +30,11 @@ archive `/tmp/eidolon-earth-stash-capacity-proof-BDzPFc`, wrapper sanitation0fil
 supplemental scan0, exact services/18560/18561/41960absent. Whole-world failure
 image inspected. Original log `/tmp/eidolon-earth-pickup-0110.log` retained.
 
+Full77046 on814f733 (code299cded) subsequently passed286suites/4018tests in
+92.011s and lint. Logs `/tmp/eidolon-stash-padding-full-{client,lint}.log`.
+The remaining gate is the complete actual replay, not further inferred capacity
+success from unit checks. No owned local browser ran alongside this regression.
+
 ## Prior failure and initial storage extension
 
 Serial route78199 on e32d37a ended FAILED after8.8minutes: stage1 passed2.7m,
