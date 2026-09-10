@@ -1,12 +1,14 @@
 import { expect } from '@playwright/test';
-import { EARNED_BAG_MIN_FREE, EARNED_BAG_TARGET_FREE, earnedBagFreeSlots, planEarnedBagSales } from '../earnedInventoryPolicy.js';
+import { EARNED_BAG_MIN_FREE, EARNED_BAG_TARGET_FREE, earnedBagFreeSlots, planEarnedBagSales,
+    planEarnedBagStorage } from '../earnedInventoryPolicy.js';
 import { equipEarnedEmptySlots } from './earned-equipment.js';
 import { ensureEarnedMerchantWindow } from './earned-merchant-window.js';
+import { storeEarnedSpareEquipment } from './earned-stash-storage.js';
 import { moveByGroundClick, projectEntity, readPlayerState, returnToTown, setAutoLootThroughSettings } from './helpers.js';
 
 const snapshot = page => page.evaluate(() => {
     const p = window.game.player;
-    return { level: p.level, gold: p.gold, inventory: p.inventory, equipment: p.equipment,
+    return { level: p.level, gold: p.gold, inventory: p.inventory, stash: p.stash || [], equipment: p.equipment,
         quests: p.quests.filter(q => q.accepted).map(q => ({ id: q.id, count: q.count, completed: q.completed })) };
 });
 
@@ -44,7 +46,7 @@ async function openEarnedMerchant(page) {
 }
 
 // Call only between encounters, before starting the existing combat watchdog.
-// All item changes are ordinary inventory/merchant clicks on this QA account.
+// All item changes are ordinary inventory/merchant/stash clicks on this QA account.
 export async function maintainEarnedInventory(page, { leaveTown }) {
     if (earnedBagFreeSlots((await snapshot(page)).inventory) >= EARNED_BAG_MIN_FREE) return false;
     expect(typeof leaveTown, 'Bag management must resume through ordinary travel').toBe('function');
@@ -58,8 +60,6 @@ export async function maintainEarnedInventory(page, { leaveTown }) {
     const equipped = await equipEarnedEmptySlots(page);
     const prepared = await snapshot(page);
     const sales = planEarnedBagSales(prepared);
-    const required = Math.max(0, EARNED_BAG_TARGET_FREE - earnedBagFreeSlots(prepared.inventory));
-    expect(sales.length, 'Conservative bag policy needs enough spare low-rarity gear; never sell protected items to force progress').toBe(required);
     if (sales.length) {
         await openEarnedMerchant(page);
         for (const sale of sales) {
@@ -75,19 +75,28 @@ export async function maintainEarnedInventory(page, { leaveTown }) {
     }
     if (await page.locator('#inventory-screen').isVisible()) await page.locator('#btn-close-inventory').click();
     if (await page.locator('#character-sheet').isVisible()) await page.locator('#btn-close-character').click();
+    const afterSales = await snapshot(page);
+    const storage = planEarnedBagStorage(afterSales);
+    const requiredStorage = Math.max(0, EARNED_BAG_TARGET_FREE - earnedBagFreeSlots(afterSales.inventory));
+    expect(storage.length, 'Spare gear must cover the remaining space without moving quest items or discarding valuables').toBe(requiredStorage);
+    const stored = await storeEarnedSpareEquipment(page, storage, snapshot);
+    if (await page.locator('#inventory-screen').isVisible()) await page.locator('#btn-close-inventory').click();
     const after = await snapshot(page);
     expect(after.level).toBe(before.level);
     expect(after.quests).toEqual(before.quests);
     expect(after.equipment).toEqual(prepared.equipment);
     expect(after.gold).toBe(before.gold + sales.reduce((sum, sale) => sum + sale.value, 0));
-    expect(after.inventory.filter(item => item?.id)).toEqual(prepared.inventory.filter(item => item?.id && !sales.some(sale => sale.id === item.id)));
+    expect(after.inventory.filter(item => item?.id)).toEqual(prepared.inventory.filter(item => item?.id &&
+        !sales.some(sale => sale.id === item.id) && !stored.some(deposit => deposit.id === item.id)));
+    expect(after.stash.filter(item => item?.id)).toEqual([...prepared.stash.filter(item => item?.id), ...stored]);
     expect(earnedBagFreeSlots(after.inventory)).toBeGreaterThanOrEqual(EARNED_BAG_TARGET_FREE);
     await setAutoLootThroughSettings(page, autoLoot);
     await leaveTown();
-    console.log('[earned-bag-management]', JSON.stringify({ equipped, sales,
+    console.log('[earned-bag-management]', JSON.stringify({ equipped, sales, stored: stored.map(({ id, name }) => ({ id, name })),
         before: { level: before.level, gold: before.gold, freeSlots: earnedBagFreeSlots(before.inventory) },
         after: { level: after.level, gold: after.gold, freeSlots: earnedBagFreeSlots(after.inventory) },
-        seconds: (Date.now() - started) / 1000, note: sales.length
+        seconds: (Date.now() - started) / 1000, note: stored.length
+            ? 'Verified preserved whole-item stash deposits and any individual merchant proceeds.' : sales.length
             ? 'Verified merchant proceeds, not vendor estimates or granted gold.'
             : 'Equipped earned items to free space; no merchant sale was needed or verified.' }));
     return true;

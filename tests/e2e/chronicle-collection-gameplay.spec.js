@@ -39,7 +39,9 @@ test.describe('prepared Earth prerequisites earned across saved chapter stages',
         await ensureDungeonReadyLevel(page);
         await earnEarthCollectionThroughPlay(page);
         seedsAfterTurnIn = await remainingSeeds(page);
+        const storedBeforeLogin = await page.evaluate(() => window.game.player.stash || []);
         await loginAndEnterWorld(page, credentials);
+        expect(await page.evaluate(() => window.game.player.stash || [])).toEqual(storedBeforeLogin);
         expect(await remainingSeeds(page)).toBe(seedsAfterTurnIn);
         expect((await readChronicleChapter(page, 'chronicle_02_seeds_first_grove')).completed).toBe(true);
         expect(failures, failures.join('\n')).toEqual([]);
@@ -52,7 +54,9 @@ test.describe('prepared Earth prerequisites earned across saved chapter stages',
         expect(seedsAfterTurnIn).toBeDefined();
         expect(await remainingSeeds(page)).toBe(seedsAfterTurnIn);
         await earnEarthImpAndScarThroughPlay(page);
+        const storedBeforeLogin = await page.evaluate(() => window.game.player.stash || []);
         await loginAndEnterWorld(page, credentials);
+        expect(await page.evaluate(() => window.game.player.stash || [])).toEqual(storedBeforeLogin);
         expect((await readChronicleChapter(page, 'chronicle_earth_returning_scar')).completed).toBe(true);
         expect(await remainingSeeds(page)).toBe(seedsAfterTurnIn);
         expect(failures, failures.join('\n')).toEqual([]);
@@ -65,7 +69,9 @@ test.describe('prepared Earth prerequisites earned across saved chapter stages',
         expect(seedsAfterTurnIn).toBeDefined();
         expect(await remainingSeeds(page)).toBe(seedsAfterTurnIn);
         await prepareEarthDungeonOfferThroughPlay(page);
+        const storedBeforeLogin = await page.evaluate(() => window.game.player.stash || []);
         await loginAndEnterWorld(page, credentials);
+        expect(await page.evaluate(() => window.game.player.stash || [])).toEqual(storedBeforeLogin);
         expect(await remainingSeeds(page)).toBe(seedsAfterTurnIn);
         expect((await readChronicleChapter(page, EARTH_DUNGEON_CHAPTER)).accepted).toBe(true);
         expect(failures, failures.join('\n')).toEqual([]);

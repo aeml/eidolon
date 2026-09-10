@@ -1,4 +1,4 @@
-import { earnedBagFreeSlots, planEarnedBagSales } from './earnedInventoryPolicy.js';
+import { earnedBagFreeSlots, planEarnedBagSales, planEarnedBagStorage } from './earnedInventoryPolicy.js';
 
 const gear = (id, changes = {}) => ({ id, type: 'ARMOR', slot: 'head', level: 3,
     rarity: { name: 'Common' }, value: 30, ...changes });
@@ -33,4 +33,30 @@ test('sale quotes match minimum value and stack rules without granting anything'
 
 test.each([-1, 1.5, 3, NaN])('rejects an invalid bag-space target %p', target => {
     expect(() => planEarnedBagSales({ inventory: [null, null], equipment, level: 5 }, target)).toThrow();
+    expect(() => planEarnedBagStorage({ inventory: [null, null], equipment }, target)).toThrow();
+});
+
+test('a shortage of saleable gear is covered by preserving the remaining rare upgrade in storage', () => {
+    const rare = gear('rare', { rarity: 'Rare', name: 'Rare helm' });
+    const inventory = Object.freeze([gear('spare-one'), gear('spare-two'), rare]);
+    const sales = planEarnedBagSales({ inventory, equipment, level: 5 }, 3);
+    expect(sales).toHaveLength(2);
+    const afterSales = inventory.map(item => sales.some(sale => sale.id === item.id) ? null : item);
+    expect(planEarnedBagStorage({ inventory: afterSales, equipment }, 3)).toEqual([{ id: 'rare', name: 'Rare helm' }]);
+    expect(inventory[2]).toBe(rare);
+    expect(afterSales[2]).toBe(rare);
+});
+
+test('storage never moves quest fragments, crafting items, worn IDs or gear for empty equipment slots', () => {
+    const inventory = [gear('chronicle-item-seed'), gear('gem', { type: 'GEM' }), gear('material', { type: 'MATERIAL' }),
+        gear('relic', { type: 'RELIC' }), gear('quest', { type: 'QUEST' }), gear('empty-slot', { slot: 'feet' }),
+        gear('ring', { slot: 'ring' }), gear('worn'), gear('stacked', { stack: 2 }), gear('stackable', { maxStack: 10 })];
+    expect(planEarnedBagStorage({ inventory, equipment }, 8)).toEqual([]);
+});
+
+test('storage preserves future-level upgrades and chooses only the needed number without mutation', () => {
+    const inventory = Object.freeze([null, gear('future', { level: 100 }), gear('valuable', { rarity: 'Legendary' })]);
+    expect(planEarnedBagStorage({ inventory, equipment }, 2)).toEqual([{ id: 'future', name: undefined }]);
+    expect(planEarnedBagStorage({ inventory, equipment }, 1)).toEqual([]);
+    expect(inventory[1].level).toBe(100);
 });

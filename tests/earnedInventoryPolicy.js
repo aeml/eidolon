@@ -24,3 +24,19 @@ export function planEarnedBagSales({ inventory, equipment, level }, targetFree =
         a.value - b.value || a.id.localeCompare(b.id));
     return candidates.slice(0, needed);
 }
+
+// Preserve spare gear in real storage when conservative sales cannot make room.
+// Quest fragments, crafting materials and gems stay carried; this policy never
+// sells higher-rarity or future-level upgrades just to satisfy a test budget.
+export function planEarnedBagStorage({ inventory, equipment }, targetFree = EARNED_BAG_TARGET_FREE) {
+    if (!Number.isInteger(targetFree) || targetFree < 0 || targetFree > inventory.length) throw new Error('Invalid bag space target');
+    const needed = Math.max(0, targetFree - earnedBagFreeSlots(inventory));
+    const equippedIds = new Set(Object.values(equipment).map(item => item?.id).filter(Boolean));
+    return inventory.filter(item => {
+        if (!item?.id || item.id.startsWith('chronicle-item-') || equippedIds.has(item.id) ||
+            !isEquippableItem(item) || Math.max(1, item.stack || 1) !== 1 || item.maxStack > 1) return false;
+        const slots = item.slot === 'ring' ? ['ring1', 'ring2'] :
+            item.slot === 'trinket' ? ['trinket1', 'trinket2'] : [item.slot];
+        return slots.every(slot => equipment[slot]?.id);
+    }).slice(0, needed).map(item => ({ id: item.id, name: item.name }));
+}

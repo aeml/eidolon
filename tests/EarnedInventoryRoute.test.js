@@ -45,3 +45,19 @@ test('no entered character produces no misleading empty inventory receipt', asyn
     try { expect(await readStoryHuntFailureEvidence(page)).toBeNull(); }
     finally { delete window.game; }
 });
+
+test('stash fallback uses real storage clicks and checks complete item conservation, never grants', () => {
+    const route = readFileSync('tests/e2e/earned-inventory-management.js', 'utf8');
+    const stash = readFileSync('tests/e2e/earned-stash-storage.js', 'utf8');
+    expect(route).toContain('const storage = planEarnedBagStorage(afterSales)');
+    expect(route).toContain('await storeEarnedSpareEquipment(page, storage, snapshot)');
+    expect(route).toContain('...prepared.stash.filter(item => item?.id), ...stored');
+    expect(stash).toContain("projectEntity(page, 'stash-1')");
+    expect(stash).toContain("await expect(page.locator('#shop-screen')).toBeHidden()");
+    expect(stash).toContain("nth(index).click({ button: 'right' })");
+    expect(stash).toContain('.stash.find(entry => entry?.id === item.id)).toEqual(item)');
+    expect(stash).toContain('expect(after.gold).toBe(before.gold)');
+    expect(stash).toContain('expect(after.equipment).toEqual(before.equipment)');
+    expect(stash).toContain('expect(after.quests).toEqual(before.quests)');
+    expect(stash).not.toMatch(/network\.send|onStashDeposit\(|player\.(inventory|stash)\s*=/);
+});
