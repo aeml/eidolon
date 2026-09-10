@@ -70,7 +70,13 @@ func TestFourRolePartySharesBossCreditAndRequiresIndividualWizardTurnIn(t *testi
 		q := *questByID(t, snapshot, ChronicleEarthDungeonID)
 		gold, xp := snapshot.Gold, snapshot.Experience
 		receipt := byPlayer[member.ID]
-		if receipt.Gold <= 0 || receipt.XP <= 0 || gold != receipt.Gold || xp != receipt.XP {
+		// This release line retains the old reward curve, so the kill can
+		// cross levels. Count earned XP, not only the remainder in this level.
+		earnedXP := xp
+		for level := 30; level < snapshot.Level; level++ {
+			earnedXP += experienceRequiredForLevel(level)
+		}
+		if receipt.Gold <= 0 || receipt.XP <= 0 || gold != receipt.Gold || earnedXP != receipt.XP {
 			t.Fatalf("%s did not receive its recorded combat reward: gold=%d xp=%d receipt=%+v", member.SubType, gold, xp, receipt)
 		}
 		if q.Count != q.MaxCount || q.Completed || q.GrantedGold != 0 || q.GrantedXP != 0 {

@@ -27,6 +27,46 @@ release gate before successor promotion.
   its separate starting-stat QA correction; do not claim that entire primary
   branch or its expanded story/balance has been imported here.
 
+## September10 party-credit integration
+
+The starting-stat prerequisite3832b150 is imported as52ff4513, and its mandatory
+all-class release checkaeff8ab5 as ec401a95. Ordinary new characters retain the
+existing all-ten baseline; explicit prepared levels now match actual growth,
+without rewriting saved stats. This also makes the shared test fixture helper
+available for party regressions. Expanded-story-only opening/readiness tests and
+the primary's recorded-build document were not added to this release line. Its
+existing fresh-opening route is retained with the extra baseline assertion.
+The wrapper retains its complete existing command sequence, including the
+Well Rested transition and Forge/socket tail, prepending only initial-stat parity.
+The unrelated primary stage-timing framework is not imported.
+
+Party-credit760d0ff8/0c86a625/decb1693/5f323d41 are imported as538b5216, ebbd0475,
+f6978c91 and51c63021. They retain whole-instance dungeon/downed credit,110-unit
+overworld range, kill-time snapshots, existing reward formulas and manual claims.
+The release line's inline on-kill explosion needed the shared corpse-lock release
+helper to support safe recursive party snapshots. That necessary lock correction
+is included, with sequential and concurrent eight-death chain tests. Existing
+explosion damage is unchanged; the separate primary Dark King phase-boundary
+damage cap is not imported or claimed here. It remains later integration scope.
+
+First focused race54382 failed only the manual-credit fixture's assumption that
+XP could not level up a recipient: this release still uses the older large reward
+curve. The assertion now sums consumed level thresholds plus remaining XP and
+requires exact equality with the receipt, preserving Gold and individual-claim
+checks. Final26906 passed eligibility/snapshots/all-class abilities/manual claims,
+ordinary/prepared stat parity and explosion chains three times under the race
+detector17.309s. Root constructor/level command15160 passed1.119s. Client35057
+passed117 tests/4suites11.84s, lint and shell syntax. Logs:
+`/tmp/eidolon-next-party-backport-focused-final.log`,
+`/tmp/eidolon-next-starting-stat-root.log`, and
+`/tmp/eidolon-next-party-backport-{client,lint}.log`.
+
+These are focused integration checks, not full combined-source acceptance.
+Desktop healing/compact roster, expanded story/reward tuning and Dark King
+phase-integrity work remain outside this candidate. The existing full Go/client,
+native initial-stat/storage/party/required-all, bundled browser, version, remote
+CI and live gates still apply before promotion.
+
 On cleanf52f3157,14417 completed343tests/9suites10.299seconds plus lint and exact
 CI-mode Playwright discovery103cases with no omissions/duplicates/empty groups.
 Job1:22layout/4entrances/3effects/6nameplates/3HUD;
@@ -63,14 +103,10 @@ Logs`/tmp/eidolon-next-candidate-stash-gate-{lint,discovery}.log`.
   frontend/backend identities and the affected gameplay after deployment.
 
 The primary solo campaign6251 is terminal130 after the player's explicit switch
-to four-role dungeon verification; it is not still running. On September10 at
-19:45, primary browser62541 owns the local heavy/browser slot on frozenf8d9bf2d,
-testing the actual Fighter/Cleric/Wizard/Rogue group with roster-targeted healing,
-visible warning avoidance and individual quest turn-in/relogin checks. Its
-preceding full server race81223 passed; no full-clear claim follows. No parallel
-heavy/native check was started for this candidate. Primary party credit, desktop
-support targeting and expanded story/balance are NOT imported into this branch.
-Its dungeon outcome, all-class/group/realm/raid, phone/balance and later roadmap
-acceptance are still open. CI scheduling changes
+to four-role dungeon verification. The primary party route owns the current
+heavy/browser slot; consult the root execution ledger for its live handle and
+frozen source. No parallel heavy/native check was started for this candidate.
+The primary dungeon outcome, all-class/group/realm/raid, phone/balance and later
+roadmap acceptance are still open. CI scheduling changes
 must not cancel the running soak or redefine its24hour stability requirement
 without the separately requested operational decision.
