@@ -1,5 +1,67 @@
 # Well Rested aura batching — separate visual/performance prototype
 
+## Native and rendered verification — September10, 06:42UTC
+
+The earlier pending native run28798 is terminal: journey/expiry passed2/1.3m,
+and two-real-player party passed1/45.8s, retries0, frozen fdd28a3. Its process
+handle is now absent; the terminal wrapper log establishes success and actual
+credential sanitation0. Log `/tmp/eidolon-aura-integrated-native.log`; archived
+HTML/results `/tmp/eidolon-aura-integrated-native-proof-obM8eG`. Exact owned
+aura-native-0910 API/Mongo/image and ports18560/18561/41960 are absent.
+
+Natural expiry outside town removed the aura and restored base strength10 and
+maximum HP/MP100; ordinary town reentry restored strength11, maximum HP/MP110,
+full resources and an earned rest bank. The journey also exercised combat,
+Recall and fresh login. Both real party actors retained5/4/5 visible meshes,
+two batches,16/8/16 sparks and exactly one correctly positioned owner group
+through High/Low/repeat-High. Fresh login retained both auras and the local bank.
+Viewed portrait High/Low world, status and rejoin images plus expired-outside
+and reentry images. These are touch-emulated desktop captures, not real phones.
+
+Native party profiles used ANGLE AMD Vulkan1.4.318/RADV RENOIR,390x844/DPR1,
+60warmup and180sample frames per phase. High/Low/repeat-High median frame times
+were16.7/16.7/16.7ms; p95 33.3/16.8/33.3ms; p99 33.4ms for all three.
+CPU-loop medians14.2/12.5/12.2ms, median full-scene draws423/414/423.
+No matched unbatched native baseline was run, so these are workload observations,
+not an FPS improvement or a supported-phone performance result.
+
+Controlled comparison rerun91295 passed1/6.5s, retries0, same fdd28a3 and GPU.
+High incremental draws9/10/10 versus37/38/38; Low8 versus20 at all three phases.
+All six RGB comparisons have exactly0 difference with nonzero aura signal.
+Log `/tmp/eidolon-aura-integrated-gpu.log`; archive
+`/tmp/eidolon-aura-integrated-gpu-proof-L4agNt`; anonymous artifact scanner0 and
+port41960 closed. Viewed both quality PNGs. This confirms the merged baseline's
+controlled draw/pixel result, not only the older prototype's result.
+
+Added a prepared real-WebGL lifecycle check in
+`tests/e2e/well-rested-gpu-lifecycle.spec.js`. The observation-only helper forwards
+the original buffer upload unchanged, associates typed-array identity with the
+actual bound WebGLBuffer, and restores the method afterward. Its five unit cases
+cover arguments/return/receiver, array identity, both bindings, unsupported inputs,
+error propagation and property restoration. Focused19tests/3suites passed1.719s
+plus lint. Logs `/tmp/eidolon-aura-gpu-lifecycle-{unit,lint}.log`.
+
+Rendered run46400 passed1/9.9s on RADV RENOIR, retries0. Forty snapshots exercise
+three quality/migration/clear/stealth/dead/inactive/expiry/reentry cycles through
+real Actor attached-effect synchronization. All24 retired effects' three owned
+GPU buffers were observed while allocated and then absent according to
+`gl.isBuffer`; current/neighbor buffers and shared geometry stayed valid.
+Every visible state contributes nonzero rendered aura pixels and retains all
+sparks, matching position and one owner group. Final actor cleanup deletes all
+remaining owned aura buffers. Log `/tmp/eidolon-aura-gpu-lifecycle-native.log`;
+archive `/tmp/eidolon-aura-gpu-lifecycle-proof-2d7wRR`, anonymous scanner0 and
+port41960 closed. Viewed dead/stealth suppression and final-restoration PNGs.
+The prepared dead-state image tests aura suppression, not death animation;
+effect-group migration is not a complete live realm transition. These checks do
+not measure GPU memory bytes or grant/expire any actual player's buff.
+
+Full rerun61718 passed257client suites/3632tests132.882s plus lint underNode24
+after the new test files. Logs `/tmp/eidolon-aura-gpu-lifecycle-full-{client,lint}.log`.
+Runtime/server code is unchanged. Required remaining gates include equivalent populated-scene
+reference comparison, native world-transition coverage, measured broader scene
+performance and physical-phone work, then pipeline integration/versioned release
+only after the separate release60 acceptance. No promotion, push or deployment.
+
 ## Integrated regression — September10, 06:27UTC
 
 Primary's fresh Wizard story-readiness run13998 is terminal and its exact
