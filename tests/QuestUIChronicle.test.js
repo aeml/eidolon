@@ -74,6 +74,48 @@ describe('QuestUI Fourfold Chronicle', () => {
         expect(summary[0].hint).toContain('Recover 4 Verdant Memory Seeds');
     });
 
+    test.each(['recall', 'respawn'].flatMap(reason => [false, true].map(isMobile => [reason, isMobile])))(
+        'ready story turn-in outranks stale %s guidance (mobile=%s)', (reason, isMobile) => {
+            const quest = chronicleQuest({ count: 4 });
+            const ui = new QuestUI({
+                isMobile, getLastPlayer: () => ({ level: 8, position: { x: 0, z: 200 }, quests: [quest] }),
+                getCurrentInstanceId: () => '', getCurrentInstanceType: () => 'overworld',
+                getOnboardingRecoveryContext: () => ({ reason })
+            });
+            const before = JSON.stringify(quest);
+            expect(ui.buildObjectiveSummary([quest])[0].id).toBe(quest.id);
+            ui.updateJournal([quest]);
+            const guidance = document.querySelector('.objective-entry');
+            expect(guidance.textContent).toContain('Speak to Archmage Ilyra');
+            expect(guidance.textContent).toContain('click Complete Quest');
+            expect(guidance.textContent).not.toContain('Re-orient');
+            expect(guidance.textContent).not.toContain('Respawned');
+            expect(JSON.stringify(quest)).toBe(before);
+        });
+
+    test('ready daily turn-ins also replace generic town recovery', () => {
+        const ui = new QuestUI({
+            getLastPlayer: () => ({ level: 8, position: { x: 0, z: 200 } }),
+            getCurrentInstanceId: () => '', getCurrentInstanceType: () => 'overworld',
+            getOnboardingRecoveryContext: () => ({ reason: 'recall' })
+        });
+        const quest = { id: 'daily_skeleton', target: 'Skeleton', accepted: true, count: 4, maxCount: 4 };
+        const summary = ui.buildObjectiveSummary([quest]);
+        expect(summary[0].id).toBe(quest.id);
+        expect(summary[0].hint).toContain('Speak to the Quest Giver');
+    });
+
+    test.each([{ accepted: false }, { completed: true }, { count: 3 }, { maxCount: 0 }])(
+        'non-claimable quest %p does not dismiss explicit recovery', override => {
+            const ui = new QuestUI({
+                getLastPlayer: () => ({ level: 8, position: { x: 0, z: 200 } }),
+                getCurrentInstanceId: () => '', getCurrentInstanceType: () => 'overworld',
+                getOnboardingRecoveryContext: () => ({ reason: 'recall' })
+            });
+            const daily = { id: 'daily_skeleton', accepted: true, count: 4, maxCount: 4, ...override };
+            expect(ui.buildTownRecoveryObjective([chronicleQuest(), daily]).id).toBe('starter-town-recovery-recall');
+        });
+
     test('keeps the story primary in town while retaining explicit respawn recovery', () => {
         let recovery = null;
         const ui = new QuestUI({
