@@ -27,7 +27,28 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 07:43 UTC
+## Current checkpoint — September 10, 07:48 UTC
+
+Previous turn made PROGRESS (separate class-input correction). This turn is a
+VERIFIED WAIT with additional partial native evidence: SAME96530 was repeatedly
+polled live; primary remains clean/frozen626385d and no restart or second workload
+was launched. Watch now passed498,264ms:40credits, manual100Gold1593XP, completed
+quest and full302HP/225MP preserved on reconnect. Zero deaths,13ordinary rest
+stops; earnedlevel8/209XP/1369Gold. Seeds has started; latest observed2target
+deaths and0seeds, not a complete collection result or failure. Source and limits
+unchanged. Continue SAME96530/log/ports through the remaining phases, retaining
+failure evidence if any. No full-route, dungeon or production pass is claimed.
+
+Separate c884455 remains clean and unmerged,106focusedtests+lint only; full
+regression and native class matrix await the current owned browser's completion.
+Read-only review found the roadmap's duel-rating/team-elimination repairs already
+present in pvp.go/pvp_test.go; no duplicate implementation or new PvP acceptance
+claim was made. Release34434837759 still queued on62dc2d1; scheduled34433520743
+still in progress at the07:48poll. No new approval, cancellation, push, deployment
+or public-identity check. Full roadmap/casino/phone/raid/balance scope remains
+active and incomplete. Root ledger only; never push it.
+
+## Previous checkpoint — September 10, 07:43 UTC
 
 Previous goal turn made PROGRESS (committed strict story-only dungeon route and
 launched its native attempt). This turn re-polled SAME96530 live, with source
