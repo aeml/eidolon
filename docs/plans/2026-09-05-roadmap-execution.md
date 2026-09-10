@@ -16,13 +16,13 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 03:05 UTC
+## Current checkpoint — September 10, 03:09 UTC
 
-Previous goal turn made PROGRESS (full Watch and first mid-hunt recovery).
-This continuation yielded further actual-play evidence:8Seeds complete and
-5/60Impcredit past the preceding4creditstall, plus predeploy gallery passed.
-No source changes, new push, restart or impasse. Full goal active; root remains
-ledger-only/NEVER pushed.
+Previous goal turn made PROGRESS (8Seeds and progress past the Imp stall).
+This continuation is a VERIFIED WAIT: same22725 and predeploy102727073506 were
+re-polled and remain live. Imp credit advanced to10, but the next action remains
+continuing the current run. No source changes, new push, restart or impasse.
+Full goal active; root remains ledger-only/NEVER pushed.
 
 **CI34430017443 ACTIVE**, canonicalcaab611 frozen. All server/client/browser
 jobs remain SUCCESS. Predeploy102727073506 ACTIVE: deterministic High/Low
@@ -39,10 +39,12 @@ town305HP/66MP → naturallyfull385HP/264MP/bank9.901 → departurebank17.919,
 22.503s, with the same120s absolute encounter deadline. Earned level10 training
 then spent2availabletalentpoints normally; no state grants or dailies.
 
-Latest Imp milestone **5/60**,0deaths,2reststops,1trainingstop,226huntseconds,
-level11/2560XP/2600next/2324Gold. HP370/440,MP43/297,18bagslots/870unsoldvalue.
-This is beyond44940's4creditstall and proves resumed qualifying progress after
-ordinary recovery in this run, NOT complete Imp or wholecampaign/balance proof.
+Latest Imp milestone **10/60**,0deaths,5reststops,1trainingstop,449huntseconds,
+level13/2535XP/3700next/2904Gold. HP357/495,MP152/330,19bagslots/1070unsoldvalue.
+Another unfinished mana retreat restored17→330MP in22.977s before that milestone;
+the subsequent between-encounter health stop restored357→495HP and153→330MP,
+departing with103.903bankseconds. These are continued qualifying progress after
+ordinary recovery, NOT complete Imp or wholecampaign/balance proof.
 Keep full60/scars/50Orcs/unchangedlevel30dungeon readiness gates intact. Continue
 sameprocess; no primary source edits, second owned browser or heavy tests until
 terminal, then retain/sanitize artifacts and verify exactcleanup.
