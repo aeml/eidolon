@@ -1,7 +1,8 @@
 # Socket appearance consistency — visual successor candidate
 
-Status: implemented, focused checks and full client regression passed;
-rendered/native acceptance and versioned deployment remain pending. Built separately from the
+Status: normalization implemented; focused checks and full client regression
+passed. Strengthened rendered acceptance FAILS on per-class socket visibility;
+native Forge and versioned deployment remain pending. Built separately from the
 accepted local aura/equipment candidate71f18922; no active campaign source or
 canonical release was edited. This is an equipment-polish correction within the
 existing1.1–1.10 goal, not completion of the broader visual milestone.
@@ -63,9 +64,53 @@ acquisition or balance evidence. Group-frame pixel signal alone does not prove
 each individual tiny socket is readable; inspect the images as well. Production
 source is unchanged from9ef7e1b7/bdf3a2df. Lint13668 and one-case Playwright
 discovery19716 passed underNode24; lint log `/tmp/eidolon-socket-render-lint.log`.
-The rendered test has not run yet: primary's post-combat dungeon-rest native
-gate38977 owns the sole local browser/heavy slot. Wait for its terminal result
-and preserve its artifacts before starting this comparison.
+The subsequent rendered attempts and narrower evidence limits are recorded below.
+
+### Rendered results and visibility gap — September 10, 12:26 UTC
+
+Primary38977 passed and was archived before these browser runs. Initial79252
+failed before rendering because this separate worktree had no generated vendor
+dependencies. Archive `/tmp/eidolon-socket-render-setup-failure-0mD1v7` retains
+that setup failure. Normal `npm run prepare:client` generated the missing files;
+the unchanged test was then run again, not silently retried inside Playwright.
+
+42354 on9caa198d passed1case6.0s (7.5s total): seven types×two quality levels×
+three equivalent representations,42zero-RGB-difference comparisons, matching
+icons/no rebuild, visible group signal. Archive
+`/tmp/eidolon-socket-render-proof-qXJs7F`. Inspected RubyHigh/Low, SapphireHigh
+and EmeraldHigh images: too wide to judge individual tiny sockets reliably.
+
+Added actual attached-weapon close-up cameras without moving/enlarging the
+weapon/gem or removing the surrounding actor. 35854 onff0be297 passed1case9.1s
+(10.6s total), same comparisons plus all sockets projected inside their views.
+Archive `/tmp/eidolon-socket-closeup-proof-wiw1sA` retains14group images,
+14four-class close-up mosaics and reports/logs. Inspected all7High close-ups:
+Fighter's socket changes color visibly, but the other classes' sockets are
+obscured in this prepared pose. Group-level pixel signal is insufficient.
+
+Strengthened the test to change ONE actor's socket at a time, keeping neighbors,
+pose and camera fixed. **22608 TERMINAL1 on7efc60f5**,3.2s: HighRuby signal4706
+forFighter and0forRogue/Wizard/Cleric. All four socket centers project inside the
+camera frustum, so in-frame metadata does not establish actual visible color.
+The test fails on Rogue's own visible-color assertion; keep that assertion.
+Archive `/tmp/eidolon-socket-visibility-failure-eaIvhd` retains failure screenshot,
+detail mosaic, trace/video, report and native/lintlogs. No remaining41980listener.
+This is an anonymous prepared scene; no account, resource or save was altered.
+
+Production code remains unchanged frombdf3a2df. Lint35728 passed for the stronger
+test; this is not a gameplay or normalization-code regression established by the
+new evidence. The prepared frame does not advance a gameplay animation, so do
+not claim sockets are hidden in every live pose. Investigate actual idle/attack
+poses and equipment placement/occlusion before changing geometry. In particular,
+blade geometry grows along local+Y from the hand and the current socket origin
+is[.1,.3,.08]; inspect its relation to the forearm rather than merely making the
+material brighter or weakening the visibility test.
+
+The earlier group-comparison passes retain their narrow meaning but DO NOT close
+all-class rendered equipment acceptance. Next resolve the per-class visibility
+gap, rerun strengthened comparisons and inspect High/Low details, then ordinary
+Forge/local+observer/save acceptance. Canonical release60 remains ahead of any
+successor push/version assignment.
 
 1. Earned44188 is now TERMINAL1 (second Warden survival failure), archived at
    `/tmp/eidolon-earned-upgrade-failure-sQmC8N`. Preserve that result; this visual
