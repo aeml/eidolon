@@ -28,6 +28,15 @@ ground shapes and respawn presentation. Logs:
 `/tmp/eidolon-aura-integration-lint.log`. No full-suite, browser or live acceptance
 is claimed for this integration.
 
+Session25774 also completed `npm run prepare:client` and actual Playwright
+`--list` discovery underNode24.18.0, without launching a browser/server. All nine
+expected cases across seven files are present: four rendered batching/lifecycle/
+population cases, journey, expiry, party, hostile death and repeated dungeon
+transitions. Logs `/tmp/eidolon-aura-integration-prepare.log` and
+`/tmp/eidolon-aura-integration-discovery.log`. Source remained clean; browser
+assets are ignored generated dependencies. Discovery is not execution or a
+substitute for the integrated native gates below.
+
 ## Promotion gates still open
 
 1. Preserve the current independent campaign attempt96530 on frozen626385d;
