@@ -178,3 +178,63 @@ probe must be labelled, not treated as earned progress. Recheck a justified
 candidate through actual play and retain all-class/party/later-boss comparisons.
 Do not restore high passive regeneration or claim the main campaign is accepted.
 All wider roadmap and release gates remain open.
+
+## Forge affordability and complete entry evidence — September 10, 14:58 UTC
+
+Source f1ca0220 extends the server audit with explicitly counterfactual normal
+Forge level upgrades. Each fixture supplies exactly the quoted shards, invokes
+the actual upgrade action, preserves item identity and verifies exact material
+consumption. These supplied materials are not earned-player evidence.
+
+| All equipped items upgraded to player level | Level31 | Level32 |
+|---|---:|---:|
+| Required Eidolon Shards | 239 | 253 |
+| HP / mana | 1280 / 770 | 1355 / 805 |
+| Fireball raw damage / mana cost | 172 / 30 | 180 / 30 |
+| Eight-minute stationary raw reference | 13928 | 14745 |
+
+The same exclusions above apply: this is not a combat simulation, a maximum
+damage bound, or evidence that the Warden is cleared. Focused audit77915 passed
+.209s; focused race85596 passed2.316s including prepared-Wizard and dungeon-rank
+regressions. Logs `/tmp/eidolon-recorded-forge-economy-{audit,race}.log`.
+
+The original archived run DOES retain a later failure receipt. In
+`/tmp/eidolon-earned-upgrade-failure-sQmC8N/run.log`, its level32 player has
+19 Eidolon Shards and two Eidolon Hearts, zero stat points and one talent point.
+The receipt was captured after the failed attempt, not before dungeon entry;
+it does not prove an exact entry budget or an exact saved inventory/stash.
+Its abbreviated inventory omits full item stats/basis/gems. Existing inventory
+maintenance already retains materials and gems; do not treat their loss to
+selling as an established cause. Gold alone does not pay the Forge shard cost.
+
+The original preparation logs at levels10/20/22/30 all report zero available
+stat points and zero allocations. Source inspection reveals a separate parity
+question: new-character creation in `server/client_dispatch.go` initializes all
+five stats to10; `canonicalBaseStatsForClass` used by `SetPlayerLevel` and many
+prepared audits instead gives the class primary stat20. The recorded Wizard's
+base Intelligence40 at31 matches the actual creation path plus ordinary growth.
+Do not silently treat the stronger prepared baseline as fresh-player evidence.
+Resolve the intended starting-stat contract and save-compatibility implications
+before changing it; no new-character or saved-player stats changed here.
+
+The fresh campaign now attaches `earned-dungeon-entry` after ordinary equipment
+swaps and before traversal. It retains detached full equipment, inventory,
+observed stash, base/derived stats, training, quests, resources, source identity
+and timestamp without account identity or credentials. It is explicitly not a
+database save. Attachment failure stops the long encounter from starting without
+its receipt. Unknown stash is null, not a claimed verified empty store.
+80072 TERMINAL0 onf1ca0220:304suites/4226tests154.437s plus lintNode24.18.0.
+Logs `/tmp/eidolon-earned-entry-full-{client,lint}.log`.
+
+Follow-up receipt coverage adds available stat/talent points, distinguishing
+actual zero from unknown/null.72143 RED2failed/3passed/.962s;72281 PASS76tests/
+4suites1.592s plus lint. Logs `/tmp/eidolon-earned-entry-points-{red,unit,lint}.log`.
+No new native fresh campaign has yet produced this attachment. The full client
+result predates this two-field follow-up, whose scoped regression passed.
+
+Next balance decision remains whether ordinary Normal story dungeons should be
+comfortably soloable with reasonable earned gear or require a party; an async
+question is pending. Meanwhile, resolve preparation/starting-stat evidence and
+continue independent ordered release validation. Do not grant this fixture
+unearned Forge materials, repeat its unchanged failed fight, extend watchdogs,
+or declare all-class, full campaign or live balance acceptance.

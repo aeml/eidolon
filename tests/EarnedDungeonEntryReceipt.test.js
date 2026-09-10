@@ -3,7 +3,7 @@ import { readEarnedDungeonEntryInPage } from './earnedDungeonEntryReceipt.js';
 class Wizard {}
 const fixture = () => ({ currentInstanceType: 'overworld', player: Object.assign(new Wizard(), {
     id: 'private-player-id', name: 'private-player-name', password: 'not-for-artifacts',
-    level: 31, xp: 10652, gold: 22432, baseStats: { intelligence: 40 },
+    level: 31, xp: 10652, gold: 22432, statPoints: 0, talentPoints: 1, baseStats: { intelligence: 40 },
     stats: { hp: 1140, maxHp: 1140, mana: 670, maxMana: 670 },
     inventory: [{ id: 'shards', name: 'Eidolon Shard', type: 'MATERIAL', stack: 19,
         maxStack: 999, stats: {}, rarity: { name: 'Common' }, statScaleVersion: 1 }, null],
@@ -23,6 +23,7 @@ test('entry receipt retains full items, stash, materials and build without accou
     const receipt = readEarnedDungeonEntryInPage({ sourceCommit: 'a'.repeat(40), sourceDirty: false });
     expect(receipt).toMatchObject({ schemaVersion: 1, className: 'Wizard', level: 31,
         sourceCommit: 'a'.repeat(40), sourceDirty: false, gold: 22432, health: 1140, mana: 670,
+        statPoints: 0, talentPoints: 1,
         inventory: window.game.player.inventory, equipment: window.game.player.equipment,
         stash: window.game.player.stash, quests: window.game.player.quests });
     expect(receipt.capturedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
@@ -47,6 +48,13 @@ test('unknown stash is not reported as verified empty storage', () => {
     window.game = fixture();
     delete window.game.player.stash;
     expect(readEarnedDungeonEntryInPage().stash).toBeNull();
+});
+
+test('unknown point balances are not reported as zero earned points', () => {
+    window.game = fixture();
+    delete window.game.player.statPoints;
+    delete window.game.player.talentPoints;
+    expect(readEarnedDungeonEntryInPage()).toMatchObject({ statPoints: null, talentPoints: null });
 });
 
 test('missing entered character fails instead of producing an empty preparation receipt', () => {

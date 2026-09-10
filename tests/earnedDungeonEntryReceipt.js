@@ -12,6 +12,7 @@ export function readEarnedDungeonEntryInPage(metadata) {
         capturedAt: new Date().toISOString(),
         note: 'Observed after earned equipment swaps, before dungeon traversal; not an exact database save.',
         className: p.constructor.name, level: p.level, xp: p.xp, gold: p.gold,
+        statPoints: p.statPoints ?? null, talentPoints: p.talentPoints ?? null,
         baseStats: p.baseStats, derivedStats: p.stats,
         equipment: p.equipment, inventory: p.inventory,
         stash: Array.isArray(p.stash) ? p.stash : null,
