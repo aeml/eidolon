@@ -58,3 +58,23 @@ test('actual encounter dispatch carries the fixed boss room into the combat call
         encounter: { x: 20000, z: 19460, width: 120, height: 120 } });
     expect(enemy.encounter).toBeUndefined();
 });
+
+test.each([true, false])('post-clear inspection runs only after successful room/reward checks: %s', async success => {
+    // Empty synthetic route isolates the post-combat inspection boundary. Native
+    // tests still require all actual configured bosses and cleared-room checks.
+    const layout = { generationSeed: 'route-boundary', rooms: [] };
+    const page = { evaluate: jest.fn().mockResolvedValueOnce(undefined).mockResolvedValueOnce(layout)
+        .mockResolvedValueOnce(10).mockResolvedValueOnce({ rooms: [] }).mockResolvedValueOnce(success ? 20 : 5) };
+    const afterClearedRoute = jest.fn();
+    enterAndExitDungeon.mockImplementationOnce(async (_page, { beforeExit }) => beforeExit());
+    const result = playDungeonThroughInputs(page, { fullRun: false, afterClearedRoute,
+        playthrough: { dungeonType: 'test', bosses: [] } });
+    if (success) {
+        await result;
+        expect(afterClearedRoute).toHaveBeenCalledWith(page);
+        expect(afterClearedRoute).toHaveBeenCalledTimes(1);
+    } else {
+        await expect(result).rejects.toThrow();
+        expect(afterClearedRoute).not.toHaveBeenCalled();
+    }
+});

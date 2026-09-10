@@ -10,7 +10,7 @@ import { dungeonBossEncounter } from '../dungeonCombatEncounter.js';
 // default enters through the town guide, without grants. Only the legacy prepared
 // caller explicitly opts into the QA entrance waypoint (which grants protection).
 export async function playDungeonThroughInputs(page, {
-    playthrough, fullRun = true, fallbackRun = false, beforeCombat, useTownGuide = true,
+    playthrough, fullRun = true, fallbackRun = false, beforeCombat, useTownGuide = true, afterClearedRoute,
     requiredFighterSkills = ['Iron Fortress', 'Guardian Roar', 'Whirlwind', 'Shield Slam']
 }) {
     const logPrefix = `[dungeon:${playthrough.dungeonType}]`;
@@ -230,6 +230,10 @@ export async function playDungeonThroughInputs(page, {
                 bossRooms, gold: await page.evaluate(() => window.game.player.gold) };
         }
         expect(await page.evaluate(() => window.game.player.gold)).toBeGreaterThan(goldBefore);
+        // Inspection boundary after actual combat/room/reward assertions, before
+        // ordinary Recall. Recovery diagnostics must observe spent pools here,
+        // not infer them from already-restored town state.
+        if (afterClearedRoute) await afterClearedRoute(page);
     } });
     if (fullRun) {
         await enterAndExitDungeon(page, { ...playthrough, useTownGuide, beforeExit: async () => {

@@ -633,6 +633,10 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   verdant)
     npx playwright test tests/e2e/verdant-dungeon-gameplay.spec.js
     ;;
+  prepared-dungeon-rest)
+    EIDOLON_E2E_PREPARED_DUNGEON_REST=1 EIDOLON_E2E_CLASS=Wizard \
+      npx playwright test --retries=0 tests/e2e/prepared-dungeon-town-rest.spec.js
+    ;;
   prepared-dungeon-fixture)
     npx playwright test tests/e2e/prepared-dungeon-fixture.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js
     ;;

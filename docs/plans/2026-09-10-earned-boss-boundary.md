@@ -96,3 +96,19 @@ play, preserving traversal, encounter and whole-run deadlines. Appropriate
 earned kit/resource use and wider class/group balance still need investigation
 before another hour-long fresh campaign replay. Full four-boss/manual-reward/
 save/Water requirements remain unchanged.
+
+The explicit isolated `prepared-dungeon-rest` diagnostic now implements the
+first post-combat check, but has not yet run natively. It observes spent mana
+after the existing two-boss/cleared-room/Gold assertions and before Recall,
+waits for normal sanctuary recovery, then uses the actual town guide without a
+reset or new waypoint. Its detached snapshot compares the same instance, seed,
+generator, difficulty, run level, cleared rooms, Gold, bag contents, level and
+quest progress after re-entry. It does not claim depleted-HP recovery: the
+prepared protection can prevent HP loss. It also does not establish persistence
+across login/server restart or normal-level resource pacing.
+
+Focused22626 passed20tests/3suites0.828s and lintNode24, including snapshot
+detachment, changed-progress detection, explicit-route guards and the actual
+post-clear callback ordering. Logs `/tmp/eidolon-dungeon-town-rest-focused.log`
+and `/tmp/eidolon-dungeon-town-rest-lint.log`. Full regression and the explicit
+native diagnostic remain required before this additional route is accepted.
