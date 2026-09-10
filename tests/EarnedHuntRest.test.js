@@ -45,6 +45,8 @@ test('unfinished retreat consumes the same encounter deadline and cannot manufac
     expect(loop).toContain('while (Date.now() < deadline');
     expect(loop.match(/deadline\s*=/g)).toHaveLength(1);
     expect(loop).toContain('toBeGreaterThan(credit)');
+    const recovery = readFileSync(new URL('./e2e/earned-town-rest.js', import.meta.url), 'utf8');
+    expect(recovery).toContain('else await returnToTown(page, { allowRespawn: false })');
 });
 test('no extra rest stop before the first credited encounter', async () => {
     expect(await recoverBetweenHuntEncounters({}, { enabled: true, creditedKills: 0, leaveTown() {} })).toBe(false);

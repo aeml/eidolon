@@ -1902,8 +1902,9 @@ export async function enterAndExitDungeon(page, { beforeExit, resetRun = false,
     if (inspectionError) throw inspectionError;
 }
 
-export async function returnToTown(page) {
+export async function returnToTown(page, { allowRespawn = true } = {}) {
     if ((await readPlayerState(page)).state === 'DEAD') {
+        if (!allowRespawn) throw new Error('Character died before Recall; an unfinished hunt cannot hide a respawn');
         await page.locator('#btn-death-respawn').click();
     } else {
         await page.keyboard.press('b');

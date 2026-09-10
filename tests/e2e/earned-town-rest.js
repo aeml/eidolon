@@ -20,7 +20,8 @@ export async function recoverBetweenCollectionEncounters(page, leaveTown) {
 // undo that progress, and retain strict level equality between encounters.
 export async function restoreEarnedTownResources(page, leaveTown, before, reason, { preserveLevel = true } = {}) {
     const started = Date.now();
-    await returnToTown(page);
+    if (preserveLevel) await returnToTown(page);
+    else await returnToTown(page, { allowRespawn: false });
     await expect.poll(() => readEarnedRestResources(page).then(state => state.zone)).toBe('lanternhold');
     const arrived = await readEarnedRestResources(page);
     await expect.poll(() => readEarnedRestResources(page).then(state => !state.dead && state.hp === state.maxHP && state.mana === state.maxMana),

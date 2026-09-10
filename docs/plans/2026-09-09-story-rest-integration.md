@@ -27,6 +27,26 @@ Existing canonical 51–57 releases and their deployment order are untouched.
 
 ## Evidence and remaining work
 
+September10, follow-up to44940: the earned hunt driver now allows ordinary Recall
+inside an unfinished encounter when fewer than one primary cast remains or HP is
+below35%. Between-kill two-cast/80% preparation is unchanged. The same absolute
+120s deadline includes recall, natural town healing and departure; no watchdog
+reset, quest credit, free resources, prepared level, lower requirement or daily
+workaround. A legitimate in-flight kill may advance level during retreat; the
+separate exact-level between-encounter check remains unchanged. Strict living
+Recall refuses to silently respawn if the character dies after its resource
+observation. Failed input/recovery remains a route failure, not a pass.
+
+Code06fb7a2 passed focused96406:41tests/3suites0.838s+lint, then full15472:
+286suites4034tests115.724s+lint. The subsequent death-race guard and unchanged
+default helper behavior passed focused38521:50tests/4suites0.857s+lint; this
+guard was added after that full run and is not included in its count. Logs
+`/tmp/eidolon-hunt-disengage-{focused,lint,full-client,full-lint}.log` and
+`/tmp/eidolon-hunt-disengage-guard-{focused,lint}.log`. Full fresh story replay
+on the final guarded source is the next gate; no new actual Imp success yet.
+This corrects a QA strategy restriction and does not establish that the game's
+early Imp difficulty, full campaign pace or group readiness is balanced.
+
 September10: fresh story-only44940 on79e9571/code d47f5c6 TERMINAL FAILED16.9m
 at4/60Imp credit, after successful opening/diary/Watch40/8Seeds and manual
 turn-ins. No death in the completed Watch/collection segments. First hunt took

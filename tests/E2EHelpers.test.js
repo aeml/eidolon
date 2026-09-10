@@ -10,7 +10,31 @@ import {
 } from './e2e/browserLaunchPolicy.js';
 
 jest.unstable_mockModule('@playwright/test', () => ({ expect: jest.fn() }));
-const { collectBrowserFailures } = await import('./e2e/helpers.js');
+const { collectBrowserFailures, returnToTown } = await import('./e2e/helpers.js');
+
+describe('unfinished hunt recall', () => {
+    test('a death between the resource observation and Recall cannot become a free rest stop', async () => {
+        const page = { evaluate: jest.fn(async () => ({ state: 'DEAD' })),
+            locator: jest.fn(), keyboard: { press: jest.fn() } };
+        await expect(returnToTown(page, { allowRespawn: false })).rejects.toThrow('cannot hide a respawn');
+        expect(page.locator).not.toHaveBeenCalled();
+        expect(page.keyboard.press).not.toHaveBeenCalled();
+    });
+    test('a living retreat still uses the ordinary Recall key', async () => {
+        const page = { evaluate: jest.fn(async () => ({ state: 'IDLE' })), locator: jest.fn(),
+            keyboard: { press: jest.fn(async () => { throw new Error('input receipt'); }) } };
+        await expect(returnToTown(page, { allowRespawn: false })).rejects.toThrow('input receipt');
+        expect(page.keyboard.press).toHaveBeenCalledWith('b');
+        expect(page.locator).not.toHaveBeenCalled();
+    });
+    test('existing explicit recovery callers retain their respawn action', async () => {
+        const click = jest.fn(async () => { throw new Error('respawn receipt'); });
+        const page = { evaluate: jest.fn(async () => ({ state: 'DEAD' })),
+            locator: jest.fn(() => ({ click })) };
+        await expect(returnToTown(page)).rejects.toThrow('respawn receipt');
+        expect(page.locator).toHaveBeenCalledWith('#btn-death-respawn');
+    });
+});
 
 function request(url, resourceType = 'document', errorText = 'net::ERR_ABORTED') {
     return {
