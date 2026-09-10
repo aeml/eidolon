@@ -27,6 +27,11 @@ supplemental0, inspected at-failure reading screenshot; exact disposable service
 and18560/18561/41960ports absent. Log `/tmp/eidolon-fresh-story-0203.log` retained.
 Full regression and another complete fresh story-only replay remain required.
 
+Full65008 on d47f5c6 subsequently PASSED286suites/4026tests114.77s and lint.
+Logs `/tmp/eidolon-diary-ack-full-{client,lint}.log`. The next actual fresh route
+must still prove diary/manual completion and all later story-only readiness
+requirements; the earlier prepared chain pass cannot substitute for that result.
+
 ## Prior reading and opening-credit work
 
 The cf9f2cc story run38966 failed after first-diary approach combat with the
