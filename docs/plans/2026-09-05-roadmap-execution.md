@@ -5,13 +5,13 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 21:12 UTC
+## Current checkpoint — September 10, 21:24 UTC
 
-Previous goal turn was PROGRESS: bundled browser/desktop healing acceptance and
-successor integration. This turn is a VERIFIED WAIT on live four-role46761:
-ordinary party setup, same-instance entry, first room and full-party town-rest/
-re-entry checks passed so far. The process remains active, not a completed clear.
-Full roadmap and release gates remain.
+Previous goal turn was a VERIFIED WAIT on four-role46761. This turn is PROGRESS:
+its terminal result isolated a second-town-return guide failure, and primary now
+has bounded waypoint-arrival sequencing, visibility diagnostics and a focused
+four-player re-entry route. Candidate full server88252 is active. Full roadmap,
+successful dungeon clear and release gates remain open.
 Full roadmap remains active and deployment/1.1 completion is not claimed.
 
 - Full Go race81223 TERMINAL0 on20d9f17d: game381.679s, other tested packages
@@ -148,7 +148,7 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   observations, not populated-storage or full-world visual/physical-phone proof.
   Additional phone captures show thumb controls outside the central actors and
   readable scrolling party choices; physical-phone acceptance remains open.
-  Primary02d30584 now owns the revised four-role run46761. Candidate
+  Primary24ef041d is now idle after four-role46761 failed. Candidate
   native stat/storage/party/required-all, bundled-browser, version/remote/live
   acceptance remain pending. Do not infer production readiness from focused
   checks or restart a process solely on an observation timeout.
@@ -189,18 +189,44 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   ports cleared. Documentatione7fde8bc records the evidence, and the candidate
   fast-forwarded to it. Full Go/client/updated104browser/required-all/version/live
   gates still apply to this changed integration source.
-- Native four-role46761 is ACTIVE on frozen primary02d30584, routeparty-dungeon,
+- Native four-role46761 TERMINAL1 on frozen primary02d30584, routeparty-dungeon,
   runparty-charge-0910-2108, ports18580/18581/41980; log
  `/tmp/eidolon-four-role-charge-reserve-native.log`. It tests the previously
   committed18-unit tank Charge reserve with ordinary party input and unchanged
-  level30 common gear/combat/regen/deadlines. This is the sole local heavy gate;
-  candidate/staging are idle. No whole dungeon clear/manual persistence claim.
+  level30 common gear/combat/regen/deadlines. No whole dungeon clear/manual
+  persistence claim.
   Re-polled46761 live at21:12. Source remains clean02d30584; replay seed
  6042377505425430721, generator2, Normal30, no fallback. Four invitation/roster
   and same-instance checks passed. First room cleared, all four restored HP/MP
   in town and resumed with exact seed/rooms/Gold/inventory/quests retained.
   Pre-rest HP/MP by Fighter/Cleric/Wizard/Rogue:758/364,845/528,756/300,752/404.
-  No boss result yet. Do not restart this still-live process or change its source.
+  The run subsequently ended after7.1minutes at the second town return: a member
+  could not acquire a visible guide in20seconds (dungeon-guide.js:48, caller
+  four-player-dungeon.spec.js:280). All remained alive; no boss encountered.
+  Fighter3872damage/847taken, Cleric1175effective ally heal/0taken,
+  Wizard3167damage/452taken, Rogue3004damage/240taken; all477Gold, no rejected
+  casts, no Charge casts in this early segment. These are not boss-strategy or
+  sustained-balance results. Archive
+ `/tmp/eidolon-four-role-charge-reserve-proof-yQ6cln`, log above; artifact scan
+  passed and owned services/listeners removed.
+- Primary24ef041d addresses an independently confirmed controller limitation:
+  guide approach issued another waypoint after the generic helper witnessed only
+  one unit of movement. It now waits for each waypoint/player/camera to settle,
+  uses deliberate Shift walking, retains four approach steps and actual NPC
+  hover/click checks, and logs early projection/loaded-guide/DOM coverage failures.
+  The old failure lacks those diagnostics, so this is not a proven root cause
+  or native fix yet. Member class/phase is now logged at each re-entry.
+ 35443 passed32tests/3suites1.365s plus lint.87783 passed lint/shell/discovery for
+  a separate four-client three-cycle Recall/individual Resume test, without
+  combat or any full-clear claim. Logs`/tmp/eidolon-guide-approach-{focused,lint}.log`
+  and`/tmp/eidolon-party-guide-reentry-{lint,discovery}.log`. Primary is clean/idle;
+  run focused routeparty-guide-reentry after the server gate finishes, then full
+  dungeon only when its re-entry path is verified. No runtime/balance change.
+- Candidate full Go race88252 is ACTIVE on frozene7fde8bc, started~21:18;
+  log`/tmp/eidolon-next-support-full-server.log`. Root21.370s and some packages
+  have passed, but game/full terminal result remains pending. This is the only
+  local heavy gate. Full client/updated104browser/required-all/version/live
+  candidate acceptance remains open. Do not modify the running candidate source.
 - Remote rechecked again at~21:10: canonical62dc CI34434837759 remains queued at
   predeploy, after five hosted jobs passed; Nightly34433520743 still in progress.
   No soak interruption, push, new version or production acceptance.
