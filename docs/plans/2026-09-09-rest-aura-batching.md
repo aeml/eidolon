@@ -1,5 +1,55 @@
 # Well Rested aura batching — separate visual/performance prototype
 
+## Required pipeline wiring and rehearsal — September10, 07:24UTC
+
+Code commitc23ef2f adds a mandatory predeploy renderer step after the existing
+animation gallery and before full disposable gameplay. `npm run test:e2e:rest-render`
+runs single-character parity, GPU lifecycle and5/20actor comparisons (four tests)
+with no retries. Its wrapper propagates browser failure, sanitizes on exit and
+fails on sanitation failure. JSON measurements and screenshots live in ignored
+`rest-render-results/`, a sibling of the routinely cleared `test-results/` root,
+and the predeploy artifact upload explicitly includes them. Line+JSON reporting
+does not replace the preceding gallery's HTML report.
+
+The full disposable `run_well_rested` suffix now requires journey/expiry, then
+two-player quality/reconnect, then the two earned-rest death/dungeon checks, with
+distinct output subdirectories and fresh actor suffixes. Every stage propagates
+failure and stops later stages. Prepared encounter/level setup remains confined
+to the disposable server; the ordinary production recovery wrapper is unchanged.
+This is wiring on the unpublished aura branch, not a mutation of queued60.
+
+Focused35tests/3suites passed1.403s, lint/bash syntax passed, and js-yaml parsed
+the resulting workflow/step order. Full29228 passed260suites3647tests127.063s plus
+lint underNode24.18.0. Tests execute mocked shell failure/sanitation paths as well
+as checking required workflow ordering, artifact paths and native suffix wiring.
+Logs `/tmp/eidolon-aura-gates-{unit,lint,full-client,full-lint}.log`.
+
+Rehearsal68099 TERMINAL PASS on clean/frozenc23ef2f, Node24/systemChrome/RADV
+RENOIR: actual new renderer command4/1.3m, ordinary journey/expiry2/1.3m,
+two-player party1/44.7s, and death/dungeon transitions2/3.0m. No retries/skips.
+The rendered JSON contains all4passing results and embedded lifecycle/populated
+measurement attachments. Its checksum stayed identical after the combined native
+suffix. Actual credential sanitation0; exact runIDaura-gates-0910 containers/
+image and18560/18561/41960 absent after cleanup. Log
+`/tmp/eidolon-aura-gates-rehearsal.log`; archive
+`/tmp/eidolon-aura-gates-proof-ZXIT6U` with render results and native HTML/images.
+Current native images are under `test-results/well-rested-{journey,party,transitions}`;
+loose older transition directories retained in the archive are NOT this run's proof.
+
+After archiving native evidence,13513 ran an actual default-output browser check
+(single-character parity1/4.6s) and compared hashes of EVERY render evidence file,
+including screenshots and JSON, before/after default-root clearing: unchanged.
+Anonymous scanner0, port41960 closed. Log
+`/tmp/eidolon-aura-gates-output-retention.log`; its HTML/results are separately
+archived as `default-output-report` / `default-output-test-results`. Viewed the
+current nested transition respawn/town-return images and20actor High render image.
+
+This rehearses the added rendering gate plus all five native aura tests, not the
+entire long full-character predeploy suite or production acceptance. Remote CI,
+versioned notes/identity and final live checks remain due after60 is accepted.
+Physical-phone/full-scene and the broader class/realm/group/campaign/raid roadmap
+gates remain open. No runtime/server change, new version, push or deployment.
+
 ## Authoritative death and dungeon transitions — September10, 07:05UTC
 
 Added `well-rested-transitions-gameplay.spec.js` and the matching isolated route
