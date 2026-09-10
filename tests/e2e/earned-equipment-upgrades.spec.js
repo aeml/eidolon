@@ -59,6 +59,15 @@ test('normal full-bag upgrades target paired slots and preserve all items after 
     seedUpgradeFixture(credentials.username);
     await loginAndEnterWorld(page, credentials);
     expect((await readEarnedGear(page)).inventory.filter(item => item?.id)).toHaveLength(25);
+    await page.keyboard.press('c');
+    await expect(page.locator('#character-sheet')).toBeVisible();
+    for (const id of ['slot-mainhand', 'slot-ring2']) {
+        expect(await page.locator(`#${id}`).evaluate(slot => {
+            const rect = slot.getBoundingClientRect();
+            return document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2) === slot;
+        }), 'Decorative equipment artwork must not split the native drop target').toBe(true);
+    }
+    await page.locator('#btn-close-character').click();
     await page.evaluate(() => {
         window.__gearDragEvents = [];
         window.__gearRefreshes = 0;
