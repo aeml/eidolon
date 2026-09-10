@@ -16,7 +16,42 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 04:31 UTC
+## Current checkpoint — September 10, 04:47 UTC
+
+Previous goal turn was a VERIFIED WAIT. This continuation observed new native
+phase proof: full Imp/manual/save and scar investigation phases passed under the
+new ordered phase runner, and Orc phase started. Full goal remains active and
+incomplete. No code/source mutation, cancellation, restart, push or deployment;
+root ledger-only and NEVER pushed. No whole-goal impasse while the earned run
+continues, despite the still-unanswered release-runner operational question.
+
+**84056 ACTIVE**, ONLY owned local browser, primary still clean/frozenea6cdbb,
+samefresh-phases-0910/18560/18561/41960/log
+`/tmp/eidolon-fresh-phases-replay.log`. Full60Imp/manual200Gold6843XP/save passed
+1734s,zero deaths,24natural townstops and2earnedtrainingstops. Exactclaim:
+21/9503XP/10071Gold→22/6246XP/10271Gold;17 bag slots/2400unsold gear value.
+Actual namedimps phase PASS1733807ms/2700000ms. No performance or balance
+improvement claim from its shorter duration versus the earlier random playthrough;
+runtime combat/rewards were unchanged and this is still one class/attempt.
+
+All3scar investigations/manual25Gold200XP then PASSED, actual phase32962ms/
+600000ms. **Orcs phase ACTIVE**,3600000ms cap, startslevel22/6446XP/11125next/
+10296Gold,full709HP/522MP,17bag slots/2400unsold gear value. All50Orcs/manual/save,
+dungeon offer/gear persistence and strictstory-onlylevel30 readiness are still
+pending. No final campaign acceptance. Same120s encounters/two-death bounds and
+normal recovery/input remain required; no additional local browser/heavy tests
+or source edits until exact terminal preservation/sanitation/cleanup.
+
+**Predeploy102741303703 remains QUEUED** inCI34434837759 on unchanged62dc2d1;
+all hostedclient/server/browser jobs passed. Scheduled24h soak34433520743/
+job102733792127 was re-polled and remains in progress on the solematchingrunner.
+The specific cancellation question remains unanswered: no authority to cancel
+that run, change labels/scheduling or claim24h completion. Last verified public
+still60/df91bb6; no predeploy/deploy/finalnative/liveidentity acceptance. Continue
+exact84056 and release queue; all1.1–1.10/class/group/raids/phone/aura/CIcost/casino
+gates remain open and unchanged.
+
+## Previous checkpoint — September 10, 04:31 UTC
 
 Previous goal turn and this continuation are VERIFIED WAITs: repeatedly polled
 the same live84056 and queuedpredeploy102741303703, with its occupying soak
