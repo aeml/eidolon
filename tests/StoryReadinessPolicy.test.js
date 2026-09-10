@@ -58,7 +58,8 @@ test('the complete release chain requires story readiness while collection diagn
     expect(script).toContain('fresh-collection)\n    run_fresh_collection');
     expect(opening.indexOf('storyOnlyReadinessEnabled();')).toBeGreaterThan(0);
     expect(opening.indexOf('storyOnlyReadinessEnabled();')).toBeLessThan(opening.indexOf('await loginAndEnterWorld('));
-    expect(opening).toContain('if (storyOnlyReadiness) await verifyStoryOnlyEarthReadiness(page);');
+    expect(opening).toContain("await runPhase('readiness', () => verifyStoryOnlyEarthReadiness(page));");
+    expect(opening).toContain('runPhase.assertComplete();');
 });
 
 test.each(['Wizard', 'Fighter', 'Rogue', 'Cleric'])('actual shell wrapper passes story-only flags for %s and propagates failure', className => {

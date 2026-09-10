@@ -17,6 +17,7 @@ import { earnFreshStoryHunt } from './fresh-story-hunt-route.js';
 import { readStoryHuntFailureEvidence } from './story-hunt-combat-observer.js';
 import { earnedTownRecoveryEnabled } from '../earnedRecoveryPolicy.js';
 import { storyOnlyReadinessEnabled } from '../storyReadinessPolicy.js';
+import { createFreshStoryPhaseRunner, freshStoryTimeout } from '../freshCampaignPhases.js';
 import { verifyStoryOnlyEarthReadiness } from './story-readiness.js';
 import { recoverEarnedDeath } from './earned-death-recovery.js';
 import { earnedCheckpoint, uninterruptedEarnedMode } from './earned-checkpoint.js';
@@ -95,7 +96,12 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     uninterruptedEarnedMode(); // Fail unsupported combinations before creating a character.
     earnedTownRecoveryEnabled();
     const storyOnlyReadiness = storyOnlyReadinessEnabled();
-    test.setTimeout(process.env.EIDOLON_E2E_FRESH_STORY_HUNT === '1' ? 1_800_000 :
+    const runPhase = storyOnlyReadiness ? createFreshStoryPhaseRunner({
+        step: (name, body, options) => test.step(name, body, options),
+        record: receipt => console.log('[fresh-story-phase]', JSON.stringify(receipt))
+    }) : (_id, body) => body();
+    test.setTimeout(storyOnlyReadiness ? freshStoryTimeout :
+        process.env.EIDOLON_E2E_FRESH_STORY_HUNT === '1' ? 1_800_000 :
         process.env.EIDOLON_E2E_FRESH_HUNT === '1' ? 3_600_000 :
         // The expanded Earth route now includes150 required expedition kills,
         // not just the former diary/collection/scar sequence.
@@ -109,142 +115,144 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
         expect(process.env.EIDOLON_E2E_FRESH_HUNT).toBe('1');
         expect(process.env.EIDOLON_E2E_FRESH_COLLECTION).toBe('1');
     }
-    await loginAndEnterWorld(page, credentials);
-    if (process.env.EIDOLON_E2E_FRESH_READY === '1') {
-        expect(['Wizard', 'Fighter'], 'fresh-ready supports explicit earned Wizard and Fighter builds')
-            .toContain(await page.evaluate(() => window.game.player.constructor.name));
-    }
-    expect((await readPlayerState(page)).level).toBe(1);
-    await expect.poll(() => page.evaluate(() => {
-        const player = window.game.player;
-        const expected = player.wellRestedSeconds > 0 ? .11 : .1;
-        return [player.stats.hpRegen, player.stats.manaRegen]
-            .every(rate => Math.abs(rate - expected) < 1e-6); // protobuf float precision
-    }), { message: 'Fresh character retains .01 per-stat regeneration, with exactly10% while rested' })
-        .toBe(true);
-    console.log(`[fresh-opening] baseline ${JSON.stringify(await page.evaluate(() => {
-        const player = window.game.player;
-        return { class: player.constructor.name, level: player.level,
-            hp: player.health ?? player.stats?.hp, maxHP: player.maxHealth ?? player.stats?.maxHp,
-            basicDamage: player.stats?.damage ?? player.damage,
-            hpRegen: player.stats.hpRegen, manaRegen: player.stats.manaRegen,
-            primaryAbility: player.abilityName };
-    }))}`);
-    await openIlyra(page);
-    await expect(page.locator('.quest-dialogue__reward')).toContainText('Reward: 100 gold · 100 XP');
-    await page.locator('#quest-window').getByRole('button', { name: 'Accept Quest', exact: true }).click();
-    await expect.poll(async () => (await readChronicleChapter(page, chapter))?.accepted).toBe(true);
-    await page.locator('#btn-close-quest').click();
-    await returnToTown(page);
-    await leaveTown(page);
-    const beforeOpeningCombat = await createFreshCollectionCombat(page);
-    await observeCollectionCombatReceipts(page);
-    let deaths = 0;
-    let retreats = 0;
-    while ((await readChronicleChapter(page, chapter)).count < 3) {
-        const encounter = await selectUnfinishedObjectiveTarget(
-            async () => (await readChronicleChapter(page, chapter)).count,
-            () => findSkeletonThroughTravel(page), 3);
-        if (!encounter) break;
-        let { target } = encounter;
-        let targetStartHP = target.health;
-        let targetLowestHP = target.health;
-        const before = encounter.before;
-        const deadline = Date.now() + 120_000;
-        while (Date.now() < deadline && (await readChronicleChapter(page, chapter)).count === before) {
-            const player = await readPlayerState(page);
-            const targetState = await page.evaluate(id => {
-                const game = window.game;
-                const enemy = game.remotePlayers.get(id);
-                return enemy ? { level: enemy.level, hp: enemy.health ?? enemy.stats?.hp,
-                    distance: game.player.position.distanceTo(enemy.position),
-                    hovered: game.hoveredEntity?.id === id } : null;
-            }, target.id);
-            if (Number.isFinite(targetState?.hp)) targetLowestHP = Math.min(targetLowestHP, targetState.hp);
-            if (player.state === 'DEAD') {
-                deaths++;
-                console.log(`[fresh-opening] death ${JSON.stringify({ deaths, count: before, level: player.level,
-                    targetStartHP, targetLowestHP, target: targetState,
-                    resources: await page.evaluate(() => ({ hp: window.game.player.stats.hp,
-                        mana: window.game.player.stats.mana, maxMana: window.game.player.stats.maxMana })) })}`);
-                expect(deaths, 'Bounded opening route exceeded two normal respawns').toBeLessThanOrEqual(2);
-                await recoverEarnedDeath(page);
-                expect((await readChronicleChapter(page, chapter)).count, 'Death must not erase earned quest credit').toBe(before);
-                await leaveTown(page);
-                target = await findSkeletonThroughTravel(page);
-                targetStartHP = target.health;
-                targetLowestHP = target.health;
-                continue;
-            }
-            // Share the collection route's ordinary defensive inputs instead
-            // of interrupting every healthy attack with another retreat.
-            if (await leaveEarnedCombatSafety(page, () => leaveTown(page))) continue;
-            if (await beforeOpeningCombat()) continue;
-            retreats = await page.evaluate(() => window.__freshWizardDefense?.counts.retreats || 0);
-            if ((await readPlayerState(page)).state === 'DEAD') continue;
-            if ((await readChronicleChapter(page, chapter)).count > before) break;
-            target = await reacquireDisengagedCollectionTarget(page, target,
-                () => projectNearestHostile(page, 'Skeleton'));
-            const point = await projectEntity(page, target.id);
-            if (point?.visible) {
-                target = await selectCollectionTargetThroughInput(page, target, point);
-                if (await page.evaluate(() => window.game.player.abilityCooldown <= 0)) {
-                    await page.mouse.click(point.x, point.y, { button: 'right' });
-                }
-            }
-            await page.waitForTimeout(250);
+    await runPhase('opening', async () => {
+        await loginAndEnterWorld(page, credentials);
+        if (process.env.EIDOLON_E2E_FRESH_READY === '1') {
+            expect(['Wizard', 'Fighter'], 'fresh-ready supports explicit earned Wizard and Fighter builds')
+                .toContain(await page.evaluate(() => window.game.player.constructor.name));
         }
-        const diagnostic = await readFreshCollectionCombat(page, target.id);
-        expect((await readChronicleChapter(page, chapter)).count,
-            `Opening combat deadline: ${JSON.stringify(diagnostic)}`).toBeGreaterThan(before);
-        const player = await readPlayerState(page);
-        console.log(`[fresh-opening] ${JSON.stringify({ kills: (await readChronicleChapter(page, chapter)).count, deaths, level: player.level, hp: player.health, elapsedSeconds: Math.round((Date.now() - started) / 1000) })}`);
-    }
-    expect((await readChronicleChapter(page, chapter)).completed).toBe(false);
-    await openIlyra(page);
-    const readRewardState = () => page.evaluate(() => {
-        const p = window.game.player;
-        return { level: p.level, xp: p.xp, next: p.xpToNextLevel, gold: p.gold };
+        expect((await readPlayerState(page)).level).toBe(1);
+        await expect.poll(() => page.evaluate(() => {
+            const player = window.game.player;
+            const expected = player.wellRestedSeconds > 0 ? .11 : .1;
+            return [player.stats.hpRegen, player.stats.manaRegen]
+                .every(rate => Math.abs(rate - expected) < 1e-6); // protobuf float precision
+        }), { message: 'Fresh character retains .01 per-stat regeneration, with exactly10% while rested' })
+            .toBe(true);
+        console.log(`[fresh-opening] baseline ${JSON.stringify(await page.evaluate(() => {
+            const player = window.game.player;
+            return { class: player.constructor.name, level: player.level,
+                hp: player.health ?? player.stats?.hp, maxHP: player.maxHealth ?? player.stats?.maxHp,
+                basicDamage: player.stats?.damage ?? player.damage,
+                hpRegen: player.stats.hpRegen, manaRegen: player.stats.manaRegen,
+                primaryAbility: player.abilityName };
+        }))}`);
+        await openIlyra(page);
+        await expect(page.locator('.quest-dialogue__reward')).toContainText('Reward: 100 gold · 100 XP');
+        await page.locator('#quest-window').getByRole('button', { name: 'Accept Quest', exact: true }).click();
+        await expect.poll(async () => (await readChronicleChapter(page, chapter))?.accepted).toBe(true);
+        await page.locator('#btn-close-quest').click();
+        await returnToTown(page);
+        await leaveTown(page);
+        const beforeOpeningCombat = await createFreshCollectionCombat(page);
+        await observeCollectionCombatReceipts(page);
+        let deaths = 0;
+        let retreats = 0;
+        while ((await readChronicleChapter(page, chapter)).count < 3) {
+            const encounter = await selectUnfinishedObjectiveTarget(
+                async () => (await readChronicleChapter(page, chapter)).count,
+                () => findSkeletonThroughTravel(page), 3);
+            if (!encounter) break;
+            let { target } = encounter;
+            let targetStartHP = target.health;
+            let targetLowestHP = target.health;
+            const before = encounter.before;
+            const deadline = Date.now() + 120_000;
+            while (Date.now() < deadline && (await readChronicleChapter(page, chapter)).count === before) {
+                const player = await readPlayerState(page);
+                const targetState = await page.evaluate(id => {
+                    const game = window.game;
+                    const enemy = game.remotePlayers.get(id);
+                    return enemy ? { level: enemy.level, hp: enemy.health ?? enemy.stats?.hp,
+                        distance: game.player.position.distanceTo(enemy.position),
+                        hovered: game.hoveredEntity?.id === id } : null;
+                }, target.id);
+                if (Number.isFinite(targetState?.hp)) targetLowestHP = Math.min(targetLowestHP, targetState.hp);
+                if (player.state === 'DEAD') {
+                    deaths++;
+                    console.log(`[fresh-opening] death ${JSON.stringify({ deaths, count: before, level: player.level,
+                        targetStartHP, targetLowestHP, target: targetState,
+                        resources: await page.evaluate(() => ({ hp: window.game.player.stats.hp,
+                            mana: window.game.player.stats.mana, maxMana: window.game.player.stats.maxMana })) })}`);
+                    expect(deaths, 'Bounded opening route exceeded two normal respawns').toBeLessThanOrEqual(2);
+                    await recoverEarnedDeath(page);
+                    expect((await readChronicleChapter(page, chapter)).count, 'Death must not erase earned quest credit').toBe(before);
+                    await leaveTown(page);
+                    target = await findSkeletonThroughTravel(page);
+                    targetStartHP = target.health;
+                    targetLowestHP = target.health;
+                    continue;
+                }
+                // Share the collection route's ordinary defensive inputs instead
+                // of interrupting every healthy attack with another retreat.
+                if (await leaveEarnedCombatSafety(page, () => leaveTown(page))) continue;
+                if (await beforeOpeningCombat()) continue;
+                retreats = await page.evaluate(() => window.__freshWizardDefense?.counts.retreats || 0);
+                if ((await readPlayerState(page)).state === 'DEAD') continue;
+                if ((await readChronicleChapter(page, chapter)).count > before) break;
+                target = await reacquireDisengagedCollectionTarget(page, target,
+                    () => projectNearestHostile(page, 'Skeleton'));
+                const point = await projectEntity(page, target.id);
+                if (point?.visible) {
+                    target = await selectCollectionTargetThroughInput(page, target, point);
+                    if (await page.evaluate(() => window.game.player.abilityCooldown <= 0)) {
+                        await page.mouse.click(point.x, point.y, { button: 'right' });
+                    }
+                }
+                await page.waitForTimeout(250);
+            }
+            const diagnostic = await readFreshCollectionCombat(page, target.id);
+            expect((await readChronicleChapter(page, chapter)).count,
+                `Opening combat deadline: ${JSON.stringify(diagnostic)}`).toBeGreaterThan(before);
+            const player = await readPlayerState(page);
+            console.log(`[fresh-opening] ${JSON.stringify({ kills: (await readChronicleChapter(page, chapter)).count, deaths, level: player.level, hp: player.health, elapsedSeconds: Math.round((Date.now() - started) / 1000) })}`);
+        }
+        expect((await readChronicleChapter(page, chapter)).completed).toBe(false);
+        await openIlyra(page);
+        const readRewardState = () => page.evaluate(() => {
+            const p = window.game.player;
+            return { level: p.level, xp: p.xp, next: p.xpToNextLevel, gold: p.gold };
+        });
+        const beforeReward = await readRewardState();
+        await expect(page.locator('.quest-dialogue__reward')).toContainText('Reward: 100 gold · 100 XP');
+        await page.locator('#quest-window').getByRole('button', { name: 'Complete Quest', exact: true }).click();
+        await expect.poll(async () => (await readChronicleChapter(page, chapter)).completed).toBe(true);
+        const rewarded = await readChronicleChapter(page, chapter);
+        expect(rewarded.grantedGold).toBe(100);
+        expect(rewarded.grantedXP).toBe(100);
+        expect(rewarded.grantedResonanceXP || 0).toBe(0);
+        await expect(page.locator('.quest-dialogue__reward')).toContainText('Reward received · 100 gold · 100 XP');
+        await expect.poll(async () => (await readRewardState()).gold).toBe(beforeReward.gold + 100);
+        const afterReward = await readRewardState();
+        expect([beforeReward.level, beforeReward.level + 1]).toContain(afterReward.level);
+        expect(afterReward.xp - beforeReward.xp + (afterReward.level > beforeReward.level ? beforeReward.next : 0)).toBe(100);
+        await page.locator('#quest-window').getByRole('button', { name: 'Continue conversation', exact: true }).click();
+        expect((await readChronicleChapter(page, 'chronicle_earth_keepers_house')).accepted).toBe(false);
+        await page.locator('#btn-close-quest').click();
+        await expect(page.locator('#quest-window')).toBeHidden();
+        const earnedLevel = (await readPlayerState(page)).level;
+        await earnedCheckpoint(page, credentials, { label: 'opening' });
+        expect((await readPlayerState(page)).level).toBe(earnedLevel);
+        expect((await readChronicleChapter(page, chapter)).completed).toBe(true);
+        expect((await readChronicleChapter(page, chapter)).grantedXP).toBe(100);
+        expect((await readChronicleChapter(page, chapter)).grantedGold).toBe(100);
+        console.log(`[fresh-opening] completed ${JSON.stringify({ level: earnedLevel, deaths, retreats, grantedGold: rewarded.grantedGold, grantedXP: rewarded.grantedXP, elapsedSeconds: Math.round((Date.now() - started) / 1000) })}`);
+        await earnEarthInvestigation(page, 'chronicle_earth_keepers_house', openIlyra,
+            (site, phase) => page.screenshot({ path: testInfo.outputPath(`${phase}-${site.id}.png`) }),
+            { beforeInspect: site => clearFreshInvestigationApproach(page, site) });
+        const afterDiary = await readChronicleChapter(page, 'chronicle_earth_keepers_house');
+        const diaryLevel = (await readPlayerState(page)).level;
+        await earnedCheckpoint(page, credentials, { label: 'diary' });
+        expect((await readPlayerState(page)).level).toBe(diaryLevel);
+        expect((await readChronicleChapter(page, 'chronicle_earth_keepers_house')).completed).toBe(true);
+        console.log(`[fresh-diary] ${JSON.stringify({ level: diaryLevel, reward: afterDiary, elapsedSeconds: Math.round((Date.now() - started) / 1000) })}`);
     });
-    const beforeReward = await readRewardState();
-    await expect(page.locator('.quest-dialogue__reward')).toContainText('Reward: 100 gold · 100 XP');
-    await page.locator('#quest-window').getByRole('button', { name: 'Complete Quest', exact: true }).click();
-    await expect.poll(async () => (await readChronicleChapter(page, chapter)).completed).toBe(true);
-    const rewarded = await readChronicleChapter(page, chapter);
-    expect(rewarded.grantedGold).toBe(100);
-    expect(rewarded.grantedXP).toBe(100);
-    expect(rewarded.grantedResonanceXP || 0).toBe(0);
-    await expect(page.locator('.quest-dialogue__reward')).toContainText('Reward received · 100 gold · 100 XP');
-    await expect.poll(async () => (await readRewardState()).gold).toBe(beforeReward.gold + 100);
-    const afterReward = await readRewardState();
-    expect([beforeReward.level, beforeReward.level + 1]).toContain(afterReward.level);
-    expect(afterReward.xp - beforeReward.xp + (afterReward.level > beforeReward.level ? beforeReward.next : 0)).toBe(100);
-    await page.locator('#quest-window').getByRole('button', { name: 'Continue conversation', exact: true }).click();
-    expect((await readChronicleChapter(page, 'chronicle_earth_keepers_house')).accepted).toBe(false);
-    await page.locator('#btn-close-quest').click();
-    await expect(page.locator('#quest-window')).toBeHidden();
-    const earnedLevel = (await readPlayerState(page)).level;
-    await earnedCheckpoint(page, credentials, { label: 'opening' });
-    expect((await readPlayerState(page)).level).toBe(earnedLevel);
-    expect((await readChronicleChapter(page, chapter)).completed).toBe(true);
-    expect((await readChronicleChapter(page, chapter)).grantedXP).toBe(100);
-    expect((await readChronicleChapter(page, chapter)).grantedGold).toBe(100);
-    console.log(`[fresh-opening] completed ${JSON.stringify({ level: earnedLevel, deaths, retreats, grantedGold: rewarded.grantedGold, grantedXP: rewarded.grantedXP, elapsedSeconds: Math.round((Date.now() - started) / 1000) })}`);
-    await earnEarthInvestigation(page, 'chronicle_earth_keepers_house', openIlyra,
-        (site, phase) => page.screenshot({ path: testInfo.outputPath(`${phase}-${site.id}.png`) }),
-        { beforeInspect: site => clearFreshInvestigationApproach(page, site) });
-    const afterDiary = await readChronicleChapter(page, 'chronicle_earth_keepers_house');
-    const diaryLevel = (await readPlayerState(page)).level;
-    await earnedCheckpoint(page, credentials, { label: 'diary' });
-    expect((await readPlayerState(page)).level).toBe(diaryLevel);
-    expect((await readChronicleChapter(page, 'chronicle_earth_keepers_house')).completed).toBe(true);
-    console.log(`[fresh-diary] ${JSON.stringify({ level: diaryLevel, reward: afterDiary, elapsedSeconds: Math.round((Date.now() - started) / 1000) })}`);
     if (process.env.EIDOLON_E2E_FRESH_STORY_HUNT === '1' || process.env.EIDOLON_E2E_FRESH_COLLECTION === '1') {
         try {
-            await earnFreshStoryHunt(page, credentials, 'chronicle_earth_kept_watch', {
+            await runPhase('watch', () => earnFreshStoryHunt(page, credentials, 'chronicle_earth_kept_watch', {
                 leaveTown: () => leaveTown(page),
                 captureReady: () => page.screenshot({ path: testInfo.outputPath('earned-watch-ready.png') })
-            });
+            }));
         } catch (error) {
             await page.screenshot({ path: testInfo.outputPath('failed-watch.png') });
             throw error;
@@ -253,6 +261,7 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     if (process.env.EIDOLON_E2E_FRESH_COLLECTION === '1') {
         try {
             await earnFreshCollectionAndInspectHandoff(page, credentials, {
+                runPhase,
                 findTarget: () => findSkeletonThroughTravel(page), leaveTown: () => leaveTown(page),
                 prepare: prepareCollection ? () => prepareEarlyEarnedCharacter(page) : undefined,
                 captureReady: () => page.screenshot({ path: testInfo.outputPath('earned-collection-ready.png') })
@@ -262,7 +271,10 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
             throw error;
         }
     }
-    if (storyOnlyReadiness) await verifyStoryOnlyEarthReadiness(page);
+    if (storyOnlyReadiness) {
+        await runPhase('readiness', () => verifyStoryOnlyEarthReadiness(page));
+        runPhase.assertComplete();
+    }
     if (process.env.EIDOLON_E2E_FRESH_HUNT === '1') {
         const hunt = {
             findTarget: () => findSkeletonThroughTravel(page), leaveTown: () => leaveTown(page)

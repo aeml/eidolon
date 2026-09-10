@@ -1,0 +1,73 @@
+# Fresh Earth campaign — bounded phase verification
+
+Unversioned QA-only change; no game rules, rewards, story content, character
+state, movement limits or production deployment changes. Full campaign balance
+and readiness remain unproved. Release60 continues separately on62dc2d1.
+
+## Why the observation budget changed
+
+Actual fresh-story22725 on a285fbc completed Watch40, Seeds8, Imp60 and all three
+scar investigations, then hit the fixed one-hour session deadline at Orc4/50.
+The retained report proves this, including the original3600000ms timeout inside
+the final984ms landing poll, not a separately exhausted8s landing watchdog.
+Archive `/tmp/eidolon-fresh-orc-departure-proof-AlfWPN`; log
+`/tmp/eidolon-fresh-hunt-rest-replay.log`. Imp alone took2169s including manual
+claim/save,26 ordinary recovery stops and earned training; Watch took746s. A
+single one-hour limit cannot observe the entire expanded150-kill campaign at
+that pace. It does not prove an impossible Orc encounter or level30 shortfall.
+
+## Explicit limits, not a renewable timeout
+
+Only the validated story-only readiness route receives the following named
+Playwright steps. One attempt retains one ordinary earned character, existing
+chapter order and fresh retry identity. Each step has its own absolute timeout;
+the enclosing test has one fixed185-minute sum, set once at the start.
+
+| Phase | Maximum QA observation time |
+|---|---:|
+| Opening and diary, including normal rewards/save | 10 minutes |
+| Watch40, including town recovery/training/claim/save | 30 minutes |
+| Seeds8, including natural drops and manual turn-in | 20 minutes |
+| Imp60, including recovery/training/claim/save | 45 minutes |
+| All three scar investigations and manual turn-in | 10 minutes |
+| Orc50, including recovery/training/claim/save | 60 minutes |
+| Dungeon offer, saved gear/progress, guide and raid lock | 5 minutes |
+| Strict story-only level30 readiness | 5 minutes |
+
+These are diagnostic caps, NOT target session lengths or evidence that current
+quest pacing is enjoyable. Imp's45-minute cap accommodates the observed36-minute
+route; Orc's60-minute cap allows a full authored hunt without giving an individual
+stalled encounter more time. Class comparisons and player-facing balance still
+require actual results, not merely completion inside these observation limits.
+The smaller opening/first-hunt/legacy comparison diagnostics keep their existing
+timeouts. There is no new environment knob for unlimited or escalating retries.
+
+Every phase emits start and pass/failure receipts with elapsed time. The runner
+rejects skipped, duplicate or simultaneous phases and cannot continue a failed
+phase as success. All eight phases, including final readiness, must complete.
+Phase timing wraps existing actions; it does not repeat or manufacture progress.
+
+## Preserved acceptance requirements
+
+- All150 hunt kills, eight actual personal Seeds and three scar interactions.
+- Same120s encounter deadlines, ordinary combat, two-death bounds, recovery
+  rules,4s jump displacement/8s landing checks, input and camera assertions.
+- No prepared levels, grants, free gear, automatic claims or daily substitution.
+- Earned merchant/stash receipts, manual rewards and exact save checks.
+- Original level30 dungeon entry and uncleared/sealed raid prerequisites.
+- Console/network failures and terminal artifact sanitation/cleanup.
+
+## Verification
+
+Focused72393 PASS87tests/6suites1.562s, lint and actual Playwright discovery of
+the existing gameplay spec. Tests cover fixed limits, ordered execution/results,
+failure preservation, duplicate/concurrent rejection, incomplete final readiness,
+source wiring and prior recovery/inventory/readiness contracts. Reviewed the
+installed Playwright types: `test.step` supports the per-step timeout option.
+Logs `/tmp/eidolon-story-phase-{focused,lint,discovery}.log`.
+
+Full client regression and a fresh native story-only replay are pending. The
+prior partial run is retained, not reclassified as a pass. Run the whole earned
+route with a new isolated identity only after full regression; keep its source
+frozen and preserve its true result. All later classes/groups/realms/dungeons/
+raids/physical-phone/economy and full1.1–1.10 gates remain required.

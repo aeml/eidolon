@@ -27,6 +27,14 @@ Existing canonical 51–57 releases and their deployment order are untouched.
 
 ## Evidence and remaining work
 
+September10 follow-up: [explicit fresh-story phase verification](2026-09-10-fresh-story-phase-verification.md)
+now wraps the unchanged earned actions in eight ordered, individually capped
+steps for the validated story-only route. Fixed185-minute total, set once;
+120s encounters, two-death limits, manual rewards/save and strictlevel30/no-daily
+acceptance unchanged. Focused87/6suites1.562s+lint+Playwright discovery passed;
+full regression and new native route pending. These observation caps are not
+approved game-pacing targets or evidence of campaign balance.
+
 September10,03:43: guarded fresh story-only22725 on cleana285fbc is TERMINAL
 FAILED after3600327ms. This is the first actual fresh run to complete the full
 60Imp chapter after ordinary unfinished-encounter recovery. Watch40/manual/save

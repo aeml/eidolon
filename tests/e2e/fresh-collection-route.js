@@ -31,7 +31,7 @@ const equipmentSnapshot = page => page.evaluate(() => {
 
 // Extends the genuinely earned opening. Callbacks use only ordinary canvas
 // movement; no level, item, quest, protection or encounter-waypoint commands.
-export async function earnFreshCollectionAndInspectHandoff(page, credentials, { findTarget, leaveTown, captureReady, prepare }) {
+async function earnFreshSeeds(page, credentials, { findTarget, leaveTown, captureReady, prepare }) {
     const started = Date.now();
     const economyBefore = await equipmentSnapshot(page);
     await openIlyra(page);
@@ -148,39 +148,50 @@ export async function earnFreshCollectionAndInspectHandoff(page, credentials, { 
     expect(reward.grantedXP).toBeGreaterThan(0);
     await page.getByRole('button', { name: 'Continue conversation', exact: true }).click();
     await page.locator('#btn-close-quest').click();
-    await earnFreshStoryHunt(page, credentials, 'chronicle_earth_walking_ink', { leaveTown });
-    await earnEarthInvestigation(page, 'chronicle_earth_returning_scar', openIlyra, null,
-        { beforeInspect: site => clearFreshInvestigationApproach(page, site), inspectWithKeyboard: true });
-    await earnFreshStoryHunt(page, credentials, 'chronicle_earth_borrowed_oath', { leaveTown });
-    await openIlyra(page);
-    await expect(page.locator('#quest-window')).toContainText('The Dungeon Guide requires level 30 for the Bastion');
-    await expect(page.locator('#quest-window')).toContainText('Daily contracts are optional');
-    await page.getByRole('button', { name: 'Accept Quest', exact: true }).click();
-    await expect.poll(async () => (await readChronicleChapter(page, dungeonChapter)).accepted).toBe(true);
-    await page.locator('#btn-close-quest').click();
-    await setAutoLootThroughSettings(page, previousAutoLoot);
-    const earnedLevel = (await readPlayerState(page)).level;
-    const retainedGear = (await equipmentSnapshot(page)).gear;
-    await loginAndEnterWorld(page, credentials);
-    expect((await equipmentSnapshot(page)).gear, 'Earned gear, rolls and vendor values survive reconnect unchanged').toEqual(retainedGear);
-    expect((await readPlayerState(page)).level).toBe(earnedLevel);
-    expect((await readChronicleChapter(page, collection)).completed).toBe(true);
-    expect((await readChronicleChapter(page, dungeonChapter)).accepted).toBe(true);
-    expect(await seedsInBag(page)).toBe(seedsBefore - required);
-    await openDungeonGuide(page);
-    await page.locator('#dungeon-type-select').selectOption('verdant_bastion_catacombs');
-    const enabled = await page.locator('#btn-enter-dungeon').isEnabled();
-    console.log(`[fresh-handoff] ${JSON.stringify({ level: earnedLevel, observedTargetDeaths, deaths,
-        grantedGold: reward.grantedGold, grantedXP: reward.grantedXP, entryEnabled: enabled,
-        entryNote: await page.locator('#dungeon-unlock-note').textContent({ timeout: 5_000 }),
-        collectionSeconds: Math.round((Date.now() - started) / 1000) })}`);
-    if (earnedLevel < 30) {
-        await expect(page.locator('#btn-enter-dungeon'), 'The first dungeon must explain its unmet level gate instead of offering an unusable Start action').toBeDisabled();
-        await expect(page.locator('#dungeon-unlock-note')).toContainText('unlocks at level 30');
-    }
-    await page.getByRole('tab', { name: 'Raids', exact: true }).click();
-    const earthRaid = page.locator('[data-raid-type="earth_crystal_raid"]');
-    // Below the raid's minimum level the existing menu does not show its card.
-    if (earnedLevel < 30) await expect(earthRaid).toHaveCount(0);
-    else await expect(earthRaid).toHaveAttribute('data-access', 'sealed');
+    return { started, previousAutoLoot, seedsBefore, required, observedTargetDeaths, deaths, reward };
+}
+
+export async function earnFreshCollectionAndInspectHandoff(page, credentials, {
+    runPhase = (_id, body) => body(), ...options
+}) {
+    const { leaveTown } = options;
+    const { started, previousAutoLoot, seedsBefore, required, observedTargetDeaths, deaths, reward } =
+        await runPhase('seeds', () => earnFreshSeeds(page, credentials, options));
+    await runPhase('imps', () => earnFreshStoryHunt(page, credentials, 'chronicle_earth_walking_ink', { leaveTown }));
+    await runPhase('scars', () => earnEarthInvestigation(page, 'chronicle_earth_returning_scar', openIlyra, null,
+        { beforeInspect: site => clearFreshInvestigationApproach(page, site), inspectWithKeyboard: true }));
+    await runPhase('orcs', () => earnFreshStoryHunt(page, credentials, 'chronicle_earth_borrowed_oath', { leaveTown }));
+    await runPhase('handoff', async () => {
+        await openIlyra(page);
+        await expect(page.locator('#quest-window')).toContainText('The Dungeon Guide requires level 30 for the Bastion');
+        await expect(page.locator('#quest-window')).toContainText('Daily contracts are optional');
+        await page.getByRole('button', { name: 'Accept Quest', exact: true }).click();
+        await expect.poll(async () => (await readChronicleChapter(page, dungeonChapter)).accepted).toBe(true);
+        await page.locator('#btn-close-quest').click();
+        await setAutoLootThroughSettings(page, previousAutoLoot);
+        const earnedLevel = (await readPlayerState(page)).level;
+        const retainedGear = (await equipmentSnapshot(page)).gear;
+        await loginAndEnterWorld(page, credentials);
+        expect((await equipmentSnapshot(page)).gear, 'Earned gear, rolls and vendor values survive reconnect unchanged').toEqual(retainedGear);
+        expect((await readPlayerState(page)).level).toBe(earnedLevel);
+        expect((await readChronicleChapter(page, collection)).completed).toBe(true);
+        expect((await readChronicleChapter(page, dungeonChapter)).accepted).toBe(true);
+        expect(await seedsInBag(page)).toBe(seedsBefore - required);
+        await openDungeonGuide(page);
+        await page.locator('#dungeon-type-select').selectOption('verdant_bastion_catacombs');
+        const enabled = await page.locator('#btn-enter-dungeon').isEnabled();
+        console.log(`[fresh-handoff] ${JSON.stringify({ level: earnedLevel, observedTargetDeaths, deaths,
+            grantedGold: reward.grantedGold, grantedXP: reward.grantedXP, entryEnabled: enabled,
+            entryNote: await page.locator('#dungeon-unlock-note').textContent({ timeout: 5_000 }),
+            collectionSeconds: Math.round((Date.now() - started) / 1000) })}`);
+        if (earnedLevel < 30) {
+            await expect(page.locator('#btn-enter-dungeon'), 'The first dungeon must explain its unmet level gate instead of offering an unusable Start action').toBeDisabled();
+            await expect(page.locator('#dungeon-unlock-note')).toContainText('unlocks at level 30');
+        }
+        await page.getByRole('tab', { name: 'Raids', exact: true }).click();
+        const earthRaid = page.locator('[data-raid-type="earth_crystal_raid"]');
+        // Below the raid's minimum level the existing menu does not show its card.
+        if (earnedLevel < 30) await expect(earthRaid).toHaveCount(0);
+        else await expect(earthRaid).toHaveAttribute('data-access', 'sealed');
+    });
 }
