@@ -6,6 +6,10 @@ export async function openEarnedStash(page) {
     // A right-click must mean deposit, never a sale through a leftover shop.
     await expect(page.locator('#shop-screen')).toBeHidden();
     if (!await page.locator('#stash-screen').isVisible()) {
+        // Player readiness can precede nearby NPC replication after login.
+        // Wait for the real actor; never synthesize it or renew a travel budget.
+        await expect.poll(() => page.evaluate(() => window.game.remotePlayers.has('stash-1')),
+            { timeout: 10_000, message: 'Town stash must arrive in the ordinary world stream' }).toBe(true);
         for (let step = 0; step < 16; step++) {
             const offset = await page.evaluate(() => {
                 const game = window.game, stash = game.remotePlayers.get('stash-1');
