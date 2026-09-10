@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 18:23 UTC
+## Current checkpoint — September 10, 18:48 UTC
 
 Previous goal turn was PROGRESS: real four-role dungeon/recovery evidence and
 tested driver corrections. This turn is PROGRESS: implementing the user's
@@ -26,14 +26,28 @@ The full1.1–1.10 objective remains active; no release/completion claim.
   freezes recipients before queued payout; leaving afterward retains credit and
   late arrivals cannot acquire it. Explicit world-lock ownership propagates
   through ability dispatch, Whirlwind and chained explosions.
-- Full server race49313 ACTIVE, actual handle confirmed18:23. It began on
- 760d0ff8 with the kill-time changes uncommitted because git staging used a
-  repository-relative path from the server directory and failed; compilation
-  then started. Keep those source bytes frozen until terminal, then commit.
-  Tracked diff SHA2567caa157d489b401cbc4e3371c8ec58947ac390195dc467513a9b42ec58c051fa;
-  new party_kill_snapshot_test.go SHA256cc0f5acc06da4379f290464c913923df9caf4b98a917cbfe5e4ef533a409a308.
-  Log`/tmp/eidolon-party-kill-credit-full-server.log`. This is the only local
-  heavy gate; no active local browser. Pending integration/native/version/live.
+- Party-credit branch is now488e9022 (runtime/tests5f323d41 plus evidence docs).
+  Full race49313 TERMINAL1 exposed the old
+  nearby-dead-player exclusion; updating that expectation and retaining a new
+  disconnected exclusion passed83708. Clean0c86a625 full9852 TERMINAL1 then
+  exposed a preexisting unlocked direct death call in the world-drop fixture.
+  decb1693 corrects all matching test call sites to the production target-lock
+  contract. No reward assertions were weakened. All old handles are terminal.
+- Full server race32932 TERMINAL0: root32.025s/game396.415s, other packages
+  pass/cached, no race warning. Log`/tmp/eidolon-party-credit-full-server-lock-contract.log`.
+  Production bytes remained unchanged while5f323d41 added real all-class ability
+  and chained-explosion party regressions.58185 passed3reps3.713s; final40190
+  passed combined ability/eligibility/snapshot/overworld/manual-turn-in coverage
+ 3reps7.262s. Log`/tmp/eidolon-party-credit-all-focused-final.log`.
+- Desktop panel/invitation and expandable44px phone guidance now explain the
+  shared rules; individual quest turn-in is unchanged. Full client/lint83603 is
+  TERMINAL0 on5f323d41:311 suites/4,272 tests160.012s plus zero-warning lint.
+  No active local test/browser. Full Go's
+  compiled test set predates the final test-only additions (verified separately).
+  Evidence archive`/tmp/eidolon-party-credit-proof-h2Ko7l`. Primary development
+  fast-forwarded cleanly to488e9022; the party-credit worktree is also clean.
+  The roadmap now retains these rules in the1.1 gate. Pending release integration,
+  native sharing proof, version notes/live. Do not claim a browser dungeon clear.
 - Four-player49218 is TERMINAL1, not active: two four-member town-rest cycles
   preserved run/content, but the Fighter died in the Warden fight. Cleric ended
   with555mana and only its two pre-boss Healing Light/two Guardian Embrace casts;
@@ -41,7 +55,8 @@ The full1.1–1.10 objective remains active; no release/completion claim.
   dungeon balance or a full clear. Archive`/tmp/eidolon-four-role-spacing-proof-OCCodb`,
   wrapper scan completed, copied log0QA prefixes, owned services/listeners absent.
   Next browser work must correct/heavily verify healer approach and target inputs,
-  not nerf the boss to fit an inactive healer. Primary remains clean7d8fb5bb.
+  not nerf the boss to fit an inactive healer. Primary is now clean488e9022,
+  including the new party-credit rules; its four-player driver is still7d8fb5bb.
 - Remote14255 rechecked canonical62dc CI34434837759: client/server/three browser
   jobs pass, predeploy queued. Nightly34433520743 remains in progress. Do not
   cancel/preempt it or publish a successor without the existing release gates.
