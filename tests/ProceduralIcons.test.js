@@ -13,6 +13,7 @@ import {
 import { EQUIPMENT_VISUAL_DESCRIPTORS } from '../src/art/ProceduralEquipment.js';
 import { BASE_ITEMS, GEM_QUALITIES, GEM_TYPES, RARITY } from '../src/core/ItemSystem.js';
 import { UIManager } from '../src/ui/UIManager.js';
+import { EQUIPMENT_SLOT_KEYS } from '../src/core/EquipmentSlots.js';
 
 function decodeIcon(uri) {
     expect(uri.startsWith('data:image/svg+xml;charset=UTF-8,')).toBe(true);
@@ -24,6 +25,25 @@ function canonicalValues(record) {
 }
 
 describe('procedural UI icons', () => {
+    test.each(EQUIPMENT_SLOT_KEYS)('unknown equipment names in %s retain recognizable slot artwork', slot => {
+        const item = Object.freeze({ name: 'Uncatalogued <script>item</script>', slot, type: 'ARMOR', level: 3, rarity: 'Rare' });
+        const baseSlot = slot.replace(/^(ring|trinket)[12]$/, '$1');
+        const base = BASE_ITEMS.find(candidate => candidate.slot === baseSlot);
+        const actual = UIManager.prototype.getItemIconPath(item);
+        expect(actual).toBe(getProceduralItemIcon({ ...item, name: base.name, baseName: base.name }));
+        expect(decodeIcon(actual)).not.toContain('<script>');
+        expect(item.name).toBe('Uncatalogued <script>item</script>');
+    });
+    test('unknown non-equipment uses a neutral icon without inventing slot or currency meaning', () => {
+        for (const item of [{ name: 'Unknown', type: 'RELIC' }, { name: 'Unknown', type: 'MATERIAL', slot: 'ring' },
+            { name: 'Unknown', type: 'GEM' }, { name: 'Unknown', slot: 'unsupported' }]) {
+            const svg = decodeIcon(UIManager.prototype.getItemIconPath(item));
+            expect(svg).toContain('data-procedural-icon="item:unidentified"');
+            expect(svg).not.toContain('equipment-');
+            expect(svg).not.toContain('quest:');
+        }
+        expect(getProceduralItemIcon(null)).toBeNull();
+    });
     test('every authoritative Chronicle quest drop has a distinct bag icon', () => {
         const source = readFileSync('server/internal/game/quests.go', 'utf8');
         const dropTable = source.match(/var chronicleDropSources = [^\n]+\{([\s\S]*?)\n\}/)?.[1] || '';
@@ -171,7 +191,8 @@ describe('procedural UI icons', () => {
         expect(getProceduralIconCacheMetrics()).toEqual(expect.objectContaining({
             icons: expect.any(Number), abilities: expect.any(Number), items: expect.any(Number), itemLimit: 512
         }));
-        expect(getProceduralItemIcon({ name: 'Unknown Relic', type: 'RELIC' })).toBeNull();
+        expect(decodeIcon(getProceduralItemIcon({ name: 'Unknown Relic', type: 'RELIC' })))
+            .toContain('data-procedural-icon="item:unidentified"');
     });
 
     test('dynamic equipment icon history is bounded for long-running sessions', () => {

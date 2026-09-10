@@ -39,8 +39,10 @@ substitute for the integrated native gates below.
 
 ## Promotion gates still open
 
-1. Preserve the current independent campaign attempt96530 on frozen626385d;
-   do not launch competing full-suite/browser work while it remains active.
+1. The independent campaign attempt96530 on626385d terminated at the first boss
+   survival assertion; preserve that failure. Its subsequent equipment diagnosis
+   and corrections passed local checks on primary. Keep future native campaign
+   work separate from these release gates and avoid competing heavy/browser runs.
 2. Run the integrated full client suite, renderer/lifecycle/populated checks and
    native recovery/party/transition checks with retained, sanitized artifacts.
    Verify merged release60 regressions, not only the previously tested aura code.
@@ -94,3 +96,35 @@ version/workflow presentation and entrance hints. Logs:
 `/tmp/eidolon-role-hint-browser-lint.log` and
 `/tmp/eidolon-role-hint-wiring-unit.log`. Actual rendered execution and image
 review remain pending behind the active campaign browser; discovery is not a pass.
+
+## Verified equipment fixes brought into the visual-release integration
+
+Before running this branch's full gates, transferred only the two runtime fixes
+and their focused tests from primarybf8d36d6: unfamiliar-item icon fallbacks and
+stable equipment-slot DOM/artwork during character-sheet updates. The relevant
+runtime/icon tests and new slot-refresh tests match primary exactly. No expanded
+campaign, reward, encounter, stat or server changes were brought across.
+
+Also included the standalone prepared equipment-upgrade policy/helper/spec,
+policy tests and real-shell output/fail-fast checks needed to exercise these
+fixes on this release baseline. The optional `equipment-refresh` isolated route
+runs three independent full-bag drag/refresh/login cases, then the existing
+Forge/guide scenario, retaining each command's artifacts in separate directories.
+This does NOT enable automatic equipment upgrades for players or alter the
+release baseline's earned campaign driver. Primary-only source-wiring tests were
+not imported into a branch that does not have that campaign integration.
+
+Primary acceptance was full293suites/4125tests+lint and retained native3+1 cases
+onf2600a44, archived at `/tmp/eidolon-equipment-refresh-proof-T4FHu5`. That proof
+does not replace this branch's own integrated full/render/native gates.
+
+Focused release-integration59078 exited0:93tests/6suites13.92s, lint and Bash syntax,
+Node24.18.0. Logs `/tmp/eidolon-aura-equipment-unit.log` and
+`/tmp/eidolon-aura-equipment-lint.log`. Full integration regression and actual
+rendered/native acceptance are still pending; no version/push/deployment changed.
+
+Include in the eventual correctly versioned successor notes: unfamiliar items
+now show recognizable slot art or a neutral fallback instead of missing images;
+equipment drag targets and keyboard focus survive stat updates while Forge/item
+changes still refresh their display. Retain the aura-batching and quest-role
+notes above. Do not publish under the unchanged base version or bypass60's gate.
