@@ -51,3 +51,13 @@ instance/seed/rooms/inventory/Gold/quests, and rewalks the entrance route. It al
 uses legal Guardian Embrace healing aura within its range, preserving critical
 direct-heal priority, and latches deaths before automatic cleanup can hide them.
 These are player-input strategy corrections; no balance or fixture buffs.
+
+Second native18143 TERMINAL1 onf6fcddef: opening room cleared, no deaths,
+Cleric666effective ally healing from Healing Light and Guardian Embrace, no
+rejected casts. Town recovery worked, but the driver incorrectly expected a
+resume request to transfer all four players. Production `dungeon_entry.go`
+explicitly resumes only the requester; initial creation moves the group. Fix
+the driver to use the guide for every remaining member, preserving the strict
+same-run/content checks. Archive `/tmp/eidolon-four-role-rest-proof-HtoFTA`;
+wrapper sanitized2files, copied-log scanner sanitized1file, zero remaining
+QA prefixes; owned services/listeners removed. This is not a game entry defect.
