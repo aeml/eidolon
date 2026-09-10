@@ -39,6 +39,12 @@ eight-item consumption,150hunt kills and all stash/fresh-play gates stay intact.
 The prepared level and ordinary QA encounter travel remain explicitly labeled;
 this is not a fresh-character balance result.
 
-- [ ] Full client/lint after the pickup correction and startup-diagnostic additions.
+- [x] Full client/lint after the pickup correction and startup-diagnostic additions.
 - [ ] Complete actual serial replay, including natural collection and stash use.
 - [ ] Separate fresh-character readiness, classes/groups and dungeon/raid play.
+
+Focused63729 passed29tests/4suites0.715s+lint. Full same-session regression on
+e0cbb32 passed286suites4011tests86.196s and lint, including the startup diagnostic
+tests. Logs `/tmp/eidolon-fragment-pickup-full-{client,lint}.log`. Actual replay
+remains required; no discarded fragment or successful stash transfer is inferred
+from unit results.
