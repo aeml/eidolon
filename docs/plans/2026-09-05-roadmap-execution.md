@@ -16,7 +16,36 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 03:19 UTC
+## Current checkpoint — September 10, 03:28 UTC
+
+The preceding casino-only reply reconfirmed existing roadmap scope without new
+implementation or evidence that changes the next action (NO PROGRESS toward the
+active implementation goal). This continuation revalidated the current trees
+and repeatedly polled exact live22725: VERIFIED WAIT, not a stopped run or
+impasse. Full goal remains active. Root remains ledger-only and NEVER pushed.
+
+**22725 remains ACTIVE**, only owned local browser, unchanged primarya285fbc.
+Latest fresh-story Imp milestone45/60, zero deaths,20 recovery stops and2 earned
+training stops,1607 hunt seconds; level20/1660XP/9125next/7266Gold,18 bag slots,
+3760 unsold equipment value,687 maxHP/445 maxMP. Level20 preparation equipped
+two earned items and spent two existing talent points without changing XP/Gold.
+Following health retreat naturally restored485→687HP and209→445MP and departed
+with291.597 bank seconds in18.559s. Full60/manual/scars/50Orcs and unchanged
+level30 dungeon-readiness assertions remain pending. Same log
+`/tmp/eidolon-fresh-hunt-rest-replay.log`; preserve/sanitize exact terminal
+artifacts and verify cleanup before another owned browser begins.
+
+Reviewed pending diagnosticd03ecde and its launch configuration; no source
+changes or premature promotion. Native ground-shape and full client regression
+remain the next release priority after22725. Host read-only capacity check:
+16 logical CPUs with load approximately28–29 and swap fully occupied; avoid
+additional heavy regression during this browser run. This is contention risk,
+not evidence that host load caused the earlier CI setup failure. Unrelated
+processes remain untouched. Canonicalcaab611 unchanged; last confirmed CI is
+terminal failed as detailed below. No new push/deployment or acceptance claim.
+All class/group/story/raid/phone/aura/CI-cost/casino and1.1–1.10 gates remain open.
+
+## Previous checkpoint — September 10, 03:19 UTC
 
 Previous goal turn was a VERIFIED WAIT. This continuation made PROGRESS:
 inspected true terminal predeploy failure, retained artifacts, diagnosed two
