@@ -1,8 +1,11 @@
 # Socket appearance consistency — visual successor candidate
 
-Status: normalization implemented; focused checks and full client regression
-passed. Strengthened rendered acceptance FAILS on per-class socket visibility;
-native Forge and versioned deployment remain pending. Built separately from the
+Status: normalization and held-weapon/socket placement implemented; strengthened
+per-class rendered checks, equipment gallery, full client regression and lint
+passed on85989abc. Native Forge and versioned deployment remain pending. See
+[held-weapon clearance evidence](2026-09-10-held-weapon-clearance.md) for the
+subsequent fix; the earlier failures below remain historical evidence, not the
+current result. Built separately from the
 accepted local aura/equipment candidate71f18922; no active campaign source or
 canonical release was edited. This is an equipment-polish correction within the
 existing1.1–1.10 goal, not completion of the broader visual milestone.
