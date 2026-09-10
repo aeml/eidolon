@@ -16,7 +16,54 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 00:59 UTC
+## Current checkpoint — September 10, 01:11 UTC
+
+This turn made PROGRESS: actual replay reached a collection failure, inspected
+current drop authority and retained evidence, corrected incomplete ground-pickup
+handling and final-encounter checking, then passed full regression and launched
+the next actual replay. Previous turn was PROGRESS. Full goal active, no impasse;
+root ledger-only and NEVER pushed.
+
+**60 CI34421323405 ACTIVE** on frozen canonicaldf91bb6. Client/server/all3browser
+groups SUCCESS; predeploy102701339923 still actual full-character gameplay.
+No deployment/final native/public60acceptance yet. Same pipeline only; no successor
+push or cancellation based on elapsed time.
+
+Primary49128 TERMINALFAILED3.5m on370f029: opening/diary/40Skeletons complete,
+Seeds7/8 after40encounters; no dailies, full2605HP,7freebag slots. One equip-only
+visit freed11slots. No stash transfer occurred. Archive
+`/tmp/eidolon-earth-seed-budget-proof-9gBFvf`, sanitation0/exactcleanup, screenshot
+inspected; log`/tmp/eidolon-earth-stash-diag.log`. Database/API started successfully
+this time; it does not identify the preceding17921startup failure's cause.
+
+An initial commentary incorrectly assumed20% from stale context; immediately
+corrected against current `ChronicleDropForKill`:35% for CollectionVersion2,
+guaranteed after4misses; grandfathered accepted contracts65%. **No drop-rate or
+encounter-budget change.** World accounting reserves outstanding fragments. Old
+functional helper moved only once toward ranged death and could leave before
+pickup, then unconditionally failed after the last allowed encounter. A particular
+abandoned Seed was not recorded and remains a source-supported hypothesis.
+
+Primary now clean **752c888**, code **e0cbb32**. Bounded real move-only approach
+reaches the actual death location within2units; waits900ms as the fresh route
+already does, then requires nearby quest drops/pending pickups to drain normally.
+Checks completion after the final permitted encounter. Failure evidence now lists
+replicated quest-drop positions/ranges/pending flags and auto-loot state.
+Existing40collection encounters,600s/stage,8Seeds,150hunt kills/manualclaims and
+stash protection remain. Focused63729 PASS29/4/.715+lint; full63729 PASS286suites
+4011tests86.196s+lint, including new startup diagnostics. Logs
+`/tmp/eidolon-fragment-pickup-full-{client,lint}.log`; primary plan
+`2026-09-10-earned-fragment-pickup.md` details evidence and limits.
+
+**12987 ACTIVE**, only owned local browser workflow: corrected complete serial
+Earth route on752c888, run`earth-pickup-0910-0110`, API18560/Mongo18561/web41960,
+log`/tmp/eidolon-earth-pickup-0110.log`. Primary frozen until terminal; preserve/
+sanitize artifacts and check exact cleanup before another browser. No heavy
+owned tests alongside. Actual storage success/full chain and separate earned
+fresh/class/group/dungeon/raid/phone/casino gates remain unproven. Independent
+aura4a91c75 remains unchanged with full/native/performance gates still pending.
+
+## Previous checkpoint — September 10, 00:59 UTC
 
 This continuation made PROGRESS: diagnosed a startup-only failed attempt's
 evidence gap, added bounded/redacted failure capture with behavioral checks,
