@@ -401,4 +401,9 @@ Initial69300 passed55tests/4suites5.097s plus lint. Final87372 passed64tests/
 points, a checked side step around a nearby body, coincident/overlapping actors,
 the recorded production floor geometry, exact-instance arrival and ordinary
 movement failures. Logs`/tmp/eidolon-party-body-final2-{focused,lint,discovery}.log`.
-Full client regression and native formation/full-clear acceptance remain pending.
+Full client regression on952b835e subsequently passed315suites/4359tests in
+140.563s; no Jest/eslint process remained at recovery. Log
+`/tmp/eidolon-party-body-full-client.log`. Lint produced no errors; an explicit
+confirmation72582 also terminated0, log
+`/tmp/eidolon-party-body-full-lint-confirm.log`. Native formation/full-clear
+acceptance remains pending; unit success is not native party movement proof.
