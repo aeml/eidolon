@@ -16,7 +16,56 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 00:50 UTC
+## Current checkpoint — September 10, 00:59 UTC
+
+This continuation made PROGRESS: diagnosed a startup-only failed attempt's
+evidence gap, added bounded/redacted failure capture with behavioral checks,
+successfully started the next actual replay, and integrated accepted59 into the
+aura prototype. Previous turn also PROGRESS; no repeated blocking condition.
+Full goal remains active; root ledger-only and NEVER pushed.
+
+**60 CI34421323405 still ACTIVE**, canonicaldf91bb6 frozen/clean. All client,
+server and three browser groups SUCCESS. Predeploy102701339923 is confirmed
+inside `Run disposable full-character gameplay`; setup and deterministic
+High/Low gallery passed. No deployment/final live/public60 acceptance yet.
+Continue this exact run; no successor push or restart based on elapsed time.
+
+Primary17921 TERMINALFAILED before gameplay: Mongo readiness timed out, API and
+Playwright never started. `/tmp/eidolon-earth-stash-0050.log` retained; exact
+owned services/18560/18561/41960absent. Disk134GBfree and retained destroy event
+do not establish the database failure cause; original logs were removed by
+cleanup. Do not attribute old screenshots or78199's quest results to this run.
+
+Primary now clean **370f029**. New failure-only helper records exact disposable
+container State (never Config/Env) and last80stdout/stderr log lines with5second/
+1MBbounds per command. Known QA/database secrets are redacted in memory before
+private artifacts are written. Fatal startup status, deadlines and exact cleanup
+are unchanged; missing diagnostics cannot imply success. Focused89605 PASS59/4/
+1.001s+lint+shellsyntax/diff. Tests cover redaction, bounds, failures/timeouts,
+exact targets, all route order and cleanup. Runtime/stash helper remains the
+full3995-test-tested4e7bc8d; a complete integrated regression remains a later
+publication gate. Primary doc `2026-09-10-isolated-startup-evidence.md` explains.
+
+**49128 ACTIVE**, only owned local browser workflow: corrected serial Earth
+route on370f029, run`earth-stash-0910-diag`, API18560/Mongo18561/web41960,
+log`/tmp/eidolon-earth-stash-diag.log`. Mongo/API became ready, actual3tests started,
+diary inspection logged. Primary frozen untilterminal; no heavy owned tests or
+second browser. Preserve/sanitize terminal artifacts and check exact cleanup.
+If startup ever fails again, inspect retained isolated-service diagnostic folder
+before another run can overwrite test-results. Full stash/quest completion and
+fresh/class/group/dungeon/raid/phone/casino gates remain unproven.
+
+Aura prototype now clean **4a91c75**, accepted59 merged into54b861f in
+`/tmp/eidolon-rest-aura-batching-k1vBvU`. Retains final58/59 recovery, interface,
+connection and casino-roadmap work along with all batching/native profile
+assertions. Single conflict combined new evidence imports with accepted
+backend-origin arguments; both preserved for the second actual browser.
+Focused78996 PASS299tests/6suites2.45s+lint. Full integrated client/server,
+controlled render/native party/expiry/journey and remaining lifecycle/performance
+gates still NOTRUN. Inherited59metadata is not a new release or permission to
+publish before60acceptance. No aura integration into primary or production.
+
+## Previous checkpoint — September 10, 00:50 UTC
 
 This continuation made PROGRESS: actual saved Earth stages1and2 passed; final
 stage exposed a conservative sale-only bag limitation, now extended with real
