@@ -12,7 +12,20 @@ const snapshot = page => page.evaluate(() => {
         quests: p.quests.filter(q => q.accepted).map(q => ({ id: q.id, count: q.count, completed: q.completed })) };
 });
 
-async function openEarnedMerchant(page) {
+export async function readEarnedMerchantApproach(page) {
+    return page.evaluate(() => {
+        const game = window.game, p = game.player;
+        const merchant = game.remotePlayers.get('merchant-1');
+        return { position: p.position.toArray(), state: p.state,
+            target: p.targetPosition?.toArray() || null,
+            camera: game.renderSystem.cameraTarget.toArray(),
+            blockedStops: p.movementMetrics?.blockedStops || 0,
+            merchant: merchant?.position.toArray() || null };
+    });
+}
+
+export async function openEarnedMerchant(page) {
+    const approach = [];
     for (let step = 0; step < 8; step++) {
         const offset = await page.evaluate(() => {
             const game = window.game, merchant = game.remotePlayers.get('merchant-1');
@@ -23,15 +36,23 @@ async function openEarnedMerchant(page) {
         const distance = Math.hypot(offset.x, offset.z);
         if (distance < 4.5) break;
         const scale = Math.min(12, distance - 3) / distance;
+        const before = await readEarnedMerchantApproach(page);
         await moveByGroundClick(page, offset.x * scale, offset.z * scale,
             { moveOnly: true, allowJumpFallback: false });
+        approach.push({ before, delta: [offset.x * scale, offset.z * scale],
+            after: await readEarnedMerchantApproach(page) });
     }
-    await expect.poll(() => page.evaluate(() => {
-        const game = window.game;
-        return game.player.state === 'IDLE' && !game.player.targetPosition &&
-            Math.hypot(game.renderSystem.cameraTarget.x - game.player.position.x,
-                game.renderSystem.cameraTarget.z - game.player.position.z) < .05;
-    })).toBe(true);
+    try {
+        await expect.poll(() => page.evaluate(() => {
+            const game = window.game;
+            return game.player.state === 'IDLE' && !game.player.targetPosition &&
+                Math.hypot(game.renderSystem.cameraTarget.x - game.player.position.x,
+                    game.renderSystem.cameraTarget.z - game.player.position.z) < .05;
+        })).toBe(true);
+    } catch (cause) {
+        const final = await readEarnedMerchantApproach(page).catch(() => null);
+        throw new Error(`Merchant approach did not settle: ${JSON.stringify({ approach, final })}; ${cause.message}`, { cause });
+    }
     const opened = await ensureEarnedMerchantWindow(page, async () => {
         let point;
         await expect.poll(async () => {

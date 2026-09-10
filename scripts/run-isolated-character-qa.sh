@@ -679,6 +679,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   fresh-hunt-npc)
     npx playwright test tests/e2e/fresh-hunt-npc.spec.js
     ;;
+  earned-merchant-approach)
+    npx playwright test tests/e2e/earned-merchant-approach.spec.js
+    ;;
   fresh-ready)
     EIDOLON_E2E_FRESH_COLLECTION=1 EIDOLON_E2E_FRESH_HUNT=1 EIDOLON_E2E_FRESH_READY=1 \
       npx playwright test tests/e2e/fresh-opening-gameplay.spec.js
