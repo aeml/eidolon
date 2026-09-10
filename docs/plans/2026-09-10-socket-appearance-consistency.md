@@ -3,8 +3,8 @@
 Status: normalization and held-weapon/socket placement implemented; strengthened
 per-class rendered checks, equipment gallery, full client regression and lint
 passed on85989abc. Native Forge/observer/bag/fresh-login passed onb640e2cf after
-fixing a stale Forge gem-panel refresh; full regression of this additional UI
-change and versioned deployment remain pending. See
+fixing a stale Forge gem-panel refresh. Full integrated regression and lint
+passed on03bb02a7; versioned deployment remains pending. See
 [held-weapon clearance evidence](2026-09-10-held-weapon-clearance.md) for the
 subsequent fix; the earlier failures below remain historical evidence, not the
 current result. Built separately from the
@@ -42,10 +42,34 @@ earned acquisition, currency costs, phone input or broader campaign acceptance.
  Archive `/tmp/eidolon-forge-socket-proof-S6Uq7N`; credential scan sanitized0,
  exact disposable containers and18580/18581/41980listeners absent after cleanup.
 
-Full client regression for the Forge addition is still required. Existing
+The native scenario is now required at the end of full predeploy and its focused
+recovery suffix, using distinct socket-owner/socket-observer accounts and a
+dedicated output directory. 14535 PASS24release-contract tests/3suites.826s+lint.
+First full69308 failed the existing suffix-alignment assertion (268suites passed,
+one failed;3759tests passed,one failed;121.91s). 03bb02a7 adds the new requirement
+to the focused suffix as well; final focused26tests/4suites.917s+lint/shell pass.
+87508 TERMINAL0 onclean03bb02a7: full269suites/3760tests121.835s plus lint.
+Logs `/tmp/eidolon-forge-integrated-verified-full-{client,lint}.log`; the earlier
+failure remains at `/tmp/eidolon-forge-integrated-full-client.log`.
+Native95175 used the same runtime/test body, before the helper acquired its
+dedicated account names; no full updated predeploy/suffix native pass is claimed.
+
+Existing
 rendered evidence remains scoped to its inspected poses/quality levels; this
 native test has recordings disabled and does not supply new visual screenshots.
 No version, patch-note release or production deployment is claimed here.
+
+### Draft player-facing notes for the eventual successor
+
+- Socketed gems now use consistent colors in equipment models and item icons,
+  including after replacing a gem on the same piece of equipment.
+- Held blades and their socket inlays sit more clearly outside class garments.
+- The open Forge's gem panels now refresh after server-confirmed changes,
+  without requiring the window to be closed and reopened.
+
+These are unpublished draft notes, not shipped patch notes. Combine them with
+the inherited aura/equipment/quest-role changes, assign the next available version
+only after canonical60 acceptance, then verify the complete release and live game.
 
 ## Reproduced behavior
 
