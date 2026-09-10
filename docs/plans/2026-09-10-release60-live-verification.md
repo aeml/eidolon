@@ -10,10 +10,13 @@ before60 is accepted; the current push repairs60's verification, not gameplay.
 
 ## Current verification — September10, 02:35UTC
 
-02:53 update: sameCI34430017443 remains ACTIVE. Server102723358239,
-client102723358452 and browser2/3 jobs102724787734/102724787664 SUCCESS;
-browser1 job102724787728 is still running. Canonicalcaab611 remains unchanged.
-No deployment/final acceptance result yet.
+02:58 update: sameCI34430017443 remains ACTIVE. Server/client/allthreebrowser
+jobs SUCCESS. Browser1 job102724787728 completed29anonymous/10.5m,6nameplate/
+49.1s and3resourceHUD/6s with no retry, retained completed-job log
+`/tmp/eidolon-release60-yield-ci-browser1.log`. Predeploy102727073506 ACTIVE:
+setup/checkout/Node/dependency+GPUverification passed and High/Low gallery is
+running; disposable full-character stage pending. Canonicalcaab611 remains
+unchanged. No deployment/final acceptance result yet.
 
 Browser3 passed25/25 in5.8m with no retry. Its formerly failing respawn case
 ran from02:48:03.921 until the next case at02:48:36.699 under reported

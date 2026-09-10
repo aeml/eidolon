@@ -16,7 +16,48 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 02:53 UTC
+## Current checkpoint — September 10, 02:58 UTC
+
+Previous turn made PROGRESS (actualCI respawn proof). This continuation yielded
+new actual-play evidence and a new release stage: first full Watch completion
+after ordinary in-encounter town recovery, all browser jobs green, predeploy
+running. Full goal active; no impasse, cancellation, source change or new push.
+Root stays ledger-only and NEVER pushed.
+
+**CI34430017443 ACTIVE**, unchanged/frozen canonicalcaab611. All server/client/
+threebrowser jobs SUCCESS. Browser1 completed29anonymous/10.5m,6nameplate/49.1s,
+3resourceHUD/6s without retry; log`/tmp/eidolon-release60-yield-ci-browser1.log`.
+**Predeploy102727073506 ACTIVE** on runner`eidolon-codex-chrome`: setup/checkout/
+Node/dependency+GPUverification passed, deterministic High/Low gallery running.
+Disposable full-character stage is pending. Do not read this as deployed or
+accepted60; predeploy, bothdeployments, finalnative and exactpublicidentities
+remain required. Continue exact workflow; no new successor/source changes.
+
+**22725 ACTIVE**, sameprimarya285fbc frozen, `fresh-hunt-rest-0910`,18560/18561/
+41960, log`/tmp/eidolon-fresh-hunt-rest-replay.log`. First Watch40/40 COMPLETE
+with manual100Gold1593XP and freshlogin exactprogress verification: level6/
+640XP/1389Gold beforeclaim → level8/508XP/1489Gold.0deaths,18townvisits,746s.
+Unsoldbaggearvalue1210 is not cash income or proof of overallloot balance.
+Inspected current actual`earned-watch-ready.png`: 40/40, displayed correct
+rewards and explicit CompleteQuest button in Ilyra dialogue. Preserve archive
+only after terminal; this active test-results file must not be overwritten.
+
+New **unfinished-hunt** recovery branch was exercised during Watch after30credit:
+livinglevel6/225HP/15MP/rest0 → actualtown247HP/41MP → naturallyfull192MP,
+bank9.669 → departurebank17.093 after21.346s. Subsequent35credit and full40/manual/
+reconnect passed without resetting the existing encounter watchdog. This proves
+ordinary mid-hunt recovery plus resumed credit in THIS run; no claim of Imp
+success, wholecampaign/class/group readiness or tunedfun/difficulty. Retain
+observed~12.4minute/18visit pacing for later balance review. Seeds/Imp/scars/Orcs/
+unchangedlevel30dungeon gate still pending. No daily/grants/prepared level.
+
+Keep22725 until terminal, no second owned browser/heavytests or primary source
+edits; preserve/sanitize/exactcleanup afterward. Auraa877d46 unchanged, remains
+unpublished with full/native/rendered gates open. Allclass/group/campaign/raid/
+phone/CIcost/casino and full1.1–1.10scope remain open. Next same22725 and exact
+predeploy102727073506, then follow true release terminal/acceptance results.
+
+## Previous checkpoint — September 10, 02:53 UTC
 
 Previous goal turn made PROGRESS (aura ownership tests). This continuation
 completed actual CI respawn correction verification and artifact inspection,
