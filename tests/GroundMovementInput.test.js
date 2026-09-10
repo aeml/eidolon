@@ -6,7 +6,7 @@ assertions.poll = callback => ({
     async toBeGreaterThan(value) { expect(await callback()).toBeGreaterThan(value); }
 });
 jest.unstable_mockModule('@playwright/test', () => ({ expect: assertions }));
-const { moveByGroundClick } = await import('./e2e/helpers.js');
+const { moveByGroundClick, enterDungeon, returnToTown } = await import('./e2e/helpers.js');
 
 function movementPage(covered, mobile = false) {
     let x = 0;
@@ -22,7 +22,7 @@ function movementPage(covered, mobile = false) {
         }),
         mouse: { move: jest.fn(), click: jest.fn(async () => {
             // A normal entity-covered click must not be treated as movement.
-            if (!covered || keys.has('Control')) x += 10;
+            if (!covered || keys.has('Control') || keys.has('Shift')) x += 10;
         }) },
         keyboard: { down: jest.fn(async key => keys.add(key)), up: jest.fn(async key => keys.delete(key)) },
         waitForTimeout: jest.fn()
@@ -70,4 +70,34 @@ test('an issued checked-path click that cannot move still fails', async () => {
     })).rejects.toThrow('No real input established 6 units');
     expect(page.mouse.click).toHaveBeenCalledTimes(1);
     expect(page.keyboard.down).not.toHaveBeenCalled();
+});
+
+test.each([false, true])('deliberate move-only input walks with Shift even on covered ground: %s', async covered => {
+    const page = movementPage(covered);
+    expect((await moveByGroundClick(page, 15, 0, { moveOnly: true, allowJumpFallback: false })).x).toBe(10);
+    expect(page.keyboard.down.mock.calls).toEqual([['Shift']]);
+    expect(page.keyboard.up.mock.calls).toEqual([['Shift']]);
+    expect(page.mouse.click).toHaveBeenCalledTimes(1);
+});
+
+test('failed move-only clicks release Shift and do not silently retry as a jump', async () => {
+    const page = movementPage(true);
+    page.mouse.click.mockRejectedValueOnce(new Error('input unavailable'));
+    await expect(moveByGroundClick(page, 15, 0, { moveOnly: true, allowJumpFallback: false }))
+        .rejects.toThrow('input unavailable');
+    expect(page.keyboard.down.mock.calls).toEqual([['Shift']]);
+    expect(page.keyboard.up.mock.calls).toEqual([['Shift']]);
+    expect(page.mouse.click).toHaveBeenCalledTimes(1);
+});
+
+test('standalone entry is available to the focused party resume diagnostic', () => {
+    expect(typeof enterDungeon).toBe('function');
+});
+
+test('party recall cannot hide a death behind default respawn behavior', async () => {
+    const page = { evaluate: jest.fn().mockResolvedValue({ state: 'DEAD' }), locator: jest.fn(),
+        keyboard: { press: jest.fn() } };
+    await expect(returnToTown(page, { allowRespawn: false })).rejects.toThrow('cannot hide a respawn');
+    expect(page.locator).not.toHaveBeenCalled();
+    expect(page.keyboard.press).not.toHaveBeenCalled();
 });
