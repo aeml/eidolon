@@ -5,7 +5,44 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 23:16 UTC
+## Current checkpoint — September 10, 23:30 UTC
+
+Previous turn was PROGRESS: actor-aware formation planning and focused checks.
+This turn is PROGRESS: recovered full client pass, exact-instance arrival checks,
+and a fresh four-role native acceptance run. Whole roadmap/live gates stay open.
+
+-69808 on04b68c5a is TERMINAL1 before combat, seed-5640445871472287783,
+  generator2/Normal30/no fallback. All four setup/party/entry passed; no casts,
+  deaths or rewards. Wizard requested12units, moved0.712, remained17.77fromtank.
+  Optional arrival correctly failed this case. Camera/mesh offsets0; blockedStops4.
+  Original diagnostics lacked the Wizard's view of other actor bodies: exact
+  blocker remains unproven. Archive`/tmp/eidolon-four-role-arrival-proof-t2IlWC`
+  scanned with0QA prefixes, owned ports cleared. No full-clear result.
+- Primary952b835e adds actor-capsule checks to the existing static walking check,
+  checked gathering-circle alternatives and short lateral detours; existing
+  overlaps may separate without deeper penetration. Exact instance ID is now
+  required by optional arrival and the group formation check. This supersedes
+  the scene-type-only caveat below. No gameplay collision or timer change.
+ 87372 passed64tests/5suites5.104s plus lint/discovery. Full client passed
+ 315suites/4359tests140.563s; recovered terminal logs/no live Jest or eslint.
+  Explicit lint confirmation72582 terminated0. Logs
+ `/tmp/eidolon-party-body-full-client.log` and`...-full-lint-confirm.log`.
+- Primarya1138def records these results. Native7703 now ACTIVE on that clean,
+  frozen source, sole local heavy gate: routeparty-dungeon,
+  runparty-bodies-0910-2330, ports18580/18581/41980, log
+ `/tmp/eidolon-four-role-bodies-native.log`. Do not edit primary or start another
+  heavy gate until this exact handle terminates. Formation/fullclear/manual
+  claims/freshlogin remain unproven. Prior69808active statements are superseded.
+- Candidate0c8c4ffe remains idle: full Go/current104browser passed; versioned
+  required-all/canonical acceptance/version/patch notes/remote/live pending.
+  Remote rechecked23:29: canonical62dc CI34434837759 queuedpredeploy;
+  Nightly34433520743 in_progress on the only runner. No new cancellation
+  authority; do not preempt/relabel/add runners or push successors over this gate.
+- No push, version bump or deployment. Root remains ledger-only, never push.
+  Partycredit local includes same-instance dungeon/raid members (downed too),
+  overworld110unit range at kill; manual quest claims remain individual.
+
+## Previous checkpoint — September 10, 23:16 UTC
 
 Previous turn was PROGRESS: current104browser acceptance and native retry.
 This turn is PROGRESS:1157 produced precise precombat arrival evidence, its
