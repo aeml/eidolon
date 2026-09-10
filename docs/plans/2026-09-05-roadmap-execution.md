@@ -16,7 +16,42 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 02:48 UTC
+## Current checkpoint — September 10, 02:53 UTC
+
+Previous goal turn made PROGRESS (aura ownership tests). This continuation
+completed actual CI respawn correction verification and artifact inspection,
+and revalidated the same two live handles. Full goal remains active; no impasse,
+runtime edit/restart or new push. Root ledger-only/NEVER pushed.
+
+**CI34430017443 ACTIVE**, canonicalcaab611 unchanged/frozen. Server/client and
+browser2/3 now SUCCESS; only browser1 job102724787728 still ACTIVE at02:53.
+Browser3 job102724787664 passed25/25 in5.8m, no retry. Its corrected respawn
+case ran02:48:03.921→nextcase02:48:36.699 under ANGLE/Vulkan SwiftShader, not
+the old two120s failures. Retained log`/tmp/eidolon-release60-yield-ci-browser3.log`
+and artifact10134436964 at`/tmp/eidolon-release60-yield-ci-proof-B5RW5Z`,scan0.
+ActualCI Rogue PNG inspected: no enclosing cube, same1280x720 fixture. This
+proves the isolated correction in CI, NOT pipeline/deploy/native acceptance.
+Predeploy, deployment, final character QA and exactpublic60/caab611 gates remain.
+
+**22725 ACTIVE**, primarya285fbc frozen; same`fresh-hunt-rest-0910`/18560/18561/
+41960, log`/tmp/eidolon-fresh-hunt-rest-replay.log`. Opening+diary manual/reconnect
+passed. Latest Watch milestone20/40,0deaths,10rest stops,level5/388XP/780Gold,
+10bag slots/810unsoldgearvalue at391huntseconds. Actual town visits heal/fullmana
+and accrue bank; bank also naturally expired outside before some returns. No
+new unfinished-encounter retreat observation yet. Watch completion, Seeds/Imp/
+scars/Orcs and unchangedlevel30dungeon readiness remain open. Continue same run;
+no second owned browser or heavy tests until terminal, then retain/sanitize and
+verify exact cleanup. Do not treat partial progress as full pacing acceptance.
+
+Aura remains cleana877d46, all native/rendered/full promotion gates pending.
+Read-only economy check noted single-eligible-member party Gold uses1.1factor
+while recipientCombatExperience intentionally has no bonus for size<=1; no new
+balance decision/fix or claim that this explains the Imp stall. Do not substitute
+that observation for existing full class/group/economy evidence requirements.
+Next: continue exactCI and22725. All broaderstory/raid/phone/aura/CIcost/casino
+and full1.1–1.10scope remain open.
+
+## Previous checkpoint — September 10, 02:48 UTC
 
 Previous goal turn made PROGRESS (guarded hunt recovery and fresh replay).
 This continuation made PROGRESS in the independent aura lifecycle verification

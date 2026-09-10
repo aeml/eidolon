@@ -10,10 +10,19 @@ before60 is accepted; the current push repairs60's verification, not gameplay.
 
 ## Current verification — September10, 02:35UTC
 
-02:48 update: sameCI34430017443 remains ACTIVE. Server102723358239,
-client102723358452 and browser2 job102724787734 SUCCESS; browser3/1 jobs
-102724787664/102724787728 are running. Canonicalcaab611 remains unchanged.
+02:53 update: sameCI34430017443 remains ACTIVE. Server102723358239,
+client102723358452 and browser2/3 jobs102724787734/102724787664 SUCCESS;
+browser1 job102724787728 is still running. Canonicalcaab611 remains unchanged.
 No deployment/final acceptance result yet.
+
+Browser3 passed25/25 in5.8m with no retry. Its formerly failing respawn case
+ran from02:48:03.921 until the next case at02:48:36.699 under reported
+ANGLE/Vulkan SwiftShader. Retained completed-job log
+`/tmp/eidolon-release60-yield-ci-browser3.log` and artifact10134436964 at
+`/tmp/eidolon-release60-yield-ci-proof-B5RW5Z`, supplemental scan0. Inspected
+the actual CI final Rogue PNG: no enclosing glowing box, same1280x720 fixture.
+This establishes the corrected scenario passed in the actual CI environment;
+it is not native gameplay, total pipeline success or final release acceptance.
 
 Normal push78092 SUCCEEDED3a139c0→caab611 from the clean canonical worktree.
 New CI34430017443 ACTIVE on exactcaab611; server102723358239 and client102723358452
