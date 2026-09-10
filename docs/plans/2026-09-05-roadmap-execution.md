@@ -16,7 +16,38 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 04:14 UTC
+## Current checkpoint — September 10, 04:31 UTC
+
+Previous goal turn and this continuation are VERIFIED WAITs: repeatedly polled
+the same live84056 and queuedpredeploy102741303703, with its occupying soak
+102733792127 confirmed in progress. No source changes, rerun, cancellation,
+new push or deployment. Full goal stays active; pending release-runner approval
+does not make the whole goal an impasse while earned gameplay is still running.
+Root is ledger-only and NEVER pushed.
+
+**84056 ACTIVE**, ONLY owned local browser, primary clean/frozenea6cdbb, same
+fresh-phases-0910/18560/18561/41960 and`/tmp/eidolon-fresh-phases-replay.log`.
+Watch phase already passed563138ms, including40kills/manual100Gold1593XP/save,
+zero deaths/16 townstops. Seeds phase subsequently PASSED152103ms:8 earnedSeeds,
+15 observed target deaths/zero playerdeaths, normal manual turn-in. Imp phase
+ACTIVE within its2700000ms cap; latest26/60credit,zero deaths,12townstops,
+1earnedtrainingstop,859huntseconds. Level17/1893XP/6500next/4955Gold,18 bag slots,
+1020unsold gear value,561maxHP/385maxMP. Actual unfinished-encounter and normal
+between-encounter town recovery continue without changed120s encounter budgets.
+All60Imp/manual/save,scars,50Orcs and strictlevel30 readiness remain pending.
+Preserve source until exact terminal result, archive/sanitize and verify cleanup;
+no second owned browser or heavy local regression while84056 owns the slot.
+
+Canonical/diagnostic62dc2d1 andCIcostdf6f806 remain clean/unchanged. Release
+CI34434837759 has all hosted jobs SUCCESS but predeploy102741303703 still QUEUED
+for the single runner held by scheduled24h soak34433520743/job102733792127.
+The asynchronous request to cancel THIS soak remains unanswered; no permission
+to cancel it, alter scheduling/labels or reuse an earlier soak approval. No
+predeploy/deploy/finalnative/public acceptance claim; last verified public remains
+60/df91bb6. Continue exact runs and all broader1.1–1.10 gates without narrowing
+scope to these successful partial chapters.
+
+## Previous checkpoint — September 10, 04:14 UTC
 
 Previous goal turn was a VERIFIED WAIT. This continuation made PROGRESS:
 confirmed all browser jobs passed, established an independent runner-allocation
