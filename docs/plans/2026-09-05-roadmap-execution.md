@@ -16,7 +16,48 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 00:03 UTC
+## Current checkpoint — September 10, release60 final local verification
+
+The immediately preceding casino-response turn only reconfirmed existing scope
+(NO PROGRESS toward implementation); this continuation revalidated active work
+and made PROGRESS. The full roadmap goal stays active; root remains ledger-only
+and must NEVER be pushed.
+
+Release59/e236b37 is fully accepted: CI34414624304 and all10jobs were rechecked
+SUCCESS, including final native live QA. Fresh public identity and inspected
+artifacts are recorded in [release59 live verification](2026-09-10-release59-live-verification.md).
+Remote master still matches59; no successor push yet.
+
+Release60 canonical worktree `/tmp/eidolon-safe-zone-release-preview-gCLEaT`,
+branch `release/60-sanctuary-combat-feedback`, now clean **2b30320**. Version,
+login text, build defaults and patch notes are synchronized. Session33981 is
+TERMINALPASS: focused254tests, full253suites3599tests75.35s+lint; server-race all
+packages passed (game229.897s). Logs `/tmp/eidolon-release60-full-{client,lint,server}.log`.
+Final interface70333 passed6cases15.9s; desktop/phone sanctuary warnings, phone
+journal and long-label rendering inspected. Archive
+`/tmp/eidolon-release60-interface-proof-0K6GU5`, scanner0/port41961absent.
+
+**88699 ACTIVE**, only owned local browser workflow: final versioned native
+sanctuary journey, run`release60-native-0910-final`, API18560/Mongo18561/web41960,
+log`/tmp/eidolon-release60-native-final.log`. Candidate frozen until terminal.
+No heavy owned tests alongside this browser. Final native proof, exact diff,
+canonical normal push and complete CI/live/public60 acceptance still required.
+
+Primary70286 is TERMINALFAILED at600s, not still running. It earned the opening,
+diary,40Skeletons,8Seeds,60Imps and scar3/3, then reached19/50DemonOrcs. Four actual
+merchant visits passed; screenshot shows active combat. Archive
+`/tmp/eidolon-functional-earth-budget-failure-kMxAKx`, sanitation/exact cleanup
+complete; no claim of full completion or fresh pacing.
+
+Primary now has an uncommitted three-stage serial refactor preserving the same
+earned account, all objectives/manual claims and saved Seed counts. Only stage1
+prepares levels; retries replay the whole chain on a fresh disposable account.
+The composite actual-dungeon helper retains every prerequisite. Focused42307
+PASS5tests0.38s+lint/diff check. Full client and actual staged replay remain due;
+see primary `2026-09-10-earth-functional-stage-budgets.md`. No progression/rate
+changes or fresh/class/group/physical-phone/raid/casino gate reductions.
+
+## Previous checkpoint — September 10, 00:03 UTC
 
 This turn made PROGRESS: release59 deployed with matching public identity, actual
 merchant-sale proof obtained, repeat-visit helper corrected, and standalone
