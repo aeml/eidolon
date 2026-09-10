@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 import { createVisualActorClock } from '../visualLifecycleClock.js';
+import { startVisualFixtureLoop } from '../visualFixtureLoop.js';
 
 // Prepared visual lifecycle scene using the real class/model/update paths.
 // This is not earned combat or a multiplayer respawn acceptance test.
@@ -8,7 +9,10 @@ test('Rogue respawn and stealth expiry keep the rendered interaction box invisib
     const failures = collectBrowserFailures(page, baseURL);
     // A self-contained fixture helper, available even when a live deployment
     // does not publish test modules. Never replace the production game clock.
-    await page.addInitScript({ content: `window.__createVisualActorClock = (${createVisualActorClock.toString()});` });
+    await page.addInitScript({ content: `
+        window.__createVisualActorClock = (${createVisualActorClock.toString()});
+        window.__startVisualFixtureLoop = (${startVisualFixtureLoop.toString()});
+    ` });
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.goto('/', { waitUntil: 'networkidle' });
     const rendererName = await page.evaluate(async () => {
@@ -49,10 +53,9 @@ test('Rogue respawn and stealth expiry keep the rendered interaction box invisib
             advance(now);
             actor.render(1);
             render.render();
-            qa.frame = requestAnimationFrame(frame);
         }
         window.__respawnAppearance = qa;
-        qa.frame = requestAnimationFrame(frame);
+        qa.stop = window.__startVisualFixtureLoop(frame);
         // Keep the fixture's ground separate from the character hitbox.
         const ground = new THREE.Mesh(new THREE.PlaneGeometry(100, 100), new THREE.MeshStandardMaterial({ color: 0x35483c }));
         ground.rotation.x = -Math.PI / 2;
@@ -79,7 +82,7 @@ test('Rogue respawn and stealth expiry keep the rendered interaction box invisib
     await page.screenshot({ path: test.info().outputPath('rogue-after-respawn.png') });
     await page.evaluate(() => {
         const qa = window.__respawnAppearance;
-        cancelAnimationFrame(qa.frame);
+        qa.stop();
         qa.actor.dispose();
         qa.render.dispose();
     });
