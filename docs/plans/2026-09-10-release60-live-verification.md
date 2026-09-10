@@ -1,4 +1,4 @@
-# Alpha1.0.60 — publication and pending live acceptance
+# Alpha1.0.60 — deployed, final live acceptance failed
 
 Canonical commit `df91bb66e8e8f3b7125aa99412f09ba25898a3ac`, branch
 `release/60-sanctuary-combat-feedback`, worktree
@@ -32,10 +32,12 @@ scan0, exact disposable services/ports cleaned. Native log
 
 ## Required public acceptance
 
-[CI34421323405](https://github.com/aeml/eidolon/actions/runs/34421323405) remains
-ACTIVE on the exact canonical commit. Predeploy102701339923 and production input
+[CI34421323405](https://github.com/aeml/eidolon/actions/runs/34421323405) is terminal
+FAILED on the exact canonical commit. Predeploy102701339923 and production input
 validation102709034222 passed, followed by Pages102709062152 and server102709062218.
-Final live character job102709210653 is running; final acceptance remains open.
+Final live character job102709210653 failed at01:36:08UTC; final acceptance remains
+open. The deployment itself succeeded; do not conflate it with a fully accepted
+release or claim the failed check proves a recovery-system regression.
 
 The server retained the previous59 image as
 `eidolon-api:rollback-2b3c5a1e95c7c12d16eb8abd412ef3428e50c2dd3e8d147dd8c90b6852ff9170`.
@@ -56,6 +58,28 @@ retain that flaky result, not an all-first-attempt claim. The original attempt
 does not establish the timeout's cause. Retry observed warning inside town,
 normal range outside, incoming2HP, accepted Fireball at80MP, normal Recall
 recovery and saved bank29.070→29.502. Log `/tmp/eidolon-release60-predeploy.log`.
+
+## Final live failure and next diagnostic
+
+Live anonymous/persistent-character and four-class/remote-animation checks passed.
+Natural rest expiry passed: bank13.924→0 outside town removed aura and returned
+strength11→10/maxHP110→100; reentry restored aura/strength11/maxHP110 and earned
+bank1.485. The following sanctuary journey failed the same10-second hover at
+the inside-town boundary, before its warning screenshot, combat, Recall or login
+checks. Party QA was not reached. Live credentials were not retried.
+
+Artifact10132708546 retained at `/tmp/eidolon-release60-live-failure-7uE6Za`,
+supplemental scan0, log `/tmp/eidolon-release60-final-live.log`. Inspected the
+only journey screenshot: it precedes the boundary failure, so neither enemy
+availability, occlusion nor pending pointer processing is established.
+
+Separate diagnostic worktree `/tmp/eidolon-release60-hover-diagnostic-V1ICnd`,
+branch`work/release60-hover-diagnostics`, commit6cf157a, adds failure-only actual
+projection/hover/card/rendered-enemy/camera observations and an at-failure world
+screenshot. No runtime change, selection/raycast injection, timeout extension or
+weakened assertion. Focused5576 passed20tests/3suites0.849s+lint. Actual diagnostic
+against fresh ordinary live QA registration is next after primary65010 releases
+the local browser slot. No blind CI rerun, no successor push, no acceptance claim.
 
 - [x] All client/server/browser/predeploy/input validation jobs pass.
 - [x] Both deployments pass; inspect server schema preflight and rollback evidence.

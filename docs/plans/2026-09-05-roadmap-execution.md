@@ -16,7 +16,50 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 01:33 UTC
+## Current checkpoint — September 10, 01:41 UTC
+
+This turn made PROGRESS: inspected terminal live60failure and artifacts, narrowed
+what evidence is missing, added read-only failure capture with tests in a separate
+diagnostic worktree. Previous turn was PROGRESS (actual stash proof/correction/
+regression). Full goal active, no impasse; root ledger-only, NEVER pushed.
+
+**60 CI34421323405 TERMINAL FAILED**, final live102709210653 at01:36:08UTC.
+Both deployments and preceding gates succeeded; exact60/df91bb6 is deployed but
+not accepted. Anonymous/persistent-character and four-class/remote-animation live
+checks passed. Natural Well Rested expiry/reentry passed (bank13.924→0 removes
+aura/stats; reentry restores and earns1.485). Sanctuary journey then failed its
+same10-second inside-boundary enemy-hover assertion, as in the earlier predeploy
+retry. No live combat/Recall/reconnect or party pass. Do not blindly rerun CI or
+push a successor. Canonical worktree remains unchanged atdf91bb6.
+
+Live failure archive `/tmp/eidolon-release60-live-failure-7uE6Za`, artifact10132708546,
+scan0; inspected pre-boundary town screenshot. It cannot identify missing enemy,
+occlusion or stale pointer; no at-failure scene was retained. Original live log
+`/tmp/eidolon-release60-final-live.log`; acceptance document updated accurately.
+
+**New clean diagnostic6cf157a**, worktree
+`/tmp/eidolon-release60-hover-diagnostic-V1ICnd`, branch`work/release60-hover-diagnostics`
+based exact60. Failure-only read observations retain last candidate/projection,
+actual hover/card, needsRaycast/canvas, camera/player state, overlay identity and
+nearest20replicatedSkeletons' rendered/alive state; capture entered-world failure
+PNG and rethrow original assertion. No runtime/timeout/selection/health/buff or
+gameplay change. Focused5576 PASS20/3/.849+lint; no native diagnostic yet. Logs
+`/tmp/eidolon-sanctuary-hover-observation-{tests,lint}.log` and plan
+`2026-09-10-sanctuary-hover-diagnostic.md` in that worktree.
+
+**65010 remains ACTIVE**, exact same primaryef1ca35 serial Earth replay,
+run`earth-padding-0910-0133`, API18560/Mongo18561/web41960,
+log`/tmp/eidolon-earth-padding-0133.log`. Stage1 PASSED4.4m including8naturalSeeds,
+all manual claims and saved state; stage2 still running. Source frozen, no second
+owned browser or heavy tests. Preserve/sanitize/verify cleanup at terminal.
+**Next browser priority changes to the failed live60 diagnostic**, using a fresh
+ordinary QA registration against exact deployed60, then determine the actual
+correction from captured evidence. Do not cancel the Earth replay to start it.
+The prepared complete-chain, fresh story-only readiness, class/group/dungeon/raid/
+phone/casino gates all remain intact and open. Aura4a91c75/CIcost080e175 unchanged;
+do not merge60 into accepted baselines before resolving its final acceptance.
+
+## Previous checkpoint — September 10, 01:33 UTC
 
 This continuation made PROGRESS: inspected the terminal Earth replay, verified
 its first actual stash transfer, corrected the second-visit occupancy calculation,
