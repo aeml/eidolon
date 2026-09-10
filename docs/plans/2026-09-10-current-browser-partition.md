@@ -1,5 +1,10 @@
 # Current-candidate browser partition — unpublished
 
+This record covers CI-only49daea2e. The branch's subsequent runtime integration
+and updated103case coverage are tracked in
+[next release integration](2026-09-10-next-release-integration.md); do not read
+the earlier101case count or CI-only scope below as the current combined source.
+
 Based on socket successor298ecde0, including canonical62dc release ancestry.
 This carries only the earlier CI partition prototype and its contracts, not the
 old primary's unpublished story, crystal art, balance or server changes. No game

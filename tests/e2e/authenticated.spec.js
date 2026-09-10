@@ -30,6 +30,13 @@ test.describe('dedicated QA character', () => {
         const failures = collectBrowserFailures(page, baseURL);
         if (process.env.EIDOLON_E2E_CAPTURE_VISUALS === '1' || process.env.EIDOLON_E2E_PROFILE_VISUALS === '1') await page.setViewportSize({ width: 1440, height: 1000 });
         await loginAndEnterWorld(page, credentials);
+        const readReplicatedStash = async () => {
+            await expect.poll(() => page.evaluate(() => Array.isArray(window.game?.player?.stash)), {
+                timeout: 10_000, message: 'Login must replicate authoritative storage, including an empty stash'
+            }).toBe(true);
+            return page.evaluate(() => window.game.player.stash);
+        };
+        const initialStash = await readReplicatedStash();
         await page.evaluate(() => {
             const game = window.game;
             window.__questQASends = [];
@@ -111,6 +118,10 @@ test.describe('dedicated QA character', () => {
         await exerciseMovement(page);
         await exerciseMenus(page);
         await exerciseReconnect(page);
+        expect(await readReplicatedStash(), 'Transport resume must retain exact stash contents').toEqual(initialStash);
+        // A fresh page cannot pass by retaining the pre-disconnect client array.
+        await loginAndEnterWorld(page, credentials);
+        expect(await readReplicatedStash(), 'Fresh login must republish exact stash contents').toEqual(initialStash);
         expect(failures, failures.join('\n')).toEqual([]);
     });
 
