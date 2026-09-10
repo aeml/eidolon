@@ -1,5 +1,54 @@
 # Well Rested aura batching — separate visual/performance prototype
 
+## Populated rendering comparison — September10, 06:50UTC
+
+New `well-rested-populated-render.spec.js` verifies5 and20 prepared mixed-class
+actors (Fighter/Wizard/Rogue/Cleric), High/Low quality, three staggered authored
+phases per quality, and a batched/reference/batched fixed-pose frame sequence.
+The test-only expanded reference reuses source geometry and caches four tinted
+materials across actors; it does not artificially allocate one material per mote.
+Three new unit cases verify both qualities' visible part counts, source transforms,
+colors/opacity, shared resources and standalone browser injection. Together with
+authored-motion/pixel guards, focused17tests/3suites passed1.704s plus lint.
+Logs `/tmp/eidolon-aura-populated-{unit,lint}.log`.
+
+Rendered35411 TERMINAL PASS2/1.1m, retries0, system Chrome149/ANGLE AMD
+Vulkan1.4.318/RADV RENOIR, viewport1280x720/DPR1. Five actors passed29.3s and
+twenty passed37.1s. All12 comparisons had exactly0 RGB difference and nonzero
+aura contribution67497–154745. Actual incremental aura draws:
+
+| Population | High, batched / reference | Low, batched / reference |
+|---|---|---|
+| 5 | 49–50 / 189–190 | 40 / 100 |
+| 20 | 199–200 / 759–760 | 160 / 400 |
+
+Each fixed-pose mode used60warmup+180sample frames. For20actors, High full-scene
+draws were1541/2101/1541 and Low1501/1741/1501 in batched/reference/batched order.
+High render-submission CPU medians19.4/31.0/19.4ms, frame medians16.7/33.3/16.7ms
+and p95 33.4/50.0/33.4ms. Low CPU medians14.4/18.1/13.2ms; all frame medians16.7ms
+with p95 33.3/33.4/16.8ms. Geometry/texture counts remained201/6 across each
+repeat. Five-actor geometry/texture counts remained186/6, frame medians16.7ms.
+
+These are controlled fixed-pose renderer observations with default class models,
+not animated combat, equipped raid groups, live native FPS improvement, network
+concurrency, or physical-phone performance. The repeated sample exposes some
+timing variation; no hardware-independent FPS threshold or speedup claim is added.
+Authored-motion tests remain separate from expansion-based pixel comparisons.
+
+Log `/tmp/eidolon-aura-populated-native.log`; complete images/HTML/profile archive
+`/tmp/eidolon-aura-populated-proof-gnlHRf`, anonymous scanner0, port41960 closed.
+Viewed5actor High and20actor High/Low screenshots: visible rings/motes around
+all class silhouettes, no enclosing cube. Full client6784 ended143 before a final
+summary; its Node process4012607 is absent. The retained log has partial suite
+passes, not a complete result, and lint was not reached. Cause is unestablished;
+the inspected kernel window contained no OOM report. The unchanged rerun41005
+passed258client suites/3635tests129.694s plus lint, Node24.18.0, with separate
+`full-{client,lint}-rerun.log` files under the same `/tmp/eidolon-aura-populated-`
+prefix. Do not count6784 as passing or silently
+replace its incomplete result. No runtime/version/pipeline/push/deployment change.
+Prepared populated-reference coverage is now present; native world/death transition
+coverage, physical-phone/full-scene performance work and release integration remain.
+
 ## Native and rendered verification — September10, 06:42UTC
 
 The earlier pending native run28798 is terminal: journey/expiry passed2/1.3m,
