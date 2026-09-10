@@ -5,7 +5,36 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 23:48 UTC
+## Current checkpoint — September 10, 23:54 UTC
+
+Previous turn was PROGRESS: first four-role recovery and corrected balance-plan
+status. This turn is PROGRESS: second native room/recovery, evidence-backed
+resource-repair milestone status and consolidated successor patch-note draft.
+99535 is also a VERIFIED WAIT on its re-polled live handle. Whole goal stays open.
+
+- Native99535 still ACTIVE on frozen229cbdd8/same6347868825596501926 seed,
+  sole local heavy gate. Room2 cleared after ordinary Skeleton kills; second
+  all-four town recovery and individual guide resume preserved exact run/content.
+  Pre-restHP/MP: Fighter855/370, Cleric845/486, Wizard855/336, Rogue822/411.
+  No boss/fullclear/manual claim/relogin result yet. Continue exact handle/log/
+  ports below, do not edit primary or replace a quiet but live process.
+- Rootdac2f6b2 updates the resource contract and marks only the core reconnect
+  repair checkbox shipped. RemoteCI34347504351/8af54f2 recheckedterminalSUCCESS,
+  ancestry in publicdf91 confirmed; candidate resource restoration source is
+  identical to publicdf91. Read the actual snapshot/restore/legacy/death paths.
+  Broader all-instance/device/raid/earned acceptance remains unchecked/open.
+- Candidate98320775 is documentation-only atop0c8c4ffe. Its integration record
+  now has one consolidated unreleased patch-note draft from the actual62dc→
+  candidate application diff: partycredit/support/slam defenses, equipment/socket/
+  Forge/Shift controls, town/quest/stash guidance and aura rendering. No version
+  assigned, no runtime change or published notes. Explicitly excludes expanded
+  Chronicle/newrewardcurve/DarkKingphasecap/casino and broadcompletion claims.
+  CurrentfullGo/104browser proofs remain; versionedrequiredall/CI/live stilldue.
+- Canonical62dc CI34434837759 remainsqueuedpredeploy; Nightly34433520743 remains
+  in_progress at23:54 recheck. No push, deployment, version bump, cancellation or
+  runner change. Root remains ledger-only, NEVER PUSH.
+
+## Previous checkpoint — September 10, 23:48 UTC
 
 Previous goal turn was PROGRESS: formation regressions fixed and native launch.
 This turn is PROGRESS: the exact native run passed its opening room/recovery
