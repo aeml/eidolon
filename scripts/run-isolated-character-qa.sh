@@ -127,6 +127,7 @@ fi
 qa_allowlist="${QA_USERNAME_BASE},${QA_USERNAME_BASE}-healing,${QA_USERNAME_BASE}-economy,${QA_USERNAME_BASE}-legacy,${QA_USERNAME_BASE}-recovery,${QA_USERNAME_BASE}-spin,${QA_USERNAME_BASE}-phone,${QA_USERNAME_BASE}-phone-combat,${QA_USERNAME_BASE}-phone-bag,${QA_USERNAME_BASE}-phone-quests,${QA_USERNAME_BASE}-phone-build,${QA_USERNAME_BASE}-phone-settings,${QA_USERNAME_BASE}-phone-adventure,${QA_USERNAME_BASE}-fighter,${QA_USERNAME_BASE}-rogue,${QA_USERNAME_BASE}-wizard,${QA_USERNAME_BASE}-cleric"
 
 qa_allowlist+=",${QA_USERNAME_BASE}-death-resources"
+qa_allowlist+=",${QA_USERNAME_BASE}-rest-transitions-death,${QA_USERNAME_BASE}-rest-transitions-dungeon"
 qa_allowlist+=",${QA_USERNAME_BASE}-duration,${QA_USERNAME_BASE}-forge,${QA_USERNAME_BASE}-whip,${QA_USERNAME_BASE}-ground"
 qa_allowlist+=",${QA_USERNAME_BASE}-cleanse"
 qa_allowlist+=",${QA_USERNAME_BASE}-cleanse-retry1"
@@ -475,6 +476,10 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   death-resources)
     run_death_resource_recovery
+    ;;
+  well-rested-transitions)
+    EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-rest-transitions" EIDOLON_E2E_CLASS=Wizard \
+      npx playwright test tests/e2e/well-rested-transitions-gameplay.spec.js
     ;;
   smoke)
     npx playwright test tests/e2e/authenticated.spec.js --grep "logs in, enters the world"
