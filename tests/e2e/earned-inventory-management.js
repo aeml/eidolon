@@ -1,6 +1,7 @@
 import { expect } from '@playwright/test';
 import { EARNED_BAG_MIN_FREE, EARNED_BAG_TARGET_FREE, earnedBagFreeSlots, planEarnedBagSales } from '../earnedInventoryPolicy.js';
 import { equipEarnedEmptySlots } from './earned-equipment.js';
+import { ensureEarnedMerchantWindow } from './earned-merchant-window.js';
 import { moveByGroundClick, projectEntity, readPlayerState, returnToTown, setAutoLootThroughSettings } from './helpers.js';
 
 const snapshot = page => page.evaluate(() => {
@@ -20,7 +21,8 @@ async function openEarnedMerchant(page) {
         const distance = Math.hypot(offset.x, offset.z);
         if (distance < 4.5) break;
         const scale = Math.min(12, distance - 3) / distance;
-        await moveByGroundClick(page, offset.x * scale, offset.z * scale, { allowJumpFallback: false });
+        await moveByGroundClick(page, offset.x * scale, offset.z * scale,
+            { moveOnly: true, allowJumpFallback: false });
     }
     await expect.poll(() => page.evaluate(() => {
         const game = window.game;
@@ -28,16 +30,17 @@ async function openEarnedMerchant(page) {
             Math.hypot(game.renderSystem.cameraTarget.x - game.player.position.x,
                 game.renderSystem.cameraTarget.z - game.player.position.z) < .05;
     })).toBe(true);
-    let point;
-    await expect.poll(async () => {
-        point = await projectEntity(page, 'merchant-1');
-        if (!point?.visible) return false;
-        await page.mouse.move(point.x, point.y);
-        return page.evaluate(() => window.game.hoveredEntity?.id === 'merchant-1');
-    }).toBe(true);
-    await page.mouse.click(point.x, point.y);
-    await expect(page.locator('#shop-screen')).toBeVisible();
-    await expect(page.locator('#inventory-screen')).toBeVisible();
+    const opened = await ensureEarnedMerchantWindow(page, async () => {
+        let point;
+        await expect.poll(async () => {
+            point = await projectEntity(page, 'merchant-1');
+            if (!point?.visible) return false;
+            await page.mouse.move(point.x, point.y);
+            return page.evaluate(() => window.game.hoveredEntity?.id === 'merchant-1');
+        }).toBe(true);
+        await page.mouse.click(point.x, point.y);
+    });
+    console.log('[earned-merchant-window]', JSON.stringify({ opened, position: await readPlayerState(page) }));
 }
 
 // Call only between encounters, before starting the existing combat watchdog.

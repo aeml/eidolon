@@ -2,8 +2,17 @@ import { expect, test } from '@playwright/test';
 import { EARTH_DUNGEON_CHAPTER, prepareEarthChronicleThroughPlay, readChronicleChapter } from './chronicle-earth-route.js';
 import { collectBrowserFailures, credentialsFromEnvironment, ensureDungeonReadyLevel,
     loginAndEnterWorld } from './helpers.js';
+import { readStoryHuntFailureEvidence } from './story-hunt-combat-observer.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
+test.afterEach(async ({ page }, testInfo) => {
+    if (testInfo.status === testInfo.expectedStatus || page.isClosed()) return;
+    const evidence = await readStoryHuntFailureEvidence(page);
+    if (!evidence) return;
+    await testInfo.attach('prepared-earth-failure', { body: JSON.stringify(evidence), contentType: 'application/json' });
+    await page.screenshot({ path: testInfo.outputPath('prepared-earth-failure.png') });
+    console.log('[prepared-earth-failure]', JSON.stringify(evidence));
+});
 
 test('earned Chronicle collection turn-in refreshes the bag before the next chapter', async ({ page, baseURL }) => {
     const credentials = credentialsFromEnvironment();
