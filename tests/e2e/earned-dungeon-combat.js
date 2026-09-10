@@ -25,7 +25,12 @@ export async function createEarnedDungeonCombat(page, className) {
     let nextAttemptAt = 0;
     return async (_page, target) => {
         // Ranged escape and immediate Healing Light take priority over buffs.
-        if (await defend(page, target)) return true;
+        if (await defend(page, target)) {
+            // Do not alternate a rejected direct heal and support cast on every
+            // loop: ordinary attacks and progress checks must get input time.
+            nextAttemptAt = Math.max(nextAttemptAt, Date.now() + 1000);
+            return true;
+        }
         if (Date.now() < nextAttemptAt) return false;
         const state = await page.evaluate(async id => {
             const game = window.game, p = game.player, enemy = game.remotePlayers.get(id);

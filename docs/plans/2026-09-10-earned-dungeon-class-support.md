@@ -44,6 +44,43 @@ all four classes; earned-route tests retain full normal clear-before-reward
 ordering and failure prevents turn-in. Mocked browser observations are not
 actual ability acceptance or a class-clear result.
 
+Follow-up: the defensive/support attempt throttle now prevents rejected healing
+and support from alternating continuously and starving ordinary combat input.
+The combined10suite focused run passed162tests2.455s plus lint. A subsequent
+prepared-route contract run passed84tests/4suites1.366s, lint and Playwright test
+discovery (one parameterized-by-class case). Logs are
+`/tmp/eidolon-earned-dungeon-classes-final-{unit,lint}.log` and
+`/tmp/eidolon-support-native-contract-{unit,lint}.log`, with discovery in
+`/tmp/eidolon-support-native-discovery.log`. These are not browser execution.
+
+Final source check26032 TERMINAL0:166tests/11suites2.529s, then lint and one-case
+Playwright discovery; `git diff --check` also passed. Logs
+`/tmp/eidolon-class-support-final-{unit,lint,discovery}.log`. This includes the
+native spec's stale-target check before activation, not masked by an active buff.
+
+## Prepared native route (implemented, execution pending)
+
+`EIDOLON_ISOLATED_QA_ROUTE=prepared-earned-support` runs separate allowlisted
+Rogue and Cleric accounts, serially with zero retries and separate artifact
+directories. It stops on either class's failure. It is explicitly opt-in and
+not inserted into an earned route or used to replace the complete release gate.
+The spec also requires the dedicated prepared flag before logging in.
+
+The existing level100, Verdant waypoint/protection and readiness commands are
+explicit fixtures. Branch selection, approach, self aim and composite-driver
+casts then use ordinary controls, without refilling during the observation.
+The case requires a real visible hostile in attack range, no support requests
+for a stale target before activation, paid server-accepted support, Cleric's
+actual Healing Light and Guardian Embrace heal events, and active-effect
+duplicate suppression. It records accepted/rejected results and normal outgoing
+requests without changing their payloads. Poison damage, isolated cooldown-only
+suppression after natural buff expiry, survival and a dungeon clear are NOT
+proven by this case. The cooldown-only negative remains covered by policy tests
+until separate native evidence is added.
+
+Do not execute this route or full regression while primary44188 owns the local
+browser/heavy gate. Discovery and focused contract tests do not clear that gate.
+
 ## Remaining acceptance, in order
 
 1. Do not merge into the active primary run or compete with its browser/heavy

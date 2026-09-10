@@ -62,6 +62,21 @@ test('unavailable support leaves ordinary combat in control', async () => {
     expect(projectGround).not.toHaveBeenCalled();
     expect(page.keyboard.press).not.toHaveBeenCalled();
 });
+test('a defensive attempt cannot alternate with support and starve ordinary combat', async () => {
+    Object.assign(state, { className: 'Cleric', healthRatio: .4,
+        skillCosts: { 'Guardian Embrace': 30 }, hotbar: ['Guardian Embrace'],
+        unlockedSkills: ['Guardian Embrace'] });
+    const now = jest.spyOn(Date, 'now').mockReturnValue(10_000);
+    defend.mockResolvedValueOnce(true).mockResolvedValue(false);
+    const driver = await createEarnedDungeonCombat(page, 'Cleric');
+    expect(await driver(page, { id: 'hostile' })).toBe(true);
+    now.mockReturnValue(10_550);
+    expect(await driver(page, { id: 'hostile' })).toBe(false);
+    expect(page.keyboard.press).not.toHaveBeenCalled();
+    now.mockReturnValue(11_001);
+    expect(await driver(page, { id: 'hostile' })).toBe(true);
+    expect(page.keyboard.press).toHaveBeenCalledWith('1');
+});
 test('the observer preserves server messages and resets without double-counting after reinstall', async () => {
     const original = jest.fn(); window.game = { handleServerMessage: original };
     page.evaluate.mockImplementation(callback => callback());
