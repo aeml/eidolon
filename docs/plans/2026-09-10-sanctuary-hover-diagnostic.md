@@ -1,4 +1,34 @@
-# Release60 live hover failure — diagnostic only
+# Release60 live hover failure — verified camera-framing QA correction
+
+## Promotion evidence — September10, 02:01UTC
+
+Full44217 on77805df PASSED254suites/3606tests69.017s and lint. Logs
+`/tmp/eidolon-sanctuary-framing-full-{client,lint}.log`. Git comparison against
+canonicaldf91bb6 confirms no changes to src, server, login, package/lock, release
+manifest or workflow. Server runtime remains the exact version whose CI passed;
+this correction changes only test inputs, failure evidence and documentation.
+
+Corrected live24692 on77805df PASSED journey+expiry2/1.1m and actual two-player
+party1/13.2s against freshly verified deployed60/df91bb6. New ordinary registrations,
+no retries, grants, prior-character reuse or backend-origin override. Real wheel
+input changed zoom15→30 at the unchanged protected94.985/200.010position. Actual
+Skeleton-lanternhold-0 hover showed Leave the safe zone; ordinary departure to
+x119.929 restored InRange. Incoming2HP and acceptedFireball110→80MP; Recall
+restored108→110HP/80→92→110MP; rest bank9.701→10.165 persisted across login.
+Separate natural expiry removed aura/stats at0 and restored them on reentry.
+Two real party members retained19High/10Low meshes and actual joystick movement.
+
+Archive `/tmp/eidolon-live60-framing-proof-yGjGmQ`, wrapper sanitation0files and
+supplemental scan0. Inspected warning, departure, rejoined and Low390party-world
+screenshots. Log `/tmp/eidolon-live60-framing-corrected.log`. All owned browser
+handles are terminal. These browser checks are not physical-phone acceptance.
+
+Promote this verification-only correction through the canonical60 branch with a
+normal non-force push, retaining60's player-facing notes/version because no
+gameplay changed. This repairs60's failed acceptance, not a new61successor or
+permission to accept the old failed workflow. Require a new complete pipeline,
+both deployments, final live evidence and fresh exact public identities before
+marking60 accepted. Preserve both original failures and the successful correction.
 
 ## Reproduced live; ordinary camera-framing correction prepared
 
