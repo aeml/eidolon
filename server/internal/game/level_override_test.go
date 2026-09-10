@@ -55,8 +55,8 @@ func TestSetPlayerLevelUpdatesDerivedState(t *testing.T) {
 	if updated.TalentPoints != 6 {
 		t.Fatalf("expected 6 talent points at level 30, got %d", updated.TalentPoints)
 	}
-	if updated.BaseStats.Strength != 78 || updated.BaseStats.Vitality != 68 {
-		t.Fatalf("expected fighter base strength/vitality to scale to 78/68 at level 30, got str=%d vit=%d", updated.BaseStats.Strength, updated.BaseStats.Vitality)
+	if updated.BaseStats.Strength != 68 || updated.BaseStats.Vitality != 68 {
+		t.Fatalf("expected ordinary base strength/vitality to scale to 68/68 at level 30, got str=%d vit=%d", updated.BaseStats.Strength, updated.BaseStats.Vitality)
 	}
 	if updated.BaseStats.Dexterity != 39 || updated.BaseStats.Intelligence != 39 || updated.BaseStats.Wisdom != 39 {
 		t.Fatalf("expected secondary stats to scale to 39 at level 30, got dex=%d int=%d wis=%d", updated.BaseStats.Dexterity, updated.BaseStats.Intelligence, updated.BaseStats.Wisdom)
@@ -104,8 +104,8 @@ func TestSetPlayerLevelRebuildsCanonicalStatsWhenTargetLevelMatchesCurrentLevel(
 	if !ok {
 		t.Fatal("expected SetPlayerLevel to succeed for same-level stat repair")
 	}
-	if updated.BaseStats.Strength != 218 || updated.BaseStats.Vitality != 208 {
-		t.Fatalf("expected fighter primary stats to rebuild to 218/208 at level 100, got str=%d vit=%d", updated.BaseStats.Strength, updated.BaseStats.Vitality)
+	if updated.BaseStats.Strength != 208 || updated.BaseStats.Vitality != 208 {
+		t.Fatalf("expected ordinary strength/vitality to rebuild to 208/208 at level 100, got str=%d vit=%d", updated.BaseStats.Strength, updated.BaseStats.Vitality)
 	}
 	if updated.BaseStats.Dexterity != 109 || updated.BaseStats.Intelligence != 109 || updated.BaseStats.Wisdom != 109 {
 		t.Fatalf("expected secondary stats to rebuild to 109 at level 100, got dex=%d int=%d wis=%d", updated.BaseStats.Dexterity, updated.BaseStats.Intelligence, updated.BaseStats.Wisdom)

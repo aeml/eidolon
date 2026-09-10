@@ -58,7 +58,7 @@ func TestChronicleOpeningManualRewardAcrossClasses(t *testing.T) {
 		t.Run(class, func(t *testing.T) {
 			p := newTestPlayer("opening-"+class, class)
 			p.Level, p.Experience, p.MaxExperience = 1, 0, experienceRequiredForLevel(1)
-			p.BaseStats = canonicalBaseStatsForClass(class)
+			p.BaseStats = InitialPlayerStats()
 			p.X, p.Z, p.Gold = 20, 215, 37
 			w.AddEntity(p)
 			w.GenerateDailyQuests(p.ID)

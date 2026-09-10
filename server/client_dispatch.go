@@ -152,23 +152,7 @@ func (c *Client) dispatchMessage(msg Message) {
 			// Let's assume the DB one is authoritative
 		} else {
 			// Create new character
-			char = &database.Character{
-				Name:               c.username, // Simple name
-				Class:              payload.Type,
-				Level:              1,
-				XP:                 0,
-				ProgressionVersion: game.CurrentProgressionVersion,
-				X:                  -1.25, // Lanternhold center aisle
-				Y:                  0,
-				Z:                  200, // Town Center Z
-				Stats: database.Stats{
-					Strength:     10,
-					Dexterity:    10,
-					Intelligence: 10,
-					Wisdom:       10,
-					Vitality:     10,
-				},
-			}
+			char = newPlayerCharacter(c.username, payload.Type)
 			// Save new character to DB
 			var err error
 			if user.Characters == nil {

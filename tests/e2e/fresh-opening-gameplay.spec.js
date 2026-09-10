@@ -125,6 +125,9 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
                 .toContain(await page.evaluate(() => window.game.player.constructor.name));
         }
         expect((await readPlayerState(page)).level).toBe(1);
+        expect(await page.evaluate(() => window.game.player.baseStats),
+            'Ordinary creation must match the shared live baseline, without a QA-only class bonus')
+            .toEqual({ strength: 10, intelligence: 10, dexterity: 10, wisdom: 10, vitality: 10 });
         await expect.poll(() => page.evaluate(() => {
             const player = window.game.player;
             const expected = player.wellRestedSeconds > 0 ? .11 : .1;
@@ -135,6 +138,7 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
         console.log(`[fresh-opening] baseline ${JSON.stringify(await page.evaluate(() => {
             const player = window.game.player;
             return { class: player.constructor.name, level: player.level,
+                baseStats: player.baseStats, statPoints: player.statPoints, talentPoints: player.talentPoints,
                 hp: player.health ?? player.stats?.hp, maxHP: player.maxHealth ?? player.stats?.maxHp,
                 basicDamage: player.stats?.damage ?? player.damage,
                 hpRegen: player.stats.hpRegen, manaRegen: player.stats.manaRegen,

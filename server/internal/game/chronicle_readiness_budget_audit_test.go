@@ -18,7 +18,7 @@ func TestChronicleEarthReadinessBudgetAudit(t *testing.T) {
 					w := newTestWorld()
 					p := newTestPlayer("readiness-budget", "Wizard")
 					p.Level, p.Experience, p.MaxExperience = 1, 0, experienceRequiredForLevel(1)
-					p.BaseStats = canonicalBaseStatsForClass(p.SubType)
+					p.BaseStats = InitialPlayerStats()
 					p.Gold = 0
 					if rested {
 						p.WellRestedSeconds = MaxWellRestedSeconds

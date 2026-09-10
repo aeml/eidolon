@@ -238,3 +238,9 @@ question is pending. Meanwhile, resolve preparation/starting-stat evidence and
 continue independent ordered release validation. Do not grant this fixture
 unearned Forge materials, repeat its unchanged failed fight, extend watchdogs,
 or declare all-class, full campaign or live balance acceptance.
+
+Follow-up: [starting-stat parity](2026-09-10-starting-stat-parity.md) resolves the
+divergent prepared helper by matching the existing live baseline, without
+buffing new players or rewriting saves. Focused regressions pass; native and
+full acceptance remain pending. This does not change the recorded Wizard's
+actual stats or turn its failed Warden attempt into an accepted clear.

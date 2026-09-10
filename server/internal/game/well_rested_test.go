@@ -351,7 +351,7 @@ func TestWellRestedPartyBossKillBoostsOnlyRestedRecipient(t *testing.T) {
 		for i, p := range players {
 			p.Level, p.MaxExperience, p.InstanceID = level, experienceRequiredForLevel(level), instanceID
 			p.Inventory = make([]Item, MaxInventorySize)
-			p.BaseStats = applyLevelGrowth(canonicalBaseStatsForClass(p.SubType), level)
+			p.BaseStats = applyLevelGrowth(InitialPlayerStats(), level)
 			if level == MaxPlayerLevel {
 				p.Experience = p.MaxExperience
 			}
