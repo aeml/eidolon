@@ -27,7 +27,28 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 07:53 UTC
+## Current checkpoint — September 10, 08:04 UTC
+
+Recent turns are VERIFIED WAITS: SAME96530 repeatedly polled live, not restarted.
+Latest Imp receipt25/60, zero deaths,11ordinary rests,1earned training stop,
+level17/540XP/4504Gold,819seconds. Previous phases remain opening79,119ms,
+Watch498,264ms and Seeds161,829ms; no full-route/dungeon pass. Primary stays
+clean/frozen626385d with the known stale Water handoff assertion. Separate clean
+4e4d46b contains that correction and class inputc884455, focused tests/lint only;
+full regression/integrated native verification still await this run's completion.
+
+Fresh08:04 no-cache public release.json +HTMLmain.js +backend health agree on
+existing60/df91bb6, statusok/database ready. CI34434837759 remains queued and
+soak34433520743 in progress. No new deployment or release62acceptance. Read-only
+CI review confirms existing browser partition work does not solve the shared
+long-soak runner reservation; no operational preemption/capacity change made.
+Asked asynchronously for physical-phone feedback on the current public build
+(device/browser/orientation, movement/casting/menus and capture). No reply yet;
+desktop/emulated checks do not close this requirement. Do not duplicate that
+question repeatedly while continuing available work. Full roadmap/casino scope
+remains active. Root documentation only; never push this branch.
+
+## Previous checkpoint — September 10, 07:53 UTC
 
 Previous turn was a VERIFIED WAIT with Watch evidence. This turn makes PROGRESS:
 found and corrected a stale Earth→Water verification contract in the separate

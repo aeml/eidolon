@@ -8,7 +8,19 @@ predecessor df91bb66e8e8f3b7125aa99412f09ba25898a3ac is deployed but failed fina
 acceptance. Root is ledger-only and is never pushed. Do not push a61successor
 before60 is accepted; the current push repairs60's verification, not gameplay.
 
-## Current status — September10, 07:08UTC
+## Current status — September10, 08:04UTC
+
+08:04 update: fresh no-cache public release.json, HTML main.js release key and
+backend health all identify existing60/df91bb66e8e8f3b7125aa99412f09ba25898a3ac.
+Backend statusok/database ready. ExactCI34434837759 remains queued and scheduled
+soak34433520743 in progress; no cancellation approval or new deployment. This is
+identity/health evidence, not final acceptance of pending62dc2d1. The separate
+local earned campaign96530 is still active and cannot replace that release gate.
+Requested a non-blocking real-phone check of the current public build for device/
+browser, orientation, touch movement/casting/menu usability and screenshots;
+feedback has not yet been received and physical-phone acceptance remains open.
+
+## Previous status — September10, 07:08UTC
 
 07:08 update: public no-cache release.json/backend health still identify existing
 60/df91bb66e8e8f3b7125aa99412f09ba25898a3ac, statusok/database ready. HTML main.js
