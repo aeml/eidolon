@@ -33,8 +33,11 @@ export async function upgradeEarnedEquipment(page) {
         const index = state.inventory.findIndex(item => item?.id === action.id);
         expect(index).toBeGreaterThanOrEqual(0);
         console.log('[earned-gear-upgrade-attempt]', JSON.stringify({ index, ...action }));
+        // A single pointer jump can enter the native target without a dragover,
+        // so Chrome never accepts a drop. Traverse the visible floor of the UI
+        // with ordinary pointer moves; do not synthesize events or send equips.
         await page.locator('#inventory-grid .inv-slot').nth(index)
-            .dragTo(page.locator(`#slot-${action.slot.toLowerCase()}`));
+            .dragTo(page.locator(`#slot-${action.slot.toLowerCase()}`), { steps: 40 });
         await expect.poll(async () => {
             const next = await readEarnedGear(page);
             return next.equipment[action.slot]?.id === action.id &&

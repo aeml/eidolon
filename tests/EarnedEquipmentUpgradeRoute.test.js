@@ -14,8 +14,8 @@ function browser({ reject = false, loseOld = false } = {}) {
     const drags = [];
     const page = { evaluate: async () => JSON.parse(JSON.stringify(state)), keyboard: { press: jest.fn() },
         locator: selector => ({ selector, isVisible: async () => true, click: jest.fn(),
-            nth: index => ({ dragTo: async target => {
-                drags.push({ index, target: target.selector });
+            nth: index => ({ dragTo: async (target, options) => {
+                drags.push({ index, target: target.selector, options });
                 if (reject) return;
                 const slot = target.selector.slice('#slot-'.length);
                 const old = state.equipment[slot];
@@ -31,7 +31,7 @@ afterEach(() => jest.restoreAllMocks());
 test('normal drag targets the weaker paired slot, retains old gear and reaches stable state', async () => {
     const { page, state, drags } = browser();
     const receipts = await upgradeEarnedEquipment(page);
-    expect(drags).toEqual([{ index: 0, target: '#slot-ring2' }]);
+    expect(drags).toEqual([{ index: 0, target: '#slot-ring2', options: { steps: 40 } }]);
     expect(receipts).toEqual([expect.objectContaining({ id: 'better', previousId: 'old', slot: 'ring2' })]);
     expect(state.inventory[0].id).toBe('old');
     expect(state.equipment.ring1.id).toBe('strong');
