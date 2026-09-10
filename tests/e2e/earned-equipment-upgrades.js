@@ -1,11 +1,15 @@
 import { expect } from '@playwright/test';
-import { planEarnedEquipmentUpgrade } from '../earnedEquipmentUpgrades.js';
+import { canonicalEarnedItem, planEarnedEquipmentUpgrade } from '../earnedEquipmentUpgrades.js';
 
-export const readEarnedGear = page => page.evaluate(() => {
+export const readEarnedGear = async page => {
+    const state = await page.evaluate(() => {
     const p = window.game.player;
     return { className: p.constructor.name, level: p.level, gold: p.gold, xp: p.xp,
         inventory: p.inventory, equipment: p.equipment };
-});
+    });
+    return { ...state, inventory: state.inventory.map(canonicalEarnedItem),
+        equipment: Object.fromEntries(Object.entries(state.equipment).map(([slot, item]) => [slot, canonicalEarnedItem(item)])) };
+};
 
 const owned = state => [...state.inventory, ...Object.values(state.equipment)]
     .filter(item => item?.id).sort((a, b) => a.id.localeCompare(b.id));
@@ -28,8 +32,12 @@ export async function upgradeEarnedEquipment(page) {
         if (!action) break;
         const index = state.inventory.findIndex(item => item?.id === action.id);
         expect(index).toBeGreaterThanOrEqual(0);
+        console.log('[earned-gear-upgrade-attempt]', JSON.stringify({ index, ...action }));
+        // A single pointer jump can enter the native target without a dragover,
+        // so Chrome never accepts a drop. Traverse the visible floor of the UI
+        // with ordinary pointer moves; do not synthesize events or send equips.
         await page.locator('#inventory-grid .inv-slot').nth(index)
-            .dragTo(page.locator(`#slot-${action.slot.toLowerCase()}`));
+            .dragTo(page.locator(`#slot-${action.slot.toLowerCase()}`), { steps: 40 });
         await expect.poll(async () => {
             const next = await readEarnedGear(page);
             return next.equipment[action.slot]?.id === action.id &&

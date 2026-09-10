@@ -1,8 +1,18 @@
-import { earnedGearScore, planEarnedEquipmentUpgrade } from './earnedEquipmentUpgrades.js';
+import { canonicalEarnedItem, earnedGearScore, planEarnedEquipmentUpgrade } from './earnedEquipmentUpgrades.js';
 
 const gear = (id, stats, rest = {}) => ({ id, stats, slot: 'mainHand', type: 'WEAPON', level: 1, ...rest });
 const plan = (bag, worn, className = 'Wizard') => planEarnedEquipmentUpgrade({
     inventory: bag, equipment: worn, level: 30, className });
+
+test('canonicalization reconciles only empty wire defaults, preserving values, gems and unknown metadata', () => {
+    const item = Object.freeze(gear('same', { damage: 1 }));
+    expect(canonicalEarnedItem({ ...item, value: 0 })).toEqual(canonicalEarnedItem({ ...item, gems: [] }));
+    const special = { ...item, value: 500, gems: [{ stats: { damage: 3 } }], uniqueEffect: 'retained', extra: 'retained' };
+    expect(canonicalEarnedItem(special)).toEqual(special);
+    expect(canonicalEarnedItem({ ...special, value: 499 })).not.toEqual(canonicalEarnedItem(special));
+    expect(canonicalEarnedItem({ ...special, gems: [] })).not.toEqual(canonicalEarnedItem(special));
+    expect(item).not.toHaveProperty('value');
+});
 
 test('actual stats beat a misleading level or rarity label without modifying observations', () => {
     const worn = Object.freeze({ mainHand: Object.freeze(gear('old', { damage: 1 })) });
