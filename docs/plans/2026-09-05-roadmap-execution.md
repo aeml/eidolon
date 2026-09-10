@@ -27,7 +27,7 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 10:28 UTC
+## Current checkpoint — September 10, 10:30 UTC
 
 Previous goal turn was PROGRESS (drag correction and full/local checks). This
 turn is PROGRESS: closed the uninterrupted visual-recovery gate, completed
@@ -67,6 +67,12 @@ handoff without accepting dailies. All existing230minute phase/death/encounter
 limits remain. No grants, fixture levels/items, fallback layouts, resource or
 boss nerfs. Original96530failure remains authoritative for its attempt; no new
 readiness/clear/hand-off result exists yet.
+
+Latest same44188 receipt: openingphase PASS86522ms of600000ms. Three opening
+kills/no deaths, manual100Gold/100XP reward atlevel2, then diary investigation
+read/manual25Gold/200XP reward atlevel3 with relog checks. First required Watch
+huntphase STARTED (1800000ms cap); beforehuntlevel3/156XP/221Gold, no equipment
+yet. This is partial earned progress, not readiness or a dungeon-clear result.
 
 10:26–10:27public release.json/HTMLmainkey/backend all60/df91bb66e8e8f3b7125aa99412f09ba25898a3ac,
 healthok/database:"ready". Fresh10:28CI34434837759 queued/nightly34433520743
