@@ -29,6 +29,17 @@ declares go1.24.5 and `go version` inside server confirms automatic1.24.5 select
 
 ## Current checkpoint — September 10, 08:20 UTC
 
+08:26 verified-wait/capacity check: SAME96530 remains authoritatively live, latest
+reported Orc5/50 atlevel23 withzero deaths (log still updating). Investigated
+whether a constrained full Jest run could safely overlap;16logical CPUs, load
+averages33.46/35.19/35.89 and a subsequent1second vmstat sample78%user/12%system/
+10%idle with18runnable processes do not support adding that workload. About13GB
+memory was available; this is not an OOM diagnosis or proof of what caused the
+run's slower phases. No process was stopped, priorities changed or extra full
+suite/browser launched. Keep timings explicitly observational under shared load;
+the same functional phase/encounter/death checks remain in force. Previous turn
+was a verified wait; no new runtime/push/deployment change in this continuation.
+
 Previous turn made PROGRESS with quest-card role polish. This turn is a VERIFIED
 WAIT yielding two completed native phases: SAME96530 repeatedly polled live on
 unchanged/frozen626385d. Imps passed1,773,261ms with60credits, zero deaths,
