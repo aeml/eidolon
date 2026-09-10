@@ -30,3 +30,9 @@ ID even to the two friendly-target heals. Those fixtures now supply a wounded
 friendly player at the same coordinates; acceptance and coordinate assertions
 are retained. Focused7527 passed both complete contracts and explicit-target
 cases under the race detector21.611s. A fresh full regression is still required.
+
+Fresh full81223 passed on clean20d9f17d: game381.679s and all other tested
+packages passed/cached, no race warning. Log:
+`/tmp/eidolon-explicit-support-full-server-friendly-contracts.log`.
+Primary integrated both commits as7b6b0afa/bba5a1bb; its entire server tree is
+identical to20d9f17d. Native acceptance of that combined source remains pending.
