@@ -27,7 +27,62 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 13:43 UTC
+## Current checkpoint — September 10, 13:59 UTC
+
+Previous turn was PROGRESS: surfaced the existing required casino stages in
+the top-level roadmap without implementing them. This continuation is PROGRESS:
+completed native Forge/observer/save verification, required that scenario in the
+future release gate, and completed full regression for the held-Shift fix.
+The complete 1.1–1.10 objective remains active and incomplete.
+
+- Primary is clean d918dfc6 (runtime df07c50f). 4117 TERMINAL0: full303suites,
+  4217tests,131.087s plus lint underNode24.18.0. Evidence and both earlier native
+  movement failures are retained in the recorded-build diagnostic plan. Logs:
+  `/tmp/eidolon-held-shift-full-{client,lint}.log`. Native first-Warden replay
+  is next; no boss/resource/timer adjustment or release change.
+- Forge76163 TERMINAL1 at4minutes: the test toggled an already-open companion
+  bag closed. Open filled-Sapphire Forge icon and both real clients' models had
+  passed. Archive `/tmp/eidolon-forge-refresh-failure-Gly8la`; credential scan0
+  and exact owned services/listeners absent. b640e2cf fixes only the test's bag
+  visibility precondition, without increasing its deadline.
+- Forge95175 TERMINAL0 onb640e2cf: one native case19.3s/20.8s total, zero retries.
+  Actual removal/insertion, consumed loose gem, owner/observer attached models,
+  filled Forge/bag icons, normal re-equip and fresh-login equipment all passed.
+  Archive `/tmp/eidolon-forge-socket-proof-S6Uq7N`; scan0 and owned18580/18581/
+  41980services absent. Recordings disabled; not new screenshot/phone evidence.
+- Socket candidate caf631fc documents the result. 06095e8e adds dedicated
+  socket-owner/socket-observer accounts and the existing native scenario to the
+  required full predeploy route. Helper contract checks propagate nonzero exit
+  status and preserve its own output directory. Focused14535 PASS24tests/3suites
+  .826s+lint/shell/diff. No remote workflow was edited or triggered.
+- First integrated full69308 TERMINAL1:268suites passed/one failed;
+  3759tests passed/one failed,121.91s. The existing recovery-tail contract
+  correctly caught that the focused suffix omitted the new required socket
+  check. 03bb02a7 adds it to both suffix and expectation. Focused final26tests/
+  4suites.917s+lint/shell/diff pass. Preserve the first full failure at
+  `/tmp/eidolon-forge-integrated-full-client.log`.
+- 87508 TERMINAL0 on clean socket03bb02a7: full269suites/3760tests121.835s plus
+  lint. Logs `/tmp/eidolon-forge-integrated-verified-full-{client,lint}.log`
+  copied into the socket proof archive. The new helper's account
+  naming/dispatch has unit coverage; no full predeploy or updated recovery-tail
+  native completion is claimed. Earlier native95175 used the same game/test code.
+- 95608 is now the sole active local heavy/browser gate on frozen primaryd918dfc6:
+  recorded level31 first-Warden replay with actual held-Shift fix. RunID
+  held-shift-build-0910; ports18580/18581/41980; log
+  `/tmp/eidolon-held-shift-build-native.log`. Poll this actual handle, do not
+  restart merely from observation timeout or edit its source while active.
+  Eight-minute encounter and twenty-minute test bounds remain unchanged.
+
+13:47 remote check: canonical60CI34434837759 stillqueued, required predeploy
+pending; all client/server/three browser jobs passed. Nightly34433520743 remains
+inprogress; no new cancellation authority. 13:54 publicGET: frontend/backend
+Alpha1.0.60/df91bb66, healthok/database ready. Canonical62dc2d1 acceptance still
+precedes successor promotion. No push, new version or production deployment.
+Root casino-index documentation committed a355367b; root remains ledger-only
+and must not be pushed. Campaign/manual rewards/save/Water/all classes/groups/
+raids/balance/physical phones/casino and all later roadmap gates remain open.
+
+## Previous checkpoint — September 10, 13:43 UTC
 
 Previous goal turn was PROGRESS (recorded-build failure and ground projection
 correction). This turn is PROGRESS: native retry supplied decisive new input
