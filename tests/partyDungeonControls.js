@@ -37,17 +37,33 @@ export function partyPathAvoidsActors(state, step, actors, radius = 1.25) {
 // At a hallway turn, a direct chord to the tank can cross a wall. Every prior
 // gathering ended near the previous anchor; use that already-walked corner as
 // an intermediate destination when the direct segment is not physically clear.
-export function partyFormationStep(state, anchor, previousAnchor, canStep, spacing = 4) {
+export function partyFormationStep(state, anchor, previousAnchor, canStep, spacing = 4, slotOffset = null) {
     const direct = partyFollowStep(state, anchor, spacing);
-    if (!direct || canStep(direct)) return direct;
+    if (!direct) return null;
+    // Early arrivals must leave a lane for the last follower. Distinct side/
+    // rear slots avoid filling the entire rear arc with two actor capsules.
+    // Orient against the walked path, not each follower's changing position.
+    const angle = Math.atan2(state.z - anchor.z, state.x - anchor.x);
+    if (Number.isFinite(slotOffset)) {
+        const approach = previousAnchor && Math.hypot(previousAnchor.x - anchor.x, previousAnchor.z - anchor.z) > 1
+            ? Math.atan2(previousAnchor.z - anchor.z, previousAnchor.x - anchor.x) : angle;
+        // Keep half a unit inside the existing spacing+1 arrival boundary.
+        const slotRadius = spacing + .5;
+        const destination = { x: anchor.x + Math.cos(approach + slotOffset) * slotRadius,
+            z: anchor.z + Math.sin(approach + slotOffset) * slotRadius };
+        const preferred = partyFollowStep(state, destination, 0);
+        if (preferred && canStep(preferred)) return preferred;
+    }
+    if (canStep(direct)) return direct;
     // Do not aim every follower at the same occupied point on the gathering
     // circle. Nearby alternatives retain the same formation radius.
-    const angle = Math.atan2(state.z - anchor.z, state.x - anchor.x);
-    for (const offset of [.5, -.5, 1, -1, 1.5, -1.5, Math.PI]) {
-        const destination = { x: anchor.x + Math.cos(angle + offset) * spacing,
-            z: anchor.z + Math.sin(angle + offset) * spacing };
-        const alternative = partyFollowStep(state, destination, 0);
-        if (alternative && canStep(alternative)) return alternative;
+    for (const radius of [spacing, spacing + .5]) {
+        for (const offset of [0, .25, -.25, .5, -.5, 1, -1, 1.5, -1.5, Math.PI]) {
+            const destination = { x: anchor.x + Math.cos(angle + offset) * radius,
+                z: anchor.z + Math.sin(angle + offset) * radius };
+            const alternative = partyFollowStep(state, destination, 0);
+            if (alternative && canStep(alternative)) return alternative;
+        }
     }
     const via = previousAnchor ? partyFollowStep(state, previousAnchor, 0) : null;
     if (via && canStep(via)) return via;

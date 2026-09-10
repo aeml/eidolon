@@ -279,7 +279,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                     { timeout: 5000 }).toBe(true);
                 try {
                     await gatherPartyFormation({ read: () => Promise.all(actors.map(actor => snapshot(actor.page))),
-                        plan: (index, _state, anchor, spacing) => actors[index].page.evaluate(async ({ anchor, previous, spacing }) => {
+                        plan: (index, _state, anchor, spacing) => actors[index].page.evaluate(async ({ anchor, previous, spacing, slot }) => {
                             const { partyFormationStep, partyPathAvoidsActors } = await import('/tests/partyDungeonControls.js');
                             const { isEarnedRetreatPathClear } = await import('/tests/wizardHuntControls.js');
                             const g = window.game, p = g.player;
@@ -289,9 +289,10 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                             const step = partyFormationStep(p.position, anchor, previous, step =>
                                 isEarnedRetreatPathClear(g.collisionManager, p.position, p.radius || 1.25,
                                     { x: step.dx, z: step.dz }) &&
-                                partyPathAvoidsActors(p.position, step, bodies, p.radius || 1.25), spacing);
+                                partyPathAvoidsActors(p.position, step, bodies, p.radius || 1.25), spacing, slot);
                             return step && { ...step, arrival: { x: anchor.x, z: anchor.z, radius: spacing + 1, instanceId: anchor.instance } };
-                        }, { anchor: { x: anchor.x, z: anchor.z, instance: anchor.instance }, previous: formationAnchor, spacing }),
+                        }, { anchor: { x: anchor.x, z: anchor.z, instance: anchor.instance }, previous: formationAnchor,
+                            spacing, slot: [Math.PI / 3, -Math.PI / 3, 0][index - 1] }),
                         move: async (index, step) => {
                             await tryDungeonGroundStep(() => moveByGroundClick(actors[index].page,
                                 step.dx, step.dz, { ...PARTY_FOLLOW_INPUT_OPTIONS, allowAlternatePaths: false,

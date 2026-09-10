@@ -437,3 +437,37 @@ gear,15-second gathering deadline or combat/expedition limit changed.
 14476 passed66tests/5suites5.148s, lint and single-route discovery. Logs
 `/tmp/eidolon-party-sequential-{focused,lint,discovery}.log`. Native success remains
 required; a controller regression pass does not establish dungeon playability.
+
+## Leave a lane for the last follower —84516
+
+84516 on clean9c7beca3 terminated1 after1.4minutes, before combat, with
+seed-2687562139384423444/generator2/Normal30/no fallback. Setup/party/exact entry
+passed, all alive,0Gold/damage/casts/healing. Sequential moves avoided7703's
+identical concurrent destinations, but a later gathering hit the original15s
+deadline. Tank(19999.89858,19935.90542), Cleric(19998.32794,19939.57916),
+Wizard(20001.21175,19939.63453), Rogue(19996.86634,19949.90267). The first two
+followers occupied the rear approach; the Rogue was still outside formation.
+All targets cleared/blockedStops0/camera and mesh offsets0. Do not call this a
+combat verdict or infer a terrain defect from these observations.
+
+Archive`/tmp/eidolon-four-role-sequential-proof-t4HuMT` retains reports/results/
+log, wrapper scanned2files/copied-log QA-prefix count0/owned containers and
+18580/18581/41980listeners absent. No fullclear/turn-in/relogin acceptance.
+
+The earlier geometry regression ignored other follower bodies. Adding those
+bodies to all canonical joins of the recorded62131 layout exposed a reproducible
+gathering failure (82071 RED); this is not a recreation of84516's network timing
+or a claim that its different seed was replayed. Distinct path-oriented side/rear
+slots now leave a lane for the last arrival. Initial slots at radius4 still
+failed one later join (78193/23106); placements now aim at4.5, half a unit inside
+the unchanged existing<5 arrival bound, and check finer alternatives inside it.
+All segments still require real floor and actor clearance. Same sequential
+observed moves,15s deadline, combat/expedition limits, resources and gameplay
+collision; no assertion weakened or actor moved by state assignment in native QA.
+
+71222 passed37tests/2suites8.688s including the new body-aware complete fixture.
+Final40104 passed68tests/5suites9.020s plus lint and single-route discovery, also
+covering distinct separated slots and unchanged ordinary movement assertions.
+Logs`/tmp/eidolon-party-slots-final-{focused,lint,discovery}.log`. The geometry
+test still assumes ideal arrival; native party clear and earned campaign gates
+remain mandatory and open.

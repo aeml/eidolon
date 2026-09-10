@@ -42,6 +42,24 @@ test('a teammate occupying the straight gathering destination gets a verified al
     expect(clear(step)).toBe(true);
     expect(Math.abs(step.dx)).toBeGreaterThan(1);
 });
+test('side and rear slots leave a clear arrival lane inside the unchanged five-unit boundary', () => {
+    const anchor = { x: 0, z: 0 }, previous = { x: 0, z: 12 };
+    const followers = [0, 1, 2].map(() => ({ ...previous }));
+    for (const [index, offset] of [Math.PI / 3, -Math.PI / 3, 0].entries()) {
+        const follower = followers[index];
+        const bodies = [anchor, ...followers.filter(other => other !== follower)];
+        const step = partyFormationStep(follower, anchor, previous,
+            candidate => partyPathAvoidsActors(follower, candidate, bodies), 4, offset);
+        follower.x += step.dx;
+        follower.z += step.dz;
+        expect(Math.hypot(follower.x, follower.z)).toBeCloseTo(4.5);
+    }
+    for (const [index, follower] of followers.entries()) {
+        for (const other of followers.slice(index + 1)) {
+            expect(Math.hypot(follower.x - other.x, follower.z - other.z)).toBeGreaterThan(2.6);
+        }
+    }
+});
 test('a nearby blocking body can be passed using a checked lateral step', () => {
     const follower = { x: 0, z: 18 }, tank = { x: 0, z: 0 };
     const bodies = [{ x: 0, z: 15, radius: 1.25 }];
