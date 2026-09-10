@@ -6,13 +6,57 @@ passed on85989abc. Native Forge/observer/bag/fresh-login passed onb640e2cf after
 fixing a stale Forge gem-panel refresh. Full integrated regression and lint
 passed on03bb02a7. The later b97a7ea1 move-only input integration now also passes
 full client/lint, native browser-input cases and the actual Forge lifecycle on
-47b465c1. Full predeploy/promotion/live acceptance remain pending. See
+47b465c1. The complete isolated gameplay sequence now passes on d3c0fff5;
+versioned pipeline/promotion/live acceptance remain pending. See
 [held-weapon clearance evidence](2026-09-10-held-weapon-clearance.md) for the
 subsequent fix; the earlier failures below remain historical evidence, not the
 current result. Built separately from the
 accepted local aura/equipment candidate71f18922; no active campaign source or
 canonical release was edited. This is an equipment-polish correction within the
 existing1.1–1.10 goal, not completion of the broader visual milestone.
+
+## Complete isolated gameplay gate — September 10, 15:43 UTC
+
+5956 TERMINAL0 on clean d3c0fff5b2d364deda327baa95ceebbc2a9de6de:
+60 passed cases, zero skipped cases, about49minutes including disposable build
+and setup. Node24.18.0 inside `sg render`, system Chrome, CI unset. The actual
+`all` sequence ran through ordinary login, dungeon/input/wall checks, phone
+inventory/stash/quest/build/adventure flows, Forge upgrades, fresh collection
+and manual reward, talent/ability validation, dungeon/death recovery, all four
+practice-duel and animation matrices, multiplayer and town nameplates, Well
+Rested journey/expiry/party/death/dungeon transitions, and final Forge sockets.
+
+Notable final results: multiplayer2.9min; Well Rested expiry39.1s and journey
+40.3s; phone party aura47.4s; actual death/Respawn aura1.4min and repeated dungeon
+entry/relogin/Recall1.5min. Final Forge socket case28.7s/30.4s total verifies
+normal gem removal/insertion, consumed loose gem, owner/actual observer model
+refresh, bag icon and saved equipment through fresh login. It remains an
+explicit prepared Forge fixture, not earned item/material acquisition.
+
+Archive `/tmp/eidolon-successor-full-proof-sUeFSL` retains available result trees,
+final report, full native log and earlier3775-test client/lint evidence. Wrapper
+credential scan sanitized0files. The redirected log lay outside its default
+artifact roots; additionally sanitized its34 disposable username occurrences
+using the existing scanner on the archive (one file changed, zero remaining
+prefix matches). Prefer this archive to the original private redirected log.
+Exact owned API/Mongo containers and image for `successor-full-0910` are absent;
+API18580/Mongo18581/web41980 have no listeners after normal wrapper cleanup.
+
+Manually inspected the retained High390 portrait and Low844 landscape party
+world captures: both player aura rings/effects are visible at ordinary framing.
+Long disposable names crowd nearby labels, and the QA performance overlay is
+present. These are emulated-phone rendering checks, not physical-device or
+complete mobile-polish acceptance. Earlier detailed weapon/socket galleries
+retain their separate source-specific scope; no Forge screenshot was retained
+by this final fixture beyond its DOM/model/pixel assertions and report.
+
+No release number changed, no push and no deployment occurred. This completes
+the combined isolated `all` gate, not the entire versioned CI/predeploy suite,
+fresh full campaign, all dungeon/raid/class/party matrices or full visual goal.
+Canonical release60 acceptance must precede successor version assignment,
+accurate player-facing patch notes, synchronized login/manifest/server metadata,
+required CI and live checks. The separate primary starting-stat correction is
+not part of this source and has its own pending full/native acceptance.
 
 ## Native Forge verification — September 10, 13:50 UTC
 
