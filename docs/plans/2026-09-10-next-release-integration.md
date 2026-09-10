@@ -62,8 +62,9 @@ passed117 tests/4suites11.84s, lint and shell syntax. Logs:
 `/tmp/eidolon-next-party-backport-{client,lint}.log`.
 
 These are focused integration checks, not full combined-source acceptance.
-Desktop healing/compact roster, expanded story/reward tuning and Dark King
-phase-integrity work remain outside this candidate. The existing full Go/client,
+At this earlier backport checkpoint desktop healing/compact roster were not yet
+included; the later integration below adds them. Expanded story/reward tuning
+and Dark King phase-integrity work remain outside. The existing full Go/client,
 native initial-stat/storage/party/required-all, bundled browser, version, remote
 CI and live gates still apply before promotion.
 
@@ -190,3 +191,8 @@ Log`/tmp/eidolon-next-desktop-support-focus-native.log`; artifact scan passed,
 temporary services removed, owned ports cleared. This proves explicit desktop
 support routing, not actual monster occlusion or full dungeon completion. Combined
 full Go/client and updated104case browser/required-all/version/live gates remain.
+
+Full combined Go race88252 now passed on cleane7fde8bc: root21.370s,
+game345.858s, remaining tested packages passed/cached, no race warning. Log
+`/tmp/eidolon-next-support-full-server.log`. This verifies the integrated server
+changes; full client, updated browser and required-all/release/live gates remain.
