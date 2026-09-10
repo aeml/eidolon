@@ -1,6 +1,6 @@
-# Alpha1.0.60 — predeploy setup failed; next correction pending verification
+# Alpha1.0.60 — corrected ground setup verified locally; new CI active
 
-Canonical corrected commit `caab6111f9d6eef1f375f7942a8163cb2d86da6c`, branch
+Canonical corrected commit `62dc2d1eb1baf8030fc69244b1522deb5f6d2340`, branch
 `release/60-sanctuary-combat-feedback`, worktree
 `/tmp/eidolon-safe-zone-release-preview-gCLEaT`. Normal non-force push from this
 worktree succeeded after the verified camera-framing correction below. Its
@@ -8,7 +8,36 @@ predecessor df91bb66e8e8f3b7125aa99412f09ba25898a3ac is deployed but failed fina
 acceptance. Root is ledger-only and is never pushed. Do not push a61successor
 before60 is accepted; the current push repairs60's verification, not gameplay.
 
-## Current status — September10, 03:19UTC
+## Current status — September10, 03:51UTC
+
+Normal push35621 succeeded caab611→62dc2d1 from the clean canonical worktree,
+after exact remote-master guard, fast-forward promotion and diff check. Root
+was NOT pushed. New CI34434837759 on exact62dc2d1 is ACTIVE: client102737643295
+and server102737643429 are running. No deployment or final acceptance result.
+Last verified public identity remains60/df91bb6; do not claim this new commit
+is live until deployment and actual public/native verification establish it.
+
+Code d03ecde passed actual isolated trained ground-shape7451:1/37.6s, retries0,
+test35.5s, Node24 inside sg render, prepared browser assets. All three spells
+rejected walls without cooldown, cast on reachable floor, retained trained
+radius/High-Low attachment checks and saved rank5 after all five normal purchases.
+Prepared QA level/skills establish geometry, not earned story progression.
+Archive `/tmp/eidolon-ground-settled-proof-oQXGNa`, log
+`/tmp/eidolon-ground-settled-native.log`, wrapper/supplemental scan0 and exact
+18560/18561/41960 plus ownedground-settled-0910 services/image absent at cleanup.
+The passed route has no screenshot; no rendered-image review is claimed.
+
+Full54348 PASS256suites/3618tests151.078s plus lint; logs
+`/tmp/eidolon-ground-settled-full-{client,lint}.log`. Commit62dc2d1 adds only
+proof documentation atop tested d03ecde. Runtime/version/patch notes/workflow
+remain unchanged; this fixes verification setup and does not ship new gameplay.
+All CI/predeploy/deploy/final-native/public identity gates remain mandatory.
+
+Primary22725 ended and its artifacts/cleanup were verified before7451 began;
+there was no overlapping owned local browser. Its partial fresh-story result
+does not change release60's scope; see the execution ledger for that evidence.
+
+## Previous status — September10, 03:19UTC
 
 CI34430017443 is terminal FAILED at predeploy102727073506. All server/client/
 browser jobs and the High/Low gallery passed. Disposable gameplay passed seven

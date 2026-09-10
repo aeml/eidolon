@@ -16,7 +16,64 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 03:28 UTC
+## Current checkpoint — September 10, 03:51 UTC
+
+Previous goal turn was a VERIFIED WAIT. This continuation made PROGRESS:
+preserved exact fresh-story terminal evidence, distinguished overall timeout
+from a jump defect, retained the error cause, verified pending ground-spell
+correction natively/full-client and pushed its new release CI. Full goal remains
+active/incomplete, no impasse. Root ledger-only and NEVER pushed.
+
+**22725 TERMINAL FAILED** on a285fbc after3600327ms. Fresh Watch40/manual/save,
+8Seeds (23 observed deaths), Imp60/manual/save and all3 scar investigations
+passed; final Orc4/50 atlevel23 with770HP/495MP and no daily credit. Imp completed
+2169s,0deaths,26townrests,2earnedtrainingstops; exact200Gold/6843XP claim changed
+21/9660XP/10411Gold→22/6403XP/10611Gold, then scar25Gold/200XP. The whole Earth
+route and unchangedlevel30 readiness did NOT pass. All completed content remains
+partial evidence, not full class/group/economy/campaign acceptance.
+
+Archive `/tmp/eidolon-fresh-orc-departure-proof-AlfWPN`, log
+`/tmp/eidolon-fresh-hunt-rest-replay.log`; wrapper/supplemental scan0, actual
+failed-collection and Seeds-ready PNGs inspected. Exactfresh-hunt-rest-0910
+API/Mongo/image and18560/18561/41960 listeners absent after normal cleanup.
+Retained HTML report: start02:43:18.586, final landing poll03:43:17.069/984ms
+explicitly reports `Test timeout of 3600000ms exceeded`. Previous jump landed
+in1975ms. The helper swallowed that cause and emitted “did not land” at98.4%
+of the current1.28s jump, NOT at its8s landing limit. This is not a proved
+runtime jump defect. No cancellation or source mutation during the live run.
+
+Primary now clean **1f8882e**: preserve original jump assertion message/cause,
+fallback diagnostic state if observation itself fails, retain4s/8s limits.
+Tests cover overall timeout, actual landing timeout and unavailable diagnostics.
+69788 PASS19/2suites1.19s+lint/diff, log
+`/tmp/eidolon-jump-failure-cause-{focused,lint}.log`; this change has not had a new
+full client or native replay. Primary integration plan records the full evidence.
+Next fresh-route task: explicit authored-phase/session timing for150 required
+kills and normal travel/rest, preserving encounter limits/death guards/manual
+claims/save/no-grants/no-daily/level30 gates. Do not claim a longer test balances
+gameplay, or retry the unchanged one-hour route hoping for full proof.
+
+**7451 TERMINAL PASS** native ground-shape1/37.6s (test35.5s), retries0 onclean
+d03ecde; started AFTER22725 terminal/preservation/cleanup. Prepared QA Wizard,
+all5trainingpurchases, three blocked-wall/no-cooldown and reachable-floor casts,
+actual radius/High-Low shape checks and savedrank5 passed. Archive
+`/tmp/eidolon-ground-settled-proof-oQXGNa`, log`/tmp/eidolon-ground-settled-native.log`,
+wrapper/supplemental scan0, exactground-settled-0910services/image/ports absent.
+No success image emitted; do not claim image review or earned-level proof.
+Full54348 PASS256suites/3618tests151.078s+lint, logs
+`/tmp/eidolon-ground-settled-full-{client,lint}.log`. Proof-doc-only62dc2d1 then
+fast-forwarded canonical60 fromcaab611 after exactremote guard; normalpush35621
+SUCCEEDED. No runtime/version/patchnote/workflow change or new gameplay claim.
+
+**CI34434837759 ACTIVE** exact62dc2d1eb1baf8030fc69244b1522deb5f6d2340; client
+102737643295/server102737643429 running. Canonical/diagnostic both clean62dc2d1;
+do not change candidate mid-CI. Latest knownpublic still60/df91bb6; deployment,
+finalnative/publicidentity acceptance pending. Also observed scheduled Nightly
+Multiplayer Soak34433520743 ACTIVE oncaab611; not restarted/cancelled/modified.
+No owned local browser or heavy local test remains active now. Continue exactCI
+and next primary timing work; all1.1–1.10/aura/CIcost/phone/casino gates remain.
+
+## Previous checkpoint — September 10, 03:28 UTC
 
 The preceding casino-only reply reconfirmed existing roadmap scope without new
 implementation or evidence that changes the next action (NO PROGRESS toward the
