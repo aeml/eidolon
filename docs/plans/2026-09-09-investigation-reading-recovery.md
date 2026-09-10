@@ -1,5 +1,34 @@
 # Earned investigation reading after combat
 
+## September10 — reading acknowledgement during resumed approach
+
+Fresh story-only62038 on5a01ce8 FAILED1.2m. Opening/manual100Gold+100XP/reconnect
+passed36seconds, level2,0deaths. Diary approach engaged one enemy; the later
+failure image shows the exact Mara diary open and1/1server quest credit, still
+requiring manual Ilyra completion. The driver had already entered another walk,
+which moved0.748units before failing its1-unit displacement requirement beneath
+the journal. Character healthy136/137HP,96/126MP,25emptybag slots; no daily quests.
+This is not evidence of missing diary credit or a fresh balance result.
+
+The initial journal-state check did not cover acknowledgements arriving during
+the subsequent approach. Guard each resumed movement against that exact visible
+open entry, recheck afterward, and recognize the reading if it appears during a
+failed movement. Do not issue the next movement or prop click once it is open.
+Report `already-open`, not successful travel or a new inspection. Unrelated,
+hidden and collapsed entries cannot suppress movement errors. Retain survival,
+exact title/open-state, total server credit, unclaimed reward and manual turn-in
+checks. No runtime, quest, movement threshold, timeout or reward changes.
+
+Focused21692 passed19tests/2suites0.825s+lint. New tests cover delayed opening
+during both successful and failed movement, prevention of the next command,
+continued fatal blocked movement without the exact reading, and route wiring.
+Archive `/tmp/eidolon-fresh-diary-race-proof-U6i3rY`, wrapper sanitized2files,
+supplemental0, inspected at-failure reading screenshot; exact disposable services
+and18560/18561/41960ports absent. Log `/tmp/eidolon-fresh-story-0203.log` retained.
+Full regression and another complete fresh story-only replay remain required.
+
+## Prior reading and opening-credit work
+
 The cf9f2cc story run38966 failed after first-diary approach combat with the
 journal already open. Archive `/tmp/eidolon-story-diary-input-failure-gOwlye`
 retains its report/context/log; there was no screenshot of this failure. An

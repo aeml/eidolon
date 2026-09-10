@@ -2,9 +2,9 @@ import { expect } from '@playwright/test';
 import { chronicleInvestigations } from '../../src/data/chronicleInvestigations.generated.js';
 import { getIlyraCompletionReply } from '../../src/ui/QuestConversation.js';
 import { moveByGroundClick, readPlayerState, returnToTown } from './helpers.js';
-import { resumeInvestigationReading } from './investigation-reading-state.js';
+import { approachInvestigationReading, investigationReadingOpen, resumeInvestigationReading } from './investigation-reading-state.js';
 
-async function walkTo(page, x, z) {
+async function walkTo(page, x, z, reading = null) {
     for (let step = 0; step < 50; step++) {
         const player = await readPlayerState(page);
         expect(player.state, 'Investigation travel must remain survivable').not.toBe('DEAD');
@@ -14,7 +14,14 @@ async function walkTo(page, x, z) {
         const scale = Math.min(1, 12 / distance);
         // Ordinary jump input is allowed when roaming enemies cover the path;
         // this is the same player-controlled fallback as other earned routes.
-        await moveByGroundClick(page, dx * scale, dz * scale);
+        const move = () => moveByGroundClick(page, dx * scale, dz * scale);
+        if (reading) {
+            const result = await approachInvestigationReading(reading, move);
+            if (result === 'already-open') {
+                expect((await readPlayerState(page)).state, 'Reading must remain survivable').not.toBe('DEAD');
+                return result;
+            }
+        } else await move();
         // The shared movement helper confirms displacement, not arrival. Let
         // both the walk and following camera settle before projecting again.
         await expect.poll(() => page.evaluate(() => {
@@ -72,7 +79,8 @@ export async function earnInvestigation(page, id, openIlyra, capture, { waypoint
         const evidence = page.locator(`#journal-list details[data-discovery-id="${site.id}"]`);
         try {
         const reading = await resumeInvestigationReading(page, evidence, async () => {
-        if (beforeInspect) await walkTo(page, site.x, site.z + 3);
+        if (beforeInspect && await walkTo(page, site.x, site.z + 3, evidence) === 'already-open') return 'already-open';
+        if (await investigationReadingOpen(evidence)) return 'already-open';
         if (capture) await capture(site, 'approach');
         if (inspectWithKeyboard) {
             // Ordinary E input reaches nearby evidence even if a hostile
