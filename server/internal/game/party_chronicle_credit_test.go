@@ -66,10 +66,9 @@ func TestFourRolePartySharesBossCreditAndRequiresIndividualWizardTurnIn(t *testi
 		t.Fatal("unclaimed objectives unlocked the party crystal raid")
 	}
 	for _, member := range members {
-		member.Mu.RLock()
-		q := *questByID(t, member, ChronicleEarthDungeonID)
-		gold, xp := member.Gold, member.Experience
-		member.Mu.RUnlock()
+		snapshot := w.GetEntityCopy(member.ID)
+		q := *questByID(t, snapshot, ChronicleEarthDungeonID)
+		gold, xp := snapshot.Gold, snapshot.Experience
 		receipt := byPlayer[member.ID]
 		if receipt.Gold <= 0 || receipt.XP <= 0 || gold != receipt.Gold || xp != receipt.XP {
 			t.Fatalf("%s did not receive its recorded combat reward: gold=%d xp=%d receipt=%+v", member.SubType, gold, xp, receipt)
@@ -92,10 +91,9 @@ func TestFourRolePartySharesBossCreditAndRequiresIndividualWizardTurnIn(t *testi
 		if _, ok := w.PerformCompleteQuest(member.ID, ChronicleEarthDungeonID); !ok {
 			t.Fatalf("%s could not explicitly turn in to Ilyra", member.SubType)
 		}
-		member.Mu.RLock()
-		q := *questByID(t, member, ChronicleEarthDungeonID)
-		gold, xp, level := member.Gold, member.Experience, member.Level
-		member.Mu.RUnlock()
+		snapshot := w.GetEntityCopy(member.ID)
+		q := *questByID(t, snapshot, ChronicleEarthDungeonID)
+		gold, xp, level := snapshot.Gold, snapshot.Experience, snapshot.Level
 		if !q.Completed || q.GrantedGold <= 0 || q.GrantedXP <= 0 || gold-beforeGold != q.GrantedGold {
 			t.Fatalf("%s manual quest payout mismatch: %+v", member.SubType, q)
 		}
