@@ -48,6 +48,7 @@ test('normal full-bag upgrades target paired slots and preserve all items after 
     test.skip(!process.env.EIDOLON_E2E_UPGRADES_MONGO_CONTAINER, 'Requires the isolated equipment fixture');
     expect(testInfo.retry).toBe(0);
     const credentials = credentialsFromEnvironment();
+    credentials.username += `-${testInfo.repeatEachIndex}`;
     const failures = collectBrowserFailures(page, baseURL);
     await openGame(page);
     await page.locator('#auth-username').fill(credentials.username);
@@ -89,6 +90,7 @@ test('normal full-bag upgrades target paired slots and preserve all items after 
     expect(await readEarnedGear(page)).toEqual(prepared);
     expect(await upgradeEarnedEquipment(page)).toEqual([]);
     await page.keyboard.press('i');
+    if (!await page.locator('#character-sheet').isVisible()) await page.keyboard.press('c');
     await expect(page.locator('#character-sheet')).toBeVisible();
     await page.screenshot({ path: testInfo.outputPath('upgraded-equipment.png') });
     expect(failures, failures.join('\n')).toEqual([]);
