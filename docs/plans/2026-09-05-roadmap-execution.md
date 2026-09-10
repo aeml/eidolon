@@ -16,7 +16,55 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 02:35 UTC
+## Current checkpoint — September 10, 02:43 UTC
+
+Previous goal turn made PROGRESS (verified/pushed caab611). This continuation
+also made PROGRESS: identified a hunt-driver restriction inconsistent with the
+requested town-recovery loop, implemented bounded ordinary disengagement,
+verified regression/death accounting and started the full fresh replay. No
+impasse; full objective remains active. Root remains ledger-only/NEVER pushed.
+
+**Release60 CI34430017443 ACTIVE** on unchanged canonicalcaab611. Server
+102723358239 and client102723358452 now SUCCESS. Browser3/1/2 jobs102724787664/
+102724787728/102724787734 are confirmed ACTIVE. Keep canonical source frozen;
+predeploy/deploy/final native/public identity gates remain required. No new
+push, release successor or accepted60claim. Last public runtime60/df91bb6.
+
+**Primary nowa285fbc**, guarded hunt resource correction after06fb7a2. Before this
+change, ordinary recovery was available only after a credited hunt kill;44940
+ended at4/60Imp/emptyMP/58retreats with its original target still alive. The
+driver now permits ordinary Recall while an encounter is unfinished if below
+one primary cast or35%HP, then verifies actual safe-zone arrival, natural full
+HP/MP and rest banking, and leaves town normally. All this time stays INSIDE the
+unchanged absolute120s encounter deadline; no credit/count/level/reward changes,
+grants, daily workaround or watchdog reset. Between-encounter two-cast/80% policy
+is unchanged. In-flight kills may legitimately advance level during a retreat;
+strict level equality remains between encounters. An observed death immediately
+before Recall now throws rather than silently using the helper's respawn path.
+Existing explicitly permitted respawn callers keep their previous default.
+
+Focused96406 PASS41/3/.838s+lint on06fb7a2; full15472 PASS286/4034/115.724s+lint.
+The later death-race guard passed focused38521 PASS50/4/.857s+lint. That guard
+was added AFTER the full run, so do not claim4034 includes its new cases. Logs
+`/tmp/eidolon-hunt-disengage-{focused,lint,full-client,full-lint}.log` and
+`/tmp/eidolon-hunt-disengage-guard-{focused,lint}.log`. All changes are QA strategy
+and evidence, not a production resource/balance fix; actual success still needed.
+
+**22725 ACTIVE**, only owned local browser workflow, Node24 inside sg render,
+primarya285fbc source FROZEN. Run`fresh-hunt-rest-0910`, API18560/Mongo18561/
+web41960, route`fresh-story-ready`, log`/tmp/eidolon-fresh-hunt-rest-replay.log`.
+Build completed; waiting on normal isolated service readiness at latest poll.
+No daily/prepared level/grants; all seven Earth chapters and unchangedlevel30/
+accepted-uncleared dungeon gate remain required. Do not launch another owned
+browser/heavy tests or mutate its source. Preserve/sanitize/exactcleanup only
+after terminal state. Previous failure archiveqYOiwO and original log retained.
+
+Next: continue same22725 and CI34430017443; observe actual in-encounter recall
+and qualifying hunt progress, not just policy-unit success. Early Imp difficulty,
+full campaign/group/class readiness, physical phones, complete dungeons/raids,
+aura/CIcost prototypes, casino and all remaining1.1–1.10 gates stay open.
+
+## Previous checkpoint — September 10, 02:35 UTC
 
 This continuation made PROGRESS: diagnosed both terminal runs, retained/inspected
 evidence, verified the respawn fixture correction with actual software rendering
