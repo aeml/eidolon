@@ -27,7 +27,60 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 14:14 UTC
+## Current checkpoint — September 10, 14:38 UTC
+
+Previous turn was PROGRESS (real Shift tracking fix and full regression). This
+turn is PROGRESS: completed the recorded-build combat replay, isolated its pacing
+failure from input cancellation, added/executed native browser input regressions,
+verified the expanded successor, and audited the actual server build economy.
+The full1.1–1.10 goal remains active/incomplete. No local heavy/browser gate is
+currently active; all handles below are terminal.
+
+- Primary27194 TERMINAL1 onf2c643f2:11.6minutes/one case/zero retries,
+  seed-547736827228613654/gen2/attempt0/no fallback. Two trash rooms cleared,
+  ordinary town recovery twice and same-run re-entry passed; earned level32.
+  Warden began full1165HP/685MP with no remaining rest bank. Eight-minute combat
+  limit ended with boss3926HP/player1165HP. Damage continued; no death, input
+  cancellation or stall error. Not a boss kill or campaign acceptance.
+  Archive `/tmp/eidolon-tracked-shift-build-failure-l2rwIf`; scan0, raw log has
+  no disposable username prefix; exact owned18580/18581/41980services absent.
+- d87d00f2 adds a server audit from the exact14item record, with ordinary growth
+  for level32 and actual Fireball emission/cost.26189 PASS.153s;69032 focused
+  race PASS1.990s with existing prepared-Wizard, overworld gear-band and dungeon
+  rank/difficulty tests. At31/32: basic22 every1.5873/1.5810s; Fireball148/151
+  for30mana; full bar22casts/3256–3322raw damage; mana regen.69/.70 per second.
+  Eight-minute stationary reference11550/11822 versus15000bossHP. This excludes
+  crit/variance/mitigation/movement/misses/action contention, not a maximum or
+  balance approval. Logs `/tmp/eidolon-recorded-wizard-economy-{audit,race}.log`
+  archived. Primary clean065370d7 documents the result. No production server or
+  boss/regen/reward/timer changes.
+- Next primary action: evaluate ordinary Forge/material preparation and encounter
+  budgets. The recorded fixture intentionally omitted the original bag, so do
+  not claim materials were available, invent earned upgrades, or repeat the same
+  build unchanged. Retain inventory/material receipts on the next earned route;
+  compare a justified candidate through real play and preserve all-class/party/
+  later-boss acceptance. Never turn the pacing failure into a passing watchdog.
+- Socket47b465c1 adds3native keyboard/mouse/held-engine cases to the existing
+  required ground-aim suite (near/far enemy, Shift begun in chat).6014 lint/
+  discovery passed;31538 TERMINAL0:4cases12.3s (including existing exact aiming).
+  Archive `/tmp/eidolon-browser-move-only-proof-qgkTCC`; no41980listener. This
+  fixture isolates input intent with fixed hover/recorded destination, not
+  physical movement, server combat or rendered-art acceptance.
+- 83064 TERMINAL0 onclean47b465c1:270suites/3775tests137.978s+lintNode24.18.0.
+  46506 TERMINAL0 on same tip: required helper's dedicated owner/observer accounts,
+  actual Forge removal/insertion, model/UI/bag changes, re-equip and fresh login;
+  one case29.0s/30.8s total, zero retries. Archive
+  `/tmp/eidolon-forge-release-input-proof-Ks2YYI`; scan0 and exact owned services
+  absent. Socket clean proofd3c0fff5. Full predeploy/expanded recovery suffix and
+  versioned/live acceptance are still pending, not replaced by these checks.
+
+14:36 remote check: canonicalCI34434837759queued;nightly34433520743inprogress.
+No new cancellation authority, push or deployment. Canonical60 still precedes
+successor promotion. Root is ledger-only, never pushed. Full campaign/manual
+rewards/save/Water/classes/groups/raids/balance/phone/casino and later stages
+remain open; do not mark the full goal complete or blocked.
+
+## Previous checkpoint — September 10, 14:14 UTC
 
 Previous turn was PROGRESS (native Forge pass, release-gate wiring and full
 regressions). This turn is PROGRESS: the real dungeon replay failed again,
