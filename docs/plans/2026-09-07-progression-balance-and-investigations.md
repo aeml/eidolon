@@ -2,6 +2,40 @@
 
 Requested September 7, 2026. Status: **implementation active; full pass open**.
 
+## Current delivery status — September 10
+
+This checkpoint supersedes the publication-status language in the historical
+implementation notes below; it does not mark the overall balance pass complete.
+
+- **Shipped foundation:** eight-fragment collections (1.0.47), Forge precision
+  (1.0.48), personal fragment limits (1.0.49), and reduced routine equipment
+  frequency (1.0.50). Their packaged commits are ancestors of the public
+  Alpha1.0.60 client/server commit`df91bb66`. The corrected1.0.50 release
+  `51ec73e` completed[CI34295826450](https://github.com/aeml/eidolon/actions/runs/34295826450),
+  including its live gate; this was independently rechecked September10.
+- **Shipped recovery:** town10%HP/MP per second and Well Rested have been live
+  since1.0.58/`ef9a638`, whose[CI34361293407](https://github.com/aeml/eidolon/actions/runs/34361293407)
+  completed successfully. Outside passive regeneration remains`.01`. The
+  [recovery record](2026-09-08-safe-zone-well-rested.md) and execution ledger
+  retain native boundary, expiry, reconnect and presentation evidence.
+- **Not yet shipped:** the expanded Chronicle and coordinated replacement
+  XP/quest-reward curve remain on the primary development line, separate from
+  the next unversioned release candidate. Local authored content, prepared tests
+  or an opening-route pass do not establish the full earned leveling route.
+- **Still required:** rested/unrested first-hour and full campaign pacing,
+  meaningful earned equipment progression, four-role dungeon/raid completion
+  and individual manual rewards/persistence, plus whole-economy source/sink
+  acceptance. Keep the1.1 baseline,1.4 investigations,1.5 economy and1.6 raid
+  revalidation stages from this plan; neither shipped hotfixes nor the currently
+  prepared level30 party replaces these gates.
+
+Current source identities, running checks and ordered release ownership are in
+the[execution ledger](2026-09-05-roadmap-execution.md). Publication of the next
+candidate still requires its own synchronized version, patch notes and CI/live
+acceptance; ancestry alone does not prove new combined-source behavior.
+
+## Historical implementation evidence — September 7–8
+
 September8 addition: the requested [Well Rested system](2026-09-08-safe-zone-well-rested.md)
 adds10% all stats and25% enemy-kill XP while earned rest duration remains, plus
 safe-zone10% maximum HP/MP recovery per second. This is planned, not active.
