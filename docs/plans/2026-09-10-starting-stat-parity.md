@@ -1,8 +1,9 @@
 # Starting-stat parity for ordinary and prepared characters
 
-Status: implemented locally; focused Go race and client checks pass. Full
-regression, real-browser creation/override parity and release integration remain
-pending. This does not resolve earned dungeon pacing or the full roadmap.
+Status: implemented locally; full Go race, full client/lint and all four actual
+browser creation/override/relogin cases pass on clean aeff8ab5. Integrated
+prepared-combat and release acceptance remain pending. This does not resolve
+earned dungeon pacing or the full roadmap.
 
 ## Evidence and choice
 
@@ -61,14 +62,14 @@ the discrepancy before changing the helper. Log
 
 ## Remaining acceptance
 
-Keep the socket/visual successor's already-running all-route gate5956 frozen;
-it uses its own earlier source and does not verify these changes. When it ends,
-preserve its evidence and owned-resource cleanup. Run full regressions and the
-new `initial-stats` route on a clean primary tip, then retain any native failures
-and address them without restoring inflated fixture stats or enlarging timers.
+The socket/visual successor's all-route gate5956 has now passed and its evidence
+is archived separately; it uses earlier source and does not verify these changes.
+Full primary regressions and the `initial-stats` route subsequently passed on
+clean aeff8ab5, as recorded below. Continue preserving source-specific evidence
+without restoring inflated fixture stats or enlarging timers.
 The creation/parity check is now the first required stage of this candidate's
-`all` release sequence, using the same helper as the focused route. It has not
-been published or run natively yet. The existing recovery suffix stays intact.
+`all` release sequence, using the same helper as the now-passed focused route.
+It has not been published. The existing recovery suffix stays intact.
 Revalidate prepared combat after the baseline change before publishing it.
 
 The original earned Wizard fixture was already at the real baseline. This fix
@@ -90,3 +91,26 @@ the complete timed-sequence regression injects a failure at every stage and
 requires later stages to stop while artifact scanning and cleanup still run.
 All four exact account suffixes are checked. These are executable orchestration
 checks, not substitutes for the pending actual browser cases or full regression.
+
+### Full and native verification — September 10, 15:56 UTC
+
+56611 TERMINAL0 on clean aeff8ab53ee5e2e45c9429a4728ddf962ef7a7eb:
+full Go race (root29.617s/game401.028s; remaining packages passed/cached), then
+305client suites/4231tests151.563s and lint underNode24.18.0. This was one serial
+local heavy gate, launched only after the socket sequence had ended and cleaned
+up. Logs `/tmp/eidolon-initial-stat-full-{server,client,lint}.log`.
+
+37432 TERMINAL0 on that same clean tip: all four real class cases,50.4s total,
+zero retries/skips. Each created a new ordinary account/character, checked the
+all10 baseline, relogged, used visible allowlisted `/level 30` input, checked
+68STR/39DEX/39INT/39WIS/68VIT and relogged again. Ordinary XP growth is covered
+by the separate Go parity test, not claimed from this explicit QA override.
+Historical/custom saved stats are covered by Go invariants and the unchanged
+existing-character load path, not by a native legacy-save fixture in this route.
+
+Archive `/tmp/eidolon-initial-stat-proof-h9RCZ0` contains available result tree,
+final report and native/full-regression logs. Actual wrapper credential scan
+sanitized0files; redirected native log contains0 disposable username prefixes.
+Exact API/Mongo containers and image for `initial-parity-0910` are absent after
+normal cleanup;18580/18581/41980 have no remaining listeners. No deployment,
+version assignment, earned dungeon victory or full roadmap acceptance is claimed.
