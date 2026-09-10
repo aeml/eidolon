@@ -27,7 +27,33 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 08:20 UTC
+## Current checkpoint — September 10, 08:34 UTC
+
+Previous turn was a VERIFIED WAIT. This turn makes PROGRESS: added three
+presentation fixtures for the new quest NPC role cards to the already-required
+interface spec, desktop1280x720/phone390x844/landscape844x390. Actual QuestNPC →
+GameEngine hint → UIManager/CSS, both roles near/far, bounds/overflow/clear checks
+and images. The two existing combat-card cases remain; browser job2 runs all via
+the unchanged interface command. Separate aura integration now clean **d9176d0e**
+atop e0c6ef8. No browser execution or post-change image review claimed yet.
+
+Discovery/lint89395 exited0,5cases/1file. Focused18414 PASS254tests/2suites3.785s;
+logs `/tmp/eidolon-role-hint-{discovery,browser-lint,wiring-unit}.log`, Node24.
+Details and remaining gates in that worktree's aura-release-integration plan.
+Full regression, actual role-card rendering and integrated aura/native gates
+still await the current owned campaign run and adequate capacity. Phone layout
+fixtures are not physical-touch or native NPC-selection evidence.
+
+SAME96530 re-polled live on frozen626385d. Latest Orc25/50, zero deaths,13rests,
+no new training during Orcs, level27/5434XP/16763Gold at722seconds. No terminal
+result or restart; known future Water assertion remains stale in this attempt.
+Separate4e4d46b correction remains unmerged/full-and-native verification pending.
+Fresh08:34 GitHub still queued34434837759 / in-progress34433520743. No cancellation,
+push, version change or deployment; public identity last checked08:04. Requests
+for phone feedback/current-soak direction unanswered. Full roadmap/casino scope
+stays active/incomplete; root ledger only, never push it.
+
+## Previous checkpoint — September 10, 08:20 UTC
 
 08:26 verified-wait/capacity check: SAME96530 remains authoritatively live, latest
 reported Orc5/50 atlevel23 withzero deaths (log still updating). Investigated
