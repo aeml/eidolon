@@ -1,5 +1,10 @@
 # Well Rested aura batching — separate visual/performance prototype
 
+September10 status: still unpublished and separate from primary and the active
+release60 pipeline. Native party verification has been strengthened below but
+must wait for the owned Earth replay before using the local browser. Do not
+interpret inherited58metadata as a current release candidate.
+
 This is unpublished follow-up work, based on recovery58/ee8a713. It is not the
 canonical recovery release and must not replace or delay its running acceptance.
 The inherited1.0.58 metadata is not authorization to publish this as1.0.58.
@@ -91,3 +96,31 @@ The process handle77576 is now absent; these terminal log summaries, not the
 missing handle itself, establish those earlier checks. GPU results are above.
 This prepared fixture does not establish earned gameplay, party transitions,
 frame-time improvements or phone performance, and is not a release gate yet.
+
+## Native party evidence preparation — September10
+
+The existing two-real-player phone journey now checks High → Low → High again,
+then a fresh login while the second client remains present. Read-only scene
+observations require exactly5/4visiblemeshes, two instanced batches, all16/8sparks,
+one attached aura group per actual owner, valid transparent geometry and correct
+world positioning on both players. Reconnect also verifies the earned local rest
+bank is retained. It does not grant buffs or fake remote actors.
+
+Reuse the existing real-game scene profiler after60warmupframes for180samples
+per quality phase. It records frame median/p95/p99, CPU-loop time, draw calls,
+triangles, allocations and entity count. Added renderer identity, viewport/DPR,
+user agent and document visibility to its evidence. Profiles are attached to the
+report alongside native world/status screenshots, including separate repeat-High
+images so first-High evidence is not overwritten.
+
+These measurements establish a documented native workload observation, not an
+automatic FPS improvement or physical-phone claim. Compare against an equivalent
+unbatched native baseline before making a speedup claim. Keep controlled GPU
+pixel/draw-call parity and authored-motion tests as independent evidence.
+
+Focused83040:18observation-validator tests passed0.416s; lint and discovery of
+the one native party test passed. The validator rejects missing sparks, old
+unbatched meshes, duplicate owners, detached effects and invalid resource values.
+No runtime change. Full regression after these test changes and actual native
+party/expiry/journey execution remain due. Actual stealth/death/scene transitions
+and wider populated-scene performance are still open promotion requirements.

@@ -1,6 +1,8 @@
 import { devices, expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld } from './helpers.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
+import { profileGameplayScene } from './scene-performance.js';
+import { restedAuraMeetsBudget } from '../restedAuraEvidence.js';
 
 test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true,
     userAgent: devices['Pixel 7'].userAgent, actionTimeout: 12_000,
@@ -10,16 +12,23 @@ const auras = (page, allyId) => page.evaluate(id => {
     const game = window.game;
     return [game.player, game.remotePlayers.get(id)].map(actor => {
         const aura = actor?.attachedStatusEffects?.get('well_rested');
-        let meshes = 0, invalid = 0;
+        let meshes = 0, invalid = 0, batches = 0, sparks = 0, ownerGroups = 0;
         aura?.group.traverse(part => {
             if (!part.isMesh) return;
-            // Low quality reuses cached geometry but hides optional motes.
-            // Compare draw-visible parts, not the reusable allocation count.
+            // Compare draw-visible parts and actual spark instances, not just
+            // the reusable geometry allocation count.
             if (part.visible) meshes++;
+            if (part.visible && part.isInstancedMesh) {
+                batches++;
+                sparks += part.count;
+            }
             if (part.geometry.type === 'BoxGeometry' || !part.material.transparent || part.material.depthWrite) invalid++;
         });
+        game.renderSystem.scene.traverse(part => {
+            if (part.name === `AttachedStatusEffect:well_rested:${actor?.id}`) ownerGroups++;
+        });
         return { bank: actor?.wellRestedSeconds, attached: Boolean(aura?.group.parent),
-            quality: aura?.quality, meshes, invalid,
+            quality: aura?.quality, meshes, invalid, batches, sparks, ownerGroups,
             ownerMatches: Boolean(aura && aura.group.userData.ownerId === actor.id),
             distance: aura && actor.mesh ? aura.group.position.distanceTo(actor.mesh.position) : null };
     });
@@ -61,8 +70,12 @@ test('two real rested party members retain readable phone auras at High and Low 
             await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
             await cdp.detach();
         }
-        const meshCounts = {};
-        for (const quality of ['high', 'low']) {
+        const meshCounts = {}, profiles = [];
+        // Rebuild High after Low as well, checking both actors for duplicate
+        // scene attachments and lost sparks instead of only fewer meshes.
+        for (const phase of ['high', 'low', 'high-repeat']) {
+            const quality = phase === 'low' ? 'low' : 'high';
+            await page.setViewportSize({ width: 390, height: 844 });
             await page.locator('#btn-mobile-menu').tap();
             await page.locator('#btn-settings').tap();
             await page.locator('#graphics-quality').selectOption(quality);
@@ -70,9 +83,15 @@ test('two real rested party members retain readable phone auras at High and Low 
             if (await page.locator('#btn-resume').isVisible()) await page.locator('#btn-resume').tap();
             await expect(page.locator('#esc-menu')).toBeHidden();
             await expect.poll(async () => (await auras(page, allyId)).every(aura =>
-                aura.bank > 0 && aura.attached && aura.quality === quality && aura.meshes > 0 &&
-                aura.invalid === 0 && aura.ownerMatches && aura.distance < .2)).toBe(true);
-            meshCounts[quality] = (await auras(page, allyId)).map(aura => aura.meshes);
+                restedAuraMeetsBudget(aura, quality))).toBe(true);
+            meshCounts[phase] = (await auras(page, allyId)).map(aura => aura.meshes);
+            const profile = await profileGameplayScene(page, `rested-two-player-${phase}`);
+            expect(profile.frames).toBe(180);
+            expect(profile.visibility).toBe('visible');
+            expect(profile.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
+            expect(profile.drawCallsMedian).toBeGreaterThan(0);
+            expect(profile.frameMedianMs).toBeGreaterThan(0);
+            profiles.push({ phase, ...profile, auras: await auras(page, allyId) });
             for (const [width, height] of [[390, 844], [844, 390], [568, 320]]) {
                 await page.setViewportSize({ width, height });
                 // The phone camera centers the hero in the layout-owned clear
@@ -93,15 +112,25 @@ test('two real rested party members retain readable phone auras at High and Low 
                 await expect(panel).toContainText('Resting');
                 await expect(panel.getByRole('heading', { name: 'Well Rested', exact: true })).toBeInViewport();
                 expect(await panel.evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true);
-                await page.screenshot({ path: testInfo.outputPath(`rested-party-${quality}-${width}.png`) });
+                await page.screenshot({ path: testInfo.outputPath(`rested-party-${phase}-${width}.png`) });
                 await page.locator('#btn-close-phone-status').tap();
-                await page.screenshot({ path: testInfo.outputPath(`rested-party-world-${quality}-${width}.png`) });
+                await page.screenshot({ path: testInfo.outputPath(`rested-party-world-${phase}-${width}.png`) });
             }
         }
         expect(meshCounts.low.every((count, index) => count < meshCounts.high[index])).toBe(true);
+        expect(meshCounts['high-repeat']).toEqual(meshCounts.high);
+        const beforeLogin = (await auras(page, allyId))[0].bank;
+        await page.setViewportSize({ width: 390, height: 844 });
+        await loginAndEnterWorld(page, credentials);
+        await expect.poll(async () => (await auras(page, allyId)).every(aura =>
+            restedAuraMeetsBudget(aura, 'high'))).toBe(true);
+        expect((await auras(page, allyId))[0].bank).toBeGreaterThanOrEqual(beforeLogin);
+        await page.screenshot({ path: testInfo.outputPath('rested-party-rejoined.png') });
         expect(failures, failures.join('\n')).toEqual([]);
         expect(allyFailures, allyFailures.join('\n')).toEqual([]);
-        console.log('[rested-party]', JSON.stringify({ meshCounts, actualPartyMembers: 2, joystickMovement: true }));
+        console.log('[rested-party]', JSON.stringify({ meshCounts, actualPartyMembers: 2, joystickMovement: true,
+            rejoinedAuras: await auras(page, allyId), profiles }));
+        await testInfo.attach('rested-party-rendering-profile', { body: JSON.stringify(profiles, null, 2), contentType: 'application/json' });
     } finally {
         await second.close();
     }
