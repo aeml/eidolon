@@ -1,7 +1,7 @@
 # Socket appearance consistency — visual successor candidate
 
-Status: implemented and focused checks passed; full regression, rendered/native
-acceptance and versioned deployment remain pending. Built separately from the
+Status: implemented, focused checks and full client regression passed;
+rendered/native acceptance and versioned deployment remain pending. Built separately from the
 accepted local aura/equipment candidate71f18922; no active campaign source or
 canonical release was edited. This is an equipment-polish correction within the
 existing1.1–1.10 goal, not completion of the broader visual milestone.
@@ -41,13 +41,17 @@ not mutated. Forge or gameplay stat calculation rules are unchanged.
   actual attached-model replacement for all four class rigs, unchanged item ID,
   no rebuild for equivalent records, neutral malformed inputs and data retention.
   Existing procedural equipment/icon and remote replication suites also pass.
+- Full21864 on frozenbdf3a2df TERMINAL0:267suites/3741tests121.725s followed by
+  lintNode24.18.0. Logs `/tmp/eidolon-socket-visual-full-{client,lint}.log`.
+  This began only after earned44188 was terminal and prepared class native32340
+  had also finished. No competing local browser/heavy gate or source edits.
 
 ## Remaining acceptance and release
 
-1. Preserve main44188 and frozen primary4b3991ff. Do not run a competing browser
-   or heavy full suite while the earned campaign owns that gate.
-2. After its terminal result/artifacts are retained, run full client regression
-   and lint on this exact candidate. Inspect rendered socket colors for all
+1. Earned44188 is now TERMINAL1 (second Warden survival failure), archived at
+   `/tmp/eidolon-earned-upgrade-failure-sQmC8N`. Preserve that result; this visual
+   correction is not a fix for its combat failure or evidence of a dungeon clear.
+2. Full client regression/lint on this candidate is complete. Inspect rendered socket colors for all
    seven types and all-class equipped fit; compare canonical versus enum forms
    at the same camera/quality. Confirm no geometry or palette regression.
 3. Verify an ordinary Forge socket change updates bag icon and equipped local/
