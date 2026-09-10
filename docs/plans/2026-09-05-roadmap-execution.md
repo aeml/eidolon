@@ -5,7 +5,33 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 22:21 UTC
+## Current checkpoint — September 10, 22:24 UTC
+
+Previous turn was PROGRESS: slam-defense implementation and role-controller
+corrections. This turn is PROGRESS: full primary server68058 terminated0,
+root29.012s/game385.718s, other tested packages pass/cached, no race warning.
+Log`/tmp/eidolon-boss-slam-full-server.log`. Primary documentationa5320d74 records
+the pass; its server tree remains identical to test sourced3a54d4a.
+
+- Native full-party62131 is ACTIVE on clean frozena5320d74, routeparty-dungeon,
+  runparty-defenses-0910-2223, ports18580/18581/41980. Log
+ `/tmp/eidolon-four-role-defenses-native.log`. It is the only local heavy gate.
+  Actual four-browser setup, legal loadouts, visible invitations/roster target
+  selection and same-instance entry passed. Replay seed-2339742150727221791,
+  generator2, Normal30, no fallback, clean source. No combat-clear result yet.
+  Do not edit primary or launch another heavy gate until this handle terminates.
+  Prior42295 artifacts already preserved/scanned in
+ `/tmp/eidolon-four-role-guide-clear-proof-mb3bxE` before report replacement.
+- Successor is clean714c4727 (documentation atop80140cfb). Its full application
+  checklist now explicitly reopens current Go acceptance after the slam runtime
+  change, preserving the earlier pass as historical. Client runtime unchanged.
+  Fresh full Go,104browser bundles, required-all/version/remote/live and broader
+  campaign/phone/roadmap gates remain required. Do not substitute primary's full
+  Go pass for this branch's distinct source. No successor native clear claimed.
+- Canonical62dc CI34434837759 rechecked queued this turn. No new push, version,
+  soak interruption or deployment. Full roadmap remains active; root is ledger-only.
+
+## Previous checkpoint — September 10, 22:21 UTC
 
 Previous goal turn was PROGRESS: preserved the terminal party attempt and
 verified party credit. This turn is PROGRESS: reproduced and corrected the real
