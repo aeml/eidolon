@@ -120,7 +120,10 @@ export async function playDungeonThroughInputs(page, {
                 const death = await page.evaluate(() => ({
                     x: window.game.player.position.x, z: window.game.player.position.z,
                     mana: window.game.player.stats.mana, cooldowns: window.game.player.cooldowns,
-                    events: window.__dungeonSurvivalEvents
+                    events: window.__dungeonSurvivalEvents,
+                    equipment: window.game.player.equipment,
+                    defense: window.__freshWizardDefense || window.__freshFighterCombat || null,
+                    hotbar: window.game.player.hotbar, unlockedSkills: window.game.player.unlockedSkills
                 }));
                 console.log(`${logPrefix} death diagnostic ${JSON.stringify(death)}`);
             }

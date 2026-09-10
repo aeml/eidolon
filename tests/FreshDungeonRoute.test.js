@@ -5,6 +5,8 @@ const readChronicleChapter = jest.fn();
 const verifyTurnIn = jest.fn();
 const playDungeon = jest.fn();
 const createDefense = jest.fn();
+const upgradeGear = jest.fn();
+const readGear = jest.fn();
 jest.unstable_mockModule('@playwright/test', () => ({ expect }));
 jest.unstable_mockModule('./e2e/helpers.js', () => ({ readPlayerState }));
 jest.unstable_mockModule('./e2e/chronicle-earth-route.js', () => ({
@@ -13,6 +15,7 @@ jest.unstable_mockModule('./e2e/chronicle-earth-route.js', () => ({
 }));
 jest.unstable_mockModule('./e2e/dungeon-playthrough-route.js', () => ({ playDungeonThroughInputs: playDungeon }));
 jest.unstable_mockModule('./e2e/earned-class-combat.js', () => ({ createEarnedClassCombat: createDefense }));
+jest.unstable_mockModule('./e2e/earned-equipment-upgrades.js', () => ({ upgradeEarnedEquipment: upgradeGear, readEarnedGear: readGear }));
 const { clearEarnedVerdant } = await import('./e2e/fresh-dungeon-route.js');
 
 let page;
@@ -20,6 +23,7 @@ beforeEach(() => {
     jest.resetAllMocks();
     jest.spyOn(console, 'log').mockImplementation(() => {});
     readPlayerState.mockResolvedValue({ level: 34, state: 'IDLE', health: 200 });
+    readGear.mockResolvedValue({ equipment: {} });
     readChronicleChapter.mockResolvedValue({ accepted: true, completed: false, count: 0,
         grantedGold: 100, grantedXP: 500 });
     page = { evaluate: jest.fn().mockResolvedValueOnce('Wizard').mockResolvedValue({ retreats: 0 }),
@@ -37,6 +41,8 @@ test('earned entry uses the real town guide and full normal level-30 route befor
         fullRun: true, fallbackRun: false, useTownGuide: true, beforeCombat: defense
     }));
     expect(verifyTurnIn).toHaveBeenCalledWith(page, {});
+    expect(upgradeGear).toHaveBeenCalledWith(page);
+    expect(upgradeGear.mock.invocationCallOrder[0]).toBeLessThan(playDungeon.mock.invocationCallOrder[0]);
     expect(playDungeon.mock.invocationCallOrder[0]).toBeLessThan(verifyTurnIn.mock.invocationCallOrder[0]);
 });
 

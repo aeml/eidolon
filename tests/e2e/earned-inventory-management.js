@@ -2,6 +2,7 @@ import { expect } from '@playwright/test';
 import { EARNED_BAG_MIN_FREE, EARNED_BAG_TARGET_FREE, earnedBagFreeSlots, planEarnedBagSales,
     planEarnedBagStorage } from '../earnedInventoryPolicy.js';
 import { equipEarnedEmptySlots } from './earned-equipment.js';
+import { upgradeEarnedEquipment } from './earned-equipment-upgrades.js';
 import { ensureEarnedMerchantWindow } from './earned-merchant-window.js';
 import { approachEarnedMerchant } from '../earnedMerchantApproach.js';
 import { storeEarnedSpareEquipment } from './earned-stash-storage.js';
@@ -72,6 +73,7 @@ export async function maintainEarnedInventory(page, { leaveTown }) {
     expect((await readPlayerState(page)).state).not.toBe('DEAD');
     const before = await snapshot(page);
     const equipped = await equipEarnedEmptySlots(page);
+    const upgrades = await upgradeEarnedEquipment(page);
     const prepared = await snapshot(page);
     const sales = planEarnedBagSales(prepared);
     if (sales.length) {
@@ -106,7 +108,7 @@ export async function maintainEarnedInventory(page, { leaveTown }) {
     expect(earnedBagFreeSlots(after.inventory)).toBeGreaterThanOrEqual(EARNED_BAG_TARGET_FREE);
     await setAutoLootThroughSettings(page, autoLoot);
     await leaveTown();
-    console.log('[earned-bag-management]', JSON.stringify({ equipped, sales, stored: stored.map(({ id, name }) => ({ id, name })),
+    console.log('[earned-bag-management]', JSON.stringify({ equipped, upgrades, sales, stored: stored.map(({ id, name }) => ({ id, name })),
         before: { level: before.level, gold: before.gold, freeSlots: earnedBagFreeSlots(before.inventory) },
         after: { level: after.level, gold: after.gold, freeSlots: earnedBagFreeSlots(after.inventory) },
         seconds: (Date.now() - started) / 1000, note: stored.length

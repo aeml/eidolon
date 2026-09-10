@@ -27,6 +27,8 @@ export async function readStoryHuntFailureEvidence(page) {
         return { player: { level: p.level, hp: p.stats.hp, mana: p.stats.mana,
             stats: { ...p.stats }, baseStats: { ...p.baseStats }, statPoints: p.statPoints,
             talentPoints: p.talentPoints, talents: p.talentRanks, branch: p.selectedBranch,
+            equipment: p.equipment, hotbar: p.hotbar, unlockedSkills: p.unlockedSkills,
+            defense: window.__freshWizardDefense || window.__freshFighterCombat || null,
             position: p.position.toArray(), safeZone: p.safeZoneId, rest: p.wellRestedSeconds,
             quests: (p.quests || []).map(q => ({ id: q.id, accepted: q.accepted,
                 completed: q.completed, count: q.count, maxCount: q.maxCount })),

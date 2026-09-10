@@ -5,6 +5,7 @@ import { jumpByGroundClick, loginAndEnterWorld, readPlayerState, returnToTown } 
 import { createEarnedClassCombat } from './earned-class-combat.js';
 import { earnedPreparationBudget, earnedPreparationProfile } from '../earnedPreparationPolicy.js';
 import { equipEarnedGearAndStats } from './earned-gear-and-stats.js';
+import { upgradeEarnedEquipment } from './earned-equipment-upgrades.js';
 
 const preparationState = page => page.evaluate(() => {
     const p = window.game.player;
@@ -16,7 +17,7 @@ const preparationState = page => page.evaluate(() => {
 });
 
 // Use only gear already collected during the earned story route. This is a
-// deliberately simple baseline: fill empty slots, five class-stat allocations,
+// deliberately simple baseline: fill empty slots, compare earned upgrades, five class-stat allocations,
 // up to five mastery ranks, and an earned defensive/utility branch.
 // Not an optimized build or a loot grant.
 export async function prepareEarnedWizard(page, credentials, { statBudget = 5, label = 'before-Imp' } = {}) {
@@ -33,6 +34,7 @@ export async function prepareEarnedClass(page, credentials, { statBudget = 5, la
     await returnToTown(page);
     const { equipped, allocated } = await equipEarnedGearAndStats(page,
         { stat: profile.stat, statAllocations: budget.statAllocations });
+    const upgrades = await upgradeEarnedEquipment(page);
     await page.keyboard.press('k');
     const skills = page.locator('#skill-tree-window');
     await skills.getByRole('button', { name: 'Skills', exact: true }).click();
@@ -57,10 +59,13 @@ export async function prepareEarnedClass(page, credentials, { statBudget = 5, la
     const prepared = await preparationState(page);
     expect(Object.keys(prepared.equipment)).not.toContain('gem');
     expect(Object.keys(prepared.equipment)).toHaveLength(Object.keys(initial.equipment).length + equipped);
-    for (const [slot, id] of Object.entries(initial.equipment)) expect(prepared.equipment[slot]).toBe(id);
+    for (const [slot, id] of Object.entries(initial.equipment)) {
+        const replacement = upgrades.filter(action => action.slot === slot).at(-1);
+        expect(prepared.equipment[slot]).toBe(replacement?.id || id);
+    }
     await loginAndEnterWorld(page, credentials);
     expect(await preparationState(page)).toEqual(prepared);
-    console.log(`[fresh-ready] earned preparation ${JSON.stringify({ label, equipped, allocated, ranks, prepared })}`);
+    console.log(`[fresh-ready] earned preparation ${JSON.stringify({ label, equipped, upgrades, allocated, ranks, prepared })}`);
     await openDungeonGuide(page);
 }
 

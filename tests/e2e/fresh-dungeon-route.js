@@ -5,6 +5,7 @@ import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
 import { createEarnedClassCombat } from './earned-class-combat.js';
 import { earnedFighterPreparationBudget } from '../earnedPreparationPolicy.js';
 import { readPlayerState } from './helpers.js';
+import { upgradeEarnedEquipment, readEarnedGear } from './earned-equipment-upgrades.js';
 
 // Called only after the no-grants opening/collection/contracts route. Never use
 // the prepared dungeon spec's level grant, encounter waypoint or rune setup.
@@ -19,10 +20,13 @@ export async function clearEarnedVerdant(page, credentials, { runPhase = (_id, b
     expect(chapter?.completed).toBe(false);
     expect(chapter?.count).toBe(0);
     await page.locator('#btn-close-dungeon-menu').click();
+    await upgradeEarnedEquipment(page);
+    const gear = await readEarnedGear(page);
     const beforeCombat = await createEarnedClassCombat(page, className);
     const started = Date.now();
     console.log(`[fresh-dungeon] earned entry ${JSON.stringify({ level: player.level,
-        health: player.health, runLevel: 30, difficulty: 'normal' })}`);
+        health: (await readPlayerState(page)).health, equipment: gear.equipment,
+        runLevel: 30, difficulty: 'normal' })}`);
     await runPhase('dungeon', () => playDungeonThroughInputs(page, {
         playthrough: dungeonPlaythroughOptions({}), fullRun: true, fallbackRun: false,
         useTownGuide: true, beforeCombat,
