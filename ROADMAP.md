@@ -116,6 +116,29 @@ Immediate corrections precede 1.1 pacing sign-off; campaign expansion lands in
 
 The [1.1–1.10 plan](docs/plans/2026-09-05-v1-1-to-v1-10-roadmap.md) proposes the alpha-to-beta sequence. Immediate dungeon defects take priority in `1.0.x` hotfixes and must be closed before `1.1`; `1.6` is reserved for encounter improvements, not repairs to unplayable basics. Historical foundation closeout does not override newly reported failures. Later milestones cover visual and combat polish, story depth, progression, competitive PvP, social activity, world events, and measured beta readiness. A fifth class and major realm expansion remain outside this scope.
 
+### Two-floor town casino — required by 1.10
+
+The [casino roadmap](docs/plans/2026-09-09-town-casino-roadmap.md) is required
+scope for the current 1.10 completion goal, scheduled for later work rather than
+immediate implementation.
+
+- **1.5:** plan Gold wagering, payouts and economy safeguards, plus a separate
+  currency interface. The future VIP currency's identity and economics remain
+  undefined pending its own design; do not substitute Gold or assume Resonance.
+- **1.8:** build authoritative seating, visible multiplayer participation,
+  table sessions, reconnect handling and seamless camera/control transitions.
+- **1.9:** convert the building behind the stash into a walkable two-floor
+  casino. Place the stash naturally between the Trading House and casino with
+  comfortable walking space and matching collisions. Build full-featured,
+  varied lore-themed slots, solo/multiplayer house blackjack and real-player-only
+  poker through physical machine/table interactions, not a minigame menu.
+- **1.10:** complete and verify both the regular-Gold public floor and prestigious
+  VIP lounge, including higher-stakes machines/tables and premium variations
+  using the separately implemented future currency. Preserve room for future
+  VIP games, rewards and services. Require desktop/phone, multiplayer, settlement,
+  persistence, visual/audio and live-release acceptance; an upstairs placeholder
+  does not satisfy completion.
+
 ### Phone-first playability — a release requirement
 
 The September 6 report identifies a connected camera and interface problem:
