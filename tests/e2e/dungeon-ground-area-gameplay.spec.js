@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { approachSettledGround } from '../settledGroundApproach.js';
 import {
     collectBrowserFailures, credentialsFromEnvironment, ensureDungeonReadyLevel, enterAndExitDungeon,
     loginAndEnterWorld, moveByGroundClick, projectGroundOffset, readPlayerState, selectGraphicsThroughSettings
@@ -6,16 +7,20 @@ import {
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 
-test('ground spells reject dungeon walls without cooldown and still cast on reachable floor', async ({ page, baseURL }) => {
+test('ground spells reject dungeon walls without cooldown and still cast on reachable floor', async ({ page, baseURL }, testInfo) => {
     const credentials = credentialsFromEnvironment();
     test.skip(!credentials.username || !credentials.password, 'Requires a dedicated QA character');
     test.skip((process.env.EIDOLON_E2E_CLASS || 'Wizard') !== 'Wizard', 'Wizard ground spell inspection');
+    expect(testInfo.retry).toBeLessThanOrEqual(1);
+    if (testInfo.retry) credentials.username += `-retry${testInfo.retry}`;
     test.setTimeout(240_000);
     const failures = collectBrowserFailures(page, baseURL);
     await loginAndEnterWorld(page, credentials);
     await ensureDungeonReadyLevel(page);
     const trained = process.env.EIDOLON_E2E_GROUND_TALENTS === '1';
     if (trained) {
+        expect(await page.evaluate(() => window.game.player.talentRanks?.WIZ_38 || 0),
+            'The dedicated attempt must start with untrained Mana Geometry').toBe(0);
         await page.keyboard.press('k');
         const skills = page.locator('#skill-tree-window');
         await expect(skills).toBeVisible();
@@ -32,15 +37,28 @@ test('ground spells reject dungeon walls without cooldown and still cast on reac
     await enterAndExitDungeon(page, { resetRun: true, beforeExit: async () => {
         const start = await page.evaluate(() => window.game.currentDungeonLayout.rooms[0]);
         const destinationZ = start.z + start.height / 2 - 8;
-        const deadline = Date.now() + 45_000;
-        while (Date.now() < deadline) {
-            const player = await readPlayerState(page);
-            if (Math.abs(destinationZ - player.z) < 2) break;
-            await moveByGroundClick(page, 0, Math.max(-12, Math.min(12, destinationZ - player.z)), {
-                allowJumpFallback: false, minimumDistance: 0.5
-            });
+        const readApproach = () => page.evaluate(() => {
+            const game = window.game, p = game.player;
+            const cameraDistance = Math.hypot(game.renderSystem.cameraTarget.x - p.position.x,
+                game.renderSystem.cameraTarget.z - p.position.z);
+            return { x: p.position.x, z: p.position.z, state: p.state,
+                targetPosition: p.targetPosition?.toArray?.() || null, cameraDistance,
+                settled: p.state === 'IDLE' && !p.targetPosition && cameraDistance < .05 };
+        });
+        try {
+            await approachSettledGround({ destinationZ, read: readApproach,
+                settle: deadline => expect.poll(() => readApproach().then(state => state.settled),
+                    { timeout: Math.max(1, deadline - Date.now()) }).toBe(true),
+                move: (x, z) => moveByGroundClick(page, x, z, {
+                    allowJumpFallback: false, minimumDistance: 0.5
+                }) });
+            expect(Math.abs((await readPlayerState(page)).z - destinationZ)).toBeLessThan(2);
+        } catch (error) {
+            const state = await readApproach().catch(() => null);
+            await testInfo.attach('ground-approach-failure', { body: JSON.stringify({ start, destinationZ, state }), contentType: 'application/json' });
+            await page.screenshot({ path: testInfo.outputPath('ground-approach-failure.png') }).catch(() => {});
+            throw error;
         }
-        expect(Math.abs((await readPlayerState(page)).z - destinationZ)).toBeLessThan(2);
         await expect.poll(() => page.evaluate(() => window.game.player.state)).toBe('IDLE');
         await page.evaluate(() => {
             const game = window.game;
