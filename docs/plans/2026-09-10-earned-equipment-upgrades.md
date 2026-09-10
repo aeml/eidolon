@@ -1,8 +1,11 @@
 # Earned equipment progression in campaign QA
 
-Status: local QA implementation, focused checks and full regression passed;
-native swap/clear acceptance remain pending. No runtime, loot, stat, currency,
-boss, version or deployment change. This addresses a verification gap identified
+Status: local QA implementation, full regression and prepared native swap/Forge
+checks passed; earned dungeon-clear acceptance remains pending. The upgrade
+driver changes no runtime, loot, stats, currency or bosses. Its native verification
+also uncovered separately tested runtime icon/drop-target corrections, now merged
+into primary; see [the retained native proof](2026-09-10-native-equipment-upgrade-verification.md).
+No version or deployment change. This addresses a verification gap identified
 in the [failed earned Verdant attempt](2026-09-10-earned-verdant-failure.md).
 
 ## Change and scope
@@ -64,8 +67,9 @@ attempted drag, so unrelated setup exceptions cannot satisfy them. Original
 `/tmp/eidolon-earned-upgrades-unit.log` retained. Corrected77-test run94297 passed
 before the final pre-dungeon integration and87-test run above.
 
-Before acceptance, exercise actual inventory drags,
-paired-slot swaps and saved ownership in a native browser; then replay earned
+Prepared native inventory drags, paired-slot swaps and saved ownership now pass
+with retained artifacts (linked above). The integrated source also passed full
+client293suites/4125tests and lint. Next replay earned
 campaign/dungeon progression under unchanged combat/death/phase limits. Capture
 the new full equipped-item and defense/skill diagnostics at entry/death. Do not
 call the original boss failure fixed merely because the harness now upgrades.

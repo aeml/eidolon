@@ -86,8 +86,6 @@ retention was not achieved. Corrected route uses independent subdirectories
 under the already-scanned test-results root. Real-shell unit checks enforce
 both distinct outputs and fail-fast chaining. Rerun before final acceptance.
 
-## Release-note draft — assign version only during actual release preparation
-
 ## Completed local acceptance
 
 Frozen source **f2600a44** passed full client session18794:293suites,4125tests,
