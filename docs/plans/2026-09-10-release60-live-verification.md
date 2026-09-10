@@ -10,6 +10,16 @@ before60 is accepted; the current push repairs60's verification, not gameplay.
 
 ## Current status — September10, 03:51UTC
 
+04:14 update: allclient/server/browser groups SUCCESS on unchanged62dc2d1.
+Predeploy102741303703 is QUEUED. Repository has one matching online runner,
+id21/eidolon-codex-chrome, busy running scheduled24h soak34433520743/
+job102733792127 since03:30:19. Actual runner/job metadata confirms the shared
+reservation; this is not a new test failure. User was asked asynchronously
+whether to cancel this particular soak for deployment; approval is pending and
+no cancellation/runner/workflow change has been made. Browser1 retained log
+`/tmp/eidolon-release60-ground-ci-browser1.log` confirms29main10.5m,6nameplate49.8s,
+3resourceHUD6.3s without retry. No predeploy/deployment/final acceptance yet.
+
 04:05 update: sameCI34434837759 on62dc2d1 remains ACTIVE. Client/server both
 SUCCESS; browser2/102738964543 and browser3/102738964477 SUCCESS. Browser1/
 102738964490 remains ACTIVE. No predeploy/deployment/final acceptance yet and

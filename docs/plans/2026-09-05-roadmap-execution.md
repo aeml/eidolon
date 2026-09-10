@@ -16,7 +16,50 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 04:05 UTC
+## Current checkpoint — September 10, 04:14 UTC
+
+Previous goal turn was a VERIFIED WAIT. This continuation made PROGRESS:
+confirmed all browser jobs passed, established an independent runner-allocation
+delay, requested specific soak-cancellation approval, and observed Watch phase
+completion in the same native run. Full goal active, not at an impasse while
+independent earned gameplay continues. Root ledger-only and NEVER pushed.
+
+**CI34434837759 queued at predeploy102741303703**, exact62dc2d1 unchanged.
+Client/server/allthreebrowser jobs SUCCESS. Completed browser1 log retained at
+`/tmp/eidolon-release60-ground-ci-browser1.log`:29main10.5m,6nameplate49.8s,
+3resourceHUD6.3s, no retry. This is not predeploy/deployment/final acceptance.
+Last verified public remains60/df91bb6, not the new candidate.
+
+Authoritative repository runner API returned **one** online runner: id21,
+eidolon-codex-chrome, busy. Queued predeploy requires its self-hosted/linux/x64/
+eidolon-live-browser labels. The same runner is executing Nightly Multiplayer
+Soak34433520743/job102733792127; its load step began03:30:19. Scheduled workflow
+default24h, same labels, so this is runner reservation rather than another
+browser-test failure. An asynchronous question asks the user whether to cancel
+THIS soak to prioritize deployment, explaining that it loses a complete soak
+result. **Approval remains pending; no cancellation is authorized by this
+checkpoint.** Do not reuse permission for an earlier, different soak. No labels,
+runner services, workflow duration or preemption policies were changed.
+
+CI-cost prototype now cleandf6f806 (documentation only atop080e175). Its plan
+records this separate end-to-end bottleneck and the need for an operational
+choice on separate capacity or approved interruption/evidence recovery, without
+weakening24h/100-client stability gates. Original proposed three-group native/
+timing/rendering/remote-CI proof remains pending. No prototype was published.
+
+**84056 ACTIVE**, ONLY owned local browser, unchanged primaryea6cdbb; same
+fresh-phases-0910/18560/18561/41960 and`/tmp/eidolon-fresh-phases-replay.log`.
+Watch40 manual100Gold/1593XP and saved progress PASSED563s,zero deaths,16 town
+stops. Before claim6/551XP/1408Gold→8/419XP/1508Gold;15 bag slots/400 unsold gear
+value. Actual namedwatch phase PASS563138ms/1800000ms. Seeds phase now ACTIVE
+with1200000ms cap. Earlier opening/diary phase passed85495ms. Later Seeds/Imp/
+scars/Orcs/level30 readiness remain open; this is not full campaign balance proof.
+Keep source frozen, no heavy local regression or second owned browser until
+terminal artifact preservation/sanitation and exact cleanup. Continue84056 and
+queuedpredeploy/actualsoak state; await the user's operational choice without
+abandoning remaining1.1–1.10/class/group/raid/phone/aura/CIcost/casino work.
+
+## Previous checkpoint — September 10, 04:05 UTC
 
 Previous goal turn made PROGRESS (ground QA/native/full promotion and actual
 fresh-route deadline diagnosis). This continuation made PROGRESS: implemented
