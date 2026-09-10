@@ -3,7 +3,7 @@
 Status: two recorded-build native runs failed on issued movement, not death/timeout.
 Ground projection correction passes focused/full client/lint. The second run
 isolated a separate held-Shift runtime defect, now fixed with focused regression
-coverage; full client and native verification of that fix remain required.
+coverage and full client regression; native verification of that fix remains required.
 No boss balance, regeneration, rewards or release changes.
 
 ## Fixture and scope
@@ -94,7 +94,10 @@ guards remain intact; no direct position writes or resource changes.
 47241 PASS48tests/4suites1.85s plus lint covers held modifiers, move-only actions,
 input handling and movement smoothness. Logs:
 `/tmp/eidolon-held-shift-{red,focused,lint}.log`.
-Full client regression and a new native recorded-build replay remain pending.
+4117 TERMINAL0 onclean80cf99ce (runtime df07c50f): full303suites/4217tests
+passed131.087s followed by lint underNode24.18.0. Logs:
+`/tmp/eidolon-held-shift-full-{client,lint}.log`.
+A new native recorded-build replay remains pending.
 
 Next repeat this bounded native diagnostic before an hourlong campaign or any
 boss-health adjustment. If movement fails again, use the new ray/status evidence;
