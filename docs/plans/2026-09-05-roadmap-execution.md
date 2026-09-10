@@ -27,7 +27,49 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 06:55 UTC
+## Current checkpoint — September 10, 07:08 UTC
+
+Previous turn classified PROGRESS: populated aura comparison/performance evidence
+was added and verified. This turn also made PROGRESS: new isolated native death/
+dungeon-transition checks passed. Aura branch clean **4806dd0** after19284f0's
+observer/route/tests and a unit-only syntax correction/proof commit. No runtime,
+version, release-pipeline or deployment change; full1.1–1.10 remains active.
+
+Native23771 TERMINAL PASS2/3.0m, retries0, frozen19284f0 throughout. Both disposable
+Wizard accounts earned60seconds of rest in town. Prepared encounter/one-health
+setup was followed by actual hostile damage, DEAD, dead login, real Respawn,
+and living login: aura absent at death with54.154seconds still banked, remains
+absent after dead login, returns once at respawn with full110HP/MP. Interaction
+hitbox opacity0 throughout. This is not an unprepared death-pacing claim.
+
+The second character used allowlisted level30 readiness and ordinary town-guide
+entry, credentialed login inside the same Verdant instance, and town Recall,
+twice. Every living state retains exactly one visible correctly positioned aura,
+two batches/16sparks/five High meshes and hitbox opacity0. No dungeon clear, raid,
+all-class/all-realm or phone acceptance is claimed. Source has no buff/time grant.
+Log `/tmp/eidolon-aura-transitions-native.log`; complete archive
+`/tmp/eidolon-aura-transitions-proof-g0YrH7`, actual-credential scanner0. Exact
+runIDaura-transitions-0910 containers/image and18560/18561/41960 absent. Viewed
+death/respawn, both dungeon entries and final town-return captures.
+
+Focused23379 failed on a new unit-test parenthesis typo; lint was not reached.
+The separately launched browser route stayed frozen until terminal. Corrected
+only the unit expression afterward; focused28tests/3suites1.636s, lint/bash syntax
+then passed. Full54110 TERMINAL PASS259suites3638tests129.459s plus lint, Node24.
+Failure and corrected/full logs retained under `/tmp/eidolon-aura-transitions-*`;
+no silent replacement. No owned browser/heavy test remains active.
+
+Next bounded aura task: integrate verified rendered/native checks into the later
+release's required pipeline while retaining accepted recovery ancestry. Do not
+publish61 or bypass canonical60's final acceptance. Physical-phone/full-scene,
+broader class/realm/group/campaign/dungeon/raid, balance, CIcost, casino and every
+remaining roadmap milestone still require their own work and evidence.
+Predeploy102741303703 remains QUEUED; scheduled soak34433520743 in progress,
+no cancellation approval. Canonical62dc2d1 unchanged. Fresh07:08 public release
+and backend health remain healthy/database-ready60/df91bb6, not62acceptance.
+Root ledger-only and NEVER pushed. Full goal is neither complete nor blocked.
+
+## Previous checkpoint — September 10, 06:55 UTC
 
 Previous turn classified PROGRESS: native/lifecycle aura checks passed and were
 committed. This continuation adds verified5/20actor mixed-class reference

@@ -8,7 +8,14 @@ predecessor df91bb66e8e8f3b7125aa99412f09ba25898a3ac is deployed but failed fina
 acceptance. Root is ledger-only and is never pushed. Do not push a61successor
 before60 is accepted; the current push repairs60's verification, not gameplay.
 
-## Current status — September10, 06:44UTC
+## Current status — September10, 07:08UTC
+
+07:08 update: public no-cache release.json/backend health still identify existing
+60/df91bb66e8e8f3b7125aa99412f09ba25898a3ac, statusok/database ready. HTML main.js
+key was not rechecked. Exact predeploy102741303703 was re-polled QUEUED and
+soak34433520743 in progress; no approval to cancel, no canonical62source change,
+no new deployment or final live acceptance. Separate aura transition23771 and
+full54110 tests finished successfully locally; they do not replace62's gate.
 
 06:43 update: exact predeploy102741303703 remains QUEUED and scheduled
 soak34433520743 is in progress; no cancellation approval or operational change.
