@@ -18,3 +18,9 @@ Focused76622 passed314tests/7suites3.114s and lint before final cleanup. Full
 regression and actual saved-stage replay follow. This merge is not a deployment:
 the primary must not publish inherited59metadata or bypass60's active pipeline.
 The current canonical60 publication is separate from this expanded content.
+
+Full66813 onf11d5bc passed284suites3991tests87.363s and lint. Logs
+`/tmp/eidolon-primary-staged-earth-full-{client,lint}.log`. This covers the staged
+refactor and resolved integration together. Actual serial browser evidence is
+still required. The final59 live acceptance record is now retained alongside the
+historical interface preparation document.

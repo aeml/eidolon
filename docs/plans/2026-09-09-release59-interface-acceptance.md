@@ -1,6 +1,8 @@
 # Alpha 1.0.59 — clearer quest and combat interface
 
-Status: local candidate, **not pushed or deployed**. Parent is accepted production
+Status: **accepted live** September10; final CI, native evidence and public checks
+are in [the59 live verification record](2026-09-10-release59-live-verification.md).
+The preparation history below is retained. Parent is accepted production
 ef9a638 (Alpha1.0.58). Recovery, save schema, rewards, quest catalog, drop rates,
 leveling and combat formulas remain unchanged. This is a staged interface release
 within the full roadmap, not completion of the campaign/balance/visual goal.
@@ -31,9 +33,9 @@ Required before release acceptance:
 - [x] Six actual interface browser cases, inspected desktop/phone screenshots and
   retained/sanitized report; focused tests are not rendering evidence.
 - [x] Review exact diff against58, including no server gameplay/economy changes.
-- [ ] Normal push from this canonical release branch only after local gates;
+- [x] Normal push from this canonical release branch only after local gates;
   verify all CI, full predeploy, deployment and final native live QA stages.
-- [ ] Fresh matching public manifest/login/runtime GET and healthy backend identity;
+- [x] Fresh matching public manifest/login/runtime GET and healthy backend identity;
   inspect live quest/combat interface without grants to ordinary player accounts.
 
 Do not borrow acceptance from the primary prototype or declare58's current

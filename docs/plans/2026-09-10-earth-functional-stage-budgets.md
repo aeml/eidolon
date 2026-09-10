@@ -39,6 +39,6 @@ rewards, progression or any fresh-character/class/group/dungeon completion gate.
 
 - [x] Focused prerequisite tests:5passed, including retained eligibility/failure
   behavior and stage wiring; lint and diff whitespace checks passed.
-- [ ] Full client regression after the refactor.
+- [x] Full client regression after the refactor and accepted59 integration.
 - [ ] Actual three-stage route, saved-state checks and retained terminal evidence.
 - [ ] Separate full fresh-character readiness and actual dungeon completion.
