@@ -5,12 +5,13 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 21:32 UTC
+## Current checkpoint — September 10, 21:35 UTC
 
 Previous goal turn was PROGRESS: guide approach correction and candidate server
 acceptance. This turn is PROGRESS: focused four-player guide59146 passed all
 twelve individual re-entries, its test controls were ported into the candidate,
-and combined full client84456 is active. Full roadmap,
+and combined full client84456 passed. Candidate-native guide88901 is active.
+Full roadmap,
 successful dungeon clear and release gates remain open.
 Full roadmap remains active and deployment/1.1 completion is not claimed.
 
@@ -148,7 +149,7 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   observations, not populated-storage or full-world visual/physical-phone proof.
   Additional phone captures show thumb controls outside the central actors and
   readable scrolling party choices; physical-phone acceptance remains open.
-  Primary24ef041d is idle after focused guide re-entry59146 passed. Candidate
+  Primaryfad742f1 is idle after focused guide re-entry59146 passed. Candidate
   native stat/storage/party/required-all, bundled-browser, version/remote/live
   acceptance remain pending. Do not infer production readiness from focused
   checks or restart a process solely on an observation timeout.
@@ -240,13 +241,22 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   in finally, normal/default/Control behavior retained. Lint/shell checks passed;
   log`/tmp/eidolon-next-guide-import-lint.log`. No game/server changes; server and
   src Git trees were checked identical to the e7fde8bc support source.
-- Full client/lint84456 is ACTIVE on frozen candidate46c008ce; logs
+- Full client/lint84456 TERMINAL0 on frozen candidate46c008ce:277 suites,
+ 3854tests136.407s and lint passed. Jest emitted its one-second asynchronous
+  cleanup warning, then exited naturally and the sequential lint succeeded;
+  no force-exit or process cancellation was used. Logs
  `/tmp/eidolon-next-support-full-client.log` and`...-full-lint.log`. This is the
-  only local heavy gate. Primary24ef041d and staginge7fde8bc are clean/idle.
-  Candidate-native guide/updated104browser/required-all/version/live and primary
-  full dungeon clear still remain. Do not edit candidate or start a browser gate
-  until this check ends.
-- Remote rechecked again at~21:10: canonical62dc CI34434837759 remains queued at
+  client check is complete. Primary documentationfad742f1 records the failed
+  full combat attempt and successful focused guide proof; test/runtime source
+  remains24ef041d. Primary and staginge7fde8bc are clean/idle.
+- Native candidate guide88901 is ACTIVE on frozen46c008ce, routeparty-guide-reentry,
+  runnext-guide-0910-2135, ports18580/18581/41980;
+  log`/tmp/eidolon-next-party-guide-native.log`. It verifies the candidate's
+  older movement helper plus imported moveOnly option, rather than assuming
+  primary's native pass transfers automatically. This is the sole heavy gate.
+  Updated104browser/required-all/version/live and primary full clear remain.
+  Do not edit candidate or start another heavy gate until it ends.
+- Remote rechecked again at~21:35: canonical62dc CI34434837759 remains queued at
   predeploy, after five hosted jobs passed; Nightly34433520743 still in progress.
   No soak interruption, push, new version or production acceptance.
 - Public frontend/backend checked again at~20:53: both Alpha1.0.60/df91bb66,
