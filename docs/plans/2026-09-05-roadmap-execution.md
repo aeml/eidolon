@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 21:44 UTC
+## Current checkpoint — September 10, 21:49 UTC
 
 Previous goal turn was PROGRESS: client acceptance and guide-test integration.
 This turn is PROGRESS: candidate79643 passed all twelve individual guide resumes,
@@ -278,6 +278,11 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   gear, legal role skills,18-unit Charge reserve, full clear/manual/relogin
   assertions and unchanged combat/regen/deadlines. Do not edit primary or start
   another heavy gate until this actual process ends.
+  Re-polled42295 live at21:48: all four setup/roster/same-instance checks passed;
+  replay seed1981447043613537575, generator2, no fallback, clean source. First
+  room cleared and all four completed town recovery plus individual guide resume
+  with exact seed/rooms/Gold/inventory/quests retained. Pre-rest HP/MP by
+  Fighter/Cleric/Wizard/Rogue:714/336,845/506,756/332,855/392. No boss result yet.
   Updated104browser/required-all/version/live and primary full clear remain.
   Do not edit candidate or start another heavy gate until it ends.
 - Remote rechecked again at~21:35: canonical62dc CI34434837759 remains queued at
