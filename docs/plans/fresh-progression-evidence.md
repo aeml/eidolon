@@ -1,5 +1,26 @@
 # Fresh-character progression evidence — 1.1 gate
 
+## Current acceptance boundary — September 10
+
+The September 7 passes below are historical evidence for their exact commits,
+older rewards and daily-contract routes. They do **not** establish balance or
+dungeon readiness for the unpublished coordinated progression candidate, its
+expanded story, or its reduced rewards. Preserve those results, but do not use
+them to approve the current candidate.
+
+Current work and exact run status are recorded in the
+[execution ledger](2026-09-05-roadmap-execution.md). The next fresh-character
+acceptance requires the complete authored Earth story through its seven manual
+chapter turn-ins, naturally reaching the unchanged level-30 gate and accepting
+the still-uncleared dungeon. No daily contracts or prepared levels may substitute
+for that evidence. Record actual time, deaths, town recovery, earned equipment,
+rewards and saved progress; repeat for all classes and relevant group play.
+
+The separate prepared level-100 serial Earth replay checks objective sequencing,
+natural fragment collection, manual consumption, earned-item handling and saved
+chapter state. Even a complete pass there would not prove fresh-player pacing,
+a dungeon clear, raid access, or the full campaign. Those gates remain separate.
+
 ## September 7 — earned Fighter comparison, stopped for a driver correction
 
 The class-specific driver checkpoint `0a92c71b75bf238ebecf21cff694e614f010f16a`
