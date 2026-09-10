@@ -61,12 +61,24 @@ test('normal full-bag upgrades target paired slots and preserve all items after 
     expect((await readEarnedGear(page)).inventory.filter(item => item?.id)).toHaveLength(25);
     await page.evaluate(() => {
         window.__gearDragEvents = [];
+        window.__gearRefreshes = 0;
+        const refreshed = new Set();
         for (const type of ['dragstart', 'dragenter', 'dragover', 'drop', 'dragend']) {
             document.addEventListener(type, event => {
                 const target = event.target.closest?.('.inv-slot, .equip-slot');
                 if (target) window.__gearDragEvents.push({ type, id: target.id, classes: target.className,
                     data: ['dragstart', 'drop'].includes(type) ? event.dataTransfer?.getData('text/plain') : null });
                 if (window.__gearDragEvents.length > 60) window.__gearDragEvents.shift();
+                if (type === 'dragstart') refreshed.clear();
+                const slots = { 'slot-mainhand': ['mainHand', 'MAIN HAND'], 'slot-ring2': ['ring2', 'RING 2'] };
+                if (type === 'dragover' && slots[target?.id] && !refreshed.has(target.id)) {
+                    refreshed.add(target.id);
+                    const [slot, label] = slots[target.id];
+                    // Exercise a real UI refresh DURING the gesture, as a health/
+                    // mana update does. No player state or network action is injected.
+                    window.game.uiManager.inventory.updateEquipSlot(target.id, window.game.player.equipment[slot], label, slot);
+                    window.__gearRefreshes++;
+                }
             }, true);
         }
     });
@@ -80,6 +92,7 @@ test('normal full-bag upgrades target paired slots and preserve all items after 
         throw error;
     }
     expect(receipts.map(({ slot }) => slot)).toEqual(['mainHand', 'ring2']);
+    expect(await page.evaluate(() => window.__gearRefreshes)).toBeGreaterThanOrEqual(2);
     const prepared = await readEarnedGear(page);
     expect(prepared.equipment.mainHand.id).toBe('upgrade-staff');
     expect(prepared.equipment.ring1.id).toBe('strong-ring');

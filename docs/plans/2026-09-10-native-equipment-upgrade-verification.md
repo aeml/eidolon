@@ -48,8 +48,41 @@ remain required before integration/promotion.
 
 ## Release-note draft — assign version only during actual release preparation
 
+## Stable equipment-slot refresh
+
+Native63002/2741d551 had two full passes and one failed swap. Icons were visible
+and missing-image requests resolved in completed cases (image inspected), but
+the remaining failed drag now included actual dragover events without a drop.
+Archive `/tmp/eidolon-upgrade-icons-partial-uawqJn`. Pointer steps alone therefore
+did not close the drag issue. No broad native success is claimed for that attempt.
+
+Source inspection found every changed character-sheet signature, including HP/
+mana changes, rebuilt equipment slots by cloning their DOM nodes. Baseline
+session38479 deterministically failed all three new equipment-refresh tests at
+node-identity checks. Log `/tmp/eidolon-equipment-refresh-baseline.log` retained.
+
+The runtime now retains equipment-slot nodes and caches unchanged item artwork.
+Changed items still rebuild art; owned tooltip/focus handlers are replaced in
+place rather than accumulated. Removing an item clears stale actions. Keyboard
+focus survives, and a focused changed item's tooltip updates explicitly.
+Same-ID Forge potency/stat changes invalidate the presentation cache.
+
+Final focused14943 PASS91tests/6suites18.306s and lint. Logs
+`/tmp/eidolon-equipment-refresh-final-unit.log` and
+`/tmp/eidolon-equipment-refresh-final-lint.log`. Native fixture now explicitly
+invokes the real equipment UI refresh during each dragover, without player-state
+or network injection. New optional `equipment-refresh` route runs all three
+independent swap fixtures and, only if successful, the existing actual Forge/
+dungeon-guide scenario on its separate account. Native and full regression
+verification of the combined correction remain pending.
+
+## Release-note draft — assign version only during actual release preparation
+
 “Unfamiliar or legacy bag items now show a recognizable equipment icon or a
 neutral fallback, instead of appearing blank or requesting a missing image.”
+
+“Equipment slots keep their drag targets and keyboard focus during character
+stat updates, while equipped-item and Forge changes still refresh their display.”
 
 Do not publish this under the old branch's Alpha1.0.59 identity. Integrate into
 the appropriate upcoming release, give it that release's patch notes/version,

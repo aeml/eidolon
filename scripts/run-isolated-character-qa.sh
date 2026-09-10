@@ -542,6 +542,12 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
       EIDOLON_E2E_UPGRADES_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_UPGRADES_MONGO_PORT="${mongo_port}" \
       npx playwright test tests/e2e/earned-equipment-upgrades.spec.js --retries=0 --repeat-each=3
     ;;
+  equipment-refresh)
+    EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-upgrades" EIDOLON_E2E_CLASS=Wizard \
+      EIDOLON_E2E_UPGRADES_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_UPGRADES_MONGO_PORT="${mongo_port}" \
+      npx playwright test tests/e2e/earned-equipment-upgrades.spec.js --retries=0 --repeat-each=3 &&
+      run_forge_guide
+    ;;
   forge-guide)
     run_forge_guide
     ;;
