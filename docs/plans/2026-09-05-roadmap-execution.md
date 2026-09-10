@@ -27,7 +27,35 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 08:07 UTC
+## Current checkpoint — September 10, 08:15 UTC
+
+Previous turn completed aura asset preparation/discovery and verified waiting.
+This turn makes PROGRESS: inspected actual active-run seed-dialogue and diary
+captures, then fixed the repeated quest-giver title/subtitle in the separate
+aura release integration. Clean head **e0c6ef8** atop a6aeba8/e3393aa at
+`/tmp/eidolon-aura-release-integration-gmeNDo`. Ilyra now has a “Story quests”
+role subtitle; daily giver has “Daily contracts.” Titles, range checks, prompts,
+marker colors and actions are unchanged. No post-change rendered capture yet.
+
+Focused59343 PASS92tests/3suites2.045s plus lint. Initial40047 failed the proposed
+ChronicleSite case because this release baseline lacks the expanded primary's
+discovery interactions; removed that unsupported addition, retaining the two
+supported quest NPC roles. Do not conflate the branches or mock away the missing
+capability. The lore-role improvement remains for future campaign integration.
+Both failed and corrected logs retained at `/tmp/eidolon-role-hint-unit{,-final}.log`;
+lint-final passed. Full regression and desktop/phone rendered-role inspection
+join the integrated aura gates before release/version/patch-note publication.
+
+SAME96530 was repeatedly polled live; frozen primary626385d remains unchanged.
+Latest Imp45/60, zero deaths,18rests,2earned training stops, level20/1315XP/7693Gold
+at1423seconds. No full-route result; known old Water assertion still applies.
+Separate4e4d46b corrects class input/Water handoff but is unmerged and awaits
+full/native gates. No second browser/full suite, push or deployment. CI recheck
+this turn still queued for62dc2d1 while scheduled soak remains in progress; last
+public identity08:04 remains60/df91bb6. Phone/soak-permission requests unanswered.
+All roadmap/casino requirements stay active; root ledger must never be pushed.
+
+## Previous checkpoint — September 10, 08:07 UTC
 
 08:10 continuation: prepared ignored browser runtime assets in the merged aura
 worktree and confirmed actual Playwright discovery of9cases/7files (no browser
