@@ -27,7 +27,89 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 09:41 UTC
+## Current checkpoint — September 10, 10:07 UTC
+
+Current turn makes PROGRESS: integrated equipment/native failure was investigated
+and corrected, not retried away. Baseline53132 on5a2c41d0 TERMINAL1:all3new
+center hit-tests failed because equipment artwork receives pointer hits. Archive
+`/tmp/eidolon-equipment-hit-baseline-proof-faBui9`; actualscan0/cleanup confirmed.
+CSS now leaves decorative equipment children pointer-transparent so the stable
+slot owns hit/drop/click input. Added stylesheet-backed icon/potency regression.
+Focused26258 PASS67tests/5suites17.382s+lint. Frozen aura candidate **c3305ae7**.
+
+Corrected native77847 TERMINAL0 on c3305ae7:3independent hit-target/full-bag/
+paired-slot/drag-during-refresh/login cases56.1s, then Forge1case22.3s. Actual
+credentialscan0 and ownedservices/listeners cleaned. Inspected all4retained
+images: equipment/icons readable and Forge+2→+3/46→50 preview live. No native FPS
+conclusion from screenshot counters. Archive
+`/tmp/eidolon-visual-equipment-hit-proof-sqU6uz`; log
+`/tmp/eidolon-visual-equipment-hit-fixed.log`. CSS/native/unit correction also
+ported narrowly into primary **25495d95**, after doc reconciliatione6d65cdc;
+primary full regression of this final port is still pending.
+
+Integrated Well Rested49294 on samec3305ae7 exited143 during party startup.
+Expiry36.8s and ordinary town/travel/combat/relogin35.7s passed (2total1.2m).
+Journey received hostile2damage, spent30mana on accepted/hitting Fireball, then
+town restored110/110HP/MP and retained bank/aura across login. Party/transition
+acceptance NOT established. No full wrapper credential scan/cleanup ran after
+the signal; cause unknown, not reported as test-assertion failure or OOM.
+Confirmed worker absent and orphan web group1403083 belonged to this WT. Removed
+only that group plus disposable visual-rest-0910 API/Mongo/image. Initial shell
+builtin kill rejected --; explicit /bin/kill succeeded and all owned ports
+18580/18581/41980 closed. No unrelated services or nightly job touched.
+
+Preserved partial results at `/tmp/eidolon-visual-rest-interrupted-proof-0sZFVx`.
+Known disposable username scan sanitized1archivefile; the killed wrapper's
+password environment was unavailable, so this is NOT a complete credentialed
+gate scan. Trace/video were disabled. Original log
+`/tmp/eidolon-visual-rest-native.log` remains interruption evidence.
+
+Active fresh isolated **93245** on SAMEfrozenc3305ae7 repeats well-rested-all,
+unchanged assertions/limits, runIDvisual-rest-second-0910, ports18580/18581/41980.
+Log `/tmp/eidolon-visual-rest-second-native.log`. Re-poll same handle; no edits or
+competing heavy/browser runs. Need terminal suffix acceptance, archive/scan/
+cleanup, final integrated full regression, then baseline60remote/live acceptance
+before successorversion/push. Most recentCI34434837759 stillqueued; nightlynot
+cancelled. Full1.1–1.10/campaign/class/group/raid/mobile/balance/casino remainsopen.
+
+## Previous checkpoint — September 10, 10:00 UTC
+
+The preceding user-request turn only confirmed existing casino scope (no new
+goal progress). Revalidated the actual handles and made PROGRESS: integrated
+visual/equipment candidate30b2dd42 has full10444 PASS266suites/3719tests135.261s
+plus lint, and render1612 TERMINAL0. Role cards5cases22.7s and aura renderer4cases
+1.2m passed. Inspected all6role crops and populated20 High/Low images. All18aura
+pixel comparisons (single/5/20 actors, High/Low,3phases) had zero RGB difference;
+GPU lifecycle observed/released all owned buffers. Controlled20-actor High draws
+1541 versus2101 reference, Low1501 versus1741; this is not native combat or
+physical-phone FPS acceptance. Renderer scan0; port41980 closed. Archive:
+`/tmp/eidolon-visual-integration-render-proof-Cgv0kl` with full/lint/render logs.
+
+Integrated equipment-refresh86642 on same30b2dd42 TERMINAL1:2nativecasespassed,
+one ring gesture timed out after reaching its slot with dragover events but no
+drop. Forge correctly did not run. No lost items observed. Actual wrapper scan0;
+ownedAPI/Mongo absent and18580/18581/41980 closed. Failure image inspected and
+all evidence retained at `/tmp/eidolon-visual-equipment-failure-gDAxRp`, log
+`/tmp/eidolon-visual-equipment-native.log`. Earlier primary passes do not close
+this integration failure. No blind same-source retry or reduced assertion.
+
+Current frozen aura WT `/tmp/eidolon-aura-release-integration-gmeNDo` is
+5a2c41d0, adding a native center hit-target assertion for equipment slots. Active
+baseline session53132 uses isolated `visual-hit-baseline-0910`, ports18580/18581/
+41980 and routeequipment-upgrades. Log
+`/tmp/eidolon-visual-equipment-hit-baseline.log`. Re-poll same handle. Artwork
+currently accepts pointer hits; check this hypothesis before changing CSS.
+Do not edit frozen source or launch competing browsers/heavy suites.
+
+Latest GitHub check this turn: canonical60run34434837759 remains queued at
+predeploy, nightly34433520743 remains in progress. No current-soak cancellation
+authority, successor version/push or deployment. Next: close equipment drag
+failure, rerun integrated full/native gates including Forge and Well Rested
+journey/expiry/party/death/dungeon transitions, then promotion only after60's
+remote/live acceptance. Primarybf8d36d6 and failed earned campaign96530 remain
+unchanged; full campaign/class/group/raid/mobile/balance/casino scope is open.
+
+## Previous checkpoint — September 10, 09:41 UTC
 
 Previous goal turn was PROGRESS (runtime icon/drop-target repairs and native
 checks). This turn makes PROGRESS by completing full/retained native gates and
