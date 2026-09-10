@@ -27,7 +27,48 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 11:46 UTC
+## Current checkpoint — September 10, 12:05 UTC
+
+Previous goal turn was NO PROGRESS toward implementation: it verified that the
+requested casino scope was already recorded, without starting casino work. This
+turn is PROGRESS: revalidated the completed boss-boundary regression and started
+the next isolated native input gate. The full roadmap remains active.
+
+Primary is clean/frozen **23bc0673b9d7ee4ca3842572408cd5c6a4fdec4d** in
+`/tmp/eidolon-primary-town-recovery-lAKY3k`. The full client log now reports
+299suites/4187tests PASS128.334s; the subsequent lint log contains no errors.
+Logs `/tmp/eidolon-boss-boundary-full-{client,lint}.log`. The original launch
+handle was lost in truncated tool output; no matching local test process remained
+at revalidation. Do not restart that full suite merely because its handle is lost.
+Earlier merged51dcc97d full regression also completed:297suites/4177tests,
+131.192s. Historical49403 below is terminal, NOT an active gate.
+
+The QA correction resolves each boss's fixed generated room and passes that
+boundary through the actual `(page,target)` callback to the ranged retreat
+planner. The failed44188 seed reconstructs its death point in earlier normalroom1,
+313.165357units from the Warden room center. This explains a missing constraint
+in the driver, not the sole cause of death or proof of a gameplay/balance fix.
+Focused85tests/7suites plus production-generator replay passed before the full
+regression. See primary's `docs/plans/2026-09-10-earned-boss-boundary.md`.
+
+**Active27282** is the sole local browser/heavy gate: isolated `verdant`, runID
+`bounded-verdant-0910`, API18580/Mongo18581/web41980, streamed log
+`/tmp/eidolon-bounded-verdant-native.log`. It has entered generated normal30
+Verdant on seed-5388765118892393174, generator2/attempt0/no fallback, and started
+the first Skeleton fight. Source is clean23bc0673. This is explicitly prepared
+level100 with normal UI talent/rune selection and the existing protected entrance
+waypoint, first TWO bosses only. It is NOT earned-level/full-clear/manual-reward/
+Water acceptance. Re-poll27282; preserve source and artifacts until terminal.
+Neither failed96530 nor44188 becomes a pass if this prepared check succeeds.
+
+12:02canonicalCI34434837759 remainsqueued: client/server/threebrowsergroups
+passed, predeployQA queued; nightly34433520743 confirmedinprogress. No new
+cancellation authority, runner changes, push or deployment. Canonical62dc2d1
+live acceptance remains ahead of successor publication. After27282, inspect
+room-coordinate evidence and archive results, then investigate ordinary dungeon
+town recovery/resume and earned resource/kit use before another long campaign.
+
+## Previous checkpoint — September 10, 11:46 UTC
 
 Previous goal turn was a VERIFIED WAIT (earned readiness passed/dungeon active).
 This turn is PROGRESS: retained the second failed dungeon attempt, completed full
