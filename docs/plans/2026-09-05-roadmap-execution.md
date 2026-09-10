@@ -16,7 +16,51 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 02:28 UTC
+## Current checkpoint — September 10, 02:35 UTC
+
+This continuation made PROGRESS: diagnosed both terminal runs, retained/inspected
+evidence, verified the respawn fixture correction with actual software rendering
+and full regression, and pushed the corrected60 verification candidate. No
+impasse; full goal remains active. Root is ledger-only/NEVER pushed.
+
+**Canonical60 caab6111f9d6eef1f375f7942a8163cb2d86da6c PUSHED**, normal78092
+3a139c0→caab611 from clean`/tmp/eidolon-safe-zone-release-preview-gCLEaT` after
+fast-forwarding verified diagnostic branch. New CI34430017443 ACTIVE confirmed
+with server102723358239/client102723358452 running. Freeze source until terminal.
+No src/server/version/package/workflow changes; existing60patch notes accurate.
+Public02:33 still healthy60/df91bb6. No accepted60or61successor yet.
+
+Diagnostic worktree now cleancaab611, codef827c80. Browser79068 PASS1/34.8s
+bundled Chromium/SwiftShader, CI=1/retries0, same120sdeadline,1280x720quality and
+all three respawn+stealth assertions. Image inspected no cube; archive
+`/tmp/eidolon-visual-yield-render-proof-ZM4ryD`,scan0,web41962closed. Full39933
+PASS255/3612/104.772s+lint. Logs`/tmp/eidolon-release60-visual-yield-browser-ready.log`
+and`/tmp/eidolon-release60-visual-yield-full-{client,lint}.log`. Initial67098
+failed before scene loading due absent ignored vendor assets; archive
+`/tmp/eidolon-visual-yield-startup-proof-AmIcGE`. `prepare` was a mistaken script
+name; actual`prepare:client` passed before79068. Do not claim first-attempt pass.
+
+**Primary44940 TERMINAL FAILED16.9m**, no local browser running now. Fresh story
+on79e9571/code d47f5c6 completed opening/diary/Watch40/Seeds8manual+reconnect but
+stalled at4/60Imp credit in unchanged120sencounter. Level11, HP304/380, MP0/260,
+rest0,58retreats,10acceptedFireballs,97hits/1440damage; originalImp204stillalive74HP
+at2.97units, actualhover/requestedSkeleton168 in crowded melee. Actual attacks
+registered; no evidence a qualifying Imp died without credit. Between-encounter
+rest waits for quest-credit progress. Investigate resource-starved retreat/target
+switching and earlylevel9→min20Imp difficulty, not presumed server credit loss.
+No reward/level/watchdog adjustment or daily/state-grant workaround made.
+
+Archive`/tmp/eidolon-fresh-imp-credit-proof-qYOiwO`,scan0; failed-collectionPNG
+inspected. Exact18560/18561/41960ports/ownedcontainersabsent afterwrappercleanup.
+Primary nowclean45a557c (failure evidence doc only after79e9571). Source no longer
+frozen by browser. Log`/tmp/eidolon-fresh-diary-ack-replay.log`; full hunt/scars/
+Orcs/unchangedlevel30dungeon gate remains unproven. Next useful local work is a
+bounded diagnosis of this real encounter/resource behavior, preserving complete
+fresh campaign acceptance. Fullgroup/class/dungeon/raid/story/physicalphone/aura/
+CIcost/casino and all remaining1.1–1.10scope remain open. Continue exact new CI
+handle and do not skip predeploy/final native/public verification.
+
+## Previous checkpoint — September 10, 02:28 UTC
 
 Previous user-facing roadmap confirmation was NO PROGRESS toward implementation:
 it verified already-recorded casino scope without new edits. This continuation

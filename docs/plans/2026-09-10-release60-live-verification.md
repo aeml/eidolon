@@ -1,6 +1,6 @@
-# Alpha1.0.60 — corrected pipeline failed before deployment
+# Alpha1.0.60 — second corrected verification pipeline active
 
-Canonical corrected commit `3a139c0179221f06e7f027218e15fea63c561842`, branch
+Canonical corrected commit `caab6111f9d6eef1f375f7942a8163cb2d86da6c`, branch
 `release/60-sanctuary-combat-feedback`, worktree
 `/tmp/eidolon-safe-zone-release-preview-gCLEaT`. Normal non-force push from this
 worktree succeeded after the verified camera-framing correction below. Its
@@ -8,7 +8,30 @@ predecessor df91bb66e8e8f3b7125aa99412f09ba25898a3ac is deployed but failed fina
 acceptance. Root is ledger-only and is never pushed. Do not push a61successor
 before60 is accepted; the current push repairs60's verification, not gameplay.
 
-## Latest CI result — September10, 02:28UTC
+## Current verification — September10, 02:35UTC
+
+Normal push78092 SUCCEEDED3a139c0→caab611 from the clean canonical worktree.
+New CI34430017443 ACTIVE on exactcaab611; server102723358239 and client102723358452
+are running. No runtime/version/patch-note change: only the respawn fixture,
+its helper/tests and evidence document changed since3a139c0. Preserve this
+candidate unchanged while its full pipeline runs.
+
+Fixture codef827c80 passed bundled Chromium/SwiftShader79068, retries0,34.8s,
+with the same120s deadline and all three respawn/stealth checks. Final image
+inspected, same1280x720 quality and no enclosing cube. Archive
+`/tmp/eidolon-visual-yield-render-proof-ZM4ryD`, scan0, exact41962web cleanup.
+Full39933 passed255suites/3612tests104.772s+lint. Logs
+`/tmp/eidolon-release60-visual-yield-browser-ready.log` and
+`/tmp/eidolon-release60-visual-yield-full-{client,lint}.log`.
+Finalcaab611 adds proof documentation only. Initial local startup failed before
+rendering because ignored vendor files were absent; retained its evidence and
+ran the actual `prepare:client` script before the successful browser replay.
+
+Fresh public checks02:33 still identify healthy/database-ready60/df91bb6. The
+latest commit is pushed, not yet deployed or finally accepted. All gates below
+remain required; failed3a139c0 and originaldf histories are preserved.
+
+## Previous CI result — September10, 02:28UTC
 
 CI34427816379 is terminal FAILED on3a139c0. Client/server and browser groups1/2
 passed; group3 failed its respawn visual fixture twice at120 seconds, with24
@@ -139,7 +162,7 @@ verified promotion are recorded above. The old failed workflow remains retained.
 - [ ] Both new deployments pass; inspect server schema preflight and rollback evidence.
 - [ ] Final live native/character verification passes; preserve and inspect evidence.
 - [ ] Fresh public manifest, login/patch notes, release-keyed runtime GET and healthy
-  backend all identify the exact60/3a139c0 release after the final live job.
+  backend all identify the exact60/caab611 release after the final live job.
 
 This does not complete the broader1.1–1.10 goal, campaign/class/group balance,
 physical-phone playability, full dungeon/raid story or two-floor casino scope.
