@@ -124,6 +124,31 @@ function createEngineHarness() {
 }
 
 describe('GameEngine ctrl-click hold regression', () => {
+    test.each([2, 30])('held Shift keeps ground movement when a hostile is %sm away', distance => {
+        const engine = createEngineHarness();
+        engine.inputManager.keys = { shift: true, control: false, meta: false };
+        engine.getBasicAttackRangeForEntity = () => 20;
+        engine.hoveredEntity = Object.assign(Object.create(Actor.prototype), {
+            id: 'enemy', type: 'Skeleton', state: 'MOVING', isActive: true,
+            position: new THREE.Vector3(distance, 0, 0)
+        });
+        engine.player.targetPosition = new THREE.Vector3(9, 0, 4);
+        engine.player.state = 'MOVING';
+        engine.player.move.mockImplementation(target => {
+            engine.player.targetPosition = target.clone();
+            engine.player.state = 'MOVING';
+        });
+        engine.abilityController.pendingAbilityTarget = engine.hoveredEntity;
+        engine.abilityController.pendingAbilitySkill = 'Fireball';
+        engine.showReadabilityFeedback = jest.fn();
+        engine.update(1 / 60);
+        expect(engine.player.targetPosition).toEqual(new THREE.Vector3(12, 0, 8));
+        expect(engine.player.move).toHaveBeenCalledWith(new THREE.Vector3(12, 0, 8));
+        expect(engine.abilityController.performAttack).not.toHaveBeenCalled();
+        expect(engine.abilityController.pendingAbilityTarget).toBeNull();
+        expect(engine.abilityController.pendingAbilitySkill).toBeNull();
+        expect(engine.pendingInteraction).toBeNull();
+    });
     test('manual phone movement cancels pursuit before queued actions and actor movement, preserving selection and new casts', () => {
         const engine = createEngineHarness();
         engine.isMobile = true;

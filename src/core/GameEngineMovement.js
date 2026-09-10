@@ -71,15 +71,7 @@ class GameEngineMovementMethods {
         // when a silhouette, discovery or loot crosses the cursor. Keep normal
         // walking/collision/server authority; this is not a jump or teleport.
         if (event?.shiftKey || this.inputManager?.keys?.shift) {
-            const point = event && this.inputManager?.getGroundIntersectionFromEvent
-                ? this.inputManager.getGroundIntersectionFromEvent(event)
-                : this.inputManager.getGroundIntersection();
-            if (!point) return false;
-            this.pendingInteraction = null;
-            this.abilityController.pendingAbilityTarget = null;
-            this.abilityController.pendingAbilitySkill = null;
-            this.player.move(point);
-            return true;
+            return this.movePlayerToPointerGround(event);
         }
 
         if (this.hoveredEntity && this.hoveredEntity !== this.player) {
@@ -112,6 +104,21 @@ class GameEngineMovementMethods {
             this.player.move(point);
         }
 
+        return true;
+    }
+
+    // Both the initial Shift-click and every held frame own the same move-only
+    // intent. A crossing hostile must not cancel the destination between the
+    // mouse-down event and mouse release.
+    movePlayerToPointerGround(event = null) {
+        const point = event && this.inputManager?.getGroundIntersectionFromEvent
+            ? this.inputManager.getGroundIntersectionFromEvent(event)
+            : this.inputManager.getGroundIntersection();
+        if (!point) return false;
+        this.pendingInteraction = null;
+        this.abilityController.pendingAbilityTarget = null;
+        this.abilityController.pendingAbilitySkill = null;
+        this.player.move(point);
         return true;
     }
 

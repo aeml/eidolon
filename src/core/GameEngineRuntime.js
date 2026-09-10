@@ -464,6 +464,8 @@ class GameEngineRuntimeMethods {
                             }, 500);
                         }
                     }
+                } else if (this.inputManager.keys.shift) {
+                    this.movePlayerToPointerGround();
                 } else if (this.hoveredEntity && this.hoveredEntity instanceof Actor && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD') {
                     const dist = this.player.position.distanceTo(this.hoveredEntity.position);
                     const range = this.getBasicAttackRangeForEntity(this.hoveredEntity);
