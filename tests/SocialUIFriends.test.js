@@ -104,6 +104,21 @@ describe('desktop party support selection', () => {
         expect(ui.partyList.querySelector('[data-party-support-target="ally"]').disabled).toBe(true);
         expect(ui.selectedSupportTargetId).toBe('ally');
     });
+    test('compact leader actions remain separate from the healing button', () => {
+        const { ui, ctx } = createSocialUI();
+        ctx.getLastPlayer.mockReturnValue({ id: 'self' });
+        ui.onPartyKick = jest.fn();
+        ui.onPartyPromote = jest.fn();
+        ui.updateParty(data());
+        const target = ui.partyList.querySelector('[data-party-support-target="ally"]');
+        expect(target.querySelector('.party-member-role')).not.toBeNull();
+        expect(target.querySelector('button')).toBeNull();
+        ui.partyList.querySelector('[aria-label="Kick Tank from party"]').click();
+        ui.partyList.querySelector('[aria-label="Promote Tank to party leader"]').click();
+        expect(ui.onPartyKick).toHaveBeenCalledWith('ally');
+        expect(ui.onPartyPromote).toHaveBeenCalledWith('ally');
+        expect(ui.selectedSupportTargetId).toBeNull();
+    });
 });
 
 describe('SocialUI.updateFriendList', () => {

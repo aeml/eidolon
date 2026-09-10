@@ -1004,7 +1004,9 @@ describe('menu polish regressions', () => {
         const members = document.querySelectorAll('.party-member');
         expect(members).toHaveLength(2);
 		expect(members[0].querySelector('.party-member-role').textContent).toBe('damage • Leader • Ready');
-        expect(members[0].querySelector('.party-member-bonus').textContent).toContain('+20%');
+        expect(document.getElementById('party-panel-guidance').textContent).toContain('Up to +20% eligible-party Gold pool, not personal XP.');
+        expect(members[0].querySelector('.party-support-target .party-member-role')).not.toBeNull();
+        expect(document.querySelector('.party-member-bonus')).toBeNull();
 		expect(members[1].querySelector('.party-member-role').textContent).toBe('support');
     });
 
