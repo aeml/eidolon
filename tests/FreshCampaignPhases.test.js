@@ -1,6 +1,7 @@
 import { jest } from '@jest/globals';
 import { readFileSync } from 'node:fs';
-import { createFreshStoryPhaseRunner, freshStoryPhases, freshStoryTimeout } from './freshCampaignPhases.js';
+import { createFreshStoryPhaseRunner, freshStoryPhases, freshStoryTimeout,
+    freshStoryDungeonPhases, freshStoryDungeonTimeout } from './freshCampaignPhases.js';
 
 test('the complete story has a fixed sum of explicit phase caps, not a renewable session timeout', () => {
     expect(freshStoryPhases.map(({ id, timeout }) => [id, timeout / 60_000])).toEqual([
@@ -79,7 +80,7 @@ test('native wiring keeps explicit story-only opt-in and all combat/save/readine
     const hunt = readFileSync('tests/e2e/fresh-story-hunt-route.js', 'utf8');
     expect(opening).toContain('const runPhase = storyOnlyReadiness ? createFreshStoryPhaseRunner(');
     expect(opening).toContain('test.step(name, body, options)');
-    expect(opening).toContain('test.setTimeout(storyOnlyReadiness ? freshStoryTimeout :');
+    expect(opening).toContain('test.setTimeout(storyOnlyReadiness ? storyTimeout :');
     expect(opening.match(/test\.setTimeout\(/g)).toHaveLength(1);
     expect(opening).toContain("await runPhase('opening', async () => {");
     expect(opening).toContain("await runPhase('watch', () => earnFreshStoryHunt");
@@ -91,4 +92,33 @@ test('native wiring keeps explicit story-only opt-in and all combat/save/readine
     expect(collection).toContain('expect((await equipmentSnapshot(page)).gear,');
     expect(collection).toContain(".toContainText('unlocks at level 30')");
     expect(hunt).toContain('Expedition exceeded two ordinary respawns');
+});
+
+test('story-only dungeon adds bounded clear and manual-turn-in phases without changing readiness caps', async () => {
+    expect(freshStoryDungeonTimeout).toBe(230 * 60_000);
+    expect(freshStoryDungeonPhases.slice(0, 8)).toEqual(freshStoryPhases);
+    expect(freshStoryDungeonPhases.slice(8)).toEqual([
+        { id: 'dungeon', timeout: 40 * 60_000 }, { id: 'dungeon-turn-in', timeout: 5 * 60_000 }
+    ]);
+    expect(Object.isFrozen(freshStoryDungeonPhases)).toBe(true);
+    expect(freshStoryDungeonPhases.every(Object.isFrozen)).toBe(true);
+    const step = jest.fn((_name, body) => body());
+    const run = createFreshStoryPhaseRunner({ step, record: jest.fn(), includeDungeon: true });
+    for (const phase of freshStoryPhases) await run(phase.id, async () => {});
+    expect(() => run.assertComplete()).toThrow('incomplete');
+    await expect(run('dungeon-turn-in', jest.fn())).rejects.toThrow('expected dungeon');
+    await run('dungeon', async () => {});
+    expect(() => run.assertComplete()).toThrow('incomplete');
+    await run('dungeon-turn-in', async () => {});
+    expect(() => run.assertComplete()).not.toThrow();
+    expect(step.mock.calls.slice(-2).map(call => call[2].timeout)).toEqual([2400000, 300000]);
+});
+
+test('failed dungeon clearance cannot skip to manual reward or report all phases complete', async () => {
+    const run = createFreshStoryPhaseRunner({ step: (_name, body) => body(), record: jest.fn(), includeDungeon: true });
+    for (const phase of freshStoryPhases) await run(phase.id, async () => {});
+    const failure = new Error('boss remains alive');
+    await expect(run('dungeon', async () => { throw failure; })).rejects.toBe(failure);
+    await expect(run('dungeon-turn-in', jest.fn())).rejects.toThrow('phase order');
+    expect(() => run.assertComplete()).toThrow('incomplete');
 });

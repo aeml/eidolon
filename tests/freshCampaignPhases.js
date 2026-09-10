@@ -7,14 +7,22 @@ export const freshStoryPhases = Object.freeze([
 ].map(([id, minutes]) => Object.freeze({ id, timeout: minutes * 60_000 })));
 
 export const freshStoryTimeout = freshStoryPhases.reduce((total, phase) => total + phase.timeout, 0);
+// Preserve the existing eight-phase readiness gate. The explicit dungeon route
+// adds the existing full-run 40-minute ceiling and five minutes for manual
+// turn-in/access/save verification; these are observation caps, not pacing goals.
+export const freshStoryDungeonPhases = Object.freeze([...freshStoryPhases,
+    Object.freeze({ id: 'dungeon', timeout: 40 * 60_000 }),
+    Object.freeze({ id: 'dungeon-turn-in', timeout: 5 * 60_000 })]);
+export const freshStoryDungeonTimeout = freshStoryDungeonPhases.reduce((total, phase) => total + phase.timeout, 0);
 
 // One runner per attempt, with the same earned character throughout. A failed
 // phase cannot be retried/skipped locally or reported as completed. The caller's
 // test.step enforces each timeout; the enclosing test enforces the fixed sum.
-export function createFreshStoryPhaseRunner({ step, record, now = Date.now }) {
+export function createFreshStoryPhaseRunner({ step, record, now = Date.now, includeDungeon = false }) {
+    const phases = includeDungeon ? freshStoryDungeonPhases : freshStoryPhases;
     let index = 0, running = false, failed = false;
     const run = async (id, body) => {
-        const phase = freshStoryPhases[index];
+        const phase = phases[index];
         if (failed || running || phase?.id !== id) throw new Error(`Fresh story phase order: expected ${phase?.id || 'finished'}, received ${id}`);
         running = true;
         const started = now();
@@ -33,7 +41,7 @@ export function createFreshStoryPhaseRunner({ step, record, now = Date.now }) {
         }
     };
     run.assertComplete = () => {
-        if (failed || running || index !== freshStoryPhases.length) throw new Error('Fresh story phase evidence is incomplete');
+        if (failed || running || index !== phases.length) throw new Error('Fresh story phase evidence is incomplete');
     };
     return run;
 }

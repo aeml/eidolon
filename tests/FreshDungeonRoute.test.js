@@ -81,3 +81,10 @@ test('a failed traversal cannot proceed to reward and raid-access assertions', a
     await expect(clearEarnedVerdant(page, {})).rejects.toBe(failure);
     expect(verifyTurnIn).not.toHaveBeenCalled();
 });
+
+test('story-only driver enforces separate clear and manual reward/save phases', async () => {
+    const runPhase = jest.fn((_id, body) => body());
+    await clearEarnedVerdant(page, {}, { runPhase });
+    expect(runPhase.mock.calls.map(call => call[0])).toEqual(['dungeon', 'dungeon-turn-in']);
+    expect(playDungeon.mock.invocationCallOrder[0]).toBeLessThan(verifyTurnIn.mock.invocationCallOrder[0]);
+});

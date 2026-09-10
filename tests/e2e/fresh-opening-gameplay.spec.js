@@ -16,8 +16,8 @@ import { clearEarnedVerdant } from './fresh-dungeon-route.js';
 import { earnFreshStoryHunt } from './fresh-story-hunt-route.js';
 import { readStoryHuntFailureEvidence } from './story-hunt-combat-observer.js';
 import { earnedTownRecoveryEnabled } from '../earnedRecoveryPolicy.js';
-import { storyOnlyReadinessEnabled } from '../storyReadinessPolicy.js';
-import { createFreshStoryPhaseRunner, freshStoryTimeout } from '../freshCampaignPhases.js';
+import { storyOnlyReadinessEnabled, storyOnlyDungeonEnabled } from '../storyReadinessPolicy.js';
+import { createFreshStoryPhaseRunner, freshStoryTimeout, freshStoryDungeonTimeout } from '../freshCampaignPhases.js';
 import { verifyStoryOnlyEarthReadiness } from './story-readiness.js';
 import { recoverEarnedDeath } from './earned-death-recovery.js';
 import { earnedCheckpoint, uninterruptedEarnedMode } from './earned-checkpoint.js';
@@ -96,11 +96,14 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     uninterruptedEarnedMode(); // Fail unsupported combinations before creating a character.
     earnedTownRecoveryEnabled();
     const storyOnlyReadiness = storyOnlyReadinessEnabled();
+    const storyOnlyDungeon = storyOnlyDungeonEnabled();
+    const storyTimeout = storyOnlyDungeon ? freshStoryDungeonTimeout : freshStoryTimeout;
     const runPhase = storyOnlyReadiness ? createFreshStoryPhaseRunner({
+        includeDungeon: storyOnlyDungeon,
         step: (name, body, options) => test.step(name, body, options),
         record: receipt => console.log('[fresh-story-phase]', JSON.stringify(receipt))
     }) : (_id, body) => body();
-    test.setTimeout(storyOnlyReadiness ? freshStoryTimeout :
+    test.setTimeout(storyOnlyReadiness ? storyTimeout :
         process.env.EIDOLON_E2E_FRESH_STORY_HUNT === '1' ? 1_800_000 :
         process.env.EIDOLON_E2E_FRESH_HUNT === '1' ? 3_600_000 :
         // The expanded Earth route now includes150 required expedition kills,
@@ -273,6 +276,13 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
     }
     if (storyOnlyReadiness) {
         await runPhase('readiness', () => verifyStoryOnlyEarthReadiness(page));
+        if (storyOnlyDungeon) {
+            await clearEarnedVerdant(page, credentials, { runPhase });
+            const usedDailies = await page.evaluate(() => window.game.player.quests.filter(quest =>
+                quest.id?.startsWith('daily_') && (quest.accepted || quest.completed)).map(quest => quest.id));
+            expect(usedDailies, 'Dungeon completion must not introduce daily-quest leveling').toEqual([]);
+            await page.screenshot({ path: testInfo.outputPath('earned-earth-dungeon-complete.png') });
+        }
         runPhase.assertComplete();
     }
     if (process.env.EIDOLON_E2E_FRESH_HUNT === '1') {

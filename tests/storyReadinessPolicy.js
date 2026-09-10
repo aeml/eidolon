@@ -8,6 +8,17 @@ export const earthReadinessChapters = Object.freeze([
 ]);
 export const earthReadinessDungeon = 'chronicle_03_roots_remember';
 
+export function storyOnlyDungeonEnabled(env = process.env) {
+    const flag = env.EIDOLON_E2E_FRESH_STORY_DUNGEON;
+    if (flag !== undefined && flag !== '0' && flag !== '1') throw new Error('EIDOLON_E2E_FRESH_STORY_DUNGEON must be 0 or 1');
+    if (flag !== '1') return false;
+    if (!storyOnlyReadinessEnabled(env)) throw new Error('Story-only dungeon requires strict story-only readiness first');
+    if (!['Wizard', 'Fighter'].includes(env.EIDOLON_E2E_CLASS || 'Wizard')) {
+        throw new Error('Earned dungeon driver currently supports Wizard or Fighter; other classes require their own verification');
+    }
+    return true;
+}
+
 export function storyOnlyReadinessEnabled(env = process.env) {
     const flag = env.EIDOLON_E2E_FRESH_STORY_READY;
     if (flag !== undefined && flag !== '0' && flag !== '1') {

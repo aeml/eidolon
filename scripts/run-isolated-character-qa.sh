@@ -326,6 +326,10 @@ run_fresh_story_ready() {
   EIDOLON_E2E_FRESH_STORY_READY=1 run_fresh_collection
 }
 
+run_fresh_story_dungeon() {
+  EIDOLON_E2E_FRESH_STORY_DUNGEON=1 run_fresh_story_ready
+}
+
 run_entrance_visibility() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-sight" EIDOLON_E2E_CLASS=Wizard \
     EIDOLON_E2E_SCENERY_VISIBILITY=1 npx playwright test tests/e2e/shield-training-gameplay.spec.js
@@ -633,6 +637,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   fresh-story-ready)
     run_fresh_story_ready
+    ;;
+  fresh-story-dungeon)
+    run_fresh_story_dungeon
     ;;
   fresh-collection-no-rest)
     EIDOLON_E2E_REST_RECOVERY=0 run_fresh_collection
