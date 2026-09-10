@@ -23,3 +23,10 @@ No browser was restarted or modified for this isolated server change.
 The native party test87906 on the unchanged parent ended with a Warden wipe,
 but confirmed10,842 effective ally healing through roster selections. That is
 evidence for the desktop input fix, not this server patch or a full clear.
+
+Full server15215 ended with four assertions failing in391.199s, no race warning:
+the all-selectable ability and dungeon-coordinate contracts supplied an enemy
+ID even to the two friendly-target heals. Those fixtures now supply a wounded
+friendly player at the same coordinates; acceptance and coordinate assertions
+are retained. Focused7527 passed both complete contracts and explicit-target
+cases under the race detector21.611s. A fresh full regression is still required.

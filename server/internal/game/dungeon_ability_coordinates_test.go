@@ -28,6 +28,12 @@ func TestSelectableAbilitiesPreserveDungeonCoordinateContext(t *testing.T) {
 				w.AddEntity(player)
 				target := &Entity{ID: "dungeon-target", InstanceID: player.InstanceID, Type: TypeEnemy, SubType: "Skeleton",
 					X: origin + 1, Z: origin + 1, Health: 100000, MaxHealth: 100000, State: "IDLE", Scale: 1}
+				// Keep the offset-coordinate coverage while using a legal ally
+				// for explicit healing, rather than the old enemy/self fallback.
+				if class == "Cleric" && (skill == "Healing Light" || skill == "Divine Intervention") {
+					target.Type, target.SubType = TypePlayer, "Fighter"
+					target.Health = 50
+				}
 				w.AddEntity(target)
 				result := w.PerformAbility(player.ID, target.X, target.Z, target.ID, skill)
 				if !result.Accepted {

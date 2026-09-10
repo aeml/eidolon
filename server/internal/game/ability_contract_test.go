@@ -47,6 +47,12 @@ func TestSelectableAbilitiesHaveConfigAndAuthoritativeHandler(t *testing.T) {
 					ID: "enemy", InstanceID: player.InstanceID, Type: TypeEnemy, SubType: "Skeleton",
 					X: 1, Z: 1, Health: 100000, MaxHealth: 100000, State: "IDLE", Scale: 1,
 				}
+				// Explicit support targets must be friendly; this contract must
+				// not rely on an invalid enemy target silently healing the caster.
+				if className == "Cleric" && (skillName == "Healing Light" || skillName == "Divine Intervention") {
+					target.Type, target.SubType = TypePlayer, "Fighter"
+					target.Health = 50
+				}
 				w.AddEntity(target)
 
 				result := w.PerformAbility(player.ID, target.X, target.Z, target.ID, skillName)
