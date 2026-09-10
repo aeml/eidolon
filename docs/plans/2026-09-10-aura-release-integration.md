@@ -1,8 +1,8 @@
 # Unpublished aura integration with the corrected release baseline
 
-Status: full/render/equipment and standalone aura transitions pass locally.
-An uninterrupted combined recovery suffix is still required after two terminated
-attempts. This is not a deployment,
+Status: full/render/equipment and the uninterrupted combined recovery suffix
+pass locally. Remote release/promotion and live verification remain open.
+This is not a deployment,
 accepted release60, or a published successor version. Keep release60's canonical
 worktree and active CI unchanged.
 
@@ -216,3 +216,28 @@ to terminal success with its actual credential scan/cleanup. Keep the corrected
 runtime frozen while running. Then reconcile release60's remote/live acceptance
 before assigning/pushing the successor with accurate patch notes. All broader
 campaign, class/group/raid, balance, phone and casino requirements remain open.
+
+## Uninterrupted combined recovery accepted locally
+
+Session26206 on cleanc78f29e6 TERMINAL0. This source differs from full-tested
+c3305ae7 only in this plan; all runtime/tests are identical. The complete
+unchanged suffix passed: ordinary journey/expiry2cases1.3m, real-party1case48.8s,
+hostiledeath/repeateddungeontransitions2cases2.9m. Its actual final credential
+scan passed with0sanitized files and ownedAPI/Mongo/webports18580/18581/41980
+were all absent after cleanup. No renewal of rest, phase limits or test retries.
+
+Retained all3scoped image trees, final HTML and complete log at
+`/tmp/eidolon-visual-recovery-complete-proof-JgdGF2`; source log
+`/tmp/eidolon-visual-rest-stream-native.log`. Inspected this run's portraitHigh/
+landscapeLow status panels, respawn and second dungeon-return images: readable
+buff text, visible owned aura, no lingering interaction cube. Party profiles
+retain their actual RADV hardware identity and median16.7ms with p95around33ms;
+neither these samples nor earlier faster samples prove physical-phone performance.
+No full earned dungeon-clear claim follows from prepared level30 transitions.
+
+The two terminated attempts and their limited scans remain historical failures
+to complete execution, not retroactively successful runs. Streaming execution
+now completed both standalone and combined routes; the earlier signal's cause
+is still unknown. This closes the combined local gate, not release60remote/live
+acceptance or the successor's versioned pipeline and production acceptance.
+Assign version/patch notes and promote only after those prerequisite gates allow it.
