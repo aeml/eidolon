@@ -48,10 +48,16 @@ The delayed-delivery test exercises both timed-impact and ability-dispatch
 lock paths, pausing at an existing room-reward event before final kill payout.
 Prepared reward tests do not constitute a browser dungeon clear or earned story.
 
-Pending: full server regression, integration into primary/current release as
-appropriate, native reward-sharing checks, versioned patch notes and deployment.
-The first full four-player clear remains separately unproven; its healer input
-controller still needs work around large-boss approach/targeting.
+Integration and full server regression subsequently passed; see the
+[successor integration evidence](2026-09-10-next-release-integration.md).
+Fresh focused race verification on64cf858e passed2.665s on September10 at22:08
+UTC, covering eligibility, actual overworld rewards, all-class ability kills,
+kill-time snapshots and four-role individual turn-in contracts. Log:
+`/tmp/eidolon-party-credit-final-verification.log`.
+
+Pending: successful full native dungeon/reward-sharing acceptance, final release
+gates, versioned patch notes and deployment. The first full four-player clear
+remains separately unproven. This feature is local, not live.
 
 First full server49313 completed with one outdated expectation: the overworld
 Chronicle party test excluded a downed nearby member. Root server28.792s and
