@@ -27,7 +27,56 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 13:59 UTC
+## Current checkpoint — September 10, 14:14 UTC
+
+Previous turn was PROGRESS (native Forge pass, release-gate wiring and full
+regressions). This turn is PROGRESS: the real dungeon replay failed again,
+isolating missing production Shift-key tracking that the earlier mocked key
+state missed. Fixed it on primary and integrated the complete initial/held
+move-only gesture into the successor candidate. Full roadmap remains active.
+
+95608 TERMINAL1 on d918dfc6: one recorded-build case5.8minutes, zero retries,
+seed7932272933816589379/generator2/attempt0/no fallback. Normal room1 clear,
+Recall/rest (mana14/670→111/737→737/737) and same-run re-entry passed. Warden
+entry1254HP/737MP, restbank2.309406338; last observed boss8344HP/player1140HP.
+Failure was again an issued retreat with correct floor ray and0displacement,
+no stun/root/freeze, no blocked stops and no server adjustments. Neither death
+nor timeout nor a balance acceptance/failure. Archive
+`/tmp/eidolon-held-shift-build-failure-TfsZo0`; wrapper sanitized2files, additional
+archived-native username sanitation1file. Exact owned services/ports absent.
+
+InputManager keys did not declare Shift, so onKeyDown's own-property guard
+discarded it. Initial mouse-event shiftKey was true, but held-frame keys.shift
+was absent. Actual InputManager/engine-update regression48997 RED4failed/20passed,
+1.527s. Earlier mocked-held tests were insufficient; keep that evidence limit.
+Primary87dcda4d declares the key and adopts the left-click modifier snapshot
+when keydown happened while chat had focus. Keyup/blur and both Shift keys are
+covered. 63700 PASS51tests/4suites2.011s+lint/diff. Full29492 TERMINAL0 onclean
+87dcda4d:303suites/4220tests151.132s+lintNode24.18.0; logs
+`/tmp/eidolon-real-shift-full-{client,lint}.log`. Proofdoc committed f2c643f2.
+27194 is now the sole active local heavy/browser gate on frozen cleanf2c643f2:
+recorded-build-dungeon, runIDtracked-shift-build-0910, ports18580/18581/41980,
+log `/tmp/eidolon-tracked-shift-build-native.log`. No combat/resource/timer
+change. Poll this handle; do not restart from observation timeout or edit its
+source while active. Full/native verification of the release candidate can run
+after this terminal result, not concurrently with this browser gate.
+
+Separate idle socketWT:40402 RED9failed/12passed/1.659s confirms missing initial/
+held behavior on its baseline. First63433 PASS48/4/1.779s+lint still used mocked
+key state; final integrationb97a7ea1 includes actual input tracking and stronger
+tests. 82243 PASS51/4/2.126s+lint/diff. Clean documentation tipd58852c6 atopb97;
+full/native acceptance of this added movement change remains pending. Draft
+player-facing notes now include Shift move-only; no campaign/reward/balance
+changes imported. Prior03bb02a7 full269/3760 and native Forge95175 remain valid
+for their historical scope, not full acceptance of the expanded candidate.
+
+14:00 remote check: canonicalCI34434837759queued/nightly34433520743inprogress.
+No new cancellation authority or release push. Canonical60 acceptance still
+precedes successor promotion. Root stays ledger-only, never pushed; all campaign,
+manual rewards/save/Water/classes/groups/raids/balance/phone/casino/later stages
+remain required and open. Do not mark the overall goal complete or blocked.
+
+## Previous checkpoint — September 10, 13:59 UTC
 
 Previous turn was PROGRESS: surfaced the existing required casino stages in
 the top-level roadmap without implementing them. This continuation is PROGRESS:
