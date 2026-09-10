@@ -1,7 +1,7 @@
 # Correct the fresh Earth → Water verification contract
 
-Status: local QA correction; native full-route acceptance and full regression
-are pending. No runtime, authored quest ordering, reward, version or deployment
+Status: local QA correction; full regression passed, native full-route acceptance
+is pending. No runtime, authored quest ordering, reward, version or deployment
 change. This does not waive any campaign completion requirement.
 
 ## Confirmed mismatch
@@ -41,7 +41,18 @@ focused suite. The original failed log remains
 
 ## Active attempt and next verification
 
-The current owned Wizard attempt96530 remains on frozen626385d, which contains
+September10 follow-up: session96530 has terminated with exit1 at the first
+Verdant boss's survival assertion, before reaching this handoff. Its original
+failure is preserved in the primary branch's earned-Verdant failure plan; this
+correction did not cause that result and does not turn it into a pass.
+
+Full regression session88068 on clean4e4d46b1 exited0:289 suites,4074 tests,
+137.043s, followed by passing lint under Node24.18.0. Logs:
+`/tmp/eidolon-class-handoff-full-client.log` and
+`/tmp/eidolon-class-handoff-full-lint.log`. This verifies the class-input and
+handoff changes together locally, not a native clear or live deployment.
+
+Historical run constraint: the owned Wizard attempt96530 ran on frozen626385d, which contains
 the old shelter assertion. Do not alter that source mid-run. If it reaches the
 handoff, retain its exact failure/evidence as such; it cannot become a full pass
 by retroactively applying this correction. Its actual dungeon combat evidence
