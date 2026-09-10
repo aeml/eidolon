@@ -70,8 +70,16 @@ Full88926 PASS287suites/4047tests138.029s plus lint on cleanf2ca8e5. This includ
 the prior jump-error cause preservation and its tests. Logs
 `/tmp/eidolon-story-phase-full-{client,lint}.log`.
 
-A fresh native story-only replay is the next gate. The prior partial run is
-retained, not reclassified as a pass. Run the whole earned route with a new
-isolated identity, keep its source frozen and preserve its true result. All
-later classes/groups/realms/dungeons/raids/physical-phone/economy and full1.1–1.10
-gates remain required. This proof update changes documentation only.
+Actual fresh84056 on ea6cdbb passed the opening85495ms, Watch563138ms,
+Seeds152103ms, Imps1733807ms and scars32962ms phases. The Orc phase failed at
+37/50 on the merchant helper's15-second settled predicate, not its phase cap.
+No final handoff/readiness acceptance. Archive
+`/tmp/eidolon-fresh-orc-phase-proof-A6Wgqj`; log
+`/tmp/eidolon-fresh-phases-replay.log`; actual-credential scan/cleanup passed.
+
+See [merchant approach verification](2026-09-10-merchant-approach-verification.md)
+for the bounded diagnostic, independently confirmed offset timing race, correction
+and native checks. A new full fresh story-only replay remains the next gate;
+retain the previous failure rather than reclassifying it. Keep the next source
+frozen and preserve its true result. All later classes/groups/realms/dungeons/
+raids/physical-phone/economy and full1.1–1.10 gates remain required.

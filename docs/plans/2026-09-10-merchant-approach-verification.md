@@ -57,5 +57,13 @@ model early movement return, ordered settle/read/click, transient proximity,
 one absolute deadline, eight failed approaches, invalid merchant positions and
 original settle/input error propagation. Full8866 PASS288suites/4056tests141.599s
 plus lint. Logs `/tmp/eidolon-merchant-settled-full-{client,lint}.log`.
-Corrected native verification is next; the whole earned campaign must still be
-replayed.
+Corrected native36179 PASS1/1.2m on clean1b5a81b, all12visits, retries0,
+System Chrome/sg-render/Node24.18.0. Every visit stopped at x19.4802,z199.9884,
+no pending target, camera settled, shop/bag visible and zero blocked stops. The
+original diagnostic accumulated12blocked stops. This supports the approach
+correction but is not proof of the original long-run failure's sole cause.
+Archive `/tmp/eidolon-merchant-settled-proof-ijYfo8`; log
+`/tmp/eidolon-merchant-settled-native.log`; actual-credential scan passed and
+exact API/Mongo/image plus18560/18561/41960 listeners were absent after cleanup.
+Neither passing route emitted a success screenshot; no inspected rendered
+shop/art quality claim. The whole earned campaign must still be replayed.
