@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 19:47 UTC
+## Current checkpoint — September 10, 19:52 UTC
 
 Previous goal turn was PROGRESS (party-credit verification, support-admission
 contract correction, warning-response test strategy). This turn is PROGRESS:
@@ -24,14 +24,27 @@ active and deployment/1.1 completion is not claimed.
   character and checks exact chapter receipt, Gold and fresh Water offer.
  67718 passed lint/discovery, not native claims. The helper export is shared;
   no direct grant, auto-completion or account manipulation was added.
-- Browser62541 is ACTIVE on clean frozenf8d9bf2d in
- `/tmp/eidolon-primary-town-recovery-lAKY3k`, runfour-role-quake-0910,
-  log`/tmp/eidolon-four-role-quake-native.log`. Build completed and the test
-  started; no room, boss, warning escape or post-clear success claim yet.
-  Do not mutate its source or restart on an observation timeout. It uses the
-  tested warning controllerd496d6d5 plus server admission and turn-in additions.
-  Ports18580/18581/41980 were verified free before launch; prior87906 artifacts
-  already archived. No other local heavy gate is running.
+- Browser62541 onf8d9bf2d is TERMINAL1 after1.8minutes. Four hotbars, party UI,
+  roster selection/clear and same-instance entry passed. The first three-Skeleton
+  pull killed the tank before any room clear. Healer approach distances40.024,
+ 28.016,15.160 corresponded to tankHP707,374,40; Cleric610mana/no casts. Tank
+ 1018damage taken, all Gold0. No boss warnings occurred. This is a formation
+  failure, not evidence against roster healing or a quake/balance result.
+  Archive`/tmp/eidolon-four-role-quake-proof-aahV7A`; wrapper and copied-log
+  checks0QA prefixes; owned containers/listeners absent. Screenshots still need
+  pixel-level privacy handling before external sharing.
+- Primary is now clean4c962541. Leader steps could be14 units while followers
+  capped at12; callbacks ran after just one unit of witnessed movement and never
+  waited for arrival. The corrected controller waits for leader arrival, then
+  gathers all actual follower positions within four-unit spacing under a15-second
+  bound, failing on death/stall.26340 passed69 tests/3suites1.041s plus lint.
+- Browser96142 is ACTIVE on frozen4c962541 in
+ `/tmp/eidolon-primary-town-recovery-lAKY3k`, runfour-role-gather-0910,
+  log`/tmp/eidolon-four-role-gather-native.log`. Its actual handle was returned
+  live after launch; no formation/room/quake/full-clear success claim yet. No
+  other heavy gate. Do not edit its source or restart on observation timeout.
+  The revised driver retains server admission, warning avoidance and all four
+  individual turn-in/relogin assertions; no balance/gear/deadline relaxation.
 - Combined successor worktree is now clean9a71c3e0 (documentation-only atop
   d0be3274). Its stale claim that solo6251 was still active is corrected; no
   additional runtime integration or acceptance is implied. Required combined
