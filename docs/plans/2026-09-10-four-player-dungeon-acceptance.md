@@ -334,3 +334,37 @@ every canonical join of this seed with the revised planner. Log
 This is a deterministic geometry check with idealized arrival, not a recreation
 of the unknown failure position, network/camera timing or complete native party
 movement. It must not be used to claim62131's exact cause or a full-clear pass.
+
+## Short-arrival failure —1157, September10 23:10
+
+1157 on cleanedc7503a terminated1 before combat after all four setup/roster/
+same-instance checks passed. Seed6747352009075544054, generator2, Normal30,
+no fallback. All remained alive, no casts/rejections, Gold0. Unlike62131, this
+failure retained the requested input, actual position, camera/mesh offsets and
+all party positions.
+
+Cleric started(19999.86762066857,19957.67491337919), requested a1.805-unit step,
+and stopped at(20000.02804926322,19956.801398267533), a0.888125-unit displacement.
+The Fighter was(19999.835235237577,19951.8698252471): the Cleric was already
+within the existing five-unit gathering boundary, but the generic movement
+helper required more than one unit. Camera/mesh offsets were0, targets cleared,
+Cleric blocked-stop count3. Its requested destination overlapped the nearby
+Rogue's standard collision body. This is not a boss, camera or terrain result;
+it demonstrates the mismatch between the helper's displacement assertion and
+the formation's actual arrival condition.
+
+Archive`/tmp/eidolon-four-role-corners-proof-83inuh` retains reports/results/log;
+wrapper scanned2files, copied log sanitized and remaining QA-prefix count0.
+Owned18580/18581/41980listeners were cleared. No dungeon clear/quest claim.
+
+The optional movement arrival region now lets this formation input complete
+after a real click when the living player is observed inside that explicit
+region in the same scene. Ordinary callers still require their original minimum
+displacement. No covered-pointer/no-input or unachieved arrival is accepted as
+movement success. The formation still rereads all actual positions and enforces
+its existing radius and15-second deadline. Exact1157 coordinates, unchanged
+ordinary short-movement failures, unachieved arrival, invalid regions, death,
+wrong scene and real Shift input are covered.28066 passed57tests/4suites1.068s
+plus lint and single-route discovery. Logs
+`/tmp/eidolon-party-arrival-{focused,lint,discovery}.log`.
+This changes test inputs/evidence only; native full-party acceptance remains open.

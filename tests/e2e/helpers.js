@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test';
 import { movementFailure } from '../groundInputFailure.js';
+import { groundMovementObserved } from '../groundMovementObservation.js';
 import { projectGroundOffsetInPage } from '../groundInputProjection.js';
 import { isHostilePointerInterception } from '../primaryClickEvidence.js';
 import { inventoryQuantity, pickupReceipt } from './lootPickupEvidence.js';
@@ -429,8 +430,8 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
                 const displacement = Math.hypot(after.x - before.x, after.z - before.z);
                 maximumDisplacement = Math.max(maximumDisplacement, displacement);
                 attempt.last = { x: after.x, z: after.z, state: after.state, displacement };
-                return displacement;
-            }, { timeout: options.timeout || 1_500 }).toBeGreaterThan(options.minimumDistance || 1);
+                return groundMovementObserved(before, after, options.minimumDistance || 1, options.arrival);
+            }, { timeout: options.timeout || 1_500 }).toBe(true);
             return readPlayerState(page);
         } catch {
             if (!useCoveredJump && options.allowJumpFallback !== false) {

@@ -283,12 +283,14 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                             const { partyFormationStep } = await import('/tests/partyDungeonControls.js');
                             const { isEarnedRetreatPathClear } = await import('/tests/wizardHuntControls.js');
                             const g = window.game, p = g.player;
-                            return partyFormationStep(p.position, anchor, previous, step =>
+                            const step = partyFormationStep(p.position, anchor, previous, step =>
                                 isEarnedRetreatPathClear(g.collisionManager, p.position, p.radius || 1.25,
                                     { x: step.dx, z: step.dz }), spacing);
+                            return step && { ...step, arrival: { x: anchor.x, z: anchor.z, radius: spacing + 1 } };
                         }, { anchor: { x: anchor.x, z: anchor.z }, previous: formationAnchor, spacing }),
                         move: (index, step) => tryDungeonGroundStep(() => moveByGroundClick(actors[index].page,
-                            step.dx, step.dz, { ...PARTY_FOLLOW_INPUT_OPTIONS, allowAlternatePaths: false, requireClearPath: true })) });
+                            step.dx, step.dz, { ...PARTY_FOLLOW_INPUT_OPTIONS, allowAlternatePaths: false,
+                                requireClearPath: true, arrival: step.arrival })) });
                 } catch (error) {
                     const positions = await Promise.all(actors.map(async actor => ({ role: actor.className,
                         ...await actor.page.evaluate(() => {
