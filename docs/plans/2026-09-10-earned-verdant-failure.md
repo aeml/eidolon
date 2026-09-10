@@ -28,7 +28,7 @@ five183-damage physical hits from the Warden, not a timeout or server stall.
 The later failure receipt was gathered after the game's town transition; its
 restored resources are not the character's health/mana at the moment of death.
 
-## Next diagnostic action
+## Original diagnostic findings
 
 `earned-equipment.js` and `earned-gear-and-stats.js` intentionally fill only
 empty slots and never upgrade occupied ones. Bag management uses the same
@@ -45,7 +45,30 @@ balance changes are necessary. Retain item identities, replacement/persistence
 checks, original failure evidence and all encounter/death limits. Do not grant
 gear, raise regeneration or weaken bosses merely to pass the harness.
 
-The separate class-input and required Water-hunt corrections still require
-integration after regression. The stale Water assertion was never reached and
-did not cause this failure. Corrected runs must earn their own native acceptance;
-all classes/groups, realms, raids, balance and phone gates remain required.
+The stale Water assertion was never reached and did not cause this failure.
+Corrected runs must earn their own native acceptance; all classes/groups,
+realms, raids, balance and phone gates remain required.
+
+## Current follow-up — September 10
+
+Primarybf8d36d6 includes the class-input/required Water-hunt corrections and the
+earned equipment-upgrade helper with fuller equipment/ability/defense receipts.
+The helper now selects strictly improving eligible bag gear through normal
+dragging before bag disposal/training checkpoints and dungeon entry. This is QA
+play behavior, not automatic player equipping. See
+[earned upgrade policy](2026-09-10-earned-equipment-upgrades.md) and
+[native equipment evidence](2026-09-10-native-equipment-upgrade-verification.md).
+
+The integrated visual-release candidate subsequently exposed another intermittent
+native ring drop failure (86642:2pass/1fail); slot artwork is a separate pointer
+target even after parent-node stability was fixed. Its correction/verification
+is proceeding on the release-integration branch and must be reconciled here
+before another long earned replay. Earlier passing equipment fixtures do not
+prove this interaction is fully reliable. Do not count a new replay as already
+started or the original dungeon failure as repaired.
+
+After that correction, rerun the earned route with the upgraded equipment and
+complete diagnostics, retaining original seed/deadlines/death bounds. Appropriate
+earned Wizard ability/resource use and actual full dungeon clear/manual reward/
+Water handoff still require native evidence. No balance conclusion is established
+by the prepared inventory fixture or the partial first-boss damage above.
