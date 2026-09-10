@@ -67,6 +67,12 @@ phase-integrity work remain outside this candidate. The existing full Go/client,
 native initial-stat/storage/party/required-all, bundled browser, version, remote
 CI and live gates still apply before promotion.
 
+Full server race37969 passed on clean38875a69: root21.800s, game331.607s,
+database1.143s, loadtest1.033s, lifecycle1.042s; no race warning. Log
+`/tmp/eidolon-next-party-backport-full-server.log`. This is combined backport
+server acceptance, not client/native/production acceptance. The full client
+and remaining promotion checks below still need current-source results.
+
 On cleanf52f3157,14417 completed343tests/9suites10.299seconds plus lint and exact
 CI-mode Playwright discovery103cases with no omissions/duplicates/empty groups.
 Job1:22layout/4entrances/3effects/6nameplates/3HUD;
@@ -91,7 +97,7 @@ Logs`/tmp/eidolon-next-candidate-stash-gate-{lint,discovery}.log`.
 
 ## Remaining promotion gates
 
-- [ ] Full combined-source Go race/client regression and lint.
+- [ ] Full combined-source regression: Go race passed38875a69; full client and lint pending.
 - [ ] Execute authenticated smoke with the strengthened stash checks.
 - [ ] Run all three proposed CI-mode bundled-browser groups, retain distinct
   artifacts, inspect rendering and measure real stage durations.
