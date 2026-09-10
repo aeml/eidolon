@@ -3,6 +3,8 @@ import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture } from '../partyDungeonFixture.js';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
+import { partyFollowStep } from '../partyDungeonControls.js';
+import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, openGame,
@@ -121,10 +123,11 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
 
         async function follow(actor, anchor, distance = 4) {
             const state = await snapshot(actor.page);
-            const dx = anchor.x - state.x, dz = anchor.z - state.z, d = Math.hypot(dx, dz);
-            if (d <= distance) return;
-            const scale = Math.min(1, 12 / d);
-            await moveByGroundClick(actor.page, dx * scale, dz * scale, { allowJumpFallback: false });
+            const step = partyFollowStep(state, anchor, distance);
+            if (!step) return;
+            // Same covered-pointer handling as the leader: reread on the next
+            // bounded loop, never count a blocked ray as successful movement.
+            await tryDungeonGroundStep(() => moveByGroundClick(actor.page, step.dx, step.dz, { allowJumpFallback: false }));
         }
 
         async function healParty() {

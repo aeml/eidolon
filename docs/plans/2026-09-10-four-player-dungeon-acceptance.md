@@ -61,3 +61,16 @@ the driver to use the guide for every remaining member, preserving the strict
 same-run/content checks. Archive `/tmp/eidolon-four-role-rest-proof-HtoFTA`;
 wrapper sanitized2files, copied-log scanner sanitized1file, zero remaining
 QA prefixes; owned services/listeners removed. This is not a game entry defect.
+
+Third native41896 TERMINAL1 on311b1a61: two complete four-person town recovery
+cycles preserved each member's same run/content, and the Fighter reached the
+Warden at855/855HP and555/555MP. No deaths/rejected casts. The healer's following
+helper then aimed a full step toward the tank, ignoring its desired seven-unit
+spacing; the ordinary ground-pointer helper refused the covered destination.
+Fix the input plan to stop short, omit sub-unit requests, and use the leader's
+existing typed covered-pointer handling without resetting any progress timer or
+suppressing actual failed movement commands. This is not proof of broken game
+collision or a boss balance result. Archive
+`/tmp/eidolon-four-role-follow-proof-Y5tJpG`; wrapper scan and copied-log
+sanitization completed, owned services/listeners absent. Focused server race
+checks for concurrent/requester-only resume passed2.423s (87676).
