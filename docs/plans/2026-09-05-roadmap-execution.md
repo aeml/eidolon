@@ -16,7 +16,35 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 06:01 UTC
+## Current checkpoint — September 10, 06:08 UTC
+
+Previous turn was a VERIFIED WAIT. This continuation observed the same live13998
+through Orc26 and a second actual stash visit. No source changes, restart,
+cancellation, push or deployment. Full1.1–1.10 goal remains active/incomplete.
+
+13998 ACTIVE, only owned browser, primary clean/frozencb348ef, same
+fresh-merchant-0910/18560/18561/41960/log
+`/tmp/eidolon-fresh-merchant-replay.log`. Latest Orc26/50 at673s, level27/
+5937XP/16150Gold, zero deaths,12ordinary rests, no additional training,
+17occupied slots/5970unsold gear value. Full50/manual/save, dungeon handoff and
+strictstory-onlylevel30 remain pending, including passage beyond prior Orc37.
+
+Second stash visit PASSED atlevel26: four whole spare gear deposits, starting
+96free stash slots, bag free4→8, Gold15551 unchanged, exact item/level/quest/
+equipment conservation and ordinary departure in20.453s. No sales in that visit.
+Later level27 recovery naturally observed rest bank0 outside with800maxHP/
+560maxMP; town re-entry rebanked rest, restored880HP/616MP fully, and ordinary
+departure retained14.453bank seconds. This is resource/bank evidence, not a new
+all-stats or all-class acceptance claim.
+
+ReleaseCI34434837759/predeploy102741303703 remains QUEUED; scheduled
+soak34433520743 re-polled in progress. No cancellation approval. Canonical
+62dc2d1 unchanged, no new deployment/live acceptance; last public identity/
+health check remains existing60/df91bb6. Root ledger-only and NEVER pushed.
+All class/group/realm/dungeon/raid/phone/aura/CIcost/casino and remaining roadmap
+gates stay open. Continue exact13998 and release queue without source mutation.
+
+## Previous checkpoint — September 10, 06:01 UTC
 
 Previous turn was a VERIFIED WAIT. This continuation observed the same live13998
 through Orc10, a fourth merchant sale and the first actual stash visit; it also
