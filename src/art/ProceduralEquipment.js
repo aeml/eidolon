@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { createTailoredTorsoGeometry, createOpenHoodGeometry } from './ProceduralGarmentGeometry.js';
+import { socketGemAppearanceName } from './SocketGemAppearance.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -551,7 +552,7 @@ function addSocketDetails(group, item, visual, mats) {
     const shown = Math.min(3, socketCount);
     for (let index = 0; index < shown; index++) {
         const gem = gems[index];
-        const gemType = gem?.type || gem?.gemType;
+        const gemType = socketGemAppearanceName(gem);
         const gemColor = GEM_COLORS[gemType] || 0x26262d;
         const gemMaterial = gem
             ? material(`socket-${gemType || 'unknown'}`, gemColor, {
@@ -698,7 +699,7 @@ export function equipmentVisualSignature(equipment = {}) {
         if (!item?.id && !item?.name) return `${slot}:empty`;
         const rarity = getRarityName(item);
         const gems = Array.isArray(item.gems)
-            ? item.gems.map((gem) => `${gem?.type || ''}/${gem?.quality || ''}`).join(',')
+            ? item.gems.map((gem) => `${socketGemAppearanceName(gem) || ''}/${gem?.quality || ''}`).join(',')
             : '';
         return [slot, item.id || '', item.baseName || '', item.name || '', rarity,
             item.level || 0, item.potency || 0, item.sockets || 0, gems,
