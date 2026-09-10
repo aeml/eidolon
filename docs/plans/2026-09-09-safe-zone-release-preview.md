@@ -1,9 +1,10 @@
 # Standalone safe-zone combat feedback — release preparation
 
-September 9. Local preparation based on release59 candidate e236b37; not pushed,
-versioned as a successor, deployed or accepted. Release59 must finish its own
-predeploy, deployment, native live QA and exact public identity verification
-before any successor is pushed. Keep its canonical worktree unchanged.
+September9 implementation history, updated September10: parent59/e236b37 is now
+fully accepted. This change is versioned as60 with final local checks passed;
+publication/live status is tracked in [the release60 record](2026-09-10-release60-sanctuary-feedback.md).
+Keep the accepted59 canonical worktree unchanged. Historical results below refer
+to their named pre-version commits, not a claim of public60 acceptance.
 
 ## Player-facing correction
 
@@ -29,7 +30,7 @@ an apparently usable in-range attack."
 - [x] Full client/lint and server regression on this exact candidate.
 - [x] Actual desktop/phone card rendering with inspected retained screenshots.
 - [x] Native membership departure feedback and preserved town recovery behavior.
-- [ ] Finished release59 acceptance before selecting and synchronizing successor
+- [x] Finished release59 acceptance before selecting and synchronizing successor
   version, login text, release identity, build defaults and actual patch notes.
 - [ ] Normal canonical push, all CI/predeploy/deploy/live checks and fresh public
   login/runtime/backend identity. No claim of live delivery before those pass.
