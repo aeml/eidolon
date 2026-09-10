@@ -16,7 +16,46 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 02:43 UTC
+## Current checkpoint — September 10, 02:48 UTC
+
+Previous goal turn made PROGRESS (guarded hunt recovery and fresh replay).
+This continuation made PROGRESS in the independent aura lifecycle verification
+and revalidated both running handles. Full goal active; no impasse, no source
+mutation/restart of either active runtime and no new release push. Root remains
+ledger-only and NEVER pushed.
+
+**CI34430017443 ACTIVE**, canonicalcaab611 frozen. Server/client SUCCESS;
+browser2 job102724787734 now SUCCESS. Browser3/1 jobs102724787664/102724787728
+confirmed ACTIVE. Predeploy/deploy/final native/public60acceptance still pending.
+Continue exact workflow; do not merge60 into accepted prototype baselines yet.
+
+**22725 ACTIVE**, primarya285fbc frozen, same`fresh-hunt-rest-0910`/18560/18561/
+41960 and `/tmp/eidolon-fresh-hunt-rest-replay.log`. Opening3kills/manual100Gold/
+100XP+reconnect passed71s/0deaths. Diary manual25Gold/200XP passed113s,level3.
+Current Watch hunt latest milestone5/40,level4,0deaths,2restStops at95huntseconds;
+additional two between-encounter town rests afterward fully restored159MP and
+bank accrued before departure. The new unfinished-encounter retreat branch has
+not yet been observed; full Watch/Seeds/Imp/scars/Orcs/level30readiness are open.
+Keep the same run/source until terminal and preserve/sanitize/exactcleanup then.
+No second owned browser or heavy tests alongside it.
+
+**Aura prototype now cleana877d46**, `/tmp/eidolon-rest-aura-batching-k1vBvU`,
+accepted59 baseline/runtime still unchanged. Added two tests with actual Fighter
+actor lifecycle synchronization: repeated High/Low and effect-scene changes,
+stealth, death, inactivity and rest-expiry/reentry dispose each retired batch
+exactly once, preserve16/8sparks/oneowner/meshposition, and leave a second actor's
+original aura/matrices/sharedshape/materials untouched. Both scenes empty at
+final cleanup; replicated bank unchanged. Focused55010 PASS35/3/2.705s+lint,
+logs`/tmp/eidolon-aura-transition-lifecycle{,-lint}.log`. Only tests/docs changed.
+This is disposal-event/ownership evidence, NOT WebGL memory/actual rendered
+transitions/native multiplayer/FPS/physicalphone proof. All full/native/rendered
+promotion gates in its plan remain due; no runtime merge or publication.
+
+Next: same22725 actual play and sameCI34430017443. Full campaign/class/group,
+dungeon/raid/physicalphone, aura native/performance, CIcost, casino and remaining
+1.1–1.10scope unchanged and open.
+
+## Previous checkpoint — September 10, 02:43 UTC
 
 Previous goal turn made PROGRESS (verified/pushed caab611). This continuation
 also made PROGRESS: identified a hunt-driver restriction inconsistent with the

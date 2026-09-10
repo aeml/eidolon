@@ -10,10 +10,10 @@ before60 is accepted; the current push repairs60's verification, not gameplay.
 
 ## Current verification — September10, 02:35UTC
 
-02:43 update: sameCI34430017443 remains ACTIVE. Server102723358239 and
-client102723358452 SUCCESS; browser3/1/2 jobs102724787664/102724787728/102724787734
-are running. Canonicalcaab611 remains unchanged. No deployment/final acceptance
-result yet.
+02:48 update: sameCI34430017443 remains ACTIVE. Server102723358239,
+client102723358452 and browser2 job102724787734 SUCCESS; browser3/1 jobs
+102724787664/102724787728 are running. Canonicalcaab611 remains unchanged.
+No deployment/final acceptance result yet.
 
 Normal push78092 SUCCEEDED3a139c0→caab611 from the clean canonical worktree.
 New CI34430017443 ACTIVE on exactcaab611; server102723358239 and client102723358452
