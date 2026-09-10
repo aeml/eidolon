@@ -9,7 +9,10 @@ function setup() {
     const ids = ['forge-equipment-list', 'forge-upgrade-info', 'forge-selected-item-name', 'forge-cost-value',
         'forge-upgrade-stats', 'forge-potency-list', 'forge-potency-info', 'forge-potency-item-name',
         'forge-potency-stats', 'forge-potency-cost-value', 'forge-socket-list', 'forge-socket-info',
-        'forge-socket-item-name', 'forge-socket-stats', 'forge-socket-cost-hearts', 'forge-socket-cost-shards'];
+        'forge-socket-item-name', 'forge-socket-stats', 'forge-socket-cost-hearts', 'forge-socket-cost-shards',
+        'forge-gem-equipment', 'forge-gem-inventory', 'forge-gem-info', 'forge-gem-socket-slots',
+        'forge-gem-remove-equipment', 'forge-gem-remove-info', 'forge-gem-remove-slots',
+        'forge-gem-combine-inventory', 'forge-gem-combine-slots', 'forge-gem-combine-result'];
     document.body.innerHTML = `<div id="forge-screen" style="display:flex">${ids.map(id => `<div id="${id}"></div>`).join('')}
         <button id="btn-forge-upgrade-1"></button><button id="btn-forge-upgrade-10"></button>
         <button id="btn-forge-potency"></button><button id="btn-forge-socket"></button></div>`;
@@ -36,6 +39,49 @@ function setup() {
 }
 
 describe('open forge authoritative refresh', () => {
+    test('gem equipment icons and selected sockets follow the authoritative replacement', () => {
+        const { engine, forge, item, delta } = setup();
+        forge.ctx.getItemIconPath = item => `/socket-${item.gems?.[0]?.type || 'empty'}.png`;
+        const ruby = { ...item, sockets: 1, gems: [{ type: 'Ruby', quality: 'Flawed' }] };
+        engine.player.equipment.mainHand = ruby;
+        forge.selectedGemEquipSlot = 'mainHand';
+        forge.updateForgeGemsUI(engine.player);
+        forge.updateForgeGemInfo(ruby, engine.player);
+        delta({ equipment: { mainHand: { ...ruby, gems: [{ type: 'Sapphire', quality: 'Flawed' }] } } });
+        expect(forge.forgeGemEquipment.firstElementChild.style.backgroundImage).toContain('socket-Sapphire.png');
+        expect(forge.forgeGemSocketSlots.firstElementChild.title).toContain('Sapphire');
+        expect(forge.selectedGemEquipSlot).toBe('mainHand');
+    });
+
+    test('consumed gem selection and removal details clear without reopening', () => {
+        const { engine, forge, item, delta } = setup();
+        engine.player.equipment.mainHand = { ...item, sockets: 1, gems: [{ type: 'Ruby', quality: 'Flawed' }] };
+        forge.selectedGemEquipSlot = 'mainHand';
+        forge.selectedRemoveEquipSlot = 'mainHand';
+        forge.selectedRemoveSocketIndex = 0;
+        forge.selectedGemInvIndex = 0;
+        forge.selectedCombineGemIndices = [0];
+        forge.refresh(engine.player);
+        delta({ equipment: {}, inventory: [] });
+        expect(forge.selectedGemEquipSlot).toBeNull();
+        expect(forge.selectedGemInvIndex).toBeNull();
+        expect(forge.selectedRemoveEquipSlot).toBeNull();
+        expect(forge.selectedRemoveSocketIndex).toBeNull();
+        expect(forge.selectedCombineGemIndices).toEqual([]);
+        expect(forge.forgeGemInfo.style.display).toBe('none');
+        expect(forge.forgeGemRemoveInfo.style.display).toBe('none');
+    });
+
+    test('unchanged state and Gold alone do not replace clickable gem nodes', () => {
+        const { engine, forge, item, delta } = setup();
+        engine.player.equipment.mainHand = { ...item, sockets: 1, gems: [] };
+        forge.refresh(engine.player);
+        const node = forge.forgeGemEquipment.firstElementChild;
+        expect(node).not.toBeNull();
+        forge.refresh(engine.player);
+        delta({ gold: 10 });
+        expect(forge.forgeGemEquipment.firstElementChild).toBe(node);
+    });
     test('equipment deltas refresh level, stats, potency and next costs without reopening', () => {
         const { forge, item, delta } = setup();
         delta({ equipment: { mainHand: { ...item, level: 40, potency: 1, stats: { damage: 45 } } },

@@ -113,7 +113,14 @@ test('ordinary Forge gem replacement updates local and observer sockets, bag ico
         expect(updated.uuid).not.toBe(original.uuid);
         expect(updatedRemote.uuid).not.toBe(originalRemote.uuid);
         await expect.poll(() => page.evaluate(() => window.game.player.inventory.filter(Boolean).length)).toBe(0);
+        // The open Forge must show the socketed item, not its optimistic empty
+        // socket state. Read the ordinary item icon resolver as an oracle only.
+        const expectedIcon = await page.evaluate(() => window.game.uiManager.getItemIconPath(window.game.player.equipment.mainHand));
+        expect(decodeURIComponent(expectedIcon)).toContain('#3566cc');
+        await expect.poll(() => page.locator('#forge-gem-equipment .inv-slot').first()
+            .evaluate((el, source) => el.style.backgroundImage.includes(source), expectedIcon)).toBe(true);
         const newIcon = await page.locator('#forge-gem-equipment .inv-slot').first().evaluate(el => el.style.backgroundImage);
+        expect(newIcon).toContain(expectedIcon);
         expect(newIcon).not.toBe(oldIcon);
         await page.locator('#btn-close-forge').click();
         await page.keyboard.press('c');
@@ -122,7 +129,7 @@ test('ordinary Forge gem replacement updates local and observer sockets, bag ico
         await page.keyboard.press('i');
         const index = await page.evaluate(() => window.game.player.inventory.findIndex(item => item?.id === 'socket-appearance-sword'));
         const bagSlot = page.locator('#inventory-grid .inv-slot').nth(index);
-        await expect.poll(() => bagSlot.evaluate(el => el.style.backgroundImage)).toBe(newIcon);
+        await expect.poll(() => bagSlot.locator(':scope > div').first().evaluate(el => el.style.backgroundImage)).toBe(newIcon);
         await bagSlot.click();
         await expectSocket(page, 0x315fc5, 'Sapphire');
         await expectSocket(observer, 0x315fc5, 'Sapphire', ownerID);
