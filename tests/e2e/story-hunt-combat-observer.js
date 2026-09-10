@@ -36,6 +36,12 @@ export async function readStoryHuntFailureEvidence(page) {
         selected: describe(game.pendingInteraction), hovered: describe(game.hoveredEntity),
         nearby: [...game.remotePlayers.values()].filter(e => game.isHostileActorTarget(e) &&
             p.position.distanceTo(e.position) < 50).map(describe),
+        visibleQuestDrops: [...game.remotePlayers.values()].filter(e => e.item?.id?.startsWith('chronicle-item-'))
+            .map(e => ({ id: e.id, itemId: e.item.id, name: e.item.name, stack: e.item.stack,
+                active: e.isActive, position: e.position?.toArray(), distance: p.position.distanceTo(e.position),
+                inPickupRange: game.canAttemptLootPickup?.(e), pending: game.pendingLootPickups?.has(e.id) || false })),
+        autoLootEnabled: game.autoLootEnabled,
+        pendingPickups: game.pendingLootPickups?.size || 0,
         combat: window.__storyHuntCombatEvidence || null };
     });
 }

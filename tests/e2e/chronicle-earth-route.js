@@ -7,6 +7,7 @@ import { findExpeditionTarget } from './earned-expedition-target.js';
 import { earnEarthHuntsBefore } from '../earthFunctionalPrerequisites.js';
 import { maintainEarnedInventory } from './earned-inventory-management.js';
 import { leaveEarnedCombatSafety } from './earned-safe-zone-combat.js';
+import { approachEarnedDrop } from '../earnedDropApproach.js';
 
 export const EARTH_DUNGEON_CHAPTER = 'chronicle_03_roots_remember';
 const FIRST_CHAPTER = 'chronicle_01_bell_below';
@@ -91,13 +92,20 @@ async function defeatOrdinaryEarthEnemy(page, hunt = null) {
         if (state.state === 'DEAD' || state.hp <= 0) {
             // Approach the normal drop location so auto-loot can collect a
             // naturally rolled personal relic; no guaranteed-drop command.
-            const player = await readPlayerState(page);
-            const distance = Math.hypot(state.x - player.x, state.z - player.z);
-            if (distance > 3) {
-                const scale = Math.min(1, 10 / distance);
-                await moveByGroundClick(page, (state.x - player.x) * scale, (state.z - player.z) * scale,
-                    { allowJumpFallback: false });
-            }
+            await approachEarnedDrop({ destination: state, readPosition: () => readPlayerState(page),
+                move: async (x, z) => {
+                    await moveByGroundClick(page, x, z, { moveOnly: true, allowJumpFallback: false });
+                    await expect.poll(() => page.evaluate(() => !window.game.player.targetPosition)).toBe(true);
+                } });
+            // Death, world-drop publication and pickup acknowledgement are not
+            // one synchronous event. Do not leave a rolled fragment behind.
+            await page.waitForTimeout(900);
+            await expect.poll(() => page.evaluate(() => {
+                const game = window.game;
+                return [...game.remotePlayers.values()].filter(entity => entity.isActive &&
+                    entity.item?.id?.startsWith('chronicle-item-') && game.canAttemptLootPickup(entity)).length;
+            })).toBe(0);
+            await expect.poll(() => page.evaluate(() => window.game.pendingLootPickups.size)).toBe(0);
             return;
         }
         if (await leaveEarnedCombatSafety(page, () => leaveTownForFunctionalHunt(page))) continue;
@@ -132,7 +140,9 @@ async function earnObjective(page, id, hunt = null) {
         await maintainEarnedInventory(page, { leaveTown: () => leaveTownForFunctionalHunt(page) });
         await defeatOrdinaryEarthEnemy(page, hunt);
     }
-    throw new Error(`No complete objective after ${maxEncounters} normal Earth encounters: ${JSON.stringify(await readChronicleChapter(page, id))}`);
+    const final = await readChronicleChapter(page, id);
+    if (final.count >= final.maxCount) return;
+    throw new Error(`No complete objective after ${maxEncounters} normal Earth encounters: ${JSON.stringify(final)}`);
 }
 
 async function earnRequiredHunts(page, nextChapter) {

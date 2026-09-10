@@ -46,6 +46,26 @@ test('no entered character produces no misleading empty inventory receipt', asyn
     finally { delete window.game; }
 });
 
+test('collection failure records visible reserved fragments without manufacturing pickup or progress', async () => {
+    const position = new Vector3();
+    const item = Object.freeze({ id: 'chronicle-item-waiting', name: 'Verdant Memory Seed', stack: 1 });
+    const quest = Object.freeze({ id: 'chronicle_02_seeds_first_grove', accepted: true, count: 7, maxCount: 8 });
+    const drop = { id: 'story-loot-waiting', item, isActive: true, position: new Vector3(12, .5, 0) };
+    window.game = { player: { level: 100, stats: { hp: 100 }, position, inventory: [], quests: [quest] },
+        remotePlayers: new Map([[drop.id, drop]]), pendingLootPickups: new Map(), autoLootEnabled: true,
+        isHostileActorTarget: () => false, canAttemptLootPickup: () => false };
+    try {
+        const evidence = await readStoryHuntFailureEvidence({ evaluate: callback => callback() });
+        expect(evidence.visibleQuestDrops).toEqual([expect.objectContaining({ id: drop.id,
+            itemId: item.id, name: item.name, stack: 1, active: true, position: [12, .5, 0],
+            inPickupRange: false, pending: false })]);
+        expect(evidence.autoLootEnabled).toBe(true);
+        expect(evidence.pendingPickups).toBe(0);
+        expect(window.game.player.quests).toEqual([quest]);
+        expect(window.game.remotePlayers.get(drop.id)).toBe(drop);
+    } finally { delete window.game; }
+});
+
 test('stash fallback uses real storage clicks and checks complete item conservation, never grants', () => {
     const route = readFileSync('tests/e2e/earned-inventory-management.js', 'utf8');
     const stash = readFileSync('tests/e2e/earned-stash-storage.js', 'utf8');
