@@ -16,7 +16,61 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 01:41 UTC
+## Current checkpoint — September 10, 02:03 UTC
+
+This turn made PROGRESS: complete prepared Earth chain passed; reproduced live60
+hover failure with real evidence, corrected ordinary camera framing, passed full
+client and live native checks, pushed corrected60 normally, and started fresh
+story-only progression. Previous turn was PROGRESS. No impasse; full1.1–1.10goal
+active, root ledger-only/NEVER pushed. No requirements reduced.
+
+**65010 TERMINAL PASS3/16.2m** on primaryef1ca35/code299cded. Stage1 opening/diary/
+40Skeletons/8naturalSeeds/manualconsumption4.4m; stage2 60Imps/all3scar readings/
+manual6.1m; stage3 50DemonOrcs/manual/dungeonoffer5.6m. Raid remained sealed.
+Four normal stash visits deposited7whole earned items with all conservation and
+per-item Gold checks; repeated capacities100/98/96/95correct. All stage logins
+preserved full stash and Seed count. Preparedlvl100, NOTfresh balance or dungeon/
+raid clear. Archive `/tmp/eidolon-earth-complete-proof-R5oR8R` HTMLreport, no success
+PNG; log `/tmp/eidolon-earth-padding-0133.log`, wrapper sanitation0/supplemental0,
+exact containers and18560/18561/41960absent after cleanup. Primary proof5a01ce8.
+
+Live60 diagnostic35114 on6824707 TERMINAL FAILED1/1PASS1.0m against exactdf91bb6,
+fresh ordinary registrations/no origin override. Natural expiry passed. Failed
+hover found no candidate/projection; nearby Skeletons living/rendered, camera
+settled, healthy protected playerx94.985, pointer complete. Screenshot inspected:
+close gate framing. Archive `/tmp/eidolon-live60-hover-proof-jeuKWn`, scans0,
+log `/tmp/eidolon-live60-hover-diagnostic.log`. No missing-spawn/healing failure.
+
+Correction77805df uses existing ordinary canvas/wheel zoom15→30 before the same
+hover, preserving player position/protection, warning/departure assertions and
+timeout. Projection regression uses observed nearby coordinates. Failure evidence
+retains last attempted projection. Focused63243 PASS23/3/.745+lint; full44217
+PASS254suites/3606tests69.017s+lint. Actual corrected live24692 PASS journey+expiry
+2/1.1m, party1/13.2s: warning, InRange after departure,2incomingHP,Fireball80MP,
+RecallHP108→110/MP80→92→110, bank9.701→10.165 acrosslogin, naturalexpiry/reentry,
+2realplayers High/Low/joystick. Archive `/tmp/eidolon-live60-framing-proof-yGjGmQ`,
+scans0, inspected both boundary images/rejoined/Low390party. Log
+`/tmp/eidolon-live60-framing-corrected.log`. No physical-phone claim.
+
+**Corrected canonical60 = 3a139c0179221f06e7f027218e15fea63c561842**; final docs-only.
+Canonical worktree `/tmp/eidolon-safe-zone-release-preview-gCLEaT` fast-forwarded
+and normal68566push SUCCEEDED df91bb6→3a139c0. Diagnostic worktree
+`/tmp/eidolon-release60-hover-diagnostic-V1ICnd` samecleancommit. No runtime/server/
+login/version/manifest/package/workflow changes, so existing60notes remain true.
+This repairs failed60 acceptance, not a61successor. **CI34427816379 ACTIVE**, exact
+newcommit. Keep old failed34421323405history; require all new jobs/deploys/final
+live/public acceptance before successor. Do not merge into accepted baselines yet.
+
+**62038 ACTIVE**, only owned local browser: freshWizard story-only readiness on
+cleanprimary5a01ce8 (code299cded), run`fresh-story-0910-0203`, API18560/Mongo18561/
+web41960, log`/tmp/eidolon-fresh-story-0203.log`; route`fresh-story-ready`.
+No prepared level, daily contracts or state grants. Preserve seven manual Earth
+chapters, unchangedlevel30gate and accepted uncleared dungeon. Source frozen,
+no heavy owned tests/second browser; preserve/sanitize/exactcleanup at terminal.
+Class/group pacing, full dungeons/raids/story, physical phones, aura batching,
+CIcost prototype, casino and all remaining1.1–1.10scope stay open.
+
+## Previous checkpoint — September 10, 01:41 UTC
 
 This turn made PROGRESS: inspected terminal live60failure and artifacts, narrowed
 what evidence is missing, added read-only failure capture with tests in a separate

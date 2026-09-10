@@ -1,10 +1,41 @@
-# Alpha1.0.60 — deployed, final live acceptance failed
+# Alpha1.0.60 — corrected verification pipeline pending
 
-Canonical commit `df91bb66e8e8f3b7125aa99412f09ba25898a3ac`, branch
+Canonical corrected commit `3a139c0179221f06e7f027218e15fea63c561842`, branch
 `release/60-sanctuary-combat-feedback`, worktree
 `/tmp/eidolon-safe-zone-release-preview-gCLEaT`. Normal non-force push from this
-worktree succeeded after accepted59/e236b37 and complete local checks. Root is
-ledger-only and is never pushed. Do not push a successor before60 is accepted.
+worktree succeeded after the verified camera-framing correction below. Its
+predecessor df91bb66e8e8f3b7125aa99412f09ba25898a3ac is deployed but failed final
+acceptance. Root is ledger-only and is never pushed. Do not push a61successor
+before60 is accepted; the current push repairs60's verification, not gameplay.
+
+## Corrected release verification — September10, 02:02UTC
+
+New [CI34427816379](https://github.com/aeml/eidolon/actions/runs/34427816379) is
+ACTIVE on exact3a139c0 after a normal non-force push. Previous failed run remains
+retained below. No src/server/login/version/manifest/package/workflow changes
+versusdf91bb6; existing60patch notes remain accurate. The correction uses real
+canvas-wheel zoom to expose live wandering enemies before the existing hover
+assertion and captures actual state if it fails. Position/protection, both combat
+card assertions,10-second timeout and all recovery checks remain required.
+
+Diagnostic35114 first reproduced the failure on actual live60: no candidate or
+projection despite nearby living rendered Skeletons, settled camera, healthy
+protected player and completed pointer processing. Inspected failure world image
+at `/tmp/eidolon-live60-hover-proof-jeuKWn`, scan0. Default15-unit framing excluded
+nearby observed positions. This was not observed spawn loss or failed recovery.
+
+Corrected code77805df passed full44217 client254suites/3606tests69.017s+lint.
+Then actual live24692 passed journey+expiry2/1.1m and real party1/13.2s on the
+unchanged deployed runtime, with fresh ordinary registrations and no retries.
+Real wheel15→30 retained protectedx94.985, actual enemy warning and departure
+InRange; incoming2HP, acceptedFireballMP80, RecallHP108→110/MP80→92→110 and saved
+rest bank9.701→10.165. Natural expiry/reentry and two-player High/Low aura/joystick
+checks passed. Archive `/tmp/eidolon-live60-framing-proof-yGjGmQ`, scans0; inspected
+warning/departure/rejoined/Low390party-world screenshots. Log
+`/tmp/eidolon-live60-framing-corrected.log`. Final3a139c0 adds proof documentation.
+
+These manual checks verify the correction, not the new pipeline's final outcome.
+All new CI/deploy/final public gates below must pass before accepting60.
 
 Player scope: the target card explains that a player must leave a safe zone to
 attack ordinary enemies, and normal range feedback returns on departure. Valid
@@ -30,7 +61,7 @@ rejoined town image were inspected. Archive
 scan0, exact disposable services/ports cleaned. Native log
 `/tmp/eidolon-release60-native-final.log`.
 
-## Required public acceptance
+## Original publication and failed acceptance — retained history
 
 [CI34421323405](https://github.com/aeml/eidolon/actions/runs/34421323405) is terminal
 FAILED on the exact canonical commit. Predeploy102701339923 and production input
@@ -81,8 +112,10 @@ weakened assertion. Focused5576 passed20tests/3suites0.849s+lint. Actual diagnos
 against fresh ordinary live QA registration is next after primary65010 releases
 the local browser slot. No blind CI rerun, no successor push, no acceptance claim.
 
-- [x] All client/server/browser/predeploy/input validation jobs pass.
-- [x] Both deployments pass; inspect server schema preflight and rollback evidence.
+## Required corrected-publication acceptance
+
+- [ ] All new client/server/browser/predeploy/input validation jobs pass.
+- [ ] Both new deployments pass; inspect server schema preflight and rollback evidence.
 - [ ] Final live native/character verification passes; preserve and inspect evidence.
 - [ ] Fresh public manifest, login/patch notes, release-keyed runtime GET and healthy
   backend all identify the exact60/df91bb6 release after the final live job.
