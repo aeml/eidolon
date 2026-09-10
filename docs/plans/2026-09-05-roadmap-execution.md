@@ -16,7 +16,38 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 02:14 UTC
+## Current checkpoint — September 10, 02:20 UTC
+
+This continuation is a VERIFIED WAIT: re-polled exact live44940 and corrected60
+CI34427816379; neither is terminal. Previous turn made PROGRESS. No impasse,
+restart, cancellation, runtime change or successor push. Full goal active;
+root ledger-only/NEVER pushed. Do not infer completion from partial hunt progress.
+
+**44940 ACTIVE**, primary79e9571/code d47f5c6 frozen. Same freshWizard story-only
+run`fresh-diary-ack-0910`,18560/18561/41960,
+log`/tmp/eidolon-fresh-diary-ack-replay.log`. Opening/diary/manual/reconnect remain
+passed. Latest numbered hunt receipt:20/40Skeletoncredit,0deaths,level5/195XP,
+719Gold,6equipment slots,1talentpoint,7rest visits at272hunt seconds; additional
+ordinary mana recovery visits continued afterward. Bank accrues in town and
+mana fully recovers before departure. No readiness, complete hunt or later
+collection/Imp/Orc result yet. Keep the same process and source to terminal;
+preserve/sanitize artifacts and exact cleanup before another browser/heavy tests.
+
+**CI34427816379 ACTIVE** on unchanged3a139c0. Client/server and browser2/3 SUCCESS;
+browser1/3job102718128481 and3/3job102718128498 remain ACTIVE. No corrected60
+predeploy/deploy/final live acceptance yet. Canonical/diagnostic worktrees frozen.
+
+Read-only source review reconfirmed an already documented group budget risk,
+not a new audit or new measured party result. `combat_death.go` grants party
+members shared combat XP and personal story kill credit. Existing7980 production
+helper audit `/tmp/eidolon-primary-earth-budget-audit.log` models7pre-dungeon
+chapters/25979questXP,最低qualifying enemies and8/20collection kills:2players end
+25/27 and5players22/23 for no/all-kill rest. Those scenarios omit incidental combat
+and are not actual party campaigns. Retain the original findings below; do not
+rerun unchanged diagnostics or tune runtime from a partial solo replay. Actual
+class/group readiness remains required without daily/grant substitutions.
+
+## Previous checkpoint — September 10, 02:14 UTC
 
 This turn made PROGRESS: inspected terminal fresh-diary failure, corrected
 acknowledgement-during-approach handling, passed full regression, and verified
