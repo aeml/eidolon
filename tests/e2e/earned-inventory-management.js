@@ -3,6 +3,7 @@ import { EARNED_BAG_MIN_FREE, EARNED_BAG_TARGET_FREE, earnedBagFreeSlots, planEa
     planEarnedBagStorage } from '../earnedInventoryPolicy.js';
 import { equipEarnedEmptySlots } from './earned-equipment.js';
 import { ensureEarnedMerchantWindow } from './earned-merchant-window.js';
+import { approachEarnedMerchant } from '../earnedMerchantApproach.js';
 import { storeEarnedSpareEquipment } from './earned-stash-storage.js';
 import { moveByGroundClick, projectEntity, readPlayerState, returnToTown, setAutoLootThroughSettings } from './helpers.js';
 
@@ -26,29 +27,21 @@ export async function readEarnedMerchantApproach(page) {
 
 export async function openEarnedMerchant(page) {
     const approach = [];
-    for (let step = 0; step < 8; step++) {
-        const offset = await page.evaluate(() => {
-            const game = window.game, merchant = game.remotePlayers.get('merchant-1');
-            if (!merchant) return null;
-            return { x: merchant.position.x - game.player.position.x, z: merchant.position.z - game.player.position.z };
-        });
-        expect(offset, 'The actual town merchant must be replicated').not.toBeNull();
-        const distance = Math.hypot(offset.x, offset.z);
-        if (distance < 4.5) break;
-        const scale = Math.min(12, distance - 3) / distance;
-        const before = await readEarnedMerchantApproach(page);
-        await moveByGroundClick(page, offset.x * scale, offset.z * scale,
-            { moveOnly: true, allowJumpFallback: false });
-        approach.push({ before, delta: [offset.x * scale, offset.z * scale],
-            after: await readEarnedMerchantApproach(page) });
-    }
     try {
-        await expect.poll(() => page.evaluate(() => {
-            const game = window.game;
-            return game.player.state === 'IDLE' && !game.player.targetPosition &&
-                Math.hypot(game.renderSystem.cameraTarget.x - game.player.position.x,
-                    game.renderSystem.cameraTarget.z - game.player.position.z) < .05;
-        })).toBe(true);
+        await approachEarnedMerchant({
+            read: () => readEarnedMerchantApproach(page),
+            settle: deadline => expect.poll(() => page.evaluate(() => {
+                const game = window.game;
+                return game.player.state === 'IDLE' && !game.player.targetPosition &&
+                    Math.hypot(game.renderSystem.cameraTarget.x - game.player.position.x,
+                        game.renderSystem.cameraTarget.z - game.player.position.z) < .05;
+            }), { timeout: Math.max(1, Math.min(15_000, deadline - Date.now())) }).toBe(true),
+            move: async (x, z) => {
+                const before = await readEarnedMerchantApproach(page);
+                await moveByGroundClick(page, x, z, { moveOnly: true, allowJumpFallback: false });
+                approach.push({ before, delta: [x, z], after: await readEarnedMerchantApproach(page) });
+            }
+        });
     } catch (cause) {
         const final = await readEarnedMerchantApproach(page).catch(() => null);
         throw new Error(`Merchant approach did not settle: ${JSON.stringify({ approach, final })}; ${cause.message}`, { cause });
