@@ -24,6 +24,7 @@
 .phone-party-header h2 { margin: 0; font-size: 1.2em; color: var(--color-gold); }
 .phone-party-body { flex: 1 1 auto; min-height: 0; padding: 12px; overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; }
 .phone-party-body p { line-height: 1.5; overflow-wrap: anywhere; }
+.phone-party-panel summary { min-height: 44px; box-sizing: border-box; padding: 10px 4px; cursor: pointer; touch-action: manipulation; }
 .phone-party-member { border: 1px solid #b99b6240; border-radius: 8px; padding: 12px; margin: 12px 0; }
 .phone-party-member h3 { margin: 0; font-size: 1em; overflow-wrap: anywhere; }
 .phone-party-panel :is(button,input,select) { min-width: 44px; min-height: 44px; padding: 8px; font: inherit; color: #eee; background: #202a35; border: 1px solid #b99b6288; border-radius: 6px; margin: 4px; max-width: 100%; touch-action: manipulation; }

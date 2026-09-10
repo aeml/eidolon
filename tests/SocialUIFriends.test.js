@@ -14,7 +14,7 @@ function setupDOM() {
     // SocialUI._createSocialWindow looks for #social-window or creates one.
     // Party panel elements are looked up by ID after construction.
     const ids = [
-        'party-panel', 'party-list', 'party-invite-input',
+        'party-panel', 'party-panel-guidance', 'party-list', 'party-invite-input',
         'btn-invite-party', 'btn-leave-party',
         'party-request-modal', 'party-inviter-name',
         'btn-accept-party', 'btn-decline-party',
@@ -47,6 +47,18 @@ function createSocialUI() {
 // ---------------------------------------------------------------------------
 // updateFriendList
 // ---------------------------------------------------------------------------
+
+test.each([null, { partyId: 'group', leaderId: 'self', members: [{ id: 'self', name: 'Hero', hp: 100, maxHp: 100 }] }])(
+    'party reward guidance distinguishes whole-instance credit from overworld range (%#)', partyData => {
+        const { ui } = createSocialUI();
+        ui.updateParty(partyData);
+        const guidance = document.getElementById('party-panel-guidance');
+        expect(guidance.textContent).toContain('Dungeon: whole instance');
+        expect(guidance.textContent).toContain('Overworld: roughly two screens');
+        expect(guidance.title).toContain('Downed allies count');
+        expect(guidance.title).toContain('completes their own quests');
+    }
+);
 
 describe('SocialUI.updateFriendList', () => {
     test('stores friendEntries and pendingUsernames', () => {

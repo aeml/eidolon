@@ -2,7 +2,7 @@ package game
 
 // Runs with no corpse or attacker lock held. A chained death follows the same
 // contract, so its explosion never recursively holds an ancestor's actor lock.
-func (w *World) applyOnKillExplosion(attacker *Entity, corpseID, instanceID string, x, z float64, damage int, deferred *deferredActions) {
+func (w *World) applyOnKillExplosion(attacker *Entity, corpseID, instanceID string, x, z float64, damage int, deferred *deferredActions, worldLocked bool) {
 	for _, nearby := range w.Grid.Nearby(x, z, 5.0, instanceID) {
 		// IDs/types are immutable; skip the corpse before touching its mutex.
 		if nearby.ID == corpseID || nearby.Type != TypeEnemy {
@@ -17,7 +17,7 @@ func (w *World) applyOnKillExplosion(attacker *Entity, corpseID, instanceID stri
 		nearby.Health -= applied
 		nearby.LastDamageType = "physical"
 		if nearby.Health <= 0 {
-			w.handleDeath(nearby, attacker, deferred)
+			w.handleDeathWithWorldLock(nearby, attacker, deferred, worldLocked)
 		}
 		nearby.Mu.Unlock()
 		if w.OnEvent != nil {

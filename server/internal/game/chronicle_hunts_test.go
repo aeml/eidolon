@@ -157,7 +157,7 @@ func TestChronicleHuntProductionDeathCreditsOnceWithoutCompleting(t *testing.T) 
 }
 
 func TestChronicleHuntPartyCreditRequiresAnEligibleAcceptedContract(t *testing.T) {
-	for _, scenario := range []string{"nearby", "unaccepted", "completed", "far", "dead", "other-instance"} {
+	for _, scenario := range []string{"nearby", "unaccepted", "completed", "far", "dead", "disconnected", "other-instance"} {
 		t.Run(scenario, func(t *testing.T) {
 			w := newTestWorld()
 			players := []*Entity{}
@@ -190,6 +190,8 @@ func TestChronicleHuntPartyCreditRequiresAnEligibleAcceptedContract(t *testing.T
 				member.X = 900
 			case "dead":
 				member.State, member.Health = "DEAD", 0
+			case "disconnected":
+				member.Disconnected = true
 			case "other-instance":
 				member.InstanceID = "unrelated-dungeon"
 			}
@@ -216,7 +218,7 @@ func TestChronicleHuntPartyCreditRequiresAnEligibleAcceptedContract(t *testing.T
 			defer member.Mu.RUnlock()
 			after := member.Quests[0]
 			wantCount := before.Count
-			if scenario == "nearby" {
+			if scenario == "nearby" || scenario == "dead" {
 				wantCount++
 			}
 			if after.Count != wantCount || after.Completed != before.Completed || after.GrantedXP != 0 || after.GrantedGold != 0 {

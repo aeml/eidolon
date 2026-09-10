@@ -1,5 +1,6 @@
 import { GuildUI } from './GuildUI.js';
 import { PhonePartyUI } from './PhonePartyUI.js';
+import { PARTY_REWARD_DETAILS, PARTY_REWARD_SUMMARY } from './PartyRewardGuidance.js';
 
 /**
  * Social UI module — handles the social (online players) window,
@@ -350,7 +351,8 @@ export class SocialUI {
 				this.partyLootRule.disabled = true;
 			}
             if (panelGuidance) {
-                panelGuidance.textContent = 'Stay near party members to share kill credit, gold, XP, and dungeon boss rewards. Each nearby member also adds to the party reward bonus.';
+                panelGuidance.textContent = PARTY_REWARD_SUMMARY;
+                panelGuidance.title = PARTY_REWARD_DETAILS;
             }
             if (this.socialWindow.style.display === 'none') {
                 this.setPartyPanelVisible(false);
@@ -390,13 +392,10 @@ export class SocialUI {
 			this.partyLootRule.value = partyData.lootRule || 'ffa';
 			this.partyLootRule.disabled = !amILeader;
 		}
-        const nearbyBonusPct = Math.max(10, members.length * 10);
-
+        const maxGoldPoolBonusPct = members.length * 10;
         if (panelGuidance) {
-            panelGuidance.title = amILeader
-                ? `Leader view: keep members nearby to share kill credit, gold, XP, and dungeon boss rewards. Current nearby party bonus target reads +${nearbyBonusPct}% before dungeon difficulty multipliers.`
-                : `Party rewards are proximity-based: stay near the group to share kill credit, gold, XP, and dungeon boss rewards. A full nearby party currently targets about +${nearbyBonusPct}% bonus rewards before difficulty scaling.`;
-            panelGuidance.textContent = `${amILeader ? 'Leader view' : 'Stay together'} · nearby allies share rewards (+${nearbyBonusPct}% target).`;
+            panelGuidance.title = PARTY_REWARD_DETAILS;
+            panelGuidance.textContent = `${amILeader ? 'Leader view' : 'Party member'} · ${PARTY_REWARD_SUMMARY}`;
         }
 
         members.forEach(member => {
@@ -453,7 +452,9 @@ export class SocialUI {
 
             const bonus = document.createElement('span');
             bonus.className = 'party-member-bonus';
-            bonus.textContent = `Nearby share: +${nearbyBonusPct}%`;
+            bonus.textContent = `Up to +${maxGoldPoolBonusPct}% Gold pool`;
+            bonus.title = 'The shared Gold pool gains 10% per eligible party member before difficulty scaling. '
+                + 'This maximum assumes everyone qualifies; it is not a personal XP bonus. ' + PARTY_REWARD_DETAILS;
 
             metaRow.appendChild(role);
             metaRow.appendChild(bonus);

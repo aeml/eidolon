@@ -265,7 +265,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 
 			w.fireDamageEvent(player, target.ID, finalDamage, "holy", player.InstanceID)
 			if target.Health <= 0 {
-				w.handleDeath(target, player, nil)
+				w.handleDeathWorldLocked(target, player, nil)
 			}
 			target.Mu.Unlock()
 
@@ -576,7 +576,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 						w.fireDamageEvent(player, target.ID, finalDamage, "holy", player.InstanceID)
 						if isDead {
 							target.Mu.Lock()
-							w.handleDeath(target, player, nil)
+							w.handleDeathWorldLocked(target, player, nil)
 							target.Mu.Unlock()
 						}
 					}
@@ -639,7 +639,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 					w.fireDamageEvent(player, target.ID, finalDamage, "holy", player.InstanceID)
 					if isDead {
 						target.Mu.Lock()
-						w.handleDeath(target, player, nil)
+						w.handleDeathWorldLocked(target, player, nil)
 						target.Mu.Unlock()
 					}
 				} else {
