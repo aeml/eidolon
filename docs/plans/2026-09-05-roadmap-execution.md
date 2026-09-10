@@ -27,7 +27,69 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 09:14 UTC
+## Current checkpoint — September 10, 09:33 UTC
+
+Previous goal turn was PROGRESS (earned upgrade implementation/native diagnostics).
+This turn makes PROGRESS with two real visual/input fixes and native evidence.
+Primary stays clean308510ad; all new work is on separate native WT
+`/tmp/eidolon-earned-upgrade-native-AktTHc`, branch
+`work/earned-upgrade-native-20260910`, now clean/frozen **f2600a44**.
+Detailed findings/release-note drafts:
+`docs/plans/2026-09-10-native-equipment-upgrade-verification.md` there.
+
+72474/f5b09c70 terminated1:2of3passed; failed drag reached mainhand but lacked
+dragover/drop. Archive `/tmp/eidolon-upgrade-repeat-proof-EeGmwU`, failure image
+inspected. Installed Playwright code confirmed default one-step pointer movement.
+a5208f00 uses40ordinary steps, no synthetic DOM events/protocol bypass. Focused
+63397 PASS39tests+lint. Native91563/a5208f00 completed all six swaps/login checks,
+but3cases failed browser-health because generic Ring artwork generated /null404s.
+Archive `/tmp/eidolon-upgrade-stepped-failure-eUcOpi`; not a full native pass.
+
+Runtime2741d551 adds safe procedural item-icon fallbacks: unknown equipment names
+reuse actual slot-family art; other nonempty unknown items use a neutral parcel.
+Canonical equipment, quest/gem/currency art unchanged. Focused99691 PASS90/6/
+13.381s+lint. Native63002 TERMINAL1:2casespassed, icons visible (image inspected),
+one swap failed despite dragover events. Archive
+`/tmp/eidolon-upgrade-icons-partial-uawqJn`. Pointer steps alone were insufficient.
+Do not attribute screenshot FPS counters to controlled performance evidence.
+
+Baseline38479 deterministically failed3new node-identity tests: equipment UI
+cloned drop targets during character-sheet refresh. Runtime0e640ef9 preserves
+slot nodes, caches unchanged artwork, replaces owned handlers, clears stale
+actions and refreshes focused tooltips. Same-ID Forge changes invalidate cache.
+Final focused14943 PASS91tests/6suites18.306s+lint; baseline failed log preserved.
+Native fixture now calls the actual equipment-render refresh DURING dragover,
+without player-state or network injection, and requires it for both swapped slots.
+
+Native79136/0e640ef9 TERMINAL PASS:3independent stressed full-bag swap accounts
+52.8s, then actual Forge/guide1case24.1s (+1/+10levels,two potency ranks,damage46/
+next50,basis,costs,tab,save and guide choices). Wrapper credential scan0sanitized;
+owned API/Mongo absent after cleanup. Archive
+`/tmp/eidolon-equipment-refresh-first-pass-XltIDl` retains log/Forge artifacts only:
+the second Playwright command cleared earlier equipment screenshots. Functional
+pass stands, but complete artifact retention was NOT achieved.
+
+f2600a44 gives both commands independent output directories under scanned
+test-results, forwards Forge arguments and adds real-shell success/fail-fast
+checks. Initial2044 passed2tests but lint rejected regex spacing; corrected29082
+exited0 with tests/lint/bash/diff checks before commit. Need retained native rerun.
+
+**ACTIVE full client session18794** on frozenf2600a44, Node24.18.0, log
+`/tmp/eidolon-equipment-refresh-full-client.log`, then lint log
+`/tmp/eidolon-equipment-refresh-full-lint.log`. Continue SAME handle; no edits to
+this WT or competing browser/heavy suite until terminal. Then rerun scoped
+`equipment-refresh` native route, inspect/retain all images and scanner/cleanup
+receipts, document and integrate into primary after gates. No native/browser
+process active now. Earned campaign/dungeon replay still unproven and must follow;
+prepared swaps do not establish dungeon balance or completion.
+
+Fresh09:33 GitHub34434837759 queued;34433520743 in progress. No soak cancellation
+permission, push/version change or deployment. Last public identity check08:04.
+Aura integrationd9176d0e full/render/native gates and physical-phone feedback
+remain pending. Full1.1–1.10 including casino scope stays active/incomplete.
+Root ledger is documentation only; never push root.
+
+## Previous checkpoint — September 10, 09:14 UTC
 
 Previous goal turn was PROGRESS (native failure diagnosis and verified route
 integration). This turn makes PROGRESS: implemented earned gear upgrades through
