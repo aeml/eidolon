@@ -272,11 +272,13 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                     const s = await snapshot(actor.page);
                     return !s.dead && s.hp === s.maxHP && s.mana === s.maxMana;
                 }, { timeout: 15_000 }).toBe(true);
+                console.log('[party-clear-rest-guide]', JSON.stringify({ roomIndex, role: tank.className, phase: 'resume-leader' }));
                 await enterDungeon(tank.page, { ...playthrough, useTownGuide: true, resetRun: false });
                 for (const [index, actor] of actors.entries()) {
                     // A fresh start moves the group; resuming intentionally
                     // moves only the requester. Each member uses the guide.
                     if ((await snapshot(actor.page)).instance !== states[index].instance) {
+                        console.log('[party-clear-rest-guide]', JSON.stringify({ roomIndex, role: actor.className, phase: 'resume-member' }));
                         await enterDungeon(actor.page, { ...playthrough, useTownGuide: true, resetRun: false });
                     }
                     await expect.poll(async () => (await snapshot(actor.page)).instance).toBe(states[index].instance);

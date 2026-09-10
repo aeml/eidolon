@@ -1,5 +1,15 @@
 import { expect } from '@playwright/test';
 import { moveByGroundClick, projectEntity, readPlayerState, zoomOutForPortal } from './helpers.js';
+import { approachTownGuide } from '../guideApproach.js';
+
+async function settledGuideApproach(page) {
+    await expect.poll(() => page.evaluate(() => {
+        const game = window.game, player = game.player, camera = game.renderSystem;
+        return player.state === 'IDLE' && !player.targetPosition && !camera.cameraPunch &&
+            Math.hypot(player.mesh.position.x - player.position.x, player.mesh.position.z - player.position.z) < 0.05 &&
+            Math.hypot(camera.cameraTarget.x - player.position.x, camera.cameraTarget.z - player.position.z) < 0.05;
+    }), { timeout: 5000, message: 'finish each town guide waypoint before projecting or issuing the next input' }).toBe(true);
+}
 
 export async function openDungeonGuide(page) {
     await page.evaluate(() => {
@@ -33,19 +43,31 @@ export async function openDungeonGuide(page) {
     });
     await zoomOutForPortal(page);
     let guide;
-    for (let step = 0; step < 4; step++) {
-        guide = await projectEntity(page, 'dungeon-npc-1');
-        if (guide?.visible) break;
-        const player = await readPlayerState(page);
-        const dx = -player.x;
-        const dz = 240 - player.z;
-        const scale = Math.min(1, 16 / Math.hypot(dx, dz));
-        await moveByGroundClick(page, dx * scale, dz * scale, { allowJumpFallback: false });
+    try {
+        guide = await approachTownGuide({
+            project: () => projectEntity(page, 'dungeon-npc-1'), read: () => readPlayerState(page),
+            move: (dx, dz, options) => moveByGroundClick(page, dx, dz, options),
+            settle: () => settledGuideApproach(page)
+        });
+        await expect.poll(async () => {
+            guide = await projectEntity(page, 'dungeon-npc-1');
+            return Boolean(guide?.visible);
+        }, { timeout: 20_000 }).toBe(true);
+    } catch (error) {
+        const diagnostic = await page.evaluate(point => {
+            const g = window.game, p = g.player;
+            const npc = g.remotePlayers.get('dungeon-npc-1');
+            const cover = point && document.elementFromPoint(point.x, point.y);
+            return { instance: g.currentInstanceType, player: p.position, state: p.state,
+                target: p.targetPosition, zoom: g.renderSystem.currentZoom, camera: g.renderSystem.cameraTarget,
+                guide: npc ? { position: npc.position, active: npc.isActive, mesh: Boolean(npc.mesh),
+                    loaded: g.activeEntitiesCache.includes(npc) } : null,
+                projection: point, coverTag: cover?.tagName, coverId: cover?.id,
+                socket: g.network.socket?.readyState, probe: window.__guideClickProbe };
+        }, guide || null);
+        console.log('[dungeon-guide] approach failed:', JSON.stringify(diagnostic));
+        throw error;
     }
-    await expect.poll(async () => {
-        guide = await projectEntity(page, 'dungeon-npc-1');
-        return Boolean(guide?.visible);
-    }, { timeout: 20_000 }).toBe(true);
     // Ground-click navigation proves movement, not arrival. A projection made
     // during that approach can hover the guide then miss on the next click's
     // fresh raycast as the rendered actor/camera advances underneath the cursor.
