@@ -16,7 +16,58 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 06:08 UTC
+## Current checkpoint — September 10, 06:22 UTC
+
+This continuation made PROGRESS: the full fresh Wizard Earth story-readiness
+attempt finished successfully, its evidence was preserved/inspected, and aura
+integrated regression advanced. Full1.1–1.10 goal remains active/incomplete.
+No new version, push, deployment, cancellation or whole-goal completion claim.
+
+**13998 TERMINAL PASS1/52.7m**, retries0, clean/frozencb348ef throughout,
+fresh-merchant-0910/18560/18561/41960/log
+`/tmp/eidolon-fresh-merchant-replay.log`. All eight phases PASSED. Orc50/manual
+300Gold15843XP/save passed1184s, zero deaths,22ordinary rests,1earned training
+stop. Exactclaim30/8464XP/20654Gold→31/3182XP/20954Gold. Handoff PASS12867ms;
+strict story-only readiness PASS2358ms, no problems, every daily unaccepted,
+level30dungeon entry enabled and raid sealed pending the actual dungeon clear.
+This proves one fresh Wizard's opening route through readiness, NOT a dungeon
+clear, other classes/groups/realms/raids or overall balance/roadmap completion.
+
+Five merchant visits passed, including level29 after the former failure point;
+their exact sale totals40/210/920/1280/810Gold were independently checked. Two
+stash visits stored four whole items each with immediate exact conservation.
+Fresh handoff checks bag gear after login, not all stored-item identities;
+separate prepared Chronicle tests contain stash-before/after-login assertions.
+Do not broaden the fresh stash receipts into an unperformed reconnect check.
+
+Archive `/tmp/eidolon-fresh-story-ready-proof-LmN2SQ`, full HTML/results;
+actual-credential wrapper scan0 and supplemental archived scan0. Exact owned
+API/Mongo/image and18560/18561/41960 listeners absent after cleanup. Viewed
+earned-watch-ready.png and earned-collection-ready.png: Ilyra's dialogue shows
+40/40 and8/8, actual reward quotes and explicit Complete Quest buttons. These
+are desktop quest captures, not full world/phone/raid visual acceptance.
+Primary proof commit **3dcb533** (docs only aftercb348ef) records details in
+`docs/plans/2026-09-10-earned-earth-readiness-proof.md` and updates the merchant/
+phase notes. Prior84056/22725 failures stay failed; source correction is1b5a81b.
+
+No owned local browser remains active. Aura prototype still clean/frozen
+**a877d46** in `/tmp/eidolon-rest-aura-batching-k1vBvU`. Integrated4349 TERMINAL
+PASS256suites3627tests141.417s plus lint, Node24; logs
+`/tmp/eidolon-aura-integrated-full-{client,lint}.log`. **95316 ACTIVE**, only
+owned heavy test, `go test -race ./...` under module-selectedGo1.24.5, log
+`/tmp/eidolon-aura-integrated-full-server.log`. Root21.857s/database1.260s have
+passed; wait for complete game/all-package terminal result. Server source diff
+against accepted59e236b37 is empty. No source edits/new heavy/native runs until
+this handle finishes. Then actual aura journey/expiry/two-player quality/rejoin
+and controlled rendered comparison remain due; no FPS/phone/promotion claim.
+
+CI34434837759/predeploy102741303703 remains QUEUED; soak34433520743 was
+re-polled in progress. No cancellation approval, canonical62dc2d1 unchanged,
+no new deployment/final live acceptance. Last public check remains healthy,
+database-ready60/df91bb6. Root ledger-only and NEVER pushed. All class/group/
+realm/dungeon/raid/phone/aura/CIcost/casino and remaining roadmap scope stays open.
+
+## Previous checkpoint — September 10, 06:08 UTC
 
 Previous turn was a VERIFIED WAIT. This continuation observed the same live13998
 through Orc26 and a second actual stash visit. No source changes, restart,
