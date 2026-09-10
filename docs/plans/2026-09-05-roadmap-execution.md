@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 20:29 UTC
+## Current checkpoint — September 10, 20:37 UTC
 
 Previous goal turn was PROGRESS (compact roster browser/full-client acceptance
 and revised safe-warning casts). This turn is PROGRESS: release-candidate stat
@@ -74,14 +74,21 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   plus zero-warning lint. Logs`/tmp/eidolon-compact-party-integrated-full-client.log`
   and corresponding`...-full-lint.log`. Primary documentation records this pass;
   its server tree is still identical to full-race-tested20d9f17d.
-- Browser60485 is ACTIVE on clean frozen primaryce2040fd,
-  runfour-role-safe-casts-0910, log`/tmp/eidolon-four-role-safe-casts-native.log`.
-  Its actual handle was revalidated live this turn. All four setup/party/roster/
-  instance checks, two rooms and two full-party recovery/re-entry cycles passed.
-  Warden started15000HP/tank855HP555MP; last observed boss12754HP at~20:28.
-  Do not mutate source or restart because an observation times out.
-  This is the sole local heavy/browser gate. It includes compact roster and
-  safe in-range warning casts; full clear/manual persistence remain open.
+- Browser60485 once2040fd is TERMINAL1 after15.7minutes. Two rooms and two
+  all-four recovery/resume cycles passed; Warden last2665HP, tank171HP/10MP,
+  then Fighter/Rogue observed deaths. Totals: Fighter7771damage/4701taken,
+  Cleric7764effective ally healing/3976taken, Wizard7595damage/2632taken,
+  Rogue8549damage/3352taken; all692Gold/no rejected casts. Warning moves/escapes
+ 18/9,14/11,8/8,11/11 respectively. Cleric ended8mana and final decisions could
+  not afford a heal. Final full Fighter resources are cleanup respawn values.
+  Archive`/tmp/eidolon-four-role-safe-casts-proof-rwErPR`; wrapper/copy0 QA
+  prefixes and owned containers/listeners gone. No active browser now.
+- Primary is clean02d30584. Its next controller reserves Charge for gaps above18 units rather
+  than repeatedly spending20mana to return from a12.5-unit quake.60485 recorded
+ 15 Charges across the run. Only the party route opts in; default hunt selection
+  and ranged casts remain unchanged.73196 passed87 tests/3suites0.94s plus lint.
+  No combat, gear, regen or deadline changes. Full clear/manual persistence and
+  native proof of this new strategy remain open.
 - Combined successor `/tmp/eidolon-browser-cost-current-RxDWen` is clean38875a69.
   It now includes prepared/ordinary starting-stat parity52ff4513 (from3832b150)
   and mandatory all-class parity gateec401a95 (fromaeff8ab5), retaining the entire
@@ -105,6 +112,13 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   No full combined Go/client or native release pass. Desktop healing/compact
   roster, expanded story/balance and Dark King phase integrity remain outside
   this candidate. All planned work and later acceptance still required.
+- Full Go race37969 is ACTIVE on clean frozen candidate38875a69, log
+ `/tmp/eidolon-next-party-backport-full-server.log`. Its actual handle was
+  revalidated live; no full result yet. This is the sole local heavy gate.
+  After it ends, inspect failures or record the pass; candidate still requires
+  complete client/lint, native stat/storage/party/required-all, bundled-browser,
+  version/remote/live acceptance. Do not infer production readiness from focused
+  checks or rerun/restart an unchanged live process.
 - Remote rechecked again at~20:13: canonical62dc CI34434837759 remains queued at
   predeploy, after five hosted jobs passed; Nightly34433520743 still in progress.
   No soak interruption, push, new version or production acceptance.
