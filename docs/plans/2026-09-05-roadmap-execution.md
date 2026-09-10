@@ -5,7 +5,47 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 22:08 UTC
+## Current checkpoint — September 10, 22:21 UTC
+
+Previous goal turn was PROGRESS: preserved the terminal party attempt and
+verified party credit. This turn is PROGRESS: reproduced and corrected the real
+boss-slam defense bypass, integrated the successor correction, and improved
+four-role input/evidence coverage. Full roadmap and release acceptance remain open.
+
+- Primaryd3a54d4a makes basic hits and slams share existing invulnerability,
+  Sanctuary/Guardian and Arcane Shield defenses. Real AI wind-up76331 failed
+  before correction;66582 passed9.426s afterward. Expanded race84455 passed
+ 16.956s, including lethal shield-rune party credit with a distant downed ally,
+  ordinary shields, safe-zone rechecks, Dark King paths and reflection identity.
+  Logs`/tmp/eidolon-boss-slam-defense-{red,green,regression}.log`.
+  No boss damage/HP/radius/cooldown, gear, regeneration or deadline changes.
+  This does not attribute42295's wipe to a shield the Wizard never cast.
+- Full primary Go race68058 is ACTIVE on server treed3a54d4a; root passed29.012s,
+  game still running, other packages pass/cached/no tests so far. Log
+ `/tmp/eidolon-boss-slam-full-server.log`. This is the only local heavy gate.
+  Poll the same handle; do not edit server source or start another heavy gate
+  until authoritative termination. No current full-pass claim.
+- Primary is clean34cf39a4 after a test-only follow-up. The party driver uses
+  equipped/affordable/ready Wizard Arcane Shield and Rogue Poison Coating via
+  real hotbar keys after warning avoidance. Client-observed warning timing and
+  recent damage positions distinguish early escape, re-entry and late movement;
+  eventual escape is not authoritative dodge proof.26401 passed67tests/3suites
+ 1.469s plus lint;37006 discovery passed the single intended route. Logs
+ `/tmp/eidolon-party-defense-controls-{client,lint,discovery}.log`.
+  Native new-controller/full-clear/manual/relogin proof remains pending.
+- Successor is clean80140cfb, importing primaryd3a54d4a with only its separate
+  Dark King phase caps excluded, preserving existing explosion/reflection damage.
+ 88780 fresh race passed17.670s: actual slams, shields/runes, safe-zone/reach,
+  reflection and party eligibility/snapshot/class/manual contracts. Log
+ `/tmp/eidolon-next-slam-defense-focused.log`. Its older full server pass is
+  superseded by this runtime change; rerun full Go, updated104browser bundles,
+  required-all/version/remote/live gates before promotion. Client runtime remains
+  unchanged; primary's full-party driver is not imported into the successor.
+- Remote check this turn: canonical62dc CI34434837759 still queued at predeploy
+  after five hosted passes; Nightly34433520743 is confirmed in progress.
+  No soak cancellation, push, version bump or new deployment claimed.
+
+## Previous checkpoint — September 10, 22:08 UTC
 
 42295 is now TERMINAL1 after16.4minutes: two rooms and both four-person
 recovery/resume cycles passed, but Rogue and Wizard died with the Warden last
