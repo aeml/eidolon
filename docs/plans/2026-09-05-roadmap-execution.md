@@ -5,12 +5,13 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 21:06 UTC
+## Current checkpoint — September 10, 21:08 UTC
 
 Previous goal turn was PROGRESS: native stat/storage acceptance and staged party
 controls. This turn is PROGRESS: all bundled browser groups passed on the prior
-candidate; the new required two-client desktop healing gate is now running on
-the separate support integration source. Full roadmap and release gates remain.
+candidate, the new required two-client desktop healing gate passed, and the
+support integration is fast-forwarded into the successor. The revised four-role
+dungeon run is now active. Full roadmap and release gates remain.
 Full roadmap remains active and deployment/1.1 completion is not claimed.
 
 - Full Go race81223 TERMINAL0 on20d9f17d: game381.679s, other tested packages
@@ -89,8 +90,8 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   and ranged casts remain unchanged.73196 passed87 tests/3suites0.94s plus lint.
   No combat, gear, regen or deadline changes. Full clear/manual persistence and
   native proof of this new strategy remain open.
-- Combined successor `/tmp/eidolon-browser-cost-current-RxDWen` is cleanee15e582
-  (documentation atop tested38875a69).
+- Combined successor `/tmp/eidolon-browser-cost-current-RxDWen` is cleane7fde8bc
+  (fast-forwarded support integration after old browser27935 finished).
   It now includes prepared/ordinary starting-stat parity52ff4513 (from3832b150)
   and mandatory all-class parity gateec401a95 (fromaeff8ab5), retaining the entire
   old required-all chain including Well Rested transitions and Forge/socket tail.
@@ -110,9 +111,9 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
  35057 passed117client tests/4suites11.84s, lint and shell syntax. All these short
   checks are terminal. Logs`/tmp/eidolon-next-party-backport-focused-final.log`,
  `/tmp/eidolon-next-starting-stat-root.log`, and corresponding backport client/lint.
-  Full combined client/native release checks remain open. Desktop healing/compact
-  roster, expanded story/balance and Dark King phase integrity remain outside
-  this candidate. All planned work and later acceptance still required.
+  Desktop healing/compact roster are now imported as recorded below. Expanded
+  story/balance and Dark King phase integrity remain outside this candidate.
+  All planned work and combined-source acceptance are still required.
 - Full Go race37969 TERMINAL0 on clean38875a69: root21.800s/game331.607s,
   database1.143s/loadtest1.033s/lifecycle1.042s, no race warning. Log
  `/tmp/eidolon-next-party-backport-full-server.log`; doc883e39e0 records the pass.
@@ -147,13 +148,12 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   observations, not populated-storage or full-world visual/physical-phone proof.
   Additional phone captures show thumb controls outside the central actors and
   readable scrolling party choices; physical-phone acceptance remains open.
-  Primary02d30584 is idle,
-  ready for the next revised four-role run. Candidate
+  Primary02d30584 now owns the revised four-role run46761. Candidate
   native stat/storage/party/required-all, bundled-browser, version/remote/live
   acceptance remain pending. Do not infer production readiness from focused
   checks or restart a process solely on an observation timeout.
 - Separate staging `/tmp/eidolon-next-party-support-ycLHyw`, branch
-  work/next-party-support-20260910, is cleanb07008d1 fromee15e582. It imports
+  work/next-party-support-20260910, is cleane7fde8bc fromee15e582. It imports
   desktop healing793 as3e526d1e, admissionb710/20d as0f12ed02/6c23dac3, and
   compact rosterba481 as43e60e91. Only the incoming primary four-player harness
   file was excluded (absent candidate dependencies); primary retains it. No
@@ -164,7 +164,7 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   four-visible-targets case. All these checks are terminal. Logs
  `/tmp/eidolon-next-support-focused-{client,server,lint}.log` and
  `/tmp/eidolon-next-support-discovery.log`. Full combined regressions/native
-  support/roster and integration remain required before version/promotion.
+  roster and full release gates remain required before version/promotion.
 -3c7cf59e adds a two-client native desktop support gate: ordinary registrations,
   real invites/roster selection/hotbar keys, both support abilities at720p/900p,
   authoritative ally-heal events/HP gains while aiming at the caster, plus clear
@@ -180,11 +180,21 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
  `/tmp/eidolon-next-desktop-support-focus-proof-Ig2ZIB`, log
  `/tmp/eidolon-next-desktop-support-native.log`; scanned and owned ports cleared.
   b07008d1 uses a real click on the permanent chat input; lint81375 exited0.
-  Native78990 is ACTIVE on frozenb07008d1, route desktop-support,
-  runnext-support-0910-focus, ports18580/18581/41980; log
- `/tmp/eidolon-next-desktop-support-focus-native.log`. This is the only local heavy
-  gate. Do not modify this source or launch another heavy/native job until it
-  exits; old103case browser acceptance is not acceptance of these changed bytes.
+  Native78990 TERMINAL0 on frozenb07008d1:1case28.4s, both spells healed the
+  explicitly selected ally at both viewport sizes while aiming at caster;
+  authoritative heal events/HP gain, unchanged caster HP and clear-selection
+  all passed. Both clients' browser-failure lists empty. Log
+ `/tmp/eidolon-next-desktop-support-focus-native.log`, archive
+ `/tmp/eidolon-next-desktop-support-proof-kwuzE8`; scan passed and owned services/
+  ports cleared. Documentatione7fde8bc records the evidence, and the candidate
+  fast-forwarded to it. Full Go/client/updated104browser/required-all/version/live
+  gates still apply to this changed integration source.
+- Native four-role46761 is ACTIVE on frozen primary02d30584, routeparty-dungeon,
+  runparty-charge-0910-2108, ports18580/18581/41980; log
+ `/tmp/eidolon-four-role-charge-reserve-native.log`. It tests the previously
+  committed18-unit tank Charge reserve with ordinary party input and unchanged
+  level30 common gear/combat/regen/deadlines. This is the sole local heavy gate;
+  candidate/staging are idle. No whole dungeon clear/manual persistence claim.
 - Remote rechecked again at~20:49: canonical62dc CI34434837759 remains queued at
   predeploy, after five hosted jobs passed; Nightly34433520743 still in progress.
   No soak interruption, push, new version or production acceptance.
