@@ -35,9 +35,9 @@ test('unrelated and non-Earth chapters do not launch Earth hunts', async () => {
 test('the actual functional route invokes each prerequisite before its formerly skipped next chapter', () => {
     const source = fs.readFileSync('tests/e2e/chronicle-earth-route.js', 'utf8');
     for (const [prerequisite, next] of [
-        ['await earnRequiredHunts(SEED_CHAPTER)', 'await acceptOfferedChapter(page, SEED_CHAPTER)'],
-        ["await earnRequiredHunts('chronicle_earth_returning_scar')", "await earnEarthInvestigation(page, 'chronicle_earth_returning_scar', openIlyra)"],
-        ['await earnRequiredHunts(EARTH_DUNGEON_CHAPTER)', 'await acceptOfferedChapter(page, EARTH_DUNGEON_CHAPTER)']
+        ['await earnRequiredHunts(page, SEED_CHAPTER)', 'await acceptOfferedChapter(page, SEED_CHAPTER)'],
+        ["await earnRequiredHunts(page, 'chronicle_earth_returning_scar')", "await earnEarthInvestigation(page, 'chronicle_earth_returning_scar', openIlyra)"],
+        ['await earnRequiredHunts(page, EARTH_DUNGEON_CHAPTER)', 'await acceptOfferedChapter(page, EARTH_DUNGEON_CHAPTER)']
     ]) {
         expect(source.indexOf(prerequisite)).toBeGreaterThan(-1);
         expect(source.indexOf(prerequisite)).toBeLessThan(source.indexOf(next));
@@ -47,4 +47,19 @@ test('the actual functional route invokes each prerequisite before its formerly 
     expect(source).toContain('await maintainEarnedInventory(page');
     expect(source).toContain('await leaveEarnedCombatSafety(page');
     expect(source).toContain('seedsBeforeTurnIn - required');
+});
+
+test('bounded serial stages preserve the earned character and the complete dungeon prerequisite route', () => {
+    const spec = fs.readFileSync('tests/e2e/chronicle-collection-gameplay.spec.js', 'utf8');
+    expect(spec).toContain("mode: 'serial', timeout: 600_000");
+    expect(spec.match(/await ensureDungeonReadyLevel\(page\)/g)).toHaveLength(1);
+    expect(spec).toContain('`${credentials.username}-retry${testInfo.retry}`');
+    expect(spec.match(/test\('/g)).toHaveLength(3);
+    expect(spec.match(/await loginAndEnterWorld\(page, credentials\)/g)).toHaveLength(6);
+    expect(spec.match(/expect\(await remainingSeeds\(page\)\).toBe\(seedsAfterTurnIn\)/g)).toHaveLength(5);
+    const route = fs.readFileSync('tests/e2e/chronicle-earth-route.js', 'utf8');
+    const composite = route.split('export async function prepareEarthChronicleThroughPlay(page) {')[1].split('\n}')[0];
+    expect(composite).toContain('await earnEarthCollectionThroughPlay(page);\n    await earnEarthImpAndScarThroughPlay(page);\n    await prepareEarthDungeonOfferThroughPlay(page);');
+    expect(route).toContain("'The same character must have earned and turned in the Seed chapter'");
+    expect(route).toContain("'The same character must have earned and turned in the scar chapter'");
 });

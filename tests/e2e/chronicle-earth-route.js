@@ -135,12 +135,8 @@ async function earnObjective(page, id, hunt = null) {
     throw new Error(`No complete objective after ${maxEncounters} normal Earth encounters: ${JSON.stringify(await readChronicleChapter(page, id))}`);
 }
 
-export async function prepareEarthChronicleThroughPlay(page) {
-    // The enclosing functional dungeon route prepares levels. These steps do
-    // not grant quests, items, kills or access; encounter waypoints are explicit
-    // QA travel/protection, so this is not fresh-character balance evidence.
-    const previousAutoLoot = await page.evaluate(() => window.game.uiManager.getAutoLootEnabled());
-    const earnRequiredHunts = nextChapter => earnEarthHuntsBefore(nextChapter, async hunt => {
+async function earnRequiredHunts(page, nextChapter) {
+    await earnEarthHuntsBefore(nextChapter, async hunt => {
         expect((await readChronicleChapter(page, hunt.previousQuestId))?.completed,
             `${hunt.title} requires its actual preceding chapter`).toBe(true);
         await openIlyra(page);
@@ -151,13 +147,20 @@ export async function prepareEarthChronicleThroughPlay(page) {
         await claimChapterAndContinue(page, hunt.id);
         await page.locator('#btn-close-quest').click();
     });
+}
+
+export async function earnEarthCollectionThroughPlay(page) {
+    // The enclosing functional route prepares levels once. These steps do not
+    // grant quests, items, kills or access; encounter waypoints are explicit QA
+    // travel/protection, so this is not fresh-character balance evidence.
+    const previousAutoLoot = await page.evaluate(() => window.game.uiManager.getAutoLootEnabled());
     await openIlyra(page); await acceptOfferedChapter(page, FIRST_CHAPTER);
     await setAutoLootThroughSettings(page, true);
     await earnObjective(page, FIRST_CHAPTER);
     await claimChapterAndContinue(page, FIRST_CHAPTER);
     await page.locator('#btn-close-quest').click();
     await earnEarthInvestigation(page, 'chronicle_earth_keepers_house', openIlyra);
-    await earnRequiredHunts(SEED_CHAPTER);
+    await earnRequiredHunts(page, SEED_CHAPTER);
     await openIlyra(page); await acceptOfferedChapter(page, SEED_CHAPTER);
     await earnObjective(page, SEED_CHAPTER);
     const required = (await readChronicleChapter(page, SEED_CHAPTER)).maxCount;
@@ -172,9 +175,25 @@ export async function prepareEarthChronicleThroughPlay(page) {
     await claimChapterAndContinue(page, SEED_CHAPTER);
     expect(await seedsInBag()).toBe(seedsBeforeTurnIn - required);
     await page.locator('#btn-close-quest').click();
-    await earnRequiredHunts('chronicle_earth_returning_scar');
+    await setAutoLootThroughSettings(page, previousAutoLoot);
+    console.log('[chronicle-earth] opening, diary, 40 Skeletons and 8 natural Seeds manually turned in');
+}
+
+export async function earnEarthImpAndScarThroughPlay(page) {
+    expect((await readChronicleChapter(page, SEED_CHAPTER))?.completed,
+        'The same character must have earned and turned in the Seed chapter').toBe(true);
+    const previousAutoLoot = await page.evaluate(() => window.game.uiManager.getAutoLootEnabled());
+    await earnRequiredHunts(page, 'chronicle_earth_returning_scar');
     await earnEarthInvestigation(page, 'chronicle_earth_returning_scar', openIlyra);
-    await earnRequiredHunts(EARTH_DUNGEON_CHAPTER);
+    await setAutoLootThroughSettings(page, previousAutoLoot);
+    console.log('[chronicle-earth] 60 qualifying Imps and all scar investigations manually turned in');
+}
+
+export async function prepareEarthDungeonOfferThroughPlay(page) {
+    expect((await readChronicleChapter(page, 'chronicle_earth_returning_scar'))?.completed,
+        'The same character must have earned and turned in the scar chapter').toBe(true);
+    const previousAutoLoot = await page.evaluate(() => window.game.uiManager.getAutoLootEnabled());
+    await earnRequiredHunts(page, EARTH_DUNGEON_CHAPTER);
     await openIlyra(page);
     await acceptOfferedChapter(page, EARTH_DUNGEON_CHAPTER);
     await setAutoLootThroughSettings(page, previousAutoLoot);
@@ -183,6 +202,13 @@ export async function prepareEarthChronicleThroughPlay(page) {
     await expect(page.locator('[data-raid-type="earth_crystal_raid"]')).toHaveAttribute('data-access', 'sealed');
     await page.locator('#btn-close-dungeon-menu').click();
     console.log('[chronicle-earth] ordinary kills, naturally dropped relics, manual rewards and sealed pre-clear raid verified');
+}
+
+export async function prepareEarthChronicleThroughPlay(page) {
+    // Preserve the full prerequisite graph for the actual dungeon playthrough.
+    await earnEarthCollectionThroughPlay(page);
+    await earnEarthImpAndScarThroughPlay(page);
+    await prepareEarthDungeonOfferThroughPlay(page);
 }
 
 export async function verifyEarthDungeonChronicleTurnIn(page, credentials) {
