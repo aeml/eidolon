@@ -16,7 +16,111 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 04:47 UTC
+## Current checkpoint — September 10, 05:23 UTC
+
+This continuation made PROGRESS; the full1.1–1.10 goal remains active and
+incomplete. Merchant correction native36179 TERMINAL PASS1/1.2m on1b5a81b,
+all12ordinary Recall/walk/shop visits, retries0, no pending target, camera
+settled, shop/bag visible, zero blocked stops (original diagnostic accumulated12).
+Archive `/tmp/eidolon-merchant-settled-proof-ijYfo8`, log
+`/tmp/eidolon-merchant-settled-native.log`; actual-credential scan passed and
+exact API/Mongo/image and18560/18561/41960 listeners absent after cleanup.
+No success screenshot was emitted; no rendered-art quality claim.
+
+Primary proof commitcb348ef documents the actual Orc37failure and corrected
+merchant evidence. Code1b5a81b is backed by full8866 PASS288suites4056tests/
+141.599s plus lint and focused54885 PASS19/3/1.023s. This fixes a QA movement
+projection race, NOT a claimed runtime collision issue. Full earned acceptance
+still requires all50Orcs/manual reward/save/handoff/strictstory-onlylevel30.
+
+**13998 ACTIVE**, ONLY owned local browser task (building at checkpoint), new
+fresh-story-ready run fresh-merchant-0910 on clean/frozencb348ef, same loopback
+18560/18561/41960, log `/tmp/eidolon-fresh-merchant-replay.log`. Fresh unprepared
+Wizard, explicit REST_RECOVERY1, CIunset/retries0, Node24inside sg-render and
+actual prepare:client. Preserve all phase/encounter/death/manual reward/save/
+readiness requirements. Do not restart on observation timeout or edit this source
+while it runs; preserve/sanitize actual terminal evidence and exact cleanup.
+All classes/groups/realms/full dungeons/raids/physical-phone/aura/CIcost/casino
+and remaining roadmap milestones stay open. No casino runtime work.
+
+At05:22:43 re-polled releaseCI34434837759: predeploy102741303703 still QUEUED;
+soak34433520743 remains in progress. Cancellation question still unanswered.
+Canonical62dc2d1 unchanged, no new push/deployment or final live acceptance.
+Root stays ledger-only and NEVER pushed. Next: observe exact13998 and exact
+release queue while retaining all broader scope.
+
+## Previous checkpoint — September 10, 05:20 UTC
+
+This goal turn is PROGRESS: preserved the failed fresh campaign, ran a bounded
+native diagnostic, corrected an independently confirmed QA projection race, and
+completed full regression checks. The full roadmap remains active/incomplete;
+none of the class/group/campaign/raid/phone/aura/casino gates were removed.
+
+Original merchant diagnostic80980 TERMINAL PASS1/1.0m, all12fresh Recall/walk/shop
+visits on72fa6b8. It did NOT reproduce the Orc37/50 failure. Archive
+`/tmp/eidolon-merchant-original-proof-PyNrX6`, actual-credential scan passed,
+exact API/Mongo/image and18560/18561/41960 listeners absent after cleanup.
+
+Source confirms `moveByGroundClick` returns after movement starts, while the
+old loop calculated its next offset before actor/camera arrival. Primary1b5a81b
+now settles before each read/click and accepts only stopped proximity. Same
+eight-move bound,12-unit clicks/three-unit stand-off, ordinary Shift-click,
+15-second individual settle limit, plus one fixed45-second approach deadline.
+Error-cause/position/target/camera/blocked-stop evidence retained. This is a QA
+correction, not a claimed production collision fix or full fresh-route pass.
+Focused54885 PASS19/3/1.023s; full8866 PASS288suites4056tests141.599s plus lint.
+See primary `docs/plans/2026-09-10-merchant-approach-verification.md`.
+
+Corrected native36179 ACTIVE, building at this checkpoint, ONLY owned browser
+task, clean/frozen1b5a81b. Run merchant-settled-0910,18560/18561/41960, route
+earned-merchant-approach, log `/tmp/eidolon-merchant-settled-native.log`.
+No further source changes/heavy tests before terminal preservation and cleanup.
+Then replay the entire earned story-only route;37/50 cannot satisfy Orc/manual
+reward/handoff/strict level30 readiness acceptance.
+
+ReleaseCI34434837759 re-polled: hosted jobs passed, predeploy102741303703 still
+QUEUED. Soak34433520743/job102733792127 still in progress. No cancellation
+approval received, no cancellation/new push/deployment. Canonical62dc2d1 frozen;
+root ledger-only and NEVER pushed. This operational wait does not block other
+meaningful local roadmap work.
+
+## Previous checkpoint — September 10, 05:12 UTC
+
+The preceding casino-only turn was NO PROGRESS toward implementation: it verified
+already-recorded scope without changing it. This continuation revalidated the
+release jobs and preserved fresh-run evidence, then added a bounded native
+merchant diagnostic. Full 1.1–1.10 scope remains active and incomplete.
+
+Fresh phase run84056 is TERMINAL FAILED on ea6cdbb, not active. Opening/diary,
+Watch40, Seeds8, Imp60 and all three scar investigations passed, but Orc progress
+stopped at37/50, level29, with no deaths. The failure is the merchant helper's
+15-second IDLE/no-target/camera-settled predicate, not the enclosing campaign or
+Orc phase timeout. Final position [23.655,0,199.79286313409136], full902HP/638MP,
+three free bag slots. Viewed failure PNG: player obscured beside the market
+stall. Existing evidence does not isolate which part of the predicate remained
+false; do not label this a confirmed production collision regression yet.
+
+Archive `/tmp/eidolon-fresh-orc-phase-proof-A6Wgqj`, log
+`/tmp/eidolon-fresh-phases-replay.log`; actual wrapper credential scan passed and
+exact disposable cleanup was verified at termination. Retained HTML confirms
+the15-second merchant poll. No final50-Orc/manual-save/dungeon-handoff/strict
+level30 story-readiness pass. Do not discard or reclassify this failed attempt.
+
+Primary72fa6b8 adds read-only merchant movement/camera/target/blocked-stop failure
+evidence, preserves the original cause, and exposes a12-visit native Recall/shop
+diagnostic. Original inputs, approach algorithm and15-second settle limit remain
+unchanged. Focused29275 PASS10tests/2suites1.198s, lint and shell/diff checks pass.
+Native80980 ACTIVE (building at this checkpoint), only owned local browser task,
+clean/frozen72fa6b8, route earned-merchant-approach, run merchant-approach-0910,
+ports18560/18561/41960, log `/tmp/eidolon-merchant-approach-native.log`. Do not
+edit this source or start another heavy/native test until its terminal result.
+
+Re-polled CI34434837759: all hosted client/server/browser jobs succeeded;
+predeploy102741303703 still QUEUED. Soak34433520743/job102733792127 remains
+in progress. No new approval to cancel it, no cancellation, push or deployment.
+Canonical62dc2d1 remains frozen. Root stays ledger-only and NEVER pushed.
+
+## Previous checkpoint — September 10, 04:47 UTC
 
 Previous goal turn was a VERIFIED WAIT. This continuation observed new native
 phase proof: full Imp/manual/save and scar investigation phases passed under the
