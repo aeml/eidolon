@@ -48,3 +48,28 @@ Proposed patch note: Desktop party roster rows can now select the recipient of
 Healing Light and Divine Intervention, so enemies covering a teammate no longer
 intercept a deliberately targeted party heal. Clear the selection to return to
 normal cursor aiming.
+
+## Native party evidence and next mechanic
+
+Native87906 on899a8664 ended with a Warden wipe, not a clear. All four hotbar,
+party and same-instance checks passed, as did visible roster selection/clear.
+The opening room cleared and one four-member town-rest/re-entry cycle preserved
+the run and content. Warden's last reported health was661/15000. Cleric recorded
+10,842 effective ally healing,17 Healing Light and8 Guardian Embrace casts,
+zero rejected casts, ending at14mana. The previous inactive-healer problem is
+therefore not the explanation for this attempt. Archive:
+`/tmp/eidolon-four-role-roster-heal-proof-Gh3dOT`; owned services cleaned up.
+The screenshot is readable but only two of four roster members fit without
+scrolling, so compact desktop layout remains a visual follow-up.
+
+All three non-tank roles recorded3864 damage. The boss emits a visible two-second
+ROOT QUAKE warning every ten seconds with12.5-unit radius at scale4; the old
+driver never avoided these warnings. Equal damage is consistent with repeated
+quakes, not proof of every individual damage source or numerical balance.
+The next controller observes replicated warning circles and chooses ordinary
+Shift-click escapes, validating full collision paths and encounter bounds. It
+holds new combat inputs until the warning expires and records witnessed moves
+separately from full-radius escapes. No combat stats, gear, passive regeneration,
+deadlines or clear assertions change. Five planner regressions plus existing
+navigation/ranged-control coverage passed66 tests/3suites1.013s; lint passed.
+Native warning-response proof and the full four-player clear remain pending.

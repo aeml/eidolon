@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { acquirePartyAllyPointer, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep } from './partyDungeonControls.js';
+import { acquirePartyAllyPointer, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, planPartyTelegraphEscape } from './partyDungeonControls.js';
 
 test('healer stops seven units short of the tank rather than aiming into the boss', () => {
     expect(partyFollowStep({ x: 0, z: 0 }, { x: 0, z: -12 }, 7)).toEqual({ dx: 0, dz: -5 });
@@ -42,4 +42,28 @@ test('offscreen allies cause no pointer input, and projection errors still fail'
     expect(input.move).not.toHaveBeenCalled();
     input.project.mockRejectedValueOnce(new Error('projection failed'));
     await expect(acquirePartyAllyPointer(input, 'ally')).rejects.toThrow('projection failed');
+});
+
+test('a melee tank walks beyond the full visible quake with a safety margin', () => {
+    const step = planPartyTelegraphEscape({ x: 8, z: 0 }, [{ x: 0, z: 0, radius: 12.5 }]);
+    expect(step.x).toBeCloseTo(6.5);
+    expect(step.z).toBeCloseTo(0);
+});
+test('already-safe players hold position instead of issuing unnecessary movement', () => {
+    expect(planPartyTelegraphEscape({ x: 16, z: 0 }, [{ x: 0, z: 0, radius: 12.5 }])).toBeNull();
+});
+test('blocked radial routes use only a fully validated alternative', () => {
+    const canStep = jest.fn(step => step.z > 1);
+    const step = planPartyTelegraphEscape({ x: 8, z: 0 }, [{ x: 0, z: 0, radius: 12.5 }], canStep);
+    expect(step.z).toBeGreaterThan(1);
+    expect(canStep).toHaveBeenCalledWith(step);
+});
+test('no legal escape is not fabricated as a successful move', () => {
+    expect(planPartyTelegraphEscape({ x: 8, z: 0 }, [{ x: 0, z: 0, radius: 12.5 }], () => false)).toBeNull();
+});
+test('escaping one warning must not walk into another', () => {
+    const warnings = [{ x: 0, z: 0, radius: 12.5 }, { x: 15, z: 0, radius: 3 }];
+    const step = planPartyTelegraphEscape({ x: 8, z: 0 }, warnings);
+    expect(step).not.toBeNull();
+    for (const warning of warnings) expect(Math.hypot(8 + step.x - warning.x, step.z - warning.z)).toBeGreaterThanOrEqual(warning.radius + 1.5);
 });

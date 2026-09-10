@@ -13,6 +13,25 @@ export function partyFollowStep(state, anchor, spacing = 4) {
 
 export const PARTY_FOLLOW_INPUT_OPTIONS = Object.freeze({ moveOnly: true, allowJumpFallback: false });
 
+// Read-only input planning for the replicated warning circles. The caller
+// validates each complete route against real collision and encounter bounds.
+export function planPartyTelegraphEscape(state, warnings, canStep = () => true) {
+    if (![state?.x, state?.z].every(Number.isFinite)) throw new Error('Invalid party position');
+    const circles = warnings.filter(w => [w?.x, w?.z, w?.radius].every(Number.isFinite) && w.radius > 0);
+    const danger = circles.find(w => Math.hypot(state.x - w.x, state.z - w.z) < w.radius + 1.5);
+    if (!danger) return null;
+    const angle = Math.atan2(state.z - danger.z, state.x - danger.x);
+    const candidates = [0, .25, -.25, .5, -.5, 1, -1, Math.PI].map(offset => {
+        const x = danger.x + Math.cos(angle + offset) * (danger.radius + 2) - state.x;
+        const z = danger.z + Math.sin(angle + offset) * (danger.radius + 2) - state.z;
+        return { x, z };
+    }).filter(delta => Math.hypot(delta.x, delta.z) >= 1 && Math.hypot(delta.x, delta.z) <= 18)
+        .filter(delta => circles.every(w => Math.hypot(state.x + delta.x - w.x, state.z + delta.z - w.z) >= w.radius + 1.5))
+        .filter(delta => canStep(delta))
+        .sort((a, b) => Math.hypot(a.x, a.z) - Math.hypot(b.x, b.z));
+    return candidates[0] || null;
+}
+
 // Look for an exposed point on the ally's real hitbox. Projection onto the
 // canvas alone does not prove that the foreground boss isn't under the cursor.
 // These hooks perform ordinary mouse input/read-only observations, never set

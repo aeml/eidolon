@@ -26,9 +26,16 @@ async function observeRole(page) {
     await page.evaluate(() => {
         const game = window.game, original = game.handleServerMessage.bind(game);
         const e = window.__partyClearEvidence = { damageDone: 0, damageTaken: 0, allyHealing: 0,
-            casts: {}, rejected: {}, sawDeath: false, lastUpdate: performance.now() };
+            casts: {}, rejected: {}, sawDeath: false, warningMoves: 0, warningEscapes: 0,
+            lastUpdate: performance.now() };
+        window.__partyClearWarnings = [];
         game.handleServerMessage = message => {
             const p = message.payload;
+            if (p && message.type === 'telegraph' && [p.x, p.z, p.radius, p.duration].every(Number.isFinite)) {
+                window.__partyClearWarnings = window.__partyClearWarnings.filter(w => w.expires > performance.now());
+                window.__partyClearWarnings.push({ x: p.x, z: p.z, radius: p.radius,
+                    instance: game.currentInstanceId, expires: performance.now() + p.duration * 1000 });
+            }
             if (message.type === 'state' || message.type === 'delta') e.lastUpdate = performance.now();
             if (p && message.type === 'damage') {
                 if (p.sourceId === game.player.id) e.damageDone += Math.max(0, p.amount || 0);
@@ -141,6 +148,34 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             await tryDungeonGroundStep(() => moveByGroundClick(actor.page, step.dx, step.dz, PARTY_FOLLOW_INPUT_OPTIONS));
         }
 
+        async function avoidWarnings(actor, encounter) {
+            const observation = await actor.page.evaluate(async encounter => {
+                const { planPartyTelegraphEscape } = await import('/tests/partyDungeonControls.js');
+                const { isEarnedRetreatPathClear, retreatStaysInEncounter } = await import('/tests/wizardHuntControls.js');
+                const g = window.game, p = g.player;
+                const warnings = window.__partyClearWarnings.filter(w =>
+                    w.expires > performance.now() && w.instance === g.currentInstanceId);
+                const step = p.state === 'DEAD' ? null : planPartyTelegraphEscape(p.position, warnings, delta =>
+                    retreatStaysInEncounter(encounter, { x: p.position.x + delta.x, z: p.position.z + delta.z }, p.radius) &&
+                    isEarnedRetreatPathClear(g.collisionManager, p.position, p.radius || 1.25, delta));
+                return { active: warnings.length > 0, step, warnings };
+            }, encounter);
+            if (!observation.active) return false;
+            if (observation.step) {
+                const moved = await tryDungeonGroundStep(() => moveByGroundClick(actor.page,
+                    observation.step.x, observation.step.z, { ...PARTY_FOLLOW_INPUT_OPTIONS,
+                        allowAlternatePaths: false, requireClearPath: true, timeout: 1500 }));
+                if (moved) await actor.page.evaluate(warnings => {
+                    const p = window.game.player.position, e = window.__partyClearEvidence;
+                    e.warningMoves++;
+                    if (warnings.every(w => Math.hypot(p.x - w.x, p.z - w.z) >= w.radius + 1.5)) e.warningEscapes++;
+                }, observation.warnings);
+            }
+            // Do not immediately select the boss and walk back into its warning.
+            // The normal combat/death/connection deadlines remain unchanged.
+            return true;
+        }
+
         async function healParty() {
             const states = await Promise.all(actors.map(actor => snapshot(actor.page)));
             const hurt = states.filter(s => !s.dead && s.hp / s.maxHP < .85).sort((a, b) => a.hp / a.maxHP - b.hp / b.maxHP)[0];
@@ -243,7 +278,9 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                     bossStart = playthrough.bosses.includes(target.type) ? await Promise.all(actors.map(actor => snapshot(actor.page))) : null;
                     return false;
                 }
-                await Promise.all([healParty(), ...damage.map(async actor => {
+                const warnings = await Promise.all(actors.map(actor => avoidWarnings(actor, target.encounter)));
+                const avoiding = warnings.some(Boolean);
+                if (!avoiding) await Promise.all([healParty(), ...damage.map(async actor => {
                     const enemy = await actor.page.evaluate(id => {
                         const g = window.game, p = g.player, e = g.remotePlayers.get(id);
                         return e && e.state !== 'DEAD' ? { distance: p.position.distanceTo(e.position),
@@ -269,7 +306,8 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                     expect(state.dead, `${actor.className} must survive; inspect party evidence if not`).toBe(false);
                     expect(await actor.page.evaluate(() => performance.now() - window.__partyClearEvidence.lastUpdate)).toBeLessThan(10_000);
                 }
-                return false;
+                if (avoiding) await tank.page.waitForTimeout(60);
+                return avoiding;
             },
             afterEncounter: async (_page, target) => {
                 if (playthrough.bosses.includes(target.type)) {
