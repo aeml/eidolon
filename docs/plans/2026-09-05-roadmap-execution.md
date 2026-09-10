@@ -50,10 +50,20 @@ all members. Source explicitly resumes only requester (fresh creation moves
 group). Archive `/tmp/eidolon-four-role-rest-proof-HtoFTA`, wrapper sanitized2,
 copied log sanitized1/0remaining QA prefixes; owned services/listeners absent.
 
-Primary311b1a61 corrects the driver: each remaining member uses the ordinary
-guide to resume, then retains strict per-member content/run checks. Lint/diff
-pass. Native41896 ACTIVE on frozen311b1a61, runID`four-role-resume-0910`,
-API18580/Mongo18581/web41980; `/tmp/eidolon-four-role-resume-native.log`.
+Primary311b1a61 corrects individual guide resume. Native41896 TERMINAL1: two
+four-member town rest/re-entry cycles passed strict same-content/run checks;
+Fighter reached Warden855/855HP and555/555MP. No deaths. The healer's follow
+input ignored seven-unit spacing and aimed toward a covered boss-side point;
+ordinary ground input refused it. Archive `/tmp/eidolon-four-role-follow-proof-Y5tJpG`,
+copied log sanitized1/zero remaining QA prefixes; owned services/listeners absent.
+Focused server race requester/concurrent resume tests87676 pass2.423s.
+
+Primary7d8fb5bb fixes desired follower spacing with tested pure input planning,
+no sub-unit movement requests, and the leader's existing typed covered-pointer
+handling. Real movement failures remain fatal; all deadlines unchanged. No
+runtime/balance/fixture buff. Focused21tests/3suites0.944s and lint/diff pass.
+Native49218 ACTIVE on frozen7d8fb5bb, runID`four-role-spacing-0910`,
+API18580/Mongo18581/web41980; `/tmp/eidolon-four-role-spacing-native.log`.
 Only owned browser job. No clear/live claim yet; archive before rerunning.
 
 ## Required scope — two-floor town casino
