@@ -118,7 +118,7 @@ passed, copied initial-stat log had zero QA identifiers, and owned ports cleared
 
 - [x] Current application regression: full Go race18911 on714c4727 passed after the slam correction (root21.272s/game367.122s). Client84456 passed on46c008ce; client runtime is unchanged and later test-only changes have focused coverage below. Versioned required-all still applies.
 - [x] Execute authenticated smoke with the strengthened stash checks (empty storage).
-- [ ] Run all three proposed CI-mode bundled-browser groups, retain distinct
+- [x] Run all three proposed CI-mode bundled-browser groups, retain distinct
   artifacts, inspect rendering and measure real stage durations.
 - [ ] Complete the changed versioned candidate's required predeploy/authenticated
   all and other release gates. Do not repeat unchanged old source as missing, or
@@ -254,3 +254,22 @@ regression requirement, not104case browser/required-all/version/remote/live.
 Primary62131 separately ended after23.4minutes: Warden killed/all four survived,
 three recovery cycles passed, then regrouping failed during travel. Its new
 corner-aware controller remains native-unverified; no full clear is claimed.
+
+## Current104 browser acceptance — September10 23:07
+
+77418 on clean frozenc27e0847 terminated0. Exact discovery104cases, no missing
+or duplicate assignments; all104 passed with no failed/flaky outcome reported.
+Group1 passed39cases (layout130.5s, entrances23.2s, effects75.8s, nameplates20.4s,
+resourceHUD10.6s); group2 passed40 (layout201.2s, entrances18.9s, effects28.9s,
+interface50.5s); group3 passed25 (layout118.3s, entrances18.2s, effects19.1s).
+Times are local stage wall measurements, not proof of hosted CI acceleration.
+Archive`/tmp/eidolon-next-current104-proof-EA8Boy` retains separate group/stage
+reports and results; scanner passed, owned41981 listener cleared. Log
+`/tmp/eidolon-next-current104-browser.log`.
+
+Inspected current720p compact roster shows four healing targets visible above
+chat;390x844 expanded chat fits the viewport;844x390 encounter composition keeps
+actors in the central area outside thumb controls. These are anonymous layout/
+render fixtures, not full-world art or physical-phone playability acceptance.
+Versioned required-all, canonical queue acceptance, version/patch notes and
+remote/live checks remain required. No new version/deployment is claimed.
