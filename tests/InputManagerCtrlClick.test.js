@@ -16,6 +16,42 @@ describe('InputManager ctrl-click propagation', () => {
         removeEventListenerSpy.mockRestore();
     });
 
+    test.each(['ShiftLeft', 'ShiftRight'])('%s is tracked through keydown, keyup and input reset', code => {
+        const manager = new InputManager({}, {});
+        try {
+            window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Shift', code }));
+            expect(manager.keys.shift).toBe(true);
+            window.dispatchEvent(new KeyboardEvent('keyup', { key: 'Shift', code }));
+            expect(manager.keys.shift).toBe(false);
+            window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Shift', code }));
+            window.dispatchEvent(new Event('blur'));
+            expect(manager.keys.shift).toBe(false);
+        } finally {
+            manager.dispose();
+        }
+    });
+
+    test('canvas click recovers Shift held while chat had keyboard focus', () => {
+        const manager = new InputManager({}, {});
+        const input = document.createElement('input');
+        document.body.append(input);
+        try {
+            input.focus();
+            window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Shift', code: 'ShiftLeft' }));
+            expect(manager.keys.shift).toBe(false);
+            manager.onMouseDown({ target: { tagName: 'CANVAS' }, button: 0,
+                shiftKey: true, clientX: 10, clientY: 10 });
+            expect(manager.keys.shift).toBe(true);
+            manager.onMouseUp({ button: 0 });
+            manager.onMouseDown({ target: { tagName: 'CANVAS' }, button: 0,
+                shiftKey: false, clientX: 10, clientY: 10 });
+            expect(manager.keys.shift).toBe(false);
+        } finally {
+            input.remove();
+            manager.dispose();
+        }
+    });
+
     test('left click forwards the original mouse event to onClick subscribers', () => {
         const manager = new InputManager({}, {});
         const callback = jest.fn();

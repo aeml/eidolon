@@ -67,6 +67,12 @@ class GameEngineMovementMethods {
             return true;
         }
 
+        // Move-only ignores actors, loot and services under the pointer, while
+        // retaining normal movement, collision and server authority.
+        if (event?.shiftKey || this.inputManager?.keys?.shift) {
+            return this.movePlayerToPointerGround(event);
+        }
+
         if (this.hoveredEntity && this.hoveredEntity !== this.player) {
             this.moveToAndInteract(this.hoveredEntity);
             return true;
@@ -97,6 +103,20 @@ class GameEngineMovementMethods {
             this.player.move(point);
         }
 
+        return true;
+    }
+
+    // Initial click and held frames must share one intent. A crossing enemy
+    // cannot replace the destination with attack/chase before mouse release.
+    movePlayerToPointerGround(event = null) {
+        const point = event && this.inputManager?.getGroundIntersectionFromEvent
+            ? this.inputManager.getGroundIntersectionFromEvent(event)
+            : this.inputManager.getGroundIntersection();
+        if (!point) return false;
+        this.pendingInteraction = null;
+        this.abilityController.pendingAbilityTarget = null;
+        this.abilityController.pendingAbilitySkill = null;
+        this.player.move(point);
         return true;
     }
 
