@@ -5,7 +5,50 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 23:30 UTC
+## Current checkpoint — September 10, 23:42 UTC
+
+Previous goal turn was PROGRESS: actor-aware body checks. This turn is PROGRESS:
+two precise precombat formation failures retained, controller concurrency and
+spacing regressions corrected, and the next native acceptance run started.
+Full roadmap, full clear/manual/relogin and release/live gates remain open.
+
+-7703 on a1138def TERMINAL1 before combat, seed-7673813163550020757,
+  generator2/Normal30/no fallback. All setup/party/entry passed, all alive/0Gold/
+  no casts. Rogue requested3units, observed0.649744; simultaneous body-safe
+  planning selected the same lateral destination for multiple followers. Archive
+ `/tmp/eidolon-four-role-bodies-proof-5eE8As` scanned/copied-log QA-prefix0,
+  owned containers/ports cleared.13430 RED proves three concurrent moves and
+  the recorded sub-.001 replicated spawn offset blocking departure.9c7beca3
+  serializes settled moves/position rereads and matches actual CollisionManager
+  coincident threshold.14476 PASS66tests/5suites5.148s+lint/discovery.
+-84516 on9c7beca3 TERMINAL1 after1.4m before combat, seed-2687562139384423444,
+  generator2/Normal30/no fallback. Allsetup/party/entry passed, allalive/0Gold/
+  no damage/heals/casts. A later gathering exceeded unchanged15s: Cleric and
+  Wizard occupied the rear approach, Rogue remained outside formation.
+  Alltargetsnull/blockedStops0/camera and mesh offsets0. Archive
+ `/tmp/eidolon-four-role-sequential-proof-t4HuMT` scanned/copied-log QA-prefix0,
+  owned containers/ports cleared. Not combat or proven terrain failure.
+-229cbdd8 adds separate path-oriented side/rear gathering slots. A stronger
+  body-aware regression over all62131fixture joins first failed82071; first
+  radius4slot revision still failed78193/23106 at a later join.4.5-unit placement
+  (inside the unchanged<5 arrival bound) and finer checked alternatives passed
+  71222 and final40104:68tests/5suites9.020s, lint/discovery. All actual native
+  motion remains real input, checked terrain/actors, sequential observed settling,
+  same15s/combat/expedition limits and unchanged gameplay/resources. Fixture
+  assumes ideal arrival; not a replay of84516's different seed/network timing.
+- Native99535 now ACTIVE on clean frozen229cbdd8, sole local heavy gate:
+  routeparty-dungeon/runparty-slots-0910-2342/ports18580/18581/41980. Log
+ `/tmp/eidolon-four-role-slots-native.log`. Do not edit primary or start another
+  heavy gate until99535 terminates. Prior7703/84516active states are superseded.
+- Candidate0c8c4ffe idle, full Go/current104browser pass retained; versioned
+  required-all/canonical acceptance/version/patch notes/remote/live pending.
+  Remote last23:29: canonical62dc CI34434837759 queuedpredeploy, Nightly
+ 34433520743 in_progress. Public identities23:35 bothAlpha1.0.60df91bb66,
+  backendhealthy/databaseready, not62dcacceptance or partycredit deployment.
+- No push/version bump/deployment/soak preemption. Root ledger-only, NEVER PUSH.
+  Whole roadmap remains active; no required gate was dropped or declared done.
+
+## Previous checkpoint — September 10, 23:30 UTC
 
 Previous turn was PROGRESS: actor-aware formation planning and focused checks.
 This turn is PROGRESS: recovered full client pass, exact-instance arrival checks,
