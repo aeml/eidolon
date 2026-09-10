@@ -22,7 +22,11 @@ point's overlay identity, and the nearest20 replicated Skeletons' alive/rendered
 states. Do not force raycasts, select targets, mutate actors, spawn enemies,
 extend the timeout, skip the warning, or retry a no-longer-fresh character.
 
-Focused5576 passed20tests/3suites0.849s and lint. These validate read-only evidence
+Focused5576 passed20tests/3suites0.849s and lint. Follow-up32896 passed21tests/
+3suites0.881s and lint after retaining the last attempted projection even if a
+later poll has no exposed candidate; this preserves an observable screen point
+for detecting an intervening HUD overlay. It does not establish that an overlay
+caused the original failure. These checks validate read-only evidence
 and preserved fatal checks, not a fixed hover. When the current primary Earth
 replay releases the browser slot, run the diagnostic journey against exact live60
 using a fresh ordinary QA registration. Preserve and sanitize its evidence before

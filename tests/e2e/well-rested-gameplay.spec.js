@@ -21,6 +21,7 @@ const restState = page => page.evaluate(() => {
 
 async function hoverEnemyCardThroughInput(page, testInfo, targetId = null) {
     let hoveredId;
+    let lastProjection = null;
     let attempt = { requestedTarget: targetId, id: null, point: null };
     try { await expect.poll(async () => {
         const id = targetId || (await projectNearestHostile(page, 'Skeleton'))?.id;
@@ -28,6 +29,7 @@ async function hoverEnemyCardThroughInput(page, testInfo, targetId = null) {
         if (!id) return false;
         const point = await projectEntity(page, id);
         attempt.point = point;
+        if (point) lastProjection = { id, point };
         if (!point?.visible) return false;
         await page.mouse.move(point.x, point.y);
         const selected = await page.evaluate(id => window.game.hoveredEntity?.id === id &&
@@ -36,7 +38,7 @@ async function hoverEnemyCardThroughInput(page, testInfo, targetId = null) {
         return selected;
     }, { timeout: 10_000, message: 'The real enemy hover must populate the combat card' }).toBe(true);
     } catch (error) {
-        const evidence = await readSanctuaryHoverEvidence(page, attempt);
+        const evidence = await readSanctuaryHoverEvidence(page, { ...attempt, lastProjection });
         await testInfo.attach('sanctuary-hover-failure', { body: JSON.stringify(evidence), contentType: 'application/json' });
         await page.screenshot({ path: testInfo.outputPath('sanctuary-hover-failure.png') });
         console.log('[sanctuary-hover-failure]', JSON.stringify(evidence));

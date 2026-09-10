@@ -13,7 +13,9 @@ export async function readSanctuaryHoverEvidence(page, attempt) {
             inActiveCache: game.activeEntitiesCache?.includes(entity) || false,
             meshAttached: Boolean(entity.mesh?.parent), meshVisible: entity.mesh?.visible
         } : null;
-        const point = attempt?.point;
+        // If the last poll found no exposed candidate, retain the most recent
+        // attempted screen point so an intervening HUD overlay is observable.
+        const point = attempt?.point || attempt?.lastProjection?.point;
         const overlay = Number.isFinite(point?.x) && Number.isFinite(point?.y)
             ? document.elementFromPoint(point.x, point.y) : null;
         const nearby = [...(game.remotePlayers?.values() || [])]
