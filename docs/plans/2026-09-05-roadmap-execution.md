@@ -27,7 +27,68 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 12:12 UTC
+## Current checkpoint — September 10, 12:27 UTC
+
+Previous goal turn was PROGRESS (bounded two-boss proof and new recovery test).
+This turn is PROGRESS: full/native post-combat recovery passed; added rendered
+socket comparisons, inspected images, then strengthened per-class visibility
+checks and retained their failure. Full1.1–1.10 goal remains active, not complete.
+No gameplay/stat/version change, push, production deployment or runner change.
+
+**99912 TERMINAL0** on1740345943c4e3f74a13a00eed6a534ebbffc51d:
+300suites/4195tests128.66s+lintNode24. **38977 TERMINAL0** on SAMEsource: isolated
+prepared-dungeon-rest,1test4.5minutes,zero retries,runIDdungeon-town-rest-0910.
+Seed-8986048952111327172/generator2/attempt0/no fallback. Both first bosses died,
+then actual mana454/1685beforeRecall→698/1853arrival→1853/1853town-rested.
+WellRested bank0→1.320336823→7.625090176seconds; ordinary buff increases maxpools.
+Real town-guide re-entry preserved same instance/seed/generator/difficulty/level,
+rooms1–6cleared/laterroomsunfinished, Gold, full bag items and quest progress.
+No reset/relogin/refill/newwaypoint aftercombat. This is prepared100/protected
+post-combat MANA recovery, not depleted-HP/earned survival/full4boss/save/Water.
+Actual credentialscan0; owned containers/all18580/18581/41980listeners absent.
+Archive `/tmp/eidolon-dungeon-town-rest-proof-ZMJXfj`; stream
+`/tmp/eidolon-dungeon-town-rest-native.log`; full logs
+`/tmp/eidolon-dungeon-town-rest-full-{client,lint}.log`.
+Primary nowclean **757bcb2032409cf4f976c0e660020c12713532af**, proofdoconly atop174.
+Next primary: ordinary between-encounter recovery/resume traversal, preserving
+cleared corridors/rewards and ALL deadlines, short diagnostic before fresh replay.
+96530/44188 survival failures remain authoritative; no long replay started.
+
+SocketWT `/tmp/eidolon-socket-visuals-lhwUl6` nowclean **1d69248e**, proofdoc atop
+test7efc60f5. Production code unchanged from full-testedbdf3a2df. 13668/65089/
+35728lint passed;19716one-case discovery passed. All following handles TERMINAL:
+
+-79252FAIL1.9s before renderer: thisWT lacked generated vendor deps. Archive
+ `/tmp/eidolon-socket-render-setup-failure-0mD1v7`; npm run prepare:client fixed
+ setup, with no source edits or hidden Playwright retry.
+-42354PASS1case6.0s/7.5stotal on9caa198d:42same-viewRGB comparisons across7gems,
+ High/Low and3equivalent records, icon equality and no unnecessary rebuild.
+ Archive `/tmp/eidolon-socket-render-proof-qXJs7F`. Four inspected wide shots
+ did not establish individual socket readability.
+-35854PASS1case9.1s/10.6stotal onff0be297: added14four-class attached-weapon
+ detail mosaics to14group shots. Archive `/tmp/eidolon-socket-closeup-proof-wiw1sA`.
+ All7High mosaics inspected. Fighter socket visible; others obscured in this pose.
+-22608FAIL3.2s on7efc60f5 after strengthening to change ONE actor at a time:
+ HighRuby RGB signalFighter4706/Rogue0/Wizard0/Cleric0. Allprojectedinview but
+ Rogue's actual visible-color assertion fails. Archive
+ `/tmp/eidolon-socket-visibility-failure-eaIvhd` retains screenshots/trace/video/
+ report/native+lintlogs. No41980listener left. Do NOT relax this assertion or
+ accept earlier group-level signal as all-class visibility.
+
+No local browser/heavy gate is active now. Socket next: inspect actual idle/
+attack animation vs prepared static pose and weapon/socket forearm occlusion;
+resolve placement as needed before High/Low, Forge/local+observer/save acceptance.
+This frame alone does not show that sockets are hidden in every live pose.
+Socket/aura/canonical release branches remain separate; aura71f18922's completed
+local gates are not missing and should not be repeated as such.
+
+12:26canonicalCI34434837759 stillqueued; nightly34433520743 confirmedinprogress.
+No new cancellation authority. Canonical62dc2d1 release acceptance still first;
+public60df91bb66 identity lastverified10:55, not rechecked/accepted this turn.
+All-class/group/realm/raid/phone/balance/casino and later version requirements
+remain intact. Root stays documentation-only; do not push this ledger branch.
+
+## Previous checkpoint — September 10, 12:12 UTC
 
 Previous goal turn was NO PROGRESS toward implementation: it verified that the
 requested casino scope was already recorded, without starting casino work. This
