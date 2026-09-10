@@ -27,7 +27,50 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 07:25 UTC
+## Current checkpoint — September 10, 07:38 UTC
+
+Previous turn was a planning confirmation only (no new progress). Revalidated
+the existing casino scope and resumed the available progression task. This turn
+makes concrete progress: primary worktree now has committed story-only dungeon
+verification, clean **626385d7674d00fb9fb5bc3f0f841ce5972c8a58**. The full goal
+remains active; no runtime/version/push/deployment change or casino implementation.
+
+Full regression71870 TERMINAL PASS288suites4063tests149.604s followed by lint;
+focused57tests/3suites1.021s and shell syntax checks passed. The new isolated
+`fresh-story-dungeon` route preserves the eight story-readiness phases and adds
+bounded full Verdant clearance plus manual Ilyra turn-in/access/save checks.
+It rejects daily leveling, prepared modes and unsupported class drivers before
+registration. Current driver coverage is Wizard/Fighter, not all classes.
+The fixed observation ceiling is230minutes (unchanged185 readiness +40 dungeon
++5 turn-in); encounter watchdogs remain unchanged. The existing required release
+readiness gate is not replaced by an unproven longer route.
+
+Native session **96530** launched at07:36UTC and was authoritatively polled live;
+currently building its isolated API, not yet claiming a browser pass. Source is
+frozen at626385d. RunID`fresh-story-dungeon-0910`, ports18560/18561/41960,
+route`fresh-story-dungeon`, fresh Wizard, REST_RECOVERY1, CI unset/zero retries,
+Node24.18.0/System Chrome via sg-render. Ports and matching containers were absent
+before launch. Log `/tmp/eidolon-fresh-story-dungeon-replay.log`. Continue polling
+the SAME96530 handle; do not restart for an observation timeout or edit its source
+while active. No other owned native or heavy test should run alongside it.
+
+The new primary plan is
+`/tmp/eidolon-primary-town-recovery-lAKY3k/docs/plans/2026-09-10-story-only-dungeon-verification.md`.
+Native acceptance still requires the actual full four-boss clear, manual claim,
+Rootheart access, next Water offer, saved progress and no accepted/completed
+dailies, followed by credential-aware artifact sanitation and exact cleanup.
+Previously proven52.7minute fresh readiness is not dungeon-clear evidence.
+
+Fresh GitHub checks this turn: canonical62dc2d1 CI34434837759 remains queued at
+predeploy102741303703 after client/server/all three browser shards passed.
+Scheduled soak34433520743/job102733792127 is still in progress. No cancellation
+approval; no preemption or61promotion. Last public identity remains the earlier
+07:08 observation, not a new production check. Aura branch0d535d6's local gates
+remain separate/unpublished. All class/group/realm/raid/balance/visual/phone/CI
+cost/casino and remaining milestone acceptance scope is preserved. Root ledger
+only: do not push this branch.
+
+## Previous checkpoint — September 10, 07:25 UTC
 
 Previous turn classified PROGRESS: native death/dungeon aura transitions passed.
 This turn adds and rehearses REQUIRED release-pipeline wiring on the separate
