@@ -60,15 +60,21 @@ play behavior, not automatic player equipping. See
 [native equipment evidence](2026-09-10-native-equipment-upgrade-verification.md).
 
 The integrated visual-release candidate subsequently exposed another intermittent
-native ring drop failure (86642:2pass/1fail); slot artwork is a separate pointer
-target even after parent-node stability was fixed. Its correction/verification
-is proceeding on the release-integration branch and must be reconciled here
-before another long earned replay. Earlier passing equipment fixtures do not
-prove this interaction is fully reliable. Do not count a new replay as already
-started or the original dungeon failure as repaired.
+native ring drop failure (86642:2pass/1fail); slot artwork was a separate pointer
+target even after parent-node stability was fixed. A native hit-target assertion
+failed all3baseline cases. Pointer-transparent decorative equipment artwork then
+passed all3drag/refresh/login cases and Forge on release runtimec3305ae7, with
+actual credential scan and retained artifacts at
+`/tmp/eidolon-visual-equipment-hit-proof-sqU6uz`. The3fileCSS/test correction is
+now ported here in25495d95. Its main-branch full regression is required before
+another long earned replay; release-branch acceptance does not replace that gate.
+Do not count a new replay as already started or the original dungeon failure as
+repaired.
 
-After that correction, rerun the earned route with the upgraded equipment and
-complete diagnostics, retaining original seed/deadlines/death bounds. Appropriate
+After that regression, rerun the earned route with upgraded equipment and
+complete diagnostics. Preserve the original failed seed receipt and all original
+deadlines/death bounds; record the new ordinary run's generated seed, rather than
+claiming the route forces the original seed. Appropriate
 earned Wizard ability/resource use and actual full dungeon clear/manual reward/
 Water handoff still require native evidence. No balance conclusion is established
 by the prepared inventory fixture or the partial first-boss damage above.
