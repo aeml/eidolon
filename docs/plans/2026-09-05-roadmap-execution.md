@@ -5,15 +5,26 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 21:55 UTC
+## Current checkpoint — September 10, 22:08 UTC
 
-Previous goal turn was PROGRESS: candidate guide acceptance and the renewed
-full-party run. This turn is a VERIFIED WAIT on live42295: two combat rooms and
-both four-person recovery/resume cycles now passed, including the stage that
-previously failed guide acquisition. No boss or full-clear result yet.
-Full roadmap,
-successful dungeon clear and release gates remain open.
-Full roadmap remains active and deployment/1.1 completion is not claimed.
+42295 is now TERMINAL1 after16.4minutes: two rooms and both four-person
+recovery/resume cycles passed, but Rogue and Wizard died with the Warden last
+reported3247/15000HP. Fighter and Cleric survived, Cleric retained106mana,
+and Fighter used only3Charges. No full-clear or post-clear claim evidence.
+Archive`/tmp/eidolon-four-role-guide-clear-proof-mb3bxE` is preserved/scanned,
+copied-log QA-prefix count0, owned listeners cleared. All local heavy gates are
+terminal. The historical active-process observations below are superseded.
+
+Fresh successor party-credit race verification33620 on64cf858e passed2.665s:
+eligibility, overworld rewards, class abilities, kill-time snapshots and individual
+manual turn-in contracts. Log`/tmp/eidolon-party-credit-final-verification.log`.
+The requested credit rule is implemented locally, not deployed. Next full-party
+investigation must distinguish timely warning avoidance, unused legal DPS
+defenses and direct-HP slam damage from balance. An eventual escape count does
+not establish escape before impact; no shield was cast in this run, so possible
+slam shield bypass is not a demonstrated cause. No boss nerf or fixture boost.
+Full roadmap, successful dungeon clear and release gates remain open.
+Deployment/1.1 completion is not claimed; root remains ledger-only, never push.
 
 - Full Go race81223 TERMINAL0 on20d9f17d: game381.679s, other tested packages
   pass/cached, no race warning. Log
