@@ -28,7 +28,12 @@ paths, impact reach and reflection instance identity. Logs:
 `/tmp/eidolon-boss-slam-defense-green.log` and
 `/tmp/eidolon-boss-slam-defense-regression.log`.
 
-Pending: full regression, native four-player acceptance, successor integration,
+Full primary Go race68058 subsequently passed on server treed3a54d4a: root29.012s,
+game385.718s, other tested packages passed/cached, no race warning. Log
+`/tmp/eidolon-boss-slam-full-server.log`. Terminal exit0 recovered September10
+22:22UTC. Subsequent primary34cf39a4 changes only the party test/controller/docs.
+
+Pending: native four-player acceptance, full successor regression,
 versioned patch notes and deployment. This is not live or a dungeon-clear receipt.
 
 Proposed patch note: Boss ground slams now respect defensive shields,
