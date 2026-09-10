@@ -27,7 +27,34 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 08:34 UTC
+## Current checkpoint — September 10, 08:46 UTC
+
+Recent turns are VERIFIED WAITS with new native progression evidence. SAME96530
+remains live on clean/frozen626385d. Orcs passed1,407,337ms:50credits, zero deaths,
+26ordinary rests,1earned training stop. Manual300Gold15843XP and reconnect passed;
+level30/11129XP/23307Gold → level31/5847XP/23607Gold. Handoff passed12,611ms and
+strict story-only readiness passed2,124ms. All eight readiness phases are now
+complete in this attempt, but the extended test is NOT a full pass.
+
+Entered normal level30 Verdant with earnedlevel31/979HP, no daily leveling or
+prepared grants. Dungeon phase is active under its unchanged40minute ceiling.
+Replay seed **6046050058853350476**, generator2, attempt0, fallbackfalse,
+sourceDirtyfalse. Actual Skeleton damage and deaths are being observed; no boss
+or full-clear acceptance yet. Well Rested naturally expired inside, leaving
+890maxHP and low mana; combat continues via real inputs and regeneration.
+Do not infer dungeon balance or native FPS from these partial shared-load receipts.
+
+Continue SAME96530/log/owned services, not a replacement run. The known obsolete
+Water-shelter assertion remains in this frozen attempt; any failure there must
+be preserved, not retroactively passed. Separate4e4d46b has its correction and
+class inputs. Aura integrationd9176d0e has UI-role presentation checks prepared;
+both branches still require full and actual browser/native gates after this run.
+No runtime/source/push/deployment change this turn. Last GitHub poll this turn
+still queued34434837759 and in-progress34433520743; public identity last08:04.
+No phone feedback or current-soak cancellation approval. Full1.1–1.10/casino
+scope remains active/incomplete; root ledger is never pushed.
+
+## Previous checkpoint — September 10, 08:34 UTC
 
 Previous turn was a VERIFIED WAIT. This turn makes PROGRESS: added three
 presentation fixtures for the new quest NPC role cards to the already-required
