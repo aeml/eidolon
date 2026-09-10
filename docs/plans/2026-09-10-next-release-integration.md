@@ -114,6 +114,61 @@ and relogin match ordinary growth. No earned-progression claim. Archive
 `/tmp/eidolon-next-initial-stats-native.log`; both checks exited0, credential scans
 passed, copied initial-stat log had zero QA identifiers, and owned ports cleared.
 
+## Consolidated patch-note draft — unreleased
+
+Drafted against the application changes through0c8c4ffe, compared with canonical
+62dc. No successor version is assigned and these are not published patch notes.
+At promotion, transfer the verified content into the game's normal per-version
+notes alongside synchronized login/manifest/server metadata. Preserve all older
+version entries. Recheck this draft if the candidate's application scope changes.
+
+### Adventure together
+
+- Party members anywhere in the same dungeon or raid share kill credit and
+  rewards, including downed teammates. In the overworld, sharing reaches roughly
+  two normal gameplay screens from the defeated enemy. Eligibility is recorded
+  at the kill; each player's quests still require their own manual turn-in.
+- On desktop, select a party member in the roster to direct Healing Light or
+  Divine Intervention to them. Clear the selection to return to cursor aiming.
+  An unavailable selected teammate no longer redirects or consumes the cast.
+- A compact desktop roster keeps four health bars and healing targets together,
+  with clearer role information and shared-reward guidance on desktop and phone.
+- Boss ground slams now respect defensive shields, invulnerability and damage
+  reduction. Shield retaliation retains normal party kill credit.
+
+### Equipment and controls
+
+- Socket gems keep consistent colors in item icons and equipped models,
+  including when replacing a gem on an existing item.
+- Held weapons sit more clearly outside class clothing; blade socket fittings
+  are visible on both sides.
+- Forge gem insertion, combination and removal panels refresh after confirmed
+  inventory/equipment changes without closing and reopening the Forge.
+- Equipment slots remain stable during resource updates, improving dragging
+  across item artwork and preserving keyboard focus.
+- Hold Shift while clicking or holding the mouse to walk without attacking or
+  interacting with an object under the pointer.
+
+### Town and interface
+
+- Ready story and daily turn-ins take priority over generic town-recovery hints,
+  without changing which quests you chose to track or completing them for you.
+- Quest-giver cards identify story quests versus daily contracts.
+- Reconnecting to an empty stash clears stale contents from the display.
+- Reduced rendering overhead for Well Rested particles, without changing the
+  buff's effects or duration.
+
+Release-engineering notes, if included: prepared QA characters now use normal
+creation/level-growth baselines; browser checks are partitioned with retained
+coverage, separate reports and explicit stage-failure handling. Do not describe
+these as a player-stat buff or a proven hosted-CI/FPS speed improvement.
+
+Excluded from this release draft: expanded Chronicle/investigations, replacement
+XP/quest-reward curve, the primary's separate Dark King phase damage cap, casino
+content, and any claim that full four-player campaign/dungeon/physical-phone
+acceptance or the1.1 milestone is complete. Required-all and live gates below
+remain mandatory; scoped local passes do not make these notes shipped content.
+
 ## Remaining promotion gates
 
 - [x] Current application regression: full Go race18911 on714c4727 passed after the slam correction (root21.272s/game367.122s). Client84456 passed on46c008ce; client runtime is unchanged and later test-only changes have focused coverage below. Versioned required-all still applies.
