@@ -5,7 +5,8 @@ jest.unstable_mockModule('./dungeonTraversalRoutes.js', () => ({
     buildDungeonTraversalRoutes: () => [[{ x: 0, z: 0 }]]
 }));
 jest.unstable_mockModule('./e2e/helpers.js', () => ({
-    enterAndExitDungeon, moveByGroundClick: jest.fn(), projectEntity: jest.fn(), readPlayerState: jest.fn()
+    enterAndExitDungeon, enterDungeon: jest.fn(), returnToTown: jest.fn(),
+    moveByGroundClick: jest.fn(), projectEntity: jest.fn(), readPlayerState: jest.fn()
 }));
 // This check exercises entry option flow without launching a browser or invoking
 // Playwright's assertions. The first entry deliberately stops at its boundary.
