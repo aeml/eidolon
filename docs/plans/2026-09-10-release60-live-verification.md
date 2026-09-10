@@ -8,7 +8,16 @@ predecessor df91bb66e8e8f3b7125aa99412f09ba25898a3ac is deployed but failed fina
 acceptance. Root is ledger-only and is never pushed. Do not push a61successor
 before60 is accepted; the current push repairs60's verification, not gameplay.
 
-## Current status — September10, 03:51UTC
+## Current status — September10, 06:01UTC
+
+06:01 update: re-polled exactCI34434837759/predeploy102741303703, still QUEUED;
+scheduled soak34433520743 remains in progress. No cancellation approval, new
+push or deployment. Fresh no-cache public GETs around05:58–05:59 confirm client
+release.json, main.js release key and backend health all identify existing
+Alpha1.0.60/df91bb66e8e8f3b7125aa99412f09ba25898a3ac; backend statusok and
+databaseready. These are identity/health checks, NOT final native acceptance
+of62dc2d1, which has not deployed. Primary13998 owns the separate local browser
+on clean/frozencb348ef; no change to this canonical candidate.
 
 04:14 update: allclient/server/browser groups SUCCESS on unchanged62dc2d1.
 Predeploy102741303703 is QUEUED. Repository has one matching online runner,

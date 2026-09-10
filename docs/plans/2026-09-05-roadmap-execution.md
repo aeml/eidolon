@@ -16,7 +16,36 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 05:56 UTC
+## Current checkpoint — September 10, 06:01 UTC
+
+Previous turn was a VERIFIED WAIT. This continuation observed the same live13998
+through Orc10, a fourth merchant sale and the first actual stash visit; it also
+rechecked public release identity/health. No source change, restart, cancellation,
+push or deployment. Full1.1–1.10 goal remains active/incomplete.
+
+13998 ACTIVE, only owned browser, primary clean/frozencb348ef, same
+fresh-merchant-0910/18560/18561/41960/log
+`/tmp/eidolon-fresh-merchant-replay.log`. Latest Orc10/50 at289s, level24/
+9359XP/13304Gold, zero deaths,5ordinary rests, no additional training. All50/
+manual/save, handoff and strictstory-onlylevel30 readiness remain pending.
+
+Fourth merchant visit PASSED atlevel23: four separate sales180+360+360+380Gold,
+10404→11684Gold, free slots4→8, conserved level/quest/equipment/item state,
+19.117s and ordinary departure. First actual stash visit PASSED atlevel24:
+four whole spare gear deposits into initially100free stash slots, bag free4→8,
+Gold13304 unchanged, exact item/level/quest/equipment conservation and ordinary
+departure verified in20.552s. No sales in that stash visit. The previous late
+Orc37failure is not yet passed by this new attempt; keep source frozen.
+
+At06:01:13 re-polled CI34434837759/predeploy102741303703, still QUEUED, and
+soak34433520743 still in progress. No cancellation approval. Fresh no-cache
+public manifest, main runtime release key and backend health identify existing
+60/df91bb6, statusok/databaseready. Canonical62dc2d1 has not deployed and lacks
+final acceptance. See updated release60 verification note. Root ledger-only
+and NEVER pushed. All class/group/realm/dungeon/raid/phone/aura/CIcost/casino and
+remaining roadmap gates stay open; continue exact13998 and release queue.
+
+## Previous checkpoint — September 10, 05:56 UTC
 
 Previous turn was a VERIFIED WAIT. This continuation observed new complete Imp
 and scar-phase evidence from the same live13998. Full1.1–1.10 remains active/
