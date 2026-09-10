@@ -27,7 +27,10 @@ test('prepared post-combat town rest restores spent mana and preserves the unfin
     const playthrough = dungeonPlaythroughOptions({});
     const beforeCombat = await createEarnedWizardDefense(page);
     let progress, spent;
+    const recoveredRooms = [];
     await playDungeonThroughInputs(page, { playthrough, fullRun: false, useTownGuide: false, beforeCombat,
+        recoverBetweenRooms: true,
+        afterTownRecovery: async (_page, { roomIndex }) => { recoveredRooms.push(roomIndex); },
         afterClearedRoute: async () => {
             progress = await snapshot(page);
             spent = await readEarnedRestResources(page);
@@ -36,6 +39,7 @@ test('prepared post-combat town rest restores spent mana and preserves the unfin
             expect(progress.rooms.some(room => room.cleared)).toBe(true);
             expect(progress.rooms.some(room => !room.cleared)).toBe(true);
         } });
+    expect(recoveredRooms.length, 'must recover mid-route then walk onward and defeat the later boss').toBeGreaterThan(0);
     const arrived = await readEarnedRestResources(page);
     expect(arrived.zone).toBe('lanternhold');
     expect(arrived.dead).toBe(false);

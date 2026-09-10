@@ -1774,7 +1774,7 @@ async function observeEntranceClick(page) {
     });
 }
 
-export async function enterAndExitDungeon(page, { beforeExit, resetRun = false,
+export async function enterDungeon(page, { resetRun = false,
     dungeonType = 'verdant_bastion_catacombs', difficulty = 'normal', runLevel: requestedRunLevel = 30,
     useTownGuide = false } = {}) {
     // Retries reuse the dedicated character. An interrupted earlier route may
@@ -1895,6 +1895,12 @@ export async function enterAndExitDungeon(page, { beforeExit, resetRun = false,
         throw new Error(`Real dungeon entry did not transition instances: ${JSON.stringify(diagnostic)}`);
     }
 
+}
+
+// Keep entry independently usable for ordinary town recovery: returning to an
+// unfinished run must leave the character inside to walk its cleared corridors.
+export async function enterAndExitDungeon(page, { beforeExit, ...options } = {}) {
+    await enterDungeon(page, options);
     let inspectionError;
     try {
         if (beforeExit) await beforeExit(page);

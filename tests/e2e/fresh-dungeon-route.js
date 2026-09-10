@@ -6,6 +6,7 @@ import { createEarnedDungeonCombat } from './earned-dungeon-combat.js';
 import { earnedFighterPreparationBudget } from '../earnedPreparationPolicy.js';
 import { readPlayerState } from './helpers.js';
 import { upgradeEarnedEquipment, readEarnedGear } from './earned-equipment-upgrades.js';
+import { earnedTownRecoveryEnabled } from '../earnedRecoveryPolicy.js';
 
 // Called only after the no-grants opening/collection/contracts route. Never use
 // the prepared dungeon spec's level grant, encounter waypoint or rune setup.
@@ -29,7 +30,7 @@ export async function clearEarnedVerdant(page, credentials, { runPhase = (_id, b
         runLevel: 30, difficulty: 'normal' })}`);
     await runPhase('dungeon', () => playDungeonThroughInputs(page, {
         playthrough: dungeonPlaythroughOptions({}), fullRun: true, fallbackRun: false,
-        useTownGuide: true, beforeCombat,
+        useTownGuide: true, beforeCombat, recoverBetweenRooms: earnedTownRecoveryEnabled(),
         ...(className === 'Fighter' ? { requiredFighterSkills: earnedFighterPreparationBudget({
             level: player.level, statPoints: 0, talentPoints: 0 }).expectedSkills } : {})
     }));

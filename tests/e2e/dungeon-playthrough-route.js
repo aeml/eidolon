@@ -5,15 +5,18 @@ import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { enterAndExitDungeon, moveByGroundClick, projectEntity, readPlayerState } from './helpers.js';
 import { dungeonSpatialSnapshot } from './dungeon-spatial-snapshot.js';
 import { dungeonBossEncounter } from '../dungeonCombatEncounter.js';
+import { recoverBetweenDungeonRooms } from './dungeon-town-rest.js';
 
 // Callers own login, earned or fixture preparation, and story turn-in. The safe
 // default enters through the town guide, without grants. Only the legacy prepared
 // caller explicitly opts into the QA entrance waypoint (which grants protection).
 export async function playDungeonThroughInputs(page, {
     playthrough, fullRun = true, fallbackRun = false, beforeCombat, useTownGuide = true, afterClearedRoute,
+    recoverBetweenRooms = false, afterTownRecovery,
     requiredFighterSkills = ['Iron Fortress', 'Guardian Roar', 'Whirlwind', 'Shield Slam']
 }) {
     const logPrefix = `[dungeon:${playthrough.dungeonType}]`;
+    const expeditionDeadline = Date.now() + 2_400_000;
     async function hostiles(page) {
         return page.evaluate(() => {
             const game = window.game;
@@ -139,6 +142,7 @@ export async function playDungeonThroughInputs(page, {
     }
 
     async function assertWorldUpdatesContinue(page) {
+        if (Date.now() > expeditionDeadline) throw new Error('Dungeon expedition exceeded40 minutes including town recovery');
         const age = await page.evaluate(() => performance.now() - window.__verdantLastState);
         expect(age, 'authoritative world updates stalled during dungeon progression').toBeLessThan(10_000);
     }
@@ -216,6 +220,18 @@ export async function playDungeonThroughInputs(page, {
                     await tryDungeonGroundStep(() => moveByGroundClick(page, (destination.x - player.x) * scale,
                         (destination.z - player.z) * scale, { allowJumpFallback: false }));
                 }
+            }
+            // Only after traversing a completed room. A living pack or boss
+            // keeps its original fight deadline; no recovery within that loop.
+            const roomIndex = layout.corridors[routeIndex].toRoomIndex;
+            if (recoverBetweenRooms && roomIndex < bossRooms[lastBoss] &&
+                await recoverBetweenDungeonRooms(page, { playthrough, roomIndex,
+                    nearbyHostiles: (await hostiles(page)).some(entity => entity.distance < 40) })) {
+                if (afterTownRecovery) await afterTownRecovery(page, { roomIndex });
+                // Rewalk all actual joins from the real entrance. Preserve the
+                // original layout, defeated set, reward baseline and total
+                // deadline; do not teleport ahead or start/reset another run.
+                routeIndex = -1;
             }
         }
         const expectedBosses = playthrough.bosses.slice(0, lastBoss + 1);

@@ -38,7 +38,7 @@ test('earned entry uses the real town guide and full normal level-30 route befor
     expect(playDungeon).toHaveBeenCalledWith(page, expect.objectContaining({
         playthrough: expect.objectContaining({ dungeonType: 'verdant_bastion_catacombs',
             difficulty: 'normal', runLevel: 30, bosses: ['RootboundWarden', 'BriarMatron', 'RustboundColossus', 'HollowSentinel'] }),
-        fullRun: true, fallbackRun: false, useTownGuide: true, beforeCombat: defense
+        fullRun: true, fallbackRun: false, useTownGuide: true, beforeCombat: defense, recoverBetweenRooms: true
     }));
     expect(verifyTurnIn).toHaveBeenCalledWith(page, {});
     expect(upgradeGear).toHaveBeenCalledWith(page);
