@@ -55,10 +55,10 @@ test('seven socket palettes render consistently across supported records on all 
         const sword = gem => ({ id: 'same-socketed-sword', name: 'Iron Sword', baseName: 'Iron Sword',
             type: 'WEAPON', slot: 'mainHand', level: 1, rarity: 'Rare', sockets: 1, gems: [gem] });
         const apply = gem => actors.map(actor => applyProceduralEquipment(actor.mesh, { mainHand: sword(gem) }));
-        const capture = () => {
+        const capture = (camera = render.camera) => {
             const previous = render.renderer.getRenderTarget(), pixels = new Uint8Array(768 * 432 * 4);
             try {
-                render.renderer.setRenderTarget(target); render.renderer.render(render.scene, render.camera);
+                render.renderer.setRenderTarget(target); render.renderer.render(render.scene, camera);
                 render.renderer.readRenderTargetPixels(target, 0, 0, 768, 432, pixels);
                 return pixels;
             } finally { render.renderer.setRenderTarget(previous); }
@@ -91,7 +91,7 @@ test('seven socket palettes render consistently across supported records on all 
                         item: actor.mesh.getObjectByName('EquippedVisual_mainHand')?.userData.itemId };
                 }) };
             },
-            closeups() {
+            closeups(type) {
                 // Inspect the actual attached weapon in place, not a detached
                 // replacement mesh or enlarged gem. Four cameras face each
                 // socket's local front; only this prepared review view changes.
@@ -111,7 +111,16 @@ test('seven socket palettes render consistently across supported records on all 
                         camera.position.copy(center).addScaledVector(front, Math.max(.5, extent.length() * 1.8));
                         camera.lookAt(center); camera.updateMatrixWorld();
                         const projected = socket.getWorldPosition(new THREE.Vector3()).project(camera);
-                        views.push({ className: classes[index], extent: extent.toArray(), projected: projected.toArray() });
+                        // Only this actor changes. A visible socket on a neighbor
+                        // must not satisfy another class's visibility assertion.
+                        renderer.setScissorTest(false);
+                        applyProceduralEquipment(actor.mesh, { mainHand: sword({ type: 'Unknown' }) });
+                        const neutral = capture(camera);
+                        applyProceduralEquipment(actor.mesh, { mainHand: sword({ type: GEM_TYPES[type].name, quality: 'Flawed' }) });
+                        const colored = capture(camera);
+                        const signal = window.__compareSocketPixels(colored, colored, neutral).referenceSignal;
+                        views.push({ className: classes[index], extent: extent.toArray(), projected: projected.toArray(), signal });
+                        renderer.setScissorTest(true);
                         const x = index % 2 * size.x / 2, y = (1 - Math.floor(index / 2)) * size.y / 2;
                         renderer.setViewport(x, y, size.x / 2, size.y / 2);
                         renderer.setScissor(x, y, size.x / 2, size.y / 2);
@@ -146,13 +155,15 @@ test('seven socket palettes render consistently across supported records on all 
                 expect(variant.iconsEqual).toBe(true);
             }
             await page.screenshot({ path: testInfo.outputPath(`sockets-${type.toLowerCase()}-${quality}.png`) });
-            const closeups = await page.evaluate(() => window.__socketPreview.closeups());
+            const closeups = await page.evaluate(type => window.__socketPreview.closeups(type), type);
+            await page.screenshot({ path: testInfo.outputPath(`socket-details-${type.toLowerCase()}-${quality}.png`) });
+            console.log('[socket-closeup-visibility]', JSON.stringify({ type, quality, closeups }));
             for (const view of closeups) {
                 expect(view.extent.every(value => Number.isFinite(value) && value > 0)).toBe(true);
                 expect(view.projected.every(value => Number.isFinite(value) && Math.abs(value) < 1)).toBe(true);
+                expect(view.signal, `${view.className}'s own socket must contribute visible color`).toBeGreaterThan(0);
             }
             results.at(-1).closeups = closeups;
-            await page.screenshot({ path: testInfo.outputPath(`socket-details-${type.toLowerCase()}-${quality}.png`) });
         }
         await testInfo.attach('socket-render-evidence', { body: JSON.stringify({ metadata, results }, null, 2), contentType: 'application/json' });
         expect(failures, failures.join('\n')).toEqual([]);
