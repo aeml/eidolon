@@ -4,6 +4,7 @@ import { expect, test } from '@playwright/test';
 import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture } from '../partyDungeonFixture.js';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
 import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyWarningInputPolicy } from '../partyDungeonControls.js';
+import { selectPartyDamageBuff } from '../partyDamageRoleControls.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
@@ -25,23 +26,33 @@ const snapshot = page => page.evaluate(() => {
 });
 
 async function observeRole(page) {
-    await page.evaluate(() => {
+    await page.evaluate(async () => {
+        const { observePartyWarning } = await import('/tests/partyDamageRoleControls.js');
         const game = window.game, original = game.handleServerMessage.bind(game);
         const e = window.__partyClearEvidence = { damageDone: 0, damageTaken: 0, allyHealing: 0,
             casts: {}, rejected: {}, sawDeath: false, warningMoves: 0, warningEscapes: 0,
+            warningEarlyEscapes: 0, recentDamage: [], lastAcceptedCastAt: -Infinity,
             lastUpdate: performance.now() };
         window.__partyClearWarnings = [];
         game.handleServerMessage = message => {
             const p = message.payload;
             if (p && message.type === 'telegraph' && [p.x, p.z, p.radius, p.duration].every(Number.isFinite)) {
-                window.__partyClearWarnings = window.__partyClearWarnings.filter(w => w.expires > performance.now());
-                window.__partyClearWarnings.push({ x: p.x, z: p.z, radius: p.radius,
-                    instance: game.currentInstanceId, expires: performance.now() + p.duration * 1000 });
+                window.__partyClearWarnings.push(observePartyWarning({ x: p.x, z: p.z, radius: p.radius,
+                    instance: game.currentInstanceId, expires: performance.now() + p.duration * 1000 },
+                game.player.position, performance.now()));
             }
             if (message.type === 'state' || message.type === 'delta') e.lastUpdate = performance.now();
             if (p && message.type === 'damage') {
                 if (p.sourceId === game.player.id) e.damageDone += Math.max(0, p.amount || 0);
-                if (p.targetId === game.player.id) e.damageTaken += Math.max(0, p.amount || 0);
+                if (p.targetId === game.player.id) {
+                    e.damageTaken += Math.max(0, p.amount || 0);
+                    const position = game.player.position, now = performance.now();
+                    e.recentDamage.push({ amount: p.amount, kind: p.kind, x: position.x, z: position.z,
+                        warnings: window.__partyClearWarnings.filter(w => w.instance === game.currentInstanceId && now < w.expires + 3000)
+                            .map(w => ({ radius: w.radius, distance: Math.hypot(position.x - w.x, position.z - w.z),
+                                msUntilImpact: w.expires - now, earlyEscape: w.firstSafeAt != null, lastObservedSafe: w.safe })) });
+                    e.recentDamage = e.recentDamage.slice(-12);
+                }
             }
             if (p && message.type === 'heal' && p.sourceId === game.player.id && p.targetId !== game.player.id) {
                 e.allyHealing += Math.max(0, p.amount || 0);
@@ -49,8 +60,19 @@ async function observeRole(page) {
             if (p && message.type === 'ability_result') {
                 const counts = p.accepted ? e.casts : e.rejected;
                 counts[p.skillName] = (counts[p.skillName] || 0) + 1;
+                if (p.accepted) e.lastAcceptedCastAt = performance.now();
             }
             const result = original(message);
+            if (message.type === 'state' || message.type === 'delta') {
+                const now = performance.now();
+                window.__partyClearWarnings = window.__partyClearWarnings
+                    .filter(w => w.instance === game.currentInstanceId && now < w.expires + 3000)
+                    .map(w => {
+                        const observed = observePartyWarning(w, game.player.position, now);
+                        if (w.firstSafeAt == null && observed.firstSafeAt != null) e.warningEarlyEscapes++;
+                        return observed;
+                    });
+            }
             e.sawDeath ||= game.player.state === 'DEAD';
             return result;
         };
@@ -307,9 +329,24 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                     const enemy = await actor.page.evaluate(id => {
                         const g = window.game, p = g.player, e = g.remotePlayers.get(id);
                         return e && e.state !== 'DEAD' ? { distance: p.position.distanceTo(e.position),
-                            range: g.abilityController.getAbilityCastRange(), cooldown: p.abilityCooldown } : null;
+                            range: g.abilityController.getAbilityCastRange(), cooldown: p.abilityCooldown,
+                            dead: p.state === 'DEAD', mana: p.stats.mana, healthRatio: p.stats.hp / p.stats.maxHp,
+                            hotbar: p.hotbar, unlockedSkills: p.unlockedSkills, cooldowns: p.cooldowns,
+                            shieldActive: p.arcaneShieldActive, poisonActive: p.poisonCoatingActive,
+                            sinceCastMs: performance.now() - window.__partyClearEvidence.lastAcceptedCastAt,
+                            costs: Object.fromEntries(['Arcane Shield', 'Poison Coating'].map(skill =>
+                                [skill, g.abilityController.getConfiguredManaCost(skill)])) } : null;
                     }, target.id);
                     if (!enemy) return;
+                    const buff = selectPartyDamageBuff({ ...enemy, className: actor.className });
+                    if (buff) {
+                        const self = await projectGroundOffset(actor.page, 0, 0);
+                        if (self?.canvas) {
+                            await actor.page.mouse.move(self.x, self.y);
+                            await actor.page.keyboard.press(buff.key);
+                            return;
+                        }
+                    }
                     const point = await projectEntity(actor.page, target.id);
                     if (!point?.visible) {
                         if (policy.allowApproach) await follow(actor, await snapshot(tank.page), 8);

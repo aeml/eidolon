@@ -247,3 +247,25 @@ Archive`/tmp/eidolon-four-role-guide-clear-proof-mb3bxE` retains report/results/
 artifact scan passed, copied-log QA-prefix count0, owned listeners cleared.
 Screenshots are not pixel-redacted. No encounter, gear, regen or deadline changes
 were made in response to this result.
+
+## Follow-up: real defense fix and better role evidence
+
+[The slam defense regression](2026-09-10-boss-slam-defenses.md) reproduced an
+actual game defect and now passes focused race checks; full server68058 remains
+active at this checkpoint. It does not retroactively explain42295 through a
+shield the controller never cast.
+
+The party controller now selects the equipped Wizard Arcane Shield when injured
+and Rogue Poison Coating while fighting, checking the actual loadout, mana cost,
+cooldown, active buff and recent accepted cast. It uses ordinary self-positioned
+hotbar keys only after warning policy allows casting; escape remains first.
+No fixture, stats, damage, deadlines or progress assertions changed.
+
+The read-only warning observer records first safe position before the advertised
+impact, latest position safety (including re-entry), and the last twelve damage
+events with observed position/distance/time relative to recent warnings. Existing
+eventual-escape counts are retained, but are no longer the only timing evidence.
+These are client observations, not server-authoritative proof of dodging.
+Focused26401 passed67tests/3suites1.469s plus lint; discovery37006 found the one
+intended four-player route. Logs`/tmp/eidolon-party-defense-controls-{client,lint,discovery}.log`.
+Native use and full-clear acceptance of these changes remain pending.
