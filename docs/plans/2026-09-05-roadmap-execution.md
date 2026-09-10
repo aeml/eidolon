@@ -27,7 +27,79 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 16:43 UTC
+## Current checkpoint — September 10, 17:07 UTC
+
+Previous turn was PROGRESS (current CI partition integration and process proof).
+This continuation is PROGRESS: fresh play exposed missing authoritative empty
+storage; fixed the real join/resume snapshot path and verified native/full
+regressions. Also fixed misleading ready-quest guidance in a separate candidate.
+Full1.1–1.10 scope stays active/incomplete, without reduced acceptance or deadlines.
+
+-96446 TERMINAL1 on clean98f757f9,15.4minutes/zero retries. Opening passed87.532s,
+  watch606.250s, seeds176.275s; watch0deaths/16town rest stops. Imp phase failed
+  after50.912s in new stash preparation: opened stash contents were not an array.
+  No dungeon entered. Cause: shared server join/resume only sent stash when
+  nonempty. A fresh empty stash had no snapshot; seeded populated fixtures missed
+  this. Do not normalize unknown data to invented emptiness or call it a boss failure.
+- Archive`/tmp/eidolon-fresh-empty-stash-failure-KyAEhw`: reports/results/log;
+  actual credential scan0, copied redirected log additionally sanitized1file,
+  zero remaining QA username prefixes. Pixel usernames are not text-redacted.
+  Exact`stash-earned-story-0910` containers/image and18580/18581/41980gone.
+- Primaryd70e5acc always sends one stash array on join/resume, including nil/empty
+  as`[]`, preserving actual stored data. Go19446 RED nil/empty;20073 focusedrace
+  PASS2.438s.27370 clientPASS37tests/5suites1.357s+lint. Existing real client handler
+  clears stale stash display without changing bag/equipment/Gold/XP; no game balance.
+  fcdfa366 adds actual four-class empty-snapshot checks before/after relogins.
+-96721 TERMINAL0 on cleanfcdfa366:4native cases12.6/11.9/12.6/12.0s,51.0s total,
+  zero retries. Actual fresh login/relogin plus login after explicit QA level
+  override, not earned progression. Archive`/tmp/eidolon-empty-stash-login-proof-br5CY4`;
+  wrapper scan0, rawlog0username prefixes; exact`empty-stash-login-0910`services gone.
+-87108 TERMINAL0 on clean545986aa: full Go race root27.641s, other tested packages
+  passed cached;309client suites4254tests160.706s+lint. Logs
+  `/tmp/eidolon-empty-stash-full-{server,client,lint}.log`, copied to proof archive.
+  Primary clean9b9dfffe documents complete evidence in
+  `docs/plans/2026-09-10-empty-stash-snapshot.md` in its worktree.
+- NEW primary6251 ACTIVE, confirmed via actual handle17:07. Clean9b9dfffe frozen;
+  `empty-fixed-story-0910`, log`/tmp/eidolon-empty-fixed-story-native.log`, same
+  loopback18580/18581/41980 and strict fresh Wizard story-dungeon route, Node24
+  inside render group, CIunset/zero retries. Preserve original230minute overall/
+ 40minute dungeon/8minute boss/watchdogs. Continue same handle; archive failures
+  before reuse. No other local heavy/browser active. This is not a campaign pass.
+
+Independent ready-quest guidance worktree`/tmp/eidolon-ready-quest-guidance-t7unYY`,
+branch`work/ready-quest-guidance-20260910`, cleanf1091179:
+
+- Real old-run screenshot showed ready8/8Ilyra dialogue while Next Step still
+  preferred generic Recall orientation. Runtime0741ff11 lets claimable story/daily
+  quests displace that generic town card. Incomplete quests retain recovery;
+  no auto-claim, forced tracking, rewards or healing changes. Based on socket298ecde0,
+  not integrated into frozen primary, current CI partition or a public release.
+-58878 RED5fail/8pass;35056 PASS68tests/3suites1.732s+lint. Native14561 failed only
+  because a new phone assertion incorrectly required desktop hint text inside
+  the intentionally compact52px HUD; archive`/tmp/eidolon-ready-guidance-failure-gctzmQ`.
+  5b55fcd2 keeps compact design and tests real journal opening/closing for the NPC
+  instruction instead. No assertion masking of the actual guidance defect.
+-87718 TERMINAL0 on clean5b55fcd2:4native cases4.1/5.5/5.6/5.2s,22.4s total,
+  zero retries. Desktop+390px phone Recall/Respawn readiness and existing daily/
+  lore interactions. Manual view confirms readable Ilyra instruction/8of8/rewards
+  in phone journal. Emulated dimensions/browser clicks, not physical touch proof.
+  Archive`/tmp/eidolon-ready-guidance-proof-ZKlmjD`; no accounts/APIcontainers;
+ 41980absent after cleanup. Guide fullclient/integration/release acceptance pending.
+
+17:07 remote: canonicalCI34434837759 still queued at predeploy after hosted passes;
+nightly34433520743 confirmed inprogress. Public endpoints rechecked this turn:
+matching Alpha1.0.60/df91bb66e8e8f3b7125aa99412f09ba25898a3ac, backend healthy/
+database ready. No cancellation authority, push, version assignment or deployment.
+Canonical62dc acceptance still precedes successor promotion. CI partition49daea2e
+remains locally verified101case discovery/272tests, but fullclient/actual3bundled
+groups/timing and release integration pending; do not overlap6251. No need to
+redo unchanged socket60case authenticated all as missing. Root ledger never pushed.
+Next: continue6251; then act on actual results and integrate verified successors
+with complete versioned CI/live gates. All-class/group/realm/raid/balance/physical
+phone/casino and later roadmap requirements, including unanswered Normal policy,
+remain intact. Do not mark the goal complete or blocked.
+
+## Previous checkpoint — September 10, 16:43 UTC
 
 Previous goal turn was PROGRESS: integrated the older browser-cost prototype
 onto the current socket candidate, verified exact discovery and added process
