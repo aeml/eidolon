@@ -6,6 +6,7 @@ import { createEarnedClassCombat } from './earned-class-combat.js';
 import { earnedPreparationBudget, earnedPreparationProfile } from '../earnedPreparationPolicy.js';
 import { equipEarnedGearAndStats } from './earned-gear-and-stats.js';
 import { upgradeEarnedEquipment } from './earned-equipment-upgrades.js';
+import { upgradeEarnedStoredEquipment } from './earned-stash-upgrades.js';
 
 const preparationState = page => page.evaluate(() => {
     const p = window.game.player;
@@ -35,6 +36,8 @@ export async function prepareEarnedClass(page, credentials, { statBudget = 5, la
     const { equipped, allocated } = await equipEarnedGearAndStats(page,
         { stat: profile.stat, statAllocations: budget.statAllocations });
     const upgrades = await upgradeEarnedEquipment(page);
+    const storage = await upgradeEarnedStoredEquipment(page);
+    upgrades.push(...storage.upgrades);
     await page.keyboard.press('k');
     const skills = page.locator('#skill-tree-window');
     await skills.getByRole('button', { name: 'Skills', exact: true }).click();

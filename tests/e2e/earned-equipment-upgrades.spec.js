@@ -1,6 +1,8 @@
 import { execFileSync } from 'node:child_process';
 import { expect, test } from '@playwright/test';
 import { upgradeEarnedEquipment, readEarnedGear } from './earned-equipment-upgrades.js';
+import { upgradeEarnedStoredEquipment } from './earned-stash-upgrades.js';
+import { openEarnedStash, storeEarnedSpareEquipment } from './earned-stash-storage.js';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, openGame } from './helpers.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off', actionTimeout: 15_000 });
@@ -27,7 +29,7 @@ function seedUpgradeFixture(username) {
         x: -1.25, y: 0, z: 200, stats: { strength: 10, dexterity: 10, intelligence: 10, wisdom: 10, vitality: 10 },
         inventory, equipment: { mainHand: gear('old-staff', 'mainHand', { damage: 1 }),
             ring1: gear('strong-ring', 'ring', { intelligence: 8 }), ring2: gear('old-ring', 'ring', { intelligence: 1 }) },
-        stash: [], quests: [], unlocked_skills: ['Fireball'] };
+        stash: [gear('stored-ring', 'ring', { intelligence: 7 })], quests: [], unlocked_skills: ['Fireball'] };
     const script = `
         if (!db.getSiblingDB('admin').auth(process.env.MONGO_INITDB_ROOT_USERNAME, process.env.MONGO_INITDB_ROOT_PASSWORD)) throw Error('Fixture auth failed');
         const result = db.getSiblingDB('eidolon').users.updateOne(
@@ -111,10 +113,36 @@ test('normal full-bag upgrades target paired slots and preserve all items after 
     await loginAndEnterWorld(page, credentials);
     expect(await readEarnedGear(page)).toEqual(prepared);
     expect(await upgradeEarnedEquipment(page)).toEqual([]);
+    // Storage is read through its real interaction, and full-bag failure must
+    // precede any withdrawal. Make room with an ordinary preserved deposit.
+    await expect(upgradeEarnedStoredEquipment(page)).rejects.toThrow('one free bag slot');
+    const opened = await readEarnedGear(page);
+    expect(opened.stash.some(item => item?.id === 'stored-ring')).toBe(true);
+    expect(opened.inventory.filter(item => item?.id)).toHaveLength(25);
+    await storeEarnedSpareEquipment(page, [{ id: 'old-ring' }], readEarnedGear);
+    if (await page.locator('#inventory-screen').isVisible()) await page.locator('#btn-close-inventory').click();
+    const stored = await upgradeEarnedStoredEquipment(page);
+    expect(stored.withdrawn.map(item => item.id)).toEqual(['stored-ring']);
+    expect(stored.upgrades.map(item => item.slot)).toEqual(['ring2']);
+    const final = await readEarnedGear(page);
+    expect(final.equipment.ring1.id).toBe('strong-ring');
+    expect(final.equipment.ring2.id).toBe('stored-ring');
+    expect(final.inventory.filter(item => item?.id)).toHaveLength(25);
+    expect(final.inventory.some(item => item?.id === 'upgrade-ring')).toBe(true);
+    expect(final.stash.some(item => item?.id === 'old-ring')).toBe(true);
+    const owned = state => [...state.inventory, ...state.stash, ...Object.values(state.equipment)]
+        .filter(item => item?.id).sort((a, b) => a.id.localeCompare(b.id));
+    expect(owned(final)).toEqual(owned(opened));
+    for (const key of ['level', 'gold', 'xp']) expect(final[key]).toBe(opened[key]);
+    await loginAndEnterWorld(page, credentials);
+    await openEarnedStash(page);
+    expect(await readEarnedGear(page)).toEqual(final);
+    await page.locator('#btn-close-stash').click();
+    await page.locator('#btn-close-inventory').click();
     await page.keyboard.press('i');
     if (!await page.locator('#character-sheet').isVisible()) await page.keyboard.press('c');
     await expect(page.locator('#character-sheet')).toBeVisible();
     await page.screenshot({ path: testInfo.outputPath('upgraded-equipment.png') });
     expect(failures, failures.join('\n')).toEqual([]);
-    console.log('[equipment-upgrade-fixture] actual full-bag drags, paired slot, exact ownership and login persistence passed; prepared fixture, not earned progression');
+    console.log('[equipment-upgrade-fixture] actual full-bag drags, stored upgrade, ordinary deposit/withdrawal, paired slot, exact ownership and login persistence passed; prepared fixture, not earned progression');
 });

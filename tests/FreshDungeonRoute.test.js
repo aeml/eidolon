@@ -7,6 +7,7 @@ const verifyTurnIn = jest.fn();
 const playDungeon = jest.fn();
 const createDefense = jest.fn();
 const upgradeGear = jest.fn();
+const upgradeStoredGear = jest.fn();
 const readGear = jest.fn();
 jest.unstable_mockModule('@playwright/test', () => ({ expect }));
 jest.unstable_mockModule('./e2e/helpers.js', () => ({ readPlayerState }));
@@ -17,6 +18,7 @@ jest.unstable_mockModule('./e2e/chronicle-earth-route.js', () => ({
 jest.unstable_mockModule('./e2e/dungeon-playthrough-route.js', () => ({ playDungeonThroughInputs: playDungeon }));
 jest.unstable_mockModule('./e2e/earned-dungeon-combat.js', () => ({ createEarnedDungeonCombat: createDefense }));
 jest.unstable_mockModule('./e2e/earned-equipment-upgrades.js', () => ({ upgradeEarnedEquipment: upgradeGear, readEarnedGear: readGear }));
+jest.unstable_mockModule('./e2e/earned-stash-upgrades.js', () => ({ upgradeEarnedStoredEquipment: upgradeStoredGear }));
 const { clearEarnedVerdant } = await import('./e2e/fresh-dungeon-route.js');
 
 let page;
@@ -43,6 +45,9 @@ test('earned entry uses the real town guide and full normal level-30 route befor
     }));
     expect(verifyTurnIn).toHaveBeenCalledWith(page, {});
     expect(upgradeGear).toHaveBeenCalledWith(page);
+    expect(upgradeStoredGear).toHaveBeenCalledWith(page);
+    expect(upgradeGear.mock.invocationCallOrder[0]).toBeLessThan(upgradeStoredGear.mock.invocationCallOrder[0]);
+    expect(upgradeStoredGear.mock.invocationCallOrder[0]).toBeLessThan(playDungeon.mock.invocationCallOrder[0]);
     expect(upgradeGear.mock.invocationCallOrder[0]).toBeLessThan(playDungeon.mock.invocationCallOrder[0]);
     expect(playDungeon.mock.invocationCallOrder[0]).toBeLessThan(verifyTurnIn.mock.invocationCallOrder[0]);
 });
@@ -51,6 +56,15 @@ test('an unmet earned level gate stops before entry without granting a level', a
     readPlayerState.mockResolvedValue({ level: 29, state: 'IDLE' });
     await expect(clearEarnedVerdant(page, {})).rejects.toThrow();
     expect(playDungeon).not.toHaveBeenCalled();
+    expect(verifyTurnIn).not.toHaveBeenCalled();
+});
+
+test('blocked stored preparation cannot start an under-prepared dungeon silently', async () => {
+    const blocked = new Error('Stored upgrade requires one free bag slot before withdrawal');
+    upgradeStoredGear.mockRejectedValue(blocked);
+    await expect(clearEarnedVerdant(page, {})).rejects.toBe(blocked);
+    expect(playDungeon).not.toHaveBeenCalled();
+    expect(createDefense).not.toHaveBeenCalled();
     expect(verifyTurnIn).not.toHaveBeenCalled();
 });
 
@@ -63,6 +77,7 @@ test('entry receipt is retained after earned swaps and before combat, even when 
     await expect(clearEarnedVerdant(page, {}, { captureEntry })).rejects.toBe(failure);
     expect(captureEntry).toHaveBeenCalledWith(receipt);
     expect(upgradeGear.mock.invocationCallOrder[0]).toBeLessThan(captureEntry.mock.invocationCallOrder[0]);
+    expect(upgradeStoredGear.mock.invocationCallOrder[0]).toBeLessThan(captureEntry.mock.invocationCallOrder[0]);
     expect(captureEntry.mock.invocationCallOrder[0]).toBeLessThan(playDungeon.mock.invocationCallOrder[0]);
     expect(verifyTurnIn).not.toHaveBeenCalled();
 });

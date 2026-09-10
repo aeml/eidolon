@@ -5,9 +5,10 @@ export const readEarnedGear = async page => {
     const state = await page.evaluate(() => {
     const p = window.game.player;
     return { className: p.constructor.name, level: p.level, gold: p.gold, xp: p.xp,
-        inventory: p.inventory, equipment: p.equipment };
+        inventory: p.inventory, equipment: p.equipment, stash: p.stash };
     });
     return { ...state, inventory: state.inventory.map(canonicalEarnedItem),
+        stash: Array.isArray(state.stash) ? state.stash.map(canonicalEarnedItem) : null,
         equipment: Object.fromEntries(Object.entries(state.equipment).map(([slot, item]) => [slot, canonicalEarnedItem(item)])) };
 };
 

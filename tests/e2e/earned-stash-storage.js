@@ -2,7 +2,7 @@ import { expect } from '@playwright/test';
 import { earnedStashFreeSlots } from '../earnedInventoryPolicy.js';
 import { moveByGroundClick, projectEntity, readPlayerState } from './helpers.js';
 
-async function openEarnedStash(page) {
+export async function openEarnedStash(page) {
     // A right-click must mean deposit, never a sale through a leftover shop.
     await expect(page.locator('#shop-screen')).toBeHidden();
     if (!await page.locator('#stash-screen').isVisible()) {

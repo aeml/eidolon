@@ -8,6 +8,7 @@ import { readPlayerState } from './helpers.js';
 import { upgradeEarnedEquipment, readEarnedGear } from './earned-equipment-upgrades.js';
 import { earnedTownRecoveryEnabled } from '../earnedRecoveryPolicy.js';
 import { readEarnedDungeonEntryInPage } from '../earnedDungeonEntryReceipt.js';
+import { upgradeEarnedStoredEquipment } from './earned-stash-upgrades.js';
 
 // Called only after the no-grants opening/collection/contracts route. Never use
 // the prepared dungeon spec's level grant, encounter waypoint or rune setup.
@@ -23,6 +24,7 @@ export async function clearEarnedVerdant(page, credentials, { runPhase = (_id, b
     expect(chapter?.count).toBe(0);
     await page.locator('#btn-close-dungeon-menu').click();
     await upgradeEarnedEquipment(page);
+    await upgradeEarnedStoredEquipment(page);
     const gear = await readEarnedGear(page);
     if (captureEntry) {
         const dirty = process.env.EIDOLON_E2E_SOURCE_DIRTY;
