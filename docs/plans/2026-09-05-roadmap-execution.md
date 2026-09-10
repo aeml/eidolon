@@ -27,7 +27,53 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 13:26 UTC
+## Current checkpoint — September 10, 13:43 UTC
+
+Previous goal turn was PROGRESS (recorded-build failure and ground projection
+correction). This turn is PROGRESS: native retry supplied decisive new input
+evidence; reproduced/fixed a held-Shift runtime bug and an independent stale
+Forge gem-panel bug. Full1.1–1.10 scope remains active/incomplete.
+
+90163 TERMINAL1 on8987d870: exact planned and actual ray point agree, no
+stun/root/freeze; retreat still stopped with0displacement/player1140HP.
+LastWarden10180HP. Archive `/tmp/eidolon-recorded-ground-failure-0DYeGS`, includes
+full303/4215projectionlogs. Actual wrappercredentialscan sanitized2files;
+additional archived-native-log username redaction sanitized1. OwnedAPI/Mongo
+and18580/18581/41980listeners absent before the next native test. Do not dump
+raw stream error lines (disposable identifiers). This is NOT a death/timeout
+or evidence justifying a balance adjustment.
+
+Code inspection found initial Shift-click honors move-only, but held input in
+GameEngineRuntime ignored Shift: one frame before mouse release could replace
+movement with a hovered enemy attack/chase.16888 RED2failed/9passed reproduced
+near/far actor cases in actual engine update. New runtime df07c50f shares
+movePlayerToPointerGround for initial/held Shift; retains Control/Meta priority,
+mobile/menu/jump guards, ordinary collision and authority.47241 PASS48tests/
+4suites1.85s+lint. Logs `/tmp/eidolon-held-shift-{red,focused,lint}.log`.
+Primary clean df07c50f; full/native verification pending, no gameplay balancing
+or version/deployment change. No primary heavy gate active now.
+
+SocketWT added1a12d02f actual Forge/owner/observer/bag/relogin test.75162lint/
+discovery passed.74721 native TERMINAL1: removal/insertion refreshed both real
+client models, then failed bag-icon assertion (test inspected outer slot rather
+than inner art). Captured Forge icon also remained its empty-socket variant;
+refresh() omitted gem panels. Archive `/tmp/eidolon-forge-socket-failure-zIfaOQ`,
+credentialscan0and ownedservice/listenercleanup confirmed.
+47351 RED3failed/6passed reproduced stale icon/selection/missing gem refresh.
+f4f0362e fixes gem panel refresh, stale selections and preserves nodes for
+unchanged item state.20231 PASS34tests/3suites1.313s+lint; final lint also passes.
+Native test now reads actual inner bag art and requires filled-Sapphire icon,
+not merely an icon different from the original Ruby.76163 is sole active local
+heavy/browser gate onclean f4f0362e: runIDforge-refresh-0910/ports18580,18581,41980,
+log `/tmp/eidolon-forge-refresh-native.log`. Do not edit frozen socketWT or run
+competing browser/full suite while live. This run has not been accepted yet.
+
+13:27canonicalCI34434837759stillqueued/nightly34433520743stillinprogress.
+No new cancellation authority or push/deployment. Canonical60stillfirst.
+Fullcampaign/manualreward/save/Water/allclasses/groups/raids/phone/balance/
+casino and remaining roadmap gates stayopen. Root is ledger-only, never pushed.
+
+## Previous checkpoint — September 10, 13:26 UTC
 
 98271 first projection full was TERMINAL1:302suitesPASS/one existing test failed
 because expected projection args omitted newallowScaling;4211passed/onefailed,
