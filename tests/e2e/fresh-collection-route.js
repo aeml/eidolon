@@ -82,7 +82,7 @@ async function earnFreshSeeds(page, credentials, { findTarget, leaveTown, captur
                 console.log('[fresh-collection-combat]', JSON.stringify(await readFreshCollectionCombat(page, target.id)));
                 nextDiagnostic = Date.now() + 15_000;
             }
-            if (await beforeCombat()) continue;
+            if (await beforeCombat(page, target)) continue;
             // A normal retreat can itself take damage. Let the existing death
             // handler observe that before issuing another attack.
             if ((await readPlayerState(page)).state === 'DEAD') continue;

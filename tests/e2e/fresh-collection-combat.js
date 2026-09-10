@@ -1,4 +1,4 @@
-import { createEarnedWizardDefense } from './earned-wizard-defense.js';
+import { createEarnedClassCombat } from './earned-class-combat.js';
 import { recordCollectionCombatReceipt } from '../collectionCombatReceipts.js';
 
 export async function observeCollectionCombatReceipts(page) {
@@ -15,11 +15,12 @@ export async function observeCollectionCombatReceipts(page) {
     })()`);
 }
 
-// Same ordinary spacing/earned shield inputs as the hunt route. No grants,
-// skill purchases, recovery commands or changes to collection/death limits.
+// Use each class's earned hunt inputs, including Rogue spacing, Cleric healing
+// and Fighter hotbar skills. Callers supply (page, target) just like the hunts.
+// No grants, skill purchases, recovery commands or changed encounter/death limits.
 export async function createFreshCollectionCombat(page) {
     const className = await page.evaluate(() => window.game.player.constructor.name);
-    return className === 'Wizard' ? createEarnedWizardDefense(page, { retreatBelowHealthRatio: .8 }) : async () => false;
+    return createEarnedClassCombat(page, className, { retreatBelowHealthRatio: .8 });
 }
 
 // Observe the result of an ordinary click, not the originally projected ID.

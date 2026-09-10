@@ -189,7 +189,7 @@ test('fresh level-one character earns and manually turns in the opening Chronicl
                 // Share the collection route's ordinary defensive inputs instead
                 // of interrupting every healthy attack with another retreat.
                 if (await leaveEarnedCombatSafety(page, () => leaveTown(page))) continue;
-                if (await beforeOpeningCombat()) continue;
+                if (await beforeOpeningCombat(page, target)) continue;
                 retreats = await page.evaluate(() => window.__freshWizardDefense?.counts.retreats || 0);
                 if ((await readPlayerState(page)).state === 'DEAD') continue;
                 if ((await readChronicleChapter(page, chapter)).count > before) break;
