@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { readSanctuaryHoverEvidence } from './sanctuary-hover-observation.js';
 import { observeCollectionCombatReceipts, readFreshCollectionCombat,
     selectCollectionTargetThroughInput } from './fresh-collection-combat.js';
 import { collectBrowserFailures, credentialsFromEnvironment, jumpByGroundClick,
@@ -18,12 +19,15 @@ const restState = page => page.evaluate(() => {
         aura: Boolean(aura?.group.parent), meshes, state: player.state };
 });
 
-async function hoverEnemyCardThroughInput(page, targetId = null) {
+async function hoverEnemyCardThroughInput(page, testInfo, targetId = null) {
     let hoveredId;
-    await expect.poll(async () => {
+    let attempt = { requestedTarget: targetId, id: null, point: null };
+    try { await expect.poll(async () => {
         const id = targetId || (await projectNearestHostile(page, 'Skeleton'))?.id;
+        attempt = { requestedTarget: targetId, id: id || null, point: null };
         if (!id) return false;
         const point = await projectEntity(page, id);
+        attempt.point = point;
         if (!point?.visible) return false;
         await page.mouse.move(point.x, point.y);
         const selected = await page.evaluate(id => window.game.hoveredEntity?.id === id &&
@@ -31,6 +35,13 @@ async function hoverEnemyCardThroughInput(page, targetId = null) {
         if (selected) hoveredId = id;
         return selected;
     }, { timeout: 10_000, message: 'The real enemy hover must populate the combat card' }).toBe(true);
+    } catch (error) {
+        const evidence = await readSanctuaryHoverEvidence(page, attempt);
+        await testInfo.attach('sanctuary-hover-failure', { body: JSON.stringify(evidence), contentType: 'application/json' });
+        await page.screenshot({ path: testInfo.outputPath('sanctuary-hover-failure.png') });
+        console.log('[sanctuary-hover-failure]', JSON.stringify(evidence));
+        throw error;
+    }
     return hoveredId;
 }
 
@@ -69,7 +80,7 @@ test('earned sanctuary rest follows real travel, combat and a fresh login', asyn
     expect(insidePosition.x).toBeGreaterThanOrEqual(94);
     expect(insidePosition.x).toBeLessThan(100);
     await expect.poll(async () => (await restState(page)).zone).toBe('lanternhold');
-    const boundaryTarget = await hoverEnemyCardThroughInput(page);
+    const boundaryTarget = await hoverEnemyCardThroughInput(page, testInfo);
     await expect(page.locator('#combat-intent-status')).toHaveText('Leave the safe zone');
     await expect(page.locator('#combat-intent-status')).not.toHaveClass(/is-in-range/);
     await page.screenshot({ path: testInfo.outputPath('native-safe-zone-warning.png') });
@@ -80,7 +91,7 @@ test('earned sanctuary rest follows real travel, combat and a fresh login', asyn
     }
     expect((await readPlayerState(page)).x).toBeGreaterThanOrEqual(115);
     await expect.poll(async () => (await restState(page)).zone).toBe('');
-    await hoverEnemyCardThroughInput(page, boundaryTarget);
+    await hoverEnemyCardThroughInput(page, testInfo, boundaryTarget);
     await expect(page.locator('#combat-intent-status')).toHaveText(/^(In Range|Move Into Range)$/);
     await page.screenshot({ path: testInfo.outputPath('native-safe-zone-departure.png') });
     console.log('[native-safe-zone-feedback]', JSON.stringify({ target: boundaryTarget,
