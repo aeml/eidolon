@@ -27,7 +27,41 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 07:38 UTC
+## Current checkpoint — September 10, 07:43 UTC
+
+Previous goal turn made PROGRESS (committed strict story-only dungeon route and
+launched its native attempt). This turn re-polled SAME96530 live, with source
+still clean/frozen626385d. Opening phase passed79,119ms; Watch is active with
+15/40 credited kills, zero deaths, five ordinary rest stops and earnedlevel5 at
+the latest receipt. This is partial evidence, not a dungeon or full-route pass.
+Keep the same process/log/runID/ports from the previous checkpoint; no restart,
+source edits, second browser or full-suite workload while it is active.
+
+Independent bounded progress: inspected collection verification and found it
+silently used no class-defense input for Fighter/Rogue/Cleric, unlike the shared
+earned hunt driver. Separate worktree
+`/tmp/eidolon-collection-class-input-tNuhow`, branch
+`work/collection-class-input-20260910`, now clean **c884455** atop626385d. Opening
+and seed encounters use the existing per-class controls and pass their real
+page/current target. Wizard's80%spacing policy is retained; other classes can use
+their actual earned inputs. No game stats/rewards/grants/death/time-limit changes
+or claim that this explained a previous failure. The dungeon class guard remains.
+
+Focused11165 TERMINAL PASS106tests/6suites1.659s plus lint, Node24.18.0. Tests
+include all four factory selections, call-site arguments, rejection propagation,
+ordinary Cleric self-aim/heal/throttle and existing locked-skill/resource guards.
+Logs `/tmp/eidolon-collection-class-{unit,lint}-final.log`; detailed new plan
+`docs/plans/2026-09-10-collection-class-input-verification.md` in that worktree.
+Full regression and native other-class collection/readiness are still pending;
+do not merge this separate change into the frozen active Wizard attempt.
+
+GitHub revalidated this turn:34434837759 still queued at predeploy after all
+client/server/browser jobs passed; scheduled34433520743 still in progress. No
+cancellation approval, push, deployment or new public-identity check. Preserve
+the complete roadmap and casino scope, unpublished aura work and release60's
+remaining acceptance. Root ledger only, never push this branch.
+
+## Previous checkpoint — September 10, 07:38 UTC
 
 Previous turn was a planning confirmation only (no new progress). Revalidated
 the existing casino scope and resumed the available progression task. This turn
