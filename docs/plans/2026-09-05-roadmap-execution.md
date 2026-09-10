@@ -5,12 +5,11 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 20:41 UTC
+## Current checkpoint — September 10, 20:47 UTC
 
-Previous goal turn was PROGRESS (compact roster browser/full-client acceptance
-and revised safe-warning casts). This turn is PROGRESS: release-candidate stat
-parity/party-credit integration with focused verification, alongside a verified
-wait on the unchanged four-role gameplay source.
+Previous goal turn was PROGRESS: recovered full-client results and freshly
+verified party-credit/overworld boundaries. This turn continues the combined
+candidate's native stat/storage release checks on disposable local services.
 Full roadmap remains active and deployment/1.1 completion is not claimed.
 
 - Full Go race81223 TERMINAL0 on20d9f17d: game381.679s, other tested packages
@@ -89,7 +88,7 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
   and ranged casts remain unchanged.73196 passed87 tests/3suites0.94s plus lint.
   No combat, gear, regen or deadline changes. Full clear/manual persistence and
   native proof of this new strategy remain open.
-- Combined successor `/tmp/eidolon-browser-cost-current-RxDWen` is clean883e39e0
+- Combined successor `/tmp/eidolon-browser-cost-current-RxDWen` is cleanef28abb7
   (documentation atop tested38875a69).
   It now includes prepared/ordinary starting-stat parity52ff4513 (from3832b150)
   and mandatory all-class parity gateec401a95 (fromaeff8ab5), retaining the entire
@@ -116,15 +115,22 @@ Full roadmap remains active and deployment/1.1 completion is not claimed.
 - Full Go race37969 TERMINAL0 on clean38875a69: root21.800s/game331.607s,
   database1.143s/loadtest1.033s/lifecycle1.042s, no race warning. Log
  `/tmp/eidolon-next-party-backport-full-server.log`; doc883e39e0 records the pass.
-- Full client/lint76117 is ACTIVE on frozen883e39e0; log
+- Full client76117 log records275 suites/3827 tests passing132.462s on883e39e0; log
  `/tmp/eidolon-next-party-backport-full-client.log` and corresponding
- `...-full-lint.log`. Its launch returned a live handle; no full client result
-  yet. This is the sole local heavy gate. Primary02d30584 is clean and idle,
-  ready for the next revised four-role run after this check ends. Candidate
+ `...-full-lint.log`. The handle expired before terminal exit recovery, so lint
+  was rerun as72385 and exited0. Fresh focused party race70449 passed2.862s;
+  actual overworld XP/quest boundary pipeline92210 passed1.306s. All local checks
+  are terminal. Native initial-stat35249 is now ACTIVE on frozenef28abb7,
+  routeinitial-stats, runnext-stats-0910-2050, ports18580/18581/41980; log
+ `/tmp/eidolon-next-initial-stats-native.log`. All four ordinary registration/
+  reconnect/explicit-QA-level checks are required; not an earned campaign proof.
+  Previous candidate report archived/sanitized at
+ `/tmp/eidolon-next-pre-native-proof-oIKg59`. Primary02d30584 is idle,
+  ready for the next revised four-role run. Candidate
   native stat/storage/party/required-all, bundled-browser, version/remote/live
   acceptance remain pending. Do not infer production readiness from focused
   checks or restart a process solely on an observation timeout.
-- Remote rechecked again at~20:13: canonical62dc CI34434837759 remains queued at
+- Remote rechecked again at~20:49: canonical62dc CI34434837759 remains queued at
   predeploy, after five hosted jobs passed; Nightly34433520743 still in progress.
   No soak interruption, push, new version or production acceptance.
 - Next inspect the actual four-role result: distinguish input/positioning bugs
