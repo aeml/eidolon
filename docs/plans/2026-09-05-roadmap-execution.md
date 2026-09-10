@@ -27,7 +27,54 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 10:55 UTC
+## Current checkpoint — September 10, 11:03 UTC
+
+Previous goal turn was PROGRESS (native support route and166 focused checks).
+This turn is PROGRESS: reproduced and corrected an equipment socket appearance
+inconsistency on a separate visual branch, while independently confirming the
+original earned campaign still runs. Full1.1–1.10 scope remains unchanged.
+
+New WT `/tmp/eidolon-socket-visuals-lhwUl6`, branch
+`work/socket-visuals-20260910`, is clean **bdf3a2df** based on aura71f18922.
+Supported uppercase gem names previously rendered as neutral stones in icons
+and equipped models; replacing a gem via the already-supported `gemType` field
+could fail to refresh because the signature only read `type`. Shared appearance
+normalization fixes colors, material reuse and change detection without changing
+stats, rewards, canonical palettes, save schema or server code. Normal current
+server sockets use canonical `type`, so this is not evidence that all production
+gems were affected. Existing frozen primary, class and aura WTs remain untouched.
+
+Red19933:9/9failed. First follow-up47923:2passed/7failed due a Jest assertion API
+mistake; corrected without weakening the material-identity check, then51581
+passed241/4. Final91082 TERMINAL0:253tests/4suites3.482s plus lintNode24 and
+diff whitespace check. Logs `/tmp/eidolon-socket-visual-final-{unit,lint}.log`;
+red and intermediate failure retained. Coverage exercises all7gem types, both
+fields/name forms, actual four-class attached mesh refresh, stable identity,
+equivalent-record no-rebuild and neutral malformed inputs. Full regression,
+rendered comparison, native Forge/local/remote/save and release acceptance remain
+pending. Candidate plan and proposed UNRELEASED patch note are in
+`docs/plans/2026-09-10-socket-appearance-consistency.md` in that worktree; no
+version assigned or publication claimed. Do not overwrite aura's accepted
+source with this addition before completing its own gates.
+
+Main **44188** polled live10:56,11:01 and11:03, SAMEfrozen **4b3991ff**.
+Same primaryWT/runID/log/ports; no source edit, reset or competing browser/heavy
+gate. Three earlier phases passed; Imps now40/60 atlevel19, no deaths,1183seconds.
+Actual bag-management receipt atlevel19 confirms two empty-slot equips and an
+earned main-hand replacement: score13 versus5, item8627309370916328718 replaces
+8956271018224286848, plus220Gold in verified ordinary merchant sales. Neither
+gear upgrade nor partial hunt is boss survival/clear/reward/Water acceptance.
+
+10:56CI34434837759 stillqueued/nightly34433520743 stillinprogress. No soak
+cancellation approval; no runner changes. Last public identity check remains
+10:55,60/df91bb66 with healthyreadyDB, not canonical62dc2d1 final acceptance.
+No deployment this turn. Next local gates after the original campaign terminal
+result/artifact preservation: class candidate506d1c9a full regression and prepared
+native support; visual socket candidate full/rendered/native gates. Preserve
+the failed original96530 and all broader earned/all-class/group/realm/raid/phone/
+casino requirements. Root remains a ledger-only branch, never a release push.
+
+## Previous checkpoint — September 10, 10:55 UTC
 
 Previous implementation goal turn was PROGRESS (isolated all-class dungeon
 drivers and focused checks); the intervening casino confirmation made no new
