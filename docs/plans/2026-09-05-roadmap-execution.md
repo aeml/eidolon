@@ -41,7 +41,7 @@ Read-only source review reconfirmed an already documented group budget risk,
 not a new audit or new measured party result. `combat_death.go` grants party
 members shared combat XP and personal story kill credit. Existing7980 production
 helper audit `/tmp/eidolon-primary-earth-budget-audit.log` models7pre-dungeon
-chapters/25979questXP,最低qualifying enemies and8/20collection kills:2players end
+chapters/25979questXP,lowest qualifying enemies and8/20collection kills:2players end
 25/27 and5players22/23 for no/all-kill rest. Those scenarios omit incidental combat
 and are not actual party campaigns. Retain the original findings below; do not
 rerun unchanged diagnostics or tune runtime from a partial solo replay. Actual
