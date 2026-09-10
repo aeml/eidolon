@@ -27,7 +27,44 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 10:07 UTC
+## Current checkpoint — September 10, 10:19 UTC
+
+This goal turn is PROGRESS: corrected native equipment hit targeting, completed
+equipment/Forge and standalone recovery transitions, and final full regression.
+Full63011 on frozenruntimec3305ae7 TERMINAL0:266suites/3720tests129.789s plus lint,
+Node24.18.0. Logs `/tmp/eidolon-visual-hit-final-{client,lint}.log` also retained
+with equipment proof `/tmp/eidolon-visual-equipment-hit-proof-sqU6uz`.
+
+Standalone37202 on samec3305ae7 TERMINAL0:2death/dungeon cases2.8m; actual wrapper
+credentialscan0 and all ownedAPI/Mongo/webports18580/18581/41980 absent. Archive
+`/tmp/eidolon-visual-transitions-proof-S1htBZ`, log
+`/tmp/eidolon-visual-transitions-native.log`. Two full entry/dungeon-login/Recall
+cycles retained one visible aura, correct bank and invisible hitbox. Inspected
+second-cycle dungeon and town-return images. Prepared level30 fixture is not a
+fresh earned dungeon clear, full dungeon-art approval or physical-phone proof.
+Streaming PTY succeeded here; both prior143interruptions remain unresolved
+execution history and neither interrupted combined suffix counts as complete.
+
+Aura branch now clean/frozen **c78f29e6**, only1planfile differs from tested
+c3305ae7; runtime/test sources unchanged. Detailed completed evidence and open
+promotion gates are in `docs/plans/2026-09-10-aura-release-integration.md` there.
+Active **26206** runs the entire unchangedwell-rested-all suffix with streaming
+PTY, freshvisual-rest-stream-0910, ports18580/18581/41980. Log
+`/tmp/eidolon-visual-rest-stream-native.log`. Re-poll SAMEhandle, no edits or
+competing browser/heavy suites. Need terminal journey/expiry→party→transitions
+with actual final credentialscan, preserved scopedartifacts and cleanup.
+
+Next after that gate: primary25495d95 requires final full regression for the
+narrow3filehit-target port before its next earned campaign replay; original
+96530failure/fullclear/Waterhandoff remainsunaccepted. Canonical60CI34434837759
+stillqueued and nightly34433520743 inprogress at latest10:15–10:16check. No
+current-soak cancellation authority. No versionchange, push or deployment this
+turn; successor promotion still requires60remote/live acceptance, correctversion/
+patchnotes and full successorCI/live verification. Root ledger is documentation
+only, never push it. Full1.1–1.10/campaign/class/group/raid/mobile/balance/casino
+scope remainsactive/incomplete; no goal completion or genuine overall impasse.
+
+## Previous checkpoint — September 10, 10:07 UTC
 
 Current turn makes PROGRESS: integrated equipment/native failure was investigated
 and corrected, not retried away. Baseline53132 on5a2c41d0 TERMINAL1:all3new
@@ -64,13 +101,33 @@ password environment was unavailable, so this is NOT a complete credentialed
 gate scan. Trace/video were disabled. Original log
 `/tmp/eidolon-visual-rest-native.log` remains interruption evidence.
 
-Active fresh isolated **93245** on SAMEfrozenc3305ae7 repeats well-rested-all,
-unchanged assertions/limits, runIDvisual-rest-second-0910, ports18580/18581/41980.
-Log `/tmp/eidolon-visual-rest-second-native.log`. Re-poll same handle; no edits or
-competing heavy/browser runs. Need terminal suffix acceptance, archive/scan/
-cleanup, final integrated full regression, then baseline60remote/live acceptance
-before successorversion/push. Most recentCI34434837759 stillqueued; nightlynot
-cancelled. Full1.1–1.10/campaign/class/group/raid/mobile/balance/casino remainsopen.
+Fresh93245 on SAMEfrozenc3305ae7 also terminated143, after expiry/travel2cases
+1.3m, party1case43.4s, and hostiledeath/respawn1case1.4m passed, during the dungeon
+case's earned-rest setup. Neither a complete suffix nor full credential scan
+passed. Party evidence shows2realmembers, joystick movement, High5/Low4/High5
+meshes per actor; hardware samples median16.7ms, not physical-phone evidence.
+Inspected portrait/landscape status and world images and the real respawn image:
+readable buff, visible aura, no cube. Kernel logs showed no relevant OOM/kills;
+the termination cause remains unknown. No blanket process kill in the inspected
+nightly script; do not blame or interrupt that job without evidence/authority.
+
+Confirmed worker absent and orphan static-server group1441128 belonged to this
+WT; removed only that group and visual-rest-second-0910 disposableAPI/Mongo/image.
+All18580/18581/41980listeners closed. Archive
+`/tmp/eidolon-visual-rest-second-interrupted-9u3pih` contains partial3scopedroots,
+HTML and log. Known-username scan sanitized1file; password unavailable, same
+qualification as the first interruption. Original log
+`/tmp/eidolon-visual-rest-second-native.log` retained.
+
+Active **37202** on SAMEfrozenc3305ae7 runs standalonewell-rested-transitions
+with unchanged2death/dungeon cases, fresh isolatedvisual-transitions-0910 and
+ports18580/18581/41980. Uses a streaming PTY rather than fully redirected output;
+this is an execution diagnostic, not a proven fix for the signal. Log
+`/tmp/eidolon-visual-transitions-native.log`. Re-poll same handle; no edits or
+competing heavy/browser runs. Need complete suffix/scan/cleanup acceptance,
+final integrated full regression, then baseline60remote/live acceptance before
+successorversion/push. Most recentCI34434837759 stillqueued; nightlynotcancelled.
+Full1.1–1.10/campaign/class/group/raid/mobile/balance/casino remainsopen.
 
 ## Previous checkpoint — September 10, 10:00 UTC
 
