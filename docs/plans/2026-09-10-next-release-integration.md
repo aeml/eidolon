@@ -62,9 +62,15 @@ Logs`/tmp/eidolon-next-candidate-stash-gate-{lint,discovery}.log`.
   write accurate player-facing patch notes, run remote CI and verify live
   frontend/backend identities and the affected gameplay after deployment.
 
-The primary earned campaign6251 currently owns the only local heavy/browser
-slot on separate frozen9b9dfffe. Keep it running; no parallel heavy/native check
-was started for this integration. Its dungeon outcome, all-class/group/realm/raid,
-phone/balance and later roadmap acceptance are still open. CI scheduling changes
+The primary solo campaign6251 is terminal130 after the player's explicit switch
+to four-role dungeon verification; it is not still running. On September10 at
+19:45, primary browser62541 owns the local heavy/browser slot on frozenf8d9bf2d,
+testing the actual Fighter/Cleric/Wizard/Rogue group with roster-targeted healing,
+visible warning avoidance and individual quest turn-in/relogin checks. Its
+preceding full server race81223 passed; no full-clear claim follows. No parallel
+heavy/native check was started for this candidate. Primary party credit, desktop
+support targeting and expanded story/balance are NOT imported into this branch.
+Its dungeon outcome, all-class/group/realm/raid, phone/balance and later roadmap
+acceptance are still open. CI scheduling changes
 must not cancel the running soak or redefine its24hour stability requirement
 without the separately requested operational decision.
