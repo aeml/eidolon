@@ -5,6 +5,7 @@ server/cmd/loadtest/bot_data.json
 public/
 playwright-report/
 test-results/
+rest-render-results/
 .playwright/
 *.pem
 *.exe
