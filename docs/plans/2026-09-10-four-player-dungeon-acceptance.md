@@ -217,3 +217,33 @@ passed; no combat or earned progression is claimed. Archive
 `/tmp/eidolon-party-guide-reentry-native.log`; scan passed and owned ports cleared.
 The focused result supports returning to the unchanged full-clear acceptance
 requirements; all bosses, rewards, individual manual turn-ins and relogin remain.
+
+## Latest full-party result — September10 22:08 checkpoint
+
+42295 on cleanfad742f1 ended TERMINAL1 after16.4minutes. Two rooms and both
+four-person town recovery/individual guide resume cycles passed with exact
+instance/seed/rooms/Gold/inventory/quests retained. Seed1981447043613537575,
+generator2, no fallback. The Warden started15000HP and was last reported3247HP
+before Rogue and Wizard deaths. Fighter and Cleric survived; no full clear,
+post-clear boss-credit, manual turn-in or persistence claim.
+
+Totals: Fighter9336damage/4929taken, Cleric7504effective ally healing/3128taken,
+Wizard6931damage/3120taken, Rogue7545damage/2808taken. All597Gold; no rejected
+casts. Fighter used3Charges,4Iron Fortress,17Whirlwind,13Shield Slam. Cleric
+used16Healing Light and7Guardian Embrace and retained106mana. Wizard used38
+Fireballs and Rogue63Piercing Throws. Death observations remain latched; cleanup
+resource values must not be treated as combat survival evidence.
+
+Warning moves/eventual escapes were12/11,9/9,6/6,6/6 respectively. The current
+counter does not prove escape occurred before impact. Inspect timing/position
+evidence and the unused legal DPS defensive/support skills before drawing a
+balance conclusion. Source inspection also found the boss slam directly
+subtracts HP rather than using ordinary Arcane Shield absorption; this needs
+focused reproduction, and cannot explain this run through shield bypass because
+the Wizard never cast that shield. The telegraph center is captured at warning
+creation and does not follow the boss.
+
+Archive`/tmp/eidolon-four-role-guide-clear-proof-mb3bxE` retains report/results/log;
+artifact scan passed, copied-log QA-prefix count0, owned listeners cleared.
+Screenshots are not pixel-redacted. No encounter, gear, regen or deadline changes
+were made in response to this result.
