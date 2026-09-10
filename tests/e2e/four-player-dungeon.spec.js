@@ -292,9 +292,13 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                                 partyPathAvoidsActors(p.position, step, bodies, p.radius || 1.25), spacing);
                             return step && { ...step, arrival: { x: anchor.x, z: anchor.z, radius: spacing + 1, instanceId: anchor.instance } };
                         }, { anchor: { x: anchor.x, z: anchor.z, instance: anchor.instance }, previous: formationAnchor, spacing }),
-                        move: (index, step) => tryDungeonGroundStep(() => moveByGroundClick(actors[index].page,
-                            step.dx, step.dz, { ...PARTY_FOLLOW_INPUT_OPTIONS, allowAlternatePaths: false,
-                                requireClearPath: true, arrival: step.arrival })) });
+                        move: async (index, step) => {
+                            await tryDungeonGroundStep(() => moveByGroundClick(actors[index].page,
+                                step.dx, step.dz, { ...PARTY_FOLLOW_INPUT_OPTIONS, allowAlternatePaths: false,
+                                    requireClearPath: true, arrival: step.arrival }));
+                            await expect.poll(() => actors[index].page.evaluate(() => !window.game.player.targetPosition),
+                                { timeout: 5000 }).toBe(true);
+                        } });
                 } catch (error) {
                     const positions = await Promise.all(actors.map(async actor => ({ role: actor.className,
                         ...await actor.page.evaluate(() => {

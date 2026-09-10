@@ -407,3 +407,33 @@ Full client regression on952b835e subsequently passed315suites/4359tests in
 confirmation72582 also terminated0, log
 `/tmp/eidolon-party-body-full-lint-confirm.log`. Native formation/full-clear
 acceptance remains pending; unit success is not native party movement proof.
+
+## Concurrent destinations —7703, September10 23:33
+
+7703 on cleana1138def ended TERMINAL1 before combat. Seed-7673813163550020757,
+generator2/Normal30/no fallback; all four setup/party/same-instance entry checks
+passed. All alive, Gold0, no casts. Rogue requested a three-unit lateral move,
+observed0.649744units and failed the unchanged displacement/arrival conditions.
+The captured Cleric and Wizard both ended at exactly the same logical location
+(19996.855299818162,19990.019934266693); Rogue's requested position was also
+that side of their shared starting point. Every follower had planned against
+the same earlier body snapshot, then all moved concurrently. A path clear of
+stationary actors is not a reservation against another concurrently chosen path.
+
+Archive`/tmp/eidolon-four-role-bodies-proof-5eE8As` retains reports/results/log;
+wrapper scanned2files, copied-log QA-prefix count0, owned containers and
+18580/18581/41980listeners absent. No combat/fullclear/manual/relogin acceptance.
+
+Two focused tests first failed as expected (13430): concurrent planning launched
+three moves together instead of one, and the recorded0.000712-unit replicated
+spawn offset forbade departure in a direction the actual collision system treats
+as coincident. Formation now plans/awaits one follower move at a time and rereads
+positions before the next plan. The native move waits for the issued destination
+to settle; observed formation position, not issued input, remains completion.
+The body's coincident threshold now matches CollisionManager's existing0.001;
+larger overlaps retain the away/tangent-only check. No game collision, resources,
+gear,15-second gathering deadline or combat/expedition limit changed.
+
+14476 passed66tests/5suites5.148s, lint and single-route discovery. Logs
+`/tmp/eidolon-party-sequential-{focused,lint,discovery}.log`. Native success remains
+required; a controller regression pass does not establish dungeon playability.

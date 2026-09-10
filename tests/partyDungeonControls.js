@@ -24,6 +24,10 @@ export function partyPathAvoidsActors(state, step, actors, radius = 1.25) {
         const separation = radius + (actor.radius || 1.25) + .1;
         const startSquared = x * x + z * z;
         const dot = x * step.dx + z * step.dz;
+        // CollisionManager treats distances below .001 as coincident and
+        // applies a deterministic separation. Float32 replication can place a
+        // shared spawn on either side of that origin; do not forbid departure.
+        if (startSquared < .001 ** 2) return true;
         if (startSquared < separation * separation) return dot <= 0;
         const t = Math.max(0, Math.min(1, dot / lengthSquared));
         return (x - t * step.dx) ** 2 + (z - t * step.dz) ** 2 >= separation * separation;
@@ -71,12 +75,15 @@ export async function gatherPartyFormation({ read, move, plan, now = Date.now, t
         if (states.some(s => s.instance !== states[0].instance)) throw new Error('Party formation cannot cross instances');
         const needed = states.slice(1).map(state => partyFollowStep(state, states[0], spacing));
         if (needed.every(step => !step)) return;
-        const steps = await Promise.all(needed.map((step, index) => step && plan
-            ? plan(index + 1, states[index + 1], states[0], spacing) : step));
+        // Simultaneous planning sees the same unoccupied destination for all
+        // followers. Finish one real move, then reread before planning another;
+        // otherwise a static body-safe path can become occupied during input.
+        const index = needed.findIndex(Boolean) + 1;
+        const step = plan ? await plan(index, states[index], states[0], spacing) : needed[index - 1];
         // A member can finish moving between the shared snapshot and its own
         // browser's planning read. A null plan triggers another actual-position
         // check; only the distance check above can declare the group gathered.
-        await Promise.all(steps.map((step, index) => step ? move(index + 1, step) : undefined));
+        if (step) await move(index, step);
     }
     throw new Error('Party failed to gather before the next pull');
 }

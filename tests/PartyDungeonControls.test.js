@@ -65,6 +65,11 @@ test('already-overlapping actors can separate, but not walk through one another'
 test('coincident spawn positions can separate instead of trapping every planned direction', () => {
     expect(partyPathAvoidsActors({ x: 0, z: 0 }, { dx: 3, dz: 0 }, [{ x: 0, z: 0, radius: 1.25 }])).toBe(true);
 });
+test('sub-millimetre replicated spawn offsets use the collision system coincident-body rule', () => {
+    const from = { x: 19999.907985236892, z: 19990.008490300283 };
+    const body = { x: 19999.908203125, z: 19990.0078125, radius: 1.25 };
+    expect(partyPathAvoidsActors(from, { dx: 0, dz: -6 }, [body])).toBe(true);
+});
 test('formation preserves an already-safe direct step and refuses an unverified alternative', () => {
     const follower = { x: 0, z: 0 }, anchor = { x: 14, z: 0 };
     expect(partyFormationStep(follower, anchor, null, () => true)).toEqual({ dx: 10, dz: 0 });
@@ -100,6 +105,29 @@ test('formation waits for observed catch-up instead of counting an issued step a
     await gatherPartyFormation({ read, move });
     expect(read).toHaveBeenCalledTimes(3);
     expect(move).toHaveBeenCalledTimes(2);
+});
+
+test('followers replan after each settled move instead of choosing a shared destination concurrently', async () => {
+    const states = [{ x: 0, z: 0 }, { x: 0, z: 12 }, { x: 0, z: 12 }, { x: 0, z: 12 }];
+    let activeMoves = 0, peakMoves = 0;
+    const planned = [];
+    await gatherPartyFormation({ read: async () => states.map(s => ({ ...s })),
+        plan: async (index, state) => {
+            planned.push({ index, firstFollower: { ...states[1] }, activeMoves });
+            const destination = { x: (index - 2) * 3, z: 3 };
+            return { dx: destination.x - state.x, dz: destination.z - state.z };
+        },
+        move: async (index, step) => {
+            peakMoves = Math.max(peakMoves, ++activeMoves);
+            await Promise.resolve();
+            states[index].x += step.dx;
+            states[index].z += step.dz;
+            activeMoves--;
+        } });
+    expect(peakMoves).toBe(1);
+    expect(planned.map(p => p.activeMoves)).toEqual([0, 0, 0]);
+    expect(planned[1].firstFollower).toEqual({ x: -3, z: 3 });
+    expect(states.slice(1).every(s => Math.hypot(s.x, s.z) < 5)).toBe(true);
 });
 
 test('blocked followers hit the original bounded gathering deadline', async () => {
