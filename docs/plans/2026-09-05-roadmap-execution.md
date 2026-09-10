@@ -27,7 +27,47 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 15:12 UTC
+## Current checkpoint — September 10, 15:18 UTC
+
+Previous turn was PROGRESS (starting-stat parity implementation). This turn is
+PROGRESS: required the native all-class parity check in the primary release
+sequence, executed its failure/cleanup contracts, and observed further actual
+successor gameplay passes. Full1.1–1.10 scope remains active and incomplete.
+
+- Primary clean aeff8ab5 atop runtime3832b150. Shared `run_initial_stats` is now
+  the first required `all` stage and the focused `initial-stats` route. Keeps
+ 4dedicated accounts, opt-in guard, zero retries and separate artifacts.
+  Existing later stages and recovery suffix are preserved. This corrects the
+  prior checkpoint's "not wired into CI" note for this unpublished candidate.
+- 17790 RED41failed/1passed/1.853s before wiring;13270 TERMINAL0:56tests/4suites
+  2.381s plus lint, shell syntax and diff check. Executed bash fixtures confirm
+  exact opt-in/command/exit propagation; timed whole-sequence tests inject
+  failure at every stage, require later work to stop and preserve scan/cleanup.
+  Logs `/tmp/eidolon-initial-stat-gate-{red,unit,lint}.log`. This is not native
+  acceptance; primary full regressions and actual4class browser run remain next.
+- Sole local heavy5956 confirmed LIVE15:17:41 on frozen socketd3c0fff5. Native
+  phone-stash-entry passed8orientation checks/43.1s, equipment recovery14.0s,
+  Forge guide23.5s. Fresh opening/collection passed4.0min/4.1min total: ordinary
+  new character, combat/item collection, manual reward and saved handoff; no
+  death observed. This socket route is not the primary's expanded full Earth
+  readiness/campaign/dungeon route. Talent economy passed33.4s/35.3s total:
+  real phone purchases,30→21mana cost, cooldown reduction and fresh login.
+  Remaining ability/phone/recovery/multiplayer/rest/Forge-socket stages pending.
+  Log `/tmp/eidolon-successor-full-native.log` remains owned by this exact run.
+- Waited using45second clock sleeps and re-polled5956; no restart, cancellation,
+  parallel heavy run or frozen-source edit. API18580/Mongo18581/web41980 remain
+  wrapper-owned until its terminal cleanup; preserve/sanitize/archive results
+  before another browser run overwrites reports.
+
+15:15 remote recheck: canonicalCI34434837759 queued, nightly34433520743 inprogress.
+No new cancellation authority, no push/version bump/deployment. Root remains
+ledger-only, never pushed. Next: finish5956, act on its actual result, then full
+primary regressions and initial-stats native route serially on cleanaeff8ab5.
+Keep native prepared-combat revalidation, ordered version/patch-note/live
+acceptance and all earned campaign/class/party/raid/balance/phone/casino/later
+requirements open. Do not mark the full goal complete or blocked.
+
+## Previous checkpoint — September 10, 15:12 UTC
 
 Previous turn was PROGRESS (entry evidence and combined successor gate launch).
 This turn is PROGRESS: corrected the prepared-character baseline discrepancy,
