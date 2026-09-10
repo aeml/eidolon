@@ -27,7 +27,35 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 08:04 UTC
+## Current checkpoint — September 10, 08:07 UTC
+
+Previous turn was a VERIFIED WAIT/public-health check. This turn makes PROGRESS:
+integrated the verified aura work with the latest corrected release baseline in
+new worktree `/tmp/eidolon-aura-release-integration-gmeNDo`, branch
+`work/aura-release-integration-20260910`, clean merge **e3393aa** (parents62dc2d1
+and0d535d6). No conflicts; source aura/runtime and transition/render wrappers
+unchanged from their tested branch, no server diff from62. Latest ground/respawn
+verification fixes are retained. Canonical release candidate was not modified.
+
+Focused3362 TERMINAL PASS131tests/11suites4.647s followed by lint, both wrapper
+syntax checks and workflow YAML parse underNode24.18.0. Logs
+`/tmp/eidolon-aura-integration-{unit,lint}.log`; new plan
+`docs/plans/2026-09-10-aura-release-integration.md` in that worktree. Integrated
+full regression/rendered/native checks remain pending. Do not claim previous
+aura-branch evidence automatically accepts this merge. No version bump/patch
+notes/push/deployment yet; require60's remote/live acceptance, deliberate version
+and notes, full successor pipeline and actual live checks before publication.
+
+SAME96530 re-polled live, primary clean/frozen626385d. Latest Imp30/60, zero deaths,
+12rests,1training, level17/6240XP/5329Gold,974seconds. All earlier phase evidence
+and the known stale future Water assertion remain; do not change or reclassify
+the active run. No competing browser/full suite. Separate4e4d46b class/handoff
+correction still awaits full/native verification after this attempt finishes.
+Latest public/CI state remains08:04 from the prior checkpoint; no new claim of
+production acceptance. Phone feedback and current-soak cancellation permission
+remain unanswered. Full roadmap/casino scope stays active; never push root.
+
+## Previous checkpoint — September 10, 08:04 UTC
 
 Recent turns are VERIFIED WAITS: SAME96530 repeatedly polled live, not restarted.
 Latest Imp receipt25/60, zero deaths,11ordinary rests,1earned training stop,
