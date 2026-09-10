@@ -16,7 +16,7 @@ function seedUpgradeFixture(username) {
     }
     const gear = (id, slot, stats, level = 1) => ({ id, name: slot === 'mainHand' ? 'Wooden Staff' : 'Ring',
         type: slot === 'mainHand' ? 'WEAPON' : 'ACCESSORY', slot, stats, level, rarity: 'Common',
-        stack: 1, max_stack: 1, stat_scale_version: 1 });
+        value: level * 25, stack: 1, max_stack: 1, stat_scale_version: 1 });
     const inventory = [gear('upgrade-staff', 'mainHand', { damage: 4 }),
         gear('upgrade-ring', 'ring', { intelligence: 4 }),
         gear('future-staff', 'mainHand', { damage: 100 }, 2),
@@ -58,7 +58,26 @@ test('normal full-bag upgrades target paired slots and preserve all items after 
     seedUpgradeFixture(credentials.username);
     await loginAndEnterWorld(page, credentials);
     expect((await readEarnedGear(page)).inventory.filter(item => item?.id)).toHaveLength(25);
-    const receipts = await upgradeEarnedEquipment(page);
+    await page.evaluate(() => {
+        window.__gearDragEvents = [];
+        for (const type of ['dragstart', 'dragenter', 'dragover', 'drop', 'dragend']) {
+            document.addEventListener(type, event => {
+                const target = event.target.closest?.('.inv-slot, .equip-slot');
+                if (target) window.__gearDragEvents.push({ type, id: target.id, classes: target.className,
+                    data: ['dragstart', 'drop'].includes(type) ? event.dataTransfer?.getData('text/plain') : null });
+                if (window.__gearDragEvents.length > 60) window.__gearDragEvents.shift();
+            }, true);
+        }
+    });
+    let receipts;
+    try {
+        receipts = await upgradeEarnedEquipment(page);
+    } catch (error) {
+        console.log('[equipment-upgrade-fixture-failure]', JSON.stringify({ gear: await readEarnedGear(page),
+            events: await page.evaluate(() => window.__gearDragEvents) }));
+        await page.screenshot({ path: testInfo.outputPath('upgrade-failure.png') });
+        throw error;
+    }
     expect(receipts.map(({ slot }) => slot)).toEqual(['mainHand', 'ring2']);
     const prepared = await readEarnedGear(page);
     expect(prepared.equipment.mainHand.id).toBe('upgrade-staff');

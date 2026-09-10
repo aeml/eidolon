@@ -32,6 +32,7 @@ export async function upgradeEarnedEquipment(page) {
         if (!action) break;
         const index = state.inventory.findIndex(item => item?.id === action.id);
         expect(index).toBeGreaterThanOrEqual(0);
+        console.log('[earned-gear-upgrade-attempt]', JSON.stringify({ index, ...action }));
         await page.locator('#inventory-grid .inv-slot').nth(index)
             .dragTo(page.locator(`#slot-${action.slot.toLowerCase()}`));
         await expect.poll(async () => {
