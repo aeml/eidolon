@@ -58,7 +58,6 @@ export async function prepareEarnedClass(page, credentials, { statBudget = 5, la
     expect(Object.keys(prepared.equipment)).not.toContain('gem');
     expect(Object.keys(prepared.equipment)).toHaveLength(Object.keys(initial.equipment).length + equipped);
     for (const [slot, id] of Object.entries(initial.equipment)) expect(prepared.equipment[slot]).toBe(id);
-    await page.reload({ waitUntil: 'networkidle' });
     await loginAndEnterWorld(page, credentials);
     expect(await preparationState(page)).toEqual(prepared);
     console.log(`[fresh-ready] earned preparation ${JSON.stringify({ label, equipped, allocated, ranks, prepared })}`);

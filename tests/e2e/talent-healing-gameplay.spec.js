@@ -96,7 +96,7 @@ test('phone healing talent purchases change actual healing and feedback after fr
     }
     await page.locator('#btn-close-skills').tap();
     await verifyHeal(5, 'portrait-mastery');
-    await page.reload({ waitUntil: 'networkidle' }); await loginAndEnterWorld(page, credentials);
+    await loginAndEnterWorld(page, credentials);
     expect(await page.evaluate(() => window.game.player.selectedBranch)).toBe('A');
     await page.setViewportSize({ width: 844, height: 390 });
     await verifyHeal(5, 'landscape-saved');

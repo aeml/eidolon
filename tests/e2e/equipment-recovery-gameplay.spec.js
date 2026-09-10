@@ -133,7 +133,6 @@ test('legacy gem recovery rejects a full bag, conserves stacks and persists norm
     await page.locator('#inventory-grid .inv-slot').nth(gemIndex).click();
     expect(await bagGemQuantity()).toBe(23);
     expect(await page.evaluate(() => Boolean(window.game.player.equipment.gem))).toBe(false);
-    await page.reload({ waitUntil: 'networkidle' });
     await loginAndEnterWorld(page, credentials);
     expect(await bagGemQuantity()).toBe(23);
     expect(await page.evaluate(() => Boolean(window.game.player.equipment.gem))).toBe(false);

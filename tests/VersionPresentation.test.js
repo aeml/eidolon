@@ -18,6 +18,16 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
+    test('release59 documents the interface changes and retains recovery history', () => {
+        expect(indexHtml.match(/data-version="1\.0\.59"/g)).toHaveLength(1);
+        expect(indexHtml.indexOf('data-version="1.0.59"')).toBeLessThan(indexHtml.indexOf('data-version="1.0.58"'));
+        for (const text of ['Keep the story in focus', 'A journal that keeps your place',
+            'Know your opponent', 'Honest combat information', 'Readable action labels',
+            'does not change quest requirements, rewards, leveling or drop rates']) expect(indexHtml).toContain(text);
+        const scripts = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).scripts;
+        expect(scripts['test:e2e:interface']).toBe('playwright test tests/e2e/journal-daily-presentation.spec.js tests/e2e/combat-action-preview.spec.js tests/e2e/desktop-action-readability.spec.js');
+        expect(versionedRuntimeFiles[0]).toContain('npm run test:e2e:interface');
+    });
     test('adds standalone town recovery notes while preserving the prior persistence release', () => {
         expect(indexHtml).toContain('Alpha 1.0.58 (a reason to come home)');
         expect(indexHtml.match(/data-version="1\.0\.58"/g)).toHaveLength(1);
@@ -42,7 +52,7 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Alpha 1.0.56 (guarding the Chronicle)');
         expect(indexHtml.match(/data-version="1\.0\.56"/g)).toHaveLength(1);
         expect(indexHtml.indexOf('data-version="1.0.56"')).toBeLessThan(indexHtml.indexOf('data-version="1.0.55"'));
-        for (const heading of ['Protecting newer saves', 'A safer recovery path', 'Clean disconnects', 'The same adventure today']) {
+        for (const heading of ['Protecting newer saves', 'A safer recovery path', 'Clean disconnects', 'Scenery settles promptly', 'The same adventure today']) {
             expect(indexHtml).toContain(heading);
         }
         expect(indexHtml).toContain('does not yet change reconnect resource behavior');
@@ -379,11 +389,11 @@ describe('version presentation', () => {
         }
         expect(fs.readFileSync(path.join(repoRoot, 'sw.js'), 'utf8')).toContain('sw-asset-cache.js?v=2026-09-04-11');
         expect(indexHtml).toContain('Built-in version: 2026-09-04-11');
-        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.0.58');
+        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.0.59');
     });
 
     test('advances the login screen and player-facing history to Alpha 1.0', () => {
-        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.0.58</span>');
+        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.0.59</span>');
         expect(indexHtml).toContain('Alpha 1.0.0 (the worlds answer together)');
         expect(indexHtml).toContain('Multiplayer has a social backbone');
         expect(indexHtml).toContain('Guilds are persistent institutions');
@@ -794,7 +804,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 1.0.58';
+        const expectedVersion = 'Alpha 1.0.59';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -916,7 +926,7 @@ describe('version presentation', () => {
     });
 
     test('marks Alpha 1.0 current and preserves its completed runway', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 1.0.58`');
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 1.0.59`');
         expect(alphaRoadmap).toContain('Active implementation line: `Alpha 1.0`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');

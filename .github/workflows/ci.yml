@@ -91,7 +91,7 @@ jobs:
         working-directory: server
         env:
           EIDOLON_DEPLOY_BACKUP_DISPOSABLE: '1'
-        run: go test -race . -run '^TestDeployUpgradeBackupPreservesPrivateStateAndRestartsOnFailure$' -count=1 -v
+        run: go test -race . -run '^TestDeploy(UpgradeBackupPreservesPrivateStateAndRestartsOnFailure|BuildContextExcludesPrivateRecoveryFiles)$' -count=1 -v
 
       - name: Run server hot-path benchmarks
         working-directory: server
@@ -143,6 +143,9 @@ jobs:
           if [ "${{ matrix.shard }}" = 1 ]; then
             npm run test:e2e:nameplates
             npm run test:e2e:resource-hud
+          fi
+          if [ "${{ matrix.shard }}" = 2 ]; then
+            npm run test:e2e:interface
           fi
 
       - name: Upload browser failure evidence
@@ -285,7 +288,7 @@ jobs:
           cp -r index.html assets src vendor public/
           cp sw.js public/
           node scripts/version-pages-runtime.mjs public "${GITHUB_SHA}"
-          printf '{"commit":"%s","version":"Alpha 1.0.58"}\n' "${GITHUB_SHA}" > public/release.json
+          printf '{"commit":"%s","version":"Alpha 1.0.59"}\n' "${GITHUB_SHA}" > public/release.json
           
           # Create coverage directory
           mkdir -p public/coverage/client public/coverage/server
@@ -467,7 +470,7 @@ jobs:
           chmod --reference=.env "${qa_env_tmp}"
           mv "${qa_env_tmp}" .env
           trap - EXIT
-          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.0.58" bash ./deploy/deploy_linux.sh
+          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.0.59" bash ./deploy/deploy_linux.sh
           EOF
 
   post-deploy-browser:
@@ -539,6 +542,18 @@ jobs:
           EIDOLON_E2E_USERNAME: ${{ secrets.EIDOLON_E2E_USERNAME }}
           EIDOLON_E2E_PASSWORD: ${{ secrets.EIDOLON_E2E_PASSWORD }}
         run: sg render -c 'npm run test:e2e:live-animations'
+
+      - name: Run live town recovery and Well Rested QA
+        env:
+          EIDOLON_E2E_BASE_URL: https://eidolon.mendola.tech
+          EIDOLON_E2E_WS_URL: wss://eserver.mendola.tech/ws
+          EIDOLON_E2E_HEALTH_URL: https://eserver.mendola.tech/healthz
+          EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
+          EIDOLON_E2E_BACKEND_ORIGIN_IP: ${{ secrets.EIDOLON_E2E_BACKEND_ORIGIN_IP }}
+          EIDOLON_EXPECTED_COMMIT: ${{ github.sha }}
+          EIDOLON_E2E_USERNAME: ${{ secrets.EIDOLON_E2E_USERNAME }}
+          EIDOLON_E2E_PASSWORD: ${{ secrets.EIDOLON_E2E_PASSWORD }}
+        run: sg render -c 'bash scripts/run-live-recovery-qa.sh'
 
       - name: Sanitize live browser evidence
         id: sanitize_evidence

@@ -1,7 +1,9 @@
 import { expect, test } from '@playwright/test';
+import { movementFrameBudget } from '../movementFrameBudget.js';
 import {
     collectBrowserFailures,
     credentialsFromEnvironment,
+    ensureDungeonReadyLevel,
     loginAndEnterWorld,
     readPlayerState,
     useCombatQAWaypoint
@@ -129,6 +131,11 @@ async function sampleMovementFrames(page, durationMs) {
             if (player?.position && player.mesh?.position) {
                 frames.push({
                     t: now - startedAt,
+                    speed: player.stats?.speed,
+                    wellRestedSeconds: player.wellRestedSeconds,
+                    simulationFrame: game.frameCount,
+                    simulationTime: game.lastTime,
+                    simulationAccumulator: game.accumulator,
                     x: player.position.x,
                     z: player.position.z,
                     renderX: player.mesh.position.x,
@@ -276,6 +283,7 @@ function movementAnalysis(frames, directionX, directionZ) {
     }
 
     return {
+        ...movementFrameBudget(frames),
         logicalTravel: Math.hypot(frames.at(-1).x - first.x, frames.at(-1).z - first.z),
         renderTravel: Math.hypot(
             frames.at(-1).renderX - first.renderX,
@@ -324,8 +332,17 @@ test.describe('real-input movement smoothness', () => {
         test.setTimeout(180_000);
         const failures = collectBrowserFailures(page, baseURL);
         await loginAndEnterWorld(page, credentials);
+        if (process.env.EIDOLON_E2E_MOVEMENT_MAX_LEVEL === '1') {
+            // Explicit isolated speed-cap rehearsal, never a fresh-progression
+            // claim. The server must authorize this dedicated QA account.
+            expect(process.env.EIDOLON_E2E_REGISTER).toBe('1');
+            await ensureDungeonReadyLevel(page, 100);
+        }
         const renderer = await assertHardwareRenderer(page);
         await recallToTownForMovementQA(page);
+        if (process.env.EIDOLON_E2E_MOVEMENT_MAX_LEVEL === '1') {
+            await expect.poll(() => page.evaluate(() => window.game.player.stats.speed)).toBeCloseTo(31.68, 4);
+        }
         await ensureCurrentGroundRayIsClear(page);
 
         const beforeNearby = await movementMetrics(page);
@@ -390,12 +407,21 @@ test.describe('real-input movement smoothness', () => {
             sustainedDirection.dx,
             sustainedDirection.dz
         );
+        await testInfo.attach('sustained-movement-samples', {
+            body: Buffer.from(JSON.stringify({ renderer, frames: sustained.frames,
+                analysis: sustainedAnalysis, transport: afterLong.local }, null, 2)),
+            contentType: 'application/json'
+        });
+        console.log('[movement-sustained]', JSON.stringify({ renderer, analysis: sustainedAnalysis,
+            speeds: [...new Set(sustained.frames.map(frame => frame.speed))] }));
 
         expect(sustainedAnalysis.logicalTravel).toBeGreaterThan(6);
         expect(sustainedAnalysis.renderTravel).toBeGreaterThan(6);
         expect(sustainedAnalysis.largestLogicalBacktrack).toBeGreaterThanOrEqual(-0.02);
         expect(sustainedAnalysis.largestRenderBacktrack).toBeGreaterThanOrEqual(-0.02);
-        expect(sustainedAnalysis.largestRenderStep).toBeLessThan(1);
+        expect(sustainedAnalysis.invalidFrames).toBe(0);
+        expect(sustainedAnalysis.maxSimulationTicks).toBeLessThanOrEqual(2);
+        expect(sustainedAnalysis.maxRenderStepExcess).toBeLessThan(1e-5);
         expect(sustainedAnalysis.maxCameraError).toBeLessThan(0.05);
         expect(sustainedAnalysis.maxRenderLogicalGap).toBeLessThan(0.75);
         expect(sustainedAnalysis.states).toContain('MOVING');
@@ -440,12 +466,19 @@ test.describe('real-input movement smoothness', () => {
             outsideDirection.dx,
             outsideDirection.dz
         );
+        await testInfo.attach('outside-movement-samples', {
+            body: Buffer.from(JSON.stringify({ renderer, frames: outside.frames,
+                analysis: outsideAnalysis, transport: afterOutside.local }, null, 2)),
+            contentType: 'application/json'
+        });
 
         expect(outsideAnalysis.logicalTravel).toBeGreaterThan(6);
         expect(outsideAnalysis.renderTravel).toBeGreaterThan(6);
         expect(outsideAnalysis.largestLogicalBacktrack).toBeGreaterThanOrEqual(-0.02);
         expect(outsideAnalysis.largestRenderBacktrack).toBeGreaterThanOrEqual(-0.02);
-        expect(outsideAnalysis.largestRenderStep).toBeLessThan(1);
+        expect(outsideAnalysis.invalidFrames).toBe(0);
+        expect(outsideAnalysis.maxSimulationTicks).toBeLessThanOrEqual(2);
+        expect(outsideAnalysis.maxRenderStepExcess).toBeLessThan(1e-5);
         expect(outsideAnalysis.maxCameraError).toBeLessThan(0.05);
         expect(outsideAnalysis.maxRenderLogicalGap).toBeLessThan(0.75);
         expect(outsideAnalysis.correctionFrames).toBe(0);

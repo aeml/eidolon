@@ -126,7 +126,6 @@ test('ground spells reject dungeon walls without cooldown and still cast on reac
         }
     } });
     if (trained) {
-        await page.reload({ waitUntil: 'networkidle' });
         await loginAndEnterWorld(page, credentials);
         await expect.poll(() => page.evaluate(() => window.game.player.talentRanks?.WIZ_38 || 0)).toBe(5);
     }

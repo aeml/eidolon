@@ -396,10 +396,12 @@ import {
 } from '../utils/dungeonRoomMetadata.js';
 
 function spawnActorReadability(engine, entity, action, fullText, color, fontSize) {
-    // A summon repeats its long identity on every smite. Keep that attribution
-    // above its model without a wide, enlarged line across the combatants.
+    // Repeated summon names and long desktop labels can stretch across the
+    // combatants. Reuse the bounded identity/action card without shortening
+    // the underlying name or its accessibility text. Short desktop labels keep
+    // their existing inline treatment.
     const isSeraph = (entity.meshType || entity.subType || entity.constructor?.name) === 'AvengingSeraph';
-    if (!engine.isMobile && !isSeraph) {
+    if (!engine.isMobile && !isSeraph && fullText.length <= 32) {
         engine.floatingTextManager.spawn(fullText, entity.position, color, fontSize);
         return;
     }
@@ -1719,12 +1721,13 @@ export class GameEngine {
         if (!intent) return '';
         return [
             intent.entityId || '',
+            intent.targetLevel ?? '',
             intent.status || '',
             Math.round((intent.distance || 0) * 10) / 10,
             intent.inBasicRange ? 1 : 0,
             intent.inAbilityRange ? 1 : 0,
-            intent.preview?.basicAttack ?? '',
-            intent.preview?.ability ?? '',
+            intent.preview?.attackPower ?? '',
+            intent.preview?.manaCost ?? '',
             intent.preview?.abilityName ?? ''
         ].join('|');
     }
@@ -1742,11 +1745,10 @@ export class GameEngine {
             || 0;
         const inBasicRange = distance <= basicAttackRange;
         const inAbilityRange = distance <= abilityRange;
-        const preview = this.abilityController?.buildSoftDamagePreview?.(entity, skillName) || {
-            basicAttack: Math.max(0, Math.round(player?.stats?.damage || 0)),
-            ability: Math.max(0, Math.round(player?.stats?.damage || 0)),
-            abilityName: skillName || 'Ability',
-            isEstimate: true
+        const preview = this.abilityController?.buildCombatActionPreview?.(entity, skillName) || {
+            attackPower: Number.isFinite(player?.stats?.damage) ? Math.max(0, Math.round(player.stats.damage)) : null,
+            manaCost: null,
+            abilityName: skillName || 'Ability'
         };
 
         return {
@@ -1754,6 +1756,7 @@ export class GameEngine {
             entityId: entity.id || null,
             name: entity.name || entity.displayName || entity.subType || entity.constructor?.name || 'Enemy',
             targetType: entity.subType || entity.type || entity.constructor?.name || 'Enemy',
+            targetLevel: Number.isInteger(entity.level) && entity.level > 0 ? entity.level : null,
             distance,
             basicAttackRange,
             abilityRange,

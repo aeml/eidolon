@@ -91,7 +91,7 @@ test('phone Ministry purchases expand the accepted Purifying Wave and rendered r
     }
     await page.locator('#btn-close-skills').tap();
     await verifyCast(5, 'low');
-    await page.reload({ waitUntil: 'networkidle' }); await loginAndEnterWorld(page, credentials);
+    await loginAndEnterWorld(page, credentials);
     await page.setViewportSize({ width: 844, height: 390 });
     await verifyCast(5, 'high');
     expect(failures, failures.join('\n')).toEqual([]);

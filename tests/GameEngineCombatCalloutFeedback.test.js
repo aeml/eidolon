@@ -49,6 +49,47 @@ describe('GameEngine encounter callouts', () => {
     });
     test.each([
         ['showRemoteActionReadability', ['Divine Intervention'], 'DIVINE INTERVENTION'],
+        ['showRemoteStateReadability', ['ATTACKING', 'IDLE'], 'ATTACK'],
+        ['showRemoteSupportStateReadability', ['divine_intervention', true], 'INTERVENTION UP']
+    ])('long desktop %s attribution uses the bounded card without losing identity', (method, args, action) => {
+        const engine = Object.create(GameEngine.prototype);
+        Object.assign(engine, { isMobile: false, player: { id: 'self' },
+            floatingTextManager: { spawn: jest.fn() }, readabilityFeedbackTimestamps: new Map(),
+            canShowThrottledReadabilityEvent: () => true, isPlayerClassEntity: () => true,
+            isPositionNearPlayer: () => true });
+        const ally = { id: 'ally', name: 'Aurelian Of The Crystal Watch', position: new THREE.Vector3(),
+            mesh: { userData: { bounds: { height: 4 } } } };
+        expect(engine[method](ally, ...args)).toBe(true);
+        const call = engine.floatingTextManager.spawn.mock.calls.at(-1);
+        expect(call[0]).toBe(`AURELIAN OF THE CRYSTAL WATCH: ${action}`);
+        expect(call[4]?.compactActorAction).toEqual({ source: 'AURELIAN OF THE CRYSTAL WATCH', action, anchorHeight: 4.65 });
+    });
+    test('a long desktop local action keeps full accessibility text without a redundant name row', () => {
+        const engine = Object.create(GameEngine.prototype);
+        const player = { id: 'self', name: 'Aurelian Of The Crystal Watch', position: new THREE.Vector3() };
+        Object.assign(engine, { isMobile: false, player,
+            floatingTextManager: { spawn: jest.fn() }, readabilityFeedbackTimestamps: new Map(),
+            canShowThrottledReadabilityEvent: () => true, isPlayerClassEntity: () => true,
+            isPositionNearPlayer: () => true });
+        engine.showRemoteActionReadability(player, 'Divine Intervention');
+        const call = engine.floatingTextManager.spawn.mock.calls.at(-1);
+        expect(call[0]).toBe('AURELIAN OF THE CRYSTAL WATCH: DIVINE INTERVENTION');
+        expect(call[4]?.compactActorAction).toEqual({ source: '', action: 'DIVINE INTERVENTION', anchorHeight: 3.15 });
+    });
+    test.each([25, 26])('desktop inline boundary preserves the full %s-character source', length => {
+        const engine = Object.create(GameEngine.prototype);
+        Object.assign(engine, { isMobile: false, player: { id: 'self' },
+            floatingTextManager: { spawn: jest.fn() }, readabilityFeedbackTimestamps: new Map(),
+            canShowThrottledReadabilityEvent: () => true, isPlayerClassEntity: () => true,
+            isPositionNearPlayer: () => true });
+        const ally = { id: 'ally', name: 'A'.repeat(length), position: new THREE.Vector3() };
+        engine.showRemoteActionReadability(ally, 'Smite');
+        const call = engine.floatingTextManager.spawn.mock.calls.at(-1);
+        expect(call[0]).toBe(`${ally.name}: SMITE`);
+        expect(Boolean(call[4]?.compactActorAction)).toBe(length + ': SMITE'.length > 32);
+    });
+    test.each([
+        ['showRemoteActionReadability', ['Divine Intervention'], 'DIVINE INTERVENTION'],
         ['showRemoteStateReadability', ['JUMPING', 'IDLE'], 'JUMP'],
         ['showRemoteSupportStateReadability', ['divine_intervention', true], 'INTERVENTION UP']
     ])('phone %s passes structured identity/action and an above-model anchor', (method, args, action) => {

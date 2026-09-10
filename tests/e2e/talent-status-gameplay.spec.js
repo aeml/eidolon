@@ -187,7 +187,7 @@ test('status Mastery purchases change real ticks and persist through fresh login
     }
     await page.locator('#btn-close-skills').click();
     await verifyTick(5, 'trained');
-    await returnToTown(page); await page.reload({ waitUntil: 'networkidle' }); await loginAndEnterWorld(page, credentials);
+    await returnToTown(page); await loginAndEnterWorld(page, credentials);
     expect(await page.evaluate(id => window.game.player.talentRanks?.[id], config.talent)).toBe(5);
     await observe(); await verifyTick(5, 'saved');
     expect(failures, failures.join('\n')).toEqual([]);

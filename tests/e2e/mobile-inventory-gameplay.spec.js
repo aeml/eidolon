@@ -2,9 +2,21 @@ import { devices, expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld } from './helpers.js';
 import { approachEncounter, openPhoneNavigation, selectLiveTarget } from './mobile-helpers.js';
 import { verifyPhoneStash } from './phone-stash-route.js';
+import { readPhoneInventoryState } from './phone-inventory-observation.js';
 
 test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, userAgent: devices['Pixel 7'].userAgent,
     actionTimeout: 12_000, trace: 'off', screenshot: 'off', video: 'off' });
+
+test.afterEach(async ({ page }, testInfo) => {
+    if (testInfo.status === testInfo.expectedStatus || page.isClosed()) return;
+    const state = await readPhoneInventoryState(page);
+    if (!state) return;
+    console.log('[phone-inventory] failure state', JSON.stringify(state));
+    // Only capture an entered world, never login fields or credentials.
+    if (await page.locator('#btn-mobile-attack').isVisible()) {
+        await page.screenshot({ path: testInfo.outputPath('failed-phone-inventory.png') });
+    }
+});
 
 test('phone bag equips, drops and stores server-owned items with saved retrieval', async ({ page, baseURL }) => {
     test.setTimeout(420_000);
@@ -57,7 +69,12 @@ test('phone bag equips, drops and stores server-owned items with saved retrieval
     }, id);
     // Setup uses the level-prepared character and existing allowlisted waypoint,
     // not granted items, a forced kill or a guaranteed-loot command.
-    for (let attempt = 0; !itemId && attempt < 8; attempt++) {
+    // The ordinary loot rule yields equipment on ~28.4% of kills: eight kills
+    // still have ~6.9% probability of no gear. Allow a bounded 32 encounters,
+    // retaining the 420s route deadline and every real kill/ownership assertion.
+    // Stop as soon as usable equipment is earned; never grant an item or alter
+    // drop rates to satisfy this inventory-action setup.
+    for (let attempt = 0; !itemId && attempt < 32; attempt++) {
         await approachEncounter(page);
         const target = await selectLiveTarget(page);
         console.log('[phone-inventory] ordinary combat setup', JSON.stringify(await combatSnapshot(target.id)));
@@ -73,6 +90,7 @@ test('phone bag equips, drops and stores server-owned items with saved retrieval
         }
         await page.waitForTimeout(1_100);
         itemId = await findItem();
+        console.log('[phone-inventory] post-combat loot', JSON.stringify(await readPhoneInventoryState(page)));
     }
     expect(itemId, 'Normal combat must yield a usable owned item for the bag route').toBeTruthy();
     const ownsItem = () => page.evaluate(id => window.game.player.inventory.some(item => item?.id === id), itemId);
@@ -125,7 +143,6 @@ test('phone bag equips, drops and stores server-owned items with saved retrieval
         await expect.poll(ownsItem).toBe(true);
         console.log(`[phone-inventory] ${width}x${height}: authoritative equip, unequip, cancelled drop, confirmed drop and manual recovery passed`);
     }
-    await page.reload();
     await loginAndEnterWorld(page, credentials);
     expect(await page.evaluate(id => window.game.player.inventory.some(item => item?.id === id), itemId)).toBe(true);
     await verifyPhoneStash(page, credentials, itemId);

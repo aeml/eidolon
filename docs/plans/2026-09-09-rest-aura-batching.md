@@ -1,9 +1,10 @@
 # Well Rested aura batching — separate visual/performance prototype
 
 September10 status: still unpublished and separate from primary and the active
-release60 pipeline. Native party verification has been strengthened below but
-must wait for the owned Earth replay before using the local browser. Do not
-interpret inherited58metadata as a current release candidate.
+release60 pipeline. Accepted59 has now been merged as the baseline; inherited59
+metadata is not a new release candidate. Native party verification has been
+strengthened below but must wait for the owned Earth replay before using the
+local browser. Earlier58prototype history is retained for provenance.
 
 This is unpublished follow-up work, based on recovery58/ee8a713. It is not the
 canonical recovery release and must not replace or delay its running acceptance.
@@ -124,3 +125,19 @@ unbatched meshes, duplicate owners, detached effects and invalid resource values
 No runtime change. Full regression after these test changes and actual native
 party/expiry/journey execution remain due. Actual stealth/death/scene transitions
 and wider populated-scene performance are still open promotion requirements.
+
+## Accepted59 baseline integration — September10
+
+Merged accepted e236b37, including final58 recovery/connection/release fixes and
+59's interface/casino-roadmap work. The only merge conflict combined the native
+party test's new profiler/observation imports with accepted backend-origin browser
+arguments; both are retained. The second real client now respects the existing
+production verification origin configuration. Batching, every spark and all
+native quality/reconnect assertions remain intact. No new version or push.
+
+Focused78996 passed299tests/6suites2.45s plus lint, including authored batching
+motion/lifecycle, attached statuses, observation validation, live recovery gate
+wiring and version consistency. Full integrated client/server regression and
+actual native/controlled rendering reruns are still due; do not substitute
+older58prototype results for the merged baseline. Do not run a second owned
+browser or heavy tests while the primary Earth journey is active.

@@ -110,7 +110,6 @@ test('Shield mastery increases actual saved absorption, renders and expires thro
     await page.locator('#btn-close-skills').tap();
     const trained = await cast(5, 'portrait-trained');
     expect(trained).toBe(Math.floor(baseline * 1.2 + 1e-9));
-    await page.reload({ waitUntil: 'networkidle' });
     await loginAndEnterWorld(page, credentials);
     await page.setViewportSize({ width: 844, height: 390 });
     await observe();

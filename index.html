@@ -343,7 +343,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.58</span>
+                <span class="start-version-row__label">Alpha 1.0.59</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -669,6 +669,18 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.59">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.59 (a clearer adventure)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Keep the story in focus:</strong> Optional daily offers start collapsed beside an active Chronicle. Expand Daily contracts when you want them; ready turn-ins and accepted work appear before unaccepted offers.</li>
+                        <li><strong>A journal that keeps your place:</strong> Daily contracts and Recovered Lore remember their separate expanded states and keyboard focus while the journal refreshes. Phone daily summaries stack labels and rewards for easier reading.</li>
+                        <li><strong>Know your opponent:</strong> Target cards show the enemy's level, including in the compact phone title.</li>
+                        <li><strong>Honest combat information:</strong> The target card shows Attack power and the selected ability's configured mana cost, including discounts, instead of invented damage estimates. These are not promises of final damage against a target; actual combat formulas are unchanged.</li>
+                        <li><strong>Readable action labels:</strong> Long desktop action messages stay compact instead of stretching across the encounter. Their full text remains available to assistive technology.</li>
+                        <li><strong>Your progress stays yours:</strong> Town recovery and Well Rested remain intact. This interface release does not change quest requirements, rewards, leveling or drop rates; the expanded campaign and balance pass remain in development.</li>
+                    </ul>
+                </div>
+
                 <div class="patch-note-entry" data-version="1.0.58">
                     <h3 class="patch-note-entry__title">Alpha 1.0.58 (a reason to come home)</h3>
                     <ul class="patch-note-entry__list">
@@ -678,6 +690,7 @@
                         <li><strong>A little golden light:</strong> A golden elemental aura and buff timer show your rest. The effect follows graphics settings, disappears on expiry and stays hidden during stealth.</li>
                         <li><strong>Rest belongs to your character:</strong> Remaining rest is saved across reconnects. Offline time neither earns nor spends rest and does not heal you. Corpses do not heal or earn rest; you still need to Respawn. Being inside a safe zone pauses rest consumption even while dead.</li>
                         <li><strong>The campaign stays familiar:</strong> Existing quests, experience requirements and reward budgets are unchanged in this release. The expanded story and broader balancing pass remain separate work.</li>
+                        <li><strong>Safer save upgrades:</strong> Deployments retain the previous server image before building its replacement, so the required character-data backup can complete. Private recovery archives stay outside the build context.</li>
                     </ul>
                 </div>
 
@@ -699,6 +712,7 @@
                         <li><strong>Protecting newer saves:</strong> The server now checks the database format before startup. If a newer release has upgraded that format, this release refuses to run instead of risking your characters with an older save writer.</li>
                         <li><strong>A safer recovery path:</strong> Deployment checks compatibility before replacing the running game server. An incompatible release leaves that server running and reports the problem without changing saves or database indexes. Recovery requires a compatible server; changing or deleting the database version is not a safe downgrade.</li>
                         <li><strong>Clean disconnects:</strong> Joining, rejoining and closing a player's connection now synchronize character identity, snapshot history and outgoing messages with world updates, preventing connection-state races.</li>
+                        <li><strong>Scenery settles promptly:</strong> Dungeon-entrance cutaways now follow elapsed time, so restoring the landmark does not linger when rendering slows down. Collisions, shadows and combat timing are unchanged.</li>
                         <li><strong>The same adventure today:</strong> This prepares for later persistence improvements. It does not yet change reconnect resource behavior, auction transactions, rewards or the 0.01 passive regeneration rate.</li>
                     </ul>
                 </div>
@@ -4322,7 +4336,7 @@
             <div class="combat-intent__meta" id="combat-intent-meta"></div>
             <div class="combat-intent__status" id="combat-intent-status"></div>
             <div class="combat-intent__preview-row">
-                <span>Attack</span>
+                <span>Attack power</span>
                 <span id="combat-intent-preview-basic"></span>
             </div>
             <div class="combat-intent__preview-row">

@@ -1,5 +1,15 @@
 import { readFileSync } from 'node:fs';
 
+test('focused recovery tail preserves the exact required full-gate suffix', () => {
+    const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
+    const all = script.split('\n  all)')[1].split('\n    ;;')[0];
+    const tail = script.split('\n  recovery-tail)')[1].split('\n    ;;')[0];
+    const sequence = 'run_pvp_cadence && run_animation_classes && run_animation_multiplayer && npx playwright test tests/e2e/nameplate-world.spec.js && run_well_rested';
+    expect(all.trim().endsWith(sequence)).toBe(true);
+    expect(tail.trim().endsWith(sequence)).toBe(true);
+    expect(tail).not.toMatch(/--grep|--retries|\|\| true/);
+});
+
 test('standalone recovery adds real earned, expiry and phone-party checks to the full gate', () => {
     const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
     const all = script.split('\n  all)')[1].split('\n    ;;')[0];

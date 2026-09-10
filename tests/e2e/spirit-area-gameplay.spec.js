@@ -1,5 +1,5 @@
 import { devices, expect, test } from '@playwright/test';
-import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld } from './helpers.js';
+import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, openGame } from './helpers.js';
 import { backendOriginBrowserArgs, hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 
 test.use({viewport:{width:390,height:844},hasTouch:true,isMobile:true,userAgent:devices['Pixel 7'].userAgent,
@@ -70,8 +70,9 @@ test('trained spirit rings preserve cherubs and reach a late observer without pr
     const second=await browser.browserType().launch({executablePath:process.env.EIDOLON_E2E_BROWSER_PATH||undefined,
         headless:process.env.EIDOLON_E2E_HEADLESS!=='0',args:[...hardwareWebGLBrowserArgs(),...backendOriginBrowserArgs(process.env.EIDOLON_E2E_BACKEND_ORIGIN_IP)]});
     try{
-        const context=await second.newContext(),observer=await context.newPage(),observerFailures=collectBrowserFailures(observer,baseURL);
-        await observer.goto(baseURL);const sourceId=await page.evaluate(()=>window.game.player.id);
+        const context=await second.newContext({ baseURL }),observer=await context.newPage(),observerFailures=collectBrowserFailures(observer,baseURL);
+        // Use the same complete runtime readiness/recovery as ordinary login.
+        await openGame(observer);const sourceId=await page.evaluate(()=>window.game.player.id);
         await cast({boosted:true,expanded:true,quality:'low'});
         await loginAndEnterWorld(observer,{...credentials,username:`${credentials.username}-view`});
         await expect.poll(()=>observer.evaluate(id=>window.game.remotePlayers.get(id)?.spiritEffect?.effectRadius,sourceId)).toBeCloseTo(34.5,4);
@@ -83,7 +84,7 @@ test('trained spirit rings preserve cherubs and reach a late observer without pr
         expect(observerFailures,observerFailures.join('\n')).toEqual([]);
         console.log('[spirit-area] late observer reconstructed trained boost/rune and saw normal expiry');
     }finally{await second.close();}
-    await page.reload({waitUntil:'networkidle'});await loginAndEnterWorld(page,credentials);
+    await loginAndEnterWorld(page,credentials);
     expect(await page.evaluate(()=>window.game.player.talentRanks?.CLR_34)).toBe(5);
     expect(await page.evaluate(()=>window.game.player.skillRunes?.['Spirit Guardians'])).toBe('spirits_expanded');
     expect(failures,failures.join('\n')).toEqual([]);

@@ -42,7 +42,7 @@ test('phone settings change readable text and preferences without changing world
     const after = await page.evaluate(() => ({ zoom: window.game.renderSystem.currentZoom, position: window.game.player.position.toArray() }));
     expect(after.zoom).toBe(before.zoom);
     expect(Math.hypot(after.position[0] - before.position[0], after.position[2] - before.position[2])).toBeLessThan(0.1);
-    await page.reload({ waitUntil: 'networkidle' }); await loginAndEnterWorld(page, credentials);
+    await loginAndEnterWorld(page, credentials);
     expect(await page.evaluate(() => ({ scale: window.game.uiManager.getUiScale(), quality: window.game.renderSystem.graphicsQuality,
         audio: window.game.uiManager.getAudioEnabled(), volume: window.game.uiManager.getAudioVolume(), autoLoot: window.game.uiManager.getAutoLootEnabled() })))
         .toEqual({ scale: 1.25, quality: 'low', audio: false, volume: 0, autoLoot: true });

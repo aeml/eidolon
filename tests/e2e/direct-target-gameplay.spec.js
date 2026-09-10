@@ -204,7 +204,6 @@ test('hostile marks reject an empty cast and accept an actual reachable enemy', 
     }
     await returnToTown(page);
     if (className === 'Rogue') {
-        await page.reload({ waitUntil: 'networkidle' });
         await loginAndEnterWorld(page, credentials);
         await expect.poll(() => page.evaluate(() => window.game.player.talentRanks?.ROG_36 || 0)).toBe(5);
         expect(await page.evaluate(() => window.game.abilityController.getAbilityCastRange('Weak Point Mark'))).toBeCloseTo(11.5, 8);

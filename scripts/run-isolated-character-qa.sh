@@ -150,7 +150,7 @@ mongo_password="$(openssl rand -hex 24)"
 docker build \
   --build-arg GO_VERSION=1.24.5 \
   --build-arg "BUILD_COMMIT=${qa_build_commit}" \
-  --build-arg "BUILD_VERSION=Alpha 1.0.58" \
+  --build-arg "BUILD_VERSION=Alpha 1.0.59" \
   --tag "${SERVER_IMAGE}" server >/dev/null
 image_created=true
 
@@ -248,7 +248,7 @@ run_phone_inventory() {
     EIDOLON_E2E_PASSWORD="${QA_PASSWORD}" \
     EIDOLON_E2E_CLASS="Fighter" \
     EIDOLON_E2E_REGISTER=1 \
-    npx playwright test tests/e2e/mobile-inventory-gameplay.spec.js
+    npx playwright test tests/e2e/mobile-inventory-gameplay.spec.js tests/e2e/phone-stash-entry.spec.js
 }
 
 run_equipment_recovery() {
@@ -447,6 +447,9 @@ run_well_rested() {
 
 set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
+  phone-stash-entry)
+    npx playwright test tests/e2e/phone-stash-entry.spec.js
+    ;;
   all)
     npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js && run_whip_shape && run_ground_shape && run_purifying_area && run_guardian_area && run_consecrated_area && run_cleric_area && run_spirit_area && run_whirlwind && run_phone && run_phone_combat && run_phone_party && run_phone_inventory && run_equipment_recovery && run_forge_guide && run_fresh_collection && run_talent_economy && run_talent_healing && run_talent_duration && run_seraph && run_shield_training && run_entrance_visibility && run_phone_quests && run_phone_build && run_phone_settings && run_phone_adventure && run_dungeon_recovery && run_death_resource_recovery && run_direct_target_classes && npm run test:e2e:movement && run_pvp_cadence && run_animation_classes && run_animation_multiplayer && npx playwright test tests/e2e/nameplate-world.spec.js && run_well_rested
     ;;
@@ -458,6 +461,14 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   pvp-cadence)
     run_pvp_cadence
+    ;;
+  recovery-tail)
+    # Focused rehearsal of the unchanged full gate's remaining suffix. This
+    # does not replace a complete all-route acceptance run.
+    run_pvp_cadence && run_animation_classes && run_animation_multiplayer && npx playwright test tests/e2e/nameplate-world.spec.js && run_well_rested
+    ;;
+  movement-fast)
+    EIDOLON_E2E_MOVEMENT_MAX_LEVEL=1 npx playwright test tests/e2e/movement-smoothness.spec.js
     ;;
   movement)
     npm run test:e2e:movement
@@ -543,6 +554,10 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   dungeons)
     npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js
     ;;
+  dungeon-inputs)
+    # Exact opening dungeon batch from all; diagnostic only, never a substitute.
+    npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js
+    ;;
   verdant)
     npx playwright test tests/e2e/verdant-dungeon-gameplay.spec.js
     ;;
@@ -582,6 +597,10 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   well-rested-all)
     run_well_rested
+    ;;
+  live-recovery-rehearsal)
+    EIDOLON_E2E_BASE_URL="http://127.0.0.1:${EIDOLON_E2E_WEB_PORT:-4173}" \
+      EIDOLON_EXPECTED_COMMIT="${QA_SOURCE_COMMIT}" bash scripts/run-live-recovery-qa.sh
     ;;
   well-rested-expiry)
     npx playwright test tests/e2e/well-rested-expiry-gameplay.spec.js

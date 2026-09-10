@@ -1,5 +1,5 @@
 import { moveByGroundClick, readPlayerState } from './helpers.js';
-import { GroundInputUnavailableError } from '../groundInputFailure.js';
+import { GroundInputUnavailableError, GroundPointerInterceptedError } from '../groundInputFailure.js';
 import { planReachableWizardStep } from './earned-retreat-plan.js';
 
 // Only observes replicated state and chooses ordinary keys/ground clicks.
@@ -47,13 +47,14 @@ export async function createEarnedWizardDefense(page, { retreatBelowHealthRatio 
                 allowAlternatePaths: false, timeout: 2500 });
         } catch (error) {
             if ((await readPlayerState(page)).state === 'DEAD') return true;
-            if (error instanceof GroundInputUnavailableError) {
+            if (error instanceof GroundInputUnavailableError || error instanceof GroundPointerInterceptedError) {
                 await page.evaluate(() => {
                     const counts = window.__freshWizardDefense.counts;
                     counts.blockedRetreats = (counts.blockedRetreats || 0) + 1;
                 });
-                // No click/key was issued. Fight from here, preserving the
-                // caller's unchanged combat deadline and death bounds.
+                // Either no input was available, or every actual click was
+                // proven to select a crossing hostile instead of ground. Fight
+                // from here without changing the combat deadline/death bounds.
                 return false;
             }
             throw error;

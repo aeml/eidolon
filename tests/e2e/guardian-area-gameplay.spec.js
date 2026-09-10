@@ -1,5 +1,5 @@
 import { devices, expect, test } from '@playwright/test';
-import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld } from './helpers.js';
+import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, openGame } from './helpers.js';
 import { backendOriginBrowserArgs, hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 
 test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true,
@@ -80,10 +80,12 @@ test('trained Guardian Embrace heals on the server and shows its persistent radi
     const secondBrowser=await browser.browserType().launch({executablePath:process.env.EIDOLON_E2E_BROWSER_PATH||undefined,
         headless:process.env.EIDOLON_E2E_HEADLESS!=='0',args:[...hardwareWebGLBrowserArgs(),...backendOriginBrowserArgs(process.env.EIDOLON_E2E_BACKEND_ORIGIN_IP)]});
     try {
-        const observerContext=await secondBrowser.newContext();
+        const observerContext=await secondBrowser.newContext({ baseURL });
         const observer=await observerContext.newPage();
         const observerFailures=collectBrowserFailures(observer,baseURL);
-        await observer.goto(baseURL);
+        // Finish the normal bounded runtime warm-up before starting the short
+        // aura. A raw extra navigation bypassed readiness/recovery handling.
+        await openGame(observer);
         const sourceId=await page.evaluate(()=>window.game.player.id);
         await cast(5,'high');
         await loginAndEnterWorld(observer,{...credentials,username:`${credentials.username}-view`});
@@ -95,7 +97,7 @@ test('trained Guardian Embrace heals on the server and shows its persistent radi
         expect(observerFailures,observerFailures.join('\n')).toEqual([]);
         console.log('[guardian-area] late rank-private observer received persistent radius and watched normal expiry');
     } finally { await secondBrowser.close(); }
-    await page.reload({waitUntil:'networkidle'}); await loginAndEnterWorld(page,credentials);
+    await loginAndEnterWorld(page,credentials);
     expect(await page.evaluate(()=>window.game.player.talentRanks?.CLR_34)).toBe(5);
     expect(failures,failures.join('\n')).toEqual([]);
 });

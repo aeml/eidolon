@@ -1,6 +1,7 @@
 import { expect } from '@playwright/test';
 import { buildDungeonTraversalRoutes } from '../dungeonTraversalRoutes.js';
 import { selectFighterDungeonSkill } from '../dungeonCombatControls.js';
+import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { enterAndExitDungeon, moveByGroundClick, projectEntity, readPlayerState } from './helpers.js';
 
 // Callers own login, earned or fixture preparation, and story turn-in. The safe
@@ -110,8 +111,8 @@ export async function playDungeonThroughInputs(page, {
                 const player = await readPlayerState(page);
                 const distance = Math.hypot(target.x - player.x, target.z - player.z);
                 const scale = Math.min(1, 12 / distance);
-                await moveByGroundClick(page, (target.x - player.x) * scale, (target.z - player.z) * scale,
-                    { allowJumpFallback: false });
+                await tryDungeonGroundStep(() => moveByGroundClick(page, (target.x - player.x) * scale, (target.z - player.z) * scale,
+                    { allowJumpFallback: false }));
             }
             await page.waitForTimeout(350);
             const playerState = await readPlayerState(page);
@@ -200,8 +201,8 @@ export async function playDungeonThroughInputs(page, {
                     const distance = Math.hypot(destination.x - player.x, destination.z - player.z);
                     if (distance < 3) break;
                     const scale = Math.min(1, 14 / distance);
-                    await moveByGroundClick(page, (destination.x - player.x) * scale,
-                        (destination.z - player.z) * scale, { allowJumpFallback: false });
+                    await tryDungeonGroundStep(() => moveByGroundClick(page, (destination.x - player.x) * scale,
+                        (destination.z - player.z) * scale, { allowJumpFallback: false }));
                 }
             }
         }

@@ -338,7 +338,7 @@ async function sampleMovingCastFrames(page, durationMs = 650) {
     }), durationMs);
 }
 
-async function exerciseMovingBaseCast(page, className, skillName, presentation) {
+async function exerciseMovingBaseCast(page, className, skillName, presentation, testInfo, renderer) {
     await page.keyboard.press('b');
     await expect.poll(async () => {
         const state = await readPlayerState(page);
@@ -379,6 +379,12 @@ async function exerciseMovingBaseCast(page, className, skillName, presentation) 
     const framesPromise = sampleMovingCastFrames(page);
     await castThroughInput(page, className, skillName, 'right', presentation, { prepare: false });
     const frames = await framesPromise;
+    // Retain the actual frame timing/movement before any assertion. This probe
+    // disables automatic traces, so a short sample must remain diagnosable.
+    await testInfo.attach('moving-base-cast-evidence', {
+        body: JSON.stringify({ className, skillName, renderer, before, frames }, null, 2),
+        contentType: 'application/json'
+    });
     expect(frames.length).toBeGreaterThan(10);
 
     const directionX = before.targetX - before.x;
@@ -541,7 +547,7 @@ test.describe('real-input animation gameplay matrix', () => {
         // Charge owns its own authoritative movement. The other three base
         // abilities must cast while ordinary click-to-move remains monotonic.
         if (className !== 'Fighter') {
-            await exerciseMovingBaseCast(page, className, matrix.base, presentations[matrix.base]);
+            await exerciseMovingBaseCast(page, className, matrix.base, presentations[matrix.base], testInfo, renderer);
         }
 
         await useCombatQAWaypoint(page);
