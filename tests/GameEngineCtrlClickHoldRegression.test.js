@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { jest } from '@jest/globals';
+import { InputManager } from '../src/core/InputManager.js';
 
 jest.unstable_mockModule('../src/proto/state_pb.js', () => {
     const mock = {
@@ -126,7 +127,14 @@ function createEngineHarness() {
 describe('GameEngine ctrl-click hold regression', () => {
     test.each([2, 30])('held Shift keeps ground movement when a hostile is %sm away', distance => {
         const engine = createEngineHarness();
-        engine.inputManager.keys = { shift: true, control: false, meta: false };
+        // Use production modifier tracking, not an invented keys.shift value.
+        const input = new InputManager({}, {});
+        try {
+            input.onKeyDown({ key: 'Shift', code: 'ShiftLeft' });
+            engine.inputManager.keys = { ...input.keys };
+        } finally {
+            input.dispose();
+        }
         engine.getBasicAttackRangeForEntity = () => 20;
         engine.hoveredEntity = Object.assign(Object.create(Actor.prototype), {
             id: 'enemy', type: 'Skeleton', state: 'MOVING', isActive: true,
