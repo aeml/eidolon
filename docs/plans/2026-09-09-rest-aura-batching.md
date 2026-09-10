@@ -1,5 +1,23 @@
 # Well Rested aura batching — separate visual/performance prototype
 
+## Integrated regression — September10, 06:27UTC
+
+Primary's fresh Wizard story-readiness run13998 is terminal and its exact
+disposable services/ports are cleaned up; it no longer owns the browser slot.
+On clean a877d46, full4349 passed256client suites/3627tests141.417s plus lint,
+Node24.18.0. Full95316 `go test -race ./...` passed underGo1.24.5: root21.857s,
+database1.260s, game348.191s and all other packages. Server source diff against
+accepted59e236b37 is empty. Logs
+`/tmp/eidolon-aura-integrated-full-{client,lint,server}.log`.
+
+This closes the pending integrated regression run, not native/rendered or
+promotion acceptance. Next are the unchanged ordinary rest journey, natural
+expiry/reentry and two-real-player High/Low/repeat-High/reconnect checks with
+native frame profiles, followed by the controlled GPU comparison rerun.
+Actual rendered transitions and physical-device/baseline performance gates
+remain required. No new version, gameplay/stat change, push or deployment;
+release60 remains separate and queued on its unchanged candidate.
+
 September10 status: still unpublished and separate from primary and the active
 release60 pipeline. Accepted59 has now been merged as the baseline; inherited59
 metadata is not a new release candidate. Native party verification has been
