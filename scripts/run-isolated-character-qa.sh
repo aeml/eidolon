@@ -270,7 +270,7 @@ run_equipment_recovery() {
 run_forge_guide() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-forge" EIDOLON_E2E_CLASS=Wizard \
     EIDOLON_E2E_FORGE_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_FORGE_MONGO_PORT="${mongo_port}" \
-    npx playwright test tests/e2e/forge-guide-gameplay.spec.js
+    npx playwright test tests/e2e/forge-guide-gameplay.spec.js "$@"
 }
 
 run_talent_economy() {
@@ -545,8 +545,8 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   equipment-refresh)
     EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-upgrades" EIDOLON_E2E_CLASS=Wizard \
       EIDOLON_E2E_UPGRADES_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_UPGRADES_MONGO_PORT="${mongo_port}" \
-      npx playwright test tests/e2e/earned-equipment-upgrades.spec.js --retries=0 --repeat-each=3 &&
-      run_forge_guide
+      npx playwright test tests/e2e/earned-equipment-upgrades.spec.js --retries=0 --repeat-each=3 --output=test-results/equipment-upgrades &&
+      run_forge_guide --output=test-results/forge-guide
     ;;
   forge-guide)
     run_forge_guide

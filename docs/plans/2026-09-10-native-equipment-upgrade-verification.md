@@ -46,8 +46,6 @@ Logs `/tmp/eidolon-upgrade-icons-unit.log` and
 `/tmp/eidolon-upgrade-icons-lint.log`. Full regression and corrected native repeats
 remain required before integration/promotion.
 
-## Release-note draft — assign version only during actual release preparation
-
 ## Stable equipment-slot refresh
 
 Native63002/2741d551 had two full passes and one failed swap. Icons were visible
@@ -75,6 +73,17 @@ or network injection. New optional `equipment-refresh` route runs all three
 independent swap fixtures and, only if successful, the existing actual Forge/
 dungeon-guide scenario on its separate account. Native and full regression
 verification of the combined correction remain pending.
+
+Native79136 on0e640ef9 TERMINAL PASS: three stressed swap/account cases52.8s,
+then actual Forge/guide1case24.1s. Actual wrapper credential scan passed0sanitized
+and both owned containers were absent after cleanup. Archive
+`/tmp/eidolon-equipment-refresh-first-pass-XltIDl` retains the surviving artifacts.
+The original log is `/tmp/eidolon-equipment-refresh-native-run.log`.
+However, the second Playwright command cleared the first command's default
+test-results tree. Functional log evidence remains, but complete screenshot
+retention was not achieved. Corrected route uses independent subdirectories
+under the already-scanned test-results root. Real-shell unit checks enforce
+both distinct outputs and fail-fast chaining. Rerun before final acceptance.
 
 ## Release-note draft — assign version only during actual release preparation
 
