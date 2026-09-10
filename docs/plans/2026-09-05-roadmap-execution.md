@@ -27,7 +27,55 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 09:33 UTC
+## Current checkpoint — September 10, 09:41 UTC
+
+Previous goal turn was PROGRESS (runtime icon/drop-target repairs and native
+checks). This turn makes PROGRESS by completing full/retained native gates and
+integrating into primary. Full18794 on frozenf2600a44 TERMINAL PASS293suites,
+4125tests145.015s plus lint, Node24.18.0. Logs
+`/tmp/eidolon-equipment-refresh-full-{client,lint}.log`.
+
+Retained native41421 on SAMEf2600a44 TERMINAL PASS:3independent stressed equipment
+swap/full-bag/login cases53.0s then actual Forge/guide1case23.2s. Both drag targets
+are explicitly refreshed through the real UI during each gesture. Existing
+level/potency/cost/basis/tab/guide/save assertions passed. Final actual credential
+scan0sanitized. Both owned containers and API18570/Mongo18571/web41970 listeners
+absent after cleanup. No native/browser/heavy local processes remain active.
+
+Inspected all4current images:3equipment screenshots retained after Forge under
+`test-results/equipment-upgrades`, plus Forge screenshot under
+`test-results/forge-guide`. Rings/old/new gear visible; Forge+2→+3,damage46→50,
+no Hearts/disabled purchase readable. These are desktop/input checks, not phone
+or controlled FPS evidence. Archive **`/tmp/eidolon-equipment-refresh-proof-T4FHu5`**
+contains both scoped artifact trees, final Forge HTML, native/full/lint logs.
+Native log `/tmp/eidolon-equipment-refresh-retained-native.log`.
+
+Proof30257639 merged cleanly into primary, then documentation reconciled. Primary
+now clean **bf8d36d6** atop merge7bc84817; diff from testedf2600a44 contains only
+two plan files. Runtime/test sources exactly match both completed gates. Native
+branch remains30257639 (its empty duplicate doc heading was corrected in primary).
+Full proof, prior failed attempts and two eventual release-note drafts live in
+`docs/plans/2026-09-10-native-equipment-upgrade-verification.md`. Nothing published.
+
+Next safe release work: clean aura integrationd9176d0e still awaits full/render/
+native gates. Read-only comparison confirms the four relevant files
+`src/art/ProceduralIcons.js`, `src/ui/InventoryUI.js`,
+`tests/ProceduralIcons.test.js`, `tests/EquipmentSlotRefresh.test.js` differ from
+primary only by these verified changes (152insertions/18deletions). Integrate the
+verified fixes into that upcoming visual release before running its remaining
+gates; preserve the smaller release baseline rather than accidentally importing
+the entire expanded campaign. Bring any required standalone native QA support
+deliberately, without its primary-only source-wiring tests. Alternatively, earned
+campaign/dungeon replay can now use bf8d36d6's real upgrades and fuller diagnostics;
+the full earned dungeon/ability/resource investigation remains unproven.
+
+Fresh09:41 GitHub34434837759 queued,34433520743 in progress. No current-soak
+cancellation authority, push/version/deployment change; last public identity08:04.
+Physical-phone feedback outstanding. Full1.1–1.10, all campaign/class/group/raid/
+balance/visual/mobile and both casino floors stay active/incomplete. Root ledger
+is documentation only; never push root.
+
+## Previous checkpoint — September 10, 09:33 UTC
 
 Previous goal turn was PROGRESS (earned upgrade implementation/native diagnostics).
 This turn makes PROGRESS with two real visual/input fixes and native evidence.
