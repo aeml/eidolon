@@ -16,7 +16,58 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 9, 23:49 UTC
+## Current checkpoint — September 10, 00:03 UTC
+
+This turn made PROGRESS: release59 deployed with matching public identity, actual
+merchant-sale proof obtained, repeat-visit helper corrected, and standalone
+sanctuary fix full client/server regression passed. Full goal stays active; root
+ledger-only and NEVER pushed. Previous turn was also PROGRESS, not an impasse.
+
+**59 DEPLOYED, final acceptance PENDING.** Canonicale236b37 remains frozen/clean.
+CI34414624304 all client/server/browser/predeploy/input/deployment jobs SUCCESS.
+Predeploy passed23:56:45 (41m19s), server23:57:19, Pages23:57:34. **Final live
+102690642047 ACTIVE** since23:57:36 in anonymous/persistent-character QA; its other
+native stages and fresh post-pass identity verification remain due. Uncached
+public release.json/login/runtimekey/backend allmatched59/e236b37 around23:58;
+actual release-keyed main.js GET200/19736bytes. Schema9→9 preflight passed and
+previous58 rollback image retained; no schema-upgrade backup required. Details in
+[release59 live verification](2026-09-10-release59-live-verification.md).
+No successor push, and do not call59 fully accepted untilfinal checksfinish.
+
+Primary39733 TERMINAL FAILED6.3m on9d01157 during a later merchant visit. Context
+shows level100, InkThatWalks39/60, full2997HP/1974MP, Gold7633, bagvisible/shophidden.
+Earlier40hunt/Seeds/manualconsumption progressed intoImp. One actual merchant
+visit verified2equips plus3Common sales10+10+80Gold:6841→6941, free3→8,17.366s,
+with individual item/Gold and preserved quest/equipment/remaining-bag checks.
+This proves that visit, NOT reliability of subsequent visits or fresh pacing.
+Archive `/tmp/eidolon-functional-merchant-failure-ZXNcRk`, wrapper sanitized2files,
+archive rescan0/exact servicescleaned. No screenshot existed; context retained.
+
+Primary now **419df41**, clean. Merchant approach uses existing move-only/no-jump
+input; new visibility helper retains an already-open shop instead of toggling
+again, otherwise clicks once and requires shop AND bag visible. Failure still
+propagates, with future full-world screenshot/read-only progress evidence. Actual
+failed prior toggle sequence is a source-supported hypothesis, not recorded fact.
+Focused10870 PASS28/4/0.685+lint; full51243 PASS284suites3989tests96.093s+lint.
+Logs `/tmp/eidolon-merchant-repeat-full-{client,lint}.log`; newplan
+`2026-09-09-earned-merchant-repeat-visit.md`. No runtime/campaign/economy edits.
+
+Standalone sanctuary preview now clean **43c58ce**, testedcode95e3f28/base63343d2.
+Full11025 TERMINALPASS: client253suites3598tests81.541s+lint; Go-race root14.220,
+game235.846,database1.116,lifecycle1.032s. Logs
+`/tmp/eidolon-safe-release-full-{client,lint,server}.log`. Prior exact native/card
+proof retained below. Still no successor version bump or push; accepted59 and
+synchronized successor defaults/notes plus release/live gates remain required.
+
+**70286 ACTIVE**, only owned local browser, corrected prepared Earth route on
+primary419df41: `merchant-repeat-0910-0002`, API18560/Mongo18561/web41960,
+`/tmp/eidolon-earth-merchant-repeat-0002.log`, routechronicle-collection, Node24
+inside sg render. Primary frozen untilterminal, preserve/sanitize/exactcleanup
+afterward. No heavy ownedtests/second browser alongside. Fullfresh replay after
+travel/merchant corrections still due; preserve all class/group/phone/raid/casino
+and overallroadmap gates. Continue same70286 and finalCI102690642047 handles.
+
+## Previous checkpoint — September 9, 23:49 UTC
 
 This continuation made PROGRESS: verified earned milestone training, diagnosed
 an incidental dialogue blocking travel, corrected the shared travel gesture, and
