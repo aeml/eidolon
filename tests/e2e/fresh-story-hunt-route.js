@@ -5,7 +5,7 @@ import { openIlyra, readChronicleChapter } from './chronicle-earth-route.js';
 import { createEarnedClassCombat } from './earned-class-combat.js';
 import { recoverEarnedDeath } from './earned-death-recovery.js';
 import { earnedCheckpoint } from './earned-checkpoint.js';
-import { recoverBetweenHuntEncounters } from './earned-hunt-rest.js';
+import { recoverBetweenHuntEncounters, recoverDuringHuntEncounter } from './earned-hunt-rest.js';
 import { earnedTownRecoveryEnabled } from '../earnedRecoveryPolicy.js';
 import { canEngageExpeditionTarget, chooseExpeditionCombatTarget } from '../expeditionCombatTargets.js';
 import { findExpeditionTarget } from './earned-expedition-target.js';
@@ -112,6 +112,10 @@ export async function earnFreshStoryHunt(page, credentials, id, { captureReady, 
                 await recover(); respawned = true; break;
             }
             if (await leaveEarnedCombatSafety(page, leaveTown)) continue;
+            if (await recoverDuringHuntEncounter(page, { enabled: earnedTownRecoveryEnabled(), leaveTown })) {
+                restStops++;
+                continue;
+            }
             const observed = await page.evaluate(id => {
                 const game = window.game;
                 const describe = target => target ? { id: target.id,
