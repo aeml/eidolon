@@ -1,6 +1,56 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 
+test('four desktop party healing targets fit together without hiding roles or covering chat', async ({ page, baseURL }, testInfo) => {
+    const failures = collectBrowserFailures(page, baseURL);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.evaluate(async () => {
+        const { UIManager } = await import('/src/ui/UIManager.js');
+        document.getElementById('start-screen').style.display = 'none';
+        const ui = window.__compactParty = new UIManager(false);
+        ui.lastPlayerRef = { id: 'member-0' };
+        ui.toggleChat(true);
+        window.__compactPartyData = { partyId: 'compact-party', leaderId: 'member-0',
+            members: ['Fighter', 'Cleric', 'Wizard', 'Rogue'].map((className, index) => ({
+                id: `member-${index}`, name: `Companion of the ${className} Order`, class: className,
+                role: index === 0 ? 'tank' : index === 1 ? 'support' : 'damage',
+                level: 30, hp: 80, maxHp: 100, isLeader: index === 0, ready: true
+            })) };
+        ui.updateParty(window.__compactPartyData);
+    });
+    for (const [width, height] of [[1280, 720], [1440, 900]]) {
+        await page.setViewportSize({ width, height });
+        for (const self of ['member-0', 'member-1']) {
+            await page.evaluate(self => {
+                window.__compactParty.lastPlayerRef = { id: self };
+                window.__compactParty.updateParty(window.__compactPartyData);
+                document.getElementById('party-panel').scrollTop = 0;
+            }, self);
+            const targets = page.locator('.party-support-target');
+            await expect(targets).toHaveCount(4);
+            await expect.poll(() => page.evaluate(() => {
+                const panel = document.getElementById('party-panel').getBoundingClientRect();
+                const chat = document.getElementById('chat-box').getBoundingClientRect();
+                return panel.bottom + 10 <= chat.top && [...document.querySelectorAll('.party-support-target')]
+                    .every(button => {
+                        const b = button.getBoundingClientRect();
+                        return b.top >= panel.top && b.bottom <= panel.bottom - 4 && b.height >= 40 &&
+                            b.left >= panel.left && b.right <= panel.right;
+                    });
+            })).toBe(true);
+            await targets.last().click();
+            await expect(targets.last()).toHaveAttribute('aria-pressed', 'true');
+            expect(await page.locator('#party-panel').evaluate(panel => panel.scrollTop)).toBe(0);
+            await expect(page.locator('.party-support-mode')).toContainText('Clear healing target');
+            await page.screenshot({ path: testInfo.outputPath(`compact-party-${self}-${width}-${height}.png`) });
+            await page.locator('.party-support-mode').click();
+            await expect(targets.last()).toHaveAttribute('aria-pressed', 'false');
+        }
+    }
+    expect(failures, failures.join('\n')).toEqual([]);
+});
+
 test('party roster and resized permanent chat remain separately reachable', async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
