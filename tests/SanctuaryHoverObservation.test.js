@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { Vector3 } from 'three';
+import { Vector3, OrthographicCamera } from 'three';
 import { readFileSync } from 'node:fs';
 import { readSanctuaryHoverEvidence } from './e2e/sanctuary-hover-observation.js';
 
@@ -50,4 +50,37 @@ test('diagnostics retain the exact hover deadline, fatal result and both real bo
     expect(source).toContain("toHaveText('Leave the safe zone')");
     expect(source).toContain('hoverEnemyCardThroughInput(page, testInfo, boundaryTarget)');
     expect(source).not.toMatch(/performRaycast\(|needsRaycast\s*=|hoveredEntity\s*=/);
+});
+
+test('observed nearby live enemies lie outside the default camera but inside ordinary wider framing', () => {
+    const target = new Vector3(94.9849853515625, 0, 200.00953674316406);
+    const positions = [
+        [107.51438023561845, 1, 233.94963723003613],
+        [128.74340990475315, 1, 215.44486649854426],
+        [128.85178921655427, 1, 172.8319529088575]
+    ];
+    const projected = zoom => {
+        const aspect = 1280 / 720;
+        const camera = new OrthographicCamera(-zoom * aspect, zoom * aspect, zoom, -zoom, .1, 1000);
+        camera.position.copy(target).add(new Vector3(100, 100, 100));
+        camera.lookAt(target); camera.updateMatrixWorld();
+        return positions.map(value => new Vector3(...value).project(camera));
+    };
+    const inFrame = point => Math.abs(point.x) <= 1 && Math.abs(point.y) <= 1 && Math.abs(point.z) <= 1;
+    expect(projected(15).some(inFrame)).toBe(false);
+    expect(projected(30).every(inFrame)).toBe(true);
+});
+
+test('sanctuary framing uses real wheel input without moving out of protection or bypassing hover', () => {
+    const source = readFileSync('tests/e2e/well-rested-gameplay.spec.js', 'utf8');
+    const framing = source.indexOf('await zoomOutThroughCanvas(page)');
+    expect(framing).toBeGreaterThan(source.indexOf('const insidePosition = await readPlayerState(page)'));
+    expect(framing).toBeLessThan(source.indexOf('const boundaryTarget = await hoverEnemyCardThroughInput'));
+    expect(source).toContain('framedPosition.x - insidePosition.x');
+    expect(source).not.toMatch(/setZoom\(|currentZoom\s*=/);
+    const helper = readFileSync('tests/e2e/helpers.js', 'utf8').split('export async function zoomOutForPortal(page)')[1]
+        .split('async function projectVerdantEntrance')[0];
+    expect(helper).toContain('await page.mouse.wheel(0, 100)');
+    expect(helper).toContain('document.elementFromPoint(x, y) === canvas');
+    expect(helper).not.toMatch(/setZoom\(|currentZoom\s*=/);
 });

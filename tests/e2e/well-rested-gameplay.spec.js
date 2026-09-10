@@ -4,7 +4,7 @@ import { observeCollectionCombatReceipts, readFreshCollectionCombat,
     selectCollectionTargetThroughInput } from './fresh-collection-combat.js';
 import { collectBrowserFailures, credentialsFromEnvironment, jumpByGroundClick,
     loginAndEnterWorld, moveByGroundClick, projectEntity, projectNearestHostile,
-    readPlayerState, returnToTown } from './helpers.js';
+    readPlayerState, returnToTown, zoomOutForPortal as zoomOutThroughCanvas } from './helpers.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 
@@ -82,6 +82,16 @@ test('earned sanctuary rest follows real travel, combat and a fresh login', asyn
     expect(insidePosition.x).toBeGreaterThanOrEqual(94);
     expect(insidePosition.x).toBeLessThan(100);
     await expect.poll(async () => (await restState(page)).zone).toBe('lanternhold');
+    // At the default close framing, live wandering enemies can all be outside
+    // the canvas even though their hitboxes are replicated. Use the player's
+    // ordinary wheel control to frame the road; keep the same protected position.
+    const zoomBefore = await page.evaluate(() => window.game.renderSystem.currentZoom);
+    await zoomOutThroughCanvas(page);
+    const framedPosition = await readPlayerState(page);
+    expect(Math.hypot(framedPosition.x - insidePosition.x, framedPosition.z - insidePosition.z)).toBeLessThan(.1);
+    await expect.poll(async () => (await restState(page)).zone).toBe('lanternhold');
+    console.log('[sanctuary-camera-framing]', JSON.stringify({ before: zoomBefore,
+        after: await page.evaluate(() => window.game.renderSystem.currentZoom), position: framedPosition }));
     const boundaryTarget = await hoverEnemyCardThroughInput(page, testInfo);
     await expect(page.locator('#combat-intent-status')).toHaveText('Leave the safe zone');
     await expect(page.locator('#combat-intent-status')).not.toHaveClass(/is-in-range/);
