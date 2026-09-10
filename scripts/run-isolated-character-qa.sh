@@ -139,6 +139,7 @@ qa_allowlist+=",${QA_USERNAME_BASE}-holy"
 qa_allowlist+=",${QA_USERNAME_BASE}-support-area"
 qa_allowlist+=",${QA_USERNAME_BASE}-spirit-area"
 qa_allowlist+=",${QA_USERNAME_BASE}-phone-party,${QA_USERNAME_BASE}-phone-party-ally"
+qa_allowlist+=",${QA_USERNAME_BASE}-desktop-support,${QA_USERNAME_BASE}-desktop-support-ally"
 qa_allowlist+=",${QA_USERNAME_BASE}-critical-rogue,${QA_USERNAME_BASE}-critical-wizard,${QA_USERNAME_BASE}-critical-fighter"
 qa_allowlist+=",${QA_USERNAME_BASE}-healing-retry1"
 qa_allowlist+=",${QA_USERNAME_BASE}-status-lunge,${QA_USERNAME_BASE}-status-serrated,${QA_USERNAME_BASE}-status-poison"
@@ -253,6 +254,16 @@ run_phone_inventory() {
     EIDOLON_E2E_CLASS="Fighter" \
     EIDOLON_E2E_REGISTER=1 \
     npx playwright test tests/e2e/mobile-inventory-gameplay.spec.js tests/e2e/phone-stash-entry.spec.js
+}
+
+run_desktop_support() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-desktop-support" EIDOLON_E2E_CLASS=Cleric \
+    EIDOLON_E2E_REGISTER=1 EIDOLON_E2E_DESKTOP_SUPPORT=1 \
+    npx playwright test --retries=0 --output=test-results/desktop-support tests/e2e/desktop-party-support.spec.js
+}
+
+run_party_support() {
+  run_phone_party && run_desktop_support
 }
 
 run_equipment_recovery() {
@@ -472,11 +483,14 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   initial-stats)
     run_initial_stats
     ;;
+  desktop-support)
+    run_desktop_support
+    ;;
   phone-stash-entry)
     npx playwright test tests/e2e/phone-stash-entry.spec.js
     ;;
   all)
-    run_initial_stats && npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js && run_whip_shape && run_ground_shape && run_purifying_area && run_guardian_area && run_consecrated_area && run_cleric_area && run_spirit_area && run_whirlwind && run_phone && run_phone_combat && run_phone_party && run_phone_inventory && run_equipment_recovery && run_forge_guide && run_fresh_collection && run_talent_economy && run_talent_healing && run_talent_duration && run_seraph && run_shield_training && run_entrance_visibility && run_phone_quests && run_phone_build && run_phone_settings && run_phone_adventure && run_dungeon_recovery && run_death_resource_recovery && run_direct_target_classes && npm run test:e2e:movement && run_pvp_cadence && run_animation_classes && run_animation_multiplayer && npx playwright test tests/e2e/nameplate-world.spec.js && run_well_rested && run_forge_socket_appearance
+    run_initial_stats && npm run test:e2e:authenticated && npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js && run_whip_shape && run_ground_shape && run_purifying_area && run_guardian_area && run_consecrated_area && run_cleric_area && run_spirit_area && run_whirlwind && run_phone && run_phone_combat && run_party_support && run_phone_inventory && run_equipment_recovery && run_forge_guide && run_fresh_collection && run_talent_economy && run_talent_healing && run_talent_duration && run_seraph && run_shield_training && run_entrance_visibility && run_phone_quests && run_phone_build && run_phone_settings && run_phone_adventure && run_dungeon_recovery && run_death_resource_recovery && run_direct_target_classes && npm run test:e2e:movement && run_pvp_cadence && run_animation_classes && run_animation_multiplayer && npx playwright test tests/e2e/nameplate-world.spec.js && run_well_rested && run_forge_socket_appearance
     ;;
   animations)
     run_animation_classes
