@@ -16,7 +16,54 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 02:03 UTC
+## Current checkpoint — September 10, 02:14 UTC
+
+This turn made PROGRESS: inspected terminal fresh-diary failure, corrected
+acknowledgement-during-approach handling, passed full regression, and verified
+opening/diary/manual/reconnect in the new actual fresh replay. Previous turn was
+PROGRESS. Full goal stays active, no impasse; root ledger-only/NEVER pushed.
+
+**Corrected60 CI34427816379 ACTIVE**, exactcanonical3a139c0 unchanged. Server
+102716687086 and client102716687272 SUCCESS; browser2/3job102718128475 SUCCESS.
+Browser1/3job102718128481 and3/3job102718128498 ACTIVE. No predeploy, deployments,
+or final new live acceptance yet. Keep canonical and diagnostic worktrees frozen;
+do not push a61successor or accept the old failed60run34421323405.
+
+Primary62038 TERMINAL FAILED1.2m on5a01ce8. Opening/manual100Gold+100XP/reconnect
+passed36s,level2,0deaths. Failure during resumed diary approach had exact Mara
+reading open and1/1servercredit, healthy136/137HP,96/126MP,25freebag. An ordinary
+pending inspection could be acknowledged after the initial journal-state check;
+movement continued under the reading and failed0.748versus1unit displacement.
+No missing diary credit or balance conclusion. Archive
+`/tmp/eidolon-fresh-diary-race-proof-U6i3rY`, wrapper sanitized2files, supplemental0,
+at-failure screenshot inspected, exact owned services/18560/18561/41960absent.
+Log `/tmp/eidolon-fresh-story-0203.log` retained.
+
+Primary correction **d47f5c6**: guard each resumed movement against the exact
+visible/open entry; recognize acknowledgements during successful or failed
+movement and return`already-open`, not a movement/inspection claim. Unrelated/
+hidden/collapsed entries cannot suppress errors. Preserve survival, title/read,
+server credit, unclaimed rewards and manual Ilyra completion. No runtime/quest/
+threshold/timeout/reward changes. Focused21692 PASS19tests/2suites.825+lint;
+full65008 PASS286suites/4026tests114.77s+lint. Logs
+`/tmp/eidolon-diary-ack-full-{client,lint}.log`. Proof-onlyprimary **79e9571**.
+
+**44940 ACTIVE**, only owned local browser: freshWizard story-only readiness on
+79e9571/code d47f5c6, run`fresh-diary-ack-0910`, API18560/Mongo18561/web41960,
+log`/tmp/eidolon-fresh-diary-ack-replay.log`. Source frozen; no heavy owned tests
+or second browser. Actual opening/manual/reconnect passed63s,0deaths; diary
+approach/read/manual25Gold+200XP/reconnect passed at100s,level3. This run used
+the ordinary`inspected`branch, not a recorded delayed-ack branch replay. Unit
+checks cover that race.40Skeletonstoryhunt has started atlevel3/121XP/172Gold,
+zero equipped slots/talentpoints, no grants/dailies. Do not claim readiness yet.
+At terminal preserve/sanitize evidence and verify exact cleanup. Seven authored
+manual chapters and unchangedlevel30/accepteduncleared dungeon remain required.
+
+Prepared Earth65010 PASS3/16.2m remains valid for its owncode/functional scope,
+not this fresh balance gate. Full class/group/dungeon/raid/story, physical phones,
+aura batching, CIcost prototype, casino and remaining1.1–1.10work stay open.
+
+## Previous checkpoint — September 10, 02:03 UTC
 
 This turn made PROGRESS: complete prepared Earth chain passed; reproduced live60
 hover failure with real evidence, corrected ordinary camera framing, passed full
