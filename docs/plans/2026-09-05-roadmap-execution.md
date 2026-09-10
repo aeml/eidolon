@@ -27,7 +27,61 @@ global Node installation. CI already explicitly installs24. The server module
 declares go1.24.5 and `go version` inside server confirms automatic1.24.5 selection
 (root-directory system go1.22.2 is not the module's selected compiler).
 
-## Current checkpoint — September 10, 13:02 UTC
+## Current checkpoint — September 10, 13:20 UTC
+
+Previous goal turn was PROGRESS (ordinary dungeon recovery/resume acceptance).
+This turn is PROGRESS: implemented a bounded recorded earned-build diagnostic,
+ran it and retained its real input failure, then corrected a reproducible ground
+projection mismatch. Full roadmap remains active, no gameplay/balance/version/
+push/deployment or runner change. No shortened campaign is claimed complete.
+
+Primary8c8b64f5 added recorded level31 Wizard fixture extracted from failed44188
+source4b3991ff:14actual equippeditems, baseStats70STR/40INT/40DEX/40WIS/70VIT,
+WIZ_01rank5/branchC/unlockedskills and8storyflags. No archived bag contents,
+exact save or earned replay claim. Explicit disposable new-empty-account Mongo
+setup only; real guide, ordinary town preparation/room recovery, no protected
+waypoint, grants or in-fight refill. Optional afterEncounter hook stops only
+after confirmed Warden death, with ordinary helper Recall still executing;
+not a four-boss clear or reward/save acceptance. Eight-minute encounter and
+other shared limits remain; explicit diagnostic total bound20minutes.
+
+25910 initialfocusedFAIL: structuredClone unavailable in Jest's jsdom global.
+JSON-only fixture clone corrected without weakening comparison/detachment.
+8134 PASS23tests/3suites0.825s+lint/bashsyntax/diff. Native29121 TERMINAL1 on
+clean8c8b64f510e4b1d0f60edfe22228cba51badc1fd,1test5.6minutes,zero retries,
+runIDrecorded-build-0910/seed-7178858117422988328/gen2/attempt0/no fallback.
+Actual build/gear/training/storyentry assertions passed. Cleared room1, then
+ordinary townrest14/670mana→111/737arrival→737/737,bank0→1.320791435→10.856633467.
+Actual Warden entry wasFULL1254HP/737MP,bank3.8289084; after buffexpiry pools
+1140HP/670MP. Continued real damage but mostly near-empty mana. Terminal failure
+was issued move-only retreat with0displacement (still1140HP), NOT death, timeout
+or damage stall. Old observed health15000does not prove boss balance from this
+interrupted run; earlier96530/44188 survival failures remainauthoritative.
+Archive `/tmp/eidolon-recorded-build-failure-hT5iS1` includes native/focusedlogs,
+reports/testresults. Actual wrappercredentialscan sanitized2files; additional
+archive-only username redaction sanitized1log. OwnedAPI/Mongo and18580/18581/
+41980listeners absent. Raw native stream still contains disposable QA identifiers;
+do not dump its complete error line or treat it as a sanitized shareable artifact.
+
+Inspection found projectGroundOffset inherited actorY=.5 instead of the actual
+InputManager Y=0groundPlane; shortened projection fallbacks also changed checked
+paths. New1eb1cbcc projects onto the production plane, keeps strict planned
+vectors unscaled, rejects pre-click camera drift>.25units, and records actual/
+planned click points plus stun/root/freeze diagnostics. No movement failure is
+reclassified as success or swallowed; earlier failure does NOT prove this was
+its sole cause.32004 PASS33tests/6suites1.136s+lint. Math tests use real Three
+projection/raycast round trips at heights0/.5/4 and retain oldheight negativecase.
+98271 is now sole active heavy gate: fullclient thenlint onclean1eb1cbcc,
+logs `/tmp/eidolon-ground-projection-full-{client,lint}.log`. Do not edit primary
+untilterminal; no browser active. Next: same bounded recorded-build native with
+corrected input projection and richer failure evidence; no hourlong fresh replay
+or boss-health reduction justified yet. Socket/aura gates and fullgoalstayopen.
+
+13:03canonicalCI34434837759 queued;nightly34433520743 confirmedinprogress.
+No current-soak cancellationauthority;canonical60acceptance stillfirst.
+Root remains documentation-only and is never pushed.
+
+## Previous checkpoint — September 10, 13:02 UTC
 
 82369 now TERMINAL0: full301suites/4204tests130.817s, followed by lintNode24,
 oncleane7214825 (test-double-only atop native-tested9a48db1c). Logs
