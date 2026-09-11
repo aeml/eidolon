@@ -74,7 +74,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 				// The combat pipeline already provides a replicated absorb shield.
 				player.ArcaneShieldActive = true
 				player.ArcaneShieldHP += totalDamage
-				player.ArcaneShieldEndTime = time.Now().Add(10 * time.Second)
+				player.ArcaneShieldEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 10*time.Second))
 				player.ArcaneShieldRuneID = ""
 			}
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 6*time.Second))
@@ -165,6 +165,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 			if runeID == "ironfortress_extended" {
 				duration = 45 * time.Second
 			}
+			duration = resolveAbilityEffectDuration(player, skillName, duration)
 
 			player.IronFortressActive = true
 			player.IronFortressEndTime = time.Now().Add(duration)
@@ -201,6 +202,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 				buffDuration = 15 * time.Second // +50% duration
 				player.ActiveCombo = ""         // Consume the combo
 			}
+			buffDuration = resolveAbilityEffectDuration(player, skillName, buffDuration)
 
 			player.GuardianRoarActive = true
 			player.GuardianRoarEndTime = time.Now().Add(buffDuration)
@@ -247,8 +249,11 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 			if runeID == "earthshaker_seismic" {
 				stunDuration *= 2
 			}
+			stunDuration = resolveAbilityEffectDuration(player, skillName, stunDuration)
 			w.damageEarthshakerArea(player, player.X, player.Z, targetX, targetZ, 6.0, damage, stunDuration, runeID == "earthshaker_fissure")
 			if runeID == "earthshaker_aftershock" {
+				// The delayed wave retains training from this cast, not a later build.
+				aftershockStun := resolveAbilityEffectDuration(player, skillName, time.Second)
 				playerID := player.ID
 				instanceID := player.InstanceID
 				x, z := player.X, player.Z
@@ -262,7 +267,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 					if owner == nil || owner.State == "DEAD" || owner.InstanceID != instanceID {
 						return
 					}
-					w.damageEarthshakerArea(owner, x, z, targetX, targetZ, 3.5, damage/2, time.Second, false)
+					w.damageEarthshakerArea(owner, x, z, targetX, targetZ, 3.5, damage/2, aftershockStun, false)
 				})
 			}
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 12*time.Second))
@@ -288,7 +293,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 				}
 				if !target.CCImmune {
 					target.Rooted = true
-					target.RootEndTime = time.Now().Add(time.Second)
+					target.RootEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, time.Second))
 				}
 				target.Mu.Unlock()
 				setCooldown(resolveAbilityCooldown(player.SubType, skillName, 15*time.Second))
@@ -314,7 +319,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 				if !target.CCImmune {
 					target.Slowed = true
 					target.SlowFactor = 0.6
-					target.SlowEndTime = time.Now().Add(5 * time.Second)
+					target.SlowEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 5*time.Second))
 					target.RecalculateStats()
 				}
 				isDead := target.Health <= 0
@@ -335,7 +340,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 		if player.Mana >= cost {
 			player.Mana -= cost
 			player.BerserkerModeActive = true
-			player.BerserkerModeEndTime = time.Now().Add(15 * time.Second)
+			player.BerserkerModeEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 15*time.Second))
 			player.RecalculateStats()
 
 			// Apply to party
@@ -356,7 +361,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 							dz := member.Z - player.Z
 							if member.InstanceID == player.InstanceID && member.State != "DEAD" && math.Hypot(dx, dz) <= 15.0+entityVisualRadius(member) {
 								member.BerserkerModeActive = true
-								member.BerserkerModeEndTime = time.Now().Add(15 * time.Second)
+								member.BerserkerModeEndTime = player.BerserkerModeEndTime
 								member.RecalculateStats()
 							}
 							member.Mu.Unlock()
@@ -374,7 +379,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 		hpPercent := float64(player.Health) / float64(player.MaxHealth)
 		if hpPercent < 0.30 {
 			player.LastStandActive = true
-			player.LastStandEndTime = time.Now().Add(10 * time.Second)
+			player.LastStandEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 10*time.Second))
 			player.RecalculateStats()
 
 			// Combo: Iron Will (Iron Fortress → Last Stand Rampage) = Damage reduction persists
