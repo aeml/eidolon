@@ -5,7 +5,37 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 04:40 UTC
+## Current checkpoint — September 11, 04:49 UTC
+
+Previous turn was PROGRESS with verified wait. This turn is PROGRESS: version61
+full regression and local browser accepted, canonical33c2faf4 pushed, new CI
+34563572711 confirmed pending; root/slow observer tests added and full race begun.
+
+- Domain worktree clean33c2faf4, application10957648.49482 TERMINAL0:
+  client259suites3634tests146.186s/lintPASS; server root16.143/game330.737,
+  loadtest1.022/database1.106/lifecycle1.033PASS.90771 twoanonymoussystemChrome
+  casesPASS8.0s;1280x720patchnotes inspected, readable61and60retained, web41961
+  clear. Artifact `/tmp/eidolon-domain61-browser-proof-2Ne4hS`, scannerPASS0files.
+  No authenticatednative/liveacceptanceclaim. Exactdiffagainst3671reviewed,
+  preserveswebsiteandgamecontent.93979 pushTERMINAL0 FF3671->33c2faf4master.
+  NewCI34563572711PENDING behind3671CI34561490782. No jobcancelled byagent.
+- User'sinstalledNginxHostnowplay; publicfrontend200. Newdomainclientrelease62dc,
+  backenddf91/ready, bothAlpha1.0.60.1.0.61stillNOTlive. No moreknownNginxfix
+  needed. Localoriginallowlisttests pass; actualneworiginloginneedsdeployment.
+- Asked asynchronouspermission tocancel ONLYsuperseded3671CI so61canadvance,
+  explaining61includeswebsite3671 and24hoursoakremains. No answer yet; do not
+  treatfirstpreselectedoption asapproval. NewNightly34558600459continues.
+- Rootintegration cleanfrozena041e6b1 in `/tmp/eidolon-root-slow-current-20260911`:
+  addedEnemy/NPCroot+slowstart/independentclear/protobufspeedproof96149PASSrace
+ 1.057s, clientactualstatusconsumerremovesindependentparticles56053PASS20tests
+ 1.328s+lint. No clientruntimechanged.25686 ACTIVE fullGo race nice10/GOMAX2/-p1,
+  log `/tmp/eidolon-root-slow-current-full-server.log`, onlylocalheavy. Do not
+  editsourcebeforeterminal. Primary06/nextstun475unchanged. Futuregameplayrelease
+  mustinheritaccepted61domains/checkout, notrestoreoldrouting. Fullfourrole/
+  earnedphone/talent/campaign/economy/casinoand1.1–1.10scope remainsrequired.
+  RootNEVERPUSH; DBrotationapprovalstillunanswered. Goalactive.
+
+## Previous checkpoint — September 11, 04:40 UTC
 
 Previous turn was PROGRESS: actual Nginx/Pages404 cause reconfirmed and exact
 operator repair supplied. This turn is PROGRESS with verified wait: version61
