@@ -31,19 +31,24 @@ animation_username() {
 
 for class_name in "${QA_CLASSES[@]}"; do
   echo "Running live real-input ${class_name} animation matrix."
-  EIDOLON_E2E_USERNAME="$(animation_username "${class_name}")" \
+  # Each invocation cleans its output directory. Keep both reports and raw
+  # artifacts below distinct roots so later classes cannot erase earlier proof.
+  PLAYWRIGHT_HTML_OUTPUT_DIR="playwright-report/live-${class_name,,}" \
+    EIDOLON_E2E_USERNAME="$(animation_username "${class_name}")" \
     EIDOLON_E2E_PASSWORD="${QA_PASSWORD}" \
     EIDOLON_E2E_CLASS="${class_name}" \
-    npx playwright test tests/e2e/animation-gameplay.spec.js
+    npx playwright test tests/e2e/animation-gameplay.spec.js \
+      --output="test-results/live-${class_name,,}"
 done
 
 echo "Running live Cleric/Wizard remote-animation matrix."
-EIDOLON_E2E_USERNAME="$(animation_username Cleric)" \
+PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/live-remote \
+  EIDOLON_E2E_USERNAME="$(animation_username Cleric)" \
   EIDOLON_E2E_PASSWORD="${QA_PASSWORD}" \
   EIDOLON_E2E_CLASS="Cleric" \
   EIDOLON_E2E_USERNAME_SECONDARY="$(animation_username Wizard)" \
   EIDOLON_E2E_PASSWORD_SECONDARY="${QA_PASSWORD}" \
   EIDOLON_E2E_CLASS_SECONDARY="Wizard" \
-  npx playwright test tests/e2e/multiplayer.spec.js
+  npx playwright test tests/e2e/multiplayer.spec.js --output=test-results/live-remote
 
 echo "Live four-class and remote-animation QA passed."
