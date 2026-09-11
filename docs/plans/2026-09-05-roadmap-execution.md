@@ -5,7 +5,58 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 20:28 UTC
+## Current checkpoint — September 11, 20:36 UTC
+
+Previous goal turn was PROGRESS. This turn is PROGRESS: accepted Alpha1.0.62's
+terminal live pipeline, accepted full Renewal regression, integrated primary
+and launched the required full four-role dungeon proof. Full roadmap stays open.
+
+-62 CI34637129931 and final live103408203727 TERMINAL SUCCESS. Explicit step
+  inspection: matching release, anonymous/persistent character, all four class/
+  remote animations, town recovery/Well Rested, sanitize/upload ALL succeeded.
+  Hosted/server,3browser shards, predeploy103394045529, QA inputs and BOTH
+  deployments succeeded. No cancellation, rerun or gate bypass. Independent
+  fresh no-cache frontend release.json/backendhealthz again return
+  Alpha1.0.62/0231c9488998432bdbcfcac6cc2a049cea0e9b1b; serverok.62 is now the
+  latest fully accepted incremental release, replacing61.
+- Live artifact10281596463 (9,436,423bytes), predeploy10280418987 (16,472,835)
+  retained. Downloaded live artifact to `/tmp/eidolon-62-live-evidence-YVhNaQ`;
+  inspected town screenshot (fullHPMP/aura/story guidance). Sanitized text does
+  NOT mean redacted pixels. HTML is only final multiplayer invocation:1expected,
+ 0unexpected/flaky/skipped, not complete-suite report. CI console summaries
+  confirm8anonymous/persistent passes, class-stage passes and town2+1passes.
+  Record in primary docs/plans/2026-09-11-release62-adventure-together.md.
+-44937 TERMINAL0 on d5b6d3a6: full Go race root21.725s/game315.975s/
+  loadtest1.028s/database1.122s/lifecycle1.023s PASS. Exact unchanged client/
+  toolchain inputs retain parent349suites/4896tests169.442s+lint PASS. Acceptance
+  doc committed7f0a43e5; primary fast-forwarded. Then release62 acceptance-only
+  docs committed3c1085b87d394e1afe6b94594d8f7eb6b53ddb35. Runtime unchanged from
+  full verified Renewal source. Expanded campaign/talent/combat follow-ups still
+  unpublished and not part of62; native full party gate still unproven.
+- Chrome and soak runners confirmed online/idle after62; soak not restarted.
+  Main primary clean; browser runtime files/manifest match package inputs. Test
+  discovery28656 PASS exactly1four-player test. Rechecked18580/18581/41980 free
+  and no isolated-QA containers before launch.
+-51681 ACTIVE full native party route, from frozen primary3c1085b8. Command:
+  Node24PATH + sg render, EIDOLON_ISOLATED_QA_RUN_ID=fourrole-current-20260911,
+  ROUTE=party-dungeon, QA_PORT18580, WEB_PORT41980, systemChrome. Log
+  `/tmp/eidolon-four-role-current-20260911.log`. Disposable authenticated Mongo/
+  API both up; log confirms readiness,1test/1worker and prepared Fighter20:36.
+  No outcome claim yet. Recover SAME handle; do not mutate frozen primary or
+  start another heavy/full/browser test. This is NOT a soak. Script owns only
+  its uniquely named temporary containers/image; cleanup scoped to those.
+- Required proof remains four real roles (Fighter/Cleric/Wizard/Rogue), all rooms/
+  bosses through ordinary party input after explicit level30/commongear seed,
+  individual unclaimed kill credit, manual Ilyra turn-ins/Water offers and fresh
+  logins/persistent rewards/no duplicate claim.120min expedition+5min test bound;
+  existing per-fight/stall/formation budgets unchanged. Preserve evidence on
+  terminal exit; old partial room4 run is NOT a clear. Earned pacing/physical
+  phones/160talents/saved builds and later1.1–1.10/casino gates remain open.
+  Read-only next offline lead: Divine Intervention still omits initial heal/
+  Guardian/Miracle and overrides trained cooldown; reproduce separately later.
+  Root ledger MUST NOT PUSH. No new source push this turn.
+
+## Previous checkpoint — September 11, 20:28 UTC
 
 Previous goal turn was PROGRESS. This turn is PROGRESS: recovered full support
 regression, accepted it into primary, verified unchanged client inputs for the
