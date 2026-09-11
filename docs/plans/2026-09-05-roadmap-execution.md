@@ -5,7 +5,39 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 00:10 UTC
+## Current checkpoint — September 11, 00:20 UTC
+
+Previous goal turn was PROGRESS: disjoint-path controller and native launch.
+This turn is PROGRESS:16027 supplied a precise looping-path trace, retained and
+reproduced RED, then replaced by bounded complete-route planning with current
+focused acceptance and a fresh native run. Whole roadmap/clear/live gates remain.
+
+-16027 on e2780eb6 TERMINAL1 after4.0m, seed723058021901932776/gen2/Normal30/
+  no fallback. First room and one all-four recovery/resume passed, all212Gold,
+  no deaths;F2170damage,W1373,R2350,C340effectivehealing. Then Wizard alternated
+  a3unit side step and return to previous anchor, ~0.4–0.6s per input, until15s.
+  Trace proves this loop, not slow movement. Earlier timing-regression evidence
+  is not a fix for this separate fallback defect. Archive
+ `/tmp/eidolon-four-role-batch-proof-J5oXCW` scanned/copied-log QA-prefix0,
+  owned containers/ports cleared. The staleACTIVE text below is superseded.
+-46596437 replaces greedy side/back fallback with bounded verified-route search.
+  Every edge checks actual floor/body collision from its own origin; detour
+  vertices use at most8nearby bodies but all bodies remain collision obstacles.
+  Only an onward route to gathering permits an intermediate input; no arbitrary
+  legal dead-end step. Same12unitinputcap/disjointbatches/livingexactinstance/
+  radius/15s/combat/expedition limits/resources/gear/gameplay.15581 RED exact
+ 16027coords; final36637 PASS86tests/5suites9.092s+lint/discovery, including
+ 99535bodypositions, all62131floorjoins withfollowers, deadend/bounded-search
+  and input-failure safeguards. Idealized positions are not a new native pass.
+-96841 now ACTIVE on clean frozen46596437, sole local heavy gate:
+  routeparty-dungeon/runparty-route-0911-0019/ports18580/18581/41980. Log
+ `/tmp/eidolon-four-role-route-native.log`. Continue this exact handle; no primary
+  edits/otherheavy gate until terminal. Fullclear/manual/relogin remains required.
+- Candidate98320775 idle; no app/version/notes publication or deployment changed.
+  Remote00:20 canonicalCI34434837759 queued; Nightly34433520743 in_progress.
+  No runner/soak changes, no push. Root ledger-only, NEVER PUSH.
+
+## Previous checkpoint — September 11, 00:10 UTC
 
 TERMINAL CORRECTION: final16027poll returned exit1 while this checkpoint's
 previously-live text was being prepared. Do not treat the ACTIVE statements
