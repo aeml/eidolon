@@ -5,7 +5,42 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 04:53 UTC
+## Current checkpoint — September 11, 05:02 UTC
+
+Previous turn: PROGRESS with a verified wait. This turn: PROGRESS through full
+root/slow acceptance, primary advancement, successor integration, and confirmed
+Fighter duration-consumer repairs. The full roadmap goal remains active.
+
+- Root/slow full race25686 completed0 on a041e6b1: root25.597s, game449.133s,
+  loadtest1.037s, database1.100s, lifecycle1.036s. Docs commit f4f0723d records
+  acceptance. Primary `/tmp/eidolon-primary-current-1YoZU4` cleanly fast-forwarded
+ 06ec65fe to f4f0723d. Native four-role/earned progression gates remain open.
+- Gameplay-after61 worktree now clean frozen8cf72eb2. Carried root reproduction,
+  repair, observer/client tests and acceptance docs without unfinished talent
+  runtime. Full combined regression82636 ACTIVE: client282suites/3969tests
+ 199.734s PASS; lint PASS (server stage reached); full Go race now running.
+  Logs `/tmp/eidolon-gameplay-after61-full-{client,lint,server}.log`. Only local
+  heavy process; do not edit the frozen source. No new version assigned/pushed.
+- Fighter repair worktree now clean bbd16285. Thirty actual casts proved ignored
+  existing generic duration ranks across defensive buffs/root/slow/Earthshaker/
+  Fortify, including Extended/Seismic. Initial Fortify rank-zero failure was a
+  zero-base-stat fixture, corrected separately; corrected31256 remains red only
+  for trained cases (1.257s). Runtime now scales those effect deadlines after
+  rune/combo adjustments; party buffs share caster timestamps, aftershock captures
+  original training. No cooldown/damage/range/channel/movement-lock changes.
+ 9971 focused race PASS48.348s, including prior96 Shield Slam casts and existing
+  wall/control cases.3671 party/duration focused race PASS7.462s verifies actual
+  party casts, Shield Slam->Roar combo, identical nearby recipient timestamps and
+  excluded distant/other-instance members. Logs `/tmp/eidolon-fighter-effect-*`;
+  detailed evidence/remaining offline-copy-native scope in fighter-effect-duration
+  document. This unfinished training stage is NOT in primary or either release.
+- CI61/34563572711 remains pending. Older3671CI/34561490782 has reached disposable
+  full-character gameplay on Chrome. Cancellation question still unanswered;
+  no cancellation performed. Dedicated24h soak continues. No61 live claim.
+  Website/domain preservation, full1.1–1.10 acceptance and unapproved credential
+  rotation remain as previously recorded. Root ledger branch must never be pushed.
+
+## Previous checkpoint — September 11, 04:53 UTC
 
 Previous turn was PROGRESS (61fullacceptance/push). This turn is PROGRESS with
 verified wait: gameplay successor integrated onto61 without droppingwebsite/
