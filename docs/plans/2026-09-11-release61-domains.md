@@ -34,3 +34,30 @@ See [domain migration details](2026-09-11-domain-migration.md) for DNS/TLS setup
 scope, retained failure evidence and operator commands. That document's initial
 legacy-default phase is superseded: this version defaults all live QA endpoints
 to the new domains because the old frontend now redirects to the website.
+
+## Final local acceptance on10957648
+
+49482 completed0: full client259suites/3634tests146.186s, full lint pass,
+full server race allpackages pass (root16.143s, game330.737s, loadtest1.022s,
+database1.106s, lifecycle1.033s; remaining packages no tests). Logs
+`/tmp/eidolon-domain61-full-{client,lint,server}.log`. The candidate stayed
+unchanged throughout this sequential run; only generated ignored vendor assets
+were prepared afterward from locked dependencies.
+
+90771 completed0: two anonymous system-Chrome cases8.0s on disposablelocal
+web41961. Login project credit remained keyboard-accessible at desktop/phone
+sizes; local release/versioned notes and runtime dependencies pass. Inspected
+the actual1280x720 screenshot:1.0.61 notes readable and1.0.60 history retained.
+This was anonymous local-surface coverage, NOT authenticated live login or the
+required full native character gate. Web41961 cleared after completion.
+
+Operator's final Host update is now observed: new public frontendHTTP200 and
+installed upstreamHostplay.eidolonrealms.com. New-domain public manifests report
+client62dc2d1e and backenddf91bb66, bothAlpha1.0.60; database ready. This proves
+DNS/TLS/proxy routing, not1.0.61 migration acceptance. Agent made no Nginx edits.
+
+Exact diff againstremote3671 reviewed: no internal/game or website changes,
+only migration/runtime endpoint initialization, Origin allowlist, workflow,
+versioning/tests/docs. Normal CI publication and new-domain live acceptance
+remain required. Pending permission question concerns cancelling only the
+superseded3671 CI run; the separate24hourNightly must stay running.
