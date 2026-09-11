@@ -63,8 +63,16 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		w.tickBleedLocked(e, now, deferred)
 		w.tickPoisonLocked(e, now, deferred)
 		dead := e.State == "DEAD"
+		// Enemy/NPC status timers do not pass through the player-only expiry
+		// block below. Freeze their AI while stunned, then release the same
+		// flag used by the attack admission check when its deadline is reached.
+		// Damage-over-time still ticks, and existing threat/pursuit is retained.
+		if e.Stunned && !now.Before(e.StunEndTime) {
+			e.Stunned = false
+		}
+		stunned := e.Stunned
 		e.Mu.Unlock()
-		if dead {
+		if dead || (stunned && e.Type == TypeEnemy) {
 			return
 		}
 	}
@@ -1321,6 +1329,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		if time.Since(e.CreatedAt) > maxDuration {
 			e.Mu.Unlock()
 			deferred.addRemoval(e.ID)
+			return
+		}
+		// Stun pauses summon AI, never its lifetime or owner-validity cleanup.
+		if e.Stunned {
+			e.Mu.Unlock()
 			return
 		}
 
