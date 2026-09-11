@@ -5,7 +5,37 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 22:52 UTC
+## Current checkpoint — September 11, 22:57 UTC
+
+Previous goal turn was PROGRESS. This continuation is PROGRESS: implemented a
+tested healer-control correction based on retained native damage/decision data.
+
+- Primary now clean430ea808 from4f5d0439, only party-test controls changed.
+  Active-aura follow uses replicated radius while direct heal is on cooldown
+  for at least1s; aims radius-minus3 and triggers beyond radius-minus1. Ready
+  heals, telegraph movement prohibition, inactive aura, dead/invalid/other-scene
+  actors and already-covered allies suppress movement. Ordinary follow owns
+  collisions/input; no stats/skills/resources/boss/cooldown/death gate changed.
+  Based on25565's healer remaining11.5584from tank, beyond aura10+body1.25,
+  during several HealingLight cooldown decisions. Not a proven complete cause
+  or an accepted dungeon clear. Native retry and full integration still due.
+-13487 TERMINAL0 initial3suites123tests0.685s+lint.77979 TERMINAL0 final
+ 3suites125tests0.739s+lint, adding invalidhealth guards. Logs
+  `/tmp/eidolon-party-aura-follow-{focused,final,lint}-20260911.log`.
+  Doc2026-09-11-party-healing-aura-uptime.md retains source/failure/limitations.
+-17718 confirmedACTIVE22:57 on frozenTeleportb1c9e8fc. Client357suites5107tests
+ 132.31s PASS, full lint PASS; Go root18.679s/database1.100s passed, game race
+  package still running. Recover SAME handle; source frozen and no competing
+  local heavy/browser until terminal. Full integration not yet claimed.
+- Normal63deployment CI34655698173 confirmedACTIVE22:56: hostedclientSUCCESS,
+  hostedserverrunning. Hostedcandidate34654262376 already terminalSUCCESS;
+  normal push predeploy/deploy/live gates stillrequired onmaster89d9e145.
+  No63liveclaim. Coordinate any next native party retry with self-hosted
+  predeploy GPU usage; no local native started this turn.
+- Full1.1–1.10/160talents/earnedpacing/phone/casino unchanged; soakoff.
+  Root MUST NOT PUSH. Last accepted production remains62/0231c948.
+
+## Previous checkpoint — September 11, 22:52 UTC
 
 Previous goal turn was PROGRESS. This continuation is PROGRESS: published the
 tested63candidate to master, retained the failed native party evidence, and
