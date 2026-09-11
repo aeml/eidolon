@@ -320,6 +320,20 @@ test('blocked radial routes use only a fully validated alternative', () => {
 test('no legal escape is not fabricated as a successful move', () => {
     expect(planPartyTelegraphEscape({ x: 8, z: 0 }, [{ x: 0, z: 0, radius: 12.5 }], () => false)).toBeNull();
 });
+test('telegraph escape avoids a teammate occupying the shortest radial path', () => {
+    const state = { x: 8, z: 0, radius: 1.25 }, bodies = [{ x: 11, z: 0, radius: 1.25 }];
+    const step = planPartyTelegraphEscape(state, [{ x: 0, z: 0, radius: 12.5 }], () => true, bodies);
+    expect(step).not.toBeNull();
+    expect(partyPathAvoidsActors(state, { dx: step.x, dz: step.z }, bodies, state.radius)).toBe(true);
+    expect(Math.hypot(state.x + step.x, state.z + step.z)).toBeGreaterThanOrEqual(14);
+});
+test('body-safe escape still respects every floor and warning constraint', () => {
+    const state = { x: 8, z: 0, radius: 1.25 }, bodies = [{ x: 11, z: 0, radius: 1.25 }];
+    const step = planPartyTelegraphEscape(state, [{ x: 0, z: 0, radius: 12.5 }], move => move.z > 0, bodies);
+    expect(step.z).toBeGreaterThan(0);
+    expect(partyPathAvoidsActors(state, { dx: step.x, dz: step.z }, bodies, state.radius)).toBe(true);
+    expect(planPartyTelegraphEscape(state, [{ x: 0, z: 0, radius: 12.5 }], () => false, bodies)).toBeNull();
+});
 test('escaping one warning must not walk into another', () => {
     const warnings = [{ x: 0, z: 0, radius: 12.5 }, { x: 15, z: 0, radius: 3 }];
     const step = planPartyTelegraphEscape({ x: 8, z: 0 }, warnings);

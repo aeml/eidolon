@@ -600,3 +600,36 @@ Log`/tmp/eidolon-four-role-route-native.log`; archived report/results and log in
 the copied log was additionally scanned/redacted with discovered QA identifiers,
 remainingQA-prefix0. Exact owned containers/18580/18581/41980 ports cleared.
 The next run must still prove fullclear, each manual wizard claim and fresh login.
+
+## Reachable healing and body-clear escape planning — not yet native-verified
+
+The old lowest-HP-first decision is extracted into a pure input-planning test.
+It fails three cases: a reachable injured tank versus an unreachable critical
+Rogue, useful self-healing versus that distant ally, and the range boundary.
+The corrected planner prioritizes lowest health among currently reachable living
+same-instance teammates. If nobody reachable needs healing, it retains the
+most injured distant teammate for ordinary approach, still prohibited during
+warnings. The85% injured threshold,14-unit conservative direct-heal range and
+actual roster/hotbar/LOS admission remain unchanged. No class is always favored.
+Decision diagnostics now retain all four HP/range snapshots, rather than only
+the selected target. These reproduce a controller policy defect, not an exact
+replay of a missing full-party snapshot from96841.
+
+Two further red cases show the escape planner choosing a radial segment through
+a teammate. It now uses the existing production-circle clearance helper on every
+candidate in addition to floor/encounter/all-warning checks. Active collision
+bodies come from the affected browser, including enemies; actors can leave an
+existing overlap but cannot move into another body. This does not prove moving
+party members' simultaneous paths never conflict, and is not yet native proof.
+Recent escape diagnostics retain planned origin/step/bodies, elapsed time,
+observed post-input position/blocked-stop count and warning time remaining.
+They do not count a sent input or client timestamp as an authoritative dodge.
+
+Healing RED3/18tests0.618s; escape RED2/56tests0.655s. Final96928 PASS104tests/
+5suites9.609s;51597lint and single-route discovery exited0. Logs
+`/tmp/eidolon-party-heal-target-red.log`,
+`/tmp/eidolon-party-escape-bodies-red.log`,
+`/tmp/eidolon-party-triage-escape-final.log`.
+This is test-controller work only: no gameplay collision, resource, equipment,
+boss, cooldown, damage, movement-speed or deadline changes. The four-player
+native clear remains required after the independent utility-area release checks.

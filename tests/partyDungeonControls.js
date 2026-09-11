@@ -179,7 +179,7 @@ export async function gatherPartyFormation({ read, move, plan, trace, now = Date
 
 // Read-only input planning for the replicated warning circles. The caller
 // validates each complete route against real collision and encounter bounds.
-export function planPartyTelegraphEscape(state, warnings, canStep = () => true) {
+export function planPartyTelegraphEscape(state, warnings, canStep = () => true, actors = []) {
     if (![state?.x, state?.z].every(Number.isFinite)) throw new Error('Invalid party position');
     const circles = warnings.filter(w => [w?.x, w?.z, w?.radius].every(Number.isFinite) && w.radius > 0);
     const danger = circles.find(w => Math.hypot(state.x - w.x, state.z - w.z) < w.radius + 1.5);
@@ -191,6 +191,7 @@ export function planPartyTelegraphEscape(state, warnings, canStep = () => true) 
         return { x, z };
     }).filter(delta => Math.hypot(delta.x, delta.z) >= 1 && Math.hypot(delta.x, delta.z) <= 18)
         .filter(delta => circles.every(w => Math.hypot(state.x + delta.x - w.x, state.z + delta.z - w.z) >= w.radius + 1.5))
+        .filter(delta => partyPathAvoidsActors(state, { dx: delta.x, dz: delta.z }, actors, state.radius || 1.25))
         .filter(delta => canStep(delta))
         .sort((a, b) => Math.hypot(a.x, a.z) - Math.hypot(b.x, b.z));
     return candidates[0] || null;

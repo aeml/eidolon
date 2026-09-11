@@ -5,6 +5,7 @@ import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture } from 
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
 import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyWarningInputPolicy } from '../partyDungeonControls.js';
 import { selectPartyDamageBuff } from '../partyDamageRoleControls.js';
+import { selectPartyHealTarget } from '../partyHealingControls.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
@@ -31,7 +32,7 @@ async function observeRole(page) {
         const game = window.game, original = game.handleServerMessage.bind(game);
         const e = window.__partyClearEvidence = { damageDone: 0, damageTaken: 0, allyHealing: 0,
             casts: {}, rejected: {}, sawDeath: false, warningMoves: 0, warningEscapes: 0,
-            warningEarlyEscapes: 0, recentDamage: [], lastAcceptedCastAt: -Infinity,
+            warningEarlyEscapes: 0, recentDamage: [], recentEscapes: [], lastAcceptedCastAt: -Infinity,
             lastUpdate: performance.now() };
         window.__partyClearWarnings = [];
         game.handleServerMessage = message => {
@@ -180,10 +181,15 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 const g = window.game, p = g.player;
                 const warnings = window.__partyClearWarnings.filter(w =>
                     w.expires > performance.now() && w.instance === g.currentInstanceId);
-                const step = p.state === 'DEAD' ? null : planPartyTelegraphEscape(p.position, warnings, delta =>
+                const origin = { x: p.position.x, z: p.position.z, radius: p.radius || 1.25 };
+                const bodies = [...g.remotePlayers.values()].filter(other => other !== p && other.id !== p.id &&
+                    other.isActive && other.stats && other.state !== 'DEAD' && other.position)
+                    .map(other => ({ x: other.position.x, z: other.position.z, radius: other.radius || 1.25 }));
+                const step = p.state === 'DEAD' ? null : planPartyTelegraphEscape(origin, warnings, delta =>
                     retreatStaysInEncounter(encounter, { x: p.position.x + delta.x, z: p.position.z + delta.z }, p.radius) &&
-                    isEarnedRetreatPathClear(g.collisionManager, p.position, p.radius || 1.25, delta));
-                return { active: warnings.length > 0, step, warnings,
+                    isEarnedRetreatPathClear(g.collisionManager, p.position, p.radius || 1.25, delta), bodies);
+                return { active: warnings.length > 0, step, warnings, origin,
+                    plannedAt: performance.now(), bodies,
                     safe: warnings.every(w => Math.hypot(p.position.x - w.x, p.position.z - w.z) >= w.radius + 1.5) };
             }, encounter);
             if (!observation.active) return partyWarningInputPolicy(observation);
@@ -199,6 +205,16 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                     return safe;
                 }, observation.warnings);
             }
+            await actor.page.evaluate(observation => {
+                const p = window.game.player, e = window.__partyClearEvidence;
+                e.recentEscapes.push({ origin: observation.origin, step: observation.step,
+                    bodies: observation.bodies, elapsed: performance.now() - observation.plannedAt,
+                    after: { x: p.position.x, z: p.position.z, dead: p.state === 'DEAD',
+                        blockedStops: p.movementMetrics?.blockedStops || 0 },
+                    safe: observation.safe, warnings: observation.warnings.map(w => ({ x: w.x, z: w.z,
+                        radius: w.radius, msUntilImpact: w.expires - performance.now() })) });
+                if (e.recentEscapes.length > 12) e.recentEscapes.shift();
+            }, observation);
             // Do not immediately select the boss and walk back into its warning.
             // The normal combat/death/connection deadlines remain unchanged.
             return partyWarningInputPolicy(observation);
@@ -206,8 +222,6 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
 
         async function healParty({ allowMovement = true } = {}) {
             const states = await Promise.all(actors.map(actor => snapshot(actor.page)));
-            const hurt = states.filter(s => !s.dead && s.hp / s.maxHP < .85).sort((a, b) => a.hp / a.maxHP - b.hp / b.maxHP)[0];
-            if (!hurt) { if (allowMovement) await follow(healer, states[0], 9); return; }
             const available = await healer.page.evaluate(() => {
                 const p = window.game.player;
                 return { index: p.hotbar.indexOf('Healing Light'), cooldown: p.cooldowns['Healing Light'] || 0, mana: p.stats.mana,
@@ -215,6 +229,9 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                     aura: p.hotbar.indexOf('Guardian Embrace'), auraCooldown: p.cooldowns['Guardian Embrace'] || 0,
                     auraActive: p.guardianEmbraceActive || p.guardianEmbraceTimer > 0 };
             });
+            const healDistance = Math.min(14, available.healRange - .5);
+            const hurt = selectPartyHealTarget(states, states[1], healDistance);
+            if (!hurt) { if (allowMovement && !states[1].dead) await follow(healer, states[0], 9); return; }
             const distance = Math.hypot(hurt.x - states[1].x, hurt.z - states[1].z);
             const record = async reason => {
                 const pointer = await healer.page.evaluate(id => ({
@@ -225,10 +242,13 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 }), hurt.id);
                 healerDecisions.push({ reason, distance, hurtRole: actors[states.indexOf(hurt)].className,
                     hp: hurt.hp, maxHP: hurt.maxHP, healerX: states[1].x, healerZ: states[1].z,
+                    party: states.map((state, index) => ({ role: actors[index].className, hp: state.hp,
+                        maxHP: state.maxHP, dead: state.dead, sameInstance: state.instance === states[1].instance,
+                        distance: Math.hypot(state.x - states[1].x, state.z - states[1].z) })),
                     ...available, ...pointer });
                 if (healerDecisions.length > 20) healerDecisions.shift();
             };
-            if (distance > Math.min(14, available.healRange - .5)) {
+            if (distance > healDistance) {
                 await record(allowMovement ? 'approach' : 'warning-hold-out-of-range');
                 if (allowMovement) await follow(healer, hurt, 7);
                 return;
