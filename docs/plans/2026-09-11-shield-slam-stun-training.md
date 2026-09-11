@@ -52,3 +52,14 @@ Logs `/tmp/eidolon-fighter-stun-duration-{client,server}-final.log` and
 paid-training/reconnect/timer replication, actual party balance, copy resolution
 and integration/release gates remain required. No native GPU run launched while
 canonical production QA uses the shared machine.
+
+## Original diagnostic rerun — September11 04:03
+
+13071 exited0 on a04e6fcc, game2.663s, running the existing overlay rather than
+replacing its formerly failing assertions. All six targeted diagnostic groups
+passed: Shield Slam duration, Executioner Spin area, Guardian Roar area, skill
+critical chance, Cleric cone/healing areas and accepted Cleric areas. Log
+`/tmp/eidolon-fighter-duration-audit-after-repair.log`. The original d70/78560 red
+evidence remains unchanged in its separate worktree. This validates those
+specific paid-cast reproductions; the overlay is not a comprehensive160-talent
+audit, copy reconciliation, earned build or native saved-training acceptance.
