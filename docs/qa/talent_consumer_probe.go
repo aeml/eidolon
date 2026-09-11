@@ -13,6 +13,41 @@ import (
 	"time"
 )
 
+// Executioner Spin's paid server strike must consume the same advertised area
+// bonuses as Guardian Roar. Paired targets stay at one point in the trained
+// annulus; the untrained control must miss and the trained strike must hit.
+func TestPendingTalentExecutionerSpinArea(t *testing.T) {
+	for _, talent := range []string{"FTR_24", "FTR_33", "FTR_38"} {
+		for _, scale := range []float64{1, 4} {
+			for _, rank := range []int{0, 5} {
+				t.Run(fmt.Sprintf("%s/body%v/rank%d", talent, scale, rank), func(t *testing.T) {
+					w := newTestWorld()
+					defer w.StopBackground()
+					p := newTestPlayer("spin-area-caster", "Fighter")
+					p.Level, p.InstanceID, p.X, p.Z = 100, "qa-spin-area-probe", 60000, 60000
+					p.UnlockedSkills, p.TalentRanks = []string{"Executioner Spin"}, map[string]int{talent: rank}
+					p.RecalculateStats()
+					p.Mana = p.MaxMana
+					w.AddEntity(p)
+					target := &Entity{ID: "spin-area-enemy", Type: TypeEnemy, InstanceID: p.InstanceID,
+						State: "IDLE", Health: 10000, MaxHealth: 10000, Scale: scale,
+						X: p.X + 6.3 + 1.25*scale, Z: p.Z}
+					w.AddEntity(target)
+					mana := p.Mana
+					result := w.PerformAbility(p.ID, p.X, p.Z, "", "Executioner Spin")
+					if !result.Accepted || p.Mana != mana-40 {
+						t.Fatalf("ordinary paid spin failed: %+v mana=%d before=%d", result, p.Mana, mana)
+					}
+					damaged := target.Health < target.MaxHealth
+					if damaged != (rank > 0) {
+						t.Errorf("rank%d body%v target at%v damaged=%v; want%v", rank, scale, target.X-p.X, damaged, rank > 0)
+					}
+				})
+			}
+		}
+	}
+}
+
 // Lineholder Instinct explicitly promises3% AoE radius per rank. Confirm its
 // utility consumer with real paid casts, not a definition/helper-only check.
 // Keep this diagnostic outside the passing release suite until the handler and

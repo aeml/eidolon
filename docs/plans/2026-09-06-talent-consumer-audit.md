@@ -1,5 +1,12 @@
 # Remaining talent consumers — reproduced September 6
 
+September11 next confirmed defect: [Executioner Spin area](2026-09-11-executioner-spin-area.md).
+The actual paid-cast diagnostic reproduces six trained-annulus misses across
+Technique, Lineholder and Rhythm, with all six untrained controls passing.
+Run90581 exits1 in3.686s; other probes pass. No runtime repair is included yet.
+Its legacy offline repeated-damage path also needs a direct parity reproduction
+before correction. Keep full-tree and release acceptance open.
+
 September11 next local repair: [Guardian Roar's area consumers](2026-09-11-guardian-roar-area.md)
 now pass the paired diagnostic and focused ordinary cast/taunt/ally-boundary and
 client-render checks. Full regression/native/save/release gates remain open.
