@@ -5,7 +5,37 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 05:02 UTC
+## Current checkpoint — September 11, 05:08 UTC
+
+Previous turn was PROGRESS. This turn is PROGRESS with verified wait: actual
+delayed Aftershock observation found and repaired shortening of the initial
+trained stun. Full original roadmap scope remains active.
+
+- Fighter repair worktree clean53d58ee8 atopbbd16285. New test runs an ordinary
+  paid Aftershock cast, changes training and moves a previously unaffected enemy
+  into range, then observes both actual scheduled-wave damage receipts.88288
+  failed1.352s: original2.7s stun was replaced by a shorter aftershock deadline;
+  late target did retain original1.35s training. Earthshaker now preserves a
+  stronger existing active stun deadline. Fresh targets, CC immunity, damage,
+  range and one-second delay unchanged.97008 PASSrace3consecutive/32.070s with
+  duration matrix, party/combo/exclusion and directional-wall cases. Logs
+  `/tmp/eidolon-fighter-aftershock-duration-{red,green}.log`. This separate
+  training stage still needs offline/rune/copy/native/full integration work;
+  it is not in primary or the gameplay/domain release candidates.
+- Combined successor82636 remains confirmed ACTIVE on frozen8cf72eb2; a50s
+  poll returned running, not terminal. Client3969/full lint already passed;
+  server root25.225/loadtest1.067/database1.121 passed, game pending. Only local
+  heavy job, no local browser. Do not restart or relabel this as full acceptance.
+- Dedicated soak34558600459 remains actually in progress on eidolon-soak.
+ 79 health samples read from QRfTOJ, all statusok/databaseready; latest235
+  goroutines/144860808heapBytes. This is partial health evidence, not completed
+ 24h proof or a new active-player count. No cancellation/restart.
+- 61CI34563572711 still pending behind older3671CI34561490782's disposable
+  full-character gameplay. Cancellation approval still unanswered. New domain
+  routes previously verified working;61 not yet live. No further publication.
+  Root branch must never be pushed; full roadmap and DBrotation scope unchanged.
+
+## Previous checkpoint — September 11, 05:02 UTC
 
 Previous turn: PROGRESS with a verified wait. This turn: PROGRESS through full
 root/slow acceptance, primary advancement, successor integration, and confirmed
