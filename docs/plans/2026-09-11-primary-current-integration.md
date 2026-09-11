@@ -1,7 +1,7 @@
 # Primary progression — accepted-fix integration
 
-Status: local integration with focused checks passed; full regression, native
-four-role dungeon clear and release acceptance remain open. This is not a new
+Status: local integration with full Go/client/lint and 116 browser cases passed;
+native four-role dungeon clear and release acceptance remain open. This is not a new
 published version or completion of the full1.1–1.10 roadmap.
 
 ## Sources and intent
@@ -90,3 +90,25 @@ Logs `/tmp/eidolon-primary-current-rest-gate-{focused,lint}.log`. Lint did not r
 after the failed full client command; this separate lint pass is explicit.
 Rerun the complete client suite on the corrected test source before browser/native
 acceptance. The full server pass remains current because server source is unchanged.
+
+## Full client and browser acceptance — September11 03:25
+
+Corrected full client/lint73302 exited0:336 suites/4673 tests174.332s, full lint
+passed. Logs `/tmp/eidolon-primary-current-full-{client,lint}-final.log`.
+Frozen9c664f95 then passed all116 browser cases in13 stages using CI1, system
+Chrome, Node24 and one worker. Group1/61836:40cases; group2/10508:50cases;
+group3/93874:26cases, all terminal0. Embedded report stats for every stage
+independently confirmed116 expected, zero unexpected/flaky/skipped. This includes
+all10 crystal-art cases, not just discovery. Port41981 is clear after cleanup.
+
+Archive `/tmp/eidolon-primary-current-browser-proof-igu3O6` contains all three
+group logs and distinct reports/results. Credential scanner passed,0 files
+sanitized; byte scanning does not assert pixel redaction. Earlier inspected720p
+party roster and568x320 expanded-chat screenshots had no new clipping. The
+crystal-art cases use controlled snapshots/prepared cameras, not native raid
+completion or physical-phone acceptance. Those acceptance boundaries remain.
+
+No local heavy/browser remains. Native four-role full clear, remaining required
+native release gates and production acceptance are still open. Separate runner
+queues were newly authorized by the user; infrastructure work is isolated in
+`work/runner-queue-separation-20260911`, not bundled with this unaccepted gameplay.
