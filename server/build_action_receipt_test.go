@@ -4,9 +4,68 @@ import (
 	"encoding/json"
 	"strings"
 	"testing"
+	"time"
 
 	"eidolon-server/internal/game"
 )
+
+func TestRateLimitedBuildActionReturnsMatchingRejection(t *testing.T) {
+	previous := world
+	defer func() { world = previous }()
+	world = game.NewWorld(nil)
+	for _, action := range []string{MsgSelectBranch, MsgUnlockTalent, MsgResetTalents, MsgSelectRune} {
+		t.Run(action, func(t *testing.T) {
+			client := newAutoStatusClient("limited-" + action)
+			player := newAutoStatusPlayer(client.playerID, "Builder", "available")
+			player.Level = 100
+			world.AddEntity(player)
+			// A future timestamp freezes refill without sleeping or changing the
+			// production clock. Admission must still reject before dispatch.
+			client.messageRates = map[string]*messageRateBucket{action: {tokens: 0, updated: time.Now().Add(time.Hour)}}
+			client.handleMessage(Message{Type: action, Payload: json.RawMessage(`{"requestId":"limited-build","talentId":"FTR_01","branch":"A","skill":"Iron Fortress","runeId":"ironfortress_extended"}`)})
+			messages := drainSentMessages(client.send)
+			if len(messages) != 1 || messages[0].Type != "build_action" {
+				t.Fatalf("expected one correlated build rejection, got %+v", messages)
+			}
+			var receipt struct {
+				RequestID string `json:"requestId"`
+				OK        bool   `json:"ok"`
+				Message   string `json:"message"`
+			}
+			if err := json.Unmarshal(messages[0].Payload, &receipt); err != nil {
+				t.Fatal(err)
+			}
+			if receipt.RequestID != "limited-build" || receipt.OK || !strings.Contains(receipt.Message, "rate limit") {
+				t.Fatalf("unexpected rejection: %+v", receipt)
+			}
+			if player.SelectedBranch != "" || len(player.TalentRanks) != 0 || len(player.SkillRunes) != 0 {
+				t.Fatal("rate-limited action mutated the build")
+			}
+		})
+	}
+}
+
+func TestInboundBuildRejectionPreservesLegacyAndMalformedErrors(t *testing.T) {
+	for _, tc := range []struct{ name, action, payload string }{
+		{"legacy", MsgUnlockTalent, `{"talentId":"FTR_01"}`},
+		{"empty ID", MsgUnlockTalent, `{"requestId":""}`},
+		{"nonstring ID", MsgUnlockTalent, `{"requestId":42}`},
+		{"long ID", MsgUnlockTalent, `{"requestId":"` + strings.Repeat("x", 65) + `"}`},
+		{"invalid JSON", MsgUnlockTalent, `{`},
+		{"oversized", MsgUnlockTalent, `{"requestId":"valid","extra":"` + strings.Repeat("x", 2048) + `"}`},
+		{"unrelated", MsgChat, `{"requestId":"not-a-build"}`},
+		{"unknown", "invented", `{"requestId":"not-a-build"}`},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			client := newAutoStatusClient("legacy-rejection")
+			client.sendInboundRejection(Message{Type: tc.action, Payload: json.RawMessage(tc.payload)}, "rejected")
+			messages := drainSentMessages(client.send)
+			if len(messages) != 1 || messages[0].Type != MsgError || string(messages[0].Payload) != `"rejected"` {
+				t.Fatalf("expected unchanged generic rejection, got %+v", messages)
+			}
+		})
+	}
+}
 
 func TestBuildActionReceiptsDescribeActualServerChanges(t *testing.T) {
 	previous := world
