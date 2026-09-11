@@ -53,7 +53,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 			w.fireAbilityEvent(player.ID, targetID, skillName, finalTargetX, finalTargetZ)
 		}
 	} else if skillName == "Whirlwind" {
-		if w.beginWhirlwind(player, time.Now()) {
+		if w.beginWhirlwind(player, time.Now(), impacts) {
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 20*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 		}

@@ -16,6 +16,9 @@ type abilityImpactContext struct {
 	world       *World
 	worldLocked bool
 	reactions   []abilityImpactReaction
+	// Autonomous summons use owner stats/credit but receive retaliation on
+	// their own visible actor. Empty means the ordinary combat attacker ID.
+	retaliationTargetID string
 }
 
 // Immediate class handlers own w.Mu. A standalone handler gets its own batch;
@@ -48,8 +51,8 @@ func (ctx *abilityImpactContext) damageWithCritical(attacker, target *Entity, ba
 	target.Health -= damage
 	target.LastDamageType = kind
 	if resolved.reflection > 0 || resolved.explosion != nil {
-		attackerID := ""
-		if attacker != nil {
+		attackerID := ctx.retaliationTargetID
+		if attackerID == "" && attacker != nil {
 			attackerID = attacker.ID
 		}
 		ctx.reactions = append(ctx.reactions, abilityImpactReaction{attackerID: attackerID,

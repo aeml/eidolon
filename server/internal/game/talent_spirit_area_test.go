@@ -94,7 +94,7 @@ func TestSpiritTrainedAreaRetainsSetHealingAndHostileProtection(t *testing.T) {
 	p.TalentRanks, p.UnlockedSkills = map[string]int{"CLR_34": 5}, []string{"Spirit Guardians"}
 	p.ActiveSetBonuses = map[string]map[string]int{"healing-set": {"spiritGuardiansHeal": 1}}
 	w.AddEntity(p)
-	for _, id := range []string{"ally", "opponent", "dead", "elsewhere"} {
+	for _, id := range []string{"ally", "opponent", "protected-opponent", "dead", "elsewhere"} {
 		e := newTestPlayer(id, "Wizard")
 		e.InstanceID, e.X, e.Health = p.InstanceID, 18.85, 100
 		if id == "dead" {
@@ -103,10 +103,14 @@ func TestSpiritTrainedAreaRetainsSetHealingAndHostileProtection(t *testing.T) {
 		if id == "elsewhere" {
 			e.InstanceID = "qa-spirit-elsewhere"
 		}
+		if id == "protected-opponent" {
+			e.InvulnerableEndTime = time.Now().Add(time.Minute)
+		}
 		w.AddEntity(e)
 	}
-	w.PvP.Matches["spirit-pvp"] = &PvPMatch{ID: "spirit-pvp", Status: PvPMatchActive, TeamA: []string{p.ID}, TeamB: []string{"opponent"}}
+	w.PvP.Matches["spirit-pvp"] = &PvPMatch{ID: "spirit-pvp", Status: PvPMatchActive, TeamA: []string{p.ID}, TeamB: []string{"opponent", "protected-opponent"}}
 	w.PvP.MatchByPlayer[p.ID], w.PvP.MatchByPlayer["opponent"] = "spirit-pvp", "spirit-pvp"
+	w.PvP.MatchByPlayer["protected-opponent"] = "spirit-pvp"
 	if !w.PerformAbility(p.ID, 0, 0, "", "Spirit Guardians").Accepted {
 		t.Fatal("cast rejected")
 	}
@@ -114,7 +118,13 @@ func TestSpiritTrainedAreaRetainsSetHealingAndHostileProtection(t *testing.T) {
 	if w.GetEntity("ally").Health != 110 {
 		t.Error("trained annulus lost set healing")
 	}
-	for _, id := range []string{"opponent", "dead", "elsewhere"} {
+	// A valid opponent takes the ordinary20-point pulse scaled to13 in PvP,
+	// and must not also receive the ally-only set heal. Invulnerability, death
+	// and other instances still protect their respective negative controls.
+	if got := w.GetEntity("opponent").Health; got != 87 {
+		t.Errorf("opponent damage/healing = %d HP, want87", got)
+	}
+	for _, id := range []string{"protected-opponent", "dead", "elsewhere"} {
 		if w.GetEntity(id).Health != 100 {
 			t.Errorf("changed protected %s", id)
 		}

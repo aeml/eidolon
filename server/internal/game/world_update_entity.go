@@ -792,7 +792,13 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 	// --- Player Abilities ---
 	if e.Type == TypePlayer {
+		impacts := &abilityImpactContext{world: w}
+		defer impacts.flush() // All charge/periodic bookkeeping releases actor locks.
 		e.Mu.Lock()
+		if e.State == "DEAD" || e.Health <= 0 {
+			e.Mu.Unlock()
+			return
+		}
 		if e.State == "JUMPING" {
 			jumpDuration := e.JumpDuration
 			if jumpDuration <= 0 {
@@ -876,6 +882,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				instanceID, sourceID := e.InstanceID, e.ID
 				consumeKnockdownCombo := e.ActiveCombo == "charge_extended_knockdown"
 				chargeCombat := snapshotCombatAttackerLocked(e)
+				chargeCombat.PartyID = e.PartyID
 				if consumeKnockdownCombo {
 					e.ActiveCombo = ""
 				}
@@ -886,7 +893,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 				for _, target := range nearby {
 					target.Mu.RLock()
-					if !w.CanDamage(e, target) || target.State == "DEAD" {
+					if !w.CanDamage(chargeCombat, target) || target.State == "DEAD" {
 						target.Mu.RUnlock()
 						continue
 					}
@@ -894,7 +901,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 					if withinAbilityRadius(impactSkill, impactX, impactZ, target, 16.0) {
 						target.Mu.Lock()
-						finalDamage := applyFinalDamage(chargeCombat, target, damage, "physical", impactSkill)
+						if !w.CanDamage(chargeCombat, target) || target.State == "DEAD" || target.InstanceID != instanceID {
+							target.Mu.Unlock()
+							continue
+						}
+						finalDamage := impacts.damage(chargeCombat, target, damage, "physical", impactSkill)
 						addThreatLocked(target, sourceID, float64(finalDamage))
 						isDead := target.Health <= 0
 						if impactSkill == "Shattering Charge" && !isDead {
@@ -928,7 +939,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					shockwaveNearby := w.Grid.Nearby(impactX, impactZ, expandedAbilityRadius("Charge Shockwave", shockwaveRadius), instanceID)
 					for _, target := range shockwaveNearby {
 						target.Mu.RLock()
-						if !w.CanDamage(e, target) || target.State == "DEAD" {
+						if !w.CanDamage(chargeCombat, target) || target.State == "DEAD" {
 							target.Mu.RUnlock()
 							continue
 						}
@@ -1096,11 +1107,19 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				e.Mu.Unlock()
 				w.updateWhirlwind(e, now, deferred)
 				e.Mu.Lock()
+				if e.State == "DEAD" || e.Health <= 0 {
+					e.Mu.Unlock()
+					return
+				}
 			}
 
 			// DoT Ticks
 			w.tickBleedLocked(e, now, deferred)
 			w.tickPoisonLocked(e, now, deferred)
+			if e.State == "DEAD" || e.Health <= 0 {
+				e.Mu.Unlock()
+				return
+			}
 
 			// Healing Light HoT (Renewal Rune)
 			if e.HealingLightHoTActive {
@@ -1229,6 +1248,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						pX, pZ, instanceID := e.X, e.Z, e.InstanceID
 						hasSpiritHeal := e.HasAnySetBonus("spiritGuardiansHeal")
 						spiritCombat := snapshotCombatAttackerLocked(e)
+						spiritCombat.PartyID = e.PartyID
 						spiritSkill := "Spirit Guardians"
 						if e.SpiritsBoosted {
 							spiritSkill = "Spirit Guardians Boost"
@@ -1254,20 +1274,21 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							}
 							targetType := target.Type
 							targetState := target.State
+							targetHostile := w.CanDamage(spiritCombat, target)
 							targetID := target.ID
 							inRadius := withinAbilityRadius("Spirit Guardians", pX, pZ, target, radius)
 							target.Mu.RUnlock()
 
 							if inRadius {
-								// Damage enemies
-								if targetType == TypeEnemy && targetState != "DEAD" {
+								// Ordinary hostility includes consenting PvP opponents.
+								if targetHostile && targetState != "DEAD" {
 									target.Mu.Lock()
-									if target.State == "DEAD" || target.InstanceID != instanceID ||
+									if !w.CanDamage(spiritCombat, target) || target.State == "DEAD" || target.InstanceID != instanceID ||
 										!withinDungeonAbilityRadius(walkRects, "Spirit Guardians", pX, pZ, target, radius) {
 										target.Mu.Unlock()
 										continue
 									}
-									finalDamage := applyFinalDamage(spiritCombat, target, damage, "holy", spiritSkill)
+									finalDamage := impacts.damage(spiritCombat, target, damage, "holy", spiritSkill)
 									addThreatLocked(target, e.ID, float64(finalDamage))
 									isDead := target.Health <= 0
 									target.Mu.Unlock()
@@ -1284,7 +1305,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 								}
 
 								// Set Bonus: Divine Light 4pc (spiritGuardiansHeal) - Heal allies
-								if hasSpiritHeal && targetType == TypePlayer && targetID != e.ID && w.CombatRelationship(e, target) != RelationshipHostile {
+								if hasSpiritHeal && targetType == TypePlayer && targetID != e.ID && !targetHostile {
 									target.Mu.Lock()
 									if target.State == "DEAD" || target.InstanceID != instanceID {
 										target.Mu.Unlock()
@@ -1314,6 +1335,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 	}
 
 	if e.SubType == "AvengingSeraph" {
+		impacts := &abilityImpactContext{world: w, retaliationTargetID: e.ID}
+		defer impacts.flush() // Retaliation hits the summon, not its owner's stat copy.
 		e.Mu.RLock()
 		ownerID := e.OwnerID
 		instanceID := e.InstanceID
@@ -1412,7 +1435,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					target.Mu.Unlock()
 					return
 				}
-				finalDamage := applyFinalDamage(seraphCombat, target, damage, "holy", "Avenging Seraph")
+				finalDamage := impacts.damage(seraphCombat, target, damage, "holy", "Avenging Seraph")
 				if ownerIsPlayer {
 					addThreatLocked(target, ownerID, float64(finalDamage))
 				}

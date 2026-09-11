@@ -18,7 +18,15 @@ func (player *Entity) WhirlwindRemaining(now time.Time) float64 {
 
 // A normal spin lasts one second, matching the authored Fighter spin. Extended
 // doubles that window and halves each pulse, not the total raw damage budget.
-func (w *World) beginWhirlwind(player *Entity, now time.Time) bool {
+func (w *World) beginWhirlwind(player *Entity, now time.Time, contexts ...*abilityImpactContext) bool {
+	// Production passes its world-locked cast batch. Standalone callers own
+	// no world lock and finish their first-pulse reactions before returning.
+	impacts := &abilityImpactContext{world: w}
+	if len(contexts) > 0 && contexts[0] != nil {
+		impacts = contexts[0]
+	} else {
+		defer impacts.flush()
+	}
 	player.Mu.Lock()
 	cost := resolveAbilityManaCost(player, "Whirlwind", 30)
 	if player.Mana < cost {
@@ -45,7 +53,9 @@ func (w *World) beginWhirlwind(player *Entity, now time.Time) bool {
 	player.WhirlwindTickCount = 0
 	player.WhirlwindHitTargets = make(map[string]bool)
 	player.Mu.Unlock()
-	w.updateWhirlwind(player, now, nil, true)
+	// The cast's first pulse shares its batch, so reflection runs after the
+	// outer PerformAbility bookkeeping instead of having DEAD overwritten.
+	w.updateWhirlwindImpacts(player, now, nil, impacts, false)
 	return true
 }
 
@@ -62,6 +72,12 @@ func clearWhirlwindLocked(player *Entity) {
 // No caller actor lock: snapshots precede target locks, including two players
 // spinning in parallel. At most four pulses can be processed in one update.
 func (w *World) updateWhirlwind(player *Entity, now time.Time, deferred *deferredActions, worldLocked ...bool) {
+	impacts := &abilityImpactContext{world: w, worldLocked: len(worldLocked) > 0 && worldLocked[0]}
+	defer impacts.flush()
+	w.updateWhirlwindImpacts(player, now, deferred, impacts, true)
+}
+
+func (w *World) updateWhirlwindImpacts(player *Entity, now time.Time, deferred *deferredActions, impacts *abilityImpactContext, flushEachPulse bool) {
 	for {
 		player.Mu.Lock()
 		if !player.WhirlwindActive {
@@ -105,7 +121,7 @@ func (w *World) updateWhirlwind(player *Entity, now time.Time, deferred *deferre
 				target.Mu.Unlock()
 				continue
 			}
-			finalDamage := applyFinalDamage(attacker, target, damage, "physical", "Whirlwind")
+			finalDamage := impacts.damage(attacker, target, damage, "physical", "Whirlwind")
 			addThreatLocked(target, attacker.ID, float64(finalDamage))
 			dead := target.Health <= 0
 			if !seen[target.ID] {
@@ -126,7 +142,7 @@ func (w *World) updateWhirlwind(player *Entity, now time.Time, deferred *deferre
 			w.fireDamageEvent(player, target.ID, finalDamage, "physical", attacker.InstanceID)
 			if dead {
 				target.Mu.Lock()
-				w.handleDeathWithWorldLock(target, player, deferred, len(worldLocked) > 0 && worldLocked[0])
+				w.handleDeathWithWorldLock(target, player, deferred, impacts.worldLocked)
 				target.Mu.Unlock()
 			}
 		}
@@ -146,6 +162,11 @@ func (w *World) updateWhirlwind(player *Entity, now time.Time, deferred *deferre
 		player.Mu.Unlock()
 		if healed > 0 {
 			w.fireHealEvent(attacker.ID, attacker.ID, healed, "self_restore", attacker.InstanceID)
+		}
+		if flushEachPulse {
+			// No actor locks are held. A lethal reflection must cancel any
+			// remaining catch-up pulses when the loop rechecks the caster.
+			impacts.flush()
 		}
 	}
 }
