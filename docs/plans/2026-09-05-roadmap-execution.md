@@ -5,7 +5,60 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 19:42 UTC
+## Current checkpoint — September 11, 19:53 UTC
+
+Previous goal turn was PROGRESS. This turn is PROGRESS: reproduced/repaired
+enemy vulnerability/armor expiry and offline stunned debuff timers, recovered
+a failed full regression, corrected its invalid fixture with real paid casts,
+and started combined full verification. Full roadmap remains incomplete.
+
+-76281 recovered TERMINAL1 onf3fa593a. Full client346suites/4835tests157.088s
+  and lint PASS; Go race root21.374s/loadtest1.022s/database1.094s/lifecycle1.050s
+  passed, game327.490s FAILED one test: TestPiercingThrowWeakPointDamageBonus
+  prepared WeakPointMarked without a deadline and expected it to persist. New
+  expiry cleared it (base20/marked20). Preserve this failed full-run evidence.
+- In Rogue-duration WT,fff67caea114ce8f9d64ad524288e559cc9de760 replaces that
+  fixture with real paid Weak Point Mark then real paid Piercing Throw. Only
+  GCD admission advanced; ordinary target expiry runs before projectile impact;
+  positive damage and unchanged50% bonus required. Three-repeat race1.047s PASS
+  with paid expiry/boundary controls. No runtime zero-deadline exception added.
+  This focused correction does not by itself accept the failed full suite.
+- New WT `/tmp/eidolon-target-debuff-expiry-20260911`, branch
+  work/target-debuff-expiry-20260911, startsf3fa593a. Eight actual paid Mark of
+  Weakness/Heaven's Trumpet/Scorch Beam/Shattering Charge cases (with/without
+  longer stun) reproduced permanent enemy mark/armor penalties0.040s. Valid
+  payment, hit/charge/application and active controls passed before expiry failed.
+- Shared recipient helper now handles Rogue mark/accuracy plus vulnerability
+  and armor breaks in enemy/NPC/player updates before stunned-enemy return.
+  Exact/missing deadlines clear flags/values. Actual post-expiry ordinary attack
+  controls return to50 damage versus60 active mark or55 active armor break.
+  Observer snapshots show active/expired mark without aliasing. Three-repeat
+  focused race1.792s; expanded regression15.738s PASS.
+- Offline5/5 paid Cleric/Rogue debuff tests reproduced timers pausing under
+  longer stun0.599s. Actor recipient mark/slow/root/accuracy/healing-penalty
+  countdowns now precede stun return; removed later duplicate blocks, clamp
+  zero/clear expired factors. Final client4suites/42tests1.246s plus lint PASS,
+  including once-per-update controls with/without stun. No full offline armor/
+  rune/spread/receiving-parity claim. No saved-schema/live-data changes.
+- Runtime1833dbcf, then merged completefff67cae follow-up without conflicts.
+  Clean frozen8bb0e0cde90dc115552bf54a3b5fa2dc35bfac63 includes evidence and
+  unreleased notes2026-09-11-target-debuff-expiry.md. Not in62/accepted primary.
+ 48892 confirmed ACTIVE: sequential full client/lint/Go race, nice10/GOMAXPROCS2,
+  logs `/tmp/eidolon-target-debuff-full-{client,lint,server}.log`. Recover SAME
+  handle; no source mutation or second local full/heavy/browser while active.
+-62 CI34637129931/predeploy103394045529 still confirmed IN_PROGRESS in
+  disposable full-character gameplay; previous hosted/browser/native-gallery/
+  required-rest-render gates passed. No deployment/final-live acceptance yet.
+  Accepted production remains4ed50046/Alpha1.0.61; accepted primary1418a20d.
+  No new push, gate bypass, runner changes or manual cancellations this turn.
+- Next: recover48892, repair any real regression, integrate into primary only
+  after acceptance; follow62 through actual deployment/live checks. Keep GPU
+  free for release QA, then required full four-role Verdant/manual turn-in/fresh
+  login run. Remaining Cleric duration and full talent consumer/copy/offline/
+  native/save, earned balance, phones and all later versions/casino stay open.
+  Soak stays cancelled with stopped orphan/data retained. Root ledger MUST NOT PUSH.
+
+## Previous checkpoint — September 11, 19:42 UTC
 
 Previous goal turn was PROGRESS. This turn is PROGRESS: accepted the full raw-
 wound regression, integrated it into primary, reproduced/repaired Rogue duration
