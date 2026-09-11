@@ -154,15 +154,17 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 	consumeSpellFocus := player.SubType == "Wizard" && player.SpellFocusActive && isWizardDamageSkill(skillName)
 
 	// Class Specific Logic
+	impacts := &abilityImpactContext{world: w, worldLocked: true}
+	defer impacts.flush() // After cast bookkeeping, before the deferred w.Mu unlock.
 	switch player.SubType {
 	case "Fighter":
-		w.performFighterAbility(player, targetX, targetZ, targetID, skillName, setCooldown)
+		w.performFighterAbility(player, targetX, targetZ, targetID, skillName, setCooldown, impacts)
 	case "Wizard":
-		w.performWizardAbility(player, targetX, targetZ, targetID, skillName, setCooldown)
+		w.performWizardAbility(player, targetX, targetZ, targetID, skillName, setCooldown, impacts)
 	case "Rogue":
-		w.performRogueAbility(player, targetX, targetZ, targetID, skillName, setCooldown)
+		w.performRogueAbility(player, targetX, targetZ, targetID, skillName, setCooldown, impacts)
 	case "Cleric":
-		w.performClericAbility(player, targetX, targetZ, targetID, skillName, setCooldown)
+		w.performClericAbility(player, targetX, targetZ, targetID, skillName, setCooldown, impacts)
 	}
 
 	if !abilityCommitted {

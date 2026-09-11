@@ -1,5 +1,37 @@
 # Ability receiving defenses — confirmed repair gate
 
+## Immediate-cast migration — focused acceptance, not full closure
+
+The four class handlers now use an explicit per-cast impact context. Outgoing
+bonuses/critical/PvP scaling precede receiving reductions and shield capacity;
+only the remainder damages HP or contributes to Fortify. Retaliation receipts
+flush after PerformAbility finishes cast/cooldown/state bookkeeping, while it
+still owns the world lock and holds no actor locks. Reflection resolves the live
+attacker rather than modifying a private outgoing-stat snapshot. Aftershock
+owns a fresh context in its existing delayed world-locked callback.
+
+Original four red skill cases passed in33868 (race1.119s). The test is promoted
+from opt-in diagnostic to ordinary TestPaidHostileAbilitiesRespectArcaneShield.
+40844 passed focused race9.234s including lethal reflected cast state, absorbed
+Fortify and live-attacker/single-flush checks. Expanded coverage now includes
+15 basic/immediate attacks across all four classes, each shielded/unshielded,
+plus partial absorption, invulnerability, Sanctuary and overlapping stronger
+Sanctuary/Guardian ordering with exact reflection amounts.
+
+34002 passed three repeats under race detection25.669s, also retaining trained
+Arcane Shield rune and boss-slam defense/party-credit coverage. Logs:
+`/tmp/eidolon-ability-shield-immediate-{green,reactions,final}.log`.
+An initial expanded invocation used an invalid Go flag (no tests ran); the next
+used a nonexistent Juggernaut Slam name. Corrected to the actual Juggernaut
+Charge before this final passing run; no runtime requirement was weakened.
+
+This does NOT close projectile, persistent/tick, basic ordering, expiry,
+explosive PvP hostility, full regression, saved/native or balance acceptance.
+The remaining pipeline requirements below are still mandatory. Unreleased
+player-note draft: direct hostile abilities now respect absorption/protection,
+reflective shields retaliate without losing death state, and Fortify does not
+grant shielding for damage absorbed by another shield.
+
 ## Receiver/reaction separation — implementation foundation
 
 The shared ordinary/boss defense implementation now separates locked receiver
@@ -9,8 +41,8 @@ origin, instance, owner). It commits capacity depletion before returning and
 does not acquire another actor/world lock or apply the HP damage itself.
 The existing mitigateImpactDamageLocked adapter retains the original immediate
 explosion timing and unlock/relock/world-lock behavior for basic attacks/slams.
-Reflection/explosion/death/party-credit processing remains intact; this is not
-yet wired into hostile skill consumers, so the confirmed bypass is still open.
+Reflection/explosion/death/party-credit processing remained intact at foundation
+commitadb89195; that commit alone was not wired into hostile skill consumers.
 
 Three new unit cases verify captured explosion survives later recast/movement,
 reflection is returned without being applied under the receiver lock, and
@@ -34,7 +66,7 @@ replacement of the outgoing helper is not sufficient.
 
 Required before claiming complete combat/talent/rune acceptance for1.1. This
 isolated investigation extends825f9b0c, not domain61 or the narrow gameplay
-successor. It does not claim a repair, native balance or completed roadmap gate.
+successor. It does not claim full pipeline/native balance or a completed gate.
 
 ## Reproduction
 
@@ -59,7 +91,7 @@ The shielded basic attack leaves HP unchanged and consumes capacity. This
 isolates the inconsistency to the tested skill paths, not failed shield creation.
 Logs `/tmp/eidolon-ability-shield-diagnostic.log` and
 `/tmp/eidolon-ability-shield-diagnostic-controls.log`.
-Reproduce with:
+Historical red reproduction onff2134af/adb89195:
 
 ```sh
 cd server
@@ -67,9 +99,9 @@ GOMAXPROCS=2 go test -race -p 1 -tags qa_diagnostics ./internal/game \
   -run '^TestDiagnosticPaidHostileAbilitiesRespectArcaneShield$' -count=1
 ```
 
-The diagnostic remains deliberately red and opt-in while the receiving pipeline
-is repaired. Passing default suites is NOT evidence that this known gate is
-closed. Promote it to ordinary regression coverage with the completed repair.
+The diagnostic was deliberately red and opt-in on those commits. The immediate
+repair above promotes it to ordinary regression coverage. Passing these tests
+is NOT evidence that the remaining full-pipeline gate is closed.
 
 ## Source evidence and implementation requirements
 

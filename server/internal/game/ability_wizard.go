@@ -9,7 +9,9 @@ import (
 
 // performWizardAbility handles all Wizard class ability logic.
 // Extracted from the "Wizard" case in PerformAbility (world.go).
-func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, targetID, skillName string, setCooldown func(time.Duration)) {
+func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, targetID, skillName string, setCooldown func(time.Duration), contexts ...*abilityImpactContext) {
+	impacts, finishImpacts := w.worldLockedAbilityImpacts(contexts)
+	defer finishImpacts()
 	if skillName == "Spell Focus" {
 		// Spell Focus (Buff)
 		cost := resolveAbilityManaCost(player, skillName, 30)
@@ -146,7 +148,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					}
 
 					// Apply damage
-					finalDamage := applyFinalDamage(player, target, baseDamage, "arcane", skillName)
+					finalDamage := impacts.damage(player, target, baseDamage, "arcane", skillName)
 					addThreatLocked(target, player.ID, float64(finalDamage))
 					isDead := target.Health <= 0
 
@@ -308,7 +310,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 							target.Mu.Unlock()
 							continue
 						}
-						finalDamage := applyFinalDamage(player, target, damage, "fire", skillName)
+						finalDamage := impacts.damage(player, target, damage, "fire", skillName)
 						addThreatLocked(target, player.ID, float64(finalDamage))
 						if !target.CCImmune {
 							target.Stunned = true
@@ -639,7 +641,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 							target.Mu.Unlock()
 							continue
 						}
-						finalDamage := applyFinalDamage(player, target, damage, "fire", skillName)
+						finalDamage := impacts.damage(player, target, damage, "fire", skillName)
 						addThreatLocked(target, player.ID, float64(finalDamage))
 						target.ArmorReduction = 5
 						target.ArmorReductionEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 5*time.Second))
@@ -730,7 +732,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 				target.Mu.Lock()
 				if w.CanDamage(player, target) && target.State != "DEAD" && withinDungeonAbilityRadius(walkRects, skillName, player.X, player.Z, target, radius) {
-					finalDamage := applyFinalDamage(player, target, damage, "arcane", skillName)
+					finalDamage := impacts.damage(player, target, damage, "arcane", skillName)
 					addThreatLocked(target, player.ID, float64(finalDamage))
 					isDead := target.Health <= 0
 					target.Mu.Unlock()
@@ -868,7 +870,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 						if withinAbilityRadius(skillName, oldX, oldZ, target, warpRadius) {
 							target.Mu.Lock()
-							finalDamage := applyFinalDamage(player, target, warpDamage, "arcane", skillName)
+							finalDamage := impacts.damage(player, target, warpDamage, "arcane", skillName)
 							addThreatLocked(target, player.ID, float64(finalDamage))
 							isDead := target.Health <= 0
 							target.Mu.Unlock()
@@ -916,7 +918,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 						if withinAbilityRadius(skillName, targetX, targetZ, target, warpRadius) {
 							target.Mu.Lock()
-							finalDamage := applyFinalDamage(player, target, warpDamage, "arcane", skillName)
+							finalDamage := impacts.damage(player, target, warpDamage, "arcane", skillName)
 							addThreatLocked(target, player.ID, float64(finalDamage))
 							isDead := target.Health <= 0
 							target.Mu.Unlock()
