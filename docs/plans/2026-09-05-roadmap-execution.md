@@ -5,7 +5,55 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 20:08 UTC
+## Current checkpoint — September 11, 20:19 UTC
+
+Previous goal turn was PROGRESS. This turn is PROGRESS: accepted full Cleric
+duration regression, repaired reproduced recipient support-buff expiry and
+started its full suite. Alpha1.0.62 passed deployment and reached final live QA.
+The full roadmap remains incomplete; soak cancellation remains in force.
+
+-74824 recovered TERMINAL0 on3673f5f8: full client348suites/4869tests162.666s,
+  lint and Go race root17.917s/game320.141s/loadtest1.018s/database1.089s/
+  lifecycle1.022s PASS. Acceptance doc committed8fcb0021e8330ea0d44bde4065266f3143be305d.
+  Clean primary `/tmp/eidolon-primary-merged-20260911` fast-forwarded to8fcb0021.
+  This accepts local duration regression, not native party/save/phone or release.
+- New WT `/tmp/eidolon-recipient-buff-expiry-20260911`, branch
+  work/recipient-buff-expiry-20260911. Actual paid support casts reproduced six
+  NPC expiry failures0.005s; offline paid support reproduced4fail/2pass0.592s
+  (stun-paused blessings/rescue and expired rescue active flag). Shared recipient
+  expiry now handles deadlines/flags/stats on NPCs and players. Offline Actor
+  timers precede stun return, preserving action suppression and server-owned
+  rescue/shield state. Exact/missing/future/repeat and independent Guardian
+  deadlines covered. Initial expanded test incorrectly expected increased
+  defense from zero naked defense; added real equipped defense and kept actual
+  benefit/restoration assertion. Two multiline JS lint issues corrected.
+- Initial final focused3race1.157s and client5suites/109tests1.959s+lint PASS.
+  Then actual paid Guardian Roar/Time Warp reproduced4more NPC failures0.012s;
+  same helper generalized to all five support skills and removed their old
+  player-only blocks. Expanded final3race15.459s PASS including those skills.
+  Evidence/unreleased notes2026-09-11-recipient-buff-expiry.md. Runtime30804b1e
+  then c1e60db5; merged parent duration acceptance docs without conflict.
+- Clean frozen31a2f05cb3da2759cae9e2a672b85a46f438e5dc: full95191 ACTIVE,
+  sequential client/lint/Go race, nice10/GOMAXPROCS2. Logs
+  `/tmp/eidolon-recipient-support-full-{client,lint,server}.log`.
+  Recover SAME handle; no frozen-source mutation or second local full/heavy/
+  browser. Recipient repair NOT yet accepted primary or published.
+-62 CI34637129931: predeploy103394045529 SUCCESS, production QA inputs and
+  BOTH Pages+SSH deployments SUCCESS. Final live103408203727 ACTIVE20:19:
+  setup/GPU/matching release gates passed; anonymous+persistent character QA
+  running. Four-class/remote/town-rest/sanitize still required afterward.
+  Read-only fresh frontend release.json AND server healthz independently return
+  Alpha1.0.62/0231c9488998432bdbcfcac6cc2a049cea0e9b1b; server status ok. Thus62
+  IS DEPLOYED, but final live acceptance not yet proven.61 remains last fully
+  accepted release. No new push, service change, manual cancellation or bypass.
+- Next: recover95191 and final62live; integrate recipient fix only after full
+  acceptance. GPU remains reserved for live QA, then required full four-role
+  Verdant/manual turn-in/fresh-login run. Read-only next lead: server Renewal
+  tick handler appears player-only despite NPC targeting; reproduce before fix.
+  Full160talents/offline/runes/save/native, earned pacing, physical phones,
+  later versions and two-floor casino remain open. Root ledger MUST NOT PUSH.
+
+## Previous checkpoint — September 11, 20:08 UTC
 
 Previous goal turn was PROGRESS. This turn is PROGRESS: recovered combined
 full regression, accepted it into primary, completed focused Cleric duration
