@@ -5,7 +5,54 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 06:53 UTC
+## Current checkpoint — September 11, 07:05 UTC
+
+Previous goal turn was PROGRESS. This turn is PROGRESS: diagnosed actual runner
+interruption, restarted only final live QA, accepted the combined wound server
+suite and repaired basic outgoing order/retaliation. Full goal stays active.
+
+- CI34563572711 attempt1 ended FAILURE because BOTH self-hosted systemd runner
+  services stopped at06:54:03 and restarted at06:54:22/26. Live QA job103173630449
+  reports operation cancelled, not a gameplay assertion failure. Services were
+  online/idle afterward; original stop cause is unconfirmed. Public61 deployment
+  and the completed login/persistent-character proof remain valid; the entire
+  live acceptance gate does not. Reran only job103173630449 through GitHub;
+  attempt2 is confirmed ACTIVE, new job103176152667, now live four-class/remote
+  animation. No redeployment, gate bypass, or local GPU competition.
+- The same service stop ended24h soak34558600459/job103137927637 at06:54:25,
+  well short of24h. It is FAILURE/cancelled, not active or successful. Agent did
+  not cancel/restart the services or soak. Asynchronous user question asks
+  whether maintenance is finished so the soak can restart, or should be held.
+  Await that specific answer while other goal work continues; do not silently
+  repeat the old claim that this soak is still running. No full-goal blocker.
+-77916 recovered TERMINAL0 on frozend10f72bb: full Go race root33.019s,
+  game376.204s, loadtest1.031s, database1.367s, lifecycle1.029s. This covers
+  periodic fixture corrections and receiving/expiry through wound stage.
+  Doc81e95735 in dot worktree; `/tmp/eidolon-dot-defense-full-server.log`.
+- New `/tmp/eidolon-basic-defense-20260911`, branchwork/basic-defense-20260911,
+  clean frozen695578b0 (runtime9eda12af plus preceding acceptance doc).45192
+  REDrace0.252s: ordinary/crit/burst unshielded budgets26/52/175 were instead
+  consumed by shields as40/40/9990; third burst broke600 shield AND damagedHP.
+  Paid Shield Slam also ignored unique/set reflection. Corrected basic/slam
+  outgoing calculation before receiving defenses, without reroll afterward.
+  Shared HP-damage retaliation includes active/unexpired Iron Fortress20%,
+  existing unique10% and set5%; shield reflection remains its own absorption
+  effect. Fully absorbed/invulnerable hits do not trigger HP-damage retaliation.
+-55560 focused PASSrace8.244s;72245 three-repeat broader PASS29.380s includes
+  actual paid Iron Fortress and Shield Slam/critical/burst/status/boss/party/
+  cadence checks.13777 final PASSrace7.267s adds actual delayed Dark King AI
+  slams: prepared phase1/2/3 outgoing200 becomes160/180/200 before paid150
+  shielding. Native raid balance is not established. Detailed scope/unreleased
+  notes in2026-09-11-basic-impact-order-and-retaliation.md; logs
+  `/tmp/eidolon-basic-defense-{red,green,broad,final}.log`.
+- Full Go-race56153 ACTIVE on frozen695578b0, nice10/GOMAXPROCS2,
+  log `/tmp/eidolon-basic-defense-full-server.log`. Recover exact handle;
+  no second local heavy/browser run or mutation of that source. All gameplay
+  changes remain isolated/unpublished. Remaining explosive-shield PvP/wound
+  outgoing budgets/native/four-role/save/talent/phone/campaign/casino/version
+  gates remain mandatory. Root ledger must never be pushed.
+
+## Previous checkpoint — September 11, 06:53 UTC
 
 Previous goal turn was PROGRESS. This turn is PROGRESS: domain61 deployed with
 public/new-origin and saved-character evidence; wound/expiry repairs committed;
