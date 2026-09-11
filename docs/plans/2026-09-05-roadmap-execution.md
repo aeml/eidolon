@@ -5,7 +5,59 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 01:34 UTC
+## Current checkpoint — September 11, 01:48 UTC
+
+Previous turn was PROGRESS through party-run startup and a new diagnostic. This
+turn is PROGRESS: corrected an insufficient diagnostic fixture, independently
+reproduced its runtime defect, implemented Executioner Spin parity and passed
+focused checks while the original four-player native run remained unchanged.
+
+-53491 remains ACTIVE, verified exacthandle01:48, sole heavy gate. Primary is
+  frozen6f46f9db, same seed-3341225116033233573. Rootbound Warden defeated; full
+  dungeon not yet cleared. Boss-only damage/taken: Fighter4797/3103,
+  Wizard3818/247, Rogue6394/2576; Cleric5697 effective healing/2208 taken.
+  Two complete all-four townrest/resume cycles passed exact progress before the
+  boss; third recovery/resume is underway, not yet claimed passed. Keep polling
+ `/tmp/eidolon-four-role-triage-native.log`/53491. No source/deadline/gear edits.
+- Executioner worktree `/tmp/eidolon-executioner-area-dfzcT7`, branch
+ `work/executioner-area-20260911`, now clean c4e7c743. Server uses trained radius
+  consistently for query/hit/accepted self-centered shape. Client local/remote
+  rings match; offline resolves the actual single strike and removes legacy
+  repeated Executioner tick state, retaining Whirlwind. Preserves server damage,
+  cost/cooldown, body/wall/hostility and party reward rules. Not integrated into
+  candidate a378ac3d, versioned or deployed. All native/full gates still due.
+- Corrected evidence:90581's first red had zero BaseStats after RecalculateStats,
+  so absence of damage was ambiguous. Standard red91703/7.124s and first repair
+ 95126/7.722s retained that fixture error. Added InitialPlayerStats and nearby
+  positive-damage control, then tested unchanged a378ac3d through Go overlay:
+ 37747 RED exactly six rank-five misses1.007s, all near/untrained controls pass.
+  Log `/tmp/eidolon-executioner-corrected-parent-red.log`. Repaired diagnostic
+ 71674 PASS3.321s. Earlier checkpoint's unqualified reproduction claim is
+  superseded by this corrected evidence, not silently treated as a valid red.
+- Client actual red61993 failed33/34 in1.736s (no immediate strike/legacy channel/
+  absent shape). Initial repaired69490 failed14 cooldown expectations because
+  fixture has2% existing globalCDR; corrected expectations preserve it.
+ 43429 final PASS103tests/4suites3.460s, full lint/shell syntax and one native-route
+  discovery. Go83603 PASS14.556s;2867 focusedracePASS17.826s including ordinary
+  purchases0–5, body/wall/exclusions and party kills; exactdamage24141 PASS2.418s.
+  Logs `/tmp/eidolon-executioner-{final-client,final-lint,discovery,
+ server-final-focused,damage-contract,audit-fixed}.log` (literal filenames have
+  no embedded newline/space). Tests use explicit prepared resources, not earned
+  progression or full-tree acceptance. Enduring Rhythm's generic UI copy and
+  other Fighter talent consumers remain broader audit work.
+- New native `executioner-spin-area` route is in the separate worktree's full
+  required-all chain, own allowlisted-spin-area account, no existing route
+  removed. Ordinary phone branchC/purchases expect6/6.6/7.5/8.1, high/low rings,
+  fresh-login landscape saved ranks. Discovery only: run AFTER53491terminal and
+  prepare generated vendor first. Full server/client/browser and native release
+  acceptance due on this source before integration/promotion.
+- Remote01:48: canonicalCI34434837759 stillqueued62dc, Nightly34433520743
+  stillin_progress. No push/cancel/relabel/service change or production claim.
+  Candidate remains a378ac3d with current104bundle accepted; versionedrequired-all
+  and canonical/successor release gates remain open. Root ledger-only NEVER PUSH.
+  Goal remains active with full original scope, not complete or blocked.
+
+## Previous checkpoint — September 11, 01:34 UTC
 
 Previous turn was PROGRESS: recovered all104 current browser results, archived
 them and reverified party credit. This turn is PROGRESS: started the next real
