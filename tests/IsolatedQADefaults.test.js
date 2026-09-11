@@ -71,9 +71,10 @@ test('phone chat coverage and Purifying retry keep the real player path', () => 
     expect(script).toContain('${QA_USERNAME_BASE}-cleanse-retry1');
     expect(script).toContain('EIDOLON_E2E_PURIFYING_RETRY_PROBE=1 run_purifying_area --retries=1');
     expect(probe).toContain('credentials.username += `-retry${testInfo.retry}`');
-    expect(probe).toContain("await verifyCast(0, 'high')");
-    expect(probe).toContain("await verifyCast(5, 'low')");
-    expect(probe).toContain("await verifyCast(5, 'high')");
+    expect(probe).toContain("await verifyCast(0, 0, 'high')");
+    expect(probe).toContain("await verifyCast(5, 0, 'low')");
+    expect(probe).toContain("await verifyCast(5, 5, 'low')");
+    expect(probe).toContain("await verifyCast(5, 5, 'high')");
     expect(commands['test:e2e:anonymous']).toContain('tests/e2e/mobile-chat-layering.spec.js');
 });
 
