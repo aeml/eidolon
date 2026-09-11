@@ -5,7 +5,47 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 20:25 UTC
+## Current checkpoint — September 11, 20:28 UTC
+
+Previous goal turn was PROGRESS. This turn is PROGRESS: recovered full support
+regression, accepted it into primary, verified unchanged client inputs for the
+server-only Renewal follow-up, and started full Go race verification. Full goal
+remains incomplete; no new blocker and no soak restart.
+
+-95191 recovered TERMINAL0 on31a2f05c: full client349suites/4896tests169.442s,
+  lint, Go race root17.642s/game322.653s/loadtest1.018s/database1.082s/
+  lifecycle1.020s PASS. Acceptance doc committed8254288de834bc5772ac6626c3391d1eba7cd86d.
+  Clean primary `/tmp/eidolon-primary-merged-20260911` fast-forwarded to8254288d.
+  Five-skill recipient support expiry accepted locally, not native/live sign-off.
+- Renewal WT merged parent acceptance docs without conflict; clean frozen
+  d5b6d3a609a8651005966f06072910d9af256473. Exact git diff against accepted parent
+  contains ONLY Renewal plan, world_update_entity.go, status_renewal.go/test and
+  strengthened periodic receiving-defense test. Client/dependencies/toolchain
+  unchanged, so accepted349suites/4896tests+lint covers these identical inputs.
+  Do not substitute this for the changed server's full regression.
+-44937 ACTIVE: `GOMAXPROCS=2 nice -n 10 go test -race ./...` from Renewal
+  WT/server, log `/tmp/eidolon-renewal-recipient-full-server.log`. Recover SAME
+  handle; no frozen-source mutation or second heavy/browser run. Renewal remains
+  outside accepted primary until this full server suite passes.
+-62 CI34637129931 live103408203727 confirmed IN_PROGRESS20:28, four-class/
+  remote-animation QA. Anonymous+persistent QA already passed. Town recovery,
+  sanitization and final terminal success still required.62 remains deployed
+  and independently version-matched0231c948;61 last fully accepted release.
+  No pushes, reruns, cancellations, runner/service changes or bypasses this turn.
+- Read-only four-role preflight: primary clean; vendor manifest matches exact
+  package versions and required Three/protobuf runtime files exist. Ports18580,
+ 18581 and41980 are free at20:28, MUST recheck before launch. Route party-dungeon
+  remains four real browsers/classes, paid ordinary combat after explicit
+  level30/common-gear fixture,120min expedition+5min allowance, no relaxed
+  per-fight/stall bounds. Script guard/loopback/disposable database retained.
+- Next: recover44937, integrate Renewal if full pass, follow62 live to terminal
+  success/failure and address evidence. Once local heavy and release GPU free,
+  launch full four-role Verdant/manual Ilyra turn-ins/fresh-login proof, preserve
+  artifacts and do not call old partial room4 evidence a clear. Remaining160
+  talent consumers/offline/runes/save/native, earned progression, physical phones,
+  later versions/casino remain required. Root ledger MUST NOT PUSH.
+
+## Previous checkpoint — September 11, 20:25 UTC
 
 Previous goal turn was PROGRESS. This turn is PROGRESS: reproduced and repaired
 Renewal NPC/missed-deadline behavior with actual paid casts and parallel-update
