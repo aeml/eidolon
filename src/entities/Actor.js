@@ -1042,9 +1042,10 @@ export class Actor extends Entity {
         }
         
         if (this.hasteTimer > 0) {
-            this.hasteTimer -= dt;
+            this.hasteTimer = Math.max(0, this.hasteTimer - dt);
             if (this.hasteTimer <= 0) {
                 this.hasteFactor = 0;
+                if (!this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) this.recalculateStats();
             }
         }
 

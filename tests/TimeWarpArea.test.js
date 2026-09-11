@@ -15,6 +15,7 @@ describe.each(cases)('$name', entry => {
         const p = new Wizard('warp-caster'), ally = new Cleric('warp-ally');
         try {
             p.unlockedSkills.push(skill); p.talentRanks = entry.ranks;
+            p.level = 30; p.recalculateStats();
             p.stats.mana = 200; p.stats.maxMana = 200;
             p.position.set(60000, 40, 60000); ally.radius = 5;
             ally.position.set(p.position.x + entry.radius + 5 + (outside ? .01 : -.01), 0, p.position.z);

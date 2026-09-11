@@ -11,6 +11,7 @@ import { getAbilityRange, getTeleportCastRange, clampWizardGroundTarget, WIZARD_
 import { clipDungeonEffectSegment, resolveDungeonBeamEndpoint } from '../skills/dungeonEffectGeometry.js';
 import { findOfflineAbilityTarget } from '../skills/offlineAbilityTargeting.js';
 import { getArcaneShieldTraining } from '../core/ArcaneShieldTraining.js';
+import { applyOfflineTimeWarp } from './WizardSupportAbilities.js';
 
 export class Wizard extends Actor {
     constructor(id) {
@@ -71,7 +72,7 @@ export class Wizard extends Actor {
         if (this.isRemote) return;
         const offline = !this.isMultiplayer && !gameEngine?.isMultiplayer;
         const requestedSkill = skillNameOverride || this.abilityName;
-        if (requestedSkill === 'Arcane Shield' && !this.unlockedSkills.includes(requestedSkill)) return;
+        if (['Arcane Shield', 'Time Warp'].includes(requestedSkill) && !this.unlockedSkills.includes(requestedSkill)) return;
         if (offline && WIZARD_GROUND_ABILITIES.has(requestedSkill)) {
             const placement = clampWizardGroundTarget(this, requestedSkill, targetVector);
             const rects = gameEngine.currentInstanceId && gameEngine.currentInstanceType !== 'overworld'
@@ -93,7 +94,7 @@ export class Wizard extends Actor {
 
         // Apply Spell Focus Multiplier if active
         let damageMultiplier = 1.0;
-        if (this.spellFocusActive && skill !== 'Arcane Shield') {
+        if (this.spellFocusActive && !['Arcane Shield', 'Time Warp'].includes(skill)) {
             damageMultiplier = this.spellFocusMultiplier;
             this.spellFocusActive = false; // Consume it
             this.spellFocusTimer = 0;
@@ -506,31 +507,9 @@ export class Wizard extends Actor {
         if (skill === "Time Warp") {
             if (!this.unlockedSkills.includes("Time Warp")) return;
             console.log("Wizard used Time Warp!");
-            
-            // Cooldown 90s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Time Warp"] = 90.0 * (1 - cdr);
-            
-            const radius = getAbilityAoeRadius('Wizard', skill, this);
-            const entities = gameEngine.chunkManager.getActiveEntities();
-            
-            // Visual
-            // Actor's canonical cast presentation owns the trained boundary.
-            
-            // Apply Buff to Allies
-            entities.forEach(entity => {
-                if (entity.isActive && entity.state !== 'DEAD') {
-                    // Ally Check
-                    if (entity === this || entity.constructor.name === 'Fighter' || entity.constructor.name === 'Rogue' || entity.constructor.name === 'Cleric' || entity.constructor.name === 'Wizard') {
-                        const d = Math.hypot(entity.position.x - this.position.x, entity.position.z - this.position.z);
-                        if (d <= radius + (entity.radius || 0)) {
-                            entity.hasteTimer = 10.0; // 10s duration
-                            entity.hasteFactor = 0.5; // +50% Speed/Attack Speed
-                            gameEngine.floatingTextManager.spawn("TIME WARP!", entity.position, '#ffd700');
-                        }
-                    }
-                }
-            });
+            // Actor already paid and committed the trained cooldown before
+            // the cast grants CDR. Its presentation owns the area boundary.
+            applyOfflineTimeWarp(this, gameEngine);
             return;
         }
 
