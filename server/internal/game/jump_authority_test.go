@@ -17,6 +17,8 @@ func TestStartPlayerJumpClampsTargetInsideCanonicalDungeon(t *testing.T) {
 		Y:          0,
 		Z:          0,
 		State:      "IDLE",
+		Health:     100,
+		MaxHealth:  100,
 	}
 	w.AddEntity(player)
 
@@ -51,6 +53,8 @@ func TestWorldUpdateAdvancesJumpAndLandsPlayer(t *testing.T) {
 		Y:            0,
 		Z:            0,
 		State:        "JUMPING",
+		Health:       100,
+		MaxHealth:    100,
 		JumpStartX:   0,
 		JumpStartY:   0,
 		JumpStartZ:   0,
@@ -92,5 +96,18 @@ func TestWorldUpdateAdvancesJumpAndLandsPlayer(t *testing.T) {
 	}
 	if player.JumpProgress != 1 {
 		t.Fatalf("expected final jump progress 1, got %.2f", player.JumpProgress)
+	}
+}
+
+func TestWorldUpdateDoesNotAdvanceDeadOrZeroHealthJump(t *testing.T) {
+	for _, state := range []string{"DEAD", "JUMPING"} {
+		p := newTestPlayer("dead-jump", "Fighter")
+		p.State, p.Health = state, 0
+		p.JumpTargetX, p.JumpDuration, p.JumpHeight = 12, .5, 6
+		w := newPvPTestWorld(p)
+		w.Update(.25)
+		if p.Health != 0 || p.State != state || p.X != 0 || p.Y != 0 || p.JumpProgress != 0 {
+			t.Fatalf("dead character advanced a jump: state=%s hp=%d position=%v/%v progress=%v", p.State, p.Health, p.X, p.Y, p.JumpProgress)
+		}
 	}
 }

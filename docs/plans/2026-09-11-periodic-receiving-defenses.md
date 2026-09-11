@@ -66,3 +66,21 @@ respect defensive shields. Spirit Guardians affects valid PvP opponents without
 healing them. Reflected damage hits the real attacking character or summon;
 dead characters stop later spin pulses and no longer receive same-frame Renewal
 healing. Publish only with the eventual accepted version and live verification.
+
+## Full-run follow-up, not full acceptance
+
+93866 completed nonzero on frozen3b9fc8f7: root31.134s, loadtest1.039s,
+database1.177s and lifecycle1.040s passed; game failed486.449s. Exactly two
+test families failed: the jumping-player fixture omitted health/max health,
+and two Spirit set-heal cases still expected a valid hostile opponent to take
+no damage. No race warning or panic was reported. Full log
+`/tmp/eidolon-periodic-defense-full-server.log` is retained as failing evidence.
+
+Jump fixtures now explicitly represent living characters; a new negative
+control proves dead/zero-health characters do not progress an in-flight jump.
+Spirit healing tests require base/boosted PvP damage13/22 and no ally set heal,
+while friendly healing remains15. No runtime corpse guard or hostile-damage
+rule was weakened.57779 passed three focused race repeats5.264s including these
+cases, Spirit protection and same-frame death/healing. Log
+`/tmp/eidolon-periodic-defense-full-followup.log`. Full merged regression must
+still be rerun; this focused follow-up is not a successful full-run claim.
