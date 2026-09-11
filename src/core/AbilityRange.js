@@ -26,13 +26,14 @@ export function getWizardAbilityAreaRadius(player, base) {
     return getAbilityAreaRadius(player, 'Wizard', base);
 }
 
-export function getAbilityAreaRadius(player, className, base) {
+export function getAbilityAreaRadius(player, className, base, skillName = null) {
     let areaBonus = 0;
     for (const talent of CONSTANTS.PASSIVE_TALENTS[className] || []) {
-        if (!talent.abilityArea) continue;
+        const effect = talent.abilityArea;
+        if (!effect || effect.skill && effect.skill !== skillName) continue;
         const raw = Number(player?.talentRanks?.[talent.id] || 0);
         const rank = Number.isFinite(raw) ? Math.max(0, Math.min(talent.maxRank, Math.floor(raw))) : 0;
-        areaBonus += talent.abilityArea.radius * rank;
+        areaBonus += effect.radius * rank;
     }
     return base * Math.max(0, 1 + areaBonus);
 }

@@ -470,7 +470,8 @@ export const CONSTANTS = {
 
             const entries = [];
             for (const s of skills) {
-                const benefit = ['Healing Light', 'Guardian Embrace', 'Divine Intervention'].includes(s) ? 'healing' : 'power';
+                const benefit = s === 'Purifying Wave' ? 'cleansing radius'
+                    : ['Healing Light', 'Guardian Embrace', 'Divine Intervention'].includes(s) ? 'healing' : 'power';
                 entries.push({ name: `${s} - Mastery`, desc: `+4% ${s} ${benefit} per rank (20% max).`, maxRank: 5 });
                 entries.push({ name: `${s} - Technique`, desc: `+3% ${s} CDR, +2% duration/range per rank.`, maxRank: 5 });
             }
@@ -498,7 +499,8 @@ export const CONSTANTS = {
                 ...(i === 17 ? { desc: '+3% Avenging Seraph CDR and +2% summon duration per rank (15% / 10% max).' } : {}),
                 abilityEconomy: i < 26 && i % 2 === 1 ? { skill: skills[Math.floor(i / 2)], cdr: 0.03 }
                     : i === 26 ? { manaReduction: 0.04 } : i === 31 ? { skill: 'Purifying Wave', cdr: 0.05 } : undefined,
-                abilityArea: i === 33 ? { radius: 0.03 } : undefined,
+                abilityArea: i === 6 ? { skill: 'Purifying Wave', radius: 0.04 }
+                    : i === 33 ? { radius: 0.03 } : undefined,
                 abilityHealing: [2, 4, 8].includes(i) ? { skill: skills[i / 2], healing: 0.04 }
                     : i === 28 ? { healing: 0.03 } : i === 38 ? { healing: 0.02 } : undefined }));
         })(),

@@ -1,5 +1,12 @@
 # Remaining talent consumers — reproduced September 6
 
+September11 local update: [Purifying Wave Mastery](2026-09-11-purifying-wave-mastery.md)
+now has a reproduced actual-cast failure and a skill-scoped cleansing-radius
+repair preserving saved IDs and ranks. Its focused client and initial server
+checks pass; full regression/native/integration and release gates remain in that
+record. Older unresolved labels below retain their historical meaning. This is
+not a full160-talent sign-off or a deployment claim.
+
 Latest September 7 integration: the [critical-chance consumer record](2026-09-07-talent-critical-chance.md)
 retains the original four trained-cast failures (1.699s), now repaired in the
 local 1.0.41 candidate. The same actual-consumer audit passes **0.890s**, alongside
