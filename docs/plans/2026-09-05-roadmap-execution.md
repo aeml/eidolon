@@ -5,7 +5,50 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 05:08 UTC
+## Current checkpoint — September 11, 05:23 UTC
+
+Previous turn was PROGRESS: public-domain inspection established frontend200
+and actual Eidolon HTML rather than the reported404. This turn is PROGRESS
+through combined regression acceptance and offline Fighter repairs. Full
+original1.1–1.10 scope stays active; no new release or milestone is completed.
+
+- Combined gameplay82636 recovered TERMINAL0:282suites/3969tests199.734s,
+  lint, Go race root25.225/game427.929/loadtest1.067/database1.121/lifecycle
+  1.040 all passed on frozen8cf72eb2. Docs-only e226c9f8 records acceptance in
+  gameplay-after61. Native combined-source character/equipment/party/rest and
+  browser acceptance remain open; no publication before61 live acceptance.
+- Fighter isolated worktree now committed7c11bc4d atop53d58ee8. New actual
+  offline-cast matrix58438 reproduced21fail/15pass1.204s: ignored percentage
+  training, missing Extended/Seismic, Grip using stun instead of root. Shared
+  effect helper now scales initial timers once; recipient training does not
+  rescale Roar. Grip respects CC immunity and target-line/two-unit pull semantics;
+  Earthshaker/Juggernaut respect control immunity, longer Earthshaker stun stays.
+  Multiplayer early return retained. Copy matches existing FTR30/37 percentage
+  definitions.80008 focused98tests/3suites1.892s +lint passed before copy test.
+- Full Fighter78805 TERMINAL1:337/338suites,4740/4741tests205.757s. Sole failure
+  was stale literal RestAuraReleaseGate assertion against existing timed QA
+  wrapper. Carried exact accepted primary9c664f95 assertion requiring timed
+  rest AND Forge/socket suffix, no gate removed. Full rerun49648 ACTIVE on
+  frozen7c11bc4d: client then lint then all Go race, GOMAXPROCS2/nice10. Logs
+  `/tmp/eidolon-fighter-duration-final-full-{client,lint,server}.log`. Recover
+  this exact handle; do not restart based on elapsed observation timeout.
+- Fighter remains isolated/unpublished, not merged into primary/gameplay61.
+  Remaining: Fortify/Reverberation, Aftershock/Fissure, Thorns/Immovable, offline
+  combos/Berserker party/target geometry, saved training/native/full integration.
+  Read-only inspection also found fixed5s Charge Unstoppable armor,5s Shattering
+  armor reduction and2s Tremor Rush stun at actual impact; reproduce next through
+  paid cast/movement before implementation. Do not scale travel/channel locks.
+- CI61/34563572711 still pending; older34561490782 confirmed running disposable
+  full-character QA. Cancellation approval unanswered; none cancelled. Dedicated
+  soak34558600459 confirmed in-progress Run multiplayer soak, not completed24h.
+  No local GPU run while CI owns Chrome. Remote master33c2faf4 remains unchanged.
+  Public play domain200/loginAlpha1.0.60, defaultoldbackend; backend newdomain
+  healthready Alpha1.0.60. Explained Nginx frontend upstream remains GitHubPages,
+  so changing hostname did not relocate frontend hosting. No origin-hosting or
+  Nginx mutations. Root ledger-only branch must never be pushed. DBrotation
+  authorization and full roadmap scope remain unchanged.
+
+## Previous checkpoint — September 11, 05:08 UTC
 
 Previous turn was PROGRESS. This turn is PROGRESS with verified wait: actual
 delayed Aftershock observation found and repaired shortening of the initial
