@@ -20,3 +20,23 @@ with the active1.0.61 full regression49482. Native four-role full dungeon clear,
 saved claims and earned campaign progression remain open; this integration does
 not supply them. Existing client/browser evidence applies only to unchanged
 client behavior, not to gameplay balance after corrected enemy control expiry.
+
+## Observer boundary coverage
+
+Added actual snapshot/delta->protobuf marshal/unmarshal cases for Enemy and NPC
+root+slow start, independent root clear and final slow clear/restored authored
+speed.96149 PASSrace1.057s alongside existing stun wire checks, log
+`/tmp/eidolon-root-slow-wire.log`. World expiry remains proved by separate paid
+casts; these fixtures exercise the resulting serialization boundary, not a real
+WebSocket observer or native gameplay.
+
+Added a client status-consumer case applying the same transition order to a
+remote actor: both effects attach, root disappears while slow remains, final
+slow clear removes its factor/timer and all attached particles.56053 PASS20tests/
+1suite1.328s with existing status-effect coverage, log
+`/tmp/eidolon-root-slow-client-status.log`. No client runtime changed. This is
+render-object lifecycle evidence, not an inspected native screen recording.
+
+The future gameplay release must inherit the1.0.61 domain/Origin/exact-checkout
+changes and new live QA endpoints when accepted; never publish this older-base
+integration as a replacement that silently restores old domain routing.
