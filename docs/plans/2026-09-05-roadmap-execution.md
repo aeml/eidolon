@@ -5,7 +5,45 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 22:06 UTC
+## Current checkpoint — September 11, 22:13 UTC
+
+Previous goal turn was PROGRESS. This turn is PROGRESS: recovered and archived
+the failed party run, fixed its short-waypoint witness, repaired stage timing
+coverage, accepted full client/lint integration and resumed native party QA.
+
+-93038 TERMINAL1,8.6min, same seed-5385752534429762084/generator2/Normal/no
+  fallback. All four alive, two recovery/resume loops and ordinary combat passed.
+  Cleric's1.092-unit detour moved0.9742units, stopped0.1306from its waypoint;
+  no blocking or pending movement. Input required1unit or final5unit formation,
+  but this intermediate waypoint was still14.94from the leader. No boss reached;
+  do not interpret this as threat/boss acceptance. Archive
+  `/tmp/eidolon-four-role-shield-failure-aZ6iAp`; scanner2files, ownedcontainersgone.
+- New party waypoint WT clean62e9f06f: endpoint arrival uses the same.25unit
+  tolerance as strict ground validation; gather still independently requires all
+  four within original5unit formation. No spacing/deadline/gear/path/death/clear
+  gate relaxed. Exact native geometry test plus alive/scene/no-motion/invalid and
+  must-continue-gathering cases.39989 TERMINAL0:3suites82tests0.753s+ESLint.
+  Log `/tmp/eidolon-party-waypoint-focused-20260911.log`; evidence doc
+ 2026-09-11-party-waypoint-arrival.md. Runtime/server code unchanged by QA repair.
+- First Focus full53029 TERMINAL1:354suites,19failed/5050passed137.202s. All
+  failures in QAStageTimingIntegration: TimeWarp's newly added release stage was
+  omitted from mock command/stage lists. Fixed lists add actual stage ordering,
+  failure-stop, scanner and cleanup coverage; no routes/assertions dropped.
+- Merged party correction into Focus, frozen6eb0b652. Full64864 TERMINAL0:
+ 355suites5084tests121.14s plus full lint. Logs
+  `/tmp/eidolon-focus-waypoint-full-{client,lint}-20260911.log`. Verified no server
+  source delta from accepted build-rejection source. Acceptance doc01a730bf.
+- Primary now frozen clean01a730bf4b4bb710754009ef3ea3a5771377640f. Native
+  four-role70393 ACTIVE, runidfourrole-waypoint-20260911, host loopback
+ 18580/18581/41980; log `/tmp/eidolon-four-role-waypoint-20260911.log`. Keep
+  source frozen and no competing heavy/browser work. NEXT recover SAME70393;
+  preserve full-room/boss/allalive/individualcredit/manualIlyra/Water/save gates.
+- Independent no-cache live release.json/healthz both still0231c948/Alpha1.0.62,
+  backend ok/database ready. CI34637129931 remains last completedSUCCESS; both
+  runners onlineidle before local native start. No new push/deployment, soakoff.
+  Full1.1–1.10/160talents/earnedpacing/phone/casino scope unchanged. Root MUST NOT PUSH.
+
+## Previous checkpoint — September 11, 22:06 UTC
 
 Previous goal turn was PROGRESS. This turn is PROGRESS: verified the existing
 four-role process still live, and reproduced/repaired offline Spell Focus parity
