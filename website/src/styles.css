@@ -28,7 +28,7 @@
   .site-header nav { display: flex; gap: 34px; font-size: .875rem; color: var(--muted); }
   .hero { position: relative; min-height: 735px; isolation: isolate; display: flex; align-items: center; border-bottom: 1px solid var(--line); }
   .hero-art, .hero-shade { position: absolute; inset: 0; z-index: -2; }
-  .hero-art { background: #18231d url('/assets/realms-hero.png') center 52% / cover no-repeat; }
+  .hero-art { width: 100%; height: 100%; object-fit: cover; object-position: center 52%; background: #18231d; }
   .hero-shade { z-index: -1; background: linear-gradient(90deg, rgba(9,16,12,.94) 0%, rgba(9,16,12,.72) 35%, rgba(9,16,12,.12) 78%), linear-gradient(0deg, #101512 0%, transparent 30%); }
   .hero-content { padding-block: 90px 130px; }
   .hero-content h1 { max-width: 850px; margin-block: 26px; }
@@ -140,7 +140,7 @@
     .section { padding-block: 64px; }
     .hero { min-height: 690px; }
     .hero-content { padding-block: 80px 120px; }
-    .hero-art { background-position: 62% center; }
+    .hero-art { object-position: 62% center; }
     .hero-shade { background: linear-gradient(90deg, #09100cd9, #09100c70), linear-gradient(0deg, #101512, transparent 65%); }
     .hero-description { max-width: 380px; font-size: 1rem; }
     .hero-actions { flex-wrap: wrap; gap: 14px 24px; margin-top: 28px; }
