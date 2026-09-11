@@ -354,8 +354,8 @@ func validDirectAbilityTarget(w *World, player, target *Entity, maxRange float64
 	return true
 }
 
-func (w *World) spreadPoison(source, primaryTarget *Entity, damage int, endTime time.Time) {
-	if w == nil || source == nil || primaryTarget == nil || damage <= 0 {
+func (w *World) spreadPoison(source, primaryTarget *Entity, budget statusDamageBudget, endTime time.Time) {
+	if w == nil || source == nil || primaryTarget == nil || budget.amount <= 0 {
 		return
 	}
 	const radius = 5.0
@@ -370,7 +370,7 @@ func (w *World) spreadPoison(source, primaryTarget *Entity, damage int, endTime 
 		target.Mu.Lock()
 		if w.CanDamage(source, target) && target.State != "DEAD" && withinDungeonAbilityRadius(walkRects, "Poison Spread", originX, originZ, target, radius) {
 			target.Poisoned = true
-			target.PoisonDamage = damage
+			target.PoisonDamage = budget.forTarget(source, target)
 			target.PoisonSourceID = source.ID
 			target.PoisonEndTime = endTime
 		}

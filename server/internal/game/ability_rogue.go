@@ -81,7 +81,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				finalDamage := impacts.damage(player, strikeTarget, damage, "physical", skillName)
 				addThreatLocked(strikeTarget, player.ID, float64(finalDamage))
 				strikeTarget.Bleeding = true
-				strikeTarget.BleedDamage = 10 + (player.Stats.Dexterity / 2)
+				strikeTarget.BleedDamage = ScalePvPDamage(player, strikeTarget, 10+player.Stats.Dexterity/2)
 				strikeTarget.BleedSourceID = player.ID
 				strikeTarget.BleedEndTime = time.Now().Add(10 * time.Second)
 				isDead := strikeTarget.Health <= 0
@@ -605,7 +605,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				// of its selected rune, as described in the Assassin skill tree.
 				bestTarget.Mu.Lock()
 				bestTarget.Bleeding = true
-				bestTarget.BleedDamage = trainedStatusDamage(player, skillName, 10+player.Stats.Dexterity/2, false)
+				bestTarget.BleedDamage = ScalePvPDamage(player, bestTarget, trainedStatusDamage(player, skillName, 10+player.Stats.Dexterity/2, false))
 				bestTarget.BleedSourceID = player.ID
 				bestTarget.BleedEndTime = time.Now().Add(10 * time.Second)
 				bestTarget.Mu.Unlock()
