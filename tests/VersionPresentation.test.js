@@ -21,6 +21,19 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
+    test('release62 documents integrated party and gameplay fixes while retaining domain history', () => {
+        expect(indexHtml.match(/data-version="1\.0\.62"/g)).toHaveLength(1);
+        expect(indexHtml.indexOf('data-version="1.0.62"')).toBeLessThan(indexHtml.indexOf('data-version="1.0.61"'));
+        const entry = indexHtml.split('data-version="1.0.62"')[1].split('data-version="1.0.61"')[0];
+        for (const text of ['Party kill credit', 'downed teammates', 'two normal screens', 'Dependable crowd control',
+            'Clearer party healing', 'Equipment stays current', 'Smoother rested effects', 'return to Ilyra']) {
+            expect(entry).toContain(text);
+        }
+        // Later isolated combat/campaign work is not part of this candidate.
+        expect(entry).not.toContain('Explosive Arcane Shields');
+        expect(entry).not.toContain('new reward curve');
+    });
+
     test('release61 documents the domain migration without dropping earlier patch notes', () => {
         expect(indexHtml.match(/data-version="1\.0\.61"/g)).toHaveLength(1);
         expect(indexHtml.indexOf('data-version="1.0.61"')).toBeLessThan(indexHtml.indexOf('data-version="1.0.60"'));
@@ -412,11 +425,11 @@ describe('version presentation', () => {
         }
         expect(fs.readFileSync(path.join(repoRoot, 'sw.js'), 'utf8')).toContain('sw-asset-cache.js?v=2026-09-04-11');
         expect(indexHtml).toContain('Built-in version: 2026-09-04-11');
-        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.0.61');
+        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.0.62');
     });
 
     test('advances the login screen and player-facing history to Alpha 1.0', () => {
-        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.0.61</span>');
+        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.0.62</span>');
         expect(indexHtml).toContain('Alpha 1.0.0 (the worlds answer together)');
         expect(indexHtml).toContain('Multiplayer has a social backbone');
         expect(indexHtml).toContain('Guilds are persistent institutions');
@@ -827,7 +840,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 1.0.61';
+        const expectedVersion = 'Alpha 1.0.62';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -949,7 +962,7 @@ describe('version presentation', () => {
     });
 
     test('marks Alpha 1.0 current and preserves its completed runway', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 1.0.61`');
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 1.0.62`');
         expect(alphaRoadmap).toContain('Active implementation line: `Alpha 1.0`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');
