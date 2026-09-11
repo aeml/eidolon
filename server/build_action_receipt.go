@@ -2,6 +2,25 @@ package main
 
 import "encoding/json"
 
+// Admission failures must finish the same deliberate UI action as dispatcher
+// failures. Otherwise a valid rejected purchase leaves touch controls pending
+// indefinitely. Never parse oversized payloads or reflect malformed IDs.
+func (c *Client) sendInboundRejection(msg Message, reason string) {
+	switch msg.Type {
+	case MsgSelectBranch, MsgUnlockTalent, MsgResetTalents, MsgSelectRune:
+		if p, known := inboundMessagePolicies[msg.Type]; known && len(msg.Payload) <= p.maxPayloadBytes {
+			var request struct {
+				RequestID string `json:"requestId"`
+			}
+			if json.Unmarshal(msg.Payload, &request) == nil && len(request.RequestID) > 0 && len(request.RequestID) <= 64 {
+				c.sendBuildActionResult(request.RequestID, false, reason)
+				return
+			}
+		}
+	}
+	c.sendError(reason)
+}
+
 func (c *Client) buildRequestID(msg Message) (string, bool) {
 	var request struct {
 		RequestID string `json:"requestId"`

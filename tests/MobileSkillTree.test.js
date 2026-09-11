@@ -87,6 +87,22 @@ describe('phone build reading and deliberate actions', () => {
         expect(ui.mobile.pending).toBeNull();
         expect(document.querySelector('.phone-build-feedback').textContent).toContain('Confirmed');
     });
+    test('rate-limited training unlocks controls without spending or automatically retrying', () => {
+        button('Talents').click();
+        const selector = 'button[data-build-action="talent:FTR_01"]';
+        document.querySelector(selector).click();
+        const requestId = ui.onUnlockTalent.mock.calls[0][1];
+        ui.handleBuildActionResult({ requestId, ok: false, message: 'message rate limit exceeded' });
+        expect(ui.mobile.pending).toBeNull();
+        expect(document.querySelector(selector).disabled).toBe(false);
+        expect(document.querySelector('.phone-build-feedback').textContent).toContain('rate limit');
+        expect(player.talentRanks).toEqual({});
+        expect(ui.onUnlockTalent).toHaveBeenCalledTimes(1);
+        document.querySelector(selector).click();
+        expect(ui.onUnlockTalent).toHaveBeenCalledTimes(2);
+        expect(ui.onUnlockTalent.mock.calls[1][1]).not.toBe(requestId);
+        expect(player.talentRanks).toEqual({});
+    });
     test('reset requires confirmation and leaves ranks intact until authoritative update', () => {
         player.talentRanks[CONSTANTS.PASSIVE_TALENTS.Fighter[0].id] = 1;
         button('Talents').click(); button('Reset talents').click();
