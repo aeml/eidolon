@@ -685,6 +685,10 @@ func TestCheckOriginAllowsKnownLocalAndProductionOrigins(t *testing.T) {
 		{name: "loopback client", origin: "http://127.0.0.1:8000", want: true},
 		{name: "production client", origin: "https://eidolon.mendola.tech", want: true},
 		{name: "production websocket host page", origin: "https://eserver.mendola.tech", want: true},
+		{name: "new production client", origin: "https://play.eidolonrealms.com", want: true},
+		{name: "new production backend page", origin: "https://server.eidolonrealms.com", want: true},
+		{name: "lookalike new origin", origin: "https://play.eidolonrealms.com.evil.example", want: false},
+		{name: "unapproved subdomain", origin: "https://untrusted.eidolonrealms.com", want: false},
 		{name: "evil origin", origin: "https://evil.example", want: false},
 	}
 

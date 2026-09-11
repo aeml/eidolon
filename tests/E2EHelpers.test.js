@@ -72,6 +72,7 @@ describe('browser failure collection', () => {
         expect(backendOriginBrowserArgs('')).toEqual([]);
         expect(backendOriginBrowserArgs('192.0.2.10')).toEqual(expect.arrayContaining([
             expect.stringContaining('MAP eserver.mendola.tech 192.0.2.10'),
+            expect.stringContaining('MAP server.eidolonrealms.com 192.0.2.10'),
             expect.stringContaining('LocalNetworkAccessChecks')
         ]));
         expect(() => backendOriginBrowserArgs('backend.example.com')).toThrow(/literal IPv4 or IPv6/);

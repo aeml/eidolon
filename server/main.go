@@ -73,10 +73,12 @@ var stateProtoMagic = []byte{'E', 'D', 'P', 'B'}
 const stateProtoWireVersion byte = 2
 
 var allowedWebsocketOriginHosts = map[string]struct{}{
-	"localhost":            {},
-	"127.0.0.1":            {},
-	"eidolon.mendola.tech": {},
-	"eserver.mendola.tech": {},
+	"localhost":                {},
+	"127.0.0.1":                {},
+	"eidolon.mendola.tech":     {},
+	"eserver.mendola.tech":     {},
+	"play.eidolonrealms.com":   {},
+	"server.eidolonrealms.com": {},
 }
 
 func isAllowedWebsocketOrigin(origin string) bool {

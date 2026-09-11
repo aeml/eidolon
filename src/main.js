@@ -1,5 +1,6 @@
 import { GameEngine } from './core/GameEngine.js';
 import { AssetCacheManager } from './assets/AssetCacheManager.js';
+import { resolveServerAddress } from './core/serverAddress.js';
 
 const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 800);
@@ -112,6 +113,9 @@ window.addEventListener('DOMContentLoaded', () => {
     // const multiplayerToggle = document.getElementById('multiplayer-toggle'); // Removed
     // const serverInputContainer = document.getElementById('server-input-container'); // Removed
     const serverAddressInput = document.getElementById('server-address');
+    if (serverAddressInput) {
+        serverAddressInput.value = resolveServerAddress(serverAddressInput.value, window.location.hostname);
+    }
     
     // Auth elements
     const authUsernameInput = document.getElementById('auth-username');

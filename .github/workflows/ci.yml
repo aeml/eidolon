@@ -477,6 +477,12 @@ jobs:
     name: Live Release and Character QA
     needs: [deploy, deploy-server]
     runs-on: [self-hosted, linux, x64, eidolon-live-browser]
+    # Switch these repository variables after the new DNS/TLS endpoints are ready.
+    # Legacy defaults keep queued releases verifiable during the migration.
+    env:
+      EIDOLON_E2E_BASE_URL: ${{ vars.EIDOLON_LIVE_BASE_URL || 'https://eidolon.mendola.tech' }}
+      EIDOLON_E2E_WS_URL: ${{ vars.EIDOLON_LIVE_WS_URL || 'wss://eserver.mendola.tech/ws' }}
+      EIDOLON_E2E_HEALTH_URL: ${{ vars.EIDOLON_LIVE_HEALTH_URL || 'https://eserver.mendola.tech/healthz' }}
     steps:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -498,9 +504,9 @@ jobs:
           EXPECTED_COMMIT: ${{ github.sha }}
         run: |
           for attempt in $(seq 1 60); do
-            client_commit="$(curl -fsS -H 'Cache-Control: no-cache' "https://eidolon.mendola.tech/release.json?expected=${EXPECTED_COMMIT}&attempt=${attempt}" 2>/dev/null | sed -n 's/.*"commit":"\([^"]*\)".*/\1/p' || true)"
-            client_runtime_release="$(curl -fsS -H 'Cache-Control: no-cache' "https://eidolon.mendola.tech/?release=${EXPECTED_COMMIT}&attempt=${attempt}" 2>/dev/null | sed -n 's/.*src\/main\.js?release=\([^"]*\)".*/\1/p' | tail -1 || true)"
-            server_commit="$(curl -fsS -H 'Cache-Control: no-cache' "https://eserver.mendola.tech/healthz?expected=${EXPECTED_COMMIT}&attempt=${attempt}" 2>/dev/null | sed -n 's/.*"commit":"\([^"]*\)".*/\1/p' || true)"
+            client_commit="$(curl -fsS -H 'Cache-Control: no-cache' "${EIDOLON_E2E_BASE_URL%/}/release.json?expected=${EXPECTED_COMMIT}&attempt=${attempt}" 2>/dev/null | sed -n 's/.*"commit":"\([^"]*\)".*/\1/p' || true)"
+            client_runtime_release="$(curl -fsS -H 'Cache-Control: no-cache' "${EIDOLON_E2E_BASE_URL%/}/?release=${EXPECTED_COMMIT}&attempt=${attempt}" 2>/dev/null | sed -n 's/.*src\/main\.js?release=\([^"]*\)".*/\1/p' | tail -1 || true)"
+            server_commit="$(curl -fsS -H 'Cache-Control: no-cache' "${EIDOLON_E2E_HEALTH_URL}?expected=${EXPECTED_COMMIT}&attempt=${attempt}" 2>/dev/null | sed -n 's/.*"commit":"\([^"]*\)".*/\1/p' || true)"
             if [ "${client_commit}" = "${EXPECTED_COMMIT}" ] && \
                [ "${client_runtime_release}" = "${EXPECTED_COMMIT}" ] && \
                [ "${server_commit}" = "${EXPECTED_COMMIT}" ]; then
@@ -515,9 +521,6 @@ jobs:
 
       - name: Run live anonymous and persistent-character QA
         env:
-          EIDOLON_E2E_BASE_URL: https://eidolon.mendola.tech
-          EIDOLON_E2E_WS_URL: wss://eserver.mendola.tech/ws
-          EIDOLON_E2E_HEALTH_URL: https://eserver.mendola.tech/healthz
           EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
           EIDOLON_E2E_BACKEND_ORIGIN_IP: ${{ secrets.EIDOLON_E2E_BACKEND_ORIGIN_IP }}
           EIDOLON_EXPECTED_COMMIT: ${{ github.sha }}
@@ -533,9 +536,6 @@ jobs:
 
       - name: Run live four-class and remote-animation QA
         env:
-          EIDOLON_E2E_BASE_URL: https://eidolon.mendola.tech
-          EIDOLON_E2E_WS_URL: wss://eserver.mendola.tech/ws
-          EIDOLON_E2E_HEALTH_URL: https://eserver.mendola.tech/healthz
           EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
           EIDOLON_E2E_BACKEND_ORIGIN_IP: ${{ secrets.EIDOLON_E2E_BACKEND_ORIGIN_IP }}
           EIDOLON_EXPECTED_COMMIT: ${{ github.sha }}
@@ -545,9 +545,6 @@ jobs:
 
       - name: Run live town recovery and Well Rested QA
         env:
-          EIDOLON_E2E_BASE_URL: https://eidolon.mendola.tech
-          EIDOLON_E2E_WS_URL: wss://eserver.mendola.tech/ws
-          EIDOLON_E2E_HEALTH_URL: https://eserver.mendola.tech/healthz
           EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
           EIDOLON_E2E_BACKEND_ORIGIN_IP: ${{ secrets.EIDOLON_E2E_BACKEND_ORIGIN_IP }}
           EIDOLON_EXPECTED_COMMIT: ${{ github.sha }}
