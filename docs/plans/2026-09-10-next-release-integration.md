@@ -116,7 +116,7 @@ passed, copied initial-stat log had zero QA identifiers, and owned ports cleared
 
 ## Consolidated patch-note draft — unreleased
 
-Drafted against the application changes through0c8c4ffe, compared with canonical
+Drafted against the application changes througha8e6851d, compared with canonical
 62dc. No successor version is assigned and these are not published patch notes.
 At promotion, transfer the verified content into the game's normal per-version
 notes alongside synchronized login/manifest/server metadata. Preserve all older
@@ -135,6 +135,14 @@ version entries. Recheck this draft if the candidate's application scope changes
   with clearer role information and shared-reward guidance on desktop and phone.
 - Boss ground slams now respect defensive shields, invulnerability and damage
   reduction. Shield retaliation retains normal party kill credit.
+
+### Talent effects
+
+- Purifying Wave Mastery now increases cleansing radius by4% per rank,20% at
+  five ranks, with clearer copy and a matching visible ring. Existing ranks
+  remain invested; the spell still cleanses rather than heals.
+- Guardian Roar now honors its area talents for ally protection and taunt reach,
+  with matching local and remote rings. Boss-taunt restrictions are unchanged.
 
 ### Equipment and controls
 
@@ -171,9 +179,10 @@ remain mandatory; scoped local passes do not make these notes shipped content.
 
 ## Remaining promotion gates
 
-- [x] Current application regression: full Go race18911 on714c4727 passed after the slam correction (root21.272s/game367.122s). Client84456 passed on46c008ce; client runtime is unchanged and later test-only changes have focused coverage below. Versioned required-all still applies.
+- [x] Current application regression: full Go race19979 on a8e6851d passed (root18.048s/game325.373s); client52400 passed278suites/3908tests126.574s and full lint44660 exited0. Versioned required-all still applies.
 - [x] Execute authenticated smoke with the strengthened stash checks (empty storage).
-- [x] Run all three proposed CI-mode bundled-browser groups, retain distinct
+- [ ] Rerun all three CI-mode bundled-browser groups on the changed utility-area
+  application (the earlier104-case source passed), retain distinct
   artifacts, inspect rendering and measure real stage durations.
 - [ ] Complete the changed versioned candidate's required predeploy/authenticated
   all and other release gates. Do not repeat unchanged old source as missing, or
@@ -328,3 +337,39 @@ actors in the central area outside thumb controls. These are anonymous layout/
 render fixtures, not full-world art or physical-phone playability acceptance.
 Versioned required-all, canonical queue acceptance, version/patch notes and
 remote/live checks remain required. No new version/deployment is claimed.
+
+## September11 utility-area integration and acceptance
+
+Fast-forwarded the local candidate from98320775 to clean a8e6851d after reviewing
+the20-file delta. No earlier application changes are lost. This imports the
+Purifying Wave Mastery repair2859efba and Guardian Roar consumer a8e6851d, plus
+their focused fixtures, browser routes, diagnostic evidence and unchanged-rank
+contracts.12e3f897 updates the existing Purifying retry contract to preserve
+baseline/Ministry-only checks while adding combined Mastery/save checks.
+The new Roar route is added to required-all; no prior route is removed.
+
+Full current-source Go race19979 PASS (root18.048s/game325.373s), client52400
+PASS278suites/3908tests126.574s and full lint44660 exited0. Logs
+`/tmp/eidolon-utility-areas-full-{server,client,lint}.log`.
+Native91529 Purifying PASS16.3s and97691 Roar PASS18.8s on clean a8e6851d:
+ordinary phone UI purchases, accepted mana/radius, actual attached high/low rings
+and fresh-login landscape saved ranks all pass. Purifying radii8/9.2/10.8;
+Roar15/16.5/18.75/20.25. Prepared levels/resources are explicit disposable
+fixtures, not earned progression or physical-device acceptance.
+
+The first Purifying launch exited before services/browser startup because this
+new worktree lacked generated vendor dependencies. The standard prepare-client
+command resolved that preflight; retain its log
+`/tmp/eidolon-utility-cleanse-native.log`, not as a gameplay failure.
+Successful logs`/tmp/eidolon-utility-cleanse-ready-native.log` and
+`/tmp/eidolon-utility-roar-native.log`; archives
+`/tmp/eidolon-utility-cleanse-proof-JagCVc` and
+`/tmp/eidolon-utility-roar-proof-bWj8lU`, copied-logQA-prefix0. Owned services and
+18580/18581/41980listeners cleared after each terminal run.
+
+Updated the consolidated unreleased patch-note draft above. No successor version
+assigned, published notes changed, remote push or deployment performed. Current
+bundled104 browser acceptance must be renewed, then versioned required-all,
+canonical62dc acceptance, synchronized version/notes, remote CI and live checks
+remain mandatory. Primary6f46f9db's new party tactics and expanded progression
+remain separate: the prior run ended at Matron, not a completed dungeon clear.
