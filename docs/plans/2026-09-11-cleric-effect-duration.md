@@ -52,3 +52,13 @@ Cleric duration talents now extend their matching buffs, zones and debuffs.
 Renewal gains additional healing ticks when its duration is trained, and party
 blessings use the caster's duration bonuses. Talent descriptions show the
 duration benefits accurately.
+
+## Full regression accepted on 3673f5f8
+
+74824 terminated exit 0 on unchanged 3673f5f85bb899f5604aa47f96902e4752d0ffe7.
+Full client 348 suites / 4869 tests PASS in 162.666s; lint PASS. Go race PASS:
+root17.917s/game320.141s/loadtest1.018s/database1.089s/lifecycle1.022s.
+Logs `/tmp/eidolon-cleric-duration-full-{client,lint,server}.log`.
+
+This accepts the duration patch for local full regression, not the subsequent
+recipient-buff expiry patch, native party/save/phone gates or publication.
