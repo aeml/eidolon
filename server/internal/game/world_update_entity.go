@@ -70,6 +70,14 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		if e.Stunned && !now.Before(e.StunEndTime) {
 			e.Stunned = false
 		}
+		if e.Rooted && !now.Before(e.RootEndTime) {
+			e.Rooted = false
+		}
+		if e.Slowed && !now.Before(e.SlowEndTime) {
+			e.Slowed = false
+			e.SlowFactor = 0
+			e.RecalculateStats()
+		}
 		stunned := e.Stunned
 		e.Mu.Unlock()
 		if dead || (stunned && e.Type == TypeEnemy) {
@@ -1419,12 +1427,16 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			dz := oz - e.Z
 			dist := math.Sqrt(dx*dx + dz*dz)
 
-			if dist > 3.0 {
+			if dist > 3.0 && !e.Rooted {
 				e.State = "MOVING"
 				// Move towards owner
 				dirX := dx / dist
 				dirZ := dz / dist
-				speed := math.Min(6.0*dt, dist-3)
+				followSpeed := 6.0
+				if e.Slowed {
+					followSpeed *= 1 - math.Max(0, math.Min(1, e.SlowFactor))
+				}
+				speed := math.Min(followSpeed*dt, dist-3)
 				newX := e.X + dirX*speed
 				newZ := e.Z + dirZ*speed
 				newX, newZ, _ = firstDungeonWalkRectWallHit(walkRects, e.X, e.Z, newX, newZ)
@@ -1686,6 +1698,10 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				}
 			} else {
 				// Chase
+				if e.Rooted {
+					e.State = "IDLE"
+					return
+				}
 				tx, tz := targetX, targetZ
 
 				// Anti-stacking steering:
@@ -1739,6 +1755,10 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			}
 		} else {
 			// Roam
+			if e.Rooted {
+				e.State = "IDLE"
+				return
+			}
 			// A lost pursuit must not keep walking toward its last chase point
 			// in a distant sector. Return at ordinary speed; keep damage taken
 			// and remain attackable. No teleport, heal, immunity or free reward.

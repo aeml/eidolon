@@ -19,3 +19,28 @@ authored speed, DOT and summon owner/lifetime cleanup, CC immunity and dungeon
 walls. The independent frozen next-stun candidate475c6d27 remains unchanged.
 This follow-up is required gameplay work, not a reason to relabel earlier
 stun-specific acceptance as a complete crowd-control audit.
+
+## Repair and focused acceptance
+
+Common enemy/NPC ticks now expire root and slow; slow expiry clears its factor
+and recalculates stats to restore authored BaseSpeed. Root stops chase/roaming
+without blocking attacks in range. Seraph following preserves its authored6
+speed, applies slow once, and stops for root while retaining owner/lifetime
+cleanup and dungeon-wall movement. No changes to damage/rewards/quest progress.
+
+The first standard contract run reproduced a separate Juggernaut Charge bug:
+it slowed CC-immune targets. Its slow assignment now checks CCImmune while
+ordinary damage/threat/death handling remains unchanged.
+
+54507 focused race PASS22.560s covers root/slow overlaps, roaming, in-range
+attacks, Seraph follow/lifetime, paid immunity, existing stun/impact, poison,
+Seraph, dungeon enemy movement/walls and authored slow recalculation. Log
+`/tmp/eidolon-root-slow-contract-green.log`; preceding immunity failure preserved
+in `/tmp/eidolon-root-slow-contract-first.log`.
+
+The original paid Gravity Well/Black Hole and Juggernaut diagnostic is promoted
+unchanged into the normal suite as TestPaidEnemyRootAndSlowLifecycle.53763
+three consecutive focused race passes7.482s including all new root/slow cases,
+`/tmp/eidolon-root-slow-paid-repeat.log`. Original overlay also passed2.980s in
+`/tmp/eidolon-enemy-root-slow-green.log`. No native/earned-party/completeCC audit
+claim; full integration suite and deployment remain required.

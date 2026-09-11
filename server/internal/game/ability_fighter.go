@@ -310,10 +310,12 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 				}
 				finalDamage := applyFinalDamage(player, target, damage, "physical", skillName)
 				addThreatLocked(target, player.ID, float64(finalDamage))
-				target.Slowed = true
-				target.SlowFactor = 0.6
-				target.SlowEndTime = time.Now().Add(5 * time.Second)
-				target.RecalculateStats()
+				if !target.CCImmune {
+					target.Slowed = true
+					target.SlowFactor = 0.6
+					target.SlowEndTime = time.Now().Add(5 * time.Second)
+					target.RecalculateStats()
+				}
 				isDead := target.Health <= 0
 				target.Mu.Unlock()
 				w.fireDamageEvent(player, target.ID, finalDamage, "physical", player.InstanceID)
