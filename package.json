@@ -1,6 +1,6 @@
 {
   "name": "eidolon-tests",
-  "version": "1.0.60",
+  "version": "1.0.61",
   "description": "Eidolon browser game client, validation, and release tooling",
   "type": "module",
   "engines": {

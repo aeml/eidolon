@@ -283,12 +283,12 @@ jobs:
 
       - name: Prepare site with coverage reports
         run: |
-          # Copy the entire game to public/ (preserves eidolon.mendola.tech)
+          # Copy the entire game to public/ for the game site's Pages deployment.
           mkdir -p public
           cp -r index.html assets src vendor public/
           cp sw.js public/
           node scripts/version-pages-runtime.mjs public "${GITHUB_SHA}"
-          printf '{"commit":"%s","version":"Alpha 1.0.60"}\n' "${GITHUB_SHA}" > public/release.json
+          printf '{"commit":"%s","version":"Alpha 1.0.61"}\n' "${GITHUB_SHA}" > public/release.json
           
           # Create coverage directory
           mkdir -p public/coverage/client public/coverage/server
@@ -478,19 +478,19 @@ jobs:
           chmod --reference=.env "${qa_env_tmp}"
           mv "${qa_env_tmp}" .env
           trap - EXIT
-          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.0.60" bash ./deploy/deploy_linux.sh
+          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.0.61" bash ./deploy/deploy_linux.sh
           EOF
 
   post-deploy-browser:
     name: Live Release and Character QA
     needs: [deploy, deploy-server]
     runs-on: [self-hosted, linux, x64, eidolon-live-browser]
-    # Switch these repository variables after the new DNS/TLS endpoints are ready.
-    # Legacy defaults keep queued releases verifiable during the migration.
+    # Verify the migrated game domains. Variables allow explicit endpoint changes
+    # without rewriting every live QA step; no health-only substitute for gameplay.
     env:
-      EIDOLON_E2E_BASE_URL: ${{ vars.EIDOLON_LIVE_BASE_URL || 'https://eidolon.mendola.tech' }}
-      EIDOLON_E2E_WS_URL: ${{ vars.EIDOLON_LIVE_WS_URL || 'wss://eserver.mendola.tech/ws' }}
-      EIDOLON_E2E_HEALTH_URL: ${{ vars.EIDOLON_LIVE_HEALTH_URL || 'https://eserver.mendola.tech/healthz' }}
+      EIDOLON_E2E_BASE_URL: ${{ vars.EIDOLON_LIVE_BASE_URL || 'https://play.eidolonrealms.com' }}
+      EIDOLON_E2E_WS_URL: ${{ vars.EIDOLON_LIVE_WS_URL || 'wss://server.eidolonrealms.com/ws' }}
+      EIDOLON_E2E_HEALTH_URL: ${{ vars.EIDOLON_LIVE_HEALTH_URL || 'https://server.eidolonrealms.com/healthz' }}
     steps:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
