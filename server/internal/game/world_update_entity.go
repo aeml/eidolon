@@ -80,7 +80,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		}
 		// These recipient-owned effects also apply to enemies/NPCs. Their
 		// timers must advance even when crowd control prevents AI updates.
-		expireRogueTargetDebuffsLocked(e, now)
+		expireTargetDebuffsLocked(e, now)
 		stunned := e.Stunned
 		e.Mu.Unlock()
 		if dead || (stunned && e.Type == TypeEnemy) {
@@ -1025,7 +1025,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				e.CloakBurstSpeedEndTime = time.Time{}
 				e.RecalculateStats()
 			}
-			expireRogueTargetDebuffsLocked(e, now)
+			expireTargetDebuffsLocked(e, now)
 			if e.ZealActive && now.After(e.ZealEndTime) {
 				e.ZealActive = false
 				e.RecalculateStats()
@@ -1077,14 +1077,6 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			}
 			if e.Rooted && now.After(e.RootEndTime) {
 				e.Rooted = false
-			}
-			if e.MarkWeakness && now.After(e.MarkWeaknessEndTime) {
-				e.MarkWeakness = false
-				e.MarkWeaknessFactor = 0
-			}
-			if e.ArmorReduction > 0 && now.After(e.ArmorReductionEndTime) {
-				e.ArmorReduction = 0
-				e.ArmorReductionEndTime = time.Time{}
 			}
 
 			// Rune buff expirations

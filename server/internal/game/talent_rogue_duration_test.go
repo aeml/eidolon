@@ -94,7 +94,7 @@ func TestRogueTargetDebuffDeadlineBoundary(t *testing.T) {
 	now := time.Now()
 	for _, remaining := range []time.Duration{time.Second, 0, -time.Second} {
 		e := &Entity{WeakPointMarked: true, WeakPointEndTime: now.Add(remaining), AccuracyReduction: .3, AccuracyReductionEndTime: now.Add(remaining)}
-		expireRogueTargetDebuffsLocked(e, now)
+		expireTargetDebuffsLocked(e, now)
 		if (e.WeakPointMarked || e.AccuracyReduction > 0) != (remaining > 0) {
 			t.Fatalf("wrong deadline boundary for remaining=%v", remaining)
 		}

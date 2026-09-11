@@ -950,6 +950,27 @@ export class Actor extends Entity {
         updateOfflineHealingLight(this, dt);
         updateOfflineDamageOverTime(this, dt);
 
+        // Recipient-owned debuffs continue counting down even while a longer
+        // stun suppresses movement. Do not let stun extend marks or roots.
+        if (this.slowTimer > 0) {
+            this.slowTimer = Math.max(0, this.slowTimer-dt);
+            if (!this.slowTimer) this.slowFactor = 0;
+        }
+        if (this.markWeaknessTimer > 0) {
+            this.markWeaknessTimer = Math.max(0, this.markWeaknessTimer-dt);
+            if (!this.markWeaknessTimer) this.markWeaknessFactor = 0;
+        }
+        if (this.weakPointMarkTimer > 0) this.weakPointMarkTimer = Math.max(0, this.weakPointMarkTimer-dt);
+        if (this.accuracyReductionTimer > 0) {
+            this.accuracyReductionTimer = Math.max(0, this.accuracyReductionTimer-dt);
+            if (!this.accuracyReductionTimer) this.accuracyReductionFactor = 0;
+        }
+        if (this.healingReductionTimer > 0) {
+            this.healingReductionTimer = Math.max(0, this.healingReductionTimer-dt);
+            if (!this.healingReductionTimer) this.healingReductionFactor = 0;
+        }
+        if (this.rootTimer > 0) this.rootTimer = Math.max(0, this.rootTimer-dt);
+
         // Stun Logic
         if (this.stunTimer > 0) {
             this.stunTimer -= dt;
@@ -975,15 +996,6 @@ export class Actor extends Entity {
             this.guardianRoarTimer -= dt;
             if (this.guardianRoarTimer <= 0) {
                 this.guardianRoarTimer = 0;
-            }
-        }
-
-        // Slow Logic
-        if (this.slowTimer > 0) {
-            this.slowTimer -= dt;
-            if (this.slowTimer <= 0) {
-                this.slowTimer = 0;
-                this.slowFactor = 0;
             }
         }
 
@@ -1017,26 +1029,7 @@ export class Actor extends Entity {
                 this.blessingZealFactor = 0;
             }
         }
-        if (this.markWeaknessTimer > 0) {
-            this.markWeaknessTimer -= dt;
-            if (this.markWeaknessTimer <= 0) {
-                this.markWeaknessTimer = 0;
-                this.markWeaknessFactor = 0;
-            }
-        }
-
-        // Rogue Debuffs Logic
-        if (this.weakPointMarkTimer > 0) {
-            this.weakPointMarkTimer -= dt;
-            if (this.weakPointMarkTimer <= 0) {
-                this.weakPointMarkTimer = 0;
-            }
-        }
-
         // Rogue Branch C Logic
-        if (this.accuracyReductionTimer > 0) this.accuracyReductionTimer -= dt;
-        if (this.healingReductionTimer > 0) this.healingReductionTimer -= dt;
-        if (this.rootTimer > 0) this.rootTimer -= dt;
         if (this.speedBoostTimer > 0) {
             this.speedBoostTimer -= dt;
             if (this.speedBoostTimer <= 0) {
