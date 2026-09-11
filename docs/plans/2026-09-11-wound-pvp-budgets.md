@@ -67,3 +67,12 @@ Bleed and Poison Coating now respect PvP damage scaling and limits. Spreading
 poison and Magma burns use the correct budget for each target without reducing
 already-scaled damage twice. Magma burns can no longer spread through dungeon
 walls.
+
+## Full server acceptance on be6d43ae
+
+86822 completed with exit0 on unchangedbe6d43ae1c568ceb9d083369a01664195263ac84.
+Full Go race passed: root22.512s, game370.317s, loadtest1.023s, database1.128s,
+lifecycle1.028s; remaining packages have no tests. Log
+`/tmp/eidolon-wound-pvp-full-server.log`. This closes full server regression for
+this wound-budget source, not native/save/party acceptance or the remaining
+status-consumer audit. These changes remain separate from the62 candidate.
