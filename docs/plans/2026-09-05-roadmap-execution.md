@@ -5,7 +5,42 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 23:04 UTC
+## Current checkpoint — September 11, 23:09 UTC
+
+Previous goal turn was PROGRESS. This continuation is PROGRESS: accepted full
+Phase/aura integration, merged it into primary, and implemented equipped-set
+offline Teleport charges with focused proof; deployment reached native QA.
+
+-55247 TERMINAL0 on85ee5a5b:358suites5143tests133.36s+full lint. Logs
+  `/tmp/eidolon-phase-aura-{prepare,full-client,full-lint}-20260911.log`.
+  Primary fast-forwarded from430ea808 to clean85ee5a5b99d37c708cca183dfb30c0abf62da395.
+  Verified no server delta from fullGo-acceptedb1c9e8fc. Not a nativeparty pass.
+- New `/tmp/eidolon-teleport-charges-20260911`, branchwork/teleport-charges,
+  based85ee5a5b, clean committedf15e445a. Real0/3/4/6TemporalWeave pieces
+  reproduce missing spare cast:93758 RED5failed/10passed0.725s. Added explicitly
+  offline charge/timer fields and paid-cast commit. First spare clears specific
+  cooldown and legacyprimary gate; second starts already-committed effective
+  recharge. Every cast pays mana; either cast restarts full-pair recharge as on
+  server. Timer ages duringstun; set removal uses normalcooldown. Failed and
+  authoritative casts do not consume/grant offlinecharges. No server change.
+-36907 GREEN6suites131tests1.482s+lint;35324 expandedGREEN6suites133tests1.613s
+  +lint (trainedmana/CDR appliedonce, unusedspare/recharge timing, failedsecond
+  cast preservescharge). Logs `/tmp/eidolon-offline-charges-{red,green,final,lint}-20260911.log`.
+  Doc2026-09-11-offline-teleport-charges.md retains full/native/visual/save/release
+  requirements. Charge candidate not yet merged into primary; ownfullregression due.
+-63normalCI34655698173 confirmedACTIVE23:09: ALL hostedclient/server/three
+  browser shards SUCCESS; PredeployCharacterQA(SystemChrome) nowINPROGRESS.
+  NEXT poll SAME run, inspect stage progress, preserve requirednative gates;
+  QA-input/Pages/SSH/finalLive and independent identity checks stillremain.
+  No63liveclaim. Candidate89d9e145/master unchanged. Last verifiedlive62/0231c948.
+- No local heavy/native process remains. Intentionally did not start charges
+  fullclient or anotherparty retry immediately before shared-machine predeploy
+  acquiredGPU. Continue safe isolated lightweight development; schedule local
+  full/native verification after that selfhosted workload is terminal.
+- Soakoff; full1.1–1.10/160talents/earnedpacing/phone/casino scope unchanged.
+  Root MUST NOT PUSH. Latestparty25565remainsfailed; do not waive survival.
+
+## Previous checkpoint — September 11, 23:04 UTC
 
 Previous goal turn was PROGRESS. This continuation is PROGRESS: accepted the
 Warp/landing full regression and repaired offline Phase with real impact timing.
