@@ -5,7 +5,34 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 03:09 UTC
+## Current checkpoint — September 11, 03:15 UTC
+
+Previous turn was PROGRESS through full client acceptance. This turn completes
+primary browser group1 and starts group2; full original roadmap remains active.
+
+-61836 TERMINAL0 on frozen9c664f95:40cases across layout24/154.6s,
+  entrances4/23.7s, effects3/75.5s, nameplates6/20.8s andresource-HUD3/10.9s
+  (stage wall times). Parsed all five embedded report stats:40expected,
+  zero unexpected/flaky/skipped. Current720p four-target healing roster and
+  short568x320 expanded chat screenshots inspected; no new clipping observed.
+  Web41981 clear before next group. Log
+ `/tmp/eidolon-primary-current-browser-group1.log`.
+-10508 ACTIVE, only local heavy/browser, same clean9c664f95 in
+ `/tmp/eidolon-primary-current-1YoZU4`: group2, CI1/systemChrome/Node24/oneworker,
+  web41981. Log `/tmp/eidolon-primary-current-browser-group2.log`. Poll exacthandle,
+  then group3 separately. Required total116cases, including10crystal-art.
+  Distinct reports/results retained; archive all and inspect render/outcome
+  evidence when complete. No source edits while running. No full primary
+  browser/native clear or physical-device acceptance yet.
+- Full server59375 and client/lint73302 remain accepted as below; original
+  primary8f37e2bd and narrower successor689b0142 unchanged. Durationd70ed1bc
+  remains diagnostic-only, no runtime fix/integration. Latest remote check03:10
+  canonical34434837759 queued62dc and Nightly34433520743 active. No cancellation,
+  runner change, version assignment or push. Keep imminent remote GPU gate free
+  of a long native party run. Rootledger-only NEVER PUSH; rotation approval
+  unanswered. Goal neither complete nor blocked; all remaining scope retained.
+
+## Previous checkpoint — September 11, 03:09 UTC
 
 Previous turn was PROGRESS through the corrected timed rest assertion. This turn
 is PROGRESS: complete client/lint now pass and primary browser execution started.
