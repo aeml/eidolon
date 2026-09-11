@@ -5,7 +5,50 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 19:09 UTC
+## Current checkpoint — September 11, 19:14 UTC
+
+Previous turn was PROGRESS. This turn is PROGRESS/verified wait: preceding
+release live checks passed,62 CI started, primary client/lint passed, and the
+confirmed orphan database belonging to the cancelled soak was stopped safely.
+Full roadmap and native four-player completion remain open.
+
+-34630275716 final job103384644802 completed all steps successfully: exact
+  release matching, anonymous/saved-character, four-class/remote animation,
+  town-rest/Well Rested, sanitization and evidence upload. Current accepted
+  production source remains4ed50046/Alpha1.0.61, not62 or full primary.
+-62 CI34637129931 on0231c948 is now ACTIVE, no longer pending. Latest check:
+  hosted client tests SUCCESS, hosted server tests ACTIVE; browser/predeploy/
+  deployments/final live checks not yet complete. Preserve the runner GPU slot.
+  No manual cancellations, reruns or bypasses this turn.
+-49901 still confirmed ACTIVE on clean frozen53127f25. Full primary client
+ 344suites/4804tests passed162.228s; lint passed; server race root19.446s,
+  loadtest1.019s/database1.120s passed, game pending. Logs remain
+  `/tmp/eidolon-primary-merged-full-{client,lint,server}.log`. Recover SAME handle,
+  no source mutation or overlapping local full/heavy/browser execution.
+- Read-only four-player route review confirms explicit disposable/loopback/new
+  account guards, real four browser roles, tank damage/healer ally-healing/both
+  DPS participation, all rooms, individual unclaimed-then-manual Ilyra chapters,
+  Water offers and fresh-login reward assertions. Prepared common level30 gear,
+  rank5 primary Mastery/story gate remain explicit. Existing120min expedition
+  plus5min completion allowance is unchanged. This review is NOT an executed
+  clear or new native proof; prior Warden/route-timeout evidence remains.
+- Revalidated cancelled soak34558600459 is terminal FAILURE and no newer soak
+  run is active. Read-only process metadata found no loadtest or soak server;
+  unrelated `server` process started September4, before this soak, and was left
+  untouched. One Mongo service remained from the interrupted03:36 job.
+  Exact container3cf6da626a3848e89b085693dfc8a387_mongo70_48bf6a was matched
+  against job103137927637's own logs (only the identifier extracted), with
+  creation03:36:51 corroborating ownership. Stopped this exact orphan using
+  Docker; postcheck is EXITED. No container/volume/data removal, no production
+  DB or runner service changes. Its data remains recoverable in the stopped
+  container. Do not restart it or mistake this cleanup for a successful soak.
+- Next: recover49901, address any real regression, then four-role native on the
+  complete source when release QA no longer owns the GPU. Monitor62 through
+  actual deployment and final live acceptance; if a gate fails, inspect/fix it
+  without claiming release completion. All later roadmap gates unchanged.
+  Root ledger MUST NOT PUSH.
+
+## Previous checkpoint — September 11, 19:09 UTC
 
 Previous turn was PROGRESS. This turn is PROGRESS: accepted wound and62 full
 regressions, submitted62 to gated CI, and assembled full primary for the required
