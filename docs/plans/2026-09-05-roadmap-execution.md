@@ -5,7 +5,40 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 05:56 UTC
+## Current checkpoint — September 11, 06:05 UTC
+
+Previous turn was PROGRESS. Current turn is PROGRESS through receiver/reaction
+separation needed for the confirmed skill-defense repair. The full goal remains
+active; the ability-shield diagnostic is still red and not treated as resolved.
+
+- Ability-defense worktree now cleanadb89195 atopff2134af. Shared defense logic
+  resolves locked receiver mutation into damage remainder, reflected amount and
+  captured explosion receipt without acquiring other actor/world locks. Legacy
+  basic/boss adapter preserves existing unlock/relock/retaliation/death behavior.
+  New unit cases cover explosion capture across recast/movement, reflection
+  returned without application, and protection not consuming shields.62735
+  focused racePASS9.532s;19737 broader three-repeat racePASS26.898s includes
+  trained Arcane Shield rune impacts and boss-slam party-credit cases. Logs
+  `/tmp/eidolon-defense-split-{focused,repeated}.log`.
+-93514 diagnostic rerun TERMINAL1/race0.149s: same4 hostile-skill bypass failures,
+  six controls pass. `/tmp/eidolon-defense-split-known-diagnostic.log`. No skill
+  caller migration yet. Foundation is not a substitute for actual repair.
+  Important lock audit: PerformAbility owns w.Mu but NOT player.Mu; parallel
+  World.Update releases w.Mu and often uses attacker snapshots. Immediate cast
+  retaliation must occur after handler bookkeeping so reflected caster death
+  cannot be overwritten; background/tick impacts need explicit contexts. Do not
+  apply reflection to a private snapshot or mechanically replace every helper
+  with one assumed lock mode. Detailed next requirements remain in defense plan.
+-65944 remains confirmed ACTIVE on frozen2b733533 (preceding Fighter source):
+  client340suites/4771tests211.89s PASS and lint; server root29.372/loadtest1.026/
+  database1.122 PASS, game pending. No new full local heavy run. Same handle/logs
+  must be recovered, not restarted due elapsed observation time.
+-61CI34563572711 remains in native disposable full-character gameplay. No
+  deployment/live61 claim, no cancellation or local GPU contention. Soak was
+  left running. Root ledger must never be pushed; broader gameplay/phone/party/
+  talent/save/casino scope remains required and incomplete.
+
+## Previous checkpoint — September 11, 05:56 UTC
 
 Previous turn was PROGRESS. Current turn is PROGRESS: full preceding-source
 acceptance plus a new confirmed ability-defense defect and reproducible controls.
