@@ -156,6 +156,8 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 	att.Mu.Unlock()
 	qaDeterministicEncounter := attackerSnapshot.Type == TypePlayer && attackerSnapshot.QAGuaranteedLoot
 	poisonSpreads := attackerSnapshot.HasAnySetBonus("poisonSpread")
+	impacts := &abilityImpactContext{world: w}
+	defer impacts.flush() // HP/death bookkeeping precedes lock-free retaliation.
 
 	// Lock target for modification
 	tgt.Mu.Lock()
@@ -178,7 +180,6 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 		tgt.Mu.Unlock()
 		return
 	}
-	pendingReflectDamage := 0
 	poisonApplied := false
 	poisonDamage := 0
 	poisonEndTime := time.Time{}
@@ -215,8 +216,6 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 	// Compute the final outgoing budget once, before receiving defenses.
 	// Shields must see criticals and PvP scaling/caps just like an HP hit does.
 	damage, _ = CalculateFinalDamage(attackerSnapshot, tgt, damage, "physical")
-	actualDamage, shieldReflectDamage := w.mitigateImpactDamageLocked(tgt, damage, time.Now(), false)
-	pendingReflectDamage += shieldReflectDamage
 
 	// The allowlisted near-death gate still uses a normal hostile AI swing,
 	// range check, cooldown, and asynchronous damage path. Once its explicit
@@ -225,14 +224,12 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 	qaNearDeathHit := tgt.Type == TypePlayer && tgt.Health == 1 &&
 		time.Now().Before(tgt.QAHealthRegenPausedUntil) && tgt.InvulnerableEndTime.IsZero() &&
 		tgt.QAWaypointProtectionEndTime.IsZero()
+	actualDamage := impacts.receiveDamageLocked(attackerSnapshot.ID, tgt, damage, "physical", time.Now())
 	if qaNearDeathHit && actualDamage < 1 {
 		actualDamage = 1
+		tgt.Health--
 	}
 
-	actualDamage = damageWithinDarkKingPhase(tgt, actualDamage)
-	tgt.Health -= actualDamage
-	tgt.LastDamageType = "physical"
-	pendingReflectDamage += ApplyDamageReflect(attackerSnapshot, tgt, actualDamage)
 	if attackerSnapshot.Type == TypePlayer && tgt.Type == TypeEnemy {
 		addThreatLocked(tgt, attackerSnapshot.ID, float64(actualDamage))
 	}
@@ -261,7 +258,6 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 	if poisonApplied && poisonSpreads {
 		w.spreadPoison(att, tgt, poisonDamage, poisonEndTime)
 	}
-	w.applyImpactReflection(att, tgt, pendingReflectDamage, attackerSnapshot.InstanceID, false)
 
 	if isDead {
 		tgt.Mu.Lock() // Re-lock for death handling
