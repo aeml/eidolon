@@ -1,5 +1,14 @@
 import { readFileSync } from 'node:fs';
 
+test('the release gate retains native Time Warp with its own allowlisted Wizard', () => {
+    const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
+    expect(script).toContain('qa_allowlist+=",${QA_USERNAME_BASE}-time-warp"');
+    expect(script).toContain('run_qa_stage time-warp-area run_time_warp_area &&');
+    expect(script).toContain('time-warp-area)\n    run_time_warp_area');
+    expect(script).toContain('EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-time-warp" EIDOLON_E2E_CLASS=Wizard');
+    expect(script).toContain('npx playwright test --retries=0 tests/e2e/time-warp-area-gameplay.spec.js');
+});
+
 test('the full gate retains the same four-class practice-duel route as focused QA', () => {
     const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
     expect(script).toContain('&&\n    run_qa_stage pvp-cadence run_pvp_cadence &&\n    run_qa_stage animation-classes run_animation_classes');

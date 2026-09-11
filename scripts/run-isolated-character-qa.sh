@@ -132,6 +132,7 @@ qa_allowlist+=",${QA_USERNAME_BASE}-death-resources"
 qa_allowlist+=",${QA_USERNAME_BASE}-socket-owner,${QA_USERNAME_BASE}-socket-observer"
 qa_allowlist+=",${QA_USERNAME_BASE}-rest-transitions-death,${QA_USERNAME_BASE}-rest-transitions-dungeon"
 qa_allowlist+=",${QA_USERNAME_BASE}-duration,${QA_USERNAME_BASE}-forge,${QA_USERNAME_BASE}-whip,${QA_USERNAME_BASE}-ground"
+qa_allowlist+=",${QA_USERNAME_BASE}-time-warp"
 qa_allowlist+=",${QA_USERNAME_BASE}-ground-retry1"
 qa_allowlist+=",${QA_USERNAME_BASE}-cleanse"
 qa_allowlist+=",${QA_USERNAME_BASE}-cleanse-retry1"
@@ -413,6 +414,11 @@ run_talent_duration() {
     npx playwright test tests/e2e/talent-duration-gameplay.spec.js
 }
 
+run_time_warp_area() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-time-warp" EIDOLON_E2E_CLASS=Wizard \
+    npx playwright test --retries=0 tests/e2e/time-warp-area-gameplay.spec.js
+}
+
 run_whip_shape() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-whip" EIDOLON_E2E_CLASS=Wizard \
     npx playwright test tests/e2e/flame-whip-gameplay.spec.js
@@ -550,6 +556,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     run_qa_stage fresh-collection run_fresh_story_ready &&
     run_qa_stage talent-economy run_talent_economy &&
     run_qa_stage talent-healing run_talent_healing &&
+    run_qa_stage time-warp-area run_time_warp_area &&
     run_qa_stage talent-duration run_talent_duration &&
     run_qa_stage seraph run_seraph &&
     run_qa_stage shield-training run_shield_training &&
@@ -679,7 +686,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     run_talent_duration
     ;;
   time-warp-area)
-    EIDOLON_E2E_CLASS=Wizard npx playwright test --retries=0 tests/e2e/time-warp-area-gameplay.spec.js
+    run_time_warp_area
     ;;
   inventory)
     npx playwright test tests/e2e/inventory-quality-of-life.spec.js
