@@ -237,7 +237,7 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 	// Apply On-Hit Effects
 	if attackerSnapshot.PoisonCoatingActive {
 		tgt.Poisoned = true
-		poisonBudget = statusDamageBudget{amount: trainedStatusDamage(attackerSnapshot, "Poison Coating", 8+attackerSnapshot.Stats.Dexterity/2, false)}
+		poisonBudget = rawStatusBudget(attackerSnapshot, "Poison Coating", 8+attackerSnapshot.Stats.Dexterity/2, "poison")
 		tgt.PoisonDamage = poisonBudget.forTarget(attackerSnapshot, tgt)
 		tgt.PoisonSourceID = attackerSnapshot.ID
 		tgt.PoisonEndTime = time.Now().Add(8 * time.Second)

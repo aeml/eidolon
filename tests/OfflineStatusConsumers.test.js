@@ -14,12 +14,12 @@ test.each([
     ['Poison Coating', 'ROG_21', 'poison', 'Basic Attack']
 ])('paid %s → %s preserves trained, attributed periodic damage', (skill, talent, kind, delivery) => {
     jest.spyOn(Math, 'random').mockReturnValue(.5);
-    for (const build of [{ rank: 0 }, { rank: 1 }, { rank: 5 }, { rank: 5, unrelated: true }]) {
+    for (const build of [{ rank: 0 }, { rank: 1 }, { rank: 5 }, { rank: 5, unrelated: true }, { rank: 5, critical: true }]) {
         const actor = new Rogue('status-caster'), target = new Imp('status-target');
         const projectiles = [], scheduled = [];
         try {
             actor.mesh = new THREE.Group(); actor.stats.dexterity = 180;
-            actor.stats.damage = 100; actor.stats.mana = 1000; actor.stats.critChanceBonus = 0;
+            actor.stats.damage = 100; actor.stats.mana = 1000; actor.stats.critChanceBonus = build.critical ? 1 : 0;
             actor.unlockedSkills.push(skill, delivery);
             actor.talentRanks = { [build.unrelated ? 'ROG_03' : talent]: build.rank };
             actor.scheduleTask = callback => { scheduled.push(callback); return scheduled.length; };
@@ -45,7 +45,8 @@ test.each([
                 expect(target.stats.hp).toBeLessThan(10000);
             }
             const base = skill === 'Shadow Lunge' ? 100 : kind === 'poison' ? 98 : Math.floor((10000-target.stats.hp)/5);
-            const expected = Math.floor(base*(1+(build.unrelated ? 0 : .04*build.rank))+1e-9);
+            const criticalMultiplier = build.critical && skill !== 'Serrated Edges' ? 2 : 1;
+            const expected = Math.floor(base*(1+(build.unrelated ? 0 : .04*build.rank))+1e-9)*criticalMultiplier;
             expect(target[`${kind}TickDamage`]).toBe(expected);
             const receive = jest.spyOn(target, 'takeDamage');
             const hp = target.stats.hp;
