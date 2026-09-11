@@ -64,7 +64,7 @@ var qaUsernamesFlag = flag.String("qa-usernames", os.Getenv("EIDOLON_QA_USERNAME
 
 var (
 	buildCommit  = "development"
-	buildVersion = "Alpha 1.0.60"
+	buildVersion = "Alpha 1.0.61"
 	qaUsernames  = map[string]struct{}{}
 )
 
@@ -73,10 +73,12 @@ var stateProtoMagic = []byte{'E', 'D', 'P', 'B'}
 const stateProtoWireVersion byte = 2
 
 var allowedWebsocketOriginHosts = map[string]struct{}{
-	"localhost":            {},
-	"127.0.0.1":            {},
-	"eidolon.mendola.tech": {},
-	"eserver.mendola.tech": {},
+	"localhost":                {},
+	"127.0.0.1":                {},
+	"eidolon.mendola.tech":     {},
+	"eserver.mendola.tech":     {},
+	"play.eidolonrealms.com":   {},
+	"server.eidolonrealms.com": {},
 }
 
 func isAllowedWebsocketOrigin(origin string) bool {

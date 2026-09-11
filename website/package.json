@@ -1,0 +1,14 @@
+{
+  "name": "eidolon-website",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The public Eidolon website at eidolonrealms.com",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check:seo": "node scripts/check-seo.mjs",
+    "dev": "node scripts/serve.mjs",
+    "preview": "node scripts/serve.mjs --dist"
+  }
+}

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Eidolon Online</title>
+    <script type="module" src="./src/analytics/game.js"></script>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23070a10'/%3E%3Cpath d='M32 7 49 18 45 45 32 57 19 45 15 18Z' fill='%2318202d' stroke='%23c6a15b' stroke-width='3'/%3E%3Cpath d='m22 21 10-7 10 7-7 11 8 13-11 7-11-7 8-13Z' fill='%235b456f' stroke='%23b8d5dc' stroke-width='2'/%3E%3Ccircle cx='32' cy='32' r='4' fill='%23f0b85c'/%3E%3C/svg%3E">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="src/styles/index.css">
@@ -343,7 +344,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.60</span>
+                <span class="start-version-row__label">Alpha 1.0.61</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -358,7 +359,7 @@
             </div>
             
             <!-- Hidden inputs for game logic -->
-            <input type="hidden" id="server-address" value="wss://eserver.mendola.tech/ws">
+            <input type="hidden" id="server-address" value="wss://server.eidolonrealms.com/ws">
 
             <div id="login-panel">
                 <div class="auth-panel__title">Welcome, traveler</div>
@@ -671,6 +672,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.61">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.61 (a new home for Eidolon)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>A new address:</strong> Play at play.eidolonrealms.com, with secure game connections to server.eidolonrealms.com.</li>
+                        <li><strong>Your adventure carries over:</strong> Existing accounts and characters use the same server and database. The new site may ask you to log in again; browser-local settings and cached assets belong to each site separately.</li>
+                        <li><strong>Safer release delivery:</strong> Queued deployments now use the exact commit that passed their checks, even when newer changes arrive while they wait.</li>
+                        <li><strong>No balance changes:</strong> This migration does not change combat, town recovery, Well Rested, quests, loot or progression.</li>
+                    </ul>
+                </div>
+
                 <div class="patch-note-entry" data-version="1.0.60">
                     <h3 class="patch-note-entry__title">Alpha 1.0.60 (beyond the sanctuary)</h3>
                     <ul class="patch-note-entry__list">

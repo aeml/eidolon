@@ -16,7 +16,7 @@ export function backendOriginBrowserArgs(backendOriginIP) {
         throw new Error('EIDOLON_E2E_BACKEND_ORIGIN_IP must be a literal IPv4 or IPv6 address');
     }
     return [
-        `--host-resolver-rules=MAP eserver.mendola.tech ${backendOriginIP}`,
+        `--host-resolver-rules=MAP eserver.mendola.tech ${backendOriginIP}, MAP server.eidolonrealms.com ${backendOriginIP}`,
         // The repository runner and production origin share a private network.
         // Chrome 142+ otherwise blocks the public game page's WebSocket after
         // DNS resolves it to that local address. This QA-only launch exception

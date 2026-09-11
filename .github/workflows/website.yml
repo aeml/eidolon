@@ -1,0 +1,30 @@
+name: Website
+
+on:
+  push:
+    branches: [master, main]
+    paths: ['website/**', 'src/analytics/GoogleAnalytics.js', '.github/workflows/website.yml']
+  pull_request:
+    branches: [master, main]
+    paths: ['website/**', 'src/analytics/GoogleAnalytics.js', '.github/workflows/website.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: website
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+      - run: npm ci
+      - run: npm run build
+      - run: npm run check:seo

@@ -11,7 +11,8 @@ import {
     isIgnoredBrowserRequest
 } from './browserFailurePolicy.js';
 
-export const productionWebSocketURL = 'wss://eserver.mendola.tech/ws';
+export { productionWebSocketURL } from '../../src/core/serverAddress.js';
+import { productionWebSocketURL } from '../../src/core/serverAddress.js';
 const browserFailureState = new WeakMap();
 
 const delay = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
