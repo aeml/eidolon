@@ -5,7 +5,17 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 01:57 UTC
+## Current checkpoint — September 11, 02:00 UTC
+
+This continuation is another VERIFIED WAIT:53491 confirmedlive through an exact
+45-second poll ending02:00:30. Fourth all-four recovery/resume completed with
+exact progress; no fifth cycle/Matron/clear yet. Canonical34434837759 stillqueued
+on62dc and Nightly34433520743 stillin_progress, freshly checked01:58:44. No new
+heavy gate, source mutation, push or production change. Spin a0cda0ff native is
+still next after party termination/preservation; credential rotation approval
+remains unanswered. Full goal stays active, not blocked by an expected live wait.
+
+## Previous checkpoint — September 11, 01:57 UTC
 
 Previous turn was PROGRESS through Spin self-cast correction. This turn is a
 VERIFIED WAIT on53491 with read-only diagnostic evidence: the quiet interval
