@@ -1,0 +1,9 @@
+[
+  { "name": "baseline", "ranks": {}, "radius": 15 },
+  { "name": "one lineholder", "ranks": { "FTR_33": 1 }, "radius": 15.45 },
+  { "name": "five lineholder", "ranks": { "FTR_33": 5 }, "radius": 17.25 },
+  { "name": "roar technique", "ranks": { "FTR_10": 5 }, "radius": 16.5 },
+  { "name": "enduring rhythm", "ranks": { "FTR_38": 5 }, "radius": 16.5 },
+  { "name": "additive composition", "ranks": { "FTR_10": 5, "FTR_33": 5, "FTR_38": 5 }, "radius": 20.25 },
+  { "name": "unrelated technique", "ranks": { "FTR_04": 5 }, "radius": 15 }
+]

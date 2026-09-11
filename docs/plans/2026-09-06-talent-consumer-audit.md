@@ -1,5 +1,11 @@
 # Remaining talent consumers — reproduced September 6
 
+September11 next local repair: [Guardian Roar's area consumers](2026-09-11-guardian-roar-area.md)
+now pass the paired diagnostic and focused ordinary cast/taunt/ally-boundary and
+client-render checks. Full regression/native/save/release gates remain open.
+The reproduced failure below is historical evidence for the unchanged parent,
+not the current branch's diagnostic result. This does not close the whole tree.
+
 September11 local update: [Purifying Wave Mastery](2026-09-11-purifying-wave-mastery.md)
 now has a reproduced actual-cast failure and a skill-scoped cleansing-radius
 repair preserving saved IDs and ranks. Its focused client and initial server

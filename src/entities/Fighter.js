@@ -4,6 +4,8 @@ import { applyOfflineAbilityHit } from '../core/AbilityCritical.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
 import { spawnEffectSceneFallback } from './EffectSceneFallback.js';
+import { getAbilityAoeRadius } from '../skills/abilityRadii.js';
+import { clipDungeonEffectSegment } from '../skills/dungeonEffectGeometry.js';
 
 const GUARDIAN_ROAR_FRIENDLY_ACTOR_TYPES = new Set([
     'Fighter',
@@ -142,8 +144,10 @@ export class Fighter extends Actor {
             // Cooldown 30s
             this.setSkillCooldown("Guardian Roar", 30.0);
 
-            const radius = 15.0;
-            const entities = gameEngine.chunkManager.getActiveEntities();
+            const radius = getAbilityAoeRadius('Fighter', skill, this);
+            const entities = new Set([this, ...gameEngine.chunkManager.getActiveEntities()]);
+            const rects = gameEngine.currentInstanceId && gameEngine.currentInstanceType !== 'overworld'
+                ? gameEngine.currentDungeonLayout?.walkRects : null;
 
             // Visual
             gameEngine.floatingTextManager.spawn("ROAR!", this.position, '#ff0000');
@@ -151,15 +155,16 @@ export class Fighter extends Actor {
 
             entities.forEach(entity => {
                 if (entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
-                    const dist = this.position.distanceTo(entity.position);
-                    if (dist < radius) {
-                        if (isGuardianRoarFriendlyActor(entity, gameEngine)) {
+                    const dist = Math.hypot(this.position.x - entity.position.x, this.position.z - entity.position.z);
+                    if (dist <= radius + (entity.radius || 0)) {
+                        const hostile = gameEngine.isHostileActorTarget?.(entity) ?? !isGuardianRoarFriendlyActor(entity, gameEngine);
+                        if (!hostile && isGuardianRoarFriendlyActor(entity, gameEngine)) {
                             // Ally: Apply Buff
                             entity.guardianRoarTimer = 10.0;
                             entity.guardianRoarReduction = 0.3; // 30%
                             console.log(`Applied Guardian Roar to ${entity.id}`);
                             gameEngine.floatingTextManager.spawn("Protected", entity.position, '#00ff00');
-                        } else {
+                        } else if (hostile && !clipDungeonEffectSegment(rects, this.position, entity.position).blocked) {
                             // Enemy: Taunt
                             gameEngine.floatingTextManager.spawn("Taunted!", entity.position, '#ff0000');
                         }

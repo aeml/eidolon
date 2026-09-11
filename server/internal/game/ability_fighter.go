@@ -206,7 +206,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 			canTauntBosses := player.HasAnySetBonus("bossTaunt")
 
 			// Taunt Logic
-			radius := 15.0
+			radius := effectiveAbilityAreaRadius(player, skillName, 15.0)
 			nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID)
 			for _, target := range nearby {
 				if target.ID == player.ID {
@@ -225,7 +225,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 			}
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 30*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityEvent(player.ID, targetID, skillName, player.X, player.Z, AbilityShape{Radius: radius, Arc: 2 * math.Pi})
 		}
 	} else if skillName == "Sweeping Strike" {
 		cost := resolveAbilityManaCost(player, skillName, 30)

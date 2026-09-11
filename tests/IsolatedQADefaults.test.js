@@ -87,6 +87,17 @@ test('the full release gate retains Seraph gameplay and rendered fallback checks
     expect(commands['test:e2e:anonymous']).toContain('tests/e2e/summon-action-readability.spec.js');
 });
 
+test('the full release gate includes saved Guardian Roar training without removing existing area routes', () => {
+    const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
+    const probe = readFileSync('tests/e2e/guardian-roar-area-gameplay.spec.js', 'utf8');
+    expect(script).toContain('${QA_USERNAME_BASE}-roar-area');
+    expect(script).toContain('&& run_purifying_area && run_guardian_roar_area && run_guardian_area &&');
+    expect(script).toContain('guardian-roar-area)\n    run_guardian_roar_area');
+    expect(probe).toContain("await verifyCast([0, 0, 0], 15, 'high')");
+    expect(probe).toContain("await verifyCast([5, 5, 5], 20.25, 'low')");
+    expect(probe).toContain("await verifyCast([5, 5, 5], 20.25, 'high')");
+});
+
 test('the full release gate retains saved Shield training and hostile absorption', () => {
     const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
     expect(script).toContain('&& run_seraph && run_shield_training &&');
