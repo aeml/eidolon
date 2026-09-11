@@ -65,7 +65,6 @@
   .label-line { display: block; height: 1px; background: var(--line); margin-top: 26px; width: 105px; }
   .realm-card { position: relative; padding: 30px 26px 26px; border: 1px solid var(--line); border-right: 0; display: flex; flex-direction: column; }
   .realm-card:last-child { border-right: 1px solid var(--line); }
-  .realm-number { font: 3.5rem var(--serif); color: var(--realm); opacity: .6; padding-bottom: 34px; }
   .realm-card .eyebrow { color: var(--realm); }
   .realm-card h3 { font-size: 1.5rem; margin-block: 12px 17px; }
   .realm-card p { font-size: .9375rem; margin-bottom: 34px; }
@@ -77,8 +76,7 @@
   .class-card { padding: 30px 28px 8px; border-left: 1px solid var(--line); }
   .class-card:first-child { padding-left: 0; border-left: 0; }
   .class-card:last-child { padding-right: 0; }
-  .class-top { min-height: 115px; }
-  .class-symbol { font: 2rem var(--serif); display: block; color: var(--gold); padding-bottom: 20px; }
+  .class-top { min-height: 32px; }
   .class-top .eyebrow { font-size: .75rem; letter-spacing: .1em; color: var(--muted); }
   .class-card h3 { font-size: 2rem; margin-block: 8px 20px; }
   .class-card p { font-size: .9375rem; }
@@ -90,8 +88,7 @@
   .gameplay figcaption > span:last-child { margin-left: auto; color: var(--muted); }
   .adventure-copy > p:not(.eyebrow) { margin-top: 24px; }
   .feature-list { list-style: none; margin: 30px 0 0; padding: 0; }
-  .feature-list li { display: flex; gap: 22px; border-top: 1px solid var(--line); padding-block: 20px; }
-  .feature-list li > span { font-size: .75rem; color: var(--gold); padding-top: 2px; }
+  .feature-list li { border-top: 1px solid var(--line); padding-block: 20px; }
   .feature-list h3 { font: 500 1rem/1.6 var(--sans); margin-bottom: 5px; }
   .feature-list p { font-size: .9375rem; }
   .guide-note { max-width: 335px; margin-top: 24px; }
@@ -123,7 +120,6 @@
     .realm-section { padding-bottom: 80px; }
     .realm-card:nth-child(2) { border-right: 1px solid var(--line); }
     .realm-card:nth-child(n+3) { border-top: 0; }
-    .realm-number { padding-bottom: 18px; }
     .class-card { padding: 30px; }
     .class-card:first-child, .class-card:nth-child(3) { padding-left: 0; border-left: 0; }
     .class-card:nth-child(n+3) { margin-top: 30px; border-top: 1px solid var(--line); }
@@ -153,7 +149,7 @@
     .section-heading { flex-direction: column; align-items: flex-start; gap: 24px; margin-bottom: 24px; }
     .section-heading > p { max-width: 100%; }
     .class-card { padding: 24px 18px; }
-    .class-top { min-height: 115px; }
+    .class-top { min-height: 40px; }
     .class-top .eyebrow { display: block; }
     .adventure, .guide { grid-template-columns: 1fr; gap: 36px; }
     .adventure-copy { order: -1; }
