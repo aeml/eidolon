@@ -678,6 +678,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   talent-duration)
     run_talent_duration
     ;;
+  time-warp-area)
+    EIDOLON_E2E_CLASS=Wizard npx playwright test --retries=0 tests/e2e/time-warp-area-gameplay.spec.js
+    ;;
   inventory)
     npx playwright test tests/e2e/inventory-quality-of-life.spec.js
     ;;
