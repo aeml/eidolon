@@ -17,5 +17,5 @@ func (w *World) tickPoisonLocked(e *Entity, now time.Time, deferred *deferredAct
 		return
 	}
 	e.LastPoisonTick = now
-	w.applyDamageOverTimeLocked(e, e.PoisonSourceID, e.PoisonDamage, "poison", "poison", deferred)
+	w.applyDamageOverTimeLocked(e, e.PoisonSourceID, e.PoisonDamage, "poison", "poison", now, deferred)
 }

@@ -313,6 +313,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				// Combo: Arcane Barrage - Shield explodes on meteor impact
 				if meteorShieldExplode && owner != nil {
 					owner.Mu.Lock()
+					expireArcaneShieldLocked(owner, time.Now())
 					if owner.ArcaneShieldActive && owner.ArcaneShieldHP > 0 {
 						shieldExplosionDamage := owner.ArcaneShieldHP
 						// Consume the shield
@@ -1040,10 +1041,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			if e.PoisonCoatingActive && now.After(e.PoisonCoatingEndTime) {
 				e.PoisonCoatingActive = false
 			}
-			if e.ArcaneShieldActive && now.After(e.ArcaneShieldEndTime) {
-				e.ArcaneShieldActive = false
-				e.ArcaneShieldHP = 0
-			}
+			expireArcaneShieldLocked(e, now)
 			if e.SpellFocusActive && now.After(e.SpellFocusEndTime) {
 				e.SpellFocusActive = false
 				e.SpellFocusEndTime = time.Time{}

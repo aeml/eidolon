@@ -155,6 +155,7 @@ func TestDungeonMeteorShieldExplosionCannotCrossWall(t *testing.T) {
 		t.Run(fmt.Sprint(doorway), func(t *testing.T) {
 			w, p, target := directSkillWallFixture("Wizard", doorway)
 			p.ArcaneShieldActive, p.ArcaneShieldHP = true, 100
+			p.ArcaneShieldEndTime = time.Now().Add(time.Minute)
 			meteor := &Entity{ID: "combo-meteor", Type: TypeProjectile, SubType: "Meteor", ProjectileSkill: "Meteor Drop",
 				InstanceID: p.InstanceID, X: p.X - 1, Z: p.Z, OwnerID: p.ID, Radius: 16, Damage: 50,
 				MeteorShieldExplode: true, LastAttackTime: time.Now().Add(-time.Second)}
