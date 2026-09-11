@@ -90,6 +90,10 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 	// --- Projectiles ---
 	if e.Type == TypeProjectile {
+		// Parallel update owns no world lock. Every return below releases its
+		// actor locks before this batch applies reflection/explosion to live actors.
+		impacts := &abilityImpactContext{world: w}
+		defer impacts.flush()
 		e.Mu.RLock()
 		projectileOwnerID := e.OwnerID
 		projectileTargetID := e.TargetID
@@ -107,6 +111,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		if owner != nil {
 			owner.Mu.RLock()
 			ownerCombat = snapshotCombatAttackerLocked(owner)
+			ownerCombat.PartyID = owner.PartyID
 			ownerSpreadsPoison = owner.HasAnySetBonus("poisonSpread")
 			ownerSerratedEdges = owner.SerratedEdgesActive
 			ownerPoisonCoating = owner.PoisonCoatingActive
@@ -167,6 +172,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					target.Mu.RLock()
 					targetType := target.Type
 					targetState := target.State
+					targetHostile := w.CanDamage(ownerCombat, target)
 					inRadius := withinAbilityRadius(zoneSubType, zoneX, zoneZ, target, radius)
 					target.Mu.RUnlock()
 
@@ -174,8 +180,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						continue
 					}
 
-					// --- Damage enemies (all zone types) ---
-					if targetType == TypeEnemy && targetState != "DEAD" {
+					// All zones use ordinary consent/party/safe-zone hostility,
+					// including actual PvP opponents, not a monster-only filter.
+					if targetHostile && targetState != "DEAD" {
 						damageType := "arcane"
 						switch zoneSubType {
 						case "ZoneFire":
@@ -189,12 +196,12 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							damageType = "fire"
 						}
 						target.Mu.Lock()
-						if target.State == "DEAD" || target.InstanceID != zoneInstanceID ||
+						if !w.CanDamage(ownerCombat, target) || target.State == "DEAD" || target.InstanceID != zoneInstanceID ||
 							!withinDungeonAbilityRadius(walkRects, zoneSubType, zoneX, zoneZ, target, radius) {
 							target.Mu.Unlock()
 							continue
 						}
-						finalDamage := applyFinalDamage(ownerCombat, target, damage, damageType, zoneSkill)
+						finalDamage := impacts.damage(ownerCombat, target, damage, damageType, zoneSkill)
 						if ownerIsPlayer {
 							addThreatLocked(target, ownerID, float64(finalDamage))
 						}
@@ -214,7 +221,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					}
 
 					// --- ZoneHoly: heal allies + sanctuary buff ---
-					if zoneSubType == "ZoneHoly" && (targetType == TypePlayer || targetType == TypeNPC) && targetState != "DEAD" && w.CombatRelationship(owner, target) != RelationshipHostile {
+					if zoneSubType == "ZoneHoly" && (targetType == TypePlayer || targetType == TypeNPC) && targetState != "DEAD" && !targetHostile {
 						// Heal allies (15 + owner_wisdom*0.5)
 						// Snapshot under the caster's read lock before entering the zone
 						// loop, so concurrent talent/equipment updates cannot race this heal.
@@ -279,12 +286,12 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				nearby := w.Grid.Nearby(impactX, impactZ, effectiveRadius, impactInstanceID)
 				for _, target := range nearby {
 					target.Mu.Lock()
-					if !w.CanDamage(owner, target) || target.State == "DEAD" || target.InstanceID != impactInstanceID ||
+					if !w.CanDamage(ownerCombat, target) || target.State == "DEAD" || target.InstanceID != impactInstanceID ||
 						!withinDungeonAbilityRadius(walkRects, impactName, impactX, impactZ, target, radius) {
 						target.Mu.Unlock()
 						continue
 					}
-					finalDamage := applyFinalDamage(ownerCombat, target, damage, "fire", impactName)
+					finalDamage := impacts.damage(ownerCombat, target, damage, "fire", impactName)
 					if ownerIsPlayer {
 						addThreatLocked(target, ownerID, float64(finalDamage))
 					}
@@ -319,12 +326,12 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						explosionNearby := w.Grid.Nearby(impactX, impactZ, effectiveExplosionRadius, impactInstanceID)
 						for _, target := range explosionNearby {
 							target.Mu.Lock()
-							if !w.CanDamage(owner, target) || target.State == "DEAD" || target.InstanceID != impactInstanceID ||
+							if !w.CanDamage(ownerCombat, target) || target.State == "DEAD" || target.InstanceID != impactInstanceID ||
 								!withinDungeonAbilityRadius(walkRects, impactName, impactX, impactZ, target, explosionRadius) {
 								target.Mu.Unlock()
 								continue
 							}
-							finalDamage := applyFinalDamage(ownerCombat, target, shieldExplosionDamage, "arcane", "Arcane Shield")
+							finalDamage := impacts.damage(ownerCombat, target, shieldExplosionDamage, "arcane", "Arcane Shield")
 							if ownerIsPlayer {
 								addThreatLocked(target, ownerID, float64(finalDamage))
 							}
@@ -372,7 +379,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		if e.SubType == "ArcaneMissile" && e.TargetID != "" {
 			if homingTarget != nil {
 				homingTarget.Mu.RLock()
-				validTarget := homingTarget.InstanceID == e.InstanceID && w.CanDamage(owner, homingTarget) && homingTarget.State != "DEAD"
+				validTarget := homingTarget.InstanceID == e.InstanceID && w.CanDamage(ownerCombat, homingTarget) && homingTarget.State != "DEAD"
 				dx := homingTarget.X - e.X
 				dz := homingTarget.Z - e.Z
 				homingTarget.Mu.RUnlock()
@@ -423,7 +430,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			}
 			// Read Target State
 			target.Mu.RLock()
-			if !w.CanDamage(owner, target) || target.State == "DEAD" {
+			if !w.CanDamage(ownerCombat, target) || target.State == "DEAD" {
 				target.Mu.RUnlock()
 				continue
 			}
@@ -491,10 +498,14 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					damageType = "arcane"
 				}
 				target.Mu.Lock()
+				if !w.CanDamage(ownerCombat, target) || target.State == "DEAD" || target.InstanceID != projectileInstanceID {
+					target.Mu.Unlock()
+					continue
+				}
 				spreadPoisonAfterHit := false
 				spreadPoisonDamage := 0
 				spreadPoisonEndTime := time.Time{}
-				finalDamage = applyFinalDamage(ownerCombat, target, finalDamage, damageType, projSkill)
+				finalDamage = impacts.damage(ownerCombat, target, finalDamage, damageType, projSkill)
 				if ownerIsPlayer {
 					addThreatLocked(target, ownerID, float64(finalDamage))
 				}
@@ -578,7 +589,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					bounceNearby := w.Grid.Nearby(target.X, target.Z, minNextDist, projectileInstanceID)
 					for _, bt := range bounceNearby {
 						bt.Mu.RLock()
-						if !w.CanDamage(owner, bt) || bt.State == "DEAD" || hitIDs[bt.ID] {
+						if !w.CanDamage(ownerCombat, bt) || bt.State == "DEAD" || hitIDs[bt.ID] {
 							bt.Mu.RUnlock()
 							continue
 						}
@@ -630,7 +641,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							continue
 						}
 						splashTarget.Mu.Lock()
-						if !w.CanDamage(owner, splashTarget) || splashTarget.ID == target.ID || splashTarget.State == "DEAD" {
+						if !w.CanDamage(ownerCombat, splashTarget) || splashTarget.ID == target.ID || splashTarget.State == "DEAD" {
 							splashTarget.Mu.Unlock()
 							continue
 						}
@@ -642,7 +653,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							if projSkill == "Fireball" && fireballWellBoost && splashTarget.Slowed {
 								splashDmg *= 2
 							}
-							splashDmg = applyFinalDamage(ownerCombat, splashTarget, splashDmg, "fire", projSkill)
+							splashDmg = impacts.damage(ownerCombat, splashTarget, splashDmg, "fire", projSkill)
 							if ownerIsPlayer {
 								addThreatLocked(splashTarget, ownerID, float64(splashDmg))
 							}
@@ -673,7 +684,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					chainNearby := w.Grid.Nearby(target.X, target.Z, minNextDist, projectileInstanceID)
 					for _, ct := range chainNearby {
 						ct.Mu.RLock()
-						if !w.CanDamage(owner, ct) || ct.State == "DEAD" || hitIDs[ct.ID] {
+						if !w.CanDamage(ownerCombat, ct) || ct.State == "DEAD" || hitIDs[ct.ID] {
 							ct.Mu.RUnlock()
 							continue
 						}
@@ -720,7 +731,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					burnTargets := w.Grid.Nearby(projX, projZ, burnRadius, projectileInstanceID)
 					for _, bt := range burnTargets {
 						bt.Mu.RLock()
-						if !w.CanDamage(owner, bt) || bt.State == "DEAD" {
+						if !w.CanDamage(ownerCombat, bt) || bt.State == "DEAD" {
 							bt.Mu.RUnlock()
 							continue
 						}

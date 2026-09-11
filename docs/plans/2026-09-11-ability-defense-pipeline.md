@@ -1,5 +1,38 @@
 # Ability receiving defenses — confirmed repair gate
 
+## Projectile/zone migration — focused acceptance
+
+Projectile updates now own a fresh world-unlocked context and flush after all
+projectile/receiver locks are released. Direct collision, splash, Meteor,
+Meteor's shield-explosion combo and periodic zone damage use the receiving
+pipeline once. Hostility uses an owner combat snapshot with captured party
+identity. Zone damage now checks ordinary hostility rather than only TypeEnemy:
+consenting PvP opponents can be hit while party members/neutrals remain safe.
+
+3829 reproduced six shield-bypassing projectile families plus two damage zones
+ignoring duel opponents (10 failing cases;6 unshielded controls passed), race
+0.057s. Initial test setup also missed the real trap trigger radius; the final
+reproduction moves its defender inside that radius without changing the trap.
+Meteor/zone/trap wall-clock deadlines are explicitly made ready, not claimed as
+native timing proof. Cast-created geometry/damage/owner/trajectory are retained.
+`/tmp/eidolon-projectile-defense-controls-red.log` records the final red state.
+
+72950 passed immediate/projectile focused race1.160s after migration. Added
+exact Fireball direct-versus-splash/reflect budgets, zone party/neutral positive
+and negative controls, lethal reflection against the live projectile caster,
+and simultaneous paid shielded Fireballs through real parallel World.Update.
+61479 passed three repeats under race detection50.586s including existing
+projectile/realm/wall/critical/bounce/impact-event, trained shield and boss-slam
+retaliation/party-credit cases. Logs
+`/tmp/eidolon-projectile-defense-{green,broad}.log`.
+
+Remaining required work includes Whirlwind, Charge landing, Spirit Guardians,
+Seraph, DoTs, basic outgoing/receiving ordering, shield expiry, explosive PvP
+hostility, full merged regression, native four-role feedback/balance and save
+acceptance. None is implicitly closed by this focused pass. Unreleased note
+draft: projectiles and lingering damage zones now respect shields/protection;
+valid PvP opponents are affected by damage zones without harming bystanders.
+
 ## Immediate-cast migration — focused acceptance, not full closure
 
 The four class handlers now use an explicit per-cast impact context. Outgoing
