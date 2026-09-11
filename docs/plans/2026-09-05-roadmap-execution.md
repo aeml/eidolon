@@ -5,7 +5,62 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 23:09 UTC
+## Current checkpoint — September 11, 23:30 UTC
+
+The intervening cancellation-clarification turn made NO PROGRESS. This goal
+continuation is PROGRESS: repaired Teleport endpoint visuals with focused proof,
+diagnosed and reproduced the real release63 predeploy failure, verified a
+test-only recovery and pushed it through ordinary CI. Full scope remains open.
+
+- Release63 run34655698173 is TERMINAL FAILURE, not an active wait. Hosted
+  client/server/all3browser shards, native High/Low gallery and Well Rested
+  rendering/lifecycle all passed. Full-character gameplay stopped on Executioner
+  Spin phone FTR_38 rank5: only4 acquired. Generic retry reused the saved fixture
+  and hit an already-selected branch. No deploy; last independent live check
+  remains healthy62/0231c948 on both new domains.
+- Original evidence `/tmp/eidolon-release63-predeploy-failure-KG87B3` and
+  `/tmp/eidolon-release63-predeploy-failure-20260911.log`. Repro branch
+  `/tmp/eidolon-release63-spin-20260911`, fix/release63-spin-admission, from89d9.
+  Instrumentation-only5cec7780, native33930 TERMINAL1: reproduced FTR_38=4,
+  points6, pending=null, feedback="message rate limit exceeded". Screenshot
+  inspected. Archive `/tmp/eidolon-release63-spin-repro-evidence-Xfnku1`.
+-5d58dbd5 corrects only the test: wait for response, require unchanged rank/points,
+  visible rate feedback and enabled controls, then a new deliberate tap after
+  1.1s (max3attempts). No game auto-retry, relaxed limits or weakened final ranks.
+  Native93676 TERMINAL0,15.4s: real rejection/recovery atFTR_38rank5, then all
+  trained/intermediate/untrained casts and High/Low geometry/fresh-login passed.
+  Scanner0; ownedservices cleaned. Archive `/tmp/eidolon-release63-spin-accepted-xcujH8`.
+  Full lint + exact104casepartition passed. Runtime identical to full-tested89d9.
+- Pushed ONLY test/evidence-doc correction0a871da0fcb4b0fc053958329cf64b38445c94d1
+  from the release63-spin worktree after fetching/checking remote89d9 ancestry.
+  Normal CI **34658209958 ACTIVE**. Poll this NEW run; all required native,
+  QA-input, Pages/SSH and finalLive gates remain. Root ledger NEVER PUSHED.
+  Existing63patch notes/version unchanged; not63live acceptance.
+- Teleport development: `/tmp/eidolon-teleport-visuals-20260911`, branch
+  work/teleport-warp-visuals, clean **ae938843**, based chargef15e445a.
+  Accepted events and real wire converter now preserve departure, clipped
+  landing and Warp4/5radius. Both clients get two exact rune-only rings without
+  private ranks; no non-Warp damage rings. Offline shows resolved landing;
+  multiplayer retains immediate animation but defers spatial effects to the
+  accepted event, with no animation replay. Both endpoints preserve floorY.
+  No balance/damage/cooldown/save changes.
+- ClientRED4failed/1pass0.620; corrected9suites136tests1.915+lint (21619).
+  Actual GameEngine local/observer dispatch, High/Low mesh boundaries and expiry,
+  height, offline clipped landing and rejected/non-Warp controls covered.
+  Server Teleport race3x12.081s (92458), wireRED missing origin then wire race3x
+  1.024s (29031). Doc2026-09-11-teleport-warp-presentation.md retains full/native/
+  Phase-status/save/publication/160talent gates. Not shipped in63.
+- **69259 ACTIVE local full regression** on ae938843: prepare, fullclient, lint,
+  then fullGo-race in sequence. Logs `/tmp/eidolon-teleport-visual-full-{prepare,client,lint,server}-20260911.log`.
+  Re-poll same handle; no second heavy/native process. Started only after old
+  self-hosted job terminal and owned native Spin cleanup. New CI hosted work may
+  run concurrently; avoid GPU contention when its next self-hosted gate starts.
+  Primary remains clean accepted85ee5a5b; charge/visual integration awaits69259.
+- Four-role dungeon clear still failed25565; next native strategy candidate is
+  accepted aura-follow430ea808 in primary85ee5, not yet native-proven. Keep all
+  alive/clear/credit/manualIlyra/Water/save requirements. Soak remains OFF.
+
+## Previous checkpoint — September 11, 23:09 UTC
 
 Previous goal turn was PROGRESS. This continuation is PROGRESS: accepted full
 Phase/aura integration, merged it into primary, and implemented equipped-set
