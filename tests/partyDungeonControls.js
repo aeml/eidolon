@@ -80,26 +80,67 @@ export function partyWarningInputPolicy({ active, safe }) {
     return { holdMelee: active, allowCasts: !active || safe, allowApproach: !active };
 }
 
+// Conservative swept-circle reservations, independent of browser scheduling:
+// concurrent routes must be separated for their full lengths, not merely have
+// different destinations or be clear of actors at the initial snapshot.
+export function partyFormationPathsDisjoint(first, a, second, b) {
+    if (![first?.x, first?.z, a?.dx, a?.dz, second?.x, second?.z, b?.dx, b?.dz].every(Number.isFinite)) return false;
+    const aLength = a.dx ** 2 + a.dz ** 2, bLength = b.dx ** 2 + b.dz ** 2;
+    if (aLength <= 0 || bLength <= 0) return false;
+    const cross = (x, z, dx, dz) => x * dz - z * dx;
+    const determinant = cross(a.dx, a.dz, b.dx, b.dz);
+    const qx = second.x - first.x, qz = second.z - first.z;
+    if (Math.abs(determinant) > 1e-8) {
+        const t = cross(qx, qz, b.dx, b.dz) / determinant;
+        const u = cross(qx, qz, a.dx, a.dz) / determinant;
+        if (t >= 0 && t <= 1 && u >= 0 && u <= 1) return false;
+    }
+    const pointDistance = (point, start, delta, length) => {
+        const x = point.x - start.x, z = point.z - start.z;
+        const t = Math.max(0, Math.min(1, (x * delta.dx + z * delta.dz) / length));
+        return (x - t * delta.dx) ** 2 + (z - t * delta.dz) ** 2;
+    };
+    const endA = { x: first.x + a.dx, z: first.z + a.dz };
+    const endB = { x: second.x + b.dx, z: second.z + b.dz };
+    const clearance = (first.radius || 1.25) + (second.radius || 1.25) + .1;
+    return Math.min(pointDistance(first, second, b, bLength), pointDistance(endA, second, b, bLength),
+        pointDistance(second, first, a, aLength), pointDistance(endB, first, a, aLength)) >= clearance ** 2;
+}
+
 // Walking a single unit is evidence that an input worked, not that a follower
 // caught up. Hold the leader at the waypoint until every actual position is in
 // formation. The caller's clock/read/move hooks never mutate game state.
-export async function gatherPartyFormation({ read, move, plan, now = Date.now, timeout = 15_000, spacing = 4 }) {
-    const deadline = now() + timeout;
+export async function gatherPartyFormation({ read, move, plan, trace, now = Date.now, timeout = 15_000, spacing = 4 }) {
+    const started = now(), deadline = started + timeout;
     while (now() < deadline) {
         const states = await read();
         if (states.some(s => s.dead)) throw new Error('Party formation cannot hide a death');
         if (states.some(s => s.instance !== states[0].instance)) throw new Error('Party formation cannot cross instances');
         const needed = states.slice(1).map(state => partyFollowStep(state, states[0], spacing));
         if (needed.every(step => !step)) return;
-        // Simultaneous planning sees the same unoccupied destination for all
-        // followers. Finish one real move, then reread before planning another;
-        // otherwise a static body-safe path can become occupied during input.
-        const index = needed.findIndex(Boolean) + 1;
-        const step = plan ? await plan(index, states[index], states[0], spacing) : needed[index - 1];
+        const steps = await Promise.all(needed.map((step, index) => step && plan
+            ? plan(index + 1, states[index + 1], states[0], spacing) : step));
+        const origins = steps.map((step, index) => step?.origin || states[index + 1]);
+        const batch = [];
+        steps.forEach((step, index) => {
+            if (step && batch.every(other => partyFormationPathsDisjoint(origins[index], step,
+                origins[other], steps[other]))) batch.push(index);
+        });
         // A member can finish moving between the shared snapshot and its own
         // browser's planning read. A null plan triggers another actual-position
         // check; only the distance check above can declare the group gathered.
-        if (step) await move(index, step);
+        if (now() >= deadline) break;
+        if (!batch.length) continue;
+        trace?.({ phase: 'planned', elapsedMs: now() - started, members: batch.map(index => ({ index: index + 1,
+            from: { x: origins[index].x, z: origins[index].z },
+            delta: { dx: steps[index].dx, dz: steps[index].dz } })) });
+        // Finish every issued input before reporting an error or taking another
+        // body snapshot. A failed member never turns another move into success.
+        const results = await Promise.allSettled(batch.map(index => move(index + 1, steps[index])));
+        trace?.({ phase: 'settled', elapsedMs: now() - started, members: batch.map((index, result) =>
+            ({ index: index + 1, outcome: results[result].status })) });
+        const failure = results.find(result => result.status === 'rejected');
+        if (failure) throw failure.reason;
     }
     throw new Error('Party failed to gather before the next pull');
 }

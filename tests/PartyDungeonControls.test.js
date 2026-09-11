@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { acquirePartyAllyPointer, gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyFormationStep, partyPathAvoidsActors, partyWarningInputPolicy, planPartyTelegraphEscape } from './partyDungeonControls.js';
+import { acquirePartyAllyPointer, gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyFormationStep, partyPathAvoidsActors, partyFormationPathsDisjoint, partyWarningInputPolicy, planPartyTelegraphEscape } from './partyDungeonControls.js';
 import { clipDungeonEffectSegment } from '../src/skills/dungeonEffectGeometry.js';
 
 test('healer stops seven units short of the tank rather than aiming into the boss', () => {
@@ -143,9 +143,75 @@ test('followers replan after each settled move instead of choosing a shared dest
             activeMoves--;
         } });
     expect(peakMoves).toBe(1);
-    expect(planned.map(p => p.activeMoves)).toEqual([0, 0, 0]);
-    expect(planned[1].firstFollower).toEqual({ x: -3, z: 3 });
+    expect(planned.every(p => p.activeMoves === 0)).toBe(true);
+    expect(planned.filter(p => p.index === 2).at(-1).firstFollower).toEqual({ x: -3, z: 3 });
     expect(states.slice(1).every(s => Math.hypot(s.x, s.z) < 5)).toBe(true);
+});
+
+test('disjoint follower lanes move together without extending the original gathering deadline', async () => {
+    const states = [{ x: 0, z: 0 }, { x: -4, z: 12 }, { x: 4, z: 12 }, { x: 0, z: 16 }];
+    const destinations = [null, { x: -4, z: 1 }, { x: 4, z: 1 }, { x: 0, z: 4 }];
+    let clock = 0, active = 0, peak = 0;
+    await gatherPartyFormation({ read: async () => states.map(s => ({ ...s })), now: () => clock,
+        plan: async (index, state) => ({ dx: destinations[index].x - state.x, dz: destinations[index].z - state.z }),
+        move: async (index, step) => {
+            const began = clock;
+            peak = Math.max(peak, ++active);
+            await Promise.resolve();
+            clock = Math.max(clock, began + 6000);
+            Object.assign(states[index], { x: states[index].x + step.dx, z: states[index].z + step.dz });
+            active--;
+        } });
+    expect(peak).toBe(3);
+    expect(clock).toBe(6000);
+    expect(states.slice(1).every(s => Math.hypot(s.x, s.z) < 5)).toBe(true);
+});
+
+test.each([
+    [{ x: 0, z: 0 }, { dx: 12, dz: 0 }, { x: 0, z: 3 }, { dx: 12, dz: 0 }, true],
+    [{ x: 0, z: 0 }, { dx: 12, dz: 0 }, { x: 0, z: 2.59 }, { dx: 12, dz: 0 }, false],
+    [{ x: 0, z: 0 }, { dx: 12, dz: 0 }, { x: 6, z: -5 }, { dx: 0, dz: 10 }, false],
+    [{ x: 0, z: 0 }, { dx: 4, dz: 12 }, { x: 0, z: 0 }, { dx: -4, dz: 12 }, false],
+    [{ x: 0, z: 0 }, { dx: 12, dz: 0 }, { x: 10, z: 0 }, { dx: -4, dz: 0 }, false],
+    [{ x: 0, z: 0 }, { dx: 4, dz: 0 }, { x: 10, z: 0 }, { dx: 4, dz: 0 }, true],
+    [{ x: 0, z: 0 }, { dx: 4, dz: 0 }, { x: 5, z: 2 }, { dx: 0, dz: 4 }, false],
+    [{ x: 0, z: 0, radius: 3 }, { dx: 12, dz: 0 }, { x: 0, z: 5, radius: 3 }, { dx: 12, dz: 0 }, false]
+])('concurrent paths reserve the whole actor capsule: %j %j %j %j', (first, a, second, b, expected) => {
+    expect(partyFormationPathsDisjoint(first, a, second, b)).toBe(expected);
+    expect(partyFormationPathsDisjoint(second, b, first, a)).toBe(expected);
+});
+test.each([{ dx: 0, dz: 0 }, { dx: NaN, dz: 1 }, { dx: Infinity, dz: 0 }])('invalid reservations fail closed: %j', step => {
+    expect(partyFormationPathsDisjoint({ x: 0, z: 0 }, step, { x: 5, z: 5 }, { dx: 2, dz: 0 })).toBe(false);
+});
+test('a failed batch waits for every issued move and records the failure without accepting formation', async () => {
+    let finishedOther = false;
+    const trace = jest.fn();
+    await expect(gatherPartyFormation({ read: async () => [{ x: 0, z: 0 }, { x: -4, z: 12 }, { x: 4, z: 12 }],
+        plan: async () => ({ dx: 0, dz: -10 }), trace,
+        move: async index => {
+            if (index === 1) throw new Error('real input failed');
+            await Promise.resolve();
+            await Promise.resolve();
+            finishedOther = true;
+        } })).rejects.toThrow('real input failed');
+    expect(finishedOther).toBe(true);
+    expect(trace.mock.calls.map(([entry]) => entry.phase)).toEqual(['planned', 'settled']);
+    expect(trace.mock.calls[1][0].members).toEqual([{ index: 1, outcome: 'rejected' }, { index: 2, outcome: 'fulfilled' }]);
+});
+test('reservations use the actual planning origin rather than an older group snapshot', async () => {
+    const states = [{ x: 0, z: 0 }, { x: -4, z: 12 }, { x: 4, z: 12 }];
+    const trace = jest.fn();
+    let active = 0, peak = 0;
+    await gatherPartyFormation({ read: async () => states.map(s => ({ ...s })), trace,
+        plan: async () => ({ dx: 0, dz: -10, origin: { x: 0, z: 12 } }),
+        move: async index => {
+            peak = Math.max(peak, ++active);
+            await Promise.resolve();
+            states[index].z = 2;
+            active--;
+        } });
+    expect(peak).toBe(1);
+    expect(trace.mock.calls[0][0].members[0].from).toEqual({ x: 0, z: 12 });
 });
 
 test('blocked followers hit the original bounded gathering deadline', async () => {

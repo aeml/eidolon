@@ -277,8 +277,13 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 // Finish this waypoint before deciding where followers gather.
                 await expect.poll(() => tank.page.evaluate(() => !window.game.player.targetPosition),
                     { timeout: 5000 }).toBe(true);
+                const formationTrace = [];
                 try {
                     await gatherPartyFormation({ read: () => Promise.all(actors.map(actor => snapshot(actor.page))),
+                        trace: entry => {
+                            formationTrace.push(entry);
+                            if (formationTrace.length > 32) formationTrace.shift();
+                        },
                         plan: (index, _state, anchor, spacing) => actors[index].page.evaluate(async ({ anchor, previous, spacing, slot }) => {
                             const { partyFormationStep, partyPathAvoidsActors } = await import('/tests/partyDungeonControls.js');
                             const { isEarnedRetreatPathClear } = await import('/tests/wizardHuntControls.js');
@@ -290,7 +295,8 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                                 isEarnedRetreatPathClear(g.collisionManager, p.position, p.radius || 1.25,
                                     { x: step.dx, z: step.dz }) &&
                                 partyPathAvoidsActors(p.position, step, bodies, p.radius || 1.25), spacing, slot);
-                            return step && { ...step, arrival: { x: anchor.x, z: anchor.z, radius: spacing + 1, instanceId: anchor.instance } };
+                            return step && { ...step, origin: { x: p.position.x, z: p.position.z, radius: p.radius || 1.25 },
+                                arrival: { x: anchor.x, z: anchor.z, radius: spacing + 1, instanceId: anchor.instance } };
                         }, { anchor: { x: anchor.x, z: anchor.z, instance: anchor.instance }, previous: formationAnchor,
                             spacing, slot: [Math.PI / 3, -Math.PI / 3, 0][index - 1] }),
                         move: async (index, step) => {
@@ -316,7 +322,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                                         radius: other.radius || 1.25 })),
                                 blockedStops: p.movementMetrics?.blockedStops || 0 };
                         }) })));
-                    console.log('[party-formation-failure]', JSON.stringify({ previousAnchor: formationAnchor, positions }));
+                    console.log('[party-formation-failure]', JSON.stringify({ previousAnchor: formationAnchor, positions, formationTrace }));
                     throw error;
                 }
                 const arrived = await snapshot(tank.page);

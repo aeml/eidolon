@@ -471,3 +471,53 @@ covering distinct separated slots and unchanged ordinary movement assertions.
 Logs`/tmp/eidolon-party-slots-final-{focused,lint,discovery}.log`. The geometry
 test still assumes ideal arrival; native party clear and earned campaign gates
 remain mandatory and open.
+
+## Warden survives; post-fight gathering still fails —99535
+
+99535 on clean229cbdd8 terminated1 after15.7minutes. Seed6347868825596501926,
+generator2/Normal30/no fallback. All four entered, cleared the two opening rooms,
+completed two full-party town recovery/individual guide-resume cycles with exact
+progress retained, and defeated the15000HP Rootbound Warden. All four had655Gold,
+no observed death and no rejected casts. Manual final chapter claims were not
+reached. The later formation failure is not a combat death or full-clear result.
+
+Boss-only damage/taken: Fighter5057/1458, Wizard3691/920, Rogue6261/736;
+Cleric3041effective ally healing/1288taken. Full-run damage/taken: Fighter9152/2367,
+Wizard6275/920, Rogue11138/1096; Cleric4244effective ally healing. Accepted casts:
+Fighter4Fortress/14Whirlwind/14ShieldSlam/4Charge; Cleric9Embrace/7Light;
+Wizard33Fireball/2Shield; Rogue6Coating/50PiercingThrow. Final tank940HP/123MP
+includes normal cleanup/town recovery and must not be described as boss reserves.
+The last pre-defeat tank report was855HP/14MP with260bossHP remaining.
+
+The run then hit the unchanged15s formation deadline while walking after the
+boss, before a third town-rest receipt. At failure the Cleric and Wizard were
+inside the formation radius; Rogue was near the previous anchor about14units
+behind the tank. All targets cleared, camera/mesh offsets0; ClericblockedStops6,
+others0. Per-move timings were not recorded, so the exact time spent planning,
+retrying or moving each follower cannot be reconstructed from this run alone.
+Archive`/tmp/eidolon-four-role-slots-proof-8rI0vh` retains reports/results/log;
+wrapper scanned2files, copied-log QA-prefix count0, owned containers and
+18580/18581/41980listeners absent.
+
+Focused62919 RED demonstrates a controller scheduling limitation: three disjoint
+six-second moves exceed the existing15s deadline serially even though they can
+finish together. The controller now batches only routes whose entire swept
+actor circles are disjoint. Shared spawn origins, intersecting/overlapping
+routes, insufficient body clearance and invalid segments cannot run together.
+Reservations use each browser's actual planning origin, not an older group
+snapshot. Existing real terrain/body checks and distinct gathering slots remain.
+After all issued moves settle, actual positions are reread before any next batch
+or completion; one input error still fails after other issued inputs finish.
+
+Bounded failure diagnostics now retain planned origins/deltas, batch membership,
+elapsed times and promise outcomes. A fulfilled input hook is not an arrival
+receipt: actual living same-instance positions remain the only completion test.
+No gameplay, resource, equipment, formation radius,15s deadline, combat or total
+expedition limit changed. This scheduling test is not proof that concurrency
+alone explains every second of99535's failure.
+
+Final39738 passed82tests/5suites8.782s, lint and single-route discovery, including
+full recorded terrain with follower bodies, crossing/collinear/near-end/shared-
+origin reservations, fresh planning origins and error propagation. Logs
+`/tmp/eidolon-party-batch-final2-{focused,lint,discovery}.log`. Native full-clear,
+manual turn-in/relogin and earned campaign acceptance remain open.
