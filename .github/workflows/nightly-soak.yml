@@ -20,7 +20,9 @@ concurrency:
 jobs:
   soak:
     name: 100-client authoritative-state soak
-    runs-on: [self-hosted, linux, x64, eidolon-live-browser]
+    # Never occupy the deployment/GPU runner for the uninterrupted 24-hour soak.
+    runs-on: [self-hosted, linux, x64, eidolon-soak]
+    if: github.repository == 'aeml/eidolon' && (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')))
     timeout-minutes: 1500
     env:
       SOAK_DURATION: ${{ inputs.duration || '24h' }}
