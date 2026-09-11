@@ -34,46 +34,78 @@ export function partyPathAvoidsActors(state, step, actors, radius = 1.25) {
     });
 }
 
-// At a hallway turn, a direct chord to the tank can cross a wall. Every prior
-// gathering ended near the previous anchor; use that already-walked corner as
-// an intermediate destination when the direct segment is not physically clear.
-export function partyFormationStep(state, anchor, previousAnchor, canStep, spacing = 4, slotOffset = null) {
+// A bounded visibility graph joins verified walking segments around actor
+// capsules and the walked hallway corner. A legal side step alone is not a
+// route: selecting it then returning to the previous anchor can loop forever.
+// canStep(delta, origin) must check the complete floor/body path from origin.
+export function partyFormationStep(state, anchor, previousAnchor, canStep, spacing = 4, slotOffset = null, actors = []) {
     const direct = partyFollowStep(state, anchor, spacing);
     if (!direct) return null;
-    // Early arrivals must leave a lane for the last follower. Distinct side/
-    // rear slots avoid filling the entire rear arc with two actor capsules.
-    // Orient against the walked path, not each follower's changing position.
     const angle = Math.atan2(state.z - anchor.z, state.x - anchor.x);
-    if (Number.isFinite(slotOffset)) {
-        const approach = previousAnchor && Math.hypot(previousAnchor.x - anchor.x, previousAnchor.z - anchor.z) > 1
-            ? Math.atan2(previousAnchor.z - anchor.z, previousAnchor.x - anchor.x) : angle;
-        // Keep half a unit inside the existing spacing+1 arrival boundary.
-        const slotRadius = spacing + .5;
-        const destination = { x: anchor.x + Math.cos(approach + slotOffset) * slotRadius,
-            z: anchor.z + Math.sin(approach + slotOffset) * slotRadius };
-        const preferred = partyFollowStep(state, destination, 0);
-        if (preferred && canStep(preferred)) return preferred;
+    const approach = previousAnchor && Math.hypot(previousAnchor.x - anchor.x, previousAnchor.z - anchor.z) > 1
+        ? Math.atan2(previousAnchor.z - anchor.z, previousAnchor.x - anchor.x) : angle;
+    if (!Number.isFinite(slotOffset) && canStep(direct, state)) return direct;
+    const nodes = [{ x: state.x, z: state.z, goal: false }];
+    const add = (x, z, goal = false) => {
+        if (![x, z].every(Number.isFinite)) return;
+        const duplicate = nodes.find(node => Math.hypot(node.x - x, node.z - z) < .05);
+        if (duplicate) { duplicate.goal ||= goal; return; }
+        nodes.push({ x, z, goal });
+    };
+    const preferredAngle = approach + (Number.isFinite(slotOffset) ? slotOffset : 0);
+    const addGoal = direction => add(anchor.x + Math.cos(direction) * (spacing + .5),
+        anchor.z + Math.sin(direction) * (spacing + .5), true);
+    addGoal(preferredAngle);
+    for (let index = 1; index < 16; index++) addGoal(preferredAngle + index * Math.PI / 8);
+    // Include cardinal directions for narrow axis-aligned hallway joins.
+    for (let index = 0; index < 4; index++) addGoal(index * Math.PI / 2);
+    const delta = (from, to) => ({ dx: to.x - from.x, dz: to.z - from.z });
+    const firstInput = point => {
+        const step = delta(state, point), scale = Math.min(1, 12 / Math.hypot(step.dx, step.dz));
+        return { dx: step.dx * scale, dz: step.dz * scale };
+    };
+    for (const goal of nodes.slice(1)) {
+        if (canStep(delta(state, goal), state)) return firstInput(goal);
     }
-    if (canStep(direct)) return direct;
-    // Do not aim every follower at the same occupied point on the gathering
-    // circle. Nearby alternatives retain the same formation radius.
-    for (const radius of [spacing, spacing + .5]) {
-        for (const offset of [0, .25, -.25, .5, -.5, 1, -1, 1.5, -1.5, Math.PI]) {
-            const destination = { x: anchor.x + Math.cos(angle + offset) * radius,
-                z: anchor.z + Math.sin(angle + offset) * radius };
-            const alternative = partyFollowStep(state, destination, 0);
-            if (alternative && canStep(alternative)) return alternative;
+    if (previousAnchor) add(previousAnchor.x, previousAnchor.z);
+    // At most eight nearby bodies contribute detour vertices. All bodies still
+    // participate in canStep collision checks; the cap can fail a search, never
+    // make an omitted obstacle passable. Twelve sides plus clearance keep their
+    // connecting chords outside each actor's collision circle.
+    const nearby = actors.filter(actor => [actor.x, actor.z].every(Number.isFinite))
+        .map(actor => ({ actor, distance: Math.min(Math.hypot(actor.x - state.x, actor.z - state.z),
+            Math.hypot(actor.x - anchor.x, actor.z - anchor.z)) }))
+        .filter(entry => entry.distance <= 24).sort((a, b) => a.distance - b.distance).slice(0, 8);
+    for (const { actor } of nearby) {
+        const radius = ((state.radius || 1.25) + (actor.radius || 1.25) + .1) / Math.cos(Math.PI / 12) + .15;
+        for (let index = 0; index < 12; index++) {
+            const direction = index * Math.PI / 6;
+            add(actor.x + Math.cos(direction) * radius, actor.z + Math.sin(direction) * radius);
         }
     }
-    const via = previousAnchor ? partyFollowStep(state, previousAnchor, 0) : null;
-    if (via && canStep(via)) return via;
-    // A nearby body can block every longer approach. Take a short lateral
-    // step first, only if its complete floor/body path is verified clear.
-    for (const distance of [3, -3, 4.5, -4.5]) {
-        const side = { dx: -Math.sin(angle) * distance, dz: Math.cos(angle) * distance };
-        if (canStep(side)) return side;
+    const costs = nodes.map(() => Infinity), parents = nodes.map(() => -1), visited = new Set();
+    costs[0] = 0;
+    for (let search = 0; search < nodes.length; search++) {
+        let current = -1;
+        for (let index = 0; index < nodes.length; index++) {
+            if (!visited.has(index) && Number.isFinite(costs[index]) && (current < 0 || costs[index] < costs[current])) current = index;
+        }
+        if (current < 0) break;
+        if (nodes[current].goal) {
+            while (parents[current] > 0) current = parents[current];
+            return firstInput(nodes[current]);
+        }
+        visited.add(current);
+        for (let index = 1; index < nodes.length; index++) {
+            if (visited.has(index)) continue;
+            const step = delta(nodes[current], nodes[index]), length = Math.hypot(step.dx, step.dz);
+            if (length > 24 || (current === 0 && length < 1 && !nodes[index].goal) || costs[current] + length >= costs[index]) continue;
+            if (!canStep(step, nodes[current])) continue;
+            costs[index] = costs[current] + length;
+            parents[index] = current;
+        }
     }
-    throw new Error('Party formation has no verified walking segment');
+    throw new Error('Party formation has no verified walking route');
 }
 
 export function partyWarningInputPolicy({ active, safe }) {

@@ -27,18 +27,18 @@ test('formation follows the walked corner instead of cutting an L-shaped hallway
     const clear = from => step => !clipDungeonEffectSegment(floors, from,
         { x: from.x + step.dx, z: from.z + step.dz }).blocked;
     expect(clear(follower)(partyFollowStep(follower, anchor))).toBe(false);
-    const first = partyFormationStep(follower, anchor, corner, clear(follower));
+    const first = partyFormationStep(follower, anchor, corner, (step, from) => clear(from)(step));
     expect(clear(follower)(first)).toBe(true);
-    const second = partyFormationStep(corner, anchor, corner, clear(corner));
+    const second = partyFormationStep(corner, anchor, corner, (step, from) => clear(from)(step));
     expect(second).toEqual({ dx: 0, dz: 10 });
 });
 
 test('a teammate occupying the straight gathering destination gets a verified alternative', () => {
     const follower = { x: 0, z: 5.8 }, tank = { x: 0, z: 0 };
     const bodies = [{ ...tank, radius: 1.25 }, { x: 0, z: 2.5, radius: 1.25 }];
-    const clear = step => partyPathAvoidsActors(follower, step, bodies);
+    const clear = (step, from = follower) => partyPathAvoidsActors(from, step, bodies);
     expect(clear(partyFollowStep(follower, tank))).toBe(false);
-    const step = partyFormationStep(follower, tank, null, clear);
+    const step = partyFormationStep(follower, tank, null, clear, 4, null, bodies);
     expect(clear(step)).toBe(true);
     expect(Math.abs(step.dx)).toBeGreaterThan(1);
 });
@@ -49,7 +49,7 @@ test('side and rear slots leave a clear arrival lane inside the unchanged five-u
         const follower = followers[index];
         const bodies = [anchor, ...followers.filter(other => other !== follower)];
         const step = partyFormationStep(follower, anchor, previous,
-            candidate => partyPathAvoidsActors(follower, candidate, bodies), 4, offset);
+            (candidate, from) => partyPathAvoidsActors(from, candidate, bodies), 4, offset, bodies);
         follower.x += step.dx;
         follower.z += step.dz;
         expect(Math.hypot(follower.x, follower.z)).toBeCloseTo(4.5);
@@ -60,17 +60,18 @@ test('side and rear slots leave a clear arrival lane inside the unchanged five-u
         }
     }
 });
-test('a nearby blocking body can be passed using a checked lateral step', () => {
+test('a nearby blocking body can be passed using a complete checked detour', () => {
     const follower = { x: 0, z: 18 }, tank = { x: 0, z: 0 };
     const bodies = [{ x: 0, z: 15, radius: 1.25 }];
-    const clear = from => step => partyPathAvoidsActors(from, step, bodies);
-    const side = partyFormationStep(follower, tank, { x: 0, z: 14 }, clear(follower));
-    expect(Math.abs(side.dx)).toBe(3);
-    expect(Math.abs(side.dz)).toBeLessThan(.001);
-    const moved = { x: follower.x + side.dx, z: follower.z + side.dz };
-    const advance = partyFormationStep(moved, tank, { x: 0, z: 14 }, clear(moved));
-    expect(clear(moved)(advance)).toBe(true);
-    expect(Math.hypot(moved.x + advance.dx, moved.z + advance.dz)).toBeLessThan(Math.hypot(moved.x, moved.z));
+    const clear = (step, from = follower) => partyPathAvoidsActors(from, step, bodies);
+    for (let count = 0; partyFollowStep(follower, tank) && count < 8; count++) {
+        const step = partyFormationStep(follower, tank, { x: 0, z: 14 }, clear, 4, null, bodies);
+        expect(clear(step)).toBe(true);
+        expect(Math.hypot(step.dx, step.dz)).toBeLessThanOrEqual(12.00001);
+        follower.x += step.dx;
+        follower.z += step.dz;
+    }
+    expect(partyFollowStep(follower, tank)).toBeNull();
 });
 test('already-overlapping actors can separate, but not walk through one another', () => {
     const from = { x: 0, z: 0 }, bodies = [{ x: 1, z: 0, radius: 1.25 }];
@@ -83,6 +84,49 @@ test('already-overlapping actors can separate, but not walk through one another'
 test('coincident spawn positions can separate instead of trapping every planned direction', () => {
     expect(partyPathAvoidsActors({ x: 0, z: 0 }, { dx: 3, dz: 0 }, [{ x: 0, z: 0, radius: 1.25 }])).toBe(true);
 });
+test('recorded post-rest body barrier reaches formation without cycling through the previous anchor', () => {
+    const follower = { x: 19957.501629686893, z: 19887.593814190874 };
+    const anchor = { x: 19949.62800608872, z: 19887.402609344314 };
+    const previous = { x: 19957.589265926803, z: 19887.585694589347 };
+    const bodies = [anchor, { x: 19953.934357986913, z: 19884.873595691028 },
+        { x: 19953.408112250418, z: 19889.393467331647 }];
+    for (let count = 0; partyFollowStep(follower, anchor) && count < 8; count++) {
+        const clear = (step, from = follower) => partyPathAvoidsActors(from, step, bodies);
+        const step = partyFormationStep(follower, anchor, previous, clear, 4, -Math.PI / 3, bodies);
+        expect(clear(step)).toBe(true);
+        follower.x += step.dx;
+        follower.z += step.dz;
+    }
+    expect(partyFollowStep(follower, anchor)).toBeNull();
+});
+test('recorded post-Warden follower positions have a complete body-clear route', () => {
+    const follower = { x: 19959.79135649875, z: 19507.19396907301 };
+    const anchor = { x: 19971.456330809397, z: 19499.363238894413 };
+    const previous = { x: 19959.886184897914, z: 19507.23852946556 };
+    const bodies = [anchor, { x: 19970.771101265793, z: 19503.25162702815 },
+        { x: 19966.867154454183, z: 19500.528392315224 }];
+    for (let count = 0; partyFollowStep(follower, anchor) && count < 8; count++) {
+        const clear = (step, from = follower) => partyPathAvoidsActors(from, step, bodies);
+        const step = partyFormationStep(follower, anchor, previous, clear, 4, 0, bodies);
+        expect(clear(step)).toBe(true);
+        follower.x += step.dx;
+        follower.z += step.dz;
+    }
+    expect(partyFollowStep(follower, anchor)).toBeNull();
+});
+test('a legal intermediate sidestep without an onward route is not accepted', () => {
+    const state = { x: 20, z: 0 }, anchor = { x: 0, z: 0 }, previous = { x: 20, z: 3 };
+    const clear = (step, from) => from.x + step.dx >= 10;
+    expect(clear({ dx: 0, dz: 3 }, state)).toBe(true);
+    expect(() => partyFormationStep(state, anchor, previous, clear)).toThrow('no verified walking route');
+});
+test('an impassable crowded scene has bounded search rather than unchecked fallback input', () => {
+    const bodies = Array.from({ length: 100 }, (_, index) => ({ x: 10 + index / 100, z: index / 100 }));
+    const clear = jest.fn(() => false);
+    expect(() => partyFormationStep({ x: 20, z: 0 }, { x: 0, z: 0 }, { x: 20, z: 3 }, clear, 4, 0, bodies))
+        .toThrow('no verified walking route');
+    expect(clear.mock.calls.length).toBeLessThan(150);
+});
 test('sub-millimetre replicated spawn offsets use the collision system coincident-body rule', () => {
     const from = { x: 19999.907985236892, z: 19990.008490300283 };
     const body = { x: 19999.908203125, z: 19990.0078125, radius: 1.25 };
@@ -91,7 +135,7 @@ test('sub-millimetre replicated spawn offsets use the collision system coinciden
 test('formation preserves an already-safe direct step and refuses an unverified alternative', () => {
     const follower = { x: 0, z: 0 }, anchor = { x: 14, z: 0 };
     expect(partyFormationStep(follower, anchor, null, () => true)).toEqual({ dx: 10, dz: 0 });
-    expect(() => partyFormationStep(follower, anchor, { x: 0, z: 2 }, () => false)).toThrow('no verified walking segment');
+    expect(() => partyFormationStep(follower, anchor, { x: 0, z: 2 }, () => false)).toThrow('no verified walking route');
 });
 test('a missing safe plan cannot count an out-of-formation member as gathered', async () => {
     let clock = 0;

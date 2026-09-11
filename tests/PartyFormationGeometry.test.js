@@ -24,7 +24,8 @@ test('full-size followers traverse every canonical join of the recorded party se
             leader = new THREE.Vector3(anchor.x, 0, anchor.z);
             for (const follower of followers) {
                 for (let stepIndex = 0; partyFollowStep(follower, leader) && stepIndex < 4; stepIndex++) {
-                    const clear = step => isEarnedRetreatPathClear(collision, follower, 1.25, { x: step.dx, z: step.dz });
+                    const clear = (step, from = follower) => isEarnedRetreatPathClear(collision,
+                        new THREE.Vector3(from.x, 0, from.z), 1.25, { x: step.dx, z: step.dz });
                     const step = partyFormationStep(follower, leader, previous, clear);
                     expect(step).not.toBeNull();
                     expect(clear(step)).toBe(true);
@@ -53,9 +54,9 @@ test('three followers leave room for the last arrival across the recorded floor 
             for (const [index, follower] of followers.entries()) {
                 for (let count = 0; partyFollowStep(follower, leader) && count < 8; count++) {
                     const bodies = [leader, ...followers.filter(other => other !== follower)];
-                    const clear = step => isEarnedRetreatPathClear(collision, follower, 1.25, { x: step.dx, z: step.dz }) &&
-                        partyPathAvoidsActors(follower, step, bodies);
-                    const step = partyFormationStep(follower, leader, previous, clear, 4, offsets[index]);
+                    const clear = (step, from = follower) => partyPathAvoidsActors(from, step, bodies) &&
+                        isEarnedRetreatPathClear(collision, new THREE.Vector3(from.x, 0, from.z), 1.25, { x: step.dx, z: step.dz });
+                    const step = partyFormationStep(follower, leader, previous, clear, 4, offsets[index], bodies);
                     expect(clear(step)).toBe(true);
                     follower.x += step.dx;
                     follower.z += step.dz;

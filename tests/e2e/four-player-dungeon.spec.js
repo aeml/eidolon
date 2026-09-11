@@ -291,10 +291,14 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                             const bodies = [...g.remotePlayers.values()].filter(other => other !== p && other.id !== p.id &&
                                 other.isActive && other.stats && other.state !== 'DEAD' && other.position)
                                 .map(other => ({ x: other.position.x, z: other.position.z, radius: other.radius || 1.25 }));
-                            const step = partyFormationStep(p.position, anchor, previous, step =>
-                                isEarnedRetreatPathClear(g.collisionManager, p.position, p.radius || 1.25,
-                                    { x: step.dx, z: step.dz }) &&
-                                partyPathAvoidsActors(p.position, step, bodies, p.radius || 1.25), spacing, slot);
+                            const step = partyFormationStep(p.position, anchor, previous, (step, from) => {
+                                const origin = p.position.clone();
+                                origin.x = from.x;
+                                origin.z = from.z;
+                                return partyPathAvoidsActors(origin, step, bodies, p.radius || 1.25) &&
+                                    isEarnedRetreatPathClear(g.collisionManager, origin, p.radius || 1.25,
+                                        { x: step.dx, z: step.dz });
+                            }, spacing, slot, bodies);
                             return step && { ...step, origin: { x: p.position.x, z: p.position.z, radius: p.radius || 1.25 },
                                 arrival: { x: anchor.x, z: anchor.z, radius: spacing + 1, instanceId: anchor.instance } };
                         }, { anchor: { x: anchor.x, z: anchor.z, instance: anchor.instance }, previous: formationAnchor,

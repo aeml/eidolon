@@ -521,3 +521,45 @@ full recorded terrain with follower bodies, crossing/collinear/near-end/shared-
 origin reservations, fresh planning origins and error propagation. Logs
 `/tmp/eidolon-party-batch-final2-{focused,lint,discovery}.log`. Native full-clear,
 manual turn-in/relogin and earned campaign acceptance remain open.
+
+## Proven previous-anchor loop —16027, September11
+
+16027 on cleane2780eb6 terminated1 after4.0minutes, seed723058021901932776,
+generator2/Normal30/no fallback. Setup/party/entry, the first room and one
+all-four town recovery/individual resume cycle passed. All four212Gold, no death;
+Fighter2170damage, Wizard1373, Rogue2350, Cleric340effective ally healing. No boss
+or manual final quest claim. Archive`/tmp/eidolon-four-role-batch-proof-J5oXCW`
+retains report/results/log; wrapper scanned2files/copied-log QA-prefix count0,
+owned services and18580/18581/41980listeners absent.
+
+Unlike99535, the new trace proves the failure's repeated movement pattern.
+Wizard alternated between about(19957.50,19887.59) and(19957.35,19890.62): a
+checked three-unit sideways move, then a checked return to the previous anchor.
+Inputs settled in about0.4–0.6s, repeating until15s. The Cleric/Rogue bodies
+blocked direct approaches. This is a looping fallback planner, not evidence of
+slow inputs, broken terrain or a need to extend the deadline. The earlier
+synthetic disjoint-move scheduling check remains valid but did not fix this loop.
+
+15581 RED reproduces the loop with its exact observed actor coordinates. The
+planner now searches a bounded graph of complete verified walking segments,
+including the previous hallway corner and clearance points around nearby actor
+circles. A legal intermediate step is returned only when an onward route to a
+gathering point is verified. It no longer alternates an unproductive sidestep
+and previous-anchor fallback. Detour vertices are bounded to eight nearby bodies;
+all bodies still participate in clearance checks. Failed search fails closed.
+Real input remains capped12units per step, with existing disjoint-path batching,
+actual same-instance/living arrival and unchanged15s/combat/expedition limits.
+No game collision, resources, difficulty or preparation changed.
+
+The exact16027 body case and99535 post-Warden positions pass with idealized
+arrival, as do all canonical joins of the existing62131 production floor fixture
+with actual collision and three follower bodies. Neither coordinate test replays
+the different failed seed's entire terrain, browser timing or combat. Each graph
+edge checks its own origin; the real browser clones the actor's height into the
+detached query, without mutating player position. Legal dead-end side steps,
+bounded crowded searches and ordinary movement failures are covered.
+
+78652 passed53tests/2suites8.780s. Final36637 passed86tests/5suites9.092s,
+lint and single-route discovery. Logs
+`/tmp/eidolon-party-loop-final-{focused,lint,discovery}.log`. Native full-clear,
+manual turn-ins/freshlogin, earned progression and release acceptance remain open.
