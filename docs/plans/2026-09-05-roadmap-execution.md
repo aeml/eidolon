@@ -5,7 +5,54 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 00:46 UTC
+## Current checkpoint — September 11, 01:04 UTC
+
+Previous turn was PROGRESS through a reproduced Roar consumer. This turn is
+PROGRESS: implemented its real effect/visible boundary, passed focused gates,
+started combined full-server acceptance and preserved the terminal Matron failure.
+Whole roadmap, dungeon fullclear and release gates remain open; goal stays active.
+
+-96841 TERMINAL1 on46596437, seed7111779750819871948/gen2/Normal30/no fallback.
+  Warden killed with all four alive; five all-four recovery/resume cycles passed
+  exact progress. Briar Matron started16800HP; last periodic10429HP/tank301HP,
+  then Fighter died while Cleric had406MP and was10.2366away. Later final evidence
+  also latched Cleric/Rogue deaths; Wizard survived. Fighter final940HP/610MP
+  includes subsequent recovery, not fight survival. All1014Gold, no rejected
+  casts. FullrunF15797damage/6042taken,W11490/1088,R18135/4822,C8977heal/3890taken.
+  Warden-onlyF4947/2373,W3896/368,R6181/2208,C4742heal/2024taken.
+  Healer trace repeatedly prioritizes lowest-HP Rogue27–28away while cooldown
+  ready/mana391–405; recipients repeatedly take191–194damage inside12.5warnings.
+  Escape planning currently ignores party-body clearance and healing selection
+  precedes reachability. These are controller leads, not proven balance/resource
+  defects. No correction/restart yet. Primary now clean9d389c6b, docs-only atop
+  tested46596437; detailed evidence in its four-player acceptance record.
+  Archive`/tmp/eidolon-four-role-route-proof-kGYqQu`, copiedQA-prefix0;
+  exact services/18580/18581/41980ports gone. Fullclear/manual/relogin never reached.
+- New worktree`/tmp/eidolon-guardian-roar-area-gSp6Rq`, branch
+ `work/guardian-roar-area-20260911`, clean a8e6851d, inherits Purifying repair.
+  Roar now applies Technique/Lineholder/Rhythm area bonuses to query/geometry
+  and server shape; offline support and local/remote ring match. Preserves costs,
+  cooldowns/buff magnitude/boss-taunt gate/saved IDs. Original probe1174 RED;
+  standard24071 RED8.966s; client17538 RED28cases1.824s (14offline cases initially
+  also had insufficient fixture mana, corrected to200;14shape cases genuine).
+ 61557 Go race PASS11.151s,97414walls/PvP/instance race PASS1.680s,
+ 41565client PASS93tests/5suites1.755s;77792lint/syntax/discovery0.
+ 56585original diagnostic now PASS2.022s, not full-tree sign-off.
+  New ordinary-phone purchase/save/ring route included in required-all but NOT
+  run yet. Work record and unreleased note in2026-09-11-guardian-roar-area.md.
+-19979 ACTIVE full Go race on frozen a8e6851d; sole local heavy gate. Log
+ `/tmp/eidolon-utility-areas-full-server.log`. Continue exact handle, then full
+  client and both Purifying/Roar native acceptance. No source edits in that
+  worktree while its full-server gate runs. Older candidate98320775 remains
+  unchanged; neither talent repair is integrated there or deployed.
+- Purifying branch clean12e3f897: additionally updated its isolated route contract
+  for preserved baseline/Ministry-only plus combined Mastery casts; focused
+  contract exited0. Same commit imported into Roar parent. No extra heavy job.
+- Remote01:00 canonicalCI34434837759 still queued on62dc; Nightly34433520743
+  in_progress. No runner/soak/push/version/live mutations. Root ledger-only,
+  NEVER PUSH. Physical-phone and all broader milestone gates stay open.
+
+## Previous checkpoint — September 11, 00:46 UTC
 
 Previous turn was PROGRESS through Purifying Wave repair and focused gates.
 This turn is PROGRESS: the next defined Fighter area consumer is now reproduced
