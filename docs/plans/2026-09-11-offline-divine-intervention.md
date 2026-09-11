@@ -53,3 +53,13 @@ Offline Divine Intervention now heals its target, respects friendly range and
 walls, and supports Quick Save, Guardian Angel and Miracle. Healing and cooldown
 training apply correctly; Guardian protection expires independently of the
 one-use death rescue. Multiplayer health remains server-controlled.
+
+## Full client regression accepted ona55ea71e
+
+95205 terminated exit0 on unchangeda55ea71e6e9b1e232db0df5a83ed39c2e1c1030c.
+Full client350suites/4923tests PASS121.364s and full lint PASS. Logs
+`/tmp/eidolon-offline-divine-full-{client,lint}.log`. Exact diff against accepted
+3c1085b8 changes only three client files, one test and this plan; Go inputs are
+unchanged and retain the preceding full race acceptance. This is local consumer
+acceptance, not a new native or live release. The separate full-party run failed
+on the pre-patch primary and must be investigated independently.
