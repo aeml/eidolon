@@ -5,7 +5,60 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 20:52 UTC
+## Current checkpoint — September 11, 21:10 UTC
+
+Previous clarification-only turn was NO PROGRESS. Revalidated clean source and
+runner state; this turn is PROGRESS: corrected the previous range hypothesis,
+repaired party QA targeting and a separate real Time Warp area consumer.
+
+- The dagger/melee lead below was WRONG: Rogue/Wizard basic attacks have a
+  16-unit base range client/server plus body padding. Runtime pending interaction
+  stops within that computed range. Boss threat pursuit remains possible but
+  aggregate damage alone does not prove who held threat at the archived death.
+- New frozen native source766486cf9d61228b527e3b6584339428ad44a9e6, clean
+  `/tmp/eidolon-party-ranged-input-20260911`, work/party-ranged-input-20260911.
+  Damage-role input now witnesses actual hovered boss hitbox before clicking,
+  tries exposed sides, and rechecks live warning/range/life and hover before the
+  follow-up primary cast. Never writes target/game/network state. Bounded
+  incoming-damage and input diagnostics capture attacker position/distance,
+  movement intent and basic reach. Occlusion was a source-level test gap, NOT
+  proven cause of the previous death. No range/balance/gear/assertions weakened.
+- Focused5suites118tests6.335s+full lint PASS; initial RED was missing new export,
+  zero tests executed, not a native reproduction. Archived seed7522185662117066327
+  generator2 passed TestReportedDungeonSeed/game0.059s; geometry-only replay.
+  Logs `/tmp/eidolon-party-pointer-{red,green,final,lint,seed-replay}.log`.
+-37298 confirmed ACTIVE21:09. Full four-role native route, loopback18580/18581/
+  41980, runIDfourrole-pointer-20260911, systemChrome/sg render. New normal
+  instance, NOT the old fixed-seed combat replay. All4prepared, party/roster
+  passed; DemonOrc defeated, first town recovery and all4same-instance resume
+  preserved seed/rooms/gold/inventory/quests. Latest observed heartbeat259603ms,
+  55leader steps/2roomTraversals/1townReturn; not a full clear. Same120min/role/
+  no-death/manual-Ilyra/Water/fresh-login gates. Log
+  `/tmp/eidolon-four-role-pointer-20260911.log`. Do not mutate its source or
+  launch another browser/full-heavy run while active. Soak remains off.
+- Separate Time Warp area WT `/tmp/eidolon-time-warp-area-20260911`, branch
+  work/time-warp-area-20260911, clean4d22416e48cdfecf013d8f24e01715c833fe49ef,
+  runtimef965a194. Actual-cast probes reproduced16server failures/game0.822s and
+  15/16client failures. Server had hard15radius and unresolved/wrong-origin
+  event; offline used3D/no-body reach and redundant ring. Area training now
+  reaches query/finalcheck/acceptedshape and high/low owner/remote rings. Shared
+  fixture base15/Volatile17.25/Geometry16.5/combined18.75. Friendly wall support,
+  NPC, zone-wide set, hostile/dead/other-instance exclusions retained and tested.
+- Time Warp focused5client suites72tests4.232s+lint PASS (17996TERMINAL0).
+  Server focused race52853TERMINAL0/game15.827s. Logs
+  `/tmp/eidolon-time-warp-area-{client-red,client-green,client-focused,server-red,server-green,server-focused,lint}.log`.
+  Full regression/native area proof still required. Known separate offline
+  Time Warp follow-up:90vs60CD,10vs8trained duration, recipient stat/expiry/set/
+  relationship/authority parity, Mastery consumer. Do not claim full skill fixed.
+  Evidence/unreleased notes2026-09-11-time-warp-area.md and
+  2026-09-11-party-pointer-acquisition.md.
+- Main remains clean efca5976; neither branch merged/published. Production62
+  stays accepted0231c948; no new push/deploy/service changes. Next: recover the
+  SAME native37298; finish Time Warp parity independently, then queued full
+  regressions/native proof and ordered publication. Full1.1–1.10 scope remains.
+  Root ledger MUST NOT PUSH.
+
+## Previous checkpoint — September 11, 20:52 UTC
 
 Previous goal turn was PROGRESS. This turn is PROGRESS: recovered a real native
 party failure, preserved evidence and narrowed input/positioning leads; repaired
