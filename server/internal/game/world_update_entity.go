@@ -1041,6 +1041,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			if e.SpellFocusActive && now.After(e.SpellFocusEndTime) {
 				e.SpellFocusActive = false
 				e.SpellFocusEndTime = time.Time{}
+				e.SpellFocusMultiplier = 0
 			}
 			if e.TimeWarpActive && now.After(e.TimeWarpEndTime) {
 				e.TimeWarpActive = false

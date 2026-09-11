@@ -95,13 +95,14 @@ function createTimedRemoteEffectConfig({
     activeProperty = payloadKey,
     timerProperty,
     fallbackDuration,
+    extraPayloadKeys = [],
     onActivate,
     onDeactivate
 }) {
     const isActive = (entity) => Boolean(entity[activeProperty]) && Number(entity[timerProperty] || 0) > 0;
     return {
         payloadKey,
-        payloadKeys: [payloadKey, durationKey],
+        payloadKeys: [payloadKey, durationKey, ...extraPayloadKeys],
         // The replicated active bit is the transition authority. A local
         // display timer may reach zero just before the server's explicit
         // inactive snapshot; requiring both here suppresses the DOWN cue and
@@ -240,8 +241,12 @@ const REMOTE_EFFECT_SYNC_CONFIG = {
         durationKey: 'spellFocusDuration',
         timerProperty: 'spellFocusTimer',
         fallbackDuration: 8,
-        onActivate: (entity) => {
-            if (!Number.isFinite(entity.spellFocusMultiplier) || entity.spellFocusMultiplier <= 1) {
+        extraPayloadKeys: ['spellFocusMultiplier'],
+        onActivate: (entity, payload) => {
+            if (payload.spellFocusMultiplier !== undefined) {
+                const value = Number(payload.spellFocusMultiplier);
+                entity.spellFocusMultiplier = Number.isFinite(value) && value >= 2.5 && value <= 3 ? value : 2.5;
+            } else if (!Number.isFinite(entity.spellFocusMultiplier) || entity.spellFocusMultiplier <= 1) {
                 entity.spellFocusMultiplier = 2.5;
             }
         },

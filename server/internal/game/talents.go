@@ -450,7 +450,7 @@ func (e *Entity) GetSkillDamageMultiplier(skillName string) float64 {
 	bonus := e.GetSkillBonus(skillName)
 	multiplier := 1.0 + bonus.SkillDamage
 	if e.SpellFocusActive {
-		multiplier *= 2.5
+		multiplier *= e.ActiveSpellFocusMultiplier()
 	}
 	return multiplier
 }

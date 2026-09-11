@@ -75,6 +75,7 @@ type EntitySnapshot struct {
 	ArcaneShieldDuration       float64
 	DivineInterventionDuration float64
 	SpellFocusDuration         float64
+	SpellFocusMultiplier       float64
 	SwiftDuration              float64
 	IronFortressDuration       float64
 	GuardianRoarDuration       float64

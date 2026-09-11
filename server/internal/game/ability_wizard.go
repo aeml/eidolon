@@ -18,6 +18,9 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 		if player.Mana >= cost {
 			player.Mana -= cost
 			player.SpellFocusActive = true
+			training := snapshotCombatAttackerLocked(player)
+			training.NormalizeTalentRanks()
+			player.SpellFocusMultiplier = 2.5 * (1 + training.GetSkillBonus(skillName).SkillDamage)
 			player.SpellFocusEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 15*time.Second))
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 45*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)

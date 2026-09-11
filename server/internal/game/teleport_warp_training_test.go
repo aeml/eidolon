@@ -15,6 +15,7 @@ func TestTeleportWarpTrainingAtBothEndpoints(t *testing.T) {
 				p.Level, p.InstanceID, p.X, p.Z = 100, "warp-training", 60000, 60000
 				p.Stats.Intelligence = 10
 				p.SpellFocusActive = true
+				p.SpellFocusMultiplier = 3
 				p.UnlockedSkills, p.SkillRunes = []string{"Teleport"}, map[string]string{"Teleport": rune}
 				if trained {
 					p.TalentRanks = map[string]int{"WIZ_19": 5, "WIZ_36": 5, "WIZ_38": 5}
@@ -35,6 +36,9 @@ func TestTeleportWarpTrainingAtBothEndpoints(t *testing.T) {
 				}
 				if !p.SpellFocusActive {
 					t.Fatal("utility rune consumed Spell Focus")
+				}
+				if p.SpellFocusMultiplier != 3 {
+					t.Fatal("utility rune changed the trained Focus charge")
 				}
 				for _, offset := range []float64{0, 12} {
 					for _, distance := range []float64{3, 5.75, 6.3} {

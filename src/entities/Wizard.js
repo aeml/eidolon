@@ -14,6 +14,7 @@ import { getArcaneShieldTraining } from '../core/ArcaneShieldTraining.js';
 import { applyOfflineTimeWarp, getWizardEffectDuration } from './WizardSupportAbilities.js';
 import { applyOfflineTeleportWarp, snapshotOfflineTeleportWarp } from '../skills/offlineTeleportWarp.js';
 import { commitOfflineTeleportCharge } from '../skills/offlineTeleportCharges.js';
+import { getSpellFocusCastMultiplier } from '../skills/spellFocusTraining.js';
 
 // Match the server's next-damage-spell contract. Utility casts neither consume
 // nor receive Spell Focus, and failed admission must leave the charge intact.
@@ -419,7 +420,7 @@ export class Wizard extends Actor {
             
             this.spellFocusActive = true;
             this.spellFocusTimer = getWizardEffectDuration(this, skill, 15);
-            this.spellFocusMultiplier = 2.5; // 150% bonus damage
+            this.spellFocusMultiplier = getSpellFocusCastMultiplier(this);
             
             gameEngine.floatingTextManager.spawn("SPELL FOCUS!", this.position, '#8800ff');
             this.spawnVisualEffect(gameEngine, this.position, 0x8800ff, "buff");
