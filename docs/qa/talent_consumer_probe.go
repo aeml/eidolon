@@ -13,6 +13,85 @@ import (
 	"time"
 )
 
+// Executioner Spin's paid server strike must consume the same advertised area
+// bonuses as Guardian Roar. Paired targets stay at one point in the trained
+// annulus; the untrained control must miss and the trained strike must hit.
+func TestPendingTalentExecutionerSpinArea(t *testing.T) {
+	for _, talent := range []string{"FTR_24", "FTR_33", "FTR_38"} {
+		for _, scale := range []float64{1, 4} {
+			for _, rank := range []int{0, 5} {
+				t.Run(fmt.Sprintf("%s/body%v/rank%d", talent, scale, rank), func(t *testing.T) {
+					w := newTestWorld()
+					defer w.StopBackground()
+					p := newTestPlayer("spin-area-caster", "Fighter")
+					p.Level, p.InstanceID, p.X, p.Z = 100, "qa-spin-area-probe", 60000, 60000
+					p.BaseStats = InitialPlayerStats()
+					p.UnlockedSkills, p.TalentRanks = []string{"Executioner Spin"}, map[string]int{talent: rank}
+					p.RecalculateStats()
+					p.Mana = p.MaxMana
+					w.AddEntity(p)
+					target := &Entity{ID: "spin-area-enemy", Type: TypeEnemy, InstanceID: p.InstanceID,
+						State: "IDLE", Health: 10000, MaxHealth: 10000, Scale: scale,
+						X: p.X + 6.3 + 1.25*scale, Z: p.Z}
+					w.AddEntity(target)
+					control := &Entity{ID: "spin-near-control", Type: TypeEnemy, InstanceID: p.InstanceID,
+						State: "IDLE", Health: 10000, MaxHealth: 10000, Scale: 1, X: p.X + 2, Z: p.Z}
+					w.AddEntity(control)
+					mana := p.Mana
+					result := w.PerformAbility(p.ID, p.X, p.Z, "", "Executioner Spin")
+					if !result.Accepted || p.Mana != mana-40 {
+						t.Fatalf("ordinary paid spin failed: %+v mana=%d before=%d", result, p.Mana, mana)
+					}
+					if control.Health >= control.MaxHealth {
+						t.Fatal("nearby positive damage control failed")
+					}
+					damaged := target.Health < target.MaxHealth
+					if damaged != (rank > 0) {
+						t.Errorf("rank%d body%v target at%v damaged=%v; want%v", rank, scale, target.X-p.X, damaged, rank > 0)
+					}
+				})
+			}
+		}
+	}
+}
+
+// Lineholder Instinct explicitly promises3% AoE radius per rank. Confirm its
+// utility consumer with real paid casts, not a definition/helper-only check.
+// Keep this diagnostic outside the passing release suite until the handler and
+// client footprint are repaired together.
+func TestPendingTalentFighterGuardianRoarArea(t *testing.T) {
+	for _, scale := range []float64{1, 4} {
+		for _, rank := range []int{0, 5} {
+			t.Run(fmt.Sprintf("body%v/rank%d", scale, rank), func(t *testing.T) {
+				w := newTestWorld()
+				defer w.StopBackground()
+				p := newTestPlayer("roar-area-caster", "Fighter")
+				p.Level, p.InstanceID, p.X, p.Z = 30, "qa-roar-area-probe", 60000, 60000
+				p.UnlockedSkills, p.TalentRanks = []string{"Guardian Roar"}, map[string]int{"FTR_33": rank}
+				p.RecalculateStats()
+				p.Mana = p.MaxMana
+				w.AddEntity(p)
+				ally := newTestPlayer("roar-area-ally", "Cleric")
+				// Same annulus position in the paired rank-zero/rank-five casts.
+				// Base15 plus body padding excludes it; trained17.25 includes it.
+				ally.InstanceID, ally.Scale, ally.X, ally.Z = p.InstanceID, scale, p.X+16+1.25*scale, p.Z
+				w.AddEntity(ally)
+				before := p.Mana
+				result := w.PerformAbility(p.ID, p.X, p.Z, "", "Guardian Roar")
+				if !result.Accepted || p.Mana != before-35 || !p.GuardianRoarActive {
+					t.Fatalf("ordinary paid roar/self buff failed: %+v mana=%d before=%d", result, p.Mana, before)
+				}
+				if ally.GuardianRoarActive != (rank > 0) {
+					t.Errorf("rank%d body%v ally at%v buffed=%v; want%v", rank, scale, ally.X-p.X, ally.GuardianRoarActive, rank > 0)
+				}
+				if ally.GuardianRoarActive && !ally.GuardianRoarEndTime.Equal(p.GuardianRoarEndTime) {
+					t.Fatal("party buff did not inherit its caster's deadline")
+				}
+			})
+		}
+	}
+}
+
 // This isolated diagnostic process uses a fixed production RNG roll to compare
 // actual casts, not a statistical sample or a replacement damage implementation.
 // No parallel subtests: reseeding the process-global RNG is deliberate here.

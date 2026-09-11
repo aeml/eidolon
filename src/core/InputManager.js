@@ -61,6 +61,7 @@ export class InputManager {
             a: false,
             s: false,
             d: false,
+            shift: false, // Track move-only intent across held mouse frames
             alt: false, // Track Alt
             control: false, // Track Control
             meta: false // Track Command/Meta
@@ -401,6 +402,9 @@ export class InputManager {
         this.updateMouseFromEvent(event);
 
         if (event.button === 0) { // Left Click
+            // Keydown may have occurred while chat owned keyboard focus.
+            // The real click's modifier snapshot must own subsequent frames.
+            this.keys.shift = Boolean(event.shiftKey);
             this.primaryMouseButtonDown = true;
             this.isMouseDown = true;
             this.callbacks.onClick.forEach(cb => cb(event));

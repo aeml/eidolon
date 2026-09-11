@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
@@ -8,6 +9,8 @@ const engineeringRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/ROADMAP.md'
 const finalCutoverAudit = fs.readFileSync(path.join(repoRoot, 'docs/art/FINAL_PROCEDURAL_CUTOVER_AUDIT.md'), 'utf8');
 const migrationInventory = fs.readFileSync(path.join(repoRoot, 'docs/art/PROCEDURAL_MIGRATION_INVENTORY.md'), 'utf8');
 const releaseManifest = JSON.parse(fs.readFileSync(path.join(repoRoot, 'release.json'), 'utf8'));
+const browserStages = [1, 2, 3].flatMap(shard => buildBrowserSmokePlan(
+    JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')), shard));
 const versionedRuntimeFiles = [
     '.github/workflows/ci.yml',
     'server/main.go',
@@ -42,7 +45,9 @@ describe('version presentation', () => {
             'does not change quest requirements, rewards, leveling or drop rates']) expect(indexHtml).toContain(text);
         const scripts = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).scripts;
         expect(scripts['test:e2e:interface']).toBe('playwright test tests/e2e/journal-daily-presentation.spec.js tests/e2e/combat-action-preview.spec.js tests/e2e/desktop-action-readability.spec.js');
-        expect(versionedRuntimeFiles[0]).toContain('npm run test:e2e:interface');
+        expect(versionedRuntimeFiles[0]).toContain('node scripts/run-browser-smoke.mjs');
+        expect(browserStages.filter(stage => stage.name === 'interface').map(stage => stage.files))
+            .toEqual([scripts['test:e2e:interface'].split(/\s+/).slice(2)]);
     });
     test('adds standalone town recovery notes while preserving the prior persistence release', () => {
         expect(indexHtml).toContain('Alpha 1.0.58 (a reason to come home)');
@@ -81,7 +86,8 @@ describe('version presentation', () => {
             'Your resources stay yours']) expect(indexHtml).toContain(heading);
         const commands = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).scripts;
         expect(commands['test:e2e:resource-hud']).toBe('playwright test tests/e2e/resource-hud.spec.js');
-        expect(versionedRuntimeFiles[0]).toContain('npm run test:e2e:resource-hud');
+        expect(versionedRuntimeFiles[0]).toContain('node scripts/run-browser-smoke.mjs ${{ matrix.shard }}');
+        expect(browserStages.filter(stage => stage.name === 'resource-hud')).toHaveLength(1);
     });
     test('adds honest basic-damage notes while preserving the readable-name release', () => {
         expect(indexHtml).toContain('Alpha 1.0.54 (know your strength)');
@@ -93,7 +99,8 @@ describe('version presentation', () => {
     test('runs crowd-name browser checks in both release verification routes', () => {
         const scripts = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).scripts;
         expect(scripts['test:e2e:nameplates']).toBe('playwright test tests/e2e/nameplate-readability.spec.js');
-        expect(versionedRuntimeFiles[0]).toContain('npm run test:e2e:nameplates');
+        expect(versionedRuntimeFiles[0]).toContain('node scripts/run-browser-smoke.mjs ${{ matrix.shard }}');
+        expect(browserStages.filter(stage => stage.name === 'nameplates')).toHaveLength(1);
         const isolated = versionedRuntimeFiles[5];
         const allRoute = isolated.split('\n  all)')[1]?.split('\n    ;;')[0];
         expect(allRoute).toContain('&& npx playwright test tests/e2e/nameplate-world.spec.js');

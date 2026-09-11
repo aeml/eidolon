@@ -7,6 +7,8 @@ import { Actor } from '../src/entities/Actor.js';
 import { Cleric } from '../src/entities/Cleric.js';
 import { Wizard } from '../src/entities/Wizard.js';
 import { getAbilityAoeRadius } from '../src/skills/abilityRadii.js';
+import { CONSTANTS } from '../src/core/Constants.js';
+import { getAbilityAreaRadius } from '../src/core/AbilityRange.js';
 
 const cases = JSON.parse(fs.readFileSync('server/internal/game/testdata/purifying_area.json', 'utf8'));
 const skill = 'Purifying Wave';
@@ -20,6 +22,7 @@ describe.each(cases)('$name', entry => {
         p.bleedTimer = 10;
         const ally = new Wizard('wave-ally');
         ally.radius = 5;
+        ally.stats.hp = 1;
         ally.position.set(p.position.x + entry.radius + ally.radius + (outside ? .01 : -.01), 0, p.position.z);
         for (const key of ['stunTimer', 'slowTimer', 'rootTimer', 'poisonTimer', 'bleedTimer', 'weakPointMarkTimer', 'markWeaknessTimer']) ally[key] = 10;
         for (const key of ['poisonStacks', 'poisonTickDamage', 'poisonTickTimer', 'bleedStacks', 'bleedTickDamage', 'bleedTickTimer']) ally[key] = 4;
@@ -30,6 +33,7 @@ describe.each(cases)('$name', entry => {
         p.useAbility(new THREE.Vector3(60100, 0, 60100), engine, skill);
         expect(p.stats.mana).toBe(before - 30);
         expect(p.bleedTimer).toBe(0);
+        expect(ally.stats.hp).toBe(1);
         expect(getAbilityAoeRadius('Cleric', skill, p)).toBeCloseTo(entry.radius, 8);
         for (const key of ['stunTimer', 'slowTimer', 'rootTimer', 'poisonTimer', 'bleedTimer', 'weakPointMarkTimer', 'markWeaknessTimer']) expect(ally[key]).toBe(outside ? 10 : 0);
         for (const key of ['poisonStacks', 'poisonTickDamage', 'poisonTickTimer', 'bleedStacks', 'bleedTickDamage', 'bleedTickTimer']) expect(ally[key]).toBe(outside ? 4 : 0);
@@ -57,6 +61,30 @@ describe.each(cases)('$name', entry => {
             } finally { engine.effects.forEach(effect => effect.dispose()); }
         }
     });
+});
+
+test('wave mastery retains its saved ID and five ranks, with precise cleanse-radius copy', () => {
+    const mastery = CONSTANTS.PASSIVE_TALENTS.Cleric.find(talent => talent.id === 'CLR_07');
+    expect(mastery.maxRank).toBe(5);
+    expect(mastery.desc).toBe('+4% Purifying Wave cleansing radius per rank (20% max).');
+});
+
+test.each([0, 1, 5])('wave-specific mastery does not leak into other Cleric areas, ministry rank %s', rank => {
+    const source = { talentRanks: { CLR_07: 5, CLR_34: rank } };
+    for (const skillName of ['Spirit Guardians', 'Guardian Embrace', 'Radiant Strike', 'Consecrated Ground', 'Blessing of Resolve', 'Blessing of Zeal', "Heaven's Trumpet"]) {
+        expect(getAbilityAoeRadius('Cleric', skillName, source)).toBeCloseTo(
+            getAbilityAoeRadius('Cleric', skillName, { talentRanks: { CLR_34: rank } }), 8);
+    }
+    expect(getAbilityAoeRadius('Cleric', 'Divine Intervention', source)).toBeNull();
+    for (const healing of [{ healingLightMassRevival: true }, { skillRunes: { 'Healing Light': 'healinglight_beacon' } }]) {
+        expect(getAbilityAoeRadius('Cleric', 'Healing Light', { ...source, ...healing })).toBeCloseTo(
+            getAbilityAoeRadius('Cleric', 'Healing Light', { talentRanks: { CLR_34: rank }, ...healing }), 8);
+    }
+    expect(getAbilityAreaRadius(source, 'Cleric', 8)).toBeCloseTo(8 * (1 + .03 * rank), 8);
+});
+
+test.each([[100, 9.6], [1.9, 8.32], [-1, 8], [Infinity, 8], [NaN, 8]])('wave mastery clamps client rank %s', (rank, radius) => {
+    expect(getAbilityAoeRadius('Cleric', skill, { talentRanks: { CLR_07: rank } })).toBeCloseTo(radius, 8);
 });
 
 test('offline wave protects enemies, PvP opponents and inactive/dead actors', () => {

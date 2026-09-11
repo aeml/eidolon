@@ -14,7 +14,7 @@ function setupDOM() {
     // SocialUI._createSocialWindow looks for #social-window or creates one.
     // Party panel elements are looked up by ID after construction.
     const ids = [
-        'party-panel', 'party-list', 'party-invite-input',
+        'party-panel', 'party-panel-guidance', 'party-list', 'party-invite-input',
         'btn-invite-party', 'btn-leave-party',
         'party-request-modal', 'party-inviter-name',
         'btn-accept-party', 'btn-decline-party',
@@ -34,7 +34,7 @@ function setupDOM() {
 function createSocialUI() {
     setupDOM();
     const ctx = {
-        getLastPlayer: () => null,
+        getLastPlayer: jest.fn(() => null),
         addChatMessage: jest.fn(),
         openManagedWindow: jest.fn(),
         closeManagedWindow: jest.fn(),
@@ -47,6 +47,79 @@ function createSocialUI() {
 // ---------------------------------------------------------------------------
 // updateFriendList
 // ---------------------------------------------------------------------------
+
+test.each([null, { partyId: 'group', leaderId: 'self', members: [{ id: 'self', name: 'Hero', hp: 100, maxHp: 100 }] }])(
+    'party reward guidance distinguishes whole-instance credit from overworld range (%#)', partyData => {
+        const { ui } = createSocialUI();
+        ui.updateParty(partyData);
+        const guidance = document.getElementById('party-panel-guidance');
+        expect(guidance.textContent).toContain('Dungeon: whole instance');
+        expect(guidance.textContent).toContain('Overworld: roughly two screens');
+        expect(guidance.title).toContain('Downed allies count');
+        expect(guidance.title).toContain('completes their own quests');
+    }
+);
+
+describe('desktop party support selection', () => {
+    const data = () => ({ partyId: 'group', leaderId: 'self', members: [
+        { id: 'self', name: 'Healer', hp: 100, maxHp: 100 },
+        { id: 'ally', name: 'Tank', hp: 50, maxHp: 100 }
+    ] });
+    test('selecting the visible roster persists through refreshes, preserves focus and can be cleared', () => {
+        const { ui, ctx } = createSocialUI();
+        ctx.getLastPlayer.mockReturnValue({ id: 'self' });
+        ui.updateParty(data());
+        const target = () => ui.partyList.querySelector('[data-party-support-target="ally"]');
+        const originalButton = target();
+        target().focus();
+        target().click();
+        expect(ui.selectedSupportTargetId).toBe('ally');
+        ui.updateParty(data());
+        expect(target().getAttribute('aria-pressed')).toBe('true');
+        expect(target()).toBe(originalButton);
+        expect(document.activeElement).toBe(target());
+        ui.partyList.querySelector('.party-support-mode').click();
+        expect(ui.selectedSupportTargetId).toBeNull();
+    });
+    test.each(['departure', 'party', 'character'])('%s clears stale selection', reason => {
+        const { ui, ctx } = createSocialUI();
+        ctx.getLastPlayer.mockReturnValue({ id: 'self' });
+        const party = data();
+        ui.updateParty(party);
+        ui.partyList.querySelector('[data-party-support-target="ally"]').click();
+        if (reason === 'departure') party.members.pop();
+        if (reason === 'party') party.partyId = 'other-group';
+        if (reason === 'character') ctx.getLastPlayer.mockReturnValue({ id: 'other-character' });
+        ui.updateParty(party);
+        expect(ui.selectedSupportTargetId).toBeNull();
+    });
+    test('downed selection is visibly disabled without silently switching heals to another player', () => {
+        const { ui, ctx } = createSocialUI();
+        ctx.getLastPlayer.mockReturnValue({ id: 'self' });
+        const party = data();
+        ui.updateParty(party);
+        ui.partyList.querySelector('[data-party-support-target="ally"]').click();
+        party.members[1].hp = 0;
+        ui.updateParty(party);
+        expect(ui.partyList.querySelector('[data-party-support-target="ally"]').disabled).toBe(true);
+        expect(ui.selectedSupportTargetId).toBe('ally');
+    });
+    test('compact leader actions remain separate from the healing button', () => {
+        const { ui, ctx } = createSocialUI();
+        ctx.getLastPlayer.mockReturnValue({ id: 'self' });
+        ui.onPartyKick = jest.fn();
+        ui.onPartyPromote = jest.fn();
+        ui.updateParty(data());
+        const target = ui.partyList.querySelector('[data-party-support-target="ally"]');
+        expect(target.querySelector('.party-member-role')).not.toBeNull();
+        expect(target.querySelector('button')).toBeNull();
+        ui.partyList.querySelector('[aria-label="Kick Tank from party"]').click();
+        ui.partyList.querySelector('[aria-label="Promote Tank to party leader"]').click();
+        expect(ui.onPartyKick).toHaveBeenCalledWith('ally');
+        expect(ui.onPartyPromote).toHaveBeenCalledWith('ally');
+        expect(ui.selectedSupportTargetId).toBeNull();
+    });
+});
 
 describe('SocialUI.updateFriendList', () => {
     test('stores friendEntries and pendingUsernames', () => {

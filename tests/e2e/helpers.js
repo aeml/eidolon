@@ -395,20 +395,22 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
         // an animation or movement regression.
         await page.waitForTimeout(75);
         const isClearGround = await page.evaluate(() => !window.game?.hoveredEntity);
-        if (!isClearGround && options.allowJumpFallback === false) continue;
-        const useCoveredJump = !isClearGround;
+        const useMoveOnly = options.moveOnly === true;
+        if (!isClearGround && !useMoveOnly && options.allowJumpFallback === false) continue;
+        const useCoveredJump = !isClearGround && !useMoveOnly;
         const attempt = { candidateX, candidateZ, screenX: target.x, screenY: target.y,
-            mode: useCoveredJump ? 'covered-ground-jump' : 'walk' };
+            mode: useMoveOnly ? 'move-only-walk' : useCoveredJump ? 'covered-ground-jump' : 'walk' };
         attempts.push(attempt);
         // Control-click resolves ground before entity interactions in production.
         // The existing optional jump fallback must also be reachable when loot
         // or an actor covers every otherwise-visible ground point.
-        if (useCoveredJump) await page.keyboard.down('Control');
+        const modifier = useMoveOnly ? 'Shift' : useCoveredJump ? 'Control' : null;
+        if (modifier) await page.keyboard.down(modifier);
         try {
             await page.evaluate(() => { window.__entranceClickProbe.click = null; });
             await page.mouse.click(target.x, target.y);
         } finally {
-            if (useCoveredJump) await page.keyboard.up('Control');
+            if (modifier) await page.keyboard.up(modifier);
         }
         attempt.clickProbe = await page.evaluate(() => window.__entranceClickProbe?.click);
         if (isHostilePointerInterception(attempt.clickProbe)) {
@@ -1752,7 +1754,7 @@ async function observeEntranceClick(page) {
     });
 }
 
-export async function enterAndExitDungeon(page, { beforeExit, resetRun = false,
+export async function enterDungeon(page, { resetRun = false,
     dungeonType = 'verdant_bastion_catacombs', difficulty = 'normal', runLevel: requestedRunLevel = 30,
     useTownGuide = false } = {}) {
     // Retries reuse the dedicated character. An interrupted earlier route may
@@ -1873,6 +1875,10 @@ export async function enterAndExitDungeon(page, { beforeExit, resetRun = false,
         throw new Error(`Real dungeon entry did not transition instances: ${JSON.stringify(diagnostic)}`);
     }
 
+}
+
+export async function enterAndExitDungeon(page, { beforeExit, ...options } = {}) {
+    await enterDungeon(page, options);
     let inspectionError;
     try {
         if (beforeExit) await beforeExit(page);
@@ -1883,8 +1889,9 @@ export async function enterAndExitDungeon(page, { beforeExit, resetRun = false,
     if (inspectionError) throw inspectionError;
 }
 
-export async function returnToTown(page) {
+export async function returnToTown(page, { allowRespawn = true } = {}) {
     if ((await readPlayerState(page)).state === 'DEAD') {
+        if (!allowRespawn) throw new Error('Character died before Recall; an unfinished hunt cannot hide a respawn');
         await page.locator('#btn-death-respawn').click();
     } else {
         await page.keyboard.press('b');

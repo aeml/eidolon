@@ -673,14 +673,19 @@ export class InventoryUI {
         const hadFocus = document.activeElement === el;
 
         el._item = (item && item.id) ? item : null;
+        const signature = JSON.stringify([el._item, placeholder, serverSlotName || '', this.isMobile]);
+        // Health/mana ticks refresh the sheet but must not destroy a native drag
+        // target (or keyboard focus). Only item presentation changes rebuild art.
+        if (el._equipmentPresentation === signature) {
+            this.mobileDetails?.refresh();
+            return;
+        }
+        el._equipmentPresentation = signature;
         el.innerHTML = '';
-
-        // Clone to remove old event listeners
-        const newEl = el.cloneNode(true);
-        el.parentNode.replaceChild(newEl, el);
-
-        const slotEl = newEl;
-        slotEl._item = (item && item.id) ? item : null;
+        const slotEl = el;
+        // Replace owned handlers in place; never clone the slot or accumulate
+        // closures pointing at equipment that was replaced or removed.
+        slotEl.onmouseenter = slotEl.onmouseleave = slotEl.onfocus = slotEl.onblur = null;
         const slotId = serverSlotName || id.replace('slot-', '');
         slotEl.setAttribute('aria-label', item?.id ? `${placeholder}: ${item.name || 'Equipped item'}. Activate to ${this.isMobile ? 'inspect' : 'unequip'}.` : `${placeholder}: empty`);
 
@@ -716,18 +721,18 @@ export class InventoryUI {
             };
 
             // Tooltip
-            slotEl.addEventListener('mouseenter', () => {
+            slotEl.onmouseenter = () => {
                 if (this.isMobile) return;
                 const rect = slotEl.getBoundingClientRect();
                 this.showItemTooltip(item, rect.right + 10, rect.top);
-            });
-            slotEl.addEventListener('mouseleave', () => this.hideTooltips());
-            slotEl.addEventListener('focus', () => {
+            };
+            slotEl.onmouseleave = () => this.hideTooltips();
+            slotEl.onfocus = () => {
                 if (this.isMobile) return;
                 const rect = slotEl.getBoundingClientRect();
                 this.showItemTooltip(item, rect.right + 10, rect.top);
-            });
-            slotEl.addEventListener('blur', () => this.hideTooltips());
+            };
+            slotEl.onblur = () => this.hideTooltips();
         } else {
             slotEl.textContent = placeholder;
             slotEl.style.color = '#aeb9c8';
@@ -744,7 +749,13 @@ export class InventoryUI {
             slotEl.append(label);
         }
         this.mobileDetails?.refresh();
-        if (hadFocus) slotEl.focus({ preventScroll: true });
+        if (hadFocus && !this.isMobile) {
+            // The node kept focus, so no new focus event fires after an upgrade.
+            if (item?.id) {
+                const rect = slotEl.getBoundingClientRect();
+                this.showItemTooltip(item, rect.right + 10, rect.top);
+            } else this.hideTooltips();
+        }
     }
 
     // ================================================================

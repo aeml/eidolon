@@ -19,7 +19,7 @@ func TestProgressionPacingAuditOverlappingBossDailies(t *testing.T) {
 			player := newTestPlayer("stack-recipient", "Wizard")
 			player.Level, player.MaxExperience = level, experienceRequiredForLevel(level)
 			player.Experience = 0
-			player.BaseStats = applyLevelGrowth(canonicalBaseStatsForClass(player.SubType), level)
+			player.BaseStats = applyLevelGrowth(InitialPlayerStats(), level)
 			player.Inventory = make([]Item, MaxInventorySize)
 			w.AddEntity(player)
 			w.AddEntity(&Entity{ID: "quest-npc-1", Type: TypeNPC})

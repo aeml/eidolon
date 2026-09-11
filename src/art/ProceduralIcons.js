@@ -6,7 +6,9 @@ import {
     EQUIPMENT_VISUAL_DESCRIPTORS,
     resolveEquipmentVisualDescriptor
 } from './ProceduralEquipment.js';
-import { GEM_QUALITIES, GEM_TYPES } from '../core/ItemSystem.js';
+import { BASE_ITEMS, GEM_QUALITIES, GEM_TYPES } from '../core/ItemSystem.js';
+import { isEquippableItem } from '../core/EquipmentSlots.js';
+import { socketGemAppearanceName } from './SocketGemAppearance.js';
 
 const ABILITY_CACHE = new Map();
 const ITEM_CACHE = new Map();
@@ -258,7 +260,7 @@ function gemBadges(item) {
     if (socketCount <= 0) return '';
     const circles = [];
     for (let index = 0; index < socketCount; index += 1) {
-        const gemName = gems[index]?.type || gems[index]?.gemType;
+        const gemName = socketGemAppearanceName(gems[index]);
         const color = GEM_ICON_COLORS[gemName]?.primary || 0x25252d;
         circles.push(`<circle cx="${38 + index * 10}" cy="85" r="3.5" fill="#${toHex(color)}" stroke="#e7e3d5"/>`);
     }
@@ -365,8 +367,25 @@ export function getProceduralItemIcon(item) {
         );
     }
 
-    const visual = resolveEquipmentVisualDescriptor(item);
-    if (!visual) return null;
+    let visual = resolveEquipmentVisualDescriptor(item);
+    if (!visual && isEquippableItem(item)) {
+        // Legacy/custom names can lack a descriptor while retaining a real slot.
+        // Reuse that slot's established art; do not invent equipment metadata.
+        const slot = /^ring[12]$/.test(item.slot) ? 'ring' : /^trinket[12]$/.test(item.slot) ? 'trinket' : item.slot;
+        const base = BASE_ITEMS.find(candidate => candidate.slot === slot && isEquippableItem(candidate));
+        if (base) visual = { baseName: base.name, ...EQUIPMENT_VISUAL_DESCRIPTORS[base.name] };
+    }
+    if (!visual) {
+        // Never let a nonempty bag item produce url('null') or an invisible slot.
+        // The neutral sealed parcel is deliberately not a currency/quest symbol.
+        const key = 'item:unidentified';
+        const cached = cachedValue(ITEM_CACHE, key);
+        if (cached) return cached;
+        return cacheValue(ITEM_CACHE, key, dataUri(frameSvg({ id: key, dark: '161c25',
+            base: '465366', accent: 'b6c3d4', pale: 'e9eef6',
+            body: '<path d="m22 31 26-13 26 13v39L48 83 22 70Z"/><path d="m22 31 26 13 26-13M48 44v39M35 25l26 13v19" fill="none"/>'
+        })), ITEM_CACHE_LIMIT);
+    }
     const rarityName = typeof item.rarity === 'string' ? item.rarity : (item.rarity?.name || 'Common');
     const rarityColor = toHex(RARITY_COLORS[rarityName] || RARITY_COLORS.Common);
     const key = [

@@ -71,9 +71,10 @@ test('phone chat coverage and Purifying retry keep the real player path', () => 
     expect(script).toContain('${QA_USERNAME_BASE}-cleanse-retry1');
     expect(script).toContain('EIDOLON_E2E_PURIFYING_RETRY_PROBE=1 run_purifying_area --retries=1');
     expect(probe).toContain('credentials.username += `-retry${testInfo.retry}`');
-    expect(probe).toContain("await verifyCast(0, 'high')");
-    expect(probe).toContain("await verifyCast(5, 'low')");
-    expect(probe).toContain("await verifyCast(5, 'high')");
+    expect(probe).toContain("await verifyCast(0, 0, 'high')");
+    expect(probe).toContain("await verifyCast(5, 0, 'low')");
+    expect(probe).toContain("await verifyCast(5, 5, 'low')");
+    expect(probe).toContain("await verifyCast(5, 5, 'high')");
     expect(commands['test:e2e:anonymous']).toContain('tests/e2e/mobile-chat-layering.spec.js');
 });
 
@@ -84,6 +85,29 @@ test('the full release gate retains Seraph gameplay and rendered fallback checks
     expect(script).toContain('${QA_USERNAME_BASE}-seraph-retry1');
     expect(commands['test:e2e:anonymous']).toContain('tests/e2e/offline-seraph-render.spec.js');
     expect(commands['test:e2e:anonymous']).toContain('tests/e2e/summon-action-readability.spec.js');
+});
+
+test('the full release gate includes saved Guardian Roar training without removing existing area routes', () => {
+    const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
+    const probe = readFileSync('tests/e2e/guardian-roar-area-gameplay.spec.js', 'utf8');
+    expect(script).toContain('${QA_USERNAME_BASE}-roar-area');
+    expect(script).toContain('&& run_purifying_area && run_guardian_roar_area && run_executioner_spin_area && run_guardian_area &&');
+    expect(script).toContain('guardian-roar-area)\n    run_guardian_roar_area');
+    expect(probe).toContain("await verifyCast([0, 0, 0], 15, 'high')");
+    expect(probe).toContain("await verifyCast([5, 5, 5], 20.25, 'low')");
+    expect(probe).toContain("await verifyCast([5, 5, 5], 20.25, 'high')");
+});
+
+test('Executioner Spin area has a saved ordinary-purchase route in the full release gate', () => {
+    const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
+    const probe = readFileSync('tests/e2e/executioner-spin-area-gameplay.spec.js', 'utf8');
+    expect(script).toContain('${QA_USERNAME_BASE}-spin-area');
+    expect(script).toContain('executioner-spin-area)\n    run_executioner_spin_area');
+    expect(script).toContain('&& run_guardian_roar_area && run_executioner_spin_area && run_guardian_area &&');
+    expect(probe).toContain('branch:C');
+    expect(probe).toContain("await verifyCast([0, 0, 0], 6, 'high')");
+    expect(probe).toContain("await verifyCast([5, 5, 5], 8.1, 'low')");
+    expect(probe).toContain("await verifyCast([5, 5, 5], 8.1, 'high')");
 });
 
 test('the full release gate retains saved Shield training and hostile absorption', () => {

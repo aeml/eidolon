@@ -139,14 +139,10 @@ jobs:
 
       - name: Run anonymous real-browser smoke
         run: |
-          npm run test:e2e:anonymous -- --shard=${{ matrix.shard }}/3
           if [ "${{ matrix.shard }}" = 1 ]; then
-            npm run test:e2e:nameplates
-            npm run test:e2e:resource-hud
+            node scripts/verify-browser-smoke-partition.mjs
           fi
-          if [ "${{ matrix.shard }}" = 2 ]; then
-            npm run test:e2e:interface
-          fi
+          node scripts/run-browser-smoke.mjs ${{ matrix.shard }}
 
       - name: Upload browser failure evidence
         if: ${{ !cancelled() }}
@@ -189,6 +185,11 @@ jobs:
           EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
         run: sg render -c 'npm run test:e2e:animations'
 
+      - name: Run required Well Rested rendering and GPU lifecycle QA
+        env:
+          EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
+        run: sg render -c 'npm run test:e2e:rest-render'
+
       - name: Run disposable full-character gameplay
         env:
           EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
@@ -202,6 +203,7 @@ jobs:
           path: |
             playwright-report/
             test-results/
+            rest-render-results/
           if-no-files-found: ignore
           retention-days: 7
 

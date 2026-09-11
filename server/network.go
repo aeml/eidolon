@@ -89,13 +89,16 @@ func sendInitialPlayerState(c *Client, entity *game.Entity, instanceID string) {
 		c.sendSafe(b)
 	}
 
-	// Stash
-	if len(entity.Stash) > 0 {
-		stashPayload, _ := json.Marshal(entity.Stash)
-		msg := Message{Type: MsgStash, Payload: stashPayload}
-		b, _ := json.Marshal(msg)
-		c.sendSafe(b)
+	// Empty storage is authoritative state too. Always send an array on join
+	// and resume so a new account is distinguishable from a missing snapshot,
+	// and a reconnect can clear previously displayed contents.
+	stash := entity.Stash
+	if stash == nil {
+		stash = []game.Item{}
 	}
+	stashPayload, _ := json.Marshal(stash)
+	stashMessage, _ := json.Marshal(Message{Type: MsgStash, Payload: stashPayload})
+	c.sendSafe(stashMessage)
 
 	// Buyback list
 	if len(entity.Buyback) > 0 {

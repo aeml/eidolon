@@ -14,6 +14,7 @@ func TestChronicleWorldDropsCannotExceedRemainingPersonalObjective(t *testing.T)
 	for _, partySize := range []int{1, 2} {
 		t.Run(fmt.Sprintf("party_%d", partySize), func(t *testing.T) {
 			w := newTestWorld()
+			defer w.StopBackground()
 			players := make([]*Entity, partySize)
 			for i := range players {
 				p := newTestPlayer(fmt.Sprintf("collector-%d", i), "Fighter")
@@ -37,7 +38,9 @@ func TestChronicleWorldDropsCannotExceedRemainingPersonalObjective(t *testing.T)
 				players[0].Mu.Unlock()
 				enemy := &Entity{ID: fmt.Sprintf("budget-enemy-%d", i), Type: TypeEnemy, SubType: "InfernoTitan", Level: 1, Health: 1, MaxHealth: 1, State: "IDLE"}
 				w.AddEntity(enemy)
+				enemy.Mu.Lock()
 				w.handleDeath(enemy, players[0], nil)
+				enemy.Mu.Unlock()
 			}
 			deadline := time.Now().Add(5 * time.Second)
 			for {

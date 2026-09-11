@@ -27,7 +27,7 @@ func TestProgressionPacingAuditBossRewards(t *testing.T) {
 				for i := range players {
 					player := newTestPlayer(fmt.Sprintf("audit-%d", i), "Fighter")
 					player.Level, player.MaxExperience = level, experienceRequiredForLevel(level)
-					player.BaseStats = applyLevelGrowth(canonicalBaseStatsForClass(player.SubType), level)
+					player.BaseStats = applyLevelGrowth(InitialPlayerStats(), level)
 					player.Inventory = make([]Item, MaxInventorySize)
 					player.InstanceID = instanceID
 					w.AddEntity(player)
@@ -55,7 +55,9 @@ func TestProgressionPacingAuditBossRewards(t *testing.T) {
 				w.AddEntity(boss)
 				// Exercise the real death/reward/party/level-up pipeline. This is an
 				// isolated reward probe, not evidence of winning a boss through play.
+				boss.Mu.Lock()
 				w.handleDeath(boss, players[0], nil)
+				boss.Mu.Unlock()
 				seen := map[string]bool{}
 				for range players {
 					select {
@@ -104,7 +106,7 @@ func TestProgressionPacingAuditQuestBudgets(t *testing.T) {
 	for _, class := range []string{"Fighter", "Rogue", "Wizard", "Cleric"} {
 		player := newTestPlayer("audit-opening-"+class, class)
 		player.Level, player.MaxExperience = 1, experienceRequiredForLevel(1)
-		player.BaseStats = canonicalBaseStatsForClass(class)
+		player.BaseStats = InitialPlayerStats()
 		for _, definition := range chronicleQuestCatalog()[:2] {
 			quest := definition
 			before := player.Level

@@ -1117,6 +1117,10 @@
     cursor: pointer;
 }
 
+/* Icons and potency labels are decorative. Keep one native hit/drop target
+   across the frame and its artwork, including when item art is refreshed. */
+.equip-slot > * { pointer-events: none; }
+
 @media (max-width: 480px) {
     .equipment-slots { grid-template-columns: 52px minmax(0, 1fr) 52px; column-gap: 4px; }
     .equip-slot { width: 52px; font-size: 0.5rem; }

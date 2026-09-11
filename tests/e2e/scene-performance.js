@@ -20,8 +20,13 @@ export async function profileGameplayScene(page, label) {
             const interval = samples.map((sample) => sample.intervalMs);
             const cpu = samples.map((sample) => sample.cpuMs);
             const preview = game.uiManager.characterPreview;
+            const gl = renderer.getContext();
+            const debug = gl.getExtension('WEBGL_debug_renderer_info');
             resolve({
                 label, frames: samples.length,
+                renderer: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER),
+                viewport: { width: innerWidth, height: innerHeight, pixelRatio: devicePixelRatio },
+                userAgent: navigator.userAgent, visibility: document.visibilityState,
                 frameMedianMs: percentile(interval, 0.5), frameP95Ms: percentile(interval, 0.95), frameP99Ms: percentile(interval, 0.99),
                 framesOver33ms: interval.filter((value) => value > 33.34).length,
                 cpuLoopMedianMs: percentile(cpu, 0.5), cpuLoopP95Ms: percentile(cpu, 0.95),

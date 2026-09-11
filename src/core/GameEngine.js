@@ -1558,8 +1558,11 @@ export class GameEngine {
         const distance = this.player.position.distanceTo(entity.position);
         const inRange = distance <= interactionRange;
         const dungeonName = this.getInteractableEntityLabel(entity);
-        const entityLabel = isDungeonEntrance ? 'Dungeon Portal' : dungeonName;
         const interactableType = entity.constructor?.name || entity.type || entity.meshType || entity.name || '';
+        // The card title already names the NPC. Use the subtitle to
+        // explain its role without relying only on quest-marker color.
+        const entityLabel = isDungeonEntrance ? 'Dungeon Portal'
+            : interactableType === 'QuestNPC' ? (entity.story ? 'Story quests' : 'Daily contracts') : dungeonName;
         let promptLabel;
         let statusLabel = inRange ? `${entityLabel} • In range` : `${entityLabel} • Move closer`;
 
@@ -1706,8 +1709,15 @@ export class GameEngine {
     }
 
     getMobileSupportTarget() {
+        return this.resolvePartySupportTarget(this.uiManager?.social?.phoneParty?.selectedId);
+    }
+
+    getDesktopSupportTarget() {
+        return this.resolvePartySupportTarget(this.uiManager?.social?.selectedSupportTargetId);
+    }
+
+    resolvePartySupportTarget(id) {
         if (!this.player || this.isPlayerDead()) return null;
-        const id = this.uiManager?.social?.phoneParty?.selectedId;
         if (!id || id === this.player.id) return this.player;
         const members = this.uiManager?.social?.partyData?.members || [];
         if (!members.some(member => member.id === id)) return null;

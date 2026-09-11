@@ -1004,7 +1004,9 @@ describe('menu polish regressions', () => {
         const members = document.querySelectorAll('.party-member');
         expect(members).toHaveLength(2);
 		expect(members[0].querySelector('.party-member-role').textContent).toBe('damage • Leader • Ready');
-        expect(members[0].querySelector('.party-member-bonus').textContent).toContain('+20%');
+        expect(document.getElementById('party-panel-guidance').textContent).toContain('Up to +20% eligible-party Gold pool, not personal XP.');
+        expect(members[0].querySelector('.party-support-target .party-member-role')).not.toBeNull();
+        expect(document.querySelector('.party-member-bonus')).toBeNull();
 		expect(members[1].querySelector('.party-member-role').textContent).toBe('support');
     });
 
@@ -1015,8 +1017,9 @@ describe('menu polish regressions', () => {
         ui.showPartyRequest('Alice');
 
         expect(document.getElementById('party-request-modal').style.display).toBe('block');
-        expect(document.getElementById('party-request-benefits').textContent).toContain('share nearby kill rewards');
-        expect(document.getElementById('party-request-benefits').textContent).toContain('dungeon boss credit');
+        expect(document.getElementById('party-request-benefits').textContent).toContain('whole dungeon');
+        expect(document.getElementById('party-request-benefits').textContent).toContain('two screens in the overworld');
+        expect(document.getElementById('party-request-benefits').title).toContain('Downed allies count');
     });
 
     test('trading house tabs explain browse, listing, and collection intent', () => {

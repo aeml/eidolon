@@ -45,7 +45,7 @@ func (w *World) beginWhirlwind(player *Entity, now time.Time) bool {
 	player.WhirlwindTickCount = 0
 	player.WhirlwindHitTargets = make(map[string]bool)
 	player.Mu.Unlock()
-	w.updateWhirlwind(player, now, nil)
+	w.updateWhirlwind(player, now, nil, true)
 	return true
 }
 
@@ -61,7 +61,7 @@ func clearWhirlwindLocked(player *Entity) {
 
 // No caller actor lock: snapshots precede target locks, including two players
 // spinning in parallel. At most four pulses can be processed in one update.
-func (w *World) updateWhirlwind(player *Entity, now time.Time, deferred *deferredActions) {
+func (w *World) updateWhirlwind(player *Entity, now time.Time, deferred *deferredActions, worldLocked ...bool) {
 	for {
 		player.Mu.Lock()
 		if !player.WhirlwindActive {
@@ -126,7 +126,7 @@ func (w *World) updateWhirlwind(player *Entity, now time.Time, deferred *deferre
 			w.fireDamageEvent(player, target.ID, finalDamage, "physical", attacker.InstanceID)
 			if dead {
 				target.Mu.Lock()
-				w.handleDeath(target, player, deferred)
+				w.handleDeathWithWorldLock(target, player, deferred, len(worldLocked) > 0 && worldLocked[0])
 				target.Mu.Unlock()
 			}
 		}

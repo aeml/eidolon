@@ -164,7 +164,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 					if isDead {
 						target.Mu.Lock()
-						w.handleDeath(target, player, nil)
+						w.handleDeathWorldLocked(target, player, nil)
 						target.Mu.Unlock()
 					}
 				} else {
@@ -321,7 +321,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 						if isDead {
 							target.Mu.Lock()
-							w.handleDeath(target, player, nil)
+							w.handleDeathWorldLocked(target, player, nil)
 							target.Mu.Unlock()
 						}
 					}
@@ -649,7 +649,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 						w.fireDamageEvent(player, target.ID, finalDamage, "fire", player.InstanceID)
 						if isDead {
 							target.Mu.Lock()
-							w.handleDeath(target, player, nil)
+							w.handleDeathWorldLocked(target, player, nil)
 							target.Mu.Unlock()
 						}
 					}
@@ -739,7 +739,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 					if isDead {
 						target.Mu.Lock()
-						w.handleDeath(target, player, nil)
+						w.handleDeathWorldLocked(target, player, nil)
 						target.Mu.Unlock()
 					}
 				} else {
@@ -876,7 +876,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 							w.fireDamageEvent(player, target.ID, finalDamage, "arcane", player.InstanceID)
 							if isDead {
 								target.Mu.Lock()
-								w.handleDeath(target, player, nil)
+								w.handleDeathWorldLocked(target, player, nil)
 								target.Mu.Unlock()
 							}
 						}
@@ -924,7 +924,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 							w.fireDamageEvent(player, target.ID, finalDamage, "arcane", player.InstanceID)
 							if isDead {
 								target.Mu.Lock()
-								w.handleDeath(target, player, nil)
+								w.handleDeathWorldLocked(target, player, nil)
 								target.Mu.Unlock()
 							}
 						}

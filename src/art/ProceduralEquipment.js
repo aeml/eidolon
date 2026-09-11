@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { createTailoredTorsoGeometry, createOpenHoodGeometry } from './ProceduralGarmentGeometry.js';
+import { socketGemAppearanceName } from './SocketGemAppearance.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -547,11 +548,15 @@ function addSocketDetails(group, item, visual, mats) {
     const gems = Array.isArray(item?.gems) ? item.gems : [];
     const socketCount = Math.max(gems.length, Math.max(0, Number(item?.sockets) || 0));
     if (socketCount <= 0) return;
-    const origin = socketDecorationPosition(visual.slot);
+    // Blade sockets are inlaid along the blade, not offset beside its narrow
+    // edge. Matching reverse fittings represent the same embedded stones and
+    // keep a naturally pitched weapon readable from either face.
+    const blade = visual.family === 'blade';
+    const origin = blade ? [0, 0.4, 0.08] : socketDecorationPosition(visual.slot);
     const shown = Math.min(3, socketCount);
     for (let index = 0; index < shown; index++) {
         const gem = gems[index];
-        const gemType = gem?.type || gem?.gemType;
+        const gemType = socketGemAppearanceName(gem);
         const gemColor = GEM_COLORS[gemType] || 0x26262d;
         const gemMaterial = gem
             ? material(`socket-${gemType || 'unknown'}`, gemColor, {
@@ -561,7 +566,8 @@ function addSocketDetails(group, item, visual, mats) {
                 emissiveIntensity: 0.12
             })
             : mats.dark;
-        const position = [origin[0] + (index - (shown - 1) / 2) * 0.085, origin[1], origin[2]];
+        const offset = (index - (shown - 1) / 2) * 0.085;
+        const position = [origin[0] + (blade ? 0 : offset), origin[1] + (blade ? offset : 0), origin[2]];
         addMesh(group, `Gear_SocketMount${index + 1}`, geometry('gear-socket-mount', () => new THREE.OctahedronGeometry(0.048, 0)), mats.dark, {
             position, scale: [1, 1, 0.4]
         });
@@ -569,6 +575,16 @@ function addSocketDetails(group, item, visual, mats) {
             position: [position[0], position[1], position[2] + 0.018],
             scale: [1, 1, 0.55]
         });
+        if (blade) {
+            // The extruded blade spans z=0..0.035 before its bevel. Mirror
+            // around its mid-plane; do not draw through the blade or body.
+            addMesh(group, `Gear_SocketMountBack${index + 1}`, geometry('gear-socket-mount', () => new THREE.OctahedronGeometry(0.048, 0)), mats.dark, {
+                position: [position[0], position[1], 0.035 - position[2]], scale: [1, 1, 0.4]
+            });
+            addMesh(group, `Gear_SocketBack${index + 1}`, geometry('gear-socket', () => new THREE.OctahedronGeometry(0.033, 0)), gemMaterial, {
+                position: [position[0], position[1], 0.035 - position[2] - 0.018], scale: [1, 1, 0.55]
+            });
+        }
     }
 }
 
@@ -698,7 +714,7 @@ export function equipmentVisualSignature(equipment = {}) {
         if (!item?.id && !item?.name) return `${slot}:empty`;
         const rarity = getRarityName(item);
         const gems = Array.isArray(item.gems)
-            ? item.gems.map((gem) => `${gem?.type || ''}/${gem?.quality || ''}`).join(',')
+            ? item.gems.map((gem) => `${socketGemAppearanceName(gem) || ''}/${gem?.quality || ''}`).join(',')
             : '';
         return [slot, item.id || '', item.baseName || '', item.name || '', rarity,
             item.level || 0, item.potency || 0, item.sockets || 0, gems,

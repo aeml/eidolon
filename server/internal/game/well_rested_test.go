@@ -351,7 +351,7 @@ func TestWellRestedPartyBossKillBoostsOnlyRestedRecipient(t *testing.T) {
 		for i, p := range players {
 			p.Level, p.MaxExperience, p.InstanceID = level, experienceRequiredForLevel(level), instanceID
 			p.Inventory = make([]Item, MaxInventorySize)
-			p.BaseStats = applyLevelGrowth(canonicalBaseStatsForClass(p.SubType), level)
+			p.BaseStats = applyLevelGrowth(InitialPlayerStats(), level)
 			if level == MaxPlayerLevel {
 				p.Experience = p.MaxExperience
 			}
@@ -376,7 +376,9 @@ func TestWellRestedPartyBossKillBoostsOnlyRestedRecipient(t *testing.T) {
 		}
 		boss := &Entity{ID: "rest-boss", Type: TypeEnemy, SubType: "RootboundWarden", Level: level, Health: 1, MaxHealth: 1, State: "IDLE", InstanceID: instanceID}
 		w.AddEntity(boss)
+		boss.Mu.Lock()
 		w.handleDeath(boss, players[0], nil)
+		boss.Mu.Unlock()
 		byPlayer := map[string]RewardSummaryEvent{}
 		for range players {
 			select {

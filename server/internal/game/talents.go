@@ -278,9 +278,13 @@ func clericTalentDef(n int) (TalentDef, bool) {
 		isMastery := (n % 2) == 1
 
 		if isMastery {
-			// Cleric mastery: +healing or +damage depending on skill
+			// Purifying Wave cleanses rather than heals: Mastery expands its reach.
+			if skillName == "Purifying Wave" {
+				return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: skillName, SkillAoe: 0.04}}, true
+			}
+			// Other Cleric mastery: +healing or +damage depending on skill.
 			if skillName == "Healing Light" || skillName == "Guardian Embrace" ||
-				skillName == "Divine Intervention" || skillName == "Purifying Wave" {
+				skillName == "Divine Intervention" {
 				return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: skillName, SkillHealing: 0.04}}, true
 			}
 			return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: skillName, SkillDamage: 0.04}}, true

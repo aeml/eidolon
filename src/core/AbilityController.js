@@ -22,7 +22,7 @@ import { getAbilityPresentation } from '../skills/abilityVisualManifest.js';
 // them into a targeted chase: doing so clears an otherwise valid movement path
 // when the caster reaches the hovered actor, producing a visible stop on cast.
 const SELF_CAST_ABILITIES = new Set([
-    'Spirit Guardians', 'Avenging Seraph'
+    'Spirit Guardians', 'Avenging Seraph', 'Executioner Spin'
 ]);
 const PARTY_TARGET_ABILITIES = new Set(['Healing Light', 'Divine Intervention']);
 
@@ -252,7 +252,7 @@ export class AbilityController {
         }
 
         // Mobile uses auto-targeting logic inside performAbility().
-        if (this.engine.isMobile) {
+        if (this.engine.isMobile || (PARTY_TARGET_ABILITIES.has(skillName) && this.engine.uiManager?.social?.selectedSupportTargetId)) {
             this.performAbility(null, skillName);
             return;
         }
@@ -399,12 +399,15 @@ export class AbilityController {
             return;
         }
         
-        if (engine.isMobile && !targetVectorOverride) {
+        const desktopSupport = !engine.isMobile && PARTY_TARGET_ABILITIES.has(castSkillName)
+            && engine.uiManager?.social?.selectedSupportTargetId;
+        if ((engine.isMobile || desktopSupport) && !targetVectorOverride) {
             const support = PARTY_TARGET_ABILITIES.has(castSkillName);
-            const selected = support ? (engine.getMobileSupportTarget ? engine.getMobileSupportTarget() : player)
+            const selected = desktopSupport ? engine.getDesktopSupportTarget()
+                : support ? (engine.getMobileSupportTarget ? engine.getMobileSupportTarget() : player)
                 : engine.getMobileCombatTarget();
             if (support && !selected) {
-                engine.showReadabilityFeedback?.('mobile-ally-unavailable', {
+                engine.showReadabilityFeedback?.(desktopSupport ? 'party-ally-unavailable' : 'mobile-ally-unavailable', {
                     title: 'Ally unavailable', tone: 'warning',
                     subtitle: 'Your selected ally is not alive and nearby. Open Party to choose another ally or yourself.'
                 }, 700);
@@ -416,7 +419,7 @@ export class AbilityController {
 
             const castRange = this.getAbilityCastRange(skillNameOverride || player.abilityName);
             if (selected && this.getAbilityTargetDistance(selected, castSkillName) > castRange) {
-                engine.showReadabilityFeedback?.('mobile-cast-range', {
+                engine.showReadabilityFeedback?.(desktopSupport ? 'party-cast-range' : 'mobile-cast-range', {
                     title: 'Move into range', tone: 'warning',
                     subtitle: `${skillNameOverride || player.abilityName} needs ${castRange.toFixed(1)}m. Your selected target is farther away.`
                 }, 700);

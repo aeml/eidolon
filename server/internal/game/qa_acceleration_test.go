@@ -38,7 +38,9 @@ func TestQAGuaranteedLootIsConsumedByNextEnemyKill(t *testing.T) {
 	if !w.ArmPlayerQAGuaranteedLoot(player.ID) {
 		t.Fatal("expected QA loot flag to arm")
 	}
+	enemy.Mu.Lock()
 	w.handleDeath(enemy, player, nil)
+	enemy.Mu.Unlock()
 	if player.QAGuaranteedLoot {
 		t.Fatal("expected QA loot flag to be consumed synchronously on kill")
 	}
@@ -112,7 +114,9 @@ func TestDungeonKillKeepsGeneratedLootInsideItsInstance(t *testing.T) {
 		PlayerRoomSummary: map[string]DungeonRoomSummary{player.ID: {}},
 	}
 
+	enemy.Mu.Lock()
 	w.handleDeath(enemy, player, nil)
+	enemy.Mu.Unlock()
 	deadline := time.Now().Add(time.Second)
 	for time.Now().Before(deadline) {
 		w.Mu.RLock()

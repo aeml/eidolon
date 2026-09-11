@@ -1,5 +1,6 @@
 import { GuildUI } from './GuildUI.js';
 import { PhonePartyUI } from './PhonePartyUI.js';
+import { PARTY_REWARD_DETAILS, PARTY_REWARD_SUMMARY } from './PartyRewardGuidance.js';
 
 /**
  * Social UI module — handles the social (online players) window,
@@ -19,6 +20,10 @@ export class SocialUI {
 
         // --- State ---
         this.partyData = null;
+        this.selectedSupportTargetId = null;
+        this.supportTargetPlayerId = null;
+        this.supportTargetPartyId = null;
+        this.supportTargetButtons = new Map();
         this.inParty = false;
         this.currentInviter = null;
         this.currentSocialStatus = 'available';
@@ -327,6 +332,13 @@ export class SocialUI {
     }
 
     updateParty(partyData) {
+        const playerId = this.ctx.getLastPlayer()?.id || null;
+        if (this.supportTargetPartyId !== partyData?.partyId || this.supportTargetPlayerId !== playerId) {
+            this.selectedSupportTargetId = null;
+        }
+        this.supportTargetPlayerId = playerId;
+        this.supportTargetPartyId = partyData?.partyId;
+        if (!partyData?.members?.some(member => member.id === this.selectedSupportTargetId)) this.selectedSupportTargetId = null;
         this.partyData = partyData;
         if (this.phoneParty) {
             this.inParty = Boolean(partyData?.partyId);
@@ -350,7 +362,8 @@ export class SocialUI {
 				this.partyLootRule.disabled = true;
 			}
             if (panelGuidance) {
-                panelGuidance.textContent = 'Stay near party members to share kill credit, gold, XP, and dungeon boss rewards. Each nearby member also adds to the party reward bonus.';
+                panelGuidance.textContent = PARTY_REWARD_SUMMARY;
+                panelGuidance.title = PARTY_REWARD_DETAILS;
             }
             if (this.socialWindow.style.display === 'none') {
                 this.setPartyPanelVisible(false);
@@ -358,6 +371,7 @@ export class SocialUI {
                 this.setPartyPanelVisible(true);
             }
             this.partyList.replaceChildren();
+            this.supportTargetButtons.clear();
             const emptyState = document.createElement('div');
             emptyState.style.color = '#aaa';
             emptyState.style.fontStyle = 'italic';
@@ -368,9 +382,26 @@ export class SocialUI {
         }
 
         this.setPartyPanelVisible(true);
+        const focusedSupportId = this.partyList.contains(document.activeElement)
+            ? document.activeElement?.dataset?.partySupportTarget : undefined;
         this.partyList.replaceChildren();
 
         const members = partyData.members || [];
+        const selectedSupport = members.find(member => member.id === this.selectedSupportTargetId);
+        const clearSupport = this.supportModeButton || document.createElement('button');
+        clearSupport.type = 'button';
+        clearSupport.className = 'party-support-mode';
+        clearSupport.dataset.partySupportTarget = '';
+        clearSupport.textContent = selectedSupport ? `Clear healing target · ${selectedSupport.name}` : 'Healing: cursor aim';
+        clearSupport.title = 'Select a party member below to direct Healing Light or Divine Intervention. Clear to use cursor aiming again.';
+        if (!this.supportModeButton) {
+            clearSupport.addEventListener('click', () => {
+                this.selectedSupportTargetId = null;
+                this.updateParty(this.partyData);
+            });
+            this.supportModeButton = clearSupport;
+        }
+        this.partyList.appendChild(clearSupport);
         const leaderId = partyData.leaderId;
         const player = this.ctx.getLastPlayer();
         const myId = player ? player.id : null;
@@ -390,13 +421,10 @@ export class SocialUI {
 			this.partyLootRule.value = partyData.lootRule || 'ffa';
 			this.partyLootRule.disabled = !amILeader;
 		}
-        const nearbyBonusPct = Math.max(10, members.length * 10);
-
+        const maxGoldPoolBonusPct = members.length * 10;
         if (panelGuidance) {
-            panelGuidance.title = amILeader
-                ? `Leader view: keep members nearby to share kill credit, gold, XP, and dungeon boss rewards. Current nearby party bonus target reads +${nearbyBonusPct}% before dungeon difficulty multipliers.`
-                : `Party rewards are proximity-based: stay near the group to share kill credit, gold, XP, and dungeon boss rewards. A full nearby party currently targets about +${nearbyBonusPct}% bonus rewards before difficulty scaling.`;
-            panelGuidance.textContent = `${amILeader ? 'Leader view' : 'Stay together'} · nearby allies share rewards (+${nearbyBonusPct}% target).`;
+            panelGuidance.title = PARTY_REWARD_DETAILS;
+            panelGuidance.textContent = `${amILeader ? 'Leader view' : 'Party member'} · ${PARTY_REWARD_SUMMARY} Up to +${maxGoldPoolBonusPct}% eligible-party Gold pool, not personal XP.`;
         }
 
         members.forEach(member => {
@@ -410,8 +438,23 @@ export class SocialUI {
 			const combatRole = member.role || 'damage';
 			const roleLabel = `${combatRole}${isLeader ? ' • Leader' : isMe ? ' • You' : ''}${member.ready ? ' • Ready' : ''}`;
 
-            const info = document.createElement('div');
-            info.className = 'party-member-info';
+            let info = this.supportTargetButtons.get(member.id);
+            if (!info) {
+                info = document.createElement('button');
+                info.addEventListener('click', () => {
+                    this.selectedSupportTargetId = member.id;
+                    this.updateParty(this.partyData);
+                });
+                this.supportTargetButtons.set(member.id, info);
+            }
+            info.replaceChildren();
+            info.type = 'button';
+            info.className = 'party-member-info party-support-target';
+            info.dataset.partySupportTarget = member.id;
+            info.disabled = !(member.hp > 0);
+            info.setAttribute('aria-label', `Select ${member.name} for healing`);
+            info.setAttribute('aria-pressed', String(member.id === this.selectedSupportTargetId));
+            info.title = 'Select for Healing Light and Divine Intervention; does not cast or change your attack target.';
 
             const nameRow = document.createElement('div');
             nameRow.className = 'party-name';
@@ -451,13 +494,8 @@ export class SocialUI {
             role.className = 'party-member-role';
             role.textContent = roleLabel;
 
-            const bonus = document.createElement('span');
-            bonus.className = 'party-member-bonus';
-            bonus.textContent = `Nearby share: +${nearbyBonusPct}%`;
-
             metaRow.appendChild(role);
-            metaRow.appendChild(bonus);
-            div.appendChild(metaRow);
+            info.appendChild(metaRow);
 
             if (amILeader && !isMe) {
                 const actions = document.createElement('div');
@@ -490,6 +528,14 @@ export class SocialUI {
 
             this.partyList.appendChild(div);
         });
+        for (const id of this.supportTargetButtons.keys()) {
+            if (!members.some(member => member.id === id)) this.supportTargetButtons.delete(id);
+        }
+        // Live roster refreshes must not steal keyboard focus from its controls.
+        if (focusedSupportId !== undefined) {
+            [...this.partyList.querySelectorAll('[data-party-support-target]')]
+                .find(button => button.dataset.partySupportTarget === focusedSupportId && !button.disabled)?.focus({ preventScroll: true });
+        }
     }
 
     showPartyRequest(inviterName) {
@@ -498,7 +544,8 @@ export class SocialUI {
         if (this.partyInviterName) this.partyInviterName.textContent = inviterName;
         const benefits = document.getElementById('party-request-benefits');
         if (benefits) {
-            benefits.textContent = 'Accept to share nearby kill rewards, dungeon boss credit, and party-led dungeon entry flow.';
+            benefits.textContent = 'Accept to share kill rewards across the whole dungeon or within roughly two screens in the overworld, plus party-led dungeon entry.';
+            benefits.title = PARTY_REWARD_DETAILS;
         }
         this.partyRequestModal.style.display = 'block';
         this.btnAcceptParty?.focus();
