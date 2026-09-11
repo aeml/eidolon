@@ -5,7 +5,46 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 03:45 UTC
+## Current checkpoint — September 11, 03:54 UTC
+
+Previous turn was PROGRESS (actual split queues and independent local stun
+repairs). This turn is PROGRESS: current-source integration, full server race
+started, actual wire-boundary proof and new-runner100-client workload verified.
+
+- New `/tmp/eidolon-stun-lifecycle-current-20260911`, branch
+  work/stun-lifecycle-current-20260911, clean frozen60c84422 = acceptedprimary
+ 45efe670 + generalstun2f495909 ONLY. No ShieldSlamtalentscaling/copy patch,
+  no src/scripts/ci.yml differences. Full server42912 ACTIVE, authoritativehandle
+  polled03:52, log `/tmp/eidolon-stun-current-full-server.log`. Command nice10,
+  GOMAXPROCS2, go test-race-p1./... to limit shared-machine contention. Earlier
+  packages passed root52.185s/loadtest1.027/database2.638; game package running.
+  Not full PASS yet. No source edits/cherry-picks while this frozen run is active.
+  One local heavy CPU job; no local browser. Preserve native/full-party/release
+  requirements after full regression; currentCIownsGPU.
+- In separate repair worktree, added actual Enemy/NPC snapshot->protobuf
+  encode/decode regression. Start/clear trigger delta change detection; clear
+  encodes inactive/zero duration even with captured deadline retained.53435
+  TERMINAL0/serverroot0.009s; log `/tmp/eidolon-stun-wire-focused.log`. Test/docs
+  commitc80ae939 atop714bb815, clean. This is wire encoding proof, not native
+  websocket/observer proof. It can be cherry-picked independently after current
+  source full-race terminal, then run that focused added test on current source.
+- NewNightly34558600459 finished fresh setup and started actual soak step03:48:05
+  on eidolon-soak. Existing logs in newrunner `_work/_temp/eidolon-soak-QRfTOJ`
+  show100 unique joinedbots/100joinevents,0 logged dial/login/join/stateframe
+  errors. First2runtime samples healthy; latestready/ok, correct8cb7ae43-run
+  identity,298goroutines/202178368heapbytes. This verifies startup/isolation,
+  NOT24hcompletion. Full duration remains active; no cancellation/shortening.
+- Canonical34434837759 onChrome still in_progress at disposablefull-character
+  gameplay; realhardware probe and High/Low gallery passed. NewCI34558375122
+  remains behind canonical. Both runnerjobs remain live; no restart inferred
+  from elapsedtime/cache restoration. Existing publicreleaseidentity not newly
+  checked this turn, no newdeployclaim. No paidrunner or authscopeexpansion.
+- Shader/client status source read confirms generic remote sync invokes stun
+  clear/details; existing self-only status tests are not claimed as native enemy
+  proof. No further runtime changes or fulltalent/copy decisions silently made.
+  Full1.1–1.10scope remainsactive; rootNEVERPUSH; DBrotationapprovalunanswered.
+
+## Previous checkpoint — September 11, 03:45 UTC
 
 Previous turn was PROGRESS (24h evidence validated and split queues carried
 forward). This turn is PROGRESS: actual concurrent runner assignment confirmed,
