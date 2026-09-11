@@ -1041,6 +1041,9 @@ export class Actor extends Entity {
             this.frozenTimer = Math.max(0, this.frozenTimer - dt);
         }
         
+        if (this.offlineTeleportChargeTimer > 0) {
+            this.offlineTeleportChargeTimer = Math.max(0, this.offlineTeleportChargeTimer - dt);
+        }
         if (this.teleportPhaseTimer > 0) {
             this.teleportPhaseTimer = Math.max(0, this.teleportPhaseTimer - dt);
         }

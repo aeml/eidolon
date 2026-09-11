@@ -13,6 +13,7 @@ import { findOfflineAbilityTarget } from '../skills/offlineAbilityTargeting.js';
 import { getArcaneShieldTraining } from '../core/ArcaneShieldTraining.js';
 import { applyOfflineTimeWarp, getWizardEffectDuration } from './WizardSupportAbilities.js';
 import { applyOfflineTeleportWarp, snapshotOfflineTeleportWarp } from '../skills/offlineTeleportWarp.js';
+import { commitOfflineTeleportCharge } from '../skills/offlineTeleportCharges.js';
 
 // Match the server's next-damage-spell contract. Utility casts neither consume
 // nor receive Spell Focus, and failed admission must leave the charge intact.
@@ -31,6 +32,8 @@ export class Wizard extends Actor {
         this.abilityManaCost = 30;
         this.abilityMaxCooldown = 2.0;
         this.teleportPhaseTimer = 0;
+        this.offlineTeleportCharges = 0;
+        this.offlineTeleportChargeTimer = 0;
         
         // Skill Tree: Pyromancer (Branch A)
         this.skillLevels = {
@@ -565,6 +568,7 @@ export class Wizard extends Actor {
             }
             applyOfflineTeleportWarp(this, departure, gameEngine, warp);
             applyOfflineTeleportWarp(this, this.position.clone(), gameEngine, warp);
+            commitOfflineTeleportCharge(this, gameEngine, !skillNameOverride);
             
             // Arrival Effect
             this.spawnVisualEffect(gameEngine, this.position, 0x00ffff, "burst");
