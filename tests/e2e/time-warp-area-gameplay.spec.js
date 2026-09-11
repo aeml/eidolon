@@ -140,8 +140,20 @@ test('Time Warp training reaches a walked ally beyond the original radius and ex
             for (let rank = 1; rank <= 5; rank++) {
                 const buy = page.locator(`button[data-build-action="talent:${id}"]`);
                 await buy.scrollIntoViewIfNeeded(); await buy.tap();
-                await expect.poll(() => page.evaluate(id => window.game.player.talentRanks?.[id] || 0, id)).toBe(rank);
+                try {
+                    await expect.poll(() => page.evaluate(id => window.game.player.talentRanks?.[id] || 0, id)).toBe(rank);
+                } catch (error) {
+                    console.log('[time-warp-training-failure]', JSON.stringify(await page.evaluate(({ id, rank }) => ({
+                        id, expectedRank: rank, ranks: window.game.player.talentRanks,
+                        points: window.game.player.talentPoints,
+                        pending: window.game.uiManager.skillTree.mobile.pending,
+                        feedback: window.game.uiManager.skillTree.mobile.feedback
+                    }), { id, rank })));
+                    await page.screenshot({ path: testInfo.outputPath('time-warp-training-failure.png') });
+                    throw error;
+                }
                 await expect.poll(() => page.evaluate(() => window.game.uiManager.skillTree.mobile.pending === null)).toBe(true);
+                console.log(`[time-warp-training] ${id} rank ${rank} confirmed`);
             }
         }
         await page.locator('#btn-close-skills').tap();
