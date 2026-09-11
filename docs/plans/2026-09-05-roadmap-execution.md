@@ -5,7 +5,29 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 00:06 UTC
+## Current checkpoint — September 11, 00:10 UTC
+
+Previous turn was PROGRESS: surviving Warden and disjoint-path controller fix.
+This turn is a VERIFIED WAIT on re-polled live16027, with its current-source
+first-room/recovery evidence recorded. No new gameplay edit or release claim.
+
+-16027 ACTIVE on clean frozene2780eb6, seed723058021901932776/gen2/Normal30/
+  no fallback. All four setup/party/entry passed; first room and first complete
+  town recovery/individual guide resume passed exact seed/rooms/Gold/bag/quests.
+  Pre-restHP/MP Fighter855/368, Cleric845/526, Wizard855/328, Rogue748/402;
+  all recovered. No boss/fullclear/manual/relogin result on this source yet.
+  Same sole heavy handle/log/ports below; do not edit primary or replace it.
+- Read-only fixture audit confirms productionlevel30 growth: STR/VIT68 and
+  DEX/INT/WIS39 from the all-ten level1 baseline, not level1 stats atlevel30.
+  Five mastery ranks spend5of6available talent points;14Common level30 items
+  come from productioncreation atpotency0. Keep this conservative fixture and
+  earned-route/optimal-build distinction; no artificial stat deficit or new
+  preparation grant was established/introduced by this audit.
+- Remote00:09 canonicalCI34434837759 queued; Nightly34433520743 in_progress.
+  Candidate98320775 idle. No push/version/deployment/runner/soak change; root
+  NEVER PUSHES. All broader roadmap gates remain open and goal stays active.
+
+## Previous checkpoint — September 11, 00:06 UTC
 
 Previous goal turn was PROGRESS: second party recovery and accurate patch-note
 draft. This turn is PROGRESS: retained a second surviving native Warden kill,
