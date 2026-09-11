@@ -9,11 +9,22 @@ import "math"
 type statusDamageBudget struct {
 	amount    int
 	pvpScaled bool
+	// Raw skill wounds roll their own outgoing modifiers at application.
+	// Inherited hit budgets leave these empty to avoid applying them twice.
+	skill, damageType string
+}
+
+func rawStatusBudget(source *Entity, skill string, amount int, damageType string) statusDamageBudget {
+	return statusDamageBudget{amount: trainedStatusDamage(source, skill, amount, false), skill: skill, damageType: damageType}
 }
 
 func (budget statusDamageBudget) forTarget(source, target *Entity) int {
 	if budget.amount <= 0 {
 		return budget.amount
+	}
+	if budget.damageType != "" {
+		damage, _ := CalculateFinalDamage(source, target, budget.amount, budget.damageType, budget.skill)
+		return damage
 	}
 	if budget.pvpScaled && source != nil && target != nil && source.Type == TypePlayer && target.Type == TypePlayer {
 		return capPvPDamage(target, budget.amount)

@@ -558,7 +558,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				}
 				if projSkill == "Piercing Throw" && ownerPoisonCoating && !isDead {
 					target.Poisoned = true
-					spreadPoisonBudget = statusDamageBudget{amount: trainedStatusDamage(ownerCombat, "Poison Coating", 8+ownerDexterity/2, false)}
+					spreadPoisonBudget = rawStatusBudget(ownerCombat, "Poison Coating", 8+ownerDexterity/2, "poison")
 					target.PoisonDamage = spreadPoisonBudget.forTarget(ownerCombat, target)
 					target.PoisonSourceID = ownerID
 					target.PoisonEndTime = time.Now().Add(8 * time.Second)

@@ -1,4 +1,5 @@
 import { CONSTANTS } from './Constants.js';
+import { rollOfflineCriticalDamage } from './AbilityCritical.js';
 
 const authoritative = actor => actor?.isMultiplayer || actor?.isRemote || actor?.gameEngine?.isMultiplayer;
 
@@ -33,7 +34,21 @@ export function clearOfflineStatus(target, kind) {
 export function applyOfflineStatus(source, target, kind, amount, duration, skill, inheritedHit = false) {
     if (!['bleed', 'poison'].includes(kind) || !source || authoritative(source) || !target || authoritative(target) ||
         target.isActive === false || target.state === 'DEAD' || !(duration > 0) || !Number.isFinite(duration)) return false;
-    const damage = getStatusTrainingDamage(source, skill, amount, inheritedHit);
+    let damage = getStatusTrainingDamage(source, skill, amount, inheritedHit);
+    if (!inheritedHit && damage > 0) {
+        // Raw wounds have their own outgoing application. Derived wounds have
+        // already inherited these modifiers from their hit and must not reroll.
+        if (source.hasLuckyEffect && Math.random() < .1) damage *= 2;
+        damage = rollOfflineCriticalDamage(source, damage, skill).amount;
+        if (source.hasExecutionerEffect && target.stats?.maxHp > 0 && target.stats.hp <= target.stats.maxHp/4) {
+            damage = Math.floor(damage*1.25);
+        }
+        if (source.ironFortressTimer > 0 && Object.values(source.activeSetBonuses || {}).some(set => set.specials?.ironFortressDamage > 0)) {
+            damage *= 2;
+        }
+        const poisonBonus = Number(source.stats?.poisonDamageBonus || 0);
+        if (kind === 'poison' && poisonBonus > 0 && Number.isFinite(poisonBonus)) damage = Math.floor(damage*(1+poisonBonus));
+    }
     if (!damage) return false;
     // Refresh the wound without postponing an already-running tick cadence.
     if (!(target[`${kind}Timer`] > 0)) target[`${kind}TickTimer`] = 0;
