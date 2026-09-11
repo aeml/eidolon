@@ -5,7 +5,38 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 22:32 UTC
+## Current checkpoint — September 11, 22:37 UTC
+
+Previous goal turn was PROGRESS. This continuation is PROGRESS: corrected the
+party tank's pointer acquisition, passed full integration and started native QA.
+
+- Primary now clean frozen4f5d0439, from2de5da37. New aimDungeonCombatTarget
+  uses existing six-point hover acquisition for party tank inputs, returning the
+  actually acquired point instead of a center possibly covered by a teammate.
+  Rechecks hover before Charge/hotbar. Records twelve recent tank inputs with
+  actual hover/pending target/range/move state. Existing solo center aiming and
+  every dungeon/party gate retained; no runtime/balance/fixture/priority changes.
+  Evidence plan2026-09-11-party-tank-targeting.md explicitly treats this as an
+  input failure path, not a proven diagnosis of all70393damage or a dungeon pass.
+-22343 TERMINAL0: four focused suites119tests0.624s and full lint.39148
+  TERMINAL0:356suites5090tests123.425s. Logs
+  `/tmp/eidolon-party-tank-target-{focused,lint,full-client}-20260911.log`.
+  No server runtime source changed since its accepted integration.
+-25565 confirmedACTIVE: only owned local heavy/browser run, fourrole-tank-20260911,
+  party-dungeon route on4f5d0439, loopback18580/18581/41980. Log
+  `/tmp/eidolon-four-role-tank-target-20260911.log`. NEXT recover SAME handle;
+  keep primary source frozen, no competing local full/browser workload. Preserve
+  all-four-alive/full-room/boss/individual-credit/manual-Ilyra/Water/save gates.
+- Candidate CI34654262376 stillACTIVE22:37 on89d9e145: hostedclientSUCCESS,
+  server race step running (Go coverage passed); browser shards not yet started.
+  No restart/cancellation/waiver. Branch release/63-wizard-support only published;
+  no master deployment. After all hosted gates pass recheck remote master and
+  publish via usual full push gates, coordinating local native GPU ownership
+  with self-hosted predeploy. Both runners were onlineidle before this run.
+- Soak remains off. Alpha1.0.62 remains last independently verified live.
+  Full1.1–1.10/160talents/earnedpacing/phone/casino scope unchanged. Root MUST NOT PUSH.
+
+## Previous checkpoint — September 11, 22:32 UTC
 
 The intervening user-clarification turn was NO PROGRESS (read-only status and
 confirmation that only soak is cancelled). This continuation is PROGRESS: full
