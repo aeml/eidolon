@@ -5,7 +5,57 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 22:13 UTC
+## Current checkpoint — September 11, 22:23 UTC
+
+Previous goal turn was PROGRESS. This turn is PROGRESS: recovered the failed
+party retry and prepared a properly versioned63release candidate from live62,
+with its own integration tests and patch notes, without narrowing the full goal.
+
+-70393 TERMINAL1 on01a730bf. Normal Verdant seed-7293995622185110194,
+  generator2/no fallback. Warden15000→last1133HP, Rogue died. Archive
+  `/tmp/eidolon-four-role-waypoint-failure-IpaqPi`; sanitizer0files, ownedservices
+  gone. No full clear/manual/save pass. Whole-run Fighter6844damage/2983taken,
+  final810HP107MP; Cleric5958healing/1472taken,486HP7MP(7Embrace17Light);
+  Wizard5192/367,855HP18MP; Rogue7821/4344,0HP9MP(6Coating37Throw).
+  Early escapes Ftr8/Clr4/Wiz2/Rog7. Rogue's last four184physical hits at7.46m,
+  three without an active warning, support pursuit/endurance investigation but
+  are not direct server threat-table evidence. Do not blindly rerun, increase
+  fixture stats or weaken survival. Main stays01a730bf, full5084/lint accepted.
+- New `/tmp/eidolon-release63-wizard-20260911`, branchrelease/63-wizard-support,
+  based directly on live0231c948, preserving user's website/analytics/history.
+  Scope: TimeWarp reach/rings/offline lifecycle, offlineSpellFocus, build-menu
+  admission receipts, per-class live-report retention, own nativeTimeWarp gate.
+  Broader Fighter/receiving/Rogue/Cleric/campaign/dungeon work remains separate
+  required work, not declared shipped or completed by63.
+- Applied f965a194/49c08a76/9e16c19b/c11a9785/b05587d4 and native proof sequence.
+  Resolved script conflict by retaining livebase's existing untimed full chain
+  and adding TimeWarp aftertalenthealing. bce01bef timing-only fixture cannot
+  apply to this base (file absent), so skipped that inapplicable commit; no
+  existing check removed. Own IsolatedQADefaults checks the actual chain.
+- Initial release focused47344 TERMINAL1:5/139failed, from timers still after
+  livebase's stun early-return. Moved onlyTimeWarp/SpellFocus timers beforestun;
+  existing broad status-system development is not pulled in.33546 TERMINAL0:
+ 7suites377tests6.529s, includingversion/patch history.62380 full lint/shell/diffPASS.
+-77335 TERMINAL1 game4.355s: fictional ActiveSetBonuses fixture is erased if
+  caster recalculates before far recipient, depending on map order. Replaced
+  fixture with actual0/5/6equipped TemporalWeave pieces and before/after bonus
+  assertions; no server set behavior changed.28472 TERMINAL0:5repeats racegame
+ 11.654s and root admission/receipt1.494s. Propagate this real-fixture correction
+  to main later; its original test is still nondeterministic there.
+- Version/login/package-lock/release/server/Docker/deploy/CI/localQA/alpha-status
+  updatedtogether; index has full63notes above preserved62history. Candidate
+  evidence/explicitexclusions in2026-09-11-release63-wizard-support.md. Frozen
+  clean89d9e145f7ea937ad83ab0065b8f123d21ba23ad.
+-96032 confirmedACTIVE22:23: candidate prepareclient→fullclient→lint→exactbrowser
+  partitiondiscovery→fullGo-race-p1. Logs `/tmp/eidolon-release63-{prepare,full-client,full-lint,partition,full-server}-20260911.log`.
+  NEXT recover SAME96032, keep release WT frozen/no competing full/browser. Then
+  its OWN nativeTimeWarp/rejection proof, normalCI/predeploy/live gates andremote
+  masterrecheckbeforepublication. Earliermainproof cannotestablish63acceptance.
+- No source push or deploymentthisturn. Remote masterrechecked0231c948;62last
+  liveaccepted, soakoff. Full1.1–1.10/160talents/earnedpacing/phone/casino unchanged.
+  Root MUST NOT PUSH.
+
+## Previous checkpoint — September 11, 22:13 UTC
 
 Previous goal turn was PROGRESS. This turn is PROGRESS: recovered and archived
 the failed party run, fixed its short-waypoint witness, repaired stage timing
