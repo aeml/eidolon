@@ -5,6 +5,10 @@
 
 > Project by [Robert Mendola](https://mendola.tech)
 
+## Public website
+
+The standalone marketing website for **eidolonrealms.com** lives in [`website/`](website/README.md). For Cloudflare Pages, use root directory `website`, build command `npm run build`, and output directory `dist`. Build locally from the repository root with `npm --prefix website run build`. The website links players to **https://play.eidolonrealms.com** and builds independently of the game client and server.
+
 ## Overview
 
 Eidolon is a browser-based realtime multiplayer action RPG and systems architecture project. The client is a vanilla JavaScript + Three.js browser application, while the backend is an authoritative Go game server that manages simulation, networking, and persistence.
