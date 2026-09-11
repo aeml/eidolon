@@ -5,7 +5,53 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 19:14 UTC
+## Current checkpoint — September 11, 19:29 UTC
+
+Previous goal turn was a VERIFIED WAIT: polled live62 CI and recovered the
+completed primary integration log. This turn is PROGRESS: reproduced and repaired
+raw-wound critical/equipment consumers online and offline, committed the fix,
+and started full current-source regression. Full roadmap remains incomplete.
+
+-49901 recovered TERMINAL0. Frozen53127f25 full integration passed client
+ 344suites/4804tests162.228s, lint, and Go race root19.446s/game331.143s,
+  loadtest1.019s/database1.120s/lifecycle1.023s. It is not a native dungeon clear.
+-62 CI34637129931 now has hosted client/server AND all three browser shards
+  SUCCESS. Predeploy Character QA103394045529 confirmed IN_PROGRESS, not stuck
+  waiting. Chrome runner online/busy; soak runner online/idle, both services
+  active. No service changes, cancellations, gate bypasses or extra pushes.
+  Current accepted live remains4ed50046/Alpha1.0.61 until actual deployment and
+  final live verification. Keep the local GPU free for predeploy/live QA.
+- New WT `/tmp/eidolon-raw-wound-outgoing-20260911`, branch
+  work/raw-wound-outgoing-20260911, starts from full53127f25. Initial paid Go
+  RED confirmed matching critical Technique ignored for Shadow Lunge and both
+  coating deliveries; poison equipment bonus ignored for both deliveries.
+  Offline real Rogue/Imp consumers reproduced these plus combined damage:
+  six failures0.567s before correction. No damage implementation substituted.
+- Clean frozen98b6cb8e659cadc06dd608277fed39701c7cf89c now applies raw training,
+  critical and outgoing equipment/unique/set modifiers once, with per-recipient
+  PvP limits/spread and stored ticks. Inherited Serrated/Fan/Magma budgets do
+  not reroll. Offline available fields corrected; full receiving-mark/rune/
+  spread parity and remaining Technique/duration/native/save audits stay open.
+  No schema or live data changes; this is NOT in already-pushed62.
+- Three-repeat server composition3.705s, broader status/receiving/parallel
+  race20.781s, final paid marked-spread1.134s PASS. Client5suites/67tests1.369s
+  and lint PASS. Added real critical Serrated projectile/Fan controls. Initial
+  low-HP offline projectile fixture incorrectly skipped flight; corrected its
+  pre-impact HP loop/assertion, retained failed evidence, no weakened damage.
+  Details and unreleased patch-note draft in
+  `docs/plans/2026-09-11-raw-wound-outgoing.md` in that WT.
+-43582 confirmed ACTIVE on unchanged98b6cb8e, sequential full client/lint/Go
+  race, nice10/GOMAXPROCS2, logs `/tmp/eidolon-raw-wound-full-{client,lint,server}.log`.
+  Recover this SAME handle; no source mutation or second local full/heavy/browser
+  while active. Focused checks are not full-source acceptance.
+- Next: recover43582 and real62 predeploy/deploy/live gates; repair any genuine
+  failure without weakening gates. Merge accepted follow-up into primary only
+  after regression; run full four-role Verdant/native progression when GPU free.
+  The soak stays cancelled, its stopped orphan/data retained. Full1.1–1.10,
+  earned pacing, physical phones, all talent consumers and casino scope unchanged.
+  Root ledger MUST NOT PUSH.
+
+## Previous checkpoint — September 11, 19:14 UTC
 
 Previous turn was PROGRESS. This turn is PROGRESS/verified wait: preceding
 release live checks passed,62 CI started, primary client/lint passed, and the
