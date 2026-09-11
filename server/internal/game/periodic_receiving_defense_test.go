@@ -93,6 +93,14 @@ func TestWhirlwindLaterReflectedPulseStopsCatchup(t *testing.T) {
 
 func TestWhirlwindReflectedDeathStopsSameFrameHealing(t *testing.T) {
 	w, source, defender := abilityDefenseDuel(t, "Fighter", "Whirlwind", "arcaneshield_reflective")
+	healer := newTestPlayer("renewal-before-reflection", "Cleric")
+	healer.X, healer.Z, healer.InstanceID = source.X, source.Z, source.InstanceID
+	healer.UnlockedSkills = []string{"Healing Light"}
+	healer.SkillRunes = map[string]string{"Healing Light": "healinglight_renewal"}
+	w.AddEntity(healer)
+	if result := w.PerformAbility(healer.ID, source.X, source.Z, source.ID, "Healing Light"); !result.Accepted || !source.HealingLightHoTActive {
+		t.Fatal("paid pre-reflection Renewal rejected")
+	}
 	if result := w.PerformAbility(source.ID, defender.X, defender.Z, defender.ID, "Whirlwind"); !result.Accepted {
 		t.Fatal("paid spin rejected")
 	}
@@ -100,9 +108,7 @@ func TestWhirlwindReflectedDeathStopsSameFrameHealing(t *testing.T) {
 	// may not revive a dead caster after the pulse's reflected damage resolves.
 	source.WhirlwindStartTime = time.Now().Add(-600 * time.Millisecond)
 	source.Health = 1
-	source.HealingLightHoTActive = true
-	source.HealingLightHoTTicksRemaining = 3
-	source.HealingLightHoTAmount = 100
+	source.LastHealingLightHoTTick = time.Now().Add(-time.Second)
 	w.updateEntity(source, .01, nil, &deferredActions{})
 	if source.Health != 0 || source.State != "DEAD" {
 		t.Fatalf("same-frame healing followed death: hp=%d state=%s", source.Health, source.State)

@@ -62,6 +62,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		now := time.Now()
 		w.tickBleedLocked(e, now, deferred)
 		w.tickPoisonLocked(e, now, deferred)
+		w.tickRenewalLocked(e, now)
 		dead := e.State == "DEAD"
 		// Enemy/NPC status timers do not pass through the player-only expiry
 		// block below. Freeze their AI while stunned, then release the same
@@ -1097,36 +1098,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				return
 			}
 
-			// Healing Light HoT (Renewal Rune)
-			if e.HealingLightHoTActive {
-				if e.HealingLightHoTTicksRemaining <= 0 {
-					e.HealingLightHoTActive = false
-					e.HealingLightHoTSourceID = ""
-				} else if time.Since(e.LastHealingLightHoTTick) >= 1*time.Second {
-					e.LastHealingLightHoTTick = now
-					previousHealth := e.Health
-					e.Health += applyHealingReceived(e, e.HealingLightHoTAmount)
-					if e.Health > e.MaxHealth {
-						e.Health = e.MaxHealth
-					}
-					e.HealingLightHoTTicksRemaining--
-					actualHeal := e.Health - previousHealth
-					if actualHeal > 0 && w.OnEvent != nil {
-						sourceID := e.HealingLightHoTSourceID
-						if sourceID == "" {
-							sourceID = "healinglight_hot"
-						}
-						w.OnEvent("heal", HealEvent{TargetID: e.ID, SourceID: sourceID, Amount: actualHeal, Kind: "healing_light_hot", InstanceID: e.InstanceID})
-					}
-					if e.HealingLightHoTTicksRemaining <= 0 {
-						e.HealingLightHoTActive = false
-						e.HealingLightHoTSourceID = ""
-					}
-				} else if now.After(e.HealingLightHoTEndTime) {
-					e.HealingLightHoTActive = false
-					e.HealingLightHoTSourceID = ""
-				}
-			}
+			w.tickRenewalLocked(e, now)
 
 			// Sanctuary Damage Reduction expiry check
 			if e.SanctuaryDamageReduction && now.After(e.SanctuaryEndTime) {
