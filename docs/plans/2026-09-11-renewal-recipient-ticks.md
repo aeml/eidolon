@@ -49,3 +49,14 @@ requirements remain open. The soak stays cancelled; release Chrome has the GPU.
 Healing Light's Renewal now heals friendly NPCs over time, including while
 stunned. Expired Renewal effects no longer deliver late healing, and healing
 cannot revive a recipient killed by an earlier effect in the same update.
+
+## Full server regression accepted ond5b6d3a6
+
+44937 terminated exit0 on unchanged d5b6d3a609a8651005966f06072910d9af256473.
+Go race passed root21.725s/game315.975s/loadtest1.028s/database1.122s/
+lifecycle1.023s. Log `/tmp/eidolon-renewal-recipient-full-server.log`.
+The exact diff against accepted parent8254288d contains only this plan and four
+server Go files; client, dependencies and toolchain inputs are unchanged. Thus
+the parent's full349suites/4896tests169.442s and lint PASS cover identical client
+inputs, alongside this new full server pass. No native party/save/phone or
+publication acceptance is inferred from these checks.
