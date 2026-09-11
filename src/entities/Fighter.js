@@ -9,6 +9,7 @@ import { clipDungeonEffectSegment } from '../skills/dungeonEffectGeometry.js';
 import { getExecutionerSpinDamage } from '../skills/executionerSpin.js';
 import { getShieldSlamStunDuration } from '../skills/shieldSlamDuration.js';
 import { getFighterEffectDuration } from '../skills/fighterEffectDuration.js';
+import { applyOfflineEarthshaker } from '../skills/offlineEarthshaker.js';
 
 const GUARDIAN_ROAR_FRIENDLY_ACTOR_TYPES = new Set([
     'Fighter',
@@ -222,33 +223,10 @@ export class Fighter extends Actor {
             // Cooldown 12s
             this.setSkillCooldown("Earthshaker", 12.0);
 
-            // AoE Circle
-            const radius = 6.0;
-            const stunDuration = getFighterEffectDuration(this, this.skillRunes?.[skill] === 'earthshaker_seismic' ? 4 : 2);
-            const entities = gameEngine.chunkManager.getActiveEntities();
-
             // Visual
             gameEngine.floatingTextManager.spawn("SMASH!", this.position, '#ff8800');
             this.spawnVisualEffect(gameEngine, this.position, 0xff8800, "wave");
-
-            entities.forEach(entity => {
-                if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
-                    const dist = this.position.distanceTo(entity.position);
-                    if (dist < radius) {
-                        // Hit!
-                        const damage = this.stats.strength * 2.0;
-                        if (entity.takeDamage) {
-                            applyOfflineAbilityHit(this, entity, damage, skill, gameEngine.floatingTextManager, '#ffff00');
-                        }
-
-                        // Knockdown (Stun)
-                        if (entity.stunTimer !== undefined && !entity.ccImmune) {
-                            entity.stunTimer = Math.max(entity.stunTimer, stunDuration);
-                            gameEngine.floatingTextManager.spawn("Knockdown!", entity.position, '#ffffff');
-                        }
-                    }
-                }
-            });
+            applyOfflineEarthshaker(this, targetVector, gameEngine, isGuardianRoarFriendlyActor);
             return;
         }
 
