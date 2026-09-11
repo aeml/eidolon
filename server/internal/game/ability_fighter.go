@@ -450,8 +450,11 @@ func (w *World) damageFighterCone(player *Entity, targetX, targetZ, radius, half
 		totalDamage += finalDamage
 		addThreatLocked(target, player.ID, float64(finalDamage)*threatMultiplier)
 		if stun > 0 && !target.CCImmune {
+			deadline := time.Now().Add(stun)
+			if !target.Stunned || deadline.After(target.StunEndTime) {
+				target.StunEndTime = deadline
+			}
 			target.Stunned = true
-			target.StunEndTime = time.Now().Add(stun)
 		}
 		isDead := target.Health <= 0
 		target.Mu.Unlock()

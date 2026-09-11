@@ -7,7 +7,7 @@ import { spawnEffectSceneFallback } from './EffectSceneFallback.js';
 import { getAbilityAoeRadius } from '../skills/abilityRadii.js';
 import { clipDungeonEffectSegment } from '../skills/dungeonEffectGeometry.js';
 import { getExecutionerSpinDamage } from '../skills/executionerSpin.js';
-import { getShieldSlamStunDuration } from '../skills/shieldSlamDuration.js';
+import { applyOfflineShieldSlam } from '../skills/offlineShieldSlam.js';
 import { getFighterEffectDuration } from '../skills/fighterEffectDuration.js';
 import { applyOfflineEarthshaker } from '../skills/offlineEarthshaker.js';
 
@@ -85,39 +85,11 @@ export class Fighter extends Actor {
 
             // Override Cooldown for Shield Slam (e.g. 6s)
             this.setSkillCooldown("Shield Slam", 6.0);
-            const stunDuration = getShieldSlamStunDuration(this);
-
-            // Cone Logic
-            const range = 4.0;
-            const angleThreshold = Math.PI / 4; // 45 degrees half-angle (90 total)
             const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(this.mesh.quaternion);
 
             this.spawnVisualEffect(gameEngine, this.position.clone().add(forward), 0xffff00, "impact");
 
-            const entities = gameEngine.chunkManager.getActiveEntities();
-            entities.forEach(entity => {
-                if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
-                    const dir = new THREE.Vector3().subVectors(entity.position, this.position);
-                    const dist = dir.length();
-                    if (dist < range) {
-                        dir.normalize();
-                        const angle = forward.angleTo(dir);
-                        if (angle < angleThreshold) {
-                            // Hit!
-                            const damage = this.stats.strength * 1.5;
-                            // Apply Damage
-                            if (entity.takeDamage) {
-                                applyOfflineAbilityHit(this, entity, damage, skill, gameEngine.floatingTextManager, '#ffff00');
-                            }
-
-                            // Apply Stun
-                            if (entity.stunTimer !== undefined) {
-                                entity.stunTimer = stunDuration;
-                            }
-                        }
-                    }
-                }
-            });
+            applyOfflineShieldSlam(this, targetVector, gameEngine, isGuardianRoarFriendlyActor);
             return;
         }
 
