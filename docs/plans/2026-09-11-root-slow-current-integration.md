@@ -40,3 +40,12 @@ render-object lifecycle evidence, not an inspected native screen recording.
 The future gameplay release must inherit the1.0.61 domain/Origin/exact-checkout
 changes and new live QA endpoints when accepted; never publish this older-base
 integration as a replacement that silently restores old domain routing.
+
+## Full current-source acceptance
+
+25686 completed0 on frozena041e6b1. Full server race passes allpackages:
+root25.597s, game449.133s, loadtest1.037s, database1.100s, lifecycle1.036s;
+remainingpackages no tests. Log `/tmp/eidolon-root-slow-current-full-server.log`.
+No racewarning or workerpanic. The source remained unchanged for this run.
+This supports advancing primary's root/slow implementation, not closing the
+native four-role clear, full talent/copy audit or production release gates.
