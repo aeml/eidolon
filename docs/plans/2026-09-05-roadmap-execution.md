@@ -5,7 +5,50 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 06:26 UTC
+## Current checkpoint — September 11, 06:39 UTC
+
+Previous goal turn was PROGRESS. This turn is PROGRESS through periodic/summon
+receiving-defense repairs, a confirmed same-frame corpse-healing fix and full
+preceding-source regression. Full1.1–1.10 scope remains active and incomplete.
+
+-34593 recovered TERMINAL0 on frozenf3068a2b: full Go race root29.386s,
+  game518.115s, loadtest1.040s, database1.127s, lifecycle1.049s. Recorded in
+  98a48f4f in ability-defense worktree. This accepts immediate/projectile source,
+  not later periodic changes. Log `/tmp/eidolon-ability-defense-full-server.log`.
+- New `/tmp/eidolon-periodic-defense-20260911`, branch
+  work/periodic-defense-20260911, now clean3b9fc8f7 (runtime9e1ed374 plus
+  preceding acceptance cherry-pick).12112 REDrace0.058s: Whirlwind/Charge/
+  Shattering Charge/Seraph bypass shields; Spirits ignore valid duel opponents;
+  first/later reflected spin deaths fail. Four unshielded controls pass.
+  New per-update contexts, ordinary Spirit hostility and pulse-boundary reaction
+  flushes repair these paths. First Whirlwind pulse shares the outer cast batch;
+  later lethal reflection stops catch-up hits. Seraph retains owner stats/credit
+  but reflection damages its own visible actor, not the owner or a stat copy.
+-54572 focused PASSrace1.074s.10920 then reproduced Renewal restoring100HP
+  after same-frame reflected death; Charge/summon lethal controls pass. Player
+  updates now stop when dead, after lethal spin reflection and after lethal DoT,
+  before further healing.14943 broad three-repeat RED90.969s only on old Spirit
+  test expecting an unprotected PvP opponent to stay undamaged. Test now requires
+  the13-point hit without ally healing, plus a new invulnerable opponent and
+  retained dead/other-instance controls.94415 three-repeat focused PASS1.719s;
+  92300 final broader racePASS27.886s. Logs `/tmp/eidolon-periodic-defense-*`;
+  exact scope/unreleased notes in2026-09-11-periodic-receiving-defenses.md.
+- New full Go-race93866 ACTIVE on frozen3b9fc8f7, nice10/GOMAXPROCS2,
+  log `/tmp/eidolon-periodic-defense-full-server.log`. Recover exact handle;
+  no second local full/heavy/browser job, no source mutation in that worktree.
+  No client edits since accepted Fighter runtime; no new native acceptance.
+- Remaining pipeline gates include DoT receiving/inherited damage budgets,
+  shield expiry, basic outgoing/receiving order, thorns/set reflection consumers,
+  explosive PvP hostility, full regression, native four-role feedback/balance
+  and saved builds. Broader phone/campaign/party/casino/versions stay required.
+-61CI34563572711 confirmed ACTIVE in native disposable gameplay. Allowlisted
+  runner-log filename extraction shows progress through PvP cadence and class
+  animation to multiplayer animation at06:39. Not stalled/not restarted; local
+  GPU remains free. Deploy and actual new-domain live acceptance still required.
+  Dedicated soak untouched. No publication from isolated gameplay branches and
+  root ledger must never be pushed.
+
+## Previous checkpoint — September 11, 06:26 UTC
 
 Previous user-response turn was a VERIFIED WAIT: old3671 CI confirmed cancelled,
 new61 CI confirmed active in native character QA. This goal turn is PROGRESS:
