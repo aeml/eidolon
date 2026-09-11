@@ -1,6 +1,7 @@
 # Alpha 1.0.62 — adventure together
 
-Candidate only; not published. Based on the integrated successor31501ede with
+Published and live-verified September11 at20:32 UTC as
+0231c9488998432bdbcfcac6cc2a049cea0e9b1b. Based on the integrated successor31501ede with
 the user's website and game-analytics commits throughdea1795b preserved. The
 full1.1–1.10 roadmap remains required; this is an incremental repair release.
 
@@ -88,3 +89,38 @@ Remote master was rechecked asdea1795b immediately before submission preparation
 it is an ancestor of the candidate. Root execution-ledger content is unchanged
 from remote and is not part of this push. Any intervening remote move must be
 handled by a fresh safe integration, never force-pushed over user changes.
+
+## Published and accepted — September11,20:32 UTC
+
+[CI34637129931](https://github.com/aeml/eidolon/actions/runs/34637129931)
+finished SUCCESS on0231c9488998432bdbcfcac6cc2a049cea0e9b1b. Hosted client/server,
+all three browser shards, predeploy character103394045529, production QA-input
+validation, BOTH Pages/SSH deployments and final live103408203727 passed.
+Final live step inspection confirms successful matching-release, anonymous/
+persistent-character, four-class/remote-animation, town recovery/Well Rested,
+sanitization and upload steps. No cancellation, skipped gate or substitute run.
+
+Independent no-cache checks after completion return Alpha1.0.62 and the same
+0231c948 commit from both `https://play.eidolonrealms.com/release.json` and
+`https://server.eidolonrealms.com/healthz`; backend status is ok. The workflow
+also checked the runtime main.js release query, not only manifest metadata.
+
+Live artifact10281596463 is retained as
+`live-browser-evidence-0231c9488998432bdbcfcac6cc2a049cea0e9b1b` (9,436,423 bytes);
+predeploy artifact10280418987 contains16,472,835 bytes. Live evidence downloaded
+read-only to `/tmp/eidolon-62-live-evidence-YVhNaQ`. The archived town screenshot
+was visually inspected: full HP/MP, active aura and story-wizard guidance are
+visible. Sanitization does not imply screenshot pixels were redacted.
+
+The HTML report is only the last multiplayer invocation:1 expected,0 unexpected,
+0 flaky,0 skipped. Do not describe it as the complete live suite report. Earlier
+checks are evidenced by the successful individual CI steps and their console
+summaries; anonymous/persistent reports8passed, town recovery reports2passed
+plus1passed. Retaining every invocation's report is a future evidence-quality
+improvement, not a claim that this single HTML contains every test.
+
+This completes62's declared incremental release gates only. Expanded campaign,
+later combat/talent/duration/recipient/Renewal repairs remain unpublished, and
+full four-role dungeon/earned pacing/save/build/physical-phone/1.1–1.10 gates
+remain required. No new source push accompanies this acceptance record. The
+soak stays cancelled.
