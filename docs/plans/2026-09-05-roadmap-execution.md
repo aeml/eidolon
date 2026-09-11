@@ -47,12 +47,16 @@ live report retention separately and started queued offline full regression.
   bash syntax and lint PASS. Initial harness unset-env failures documented, not
   mislabeled as6runtime defects. Evidence/unreleased QA note2026-09-11-live-report-retention.md.
   NOT merged/published; future live execution must prove retained real artifacts.
--95205 ACTIVE on cleana55ea71e offlineDivine WT: sequential full client/lint,
-  nice10, logs `/tmp/eidolon-offline-divine-full-{client,lint}.log`. Only one local
-  heavy suite, started after party terminal. No Go inputs changed versus accepted
-  primary; exact diff confirms client/test/doc only. Recover SAME handle before
-  integrating. No active browser, no new push/service/runner changes; soak off.
-- Next: recover95205, integrate accepted branches only after verification;
+-95205 recovered TERMINAL0 ona55ea71e: full350suites/4923tests121.364s+lint
+  PASS. Logs `/tmp/eidolon-offline-divine-full-{client,lint}.log`. Exact diff
+  confirms only client/test/doc changes; accepted Go inputs unchanged. Acceptance
+  doc committed61b37113. Primary fast-forwarded then merged report retention
+  without conflict: clean efca5976812a287965d8a3be5cb9f31745bdb591.75071 TERMINAL0:
+  focused21wrapper/recovery tests0.724s plus lint PASS on this integration, logs
+  `/tmp/eidolon-live-retention-integration{,-lint}.log`. No new full suite is
+  implied. No active browser or full/heavy suite.
+  No new push/service/runner changes; soak off.
+- Next:
   reproduce/fix ranged-party input/positioning causes, then rerun full party
   with preserved failure seed/evidence and unchanged completion gates.62 stays
   fully live-accepted0231c948. Full1.1–1.10/160talents/earned pacing/native/save/
