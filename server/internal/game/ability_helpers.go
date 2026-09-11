@@ -163,8 +163,16 @@ func resolveAbilityEffectDuration(source *Entity, skillName string, base time.Du
 	if source == nil || base <= 0 {
 		return base
 	}
-	bonus := math.Max(0, source.GetSkillBonus(skillName).SkillDuration)
-	return time.Duration(math.Round(float64(base) * (1 + bonus)))
+	return scaleAbilityEffectDuration(base, source.GetSkillBonus(skillName).SkillDuration)
+}
+
+// Also accepts a bonus captured before travel or a delayed impact. It must not
+// read a potentially changed build when the effect finally reaches its target.
+func scaleAbilityEffectDuration(base time.Duration, bonus float64) time.Duration {
+	if base <= 0 {
+		return base
+	}
+	return time.Duration(math.Round(float64(base) * (1 + math.Max(0, bonus))))
 }
 
 // applyHealingReceived applies target-side healing modifiers. Poison Coating's

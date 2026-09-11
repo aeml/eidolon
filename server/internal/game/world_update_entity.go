@@ -856,10 +856,12 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				}
 
 				// Unstoppable rune: clear CC immunity, grant +20% armor for 5s
+				armorDuration := scaleAbilityEffectDuration(5*time.Second, e.ChargeEffectDurationBonus)
+				knockdownDuration := scaleAbilityEffectDuration(2*time.Second, e.ChargeEffectDurationBonus)
 				if runeID == "charge_unstoppable" {
 					e.CCImmune = false
 					e.RuneArmorBuff = 0.20
-					e.RuneArmorBuffEndTime = time.Now().Add(5 * time.Second)
+					e.RuneArmorBuffEndTime = time.Now().Add(armorDuration)
 				}
 				impactX, impactZ := e.ChargeTargetX, e.ChargeTargetZ
 				instanceID, sourceID := e.InstanceID, e.ID
@@ -888,13 +890,16 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						isDead := target.Health <= 0
 						if impactSkill == "Shattering Charge" && !isDead {
 							target.ArmorReduction = 5
-							target.ArmorReductionEndTime = time.Now().Add(5 * time.Second)
+							target.ArmorReductionEndTime = time.Now().Add(armorDuration)
 						}
 
 						// Combo: Tremor Rush (Earthshaker → Charge) = +2s knockdown
 						if consumeKnockdownCombo && !target.CCImmune {
+							deadline := time.Now().Add(knockdownDuration)
+							if !target.Stunned || deadline.After(target.StunEndTime) {
+								target.StunEndTime = deadline
+							}
 							target.Stunned = true
-							target.StunEndTime = time.Now().Add(2 * time.Second)
 						}
 						target.Mu.Unlock()
 
@@ -957,6 +962,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				e.MoveLockUntil = time.Now().Add(AbilityMovementLockDuration)
 				e.ChargeRuneID = ""
 				e.ChargeSkillName = ""
+				e.ChargeEffectDurationBonus = 0
 				e.Mu.Unlock()
 			} else {
 				nextX := e.X + (dx/dist)*moveDist

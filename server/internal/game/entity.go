@@ -206,25 +206,26 @@ type Entity struct {
 	ZoneDoubleTick           bool      `json:"-"` // Combo: Time Burn - Zone ticks twice as fast
 
 	// Abilities
-	SpiritsActive   bool      `json:"spiritsActive"`
-	SpiritsBoosted  bool      `json:"spiritsBoosted"`
-	SpiritRadius    float64   `json:"spiritRadius,omitempty"`
-	SpiritEndTime   time.Time `json:"-"`
-	LastSpiritTick  time.Time `json:"-"`
-	IsCharging      bool      `json:"isCharging,omitempty"`
-	ChargeTargetX   float64   `json:"-"`
-	ChargeTargetZ   float64   `json:"-"`
-	ChargeSkillName string    `json:"-"`
-	JumpStartX      float64   `json:"jumpStartX,omitempty"`
-	JumpStartY      float64   `json:"jumpStartY,omitempty"`
-	JumpStartZ      float64   `json:"jumpStartZ,omitempty"`
-	JumpTargetX     float64   `json:"jumpTargetX,omitempty"`
-	JumpTargetY     float64   `json:"jumpTargetY,omitempty"`
-	JumpTargetZ     float64   `json:"jumpTargetZ,omitempty"`
-	JumpDuration    float64   `json:"jumpDuration,omitempty"`
-	JumpElapsed     float64   `json:"jumpElapsed,omitempty"`
-	JumpHeight      float64   `json:"jumpHeight,omitempty"`
-	JumpProgress    float64   `json:"jumpProgress,omitempty"`
+	SpiritsActive             bool      `json:"spiritsActive"`
+	SpiritsBoosted            bool      `json:"spiritsBoosted"`
+	SpiritRadius              float64   `json:"spiritRadius,omitempty"`
+	SpiritEndTime             time.Time `json:"-"`
+	LastSpiritTick            time.Time `json:"-"`
+	IsCharging                bool      `json:"isCharging,omitempty"`
+	ChargeTargetX             float64   `json:"-"`
+	ChargeTargetZ             float64   `json:"-"`
+	ChargeSkillName           string    `json:"-"`
+	ChargeEffectDurationBonus float64   `json:"-"` // Cast-time training, cleared on impact/scene reset.
+	JumpStartX                float64   `json:"jumpStartX,omitempty"`
+	JumpStartY                float64   `json:"jumpStartY,omitempty"`
+	JumpStartZ                float64   `json:"jumpStartZ,omitempty"`
+	JumpTargetX               float64   `json:"jumpTargetX,omitempty"`
+	JumpTargetY               float64   `json:"jumpTargetY,omitempty"`
+	JumpTargetZ               float64   `json:"jumpTargetZ,omitempty"`
+	JumpDuration              float64   `json:"jumpDuration,omitempty"`
+	JumpElapsed               float64   `json:"jumpElapsed,omitempty"`
+	JumpHeight                float64   `json:"jumpHeight,omitempty"`
+	JumpProgress              float64   `json:"jumpProgress,omitempty"`
 
 	// Buffs
 	BerserkerModeActive  bool      `json:"berserkerModeActive,omitempty"`

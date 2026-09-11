@@ -17,6 +17,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 			// Check for rune effects
 			runeID := player.GetRuneForSkill("Charge")
 			player.ChargeRuneID = runeID
+			player.ChargeEffectDurationBonus = player.GetSkillBonus(skillName).SkillDuration
 			player.ChargeStartX = player.X
 			player.ChargeStartZ = player.Z
 
@@ -85,6 +86,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 		cost := resolveAbilityManaCost(player, skillName, 30)
 		if player.Mana >= cost {
 			player.Mana -= cost
+			player.ChargeEffectDurationBonus = player.GetSkillBonus(skillName).SkillDuration
 			finalTargetX, finalTargetZ := clampAbilityTargetDistance(player, targetX, targetZ, 28.0)
 			if constrainedX, constrainedZ, ok := w.constrainDungeonMovementDestination(player, finalTargetX, finalTargetZ); ok {
 				finalTargetX = constrainedX
