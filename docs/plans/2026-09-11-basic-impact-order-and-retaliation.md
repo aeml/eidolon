@@ -49,3 +49,13 @@ Unreleased patch-note draft: Basic attacks consume shield capacity using their
 actual critical/PvP damage budget. Ability hits now respect damage-taken Thorns
 and set reflection; protected/absorbed hits do not trigger those effects.
 The Dark King's slams honor the Eidolons' phase-specific protection.
+
+## Full server acceptance on695578b0
+
+56153 completed with exit0 on the unchanged basic-defense source. Full Go race
+suite passed: root25.683s, game391.517s, loadtest1.026s, database1.128s and
+lifecycle1.029s; remaining packages have no tests. Log
+`/tmp/eidolon-basic-defense-full-server.log`. This accepts the server regression
+for the basic-order stage, not later explosive changes or native combat balance.
+The subsequent explosive repair replaces the last basic/slam adapter with the
+same queued receiving context already used by abilities.

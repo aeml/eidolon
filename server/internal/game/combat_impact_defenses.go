@@ -6,6 +6,7 @@ type impactShieldExplosion struct {
 	damage              int
 	x, z                float64
 	instanceID, ownerID string
+	partyID             string
 }
 
 type impactDefenseResolution struct {
@@ -90,7 +91,7 @@ func resolveImpactDefenseLocked(tgt *Entity, damage int, now time.Time) impactDe
 			tgt.ArcaneShieldAbsorbed = 0
 			if runeID == "arcaneshield_explosive" {
 				explosion = &impactShieldExplosion{damage: shieldAbsorbed, x: tgt.X, z: tgt.Z,
-					instanceID: tgt.InstanceID, ownerID: tgt.ID}
+					instanceID: tgt.InstanceID, ownerID: tgt.ID, partyID: tgt.PartyID}
 			}
 		}
 	}
@@ -98,36 +99,28 @@ func resolveImpactDefenseLocked(tgt *Entity, damage int, now time.Time) impactDe
 	return impactDefenseResolution{damage: actualDamage, reflection: pendingReflectDamage, explosion: explosion}
 }
 
-// Compatibility adapter for ordinary hits and boss slams. Preserve their exact
-// release/reacquire and world-lock contract while skill callers are migrated.
-func (w *World) mitigateImpactDamageLocked(tgt *Entity, damage int, now time.Time, worldLocked bool) (int, int) {
-	resolved := resolveImpactDefenseLocked(tgt, damage, now)
-	if resolved.explosion != nil {
-		tgt.Mu.Unlock()
-		w.applyImpactShieldExplosion(tgt, *resolved.explosion, worldLocked)
-		tgt.Mu.Lock()
-	}
-	return resolved.damage, resolved.reflection
-}
-
 // No actor locks may be held; worldLocked retains the caller's existing mode.
 func (w *World) applyImpactShieldExplosion(owner *Entity, explosion impactShieldExplosion, worldLocked bool) {
 	const radius = 6.0
-	for _, target := range w.Grid.Nearby(explosion.x, explosion.z, radius, explosion.instanceID) {
-		target.Mu.RLock()
-		if target.Type != TypeEnemy || target.State == "DEAD" {
-			target.Mu.RUnlock()
-			continue
-		}
-		dx, dz := explosion.x-target.X, explosion.z-target.Z
-		target.Mu.RUnlock()
-		if dx*dx+dz*dz > radius*radius {
-			continue
-		}
+	// This is an already stored damage budget, not a new spell cast. Capture
+	// identity/geometry at depletion, check current hostility, and scale for
+	// PvP once without rerolling owner criticals or outgoing bonuses.
+	source := &Entity{ID: explosion.ownerID, Type: TypePlayer, InstanceID: explosion.instanceID,
+		PartyID: explosion.partyID, X: explosion.x, Z: explosion.z}
+	walkRects := w.dungeonWalkRectsSnapshot(explosion.instanceID)
+	impacts := &abilityImpactContext{world: w, worldLocked: worldLocked}
+	defer impacts.flush()
+	for _, target := range w.Grid.Nearby(explosion.x, explosion.z, expandedAbilityRadius("Arcane Shield", radius), explosion.instanceID) {
 		target.Mu.Lock()
-		applied := damageWithinDarkKingPhase(target, explosion.damage)
-		target.Health -= applied
-		target.LastDamageType = "arcane"
+		if target.State == "DEAD" || target.Health <= 0 || target.Disconnected ||
+			!w.CanDamage(source, target) || !withinDungeonAbilityRadius(walkRects, "Arcane Shield", explosion.x, explosion.z, target, radius) {
+			target.Mu.Unlock()
+			continue
+		}
+		applied := impacts.receiveDamageLocked(explosion.ownerID, target, ScalePvPDamage(source, target, explosion.damage), "arcane", time.Now())
+		if target.Type == TypeEnemy {
+			addThreatLocked(target, explosion.ownerID, float64(applied))
+		}
 		dead := target.Health <= 0
 		target.Mu.Unlock()
 		if w.OnEvent != nil {
@@ -135,7 +128,9 @@ func (w *World) applyImpactShieldExplosion(owner *Entity, explosion impactShield
 		}
 		if dead {
 			target.Mu.Lock()
-			w.handleDeathWithWorldLock(target, owner, nil, worldLocked)
+			if target.Health <= 0 && target.State != "DEAD" {
+				w.handleDeathWithWorldLock(target, owner, nil, worldLocked)
+			}
 			target.Mu.Unlock()
 		}
 	}

@@ -1690,6 +1690,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							if sourceUnavailable {
 								return
 							}
+							impacts := &abilityImpactContext{world: w, worldLocked: true}
+							defer impacts.flush()
 
 							for _, p := range w.Entities {
 								if p.Type != TypePlayer {
@@ -1708,10 +1710,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 										damage = 1
 									}
 									damage, _ = CalculateFinalDamage(sourceSnapshot, p, damage, "physical")
-									var shieldReflect int
-									damage, shieldReflect = w.mitigateImpactDamageLocked(p, damage, time.Now(), true)
-									reflected := shieldReflect + ApplyDamageReflect(sourceSnapshot, p, damage)
-									p.Health -= damage
+									damage = impacts.receiveDamageLocked(srcID, p, damage, "physical", time.Now())
 									if w.OnEvent != nil {
 										w.OnEvent("damage", DamageEvent{TargetID: p.ID, SourceID: srcID, Amount: damage, Kind: "physical", InstanceID: instID})
 									}
@@ -1719,7 +1718,6 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 										w.handleDeathWorldLocked(p, src, nil)
 									}
 									p.Mu.Unlock()
-									w.applyImpactReflection(src, p, reflected, instID, true)
 									continue
 								}
 								p.Mu.Unlock()
