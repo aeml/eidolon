@@ -50,9 +50,9 @@ func TestPaidBleedReceivingReductionsAndPartialAbsorption(t *testing.T) {
 		incoming, capacity int
 		configure          func(*Entity)
 	}{
-		{"partial", 10, 3, nil},
-		{"sanctuary", 8, 100, func(p *Entity) { p.SanctuaryDamageReduction = true; p.SanctuaryEndTime = time.Now().Add(time.Minute) }},
-		{"guardian", 5, 100, func(p *Entity) {
+		{"partial", 6, 3, nil},
+		{"sanctuary", 4, 100, func(p *Entity) { p.SanctuaryDamageReduction = true; p.SanctuaryEndTime = time.Now().Add(time.Minute) }},
+		{"guardian", 3, 100, func(p *Entity) {
 			p.DivineInterventionGuardian = true
 			p.DivineInterventionGuardTime = time.Now().Add(time.Minute)
 		}},
@@ -60,7 +60,7 @@ func TestPaidBleedReceivingReductionsAndPartialAbsorption(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			w, source, defender := abilityDefenseDuel(t, "Rogue", "Shadow Strike", "arcaneshield_reflective")
-			if result := w.PerformAbility(source.ID, defender.X, defender.Z, defender.ID, "Shadow Strike"); !result.Accepted || defender.BleedDamage != 10 {
+			if result := w.PerformAbility(source.ID, defender.X, defender.Z, defender.ID, "Shadow Strike"); !result.Accepted || defender.BleedDamage != 6 {
 				t.Fatal("paid bleed setup failed")
 			}
 			defender.ArcaneShieldHP = tc.capacity

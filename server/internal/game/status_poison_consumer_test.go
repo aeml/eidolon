@@ -108,7 +108,7 @@ func TestPoisonSpreadRetainsBodyRangeAndRelationships(t *testing.T) {
 				target.InstanceID = "dungeon_elsewhere"
 			}
 			w.AddEntity(target)
-			w.spreadPoison(p, primary, 9, time.Now().Add(8*time.Second))
+			w.spreadPoison(p, primary, statusDamageBudget{amount: 9}, time.Now().Add(8*time.Second))
 			if target.Poisoned != (mode == "inside") {
 				t.Fatalf("incorrect spread outcome for %s", mode)
 			}
@@ -122,7 +122,7 @@ func TestPoisonSpreadRespectsDungeonCover(t *testing.T) {
 		primary := &Entity{ID: "poison-primary", Type: TypeEnemy, InstanceID: p.InstanceID, X: p.X, Z: p.Z,
 			Health: 10000, MaxHealth: 10000, State: "IDLE", Scale: 1}
 		w.AddEntity(primary)
-		w.spreadPoison(p, primary, 9, time.Now().Add(8*time.Second))
+		w.spreadPoison(p, primary, statusDamageBudget{amount: 9}, time.Now().Add(8*time.Second))
 		if target.Poisoned != doorway {
 			t.Fatalf("doorway=%v: poison spread=%v", doorway, target.Poisoned)
 		}

@@ -181,7 +181,7 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 		return
 	}
 	poisonApplied := false
-	poisonDamage := 0
+	poisonBudget := statusDamageBudget{}
 	poisonEndTime := time.Time{}
 
 	defense := tgt.Defense - tgt.ArmorReduction
@@ -237,11 +237,11 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 	// Apply On-Hit Effects
 	if attackerSnapshot.PoisonCoatingActive {
 		tgt.Poisoned = true
-		tgt.PoisonDamage = trainedStatusDamage(attackerSnapshot, "Poison Coating", 8+attackerSnapshot.Stats.Dexterity/2, false)
+		poisonBudget = statusDamageBudget{amount: trainedStatusDamage(attackerSnapshot, "Poison Coating", 8+attackerSnapshot.Stats.Dexterity/2, false)}
+		tgt.PoisonDamage = poisonBudget.forTarget(attackerSnapshot, tgt)
 		tgt.PoisonSourceID = attackerSnapshot.ID
 		tgt.PoisonEndTime = time.Now().Add(8 * time.Second)
 		poisonApplied = true
-		poisonDamage = tgt.PoisonDamage
 		poisonEndTime = tgt.PoisonEndTime
 	}
 
@@ -256,7 +256,7 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 		w.OnEvent("damage", DamageEvent{TargetID: tgt.ID, SourceID: attackerSnapshot.ID, Amount: actualDamage, Kind: "physical", InstanceID: attackerSnapshot.InstanceID})
 	}
 	if poisonApplied && poisonSpreads {
-		w.spreadPoison(att, tgt, poisonDamage, poisonEndTime)
+		w.spreadPoison(attackerSnapshot, tgt, poisonBudget, poisonEndTime)
 	}
 
 	if isDead {

@@ -2,6 +2,25 @@ package game
 
 import "math"
 
+// Raw wounds have not been scaled for a recipient. Wounds inherited from an
+// actual hit retain that hit's PvP scaling; spreading them must not apply 65%
+// again. Every new player recipient still gets their own maximum-HP cap.
+// This budget is application-local; entity wounds store the resulting amount.
+type statusDamageBudget struct {
+	amount    int
+	pvpScaled bool
+}
+
+func (budget statusDamageBudget) forTarget(source, target *Entity) int {
+	if budget.amount <= 0 {
+		return budget.amount
+	}
+	if budget.pvpScaled && source != nil && target != nil && source.Type == TypePlayer && target.Type == TypePlayer {
+		return capPvPDamage(target, budget.amount)
+	}
+	return ScalePvPDamage(source, target, budget.amount)
+}
+
 // A wound stores its damage at application; ticks never reread training. Raw
 // Shadow Lunge/Poison Coating damage receives generic and matching skill damage.
 // Serrated Edges derives from an already-modified hit, so only its own Mastery

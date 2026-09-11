@@ -504,9 +504,10 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					continue
 				}
 				spreadPoisonAfterHit := false
-				spreadPoisonDamage := 0
+				spreadPoisonBudget := statusDamageBudget{}
 				spreadPoisonEndTime := time.Time{}
 				finalDamage = impacts.damage(ownerCombat, target, finalDamage, damageType, projSkill)
+				inheritedHitPvP := ownerIsPlayer && target.Type == TypePlayer
 				if ownerIsPlayer {
 					addThreatLocked(target, ownerID, float64(finalDamage))
 				}
@@ -551,23 +552,23 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						target.PoisonSourceID = ownerID
 						target.PoisonEndTime = time.Now().Add(5 * time.Second)
 						spreadPoisonAfterHit = ownerSpreadsPoison
-						spreadPoisonDamage = target.PoisonDamage
+						spreadPoisonBudget = statusDamageBudget{amount: target.PoisonDamage, pvpScaled: inheritedHitPvP}
 						spreadPoisonEndTime = target.PoisonEndTime
 					}
 				}
 				if projSkill == "Piercing Throw" && ownerPoisonCoating && !isDead {
 					target.Poisoned = true
-					target.PoisonDamage = trainedStatusDamage(ownerCombat, "Poison Coating", 8+ownerDexterity/2, false)
+					spreadPoisonBudget = statusDamageBudget{amount: trainedStatusDamage(ownerCombat, "Poison Coating", 8+ownerDexterity/2, false)}
+					target.PoisonDamage = spreadPoisonBudget.forTarget(ownerCombat, target)
 					target.PoisonSourceID = ownerID
 					target.PoisonEndTime = time.Now().Add(8 * time.Second)
 					spreadPoisonAfterHit = ownerSpreadsPoison
-					spreadPoisonDamage = target.PoisonDamage
 					spreadPoisonEndTime = target.PoisonEndTime
 				}
 
 				target.Mu.Unlock()
 				if spreadPoisonAfterHit {
-					w.spreadPoison(owner, target, spreadPoisonDamage, spreadPoisonEndTime)
+					w.spreadPoison(ownerCombat, target, spreadPoisonBudget, spreadPoisonEndTime)
 				}
 
 				if w.OnEvent != nil {
@@ -724,31 +725,26 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					}
 				}
 
-				// Fireball Magma rune: leave burning ground (handled via event for now)
-				// The burning ground effect would be client-side visual + periodic damage
-				// For simplicity, we apply a burn DoT to all enemies in the splash area
+				// Magma wounds inherit the actual hit, but each spread recipient
+				// still needs its own PvP cap and canonical dungeon cover check.
 				if projSkill == "Fireball" && projRuneID == "fireball_magma" {
 					burnRadius := 5.0
-					burnTargets := w.Grid.Nearby(projX, projZ, burnRadius, projectileInstanceID)
+					burnBudget := statusDamageBudget{amount: finalDamage / 6, pvpScaled: inheritedHitPvP}
+					walkRects := w.dungeonWalkRectsSnapshot(projectileInstanceID)
+					burnTargets := w.Grid.Nearby(projX, projZ, expandedAbilityRadius("Magma", burnRadius), projectileInstanceID)
 					for _, bt := range burnTargets {
-						bt.Mu.RLock()
-						if !w.CanDamage(ownerCombat, bt) || bt.State == "DEAD" {
-							bt.Mu.RUnlock()
+						bt.Mu.Lock()
+						if !w.CanDamage(ownerCombat, bt) || bt.State == "DEAD" || bt.Health <= 0 || bt.Disconnected ||
+							!withinDungeonAbilityRadius(walkRects, "Magma", projX, projZ, bt, burnRadius) || burnBudget.amount <= 0 {
+							bt.Mu.Unlock()
 							continue
 						}
-						bdx := projX - bt.X
-						bdz := projZ - bt.Z
-						bt.Mu.RUnlock()
-
-						if (bdx*bdx + bdz*bdz) <= burnRadius*burnRadius {
-							bt.Mu.Lock()
-							// Apply burning ground DoT (reuse Bleeding for simplicity)
-							bt.Bleeding = true
-							bt.BleedDamage = finalDamage / 6 // ~17% per tick
-							bt.BleedSourceID = ownerID
-							bt.BleedEndTime = time.Now().Add(3 * time.Second)
-							bt.Mu.Unlock()
-						}
+						// Retain the existing attributed wound/tick representation.
+						bt.Bleeding = true
+						bt.BleedDamage = burnBudget.forTarget(ownerCombat, bt)
+						bt.BleedSourceID = ownerID
+						bt.BleedEndTime = time.Now().Add(3 * time.Second)
+						bt.Mu.Unlock()
 					}
 				}
 

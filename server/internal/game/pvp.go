@@ -371,7 +371,11 @@ func ScalePvPDamage(source, target *Entity, damage int) int {
 	if source == nil || target == nil || source.Type != TypePlayer || target.Type != TypePlayer || damage <= 0 {
 		return damage
 	}
-	damage = damage * 65 / 100
+	return capPvPDamage(target, damage*65/100)
+}
+
+// Scaling and inherited status applications share the same recipient cap.
+func capPvPDamage(target *Entity, damage int) int {
 	cap := target.MaxHealth * 35 / 100
 	if cap < 1 {
 		cap = 1
