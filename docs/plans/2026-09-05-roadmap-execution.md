@@ -5,7 +5,49 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 03:59 UTC
+## Current checkpoint — September 11, 04:08 UTC
+
+Previous turn was PROGRESS through impact repair/fixture correction and the full
+rerun launch. This turn is PROGRESS: original targeted diagnostic passes, complete
+current-source server race passes, and validated generalstun fixes advance primary.
+
+-16462 TERMINAL0 on frozen7c6cf6b2: root27.354s/game444.808s, loadtest/database/
+  lifecycle cached passes, remainingpackages no tests. No race warning or worker
+  panic. Log `/tmp/eidolon-stun-current-full-server-final.log`; same nice10/
+  GOMAXPROCS2/-p1/full-race command. Preserve original42912failure and corrected
+  five-runfixtureproof; do not repeat the earlier full pass as proof of a later
+  different application. No new src/scripts/workflow differences from45efe670.
+- Current-stunbranch now06ec65fe after docs-only fullacceptance follow-up.
+  Primary `/tmp/eidolon-primary-current-1YoZU4` fast-forwarded45efe670->06ec65fe
+  after verifying clean. This includes generalstun expiry/AI pause, post-delay
+  impactgate, wiretest and isolatedregenfixture, NOTunfinished714talentscaling/
+  copy. Both trees clean. Primary nativefour-role run should now use this fixed
+  behavior, not prior no-expiry enemyattackblocking. Successore55ce9a8/original
+  primary8f37 remain unchanged. No versionassignment/gamepush/nativeclearclaimed.
+-8066 TERMINAL0: prepared onlynewignoredvendor dependencies in current-stuntree
+  after verifiedabsence, linked alreadyexisting matchingnode_modules. Discovered
+  exactlyonefour-player dungeon testcase; source stayedclean and18580/18581/41980
+  clear. This is readiness/discovery, not an executednativecase.125minouter/120min
+  partybudget and all original combat/death/stall/manualindividualclaim guards
+  retained. No localheavy/browser process remains.
+-13071 originaltalentoverlay TERMINAL0 onrepaira04e6fcc/game2.663s. Six targeted
+  groups pass inclformerlyredShieldSlamduration and oldarea/criticalprobes. No
+  diagnosticassertionsreplaced. Repairbranch now0b267f38 docs-onlyfollowup, clean;
+  oldd70red preserved. This does not close160talents, copyreconciliation, native
+  savedtraining or remainingFighterbuff/root/slow/freeze consumers. No training
+  patch introduced into primary by the generalstun fast-forward.
+- Publicidentity independentlychecked04:02: clientrelease.json andbackendhealthz
+  bothHTTP200/Alpha1.0.60/df91bb66e8e8f3b7125aa99412f09ba25898a3ac, backendok/
+  databaseready. Canonical62dc/34434837759 stillin_progress at disposablefull-
+  character gameplay, newer8cbCI34558375122 pendingbehindit. DedicatedNightly
+ 34558600459 stillrunning24h. No newerpublicdeploymentclaim; no cancellations.
+- Roadmapreview keeps completefour-role dungeon, earnedfirstdungeon/firsthour,
+  physicalphones, alltalents/runes/save and later1.2–1.10casino/endgame scope
+  required. Preparedparty fixture is not earnedcharacterprogress. KeepGPUfree
+  whilecanonicalQA runs; move tonative acceptance when safe. RootNEVERPUSH;
+  DBrotationapprovalstillunanswered. Goalactive, neithercomplete norblocked.
+
+## Previous checkpoint — September 11, 03:59 UTC
 
 Previous turn was PROGRESS through integration/wire proof with a verified full
 server wait. This turn is PROGRESS: preserved full failure, fixed the noncombat
