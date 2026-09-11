@@ -35,9 +35,15 @@ test('Time Warp training reaches a walked ally beyond the original radius and ex
     const peerBrowser = await browser.browserType().launch({ executablePath: process.env.EIDOLON_E2E_BROWSER_PATH || '/usr/bin/google-chrome',
         headless: true, args: hardwareWebGLBrowserArgs() });
     try {
-        const ally = await (await peerBrowser.newContext({ baseURL, viewport: { width: 1280, height: 720 } })).newPage();
+        // BrowserType's test defaults include this spec's phone user agent and
+        // touch mode even for a separately launched browser. Override the full
+        // device, not just its viewport, for desktop click-to-move input.
+        const ally = await (await peerBrowser.newContext({ ...devices['Desktop Chrome'], baseURL,
+            viewport: { width: 1280, height: 720 } })).newPage();
         const allyFailures = collectBrowserFailures(ally, baseURL);
         await loginAndEnterWorld(ally, { ...credentials, username: `${credentials.username}-warp-view`, characterClass: 'Fighter' });
+        expect(await ally.evaluate(() => window.game.isMobile)).toBe(false);
+        expect(await page.evaluate(() => window.game.isMobile)).toBe(true);
         const source = await page.evaluate(() => ({ id: window.game.player.id, x: window.game.player.position.x, z: window.game.player.position.z }));
         await expect.poll(() => ally.evaluate(id => window.game.remotePlayers.has(id), source.id)).toBe(true);
         console.log('[time-warp-position-source]', JSON.stringify(source));
