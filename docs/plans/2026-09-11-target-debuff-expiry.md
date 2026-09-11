@@ -78,3 +78,16 @@ complete offline rune/armor/spread/receiving parity. This repair does not claim
 all classes or160 talents are accepted. Keep1.1–1.10, phone/pacing/save/native
 and two-floor casino requirements intact. The cancelled soak stays stopped;
 the designated GPU is reserved for62 predeploy/live QA.
+
+## Combined full regression accepted on8bb0e0cd
+
+48892 terminated exit0 on unchanged8bb0e0cde90dc115552bf54a3b5fa2dc35bfac63.
+Full client347suites/4842tests passed153.656s, full lint passed, and Go race
+passed root20.984s/game348.206s/loadtest1.019s/database1.093s/lifecycle1.023s.
+Logs `/tmp/eidolon-target-debuff-full-{client,lint,server}.log`.
+
+This combined pass includes the corrected paid Weak Point fixture and accepts
+both the preceding Rogue-duration stage and this enemy/offline expiry stage
+for local full regression. The failed parent run remains preserved above.
+It does not accept the later Cleric-duration work, native party/save/phone
+gates or deployment. This source remains separate from62's active release.
