@@ -7,6 +7,7 @@ import { spawnEffectSceneFallback } from './EffectSceneFallback.js';
 import { getAbilityAoeRadius } from '../skills/abilityRadii.js';
 import { clipDungeonEffectSegment } from '../skills/dungeonEffectGeometry.js';
 import { getExecutionerSpinDamage } from '../skills/executionerSpin.js';
+import { getShieldSlamStunDuration } from '../skills/shieldSlamDuration.js';
 
 const GUARDIAN_ROAR_FRIENDLY_ACTOR_TYPES = new Set([
     'Fighter',
@@ -82,6 +83,7 @@ export class Fighter extends Actor {
 
             // Override Cooldown for Shield Slam (e.g. 6s)
             this.setSkillCooldown("Shield Slam", 6.0);
+            const stunDuration = getShieldSlamStunDuration(this);
 
             // Cone Logic
             const range = 4.0;
@@ -108,8 +110,7 @@ export class Fighter extends Actor {
 
                             // Apply Stun
                             if (entity.stunTimer !== undefined) {
-                                entity.stunTimer = 1.5;
-                                console.log(`Stunned ${entity.id} for 1.5s`);
+                                entity.stunTimer = stunDuration;
                             }
                         }
                     }
