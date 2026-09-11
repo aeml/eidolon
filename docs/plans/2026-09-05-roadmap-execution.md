@@ -5,7 +5,60 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 21:38 UTC
+## Current checkpoint — September 11, 21:58 UTC
+
+Previous clarification-only goal turn was NO PROGRESS. Revalidated current
+worktrees, terminal logs and idle runner state. This turn is PROGRESS: isolated
+the native positioning mistake, reproduced and repaired a real build-menu
+rejection hang, and resumed the unchanged two-client spell acceptance route.
+
+- Integrated52148 is TERMINAL0:353 suites/5036 tests148.57s, lint and full Go
+  race suite passed (root16.746/game295.023s; other tested packages cached).
+  Acceptance doc is committed in cac902b7; earlier active notation below is stale.
+- Native60729 failed before casting: ally distance26.7525 instead of16.5–19.75.
+  Archive `/tmp/eidolon-time-warp-position-failure-fRuwCF`.
+- Diagnostic67602 on0c9238f6 TERMINAL1 reproduced26.5858 distance, with wrong
+  walking directions and no collision stops. Archive
+  `/tmp/eidolon-time-warp-position-diagnostic-QRMYwF`. Explicit full Desktop
+  Chrome device options fixed inherited phone behavior on the peer; viewport
+  alone was insufficient. Native asserts peer desktop/caster phone. No range
+  thresholds, movement shortcuts, game balance or runtime movement changed.
+-25559 on160eb145 TERMINAL1: correct18.4585-unit walked spacing, base cast
+  wire/rings/exclusion/expiry passed; thirteenth purchase succeeded, fourteenth
+  stalled. Archive `/tmp/eidolon-time-warp-training-failure-ZsC3K3`.
+-36339 on541ca80a TERMINAL1 reproduced same purchase hang: WIZ_36/38 rank5,
+  WIZ_34 rank3, seven points available, fourth rank pending unacknowledged.
+  Archive `/tmp/eidolon-time-warp-training-diagnostic-h84E68`; manually inspected
+  screenshot confirms permanently disabled waiting controls. No trained pass.
+- Real defect: build requests rejected by admission policy emitted only generic
+  errors, leaving the phone menu's correlated action pending. Four deterministic
+  RED cases reproduced it0.186s. Valid bounded build requests now get correlated
+  failure receipts; malformed/legacy/oversized/unrelated requests retain generic
+  errors. Rate limits/security/point budgets unchanged; no auto retry/spending.
+- Primary now c11a9785: focused server race1.377s, phone39tests1.010s+lint,
+  full server-entry race19.043s(session58338 TERMINAL0). This is not a new full
+  game package run; application/game code unchanged from integrated acceptance.
+  Evidence/unreleased notes2026-09-11-build-rejection-recovery.md and logs
+  `/tmp/eidolon-build-rejection-{red,green,client,server-full}-20260911.log`.
+- Native25348 TERMINAL0 on c71c1f420d226006330e44cfa3fce6ac13986417:
+  one test56.5s/total57.7s. Base/high and trained/low+high verified both clients'
+  rings, trained reach, duration, recipient stats, normal expiry and saved ranks.
+  The fourteenth purchase really hit rate admission, released controls without
+  spending, and a later deliberate tap succeeded. All15ranks saved. Archive
+  `/tmp/eidolon-time-warp-accepted-6Obym7`; scanner0changes; ownedcontainersgone.
+- Added named regular release stage with its own allowlisted Wizard so it cannot
+  reuse another route's class/account. Two gate/preflight suites16tests0.544s,
+  ESLint/shellsyntax/diffchecks passed4005 TERMINAL0. Runtime unchanged. This
+  script-wrapper change is not a complete all-route or native wrapper rerun.
+- Primary fast-forwarded to frozen clean51da6fb101bac3db9028885353a7b2cd7430a360.
+  Four-role dungeon session93038 ACTIVE, runidfourrole-shield-20260911, host
+  network loopback18580/18581/41980, log `/tmp/eidolon-four-role-shield-20260911.log`.
+  Next recover SAME93038. Keep source frozen and no competing heavy/browser
+  work. This retry includes accepted Shield Slam threat repair, unchanged
+  loadout/no-death/manual/save gates; it is not yet a clear. Soak remains off. No push/deployment;
+  production remains last accepted62. Full1.1–1.10/casino scope intact. Root MUST NOT PUSH.
+
+## Previous checkpoint — September 11, 21:38 UTC
 
 Previous goal turn was PROGRESS. This turn is PROGRESS: accepted Time Warp full
 regression, repaired Shield Slam's paired damage-training consumer, integrated
