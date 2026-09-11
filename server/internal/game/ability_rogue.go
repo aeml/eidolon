@@ -9,7 +9,9 @@ import (
 
 // performRogueAbility handles all Rogue class ability logic.
 // Extracted from the "Rogue" case in PerformAbility (world.go).
-func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, targetID, skillName string, setCooldown func(time.Duration)) {
+func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, targetID, skillName string, setCooldown func(time.Duration), contexts ...*abilityImpactContext) {
+	impacts, finishImpacts := w.worldLockedAbilityImpacts(contexts)
+	defer finishImpacts()
 	if skillName == "Stealth" {
 		// Stealth (Buff)
 		cost := resolveAbilityManaCost(player, skillName, 25)
@@ -76,7 +78,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				}
 
 				strikeTarget.Mu.Lock()
-				finalDamage := applyFinalDamage(player, strikeTarget, damage, "physical", skillName)
+				finalDamage := impacts.damage(player, strikeTarget, damage, "physical", skillName)
 				addThreatLocked(strikeTarget, player.ID, float64(finalDamage))
 				strikeTarget.Bleeding = true
 				strikeTarget.BleedDamage = 10 + (player.Stats.Dexterity / 2)
@@ -274,7 +276,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				target.Mu.Lock()
 				if w.CanDamage(player, target) && target.State != "DEAD" {
 					if withinDungeonAbilityRadius(walkRects, skillName, targetX, targetZ, target, radius) {
-						finalDamage := applyFinalDamage(player, target, damage, "physical", skillName)
+						finalDamage := impacts.damage(player, target, damage, "physical", skillName)
 						addThreatLocked(target, player.ID, float64(finalDamage))
 						w.fireDamageEvent(player, target.ID, finalDamage, "physical", player.InstanceID)
 						if target.Health <= 0 {
@@ -508,7 +510,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				}
 
 				bestTarget.Mu.Lock()
-				finalDamage = applyFinalDamageWithCritical(player, bestTarget, finalDamage, "physical", skillName, guaranteedCritical)
+				finalDamage = impacts.damageWithCritical(player, bestTarget, finalDamage, "physical", skillName, guaranteedCritical)
 				addThreatLocked(bestTarget, player.ID, float64(finalDamage))
 				isDead := bestTarget.Health <= 0
 				bestTarget.Mu.Unlock()
@@ -625,7 +627,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					// Create a temporary "illusion" that deals one attack worth of damage
 					cloneDamage := player.Damage
 					bestTarget.Mu.Lock()
-					cloneDamage = applyFinalDamage(player, bestTarget, cloneDamage, "physical", skillName)
+					cloneDamage = impacts.damage(player, bestTarget, cloneDamage, "physical", skillName)
 					addThreatLocked(bestTarget, player.ID, float64(cloneDamage))
 					isDead := bestTarget.Health <= 0
 					bestTarget.Mu.Unlock()
@@ -751,7 +753,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 						target.BleedDamage = 0
 						target.BleedSourceID = ""
 					}
-					finalDamage = applyFinalDamage(player, target, finalDamage, "physical", skillName)
+					finalDamage = impacts.damage(player, target, finalDamage, "physical", skillName)
 					addThreatLocked(target, player.ID, float64(finalDamage))
 					isDead := target.Health <= 0
 					target.Mu.Unlock()

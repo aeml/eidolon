@@ -1,5 +1,3 @@
-//go:build qa_diagnostics
-
 package game
 
 import (
@@ -8,13 +6,17 @@ import (
 	"time"
 )
 
-// Isolated diagnostic until the full ability-receiver pipeline is repaired.
 // Uses ordinary mutually accepted duels and paid skill casts, not damage helpers.
-func TestDiagnosticPaidHostileAbilitiesRespectArcaneShield(t *testing.T) {
+func TestPaidHostileAbilitiesRespectArcaneShield(t *testing.T) {
 	for _, attack := range []struct{ class, skill string }{
 		{"Fighter", "basic"},
 		{"Fighter", "Shield Slam"}, {"Fighter", "Earthshaker"},
+		{"Fighter", "Sweeping Strike"}, {"Fighter", "Juggernaut Charge"},
 		{"Cleric", "Smite"}, {"Wizard", "Flame Whip"},
+		{"Cleric", "Radiant Strike"}, {"Cleric", "Heaven's Trumpet"},
+		{"Wizard", "Gravity Well"}, {"Wizard", "Scorch Beam"}, {"Wizard", "Frost Nova"},
+		{"Rogue", "Shadow Strike"}, {"Rogue", "Rain of Arrows"},
+		{"Rogue", "Backstab"}, {"Rogue", "Death Spiral"},
 	} {
 		for _, shielded := range []bool{false, true} {
 			t.Run(fmt.Sprintf("%s/shielded%v", attack.skill, shielded), func(t *testing.T) {
