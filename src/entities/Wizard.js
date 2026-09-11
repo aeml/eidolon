@@ -30,6 +30,7 @@ export class Wizard extends Actor {
         this.abilityDescription = "Launch a fiery orb that explodes on impact.";
         this.abilityManaCost = 30;
         this.abilityMaxCooldown = 2.0;
+        this.teleportPhaseTimer = 0;
         
         // Skill Tree: Pyromancer (Branch A)
         this.skillLevels = {
@@ -559,6 +560,9 @@ export class Wizard extends Actor {
             this.position.copy(finalTarget);
             if (this.mesh) this.mesh.position.copy(this.position);
             this.lastOfflineTeleportAt = Date.now();
+            if (this.skillRunes?.Teleport === 'teleport_phase') {
+                this.teleportPhaseTimer = getWizardEffectDuration(this, 'Teleport', 1);
+            }
             applyOfflineTeleportWarp(this, departure, gameEngine, warp);
             applyOfflineTeleportWarp(this, this.position.clone(), gameEngine, warp);
             

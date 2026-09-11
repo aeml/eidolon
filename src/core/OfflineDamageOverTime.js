@@ -77,12 +77,20 @@ export function updateOfflineDamageOverTime(target, dt) {
         const elapsed = (Number.isFinite(accrued) && accrued >= 0 ? accrued : 0)+Math.min(dt, remaining);
         target[`${kind}Timer`] = Math.max(0, remaining-dt);
         target[`${kind}TickTimer`] = elapsed;
+        // Phase counts down after periodic work in Actor.update. Place each
+        // accrued tick within this frame so a slow frame cannot extend immunity
+        // or retroactively remove protection from an earlier tick.
+        let tickOffset = 1 - (Number.isFinite(accrued) && accrued >= 0 ? accrued : 0);
         while (target[`${kind}TickTimer`] >= 1 && target.state !== 'DEAD' && target.isActive !== false) {
             target[`${kind}TickTimer`] -= 1;
             const source = target[`${kind}Source`] || null;
             const damage = target[`${kind}TickDamage`] > 0 ? target[`${kind}TickDamage`]
                 : (kind === 'bleed' ? 5 : 3)*(target[`${kind}Stacks`] || 0);
-            if (damage > 0 && !authoritative(source)) target.takeDamage(damage, source);
+            if (damage > 0 && !authoritative(source)) {
+                if (target.teleportPhaseTimer > 0) target.takeDamage(damage, source, Math.max(0, tickOffset));
+                else target.takeDamage(damage, source);
+            }
+            tickOffset += 1;
         }
         if (target[`${kind}Timer`] <= 0 || target.state === 'DEAD') clearOfflineStatus(target, kind);
     }

@@ -1077,6 +1077,9 @@ export class Actor extends Entity {
             this.frozenTimer = Math.max(0, this.frozenTimer - dt);
         }
         
+        if (this.teleportPhaseTimer > 0) {
+            this.teleportPhaseTimer = Math.max(0, this.teleportPhaseTimer - dt);
+        }
         if (this.arcaneShieldTimer > 0) {
             this.arcaneShieldTimer -= dt;
             if (this.arcaneShieldTimer <= 0) {
@@ -1454,8 +1457,12 @@ export class Actor extends Entity {
         console.log(`${this.id} was cleansed!`);
     }
 
-    takeDamage(amount, attacker = null) {
-        if (this.state === 'DEAD' || this.isMultiplayer || this.isRemote) return;
+    takeDamage(amount, attacker = null, elapsedInFrame = 0) {
+        if (this.state === 'DEAD' || this.isMultiplayer || this.isRemote || this.gameEngine?.isMultiplayer) return;
+        // A Phase window blocks the impact before shields, death saves and
+        // retaliation, just like authoritative gameplay invulnerability.
+        const impactElapsed = Number.isFinite(elapsedInFrame) ? Math.max(0, elapsedInFrame) : 0;
+        if (this.teleportPhaseTimer > impactElapsed) return;
         
         let finalAmount = amount;
         
@@ -1537,6 +1544,7 @@ export class Actor extends Entity {
 
     die() {
         if (this.state === 'DEAD') return;
+        this.teleportPhaseTimer = 0;
         this.stealthTimer = 0;
         restoreActorStealthAppearance(this);
         this.state = 'DEAD';
@@ -1713,6 +1721,7 @@ export class Actor extends Entity {
     }
 
     respawn(x, z) {
+        this.teleportPhaseTimer = 0;
         this.stealthTimer = 0;
         restoreActorStealthAppearance(this);
         const wasDead = this.state === 'DEAD' || this.stats.hp <= 0;
