@@ -5,7 +5,38 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 05:33 UTC
+## Current checkpoint — September 11, 05:40 UTC
+
+Previous turn was PROGRESS (approved queue replacement). Current turn is
+PROGRESS through full preceding Fighter acceptance and offline Earthshaker rune
+implementation. Original full roadmap remains active, not narrowed or completed.
+
+- Fighter49648 recovered TERMINAL0 on frozen7c11bc4d:338suites/4741tests
+  212.323s, full lint, server race root34.403/game478.435/loadtest1.063/
+  database1.124/lifecycle1.046. Docs97c0d511 in fighter-duration-repair worktree
+  records exact scope. This does not cover later Charge/Earthshaker source.
+- Charge worktree now clean frozenf2c1f468: runtime2340a4e3 atop8d4256fd,
+  plus cherry-picked preceding acceptance doc. Offline Earthshaker now includes
+  planar body-aware circle/Fissure, hostile/wall checks, server base damage,
+  captured Seismic/Aftershock timing, managed delayed3.5-unit wave and death/
+  disposal/scene/authority guards.90592 RED6fail/5pass1.236s;31394 green110tests;
+  final61200 PASS111tests/4suites1.938s +full lint. Stronger cancellation tests
+  assert first-wave hit and one pending managed task before cancellation; no
+  vacuous missing-wave pass. Fake-timer/parameter evidence is not native timing.
+  Detailed scope/logs in2026-09-11-earthshaker-offline-runes.md.
+- New full combined Fighter regression65176 confirmed ACTIVE onf2c1f468,
+  client then lint then all Go race, nice10/GOMAXPROCS2. Logs
+  `/tmp/eidolon-fighter-charge-earth-full-{client,lint,server}.log`. Recover same
+  handle and keep source frozen. Previous49648 must not be relabeled as this pass.
+  No unfinished Fighter changes merged into primary/gameplay/domain releases.
+- Domain61 CI34563572711 now passed client AND server, three hosted browser
+  shards in progress. Older3671 run remains cancelled by explicit user approval.
+  Dedicated soak34558600459 still in progress, untouched. No new-domain login/
+  deployment acceptance claim yet; latest actual handshakes were403 until61
+  replaces server. Remaining primary four-role, phone, full talents/runes/save,
+  later roadmap/casino scope stays open. Root ledger must never be pushed.
+
+## Previous checkpoint — September 11, 05:33 UTC
 
 Previous turn was PROGRESS through Charge-impact repair and verified new-origin
 403 diagnosis. Current turn is PROGRESS: user explicitly approved cancellation
