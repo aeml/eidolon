@@ -5,7 +5,52 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 01:04 UTC
+## Current checkpoint — September 11, 01:15 UTC
+
+Previous turn was PROGRESS through Roar repair and Matron evidence. This turn
+is PROGRESS: completed both utility fixes' full regression/native acceptance,
+integrated the local candidate, and reproduced/repaired two party-controller
+decisions. The original full roadmap and remaining release/play gates stay open.
+
+- Utility a8e6851d full Go19979 TERMINAL0 (root18.048s/game325.373s; no race).
+  Full client52400 TERMINAL0:278suites/3908tests126.574s; full lint44660 exited0.
+  Native91529 Purifying PASS16.3s: baseline/Ministry/combined Mastery rings
+ 8/9.2/10.8, actual purchases and fresh-login landscape ranks/high-quality shape.
+  Native97691 Roar PASS18.8s:15/16.5/18.75/20.25, three actual talent purchases,
+  low/high attached rings and saved landscape build. These are explicit prepared
+  level/resource fixtures, not earned/physical-phone acceptance. Initial cleanse
+  preflight failed before services due missing generated vendor; prepare-client
+  resolved it, original log retained. Archives
+ `/tmp/eidolon-utility-cleanse-proof-JagCVc` and
+ `/tmp/eidolon-utility-roar-proof-bWj8lU`, copiedQA-prefix0; ownedservices/portsgone.
+- Candidate fast-forward reviewed98320775→a8e6851d, now clean e6a5a6f1 with
+  updated consolidated unreleased notes and acceptance record. No previous
+  application changes dropped, Roar added to required-all, no version assigned.
+  Both utility fixes integrated locally, NOT deployed. Utility worktree remains
+  a8e6851d; Purifying12e3f897, no active jobs in either isolated worktree.
+-58548 ACTIVE renewed combined104browser regression on frozen e6a5a6f1,
+  sole heavy gate, candidate`/tmp/eidolon-browser-cost-current-RxDWen`, web41981.
+  Exact discovery104/no omissions or duplicates passed; first group layout is
+  running. Log`/tmp/eidolon-utility-current104-browser.log`. Continue exacthandle;
+  no new heavy gate or candidate edits until terminal. Current-source bundle,
+  versionedrequired-all, canonical62dc acceptance, version/notes/remote/live due.
+- Primary now clean6f46f9db, test-only atop9d389c6b. New pure healer selection
+  prioritizes most-injured reachable living same-instance teammate, retaining
+  distant approach only if nobody reachable needs healing. Existing85%threshold,
+ 14unitmargin, resources and roster/hotbar admission unchanged. RED3/18cases
+ 0.618s, original out-of-range-first decision reproduced (not an exact native
+  all-four snapshot replay). New escape body checks reject radial paths through
+  teammates while preserving floor/encounter/all-warning constraints; RED2/56
+ 0.655s. Uses affected browser's current bodies, does not prove simultaneous
+  moving paths never conflict. Adds bounded all-four healing/escape diagnostics.
+ 96928 final PASS104tests/5suites9.609s;51597lint/discovery0. Full native dungeon
+  attempt still due after current candidate bundle; all combat/expedition/death
+  limits, stats/gear/damage/collision stay unchanged. No primary heavy job active.
+- Last remote check01:00 remains canonicalCI34434837759 queued/Nightly34433520743
+  active, not a fresh check here. No push, soak/runner change or live claim.
+  Root ledger-only NEVER PUSH. Goal remains active, not complete or blocked.
+
+## Previous checkpoint — September 11, 01:04 UTC
 
 Previous turn was PROGRESS through a reproduced Roar consumer. This turn is
 PROGRESS: implemented its real effect/visible boundary, passed focused gates,
