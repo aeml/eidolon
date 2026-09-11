@@ -167,25 +167,32 @@ func TestProjectileHitListInitialization(t *testing.T) {
 
 func TestPiercingThrowWeakPointDamageBonus(t *testing.T) {
 	newImpact := func(marked bool) int {
-		w := NewWorld(nil)
-		w.Entities = make(map[string]*Entity)
-		w.Grid = NewSpatialMap(50.0)
-		owner := newTestPlayer("rogue", "Rogue")
-		target := &Entity{ID: "enemy", Type: TypeEnemy, X: 2, Health: 100, MaxHealth: 100, State: "IDLE", WeakPointMarked: marked}
-		projectile := &Entity{
-			ID: "dagger", Type: TypeProjectile, SubType: "Dagger", ProjectileSkill: "Piercing Throw",
-			X: 0, VelX: 10, Radius: 1, Damage: 20, OwnerID: owner.ID, CreatedAt: time.Now(),
+		w, owner, target, _ := rawWoundOutgoingFixture(t, "lunge")
+		owner.UnlockedSkills = []string{"Weak Point Mark", "Piercing Throw"}
+		owner.Stats.Dexterity, owner.CritChanceBonus = 10, 0
+		if marked {
+			mana := owner.Mana
+			if result := w.PerformAbility(owner.ID, target.X, target.Z, target.ID, "Weak Point Mark"); !result.Accepted || owner.Mana >= mana {
+				t.Fatal("ordinary paid mark rejected")
+			}
+			// Advance only GCD admission, not the real mark's lifetime.
+			owner.LastAbilityTime = time.Now().Add(-time.Second)
 		}
-		w.AddEntity(owner)
-		w.AddEntity(target)
-		w.AddEntity(projectile)
-		w.Update(0.2)
-		return 100 - target.Health
+		w.updateEntity(target, 0, nil, &deferredActions{})
+		if target.WeakPointMarked != marked {
+			t.Fatal("ordinary target update lost the live mark")
+		}
+		before, mana := target.Health, owner.Mana
+		if result := w.PerformAbility(owner.ID, target.X, target.Z, target.ID, "Piercing Throw"); !result.Accepted || owner.Mana >= mana {
+			t.Fatal("ordinary paid Piercing Throw rejected")
+		}
+		advancePaidProjectileUntilHit(t, w, owner, target)
+		return before - target.Health
 	}
 
 	baseDamage := newImpact(false)
 	markedDamage := newImpact(true)
-	if markedDamage != baseDamage*3/2 {
+	if baseDamage <= 0 || markedDamage != baseDamage*3/2 {
 		t.Fatalf("Weak Point did not add 50%% Piercing Throw damage: base=%d marked=%d", baseDamage, markedDamage)
 	}
 }

@@ -92,3 +92,20 @@ reproduce its actual enemy lifecycle next, along with remaining armor-reduction
 and other target timers. Rogue non-damaging/Serrated Technique benefits and
 remaining generic description/consumer mismatches are still open. No later
 roadmap release or required two-floor casino scope has been removed.
+
+## First full regression and live-mark fixture correction
+
+76281 terminated with exit1 onf3fa593a. Full client346suites/4835tests157.088s
+and lint passed. Go race root21.374s/loadtest1.022s/database1.094s/lifecycle1.050s
+passed, but game failed327.490s with one failure:
+`TestPiercingThrowWeakPointDamageBonus` created a marked enemy without any
+deadline, so the newly correct expiry cleared it before impact (20 vs20).
+Log `/tmp/eidolon-rogue-duration-full-server.log` retains the failure.
+
+The test now uses real paid Weak Point Mark followed by real paid Piercing
+Throw. It advances only GCD admission, runs ordinary target lifecycle before
+impact, asserts positive base damage and retains the exact50% bonus assertion.
+No zero-deadline exception or weakened expiry was added to runtime. Focused
+three-repeat race includes the paired hit, paid expiry and boundary controls;
+log `/tmp/eidolon-rogue-duration-live-mark-fixture.log`. Full acceptance must
+come from the next combined current-source regression, not the failed run.
