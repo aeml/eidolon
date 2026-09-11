@@ -5,7 +5,31 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 00:40 UTC
+## Current checkpoint — September 11, 00:46 UTC
+
+Previous turn was PROGRESS through Purifying Wave repair and focused gates.
+This turn is PROGRESS: the next defined Fighter area consumer is now reproduced
+with paired paid casts, while the same native four-player gate remains live.
+
+- Purifying branch is clean2b7bd953 (runtime still2859efba). Its diagnostic
+  overlay now tests Guardian Roar with0/5FTR_33 Lineholder Instinct ranks at
+  level30, against identical annulus allies at ordinary/four-times body scale.
+  Both baseline controls pass; both trained casts miss the promised party buff
+  (17.25and21units).1174 TERMINAL1,2.050s; all prior probes passed. Log
+ `/tmp/eidolon-roar-area-consumer-red.log`. This confirms the fixed15radius
+  handler ignores the advertised3% area/rank. No Roar runtime fix is included.
+  Next bounded repair must retain boss-taunt/relationship/instance/wall/body
+  semantics and fix actual query/geometry plus offline/client/remote footprints,
+  not just metadata. Existing Purifying acceptance gates remain due separately.
+-96841 re-polled live, still sole heavy gate on frozen46596437. Following the
+  fourth all-four recovery/resume, the run has reached and defeated two more
+  Skeletons nearz19132. No second-boss/finalclear/manual/relogin receipt yet.
+  Preserve this exact run and its log; no restart or primary edits while active.
+- No push/version/live/runner/soak mutation. Last remote00:36 canonicalCI queued
+  and Nightly active remains a last observation, not a new check this checkpoint.
+  Root ledger-only NEVER PUSH; whole roadmap goal remains active.
+
+## Previous checkpoint — September 11, 00:40 UTC
 
 Previous turn was PROGRESS through fresh focused party-credit evidence. This
 turn is PROGRESS: reproduced and repaired the ineffective Purifying Wave Mastery
