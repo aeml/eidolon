@@ -13,6 +13,56 @@ import (
 	"time"
 )
 
+// Baseline crowd-control lifecycle must work before additional duration ranks
+// can be accepted. These casts use real handlers; only the later deadline is
+// advanced to exercise expiry without a wall-clock sleep.
+func TestPendingTalentEnemyRootAndSlowLifecycle(t *testing.T) {
+	for _, tc := range []struct{ class, skill, runeID string }{
+		{"Wizard", "Gravity Well", "gravitywell_blackhole"},
+		{"Fighter", "Juggernaut Charge", ""},
+	} {
+		t.Run(tc.skill, func(t *testing.T) {
+			w := newTestWorld()
+			defer w.StopBackground()
+			p := newTestPlayer("control-caster", tc.class)
+			p.Level, p.InstanceID, p.X, p.Z = 100, "qa-control-lifecycle", 60000, 60000
+			p.BaseStats = InitialPlayerStats()
+			p.UnlockedSkills = []string{tc.skill}
+			p.SkillRunes = map[string]string{tc.skill: tc.runeID}
+			p.RecalculateStats()
+			p.Mana = p.MaxMana
+			w.AddEntity(p)
+			e := &Entity{ID: "control-enemy", Type: TypeEnemy, SubType: "Skeleton", InstanceID: p.InstanceID,
+				State: "IDLE", Level: 30, BaseStats: InitialPlayerStats(), Health: 10000, MaxHealth: 10000,
+				X: p.X + 8, Z: p.Z, SpawnX: p.X + 8, SpawnZ: p.Z, Scale: 1, Radius: 1.25, Speed: 8, BaseSpeed: 8}
+			w.AddEntity(e)
+			mana := p.Mana
+			result := w.PerformAbility(p.ID, e.X, e.Z, "", tc.skill)
+			root := tc.skill == "Gravity Well"
+			if !result.Accepted || p.Mana >= mana || !e.Slowed || e.SlowFactor <= 0 || e.Rooted != root || e.Health >= 10000 {
+				t.Fatalf("paid damaging control failed: accepted=%v slow=%v factor=%v root=%v hp=%d", result.Accepted, e.Slowed, e.SlowFactor, e.Rooted, e.Health)
+			}
+			x, z := e.X, e.Z
+			w.updateEntity(e, .25, []*Entity{p}, &deferredActions{})
+			wantMove := 8 * (1 - e.SlowFactor) * .25
+			if root {
+				wantMove = 0
+			}
+			if moved := math.Hypot(e.X-x, e.Z-z); math.Abs(moved-wantMove) > 1e-6 {
+				t.Errorf("active crowd control moved=%v want=%v", moved, wantMove)
+			}
+			e.RootEndTime, e.SlowEndTime = time.Now().Add(-time.Millisecond), time.Now().Add(-time.Millisecond)
+			x, z = e.X, e.Z
+			w.updateEntity(e, .25, []*Entity{p}, &deferredActions{})
+			if e.Rooted || e.Slowed || e.SlowFactor != 0 || math.Abs(e.Speed-8) > 1e-6 {
+				t.Errorf("expired control retained: root=%v slow=%v factor=%v speed=%v", e.Rooted, e.Slowed, e.SlowFactor, e.Speed)
+			}
+			if moved := math.Hypot(e.X-x, e.Z-z); math.Abs(moved-2) > 1e-6 {
+				t.Errorf("post-expiry normal pursuit moved=%v want=2", moved)
+			}
+		})
+	}
+}
 // Executioner Spin's paid server strike must consume the same advertised area
 // bonuses as Guardian Roar. Paired targets stay at one point in the trained
 // annulus; the untrained control must miss and the trained strike must hit.
