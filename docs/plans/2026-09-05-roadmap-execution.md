@@ -5,7 +5,66 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 19:01 UTC
+## Current checkpoint — September 11, 19:09 UTC
+
+Previous turn was PROGRESS. This turn is PROGRESS: accepted wound and62 full
+regressions, submitted62 to gated CI, and assembled full primary for the required
+four-role dungeon acceptance. Full1.1–1.10 scope stays intact and incomplete.
+
+-86822 recovered TERMINAL0 on frozenbe6d43ae: root22.512s, game370.317s,
+  loadtest1.023s, database1.128s, lifecycle1.028s all racePASS. Docf196bfb4 in
+  wound WT records acceptance. These later wound/defense changes are NOT in62.
+-56004 recovered TERMINAL0 on unchangedeb091cda: full62 client283suites/
+ 3985tests139.757s, full lint, full Go race. Root19.639s; game/loadtest/database/
+  lifecycle valid Go-cache successes for unchanged source, not fresh timings.
+ 24063 actual discovery verifies104 required browser cases with no omissions/
+  duplicates across12 stages/3 shards; not browser gameplay acceptance.
+- Reviewed CI dependencies: hosted tests -> all browser shards -> native gallery,
+  required rested-render/GPU lifecycle and full disposable character route ->
+  QA-input validation -> BOTH deployment jobs -> final native live QA. Required
+  equipment/party/support/Forge/socket/rest routes are present in default all.
+  Remaining native checks will run on that designated runner before deployment,
+  not via competing local Chrome. No check removed/skipped or gate bypassed.
+- Alpha1.0.62 exact0231c9488998432bdbcfcac6cc2a049cea0e9b1b PUSHED to master
+  from next-gameplay WT. Root-ledger diff against remote verified empty before
+  push. Latestdea1795b user source was an ancestor; normal nonforce push succeeded.
+  Release doc includes full local acceptance. CI34637129931 confirmed PENDING,
+  URL https://github.com/aeml/eidolon/actions/runs/34637129931 . Not live yet.
+  Existing active4ed50046 CI34630275716 remains running; GitHub concurrency
+  replaced older pendingdea1795b34631386195 (nowcancelled), not an agent cancel
+  operation. All that user's source is included in62. Soak remains stopped.
+- New full-primary WT `/tmp/eidolon-primary-merged-20260911`, branch
+  work/primary-merged-20260911: startedf196bfb4, mergedf4f0723d primary control/
+  replication tests asa5171c4d, then remote user/domain/analytics asa89944c5e,
+  then complete62 baseline as84085016. Preserved accepted effect-duration call
+  vs old flat five seconds, both diagnostic/history sides, and cache-friendly
+  Docker ARG placement while updating a single version default. No blanket
+  conflict-side replacement or reversal of receiving-defense fixes.
+- On89944c5e,19342 focused racePASSroot1.048s/game6.366s (protobuf status,
+  paid root/slow/Fighter deadlines/wound budgets/Magma wall/basic chain).
+ 62082 clientPASS335tests/6suites3.434s (version, analytics, runner queues,
+  attached status, Fighter duration/offline Shield Slam). These precede final
+ 62-baseline merge and are not whole integrated acceptance. Locked dependencies
+  matched apart from package version metadata; shared node_modules and ignored
+  vendor assets prepared. No local Chrome or physical-device claim.
+- Full primary now clean frozen53127f25a5f511a63f1e8a5c22ce9dad92037788.
+ 49901 ACTIVE sequential full client/lint/server race, nice10/GOMAXPROCS2 forGo,
+  logs `/tmp/eidolon-primary-merged-full-{client,lint,server}.log`. Recover exact
+  handle, no source mutation or second local heavy/browser while active.
+  Detailed scope/resolutions/gates2026-09-11-full-roadmap-integration.md.
+- This full primary INCLUDES expanded campaign/reward curve/Dark King phase
+  limits, Fighter/offline fixes, receiving pipeline and wounds plus62 baseline.
+  It is unpublished, not the62 release source. Next actualparty-dungeon route
+  must clear all Normal Verdant, exercise tank/healer/DPS plus town recovery,
+  manually claim each chapter and verify Water offers/fresh logins. Prepared
+  level30/common gear/story gate is explicit, not claimed earned progression.
+  Preserve existing bounded driver and previous Warden-only timeout evidence.
+- Keep GPU free for actual CI/live QA. Full talent/status/earned-pacing/save/
+  phone/campaign/balance/casino and ordered later release gates remain mandatory.
+  Do not restart the cancelled soak, force-push, push root ledger or mark the
+  roadmap complete merely because62 source was submitted successfully.
+
+## Previous checkpoint — September 11, 19:01 UTC
 
 Previous turn was PROGRESS. This turn is PROGRESS: prepared the numbered62
 candidate with explicit scope, preserved patch history and matching defaults;
