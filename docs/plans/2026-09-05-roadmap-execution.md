@@ -5,7 +5,38 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 05:48 UTC
+## Current checkpoint — September 11, 05:56 UTC
+
+Previous turn was PROGRESS. Current turn is PROGRESS: full preceding-source
+acceptance plus a new confirmed ability-defense defect and reproducible controls.
+Full1.1–1.10 goal stays active; no known failure is treated as completed.
+
+-65176 recovered TERMINAL0 onf2c1f468:339suites/4753tests195.965s +lint,
+  Go race root29.301/game441.151/loadtest1.040/database1.129/lifecycle1.036.
+  Docsff2212f3 committed in Charge/Earthshaker tree; carried as2b733533 into
+  Fighter rune tree atop825f9b0c. New full65944 ACTIVE on frozen2b733533,
+  client then lint then all Go race, nice10/GOMAXPROCS2. Logs
+  `/tmp/eidolon-fighter-rune-full-{client,lint,server}.log`. Recover exact handle.
+- New `/tmp/eidolon-ability-defense-audit-20260911`, branch
+  work/ability-defense-audit-20260911, cleanff2134af atop825f9b0c. Diagnostic
+  uses requested/accepted duels, paid600-capacity Arcane Shield and paid attacks.
+  Shield Slam/Earthshaker/Smite/Flame Whip bypass shielding: HP500→458/455/468/
+  471 while capacity stays600, absorbed0.87847 REDrace0.033s. Added actual
+  scheduled basic-attack controls (no impact-helper shortcut):72981 REDrace
+  0.130s, same4 failures, all6 unshielded/basic controls pass. Logs
+  `/tmp/eidolon-ability-shield-diagnostic{,-controls}.log`. Test explicitly
+  opt-inqa_diagnostics while repairing; default green is NOT closure of this
+  known gate. No runtime defense repair yet. Full caller/lock/retaliation/death/
+  credit and damage-family requirements in2026-09-11-ability-defense-pipeline.md.
+  Prioritize proper receiver pipeline repair, not shield subtraction that drops
+  Reflective/Explosive behavior or bypasses party/Dark King/PvP contracts.
+- Domain61 CI34563572711 now passed all hosted jobs and is in native predeploy,
+  current step deterministic High/Low animation gallery. Local GPU left free.
+  Dedicated soak34558600459 confirmed in progress, untouched. No production
+  origin acceptance or live61 claim yet. Root ledger must never be pushed;
+  standalone Fighter/audit branches remain outside primary and releases.
+
+## Previous checkpoint — September 11, 05:48 UTC
 
 Previous turn was PROGRESS. Current turn is PROGRESS: offline Shield Slam rune
 implementation and actual server stun-overlap repair, with focused acceptance.
