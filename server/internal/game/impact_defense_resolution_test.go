@@ -9,6 +9,7 @@ func TestImpactDefenseResolutionCapturesBrokenShieldBeforeRecast(t *testing.T) {
 	target := &Entity{ID: "defender", Type: TypePlayer, X: 12, Z: 34, InstanceID: "original",
 		Health: 100, ArcaneShieldActive: true, ArcaneShieldHP: 50,
 		ArcaneShieldAbsorbed: 20, ArcaneShieldRuneID: "arcaneshield_explosive"}
+	target.ArcaneShieldEndTime = time.Now().Add(time.Minute)
 	target.Mu.Lock()
 	defer target.Mu.Unlock()
 	resolved := resolveImpactDefenseLocked(target, 75, time.Now())
@@ -29,6 +30,7 @@ func TestImpactDefenseResolutionCapturesBrokenShieldBeforeRecast(t *testing.T) {
 func TestImpactDefenseResolutionReturnsReflectionWithoutApplyingIt(t *testing.T) {
 	target := &Entity{Type: TypePlayer, Health: 100, ArcaneShieldActive: true,
 		ArcaneShieldHP: 100, ArcaneShieldRuneID: "arcaneshield_reflective"}
+	target.ArcaneShieldEndTime = time.Now().Add(time.Minute)
 	target.Mu.Lock()
 	defer target.Mu.Unlock()
 	resolved := resolveImpactDefenseLocked(target, 75, time.Now())
@@ -41,6 +43,7 @@ func TestImpactDefenseResolutionProtectionDoesNotSpendShield(t *testing.T) {
 	now := time.Now()
 	target := &Entity{Type: TypePlayer, Health: 100, ArcaneShieldActive: true,
 		ArcaneShieldHP: 100, ArcaneShieldRuneID: "arcaneshield_reflective", InvulnerableEndTime: now.Add(time.Second)}
+	target.ArcaneShieldEndTime = now.Add(time.Minute)
 	target.Mu.Lock()
 	defer target.Mu.Unlock()
 	resolved := resolveImpactDefenseLocked(target, 75, now)

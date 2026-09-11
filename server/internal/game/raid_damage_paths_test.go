@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sync"
 	"testing"
+	"time"
 )
 
 // Isolate the real post-wind-up damage paths, as the wall-impact tests do.
@@ -62,6 +63,7 @@ func TestDarkKingRealShieldExplosionHonorsPhaseWithoutCappingOtherTargets(t *tes
 		State: "IDLE", Health: 10000, MaxHealth: 10000, X: boss.X + 3, Z: boss.Z}
 	w.AddEntity(ordinary)
 	player.ArcaneShieldActive, player.ArcaneShieldHP = true, 1000
+	player.ArcaneShieldEndTime = time.Now().Add(time.Minute)
 	player.ArcaneShieldRuneID = "arcaneshield_explosive"
 	w.applyAttackImpact(boss.ID, player.ID, boss.InstanceID, nil, 0)
 	requirePhaseBoundaryEvent(t, boss, *events, "arcane", 250)

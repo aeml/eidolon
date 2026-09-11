@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"sync"
 	"testing"
+	"time"
 )
 
 // This regression uses the ordinary outgoing-damage calculation. The fixture
@@ -113,8 +114,8 @@ func TestDarkKingDamageOverTimeReportsOnlyAppliedDamage(t *testing.T) {
 		}
 	}
 	boss.Mu.Lock()
-	w.applyDamageOverTimeLocked(boss, "", 10000, "bleed", "physical", nil)
-	w.applyDamageOverTimeLocked(boss, "", 10000, "poison", "poison", nil)
+	w.applyDamageOverTimeLocked(boss, "", 10000, "bleed", "physical", time.Now(), nil)
+	w.applyDamageOverTimeLocked(boss, "", 10000, "poison", "poison", time.Now(), nil)
 	boss.Mu.Unlock()
 	if boss.Health != 750 || !reflect.DeepEqual(amounts, []int{250, 0}) {
 		t.Fatal("DoT bypassed phase or reported unapplied damage", boss.Health, amounts)

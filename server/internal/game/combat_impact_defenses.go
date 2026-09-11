@@ -13,10 +13,25 @@ type impactDefenseResolution struct {
 	explosion          *impactShieldExplosion
 }
 
+// Timer cleanup and impact resolution share the same boundary. An expired or
+// malformed shield cannot absorb between updates, reflect, or detonate history.
+// Caller holds the receiver lock. All real shield casts provide an expiry.
+func expireArcaneShieldLocked(target *Entity, now time.Time) {
+	if !target.ArcaneShieldActive || (!target.ArcaneShieldEndTime.IsZero() && now.Before(target.ArcaneShieldEndTime)) {
+		return
+	}
+	target.ArcaneShieldActive = false
+	target.ArcaneShieldHP = 0
+	target.ArcaneShieldEndTime = time.Time{}
+	target.ArcaneShieldRuneID = ""
+	target.ArcaneShieldAbsorbed = 0
+}
+
 // resolveImpactDefenseLocked mutates only the locked receiver. Retaliation is
 // captured, not executed: callers can release their actor locks before applying
 // world effects without rereading a replaced shield's capacity or origin.
 func resolveImpactDefenseLocked(tgt *Entity, damage int, now time.Time) impactDefenseResolution {
+	expireArcaneShieldLocked(tgt, now)
 	pendingReflectDamage := 0
 	var explosion *impactShieldExplosion
 	// Gameplay invulnerability and allowlisted release-QA protection are

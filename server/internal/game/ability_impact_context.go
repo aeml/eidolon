@@ -46,14 +46,27 @@ func (ctx *abilityImpactContext) damageWithCritical(attacker, target *Entity, ba
 		return 0
 	}
 	outgoing, _ := calculateFinalDamageWithCritical(attacker, target, base, kind, skill, critical)
-	resolved := resolveImpactDefenseLocked(target, outgoing, time.Now())
+	attackerID := ""
+	if attacker != nil {
+		attackerID = attacker.ID
+	}
+	return ctx.receiveDamageLocked(attackerID, target, outgoing, kind, time.Now())
+}
+
+// Stored wound budgets have already inherited their application-time damage.
+// They enter here without rerolling criticals or applying outgoing bonuses a
+// second time. Only receiver state/phase limits are resolved at this impact.
+func (ctx *abilityImpactContext) receiveDamageLocked(attackerID string, target *Entity, outgoing int, kind string, now time.Time) int {
+	if target == nil || target.State == "DEAD" || target.Health <= 0 || outgoing <= 0 {
+		return 0
+	}
+	resolved := resolveImpactDefenseLocked(target, outgoing, now)
 	damage := damageWithinDarkKingPhase(target, resolved.damage)
 	target.Health -= damage
 	target.LastDamageType = kind
 	if resolved.reflection > 0 || resolved.explosion != nil {
-		attackerID := ctx.retaliationTargetID
-		if attackerID == "" && attacker != nil {
-			attackerID = attacker.ID
+		if ctx.retaliationTargetID != "" {
+			attackerID = ctx.retaliationTargetID
 		}
 		ctx.reactions = append(ctx.reactions, abilityImpactReaction{attackerID: attackerID,
 			instanceID: target.InstanceID, defender: target, reflection: resolved.reflection, explosion: resolved.explosion})

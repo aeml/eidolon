@@ -3,8 +3,8 @@ package game
 import "time"
 
 // tickBleedLocked is shared by player and enemy/NPC updates. The caller holds
-// the target lock; only source lookup during death handling releases it, as in
-// the original player tick path. No tick may run for an already-dead actor.
+// the target lock; receiving reactions and source lookup temporarily release
+// it. No tick may run for an already-dead actor.
 func (w *World) tickBleedLocked(e *Entity, now time.Time, deferred *deferredActions) {
 	if !e.Bleeding || e.State == "DEAD" {
 		return
@@ -18,15 +18,14 @@ func (w *World) tickBleedLocked(e *Entity, now time.Time, deferred *deferredActi
 		return
 	}
 	e.LastBleedTick = now
-	w.applyDamageOverTimeLocked(e, e.BleedSourceID, e.BleedDamage, "bleed", "physical", deferred)
+	w.applyDamageOverTimeLocked(e, e.BleedSourceID, e.BleedDamage, "bleed", "physical", now, deferred)
 }
 
 // Shared damage/death handling keeps poison and bleed attribution, threat and
 // lethal-damage protection identical without duplicating the lock transition.
-func (w *World) applyDamageOverTimeLocked(e *Entity, ownerID string, damage int, kind, damageType string, deferred *deferredActions) {
-	damage = damageWithinDarkKingPhase(e, damage)
-	e.Health -= damage
-	e.LastDamageType = damageType
+func (w *World) applyDamageOverTimeLocked(e *Entity, ownerID string, damage int, kind, damageType string, now time.Time, deferred *deferredActions) {
+	impacts := &abilityImpactContext{world: w}
+	damage = impacts.receiveDamageLocked(ownerID, e, damage, damageType, now)
 	sourceID := ownerID
 	if sourceID == "" {
 		sourceID = kind
@@ -36,6 +35,13 @@ func (w *World) applyDamageOverTimeLocked(e *Entity, ownerID string, damage int,
 	}
 	if w.OnEvent != nil {
 		w.OnEvent("damage", DamageEvent{TargetID: e.ID, SourceID: sourceID, Amount: damage, Kind: kind, InstanceID: e.InstanceID})
+	}
+	if len(impacts.reactions) > 0 {
+		e.Mu.Unlock()
+		func() {
+			defer e.Mu.Lock() // Restore the caller's receiver-lock contract.
+			impacts.flush()
+		}()
 	}
 	if e.Health <= 0 {
 		e.Mu.Unlock()
