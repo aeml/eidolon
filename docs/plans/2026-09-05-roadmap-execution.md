@@ -5,7 +5,48 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 01:15 UTC
+## Current checkpoint — September 11, 01:34 UTC
+
+Previous turn was PROGRESS: recovered all104 current browser results, archived
+them and reverified party credit. This turn is PROGRESS: started the next real
+four-player dungeon gate and reproduced another actual talent-consumer defect.
+The complete roadmap remains active; no milestone or release is declared done.
+
+- Candidate `/tmp/eidolon-browser-cost-current-RxDWen` now clean a378ac3d,
+  docs-only atop e6a5a6f1/a8e6851d runtime.58548 is terminal: handle missing on
+  recovery, but all12 stage logs status0, all104 cases passed, no failed/flaky
+  result. Archive `/tmp/eidolon-utility-current104-proof-SDOlIj`, scanner0 files
+  changed for anonymous artifacts, port41981 clear. Current roster/chat/Forge/
+  encounter/stash renders inspected; physical-phone acceptance remains open.
+  Focused party-credit race67033 PASS2.170s and delayed snapshot57922 PASS1.517s.
+  Current bundle is no longer pending. Versionedrequired-all, canonical62dc,
+  synchronized version/notes, remoteCI and live acceptance remain due.
+-53491 ACTIVE, sole local heavy gate: four real clients on frozen primary
+ 6f46f9db in `/tmp/eidolon-primary-town-recovery-lAKY3k`. RunID
+ `party-triage-0911-0131`, log `/tmp/eidolon-four-role-triage-native.log`,
+ 18580/18581/41980. Actual four-member invitation/roster/entry passed; exact
+  seed-3341225116033233573, generator2/attempt0/Normal30/no fallback. First two
+  Skeletons defeated; no boss-clear claim. Confirmedlive via exacthandle01:34.
+  Continue this handle, do not restart or edit frozen source. Same prepared
+  common gear/level30, original combat/death/40-minute expedition bounds. New
+  reachable-first healer/body-clear escape decisions are under real acceptance.
+  Archive and sanitize final evidence before any replacement run.
+- Separate `/tmp/eidolon-executioner-area-dfzcT7`, branch
+ `work/executioner-area-20260911`, clean bff24483 from a378ac3d. Diagnostic90581
+  TERMINAL1/game3.686s: Executioner Spin FTR24/33/38 rank-five paid casts miss
+  trained-annulus targets for both ordinary/scale4 bodies; all six baseline
+  controls pass and other probes pass. Log
+ `/tmp/eidolon-executioner-area-consumer-red.log`. No runtime repair/integration.
+  Source additionally shows legacy offline radius3 repeated ticks versus server
+  radius6 single strike; actual offline reproduction is the next prerequisite,
+  not an already tested defect. Detailed repair boundaries in its new work record.
+- Remote rechecked01:30: CI34434837759 queued on62dc; five hosted jobs passed,
+  predeploy queued. Nightly34433520743 soak stillin_progress. No permission to
+  cancel/relabel soak or alter runner. No push/version/deployment/liveclaim.
+  Root is ledger-only, NEVER PUSH. Broader campaign, balancing, mobile, full-tree,
+  raids, casino and1.1–1.10 gates remain open.
+
+## Previous checkpoint — September 11, 01:15 UTC
 
 Previous turn was PROGRESS through Roar repair and Matron evidence. This turn
 is PROGRESS: completed both utility fixes' full regression/native acceptance,
