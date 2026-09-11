@@ -5,7 +5,36 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 01:48 UTC
+## Current checkpoint — September 11, 01:53 UTC
+
+Previous turn was PROGRESS through Spin damage/area repair. This turn is
+PROGRESS: reproduced and corrected its adjacent self-cast input defect, while
+verifying the same live four-player gate without restarting it.
+
+-53491 ACTIVE, confirmed by exact45s poll ending01:53 and owned QA containers
+  stillrunning. Frozen primary6f46f9db, unchanged seed-3341225116033233573. Third
+  complete all-four townrest/resume now passed exact seed/rooms/Gold/bag/quests.
+  Latest log remains that post-Warden recovery; no new boss/combat progress since
+  that checkpoint, so do not claim the party reached Matron. No terminal result.
+  Keep exacthandle/log; no new heavy gate, source edits or timeout reset.
+- Executioner worktree now clean a0cda0ff atop c4e7c743. Actual controller tests
+ 98828 RED4/52 in2.301s: distant desktop hover/mobile selection prevented or
+  redirected self-centered Spin, absent ground intersection stopped hotbar input,
+  and a direct class cast spawned a cosmetic at the distant supplied cursor.
+  Added Spin to the existing self-cast controller set and normalized its class
+  presentation target to owner. Retains paid casts, movement/buffer behavior,
+  no policy changes to other skills.66256 final PASS138tests/7suites3.947s and
+  full lint. Logs `/tmp/eidolon-executioner-self-cast-{red,final,lint}.log`.
+-93129 prepare-client TERMINAL0 in Spin worktree: generated vendor exists for
+  native preflight. Its new ordinary-phone purchase/save/ring route remains
+  unrun. It is next after53491terminal and preserved/sanitized evidence. Then
+  full regression and integration/release acceptance, not another heavy run in
+  parallel. Candidate a378ac3d unchanged; Spin not integrated/versioned/deployed.
+- Remote lastchecked01:48 canonicalCI34434837759 queued62dc/Nightly34433520743
+  in_progress; no fresh remote check here, no push or soak/runner mutation.
+  Root ledger-only NEVER PUSH. Full original roadmap remains active/open.
+
+## Previous checkpoint — September 11, 01:48 UTC
 
 Previous turn was PROGRESS through party-run startup and a new diagnostic. This
 turn is PROGRESS: corrected an insufficient diagnostic fixture, independently
