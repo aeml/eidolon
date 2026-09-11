@@ -61,3 +61,30 @@ The currently running4ed50046 CI and pendingdea1795b CI are separate sources.
 Keep their GPU slot free; their eventual success cannot prove62 gameplay.
 The user cancelled only the interrupted soak. Leave it stopped without treating
 that cancellation as a waiver of ordinary release or future concurrency gates.
+
+## Full local acceptance and CI submission
+
+56004 completed with exit0 on unchangedeb091cda5058974054d75df9b9d4e64f75610c79:
+full client283suites/3985tests139.757s, full lint, and all-package Go race pass.
+Root server ran19.639s; game/loadtest/database/lifecycle results were valid Go
+cache successes for their unchanged source, not new elapsed-time measurements.
+Logs `/tmp/eidolon-release62-full-{client,lint,server}.log`.
+
+24063 current-source partition verification passed:104 required browser cases,
+no omissions or duplicates across12 stages/3 shards. This is discovery coverage,
+not browser gameplay. Log `/tmp/eidolon-release62-partition.log`.
+
+Remaining browser/native checks will execute in the normal CI release pipeline,
+not compete with that runner through a second local Chrome instance. Source
+submission to master is not a gameplay-deployment acceptance claim. Reviewed
+workflow dependencies require all hosted tests and browser shards, then native
+gallery, Well Rested render/GPU lifecycle and full disposable character route,
+then production QA-input validation BEFORE either server or Pages deployment.
+The default disposable route includes all-class initial stats, party/support,
+equipment recovery, Forge/socket appearance and town-rest gameplay. Final live
+saved-character/four-class/rest checks follow both deployments. None is bypassed.
+
+Remote master was rechecked asdea1795b immediately before submission preparation;
+it is an ancestor of the candidate. Root execution-ledger content is unchanged
+from remote and is not part of this push. Any intervening remote move must be
+handled by a fresh safe integration, never force-pushed over user changes.
