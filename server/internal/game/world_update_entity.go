@@ -81,6 +81,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		// These recipient-owned effects also apply to enemies/NPCs. Their
 		// timers must advance even when crowd control prevents AI updates.
 		expireTargetDebuffsLocked(e, now)
+		expireRecipientClericBuffsLocked(e, now)
 		stunned := e.Stunned
 		e.Mu.Unlock()
 		if dead || (stunned && e.Type == TypeEnemy) {
@@ -1026,10 +1027,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				e.RecalculateStats()
 			}
 			expireTargetDebuffsLocked(e, now)
-			if e.ZealActive && now.After(e.ZealEndTime) {
-				e.ZealActive = false
-				e.RecalculateStats()
-			}
+			expireRecipientClericBuffsLocked(e, now)
 			if e.IronFortressActive && now.After(e.IronFortressEndTime) {
 				e.IronFortressActive = false
 				e.IronFortressThorns = false
@@ -1056,15 +1054,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				e.TimeWarpActive = false
 				e.RecalculateStats()
 			}
-			if e.DivineInterventionActive && now.After(e.DivineInterventionEndTime) {
-				e.DivineInterventionActive = false
-			}
 			if e.SwiftActive && now.After(e.SwiftEndTime) {
 				e.SwiftActive = false
-				e.RecalculateStats()
-			}
-			if e.BlessingResolveActive && now.After(e.BlessingResolveEndTime) {
-				e.BlessingResolveActive = false
 				e.RecalculateStats()
 			}
 			if e.Stunned && now.After(e.StunEndTime) {
@@ -1151,11 +1142,6 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			}
 			if !e.ConsecratedSanctuaryEndTime.IsZero() && now.After(e.ConsecratedSanctuaryEndTime) {
 				e.ConsecratedSanctuaryEndTime = time.Time{}
-			}
-
-			// Divine Intervention Guardian Angel expiry check
-			if e.DivineInterventionGuardian && now.After(e.DivineInterventionGuardTime) {
-				e.DivineInterventionGuardian = false
 			}
 
 			// HoT Ticks (Guardian Embrace)

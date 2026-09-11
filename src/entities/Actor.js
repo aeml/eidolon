@@ -971,26 +971,6 @@ export class Actor extends Entity {
         }
         if (this.rootTimer > 0) this.rootTimer = Math.max(0, this.rootTimer-dt);
 
-        // Stun Logic
-        if (this.stunTimer > 0) {
-            this.stunTimer -= dt;
-            if (this.stunTimer <= 0) {
-                this.stunTimer = 0;
-                // Resume Idle if not dead
-                if (this.state !== 'DEAD') {
-                    this.state = 'IDLE';
-                    this.playAnimation('Idle');
-                }
-            } else {
-                // While stunned, ensure state is STUNNED or IDLE and don't move
-                if (this.state !== 'DEAD') {
-                    // Optional: Play stun animation if available
-                    // this.playAnimation('Stun'); 
-                    return; // Skip movement and other updates
-                }
-            }
-        }
-
         // Guardian Roar Buff Logic
         if (this.guardianRoarTimer > 0) {
             this.guardianRoarTimer -= dt;
@@ -1020,6 +1000,9 @@ export class Actor extends Entity {
             this.divineInterventionTimer -= dt;
             if (this.divineInterventionTimer <= 0) {
                 this.divineInterventionTimer = 0;
+                if (!this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) {
+                    this.divineInterventionActive = false;
+                }
             }
         }
         if (this.blessingZealTimer > 0) {
@@ -1082,6 +1065,21 @@ export class Actor extends Entity {
         // Swift unique effect timer
         if (this.swiftBuffTimer > 0) {
             this.swiftBuffTimer -= dt;
+        }
+
+        // Stun suppresses actions, not elapsed buff or debuff lifetimes.
+        // Keep this after recipient timers so existing buffs cannot be extended
+        // by crowd control, and never run those timers twice in one update.
+        if (this.stunTimer > 0) {
+            this.stunTimer = Math.max(0, this.stunTimer - dt);
+            if (this.stunTimer === 0) {
+                if (this.state !== 'DEAD') {
+                    this.state = 'IDLE';
+                    this.playAnimation('Idle');
+                }
+            } else if (this.state !== 'DEAD') {
+                return;
+            }
         }
 
         if (this.isRemote) {
