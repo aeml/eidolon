@@ -1,5 +1,37 @@
 # Ability receiving defenses — confirmed repair gate
 
+## Receiver/reaction separation — implementation foundation
+
+The shared ordinary/boss defense implementation now separates locked receiver
+mutation from world retaliation. resolveImpactDefenseLocked returns HP-damage
+remainder, reflected amount and an immutable explosive-shield receipt (damage,
+origin, instance, owner). It commits capacity depletion before returning and
+does not acquire another actor/world lock or apply the HP damage itself.
+The existing mitigateImpactDamageLocked adapter retains the original immediate
+explosion timing and unlock/relock/world-lock behavior for basic attacks/slams.
+Reflection/explosion/death/party-credit processing remains intact; this is not
+yet wired into hostile skill consumers, so the confirmed bypass is still open.
+
+Three new unit cases verify captured explosion survives later recast/movement,
+reflection is returned without being applied under the receiver lock, and
+invulnerability consumes neither capacity nor retaliation.62735 focused race
+PASS9.532s.19737 broader three-repeat racePASS26.898s also includes actual trained
+Arcane Shield rune absorption/retaliation and boss-slam party-credit cases.
+Logs `/tmp/eidolon-defense-split-focused.log` and
+`/tmp/eidolon-defense-split-repeated.log`. These are foundation/legacy-path
+acceptance, not a passing ability-shield diagnostic or full pipeline validation.
+
+Lock audit correction: PerformAbility owns w.Mu but does NOT acquire player.Mu.
+World.Update releases w.Mu before parallel actor updates; update damage callers
+often use private attacker snapshots. Therefore do not assume every function
+in ability_*.go has the same lock contract (Whirlwind ticks are a counterexample),
+apply reflected damage to a snapshot, or look up a live attacker under a new
+world lock while holding a target lock. Immediate-cast reactions should be
+flushed after handler state/cooldown bookkeeping so a reflected caster death
+cannot be overwritten by the rest of that cast. Background/parallel impacts
+need explicit equivalent ownership and reaction boundaries. A bare mechanical
+replacement of the outgoing helper is not sufficient.
+
 Required before claiming complete combat/talent/rune acceptance for1.1. This
 isolated investigation extends825f9b0c, not domain61 or the narrow gameplay
 successor. It does not claim a repair, native balance or completed roadmap gate.

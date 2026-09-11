@@ -2,12 +2,23 @@ package game
 
 import "time"
 
-// mitigateImpactDamageLocked shares ordinary-hit defenses with boss slams.
-// Caller owns tgt.Mu and declares whether it owns w.Mu. Explosive shield
-// retaliation temporarily releases and restores tgt.Mu, retaining the caller's
-// world-lock mode for death/party-credit processing.
-func (w *World) mitigateImpactDamageLocked(tgt *Entity, damage int, now time.Time, worldLocked bool) (int, int) {
+type impactShieldExplosion struct {
+	damage              int
+	x, z                float64
+	instanceID, ownerID string
+}
+
+type impactDefenseResolution struct {
+	damage, reflection int
+	explosion          *impactShieldExplosion
+}
+
+// resolveImpactDefenseLocked mutates only the locked receiver. Retaliation is
+// captured, not executed: callers can release their actor locks before applying
+// world effects without rereading a replaced shield's capacity or origin.
+func resolveImpactDefenseLocked(tgt *Entity, damage int, now time.Time) impactDefenseResolution {
 	pendingReflectDamage := 0
+	var explosion *impactShieldExplosion
 	// Gameplay invulnerability and allowlisted release-QA protection are
 	// independent clocks; a short class effect must never shorten the latter.
 	damageTime := now
@@ -63,46 +74,56 @@ func (w *World) mitigateImpactDamageLocked(tgt *Entity, damage int, now time.Tim
 			tgt.ArcaneShieldRuneID = ""
 			tgt.ArcaneShieldAbsorbed = 0
 			if runeID == "arcaneshield_explosive" {
-				// Explode dealing absorbed amount to nearby enemies
-				explosionDamage := shieldAbsorbed
-				explosionRadius := 6.0
-				shieldX, shieldZ, shieldInstanceID, shieldOwnerID := tgt.X, tgt.Z, tgt.InstanceID, tgt.ID
-				tgt.Mu.Unlock() // Unlock for grid search
-				explosionNearby := w.Grid.Nearby(shieldX, shieldZ, explosionRadius, shieldInstanceID)
-				for _, et := range explosionNearby {
-					et.Mu.RLock()
-					if et.Type != TypeEnemy || et.State == "DEAD" {
-						et.Mu.RUnlock()
-						continue
-					}
-					edx := shieldX - et.X
-					edz := shieldZ - et.Z
-					et.Mu.RUnlock()
-
-					if (edx*edx + edz*edz) <= explosionRadius*explosionRadius {
-						et.Mu.Lock()
-						appliedExplosion := damageWithinDarkKingPhase(et, explosionDamage)
-						et.Health -= appliedExplosion
-						et.LastDamageType = "arcane"
-						isDead := et.Health <= 0
-						et.Mu.Unlock()
-
-						if w.OnEvent != nil {
-							w.OnEvent("damage", DamageEvent{TargetID: et.ID, SourceID: shieldOwnerID, Amount: appliedExplosion, Kind: "arcane", InstanceID: shieldInstanceID})
-						}
-						if isDead {
-							et.Mu.Lock()
-							w.handleDeathWithWorldLock(et, tgt, nil, worldLocked)
-							et.Mu.Unlock()
-						}
-					}
-				}
-				tgt.Mu.Lock() // Relock
+				explosion = &impactShieldExplosion{damage: shieldAbsorbed, x: tgt.X, z: tgt.Z,
+					instanceID: tgt.InstanceID, ownerID: tgt.ID}
 			}
 		}
 	}
 
-	return actualDamage, pendingReflectDamage
+	return impactDefenseResolution{damage: actualDamage, reflection: pendingReflectDamage, explosion: explosion}
+}
+
+// Compatibility adapter for ordinary hits and boss slams. Preserve their exact
+// release/reacquire and world-lock contract while skill callers are migrated.
+func (w *World) mitigateImpactDamageLocked(tgt *Entity, damage int, now time.Time, worldLocked bool) (int, int) {
+	resolved := resolveImpactDefenseLocked(tgt, damage, now)
+	if resolved.explosion != nil {
+		tgt.Mu.Unlock()
+		w.applyImpactShieldExplosion(tgt, *resolved.explosion, worldLocked)
+		tgt.Mu.Lock()
+	}
+	return resolved.damage, resolved.reflection
+}
+
+// No actor locks may be held; worldLocked retains the caller's existing mode.
+func (w *World) applyImpactShieldExplosion(owner *Entity, explosion impactShieldExplosion, worldLocked bool) {
+	const radius = 6.0
+	for _, target := range w.Grid.Nearby(explosion.x, explosion.z, radius, explosion.instanceID) {
+		target.Mu.RLock()
+		if target.Type != TypeEnemy || target.State == "DEAD" {
+			target.Mu.RUnlock()
+			continue
+		}
+		dx, dz := explosion.x-target.X, explosion.z-target.Z
+		target.Mu.RUnlock()
+		if dx*dx+dz*dz > radius*radius {
+			continue
+		}
+		target.Mu.Lock()
+		applied := damageWithinDarkKingPhase(target, explosion.damage)
+		target.Health -= applied
+		target.LastDamageType = "arcane"
+		dead := target.Health <= 0
+		target.Mu.Unlock()
+		if w.OnEvent != nil {
+			w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: explosion.ownerID, Amount: applied, Kind: "arcane", InstanceID: explosion.instanceID})
+		}
+		if dead {
+			target.Mu.Lock()
+			w.handleDeathWithWorldLock(target, owner, nil, worldLocked)
+			target.Mu.Unlock()
+		}
+	}
 }
 
 // Caller owns neither actor lock. World-locked slam impacts and fine-grained
