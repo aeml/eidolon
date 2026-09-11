@@ -43,3 +43,20 @@ do not infer balanced encounters from unit tests or old no-expiry runs.
 
 Other root/slow/freeze/status consumers and the full160 talent gate remain open;
 this patch must not be reported as a complete crowd-control audit.
+
+## Replication and current-source follow-up
+
+Added an explicit Enemy/NPC snapshot and protobuf encode/decode check for stun
+start and clear. Both transitions must trigger delta change detection. A clear
+must encode inactive with zero duration even when the captured deadline remains
+on the authoritative entity.53435 passed server root0.009s at reduced build
+parallelism; log `/tmp/eidolon-stun-wire-focused.log`. This verifies actual Go wire
+encoding, not a live browser/remote observer or websocket session.
+
+The general lifecycle fix (without the unfinished talent-scaling/copy change)
+was cherry-picked onto accepted current-primary45efe670 as60c84422 in
+`/tmp/eidolon-stun-lifecycle-current-20260911`. Full server race42912 is running
+on that frozen source with GOMAXPROCS2, package parallelism1 and nice10 to limit
+competition with current production QA. Do not claim its result before terminal
+completion. Application client/scripts/CI are unchanged from45efe670; the prior
+client/browser proofs retain that exact scope, not native stun gameplay proof.
