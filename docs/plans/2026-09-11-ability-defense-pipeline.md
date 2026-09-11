@@ -1,5 +1,16 @@
 # Ability receiving defenses — confirmed repair gate
 
+## Full immediate/projectile server regression
+
+34593 completed successfully on frozenf3068a2b (runtime20b9e673), with all
+server packages under race detection: root29.386s, game518.115s,
+loadtest1.040s, database1.127s and lifecycle1.049s. Log:
+`/tmp/eidolon-ability-defense-full-server.log`. This covers the immediate and
+projectile/zone migration together with the preceding Fighter work. It does
+not cover later periodic-defense edits, native feedback, saved builds or
+completed balance. The client has not changed since the accepted Fighter
+runtime825f9b0c full client/lint run; no new client acceptance is claimed here.
+
 ## Projectile/zone migration — focused acceptance
 
 Projectile updates now own a fresh world-unlocked context and flush after all
