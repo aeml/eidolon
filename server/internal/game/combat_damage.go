@@ -3,6 +3,7 @@ package game
 import (
 	"math"
 	"math/rand"
+	"time"
 )
 
 // Generic critical talents cover ordinary damage (including basic attacks).
@@ -151,8 +152,20 @@ func ApplyDamageReflect(attacker, defender *Entity, damageDealt int) int {
 	if defender == nil || attacker == nil || damageDealt <= 0 {
 		return 0
 	}
+	return receivedDamageReflectionLocked(defender, damageDealt, time.Now())
+}
+
+// Caller owns the receiver lock. Unlike reflective absorption, these effects
+// reflect HP damage actually applied, not protected/absorbed outgoing damage.
+func receivedDamageReflectionLocked(defender *Entity, damageDealt int, now time.Time) int {
+	if defender == nil || damageDealt <= 0 {
+		return 0
+	}
 
 	reflectedDamage := 0
+	if defender.Type == TypePlayer && defender.IronFortressActive && defender.IronFortressThorns && now.Before(defender.IronFortressEndTime) {
+		reflectedDamage += damageDealt / 5
+	}
 
 	// Unique Effect: thorns - Reflect 10% damage taken
 	if defender.HasUniqueEffect("thorns") {

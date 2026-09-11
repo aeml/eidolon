@@ -1707,13 +1707,10 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 									if damage < 1 {
 										damage = 1
 									}
-									reflected := 0
-									if p.IronFortressActive && p.IronFortressThorns {
-										reflected = damage / 5
-									}
+									damage, _ = CalculateFinalDamage(sourceSnapshot, p, damage, "physical")
 									var shieldReflect int
 									damage, shieldReflect = w.mitigateImpactDamageLocked(p, damage, time.Now(), true)
-									reflected += shieldReflect + ApplyDamageReflect(sourceSnapshot, p, damage)
+									reflected := shieldReflect + ApplyDamageReflect(sourceSnapshot, p, damage)
 									p.Health -= damage
 									if w.OnEvent != nil {
 										w.OnEvent("damage", DamageEvent{TargetID: p.ID, SourceID: srcID, Amount: damage, Kind: "physical", InstanceID: instID})
