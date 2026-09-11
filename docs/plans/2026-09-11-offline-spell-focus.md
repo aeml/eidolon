@@ -39,9 +39,21 @@ Evidence:
   additions passed their own ESLint check. Whitespace check passed.
 - Logs `/tmp/eidolon-offline-focus-{red,green,focused,final,expanded,lint}-20260911.log`.
 
-Full client regression remains queued behind the live isolated four-role browser
-run93038. No server source changed; no new whole-project, native or production
-acceptance is implied. Keep this branch separate until that verification is done.
+Full client regression is now accepted on integrated6eb0b652 (including the party
+waypoint correction). Session64864 exit0:355suites/5084tests121.14s plus full lint.
+Logs `/tmp/eidolon-focus-waypoint-full-{client,lint}-20260911.log`. Server source
+is unchanged from the already accepted build-rejection server tests.
+
+The first full run53029 failed19 stage-timing cases (353other suites passed):
+the Time Warp stage added previously was missing from the exact command/stage
+fixture. The fixture now includes its execution-order, failure-stop, artifact
+scan and cleanup checks; no stages or assertions were dropped. That first run's
+137.202s result remains a failure, not the acceptance result.
+
+Native four-role run93038 has ended with a waypoint-observation failure; its
+correction and archived evidence are in2026-09-11-party-waypoint-arrival.md. A
+new full party route still needs to pass. No native or production acceptance of
+Spell Focus is implied by this unit regression.
 The broader160-talent audit remains open, including non-damaging utility skills'
 placeholder damage Masteries and other missing consumers.
 
