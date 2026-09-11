@@ -1,6 +1,7 @@
 import { expect } from '@playwright/test';
 import { buildDungeonTraversalRoutes } from '../dungeonTraversalRoutes.js';
 import { selectFighterDungeonSkill, shouldUseHuntPrimary } from '../dungeonCombatControls.js';
+import { aimDungeonCombatTarget } from '../dungeonTargetInput.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { enterAndExitDungeon, moveByGroundClick, projectEntity, readPlayerState } from './helpers.js';
 import { dungeonSpatialSnapshot } from './dungeon-spatial-snapshot.js';
@@ -83,10 +84,14 @@ export async function playDungeonThroughInputs(page, {
                 console.log(`${logPrefix} ${target.type}: ${JSON.stringify(diagnostic)}`);
                 nextReport = Date.now() + 15_000;
             }
-            const point = await projectEntity(page, target.id);
+            const partyTarget = expeditionProfile === 'party';
+            const point = await aimDungeonCombatTarget({
+                project: (id, hitboxPoint) => projectEntity(page, id, hitboxPoint),
+                move: (x, y) => page.mouse.move(x, y),
+                settle: () => page.waitForTimeout(50),
+                hoveredId: () => page.evaluate(() => window.game.hoveredEntity?.id)
+            }, target.id, partyTarget);
             if (point?.visible) {
-                await page.mouse.move(point.x, point.y);
-                await page.waitForTimeout(50);
                 await page.mouse.click(point.x, point.y);
                 const primaryState = await page.evaluate(id => {
                     const game = window.game;
@@ -97,7 +102,8 @@ export async function playDungeonThroughInputs(page, {
                         distance: enemy.position.distanceTo(player.position), attackRange: game.getBasicAttackRangeForEntity(enemy),
                         castRange: game.abilityController.getAbilityCastRange() };
                 }, target.id);
-                if (primaryState && shouldUseHuntPrimary(primaryState, { minimumChargeDistance })) {
+                if (primaryState && shouldUseHuntPrimary(primaryState, { minimumChargeDistance }) &&
+                    (!partyTarget || await page.evaluate(id => window.game.hoveredEntity?.id === id, target.id))) {
                     await page.mouse.click(point.x, point.y, { button: 'right' });
                 }
                 const skillState = await page.evaluate(id => {
@@ -114,10 +120,21 @@ export async function playDungeonThroughInputs(page, {
                         hotbar: player.hotbar, cooldowns: player.cooldowns };
                 }, target.id);
                 const skillAction = skillState && selectFighterDungeonSkill(skillState, fullRun);
-                if (skillAction && Date.now() >= nextSkillAttemptAt) {
+                if (skillAction && Date.now() >= nextSkillAttemptAt &&
+                    (!partyTarget || await page.evaluate(id => window.game.hoveredEntity?.id === id, target.id))) {
                     await page.keyboard.press(skillAction.key);
                     nextSkillAttemptAt = Date.now() + 1000;
                 }
+                if (partyTarget) await page.evaluate(id => {
+                    const g = window.game, p = g.player, enemy = g.remotePlayers.get(id);
+                    const records = window.__partyClearEvidence.recentAttackInputs;
+                    records.push({ hovered: g.hoveredEntity?.id === id,
+                        distance: enemy ? p.position.distanceTo(enemy.position) : null,
+                        basicRange: enemy ? g.getBasicAttackRangeForEntity(enemy) : null,
+                        pendingTarget: g.pendingInteraction?.id === id,
+                        moveTarget: p.targetPosition ? { x: p.targetPosition.x, z: p.targetPosition.z } : null });
+                    if (records.length > 12) records.shift();
+                }, target.id);
             } else {
                 const player = await readPlayerState(page);
                 const distance = Math.hypot(target.x - player.x, target.z - player.z);
