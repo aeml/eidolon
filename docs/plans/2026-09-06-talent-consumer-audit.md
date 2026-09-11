@@ -1,5 +1,12 @@
 # Remaining talent consumers — reproduced September 6
 
+September11 next reproduced consumer: [Fighter duration](2026-09-11-fighter-duration-consumers.md).
+Actual paid Shield Slam with FTR_30/FTR_37 rank5 retains baseline stun duration,
+both with and without Concussion.78560 exits1/game2.092s with four trained
+failures; all untrained controls, actual damage/stun/cost checks and prior probes
+pass. No runtime repair yet. The record separates percentage server definitions
+from inconsistent legacy descriptions and preserves full-tree acceptance scope.
+
 September11 local repair: [Executioner Spin area](2026-09-11-executioner-spin-area.md).
 The initial90581 zero-attack-stat fixture was insufficient evidence. Corrected
 37747 on the unchanged parent includes nearby positive damage controls and still

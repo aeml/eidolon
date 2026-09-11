@@ -13,6 +13,55 @@ import (
 	"time"
 )
 
+// Duration definitions are percentage-based, although the older Fighter copy
+// describes flat stun seconds/armor penetration. This probes the server-defined
+// benefit, not a claim that those descriptions already match the implementation.
+func TestPendingTalentFighterShieldSlamDuration(t *testing.T) {
+	for _, talent := range []string{"FTR_30", "FTR_37"} {
+		for _, runeID := range []string{"", "shieldslam_concussion"} {
+			for _, rank := range []int{0, 5} {
+				t.Run(fmt.Sprintf("%s/rune%s/rank%d", talent, runeID, rank), func(t *testing.T) {
+					w := newTestWorld()
+					defer w.StopBackground()
+					p := newTestPlayer("slam-duration-caster", "Fighter")
+					p.Level, p.InstanceID, p.X, p.Z = 100, "qa-slam-duration", 60000, 60000
+					p.BaseStats = InitialPlayerStats()
+					p.UnlockedSkills = []string{"Shield Slam"}
+					p.TalentRanks = map[string]int{talent: rank}
+					p.SkillRunes = map[string]string{"Shield Slam": runeID}
+					p.RecalculateStats()
+					p.Mana = p.MaxMana
+					w.AddEntity(p)
+					target := &Entity{ID: "slam-duration-enemy", Type: TypeEnemy, InstanceID: p.InstanceID,
+						State: "IDLE", Health: 10000, MaxHealth: 10000, Scale: 1, X: p.X + 2, Z: p.Z}
+					w.AddEntity(target)
+					base := 1500 * time.Millisecond
+					if runeID != "" {
+						base += time.Second
+					}
+					def, ok := talentDefForID("Fighter", talent)
+					if !ok || def.PerRank.SkillDuration <= 0 {
+						t.Fatal("duration definition missing")
+					}
+					want := time.Duration(math.Round(float64(base) * (1 + float64(rank)*def.PerRank.SkillDuration)))
+					mana, started := p.Mana, time.Now()
+					result := w.PerformAbility(p.ID, target.X, target.Z, target.ID, "Shield Slam")
+					finished := time.Now()
+					if !result.Accepted || p.Mana != mana-25 || !p.Cooldowns["Shield Slam"].After(started) ||
+						!target.Stunned || target.Health >= target.MaxHealth {
+						t.Fatalf("paid damaging/stunning control failed: accepted=%v mana=%d stunned=%v hp=%d", result.Accepted, p.Mana, target.Stunned, target.Health)
+					}
+					if target.StunEndTime.Before(started.Add(want)) || target.StunEndTime.After(finished.Add(want)) {
+						t.Errorf("rank%d duration=%v..%v want=%v after rune; ordinary hit and stun succeeded", rank,
+							target.StunEndTime.Sub(finished), target.StunEndTime.Sub(started), want)
+					}
+				})
+			}
+		}
+	}
+
+}
+
 // Executioner Spin's paid server strike must consume the same advertised area
 // bonuses as Guardian Roar. Paired targets stay at one point in the trained
 // annulus; the untrained control must miss and the trained strike must hit.
