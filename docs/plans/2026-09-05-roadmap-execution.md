@@ -5,7 +5,39 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 00:31 UTC
+## Current checkpoint — September 11, 00:40 UTC
+
+Previous turn was PROGRESS through fresh focused party-credit evidence. This
+turn is PROGRESS: reproduced and repaired the ineffective Purifying Wave Mastery
+consumer separately while polling the same live four-player run. Full roadmap,
+native acceptance and deployment remain open; goal stays active.
+
+- Purifying branch`work/purifying-mastery-20260911` in
+ `/tmp/eidolon-purifying-mastery-LFLbff` is clean2859efba, based on98320775.
+  CLR_07 now adds4% skill-scoped cleanse radius per rank, preserving existing
+  five ranks/ID/points/cost/cooldown and adding no heal. Client copy, offline
+  cleanse and predicted/remote rings match; global Ministry stacks additively.
+  Red actual-cast34068 failed8.063s; client19129 failed18/43tests2.276s.
+  Final focused Go race6143 PASS10.302s includes ordinary purchases0–5 against
+  one fixed ally, no-heal/cost/cooldown, body boundaries, relationships and legacy
+  rank normalization. Client62294 PASS138tests/6suites4.194s; focused lint0.
+  Initial expanded Go24430 failed only a new rank-zero fixture lacking derived
+  stat recalculation; corrected uniformly, not by changing production stats.
+  Updated existing purifying-area native case discovers exactly one test and
+  adds ordinary Mastery purchases/saved combined ranks/render checks while
+  retaining Ministry-only checks. It has NOT run; full regression/native/
+  integration/version/CI/live still due. Work record and unreleased patch-note
+  draft live in that branch's`2026-09-11-purifying-wave-mastery.md`.
+-96841 still ACTIVE on frozen46596437, sole heavy gate. Current-source Warden
+  defeated; all-four third recovery/resume passed. Next room also cleared and
+  fourth recovery/resume passed exact progress; pre-restHP/MP F827/293,C845/481,
+  W761/232,R855/391. No finalclear/individualmanual/relogin receipts yet. Continue
+  the exact handle and existing log; no primary edits or new heavy gate.
+- Remote00:36 canonicalCI34434837759 remains queued on62dc; Nightly34433520743
+  remains in_progress. No soak/runner/push/deployment changes. Candidate98320775
+  remains separate and unchanged. Root ledger-only, NEVER PUSH.
+
+## Previous checkpoint — September 11, 00:31 UTC
 
 Party-credit request reconfirmed against candidate98320775. Fresh race-enabled
 focused checks passed:32800 (2.338s) covers eligibility, actual open-world death
