@@ -112,3 +112,18 @@ No local heavy/browser remains. Native four-role full clear, remaining required
 native release gates and production acceptance are still open. Separate runner
 queues were newly authorized by the user; infrastructure work is isolated in
 `work/runner-queue-separation-20260911`, not bundled with this unaccepted gameplay.
+
+## Queue carry-forward and render review — September11 03:29
+
+Infrastructure-only8cb7ae43 was carried into this branch as2eb20e8f so a future
+gameplay release cannot restore the obsolete shared soak/GPU label. Focused
+queue/isolation/browser-sharding82052 passed8tests/3suites0.979s. Diff inspection
+confirms no src/server/scripts/ci.yml changes since frozen9c664f95; the existing
+application regression evidence remains applicable. The nightly workflow, new
+queue regression test and documentation are the only additional changes.
+
+Inspected current crystal-art Earth portrait repair and desktop Maelin channel
+screenshots. The crystal and repair beam are visible, and Maelin has a distinct
+apron/tools silhouette in the comparison fixture. The prepared portrait camera
+makes Maelin small; this does not establish real mobile encounter readability or
+close the physical-phone gate. No new native crystal defense completion claimed.
