@@ -138,7 +138,9 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 		return
 	}
 	att.Mu.Lock()
-	if att.State == "DEAD" || att.InstanceID != attackerInstanceID {
+	// An accepted wind-up is not permission to land a swing while stunned.
+	// This does not remove projectiles already launched or alter boss immunity.
+	if att.State == "DEAD" || att.Stunned || att.InstanceID != attackerInstanceID {
 		att.Mu.Unlock()
 		return
 	}
