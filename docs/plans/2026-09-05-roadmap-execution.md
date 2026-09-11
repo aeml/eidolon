@@ -5,7 +5,49 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 03:27 UTC
+## Current checkpoint — September 11, 03:34 UTC
+
+Previous goal turn was PROGRESS (runner registered/service installed, approved
+infrastructure-only routing pushed, primary116 browser gate completed). This turn
+also makes PROGRESS: carries routing into both future source branches, validates
+full24hsoak evidence and inspects previously unreviewed crystal/NPC renders.
+
+- Nightly34433520743 sourcecaab6111 completed its full24h Run multiplayer soak
+  step SUCCESS at03:30:44; evidence upload SUCCESS03:30:47, artifact10183524139
+  `nightly-soak-34433520743`,633195bytes, not expired. Job remains authoritatively
+  in_progress at Post Setup Go cache cleanup (started03:30:48), not yet a terminal
+  workflow conclusion. Do not restart/cancel it or conflate step/workflow status.
+- Independently validated existing local soak-runtime/client logs through
+  validateSoakEvidence:1440samples,100connected/100joined,115694499stateframes,
+  read_errors0/write_errors0, all health/database samples ok/ready. Max329
+  goroutines; peak heap297733456bytes, first42270664, final196803440,
+  growth154532776. All existing acceptance ceilings passed. Evidence is for
+  caab6111, not automatic full-soak proof of newer primary/gameplay source.
+- Scheduled34558600459 was created03:28:59 on8cb7ae43 and automatically replaced
+  pending manual smoke34558402598 in GitHub's single-pending concurrency slot.
+  Manual smoke is TERMINALcancelled before any job, not failed on new runner;
+  no agent cancellation. New daily soak remains pending until old cleanup ends.
+  Do not dispatch a replacement smoke that would cancel the pending full soak.
+  Verify new scheduled job really gets eidolon-soak, then actual startup/health/
+  later completion. Newrunneronlineidle/oldChromeonlinebusy last verified;
+  canonicalpredeploy34434837759 stillqueued, newCI34558375122 behind it.
+- Carried8cb7ae43 to primary as2eb20e8f and successor ase55ce9a8 so future
+  releases retain split queues.82052 primaryPASS8tests/3suites0.979s;
+ 1264 successorPASS8/3/0.951s. No src/server/scripts/ci.yml differences from each
+  accepted application source; onlynightlyworkflow/newtest/docs changed.
+  Primary now45efe670 after docs-only render/provenance follow-up, successor
+  e55ce9a8, both clean. Originalprimary8f and Spin689 untouched; no newgamepush.
+- Inspected Earth portrait repair screenshot and desktop Maelin channel fixture.
+  Crystal/beam visible and Maelin distinct apron/tools model. Preparedportrait
+  zoom makes NPC small; not native-mobile readability or physical-device proof.
+  No new browser run, native raid/dungeon clear or globalart signoff inferred.
+- Read-only Fighter duration follow-up confirms direct authored ShieldSlam stun
+  and fixed offline path. Diagnosticd70 unchanged, no runtime fix/copy decision
+  silently made. All full1.1–1.10 scope remains OPEN; current sources support
+  native party acceptance after remoteGPU jobs, not roadmap completion. No local
+  heavy/browser process remains; DBrotationapproval still unanswered. RootNEVERPUSH.
+
+## Previous checkpoint — September 11, 03:27 UTC
 
 User explicitly APPROVED separate runner queues and completed the new sudo
 service installation. Prior no-runner-change restriction is superseded for this
