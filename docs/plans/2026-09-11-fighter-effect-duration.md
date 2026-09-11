@@ -1,5 +1,15 @@
 # Fighter effect-duration consumers — server implementation stage
 
+## Full preceding-source acceptance — September 11, 05:37 UTC
+
+49648 completed exit0 on frozen7c11bc4d:338 client suites /4741 tests in
+212.323s; full lint; Go race root34.403s/game478.435s/loadtest1.063s/
+database1.124s/lifecycle1.046s. Final logs:
+`/tmp/eidolon-fighter-duration-final-full-{client,lint,server}.log`.
+This is full regression of this exact preceding-source stage, not the later
+Charge8d4256fd or offline Earthshaker additions, and not native/save/rune
+completion. This branch remains isolated and unpublished.
+
 ## Offline timer and copy follow-up — September 11
 
 The new ordinary-cast matrix reproduced21 failures /15 passing controls in
