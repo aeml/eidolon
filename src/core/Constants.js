@@ -130,7 +130,7 @@ export const CONSTANTS = {
             BranchA: {
                 name: "Shield & Mitigation",
                 Tier2: { name: "Whirlwind", desc: "Spin around dealing damage to all nearby enemies." },
-                Tier3: { name: "Shield Slam", desc: "AoE cone threat + minor stun." },
+                Tier3: { name: "Shield Slam", desc: "Cone strike generating 2× normal threat from damage dealt; briefly stuns non-immune enemies." },
                 Tier4: { name: "Iron Fortress", desc: "Flat damage reduction for X seconds after Charge." },
                 Tier5: { name: "Guardian Roar", desc: "Large-radius taunt + group damage reduction buff." }
             },
@@ -346,6 +346,8 @@ export const CONSTANTS = {
             );
 
             return entries.slice(0, 40).map((t, i) => ({ id: `FTR_${String(i + 1).padStart(2, '0')}`, ...t,
+                abilityDamage: i < 26 && i % 2 === 0 ? { skill: skills[Math.floor(i / 2)], damage: 0.04 }
+                    : i === 37 ? { damage: 0.02 } : undefined,
                 criticalChance: i === 38 ? { chance: 0.02 } : undefined,
                 abilityArea: i === 9 ? { skill: 'Guardian Roar', radius: 0.02 }
                     : i === 23 ? { skill: 'Executioner Spin', radius: 0.02 }

@@ -1,0 +1,13 @@
+[
+  {"name":"untrained","ranks":{},"damage":65},
+  {"name":"mastery-one","ranks":{"FTR_05":1},"damage":67},
+  {"name":"mastery-five","ranks":{"FTR_05":5},"damage":78},
+  {"name":"capped-mastery","ranks":{"FTR_05":99},"damage":78},
+  {"name":"negative-mastery","ranks":{"FTR_05":-1},"damage":65},
+  {"name":"legacy-mastery","ranks":{"FTR_5":5},"damage":78},
+  {"name":"duplicate-alias","ranks":{"FTR_05":5,"FTR_5":5},"damage":78},
+  {"name":"generic-damage","ranks":{"FTR_38":5},"damage":71},
+  {"name":"combined","ranks":{"FTR_05":5,"FTR_38":5},"damage":84},
+  {"name":"duration-not-damage","ranks":{"FTR_30":5},"damage":65},
+  {"name":"other-skill","ranks":{"FTR_03":5},"damage":65}
+]

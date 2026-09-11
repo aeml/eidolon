@@ -4,7 +4,7 @@ import { expect, test } from '@playwright/test';
 import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture } from '../partyDungeonFixture.js';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
 import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyWarningInputPolicy } from '../partyDungeonControls.js';
-import { selectPartyDamageBuff } from '../partyDamageRoleControls.js';
+import { attackPartyDamageTarget, selectPartyDamageBuff } from '../partyDamageRoleControls.js';
 import { selectPartyHealTarget } from '../partyHealingControls.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { dungeonExpeditionBudget } from '../dungeonExpeditionTiming.js';
@@ -33,7 +33,7 @@ async function observeRole(page) {
         const game = window.game, original = game.handleServerMessage.bind(game);
         const e = window.__partyClearEvidence = { damageDone: 0, damageTaken: 0, allyHealing: 0,
             casts: {}, rejected: {}, sawDeath: false, warningMoves: 0, warningEscapes: 0,
-            warningEarlyEscapes: 0, recentDamage: [], recentEscapes: [], lastAcceptedCastAt: -Infinity,
+            warningEarlyEscapes: 0, recentDamage: [], recentEscapes: [], recentAttackInputs: [], lastAcceptedCastAt: -Infinity,
             lastUpdate: performance.now() };
         window.__partyClearWarnings = [];
         game.handleServerMessage = message => {
@@ -49,7 +49,14 @@ async function observeRole(page) {
                 if (p.targetId === game.player.id) {
                     e.damageTaken += Math.max(0, p.amount || 0);
                     const position = game.player.position, now = performance.now();
+                    const source = game.remotePlayers.get(p.sourceId);
                     e.recentDamage.push({ amount: p.amount, kind: p.kind, x: position.x, z: position.z,
+                        source: source ? { type: source.subType || source.constructor.name,
+                            x: source.position?.x, z: source.position?.z,
+                            distance: source.position ? Math.hypot(source.position.x - position.x, source.position.z - position.z) : null,
+                            state: source.state } : null,
+                        pendingTarget: game.pendingInteraction?.id || null,
+                        moveTarget: game.player.targetPosition ? { x: game.player.targetPosition.x, z: game.player.targetPosition.z } : null,
                         warnings: window.__partyClearWarnings.filter(w => w.instance === game.currentInstanceId && now < w.expires + 3000)
                             .map(w => ({ radius: w.radius, distance: Math.hypot(position.x - w.x, position.z - w.z),
                                 msUntilImpact: w.expires - now, earlyEscape: w.firstSafeAt != null, lastObservedSafe: w.safe })) });
@@ -428,10 +435,36 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                         if (policy.allowApproach) await follow(actor, await snapshot(tank.page), 8);
                         return;
                     }
-                    await actor.page.mouse.move(point.x, point.y);
-                    await actor.page.waitForTimeout(60);
-                    if (policy.allowApproach) await actor.page.mouse.click(point.x, point.y);
-                    if (enemy.distance <= enemy.range && enemy.cooldown <= 0) await actor.page.mouse.click(point.x, point.y, { button: 'right' });
+                    const clicks = await attackPartyDamageTarget({
+                        project: (id, hitboxPoint) => projectEntity(actor.page, id, hitboxPoint),
+                        move: (x, y) => actor.page.mouse.move(x, y),
+                        settle: () => actor.page.waitForTimeout(60),
+                        hoveredId: () => actor.page.evaluate(() => window.game.hoveredEntity?.id),
+                        read: id => actor.page.evaluate(id => {
+                            const g = window.game, p = g.player, e = g.remotePlayers.get(id);
+                            const warnings = window.__partyClearWarnings.filter(w =>
+                                w.expires > performance.now() && w.instance === g.currentInstanceId);
+                            return { alive: p.state !== 'DEAD' && Boolean(e?.isActive && e.state !== 'DEAD'),
+                                distance: e ? Math.hypot(p.position.x - e.position.x, p.position.z - e.position.z) : null,
+                                range: g.abilityController.getAbilityCastRange(), cooldown: p.abilityCooldown,
+                                allowApproach: warnings.length === 0,
+                                allowCasts: warnings.every(w => Math.hypot(p.position.x - w.x, p.position.z - w.z) >= w.radius + 1.5) };
+                        }, id),
+                        click: async button => {
+                            await actor.page.mouse.down({ button });
+                            await actor.page.mouse.up({ button });
+                        }
+                    }, target.id);
+                    await actor.page.evaluate(({ id, clicks }) => {
+                        const g = window.game, p = g.player, e = g.remotePlayers.get(id);
+                        const records = window.__partyClearEvidence.recentAttackInputs;
+                        records.push({ clicks, hovered: g.hoveredEntity?.id === id,
+                            distance: e ? Math.hypot(p.position.x - e.position.x, p.position.z - e.position.z) : null,
+                            basicRange: e ? g.getBasicAttackRangeForEntity(e) : null,
+                            pendingTarget: g.pendingInteraction?.id === id,
+                            moveTarget: p.targetPosition ? { x: p.targetPosition.x, z: p.targetPosition.z } : null });
+                        if (records.length > 12) records.shift();
+                    }, { id: target.id, clicks });
                 })]);
                 for (const actor of actors) {
                     const state = await snapshot(actor.page);

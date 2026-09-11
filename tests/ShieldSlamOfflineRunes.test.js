@@ -2,6 +2,7 @@ import { jest } from '@jest/globals';
 import * as THREE from 'three';
 import { Fighter } from '../src/entities/Fighter.js';
 import { Actor } from '../src/entities/Actor.js';
+import fs from 'node:fs';
 
 function fixture(rune = '', rank = 5) {
     const p = new Fighter('slam-caster'); p.mesh = new THREE.Group();
@@ -112,4 +113,30 @@ test.each(['remote', 'multiplayer', 'engine'])('%s cast presentation never appli
 test('Shield Slam preserves a stronger existing offline stun', () => {
     const f = fixture(); const target = f.add('target', 1); target.stunTimer = 5.4;
     f.cast(); expect(target.stunTimer).toBe(5.4); expect(target.stats.hp).toBe(935);
+});
+
+const trainingCases = JSON.parse(fs.readFileSync('server/internal/game/testdata/shield_slam_damage.json', 'utf8'));
+describe.each(trainingCases)('paid damage training: $name', entry => {
+    test.each(['', 'shieldslam_concussion', 'shieldslam_reverberation', 'shieldslam_fortify'])('%s preserves rune, payment, threat-independent damage', rune => {
+        const f = fixture(rune, 0), target = f.add('trained-target', 2);
+        try {
+            f.p.talentRanks = entry.ranks;
+            f.cast();
+            const damage = entry.damage * (rune === 'shieldslam_reverberation' ? 2 : 1);
+            expect(target.stats.hp).toBe(1000 - damage);
+            expect(f.p.stats.mana).toBe(175);
+            expect(f.p.shieldHP).toBe(rune === 'shieldslam_fortify' ? damage : 0);
+            expect(f.p.talentRanks).toEqual(entry.ranks);
+        } finally { f.p.dispose(); target.dispose(); }
+    });
+});
+
+test('trained critical Fortify applies training, critical and absorption once each', () => {
+    const f = fixture('shieldslam_fortify', 0), target = f.add('trained-critical', 2);
+    try {
+        f.p.talentRanks = { FTR_05: 5 }; f.p.stats.critChanceBonus = 1;
+        f.cast();
+        expect(target.stats.hp).toBe(844);
+        expect(f.p.shieldHP).toBe(156);
+    } finally { f.p.dispose(); target.dispose(); }
 });

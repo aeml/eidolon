@@ -4,11 +4,13 @@ import { applyOfflineAbilityHit } from '../core/AbilityCritical.js';
 import { clipDungeonEffectSegment } from './dungeonEffectGeometry.js';
 import { getFighterEffectDuration } from './fighterEffectDuration.js';
 import { getShieldSlamStunDuration } from './shieldSlamDuration.js';
+import { getFighterAbilityDamage } from './fighterAbilityDamage.js';
 
 export function applyOfflineShieldSlam(source, aim, engine, isFriendlyActor) {
     if (source.isRemote || source.isMultiplayer || engine.isMultiplayer) return;
     const rune = source.skillRunes?.['Shield Slam'];
-    const damage = (source.stats.damage + Math.floor(source.stats.strength * 1.5)) * (rune === 'shieldslam_reverberation' ? 2 : 1);
+    const damage = getFighterAbilityDamage(source, 'Shield Slam', source.stats.damage + Math.floor(source.stats.strength * 1.5))
+        * (rune === 'shieldslam_reverberation' ? 2 : 1);
     const duration = getShieldSlamStunDuration(source);
     const facing = new THREE.Vector3().subVectors(aim || source.position, source.position);
     facing.y = 0;
