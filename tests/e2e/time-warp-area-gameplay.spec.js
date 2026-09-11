@@ -139,8 +139,20 @@ test('Time Warp training reaches a walked ally beyond the original radius and ex
         for (const id of ['WIZ_36', 'WIZ_38', 'WIZ_34']) {
             for (let rank = 1; rank <= 5; rank++) {
                 const buy = page.locator(`button[data-build-action="talent:${id}"]`);
-                await buy.scrollIntoViewIfNeeded(); await buy.tap();
                 try {
+                    for (let attempt = 0; attempt < 3; attempt++) {
+                        await buy.scrollIntoViewIfNeeded(); await buy.tap();
+                        await expect.poll(() => page.evaluate(() => window.game.uiManager.skillTree.mobile.pending === null)).toBe(true);
+                        if (await page.evaluate(id => window.game.player.talentRanks?.[id] || 0, id) === rank) break;
+                        // A legitimate rate rejection must release the actual
+                        // menu without spending a point. Retry with another
+                        // deliberate tap only after its visible rejection.
+                        expect(await page.evaluate(id => window.game.player.talentRanks?.[id] || 0, id)).toBe(rank - 1);
+                        await expect(page.locator('.phone-build-feedback')).toContainText('rate limit');
+                        await expect(buy).toBeEnabled();
+                        console.log(`[time-warp-training] ${id} rank ${rank}: rate rejection released controls without spending`);
+                        await page.waitForTimeout(1100);
+                    }
                     await expect.poll(() => page.evaluate(id => window.game.player.talentRanks?.[id] || 0, id)).toBe(rank);
                 } catch (error) {
                     console.log('[time-warp-training-failure]', JSON.stringify(await page.evaluate(({ id, rank }) => ({
