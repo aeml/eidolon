@@ -69,6 +69,8 @@ type EntitySnapshot struct {
 	SpiritDuration             float64
 	BlessingResolveDuration    float64
 	TimeWarpDuration           float64
+	InvulnerableActive         bool
+	InvulnerableDuration       float64
 	GuardianEmbraceDuration    float64
 	ArcaneShieldDuration       float64
 	DivineInterventionDuration float64

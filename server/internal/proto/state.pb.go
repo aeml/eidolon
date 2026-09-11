@@ -948,6 +948,9 @@ type Entity struct {
 	// Server-owned rest bank; replicated for local/remote UI and aura state.
 	WellRestedSeconds float64 `protobuf:"fixed64,116,opt,name=well_rested_seconds,json=wellRestedSeconds,proto3" json:"well_rested_seconds,omitempty"`
 	SafeZoneId        string  `protobuf:"bytes,117,opt,name=safe_zone_id,json=safeZoneId,proto3" json:"safe_zone_id,omitempty"`
+	// Shared combat protection (Phase, Cleric and PvP opening protection).
+	InvulnerableActive   bool    `protobuf:"varint,118,opt,name=invulnerable_active,json=invulnerableActive,proto3" json:"invulnerable_active,omitempty"`
+	InvulnerableDuration float32 `protobuf:"fixed32,119,opt,name=invulnerable_duration,json=invulnerableDuration,proto3" json:"invulnerable_duration,omitempty"`
 	// Authoritative jump replication
 	JumpStartX    float32 `protobuf:"fixed32,81,opt,name=jump_start_x,json=jumpStartX,proto3" json:"jump_start_x,omitempty"`
 	JumpStartY    float32 `protobuf:"fixed32,82,opt,name=jump_start_y,json=jumpStartY,proto3" json:"jump_start_y,omitempty"`
@@ -1748,6 +1751,20 @@ func (x *Entity) GetSafeZoneId() string {
 	return ""
 }
 
+func (x *Entity) GetInvulnerableActive() bool {
+	if x != nil {
+		return x.InvulnerableActive
+	}
+	return false
+}
+
+func (x *Entity) GetInvulnerableDuration() float32 {
+	if x != nil {
+		return x.InvulnerableDuration
+	}
+	return 0
+}
+
 func (x *Entity) GetJumpStartX() float32 {
 	if x != nil {
 		return x.JumpStartX
@@ -1904,7 +1921,7 @@ const file_state_proto_rawDesc = "" +
 	"\n" +
 	"StatsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\xf5$\n" +
+	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\xdb%\n" +
 	"\x06Entity\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
 	"\vinstance_id\x18\x02 \x01(\tR\n" +
@@ -2028,7 +2045,9 @@ const file_state_proto_rawDesc = "" +
 	"spiritRune\x12.\n" +
 	"\x13well_rested_seconds\x18t \x01(\x01R\x11wellRestedSeconds\x12 \n" +
 	"\fsafe_zone_id\x18u \x01(\tR\n" +
-	"safeZoneId\x12 \n" +
+	"safeZoneId\x12/\n" +
+	"\x13invulnerable_active\x18v \x01(\bR\x12invulnerableActive\x123\n" +
+	"\x15invulnerable_duration\x18w \x01(\x02R\x14invulnerableDuration\x12 \n" +
 	"\fjump_start_x\x18Q \x01(\x02R\n" +
 	"jumpStartX\x12 \n" +
 	"\fjump_start_y\x18R \x01(\x02R\n" +

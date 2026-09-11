@@ -7,6 +7,7 @@ import {
 } from '../art/ProceduralStatusEffects.js';
 
 export const ACTOR_STATUS_VISUAL_STATES = Object.freeze({
+    invulnerable: (actor) => Math.max(actor.invulnerabilityTimer || 0, actor.teleportPhaseTimer || 0) > 0,
     well_rested: (actor) => Number.isFinite(actor.wellRestedSeconds) && actor.wellRestedSeconds > 0 && !(actor.stealthTimer > 0),
     iron_fortress: (actor) => actor.ironFortressTimer > 0,
     guardian_roar: (actor) => actor.guardianRoarTimer > 0,

@@ -13,6 +13,8 @@ const definition = (family, polarity, motif, artStyle, radius, palette) => Objec
 });
 
 export const PROCEDURAL_STATUS_EFFECT_DEFINITIONS = Object.freeze({
+    invulnerable: definition('protection', 'buff', 'phase-veil', 'silver-blue orbiting shards and a thin protective seal', 1.7,
+        { dark: 0x153342, base: 0x579ab3, accent: 0x93ddff, pale: 0xe0f8ff }),
     well_rested: definition('sanctuary', 'buff', 'lantern-resonance', 'golden sanctuary motes carrying four elemental echoes', 1.55,
         { dark: 0x51340c, base: 0xc99435, accent: 0xffcf68, pale: 0xffedbd }),
     iron_fortress: definition('fighter', 'buff', 'bastion-cage', 'riveted oathsteel bastion cage', 1.75,
@@ -261,6 +263,12 @@ function buildStatus(root, statusKey, def, materials) {
                 { thickness: 0.018, y: 0.065, motion: 'counter-seal' });
             break;
         }
+        case 'phase-veil':
+            orbit(root, statusKey, 'PhaseShard', 'crystal', 6, radius * 0.72, 1.2, materials,
+                { speed: 1.5, scale: [0.38, 0.8, 0.38], optionalEvery: 2 });
+            ring(root, statusKey, 'ProtectionSeal', radius * 0.8, materials.accent,
+                { thickness: 0.025, y: 0.08, motion: 'counter-seal' });
+            break;
         case 'bastion-cage':
             addPart(root, statusKey, 'OathsteelShell', geometry('status-shell', () => new THREE.IcosahedronGeometry(1, 1)), materials.veil,
                 { position: [0, 1.35, 0], scale: [radius, 1.85, radius], motion: 'shell' });

@@ -138,6 +138,7 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 			blessingResolveDuration = 0
 		}
 	}
+	invulnerableDuration := e.InvulnerabilityRemaining(time.Now())
 	timeWarpDuration := 0.0
 	if e.TimeWarpActive {
 		timeWarpDuration = time.Until(e.TimeWarpEndTime).Seconds()
@@ -296,6 +297,8 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		SpiritDuration:             spiritDuration,
 		BlessingResolveDuration:    blessingResolveDuration,
 		TimeWarpDuration:           timeWarpDuration,
+		InvulnerableActive:         invulnerableDuration > 0,
+		InvulnerableDuration:       invulnerableDuration,
 		GuardianEmbraceDuration:    guardianEmbraceDuration,
 		GuardianEmbraceRadius:      e.GuardianEmbraceAreaRadius(),
 		ArcaneShieldDuration:       arcaneShieldDuration,
@@ -358,6 +361,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	carcaneShieldActive := current.ArcaneShieldActive
 	carcaneShieldHP := current.ArcaneShieldHP
 	ctimeWarpActive := current.TimeWarpActive
+	cinvulnerableDuration := current.InvulnerabilityRemaining(time.Now())
 	cspellFocusActive := current.SpellFocusActive
 	cswiftActive := current.SwiftActive
 	cironFortressActive := current.IronFortressActive
@@ -643,6 +647,9 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 		return true
 	}
 	if ctimeWarpActive != last.TimeWarpActive {
+		return true
+	}
+	if (cinvulnerableDuration > 0) != last.InvulnerableActive || math.Abs(cinvulnerableDuration-last.InvulnerableDuration) > 0.05 {
 		return true
 	}
 	if cweakPointMarked != last.WeakPointMarked {
@@ -1049,6 +1056,7 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 			blessingResolveDuration = float32(remaining)
 		}
 	}
+	invulnerableDuration := float32(e.InvulnerabilityRemaining(time.Now()))
 	timeWarpDuration := float32(0)
 	if e.TimeWarpActive {
 		remaining := time.Until(e.TimeWarpEndTime).Seconds()
@@ -1231,6 +1239,8 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		SpiritDuration:             spiritDuration,
 		BlessingResolveDuration:    blessingResolveDuration,
 		TimeWarpDuration:           timeWarpDuration,
+		InvulnerableActive:         invulnerableDuration > 0,
+		InvulnerableDuration:       invulnerableDuration,
 		GuardianEmbraceDuration:    guardianEmbraceDuration,
 		GuardianEmbraceRadius:      float32(e.GuardianEmbraceAreaRadius()),
 		ArcaneShieldDuration:       arcaneShieldDuration,
