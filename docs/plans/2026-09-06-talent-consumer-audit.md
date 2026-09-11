@@ -5,8 +5,10 @@ The initial90581 zero-attack-stat fixture was insufficient evidence. Corrected
 37747 on the unchanged parent includes nearby positive damage controls and still
 reproduces six trained-annulus misses in1.007s. Repaired71674 passes3.321s.
 The legacy offline repeated-damage path has also been reproduced and corrected
-to the single strike. Focused server/client checks pass; the new native purchase/
-save route, full regression, integration and release acceptance remain pending.
+to the single strike. Focused checks, native purchase/save85991, full server/client
+regression and all104 bundled-browser cases now pass on a0cda0ff. The work record
+preserves the interrupted first browser attempt and complete remaining-group
+retries. Versioned release/deployment acceptance remains pending.
 This does not close the full-tree gate or fix every generic Fighter description.
 
 September11 next local repair: [Guardian Roar's area consumers](2026-09-11-guardian-roar-area.md)

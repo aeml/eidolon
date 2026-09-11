@@ -116,7 +116,7 @@ passed, copied initial-stat log had zero QA identifiers, and owned ports cleared
 
 ## Consolidated patch-note draft — unreleased
 
-Drafted against the application changes througha8e6851d, compared with canonical
+Drafted against the application changes througha0cda0ff, compared with canonical
 62dc. No successor version is assigned and these are not published patch notes.
 At promotion, transfer the verified content into the game's normal per-version
 notes alongside synchronized login/manifest/server metadata. Preserve all older
@@ -143,6 +143,10 @@ version entries. Recheck this draft if the candidate's application scope changes
   remain invested; the spell still cleanses rather than heals.
 - Guardian Roar now honors its area talents for ally protection and taunt reach,
   with matching local and remote rings. Boss-taunt restrictions are unchanged.
+- Executioner Spin honors its area talents and shows a ring matching its strike.
+  Offline play now resolves the same single strike instead of repeated short-range
+  ticks. Spin casts around you without chasing a distant selected enemy. Existing
+  talent ranks, ordinary costs and cooldowns remain intact.
 
 ### Equipment and controls
 
@@ -179,11 +183,12 @@ remain mandatory; scoped local passes do not make these notes shipped content.
 
 ## Remaining promotion gates
 
-- [x] Current application regression: full Go race19979 on a8e6851d passed (root18.048s/game325.373s); client52400 passed278suites/3908tests126.574s and full lint44660 exited0. Versioned required-all still applies.
+- [x] Current application regression: full Go race75374 on a0cda0ff passed (root21.131s/game384.704s); client14482 passed279suites/3952tests142.091s and full lint. Versioned required-all still applies.
 - [x] Execute authenticated smoke with the strengthened stash checks (empty storage).
-- [x] Renew all three CI-mode bundled-browser groups on the utility-area
-  application: clean e6a5a6f1 passed all104 cases. Distinct artifacts and
-  inspected rendering are recorded in the September11 acceptance below.
+- [x] Renew all three CI-mode bundled-browser groups on the Spin application:
+  clean a0cda0ff passed all104 cases, with zero failed/flaky/skipped results.
+  Interrupted initial group2 was rerun in full; distinct artifacts and inspected
+  rendering are recorded in the September11 Spin acceptance below.
 - [ ] Complete the changed versioned candidate's required predeploy/authenticated
   all and other release gates. Do not repeat unchanged old source as missing, or
   substitute its old pass for a changed-source release acceptance claim.
@@ -401,3 +406,26 @@ snapshot race57922 passed1.517s. Whole-instance dungeon/raid credit includes
 downed connected members, and overworld sharing uses110 units from the kill.
 This is still local, not deployed; full native party clear and the remaining
 versioned/canonical/remote/live gates above remain open.
+
+## September11 Executioner Spin integration acceptance
+
+Reviewed a378ac3d→a0cda0ff adds the trained server/offline strike, consistent
+authoritative radius and self-centered input, plus its ordinary purchase/save
+route in required-all. It preserves the existing candidate's party-credit,
+equipment, Forge, UI and utility fixes; it does not import the primary's expanded
+story/new reward curve or separate Dark King phase cap. Full proof and fixture
+limits: [Executioner Spin record](2026-09-11-executioner-spin-area.md).
+
+Native85991 passed24.5s on a0cda0ff. Full Go race75374 and client/lint14482 pass
+as recorded above. Browser24016 terminated143 during group2 after39 passed;
+complete group2 retry60386 and group3 session45200 both exit0, supplying40+25
+additional cases on unchanged source. All12 embedded reports prove104 expected,
+zero failed/flaky/skipped. Archive
+`/tmp/eidolon-executioner-current104-proof-zv6zgi`; interrupted evidence retained
+separately. Scanner0 changed files, web41981 clear, current rendered scenes
+inspected. This is not a speedup benchmark or physical-phone/full-party clear.
+
+The consolidated unreleased notes now include Spin's actual behavior and input
+fix. No successor version assigned or pushed. Canonical62dc still awaits its
+existing remote gate; versioned required-all and normal release/live checks
+remain required. Prior historical pending labels above are not new failed tests.

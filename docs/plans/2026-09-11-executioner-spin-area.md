@@ -1,7 +1,7 @@
 # Executioner Spin — reproduced area-consumer defect
 
-Status: local repair with focused checks; native/full regression/integration and
-deployment remain pending. This is part of the existing full talent-consumer
+Status: local repair accepted by native and full regression checks; versioned
+release and deployment remain pending. This is part of the existing full talent-consumer
 gate, not a replacement for that gate.
 
 ## Reproduction
@@ -130,3 +130,43 @@ ready to execute when the unchanged four-player gate53491 becomes terminal;
 it has not run yet. Full regression/required-all/integration/release gates remain
 open on this changed source. Add to the eventual patch note: Spin no longer
 chases or refuses to cast because of a distant selected/hovered enemy.
+
+## Native and full regression acceptance — September11 02:43
+
+The preceding pending-native labels are historical. Clean a0cda0ff passed native
+85991 in24.5s: ordinary phone branch-C selection, five paid ranks each in
+FTR_24/FTR_33/FTR_38, accepted radii6→6.6→7.5→8.1, attached authoritative rings
+in low/high quality, and fresh-login landscape saved ranks. Explicit prepared
+level100/resources remain fixtures; this does not prove earned progression,
+physical-phone ergonomics or a native hostile hit. Archive
+`/tmp/eidolon-executioner-native-proof-lR6UEF`, log
+`/tmp/eidolon-executioner-native.log`; disposable services/ports were removed.
+
+Full Go race75374 exited0: root21.131s/game384.704s, all packages passed with
+no race warning. Full client14482 exited0:279suites/3952tests142.091s and full
+lint. Logs `/tmp/eidolon-executioner-full-{server,client,lint}.log`.
+
+Current104-case browser acceptance is complete on the same unchanged source.
+Initial24016 terminated143 after group1's39 cases passed, during group2 layout;
+the signal's cause is unconfirmed, not a test pass. Preserved interrupted proof
+`/tmp/eidolon-executioner-current104-interrupted-wICB21`; only its verified orphan
+web server and exact shell/npm ancestry were stopped, then port41981 was clear.
+Complete group2 retry60386 exited0 with40 cases; group3 session45200 exited0
+with25. All12 embedded reports were inspected:104 expected, zero unexpected,
+flaky or skipped. Exact partition discovery had verified no omissions/duplicates.
+
+Stage wall times including invocation: group1 layout131.0s/entrances23.4s/
+effects75.9s/nameplates20.8s/resource-HUD11.5s; group2 layout196.0s/
+entrances18.7s/effects27.4s/interface49.4s; group3 layout113.1s/entrances19.2s/
+effects19.4s. These are local regression durations, not a CI speedup benchmark.
+Archive `/tmp/eidolon-executioner-current104-proof-zv6zgi` contains separate stage
+reports/results and all three logs; supplied credential scanner changed0 files
+for this anonymous run. Port41981 is clear. Inspected current screenshots cover
+the four-target720p healing roster,390px expanded chat/Forge,360px stash detail
+and portrait encounter framing. No new clipping observed; dense Forge copy and
+physical-device play remain open. No pixel-redaction claim.
+
+Integration review confirms this branch fast-forwards a378ac3d, preserving the
+existing candidate changes. Spin joins required-all without removing any prior
+route. No new version or deployment is implied by these local passes. The full
+talent-tree, four-player dungeon/campaign and original roadmap remain open.
