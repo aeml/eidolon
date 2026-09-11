@@ -60,3 +60,12 @@ Explosive Arcane Shields now respect dungeon walls and can damage valid PvP
 opponents. Their blasts respect defensive effects and PvP damage limits, leave
 party members and neutral players unharmed, and correctly chain with other
 explosive shields without applying a shield's explosion twice.
+
+## Full server acceptance on9446887c
+
+93579 completed with exit0 on unchanged9446887cf4e8e57744a9123f218b9720e4fd24fb.
+Full Go race passed all packages: root19.196s, game330.065s, loadtest1.020s,
+database1.111s and lifecycle1.023s; remaining packages have no tests. Log
+`/tmp/eidolon-explosive-defense-full-server.log`. This closes this source's full
+server regression gate. Merged/native/four-role/save acceptance remains open;
+the patch is still unpublished and has not been assigned a release version.
