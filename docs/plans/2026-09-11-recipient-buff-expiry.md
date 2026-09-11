@@ -77,3 +77,15 @@ Unreleased note addition: Guardian Roar and Time Warp also expire properly on
 friendly NPCs. Full native/save and remaining consumers stay open. Read-only
 next lead: Renewal's tick handler appears player-only despite accepting NPCs;
 reproduce it before changing it, and do not claim this expiry patch fixes it.
+
+## Full regression accepted on31a2f05c
+
+95191 terminated exit0 on unchanged31a2f05cb3da2759cae9e2a672b85a46f438e5dc.
+Full client349suites/4896tests PASS169.442s, lint PASS, and full Go race PASS.
+Exact package timings are retained in
+`/tmp/eidolon-recipient-support-full-server.log`; client/lint logs share the
+`/tmp/eidolon-recipient-support-full-` prefix.
+
+This accepts all five support-buff expiry repairs for local full regression.
+It does not accept the later Renewal-recipient patch or native party/save/phone
+gates. The runtime remains separate from deployed Alpha1.0.62.
