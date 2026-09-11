@@ -511,19 +511,19 @@ export class Wizard extends Actor {
             const cdr = this.stats.cooldownReduction || 0;
             this.cooldowns["Time Warp"] = 90.0 * (1 - cdr);
             
-            const radius = 15.0;
+            const radius = getAbilityAoeRadius('Wizard', skill, this);
             const entities = gameEngine.chunkManager.getActiveEntities();
             
             // Visual
-            this.spawnVisualEffect(gameEngine, this.position, 0xffd700, "ring"); // Gold
+            // Actor's canonical cast presentation owns the trained boundary.
             
             // Apply Buff to Allies
             entities.forEach(entity => {
                 if (entity.isActive && entity.state !== 'DEAD') {
                     // Ally Check
                     if (entity === this || entity.constructor.name === 'Fighter' || entity.constructor.name === 'Rogue' || entity.constructor.name === 'Cleric' || entity.constructor.name === 'Wizard') {
-                        const d = entity.position.distanceTo(this.position);
-                        if (d < radius) {
+                        const d = Math.hypot(entity.position.x - this.position.x, entity.position.z - this.position.z);
+                        if (d <= radius + (entity.radius || 0)) {
                             entity.hasteTimer = 10.0; // 10s duration
                             entity.hasteFactor = 0.5; // +50% Speed/Attack Speed
                             gameEngine.floatingTextManager.spawn("TIME WARP!", entity.position, '#ffd700');
