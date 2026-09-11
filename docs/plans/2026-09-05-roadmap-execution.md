@@ -5,7 +5,47 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 02:36 UTC
+## Current checkpoint — September 11, 02:45 UTC
+
+Previous turn was PROGRESS through terminal interruption evidence and exact
+retry ownership. This turn is PROGRESS: full104browser acceptance completed,
+archived/inspected and reviewed Spin changes integrated into the successor.
+The full original roadmap goal remains active, not complete or blocked.
+
+-60386 TERMINAL0: complete group2 retry40cases, stage wall times layout196.0s,
+  entrances18.7s/effects27.4s/interface49.4s.45200 TERMINAL0: group3's25cases,
+  layout113.1s/entrances19.2s/effects19.4s. Combined with24016's fully completed
+  group1, all12 embedded report stats were parsed:104 expected, zero unexpected,
+  flaky or skipped. Initial24016's143 remains an interruption of unconfirmed
+  cause, not retroactively a successful process. No source changes during runs.
+- Archive `/tmp/eidolon-executioner-current104-proof-zv6zgi` preserves separate
+  reports/results and all three logs; supplied anonymous credential scan0 changed
+  files. Interrupted archive remains separately preserved below. Inspected
+  four-target720p healing roster,390px chat/Forge,360px stash detail and portrait
+  encounter framing. No new clipping observed; physical-phone play and dense
+  Forge copy remain open. Port41981 confirmed clear, no local heavy/browser live.
+- Spin worktree and successor candidate both now clean689b0142, docs-only atop
+  runtime a0cda0ff. Candidate `/tmp/eidolon-browser-cost-current-RxDWen` advanced
+  a378ac3d→689b0142 with reviewed fast-forward. Exact src/server/scripts/tests/
+  index/package/workflow comparison against accepted a0cda0ff is unchanged.
+  Existing party-credit/equipment/Forge/UI/utility changes preserved; Spin's
+  native route joins required-all without removing earlier routes. Workrecord,
+  talent-audit summary and consolidated UNRELEASED notes now record native,
+  fullGo/client/lint/browser acceptance and self-centered Spin behavior.
+- No new version assigned or pushed. Canonical34434837759 freshly checked02:44
+  still queued62dc with five hosted jobs passed; Nightly34433520743 still active.
+  Versioned required-all/canonical/successor remote/live gates remain mandatory.
+  Last independent public check02:32: Alpha1.0.60/df91bb66 on frontend/backend,
+  statusok/databaseready. Rootledger-only NEVER PUSH.
+- Primary8f37e2bd unchanged;120-minute timed four-role native run still due.
+  Previous53491 proved Warden plus four all-four town/resume cycles, not full
+  clear/manualclaims/freshlogin. Avoid starting its long browser gate across
+  imminent canonical predeployQA on the same GPU. Full talent-tree/campaign/
+  balance/phone/1.1–1.10 scope remain open. Production credential rotation still
+  needs affirmative user approval; no secret/process-argument output or service
+  restart authorized by silence. No local gate currently needs polling.
+
+## Previous checkpoint — September 11, 02:36 UTC
 
 Previous turn was VERIFIED WAIT on live24016 plus source verification of the
 requested party-credit policy. This continuation is PROGRESS: the interrupted
