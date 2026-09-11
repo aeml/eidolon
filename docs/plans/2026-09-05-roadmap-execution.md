@@ -5,7 +5,55 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 06:39 UTC
+## Current checkpoint — September 11, 06:53 UTC
+
+Previous goal turn was PROGRESS. This turn is PROGRESS: domain61 deployed with
+public/new-origin and saved-character evidence; wound/expiry repairs committed;
+preceding full-run fixture failures addressed. Full1.1–1.10 stays active.
+
+- Domain61 CI34563572711 passed predeploy, validation, Pages and SSH deployment.
+  At06:46 publicplay/release.json andserver/healthz both reportAlpha1.0.61,
+  exact33c2faf4c3651c057cd77ead2cde7089172a112e; statusok/database ready.
+  HTTP1.1WebSocket with Originhttps://play.eidolonrealms.com returns101 (curl
+  ends at intentional3s observation timeout after upgrade, not a failure403).
+  UnrelatedOriginhttps://unrelated.invalid returns403. New domain is usable.
+  At06:52 actual CI live anonymous/persistent-character QA passed, not merely
+  health or anonymous handshake evidence. Live four-class/remote-animation QA
+  is now ACTIVE; town recovery/Well Rested and sanitized evidence still pending.
+  Do not call the entire CI/live release gate complete yet. Soak34558600459
+  confirmed still active/untouched. No local GPU work competing with live QA.
+-93866 recovered TERMINAL1 on frozen3b9fc8f7: game486.449s failed only jump
+  fixture with omitted health and two old Spirit heal cases expecting no PvP
+  damage. Root31.134/loadtest1.039/database1.177/lifecycle1.040 passed, no race
+  warning/panic.85045b2c adds living jump resources plus dead/zero-health jump
+  negative controls, and exact13/22 hostile Spirit damage with no ally heal.
+  57779 three-repeat focused racePASS5.264s. Full failure retained, not relabeled
+  green; doc2026-09-11-periodic-receiving-defenses.md records exact scope.
+- New `/tmp/eidolon-dot-defense-20260911`, branchwork/dot-defense-20260911,
+  now clean frozend10f72bb (runtime21d36078 plus periodic fixture/doc followup).
+  60706 REDrace0.082s: paid bleed/poison bypass shielding; expired/missing-clock
+  shields still absorb/retain rune history. Two active-shield controls pass.
+  Wound ticks now enter receiver-only resolution with stored budgets, flush
+  reactions outside actor locks, preserve cadence/credit and avoid rerolling
+  outgoing bonuses. Expiry is enforced at impact/exact deadline, ordinary
+  cleanup and Meteor combo consumption. Missing expiry invalidates a shield;
+  positive manually prepared shield fixtures now provide valid deadlines.
+-20981 focused PASSrace15.847s;27747 broader PASS20.937s includes status/phase/
+  death/reward/training;71929 three-repeat PASS3.102s includes changed-source
+  budget independence, partial/reduced/protected ticks, lethal reflected bleed,
+  parallel wounds with real shields and actual ArcaneShield→Meteor unable to
+  consume an expired shield. Logs `/tmp/eidolon-dot-expiry-defense-*`; scope
+  and unreleased notes in2026-09-11-dot-and-shield-expiry.md. These are local,
+  not part of live61. No broad native or combat-balance closure claim.
+- Combined full Go-race77916 ACTIVE on frozend10f72bb, nice10/GOMAXPROCS2,
+  log `/tmp/eidolon-dot-defense-full-server.log`. Recover same handle, not
+  earlier93866; no second local heavy/browser run or source mutation there.
+  Remaining pipeline: raw/inherited wound outgoing/PvP budgets, basic ordering,
+  all thorns/set reflection consumers, explosive PvP hostility, merged/native/
+  saved/encounter acceptance. Remaining phone/campaign/party/casino/versions
+  unchanged. Root ledger must never be pushed.
+
+## Previous checkpoint — September 11, 06:39 UTC
 
 Previous goal turn was PROGRESS. This turn is PROGRESS through periodic/summon
 receiving-defense repairs, a confirmed same-frame corpse-healing fix and full
