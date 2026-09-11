@@ -64,6 +64,7 @@ func (ctx *abilityImpactContext) receiveDamageLocked(attackerID string, target *
 	damage := resolved.damage
 	target.Health -= damage
 	target.LastDamageType = kind
+	resolved.reflection += receivedDamageReflectionLocked(target, damage, now)
 	if resolved.reflection > 0 || resolved.explosion != nil {
 		if ctx.retaliationTargetID != "" {
 			attackerID = ctx.retaliationTargetID

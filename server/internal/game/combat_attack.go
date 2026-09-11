@@ -212,14 +212,9 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 		damage = int(float64(damage) * (1.0 + cloakBonus))
 	}
 
-	// Iron Fortress Thorns rune: reflect 20% damage back to attacker
-	if tgt.Type == TypePlayer && tgt.IronFortressActive && tgt.IronFortressThorns {
-		thornsDamage := damage / 5 // 20%
-		if thornsDamage > 0 {
-			pendingReflectDamage += thornsDamage
-		}
-	}
-
+	// Compute the final outgoing budget once, before receiving defenses.
+	// Shields must see criticals and PvP scaling/caps just like an HP hit does.
+	damage, _ = CalculateFinalDamage(attackerSnapshot, tgt, damage, "physical")
 	actualDamage, shieldReflectDamage := w.mitigateImpactDamageLocked(tgt, damage, time.Now(), false)
 	pendingReflectDamage += shieldReflectDamage
 
@@ -234,7 +229,9 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 		actualDamage = 1
 	}
 
-	actualDamage = applyFinalDamage(attackerSnapshot, tgt, actualDamage, "physical")
+	actualDamage = damageWithinDarkKingPhase(tgt, actualDamage)
+	tgt.Health -= actualDamage
+	tgt.LastDamageType = "physical"
 	pendingReflectDamage += ApplyDamageReflect(attackerSnapshot, tgt, actualDamage)
 	if attackerSnapshot.Type == TypePlayer && tgt.Type == TypeEnemy {
 		addThreatLocked(tgt, attackerSnapshot.ID, float64(actualDamage))
