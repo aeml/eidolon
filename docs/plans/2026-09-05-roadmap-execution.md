@@ -5,7 +5,45 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 22:37 UTC
+## Current checkpoint — September 11, 22:45 UTC
+
+Previous goal turn was PROGRESS. This continuation is PROGRESS: reproduced and
+repaired Teleport Warp's server training/wall defects in a separate worktree
+while preserving the running party source and frozen release candidate.
+
+-25565 confirmedACTIVE this turn, main frozen4f5d0439 unchanged. Four-role
+  native seed-4512227221557722414, generator2/Normal/no fallback. All four joined,
+  ordinary combat and two town recovery/resume loops passed with identical
+  seed/rooms/gold/inventory/quests. Latest heartbeat375.7s, four route traversals,
+  67leader ground steps, alive; no Warden/full-clear/manual/save result yet.
+  Log `/tmp/eidolon-four-role-tank-target-20260911.log`. NEXT poll SAME handle.
+  Only local heavy/browser owner; no competing full/browser before it closes.
+- Candidate hosted CI34654262376 confirmedACTIVE22:44. Client and server jobs
+  SUCCESS, browser3SUCCESS, browser1/2 still running anonymous real-browser
+  smoke. All operate on89d9e145. No restart/cancellation/waiver. Remote master
+  rechecked0231c948; no master push/deployment yet. After all hosted gates pass,
+  recheck master and publish via ordinary push/predeploy/deploy/live gates,
+  coordinating native GPU ownership before self-hosted predeploy begins.
+- New `/tmp/eidolon-teleport-warp-20260911`, branchwork/teleport-warp-training,
+  clean committeda0315eb4 from4f5d0439. Paid-cast89985 TERMINAL1/game1.940s:
+  both rune endpoints ignored WIZ19damage (25not30), WIZ36/38trained annulus,
+  and solid dungeon wall. Untrained/rune-absent/outside/open-door controls pass.
+  Server fix snapshots canonical training once for both bursts, applies existing
+  damage/area benefits and canonical dungeon geometry. Base behavior/cost/range/
+  landing/cooldown preserved. Utility Teleport neither consumes nor borrows
+  SpellFocus. No save/rank reset or new benefit invented for non-damaging spells.
+-22538 TERMINAL0 initialgreen2.270s.27101 TERMINAL0 expanded three-repeat race
+ 43.896s: activeFocus, both-end walls/open doors, overlap exactlytwo hits,
+  friendly/dead/other-instance exclusions, existingTeleport/movement/Focus/impact
+  regressions. Logs `/tmp/eidolon-teleport-warp-{red,green,focused}-20260911.log`.
+  Doc2026-09-11-teleport-warp-training.md explicitly retains missing offline rune
+  behaviors, both-client burst visuals/trained boundaries, additional receiving/
+  death/credit cases, full/native/save/release and wider utilityMastery gates.
+  Not merged into main or63; no claim of completeTeleport/160talent acceptance.
+- Soak remains off. Alpha1.0.62 remains last independently verified live.
+  Full1.1–1.10/earnedpacing/phone/casino scope unchanged. Root MUST NOT PUSH.
+
+## Previous checkpoint — September 11, 22:37 UTC
 
 Previous goal turn was PROGRESS. This continuation is PROGRESS: corrected the
 party tank's pointer acquisition, passed full integration and started native QA.
