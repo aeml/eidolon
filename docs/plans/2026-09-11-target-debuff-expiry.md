@@ -47,14 +47,21 @@ this adds no local outgoing damage calculation or server-authority bypass.
   duration/replication checks. Active/expired vulnerability reaches the player
   view and an earlier snapshot does not alias the mutable entity.
   Logs `/tmp/eidolon-target-debuff-expiry-{green,broad}.log`.
-- Initial client4suites/40tests1.234s plus lint passed. Final client run adds
-  root/healing-penalty once-per-update controls with/without stun; its log is
+- Initial client4suites/40tests1.234s plus lint passed. Final client4suites/
+ 42tests1.246s plus lint PASS adds root/healing-penalty once-per-update controls
+  with/without stun; its log is
   `/tmp/eidolon-target-debuff-offline-final.log`, with full lint in
   `/tmp/eidolon-target-debuff-lint-final.log`.
 
-Full current-source regression is still required, after the existing parent
-Rogue-duration run terminates. Do not overlap another full/heavy/browser run
-or mutate its frozen source. Native observers, saved characters, full four-role
+The parent Rogue-duration run76281 terminated exit1: client346suites/4835tests
+and lint passed, but an old Piercing Throw test had a mark without a deadline.
+That invalid prepared mark expired; its exact damage-bonus assertion failed.
+Follow-upfff67cae replaces it with real paid mark/projectile casts, preserving
+the50% bonus assertion; three race repetitions1.047s passed. Merged the entire
+follow-up, including the failed full-run record, into this branch without
+conflicts. One new combined full regression is required; do not call the failed
+parent run accepted or duplicate full/heavy/browser executions.
+Native observers, saved characters, full four-role
 Verdant/manual turn-ins and earned balancing are not proven by these fixtures.
 
 ## Unreleased patch-note draft
