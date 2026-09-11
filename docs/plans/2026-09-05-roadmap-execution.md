@@ -5,7 +5,50 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 02:16 UTC
+## Current checkpoint — September 11, 02:26 UTC
+
+Previous turn was PROGRESS through Spin native acceptance. This turn is PROGRESS:
+separate bounded party timing is implemented/tested; current Spin full Go/client/
+lint pass and its updated104browser acceptance is underway. Full goal unchanged.
+
+- Primary now clean8f37e2bd, tests/docs-only atop0d3c2249/6f46f9db runtime.
+  Fixed solo40-minute and explicit party120-minute overall harness profiles;
+  outer party test125minutes allows preparation/claims/cleanup. No environment
+  override, no extension after phase changes/rests. Keeps8-minute encounter,
+ 60-second damage-stall,3-minute destination/15-second formation/death/input/
+  room/credit/manualclaim/freshlogin invariants. Recovery80%threshold, gear/stats,
+  server/gameplay untouched. This is automation allowance, not human pacing signoff.
+  Monotonic entry/traversal/combat/recovery/verification totals and input/room/
+  town-return counts emit phase/30s-loop heartbeat/failure-exit records. Final
+  phase can include cleanupRecall; travel includes browser/formation overhead.
+ 22476 unwiredcontractRED1/5/1.158s;95441 PASS110tests/5suites1.562s plusfull
+  lint/single-routediscovery. Logs `/tmp/eidolon-party-timing-{red,focused,lint,
+ discovery}.log`. New fullparty attempt NOTrun. Respect shared-runner browser
+  release work when scheduling this long gate; do not compete with productionQA.
+-75374 TERMINAL0 on frozen Spin a0cda0ff: full Go race root21.131s,
+  game384.704s, remaining packages passed/no race warning.14482 TERMINAL0:
+  full client279suites3952tests142.091s plus full lint. Logs
+ `/tmp/eidolon-executioner-full-{server,client,lint}.log`. Current native85991
+ 24.5s purchase/save/ring proof remains accepted and archived, not missing again.
+-24016 ACTIVE, sole local heavy gate, current104bundled browser regression on
+  frozen a0cda0ff, worktree `/tmp/eidolon-executioner-area-dfzcT7`, web41981.
+  CI-mode/systemChrome/Node24, exactpartition verification and all3groups, one
+  worker and distinct stage outputs. Log
+ `/tmp/eidolon-executioner-current104-browser.log`. Continue exacthandle, preserve
+  artifacts and inspect failed/flaky outcomes. No source edits/newheavy until
+  terminal. Native archive already protects the previous run before report reset.
+- Candidate a378ac3d unchanged, no Spin integration/version/publication yet.
+  After current bundle: record current evidence/integrate reviewed branch, then
+  appropriate versionedrequired-all and canonical/successor release gates, accurate
+  notes/version/remote/live checks. Full primary campaign/party clear and all
+  original1.1–1.10 scope remain open, not hidden by a hotfix pass.
+- CanonicalCI34434837759 rechecked~02:22stillqueued62dc; Nightly34433520743
+  checked~02:24stillin_progress. No push/cancel/relabel/service mutation.
+  Production credential rotation approval unanswered; do not emit process args
+  or secrets, rotate or restart without affirmative authority. Rootledger-only
+  NEVER PUSH. Goal active, neither complete nor blocked.
+
+## Previous checkpoint — September 11, 02:16 UTC
 
 Previous turn was VERIFIED WAIT. This turn is PROGRESS: preserved the terminal
 party timeout, completed native Spin acceptance and started its full regression.
