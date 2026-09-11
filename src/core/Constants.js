@@ -444,6 +444,7 @@ export const CONSTANTS = {
             );
 
             return entries.slice(0, 40).map((t, i) => ({ id: `WIZ_${String(i + 1).padStart(2, '0')}`, ...t,
+                abilityDamage: i === 18 ? { skill: 'Teleport', damage: 0.04 } : undefined,
                 ...(i === 20 ? { desc: '+4% Arcane Shield damage absorption per rank (20% max).' } : {}),
                 shieldTraining: i === 20 ? { absorption: 0.04 } : i === 31 ? { duration: 0.05 }
                     : i === 33 ? { duration: 0.04 } : undefined,
