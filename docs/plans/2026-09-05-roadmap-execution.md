@@ -5,7 +5,52 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 02:45 UTC
+## Current checkpoint — September 11, 02:54 UTC
+
+Previous turn was PROGRESS through accepted Spin integration. This turn is
+PROGRESS: current fixes are now merged into expanded primary progression in a
+separate worktree, with conflict-sensitive tests passing and full Go underway.
+Full original roadmap goal active; no completion, blocker or deployment claim.
+
+- New clean ee1da4b4 in `/tmp/eidolon-primary-current-1YoZU4`, branch
+ `work/primary-current-20260911`, merges primary8f37e2bd and successor689b0142.
+  Original primary and successor remain unchanged.26 conflicts resolved through
+  explicit per-file review; no branch-wide ours/theirs replacement. Preserved
+  expanded Chronicle/hunts/investigations/reward budgets/crystal repair and
+  Dark King phase caps, strict ground movement, healer/body-aware party tactics,
+ 120-minute profile and exact stronger earned/initial-stash fixtures.
+  Actual aura batching/socket/equipment/Forge/ability fixes now join primary.
+  No measured performance gain claimed from the earlier15FPS single screenshot.
+- Required-all retains timed fail-fast commands and expanded story readiness,
+  adds Roar/Spin/socket checks and both phone/desktop support, with Well Rested
+  transitions inside its helper. Shared browser runner includes the primary's
+  crystal-art stage. Inherited Alpha1.0.60 metadata is consistent, not a new
+  published primary release. Docker identity remains after dependency layers.
+  Full decisions/evidence in new `2026-09-11-primary-current-integration.md`;
+  successor provenance doc is explicitly labeled as separate-source evidence.
+-48039 TERMINAL0:96tests/11suites5.885s plus full lint.3282 TERMINAL0:
+ 292tests/3suites2.359s, then exact116-case browser discovery with no omissions/
+  duplicates (includes10crystal-art cases and primary-specific anonymous cases).
+  Discovery is NOT browser execution.72528 TERMINAL0 focused server race24.645s:
+  party/receipts/explosion locks, Spin/Roar/Purifying area consumers and Dark King
+  phase/actual-damage-path checks. Logs `/tmp/eidolon-primary-current-{focused,
+ lint,sequence,discovery,server-focused}.log`.
+-59375 ACTIVE, only local heavy gate: full `go test -race ./...` on frozen
+  ee1da4b4, cwd new integration/server, log
+ `/tmp/eidolon-primary-current-full-server.log`. Poll exacthandle; no source
+  changes/newheavy until terminal. Then full client/lint in a separate handle
+  (avoid a single oversized combined invocation),116browser/native appropriate
+  checks before advancing original primary. Native vendor preparation also due
+  in this new tree. Its node_modules links the accepted successor dependencies.
+-02:53 canonical34434837759 remains queued62dc; Nightly34433520743 remains
+  in_progress. No push/cancel/relabel/runner mutation. Last public check02:32
+  healthy Alpha1.0.60/df91bb66. Do not run a120-minute party browser route across
+  upcoming canonical predeploy on the same GPU. Full native party/campaign and
+  original milestones still open; candidate689b0142 still needs ordered
+  versioned required-all/canonical/successor/live gates. Root ledger-only NEVER
+  PUSH. Production credential rotation still awaits affirmative user approval.
+
+## Previous checkpoint — September 11, 02:45 UTC
 
 Previous turn was PROGRESS through terminal interruption evidence and exact
 retry ownership. This turn is PROGRESS: full104browser acceptance completed,
