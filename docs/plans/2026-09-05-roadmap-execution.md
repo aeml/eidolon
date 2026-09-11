@@ -5,7 +5,27 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 02:00 UTC
+## Current checkpoint — September 11, 02:07 UTC
+
+Previous turn was VERIFIED WAIT; this turn remains VERIFIED WAIT on the same
+53491, exact45s poll confirmedlive02:06:43. No restart, source change or extra
+heavy gate. Latest log is still fourth completed all-four recovery/resume; no
+Matron or fullclear claim. A read-only saved-state snapshot after that town
+return shows all four alive/full984Gold and back along the dungeon route
+(Fighter19888.50/19554.98), corroborating continued travel, not a dead test.
+
+Inspected this run's saved desktop-party-healing.png: four health/role rows and
+selected healing target are readable above chat. The single startup screenshot
+shows15FPS/68.3ms with four browsers, not a performance benchmark or candidate
+sign-off. Primary still differs from candidate's ProceduralStatusEffects/aura
+batching; do not ascribe that old-source frame to the changed release candidate.
+Do not edit primary while53491runs. Candidate a378ac3d and Spin a0cda0ff remain
+unchanged; Spin's prepared native gate is next after terminal evidence archive.
+No new remote check since01:58:44; credential rotation approval unanswered.
+Root ledger-only NEVER PUSH, original full goal active and all remaining gates
+open. No product/release change claimed for this verified waiting interval.
+
+## Previous checkpoint — September 11, 02:00 UTC
 
 This continuation is another VERIFIED WAIT:53491 confirmedlive through an exact
 45-second poll ending02:00:30. Fourth all-four recovery/resume completed with
