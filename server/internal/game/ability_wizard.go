@@ -853,12 +853,17 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			if dist <= maxRange {
 				player.Mana -= cost
 				oldX, oldZ := player.X, player.Z
+				// Snapshot the rune's training once for both bursts. Teleport is
+				// a utility cast: preserve Spell Focus without borrowing its boost.
+				training := snapshotCombatAttackerLocked(player)
+				training.NormalizeTalentRanks()
+				warpDamage := int(math.Floor(float64(15+player.Stats.Intelligence)*(1+training.GetSkillBonus(skillName).SkillDamage) + 1e-9))
+				warpRadius := effectiveAbilityAreaRadius(training, skillName, 4.0)
+				effectiveWarpRadius := expandedAbilityRadius(skillName, warpRadius)
+				walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 
 				// Warp rune: damage enemies at start location
 				if runeID == "teleport_warp" {
-					warpDamage := 15 + player.Stats.Intelligence
-					warpRadius := 4.0
-					effectiveWarpRadius := expandedAbilityRadius(skillName, warpRadius)
 					startNearby := w.Grid.Nearby(oldX, oldZ, effectiveWarpRadius, player.InstanceID)
 					for _, target := range startNearby {
 						target.Mu.RLock()
@@ -868,7 +873,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 						}
 						target.Mu.RUnlock()
 
-						if withinAbilityRadius(skillName, oldX, oldZ, target, warpRadius) {
+						if withinDungeonAbilityRadius(walkRects, skillName, oldX, oldZ, target, warpRadius) {
 							target.Mu.Lock()
 							finalDamage := impacts.damage(player, target, warpDamage, "arcane", skillName)
 							addThreatLocked(target, player.ID, float64(finalDamage))
@@ -904,9 +909,6 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 				// Warp rune: damage enemies at end location
 				if runeID == "teleport_warp" {
-					warpDamage := 15 + player.Stats.Intelligence
-					warpRadius := 4.0
-					effectiveWarpRadius := expandedAbilityRadius(skillName, warpRadius)
 					endNearby := w.Grid.Nearby(targetX, targetZ, effectiveWarpRadius, player.InstanceID)
 					for _, target := range endNearby {
 						target.Mu.RLock()
@@ -916,7 +918,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 						}
 						target.Mu.RUnlock()
 
-						if withinAbilityRadius(skillName, targetX, targetZ, target, warpRadius) {
+						if withinDungeonAbilityRadius(walkRects, skillName, targetX, targetZ, target, warpRadius) {
 							target.Mu.Lock()
 							finalDamage := impacts.damage(player, target, warpDamage, "arcane", skillName)
 							addThreatLocked(target, player.ID, float64(finalDamage))
