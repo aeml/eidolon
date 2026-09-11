@@ -41,12 +41,21 @@ prior Fighter effect/party-duration matrix, Charge overlap, directional dungeon
 attacks and enemy stun lifecycle. Logs:
 `/tmp/eidolon-shieldslam-overlap-{red,green}.log`.
 
+## Full preceding-source regression
+
+Run65944 completed successfully on frozen2b733533 (runtime825f9b0c):
+340 client suites /4771 tests in211.89s and full lint passed. Full Go race
+passed: root29.372s, game504.379s, loadtest1.026s, database1.122s and
+lifecycle1.039s. Logs `/tmp/eidolon-fighter-rune-full-{client,lint,server}.log`.
+This accepts the combined Fighter changes at that exact source, not the later
+ability-defense migration. It does not establish native visuals, saved training
+or completed class/encounter balance.
+
 ## Remaining scope
 
-Full merged client/server regression, native Fortify presentation/absorption and
-saved training are still needed. Other Fighter buffs/runes/party/combo parity
-remain open. Do not treat full run65176 on precedingf2c1f468 as acceptance of
-this new source.
+Native Fortify presentation/absorption and saved training are still needed.
+Other Fighter buffs/runes/party/combo parity remain open. Run65944, not the
+preceding65176 onf2c1f468, is the full regression for this source.
 
 Separate source-audit question: server applyFinalDamage directly subtracts its
 outgoing calculation, whereas basic attacks have receiver-side shielding logic.
