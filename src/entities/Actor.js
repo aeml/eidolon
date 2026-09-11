@@ -949,6 +949,23 @@ export class Actor extends Entity {
         updateOfflineHealingLight(this, dt);
         updateOfflineDamageOverTime(this, dt);
 
+        // These Wizard effects keep expiring while stun suppresses actions.
+        // Replicas advance display timers without recalculating server stats.
+        if (this.hasteTimer > 0) {
+            this.hasteTimer = Math.max(0, this.hasteTimer - dt);
+            if (this.hasteTimer <= 0) {
+                this.hasteFactor = 0;
+                if (!this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) this.recalculateStats();
+            }
+        }
+        if (this.spellFocusTimer > 0) {
+            this.spellFocusTimer = Math.max(0, this.spellFocusTimer - dt);
+            if (this.spellFocusTimer <= 0 && !this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) {
+                this.spellFocusActive = false;
+                this.spellFocusMultiplier = 1;
+            }
+        }
+
         // Stun Logic
         if (this.stunTimer > 0) {
             this.stunTimer -= dt;
@@ -1060,25 +1077,6 @@ export class Actor extends Entity {
             this.frozenTimer = Math.max(0, this.frozenTimer - dt);
         }
         
-        if (this.hasteTimer > 0) {
-            this.hasteTimer = Math.max(0, this.hasteTimer - dt);
-            if (this.hasteTimer <= 0) {
-                this.hasteFactor = 0;
-                if (!this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) this.recalculateStats();
-            }
-        }
-
-        if (this.spellFocusTimer > 0) {
-            this.spellFocusTimer -= dt;
-            if (this.spellFocusTimer <= 0) {
-                this.spellFocusTimer = 0;
-                if (!this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) {
-                    this.spellFocusActive = false;
-                    this.spellFocusMultiplier = 1;
-                }
-            }
-        }
-
         if (this.arcaneShieldTimer > 0) {
             this.arcaneShieldTimer -= dt;
             if (this.arcaneShieldTimer <= 0) {
