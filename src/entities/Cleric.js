@@ -12,6 +12,7 @@ import { clipDungeonEffectSegment } from '../skills/dungeonEffectGeometry.js';
 import {applyOfflineHealingLight,applyOfflineRadiantStrike,resolveOfflineClericHealTarget} from './ClericAreaAbilities.js';
 import { AvengingSeraph } from './AvengingSeraph.js';
 import { configureOfflineSeraph, dismissOfflineSeraph } from './SeraphSummon.js';
+import { getClericEffectDuration } from '../skills/clericEffectDuration.js';
 
 export class Cleric extends Actor {
     constructor(id) {
@@ -65,7 +66,7 @@ export class Cleric extends Actor {
             console.log("Cleric used Guardian Embrace!");
             
             this.guardianEmbraceActive = true;
-            this.guardianEmbraceTimer = 10.0;
+            this.guardianEmbraceTimer = getClericEffectDuration(this, skill, 10);
             this.guardianEmbraceRadius = getAbilityAoeRadius('Cleric', skill, this);
             this.embraceTickTimer = 1; // The server's first eligible update pulses immediately.
             
@@ -119,7 +120,7 @@ export class Cleric extends Actor {
             if (!target) target = this;
 
             target.divineInterventionActive = true;
-            target.divineInterventionTimer = 10.0;
+            target.divineInterventionTimer = getClericEffectDuration(this, skill, 10);
             gameEngine.floatingTextManager.spawn("DIVINE PROTECTION", target.position, '#ffd700');
             this.spawnVisualEffect(gameEngine, target.position, 0xffd700, "pillar");
             return;
@@ -144,7 +145,7 @@ export class Cleric extends Actor {
             (gameEngine.effectScene || gameEngine.scene)?.add(visual);
             this.consecratedZone = {
                 position: this.position.clone(),
-                duration: this.skillRunes?.[skill] === 'consecratedground_lingering' ? 16 : 8,
+                duration: getClericEffectDuration(this, skill, this.skillRunes?.[skill] === 'consecratedground_lingering' ? 16 : 8),
                 radius, visual, elapsed: 0, tickTimer: 1,
                 damage: 20 + this.stats.wisdom
             };
@@ -155,7 +156,7 @@ export class Cleric extends Actor {
             console.log("Cleric used Spirit Guardians Boost!");
 
             this.spiritsActive = true;
-            this.spiritDuration = 10.0;
+            this.spiritDuration = getClericEffectDuration(this, skill, 10);
             this.spiritBoosted = true; // Enable boost
             this.spiritRadius = getAbilityAoeRadius('Cleric', skill, this);
             this.spiritRune = this.skillRunes?.['Spirit Guardians'] || '';
@@ -191,11 +192,11 @@ export class Cleric extends Actor {
                     : !['Fighter', 'Rogue', 'Wizard', 'Cleric', 'AvengingSeraph'].includes(entity.constructor.name));
                 if (hostile || Math.hypot(this.position.x - entity.position.x, this.position.z - entity.position.z) > radius + (entity.radius || 0)) continue;
                 if (skill === 'Blessing of Resolve') {
-                    entity.blessingResolveTimer = 20;
+                    entity.blessingResolveTimer = getClericEffectDuration(this, skill, 20);
                     entity.blessingResolveReduction = 0.25;
                     gameEngine.floatingTextManager.spawn('DEFENSE UP!', entity.position, '#0000ff');
                 } else {
-                    entity.blessingZealTimer = 8;
+                    entity.blessingZealTimer = getClericEffectDuration(this, skill, 8);
                     entity.blessingZealFactor = 0.35;
                     gameEngine.floatingTextManager.spawn('ZEAL!', entity.position, '#ff0000');
                 }
@@ -229,7 +230,7 @@ export class Cleric extends Actor {
             });
 
             if (target) {
-                target.markWeaknessTimer = 10.0;
+                target.markWeaknessTimer = getClericEffectDuration(this, skill, 10);
                 target.markWeaknessFactor = 0.20; // 20% more damage taken
                 gameEngine.floatingTextManager.spawn("MARKED!", target.position, '#800080');
                 this.spawnVisualEffect(gameEngine, target.position, 0x800080, "pillar");
@@ -257,10 +258,10 @@ export class Cleric extends Actor {
                             applyOfflineAbilityHit(this, entity, this.stats.wisdom * 3, skill, gameEngine.floatingTextManager, '#ffff00');
                             // Stun
                             if (entity.stunTimer !== undefined && !entity.ccImmune) {
-                                entity.stunTimer = 3.0;
+                                entity.stunTimer = getClericEffectDuration(this, skill, 3);
                             }
                             // Debuff
-                            entity.markWeaknessTimer = 5.0;
+                            entity.markWeaknessTimer = getClericEffectDuration(this, skill, 5);
                             entity.markWeaknessFactor = 0.50; // 50% more damage taken!
                             
                             gameEngine.floatingTextManager.spawn(entity.ccImmune ? 'WEAKENED!' : 'STUNNED!', entity.position, '#ffffff');
@@ -276,7 +277,7 @@ export class Cleric extends Actor {
             console.log("Cleric used Spirit Guardians!");
             
             this.spiritsActive = true;
-            this.spiritDuration = 8.0;
+            this.spiritDuration = getClericEffectDuration(this, 'Spirit Guardians', 8);
             this.spiritBoosted = false; // Normal mode
             this.spiritRadius = getAbilityAoeRadius('Cleric', 'Spirit Guardians', this);
             this.spiritRune = this.skillRunes?.['Spirit Guardians'] || '';

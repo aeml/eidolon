@@ -483,20 +483,23 @@ export const CONSTANTS = {
                 { name: "Efficient Rites", desc: "-4% mana cost per rank (20% max).", maxRank: 5 },
                 { name: "Rites of Haste", desc: "+2% global CDR per rank (10% max).", maxRank: 5 },
                 { name: "Mercy Routine", desc: "+3% spell healing per rank (15% max).", maxRank: 5 },
-                { name: "Sanctuary Practice", desc: "+3% shield/absorb effectiveness per rank (15% max).", maxRank: 5 },
+                { name: "Sanctuary Practice", desc: "+4% ability-effect duration per rank (20% max).", maxRank: 5 },
                 { name: "Radiant Doctrine", desc: "+3% holy damage per rank (15% max).", maxRank: 5 },
                 { name: "Cleanse Discipline", desc: "-5% Purifying Wave cooldown per rank (25% max).", maxRank: 5 },
-                { name: "Chorus of Faith", desc: "+2% party buff duration per rank (10% max).", maxRank: 5 },
+                { name: "Chorus of Faith", desc: "+3% ability-effect duration per rank (15% max).", maxRank: 5 },
                 { name: "Battlefield Ministry", desc: "+3% AoE heal radius per rank (15% max).", maxRank: 5 },
                 { name: "Warden's Instinct", desc: "+2% damage reduction per rank (10% max).", maxRank: 5 },
                 { name: "Blessed Footwork", desc: "+2% movement speed per rank (10% max).", maxRank: 5 },
                 { name: "Hymncraft", desc: "+2% HoT effectiveness per rank (10% max).", maxRank: 5 },
                 { name: "Pilgrim Patience", desc: "+3% mana regen per rank (15% max).", maxRank: 5 },
-                { name: "Mercy Doctrine", desc: "+2% spell healing per rank (10% max).", maxRank: 5 },
+                { name: "Mercy Doctrine", desc: "+2% spell healing and ability-effect duration per rank (10% each max).", maxRank: 5 },
                 { name: "Ritekeeper", desc: "+1% all healing/damage per rank (5% max).", maxRank: 5 },
             );
 
             return entries.slice(0, 40).map((t, i) => ({ id: `CLR_${String(i + 1).padStart(2, '0')}`, ...t,
+                ...(i < 26 && i % 2 === 1 ? { desc: `+3% ${skills[Math.floor(i / 2)]} CDR and +2% timed-effect duration per rank (15% / 10% max).` } : {}),
+                abilityDuration: i < 26 && i % 2 === 1 ? { skill: skills[Math.floor(i / 2)], duration: 0.02 }
+                    : i === 29 ? { duration: 0.04 } : i === 32 ? { duration: 0.03 } : i === 38 ? { duration: 0.02 } : undefined,
                 summonTraining: i === 16 ? { damage: 0.04 } : i === 17 ? { duration: 0.02 }
                     : i === 29 ? { duration: 0.04 } : i === 32 ? { duration: 0.03 } : i === 38 ? { duration: 0.02 } : undefined,
                 ...(i === 17 ? { desc: '+3% Avenging Seraph CDR and +2% summon duration per rank (15% / 10% max).' } : {}),

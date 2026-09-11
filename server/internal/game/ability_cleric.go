@@ -43,7 +43,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				primaryTarget = player
 			}
 
-			protectionEnd := time.Now().Add(10 * time.Second)
+			protectionEnd := time.Now().Add(resolveAbilityEffectDuration(player, skillName, 10*time.Second))
 			applyIntervention := func(target *Entity) int {
 				target.DivineInterventionActive = true
 				target.DivineInterventionEndTime = protectionEnd
@@ -55,7 +55,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				}
 				if runeID == "divineintervention_guardian" {
 					target.DivineInterventionGuardian = true
-					target.DivineInterventionGuardTime = time.Now().Add(5 * time.Second)
+					target.DivineInterventionGuardTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 5*time.Second))
 				}
 				return target.Health - previousHealth
 			}
@@ -116,12 +116,12 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			player.Mana -= cost
 			player.GuardianEmbraceActive = true
 			player.GuardianEmbraceRadius = effectiveAbilityAreaRadius(player, skillName, 10)
-			player.GuardianEmbraceEndTime = time.Now().Add(10 * time.Second)
+			player.GuardianEmbraceEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 10*time.Second))
 
 			// Combo: Sanctuary (Consecrated Ground → Guardian Embrace) = Damage immunity
 			if player.ActiveCombo == "ground_damage_immunity" {
 				// Grant brief damage immunity (3s)
-				player.InvulnerableEndTime = time.Now().Add(3 * time.Second)
+				player.InvulnerableEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 3*time.Second))
 				player.ActiveCombo = "" // Consume combo
 			}
 
@@ -179,7 +179,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			// Spirit Guardians rune instead of depending on an earlier base cast.
 			player.SpiritGuardiansRuneID = player.GetRuneForSkill("Spirit Guardians")
 			player.SpiritRadius = effectiveAbilityAreaRadius(player, skillName, spiritGuardiansRadius(true, player.SpiritGuardiansRuneID))
-			player.SpiritEndTime = time.Now().Add(consumePersistentDuration(player, 10*time.Second))
+			player.SpiritEndTime = time.Now().Add(consumePersistentDuration(player, resolveAbilityEffectDuration(player, skillName, 10*time.Second)))
 			// Boost logic would be in updateEntity where spirits do damage
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 20*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, player.X, player.Z, AbilityShape{Radius: player.SpiritRadius, Arc: 2 * math.Pi})
@@ -262,7 +262,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			addThreatLocked(target, player.ID, float64(finalDamage))
 			if !target.CCImmune {
 				target.Stunned = true
-				target.StunEndTime = time.Now().Add(2 * time.Second)
+				target.StunEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 2*time.Second))
 			}
 
 			w.fireDamageEvent(player, target.ID, finalDamage, "holy", player.InstanceID)
@@ -279,7 +279,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 		cost := resolveAbilityManaCost(player, skillName, 35)
 		if player.Mana >= cost {
 			player.Mana -= cost
-			endTime := time.Now().Add(20 * time.Second)
+			endTime := time.Now().Add(resolveAbilityEffectDuration(player, skillName, 20*time.Second))
 			radius := effectiveAbilityAreaRadius(player, skillName, 10)
 			for _, target := range w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID) {
 				target.Mu.Lock()
@@ -300,7 +300,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			player.Mana -= cost
 			player.SpiritsActive = true
 			player.SpiritsBoosted = false
-			player.SpiritEndTime = time.Now().Add(consumePersistentDuration(player, 8*time.Second))
+			player.SpiritEndTime = time.Now().Add(consumePersistentDuration(player, resolveAbilityEffectDuration(player, skillName, 8*time.Second)))
 			player.State = "ATTACKING"
 
 			// Spirit Guardians Rune Effects
@@ -436,7 +436,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 
 				// healinglight_renewal: Adds HoT for 5s (20% of initial heal)
 				if runeID == "healinglight_renewal" {
-					hotAmount := healAmount / 25 // Five ticks total 20% of the initial heal.
+					hotAmount := healAmount / 25 // Base five ticks total 20%; duration training adds whole ticks.
 					if hotAmount < 1 {
 						hotAmount = 1
 					}
@@ -444,8 +444,9 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 					target.HealingLightHoTActive = true
 					target.HealingLightHoTAmount = hotAmount
 					target.HealingLightHoTSourceID = player.ID
-					target.HealingLightHoTTicksRemaining = 5
-					target.HealingLightHoTEndTime = time.Now().Add(5 * time.Second)
+					duration := resolveAbilityEffectDuration(player, skillName, 5*time.Second)
+					target.HealingLightHoTTicksRemaining = int(duration / time.Second)
+					target.HealingLightHoTEndTime = time.Now().Add(duration)
 					target.LastHealingLightHoTTick = time.Now()
 					target.Mu.Unlock()
 				}
@@ -553,7 +554,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 						// radiantstrike_chains: Roots target for 2s
 						if runeID == "radiantstrike_chains" && !target.CCImmune {
 							target.Rooted = true
-							target.RootEndTime = time.Now().Add(2 * time.Second)
+							target.RootEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 2*time.Second))
 						}
 
 						// radiantstrike_purge: Removes 1 buff from target
@@ -630,11 +631,11 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 					addThreatLocked(target, player.ID, float64(finalDamage))
 					if !target.CCImmune {
 						target.Stunned = true
-						target.StunEndTime = time.Now().Add(3 * time.Second)
+						target.StunEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 3*time.Second))
 					}
 					target.MarkWeakness = true
 					target.MarkWeaknessFactor = 0.50
-					target.MarkWeaknessEndTime = time.Now().Add(5 * time.Second)
+					target.MarkWeaknessEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 5*time.Second))
 					isDead := target.Health <= 0
 					target.Mu.Unlock()
 
@@ -688,9 +689,9 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 
 			// consecratedground_lingering: +100% duration (8s -> 16s)
 			if runeID == "consecratedground_lingering" {
-				zone.ConsecratedGroundEndTime = time.Now().Add(16 * time.Second)
+				zone.ConsecratedGroundEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 16*time.Second))
 			} else {
-				zone.ConsecratedGroundEndTime = time.Now().Add(8 * time.Second)
+				zone.ConsecratedGroundEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 8*time.Second))
 			}
 
 			w.Entities[zone.ID] = zone
@@ -704,6 +705,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 		cost := resolveAbilityManaCost(player, skillName, 35)
 		if player.Mana >= cost {
 			player.Mana -= cost
+			endTime := time.Now().Add(resolveAbilityEffectDuration(player, skillName, 8*time.Second))
 
 			radius := effectiveAbilityAreaRadius(player, skillName, 10)
 			nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID)
@@ -711,7 +713,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				target.Mu.Lock()
 				if (target.Type == TypePlayer || target.Type == TypeNPC) && w.CombatRelationship(player, target) != RelationshipHostile && target.State != "DEAD" && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
 					target.ZealActive = true
-					target.ZealEndTime = time.Now().Add(8 * time.Second)
+					target.ZealEndTime = endTime
 					target.RecalculateStats()
 				}
 				target.Mu.Unlock()
@@ -755,7 +757,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			targetID, targetX, targetZ = target.ID, target.X, target.Z
 			target.MarkWeakness = true
 			target.MarkWeaknessFactor = 0.20
-			target.MarkWeaknessEndTime = time.Now().Add(10 * time.Second)
+			target.MarkWeaknessEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 10*time.Second))
 			target.Mu.Unlock()
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 20*time.Second))

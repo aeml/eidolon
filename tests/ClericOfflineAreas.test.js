@@ -132,7 +132,8 @@ test.each(['radiantstrike_smite','radiantstrike_chains','radiantstrike_purge'])(
     p.useAbility(target.position,engine,'Radiant Strike');
     expect(target.takeDamage).toHaveBeenCalledWith(rune==='radiantstrike_smite'?126:84,p);
     expect(p.cooldowns['Radiant Strike']).toBeCloseTo(4*(1-p.stats.cooldownReduction)*.85);
-    expect(target.rootTimer).toBe(rune==='radiantstrike_chains'?2:0);expect(immune.rootTimer).toBe(0);
+    // Five CLR_12 Technique ranks extend the two-second rune root by10%.
+    expect(target.rootTimer).toBe(rune==='radiantstrike_chains'?2.2:0);expect(immune.rootTimer).toBe(0);
     expect(target.blessingZealTimer).toBe(rune==='radiantstrike_purge'?0:5);
     expect(target.shieldHP).toBe(200); // Purge removes only the first buff.
 });

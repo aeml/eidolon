@@ -4,6 +4,7 @@ import {Actor} from './Actor.js';
 import {getAbilityAoeRadius} from '../skills/abilityRadii.js';
 import {clipDungeonEffectSegment} from '../skills/dungeonEffectGeometry.js';
 import {applyOfflineHealing,getAbilityHealingAmount} from '../core/AbilityHealing.js';
+import { getClericEffectDuration } from '../skills/clericEffectDuration.js';
 
 const playerClasses = new Set(['Fighter','Rogue','Wizard','Cleric','AvengingSeraph']);
 const alive = entity => entity instanceof Actor && entity.isActive && entity.state !== 'DEAD' && !entity.isRemote && !entity.isMultiplayer;
@@ -44,7 +45,8 @@ export function applyOfflineHealingLight(source,target,engine) {
     if (source.healingLightMassRevival) return;
     const rune = source.skillRunes?.['Healing Light'];
     if (rune === 'healinglight_renewal') {
-        target.healingLightRenewal = {amount:Math.max(1,Math.floor(amount/25)),elapsed:0,ticks:5,floatingTextManager:engine?.floatingTextManager};
+        target.healingLightRenewal = {amount:Math.max(1,Math.floor(amount/25)),elapsed:0,
+            ticks:Math.floor(getClericEffectDuration(source,'Healing Light',5)),floatingTextManager:engine?.floatingTextManager};
     } else if (rune === 'healinglight_divine') {
         if (target.stunTimer > 0) target.stunTimer = 0;
         else if (target.rootTimer > 0) target.rootTimer = 0;
@@ -82,7 +84,7 @@ export function applyOfflineRadiantStrike(source,aim,engine,holyFury = false) {
         const actual = Math.max(0,before-target.stats.hp);
         totalDamage += actual;
         if (actual > 0) engine?.floatingTextManager?.spawn(Math.floor(actual),target.position,'#ffff00');
-        if (rune === 'radiantstrike_chains' && !target.ccImmune) target.rootTimer = 2;
+        if (rune === 'radiantstrike_chains' && !target.ccImmune) target.rootTimer = getClericEffectDuration(source,'Radiant Strike',2);
         if (rune === 'radiantstrike_purge') {
             if (target.blessingZealTimer > 0) { target.blessingZealTimer = 0; target.blessingZealFactor = 0; }
             else if (target.shieldHP > 0) { target.shieldHP = 0; target.arcaneShieldTimer = 0; }
