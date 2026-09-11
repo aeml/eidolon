@@ -5,7 +5,48 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 03:54 UTC
+## Current checkpoint — September 11, 03:59 UTC
+
+Previous turn was PROGRESS through integration/wire proof with a verified full
+server wait. This turn is PROGRESS: preserved full failure, fixed the noncombat
+test fixture, reproduced/repaired the missed impact-time stun gate, and started
+the combined full rerun. Full original goal remains active, not complete/blocked.
+
+-42912 TERMINAL1: root52.185s/loadtest1.027/database2.638/lifecycle1.032 passed;
+  game445.696s failed only TestPassiveRegenerationUsesRealWorldTick, hp49/mana51
+  instead51/51. No race warning. Existing fixture clears hazards but shares the
+  populated overworld instance; health loss is consistent with unrelated enemy
+  damage, not discarded fractional regeneration (the exact failed attacker was
+  not recorded). Do not attribute this to the stun patch without evidence.
+ 4df2efe5 isolates the fixture in a separate nonsafe scene, keeps actualWorld.Update
+  and rate assertions, explicitly counts unexpected damage events and closes
+  background callbacks.51979 PASSrace5consecutive runs/game10.137s. No runtime
+  regeneration/townheal/WellRested behavior changed. Original full failure retained
+  `/tmp/eidolon-stun-current-full-server.log`; repeatedfixtureproof
+  `/tmp/eidolon-regeneration-isolated-repeat.log`.
+- Separate84336 reproduced impact bug TERMINAL1/game0.156: ordinary enemy
+  wind-up accepted, actual paidShieldSlam appliesstun, actual post-delay path
+  stilldamagesplayer. Expired-stun positive control passed. a04e6fcc checks
+  Stunned under attacker lock at impact before bonus consumption/snapshot;
+  does not remove already-launched projectiles or rewrite bossabilities/immunity.
+  Not a generalcancel-generation system: a swing impacting after stun expires
+  remains permitted.30832 PASSfocusedrace5.403s incl lifecycle/DOT/Seraphcleanup/
+  immunity/exclusions/enemyreach/playercadence. Logs
+ `/tmp/eidolon-stun-impact-{red,green}.log`. Repairbranch nowa04e6fcc clean.
+- Current lifecyclebranch now clean frozen7c6cf6b2, with fixture4df2efe5,
+  wire09e43bde and impact7c6cf6b2 carried in. Still excludes unfinished714 talent
+  scaling/copy. Newfullserver16462 ACTIVE, nice10/GOMAXPROCS2/go test-race-p1./...,
+  log `/tmp/eidolon-stun-current-full-server-final.log`, cwd
+ `/tmp/eidolon-stun-lifecycle-current-20260911/server`. Only localheavyCPU;
+  no localbrowser. Do not modify this source or assume PASS until terminal.
+  Prior partial fullsource60c84422 is not evidence for the added impactfix.
+- Canonical34434837759 remainsin_progress onChrome at disposablefull-character
+  gameplay. Nightly34558600459 remainsin_progress on dedicatedsoakrunner.
+  No newproductionpublication/identity acceptance, no cancellation/restart. Keep
+  nativeGPU free. Wire/full/balance/native four-role/release gates retain their
+  actual scope. RootNEVERPUSH; DBrotationapprovalunanswered.
+
+## Previous checkpoint — September 11, 03:54 UTC
 
 Previous turn was PROGRESS (actual split queues and independent local stun
 repairs). This turn is PROGRESS: current-source integration, full server race
