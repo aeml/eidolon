@@ -82,3 +82,12 @@ derived bleeds and burns from multiplying already-critical hits a second time.
 Still required: status duration/copy consistency, remaining non-damaging and
 Serrated Technique semantics, native feedback/save coverage, full four-role
 Verdant acceptance, earned pacing, physical phones and later roadmap stages.
+
+## Full regression accepted on98b6cb8e
+
+43582 recovered terminal exit0 on unchanged98b6cb8e659cadc06dd608277fed39701c7cf89c.
+Full client345suites/4813tests passed151.385s; full lint passed. Go race passed
+root23.380s, game366.028s, loadtest1.021s, database1.092s and lifecycle1.027s.
+Logs `/tmp/eidolon-raw-wound-full-{client,lint,server}.log`. This accepts the
+raw-wound regression stage, not native/save/party or later duration changes.
+The source remains unpublished and separate from62's active release pipeline.
