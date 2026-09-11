@@ -13,6 +13,20 @@ export function partyFollowStep(state, anchor, spacing = 4) {
 
 export const PARTY_FOLLOW_INPUT_OPTIONS = Object.freeze({ moveOnly: true, allowJumpFallback: false });
 
+// A visibility-graph detour can be only just over one unit long. Actual walking
+// stops near that waypoint, not necessarily after one full unit of displacement.
+// This proves only the issued segment; gatherPartyFormation still checks every
+// member against the leader's unchanged five-unit formation boundary.
+export function partyFormationArrival(origin, step, instanceId) {
+    if (![origin?.x, origin?.z, step?.dx, step?.dz].every(Number.isFinite) ||
+        Math.hypot(step.dx, step.dz) <= 0 || typeof instanceId !== 'string' || !instanceId) {
+        throw new Error('Formation arrival requires a finite walking segment and instance');
+    }
+    // Same quarter-unit tolerance used by strict ground projection validation;
+    // includes normal0.1-unit arrival plus screen-coordinate rounding.
+    return { x: origin.x + step.dx, z: origin.z + step.dz, radius: .25, instanceId };
+}
+
 // The static floor query does not include actors. Check the same logical
 // circles used by entity collision, allowing movement away from an existing
 // overlap but never a new intersection or deeper penetration.
