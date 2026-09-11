@@ -99,3 +99,36 @@ func TestAbilityPayloadPreservesDistinctAuthoritativeLanding(t *testing.T) {
 		}
 	}
 }
+
+func TestAbilityPayloadPreservesTeleportDeparture(t *testing.T) {
+	for _, origin := range []*game.AbilityOrigin{nil, {X: 0, Z: 0}, {X: 60000, Z: 60000}} {
+		event := game.AbilityEvent{SourceID: "caster", SkillName: "Teleport", Origin: origin,
+			TargetX: 60009, TargetZ: 60000, Radius: 5, Arc: 2 * math.Pi, ShapeResolved: true}
+		payload := abilityPayloadFromEvent(event)
+		data, err := json.Marshal(payload)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var received map[string]any
+		if err := json.Unmarshal(data, &received); err != nil {
+			t.Fatal(err)
+		}
+		if received["targetX"] != float64(60009) || received["radius"] != float64(5) || received["shapeResolved"] != true {
+			t.Fatalf("lost accepted landing/shape: %s", data)
+		}
+		if origin == nil {
+			if received["origin"] != nil {
+				t.Fatalf("invented legacy origin: %s", data)
+			}
+			continue
+		}
+		point, ok := received["origin"].(map[string]any)
+		if !ok || point["x"] != origin.X || point["z"] != origin.Z {
+			t.Fatalf("departure lost on real wire: %s", data)
+		}
+		origin.X++
+		if payload.Origin.X == origin.X {
+			t.Fatal("payload aliases mutable origin")
+		}
+	}
+}

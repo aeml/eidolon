@@ -958,8 +958,14 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				} else {
 					setCooldown(baseCooldown)
 				}
-				// Teleport mutates targetX/targetZ (clamping), so pass the clamped values
-				w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+				// Publish both accepted endpoints: remote interpolation may already
+				// have moved past the departure. Only Warp has a damage footprint.
+				visualRadius := 0.0
+				if runeID == "teleport_warp" {
+					visualRadius = warpRadius
+				}
+				w.fireTeleportEvent(player.ID, targetID, AbilityOrigin{X: oldX, Z: oldZ},
+					AbilityLanding{X: targetX, Z: targetZ}, visualRadius)
 			}
 		}
 	}

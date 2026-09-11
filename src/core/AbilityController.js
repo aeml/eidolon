@@ -147,7 +147,8 @@ export class AbilityController {
             entity.playAbilityAnimation?.(skillName);
         }
 
-        const targetPosition = new THREE.Vector3(targetX, 0, targetZ);
+        // Teleport is planar, including on elevated dungeon/realm floors.
+        const targetPosition = new THREE.Vector3(targetX, skillName === 'Teleport' ? (entity.position?.y || 0) : 0, targetZ);
         const visual = resolveRemoteSkillVisual(entity, skillName, targetPosition, shape);
         if (visual.handled) {
             return;
@@ -199,6 +200,15 @@ export class AbilityController {
     }
 
     reconcileLocalAbilityShape(data) {
+        if (data.skillName === 'Teleport') {
+            // No speculative endpoint effects: the server may clip the blink
+            // to a wall. Play the accepted two-point cast once, keeping the
+            // immediate local animation and applying no gameplay damage.
+            if (Number.isFinite(data.targetX) && Number.isFinite(data.targetZ)) {
+                this.triggerRemoteAbilityVisuals(this.engine.player, data.skillName, data.targetX, data.targetZ, data, { skipAnimation: true });
+            }
+            return;
+        }
         const positioned = data.skillName === 'Healing Light' || WIZARD_GROUND_ABILITIES.has(data.skillName) || SELF_CENTERED_SHAPE_ABILITIES.has(data.skillName);
         const singleHeal = data.skillName === 'Healing Light' && data.shapeResolved && !data.radius;
         if (!AUTHORITATIVE_SHAPE_ABILITIES.has(data.skillName) || (!singleHeal && (!Number.isFinite(data.radius) || data.radius <= 0 ||

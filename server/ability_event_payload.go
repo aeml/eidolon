@@ -9,5 +9,8 @@ func abilityPayloadFromEvent(event game.AbilityEvent) AbilityPayload {
 	if event.Landing != nil {
 		payload.Landing = &AbilityLandingPayload{X: event.Landing.X, Z: event.Landing.Z}
 	}
+	if event.Origin != nil {
+		payload.Origin = &AbilityOriginPayload{X: event.Origin.X, Z: event.Origin.Z}
+	}
 	return payload
 }
