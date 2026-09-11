@@ -156,17 +156,17 @@ func (c *Client) handleMessage(msg Message) {
 		unlock := lockCharacterWork(c.username)
 		defer unlock()
 		if !currentCharacterConnection(c) {
-			c.sendError("This connection has been replaced; please reconnect.")
+			c.sendInboundRejection(msg, "This connection has been replaced; please reconnect.")
 			return
 		}
 	}
 	if err := c.acceptInboundMessage(msg, time.Now()); err != nil {
-		c.sendError(err.Error())
+		c.sendInboundRejection(msg, err.Error())
 		return
 	}
 	if c.username != "" && msg.Type != MsgLogin && msg.Type != MsgResumeSession {
 		if err := recoverAccountAuctionBidsLocked(c.username); err != nil {
-			c.sendError("Your pending auction bid is awaiting recovery. Please try again shortly.")
+			c.sendInboundRejection(msg, "Your pending auction bid is awaiting recovery. Please try again shortly.")
 			return
 		}
 	}
