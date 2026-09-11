@@ -5,7 +5,30 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 04:49 UTC
+## Current checkpoint — September 11, 04:53 UTC
+
+Previous turn was PROGRESS (61fullacceptance/push). This turn is PROGRESS with
+verified wait: gameplay successor integrated onto61 without droppingwebsite/
+domains, targeted merged checks and exact104browserdiscovery pass. Goalactive.
+
+- New `/tmp/eidolon-gameplay-after61-20260911`, branch
+  work/gameplay-after61-20260911, clean947b079d (mergee6d56231) from33c2faf4+
+  acceptednextstun475c6d27. No conflicts. Website andwebsiteworkflow unchanged
+  from33c2; newbackenddefault/Origin/newliveQAurls/exactSHAcheckout/version61
+  preserved.84753 PASS281tests/7suites10.05s.91009 discoveredexact104cases with
+  noomissions/duplicates across12stages; discovery only, notnativeexecution.
+  No root/slowfixorunfinished714talentwork carried yet. Mustinheritvalidated
+  root/slowthenfullcombinedregression/nativeacceptance before newversion/push.
+- 25686 remainsconfirmedACTIVE (50secondpoll, no terminal), frozena041e6b1
+  rootintegrationfullGo race; earlierpackages root25.597/loadtest1.037/database
+ 1.100PASS, gamepending. Onlylocalheavy/no localbrowser. Primary06unchanged.
+- 61CI34563572711remainspendingbehindold3671CI34561490782, whichnowownsChrome
+  predeployqueue. No cancellationapprovalreceived; do not interpretpreselected
+  asyncanswer asapproval.24hoursoak34558600459continues. Publicdomainroute200
+  frompreviousverifiedoperatorfix, no61liveidentityclaim. Do notpublishgameplay
+  successor before61liveacceptance. Fullroadmap/DBrotationauthorization unchanged.
+
+## Previous checkpoint — September 11, 04:49 UTC
 
 Previous turn was PROGRESS with verified wait. This turn is PROGRESS: version61
 full regression and local browser accepted, canonical33c2faf4 pushed, new CI
