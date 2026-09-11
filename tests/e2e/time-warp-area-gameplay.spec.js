@@ -1,5 +1,5 @@
 import { devices, expect, test } from '@playwright/test';
-import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, moveByGroundClick } from './helpers.js';
+import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, moveByGroundClick, projectGroundOffset } from './helpers.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 
 test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true,
@@ -40,14 +40,21 @@ test('Time Warp training reaches a walked ally beyond the original radius and ex
         await loginAndEnterWorld(ally, { ...credentials, username: `${credentials.username}-warp-view`, characterClass: 'Fighter' });
         const source = await page.evaluate(() => ({ id: window.game.player.id, x: window.game.player.position.x, z: window.game.player.position.z }));
         await expect.poll(() => ally.evaluate(id => window.game.remotePlayers.has(id), source.id)).toBe(true);
+        console.log('[time-warp-position-source]', JSON.stringify(source));
         for (let step = 0; step < 4; step++) {
             const offset = await ally.evaluate(source => ({ dx: source.x + 18.5 - window.game.player.position.x,
                 dz: source.z - window.game.player.position.z }), source);
             if (Math.hypot(offset.dx, offset.dz) < .8) break;
             const scale = Math.min(1, 12 / Math.hypot(offset.dx, offset.dz));
+            console.log('[time-warp-position-step]', JSON.stringify({ step, offset,
+                projection: await projectGroundOffset(ally, offset.dx * scale, offset.dz * scale) }));
             await moveByGroundClick(ally, offset.dx * scale, offset.dz * scale,
                 { moveOnly: true, allowJumpFallback: false, allowAlternatePaths: false });
             await expect.poll(() => ally.evaluate(() => !window.game.player.targetPosition)).toBe(true);
+            console.log('[time-warp-position-arrival]', JSON.stringify(await ally.evaluate(() => {
+                const p = window.game.player;
+                return { x: p.position.x, z: p.position.z, blockedStops: p.movementMetrics?.blockedStops };
+            })));
         }
         const distance = () => ally.evaluate(source => Math.hypot(window.game.player.position.x - source.x,
             window.game.player.position.z - source.z), source);
