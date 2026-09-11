@@ -5,7 +5,36 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 05:23 UTC
+## Current checkpoint — September 11, 05:33 UTC
+
+Previous turn was PROGRESS through Charge-impact repair and verified new-origin
+403 diagnosis. Current turn is PROGRESS: user explicitly approved cancellation
+("yew cancel"). Exact older CI34561490782/3671 was verified then cancelled;
+GitHub now confirms completed/cancelled. Domain61 CI34563572711/33c2faf4 has
+STARTED, client and server jobs in progress. Separate soak34558600459 remains
+in progress and was not cancelled. Required release gates remain intact.
+
+- New Charge worktree `/tmp/eidolon-fighter-charge-duration-20260911` clean
+  8d4256fd atop7c11bc4d. Captures duration training before travel; applies it
+  to Unstoppable armor, Shattering armor reduction and Tremor stun at impact;
+  clears snapshot at impact/scene reset/QA reset. Travel/immunity locks unchanged.
+  Paid18-case matrix with actual partial travel and impact reproduced12 trained
+  failures/6 rank-zero controls. Specific damage receipts avoid hiding rank-one
+  errors inside slow full-world updates.52238 three repeats racePASS30.366s.
+  Follow-up15600 RED1.109s found Tremor shortening stronger Seismic stun; fixed
+  to retain longer active stun.69092 broad focused racePASS22.297s includes
+  immunity, actual Recall cleanup, existing charge/movement/wall and prior party/
+  duration cases. Detailed logs and scope in2026-09-11-charge-effect-duration.md.
+  No full current-source/native/offline-Charge parity claim; not released/merged.
+- Prior Fighter full49648 remains verified ACTIVE on frozen7c11bc4d, not8d4256fd:
+  client338suites/4741tests212.323s PASS, lint reached server; root34.403,
+  loadtest1.063/database1.124 PASS, game pending. Recover same handle.
+- Public frontend still60 and both old/new backends reject the new play Origin
+  with HTTP1.1 WebSocket403. Domain61 fixes this once deployed; no playable-new-
+  domain claim yet. Earlier HTTP2 probe400 was not an Origin result; retried
+  correctly with HTTP1.1. Root ledger must never be pushed; full goal active.
+
+## Previous checkpoint — September 11, 05:23 UTC
 
 Previous turn was PROGRESS: public-domain inspection established frontend200
 and actual Eidolon HTML rather than the reported404. This turn is PROGRESS
