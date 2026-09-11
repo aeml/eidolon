@@ -219,7 +219,12 @@ func TestTalentHealingSpiritSetBonus(t *testing.T) {
 				w.updateEntity(p, 0, nil, &deferredActions{})
 				want := 15
 				if hostile {
-					want = 0
+					// Valid opponents take the normal pulse, never the ally set
+					// heal. Base20/boosted35 become13/22 after PvP scaling.
+					want = -13
+					if skill == "Spirit Guardians Boost" {
+						want = -22
+					}
 				}
 				if ally.Health != 100+want {
 					t.Fatalf("spirit healed %d; want %d", ally.Health-100, want)
