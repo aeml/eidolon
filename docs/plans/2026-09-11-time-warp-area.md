@@ -75,3 +75,14 @@ Full regression and native trained area/buff proof remain pending. Prepared set
 consumer tests are not earned/saved-set gameplay proof. Time Warp Mastery's
 consumer and the wider Wizard timed-effect audit remain open; this entry does
 not close the entire skill tree or publish a release.
+
+## Full regression accepted
+
+Session 58396 completed exit zero on frozen
+`49c08a76758ae94d1ca1fd527a103c577cc69cf1`: client 353 suites / 4,977 tests in
+109.207 seconds, lint passed, Go race suite root 17.030s / game 324.131s /
+loadtest 1.016s / database 1.083s / lifecycle 1.021s. Other packages had no tests.
+Logs are `/tmp/eidolon-time-warp-full-{client,lint,server}.log`.
+This accepts full regression, not the pending native trained-area proof or a
+release. The failed four-role dungeon run used a different frozen source and
+does not become a pass because these suites passed.
