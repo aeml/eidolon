@@ -5,7 +5,46 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 03:15 UTC
+## Current checkpoint — September 11, 03:27 UTC
+
+User explicitly APPROVED separate runner queues and completed the new sudo
+service installation. Prior no-runner-change restriction is superseded for this
+scoped change; DB credential rotation approval remains separate/unanswered.
+
+- Dedicated runner `/home/aeml/.local/share/eidolon-soak-actions-runner`, name and
+  unique custom label `eidolon-soak`, official2.337.0 checksum verified, registered
+  with token passed privately via runner environment input (not arguments/logs).
+  Separate directory/_work and clean system PATH; no Chrome credentials copied.
+  User installed/started `actions.runner.aeml-eidolon.eidolon-soak.service` at
+ 03:24. systemd active/enabled and GitHub online/idle independently verified.
+  Chrome retains only its deployment/browser custom labels and existing soak.
+- Infrastructure-only branch `work/runner-queue-separation-20260911`, worktree
+ `/tmp/eidolon-runner-queue-separation-20260911`, commit8cb7ae43 based exactly on
+  canonical62dc was committed and fast-forward pushed to remote master. No game
+  version/runtime changes or root-ledger push. Nightly now selects eidolon-soak;
+  standard hosted CI and both actual GPU gates unchanged. Manual soak dispatch
+  restricted to this repo master/main; uninterrupted24h/default1500min and
+  no-cancel concurrency preserved.8tests/3suites0.908s, focusedlint, YAML parsing,
+  service shell syntax and diff checks passed after new-test ID/lint correction.
+- NewCI34558375122 pending behind existing canonicalCI34434837759 (cancel false).
+  Short1-minute disposable soak34558402598 queued on new8cb; same nightly
+  concurrency deliberately waits for old24h34433520743 to finish naturally.
+  Do not cancel old soak or treat short smoke as24hacceptance. Need verify actual
+  new runner assignment/evidence/cleanup once queued test starts. No sudo remains.
+- Primary-current group2/10508 and group3/93874 both TERMINAL0. All13embedded
+  report stats verified116expected, zero unexpected/flaky/skipped. All116 ran on
+  frozen9c664f95, group1=40/group2=50/group3=26 incl10crystal-art. Port41981clear;
+  no local heavy/browser remains. Archive
+ `/tmp/eidolon-primary-current-browser-proof-igu3O6`, credential scanner PASS0
+  sanitized (not pixel-redaction assertion). FullGo/client/lint acceptance retained.
+  Docs-only744c0bb1 records this in primary-current; originalprimary8f and narrower
+  successor689 unchanged. Native full four-role clear/release gates still OPEN.
+- Full original1.1–1.10 goal active, neither complete nor blocked. Keep GPU free
+  for imminent canonical predeploy. Runner separation shares host resources and
+  account, not security/hardware isolation. Full talent duration diagnosticd70
+  remains red/no runtimefix; other remaining roadmap requirements preserved.
+
+## Previous checkpoint — September 11, 03:15 UTC
 
 Previous turn was PROGRESS through full client acceptance. This turn completes
 primary browser group1 and starts group2; full original roadmap remains active.
