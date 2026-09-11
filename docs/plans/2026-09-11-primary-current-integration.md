@@ -70,3 +70,23 @@ history: Warden and four complete town/resume cycles are not a full clear.
 Schedule the long native run without competing with canonical predeploy on the
 same GPU. Canonical62dc and successor release gates remain separate; never push
 the root ledger branch or overwrite production with this unaccepted tree.
+
+## Full regression follow-up — September11 03:05
+
+Full server race59375 exited0 on ee1da4b4: root28.570s/game400.604s,
+loadtest1.030s/database1.140s/lifecycle1.042s; other packages had no tests.
+No race warning. Log `/tmp/eidolon-primary-current-full-server.log`.
+
+Full client45446 exited1:335 suites/4672 tests passed, one test failed out of
+336suites/4673tests170.905s. `RestAuraReleaseGate` expected the old untimed literal
+`&& run_well_rested`, although required-all now calls it through run_qa_stage.
+The actual helper-invocation checks passed; no Well Rested route was dropped.
+The assertion now requires the timed Well Rested stage followed by the timed
+Forge/socket tail, retaining both mandatory gates. No src/server/script changes.
+
+Focused5163 then passed56tests/4suites1.981s and full lint, covering the actual
+native helper sequence, timing failure/cleanup behavior and socket suffix.
+Logs `/tmp/eidolon-primary-current-rest-gate-{focused,lint}.log`. Lint did not run
+after the failed full client command; this separate lint pass is explicit.
+Rerun the complete client suite on the corrected test source before browser/native
+acceptance. The full server pass remains current because server source is unchanged.
