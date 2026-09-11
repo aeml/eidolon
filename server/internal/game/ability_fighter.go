@@ -488,8 +488,12 @@ func (w *World) damageEarthshakerArea(player *Entity, originX, originZ, targetX,
 		finalDamage := applyFinalDamage(player, target, damage, "physical", "Earthshaker")
 		addThreatLocked(target, player.ID, float64(finalDamage))
 		if !target.CCImmune {
+			// A later, smaller aftershock must not cut short a stronger stun.
+			deadline := time.Now().Add(stun)
+			if !target.Stunned || deadline.After(target.StunEndTime) {
+				target.StunEndTime = deadline
+			}
 			target.Stunned = true
-			target.StunEndTime = time.Now().Add(stun)
 		}
 		isDead := target.Health <= 0
 		target.Mu.Unlock()
