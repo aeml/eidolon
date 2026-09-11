@@ -7,6 +7,14 @@ the whole goal. Started September 5, 2026.
 
 ## Current checkpoint — September 11, 00:10 UTC
 
+TERMINAL CORRECTION: final16027poll returned exit1 while this checkpoint's
+previously-live text was being prepared. Do not treat the ACTIVE statements
+below as current. Its first room/recovery passed, then Wizard formation looped
+between a checked lateral step and the previous anchor until15s. The new trace
+records repeated0.4–0.6s inputs, not slow input completion. No current local
+heavy gate remains. Archive/path-search regression work is underway; preserve
+this failed run before any replacement. Primarye2780eb6 remains unchanged so far.
+
 Previous turn was PROGRESS: surviving Warden and disjoint-path controller fix.
 This turn is a VERIFIED WAIT on re-polled live16027, with its current-source
 first-room/recovery evidence recorded. No new gameplay edit or release claim.
