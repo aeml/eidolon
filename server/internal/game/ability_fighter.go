@@ -64,6 +64,11 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 			player.Mana -= cost
 			runeID := player.GetRuneForSkill(skillName)
 			damage := player.Damage + int(float64(player.Stats.Strength)*1.5)
+			// Canonicalize a read-only training view: duplicate legacy aliases
+			// must not double one saved investment or mutate the live rank map.
+			training := &Entity{SubType: player.SubType, TalentRanks: player.TalentRanks, SpellFocusActive: player.SpellFocusActive}
+			training.NormalizeTalentRanks()
+			damage = int(math.Floor(float64(damage)*training.GetSkillDamageMultiplier(skillName) + 1e-9))
 			if runeID == "shieldslam_reverberation" {
 				damage *= 2
 			}

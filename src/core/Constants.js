@@ -346,6 +346,8 @@ export const CONSTANTS = {
             );
 
             return entries.slice(0, 40).map((t, i) => ({ id: `FTR_${String(i + 1).padStart(2, '0')}`, ...t,
+                abilityDamage: i < 26 && i % 2 === 0 ? { skill: skills[Math.floor(i / 2)], damage: 0.04 }
+                    : i === 37 ? { damage: 0.02 } : undefined,
                 criticalChance: i === 38 ? { chance: 0.02 } : undefined,
                 abilityArea: i === 9 ? { skill: 'Guardian Roar', radius: 0.02 }
                     : i === 23 ? { skill: 'Executioner Spin', radius: 0.02 }

@@ -60,3 +60,29 @@ of the 1.1–1.10 roadmap. Separate remaining consumer found during inspection:
 Shield Slam's Mastery damage multiplier is not used in its current raw-damage
 calculation and needs a paired server/offline investigation; this threat-only
 candidate deliberately does not claim to fix that saved investment.
+
+## Shield Slam Mastery consumer follow-up
+
+Paired paid-cast probes confirmed that Mastery and generic Enduring Rhythm
+damage training were absent on both server and offline paths: 24 trained server
+cases and 24 client cases failed, while untrained/unrelated-rank cases retained
+their old damage. Shared fixture input is 50 damage + 10 Strength, a 65-point
+base hit; rank-five Mastery now yields 78, generic rank-five 71, combined 84.
+Reverberation doubles that resolved integer budget; Fortify and the separate
+threat premium consume the resulting hit. Base damage is unchanged.
+
+A first server correction exposed four duplicate-alias cases: `FTR_05` and
+`FTR_5` together were counted twice. The handler now canonicalizes a temporary
+training view, preserving the original saved map; the offline metadata-backed
+helper uses the same highest-rank rule. Capped and negative ranks, unrelated
+skill/duration ranks, all three runes, and the offline critical/Fortify ordering
+are covered. This fixes a saved-investment consumer, not an arbitrary base-damage
+increase or extra points for the prepared dungeon party. Its existing loadout
+and five-point budget remain unchanged.
+
+Final focused race on current source passed (83905 terminal zero), game22.990s;
+client3suites124tests0.828s and full lint passed (79624 terminal zero). An earlier
+client invocation from the server directory failed its relative fixture lookup;
+the correctly rooted rerun is the accepted result. Logs:
+`/tmp/eidolon-shield-slam-mastery-{server-red,client-red,server-green,server-final,server-current,client-green,expanded-client,client-final,lint,lint-final}.log`.
+Full integrated regression and real native dungeon completion still remain.
