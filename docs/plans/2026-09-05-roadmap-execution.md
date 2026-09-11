@@ -5,7 +5,44 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 21:58 UTC
+## Current checkpoint — September 11, 22:06 UTC
+
+Previous goal turn was PROGRESS. This turn is PROGRESS: verified the existing
+four-role process still live, and reproduced/repaired offline Spell Focus parity
+in an independent worktree while preserving the browser's frozen source.
+
+-93038 confirmed ACTIVE22:06. Primary remains clean51da6fb1; no source edits or
+  competing full/browser job. Four roles invited/roster/same Normal Verdant entry
+  passed; seed-5385752534429762084/generator2/attempt0/no fallback. Ordinary
+  DemonOrc/Skeleton combat passed. Two real town recovery/resume loops restored
+  all four and preserved dungeon seed/rooms/gold/inventory/quest state. Last
+  elapsed427.7s, three room traversals, continuing toward later encounters.
+  This is NOT a full boss/clear/manual quest/save pass. Recover SAME93038 and
+  log `/tmp/eidolon-four-role-shield-20260911.log`; do not restart on timeout.
+- New `/tmp/eidolon-offline-focus-20260911`, work/offline-focus-20260911, clean
+ 9e16c19b85d21f05610f894e20f1279dc8ee9926. Initial actual offline cast tests
+  reproduced11failures/21cases1.999s. Existing server contract retained:45s
+  trained cooldown/30MP,15s duration plus Prismatic Control, next damage×2.5.
+  Fixed legacy20s override, ignored duration training, locked prepayment,
+  Teleport/refresh consuming charge, active charge surviving expiry, and
+  Fireball consuming charge without actual projectile multiplication. All
+  non-base Wizard unlock admission now precedes payment; server-owned engine
+  guards and offline-vs-replica expiry are explicit. No server source changed.
+-77784 TERMINAL0 initial3suites57tests1.903s. Expanded68728 TERMINAL1 was
+  three incorrect fixture assertions forbidding ordinary multiplayer predicted
+  cast visuals, not gameplay bugs. Corrected tests retain presentation while
+  proving no local gameplay charge.18507 TERMINAL0:9suites224tests6.580s+full
+  lint. Final30205 TERMINAL0:9suites226tests4.914s+test ESLint. Diffcheck passed.
+  Logs `/tmp/eidolon-offline-focus-{red,green,focused,final,expanded,lint}-20260911.log`.
+  Evidence/unreleased notes2026-09-11-offline-spell-focus.md.
+- NEXT continue SAME93038; once terminal preserve native evidence, resolve any
+  real failures, and run full client/lint on frozen9e16c19b when heavy queue is
+  free before integrating. Native/prod focus proof and full160talent audit remain
+  open, including utility skills' placeholder damage Masteries. No new push or
+  deployment.62 remains last accepted production; soak off. Full1.1–1.10/casino
+  scope intact. Root is ledger-only and MUST NOT PUSH.
+
+## Previous checkpoint — September 11, 21:58 UTC
 
 Previous clarification-only goal turn was NO PROGRESS. Revalidated current
 worktrees, terminal logs and idle runner state. This turn is PROGRESS: isolated
