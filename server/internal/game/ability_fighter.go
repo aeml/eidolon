@@ -106,7 +106,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 			player.Mana -= cost
 			walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 
-			radius := 6.0
+			radius := effectiveAbilityAreaRadius(player, skillName, 6.0)
 			effectiveRadius := expandedAbilityRadius(skillName, radius)
 			damage := int((float64(player.Damage)*1.0 + float64(player.Stats.Strength)*3) * 1.3 * player.GetSkillDamageMultiplier("Executioner Spin"))
 
@@ -148,7 +148,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 
 			player.State = "ATTACKING"
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 15*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityEvent(player.ID, targetID, skillName, player.X, player.Z, AbilityShape{Radius: radius, Arc: 2 * math.Pi})
 		}
 	} else if skillName == "Iron Fortress" {
 		// Iron Fortress (Buff)

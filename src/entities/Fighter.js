@@ -6,6 +6,7 @@ import { MeshFactory } from '../utils/MeshFactory.js';
 import { spawnEffectSceneFallback } from './EffectSceneFallback.js';
 import { getAbilityAoeRadius } from '../skills/abilityRadii.js';
 import { clipDungeonEffectSegment } from '../skills/dungeonEffectGeometry.js';
+import { getExecutionerSpinDamage } from '../skills/executionerSpin.js';
 
 const GUARDIAN_ROAR_FRIENDLY_ACTOR_TYPES = new Set([
     'Fighter',
@@ -373,20 +374,18 @@ export class Fighter extends Actor {
         }
 
         if (skill === "Executioner Spin") {
-            console.log("Fighter used Executioner Spin!");
-            this.isWhirlwinding = true;
-            this.whirlwindTimer = 0;
-            this.whirlwindDuration = 1.5; // Longer spin
-            this.state = 'ATTACKING';
-
-            // Mark as Executioner
-            this.isExecutionerSpin = true;
-
-            // Cooldown 15s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Executioner Spin"] = 15.0 * (1 - cdr);
-
-            this.spawnVisualEffect(gameEngine, this.position, 0xff0000, "spin");
+            // Base Actor owns the paid cast, cooldown and spin presentation.
+            // Apply one strike at that cast point; never enable legacy ticks.
+            const radius = getAbilityAoeRadius('Fighter', skill, this);
+            const rects = gameEngine.currentInstanceId && gameEngine.currentInstanceType !== 'overworld'
+                ? gameEngine.currentDungeonLayout?.walkRects : null;
+            for (const entity of new Set(gameEngine.chunkManager.getActiveEntities())) {
+                if (entity === this || !(entity instanceof Actor) || !entity.isActive || entity.state === 'DEAD') continue;
+                const hostile = gameEngine.isHostileActorTarget?.(entity) ?? !isGuardianRoarFriendlyActor(entity, gameEngine);
+                if (!hostile || Math.hypot(this.position.x - entity.position.x, this.position.z - entity.position.z) > radius + (entity.radius || 0)) continue;
+                if (clipDungeonEffectSegment(rects, this.position, entity.position).blocked) continue;
+                applyOfflineAbilityHit(this, entity, getExecutionerSpinDamage(this, entity), skill, gameEngine.floatingTextManager, '#ff8800');
+            }
             return;
         }
 
@@ -433,7 +432,6 @@ export class Fighter extends Actor {
         this.isCharging = false;
         this.isWhirlwinding = false;
         this.isShatteringCharge = false;
-        this.isExecutionerSpin = false;
         // Iron Fortress is a buff, usually persists? Or cancel on death?
         // Actor.die() calls cancelAbilities.
         this.ironFortressTimer = 0;
@@ -492,11 +490,6 @@ export class Fighter extends Actor {
                         if (dist < radius) {
                             let damage = this.stats.strength * 0.5; // Base tick damage
 
-                            // Executioner Spin Bonus
-                            if (this.isExecutionerSpin) {
-                                damage *= 1.5;
-                            }
-
                             // Berserker Edge Bonus
                             if (this.berserkerEdgeActive) {
                                 const hpPercent = this.stats.hp / this.stats.maxHp;
@@ -511,7 +504,7 @@ export class Fighter extends Actor {
                             }
 
                             if (entity.takeDamage) {
-                                applyOfflineAbilityHit(this, entity, damage, this.isExecutionerSpin ? 'Executioner Spin' : 'Whirlwind', this.gameEngine?.floatingTextManager, '#ff8800');
+                                applyOfflineAbilityHit(this, entity, damage, 'Whirlwind', this.gameEngine?.floatingTextManager, '#ff8800');
                             }
                         }
                     }
@@ -520,7 +513,6 @@ export class Fighter extends Actor {
 
             if (this.whirlwindTimer >= this.whirlwindDuration) {
                 this.isWhirlwinding = false;
-                this.isExecutionerSpin = false;
                 this.state = 'IDLE';
                 this.playAnimation('Idle');
             }

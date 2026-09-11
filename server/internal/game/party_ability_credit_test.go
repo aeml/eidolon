@@ -13,6 +13,7 @@ func TestPartyAbilityKillsShareCreditAcrossTheDungeon(t *testing.T) {
 		explosive    bool
 	}{
 		{"Fighter", "Whirlwind", false},
+		{"Fighter", "Executioner Spin", false},
 		{"Wizard", "Frost Nova", false},
 		{"Rogue", "Rain of Arrows", false},
 		{"Cleric", "Smite", false},

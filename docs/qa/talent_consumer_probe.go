@@ -25,6 +25,7 @@ func TestPendingTalentExecutionerSpinArea(t *testing.T) {
 					defer w.StopBackground()
 					p := newTestPlayer("spin-area-caster", "Fighter")
 					p.Level, p.InstanceID, p.X, p.Z = 100, "qa-spin-area-probe", 60000, 60000
+					p.BaseStats = InitialPlayerStats()
 					p.UnlockedSkills, p.TalentRanks = []string{"Executioner Spin"}, map[string]int{talent: rank}
 					p.RecalculateStats()
 					p.Mana = p.MaxMana
@@ -33,10 +34,16 @@ func TestPendingTalentExecutionerSpinArea(t *testing.T) {
 						State: "IDLE", Health: 10000, MaxHealth: 10000, Scale: scale,
 						X: p.X + 6.3 + 1.25*scale, Z: p.Z}
 					w.AddEntity(target)
+					control := &Entity{ID: "spin-near-control", Type: TypeEnemy, InstanceID: p.InstanceID,
+						State: "IDLE", Health: 10000, MaxHealth: 10000, Scale: 1, X: p.X + 2, Z: p.Z}
+					w.AddEntity(control)
 					mana := p.Mana
 					result := w.PerformAbility(p.ID, p.X, p.Z, "", "Executioner Spin")
 					if !result.Accepted || p.Mana != mana-40 {
 						t.Fatalf("ordinary paid spin failed: %+v mana=%d before=%d", result, p.Mana, mana)
+					}
+					if control.Health >= control.MaxHealth {
+						t.Fatal("nearby positive damage control failed")
 					}
 					damaged := target.Health < target.MaxHealth
 					if damaged != (rank > 0) {

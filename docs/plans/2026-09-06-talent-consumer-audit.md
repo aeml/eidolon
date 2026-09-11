@@ -1,11 +1,13 @@
 # Remaining talent consumers — reproduced September 6
 
-September11 next confirmed defect: [Executioner Spin area](2026-09-11-executioner-spin-area.md).
-The actual paid-cast diagnostic reproduces six trained-annulus misses across
-Technique, Lineholder and Rhythm, with all six untrained controls passing.
-Run90581 exits1 in3.686s; other probes pass. No runtime repair is included yet.
-Its legacy offline repeated-damage path also needs a direct parity reproduction
-before correction. Keep full-tree and release acceptance open.
+September11 local repair: [Executioner Spin area](2026-09-11-executioner-spin-area.md).
+The initial90581 zero-attack-stat fixture was insufficient evidence. Corrected
+37747 on the unchanged parent includes nearby positive damage controls and still
+reproduces six trained-annulus misses in1.007s. Repaired71674 passes3.321s.
+The legacy offline repeated-damage path has also been reproduced and corrected
+to the single strike. Focused server/client checks pass; the new native purchase/
+save route, full regression, integration and release acceptance remain pending.
+This does not close the full-tree gate or fix every generic Fighter description.
 
 September11 next local repair: [Guardian Roar's area consumers](2026-09-11-guardian-roar-area.md)
 now pass the paired diagnostic and focused ordinary cast/taunt/ally-boundary and

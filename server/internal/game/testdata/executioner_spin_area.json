@@ -1,0 +1,9 @@
+[
+  {"name":"baseline","ranks":{},"radius":6},
+  {"name":"technique-one","ranks":{"FTR_24":1},"radius":6.12},
+  {"name":"technique-five","ranks":{"FTR_24":5},"radius":6.6},
+  {"name":"lineholder-five","ranks":{"FTR_33":5},"radius":6.9},
+  {"name":"rhythm-five","ranks":{"FTR_38":5},"radius":6.6},
+  {"name":"combined","ranks":{"FTR_24":5,"FTR_33":5,"FTR_38":5},"radius":8.1},
+  {"name":"unrelated-technique","ranks":{"FTR_10":5},"radius":6}
+]
