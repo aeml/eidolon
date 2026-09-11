@@ -5,7 +5,48 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 22:23 UTC
+## Current checkpoint — September 11, 22:32 UTC
+
+The intervening user-clarification turn was NO PROGRESS (read-only status and
+confirmation that only soak is cancelled). This continuation is PROGRESS: full
+candidate regression and native acceptance completed, corrected fixture merged
+into development, and hosted candidate CI started. Full goal remains active.
+
+-96032 TERMINAL0 on frozen89d9e145: prepare client,287suites/4073tests103.827s,
+  full lint and exact104browser-case partition PASS. Full Go race-p1 PASS:
+  root11.806s, game272.629s, database1.080s/lifecycle1.022s. Logs remain
+  `/tmp/eidolon-release63-{prepare,full-client,full-lint,partition,full-server}-20260911.log`.
+-50066 TERMINAL0: candidate's OWN native TimeWarp route, same89d9e145,
+  runIDrelease63-warp-20260911, loopback18570/18571/41970. One test51.3s,
+  total52.5s. Both clients verified base/high and trained/low/high reach, rings,
+  recipient stats, expiry and saved ranks. Native walk ended18.4585units away.
+  WIZ34ranks3and5 each received real rate rejections; controls released with no
+  spend and subsequent deliberate taps succeeded. Scanner0rewrites; script
+  cleanup and independent exact-container absence PASS. Archive
+  `/tmp/eidolon-release63-native-accepted-wSv5su` holds results/report/log;
+  trained-high screenshot inspected. This is not physical-phone acceptance.
+- Pushed only release/63-wizard-support at89d9e145 and dispatched ci.yml.
+  Hosted CI34654262376 confirmedACTIVE22:32, client and server jobs running.
+  Workflow-dispatch deliberately does not deploy or invoke self-hosted predeploy.
+  NEXT poll SAME run; after its hosted client/server/3browser gates pass, recheck
+  remote master, then publish through normal master push/predeploy/deploy/live
+  gates. No master push or63production claim yet. No owned local process remains.
+- Main development fixture correction propagated as clean2de5da37: actual
+  TemporalWeave0/5/6pieces instead of ephemeral fictional ActiveSetBonuses.
+ 41518 TERMINAL0, five repeated focused race runs10.632s; no runtime change.
+  Log `/tmp/eidolon-primary-warp-set-fixture-20260911.log`. Main full5084/lint
+  evidence remains from its previous runtime source; no new full run claimed.
+- Further party70393 inspection: server selects highest decayed valid threat,
+  falling back to nearest only without threat. Scale4boss basic reach is7.5,
+  consistent with Rogue's repeated7.4584distance basic hits without warnings.
+  This is not proof of a range defect. Driver prioritizes Whirlwind before
+  ShieldSlam, but threat-table evidence is absent: do not blindly rebalance or
+  weaken the existing all-four-survive/full-clear gates. No party rerun this turn.
+- Remote master remains0231c948. Independent public release.json and healthz
+  match Alpha1.0.62/0231c948, statusok/database ready22:31. Soak stays off.
+  Full1.1–1.10/160talents/earnedpacing/phone/casino scope unchanged. Root MUST NOT PUSH.
+
+## Previous checkpoint — September 11, 22:23 UTC
 
 Previous goal turn was PROGRESS. This turn is PROGRESS: recovered the failed
 party retry and prepared a properly versioned63release candidate from live62,
