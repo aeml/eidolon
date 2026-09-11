@@ -5,7 +5,51 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 22:45 UTC
+## Current checkpoint — September 11, 22:52 UTC
+
+Previous goal turn was PROGRESS. This continuation is PROGRESS: published the
+tested63candidate to master, retained the failed native party evidence, and
+implemented offline Warp plus reproduced Teleport landing corrections.
+
+- Candidate hosted CI34654262376 TERMINALSUCCESS: client/server/three browser
+  shards passed. Expected dispatch-only predeploy/deploy/live skips are NOT live
+  acceptance. Rechecked master0231c948 and ancestry, then ordinary fast-forward
+  push13948 TERMINAL0 advanced master to frozen89d9e145. Root ledger not pushed.
+  New normal deployment CI34655698173 confirmedACTIVE22:51, hosted client/server
+  running. NEXT poll SAME run through all predeploy/QA-input/Pages/SSH/live gates
+  and independent live identity/gameplay checks.63not yet liveaccepted;62lastlive.
+-25565 TERMINAL1/10.7m. Seed-4512227221557722414/gen2/Normal/nofallback.
+  Two town loops preserved progress, then Warden15000→last5282HP; Fighter died.
+  Archive `/tmp/eidolon-four-role-tank-failure-1PRIEN` includes rawreport/log;
+  scanner0rewrites, exactownedcontainersgone. No clear/credit/manual/save pass.
+  Tank final record was already recovered940HP: must NOT erase recordeddeath.
+  Last tank pointers hovertrue/pendingtrue at7.44range8.5. Whole-run tank7286
+  damage/4081taken, Charge2/Fortress4/Whirlwind15/Shield14, zero rejections.
+  Cleric4821allyhealing/552taken/157MP,6Embrace13Light; bossheal3399. Wiz5657
+  damage/534taken/4MP; Rogue8138/1648/40MP. Last tank183hits include both quake
+  and ordinary melee. Tank targeting witness is improved, viability not proved.
+  Last healer decisions at11.558units repeatedly selected tank and cast on
+  cooldown, then waited; this is outside the10unit Embrace aura. Inspect role
+  positioning/support uptime and measured incoming/healing rates before another
+  retry or balance change. Do not inflate fixture stats or waive survival.
+- Offline Warp in separateworktree now adds actual trained departure/arrival
+  hits, wall/target filters, Focus preservation and real shield absorption.
+ 29851 RED6failed/8passed1.773s;46901 GREEN4suites76tests1.381s+lint.
+  New landing2979 RED2failed/15passed0.709s: jumping across disjoint room floors,
+  and vertical separation incorrectly shortened horizontal range/changedheight.
+  Fixed using existing canonical movement-endpoint resolver, planar range and
+  preserved height.40912 GREEN4suites79tests1.305s+lint. Logs
+  `/tmp/eidolon-offline-warp-{red,green,landing-red,landing-green,lint}-20260911.log`.
+- Warpworktree clean frozenb1c9e8fc afterservera0315eb4.17718 confirmedACTIVE:
+  prepare→fullclient→lint→fullGo-race-p1, logs
+  `/tmp/eidolon-teleport-warp-{prepare,full-client,full-lint,full-server}-20260911.log`.
+  NEXT recover SAME17718; only local heavy owner, no competing native/browser.
+  MissingPhase/setcharges/both-clientvisualboundaries/native/save/release and
+  utilityMastery decisions remain explicit. Not merged into main4f5or63.
+- Soak remains off; full1.1–1.10/160talents/earnedpacing/phone/casino scope
+  unchanged. Root MUST NOT PUSH. No new native party retry started.
+
+## Previous checkpoint — September 11, 22:45 UTC
 
 Previous goal turn was PROGRESS. This continuation is PROGRESS: reproduced and
 repaired Teleport Warp's server training/wall defects in a separate worktree
