@@ -249,6 +249,8 @@ message Entity {
   // Shared combat protection (Phase, Cleric and PvP opening protection).
   bool invulnerable_active = 118;
   float invulnerable_duration = 119;
+  // Paid Spell Focus's stored next-spell multiplier, independent of private ranks.
+  float spell_focus_multiplier = 120;
 
   // Authoritative jump replication
   float jump_start_x = 81;

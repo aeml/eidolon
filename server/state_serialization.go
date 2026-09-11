@@ -168,7 +168,9 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		}
 	}
 	spellFocusDuration := 0.0
+	spellFocusMultiplier := 0.0
 	if e.SpellFocusActive {
+		spellFocusMultiplier = e.ActiveSpellFocusMultiplier()
 		spellFocusDuration = time.Until(e.SpellFocusEndTime).Seconds()
 		if spellFocusDuration < 0 {
 			spellFocusDuration = 0
@@ -304,6 +306,7 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		ArcaneShieldDuration:       arcaneShieldDuration,
 		DivineInterventionDuration: divineInterventionDuration,
 		SpellFocusDuration:         spellFocusDuration,
+		SpellFocusMultiplier:       spellFocusMultiplier,
 		SwiftDuration:              swiftDuration,
 		IronFortressDuration:       ironFortressDuration,
 		GuardianRoarDuration:       guardianRoarDuration,
@@ -363,6 +366,10 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	ctimeWarpActive := current.TimeWarpActive
 	cinvulnerableDuration := current.InvulnerabilityRemaining(time.Now())
 	cspellFocusActive := current.SpellFocusActive
+	cspellFocusMultiplier := 0.0
+	if cspellFocusActive {
+		cspellFocusMultiplier = current.ActiveSpellFocusMultiplier()
+	}
 	cswiftActive := current.SwiftActive
 	cironFortressActive := current.IronFortressActive
 	cguardianRoarActive := current.GuardianRoarActive
@@ -658,7 +665,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	if cmarkWeakness != last.MarkWeakness {
 		return true
 	}
-	if cspellFocusActive != last.SpellFocusActive {
+	if cspellFocusActive != last.SpellFocusActive || math.Abs(cspellFocusMultiplier-last.SpellFocusMultiplier) > 0.0001 {
 		return true
 	}
 	if cswiftActive != last.SwiftActive {
@@ -1087,7 +1094,9 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		}
 	}
 	spellFocusDuration := float32(0)
+	spellFocusMultiplier := float32(0)
 	if e.SpellFocusActive {
+		spellFocusMultiplier = float32(e.ActiveSpellFocusMultiplier())
 		remaining := time.Until(e.SpellFocusEndTime).Seconds()
 		if remaining > 0 {
 			spellFocusDuration = float32(remaining)
@@ -1247,6 +1256,7 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		ArcaneShieldDuration:       arcaneShieldDuration,
 		DivineInterventionDuration: divineInterventionDuration,
 		SpellFocusDuration:         spellFocusDuration,
+		SpellFocusMultiplier:       spellFocusMultiplier,
 		SwiftDuration:              swiftDuration,
 		IronFortressDuration:       ironFortressDuration,
 		GuardianRoarDuration:       guardianRoarDuration,

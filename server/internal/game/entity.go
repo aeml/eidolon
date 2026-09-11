@@ -248,6 +248,7 @@ type Entity struct {
 	PoisonCoatingEndTime      time.Time `json:"-"`
 	SpellFocusActive          bool      `json:"spellFocusActive,omitempty"`
 	SpellFocusEndTime         time.Time `json:"-"`
+	SpellFocusMultiplier      float64   `json:"-"`
 	ArcaneShieldActive        bool      `json:"arcaneShieldActive,omitempty"`
 	ArcaneShieldHP            int       `json:"arcaneShieldHP,omitempty"`
 	ArcaneShieldEndTime       time.Time `json:"-"`
@@ -932,6 +933,9 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		LastRespawnTime:        e.LastRespawnTime,
 		MoveLockUntil:          e.MoveLockUntil,
 		InvulnerableEndTime:    e.InvulnerableEndTime,
+		SpellFocusActive:       e.SpellFocusActive,
+		SpellFocusEndTime:      e.SpellFocusEndTime,
+		SpellFocusMultiplier:   e.SpellFocusMultiplier,
 		MovementContext:        e.MovementContext,
 		RecoveryContextReady:   e.RecoveryContextReady,
 		LootItem:               e.LootItem,
@@ -1125,6 +1129,7 @@ func (w *World) copyEntity(v *Entity) *Entity {
 		PoisonCoatingEndTime:      v.PoisonCoatingEndTime,
 		SpellFocusActive:          v.SpellFocusActive,
 		SpellFocusEndTime:         v.SpellFocusEndTime,
+		SpellFocusMultiplier:      v.SpellFocusMultiplier,
 		ArcaneShieldActive:        v.ArcaneShieldActive,
 		ArcaneShieldHP:            v.ArcaneShieldHP,
 		ArcaneShieldEndTime:       v.ArcaneShieldEndTime,

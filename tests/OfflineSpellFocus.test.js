@@ -15,6 +15,42 @@ function fixture() {
         dispose: () => { for (const [entity] of engine.addEntity.mock.calls) entity.dispose?.(); wizard.dispose(); } };
 }
 
+test.each([[0, 2.5], [1, 2.6], [5, 3], [99, 3], [-1, 2.5], [Infinity, 2.5]])(
+    'Focus Mastery rank %s snapshots its multiplier %s for exactly one paid spell', (rank, multiplier) => {
+        const f = fixture();
+        try {
+            f.wizard.talentRanks = { WIZ_15: rank };
+            f.cast();
+            expect(f.wizard.spellFocusMultiplier).toBeCloseTo(multiplier);
+            f.wizard.talentRanks = { WIZ_15: rank > 0 ? 0 : 5 };
+            f.cast('Teleport');
+            expect(f.wizard.spellFocusMultiplier).toBeCloseTo(multiplier);
+            const base = 20 + f.wizard.stats.intelligence * 2;
+            f.cast('Fireball');
+            expect(f.engine.addEntity.mock.calls.at(-1)[0].damage).toBeCloseTo(base * multiplier);
+            expect(f.wizard.spellFocusActive).toBe(false);
+            expect(f.wizard.spellFocusMultiplier).toBe(1);
+            f.wizard.cooldowns.Fireball = 0;
+            f.cast('Fireball');
+            expect(f.engine.addEntity.mock.calls.at(-1)[0].damage).toBe(base);
+        } finally { f.dispose(); }
+    }
+);
+
+test('unaffordable next spell preserves the trained Focus charge and its timer', () => {
+    const f = fixture();
+    try {
+        f.wizard.talentRanks = { WIZ_15: 5 };
+        f.cast();
+        f.wizard.stats.mana = 0;
+        f.cast('Dragonfire Lance');
+        expect(f.wizard.spellFocusActive).toBe(true);
+        expect(f.wizard.spellFocusMultiplier).toBe(3);
+        expect(f.wizard.spellFocusTimer).toBe(15);
+        expect(f.engine.addEntity).not.toHaveBeenCalled();
+    } finally { f.dispose(); }
+});
+
 test.each([[0, 15], [5, 18], [99, 18], [-1, 15], [Infinity, 15]])(
     'paid Spell Focus snapshots duration rank %s and canonical cooldown', (rank, duration) => {
         const f = fixture();

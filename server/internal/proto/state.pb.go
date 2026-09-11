@@ -959,6 +959,8 @@ type Entity struct {
 	// Shared combat protection (Phase, Cleric and PvP opening protection).
 	InvulnerableActive   bool    `protobuf:"varint,118,opt,name=invulnerable_active,json=invulnerableActive,proto3" json:"invulnerable_active,omitempty"`
 	InvulnerableDuration float32 `protobuf:"fixed32,119,opt,name=invulnerable_duration,json=invulnerableDuration,proto3" json:"invulnerable_duration,omitempty"`
+	// Paid Spell Focus's stored next-spell multiplier, independent of private ranks.
+	SpellFocusMultiplier float32 `protobuf:"fixed32,120,opt,name=spell_focus_multiplier,json=spellFocusMultiplier,proto3" json:"spell_focus_multiplier,omitempty"`
 	// Authoritative jump replication
 	JumpStartX    float32 `protobuf:"fixed32,81,opt,name=jump_start_x,json=jumpStartX,proto3" json:"jump_start_x,omitempty"`
 	JumpStartY    float32 `protobuf:"fixed32,82,opt,name=jump_start_y,json=jumpStartY,proto3" json:"jump_start_y,omitempty"`
@@ -1773,6 +1775,13 @@ func (x *Entity) GetInvulnerableDuration() float32 {
 	return 0
 }
 
+func (x *Entity) GetSpellFocusMultiplier() float32 {
+	if x != nil {
+		return x.SpellFocusMultiplier
+	}
+	return 0
+}
+
 func (x *Entity) GetJumpStartX() float32 {
 	if x != nil {
 		return x.JumpStartX
@@ -1930,7 +1939,7 @@ const file_state_proto_rawDesc = "" +
 	"\n" +
 	"StatsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\xdb%\n" +
+	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\x91&\n" +
 	"\x06Entity\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
 	"\vinstance_id\x18\x02 \x01(\tR\n" +
@@ -2056,7 +2065,8 @@ const file_state_proto_rawDesc = "" +
 	"\fsafe_zone_id\x18u \x01(\tR\n" +
 	"safeZoneId\x12/\n" +
 	"\x13invulnerable_active\x18v \x01(\bR\x12invulnerableActive\x123\n" +
-	"\x15invulnerable_duration\x18w \x01(\x02R\x14invulnerableDuration\x12 \n" +
+	"\x15invulnerable_duration\x18w \x01(\x02R\x14invulnerableDuration\x124\n" +
+	"\x16spell_focus_multiplier\x18x \x01(\x02R\x14spellFocusMultiplier\x12 \n" +
 	"\fjump_start_x\x18Q \x01(\x02R\n" +
 	"jumpStartX\x12 \n" +
 	"\fjump_start_y\x18R \x01(\x02R\n" +
