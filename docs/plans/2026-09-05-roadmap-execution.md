@@ -5,7 +5,48 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 06:05 UTC
+## Current checkpoint — September 11, 06:26 UTC
+
+Previous user-response turn was a VERIFIED WAIT: old3671 CI confirmed cancelled,
+new61 CI confirmed active in native character QA. This goal turn is PROGRESS:
+immediate and projectile receiving-defense repairs with actual-cast regression.
+The full1.1–1.10 objective remains active, not reduced to these combat fixes.
+
+-40844 recovered TERMINAL0/race9.234s: lethal reflection preserves DEAD after
+  cast bookkeeping, Fortify does not clone absorbed damage, and queued reflection
+  resolves the live attacker exactly once. Expanded15 basic/immediate families
+  across all4 classes with shielded/unshielded controls and exact partial/
+  reduction/reflect ordering.34002 three-repeat racePASS25.669s;6e581eed commits
+  four immediate handlers plus fresh delayed Aftershock context. Diagnostic is
+  promoted to default regression; full damage-pipeline gate remains open.
+-3829 reproduced six projectile shield bypasses and two zones ignoring duel
+  opponents:10 failing cases/6 positive unshielded controls, race0.057s.20b9e673
+  adds world-unlocked projectile context with lock-free retaliation flush for
+  direct/splash/Meteor/combo/zone impacts. Zone hostility now includes valid PvP
+  opponents and preserves party/neutral safety.72950 focused PASSrace1.160s;
+  61479 broader three-repeat PASSrace50.586s includes precise splash/reflect,
+  lethal projectile reflection, simultaneous paid Fireballs through parallel
+  World.Update and existing projectile/realm/wall/crit/shield/boss-party cases.
+  Logs `/tmp/eidolon-projectile-defense-{controls-red,green,broad}.log`.
+-65944 preceding Fighter regression recovered TERMINAL0:340suites/4771tests
+  211.89s +lint; full Go race root29.372/game504.379/loadtest1.026/database1.122/
+  lifecycle1.039. Accepted in Fighter-doc commitd253defa, carried asf3068a2b into
+  ability-defense tree. No claim that preceding full run covers later defenses.
+- Ability-defense tree is clean frozenf3068a2b; new full Go-race34593 ACTIVE,
+  nice10/GOMAXPROCS2, log `/tmp/eidolon-ability-defense-full-server.log`. Recover
+  this exact handle; do not restart based on observation elapsed time. No second
+  local full/heavy/browser run. Native CI retains the GPU.
+- Remaining defense work: Whirlwind/Charge/Spirit Guardians/Seraph/DoT, basic
+  ordering, shield expiry, explosive PvP hostility, full regression and native
+  four-role/save/balance acceptance. Detailed scope and unreleased notes in
+  ability-defense-pipeline.md. These changes are isolated, not merged/published.
+-61 CI34563572711 confirmed active in disposable full-character gameplay;
+  all hosted jobs and native animation gallery passed. Soak34558600459 remains
+  active/untouched. No new-domain production61 login acceptance yet. Root ledger
+  must never be pushed; broader gameplay, phone, campaign, casino and later
+  versions remain required.
+
+## Previous checkpoint — September 11, 06:05 UTC
 
 Previous turn was PROGRESS. Current turn is PROGRESS through receiver/reaction
 separation needed for the confirmed skill-defense repair. The full goal remains
