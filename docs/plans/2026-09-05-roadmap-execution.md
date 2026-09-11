@@ -5,7 +5,52 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 02:54 UTC
+## Current checkpoint — September 11, 03:06 UTC
+
+Previous continuation yielded a verified runner diagnosis and live client wait.
+This turn is PROGRESS: full client exposed one merged orchestration assertion,
+now corrected/focused-tested, with the full rerun active. Full roadmap unchanged.
+
+-59375 TERMINAL0 on primary integration ee1da4b4: full Go race root28.570s/
+  game400.604s, all tested packages passed, no race warning. Log
+ `/tmp/eidolon-primary-current-full-server.log`; do not repeat as missing.
+-45446 TERMINAL1:335suites/4672tests passed,1 failed of336/4673 in170.905s.
+  RestAuraReleaseGate expected the old untimed literal although the actual
+  timed Well Rested helper remains in required-all.9c664f95 changes only that
+  assertion and acceptance docs, explicitly requiring timed rest then socket
+  tail.5163 PASS56tests/4suites1.981s plus full lint. Logs
+ `/tmp/eidolon-primary-current-rest-gate-{focused,lint}.log`. No game/server/
+  script changes. Earlier full attempt skipped chained lint after test failure.
+-73302 ACTIVE, only local heavy gate, complete client rerun then lint on frozen
+  clean9c664f95 in `/tmp/eidolon-primary-current-1YoZU4`. Logs
+ `/tmp/eidolon-primary-current-full-{client,lint}-final.log`. Poll exacthandle;
+  then vendor preparation and116browser execution in separate group handles.
+  Original primary8f37e2bd and accepted narrower successor689b0142 unchanged.
+  No native fullparty/expanded campaign or deployment acceptance implied.
+- Separate diagnostic branch `work/fighter-duration-audit-20260911`, clean
+  d70ed1bc in `/tmp/eidolon-fighter-duration-fSuAnl`, from ee1da4b4. New ordinary
+  Shield Slam duration probe78560 TERMINAL1/game2.092s: exactly four trained
+  failures for FTR_30/FTR_37 with/without Concussion; rank-zero/damage/stun/cost/
+  cooldown controls and prior probes passed. Actual1.5/2.5s unchanged at rank5,
+  versus definitions1.8/3.0s and1.725/2.875s. Log
+ `/tmp/eidolon-fighter-duration-consumer-red.log`. Initial missing brace caught
+  by gofmt before any run, corrected; not runtime evidence. Diagnostic/docs only,
+  no fix yet. Legacy descriptions differ from percentage duration definitions;
+  retain the explicit design/copy/consumer reconciliation and saved-rank scope.
+- User asked why CI waited22h and whether public GitHub runners are free.
+  Verified repo PUBLIC, sole matching eidolon-codex-chrome online/busy with
+  24h100-client soak34433520743. Normal tests/three browser jobs already hosted;
+  both soak and predeploy explicitly local. Official GitHub docs confirm free
+  standard public minutes but6h hosted-job limit; our Chrome preflight rejects
+  software rendering. Explained mixed hosting and separate soak queue, but made
+  no runner/workflow/service changes and did not shorten/cancel the soak.
+  At03:04 canonical34434837759 queued62dc; soak in_progress. Expected24h point
+  roughly03:30, not guaranteed cleanup or deployment finish. Preserve GPU gate.
+- Production rotation approval remains unanswered. Never output process args/
+  secrets or treat silence as authority. Root ledger-only NEVER PUSH. Remaining
+  versioned/canonical/successor/live/fullparty/phone/whole roadmap gates stay open.
+
+## Previous checkpoint — September 11, 02:54 UTC
 
 Previous turn was PROGRESS through accepted Spin integration. This turn is
 PROGRESS: current fixes are now merged into expanded primary progression in a
