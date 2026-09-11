@@ -313,7 +313,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                             if (formationTrace.length > 32) formationTrace.shift();
                         },
                         plan: (index, _state, anchor, spacing) => actors[index].page.evaluate(async ({ anchor, previous, spacing, slot }) => {
-                            const { partyFormationStep, partyPathAvoidsActors } = await import('/tests/partyDungeonControls.js');
+                            const { partyFormationStep, partyPathAvoidsActors, partyFormationArrival } = await import('/tests/partyDungeonControls.js');
                             const { isEarnedRetreatPathClear } = await import('/tests/wizardHuntControls.js');
                             const g = window.game, p = g.player;
                             const bodies = [...g.remotePlayers.values()].filter(other => other !== p && other.id !== p.id &&
@@ -328,7 +328,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                                         { x: step.dx, z: step.dz });
                             }, spacing, slot, bodies);
                             return step && { ...step, origin: { x: p.position.x, z: p.position.z, radius: p.radius || 1.25 },
-                                arrival: { x: anchor.x, z: anchor.z, radius: spacing + 1, instanceId: anchor.instance } };
+                                arrival: partyFormationArrival(p.position, step, anchor.instance) };
                         }, { anchor: { x: anchor.x, z: anchor.z, instance: anchor.instance }, previous: formationAnchor,
                             spacing, slot: [Math.PI / 3, -Math.PI / 3, 0][index - 1] }),
                         move: async (index, step) => {
