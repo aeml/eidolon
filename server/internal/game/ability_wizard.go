@@ -58,7 +58,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			// party-wide CDR buff is applied.
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 60*time.Second))
 			endTime := time.Now().Add(resolveAbilityEffectDuration(player, skillName, 8*time.Second))
-			radius := 15.0
+			radius := effectiveAbilityAreaRadius(player, skillName, 15.0)
 			targets := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID)
 			if player.HasAnySetBonus("timeWarpZone") {
 				targets = make([]*Entity, 0, len(w.Entities))
@@ -81,7 +81,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				}
 				target.Mu.Unlock()
 			}
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityEvent(player.ID, targetID, skillName, player.X, player.Z, AbilityShape{Radius: radius, Arc: 2 * math.Pi})
 		}
 	} else if skillName == "Gravity Well" {
 		// Gravity Well (AoE Pull + Slow)

@@ -1,0 +1,6 @@
+[
+  {"name":"base","ranks":{},"radius":15},
+  {"name":"volatile","ranks":{"WIZ_36":5},"radius":17.25},
+  {"name":"geometry","ranks":{"WIZ_38":5},"radius":16.5},
+  {"name":"combined","ranks":{"WIZ_36":5,"WIZ_38":5},"radius":18.75}
+]
