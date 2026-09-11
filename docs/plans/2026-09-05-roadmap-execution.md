@@ -5,7 +5,50 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 19:53 UTC
+## Current checkpoint — September 11, 20:08 UTC
+
+Previous goal turn was PROGRESS. This turn is PROGRESS: recovered combined
+full regression, accepted it into primary, completed focused Cleric duration
+repairs and started their frozen full regression. Full roadmap remains open.
+User cancellation refers ONLY to the soak; leave it off and continue the goal.
+
+- 48892 recovered TERMINAL0 on frozen 8bb0e0cd: client 347 suites / 4842 tests
+  153.656s, lint, Go race root20.984s/game348.206s/loadtest1.019s/database1.093s/
+  lifecycle1.023s PASS. This accepts preceding Rogue duration plus target/offline
+  expiry and the paid Weak Point fixture correction. Preserve the failed parent
+  run below. Acceptance documentation committed a972dafe; clean primary
+  `/tmp/eidolon-primary-merged-20260911` fast-forwarded to a972dafe16898babb874293c1336853d654179c3.
+- Cleric WT `/tmp/eidolon-cleric-duration-20260911`, branch
+  work/cleric-duration-20260911: paid server casts reproduced 42 trained timer
+  failures; offline casts reproduced 13. Existing Technique/generic duration
+  ranks now reach timed effects once after rune bases, preserving cast snapshots,
+  shared party deadlines, whole Renewal ticks, absolute QA overrides and Seraph.
+  Offline metadata/normalization/authority guards and accurate descriptions added.
+  Saved IDs/ranks/schema unchanged. Evidence and unreleased notes in
+  docs/plans/2026-09-11-cleric-effect-duration.md.
+- Expanded three-repeat focused Go race17.046s PASS. Broader client initially
+  failed two old exact expectations (trained Chains2 vs2.2 and healing-only
+  Mercy copy); corrected without dropping damage/CC/CDR assertions. Final
+  focused7suites/148tests2.641s plus lint PASS. A mistargeted gofmt path returned
+  exit2 before launching checks; corrected path and reran successfully.
+- Clean frozen 3673f5f85bb899f5604aa47f96902e4752d0ffe7 committed Cleric work.
+  Full regression 74824 ACTIVE: sequential client/lint/Go race, nice10 and
+  GOMAXPROCS2 for Go. Logs `/tmp/eidolon-cleric-duration-full-{client,lint,server}.log`.
+  Recover SAME handle; do not mutate frozen source or start another local
+  full/heavy/browser run. Cleric source NOT yet accepted into primary or live.
+- 62 CI34637129931/predeploy103394045529 confirmed IN_PROGRESS20:08 in
+  disposable full-character gameplay. Earlier hosted client/server, all three
+  browser shards, native gallery and required rest-render gates passed.
+  No deployment/final-live acceptance yet; accepted production remains
+  4ed50046/Alpha1.0.61. No push, rerun, runner changes or new cancellations.
+- Next: recover74824 and actual62 predeploy/deploy/live gates. Integrate Cleric
+  only after full acceptance. Keep GPU reserved for release; full native
+  four-role Verdant/manual turn-in/fresh-login proof remains required afterward.
+  Full talent consumers/copy/offline/save, earned balance, physical phones,
+  later versions and two-floor casino remain open. Soak stays cancelled;
+  stopped orphan data retained. Root ledger MUST NOT PUSH.
+
+## Previous checkpoint — September 11, 19:53 UTC
 
 Previous goal turn was PROGRESS. This turn is PROGRESS: reproduced/repaired
 enemy vulnerability/armor expiry and offline stunned debuff timers, recovered
