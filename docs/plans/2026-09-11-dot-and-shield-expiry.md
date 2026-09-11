@@ -47,6 +47,14 @@ required, including the preceding periodic full-run fixture corrections.
 
 ## Remaining pipeline work
 
+Full combined server follow-up77916 completed successfully on frozend10f72bb:
+Go race root33.019s, game376.204s, loadtest1.031s, database1.367s and
+lifecycle1.029s. Log `/tmp/eidolon-dot-defense-full-server.log`. This includes
+the preceding periodic corpse-healing/Spirit fixes and corrected jump/Spirit
+fixtures, so it supersedes the failed93866 as combined server evidence through
+this source. It does not cover subsequent basic-order/retaliation changes or
+native/save/balance acceptance. No client code changed in these defense stages.
+
 Do not infer full combat/balance closure: raw versus inherited wound creation
 still needs outgoing/PvP budget validation (receiving repair deliberately does
 not rescale stored ticks); basic-hit outgoing/receiving ordering, all thorns/set
