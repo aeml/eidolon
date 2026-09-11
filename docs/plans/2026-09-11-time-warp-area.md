@@ -26,8 +26,10 @@ not a redesign of saved talents or Time Warp's underlying support policy.
   passed. Includes Guardian Roar, Wizard routing and Arcane Shield regressions.
 - Additional paid server cases retain friendly support through walls, NPC
   support, the zone-wide set bonus, and exclusion of dead, hostile and
-  other-instance recipients. Broader focused race run is recorded separately
-  after terminal completion.
+  other-instance recipients. Broader focused race run passed, game package
+  15.827 seconds (`TestTimeWarp|TestTalentDuration|TestPartySupportAbilities|`
+  `TestPlayerBasicAttackCadence|TestRecipient` prefix filter). Session 52853 is
+  terminal exit zero. This is focused coverage, not the full Go suite.
 
 Logs: `/tmp/eidolon-time-warp-area-{client-red,client-green,client-focused,server-red,server-green,server-focused,lint}.log`.
 
