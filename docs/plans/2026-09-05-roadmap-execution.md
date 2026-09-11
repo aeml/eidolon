@@ -5,7 +5,58 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 19:29 UTC
+## Current checkpoint — September 11, 19:42 UTC
+
+Previous goal turn was PROGRESS. This turn is PROGRESS: accepted the full raw-
+wound regression, integrated it into primary, reproduced/repaired Rogue duration
+and enemy mark/accuracy expiry, committed the follow-up and started full checks.
+Full roadmap, four-role dungeon and native release acceptance stay incomplete.
+
+-43582 recovered TERMINAL0 on frozen98b6cb8e. Full client345suites/4813tests
+ 151.385s, lint, Go race root23.380s/game366.028s/loadtest1.021s/database1.092s/
+  lifecycle1.027s PASS. Acceptance doc committed1418a20d in raw-wound WT.
+  Clean primary `/tmp/eidolon-primary-merged-20260911` fast-forwarded to
+ 1418a20dc2a68d6082484bdc3adcdb403fdea680. This is accepted local regression,
+  not publication or full four-role/native gameplay acceptance.
+-62 CI34637129931 confirmed IN_PROGRESS; predeploy103394045529 has passed
+  system Chrome setup, High/Low native gallery and required Well Rested/GPU
+  lifecycle. Disposable full-character gameplay is now running. Earlier hosted
+  client/server and all three browser shards remain green; deployment/final live
+  not reached. Production accepted source remains4ed50046/Alpha1.0.61. No new
+  push, rerun, manual cancellation or runner change. Keep local GPU free.
+- New `/tmp/eidolon-rogue-duration-20260911`, branch
+  work/rogue-duration-20260911, based on98b6cb8e then fast-forwarded parent docs
+  to1418a20d. Corrected actual-cast probes reproduced22 trained direct duration
+  failures0.043s, eight trained on-hit failures0.117s, and paid enemy Weak Point
+  Mark/Smoke Bomb accuracy effects failing to expire0.026s. All corrected
+  baseline controls passed. Initial invalid Cripple rune/strict trap-boundary
+  fixtures and a declaration compile error are explicitly retained, not counted
+  as runtime evidence. Offline12/12 cast/timer/copy tests failed0.836s before fix.
+- Clean frozenf3fa593a621a04ffded66b815ad9b756ac494ea7 applies existing ROG_28
+  duration ranks once to direct/on-hit Rogue effects; retains saved IDs/ranks;
+  corrects Dirty Tricks duration copy. Enemy/NPC/player mark/accuracy expiry
+  shares an exact-boundary helper, before stunned-enemy return. Offline duration
+  consumers plus missing Cripple slow/Lasting Shadow base are implemented.
+  No schema/live data changes. This is NOT in62 or accepted primary yet.
+- Focused server direct/on-hit three-repeat1.328s; broader duration/status/
+  poison/receiving/parallel three-repeat race32.363s PASS. Client6suites/89tests
+ 1.781s plus lint PASS, including actual raw/inherited duration/ticks, later-rank
+  stability, authority/wrong-class/rank normalization. Evidence and unreleased
+  notes `docs/plans/2026-09-11-rogue-duration-and-expiry.md` in that WT.
+-76281 confirmed ACTIVE on unchangedf3fa593a: sequential full client/lint/Go
+  race, nice10/GOMAXPROCS2, logs `/tmp/eidolon-rogue-duration-full-{client,lint,server}.log`.
+  Recover SAME handle. No mutation of frozen source or second local full/heavy/
+  browser while active. Prior raw-wound full success does not accept this patch.
+- Next: recover76281 and actual62 predeploy/deploy/live gates, fix real failures
+  without weaker assertions; integrate duration only after full acceptance.
+  Four-role full Verdant/native/manual turn-in/fresh-login acceptance remains
+  required when GPU free. Read-only next lead: Cleric Mark Weakness/armor target
+  expiry still appears player-only; reproduce before fixing. Remaining Rogue
+  non-damaging/Serrated Technique, generic copy/consumer and offline parity,
+  earned pacing, physical phones, later releases and two-floor casino remain.
+  Soak stays cancelled; stopped orphan/data retained. Root ledger MUST NOT PUSH.
+
+## Previous checkpoint — September 11, 19:29 UTC
 
 Previous goal turn was a VERIFIED WAIT: polled live62 CI and recovered the
 completed primary integration log. This turn is PROGRESS: reproduced and repaired
