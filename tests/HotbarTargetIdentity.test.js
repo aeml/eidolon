@@ -106,3 +106,22 @@ test('a buffered Seraph follows its moving owner even after the hovered enemy di
         targetId: '', targetX: 4, targetZ: 3, skillName: 'Avenging Seraph'
     });
 });
+
+test.each([false, true])('Executioner Spin casts around its owner, not a distant selection, mobile=%s', mobile => {
+    const { engine, controller, player, target } = fixture();
+    player.constructor.name = 'Fighter'; player.subType = 'Fighter'; player.hotbar = ['Executioner Spin'];
+    player.move = jest.fn(); target.position.set(100, 0, 100);
+    engine.isMobile = mobile; engine.getMobileCombatTarget = () => target;
+    controller.performHotbarAbility(0);
+    expect(engine.network.send).toHaveBeenCalledWith('ability', { targetId: '', targetX: 0, targetZ: 0, skillName: 'Executioner Spin' });
+    expect(player.move).not.toHaveBeenCalled(); expect(controller.pendingAbilityTarget).toBeNull();
+});
+
+test('Executioner Spin works without ground hover and buffered input follows its moving owner', () => {
+    const { engine, controller, player } = fixture();
+    player.constructor.name = 'Fighter'; player.subType = 'Fighter'; player.hotbar = ['Executioner Spin'];
+    engine.hoveredEntity = null; engine.inputManager.getGroundIntersection.mockReturnValue(null);
+    player.cooldowns['Executioner Spin'] = .2; controller.performHotbarAbility(0);
+    player.position.set(3, 0, 4); player.cooldowns['Executioner Spin'] = 0; controller.processInputBuffer();
+    expect(engine.network.send).toHaveBeenCalledWith('ability', { targetId: '', targetX: 3, targetZ: 4, skillName: 'Executioner Spin' });
+});

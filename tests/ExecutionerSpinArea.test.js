@@ -109,6 +109,14 @@ test.each(['mana', 'cooldown', 'multiplayer'])('%s never executes offline damage
     expect(target.takeDamage).not.toHaveBeenCalled();
 });
 
+test('all predicted Spin cosmetics stay at the owner even when given a distant cursor', () => {
+    const { p, engine } = fixture();
+    p.useAbility(p.position.clone().addScalar(100), engine, skill);
+    const calls = engine.spawnTransientEffect.mock.calls;
+    expect(calls.length).toBeGreaterThan(0);
+    for (const [, position] of calls) expect(position.toArray()).toEqual(p.position.toArray());
+});
+
 test('accepted spin corrects its original footprint without replaying animation', () => {
     const p = new Fighter('spin-caster'); p.mesh = new THREE.Group(); p.playAbilityAnimation = jest.fn();
     const engine = { player: p, effects: [], renderSystem: { effectGroup: new THREE.Group(), getEffectQualityScale: () => 1 },

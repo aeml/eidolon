@@ -110,3 +110,23 @@ remain due; do not claim native acceptance from route source or discovery.
 Proposed patch note: Executioner Spin now honors its area talents, with a visible
 ring that matches the strike. Offline play resolves the same single strike rather
 than repeated short-range ticks. Existing talent ranks and ordinary costs remain.
+
+## Self-centered input follow-up — September11 01:51
+
+The paid strike was fixed but its client controller still treated Spin as a
+targeted ability. Added actual controller tests for distant desktop hover and
+phone selection, a missing ground intersection and buffered movement. Added an
+actual Fighter cast check that all predicted cosmetics remain at the owner even
+when the caller supplies a distant cursor.98828 RED4/52 in2.301s reproduces these
+input/presentation defects on c4e7c743; no native failure is implied.
+
+Spin is now enrolled in the existing self-cast controller path, retaining normal
+resource/cooldown checks and buffered input. Its class cast normalizes the visual
+target to its owner too. No other ability's targeting policy changes.66256 PASS
+138tests/7suites3.947s plus full lint. Logs
+`/tmp/eidolon-executioner-self-cast-{red,final,lint}.log`.
+Generated browser vendor preparation93129 also exited0. The native route is now
+ready to execute when the unchanged four-player gate53491 becomes terminal;
+it has not run yet. Full regression/required-all/integration/release gates remain
+open on this changed source. Add to the eventual patch note: Spin no longer
+chases or refuses to cast because of a distant selected/hovered enemy.

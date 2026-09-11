@@ -44,6 +44,7 @@ export class Fighter extends Actor {
 
     useAbility(targetVector, gameEngine, skillNameOverride = null) {
         const requestedSkill = skillNameOverride || this.abilityName;
+        if (requestedSkill === 'Executioner Spin') targetVector = this.position.clone();
         if (requestedSkill === 'Last Stand Rampage' && this.stats.hp / this.stats.maxHp >= 0.30) {
             gameEngine?.floatingTextManager?.spawn?.('HP too high!', this.position, '#888888');
             return false;
