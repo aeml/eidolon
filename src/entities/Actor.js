@@ -137,7 +137,8 @@ export class Actor extends Entity {
         // Cleric Buffs/Debuffs
         this.blessingResolveTimer = 0;
         this.blessingResolveReduction = 0;
-        this.divineInterventionTimer = 0; // Display-only authoritative rescue window
+        this.divineInterventionTimer = 0; // Remaining rescue window; display-only for replicas
+        this.divineInterventionGuardianTimer = 0;
         this.blessingZealTimer = 0;
         this.blessingZealFactor = 0;
         this.markWeaknessTimer = 0;
@@ -1005,6 +1006,9 @@ export class Actor extends Entity {
                 }
             }
         }
+        if (this.divineInterventionGuardianTimer > 0) {
+            this.divineInterventionGuardianTimer = Math.max(0, this.divineInterventionGuardianTimer-dt);
+        }
         if (this.blessingZealTimer > 0) {
             this.blessingZealTimer -= dt;
             if (this.blessingZealTimer <= 0) {
@@ -1444,7 +1448,7 @@ export class Actor extends Entity {
     }
 
     takeDamage(amount, attacker = null) {
-        if (this.state === 'DEAD' || this.isMultiplayer || this.isRemote) return;
+        if (this.state === 'DEAD' || this.isMultiplayer || this.isRemote || this.gameEngine?.isMultiplayer) return;
         
         let finalAmount = amount;
         
@@ -1461,6 +1465,8 @@ export class Actor extends Entity {
             finalAmount *= (1 + this.markWeaknessFactor);
         }
         
+        if (this.divineInterventionGuardianTimer > 0) finalAmount = Math.floor(finalAmount*.5);
+
         // Shield Absorption
         if (this.shieldHP > 0) {
             const absorbed = Math.min(this.shieldHP, finalAmount);
@@ -1476,7 +1482,7 @@ export class Actor extends Entity {
         
         // Divine Intervention Check
         if (this.divineInterventionActive && (this.stats.hp - finalAmount <= 0)) {
-            this.stats.hp = this.stats.maxHp * 0.30; // Heal to 30%
+            this.stats.hp = Math.max(1, Math.floor(this.stats.maxHp * 0.30)); // Heal to 30%
             this.divineInterventionActive = false;
             this.divineInterventionTimer = 0;
             console.log(`${this.id} was saved by Divine Intervention!`);

@@ -9,7 +9,7 @@ import { getAbilityHealingAmount } from '../core/AbilityHealing.js';
 import { applyOfflineAbilityHit } from '../core/AbilityCritical.js';
 import { createProceduralProjectileVisual, applyProceduralProjectileScale, updateProceduralProjectileVisual, releaseProceduralProjectileVisual } from '../art/ProceduralProjectileEffects.js';
 import { clipDungeonEffectSegment } from '../skills/dungeonEffectGeometry.js';
-import {applyOfflineHealingLight,applyOfflineRadiantStrike,resolveOfflineClericHealTarget} from './ClericAreaAbilities.js';
+import {applyOfflineHealingLight,applyOfflineRadiantStrike,applyOfflineDivineIntervention,resolveOfflineClericHealTarget} from './ClericAreaAbilities.js';
 import { AvengingSeraph } from './AvengingSeraph.js';
 import { configureOfflineSeraph, dismissOfflineSeraph } from './SeraphSummon.js';
 import { getClericEffectDuration } from '../skills/clericEffectDuration.js';
@@ -36,13 +36,13 @@ export class Cleric extends Actor {
     useAbility(targetVector, gameEngine, skillNameOverride = null) {
         const skill = skillNameOverride || this.abilityName;
         const offline = !this.isMultiplayer && !this.isRemote && !gameEngine?.isMultiplayer;
-        if (offline && ['Healing Light','Radiant Strike','Avenging Seraph'].includes(skill) && !this.unlockedSkills.includes(skill)) return;
+        if (offline && ['Healing Light','Radiant Strike','Avenging Seraph','Divine Intervention'].includes(skill) && !this.unlockedSkills.includes(skill)) return;
         if (offline && skill === 'Avenging Seraph' && !gameEngine?.addEntity) return;
         const previous = this.lastOfflineClericCast;
         const chained = offline && previous && Date.now()-previous.at >= 0 && Date.now()-previous.at <= 3000;
         this.healingLightMassRevival = Boolean(chained && skill === 'Healing Light' && previous.skill === 'Divine Intervention');
         const holyFury = chained && skill === 'Radiant Strike' && previous.skill === 'Mark of Weakness';
-        const healingTarget = offline && skill === 'Healing Light'
+        const healingTarget = offline && ['Healing Light','Divine Intervention'].includes(skill)
             ? (this.healingLightMassRevival ? this : resolveOfflineClericHealTarget(this,targetVector,gameEngine)) : null;
         // Resolve the offline target before the canonical cast presentation, so
         // a fallback heal or Mass Revival is drawn at its actual healing center.
@@ -98,31 +98,7 @@ export class Cleric extends Actor {
         }
 
         if (skill === "Divine Intervention") {
-            console.log("Cleric used Divine Intervention!");
-            
-            // Cooldown 120s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Divine Intervention"] = 120.0 * (1 - cdr);
-
-            // Find target
-            let target = null;
-            let minDst = 1000;
-            const entities = gameEngine.chunkManager.getActiveEntities();
-            entities.forEach(entity => {
-                if (entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
-                    const d = entity.position.distanceTo(targetVector);
-                    if (d < 3.0 && d < minDst) {
-                        minDst = d;
-                        target = entity;
-                    }
-                }
-            });
-            if (!target) target = this;
-
-            target.divineInterventionActive = true;
-            target.divineInterventionTimer = getClericEffectDuration(this, skill, 10);
-            gameEngine.floatingTextManager.spawn("DIVINE PROTECTION", target.position, '#ffd700');
-            this.spawnVisualEffect(gameEngine, target.position, 0xffd700, "pillar");
+            applyOfflineDivineIntervention(this, healingTarget, gameEngine);
             return;
         }
 

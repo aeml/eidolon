@@ -5,9 +5,10 @@ import {getAbilityAoeRadius} from '../skills/abilityRadii.js';
 import {clipDungeonEffectSegment} from '../skills/dungeonEffectGeometry.js';
 import {applyOfflineHealing,getAbilityHealingAmount} from '../core/AbilityHealing.js';
 import { getClericEffectDuration } from '../skills/clericEffectDuration.js';
+import { getAbilityCooldown } from '../core/AbilityEconomy.js';
 
 const playerClasses = new Set(['Fighter','Rogue','Wizard','Cleric','AvengingSeraph']);
-const alive = entity => entity instanceof Actor && entity.isActive && entity.state !== 'DEAD' && !entity.isRemote && !entity.isMultiplayer;
+const alive = entity => entity instanceof Actor && entity.isActive && entity.state !== 'DEAD' && !entity.isRemote && !entity.isMultiplayer && !entity.gameEngine?.isMultiplayer;
 const distance = (a,b) => Math.hypot(a.x-b.x,a.z-b.z);
 const body = entity => Number.isFinite(entity.radius) ? Math.max(0,entity.radius) : 0;
 const walkRects = engine => engine?.currentInstanceId && engine.currentInstanceType !== 'overworld' ? engine.currentDungeonLayout?.walkRects : null;
@@ -54,6 +55,36 @@ export function applyOfflineHealingLight(source,target,engine) {
         else if (target.bleedTimer > 0) { target.bleedTimer = 0; target.bleedStacks = 0; target.bleedTickDamage = 0; target.bleedTickTimer = 0; }
         else if (target.poisonTimer > 0) { target.poisonTimer = 0; target.poisonStacks = 0; target.poisonTickDamage = 0; target.poisonTickTimer = 0; }
     }
+}
+
+export function applyOfflineDivineIntervention(source, primary, engine) {
+    if (!alive(source) || engine?.isMultiplayer) return;
+    const skill = 'Divine Intervention', rune = source.skillRunes?.[skill];
+    const recipients = [primary];
+    if (rune === 'divineintervention_miracle') {
+        let nearest = null, minimum = 15;
+        for (const target of actors(source, engine)) {
+            if (target === primary || !alive(target) || hostile(source, target, engine) ||
+                clipDungeonEffectSegment(walkRects(engine), source.position, target.position).blocked) continue;
+            const range = distance(source.position, target.position);
+            if (range < minimum) { nearest = target; minimum = range; }
+        }
+        if (nearest) recipients.push(nearest);
+    }
+    const duration = getClericEffectDuration(source, skill, 10);
+    for (const target of recipients) {
+        if (!alive(target)) continue;
+        target.divineInterventionActive = true;
+        target.divineInterventionTimer = duration;
+        applyOfflineHealing(target, getAbilityHealingAmount(source, skill, Math.floor(target.stats.maxHp/2)), engine?.floatingTextManager);
+        if (rune === 'divineintervention_guardian') {
+            target.divineInterventionGuardianTimer = getClericEffectDuration(source, skill, 5);
+        }
+        engine?.floatingTextManager?.spawn('DIVINE PROTECTION', target.position, '#ffd700');
+        source.spawnVisualEffect(engine, target.position, 0xffd700, 'pillar');
+    }
+    const setCooldown = Object.values(source.activeSetBonuses || {}).some(set => set.specials?.divineInterventionCD > 0);
+    source.cooldowns[skill] = getAbilityCooldown(source, skill, (setCooldown ? 60 : 120)*(rune === 'divineintervention_quick' ? .5 : 1));
 }
 
 export function applyOfflineRadiantStrike(source,aim,engine,holyFury = false) {
