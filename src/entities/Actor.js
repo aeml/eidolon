@@ -1049,6 +1049,16 @@ export class Actor extends Entity {
         if (this.teleportPhaseTimer > 0) {
             this.teleportPhaseTimer = Math.max(0, this.teleportPhaseTimer - dt);
         }
+        if (this.invulnerabilityTimer > 0) {
+            this.invulnerabilityTimer = Math.max(0, this.invulnerabilityTimer - dt);
+        }
+        if (!(this.teleportPhaseTimer > 0) && !(this.invulnerabilityTimer > 0)) {
+            const protection = this.attachedStatusEffects.get('invulnerable');
+            if (protection) {
+                protection.dispose();
+                this.attachedStatusEffects.delete('invulnerable');
+            }
+        }
         if (this.hasteTimer > 0) {
             this.hasteTimer = Math.max(0, this.hasteTimer - dt);
             if (this.hasteTimer <= 0) {
@@ -1550,6 +1560,8 @@ export class Actor extends Entity {
     die() {
         if (this.state === 'DEAD') return;
         this.teleportPhaseTimer = 0;
+        this.invulnerabilityTimer = 0;
+        this.invulnerableActive = false;
         this.stealthTimer = 0;
         restoreActorStealthAppearance(this);
         this.state = 'DEAD';
@@ -1727,6 +1739,8 @@ export class Actor extends Entity {
 
     respawn(x, z) {
         this.teleportPhaseTimer = 0;
+        this.invulnerabilityTimer = 0;
+        this.invulnerableActive = false;
         this.stealthTimer = 0;
         restoreActorStealthAppearance(this);
         const wasDead = this.state === 'DEAD' || this.stats.hp <= 0;

@@ -325,7 +325,7 @@ type Entity struct {
 	IronFortressImmovable       bool            `json:"-"`
 	ArcaneShieldRuneID          string          `json:"-"` // For reflective/explosive effects
 	ArcaneShieldAbsorbed        int             `json:"-"` // Track absorbed damage for explosive rune
-	InvulnerableEndTime         time.Time       `json:"-"` // For teleport phase rune
+	InvulnerableEndTime         time.Time       `json:"-"` // Shared Phase, Cleric and PvP opening protection.
 	QAWaypointProtectionEndTime time.Time       `json:"-"` // Isolated allowlisted release-QA protection
 	QAHazardInspectionEndTime   time.Time       `json:"-"` // Lets QA hazard damage through while hostile protection remains active
 	TeleportCharges             int             `json:"-"`
@@ -931,6 +931,7 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		AbilityCooldown:        e.AbilityCooldown,
 		LastRespawnTime:        e.LastRespawnTime,
 		MoveLockUntil:          e.MoveLockUntil,
+		InvulnerableEndTime:    e.InvulnerableEndTime,
 		MovementContext:        e.MovementContext,
 		RecoveryContextReady:   e.RecoveryContextReady,
 		LootItem:               e.LootItem,
@@ -1129,6 +1130,7 @@ func (w *World) copyEntity(v *Entity) *Entity {
 		ArcaneShieldEndTime:       v.ArcaneShieldEndTime,
 		TimeWarpActive:            v.TimeWarpActive,
 		TimeWarpEndTime:           v.TimeWarpEndTime,
+		InvulnerableEndTime:       v.InvulnerableEndTime,
 		DivineInterventionActive:  v.DivineInterventionActive,
 		DivineInterventionEndTime: v.DivineInterventionEndTime,
 		BlessingResolveActive:     v.BlessingResolveActive,

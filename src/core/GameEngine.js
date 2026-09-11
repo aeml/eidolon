@@ -29,6 +29,10 @@ import { installGameEngineMovement } from './GameEngineMovement.js';
 import { installGameEngineRuntime } from './GameEngineRuntime.js';
 
 const REMOTE_SUPPORT_STATE_CONFIG = {
+    invulnerable: {
+        activeLabel: 'PROTECTED', inactiveLabel: 'PROTECTION ENDED',
+        explicitSkillLabel: 'Protection', activeColor: '#b9edff', inactiveColor: '#bdd6e0', cooldownMs: 250,
+    },
     spirit_guardians: {
         activeLabel: 'GUARDIANS UP',
         inactiveLabel: 'GUARDIANS DOWN',
@@ -126,6 +130,10 @@ function createTimedRemoteEffectConfig({
 }
 
 const REMOTE_EFFECT_SYNC_CONFIG = {
+    invulnerable: createTimedRemoteEffectConfig({
+        payloadKey: 'invulnerableActive', durationKey: 'invulnerableDuration',
+        timerProperty: 'invulnerabilityTimer', fallbackDuration: 0,
+    }),
     spirit_guardians: {
         payloadKey: 'spiritsActive',
         payloadKeys: ['spiritsActive', 'spiritsBoosted', 'spiritDuration', 'spiritRadius', 'spiritRune'],
@@ -2064,6 +2072,13 @@ export class GameEngine {
                 durationSeconds: Number(actor.hasteTimer || 0),
                 detail: `+${Math.round(Number(actor.hasteFactor || 0) * 100)}% haste`,
                 isDebuff: false
+            },
+            {
+                id: 'invulnerable',
+                active: actor.state !== 'DEAD' && Math.max(actor.invulnerabilityTimer || 0, actor.teleportPhaseTimer || 0) > 0,
+                icon: '✧', name: 'Protected',
+                durationSeconds: Math.max(actor.invulnerabilityTimer || 0, actor.teleportPhaseTimer || 0),
+                detail: 'Temporarily immune to damage', isDebuff: false
             },
             {
                 id: 'arcane_shield',

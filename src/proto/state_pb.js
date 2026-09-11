@@ -3988,6 +3988,8 @@ export const eidolon = $root.eidolon = (() => {
              * @property {string|null} [spiritRune] Entity spiritRune
              * @property {number|null} [wellRestedSeconds] Entity wellRestedSeconds
              * @property {string|null} [safeZoneId] Entity safeZoneId
+             * @property {boolean|null} [invulnerableActive] Entity invulnerableActive
+             * @property {number|null} [invulnerableDuration] Entity invulnerableDuration
              * @property {number|null} [jumpStartX] Entity jumpStartX
              * @property {number|null} [jumpStartY] Entity jumpStartY
              * @property {number|null} [jumpStartZ] Entity jumpStartZ
@@ -4899,6 +4901,22 @@ export const eidolon = $root.eidolon = (() => {
             Entity.prototype.safeZoneId = "";
 
             /**
+             * Entity invulnerableActive.
+             * @member {boolean} invulnerableActive
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.invulnerableActive = false;
+
+            /**
+             * Entity invulnerableDuration.
+             * @member {number} invulnerableDuration
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.invulnerableDuration = 0;
+
+            /**
              * Entity jumpStartX.
              * @member {number} jumpStartX
              * @memberof eidolon.state.Entity
@@ -5244,6 +5262,10 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 116, wireType 1 =*/929).double(message.wellRestedSeconds);
                 if (message.safeZoneId != null && $Object.hasOwnProperty.call(message, "safeZoneId") && message.safeZoneId !== "")
                     writer.uint32(/* id 117, wireType 2 =*/938).string(message.safeZoneId);
+                if (message.invulnerableActive != null && $Object.hasOwnProperty.call(message, "invulnerableActive") && message.invulnerableActive !== false)
+                    writer.uint32(/* id 118, wireType 0 =*/944).bool(message.invulnerableActive);
+                if (message.invulnerableDuration != null && $Object.hasOwnProperty.call(message, "invulnerableDuration") && !$Object.is(message.invulnerableDuration, 0))
+                    writer.uint32(/* id 119, wireType 5 =*/957).float(message.invulnerableDuration);
                 if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
                     for (let i = 0; i < message.$unknowns.length; ++i)
                         writer.raw(message.$unknowns[i]);
@@ -6314,6 +6336,24 @@ export const eidolon = $root.eidolon = (() => {
                                 delete message.safeZoneId;
                             continue;
                         }
+                    case 118: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.invulnerableActive = value;
+                            else
+                                delete message.invulnerableActive;
+                            continue;
+                        }
+                    case 119: {
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.invulnerableDuration = value;
+                            else
+                                delete message.invulnerableDuration;
+                            continue;
+                        }
                     case 81: {
                             if (wireType !== 5)
                                 break;
@@ -6799,6 +6839,12 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.safeZoneId != null && $Object.hasOwnProperty.call(message, "safeZoneId"))
                     if (!$util.isString(message.safeZoneId))
                         return "safeZoneId: string expected";
+                if (message.invulnerableActive != null && $Object.hasOwnProperty.call(message, "invulnerableActive"))
+                    if (typeof message.invulnerableActive !== "boolean")
+                        return "invulnerableActive: boolean expected";
+                if (message.invulnerableDuration != null && $Object.hasOwnProperty.call(message, "invulnerableDuration"))
+                    if (typeof message.invulnerableDuration !== "number")
+                        return "invulnerableDuration: number expected";
                 if (message.jumpStartX != null && $Object.hasOwnProperty.call(message, "jumpStartX"))
                     if (typeof message.jumpStartX !== "number")
                         return "jumpStartX: number expected";
@@ -7236,6 +7282,12 @@ export const eidolon = $root.eidolon = (() => {
                 if (object.safeZoneId != null)
                     if (typeof object.safeZoneId !== "string" || object.safeZoneId.length)
                         message.safeZoneId = $String(object.safeZoneId);
+                if (object.invulnerableActive != null)
+                    if (object.invulnerableActive)
+                        message.invulnerableActive = $Boolean(object.invulnerableActive);
+                if (object.invulnerableDuration != null)
+                    if (!$Object.is($Number(object.invulnerableDuration), 0))
+                        message.invulnerableDuration = $Number(object.invulnerableDuration);
                 if (object.jumpStartX != null)
                     if (!$Object.is($Number(object.jumpStartX), 0))
                         message.jumpStartX = $Number(object.jumpStartX);
@@ -7417,6 +7469,8 @@ export const eidolon = $root.eidolon = (() => {
                     object.spiritRune = "";
                     object.wellRestedSeconds = 0;
                     object.safeZoneId = "";
+                    object.invulnerableActive = false;
+                    object.invulnerableDuration = 0;
                 }
                 if (message.id != null && $Object.hasOwnProperty.call(message, "id"))
                     object.id = message.id;
@@ -7695,6 +7749,10 @@ export const eidolon = $root.eidolon = (() => {
                     object.wellRestedSeconds = options.json && !$isFinite(message.wellRestedSeconds) ? $String(message.wellRestedSeconds) : message.wellRestedSeconds;
                 if (message.safeZoneId != null && $Object.hasOwnProperty.call(message, "safeZoneId"))
                     object.safeZoneId = message.safeZoneId;
+                if (message.invulnerableActive != null && $Object.hasOwnProperty.call(message, "invulnerableActive"))
+                    object.invulnerableActive = message.invulnerableActive;
+                if (message.invulnerableDuration != null && $Object.hasOwnProperty.call(message, "invulnerableDuration"))
+                    object.invulnerableDuration = options.json && !$isFinite(message.invulnerableDuration) ? $String(message.invulnerableDuration) : message.invulnerableDuration;
                 return object;
             };
 

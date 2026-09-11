@@ -246,6 +246,9 @@ message Entity {
   // Server-owned rest bank; replicated for local/remote UI and aura state.
   double well_rested_seconds = 116;
   string safe_zone_id = 117;
+  // Shared combat protection (Phase, Cleric and PvP opening protection).
+  bool invulnerable_active = 118;
+  float invulnerable_duration = 119;
 
   // Authoritative jump replication
   float jump_start_x = 81;
