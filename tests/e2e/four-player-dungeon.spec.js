@@ -7,6 +7,7 @@ import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, part
 import { selectPartyDamageBuff } from '../partyDamageRoleControls.js';
 import { selectPartyHealTarget } from '../partyHealingControls.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
+import { dungeonExpeditionBudget } from '../dungeonExpeditionTiming.js';
 import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 import { claimChapterAndContinue, EARTH_DUNGEON_CHAPTER, readChronicleChapter } from './chronicle-earth-route.js';
@@ -109,7 +110,7 @@ async function seedActor(page, credentials, character) {
 
 test('four level30 roles clear Normal Verdant through real party inputs and receive individual credit', async ({ page, browser, baseURL }, testInfo) => {
     test.skip(process.env.EIDOLON_E2E_PARTY_DUNGEON !== '1', 'Explicit disposable four-player diagnostic only');
-    test.setTimeout(2_700_000);
+    test.setTimeout(dungeonExpeditionBudget('party') + 300_000);
     requireIsolatedPartyFixture(process.env);
     const output = execFileSync('go', ['test', './internal/game', '-run', '^TestPartyBrowserFixtureCatalog$', '-count=1', '-v'], {
         cwd: 'server', env: { ...process.env, EIDOLON_PARTY_FIXTURE_CATALOG: '1' }, encoding: 'utf8', timeout: 120_000
@@ -277,7 +278,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
 
         let currentTarget, bossStart;
         let townRests = 0;
-        await playDungeonThroughInputs(tank.page, { playthrough,
+        await playDungeonThroughInputs(tank.page, { playthrough, expeditionProfile: 'party',
             // Walk the short return from a12.5-unit quake instead of spending
             //20mana on Charge every cycle; retain it for real opening gaps.
             minimumChargeDistance: 18,

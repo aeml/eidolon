@@ -6,6 +6,7 @@ import { enterAndExitDungeon, moveByGroundClick, projectEntity, readPlayerState 
 import { dungeonSpatialSnapshot } from './dungeon-spatial-snapshot.js';
 import { dungeonBossEncounter } from '../dungeonCombatEncounter.js';
 import { recoverBetweenDungeonRooms } from './dungeon-town-rest.js';
+import { createDungeonExpeditionTiming } from '../dungeonExpeditionTiming.js';
 
 // Callers own login, earned or fixture preparation, and story turn-in. The safe
 // default enters through the town guide, without grants. Only the legacy prepared
@@ -13,11 +14,12 @@ import { recoverBetweenDungeonRooms } from './dungeon-town-rest.js';
 export async function playDungeonThroughInputs(page, {
     playthrough, fullRun = true, fallbackRun = false, beforeCombat, useTownGuide = true, afterClearedRoute,
     recoverBetweenRooms = false, afterTownRecovery, recoverAfterRoom,
-    afterEncounter, afterEntry, afterGroundStep, minimumChargeDistance = 0,
+    afterEncounter, afterEntry, afterGroundStep, minimumChargeDistance = 0, expeditionProfile = 'solo',
     requiredFighterSkills = ['Iron Fortress', 'Guardian Roar', 'Whirlwind', 'Shield Slam']
 }) {
     const logPrefix = `[dungeon:${playthrough.dungeonType}]`;
-    const expeditionDeadline = Date.now() + 2_400_000;
+    const timing = createDungeonExpeditionTiming({ profile: expeditionProfile,
+        onReport: report => console.log(`${logPrefix} timing ${JSON.stringify(report)}`) });
     async function hostiles(page) {
         return page.evaluate(() => {
             const game = window.game;
@@ -32,12 +34,13 @@ export async function playDungeonThroughInputs(page, {
     }
 
     async function defeatByMouse(page, target) {
+        timing.enter('combat');
         console.log(`${logPrefix} fighting ${target.type}`);
         if (target.encounter) console.log(`${logPrefix} boss encounter ${JSON.stringify({ type: target.type, ...target.encounter })}`);
         // Tempest seed -1329185764639002788 reached Zephyrion alive with
         // continuous damage but outlasted six minutes (93,600 starting HP).
         // Allow eight minutes for functional combat; retain the 60s damage-stall
-        // watchdog and 40-minute whole-run ceiling. This is not a balance pass.
+        // watchdog and bounded profile-specific whole-run ceiling. This is not a balance pass.
         const deadline = Date.now() + (fullRun ? 480_000 : 120_000);
         let sawDamage = false;
         let lowestHealth = target.health;
@@ -143,7 +146,7 @@ export async function playDungeonThroughInputs(page, {
     }
 
     async function assertWorldUpdatesContinue(page) {
-        if (Date.now() > expeditionDeadline) throw new Error('Dungeon expedition exceeded40 minutes including town recovery');
+        timing.assertActive();
         const age = await page.evaluate(() => performance.now() - window.__verdantLastState);
         expect(age, 'authoritative world updates stalled during dungeon progression').toBeLessThan(10_000);
     }
@@ -199,6 +202,7 @@ export async function playDungeonThroughInputs(page, {
         // Walk actual joins through the chosen boss rooms. The fallback switch
         // selects geometry only: no inside waypoint, kill or health override.
         for (let routeIndex = 0; routeIndex < bossRooms[lastBoss]; routeIndex++) {
+            timing.enter('traversal');
             for (const destination of routes[routeIndex]) {
                 let deadline = Date.now() + 180_000;
                 while (true) {
@@ -214,6 +218,7 @@ export async function playDungeonThroughInputs(page, {
                         deadline += Date.now() - combatStarted;
                         defeated.add(nearby.type);
                         if (afterEncounter) await afterEncounter(page, nearby);
+                        timing.enter('traversal');
                         continue;
                     }
                     const player = await readPlayerState(page);
@@ -223,17 +228,21 @@ export async function playDungeonThroughInputs(page, {
                     await tryDungeonGroundStep(() => moveByGroundClick(page, (destination.x - player.x) * scale,
                         (destination.z - player.z) * scale, { allowJumpFallback: false }));
                     if (afterGroundStep) await afterGroundStep(page);
+                    timing.count('leaderGroundSteps');
                 }
             }
             // Only after traversing a completed room. A living pack or boss
             // keeps its original fight deadline; no recovery within that loop.
             const roomIndex = layout.corridors[routeIndex].toRoomIndex;
+            timing.count('roomTraversals');
             const recoveryContext = { playthrough, roomIndex,
                 nearbyHostiles: (await hostiles(page)).some(entity => entity.distance < 40) };
+            timing.enter('recovery'); // Includes the eligibility check even when no trip is needed.
             const recovered = roomIndex < bossRooms[lastBoss] && (recoverAfterRoom
                 ? await recoverAfterRoom(page, recoveryContext)
                 : recoverBetweenRooms && await recoverBetweenDungeonRooms(page, recoveryContext));
             if (recovered) {
+                timing.count('townReturns');
                 if (afterTownRecovery) await afterTownRecovery(page, { roomIndex });
                 // Rewalk all actual joins from the real entrance. Preserve the
                 // original layout, defeated set, reward baseline and total
@@ -241,6 +250,7 @@ export async function playDungeonThroughInputs(page, {
                 routeIndex = -1;
             }
         }
+        timing.enter('verification');
         const expectedBosses = playthrough.bosses.slice(0, lastBoss + 1);
         expect([...defeated]).toEqual(expect.arrayContaining(expectedBosses));
         const summary = await page.evaluate(() => window.game.currentDungeonRoomState);
@@ -257,7 +267,7 @@ export async function playDungeonThroughInputs(page, {
         // ordinary Recall. Recovery diagnostics must observe spent pools here,
         // not infer them from already-restored town state.
         if (afterClearedRoute) await afterClearedRoute(page);
-    } });
+    } }).finally(() => timing.report('route-exit'));
     if (fullRun) {
         await enterAndExitDungeon(page, { ...playthrough, useTownGuide, beforeExit: async () => {
             expect(await page.evaluate(() => window.game.currentDungeonLayout.generationSeed)).toBe(completedRun.seed);
@@ -268,4 +278,5 @@ export async function playDungeonThroughInputs(page, {
             console.log(`${logPrefix} completed-run recall/re-entry preserved seed, cleared bosses and gold`);
         } });
     }
+    timing.report('complete');
 }

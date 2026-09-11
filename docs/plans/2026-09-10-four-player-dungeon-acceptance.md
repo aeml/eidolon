@@ -679,3 +679,39 @@ Screenshot pixels are not redacted; do not share the native QA-name screenshot
 as anonymized evidence. Owned containers and18580/18581/41980 listeners cleared.
 Log `/tmp/eidolon-four-role-triage-native.log`; use the sanitized archive for
 inspection. Subsequent Spin acceptance uses its separate worktree, not this source.
+
+## Separate party allowance and phase timing — September11 02:21
+
+After the terminal40-minute53491 result, the harness now has fixed explicit
+profiles: solo remains40minutes; four-browser party gets120minutes, plus5minutes
+for preparation/turn-ins/cleanup at the outer Playwright timeout. The previous
+run survived and continued real travel but exhausted its solo-sized overall
+ceiling before boss2. This three-times overall automation allowance is bounded,
+not a promise that a human dungeon should take two hours, nor evidence that
+the current return-trip burden is fun or balanced.
+
+Only the party caller opts in. The8-minute full-run encounter bound,60-second
+damage-stall watchdog,3-minute destination traversal bound,15-second formation
+bound, deaths, actual inputs/resources/gear, all rooms/bosses, whole-party credit,
+manual individual claims and fresh-login handoff assertions remain unchanged.
+The80% recovery decision is unchanged. No timer extends because of a phase
+change or town trip; unknown profiles are rejected, with no environment override.
+
+The monotonic harness clock records entry, traversal, combat, recovery and
+verification durations, plus successful leader-ground-step, room-traversal and
+town-return counts. Traversal includes browser/formation overhead; recovery
+includes the eligibility check even when no trip occurs. Phase transitions and
+30-second heartbeat checks use the existing loop rather than a second polling
+timer. Final route-exit data is printed on failure too; the last phase can include
+the helper's cleanup Recall. These are harness timings, not measured movement
+speed, physical-phone performance or pure server-combat durations. Logs contain
+only fixed phase names/counters/times, not actor IDs or credentials.
+
+22476 initially failed only the unwired route contract (1/5,1.158s). After actual
+route integration,95441 passed110tests/5suites1.562s, full lint and single-route
+discovery. Fake-clock tests cover unchanged solo budget, explicit party budget,
+expiry boundaries, repeated recovery not resetting total time, immutable report
+snapshots and heartbeat throttling. Logs `/tmp/eidolon-party-timing-{red,focused,
+lint,discovery}.log`. This change has not yet run natively and does not close the
+full-clear gate. Do not start its long native attempt over another heavy gate
+or the queued production release's browser checks on the shared runner.
