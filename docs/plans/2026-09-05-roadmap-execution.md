@@ -5,7 +5,59 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 07:05 UTC
+## Current checkpoint — September 11, 18:08 UTC
+
+The user explicitly clarified that "cancel" applied ONLY to the soak test.
+Resume the full roadmap implementation; leave that interrupted soak stopped.
+The cancellation clarification blocker is resolved. This turn is PROGRESS:
+implemented and committed explosive receiving-defense fixes, captured final
+domain61 acceptance and started full current-source server regression.
+
+- Domain61 CI34563572711 attempt2 is confirmed SUCCESS. Final job103176152667
+  passed saved/anonymous character, four-class/remote animation, town recovery/
+  Well Rested, and evidence sanitization/upload. Prior independent public checks
+  matched client/backend33c2faf4/Alpha1.0.61. Completed acceptance and explicit
+  soak scope are recorded in40ca60a8 in the next-gameplay worktree (previously
+  e226c9f8). No new gameplay publication from this worktree.
+- Soak34558600459 is terminal FAILURE after the earlier runner interruption;
+  it remains stopped at the user's request. Do not restart it, claim24h success,
+  or interpret this as cancellation of the roadmap or a permanent waiver of
+  future concurrency validation. No runner-service changes this turn.
+- New user website commit4ed500462236aaa3c7e543dd9d9cbd76a44426e3 has its own
+  website CI34630275815 SUCCESS and game CI34630275716 ACTIVE (server/client
+  and browser shards2/3,3/3 passed; shard1/3 still running). Preserve this commit
+  during the next release integration. Do not cancel its run or overwrite it
+  with an older isolated branch. Keep local GPU free for its predeploy/live QA.
+-56153 recovered TERMINAL0 on frozen695578b0: root25.683s, game391.517s,
+  loadtest1.026s, database1.128s, lifecycle1.029s all passed under Go race.
+  Acceptance is now recorded in the explosive follow-up branch.
+- Explosive WT `/tmp/eidolon-explosive-defense-20260911`, branch
+  work/explosive-defense-20260911, clean frozen9446887cf4e8e57744a9123f218b9720e4fd24fb.
+  Initial REDrace0.282s proved paid explosive shields ignore duel opponents and
+  blast through solid dungeon walls. Now uses ordinary hostility, captured
+  identity/origin, canonical wall/body checks, once-only PvP budget then receiver
+  defenses. Basic/slam reactions are queued after HP/death bookkeeping instead
+  of temporarily unlocking before subtraction. Normal death/credit retained.
+-2717 focused PASSrace1.471s;17149 broader shield/reflect/slam/Dark King/
+  impact/near-death PASS34.456s.17778 failed7.352s solely because the added lethal
+  duel test observed AFTER scheduled restoration; corrected observation waits
+  for elimination and drains the attack while stopping its disposable world's
+  later restore.5172 corrected three-repeat PASS2.307s.93891 expanded three-repeat
+  PASS2.321s includes real parallel paid Fireballs, one blast each/exact71HP loss,
+  body-edge/outside controls, chained death, PvP caps/reductions, old origin/recast,
+  current party/round/disconnect exclusions. Full details/unreleased note in
+  2026-09-11-explosive-receiving-defenses.md; logs `/tmp/eidolon-explosive-defense-*`.
+- Full Go-race93579 ACTIVE on unchanged9446887c, nice10/GOMAXPROCS2,
+  log `/tmp/eidolon-explosive-defense-full-server.log`. Recover this exact handle;
+  do not mutate that source or launch another local heavy/browser job while it
+  runs. No need to rerun unchanged client solely for this server-only patch.
+- Required next work remains raw/inherited wound outgoing/PvP budgets, current
+  merged-source/native/party/save/talent/phone/campaign/balance acceptance and
+  each version's patch notes/deployment. Full four-player first-dungeon clear
+  and manual follow-up turn-ins are still unproven; casino/version scope is
+  unchanged. Do not mark the full roadmap complete. Root ledger MUST NOT PUSH.
+
+## Previous checkpoint — September 11, 07:05 UTC
 
 Previous goal turn was PROGRESS. This turn is PROGRESS: diagnosed actual runner
 interruption, restarted only final live QA, accepted the combined wound server
