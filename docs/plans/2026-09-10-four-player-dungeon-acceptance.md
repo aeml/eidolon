@@ -563,3 +563,40 @@ bounded crowded searches and ordinary movement failures are covered.
 lint and single-route discovery. Logs
 `/tmp/eidolon-party-loop-final-{focused,lint,discovery}.log`. Native full-clear,
 manual turn-ins/freshlogin, earned progression and release acceptance remain open.
+
+## Current complete-route run reaches Matron, then loses the tank —96841
+
+On clean46596437, seed7111779750819871948/gen2/Normal30/no fallback,96841
+terminated1 during Briar Matron. This is not a full dungeon-clear pass. It
+passed Warden and five complete all-four town-recovery/individual-guide resumes
+with exact progress preservation, traversing the intervening cleared route.
+No formation-loop failure was observed on this partial run; later rooms are
+unproven. The original four-role fixture, ordinary inputs and all deadlines held.
+
+Warden boss-only damage/taken: Fighter4947/2373, Wizard3896/368,
+Rogue6181/2208; Cleric4742effective ally healing/2024taken. All four survived
+that boss. Matron started at16800HP; last periodic report was10429HP with
+tank301/855HP and252MP. The next explicit failure was Fighter death, with
+Cleric406MP, distance10.2366fromtank,14Embrace/16Light casts across the run
+and2110boss-fight ally healing. Final evidence also latched Cleric/Rogue deaths;
+Wizard survived. Fighter's final940HP/610MP reflects subsequent recovery and
+must not be cited as survival of the fight. All four held1014Gold.
+
+Fullrun damage/taken F15797/6042,W11490/1088,R18135/4822;
+C8977effectivehealing/3890taken. No rejected ability results were recorded.
+The final healer-decision ring repeatedly selected the lowest-health Rogue
+27–28units away, alternating approach and warning-hold-out-of-range while its
+healing cooldown was ready and mana remained391–405. Recent damage records show
+repeated191–194physical hits while recipients remained inside12.5radius warnings.
+Client timestamps are not authoritative dodge receipts. Current escape planning
+checks floor geometry but not party bodies; current heal selection considers
+lowest HP before reachability. These are concrete controller investigation leads,
+not proof of a resource shortage, required gear increase, or unfair boss damage.
+Retain both the targeting decision trace and movement/impact evidence before
+changing party tactics or balance. No new controller/gameplay correction yet.
+
+Log`/tmp/eidolon-four-role-route-native.log`; archived report/results and log in
+`/tmp/eidolon-four-role-route-proof-kGYqQu`. Wrapper sanitized its artifacts;
+the copied log was additionally scanned/redacted with discovered QA identifiers,
+remainingQA-prefix0. Exact owned containers/18580/18581/41980 ports cleared.
+The next run must still prove fullclear, each manual wizard claim and fresh login.
