@@ -32,7 +32,7 @@ const description = attribute(findTag('name', 'description'), 'content');
 assert(description?.length > 50, 'Write a useful description');
 assert(!/noindex|nofollow/i.test(attribute(findTag('name', 'robots'), 'content')));
 assert.match(html, /<html\s+lang="en"/);
-const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)];
+const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)].filter(match => match[1].includes('application/ld+json'));
 assert.equal(scripts.length, 1, 'Keep structured data in one JSON-LD graph');
 assert.match(scripts[0][1], /type="application\/ld\+json"/);
 const schema = JSON.parse(scripts[0][2]);

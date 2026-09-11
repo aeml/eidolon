@@ -13,4 +13,6 @@ await mkdir(output, { recursive: true });
 for (const entry of await readdir(source)) {
   await cp(join(source, entry), join(output, entry), { recursive: true });
 }
+// Share the same production tag configuration as the independently deployed game.
+await cp(fileURLToPath(new URL('../../src/analytics/GoogleAnalytics.js', import.meta.url)), join(output, 'GoogleAnalytics.js'));
 console.log('Website built successfully → website/dist');

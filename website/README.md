@@ -17,7 +17,7 @@ Connect this Git repository to a new **Pages** project with these settings:
 
 The output directory is relative to the root directory: the resulting repository path is **`website/dist`**. No environment variables, game-server secrets, or runtime functions are required. The website has no third-party dependencies.
 
-After the first deployment, add `eidolonrealms.com` under the Pages project's **Custom domains** and complete Cloudflare's domain setup. Keep `play.eidolonrealms.com` pointed at the game deployment. Optionally limit Pages build watch paths to `website/*` so unrelated game changes do not rebuild this site.
+After the first deployment, add `eidolonrealms.com` under the Pages project's **Custom domains** and complete Cloudflare's domain setup. Keep `play.eidolonrealms.com` pointed at the game deployment. If limiting Pages build watch paths, include both `website/*` and `src/analytics/GoogleAnalytics.js` so changes to the shared tag also rebuild the website.
 
 Cloudflare reference: [Build configuration](https://developers.cloudflare.com/pages/configuration/build-configuration/).
 
@@ -47,7 +47,7 @@ From the repository root, the build can also be run with `npm --prefix website r
 - `src/_headers`: Cloudflare Pages security and asset-cache headers.
 - `src/404.html`, `robots.txt`, and `sitemap.xml`: static hosting and discovery support.
 
-The site uses system fonts and no executable client JavaScript, analytics, cookies, or remote asset services. The inline JSON-LD script is structured data only.
+The site uses system fonts, lightweight GA4 analytics, and no remote visual assets. The inline JSON-LD script is structured data only. The shared analytics loader in `../src/analytics/GoogleAnalytics.js` is copied into the public build; the complete repository checkout must be present. See [analytics events and reporting setup](../docs/ANALYTICS.md).
 
 ## Technical SEO
 
