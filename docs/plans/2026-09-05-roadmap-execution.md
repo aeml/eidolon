@@ -5,7 +5,52 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 18:55 UTC
+## Current checkpoint — September 11, 19:01 UTC
+
+Previous turn was PROGRESS. This turn is PROGRESS: prepared the numbered62
+candidate with explicit scope, preserved patch history and matching defaults;
+confirmed existing remote4ed deployment and the ongoing wound regression.
+The full roadmap remains incomplete. Only the interrupted soak stays stopped.
+
+- Next-gameplay WT `/tmp/eidolon-gameplay-after61-20260911` is clean frozen
+  eb091cda5058974054d75df9b9d4e64f75610c79, following31501ede integration record.
+  Candidate Alpha1.0.62 "adventure together" aligns login/package/lock/manifest/
+  server/container/deploy/CI/disposable-QA versions. It retains all earlier
+  patch notes and the user's commits throughdea1795b. No push/publication yet.
+- New player-facing62 notes cover whole-instance party credit/downed teammates,
+ 110-unit overworld sharing and individual turn-ins; stun/root/slow and observer
+  status; compact party healing/support admission; Forge/equipment/socket refresh,
+  held-weapon clearance; shared rested-aura rendering; move-only input, trained
+  Guardian Roar/Executioner Spin/Purifying Wave area; Ilyra ready guidance and
+  empty fresh stashes. Existing stats/saves/town recovery are not rewritten.
+- Explicit release doc2026-09-11-release62-adventure-together.md lists remaining
+  full/local/native/CI/live gates. Later primary campaign/Fighter/receiving/
+  explosive/wound fixes are NOT included; do not advertise them as62 content.
+  Full1.1 dungeon/earned-four-role/save/phone and later milestones remain open.
+-51165 focused current versioned PASS280tests/4suites1.695s (version/history/
+  runtime alignment, analytics, QA defaults and declared browser plan). Log
+  `/tmp/eidolon-release62-focused.log`. This is not full regression or native
+  browser execution. Do not reuse old8cf72eb2 full client as current acceptance.
+-86822 is still confirmed ACTIVE on unchangedbe6d43ae, same log
+  `/tmp/eidolon-wound-pvp-full-server.log`: root22.512s, loadtest1.023s and
+  database1.128s passed; game pending. Keep source frozen; do not rerun on an
+  observation timeout. When terminal, retain result then run the clean62 full
+  client/lint/server sequence as the next single local heavy job. If the wound
+  run fails, preserve evidence and inspect cause before mutation/retest.
+- Remote CI34630275716/4ed50046 advanced: all hosted tests/browser shards,
+  native predeploy, QA-input checks, SSH and Pages deploy PASSED. Final live QA
+  ACTIVE on worker185754. Independently queried both public endpoints: exact
+ 4ed500462236aaa3c7e543dd9d9cbd76a44426e3 /Alpha1.0.61; server ok/database ready.
+  This is the user's existing release, not62 or the later analytics commit.
+  Do not call final native acceptance complete until the job passes. Keep local
+  GPU free. Newestdea1795b CI34631386195 was pending behind this run.
+- Next release must still pass complete current-source client/lint/server,
+  declared browser partition and native character/equipment/party/rest routes,
+  preserve any newer remote changes, and then publish/verify live through normal
+  gates. No bypass, no soak restart and no root-ledger push. Do not mistake a
+  candidate label or patch-note entry for a deployment.
+
+## Previous checkpoint — September 11, 18:55 UTC
 
 Previous turn was PROGRESS. This turn is PROGRESS: accepted full explosive-shield
 server regression, reproduced/repaired wound PvP budgets and Magma wall spread,
