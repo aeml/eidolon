@@ -59,3 +59,21 @@ Support buffs now expire correctly on friendly NPCs. Stuns no longer pause
 offline buff lifetimes, and an expired Divine Intervention can no longer rescue
 a character. Its shorter Guardian protection and longer rescue window expire
 independently.
+
+## Same recipient gap in Fighter and Wizard support
+
+Paid Guardian Roar and Time Warp casts reproduced four additional NPC expiry
+failures (with/without stun); player and active controls passed. RED0.012s:
+`/tmp/eidolon-recipient-support-other-red.log`.
+
+The shared helper now covers these two support buffs too, replacing their old
+player-only expiry blocks. All five skills retain actual payment/application,
+nonzero equipped defense or speed/cadence benefits and baseline restoration
+assertions. Exact/missing/future and repeat-update controls cover simultaneous
+support buffs. Three-repeat expanded Go race15.459s PASS, including Guardian
+Roar and Time Warp regressions: `/tmp/eidolon-recipient-support-final.log`.
+
+Unreleased note addition: Guardian Roar and Time Warp also expire properly on
+friendly NPCs. Full native/save and remaining consumers stay open. Read-only
+next lead: Renewal's tick handler appears player-only despite accepting NPCs;
+reproduce it before changing it, and do not claim this expiry patch fixes it.

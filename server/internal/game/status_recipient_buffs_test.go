@@ -5,12 +5,18 @@ import (
 	"time"
 )
 
-func TestPaidRecipientClericBuffExpiry(t *testing.T) {
+func TestPaidRecipientSupportBuffExpiry(t *testing.T) {
 	for _, kind := range []EntityType{TypePlayer, TypeNPC} {
 		for _, stunned := range []bool{false, true} {
-			for _, skill := range []string{"Blessing of Resolve", "Blessing of Zeal", "Divine Intervention"} {
+			for _, skill := range []string{"Blessing of Resolve", "Blessing of Zeal", "Divine Intervention", "Guardian Roar", "Time Warp"} {
 				t.Run(string(kind)+"/"+skill+"/stunned="+map[bool]string{false: "false", true: "true"}[stunned], func(t *testing.T) {
 					w, source, _, target := clericDurationFixture(t, skill)
+					if skill == "Guardian Roar" {
+						source.SubType = "Fighter"
+					}
+					if skill == "Time Warp" {
+						source.SubType = "Wizard"
+					}
 					target.Type = kind
 					target.Equipment["chest"] = Item{Stats: map[string]int{"defense": 100}}
 					target.RecalculateStats()
@@ -26,6 +32,10 @@ func TestPaidRecipientClericBuffExpiry(t *testing.T) {
 							return target.BlessingResolveActive
 						case "Blessing of Zeal":
 							return target.ZealActive
+						case "Guardian Roar":
+							return target.GuardianRoarActive
+						case "Time Warp":
+							return target.TimeWarpActive
 						default:
 							return target.DivineInterventionActive && target.DivineInterventionGuardian
 						}
@@ -33,10 +43,10 @@ func TestPaidRecipientClericBuffExpiry(t *testing.T) {
 					if !active() {
 						t.Fatal("paid cast did not apply to recipient")
 					}
-					if skill == "Blessing of Resolve" && target.Defense <= defense {
+					if (skill == "Blessing of Resolve" || skill == "Guardian Roar") && target.Defense <= defense {
 						t.Fatal("paid Resolve did not increase actual defense")
 					}
-					if skill == "Blessing of Zeal" && (target.Speed <= speed || target.AttackSpeed >= attackSpeed) {
+					if (skill == "Blessing of Zeal" || skill == "Time Warp") && (target.Speed <= speed || target.AttackSpeed >= attackSpeed) {
 						t.Fatal("paid Zeal did not improve actual speed/cadence")
 					}
 					target.Stunned = stunned
@@ -48,8 +58,9 @@ func TestPaidRecipientClericBuffExpiry(t *testing.T) {
 					past := time.Now().Add(-time.Second)
 					target.BlessingResolveEndTime, target.ZealEndTime = past, past
 					target.DivineInterventionEndTime, target.DivineInterventionGuardTime = past, past
+					target.GuardianRoarEndTime, target.TimeWarpEndTime = past, past
 					w.updateEntity(target, 0, nil, &deferredActions{})
-					if target.BlessingResolveActive || target.ZealActive || target.DivineInterventionActive || target.DivineInterventionGuardian {
+					if target.BlessingResolveActive || target.ZealActive || target.DivineInterventionActive || target.DivineInterventionGuardian || target.GuardianRoarActive || target.TimeWarpActive {
 						t.Fatal("expired paid support effects remain on recipient")
 					}
 					if target.Defense != defense || target.Speed != speed || target.AttackSpeed != attackSpeed {
@@ -61,7 +72,7 @@ func TestPaidRecipientClericBuffExpiry(t *testing.T) {
 	}
 }
 
-func TestRecipientClericBuffDeadlineBoundaries(t *testing.T) {
+func TestRecipientSupportBuffDeadlineBoundaries(t *testing.T) {
 	for _, deadlineKind := range []string{"future", "exact", "missing"} {
 		t.Run(deadlineKind, func(t *testing.T) {
 			target := newTestPlayer("recipient-boundary", "Fighter")
@@ -77,24 +88,26 @@ func TestRecipientClericBuffDeadlineBoundaries(t *testing.T) {
 				deadline = time.Time{}
 			}
 			target.BlessingResolveActive, target.ZealActive = true, true
+			target.GuardianRoarActive, target.TimeWarpActive = true, true
 			target.DivineInterventionActive, target.DivineInterventionGuardian = true, true
 			target.BlessingResolveEndTime, target.ZealEndTime = deadline, deadline
+			target.GuardianRoarEndTime, target.TimeWarpEndTime = deadline, deadline
 			target.DivineInterventionEndTime, target.DivineInterventionGuardTime = deadline, deadline
 			target.RecalculateStats()
-			expireRecipientClericBuffsLocked(target, now)
+			expireRecipientSupportBuffsLocked(target, now)
 			if deadlineKind == "future" {
-				if !target.BlessingResolveActive || !target.ZealActive || !target.DivineInterventionActive || !target.DivineInterventionGuardian {
+				if !target.BlessingResolveActive || !target.ZealActive || !target.DivineInterventionActive || !target.DivineInterventionGuardian || !target.GuardianRoarActive || !target.TimeWarpActive {
 					t.Fatal("future support buff expired early")
 				}
 				return
 			}
-			if target.BlessingResolveActive || target.ZealActive || target.DivineInterventionActive || target.DivineInterventionGuardian {
+			if target.BlessingResolveActive || target.ZealActive || target.DivineInterventionActive || target.DivineInterventionGuardian || target.GuardianRoarActive || target.TimeWarpActive {
 				t.Fatal("boundary support flags not cleared")
 			}
-			if !target.BlessingResolveEndTime.IsZero() || !target.ZealEndTime.IsZero() || !target.DivineInterventionEndTime.IsZero() || !target.DivineInterventionGuardTime.IsZero() {
+			if !target.BlessingResolveEndTime.IsZero() || !target.ZealEndTime.IsZero() || !target.DivineInterventionEndTime.IsZero() || !target.DivineInterventionGuardTime.IsZero() || !target.GuardianRoarEndTime.IsZero() || !target.TimeWarpEndTime.IsZero() {
 				t.Fatal("expired deadline retained")
 			}
-			expireRecipientClericBuffsLocked(target, now.Add(time.Second))
+			expireRecipientSupportBuffsLocked(target, now.Add(time.Second))
 			if target.Defense != defense || target.Speed != speed || target.AttackSpeed != cadence {
 				t.Fatal("support expiry compounded stats on repeat update")
 			}

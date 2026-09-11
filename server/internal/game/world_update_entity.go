@@ -81,7 +81,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		// These recipient-owned effects also apply to enemies/NPCs. Their
 		// timers must advance even when crowd control prevents AI updates.
 		expireTargetDebuffsLocked(e, now)
-		expireRecipientClericBuffsLocked(e, now)
+		expireRecipientSupportBuffsLocked(e, now)
 		stunned := e.Stunned
 		e.Mu.Unlock()
 		if dead || (stunned && e.Type == TypeEnemy) {
@@ -1027,16 +1027,12 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				e.RecalculateStats()
 			}
 			expireTargetDebuffsLocked(e, now)
-			expireRecipientClericBuffsLocked(e, now)
+			expireRecipientSupportBuffsLocked(e, now)
 			if e.IronFortressActive && now.After(e.IronFortressEndTime) {
 				e.IronFortressActive = false
 				e.IronFortressThorns = false
 				e.IronFortressImmovable = false
 				e.IronFortressRuneID = ""
-				e.RecalculateStats()
-			}
-			if e.GuardianRoarActive && now.After(e.GuardianRoarEndTime) {
-				e.GuardianRoarActive = false
 				e.RecalculateStats()
 			}
 			if e.SerratedEdgesActive && now.After(e.SerratedEdgesEndTime) {
@@ -1049,10 +1045,6 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			if e.SpellFocusActive && now.After(e.SpellFocusEndTime) {
 				e.SpellFocusActive = false
 				e.SpellFocusEndTime = time.Time{}
-			}
-			if e.TimeWarpActive && now.After(e.TimeWarpEndTime) {
-				e.TimeWarpActive = false
-				e.RecalculateStats()
 			}
 			if e.SwiftActive && now.After(e.SwiftEndTime) {
 				e.SwiftActive = false

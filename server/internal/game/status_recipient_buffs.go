@@ -4,8 +4,18 @@ import "time"
 
 // Caller holds the recipient lock. Support spells may affect NPCs as well as
 // players; their deadlines must not depend on which actor owns the update.
-func expireRecipientClericBuffsLocked(target *Entity, now time.Time) {
+func expireRecipientSupportBuffsLocked(target *Entity, now time.Time) {
 	statsChanged := false
+	if target.GuardianRoarActive && !now.Before(target.GuardianRoarEndTime) {
+		target.GuardianRoarActive = false
+		target.GuardianRoarEndTime = time.Time{}
+		statsChanged = true
+	}
+	if target.TimeWarpActive && !now.Before(target.TimeWarpEndTime) {
+		target.TimeWarpActive = false
+		target.TimeWarpEndTime = time.Time{}
+		statsChanged = true
+	}
 	if target.ZealActive && !now.Before(target.ZealEndTime) {
 		target.ZealActive = false
 		target.ZealEndTime = time.Time{}
