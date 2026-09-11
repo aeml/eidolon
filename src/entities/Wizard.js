@@ -8,10 +8,11 @@ import { applyOfflineAbilityHit } from '../core/AbilityCritical.js';
 import { spawnEffectSceneFallback, spawnSceneFallbackBeam } from './EffectSceneFallback.js';
 import { getAbilityAoeRadius } from '../skills/abilityRadii.js';
 import { getAbilityRange, getTeleportCastRange, clampWizardGroundTarget, WIZARD_GROUND_ABILITIES } from '../core/AbilityRange.js';
-import { clipDungeonEffectSegment, resolveDungeonBeamEndpoint } from '../skills/dungeonEffectGeometry.js';
+import { clipDungeonEffectSegment, resolveDungeonBeamEndpoint, resolveDungeonMovementEndpoint } from '../skills/dungeonEffectGeometry.js';
 import { findOfflineAbilityTarget } from '../skills/offlineAbilityTargeting.js';
 import { getArcaneShieldTraining } from '../core/ArcaneShieldTraining.js';
 import { applyOfflineTimeWarp, getWizardEffectDuration } from './WizardSupportAbilities.js';
+import { applyOfflineTeleportWarp, snapshotOfflineTeleportWarp } from '../skills/offlineTeleportWarp.js';
 
 // Match the server's next-damage-spell contract. Utility casts neither consume
 // nor receive Spell Focus, and failed admission must leave the charge intact.
@@ -528,11 +529,12 @@ export class Wizard extends Actor {
             this.spawnVisualEffect(gameEngine, this.position, 0x00ffff, "burst");
             
             const maxRange = getTeleportCastRange(this);
-            const dist = this.position.distanceTo(targetVector);
+            const dist = Math.hypot(targetVector.x - this.position.x, targetVector.z - this.position.z);
             
             let finalTarget = targetVector.clone();
+            finalTarget.y = this.position.y;
             if (dist > maxRange) {
-                const dir = new THREE.Vector3().subVectors(targetVector, this.position).normalize();
+                const dir = new THREE.Vector3().subVectors(finalTarget, this.position).normalize();
                 finalTarget = this.position.clone().add(dir.multiplyScalar(maxRange));
             }
             
@@ -542,12 +544,23 @@ export class Wizard extends Actor {
                 finalTarget.x = Math.max(-3000, Math.min(3000, finalTarget.x));
                 finalTarget.z = Math.max(-2200, Math.min(1000, finalTarget.z));
             } else {
-                gameEngine.collisionManager?.constrainToDungeonWalkableArea?.(finalTarget, this.radius);
+                const rects = gameEngine.currentDungeonLayout?.walkRects;
+                if (Array.isArray(rects) && rects.length) {
+                    const landing = resolveDungeonMovementEndpoint(rects, this.position, finalTarget);
+                    finalTarget.x = landing.x;
+                    finalTarget.z = landing.z;
+                } else {
+                    gameEngine.collisionManager?.constrainToDungeonWalkableArea?.(finalTarget, this.radius);
+                }
             }
 
+            const warp = snapshotOfflineTeleportWarp(this, gameEngine);
+            const departure = this.position.clone();
             this.position.copy(finalTarget);
             if (this.mesh) this.mesh.position.copy(this.position);
             this.lastOfflineTeleportAt = Date.now();
+            applyOfflineTeleportWarp(this, departure, gameEngine, warp);
+            applyOfflineTeleportWarp(this, this.position.clone(), gameEngine, warp);
             
             // Arrival Effect
             this.spawnVisualEffect(gameEngine, this.position, 0x00ffff, "burst");

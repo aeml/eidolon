@@ -31,3 +31,26 @@ regression, native purchase/save/gameplay and versioned deployment remain due.
 Non-damaging utility Masteries need an explicit coherent benefit review; this
 damage-rune repair does not make base Teleport a damaging spell or repair
 Spell Focus/Time Warp Masteries.
+
+## Offline Warp and landing follow-up
+
+29851 reproduced six missing-damage failures with eight controls passing1.773s.
+Offline Warp now snapshots the same damage/radius training for both endpoints,
+uses actual recipient damage/shields, excludes nonhostile/dead/remote/inactive/
+other-instance actors and respects each burst's canonical dungeon geometry.
+It preserves Focus and has no multiplayer prediction damage. Four suites76tests
+passed1.381s plus full lint (46901). This does not implement the Phase rune.
+
+Landing probes2979 then reproduced two further failures0.709s: Teleport could
+jump between disjoint room floors, and a12unit horizontal destination40units
+below the actor incorrectly shortened movement to4.31units while changing height.
+The offline movement now uses the existing server-matching canonical-floor
+endpoint resolver, horizontal range and preserved actor height. Arrival burst
+uses the actual clipped destination; real doorways still allow travel/damage.
+Four suites79tests passed1.305s plus full lint (40912), with14original controls
+and new movement/height cases retained. No runtime state bypass in native QA.
+
+Logs `/tmp/eidolon-offline-warp-{red,green,landing-red,landing-green,lint}-20260911.log`.
+Full integration remains required. Phase invulnerability/set charges, visual
+burst boundary/remote parity, native gameplay/save and versioned publication are
+still open. These local passes do not establish completeTeleport or1.1acceptance.
