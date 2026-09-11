@@ -5,7 +5,39 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 05:40 UTC
+## Current checkpoint — September 11, 05:48 UTC
+
+Previous turn was PROGRESS. Current turn is PROGRESS: offline Shield Slam rune
+implementation and actual server stun-overlap repair, with focused acceptance.
+Original roadmap and required live/native acceptance remain active.
+
+- New `/tmp/eidolon-fighter-rune-parity-20260911`, branch
+  work/fighter-rune-parity-20260911, clean825f9b0c atopf2c1f468. Shield Slam now
+  uses aimed planar/body-aware cone, hostile/wall/immunity/authority checks,
+  server base damage, Reverberation and Fortify. Fortify stacks each outgoing
+  hit/crit once, misses do not refresh, normal receiving/update paths absorb/
+  expire it.28706 RED11fail/1pass1.020s. Initial green had one exact-float
+  assertion13.499999999999998vs13.5; corrected8-decimal tolerance.71180 final
+  PASS113tests/5suites2.862s +lint; positive capacity, damage, expiry, authority,
+  duplicate-target and missed-cast controls. Not native/save/full acceptance.
+-32032 actual paid Seismic->Shield Slam RED0.612s: shorter second stun replaced
+  stronger first. Immune control passed. Common Fighter cone now retains longer
+  active stun;80299 three-repeat focused racePASS26.798s with previous duration/
+  party/Charge/directional-wall/enemy-lifecycle cases. Full logs and exact scope
+  in2026-09-11-shield-slam-offline-runes.md. Separate source-audit question about
+  skill receiving-side shielding versus basic attacks is recorded for actual
+  reproduction; it is not claimed tested/fixed by this rune patch.
+- Prior full65176 confirmed ACTIVE on frozenf2c1f468: client339suites/4753tests
+  195.965s PASS, lint passed, server game pending. It cannot cover825f9b0c. No
+  second local full/heavy run started. Recover exact handle before further full
+  regression; no source mutation in its Charge/Earthshaker worktree.
+- Domain61 CI34563572711 remains in progress: client/server plus hosted browser
+  shards2/3 and3/3 passed; shard1/3 still running anonymous smoke. Native
+  predeploy/deploy/live acceptance follow. Soak remains untouched; no further
+  cancellation or publication. No new-domain playable/live61 claim. Root ledger
+  must never be pushed; isolated Fighter stages are not in primary or releases.
+
+## Previous checkpoint — September 11, 05:40 UTC
 
 Previous turn was PROGRESS (approved queue replacement). Current turn is
 PROGRESS through full preceding Fighter acceptance and offline Earthshaker rune
