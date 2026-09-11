@@ -72,7 +72,10 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 				stunDuration += time.Second
 			}
 			stunDuration = resolveAbilityEffectDuration(player, skillName, stunDuration)
-			totalDamage := w.damageFighterCone(player, targetX, targetZ, 4.0, math.Pi/4, damage, stunDuration, 1.0, impacts, skillName)
+			// The shield branch needs a threat tool before Guardian Roar unlocks.
+			// Match Sweeping Strike's threat premium, without increasing damage,
+			// Fortify absorption or overriding boss crowd-control immunity.
+			totalDamage := w.damageFighterCone(player, targetX, targetZ, 4.0, math.Pi/4, damage, stunDuration, 2.0, impacts, skillName)
 			if runeID == "shieldslam_fortify" && totalDamage > 0 {
 				// The combat pipeline already provides a replicated absorb shield.
 				player.ArcaneShieldActive = true

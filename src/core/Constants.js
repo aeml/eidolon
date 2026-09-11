@@ -130,7 +130,7 @@ export const CONSTANTS = {
             BranchA: {
                 name: "Shield & Mitigation",
                 Tier2: { name: "Whirlwind", desc: "Spin around dealing damage to all nearby enemies." },
-                Tier3: { name: "Shield Slam", desc: "AoE cone threat + minor stun." },
+                Tier3: { name: "Shield Slam", desc: "Cone strike generating 2× normal threat from damage dealt; briefly stuns non-immune enemies." },
                 Tier4: { name: "Iron Fortress", desc: "Flat damage reduction for X seconds after Charge." },
                 Tier5: { name: "Guardian Roar", desc: "Large-radius taunt + group damage reduction buff." }
             },
