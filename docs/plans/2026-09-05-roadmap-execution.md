@@ -5,7 +5,60 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 20:44 UTC
+## Current checkpoint — September 11, 20:52 UTC
+
+Previous goal turn was PROGRESS. This turn is PROGRESS: recovered a real native
+party failure, preserved evidence and narrowed input/positioning leads; repaired
+live report retention separately and started queued offline full regression.
+
+-51681 TERMINAL1, NOT a full clear. Normal Verdant seed7522185662117066327 on
+  frozen3c1085b8 reached RootboundWarden and reduced it from15000 to last-observed
+ 5191HP; failed `Rogue must survive` at four-player-dungeon.spec.js:445. This
+  was a real death assertion, not an observation or expedition timeout. Boss
+  attackability proven for this encounter only; later bosses/quest/save gates
+  not reached. No assertion/difficulty/budget weakened and no blind rerun.
+- Archived test-results, playwright-report and run.log to
+  `/tmp/eidolon-four-role-current-failure-qn4hV2`. Existing sanitizer terminal
+  scan PASS0changes, not a pixel-redaction guarantee. Both specifically owned
+  disposable containers removed by script; no remaining containers matching
+  fourrole-current-20260911, primary clean. Test data disposable; user/live data
+  untouched. Full source remains3c1085b8.
+- Death evidence: Rogue0HP/33MP, healer10.79units away with216MP; Cleric had
+ 12HealingLight/5Embrace casts and2466boss ally-healing. Whole-run roles:
+  Fighter7412damage/2245taken, Cleric3640allyhealing/1104taken,
+  Wizard4947damage/431taken, Rogue8374damage/2944taken. Only1Rogue/1Cleric
+  early-warning escape; several completed escapes were late. Party sometimes
+  spread16–28units beyond heal range; healer selected reachable self while
+  critically injured teammates were distant. This is evidence, not proof that
+  boss damage should be reduced or healing is broken.
+- Important next input lead: DPS loop unconditionally left-clicks a boss when
+  approach is allowed, even when ranged primary is already in range. Branch-C
+  Rogue has Piercing Throw but dagger basic attack, so this can walk a ranged
+  damage dealer into melee. Reproduce a range-aware input policy before changing
+  controller; keep ordinary input and no-death/all-role/manual/save gates.
+  Prepared loadout has only rank5primary Mastery and canonical base growth;
+  do not invent stat-point spending or inflate gear without validating budgets.
+- Independent report-retention WT `/tmp/eidolon-live-report-retention-20260911`,
+  branchwork/live-report-retention-20260911, cleanb05587d44600d89d1dbd2efe6e4dd4d77f118887.
+  Live animation wrapper now retains five distinct nested HTML+raw-output roots;
+  existing recursive sanitizer/upload includes them; recovery line reports keep
+  prior HTML. Installed reporter source confirms env override precedence. Shell
+  harness all5routes and each fail-stop checked; final21tests/2suites0.784s,
+  bash syntax and lint PASS. Initial harness unset-env failures documented, not
+  mislabeled as6runtime defects. Evidence/unreleased QA note2026-09-11-live-report-retention.md.
+  NOT merged/published; future live execution must prove retained real artifacts.
+-95205 ACTIVE on cleana55ea71e offlineDivine WT: sequential full client/lint,
+  nice10, logs `/tmp/eidolon-offline-divine-full-{client,lint}.log`. Only one local
+  heavy suite, started after party terminal. No Go inputs changed versus accepted
+  primary; exact diff confirms client/test/doc only. Recover SAME handle before
+  integrating. No active browser, no new push/service/runner changes; soak off.
+- Next: recover95205, integrate accepted branches only after verification;
+  reproduce/fix ranged-party input/positioning causes, then rerun full party
+  with preserved failure seed/evidence and unchanged completion gates.62 stays
+  fully live-accepted0231c948. Full1.1–1.10/160talents/earned pacing/native/save/
+  phones/casino remain required. Root ledger MUST NOT PUSH.
+
+## Previous checkpoint — September 11, 20:44 UTC
 
 Previous goal turn was PROGRESS. This turn is PROGRESS: reproduced/repaired
 offline Divine Intervention in an independent WT while the full four-role run
