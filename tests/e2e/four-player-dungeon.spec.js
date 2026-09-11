@@ -5,7 +5,7 @@ import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture } from 
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
 import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyWarningInputPolicy } from '../partyDungeonControls.js';
 import { attackPartyDamageTarget, selectPartyDamageBuff } from '../partyDamageRoleControls.js';
-import { selectPartyHealTarget } from '../partyHealingControls.js';
+import { partyAuraFollowSpacing, selectPartyHealTarget } from '../partyHealingControls.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { dungeonExpeditionBudget } from '../dungeonExpeditionTiming.js';
 import { playDungeonThroughInputs } from './dungeon-playthrough-route.js';
@@ -235,6 +235,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 return { index: p.hotbar.indexOf('Healing Light'), cooldown: p.cooldowns['Healing Light'] || 0, mana: p.stats.mana,
                     healRange: window.game.abilityController.getAbilityCastRange('Healing Light'),
                     aura: p.hotbar.indexOf('Guardian Embrace'), auraCooldown: p.cooldowns['Guardian Embrace'] || 0,
+                    auraRadius: p.guardianEmbraceRadius || 10,
                     auraActive: p.guardianEmbraceActive || p.guardianEmbraceTimer > 0 };
             });
             const healDistance = Math.min(14, available.healRange - .5);
@@ -259,6 +260,12 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             if (distance > healDistance) {
                 await record(allowMovement ? 'approach' : 'warning-hold-out-of-range');
                 if (allowMovement) await follow(healer, hurt, 7);
+                return;
+            }
+            const auraSpacing = partyAuraFollowSpacing(states[1], hurt, { ...available, allowMovement });
+            if (auraSpacing !== null) {
+                await record('maintain-active-aura');
+                await follow(healer, hurt, auraSpacing);
                 return;
             }
             // Use the unlocked ten-unit healing aura for sustained group
