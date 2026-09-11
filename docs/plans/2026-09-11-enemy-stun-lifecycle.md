@@ -60,3 +60,31 @@ on that frozen source with GOMAXPROCS2, package parallelism1 and nice10 to limit
 competition with current production QA. Do not claim its result before terminal
 completion. Application client/scripts/CI are unchanged from45efe670; the prior
 client/browser proofs retain that exact scope, not native stun gameplay proof.
+
+## Current-source full regression — September11 04:07
+
+First full42912 exited1 on60c84422: game445.696s failed only the real-world
+regeneration fixture (hp49/mana51 instead51/51). The fixture removed hazards but
+shared spawned overworld enemies; health loss is consistent with unrelated
+combat, though the exact attacker was not captured.4df2efe5 puts that noncombat
+fixture in a separate nonsafe scene, counts unexpected damage events, and closes
+owned background callbacks. It keeps the real World.Update and exact fractional
+rate assertions.51979 passed five consecutive race runs/game10.137s. No runtime
+regeneration, town healing or Well Rested values changed.
+
+The wire check and independently reproduced impact-time stun guard were then
+integrated; current runtime source is7c6cf6b2. Full16462 exited0 on that frozen
+source: server root27.354s/game444.808s, loadtest/database/lifecycle cached passes;
+other packages had no tests. No race warning or worker panic was found. Command
+nice10/GOMAXPROCS2/go test-race-p1./...; log
+`/tmp/eidolon-stun-current-full-server-final.log`. The original failed full run is
+retained, not relabeled successful. No client/scripts/workflow differences from
+acceptedprimary45efe670; full server acceptance is now current, while previous
+client/browser acceptance retains its unchanged-application scope.
+
+The native four-role dungeon route was discovered successfully (one test), and
+new ignored vendor dependencies prepared after confirming the vendor directory
+did not exist. Ports18580/18581/41980 were clear. No local native/browser run
+started while canonical production QA owns the GPU. Full four-role dungeon
+completion, actual stun/party balance and release/live acceptance remain open.
+The unfinished Shield Slam talent-scaling/copy patch is still excluded here.
