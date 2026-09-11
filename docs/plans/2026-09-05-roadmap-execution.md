@@ -5,7 +5,57 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 03:34 UTC
+## Current checkpoint — September 11, 03:45 UTC
+
+Previous turn was PROGRESS (24h evidence validated and split queues carried
+forward). This turn is PROGRESS: actual concurrent runner assignment confirmed,
+enemy stun lifecycle reproduced/repaired, Shield Slam training consumer repaired
+locally with focused regression. Full original roadmap goal remains active.
+
+- Old24hNightly34433520743 is now TERMINALsuccess, updated03:36:40, including
+  cleanup. New scheduled34558600459 actually assigned to eidolon-soak, onlinebusy;
+  canonical34434837759 Predeploy Character QA simultaneously assigned to
+  eidolon-codex-chrome, onlinebusy. Queue separation is proven by actual jobs,
+  not only labels/service configuration. NewsoakcurrentlySetupGo(start03:37:09);
+  Chrome passed hardware/gallery steps and is running disposable full-character
+  gameplay. No failure observed. Do not run another local native/GPU route.
+  NewCI34558375122 remains behind canonical; newsoakfull24hacceptance pending.
+- New worktree `/tmp/eidolon-fighter-duration-repair-20260911`, branch
+  work/fighter-duration-repair-20260911, from diagnosticd70. Two independent
+  implementation commits:2f495909 enemy/NPC stun lifecycle,714bb815 ShieldSlam
+  duration consumer. Clean, not pushed/integrated into primary/successor yet.
+  Original diagnosticd70 remains untouched; old red evidence retained.
+- Actual paid ShieldSlam lifecycle58674 TERMINAL1/game0.099 proved enemy moves
+  during stun and retains Stunned after deadline. Player-only expiry block did
+  not cover enemies/NPCs.2f495909 now expires their flags, pauses enemy AI while
+  active and Seraph AI after its required owner/lifetime checks. Bleed/poison
+  and death continue. Review corrected an early-return NPC lifetime risk before
+  final acceptance. Initialfocused33681 PASSrace16.924s; finalexpanded88626
+  PASSrace25.359s including movement/resume, DOT during stun, actor expiry,
+  Seraph expiry/ownerloss, immunity/dead/instance/friendly exclusions, existing
+  Seraph/poison/dungeon movement/enemyimpact tests. Still not full regression or
+  native/balance acceptance. Logs `/tmp/eidolon-enemy-stun-{lifecycle-red,
+  lifecycle-green,expanded}.log`. This is a general gameplay repair independent
+  of talent scaling; pausing/resuming enemies changes encounter balance.
+-714bb815 composes existingFTR_30(.04)/FTR_37(.03) per-rank stun bonuses after
+  Concussion on server/offline, preserving rank0 lengths and savedIDs/costs/CDR.
+  Server94869 PASSrace16.152s96paidcasts, ranks0–5/talents/composition/unrelated
+  mastery/fourrunes. Client86127 PASS25tests/1suite1.265s96offlinecasts plus
+  malformedrank controls; focusedlint/diffPASS. Initial88310/47666 tests failed
+  due incorrect flat6sCDassumption, corrected to existingstatCDR; runtimeCD
+  unchanged. Logs `/tmp/eidolon-fighter-stun-duration-{client,server}-final.log`.
+  Separate docs explain oldFTR30flatseconds/FTR37penetration copy still needs
+  complete intended-scope reconciliation with all other affected consumers before
+  shipping talent patch. No global160talent/copy signoff or offlinegeometry/rune
+  parity inferred. Fortifyshield duration, otherbuffs/root/slow/freeze remainopen.
+- No local heavy/browser process remains; all mentioned localhandles terminal.
+  FullGo/client/native/reconnect/balance/release proof for new714/2f remainsOPEN.
+  Primary45efe670 and narrower successore55ce9a8 retain their earlier scoped
+  acceptance, unchanged this turn. Evaluate generalstunrepair before next full
+  party balancing run, so old permanentattackblock does not masquerade as balance.
+  RootledgerNEVERPUSH. No productionDBrotation/restart authorization inferred.
+
+## Previous checkpoint — September 11, 03:34 UTC
 
 Previous goal turn was PROGRESS (runner registered/service installed, approved
 infrastructure-only routing pushed, primary116 browser gate completed). This turn
