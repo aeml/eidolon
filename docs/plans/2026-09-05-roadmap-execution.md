@@ -5,7 +5,54 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 23:30 UTC
+## Current checkpoint — September 11, 23:42 UTC
+
+Previous goal turn was PROGRESS. This continuation is PROGRESS: accepted full
+Teleport integration and fast-forwarded primary; implemented shared Protected
+status replication, aura/countdown and cleanup with focused runtime/race proof.
+
+-69259 TERMINAL0 on **ae938843**:360suites5177clienttests103.576s+lint;
+  complete Go race suite root14.419s/game265.620s/database1.082s/lifecycle1.018s
+  (loadtest1.015s). Logs `/tmp/eidolon-teleport-visual-full-{prepare,client,lint,server}-20260911.log`.
+  Primary `/tmp/eidolon-primary-merged-20260911` fast-forwarded from85ee5a5b to
+  clean **ae938843**. This includes offline Temporal Weave charges and Warp
+  endpoint/shape visuals, not native/save/publication acceptance.
+- New `/tmp/eidolon-protection-status-20260911`, branchwork/protection-status,
+  basedae938843, clean **3b23c231**. The existing generic combat deadline serves
+  Teleport Phase, Cleric and PvP entry: display is shared **Protected**, not a
+  misleading Phase label on every immunity. No protection-duration or damage
+  change; client visual state grants no gameplay immunity.
+- Added protobuf118/119 active/remaining fields; regenerated with existing
+  scripts/gen-proto.sh and localprotoc. Full state + delta activation/refresh/
+  short-expiry edges preserve actual remaining time. Both detached entity-copy
+  paths now retain InvulnerableEndTime. Shared silver-blue shards/thin seal,
+  High/Low detail, tracked countdown, stun-time expiry and death/respawn cleanup;
+  no box/sphere/opaque body shell. Offline Phase uses its existing gameplay timer.
+- ClientRED11fails0.586s. Initial server copy test caught remaining missing
+  GetEntityCopy deadline; corrected both paths and covered GetStateForPlayer.
+  Expanded7237 GREEN8suites143tests1.591s+lint. Full protocol/defaults, actual
+  attached meshes/expiry, buff tracking, death/respawn and old Phase/buff/Warp
+  regressions covered. Logs `/tmp/eidolon-protection-status-{red,green,final,lint}-20260911.log`.
+-56665 server race root1.306s/game5.279s;74366 expanded actual Arena/Duel,
+  Teleport Phase duration and state-copy tests repeated3xwithrace42.356s.
+  Logs `/tmp/eidolon-protection-server-{green,final}-20260911.log` and
+  `/tmp/eidolon-protection-pvp-race-20260911.log`.
+  Doc2026-09-11-protection-status-presentation.md retains fullintegration,
+  native2client/visual inspection/earned/save/versionedpublication requirements.
+  **Protected candidate not merged into primary; own full regression due.**
+- Release63 **34658209958 ACTIVE**23:42, source0a871da0: hostedclient/server
+  and browser2/3+3/3 SUCCESS; browser1/3 still running. Continue polling SAME run;
+  required SystemChrome/native/input/Pages/SSH/finalLive all still due. No63live
+  claim and no automatic cancellation/restart. Independent23:42checks confirm
+  bothnewdomains remain62/0231c948; backendhealthy/database ready.
+- All local tool sessions this turn are TERMINAL; no localheavy/native job left.
+  Avoid starting a long local browser/full run as the pending self-hosted gate
+  approaches. Next nativefour-role retry still uses aura-follow430ea808 strategy
+  now in primaryae938843; last25565 failed with tankdeath/boss5282HP. No weakening
+  allalive/clear/partycredit/manualIlyra/Water/freshsave gates. Full1.1–1.10 scope
+  retained, including all160talents/physicalphone/balance/casino. Soak stays OFF.
+
+## Previous checkpoint — September 11, 23:30 UTC
 
 The intervening cancellation-clarification turn made NO PROGRESS. This goal
 continuation is PROGRESS: repaired Teleport endpoint visuals with focused proof,
