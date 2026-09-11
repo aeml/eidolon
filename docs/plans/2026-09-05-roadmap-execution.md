@@ -5,7 +5,53 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 20:36 UTC
+## Current checkpoint — September 11, 20:44 UTC
+
+Previous goal turn was PROGRESS. This turn is PROGRESS: reproduced/repaired
+offline Divine Intervention in an independent WT while the full four-role run
+continues on unchanged primary. No full/heavy/browser competitor was launched.
+
+-51681 confirmed ACTIVE20:44 on primary3c1085b8, clean and unchanged. All four
+  level30/common-gear roles prepared, invitation UI formed party, visible healer
+  roster select/clear passed, and all entered same Normal Verdant instance.
+  Seed7522185662117066327, generator2, attempt0, fallbackfalse. Actual DemonOrc
+  and Skeleton combat progressed; latest heartbeat elapsed419455ms records
+  76leaderGroundSteps/4roomTraversals/2townReturns. This does not imply four
+  distinct rooms cleared or boss completion. Quest turn-in/fresh-login outcome
+  still pending. Same log `/tmp/eidolon-four-role-current-20260911.log`.
+  No timing-budget changes, primary mutations, cancellations or soak restart.
+- New `/tmp/eidolon-offline-divine-20260911`, branchwork/offline-divine-20260911,
+  starts3c1085b8 and shares identical node_modules. Fifteen paid offline tests
+  reproduced15fail2.208s: initial heal/Mastery missing, invalid friendly target
+  selection, Miracle/Guardian absent, trained/rune/set cooldown overwritten.
+  Source/target authority, range/LOS/dead/inactive fallback now use shared heal
+  eligibility before presentation; added locked-skill admission. Half-max-HP
+  heal consumes caster bonuses and recipient poison/cap. Miracle adds nearest
+  distinct valid friend. Guardian's trained5s half-damage timer is separate from
+  trained10s one-use rescue. Canonical cooldown combines Quick Save/set/training.
+  Rescue integer30%minimum1; engine-authoritative takeDamage guarded.
+- Initial15tests1.135s PASS; expanded8suites/243tests7.169s PASS; final exact
+  current-source8suites/243tests6.107s plus full lint PASS.11618 TERMINAL0.
+  Includes payment/rejected casts, rank/healing equipment/poison/clamp,3runes,
+  range/wall/friendly/authority boundaries, real Guardian expiry under stun and
+  lethal rescue/second death, existing shield/respawn/Cleric regressions.
+  Prepared set metadata is consumer proof, not earned/equipped/saved-set proof.
+- Clean committeda55ea71e6e9b1e232db0df5a83ed39c2e1c1030c includes evidence and
+  unreleased notes2026-09-11-offline-divine-intervention.md. Logs
+  `/tmp/eidolon-offline-divine-{red,green,broad,final}.log` and
+  `/tmp/eidolon-offline-divine-lint-final.log`. No server/protocol/schema changes.
+  NOT merged primary or published. Full client regression required after native
+  party run releases heavy slot; do not run it concurrently or claim focused
+  checks as full acceptance. Parent Go inputs unchanged but require exact diff
+  verification before reusing its accepted server evidence.
+- Live accepted62 remains0231c948, full CI34637129931 success from prior turn.
+  No source push or runner/service changes. Next recover SAME51681; preserve
+  sanitized artifacts on terminal outcome and fix real failures without weaker
+  four-role/manual-turn-in/save assertions. Then verify/integrate offlineDivine,
+  continue full1.1–1.10/160talent/earned pacing/native/save/physical phone/casino
+  scope. Root execution ledger MUST NOT PUSH.
+
+## Previous checkpoint — September 11, 20:36 UTC
 
 Previous goal turn was PROGRESS. This turn is PROGRESS: accepted Alpha1.0.62's
 terminal live pipeline, accepted full Renewal regression, integrated primary
