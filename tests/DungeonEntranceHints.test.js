@@ -281,6 +281,20 @@ describe('Dungeon entrance hints', () => {
         }));
     });
 
+    test.each([
+        ['QuestNPC', true, 'Archmage Ilyra', 'Story quests'],
+        ['QuestNPC', false, 'Quest Giver', 'Daily contracts']
+    ])('%s story=%s card distinguishes role from its title without changing range', (kind, story, name, role) => {
+        const engine = createEngineHarness();
+        for (const [distance, inRange, action] of [[3, true, 'In range'], [12, false, 'Move closer']]) {
+            const entity = createTownInteractable({ constructor: { name: kind }, story, name,
+                position: new THREE.Vector3(distance, 0, 0) });
+            const hint = engine.buildDungeonEntranceHint(entity);
+            expect(hint).toMatchObject({ dungeonName: name, inRange, statusLabel: `${role} • ${action}` });
+            expect(hint.promptLabel).toContain(inRange ? 'Click' : 'Move closer');
+        }
+    });
+
     test('GameEngine clears hint when hover is removed', () => {
         const engine = createEngineHarness();
         engine.hoveredEntity = null;

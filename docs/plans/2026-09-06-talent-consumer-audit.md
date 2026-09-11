@@ -1,5 +1,42 @@
 # Remaining talent consumers — reproduced September 6
 
+September11 local repair: [Executioner Spin area](2026-09-11-executioner-spin-area.md).
+The initial90581 zero-attack-stat fixture was insufficient evidence. Corrected
+37747 on the unchanged parent includes nearby positive damage controls and still
+reproduces six trained-annulus misses in1.007s. Repaired71674 passes3.321s.
+The legacy offline repeated-damage path has also been reproduced and corrected
+to the single strike. Focused checks, native purchase/save85991, full server/client
+regression and all104 bundled-browser cases now pass on a0cda0ff. The work record
+preserves the interrupted first browser attempt and complete remaining-group
+retries. Versioned release/deployment acceptance remains pending.
+This does not close the full-tree gate or fix every generic Fighter description.
+
+September11 next local repair: [Guardian Roar's area consumers](2026-09-11-guardian-roar-area.md)
+now pass the paired diagnostic and focused ordinary cast/taunt/ally-boundary and
+client-render checks. Full regression/native/save/release gates remain open.
+The reproduced failure below is historical evidence for the unchanged parent,
+not the current branch's diagnostic result. This does not close the whole tree.
+
+September11 local update: [Purifying Wave Mastery](2026-09-11-purifying-wave-mastery.md)
+now has a reproduced actual-cast failure and a skill-scoped cleansing-radius
+repair preserving saved IDs and ranks. Its focused client and initial server
+checks pass; full regression/native/integration and release gates remain in that
+record. Older unresolved labels below retain their historical meaning. This is
+not a full160-talent sign-off or a deployment claim.
+
+September11 next reproduced consumer: `FTR_33` Lineholder Instinct promises3%
+AoE radius per rank, but Guardian Roar still uses an untrained15-unit radius.
+The diagnostic overlay now contains paid, level30 rank-zero/rank-five casts
+against the same friendly target in the trained annulus, at both ordinary and
+four-times body scale. Both baseline controls pass; both five-rank casts fail
+to apply the ally buff. All prior overlay probes pass. Run1174 exits1 in2.050s,
+log`/tmp/eidolon-roar-area-consumer-red.log`; no runtime fix is included yet.
+This is the next confirmed area-consumer task, not proof of every Fighter area
+or mastery. Repair query/final geometry, client offline behavior and authoritative
+ring together, preserving boss-taunt eligibility, walls, instance/relationship
+rules, body padding, ordinary resource costs and saved investments. Promote this
+probe into standard regressions when repaired. Full-tree acceptance remains open.
+
 Latest September 7 integration: the [critical-chance consumer record](2026-09-07-talent-critical-chance.md)
 retains the original four trained-cast failures (1.699s), now repaired in the
 local 1.0.41 candidate. The same actual-consumer audit passes **0.890s**, alongside

@@ -160,6 +160,41 @@ export class ForgeUI {
                 if (this[panel]) this[panel].style.display = 'none';
             }
         }
+        this.refreshGemPanels(player);
+    }
+
+    refreshGemPanels(player) {
+        const equipmentSignature = JSON.stringify(player.equipment || {});
+        const inventorySignature = JSON.stringify(player.inventory || []);
+        if (this._gemEquipmentSignature === equipmentSignature && this._gemInventorySignature === inventorySignature) return;
+        const inventoryChanged = this._gemInventorySignature !== undefined && this._gemInventorySignature !== inventorySignature;
+        this._gemEquipmentSignature = equipmentSignature;
+        this._gemInventorySignature = inventorySignature;
+
+        // Inventory indices can point to different items after sorting or a
+        // server reply. Do not silently redirect a pending insertion/combine.
+        if (inventoryChanged || !this._isGemItem(player.inventory?.[this.selectedGemInvIndex])) this.selectedGemInvIndex = null;
+        if (inventoryChanged || this.selectedCombineGemIndices.some(index => !this._isGemItem(player.inventory?.[index]))) {
+            this.selectedCombineGemIndices = [];
+        }
+        const selected = player.equipment?.[this.selectedGemEquipSlot];
+        if (!selected?.sockets) this.selectedGemEquipSlot = null;
+        if (!selected || this.selectedGemSocketIndex >= selected.sockets ||
+            this.selectedGemSocketIndex < (selected.gems?.length || 0)) this.selectedGemSocketIndex = null;
+        const removal = player.equipment?.[this.selectedRemoveEquipSlot];
+        if (!removal?.gems?.length) {
+            this.selectedRemoveEquipSlot = null;
+            this.selectedRemoveSocketIndex = null;
+            if (this.forgeGemRemoveInfo) this.forgeGemRemoveInfo.style.display = 'none';
+            if (this.btnForgeRemoveGem) this.btnForgeRemoveGem.disabled = true;
+        } else if (this.selectedRemoveSocketIndex >= removal.gems.length) this.selectedRemoveSocketIndex = null;
+
+        this.updateForgeGemsUI(player);
+        this.updateForgeGemInfo(null, player);
+        if (!this.selectedGemEquipSlot && this.btnForgeInsertGem) this.btnForgeInsertGem.disabled = true;
+        this.updateGemCombineUI(player);
+        this.updateGemRemoveUI(player);
+        if (this.selectedRemoveEquipSlot) this.updateGemRemoveInfo(removal, player);
     }
 
     /** Close forge (used by handleEscape). */

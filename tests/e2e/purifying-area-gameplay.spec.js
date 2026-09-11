@@ -5,7 +5,7 @@ test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true
     userAgent: devices['Pixel 7'].userAgent, actionTimeout: 12_000,
     trace: 'off', screenshot: 'off', video: 'off' });
 
-test('phone Ministry purchases expand the accepted Purifying Wave and rendered ring across login', async ({ page, baseURL }, testInfo) => {
+test('phone Mastery and Ministry purchases expand the accepted Purifying Wave and rendered ring across login', async ({ page, baseURL }, testInfo) => {
     test.setTimeout(180_000);
     test.skip(process.env.EIDOLON_E2E_REGISTER !== '1', 'Requires the disposable cleanse-area route');
     const credentials = credentialsFromEnvironment();
@@ -36,7 +36,7 @@ test('phone Ministry purchases expand the accepted Purifying Wave and rendered r
     await expect.poll(() => page.evaluate(() => window.game.player.hotbar.indexOf('Purifying Wave'))).toBeGreaterThanOrEqual(0);
     await page.locator('#btn-close-skills').tap();
 
-    async function verifyCast(rank, quality) {
+    async function verifyCast(rank, mastery, quality) {
         await page.locator('#btn-mobile-menu').tap(); await page.locator('#btn-settings').tap();
         await page.locator('#graphics-quality').selectOption(quality);
         await page.locator('#btn-close-settings').tap();
@@ -65,8 +65,10 @@ test('phone Ministry purchases expand the accepted Purifying Wave and rendered r
             };
         });
         const state = await page.evaluate(() => ({ mana: window.game.player.stats.mana, rank: window.game.player.talentRanks?.CLR_34 || 0,
+            mastery: window.game.player.talentRanks?.CLR_07 || 0,
             slot: window.game.player.hotbar.indexOf('Purifying Wave') }));
         expect(state.rank).toBe(rank);
+        expect(state.mastery).toBe(mastery);
         await page.locator('#hotbar-container .hotbar-slot').nth(state.slot).tap();
         await expect.poll(() => page.evaluate(() => window.__waveArea.casts.length)).toBe(1);
         await expect.poll(() => page.evaluate(() => window.__waveArea.results.length)).toBe(1);
@@ -75,25 +77,30 @@ test('phone Ministry purchases expand the accepted Purifying Wave and rendered r
         expect(state.mana - observation.results[0].mana).toBe(30);
         const cast = observation.casts[0];
         expect(cast).toMatchObject({ attached: true, authoritative: true, quality });
-        expect(cast.radius).toBeCloseTo(rank ? 9.2 : 8, 8);
+        expect(cast.radius).toBeCloseTo(8 * (1 + .03 * rank + .04 * mastery), 8);
         expect(cast.meshRadius).toBeCloseTo(cast.radius, 8);
         expect(cast.arc).toBeCloseTo(2 * Math.PI, 8);
-        console.log(`[purifying-area] rank ${rank}, ${quality}: accepted radius ${cast.radius} matches actual mesh`);
+        console.log(`[purifying-area] Ministry ${rank}, Mastery ${mastery}, ${quality}: accepted radius ${cast.radius} matches actual mesh`);
     }
-    await verifyCast(0, 'high');
-    await page.locator('#btn-mobile-menu').tap(); await page.locator('#btn-phone-skills').tap();
-    await page.locator('.phone-build-tabs').getByRole('button', { name: 'Talents', exact: true }).tap();
-    for (let rank = 1; rank <= 5; rank++) {
-        const buy = page.locator('button[data-build-action="talent:CLR_34"]');
-        await buy.scrollIntoViewIfNeeded(); await buy.tap();
-        await expect.poll(() => page.evaluate(() => window.game.player.talentRanks?.CLR_34 || 0)).toBe(rank);
-        await expect.poll(() => page.evaluate(() => window.game.uiManager.skillTree.mobile.pending === null)).toBe(true);
+    async function buyFive(talentId) {
+        await page.locator('#btn-mobile-menu').tap(); await page.locator('#btn-phone-skills').tap();
+        await page.locator('.phone-build-tabs').getByRole('button', { name: 'Talents', exact: true }).tap();
+        for (let rank = 1; rank <= 5; rank++) {
+            const buy = page.locator(`button[data-build-action="talent:${talentId}"]`);
+            await buy.scrollIntoViewIfNeeded(); await buy.tap();
+            await expect.poll(() => page.evaluate(id => window.game.player.talentRanks?.[id] || 0, talentId)).toBe(rank);
+            await expect.poll(() => page.evaluate(() => window.game.uiManager.skillTree.mobile.pending === null)).toBe(true);
+        }
+        await page.locator('#btn-close-skills').tap();
     }
-    await page.locator('#btn-close-skills').tap();
-    await verifyCast(5, 'low');
+    await verifyCast(0, 0, 'high');
+    await buyFive('CLR_34');
+    await verifyCast(5, 0, 'low');
+    await buyFive('CLR_07');
+    await verifyCast(5, 5, 'low');
     await loginAndEnterWorld(page, credentials);
     await page.setViewportSize({ width: 844, height: 390 });
-    await verifyCast(5, 'high');
+    await verifyCast(5, 5, 'high');
     expect(failures, failures.join('\n')).toEqual([]);
     if (process.env.EIDOLON_E2E_PURIFYING_RETRY_PROBE === '1' && testInfo.retry === 0) {
         throw new Error('Intentional Purifying retry probe after successful saved-build verification');

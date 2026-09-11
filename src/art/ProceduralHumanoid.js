@@ -3,6 +3,11 @@ import { createTailoredTorsoGeometry, createPairedEyesGeometry, createOpenHoodGe
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
+// Main-hand weapons grow along local +Y. A forward-ready wrist angle keeps
+// their blades and socket fittings clear of the forearm instead of embedding
+// them in it. Apply at the shared mount so default and equipped weapons agree;
+// leave the off-hand shield/book mounting and animation tracks unchanged.
+const MAIN_HAND_FORWARD_PITCH = Math.PI / 3;
 
 const FIGHTER_PALETTE = Object.freeze({
     iron: 0x343b46,
@@ -189,7 +194,8 @@ function addArm(parent, side, materials) {
     const ringName = side === 'Left' ? 'Equipment_RingLeft' : 'Equipment_RingRight';
     addAnchor(gloveAnchor, ringName, [sign * 0.12, -0.02, 0.05]);
     const handName = side === 'Left' ? 'Equipment_OffHand' : 'Equipment_MainHand';
-    return addAnchor(gloveAnchor, handName, [0, -0.04, 0], [0, 0, sign * 0.08]);
+    return addAnchor(gloveAnchor, handName, [0, -0.04, 0],
+        [side === 'Right' ? MAIN_HAND_FORWARD_PITCH : 0, 0, sign * 0.08]);
 }
 
 function addLeg(parent, side, materials) {
@@ -423,7 +429,7 @@ function addRogueArm(parent, side, materials) {
         glove,
         side === 'Left' ? 'Equipment_OffHand' : 'Equipment_MainHand',
         [0, -0.04, 0],
-        [0, 0, sign * 0.08]
+        [side === 'Right' ? MAIN_HAND_FORWARD_PITCH : 0, 0, sign * 0.08]
     );
 }
 
@@ -539,7 +545,7 @@ function addWizardArm(parent, side, materials) {
         glove,
         side === 'Left' ? 'Equipment_OffHand' : 'Equipment_MainHand',
         [0, -0.05, 0],
-        [0, 0, sign * 0.06]
+        [side === 'Right' ? MAIN_HAND_FORWARD_PITCH : 0, 0, sign * 0.06]
     );
 }
 
@@ -723,7 +729,7 @@ function addClericArm(parent, side, materials) {
         glove,
         side === 'Left' ? 'Equipment_OffHand' : 'Equipment_MainHand',
         [0, -0.05, 0],
-        [0, 0, sign * 0.07]
+        [side === 'Right' ? MAIN_HAND_FORWARD_PITCH : 0, 0, sign * 0.07]
     );
 }
 

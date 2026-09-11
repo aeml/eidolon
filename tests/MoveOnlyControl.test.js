@@ -16,7 +16,7 @@ const setup = (type = 'ChronicleSite') => Object.assign(new Harness(), {
     setMobileCombatTarget: jest.fn()
 });
 
-test.each(['ChronicleSite', 'LootDrop', 'Skeleton', 'QuestNPC', 'DwarfSalesman'])('Shift-click walks without interacting with %s', type => {
+test.each(['Forge', 'ChronicleSite', 'LootDrop', 'Skeleton', 'QuestNPC', 'DwarfSalesman'])('Shift-click walks without interacting with %s', type => {
     const engine = setup(type), event = { shiftKey: true, clientX: 120, clientY: 240 };
     expect(engine.handlePrimaryClick(event)).toBe(true);
     expect(engine.player.move).toHaveBeenCalledWith(new Vector3(9, 0, 4));

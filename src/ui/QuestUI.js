@@ -378,6 +378,12 @@ export class QuestUI {
         if ((this.ctx.getCurrentInstanceType?.() || 'overworld') !== 'overworld') return null;
         if (!this.isPlayerInTown()) return null;
 
+        // A claimable quest is a concrete town action. A prior Recall/Respawn
+        // must not keep its generic orientation card ahead of manual turn-in.
+        // Keep the player's tracking choices and ordinary recovery unchanged.
+        if (quests.some(quest => quest?.accepted && !quest.completed &&
+            quest.maxCount > 0 && quest.count >= quest.maxCount)) return null;
+
         const recovery = this.ctx.getOnboardingRecoveryContext?.() || null;
         // The auto-start Chronicle is already a concrete next step. Generic
         // town orientation should not displace it; explicit recovery still can.

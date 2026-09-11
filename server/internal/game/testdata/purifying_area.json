@@ -3,6 +3,8 @@
   { "name": "one ministry rank", "ranks": { "CLR_34": 1 }, "radius": 8.24 },
   { "name": "five ministry ranks", "ranks": { "CLR_34": 5 }, "radius": 9.2 },
   { "name": "unrelated healing mastery", "ranks": { "CLR_03": 5 }, "radius": 8 },
-  { "name": "wave mastery does not currently change area", "ranks": { "CLR_07": 5 }, "radius": 8 },
+  { "name": "one wave mastery rank", "ranks": { "CLR_07": 1 }, "radius": 8.32 },
+  { "name": "five wave mastery ranks", "ranks": { "CLR_07": 5 }, "radius": 9.6 },
+  { "name": "wave mastery and ministry compose additively", "ranks": { "CLR_07": 5, "CLR_34": 5 }, "radius": 10.8 },
   { "name": "ministry and technique", "ranks": { "CLR_34": 5, "CLR_08": 5 }, "radius": 9.2 }
 ]

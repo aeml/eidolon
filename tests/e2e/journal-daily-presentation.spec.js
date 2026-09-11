@@ -4,6 +4,67 @@ import { collectBrowserFailures } from './helpers.js';
 // Controlled presentation fixture: actual QuestUI, DOM and shipped CSS, not a
 // claimed earned quest completion or authorization to change server rewards.
 for (const [width, height] of [[1280, 720], [390, 844]]) {
+    test(`${width}x${height}: ready quest replaces town recovery guidance without claiming it`, async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+        await page.setViewportSize({ width, height });
+        await page.goto('/', { waitUntil: 'networkidle' });
+        await page.evaluate(async mobile => {
+            const { QuestUI } = await import('/src/ui/QuestUI.js');
+            document.getElementById('start-screen').style.display = 'none';
+            document.body.classList.toggle('mobile-mode', mobile);
+            const quest = { id: 'chronicle_02_seeds_first_grove', category: 'chronicle', chapter: 2,
+                title: 'Seeds of the First Grove', accepted: true, completed: false,
+                type: 'COLLECT', count: 7, maxCount: 8, target: 'Verdant Memory Seed', rewardXP: 200, rewardGold: 25 };
+            const player = { id: 'ready-guidance-presentation', level: 8, position: { x: 0, z: 200 }, quests: [quest] };
+            const recovery = { reason: 'recall' };
+            const ui = new QuestUI({ isMobile: mobile, getLastPlayer: () => player,
+                getCurrentInstanceId: () => '', getCurrentInstanceType: () => 'overworld',
+                getOnboardingRecoveryContext: () => recovery });
+            ui.updateJournal(player.quests);
+            window.__readyGuidance = { ui, player, quest, recovery };
+        }, width < 600);
+        const panel = page.locator('#objectives-panel');
+        const primary = panel.locator('.objective-entry').first();
+        await expect(primary).toContainText('Re-orient after recalling');
+        for (const reason of ['recall', 'respawn']) {
+            await page.evaluate(reason => {
+                const { ui, player, quest, recovery } = window.__readyGuidance;
+                recovery.reason = reason;
+                quest.count = 8;
+                ui.updateJournal(player.quests);
+            }, reason);
+            await expect(primary.locator('.objective-entry__title')).toHaveText('Seeds of the First Grove');
+            await expect(primary.locator('.objective-entry__status')).toHaveText('Ready');
+            const hint = primary.locator('.objective-entry__hint');
+            await expect(hint).toContainText('Speak to Archmage Ilyra in town and click Complete Quest');
+            if (width < 600) {
+                // Phone HUD deliberately stays one compact, thumb-sized row;
+                // the existing journal is the readable detail view.
+                await expect(hint).toBeHidden();
+                expect((await primary.boundingBox()).height).toBeGreaterThanOrEqual(44);
+                await primary.click();
+                const journal = page.locator('#quest-journal');
+                await expect(journal).toBeVisible();
+                await expect(journal).toContainText('Ready to complete — return to Archmage Ilyra');
+                await page.screenshot({ path: testInfo.outputPath(`ready-journal-${reason}.png`) });
+                await page.locator('#btn-close-journal').click();
+                await expect(journal).toBeHidden();
+                await expect(primary).toBeVisible();
+            } else {
+                await expect(hint).toBeVisible();
+            }
+            await expect(panel).not.toContainText(/Re-orient after recalling|Recover in town and re-orient/);
+            expect(await page.evaluate(() => window.__readyGuidance.quest.completed)).toBe(false);
+            const bounds = await primary.boundingBox();
+            expect(bounds.x).toBeGreaterThanOrEqual(0);
+            expect(bounds.x + bounds.width).toBeLessThanOrEqual(width + 1);
+            expect(bounds.y + bounds.height).toBeLessThanOrEqual(height + 1);
+            await page.screenshot({ path: testInfo.outputPath(`ready-after-${reason}.png`) });
+        }
+        expect(failures, failures.join('\n')).toEqual([]);
+    });
+
     test(`${width}x${height}: story journal keeps optional dailies compact and preserves reading focus`, async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});

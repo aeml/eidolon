@@ -129,15 +129,21 @@ fi
 qa_allowlist="${QA_USERNAME_BASE},${QA_USERNAME_BASE}-healing,${QA_USERNAME_BASE}-economy,${QA_USERNAME_BASE}-legacy,${QA_USERNAME_BASE}-recovery,${QA_USERNAME_BASE}-spin,${QA_USERNAME_BASE}-phone,${QA_USERNAME_BASE}-phone-combat,${QA_USERNAME_BASE}-phone-bag,${QA_USERNAME_BASE}-phone-quests,${QA_USERNAME_BASE}-phone-build,${QA_USERNAME_BASE}-phone-settings,${QA_USERNAME_BASE}-phone-adventure,${QA_USERNAME_BASE}-fighter,${QA_USERNAME_BASE}-rogue,${QA_USERNAME_BASE}-wizard,${QA_USERNAME_BASE}-cleric"
 
 qa_allowlist+=",${QA_USERNAME_BASE}-death-resources"
+qa_allowlist+=",${QA_USERNAME_BASE}-socket-owner,${QA_USERNAME_BASE}-socket-observer"
+qa_allowlist+=",${QA_USERNAME_BASE}-rest-transitions-death,${QA_USERNAME_BASE}-rest-transitions-dungeon"
 qa_allowlist+=",${QA_USERNAME_BASE}-duration,${QA_USERNAME_BASE}-forge,${QA_USERNAME_BASE}-whip,${QA_USERNAME_BASE}-ground"
+qa_allowlist+=",${QA_USERNAME_BASE}-ground-retry1"
 qa_allowlist+=",${QA_USERNAME_BASE}-cleanse"
 qa_allowlist+=",${QA_USERNAME_BASE}-cleanse-retry1"
+qa_allowlist+=",${QA_USERNAME_BASE}-roar-area"
+qa_allowlist+=",${QA_USERNAME_BASE}-spin-area"
 qa_allowlist+=",${QA_USERNAME_BASE}-economy-retry1"
 qa_allowlist+=",${QA_USERNAME_BASE}-guardian"
 qa_allowlist+=",${QA_USERNAME_BASE}-holy"
 qa_allowlist+=",${QA_USERNAME_BASE}-support-area"
 qa_allowlist+=",${QA_USERNAME_BASE}-spirit-area"
 qa_allowlist+=",${QA_USERNAME_BASE}-phone-party,${QA_USERNAME_BASE}-phone-party-ally"
+qa_allowlist+=",${QA_USERNAME_BASE}-desktop-support,${QA_USERNAME_BASE}-desktop-support-ally"
 qa_allowlist+=",${QA_USERNAME_BASE}-critical-rogue,${QA_USERNAME_BASE}-critical-wizard,${QA_USERNAME_BASE}-critical-fighter"
 qa_allowlist+=",${QA_USERNAME_BASE}-healing-retry1"
 qa_allowlist+=",${QA_USERNAME_BASE}-status-lunge,${QA_USERNAME_BASE}-status-serrated,${QA_USERNAME_BASE}-status-poison"
@@ -159,7 +165,7 @@ capture_isolated_service_failure() {
 docker build \
   --build-arg GO_VERSION=1.24.5 \
   --build-arg "BUILD_COMMIT=${qa_build_commit}" \
-  --build-arg "BUILD_VERSION=Alpha 1.0.59" \
+  --build-arg "BUILD_VERSION=Alpha 1.0.60" \
   --tag "${SERVER_IMAGE}" server >/dev/null
 image_created=true
 
@@ -262,6 +268,16 @@ run_phone_inventory() {
     npx playwright test tests/e2e/mobile-inventory-gameplay.spec.js tests/e2e/phone-stash-entry.spec.js
 }
 
+run_desktop_support() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-desktop-support" EIDOLON_E2E_CLASS=Cleric \
+    EIDOLON_E2E_REGISTER=1 EIDOLON_E2E_DESKTOP_SUPPORT=1 \
+    npx playwright test --retries=0 --output=test-results/desktop-support tests/e2e/desktop-party-support.spec.js
+}
+
+run_party_support() {
+  run_phone_party && run_desktop_support
+}
+
 run_equipment_recovery() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-legacy" EIDOLON_E2E_CLASS=Wizard \
     EIDOLON_E2E_LEGACY_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_LEGACY_MONGO_PORT="${mongo_port}" \
@@ -272,6 +288,13 @@ run_forge_guide() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-forge" EIDOLON_E2E_CLASS=Wizard \
     EIDOLON_E2E_FORGE_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_FORGE_MONGO_PORT="${mongo_port}" \
     npx playwright test tests/e2e/forge-guide-gameplay.spec.js "$@"
+}
+
+run_forge_socket_appearance() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-socket-owner" \
+    EIDOLON_E2E_USERNAME_SECONDARY="${QA_USERNAME_BASE}-socket-observer" EIDOLON_E2E_PASSWORD_SECONDARY="${QA_PASSWORD}" \
+    EIDOLON_E2E_SOCKET_MONGO_CONTAINER="${MONGO_CONTAINER}" EIDOLON_E2E_SOCKET_MONGO_PORT="${mongo_port}" \
+    npx playwright test --retries=0 --output=test-results/forge-socket-appearance tests/e2e/forge-socket-appearance.spec.js
 }
 
 run_talent_economy() {
@@ -339,6 +362,16 @@ run_entrance_visibility() {
 run_purifying_area() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-cleanse" EIDOLON_E2E_CLASS=Cleric \
     npx playwright test tests/e2e/purifying-area-gameplay.spec.js "$@"
+}
+
+run_guardian_roar_area() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-roar-area" EIDOLON_E2E_CLASS=Fighter \
+    npx playwright test tests/e2e/guardian-roar-area-gameplay.spec.js
+}
+
+run_executioner_spin_area() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-spin-area" EIDOLON_E2E_CLASS=Fighter \
+    npx playwright test tests/e2e/executioner-spin-area-gameplay.spec.js
 }
 
 run_guardian_area() {
@@ -467,6 +500,11 @@ run_initial_stats() {
   EIDOLON_E2E_INITIAL_STAT_PARITY=1 npx playwright test --retries=0 --output=test-results/initial-stat-parity tests/e2e/initial-stat-parity.spec.js
 }
 
+run_well_rested_transitions() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-rest-transitions" EIDOLON_E2E_CLASS=Wizard \
+    EIDOLON_E2E_REGISTER=1 npx playwright test --output=test-results/well-rested-transitions \
+      tests/e2e/well-rested-transitions-gameplay.spec.js --retries=0
+}
 run_well_rested() {
   # Separate ordinary registrations: never reuse a progressed gate character.
   # The expiry test appends its own -expiry suffix to the first base name.
@@ -474,13 +512,17 @@ run_well_rested() {
     EIDOLON_E2E_REGISTER=1 npx playwright test --output=test-results/well-rested-journey tests/e2e/well-rested-gameplay.spec.js \
       tests/e2e/well-rested-expiry-gameplay.spec.js || return $?
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-rest-party" EIDOLON_E2E_CLASS=Wizard \
-    EIDOLON_E2E_REGISTER=1 npx playwright test --output=test-results/well-rested-party tests/e2e/well-rested-party-gameplay.spec.js
+    EIDOLON_E2E_REGISTER=1 npx playwright test --output=test-results/well-rested-party tests/e2e/well-rested-party-gameplay.spec.js || return $?
+  run_well_rested_transitions
 }
 
 set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   initial-stats)
     run_initial_stats
+    ;;
+  desktop-support)
+    run_desktop_support
     ;;
   phone-stash-entry)
     npx playwright test tests/e2e/phone-stash-entry.spec.js
@@ -492,6 +534,8 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     run_qa_stage whip-shape run_whip_shape &&
     run_qa_stage ground-shape run_ground_shape &&
     run_qa_stage purifying-area run_purifying_area &&
+    run_qa_stage guardian-roar-area run_guardian_roar_area &&
+    run_qa_stage executioner-spin-area run_executioner_spin_area &&
     run_qa_stage guardian-area run_guardian_area &&
     run_qa_stage consecrated-area run_consecrated_area &&
     run_qa_stage cleric-area run_cleric_area &&
@@ -499,7 +543,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     run_qa_stage whirlwind run_whirlwind &&
     run_qa_stage phone run_phone &&
     run_qa_stage phone-combat run_phone_combat &&
-    run_qa_stage phone-party run_phone_party &&
+    run_qa_stage phone-party run_party_support &&
     run_qa_stage phone-inventory run_phone_inventory &&
     run_qa_stage equipment-recovery run_equipment_recovery &&
     run_qa_stage forge-guide run_forge_guide &&
@@ -522,7 +566,8 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     run_qa_stage animation-classes run_animation_classes &&
     run_qa_stage animation-multiplayer run_animation_multiplayer &&
     run_qa_stage nameplate-world npx playwright test tests/e2e/nameplate-world.spec.js &&
-    run_qa_stage well-rested run_well_rested
+    run_qa_stage well-rested run_well_rested &&
+    run_qa_stage forge-socket-appearance run_forge_socket_appearance
     ;;
   animations)
     run_animation_classes
@@ -530,12 +575,16 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   multiplayer)
     run_animation_multiplayer
     ;;
+  forge-socket-appearance)
+    run_forge_socket_appearance
+    ;;
   pvp-cadence)
     run_pvp_cadence
     ;;
   recovery-tail)
-    # Focused suffix rehearsal; does not replace the complete all-route gate.
-    run_pvp_cadence && run_animation_classes && run_animation_multiplayer && npx playwright test tests/e2e/nameplate-world.spec.js && run_well_rested
+    # Focused rehearsal of the unchanged full gate's remaining suffix. This
+    # does not replace a complete all-route acceptance run.
+    run_pvp_cadence && run_animation_classes && run_animation_multiplayer && npx playwright test tests/e2e/nameplate-world.spec.js && run_well_rested && run_forge_socket_appearance
     ;;
   movement-fast)
     EIDOLON_E2E_MOVEMENT_MAX_LEVEL=1 npx playwright test tests/e2e/movement-smoothness.spec.js
@@ -545,6 +594,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   death-resources)
     run_death_resource_recovery
+    ;;
+  well-rested-transitions)
+    run_well_rested_transitions
     ;;
   smoke)
     npx playwright test tests/e2e/authenticated.spec.js --grep "logs in, enters the world"
@@ -598,6 +650,12 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   purifying-area)
     run_purifying_area
+    ;;
+  guardian-roar-area)
+    run_guardian_roar_area
+    ;;
+  executioner-spin-area)
+    run_executioner_spin_area
     ;;
   purifying-area-retry)
     EIDOLON_E2E_PURIFYING_RETRY_PROBE=1 run_purifying_area --retries=1
@@ -821,8 +879,11 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   *)
     echo "Earned rest, real travel/combat and reconnect verification: EIDOLON_ISOLATED_QA_ROUTE=well-rested" >&2
+    echo "Earned rest through prepared hostile death and dungeon transitions: EIDOLON_ISOLATED_QA_ROUTE=well-rested-transitions" >&2
     echo "Trained ground-spell geometry verification: EIDOLON_ISOLATED_QA_ROUTE=ground-shape" >&2
     echo "Trained cleanse-area verification: EIDOLON_ISOLATED_QA_ROUTE=purifying-area" >&2
+    echo "Trained Guardian Roar verification: EIDOLON_ISOLATED_QA_ROUTE=guardian-roar-area" >&2
+    echo "Trained Executioner Spin verification: EIDOLON_ISOLATED_QA_ROUTE=executioner-spin-area" >&2
     echo "Trained persistent support-area verification: EIDOLON_ISOLATED_QA_ROUTE=guardian-area" >&2
     echo "Trained holy-zone verification: EIDOLON_ISOLATED_QA_ROUTE=consecrated-area" >&2
     echo "Critical training/persistence verification: EIDOLON_ISOLATED_QA_ROUTE=talent-critical" >&2

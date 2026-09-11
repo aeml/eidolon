@@ -94,7 +94,6 @@ Complete client regression/lint83603 passed on clean5f323d41:311 suites,
 `/tmp/eidolon-party-credit-proof-h2Ko7l` contains full server/client/lint and final
 focused race logs. All local test handles are terminal. No push, version
 assignment, native sharing proof or production acceptance is implied.
-
 ## Proposed player-facing patch note
 
 Party members in the same dungeon now share kill credit regardless of distance,

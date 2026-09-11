@@ -39,3 +39,17 @@ versioned patch notes and deployment. This is not live or a dungeon-clear receip
 Proposed patch note: Boss ground slams now respect defensive shields,
 invulnerability and damage-reduction buffs. Shield retaliation retains normal
 party kill credit.
+
+## Successor integration
+
+The successor also imports this correction from primaryd3a54d4a. The two
+extracted ordinary-hit blocks conflicted only around the primary's separate
+Dark King phase damage cap. This release retains its existing uncapped explosion
+and reflection damage, as before; it does not silently import that later scope.
+All shield, invulnerability, Sanctuary and world-lock corrections are retained.
+The primary evidence above remains attributed to that source. Fresh successor
+focused race88780 passed the actual slam/shield suite plus ordinary shield,
+safe-zone, reflection, party eligibility, snapshots, all-class and individual
+turn-in regressions. Log`/tmp/eidolon-next-slam-defense-focused.log`.
+The successor's earlier full server pass predates this runtime change; a new
+full server regression is required, along with final native/version/live gates.

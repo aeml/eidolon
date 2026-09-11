@@ -8,6 +8,7 @@ import {
 } from './ProceduralEquipment.js';
 import { BASE_ITEMS, GEM_QUALITIES, GEM_TYPES } from '../core/ItemSystem.js';
 import { isEquippableItem } from '../core/EquipmentSlots.js';
+import { socketGemAppearanceName } from './SocketGemAppearance.js';
 
 const ABILITY_CACHE = new Map();
 const ITEM_CACHE = new Map();
@@ -259,7 +260,7 @@ function gemBadges(item) {
     if (socketCount <= 0) return '';
     const circles = [];
     for (let index = 0; index < socketCount; index += 1) {
-        const gemName = gems[index]?.type || gems[index]?.gemType;
+        const gemName = socketGemAppearanceName(gems[index]);
         const color = GEM_ICON_COLORS[gemName]?.primary || 0x25252d;
         circles.push(`<circle cx="${38 + index * 10}" cy="85" r="3.5" fill="#${toHex(color)}" stroke="#e7e3d5"/>`);
     }

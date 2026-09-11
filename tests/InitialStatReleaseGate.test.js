@@ -18,6 +18,7 @@ test.each([0, 23])('initial-stat gate opts into native checks and preserves exit
 test('full release sequence and focused route use the same initial-stat check', () => {
     const all = wrapper.split('\n  all)')[1].split('\n    ;;')[0].trim();
     expect(all).toMatch(/^run_qa_stage initial-stats run_initial_stats &&\s+run_qa_stage authenticated /);
+    expect(all).toMatch(/run_qa_stage well-rested run_well_rested &&\s+run_qa_stage forge-socket-appearance run_forge_socket_appearance$/);
     expect(wrapper.split('\n  initial-stats)')[1].split('\n    ;;')[0].trim()).toBe('run_initial_stats');
     for (const className of ['fighter', 'rogue', 'wizard', 'cleric']) {
         expect(wrapper).toContain('${QA_USERNAME_BASE}-baseline-' + className);

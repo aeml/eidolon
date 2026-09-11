@@ -14,6 +14,8 @@ const commands = [
     "run_whip_shape",
     "run_ground_shape",
     "run_purifying_area",
+    "run_guardian_roar_area",
+    "run_executioner_spin_area",
     "run_guardian_area",
     "run_consecrated_area",
     "run_cleric_area",
@@ -21,7 +23,7 @@ const commands = [
     "run_whirlwind",
     "run_phone",
     "run_phone_combat",
-    "run_phone_party",
+    "run_party_support",
     "run_phone_inventory",
     "run_equipment_recovery",
     "run_forge_guide",
@@ -44,7 +46,8 @@ const commands = [
     "run_animation_classes",
     "run_animation_multiplayer",
     "npx playwright test tests/e2e/nameplate-world.spec.js",
-    "run_well_rested"
+    "run_well_rested",
+    "run_forge_socket_appearance"
 ];
 const stages = [
     "initial-stats",
@@ -53,6 +56,8 @@ const stages = [
     "whip-shape",
     "ground-shape",
     "purifying-area",
+    "guardian-roar-area",
+    "executioner-spin-area",
     "guardian-area",
     "consecrated-area",
     "cleric-area",
@@ -83,7 +88,8 @@ const stages = [
     "animation-classes",
     "animation-multiplayer",
     "nameplate-world",
-    "well-rested"
+    "well-rested",
+    "forge-socket-appearance"
 ];
 const events = (output, prefix) => output.split('\n')
     .filter(line => line.startsWith(prefix)).map(line => line.slice(prefix.length));
