@@ -5,7 +5,60 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 18:08 UTC
+## Current checkpoint — September 11, 18:55 UTC
+
+Previous turn was PROGRESS. This turn is PROGRESS: accepted full explosive-shield
+server regression, reproduced/repaired wound PvP budgets and Magma wall spread,
+and preserved the user's latest website/analytics work in the narrow successor.
+Only the interrupted soak remains cancelled. The full roadmap is not complete.
+
+-93579 recovered TERMINAL0 on frozen9446887c: root19.196s, game330.065s,
+  loadtest1.020s, database1.111s and lifecycle1.023s passed under Go race.
+  Acceptance doc0d3422f8 in explosive WT, now clean0d3422f8. Still unpublished.
+- New `/tmp/eidolon-wound-pvp-budget-20260911`, branchwork/wound-pvp-budget-20260911,
+  now clean frozenbe6d43ae1c568ceb9d083369a01664195263ac84 (runtime32f555e8 plus
+  explosive acceptance doc).32560 REDrace0.241s: actual paid Shadow Strike,
+  Shadow Lunge and Coating/basic/projectile keep raw60/58 instead of39/37 PvP;
+  huge wounds bypass175 cap; monster-hit coating spreads58 instead of37 to a
+  flagged player. Inherited critical Serrated/Poisoned Fan controls pass.
+  The high-Dexterity PvE control needed enough HP to survive the projectile.
+- Raw wounds now scale/cap once at application; application-local spread budget
+  distinguishes inherited PvP hits so each new recipient gets its own cap
+  without a second65% reduction. Stored ticks/save schema unchanged; poison
+  spread uses the existing immutable caster snapshot.82000 REDrace0.038s also
+  proved Magma PvE-hit burn copying6 rather than3 damage to a player;53730
+  REDrace0.497s proved that real paid burn crosses a closed dungeon wall.
+  Magma now uses target-specific budgets and canonical wall/body checks.
+-15571 three-repeat focused PASSrace1.657s;3580 broader three-repeat PASS23.801s
+  includes training/Mastery, real tick/receiver/reflect/cadence/spread/parallel
+  wounds/Dark King bounds.10060 final three-repeat PASS2.672s adds actual paid
+  Poisoned Fan spread to a prepared opposing seat and immutable later ticks.
+  Old Shadow Strike receiver fixtures now correctly expect6 PvP before further
+  reductions rather than10. Docs/patch-note draft2026-09-11-wound-pvp-budgets.md;
+  `/tmp/eidolon-wound-pvp-{red,green,broad,final}.log`, spread/magma RED logs retained.
+- Full Go-race86822 ACTIVE on unchangedbe6d43ae, nice10/GOMAXPROCS2,
+  log `/tmp/eidolon-wound-pvp-full-server.log`. Recover exact handle. No source
+  mutation there or second local heavy/native job while it runs. Status raw
+  critical-Technique/elemental/unique/set/duration/copy/offline/native audit
+  remains open; do not claim all outgoing consumers are finished.
+- Fetched latest remote throughdea1795b. New commits4ed50046 website SEO/assets,
+  f00948b5 website AND gameplay analytics, dea1795b website labels are preserved
+  in conflict-free next-gameplay merge0d2d4ffc.84571 focused new analytics suite
+  PASS15tests1.988s. Acceptance update follows in this worktree. New game entry/
+  analytics client files mean full client/lint/native checks are still needed;
+  server source unchanged by these remote commits. Narrow branch still excludes
+  later primary campaign/Fighter/defense changes. No release version/push yet.
+- Remote CI34630275716 remains ACTIVE in native predeploy gameplay,
+  job103370748882 started18:12:34; hosted server/client/three browser shards and
+  gallery passed. Newestdea1795b gameCI34631386195 pending; intermediatef00948b5
+  gameCI34631108877 cancelled by external concurrency/state, not agent action.
+  Website jobs passed. Keep local GPU free and preserve user changes on future
+  release rebase/merge. Soak34558600459 stays stopped; do not restart it.
+- Remaining native combined-source/earned four-role dungeon/save/talent/phone/
+  campaign/balance/casino and every version's release gates are unchanged.
+  Root ledger MUST NOT PUSH. Latest goal remains the full1.1–1.10 roadmap.
+
+## Previous checkpoint — September 11, 18:08 UTC
 
 The user explicitly clarified that "cancel" applied ONLY to the soak test.
 Resume the full roadmap implementation; leave that interrupted soak stopped.
