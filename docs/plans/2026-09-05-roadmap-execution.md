@@ -5,7 +5,45 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 22:57 UTC
+## Current checkpoint — September 11, 23:04 UTC
+
+Previous goal turn was PROGRESS. This continuation is PROGRESS: accepted the
+Warp/landing full regression and repaired offline Phase with real impact timing.
+
+-17718 TERMINAL0 onb1c9e8fc:357suites5107tests132.31s+lint, full Go race
+  root18.679s/game329.893s/database1.100s/lifecycle1.023s. No native/visual/setcharge
+  or fullTeleport completion implied. Logs remain `/tmp/eidolon-teleport-warp-*`.
+- Separate `/tmp/eidolon-teleport-phase-20260911`, branchwork/teleport-phase,
+  initiallybasedb1c9e8fc.66178 RED7failed/10passed0.681s: missing offline Phase
+  immunity and lifecycle. Now1s, WIZ34rank5→1.2s, damage blocked before shields/
+  deathsave/reflection; timer expires duringstun, clearsondeath/respawn, no
+  multiplayer/remote/rejectedcast grant.19995 GREEN4suites80tests1.311s+lint.
+-25358 RED4periodic failures0.709s: DoT work precedes Phase countdown, so a
+  slow frame could suppress post-expiry ticks. Periodic hits now pass actual
+  tick offsets within the frame to takeDamage; direct hits defaultzero, nonPhase
+  calls unchanged. Trained1.2s window blocks1s tick/admit2s tick for batched or
+  split frames; exact1s untrained deadline admitsdamage.11040 GREEN6suites157
+  tests1.906s+lint. Logs `/tmp/eidolon-offline-phase-{red,green,periodic-red,final,lint}-20260911.log`.
+- CommittedPhase9842ebe3, merged testedhealer430ea808 withoutconflict into
+  frozen clean85ee5a5b99d37c708cca183dfb30c0abf62da395.55247 confirmedACTIVE23:04:
+  prepare→fullclient→lint, logs `/tmp/eidolon-phase-aura-{prepare,full-client,full-lint}-20260911.log`.
+  NEXT recover SAME55247, preserve frozen source/no competing localfull/browser.
+  After success merge into primary (currently430ea808) and record acceptance.
+  Server source unchanged from acceptedb1c9e8fc. Phase stillneeds full/native/
+  visual acceptance; charges and utilityMastery decisions not claimed complete.
+- Remaining Teleportset gap confirmed in source: realTemporalWeave4piece
+  teleportCharges2 exists on client/server; only server consumes/recharges
+  charges (ability_wizard.go), offline still ordinary one-cast cooldown. Next
+  repair should use actualequippedset and preserve paid casts/expiry/removal/
+  authoritativeownership, not fabricate ActiveSetBonuses. No chargecode yet.
+-63normalCI34655698173 confirmedACTIVE23:03: client/server/browser3SUCCESS,
+  browser1/2running; predeploy/deploy/live stillrequired. Master89d9e145 unchanged.
+  Independent public release.json andhealthz rechecked23:02 still62/0231c948,
+  statusok/database ready. No63liveclaim. Avoid localnative during selfhosted QA.
+- Soakoff; full1.1–1.10/160talents/earnedpacing/phone/casino scope unchanged.
+  Root MUST NOT PUSH. No new nativeparty run started; latest25565remainsfailed.
+
+## Previous checkpoint — September 11, 22:57 UTC
 
 Previous goal turn was PROGRESS. This continuation is PROGRESS: implemented a
 tested healer-control correction based on retained native damage/decision data.
