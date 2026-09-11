@@ -1,6 +1,7 @@
 # Alpha 1.0.61 — a new home for Eidolon
 
-Candidate only; not a production acceptance claim. Based on remote3671aab4,
+Production acceptance completed September 11; see the final section below.
+The following candidate history is retained as evidence. Based on remote3671aab4,
 preserving the separate Cloudflare Pages website and all existing1.0.60 game
 content. The full1.1–1.10 roadmap remains active.
 
@@ -61,3 +62,25 @@ only migration/runtime endpoint initialization, Origin allowlist, workflow,
 versioning/tests/docs. Normal CI publication and new-domain live acceptance
 remain required. Pending permission question concerns cancelling only the
 superseded3671 CI run; the separate24hourNightly must stay running.
+
+## Production acceptance — September 11
+
+CI34563572711 attempt2 completed SUCCESS on exact
+33c2faf4c3651c057cd77ead2cde7089172a112e. Both public release endpoints were
+independently checked and reported Alpha1.0.61 with that commit; backend status
+was ok and database ready. New-origin WebSocket upgrade returned101; an
+unrelated Origin returned403.
+
+Final job103176152667 passed matching-release checks, live anonymous and
+persistent-character QA, four-class/remote-animation QA, town recovery and
+Well Rested QA, and evidence sanitization/upload. This closes the domain61
+release gate, not the full1.1 combat, campaign, phone or roadmap gates.
+
+Attempt1's final QA was interrupted by both runner services stopping at06:54;
+this was an operation cancellation, not a gameplay assertion failure. Only
+the final QA job was rerun, without redeploying or bypassing a gate. The same
+service interruption ended soak34558600459 before24hours. The user clarified
+that cancellation applies only to the soak: leave it stopped and resume normal
+roadmap work. This is not a successful24hour soak or a waiver of later
+concurrency acceptance. The older instruction to keep that specific soak
+running is superseded by this clarification.
