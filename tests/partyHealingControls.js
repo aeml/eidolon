@@ -15,3 +15,14 @@ export function selectPartyHealTarget(states, healer, range) {
     return injured.find(state => Math.hypot(state.x - healer.x, state.z - healer.z) <= range)
         || injured[0] || null;
 }
+
+// Spend direct-heal cooldown time maintaining the already-active aura. This
+// plans normal follow input only; ready heals and telegraph safety come first.
+export function partyAuraFollowSpacing(healer, target, { allowMovement, cooldown, auraActive, auraRadius }) {
+    if (!allowMovement || !auraActive || !Number.isFinite(cooldown) || cooldown < 1 ||
+        !Number.isFinite(auraRadius) || auraRadius <= 3 || healer?.dead || target?.dead ||
+        healer?.instance !== target?.instance || healer?.hp <= 0 || target?.hp <= 0 ||
+        ![healer?.hp, target?.hp, healer?.x, healer?.z, target?.x, target?.z].every(Number.isFinite)) return null;
+    if (Math.hypot(target.x - healer.x, target.z - healer.z) <= auraRadius - 1) return null;
+    return auraRadius - 3;
+}
