@@ -5,7 +5,53 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 21:24 UTC
+## Current checkpoint — September 11, 21:38 UTC
+
+Previous goal turn was PROGRESS. This turn is PROGRESS: accepted Time Warp full
+regression, repaired Shield Slam's paired damage-training consumer, integrated
+both, and prepared native trained-ally verification without competing browser work.
+
+-58396 TERMINAL0 on frozen49c08a76: full353suites4977tests109.207s+lint, Go
+  root17.030s/game324.131s/load1.016s/db1.083s/lifecycle1.021s PASS. Evidence
+  doc accepted in7a4cd1e0e3c25e81b439e5e5e0d6739454191261 and primary FF'd.
+  Logs `/tmp/eidolon-time-warp-full-{client,lint,server}.log`.
+-87588 frompriorcheckpoint alsoTERMINAL0, exactShieldthreat79test/lint rerun.
+  No native clear is implied. Both earlierpartyfailures remainarchivedfailures.
+- Shield WT now clean8a6855f52fd360528913f1d3a3fe237fcf65b4fd.24pairedserver
+  and24clienttrainedcases reproducedmissingMastery/EnduringRhythm damage;
+  baseline/unrelatedranks retainedoldhits. Shared65rawbudget→rank5Mastery78,
+  generic71,combined84; Reverberation/Fortify/threatconsumeintegerhit. Untrained
+  damageunchanged. Firstserverfixfound4duplicatelegacyIDdoublecounts; temporary
+  canonicaltrainingviewnowuseshigheraliasrankwithoutmutatingsavedmap, matching
+  offlinehelper/metadata. Addedcaps/negative/unrelatedranks/allrunes/critFortify.
+-83905 TERMINAL0 finalcurrentfocusedracegame22.990s.79624 TERMINAL0 current
+  client3suites124tests0.828s+lint. Earlierclientinvocationfromserverdirectory
+  failedfixturelookup; acceptedrerunusesreporoot. Logs
+  `/tmp/eidolon-shield-slam-mastery-{server-red,client-red,server-green,server-final,server-current,client-green,expanded-client,client-final,lint,lint-final}.log`.
+  No nativefixturegear/rankbudget/role/difficulty/assertion changes.
+- Primary mergedwithoutconflict; frozen clean a57fb362a3e52d08ce448debf767691ce9427db8.
+  Fullsequential52148 confirmedACTIVE21:37. Client353suites5036tests148.57s and
+  lint PASS; Go root16.746s observed, gamepending. Logs
+  `/tmp/eidolon-time-warp-shield-integrated-{client,lint,server}.log`.
+  Do notmutateprimary/startcompetingfull/browser untilterminal.
+- New nativeproof WT `/tmp/eidolon-time-warp-native-20260911`, branch
+  work/time-warp-native-20260911, clean14d7c7638b1cbb4d1e0d6b54e005530dbf5ea729,
+  runtimeidenticala57fb362. Standaloneisolatedroute `time-warp-area` prepares
+  level100Wizard, secondnormalplayerwalksbeyondoldradius, baselineexclusion,
+  15realphoneUItalentpurchases, trained18.75reach/9.6sduration, bothclients'
+  high/lowcastercenteredrings, actualrecipientstats/expiry andfreshsavedranks.
+  WellRestedkeptactive; CDRexpectationpreservesitsmultiplier/cap. Readonly
+  observerscaptureactualhandleroutput. No directstate/cast/network/clockwrites.
+  BrowserNOTSTARTED. ESLint/shellsyntax/discovery1testPASS; vendorprepared.
+  Evidence2026-09-11-time-warp-native-proof.md. Afterrealacceptance, wireinto
+  normalreleasegate; standalonepreparedtest isnotphysicalphone/earnedbuildproof.
+- Next recoverSAME52148. Ifpasses, checkrunner/GPUports then run nativeproof
+  from14d7c763, preserveevidence andrepairrealfailures; rerunfullfour-role party
+  withnewtankthreat andunchangedclear/manual/savegates whenbrowserfree. Subsequent
+  orderedversionedpublication remainsrequired. Nothingnewpushed/deployed,62last
+  acceptedproduction,soakoff. Full1.1–1.10includingcasino unchanged. Root MUST NOT PUSH.
+
+## Previous checkpoint — September 11, 21:24 UTC
 
 Previous goal turn was PROGRESS. This turn is PROGRESS: recovered terminal native
 failure, completed offline Time Warp parity with tests, and added a bounded
