@@ -40,3 +40,28 @@ browser acceptance remain outstanding; full regression does not replace them.
 Domain61 is still queued behind the older predeploy character job. Do not
 publish this successor before61 live acceptance and a new release version with
 its own patch notes. No full1.1 or later milestone completion claim.
+
+## September 11, 18:54 UTC — preserve newer website/game analytics
+
+Domain61 completed live acceptance in CI34563572711 attempt2; its completed
+record is now carried in40ca60a8. The user clarified that cancellation referred
+only to the interrupted soak, not roadmap implementation. Leave that soak off.
+
+Fetched remote master and merged throughdea1795bfc85ae62af084a44c63deb6bef6b7afc
+without conflicts into0d2d4ffc84e150f3ee15b720e75ba06263a932ff. This preserves
+the user's4ed50046 website SEO/image-delivery changes, f00948b5 website/game
+analytics anddea1795b card-label changes. The analytics addition touches the
+game entry page and client source, not just the separate website, so previous
+full client acceptance is not automatically current-source acceptance.
+
+84571 focused analytics integration PASS15tests/1suite1.988s on0d2d4ffc; log
+`/tmp/eidolon-next-analytics-integration.log`. Full current client/lint and native
+combined-source acceptance remain required. Game server source is unchanged by
+these remote commits. This branch still excludes the later full primary
+campaign/Fighter/receiving-defense/wound-budget work; those remain required,
+not implicitly included by this integration. No release-number bump or push yet.
+
+Remote game CI34630275716 is still in predeploy gameplay for4ed50046; newest
+dea1795b game CI34631386195 is pending. Do not cancel those runs or compete for
+the native GPU. A pending release must be rechecked against the latest remote
+tip before publication so user work is never overwritten.
