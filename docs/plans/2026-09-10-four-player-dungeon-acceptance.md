@@ -633,3 +633,49 @@ Healing RED3/18tests0.618s; escape RED2/56tests0.655s. Final96928 PASS104tests/
 This is test-controller work only: no gameplay collision, resource, equipment,
 boss, cooldown, damage, movement-speed or deadline changes. The four-player
 native clear remains required after the independent utility-area release checks.
+
+## Triage/body-clear native run — terminal overall timeout, September11 02:12
+
+53491 on clean frozen6f46f9db ended1 at the existing40-minute expedition limit,
+not death, encounter damage-stall or a formation exception. Exact failure:
+`Dungeon expedition exceeded40 minutes including town recovery`. The seed is
+-3341225116033233573, generator2/attempt0/Normal30/no fallback. Four ordinary
+browser clients, original common gear, skills/resources,8-minute encounter bounds
+and15-second local formation checks were retained throughout.
+
+All four entered together. Rootbound Warden was defeated with all four alive,
+then the party killed additional room4 enemies. Four complete all-four town
+recovery/individual-guide Resume cycles preserved the seed, rooms, Gold, bags
+and quests. The final failure occurred on later traversal; Matron and the later
+bosses, fullclear, individual final claims and fresh-login handoff were not reached.
+None of the four per-client sawDeath latches was set and no cast rejection was
+recorded. Final984Gold each. Fighter's final940HP/610MP includes the route's
+ordinary cleanup return to town; other final pools were Cleric845/555,
+Wizard855/555 and Rogue855/555. These maxima are not a build/stat increase.
+
+Warden-only damage/taken: Fighter4797/3103, Wizard3818/247, Rogue6394/2576;
+Cleric5697 effective healing/2208taken. Whole-run F10240/4063,W7901/367,
+R12588/2816,C6990healing/2208taken. Accepted casts F4Charge/5Fortress/18Whirlwind/
+15Slam; C12Embrace/11Light; W43Fireball/2Shield; R8Coating/56Piercing.
+Warning inputs/observed escapes/early-safe observations F17/14/6,C11/10/3,
+W2/2/0,R16/16/7 remain client observations, not authoritative dodge proof.
+The healer trace now actually records a reachable Fighter604HP/13.49units being
+selected while the Rogue272HP is15.36units away. The earlier missing-state
+selection ambiguity is resolved for this observed decision, not all encounters.
+
+Read-only saved-position checks corroborated long return travel rather than a
+stopped worker: after the fourth recovery the group moved roughly300units over
+several minutes while living/full, before the overall timeout. This is harness
+travel overhead plus the current real entrance-to-progress loop, not a measured
+human pacing result. The next full-party run needs explicit phase/travel/combat/
+recovery timing and a separate bounded overall party budget. Keep solo40minutes,
+individual combat/death/progression checks and original gameplay balance intact;
+do not extend a running test or claim this timeout is a completed dungeon clear.
+No new budget or recovery policy has been implemented at this checkpoint.
+
+Archive `/tmp/eidolon-four-role-triage-proof-j9s3cy` preserves reports/results and
+the log, copied QA-prefix0 and no credential-bearing Mongo URI after scanning.
+Screenshot pixels are not redacted; do not share the native QA-name screenshot
+as anonymized evidence. Owned containers and18580/18581/41980 listeners cleared.
+Log `/tmp/eidolon-four-role-triage-native.log`; use the sanitized archive for
+inspection. Subsequent Spin acceptance uses its separate worktree, not this source.
