@@ -5,7 +5,55 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 23:42 UTC
+## Current checkpoint — September 11, 23:58 UTC
+
+Previous goal turn was PROGRESS. This continuation is PROGRESS: reproduced and
+repaired nonfunctional Spell Focus Mastery in real server/offline cast paths,
+stored/replicated its trained charge and verified surrounding behavior. Full
+scope remains open; this is not full-tree, native or release acceptance.
+
+- New `/tmp/eidolon-focus-mastery-20260911`, branchwork/focus-mastery, based on
+  protection3b23c231, clean **e5a3c2a6** (final documentation wording corrected
+  before any publication). WIZ_15's existing+4%damage/rank was unused because
+  Focus did no direct damage and always amplified the next spell by2.5.
+  It now stores2.5/2.6/3.0 at0/1/5ranks on the paid Focus cast; rank changes after
+  activation cannot retroactively alter the charge. Base costs/CD/duration and
+  eligible spells unchanged. This is+20%focused-spell damage at max, not a
+  second charge or additional damage effect. Copy explicitly describes it.
+- Utility/rejected casts preserve charge; one accepted damaging spell consumes
+  it; actual world tick clears expired strength. Both entity-copy paths and
+  protobuf120 preserve the stored multiplier independently of private ranks.
+  Full/scalar-delta snapshots and both client support paths display actual buff
+  strength, handle legacy2.5 and inactivezero without phantom deltas/charges.
+  Warp does not borrow the trained3.0 charge. Other utility Masteries, including
+  non-damaging Time Warp and base Teleport, still require coherent review.
+- ClientRED3failed/34pass0.605s; server64581 RED3rankedfailures0.159s.
+  Initial client37pass0.582s;72305 server race3x4.022s. Final20140:
+  **7suites152tests1.775s+full lint**. Final15331 repeated3xrace:
+  root1.658s/game9.839s, covering paid casts, preserved/rejected/consumed charges,
+  actual world-tick expiry, stored-rank changes, Fireball Mastery+empowered rune
+  composition144damage, real wire/copy/deltas, legacy state, Warp/Shield/duration.
+  Logs `/tmp/eidolon-focus-mastery-client-{red,green,final}-20260911.log`,
+  `/tmp/eidolon-focus-mastery-server-{red,green,final}-20260911.log`,
+  `/tmp/eidolon-focus-mastery-lint-20260911.log`.
+  Doc2026-09-11-spell-focus-mastery.md records remaining native earned/hit/
+  recipient/display/save/balance/fullintegration/versionedpublication gates.
+- **Combined protection+Focus full regression still due** on e5a3c2a6; no
+  localfull/browser launched during active shared-machine predeploy. Primary
+  remains acceptedae938843; protection3b23c231 and Focuse5a3c2a6 not merged.
+  All localtool sessions this turn are TERMINAL (including15331/20140).
+- Release63 **34658209958 ACTIVE** at23:58, source0a871da0. All hosted tests/
+  threebrowser shards passed; SystemChrome advanced through gallery/WellRested
+  to required full-character gameplay. Poll SAME run; do not restart/cancel
+  based on elapsed observation. No63liveclaim. Last verified23:42 live both
+  newdomains62/0231c948, backendhealthy/database ready. Root ledger NEVER PUSH.
+- Next four-role native attempt remains pending sharedGPU availability, using
+  aura-follow430ea808 in primaryae938843. Last25565failed tankdeath/Warden5282;
+  allalive/clear/individualcredit/manualIlyra/Water/freshsave requirements stand.
+  Full1.1–1.10 including all160talents/physicalphone/balance/casino retained.
+  Soak remains OFF; no new authority or external blocker has arisen.
+
+## Previous checkpoint — September 11, 23:42 UTC
 
 Previous goal turn was PROGRESS. This continuation is PROGRESS: accepted full
 Teleport integration and fast-forwarded primary; implemented shared Protected
