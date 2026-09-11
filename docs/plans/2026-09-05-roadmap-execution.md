@@ -5,7 +5,62 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 21:10 UTC
+## Current checkpoint — September 11, 21:24 UTC
+
+Previous goal turn was PROGRESS. This turn is PROGRESS: recovered terminal native
+failure, completed offline Time Warp parity with tests, and added a bounded
+Shield Slam tank-threat balance candidate. Nothing newly deployed; soak off.
+
+-37298 TERMINAL1, four-role766486cf route9.6min. Normal Verdant new seed
+  -9168889736000078647/generator2/no fallback. Last Warden1278HP, then Rogue
+  died during move-only dodge (movement failure reports DEAD). All4-party/native
+  first town recovery/resume passed, full boss/quest/save gates NOT reached.
+  Full archive `/tmp/eidolon-four-role-pointer-failure-c8l4uB`; sanitizer changed
+  2report files; owned disposable services cleaned, no matching containers.
+- New evidence: Rogue verified-hover inputs20.5basicreach/no movement target;
+  Warden closed repeatedly to7.4units and hit184physical. Last lethal184 matched
+  warning impact.10Rogue early escapes, not all dodges successful. Whole-run
+  Fighter5929damage/2167taken, Rogue7516/5502, Wizard5007/350; Cleric6232ally
+  healing/920taken/8Embrace15Light, ended6MP. This supports pursuit/endurance
+  investigation, not direct server threat-table capture. Preserve all no-death/
+  boss/manual-Ilyra/individualcredit/Water/fresh-login gates; no blind rerun.
+- Time Warp WT now clean49c08a76758ae94d1ca1fd527a103c577cc69cf1.17/21 new
+  offline tests failed1.578s on prior source; fixed locked prepayment admission,
+  canonical60s trained cooldown before its ownCDR,8s trained caster-duration
+  snapshot, self inclusion/recipient authority+relationship+scene guards,
+  actual6piece TemporalWeave zone effect, immediate speed/CDR and offline expiry
+  recalculation even duringstun. Haste refresh doesn't compound; replicas don't
+  recalculate serverstats; support doesn'tconsumeSpellFocus. Existing source
+  attack timing factor supplieshastewithoutdoubleapplying. Area fixture now
+  uses reallevel30derivedmaxima before200MP to support valid recalc.
+-87980 TERMINAL0 focused7suites127tests2.101s+lint. Logs
+  `/tmp/eidolon-offline-time-warp-{red,green,focused,lint}.log`.58396 confirmed
+  ACTIVE21:23, frozen49c08a76 fullsequentialclient/lint/Go. Client353suites4977
+  tests109.207s+lint PASS. Server root17.030s/load1.016/db1.083 observed; game
+  stillpending. Logs `/tmp/eidolon-time-warp-full-{client,lint,server}.log`.
+  Do not modify source or start competing full/browser work before terminal.
+- Separate `/tmp/eidolon-shield-slam-threat-20260911`, work/shield-slam-threat-20260911,
+  clean96fc909cc54afdb5886eacd92199dbc6e7816c1d (base766486cf). Shield Slam's
+  advertised tank role had1xordinarydamage threat; candidate uses Sweeping
+  Strike's existing2x premium, without changing damage/mana/CD/cone/Fortify or
+  stun/boss-taunt immunity. Explicit UIcopy distinguishes threatfromdamage.
+  Paidtests normal/bosssized,4runes,immunity and wall/outside/behind/dead/friendly/
+  otherinstance exclusions; seededcompetingthreat is consumerproof not fullAI.
+- Shield initialprobe also hadinvalidenemyArcaneShield assumptions (absorption
+  onlyplayer) and laterwrongGrid.Update signature; both testerrorsdocumented,
+  originalredlogsretained, notdeclaredgameplayfixes.50225 TERMINAL0 finalfocused
+  racegame19.269s;3clientsuites79tests1.064s+lintPASS.87588 exactcommittedsource
+  client/lint rerun started; recover its handle. Logs
+  `/tmp/eidolon-shield-slam-threat-{red,focused,final,client,lint,client-final,lint-final}.log`.
+  Evidence/unreleased notes2026-09-11-shield-slam-threat.md. Fullregression/native
+  stillrequired. ShieldSlamMastery rawdamageconsumer newlynotedmissing, needs
+  pairedserver/offlineproof; TimeWarpMastery and widerWizardtimedconsumers open.
+- Main still efca5976, branches notmerged/published. Next recover58396 and87588,
+  finish remainingboundedconsumer repairs, integrate acceptedchanges and run
+  complete nativeparty/trainedsupport proofs with unchangedgates; ordered
+  versionedpublication stillrequired. Full1.1–1.10 scope intact. Root MUST NOT PUSH.
+
+## Previous checkpoint — September 11, 21:10 UTC
 
 Previous clarification-only turn was NO PROGRESS. Revalidated clean source and
 runner state; this turn is PROGRESS: corrected the previous range hypothesis,
