@@ -2,6 +2,7 @@ package game
 
 import (
 	"math"
+	"sync/atomic"
 	"testing"
 	"time"
 )
@@ -63,11 +64,20 @@ func TestPassiveRegenerationDoesNotBankWhileFullDeadOrPaused(t *testing.T) {
 
 func TestPassiveRegenerationUsesRealWorldTick(t *testing.T) {
 	w := newTestWorld()
+	defer w.StopBackground()
 	e := newTestPlayer("regen-tick", "Wizard")
 	// This contract is outside-safe-zone passive regen. Town now deliberately
-	// restores 10% per second; isolate random hazards from this rate assertion.
+	// restores 10% per second. Isolate both hazards and spawned overworld
+	// enemies, whose delayed attacks otherwise contaminate this rate assertion.
 	e.X, e.Z = -1.25, 80
+	e.InstanceID = "qa-passive-regeneration"
 	w.Hazards = make(map[string]*Hazard)
+	var damageEvents atomic.Int32
+	w.OnEvent = func(kind string, payload interface{}) {
+		if event, ok := payload.(DamageEvent); kind == "damage" && ok && event.TargetID == e.ID {
+			damageEvents.Add(1)
+		}
+	}
 	e.BaseStats = Stats{Vitality: 10, Wisdom: 10, Intelligence: 10}
 	e.RecalculateStats()
 	e.Health, e.Mana = 50, 50
@@ -80,6 +90,9 @@ func TestPassiveRegenerationUsesRealWorldTick(t *testing.T) {
 		t.Fatal("fractional regen applied a whole point too soon")
 	}
 	w.Update(1)
+	if damageEvents.Load() != 0 {
+		t.Fatal("unrelated damage contaminated the isolated regeneration fixture")
+	}
 	if e.Health != 51 || e.Mana != 51 {
 		t.Fatalf("world discarded fractional regen: hp%d mana%d", e.Health, e.Mana)
 	}

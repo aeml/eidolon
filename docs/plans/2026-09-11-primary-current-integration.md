@@ -1,7 +1,7 @@
 # Primary progression — accepted-fix integration
 
-Status: local integration with focused checks passed; full regression, native
-four-role dungeon clear and release acceptance remain open. This is not a new
+Status: local integration with full Go/client/lint and 116 browser cases passed;
+native four-role dungeon clear and release acceptance remain open. This is not a new
 published version or completion of the full1.1–1.10 roadmap.
 
 ## Sources and intent
@@ -70,3 +70,60 @@ history: Warden and four complete town/resume cycles are not a full clear.
 Schedule the long native run without competing with canonical predeploy on the
 same GPU. Canonical62dc and successor release gates remain separate; never push
 the root ledger branch or overwrite production with this unaccepted tree.
+
+## Full regression follow-up — September11 03:05
+
+Full server race59375 exited0 on ee1da4b4: root28.570s/game400.604s,
+loadtest1.030s/database1.140s/lifecycle1.042s; other packages had no tests.
+No race warning. Log `/tmp/eidolon-primary-current-full-server.log`.
+
+Full client45446 exited1:335 suites/4672 tests passed, one test failed out of
+336suites/4673tests170.905s. `RestAuraReleaseGate` expected the old untimed literal
+`&& run_well_rested`, although required-all now calls it through run_qa_stage.
+The actual helper-invocation checks passed; no Well Rested route was dropped.
+The assertion now requires the timed Well Rested stage followed by the timed
+Forge/socket tail, retaining both mandatory gates. No src/server/script changes.
+
+Focused5163 then passed56tests/4suites1.981s and full lint, covering the actual
+native helper sequence, timing failure/cleanup behavior and socket suffix.
+Logs `/tmp/eidolon-primary-current-rest-gate-{focused,lint}.log`. Lint did not run
+after the failed full client command; this separate lint pass is explicit.
+Rerun the complete client suite on the corrected test source before browser/native
+acceptance. The full server pass remains current because server source is unchanged.
+
+## Full client and browser acceptance — September11 03:25
+
+Corrected full client/lint73302 exited0:336 suites/4673 tests174.332s, full lint
+passed. Logs `/tmp/eidolon-primary-current-full-{client,lint}-final.log`.
+Frozen9c664f95 then passed all116 browser cases in13 stages using CI1, system
+Chrome, Node24 and one worker. Group1/61836:40cases; group2/10508:50cases;
+group3/93874:26cases, all terminal0. Embedded report stats for every stage
+independently confirmed116 expected, zero unexpected/flaky/skipped. This includes
+all10 crystal-art cases, not just discovery. Port41981 is clear after cleanup.
+
+Archive `/tmp/eidolon-primary-current-browser-proof-igu3O6` contains all three
+group logs and distinct reports/results. Credential scanner passed,0 files
+sanitized; byte scanning does not assert pixel redaction. Earlier inspected720p
+party roster and568x320 expanded-chat screenshots had no new clipping. The
+crystal-art cases use controlled snapshots/prepared cameras, not native raid
+completion or physical-phone acceptance. Those acceptance boundaries remain.
+
+No local heavy/browser remains. Native four-role full clear, remaining required
+native release gates and production acceptance are still open. Separate runner
+queues were newly authorized by the user; infrastructure work is isolated in
+`work/runner-queue-separation-20260911`, not bundled with this unaccepted gameplay.
+
+## Queue carry-forward and render review — September11 03:29
+
+Infrastructure-only8cb7ae43 was carried into this branch as2eb20e8f so a future
+gameplay release cannot restore the obsolete shared soak/GPU label. Focused
+queue/isolation/browser-sharding82052 passed8tests/3suites0.979s. Diff inspection
+confirms no src/server/scripts/ci.yml changes since frozen9c664f95; the existing
+application regression evidence remains applicable. The nightly workflow, new
+queue regression test and documentation are the only additional changes.
+
+Inspected current crystal-art Earth portrait repair and desktop Maelin channel
+screenshots. The crystal and repair beam are visible, and Maelin has a distinct
+apron/tools silhouette in the comparison fixture. The prepared portrait camera
+makes Maelin small; this does not establish real mobile encounter readability or
+close the physical-phone gate. No new native crystal defense completion claimed.

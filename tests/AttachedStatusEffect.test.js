@@ -250,6 +250,42 @@ describe('attached status effect lifecycle', () => {
         }
     });
 
+    test('remote root and slow visuals clear independently from authoritative status transitions', () => {
+        const engine = Object.create(GameEngine.prototype);
+        const actor = new Actor('remote-control-observer', CONSTANTS.ENTITIES.FIGHTER);
+        actor.isRemote = true;
+        actor.mesh = new THREE.Group();
+        const scene = attachEngine(actor);
+        try {
+            engine.syncPlayerStatusDetails(actor, {
+                rooted: true, rootDuration: 3,
+                slowed: true, slowDuration: 5, slowFactor: .5
+            });
+            actor.syncAttachedStatusEffects(0);
+            expect(actor.attachedStatusEffects.has('rooted')).toBe(true);
+            expect(actor.attachedStatusEffects.has('slowed')).toBe(true);
+
+            const rootClear = { rooted: false, rootDuration: 0, slowed: true, slowDuration: 2, slowFactor: .5 };
+            engine.syncPlayerStatusClears(actor, rootClear);
+            engine.syncPlayerStatusDetails(actor, rootClear);
+            actor.syncAttachedStatusEffects(0);
+            expect(actor.rootTimer).toBe(0);
+            expect(actor.attachedStatusEffects.has('rooted')).toBe(false);
+            expect(actor.attachedStatusEffects.has('slowed')).toBe(true);
+
+            const slowClear = { rooted: false, rootDuration: 0, slowed: false, slowDuration: 0, slowFactor: 0 };
+            engine.syncPlayerStatusClears(actor, slowClear);
+            engine.syncPlayerStatusDetails(actor, slowClear);
+            actor.syncAttachedStatusEffects(0);
+            expect(actor.slowTimer).toBe(0);
+            expect(actor.slowFactor).toBe(0);
+            expect(actor.attachedStatusEffects.size).toBe(0);
+            expect(scene.children).toHaveLength(0);
+        } finally {
+            actor.dispose();
+        }
+    });
+
     test('server duration-only snapshots refresh remote visuals and debuffs', () => {
         const engine = Object.create(GameEngine.prototype);
         engine.showRemoteSupportStateReadability = jest.fn();
