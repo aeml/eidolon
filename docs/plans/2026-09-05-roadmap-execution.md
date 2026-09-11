@@ -5,7 +5,44 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 10, 23:54 UTC
+## Current checkpoint — September 11, 00:06 UTC
+
+Previous goal turn was PROGRESS: second party recovery and accurate patch-note
+draft. This turn is PROGRESS: retained a second surviving native Warden kill,
+diagnosed a further controller scheduling limitation with a red regression,
+implemented disjoint-path batches/timing diagnostics and launched renewed native
+acceptance. Whole roadmap/fullclear/manual/relogin/live gates remain required.
+
+-99535 on229cbdd8 TERMINAL1 after15.7m, seed6347868825596501926/gen2/Normal30/
+  no fallback. Two opening rooms and two all-four town recovery/resume cycles
+  passed;15000HP Warden defeated, all four655Gold/no observed death/no rejected
+  casts. Boss damage/taken: Fighter5057/1458, Wizard3691/920, Rogue6261/736;
+  Cleric3041effective ally healing/1288taken. FullrunF9152/2367,W6275/920,
+  R11138/1096,C4244healing. Finaltank940/123includescleanup, notbossreserves.
+- After the boss, before any third rest receipt,15s formation deadline failed.
+  Cleric/Wizard were within radius; Rogue about14behind nearpreviousanchor.
+  Alltargetsnull/mesh-cameraoffsets0; ClericblockedStops6/others0. Exact per-move
+  timings were absent, so do not claim a fully proven timing breakdown/cause.
+  Archive`/tmp/eidolon-four-role-slots-proof-8rI0vh` scanned/copied-log QA-prefix0;
+  owned containers/ports gone. Fullclear/claims/relogin not reached.
+- Primarye2780eb6 batches only disjoint swept-body paths, preserving real
+  terrain/body checks, separate slots and actual-position arrival. Shared-origin,
+  crossing/overlapping/too-close paths remain serial. Uses actual planning origin;
+  awaits all issued inputs before propagating any error/replanning. Bounded
+  failure trace records batch/origin/delta/elapsed/promise outcomes; outcome alone
+  is not arrival.62919 RED shows three independent6s moves fail serial15s limit;
+  final39738 PASS82tests/5suites8.782s+lint/discovery. Same radius/deadlines/gameplay/
+  resources. No claim that synthetic timing completely reproduces99535.
+- Native16027 now ACTIVE on clean frozene2780eb6, sole local heavy gate:
+  routeparty-dungeon/runparty-batch-0911-0005/ports18580/18581/41980. Log
+ `/tmp/eidolon-four-role-batch-native.log`. Continue this exact handle; no primary
+  edits/other heavy gate until it terminates. Old99535active states superseded.
+- Candidate98320775 idle; app0c8c4ffe/currentfullGo/104browser evidence retained,
+  draft notes prepared but unversionedrequiredall/canonical/version/CI/live due.
+  Remote00:06 canonical62dc CI34434837759 queued; Nightly34433520743 in_progress.
+  No cancellation, runner changes, version/push/deployment. Root NEVER PUSHES.
+
+## Previous checkpoint — September 10, 23:54 UTC
 
 Previous turn was PROGRESS: first four-role recovery and corrected balance-plan
 status. This turn is PROGRESS: second native room/recovery, evidence-backed
