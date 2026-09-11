@@ -5,7 +5,47 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 04:34 UTC
+## Current checkpoint — September 11, 04:40 UTC
+
+Previous turn was PROGRESS: actual Nginx/Pages404 cause reconfirmed and exact
+operator repair supplied. This turn is PROGRESS with verified wait: version61
+prepared/frozen, full client/lint passed, full server running, root/slow isolated
+integration committed with fresh focused proof. Full roadmap remains active.
+
+- Domain release worktree now clean frozen10957648, Alpha1.0.61 login/package/
+  lock/manifest/server/container/deploy/isolatedQA/CIdefaults plus player-facing
+  patch notes retaining all prior entries. Current live QA defaults nownewdomains
+  (optional vars retained) because oldfrontend redirects toapexwebsite. Scope
+  remains domain/Origin/QA/exact-releasecheckout, no gameplay mechanics changed.
+  Focused82729 PASS268tests/6suites3.169s. Docsrelease61 recordstillnotlive.
+- 49482 ACTIVE in `/tmp/eidolon-domain-migration-20260911`, sequential nice10/
+  GOMAXPROCS2 client->lint->fullserverrace. Full client PASS259suites3634tests
+ 146.186s; lintPASS; current server root16.143/loadtest1.022/database1.106PASS,
+  game stillrunning atlastpoll. Logs `/tmp/eidolon-domain61-full-{client,lint,server}.log`.
+  Do not editfrozencandidate or callfullserverpassed before terminal. This is
+  onlylocalheavy; no localbrowser. Normalpredeploy/native/livegates stillrequired.
+- User reportsnewfrontend404. Read-only inspection04:37 provesactiveenabled
+  config is the expected symlink and stillline13oldHosteidolon.mendola.tech;
+  bothdirectoriginHTTPSandpublicreturn404. PagesAPIcustomdomainplay; explicit
+  upstreamHostplay returns200. Agent supplied exactsudoHostreplacement+reload+
+  verification commands again.04:39 installedHoststillold; not an agent blocker
+  forindependentwork, not a successfulcutoverclaim. Certs/backendHTTPSalreadywork.
+  No agent sudo/DNS/Pages mutation, no publicationorCIcancel.
+- New `/tmp/eidolon-root-slow-current-20260911`, branch
+  work/root-slow-current-20260911, cleanfa58e4d2 (runtimea6b37b36) fromprimary06.
+  Carriedab825/7d648only. Diagnosticconflict resolved retainingrootprobe and
+  primary'sexistingdiagnostics, notbringinglaterShieldSlamprobe/runtime714.
+  Accidental67015 older-sourcefocusedrun is explicitly NOTnewfixacceptance.
+  Fresh32848 PASSrace8.505s againsta6b37b36, log
+  `/tmp/eidolon-root-slow-current-focused-final.log`. Fullrootintegrationrace
+  remainsnextafter49482, thenprimaryadvanceifgreen. Primary06/nextstun475unchanged.
+- CI3671/34561490782stillrunninghostedbrowser1/3+3/3 at04:40 (2/3finished),
+  newNightly34558600459actuallyrunningeidolon-soak. Priorcanonical62dcfailure
+  remainsrecorded; no rerun/pushyet. Fullfour-roleclear, earnedprogression,
+  physicalphones, all160talents/save/runes,1.2–1.10andcasino remainrequired.
+  RootNEVERPUSH. Credentialrotationapprovalstillunanswered.
+
+## Previous checkpoint — September 11, 04:34 UTC
 
 Previous turn was PROGRESS (verified DNS/Cloudflare challenge failure and
 operator retry guidance). This turn is PROGRESS: root/slow repair committed,
