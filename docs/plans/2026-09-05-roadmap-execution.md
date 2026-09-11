@@ -5,7 +5,53 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 02:07 UTC
+## Current checkpoint — September 11, 02:16 UTC
+
+Previous turn was VERIFIED WAIT. This turn is PROGRESS: preserved the terminal
+party timeout, completed native Spin acceptance and started its full regression.
+The complete original roadmap stays active, not complete or blocked.
+
+-53491 TERMINAL1 on clean6f46f9db: exact error `Dungeon expedition exceeded40
+  minutes including town recovery`. NOT death, a boss damage-stall or a formation
+  exception. Seed-3341225116033233573/gen2/attempt0/Normal30/no fallback. Warden
+  defeated and four complete all-four townrest/individual Resume cycles passed
+  exact progress; room4 enemies killed. Matron/later bosses, fullclear, final
+  individual claims/fresh login never reached. All four sawDeath=false, no cast
+  rejection,984Gold each. Full damage/taken F10240/4063,W7901/367,R12588/2816;
+  C6990 effectiveheal/2208taken. Earlier Warden-only measurements retained below.
+  New healer trace shows actual reachableF604HP/13.49 chosen over R272HP/15.36.
+  Warning-input counts remain client observations, not authoritative dodges.
+- Primary now clean0d3c2249, docs-only atop6f46f9db. Archive
+ `/tmp/eidolon-four-role-triage-proof-j9s3cy` preserves reports/results/native.log,
+  copiedQA-prefix0/no credential-bearing MongoURI; screenshot pixels NOT redacted.
+  Owned containers and18580/18581/41980ports confirmedgone before next run.
+  No party budget/tactics/gameplay changes yet. Next party work: add explicit
+  phase/travel/combat/recovery timing and a separate bounded overall party test
+  budget justified by this actual40-minute timeout; preserve solo40minutes,
+  per-encounter8minutes/death/room/credit/manualclaim checks and gameplay stats.
+  Do not claim longer automation allowance proves human pacing or balance.
+-85991 TERMINAL0, Spin native PASS1/24.5s on clean a0cda0ff. Ordinary phone
+  branchC and three paid five-rank purchases; accepted visible radii6/6.6/7.5/8.1,
+  high/low quality, fresh-login landscape saved ranks all passed. Explicit
+  preparedlevel100/resources, not earned progression or native hostile-hit proof.
+  Archive `/tmp/eidolon-executioner-native-proof-lR6UEF`, copiedQA-prefix0,
+  log `/tmp/eidolon-executioner-native.log`, runIDspin-area-0911-0213. Cleanup
+  removed owned services/ports. Current source's focused actual hit/wall/party
+  tests complement the native ring/purchase/save proof; broader gates stay open.
+-75374 ACTIVE full Go race on frozen a0cda0ff, sole local heavy gate, cwd
+ `/tmp/eidolon-executioner-area-dfzcT7/server`, log
+ `/tmp/eidolon-executioner-full-server.log`. Continue exacthandle, no source
+  edits there until terminal. Then full client/lint and current combined browser
+  regression/integration; current Spin native is no longer missing. Candidate
+  a378ac3d unchanged, no Spin integration/version/deployment yet. Canonical62dc,
+  versionedrequired-all/notes/remote/live and broader roadmap remain open.
+- Latest remote check remains01:58:44 canonical34434837759queued/Nightlyactive;
+  no fresh check here or runner/soak/push mutation. Credential rotation question
+  still unanswered: no authority to rotate/restart production. Never emit process
+  arguments or secret values; safe checks use comm/projections only.
+  Root is ledger-only NEVER PUSH. Both terminal browser gates are preserved.
+
+## Previous checkpoint — September 11, 02:07 UTC
 
 Previous turn was VERIFIED WAIT; this turn remains VERIFIED WAIT on the same
 53491, exact45s poll confirmedlive02:06:43. No restart, source change or extra
