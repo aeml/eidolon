@@ -1,3 +1,31 @@
+import { acquirePartyAllyPointer } from './partyDungeonControls.js';
+
+// The same hitbox/hover acquisition works for hostiles and allies. Projection
+// alone is not target acquisition: another actor or loot may cover the point.
+// Hooks only read game state and issue normal pointer input. In particular,
+// never assign hoveredEntity or bypass the game's attack/cast admission.
+export async function attackPartyDamageTarget(input, targetId) {
+    const clicks = [];
+    const valid = state => state?.alive && state.allowCasts &&
+        Number.isFinite(state.distance) && Number.isFinite(state.range);
+    if (!await acquirePartyAllyPointer(input, targetId)) return clicks;
+    let state = await input.read(targetId);
+    if (!valid(state)) return clicks;
+    if (state.allowApproach) {
+        await input.click('left');
+        clicks.push('left');
+        // The first input can move either actor or start a new warning. Recheck
+        // the actual target and its current range before the second input.
+        if (await input.hoveredId() !== targetId) return clicks;
+        state = await input.read(targetId);
+    }
+    if (valid(state) && state.distance <= state.range && state.cooldown <= 0) {
+        await input.click('right');
+        clicks.push('right');
+    }
+    return clicks;
+}
+
 // Choose legal self-buff inputs from the actual loadout/resources. This does
 // not grant skills or stats, and never spends mana during travel/out-of-range.
 export function selectPartyDamageBuff(state) {
