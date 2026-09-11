@@ -436,21 +436,29 @@ jobs:
             "REF_NAME='${REF_NAME}' COMMIT_SHA='${COMMIT_SHA}' QA_USERNAMES_B64='${qa_usernames_b64}' bash -se" <<'EOF'
           set -euo pipefail
           cd /home/aeml/eidolon
-          git fetch origin "${REF_NAME}"
-          EXPECTED_SHA="$(git rev-parse origin/${REF_NAME})"
-          echo "Expected origin/${REF_NAME}: ${EXPECTED_SHA}"
-          git reset --hard origin/${REF_NAME}
-          git clean -fd
-          ACTUAL_SHA="$(git rev-parse HEAD)"
-          echo "Checked out HEAD: ${ACTUAL_SHA}"
-          if [ "${ACTUAL_SHA}" != "${EXPECTED_SHA}" ]; then
-            echo "Deployed checkout does not match origin/${REF_NAME}" >&2
+          # DEPLOY_CHECKOUT_BEGIN: deploy what this run tested, not a newer push.
+          if ! [[ "${COMMIT_SHA}" =~ ^[0-9a-f]{40}$ ]] || \
+             ! [[ "${REF_NAME}" = master || "${REF_NAME}" = main ]]; then
+            echo "Invalid release commit or branch" >&2
             exit 1
           fi
+          git fetch origin "${REF_NAME}"
+          if ! git merge-base --is-ancestor "${COMMIT_SHA}" FETCH_HEAD; then
+            echo "Release commit is not in the fetched production branch" >&2
+            exit 1
+          fi
+          if ! git diff --quiet || ! git diff --cached --quiet; then
+            echo "Deployment checkout has tracked local changes; refusing to overwrite them" >&2
+            exit 1
+          fi
+          git -c advice.detachedHead=false checkout --detach "${COMMIT_SHA}"
+          ACTUAL_SHA="$(git rev-parse HEAD)"
+          echo "Checked out HEAD: ${ACTUAL_SHA}"
           if [ "${ACTUAL_SHA}" != "${COMMIT_SHA}" ]; then
             echo "Deployed checkout does not match workflow commit ${COMMIT_SHA}" >&2
             exit 1
           fi
+          # DEPLOY_CHECKOUT_END
           cd server
           qa_usernames="$(printf '%s' "${QA_USERNAMES_B64}" | base64 --decode)"
           qa_env_tmp="$(mktemp .env.qa.XXXXXX)"

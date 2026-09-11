@@ -93,7 +93,54 @@ the expected commit, login at the new frontend actually uses the new WSS host,
 rejected unrelated Origins remain rejected, and a saved character reconnects.
 Run native live release QA on the new URLs. Keep old domains available until
 this passes; do not redirect the old WebSocket endpoint or delete old certs.
-No live DNS/Nginx/Certbot/Pages setting mutation has been performed by this patch.
+No live DNS/Nginx/Certbot/Pages setting mutation has been performed by the agent.
+
+## Operator cutover follow-up — September 11, 04:34 UTC
+
+The initial Certbot request failed through Cloudflare520. Operator has since
+installed certificates: new backend HTTPS/health is200, database ready, still
+running df91bb66/Alpha1.0.60 (not the new Origin code). Do not reinstall the
+HTTP bootstrap over the Certbot-managed TLS configuration.
+
+GitHub Pages custom-domain state has also changed to `play.eidolonrealms.com`.
+This supersedes the old-Host routing instructions above. Upstream tests show
+`Host: eidolon.mendola.tech` now404 and `Host: play.eidolonrealms.com`200.
+The new frontend public404 therefore needs the installed proxy Host changed to
+the new Pages custom domain. The checked-in bootstrap now uses the new Host.
+The old public frontend currently redirects to the apex website; that external
+operator change is not undone by this patch. Keeping the legacy connection
+resolver is backward compatibility, not a claim that this redirect serves a game.
+
+Run only this targeted update, preserving Certbot's HTTPS additions:
+
+```bash
+sudo sed -i.before-pages-host 's/proxy_set_header Host eidolon.mendola.tech;/proxy_set_header Host play.eidolonrealms.com;/' /etc/nginx/sites-available/eidolonrealms.conf
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+The backup is `/etc/nginx/sites-available/eidolonrealms.conf.before-pages-host`.
+After migration code is deployed, live QA must use the three new endpoint
+variables above: the old frontend is no longer a valid game QA destination.
+
+## Queued release checkout repair
+
+Canonical62dc CI34434837759 completed predeploy QA but failed SSH deployment:
+the step reset to newer origin/master3671 while expecting tested62dc. This was
+before API replacement; backend remainsdf91. The pending3671 run is not proof
+that this pipeline bug is fixed.
+
+Updated checkout validates the SHA/production branch, fetches, verifies the
+tested commit belongs to fetched branch history, rejects tracked local changes,
+and checks out the exact tested commit detached. It no longer resets to a
+moving branch tip or deletes untracked files at this step. Existing later
+deployment behavior is unchanged. Six disposable real-Git cases execute the
+actual workflow segment: later push, next release, staged/unstaged preservation,
+unrelated history and invalid inputs. Five focused suites/32 tests pass2.621s;
+focused ESLint passes. Initial test-only environment error (HTMLCanvasElement)
+was fixed by using the repository's normal configured test environment.
+
+Unreleased patch-note addition: Queued deployments now use the exact tested
+commit even when newer changes arrive while a release is waiting for QA.
 
 ## Local verification — September 11, 04:28 UTC
 
