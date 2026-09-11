@@ -378,7 +378,7 @@ export const CONSTANTS = {
 
             entries.push(
                 { name: "Opportunist's Flow", desc: "+2% global CDR per rank (10% max).", maxRank: 5 },
-                { name: "Dirty Tricks", desc: "+4% bleed/poison damage per rank (20% max).", maxRank: 5 },
+                { name: "Dirty Tricks", desc: "+4% ability-effect duration per rank (20% max), including buffs, debuffs and wounds.", maxRank: 5 },
                 { name: "Quickhands", desc: "+3% attack speed per rank (15% max).", maxRank: 5 },
                 { name: "Shadow Poise", desc: "+2% evasion per rank (10% max).", maxRank: 5 },
                 { name: "Silent Balance", desc: "+3% movement speed per rank (15% max).", maxRank: 5 },

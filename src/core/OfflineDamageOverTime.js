@@ -1,5 +1,6 @@
 import { CONSTANTS } from './Constants.js';
 import { rollOfflineCriticalDamage } from './AbilityCritical.js';
+import { getRogueEffectDuration } from '../skills/rogueEffectDuration.js';
 
 const authoritative = actor => actor?.isMultiplayer || actor?.isRemote || actor?.gameEngine?.isMultiplayer;
 
@@ -50,6 +51,7 @@ export function applyOfflineStatus(source, target, kind, amount, duration, skill
         if (kind === 'poison' && poisonBonus > 0 && Number.isFinite(poisonBonus)) damage = Math.floor(damage*(1+poisonBonus));
     }
     if (!damage) return false;
+    duration = getRogueEffectDuration(source, duration);
     // Refresh the wound without postponing an already-running tick cadence.
     if (!(target[`${kind}Timer`] > 0)) target[`${kind}TickTimer`] = 0;
     target[`${kind}Timer`] = duration;

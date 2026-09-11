@@ -14,7 +14,7 @@ test.each([
     ['Poison Coating', 'ROG_21', 'poison', 'Basic Attack']
 ])('paid %s → %s preserves trained, attributed periodic damage', (skill, talent, kind, delivery) => {
     jest.spyOn(Math, 'random').mockReturnValue(.5);
-    for (const build of [{ rank: 0 }, { rank: 1 }, { rank: 5 }, { rank: 5, unrelated: true }, { rank: 5, critical: true }]) {
+    for (const build of [{ rank: 0 }, { rank: 1 }, { rank: 5 }, { rank: 5, unrelated: true }, { rank: 5, critical: true }, { rank: 0, durationRank: 5 }]) {
         const actor = new Rogue('status-caster'), target = new Imp('status-target');
         const projectiles = [], scheduled = [];
         try {
@@ -22,6 +22,7 @@ test.each([
             actor.stats.damage = 100; actor.stats.mana = 1000; actor.stats.critChanceBonus = build.critical ? 1 : 0;
             actor.unlockedSkills.push(skill, delivery);
             actor.talentRanks = { [build.unrelated ? 'ROG_03' : talent]: build.rank };
+            if (build.durationRank) actor.talentRanks.ROG_28 = build.durationRank;
             actor.scheduleTask = callback => { scheduled.push(callback); return scheduled.length; };
             target.mesh = new THREE.Group(); target.position.set(0, 0, 6);
             target.stats.hp = target.stats.maxHp = 10000; target.stats.hpRegen = 0;
@@ -48,6 +49,8 @@ test.each([
             const criticalMultiplier = build.critical && skill !== 'Serrated Edges' ? 2 : 1;
             const expected = Math.floor(base*(1+(build.unrelated ? 0 : .04*build.rank))+1e-9)*criticalMultiplier;
             expect(target[`${kind}TickDamage`]).toBe(expected);
+            const duration = (skill === 'Shadow Lunge' ? 10 : kind === 'poison' ? 8 : 5)*(1+.04*(build.durationRank || 0));
+            expect(target[`${kind}Timer`]).toBeCloseTo(duration, 8);
             const receive = jest.spyOn(target, 'takeDamage');
             const hp = target.stats.hp;
             target.stunTimer = 5;
@@ -59,6 +62,7 @@ test.each([
             actor.talentRanks = { [talent]: 5 }; actor.stats.critChanceBonus = 1;
             Actor.prototype.update.call(target, 1, null, null, engine.chunkManager);
             expect(target.stats.hp).toBe(hp-2*expected);
+            expect(target[`${kind}Timer`]).toBeCloseTo(duration-2, 8);
             target.cleanse(); receive.mockClear();
             Actor.prototype.update.call(target, 1, null, null, engine.chunkManager);
             expect(receive).not.toHaveBeenCalled();

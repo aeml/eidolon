@@ -10,6 +10,7 @@ import { getAbilityRange, getRogueMovementCastRange } from '../core/AbilityRange
 import { findOfflineAbilityTarget } from '../skills/offlineAbilityTargeting.js';
 import { resolveDungeonMovementEndpoint } from '../skills/dungeonEffectGeometry.js';
 import { applyOfflineStatus } from '../core/OfflineDamageOverTime.js';
+import { getRogueEffectDuration } from '../skills/rogueEffectDuration.js';
 import {
     PROCEDURAL_PROJECTILE_VISUAL_DEFINITIONS,
     createProceduralProjectileVisual,
@@ -84,7 +85,7 @@ export class Rogue extends Actor {
                     if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
                         if (entity.position.distanceTo(trap.position) < trap.radius) {
                             // Trigger!
-                            entity.rootTimer = 3.0; // Root for 3s
+                            entity.rootTimer = getRogueEffectDuration(this, 3);
                             if (floatingTextManager) floatingTextManager.spawn("ROOTED!", entity.position, '#ffff00');
                             
                             // Visual Effect (Need scene)
@@ -193,7 +194,7 @@ export class Rogue extends Actor {
             const target = castTarget;
 
             if (target) {
-                target.weakPointMarkTimer = 10.0;
+                target.weakPointMarkTimer = getRogueEffectDuration(this, 10);
                 gameEngine.floatingTextManager.spawn("WEAK POINT!", target.position, '#ff0000');
                 this.spawnVisualEffect(gameEngine, target.position, 0xff0000, "mark");
             }
@@ -219,6 +220,10 @@ export class Rogue extends Actor {
                 
                 // Apply Bleed
                 applyOfflineStatus(this, target, 'bleed', 10+Math.floor(this.stats.dexterity/2), 10, skill);
+                if (this.skillRunes?.[skill] === 'shadowlunge_cripple' && !target.ccImmune) {
+                    target.slowTimer = getRogueEffectDuration(this, 3);
+                    target.slowFactor = .5;
+                }
                 gameEngine.floatingTextManager.spawn("BLEED!", target.position, '#ff0000');
                 
                 this.spawnVisualEffect(gameEngine, this.position, 0x000000, "smoke");
@@ -273,7 +278,7 @@ export class Rogue extends Actor {
             this.cooldowns["Serrated Edges"] = 20.0 * (1 - cdr);
 
             this.serratedEdgesActive = true;
-            this.serratedEdgesTimer = 10.0;
+            this.serratedEdgesTimer = getRogueEffectDuration(this, 10);
             
             gameEngine.floatingTextManager.spawn("SERRATED BLADES!", this.position, '#ff0000');
             this.spawnVisualEffect(gameEngine, this.position, 0xff0000, "buff");
@@ -393,11 +398,11 @@ export class Rogue extends Actor {
                     const dist = this.position.distanceTo(entity.position);
                     if (dist < radius) {
                         // Apply Slow
-                        entity.slowTimer = 5.0;
+                        entity.slowTimer = getRogueEffectDuration(this, 5);
                         entity.slowFactor = 0.5; // 50% slow
                         
                         // Apply Accuracy Reduction
-                        entity.accuracyReductionTimer = 5.0;
+                        entity.accuracyReductionTimer = getRogueEffectDuration(this, 5);
                         entity.accuracyReductionFactor = 0.3; // 30% miss chance (logic needs to be in attack code)
                         
                         gameEngine.floatingTextManager.spawn("BLIND!", entity.position, '#aaaaaa');
@@ -415,7 +420,7 @@ export class Rogue extends Actor {
             this.cooldowns["Poison Coating"] = 20.0 * (1 - cdr);
 
             this.poisonCoatingActive = true;
-            this.poisonCoatingTimer = 15.0;
+            this.poisonCoatingTimer = getRogueEffectDuration(this, 15);
             
             gameEngine.floatingTextManager.spawn("POISON READY!", this.position, '#00ff00');
             this.spawnVisualEffect(gameEngine, this.position, 0x00ff00, "buff");
@@ -461,7 +466,7 @@ export class Rogue extends Actor {
             const cdr = this.stats.cooldownReduction || 0;
             this.cooldowns["Cloak & Vanish"] = 30.0 * (1 - cdr);
 
-            this.stealthTimer = 5.0;
+            this.stealthTimer = getRogueEffectDuration(this, this.skillRunes?.[skill] === 'cloak_longer' ? 10 : 5);
             
             // Speed Burst (handled in Actor update or just modify stats temporarily?)
             // Let's use a buff timer for speed if we had one, or just hack it here.
@@ -472,7 +477,7 @@ export class Rogue extends Actor {
             // Or I can modify `this.stats.speed` and reset it later? No, stats are recalculated from base.
             // I'll add `speedBoostTimer` to Actor.js in a moment.
             
-            this.speedBoostTimer = 3.0;
+            this.speedBoostTimer = getRogueEffectDuration(this, 3);
             this.speedBoostFactor = 1.0; // +100% speed
             
             gameEngine.floatingTextManager.spawn("VANISH!", this.position, '#ffffff');

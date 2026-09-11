@@ -240,7 +240,7 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 		poisonBudget = rawStatusBudget(attackerSnapshot, "Poison Coating", 8+attackerSnapshot.Stats.Dexterity/2, "poison")
 		tgt.PoisonDamage = poisonBudget.forTarget(attackerSnapshot, tgt)
 		tgt.PoisonSourceID = attackerSnapshot.ID
-		tgt.PoisonEndTime = time.Now().Add(8 * time.Second)
+		tgt.PoisonEndTime = time.Now().Add(resolveAbilityEffectDuration(attackerSnapshot, "Poison Coating", 8*time.Second))
 		poisonApplied = true
 		poisonEndTime = tgt.PoisonEndTime
 	}

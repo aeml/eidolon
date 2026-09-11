@@ -74,3 +74,15 @@ test('invalid timing cannot create an unbounded tick loop or non-finite damage',
     expect(target.stats.hp).toBe(990); expect(target.bleedSource).toBeNull();
     expect(applyOfflineStatus(source, target, 'poison', Infinity, 8, 'Poison Coating')).toBe(false);
 });
+
+test.each([false, true])('Dirty Tricks extends actual tick lifetime once, inherited=%s', inherited => {
+    source.talentRanks = { ROG_28: 5 };
+    expect(applyOfflineStatus(source, target, 'bleed', 10, 2.5, inherited ? 'Serrated Edges' : 'Shadow Lunge', inherited)).toBe(true);
+    expect(target.bleedTimer).toBe(3);
+    source.talentRanks = {};
+    updateOfflineDamageOverTime(target, 4);
+    expect(target.stats.hp).toBe(970);
+    expect(target.bleedTimer).toBe(0);
+    updateOfflineDamageOverTime(target, 4);
+    expect(target.stats.hp).toBe(970);
+});

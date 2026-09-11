@@ -78,6 +78,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			e.SlowFactor = 0
 			e.RecalculateStats()
 		}
+		// These recipient-owned effects also apply to enemies/NPCs. Their
+		// timers must advance even when crowd control prevents AI updates.
+		expireRogueTargetDebuffsLocked(e, now)
 		stunned := e.Stunned
 		e.Mu.Unlock()
 		if dead || (stunned && e.Type == TypeEnemy) {
@@ -516,7 +519,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				// Apply Trap Effects
 				if (subType == "SnareTrap" || subType == "Tripwire") && !target.CCImmune {
 					target.Rooted = true
-					target.RootEndTime = time.Now().Add(3 * time.Second)
+					target.RootEndTime = time.Now().Add(resolveAbilityEffectDuration(ownerCombat, subType, 3*time.Second))
 				}
 
 				// Piercing Throw: Serrated rune applies bleed
@@ -531,7 +534,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						target.BleedDamage = 1
 					}
 					target.BleedSourceID = ownerID
-					target.BleedEndTime = time.Now().Add(5 * time.Second)
+					bleedSkill := projSkill
+					if ownerSerratedEdges {
+						bleedSkill = "Serrated Edges"
+					}
+					target.BleedEndTime = time.Now().Add(resolveAbilityEffectDuration(ownerCombat, bleedSkill, 5*time.Second))
 				}
 
 				// Fan of Knives rune effects
@@ -540,7 +547,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						if !target.CCImmune {
 							target.Slowed = true
 							target.SlowFactor = 0.30
-							target.SlowEndTime = time.Now().Add(3 * time.Second)
+							target.SlowEndTime = time.Now().Add(resolveAbilityEffectDuration(ownerCombat, projSkill, 3*time.Second))
 							target.RecalculateStats()
 						}
 					} else if projRuneID == "fanofknives_poisoned" {
@@ -550,7 +557,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							target.PoisonDamage = 1
 						}
 						target.PoisonSourceID = ownerID
-						target.PoisonEndTime = time.Now().Add(5 * time.Second)
+						target.PoisonEndTime = time.Now().Add(resolveAbilityEffectDuration(ownerCombat, projSkill, 5*time.Second))
 						spreadPoisonAfterHit = ownerSpreadsPoison
 						spreadPoisonBudget = statusDamageBudget{amount: target.PoisonDamage, pvpScaled: inheritedHitPvP}
 						spreadPoisonEndTime = target.PoisonEndTime
@@ -561,7 +568,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					spreadPoisonBudget = rawStatusBudget(ownerCombat, "Poison Coating", 8+ownerDexterity/2, "poison")
 					target.PoisonDamage = spreadPoisonBudget.forTarget(ownerCombat, target)
 					target.PoisonSourceID = ownerID
-					target.PoisonEndTime = time.Now().Add(8 * time.Second)
+					target.PoisonEndTime = time.Now().Add(resolveAbilityEffectDuration(ownerCombat, "Poison Coating", 8*time.Second))
 					spreadPoisonAfterHit = ownerSpreadsPoison
 					spreadPoisonEndTime = target.PoisonEndTime
 				}
@@ -1018,10 +1025,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				e.CloakBurstSpeedEndTime = time.Time{}
 				e.RecalculateStats()
 			}
-			if e.AccuracyReduction > 0 && now.After(e.AccuracyReductionEndTime) {
-				e.AccuracyReduction = 0
-				e.AccuracyReductionEndTime = time.Time{}
-			}
+			expireRogueTargetDebuffsLocked(e, now)
 			if e.ZealActive && now.After(e.ZealEndTime) {
 				e.ZealActive = false
 				e.RecalculateStats()
@@ -1073,9 +1077,6 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			}
 			if e.Rooted && now.After(e.RootEndTime) {
 				e.Rooted = false
-			}
-			if e.WeakPointMarked && now.After(e.WeakPointEndTime) {
-				e.WeakPointMarked = false
 			}
 			if e.MarkWeakness && now.After(e.MarkWeaknessEndTime) {
 				e.MarkWeakness = false

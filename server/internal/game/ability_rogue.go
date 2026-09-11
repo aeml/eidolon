@@ -18,7 +18,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 		if player.Mana >= cost {
 			player.Mana -= cost
 			player.StealthActive = true
-			player.StealthEndTime = time.Now().Add(10 * time.Second)
+			player.StealthEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 10*time.Second))
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 20*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 		}
@@ -83,7 +83,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				strikeTarget.Bleeding = true
 				strikeTarget.BleedDamage = rawStatusBudget(player, skillName, 10+player.Stats.Dexterity/2, "physical").forTarget(player, strikeTarget)
 				strikeTarget.BleedSourceID = player.ID
-				strikeTarget.BleedEndTime = time.Now().Add(10 * time.Second)
+				strikeTarget.BleedEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 10*time.Second))
 				isDead := strikeTarget.Health <= 0
 				strikeTarget.Mu.Unlock()
 				w.fireDamageEvent(player, strikeTarget.ID, finalDamage, "physical", player.InstanceID)
@@ -141,7 +141,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			bestTarget.Mu.Lock()
 			targetID, targetX, targetZ = bestTarget.ID, bestTarget.X, bestTarget.Z
 			bestTarget.WeakPointMarked = true
-			bestTarget.WeakPointEndTime = time.Now().Add(10 * time.Second)
+			bestTarget.WeakPointEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 10*time.Second))
 			bestTarget.Mu.Unlock()
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 12*time.Second))
@@ -194,7 +194,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 		if player.Mana >= cost {
 			player.Mana -= cost
 			player.PoisonCoatingActive = true
-			player.PoisonCoatingEndTime = time.Now().Add(15 * time.Second)
+			player.PoisonCoatingEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 15*time.Second))
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 30*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 		}
@@ -607,7 +607,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				bestTarget.Bleeding = true
 				bestTarget.BleedDamage = rawStatusBudget(player, skillName, 10+player.Stats.Dexterity/2, "physical").forTarget(player, bestTarget)
 				bestTarget.BleedSourceID = player.ID
-				bestTarget.BleedEndTime = time.Now().Add(10 * time.Second)
+				bestTarget.BleedEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 10*time.Second))
 				bestTarget.Mu.Unlock()
 
 				// Cripple rune: slow target by 50% for 3s
@@ -616,7 +616,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					if !bestTarget.CCImmune {
 						bestTarget.Slowed = true
 						bestTarget.SlowFactor = 0.50
-						bestTarget.SlowEndTime = time.Now().Add(3 * time.Second)
+						bestTarget.SlowEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 3*time.Second))
 						bestTarget.RecalculateStats()
 					}
 					bestTarget.Mu.Unlock()
@@ -692,7 +692,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 		if player.Mana >= cost {
 			player.Mana -= cost
 			player.SerratedEdgesActive = true
-			player.SerratedEdgesEndTime = time.Now().Add(10 * time.Second)
+			player.SerratedEdgesEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 10*time.Second))
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 20*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 		}
@@ -788,9 +788,9 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			}
 
 			player.StealthActive = true
-			player.StealthEndTime = time.Now().Add(duration)
+			player.StealthEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, duration))
 			player.CloakBurstSpeedBonus = true
-			player.CloakBurstSpeedEndTime = time.Now().Add(3 * time.Second)
+			player.CloakBurstSpeedEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 3*time.Second))
 
 			// Swift rune: +30% movement speed while invisible
 			if runeID == "cloak_swift" {
@@ -833,11 +833,11 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					if !target.CCImmune {
 						target.Slowed = true
 						target.SlowFactor = 0.5
-						target.SlowEndTime = time.Now().Add(5 * time.Second)
+						target.SlowEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 5*time.Second))
 						target.RecalculateStats()
 					}
 					target.AccuracyReduction = 0.30
-					target.AccuracyReductionEndTime = time.Now().Add(5 * time.Second)
+					target.AccuracyReductionEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 5*time.Second))
 				}
 				target.Mu.Unlock()
 			}
