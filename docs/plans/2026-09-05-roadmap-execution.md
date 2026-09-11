@@ -5,7 +5,52 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 20:19 UTC
+## Current checkpoint — September 11, 20:25 UTC
+
+Previous goal turn was PROGRESS. This turn is PROGRESS: reproduced and repaired
+Renewal NPC/missed-deadline behavior with actual paid casts and parallel-update
+proof. Parent full regression and62 final live QA remain active, not blocked.
+
+-95191 confirmed ACTIVE on frozen31a2f05c. Full client349suites/4896tests
+ 169.442s PASS; Go race still running (root17.642s/loadtest1.018s/database1.082s
+  already passed; game still pending). Sequential command reached Go after lint.
+  Recover SAME handle; logs `/tmp/eidolon-recipient-support-full-{client,lint,server}.log`.
+  No second local heavy/browser run; support source not accepted primary yet.
+- New WT `/tmp/eidolon-renewal-recipient-ticks-20260911`, branch
+  work/renewal-recipient-ticks-20260911 based31a2f05c. Actual paid trained Renewal
+  reproduced4fail0.023s: NPC ticks absent±stun; expired player tick still healed;
+  expired NPC retained budget. Unexpired player controls passed. Shared tick
+  helper now runs recipient-owned after DoTs and before NPC stun/AI return.
+  Corpse/empty/expired checks precede healing. Cast snapshot, cadence, trained
+  budget, exact-deadline final tick, receiving penalties/cap and attributed
+  events retained; finished state cleared. No client/schema/protocol edits.
+- Three-repeat focused race1.445s, expanded13.735s, final12.969s PASS. Final
+  includes paid player/NPC ticks±stun after rank changes, no duplicate immediate
+  tick, all7trained ticks/events, exact/missing/expired deadlines, poison,
+  capped/full health, corpse guards and normal parallel World.Update delivering
+  both recipient types/events under race detector. Strengthened reflected-death
+  test's prior zero-deadline fabricated HoT into a real paid Cleric Renewal with
+  valid deadline and due tick, preserving no same-frame/next-frame revival.
+- Clean committed d18c4b4aa8a780ae26018d583f52feff4efb14d9, evidence/unreleased
+  notes docs/plans/2026-09-11-renewal-recipient-ticks.md. Final focused log
+  `/tmp/eidolon-renewal-recipient-final.log`; RED/green/broad retained. NOT in
+  primary/live. Full server regression required after95191; unchanged client/
+  toolchain evidence reusable only after checking exact input equality. Do not
+  mislabel parent full suite as acceptance of new Go changes.
+-62 CI34637129931 final live103408203727 confirmed IN_PROGRESS20:24: matching
+  releases and anonymous+persistent-character QA SUCCESS; four-class/remote-
+  animation QA running. Town-rest and sanitize/final success still required.
+ 62 deployed0231c948 matching frontend/backend as independently checked last
+  turn;61 remains last fully accepted until actual final live outcome. GPU stays
+  reserved. No new push, runner/service changes, cancellation or gate bypass.
+- Next: recover95191 and integrate only if fully passed; full Renewal server
+  regression, then integrate on acceptance. Follow62 final live to completion.
+  Required full four-role Verdant/manual Ilyra turn-in/fresh-login proof follows
+  when local heavy/GPU gates free. Keep160talent/core-build/offline/rune/native/
+  save, earned balance, physical phone, later releases and casino scope intact.
+  Soak stays cancelled with retained data. Root ledger MUST NOT PUSH.
+
+## Previous checkpoint — September 11, 20:19 UTC
 
 Previous goal turn was PROGRESS. This turn is PROGRESS: accepted full Cleric
 duration regression, repaired reproduced recipient support-buff expiry and
