@@ -5,7 +5,32 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 00:20 UTC
+## Current checkpoint — September 11, 00:31 UTC
+
+Party-credit request reconfirmed against candidate98320775. Fresh race-enabled
+focused checks passed:32800 (2.338s) covers eligibility, actual open-world death
+rewards and kill-time recipient snapshots;67110 (1.856s) covers four-role boss
+credit with individual wizard turn-in and explosive-chain death rewards.
+Same-instance dungeon/raid members qualify regardless of distance or damage,
+including downed members; open-world range is110world units from the kill.
+Disconnected or other-instance members do not qualify. This is local candidate
+evidence, not a new deployment or a completed native dungeon clear.
+
+-96841 remains ACTIVE on frozen46596437, sole heavy gate. Two opening rooms and
+  two all-four town recovery/individual guide-resume cycles passed exact progress.
+  Warden encounter is ongoing (last observed1133HP); no current-source boss kill
+  or fullclear receipt yet. Continue the exact handle/log described below.
+- Independent light-work preparation created clean98320775-based worktree
+ `/tmp/eidolon-purifying-mastery-LFLbff`, branch
+ `work/purifying-mastery-20260911`. No edits/tests yet. The unresolvedCLR_07
+  healing-only bonus has no consumer because Purifying Wave only cleanses.
+  Planned bounded fix: retain saved ID/ranks and replace it with4% cleansing
+  radius per rank, scoped to this spell in client/server. Red actual-cast and
+  client regressions must precede implementation; no new version assigned.
+- Candidate remains unchanged; no push, runner change, or deployment claim.
+  Root is ledger-only and must NEVER PUSH. Entire roadmap goal stays active.
+
+## Previous checkpoint — September 11, 00:20 UTC
 
 Previous goal turn was PROGRESS: disjoint-path controller and native launch.
 This turn is PROGRESS:16027 supplied a precise looping-path trace, retained and
