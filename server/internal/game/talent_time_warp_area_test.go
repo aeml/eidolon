@@ -66,15 +66,20 @@ func TestTimeWarpTrainedAreaAndAcceptedShape(t *testing.T) {
 }
 
 func TestTimeWarpAreaPreservesZoneSetAndRelationships(t *testing.T) {
-	for _, zone := range []bool{false, true} {
-		t.Run(fmt.Sprintf("zone%v", zone), func(t *testing.T) {
+	for _, pieces := range []int{0, 5, 6} {
+		t.Run(fmt.Sprintf("set-pieces%d", pieces), func(t *testing.T) {
+			zone := pieces == 6
 			w, p, enemy := directSkillWallFixture("Wizard", false)
 			defer w.StopBackground()
 			p.Level, p.TalentRanks, p.UnlockedSkills = 100, map[string]int{"WIZ_36": 5, "WIZ_38": 5}, []string{"Time Warp"}
+			p.Equipment = make(map[string]Item)
+			for _, slot := range []string{"head", "chest", "legs", "feet", "gloves", "shoulders"}[:pieces] {
+				p.Equipment[slot] = Item{ID: "warp-" + slot, Slot: slot, SetID: "temporal_weave", Level: 100}
+			}
 			p.RecalculateStats()
 			p.Mana = p.MaxMana
-			if zone {
-				p.ActiveSetBonuses = map[string]map[string]int{"chronomancer": {"timeWarpZone": 1}}
+			if p.HasAnySetBonus("timeWarpZone") != zone {
+				t.Fatal("invalid equipped-set fixture")
 			}
 			for _, id := range []string{"ally", "npc", "far", "dead", "other-instance", "opponent"} {
 				ally := newTestPlayer(id, "Cleric")
@@ -105,6 +110,9 @@ func TestTimeWarpAreaPreservesZoneSetAndRelationships(t *testing.T) {
 			}
 			if w.GetEntity("far").TimeWarpActive != zone {
 				t.Fatal("changed zone-wide set effect")
+			}
+			if p.HasAnySetBonus("timeWarpZone") != zone {
+				t.Fatal("cast changed equipped-set bonus")
 			}
 			for _, id := range []string{"dead", "other-instance", "opponent", enemy.ID} {
 				if w.GetEntity(id).TimeWarpActive {
