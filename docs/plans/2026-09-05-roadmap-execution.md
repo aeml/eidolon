@@ -5,7 +5,57 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 04:08 UTC
+## Current checkpoint — September 11, 04:34 UTC
+
+Previous turn was PROGRESS (verified DNS/Cloudflare challenge failure and
+operator retry guidance). This turn is PROGRESS: root/slow repair committed,
+domain migration implemented/tested, real queued-release failure diagnosed and
+exact-commit checkout repaired. Full roadmap goal remains active.
+
+- Domain worktree `/tmp/eidolon-domain-migration-20260911`, branch
+  work/eidolonrealms-domain-migration-20260911, clean2b7eef3d atopc1574e57 and
+  remote3671aab4. Preserve user's new website commit3671 (separate Cloudflare
+  Pages website); never push this root ledger branch. New WebSocket allowlist,
+  new client default, legacy-host fallback, QA endpoint variables and dual
+  backend resolver mapping implemented.21 client tests/3 suites and actual
+  local websocket handshake/Origin race1.043s pass. Later checkout integration
+  passes32 tests/5 suites2.621s; focused lint/YAML/diff pass. Not deployed.
+- User installed additive Nginx config; first certificate request failed with
+  Cloudflare520. Agent instructed DNS-only retry. Later read-only inspection
+  sees Certbot TLS configuration; https://server.eidolonrealms.com/healthz
+  returns200, database ready, olddf91bb66/Alpha1.0.60. Frontend404 is confirmed
+  Pages Host mismatch: Pages custom domain nowplay.eidolonrealms.com (operator
+  changed it); old upstream Host404/new Host200. Template now corrected; user
+  needs one targeted sudo Host replacement without overwriting Certbot additions.
+  Old frontend now301 toapexwebsite; do not claim old game stillserved. New
+  endpoint CI vars must be selected after readiness. Exact commands/evidence in
+  domain migration document. No agent DNS/TLS/Pages mutation or push performed.
+- Canonical62dc CI34434837759 TERMINALfailure at SSH after predeploy acceptance.
+  Checkout reset to movingorigin/master3671 then failed expected62dc comparison,
+  before API replacement. Newer3671 CI34561490782 nowin_progress.2b7eef3d fixes
+  this via SHA/branch/ancestry validation and exact detached checkout, preserving
+  tracked modifications by failing instead of resetting. Six actual temporary
+  Git-repository cases execute workflow segment. Do not bypass existing gates.
+- 45943 next-stun full race TERMINAL0 onfrozen475c6d27: root23.393/game434.908,
+  loadtest1.049/database1.121/lifecycle1.085 PASS; others no tests. Candidate
+  remains unchanged, no versionassignment/liveclaim. Log
+  `/tmp/eidolon-next-stun-full-server.log`. Primary06ec65fe unchanged.
+- Repair tree `/tmp/eidolon-fighter-duration-repair-20260911` nowclean7d648488
+  atopab8252b3. Root prevents enemy chase/roam, root/slowexpire forenemy/NPC,
+  Seraph followhonorsroot/slow without double-slowing enemySpeed. First standard
+  test proved Juggernaut ignoredCCImmune; guardedslow preservesdamage.54507
+  focusedracePASS22.560s. Promotedactualpaid GravityWellBlackHole/Juggernaut
+  diagnostic into normal suite;53763 threefocusedracepasses7.482s. Original
+  overlayPASS2.980s; red artifacts retained. Rootfix NOTintegratedprimary/hotfix
+  yet; repairbranch stillcontainsunfinished714talentduration/copywork, do not
+  merge wholebranch as release. No completeCC/nativepartyacceptanceclaim.
+- Soak34558600459 continues dedicated24hqueue; no cancellation/restart.
+  Prior service confirmation was a verified wait (both realjobs assigned).
+  No localheavy/browser remains from recovered54507/45943/53763 processes.
+  Broader earnedparty/phone/talent/campaign/pacing/casino scope remains required;
+  DBcredentialrotation still lacks approval. Goal neither complete nor blocked.
+
+## Previous checkpoint — September 11, 04:08 UTC
 
 Previous turn was PROGRESS through impact repair/fixture correction and the full
 rerun launch. This turn is PROGRESS: original targeted diagnostic passes, complete
