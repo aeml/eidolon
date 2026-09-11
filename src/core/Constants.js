@@ -447,6 +447,8 @@ export const CONSTANTS = {
                 ...(i === 20 ? { desc: '+4% Arcane Shield damage absorption per rank (20% max).' } : {}),
                 shieldTraining: i === 20 ? { absorption: 0.04 } : i === 31 ? { duration: 0.05 }
                     : i === 33 ? { duration: 0.04 } : undefined,
+                abilityDuration: i === 31 ? { skill: 'Arcane Shield', duration: 0.05 }
+                    : i === 33 ? { duration: 0.04 } : undefined,
                 criticalChance: i === 38 ? { chance: 0.02 } : undefined,
                 abilityRange: i === 28 ? { range: 0.03 } : i === 34 ? { range: 0.04 } : i === 37 ? { range: 0.02 } : undefined,
                 abilityArea: i === 35 ? { radius: 0.03 } : i === 37 ? { radius: 0.02 } : undefined,
