@@ -5,7 +5,39 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 01:53 UTC
+## Current checkpoint — September 11, 01:57 UTC
+
+Previous turn was PROGRESS through Spin self-cast correction. This turn is a
+VERIFIED WAIT on53491 with read-only diagnostic evidence: the quiet interval
+ended with new kills beyond Warden, not a stopped test. Goal remains active.
+
+-53491 confirmedlive by exact45s poll ending01:56:40. Primary6f46f9db remains
+  frozen, seed-3341225116033233573. Three complete all-four townrest/resume cycles
+  passed; fourth recovery/resume now underway after more Skeleton kills in room4.
+  Do not claim fourth resume or Matron/fullclear yet. No source/time/gear mutation.
+- Read-only isolated Mongo snapshots used only a whitelist of class, coordinates,
+  saved resources and Gold. First showed all four living/full,626Gold, positions
+  beyond Warden's room (Fighter19938.30/19365.19). Second at01:56:40 showed living
+  recovered town snapshots and984Gold, while the native log added real room4
+  kills and resume-leader/member phases. These are saved snapshots, not live
+  tick/pacing or full-combat acceptance; log/handle corroborate actual progress.
+- Spin stays clean a0cda0ff, generated vendor ready, focused138tests/lint passed.
+  No native/full gate started over the sole live party gate. Its isolated
+ `executioner-spin-area` native purchase/save/ring check remains next after
+ 53491terminal and preservation/sanitization, then full regression/integration.
+- Operational incident: a broad process listing emitted QA and production Mongo
+  credentials in this chat's tool output. Do not reproduce any credential or
+  use process argument listings again; subsequent CPU checks use comm-only and
+  read-only Mongo authentication uses container env internally, no secret output.
+  User notified; asynchronous approval requested to rotate production credentials
+  after QA, explaining possible brief restart. Tool accepted the question, NOT
+  user approval. Do not rotate/restart production without an affirmative answer.
+  Disposable QA credentials disappear with the owned-run cleanup at termination.
+- No fresh remote check this turn; last01:48 canonical62dcCIqueued/Nightlyactive.
+  No push, deployment, runner/soak change or completion claim. Root ledger-only
+  NEVER PUSH; full original roadmap and remaining release gates remain open.
+
+## Previous checkpoint — September 11, 01:53 UTC
 
 Previous turn was PROGRESS through Spin damage/area repair. This turn is
 PROGRESS: reproduced and corrected its adjacent self-cast input defect, while
