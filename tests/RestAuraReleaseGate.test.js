@@ -57,7 +57,8 @@ test('native full suffix preserves journey, expiry and party before mandatory tr
     expect(runs[2]).toContain('dedicated-rest-transitions Wizard 1');
     expect(runs[2]).toContain('--output=test-results/well-rested-transitions');
     expect(runs[2]).toContain('well-rested-transitions-gameplay.spec.js --retries=0');
-    expect(isolated.split('  all)')[1].split('    ;;')[0]).toContain('&& run_well_rested');
+    expect(isolated.split('  all)')[1].split('    ;;')[0]).toMatch(
+        /&&\s+run_qa_stage well-rested run_well_rested &&\s+run_qa_stage forge-socket-appearance run_forge_socket_appearance\s*$/);
     expect(isolated.split('  well-rested-transitions)')[1].split('    ;;')[0]).toContain('run_well_rested_transitions');
     expect(isolated).toContain('${QA_USERNAME_BASE}-rest-transitions-death,${QA_USERNAME_BASE}-rest-transitions-dungeon');
 });

@@ -8,6 +8,7 @@ import { getAbilityAoeRadius } from '../skills/abilityRadii.js';
 import { clipDungeonEffectSegment } from '../skills/dungeonEffectGeometry.js';
 import { getExecutionerSpinDamage } from '../skills/executionerSpin.js';
 import { getShieldSlamStunDuration } from '../skills/shieldSlamDuration.js';
+import { getFighterEffectDuration } from '../skills/fighterEffectDuration.js';
 
 const GUARDIAN_ROAR_FRIENDLY_ACTOR_TYPES = new Set([
     'Fighter',
@@ -123,13 +124,13 @@ export class Fighter extends Actor {
             if (!this.unlockedSkills.includes("Iron Fortress")) return;
             console.log("Fighter used Iron Fortress!");
 
-            // Duration 30s
-            this.ironFortressTimer = 30.0;
+            const baseDuration = this.skillRunes?.[skill] === 'ironfortress_extended' ? 45 : 30;
+            this.ironFortressTimer = getFighterEffectDuration(this, baseDuration);
 
             // Formula: 1% per Strength, max 75%
             this.ironFortressReduction = Math.min(0.75, this.stats.strength * 0.01);
 
-            console.log(`Iron Fortress active: ${(this.ironFortressReduction * 100).toFixed(1)}% reduction for 30s`);
+            console.log(`Iron Fortress active: ${(this.ironFortressReduction * 100).toFixed(1)}% reduction for ${this.ironFortressTimer}s`);
 
             // Cooldown 60s
             this.setSkillCooldown("Iron Fortress", 60.0);
@@ -148,6 +149,7 @@ export class Fighter extends Actor {
             this.setSkillCooldown("Guardian Roar", 30.0);
 
             const radius = getAbilityAoeRadius('Fighter', skill, this);
+            const buffDuration = getFighterEffectDuration(this, 10);
             const entities = new Set([this, ...gameEngine.chunkManager.getActiveEntities()]);
             const rects = gameEngine.currentInstanceId && gameEngine.currentInstanceType !== 'overworld'
                 ? gameEngine.currentDungeonLayout?.walkRects : null;
@@ -163,7 +165,7 @@ export class Fighter extends Actor {
                         const hostile = gameEngine.isHostileActorTarget?.(entity) ?? !isGuardianRoarFriendlyActor(entity, gameEngine);
                         if (!hostile && isGuardianRoarFriendlyActor(entity, gameEngine)) {
                             // Ally: Apply Buff
-                            entity.guardianRoarTimer = 10.0;
+                            entity.guardianRoarTimer = buffDuration;
                             entity.guardianRoarReduction = 0.3; // 30%
                             console.log(`Applied Guardian Roar to ${entity.id}`);
                             gameEngine.floatingTextManager.spawn("Protected", entity.position, '#00ff00');
@@ -222,6 +224,7 @@ export class Fighter extends Actor {
 
             // AoE Circle
             const radius = 6.0;
+            const stunDuration = getFighterEffectDuration(this, this.skillRunes?.[skill] === 'earthshaker_seismic' ? 4 : 2);
             const entities = gameEngine.chunkManager.getActiveEntities();
 
             // Visual
@@ -239,8 +242,8 @@ export class Fighter extends Actor {
                         }
 
                         // Knockdown (Stun)
-                        if (entity.stunTimer !== undefined) {
-                            entity.stunTimer = 2.0;
+                        if (entity.stunTimer !== undefined && !entity.ccImmune) {
+                            entity.stunTimer = Math.max(entity.stunTimer, stunDuration);
                             gameEngine.floatingTextManager.spawn("Knockdown!", entity.position, '#ffffff');
                         }
                     }
@@ -276,15 +279,24 @@ export class Fighter extends Actor {
             });
 
             if (target) {
-                // Pull Logic
-                const pullPos = this.position.clone().add(new THREE.Vector3(0, 0, 1).applyQuaternion(this.mesh.quaternion).multiplyScalar(2.0));
-                target.position.copy(pullPos); // Instant pull for now
-                gameEngine.floatingTextManager.spawn("Pulled!", target.position, '#ffffff');
-                this.spawnVisualEffect(gameEngine, target.position, 0xffffff, "impact");
+                // An immune target can still be selected, but neither pulled
+                // nor rooted. Never push a target already within two units away.
+                if (!target.ccImmune && !target.ironFortressImmovable) {
+                    const offset = new THREE.Vector3().subVectors(target.position, this.position);
+                    offset.y = 0;
+                    const distance = offset.length();
+                    if (distance > 2) {
+                        offset.multiplyScalar(2 / distance);
+                        target.position.x = this.position.x + offset.x;
+                        target.position.z = this.position.z + offset.z;
+                    }
+                    gameEngine.floatingTextManager.spawn("Pulled!", target.position, '#ffffff');
+                    this.spawnVisualEffect(gameEngine, target.position, 0xffffff, "impact");
+                }
 
-                // Root/Stun briefly
-                if (target.stunTimer !== undefined) {
-                    target.stunTimer = 1.0;
+                // Grip roots movement; it does not silence attacks like a stun.
+                if (target.rootTimer !== undefined && !target.ccImmune) {
+                    target.rootTimer = getFighterEffectDuration(this, 1);
                 }
             } else {
                 console.log("No target for Grip");
@@ -301,6 +313,7 @@ export class Fighter extends Actor {
 
             // AoE Shockwave
             const radius = 10.0;
+            const slowDuration = getFighterEffectDuration(this, 5);
             const entities = gameEngine.chunkManager.getActiveEntities();
 
             // Visual
@@ -318,8 +331,8 @@ export class Fighter extends Actor {
                         }
 
                         // Heavy Slow
-                        if (entity.slowTimer !== undefined) {
-                            entity.slowTimer = 5.0;
+                        if (entity.slowTimer !== undefined && !entity.ccImmune) {
+                            entity.slowTimer = slowDuration;
                             entity.slowFactor = 0.6; // 60% slow
                             gameEngine.floatingTextManager.spawn("Slowed!", entity.position, '#00ffff');
                         }
@@ -339,8 +352,7 @@ export class Fighter extends Actor {
             const cdr = this.stats.cooldownReduction || 0;
             this.cooldowns["Berserker Edge"] = 45.0 * (1 - cdr);
 
-            // Duration 15s
-            this.berserkerEdgeTimer = 15.0;
+            this.berserkerEdgeTimer = getFighterEffectDuration(this, 15);
             this.berserkerEdgeActive = true;
 
             gameEngine.floatingTextManager.spawn("Berserker Mode!", this.position, '#ff0000');
@@ -405,8 +417,7 @@ export class Fighter extends Actor {
             const cdr = this.stats.cooldownReduction || 0;
             this.cooldowns["Last Stand Rampage"] = 120.0 * (1 - cdr);
 
-            // Duration 10s
-            this.lastStandTimer = 10.0;
+            this.lastStandTimer = getFighterEffectDuration(this, 10);
             this.lastStandDamageBoost = 2.0; // +200% Damage
 
             gameEngine.floatingTextManager.spawn("RAMPAGE!", this.position, '#ff0000');

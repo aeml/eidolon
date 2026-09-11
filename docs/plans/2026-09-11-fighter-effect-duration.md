@@ -1,5 +1,48 @@
 # Fighter effect-duration consumers — server implementation stage
 
+## Offline timer and copy follow-up — September 11
+
+The new ordinary-cast matrix reproduced21 failures /15 passing controls in
+1.204s (58438, `/tmp/eidolon-fighter-offline-duration-red.log`). Training was
+ignored by the existing offline defensive buffs, Earthshaker and Juggernaut;
+Extended/Seismic durations were absent, and Grip incorrectly applied a stun
+instead of a root even with no training.
+
+The offline Fighter now shares one duration resolver with Shield Slam, applied
+once after Extended/Seismic. Roar recipients receive the caster's resolved time,
+not their own training multiplier. Grip roots without silencing attacks, keeps
+the target's direction and stops at two units without pushing close targets
+away. CC immunity prevents its pull/root and Earthshaker/Juggernaut control;
+Earthshaker preserves a longer existing stun. Multiplayer retains its early
+return, so none of these offline effects runs over authoritative snapshots.
+Mana/cooldown budgets are unchanged. FTR_30/FTR_37 descriptions now state the
+existing4%/3% percentage definitions instead of promising flat seconds and
+unimplemented armor penetration; the bonuses add rather than multiply.
+
+Focused80008 passed98 tests across3 suites in1.892s, then full lint. Log
+`/tmp/eidolon-fighter-offline-duration-green.log`; the copy contract was added
+after that focused run and is included in the pending full client78805.
+Full logs `/tmp/eidolon-fighter-offline-duration-full-{client,lint}.log`.
+
+This is not complete offline rune/combo parity: Fortify/Reverberation, delayed
+Aftershock/Fissure, Iron Fortress Thorns/Immovable, combo sequencing, Berserker
+party sharing and remaining hostile target/wall eligibility still require work.
+Source inspection also found fixed Charge-impact Unstoppable armor5s, Shattering
+armor-reduction5s and Tremor Rush stun2s in world_update_entity.go. Reproduce
+those through actual cast/movement/impact before choosing their cast-time
+duration handling. Do not scale Charge travel or its temporary movement immunity
+timer, or Whirlwind pulse/channel timing. No new balance, native play, saved
+training or complete talent-audit acceptance claim; this branch is not deployed.
+
+Full client78805 completed exit1:337/338 suites,4740/4741 tests passed in
+205.757s. The sole failure was RestAuraReleaseGate's old literal
+`&& run_well_rested`, incompatible with the already-present timed stage wrapper.
+Carried the exact accepted primary9c664f95 assertion, requiring both the timed
+rest stage and final Forge/socket stage in order; no workflow or acceptance gate
+was removed. This is an integration-test mismatch, not Fighter effect failure.
+The first full log is retained at the path above; rerun uses separate
+`/tmp/eidolon-fighter-duration-final-full-{client,lint,server}.log` paths.
+
 This extends the isolated Shield Slam training work, not the1.0.61 domain
 release or the accepted general root/slow repair. Do not merge this whole branch
 into a release until offline parity, descriptions, saved training and native
