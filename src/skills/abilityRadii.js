@@ -6,7 +6,7 @@ export const SELF_CENTERED_SHAPE_ABILITIES = new Set([
     'Blessing of Resolve', 'Blessing of Zeal', "Heaven's Trumpet",
     'Spirit Guardians', 'Spirit Guardians Boost', 'Guardian Roar', 'Executioner Spin', 'Time Warp'
 ]);
-export const AUTHORITATIVE_SHAPE_ABILITIES = new Set(['Flame Whip', 'Radiant Strike', 'Healing Light', ...WIZARD_GROUND_ABILITIES, ...SELF_CENTERED_SHAPE_ABILITIES]);
+export const AUTHORITATIVE_SHAPE_ABILITIES = new Set(['Teleport', 'Flame Whip', 'Radiant Strike', 'Healing Light', ...WIZARD_GROUND_ABILITIES, ...SELF_CENTERED_SHAPE_ABILITIES]);
 
 /**
  * World-space radii for player ability presentations with a circular gameplay
@@ -87,6 +87,9 @@ export const AOE_BOUNDARY_VISUAL_TYPES = Object.freeze(new Set([
 ]));
 
 export function getAbilityAoeRadius(className, canonicalSkillName, source = null) {
+    if (className === 'Wizard' && canonicalSkillName === 'Teleport') {
+        return source?.skillRunes?.Teleport === 'teleport_warp' ? getWizardAbilityAreaRadius(source, 4) : null;
+    }
     if (className === 'Wizard' && canonicalSkillName === 'Time Warp') return getWizardAbilityAreaRadius(source, 15);
     if (className === 'Wizard' && canonicalSkillName === 'Flame Whip') return getFlameWhipRadius(source);
     if (className === 'Cleric' && canonicalSkillName === 'Healing Light' && source?.healingLightMassRevival) return getAbilityAreaRadius(source, className, 20, canonicalSkillName);
@@ -106,6 +109,7 @@ export function getAbilityAoeRadius(className, canonicalSkillName, source = null
 }
 
 export function getAbilityAoeArc(className, canonicalSkillName, source = null) {
+    if (className === 'Wizard' && canonicalSkillName === 'Teleport' && getAbilityAoeRadius(className, canonicalSkillName, source)) return 2 * Math.PI;
     if (className === 'Wizard' && canonicalSkillName === 'Time Warp') return 2 * Math.PI;
     if (className === 'Fighter' && ['Guardian Roar', 'Executioner Spin'].includes(canonicalSkillName)) return 2 * Math.PI;
     if (className === 'Cleric' && canonicalSkillName === 'Healing Light' && getAbilityAoeRadius(className, canonicalSkillName, source)) return 2 * Math.PI;

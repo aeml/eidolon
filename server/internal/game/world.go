@@ -177,6 +177,12 @@ type AbilityEvent struct {
 	Arc           float64         `json:"arc,omitempty"`
 	ShapeResolved bool            `json:"shapeResolved,omitempty"` // Explicit zero radius means no area, not missing legacy data.
 	Landing       *AbilityLanding `json:"landing,omitempty"`       // An accepted movement endpoint, never an aim point.
+	Origin        *AbilityOrigin  `json:"origin,omitempty"`        // Accepted departure; independent of newer actor snapshots.
+}
+
+type AbilityOrigin struct {
+	X float64 `json:"x"`
+	Z float64 `json:"z"`
 }
 
 type AbilityLanding struct {

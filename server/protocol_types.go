@@ -547,6 +547,12 @@ type AbilityPayload struct {
 	Arc           float64                `json:"arc,omitempty"`
 	ShapeResolved bool                   `json:"shapeResolved,omitempty"`
 	Landing       *AbilityLandingPayload `json:"landing,omitempty"`
+	Origin        *AbilityOriginPayload  `json:"origin,omitempty"`
+}
+
+type AbilityOriginPayload struct {
+	X float64 `json:"x"`
+	Z float64 `json:"z"`
 }
 
 type AbilityLandingPayload struct {

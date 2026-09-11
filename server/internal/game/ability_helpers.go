@@ -75,6 +75,18 @@ func (w *World) fireProjectileImpactEvent(event ProjectileImpactEvent) {
 	}
 }
 
+func (w *World) fireTeleportEvent(sourceID, targetID string, origin AbilityOrigin, landing AbilityLanding, radius float64) {
+	if w.OnEvent == nil {
+		return
+	}
+	event := AbilityEvent{SourceID: sourceID, TargetID: targetID, SkillName: "Teleport",
+		TargetX: landing.X, TargetZ: landing.Z, Origin: &origin, ShapeResolved: true, Radius: radius}
+	if radius > 0 {
+		event.Arc = 2 * math.Pi
+	}
+	w.OnEvent("ability", event)
+}
+
 // Keep targeting and movement separate: old clients still receive the same aim
 // point, while new clients can commit even a sub-three-unit authoritative blink.
 func (w *World) fireAbilityLandingEvent(sourceID, targetID, skillName string, targetX, targetZ float64, landing AbilityLanding) {

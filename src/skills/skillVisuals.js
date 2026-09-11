@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { AvengingSeraph } from '../entities/AvengingSeraph.js';
 import { getAbilityPresentation, isAbilityVisualLayerEnabled } from './abilityVisualManifest.js';
 import { getAbilityAoeArc, getAbilityAoeRadius, isAoeBoundaryVisualType, SELF_CENTERED_SHAPE_ABILITIES } from './abilityRadii.js';
@@ -39,19 +40,24 @@ export function resolveRemoteSkillVisual(entity, skillName, targetPos, shape = {
     }
 
     const resolvedHealing = skillName === 'Healing Light' && (shape.shapeResolved || Number.isFinite(shape.radius));
-    const gameplayRadius = resolvedHealing ? (shape.radius > 0 ? shape.radius : null) : Number.isFinite(shape.radius) && shape.radius > 0 ? shape.radius
+    const resolvedTeleport = skillName === 'Teleport' && shape.shapeResolved;
+    const teleportOrigin = skillName === 'Teleport' && Number.isFinite(shape.origin?.x) && Number.isFinite(shape.origin?.z)
+        ? new THREE.Vector3(shape.origin.x, entity.position?.y || 0, shape.origin.z) : null;
+    const gameplayRadius = resolvedHealing || resolvedTeleport ? (shape.radius > 0 ? shape.radius : null) : Number.isFinite(shape.radius) && shape.radius > 0 ? shape.radius
         : (getAbilityAoeRadius(className, skillName, entity) ?? getAbilityAoeRadius(className, presentation.canonicalName, entity));
     const gameplayArc = Number.isFinite(shape.arc) && shape.arc > 0 && shape.arc <= 2 * Math.PI ? shape.arc
         : (getAbilityAoeArc(className, skillName, entity) ?? getAbilityAoeArc(className, presentation.canonicalName, entity));
     const layers = presentation.layers
-        .filter((entry) => resolvedHealing && entry.runeOnly === 'healinglight_beacon'
+        .filter((entry) => (resolvedHealing && entry.runeOnly === 'healinglight_beacon') ||
+            (resolvedTeleport && entry.runeOnly === 'teleport_warp')
             ? gameplayRadius > 0 : isAbilityVisualLayerEnabled(entry, entity, presentation.canonicalName))
         .map((entry) => ({
         color: entry.color,
         type: entry.type,
         // A self-centered cleanse is fixed at its accepted cast point, not at
         // the observer's newer interpolated actor position.
-        origin: resolvePosition(entity, targetPos, SELF_CENTERED_SHAPE_ABILITIES.has(skillName) && Number.isFinite(shape.radius) && shape.radius > 0 ? 'target' : entry.anchor),
+        origin: teleportOrigin && entry.anchor === 'source' ? teleportOrigin
+            : resolvePosition(entity, targetPos, SELF_CENTERED_SHAPE_ABILITIES.has(skillName) && Number.isFinite(shape.radius) && shape.radius > 0 ? 'target' : entry.anchor),
         ...(gameplayRadius && isAoeBoundaryVisualType(entry.type)
             ? { radius: gameplayRadius, ...(gameplayArc ? { arc: gameplayArc } : {}) }
             : {})

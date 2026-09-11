@@ -529,8 +529,6 @@ export class Wizard extends Actor {
             if (!this.unlockedSkills.includes("Teleport")) return;
             console.log("Wizard used Teleport!");
             
-            // Visual Effect: Fade out/in or particles
-            this.spawnVisualEffect(gameEngine, this.position, 0x00ffff, "burst");
             
             const maxRange = getTeleportCastRange(this);
             const dist = Math.hypot(targetVector.x - this.position.x, targetVector.z - this.position.z);
@@ -560,6 +558,7 @@ export class Wizard extends Actor {
 
             const warp = snapshotOfflineTeleportWarp(this, gameEngine);
             const departure = this.position.clone();
+            this.spawnAbilityPresentation(gameEngine, skill, finalTarget);
             this.position.copy(finalTarget);
             if (this.mesh) this.mesh.position.copy(this.position);
             this.lastOfflineTeleportAt = Date.now();
@@ -570,8 +569,6 @@ export class Wizard extends Actor {
             applyOfflineTeleportWarp(this, this.position.clone(), gameEngine, warp);
             commitOfflineTeleportCharge(this, gameEngine, !skillNameOverride);
             
-            // Arrival Effect
-            this.spawnVisualEffect(gameEngine, this.position, 0x00ffff, "burst");
             
             return;
         }

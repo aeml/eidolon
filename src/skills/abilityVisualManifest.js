@@ -55,7 +55,11 @@ export const PLAYER_ABILITY_VISUALS = Object.freeze({
         'Arcane Missiles': presentation('projectile', 'volley', [layer('burst', 0xc66bff)]),
         'Spell Focus': presentation('buff', 'channel', [layer('buff', 0xa449ff), layer('sphere', 0x6e2ca8)], { persistentState: 'spell_focus' }),
         'Dragonfire Lance': presentation('projectile', 'heavy-cast', [layer('beam', 0xff8b2e, 'target'), layer('impact', 0xffc24c, 'target')]),
-        Teleport: presentation('movement', 'teleport', [layer('smoke', 0x4169b8), layer('burst', 0x63d9ff, 'target')]),
+        Teleport: presentation('movement', 'teleport', [
+            layer('smoke', 0x4169b8), layer('burst', 0x63d9ff, 'target'),
+            layer('ring', 0x63d9ff, 'source', { runeOnly: 'teleport_warp' }),
+            layer('ring', 0x63d9ff, 'target', { runeOnly: 'teleport_warp' })
+        ]),
         'Arcane Shield': presentation('buff', 'buff', [layer('sphere', 0x4da6ff), layer('buff', 0x9edbff)], { persistentState: 'arcane_shield' }),
         'Gravity Well': presentation('persistent-area', 'heavy-cast', [layer('ring', 0x6d33a8, 'target'), layer('sphere', 0x32164f, 'target')], { persistentState: 'gravity_well' }),
         'Time Warp': presentation('buff-area', 'channel', [layer('ring', 0xffd75a), layer('buff', 0xfff1a8)], { persistentState: 'time_warp' })
