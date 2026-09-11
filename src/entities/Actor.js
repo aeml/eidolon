@@ -1053,6 +1053,10 @@ export class Actor extends Entity {
             this.spellFocusTimer -= dt;
             if (this.spellFocusTimer <= 0) {
                 this.spellFocusTimer = 0;
+                if (!this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) {
+                    this.spellFocusActive = false;
+                    this.spellFocusMultiplier = 1;
+                }
             }
         }
 

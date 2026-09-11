@@ -11,7 +11,13 @@ import { getAbilityRange, getTeleportCastRange, clampWizardGroundTarget, WIZARD_
 import { clipDungeonEffectSegment, resolveDungeonBeamEndpoint } from '../skills/dungeonEffectGeometry.js';
 import { findOfflineAbilityTarget } from '../skills/offlineAbilityTargeting.js';
 import { getArcaneShieldTraining } from '../core/ArcaneShieldTraining.js';
-import { applyOfflineTimeWarp } from './WizardSupportAbilities.js';
+import { applyOfflineTimeWarp, getWizardEffectDuration } from './WizardSupportAbilities.js';
+
+// Match the server's next-damage-spell contract. Utility casts neither consume
+// nor receive Spell Focus, and failed admission must leave the charge intact.
+const WIZARD_DAMAGE_SKILLS = new Set(['Fireball', 'Flame Whip', 'Flame Tornado',
+    'Meteor Drop', 'Inferno Cataclysm', 'Scorch Beam', 'Arcane Missiles',
+    'Dragonfire Lance', 'Gravity Well', 'Frost Nova']);
 
 export class Wizard extends Actor {
     constructor(id) {
@@ -70,9 +76,9 @@ export class Wizard extends Actor {
     useAbility(targetVector, gameEngine, skillNameOverride = null) {
         if (!targetVector) return;
         if (this.isRemote) return;
-        const offline = !this.isMultiplayer && !gameEngine?.isMultiplayer;
+        const offline = !this.isMultiplayer && !gameEngine?.isMultiplayer && !this.gameEngine?.isMultiplayer;
         const requestedSkill = skillNameOverride || this.abilityName;
-        if (['Arcane Shield', 'Time Warp'].includes(requestedSkill) && !this.unlockedSkills.includes(requestedSkill)) return;
+        if (requestedSkill !== 'Fireball' && !this.unlockedSkills.includes(requestedSkill)) return;
         if (offline && WIZARD_GROUND_ABILITIES.has(requestedSkill)) {
             const placement = clampWizardGroundTarget(this, requestedSkill, targetVector);
             const rects = gameEngine.currentInstanceId && gameEngine.currentInstanceType !== 'overworld'
@@ -88,13 +94,13 @@ export class Wizard extends Actor {
 
         const skill = skillNameOverride || this.abilityName;
 
-        if (this.isMultiplayer || gameEngine?.isMultiplayer) return true;
+        if (!offline) return true;
         this.lastOfflineTeleportAt = null;
         this.lastOfflineGravityWellAt = null;
 
         // Apply Spell Focus Multiplier if active
         let damageMultiplier = 1.0;
-        if (this.spellFocusActive && !['Arcane Shield', 'Time Warp'].includes(skill)) {
+        if (this.spellFocusActive && this.spellFocusTimer > 0 && WIZARD_DAMAGE_SKILLS.has(skill)) {
             damageMultiplier = this.spellFocusMultiplier;
             this.spellFocusActive = false; // Consume it
             this.spellFocusTimer = 0;
@@ -403,12 +409,11 @@ export class Wizard extends Actor {
             if (!this.unlockedSkills.includes("Spell Focus")) return;
             console.log("Wizard used Spell Focus!");
             
-            // Cooldown 20s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Spell Focus"] = 20.0 * (1 - cdr);
+            // Actor admission already applies the canonical45s cooldown and
+            // trained economy. Do not overwrite it with the legacy20s value.
             
             this.spellFocusActive = true;
-            this.spellFocusTimer = 15.0;
+            this.spellFocusTimer = getWizardEffectDuration(this, skill, 15);
             this.spellFocusMultiplier = 2.5; // 150% bonus damage
             
             gameEngine.floatingTextManager.spawn("SPELL FOCUS!", this.position, '#8800ff');
@@ -568,7 +573,7 @@ export class Wizard extends Actor {
         }
         
         // Damage Calculation: Base 20 + (Intelligence * 2.0)
-        fireball.damage = 20 + (this.stats.intelligence * 2.0);
+        fireball.damage = (20 + (this.stats.intelligence * 2.0)) * damageMultiplier;
         
         // Pyromancer Passives (Removed/Replaced)
         // if (this.skillLevels.pyromancer.flameSurge > 0) { ... }
