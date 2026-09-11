@@ -5,7 +5,46 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 02:26 UTC
+## Current checkpoint — September 11, 02:36 UTC
+
+Previous turn was VERIFIED WAIT on live24016 plus source verification of the
+requested party-credit policy. This continuation is PROGRESS: the interrupted
+browser gate is now terminal, its partial evidence archived and its incomplete
+group restarted only after exact owned-process cleanup. Full goal remains active.
+
+-24016 TERMINAL143 at02:33, not a passed104-case run. Group1's five stages
+  completed39 cases: layout23/131.0s, entrances4/23.4s, effects3/75.9s,
+  nameplates6/20.8s, resource-HUD3/11.5s. Group2 reached layout case23 without
+  a terminal report; group3 never started. No cause for SIGTERM established.
+  Archive `/tmp/eidolon-executioner-current104-interrupted-wICB21` preserves
+  reports/results/browser.log; supplied credential scanner changed0 files.
+  Orphan web server1055973 and its exact shell/npm ancestry1055972/1055939/
+ 1055938 were verified by render-group cwd/socket checks and terminated normally;
+  web41981 then confirmed clear. No production/soak service was stopped.
+-60386 ACTIVE, only local browser/heavy gate, frozen Spin a0cda0ff in
+ `/tmp/eidolon-executioner-area-dfzcT7`, retry of the complete group2 with
+  CI1/systemChrome/Node24/oneworker and distinct artifacts, web41981. Log
+ `/tmp/eidolon-executioner-current104-group2-retry.log`. Poll exacthandle;
+  then run group3 separately if group2 passes. Group1's unchanged-source pass
+  remains valid; do not count the interrupted group2 as a pass or edit source.
+- Inspected actual current-source anonymous renders: four desktop healing
+  targets fit above chat at720p;390px expanded chat and Forge show no new
+  clipping. The deliberately oversized ten-member/900px-chat fixture at600px
+  uses scrolling; this is not the normal four-member scene. Forge copy remains
+  dense. No physical-phone/native full-party acceptance claim.
+- Canonical34434837759 freshly queued on62dc, hosted five jobs passed;
+  Nightly34433520743 freshly in_progress. Public frontend release.json and
+  backend healthz independently checked02:32: both Alpha1.0.60/df91bb66,
+  backend statusok/databaseready. No canonical acceptance or successor push.
+- Spin full Go/client/lint and native passes below remain valid. Candidate
+  a378ac3d unchanged until browser completion/review/integration; then update
+  unreleased notes and proceed with ordered versioned release gates. Primary
+  8f37e2bd new120-minute four-role profile still needs native execution without
+  competing with imminent canonical browserQA. Production credential rotation
+  still awaits affirmative user approval; no process arguments or secrets output.
+  Root ledger-only, NEVER PUSH. Full roadmap and original scope remain open.
+
+## Previous checkpoint — September 11, 02:26 UTC
 
 Previous turn was PROGRESS through Spin native acceptance. This turn is PROGRESS:
 separate bounded party timing is implemented/tested; current Spin full Go/client/
