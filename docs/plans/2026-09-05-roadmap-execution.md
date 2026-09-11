@@ -5,7 +5,36 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 03:06 UTC
+## Current checkpoint — September 11, 03:09 UTC
+
+Previous turn was PROGRESS through the corrected timed rest assertion. This turn
+is PROGRESS: complete client/lint now pass and primary browser execution started.
+Full roadmap goal remains active with original scope, not complete or blocked.
+
+-73302 TERMINAL0 on frozen clean9c664f95:336suites/4673tests174.332s and full
+  lint. Logs `/tmp/eidolon-primary-current-full-{client,lint}-final.log`.
+  Earlier45446 failure remains preserved; no game/server source changed in the
+  correction, so full server59375 root28.570s/game400.604s remains current.
+- Browser vendor preparation completed0 after verifying vendor did not yet
+  exist in this new tree.61836 ACTIVE, only local heavy/browser: primary group1,
+  cwd `/tmp/eidolon-primary-current-1YoZU4`, source9c664f95, CI1/systemChrome/
+  Node24/oneworker, web41981. Log
+ `/tmp/eidolon-primary-current-browser-group1.log`. Poll exacthandle, preserve
+  frozen source. Then groups2/3 in separate invocations; total required116cases,
+  including10crystal-art and primary-specific anonymous coverage. Discovery alone
+  is not acceptance. Archive all separate reports/results and inspect outcomes/
+  renders after completion; no native primary clear or physical-phone claim.
+- Original primary8f37e2bd, narrower successor689b0142 and diagnosticd70ed1bc
+  remain unchanged. Duration diagnostic still unfixed and isolated from this
+  accepted-code regression. Update integration evidence only after browser ends.
+-03:09 canonical34434837759 stillqueued62dc and Nightly34433520743 stillactive.
+  No runner/soak/service/workflow scheduling changes, no successor version/push.
+  Keep long party play off the GPU during imminent canonical predeploy. Previous
+  runner/free-hosting diagnosis does not authorize shortening the24h soak or
+  dropping hardware-render acceptance. Credential rotation approval unanswered.
+  Root ledger-only NEVER PUSH. All remaining full-roadmap release gates retained.
+
+## Previous checkpoint — September 11, 03:06 UTC
 
 Previous continuation yielded a verified runner diagnosis and live client wait.
 This turn is PROGRESS: full client exposed one merged orchestration assertion,
