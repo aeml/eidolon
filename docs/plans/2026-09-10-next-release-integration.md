@@ -181,9 +181,9 @@ remain mandatory; scoped local passes do not make these notes shipped content.
 
 - [x] Current application regression: full Go race19979 on a8e6851d passed (root18.048s/game325.373s); client52400 passed278suites/3908tests126.574s and full lint44660 exited0. Versioned required-all still applies.
 - [x] Execute authenticated smoke with the strengthened stash checks (empty storage).
-- [ ] Rerun all three CI-mode bundled-browser groups on the changed utility-area
-  application (the earlier104-case source passed), retain distinct
-  artifacts, inspect rendering and measure real stage durations.
+- [x] Renew all three CI-mode bundled-browser groups on the utility-area
+  application: clean e6a5a6f1 passed all104 cases. Distinct artifacts and
+  inspected rendering are recorded in the September11 acceptance below.
 - [ ] Complete the changed versioned candidate's required predeploy/authenticated
   all and other release gates. Do not repeat unchanged old source as missing, or
   substitute its old pass for a changed-source release acceptance claim.
@@ -373,3 +373,31 @@ bundled104 browser acceptance must be renewed, then versioned required-all,
 canonical62dc acceptance, synchronized version/notes, remote CI and live checks
 remain mandatory. Primary6f46f9db's new party tactics and expanded progression
 remain separate: the prior run ended at Matron, not a completed dungeon clear.
+
+## Renewed utility-area browser acceptance — September11
+
+The completed log for58548 on frozen e6a5a6f1 records all104 cases passed,
+all12 stages status0, with no failed/flaky result. The process handle was no
+longer available when recovering the turn; completion is evidenced by every
+stage's terminal status, not a recovered top-level process exit code.
+Group1: layout23/107.0s, entrances4/19.5s, effects3/72.7s,
+nameplates6/16.7s, resource-HUD3/9.1s. Group2: layout23/167.7s,
+entrances3/15.2s, effects3/23.1s, interface11/40.0s. Group3:
+layout20/88.8s, entrances3/14.3s, effects2/14.5s. Port41981 is clear.
+
+Archive `/tmp/eidolon-utility-current104-proof-SDOlIj` preserves the log and
+separate group/stage reports and results. The supplied credential scanner
+completed with0 files changed for this anonymous run; it is not pixel redaction.
+Inspected current-source renders: compact four-player desktop roster,
+390px expanded chat,390px Forge,844x390 encounter framing and360px stash
+detail. No new clipping regression was observed in those scenes. Dense legacy
+Forge copy and real-device phone ergonomics remain open; these prepared views
+are not physical-phone or native dungeon-clear acceptance.
+
+The user's party-credit rules were rechecked on the same source. Focused race
+67033 passed2.170s (eligibility, actual overworld XP/quest rewards, all-class
+ability kills and individual wizard turn-ins); delayed kill-time recipient
+snapshot race57922 passed1.517s. Whole-instance dungeon/raid credit includes
+downed connected members, and overworld sharing uses110 units from the kill.
+This is still local, not deployed; full native party clear and the remaining
+versioned/canonical/remote/live gates above remain open.
