@@ -883,6 +883,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				knockdownDuration := scaleAbilityEffectDuration(2*time.Second, e.ChargeEffectDurationBonus)
 				if runeID == "charge_unstoppable" {
 					e.CCImmune = false
+					e.CCImmuneEndTime = time.Time{}
 					e.RuneArmorBuff = 0.20
 					e.RuneArmorBuffEndTime = time.Now().Add(armorDuration)
 				}
@@ -995,12 +996,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 				// Clear charge rune ID
 				e.Mu.Lock()
-				e.IsCharging = false
+				clearChargeStateLocked(e)
 				e.State = "IDLE"
 				e.MoveLockUntil = time.Now().Add(AbilityMovementLockDuration)
-				e.ChargeRuneID = ""
-				e.ChargeSkillName = ""
-				e.ChargeEffectDurationBonus = 0
 				e.Mu.Unlock()
 			} else {
 				nextX := e.X + (dx/dist)*moveDist

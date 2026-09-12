@@ -128,11 +128,7 @@ func resetSceneMovementLocked(player *Entity) {
 	player.Y = 0
 	player.TargetID = ""
 	player.VelX, player.VelZ = 0, 0
-	player.IsCharging = false
-	player.ChargeStartX, player.ChargeStartZ = player.X, player.Z
-	player.ChargeTargetX, player.ChargeTargetZ = player.X, player.Z
-	player.ChargeSkillName, player.ChargeRuneID = "", ""
-	player.ChargeEffectDurationBonus = 0
+	clearChargeStateLocked(player)
 	player.JumpStartX, player.JumpStartY, player.JumpStartZ = player.X, 0, player.Z
 	player.JumpTargetX, player.JumpTargetY, player.JumpTargetZ = player.X, 0, player.Z
 	player.JumpDuration, player.JumpElapsed, player.JumpHeight, player.JumpProgress = 0, 0, 0, 0

@@ -48,6 +48,7 @@ func (w *World) handleDeathWithWorldLock(target *Entity, attacker *Entity, defer
 	target.Health = 0
 	target.State = "DEAD"
 	clearWhirlwindLocked(target)
+	clearChargeStateLocked(target)
 	target.LastAttackTime = time.Now()
 	if target.Type == TypePlayer && attacker != nil && attacker.Type == TypePlayer {
 		w.ResolvePvPDeath(target.ID, attacker.ID)

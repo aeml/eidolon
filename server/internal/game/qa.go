@@ -259,12 +259,9 @@ func (w *World) PreparePlayerForAnimationQA(playerID string, lowHealth, persiste
 		// legitimately survive the final cast. Owned projectiles and the Seraph
 		// were removed above. Waypoint protection is kept separate and must
 		// still be explicitly removed by /qa-protection off.
-		player.IsCharging = false
-		player.ChargeTargetX = player.X
-		player.ChargeTargetZ = player.Z
-		player.ChargeRuneID = ""
-		player.ChargeSkillName = ""
-		player.ChargeEffectDurationBonus = 0
+		clearChargeStateLocked(player)
+		player.RuneArmorBuff = 0
+		player.RuneArmorBuffEndTime = time.Time{}
 		clearWhirlwindLocked(player)
 		player.ArcaneShieldActive = false
 		player.ArcaneShieldHP = 0
