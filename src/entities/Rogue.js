@@ -10,6 +10,7 @@ import { getAbilityRange, getRogueMovementCastRange } from '../core/AbilityRange
 import { findOfflineAbilityTarget } from '../skills/offlineAbilityTargeting.js';
 import { resolveDungeonMovementEndpoint } from '../skills/dungeonEffectGeometry.js';
 import { applyOfflineStatus } from '../core/OfflineDamageOverTime.js';
+import { getOfflineEffectiveArmor } from '../core/OfflineArmor.js';
 import { getRogueEffectDuration } from '../skills/rogueEffectDuration.js';
 import {
     PROCEDURAL_PROJECTILE_VISUAL_DEFINITIONS,
@@ -171,7 +172,7 @@ export class Rogue extends Actor {
                 
                 const rune = this.skillRunes?.Backstab;
                 const runeCritical = rune === 'backstab_ambush' && Math.random() < .5;
-                let armor = Math.max(0, Math.floor(Number(target.stats?.defense) || 0));
+                let armor = getOfflineEffectiveArmor(target);
                 if (rune === 'backstab_eviscerate') armor -= Math.floor(armor / 2);
                 damage = Math.max(1, damage - armor);
                 applyOfflineAbilityHit(this, target, damage, skill, gameEngine.floatingTextManager, '#ffffff', ambushCombo || runeCritical);

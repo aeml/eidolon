@@ -16,6 +16,7 @@ import { applyOfflineTeleportWarp, snapshotOfflineTeleportWarp } from '../skills
 import { commitOfflineTeleportCharge } from '../skills/offlineTeleportCharges.js';
 import { getSpellFocusCastMultiplier } from '../skills/spellFocusTraining.js';
 import { getWizardAbilityDamageMultiplier, resolveWizardSpellDamage, WIZARD_DAMAGE_SKILLS } from '../skills/wizardAbilityDamage.js';
+import { applyOfflineArmorMelt } from '../core/OfflineArmor.js';
 
 
 export class Wizard extends Actor {
@@ -351,9 +352,7 @@ export class Wizard extends Actor {
                     const dist = Math.hypot(closestPoint.x - entity.position.x, closestPoint.z - entity.position.z);
                     if (dist < width + targetRadius && !clipDungeonEffectSegment(walkRects, this.position, entity.position).blocked) {
                          applyOfflineAbilityHit(this, entity, damage, skill, gameEngine.floatingTextManager, '#ffaa00');
-                         // Armor Melt Debuff (Mockup)
-                         if (entity.stats) {
-                             entity.stats.defense = Math.max(0, entity.stats.defense - 5);
+                         if (applyOfflineArmorMelt(entity, getWizardEffectDuration(this, skill, 5))) {
                              gameEngine.floatingTextManager.spawn("ARMOR MELT", entity.position, '#ffaa00');
                          }
                     }

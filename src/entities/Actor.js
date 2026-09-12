@@ -6,6 +6,7 @@ import { getAbilityManaCost, getAbilityCooldown } from '../core/AbilityEconomy.j
 import { updateOfflineHealingLight } from '../core/AbilityHealing.js';
 import { PASSIVE_REGEN_PER_STAT } from '../core/Regeneration.js';
 import { getBasicAttackDamage } from '../core/BasicAttackDamage.js';
+import { getOfflineBasicAttackArmor } from '../core/OfflineArmor.js';
 import { applyActorStealthAppearance, restoreActorStealthAppearance } from './ActorStealthAppearance.js';
 import { basicAttackInterval, usesPlayerAttackCadence } from '../core/BasicAttackCadence.js';
 import { rollOfflineCriticalDamage } from '../core/AbilityCritical.js';
@@ -160,6 +161,8 @@ export class Actor extends Entity {
         this.healingReductionTimer = 0;
         this.healingReductionFactor = 0;
         this.rootTimer = 0;
+        this.armorReduction = 0;
+        this.armorReductionTimer = 0;
         this.stealthTimer = 0;
         this.poisonTimer = 0;
         this.poisonStacks = 0;
@@ -973,6 +976,10 @@ export class Actor extends Entity {
             if (!this.healingReductionTimer) this.healingReductionFactor = 0;
         }
         if (this.rootTimer > 0) this.rootTimer = Math.max(0, this.rootTimer-dt);
+        if (this.armorReductionTimer > 0) {
+            this.armorReductionTimer = Math.max(0, this.armorReductionTimer-dt);
+            if (!this.armorReductionTimer) this.armorReduction = 0;
+        }
 
         // Guardian Roar Buff Logic
         if (this.guardianRoarTimer > 0) {
@@ -1657,9 +1664,9 @@ export class Actor extends Entity {
             if (this.state === 'DEAD') return;
 
             if (target && target.stats.hp > 0) {
-                const baseDmg = this.stats.damage;
+                const baseDmg = Math.max(1, this.stats.damage - getOfflineBasicAttackArmor(this, target));
                 const variance = (Math.random() * 0.4) + 0.8;
-                let finalDmg = Math.floor(baseDmg * variance);
+                let finalDmg = Math.max(1, Math.floor(baseDmg * variance));
                 
                 // Unique Effect: Berserker - +30% damage when below 30% HP
                 if (this.hasBerserkerEffect && this.stats.hp < this.stats.maxHp * 0.3) {
