@@ -5,7 +5,30 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 05:46 UTC
+## Current checkpoint — September 12, 05:50 UTC
+
+Previous turn was PROGRESS. This continuation is a VERIFIED WAIT on the same
+two live CI runs, with additional completed server/browser evidence retained.
+No replacement job, speculative runtime edit, new native run or goal blocker.
+
+- Production65 **34675345557 /native103506166516 ACTIVE**, now in disposable
+  full-character gameplay. Gallery and Well Rested rendering/GPU lifecycle steps
+  succeeded. Predeploy completion, deployment and final live remain required.
+- 1.1 **34676048154 at6e752e8f ACTIVE**. Server103505989314 now SUCCESS:
+  game coverage86.7%/94.079s, full game race326.079s, backup/restore/bench/build.
+  Log`/tmp/eidolon-integrated-1-1-fortress-server-34676048154.log`.
+  Browser3/1/2 active:103507049706/103507049715/103507049725.
+- Completed production browser archive retained at
+  `/tmp/eidolon-release65-gallery-correction-browser-artifacts-rmJOhi`.
+  Inspected568px landscape status-panel capture: opaque legible card, separate
+  skill controls/chat. This is a mocked layout test, not native combat acceptance.
+- Candidate5f501f5e remains clean, dependencies prepared, awaiting integration
+  after frozen6e752e8f hosted regression terminates. No local test handle remains.
+  Poll SAME runs; preserve GPU for production. Then actual four-role input/clear
+  and scoped Fortress native acceptance remain next. Full roadmap stays active;
+  leave scheduled soak alone and NEVER PUSH ROOT MASTER.
+
+## Previous checkpoint — September 12, 05:46 UTC
 
 Previous turn was PROGRESS. This continuation is PROGRESS: implemented the
 native Iron Fortress purchase/duration/save gate and its observer regressions,
