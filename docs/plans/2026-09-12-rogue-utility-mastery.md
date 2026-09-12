@@ -73,3 +73,14 @@ then executed. Full lint/assets/shell/diff passed; Playwright listing finds the
 single scenario without executing it. Logs use
 `/tmp/eidolon-rogue-utility-native-{red,tests,expanded,attached,lint-final,assets,list-final}-20260912.log`.
 Combined authored-route CI and native results remain required before integration.
+
+First native40445 on frozen d13194ba FAILED28.4s: the first rank-zero Weak
+Point cast produced TWO ability-result messages where the test required one.
+This is not a missing receipt, successful duration proof or diagnosed runtime
+cause. Archive `/tmp/eidolon-rogue-utility-first-failure-GMQao6`; original
+`/tmp/eidolon-rogue-utility-native-20260912.log`. Scan0/owned services/ports clear.
+The initial failure lacked full result payloads. A diagnostic-only follow-up
+retains the strict assertion and captures both payloads, cast messages, input
+focus/pending target/cooldowns and a failure screenshot before rethrowing. No
+retry, timer, cast count or runtime rule is changed. The next native replay is
+required to distinguish duplicate dispatch from admission/other causes.

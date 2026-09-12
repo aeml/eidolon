@@ -109,7 +109,20 @@ test('Rogue utility Masteries extend real paid effects through normal purchases 
         await page.evaluate(installRogueUtilityObserver, { ...cfg, targetId: target.id });
         const base = rune === 'cloak_longer' ? 10 : cfg.base, expected = base * (1 + .04 * (rank + generic));
         await page.keyboard.press(String(before.slot + 1));
-        await expect.poll(() => page.evaluate(() => window.__rogueUtility.results.length)).toBe(1);
+        try {
+            await expect.poll(() => page.evaluate(() => window.__rogueUtility.results.length)).toBe(1);
+        } catch (error) {
+            const observed = await page.evaluate(() => ({
+                ...window.__rogueUtility, focus: document.activeElement?.id,
+                playerState: window.game.player.state, pendingSkill: window.game.abilityController.pendingAbilitySkill,
+                pendingTarget: window.game.abilityController.pendingAbilityTarget?.id,
+                hoveredId: window.game.hoveredEntity?.id, cooldowns: window.game.player.cooldowns
+            }));
+            console.log('[rogue-utility-failed]', JSON.stringify({ before, expected, observed }));
+            await testInfo.attach('rogue-utility-failed-cast', { body: JSON.stringify({ before, expected, observed }), contentType: 'application/json' });
+            await page.screenshot({ path: testInfo.outputPath('rogue-utility-failed-cast.png') });
+            throw error;
+        }
         const result = await page.evaluate(() => window.__rogueUtility.results[0]);
         expect(result.accepted).toBe(true); expect(before.mana - result.mana).toBe(cfg.cost);
         await expect.poll(() => page.evaluate(() => window.__rogueUtility.casts.length)).toBe(1);
