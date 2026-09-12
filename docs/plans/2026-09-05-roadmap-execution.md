@@ -5,7 +5,55 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 04:04 UTC
+## Current checkpoint — September 12, 04:28 UTC
+
+The preceding numbering-only reply made no implementation progress. This goal
+continuation revalidated authoritative state and made PROGRESS: retained native
+Focus acceptance, collected the terminal combined regression, and began the
+remaining scoped Time Warp check without replacing a live process.
+
+- **Production64 CI34668112188 TERMINAL SUCCESS**, exact6d5e82cb. All ten
+  jobs passed, including final native live103493209801. Independent public
+  frontend/backend checks this continuation both match Alpha1.0.64/6d5e82cb;
+  backend health is ok/database ready. Native artifacts retained at
+  `/tmp/eidolon-release64-predeploy-accepted-sU8eqe` and
+  `/tmp/eidolon-release64-live-accepted-CClhdC`. This supersedes earlier pending
+  acceptance statements, not the open wider roadmap gates.
+- **Combined1.1 rehearsal34671975379 TERMINAL SUCCESS**, exact8f2c82a4.
+  Client367suites/5466tests92.607s plus lint/audit/benchmark; server coverage
+  86.7%/84.473s, full game race268.254s plus backup/restore/bench/build PASS.
+  Browser shards40+50+26=116cases PASS. Native/deployment/live intentionally
+  skipped for manual dispatch, not passed. Logs use
+  `/tmp/eidolon-integrated-1-1-followup-{client,server,browser1,browser2,browser3}-34671975379.log`.
+  Primary and frozen rehearsal remain clean8f2c82a4. Do not keep polling this run.
+- Native65 Teleport first session42477 ended143, cause unknown; no test result.
+  Exact owned leftover web process group and disposable services were verified
+  and cleaned. Unchanged TTY retry7369 failed on occupied ground: the test
+  aimed at its observing Fighter. Retained failure
+  `/tmp/eidolon-release65-teleport-occupied-ground-Nh5Mhh`.
+- Test-only correction **95a78071** alternates two clear destinations, retaining
+  real input, collision checks and every gameplay assertion. Focused3suites/
+  24tests plus lint PASS. Native17729 then **PASS1test/2.0m**, all four cases:
+  base/trained Warp and base/saved-trained Phase, owner/peer effects and expiry.
+  Archive `/tmp/eidolon-release65-teleport-accepted-B42924`; credential scan0.
+- Same95 native Spell Focus **PASS1test/2.1m**: base/trained glyphs, stored
+  strength, paid training/save/login, one amplified real Scorch Beam789 versus
+  ordinary263, charge consumed on both clients. Retained complete report/results
+  and log in `/tmp/eidolon-release65-focus-accepted-n6qdKn`; scan0. Its workers
+  are absent, exact containers gone, ports clear before the next route.
+- **Native Time Warp session44831 ACTIVE** on clean95a78071, TTY, isolated
+  runIDrelease65timewarp0912, ports18185/18186/41875. Log
+  `/tmp/eidolon-release65-native-timewarp-20260912.log`. Poll this same handle;
+  do not edit its source or launch competing native work. Candidate95 is still
+  local; hosted acceptance34670196359 is for preceding1de18e03. No65 master push.
+- Scheduled soak34670421761 remains active; soak runner busy and native runner
+  online/idle at check. No schedule change or new soak. Next retain Time Warp
+  evidence, finish65 release gates and run instrumented four-role Briar QA.
+  No ordinary66 candidate: remaining foundation work belongs in1.1.0. Earned
+  dungeon/first-hour/balance/campaign/reconnect and all1.2–1.10 scope stay open.
+  Root master is ledger-only: NEVER PUSH.
+
+## Previous checkpoint — September 12, 04:04 UTC
 
 Previous turn was PROGRESS. This continuation is PROGRESS: accepted the frozen
 integrated rehearsal, retained its complete evidence and started the combined
