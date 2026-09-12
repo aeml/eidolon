@@ -15,6 +15,7 @@ func TestPurchasedRogueUtilityTechniquesReachPaidCasts(t *testing.T) {
 		deadline           func(*Entity, *Entity) time.Time
 	}{
 		{"Weak Point Mark", "ROG_06", 25, 12 * time.Second, 10 * time.Second, func(_, e *Entity) time.Time { return e.WeakPointEndTime }},
+		{"Serrated Edges", "ROG_14", 30, 20 * time.Second, 10 * time.Second, func(p, _ *Entity) time.Time { return p.SerratedEdgesEndTime }},
 		{"Smoke Bomb", "ROG_20", 35, 20 * time.Second, 5 * time.Second, func(_, e *Entity) time.Time { return e.SlowEndTime }},
 		{"Cloak & Vanish", "ROG_26", 30, 30 * time.Second, 5 * time.Second, func(p, _ *Entity) time.Time { return p.StealthEndTime }},
 	} {

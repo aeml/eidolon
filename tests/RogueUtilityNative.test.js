@@ -5,9 +5,19 @@ import { installRogueUtilityObserver } from './e2e/rogue-utility-observer.js';
 const configs = [
     { skill: 'Weak Point Mark', targetId: 'enemy', active: 'weakPointMarked', duration: 'weakPointDuration' },
     { skill: 'Smoke Bomb', targetId: 'enemy', active: 'slowed', duration: 'slowDuration' },
-    { skill: 'Cloak & Vanish', targetId: 'owner', active: 'stealthActive', duration: 'stealthDuration' }
+    { skill: 'Cloak & Vanish', targetId: 'owner', active: 'stealthActive', duration: 'stealthDuration' },
+    { skill: 'Serrated Edges', targetId: 'owner', active: 'serratedEdgesActive', duration: 'serratedEdgesDuration' }
 ];
 afterEach(() => { delete window.game; delete window.__rogueUtility; });
+test('Serrated Technique uses an independent legal point budget and allowlisted native stage', () => {
+    const route = readFileSync('tests/e2e/rogue-utility-mastery-gameplay.spec.js', 'utf8');
+    expect(route).toContain("const utilities = (serrated ? [");
+    expect(route).toContain('initialPoints - 5 * (utilities.length + 1)');
+    const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
+    expect(script).toContain('qa_allowlist+=",${QA_USERNAME_BASE}-serrated-technique"');
+    expect(script).toContain('EIDOLON_E2E_SERRATED_TECHNIQUE=1 EIDOLON_E2E_ROGUE_UTILITY=1 npx playwright test --retries=0');
+    expect(script.match(/run_qa_stage serrated-technique run_serrated_technique/g)).toHaveLength(1);
+});
 test('resource diagnostics preserve before/after delivery and missing fields without inventing mana', () => {
     const player = { id: 'owner', stats: { mana: 1743, maxMana: 1743 }, wellRestedSeconds: 0 };
     const receive = jest.fn(message => {
