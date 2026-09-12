@@ -14,6 +14,16 @@ type impactDefenseResolution struct {
 	explosion          *impactShieldExplosion
 }
 
+// Caller holds the recipient lock. Environmental and reflected damage retain
+// their existing non-absorb/non-retaliate rules, but Fortress's incoming damage
+// reduction also covers those paths. Share the exact impact-time boundary.
+func fortressIncomingDamageLocked(target *Entity, damage int, now time.Time) int {
+	if target.Type == TypePlayer && target.IronFortressActive && !target.IronFortressEndTime.IsZero() && now.Before(target.IronFortressEndTime) {
+		return damage * 80 / 100
+	}
+	return damage
+}
+
 // Timer cleanup and impact resolution share the same boundary. An expired or
 // malformed shield cannot absorb between updates, reflect, or detonate history.
 // Caller holds the receiver lock. All real shield casts provide an expiry.
@@ -45,9 +55,7 @@ func resolveImpactDefenseLocked(tgt *Entity, damage int, now time.Time) impactDe
 	}
 	// Fortress protects scaled incoming hits as well as adding armor. Check
 	// the actual deadline at impact, before other reductions and absorption.
-	if tgt.Type == TypePlayer && tgt.IronFortressActive && !tgt.IronFortressEndTime.IsZero() && now.Before(tgt.IronFortressEndTime) {
-		damage = damage * 80 / 100
-	}
+	damage = fortressIncomingDamageLocked(tgt, damage, now)
 
 	// The two Sanctuary sources have distinct advertised strengths and may
 	// overlap. Use the stronger active reduction rather than an approximation.
@@ -152,6 +160,7 @@ func (w *World) applyImpactReflection(attacker, defender *Entity, damage int, in
 		attacker.Mu.Unlock()
 		return
 	}
+	damage = fortressIncomingDamageLocked(attacker, damage, time.Now())
 	damage = damageWithinDarkKingPhase(attacker, damage)
 	attacker.Health -= damage
 	attacker.LastDamageType = "physical"
