@@ -84,3 +84,13 @@ retains the strict assertion and captures both payloads, cast messages, input
 focus/pending target/cooldowns and a failure screenshot before rethrowing. No
 retry, timer, cast count or runtime rule is changed. The next native replay is
 required to distinguish duplicate dispatch from admission/other causes.
+
+Diagnostic81689 onf40689b2 FAILED13.4s earlier in acquisition: the live target
+had moved to5.7306units during post-approach readiness chat, outside the retained
+5unit cast-position assertion. No cast-result payloads were reached, so the
+earlier TWO-results cause is still unresolved. Archive
+`/tmp/eidolon-rogue-utility-moving-target-failure-q2lw4m`; original
+`/tmp/eidolon-rogue-utility-diagnostic-native-20260912.log`. Scan0/cleanupPASS.
+Readiness now precedes normal approach, with unchanged range, cast count and
+duration assertions. Diagnostic observer tests still pass; native replay remains
+required and is not a retry that erases either failure.

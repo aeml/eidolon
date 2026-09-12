@@ -80,13 +80,15 @@ test('Rogue utility Masteries extend real paid effects through normal purchases 
     }
     async function cast(cfg, rank, generic, tier, rune = '') {
         await returnToTown(page); await branch(cfg); await quality(tier); await useCombatQAWaypoint(page);
-        const target = await targetFor(cfg);
         // Incoming combat, cooldowns and mana are fixture preparation only;
         // the target, ranks, timers and cast itself are never assigned.
         await page.waitForTimeout(1100);
         const sequence = await page.evaluate(() => window.game.animationQAReadySequence || 0);
         await page.locator('#chat-input').fill('/qa-animation-ready'); await page.locator('#chat-input').press('Enter');
         await expect.poll(() => page.evaluate(() => window.game.animationQAReadySequence || 0)).toBeGreaterThan(sequence);
+        // Prepare before approaching a live enemy. A chat round-trip after
+        // acquisition let the enemy move outside the required footprint.
+        const target = await targetFor(cfg);
         if (!cfg.self) {
             await expect.poll(async () => {
                 for (const point of [null, { x: .2, y: .7, z: .5 }, { x: .8, y: .7, z: .5 }]) {
