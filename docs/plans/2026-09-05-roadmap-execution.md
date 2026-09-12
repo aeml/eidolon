@@ -5,7 +5,43 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 14:09 UTC
+## Current checkpoint — September 12, 14:14 UTC
+
+This continuation remains PROGRESS; full roadmap ACTIVE. Primary/integrated
+remain clean da4a07cc, root ledger only/no push, no release/production/soak change.
+
+**Rogue18728 is now TERMINAL FAILED43.3s**, frozen1a23887d, not still active.
+Diagnostic proved two identical accepted1718mana result records after1743mana,
+two identical ability records, real base-mark duration9.9831s/natural expiry.
+Cause reproduced: `moveByGroundClick` wraps the receiver with the entrance-click
+observer (`tests/groundInputObservations.js:33`), dropping the function-property
+installation marker. Reinstalling the Rogue observer nested another recorder,
+so one core delivery was recorded twice. No double-cost gameplay bug inferred.
+Archive `/tmp/eidolon-rogue-utility-duplicate-failure-YgaHUJ`; original
+`/tmp/eidolon-rogue-utility-readiness-native-20260912.log`. Scan0/ownedcleanupPASS.
+
+Rogue WT now frozen clean/devpushed **2e19276dfe651c83764797482b328673aa53a2ab**.
+Installation ownership now lives on the current game/document, retaining outer
+observers and fresh-login behavior. New layered-observer regression RED1fail/
+5pass; final4suites77PASS4.975s/full lint/diff. Logs
+`/tmp/eidolon-rogue-utility-composed-observer-{red,tests,lint}-20260912.log`.
+**6920 ACTIVE — sole native GPU lane**, same2e19276d,
+runIDrogueutilitycompose09121413, route rogue-utility,18185/18186/41875.
+Log `/tmp/eidolon-rogue-utility-composed-native-20260912.log`. Services ready,
+no corrected native result yet; poll samehandle and freeze source. Archive and
+confirm cleanup before party/Spin/Roar or any other native check. Corrected
+**CI34698644440 PENDING**, old d13194ba34697848131 still has required browser
+jobs; neither is a full corrected-native acceptance. Rogue is not merged.
+
+Combined Fighter+buff **CI34698082603 ACTIVE**, source28a61378: actual
+client404suites6315tests103.296s and servergame86.9%/99.712s/race349.166s pass;
+browser103566217536/103566217605/103566217619active at last explicit check.
+Logs `/tmp/eidolon-fighter-verified-buff-ci-{client,server}-34698082603.log`.
+Do not move primary until remaining combined checks succeed. WT clean.
+Queued party triage tip is **d879ab9dc97e93640d8c1ac77e4dd38b8422eb30**, clean/
+unpushed. Its full replay, dungeon credit and Water handoff still unproven.
+
+## Previous checkpoint — September 12, 14:09 UTC
 
 Previous/current goal continuation is PROGRESS: primary integration, complete
 component CI evidence, authored Rogue native gate, two retained native failures
