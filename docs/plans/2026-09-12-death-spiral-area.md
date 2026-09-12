@@ -50,3 +50,12 @@ corrected four suites70tests passed2.015s, with lint, assets, shell syntax and
 diff checks passing. Logs `/tmp/eidolon-death-spiral-native-tests{,-corrected}-20260912.log`,
 `/tmp/eidolon-death-spiral-native-{lint,assets}-20260912.log`.
 Actual native execution and combined full CI remain required; no release claim.
+
+Native25693 on a1513834 PASSED22.0s test/24.0s total, zero retries: rank0/high
+radius4, rank1/high4.12, rank5/low4.6 and saved rank5/high4.6. All paid mana,
+attached-boundary/origin and normal purchase/persistence assertions passed.
+Main-agent screenshot review shows the real Rogue and spin footprint in the
+landscape world. Archive `/tmp/eidolon-death-spiral-native-pass-k1DpfW`, original
+`/tmp/eidolon-death-spiral-trained-native-20260912.log`; credential scan and owned
+service/port cleanup passed. Combined CI34694650346 remains pending completion;
+native success does not replace its full regression gates.
