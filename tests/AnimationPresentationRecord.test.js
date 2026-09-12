@@ -1,6 +1,20 @@
-import { readAnimationPresentation } from './animationPresentationRecord.js';
+import { readAnimationCastState, readAnimationPresentation } from './animationPresentationRecord.js';
 
 afterEach(() => { delete window.game; });
+
+test('cast diagnostics retain transient guard values without modifying the player', () => {
+    const player = {
+        state: 'IDLE', stunTimer: 0.3, stats: { hp: 50, mana: 60 },
+        cooldowns: { 'Meteor Drop': 0 }, skillRunes: { 'Meteor Drop': 'impact' },
+        unlockedSkills: ['Meteor Drop'], hotbar: ['Meteor Drop']
+    };
+    window.game = { player, uiManager: { isEscMenuOpen: true } };
+    const snapshot = readAnimationCastState('Meteor Drop');
+    expect(snapshot).toMatchObject({ stunTimer: 0.3, rune: 'impact', unlocked: true, escapeMenu: true });
+    expect(player.stunTimer).toBe(0.3);
+    player.stunTimer = 0;
+    expect(snapshot.stunTimer).toBe(0.3);
+});
 
 test('Teleport waits for the accepted endpoint presentation, not local prediction', () => {
     const local = { skillName: 'Teleport', timestamp: 10, layerCount: 2 };
