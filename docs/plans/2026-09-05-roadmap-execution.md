@@ -5,7 +5,67 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 09:35 UTC
+## Current checkpoint — September 12, 09:54 UTC
+
+Previous user-facing numbering confirmation was NO PROGRESS on implementation;
+this continuation PROGRESS. Revalidated actual worktrees and CI, completed and
+pushed the Juggernaut candidate for hosted checks, and integrated the now-accepted
+Earthshaker area runtime. The full 1.1.0–1.10.0 objective remains active.
+
+- `/tmp/eidolon-1-1-juggernaut-training-20260912`, branch
+  `work/1-1-juggernaut-training`, clean **034fadd57ed97a6fc1c616dbbf59ea9d9fbf3db9**,
+  parent e39599d9. Pushed ONLY the development branch; manually dispatched
+  **CI34686991417 ACTIVE**, client/server running. NOT integrated or deployed.
+  Damage FTR_17 and area FTR_18 now reach real paid shockwaves, Damage+Strength
+  with named/generic damage once, radius10..13.5 with named/generic area.
+  Preserve mana30/CD20/base slow5s/.6, existing status, damage/death receipts,
+  threat, critical, immunity and gameplay identity (no invented extra dash).
+- New offline helper shares planar body-padded radius, trained damage, wall,
+  hostile/living/active/instance and duplicate checks. No online damage
+  prediction. Remove the redundant legacy wave. Public accepted origin/radius/
+  full-circle arc drive local prediction and private-rank observers.
+- Recovered unfinished elevated remote mesh test: initial High/Low RED2fail,
+  13pass/2.19s in `/tmp/eidolon-juggernaut-height-red-20260912.log` (Y0 vs40).
+  Remote enrolled self-centered effects now retain caster floor Y and accepted
+  X/Z. Every enrolled ability has a raised-floor origin regression; actual
+  Juggernaut High/Low world-matrix circles, stale replacement and no replay
+  tested. Enemy server fixtures now retain valid Vitality/MaxHealth when slows
+  recalculate stats, avoiding an invalid zero-MaxHealth positive fixture.
+- Client focused **4suites179PASS5.347s**; exact log
+  `/tmp/eidolon-juggernaut-client-expanded-20260912.log`. The invocation also
+  named a nonexistent EarthshakerAreaTraining.test.js pattern; it did NOT add
+  a fifth suite. Do not claim it did. Existing Earthshaker suites are included
+  in the full run. Server focused race**39.059s** includes paid rank0/1/5 ×
+  generic0/5, edges/outside/walls, critical/CC, ordinary five purchases and
+  sixth rejection of BOTH named talents, malformed caps/foreign exclusion and
+  immutable saved map. Wire race**1.085s** preserves Juggernaut public shape.
+  Duration/root regressions**15.023s**, explicit paid shield/slow/immunity/wall
+  regressions**12.980s**. Lint/whitespace PASS. All those processes terminal.
+- **Full local client session3785 STILL ACTIVE**, confirmed via same live
+  handle; log `/tmp/eidolon-juggernaut-client-full-20260912.log` advancing with
+  no failure summary yet. Resumption must poll3785, not restart for observation
+  timeout. Source/tests unchanged throughout; evidence doc committed during
+  run. Exact logs also `/tmp/eidolon-juggernaut-{server-final,wire-final,lint,status-regression,paid-status-regression}-20260912.log`.
+  Doc `2026-09-12-juggernaut-training.md` explicitly keeps native phone,
+  party/dungeon and live acceptance open. No native launched.
+- **Earthshaker area CI34685697297 TERMINAL SUCCESS**. Client389suites6158tests
+  98.636s; server86.8%/96.151s, race332.926s plus backup/restore/bench/build.
+  Direct downloaded browser logs prove40+50+26=**116 PASS**; logs
+  `/tmp/eidolon-earthshaker-area-ci-browser{1,2,3}-34685697297.log`.
+  Native/deploy/live skipped by the manual-run guard, not native passes.
+  Verified clean primary and integrated worktrees and no processes with those
+  exact cwd paths, then fast-forwarded BOTH to **e39599d9**. No root push.
+  Pending Earthshaker native8e6189a6 and other native-only worktrees unchanged.
+- **Production CI34683452640 ACTIVE**, native103528155488 full-character
+  stage, rechecked09:54. Scoped process observation09:51 found the actual
+  `well-rested-transitions-gameplay.spec.js` (PID519979 observational only),
+  demonstrating progress beyond the earlier opening test. Reserve the GPU for
+  the WHOLE production workflow including later live QA; do not stop/restart.
+  Independent public frontend/backend still **Alpha1.0.64/6d5e82cb** with healthy
+  database. Four-role dungeon remains next native priority after production
+  releases the GPU. Scheduled soak untouched. No65/1.1.0 live claim.
+
+## Historical checkpoint — September 12, 09:35 UTC
 
 Previous goal turn PROGRESS; this continuation PROGRESS. Authored and tested the
 real-phone Earthshaker purchase/geometry gate while production retained the GPU;
