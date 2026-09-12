@@ -33,8 +33,6 @@ Still required: final candidate CI, actual native paid/trained/saved casts and
 High/Low rendered flight/boundary checks, then merged regression. This candidate
 does not prove all160 talent consumers, whole dungeon balance or live release.
 
-## Draft 1.1.0 patch note (unreleased)
-
 ## Authored native phone route (execution pending)
 
 The new blade-storm-area route uses a dedicated allowlisted Rogue, normal phone
