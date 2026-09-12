@@ -127,8 +127,11 @@ async function seedActor(page, credentials, character) {
     console.log(`[party-clear] prepare ${character.class}: verify replicated build`);
     await expect.poll(() => page.evaluate(() => window.game.player.level)).toBe(30);
     expect(await page.evaluate(() => window.game.player.baseStats)).toMatchObject(character.stats);
-    const equipped = await page.evaluate(() => Object.fromEntries(Object.entries(window.game.player.equipment)
-        .map(([slot, item]) => [slot, item && { name: item.name, level: item.level, rarity: item.rarity, stats: item.stats }])));
+    const equipped = await page.evaluate(async () => {
+        const { partyEquippedItemSnapshot } = await import('/tests/partyDungeonFixture.js');
+        return Object.fromEntries(Object.entries(window.game.player.equipment)
+            .map(([slot, item]) => [slot, partyEquippedItemSnapshot(item)]));
+    });
     for (const [slot, item] of Object.entries(character.equipment)) {
         expect(equipped[slot], `${character.class} must actually wear its prepared ${slot}`).toEqual({
             name: item.name, level: item.level, rarity: item.rarity, stats: item.stats });

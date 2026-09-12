@@ -1,4 +1,7 @@
 export const PARTY_ROLES = ['Fighter', 'Cleric', 'Wizard', 'Rogue'];
+export function partyEquippedItemSnapshot(item) {
+    return item && { name: item.name, level: item.level, rarity: item.rarity?.name || item.rarity, stats: item.stats };
+}
 const PRIMARY = { Fighter: ['strength', 'Strong'], Rogue: ['dexterity', 'Agile'],
     Wizard: ['intelligence', 'Brilliant'], Cleric: ['wisdom', 'Wise'] };
 const RARE_SLOTS = new Set(['mainHand', 'offHand', 'chest', 'legs', 'trinket1']);

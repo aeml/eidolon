@@ -35,3 +35,11 @@ in1.080s. Full lint, client preparation and diff checks pass. Logs
 `/tmp/eidolon-party-progressed-gear-{client,server,lint,prepare}-20260912.log`.
 This changes test loadouts, not player loot, so it needs an acceptance record
 rather than a fabricated player-facing release note.
+
+First native70936 on0a75527d failed14.0s during equipment verification, before
+party formation or dungeon entry. The real Fighter had the expected Strong Rare
+sword and exact11damage/9Strength/9Vitality, but hydrated client rarity is an
+object with `name: Rare`, not the wire string. The read-only comparison now
+normalizes that representation; all item name/level/rarity/stat checks remain.
+Archive `/tmp/eidolon-party-progressed-gear-preparation-failure-9pX8sZ`, scan0/
+exact cleanup verified. This was a test-contract error, not a dungeon failure.

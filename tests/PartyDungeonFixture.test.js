@@ -1,4 +1,4 @@
-import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture, partyGraphicsQuality, partyGearProfile } from './partyDungeonFixture.js';
+import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture, partyGraphicsQuality, partyGearProfile, partyEquippedItemSnapshot } from './partyDungeonFixture.js';
 
 const env = { EIDOLON_E2E_PARTY_DUNGEON: '1', EIDOLON_E2E_REGISTER: '1',
     EIDOLON_E2E_BUILD_MONGO_CONTAINER: 'eidolon-isolated-qa-mongo-party',
@@ -41,6 +41,14 @@ test('progressed gear is the default and the original Common baseline remains an
     expect(partyGearProfile()).toBe('progressed');
     expect(partyGearProfile({ EIDOLON_E2E_PARTY_GEAR: 'common' })).toBe('common');
     expect(() => partyGearProfile({ EIDOLON_E2E_PARTY_GEAR: 'legendary' })).toThrow();
+});
+
+test('equipped verification reads hydrated rarity names without altering item stats', () => {
+    const item = { name: 'Strong Iron Sword of the Whale', level: 30, rarity: 'Rare', stats: { damage: 11, strength: 9, vitality: 9 } };
+    expect(partyEquippedItemSnapshot({ ...item, rarity: { name: 'Rare', color: '#0070dd' } })).toEqual(item);
+    expect(partyEquippedItemSnapshot(item)).toEqual(item);
+    expect(partyEquippedItemSnapshot({ ...item, stats: { damage: 1 } }).stats).toEqual({ damage: 1 });
+    expect(partyEquippedItemSnapshot(null)).toBeNull();
 });
 
 test.each([
