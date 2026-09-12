@@ -571,7 +571,7 @@ export class UIManager {
             if (e.key === 'Enter') {
                 // Let native controls handle activation/submission before the
                 // gameplay shortcut. Otherwise Enter steals focus from menus.
-                if (!this.chatInput?.isConnected || e.defaultPrevented || document.activeElement?.closest('button, input, textarea, select, a[href], [contenteditable]:not([contenteditable="false"])')) return;
+                if (!this.chatInput?.isConnected || e.defaultPrevented || document.activeElement?.closest('button, summary, input, textarea, select, a[href], [contenteditable]:not([contenteditable="false"])')) return;
                 if (this.chatInput && document.activeElement !== this.chatInput) {
                     e.preventDefault(); // Prevent other actions
                     this.chat.focusChatInput();

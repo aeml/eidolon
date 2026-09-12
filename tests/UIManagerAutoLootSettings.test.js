@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
 import { UIManager } from '../src/ui/UIManager.js';
+import { InputManager } from '../src/core/InputManager.js';
 
 function buildDom() {
     document.body.innerHTML = `
@@ -199,6 +200,36 @@ describe('UIManager settings', () => {
         button.blur();
         document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
         expect(document.activeElement).toBe(ui.chatInput);
+    });
+
+    test.each([false, true])('summary retains native keyboard activation with gameplay binding=%s', bound => {
+        buildDom();
+        const ui = new UIManager(false);
+        const input = bound ? new InputManager({}, {}) : null;
+        input?.subscribe('onChat', () => ui.chat.focusChatInput());
+        const ability = jest.fn();
+        input?.subscribe('onSpace', ability);
+        const details = document.createElement('details');
+        const summary = document.createElement('summary');
+        summary.tabIndex = 0;
+        details.append(summary);
+        document.body.append(details);
+        try {
+            summary.focus();
+            for (const [key, code] of [['Enter', 'Enter'], [' ', 'Space']]) {
+                const event = new KeyboardEvent('keydown', { key, code, bubbles: true, cancelable: true });
+                summary.dispatchEvent(event);
+                expect(document.activeElement).toBe(summary);
+                expect(event.defaultPrevented).toBe(false);
+            }
+            expect(ability).not.toHaveBeenCalled();
+            summary.blur();
+            document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', bubbles: true, cancelable: true }));
+            expect(document.activeElement).toBe(ui.chatInput);
+        } finally {
+            input?.dispose();
+            details.remove();
+        }
     });
 
     test('submitting chat stays blurred instead of reopening globally', () => {
