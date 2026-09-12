@@ -5,7 +5,37 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 05:58 UTC
+## Current checkpoint — September 12, 06:01 UTC
+
+Previous goal turn was PROGRESS. This continuation is PROGRESS: confirmed the
+frozen regression's terminal success, integrated the pending native route/copy
+contract, dispatched exact-source combined CI and identified actual production
+gameplay progress without exposing process arguments or changing running source.
+
+- **34676048154 at6e752e8f TERMINAL SUCCESS**: client377suites/5811tests,
+  server game86.7%/94.079s/full race326.079s, backup/restore/bench/build and
+  browser40+50+26=116 all pass. Manual native/deployment guards skipped, not passed.
+  Shard1 log`/tmp/eidolon-integrated-1-1-fortress-browser1-34676048154.log`.
+  Full browser archive`/tmp/eidolon-integrated-1-1-fortress-browser-artifacts-b5xReR`.
+- Primary and `/tmp/eidolon-1-1-integrated-regression-20260912` fast-forwarded
+  only after that terminal result to clean **befd528421eb8164770f63b1734359b609499a35**.
+  Includes5f501f5e Fortress native route and28 generic description corrections.
+  Remote branch SHA verified before dispatch. **CI34676966185 ACTIVE** at
+  exactbefd5284. Freeze those sources and poll SAME run. No production push of1.1.
+- **Production65 CI34675345557 /native103506166516 ACTIVE** in full-character
+  gameplay. Read-only runner inspection confirmed checkout1af59512865140037b02b9159ea46890b193ea97
+  and active Playwright process2133208 running
+  `tests/e2e/cleric-immediate-area-gameplay.spec.js`. Only PID and explicitly
+  validated spec paths were printed, never environment or unfiltered arguments.
+  This proves current activity, not stage/job/deployment success. Keep the same
+  job; no conflicting local native/browser process has been started.
+- No new live-release claim. After these gates, actual four-role dungeon clear,
+  batched/independent inputs and Fortress native purchase/save/expiry acceptance
+  remain necessary, alongside first-hour/earned/balance/reconnect/full talent
+  usability and every1.2–1.10 requirement. Leave scheduled soak alone. Root master
+  is ledger-only: NEVER PUSH ROOT. No local tool process remains.
+
+## Previous checkpoint — September 12, 05:58 UTC
 
 Previous goal turn was VERIFIED WAIT. This continuation is PROGRESS: corrected
 28 misleading generic-talent descriptions against unchanged server definitions,
