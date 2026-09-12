@@ -7,6 +7,7 @@ import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, part
 import { attackPartyDamageTarget, selectPartyDamageBuff } from '../partyDamageRoleControls.js';
 import { runPartyRoleInputs } from '../partyRoleScheduling.js';
 import { startPartyCombatWorkers } from '../partyCombatWorkers.js';
+import { observePartyCombatHealth } from '../partyCombatHealth.js';
 import { partyTankHasEngaged } from '../partyEngagementControls.js';
 import { partyAuraFollowSpacing, selectPartyHealTarget } from '../partyHealingControls.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
@@ -580,19 +581,27 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 combatWorkers.check();
                 // The Fighter remains owned by the leader driver; other roles
                 // observe and act independently, with one input loop per browser.
-                const tankPolicy = await avoidWarnings(tank, target.encounter);
-                for (const actor of actors) {
-                    const state = await snapshot(actor.page);
-                    if (state.dead) {
+                const health = await observePartyCombatHealth(actors, actor => actor.page.evaluate(async () => {
+                    const { partyCombatHealthSnapshot } = await import('/tests/partyCombatHealth.js');
+                    return partyCombatHealthSnapshot(window.game, window.__partyClearEvidence, performance.now());
+                }));
+                for (const [index, actor] of actors.entries()) {
+                    const status = health[index];
+                    if (status.dead || status.sawDeath) {
+                        const state = await snapshot(actor.page);
                         const cleric = await snapshot(healer.page);
                         console.log('[party-clear-death]', JSON.stringify({ role: actor.className, boss: target.type,
                             healerDistance: Math.hypot(state.x - cleric.x, state.z - cleric.z),
                             healerMana: cleric.mana, healerCasts: cleric.evidence.casts,
                             bossAllyHealing: bossStart ? cleric.evidence.allyHealing - bossStart[1].evidence.allyHealing : null }));
                     }
-                    expect(state.dead, `${actor.className} must survive; inspect party evidence if not`).toBe(false);
-                    expect(await actor.page.evaluate(() => performance.now() - window.__partyClearEvidence.lastUpdate)).toBeLessThan(10_000);
+                    expect(status.dead || status.sawDeath, `${actor.className} must survive; inspect party evidence if not`).toBe(false);
+                    expect(status.updateAge).toBeGreaterThanOrEqual(0);
+                    expect(status.updateAge).toBeLessThan(10_000);
                 }
+                // Check current warnings after observation, immediately before
+                // returning control to the sole Fighter input owner.
+                const tankPolicy = await avoidWarnings(tank, target.encounter);
                 if (tankPolicy.holdMelee) await tank.page.waitForTimeout(60);
                 return tankPolicy.holdMelee;
             },

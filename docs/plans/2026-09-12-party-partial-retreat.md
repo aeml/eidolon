@@ -207,3 +207,22 @@ Archive `/tmp/eidolon-party-low-graphics-failure-tgwJIq`, log
 `/tmp/eidolon-party-low-graphics-native-20260912.log`. Credential scan sanitized
 zero files; exact owned containers/image/ports were clear before Serrated QA.
 No gameplay stats, damage, recovery, deadlines or acceptance assertions changed.
+
+### Compact concurrent health observations
+
+Inspection found the Fighter's leader loop waited for four full snapshots plus
+four separate freshness observations after each warning decision. Those full
+snapshots serialize retained combat diagnostics on every iteration. The hot
+path now starts four compact read-only observations together, joins all of them
+even on failure, then checks current warnings immediately before returning to
+the sole Fighter input owner. Detailed diagnostics remain recorded and are
+retrieved on death/final report. Death history is explicitly fatal even if a
+later snapshot appears alive; the same10second update-age limit remains.
+
+Focused4suites23tests PASS1.001s plus ESLint/diff: concurrent starts, ordered
+results, joined failure propagation, missing update evidence rejected, browser
+clock ages, retained death history and existing role/input receipt contracts.
+Initial test failed because the new helper did not yet exist. No native timing
+improvement or dungeon clear has yet been verified. The leader still performs
+ordinary mouse/keyboard actions; no second input owner, game-state mutation,
+encounter nerf or larger timeout was introduced.
