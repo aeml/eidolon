@@ -6,7 +6,7 @@ export const SELF_CENTERED_SHAPE_ABILITIES = new Set([
     'Blessing of Resolve', 'Blessing of Zeal', "Heaven's Trumpet",
     'Spirit Guardians', 'Spirit Guardians Boost', 'Guardian Roar', 'Executioner Spin', 'Time Warp', 'Whirlwind'
 ]);
-export const AUTHORITATIVE_SHAPE_ABILITIES = new Set(['Teleport', 'Flame Whip', 'Radiant Strike', 'Healing Light', 'Shield Slam', 'Sweeping Strike', ...WIZARD_GROUND_ABILITIES, ...SELF_CENTERED_SHAPE_ABILITIES]);
+export const AUTHORITATIVE_SHAPE_ABILITIES = new Set(['Earthshaker', 'Teleport', 'Flame Whip', 'Radiant Strike', 'Healing Light', 'Shield Slam', 'Sweeping Strike', ...WIZARD_GROUND_ABILITIES, ...SELF_CENTERED_SHAPE_ABILITIES]);
 
 /**
  * World-space radii for player ability presentations with a circular gameplay
@@ -100,7 +100,7 @@ export function getAbilityAoeRadius(className, canonicalSkillName, source = null
     const runeId = source?.skillRunes?.[runeSkill] || null;
     const runeRadius = runeId ? definition.runes?.[runeId] : null;
     const radius = Number.isFinite(runeRadius) ? runeRadius : definition.base;
-    if (className === 'Fighter' && ['Guardian Roar', 'Executioner Spin', 'Shattering Charge', 'Whirlwind', 'Shield Slam', 'Sweeping Strike'].includes(canonicalSkillName)) return getAbilityAreaRadius(source, className, radius, canonicalSkillName);
+    if (className === 'Fighter' && ['Earthshaker', 'Guardian Roar', 'Executioner Spin', 'Shattering Charge', 'Whirlwind', 'Shield Slam', 'Sweeping Strike'].includes(canonicalSkillName)) return getAbilityAreaRadius(source, className, radius, canonicalSkillName);
     if (className === 'Cleric' && (SELF_CENTERED_SHAPE_ABILITIES.has(canonicalSkillName) || ['Radiant Strike', 'Healing Light'].includes(canonicalSkillName))) {
         return Number.isFinite(radius) && radius > 0 ? getAbilityAreaRadius(source, className, radius, canonicalSkillName) : null;
     }

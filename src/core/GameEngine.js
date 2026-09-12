@@ -12,7 +12,7 @@ import { AbilityController } from './AbilityController.js';
 import { CONSTANTS } from './Constants.js';
 import { resolveDungeonBeamEndpoint } from '../skills/dungeonEffectGeometry.js';
 import { getAbilityRange } from './AbilityRange.js';
-import { AUTHORITATIVE_SHAPE_ABILITIES } from '../skills/abilityRadii.js';
+import { attachAbilityShapeMetadata } from '../skills/abilityShapeMetadata.js';
 import { syncWhirlwindPresentation } from '../skills/whirlwindPresentation.js';
 import { UIBindings } from './UIBindings.js';
 import { SocialPresenceController } from './SocialPresenceController.js';
@@ -1018,10 +1018,7 @@ export class GameEngine {
         };
         const effect = createTransientEffect(this.renderSystem.effectGroup, type, effectPosition, color, mergedOptions);
         if (!effect) return false;
-        if (AUTHORITATIVE_SHAPE_ABILITIES.has(options.abilityName) && Number.isFinite(options.radius)) {
-            effect.abilityShape = { sourceId: options.source?.id, skillName: options.abilityName, x: effectPosition.x, z: effectPosition.z,
-                radius: options.radius, arc: options.arc, authoritative: Boolean(options.authoritativeShape) };
-        }
+        attachAbilityShapeMetadata(effect, effectPosition, options);
         this.effects.push(effect);
         return true;
     }

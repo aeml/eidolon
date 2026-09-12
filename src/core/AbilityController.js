@@ -16,6 +16,7 @@ import { AvengingSeraph } from '../entities/AvengingSeraph.js';
 import { DwarfSalesman } from '../entities/DwarfSalesman.js';
 import { AUDIO_CUES } from '../audio/AudioManager.js';
 import { resolveRemoteSkillVisual } from '../skills/skillVisuals.js';
+import { spawnEarthshakerPresentation } from '../skills/earthshakerPresentation.js';
 import { getAbilityPresentation } from '../skills/abilityVisualManifest.js';
 
 // These abilities resolve around their caster. Cursor hover must never turn
@@ -141,6 +142,14 @@ export class AbilityController {
             typeof entity.spawnVisualEffect !== 'function'
         )) return;
 
+        if (skillName === 'Earthshaker') {
+            const spawned = spawnEarthshakerPresentation(this.engine, entity, new THREE.Vector3(targetX, 0, targetZ), shape);
+            if (spawned && !skipAnimation && shape.phase !== 'aftershock') entity.playAbilityAnimation?.(skillName);
+            if (spawned && shape.phase !== 'aftershock') entity.lastRemoteAbilityPresentation = {
+                skillName, layerCount: 1, fallback: false, timestamp: globalThis.performance?.now?.() ?? Date.now() };
+            return;
+        }
+
         // A state snapshot can arrive before its cast event. Keep the existing
         // remaining-time animation instead of restarting a late-observed spin.
         if (!skipAnimation && (skillName !== 'Whirlwind' || !entity.whirlwindCastEffect?.isActive)) {
@@ -200,6 +209,10 @@ export class AbilityController {
     }
 
     reconcileLocalAbilityShape(data) {
+        if (data.skillName === 'Earthshaker') {
+            if (data.shapeResolved) spawnEarthshakerPresentation(this.engine, this.engine.player, null, data, true);
+            return;
+        }
         if (data.skillName === 'Teleport') {
             // No speculative endpoint effects: the server may clip the blink
             // to a wall. Play the accepted two-point cast once, keeping the

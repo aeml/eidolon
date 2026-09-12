@@ -51,6 +51,27 @@ test('Fissure hits the forward strip, not a circular quake', () => {
     for (const target of [wide, behind]) expect(target.takeDamage).not.toHaveBeenCalled();
 });
 
+test.each(['', 'earthshaker_fissure', 'earthshaker_seismic'].flatMap(rune =>
+    [0, 1, 5].flatMap(rank => [0, 5].map(generic => ({ rune, rank, generic }))))) (
+    '$rune paid area rank$rank generic$generic matches its visible footprint', ({ rune, rank, generic }) => {
+        const f = fixture(rune, 0), radius = 6 * (1 + .02 * rank + .05 * generic);
+        f.p.talentRanks = { FTR_14: rank, FTR_33: generic, FTR_38: generic };
+        const edge = f.add('trained-edge', radius+.499), outside = f.add('outside', radius+.501);
+        const side = f.add('side', 1, -radius/4-.499), wide = f.add('wide', 1, -radius/4-.501);
+        try {
+            f.cast();
+            expect(f.p.stats.mana).toBe(160);
+            expect(edge.takeDamage).toHaveBeenCalledTimes(1);
+            expect(outside.takeDamage).not.toHaveBeenCalled();
+            if (rune === 'earthshaker_fissure') {
+                expect(side.takeDamage).toHaveBeenCalledTimes(1); expect(wide.takeDamage).not.toHaveBeenCalled();
+            }
+            const wave = f.engine.spawnTransientEffect.mock.calls.find(call => call[3]?.abilityName === 'Earthshaker');
+            expect(wave[3].radius).toBeCloseTo(radius, 8);
+            expect(wave[3].shapeKind).toBe(rune === 'earthshaker_fissure' ? 'line' : 'circle');
+        } finally { f.p.dispose(); f.entities.forEach(actor => actor.dispose()); }
+    });
+
 test.each(['', 'earthshaker_fissure', 'earthshaker_seismic', 'earthshaker_aftershock'].flatMap(rune =>
     [0, 1, 5].flatMap(rank => [0, 5].map(generic => ({ rune, rank, generic }))))) (
     '$rune paid damage mastery rank$rank generic$generic applies once', ({ rune, rank, generic }) => {
@@ -113,6 +134,26 @@ test('remote presentation cannot apply offline damage, stun or scheduled gamepla
 describe('Aftershock scheduled wave', () => {
     beforeEach(() => jest.useFakeTimers());
     afterEach(() => { jest.clearAllTimers(); jest.useRealTimers(); });
+
+    test('Aftershock keeps trained area for late arrivals and its visible pulse after the caster moves', () => {
+        const f = fixture('earthshaker_aftershock', 0);
+        f.p.talentRanks = { FTR_14: 5, FTR_33: 5, FTR_38: 5 };
+        const edge = f.add('aftershock-edge', 20), outside = f.add('aftershock-outside', 20);
+        const origin = f.p.position.clone();
+        try {
+            f.cast();
+            expect(edge.takeDamage).not.toHaveBeenCalled();
+            f.p.talentRanks = {}; f.p.position.x += 100;
+            edge.position.x = origin.x + 4.725 + .499;
+            outside.position.x = origin.x + 4.725 + .501;
+            jest.advanceTimersByTime(1000);
+            expect(edge.takeDamage).toHaveBeenCalledTimes(1);
+            expect(outside.takeDamage).not.toHaveBeenCalled();
+            const pulse = f.engine.spawnTransientEffect.mock.calls.find(call => call[3]?.phase === 'aftershock');
+            expect(pulse[1].x).toBe(origin.x); expect(pulse[1].z).toBe(origin.z);
+            expect(pulse[3]).toMatchObject({ radius: expect.closeTo(4.725, 8), shapeKind: 'circle' });
+        } finally { f.p.dispose(); f.entities.forEach(actor => actor.dispose()); }
+    });
 
     test('both waves retain trained damage after a build change, without repeating mana or cooldown', () => {
         const f = fixture('earthshaker_aftershock', 0), target = f.add('trained-aftershock', 1);

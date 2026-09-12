@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { AvengingSeraph } from '../entities/AvengingSeraph.js';
 import { getAbilityPresentation, isAbilityVisualLayerEnabled } from './abilityVisualManifest.js';
 import { getAbilityAoeArc, getAbilityAoeRadius, isAoeBoundaryVisualType, SELF_CENTERED_SHAPE_ABILITIES } from './abilityRadii.js';
+import { resolveEarthshakerFootprint } from './earthshakerPresentation.js';
 
 const CLASS_FALLBACKS = Object.freeze({
     Fighter: Object.freeze({ color: 0xffaa55, type: 'wave' }),
@@ -20,6 +21,10 @@ function resolvePosition(entity, targetPos, anchor) {
 
 export function resolveRemoteSkillVisual(entity, skillName, targetPos, shape = {}) {
     const className = entity?.meshType || entity?.subType || entity?.constructor?.name || '';
+    if (className === 'Fighter' && skillName === 'Earthshaker') {
+        const footprint = resolveEarthshakerFootprint(entity, targetPos, shape);
+        return footprint ? { ...footprint, type: 'wave', color: 0xb66b35 } : { handled: true };
+    }
 
     if (entity instanceof AvengingSeraph && skillName === 'Smite') {
         return {

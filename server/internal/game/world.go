@@ -176,6 +176,8 @@ type AbilityEvent struct {
 	Radius        float64         `json:"radius,omitempty"`
 	Arc           float64         `json:"arc,omitempty"`
 	ShapeResolved bool            `json:"shapeResolved,omitempty"` // Explicit zero radius means no area, not missing legacy data.
+	ShapeKind     string          `json:"shapeKind,omitempty"`     // Earthshaker circle or forward line (half-width = radius/4).
+	Phase         string          `json:"phase,omitempty"`         // Delayed aftershock is an impact, not another cast.
 	Landing       *AbilityLanding `json:"landing,omitempty"`       // An accepted movement endpoint, never an aim point.
 	Origin        *AbilityOrigin  `json:"origin,omitempty"`        // Accepted departure; independent of newer actor snapshots.
 }

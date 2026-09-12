@@ -488,10 +488,20 @@ class GameEngineNetworkMessageMethods {
 
             const source = this.remotePlayers.get(abilityData.sourceId);
             if (source) {
-                const lookTarget = this.getReplicatedEntityById(abilityData.targetId)?.position
+                if (abilityData.skillName === 'Earthshaker' && abilityData.phase === 'aftershock') {
+                    // A delayed ground impact must not turn the actor, interrupt
+                    // movement, replay its cast animation, or show a second cast.
+                    this.abilityController.triggerRemoteAbilityVisuals(source, abilityData.skillName, abilityData.targetX, abilityData.targetZ, abilityData);
+                    return;
+                }
+                let lookTarget = this.getReplicatedEntityById(abilityData.targetId)?.position
                     || (Number.isFinite(abilityData.targetX) && Number.isFinite(abilityData.targetZ)
                         ? new THREE.Vector3(abilityData.targetX, source.position?.y || 0, abilityData.targetZ)
                         : null);
+                if (abilityData.skillName === 'Earthshaker' && abilityData.origin && lookTarget) {
+                    lookTarget = new THREE.Vector3(source.position.x + abilityData.targetX - abilityData.origin.x,
+                        source.position.y, source.position.z + abilityData.targetZ - abilityData.origin.z);
+                }
                 if (lookTarget && source.mesh) {
                     source.mesh.lookAt(new THREE.Vector3(lookTarget.x, source.position?.y || 0, lookTarget.z));
                     source.rotation?.copy?.(source.mesh.quaternion);

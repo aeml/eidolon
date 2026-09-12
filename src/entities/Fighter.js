@@ -176,7 +176,6 @@ export class Fighter extends Actor {
 
             // Visual
             gameEngine.floatingTextManager.spawn("SMASH!", this.position, '#ff8800');
-            this.spawnVisualEffect(gameEngine, this.position, 0xff8800, "wave");
             applyOfflineEarthshaker(this, targetVector, gameEngine, isGuardianRoarFriendlyActor);
             return;
         }

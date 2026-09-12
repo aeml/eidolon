@@ -311,6 +311,32 @@ function buildCast(root, identity, def, materials, type, position, options) {
         return 0.42;
     }
 
+    if (radius && options.abilityName === 'Earthshaker' && options.shapeKind === 'line') {
+        const halfWidth = radius / 4;
+        direction.y = 0;
+        direction.normalize();
+        root.rotation.y = Math.atan2(direction.x, direction.z);
+        root.userData.gameplayHalfWidth = halfWidth;
+        // Four stationary edges state the actual strip; the fissure's interior
+        // shards animate without stretching that gameplay boundary.
+        for (const side of [-1, 1]) {
+            addPart(root, identity, `FissureSide${side}`, geometry('cast-fissure-edge', () => new THREE.BoxGeometry(1, .04, 1)), materials.pale,
+                { position: [side * halfWidth, .08, radius/2], scale: [.06, 1, radius], gameplayBoundary: true, gameplayRadius: radius });
+        }
+        for (const end of [0, radius]) {
+            addPart(root, identity, `FissureEnd${end === 0 ? 'Start' : 'Finish'}`, geometry('cast-fissure-edge', () => new THREE.BoxGeometry(1, .04, 1)), materials.pale,
+                { position: [0, .08, end], scale: [halfWidth*2, 1, .06], gameplayBoundary: true, gameplayRadius: radius });
+        }
+        for (let i = 0; i < 9; i++) {
+            const z = radius * (i+.5)/9;
+            addPart(root, identity, `FaultShard${i}`, geometry('cast-fault-shard', () => new THREE.IcosahedronGeometry(1, 0)),
+                i % 2 ? materials.accent : materials.dark, { position: [Math.sin(i*2.3)*halfWidth*.4, .22, z],
+                    scale: [halfWidth*.3, .35 + (i%3)*.15, radius/20], motion: 'rise', phase: i*.15,
+                    highQualityOnly: i % 2 === 1 });
+        }
+        return .75;
+    }
+
     if (radius && (type === 'cone' || type === 'cone_large')) {
         addConeBoundary(root, identity, radius, arc || Math.PI / 2, direction, materials);
     } else if (radius) {

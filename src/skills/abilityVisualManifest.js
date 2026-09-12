@@ -22,7 +22,7 @@ export const PLAYER_ABILITY_VISUALS = Object.freeze({
         'Iron Fortress': presentation('buff', 'buff', [layer('sphere', 0xaeb7c2)], { persistentState: 'iron_fortress' }),
         'Guardian Roar': presentation('buff', 'shout', [layer('ring', 0xff4c45)], { persistentState: 'guardian_roar' }),
         'Sweeping Strike': presentation('melee', 'sweep', [layer('cone', 0xf5f7ff)]),
-        Earthshaker: presentation('area', 'heavy', [layer('wave', 0xb66b35), layer('impact', 0xffc46b, 'target')]),
+        Earthshaker: presentation('area', 'heavy', [layer('wave', 0xb66b35)]),
         'Unbreakable Grip': presentation('control', 'pull', [layer('beam', 0x6aa9ff, 'target'), layer('impact', 0x326dff, 'target')]),
         'Juggernaut Charge': presentation('movement', 'charge', [layer('wave', 0xff3f35), layer('impact', 0xffaa55, 'target')]),
         'Berserker Edge': presentation('buff', 'buff', [layer('buff', 0xff3434), layer('ring', 0x9e1212)], { persistentState: 'berserker_edge' }),

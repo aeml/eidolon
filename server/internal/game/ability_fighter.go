@@ -273,10 +273,15 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 				stunDuration *= 2
 			}
 			stunDuration = resolveAbilityEffectDuration(player, skillName, stunDuration)
-			w.damageEarthshakerArea(player, player.X, player.Z, targetX, targetZ, 6.0, damage, stunDuration, runeID == "earthshaker_fissure", impacts)
+			radius := effectiveAbilityAreaRadius(training, skillName, 6)
+			facingX, facingZ := fighterFacing(player, targetX, targetZ)
+			originX, originZ := player.X, player.Z
+			line := runeID == "earthshaker_fissure"
+			w.damageEarthshakerArea(player, originX, originZ, facingX, facingZ, radius, damage, stunDuration, line, impacts)
 			if runeID == "earthshaker_aftershock" {
 				// The delayed wave retains training from this cast, not a later build.
 				aftershockStun := resolveAbilityEffectDuration(player, skillName, time.Second)
+				aftershockRadius := effectiveAbilityAreaRadius(training, skillName, 3.5)
 				playerID := player.ID
 				instanceID := player.InstanceID
 				x, z := player.X, player.Z
@@ -292,11 +297,12 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 					}
 					aftershockImpacts := &abilityImpactContext{world: w, worldLocked: true}
 					defer aftershockImpacts.flush()
-					w.damageEarthshakerArea(owner, x, z, targetX, targetZ, 3.5, damage/2, aftershockStun, false, aftershockImpacts)
+					w.damageEarthshakerArea(owner, x, z, facingX, facingZ, aftershockRadius, damage/2, aftershockStun, false, aftershockImpacts)
+					w.fireEarthshakerEvent(owner.ID, x, z, facingX, facingZ, aftershockRadius, false, "aftershock")
 				})
 			}
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 12*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireEarthshakerEvent(player.ID, originX, originZ, facingX, facingZ, radius, line, "")
 		}
 	} else if skillName == "Unbreakable Grip" {
 		if target := w.findFighterGripTarget(player, targetX, targetZ, targetID); target != nil {
@@ -494,10 +500,25 @@ func (w *World) damageFighterCone(player *Entity, targetX, targetZ, radius, half
 	return totalDamage
 }
 
-func (w *World) damageEarthshakerArea(player *Entity, originX, originZ, targetX, targetZ, radius float64, damage int, stun time.Duration, line bool, impacts *abilityImpactContext) {
-	facingX, facingZ := fighterFacing(player, targetX, targetZ)
+func (w *World) fireEarthshakerEvent(sourceID string, x, z, facingX, facingZ, radius float64, line bool, phase string) {
+	if w.OnEvent == nil {
+		return
+	}
+	kind := "circle"
+	if line {
+		kind = "line"
+	}
+	w.OnEvent("ability", AbilityEvent{SourceID: sourceID, SkillName: "Earthshaker", TargetX: x + facingX, TargetZ: z + facingZ,
+		Origin: &AbilityOrigin{X: x, Z: z}, Radius: radius, Arc: 2 * math.Pi, ShapeResolved: true, ShapeKind: kind, Phase: phase})
+}
+
+func (w *World) damageEarthshakerArea(player *Entity, originX, originZ, facingX, facingZ, radius float64, damage int, stun time.Duration, line bool, impacts *abilityImpactContext) {
 	walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
-	nearby := w.Grid.Nearby(originX, originZ, expandedAbilityRadius("Earthshaker", radius), player.InstanceID)
+	queryRadius := radius
+	if line {
+		queryRadius = math.Hypot(radius+maxAbilityTargetVisualRadius, radius/4+maxAbilityTargetVisualRadius)
+	}
+	nearby := w.Grid.Nearby(originX, originZ, expandedAbilityRadius("Earthshaker", queryRadius), player.InstanceID)
 	for _, target := range nearby {
 		target.Mu.Lock()
 		if !w.CanDamage(player, target) || target.State == "DEAD" {
@@ -510,7 +531,7 @@ func (w *World) damageEarthshakerArea(player *Entity, originX, originZ, targetX,
 		if line {
 			forward := dx*facingX + dz*facingZ
 			lateral := math.Abs(dx*facingZ - dz*facingX)
-			hit = forward >= 0 && forward <= radius+entityVisualRadius(target) && lateral <= 1.5+entityVisualRadius(target)
+			hit = forward >= 0 && forward <= radius+entityVisualRadius(target) && lateral <= radius/4+entityVisualRadius(target)
 		}
 		if !hit || !dungeonEffectReachesTarget(walkRects, originX, originZ, target) {
 			target.Mu.Unlock()

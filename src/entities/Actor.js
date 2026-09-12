@@ -29,6 +29,7 @@ import {
 import { getAbilityAoeArc, getAbilityAoeRadius, isAoeBoundaryVisualType } from '../skills/abilityRadii.js';
 import { clampWizardGroundTarget, WIZARD_GROUND_ABILITIES } from '../core/AbilityRange.js';
 import { getWhirlwindCastDuration } from '../skills/whirlwindPresentation.js';
+import { spawnEarthshakerPresentation } from '../skills/earthshakerPresentation.js';
 import { ACTOR_STATUS_VISUAL_STATES, AttachedStatusEffect } from './AttachedStatusEffect.js';
 import { applyProceduralEquipment, clearProceduralEquipment } from '../art/ProceduralEquipment.js';
 
@@ -574,6 +575,12 @@ export class Actor extends Entity {
     }
 
     spawnAbilityPresentation(gameEngine, skillName, targetVector) {
+        if (skillName === 'Earthshaker') {
+            const spawned = spawnEarthshakerPresentation(gameEngine, this, targetVector);
+            if (spawned) this.lastAbilityPresentation = { skillName, requestedSkillName: skillName, layerCount: 1,
+                timestamp: globalThis.performance?.now?.() ?? Date.now() };
+            return spawned;
+        }
         const className = this.meshType || this.subType || this.constructor.name;
         const presentation = getAbilityPresentation(className, skillName);
         if (!presentation || typeof gameEngine?.spawnTransientEffect !== 'function') return false;

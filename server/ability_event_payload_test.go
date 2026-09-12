@@ -8,6 +8,30 @@ import (
 	"eidolon-server/internal/game"
 )
 
+func TestAbilityPayloadEarthshakerFootprintAndDelayedPhase(t *testing.T) {
+	for _, entry := range []struct{ kind, phase string }{{"circle", ""}, {"line", ""}, {"circle", "aftershock"}} {
+		radius := 8.1
+		if entry.phase == "aftershock" {
+			radius = 4.725
+		}
+		event := game.AbilityEvent{SourceID: "quake", SkillName: "Earthshaker", TargetX: 50001, TargetZ: 50000,
+			Radius: radius, Arc: 2 * math.Pi, ShapeResolved: true, ShapeKind: entry.kind, Phase: entry.phase,
+			Origin: &game.AbilityOrigin{X: 50000, Z: 50000}}
+		data, err := json.Marshal(abilityPayloadFromEvent(event))
+		if err != nil {
+			t.Fatal(err)
+		}
+		var got AbilityPayload
+		if err := json.Unmarshal(data, &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.ShapeKind != entry.kind || got.Phase != entry.phase || got.Radius != radius || !got.ShapeResolved ||
+			got.Origin == nil || got.Origin.X != 50000 || got.Origin.Z != 50000 || got.TargetX != 50001 || got.TargetZ != 50000 {
+			t.Fatalf("wire lost actual quake footprint: %+v", got)
+		}
+	}
+}
+
 func TestAbilityPayloadPreservesOptionalResolvedShape(t *testing.T) {
 	for _, shaped := range []bool{false, true} {
 		event := game.AbilityEvent{SourceID: "caster", TargetID: "target", SkillName: "Flame Whip", TargetX: 12, TargetZ: 34}
