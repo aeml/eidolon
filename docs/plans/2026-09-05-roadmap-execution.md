@@ -5,7 +5,28 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 13:15 UTC
+## Current checkpoint — September 12, 13:16 UTC
+
+**Earthshaker63410 TERMINAL SUCCESS**, exact6263f4e8,1.1m test/total, zero
+retries. All fifteen normal purchases, rank0/1/5 and generic area6→8.1,
+Fissure High/Low, Aftershock both phases with cast-origin retention, Seismic,
+fresh-login points/runes and landscape checks passed. Main agent viewed low
+Fissure and saved low Aftershock screenshots. Archive
+`/tmp/eidolon-earthshaker-current-pass-FiKJSJ`; original
+`/tmp/eidolon-earthshaker-current-native-20260912.log`. Credential scanPASS and
+owned services/ports clear. Previous checkpoint was composed at terminal poll;
+63410 must not be treated as still active.
+
+**Whirlwind72405 ACTIVE** on the SAME frozen clean6263f4e8 in
+`/tmp/eidolon-1-1-fighter-area-native-current-20260912`, runIDwhirlwind09121316,
+18185/18186/41875, sole owned GPU lane. Log
+`/tmp/eidolon-whirlwind-current-native-20260912.log`. No native result yet;
+do not edit this tree or start party replay until terminal. Party corrected
+0bf10df6 remains clean and queued; failed7792 remains failed. Full CI/primary
+integration for this Fighter candidate is still pending, not inferred from
+Earthshaker alone. Primary064704cb and full roadmap goal unchanged.
+
+## Previous checkpoint — September 12, 13:15 UTC
 
 This continuation remains PROGRESS. Party7792 is now terminal, its exact input
 verification failure is retained and corrected locally; queued Earthshaker
