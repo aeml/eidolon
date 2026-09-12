@@ -5,7 +5,54 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 00:54 UTC
+## Current checkpoint — September 12, 01:05 UTC
+
+Previous goal turn was a VERIFIED WAIT: it polled live release CI34660899212
+and independently checked both production identities. This continuation is
+PROGRESS: repaired offline Scorch Beam armor expiry and physical armor consumers.
+The full 1.1–1.10 objective remains active, with no genuine external blocker.
+
+- New `/tmp/eidolon-offline-armor-melt-20260912`, branch
+  `work/offline-armor-melt`, clean **7f584d68**, based on aa1ba963. Primary remains
+  97cd447b; no broad development code has been pushed into release63.
+- Scorch Beam now stores a separate flat five-point armor reduction for five
+  seconds plus applicable duration training. Recasts refresh without stacking;
+  expiry runs during stun; equipment recalculation preserves base armor.
+  Remote/multiplayer recipients cannot receive the offline mutation.
+- Basic attacks previously ignored armor; real delayed impacts now use effective
+  armor before existing variance/outgoing effects/crit/shields. Retains server
+  named boss/Seraph half-armor mapping and minimum one-point hit. Backstab uses
+  effective armor before Eviscerate rounding. Server balance is unchanged;
+  existing offline variance and other remaining parity work are not closed.
+- RED: 12 failures/3 controls, 0.719s. Two failures were out-of-range Backstab
+  fixtures, corrected by positioning the Rogue within normal range. First GREEN
+  had 13 passing plus those two fixture failures, 0.540s. Final focused family
+  **7 suites/252 tests PASS, 2.042s**, full lint PASS. Actual paid beams and
+  physical impacts cover duration ranks, stun expiry, refresh/recalculation,
+  authority exclusion, rune armor ordering, critical/shield absorption and
+  expiry during wind-up. Boss mapping is helper-tested, not native acceptance.
+- Existing server paid debuff/actual follow-up attack tests repeated 3x under
+  Go race detection PASS, 1.484s; Wizard target duration consumers repeated 3x
+  PASS, 3.595s. Logs `/tmp/eidolon-offline-armor-*-20260912.log`; full details in
+  development doc `2026-09-12-offline-armor-melt.md`. All local sessions terminal.
+- **Combined full regression and native/browser acceptance remain due**, now
+  including 7f584d68 and pending Wizard/TWM parents. No competing local full or
+  native jobs were started while self-hosted release QA was active. Next source
+  finding: offline Shattering Charge still has a display-only armor-break
+  placeholder; requires paid movement/impact tests and real timed status with
+  cast-time training. Do not count it as fixed by this Scorch Beam change.
+- **CI34660899212 remains ACTIVE** on f866df68 at the required self-hosted
+  full-character gameplay step (last checked this continuation). Hosted client,
+  server and all three browser groups passed. Poll the same run, never restart
+  solely for elapsed observation. No release63 live claim. Last independent
+  public identities remain Alpha1.0.62 /0231c948 with healthy database.
+- User clarified cancellation applies only to soak. Prior soak run34558600459
+  is authoritatively completed with conclusion FAILURE (not a currently running
+  job); it has not been restarted. Normal CI and roadmap work continue. Root
+  ledger is NEVER PUSH. Four-role dungeon/nativeTWM/full integration and every
+  remaining roadmap milestone stay in scope.
+
+## Previous checkpoint — September 12, 00:54 UTC
 
 Previous goal turn was PROGRESS. This continuation is PROGRESS: reproduced and
 repaired nine missing offline Wizard damage Masteries, then reconciled five
