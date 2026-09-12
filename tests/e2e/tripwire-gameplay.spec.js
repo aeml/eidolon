@@ -77,8 +77,9 @@ test('paid Tripwire training and saved ranks damage and root an ordinarily lured
                 const d = await offset(); expect(d).not.toBeNull();
                 const distance = Math.hypot(d.x, d.z);
                 if (distance < 6) break;
-                const scale = Math.min(7, distance - 4) / distance;
-                await moveByPhoneJoystick(page, d.x * scale, d.z * scale);
+                const scale = Math.min(3, distance - 4) / distance;
+                const movement = await moveByPhoneJoystick(page, d.x * scale, d.z * scale);
+                approach.push({ movement });
             }
         } catch (error) {
             await page.screenshot({ path: testInfo.outputPath(`tripwire-${rank}-${quality}-${saved}-approach-failed.png`) });

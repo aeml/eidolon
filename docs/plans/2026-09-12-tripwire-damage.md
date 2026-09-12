@@ -118,6 +118,17 @@ lower trap/root assertions, inject positions, or claim native combat acceptance.
 The shared click helper's mobile keyboard fallback remains outside this focused
 route change; audit its other callers separately instead of assuming repaired.
 
+The next helper uses at most eight80ms real-touch pulses. Release is sent on
+the Node driver clock before awaiting touch-start acknowledgement, then both
+protocol receipts and actual endpoint are checked before another pulse. This
+avoids holding movement through slow browser observations. Each endpoint records
+HP/state/instance, projected progress, released stick and blocked-target position;
+exhaustion throws those bounded samples. Approach asks for three-unit steps;
+trap luring retains its eight-unit requested direction. Unit tests cover delayed
+start acknowledgement, observation failure cleanup, eight-pulse bound and actual
+production inverse direction. No world/clock/joystick-state mutation. Native
+replay remains queued behind the active four-player Low comparison.
+
 ## Draft 1.1.0 patch note
 
 - Fixed Tripwire's damage and critical talents not affecting triggered traps.
