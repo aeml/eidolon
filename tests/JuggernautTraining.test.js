@@ -5,6 +5,7 @@ import { Actor } from '../src/entities/Actor.js';
 import { GameEngine } from '../src/core/GameEngine.js';
 import { AbilityController } from '../src/core/AbilityController.js';
 import { SELF_CENTERED_SHAPE_ABILITIES } from '../src/skills/abilityRadii.js';
+import { PLAYER_ABILITY_VISUALS, getAbilityPresentation } from '../src/skills/abilityVisualManifest.js';
 
 const owned = [];
 function fixture(rank = 0, generic = 0) {
@@ -101,8 +102,9 @@ test.each(['high','low'])('%s actual owner and rank-private observer meshes use 
 });
 
 test.each([...SELF_CENTERED_SHAPE_ABILITIES])('remote %s retains the elevated caster floor at the accepted cast origin', skill => {
-    const className = ['Guardian Roar', 'Executioner Spin', 'Whirlwind', 'Juggernaut Charge'].includes(skill)
-        ? 'Fighter' : skill === 'Time Warp' ? 'Wizard' : 'Cleric';
+    const owners = Object.keys(PLAYER_ABILITY_VISUALS).filter(name => getAbilityPresentation(name, skill));
+    expect(owners).toHaveLength(1);
+    const [className] = owners;
     const engine = { spawnTransientEffect: jest.fn() };
     const remote = { id: 'elevated-observer', meshType: className, position: new THREE.Vector3(51000, 40, 51000), mesh: new THREE.Group() };
     new AbilityController(engine).triggerRemoteAbilityVisuals(remote, skill, 50000, 50000, { radius: 13.5, arc: 2*Math.PI });

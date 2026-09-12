@@ -31,3 +31,17 @@ This is one area consumer, not sign-off for all Rogue talents: nondamaging
 utility Mastery/critical bonuses and other area skills still need individual
 review. Full hosted CI and native trained purchase/cast/persistence verification
 remain required. No deployment or version bump is claimed.
+
+Native System Chrome verified the baseline Rogue ability/rune matrix twice on
+1931575a (59.9 seconds and 1.0 minute; 2.1 minutes total, zero retries).
+Artifacts: `/tmp/eidolon-smoke-area-native-pass-Ewt8KH`. This is baseline
+compatibility, not the still-required trained purchase/persistence route.
+
+Hosted run34692398507 exposed an existing shared-test fixture assumption:
+JuggernautTraining enumerates all self-centered skills, but classified every
+non-Fighter/non-Time-Warp skill as Cleric. Adding Smoke Bomb therefore tried
+to render a nonexistent Cleric spell. The fixture now resolves the owning
+class from the actual presentation manifest (including aliases), asserts
+exactly one owner, and keeps all boundary/elevation assertions. The original
+CI failure is retained; three focused suites/44 tests passed in1.409 seconds
+after correction, as did lint/diff. Full CI must run on the corrected source.
