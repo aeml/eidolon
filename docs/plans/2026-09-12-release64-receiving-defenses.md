@@ -52,6 +52,34 @@ Version-presentation regressions enforce this candidate's identity and history.
 
 ## Required before acceptance
 
+### Additional on-kill explosion review
+
+Reviewing remaining direct HP writers found that equipment's on-kill explosion
+only queried grid cells: it did not check actual circular distance, canonical
+dungeon walls, receiving defenses or threat. New tests trigger the effect through
+ordinary attack admission and the scheduled killing blow, not direct explosion
+helper calls. Initial race run failed1.580s: a closed wall leaked500damage;
+outside-circle and beyond-body recipients also lost500; receiving reduction,
+reflection and threat were bypassed. The open-door and same-side controls passed,
+as did enemy-only recipient exclusions. Log
+`/tmp/eidolon-release64-gear-explosion-red-20260912.log`.
+
+The candidate now captures geometry before locking recipients, applies circular
+body-aware reach, routes the stored50% attack-damage budget through current
+receiving defenses without rerolling outgoing damage, and records actual threat.
+Enemy-only targeting and lock-free chained-death/retaliation contracts remain.
+Runtime commit `d890b830`. Focused three-repeat race acceptance PASS6.726s;
+expanded three-repeat run PASS10.485s additionally proves a real paid Smite
+killing blow retains its accepted cooldown/mana receipt and the caster's lethal
+reflected death through world-locked handling. Existing simultaneous explosive
+party kills still award each death once. Logs
+`/tmp/eidolon-release64-gear-explosion-{green,final}-20260912.log`.
+Updated version/history suite239tests PASS4.946s and changed-test lint PASS;
+logs `/tmp/eidolon-release64-gear-{notes,lint}-20260912.log`. This supersedes
+the narrower pre-review candidate, but full release gates still remain.
+
+### Remaining release gates
+
 1. Review the scoped integration and finish expanded focused race coverage.
 2. Run full client/lint/server race regression on the frozen release64 candidate.
 3. Publish through the unchanged CI workflow: hosted tests/browser shards,

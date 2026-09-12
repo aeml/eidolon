@@ -26,7 +26,7 @@ describe('version presentation', () => {
         expect(indexHtml.indexOf('data-version="1.0.64"')).toBeLessThan(indexHtml.indexOf('data-version="1.0.63"'));
         const entry = indexHtml.split('data-version="1.0.64"')[1].split('data-version="1.0.63"')[0];
         for (const text of ['Protection across combat', 'Shields end cleanly', 'Explosions respect the battlefield',
-            'Consistent wounds', 'Progression stays familiar']) expect(entry).toContain(text);
+            'Consistent wounds', 'Progression stays familiar', "Equipment's on-kill explosions", 'circular reach']) expect(entry).toContain(text);
         expect(entry).not.toContain('new reward curve');
         expect(entry).not.toContain('dungeon clear');
     });
