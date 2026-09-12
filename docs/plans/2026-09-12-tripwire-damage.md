@@ -236,6 +236,21 @@ commit's hosted run. Their focused tests and the actual Tripwire native pass
 remain separate evidence; the updated full entrance route is still queued.
 Manual native/deploy/live jobs were skipped, not passed. No production claim.
 
+Native49905 on a42507b6 FAILED55.2s. Actual phone walking around the outside
+arc activated the Verdant cutaway and walking back restored opacity; its captured
+image was inspected. Baseline695/trained834/saved834 shield capacities and natural
+expiry passed. Then a real Inferno Titan consumed part of the834shield, but the
+later attached-shield-effect assertion was false. The test had selected a prior
+partial-absorption snapshot and separately read the current effect; current
+depletion versus missing visual is not established by the retained evidence.
+Do not label the complete shield/entrance route accepted.
+
+Archive `/tmp/eidolon-entrance-arc-failure-pvtDxd`, scan0/exact cleanup verified.
+Diagnostic00b9e034 retains current active/HP/visual state and recent shield
+snapshots immediately before the unchanged failing assertion. Targeted lint/diff
+pass; diagnostic replay queued after the desktop talent native check. No runtime
+repair or weaker absorption/visual assertion was substituted for diagnosis.
+
 ## Draft 1.1.0 patch note
 
 - Fixed Tripwire's damage and critical talents not affecting triggered traps.
