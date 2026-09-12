@@ -5,7 +5,63 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 20:37 UTC
+## Current checkpoint — September 12, 20:52 UTC
+
+The intervening version-number confirmation was no implementation progress.
+This goal continuation revalidated real processes/jobs and made PROGRESS:
+finished an authoritative desktop talent UI candidate, obtained full Verdant
+hosted regression success, and recorded actual first-boss four-role evidence.
+Full1.1.0–1.10.0 goal ACTIVE; no release, deployment or soak change. NEVER PUSH ROOT.
+
+- **Desktop candidate e2ef6e51**, clean/dev-pushed work/1-1-desktop-talent-
+  confirmation at `/tmp/eidolon-1-1-desktop-talent-confirmation-20260912`, based
+  on accepted primary c9e922be. Desktop clicks no longer invent local talent
+  ranks/reset state before server acceptance. Single identified request, matching
+  receipt plus actual replicated build, visible rejection, fresh reconnect
+  snapshot and prior-character reply isolation; keyboard button semantics.
+  No talent balance/cost or mobile/branch/rune changes. First six DOM cases RED;
+  expanded three suites50tests PASS3.925s, full lint/prepare/diff pass. Logs
+  `/tmp/eidolon-desktop-talent-{red,final-focused,final-lint}-20260912.log`.
+  Doc and draft1.1.0 note included. Existing Rogue native purchase helper now
+  also requires visible exact rank confirmation alongside wire rank/point debit.
+  **CI34718270509 ACTIVE** on e2ef6e51, server/client running last check. Native
+  **serrated-technique** queued after party and Tripwire entrance; no acceptance
+  or integration based only on focused tests.
+- **Verdant CI34717311804 SUCCESS** on832ff72e. Client419suites6464tests137.499s;
+  game race303.045s and all three browser shards passed. Logs
+  `/tmp/eidolon-verdant-budget-ci-{client,server}-34717311804.log`.
+  **Native98186 STILL ACTIVE — SOLE OWNED GPU**, same frozen balance worktree,
+  routeparty-dungeon/runIDverdantbudget0912/Low/API18185/Mongo18186/web41875.
+  Actual process3151285 wrapper /3159267 Playwright confirmed live20:52.
+  Seed-2991027920777006249, gen2/attempt0/no fallback. Actual9000HP Warden killed,
+  all four alive: Fighter3166damage/1701taken, Cleric1674ally healing,
+  Wizard2630damage, Rogue3213damage. Four town recoveries and same-run reentries
+  observed; latest traversal192ground steps/13room traversals,1042s route time.
+  Full remaining bosses/individual credit/Water handoff NOT verified. Preserve
+  log `/tmp/eidolon-verdant-budget-native-20260912.log`; archive/scan/exact cleanup
+  only after terminal. Do not edit the running tree or overlap native Chrome.
+  Provisional40% Verdant boss HP change still requires actual full-clear and
+  reward-per-minute acceptance; hosted pass alone does not establish balance.
+- **Tripwire CI34716757122 SUCCESS** on9048c71a: client414/6418/131.108s,
+  game race344.677s, all three browser shards. Native paid trap43530 pass and
+  failed collateral61208 preserved below. Docs now **a42507b6** (local clean;
+  last dev-pushed844c69c1), updated entrance test remains code844c69c1. Replay
+  **entrance-visibility** after98186 terminal/archive/cleanup; also retain other
+  affected arrival consumers. Later test edits aren't covered by older hosted
+  commit. Do not integrate Tripwire before its pending collateral acceptance.
+- Integrated **719df4de CI34717404204 ACTIVE**, client413/6398/133.637s and
+  game race358.420s passed; remaining browser jobs pending. Logs
+  `/tmp/eidolon-integrated-ci-{client,server}-34717404204.log`. Includes accepted
+  health and Serrated, not current desktop/Tripwire/Verdant candidates.
+
+Next: poll the exact native/CI handles, finish collateral entrance and actual
+desktop purchase/save tests in that order when GPU is free, and integrate only
+accepted candidates. First-hour earned progression, full dungeon/party gates,
+resource/death/reconnect matrix and later1.2–1.10 including casino remain open.
+Last public evidence remains1.0.65/f9eb; no fresh live check this continuation.
+Skipped manual native/deploy/live jobs are never counted as passes.
+
+## Historical checkpoint — September 12, 20:37 UTC
 
 Previous goal turn PROGRESS; this turn also PROGRESS: accepted/integrated health
 normalization, obtained actual Tripwire damage/root/save proof, repaired physical
