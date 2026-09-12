@@ -208,7 +208,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 const origin = { x: p.position.x, z: p.position.z, radius: p.radius || 1.25 };
                 const bodies = [...g.remotePlayers.values()].filter(other => other !== p && other.id !== p.id &&
                     other.isActive && other.stats && other.state !== 'DEAD' && other.position)
-                    .map(other => ({ x: other.position.x, z: other.position.z, radius: other.radius || 1.25 }));
+                    .map(other => ({ id: other.id, state: other.state, x: other.position.x, z: other.position.z, radius: other.radius || 1.25 }));
                 const step = p.state === 'DEAD' ? null : planPartyTelegraphEscape(origin, warnings, delta =>
                     retreatStaysInEncounter(encounter, { x: p.position.x + delta.x, z: p.position.z + delta.z }, p.radius) &&
                     isEarnedRetreatPathClear(g.collisionManager, p.position, p.radius || 1.25, delta), bodies);
@@ -339,17 +339,34 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 const step = planPartyRangedSpacing(origin, target, healing, delta =>
                     retreatStaysInEncounter(encounter, { x: origin.x + delta.dx, z: origin.z + delta.dz }, origin.radius) &&
                     isEarnedRetreatPathClear(g.collisionManager, p.position, origin.radius, { x: delta.dx, z: delta.dz }), bodies);
-                return step && { origin, target, healing, step, instanceId: g.currentInstanceId };
+                return step && { origin, target, healing, step, bodies, actorState: p.state, instanceId: g.currentInstanceId };
             }, { id: target.id, encounter: target.encounter, support });
             if (!plan) return false;
-            const moved = await tryDungeonGroundStep(() => moveByGroundClick(actor.page, plan.step.dx, plan.step.dz,
-                { ...PARTY_FOLLOW_INPUT_OPTIONS, allowAlternatePaths: false, requireClearPath: true, timeout: 1500,
-                    arrival: partyFormationArrival(plan.origin, plan.step, plan.instanceId) }));
-            await actor.page.evaluate(({ plan, moved }) => {
-                const g = window.game, p = g.player, records = window.__partyClearEvidence.recentRangedSpacing;
-                records.push({ ...plan, moved, at: Date.now(), after: { x: p.position.x, z: p.position.z, dead: p.state === 'DEAD' } });
-                if (records.length > 20) records.shift();
-            }, { plan, moved });
+            let moved = false, failure = null;
+            try {
+                moved = await tryDungeonGroundStep(() => moveByGroundClick(actor.page, plan.step.dx, plan.step.dz,
+                    { ...PARTY_FOLLOW_INPUT_OPTIONS, allowAlternatePaths: false, requireClearPath: true, timeout: 1500,
+                        arrival: partyFormationArrival(plan.origin, plan.step, plan.instanceId) }));
+            } catch (error) {
+                failure = error;
+                throw error; // An issued input failure remains fatal, never a successful retreat.
+            } finally {
+                // Earlier evidence retained only successful moves, losing the
+                // actual failed plan and body geometry at the point of failure.
+                const capture = actor.page.evaluate(({ plan, moved, failure }) => {
+                    const g = window.game, p = g.player, records = window.__partyClearEvidence.recentRangedSpacing;
+                    const bodiesAfter = [...g.remotePlayers.values()].filter(other => other.isActive && other.position &&
+                        Math.hypot(other.position.x - p.position.x, other.position.z - p.position.z) < 30)
+                        .map(other => ({ id: other.id, state: other.state, x: other.position.x, z: other.position.z, radius: other.radius || 1.25 }));
+                    records.push({ ...plan, moved, failure, bodiesAfter, at: Date.now(),
+                        after: { x: p.position.x, z: p.position.z, state: p.state, dead: p.state === 'DEAD' } });
+                    if (records.length > 20) records.shift();
+                }, { plan, moved, failure: failure?.message?.slice(0, 1500) || null });
+                // If the page itself closed, preserve the original movement
+                // exception rather than replacing it with a diagnostic error.
+                if (failure) await capture.catch(() => {});
+                else await capture;
+            }
             return moved; // The next serial role step rereads warnings/range before attacking.
         }
 
