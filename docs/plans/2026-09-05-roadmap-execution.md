@@ -5,7 +5,26 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 22:00 UTC
+## Current checkpoint — September 12, 22:06 UTC
+
+Previous goal turn VERIFIED WAIT. This continuation adds the actual draft1.1.0
+release-note handoff, **1c574d63** clean/dev-pushed in the integrated worktree.
+`docs/plans/2026-09-12-1-1-release-handoff.md` consolidates six accepted component
+notes with resolvable evidence links, pending candidate/inventory work, complete
+milestone acceptance boundaries (including duel/2v2), and ordered publication/
+identity/live checks. It explicitly does not replace the full roadmap, claim
+published patch notes, bump metadata or approve1.1.0. Preserve published63–65
+history when reconciling the historical62 development base. Link/diff checks pass.
+
+**34721303156 remains ACTIVE** onbea88218: client passed, server running.
+**15051 remains ACTIVE**, PID3544161 confirmed46:07 elapsed; latest2698s/
+391leader steps/27room traversals/five town returns. Three bosses defeated;
+final clear/individual credit/manual rewards/Water/relogin still pending.
+Frozen9b6745d7 unchanged; no second native, production or soak action. Next native
+Tripwire3b83b154 still waits for exact terminal/archive/scan/cleanup. Full goal
+ACTIVE, not blocked or complete; NEVER PUSH ROOT.
+
+## Historical checkpoint — September 12, 22:00 UTC
 
 Previous goal turn PROGRESS; this continuation VERIFIED WAIT, polling the exact
 native15051 process and both hosted workflow handles. No new runtime change,
