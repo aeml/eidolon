@@ -12,9 +12,7 @@ export function getTrackedActorBuffs(actor) {
             icon: '🛡️',
             name: 'Iron Fortress',
             durationSeconds: Number(actor.ironFortressTimer || 0),
-            // Protection strength is not replicated here; do not display
-            // the offline actor's default zero as the server's reduction.
-            detail: 'Damage reduction active',
+            detail: '20% less damage · +50% armor · -20% movement speed',
             isDebuff: false
         },
         {

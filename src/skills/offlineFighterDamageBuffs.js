@@ -54,6 +54,10 @@ export function applyOfflineFighterDamageBuffStats(actor) {
         const value = actor.lastStandMultiplier;
         actor.stats.damage = Math.trunc(actor.stats.damage * (value >= 3 && value <= 3.6 ? value : 3));
     }
+    if (actor.ironFortressTimer > 0) {
+        actor.stats.defense = Math.trunc(actor.stats.defense * 1.5);
+        actor.stats.speed *= .8;
+    }
 }
 
 export function advanceFighterDamageBuffs(actor, dt) {
