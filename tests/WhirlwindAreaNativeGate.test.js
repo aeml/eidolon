@@ -8,6 +8,12 @@ test('trained Whirlwind owns an allowlisted Fighter account and non-retrying sco
 });
 test('full timed acceptance keeps existing duration coverage and runs area purchases once afterward', () => {
     const all = script.match(/\n {2}all\)\n([\s\S]*?)\n {4};;/)[1];
-    expect(all).toContain('run_qa_stage whirlwind run_whirlwind &&\n    run_qa_stage whirlwind-area run_whirlwind_area &&\n    run_qa_stage phone run_phone');
+    expect(all).toContain('run_qa_stage whirlwind run_whirlwind &&\n    run_qa_stage earthshaker-area run_earthshaker_area &&\n    run_qa_stage whirlwind-area run_whirlwind_area &&\n    run_qa_stage phone run_phone');
     expect(all.match(/run_whirlwind_area/g)).toHaveLength(1);
+});
+
+test('Whirlwind purchases select the specialization that actually unlocks it', () => {
+    const route = readFileSync('tests/e2e/whirlwind-area-gameplay.spec.js', 'utf8');
+    expect(route).toContain('[data-build-action="branch:A"]');
+    expect(route).not.toContain('[data-build-action="branch:B"]');
 });

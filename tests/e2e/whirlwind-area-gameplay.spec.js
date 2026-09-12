@@ -25,7 +25,7 @@ test('phone Whirlwind area purchases match server and rendered geometry across s
         await page.locator('.phone-build-tabs').getByRole('button', { name: tab, exact: true }).tap();
     }
     await skills('Skills');
-    const branch = page.locator('[data-build-action="branch:B"]');
+    const branch = page.locator('[data-build-action="branch:A"]');
     await branch.scrollIntoViewIfNeeded(); await branch.tap();
     await expect.poll(() => page.evaluate(() => window.game.player.hotbar.indexOf('Whirlwind'))).toBeGreaterThanOrEqual(0);
     await expect.poll(() => page.evaluate(() => window.game.uiManager.skillTree.mobile.pending === null)).toBe(true);

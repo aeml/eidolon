@@ -8,6 +8,6 @@ test('Earthshaker area owns an allowlisted Fighter account and no-retry standalo
 });
 test('full timing retains existing Whirlwind and runs Earthshaker once before phone coverage', () => {
     const all = script.match(/\n {2}all\)\n([\s\S]*?)\n {4};;/)[1];
-    expect(all).toContain('run_qa_stage whirlwind run_whirlwind &&\n    run_qa_stage earthshaker-area run_earthshaker_area &&\n    run_qa_stage phone run_phone');
+    expect(all).toContain('run_qa_stage whirlwind run_whirlwind &&\n    run_qa_stage earthshaker-area run_earthshaker_area &&\n    run_qa_stage whirlwind-area run_whirlwind_area &&\n    run_qa_stage phone run_phone');
     expect(all.match(/run_earthshaker_area/g)).toHaveLength(1);
 });
