@@ -1,5 +1,24 @@
 # Cursor healing beneath overlapping enemies — 1.1.0 candidate
 
+## Native result — September 12, 2026
+
+Native36250 on48713d22 passes Rogue28.6s and Cleric24.1s, zero retries.
+Rogue pays30mana for Poison Coating. Cleric pays25 for Healing Light (387heal)
+and40 for Guardian Embrace (three238heal events); zero rejected casts. Inspected
+the Cleric screenshot: overlapping enemies remain present, with the healing
+aura and positive heal text visible. Archive
+`/tmp/eidolon-healing-cursor-pass-h0JDzB`, scan0/exact containers/image/ports cleanup.
+Full refreshed CI34723986784 remains running. These native results verify paid
+activation/healing and active-effect suppression, not earned play or performance.
+
+Subsequent arrival status route92442 on48713d22 passes Shadow Lunge39.7s and
+Serrated Edges47.5s, baseline/trained/saved ticks, but fails Poison Coating37.5s:
+baseline67 passes; trained expects80, observes74. Archive
+`/tmp/eidolon-arrival-status-failure-F0VJZM`, scan0/exact cleanup. The test reads
+dexterity before aiming, while poison computes its budget at projectile impact;
+temporary stat changes are a hypothesis, not a proven cause yet. Preserve the
+exact-damage assertions and observe dispatch/impact stats before correcting it.
+
 Arrival collateral58903 on00b616b0 reproduced the Cleric failure52.2s (Rogue
 passes28.8s). Read-only receipts show17 Healing Light requests rejected with
 requirements_not_met, zero accepted casts/heals,779/2575HP,1585mana, unlocked

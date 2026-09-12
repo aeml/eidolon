@@ -38,7 +38,8 @@ test('status Mastery purchases change real ticks and persist through fresh login
                 if (message.type === 'ability_result') qa.results.push(message.payload);
                 if (message.type === 'ability' && message.payload?.sourceId === game.player.id) qa.casts.push(message.payload);
                 if (message.type === 'damage' && message.payload?.sourceId === game.player.id && message.payload?.targetId === qa.target) {
-                    qa.damage.push({ amount: message.payload.amount, kind: message.payload.kind });
+                    qa.damage.push({ amount: message.payload.amount, kind: message.payload.kind,
+                        dexterity: game.player.stats.dexterity, wellRestedSeconds: game.player.wellRestedSeconds });
                 }
                 return handle(message);
             };
@@ -53,6 +54,7 @@ test('status Mastery purchases change real ticks and persist through fresh login
                     const selectedTarget = payload.targetId === target?.id && game.isHostileActorTarget(target);
                     if (targeted && selectedTarget) window.__statusQA.target = target.id;
                     window.__statusQA.requests.push({ skill: payload.skillName, targetId: payload.targetId, selectedTarget,
+                        dexterity: game.player.stats.dexterity, wellRestedSeconds: game.player.wellRestedSeconds,
                         durable: Boolean(target?.constructor?.name === 'InfernoTitan'
                             && target.stats.hp > 2*(15+1.5*game.player.stats.dexterity)),
                         inRange: Boolean(target && target.position.distanceTo(game.player.position) < 9) });
@@ -172,6 +174,8 @@ test('status Mastery purchases change real ticks and persist through fresh login
         const base = config.skill === 'Serrated Edges' ? Math.floor(events.find(hit => hit.kind === 'physical').amount/5)
             : (config.kind === 'poison' ? 8 : 10)+Math.floor(dexterity/2);
         const expected = Math.floor(base*(1+.04*rank)+1e-9);
+        console.log('[status-damage-budget]', JSON.stringify({ skill: config.skill, label, rank,
+            sampledDexterity: dexterity, expected, requests: await page.evaluate(() => window.__statusQA.requests), events }));
         expect(events.filter(hit => hit.kind === config.kind).map(hit => hit.amount)).toEqual(expect.arrayContaining([expected]));
         expect(events.filter(hit => hit.kind === config.kind).every(hit => hit.amount === expected)).toBe(true);
         console.log(`[status-training] ${config.skill} ${label}: rank ${rank}, tick ${expected}, accepted targeted combat`);
