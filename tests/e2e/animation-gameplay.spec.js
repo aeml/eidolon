@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { CONSTANTS } from '../../src/core/Constants.js';
-import { readAnimationPresentation } from '../animationPresentationRecord.js';
+import { readAnimationCastState, readAnimationPresentation } from '../animationPresentationRecord.js';
 import {
     PLAYER_ABILITY_VISUALS,
     getAbilityRuneVariants,
@@ -233,6 +233,7 @@ async function castThroughInput(page, className, skillName, key, presentation, o
     }
     await page.mouse.move(target.x, target.y);
     const previousTimestamp = (await page.evaluate(readAnimationPresentation, skillName))?.timestamp ?? -1;
+    const beforeInput = await page.evaluate(readAnimationCastState, skillName);
     if (key === 'right') {
         await page.mouse.click(target.x, target.y, { button: 'right' });
     } else {
@@ -268,7 +269,8 @@ async function castThroughInput(page, className, skillName, key, presentation, o
                 readinessSequence: game?.animationQAReadySequence
             };
         });
-        throw new Error(`${className}/${skillName} input presentation failure: ${JSON.stringify(diagnostic)}`, { cause: error });
+        const afterInput = await page.evaluate(readAnimationCastState, skillName);
+        throw new Error(`${className}/${skillName}/${options.runeId || 'base'} input presentation failure: ${JSON.stringify({ previousTimestamp, beforeInput, afterInput, diagnostic })}`, { cause: error });
     }
 
     const snapshot = await page.evaluate(() => {

@@ -29,3 +29,24 @@ removed; local18185/18186/41875 checked free before the scoped native attempt.
 Candidate browser dependencies prepared. Native Wizard matrix execution,
 full CI and versioned deployment acceptance remain required before publication.
 This is a release65 QA correction, not another version or a balance change.
+
+## Scoped native result
+
+The first local Wizard run74130 passed Teleport but failed a later Meteor Drop
+rune cast (sequence21,56.0s). Its timeout observed only the previous Meteor
+presentation. Preserve that failure in `/tmp/eidolon-release65-meteor-failure-dvvaL9`;
+there is not enough evidence to attribute it to a gameplay defect or claim a fix.
+Hotkeys use direct keydown callbacks, not frame-polled short presses.
+
+Added before/after read-only diagnostics for transient stun/menu/jump gates,
+selected rune, unlocks, targeting and the prior presentation timestamp. Do not
+clear those gates, retry a failed cast or broaden its acceptance criteria.
+Seven helper tests pass0.619s; changed lint/diff checks pass.
+
+Native88301 then PASS1.1m (1.2m total): the complete Wizard ability/rune matrix,
+movement, jump, basic attack, both graphics tiers and death/respawn. Sanitized
+archive `/tmp/eidolon-release65-wizard-accepted-rgWYmh`, scan0. Inspected its
+final screenshot: visible character shield and ground utility effect; it is
+one captured instant, not evidence for every effect by itself. Temporary
+services cleaned up and41875/18185/18186 free after terminal success. Full
+production CI and independent live release/health checks remain required.
