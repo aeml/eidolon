@@ -52,6 +52,19 @@ Logs `/tmp/eidolon-blade-storm-native-{focused,lint,assets,list}-20260912.log`.
 Runtime6cd11168 CI34709688359 currently client/serverPASS, browser shardsactive.
 Actual native execution and final combined regression still required.
 
+## Native phone acceptance
+
+92396 on frozen docs-onlydfd65955 (runtime6cd11168, route07b90578) PASS34.6s,
+zero retries. Normal purchased0/1/5 casts paid30mana and produced an attached
+authoritative cone with five distinct actual terminal endpoints at10/10.3/11.5
+units; replicas disappeared. Rank5 Low portrait and saved rank5 High landscape
+passed. Normal town healing and cooldown recovery were used, no readiness
+refills. Archive `/tmp/eidolon-blade-storm-area-pass-hxNC3u`; native log
+`/tmp/eidolon-blade-storm-area-native-20260912.log`; scan0 and exactowned
+containers/image/ports clear. Main agent viewed Low portrait capture;53FPS is
+incidental and does not close visual/performance polish. Full runtime CI and
+combined-primary regression remain required; no whole-dungeon acceptance.
+
 ## Draft 1.1.0 patch note (unreleased)
 
 - Blade Storm's five daggers now stop at their intended range and dungeon walls.
