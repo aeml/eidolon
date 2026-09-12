@@ -76,7 +76,27 @@ test(`Rogue utility ${technique ? 'Techniques reduce paid mana and cooldowns' : 
             }, target.id);
             expect(delta, 'ordinary target must stay alive').not.toBeNull();
             const distance = Math.hypot(delta.x, delta.z);
-            if (distance < 4) return target;
+            if (distance < 4) {
+                await expect.poll(async () => {
+                    for (const point of [null, { x: .2, y: .7, z: .5 }, { x: .8, y: .7, z: .5 }]) {
+                        const aim = await projectEntity(page, target.id, point);
+                        if (!aim?.visible) continue;
+                        await page.mouse.move(aim.x, aim.y); await page.waitForTimeout(70);
+                        if (await page.evaluate(id => window.game.hoveredEntity?.id === id, target.id)) return true;
+                    }
+                    return false;
+                }).toBe(true);
+                // Projection/hover takes time while the enemy keeps walking.
+                // Reacquire by real movement before any paid cast if it left
+                // the interior of Smoke's five-unit authoritative footprint.
+                const ready = await page.evaluate(id => {
+                    const g = window.game, e = g.remotePlayers.get(id);
+                    return Boolean(e?.isActive && e.state !== 'DEAD' && g.hoveredEntity?.id === id &&
+                        Math.hypot(e.position.x - g.player.position.x, e.position.z - g.player.position.z) < 4);
+                }, target.id);
+                if (ready) return target;
+                continue;
+            }
             const scale = Math.min(8, distance - 3) / distance;
             await moveByGroundClick(page, delta.x * scale, delta.z * scale,
                 { moveOnly: true, allowJumpFallback: false, requireClearPath: true });
@@ -94,17 +114,6 @@ test(`Rogue utility ${technique ? 'Techniques reduce paid mana and cooldowns' : 
         // Prepare before approaching a live enemy. A chat round-trip after
         // acquisition let the enemy move outside the required footprint.
         const target = await targetFor(cfg);
-        if (!cfg.self) {
-            await expect.poll(async () => {
-                for (const point of [null, { x: .2, y: .7, z: .5 }, { x: .8, y: .7, z: .5 }]) {
-                    const aim = await projectEntity(page, target.id, point);
-                    if (!aim?.visible) continue;
-                    await page.mouse.move(aim.x, aim.y); await page.waitForTimeout(70);
-                    if (await page.evaluate(id => window.game.hoveredEntity?.id === id, target.id)) return true;
-                }
-                return false;
-            }).toBe(true);
-        }
         const before = await page.evaluate(({ cfg, id, genericId }) => {
             const g = window.game, p = g.player, actor = cfg.self ? p : g.remotePlayers.get(id);
             return { mana: p.stats.mana, rank: p.talentRanks?.[cfg.talent] || 0, generic: p.talentRanks?.[genericId] || 0,

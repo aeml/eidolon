@@ -56,6 +56,20 @@ prepared client assets and diff checks pass. Logs
 `/tmp/eidolon-rogue-utility-technique-{final-tests,final-lint,native-list,assets}-20260912.log`.
 Corrected full CI and both native profiles remain pending; no acceptance inferred.
 
+First Technique native46603 FAILED1.4m ondf5b83ea. Mark rank0/1/5 passed actual
+cost25/24/22 and cooldown6/5.82/5.1, unchanged10s duration/High-Low/expiry. Before
+Smoke's baseline cast, target moved to5.4403units during hover acquisition and
+the unchanged `<5` range assertion correctly stopped the test. No Smoke cast,
+saved Technique or full route success. Archive
+`/tmp/eidolon-rogue-technique-first-failure-j7oKzi`; original
+`/tmp/eidolon-rogue-utility-technique-native-20260912.log`; scan0/ownedcleanupPASS.
+
+The approach loop now includes hover acquisition and rechecks the same target's
+living identity and distance<4 before returning. If projection/hover lets the
+enemy walk out, continue ordinary movement/reacquisition within the original60s
+deadline before any cast. Final<5, paid-cost, cooldown and all effect assertions
+remain. No target freezing, teleporting or cast retries are introduced.
+
 ## Proposed 1.1 patch-note text
 
 Weak Point Mark, Smoke Bomb and Cloak & Vanish Techniques now reduce their mana
