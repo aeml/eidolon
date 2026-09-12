@@ -1063,6 +1063,15 @@ export class Actor extends Entity {
         if (this.teleportPhaseTimer > 0) {
             this.teleportPhaseTimer = Math.max(0, this.teleportPhaseTimer - dt);
         }
+        // Periodic ticks above use the pre-frame lifetime and their own
+        // offsets. Expiring afterward preserves protection on earlier ticks.
+        if (this.ironFortressTimer > 0) {
+            this.ironFortressTimer = Math.max(0, this.ironFortressTimer - dt);
+            if (!this.ironFortressTimer) {
+                this.ironFortressReduction = 0;
+                if (!this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) this.recalculateStats();
+            }
+        }
         if (this.invulnerabilityTimer > 0) {
             this.invulnerabilityTimer = Math.max(0, this.invulnerabilityTimer - dt);
         }

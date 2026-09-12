@@ -23,7 +23,7 @@ describe('GameEngine active buff tracker', () => {
         engine.syncTrackedActorBuffs(actor);
         expect(engine.getActiveBuffs()).toEqual(expect.arrayContaining([expect.objectContaining({
             id: 'iron_fortress', name: 'Iron Fortress', icon: '🛡️', durationSeconds: 53.7,
-            detail: 'Damage reduction active', isDebuff: false
+            detail: '20% less damage · +50% armor · -20% movement speed', isDebuff: false
         })]));
         actor.ironFortressTimer = 30.4;
         engine.syncTrackedActorBuffs(actor);

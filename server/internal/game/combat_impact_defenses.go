@@ -43,6 +43,11 @@ func resolveImpactDefenseLocked(tgt *Entity, damage int, now time.Time) impactDe
 	if tgt.Type == TypePlayer && (gameplayInvulnerable || qaWaypointProtected) {
 		damage = 0
 	}
+	// Fortress protects scaled incoming hits as well as adding armor. Check
+	// the actual deadline at impact, before other reductions and absorption.
+	if tgt.Type == TypePlayer && tgt.IronFortressActive && !tgt.IronFortressEndTime.IsZero() && now.Before(tgt.IronFortressEndTime) {
+		damage = damage * 80 / 100
+	}
 
 	// The two Sanctuary sources have distinct advertised strengths and may
 	// overlap. Use the stronger active reduction rather than an approximation.

@@ -123,8 +123,10 @@ export class Fighter extends Actor {
             const baseDuration = this.skillRunes?.[skill] === 'ironfortress_extended' ? 45 : 30;
             this.ironFortressTimer = getFighterEffectDuration(this, baseDuration, skill);
 
-            // Formula: 1% per Strength, max 75%
-            this.ironFortressReduction = Math.min(0.75, this.stats.strength * 0.01);
+            // Match the authoritative receiving pipeline; Mastery changes
+            // duration, never protection strength.
+            this.ironFortressReduction = 0.2;
+            this.recalculateStats();
 
             console.log(`Iron Fortress active: ${(this.ironFortressReduction * 100).toFixed(1)}% reduction for ${this.ironFortressTimer}s`);
 
@@ -259,6 +261,7 @@ export class Fighter extends Actor {
     }
 
     cancelAbilities() {
+        const hadFortress = this.ironFortressTimer > 0;
         cancelOfflineWhirlwind(this);
         this.lastOfflineFighterCast = null;
         clearOfflineFighterDamageBuffs(this);
@@ -274,15 +277,17 @@ export class Fighter extends Actor {
         this.ironFortressTimer = 0;
         this.berserkerEdgeTimer = 0;
         this.berserkerEdgeActive = false;
+        if (hadFortress && !this.isMultiplayer && !this.isRemote && !this.gameEngine?.isMultiplayer) this.recalculateStats();
     }
 
-    takeDamage(amount, attacker = null) {
+    takeDamage(amount, attacker = null, elapsedInFrame = 0) {
         let finalAmount = amount;
-        if (this.ironFortressTimer > 0) {
-            finalAmount = amount * (1 - this.ironFortressReduction);
+        const elapsed = Number.isFinite(elapsedInFrame) ? Math.max(0, elapsedInFrame) : 0;
+        if (this.ironFortressTimer > elapsed) {
+            finalAmount = Math.floor(amount * .8);
             // console.log(`Iron Fortress reduced damage from ${amount} to ${finalAmount}`);
         }
-        super.takeDamage(finalAmount, attacker);
+        super.takeDamage(finalAmount, attacker, elapsedInFrame);
     }
 
     update(dt, collisionManager, player, chunkManager, floatingTextManager) {
@@ -290,14 +295,6 @@ export class Fighter extends Actor {
             this.runeArmorBuffTimer = Math.max(0, this.runeArmorBuffTimer - dt);
             if (!this.runeArmorBuffTimer) this.runeArmorBuff = 0;
         }
-        if (this.ironFortressTimer > 0) {
-            this.ironFortressTimer -= dt;
-            if (this.ironFortressTimer <= 0) {
-                this.ironFortressTimer = 0;
-                console.log("Iron Fortress expired.");
-            }
-        }
-
         if (this.offlineCharge) {
             // Advance ordinary timers once; the paid charge owns movement.
             super.update(dt, collisionManager);

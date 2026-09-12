@@ -89,7 +89,7 @@ export function updateOfflineDamageOverTime(target, dt) {
             const damage = target[`${kind}TickDamage`] > 0 ? target[`${kind}TickDamage`]
                 : (kind === 'bleed' ? 5 : 3)*(target[`${kind}Stacks`] || 0);
             if (damage > 0 && !authoritative(source)) {
-                if (target.teleportPhaseTimer > 0) target.takeDamage(damage, source, Math.max(0, tickOffset));
+                if (target.teleportPhaseTimer > 0 || target.ironFortressTimer > 0) target.takeDamage(damage, source, Math.max(0, tickOffset));
                 else target.takeDamage(damage, source);
             }
             tickOffset += 1;
