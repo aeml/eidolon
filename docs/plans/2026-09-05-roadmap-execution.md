@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 01:43 UTC
+## Current checkpoint — September 12, 01:46 UTC
 
 Previous goal turn was PROGRESS (Shattering and phone feedback). This continuation
 is PROGRESS: accepted release63's complete live gate, repaired the remaining
@@ -52,20 +52,32 @@ The full 1.1–1.10 goal remains active; no genuine external blocker exists.
   that missing test observer. Archived `/tmp/eidolon-time-warp-mastery-failure-unDK7r`;
   Mastery5Low image inspected, scanner0, disposable services removed. Log
   `/tmp/eidolon-time-warp-mastery-native-20260912.log`.
-- Candidate now clean **482f9c24**, adding test-only idempotent observer helper
+- Native candidate **482f9c24** added test-only idempotent observer helper
   and reinstall after fresh login, plus pre-cast observer presence assertions.
   Three suites/56tests PASS0.799s+lint; logs
   `/tmp/eidolon-time-warp-observer-{tests,lint}-20260912.log`. Runtime remains
-  full-tested a955; primary remains3d1 until the new native check is accepted.
-- **Corrected native Time Warp session76982 ACTIVE**, clean482f, run IDtwm120142,
-  route=time-warp-area, System Chrome/render group, loopback API18185/Mongo18186,
-  web4173. Log `/tmp/eidolon-time-warp-mastery-native-relogin-20260912.log`.
-  Confirmed Running1test. Poll SAME handle, preserve evidence and avoid competing
-  GPU work. All original duration/radius/payment/expiry/save gates remain intact.
+  full-tested a955.
+- **Corrected native Time Warp76982 TERMINAL0** on clean482f (~1.3m): all20
+  paid ranks, baseline/trained controls, Mastery5Low and fresh-loginMastery5High,
+  both-client11.2s duration, saved ranks and expiry restoring stats passed.
+  WIZ34rank4 again exercised actual rate rejection/recovery. Scanner0, exact
+  disposable containers removed; HighMastery5 image inspected. Log
+  `/tmp/eidolon-time-warp-mastery-native-relogin-20260912.log`, retained
+  `/tmp/eidolon-time-warp-mastery-accepted-uHoh69`. Proof208b0aa3; primary and
+  candidate now clean **208b0aa3**, including test-only observer repair and docs.
+  Runtime remains full-tested a955; no new production release is claimed.
+- **Four-role dungeon session77501 ACTIVE**, launched01:46 on frozen primary
+ 208b0aa3. Log `/tmp/eidolon-four-role-aura-follow-20260912.log`; routeparty-dungeon,
+  disposable run IDparty120146, System Chrome/render group, loopback API18185/
+  Mongo18186/web4173. This is the first native retry with the aura-follow strategy
+  since25565's tank death/Warden5282. Preserve all four alive/full clear/credit/
+  manualIlyra/Water/fresh-save requirements; no prepared-build or budget weakening.
+  Poll SAME handle; do not compete for GPU, restart on observation timeout or
+  overwrite evidence. No current dungeon outcome is proved yet.
 - Before starting native, GitHub confirmed both repository runners online/idle
   and the latest soak34558600459 completed FAILURE, with no newer soak run.
   Cancelled soak remains OFF. Normal release CI was allowed to finish.
-- Next: finish/archive native TWM, four-role Normal Verdant retry retaining all
+- Next: finish/archive four-role Normal Verdant retry retaining all
   four alive/full clear/individual manual Ilyra/Water/fresh-save gates; scoped
   next release with patch notes. Teleport release packaging depends on unpublished
   receiving-defense work; never push the entire broad primary/root accidentally.
