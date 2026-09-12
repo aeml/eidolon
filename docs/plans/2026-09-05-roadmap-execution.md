@@ -5,7 +5,53 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 00:36 UTC
+## Current checkpoint — September 12, 00:54 UTC
+
+Previous goal turn was PROGRESS. This continuation is PROGRESS: reproduced and
+repaired nine missing offline Wizard damage Masteries, then reconciled five
+base-formula differences against actual server casts. Full objective remains.
+
+- New `/tmp/eidolon-wizard-offline-mastery-20260912`, branch
+  work/wizard-offline-mastery, clean **aa1ba963**, based onTWM3a003536. Primary
+  remains97cd447b. NamedMastery is capturedonce after paid admission and composed
+  once with storedFocus; delayedmissiles retaintrainingandIntelligence. No
+  utilityMastery doubleboost or authoritative-clientdamage; aliasesusemaxbounded
+  rankwithoutsave mutation. Runtimehelper `src/skills/wizardAbilityDamage.js`.
+- Baseprofiles checked via sharedwizard_damage.json against54actualserver
+  cases (9skills x0/1/5ranks xordinary/focused). Corrected offlineWhip25+2I,
+  Tornado30+3I, Scorch25+2I, Missiles15+Ieach andLance100+5I; otherfourbases
+  unchanged. Castdamageusesexistingserverintegerconversion. Noonlinebasebalance
+  change. Runes/status/generictalents/legacyfallbacks remainaudit scope.
+- Initial48565 RED28failures/33controls0.707s. Initial92349 GREEN3suites109
+  tests1.047s; expandedactualimpacts72pass0.692s. CanonicalbaseRED36742:
+ 33failures/50controls0.762s. Firstserver76635fixturemeasuredchangingMaxHealth
+  duringGravityrecalc; correctedtopre/postHealth (notserverdefect).
+  **61539 repeated3xGo-race PASS16.175s**. InstantcasesverifyHPloss;
+  projectile/fieldcasesverifyspawneddamage/count, noteveryserverimpact/rune.
+- Basealignmentinitial27988 leftoneoldLanceexpectation; changedtoauthoritative
+  100+5I. Final **12084 PASS15suites588tests3.457s+full lint**, includingpaid
+  Focus+Mastery acrossallnine, realofflineprojectile/instant/fieldimpacts,
+  malformedranks/aliases, cast-timerank/Intchanges, criticalshieldabsorption,
+  nohitonrejected/authoritativecasts, geometry/visual/resources/TimeWarpchecks.
+  Logs `/tmp/eidolon-wizard-damage-{family,final,lint-final}-20260912.log`,
+  `/tmp/eidolon-wizard-base-contract-server-green-20260912.log`; detailedRED/
+  fixturelimits in2026-09-12-wizard-offline-damage.md.
+- Combined **aa1ba963 fullclient/server integration stilldue**, includingparent
+  TWM3a003536. ExpandednativeTimeWarp stillnotexecuted. Do notmergeorrelease
+  basedsolelyonthese focusedchecks. Primary97cd447b retainsnativeFocusacceptance
+  andruntimefullacceptanceedf6acaa frompreviouscheckpoint. Alllocaltooltest
+  sessions thisturn TERMINAL; no localfull/native wasstartedduringselfhostedQA.
+- **CI34660899212 ACTIVE**, sourcef866df68, at00:53 inrequiredselfhosted
+  full-character gameplay; hostedclient/server/threebrowsergroupspassed. Poll
+  SAMErun, do notcancel/restartbecauseobservationexpires. No63liveclaim. Root
+  ledgerNEVERPUSH, cancelledsoakOFF. Noexternalblocker; full1.1–1.10 intact.
+- Nextavailablehardware: combinedWizard/TWMfullchecks, expandedTWMnative,
+  four-role dungeonretry (last25565tankdeath/Warden5282; aura-followstrategy
+  available). Retainallalive/fullclear/individualcredit/manualIlyra/Water/
+  freshsave. Remaining160talents/phone/balance/story/casinoandlaterreleases
+  stayrequired, notclosedbythisdamagepass.
+
+## Previous checkpoint — September 12, 00:36 UTC
 
 Previous goal turn was PROGRESS. This continuation is PROGRESS: accepted full
 Focus/protection integration, proved native Focus's paid ranks and actual single
