@@ -98,13 +98,16 @@ test('Fighter buff Masteries have paid, saved strength and visible High/Low owne
         await expect(badge).toBeVisible();
         await expect(badge).toContainText(`+${Math.round((multiplier - 1) * 100)}% Damage stat`);
         if (buff.id === 'berserker_edge') await expect(badge).toContainText('-20% defense');
+        await badge.scrollIntoViewIfNeeded();
+        await expect(badge).toBeInViewport();
         await page.screenshot({ path: testInfo.outputPath(`${buff.id}-rank${rank}-${tier}.png`) });
         await expect.poll(() => page.evaluate(() => window.__fighterBuffNative.expired), { timeout: 22_000 }).toBe(true);
         await expect.poll(() => page.evaluate(({ id, timer, damage, defense }) => {
             const p = window.game.player;
             return p[timer] <= 0 && !p.attachedStatusEffects.has(id) && p.stats.damage === damage && p.stats.defense === defense;
         }, { id: buff.id, timer: buff.timer, damage: before.damage, defense: before.defense })).toBe(true);
-        await expect(badge).toHaveCount(0); await page.locator('#btn-phone-status').tap();
+        await expect(badge).toHaveCount(0); await page.locator('#btn-close-phone-status').tap();
+        await expect(page.locator('#phone-status-panel')).toBeHidden();
         await testInfo.attach(`${buff.id}-rank${rank}-${tier}-receipts`, {
             body: JSON.stringify({ before, expected: { multiplier, damage, defense },
                 receipts: await page.evaluate(() => window.__fighterBuffNative) }), contentType: 'application/json'
@@ -195,11 +198,14 @@ test('Fighter buff Masteries have paid, saved strength and visible High/Low owne
             await ally.locator('#btn-phone-status').tap();
             const badge = ally.locator('#phone-status-panel [data-buff-id="berserker_edge"]');
             await expect(badge).toContainText('+80% Damage stat');
+            await badge.scrollIntoViewIfNeeded();
+            await expect(badge).toBeInViewport();
             await ally.screenshot({ path: testInfo.outputPath(`berserker-party-cleric-${tier}.png`) });
             await expect.poll(() => ally.evaluate(() => window.__fighterBuffNative.expired), { timeout: 22_000 }).toBe(true);
             await expect.poll(() => ally.evaluate(before => window.game.player.stats.damage === before.damage &&
                 window.game.player.stats.defense === before.defense && !window.game.player.attachedStatusEffects.has('berserker_edge'), before)).toBe(true);
-            await expect(badge).toHaveCount(0); await ally.locator('#btn-phone-status').tap();
+            await expect(badge).toHaveCount(0); await ally.locator('#btn-close-phone-status').tap();
+            await expect(ally.locator('#phone-status-panel')).toBeHidden();
             await expect.poll(() => page.evaluate(() => window.__fighterBuffNative.expired)).toBe(true);
             for (const client of [page, ally]) {
                 await expect.poll(() => client.evaluate(ids => ids.every(id => {

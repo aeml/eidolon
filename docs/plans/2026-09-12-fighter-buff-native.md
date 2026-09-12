@@ -1,5 +1,22 @@
 # Fighter damage-buff native owner and party gate — authored, not yet executed
 
+## September12 current-integration replay preparation
+
+Ported f27c003a/0f15acd8 onto accepted7f4df79a in a separate worktree, preserving
+both owner and real Cleric recipient coverage. The full gate retains Smoke
+Bomb and all older stages; original runtime skill/rank/party rules are unchanged.
+Both status panels now close through their existing visible Close button, as
+the completed Fortress replay demonstrated. Buff cards are scrolled into view
+and checked against the viewport before screenshots. No forced input or
+synthetic receipt replaces the paid-cast/expiry/stat-restoration checks.
+
+Seven focused suites128tests passed7.775s, including native observers/enrollment,
+actual buff replication, offline owner/recipient expiry, gate order and phone
+status behavior. Lint/assets/bash syntax/diff passed. Logs
+`/tmp/eidolon-fighter-buff-current-{tests,lint,assets}-20260912.log`.
+Native execution remains pending while party7792 owns the single GPU lane.
+This preparation is not owner/party gameplay acceptance or a release.
+
 Based on06f62f1b in a separate worktree while its hosted rehearsal and the
 separate release65 native pipeline remain frozen. This document is not browser
 acceptance evidence. Local GPU must stay available to release65 until terminal.
