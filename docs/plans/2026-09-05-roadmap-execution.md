@@ -5,7 +5,41 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 20:52 UTC
+## Current checkpoint — September 12, 20:57 UTC
+
+Previous goal turn PROGRESS. This continuation completed acceptance evidence
+for the combined health/Serrated revision and verified the still-live native
+run. Full roadmap goal ACTIVE; no runtime release, deployment or soak change.
+
+- **CI34717404204 SUCCESS** on719df4de, including all three browser shards.
+  Integrated worktree now clean **66cd93f1** with acceptance documentation;
+  runtime unchanged, last dev-pushed719df4de. Client413/6398/133.637s and game
+  race358.420s. Complete logs
+  `/tmp/eidolon-integrated-ci-{client,server,browser1,browser2,browser3}-34717404204.log`.
+  Manual native/deploy/live skips are not passes; no milestone readiness claim.
+- Desktop **CI34718270509 ACTIVE** on e2ef6e51. Full client414suites6408tests
+  PASS134.634s, server job103619323648 still running. Client log
+  `/tmp/eidolon-desktop-talent-ci-client-34718270509.log`. Desktop tree now
+  clean **50304e6a**, documentation-only follow-up; dev-pushed sourcee2ef6e51.
+  Native `serrated-technique` remains queued after party and Tripwire entrance.
+- **98186 ACTIVE**, same frozen832ff72e Verdant tree and exact disposable
+  resources below. Wrapper3151285 / Playwright3159267 confirmed live20:57.
+  Five actual town recoveries/reentries; room5 cleared, only Warden boss kill
+  verified so far. Latest1318s route time:962s traversal,189s combat,157s
+  recovery;224ground steps/16room traversals. Walking after town rest is a
+  material pacing burden, not a failed process or justification to skip rooms.
+  Keep full-clear/individual credit/manual Water handoff assertions intact.
+
+Next unchanged: allow98186 to finish, archive/scan/exact cleanup, replay Tripwire
+`entrance-visibility` on844c69c1 code/a42507b6 docs, then actual desktop purchases
+on50304e6a. Do not overlap native GPU or edit the running balance tree. Full
+first-hour, dungeon/party/reconnect/balance and later1.2–1.10 scope stays open.
+No new runtime defect was established by the read-only party-credit inspection:
+current eligibility correctly includes in-instance corpses and uses110units
+outside, with kill-time recipient snapshot regressions; full native credit proof
+still requires the current run's eventual outcome. NEVER PUSH ROOT.
+
+## Historical checkpoint — September 12, 20:52 UTC
 
 The intervening version-number confirmation was no implementation progress.
 This goal continuation revalidated real processes/jobs and made PROGRESS:
