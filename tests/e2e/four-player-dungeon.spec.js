@@ -6,6 +6,7 @@ import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
 import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyWarningInputPolicy } from '../partyDungeonControls.js';
 import { attackPartyDamageTarget, selectPartyDamageBuff } from '../partyDamageRoleControls.js';
 import { runPartyRoleInputs } from '../partyRoleScheduling.js';
+import { partyTankHasEngaged } from '../partyEngagementControls.js';
 import { partyAuraFollowSpacing, selectPartyHealTarget } from '../partyHealingControls.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { dungeonExpeditionBudget } from '../dungeonExpeditionTiming.js';
@@ -31,8 +32,9 @@ const snapshot = page => page.evaluate(() => {
 async function observeRole(page) {
     await page.evaluate(async () => {
         const { observePartyWarning } = await import('/tests/partyDamageRoleControls.js');
+        const { recordPartyOutgoingDamage } = await import('/tests/partyEngagementControls.js');
         const game = window.game, original = game.handleServerMessage.bind(game);
-        const e = window.__partyClearEvidence = { damageDone: 0, damageTaken: 0, allyHealing: 0,
+        const e = window.__partyClearEvidence = { damageDone: 0, damageByTarget: {}, damageTaken: 0, allyHealing: 0,
             casts: {}, rejected: {}, sawDeath: false, warningMoves: 0, warningEscapes: 0,
             warningEarlyEscapes: 0, recentDamage: [], recentEscapes: [], recentAttackInputs: [], lastAcceptedCastAt: -Infinity,
             lastUpdate: performance.now() };
@@ -46,7 +48,7 @@ async function observeRole(page) {
             }
             if (message.type === 'state' || message.type === 'delta') e.lastUpdate = performance.now();
             if (p && message.type === 'damage') {
-                if (p.sourceId === game.player.id) e.damageDone += Math.max(0, p.amount || 0);
+                recordPartyOutgoingDamage(e, p, game.player.id);
                 if (p.targetId === game.player.id) {
                     e.damageTaken += Math.max(0, p.amount || 0);
                     const position = game.player.position, now = performance.now();
@@ -416,7 +418,8 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 return true; // Existing driver rewalks the real cleared route.
             },
             beforeCombat: async (_page, target) => {
-                // Let the Fighter engage first, then maintain real ally inputs.
+                // Start the Fighter's ordinary driver first; movement alone
+                // is not an opener, so DPS also waits for a damage receipt.
                 if (currentTarget !== target.id) {
                     currentTarget = target.id;
                     bossStart = playthrough.bosses.includes(target.type) ? await Promise.all(actors.map(actor => snapshot(actor.page))) : null;
@@ -424,10 +427,14 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 }
                 // Every role reacts to its own safety decision immediately;
                 // a slow escape on another browser must not postpone healing.
+                const tankEngaged = partyTankHasEngaged(await tank.page.evaluate(() => ({
+                    damageByTarget: window.__partyClearEvidence.damageByTarget
+                })), target.id);
                 const [tankPolicy] = await runPartyRoleInputs(actors,
                     actor => avoidWarnings(actor, target.encounter), async (actor, policy) => {
                     if (actor === tank) return; // The ordinary leader driver owns Fighter combat.
                     if (actor === healer) return healParty({ allowMovement: policy.allowApproach });
+                    if (!tankEngaged) return; // Heals and each role's warning escape remain active.
                     const enemy = await actor.page.evaluate(id => {
                         const g = window.game, p = g.player, e = g.remotePlayers.get(id);
                         return e && e.state !== 'DEAD' ? { distance: p.position.distanceTo(e.position),
