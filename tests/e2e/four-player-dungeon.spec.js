@@ -226,7 +226,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             if (observation.step) {
                 const moved = await tryDungeonGroundStep(() => moveByGroundClick(actor.page,
                     observation.step.x, observation.step.z, { ...PARTY_FOLLOW_INPUT_OPTIONS,
-                        allowAlternatePaths: false, requireClearPath: true, timeout: 1500,
+                        allowAlternatePaths: false, requireClearPath: true, batchPreparation: true, timeout: 1500,
                         onTiming: phase => observation.inputTiming.push(phase) }));
                 if (moved) observation.safe = await actor.page.evaluate(warnings => {
                     const p = window.game.player.position, e = window.__partyClearEvidence;

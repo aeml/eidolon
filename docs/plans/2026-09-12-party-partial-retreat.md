@@ -116,3 +116,23 @@ before issuing normal input. Investigate this measured input overhead before
 using the failed party run to lower boss damage or increase healing. Retain real
 input, collision/ray checks, fatal issued-input failures and authoritative damage
 receipts. No enemy/player balance or timeouts changed during this audit.
+
+### Batched strict dodge preparation
+
+The measured three serial browser observations (origin, collision path,
+projection) now execute synchronously in one browser call for the strict
+single-path warning dodge only. The actual movement helper still moves the
+pointer, settles hover, rechecks the real ground ray, issues a normal Shift-click
+and verifies observed displacement. The requested path is never shrunk or
+substituted. Missing/dead actors, invalid deltas, blocked paths and unavailable
+projections cannot issue a click. General movement callers retain their existing
+path. Timings explicitly record batch-preparation for before/after comparison.
+
+RED reproduced two missing batch calls; a third test initially named a nonexistent
+failure class and was corrected to the existing ordinary fatal Error contract.
+After implementation, six suites61tests PASS2.530seconds, including full sampled
+collision paths, exact ground projection, no state/input mutation, stale ray
+rejection and fatal issued-but-unmoving input. Lint/prepared assets/diff checks
+pass. Logs `/tmp/eidolon-party-batched-input-*-20260912.log`. Actual four-player
+timing/clear replay is still required; fewer browser calls are not yet proof of
+timely dodges or balanced boss combat. No stat/regen/AI/deadline changes here.
