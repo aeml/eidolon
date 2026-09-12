@@ -964,6 +964,7 @@ type Entity struct {
 	// Public cast-time Fighter buff strength, independent of private talent ranks.
 	BerserkerModeMultiplier float32 `protobuf:"fixed32,121,opt,name=berserker_mode_multiplier,json=berserkerModeMultiplier,proto3" json:"berserker_mode_multiplier,omitempty"`
 	LastStandMultiplier     float32 `protobuf:"fixed32,122,opt,name=last_stand_multiplier,json=lastStandMultiplier,proto3" json:"last_stand_multiplier,omitempty"`
+	WhirlwindRadius         float32 `protobuf:"fixed32,123,opt,name=whirlwind_radius,json=whirlwindRadius,proto3" json:"whirlwind_radius,omitempty"`
 	// Authoritative jump replication
 	JumpStartX    float32 `protobuf:"fixed32,81,opt,name=jump_start_x,json=jumpStartX,proto3" json:"jump_start_x,omitempty"`
 	JumpStartY    float32 `protobuf:"fixed32,82,opt,name=jump_start_y,json=jumpStartY,proto3" json:"jump_start_y,omitempty"`
@@ -1799,6 +1800,13 @@ func (x *Entity) GetLastStandMultiplier() float32 {
 	return 0
 }
 
+func (x *Entity) GetWhirlwindRadius() float32 {
+	if x != nil {
+		return x.WhirlwindRadius
+	}
+	return 0
+}
+
 func (x *Entity) GetJumpStartX() float32 {
 	if x != nil {
 		return x.JumpStartX
@@ -1956,7 +1964,7 @@ const file_state_proto_rawDesc = "" +
 	"\n" +
 	"StatsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\x81'\n" +
+	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\xac'\n" +
 	"\x06Entity\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
 	"\vinstance_id\x18\x02 \x01(\tR\n" +
@@ -2085,7 +2093,8 @@ const file_state_proto_rawDesc = "" +
 	"\x15invulnerable_duration\x18w \x01(\x02R\x14invulnerableDuration\x124\n" +
 	"\x16spell_focus_multiplier\x18x \x01(\x02R\x14spellFocusMultiplier\x12:\n" +
 	"\x19berserker_mode_multiplier\x18y \x01(\x02R\x17berserkerModeMultiplier\x122\n" +
-	"\x15last_stand_multiplier\x18z \x01(\x02R\x13lastStandMultiplier\x12 \n" +
+	"\x15last_stand_multiplier\x18z \x01(\x02R\x13lastStandMultiplier\x12)\n" +
+	"\x10whirlwind_radius\x18{ \x01(\x02R\x0fwhirlwindRadius\x12 \n" +
 	"\fjump_start_x\x18Q \x01(\x02R\n" +
 	"jumpStartX\x12 \n" +
 	"\fjump_start_y\x18R \x01(\x02R\n" +

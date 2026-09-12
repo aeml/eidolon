@@ -29,6 +29,7 @@ type EntitySnapshot struct {
 	SpiritsActive              bool
 	WhirlwindActive            bool
 	WhirlwindDuration          float64
+	WhirlwindRadius            float64
 	SpiritsBoosted             bool
 	SpiritRadius               float64
 	SpiritRune                 string

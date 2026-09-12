@@ -7,6 +7,15 @@ import (
 
 const whirlwindPulseInterval = 500 * time.Millisecond
 
+// The paid cast owns its footprint; subsequent talent changes cannot resize
+// later pulses. Zero is the legacy (untrained) active-cast representation.
+func (player *Entity) WhirlwindAreaRadius() float64 {
+	if player.WhirlwindRadius < 6 || player.WhirlwindRadius > 8.1+1e-9 || math.IsNaN(player.WhirlwindRadius) {
+		return 6
+	}
+	return player.WhirlwindRadius
+}
+
 // WhirlwindRemaining is presentation state, not a client-controlled timer.
 // Call with the entity read lock held or on an owned broadcast copy.
 func (player *Entity) WhirlwindRemaining(now time.Time) float64 {
@@ -41,6 +50,7 @@ func (w *World) beginWhirlwind(player *Entity, now time.Time, contexts ...*abili
 		player.ActiveCombo = ""
 	}
 	player.WhirlwindActive = true
+	player.WhirlwindRadius = effectiveAbilityAreaRadius(player, "Whirlwind", 6)
 	player.WhirlwindStartTime = now
 	player.WhirlwindTotalTicks = 2
 	if runeID == "whirlwind_extended" {
@@ -63,6 +73,7 @@ func (w *World) beginWhirlwind(player *Entity, now time.Time, contexts ...*abili
 // death, disconnect or a new session. No private pulse state is persisted.
 func clearWhirlwindLocked(player *Entity) {
 	player.WhirlwindActive = false
+	player.WhirlwindRadius = 0
 	player.WhirlwindStartTime, player.WhirlwindEndTime = time.Time{}, time.Time{}
 	player.WhirlwindRuneID, player.WhirlwindInstanceID = "", ""
 	player.WhirlwindTickCount, player.WhirlwindTotalTicks, player.WhirlwindDamageBudget = 0, 0, 0
@@ -103,6 +114,7 @@ func (w *World) updateWhirlwindImpacts(player *Entity, now time.Time, deferred *
 		attacker := snapshotCombatAttackerLocked(player)
 		attacker.X, attacker.Z, attacker.PartyID = player.X, player.Z, player.PartyID
 		originX, originZ := player.X, player.Z
+		radius := player.WhirlwindAreaRadius()
 		start, runeID := player.WhirlwindStartTime, player.WhirlwindRuneID
 		seen := make(map[string]bool, len(player.WhirlwindHitTargets))
 		for id := range player.WhirlwindHitTargets {
@@ -111,13 +123,13 @@ func (w *World) updateWhirlwindImpacts(player *Entity, now time.Time, deferred *
 		player.Mu.Unlock()
 		walkRects := w.dungeonWalkRectsSnapshot(attacker.InstanceID)
 		newHits := []string{}
-		for _, target := range w.Grid.Nearby(originX, originZ, expandedAbilityRadius("Whirlwind", 6), attacker.InstanceID) {
+		for _, target := range w.Grid.Nearby(originX, originZ, expandedAbilityRadius("Whirlwind", radius), attacker.InstanceID) {
 			if target.ID == attacker.ID {
 				continue
 			}
 			target.Mu.Lock()
 			if !w.CanDamage(attacker, target) || target.State == "DEAD" ||
-				!withinDungeonAbilityRadius(walkRects, "Whirlwind", originX, originZ, target, 6) {
+				!withinDungeonAbilityRadius(walkRects, "Whirlwind", originX, originZ, target, radius) {
 				target.Mu.Unlock()
 				continue
 			}

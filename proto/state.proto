@@ -254,6 +254,7 @@ message Entity {
   // Public cast-time Fighter buff strength, independent of private talent ranks.
   float berserker_mode_multiplier = 121;
   float last_stand_multiplier = 122;
+  float whirlwind_radius = 123;
 
   // Authoritative jump replication
   float jump_start_x = 81;

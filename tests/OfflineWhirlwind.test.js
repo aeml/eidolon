@@ -26,6 +26,25 @@ function cast(f) { f.source.useAbility(f.source.position.clone(), f.engine, 'Whi
 function tick(f, dt) { f.source.update(dt, null, null, f.engine.chunkManager); }
 afterEach(() => { for (const actor of actors.splice(0)) actor.dispose(); jest.restoreAllMocks(); });
 
+test.each([0, 1, 5].flatMap(rank => [0, 5].flatMap(generic => ['', 'whirlwind_extended'].map(rune => ({ rank, generic, rune }))))) (
+    'paid area rank$rank generic$generic $rune reaches its visible edge and keeps the cast snapshot', ({ rank, generic, rune }) => {
+        const f = fixture(rune, { FTR_04: rank, FTR_33: generic, FTR_38: generic });
+        const radius = 6 * (1 + .02 * rank + .05 * generic);
+        f.target.radius = .5; f.target.position.x = radius + .5 - .001;
+        const outside = enemy(-radius - .5 - .001); outside.radius = .5;
+        cast(f);
+        expect(f.source.stats.mana).toBe(270);
+        expect(f.target.takeDamage).toHaveBeenCalledTimes(1);
+        expect(outside.takeDamage).not.toHaveBeenCalled();
+        expect(f.source.offlineWhirlwind.radius).toBeCloseTo(radius, 8);
+        const spin = f.engine.spawnTransientEffect.mock.calls.find(([type]) => type === 'spin');
+        expect(spin[3].radius).toBeCloseTo(radius, 8);
+        f.source.talentRanks = { FTR_04: 5 - rank, FTR_33: 5 - generic, FTR_38: 5 - generic };
+        tick(f, .5);
+        expect(f.target.takeDamage).toHaveBeenCalledTimes(2);
+        expect(outside.takeDamage).not.toHaveBeenCalled();
+    });
+
 test.each(['', 'whirlwind_extended'].flatMap(rune => [0, 1, 5].map(rank => ({ rune, rank }))))(
     '$rune rank$rank uses one paid cast budget and exact half-second pulses', ({ rune, rank }) => {
         const f = fixture(rune, { FTR_03: rank, FTR_38: 5 });

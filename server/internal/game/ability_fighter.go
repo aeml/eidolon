@@ -56,7 +56,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 	} else if skillName == "Whirlwind" {
 		if w.beginWhirlwind(player, time.Now(), impacts) {
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 20*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityEvent(player.ID, targetID, skillName, player.X, player.Z, AbilityShape{Radius: player.WhirlwindAreaRadius(), Arc: 2 * math.Pi})
 		}
 	} else if skillName == "Shield Slam" {
 		cost := resolveAbilityManaCost(player, skillName, 25)

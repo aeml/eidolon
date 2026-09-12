@@ -245,9 +245,14 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 	}
 
 	whirlwindDuration := e.WhirlwindRemaining(time.Now())
+	whirlwindRadius := 0.0
+	if whirlwindDuration > 0 {
+		whirlwindRadius = e.WhirlwindAreaRadius()
+	}
 	snap := &EntitySnapshot{
 		WhirlwindActive:            whirlwindDuration > 0,
 		WhirlwindDuration:          whirlwindDuration,
+		WhirlwindRadius:            whirlwindRadius,
 		X:                          e.X,
 		Z:                          e.Z,
 		Y:                          e.Y,
@@ -360,6 +365,10 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	cspiritsActive := current.SpiritsActive
 	cwhirlwindDuration := current.WhirlwindRemaining(time.Now())
 	cwhirlwindActive := cwhirlwindDuration > 0
+	cwhirlwindRadius := 0.0
+	if cwhirlwindActive {
+		cwhirlwindRadius = current.WhirlwindAreaRadius()
+	}
 	cspiritsBoosted := current.SpiritsBoosted
 	cspiritRadius := current.SpiritAreaRadius()
 	cspiritRune := current.ActiveSpiritRune()
@@ -648,7 +657,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	if cspiritsActive != last.SpiritsActive {
 		return true
 	}
-	if cwhirlwindActive != last.WhirlwindActive || math.Abs(cwhirlwindDuration-last.WhirlwindDuration) > 0.05 {
+	if cwhirlwindActive != last.WhirlwindActive || cwhirlwindRadius != last.WhirlwindRadius || math.Abs(cwhirlwindDuration-last.WhirlwindDuration) > 0.05 {
 		return true
 	}
 	if cspiritsBoosted != last.SpiritsBoosted || cspiritRadius != last.SpiritRadius || cspiritRune != last.SpiritRune {
@@ -1179,9 +1188,14 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 	}
 
 	whirlwindDuration := e.WhirlwindRemaining(time.Now())
+	whirlwindRadius := 0.0
+	if whirlwindDuration > 0 {
+		whirlwindRadius = e.WhirlwindAreaRadius()
+	}
 	out := &statepb.Entity{
 		WhirlwindActive:            whirlwindDuration > 0,
 		WhirlwindDuration:          float32(whirlwindDuration),
+		WhirlwindRadius:            float32(whirlwindRadius),
 		Id:                         e.ID,
 		InstanceId:                 e.InstanceID,
 		Name:                       e.Name,

@@ -355,7 +355,8 @@ export const CONSTANTS = {
                 abilityDamage: i < 26 && i % 2 === 0 && i !== 6 && i !== 8 ? { skill: skills[Math.floor(i / 2)], damage: 0.04 }
                     : i === 37 ? { damage: 0.02 } : undefined,
                 criticalChance: i === 38 ? { chance: 0.02 } : undefined,
-                abilityArea: i === 9 ? { skill: 'Guardian Roar', radius: 0.02 }
+                abilityArea: i === 3 ? { skill: 'Whirlwind', radius: 0.02 }
+                    : i === 9 ? { skill: 'Guardian Roar', radius: 0.02 }
                     : i === 21 ? { skill: 'Shattering Charge', radius: 0.02 }
                     : i === 23 ? { skill: 'Executioner Spin', radius: 0.02 }
                     : i === 32 ? { radius: 0.03 } : i === 37 ? { radius: 0.02 } : undefined,

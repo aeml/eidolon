@@ -996,6 +996,7 @@ export class GameEngine {
 
     spawnTransientEffect(type, position, color, options = {}) {
         if (type === 'spin' && options.abilityName === 'Whirlwind' && options.source?.whirlwindCastEffect?.isActive) {
+            if (options.authoritativeShape) options.source.whirlwindCastEffect.setRadius(options.radius);
             return true;
         }
         let effectPosition = position;

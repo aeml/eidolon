@@ -4,7 +4,7 @@ import { getAbilityAreaRadius, getFlameWhipRadius, getWizardAbilityAreaRadius, W
 export const SELF_CENTERED_SHAPE_ABILITIES = new Set([
     'Purifying Wave', 'Guardian Embrace', 'Consecrated Ground',
     'Blessing of Resolve', 'Blessing of Zeal', "Heaven's Trumpet",
-    'Spirit Guardians', 'Spirit Guardians Boost', 'Guardian Roar', 'Executioner Spin', 'Time Warp'
+    'Spirit Guardians', 'Spirit Guardians Boost', 'Guardian Roar', 'Executioner Spin', 'Time Warp', 'Whirlwind'
 ]);
 export const AUTHORITATIVE_SHAPE_ABILITIES = new Set(['Teleport', 'Flame Whip', 'Radiant Strike', 'Healing Light', ...WIZARD_GROUND_ABILITIES, ...SELF_CENTERED_SHAPE_ABILITIES]);
 
@@ -100,7 +100,7 @@ export function getAbilityAoeRadius(className, canonicalSkillName, source = null
     const runeId = source?.skillRunes?.[runeSkill] || null;
     const runeRadius = runeId ? definition.runes?.[runeId] : null;
     const radius = Number.isFinite(runeRadius) ? runeRadius : definition.base;
-    if (className === 'Fighter' && ['Guardian Roar', 'Executioner Spin', 'Shattering Charge'].includes(canonicalSkillName)) return getAbilityAreaRadius(source, className, radius, canonicalSkillName);
+    if (className === 'Fighter' && ['Guardian Roar', 'Executioner Spin', 'Shattering Charge', 'Whirlwind'].includes(canonicalSkillName)) return getAbilityAreaRadius(source, className, radius, canonicalSkillName);
     if (className === 'Cleric' && (SELF_CENTERED_SHAPE_ABILITIES.has(canonicalSkillName) || ['Radiant Strike', 'Healing Light'].includes(canonicalSkillName))) {
         return Number.isFinite(radius) && radius > 0 ? getAbilityAreaRadius(source, className, radius, canonicalSkillName) : null;
     }
@@ -111,7 +111,7 @@ export function getAbilityAoeRadius(className, canonicalSkillName, source = null
 export function getAbilityAoeArc(className, canonicalSkillName, source = null) {
     if (className === 'Wizard' && canonicalSkillName === 'Teleport' && getAbilityAoeRadius(className, canonicalSkillName, source)) return 2 * Math.PI;
     if (className === 'Wizard' && canonicalSkillName === 'Time Warp') return 2 * Math.PI;
-    if (className === 'Fighter' && ['Guardian Roar', 'Executioner Spin'].includes(canonicalSkillName)) return 2 * Math.PI;
+    if (className === 'Fighter' && ['Guardian Roar', 'Executioner Spin', 'Whirlwind'].includes(canonicalSkillName)) return 2 * Math.PI;
     if (className === 'Cleric' && canonicalSkillName === 'Healing Light' && getAbilityAoeRadius(className, canonicalSkillName, source)) return 2 * Math.PI;
     if (className === 'Cleric' && SELF_CENTERED_SHAPE_ABILITIES.has(canonicalSkillName)) return 2 * Math.PI;
     if (className === 'Wizard' && WIZARD_GROUND_ABILITIES.has(canonicalSkillName)) return 2 * Math.PI;

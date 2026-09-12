@@ -214,6 +214,12 @@ export class AbilityController {
         if (!AUTHORITATIVE_SHAPE_ABILITIES.has(data.skillName) || (!singleHeal && (!Number.isFinite(data.radius) || data.radius <= 0 ||
             !Number.isFinite(data.arc) || data.arc <= 0 || data.arc > 2 * Math.PI))) return;
         const player = this.engine.player;
+        if (data.skillName === 'Whirlwind' && player.whirlwindCastEffect?.isActive) {
+            // Resize the existing moving spin; do not restart its pulse clock,
+            // animation or lifetime when the accepted cast corrects prediction.
+            player.whirlwindCastEffect.setRadius(data.radius);
+            return;
+        }
         const predicted = (this.engine.effects || []).filter(effect => effect.isActive &&
             effect.abilityShape?.sourceId === player.id && effect.abilityShape?.skillName === data.skillName);
         if (singleHeal) {

@@ -463,6 +463,19 @@ class ProceduralAbilityCastEffect {
         this.duration = this.elapsed + remaining;
     }
 
+    setRadius(radius) {
+        if (!this.whirlwindSource || !this.isActive || !Number.isFinite(radius) || radius < 6 || radius > 8.1 + 1e-6) return;
+        const previous = this.root.userData.gameplayRadius;
+        if (!(previous > 0)) return;
+        this.root.scale.x *= radius / previous;
+        this.root.scale.z *= radius / previous;
+        this.root.userData.gameplayRadius = radius;
+        if (this.abilityShape) {
+            this.abilityShape.radius = radius;
+            this.abilityShape.authoritative = true;
+        }
+    }
+
     update(dt) {
         if (!this.isActive) return;
         const step = Math.max(0, Number(dt) || 0);

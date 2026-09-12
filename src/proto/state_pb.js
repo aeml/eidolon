@@ -3993,6 +3993,7 @@ export const eidolon = $root.eidolon = (() => {
              * @property {number|null} [spellFocusMultiplier] Entity spellFocusMultiplier
              * @property {number|null} [berserkerModeMultiplier] Entity berserkerModeMultiplier
              * @property {number|null} [lastStandMultiplier] Entity lastStandMultiplier
+             * @property {number|null} [whirlwindRadius] Entity whirlwindRadius
              * @property {number|null} [jumpStartX] Entity jumpStartX
              * @property {number|null} [jumpStartY] Entity jumpStartY
              * @property {number|null} [jumpStartZ] Entity jumpStartZ
@@ -4944,6 +4945,14 @@ export const eidolon = $root.eidolon = (() => {
             Entity.prototype.lastStandMultiplier = 0;
 
             /**
+             * Entity whirlwindRadius.
+             * @member {number} whirlwindRadius
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.whirlwindRadius = 0;
+
+            /**
              * Entity jumpStartX.
              * @member {number} jumpStartX
              * @memberof eidolon.state.Entity
@@ -5299,6 +5308,8 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 121, wireType 5 =*/973).float(message.berserkerModeMultiplier);
                 if (message.lastStandMultiplier != null && $Object.hasOwnProperty.call(message, "lastStandMultiplier") && !$Object.is(message.lastStandMultiplier, 0))
                     writer.uint32(/* id 122, wireType 5 =*/981).float(message.lastStandMultiplier);
+                if (message.whirlwindRadius != null && $Object.hasOwnProperty.call(message, "whirlwindRadius") && !$Object.is(message.whirlwindRadius, 0))
+                    writer.uint32(/* id 123, wireType 5 =*/989).float(message.whirlwindRadius);
                 if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
                     for (let i = 0; i < message.$unknowns.length; ++i)
                         writer.raw(message.$unknowns[i]);
@@ -6414,6 +6425,15 @@ export const eidolon = $root.eidolon = (() => {
                                 delete message.lastStandMultiplier;
                             continue;
                         }
+                    case 123: {
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.whirlwindRadius = value;
+                            else
+                                delete message.whirlwindRadius;
+                            continue;
+                        }
                     case 81: {
                             if (wireType !== 5)
                                 break;
@@ -6914,6 +6934,9 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.lastStandMultiplier != null && $Object.hasOwnProperty.call(message, "lastStandMultiplier"))
                     if (typeof message.lastStandMultiplier !== "number")
                         return "lastStandMultiplier: number expected";
+                if (message.whirlwindRadius != null && $Object.hasOwnProperty.call(message, "whirlwindRadius"))
+                    if (typeof message.whirlwindRadius !== "number")
+                        return "whirlwindRadius: number expected";
                 if (message.jumpStartX != null && $Object.hasOwnProperty.call(message, "jumpStartX"))
                     if (typeof message.jumpStartX !== "number")
                         return "jumpStartX: number expected";
@@ -7366,6 +7389,9 @@ export const eidolon = $root.eidolon = (() => {
                 if (object.lastStandMultiplier != null)
                     if (!$Object.is($Number(object.lastStandMultiplier), 0))
                         message.lastStandMultiplier = $Number(object.lastStandMultiplier);
+                if (object.whirlwindRadius != null)
+                    if (!$Object.is($Number(object.whirlwindRadius), 0))
+                        message.whirlwindRadius = $Number(object.whirlwindRadius);
                 if (object.jumpStartX != null)
                     if (!$Object.is($Number(object.jumpStartX), 0))
                         message.jumpStartX = $Number(object.jumpStartX);
@@ -7552,6 +7578,7 @@ export const eidolon = $root.eidolon = (() => {
                     object.spellFocusMultiplier = 0;
                     object.berserkerModeMultiplier = 0;
                     object.lastStandMultiplier = 0;
+                    object.whirlwindRadius = 0;
                 }
                 if (message.id != null && $Object.hasOwnProperty.call(message, "id"))
                     object.id = message.id;
@@ -7840,6 +7867,8 @@ export const eidolon = $root.eidolon = (() => {
                     object.berserkerModeMultiplier = options.json && !$isFinite(message.berserkerModeMultiplier) ? $String(message.berserkerModeMultiplier) : message.berserkerModeMultiplier;
                 if (message.lastStandMultiplier != null && $Object.hasOwnProperty.call(message, "lastStandMultiplier"))
                     object.lastStandMultiplier = options.json && !$isFinite(message.lastStandMultiplier) ? $String(message.lastStandMultiplier) : message.lastStandMultiplier;
+                if (message.whirlwindRadius != null && $Object.hasOwnProperty.call(message, "whirlwindRadius"))
+                    object.whirlwindRadius = options.json && !$isFinite(message.whirlwindRadius) ? $String(message.whirlwindRadius) : message.whirlwindRadius;
                 return object;
             };
 

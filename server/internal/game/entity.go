@@ -316,6 +316,7 @@ type Entity struct {
 	RuneArmorBuffEndTime        time.Time       `json:"-"`
 	WhirlwindTickCount          int             `json:"-"` // For extended whirlwind duration
 	WhirlwindActive             bool            `json:"whirlwindActive,omitempty"`
+	WhirlwindRadius             float64         `json:"-"`
 	WhirlwindEndTime            time.Time       `json:"-"`
 	WhirlwindRuneID             string          `json:"-"`
 	WhirlwindStartTime          time.Time       `json:"-"`
@@ -964,6 +965,7 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		GuardianEmbraceRadius:   e.GuardianEmbraceAreaRadius(),
 		WhirlwindActive:         e.WhirlwindActive && !e.Disconnected,
 		WhirlwindEndTime:        e.WhirlwindEndTime,
+		WhirlwindRadius:         e.WhirlwindRadius,
 		SpiritEndTime:           e.SpiritEndTime,
 		LastSpiritTick:          e.LastSpiritTick,
 		IsCharging:              e.IsCharging,
@@ -1113,6 +1115,7 @@ func (w *World) copyEntity(v *Entity) *Entity {
 		SpiritsActive:         v.SpiritsActive,
 		WhirlwindActive:       v.WhirlwindActive && !v.Disconnected,
 		WhirlwindEndTime:      v.WhirlwindEndTime,
+		WhirlwindRadius:       v.WhirlwindRadius,
 		SpiritsBoosted:        v.SpiritsBoosted,
 		SpiritRadius:          v.SpiritAreaRadius(),
 		SpiritGuardiansRuneID: v.ActiveSpiritRune(),

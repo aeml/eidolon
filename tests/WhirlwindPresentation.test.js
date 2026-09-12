@@ -21,6 +21,70 @@ function fixture(quality, extended, remote = false) {
 }
 
 describe('Whirlwind presentation', () => {
+    test.each(['high', 'low'])('%s accepted radius resizes a running prediction without replay or clock reset', quality => {
+        const { source, engine } = fixture(quality, true);
+        Actor.prototype.spawnAbilityPresentation.call(source, engine, 'Whirlwind', source.position);
+        const effect = source.whirlwindCastEffect;
+        effect.update(.4);
+        const controller = new AbilityController(engine);
+        controller.reconcileLocalAbilityShape({ skillName: 'Whirlwind', radius: 8.1, arc: 2 * Math.PI });
+        expect(source.whirlwindCastEffect).toBe(effect);
+        expect(effect.elapsed).toBe(.4);
+        expect(effect.duration).toBe(2);
+        expect(engine.effects).toHaveLength(1);
+        expect(effect.abilityShape).toMatchObject({ radius: 8.1, authoritative: true });
+        effect.root.updateMatrixWorld(true);
+        const boundary = effect.root.children.find(child => child.userData.normalizedGameplayRadius === 1);
+        expect(boundary.getWorldScale(new THREE.Vector3()).x).toBeCloseTo(8.1, 8);
+        controller.reconcileLocalAbilityShape({ skillName: 'Whirlwind', radius: 6.12, arc: 2 * Math.PI });
+        effect.root.updateMatrixWorld(true);
+        expect(boundary.getWorldScale(new THREE.Vector3()).x).toBeCloseTo(6.12, 8);
+        expect(source.playAbilityAnimation).not.toHaveBeenCalled();
+        stopWhirlwindPresentation(source);
+    });
+
+    test.each(['high', 'low'])('%s rank-private protobuf observer and partial updates retain trained boundary', quality => {
+        const { source, engine } = fixture(quality, true, true);
+        const snapshot = fields => eidolon.state.Entity.decode(eidolon.state.Entity.encode({ id: source.id, ...fields }).finish());
+        engine.syncRemoteSupportEffects(source, snapshot({ whirlwindActive: true, whirlwindDuration: 1.4, whirlwindRadius: 8.1 }));
+        const effect = source.whirlwindCastEffect;
+        expect(effect.root.userData.gameplayRadius).toBeCloseTo(8.1, 6);
+        source.talentRanks = { FTR_04: 5 }; // Observer's stale private data is irrelevant.
+        engine.syncRemoteSupportEffects(source, { whirlwindDuration: 1.1 });
+        expect(effect.root.userData.gameplayRadius).toBeCloseTo(8.1, 6);
+        engine.syncRemoteSupportEffects(source, { whirlwindRadius: 6.12 });
+        expect(source.whirlwindCastEffect).toBe(effect);
+        expect(effect.root.userData.gameplayRadius).toBeCloseTo(6.12, 8);
+        engine.syncRemoteSupportEffects(source, snapshot({}));
+        expect(source.whirlwindCastEffect).toBeNull();
+        expect(source.whirlwindRadius).toBe(0);
+    });
+
+    test('a cast event arriving after an observer snapshot resizes the same effect without restarting it', () => {
+        const { source, engine } = fixture('high', true, true);
+        engine.syncRemoteSupportEffects(source, { whirlwindActive: true, whirlwindDuration: 1.2, whirlwindRadius: 6 });
+        const effect = source.whirlwindCastEffect;
+        effect.update(.2);
+        const animations = source.playAbilityAnimation.mock.calls.length;
+        new AbilityController(engine).triggerRemoteAbilityVisuals(source, 'Whirlwind', source.position.x, source.position.z,
+            { radius: 8.1, arc: 2 * Math.PI });
+        expect(source.whirlwindCastEffect).toBe(effect);
+        expect(effect.elapsed).toBe(.2);
+        expect(effect.duration).toBe(1.2);
+        expect(effect.root.userData.gameplayRadius).toBe(8.1);
+        expect(engine.effects).toHaveLength(1);
+        expect(source.playAbilityAnimation).toHaveBeenCalledTimes(animations);
+        stopWhirlwindPresentation(source);
+    });
+
+    test.each([undefined, 0, -1, 9, Infinity, NaN, '8.1'])('legacy/invalid remote radius %s uses untrained geometry', radius => {
+        const { source, engine } = fixture('low', false, true);
+        source.talentRanks = { FTR_04: 5, FTR_33: 5, FTR_38: 5 };
+        engine.syncRemoteSupportEffects(source, { whirlwindActive: true, whirlwindDuration: .8, whirlwindRadius: radius });
+        expect(source.whirlwindCastEffect.root.userData.gameplayRadius).toBe(6);
+        stopWhirlwindPresentation(source);
+    });
+
     test('a final in-flight snapshot cannot recreate an expired spin', () => {
         const { source, engine } = fixture('high', false, true);
         engine.syncRemoteSupportEffects(source, { whirlwindActive: true, whirlwindDuration: 0.03 });

@@ -1,4 +1,8 @@
-import { getAbilityAoeRadius } from './abilityRadii.js';
+// Protobuf float32 may round the maximum slightly above 8.1. Observers never
+// infer another player's private training, and legacy packets use base radius.
+export function readWhirlwindRadius(value, fallback = 6) {
+    return Number.isFinite(value) && value >= 6 && value <= 8.1 + 1e-6 ? Math.min(8.1, value) : fallback;
+}
 
 export function getWhirlwindCastDuration(actor) {
     return actor?.skillRunes?.Whirlwind === 'whirlwind_extended' ? 2 : 1;
@@ -11,6 +15,7 @@ export function stopWhirlwindPresentation(actor, { predictedOnly = false } = {})
     if (!actor) return false;
     actor.whirlwindActive = false;
     actor.whirlwindRemaining = 0;
+    actor.whirlwindRadius = 0;
     if (actor.currentAbilityAnimation?.skillName === 'Whirlwind') {
         actor.currentAbilityAnimation = null;
         if (actor.state !== 'DEAD') {
@@ -26,10 +31,10 @@ export function stopWhirlwindPresentation(actor, { predictedOnly = false } = {})
 // survives older inactive snapshots until it is acknowledged or rejected; an
 // acknowledged spin ends immediately on an explicit authoritative clear.
 export function syncWhirlwindPresentation(engine, actor, payload) {
-    if (payload.whirlwindActive === undefined && payload.whirlwindDuration === undefined) return;
-    const value = Number(payload.whirlwindDuration);
+    if (payload.whirlwindActive === undefined && payload.whirlwindDuration === undefined && payload.whirlwindRadius === undefined) return;
+    const value = Number(payload.whirlwindDuration ?? actor.whirlwindRemaining);
     const remaining = Number.isFinite(value) ? Math.max(0, Math.min(2, value)) : 0;
-    const active = payload.whirlwindActive === true && remaining > 0 && actor.state !== 'DEAD';
+    const active = (payload.whirlwindActive ?? actor.whirlwindActive) === true && remaining > 0 && actor.state !== 'DEAD';
     const previousRemaining = actor.whirlwindLastSnapshotRemaining || 0;
     actor.whirlwindLastSnapshotRemaining = active ? remaining : 0;
     if (!active) {
@@ -44,16 +49,19 @@ export function syncWhirlwindPresentation(engine, actor, payload) {
     if (!actor.whirlwindCastEffect?.isActive && previousRemaining > 0 && remaining <= previousRemaining) return;
     actor.whirlwindActive = true;
     actor.whirlwindRemaining = remaining;
+    actor.whirlwindRadius = readWhirlwindRadius(payload.whirlwindRadius,
+        payload.whirlwindRadius === undefined ? readWhirlwindRadius(actor.whirlwindRadius) : 6);
     if (!actor.whirlwindCastEffect?.isActive) {
         engine.spawnTransientEffect?.('spin', actor.position, 0xd7dbe0, {
             source: actor, abilityName: 'Whirlwind', abilityLayer: 0,
-            radius: getAbilityAoeRadius('Fighter', 'Whirlwind', actor),
+            radius: actor.whirlwindRadius, arc: 2 * Math.PI, authoritativeShape: true,
             whirlwindDuration: remaining
         });
         actor.playAbilityAnimation?.('Whirlwind', { duration: remaining });
     }
     if (actor.whirlwindCastEffect) {
         actor.whirlwindCastEffect.authoritativeSeen = true;
+        actor.whirlwindCastEffect.setRadius(actor.whirlwindRadius);
         actor.whirlwindCastEffect.setRemaining(remaining);
     }
 }

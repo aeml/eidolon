@@ -3,6 +3,7 @@ import { applyOfflineHealing } from '../core/AbilityHealing.js';
 import { getFighterAbilityDamageMultiplier } from './fighterAbilityDamage.js';
 import { clipDungeonEffectSegment } from './dungeonEffectGeometry.js';
 import { stopWhirlwindPresentation } from './whirlwindPresentation.js';
+import { getAbilityAoeRadius } from './abilityRadii.js';
 
 const offline = actor => actor && !actor.isRemote && !actor.isMultiplayer && !actor.gameEngine?.isMultiplayer;
 
@@ -23,7 +24,7 @@ export function beginOfflineWhirlwind(source, engine, isFriendly, combo = false)
     let budget = Math.trunc((source.stats.damage * .8 + source.stats.strength * 2) * 1.3 *
         getFighterAbilityDamageMultiplier(source, 'Whirlwind'));
     if (combo) budget = Math.trunc(budget * 1.5);
-    source.offlineWhirlwind = { rune, total, budget, elapsed: 0, tick: 0, seen: new Set(),
+    source.offlineWhirlwind = { rune, total, budget, radius: getAbilityAoeRadius('Fighter', 'Whirlwind', source), elapsed: 0, tick: 0, seen: new Set(),
         engine, instance: engine?.currentInstanceId || '', isFriendly };
     source.whirlwindTimer = 0;
     source.whirlwindDuration = total * .5;
@@ -57,8 +58,8 @@ export function advanceOfflineWhirlwind(source, dt, engine) {
             const radius = Number.isFinite(target.radius) ? Math.max(0, target.radius) : 0;
             const dx = source.position.x - target.position.x, dz = source.position.z - target.position.z;
             const distance = Math.hypot(dx, dz);
-            // Same fixed six-unit visible boundary as the authoritative spin.
-            if (distance > 6 + radius || clipDungeonEffectSegment(rects, source.position, target.position).blocked) continue;
+            // The paid cast's trained boundary remains fixed across pulses.
+            if (distance > cast.radius + radius || clipDungeonEffectSegment(rects, source.position, target.position).blocked) continue;
             applyOfflineAbilityHit(source, target, damage, 'Whirlwind', engine?.floatingTextManager, '#ff8800');
             if (!cast.seen.has(target.id)) {
                 cast.seen.add(target.id); newHits++;
