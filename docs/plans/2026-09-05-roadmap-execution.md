@@ -5,7 +5,67 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 18:49 UTC
+## Current checkpoint — September 12, 19:03 UTC
+
+Previous/current goal turns PROGRESS. Implemented actualGuardianRoar protection
+parity and truthfulstatus, reproduced/fixed subframeperiodicexpiry, retained
+Tripwirefullregression results. FullgoalACTIVE; rootledger-onlyNEVERPUSHROOT.
+No live/version/soakchanges. Primary506e3200 and integrated695cd8d7 unchanged.
+
+- New WT `/tmp/eidolon-1-1-guardian-roar-protection-20260912`, branch
+  work/1-1-guardian-roar-protection fromprimary506e3200, clean/devpushed
+  **be6b1193db72a6f429ac95766272f7a4cb72b4a3**. User-facing assumption announced:
+  standardizeRoar on existingoffline30%damage reduction, **replace** online20%
+  armorapproximation, notstackboth. Retains35mana/30CD,10sbase+paidarea/duration,
+  taunt/bosspermissions/combo/recipientrules. Defensiveincomingstep checksactual
+  deadline, afterFortress/beforeabsorption, includingNPCs,hazards,reflection.
+  Offlineintegerrounding/subframeexpiry matches; periodichelpernowpassesoffset
+  whenRoaractive. Replicatedtrackerfills/clears30%displaystrengthwithoutHP/stat
+  mutation; explicitcatalogcopy30%/10sbase. No `.01`regen orencounterstatstuning.
+  REDclient5fail4pass1.936s, server0.620s provedmissingmitigation/shieldorder/
+  armorstat substitution. Firstgreen exposedrealperiodicexpiryoffsetmissing and
+  oldarmor-only contracts. Correctedactualoffset; area/party/NPC/Masterytests
+  nowassertreal70-of100damage, preservingrange/point/taunt/deadlineguards.
+  Finalclient7suites81PASS4.313s; serverfocusedrace22.644s includespaidcaster/
+  party actualSkeletonhits, area,expiry,NPClifecycle,hazard/reflection,shield/
+  Fortresscomposition. Nativeobserver2suites17PASS1.606s, lint/gofmt/diff/assets
+  PASS. Logs `/tmp/eidolon-roar-protection-*-20260912.log`.
+  Docs/draft1.1note2026-09-12-guardian-roar-protection.md.
+- **CI34712906594 ACTIVE** exactbe6, client/serverrunning. **52996 ACTIVE —
+  sole nativeGPU**, exactfrozenbe6, runIDroarprotection0912, routeguardian-roar-area,
+ 18185/18186/41875. Log `/tmp/eidolon-roar-protection-native-20260912.log`.
+  Firstfiveactualnormal/saved High/Lowarea casts passed; Masteryduration/expiry
+  and newlyaddedrealincoming sequence stillrunning. SharedFortressincominghelper
+  nowacceptsexplicitRoarprofile, defaultFortresschecks/evidencenamespreserved.
+  Roarrouteadds30%cardassertion andbaseline→paid35mana→3protectedordinary
+  Skeletonhits→naturalexpiry→3unprotectedhits, observedarmorunchanged. No
+  fakehits/HP/timers/training. Baseline2→1wouldproveon/off, notuniquely30%;
+  exactstrengthprovenbyactualreceiving tests. FreezeWT,pollsamehandle; terminal/
+  archive/credentialscan/exactownedcleanup BEFOREanothernative. Nointegrationyet.
+- Tripwire **95636 TERMINALPASS** completecorrectedlocalclient410suites6395tests
+  360.246s. Sameefda8f9f CI34712331175 client410/6395/135.117s andserverPASS;
+  browser3shardsACTIVE. EarlierCI34711930441terminalFAILED (retained6fixture
+  failures); no cancellation. TripwireWTlatestdocs-only **f44ba3e2**, clean,
+  oneaheadofdevorigin; runtime d4a0017f/fixtureefda unchanged. Nativeactualpaid/
+  trained/savedtrap route stillNOTauthored/run, notintegrated. Futureactualinput
+  route mustplaceatfeet thenmoveaway/lureanordinaryenemy: enemy'snormalmelee
+  stopdistance canexceedstationarytraptriggerdistance; don'tinjecttargetposition.
+- **CI34711998572 ACTIVE** integratedf9ddf686 (RogueTech/QAack+Fortress/Blade):
+  client/serverPASS, threebrowsersactive. Thisdoesnotincludeprimary506e'slater
+  nativepurchase-recoverytestmerge ornewRoar/Tripwire runtime. Priorfullcombined
+  f021/34710916056SUCCESSretained. NoadditionalCIreruns/cancellations.
+- Party diagnosticremainsa7d6ff9e: finalRoguedeath/3202HPWarden, mixedslam/
+  ordinaryhits, lategroundinput, nofullclear. Nextmeaningfuldriverwork isbatching
+  redundantbrowserobservations/reducingmeasuredinputoverhead whilekeepingnormal
+  click/ray/collision/issuedfailureguardsthenreal4partyreplay. Do notconcludethat
+  largerheals/lowerbossdamagealoneisnecessaryfromautomation'slateAoEdodges.
+
+Next: actualRoaroutcome/CI, Tripwirenative, combinedregression, partyclear/
+individualcredit/Waterhandoff andremainingall160/earnedfirsthour/fivedungeons/
+multiseeds/reconnect/raids/DarkRealm/exactlive. All1.2–1.10 remainsrequired;
+1.1notreleased, no1.0.66planned. Lastknownlive1.0.65/f9ebnotfreshlyprobed.
+
+## Previous checkpoint — September 12, 18:49 UTC
 
 Previous semver-only reply was conversational/no implementation progress; this
 continuation PROGRESS: accepted native results, integrated verified components,
