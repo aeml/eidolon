@@ -35,6 +35,27 @@ does not prove all160 talent consumers, whole dungeon balance or live release.
 
 ## Draft 1.1.0 patch note (unreleased)
 
+## Authored native phone route (execution pending)
+
+The new blade-storm-area route uses a dedicated allowlisted Rogue, normal phone
+branch/talent purchases with actual wire ranks and exact point accounting,
+rank0/1/5 High/Low casts and saved rank5 landscape login. Only level is prepared;
+resources recover through normal town healing and cooldowns expire naturally.
+No cast, projectile, rank, timer or endpoint is assigned. Each paid30mana cast
+must show an attached authoritative cone at the trained radius and five distinct
+server terminal events at that distance, followed by replica removal. Server
+wall/intermediate-hit tests remain separate from this open-town flight check.
+
+The receiver observer forwards each message once even if another observer wraps
+it; missing geometry and optimistic ranks cannot manufacture success. The route
+is included once in full QA with zero retries. Focused2suites11testsPASS2.156s,
+changed-file lint, assets, shell syntax, single-scenario listing and diff passed.
+Logs `/tmp/eidolon-blade-storm-native-{focused,lint,assets,list}-20260912.log`.
+Runtime6cd11168 CI34709688359 currently client/serverPASS, browser shardsactive.
+Actual native execution and final combined regression still required.
+
+## Draft 1.1.0 patch note (unreleased)
+
 - Blade Storm's five daggers now stop at their intended range and dungeon walls.
   Fine Motor training expands that range and its cone indicator consistently;
   targets crossed between frames can be hit without daggers passing through walls.
