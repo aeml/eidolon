@@ -46,6 +46,26 @@ server passed; three browser shards remain active at this entry. Original
 CI34711930441 is terminalFAILED with the retained six fixture failures; no
 running job was canceled or replaced. Native trap acceptance remains required.
 
+CI34712331175 subsequently completed SUCCESS on efda8f9f, including all three
+browser shards. No native/deployment pass is inferred from those manually
+skipped jobs. A new real-input Tripwire route is authored: normal town recovery,
+level-only/waypoint preparation, ordinary enemy chase across a placed trap,
+paid0/1/5 Mastery and Technique purchases, High/Low and saved ranks, actual trap
+replica/amount/removal and target root/expiry. No target-position, hit, rank or
+timer injection. Critical outcomes remain random (observed damage must equal
+stored base or its double); exact Technique probability boundaries retain their
+deterministic receiving tests. Healthy ordinary Skeletons are required so death
+cannot replace root-expiry evidence. This is prepared ability QA, not earned
+first-hour or dungeon balance.
+
+Route is allowlisted and included once in full QA with zero retries. Updated
+both independent stage/command lists. Four suites103tests PASS3.938s plus full
+lint/diff/assets, including real-message observer ownership and gate failure/
+cleanup contracts. Logs `/tmp/eidolon-tripwire-native-*-20260912.log`.
+Native execution is queued behind the active four-player run. App/runtime source
+is unchanged from accepted efda8f9f; retain a combined full regression after
+integration instead of attributing the earlier CI to these newly authored tests.
+
 ## Draft 1.1.0 patch note
 
 - Fixed Tripwire's damage and critical talents not affecting triggered traps.
