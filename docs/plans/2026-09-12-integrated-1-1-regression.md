@@ -23,3 +23,25 @@ Required afterward: inspect terminal results/artifacts, resolve any integration
 regression, run native Teleport65 and the instrumented four-role dungeon route
 when hardware is available, then complete the first-hour/all-dungeon/earned
 pacing/reconnect/balance gates for1.1.0. All1.2–1.10 scope remains intact.
+
+## First integrated rehearsal accepted; follow-up scope
+
+CI34670988965 at e2cd42f2 is TERMINAL SUCCESS. Client367suites/5465tests
+PASS100.597s plus full lint/audit/benchmark. Server game coverage97.027s/86.6%,
+full race301.947s and backup/restore/bench/build PASS. Browser shards1/2/3
+PASS40/50/26cases=116. Native, deployment and live checks were intentionally
+skipped by unchanged manual-event guards, not passed.
+
+Full logs `/tmp/eidolon-integrated-1-1-{client,server,browser1,browser2,browser3}
+-34670988965.log`; artifacts `/tmp/eidolon-integrated-1-1-shard1-JaX63B`,
+`/tmp/eidolon-integrated-1-1-shard2-49pR9L`,
+`/tmp/eidolon-integrated-1-1-shard3-XLnDMH`. Inspected broken/restored crystal
+presentation captures; their stage coloring is distinct. These mocked scenes
+are not earned raid repair, native/phone performance or full visual acceptance.
+
+After terminal completion, fast-forwarded this rehearsal branch through
+5ab1b96e (server Charge recovery/explicit death-QA cleanup) and9bb79ab6 (the
+already accepted65 phone surface fix port). Their focused evidence is recorded
+in their dedicated documents. Run another exact-source hosted regression on
+the combined changes; do not attribute e2cd42f2's result to these later edits.
+No new1.0.x candidate, milestone version bump or production push was made.
