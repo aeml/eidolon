@@ -27,3 +27,12 @@ stays in GameEngine. The architecture limit was not relaxed. Five expanded
 suites72tests passed1.581 seconds, including all active-buff, phone status,
 attached-effect, observer and architecture checks. Lint/diff passed.
 Logs `/tmp/eidolon-fortress-status-{red,green,expanded,lint}-20260912.log`.
+
+Corrected runtime replay11633 failed18.2 seconds after the rank-zero badge,
+countdown and character-effect checks passed. Its closing input targeted the
+launcher covered by the open reading panel. The existing visible Close button
+is the intended control (also used by the compact-status browser suite). The
+route now taps that button and explicitly checks the panel closes; no forced
+click, layout change or duration/upgrade assertion was substituted. Retained
+archive `/tmp/eidolon-fortress-status-failure-6yvMsn`; credential scan passed and
+owned services/ports were clear. A full corrected replay is still required.

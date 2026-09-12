@@ -87,7 +87,8 @@ test('Iron Fortress Mastery purchases extend visible protection and persist with
             await expect(badge).toHaveCount(0);
             await expect(page.locator('#phone-status-panel [data-buff-id="well_rested"]')).toBeVisible();
         }
-        await page.locator('#btn-phone-status').tap();
+        await page.locator('#btn-close-phone-status').tap();
+        await expect(page.locator('#phone-status-panel')).toBeHidden();
         console.log(`[fortress-native] rank=${rank}, rune=${rune || 'none'}, quality=${quality}, expected=${expected}, naturalExpiry=${verifyExpiry}`);
     }
 
