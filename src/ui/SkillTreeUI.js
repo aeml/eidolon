@@ -1,5 +1,6 @@
 import { CONSTANTS } from '../core/Constants.js';
 import { MobileSkillTree } from './MobileSkillTree.js';
+import { DesktopTalentConfirmation } from './DesktopTalentConfirmation.js';
 
 /**
  * Skill Tree UI module — handles skill trees, talents, runes, combos, and respec.
@@ -32,6 +33,8 @@ export class SkillTreeUI {
         this.onSelectRune = null;
 
         if (ctx.isMobile && this.skillTreeWindow?.contains(this.skillTreeContent)) this.mobile = new MobileSkillTree(this);
+        if (!this.mobile) this.desktopTalents = new DesktopTalentConfirmation(() => this.ctx.getLastPlayer(),
+            () => this.renderSkillTree(this.desktopClassType));
 
         // --- Event listeners ---
         if (this.btnCloseSkillTree) {
@@ -204,6 +207,8 @@ export class SkillTreeUI {
     renderSkillTree(classType) {
         if (!classType) return;
         if (this.mobile) return this.mobile.render(classType);
+        this.desktopClassType = classType;
+        this.desktopTalents.synchronize(this.ctx.getLastPlayer());
 
         // Tabs at top
         this.skillTreeContent.innerHTML = '';
@@ -229,14 +234,17 @@ export class SkillTreeUI {
 
     handleBuildActionResult(payload) {
         this.mobile?.receive(payload);
+        this.desktopTalents?.receive(payload);
     }
 
     handleBuildConnectionState(state) {
         this.mobile?.connection(state);
+        this.desktopTalents?.connection(state);
     }
 
     handleBuildSnapshot() {
         this.mobile?.synchronizeAfterReconnect();
+        this.desktopTalents?.snapshot();
     }
 
     createSkillTreeTabs(classType) {
@@ -507,14 +515,11 @@ export class SkillTreeUI {
         const resetBtn = document.createElement('button');
         resetBtn.className = 'ui-button';
         resetBtn.textContent = 'Reset Talents';
+        resetBtn.disabled = this.desktopTalents.disabled || spentPoints === 0 || !this.onResetTalents;
         resetBtn.onclick = () => {
-            // Optimistic UI update; server remains authoritative.
-            const p = this.ctx.getLastPlayer();
-            if (p) {
-                p.talentRanks = {};
-            }
-            this.renderSkillTree(classType);
-            if (this.onResetTalents) this.onResetTalents();
+            this.desktopTalents.request('Talent reset',
+                p => !Object.values(p?.talentRanks || {}).some(rank => rank > 0),
+                this.onResetTalents && (id => this.onResetTalents(id)));
         };
         resetWrap.appendChild(resetBtn);
 
@@ -535,6 +540,18 @@ export class SkillTreeUI {
 
         this.skillTreeContent.appendChild(resetWrap);
 
+        const confirmation = this.desktopTalents;
+        const feedback = confirmation.disconnected ? 'Connection interrupted. Waiting for your current build from the server.'
+            : confirmation.pending ? 'Waiting for the server. Your build has not been changed locally.' : confirmation.feedback;
+        if (feedback) {
+            const notice = document.createElement('div');
+            notice.className = 'build-action-feedback';
+            notice.setAttribute('role', confirmation.feedback && !confirmation.feedback.startsWith('Confirmed:') ? 'alert' : 'status');
+            notice.textContent = feedback;
+            notice.style.margin = '8px 0';
+            this.skillTreeContent.appendChild(notice);
+        }
+
         if (!visibleTalents) {
             const empty = document.createElement('div');
             empty.style.textAlign = 'center';
@@ -554,10 +571,14 @@ export class SkillTreeUI {
             const maxRank = t.maxRank || 1;
             const currentRank = (ranks && typeof ranks[t.id] === 'number') ? ranks[t.id] : 0;
             const isUnlocked = currentRank > 0;
-            const canRankUp = points > 0 && currentRank < maxRank;
+            const canRankUp = points > 0 && currentRank < maxRank && !confirmation.disabled && Boolean(this.onUnlockTalent);
 
             const node = document.createElement('div');
             node.className = 'skill-node';
+            node.dataset.talentId = t.id;
+            node.setAttribute('role', 'button');
+            node.setAttribute('aria-disabled', String(!canRankUp));
+            node.tabIndex = canRankUp ? 0 : -1;
 
             if (isUnlocked) {
                 node.classList.add('unlocked');
@@ -569,15 +590,14 @@ export class SkillTreeUI {
 
             if (canRankUp) {
                 node.onclick = () => {
-                    // Optimistic UI update; server remains authoritative.
-                    const p = this.ctx.getLastPlayer();
-                    if (p) {
-                        if (!p.talentRanks) p.talentRanks = {};
-                        const prev = p.talentRanks[t.id] | 0;
-                        p.talentRanks[t.id] = prev + 1;
+                    confirmation.request(`${t.name}, rank ${currentRank + 1}`,
+                        p => (p?.talentRanks?.[t.id] || 0) >= currentRank + 1,
+                        this.onUnlockTalent && (id => this.onUnlockTalent(t.id, id)));
+                };
+                node.onkeydown = event => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault(); node.click();
                     }
-                    this.renderSkillTree(classType);
-                    if (this.onUnlockTalent) this.onUnlockTalent(t.id);
                 };
             }
 

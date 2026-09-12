@@ -59,10 +59,11 @@ test(`Rogue utility ${technique ? 'Techniques reduce paid mana and cooldowns' : 
             await page.evaluate(installRogueUtilityObserver);
             const node = skills.locator('.skill-node').filter({ has: page.getByText(name, { exact: true }) });
             await expect(node).toHaveCount(1); await node.scrollIntoViewIfNeeded(); await node.click();
-            // Desktop ranks have an optimistic preview. Require the actual
-            // server rank AND the exact consumed point, not that preview.
+            // Require the actual wire rank, exact consumed point and UI
+            // confirmation of the identified request, not just card text.
             await expect.poll(() => page.evaluate(id => window.__rogueUtility.ranks?.[id], id)).toBe(rank);
             await expect.poll(() => page.evaluate(() => window.__rogueUtility.points)).toBe(points - 1);
+            await expect(skills.locator('.build-action-feedback')).toHaveText(`Confirmed: ${name}, rank ${rank}.`);
         }
         await page.locator('#btn-close-skills').click();
     }
