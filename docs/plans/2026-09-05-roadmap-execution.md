@@ -5,7 +5,43 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 23:33 UTC
+## Current checkpoint — September 12, 23:57 UTC
+
+PROGRESS under the player's feature-first policy. **1.1.0 pushed to master** from
+clean release WT `/tmp/eidolon-release-1-1-assembly-20260912`, exact
+**1de13c5375991faa96a34ef92e80cd721176ed6c**. Not yet verified deployed. Next:
+locate/watch this publishing workflow, resolve concrete failures, verify matching
+live frontend/backend versions and basic live smoke. Do not mark1.1 delivered
+until that evidence exists; full1.1–1.10 goal remains active. NEVER PUSH ROOT.
+
+- Cleric implementationd037ed17 merged into integrated24378329, including server
+  potency, full/delta wire, local/remote display and reversible offline defense/
+  movement/cadence. Focused108 client tests pass3.414s, server wire/race passes,
+  changed ESLint passes. Broader native/saved-build matrices deferred, not passed.
+- Release assembly634bde20 merges actual publishedf9eb1f30 ancestry and preserves
+  63–65 notes. Inspected conflicts retain newer development mechanics and published
+  historical annotations. Full Go package compile passes; full lint passes;
+  focused version/client259 tests pass3.083s; workflow/tooling/version checks pass
+  after explicitly updating old mandatory-full-suite expectations. Resource/PvP/
+  utility focused server checks pass. Logs `/tmp/eidolon-1-1-release-{lint,critical}.log`,
+  `/tmp/eidolon-release-1-1-{assembly-compile,version-focused}.log`,
+  `/tmp/eidolon-1-1-release-policy-final.log` (old runner-policy assertion fails
+  there; corrected rerun `/tmp/eidolon-1-1-runner-policy-final.log` passes4 tests).
+- Version/login/package/server/container/workflow identities now1.1.0; actual
+  index.html milestone notes added. Ordinary publishing uses newrelease-smoke
+  (real authenticated login/combat/portal + inventory), while exhaustive native
+  gallery/render/full-character checks require full_stabilization manual input
+  or EIDOLON_FULL_STABILIZATION repository variable. Long live animation matrix
+  similarly opt-in; live identity/smoke/town recovery retained. No new development
+  full-CI dispatch. Existing34725661007 still in_progress at last observation;
+  earlier34725102442 succeeded. Neither proves this new release candidate.
+- Old native16530 handle vanished; process inspection found no fresh-story
+  browser/runner process. Last log stops Roguelevel17/Earth walking ink30/60,
+  deaths0; NO full readiness pass. Owned api/mongo containersfreshrogueready0912
+  still exist. Archive/scan and exact disposable cleanup remain; don't restart
+  the long route merely to satisfy deferred exhaustive verification.
+
+## Historical checkpoint — September 12, 23:33 UTC
 
 **Subsequent user direction:** prioritize implementing ALL features over repeated
 exhaustive testing at each version. The roadmap's new feature-first policy
