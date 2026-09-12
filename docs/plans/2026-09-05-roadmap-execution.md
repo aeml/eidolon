@@ -5,7 +5,47 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 22:55 UTC
+## Current checkpoint — September 12, 23:04 UTC
+
+Previous turn PROGRESS; this continuation PROGRESS: verified healing gameplay,
+implemented/repeatedly verified the PvP completion race repair, and isolated a
+new exact poison-tick discrepancy. Full1.1–1.10 ACTIVE. NEVER PUSH ROOT.
+
+- Native36250 TERMINAL PASS on48713d22: Rogue28.6s, Cleric24.1s, zero retries.
+  Poison Coating pays30mana; Healing Light pays25/heals387; Guardian Embrace
+  pays40/three238heal events, no rejections. Archive
+  `/tmp/eidolon-healing-cursor-pass-h0JDzB`, scan0/exact cleanup. Cleric image
+  inspected: actual crowd overlap, healing aura/positive heal text retained.
+  This closes the prepared support check, not earned progression/performance.
+- Native92442 TERMINAL FAILURE on48713d22: Shadow Lunge39.7s passes69→82→82,
+  Serrated47.5s passes38→45→45. Poison37.5s baseline67 passes, trained expects80
+  but receives74; saved phase not reached. Archive
+  `/tmp/eidolon-arrival-status-failure-F0VJZM`, scan0/exact cleanup. Test snapshots
+  dexterity before aim; server computes poison at projectile impact. Well Rested
+  expiry/stat drift is a hypothesis only. Added read-only dispatch/received-damage
+  dexterity/rest diagnostics, retaining all numeric assertions. **252650565b80e1dc103f4016f099fb63732583f4**
+  clean/dev-pushed; two suites26PASS0.991s plus changed-file lint/diff. Updated
+  healing evidence/draft notes without claiming full status or Tripwire acceptance.
+- Sole native **46213 ACTIVE** frozen25265056: route talent-status, skillpoison,
+  runIDpoisonbudgetdiag0912, API18185/Mongo18186/web41875. Log
+  `/tmp/eidolon-poison-budget-diagnostic-native-20260912.log`. Preserve terminal
+  evidence and exact cleanup before another browser; no concurrent native.
+- Separate PvP repair WT `/tmp/eidolon-1-1-pvp-completion-race-20260912`, based on
+  integrated802d216a. Added concurrent transition regression, reproduces race
+  before fix0.074s. Delayed impacts now copy only relationship fields under
+  World→Entity order, one actor lock at a time, releasing before PvP lookup;
+  late-impact instance/death/stun checks remain. First repeated suite3x41.585s
+  passes. Removed avoidable heap snapshots after compiler escape review. Final
+  expanded relationship/PvE/safe-zone/party/actual2v2 suite3x41.223s PASS;
+  benchmark194.1ns/op,0B/op,0allocs/op (not full performance acceptance).
+  **03aef5b228e0a6a8356e227743a2c96c10ac7a17** clean/dev-pushed, draft notes/evidence
+  `docs/plans/2026-09-12-pvp-impact-relationship-race.md`. **CI34724352226 ACTIVE**.
+  Not yet integrated; full regression/actual ranked-party browser remain open.
+- **CI34723609678 ACTIVE** integrated802d216a: client/server/browser1/3passed,
+  browser2running. **CI34723986784 ACTIVE** healing48713d22: clientpassed/server
+  running. No new production/version/soak action or1.1/milestone approval.
+
+## Historical checkpoint — September 12, 22:55 UTC
 
 Previous goal turn PROGRESS. This continuation PROGRESS: isolated the Cleric
 support failure, implemented a focused cursor-healing correction, and found a
