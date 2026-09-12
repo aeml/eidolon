@@ -1,4 +1,13 @@
 export const PARTY_ROLES = ['Fighter', 'Cleric', 'Wizard', 'Rogue'];
+const PRIMARY = { Fighter: ['strength', 'Strong'], Rogue: ['dexterity', 'Agile'],
+    Wizard: ['intelligence', 'Brilliant'], Cleric: ['wisdom', 'Wise'] };
+const RARE_SLOTS = new Set(['mainHand', 'offHand', 'chest', 'legs', 'trinket1']);
+
+export function partyGearProfile(env = {}) {
+    const profile = env.EIDOLON_E2E_PARTY_GEAR || 'progressed';
+    if (!['common', 'progressed'].includes(profile)) throw new Error('Unknown party gear profile');
+    return profile;
+}
 
 export function partyGraphicsQuality(env = {}) {
     const quality = env.EIDOLON_E2E_PARTY_QUALITY || 'high';
@@ -16,8 +25,10 @@ export function requireIsolatedPartyFixture(env) {
     }
 }
 
-export function partyDungeonCharacter(catalog, quests, className, name) {
+export function partyDungeonCharacter(catalog, quests, className, name, profile = 'progressed') {
     if (!PARTY_ROLES.includes(className)) throw new Error('Unknown party role');
+    partyGearProfile({ EIDOLON_E2E_PARTY_GEAR: profile });
+    if (catalog.gearProfile && catalog.gearProfile !== profile) throw new Error('Party catalog profile mismatch');
     const tank = className === 'Fighter', rogue = className === 'Rogue';
     const names = {
         mainHand: { Fighter: 'Iron Sword', Cleric: 'Cleric Mace', Wizard: 'Wooden Staff', Rogue: 'Steel Dagger' }[className],
@@ -33,8 +44,16 @@ export function partyDungeonCharacter(catalog, quests, className, name) {
         neck: 'Pendant', trinket1: 'Amulet of Power', trinket2: 'Orb of Mana'
     };
     const equipment = Object.fromEntries(Object.entries(names).map(([slot, itemName]) => {
-        const item = catalog.items[itemName];
-        if (!item || item.level !== 30 || item.rarity !== 'Common') throw new Error(`Invalid catalog item ${itemName}`);
+        const rarity = profile === 'common' ? 'Common' : RARE_SLOTS.has(slot) ? 'Rare' : 'Uncommon';
+        const item = profile === 'common' ? catalog.items?.[itemName] : catalog.roleItems?.[className]?.[rarity]?.[itemName];
+        if (!item || item.level !== 30 || item.rarity !== rarity || (item.potency || 0) !== 0) {
+            throw new Error(`Invalid catalog item ${itemName}`);
+        }
+        if (profile === 'progressed' && (!item.name.startsWith(`${PRIMARY[className][1]} `) ||
+            !(item.stats?.[PRIMARY[className][0]] > 0) ||
+            (rarity === 'Rare' && (!item.name.endsWith(' of the Whale') || !(item.stats?.vitality > 0))))) {
+            throw new Error(`Wrong role affixes for ${className}: ${itemName}`);
+        }
         const { maxStack, statScaleVersion, ...rest } = item;
         return [slot, { ...rest, id: `party-${className}-${slot}`, max_stack: maxStack, stat_scale_version: statScaleVersion }];
     }));

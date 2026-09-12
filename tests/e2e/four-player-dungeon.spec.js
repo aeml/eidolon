@@ -1,7 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
-import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture, partyGraphicsQuality } from '../partyDungeonFixture.js';
+import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture, partyGraphicsQuality, partyGearProfile } from '../partyDungeonFixture.js';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
 import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyWarningInputPolicy, partyFormationArrival } from '../partyDungeonControls.js';
 import { attackPartyDamageTarget, selectPartyDamageBuff } from '../partyDamageRoleControls.js';
@@ -127,6 +127,12 @@ async function seedActor(page, credentials, character) {
     console.log(`[party-clear] prepare ${character.class}: verify replicated build`);
     await expect.poll(() => page.evaluate(() => window.game.player.level)).toBe(30);
     expect(await page.evaluate(() => window.game.player.baseStats)).toMatchObject(character.stats);
+    const equipped = await page.evaluate(() => Object.fromEntries(Object.entries(window.game.player.equipment)
+        .map(([slot, item]) => [slot, item && { name: item.name, level: item.level, rarity: item.rarity, stats: item.stats }])));
+    for (const [slot, item] of Object.entries(character.equipment)) {
+        expect(equipped[slot], `${character.class} must actually wear its prepared ${slot}`).toEqual({
+            name: item.name, level: item.level, rarity: item.rarity, stats: item.stats });
+    }
     const skills = character.unlocked_skills.slice(1);
     await expect.poll(() => page.evaluate(() => window.game.player.hotbar)).toEqual(expect.arrayContaining(skills));
     await observeRole(page);
@@ -137,6 +143,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
     test.setTimeout(dungeonExpeditionBudget('party') + 300_000);
     requireIsolatedPartyFixture(process.env);
     const graphicsQuality = partyGraphicsQuality(process.env);
+    const gearProfile = partyGearProfile(process.env);
     const output = execFileSync('go', ['test', './internal/game', '-run', '^TestPartyBrowserFixtureCatalog$', '-count=1', '-v'], {
         cwd: 'server', env: { ...process.env, EIDOLON_PARTY_FIXTURE_CATALOG: '1' }, encoding: 'utf8', timeout: 120_000
     });
@@ -163,7 +170,8 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             actorPage.setDefaultNavigationTimeout(30_000);
             const actor = { page: actorPage, className, login, failures: collectBrowserFailures(actorPage, baseURL) };
             actors.push(actor);
-            await seedActor(actorPage, login, partyDungeonCharacter(catalog, quests, className, login.username));
+            const character = partyDungeonCharacter(catalog, quests, className, login.username, gearProfile);
+            await seedActor(actorPage, login, character);
             if (graphicsQuality !== 'high') {
                 await actorPage.keyboard.press('Escape');
                 await actorPage.locator('#btn-settings').click();
@@ -173,7 +181,9 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             }
             await expect.poll(() => actorPage.evaluate(() => window.game.renderSystem.graphicsQuality)).toBe(graphicsQuality);
             console.log(`[party-clear] ${className} graphics: ${graphicsQuality}`);
-            console.log(`[party-clear] prepared ${className}: level30 common gear, rank5 primary mastery, seeded Earth story gate`);
+            console.log(`[party-clear] prepared ${className}: level30 ${gearProfile} gear, rank5 primary mastery, seeded Earth story gate`);
+            console.log('[party-loadout]', JSON.stringify({ class: className, profile: gearProfile,
+                items: Object.entries(character.equipment).map(([slot, item]) => ({ slot, name: item.name, rarity: item.rarity })) }));
         }
         const [tank, healer, ...damage] = actors;
         let formationAnchor = null;

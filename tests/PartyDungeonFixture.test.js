@@ -1,4 +1,4 @@
-import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture, partyGraphicsQuality } from './partyDungeonFixture.js';
+import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture, partyGraphicsQuality, partyGearProfile } from './partyDungeonFixture.js';
 
 const env = { EIDOLON_E2E_PARTY_DUNGEON: '1', EIDOLON_E2E_REGISTER: '1',
     EIDOLON_E2E_BUILD_MONGO_CONTAINER: 'eidolon-isolated-qa-mongo-party',
@@ -23,7 +23,7 @@ test.each(PARTY_ROLES)('%s fixture has legal level30 specialization without futu
     const items = new Proxy({}, { get: (_target, name) => ({ name, level: 30, rarity: 'Common',
         stats: { defense: 1 }, maxStack: 1, statScaleVersion: 1 }) });
     const quests = [{ id: 'chronicle_03_roots_remember', accepted: true, completed: false, count: 0 }];
-    const character = partyDungeonCharacter({ stats: { strength: 68 }, items }, quests, className, 'fixture');
+    const character = partyDungeonCharacter({ stats: { strength: 68 }, items }, quests, className, 'fixture', 'common');
     expect(character.level).toBe(30);
     expect(Object.keys(character.equipment)).toHaveLength(14);
     expect(new Set(Object.values(character.equipment).map(item => item.id)).size).toBe(14);
@@ -35,6 +35,37 @@ test.each(PARTY_ROLES)('%s fixture has legal level30 specialization without futu
     expect(character.gold).toBe(0);
     character.quests[0].count = 1;
     expect(quests[0].count).toBe(0);
+});
+
+test('progressed gear is the default and the original Common baseline remains an explicit diagnostic', () => {
+    expect(partyGearProfile()).toBe('progressed');
+    expect(partyGearProfile({ EIDOLON_E2E_PARTY_GEAR: 'common' })).toBe('common');
+    expect(() => partyGearProfile({ EIDOLON_E2E_PARTY_GEAR: 'legendary' })).toThrow();
+});
+
+test.each([
+    ['Fighter', 'strength', 'Strong'], ['Rogue', 'dexterity', 'Agile'],
+    ['Wizard', 'intelligence', 'Brilliant'], ['Cleric', 'wisdom', 'Wise']
+])('%s wears only its own role-affixed Uncommon/Rare catalog items', (className, stat, prefix) => {
+    const roleItems = { [className]: Object.fromEntries(['Uncommon', 'Rare'].map(rarity => [rarity,
+        new Proxy({}, { get: (_target, name) => ({ name: `${prefix} ${name}${rarity === 'Rare' ? ' of the Whale' : ''}`,
+            level: 30, rarity, stats: { [stat]: 9, ...(rarity === 'Rare' ? { vitality: 9 } : {}) },
+            maxStack: 1, statScaleVersion: 1 }) })])) };
+    const stats = { strength: 68, vitality: 68, dexterity: 39, intelligence: 39, wisdom: 39 };
+    const catalog = { gearProfile: 'progressed', stats, roleItems };
+    const c = partyDungeonCharacter(catalog, [], className, 'fixture');
+    const items = Object.values(c.equipment);
+    expect(items).toHaveLength(14);
+    expect(items.filter(item => item.rarity === 'Rare')).toHaveLength(5);
+    expect(items.filter(item => item.rarity === 'Uncommon')).toHaveLength(9);
+    expect(items.every(item => item.name.startsWith(`${prefix} `) && item.stats[stat] > 0)).toBe(true);
+    expect(c.stats).toEqual(stats); // No level-dependent stat bonus.
+    expect(Object.values(c.talent_ranks)).toEqual([5]);
+    expect(() => partyDungeonCharacter(catalog, [], className, 'fixture', 'common')).toThrow('profile mismatch');
+    const wrong = { ...catalog, roleItems: { [className]: { Rare: new Proxy({}, { get: () => ({
+        name: 'Hearty Iron Sword of the Bear', level: 30, rarity: 'Rare', stats: { strength: 9, vitality: 9 }
+    }) }) } } };
+    expect(() => partyDungeonCharacter(wrong, [], className, 'fixture')).toThrow('Wrong role affixes');
 });
 
 test('unknown roles and missing or inflated catalog gear fail closed', () => {
