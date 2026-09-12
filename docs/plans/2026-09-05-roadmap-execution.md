@@ -5,7 +5,86 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 18:21 UTC
+## Current checkpoint — September 12, 18:49 UTC
+
+Previous semver-only reply was conversational/no implementation progress; this
+continuation PROGRESS: accepted native results, integrated verified components,
+committed Tripwire runtime repair and corrected a full-suite fixture gap, and
+diagnosed retained party damage/input timing. Full roadmap ACTIVE. Root remains
+ledger-only, NEVER PUSH ROOT. No live/version/soak changes; no1.0.66planned.
+
+- QA resource acknowledgement **50451 TERMINALPASS3.8m/0retry**, frozen
+  e7b907ce; **CI34710643517SUCCESS** same source. Client403/6332/133.2s,
+  full game race292.718s and all browser shards pass; manualnative/deployskips.
+  Archive `/tmp/eidolon-qa-resource-ack-pass-KniFfg`, log
+  `/tmp/eidolon-qa-resource-ack-native-20260912.log`; scan0 and ownedcleanupPASS.
+  Docs56ea1669 accepted; primary15870d85 merges Rogue Techniques and this
+  actual QA cached-resource fix with Fortress/Blade Storm. Old185-vs27native
+  mismatch still not causally proved. Earlier94f **CI34710073474SUCCESS** too.
+- **CI34709857382 attempt2 SUCCESS** on cbdec after external DockerHub reset;
+  no code/test relaxation. **CI34710916056 SUCCESS** on f0218c8a (Fortress+
+  Blade Storm):409suites6362tests133.006s,game87.0%89.782s/race292.665s,
+  all three browser shardsPASS, native/deployment manuallyskipped. Logs
+  `/tmp/eidolon-integrated-blade-ci-{client,server}-34710916056.log`.
+  Combined Rogue/ack integration f9ddf686 focused3suites66PASS2.580s;
+  **CI34711998572 ACTIVE** exactf9, client/serverrunning. IntegratedWT latest
+  docs-only695cd8d7, clean, one ahead of devorigin. No Tripwire integration.
+- Tripwire WT `/tmp/eidolon-1-1-tripwire-damage-20260912`, branch
+  work/1-1-tripwire-damage from8561a773. Runtime **d4a0017f** fixes paid
+  ROG23/24 damage/critical consumers, server skill identity and multiplier,
+  actualoffline damage, friendly/online/instance/CC guards, planar radius,
+  60s expiry and dungeon-wall rejection. Cost25/CD15/root3/placement unchanged.
+  Focused6client suites84PASS5.502s; serverrace25.587s/lint/assetsPASS.
+  Full **CI34711930441 still ACTIVE**, clientFAILED6cases/409othersuitesPASS
+  because OfflineRogueMastery assumed every non-instant ability uses traveling
+  projectiles and supplied no effect scene. Server job stillrunning; notcanceled.
+  Corrected shared fixture labels Tripwire kindtrap, uses real scene and actual
+  stored trap/trigger; verifies snapshot damage after rank/gear changes, root,
+  single consumption. Original projectile checks unchanged. Corrected3suites82
+  PASS3.555s, serverrace15.013s/lint/diffPASS. **efda8f9f7819b8baf9555edc3119a63acc300dcb**
+  clean/devpushed; **CI34712331175 PENDING** behind original branchrun.
+  **Local full client95636 ACTIVE** on corrected source, log
+  `/tmp/eidolon-tripwire-full-client-corrected-20260912.log`; pollsamehandle.
+  Native actualpaid/trained/saved trap route NOT yet authored/run. Draft1.1
+  patch note/evidence docs2026-09-12-tripwire-damage.md; noacceptedintegration.
+- Party **89748 TERMINALFAILED16.2m**, c9ef1164, seed
+  -5560940123775574701/gen2/attempt0/no fallback. Twoactual4party town recoveries/
+  reentries retained progress;126groundsteps/5roomtraversals beforefirstboss.
+  Roguedied,Wardenlast3202/15000; healer10.77636units/7mana/18Light/8Embrace/
+  4990bossallyheal. Archive `/tmp/eidolon-party-ready-aura-failure-KiywKO`,
+  log `/tmp/eidolon-party-ready-aura-native-20260912.log`, scan0/ownedcleanupPASS.
+  PartyWT latest **a7d6ff9e** localdocs, notdevpushed; c9driverunchanged.
+  Corrected earlier182→183copy and blanketordinary-hit claim: slam uses same
+  physicalkind/halfarmor formula,12.5circle/2secondwarning. Retained lastsamples
+  F8/12,C4/4,W2/2hits coincide withwarningimpact; someC/W >7.5melee distance.
+  LastF/Rdodge clicks released1468/1567ms afterinputstart; actualsafe arrivals
+  1334/1992ms AFTERpredictedimpact. Roleinputs alreadyconcurrent; generalground
+  helper serial observations/settling measurablydelayrealinput. Improve measured
+  driver overhead without fakeinput/weakenedray/collision/issuedfailure guards
+  before treating this as a purebossdamage/healbalance failure. .01regen stays.
+- Previouslyqueued native purchase-recovery checks nowbothPASS on a6b7d307:
+  **67063 Spin27.1s**, **40395 Roar1.9m**, both0retry. Actualnormal/saved
+  High/Low areas andRoarMasteryexpiry pass. Neither logged a rate rejection,
+  so conditionalrejectionpath was not newlyexercised. Archives
+  `/tmp/eidolon-purchase-recovery-spin-pass-JXsA2v` and
+  `/tmp/eidolon-purchase-recovery-roar-pass-YHBnYv`; matchingnative logs, scan0/
+  ownedcleanupPASS. **No nativeGPU currentlyactive.** CI34695573901SUCCESS
+  reverifiedexacta6. Docs0bfad287 accepted; **primary latestclean506e3200**
+  merges verified testchanges. Not yet in integrated f9 CI.
+  Main-agent RoarLow screenshot reveals **0%damage reduction** card. Proven
+  mismatch: onlineGuardianRoarActive gives20%armor, offlineFighter sets.3damage
+  reduction; networkeffecttimer doesn't set thatofflinefield usedbycard. Must
+  resolveactualprotection parity AND truthfulstatuscopy withreceivingdamage
+  tests; don't merelyhidecopy orclaimfullabilityacceptance. Screenshot26FPS
+  incidental, not performance closure. See purchase-recoverycurrentdoc.
+
+Next: finish correctedTripwire fulltests/CI andnative, combinedregression,
+actualGuardianRoar protection/status parity, measuredpartyinputlatency then
+fullclear/individualcredit/Waterhandoff. All160consumers/earnedfirsthour/five
+dungeons/multiseeds/raids/DarkRealm/exactlive and1.2–1.10 remainrequired.
+Latestlive known1.0.65/f9eb, notfreshlyprobedthisturn. KeepgoalACTIVE.
+
+## Previous checkpoint — September 12, 18:21 UTC
 
 Previous/current goal turns PROGRESS: paid native Blade Storm verification and
 integration, reproduced/fixed QA cached-resource acknowledgements, retained party
