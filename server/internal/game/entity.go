@@ -507,6 +507,12 @@ func (e *Entity) GetEffectiveSpeed() float64 {
 func (e *Entity) RecalculateStats() {
 	defer func() {
 		e.applyWellRestedStats()
+		// Equipment and expired bonuses can lower the final player maximum.
+		// Clamp only excess HP after talents/sets/rest; never refill a deficit
+		// or change death state when recalculating a character.
+		if e.Type == TypePlayer && e.Health > e.MaxHealth {
+			e.Health = max(0, e.MaxHealth)
+		}
 		if e.Mana > e.MaxMana {
 			e.Mana = e.MaxMana
 		}
