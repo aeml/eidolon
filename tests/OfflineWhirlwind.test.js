@@ -26,6 +26,23 @@ function cast(f) { f.source.useAbility(f.source.position.clone(), f.engine, 'Whi
 function tick(f, dt) { f.source.update(dt, null, null, f.engine.chunkManager); }
 afterEach(() => { for (const actor of actors.splice(0)) actor.dispose(); jest.restoreAllMocks(); });
 
+test.each([{ FTR_4: 5 }, { FTR_04: 1, FTR_4: 5 }, { FTR_04: 5, FTR_4: 1 }])(
+    'legacy Technique ranks %j retain one trained footprint for both paid pulses', ranks => {
+        const f = fixture('', Object.freeze(ranks));
+        f.target.radius = .5; f.target.position.x = 7.09;
+        const outside = enemy(7.11); outside.radius = .5;
+        cast(f);
+        expect(f.source.stats.mana).toBe(270);
+        expect(f.source.offlineWhirlwind.radius).toBeCloseTo(6.6, 8);
+        expect(f.target.takeDamage).toHaveBeenCalledTimes(1);
+        const spin = f.engine.spawnTransientEffect.mock.calls.find(([type]) => type === 'spin');
+        expect(spin[3].radius).toBeCloseTo(6.6, 8);
+        f.source.talentRanks = {};
+        tick(f, .5);
+        expect(f.target.takeDamage).toHaveBeenCalledTimes(2);
+        expect(outside.takeDamage).not.toHaveBeenCalled();
+    });
+
 test.each([0, 1, 5].flatMap(rank => [0, 5].flatMap(generic => ['', 'whirlwind_extended'].map(rune => ({ rank, generic, rune }))))) (
     'paid area rank$rank generic$generic $rune reaches its visible edge and keeps the cast snapshot', ({ rank, generic, rune }) => {
         const f = fixture(rune, { FTR_04: rank, FTR_33: generic, FTR_38: generic });

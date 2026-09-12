@@ -31,8 +31,14 @@ export function getAbilityAreaRadius(player, className, base, skillName = null) 
     for (const talent of CONSTANTS.PASSIVE_TALENTS[className] || []) {
         const effect = talent.abilityArea;
         if (!effect || effect.skill && effect.skill !== skillName) continue;
-        const raw = Number(player?.talentRanks?.[talent.id] || 0);
-        const rank = Number.isFinite(raw) ? Math.max(0, Math.min(talent.maxRank, Math.floor(raw))) : 0;
+        // Old saves used unpadded IDs. Like server normalization, take the
+        // highest bounded rank, never sum aliases or rewrite the saved map.
+        const [prefix, number] = talent.id.split('_');
+        let rank = 0;
+        for (const id of new Set([talent.id, `${prefix}_${Number(number)}`])) {
+            const raw = Number(player?.talentRanks?.[id] || 0);
+            if (Number.isFinite(raw)) rank = Math.max(rank, Math.min(talent.maxRank, Math.floor(raw)));
+        }
         areaBonus += effect.radius * rank;
     }
     return base * Math.max(0, 1 + areaBonus);
