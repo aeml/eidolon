@@ -38,7 +38,7 @@ async function observeRole(page) {
         const game = window.game, original = game.handleServerMessage.bind(game);
         const e = window.__partyClearEvidence = { damageDone: 0, damageByTarget: {}, damageTaken: 0, allyHealing: 0,
             casts: {}, rejected: {}, sawDeath: false, combatReceipts: [], warningMoves: 0, warningEscapes: 0,
-            warningEarlyEscapes: 0, recentDamage: [], recentEscapes: [], recentAttackInputs: [], lastAcceptedCastAt: -Infinity,
+            warningEarlyEscapes: 0, recentDamage: [], recentEscapes: [], recentAttackInputs: [], recentRangedSpacing: [], lastAcceptedCastAt: -Infinity,
             lastUpdate: performance.now() };
         window.__partyClearWarnings = [];
         game.handleServerMessage = message => {
@@ -320,12 +320,45 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             await healer.page.keyboard.press(String(available.index + 1));
         }
 
+        async function spaceRangedRole(actor, target) {
+            const support = await healer.page.evaluate(() => ({ id: window.game.player.id,
+                range: Math.min(14, window.game.abilityController.getAbilityCastRange('Healing Light') - .5) }));
+            const plan = await actor.page.evaluate(async ({ id, encounter, support }) => {
+                const { planPartyRangedSpacing } = await import('/tests/partyRangedSpacing.js');
+                const { isEarnedRetreatPathClear, retreatStaysInEncounter } = await import('/tests/wizardHuntControls.js');
+                const g = window.game, p = g.player, enemy = g.remotePlayers.get(id), healer = g.remotePlayers.get(support.id);
+                const live = entity => entity?.isActive && entity.stats && entity.state !== 'DEAD' && entity.position;
+                // A new warning may arrive since the role's earlier safety read.
+                if (p.state === 'DEAD' || !live(enemy) || !live(healer) ||
+                    window.__partyClearWarnings.some(w => w.expires > performance.now() && w.instance === g.currentInstanceId)) return null;
+                const origin = { x: p.position.x, z: p.position.z, radius: p.radius || 1.25 };
+                const target = { x: enemy.position.x, z: enemy.position.z, range: g.getBasicAttackRangeForEntity(enemy) };
+                const healing = { x: healer.position.x, z: healer.position.z, range: support.range };
+                const bodies = [...g.remotePlayers.values()].filter(live)
+                    .map(other => ({ x: other.position.x, z: other.position.z, radius: other.radius || 1.25 }));
+                const step = planPartyRangedSpacing(origin, target, healing, delta =>
+                    retreatStaysInEncounter(encounter, { x: origin.x + delta.dx, z: origin.z + delta.dz }, origin.radius) &&
+                    isEarnedRetreatPathClear(g.collisionManager, p.position, origin.radius, { x: delta.dx, z: delta.dz }), bodies);
+                return step && { origin, target, healing, step };
+            }, { id: target.id, encounter: target.encounter, support });
+            if (!plan) return false;
+            const moved = await tryDungeonGroundStep(() => moveByGroundClick(actor.page, plan.step.dx, plan.step.dz,
+                { ...PARTY_FOLLOW_INPUT_OPTIONS, allowAlternatePaths: false, requireClearPath: true, timeout: 1500 }));
+            await actor.page.evaluate(({ plan, moved }) => {
+                const g = window.game, p = g.player, records = window.__partyClearEvidence.recentRangedSpacing;
+                records.push({ ...plan, moved, at: Date.now(), after: { x: p.position.x, z: p.position.z, dead: p.state === 'DEAD' } });
+                if (records.length > 20) records.shift();
+            }, { plan, moved });
+            return moved; // The next serial role step rereads warnings/range before attacking.
+        }
+
         async function actCombatRole(actor, policy, target) {
             if (actor === healer) return healParty({ allowMovement: policy.allowApproach });
             const tankEngaged = partyTankHasEngaged(await tank.page.evaluate(() => ({
                 damageByTarget: window.__partyClearEvidence.damageByTarget
             })), target.id);
             if (!tankEngaged) return; // Wait for a real tank hit, not just movement.
+            if (policy.allowApproach && await spaceRangedRole(actor, target)) return;
             const enemy = await actor.page.evaluate(id => {
                 const g = window.game, p = g.player, e = g.remotePlayers.get(id);
                 return e && e.state !== 'DEAD' ? { distance: p.position.distanceTo(e.position),
