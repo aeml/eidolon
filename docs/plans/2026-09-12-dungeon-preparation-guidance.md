@@ -20,10 +20,26 @@ chat. It saves screenshots for inspection. Browser execution and visual review
 remain pending; listing a test is not running it. No native browser was started
 alongside the active four-player gameplay run.
 
+Follow-up keyboard reproduction: the global InputManager ignored buttons,
+links and selects for Enter/Space, but not native summary controls. A focused
+summary incorrectly dispatched chat and ability input. The expanded existing
+input regression failed only that new case (14 controls passed); complete red
+log `/tmp/eidolon-dungeon-summary-input-red-full-20260912.log`. Adding summary
+to the same native-activation exclusion preserves browser toggling rather than
+intercepting or simulating it. Focused input/inspection/dungeon/menu checks now
+pass six suites/141 tests in12.373s. Browser coverage additionally requires
+retained summary focus and native Space close/reopen on desktop. Full lint
+passes; logs `/tmp/eidolon-dungeon-summary-input-{green,lint}-20260912.log`.
+
+Initial CI34720519281 remains in progress on e903cffc and cannot validate this
+subsequent keyboard correction. Do not call its result final candidate acceptance.
+
 ## Draft 1.1.0 patch note
 
 - Added optional first-dungeon preparation tips covering party roles,
   class-appropriate equipment and recovering in town before continuing a run.
+- Using Enter or Space on expandable menu sections no longer also opens chat
+  or triggers a gameplay ability.
 
 This remains unreleased until integration and actual browser verification.
 The full first-hour, dungeon, reconnect, balance and later roadmap gates stay

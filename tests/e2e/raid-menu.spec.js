@@ -44,6 +44,14 @@ for (const [width, height, isMobile] of [[1280, 720, false], [390, 844, true], [
                 await page.keyboard.press('Enter');
             }
             await expect(preparation.locator('p')).toBeVisible();
+            if (!isMobile) {
+                await expect(summary).toBeFocused();
+                await page.keyboard.press('Space');
+                await expect(preparation.locator('p')).toBeHidden();
+                await page.keyboard.press('Space');
+                await expect(preparation.locator('p')).toBeVisible();
+                await expect(summary).toBeFocused();
+            }
             for (const text of ['Strength for Fighters', 'Dexterity for Rogues', 'Intelligence for Wizards',
                 'Wisdom for Clerics', 'Uncommon/Rare', 'Lanternhold']) {
                 await expect(preparation).toContainText(text);

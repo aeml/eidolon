@@ -145,7 +145,7 @@ describe('InputManager ctrl-click propagation', () => {
         manager.dispose();
     });
 
-    test.each(['button', 'select', 'a'])('Enter and Space stay with a focused %s control', (tag) => {
+    test.each(['button', 'select', 'a', 'summary'])('Enter and Space stay with a focused %s control', (tag) => {
         const manager = new InputManager({}, {});
         const chat = jest.fn();
         const ability = jest.fn();
@@ -153,8 +153,14 @@ describe('InputManager ctrl-click propagation', () => {
         manager.subscribe('onSpace', ability);
         const control = document.createElement(tag);
         if (tag === 'a') control.href = '#help';
-        document.body.append(control);
+        const host = tag === 'summary' ? document.createElement('details') : control;
+        if (tag === 'summary') {
+            control.tabIndex = 0;
+            host.append(control);
+        }
+        document.body.append(host);
         control.focus();
+        expect(document.activeElement).toBe(control);
         manager.onKeyDown({ key: 'Enter', code: 'Enter' });
         manager.onKeyDown({ key: ' ', code: 'Space' });
         expect(chat).not.toHaveBeenCalled();
@@ -162,7 +168,7 @@ describe('InputManager ctrl-click propagation', () => {
         control.blur();
         manager.onKeyDown({ key: 'Enter', code: 'Enter' });
         expect(chat).toHaveBeenCalledTimes(1);
-        control.remove();
+        host.remove();
         manager.dispose();
     });
 
