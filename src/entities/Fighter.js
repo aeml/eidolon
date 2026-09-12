@@ -222,7 +222,7 @@ export class Fighter extends Actor {
 
                 // Grip roots movement; it does not silence attacks like a stun.
                 if (target.rootTimer !== undefined && !target.ccImmune) {
-                    target.rootTimer = getFighterEffectDuration(this, 1);
+                    target.rootTimer = getFighterEffectDuration(this, 1, skill);
                 }
             } else {
                 console.log("No target for Grip");

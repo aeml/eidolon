@@ -7,6 +7,7 @@ export function getFighterEffectDuration(source, baseSeconds, skill = '') {
         return Number.isFinite(value) ? Math.max(0, Math.min(5, Math.floor(value))) : 0;
     };
     const mastery = skill === 'Iron Fortress' ? .04 * rank('FTR_07')
-        : skill === 'Guardian Roar' ? .04 * rank('FTR_09') : 0;
+        : skill === 'Guardian Roar' ? .04 * rank('FTR_09')
+            : skill === 'Unbreakable Grip' ? .04 * rank('FTR_15') : 0;
     return baseSeconds * (1 + mastery + .04 * rank('FTR_30') + .03 * rank('FTR_37'));
 }

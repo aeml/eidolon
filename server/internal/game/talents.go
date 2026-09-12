@@ -96,6 +96,11 @@ func fighterTalentDef(n int) (TalentDef, bool) {
 	if n == 9 {
 		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: "Guardian Roar", SkillDuration: 0.04}}, true
 	}
+	// Grip is a non-damaging pull/root. Train its control window, keeping
+	// the saved talent ID and the ability's immunity/movement rules intact.
+	if n == 15 {
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: "Unbreakable Grip", SkillDuration: 0.04}}, true
+	}
 	// Talents 1-26: Skill-specific (odd=Mastery +damage, even=Technique +utility)
 	if n <= 26 {
 		skillIdx := (n - 1) / 2
