@@ -36,8 +36,9 @@ and resolved a full-integration architecture-budget failure. Full scope remains.
   one ToolingBaseline failure (GameEngine2515lines>2500),103.719s. It did NOT
   proceed to lint/Go. Extracted unchanged timed-effect factory into its own
   module, **edf6acaa**, in `/tmp/eidolon-focus-mastery-20260911`; focused14545
-  passed3suites25tests. **Full rerun31631 ACTIVE** on frozenedf6acaa: client,
-  lint then completeGo-race. Poll same handle; do not restart on observation
+  passed3suites25tests. **Full rerun31631 ACTIVE** on frozenedf6acaa:
+  client362suites5202tests passed101.761s, lintpassed; completeGo-race running.
+  Poll same handle; do not restart on observation
   timeout. Logs `/tmp/eidolon-focus-full-client-rerun-20260912.log`,
   `/tmp/eidolon-focus-full-{lint,server}-20260912.log`. Primary stillae938843.
 - New native Focus candidate `/tmp/eidolon-focus-native-20260912`, branch
