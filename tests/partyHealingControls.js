@@ -1,6 +1,6 @@
 // Ordinary party-test input planning only; this never heals, moves or edits a
 // character. The real roster/hotbar dispatch retains server admission checks.
-export function selectPartyHealTarget(states, healer, range) {
+export function selectPartyHealTarget(states, healer, range, { allowApproach = true } = {}) {
     if (![healer?.x, healer?.z, range].every(Number.isFinite) || range < 0) {
         throw new Error('Party healing requires finite position and nonnegative range');
     }
@@ -9,11 +9,18 @@ export function selectPartyHealTarget(states, healer, range) {
         [state.hp, state.maxHP, state.x, state.z].every(Number.isFinite) &&
         state.hp > 0 && state.maxHP > 0 && state.hp / state.maxHP < .85)
         .sort((a, b) => a.hp / a.maxHP - b.hp / b.maxHP);
-    // Spend a useful heal now before chasing an even more injured ally. If
-    // nobody in range needs healing, retain that distant ally as an approach
-    // target; warning policy still decides whether movement is currently safe.
-    return injured.find(state => Math.hypot(state.x - healer.x, state.z - healer.z) <= range)
-        || injured[0] || null;
+    const distance = state => Math.hypot(state.x - healer.x, state.z - healer.z);
+    const reachable = injured.find(state => distance(state) <= range);
+    // Preserve immediate aid for urgent reachable allies. But do not spend a
+    // full heal cooldown on someone above60% while a below40% ally is only a
+    // short approach away. This selects a walking target, never extends range.
+    if (allowApproach && reachable && reachable.hp / reachable.maxHP > .6) {
+        const criticalNearby = injured.find(state => state.hp / state.maxHP < .4 && distance(state) <= range + 2);
+        if (criticalNearby) return criticalNearby;
+    }
+    // If nobody reachable needs aid, retain the distant target for approach;
+    // the caller still enforces warning, collision and actual cast-range rules.
+    return reachable || injured[0] || null;
 }
 
 // Spend direct-heal cooldown time maintaining the already-active aura. This

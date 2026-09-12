@@ -86,3 +86,32 @@ results are in `/tmp/eidolon-party-fortress-reserve-final-20260912.log`; full li
 and diff pass. The old Whirlwind affordability test now requires its actual
 combined Fortress+Slam budget; separate unequipped-Fortress coverage retains the
 old Slam-only threshold. Corrected native party replay is still required.
+
+## Reserved-mana replay and bounded healer triage
+
+Native70658 on4203d254 FAILED15.7m, seed-3583300797726629916/gen2/attempt0/
+no fallback. Early rooms/Skeleton/DemonOrc and two all-four town recovery/saved
+reentries passed. First Warden remained alive (last periodic3622/15000HP) when
+Rogue died. Tank survived; final F6104damage/3439taken/5Fortress casts,
+C5969effective ally healing (4704boss)/184taken, W5313damage/799taken,
+R8669damage/2944taken. This is not a full-clear or final-balance result.
+Archive `/tmp/eidolon-party-reserve-failure-TzBG9t`; original
+`/tmp/eidolon-party-fortress-reserve-native-20260912.log`. Scan0/owned cleanupPASS.
+
+Final receipts explain why35mana/7.5unit healer proximity did not yield a final
+heal: Healing Light was still cooling down. At1789221594605 the healer spent it
+on tank674/855HP, then approached Rogue312/855HP at14.1501units (planning range14).
+Rogue fell to129HP; ready mana34–35 could not bypass cooldown2.82→0.67s before
+the fatal attack. Repeated184physical hits at7.45–7.49units and no active warnings
+are also retained. Do not infer a missing heal packet or increase regeneration.
+
+The test triage now chooses a below40% ally within a two-unit approach margin
+before spending the cooldown on a reachable ally above60%, only if movement is
+allowed. It does NOT extend spell range or bypass normal walking/collision.
+Urgent reachable targets and the prior far-away-Matron regression keep their
+immediate-heal priority; warning holds keep the reachable-target behavior.
+Recorded values, exact approach boundary, urgent/self-healing and unavailable
+targets are covered. RED2fail33pass; final5suites122PASS1.341s/lint/diffPASS.
+Logs `/tmp/eidolon-party-critical-triage-{red,tests,lint}-20260912.log`.
+The corrected full party replay remains queued; no runtime/balance or gate
+acceptance follows from input-planning tests alone.

@@ -266,7 +266,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                     auraActive: p.guardianEmbraceActive || p.guardianEmbraceTimer > 0 };
             });
             const healDistance = Math.min(14, available.healRange - .5);
-            const hurt = selectPartyHealTarget(states, states[1], healDistance);
+            const hurt = selectPartyHealTarget(states, states[1], healDistance, { allowApproach: allowMovement });
             if (!hurt) { if (allowMovement && !states[1].dead) await follow(healer, states[0], 9); return; }
             const distance = Math.hypot(hurt.x - states[1].x, hurt.z - states[1].z);
             const record = async reason => {
