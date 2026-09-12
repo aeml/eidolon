@@ -37,7 +37,9 @@ dungeon clear, first-hour pacing or production delivery.
 ## Material still requiring acceptance or inventory review
 
 - First-dungeon preparation guidance and native summary keyboard ownership:
-  corrected candidate bea88218 requires hosted browser and screenshot acceptance.
+  corrected candidate c09248c8 requires hosted desktop browser acceptance. Phone
+  reading/entry checks and screenshots passed on bea88218; its second global
+  Enter handler was subsequently corrected after the desktop case failed.
 - Tripwire damage/training repair: preserve its separate gameplay proof, but
   finish collateral entrance/shield diagnostics before integration.
 - Inventory all other accepted development changes against the current published
@@ -50,9 +52,12 @@ dungeon clear, first-hour pacing or production delivery.
 
 ## Release acceptance checklist
 
-- [ ] Complete the current four-role Verdant route: all rooms/bosses, every
+- [x] Complete the current four-role Verdant route: all rooms/bosses, every
   member's kill credit/XP, independent manual Ilyra reward, Water offer and
-  saved state/reward checks after relog. A three-boss result is incomplete.
+  saved state/reward checks after relog. Native15051 passed58.8minutes on9b6745d7,
+  one prepared Normal level30 seed, with zero deaths. See the
+  [exact acceptance scope](2026-09-12-party-progressed-gear.md); this does not
+  close the broader dungeon or earned-progression requirements below.
 - [ ] Complete the roadmap's five dungeon defect checks across required dungeon
   families, classes, difficulties, seeds and party/death/reconnect scenarios.
   Preserve failing seeds and verify exit/re-entry, geometry and abilities.

@@ -4,6 +4,19 @@ Draft notes, outstanding acceptance and publication steps are consolidated in
 the [1.1.0 release handoff](2026-09-12-1-1-release-handoff.md). It is not release
 approval or a substitute for the full roadmap.
 
+## Follow-up integration — September 12, 22:21 UTC
+
+Merged accepted primary1ea44fbc, including the fully verified role-equipped
+four-player controller/fixture component e2d5da9b. Native15051 on9b6745d7 passed
+all rooms/four original-health bosses, individual credit/manual rewards/Water
+offers and saved state after relog,58.8minutes with zero deaths. Exact evidence
+and limitations are in [the party record](2026-09-12-party-progressed-gear.md).
+These incoming changes are QA/supporting documentation, not production stat
+scaling or boss tuning. No preparation UI or Tripwire candidate is merged here.
+Fresh combined hosted regression is required; earlier0087e4de CI does not prove
+the merged test/controller surface. Native/deployment/live acceptance remains
+separate. The handoff checks off only this exact prepared-party route, not1.1.
+
 ## Latest accepted combined regression — September 12, 21:41 UTC
 
 CI34719685288 completed SUCCESS on exact
