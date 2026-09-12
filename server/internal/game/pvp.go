@@ -141,6 +141,31 @@ func (w *World) CanDamage(source, target *Entity) bool {
 	return w.CombatRelationship(source, target) == RelationshipHostile
 }
 
+// canDamageAtImpact reads only detached relationship fields. Delayed attacks
+// run without World.Mu and can overlap a match returning players to town.
+// Capture under World -> Entity ownership, never holding two actor locks or
+// acquiring the PvP lock while an actor is locked. The damage path still
+// rechecks the admitted instance and living state before changing health.
+func (w *World) canDamageAtImpact(sourceID, targetID string) bool {
+	w.Mu.RLock()
+	source, target := w.Entities[sourceID], w.Entities[targetID]
+	if source == nil || target == nil {
+		w.Mu.RUnlock()
+		return false
+	}
+	snapshot := func(actor, copy *Entity) {
+		actor.Mu.RLock()
+		defer actor.Mu.RUnlock()
+		copy.ID, copy.Type, copy.InstanceID = actor.ID, actor.Type, actor.InstanceID
+		copy.PartyID, copy.X, copy.Z = actor.PartyID, actor.X, actor.Z
+	}
+	var sourceCopy, targetCopy Entity
+	snapshot(source, &sourceCopy)
+	snapshot(target, &targetCopy)
+	w.Mu.RUnlock()
+	return w.CanDamage(&sourceCopy, &targetCopy)
+}
+
 func (system *PvPSystem) areOpenWorldOpponents(first, second *Entity) bool {
 	if first == nil || second == nil || first.InstanceID != "" || second.InstanceID != "" {
 		return false
