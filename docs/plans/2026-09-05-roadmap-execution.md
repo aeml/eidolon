@@ -5,7 +5,38 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 21:41 UTC
+## Current checkpoint — September 12, 21:47 UTC
+
+Previous goal turn PROGRESS (preparation guidance, actual Matron and integrated
+CI acceptance). This continuation PROGRESS: reproduced and fixed native summary
+keyboard ownership in the preparation candidate. Full roadmap remains ACTIVE;
+no release/version/soak change. NEVER PUSH ROOT.
+
+- Preparation candidate now clean/dev-pushed **66888d3abb43da00554f0e5895703c43183c4089**
+  in `/tmp/eidolon-1-1-dungeon-preparation-copy-20260912`. Actual InputManager
+  dispatched chat and ability callbacks on focused summary Enter/Space because
+  its native activation exclusion covered buttons/links/selects only. Expanded
+  existing input test RED1/14PASS (complete log
+  `/tmp/eidolon-dungeon-summary-input-red-full-20260912.log`). Adding summary to
+  the same exclusion keeps native default toggling. Focused six suites/141tests
+  PASS12.373s; full lint plus final changed-file lint/diff PASS. Browser test now
+  also requires retained summary focus and Space close/reopen. Draft1.1.0 patch
+  notes and acceptance record updated. No local browser started.
+- **CI34720930285 PENDING** on exact66888d3a behind original **34720519281 ACTIVE**
+  on e903cffc. Original client passed, server running at last observation; it
+  does NOT include the new keyboard fix. Preserve both results separately.
+  No cancellation or restart was requested. Actual browser/visual acceptance
+  remains required before merging preparation into accepted primary.
+- **Native15051 ACTIVE — sole GPU**, Playwright PID3544161 confirmed27:48 elapsed.
+  Source9b6745d7 remains clean/frozen. Warden/Matron victories stand; latest1608s/
+  264leader steps/18room traversals/four town returns. No later boss or full-clear
+  result yet. Keep the same run; exact terminal/archive/scan/cleanup precedes
+  queued Tripwire entrance-visibility diagnostic on3b83b154.
+- Integrated accepted docs **3958df93** successfully dev-pushed after combined
+  runtime0087e4de passed CI34719685288. Primary0992f77b unchanged. Later full
+  first-hour/all-dungeon/reconnect/talent and1.2–1.10 gates remain open.
+
+## Historical checkpoint — September 12, 21:41 UTC
 
 Fresh progress: **Briar Matron defeated** on original health in native15051,
 55.19s encounter (1095438→1150630ms), all four survival checks passed. Fighter
