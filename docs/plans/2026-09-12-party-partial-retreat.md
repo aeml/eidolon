@@ -183,3 +183,27 @@ performance or a controlled same-seed comparison.
 
 Focused3suites22tests PASS1.571seconds (fixture, combat receipts, role scheduling),
 ESLint/diff checks pass. Log `/tmp/eidolon-party-quality-tests-20260912.log`.
+
+### Low-graphics replay — failed, not a completed party clear
+
+Native82404 on87d62281 terminated FAILED after16.1minutes, seed
+681688086402035219, generator2/attempt0/no fallback. All four roles selected
+Low through Settings, formed the party and entered Normal Verdant30. Actual
+trash kills, two four-player town recoveries/reentries,82ground steps and five
+room traversals preceded the Warden. The Fighter died with the boss last seen
+at2434/15000HP. Cleanup respawn does not erase `evidence.sawDeath=true`.
+Full clear, individual completion credit and Water handoff remain unverified.
+
+Across the whole run (not just the boss), Cleric cast18Healing Light and
+9Guardian Embrace, healing allies5487. Early warning escapes were Fighter1,
+Cleric13, Wizard4, Rogue8. Recorded recent hit frames ranged14–58FPS. The
+Fighter's final strict dodge released its click693.2ms after planning and
+arrived308.6ms after estimated impact; a Rogue sample arrived256ms early.
+Low graphics did not eliminate late input. Different seeds prevent a controlled
+High-versus-Low difficulty comparison. Healer resources and the leader's serial
+observation/attack pipeline need investigation before changing encounter balance.
+
+Archive `/tmp/eidolon-party-low-graphics-failure-tgwJIq`, log
+`/tmp/eidolon-party-low-graphics-native-20260912.log`. Credential scan sanitized
+zero files; exact owned containers/image/ports were clear before Serrated QA.
+No gameplay stats, damage, recovery, deadlines or acceptance assertions changed.
