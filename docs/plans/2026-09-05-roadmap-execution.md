@@ -5,7 +5,91 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 10:14 UTC
+## Current checkpoint — September 12, 10:28 UTC
+
+Previous goal turn PROGRESS; this continuation PROGRESS. Integrated two fully
+accepted development candidates, retained the failed four-role result, and
+authored/tested real UI base-rune preparation with an active repeat-character
+native rehearsal. Full 1.1.0–1.10.0 goal remains active; no deployment/clear
+acceptance claim beyond the already-published65 identity.
+
+- **Four-role32483 TERMINAL FAILURE**,11.9m, at frozen e39599d9/seed
+  5245927292081125682. All four entered, opening Skeleton combat and full town
+  recall/recovery/resume passed, including same instance/seed/rooms/Gold/items/
+  quest state. Rogue died to a **Skeleton pack before any boss**. No warning
+  moves/escapes; this does NOT test the prior Warden telegraph timing fix yet.
+  No full clear, personal turn-in, Water handoff or earned-progression proof.
+- Totals: Fighter2984damage/2614taken, final221HP; Cleric2405effective ally
+  healing/0taken,845HP/478MP; Wizard2087damage/840taken,616HP; Rogue3649damage/
+  1920taken,0HP. Fighter castsFortress2/Whirlwind4/Slam2; ClericEmbrace2/Heal4.
+  Final healer10.728units from Rogue with477MP. Last ready heal selected
+  Fighter293/855HP over Rogue343/855; later unavailable cooldown1.67s with
+  Fighter138HP. This establishes real healing and no mana outage, not a proven
+  healer bug or sufficient throughput. Guardian Roar is correctly absent:
+  it unlocks40, fixture30 MUST NOT be given it. Available Slam already has2×
+  threat and a90-degree cone. Investigate pack positioning/threat/ordinary
+  skill priorities and incoming damage; do not assume a boss nerf is needed.
+- Archived generated test-results/playwright-report to
+  `/tmp/eidolon-four-role-scheduled-input-failure-ZnRnGl`; log remains
+  `/tmp/eidolon-four-role-scheduled-input-native-20260912.log`. Wrapper's own
+  credential scan passed/sanitized0. Owned party09121010 containers gone and
+  ports18185/18186/41875 free; no scoped processes in frozen test cwd.
+  Cleanup/rechecks complete before launching the next native. Soak untouched.
+- **Juggernaut CI34686991417 TERMINAL SUCCESS**,390suites6195tests98.049s,
+  server86.9%/97.038s/fullrace337.804s, all extras and browser40+50+26=116PASS.
+  Browser logs `/tmp/eidolon-juggernaut-ci-browser{1,2,3}-34686991417.log`.
+  **Grip Mastery CI34687250376 TERMINAL SUCCESS**,391suites6202tests92.182s,
+  server86.9%/87.523s/fullrace280.608s, extras and browser116PASS. Logs
+  `/tmp/eidolon-grip-mastery-ci-{server,browser1,browser2,browser3}-34687250376.log`.
+  Native/deploy/live skipped on both manual hosted rehearsals, not passes.
+  Primary advanced034fadd5→**af57344f**; after32483 terminated and archives/
+  cleanup were verified, integrated also advanced e39599d9→**af57344f**.
+  Both clean. Grip targeting f016e0f7 remains separate, **CI34687856500 ACTIVE**;
+  client103537902476/server103537902349 pass; browsers103539052889/2915/2918
+  running. Do not integrate before full acceptance.
+- New `/tmp/eidolon-release65-animation-rune-preparation-20260912`, branch
+  `work/release65-animation-rune-preparation`, clean
+  **1a491c4100617a86ab8d4c5ceb9de509327e1032**,parentf9eb1f30. NOT pushed,
+  integrated or deployed. QA-only: clear each base cast's actually equipped
+  rune through existing desktop UI, recheck after opening, await server ack;
+  never mutate saved map or issue a synthetic network request. Unknown saved
+  rune fails, already-cleared state does not accidentally re-equip. Clear the
+  main spell while level100 before temporary level1 movement probe. Explicit
+  variants retained; preinput rune asserted and layer failure diagnostics
+  now include skill/rune/snapshot. Real SkillTreeUI toggle test proves Warp4→2
+  and Beacon3→2 only after modeled ack; live failure's exact active rune remains
+  unproved because its original layer assertion did not capture that value.
+- `animation-reuse` uses the same disposable characters/database with two
+  sequential matrix passes, --repeat-each=2/--retries=0. Existing all/animations
+  commands unchanged by default. New helper export initially missing; initial
+ 3suites29PASS2.648s. Expanded real-DOM test had one incorrect authored Beacon
+  count; corrected against unchanged manifest,4suites70PASS7.291s. Final
+ 6suites**89PASS4.315s**, full lint/shell syntax/whitespace pass. Assets prepared;
+  list2tests is discovery only. All local unit/lint sessions63939/40211/28850/
+  4114/75121/75315 terminal. Logs
+  `/tmp/eidolon-release65-rune-preparation-{red,green,expanded,final,gate,lint-gate,assets,list}-20260912.log`.
+  Doc `2026-09-12-release65-animation-rune-preparation.md` retains Whirlwind
+  late snapshot/Fireball sample failures; no assertion/performance relaxation.
+- **Native11193 ACTIVE**, TTY, frozen clean1a491c41, runIDrune09121024,
+  routeanimation-reuse, EIDOLON_ANIMATION_QA_CLASS=Wizard, systemChrome via
+  sg render, loopback18185/18186/41875. Single GPU RESERVED. Log
+  `/tmp/eidolon-release65-rune-reuse-native-20260912.log`. Same handle resumed;
+  do not restart on observation timeout or alter this running worktree.
+  First pass FAILED50.5s; second pass still active, no overall success claim.
+- First-pass evidence is a NEW actionable cast failure, not the layer-count
+  assertion: **Inferno Cataclysm/base** never produced a presentation after
+  Meteor. Ready sequence6, IDLE, zero stun/CD,2575HP/1585MP, unlocked, correct
+  hotbar and valid ground ray. Both before/after input retained a hovered
+  **inactive Meteor projectile**; mana unchanged. Error-context in this active
+  worktree's test-results first-pass directory captures it. Source
+  AbilityController.performHotbarAbility excludes DEAD and DwarfSalesman but
+  does NOT exclude inactive entities, so it supplies the stale projectile as
+  targetEntity instead of falling back to the valid ground ray. Investigate/
+  reproduce that path next in a separate worktree; no runtime fix yet.
+  Keep remaining original live65 QA failures and second matrix result open.
+  Root ledger NOT pushed; no master/release modification.
+
+## Historical checkpoint — September 12, 10:14 UTC
 
 Previous goal turn PROGRESS; this continuation PROGRESS. Implemented Grip's
 remaining identified targeting/range consumers, retained final live65 failure
