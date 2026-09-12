@@ -5,7 +5,71 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 05:05 UTC
+## Current checkpoint — September 12, 05:21 UTC
+
+The preceding conversational version-number confirmation made no implementation
+progress. This continuation is PROGRESS: revalidated worktrees/jobs, repaired
+30 cooldown overrides, integrated and dispatched exact-source 1.1 regression,
+then diagnosed and repaired a terminal release65 native gallery failure and
+pushed the correction through normal production CI. The whole goal stays active.
+
+- **eb20789adad1d21e8f0226fc5ccf310361acdbc2**, clean primary and frozen
+  `/tmp/eidolon-1-1-integrated-regression-20260912`. Includes651e147c input
+  observation batching and new offline paid-cast cooldown fix. Working branch
+  `work/1-1-offline-cooldown-consumers` at
+  `/tmp/eidolon-1-1-rogue-cooldown-consumers-20260912` is clean same commit.
+  Removed duplicate cooldown writes only: Fighter10/Rogue12/Wizard7/Cleric1.
+  Shared Actor economy and special Teleport charges stay authoritative.
+- Actual cast matrix covers52 skills x Technique0/5 x generic training off/on:
+  208 cases. Initial RED91fail/117pass7.424s:87 cooldown assertion failures,
+  four invalid fixture mana-clamp assumptions. Corrected fixture independently;
+  GREEN208/5.686s. Related final7suites/349tests7.063s +full lint/diff PASS.
+  Doc`2026-09-12-offline-cooldown-consumers.md`; logs
+  `/tmp/eidolon-offline-cooldown-consumers-{red,green,focused,lint}-20260912.log`.
+- Previous hosted **34674058495 at13c642dc TERMINAL SUCCESS**, client372/5528,
+  full server/race and browser40+50+26=116 pass. Native/deployment guards skipped,
+  not passed. All three browser logs retained under
+  `/tmp/eidolon-integrated-1-1-rogue-browser{1,2,3}-34674058495.log`;
+  artifact `/tmp/eidolon-integrated-1-1-rogue-browser-artifacts-p4SMkg`.
+  Only after terminal success were primary/rehearsal advanced toeb20789a.
+- New exact-source **CI34675108921 ACTIVE**, remote branch SHA verified before
+  dispatch. Client103503460864 SUCCESS **374suites/5745tests122.215s**, lint,
+  audit and benchmark. Log
+  `/tmp/eidolon-integrated-1-1-cooldown-client-34675108921.log`.
+  Server103503460921 ACTIVE; browsers/full result pending. Keep source frozen.
+- **Production65 CI34673903787 TERMINAL FAILURE** at66ca3a3d: all hosted
+  client/server and104 browser cases passed; native103502445330 animation
+  gallery29pass/1fail7.1m. Missing `protection` family mapping passed undefined
+  to selectOption; automatic retry reproduced. Subsequent deploy/live skipped.
+  Logs`/tmp/eidolon-release65-production-{browser1,native}-34673903787.log`;
+  failure archive`/tmp/eidolon-release65-native-failure-KAP9Bb`.
+- Corrected in **1af59512865140037b02b9159ea46890b193ea97**, clean
+  `/tmp/eidolon-release65-status-gallery-fix-20260912`, branch
+  `work/release65-status-gallery-fix`. New all-family unit test RED1/24pass;
+  actual local/remote preview activation tests RED2/25pass exposed missing
+  gallery applier/cleanup too. Added explicit protection->Wizard mapping,
+  preview activation and timer cleanup; no game balance or release version edit.
+  Final4suites/65tests3.872s +lint/diff PASS. Doc
+  `2026-09-12-release65-status-gallery-repair.md` records exact evidence.
+- Local native45621 TERMINAL FAIL before startup: forgot prepare:client in the
+  fresh worktree. Retained`/tmp/eidolon-release65-status-gallery-unprepared-Bt7kxf`.
+  After dependency preparation, native30960 TERMINAL PASS1test24.3s, all25
+  statuses High/local and Low/remote, visible finite geometry/identity/cleanup.
+  Accepted archive`/tmp/eidolon-release65-status-gallery-accepted-D3GvQ9`.
+  Inspected protection PNG: thin blue seal and shards, no enclosing cube.
+  No local native handle remains;41877 free. No active process was replaced.
+- Pushed only1af59512 from its release worktree to master (parent66 verified).
+  **New production CI34675345557 ACTIVE** at exact1af59512. Not deployed yet.
+  Public frontend release.json and backend/healthz independently verified
+  healthy/dbready **Alpha1.0.64 /6d5e82cb** this turn. No ordinary66 candidate.
+- Next poll SAME34675345557 and34675108921; preserve evidence. Forward-port
+  gallery repair into1.1 after eb20789a rehearsal terminal. Reserve native GPU
+  for production predeploy/final gates; then verify batching serialization and
+  repeat real four-role dungeon viability. Prior party failure remains failed;
+  earned progression, first-hour, balance/reconnect and1.2–1.10 remain open.
+  Do not cancel scheduled soak; root master is ledger-only, NEVER PUSH ROOT.
+
+## Previous checkpoint — September 12, 05:05 UTC
 
 Previous turn was PROGRESS. This continuation is PROGRESS: reduced the measured
 ground-input observation overhead, preserved all strict input checks, completed
