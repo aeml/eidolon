@@ -5,7 +5,43 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 21:25 UTC
+## Current checkpoint — September 12, 21:39 UTC
+
+Previous goal turn VERIFIED WAIT: polled native15051 live without changing or
+restarting it. This continuation PROGRESS: finished the first-dungeon preparation
+candidate and dispatched its hosted verification. Full roadmap remains ACTIVE;
+no milestone, deployment, version or soak change. NEVER PUSH ROOT.
+
+- Preparation candidate **e903cffc4d1cceeee515a3d1ac742a1c877ecd3e**, clean and
+  dev-pushed from `/tmp/eidolon-1-1-dungeon-preparation-copy-20260912`, based on
+  accepted primary0992f77b. Optional collapsed Normal Bastion guidance explains
+  party roles, Uncommon/Rare class-primary gear, Vitality and town recovery/
+  continue-run behavior. No added entry gate, scaling or enemy adjustment.
+  Four focused suites/115tests PASS10.253s, final full lint and diff PASS.
+  Three added browser cases exercise desktop keyboard and phone portrait/
+  landscape touch, expanded text/overflow/reachable entry and unchanged request.
+  Test discovery succeeds (8 raid-menu cases total); actual execution and
+  screenshot review remain pending. Draft1.1.0 note and candidate acceptance
+  document added. **CI34720519281 ACTIVE** on exact e903cffc, manual development
+  verification only. No second native browser was started.
+- Gear **CI34719442897 SUCCESS** on0a75527d: client/server and all three browser
+  shards passed. Native/deploy/live jobs skipped by the manual-event guards,
+  not passed. Does not include the later test-only hydrated-rarity9b6745d7.
+- Integrated **CI34719685288 ACTIVE** on0087e4de: client/server and browser3
+  passed; browser1/2 still running. No full combined success claim yet. Attempts
+  to download job logs via gh were deferred until run completion, so their
+  newly created output files are empty, not evidence of test counts.
+- **15051 ACTIVE — sole native GPU**, PID3544161 confirmed. Original-health
+  geared Warden kill stands; latest1076s/195leader steps/13room traversals/
+  three town returns. No subsequent boss kill or full-clear claim yet. Formation
+  takes748s of884s traversal, including real input/observation; do not mistake
+  harness wall time for human walking time. Keep source9b6745d7 frozen.
+  After terminal/archive/credential scan/exact cleanup, next queued native is
+  Tripwire entrance-visibility/shield diagnostic on3b83b154, with unchanged
+  failing assertion. All full-party/individual-credit/Water and wider gates stay
+  open.
+
+## Historical checkpoint — September 12, 21:25 UTC
 
 Latest continuation PROGRESS: the actual browser verified all14 equipped items
 for each of the four roles, then the properly geared party defeated the ORIGINAL
