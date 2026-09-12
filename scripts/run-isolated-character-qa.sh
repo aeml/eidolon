@@ -558,9 +558,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     npx playwright test tests/e2e/phone-stash-entry.spec.js
     ;;
   all)
-    run_qa_stage auth-recovery run_auth_recovery &&
     run_qa_stage initial-stats run_initial_stats &&
     run_qa_stage authenticated npm run test:e2e:authenticated &&
+    run_qa_stage auth-recovery run_auth_recovery &&
     run_qa_stage dungeons-and-inventory npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js &&
     run_qa_stage whip-shape run_whip_shape &&
     run_qa_stage ground-shape run_ground_shape &&
