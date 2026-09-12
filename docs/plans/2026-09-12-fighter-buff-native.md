@@ -1,4 +1,29 @@
-# Fighter damage-buff native owner and party gate — authored, not yet executed
+# Fighter damage-buff native owner and party gate — party acceptance still open
+
+## September12 first native result and phone-input correction
+
+Full component CI34695408928 passed on6814147c (client398suites6276tests128.997s;
+server and all three browser jobs succeeded; native/deployment skipped).
+Native11597 FAILED3.2m after all owner rank0/1/5, fifteen purchases, saved ranks,
+High/Low status/effects and natural expiry checks passed. Party setup then
+expected movement from an empty-ground phone tap. Actual position remained at
+120,200. Source `GameEngineMovement.handlePrimaryClick` explicitly makes phone
+ground taps clear targeting, not walk; movement is through the joystick. This
+is a test-input error, not a confirmed character-control regression.
+
+Archive `/tmp/eidolon-fighter-buff-setup-failure-2InrBH`; original
+`/tmp/eidolon-fighter-buff-current-native-20260912.log`. Scan0/owned services and
+ports clear. Main agent viewed the saved Low Last Stand status screenshot.
+No party sharing result was reached; prior wording about ground movement was
+an incorrect test assumption and is superseded here.
+
+The correction uses a real touch on the visible joystick and releases it in
+finally, then requires neutral input, >3units local movement, >2units seen by
+the other client and <10units final separation for the existing buff radius.
+No scene-position assignment, hidden movement message or weakened paid-buff
+assertion. Regression RED1fail1pass; four suites82tests GREEN3.258s, full lint
+and diff passed. Logs `/tmp/eidolon-fighter-buff-joystick-{red,tests,lint}-20260912.log`.
+Fresh full native and corrected CI remain required.
 
 ## September12 current-integration replay preparation
 

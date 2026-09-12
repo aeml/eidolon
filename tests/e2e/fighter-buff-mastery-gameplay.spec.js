@@ -1,5 +1,5 @@
 import { devices, expect, test } from '@playwright/test';
-import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, projectGroundOffset } from './helpers.js';
+import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld } from './helpers.js';
 import { installFighterBuffObserver } from './fighter-buff-observer.js';
 import { backendOriginBrowserArgs, hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 
@@ -150,15 +150,34 @@ test('Fighter buff Masteries have paid, saved strength and visible High/Low owne
         await command('/level 100', ally);
         await expect.poll(() => ally.evaluate(() => window.game.player.level)).toBe(100);
         await outsideStableStats(ally); await outsideStableStats();
-        // Normal ground input separates the models; neither player is moved
-        // by assigning a scene position or sending a hidden movement message.
+        // Empty-ground phone taps cancel targeting; only desktop uses them to
+        // walk. Separate the models through the actual visible phone joystick.
         await ally.waitForTimeout(1100); // Existing waypoint movement-lock window.
-        const ground = await projectGroundOffset(ally, 6, 0);
-        expect(ground?.canvas).toBe(true); await ally.touchscreen.tap(ground.x, ground.y);
-        await expect.poll(() => ally.evaluate(() => Math.hypot(window.game.player.position.x - 120,
-            window.game.player.position.z - 200)), { timeout: 10_000 }).toBeGreaterThan(2);
+        const beforeMove = await ally.evaluate(() => ({ x: window.game.player.position.x, z: window.game.player.position.z }));
+        const stick = await ally.locator('#joystick-zone').boundingBox();
+        expect(stick).not.toBeNull();
+        const cdp = await context.newCDPSession(ally);
+        try {
+            await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [
+                { id: 1, x: stick.x + stick.width / 2 + 24, y: stick.y + stick.height / 2 }
+            ] });
+            await expect.poll(() => ally.evaluate(before => Math.hypot(window.game.player.position.x - before.x,
+                window.game.player.position.z - before.z), beforeMove), { timeout: 10_000, intervals: [100] }).toBeGreaterThan(3);
+        } finally {
+            await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+            await cdp.detach();
+        }
+        await expect.poll(() => ally.evaluate(() => window.game.inputManager.joystickVector.lengthSq())).toBe(0);
         const ownerId = await page.evaluate(() => window.game.player.id), allyId = await ally.evaluate(() => window.game.player.id);
         await expect.poll(() => page.evaluate(id => Boolean(window.game.remotePlayers.get(id)), allyId)).toBe(true);
+        await expect.poll(() => page.evaluate(({ id, before }) => {
+            const position = window.game.remotePlayers.get(id)?.position;
+            return position ? Math.hypot(position.x - before.x, position.z - before.z) : 0;
+        }, { id: allyId, before: beforeMove })).toBeGreaterThan(2);
+        await expect.poll(() => page.evaluate(id => {
+            const g = window.game, position = g.remotePlayers.get(id)?.position;
+            return position ? g.player.position.distanceTo(position) : Infinity;
+        }, allyId)).toBeLessThan(10);
         await page.locator('#btn-phone-party').tap();
         await page.getByRole('textbox', { name: 'Player to invite' }).fill(`${credentials.username}-ally`);
         await page.locator('#phone-party-panel').getByRole('button', { name: 'Invite', exact: true }).tap();
