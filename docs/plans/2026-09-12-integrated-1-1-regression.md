@@ -6,6 +6,15 @@ approval or a substitute for the full roadmap.
 
 ## Tripwire/healing integration — September 12, 23:19 UTC
 
+Subsequent integration: accepted PvP componentbec83434 is now merged. Its exact
+runtime03aef5b2 passed full CI34724352226 (client420/6489, server game race
+360.608s and all three browser shards). See the
+[race acceptance](2026-09-12-pvp-impact-relationship-race.md). A fresh combined
+workflow is required; earlier CI34725102442 is still running on frozene604dbdb
+and cannot validate this additional merge. The independently running fresh
+Rogue native16530 also remains frozen on e604dbdb. Cleric utility runtime work
+is still isolated and unaccepted; no production publication occurred.
+
 Merged accepted primarye6bedc73, including component2a6f18b4. Full CI34723986784
 passes on runtime48713d22: client417/6456/101.627s, game race348.863s and all
 three browser shards. Actual paid/trained/saved trap43530, complete entrance/

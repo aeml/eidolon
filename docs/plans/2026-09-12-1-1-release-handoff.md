@@ -40,6 +40,9 @@ acceptance. They are not the complete 1.1.0 change inventory.
 - Healing spells aimed beneath overlapping enemies no longer accidentally
   select a hostile and fail; explicit party healing targets remain respected.
   [Evidence](2026-09-12-healing-cursor-target.md).
+- Fixed a concurrency issue when delayed attacks overlap players returning from
+  a completed arena match.
+  [Evidence](2026-09-12-pvp-impact-relationship-race.md).
 
 The [combined regression record](2026-09-12-integrated-1-1-regression.md) identifies
 the exact tested integration. Component tests do not independently prove a full
@@ -54,9 +57,9 @@ dungeon clear, first-hour pacing or production delivery.
   runtime48713d22, paid trap/shield/support native checks and all three stable
   status collateral routes on50d2ea57. Merged through primarye6bedc73; fresh
   combined regression remains required.
-- Delayed attack/PvP completion concurrency: candidate03aef5b2 fixes a race
-  found by actual2v2 combat under the race detector. Repeated focused checks
-  pass, but full CI34724352226 and integration remain pending. Do not describe
+- Delayed attack/PvP completion concurrency: accepted componentbec83434 fixes a
+  race found by actual2v2 combat under the race detector. Repeated focused checks
+  and full CI34724352226 pass. Now merged; fresh combined CI is required. Do not describe
   all PvP as accepted based only on the earlier complete CI pass.
 - Inventory all other accepted development changes against the current published
   baseline: expanded Chronicle/investigations and pacing, dungeon mechanics,
