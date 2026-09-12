@@ -26,6 +26,17 @@ pacing/reconnect/balance gates for1.1.0. All1.2–1.10 scope remains intact.
 
 ## First integrated rehearsal accepted; follow-up scope
 
+September12 follow-up: primary15870d85 now integrates verified Rogue utility
+Techniques and QA resource acknowledgement56ea1669. Exact QA runtimee7b907ce
+passed CI34710643517 and native50451 (3.8minutes, zero retries); saved effects,
+costs and cooldowns passed. Integratedf9ddf686 focused3suites66tests PASS2.580s.
+CI34711998572 is queued for that exact combined revision behind34710916056
+(Fortress+Blade Stormf0218c8a, still running). No Tripwire integration yet.
+
+Earlier cbdec31a CI34709857382 attempt2 has now SUCCEEDED, including the real
+disposable upgrade test after the external registry connection failure. This
+does not replace the required checks on the later combined revisions.
+
 September12 18:21: primary8561a773 now includes Blade Storm95299372 as well as
 Fortress. Blade Storm runtime6cd11168 full CI34709688359 and native92396 passed;
 subsequent full-stage fixture enrollment correction passed5suites89checks.
