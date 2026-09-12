@@ -5,7 +5,39 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, release65 cast diagnosis
+## Current checkpoint — September 12, 07:04 UTC
+
+This goal continuation is PROGRESS: preserved the first local failure, added
+transient cast diagnostics, completed a full native Wizard pass, and pushed
+the scoped release65 correction. Full1.1–1.10 goal remains active.
+
+- **Native88301 TERMINAL SUCCESS**, full Wizard animation matrix1.1m (1.2m
+  total). Includes ability/rune inputs, graphics tiers, movement/jump/basic,
+  death/respawn. Sanitized accepted archive
+  `/tmp/eidolon-release65-wizard-accepted-rgWYmh`, scan0; inspected final PNG
+  showing visible shield/ground utility effects. Services cleaned and all
+  three ports free. First local Meteor failure remains archived, cause not
+  established; do not claim a Meteor gameplay fix from a passing repeat.
+- **0e1068a530980441679e081ddd730a81bfbb5130** clean and PUSHED to origin master
+  from `/tmp/eidolon-release65-animation-record-fix-20260912`, parent2a82012b.
+  Adds read-only before/after rune/stun/menu/jump/target diagnostic snapshots
+  and records native evidence. No runtime or gate/retry change. Final focused
+  5 suites64 tests PASS1.915s, changed lint/diff pass. Existing1.0.65 version/
+  patch notes retained; no1.0.66. Forward-port2a/0e into1.1 still required.
+- **CI34679633154 ACTIVE** at0e1068a5. Last read client103515717272 and
+  server103515717349 in_progress; later browser/native/deployment/live gates
+  not yet started. Keep GPU reserved for production native once it starts,
+  do not launch competing local Chrome work. Production independently checked:
+  frontend/backend still Alpha1.0.64/6d5e82cb, healthok/dbready.
+- Offline damage-buff candidate4e9e6b remains CLEAN/unchanged. Further source
+  read confirms server Berserker party scope15m+recipient radius, same instance,
+  alive; offline code still only enables Whirlwind-only high-HP bonus. Pending
+  phase must deliberately reconcile descriptions, actual stat/basic/ability
+  consumers, party scope and all-actor expiry/cleanup, avoiding online duplicate
+  multiplication. See its existing phase doc. No offline parity claim yet.
+- Root ledger-only commit must never be pushed. Scheduled soak untouched.
+
+## Previous checkpoint — September 12, release65 cast diagnosis
 
 The latest numbering-confirmation turn was NO PROGRESS on implementation.
 Revalidated source, terminal logs and remote master (still1af5951). The previous
