@@ -184,6 +184,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
 
         async function avoidWarnings(actor, encounter) {
             const observation = await actor.page.evaluate(async encounter => {
+                const planningStartedAt = performance.now();
                 const { planPartyTelegraphEscape } = await import('/tests/partyDungeonControls.js');
                 const { isEarnedRetreatPathClear, retreatStaysInEncounter } = await import('/tests/wizardHuntControls.js');
                 const g = window.game, p = g.player;
@@ -197,14 +198,21 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                     retreatStaysInEncounter(encounter, { x: p.position.x + delta.x, z: p.position.z + delta.z }, p.radius) &&
                     isEarnedRetreatPathClear(g.collisionManager, p.position, p.radius || 1.25, delta), bodies);
                 return { active: warnings.length > 0, step, warnings, origin,
-                    plannedAt: performance.now(), bodies,
+                    plannedAt: performance.now(), planningMs: performance.now() - planningStartedAt,
+                    frameAtPlan: Number.isFinite(g.frameCount) ? g.frameCount : null,
+                    renderSample: { actors: g.remotePlayers.size,
+                        geometries: g.renderSystem.renderer?.info.memory.geometries,
+                        textures: g.renderSystem.renderer?.info.memory.textures,
+                        calls: g.renderSystem.renderer?.info.render.calls }, bodies,
                     safe: warnings.every(w => Math.hypot(p.position.x - w.x, p.position.z - w.z) >= w.radius + 1.5) };
             }, encounter);
             if (!observation.active) return partyWarningInputPolicy(observation);
+            observation.inputTiming = [];
             if (observation.step) {
                 const moved = await tryDungeonGroundStep(() => moveByGroundClick(actor.page,
                     observation.step.x, observation.step.z, { ...PARTY_FOLLOW_INPUT_OPTIONS,
-                        allowAlternatePaths: false, requireClearPath: true, timeout: 1500 }));
+                        allowAlternatePaths: false, requireClearPath: true, timeout: 1500,
+                        onTiming: phase => observation.inputTiming.push(phase) }));
                 if (moved) observation.safe = await actor.page.evaluate(warnings => {
                     const p = window.game.player.position, e = window.__partyClearEvidence;
                     e.warningMoves++;
@@ -216,6 +224,10 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             await actor.page.evaluate(observation => {
                 const p = window.game.player, e = window.__partyClearEvidence;
                 e.recentEscapes.push({ origin: observation.origin, step: observation.step,
+                    inputTiming: observation.inputTiming,
+                    planningMs: observation.planningMs, frameAtPlan: observation.frameAtPlan,
+                    frameAfterInput: Number.isFinite(window.game.frameCount) ? window.game.frameCount : null,
+                    renderSample: observation.renderSample,
                     bodies: observation.bodies, elapsed: performance.now() - observation.plannedAt,
                     after: { x: p.position.x, z: p.position.z, dead: p.state === 'DEAD',
                         blockedStops: p.movementMetrics?.blockedStops || 0 },

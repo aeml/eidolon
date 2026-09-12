@@ -28,3 +28,9 @@ This candidate extends208b0aa3; the primary worktree remains frozen there while
 native four-player session77501 continues. Merge only after that run ends, then
 retain the full integration gate. These prepared tests do not prove earned gear,
 native dungeon completion or the upcoming release's production acceptance.
+
+After77501 ended and its failure was archived, primary fast-forwarded to
+a7be1ed9. Full server race session52549 TERMINAL0: root18.942s, loadtest1.022s,
+game343.992s; database and lifecycle passed from cache. Log
+`/tmp/eidolon-development-gear-full-server-20260912.log`. This accepts the
+integrated server regression, not the failed native encounter or publication.

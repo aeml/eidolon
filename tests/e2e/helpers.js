@@ -342,8 +342,18 @@ export async function projectGroundOffset(page, deltaX, deltaZ, options = {}) {
 }
 
 export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
+    const startedAt = performance.now();
+    let previousPhaseAt = startedAt;
+    const mark = phase => {
+        if (!options.onTiming) return;
+        const at = performance.now();
+        options.onTiming({ phase, elapsedMs: at - startedAt, durationMs: at - previousPhaseAt });
+        previousPhaseAt = at;
+    };
     await observeEntranceClick(page);
+    mark('click-observer');
     const before = await readPlayerState(page);
+    mark('read-origin');
     expect(before).not.toBeNull();
     const attempts = [];
     let maximumDisplacement = 0;
@@ -360,12 +370,16 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
     ];
 
     for (const [candidateX, candidateZ] of candidates) {
-        if (options.requireClearPath && !await page.evaluate(async ({ x, z }) => {
-            const { isEarnedRetreatPathClear } = await import('/tests/wizardHuntControls.js');
-            const game = window.game;
-            return isEarnedRetreatPathClear(game.collisionManager, game.player.position,
-                game.player.radius || 1.25, { x, z });
-        }, { x: candidateX, z: candidateZ })) continue;
+        if (options.requireClearPath) {
+            const clear = await page.evaluate(async ({ x, z }) => {
+                const { isEarnedRetreatPathClear } = await import('/tests/wizardHuntControls.js');
+                const game = window.game;
+                return isEarnedRetreatPathClear(game.collisionManager, game.player.position,
+                    game.player.radius || 1.25, { x, z });
+            }, { x: candidateX, z: candidateZ });
+            mark(clear ? 'path-clear' : 'path-blocked');
+            if (!clear) continue;
+        }
         let target = null;
         try {
             await expect.poll(async () => {
@@ -373,11 +387,14 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
                     { allowScaling: !options.requireClearPath });
                 return Boolean(target?.canvas);
             }, { timeout: 1_000 }).toBe(true);
+            mark('project-ground');
         } catch {
+            mark('projection-unavailable');
             continue;
         }
 
         await page.mouse.move(target.x, target.y);
+        mark('mouse-move');
         // A projected ground point can be crossed by a moving actor between
         // projection and click. Wait for the production hover route and only
         // click coordinates that are still genuinely clear ground; otherwise
@@ -385,6 +402,7 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
         // an animation or movement regression.
         await page.waitForTimeout(75);
         const isClearGround = await page.evaluate(() => !window.game?.hoveredEntity);
+        mark('hover-settled');
         const useMoveOnly = options.moveOnly === true;
         if (!isClearGround && !useMoveOnly && options.allowJumpFallback === false) continue;
         const useCoveredJump = !isClearGround && !useMoveOnly;
@@ -395,8 +413,12 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
             const hit = game.inputManager.getGroundIntersectionFromEvent({ clientX: x, clientY: y });
             return hit ? { x: hit.x, y: hit.y, z: hit.z } : null;
         }, target);
+        mark('ground-ray');
         if (options.requireClearPath && (!groundPoint ||
-            Math.hypot(groundPoint.x - target.world.x, groundPoint.z - target.world.z) > .25)) continue;
+            Math.hypot(groundPoint.x - target.world.x, groundPoint.z - target.world.z) > .25)) {
+            mark('ray-invalid');
+            continue;
+        }
         const attempt = { candidateX, candidateZ, screenX: target.x, screenY: target.y,
             plannedGround: target.world, groundPoint,
             mode: useMoveOnly ? 'move-only-walk' : useCoveredJump ? 'covered-ground-jump' : 'walk' };
@@ -411,6 +433,7 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
             await page.mouse.click(target.x, target.y);
         } finally {
             if (modifier) await page.keyboard.up(modifier);
+            mark('click-released');
         }
         attempt.intent = await page.evaluate(() => {
             const game = window.game, p = game.player;
@@ -420,6 +443,7 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
                 blockedStops: p.movementMetrics?.blockedStops || 0 };
         });
         attempt.clickProbe = await page.evaluate(() => window.__entranceClickProbe?.click);
+        mark('click-observed');
         if (isHostilePointerInterception(attempt.clickProbe)) {
             // The real click attacked the new foreground enemy, not ground.
             // Do not call that an ignored movement command or a successful move.
@@ -434,8 +458,10 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
                 attempt.last = { x: after.x, z: after.z, state: after.state, displacement };
                 return groundMovementObserved(before, after, options.minimumDistance || 1, options.arrival);
             }, { timeout: options.timeout || 1_500 }).toBe(true);
+            mark('movement-observed');
             return readPlayerState(page);
         } catch {
+            mark('movement-timeout');
             if (!useCoveredJump && options.allowJumpFallback !== false) {
                 // Jump is a real desktop input path and lets the character clear
                 // small town props or fence edges that block click-to-move.

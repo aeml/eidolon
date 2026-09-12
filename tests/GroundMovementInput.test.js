@@ -42,6 +42,35 @@ test('covered ground can use the existing real Control-click fallback', async ()
     expect(page.mouse.click).toHaveBeenCalledTimes(1);
 });
 
+test('optional phase timing observes the same strict move-only input without changing it', async () => {
+    const page = movementPage(true), phases = [];
+    const after = await moveByGroundClick(page, 9, 0, { moveOnly: true, requireClearPath: true,
+        allowJumpFallback: false, allowAlternatePaths: false, onTiming: phase => phases.push(phase) });
+    expect(after.x).toBe(10);
+    expect(phases.map(p => p.phase)).toEqual(['click-observer', 'read-origin', 'path-clear',
+        'project-ground', 'mouse-move', 'hover-settled', 'ground-ray', 'click-released',
+        'click-observed', 'movement-observed']);
+    for (const [index, phase] of phases.entries()) {
+        expect(Number.isFinite(phase.elapsedMs)).toBe(true);
+        expect(phase.durationMs).toBeGreaterThanOrEqual(0);
+        expect(phase.elapsedMs).toBeGreaterThanOrEqual(phases[index - 1]?.elapsedMs || 0);
+    }
+    expect(page.mouse.click).toHaveBeenCalledTimes(1);
+    expect(page.keyboard.down.mock.calls).toEqual([['Shift']]);
+    expect(page.keyboard.up.mock.calls).toEqual([['Shift']]);
+});
+
+test('timing records a stale ground ray without inventing a successful input', async () => {
+    const page = movementPage(true, false, .4), phases = [];
+    await expect(moveByGroundClick(page, 9, 0, { moveOnly: true, requireClearPath: true,
+        allowJumpFallback: false, allowAlternatePaths: false, onTiming: phase => phases.push(phase) }))
+        .rejects.toMatchObject({ name: 'GroundInputUnavailableError' });
+    expect(phases.map(p => p.phase)).toContain('ray-invalid');
+    expect(phases.map(p => p.phase)).not.toContain('click-released');
+    expect(phases.map(p => p.phase)).not.toContain('movement-observed');
+    expect(page.mouse.click).not.toHaveBeenCalled();
+});
+
 test('no-jump retreat stays strict and never invents desktop WASD movement', async () => {
     const page = movementPage(true);
     await expect(moveByGroundClick(page, 9, 0, { allowJumpFallback: false, minimumDistance: 6 }))
