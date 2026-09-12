@@ -5,7 +5,58 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 07:04 UTC
+## Current checkpoint — September 12, 07:14 UTC
+
+Previous goal turn PROGRESS; this continuation also PROGRESS. Implemented and
+tested offline damage-buff stat/recipient/lifecycle consumers, corrected their
+descriptions and carried release65 QA repairs forward into the candidate. The
+full roadmap is active; neither1.1 nor the incomplete buff candidate is released.
+
+- Clean candidate `/tmp/eidolon-1-1-fighter-damage-buff-mastery-20260912`,
+  branch `work/1-1-fighter-damage-buff-mastery`, now
+  **37d00650af106f21974a5d79be9ce37826070936**, NOT pushed/integrated.
+  Runtime commit **f91c7ddf** follows4e9e6b9b. **27093379/37d00650** are clean
+  cherry-picks of release2a82012b/0e1068a5, so QA forward-port is present in this
+  candidate (not yet primary7f781121).
+- New offline helper captures named strength, applies stat multipliers in
+  server order and shares Berserker only to explicit same-party, alive,
+  same-instance nearby hero actors. No party creation or all-friendly grant.
+  Actual basic/Executioner Spin consumers use buffed Damage; online values are
+  never multiplied again. All-Actor expiry handles non-Fighter recipients.
+  Death/Fighter cancellation/purge reset strength and derived stats. Last Stand
+  retains its activation gate. Whirlwind now advances normal Actor timers;
+  removed its old high-health and Last Stand extra multiplications.
+- Fixture RED initially16failed because test armor type was lowercase and
+  correctly excluded; changed fixture to ordinary ARMOR. Corrected RED13failed/
+  3passed0.892s. First green six old duration tests exposed artificial200-mana
+  without matching Intelligence; now fixture has20 Intelligence and ordinary
+  recalculation, preserves mana/cost assertions. Expanded99PASS3.509s; final
+  focused **6suites142tests PASS3.7s**, full lint/diff pass. Tests cover actual
+  delayed basic impact, Spin formula/generic once, actual purge, party scope,
+  snapshot/overlap/refresh/expiry/death, HP/CD rejection, malformed ranks,
+  authority isolation and buff expiry during spin. Logs
+  `/tmp/eidolon-fighter-buff-offline-*-20260912.log`.
+- **Full local client regression49703 ACTIVE** against frozen37d00650 after
+  prepare:client. `nice -n10 npm test -- --runInBand`, Node24; log
+  `/tmp/eidolon-fighter-buff-offline-full-20260912.log`. No GPU use. Poll SAME
+  handle; do not edit this worktree until terminal. No failure observed yet,
+  not an acceptance claim. Updated phase doc explicitly lists open work.
+- Next concrete runtime phase: **offline Whirlwind** still has a Strength-only
+  0.2s legacy tick instead of authoritative Damage+Strength cast budget, first
+  pulse on cast, two0.5s pulses/fourExtended, unique-hit Bloodwhirl and Bladestorm.
+  Implement/test full consumer against ability_whirlwind.go, plus scene/save/
+  native/balance/fullcombined checks before publishing candidate. Do not claim
+  all abilities are repaired from basic/Spin tests. Real four-party dungeon
+  clear and all other1.1–1.10 gates remain open.
+- **Production CI34679633154@0e1068a5 still ACTIVE**. Client103515717272 and
+  server103515717349 TERMINAL SUCCESS. Retained completed logs via job API:
+  `/tmp/eidolon-release65-ci-{client,server}-34679633154.log`. Standard gh run
+  log command cannot fetch while overall run is active; API download succeeded.
+  Browser3/1/2 jobs103516749082/103516749095/103516749113 last read in_progress.
+  Native/deploy still pending. Reserve GPU for its native stage; leave scheduled
+  soak untouched. Last independent live check remains1.0.64/6d5e82cb, not65.
+
+## Previous checkpoint — September 12, 07:04 UTC
 
 This goal continuation is PROGRESS: preserved the first local failure, added
 transient cast diagnostics, completed a full native Wizard pass, and pushed
