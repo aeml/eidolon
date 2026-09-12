@@ -147,3 +147,10 @@ independent owned-container/18185/18186/41875 cleanup checks passed. Main agent
 viewed the saved High cloak capture; incidental12FPS is not performance closure.
 Exact-source CI34699201516 is queued/running; full corrected CI is still required
 before primary integration. No production release follows from this local pass.
+
+Exact-source CI34699201516 subsequently SUCCEEDED:400 client suites/6311 tests/
+131.29s; server game87.0%/106.880s, race341.201s; browsers40+53+26=119 actual.
+Logs `/tmp/eidolon-rogue-utility-catalog-ci-{client,server,browser1,browser2,browser3}-34699201516.log`.
+Native/deployment jobs were skipped by development dispatch. The separate frozen
+native success above plus this full corrected CI accepts the Mastery component
+for merged regression; it does not accept subsequent Technique changes.
