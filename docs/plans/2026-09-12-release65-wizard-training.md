@@ -97,3 +97,29 @@ Regression RED1failed/3passed0.586s with the original group; GREEN4suites/
 own candidate rehearsal34668784144 was canceled for replacement on the corrected
 workflow; production34668112188 was left untouched. New hosted source/run and
 its terminal evidence must still be recorded before acceptance.
+
+### Hosted65 acceptance and subsequent integration
+
+Corrected rehearsal **CI34668886679 TERMINAL SUCCESS**, source9ab5b644.
+Client296suites/4340tests104.525s plus full lint/audit/benchmark; server coverage
+game74.909s/85.5%, full race game224.979s and backup/restore/bench/build PASS.
+Hosted browser shards1/2/3 PASS39/40/25cases=104. The production/native jobs were
+intentionally skipped by unchanged event/branch guards, not passed.
+
+Retained full logs`/tmp/eidolon-release65-hosted-{client,server,browser1,browser2,
+browser3}-34668886679.log`; browser artifacts
+`/tmp/eidolon-release65-hosted-shard1-OxJYej`,
+`/tmp/eidolon-release65-hosted-shard2-S2vbUM`, and
+`/tmp/eidolon-release65-hosted-shard3-nfCykY`. Inspection of the mocked Rogue
+respawn capture shows no persistent white interaction cube. A390px status-panel
+capture exposed background text faintly showing through its translucent surface.
+These fixtures are not live gameplay, physical-phone or four-party acceptance.
+
+After that run completed, fast-forwarded the candidate to1f5fe935: adds the
+[two-client native Teleport/Phase route](2026-09-12-teleport-native-qa.md) and
+[opaque phone reading surface](2026-09-12-phone-status-surface.md), with its
+release-note entry and regressions. The new native route is wired into full QA
+without removing prior commands but has NOT yet been executed natively.
+Only CSS runtime changes after9ab5b644; server/gameplay runtime is identical.
+Another hosted regression on the combined source remains required. Do not
+attribute the successful9ab5b644 run to these later additions or claim65 live.
