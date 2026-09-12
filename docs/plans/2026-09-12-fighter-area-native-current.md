@@ -23,6 +23,23 @@ Neither test discovery nor these unit results proves native acceptance. Run
 each scoped route only after current party7792 releases the native GPU lane.
 No production release or version bump accompanies this test-only candidate.
 
+Native63410 Earthshaker PASSED1.1m on6263f4e8, zero retries: all15 normal
+purchases,6/6.12/6.6/7.5/8.1 radii, Fissure high/low, Aftershock both phases and
+stored origin, saved points/runes/landscape and Seismic checks passed. Archive
+`/tmp/eidolon-earthshaker-current-pass-FiKJSJ`, original
+`/tmp/eidolon-earthshaker-current-native-20260912.log`. Main agent reviewed low
+Fissure and saved low Aftershock screenshots. Scan/owned cleanup passed.
+
+Native72405 Whirlwind PASSED55.2s/56.8s total on the same6263f4e8, zero retries.
+All15 purchases, rank0/1/5 and generic area bonuses, actual paid30mana, Extended
+duration, accepted shape, attached boundary frames/natural expiry and saved
+landscape high/low checks passed. Low Extended screenshot reviewed. Archive
+`/tmp/eidolon-whirlwind-current-pass-eYKlcR`, original
+`/tmp/eidolon-whirlwind-current-native-20260912.log`; scan/owned cleanup passed.
+Full candidate CI34695174069 completed successfully; detailed job logs and
+combined-integration checks remain separately recorded in the execution ledger.
+These native area checks are not enemy-hit/whole-dungeon/earned-progression proof.
+
 Related source-review findings still open: the separate Fighter damage-buff
 scenario uses the status launcher for closing, unlike the tested visible Close
 button used by Fortress; address when porting that route. Blade Storm's nominal
