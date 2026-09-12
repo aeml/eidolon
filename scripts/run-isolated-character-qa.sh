@@ -139,6 +139,7 @@ qa_allowlist+=",${QA_USERNAME_BASE}-ground-retry1"
 qa_allowlist+=",${QA_USERNAME_BASE}-cleanse"
 qa_allowlist+=",${QA_USERNAME_BASE}-cleanse-retry1"
 qa_allowlist+=",${QA_USERNAME_BASE}-roar-area"
+qa_allowlist+=",${QA_USERNAME_BASE}-fortress-mastery"
 qa_allowlist+=",${QA_USERNAME_BASE}-spin-area"
 qa_allowlist+=",${QA_USERNAME_BASE}-economy-retry1"
 qa_allowlist+=",${QA_USERNAME_BASE}-guardian"
@@ -372,6 +373,11 @@ run_guardian_roar_area() {
     npx playwright test tests/e2e/guardian-roar-area-gameplay.spec.js
 }
 
+run_fortress_mastery() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-fortress-mastery" EIDOLON_E2E_CLASS=Fighter \
+    npx playwright test --retries=0 tests/e2e/iron-fortress-mastery-gameplay.spec.js
+}
+
 run_executioner_spin_area() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-spin-area" EIDOLON_E2E_CLASS=Fighter \
     npx playwright test tests/e2e/executioner-spin-area-gameplay.spec.js
@@ -553,6 +559,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     run_qa_stage ground-shape run_ground_shape &&
     run_qa_stage purifying-area run_purifying_area &&
     run_qa_stage guardian-roar-area run_guardian_roar_area &&
+    run_qa_stage fortress-mastery run_fortress_mastery &&
     run_qa_stage executioner-spin-area run_executioner_spin_area &&
     run_qa_stage guardian-area run_guardian_area &&
     run_qa_stage consecrated-area run_consecrated_area &&
@@ -677,6 +684,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   guardian-roar-area)
     run_guardian_roar_area
+    ;;
+  fortress-mastery)
+    run_fortress_mastery
     ;;
   executioner-spin-area)
     run_executioner_spin_area
@@ -913,6 +923,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     echo "Trained ground-spell geometry verification: EIDOLON_ISOLATED_QA_ROUTE=ground-shape" >&2
     echo "Trained cleanse-area verification: EIDOLON_ISOLATED_QA_ROUTE=purifying-area" >&2
     echo "Trained Guardian Roar verification: EIDOLON_ISOLATED_QA_ROUTE=guardian-roar-area" >&2
+    echo "Iron Fortress duration and saved training: EIDOLON_ISOLATED_QA_ROUTE=fortress-mastery" >&2
     echo "Trained Executioner Spin verification: EIDOLON_ISOLATED_QA_ROUTE=executioner-spin-area" >&2
     echo "Trained persistent support-area verification: EIDOLON_ISOLATED_QA_ROUTE=guardian-area" >&2
     echo "Trained holy-zone verification: EIDOLON_ISOLATED_QA_ROUTE=consecrated-area" >&2
