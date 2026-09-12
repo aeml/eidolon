@@ -5,7 +5,67 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 10:53 UTC
+## Current checkpoint — September 12, 11:04 UTC
+
+Previous goal turn PROGRESS; this continuation PROGRESS (reproduced/fixed an
+independent runtime auth recovery defect, with hosted/native-route preparation)
+and verified waits. Full roadmap goal remains active. No production deployment,
+root/master push, cancelled soak or restarted party run.
+
+- **Native87251 still ACTIVE**, frozenbfa908c8/party opener, same handle
+  re-polled11:04. Log `/tmp/eidolon-party-opener-native-20260912.log` still only
+  confirms Fighter setup. The prior healthy API/two seeded Fighter+Cleric
+  accounts evidence remains; no new confirmation of Cleric world entry, party
+  formation or dungeon entry. Leave this source/process/DB untouched; do not
+  restart on observation timeout. ONE native GPU lane reserved. The active
+  run's cause is still unknown. Do not conflate the following independent
+  code reproduction with a proven explanation for this setup delay.
+- New `/tmp/eidolon-1-1-auth-inflight-recovery-20260912`, branch
+  `work/1-1-auth-inflight-recovery`, clean
+  **308e83ae0479ffa5e5452f7a51f06d5fe2e896fb**,parent61fd4b96. Production main.js
+  discarded pendingAuthRequest immediately after send, leaving no automatic
+  retry when the socket died before login_success. Actual main-module UI tests
+  reproduced both close/error after send: no replacement socket (9 prior tests
+  pass,2 new fail). Fix retains in-flight LOGIN until reply/transport recovery,
+  caps six reconnects per explicit request without resetting on mere open,
+  clears retained requests/timers on success/rejection/exhaustion, closes old
+  transports and ignores stale socket events. Exhaustion requests a new manual
+  login. Sent registrations are NOT replayed (creation might have committed);
+  pre-send pending registration recovery unchanged. No auth/token/wire changes.
+- Initial auth green11PASS2.234s; expanded auth/menu/address3suites91PASS9.071s;
+  final14authPASS2.318s including stale open/message/error, rejection, no sent
+  registration replay, six-retry cap and corrected later manual credentials.
+  Final auth+route enrollment2suites33PASS1.479s. Full lint and final changed-file
+  lint/shell/diff passed; assets prepared. Logs
+  `/tmp/eidolon-auth-inflight-{red,green,expanded,final,route,gate,lint,final-lint,assets,list}-20260912.log`.
+- Auth candidate dev-pushed; **CI34690013776 ACTIVE** at308e83ae. No primary/
+  integrated fast-forward or deployment. New native `auth-recovery` route uses
+  a distinct allowlisted disposable account, actual server-forwarding WebSocket
+  interception, drops exactly the first real login_success/transport, then
+  requires one UI click to yield exactly2login requests/1dropped+1delivered
+  replies and authenticated class selection. No helper retry/synthetic login
+  request masks the bug. Counts-only attachment, no credentialed recordings.
+  Enrolled in full isolated gate with --retries=0. Playwright --list found1test:
+  discovery ONLY; actual native proof pending behind87251. API forwarding/close
+  semantics inspected in installed Playwright type documentation.
+- Original stale-hover **CI34688932938 TERMINAL SUCCESS**: client301suites
+  4402tests79.787s (prior actual log), game85.5%74.495s/fullrace227.688s, browser
+  39+40+25=104PASS from actual logs. Native/deploy/live jobs SKIPPED, not passes.
+  Logs `/tmp/eidolon-stale-hover-ci-{client,server,browser1,browser2,browser3}-34688932938.log`.
+  Native75464's8frame failure remains, so not full animation acceptance.
+- Combined casting **CI34689363204 still ACTIVE** at61fd4b96: client6232PASS
+  (prior actual evidence), server103541806463SUCCESS, browser3/3 103542854047
+  SUCCESS; browser1/3 103542854025 and2/3 103542854038running at11:02:48.
+  Retrieve final actual logs before full acceptance. Primary/integrated still
+  f016e0f7. Profilef0f250f1 and bounded-party-setup9e7278ea remain separate,
+  NOT natively executed/integrated/pushed; prior checkpoint details retained.
+- Local sessions35711/62456/44503/90515/25223/78522/61091/45708/54530/1104 all
+  terminal. No second native launched. All remaining dungeon clear/credit/
+  handoff, first-hour progression, native talent/visual and later milestone
+  scope remains open. Next work can continue while87251 is genuinely live;
+  no unsupported blocker/completion claim.
+
+## Previous checkpoint — September 12, 10:53 UTC
 
 Previous goal turn PROGRESS; this continuation PROGRESS plus verified waits.
 Full1.1.0–1.10.0 scope remains active. No new version or production deployment,
