@@ -65,6 +65,21 @@ containers/image/ports clear. Main agent viewed Low portrait capture;53FPS is
 incidental and does not close visual/performance polish. Full runtime CI and
 combined-primary regression remain required; no whole-dungeon acceptance.
 
+## Component CI and release-gate rehearsal
+
+Runtime6cd11168 CI34709688359 SUCCESS:407client suites6344tests89.656s,
+game87.0%/101.574s/race359.475s, browser40+53+26=119actual checks. Manual
+native/deploy skipped; native92396 supplies separate actual browser evidence.
+No src/server difference exists between the runtime CI source and native source.
+Logs `/tmp/eidolon-blade-storm-ci-*-34709688359.log`.
+
+Expanded gate rehearsal initially failed21cases because the command stub and
+expected stage lists omitted the newly enrolled Blade Storm route. Added that
+same stage once, preserving all existing commands/order, failure status19,
+artifact scanning and cleanup assertions. Corrected5suites89testsPASS4.828s,
+changed-file lint/diff. This follow-up changes only test expectations, not the
+native route or gameplay. Combined full regression still remains mandatory.
+
 ## Draft 1.1.0 patch note (unreleased)
 
 - Blade Storm's five daggers now stop at their intended range and dungeon walls.
