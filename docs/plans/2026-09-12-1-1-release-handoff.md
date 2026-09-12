@@ -71,6 +71,15 @@ dungeon clear, first-hour pacing or production delivery.
 
 ## Release acceptance checklist
 
+Updated delivery policy: the player has deferred exhaustive per-version matrices
+to final full-feature stabilization. The unchecked broad verification items below
+are retained as deferred work, not repeated prerequisites for shipping otherwise
+working milestone features. Essential data-safety, known progression blockers,
+focused changed-behavior tests and basic deployment/live smoke remain required.
+Cleric utility Masteries are now implemented and merged fromd037ed17 after focused
+server/wire/client checks. Add their actual bonus and offline/UI parity correction
+to1.1 notes. No further dedicated full CI/native matrix is required for that fix.
+
 - [x] Complete the current four-role Verdant route: all rooms/bosses, every
   member's kill credit/XP, independent manual Ilyra reward, Water offer and
   saved state/reward checks after relog. Native15051 passed58.8minutes on9b6745d7,
