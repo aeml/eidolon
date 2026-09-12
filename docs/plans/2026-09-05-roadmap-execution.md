@@ -5,7 +5,68 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 04:38 UTC
+## Current checkpoint — September 12, 04:51 UTC
+
+Previous goal turn was PROGRESS. This continuation made PROGRESS: retained and
+analyzed the terminal party failure, repaired six actual Rogue offline damage
+consumers with paired server proof, integrated the accepted Teleport gate port,
+started exact-source hosted regression, and published65 to its normal CI gate.
+The full objective remains active and unproved.
+
+- **Party native37629 TERMINAL FAIL13.7m**, source8f2c82a4/seed-6948543675275706922.
+  Opening combat and one four-person town recovery/resume PASS, preserving each
+  member's seed/rooms/Gold/inventory/quests. Fighter died at Rootbound Warden;
+  last periodic boss report12338/15000. Cleanup's940HP/610MP is town respawn,
+  not survival. No boss/full-clear/manual turn-in/fresh Water claim.
+  Full sanitized archive `/tmp/eidolon-four-role-timing-failure-WNbMXB`;
+  log `/tmp/eidolon-four-role-briar-timing-20260912.log`. Scan0, exact owned
+  party09120431 containers absent and18185/18186/41875 free after termination.
+- Actual timing evidence: second escape took Fighter1955/Cleric2068/Wizard1945/
+  Rogue2153ms, finishing289/396/333/618ms after impact. Ground-input helper
+  consumed1629/1772/1616/1802ms, with many serial read-only browser round trips
+  before click delivery. This supports reducing harness observation overhead,
+  not declaring a server movement or boss-balance cause. Cleric healed3123
+  total and its final ready heal reached the tank from6.15units; mana was not
+  exhausted. Full analysis in`2026-09-12-four-role-warning-timing-result.md`.
+- **Rogue damage repair13c642dc33566bee2a52eeee5775ef0b9ed70c6a**, in
+  `/tmp/eidolon-1-1-rogue-damage-training-20260912`, based onac38aa09. Missing
+  offline named Mastery/ROG_38 consumers reproduced30failed/6passed4.684s.
+  Six skills now match actual server base/training formulas: Piercing Throw,
+  Backstab, Death Spiral, Fan of Knives, Blade Storm and Phantom Volley.
+  Volley snapshots before delayed shots; integer damage boundaries match Go.
+  Positional Backstab independently RED431.5vs431; fixed truncation before
+  armor/critical. No online gameplay, saved ranks or1.0.x metadata change.
+- Paired server37 actual cast/positional cases and existing Backstab critical/
+  Unstoppable armor consumers PASS final race12.074s. Focused client12suites/
+  210tests6.67s plus changed-file lint/diff PASS. Logs
+  `/tmp/eidolon-1-1-rogue-damage-{red,green,expanded,final,final-lint,server-contract,server-race,server-final}-20260912.log`
+  and `/tmp/eidolon-1-1-rogue-behind-red-20260912.log`.
+  Doc`2026-09-12-rogue-damage-training.md`. Existing diagnostic talent overlay
+  separately passed7.984s; its old probes do not establish all160 talents.
+- After native37629 ended, primary and integrated rehearsal fast-forwarded
+  throughac38aa09 to clean13c642dc. Accepted Teleport coverage is now integrated.
+  Pushed ONLY`work/1-1-integrated-regression`, verified remote13c642dc, then
+  dispatched **CI34674058495 ACTIVE**, exact run head confirmed. Sessions50475/
+  79958 terminal. Hosted-only regression; native/deploy guards remain unchanged.
+  Do not attribute earlier8f2c82a4 acceptance to these newer changes.
+- **Release65 pushed to master**, exact66ca3a3d262a0dc477b18c3912a1fcec3904e60b;
+  push29989 terminal after64's full acceptance and party hardware cleanup.
+  **Production CI34673903787 ACTIVE**. Client103500199021 SUCCESS298suites/
+  4349tests99.044s; log `/tmp/eidolon-release65-production-client-34673903787.log`.
+  Server103500199162 still running at last check. Native/predeploy/input/deploy/
+  final live acceptance remain unproved; keep native hardware free for this run.
+  Do not start another local four-party/browser run over it.
+- Independent public frontend/backend still Alpha1.0.64/6d5e82cb, healthok/
+  database ready at04:50. A master push is not proof65 is live. Scheduled soak
+  34670421761 remains active; no new soak or schedule change.
+- Next: poll SAME production34673903787 and hosted34674058495; retain terminal
+  logs/artifacts. Reduce verified serial browser-observation overhead in a
+  separate development worktree, retaining real input/collision/ray/receipt/
+  displacement/survival checks, then retry four-role only when native65 is free.
+  Full1.1 dungeon/party/earned/first-hour/balance/reconnect and all1.2–1.10 work
+  remain. No ordinary66 release. Root master is ledger-only: NEVER PUSH.
+
+## Previous checkpoint — September 12, 04:38 UTC
 
 Previous turn was PROGRESS. This continuation is PROGRESS: preserved accepted
 Teleport coverage for1.1 in an independent worktree while verifying the same
