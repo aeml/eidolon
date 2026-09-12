@@ -6,6 +6,7 @@ import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
 import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyWarningInputPolicy } from '../partyDungeonControls.js';
 import { attackPartyDamageTarget, selectPartyDamageBuff } from '../partyDamageRoleControls.js';
 import { runPartyRoleInputs } from '../partyRoleScheduling.js';
+import { startPartyCombatWorkers } from '../partyCombatWorkers.js';
 import { partyTankHasEngaged } from '../partyEngagementControls.js';
 import { partyAuraFollowSpacing, selectPartyHealTarget } from '../partyHealingControls.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
@@ -135,7 +136,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
     const quests = JSON.parse(readFileSync('tests/fixtures/earned-wizard-31.json', 'utf8')).quests;
     const credentials = credentialsFromEnvironment(), ownedBrowsers = [], actors = [];
     const playthrough = dungeonPlaythroughOptions({});
-    let entered = false;
+    let entered = false, combatWorkers = null, routeFailure = null;
     const healerDecisions = [];
     try {
         for (const [index, className] of PARTY_ROLES.entries()) {
@@ -319,6 +320,70 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             await healer.page.keyboard.press(String(available.index + 1));
         }
 
+        async function actCombatRole(actor, policy, target) {
+            if (actor === healer) return healParty({ allowMovement: policy.allowApproach });
+            const tankEngaged = partyTankHasEngaged(await tank.page.evaluate(() => ({
+                damageByTarget: window.__partyClearEvidence.damageByTarget
+            })), target.id);
+            if (!tankEngaged) return; // Wait for a real tank hit, not just movement.
+            const enemy = await actor.page.evaluate(id => {
+                const g = window.game, p = g.player, e = g.remotePlayers.get(id);
+                return e && e.state !== 'DEAD' ? { distance: p.position.distanceTo(e.position),
+                    range: g.abilityController.getAbilityCastRange(), cooldown: p.abilityCooldown,
+                    dead: p.state === 'DEAD', mana: p.stats.mana, healthRatio: p.stats.hp / p.stats.maxHp,
+                    hotbar: p.hotbar, unlockedSkills: p.unlockedSkills, cooldowns: p.cooldowns,
+                    shieldActive: p.arcaneShieldActive, poisonActive: p.poisonCoatingActive,
+                    sinceCastMs: performance.now() - window.__partyClearEvidence.lastAcceptedCastAt,
+                    costs: Object.fromEntries(['Arcane Shield', 'Poison Coating'].map(skill =>
+                        [skill, g.abilityController.getConfiguredManaCost(skill)])) } : null;
+            }, target.id);
+            if (!enemy) return;
+            const buff = selectPartyDamageBuff({ ...enemy, className: actor.className });
+            if (buff) {
+                const self = await projectGroundOffset(actor.page, 0, 0);
+                if (self?.canvas) {
+                    await actor.page.mouse.move(self.x, self.y);
+                    await actor.page.keyboard.press(buff.key);
+                    return;
+                }
+            }
+            const point = await projectEntity(actor.page, target.id);
+            if (!point?.visible) {
+                if (policy.allowApproach) await follow(actor, await snapshot(tank.page), 8);
+                return;
+            }
+            const clicks = await attackPartyDamageTarget({
+                project: (id, hitboxPoint) => projectEntity(actor.page, id, hitboxPoint),
+                move: (x, y) => actor.page.mouse.move(x, y),
+                settle: () => actor.page.waitForTimeout(60),
+                hoveredId: () => actor.page.evaluate(() => window.game.hoveredEntity?.id),
+                read: id => actor.page.evaluate(id => {
+                    const g = window.game, p = g.player, e = g.remotePlayers.get(id);
+                    const warnings = window.__partyClearWarnings.filter(w =>
+                        w.expires > performance.now() && w.instance === g.currentInstanceId);
+                    return { alive: p.state !== 'DEAD' && Boolean(e?.isActive && e.state !== 'DEAD'),
+                        distance: e ? Math.hypot(p.position.x - e.position.x, p.position.z - e.position.z) : null,
+                        range: g.abilityController.getAbilityCastRange(), cooldown: p.abilityCooldown,
+                        allowApproach: warnings.length === 0,
+                        allowCasts: warnings.every(w => Math.hypot(p.position.x - w.x, p.position.z - w.z) >= w.radius + 1.5) };
+                }, id),
+                click: async button => {
+                    await actor.page.mouse.down({ button });
+                    await actor.page.mouse.up({ button });
+                }
+            }, target.id);
+            await actor.page.evaluate(({ id, clicks }) => {
+                const g = window.game, p = g.player, e = g.remotePlayers.get(id);
+                const records = window.__partyClearEvidence.recentAttackInputs;
+                records.push({ clicks, hovered: g.hoveredEntity?.id === id,
+                    distance: e ? Math.hypot(p.position.x - e.position.x, p.position.z - e.position.z) : null,
+                    basicRange: e ? g.getBasicAttackRangeForEntity(e) : null,
+                    pendingTarget: g.pendingInteraction?.id === id,
+                    moveTarget: p.targetPosition ? { x: p.targetPosition.x, z: p.targetPosition.z } : null });
+                if (records.length > 12) records.shift();
+            }, { id: target.id, clicks });
+        }
+
         let currentTarget, bossStart;
         let townRests = 0;
         await playDungeonThroughInputs(tank.page, { playthrough, expeditionProfile: 'party',
@@ -435,77 +500,20 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 // Start the Fighter's ordinary driver first; movement alone
                 // is not an opener, so DPS also waits for a damage receipt.
                 if (currentTarget !== target.id) {
+                    if (combatWorkers) await combatWorkers.stop();
                     currentTarget = target.id;
                     bossStart = playthrough.bosses.includes(target.type) ? await Promise.all(actors.map(actor => snapshot(actor.page))) : null;
+                    combatWorkers = startPartyCombatWorkers(actors.slice(1),
+                        actor => runPartyRoleInputs([actor],
+                            role => avoidWarnings(role, target.encounter),
+                            (role, policy) => actCombatRole(role, policy, target)),
+                        actor => actor.page.waitForTimeout(60));
                     return false;
                 }
-                // Every role reacts to its own safety decision immediately;
-                // a slow escape on another browser must not postpone healing.
-                const tankEngaged = partyTankHasEngaged(await tank.page.evaluate(() => ({
-                    damageByTarget: window.__partyClearEvidence.damageByTarget
-                })), target.id);
-                const [tankPolicy] = await runPartyRoleInputs(actors,
-                    actor => avoidWarnings(actor, target.encounter), async (actor, policy) => {
-                    if (actor === tank) return; // The ordinary leader driver owns Fighter combat.
-                    if (actor === healer) return healParty({ allowMovement: policy.allowApproach });
-                    if (!tankEngaged) return; // Heals and each role's warning escape remain active.
-                    const enemy = await actor.page.evaluate(id => {
-                        const g = window.game, p = g.player, e = g.remotePlayers.get(id);
-                        return e && e.state !== 'DEAD' ? { distance: p.position.distanceTo(e.position),
-                            range: g.abilityController.getAbilityCastRange(), cooldown: p.abilityCooldown,
-                            dead: p.state === 'DEAD', mana: p.stats.mana, healthRatio: p.stats.hp / p.stats.maxHp,
-                            hotbar: p.hotbar, unlockedSkills: p.unlockedSkills, cooldowns: p.cooldowns,
-                            shieldActive: p.arcaneShieldActive, poisonActive: p.poisonCoatingActive,
-                            sinceCastMs: performance.now() - window.__partyClearEvidence.lastAcceptedCastAt,
-                            costs: Object.fromEntries(['Arcane Shield', 'Poison Coating'].map(skill =>
-                                [skill, g.abilityController.getConfiguredManaCost(skill)])) } : null;
-                    }, target.id);
-                    if (!enemy) return;
-                    const buff = selectPartyDamageBuff({ ...enemy, className: actor.className });
-                    if (buff) {
-                        const self = await projectGroundOffset(actor.page, 0, 0);
-                        if (self?.canvas) {
-                            await actor.page.mouse.move(self.x, self.y);
-                            await actor.page.keyboard.press(buff.key);
-                            return;
-                        }
-                    }
-                    const point = await projectEntity(actor.page, target.id);
-                    if (!point?.visible) {
-                        if (policy.allowApproach) await follow(actor, await snapshot(tank.page), 8);
-                        return;
-                    }
-                    const clicks = await attackPartyDamageTarget({
-                        project: (id, hitboxPoint) => projectEntity(actor.page, id, hitboxPoint),
-                        move: (x, y) => actor.page.mouse.move(x, y),
-                        settle: () => actor.page.waitForTimeout(60),
-                        hoveredId: () => actor.page.evaluate(() => window.game.hoveredEntity?.id),
-                        read: id => actor.page.evaluate(id => {
-                            const g = window.game, p = g.player, e = g.remotePlayers.get(id);
-                            const warnings = window.__partyClearWarnings.filter(w =>
-                                w.expires > performance.now() && w.instance === g.currentInstanceId);
-                            return { alive: p.state !== 'DEAD' && Boolean(e?.isActive && e.state !== 'DEAD'),
-                                distance: e ? Math.hypot(p.position.x - e.position.x, p.position.z - e.position.z) : null,
-                                range: g.abilityController.getAbilityCastRange(), cooldown: p.abilityCooldown,
-                                allowApproach: warnings.length === 0,
-                                allowCasts: warnings.every(w => Math.hypot(p.position.x - w.x, p.position.z - w.z) >= w.radius + 1.5) };
-                        }, id),
-                        click: async button => {
-                            await actor.page.mouse.down({ button });
-                            await actor.page.mouse.up({ button });
-                        }
-                    }, target.id);
-                    await actor.page.evaluate(({ id, clicks }) => {
-                        const g = window.game, p = g.player, e = g.remotePlayers.get(id);
-                        const records = window.__partyClearEvidence.recentAttackInputs;
-                        records.push({ clicks, hovered: g.hoveredEntity?.id === id,
-                            distance: e ? Math.hypot(p.position.x - e.position.x, p.position.z - e.position.z) : null,
-                            basicRange: e ? g.getBasicAttackRangeForEntity(e) : null,
-                            pendingTarget: g.pendingInteraction?.id === id,
-                            moveTarget: p.targetPosition ? { x: p.targetPosition.x, z: p.targetPosition.z } : null });
-                        if (records.length > 12) records.shift();
-                    }, { id: target.id, clicks });
-                });
+                combatWorkers.check();
+                // The Fighter remains owned by the leader driver; other roles
+                // observe and act independently, with one input loop per browser.
+                const tankPolicy = await avoidWarnings(tank, target.encounter);
                 for (const actor of actors) {
                     const state = await snapshot(actor.page);
                     if (state.dead) {
@@ -522,6 +530,8 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 return tankPolicy.holdMelee;
             },
             afterEncounter: async (_page, target) => {
+                await combatWorkers?.stop();
+                combatWorkers = null;
                 if (playthrough.bosses.includes(target.type)) {
                     const end = await Promise.all(actors.map(actor => snapshot(actor.page)));
                     console.log('[party-clear-boss]', JSON.stringify({ boss: target.type,
@@ -567,7 +577,10 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             console.log(`[party-clear-relogin] ${actor.className}: personal chapter, reward and Water offer persisted`);
         }
         for (const actor of actors) expect(actor.failures, `${actor.className} browser failures`).toEqual([]);
+    } catch (error) {
+        routeFailure = error;
     } finally {
+        try { await combatWorkers?.stop(); } catch (error) { routeFailure ||= error; }
         console.log('[party-healer-decisions]', JSON.stringify(healerDecisions));
         for (const actor of actors) {
             try {
@@ -578,4 +591,5 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
         }
         await Promise.all(ownedBrowsers.map(extra => extra.close()));
     }
+    if (routeFailure) throw routeFailure;
 });
