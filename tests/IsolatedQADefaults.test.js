@@ -110,7 +110,7 @@ test('the full release gate includes saved Guardian Roar training without removi
     const probe = readFileSync('tests/e2e/guardian-roar-area-gameplay.spec.js', 'utf8');
     expect(script).toContain('${QA_USERNAME_BASE}-roar-area');
     const untimed = script.replace(/run_qa_stage [a-z0-9-]+ /g, '').replace(/\s+/g, ' ');
-    expect(untimed).toContain('&& run_purifying_area && run_guardian_roar_area && run_executioner_spin_area && run_guardian_area &&');
+    expect(untimed).toContain('&& run_purifying_area && run_guardian_roar_area && run_fortress_mastery && run_executioner_spin_area && run_guardian_area &&');
     expect(script).toContain('guardian-roar-area)\n    run_guardian_roar_area');
     expect(probe).toContain("await verifyCast([0, 0, 0], 15, 'high')");
     expect(probe).toContain("await verifyCast([5, 5, 5], 20.25, 'low')");
@@ -123,7 +123,7 @@ test('Executioner Spin area has a saved ordinary-purchase route in the full rele
     expect(script).toContain('${QA_USERNAME_BASE}-spin-area');
     expect(script).toContain('executioner-spin-area)\n    run_executioner_spin_area');
     const untimed = script.replace(/run_qa_stage [a-z0-9-]+ /g, '').replace(/\s+/g, ' ');
-    expect(untimed).toContain('&& run_guardian_roar_area && run_executioner_spin_area && run_guardian_area &&');
+    expect(untimed).toContain('&& run_guardian_roar_area && run_fortress_mastery && run_executioner_spin_area && run_guardian_area &&');
     expect(probe).toContain('branch:C');
     expect(probe).toContain("await verifyCast([0, 0, 0], 6, 'high')");
     expect(probe).toContain("await verifyCast([5, 5, 5], 8.1, 'low')");
