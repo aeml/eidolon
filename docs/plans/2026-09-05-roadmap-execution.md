@@ -5,7 +5,86 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 19:52 UTC
+## Current checkpoint — September 12, 20:20 UTC
+
+The brief version-confirmation turn was no implementation progress. This
+continuation revalidated actual handles/source and made PROGRESS: accepted and
+merged Serrated Technique, fixed equipment HP normalization with actual equip
+regressions, improved party observation overhead, and reproduced/fixed a QA
+waypoint inside the entrance collider. Full1.1.0–1.10.0 objective remains ACTIVE.
+No production/version/soak change. Root remains ledger-only: NEVER PUSH ROOT.
+
+- Serrated63981 TERMINAL PASS1.6minutes/zero retries; native archive
+  `/tmp/eidolon-serrated-technique-pass-02JBy7`, scan0/exact cleanup verified.
+  Paid0/1/5 mana30/29/27, observed cooldown10/9.7/8.5 (generic5:7.5), unchanged
+  effect10s, expiry, High/Low and saved purchases. Screenshot inspected.
+  CI34715389572 SUCCESS: client413/6398/136.679s, game race352.077s, all3browser
+  shards; manual native/deploy/live skipped. Accepted docs ebd466ad; primary
+  clean **b115e307** merges this candidate. Integrated tree remains2cf857dd,
+  NOT yet updated with Serrated. Logs `/tmp/eidolon-serrated-ci-*-34715389572.log`.
+- Health candidate `/tmp/eidolon-1-1-health-recalculation-20260912`, branch
+  work/1-1-health-recalculation, runtime/dev-origin2162b442; later local docs.
+  Excess player HP caps AFTER all set/talent/rested maxima; never refill missing
+  resources or alter death/NPC state. Actual equip/unequip/copy/re-equip across
+  four classes x rested/unrested x full/depleted/dead plus final-bonus stability.
+  Original RED8full cases+bonus case. Broad focused116.948s initially FAILED2
+  shield fixtures (synthetic500HP vs real495); fixed their initial derived stats,
+  retaining all paid shield/no-damage assertions. Corrected targeted race PASS
+  4.996s. Talent reset already explicitly capped HP; do not claim a reset exploit.
+  Local full90222 TERMINAL143/incomplete; exact process absent, signal source
+  unknown. Root27.180/load1.034/db1.079 passed but game had no result. Independent
+  **CI34716297331 ACTIVE**: server/client SUCCESS (game race294.871s;
+  client413/6393/104.648s), three browser shards running. Do not integrate until
+  required acceptance. Logs `/tmp/eidolon-health-cap-*-20260912.log` and
+  `/tmp/eidolon-health-cap-ci-*-34716297331.log`; candidate doc/draft notes exist.
+- Party Low82404 TERMINAL FAILED16.1m on87d62281; seed681688086402035219,
+  gen2/attempt0/no fallback. Two real four-player rests/reentries,82steps/5room
+  traversals; Fighter died with Warden2434/15000. Cleanup respawn cannot erase
+  sawDeath. Cleric18Light9Embrace5487ally healing across WHOLE run. Early escapes
+  F1/C13/W4/R8; final F release693.2ms, arrival308.6ms late.14–58FPS samples,
+  different seed from High, not a controlled comparison or a complete clear.
+  Archive `/tmp/eidolon-party-low-graphics-failure-tgwJIq`, scan0/cleanup done.
+  Outcome docs e30b406f retained.
+- Party candidate **d985fa89**, clean/dev-pushed in
+  `/tmp/eidolon-1-1-party-partial-retreat-20260912`: eight serial expensive
+  status calls become four concurrent compact read-only observations, joined
+  on failure. Current warning check happens AFTER these checks, just before
+  sole Fighter input owner acts. Death history/freshness stay fatal, detailed
+  diagnostics remain recorded. Focused4suites23tests PASS1.001s +lint/diff.
+  **39948 ACTIVE — sole owned native GPU**, route **party-dungeon**, runID
+  partyhealthfix0912, API18185/Mongo18186/web41875, Low. Freeze this worktree.
+  Log `/tmp/eidolon-party-health-correct-route-native-20260912.log`. Actual seed
+  -5075659787700787075/gen2/attempt0/no fallback; all4entered, trash and one town
+  recovery/reentry observed; currently fighting Warden, no clear claim. Earlier
+  63424 used INVALID route four-player-dungeon, TERMINAL1 without running a
+  test; cleanup/ports verified before39948. Retain wrong-route log
+  `/tmp/eidolon-party-health-native-20260912.log`, never count it as a replay.
+- Tripwire native44547 on9cb94108 FAILED12.4s: duplicate CDP touchEnd in cleanup.
+  Stateful protocol regression RED3fail/1pass then fixed14tests/2suites1.776s.
+  Corrected02cb0df2 native68266 FAILED12.0s: first touch moved36.15units then
+  stalled. Both were BEFORE CAST, not trap acceptance. Archives
+  `/tmp/eidolon-tripwire-touch-release-failure-uoD4FU` and
+  `/tmp/eidolon-tripwire-pulse-overshoot-17f0nU`, scan0/exact cleanup verified.
+- Actual Tripwire overshoot cause: QA verdant was800/200, exactly production
+  entrance centre. Real CollisionManager test reproduces >30unit ejection
+  from .25unit step (entrance radius32.79). Old long-touch hypothesis is not
+  established cause. **9048c71a** clean/dev-pushed in Tripwire worktree changes
+  fixed allowlisted QA arrival to800/250, updates all known arrival checks,
+  and selects actual enemies with an unobstructed approach. No normal player,
+  monster, doorway, combat or recovery stats changed. Real collider two radii/
+  eight directions pass; actual command auth/protection/instance checks pass
+  race2.962s. Focused6suites34tests3.774s +lint/diff. **CI34716757122 ACTIVE** on
+  9048c71a; native queued AFTER39948 terminal/archive/cleanup. Recheck affected
+  shield/entrance routes as well as Tripwire paid0/1/5 damage/root/expiry/save.
+
+Next: poll39948 without overlap and both specific hosted CI runs. Integrate
+health only after complete required gates; next Tripwire native uses fixed
+forecourt. Preserve failure evidence. The actual four-player full clear/credit/
+Water handoff, earned first-hour progression, all five dungeon families/seeds/
+reconnects and all later1.2–1.10 work (including casino) remain open. Last public
+verification remains1.0.65/f9eb; no new deployment verification this turn.
+
+## Historical checkpoint — September 12, 19:52 UTC
 
 Goal turn PROGRESS: implemented useful Serrated Technique mana training after
 reproducing dead critical metadata, passed actual client/server consumers,
