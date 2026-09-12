@@ -41,16 +41,21 @@ test('paid Tripwire training and saved ranks damage and root an ordinarily lured
             return Boolean(p.safeZoneId) && p.stats.mana === p.stats.maxMana && (p.cooldowns.Tripwire || 0) <= 0;
         }), { timeout: 25_000 }).toBe(true);
         const origin = await page.evaluate(() => ({ x: window.game.player.position.x, z: window.game.player.position.z }));
-        await command('/qa-waypoint encounter');
+        // Level-100 Tripwire can kill even a full-health level-10 Skeleton
+        // (150 HP). Use the existing durable-enemy waypoint so actual root
+        // expiry is observable without altering health or suppressing damage.
+        await command('/qa-waypoint verdant');
         await expect.poll(() => page.evaluate(p => Math.hypot(window.game.player.position.x - p.x,
             window.game.player.position.z - p.z), origin), { timeout: 30_000 }).toBeGreaterThan(20);
         await page.waitForTimeout(1100);
         const find = () => page.evaluate(async () => {
             const { nearestObservedHostile } = await import('/tests/observedHostileApproach.js');
             const g = window.game;
+            const minimumHealth = 2 * Math.floor((20 + g.player.stats.dexterity) * (1 + .04 * (g.player.talentRanks?.ROG_23 || 0)));
             return nearestObservedHostile(g.player.position, [...g.remotePlayers.values()].map(e => ({ id: e.id,
                 subtype: e.subType || e.constructor.name, active: e.isActive && g.isHostileActorTarget(e),
-                alive: e.state !== 'DEAD' && e.stats?.hp > 100, x: e.position.x, z: e.position.z })), 'Skeleton');
+                alive: e.state !== 'DEAD' && !e.ccImmune && (e.health ?? e.stats?.hp) > minimumHealth,
+                x: e.position.x, z: e.position.z })), 'InfernoTitan');
         });
         await expect.poll(find, { timeout: 30_000 }).not.toBeNull();
         const target = await find();
@@ -72,7 +77,7 @@ test('paid Tripwire training and saved ranks damage and root an ordinarily lured
             const p = window.game.player, e = window.game.remotePlayers.get(id);
             return { x: p.position.x, z: p.position.z, mana: p.stats.mana, dex: p.stats.dexterity,
                 mastery: p.talentRanks?.ROG_23 || 0, technique: p.talentRanks?.ROG_24 || 0,
-                hp: e.stats.hp, slot: p.hotbar.indexOf('Tripwire') };
+                hp: e.health ?? e.stats.hp, slot: p.hotbar.indexOf('Tripwire') };
         }, target.id);
         expect(before.mastery).toBe(rank); expect(before.technique).toBe(rank); expect(before.slot).toBeGreaterThanOrEqual(0);
         const base = Math.floor((20 + before.dex) * (1 + .04 * rank));

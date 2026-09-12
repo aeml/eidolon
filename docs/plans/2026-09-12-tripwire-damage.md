@@ -66,6 +66,20 @@ Native execution is queued behind the active four-player run. App/runtime source
 is unchanged from accepted efda8f9f; retain a combined full regression after
 integration instead of attributing the earlier CI to these newly authored tests.
 
+## Native setup correction
+
+Native63454 on65642f33 terminated FAILED39.3seconds before casting: the
+healthy-Skeleton selector returned null. Archive
+`/tmp/eidolon-tripwire-selection-failure-DEv64o`; credential scan sanitized0,
+owned containers/image and18185/18186/41875 confirmed clear. Source inspection
+also proves the setup could not guarantee root expiry: even level10Skeleton
+has150HP, below the prepared level100 trap's possible critical damage.
+Use the existing Verdant waypoint and real InfernoTitan instead, requiring
+observed health greater than twice the actual current-rank trap damage and no
+CC immunity. Keep the independent before-cast health assertion. No enemy stats,
+damage, root timing or player position beyond existing bounded preparation
+are altered. Focused2suites9tests PASS1.086seconds; native replay still required.
+
 ## Draft 1.1.0 patch note
 
 - Fixed Tripwire's damage and critical talents not affecting triggered traps.

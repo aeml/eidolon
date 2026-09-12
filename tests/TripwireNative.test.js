@@ -44,3 +44,12 @@ test('native trap route is explicitly allowlisted and runs once without retries 
     const all = script.match(/\n {2}all\)\n([\s\S]*?)\n {4};;/)[1];
     expect(all.match(/run_qa_stage tripwire run_tripwire/g)).toHaveLength(1);
 });
+
+test('native root-expiry setup requires a real target able to survive the strongest possible hit', () => {
+    const route = readFileSync('tests/e2e/tripwire-gameplay.spec.js', 'utf8');
+    expect(route).toContain("command('/qa-waypoint verdant')");
+    expect(route).toContain("'InfernoTitan'");
+    expect(route).toContain('const minimumHealth = 2 * Math.floor((20 + g.player.stats.dexterity)');
+    expect(route).toContain('(e.health ?? e.stats?.hp) > minimumHealth');
+    expect(route).toContain('expect(before.hp).toBeGreaterThan(base * 2)');
+});
