@@ -5,7 +5,37 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 06:21 UTC
+## Current checkpoint — September 12, 06:24 UTC
+
+Previous goal turn was PROGRESS. This continuation is PROGRESS: pushed the
+completed Guardian Roar candidate and dispatched exact-source full validation,
+while preserving the independently active earlier regression and production QA.
+
+- Candidate **7f78112134c01a7be8cfee5c9383bc51fa84e15d** pushed to
+  `work/1-1-guardian-roar-mastery`; remote SHA verified. **CI34677980248 ACTIVE**
+  at that exact SHA, server103511178371/client103511178464 active. This is a
+  distinct hosted branch, not a restart/replacement of611 CI or a production
+  push. Keep its source frozen and poll SAME run.
+- `npm run prepare:client` completed in the clean candidate worktree, session
+  22962 exit0; log `/tmp/eidolon-guardian-roar-mastery-prepare-20260912.log`.
+  No local test/GPU process remains. Native four-party, Fortress and Roar
+  acceptance still await production GPU availability; prepared assets are not
+  native acceptance. No production, database or soak mutation.
+- **611 CI34677399754 ACTIVE**, browser1/2/3 still running:
+  103510743379/103510743403/103510743406. Its exact-source full client/server
+  successes remain recorded below. Retain terminal browser evidence; integrate
+  validated candidates into primary without changing any running worktree.
+  Primary and integrated-regression stay befd5284 for now.
+- **Production65 CI34675345557/native103506166516 ACTIVE** in full-character
+  gameplay at recheck. No deploy or live65 claim. Leave the same run and
+  scheduled soak alone. Root is ledger-only: NEVER PUSH ROOT.
+- Read-only review identifies hard-coded Berserker/Last Stand buff damage
+  multipliers and legacy offline differences as next talent-consumer work;
+  no new implementation, paired-cast proof or broad parity claim for them.
+  Full1.1–1.10 scope remains active, including actual party dungeon clear,
+  earned progression, remaining talent usability and versioned deployments.
+
+## Previous checkpoint — September 12, 06:21 UTC
 
 Previous goal turn was PROGRESS. This continuation is PROGRESS: implemented
 Guardian Roar Mastery's useful protective duration, fixed omitted caster stat
