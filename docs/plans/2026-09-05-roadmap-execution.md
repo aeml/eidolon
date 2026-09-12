@@ -5,7 +5,50 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 06:01 UTC
+## Current checkpoint — September 12, 06:11 UTC
+
+Previous goal turn was PROGRESS; the intervening numbering confirmation made
+no implementation change. This continuation is PROGRESS: inspected authoritative
+CI failure, repaired the omitted Fortress gate contracts and dispatched a new
+exact-source hosted regression without altering production or skipping checks.
+
+- **34676966185 at befd5284 TERMINAL FAILURE**. Client: 2 suites / 39 tests
+  failed, 378 suites / 5807 tests passed (120.961s). Both failures are stale
+  full-wrapper test expectations after adding Fortress: two adjacency checks,
+  plus an absent mock command/stage causing shell exit127 instead of injected19.
+  Server103508427785 SUCCESS: game86.7%/93.982s, race309.252s, backup/restore,
+  benchmarks and build. Browser and downstream jobs skipped, not passed.
+  Logs `/tmp/eidolon-integrated-1-1-befd-{client,server}-34676966185.log`.
+- **611024d46883e15b86b2c1b3f36128eb196f33da**, separate clean candidate
+  `/tmp/eidolon-1-1-fortress-gate-contract-20260912`, branch
+  `work/1-1-fortress-gate-contract`, pushed and remote SHA verified.
+  Adds Fortress at its actual position in both independently explicit contracts,
+  including injected-failure/cleanup coverage at Fortress itself. No runtime,
+  wrapper, version, patch-note or relaxed acceptance change. Focused5suites/81tests
+  PASS4.935s; full lint PASS. The first focused command named a nonexistent extra
+  test and correctly failed ENOENT; corrected run is accepted, original retained.
+  Doc `2026-09-12-fortress-gate-contract-repair.md` records evidence.
+- **CI34677399754 ACTIVE** at exact611024d4. Client103509604876 and
+  server103509604992 active. Poll SAME run; do not dispatch a duplicate.
+  Primary and integrated-regression trees remain clean befd5284; integrate
+  correction after validation. No production push of 1.1 and NEVER PUSH ROOT.
+- **Local full client session14429 ACTIVE**, in the correction worktree;
+  `/tmp/eidolon-fortress-gate-contract-full-20260912.log`. Last poll confirmed
+  live,113 suites had printed PASS, not a complete result. Tests are the same
+  bytes as611024d4; commit happened after launch with no subsequent source edits.
+  No local native/GPU process was started. Preserve and poll this exact handle.
+- **Production65 CI34675345557 / native103506166516 ACTIVE**, still in
+  full-character gameplay. Read-only runner inspection: checkout1af5951 and
+  active2176863 running mobile-inventory-gameplay and phone-stash-entry specs.
+  This is advancement, not stage/deploy acceptance. Keep GPU reserved through
+  production final-live checks. Gallery and Well Rested lifecycle remain passed.
+- Public frontend release and backend health rechecked at06:10: both still
+  **Alpha1.0.64 /6d5e82cb8f50dd9e76a1353bd024339eabc544e0**, healthok/dbready.
+  No65live claim. Do not cancel scheduled soak. Actual four-party clear/input
+  improvements, Fortress native purchase/save/expiry, earned progression and
+  complete1.1–1.10 scope remain open; goal stays active.
+
+## Previous checkpoint — September 12, 06:01 UTC
 
 Previous goal turn was PROGRESS. This continuation is PROGRESS: confirmed the
 frozen regression's terminal success, integrated the pending native route/copy
