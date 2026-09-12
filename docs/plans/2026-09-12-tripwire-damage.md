@@ -145,6 +145,36 @@ failed-release cleanup, observation failure and bounded stalled movement. ESLint
 and diff checks pass. A fresh actual replay is still required; no gameplay or
 acceptance assertions changed.
 
+### Actual collision-ejection cause and waypoint correction
+
+Native68266 on02cb0df2 failed12.0s before any cast. The first80ms touch moved
+from800/200 to764.68/207.73 (36.15units), then the return direction stalled near
+the building edge. Archive `/tmp/eidolon-tripwire-pulse-overshoot-17f0nU`; scan0
+and exact cleanup passed. Screenshot and attachment were inspected.
+
+The production entrance definition is centred at800/200, exactly the old QA
+waypoint, and WorldGenerator installs its32.79unit circular collider. A test
+using the real CollisionManager reproduces >30unit ejection from a quarter-unit
+step. Therefore the apparent first-pulse overshoot is explained by collision
+resolution, not proven to be a long joystick hold. Earlier latency hypotheses
+must not be treated as the established cause.
+
+The allowlisted fixed Verdant QA waypoint now arrives at800/250 on the forecourt.
+Both tested player radii and eight initial walking directions clear the actual
+entrance collider; the old-centre regression remains as a control. Server command
+tests retain authorization, instance restrictions, stationary target and protection
+checks; only expected arrival coordinates change. Existing waypoint consumers
+check the new position. Ordinary entrances, enemy/player stats and public travel
+are unchanged. Native Tripwire also filters candidate approaches through the
+existing complete walking-path check instead of aiming through the entrance.
+
+Waypoint RED2fail/1controlpass, then5suites28tests PASS3.648s and paid command
+race PASS2.962s. The optional target-path predicate failed before implementation;
+combined6suites34tests pass, plus ESLint/diff. Logs use
+`/tmp/eidolon-verdant-waypoint-*-20260912.log` and
+`/tmp/eidolon-tripwire-clear-approach-*-20260912.log`. Full CI and new native
+execution remain required, including rechecking affected entrance/shield routes.
+
 ## Draft 1.1.0 patch note
 
 - Fixed Tripwire's damage and critical talents not affecting triggered traps.

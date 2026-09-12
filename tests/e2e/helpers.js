@@ -1644,7 +1644,7 @@ export async function useVerdantQAWaypoint(page) {
     await chatInput.press('Enter');
     await expect.poll(async () => {
         const state = await readPlayerState(page);
-        return Math.hypot(state.x - 800, state.z - 200);
+        return Math.hypot(state.x - 800, state.z - 250);
     }, { timeout: 30_000 }).toBeLessThan(3);
     await expect(page.locator('#chat-box')).toBeVisible();
 }

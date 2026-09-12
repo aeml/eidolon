@@ -120,7 +120,7 @@ test('Shield mastery increases actual saved absorption, renders and expires thro
     await command('/qa-waypoint verdant');
     await expect.poll(() => page.evaluate(() => {
         const p = window.game.player.position;
-        return Math.hypot(p.x - 800, p.z - 200);
+        return Math.hypot(p.x - 800, p.z - 250);
     }), { timeout: 30_000 }).toBeLessThan(3);
     if (process.env.EIDOLON_E2E_SCENERY_VISIBILITY === '1') {
         await expect.poll(() => page.evaluate(() => [...window.game.renderSystem.sceneryVisibility.entries.values()]

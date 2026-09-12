@@ -70,7 +70,7 @@ test('status Mastery purchases change real ticks and persist through fresh login
         await page.keyboard.press('Enter');
         await page.locator('#chat-input').fill('/qa-waypoint verdant');
         await page.locator('#chat-input').press('Enter');
-        await expect.poll(() => page.evaluate(() => Math.hypot(window.game.player.position.x-800, window.game.player.position.z-200))).toBeLessThan(3);
+        await expect.poll(() => page.evaluate(() => Math.hypot(window.game.player.position.x-800, window.game.player.position.z-250))).toBeLessThan(3);
         await page.waitForTimeout(1100); // Existing authoritative waypoint movement lock.
         // Enemies must remain selectable even where the entrance overlaps
         // their silhouette; exercise the real interaction-priority path.

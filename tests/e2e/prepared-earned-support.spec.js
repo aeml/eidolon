@@ -41,7 +41,7 @@ test('prepared Rogue/Cleric dungeon driver pays for real support and respects ac
     await expect.poll(() => page.evaluate(skill => window.game.player.unlockedSkills.includes(skill), support)).toBe(true);
     await command('/qa-waypoint verdant');
     await expect.poll(() => page.evaluate(() => Math.hypot(window.game.player.position.x - 800,
-        window.game.player.position.z - 200))).toBeLessThan(3);
+        window.game.player.position.z - 250))).toBeLessThan(3);
     await page.waitForTimeout(1100);
     let target = await projectNearestHostile(page, 'InfernoTitan');
     for (let step = 0; !target && step < 12; step++) {

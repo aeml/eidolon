@@ -51,12 +51,18 @@ test('paid Tripwire training and saved ranks damage and root an ordinarily lured
         await page.waitForTimeout(1100);
         const find = () => page.evaluate(async () => {
             const { nearestObservedHostile } = await import('/tests/observedHostileApproach.js');
+            const { isEarnedRetreatPathClear } = await import('/tests/wizardHuntControls.js');
             const g = window.game;
             const minimumHealth = 2 * Math.floor((20 + g.player.stats.dexterity) * (1 + .04 * (g.player.talentRanks?.ROG_23 || 0)));
             return nearestObservedHostile(g.player.position, [...g.remotePlayers.values()].map(e => ({ id: e.id,
                 subtype: e.subType || e.constructor.name, active: e.isActive && g.isHostileActorTarget(e),
                 alive: e.state !== 'DEAD' && !e.ccImmune && (e.health ?? e.stats?.hp) > minimumHealth,
-                x: e.position.x, z: e.position.z })), 'InfernoTitan');
+                x: e.position.x, z: e.position.z })), 'InfernoTitan', enemy => {
+                if (enemy.distance < 6) return true;
+                const scale = (enemy.distance - 4) / enemy.distance;
+                return isEarnedRetreatPathClear(g.collisionManager, g.player.position, g.player.radius || 1.25,
+                    { x: (enemy.x - g.player.position.x) * scale, z: (enemy.z - g.player.position.z) * scale });
+            });
         });
         await expect.poll(find, { timeout: 30_000 }).not.toBeNull();
         const target = await find();
