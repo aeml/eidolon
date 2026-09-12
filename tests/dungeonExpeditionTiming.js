@@ -13,14 +13,24 @@ export function createDungeonExpeditionTiming({ profile = 'solo', now = () => pe
     const budgetMs = dungeonExpeditionBudget(profile), started = now();
     let phase = 'entry', phaseStarted = started, lastReport = started;
     const totalsMs = Object.fromEntries(PHASES.map(name => [name, 0]));
+    // Completed attempt wall times within the phase totals, not additional
+    // phases or simulated walking time. Input includes its observation waits;
+    // formation includes follower movement, collision planning and checks.
+    const activitiesMs = { leaderInput: 0, formation: 0 };
     const counters = { leaderGroundSteps: 0, roomTraversals: 0, townReturns: 0 };
     const snapshot = (at = now()) => ({ profile, budgetMs, elapsedMs: at - started, phase,
         phaseElapsedMs: at - phaseStarted, totalsMs: { ...totalsMs, [phase]: totalsMs[phase] + at - phaseStarted },
-        counters: { ...counters } });
+        counters: { ...counters }, activitiesMs: { ...activitiesMs } });
     const report = reason => { const at = now(); lastReport = at; onReport({ reason, ...snapshot(at) }); };
     return {
         snapshot,
         report,
+        async measure(activity, action) {
+            if (!Object.hasOwn(activitiesMs, activity)) throw new Error(`Unknown expedition activity: ${activity}`);
+            const at = now();
+            try { return await action(); }
+            finally { activitiesMs[activity] += now() - at; }
+        },
         enter(next) {
             if (!PHASES.includes(next)) throw new Error(`Unknown expedition phase: ${next}`);
             if (phase === next) return;

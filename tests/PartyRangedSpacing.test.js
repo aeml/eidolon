@@ -1,0 +1,95 @@
+import { planPartyRangedSpacing } from './partyRangedSpacing.js';
+import { partyFormationArrival } from './partyDungeonControls.js';
+import { groundMovementObserved } from './groundMovementObservation.js';
+import { retreatStaysInEncounter } from './wizardHuntControls.js';
+
+const state = { x: 7.5, z: 0, radius: 1.25 };
+const enemy = { x: 0, z: 0, range: 20.5 };
+const healer = { x: 12, z: 4, range: 14 };
+const distance = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
+
+test('the observed Warden spacing click accepts actual near-destination arrival, not arbitrary short movement', () => {
+    const before = { x: 19960.0328721533, z: 19510.395970053178,
+        instanceId: 'warden-replay', instanceType: 'verdant_bastion_catacombs' };
+    const after = { ...before, x: 19960.981760892733, z: 19510.28419862083, state: 'IDLE', health: 855 };
+    const step = { dx: 1.0563231421620003, dz: -.05317695823760005 };
+    const arrival = partyFormationArrival(before, step, before.instanceId);
+    expect(groundMovementObserved(before, after, 1)).toBe(false);
+    expect(groundMovementObserved(before, after, 1, arrival)).toBe(true);
+    expect(groundMovementObserved(before, { ...after, x: before.x + .5 }, 1, arrival)).toBe(false);
+    expect(groundMovementObserved(before, { ...after, instanceId: 'elsewhere' }, 1, arrival)).toBe(false);
+    expect(groundMovementObserved(before, { ...after, state: 'DEAD' }, 1, arrival)).toBe(false);
+});
+
+test('a ranged actor leaves melee while remaining inside actual attack and heal ranges', () => {
+    const step = planPartyRangedSpacing(state, enemy, healer);
+    const end = { x: state.x + step.dx, z: state.z + step.dz };
+    expect(distance(end, enemy)).toBeGreaterThan(15);
+    expect(distance(end, enemy)).toBeLessThan(enemy.range);
+    expect(distance(end, healer)).toBeLessThan(healer.range);
+    expect(Math.hypot(step.dx, step.dz)).toBeLessThanOrEqual(12);
+});
+
+test('the failed Warden edge position takes a shorter safe retreat when no ideal firing ring is reachable', () => {
+    const start = { x: 20015.232409494627, z: 19698.095018132488, radius: 1.25 };
+    const target = { x: 20022.55859375, z: 19696.603515625, range: 20.5 };
+    const support = { x: 20021.03467462685, z: 19701.184819074053, range: 14 };
+    const room = { x: 20038.58281422159, z: 19640, width: 120, height: 120 };
+    const canStep = delta => retreatStaysInEncounter(room,
+        { x: start.x + delta.dx, z: start.z + delta.dz }, start.radius);
+    const bodies = [{ ...target, radius: 5 }, { ...support, radius: 1.25 },
+        { x: 20030.2, z: 19694.86, radius: 1.25 }];
+    const step = planPartyRangedSpacing(start, target, support, canStep, bodies);
+    expect(step).not.toBeNull();
+    const end = { x: start.x + step.dx, z: start.z + step.dz };
+    expect(distance(end, target)).toBeGreaterThan(distance(start, target) + 1);
+    expect(distance(end, target)).toBeGreaterThan(8.5);
+    expect(distance(end, target)).toBeLessThan(target.range);
+    expect(distance(end, support)).toBeLessThan(support.range - .5);
+    expect(canStep(step)).toBe(true);
+    expect(Math.hypot(step.dx, step.dz)).toBeLessThanOrEqual(12);
+});
+
+test('partial retreats still reject blocked paths, actor intersections and lost healing reach', () => {
+    const enclosedSupport = { x: 0, z: 0, range: 14 };
+    // Desired16.5+ radii cannot share this healer reach, so these exercise the fallback.
+    expect(planPartyRangedSpacing(state, enemy, enclosedSupport, () => false)).toBeNull();
+    const surroundingBodies = Array.from({ length: 8 }, (_, i) => ({
+        x: state.x + Math.cos(i * Math.PI / 4) * 5,
+        z: state.z + Math.sin(i * Math.PI / 4) * 5, radius: 3 }));
+    expect(planPartyRangedSpacing(state, enemy, enclosedSupport, () => true, surroundingBodies)).toBeNull();
+    expect(planPartyRangedSpacing(state, enemy, { x: -80, z: 0, range: 14 })).toBeNull();
+});
+test('already well-spaced damage roles do not continuously kite instead of attacking', () => {
+    expect(planPartyRangedSpacing({ x: 17, z: 0 }, enemy, healer)).toBeNull();
+});
+test('a role outside healer reach moves toward a jointly reachable attack position', () => {
+    const start = { x: 8, z: 15 }, support = { x: 14, z: 0, range: 14 };
+    const step = planPartyRangedSpacing(start, enemy, support);
+    expect(step).not.toBeNull();
+    const end = { x: start.x + step.dx, z: start.z + step.dz };
+    expect(distance(end, support)).toBeLessThan(support.range);
+    expect(distance(end, enemy)).toBeLessThan(enemy.range);
+});
+test('blocked full paths and unreachable healer geometry never fabricate a legal move', () => {
+    expect(planPartyRangedSpacing(state, enemy, healer, () => false)).toBeNull();
+    expect(planPartyRangedSpacing(state, enemy, { x: -80, z: 0, range: 14 })).toBeNull();
+});
+test('actor bodies exclude a direct route while permitting a verified side step', () => {
+    const blocker = { x: 12, z: 0, radius: 2 };
+    const step = planPartyRangedSpacing(state, enemy, healer, () => true, [blocker]);
+    expect(step).not.toBeNull();
+    expect(Math.abs(step.dz)).toBeGreaterThan(1);
+});
+test('every candidate is checked against complete floor and encounter geometry', () => {
+    const step = planPartyRangedSpacing(state, enemy, healer, delta => delta.dz < -3);
+    expect(step.dz).toBeLessThan(-3);
+});
+test.each([
+    [{ x: NaN, z: 0 }, enemy, healer],
+    [state, { ...enemy, range: 4 }, healer],
+    [state, enemy, { ...healer, range: 0 }],
+    [state, enemy, null],
+])('invalid or melee-only observations do not authorize movement', (origin, target, support) => {
+    expect(planPartyRangedSpacing(origin, target, support)).toBeNull();
+});
