@@ -1,6 +1,7 @@
 import { devices, expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld,
-    moveByGroundClick, returnToTown } from './helpers.js';
+    returnToTown } from './helpers.js';
+import { moveByPhoneJoystick } from './phone-joystick-movement.js';
 
 test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true,
     userAgent: devices['Pixel 7'].userAgent, actionTimeout: 12_000,
@@ -120,23 +121,59 @@ test('Shield mastery increases actual saved absorption, renders and expires thro
     await command('/qa-waypoint verdant');
     await expect.poll(() => page.evaluate(() => {
         const p = window.game.player.position;
-        return Math.hypot(p.x - 800, p.z - 200);
+        return Math.hypot(p.x - 800, p.z - 250);
     }), { timeout: 30_000 }).toBeLessThan(3);
     if (process.env.EIDOLON_E2E_SCENERY_VISIBILITY === '1') {
-        await expect.poll(() => page.evaluate(() => [...window.game.renderSystem.sceneryVisibility.entries.values()]
-            .some(entry => entry.opacity < .005))).toBe(true);
+        const opacity = () => page.evaluate(() => [...window.game.renderSystem.sceneryVisibility.entries.values()]
+            .find(entry => entry.root.userData.dungeonType === 'verdant_bastion_catacombs')?.opacity);
+        await expect.poll(opacity).toBe(1);
+        const path = await page.evaluate(async () => {
+            const { entranceInspectionPath } = await import('/tests/entranceInspectionPath.js');
+            const { DUNGEON_ENTRANCE_DEFINITIONS } = await import('/src/art/ProceduralDungeonEntrances.js');
+            return entranceInspectionPath(DUNGEON_ENTRANCE_DEFINITIONS.verdant_bastion_catacombs);
+        });
+        async function walkTo(point) {
+            for (let step = 0; step < 12; step++) {
+                const offset = await page.evaluate(point => {
+                    const p = window.game.player.position;
+                    return { x: point.x - p.x, z: point.z - p.z };
+                }, point);
+                const distance = Math.hypot(offset.x, offset.z);
+                if (distance < 2) return;
+                const scale = Math.min(4, distance) / distance;
+                await moveByPhoneJoystick(page, offset.x * scale, offset.z * scale);
+            }
+            throw new Error(`Entrance inspection did not reach walking waypoint ${JSON.stringify(point)}`);
+        }
+        for (const point of path.slice(1)) await walkTo(point);
+        await expect.poll(opacity).toBeLessThan(.005);
+        expect(await page.evaluate(() => {
+            const g = window.game, p = g.player;
+            const entry = [...g.renderSystem.sceneryVisibility.entries.values()]
+                .find(value => value.root.userData.dungeonType === 'verdant_bastion_catacombs');
+            return p.position.distanceTo(entry.root.position) > entry.root.userData.interactionRadius + p.radius &&
+                g.renderSystem.sceneryVisibility.blocksFocus(entry, g.renderSystem.camera, p.position);
+        })).toBe(true);
         await page.screenshot({ path: testInfo.outputPath('entrance-live-cutaway.png') });
-        console.log('[entrance-live] normal rendered hero receives a cutaway at the existing protected waypoint');
+        for (const point of path.slice(0, -1).reverse()) await walkTo(point);
+        await expect.poll(opacity).toBe(1);
+        console.log('[entrance-live] real touch walking outside the collider activates and clears the Verdant cutaway');
     }
     const observeTarget = () => page.evaluate(async () => {
         const { nearestObservedHostile } = await import('/tests/observedHostileApproach.js');
+        const { isEarnedRetreatPathClear } = await import('/tests/wizardHuntControls.js');
         const game = window.game, p = game.player.position;
         return nearestObservedHostile(p, [...game.remotePlayers.values()].map(enemy => ({
             id: enemy.id, subtype: enemy.subType || enemy.constructor?.name,
             active: enemy.isActive && game.isHostileActorTarget(enemy),
             alive: enemy.state !== 'DEAD' && (enemy.health ?? enemy.stats?.hp) > 0,
             x: enemy.position.x, z: enemy.position.z
-        })), 'InfernoTitan');
+        })), 'InfernoTitan', enemy => {
+            if (enemy.distance < 3) return true;
+            const scale = (enemy.distance - 2.5) / enemy.distance;
+            return isEarnedRetreatPathClear(game.collisionManager, p, game.player.radius || 1.25,
+                { x: (enemy.x - p.x) * scale, z: (enemy.z - p.z) * scale });
+        });
     });
     await expect.poll(observeTarget, { message: 'Observe a real Inferno Titan before approaching it' }).not.toBeNull();
     const target = await observeTarget();
@@ -150,25 +187,35 @@ test('Shield mastery increases actual saved absorption, renders and expires thro
         expect(offset).not.toBeNull();
         const distance = Math.hypot(offset.x, offset.z);
         if (distance < 3) break;
-        const scale = Math.min(7, distance - 2) / distance;
-        // The generic helper normally returns after just one unit. Here each
-        // planned seven-unit step must substantially finish before replanning.
-        await moveByGroundClick(page, offset.x * scale, offset.z * scale,
-            { minimumDistance: Math.min(6, Math.max(1, (distance - 3) * 0.5)) });
+        const scale = Math.min(3, distance - 2.5) / distance;
+        await moveByPhoneJoystick(page, offset.x * scale, offset.z * scale);
     }
     expect(await page.evaluate(id => {
         const game = window.game, enemy = game.remotePlayers.get(id);
         return enemy ? game.player.position.distanceTo(enemy.position) : Infinity;
     }, target.id), 'Ordinary movement must reach the observed enemy before removing protection').toBeLessThan(3);
     const capacity = await cast(5, 'before-hostile-hit');
-    await command('/qa-protection off');
-    await expect.poll(() => page.evaluate(capacity => window.__shieldQA.snapshots.some(s => s.active && s.hp > 0 && s.hp < capacity), capacity), { timeout: 12_000 }).toBe(true);
-    const absorbed = await page.evaluate(capacity => {
-        const first = window.__shieldQA.snapshots.find(s => s.active && s.hp > 0 && s.hp < capacity);
-        return { remaining: first.hp, absorbed: capacity - first.hp };
+    await page.evaluate(async capacity => {
+        const { observeShieldAbsorption } = await import('/tests/shieldAbsorptionEvidence.js');
+        window.__shieldAbsorption = observeShieldAbsorption(window.game, capacity);
     }, capacity);
-    expect(await page.evaluate(() => window.game.player.attachedStatusEffects.has('arcane_shield'))).toBe(true);
-    await page.screenshot({ path: testInfo.outputPath('shield-hostile-absorption.png') });
+    await command('/qa-protection off');
+    await expect.poll(() => page.evaluate(() => window.__shieldAbsorption.sample), { timeout: 12_000 }).not.toBeNull();
+    const absorbed = await page.evaluate(() => window.__shieldAbsorption.sample);
+    expect(absorbed).toMatchObject({ active: true, visual: true });
+    expect(absorbed.remaining).toBeGreaterThan(0);
+    expect(absorbed.remaining).toBeLessThan(capacity);
+    expect(absorbed.absorbed).toBe(capacity - absorbed.remaining);
+    await page.evaluate(() => window.__shieldAbsorption.stop());
+    console.log('[shield-absorption-state]', JSON.stringify(await page.evaluate(() => {
+        const p = window.game.player, now = performance.now();
+        return { active: p.arcaneShieldActive, shieldHP: p.shieldHP, health: p.stats.hp,
+            visual: p.attachedStatusEffects.has('arcane_shield'),
+            snapshots: window.__shieldQA.snapshots.slice(-8).map(s => ({ ...s, ageMs: now - s.at })) };
+    })));
+    // Later attacks may already have depleted the shield. The same-moment
+    // observation above proves the partial shield's visual, not this later image.
+    await page.screenshot({ path: testInfo.outputPath('shield-after-hostile-hit.png') });
     console.log(`[shield-absorption] ${JSON.stringify(absorbed)}`);
     await returnToTown(page);
     if (process.env.EIDOLON_E2E_SCENERY_VISIBILITY === '1') {
