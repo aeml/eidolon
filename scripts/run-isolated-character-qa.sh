@@ -140,6 +140,7 @@ qa_allowlist+=",${QA_USERNAME_BASE}-rogue-techniques"
 qa_allowlist+=",${QA_USERNAME_BASE}-serrated-technique"
 qa_allowlist+=",${QA_USERNAME_BASE}-death-spiral-area"
 qa_allowlist+=",${QA_USERNAME_BASE}-blade-storm-area"
+qa_allowlist+=",${QA_USERNAME_BASE}-tripwire"
 qa_allowlist+=",${QA_USERNAME_BASE}-focus-mastery,${QA_USERNAME_BASE}-focus-mastery-observer"
 qa_allowlist+=",${QA_USERNAME_BASE}-teleport-protection,${QA_USERNAME_BASE}-teleport-protection-observer"
 qa_allowlist+=",${QA_USERNAME_BASE}-ground-retry1"
@@ -497,6 +498,11 @@ run_blade_storm_area() {
     EIDOLON_E2E_BLADE_STORM_AREA=1 npx playwright test --retries=0 tests/e2e/blade-storm-area-gameplay.spec.js
 }
 
+run_tripwire() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-tripwire" EIDOLON_E2E_CLASS=Rogue \
+    EIDOLON_E2E_TRIPWIRE=1 npx playwright test --retries=0 tests/e2e/tripwire-gameplay.spec.js
+}
+
 run_whip_shape() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-whip" EIDOLON_E2E_CLASS=Wizard \
     npx playwright test tests/e2e/flame-whip-gameplay.spec.js
@@ -646,6 +652,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     run_qa_stage serrated-technique run_serrated_technique &&
     run_qa_stage death-spiral-area run_death_spiral_area &&
     run_qa_stage blade-storm-area run_blade_storm_area &&
+    run_qa_stage tripwire run_tripwire &&
     run_qa_stage focus-mastery run_focus_mastery &&
     run_qa_stage talent-duration run_talent_duration &&
     run_qa_stage seraph run_seraph &&
@@ -816,6 +823,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   blade-storm-area)
     run_blade_storm_area
+    ;;
+  tripwire)
+    run_tripwire
     ;;
   focus-mastery)
     run_focus_mastery

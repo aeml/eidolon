@@ -90,6 +90,14 @@ export class AbilityController {
         return this.getAbilityCastRange(this.getAbilityIntentSkillName(skillNameOverride));
     }
 
+    isHostileSupportHover(skillName) {
+        // An enemy model overlapping the caster must not turn cursor healing
+        // into an explicit hostile target. Keep ground-based ally resolution;
+        // selected/captured ally intent still follows its existing strict path.
+        return PARTY_TARGET_ABILITIES.has(skillName) &&
+            this.engine.isHostileActorTarget?.(this.engine.hoveredEntity);
+    }
+
     getAbilityTargetDistance(target, skillName) {
         const origin = this.engine.player.position;
         if (skillName === 'Radiant Strike' || skillName === 'Unbreakable Grip') {
@@ -295,7 +303,7 @@ export class AbilityController {
         // Hover is sampled separately from input; a projectile or actor may
         // have expired since that sample. Fresh input can still aim at ground.
         // Captured buffered actor intent is validated separately below.
-        if (this.engine.hoveredEntity && this.engine.hoveredEntity.isActive !== false && this.engine.hoveredEntity !== player && this.engine.hoveredEntity.state !== 'DEAD' && !(this.engine.hoveredEntity instanceof DwarfSalesman)) {
+        if (this.engine.hoveredEntity && this.engine.hoveredEntity.isActive !== false && this.engine.hoveredEntity !== player && this.engine.hoveredEntity.state !== 'DEAD' && !(this.engine.hoveredEntity instanceof DwarfSalesman) && !this.isHostileSupportHover(skillName)) {
             targetEntity = this.engine.hoveredEntity;
             targetPos = targetEntity.position;
         } else {
@@ -341,7 +349,7 @@ export class AbilityController {
             let lookAtPos = null;
             if (targetVectorOverride) {
                 lookAtPos = targetVectorOverride;
-            } else if (engine.hoveredEntity && engine.hoveredEntity.isActive !== false && engine.hoveredEntity !== player && engine.hoveredEntity.state !== 'DEAD' && !(engine.hoveredEntity instanceof DwarfSalesman)) {
+            } else if (engine.hoveredEntity && engine.hoveredEntity.isActive !== false && engine.hoveredEntity !== player && engine.hoveredEntity.state !== 'DEAD' && !(engine.hoveredEntity instanceof DwarfSalesman) && !this.isHostileSupportHover(skillNameOverride || player.abilityName)) {
                 lookAtPos = engine.hoveredEntity.position;
             } else {
                 const point = engine.inputManager.getGroundIntersection();
@@ -518,7 +526,7 @@ export class AbilityController {
             return;
         }
 
-        if (engine.hoveredEntity && engine.hoveredEntity.isActive !== false && engine.hoveredEntity !== player && engine.hoveredEntity.state !== 'DEAD') {
+        if (engine.hoveredEntity && engine.hoveredEntity.isActive !== false && engine.hoveredEntity !== player && engine.hoveredEntity.state !== 'DEAD' && !this.isHostileSupportHover(castSkillName)) {
             if (engine.hoveredEntity instanceof DwarfSalesman) return;
 
             const dist = this.getAbilityTargetDistance(engine.hoveredEntity, castSkillName);

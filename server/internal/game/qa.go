@@ -42,7 +42,9 @@ func (w *World) MovePlayerToQAWaypoint(playerID, waypoint string) (*Entity, bool
 	case "combat":
 		x, z = 120, 200
 	case "verdant":
-		x, z = 800, 200
+		// The entrance is centred at (800, 200) with a ~33m collider.
+		// Arrive on the forecourt so first movement is not a collision ejection.
+		x, z = 800, 250
 	case "encounter":
 		const anchorX, anchorZ = 120.0, 200.0
 		nearestDistanceSq := math.MaxFloat64

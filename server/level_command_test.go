@@ -240,8 +240,8 @@ func TestHandleMessageQAWaypointMovesAllowlistedOverworldPlayer(t *testing.T) {
 	if updated == nil {
 		t.Fatal("expected player to remain in world")
 	}
-	if updated.X != 800 || updated.Y != 0 || updated.Z != 200 {
-		t.Fatalf("expected Verdant QA waypoint at (800, 0, 200), got (%v, %v, %v)", updated.X, updated.Y, updated.Z)
+	if updated.X != 800 || updated.Y != 0 || updated.Z != 250 {
+		t.Fatalf("expected Verdant QA forecourt at (800, 0, 250), got (%v, %v, %v)", updated.X, updated.Y, updated.Z)
 	}
 	if updated.TargetX != updated.X || updated.TargetZ != updated.Z || updated.State != "IDLE" {
 		t.Fatalf("expected a stationary waypoint arrival, got target=(%v, %v) state=%q", updated.TargetX, updated.TargetZ, updated.State)
