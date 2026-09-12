@@ -3994,6 +3994,9 @@ export const eidolon = $root.eidolon = (() => {
              * @property {number|null} [berserkerModeMultiplier] Entity berserkerModeMultiplier
              * @property {number|null} [lastStandMultiplier] Entity lastStandMultiplier
              * @property {number|null} [whirlwindRadius] Entity whirlwindRadius
+             * @property {number|null} [blessingResolvePower] Entity blessingResolvePower
+             * @property {number|null} [zealPower] Entity zealPower
+             * @property {number|null} [markWeaknessFactor] Entity markWeaknessFactor
              * @property {number|null} [jumpStartX] Entity jumpStartX
              * @property {number|null} [jumpStartY] Entity jumpStartY
              * @property {number|null} [jumpStartZ] Entity jumpStartZ
@@ -4953,6 +4956,30 @@ export const eidolon = $root.eidolon = (() => {
             Entity.prototype.whirlwindRadius = 0;
 
             /**
+             * Entity blessingResolvePower.
+             * @member {number} blessingResolvePower
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.blessingResolvePower = 0;
+
+            /**
+             * Entity zealPower.
+             * @member {number} zealPower
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.zealPower = 0;
+
+            /**
+             * Entity markWeaknessFactor.
+             * @member {number} markWeaknessFactor
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.markWeaknessFactor = 0;
+
+            /**
              * Entity jumpStartX.
              * @member {number} jumpStartX
              * @memberof eidolon.state.Entity
@@ -5310,6 +5337,12 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 122, wireType 5 =*/981).float(message.lastStandMultiplier);
                 if (message.whirlwindRadius != null && $Object.hasOwnProperty.call(message, "whirlwindRadius") && !$Object.is(message.whirlwindRadius, 0))
                     writer.uint32(/* id 123, wireType 5 =*/989).float(message.whirlwindRadius);
+                if (message.blessingResolvePower != null && $Object.hasOwnProperty.call(message, "blessingResolvePower") && !$Object.is(message.blessingResolvePower, 0))
+                    writer.uint32(/* id 124, wireType 5 =*/997).float(message.blessingResolvePower);
+                if (message.zealPower != null && $Object.hasOwnProperty.call(message, "zealPower") && !$Object.is(message.zealPower, 0))
+                    writer.uint32(/* id 125, wireType 5 =*/1005).float(message.zealPower);
+                if (message.markWeaknessFactor != null && $Object.hasOwnProperty.call(message, "markWeaknessFactor") && !$Object.is(message.markWeaknessFactor, 0))
+                    writer.uint32(/* id 126, wireType 5 =*/1013).float(message.markWeaknessFactor);
                 if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
                     for (let i = 0; i < message.$unknowns.length; ++i)
                         writer.raw(message.$unknowns[i]);
@@ -6434,6 +6467,33 @@ export const eidolon = $root.eidolon = (() => {
                                 delete message.whirlwindRadius;
                             continue;
                         }
+                    case 124: {
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.blessingResolvePower = value;
+                            else
+                                delete message.blessingResolvePower;
+                            continue;
+                        }
+                    case 125: {
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.zealPower = value;
+                            else
+                                delete message.zealPower;
+                            continue;
+                        }
+                    case 126: {
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.markWeaknessFactor = value;
+                            else
+                                delete message.markWeaknessFactor;
+                            continue;
+                        }
                     case 81: {
                             if (wireType !== 5)
                                 break;
@@ -6937,6 +6997,15 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.whirlwindRadius != null && $Object.hasOwnProperty.call(message, "whirlwindRadius"))
                     if (typeof message.whirlwindRadius !== "number")
                         return "whirlwindRadius: number expected";
+                if (message.blessingResolvePower != null && $Object.hasOwnProperty.call(message, "blessingResolvePower"))
+                    if (typeof message.blessingResolvePower !== "number")
+                        return "blessingResolvePower: number expected";
+                if (message.zealPower != null && $Object.hasOwnProperty.call(message, "zealPower"))
+                    if (typeof message.zealPower !== "number")
+                        return "zealPower: number expected";
+                if (message.markWeaknessFactor != null && $Object.hasOwnProperty.call(message, "markWeaknessFactor"))
+                    if (typeof message.markWeaknessFactor !== "number")
+                        return "markWeaknessFactor: number expected";
                 if (message.jumpStartX != null && $Object.hasOwnProperty.call(message, "jumpStartX"))
                     if (typeof message.jumpStartX !== "number")
                         return "jumpStartX: number expected";
@@ -7392,6 +7461,15 @@ export const eidolon = $root.eidolon = (() => {
                 if (object.whirlwindRadius != null)
                     if (!$Object.is($Number(object.whirlwindRadius), 0))
                         message.whirlwindRadius = $Number(object.whirlwindRadius);
+                if (object.blessingResolvePower != null)
+                    if (!$Object.is($Number(object.blessingResolvePower), 0))
+                        message.blessingResolvePower = $Number(object.blessingResolvePower);
+                if (object.zealPower != null)
+                    if (!$Object.is($Number(object.zealPower), 0))
+                        message.zealPower = $Number(object.zealPower);
+                if (object.markWeaknessFactor != null)
+                    if (!$Object.is($Number(object.markWeaknessFactor), 0))
+                        message.markWeaknessFactor = $Number(object.markWeaknessFactor);
                 if (object.jumpStartX != null)
                     if (!$Object.is($Number(object.jumpStartX), 0))
                         message.jumpStartX = $Number(object.jumpStartX);
@@ -7579,6 +7657,9 @@ export const eidolon = $root.eidolon = (() => {
                     object.berserkerModeMultiplier = 0;
                     object.lastStandMultiplier = 0;
                     object.whirlwindRadius = 0;
+                    object.blessingResolvePower = 0;
+                    object.zealPower = 0;
+                    object.markWeaknessFactor = 0;
                 }
                 if (message.id != null && $Object.hasOwnProperty.call(message, "id"))
                     object.id = message.id;
@@ -7869,6 +7950,12 @@ export const eidolon = $root.eidolon = (() => {
                     object.lastStandMultiplier = options.json && !$isFinite(message.lastStandMultiplier) ? $String(message.lastStandMultiplier) : message.lastStandMultiplier;
                 if (message.whirlwindRadius != null && $Object.hasOwnProperty.call(message, "whirlwindRadius"))
                     object.whirlwindRadius = options.json && !$isFinite(message.whirlwindRadius) ? $String(message.whirlwindRadius) : message.whirlwindRadius;
+                if (message.blessingResolvePower != null && $Object.hasOwnProperty.call(message, "blessingResolvePower"))
+                    object.blessingResolvePower = options.json && !$isFinite(message.blessingResolvePower) ? $String(message.blessingResolvePower) : message.blessingResolvePower;
+                if (message.zealPower != null && $Object.hasOwnProperty.call(message, "zealPower"))
+                    object.zealPower = options.json && !$isFinite(message.zealPower) ? $String(message.zealPower) : message.zealPower;
+                if (message.markWeaknessFactor != null && $Object.hasOwnProperty.call(message, "markWeaknessFactor"))
+                    object.markWeaknessFactor = options.json && !$isFinite(message.markWeaknessFactor) ? $String(message.markWeaknessFactor) : message.markWeaknessFactor;
                 return object;
             };
 

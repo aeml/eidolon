@@ -1,4 +1,31 @@
-# Cleric utility Masteries — server repair in progress, not accepted
+# Cleric utility Masteries — implementation complete, focused checks passed
+
+## Delivery under revised feature-first policy
+
+Server recipient potency now travels through snapshot comparison and both full/
+delta protobuf messages (new fields124–126); unchanged or inactive potency does
+not produce spurious updates. Heaven's Trumpet retains its separate50% mark.
+Local/remote clients display received power without reapplying stat multipliers.
+Offline Resolve now uses defense, not the old25% direct reduction; Zeal uses
+20% movement/30% attack speed before Mastery, with one derived-stat application,
+recipient-owned expiry and purge cleanup. Buff descriptions reflect those effects.
+
+Focused verification: server wire/race suite passes (main1.129s, game4.831s);
+initial client wire25 tests pass2.403s; final relevant client108 tests pass3.414s.
+Changed client files pass ESLint; diff checks pass. Logs:
+`/tmp/eidolon-cleric-utility-wire-race-20260912.log` and
+`/tmp/eidolon-cleric-final-focused-20260912.log`.
+The preexisting tracker assertion expected obsolete reduction/damage/healing
+text; it now expects the implemented defense/movement/cadence descriptions.
+
+Accept for integration using the player's revised proportionate-verification
+policy. Broad rendered/saved-purchase matrices move to final stabilization;
+they are not claimed passed. No dedicated full CI or new long native run is
+required for this isolated fix. Normal release smoke and data-safety checks
+remain. No production deployment/version bump yet.
+
+Draft patch note: Cleric Resolve, Zeal and Mark Masteries now strengthen their
+actual bonuses; online/offline blessing effects and buff descriptions agree.
 
 ## Server implementation — September 12, 23:32 UTC
 

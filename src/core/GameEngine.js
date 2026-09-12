@@ -30,6 +30,7 @@ import { installGameEngineMovement } from './GameEngineMovement.js';
 import { installGameEngineRuntime } from './GameEngineRuntime.js';
 import { createTimedRemoteEffectConfig } from './TimedRemoteEffectConfig.js';
 import { readDamageBuffMultiplier } from './FighterDamageBuffState.js';
+import { readClericUtilityScalar } from './ClericUtilityState.js';
 import { GUARDIAN_ROAR_DAMAGE_REDUCTION_PERCENT } from './GuardianRoar.js';
 
 const REMOTE_SUPPORT_STATE_CONFIG = {
@@ -159,7 +160,12 @@ const REMOTE_EFFECT_SYNC_CONFIG = {
         payloadKey: 'blessingResolveActive',
         durationKey: 'blessingResolveDuration',
         timerProperty: 'blessingResolveTimer',
-        fallbackDuration: 8
+        fallbackDuration: 20,
+        extraPayloadKeys: ['blessingResolvePower'],
+        onActivate: (entity, payload) => {
+            entity.blessingResolvePower = readClericUtilityScalar(payload, 'blessingResolvePower', entity.blessingResolvePower);
+        },
+        onDeactivate: entity => { entity.blessingResolvePower = 0; }
     }),
     divine_intervention: createTimedRemoteEffectConfig({
         payloadKey: 'divineInterventionActive',
@@ -287,8 +293,23 @@ const REMOTE_EFFECT_SYNC_CONFIG = {
         activeProperty: 'blessingZealActive',
         timerProperty: 'blessingZealTimer',
         fallbackDuration: 8,
-        onActivate: (entity) => { entity.blessingZealFactor = 0.35; },
-        onDeactivate: (entity) => { entity.blessingZealFactor = 0; }
+        extraPayloadKeys: ['zealPower'],
+        onActivate: (entity, payload) => {
+            entity.zealPower = readClericUtilityScalar(payload, 'zealPower', entity.zealPower);
+            entity.blessingZealFactor = .3 * entity.zealPower;
+        },
+        onDeactivate: entity => { entity.zealPower = 0; entity.blessingZealFactor = 0; }
+    }),
+    mark_weakness: createTimedRemoteEffectConfig({
+        payloadKey: 'markWeakness',
+        durationKey: 'markWeaknessDuration',
+        timerProperty: 'markWeaknessTimer',
+        fallbackDuration: 10,
+        extraPayloadKeys: ['markWeaknessFactor'],
+        onActivate: (entity, payload) => {
+            entity.markWeaknessFactor = readClericUtilityScalar(payload, 'markWeaknessFactor', entity.markWeaknessFactor, .2, .5);
+        },
+        onDeactivate: entity => { entity.markWeaknessFactor = 0; }
     }),
 };
 

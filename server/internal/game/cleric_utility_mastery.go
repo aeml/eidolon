@@ -42,3 +42,15 @@ func (e *Entity) ActiveBlessingResolvePower() float64 {
 func (e *Entity) ActiveZealPower() float64 {
 	return activeClericUtilityPower(e.ZealActive, e.ZealPower)
 }
+
+// Heaven's Trumpet shares this vulnerability slot at 50%; preserve that
+// independent rune while bounding invalid values and legacy untyped marks.
+func (e *Entity) ActiveMarkWeaknessFactor() float64 {
+	if !e.MarkWeakness {
+		return 0
+	}
+	if e.MarkWeaknessFactor > 0 && e.MarkWeaknessFactor <= .5 {
+		return e.MarkWeaknessFactor
+	}
+	return .2
+}

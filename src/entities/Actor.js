@@ -3,6 +3,7 @@ import { Entity } from './Entity.js';
 import { calculateSetBonuses, getEquippedUniqueEffects, getGemStats, UNIQUE_EFFECTS } from '../core/ItemSystem.js';
 import { isEquippableItem, isActiveEquipment } from '../core/EquipmentSlots.js';
 import { advanceFighterDamageBuffs, applyOfflineFighterDamageBuffStats, clearOfflineFighterDamageBuffs } from '../skills/offlineFighterDamageBuffs.js';
+import { advanceClericUtilityBuffs, applyOfflineClericUtilityStats } from '../skills/clericUtilityPower.js';
 import { getAbilityManaCost, getAbilityCooldown } from '../core/AbilityEconomy.js';
 import { updateOfflineHealingLight } from '../core/AbilityHealing.js';
 import { PASSIVE_REGEN_PER_STAT } from '../core/Regeneration.js';
@@ -144,6 +145,8 @@ export class Actor extends Entity {
         // Cleric Buffs/Debuffs
         this.blessingResolveTimer = 0;
         this.blessingResolveReduction = 0;
+        this.blessingResolvePower = 0;
+        this.zealPower = 0;
         this.divineInterventionTimer = 0; // Remaining rescue window; display-only for replicas
         this.divineInterventionGuardianTimer = 0;
         this.blessingZealTimer = 0;
@@ -1008,13 +1011,7 @@ export class Actor extends Entity {
         advanceFighterDamageBuffs(this, dt);
 
         // Cleric Buffs/Debuffs Logic
-        if (this.blessingResolveTimer > 0) {
-            this.blessingResolveTimer -= dt;
-            if (this.blessingResolveTimer <= 0) {
-                this.blessingResolveTimer = 0;
-                this.blessingResolveReduction = 0;
-            }
-        }
+        advanceClericUtilityBuffs(this, dt);
         if (this.divineInterventionTimer > 0) {
             this.divineInterventionTimer -= dt;
             if (this.divineInterventionTimer <= 0) {
@@ -1026,13 +1023,6 @@ export class Actor extends Entity {
         }
         if (this.divineInterventionGuardianTimer > 0) {
             this.divineInterventionGuardianTimer = Math.max(0, this.divineInterventionGuardianTimer-dt);
-        }
-        if (this.blessingZealTimer > 0) {
-            this.blessingZealTimer -= dt;
-            if (this.blessingZealTimer <= 0) {
-                this.blessingZealTimer = 0;
-                this.blessingZealFactor = 0;
-            }
         }
         // Rogue Branch C Logic
         if (this.speedBoostTimer > 0) {
@@ -1504,9 +1494,6 @@ export class Actor extends Entity {
         if (this.guardianRoarTimer > impactElapsed) {
             finalAmount = Math.floor(finalAmount * (100 - GUARDIAN_ROAR_DAMAGE_REDUCTION_PERCENT) / 100);
         }
-        if (this.blessingResolveTimer > 0) {
-            finalAmount *= (1 - this.blessingResolveReduction);
-        }
 
         // Damage Increases (Debuffs)
         if (this.markWeaknessTimer > 0) {
@@ -1631,9 +1618,6 @@ export class Actor extends Entity {
         let cooldownMs = this.stats.attackSpeed * 1000;
         
         // Apply Attack Speed Buffs
-        if (this.blessingZealTimer > 0) {
-            cooldownMs /= (1 + this.blessingZealFactor);
-        }
         if (this.hasteTimer > 0) {
             cooldownMs /= (1 + this.hasteFactor);
         }
@@ -2029,6 +2013,7 @@ export class Actor extends Entity {
         this.stats.manaCostReduction = this.hasEfficientEffect ? 0.1 : 0;
 
         applyOfflineFighterDamageBuffStats(this);
+        applyOfflineClericUtilityStats(this);
 
         // Clamp current HP/Mana
         if (this.stats.hp > this.stats.maxHp) this.stats.hp = this.stats.maxHp;

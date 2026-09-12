@@ -30,7 +30,7 @@ export function getTrackedActorBuffs(actor) {
             icon: '✝️',
             name: 'Blessing of Resolve',
             durationSeconds: Number(actor.blessingResolveTimer || 0),
-            detail: `${Math.round(Number(actor.blessingResolveReduction || 0) * 100)}% damage reduction`,
+            detail: `+${Math.round(.2 * Number(actor.blessingResolvePower || 1) * 100)}% defense`,
             isDebuff: false
         },
         {
@@ -48,7 +48,7 @@ export function getTrackedActorBuffs(actor) {
             icon: '✨',
             name: 'Blessing of Zeal',
             durationSeconds: Number(actor.blessingZealTimer || 0),
-            detail: `+${Math.round(Number(actor.blessingZealFactor || 0) * 100)}% damage and healing`,
+            detail: `+${Math.round(.2 * Number(actor.zealPower || 1) * 100)}% movement, +${Math.round(.3 * Number(actor.zealPower || 1) * 100)}% attack speed`,
             isDebuff: false
         },
         {

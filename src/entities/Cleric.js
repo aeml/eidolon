@@ -13,6 +13,7 @@ import {applyOfflineHealingLight,applyOfflineRadiantStrike,applyOfflineDivineInt
 import { AvengingSeraph } from './AvengingSeraph.js';
 import { configureOfflineSeraph, dismissOfflineSeraph } from './SeraphSummon.js';
 import { getClericEffectDuration } from '../skills/clericEffectDuration.js';
+import { getClericUtilityPower, isOfflineUtilityActor } from '../skills/clericUtilityPower.js';
 
 export class Cleric extends Actor {
     constructor(id) {
@@ -159,23 +160,30 @@ export class Cleric extends Actor {
 
         if (skill === "Blessing of Resolve" || skill === "Blessing of Zeal") {
             const radius = getAbilityAoeRadius('Cleric', skill, this);
+            const power = getClericUtilityPower(this, skill);
             // Retain shared cooldown/presentation and include self even when
             // the chunk list omits the local actor. Support remains planar.
             for (const entity of new Set([this, ...gameEngine.chunkManager.getActiveEntities()])) {
                 if (!(entity instanceof Actor) || !entity.isActive || entity.state === 'DEAD') continue;
+                if (!isOfflineUtilityActor(entity) || (entity.instanceId || '') !== (this.instanceId || '')) continue;
                 const hostile = entity !== this && (typeof gameEngine.isHostileActorTarget === 'function'
                     ? gameEngine.isHostileActorTarget(entity)
                     : !['Fighter', 'Rogue', 'Wizard', 'Cleric', 'AvengingSeraph'].includes(entity.constructor.name));
                 if (hostile || Math.hypot(this.position.x - entity.position.x, this.position.z - entity.position.z) > radius + (entity.radius || 0)) continue;
                 if (skill === 'Blessing of Resolve') {
                     entity.blessingResolveTimer = getClericEffectDuration(this, skill, 20);
-                    entity.blessingResolveReduction = 0.25;
+                    entity.blessingResolveActive = true;
+                    entity.blessingResolvePower = power;
+                    entity.blessingResolveReduction = 0;
                     gameEngine.floatingTextManager.spawn('DEFENSE UP!', entity.position, '#0000ff');
                 } else {
                     entity.blessingZealTimer = getClericEffectDuration(this, skill, 8);
-                    entity.blessingZealFactor = 0.35;
+                    entity.blessingZealActive = true;
+                    entity.zealPower = power;
+                    entity.blessingZealFactor = .3 * power;
                     gameEngine.floatingTextManager.spawn('ZEAL!', entity.position, '#ff0000');
                 }
+                entity.recalculateStats();
                 entity.syncAttachedStatusEffects(0);
             }
             return;
@@ -204,7 +212,7 @@ export class Cleric extends Actor {
 
             if (target) {
                 target.markWeaknessTimer = getClericEffectDuration(this, skill, 10);
-                target.markWeaknessFactor = 0.20; // 20% more damage taken
+                target.markWeaknessFactor = .20 * getClericUtilityPower(this, skill);
                 gameEngine.floatingTextManager.spawn("MARKED!", target.position, '#800080');
                 this.spawnVisualEffect(gameEngine, target.position, 0x800080, "pillar");
             }

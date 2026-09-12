@@ -255,6 +255,10 @@ message Entity {
   float berserker_mode_multiplier = 121;
   float last_stand_multiplier = 122;
   float whirlwind_radius = 123;
+  // Public recipient potency, captured from the casting Cleric's training.
+  float blessing_resolve_power = 124;
+  float zeal_power = 125;
+  float mark_weakness_factor = 126;
 
   // Authoritative jump replication
   float jump_start_x = 81;
