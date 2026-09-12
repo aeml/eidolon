@@ -5,7 +5,63 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 03:24 UTC
+## Current checkpoint — September 12, 03:37 UTC
+
+Previous goal turn was PROGRESS (corrected65 gate and release consolidation).
+This continuation is PROGRESS: repaired ordinary offline Charge and the actual
+server Unstoppable armor consumer, tested and committed them for consolidated
+1.1.0. No additional1.0.x candidate or milestone completion is claimed.
+
+- **Primary08a737775d96242d25001df223638e30323bf83f**, clean after fast-forward
+  from960c4936. Same clean source in`/tmp/eidolon-1-1-offline-charge-20260912`,
+  branch`work/1-1-offline-charge`. Not pushed to master/production.64/65 sources
+  unchanged. New doc`docs/plans/2026-09-12-charge-and-unstoppable.md`records
+  implementation, limits and player-facing notes to include in1.1.0.
+- Replaced offline Charge's25speed/unbounded3D aim/radius3/old strength damage
+  with50speed/28planar range/fixed16plus body edges/impact-time training. Added
+  real Momentum, Shockwave and Unstoppable behavior; clipped movement/knockback,
+  hostile-only recipients, elapsed clocks, paid-cast rune/duration capture,
+  correct visible landing, rejection and cancellation/scene/death cleanup.
+  Unstoppable armor refreshes without stacking or mutating equipped defense.
+- ServerRuneArmorBuff existed but was not consumed by either armor path.
+  Paid-charge/actual-enemy-attack RED demonstrated105damage instead of85, or
+  boss153 instead of143. Effective armor now consumes the active20% before
+  existing flat melt and boss/Backstab penetration; expired deadlines stop
+  helping at impact. Base equipment remains intact. No universal spell armor
+  or blanket mitigation rule was introduced.
+- Client original RED16failed/10passed0.911s. Final expanded checks PASS
+  **8suites/189tests2.428s**, changed-file lint/diff whitespace PASS. Includes
+  actual active/expired armor attack impact, multiplayer authority, critical
+  consumers, Shattering and Fighter timers. Logs
+  `/tmp/eidolon-1-1-charge-{red,expanded-client,lint}-20260912.log`.
+- Server focused race PASS**12.510s** for Charge/Shattering, paid armor ordinary/
+  boss attacks, Backstab/Eviscerate, equipment and exact-deadline expiration,
+  existing shield and enemy-debuff consumers. Logs
+  `/tmp/eidolon-1-1-charge-{server-red,final-server}-20260912.log`.
+  All local handles39968/47815/72838/52315/50134/30358/32734/74450/66291/13535
+  are terminal. No native or full regression was started over production QA.
+- **Corrected hosted65 CI34670196359 ACTIVE**, frozen1de18e03. Client103490000568
+  SUCCESS297suites/4347tests104.847s plus full lint/audit/benchmark. Server
+  103490000724 SUCCESScoverage81.799s/85.6%, full game race255.387s plus backup/
+  restore/bench/build. Browser3 job103491038881 SUCCESS20+3+2cases; browser2
+  103491038933 and browser1 103491038983 still running. Logs
+  `/tmp/eidolon-release65-corrected-{client,server,browser3}-34670196359.log`.
+  Poll SAME run; native/deployment intentionally excluded from manual rehearsal.
+- **Production64 CI34668112188 ACTIVE**,6d5e82cb. Native103486534312 remains
+  in disposable full-character gameplay; deployment and final live checks
+  remain. Independent03:36 public checks: frontend/backend63/f866, healthok,
+  database ready. No64/65 publication claimed and no production cancellation.
+- **Scheduled soak34670421761 now ACTIVE**, created03:27:43,6d5e82cb.
+  Job103490621233 is running100-client authoritative-state soak. This is the
+  existing enabled nightly schedule, not a new manual dispatch. Earlier
+  yesterday-only listings are superseded. No new soak canceled or schedule
+  disabled; do not claim otherwise. Same physical machine remains shared.
+- Full integrated client/server/native Charge acceptance, native Teleport65,
+  instrumented Briar four-role clear, earned progression/balance/campaign/
+  reconnect gates and all1.2–1.10 work remain. Keep scope intact. Root master
+  is ledger-only: NEVER PUSH.
+
+## Previous checkpoint — September 12, 03:24 UTC
 
 The preceding user-status exchange was NO PROGRESS on implementation; the prior
 goal work made progress but its local verification had not been collected.
