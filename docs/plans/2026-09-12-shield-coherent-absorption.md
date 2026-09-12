@@ -1,5 +1,28 @@
 # Same-moment shield absorption evidence — QA correction
 
+## Native acceptance — September 12, 2026
+
+Native86468 on843914f1 completed PASS, one test2.4minutes, zero retries.
+Portrait baseline695, trained834 and saved landscape834 pass, together with
+ordinary20s expiry and effect cleanup. A real Inferno Titan hit produced a
+coherent active/visible sample with524shield remaining,310absorbed and2575HP.
+The later inactive/zero/absent effect is consistent with further depletion.
+Actual touch entrance cutaway and ordinary town recall/material restoration
+also pass. Archive `/tmp/eidolon-shield-coherent-pass-O9ExyL`, credential scan0;
+exact containers/image/API18185/Mongo18186/web41875 cleanup verified. Inspected
+the pre-hit model screenshot; it is not the earlier partial-absorption moment
+and does not establish performance acceptance. Final focused54tests pass.
+
+Full CI34723036018 on843914f1 is still running its browser shards; client/server
+passed. Follow-up arrival collateral41979 then passed Rogue24.6s but failed
+Cleric50.8s at the unchanged Guardian Embrace accepted-count requirement
+(expected1,observed0). No current state/receipts were printed at that failure,
+so its cause is not yet established. Archive
+`/tmp/eidolon-arrival-support-failure-GHxzWa`, scan0/exact cleanup verified.
+Add read-only failure state/receipt capture while retaining all assertions,
+then reproduce before choosing a correction. No talent-status route is run yet.
+Tripwire remains unaccepted for integration pending these collateral checks.
+
 Native69982 on3b83b154 failed the unchanged current-visual assertion after real
 hostile absorption. Diagnostic evidence shows that the later character state had
 active=false, shieldHP=0 and visual=false; subsequent ordinary attacks had reduced

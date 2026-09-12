@@ -95,10 +95,31 @@ test('prepared Rogue/Cleric dungeon driver pays for real support and respects ac
         expect(await page.evaluate(skill => window.__preparedSupport.requests.filter(r => r.skill === skill).length, support)).toBe(0);
         await page.waitForTimeout(1100);
     }
-    await expect.poll(async () => {
-        await driver(page, target);
-        return page.evaluate(skill => window.__earnedDungeonCasts.accepted[skill] || 0, support);
-    }, { timeout: 30_000, intervals: [1100] }).toBe(1);
+    try {
+        await expect.poll(async () => {
+            await driver(page, target);
+            return page.evaluate(skill => window.__earnedDungeonCasts.accepted[skill] || 0, support);
+        }, { timeout: 30_000, intervals: [1100] }).toBe(1);
+    } catch (error) {
+        // Preserve the failed requirement and observe why the real controller
+        // did not earn acceptance; never reset health, cooldowns or the target.
+        console.log('[prepared-support-failure]', JSON.stringify(await page.evaluate(id => {
+            const g = window.game, p = g.player, enemy = g.remotePlayers.get(id);
+            return { ...window.__preparedSupport, counts: window.__earnedDungeonCasts,
+                className: p.constructor.name, state: p.state,
+                hp: p.stats.hp, maxHp: p.stats.maxHp, mana: p.stats.mana,
+                hotbar: p.hotbar, unlockedSkills: p.unlockedSkills, cooldowns: p.cooldowns,
+                guardianEmbraceActive: p.guardianEmbraceActive,
+                guardianEmbraceTimer: p.guardianEmbraceTimer,
+                position: { x: p.position.x, z: p.position.z },
+                target: enemy ? { active: enemy.isActive, state: enemy.state,
+                    health: enemy.health ?? enemy.stats?.hp, hostile: g.isHostileActorTarget(enemy),
+                    distance: p.position.distanceTo(enemy.position),
+                    attackRange: g.getBasicAttackRangeForEntity(enemy) } : null };
+        }, target.id)));
+        await page.screenshot({ path: testInfo.outputPath(`prepared-${className.toLowerCase()}-support-failure.png`) });
+        throw error;
+    }
     const active = () => page.evaluate(name => {
         const p = window.game.player;
         return name === 'Rogue' ? p.poisonCoatingActive : p.guardianEmbraceActive;
