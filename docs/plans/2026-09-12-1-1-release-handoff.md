@@ -29,6 +29,10 @@ acceptance. They are not the complete 1.1.0 change inventory.
 - Serrated Edges Technique reduces mana cost as well as cooldown. Its previous
   critical-chance bonus did not affect the inherited bleed damage.
   [Evidence](2026-09-12-serrated-technique.md).
+- The first dungeon's optional preparation tips explain party roles, suitable
+  equipment and town recovery. Expandable menu sections retain native Enter/
+  Space behavior without also opening chat or activating an ability.
+  [Evidence](2026-09-12-dungeon-preparation-guidance.md).
 
 The [combined regression record](2026-09-12-integrated-1-1-regression.md) identifies
 the exact tested integration. Component tests do not independently prove a full
@@ -36,10 +40,9 @@ dungeon clear, first-hour pacing or production delivery.
 
 ## Material still requiring acceptance or inventory review
 
-- First-dungeon preparation guidance and native summary keyboard ownership:
-  corrected candidate c09248c8 requires hosted desktop browser acceptance. Phone
-  reading/entry checks and screenshots passed on bea88218; its second global
-  Enter handler was subsequently corrected after the desktop case failed.
+- First-dungeon preparation guidance is accepted and merged from cf7f67a1 after
+  full CI34722166310 on c09248c8 and desktop/phone screenshot inspection. Its
+  combined regression with the other accepted components remains required.
 - Tripwire damage/training repair: preserve its separate gameplay proof, but
   finish collateral entrance/shield diagnostics before integration.
 - Inventory all other accepted development changes against the current published
