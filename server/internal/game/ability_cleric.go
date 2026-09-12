@@ -280,12 +280,14 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 		if player.Mana >= cost {
 			player.Mana -= cost
 			endTime := time.Now().Add(resolveAbilityEffectDuration(player, skillName, 20*time.Second))
+			power := clericUtilityPowerAtCast(player, skillName)
 			radius := effectiveAbilityAreaRadius(player, skillName, 10)
 			for _, target := range w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID) {
 				target.Mu.Lock()
 				if (target.Type == TypePlayer || target.Type == TypeNPC) && w.CombatRelationship(player, target) != RelationshipHostile && target.State != "DEAD" && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
 					target.BlessingResolveActive = true
 					target.BlessingResolveEndTime = endTime
+					target.BlessingResolvePower = power
 					target.RecalculateStats()
 				}
 				target.Mu.Unlock()
@@ -562,6 +564,8 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 							// Remove buffs in priority order
 							if target.ZealActive {
 								target.ZealActive = false
+								target.ZealEndTime = time.Time{}
+								target.ZealPower = 0
 							} else if target.ArcaneShieldActive && target.ArcaneShieldHP > 0 {
 								target.ArcaneShieldActive = false
 								target.ArcaneShieldHP = 0
@@ -708,6 +712,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 		if player.Mana >= cost {
 			player.Mana -= cost
 			endTime := time.Now().Add(resolveAbilityEffectDuration(player, skillName, 8*time.Second))
+			power := clericUtilityPowerAtCast(player, skillName)
 
 			radius := effectiveAbilityAreaRadius(player, skillName, 10)
 			nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID)
@@ -716,6 +721,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				if (target.Type == TypePlayer || target.Type == TypeNPC) && w.CombatRelationship(player, target) != RelationshipHostile && target.State != "DEAD" && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
 					target.ZealActive = true
 					target.ZealEndTime = endTime
+					target.ZealPower = power
 					target.RecalculateStats()
 				}
 				target.Mu.Unlock()
@@ -758,7 +764,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			target.Mu.Lock()
 			targetID, targetX, targetZ = target.ID, target.X, target.Z
 			target.MarkWeakness = true
-			target.MarkWeaknessFactor = 0.20
+			target.MarkWeaknessFactor = .20 * clericUtilityPowerAtCast(player, skillName)
 			target.MarkWeaknessEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 10*time.Second))
 			target.Mu.Unlock()
 

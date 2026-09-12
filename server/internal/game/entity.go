@@ -240,6 +240,7 @@ type Entity struct {
 	StealthEndTime          time.Time `json:"-"`
 	ZealActive              bool      `json:"zealActive,omitempty"`
 	ZealEndTime             time.Time `json:"-"`
+	ZealPower               float64   `json:"-"`
 
 	// New Buffs
 	IronFortressActive        bool      `json:"ironFortressActive,omitempty"`
@@ -262,6 +263,7 @@ type Entity struct {
 	DivineInterventionEndTime time.Time `json:"-"`
 	BlessingResolveActive     bool      `json:"blessingResolveActive,omitempty"`
 	BlessingResolveEndTime    time.Time `json:"-"`
+	BlessingResolvePower      float64   `json:"-"`
 	GuardianEmbraceActive     bool      `json:"guardianEmbraceActive,omitempty"`
 	GuardianEmbraceRadius     float64   `json:"guardianEmbraceRadius,omitempty"`
 	GuardianEmbraceEndTime    time.Time `json:"-"`
@@ -811,8 +813,8 @@ func (e *Entity) RecalculateStats() {
 		e.Damage = int(float64(e.Damage) * e.ActiveLastStandMultiplier())
 	}
 	if e.ZealActive {
-		e.Speed *= 1.2
-		e.AttackSpeed /= 1.3 // Faster attacks = lower cooldown
+		e.Speed *= 1 + .2*e.ActiveZealPower()
+		e.AttackSpeed /= 1 + .3*e.ActiveZealPower() // Faster attacks = lower cooldown
 		e.AttackCooldown = time.Duration(e.AttackSpeed * float64(time.Second))
 	}
 	if e.IronFortressActive {
@@ -829,7 +831,7 @@ func (e *Entity) RecalculateStats() {
 		e.Speed *= 1.2
 	}
 	if e.BlessingResolveActive {
-		e.Defense = int(float64(e.Defense) * 1.2)
+		e.Defense = int(float64(e.Defense) * (1 + .2*e.ActiveBlessingResolvePower()))
 	}
 	// Cloak Swift Rune: +30% movement speed while invisible
 	if e.CloakSwiftSpeedBonus && e.StealthActive {
@@ -950,6 +952,15 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		LastStandActive:          e.LastStandActive,
 		LastStandEndTime:         e.LastStandEndTime,
 		LastStandMultiplier:      e.LastStandMultiplier,
+		ZealActive:               e.ZealActive,
+		ZealEndTime:              e.ZealEndTime,
+		ZealPower:                e.ZealPower,
+		BlessingResolveActive:    e.BlessingResolveActive,
+		BlessingResolveEndTime:   e.BlessingResolveEndTime,
+		BlessingResolvePower:     e.BlessingResolvePower,
+		MarkWeakness:             e.MarkWeakness,
+		MarkWeaknessEndTime:      e.MarkWeaknessEndTime,
+		MarkWeaknessFactor:       e.MarkWeaknessFactor,
 		MovementContext:          e.MovementContext,
 		RecoveryContextReady:     e.RecoveryContextReady,
 		LootItem:                 e.LootItem,
@@ -1138,6 +1149,7 @@ func (w *World) copyEntity(v *Entity) *Entity {
 		StealthEndTime:          v.StealthEndTime,
 		ZealActive:              v.ZealActive,
 		ZealEndTime:             v.ZealEndTime,
+		ZealPower:               v.ZealPower,
 
 		IronFortressActive:        v.IronFortressActive,
 		IronFortressEndTime:       v.IronFortressEndTime,
@@ -1160,6 +1172,7 @@ func (w *World) copyEntity(v *Entity) *Entity {
 		DivineInterventionEndTime: v.DivineInterventionEndTime,
 		BlessingResolveActive:     v.BlessingResolveActive,
 		BlessingResolveEndTime:    v.BlessingResolveEndTime,
+		BlessingResolvePower:      v.BlessingResolvePower,
 		GuardianEmbraceActive:     v.GuardianEmbraceActive,
 		GuardianEmbraceRadius:     v.GuardianEmbraceAreaRadius(),
 		GuardianEmbraceEndTime:    v.GuardianEmbraceEndTime,

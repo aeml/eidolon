@@ -19,11 +19,13 @@ func expireRecipientSupportBuffsLocked(target *Entity, now time.Time) {
 	if target.ZealActive && !now.Before(target.ZealEndTime) {
 		target.ZealActive = false
 		target.ZealEndTime = time.Time{}
+		target.ZealPower = 0
 		statsChanged = true
 	}
 	if target.BlessingResolveActive && !now.Before(target.BlessingResolveEndTime) {
 		target.BlessingResolveActive = false
 		target.BlessingResolveEndTime = time.Time{}
+		target.BlessingResolvePower = 0
 		statsChanged = true
 	}
 	if target.DivineInterventionActive && !now.Before(target.DivineInterventionEndTime) {

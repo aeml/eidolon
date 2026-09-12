@@ -1,4 +1,38 @@
-# Cleric utility Masteries — reproduced, not repaired
+# Cleric utility Masteries — server repair in progress, not accepted
+
+## Server implementation — September 12, 23:32 UTC
+
+Named caster ranks now snapshot bounded power onto recipients: Resolve grants
+20%→24% defense, Zeal grants20%→24% movement and30%→36% attack speed, and Mark
+grants20%→24% incoming-damage vulnerability at rank0→5. The multiplier applies
+to the bonus only. Generic damage training and recipient ranks do not amplify
+it. Saved IDs/maps remain untouched; invalid/legacy blessing power falls back
+to the ordinary bonus. Both entity copy paths retain potency/deadlines. Recasts
+replace rather than stack strength; expiry and Zeal purge clear stored power.
+Untrained server costs, durations, relationship and targeting rules are unchanged.
+
+Original missing-effect probe now passes. Expanded paid rank0/1/5 checks,
+bounded/foreign-class inputs, legal five-rank purchases and sixth-rank rejection,
+recipient ownership, actual Mark damage, recasts/copies and expiry pass together
+with existing Cleric, support-deadline, targeted dungeon-wall and Fighter purge
+regressions: session57512 TERMINAL PASS, game25.274s under the race detector.
+Log `/tmp/eidolon-cleric-utility-server-final-20260912.log`.
+Earlier expanded checks correctly exposed two fixture assumptions: the compact
+broadcast copy excludes the internal attack timer, and the raw enemy fixture
+had not derived its baseline stats. Tests now assert actual live attack timing
+separately and derive the enemy baseline before comparison; potency, copied
+cadence, actual damage and expiry assertions remain exact.
+
+This is an isolated server candidate, NOT accepted or integrated. Required next:
+JSON/full-delta/protobuf potency replication and tests; offline effects and
+truthful UI parity; trained NPC/purge coverage; saved purchases and real rendered
+recipients; full CI and combined acceptance. Offline currently uses incompatible
+25% Resolve damage reduction and35% Zeal attack speed, with misleading Zeal
+damage/healing text. Reconcile to canonical server defense/movement/cadence,
+explicitly documenting this parity correction rather than claiming both old
+baselines were preserved. No version or production deployment changed.
+
+## Original reproduction
 
 On accepted integration8500bdf4, paired ordinary rank0/rank5 paid casts confirm
 that three advertised power Masteries do not improve their recipient effects.
@@ -15,7 +49,7 @@ are used for each rank comparison. This is stronger than a missing metadata
 reference: the useful effect itself remains unchanged after five ranks.
 Log `/tmp/eidolon-cleric-utility-mastery-red-20260912.log`.
 
-The failing test remains on separate work/1-1-cleric-utility-mastery, not accepted
+The original failing test was committed on separate work/1-1-cleric-utility-mastery, not accepted
 integration. No game runtime, saved rank/ID, stat scaling or version changed.
 
 Next repair should make the promised power affect the actual buff/debuff bonus,
