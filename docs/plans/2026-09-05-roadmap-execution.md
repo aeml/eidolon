@@ -5,7 +5,31 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 21:55 UTC
+## Current checkpoint — September 12, 22:00 UTC
+
+Previous goal turn PROGRESS; this continuation VERIFIED WAIT, polling the exact
+native15051 process and both hosted workflow handles. No new runtime change,
+deployment, version, soak or milestone claim. Full roadmap ACTIVE; NEVER PUSH ROOT.
+
+Initial guidance **34720519281 TERMINAL FAILURE** on e903cffc: only browser3's
+desktop summary-Enter case failed; client/server and browser1/2 all passed.
+Client414suites/6412tests136.644s; game coverage90.004s/86.9%, race276.362s.
+Logs `/tmp/eidolon-dungeon-preparation-{client,server,browser1,browser2,browser3}-34720519281.log`.
+Its exact failure/artifact inspection and later keyboard/phone corrections are
+recorded below. Native/deploy/live stages skipped, not passed.
+
+Latest **34721303156 ACTIVE** on exactbea882184fb80048d4bdb0d8cb8a0482e9991fe8:
+client/server now running. This is the required corrected candidate check; do
+not substitute the earlier partial pass. No extra dispatch or cancellation.
+
+**15051 still ACTIVE**, PID3544161 confirmed40:07 elapsed. Latest2330s/
+341leader steps/23room traversals/five town returns, three original-health bosses
+defeated and no final Sentinel/individual claim/relogin outcome yet. Source9b6745d7
+remains frozen; no second native browser. Next native remains Tripwire diagnostic
+3b83b154 only after terminal/archive/credential scan/exact cleanup. Broader
+first-hour/five-dungeon/reconnect/talent and1.2–1.10 acceptance remains open.
+
+## Historical checkpoint — September 12, 21:55 UTC
 
 Previous goal turn PROGRESS (summary keyboard correction). This continuation
 PROGRESS: hosted failure diagnosed, phone acceptance fixture corrected, and
