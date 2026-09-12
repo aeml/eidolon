@@ -166,6 +166,17 @@ var rogueSkills = []string{
 }
 
 func rogueTalentDef(n int) (TalentDef, bool) {
+	// Utility casts retain cooldown training and use mana efficiency instead
+	// of an unusable critical bonus. Serrated wounds inherit the original hit's
+	// critical result; they deliberately do not roll a second named critical.
+	if n == 6 || n == 14 || n == 20 || n == 26 {
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: rogueSkills[(n-1)/2], SkillCdr: 0.03, SkillManaCost: -0.02}}, true
+	}
+	// These utility skills have no direct damage. Preserve saved Mastery IDs
+	// and train their existing effect windows, like the other support Masteries.
+	if n == 5 || n == 19 || n == 25 {
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: rogueSkills[(n-1)/2], SkillDuration: 0.04}}, true
+	}
 	if n <= 26 {
 		skillIdx := (n - 1) / 2
 		if skillIdx >= len(rogueSkills) {

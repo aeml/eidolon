@@ -6,7 +6,7 @@ import { MeshFactory } from '../utils/MeshFactory.js';
 import { Projectile } from './Projectile.js';
 import { applyOfflineAbilityHit } from '../core/AbilityCritical.js';
 import { spawnEffectSceneFallback } from './EffectSceneFallback.js';
-import { getAbilityRange, getRogueMovementCastRange } from '../core/AbilityRange.js';
+import { getAbilityRange, getRogueMovementCastRange, getAbilityAreaRadius } from '../core/AbilityRange.js';
 import { findOfflineAbilityTarget } from '../skills/offlineAbilityTargeting.js';
 import { resolveDungeonMovementEndpoint } from '../skills/dungeonEffectGeometry.js';
 import { applyOfflineStatus } from '../core/OfflineDamageOverTime.js';
@@ -192,7 +192,7 @@ export class Rogue extends Actor {
             const target = castTarget;
 
             if (target) {
-                target.weakPointMarkTimer = getRogueEffectDuration(this, 10);
+                target.weakPointMarkTimer = getRogueEffectDuration(this, 10, skill);
                 gameEngine.floatingTextManager.spawn("WEAK POINT!", target.position, '#ff0000');
                 this.spawnVisualEffect(gameEngine, target.position, 0xff0000, "mark");
             }
@@ -248,6 +248,7 @@ export class Rogue extends Actor {
 
         if (skill === "Blade Storm") {
             console.log("Rogue used Blade Storm!");
+            const radius = getAbilityAreaRadius(this, 'Rogue', 10, skill);
             
 
             // Cone of daggers
@@ -265,13 +266,16 @@ export class Rogue extends Actor {
                 const velZ = Math.cos(angle);
                 
                 const targetPos = new THREE.Vector3(
-                    this.position.x + velX * 10,
-                    this.position.y,
-                    this.position.z + velZ * 10
+                    this.position.x + velX * radius,
+                    startPos.y,
+                    this.position.z + velZ * radius
                 );
 
                 const dagger = new Projectile(null, this, 'Dagger', startPos, targetPos);
                 dagger.skillName = skill;
+                dagger.maxTravelDistance = radius;
+                dagger.travelDistance = 0;
+                dagger.radius = 1; // Match the authoritative Blade Storm capsule.
                 dagger.damage = resolveRogueAbilityDamage(this, skill);
                 gameEngine.addEntity(dagger);
             }
@@ -387,7 +391,7 @@ export class Rogue extends Actor {
             console.log("Rogue used Cloak & Vanish!");
             
 
-            this.stealthTimer = getRogueEffectDuration(this, this.skillRunes?.[skill] === 'cloak_longer' ? 10 : 5);
+            this.stealthTimer = getRogueEffectDuration(this, this.skillRunes?.[skill] === 'cloak_longer' ? 10 : 5, skill);
             
             // Speed Burst (handled in Actor update or just modify stats temporarily?)
             // Let's use a buff timer for speed if we had one, or just hack it here.
@@ -398,7 +402,7 @@ export class Rogue extends Actor {
             // Or I can modify `this.stats.speed` and reset it later? No, stats are recalculated from base.
             // I'll add `speedBoostTimer` to Actor.js in a moment.
             
-            this.speedBoostTimer = getRogueEffectDuration(this, 3);
+            this.speedBoostTimer = getRogueEffectDuration(this, 3, skill);
             this.speedBoostFactor = 1.0; // +100% speed
             
             gameEngine.floatingTextManager.spawn("VANISH!", this.position, '#ffffff');

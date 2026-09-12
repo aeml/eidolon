@@ -9,7 +9,7 @@ import { Cleric } from '../src/entities/Cleric.js';
 describe('Actor ability config integration', () => {
     test.each([
         [Fighter, 'Unbreakable Grip', { FTR_16: 5, FTR_28: 5 }, 29, 10.2],
-        [Rogue, 'Smoke Bomb', { ROG_20: 5 }, 35, 13.6],
+        [Rogue, 'Smoke Bomb', { ROG_20: 5 }, 31, 13.6],
         [Wizard, 'Flame Whip', { WIZ_04: 5, WIZ_27: 5 }, 24, 6.8],
         [Cleric, 'Healing Light', { CLR_04: 5, CLR_27: 5 }, 20, 5.44]
     ])('%p retains canonical talent economy through its multiplayer skill override', (Class, skill, ranks, mana, cooldown) => {

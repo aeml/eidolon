@@ -5,7 +5,7 @@ test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true
     userAgent: devices['Pixel 7'].userAgent, actionTimeout: 12_000,
     trace: 'off', screenshot: 'off', video: 'off' });
 
-test('phone Executioner Spin area purchases reach the authoritative ring and survive login', async ({ page, baseURL }) => {
+test('phone Executioner Spin area purchases reach the authoritative ring and survive login', async ({ page, baseURL }, testInfo) => {
     test.setTimeout(180_000);
     test.skip(process.env.EIDOLON_E2E_REGISTER !== '1', 'Requires the isolated Executioner Spin route');
     const credentials = credentialsFromEnvironment();
@@ -82,8 +82,31 @@ test('phone Executioner Spin area purchases reach the authoritative ring and sur
         await page.locator('.phone-build-tabs').getByRole('button', { name: 'Talents', exact: true }).tap();
         for (let rank = 1; rank <= 5; rank++) {
             const buy = page.locator(`button[data-build-action="talent:${talentId}"]`);
-            await buy.scrollIntoViewIfNeeded(); await buy.tap();
-            await expect.poll(() => page.evaluate(id => window.game.player.talentRanks?.[id] || 0, talentId)).toBe(rank);
+            try {
+                for (let attempt = 0; attempt < 3; attempt++) {
+                    const points = await page.evaluate(() => window.game.player.talentPoints);
+                    await buy.scrollIntoViewIfNeeded(); await buy.tap();
+                    await expect.poll(() => page.evaluate(() => window.game.uiManager.skillTree.mobile.pending === null)).toBe(true);
+                    if (await page.evaluate(id => window.game.player.talentRanks?.[id] || 0, talentId) === rank) break;
+                    expect(await page.evaluate(id => window.game.player.talentRanks?.[id] || 0, talentId)).toBe(rank - 1);
+                    expect(await page.evaluate(() => window.game.player.talentPoints)).toBe(points);
+                    await expect(page.locator('.phone-build-feedback')).toContainText('rate limit');
+                    await expect(buy).toBeEnabled();
+                    console.log(`[spin-purchase] ${talentId} rank ${rank}: rate rejection unlocked controls without spending`);
+                    // A new deliberate user tap, not an automatic game retry.
+                    await page.waitForTimeout(1100);
+                }
+                await expect.poll(() => page.evaluate(id => window.game.player.talentRanks?.[id] || 0, talentId)).toBe(rank);
+            } catch (error) {
+                console.log('[spin-purchase-failure]', JSON.stringify(await page.evaluate(({ talentId, rank }) => ({
+                    talentId, expectedRank: rank, ranks: window.game.player.talentRanks,
+                    points: window.game.player.talentPoints,
+                    pending: window.game.uiManager.skillTree.mobile.pending,
+                    feedback: window.game.uiManager.skillTree.mobile.feedback
+                }), { talentId, rank })));
+                await page.screenshot({ path: testInfo.outputPath('spin-purchase-failure.png') });
+                throw error;
+            }
             await expect.poll(() => page.evaluate(() => window.game.uiManager.skillTree.mobile.pending === null)).toBe(true);
         }
         await page.locator('#btn-close-skills').tap();

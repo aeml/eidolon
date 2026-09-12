@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"strings"
 	"testing"
 	"time"
@@ -175,6 +176,15 @@ func TestAnimationQACommandsRequireAllowlistAndUseDedicatedSignal(t *testing.T) 
 	for _, message := range messages {
 		if message.Type == MsgQAAnimationReady {
 			foundSignal = true
+			var payload map[string]interface{}
+			if err := json.Unmarshal(message.Payload, &payload); err != nil {
+				t.Fatal(err)
+			}
+			for key, want := range map[string]int{"health": player.Health, "maxHealth": player.MaxHealth, "mana": player.Mana, "maxMana": player.MaxMana} {
+				if payload[key] != float64(want) {
+					t.Fatalf("readiness %s=%v want%d", key, payload[key], want)
+				}
+			}
 		}
 	}
 	if !foundSignal {

@@ -132,7 +132,7 @@ export const CONSTANTS = {
                 Tier2: { name: "Whirlwind", desc: "Spin around dealing damage to all nearby enemies." },
                 Tier3: { name: "Shield Slam", desc: "Cone strike generating 2× normal threat from damage dealt; briefly stuns non-immune enemies." },
                 Tier4: { name: "Iron Fortress", desc: "For 30 seconds, take 20% less damage and gain 50% armor, at the cost of 20% movement speed. Mastery extends duration." },
-                Tier5: { name: "Guardian Roar", desc: "Large-radius taunt + group damage reduction buff." }
+                Tier5: { name: "Guardian Roar", desc: "Large-radius taunt + 30% group damage reduction (10s base duration)." }
             },
             BranchB: {
                 name: "Control & Crowd Management",
@@ -412,16 +412,22 @@ export const CONSTANTS = {
             );
 
             return entries.slice(0, 40).map((t, i) => ({ id: `ROG_${String(i + 1).padStart(2, '0')}`, ...t,
+                ...([4, 18, 24].includes(i) ? { desc: `+4% ${skills[Math.floor(i / 2)]} effect duration per rank (20% max).` } : {}),
+                abilityDuration: [4, 18, 24].includes(i) ? { skill: skills[Math.floor(i / 2)], duration: 0.04 }
+                    : i === 27 ? { duration: 0.04 } : undefined,
                 abilityDamage: [0, 2, 8, 10, 14, 16].includes(i) ? { skill: skills[Math.floor(i / 2)], damage: 0.04 }
                     : i === 37 ? { damage: 0.02 } : undefined,
                 statusTraining: [6, 12, 20].includes(i) ? { skill: skills[Math.floor(i / 2)], damage: 0.04 }
                     : i === 37 ? { damage: 0.02 } : undefined,
-                ...(i < 26 && i % 2 === 1 ? { desc: `+3% ${skills[Math.floor(i / 2)]} CDR and +2% critical chance per rank (15% / 10% max).` } : {}),
-                criticalChance: i < 26 && i % 2 === 1 ? { skill: skills[Math.floor(i / 2)], chance: 0.02 }
+                ...(i < 26 && i % 2 === 1 ? { desc: [5, 13, 19, 25].includes(i)
+                    ? `+3% ${skills[Math.floor(i / 2)]} CDR and -2% mana cost per rank (15% / 10% max).`
+                    : `+3% ${skills[Math.floor(i / 2)]} CDR and +2% critical chance per rank (15% / 10% max).` } : {}),
+                criticalChance: i < 26 && i % 2 === 1 && ![5, 13, 19, 25].includes(i) ? { skill: skills[Math.floor(i / 2)], chance: 0.02 }
                     : i === 31 ? { chance: 0.03 } : i === 38 ? { chance: 0.02 } : undefined,
                 abilityRange: i === 35 ? { range: 0.03 } : undefined,
                 abilityArea: i === 33 ? { radius: 0.03 } : undefined,
-                abilityEconomy: i < 26 && i % 2 === 1 ? { skill: skills[Math.floor(i / 2)], cdr: 0.03 }
+                abilityEconomy: i < 26 && i % 2 === 1 ? { skill: skills[Math.floor(i / 2)], cdr: 0.03,
+                    ...([5, 13, 19, 25].includes(i) ? { manaReduction: 0.02 } : {}) }
                     : i === 32 ? { cdr: 0.02 } : undefined }));
         })(),
         Wizard: (() => {

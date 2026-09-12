@@ -232,7 +232,7 @@ func (w *World) processHazardDamage(dt float64, players []*Entity) {
 
 					// Apply damage
 					player.Mu.Lock()
-					damage = fortressIncomingDamageLocked(player, damage, time.Now())
+					damage = defensiveBuffIncomingDamageLocked(player, damage, time.Now())
 					player.Health -= damage
 					if player.Health <= 0 {
 						w.handleDeath(player, nil, nil)

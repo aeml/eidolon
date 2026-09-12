@@ -104,7 +104,12 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		projectileTargetID := e.TargetID
 		projectileSubType := e.SubType
 		projectileInstanceID := e.InstanceID
+		projectileBounded := e.ProjectileTravelLimit > 0
 		e.Mu.RUnlock()
+		var flightWalkRects []DungeonWalkRect
+		if projectileBounded {
+			flightWalkRects = w.dungeonWalkRectsSnapshot(projectileInstanceID)
+		}
 		owner := w.GetEntity(projectileOwnerID)
 		var ownerCombat *Entity
 		ownerSpreadsPoison := false
@@ -402,10 +407,28 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		// Move
 		oldX, oldZ := e.X, e.Z
 		nextX, nextZ := e.X+e.VelX*dt, e.Z+e.VelZ*dt
-		wallX, wallZ, wallHit := w.firstDungeonWallHit(e.InstanceID, oldX, oldZ, nextX, nextZ)
+		boundedFlight, rangeEnded := e.ProjectileTravelLimit > 0, false
+		if boundedFlight {
+			distance := math.Hypot(nextX-oldX, nextZ-oldZ)
+			remaining := math.Max(0, e.ProjectileTravelLimit-e.ProjectileTravelDistance)
+			if distance >= remaining {
+				if distance > 0 {
+					nextX, nextZ = oldX+(nextX-oldX)*remaining/distance, oldZ+(nextZ-oldZ)*remaining/distance
+				}
+				rangeEnded = true
+			}
+			e.ProjectileTravelDistance += math.Min(distance, remaining)
+		}
+		var wallX, wallZ float64
+		var wallHit bool
+		if boundedFlight {
+			wallX, wallZ, wallHit = firstDungeonWalkRectWallHit(flightWalkRects, oldX, oldZ, nextX, nextZ)
+		} else {
+			wallX, wallZ, wallHit = w.firstDungeonWallHit(e.InstanceID, oldX, oldZ, nextX, nextZ)
+		}
 		e.X, e.Z = wallX, wallZ
 		w.Grid.Update(e, oldX, oldZ)
-		if wallHit {
+		if wallHit && !boundedFlight {
 			impact := ProjectileImpactEvent{ProjectileID: e.ID, ProjectileType: e.SubType,
 				SourceID: e.OwnerID, InstanceID: e.InstanceID, SkillName: e.ProjectileSkill,
 				X: e.X, Y: e.Y, Z: e.Z, DirectionX: e.VelX, DirectionZ: e.VelZ, Terminal: true}
@@ -429,7 +452,12 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		ownerIsPlayer := owner != nil && owner.Type == TypePlayer
 
 		// Check Collision with Enemies
-		nearbyEnemies := w.Grid.Nearby(projX, projZ, radius+2.0, projectileInstanceID)
+		queryX, queryZ, queryRadius := projX, projZ, radius+2.0
+		if boundedFlight {
+			queryX, queryZ = (oldX+projX)/2, (oldZ+projZ)/2
+			queryRadius += math.Hypot(projX-oldX, projZ-oldZ) / 2
+		}
+		nearbyEnemies := w.Grid.Nearby(queryX, queryZ, queryRadius, projectileInstanceID)
 		for _, target := range nearbyEnemies {
 			if target.InstanceID != projectileInstanceID {
 				continue
@@ -442,6 +470,21 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			}
 			dx := projX - target.X
 			dz := projZ - target.Z
+			if boundedFlight {
+				// Sweep the legal clipped segment: slow frames cannot skip an
+				// intermediate target or reserve an impact beyond the flight.
+				vx, vz := projX-oldX, projZ-oldZ
+				t := 0.0
+				if lengthSquared := vx*vx + vz*vz; lengthSquared > 0 {
+					t = math.Max(0, math.Min(1, ((target.X-oldX)*vx+(target.Z-oldZ)*vz)/lengthSquared))
+				}
+				dx, dz = oldX+t*vx-target.X, oldZ+t*vz-target.Z
+				_, _, blocked := firstDungeonWalkRectWallHit(flightWalkRects, oldX, oldZ, target.X, target.Z)
+				if blocked {
+					target.Mu.RUnlock()
+					continue
+				}
+			}
 			target.Mu.RUnlock()
 
 			dist := math.Sqrt(dx*dx + dz*dz)
@@ -787,12 +830,20 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 		e.Mu.Lock()
 		// Include the Fire and Air realm wings, not just the original Earth/Water map.
+		if boundedFlight && (rangeEnded || wallHit) {
+			deferred.addRemoval(e.ID)
+		}
 		if e.InstanceID == "" {
 			if e.X < -3000 || e.X > 3000 || e.Z < -2200 || e.Z > 1000 {
 				deferred.addRemoval(e.ID)
 			}
 		}
 		e.Mu.Unlock()
+		if boundedFlight && (rangeEnded || wallHit) {
+			w.fireProjectileImpactEvent(ProjectileImpactEvent{ProjectileID: e.ID, ProjectileType: subType,
+				SourceID: ownerID, InstanceID: projectileInstanceID, SkillName: projSkillName,
+				X: projX, Y: projY, Z: projZ, DirectionX: projVelX, DirectionZ: projVelZ, Terminal: true})
+		}
 		return
 	}
 
