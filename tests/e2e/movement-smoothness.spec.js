@@ -50,7 +50,7 @@ async function projectExactGroundOffset(page, deltaX, deltaZ) {
 }
 
 async function findOpenMovementDirection(page, distance, probeDistances = [distance]) {
-    return page.evaluate(({ requestedDistance, screenProbeDistances }) => {
+    return page.evaluate(({ requestedDistance, screenProbeDistances, pixelProbe }) => {
         const game = window.game;
         const player = game?.player;
         const camera = game?.renderSystem?.camera;
@@ -64,6 +64,10 @@ async function findOpenMovementDirection(page, distance, probeDistances = [dista
         let best = null;
 
         for (let index = 0; index < 72; index += 1) {
+            // Diagnostic-only physical-input reproduction: at this angle the
+            // 0.05-unit projection truncates to a pixel outside the 0.1 dead zone.
+            // Keep normal ray/clearance checks and all movement assertions.
+            if (pixelProbe && screenProbeDistances.includes(0.05) && index !== 30) continue;
             const angle = index * Math.PI * 2 / 72;
             const dx = Math.cos(angle) * requestedDistance;
             const dz = Math.sin(angle) * requestedDistance;
@@ -118,7 +122,8 @@ async function findOpenMovementDirection(page, distance, probeDistances = [dista
             if (!best || clearance > best.clearance) best = { dx, dz, clearance };
         }
         return best;
-    }, { requestedDistance: distance, screenProbeDistances: probeDistances });
+    }, { requestedDistance: distance, screenProbeDistances: probeDistances,
+        pixelProbe: process.env.EIDOLON_E2E_MOVEMENT_PIXEL_PROBE === '1' });
 }
 
 async function sampleMovementFrames(page, durationMs) {
