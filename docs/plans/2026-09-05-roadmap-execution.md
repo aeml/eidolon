@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 19:03 UTC
+## Current checkpoint — September 12, 19:05 UTC
 
 Previous/current goal turns PROGRESS. Implemented actualGuardianRoar protection
 parity and truthfulstatus, reproduced/fixed subframeperiodicexpiry, retained
@@ -31,17 +31,20 @@ No live/version/soakchanges. Primary506e3200 and integrated695cd8d7 unchanged.
   Fortresscomposition. Nativeobserver2suites17PASS1.606s, lint/gofmt/diff/assets
   PASS. Logs `/tmp/eidolon-roar-protection-*-20260912.log`.
   Docs/draft1.1note2026-09-12-guardian-roar-protection.md.
-- **CI34712906594 ACTIVE** exactbe6, client/serverrunning. **52996 ACTIVE —
-  sole nativeGPU**, exactfrozenbe6, runIDroarprotection0912, routeguardian-roar-area,
- 18185/18186/41875. Log `/tmp/eidolon-roar-protection-native-20260912.log`.
-  Firstfiveactualnormal/saved High/Lowarea casts passed; Masteryduration/expiry
-  and newlyaddedrealincoming sequence stillrunning. SharedFortressincominghelper
+- **CI34712906594 ACTIVE** exactbe6, clientPASS/serverrunning. **52996 TERMINAL
+  PASS2.5m/0retry**, exactfrozenbe6, runIDroarprotection0912, routeguardian-roar-area.
+  Log `/tmp/eidolon-roar-protection-native-20260912.log`; archive
+  `/tmp/eidolon-roar-protection-pass-fFwx65`. Allnormal/savedHigh/Lowarea and
+  Masteryduration/expiry/30%status pass. ActualSkeleton2/2/2→1/1/1→2/2/2hits,
+  observedarmor0unchanged, attachedauraactiveonlyduringprotection,35manapaid,
+  livingtownreturn. Credentialscan0/ownedcontainers/image/portsverifiedclear.
+  MainagentviewedLowcard30%text; incidental4FPSsnapshotnotperformanceacceptance.
+  **No nativeGPU currentlyactive.** SharedFortressincominghelper
   nowacceptsexplicitRoarprofile, defaultFortresschecks/evidencenamespreserved.
   Roarrouteadds30%cardassertion andbaseline→paid35mana→3protectedordinary
   Skeletonhits→naturalexpiry→3unprotectedhits, observedarmorunchanged. No
   fakehits/HP/timers/training. Baseline2→1wouldproveon/off, notuniquely30%;
-  exactstrengthprovenbyactualreceiving tests. FreezeWT,pollsamehandle; terminal/
-  archive/credentialscan/exactownedcleanup BEFOREanothernative. Nointegrationyet.
+  exactstrengthprovenbyactualreceiving tests. Nointegrationyet; fullCIstilldue.
 - Tripwire **95636 TERMINALPASS** completecorrectedlocalclient410suites6395tests
   360.246s. Sameefda8f9f CI34712331175 client410/6395/135.117s andserverPASS;
   browser3shardsACTIVE. EarlierCI34711930441terminalFAILED (retained6fixture
