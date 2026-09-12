@@ -5,7 +5,54 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 05:21 UTC
+## Current checkpoint — September 12, 05:28 UTC
+
+Previous goal turn was PROGRESS. This continuation is PROGRESS: reproduced and
+corrected a cross-role input barrier, prepared the gallery forward-port, started
+full combined client verification, and collected newly completed CI evidence.
+No claim of dungeon/full-roadmap completion; no active process was replaced.
+
+- New separate candidate **9bd27adade488c1b46f71a2569b9149889a820eb**, clean
+  branch`work/1-1-party-role-scheduling` at
+  `/tmp/eidolon-1-1-party-role-scheduling-20260912`, based oneb20789a.
+  Contains scheduling commita85ebded8656085a773351aa10157d6e39e89d4a plus
+  clean cherry-pick of release65 gallery repair1af59512 as9bd27ada.
+  Primary and hosted rehearsal remain frozeneb20789a until their CI is terminal.
+- The party driver awaited all four warning/escape inputs before beginning any
+  healer/DPS action. An already-safe Cleric therefore waited for another actor's
+  slow dodge. Extracted identical two-stage ordering; two deferred-input controls
+  RED2failed/2passed0.902s. Independent safety->action sequences now allow safe
+  roles to act promptly, without overlapping inputs within a role. All role
+  inputs join before return/error cleanup; original errors propagate. Fighter
+  combat remains owned by the ordinary leader driver, so this is not a claim
+  that every source of party input latency has been eliminated.
+- Focused scheduling/navigation/healing/DPS PASS4suites/131tests2.161s. Changed
+  lint, Playwright discovery1test and diff whitespace PASS. Logs
+  `/tmp/eidolon-party-role-scheduling-{red,green,lint,discovery}-20260912.log`.
+  Doc`2026-09-12-party-role-input-scheduling.md`. Game runtime, resources,
+  telegraphs, deaths, expedition limits and full-clear requirements unchanged.
+- **Local combined client78153 ACTIVE** on clean9bd27ada; full lint37158
+  TERMINAL SUCCESS. Logs
+  `/tmp/eidolon-1-1-party-gallery-{client-full,lint}-20260912.log`.
+  Do not edit this candidate or start a replacement test while78153 runs.
+  No local native/browser run active; native timing/full party proof still open.
+- **Hosted eb20789a CI34675108921 ACTIVE**, client374suites/5745tests passed
+  as below. Server103503460921 now SUCCESS: game coverage86.6%/98.070s,
+  full game race320.580s, backup/restore, benchmarks and build passed. Log
+  `/tmp/eidolon-integrated-1-1-cooldown-server-34675108921.log`.
+  Browser2/3/1 active:103504603860/103504603870/103504603881. Poll SAME run.
+- **Production65 CI34675345557 ACTIVE** at1af59512. Client103504104916
+  SUCCESS299suites/4376tests97.708s plus lint/audit/benchmark; log
+  `/tmp/eidolon-release65-gallery-correction-client-34675345557.log`.
+  Server103504104976 still active at observation. No new deployment/live claim;
+  public64/6d was independently healthy last turn. Leave the scheduled soak alone.
+- Next collect78153 terminal result and both SAME CI runs. Integrate9bd27ada
+  only after local verification and frozeneb hosted regression finish, then
+  verify actual batched-input/independent-role dungeon play when production65
+  native gates are free. Broader earned progression, first hour, reconnect,
+  balance and every1.2–1.10 milestone remain required. NEVER PUSH ROOT MASTER.
+
+## Previous checkpoint — September 12, 05:21 UTC
 
 The preceding conversational version-number confirmation made no implementation
 progress. This continuation is PROGRESS: revalidated worktrees/jobs, repaired
