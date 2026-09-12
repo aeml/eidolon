@@ -1,6 +1,6 @@
 # Alpha 1.0.65 — Wizard training and readable protection
 
-Status: scoped local candidate, not pushed or deployed. Based on release64
+Status: scoped candidate on its nonproduction branch, not deployed. Based on release64
 `6d5e82cb`; its production CI34668112188 remains active. Public63 is the last
 fully accepted release at this checkpoint. Do not promote65 ahead of64 acceptance.
 The full1.1–1.10 roadmap remains open.
@@ -74,3 +74,26 @@ native training plus dedicated Teleport/protection observations on this scope;
 normal complete predeploy, input, deployment and final live gates. Keep local
 native hardware free while64 needs it. Do not weaken gates or infer broader
 earned progression/all-talents correctness from the narrow tests above.
+
+## Hosted rehearsal queue correction
+
+Committed8139ab6d and pushed only`work/release65-wizard-training`. Manual
+CI34668784144 remained pending with no jobs because the workflow used the same
+global`pages` concurrency group for hosted rehearsals and production. This is
+distinct from runner labels: splitting native/soak runners alone cannot remove
+that workflow-level wait. GitHub documents that a shared group admits one active
+run and, by default, one pending run, so unrelated rehearsals could also replace
+a pending production release.
+
+Changed only the grouping: master/main **pushes** still use`pages`; other events
+use a workflow/ref-specific`ci-checks`group. Kept`cancel-in-progress:false`, every
+production-only job guard and post-deploy dependencies. No native, deploy or
+soak stage is enabled for a manual branch rehearsal. Source:
+[GitHub concurrency documentation](https://docs.github.com/en/actions/concepts/workflows-and-actions/concurrency).
+
+Regression RED1failed/3passed0.586s with the original group; GREEN4suites/
+263tests1.385s plus changed-file lint. Logs
+`/tmp/eidolon-release65-queue-{red,green,lint}-20260912.log`. Only the never-started
+own candidate rehearsal34668784144 was canceled for replacement on the corrected
+workflow; production34668112188 was left untouched. New hosted source/run and
+its terminal evidence must still be recorded before acceptance.
