@@ -100,7 +100,7 @@ export function getAbilityAoeRadius(className, canonicalSkillName, source = null
     const runeId = source?.skillRunes?.[runeSkill] || null;
     const runeRadius = runeId ? definition.runes?.[runeId] : null;
     const radius = Number.isFinite(runeRadius) ? runeRadius : definition.base;
-    if (className === 'Fighter' && ['Guardian Roar', 'Executioner Spin'].includes(canonicalSkillName)) return getAbilityAreaRadius(source, className, radius, canonicalSkillName);
+    if (className === 'Fighter' && ['Guardian Roar', 'Executioner Spin', 'Shattering Charge'].includes(canonicalSkillName)) return getAbilityAreaRadius(source, className, radius, canonicalSkillName);
     if (className === 'Cleric' && (SELF_CENTERED_SHAPE_ABILITIES.has(canonicalSkillName) || ['Radiant Strike', 'Healing Light'].includes(canonicalSkillName))) {
         return Number.isFinite(radius) && radius > 0 ? getAbilityAreaRadius(source, className, radius, canonicalSkillName) : null;
     }

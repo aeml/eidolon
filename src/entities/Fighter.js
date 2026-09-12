@@ -10,6 +10,7 @@ import { getExecutionerSpinDamage } from '../skills/executionerSpin.js';
 import { applyOfflineShieldSlam } from '../skills/offlineShieldSlam.js';
 import { getFighterEffectDuration } from '../skills/fighterEffectDuration.js';
 import { applyOfflineEarthshaker } from '../skills/offlineEarthshaker.js';
+import { beginOfflineShatteringCharge, advanceOfflineShatteringCharge } from '../skills/offlineShatteringCharge.js';
 
 const GUARDIAN_ROAR_FRIENDLY_ACTOR_TYPES = new Set([
     'Fighter',
@@ -46,7 +47,16 @@ export class Fighter extends Actor {
     }
 
     useAbility(targetVector, gameEngine, skillNameOverride = null) {
+        if (this.isCharging && this.isShatteringCharge && !this.isRemote) return false;
+        if (!this.isCharging && this.isShatteringCharge) {
+            // Scene recovery can clear the shared movement flag independently.
+            this.isShatteringCharge = false;
+            this.shatteringArmorDuration = 0;
+            this.shatteringInstanceId = null;
+        }
         const requestedSkill = skillNameOverride || this.abilityName;
+        if (requestedSkill === 'Shattering Charge' && (this.isRemote || !this.unlockedSkills.includes(requestedSkill) ||
+            ![targetVector?.x, targetVector?.z].every(Number.isFinite))) return false;
         if (requestedSkill === 'Executioner Spin') targetVector = this.position.clone();
         if (requestedSkill === 'Last Stand Rampage' && this.stats.hp / this.stats.maxHp >= 0.30) {
             gameEngine?.floatingTextManager?.spawn?.('HP too high!', this.position, '#888888');
@@ -311,29 +321,9 @@ export class Fighter extends Actor {
         }
 
         if (skill === "Shattering Charge") {
-            console.log("Fighter used Shattering Charge!");
-            // This modifies Charge, but instructions said "abilities arent allowed to modify charge only do things on their own".
-            // However, the skill name IS "Shattering Charge".
-            // If we follow "do things on their own", maybe it's a separate charge ability?
-            // Let's implement it as a separate charge that applies armor reduction.
-
-            this.isCharging = true;
-            this.state = 'ATTACKING';
-            this.chargeTarget = targetVector.clone();
-
-            // Mark this charge as Shattering
-            this.isShatteringCharge = true;
-
-            // Face target
-            const lookTarget = new THREE.Vector3(targetVector.x, this.position.y, targetVector.z);
-            if (this.mesh) {
-                this.mesh.lookAt(lookTarget);
-                this.rotation.copy(this.mesh.quaternion);
-            }
-
-            // Cooldown 12s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Shattering Charge"] = 12.0 * (1 - cdr);
+            // Base Actor already admitted and paid for the cast, including
+            // Technique cooldown reduction. Do not replace that cooldown.
+            beginOfflineShatteringCharge(this, targetVector, gameEngine);
             return;
         }
 
@@ -395,6 +385,8 @@ export class Fighter extends Actor {
         this.isCharging = false;
         this.isWhirlwinding = false;
         this.isShatteringCharge = false;
+        this.shatteringArmorDuration = 0;
+        this.shatteringInstanceId = null;
         // Iron Fortress is a buff, usually persists? Or cancel on death?
         // Actor.die() calls cancelAbilities.
         this.ironFortressTimer = 0;
@@ -484,6 +476,17 @@ export class Fighter extends Actor {
             return;
         }
 
+        if (this.isCharging && this.isShatteringCharge) {
+            // Recipient timers keep running during travel. ATTACKING and the
+            // cleared movement target prevent ordinary walking from competing.
+            super.update(dt, collisionManager);
+            if (this.stunTimer > 0) return;
+            if (this.isCharging && this.isShatteringCharge) {
+                advanceOfflineShatteringCharge(this, dt, this.gameEngine, isGuardianRoarFriendlyActor);
+            }
+            return;
+        }
+
         if (this.isCharging) {
             // Remote entities are moved by server updates, so we skip local physics simulation
             if (this.isRemote) {
@@ -534,16 +537,7 @@ export class Fighter extends Actor {
                             }
 
                             if (entity.takeDamage) {
-                                applyOfflineAbilityHit(this, entity, damage, this.isShatteringCharge ? 'Shattering Charge' : 'Charge', this.gameEngine?.floatingTextManager, '#ff0000');
-                            }
-
-                            // Shattering Charge Effect
-                            if (this.isShatteringCharge) {
-                                if (this.gameEngine && this.gameEngine.floatingTextManager) {
-                                    this.gameEngine.floatingTextManager.spawn("Armor Break!", entity.position, '#ffffff');
-                                }
-                                this.spawnVisualEffect(this.gameEngine, entity.position, 0xffffff, "impact");
-                                // entity.defense -= 5; // If defense existed
+                                applyOfflineAbilityHit(this, entity, damage, 'Charge', this.gameEngine?.floatingTextManager, '#ff0000');
                             }
                         }
                     }

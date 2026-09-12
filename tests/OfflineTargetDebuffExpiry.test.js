@@ -63,3 +63,29 @@ test.each([false, true])('root and healing penalty tick once per update, stunned
         expect(target.healingReductionTimer).toBe(0);
     } finally { target.dispose(); }
 });
+
+test.each([false, true])('ordinary cooldowns continue exactly once while stunned, multiplayer prediction=%s', multiplayer => {
+    const target = new Actor('cooldown-recipient', {});
+    try {
+        target.isMultiplayer = multiplayer;
+        target.stunTimer = 10; target.abilityCooldown = 1;
+        target.cooldowns = { Fireball: 1, Teleport: 3 };
+        target.update(.5, null, null, null);
+        expect(target.abilityCooldown).toBe(.5);
+        expect(target.cooldowns).toEqual({ Fireball: .5, Teleport: 2.5 });
+        target.update(1, null, null, null);
+        expect(target.abilityCooldown).toBe(0);
+        expect(target.cooldowns).toEqual({ Fireball: 0, Teleport: 1.5 });
+    } finally { target.dispose(); }
+});
+
+test('remote actors do not locally count down authoritative cooldowns', () => {
+    const target = new Actor('remote-cooldown-recipient', {});
+    try {
+        target.isRemote = true; target.stunTimer = 10;
+        target.abilityCooldown = 1; target.cooldowns = { Fireball: 1 };
+        target.update(.5, null, null, null);
+        expect(target.abilityCooldown).toBe(1);
+        expect(target.cooldowns.Fireball).toBe(1);
+    } finally { target.dispose(); }
+});

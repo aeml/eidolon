@@ -5,6 +5,12 @@ import { CONSTANTS } from '../core/Constants.js';
 export function getFighterAbilityDamage(source, skill, base) {
     const className = source?.meshType || source?.subType || source?.constructor?.name;
     if (className !== 'Fighter') return base;
+    return Math.floor(base * getFighterAbilityDamageMultiplier(source, skill) + 1e-9);
+}
+
+export function getFighterAbilityDamageMultiplier(source, skill) {
+    const className = source?.meshType || source?.subType || source?.constructor?.name;
+    if (className !== 'Fighter') return 1;
     let bonus = 0;
     for (const talent of CONSTANTS.PASSIVE_TALENTS.Fighter) {
         const effect = talent.abilityDamage;
@@ -17,5 +23,5 @@ export function getFighterAbilityDamage(source, skill, base) {
         }
         bonus += effect.damage * rank;
     }
-    return Math.floor(base * (1 + bonus) * (source.spellFocusActive ? 2.5 : 1) + 1e-9);
+    return (1 + bonus) * (source.spellFocusActive ? 2.5 : 1);
 }

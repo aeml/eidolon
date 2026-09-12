@@ -888,6 +888,10 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				}
 				impactX, impactZ := e.ChargeTargetX, e.ChargeTargetZ
 				instanceID, sourceID := e.InstanceID, e.ID
+				impactRadius := 16.0
+				if impactSkill == "Shattering Charge" {
+					impactRadius = effectiveAbilityAreaRadius(e, impactSkill, impactRadius)
+				}
 				consumeKnockdownCombo := e.ActiveCombo == "charge_extended_knockdown"
 				chargeCombat := snapshotCombatAttackerLocked(e)
 				chargeCombat.PartyID = e.PartyID
@@ -897,7 +901,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 				e.Mu.Unlock() // Unlock before interaction
 
-				nearby := w.Grid.Nearby(impactX, impactZ, expandedAbilityRadius(impactSkill, 16.0), instanceID)
+				walkRects := w.dungeonWalkRectsSnapshot(instanceID)
+				nearby := w.Grid.Nearby(impactX, impactZ, expandedAbilityRadius(impactSkill, impactRadius), instanceID)
 
 				for _, target := range nearby {
 					target.Mu.RLock()
@@ -905,11 +910,13 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						target.Mu.RUnlock()
 						continue
 					}
+					reachable := withinDungeonAbilityRadius(walkRects, impactSkill, impactX, impactZ, target, impactRadius)
 					target.Mu.RUnlock()
 
-					if withinAbilityRadius(impactSkill, impactX, impactZ, target, 16.0) {
+					if reachable {
 						target.Mu.Lock()
-						if !w.CanDamage(chargeCombat, target) || target.State == "DEAD" || target.InstanceID != instanceID {
+						if !w.CanDamage(chargeCombat, target) || target.State == "DEAD" || target.InstanceID != instanceID ||
+							!withinDungeonAbilityRadius(walkRects, impactSkill, impactX, impactZ, target, impactRadius) {
 							target.Mu.Unlock()
 							continue
 						}
@@ -950,7 +957,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					shockwaveNearby := w.Grid.Nearby(impactX, impactZ, expandedAbilityRadius("Charge Shockwave", shockwaveRadius), instanceID)
 					for _, target := range shockwaveNearby {
 						target.Mu.RLock()
-						if !w.CanDamage(chargeCombat, target) || target.State == "DEAD" {
+						if !w.CanDamage(chargeCombat, target) || target.State == "DEAD" ||
+							!withinDungeonAbilityRadius(walkRects, "Charge Shockwave", impactX, impactZ, target, shockwaveRadius) {
 							target.Mu.RUnlock()
 							continue
 						}
@@ -966,7 +974,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							knockDz = (knockDz / knockDist) * knockbackDist
 
 							target.Mu.Lock()
-							if target.CCImmune || target.IronFortressImmovable {
+							if target.CCImmune || target.IronFortressImmovable || target.InstanceID != instanceID ||
+								!withinDungeonAbilityRadius(walkRects, "Charge Shockwave", impactX, impactZ, target, shockwaveRadius) {
 								target.Mu.Unlock()
 								continue
 							}

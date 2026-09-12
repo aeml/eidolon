@@ -1101,6 +1101,15 @@ export class Actor extends Entity {
             this.swiftBuffTimer -= dt;
         }
 
+        // Cooldown time also continues during stun. Remote presentation does
+        // not own cooldown prediction; preserve its server-owned values.
+        if (!this.isRemote) {
+            if (this.abilityCooldown > 0) this.abilityCooldown = Math.max(0, this.abilityCooldown - dt);
+            for (const skill in this.cooldowns) {
+                if (this.cooldowns[skill] > 0) this.cooldowns[skill] = Math.max(0, this.cooldowns[skill] - dt);
+            }
+        }
+
         // Stun suppresses actions, not elapsed buff or debuff lifetimes.
         // Keep this after recipient timers so existing buffs cannot be extended
         // by crowd control, and never run those timers twice in one update.
@@ -1265,19 +1274,6 @@ export class Actor extends Entity {
             return;
         }
         
-        // Cooldowns
-        if (this.abilityCooldown > 0) {
-            this.abilityCooldown -= dt;
-        }
-
-        // Update per-skill cooldowns
-        for (const skill in this.cooldowns) {
-            if (this.cooldowns[skill] > 0) {
-                this.cooldowns[skill] -= dt;
-                if (this.cooldowns[skill] < 0) this.cooldowns[skill] = 0;
-            }
-        }
-
         // Regeneration Logic (1 second tick)
         if (this.state !== 'DEAD' && this.stats.hp > 0 && !this.isMultiplayer && !this.isRemote) {
             this.regenTimer += dt;
