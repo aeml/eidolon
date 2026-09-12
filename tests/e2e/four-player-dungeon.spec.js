@@ -294,7 +294,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             }
             const auraSpacing = partyAuraFollowSpacing(states[1], hurt, { ...available, allowMovement });
             if (auraSpacing !== null) {
-                await record('maintain-active-aura');
+                await record(available.auraActive ? 'maintain-active-aura' : 'approach-ready-aura');
                 await follow(healer, hurt, auraSpacing);
                 return;
             }
@@ -335,7 +335,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 const target = { x: enemy.position.x, z: enemy.position.z, range: g.getBasicAttackRangeForEntity(enemy) };
                 const healing = { x: healer.position.x, z: healer.position.z, range: support.range };
                 const bodies = [...g.remotePlayers.values()].filter(live)
-                    .map(other => ({ x: other.position.x, z: other.position.z, radius: other.radius || 1.25 }));
+                    .map(other => ({ id: other.id, state: other.state, x: other.position.x, z: other.position.z, radius: other.radius || 1.25 }));
                 const step = planPartyRangedSpacing(origin, target, healing, delta =>
                     retreatStaysInEncounter(encounter, { x: origin.x + delta.dx, z: origin.z + delta.dz }, origin.radius) &&
                     isEarnedRetreatPathClear(g.collisionManager, p.position, origin.radius, { x: delta.dx, z: delta.dz }), bodies);

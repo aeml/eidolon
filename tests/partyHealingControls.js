@@ -23,10 +23,14 @@ export function selectPartyHealTarget(states, healer, range, { allowApproach = t
     return reachable || injured[0] || null;
 }
 
-// Spend direct-heal cooldown time maintaining the already-active aura. This
-// plans normal follow input only; ready heals and telegraph safety come first.
-export function partyAuraFollowSpacing(healer, target, { allowMovement, cooldown, auraActive, auraRadius }) {
-    if (!allowMovement || !auraActive || !Number.isFinite(cooldown) || cooldown < 1 ||
+// Spend direct-heal cooldown time maintaining an active aura or approaching
+// for an affordable ready aura. Reserve40mana for the aura plus25 for the next
+// direct heal; ready heals and telegraph safety still come first.
+export function partyAuraFollowSpacing(healer, target, { allowMovement, cooldown, auraActive, auraRadius,
+    aura = -1, auraCooldown = Infinity, mana = 0 }) {
+    const auraReady = Number.isInteger(aura) && aura >= 0 && Number.isFinite(auraCooldown) && auraCooldown <= 0 &&
+        Number.isFinite(mana) && mana >= 65;
+    if (!allowMovement || (!auraActive && !auraReady) || !Number.isFinite(cooldown) || cooldown < 1 ||
         !Number.isFinite(auraRadius) || auraRadius <= 3 || healer?.dead || target?.dead ||
         healer?.instance !== target?.instance || healer?.hp <= 0 || target?.hp <= 0 ||
         ![healer?.hp, target?.hp, healer?.x, healer?.z, target?.x, target?.z].every(Number.isFinite)) return null;

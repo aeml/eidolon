@@ -64,6 +64,15 @@ test.each([-1, NaN, Infinity])('invalid range fails explicitly: %s', range => {
 });
 
 const activeAura = { allowMovement: true, cooldown: 2.6367, auraActive: true, auraRadius: 10 };
+test('recorded idle aura cooldown gap approaches for an affordable aura while reserving a direct heal', () => {
+    const readyAura = { ...activeAura, cooldown: 2.8867, auraActive: false, aura: 1, auraCooldown: 0, mana: 102 };
+    const tank = member('tank', 493, 13.736243);
+    expect(partyAuraFollowSpacing(healer, tank, readyAura)).toBe(7);
+    for (const override of [{ aura: -1 }, { auraCooldown: 1 }, { mana: 64 }, { mana: NaN },
+        { allowMovement: false }, { cooldown: .5 }]) {
+        expect(partyAuraFollowSpacing(healer, tank, { ...readyAura, ...override })).toBeNull();
+    }
+});
 test('recorded Warden cooldown gap moves the healer back inside the active aura', () => {
     const tank = member('tank', 322, 11.558409295);
     expect(partyAuraFollowSpacing(healer, tank, activeAura)).toBe(7);

@@ -49,3 +49,29 @@ positions before/after even when movement throws. Previous records captured only
 successful attempts. Thresholds,1500ms timeout, no-alternate-path setting and
 fatal issued-input behavior are unchanged. A disconnected page cannot replace
 the original movement error with a diagnostic error. Actual replay remains due.
+
+## Diagnostic replay and ready-aura positioning
+
+23513 onbfca8314 FAILED7.7m, seed4063816672232710614/gen2/attempt0/no fallback.
+The route reached and fought the Warden; Fighter died with boss last2606HP.
+At death the healer was12.5143units away with60mana,17HealingLight casts,
+5GuardianEmbrace casts and3972boss ally healing. A real heal at Fighter132HP
+raised him to313; repeated ordinary182hits while the direct heal cooled down
+then killed him. Mana was still available; this is not a proven targeting or
+resource-exhaustion failure. The earlier blocked movement did not reproduce.
+Archive `/tmp/eidolon-party-spacing-diagnostic-failure-hy0s1A`; native log
+`/tmp/eidolon-party-spacing-diagnostic-native-20260912.log`; scan0 and exactowned
+container/image/ports clear before Blade Storm native began.
+
+The trace also records an idle ready aura,102mana,2.8867s direct-heal cooldown,
+Fighter493HP at13.7362units: the planner would approach only for an already
+active aura, so this ready aura could never become useful from that position.
+New test reproduced the missed planning opportunity (1failed/35passed). During
+direct-heal cooldown only, the healer may now approach for an unlocked, ready,
+affordable aura, reserving40+25mana. Existing ready-heal, warning, same-instance,
+health, collision and active-aura checks remain. It does not grant healing or
+change stats/armor/enemies/regen. Actual new positioning must still prove useful
+and safe in combat; this is not the full explanation or encounter acceptance.
+Two focused suites49testsPASS0.758s plus changed-file lint/diff. Before-body
+diagnostics now include IDs/state as well as coordinates, matching after-bodies.
+Logs `/tmp/eidolon-party-ready-aura-{red,tests,lint}-20260912.log`.
