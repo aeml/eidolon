@@ -5,7 +5,85 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 20:20 UTC
+## Current checkpoint — September 12, 20:37 UTC
+
+Previous goal turn PROGRESS; this turn also PROGRESS: accepted/integrated health
+normalization, obtained actual Tripwire damage/root/save proof, repaired physical
+entrance-inspection QA, and implemented a measured Verdant boss-budget candidate.
+Full1.1.0–1.10.0 objective ACTIVE. No version/deployment/soak change. NEVER PUSH ROOT.
+
+- **Health CI34716297331 SUCCESS**, including all3browser shards. Accepted
+  candidate docs aab03453, runtime2162b442. Primary clean **c9e922be** merges it
+  after Serrated. Actual equip/unequip/re-equip/copy regressions and full CI
+  support this bounded server fix; no new UI behavior. The four-class native
+  resource/reconnect/death matrix remains a broader milestone gate, not passed
+  by implication. Retain earlier local full90222 exit143/incomplete evidence.
+- Integrated clean/dev-pushed **719df4de** now includes accepted primary
+  Serrated + health. **CI34717404204 ACTIVE**: client passed, server pending at
+  last check. Full combined regression required; manual deploy/native skips
+  never count as production proof.
+- Party39948 TERMINAL FAILED7.8m on d985fa89. Seed-5075659787700787075,
+  gen2/attempt0/no fallback. Entry/trash/one four-player town recovery/reentry,
+ 38steps/two room traversals observed; Warden lasted226.5s before Fighter died,
+  last boss1465/15000HP. F early escapes14 (previous Low1, DIFFERENT SEED),
+  Cleric16Light8Embrace4199whole-run healing/3665boss-only; healer12mana at death.
+  Final two ordinary hits183 at7.38/7.43range50/54FPS, fatal warning183 at11.48
+  distance47ms late. Final dodge release602ms, movement853ms, dead/unsafe253ms
+  after impact. Archive `/tmp/eidolon-party-health-failure-P7Dabk`, scan0/exact
+  cleanup. Outcome doc committed6f00e00d on party branch. No clear/credit/handoff.
+- **Verdant balance candidate832ff72e**, clean/dev-pushed work/1-1-verdant-
+  expedition-budget at `/tmp/eidolon-1-1-verdant-expedition-budget-20260912`.
+  Based on party d985fa89 plus accepted primary b115e307 (NOT later health).
+  Announced design judgment: four Verdant bosses have40% less health after
+  repeated four-role mana exhaustion; preserve damage, mechanics, depth and
+  difficulty ratios. Normal30 HP9000/10080/11250/13050, other families/raids/
+  Dark Realm/trash/players/rewards/regen unchanged. Provisional budget, not
+  proof of impossible old combat or accepted new balance. Full clear and
+  reward-per-minute revalidation remain required. Doc/draft notes included.
+  RED old profiles reproduced; focused server race27.169s PASS, client6/64/
+  1.504s PASS, full ESLint/prepare/diff pass. Logs
+  `/tmp/eidolon-verdant-budget-*-20260912.log`.
+  **CI34717311804 ACTIVE** (client passed, server pending last check).
+  **98186 ACTIVE — SOLE NATIVE GPU**, freeze balance worktree832ff72e. Route
+  **party-dungeon**, runIDverdantbudget0912, API18185/Mongo18186/web41875, Low.
+  Log `/tmp/eidolon-verdant-budget-native-20260912.log`. Four-role entry, trash
+  and one town recovery/reentry observed; still running, no first-boss/full clear.
+- Tripwire64049 on9048c71a FAILED9.3s AFTER normal approach and paid placement.
+  Snapshot damage0 vs expected139 was a TEST contract error: optimized
+  `copyEntity` intentionally omits projectile damage; live trigger owns actual
+  damage. Observer/test now checks delivered identity/position plus real hit
+  damage, not omitted internal fields. RED2cases then3/13 PASS0.863s+lint.
+  Archive `/tmp/eidolon-tripwire-wire-contract-failure-giMuZZ`, scan0/cleanup.
+- **Tripwire43530 on6220f557 PASS1.1m/zero retries**: actual25mana each;
+  rank0/1/5 hits139/144/166, saved5 critical332; actual mesh, target root/natural
+  expiry, single trigger, High/Low and saved ranks. Screenshot inspected. Log
+  `placed` means calculated expected base, not replicated internal damage.
+  Archive `/tmp/eidolon-tripwire-hit-pass-RZmpcM`, scan0/exact cleanup verified.
+  No broad integration yet: collateral arrival consumers need verification.
+- Entrance/shield61208 on b5a75372 FAILED49.9s: paid baseline/trained/saved
+  Shield/expiry passed, cutaway expectation failed at CLEAR new forecourt.
+  Old test relied on being inside the building. Archive
+  `/tmp/eidolon-forecourt-visibility-failure-J3lHQ7`, scan0/cleanup, then98186
+  started. New **844c69c1** clean/dev-pushed Tripwire tree uses actual joystick
+  walking on six outside50unit-radius chords to a genuinely occluded far-side
+  position, checks specific Verdant opacity + real rays/outside collider, then
+  walks back to restore opacity. Subsequent shield approach uses real phone
+  joystick + complete clear-path selection instead of desktop movement helper.
+  Real geometry/collision/ray tests and supporting suites5/28 PASS3.594s+lint.
+  New native **entrance-visibility** replay queued AFTER98186 terminal/archive/
+  cleanup. Also retain affected talent-status/prepared-support route validation.
+  **CI34716757122 ACTIVE** on runtime9048c71a: server/client/shard3passed,
+  shards1/2running at20:37. Later changes are tests/docs; not yet full acceptance.
+
+Next: poll98186 and the three identified CIs. Do not overlap native GPU or edit
+the balance worktree while it runs. Record actual party outcome; then replay
+844c69c1 entrance-visibility and remaining affected consumers before integrating
+Tripwire. Integrate/release candidates only with appropriate completed evidence.
+First-hour earned progression, complete party clear/credit/Water handoff, all
+dungeon seeds/families/death/reconnects and later1.2–1.10 (including casino) stay
+open. Last public evidence remains1.0.65/f9eb; no fresh live check this turn.
+
+## Historical checkpoint — September 12, 20:20 UTC
 
 The brief version-confirmation turn was no implementation progress. This
 continuation revalidated actual handles/source and made PROGRESS: accepted and
