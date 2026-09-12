@@ -20,7 +20,6 @@ test('saved-rune rehearsal repeats the same animation characters twice without r
     expect(script).toContain('animations)\n    run_animation_classes');
     expect(script.split('\n  all)')[1].split('\n    ;;')[0]).not.toContain('--repeat-each');
 });
-
 test('Teleport and Phase have a two-client no-retry route in the complete native gate', () => {
     const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
     expect(script).toContain('qa_allowlist+=",${QA_USERNAME_BASE}-teleport-protection,${QA_USERNAME_BASE}-teleport-protection-observer"');

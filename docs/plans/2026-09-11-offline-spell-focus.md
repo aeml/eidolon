@@ -54,6 +54,12 @@ Native four-role run93038 has ended with a waypoint-observation failure; its
 correction and archived evidence are in2026-09-11-party-waypoint-arrival.md. A
 new full party route still needs to pass. No native or production acceptance of
 Spell Focus is implied by this unit regression.
+
+### Historical published-branch annotation
+
+Full client regression remains queued behind the live isolated four-role browser
+run93038. No server source changed; no new whole-project, native or production
+acceptance is implied. Keep this branch separate until that verification is done.
 The broader160-talent audit remains open, including non-damaging utility skills'
 placeholder damage Masteries and other missing consumers.
 

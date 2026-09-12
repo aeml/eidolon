@@ -180,7 +180,7 @@ capture_isolated_service_failure() {
 docker build \
   --build-arg GO_VERSION=1.24.5 \
   --build-arg "BUILD_COMMIT=${qa_build_commit}" \
-  --build-arg "BUILD_VERSION=Alpha 1.0.62" \
+  --build-arg "BUILD_VERSION=Alpha 1.0.65" \
   --tag "${SERVER_IMAGE}" server >/dev/null
 image_created=true
 
@@ -502,7 +502,6 @@ run_tripwire() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-tripwire" EIDOLON_E2E_CLASS=Rogue \
     EIDOLON_E2E_TRIPWIRE=1 npx playwright test --retries=0 tests/e2e/tripwire-gameplay.spec.js
 }
-
 run_whip_shape() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-whip" EIDOLON_E2E_CLASS=Wizard \
     npx playwright test tests/e2e/flame-whip-gameplay.spec.js

@@ -1,5 +1,10 @@
 # Teleport Warp presentation — unreleased
 
+> Release65 provenance: this imported investigation records the original
+> development branch, not acceptance of the scoped release integration. Original
+> hashes, broader campaign/raid behavior and native results are historical. See
+> [release65 scope and gates](2026-09-12-release65-wizard-training.md) for current
+> integration evidence and remaining publication requirements.
 Based on the offline charge candidate f15e445a in
 `/tmp/eidolon-teleport-visuals-20260911` (`work/teleport-warp-visuals`).
 This does not change the frozen Alpha 1.0.63 deployment source.

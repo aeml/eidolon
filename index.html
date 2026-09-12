@@ -344,7 +344,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.62</span>
+                <span class="start-version-row__label">Alpha 1.0.65</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -672,6 +672,42 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.65">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.65 (training that shapes your magic)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>A stronger Focus charge:</strong> Spell Focus Mastery improves the stored next-damage-spell multiplier. Utility casts preserve that charge, and the displayed bonus agrees with the server.</li>
+                        <li><strong>Time Warp Mastery lasts longer:</strong> Each rank extends this support spell's duration instead of promising damage it never deals. Duration training and the equipped set continue to work together.</li>
+                        <li><strong>Teleport obeys the battlefield:</strong> Warp bursts use trained damage and area, respect dungeon walls, and show their departure and arrival boundaries. Offline Teleport uses the canonical landing height, Phase immunity and Temporal Weave recharge rules.</li>
+                        <li><strong>Protection you can read:</strong> A timed Protected status and light orbital effect show temporary immunity without enclosing the character in a glowing box. The effect clears on expiry, death and respawn.</li>
+                        <li><strong>Consistent offline spell training:</strong> Wizard damage spells use their own Mastery and base damage profiles. Focus is captured once for the next damage spell; stun does not prolong Phase or pause Teleport recharge.</li>
+                        <li><strong>The same progression:</strong> Quest rewards, manual turn-ins, town recovery and Well Rested remain unchanged. This update does not declare the full dungeon or balance pass complete.</li>
+                        <li><strong>Independent rehearsal checks:</strong> Non-deploying branch checks no longer wait behind the production release queue. Production releases remain serialized and retain their native-browser acceptance checks.</li>
+                        <li><strong>A cleaner phone status panel:</strong> The reading surface is now opaque, so buttons and bright effects behind it do not show through descriptions. Its compact size and reachable combat controls are unchanged.</li>
+                    </ul>
+                </div>
+
+                <div class="patch-note-entry" data-version="1.0.64">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.64 (defenses you can depend on)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Protection across combat:</strong> Direct abilities, projectiles, lingering areas, summons, poison and bleeding now respect receiving defenses, including Arcane Shield, Sanctuary and temporary invulnerability. Basic attacks apply outgoing damage bonuses before those defenses.</li>
+                        <li><strong>Shields end cleanly:</strong> Expired shields cannot absorb or retaliate between updates. Reflective shields strike the actual attacker, and depletion cannot clear a newly recast shield.</li>
+                        <li><strong>Explosions respect the battlefield:</strong> Explosive Arcane Shields respect dungeon walls, party protection and valid PvP opponents. Their blasts observe defensive effects and PvP limits, including when another shield explodes in response. Equipment's on-kill explosions also respect walls and their circular reach, retain enemy-only targeting, and generate threat from the damage dealt.</li>
+                        <li><strong>Consistent wounds:</strong> Poison and bleed budgets apply their outgoing bonuses and PvP limits once per recipient. Raw wounds honor critical training and equipment effects; wounds inherited from an earlier hit do not apply those bonuses again.</li>
+                        <li><strong>Progression stays familiar:</strong> Existing quest rewards, manual turn-ins, town recovery and Well Rested are unchanged. The wider dungeon and progression acceptance work continues.</li>
+                    </ul>
+                </div>
+
+                <div class="patch-note-entry" data-version="1.0.63">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.63 (a clearer spell of support)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Time Warp reaches its trained area:</strong> Area talents now extend the allies reached by Time Warp. The caster-centered effect agrees with that reach for the caster and other players at both graphics quality settings.</li>
+                        <li><strong>Consistent offline haste:</strong> Time Warp uses its trained duration and cooldown, updates movement and attack speed correctly, and removes its bonuses when it expires—even while stunned. Its six-piece set effect retains its zone-wide reach.</li>
+                        <li><strong>A dependable Spell Focus charge:</strong> Offline Spell Focus respects duration and cooldown training, survives utility casts such as Teleport, correctly empowers the next Fireball, and expires normally. Locked or rejected casts do not spend the charge.</li>
+                        <li><strong>Build menus recover from rejection:</strong> Talent, specialization and rune controls no longer stay stuck waiting when the server rejects a change. A rejected purchase does not spend points or retry itself.</li>
+                        <li><strong>Clearer release evidence:</strong> Live animation checks retain separate reports for each class and multiplayer stage.</li>
+                    </ul>
+                </div>
+
                 <div class="patch-note-entry" data-version="1.0.62">
                     <h3 class="patch-note-entry__title">Alpha 1.0.62 (adventure together)</h3>
                     <ul class="patch-note-entry__list">

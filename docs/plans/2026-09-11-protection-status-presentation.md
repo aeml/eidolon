@@ -1,5 +1,10 @@
 # Shared protection status — unreleased
 
+> Release65 provenance: this imported investigation records the original
+> development branch, not acceptance of the scoped release integration. Original
+> hashes, broader campaign/raid behavior and native results are historical. See
+> [release65 scope and gates](2026-09-12-release65-wizard-training.md) for current
+> integration evidence and remaining publication requirements.
 Based on full-regression-accepted ae938843 in
 `/tmp/eidolon-protection-status-20260911` (`work/protection-status`).
 

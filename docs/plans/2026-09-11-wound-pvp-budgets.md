@@ -1,5 +1,11 @@
 # Wound application budgets and spreading
 
+> Historical development evidence, imported with the receiving-defense changes.
+> This document's source hashes and phase-cap results describe that development
+> branch, not the narrower release64 build. See
+> [release64 scope and gates](2026-09-12-release64-receiving-defenses.md) for the
+> current candidate: existing release63 campaign/economy and Dark King behavior
+> are retained; the separate phase-cap change remains pending.
 Unreleased follow-up to9446887c explosive defenses; part of the still-open1.1
 combat gate. This patch does not finish all status talents or full1.1–1.10.
 

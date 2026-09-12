@@ -31,6 +31,11 @@ not a redesign of saved talents or Time Warp's underlying support policy.
   `TestPlayerBasicAttackCadence|TestRecipient` prefix filter). Session 52853 is
   terminal exit zero. This is focused coverage, not the full Go suite.
 
+### Historical published-branch annotation
+
+  other-instance recipients. Broader focused race run is recorded separately
+  after terminal completion.
+
 Logs: `/tmp/eidolon-time-warp-area-{client-red,client-green,client-focused,server-red,server-green,server-focused,lint}.log`.
 
 Full client/server regression and a native trained Time Warp boundary test still

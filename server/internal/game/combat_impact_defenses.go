@@ -28,7 +28,6 @@ func defensiveBuffIncomingDamageLocked(target *Entity, damage int, now time.Time
 	}
 	return damage
 }
-
 // Timer cleanup and impact resolution share the same boundary. An expired or
 // malformed shield cannot absorb between updates, reflect, or detonate history.
 // Caller holds the receiver lock. All real shield casts provide an expiry.

@@ -202,6 +202,15 @@ func TestTalentHealingSpiritSetBonus(t *testing.T) {
 				ally.Health = 100
 				ally.X = 1
 				w.AddEntity(ally)
+				healed := 0
+				w.OnEvent = func(kind string, value interface{}) {
+					if kind == "heal" {
+						event := value.(HealEvent)
+						if event.TargetID == ally.ID {
+							healed += event.Amount
+						}
+					}
+				}
 				if hostile {
 					if err := w.SetOpenWorldPvP(p.ID, true); err != nil {
 						t.Fatal(err)
@@ -228,6 +237,13 @@ func TestTalentHealingSpiritSetBonus(t *testing.T) {
 				}
 				if ally.Health != 100+want {
 					t.Fatalf("spirit healed %d; want %d", ally.Health-100, want)
+				}
+				wantHealing := 15
+				if hostile {
+					wantHealing = 0
+				}
+				if healed != wantHealing {
+					t.Fatalf("spirit heal events=%d want=%d; damage must not conceal healing a hostile player", healed, wantHealing)
 				}
 			})
 		}

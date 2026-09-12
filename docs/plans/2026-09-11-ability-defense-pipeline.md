@@ -11,6 +11,15 @@ not cover later periodic-defense edits, native feedback, saved builds or
 completed balance. The client has not changed since the accepted Fighter
 runtime825f9b0c full client/lint run; no new client acceptance is claimed here.
 
+### Historical published-branch annotation
+
+> Historical development evidence, imported with the receiving-defense changes.
+> This document's source hashes and phase-cap results describe that development
+> branch, not the narrower release64 build. See
+> [release64 scope and gates](2026-09-12-release64-receiving-defenses.md) for the
+> current candidate: existing release63 campaign/economy and Dark King behavior
+> are retained; the separate phase-cap change remains pending.
+
 ## Projectile/zone migration — focused acceptance
 
 Projectile updates now own a fresh world-unlocked context and flush after all

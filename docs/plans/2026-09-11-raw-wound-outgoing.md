@@ -1,5 +1,11 @@
 # Raw wound outgoing modifiers
 
+> Historical development evidence, imported with the receiving-defense changes.
+> This document's source hashes and phase-cap results describe that development
+> branch, not the narrower release64 build. See
+> [release64 scope and gates](2026-09-12-release64-receiving-defenses.md) for the
+> current candidate: existing release63 campaign/economy and Dark King behavior
+> are retained; the separate phase-cap change remains pending.
 Unpublished follow-up on the full roadmap integration53127f25. This is not
 part of the already-pushed Alpha1.0.62 release and does not close the entire
 talent, combat, four-player dungeon or1.1–1.10 scope.

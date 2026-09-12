@@ -1,5 +1,10 @@
 # Wizard named damage and offline base parity — unreleased
 
+> Release65 provenance: this imported investigation records the original
+> development branch, not acceptance of the scoped release integration. Original
+> hashes, broader campaign/raid behavior and native results are historical. See
+> [release65 scope and gates](2026-09-12-release65-wizard-training.md) for current
+> integration evidence and remaining publication requirements.
 Based on Time Warp Mastery3a003536, not yet merged into primary97cd447b.
 The nine damaging Wizard Masteries were calculated on the server but absent
 from offline damage. The repaired paid-cast path snapshots the named multiplier
