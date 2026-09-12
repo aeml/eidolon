@@ -1,4 +1,33 @@
-# Focus native verification — staged, not yet executed
+# Focus native verification — prepared functional route passed
+
+## Native result, September12
+
+Run60183 on cleanef70be8b passed in53.4s (54.5s total) with System Chrome.
+Normal phone purchases reached five ranks; High untrained2.5 and Low trained3.0
+showed actual glyphs on both clients, correct owner bonus text and natural
+expiry. A fresh desktop context loaded the paid ranks. Real hovered Scorch Beam
+dealt789 focused damage and263 on the following unboosted cast; both clients
+reported identical values and cleared the single charge after consumption.
+No forced hits, targets, ranks or server-rule changes were used.
+
+The first native64892 failed after its successful visual/expiry/save checks:
+Scorch Beam followed Focus inside the server's ordinary500ms global cooldown.
+The rejection preserved the charge. Its screenshot and receipt were inspected;
+the test now waits600ms after accepted Focus, then acquires the moving target.
+No cooldown reset between Focus and its damaging spell, blanket retry, relaxed
+damage assertion or runtime change is included.
+
+Both artifact credential scans passed with zero sanitizations; both disposable
+service sets were removed. First-run archive:
+`/tmp/eidolon-focus-native-first-1lgZnu`; accepted archive:
+`/tmp/eidolon-focus-native-accepted-hxnpA8`.
+Logs `/tmp/eidolon-focus-native-20260912.log` and
+`/tmp/eidolon-focus-native-cadence-20260912.log`. Retained High phone and Low
+observer screenshots were visually inspected from the first run's passing
+visual stages. This is prepared functional acceptance, not earned progression,
+balance, physical-device acceptance or publication.
+
+## Original setup checkpoint (historical)
 
 The new `focus-mastery` isolated route prepares only its allowlisted Wizard
 and observing Fighter. It joins the full timed QA chain immediately after
@@ -17,7 +46,7 @@ The authored System Chrome test covers:
   clients; charge removal and a subsequent unboosted spell against a real enemy.
 - Failure screenshots/receipts, browser failures and normal disposable cleanup.
 
-`/level100`, `/qa-animation-ready` and the existing encounter waypoint are
+`/level 100`, `/qa-animation-ready` and the existing encounter waypoint are
 bounded functional preparation, not proof of earned progression or balance.
 The test never grants talent ranks, creates targets, injects attacks, forces
 hits or changes the server's damage/resource rules. Its native result is still
