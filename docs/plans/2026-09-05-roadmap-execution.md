@@ -7,6 +7,13 @@ the whole goal. Started September 5, 2026.
 
 ## Current checkpoint — September 12, 23:33 UTC
 
+**Subsequent user direction:** prioritize implementing ALL features over repeated
+exhaustive testing at each version. The roadmap's new feature-first policy
+supersedes older exhaustive per-milestone acceptance requirements. Keep targeted
+checks and essential deployment/data-safety checks; defer broad matrices/soaks
+to final full-feature stabilization. No more routine full CI per small fix or
+QA overengineering. Preserve existing evidence, scope and milestone patch notes.
+
 Previous user-facing confirmation only rechecked already accepted gear evidence
 (NO PROGRESS toward remaining scope). This continuation PROGRESS: implemented
 and race-tested the isolated Cleric server consumer, accepted/merged the verified
