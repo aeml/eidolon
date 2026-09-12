@@ -5,7 +5,100 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 11:46 UTC
+## Current checkpoint — September 12, 12:11 UTC
+
+The previous conversational turn confirmed version naming only; this goal
+continuation is PROGRESS. Revalidated actual sessions/CI, integrated the fully
+verified fence change, corrected the Smoke Bomb CI fixture, and started the
+receipt-instrumented four-player run. Full1.1.0–1.10.0 scope remains active.
+No production deployment/version bump/root push or soak changes.
+
+- **Fence CI34691877282 TERMINAL SUCCESS**, exactaeb0356e. Actual downloaded
+  logs prove394suites6248client tests98.234s, game86.9%97.331s/race343.301s;
+  browser40+53+26=119PASS, including town-fence-render. Native/deploy/live
+  jobs SKIPPED. Logs `/tmp/eidolon-town-fence-ci-{client,server,browser1,browser2,browser3}-34691877282.log`.
+  Clean primary `/tmp/eidolon-primary-merged-20260911` and integrated
+  `/tmp/eidolon-1-1-integrated-regression-20260912` fast-forwarded ea772f90→
+  **aeb0356e2681c5c22543c6ed0bf788019505921d**. Acceptance is scoped, not1.1release.
+- Fence native40144 TERMINAL PASS on30783498, actual System Chrome:
+  **737→27drawcalls, zero differing pixels,26meshes**;3.5stest/7.0stotal.
+  Old/new PNG hash identical; main agent inspected image. Archive
+  `/tmp/eidolon-town-fence-native-pass-OmwalT`, original
+  `/tmp/eidolon-town-fence-native-20260912.log`.
+  Native6859 Wizard repeat matrix TERMINAL PASS, same30783498,
+  fenceframe09121155; two sessions, zero retries,1.9m total. Unchanged650ms
+  moving-cast samples31/28frames, mean update4.1097/5.7857ms,
+  render15.4742/16.0036ms, maxdraw1699/1743 vs baseline2677/2633.
+  Scheduling/load are not controlled identically: no universal FPS or intermittent
+  frame-stall closure claimed. JSON metrics inspected. Archive
+  `/tmp/eidolon-fence-frame-pass-MgTAsz`, log
+  `/tmp/eidolon-fence-frame-native-20260912.log`. Credential scans passed;
+  owned temporary services cleared before the subsequent Rogue run.
+- Independent talent inspection found fixed5 Smoke Bomb radius ignored Fine
+  MotorROG_34 after the accepted seven-function overlay audit passed7.062s.
+  Audit log `/tmp/eidolon-accepted-talent-audit-20260912.log`; NOTall160 signoff.
+  `/tmp/eidolon-1-1-smoke-bomb-area-20260912`, branch
+  `work/1-1-smoke-bomb-area`, runtime1931575a applies actual area training
+  server/offline, accepted self-centered shape, planar body/LOS/target exclusions,
+  and removes duplicate legacy visual. No cost/strength/duration rebalance.
+  Rank0/1/5 radii5/5.15/5.75; paid purchased server edge tests/race5.592s,
+  expanded8client suites194PASS2.222s; lint/assets/diffPASS. Logs and detailed
+  fixture-red correction recorded in candidate Smoke Bomb plan.
+- Smoke native52705 now **TERMINAL PASS**, exact1931575a,
+  smokerogue09121200: real-input Rogue ability/rune matrix twice,59.9s+1.0m,
+ 2.1m total/zero retries. CredentialscanPASS; ports/services cleared. Archive
+  `/tmp/eidolon-smoke-area-native-pass-Ewt8KH`, original
+  `/tmp/eidolon-smoke-area-native-20260912.log`. Baseline compatibility only,
+  not trained-purchase persistence acceptance.
+- Smoke CI34692398507 TERMINAL FAILURE: serverPASS86.9%98.861s/race315.287s,
+  client1fail/6261pass. Actual failure was shared JuggernautTraining fixture:
+  every newly enumerated non-Fighter/non-Time-Warp ability was cast as Cleric,
+  so Smoke Bomb had no valid visual. Fixture now resolves exactly one real
+  class from the presentation manifest, retaining elevation/boundary assertions.
+  Three suites44PASS1.409s; lint/diffPASS. Clean/dev-pushed tip
+  **4b54d89486335809d31651fff34efef0c6a06fac**. Corrected manual
+  **CI34692752460 ACTIVE**: client103551032601PASS394suites6262tests129.444s;
+  server103551032759ACTIVE. Logs
+  `/tmp/eidolon-smoke-area-fixed-ci-client-34692752460.log` and
+  `/tmp/eidolon-smoke-area-ci-{client,server}-34692398507.log`.
+  Do not accept primary integration until corrected fullCI completes.
+- **Previous party6805 TERMINAL FAILURE**, b9f3e4f7,
+  seed1623699781862383209: two Skeleton packs/two real town recoveries/saved
+  resumes passed, then Fighter died on first Warden after51.238s boss combat.
+  Last periodic boss12701HP, Fighter319HP/407MP. Total15.1m.
+  Cleanup town recovery's final940HP is NOT survival; sawDeath retained.
+  Healer had selected Fighter within9.433units; net HP145 after a heal can
+  reflect180healing minus183damage, not proof of lost/wrong-target healing.
+  Archive `/tmp/eidolon-tank-priority-failure-lPvrfH`, original
+  `/tmp/eidolon-party-tank-priority-native-20260912.log`.
+- Receipt-only followup `/tmp/eidolon-1-1-party-combat-receipts-20260912`,
+  clean ca5a56f2, retains max64 whitelisted timestamped real damage/heal/cast
+  receipts plus selected/resolved healer target at input. No game/input-policy
+  mutation. Three suites53PASS0.844s; lint/diffPASS; notpushed/native alone.
+  Combined `/tmp/eidolon-1-1-party-receipts-fence-20260912`, branch
+  `work/1-1-party-receipts-fence`, frozen clean
+  **a45a75f68140758797392888197e08cce7f1af48** (ca5+fence), four focused
+  suites54PASS1.519s; assets/lint/diffPASS. **Native17214 ACTIVE**,
+  partyreceipts09121208, SystemChrome/sg render,18185/18186/41875.
+  All four legal30/common-gear roles invited/entered; seed8963121954055646641,
+  gen2/attempt0/no fallback. DemonOrc killed; all four town-healed/restored mana
+  and resumed same saved seed/rooms/Gold/bag/quests. Latest first Warden
+ 15000→13015HP, Fighter855HP/446MP; no full clear/credit/Water acceptance.
+  Log `/tmp/eidolon-party-receipts-fence-native-20260912.log`.
+  SINGLE GPU LANE RESERVED; poll same17214, do not run another native test.
+- Authored next Smoke native candidate:
+  `/tmp/eidolon-1-1-smoke-area-native-20260912`, branch
+  `work/1-1-smoke-area-native`, parent4b54d894+fence1c868d07.
+  Ordinary phone branch/rank purchases, paid rank0/1/5 casts, independent mesh
+  vs accepted shape, low/high quality and fresh-login persistence in landscape.
+  Full/scoped non-retrying route enrollment; observer tests preserve rejection,
+  missing meshes and single delivery. Five suites64PASS2.516s; assets/lint/bash
+  syntax/diffPASS, session98139terminal0. Clean committed **a1daded9**, notpushed.
+  Logs
+  `/tmp/eidolon-smoke-area-native-{preflight,assets,lint}-20260912.log`.
+  Native NOTstarted; source fixture preparation is not earned first-hour proof.
+
+## Previous checkpoint — September 12, 11:46 UTC
 
 Previous goal turn PROGRESS; this continuation PROGRESS. Integrated verified
 boot/auth recovery, implemented a surface-preserving fence rendering
