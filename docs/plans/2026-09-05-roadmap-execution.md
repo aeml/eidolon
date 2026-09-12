@@ -5,7 +5,65 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 01:05 UTC
+## Current checkpoint — September 12, 01:22 UTC
+
+Previous goal turn was PROGRESS (offline armor fix). This continuation is
+PROGRESS: implemented Shattering Charge's real offline travel/impact, repaired
+authoritative charge wall/area defects, and recorded positive user phone feedback.
+The complete 1.1–1.10 goal stays active; no genuine external blocker exists.
+
+- New `/tmp/eidolon-offline-shattering-charge-20260912`, branch
+  `work/offline-shattering-charge`, clean **78c55f73**. Runtime/test implementation
+  is **940b57c7**; successor adds phone-feedback documentation only. Based on
+  armor7f584d68 plus pending Wizard/TWM parents. Primary remains97cd447b.
+- Offline Shattering Charge now travels 28 planar units at 50 units/sec with
+  preserved height and canonical-floor clipping; one landing impact consumes
+  damage/area training, then crit/shields and a non-stacking five-point armor
+  break with cast-time trained duration. Paid Technique cooldown is preserved.
+  Scene/death/recovery cleanup, authority/hostility/instance exclusions and
+  cast admission during its travel are tested. Shared recipient cooldowns now
+  tick once during stun; remote cooldowns remain server-owned.
+- Server RED exposed absent ranked area and Charge/Shattering hitting through
+  walls: four failing/three control cases, 0.196s. Separate Shockwave RED proved
+  pushing across a closed wall (0.079s). Fixed actual impact connectivity under
+  target locks, plus Shattering Technique/generic area consumers. Base radius16
+  and damage unchanged; max combined area training gives21.6 before body radius.
+- Offline initial RED13 failures/12 controls0.572s; first GREEN25/0.551s.
+  Expanded regression found stun-paused cooldown and stale cross-scene impact
+  (26 pass/2 fail0.668s), now corrected. **Final13 suites/240 tests PASS2.463s
+  plus full lint**. Actual travel/impact, wall/door, height/range, training,
+  critical/shield, expiry and lifecycle checks; no native acceptance implied.
+- Server new regressions plus existing duration/expiry repeated3xGo-race PASS
+ 18.242s. Expanded charge/movement/rune/recovery/reflected-death family repeated
+ 3xGo-race PASS22.001s. Logs `/tmp/eidolon-shattering-*-20260912.log`; evidence
+  doc `2026-09-12-shattering-charge.md`. All local sessions are terminal.
+- **Combined full client/server integration remains due** on latest78c55f73
+  (runtime940b57c7), including every pending parent. Native TWM and four-role
+  dungeon retry remain due. Offline ordinary Charge/runes are not fully made
+  server-equivalent by the dedicated Shattering path. Full scope is unchanged.
+- User replied **"yes everything looks good"** to the actual-phone live combat
+  readability and bag/quest/skill-menu question. This is positive user-reported
+  acceptance, not an agent-operated device test. Phone/browser/orientation/build
+  unspecified; compatibility/performance and later ergonomic scope stay open.
+  Recorded in phone evidence and main roadmap (roota393866d/66e3e9e1,
+  development55e80a21/78c55f73). Do not continue claiming no user phone feedback.
+- **Release CI34660899212 progressed:** all hosted/predeploy/input checks,
+  Pages deploy and SSH deploy passed. Required final live QA job103473089014
+  is ACTIVE, started01:16:37. Anonymous/persistent-character checks passed;
+  four-class/remote-animation checks are now running, with town recovery still
+  pending. Poll the SAME run.
+  Do not cancel/restart for elapsed observation or compete with local full/GPU.
+- Independent uncached checks at~01:17 show both domains now serving
+  **Alpha1.0.63 /f866df68b74b52531ed32a2fa53a93b179d983ac**, database ready.
+  Public HTML confirms login version, matching versioned main module and63
+  patch notes (older notes retained). Deployed identity is proved; final release
+  acceptance is NOT yet proved until live QA finishes. New Shattering/armor/
+  Wizard/TWM development is NOT part of63. Cancelled soak remains off.
+- Root ledger NEVER PUSH. Next priority is complete63's existing final gate,
+  run combined full integration once shared browser QA frees hardware, then
+  native/party acceptance and staged next-version packaging with patch notes.
+
+## Previous checkpoint — September 12, 01:05 UTC
 
 Previous goal turn was a VERIFIED WAIT: it polled live release CI34660899212
 and independently checked both production identities. This continuation is
