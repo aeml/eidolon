@@ -5,7 +5,86 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 18:04 UTC
+## Current checkpoint — September 12, 18:21 UTC
+
+Previous/current goal turns PROGRESS: paid native Blade Storm verification and
+integration, reproduced/fixed QA cached-resource acknowledgements, retained party
+death evidence and improved the healer's normal positioning. Full roadmap ACTIVE;
+no production/version/soak changes. Root ledger-only, NEVER PUSH ROOT.
+
+- Blade Storm **92396 TERMINAL PASS34.6s/0retry**, frozen docs-onlydfd65955
+  (runtime6cd11168, authored route07b90578). Phone normal paid0/1/5 ranks show
+  attached authoritative cone and FIVE distinct actual server terminal endpoints
+  at10/10.3/11.5units, replica removal, exact30mana. Rank5 Low portrait and saved
+  High landscape pass. Normal town recovery/natural cooldowns; level-onlyfixture,
+  no synthetic endpoints/casts/ranks. Archive `/tmp/eidolon-blade-storm-area-pass-hxNC3u`,
+  log `/tmp/eidolon-blade-storm-area-native-20260912.log`; scan0/ownedcleanupPASS.
+  Main agent viewed Low image (53FPS incidental, not visual/performance closure).
+  **CI34709688359 SUCCESS** runtime6cd:407/6344/89.656s,game87.0%/101.574s/
+  race359.475s,browser40+53+26=119actual. Manualnative/deployskips distinct.
+  Logs `/tmp/eidolon-blade-storm-ci-*-34709688359.log`.
+  Expanded release-gate rehearsal RED21fail67pass exposed missing newstage in
+  command stubs/expectedstage arrays. Added BladeStorm once, preserving all old
+  commands/order, failure19, artifactscan/cleanup assertions. Corrected5suites
+  89PASS4.828s/lint/diff. Latestclean/devpushed **95299372** includes onlytest
+  expectation/docs changes beyond native07; appsrc/server identical toCI6cd.
+  **Primary clean8561a773** merges verifiedBladeStorm withFortress5d4c5123.
+  Integrated merge+docs **f0218c8aa0794d55fd3f624f40d2e1823695f87e**, clean/
+  devpushed; combinedfocused3suites74PASS4.459s. **CI34710916056 PENDING** on
+  exactf021, queued behind samebranch earlierattempt below. No Techniques or
+  QA resource-ack integration yet; finalcombinedfullCI required.
+- Integrated **CI34709857382 attempt1 TERMINALFAILED** oncbdec: code/coverage
+  game86.9%90.663s and full gamerace275.182s passed; disposable upgrade test
+  failed on DockerHubauth connectionreset while pullingmongo7.0.14. Exactlog
+  `/tmp/eidolon-integrated-fortress-failed-server-34709857382.log`. Requested
+  `gh run rerun 34709857382 --failed` only after terminal/network diagnosis.
+  **Attempt2 ACTIVE**, latest server103598252622 raceactive, clientPASS. No
+  code/test relaxation, timeoutrestart, production or soak cancellation.
+- Rogue olderdiagnostic **CI34710073474 ACTIVE** on94f1ef14: client/serverPASS,
+  browseractive. Earlier8403nativePASS stands;185mana mismatch stillnotproven.
+  New isolated WT `/tmp/eidolon-1-1-qa-resource-ack-20260912`, branch
+  work/1-1-qa-resource-ack from94f, clean/devpushed
+  **e7b907cecaf317d18e6a88ba396c791a10875b28**. ActualQA receiver regressions
+  RED4fail prove stale cached maxima manufactured client refills and near-death
+  signal displayed fullHP. Existingallowlisted server readiness now sends current
+  HP/MP/maxima underentityreadlock; receiver acceptsfinite/nonnegativefields,
+  missinglegacyfields awaitnormalstate without inventing resources. SameCD/
+  sequence/allowlist/preparation; normalcombat/WellRested/regen unchanged.
+  Client2suites13PASS0.892s, serverfocusedrace2.151s, lint/gofmt/diffPASS.
+  **CI34710643517 ACTIVE** exacte7, clientPASS/serveractive. NativeRogueactual
+  readiness replay remainsdue; neitherthisunitrepro nor8403pass proves causeof
+  old185delta. Assets preparation started endturn; check its terminalhandle/log
+  before native. Docs2026-09-12-qa-resource-ack.md retains limitedscope.
+- Party **23513 TERMINALFAILED7.7m**, frozenbfca8314, actualseed
+  **4063816672232710614**,gen2/attempt0/no fallback. FirstWardenlast2606/15000,
+  Fighterdead; healer12.5143units/60mana/17HealingLight/5GuardianEmbrace/
+  3972bossallyhealing. Lastheal132→313HP, thenordinary **183**physicalhits while
+  directhealcooleddown. NOTE candidateparty doc accidentallysays182; correct to
+ 183AFTERcurrentnativeWTunfreezes. No manaexhaustion/targetingcauseproved;
+  priorblockedspacingdidnotreproduce. Archive
+  `/tmp/eidolon-party-spacing-diagnostic-failure-hy0s1A`; log
+  `/tmp/eidolon-party-spacing-diagnostic-native-20260912.log`; scan0cleanupPASS.
+  Evidencealso records readyinactiveaura,102mana,2.8867directCD,F493HP at13.7362.
+  OldplannerwouldfollowonlyACTIVEaura. Newready-aura planning RED1fail35pass;
+  duringdirectCD>=1 only, approachreadyunlockedaffordableaura while reserving
+  40+25mana. Readyheal/warnings/living/sameinstance/floor/collision rules retained,
+  no actualhealing/stat/enemy/regen grants. Focused2suites49PASS0.758s/lint/diff.
+  Beforebodyrecords nowIDs/states too (earlierbfca onlyafterbodies hadIDs).
+  PartyWT clean **c9ef11645053dcb887339be189fc6bff75725d15**, notdevpushedyet.
+  **89748 ACTIVE — sole nativeGPU**, frozen c9ef, routeparty-dungeon,
+  runIDpartyreadyaura0912,18185/18186/41875. Log
+  `/tmp/eidolon-party-ready-aura-native-20260912.log`; actualseed
+  **-5560940123775574701**,gen2/attempt0/no fallback. Allfourpartyentry,
+  earlytrash and firsttownrecovery/reentry verified; no fullclear. FreezeWT,
+  pollsamehandle; terminal/archive/exactcleanup before nextnative.
+
+Next: actual4partyoutcome/failedseeddiagnosis, queuedQARogueacknative, currentCI
+and combinedregression. All160remainingconsumers/earnedfirsthour/fivedungeons/
+multiseeds/individualcredit/raids/DarkRealm/live gates and1.2–1.10stillrequired.
+Spin/Roar correctedpurchase-recoverynative remainsdue. No1.0.66 or1.1release.
+Lastpublicverification remains1.0.65/f9eb; not freshlyprobed thiscontinuation.
+
+## Previous checkpoint — September 12, 18:04 UTC
 
 Previous implementation goal turn and this continuation PROGRESS. Intervening
 semver confirmation was conversational, not implementation. Full roadmap stays
