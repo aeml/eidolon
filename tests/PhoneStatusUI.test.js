@@ -1,8 +1,17 @@
 import { jest } from '@jest/globals';
+import { readFileSync } from 'node:fs';
 import { PhoneStatusUI } from '../src/ui/PhoneStatusUI.js';
 import { wellRestedBuff } from '../src/core/WellRested.js';
 
 const buff = { id: 'arcane_shield', name: 'Arcane Shield', remainingSeconds: 24.8, detail: 'Absorbs 500 damage.' };
+
+test('status reading has an opaque surface without expanding its encounter footprint', () => {
+    const css = readFileSync('src/styles/phone-status.css', 'utf8');
+    const panel = css.split('.mobile-mode .phone-status-panel:not([hidden]) {')[1].split('}')[0];
+    expect(panel).toContain('background: #111923;');
+    expect(panel).toContain('max-height: min(38dvh,');
+    expect(panel).toContain('bottom: auto;');
+});
 let ui;
 beforeEach(() => {
     document.body.innerHTML = '<div id="ui-layer"><div id="minimap-hud"></div></div><div id="chat-box"><input></div>';

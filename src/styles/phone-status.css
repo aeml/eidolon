@@ -18,7 +18,8 @@
     max-height: min(38dvh, calc(100dvh - var(--phone-top) - var(--phone-bottom) - 328px));
     z-index: var(--z-window); pointer-events: auto;
     min-height: 0; overflow: hidden; border: 1px solid #b99b6288; border-radius: 10px;
-    background: #111923f5; color: #f3ece0; box-shadow: 0 8px 24px #0008;
+    /* Text and bright effects behind a reading panel must not bleed through. */
+    background: #111923; color: #f3ece0; box-shadow: 0 8px 24px #0008;
     font-size: var(--phone-menu-text-size, 16px); text-align: left;
 }
 .phone-status-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 10px; border-bottom: 1px solid #b99b6244; flex: 0 0 auto; }

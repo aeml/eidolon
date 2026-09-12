@@ -29,6 +29,9 @@ for (const [width, height] of [[360, 800], [390, 844], [844, 390], [568, 320]]) 
         await expect(launcher).toBeVisible();
         expect((await launcher.boundingBox()).height).toBeGreaterThanOrEqual(44);
         await launcher.tap(); await expect(panel).toBeVisible();
+        // Text/buttons and bright world effects behind the sheet must not
+        // ghost through the reading surface. Keep the existing layout budget.
+        await expect(panel).toHaveCSS('background-color', 'rgb(17, 25, 35)');
         const body = panel.locator('.phone-status-body'), close = page.locator('#btn-close-phone-status');
         await expect(close).toBeInViewport();
         expect((await close.boundingBox()).height).toBeGreaterThanOrEqual(44);

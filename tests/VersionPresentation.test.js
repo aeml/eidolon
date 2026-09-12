@@ -27,7 +27,8 @@ describe('version presentation', () => {
         const entry = indexHtml.split('data-version="1.0.65"')[1].split('data-version="1.0.64"')[0];
         for (const text of ['A stronger Focus charge', 'Time Warp Mastery lasts longer',
             'Teleport obeys the battlefield', 'Protection you can read',
-            'Consistent offline spell training', 'The same progression', 'Independent rehearsal checks']) expect(entry).toContain(text);
+            'Consistent offline spell training', 'The same progression', 'Independent rehearsal checks',
+            'A cleaner phone status panel']) expect(entry).toContain(text);
         expect(entry).not.toContain('new reward curve');
         expect(entry).not.toContain('Shattering Charge');
     });
