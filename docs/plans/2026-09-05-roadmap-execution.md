@@ -5,7 +5,67 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 03:41 UTC
+## Current checkpoint — September 12, 03:51 UTC
+
+Previous goal turn was PROGRESS (integrated hosted regression and artifacts).
+This continuation is PROGRESS: accepted hosted65, fixed verified Charge recovery
+state leaks for1.1, collected full integrated client/server results, and verified
+public64 deployment. Final native production acceptance remains outstanding.
+
+- **64 is now publicly deployed, not yet fully accepted.** CI34668112188,
+  exact6d5e82cb, passed nativepredeploy103486534312, inputs103493085494, Pages
+  103493098145 and SSH103493098152. At03:49:04 independent frontend/backend
+  both reportAlpha1.0.64/6d5e82cb, HTTP200, healthok/database ready. Prior63
+  publication statements are superseded by this check.
+- **Final native live103493209801 ACTIVE**, started03:48:46; running live
+  anonymous/persistent-character QA from03:49:05. Poll SAME production run;
+  do not push65 or start competing native work before terminal acceptance.
+  Predeploy log`/tmp/eidolon-release64-production-predeploy-34668112188.log`
+  retained; full route passed03:47:31, credential scan0 sanitized files.
+  Read-only Docker prefix check found no remaining isolated-QA containers.
+- Nativepredeploy artifact retained
+  `/tmp/eidolon-release64-predeploy-accepted-sU8eqe`(id10290569547). Inspected
+  actual restored rested aura after real hostile death/respawn: no persistent
+  solid white interaction cube. This is not a physical-phone or performance
+  acceptance claim; screenshot counters alone do not prove smooth gameplay.
+- **Corrected65 CI34670196359 TERMINAL SUCCESS**, exact1de18e03. Client297/
+  4347tests104.847s; full server game race255.387s/coverage85.6%; all browser
+  shards39+40+25=104cases PASS. Native/input/deploy/live jobs deliberately
+  SKIPPED for manual rehearsal. Full logs
+  `/tmp/eidolon-release65-corrected-{client,server,browser1,browser2,browser3}
+  -34670196359.log`; final artifact
+  `/tmp/eidolon-release65-corrected-shard1-CBghgz` plus previously retained2/3.
+  Candidate remains clean/frozen1de18e03, not pushed to master. Native65
+  Teleport/Phase and release acceptance still required. Do not poll terminal65
+  rehearsal as active or attribute native acceptance to hosted success.
+- **Integrated1.1 rehearsal34670988965 ACTIVE**, frozene2cd42f2. Client
+  103492183367 SUCCESS367suites/5465tests100.597s plus full lint/audit/benchmark.
+  Server103492183473 SUCCESScoveragegame97.027s/86.6%, full race301.947s and
+  backup/restore/bench/build. Logs
+  `/tmp/eidolon-integrated-1-1-{client,server}-34670988965.log`.
+  Browser3/2/1 **103493298669/103493298684/103493298700 ACTIVE**. Keep frozen
+  source and SAME run. These results exclude the subsequent recovery fix.
+- **New primary5ab1b96ee47ca6ee1cc195d07149d7af5ba87608**, clean after merge;
+  same in`/tmp/eidolon-1-1-charge-recovery-20260912`,branchwork/1-1-charge-recovery.
+  Paid Unstoppable tests reproduced stale travel immunity after recall, respawn,
+  externally cleared movement and death; impact also retained its deadline.
+  Shared locked cleanup now ends owned travel before discarding rune identity,
+  preserving cooldowns, unrelated immunity and already-earned armor on normal
+  scene recovery. Death cancels pending impact. No new1.0.x release candidate.
+- Explicit near-death QA also retained newly functional rune armor; paid-armor
+  RED reproduced it. Only this existing one-HP preparation clears armor and its
+  deadline. Normal recovery does not. Final focused server race PASS12.870s,
+  including recovery/Charge/Shattering/armor and actual near-death QA. Logs
+  `/tmp/eidolon-1-1-charge-recovery-{red,final}-20260912.log` and
+  `/tmp/eidolon-1-1-charge-qa-armor-red-20260912.log`. Handles39286/23719/22008/
+  3607 terminal. Doc`2026-09-12-charge-recovery-cleanup.md`includes1.1 patch-note
+  wording and remaining full/native verification. Not pushed/published.
+- Scheduled soak34670421761/job103490621233 remains ACTIVE. No manual soak,
+  cancellation or workflow disable. Hardware remains shared. Native65, Briar
+  four-role completion, earned/all-dungeon/first-hour/balance/campaign/reconnect
+  and all1.2–1.10 requirements remain. Root master is ledger-only: NEVER PUSH.
+
+## Previous checkpoint — September 12, 03:41 UTC
 
 Previous goal turn was PROGRESS (Charge and Unstoppable implementation).
 This continuation is PROGRESS: collected corrected65 browser evidence, inspected
