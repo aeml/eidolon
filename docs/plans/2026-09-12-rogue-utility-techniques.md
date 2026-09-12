@@ -165,6 +165,20 @@ not supply values or alter simulation. Focused2suites15tests passed0.788s;
 changed-file lint/diff passed. Native reproduction remains required. Exact
 runtimec9e7bf7a CI34707979043 is now SUCCESS; manual native/deploy were skipped.
 
+### Resource diagnostic replay passed; prior mismatch not diagnosed
+
+Native8403 on8b07e36c PASS3.9m/4.0m, zero retries. All normal0/1/5 Techniques
+and saved20ranks passed unchanged exact costs/cooldowns/durations/High/Low and
+natural-expiry checks. Saved Cloak with Lasting Shadow paid27mana,11.25s cooldown
+and10s duration. This does not explain or erase the earlier185mana observation.
+Archive `/tmp/eidolon-rogue-resource-diagnostic-pass-7jPN57`; log
+`/tmp/eidolon-rogue-resource-diagnostic-native-20260912.log`; scan0, exactowned
+containers/image/ports clear. Main agent viewed the saved Cloak capture; its
+37FPS readout is incidental, not performance acceptance. The test-only readiness
+receiver locally refills from its cached maximum rather than a server resource
+payload, a concrete diagnostic lead if maxima changed; causal attribution to the
+older failed cast remains unproven. Combined regression remains required.
+
 ### Player-facing draft
 
 Weak Point Mark, Smoke Bomb and Cloak & Vanish Techniques now reduce their mana
