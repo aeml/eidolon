@@ -6,7 +6,8 @@ const catalog = JSON.parse(fs.readFileSync('server/internal/game/testdata/talent
 test.each(Object.entries(catalog))('%s prediction metadata matches the shared server contract', (className, expected) => {
     for (let n = 1; n <= 40; n++) {
         let bonus = expected.generic[n] || {};
-        if (n <= 26 && n % 2 === 0) bonus = { skill: expected.skills[n / 2 - 1], cdr: 0.03, manaReduction: expected.techniqueMana };
+        if (n <= 26 && n % 2 === 0) bonus = { skill: expected.skills[n / 2 - 1], cdr: 0.03,
+            manaReduction: expected.techniqueManaOverrides?.[n] ?? expected.techniqueMana };
         const actual = CONSTANTS.PASSIVE_TALENTS[className][n - 1].abilityEconomy || {};
         expect({ skill: actual.skill || '', cdr: actual.cdr || 0, manaReduction: actual.manaReduction || 0 })
             .toEqual({ skill: bonus.skill || '', cdr: bonus.cdr || 0, manaReduction: bonus.manaReduction || 0 });

@@ -15,11 +15,16 @@ type impactDefenseResolution struct {
 }
 
 // Caller holds the recipient lock. Environmental and reflected damage retain
-// their existing non-absorb/non-retaliate rules, but Fortress's incoming damage
-// reduction also covers those paths. Share the exact impact-time boundary.
-func fortressIncomingDamageLocked(target *Entity, damage int, now time.Time) int {
+// their existing non-absorb/non-retaliate rules, but defensive buff reductions
+// also cover those paths. Share the exact impact-time boundary and rounding.
+const guardianRoarIncomingDamagePercent = 70 // 30% reduction, matching offline play.
+
+func defensiveBuffIncomingDamageLocked(target *Entity, damage int, now time.Time) int {
 	if target.Type == TypePlayer && target.IronFortressActive && !target.IronFortressEndTime.IsZero() && now.Before(target.IronFortressEndTime) {
-		return damage * 80 / 100
+		damage = damage * 80 / 100
+	}
+	if target.GuardianRoarActive && !target.GuardianRoarEndTime.IsZero() && now.Before(target.GuardianRoarEndTime) {
+		damage = damage * guardianRoarIncomingDamagePercent / 100
 	}
 	return damage
 }
@@ -55,7 +60,7 @@ func resolveImpactDefenseLocked(tgt *Entity, damage int, now time.Time) impactDe
 	}
 	// Fortress protects scaled incoming hits as well as adding armor. Check
 	// the actual deadline at impact, before other reductions and absorption.
-	damage = fortressIncomingDamageLocked(tgt, damage, now)
+	damage = defensiveBuffIncomingDamageLocked(tgt, damage, now)
 
 	// The two Sanctuary sources have distinct advertised strengths and may
 	// overlap. Use the stronger active reduction rather than an approximation.
@@ -160,7 +165,7 @@ func (w *World) applyImpactReflection(attacker, defender *Entity, damage int, in
 		attacker.Mu.Unlock()
 		return
 	}
-	damage = fortressIncomingDamageLocked(attacker, damage, time.Now())
+	damage = defensiveBuffIncomingDamageLocked(attacker, damage, time.Now())
 	damage = damageWithinDarkKingPhase(attacker, damage)
 	attacker.Health -= damage
 	attacker.LastDamageType = "physical"

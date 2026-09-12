@@ -176,11 +176,24 @@ func (c *Client) handleChatCommand(raw string) bool {
 			message = "Animation QA readiness restored at one health for hostile death validation."
 		}
 		c.sendSystemChat(message)
-		payload, _ := json.Marshal(map[string]bool{
+		// A readiness acknowledgement must carry the current authoritative
+		// resources, not ask the client to refill from a possibly stale maximum.
+		player := world.GetEntity(c.playerID)
+		if player == nil {
+			c.sendError("No active character for animation readiness.")
+			return true
+		}
+		player.Mu.RLock()
+		payload, _ := json.Marshal(map[string]interface{}{
 			"lowHealth":  lowHealth,
 			"persistent": persistent,
 			"nearDeath":  nearDeath,
+			"health":     player.Health,
+			"maxHealth":  player.MaxHealth,
+			"mana":       player.Mana,
+			"maxMana":    player.MaxMana,
 		})
+		player.Mu.RUnlock()
 		c.sendSafe(createMessage(MsgQAAnimationReady, payload))
 		return true
 	case "/qa-protection":

@@ -6,6 +6,7 @@ import (
 	"math"
 	"os"
 	"testing"
+	"time"
 )
 
 func TestGuardianRoarTrainedAreaAndAcceptedShape(t *testing.T) {
@@ -52,8 +53,15 @@ func TestGuardianRoarTrainedAreaAndAcceptedShape(t *testing.T) {
 					if !result.Accepted || p.Mana != mana-35 || !p.GuardianRoarActive {
 						t.Fatalf("paid/self roar failed: %+v", result)
 					}
-					if ally.GuardianRoarActive != !outside || (ally.Defense > defense) != !outside {
+					if ally.GuardianRoarActive != !outside || ally.Defense != defense {
 						t.Fatalf("ally buff=%v defense=%d before=%d outside=%v", ally.GuardianRoarActive, ally.Defense, defense, outside)
+					}
+					wantDamage := 70
+					if outside {
+						wantDamage = 100
+					}
+					if got := resolveImpactDefenseLocked(ally, 100, time.Now()).damage; got != wantDamage {
+						t.Fatalf("area recipient damage%d want%d", got, wantDamage)
 					}
 					if !outside && !ally.GuardianRoarEndTime.Equal(p.GuardianRoarEndTime) {
 						t.Fatal("ally lost shared deadline")

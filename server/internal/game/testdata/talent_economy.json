@@ -6,6 +6,7 @@
   },
   "Rogue": {
     "prefix": "ROG", "techniqueMana": 0,
+    "techniqueManaOverrides": { "6": 0.02, "14": 0.02, "20": 0.02, "26": 0.02 },
     "skills": ["Piercing Throw", "Backstab", "Weak Point Mark", "Shadow Lunge", "Death Spiral", "Fan of Knives", "Serrated Edges", "Blade Storm", "Phantom Volley", "Smoke Bomb", "Poison Coating", "Tripwire", "Cloak & Vanish"],
     "generic": { "33": { "cdr": 0.02 } }
   },

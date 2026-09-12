@@ -235,14 +235,12 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 				} else if (target.Type == TypePlayer || target.Type == TypeNPC) && w.CombatRelationship(player, target) != RelationshipHostile && target.State != "DEAD" && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
 					target.GuardianRoarActive = true
 					target.GuardianRoarEndTime = player.GuardianRoarEndTime
-					target.RecalculateStats()
 				}
 				target.Mu.Unlock()
 			}
 
-			// The recipient loop skips the caster; apply its protective stats too,
-			// after resolving this cast's existing equipment-based taunt permission.
-			player.RecalculateStats()
+			// Both caster and recipients receive protection at impact time.
+			// Roar no longer substitutes an armor-stat increase for that reduction.
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 30*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, player.X, player.Z, AbilityShape{Radius: radius, Arc: 2 * math.Pi})
 		}

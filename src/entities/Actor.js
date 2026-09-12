@@ -12,6 +12,7 @@ import { applyActorStealthAppearance, restoreActorStealthAppearance } from './Ac
 import { basicAttackInterval, usesPlayerAttackCadence } from '../core/BasicAttackCadence.js';
 import { rollOfflineCriticalDamage } from '../core/AbilityCritical.js';
 import { applyOfflineStatus, clearOfflineStatus, updateOfflineDamageOverTime } from '../core/OfflineDamageOverTime.js';
+import { GUARDIAN_ROAR_DAMAGE_REDUCTION_PERCENT } from '../core/GuardianRoar.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { awardOfflineExperience, experienceRequiredForLevel, PLAYER_LEVEL_CAP } from '../core/ProgressionCurve.js';
 import {
@@ -999,6 +1000,7 @@ export class Actor extends Entity {
             this.guardianRoarTimer -= dt;
             if (this.guardianRoarTimer <= 0) {
                 this.guardianRoarTimer = 0;
+                this.guardianRoarReduction = 0;
             }
         }
 
@@ -1499,8 +1501,8 @@ export class Actor extends Entity {
         let finalAmount = amount;
         
         // Damage Reductions (Buffs)
-        if (this.guardianRoarTimer > 0) {
-            finalAmount *= (1 - this.guardianRoarReduction);
+        if (this.guardianRoarTimer > impactElapsed) {
+            finalAmount = Math.floor(finalAmount * (100 - GUARDIAN_ROAR_DAMAGE_REDUCTION_PERCENT) / 100);
         }
         if (this.blessingResolveTimer > 0) {
             finalAmount *= (1 - this.blessingResolveReduction);
