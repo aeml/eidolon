@@ -18,6 +18,7 @@ import {
     DUNGEON_ROOM_IDENTITY_IDS
 } from '../../src/art/ProceduralDungeonInteriors.js';
 import { PROCEDURAL_STATUS_EFFECT_DEFINITIONS } from '../../src/art/ProceduralStatusEffects.js';
+import { STATUS_GALLERY_CLASS_BY_FAMILY } from '../statusGalleryCoverage.js';
 import {
     PROCEDURAL_ABILITY_ICON_DEFINITIONS,
     PROCEDURAL_ITEM_ICON_DEFINITIONS
@@ -873,30 +874,22 @@ test.describe('deterministic production animation gallery', () => {
         expect(renderer).not.toBeNull();
         expect(`${renderer.vendor} ${renderer.renderer}`).not.toMatch(/swiftshader|llvmpipe|software/i);
 
-        const classForFamily = {
-            fighter: 'Fighter',
-            rogue: 'Rogue',
-            wizard: 'Wizard',
-            cleric: 'Cleric',
-            relic: 'Fighter',
-            control: 'Fighter',
-            affliction: 'Fighter',
-            sanctuary: 'Fighter'
-        };
         const statusEntries = Object.entries(PROCEDURAL_STATUS_EFFECT_DEFINITIONS)
             .sort(([, left], [, right]) => left.family.localeCompare(right.family));
         const seenMotifs = new Set();
         const seenArtStyles = new Set();
         const screenshotStatuses = new Set([
             'iron_fortress', 'stealth', 'spell_focus', 'divine_intervention',
-            'swift', 'frozen', 'poisoned', 'well_rested'
+            'swift', 'frozen', 'poisoned', 'well_rested', 'invulnerable'
         ]);
         let currentClass = '';
 
         for (const quality of ['high', 'low']) {
             await page.locator('#gallery-quality').selectOption(quality);
             for (const [statusKey, definition] of statusEntries) {
-                const className = classForFamily[definition.family];
+                const className = STATUS_GALLERY_CLASS_BY_FAMILY[definition.family];
+                expect(className, `${statusKey}: unmapped gallery family ${definition.family}`)
+                    .toBeTruthy();
                 if (className !== currentClass) {
                     await page.locator('#gallery-class').selectOption(className);
                     await waitForActor(page, className);

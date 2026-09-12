@@ -212,6 +212,7 @@ const PERSISTENT_STATE_APPLIERS = Object.freeze({
 });
 
 const STATUS_GALLERY_APPLIERS = Object.freeze({
+    invulnerable: (actor) => { actor.invulnerabilityTimer = 8; actor.invulnerableActive = true; },
     well_rested: (actor) => { actor.wellRestedSeconds = 7200; actor.safeZoneId = 'lanternhold'; },
     iron_fortress: (actor) => { actor.ironFortressTimer = 8; },
     guardian_roar: (actor) => { actor.guardianRoarTimer = 8; },
@@ -281,6 +282,9 @@ function makeActor(type, id) {
 
 function clearActorStatusState(actor) {
     if (!actor) return;
+    actor.invulnerabilityTimer = 0;
+    actor.invulnerableActive = false;
+    actor.teleportPhaseTimer = 0;
     actor.ironFortressTimer = 0;
     actor.guardianRoarTimer = 0;
     actor.guardianRoarReduction = 0;
