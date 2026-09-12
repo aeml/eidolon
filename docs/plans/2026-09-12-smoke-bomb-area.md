@@ -45,3 +45,13 @@ class from the actual presentation manifest (including aliases), asserts
 exactly one owner, and keeps all boundary/elevation assertions. The original
 CI failure is retained; three focused suites/44 tests passed in1.409 seconds
 after correction, as did lint/diff. Full CI must run on the corrected source.
+
+The follow-up native candidate adds `smoke-area` to both the isolated route
+selector and complete timed acceptance gate. A disposable level-prepared Rogue
+selects Utility, buys Fine Motor ranks through normal phone controls, spends
+real points, and casts at ranks0/1/5 in high/low quality. It checks paid mana,
+accepted server radius, independently measured attached mesh radius and cast
+origin; a fresh login must retain rank/points and produce the trained shape in
+landscape. No synthetic talent assignments or earned-progression claim.
+Observer tests retain rejected/missing-mesh evidence and single delivery across
+reinstallation. This route is authored, not native-passing evidence yet.
