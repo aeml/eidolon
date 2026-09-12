@@ -21,8 +21,8 @@ func TestTalentDurationDefinitions(t *testing.T) {
 	if err := json.Unmarshal(data, &entries); err != nil {
 		t.Fatal(err)
 	}
-	if len(entries) != 2 {
-		t.Fatal("expected two Wizard duration entries")
+	if len(entries) != 3 {
+		t.Fatal("expected three Wizard duration entries")
 	}
 	for _, entry := range entries {
 		def, ok := talentDefForID("Wizard", entry.ID)
