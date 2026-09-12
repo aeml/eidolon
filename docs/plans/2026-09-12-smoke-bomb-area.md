@@ -66,3 +66,11 @@ log `/tmp/eidolon-smoke-area-trained-native-20260912.log`. Credential scan
 passed and owned disposable services were removed. Five focused suites64tests
 passed2.516 seconds with lint/assets/syntax/diff checks. This is scoped training
 verification, not first-hour progression, full-tree sign-off or deployment.
+
+Combined CI34693543419 caught the full-gate integration mock's explicit
+command/stage catalogs missing the newly enrolled `smoke-area` stage. Its fake
+shell therefore returned127 at that stage, causing21 integration failures;
+the other6249 client tests passed. Both catalogs now include Smoke immediately
+after Time Warp, preserving every older stage and failure/cleanup check.
+Four focused suites83tests passed5.786 seconds. The failed hosted run remains
+recorded; corrected full CI is required before accepting the combined candidate.
