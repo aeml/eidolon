@@ -32,6 +32,30 @@ Full CI, saved native Technique purchases and merged regression remain required.
 Do not credit the separate Mastery native test as Technique verification. This
 is development work, not a released1.1 or completed160-talent audit.
 
+CI34699578801 on a1987d93 failed client2 suites/7 tests (398 suites/6304 tests
+passed); server passed. The existing full offline cast matrix had not consumed
+the new per-Technique contract overrides, and the multiplayer Smoke fixture
+still supplied35mana expecting zero after a now31mana cast. Update that contract
+consumer and exact fixture cost; retain all cast, cooldown and rejection checks.
+Failure log `/tmp/eidolon-rogue-utility-technique-ci-client-34699578801.log`.
+
+The candidate now reuses the separately verified Mastery route and receiver
+through a distinct `rogue-techniques` route/account. It buys each Technique at
+rank0/1/5, asserts paid server mana and cooldown independently of local prediction,
+retains High/Low utility visuals/durations/expiry, buys Lightstep5, then verifies
+all20 points and rune training after a fresh login. No Mastery rank is assigned
+or credited to this route. Both routes remain enrolled exactly once in the full
+predeploy stage ledger; the Mastery route keeps its prior duration assertions.
+Six focused suites113 tests passed5.483s before the two old consumer corrections;
+final expanded checks and native execution are still required.
+
+Expanded client checks now pass8 suites/330 tests/4.657s, including all52 actual
+offline skill consumers across baseline/ranked/generic combinations and the
+multiplayer override fixture. Full lint, shell syntax, both native profile lists,
+prepared client assets and diff checks pass. Logs
+`/tmp/eidolon-rogue-utility-technique-{final-tests,final-lint,native-list,assets}-20260912.log`.
+Corrected full CI and both native profiles remain pending; no acceptance inferred.
+
 ## Proposed 1.1 patch-note text
 
 Weak Point Mark, Smoke Bomb and Cloak & Vanish Techniques now reduce their mana

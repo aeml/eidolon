@@ -7,16 +7,18 @@ import { selectPreparedRune } from './prepared-rune-input.js';
 import { CONSTANTS } from '../../src/core/Constants.js';
 
 test.use({ viewport: { width: 1280, height: 720 }, trace: 'off', screenshot: 'off', video: 'off' });
+const technique = process.env.EIDOLON_E2E_ROGUE_TECHNIQUE === '1';
+const genericId = technique ? 'ROG_33' : 'ROG_28';
 const utilities = [
     { skill: 'Weak Point Mark', talent: 'ROG_05', branch: 'Assassin Burst Path',
-        active: 'weakPointMarked', duration: 'weakPointDuration', timer: 'weakPointMarkTimer', visual: 'weak_point_mark', base: 10, cost: 25 },
+        active: 'weakPointMarked', duration: 'weakPointDuration', timer: 'weakPointMarkTimer', visual: 'weak_point_mark', base: 10, cost: 25, cooldown: 12 },
     { skill: 'Smoke Bomb', talent: 'ROG_19', branch: 'Utility / Debuff Path',
-        active: 'slowed', duration: 'slowDuration', timer: 'slowTimer', visual: 'slowed', base: 5, cost: 35 },
+        active: 'slowed', duration: 'slowDuration', timer: 'slowTimer', visual: 'slowed', base: 5, cost: 35, cooldown: 20 },
     { skill: 'Cloak & Vanish', talent: 'ROG_25', branch: 'Utility / Debuff Path',
-        active: 'stealthActive', duration: 'stealthDuration', timer: 'stealthTimer', visual: 'stealth', base: 5, cost: 30, self: true }
-];
+        active: 'stealthActive', duration: 'stealthDuration', timer: 'stealthTimer', visual: 'stealth', base: 5, cost: 30, cooldown: 30, self: true }
+].map(cfg => technique ? { ...cfg, talent: `ROG_${String(Number(cfg.talent.slice(4)) + 1).padStart(2, '0')}` } : cfg);
 
-test('Rogue utility Masteries extend real paid effects through normal purchases and saved rune training', async ({ page, baseURL }, testInfo) => {
+test(`Rogue utility ${technique ? 'Techniques reduce paid mana and cooldowns' : 'Masteries extend real paid effects'} through normal purchases and saved rune training`, async ({ page, baseURL }, testInfo) => {
     test.skip(process.env.EIDOLON_E2E_ROGUE_UTILITY !== '1' || process.env.EIDOLON_E2E_REGISTER !== '1',
         'Explicit disposable Rogue utility route only');
     test.setTimeout(900_000);
@@ -103,16 +105,24 @@ test('Rogue utility Masteries extend real paid effects through normal purchases 
                 return false;
             }).toBe(true);
         }
-        const before = await page.evaluate(({ cfg, id }) => {
+        const before = await page.evaluate(({ cfg, id, genericId }) => {
             const g = window.game, p = g.player, actor = cfg.self ? p : g.remotePlayers.get(id);
-            return { mana: p.stats.mana, rank: p.talentRanks?.[cfg.talent] || 0, generic: p.talentRanks?.ROG_28 || 0,
+            return { mana: p.stats.mana, rank: p.talentRanks?.[cfg.talent] || 0, generic: p.talentRanks?.[genericId] || 0,
+                globalCDR: p.stats.cooldownReduction || 0, equipmentManaReduction: p.stats.manaCostReduction || 0,
                 rune: p.skillRunes?.[cfg.skill] || '', slot: p.hotbar.indexOf(cfg.skill), hp: actor?.stats?.hp,
                 distance: actor ? Math.hypot(actor.position.x - p.position.x, actor.position.z - p.position.z) : Infinity };
-        }, { cfg, id: target.id });
+        }, { cfg, id: target.id, genericId });
         expect(before).toMatchObject({ rank, generic, rune }); expect(before.slot).toBeGreaterThanOrEqual(0);
         if (!cfg.self) expect(before.distance).toBeLessThan(5);
         await page.evaluate(installRogueUtilityObserver, { ...cfg, targetId: target.id });
-        const base = rune === 'cloak_longer' ? 10 : cfg.base, expected = base * (1 + .04 * (rank + generic));
+        const base = rune === 'cloak_longer' ? 10 : cfg.base;
+        const expected = base * (1 + (technique ? 0 : .04 * (rank + generic)));
+        // Prepared characters carry no equipment cost reduction. Compare the
+        // independent paid server result, not a locally predicted mana value.
+        expect(before.equipmentManaReduction).toBe(0);
+        const expectedCost = Math.floor(cfg.cost * (1 - (technique ? .02 * rank : 0)) + 1e-9);
+        const expectedCooldown = cfg.cooldown * (1 - before.globalCDR) *
+            (1 - (technique ? .03 * rank + .02 * generic : 0));
         await page.keyboard.press(String(before.slot + 1));
         try {
             await expect.poll(() => page.evaluate(() => window.__rogueUtility.results.length)).toBe(1);
@@ -129,7 +139,8 @@ test('Rogue utility Masteries extend real paid effects through normal purchases 
             throw error;
         }
         const result = await page.evaluate(() => window.__rogueUtility.results[0]);
-        expect(result.accepted).toBe(true); expect(before.mana - result.mana).toBe(cfg.cost);
+        expect(result.accepted).toBe(true); expect(before.mana - result.mana).toBe(expectedCost);
+        expect(result.cooldownRemaining).toBeCloseTo(expectedCooldown, 5);
         await expect.poll(() => page.evaluate(() => window.__rogueUtility.casts.length)).toBe(1);
         if (!cfg.self && cfg.skill === 'Weak Point Mark') {
             expect(await page.evaluate(() => window.__rogueUtility.casts[0].targetId)).toBe(target.id);
@@ -161,8 +172,8 @@ test('Rogue utility Masteries extend real paid effects through normal purchases 
         if (!cfg.self) expect(await page.evaluate(id => window.game.remotePlayers.get(id)?.stats?.hp, target.id)).toBe(before.hp);
         expect(await page.evaluate(() => window.game.player.state)).not.toBe('DEAD');
         const observation = await page.evaluate(() => window.__rogueUtility);
-        receipts.push({ skill: cfg.skill, before, expected, observation });
-        console.log(`[rogue-utility] ${cfg.skill}: rank${rank}/generic${generic}/${rune || 'base'}/${tier}, paid duration${expected}, natural expiry`);
+        receipts.push({ skill: cfg.skill, technique, before, expected, expectedCost, expectedCooldown, observation });
+        console.log(`[rogue-utility] ${cfg.skill}: rank${rank}/generic${generic}/${rune || 'base'}/${tier}, cost${expectedCost}, cooldown${expectedCooldown}, paid duration${expected}, natural expiry`);
     }
 
     for (const cfg of utilities) {
@@ -171,15 +182,15 @@ test('Rogue utility Masteries extend real paid effects through normal purchases 
             await cast(cfg, rank, 0, rank === 5 ? 'low' : 'high');
         }
     }
-    await purchase('ROG_28', 0, 5);
+    await purchase(genericId, 0, 5);
     await returnToTown(page); await menu('Runes');
     await selectPreparedRune(page, skills, { skill: 'Cloak & Vanish', id: 'cloak_longer', name: 'Lasting Shadow' });
     await expect.poll(() => page.evaluate(() => window.game.player.skillRunes?.['Cloak & Vanish'])).toBe('cloak_longer');
     await page.locator('#btn-close-skills').click();
     const points = await page.evaluate(() => window.game.player.talentPoints); expect(points).toBe(0);
     await loginAndEnterWorld(page, credentials);
-    await expect.poll(() => page.evaluate(() => ['ROG_05', 'ROG_19', 'ROG_25', 'ROG_28']
-        .map(id => window.game.player.talentRanks?.[id]))).toEqual([5, 5, 5, 5]);
+    const savedIds = [...utilities.map(cfg => cfg.talent), genericId];
+    await expect.poll(() => page.evaluate(ids => ids.map(id => window.game.player.talentRanks?.[id]), savedIds)).toEqual([5, 5, 5, 5]);
     expect(await page.evaluate(() => window.game.player.talentPoints)).toBe(points);
     for (const cfg of utilities) await cast(cfg, 5, 5, 'high', cfg.self ? 'cloak_longer' : '');
     await testInfo.attach('rogue-utility-paid-saved-receipts', { body: JSON.stringify(receipts), contentType: 'application/json' });

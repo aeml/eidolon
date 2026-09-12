@@ -30,7 +30,8 @@ test.each(cases)('$className $skill rank$rank generic$generic retains the paid c
         actor.stats.manaCostReduction = .1;
         actor.stats.critChanceBonus = 0;
         actor.talentRanks = { [`${spec.prefix}_${String(index * 2 + 2).padStart(2, '0')}`]: rank };
-        let skillCDR = .03 * rank, manaReduction = spec.techniqueMana * rank;
+        let skillCDR = .03 * rank;
+        let manaReduction = (spec.techniqueManaOverrides?.[index * 2 + 2] ?? spec.techniqueMana) * rank;
         if (generic) for (const [id, effect] of Object.entries(spec.generic)) {
             actor.talentRanks[`${spec.prefix}_${id.padStart(2, '0')}`] = 5;
             if (!effect.skill || effect.skill === skill) {
