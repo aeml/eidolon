@@ -5,7 +5,52 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 19:32 UTC
+## Current checkpoint — September 12, 19:42 UTC
+
+Goal turn PROGRESS: native evidence identified incorrect desktop-style movement
+in the phone Tripwire route; implemented real touch joystick movement; authored
+and started an explicit four-player Low-graphics comparison. Goal ACTIVE, all
+milestones intact. No production/version/soak changes; root ledger-only NEVER PUSH.
+
+- Primary75de2aff/integrated8b3e0404 unchanged. **CI34714237895 ACTIVE**:
+  client/server PASS, all3browser shards running. No cancellation/restart.
+- Tripwire diagnostic50573/cf57bde7 FAILED42.7s. Archive
+  `/tmp/eidolon-tripwire-approach-diagnostic-7jmE07`, scan0/exact cleanup verified.
+  Attached snapshots: planned7unit step became800/200→731.87/131.87, then
+  688.73/88.73→614.06/14.06; same Titan retained1760HP until unloaded. Mainagent
+  viewed failure screenshot (accidentally opened dungeon guide). Source proves
+  mobile taps select/clear/interact, not desktop Shift-walk; shared helper's
+  W-key fallback explains northwest wandering. No new gameplay bug inferred.
+- Tripwire **b2d9a268** clean/devpushed test-only: new actual CDP stick touch
+  helper, inverse isometric direction verified against actual InputManager,
+  measured forward progress, living/same-instance guards, touch release in
+  finally. No keyboard/position/target/hit mutation. Initial test used wrong
+  method name, corrected;3suites19PASS1.808s/lint/diff. Actual native84373
+  FAILED25.8s before casting: first7unit step overshot to825.07/172.50; second
+  progressed3.568<5.25 then timed out. Archive
+  `/tmp/eidolon-tripwire-joystick-failure-x20Rqt`, scan0/exact cleanup verified.
+  Mainagent viewed temple/Titans screenshot. Target pre-stepHP1760; last-step
+  endpoint/blocked state not captured. Collision is hypothesis, not fact.
+  Need bounded joystick approach + endpoint evidence. No trap/damage/root pass
+  or integration; docs-only latest commit discover via git log in Tripwire WT.
+- Party WT clean/devpushed **87d62281** over209612b2/1a1. Optional
+  EIDOLON_E2E_PARTY_QUALITY=low/medium/high retains High default, uses normal
+  Settings UI for each actor and verifies renderer value. Final/incoming-hit
+  receipts record quality/FPS/frameTime (null if overlay disabled). No balance/
+  resource/AI/input/timeout/clear-assertion changes. Focused3suites22PASS1.571s,
+  ESLint/diff PASS; doc appended2026-09-12-party-partial-retreat.md.
+  **82404 ACTIVE, sole native GPU**, frozen87d62281, runIDpartygraphicslow0912,
+  routeparty-dungeon, explicitLow,18185/18186/41875. Log
+  `/tmp/eidolon-party-low-graphics-native-20260912.log`. Poll same handle;
+  archive/scan/exact cleanup after terminal before next native. Different seeds
+  mean Low outcome alone is not a controlled comparison or High acceptance.
+
+Next: four-player Low outcome/actual frame and dodge receipts; combined CI;
+Tripwire bounded true-phone approach. All prior failed seeds, full clear/credit/
+Waterhandoff/earned pacing/five dungeons/160consumers/reconnect/raids/live and
+1.2–1.10 remain required. Do not declare 1.1 ready or drop later milestones.
+
+## Previous checkpoint — September 12, 19:32 UTC
 
 This goal turn PROGRESS: accepted and merged Guardian Roar protection; corrected
 the Tripwire native precondition after a terminal failure; audited normal party
