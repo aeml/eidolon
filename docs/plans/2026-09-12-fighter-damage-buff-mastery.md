@@ -1,4 +1,4 @@
-# Fighter damage-buff Masteries — server phase, not release-ready
+# Fighter damage-buff Masteries — server and network phases, not release-ready
 
 Based on7f781121 in a separate candidate. This is an intermediate step toward
 the full1.1 core-build requirement, not sign-off on these abilities or1.1.
@@ -56,10 +56,30 @@ Logs:
 - `/tmp/eidolon-fighter-damage-buff-mastery-server-complete-20260912.log`
 - `/tmp/eidolon-fighter-damage-buff-mastery-server-accepted-20260912.log`
 
-## Required next phase — do not publish this server-only candidate
+## Network and display phase
 
-Carry stored strength through explicit wire/state/delta fields and accurate
-client buff presentation, with scalar-only packet safety and legacy fallback.
+Added stable protobuf fields121/122 for stored Berserker/Last Stand multipliers,
+generated with the existing pinned local tooling. Full snapshots, binary wire
+and scalar-only delta detection preserve active strength. Inactive buffs publish
+zero without spurious deltas. Client owner and remote support paths consume
+those values without private rank inference or multiplying gameplay stats again.
+Partial duration updates retain strength; scalar-only packets cannot activate
+a buff. Legacy active packets use baseline strength, malformed values fall back
+safely, and authoritative removal resets strength. Berserker now has a tracked
+buff card; both cards explicitly identify the Damage stat, with Berserker's
+unchanged20% defense penalty.
+
+Client RED12failed2.076s; initial server reflection test mistakenly inspected
+a snapshot pointer as a struct, so that panic is fixture evidence only. After
+dereferencing, all6 missing-field cases fail0.007s on unchanged serialization.
+Final client6suites/144tests PASS2.826s, including actual protobuf delivery to
+both support paths, private-rank independence, delta-like updates, legacy/malformed
+values and no duplicate stat scaling. Server wire/snapshot/delta/Focus regression
+race PASS1.358s. Full lint, generated bindings and whitespace checks pass.
+Logs `/tmp/eidolon-fighter-buff-wire-{client-red,server-red,server-red-corrected,client-green,client-final,server-green,generate,lint}-20260912.log`.
+
+## Required next phase — do not publish this partial candidate
+
 Update descriptions to distinguish the Damage stat from every spell's entire
 damage formula. Repair the actual offline stat/attack consumers and remove
 legacy Whirlwind-only special cases that would double-apply bonuses. Source

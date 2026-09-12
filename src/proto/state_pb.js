@@ -3991,6 +3991,8 @@ export const eidolon = $root.eidolon = (() => {
              * @property {boolean|null} [invulnerableActive] Entity invulnerableActive
              * @property {number|null} [invulnerableDuration] Entity invulnerableDuration
              * @property {number|null} [spellFocusMultiplier] Entity spellFocusMultiplier
+             * @property {number|null} [berserkerModeMultiplier] Entity berserkerModeMultiplier
+             * @property {number|null} [lastStandMultiplier] Entity lastStandMultiplier
              * @property {number|null} [jumpStartX] Entity jumpStartX
              * @property {number|null} [jumpStartY] Entity jumpStartY
              * @property {number|null} [jumpStartZ] Entity jumpStartZ
@@ -4926,6 +4928,22 @@ export const eidolon = $root.eidolon = (() => {
             Entity.prototype.spellFocusMultiplier = 0;
 
             /**
+             * Entity berserkerModeMultiplier.
+             * @member {number} berserkerModeMultiplier
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.berserkerModeMultiplier = 0;
+
+            /**
+             * Entity lastStandMultiplier.
+             * @member {number} lastStandMultiplier
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.lastStandMultiplier = 0;
+
+            /**
              * Entity jumpStartX.
              * @member {number} jumpStartX
              * @memberof eidolon.state.Entity
@@ -5277,6 +5295,10 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 119, wireType 5 =*/957).float(message.invulnerableDuration);
                 if (message.spellFocusMultiplier != null && $Object.hasOwnProperty.call(message, "spellFocusMultiplier") && !$Object.is(message.spellFocusMultiplier, 0))
                     writer.uint32(/* id 120, wireType 5 =*/965).float(message.spellFocusMultiplier);
+                if (message.berserkerModeMultiplier != null && $Object.hasOwnProperty.call(message, "berserkerModeMultiplier") && !$Object.is(message.berserkerModeMultiplier, 0))
+                    writer.uint32(/* id 121, wireType 5 =*/973).float(message.berserkerModeMultiplier);
+                if (message.lastStandMultiplier != null && $Object.hasOwnProperty.call(message, "lastStandMultiplier") && !$Object.is(message.lastStandMultiplier, 0))
+                    writer.uint32(/* id 122, wireType 5 =*/981).float(message.lastStandMultiplier);
                 if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
                     for (let i = 0; i < message.$unknowns.length; ++i)
                         writer.raw(message.$unknowns[i]);
@@ -6374,6 +6396,24 @@ export const eidolon = $root.eidolon = (() => {
                                 delete message.spellFocusMultiplier;
                             continue;
                         }
+                    case 121: {
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.berserkerModeMultiplier = value;
+                            else
+                                delete message.berserkerModeMultiplier;
+                            continue;
+                        }
+                    case 122: {
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.lastStandMultiplier = value;
+                            else
+                                delete message.lastStandMultiplier;
+                            continue;
+                        }
                     case 81: {
                             if (wireType !== 5)
                                 break;
@@ -6868,6 +6908,12 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.spellFocusMultiplier != null && $Object.hasOwnProperty.call(message, "spellFocusMultiplier"))
                     if (typeof message.spellFocusMultiplier !== "number")
                         return "spellFocusMultiplier: number expected";
+                if (message.berserkerModeMultiplier != null && $Object.hasOwnProperty.call(message, "berserkerModeMultiplier"))
+                    if (typeof message.berserkerModeMultiplier !== "number")
+                        return "berserkerModeMultiplier: number expected";
+                if (message.lastStandMultiplier != null && $Object.hasOwnProperty.call(message, "lastStandMultiplier"))
+                    if (typeof message.lastStandMultiplier !== "number")
+                        return "lastStandMultiplier: number expected";
                 if (message.jumpStartX != null && $Object.hasOwnProperty.call(message, "jumpStartX"))
                     if (typeof message.jumpStartX !== "number")
                         return "jumpStartX: number expected";
@@ -7314,6 +7360,12 @@ export const eidolon = $root.eidolon = (() => {
                 if (object.spellFocusMultiplier != null)
                     if (!$Object.is($Number(object.spellFocusMultiplier), 0))
                         message.spellFocusMultiplier = $Number(object.spellFocusMultiplier);
+                if (object.berserkerModeMultiplier != null)
+                    if (!$Object.is($Number(object.berserkerModeMultiplier), 0))
+                        message.berserkerModeMultiplier = $Number(object.berserkerModeMultiplier);
+                if (object.lastStandMultiplier != null)
+                    if (!$Object.is($Number(object.lastStandMultiplier), 0))
+                        message.lastStandMultiplier = $Number(object.lastStandMultiplier);
                 if (object.jumpStartX != null)
                     if (!$Object.is($Number(object.jumpStartX), 0))
                         message.jumpStartX = $Number(object.jumpStartX);
@@ -7498,6 +7550,8 @@ export const eidolon = $root.eidolon = (() => {
                     object.invulnerableActive = false;
                     object.invulnerableDuration = 0;
                     object.spellFocusMultiplier = 0;
+                    object.berserkerModeMultiplier = 0;
+                    object.lastStandMultiplier = 0;
                 }
                 if (message.id != null && $Object.hasOwnProperty.call(message, "id"))
                     object.id = message.id;
@@ -7782,6 +7836,10 @@ export const eidolon = $root.eidolon = (() => {
                     object.invulnerableDuration = options.json && !$isFinite(message.invulnerableDuration) ? $String(message.invulnerableDuration) : message.invulnerableDuration;
                 if (message.spellFocusMultiplier != null && $Object.hasOwnProperty.call(message, "spellFocusMultiplier"))
                     object.spellFocusMultiplier = options.json && !$isFinite(message.spellFocusMultiplier) ? $String(message.spellFocusMultiplier) : message.spellFocusMultiplier;
+                if (message.berserkerModeMultiplier != null && $Object.hasOwnProperty.call(message, "berserkerModeMultiplier"))
+                    object.berserkerModeMultiplier = options.json && !$isFinite(message.berserkerModeMultiplier) ? $String(message.berserkerModeMultiplier) : message.berserkerModeMultiplier;
+                if (message.lastStandMultiplier != null && $Object.hasOwnProperty.call(message, "lastStandMultiplier"))
+                    object.lastStandMultiplier = options.json && !$isFinite(message.lastStandMultiplier) ? $String(message.lastStandMultiplier) : message.lastStandMultiplier;
                 return object;
             };
 

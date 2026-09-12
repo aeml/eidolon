@@ -80,7 +80,9 @@ type EntitySnapshot struct {
 	IronFortressDuration       float64
 	GuardianRoarDuration       float64
 	BerserkerModeDuration      float64
+	BerserkerModeMultiplier    float64
 	LastStandDuration          float64
+	LastStandMultiplier        float64
 	SerratedEdgesDuration      float64
 	PoisonCoatingDuration      float64
 	StealthDuration            float64

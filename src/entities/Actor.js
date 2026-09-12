@@ -133,7 +133,10 @@ export class Actor extends Entity {
         this.slowFactor = 0;
         this.lastStandTimer = 0; // Last Stand Rampage Buff
         this.lastStandDamageBoost = 0;
+        this.lastStandMultiplier = 1;
         this.berserkerEdgeActive = false; // Passive check
+        this.berserkerEdgeTimer = 0;
+        this.berserkerEdgeMultiplier = 1;
 
         // Cleric Buffs/Debuffs
         this.blessingResolveTimer = 0;

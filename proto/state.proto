@@ -251,6 +251,9 @@ message Entity {
   float invulnerable_duration = 119;
   // Paid Spell Focus's stored next-spell multiplier, independent of private ranks.
   float spell_focus_multiplier = 120;
+  // Public cast-time Fighter buff strength, independent of private talent ranks.
+  float berserker_mode_multiplier = 121;
+  float last_stand_multiplier = 122;
 
   // Authoritative jump replication
   float jump_start_x = 81;

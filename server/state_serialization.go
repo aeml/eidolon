@@ -198,14 +198,18 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		}
 	}
 	berserkerModeDuration := 0.0
+	berserkerModeMultiplier := 0.0
 	if e.BerserkerModeActive {
+		berserkerModeMultiplier = e.ActiveBerserkerModeMultiplier()
 		berserkerModeDuration = time.Until(e.BerserkerModeEndTime).Seconds()
 		if berserkerModeDuration < 0 {
 			berserkerModeDuration = 0
 		}
 	}
 	lastStandDuration := 0.0
+	lastStandMultiplier := 0.0
 	if e.LastStandActive {
+		lastStandMultiplier = e.ActiveLastStandMultiplier()
 		lastStandDuration = time.Until(e.LastStandEndTime).Seconds()
 		if lastStandDuration < 0 {
 			lastStandDuration = 0
@@ -311,7 +315,9 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		IronFortressDuration:       ironFortressDuration,
 		GuardianRoarDuration:       guardianRoarDuration,
 		BerserkerModeDuration:      berserkerModeDuration,
+		BerserkerModeMultiplier:    berserkerModeMultiplier,
 		LastStandDuration:          lastStandDuration,
+		LastStandMultiplier:        lastStandMultiplier,
 		SerratedEdgesDuration:      serratedEdgesDuration,
 		PoisonCoatingDuration:      poisonCoatingDuration,
 		StealthDuration:            stealthDuration,
@@ -375,6 +381,13 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	cguardianRoarActive := current.GuardianRoarActive
 	cberserkerModeActive := current.BerserkerModeActive
 	clastStandActive := current.LastStandActive
+	cberserkerModeMultiplier, clastStandMultiplier := 0.0, 0.0
+	if cberserkerModeActive {
+		cberserkerModeMultiplier = current.ActiveBerserkerModeMultiplier()
+	}
+	if clastStandActive {
+		clastStandMultiplier = current.ActiveLastStandMultiplier()
+	}
 	cserratedEdgesActive := current.SerratedEdgesActive
 	cpoisonCoatingActive := current.PoisonCoatingActive
 	cstealthActive := current.StealthActive
@@ -666,6 +679,9 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 		return true
 	}
 	if cspellFocusActive != last.SpellFocusActive || math.Abs(cspellFocusMultiplier-last.SpellFocusMultiplier) > 0.0001 {
+		return true
+	}
+	if math.Abs(cberserkerModeMultiplier-last.BerserkerModeMultiplier) > 0.0001 || math.Abs(clastStandMultiplier-last.LastStandMultiplier) > 0.0001 {
 		return true
 	}
 	if cswiftActive != last.SwiftActive {
@@ -1122,13 +1138,17 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		}
 	}
 	berserkerModeDuration := float32(0)
+	berserkerModeMultiplier := float32(0)
 	if e.BerserkerModeActive {
+		berserkerModeMultiplier = float32(e.ActiveBerserkerModeMultiplier())
 		if remaining := time.Until(e.BerserkerModeEndTime).Seconds(); remaining > 0 {
 			berserkerModeDuration = float32(remaining)
 		}
 	}
 	lastStandDuration := float32(0)
+	lastStandMultiplier := float32(0)
 	if e.LastStandActive {
+		lastStandMultiplier = float32(e.ActiveLastStandMultiplier())
 		if remaining := time.Until(e.LastStandEndTime).Seconds(); remaining > 0 {
 			lastStandDuration = float32(remaining)
 		}
@@ -1261,7 +1281,9 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		IronFortressDuration:       ironFortressDuration,
 		GuardianRoarDuration:       guardianRoarDuration,
 		BerserkerModeDuration:      berserkerModeDuration,
+		BerserkerModeMultiplier:    berserkerModeMultiplier,
 		LastStandDuration:          lastStandDuration,
+		LastStandMultiplier:        lastStandMultiplier,
 		SerratedEdgesDuration:      serratedEdgesDuration,
 		PoisonCoatingDuration:      poisonCoatingDuration,
 		StealthDuration:            stealthDuration,

@@ -961,6 +961,9 @@ type Entity struct {
 	InvulnerableDuration float32 `protobuf:"fixed32,119,opt,name=invulnerable_duration,json=invulnerableDuration,proto3" json:"invulnerable_duration,omitempty"`
 	// Paid Spell Focus's stored next-spell multiplier, independent of private ranks.
 	SpellFocusMultiplier float32 `protobuf:"fixed32,120,opt,name=spell_focus_multiplier,json=spellFocusMultiplier,proto3" json:"spell_focus_multiplier,omitempty"`
+	// Public cast-time Fighter buff strength, independent of private talent ranks.
+	BerserkerModeMultiplier float32 `protobuf:"fixed32,121,opt,name=berserker_mode_multiplier,json=berserkerModeMultiplier,proto3" json:"berserker_mode_multiplier,omitempty"`
+	LastStandMultiplier     float32 `protobuf:"fixed32,122,opt,name=last_stand_multiplier,json=lastStandMultiplier,proto3" json:"last_stand_multiplier,omitempty"`
 	// Authoritative jump replication
 	JumpStartX    float32 `protobuf:"fixed32,81,opt,name=jump_start_x,json=jumpStartX,proto3" json:"jump_start_x,omitempty"`
 	JumpStartY    float32 `protobuf:"fixed32,82,opt,name=jump_start_y,json=jumpStartY,proto3" json:"jump_start_y,omitempty"`
@@ -1782,6 +1785,20 @@ func (x *Entity) GetSpellFocusMultiplier() float32 {
 	return 0
 }
 
+func (x *Entity) GetBerserkerModeMultiplier() float32 {
+	if x != nil {
+		return x.BerserkerModeMultiplier
+	}
+	return 0
+}
+
+func (x *Entity) GetLastStandMultiplier() float32 {
+	if x != nil {
+		return x.LastStandMultiplier
+	}
+	return 0
+}
+
 func (x *Entity) GetJumpStartX() float32 {
 	if x != nil {
 		return x.JumpStartX
@@ -1939,7 +1956,7 @@ const file_state_proto_rawDesc = "" +
 	"\n" +
 	"StatsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\x91&\n" +
+	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\x81'\n" +
 	"\x06Entity\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
 	"\vinstance_id\x18\x02 \x01(\tR\n" +
@@ -2066,7 +2083,9 @@ const file_state_proto_rawDesc = "" +
 	"safeZoneId\x12/\n" +
 	"\x13invulnerable_active\x18v \x01(\bR\x12invulnerableActive\x123\n" +
 	"\x15invulnerable_duration\x18w \x01(\x02R\x14invulnerableDuration\x124\n" +
-	"\x16spell_focus_multiplier\x18x \x01(\x02R\x14spellFocusMultiplier\x12 \n" +
+	"\x16spell_focus_multiplier\x18x \x01(\x02R\x14spellFocusMultiplier\x12:\n" +
+	"\x19berserker_mode_multiplier\x18y \x01(\x02R\x17berserkerModeMultiplier\x122\n" +
+	"\x15last_stand_multiplier\x18z \x01(\x02R\x13lastStandMultiplier\x12 \n" +
 	"\fjump_start_x\x18Q \x01(\x02R\n" +
 	"jumpStartX\x12 \n" +
 	"\fjump_start_y\x18R \x01(\x02R\n" +

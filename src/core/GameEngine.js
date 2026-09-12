@@ -28,6 +28,7 @@ import { installGameEngineEntitySync } from './GameEngineEntitySync.js';
 import { installGameEngineMovement } from './GameEngineMovement.js';
 import { installGameEngineRuntime } from './GameEngineRuntime.js';
 import { createTimedRemoteEffectConfig } from './TimedRemoteEffectConfig.js';
+import { readDamageBuffMultiplier } from './FighterDamageBuffState.js';
 
 const REMOTE_SUPPORT_STATE_CONFIG = {
     invulnerable: {
@@ -239,13 +240,24 @@ const REMOTE_EFFECT_SYNC_CONFIG = {
         durationKey: 'berserkerModeDuration',
         activeProperty: 'berserkerEdgeActive',
         timerProperty: 'berserkerEdgeTimer',
-        fallbackDuration: 15
+        fallbackDuration: 15,
+        extraPayloadKeys: ['berserkerModeMultiplier'],
+        onActivate: (entity, payload) => {
+            entity.berserkerEdgeMultiplier = readDamageBuffMultiplier(payload, 'berserkerModeMultiplier', entity.berserkerEdgeMultiplier, 1.5, 1.8);
+        },
+        onDeactivate: entity => { entity.berserkerEdgeMultiplier = 1; }
     }),
     last_stand: createTimedRemoteEffectConfig({
         payloadKey: 'lastStandActive',
         durationKey: 'lastStandDuration',
         timerProperty: 'lastStandTimer',
-        fallbackDuration: 10
+        fallbackDuration: 10,
+        extraPayloadKeys: ['lastStandMultiplier'],
+        onActivate: (entity, payload) => {
+            entity.lastStandMultiplier = readDamageBuffMultiplier(payload, 'lastStandMultiplier', entity.lastStandMultiplier, 3, 3.6);
+            entity.lastStandDamageBoost = entity.lastStandMultiplier - 1;
+        },
+        onDeactivate: entity => { entity.lastStandMultiplier = 1; entity.lastStandDamageBoost = 0; }
     }),
     serrated_edges: createTimedRemoteEffectConfig({
         payloadKey: 'serratedEdgesActive',
@@ -2071,7 +2083,16 @@ export class GameEngine {
                 icon: '🔥',
                 name: 'Last Stand',
                 durationSeconds: Number(actor.lastStandTimer || 0),
-                detail: `+${Math.round(Number(actor.lastStandDamageBoost || 0) * 100)}% damage`,
+                detail: `+${Math.round(Number(actor.lastStandDamageBoost || 0) * 100)}% Damage stat`,
+                isDebuff: false
+            },
+            {
+                id: 'berserker_edge',
+                active: Number(actor.berserkerEdgeTimer) > 0,
+                icon: '🔥',
+                name: 'Berserker Edge',
+                durationSeconds: Number(actor.berserkerEdgeTimer || 0),
+                detail: `+${Math.round((Number(actor.berserkerEdgeMultiplier || 1.5) - 1) * 100)}% Damage stat; -20% defense`,
                 isDebuff: false
             },
             {

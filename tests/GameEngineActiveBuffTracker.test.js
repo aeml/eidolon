@@ -130,7 +130,7 @@ describe('GameEngine active buff tracker', () => {
                 id: 'last_stand',
                 name: 'Last Stand',
                 icon: '🔥',
-                detail: '+45% damage',
+                detail: '+45% Damage stat',
                 durationSeconds: 4.8,
                 isDebuff: false
             }),
