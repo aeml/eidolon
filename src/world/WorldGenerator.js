@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { createProceduralPvPArena } from '../art/ProceduralPvPArena.js';
 import { buildDungeonSurfaceUnion } from './dungeonSurfaceUnion.js';
 import { getLanternholdWalkCollider } from '../art/ProceduralLanternholdArchitecture.js';
@@ -265,12 +266,24 @@ export class WorldGenerator {
         // Taller fence: Post height 8, Rail height adjusted
         const postGeo = new THREE.BoxGeometry(0.8, 8, 0.8);
         const railGeo = new THREE.BoxGeometry(4, 0.4, 0.2);
-        const createFenceMaterial = () => MeshFactory.configureShadowCastingForMaterial(
+        const material = MeshFactory.configureShadowCastingForMaterial(
             new THREE.MeshStandardMaterial({ color: 0x8B4513 }),
             { stableFrontShadows: true }
         );
 
         const group = new THREE.Group();
+        group.name = 'TownFence';
+        const buckets = new Map();
+        // Small local batches preserve useful camera/shadow frustum culling.
+        // Keep vertices near their origin even in distant dungeon coordinates.
+        const addPart = (geometry, x, y, z, rotation = 0) => {
+            const bx = Math.floor(x / 32) * 32, bz = Math.floor(z / 32) * 32;
+            const key = `${bx}:${bz}`;
+            if (!buckets.has(key)) buckets.set(key, { x: bx, z: bz, geometries: [] });
+            const transform = new THREE.Matrix4().makeRotationY(rotation);
+            transform.setPosition(x - bx, y, z - bz);
+            buckets.get(key).geometries.push(geometry.clone().applyMatrix4(transform));
+        };
         
         const minX = cx - width / 2;
         const maxX = cx + width / 2;
@@ -283,17 +296,12 @@ export class WorldGenerator {
         // Helper to create segment
         const createSegment = (x, z, rotation) => {
             // Post
-            this.addPost(group, postGeo, createFenceMaterial(), x, z);
+            addPart(postGeo, x, 4, z);
 
             // Rails
             const railHeights = [2, 4, 6];
             for (let h of railHeights) {
-                const rail = new THREE.Mesh(railGeo, createFenceMaterial());
-                rail.castShadow = true;
-                rail.receiveShadow = true;
-                rail.position.set(x, h, z);
-                rail.rotation.y = rotation;
-                group.add(rail);
+                addPart(railGeo, x, h, z, rotation);
             }
 
             // Collider
@@ -332,6 +340,21 @@ export class WorldGenerator {
             createSegment(maxX, z, Math.PI / 2);
         }
 
+        for (const bucket of buckets.values()) {
+            const geometry = mergeGeometries(bucket.geometries, false);
+            bucket.geometries.forEach(part => part.dispose());
+            if (!geometry) throw new Error('Unable to batch town fence geometry');
+            geometry.computeBoundingBox();
+            geometry.computeBoundingSphere();
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(bucket.x, 0, bucket.z);
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            group.add(mesh);
+        }
+        postGeo.dispose();
+        railGeo.dispose();
+        if (!group.children.length) material.dispose();
         this.scene.add(group);
     }
 
