@@ -228,6 +228,14 @@ before the helper existed. Native inspection/absorption replay is queued after
 the sole Verdant-budget four-role run. Its earlier paid shield checks do not
 replace this pending complete route, and Tripwire integration remains gated.
 
+CI34716757122 completed SUCCESS on9048c71a: client414suites/6418tests131.108s,
+server game race344.677s, and all three browser smoke shards passed. Logs
+`/tmp/eidolon-tripwire-ci-{client,server}-34716757122.log` preserve those jobs.
+Later wire-observer and entrance-inspection test edits are not covered by that
+commit's hosted run. Their focused tests and the actual Tripwire native pass
+remain separate evidence; the updated full entrance route is still queued.
+Manual native/deploy/live jobs were skipped, not passed. No production claim.
+
 ## Draft 1.1.0 patch note
 
 - Fixed Tripwire's damage and critical talents not affecting triggered traps.
