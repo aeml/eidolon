@@ -1,5 +1,9 @@
 import { jest } from '@jest/globals';
 
+jest.unstable_mockModule('../src/assets/StylesheetBoot.js', () => ({
+    ensureGameStylesReady: jest.fn(async () => true)
+}));
+
 jest.unstable_mockModule('../src/core/GameEngine.js', () => ({
     GameEngine: class MockGameEngine {
         constructor() {

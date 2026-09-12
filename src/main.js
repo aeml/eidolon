@@ -1,5 +1,6 @@
 import { GameEngine } from './core/GameEngine.js';
 import { AssetCacheManager } from './assets/AssetCacheManager.js';
+import { ensureGameStylesReady } from './assets/StylesheetBoot.js';
 import { resolveServerAddress } from './core/serverAddress.js';
 
 const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -94,7 +95,8 @@ window.addEventListener('unhandledrejection', function(event) {
     logToScreen(`Unhandled Rejection: ${event.reason}`, 'CRITICAL');
 });
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
+    if (!await ensureGameStylesReady()) return;
     void syncFullscreenPreference(false);
     void AssetCacheManager.registerServiceWorker().catch((error) => {
         console.warn('Asset service worker registration failed', error);
