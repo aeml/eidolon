@@ -41,6 +41,13 @@ still running at this entry, so full CI and candidate integration remain pending
 Logs `/tmp/eidolon-health-cap-ci-{client,server}-34716297331.log` preserve the
 independent completed jobs; the earlier local143 result remains incomplete.
 
+CI34716297331 subsequently completed SUCCESS: all three browser smoke shards
+passed in addition to full client/server jobs. Accept this bounded server fix
+for integration based on actual equip/unequip/re-equip and detached-state
+regressions plus full CI. No new UI behavior was introduced. This does not close
+the broader four-class native resource/reconnect/death matrix or publish1.1.0.
+Manual native/deploy/live jobs were skipped and are not counted as passes.
+
 ## Draft 1.1.0 patch note
 
 - Removing health-boosting equipment now immediately limits current health to
