@@ -5,7 +5,47 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 02:20 UTC
+## Current checkpoint — September 12, 02:31 UTC
+
+Previous goal turn was PROGRESS (hosted rerun and terminal Briar evidence).
+This continuation is PROGRESS: full integrated server race acceptance and
+test-only input diagnostics are complete. The full1.1–1.10 goal remains active.
+
+- **Development full-server52549 TERMINAL0** on clean a7be1ed9: root18.942s,
+  loadtest1.022s, game343.992s; database/lifecycle cached passes. Log
+  `/tmp/eidolon-development-gear-full-server-20260912.log`. No local full or
+  native test is active now; do not keep polling terminal52549 or77501.
+- Input review confirms both Warden and Briar use the same2s generic slam
+  warning. The retained late-escape totals do not isolate a cause. Added
+  optional per-phase timing to ordinary ground input and bounded party escape
+  records: observer/origin/path/projection/mouse/hover/ray/click/movement, plus
+  planning time, game frame counts and renderer resources. No input, movement,
+  damage, deadline, death or survival rule changes. Three client suites/36tests
+  PASS1.113s, changed-file lint PASS. Logs
+  `/tmp/eidolon-party-input-timing-{tests,lint}-20260912.log`.
+- **4231854db325e55c17ca8cf0a9fae41cc6ddcbbb** adds that test-only diagnostic and
+  evidence docs. Primary and `/tmp/eidolon-offline-shattering-charge-20260912`
+  now clean4231854d, merged only after full Go terminal. Server runtime remains
+  the accepted a7be1ed9 runtime. Doc `2026-09-12-briar-input-timing.md`; this is
+  NOT a native retry or a fixed/balanced Briar encounter. Failed77501 archive
+  and all wider dungeon/earned/quest/save gates remain as below.
+- **HostedCI34667225615 ACTIVE at02:31**, release64source6d5e82cb. Full client
+  and server jobs SUCCESS (server race, backup/restore, benchmarks/build stages
+  completed); browser3/3 job103482587597 SUCCESS. Browser1/3 job103482587561
+  and2/3 job103482587639 are still running their smoke steps. No new failure.
+  This workflow-dispatch intentionally excludes native and deployment stages.
+  Inspect completed logs/artifacts when available before master promotion.
+  An early `gh run view --job --log` was refused while the run remained active;
+  `/tmp/eidolon-release64-hosted-server-34667225615.log` is NOT collected proof yet.
+- Next: finish/check that SAME hosted run, then push ONLY the clean scoped
+  release64 branch to master after verifying remote ancestry. Preserve all
+  normal master-push CI, predeploy, deployment and final live gates. Keep local
+  browser hardware free for that release; diagnostic four-party retry follows
+  without competing. Public63 remains last accepted;64 is not deployed.
+- No soak dispatched. Existing nightly schedule remains enabled, as recorded
+  below; do not claim it was disabled. Root ledger-only master: NEVER PUSH.
+
+## Previous checkpoint — September 12, 02:20 UTC
 
 Previous goal turn was PROGRESS (gear explosion repair and integration). This
 continuation is PROGRESS: moved full release regression to hosted CI while the
