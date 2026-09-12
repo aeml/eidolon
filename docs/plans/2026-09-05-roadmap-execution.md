@@ -5,7 +5,76 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 11:20 UTC
+## Current checkpoint — September 12, 11:36 UTC
+
+Previous goal turn PROGRESS; this continuation PROGRESS. Retained the full
+1.1.0–1.10.0 scope. Verified terminal party evidence, completed the recovered
+Wizard reuse/profile run, corrected party-only tank tactics with red/green
+tests, and started native verification. No production deployment/version bump,
+root push or soak change. Primary/integrated remain clean61fd4b96 pending
+combined stylesheet/auth CI completion; do not push the root ledger branch.
+
+- **Party78290 TERMINAL FAILURE**, frozenab0ac2be,6.7m total. All four legal
+  level30 roles entered Normal Verdant; DemonOrc killed; all four actually
+  returned to town, healed/restored mana, and resumed the same saved instance,
+  seed, rooms, Gold, inventory and quests. Seed-8994194291653967333,gen2,
+  attempt0/no fallback. First RootboundWarden fight progressed15000→last
+  periodic1759HP, then **Rogue died** after167.890s of boss combat. This is
+  not a clear or quest-credit/Water acceptance. Total damage Fighter5819,
+  Rogue7109,Wizard5004; Cleric5021 effective ally healing,4543 in boss fight.
+  Final HP/MP: Fighter824/107,Cleric663/30,Wizard855/19,Rogue0/2. Tank used
+ 13Whirlwind/11Slam; Rogue took3496damage with repeated late close-range hits.
+  Evidence does not prove one sole cause. Original log retained and report,
+  results/log archived `/tmp/eidolon-party-warden-failure-j2v94y`.
+  Wrapper credentialscanPASS/sanitized0; owned services/ports cleared.
+- Profile forward-port `/tmp/eidolon-1-1-recovered-boot-frame-profile-20260912`,
+  branch`work/1-1-recovered-boot-frame-profile`, runtime**9b089ee8**,parent
+  ea772f90; now clean docs-tip**8af627fe**. Six focused suites66PASS3.644s;
+  assets/lint/diffPASS, session86164terminal0. Logs
+  `/tmp/eidolon-recovered-boot-profile-{preflight,assets,lint}-20260912.log`.
+  **Native26996 TERMINAL PASS**, frozen9b089ee8,frame09121130,
+  routeanimation-reuse/Wizard/SystemChrome/RADVRENOIR: same saved character
+  repeated twice with zero retries; full ability/rune matrices1.5m+1.8m,
+  total3.3m. Moving Fireball retained17/29frames in unchanged650ms sample.
+  Mean update walltime10.62/4.13ms; render28.91/17.30ms; maximum drawcalls
+ 2677/2633. These include scheduling/driver wait, not GPU execution timings.
+  Prior8-frame intermittent failure is NOT explained or closed by two passes.
+  Scene-level profiling is warranted; no particular model blamed yet.
+  Log `/tmp/eidolon-recovered-boot-frame-native-20260912.log`; report,
+  results/log archived `/tmp/eidolon-recovered-frame-pass-w5iSSo`.
+  Both moving-cast JSON bodies inspected from report embedded ZIP.
+  Wrapper credentialscanPASS/sanitized0; services/API18185/Mongo18186/
+  web41875 cleared before next run. Candidate not pushed/integrated.
+- Party-only follow-up `/tmp/eidolon-1-1-party-tank-priority-20260912`,
+  branch`work/1-1-party-tank-priority`, clean
+  **b9f3e4f7f60b3be469015c6d17511bc45a4f7a3a**,parentab0. Inspection found
+  solo rotation prioritized Whirlwind ahead of extra-threat Shield Slam and
+  spent the next Slam's mana. Party policy now retains defenses first, chooses
+  Slam before optional Whirlwind, and saves actual resolved Slam cost. Basic
+  attacks remain active; solo policy unchanged. No stats/resource grants,
+  level40Roar unlock, boss nerf, or survival/credit gate changes. RED4fails/
+ 23pass, GREEN6suites90PASS2.593s; lint/assets/diffPASS. Logs
+  `/tmp/eidolon-party-tank-priority-{red,green,lint,assets}-20260912.log`.
+  **Native6805 ACTIVE**, frozenb9f3e4f7,tankpriority09121135,party-dungeon,
+  SystemChrome/sg render,18185/18186/41875. Log
+  `/tmp/eidolon-party-tank-priority-native-20260912.log`. One GPU lane
+  RESERVED; poll same handle. At11:35 Fighter/Cleric/Wizard prepared and
+  Rogue logging in; no entry/clear yet. Not pushed/primary-integrated.
+- Auth **CI34690510473 TERMINAL SUCCESS**: actual job logs client392suites/
+ 6239tests128.328s; game86.9%87.770s/fullrace281.625s; browser40+50+26=
+ 116PASS. Logs `/tmp/eidolon-auth-recovery-ci-{client,server,browser1,browser2,browser3}-34690510473.log`.
+  Native/deploy/live jobs SKIPPED, not passes. Previously recorded native
+  auth51917 on combinedstyle source remains valid scoped evidence.
+- Style **CI34690667637 ACTIVE** at11:35: client103545207737PASS393suites/
+ 6244tests121.719s; server103545207843PASSgame86.9%98.496s/race341.886s;
+  browser3/103546364025PASS28tests. Browser1/103546364065 and2/
+ 103546364028 stillrunning. Logs
+  `/tmp/eidolon-style-boot-ci-{client,server,browser3}-34690667637.log`.
+  Direct completed-job API downloads worked while `gh run view --job --log`
+  refused logs until whole run completion. Await remaining groups before
+  accepting combinedea772f90 into primary. Do not restart active CI jobs.
+
+## Previous checkpoint — September 12, 11:20 UTC
 
 Previous goal turn PROGRESS; this continuation PROGRESS. Direct live inspection
 identified the party setup failure, implemented and natively verified stylesheet
