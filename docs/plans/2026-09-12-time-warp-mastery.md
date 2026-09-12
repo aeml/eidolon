@@ -1,5 +1,11 @@
 # Time Warp Mastery — meaningful duration upgrade, unreleased
 
+> Release65 provenance: this imported investigation records the original
+> development branch, not acceptance of the scoped release integration. Original
+> hashes, broader campaign/raid behavior and native results are historical. See
+> [release65 scope and gates](2026-09-12-release65-wizard-training.md) for current
+> integration evidence and remaining publication requirements.
+
 WIZ_25 previously advertised and calculated damage for a non-damaging support
 spell. The upgrade now grants4% Time Warp duration per rank, preserving the
 existing ID, five-rank limit and paid ranks. Haste remains50%, the cooldown

@@ -1,5 +1,11 @@
 # Offline Temporal Weave charges — unreleased
 
+> Release65 provenance: this imported investigation records the original
+> development branch, not acceptance of the scoped release integration. Original
+> hashes, broader campaign/raid behavior and native results are historical. See
+> [release65 scope and gates](2026-09-12-release65-wizard-training.md) for current
+> integration evidence and remaining publication requirements.
+
 The actual four-piece Temporal Weave bonus promises two Teleport charges. Server
 casts already implement a full-pair recharge restarted by either cast. Offline
 casting ignored the bonus and imposed ordinary cooldown after the first cast.

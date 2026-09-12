@@ -21,6 +21,16 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
+    test('release65 explains Wizard training and retains all release64 notes', () => {
+        expect(indexHtml.match(/data-version="1\.0\.65"/g)).toHaveLength(1);
+        expect(indexHtml.indexOf('data-version="1.0.65"')).toBeLessThan(indexHtml.indexOf('data-version="1.0.64"'));
+        const entry = indexHtml.split('data-version="1.0.65"')[1].split('data-version="1.0.64"')[0];
+        for (const text of ['A stronger Focus charge', 'Time Warp Mastery lasts longer',
+            'Teleport obeys the battlefield', 'Protection you can read',
+            'Consistent offline spell training', 'The same progression']) expect(entry).toContain(text);
+        expect(entry).not.toContain('new reward curve');
+        expect(entry).not.toContain('Shattering Charge');
+    });
     test('release64 documents combat defenses without dropping earlier releases', () => {
         expect(indexHtml.match(/data-version="1\.0\.64"/g)).toHaveLength(1);
         expect(indexHtml.indexOf('data-version="1.0.64"')).toBeLessThan(indexHtml.indexOf('data-version="1.0.63"'));
@@ -444,11 +454,11 @@ describe('version presentation', () => {
         }
         expect(fs.readFileSync(path.join(repoRoot, 'sw.js'), 'utf8')).toContain('sw-asset-cache.js?v=2026-09-04-11');
         expect(indexHtml).toContain('Built-in version: 2026-09-04-11');
-        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.0.64');
+        expect(JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8')).version).toBe('1.0.65');
     });
 
     test('advances the login screen and player-facing history to Alpha 1.0', () => {
-        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.0.64</span>');
+        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 1.0.65</span>');
         expect(indexHtml).toContain('Alpha 1.0.0 (the worlds answer together)');
         expect(indexHtml).toContain('Multiplayer has a social backbone');
         expect(indexHtml).toContain('Guilds are persistent institutions');
@@ -859,7 +869,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 1.0.64';
+        const expectedVersion = 'Alpha 1.0.65';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -981,7 +991,7 @@ describe('version presentation', () => {
     });
 
     test('marks Alpha 1.0 current and preserves its completed runway', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 1.0.64`');
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 1.0.65`');
         expect(alphaRoadmap).toContain('Active implementation line: `Alpha 1.0`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');

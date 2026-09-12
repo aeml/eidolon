@@ -1,5 +1,11 @@
 # Spell Focus Mastery — unreleased
 
+> Release65 provenance: this imported investigation records the original
+> development branch, not acceptance of the scoped release integration. Original
+> hashes, broader campaign/raid behavior and native results are historical. See
+> [release65 scope and gates](2026-09-12-release65-wizard-training.md) for current
+> integration evidence and remaining publication requirements.
+
 Based on protection-status candidate3b23c231 in
 `/tmp/eidolon-focus-mastery-20260911` (`work/focus-mastery`). Primary development
 remains at full-accepted ae938843; neither this change nor its protection-status
