@@ -42,6 +42,22 @@ integration. Low Skeleton damage can prove protection on/off without uniquely
 identifying30%from integer rounding; exact strength comes from receiving tests.
 Logs `/tmp/eidolon-roar-protection-*-20260912.log`.
 
+## Native result
+
+52996 on frozenbe6b1193 PASSED2.5minutes, zero retries. All normal/saved High/Low
+area, trained duration/expiry and30%status checks passed. Ordinary Skeleton hits
+were2/2/2 before,1/1/1 while protected, then2/2/2 after natural expiry; armor
+stayed0 and the aura appeared/disappeared with the real buff. Exact35mana paid,
+living town return. This establishes real receiving protection on/off; these
+small integral hits do not independently distinguish30%from other reductions.
+Archive `/tmp/eidolon-roar-protection-pass-fFwx65`; native log
+`/tmp/eidolon-roar-protection-native-20260912.log`. Credential scan sanitized0;
+owned containers/image and ports cleared after terminal completion. Main agent
+viewed Low status screenshot and confirmed30%text. Its incidental4FPS snapshot
+is not a performance pass or a demonstrated cause; performance remains open.
+Full CI34712906594 is still running at this entry (client passed). Do not
+integrate/publish based only on this scoped native success.
+
 ## Draft 1.1.0 patch note
 
 - Guardian Roar now consistently reduces incoming damage by30%for its protected
