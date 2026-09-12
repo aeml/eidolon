@@ -357,6 +357,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 		if player.Mana >= cost {
 			player.Mana -= cost
 			player.BerserkerModeActive = true
+			player.BerserkerModeMultiplier = fighterDamageBuffMultiplierAtCast(player, skillName)
 			player.BerserkerModeEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 15*time.Second))
 			player.RecalculateStats()
 
@@ -378,6 +379,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 							dz := member.Z - player.Z
 							if member.InstanceID == player.InstanceID && member.State != "DEAD" && math.Hypot(dx, dz) <= 15.0+entityVisualRadius(member) {
 								member.BerserkerModeActive = true
+								member.BerserkerModeMultiplier = player.BerserkerModeMultiplier
 								member.BerserkerModeEndTime = player.BerserkerModeEndTime
 								member.RecalculateStats()
 							}
@@ -396,6 +398,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 		hpPercent := float64(player.Health) / float64(player.MaxHealth)
 		if hpPercent < 0.30 {
 			player.LastStandActive = true
+			player.LastStandMultiplier = fighterDamageBuffMultiplierAtCast(player, skillName)
 			player.LastStandEndTime = time.Now().Add(resolveAbilityEffectDuration(player, skillName, 10*time.Second))
 			player.RecalculateStats()
 

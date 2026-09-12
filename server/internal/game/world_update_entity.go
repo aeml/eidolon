@@ -1018,10 +1018,14 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			now := time.Now()
 			if e.BerserkerModeActive && now.After(e.BerserkerModeEndTime) {
 				e.BerserkerModeActive = false
+				e.BerserkerModeMultiplier = 0
+				e.BerserkerModeEndTime = time.Time{}
 				e.RecalculateStats()
 			}
 			if e.LastStandActive && now.After(e.LastStandEndTime) {
 				e.LastStandActive = false
+				e.LastStandMultiplier = 0
+				e.LastStandEndTime = time.Time{}
 				e.RecalculateStats()
 			}
 			if e.StealthActive && now.After(e.StealthEndTime) {

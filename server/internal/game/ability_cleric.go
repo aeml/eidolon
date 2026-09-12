@@ -567,6 +567,8 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 								target.ArcaneShieldHP = 0
 							} else if target.BerserkerModeActive {
 								target.BerserkerModeActive = false
+								target.BerserkerModeMultiplier = 0
+								target.BerserkerModeEndTime = time.Time{}
 							} else if target.IronFortressActive {
 								target.IronFortressActive = false
 							}
