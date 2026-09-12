@@ -46,6 +46,21 @@ replication fields. Full CI and native execution remain required; no integration
 or production release is claimed. The four-player dungeon clear and all wider
 1.1–1.10 milestones remain open.
 
+## Candidate acceptance — September 12
+
+CI34715389572 on51938259 completed SUCCESS: client/server and all three browser
+smoke shards passed. Manual native/deploy/live jobs were skipped, not passed.
+Separate native63981 passed1.6minutes with zero retries: rank0/1/5 paid mana
+30/29/27, observed cooldown10/9.7/8.5 seconds (existing intelligence reduction),
+rank5 with generic CDR5 cooldown7.5, unchanged10second effect and natural expiry,
+High/Low visuals and persisted purchases after login. The attached High capture
+was visually inspected. Archive `/tmp/eidolon-serrated-technique-pass-02JBy7`;
+credential scan sanitized0files and exact containers/image/ports were clear.
+CI logs `/tmp/eidolon-serrated-ci-{client,server}-34715389572.log`.
+
+This accepts the bounded Serrated Technique candidate for integration. It does
+not establish full dungeon clear, 1.1.0 release readiness or production delivery.
+
 ## Draft 1.1.0 patch note
 
 - Serrated Edges Technique now reduces mana cost as well as cooldown. Its
