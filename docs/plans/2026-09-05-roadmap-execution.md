@@ -5,7 +5,58 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 14:14 UTC
+## Current checkpoint — September 12, 16:33 UTC
+
+Previous/current goal work is PROGRESS: completed Mastery native/CI, accepted
+Fighter integration, implemented paid utility Techniques and retained a failed
+party replay. Full1.1–1.10 goal ACTIVE; no version, production or soak change.
+Root is ledger-only and must not be pushed. Last verified live remains1.0.65;
+no fresh public probe, preserve63–65 patch history at1.1 preparation.
+
+- Primary and integrated clean **0ebfac25ae9a2c21c568a00cbe8cae7c87209aba**.
+  Combined Fighter+buff CI34698082603 SUCCESS exact28a61378:404/6315/103.296s,
+  game86.9%/99.712s/race349.166s,browser119actual. Merged docs-only31e5a7d1,
+  verified exact full-tree equality and integrated FF. No live publication.
+- Rogue Mastery **1494 TERMINAL PASS5.1m/5.2m0retries** onab202a67:
+  all three normal rank0/1/5 purchases, exact paid effects, High/Low, expiry,
+  fresh-login20ranks and LastingShadow/DirtyTricks14/7/14s. Archive
+  `/tmp/eidolon-rogue-utility-catalog-pass-YSeiyL`, log
+  `/tmp/eidolon-rogue-utility-catalog-native-20260912.log`; scan0/cleanupPASS,
+  saved cloak image viewed. Incidental12FPS is not performance acceptance.
+  Prior6920 actually FAILED50.2s on wrong guessed talent label; label now
+  resolved by stable catalog ID. Retain all four earlier failures.
+  Exact CI34699201516 SUCCESS400/6311/131.29s,game87.0%/106.880s,
+  race341.201s,browser119actual. WT clean **ad8bd5b3**, docs-only final.
+  Accepted component, combined integration still required.
+- Utility Techniques WT `/tmp/eidolon-1-1-rogue-utility-techniques-20260912`,
+  branch work/1-1-rogue-utility-techniques, frozen/devpushed **df5b83ea**.
+  Runtimea1987d93 replaces unusable named crit onROG06/20/26 with-.02mana/rank,
+  retaining+.03CDR/rank, IDs/five-rank/one-point and independent Masteries.
+  Actual paid client/server0/1/5, exact/insufficient mana, cooldown rejection,
+  duration/no-damage/equipment rounding/isolation tests pass; server race28.308s.
+  Initial CI34699578801 FAILED2client suites/7tests: old full offline matrix
+  ignored new override contract and multiplayer Smoke expected35cost instead31.
+  Fixed both expectations while retaining exact assertions. Final8suites330
+  PASS4.657s/full lint/shell/assets/list/diff. New full CI dispatched ondf5b83ea.
+  Newdistinctrogue-techniques route buys15Technique+5Lightstep/savedrune and
+  asserts actual paid mana/CDR/duration/High-Low/expiry; no granted ranks.
+  **46603 ACTIVE — sole native GPU**, frozen df5b83ea,
+  runIDroguetechnique09121632,18185/18186/41875. Log
+  `/tmp/eidolon-rogue-utility-technique-native-20260912.log`. Do not edit source
+  or run another native before terminal/archive/cleanup. Both new profiles
+  require native verification; Mastery-only priorpass is not Technique proof.
+- Party **19674 TERMINAL FAILED14.5m** on d879ab9d,
+  seed-2223287599221611197/gen2/attempt0/no fallback. Early rooms/two all-four
+  town recoveries+savedreentry passed; first Warden last2160/15000HP before
+  Fighter and Rogue deaths. F7985damage/5937taken,C6397allyhealing/368taken,
+  W6578damage/304taken,R10106damage/3408taken. Late healer readyCD but22–24mana
+  could not cast; apparent movementfailure records Fighterdeath beforemovement.
+  Archive `/tmp/eidolon-party-critical-triage-failure-9KBVOq`, log
+  `/tmp/eidolon-party-critical-triage-native-20260912.log`; scan sanitized2,
+  exactcleanupPASS. WTclean **f5a52592** docs-onlytip. No full clear/credit/
+  Waterhandoff or balance closure. Preserve requested.01 outside regen.
+
+## Previous checkpoint — September 12, 14:14 UTC
 
 This continuation remains PROGRESS; full roadmap ACTIVE. Primary/integrated
 remain clean da4a07cc, root ledger only/no push, no release/production/soak change.
