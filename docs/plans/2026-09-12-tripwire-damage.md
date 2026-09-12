@@ -129,6 +129,22 @@ start acknowledgement, observation failure cleanup, eight-pulse bound and actual
 production inverse direction. No world/clock/joystick-state mutation. Native
 replay remains queued behind the active four-player Low comparison.
 
+### Pulse replay exposed duplicate protocol release
+
+Native44547 on9cb94108 failed12.4s during approach: the helper's unconditional
+finally block sent a second touchEnd after a successful release. Chrome rejects
+that sequence. No actual trap acceptance was reached. Archive
+`/tmp/eidolon-tripwire-touch-release-failure-uoD4FU`; credential scan0 and exact
+disposable cleanup passed. The error does not prove the pulse movement endpoint.
+
+A stateful protocol test reproduced three failures with one cleanup control
+passing. The helper now tracks outstanding release only, retaining cleanup for
+a failed release without issuing another after success. Both direction/movement
+suites pass14tests1.776s, including delayed acknowledgement, protocol state,
+failed-release cleanup, observation failure and bounded stalled movement. ESLint
+and diff checks pass. A fresh actual replay is still required; no gameplay or
+acceptance assertions changed.
+
 ## Draft 1.1.0 patch note
 
 - Fixed Tripwire's damage and critical talents not affecting triggered traps.

@@ -17,14 +17,17 @@ export async function moveByPhoneJoystick(page, x, z) {
         y: bounds.y + bounds.height / 2 + 30 * direction.y };
     const cdp = await page.context().newCDPSession(page);
     const samples = [];
+    let releasePending = false;
     try {
         for (let pulse = 0; pulse < 8; pulse++) {
             // Attach rejection handling immediately; still wait for both actual
             // protocol receipts before inspecting movement or issuing a pulse.
+            releasePending = true;
             const started = cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [stick] })
                 .then(() => null, error => error);
             await new Promise(resolve => setTimeout(resolve, 80));
             await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+            releasePending = false;
             const startError = await started;
             if (startError) throw startError;
             const sample = await page.evaluate(({ before, x, z, distance }) => {
@@ -42,7 +45,7 @@ export async function moveByPhoneJoystick(page, x, z) {
         throw new Error(`Joystick pulses did not reach required forward progress: ${JSON.stringify({ before, x, z, samples })}`);
     } finally {
         try {
-            if (!page.isClosed()) await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+            if (releasePending && !page.isClosed()) await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
         } finally { await cdp.detach(); }
     }
 }
