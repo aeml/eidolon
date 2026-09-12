@@ -26,5 +26,25 @@ export function planPartyRangedSpacing(state, target, healer, canStep = () => tr
         }
     }
     candidates.sort((a, b) => a.travel - b.travel);
-    return candidates[0]?.step || null;
+    if (candidates.length) return candidates[0].step;
+
+    // Room edges and the healer's current location can make the ideal rings
+    // mutually unreachable. Do not stand in melee just because the whole
+    // retreat cannot finish in one input: take verified progress, then reread
+    // the moving enemy/support on the next serial role step.
+    const partial = [];
+    for (const travel of [3, 6, 9, 12]) {
+        for (let index = 0; index < 32; index++) {
+            const direction = angle + index * Math.PI / 16;
+            const step = { dx: Math.cos(direction) * travel, dz: Math.sin(direction) * travel };
+            const x = state.x + step.dx, z = state.z + step.dz;
+            const separation = Math.hypot(x - target.x, z - target.z);
+            if (separation < distance + 1 || separation > desired ||
+                Math.hypot(x - healer.x, z - healer.z) >= healer.range - .5) continue;
+            if (!partyPathAvoidsActors(state, step, actors, state.radius || 1.25) || !canStep(step)) continue;
+            partial.push({ step, separation, travel });
+        }
+    }
+    partial.sort((a, b) => b.separation - a.separation || a.travel - b.travel);
+    return partial[0]?.step || null;
 }

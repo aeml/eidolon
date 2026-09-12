@@ -1,6 +1,7 @@
 import { planPartyRangedSpacing } from './partyRangedSpacing.js';
 import { partyFormationArrival } from './partyDungeonControls.js';
 import { groundMovementObserved } from './groundMovementObservation.js';
+import { retreatStaysInEncounter } from './wizardHuntControls.js';
 
 const state = { x: 7.5, z: 0, radius: 1.25 };
 const enemy = { x: 0, z: 0, range: 20.5 };
@@ -27,6 +28,37 @@ test('a ranged actor leaves melee while remaining inside actual attack and heal 
     expect(distance(end, enemy)).toBeLessThan(enemy.range);
     expect(distance(end, healer)).toBeLessThan(healer.range);
     expect(Math.hypot(step.dx, step.dz)).toBeLessThanOrEqual(12);
+});
+
+test('the failed Warden edge position takes a shorter safe retreat when no ideal firing ring is reachable', () => {
+    const start = { x: 20015.232409494627, z: 19698.095018132488, radius: 1.25 };
+    const target = { x: 20022.55859375, z: 19696.603515625, range: 20.5 };
+    const support = { x: 20021.03467462685, z: 19701.184819074053, range: 14 };
+    const room = { x: 20038.58281422159, z: 19640, width: 120, height: 120 };
+    const canStep = delta => retreatStaysInEncounter(room,
+        { x: start.x + delta.dx, z: start.z + delta.dz }, start.radius);
+    const bodies = [{ ...target, radius: 5 }, { ...support, radius: 1.25 },
+        { x: 20030.2, z: 19694.86, radius: 1.25 }];
+    const step = planPartyRangedSpacing(start, target, support, canStep, bodies);
+    expect(step).not.toBeNull();
+    const end = { x: start.x + step.dx, z: start.z + step.dz };
+    expect(distance(end, target)).toBeGreaterThan(distance(start, target) + 1);
+    expect(distance(end, target)).toBeGreaterThan(8.5);
+    expect(distance(end, target)).toBeLessThan(target.range);
+    expect(distance(end, support)).toBeLessThan(support.range - .5);
+    expect(canStep(step)).toBe(true);
+    expect(Math.hypot(step.dx, step.dz)).toBeLessThanOrEqual(12);
+});
+
+test('partial retreats still reject blocked paths, actor intersections and lost healing reach', () => {
+    const enclosedSupport = { x: 0, z: 0, range: 14 };
+    // Desired16.5+ radii cannot share this healer reach, so these exercise the fallback.
+    expect(planPartyRangedSpacing(state, enemy, enclosedSupport, () => false)).toBeNull();
+    const surroundingBodies = Array.from({ length: 8 }, (_, i) => ({
+        x: state.x + Math.cos(i * Math.PI / 4) * 5,
+        z: state.z + Math.sin(i * Math.PI / 4) * 5, radius: 3 }));
+    expect(planPartyRangedSpacing(state, enemy, enclosedSupport, () => true, surroundingBodies)).toBeNull();
+    expect(planPartyRangedSpacing(state, enemy, { x: -80, z: 0, range: 14 })).toBeNull();
 });
 test('already well-spaced damage roles do not continuously kite instead of attacking', () => {
     expect(planPartyRangedSpacing({ x: 17, z: 0 }, enemy, healer)).toBeNull();
