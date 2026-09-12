@@ -33,13 +33,15 @@ async function observeRole(page) {
     await page.evaluate(async () => {
         const { observePartyWarning } = await import('/tests/partyDamageRoleControls.js');
         const { recordPartyOutgoingDamage } = await import('/tests/partyEngagementControls.js');
+        const { recordPartyCombatReceipt } = await import('/tests/partyCombatReceipts.js');
         const game = window.game, original = game.handleServerMessage.bind(game);
         const e = window.__partyClearEvidence = { damageDone: 0, damageByTarget: {}, damageTaken: 0, allyHealing: 0,
-            casts: {}, rejected: {}, sawDeath: false, warningMoves: 0, warningEscapes: 0,
+            casts: {}, rejected: {}, sawDeath: false, combatReceipts: [], warningMoves: 0, warningEscapes: 0,
             warningEarlyEscapes: 0, recentDamage: [], recentEscapes: [], recentAttackInputs: [], lastAcceptedCastAt: -Infinity,
             lastUpdate: performance.now() };
         window.__partyClearWarnings = [];
         game.handleServerMessage = message => {
+            recordPartyCombatReceipt(e.combatReceipts, message, game.player.id, Date.now());
             const p = message.payload;
             if (p && message.type === 'telegraph' && [p.x, p.z, p.radius, p.duration].every(Number.isFinite)) {
                 window.__partyClearWarnings.push(observePartyWarning({ x: p.x, z: p.z, radius: p.radius,
@@ -268,6 +270,9 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             const distance = Math.hypot(hurt.x - states[1].x, hurt.z - states[1].z);
             const record = async reason => {
                 const pointer = await healer.page.evaluate(id => ({
+                    observedAtMs: Date.now(),
+                    selectedSupportTargetId: window.game.uiManager.social.selectedSupportTargetId,
+                    resolvedSupportTargetId: window.game.getDesktopSupportTarget()?.id || null,
                     targetLoaded: window.game.remotePlayers.has(id),
                     hoveredType: window.game.hoveredEntity?.constructor?.name || null,
                     hoveringAlly: window.game.hoveredEntity?.id === id,
