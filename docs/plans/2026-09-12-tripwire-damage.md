@@ -88,6 +88,23 @@ Added bounded read-only player/target/position/health/state/instance snapshots
 for each approach step and a failure screenshot, retaining original input and
 failure assertions. Do not replace the target or claim a trigger/damage/root pass.
 
+Diagnostic50573 oncf57bde7 FAILED42.7seconds, archived
+`/tmp/eidolon-tripwire-approach-diagnostic-7jmE07`; scan0/exact cleanup verified.
+The attached observations establish a test-input error: planned seven-unit
+approaches instead moved from800/200 to731.87/131.87, then688.73/88.73 and
+eventually614.06/14.06 while the same Titan retained1760HP. The screenshot
+shows an accidentally opened dungeon guide. Production mobile clicks select/
+clear targets or interact, rather than desktop move-only walking. The shared
+helper's mobile W-key fallback accounts for this fixed northwest movement.
+
+Replaced Tripwire approach/lure with actual CDP touch on the visible joystick,
+using the inverse of production isometric direction, measuring forward progress
+and releasing touch in finally. No keyboard fallback or synthetic actor movement.
+Living/same-instance and stick-release checks remain explicit. Unit direction
+cases use actual InputManager.getMovementDirection; an initial incorrect method
+name failed six cases and was corrected, not treated as a game defect. Native
+paid trap/damage/root acceptance is still required.
+
 ## Draft 1.1.0 patch note
 
 - Fixed Tripwire's damage and critical talents not affecting triggered traps.

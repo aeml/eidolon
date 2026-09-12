@@ -52,4 +52,6 @@ test('native root-expiry setup requires a real target able to survive the strong
     expect(route).toContain('const minimumHealth = 2 * Math.floor((20 + g.player.stats.dexterity)');
     expect(route).toContain('(e.health ?? e.stats?.hp) > minimumHealth');
     expect(route).toContain('expect(before.hp).toBeGreaterThan(base * 2)');
+    expect(route).toContain('await moveByPhoneJoystick(page, d.x * scale, d.z * scale)');
+    expect(route).not.toContain('moveByGroundClick');
 });

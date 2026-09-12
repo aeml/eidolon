@@ -1,6 +1,7 @@
 import { devices, expect, test } from '@playwright/test';
-import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, moveByGroundClick, returnToTown } from './helpers.js';
+import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, returnToTown } from './helpers.js';
 import { installTripwireObserver } from './tripwire-observer.js';
+import { moveByPhoneJoystick } from './phone-joystick-movement.js';
 
 test.use({ viewport: { width: 844, height: 390 }, hasTouch: true, isMobile: true,
     userAgent: devices['Pixel 7'].userAgent, actionTimeout: 12_000, trace: 'off', screenshot: 'off', video: 'off' });
@@ -77,7 +78,7 @@ test('paid Tripwire training and saved ranks damage and root an ordinarily lured
                 const distance = Math.hypot(d.x, d.z);
                 if (distance < 6) break;
                 const scale = Math.min(7, distance - 4) / distance;
-                await moveByGroundClick(page, d.x * scale, d.z * scale, { moveOnly: true, allowJumpFallback: false });
+                await moveByPhoneJoystick(page, d.x * scale, d.z * scale);
             }
         } catch (error) {
             await page.screenshot({ path: testInfo.outputPath(`tripwire-${rank}-${quality}-${saved}-approach-failed.png`) });
@@ -114,8 +115,7 @@ test('paid Tripwire training and saved ranks damage and root an ordinarily lured
             // A melee enemy stops short of a trap under a stationary player's
             // feet. Walk away so its normal chase crosses the placed trap.
             const length = Math.hypot(d.x, d.z);
-            await moveByGroundClick(page, -d.x / length * 8, -d.z / length * 8,
-                { moveOnly: true, allowJumpFallback: false, allowAlternatePaths: false, requireClearPath: true });
+            await moveByPhoneJoystick(page, -d.x / length * 8, -d.z / length * 8);
             await command('/qa-protection off'); // Existing fixture primes ordinary AI threat, never damage.
             await expect.poll(() => page.evaluate(() => window.__tripwire.damage.length), { timeout: 20_000 }).toBe(1);
             const hit = await page.evaluate(() => window.__tripwire.damage[0]);
