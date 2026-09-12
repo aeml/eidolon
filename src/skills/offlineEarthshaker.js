@@ -3,6 +3,7 @@ import { Actor } from '../entities/Actor.js';
 import { applyOfflineAbilityHit } from '../core/AbilityCritical.js';
 import { clipDungeonEffectSegment } from './dungeonEffectGeometry.js';
 import { getFighterEffectDuration } from './fighterEffectDuration.js';
+import { getFighterAbilityDamage } from './fighterAbilityDamage.js';
 
 // Paid offline casts only. Multiplayer prediction never calls this handler.
 export function applyOfflineEarthshaker(source, aim, engine, isFriendlyActor) {
@@ -10,7 +11,7 @@ export function applyOfflineEarthshaker(source, aim, engine, isFriendlyActor) {
     const origin = source.position.clone();
     const instance = engine.currentInstanceId;
     const rune = source.skillRunes?.Earthshaker;
-    const damage = Math.floor(source.stats.damage + source.stats.strength * 2);
+    const damage = getFighterAbilityDamage(source, 'Earthshaker', Math.floor(source.stats.damage + source.stats.strength * 2));
     const stun = getFighterEffectDuration(source, rune === 'earthshaker_seismic' ? 4 : 2);
     const aftershockStun = getFighterEffectDuration(source, 1);
     const facing = new THREE.Vector3().subVectors(aim || origin, origin);

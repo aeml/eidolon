@@ -265,6 +265,9 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 			player.Mana -= cost
 			runeID := player.GetRuneForSkill(skillName)
 			damage := player.Damage + player.Stats.Strength*2
+			training := &Entity{SubType: player.SubType, TalentRanks: player.TalentRanks, SpellFocusActive: player.SpellFocusActive}
+			training.NormalizeTalentRanks()
+			damage = int(math.Floor(float64(damage)*training.GetSkillDamageMultiplier(skillName) + 1e-9))
 			stunDuration := 2 * time.Second
 			if runeID == "earthshaker_seismic" {
 				stunDuration *= 2

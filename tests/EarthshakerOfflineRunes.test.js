@@ -51,6 +51,44 @@ test('Fissure hits the forward strip, not a circular quake', () => {
     for (const target of [wide, behind]) expect(target.takeDamage).not.toHaveBeenCalled();
 });
 
+test.each(['', 'earthshaker_fissure', 'earthshaker_seismic', 'earthshaker_aftershock'].flatMap(rune =>
+    [0, 1, 5].flatMap(rank => [0, 5].map(generic => ({ rune, rank, generic }))))) (
+    '$rune paid damage mastery rank$rank generic$generic applies once', ({ rune, rank, generic }) => {
+        const f = fixture(rune, 0), target = f.add('trained-damage', 1);
+        f.p.talentRanks = Object.freeze({ FTR_13: rank, FTR_38: generic });
+        try {
+            f.cast();
+            expect(f.p.stats.mana).toBe(160);
+            expect(target.takeDamage).toHaveBeenCalledTimes(1);
+            expect(target.takeDamage).toHaveBeenCalledWith(Math.floor(70 * (1 + .04 * rank + .02 * generic) + 1e-9), f.p);
+        } finally { f.p.dispose(); f.entities.forEach(actor => actor.dispose()); }
+    });
+
+test('Earthshaker damage training keeps caps and foreign-rank isolation before one ordinary critical', () => {
+    const f = fixture('', 0), target = f.add('critical-damage', 1);
+    f.p.talentRanks = Object.freeze({ FTR_13: 999, FTR_38: -1, CLR_13: 5 });
+    f.p.stats.critChanceBonus = 1;
+    try {
+        f.cast();
+        expect(target.takeDamage).toHaveBeenCalledTimes(1);
+        expect(target.takeDamage).toHaveBeenCalledWith(168, f.p);
+        expect(f.p.talentRanks).toEqual({ FTR_13: 999, FTR_38: -1, CLR_13: 5 });
+    } finally { f.p.dispose(); f.entities.forEach(actor => actor.dispose()); }
+});
+
+test.each(['mana', 'cooldown', 'online'])('trained Earthshaker %s rejection never damages or schedules an offline aftershock', reason => {
+    const f = fixture('earthshaker_aftershock', 0), target = f.add('rejected-damage', 1);
+    f.p.talentRanks = { FTR_13: 5, FTR_38: 5 };
+    if (reason === 'mana') f.p.stats.mana = 0;
+    if (reason === 'cooldown') f.p.cooldowns.Earthshaker = 100;
+    if (reason === 'online') { f.p.isMultiplayer = true; f.engine.isMultiplayer = true; }
+    try {
+        f.cast();
+        expect(target.takeDamage).not.toHaveBeenCalled();
+        expect(f.p.managedTimers.size).toBe(0);
+    } finally { f.p.dispose(); f.entities.forEach(actor => actor.dispose()); }
+});
+
 test.each([false, true])('quake cannot cross a dungeon wall; doorway %s', doorway => {
     const f = fixture(); const target = f.add('across-wall', 2);
     f.engine.currentDungeonLayout = { walkRects: [
@@ -75,6 +113,22 @@ test('remote presentation cannot apply offline damage, stun or scheduled gamepla
 describe('Aftershock scheduled wave', () => {
     beforeEach(() => jest.useFakeTimers());
     afterEach(() => { jest.clearAllTimers(); jest.useRealTimers(); });
+
+    test('both waves retain trained damage after a build change, without repeating mana or cooldown', () => {
+        const f = fixture('earthshaker_aftershock', 0), target = f.add('trained-aftershock', 1);
+        f.p.talentRanks = { FTR_13: 5, FTR_38: 5 };
+        try {
+            f.cast();
+            const cooldown = f.p.cooldowns.Earthshaker;
+            expect(target.takeDamage).toHaveBeenNthCalledWith(1, 91, f.p);
+            f.p.talentRanks = {}; f.p.stats.damage = 500; f.p.stats.strength = 100;
+            jest.advanceTimersByTime(1000);
+            expect(target.takeDamage).toHaveBeenCalledTimes(2);
+            expect(target.takeDamage).toHaveBeenNthCalledWith(2, 45, f.p);
+            expect(f.p.stats.mana).toBe(160);
+            expect(f.p.cooldowns.Earthshaker).toBe(cooldown);
+        } finally { f.p.dispose(); f.entities.forEach(actor => actor.dispose()); }
+    });
 
     test('delays one second and retains cast origin, damage and training for late targets', () => {
         const f = fixture('earthshaker_aftershock');
