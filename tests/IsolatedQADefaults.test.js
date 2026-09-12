@@ -1,5 +1,15 @@
 import { readFileSync } from 'node:fs';
 
+test('the full gate includes Focus with independent allowlisted owner and observer', () => {
+    const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
+    expect(script).toContain('qa_allowlist+=",${QA_USERNAME_BASE}-focus-mastery,${QA_USERNAME_BASE}-focus-mastery-observer"');
+    const all = script.split('\n  all)')[1].split('\n    ;;')[0];
+    expect(all).toContain('run_time_warp_area && run_focus_mastery && run_talent_duration');
+    expect(script).toContain('focus-mastery)\n    run_focus_mastery');
+    expect(script).toContain('EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-focus-mastery" EIDOLON_E2E_CLASS=Wizard');
+    expect(script).toContain('npx playwright test --retries=0 tests/e2e/spell-focus-mastery-gameplay.spec.js');
+});
+
 test('the release gate retains native Time Warp with its own allowlisted Wizard', () => {
     const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
     expect(script).toContain('qa_allowlist+=",${QA_USERNAME_BASE}-time-warp"');
