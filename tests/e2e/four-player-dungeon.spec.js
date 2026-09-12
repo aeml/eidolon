@@ -5,6 +5,7 @@ import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture } from 
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
 import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyWarningInputPolicy } from '../partyDungeonControls.js';
 import { attackPartyDamageTarget, selectPartyDamageBuff } from '../partyDamageRoleControls.js';
+import { runPartyRoleInputs } from '../partyRoleScheduling.js';
 import { partyAuraFollowSpacing, selectPartyHealTarget } from '../partyHealingControls.js';
 import { tryDungeonGroundStep } from '../dungeonNavigationInput.js';
 import { dungeonExpeditionBudget } from '../dungeonExpeditionTiming.js';
@@ -421,13 +422,12 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                     bossStart = playthrough.bosses.includes(target.type) ? await Promise.all(actors.map(actor => snapshot(actor.page))) : null;
                     return false;
                 }
-                const [tankPolicy, healerPolicy, ...damagePolicies] = await Promise.all(actors.map(actor => avoidWarnings(actor, target.encounter)));
-                // Safe ranged players can keep doing their jobs during a
-                // telegraph, but never use an approach input into its circle.
-                await Promise.all([healerPolicy.allowCasts ? healParty({ allowMovement: healerPolicy.allowApproach }) : null,
-                    ...damage.map(async (actor, index) => {
-                    const policy = damagePolicies[index];
-                    if (!policy.allowCasts) return;
+                // Every role reacts to its own safety decision immediately;
+                // a slow escape on another browser must not postpone healing.
+                const [tankPolicy] = await runPartyRoleInputs(actors,
+                    actor => avoidWarnings(actor, target.encounter), async (actor, policy) => {
+                    if (actor === tank) return; // The ordinary leader driver owns Fighter combat.
+                    if (actor === healer) return healParty({ allowMovement: policy.allowApproach });
                     const enemy = await actor.page.evaluate(id => {
                         const g = window.game, p = g.player, e = g.remotePlayers.get(id);
                         return e && e.state !== 'DEAD' ? { distance: p.position.distanceTo(e.position),
@@ -484,7 +484,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                             moveTarget: p.targetPosition ? { x: p.targetPosition.x, z: p.targetPosition.z } : null });
                         if (records.length > 12) records.shift();
                     }, { id: target.id, clicks });
-                })]);
+                });
                 for (const actor of actors) {
                     const state = await snapshot(actor.page);
                     if (state.dead) {
