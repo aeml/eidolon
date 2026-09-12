@@ -27,7 +27,8 @@ Root remains ledger-only, NEVER PUSH ROOT. No production/version/soak changes.
   Catalog/production growth audit rules out missing role base allocation:
   level30 Strength/Vitality68, other stats39, same canonical growth all classes.
   Detailed outcome committed **209612b2** in party WT (docs-only over1a1).
-  CI34713334140 still ACTIVE; client/server/browser2/3 PASS, browser1 running.
+  CI34713334140 subsequently completed SUCCESS, all client/server/browser jobs;
+  manual native/deploy skipped. This does not override the failed native clear.
   Full clear/credit/Water handoff still NOT proved. Equipment quantization and
   healer budget are open; don't inflate fixture stats or undo.01regen.
 - Tripwire CI34712331175 SUCCESS on efda; new native route65642f33 then failed
@@ -38,11 +39,15 @@ Root remains ledger-only, NEVER PUSH ROOT. No production/version/soak changes.
   current-rank actual2xdamage health threshold and excludes CC immunity, retains
   independent survival assertion. No altered stats/hits/timers. Tests2/9PASS
   1.086s/full lint/diff PASS. Clean/devpushed **b167ad91** in Tripwire WT.
-  **39281 ACTIVE, sole native GPU**, frozen b167, runIDtripwiredurable0912,
-  route tripwire,18185/18186/41875. Log
-  `/tmp/eidolon-tripwire-durable-native-20260912.log`; browser running, no
-  acceptance result yet. Poll same handle, archive/scan/exact cleanup after
-  terminal before any next native. Tripwire NOT integrated yet.
+  **39281 TERMINAL FAILED33.2s** onb167: selected durable target, then the
+  ordinary approach lost it (missing/inactive/dead not distinguished by earlier
+  evidence). Archive `/tmp/eidolon-tripwire-approach-failure-80mGUX`, scan0 and
+  exact cleanup verified. Read-only per-step player/target position/HP/state/
+  instance diagnostics and failure screenshot added in clean/devpushed
+  **cf57bde7**; ESLint/diff passed. No target replacement/assertion relaxation.
+  **50573 ACTIVE, sole native GPU**, frozen cf57bde7. RunIDtripwireapproach0912,
+  route tripwire,18185/18186/41875, log
+  `/tmp/eidolon-tripwire-approach-native-20260912.log`. Tripwire NOT integrated.
 
 Next: actual Tripwire outcome and combined/party CI; retain failed evidence.
 Next party diagnosis should quantify boss-period healing/resource budget and
