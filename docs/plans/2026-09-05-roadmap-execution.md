@@ -5,7 +5,67 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 08:31 UTC
+## Current checkpoint — September 12, 08:57 UTC
+
+Previous implementation turn PROGRESS; intervening numbering confirmation alone
+was NO PROGRESS. This continuation PROGRESS: reproduced/fixed legacy area-rank
+consumers, verified actual casts, integrated accepted movement QA and started
+hosted regression. Full 1.1.0–1.10.0 scope remains active, no milestone/live claim.
+
+- Recovered unrecorded candidate `/tmp/eidolon-1-1-fighter-cone-training-20260912`,
+  clean **b9b8065a2c26b966d643628c43b7c9dabe5e9fb4**, parent11d6920d. Shield Slam
+  and Sweeping Strike trained radii4..5.4/5..6.75, accepted cone radius/arc,
+  Sweeping named/generic damage applied once, shared offline planar cone hits
+  with body padding, walls, hostile/instance/dead/remote exclusions. Costs,
+  cooldowns, criticals, Shield runes/Fortify and threat retained. Corrected RED
+  fixture initializes real base stats; did not weaken positive hit/mana controls.
+  Focused7suites161PASS5.496s/lint; server expandedrace23.984s; corrected wire
+  TestAbilityPayload race1.109s (earlier TestAbilityEvent selected no tests).
+  Doc `docs/plans/2026-09-12-fighter-cone-training.md` in candidate, logs
+  `/tmp/eidolon-fighter-cone-{server-red-corrected,server-final,client-final,lint-final,wire-final}-20260912.log`.
+- **Cone CI34684185347 ACTIVE** atb9. Client103528151728 SUCCESS,
+  **387suites5992tests124.569s**, direct API log
+  `/tmp/eidolon-fighter-cone-ci-client-34684185347.log`. Server103528151802
+  still active; no full acceptance. Native purchased cone/impact checks pending,
+  no deployment/primary integration. Earthshaker and remaining talent audit open.
+- **Movement forward-port CI34683587220 TERMINAL SUCCESS** at
+  **11d6920dcbb3f8577ee681d9b94e2e5011a12dde**. Client386suites5960tests119.858s;
+  server86.8%/94.617s, race331.188s plus backup/restore/bench/build. Browsers
+ 40+50+26=116 confirmed from direct job logs. `gh run view --log` returned empty
+  files despite exit0; those empty files are NOT evidence. Recovered via API
+  `/tmp/eidolon-movement-forwardport-ci-browser{1,2,3}-api-34683587220.log`.
+  Native/deploy/live SKIPPED by manual guards, not passes. Verified primary and
+  integrated worktrees clean, exact876 heads, no processes using either cwd;
+  fast-forwarded both to11d6920d. No primary/master push.
+- New `/tmp/eidolon-1-1-area-legacy-ranks-20260912`, branch
+  `work/1-1-area-legacy-ranks`, clean **770eeb8f140167d9860c255f19a00b73180e0ca6**,
+  parentb9. Shared client area reader previously ignored unpadded FTR_4/FTR_6/
+  CLR_7. Actual paid Shield Slam missed trained edge and Purifying Wave left
+  edge ally bleeding. RED12fail88pass1.608s, paid mana controls passed.
+  Fix takes highest bounded finite floored canonical/legacy rank without
+  summing aliases or changing saved map. Skill/class isolation preserved.
+  Tests cover all currently declared area talents, malformed/duplicate ranks,
+  frozen saves, actual Slam/Wave, Whirlwind's both pulses and cast snapshot,
+  visible radii and existing class/range behavior. Final12suites**489PASS5.667s**,
+  full lint/whitespace pass. Logs
+  `/tmp/eidolon-area-legacy-{red,green,final,lint-final}-20260912.log`.
+  Doc `docs/plans/2026-09-12-area-legacy-ranks.md` includes proposed1.1 notes
+  and exact limits. No save migration/all-160-talents claim. Sessions38263,
+  99449,22703,67360,76301 terminal. Pushed ONLY dev branch; new hosted
+  **CI34684544288 ACTIVE** at exact770eeb8f, confirmed after dispatch.
+- Production **CI34683452640 ACTIVE** atf9eb1f30; hosted gates all pass.
+  Native103528155488 gallery and Well Rested/GPU lifecycle stages pass;
+  full-character gameplay now active. GPU remains reserved; no local native
+  launched. Last independent public08:56 still **Alpha1.0.64/6d5e82cb**,
+  frontend/backend match, healthok/dbready. No65 live assertion.
+- Pending native candidates unchanged: Whirlwind area01dbe625, Fighter
+  owner/real-party0f15acd8, Fortress and Guardian Roar routes. Four-role dungeon
+  clear with input batching/independent role scheduling is still unverified and
+  next priority once production GPU is terminal. Earned first-hour progression,
+  remaining dungeon/seeds/talents and all later milestones remain open.
+  Scheduled soak/runner untouched. Root ledger NOT pushed.
+
+## Historical checkpoint — September 12, 08:31 UTC
 
 Previous goal turn PROGRESS; this continuation PROGRESS. Hosted Whirlwind area
 acceptance integrated, its native purchase gate authored/tested, and a newly
