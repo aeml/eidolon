@@ -5,7 +5,51 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 07:14 UTC
+## Current checkpoint — September 12, 07:26 UTC
+
+Previous goal turn PROGRESS; this continuation also PROGRESS. Finished the
+offline Whirlwind consumer and its focused regressions; combined candidate now
+has a hosted rehearsal running. Full roadmap remains active and unreleased.
+
+- **Local49703 TERMINAL SUCCESS** at37d00650:384suites5900tests351.766s.
+  Log `/tmp/eidolon-fighter-buff-offline-full-20260912.log`. Source in that
+  damage-buff worktree remained frozen/clean throughout; it still points37d.
+- New separate worktree `/tmp/eidolon-1-1-offline-whirlwind-20260912`, branch
+  `work/1-1-offline-whirlwind`, clean **06f62f1bd320aaa49ba3012a31aa3720cfc28e2f**,
+  parent37d00650, PUSHED to its development branch, NOT master/integrated.
+  Contains all83d/4e/f91 Fighter phases plus QA forward-ports2709/37d.
+- Replaced offline Whirlwind legacy Strength-only0.2s loop with actual paid
+  cast budget, first pulse immediately, two0.5s pulses/fourExtended, exact
+  integer remainder distribution. Fixed6m+body boundary, floor walls, living
+  hostile same-instance targets, no online simulation. Snapshots damage/rune
+  budget; one-time Bloodwhirl/Bladestorm per target; real3s Charge combo;
+  death/scene/removal/authority/cancel/expiry clears. Lethal real Thorns stops
+  pulses without reviving; both Charge variants and spin advance concurrently.
+  Canonical presentation reused; no extra legacy spin or mesh rotation loop.
+- RED15failed/1passed1.956s. First green one fixture ignored default1.25body
+  radius (7m is inside6+1.25); move outside fixture to7.26 while retaining
+  positive6.4m/.5body test. Expanded one combo fixture had never unlocked Charge;
+  explicit ordinary unlock plus20-mana/prior-record positive controls fixes it.
+  Final **5suites152tests PASS3.879s**, full lint/diff pass. Logs
+  `/tmp/eidolon-offline-whirlwind-{red,green,expanded,final,accepted-focused,lint}-20260912.log`.
+  Docs `2026-09-12-offline-whirlwind.md` and Fighter phase doc record scope and
+  open native/save/balance/combined acceptance; no full1.1 claim.
+- **Hosted CI34680685387 ACTIVE** at06f62f1b, explicit workflow_dispatch on
+  development branch. Verified workflow guards: client/server/browser hosted;
+  native/release/deploy require master/main PUSH and are skipped here, never
+  counted as passes. Last read client103518653113/server103518653234 running.
+  Do not duplicate full local run or integrate into primary before terminal
+  combined acceptance. Native buff purchases/fresh login/render/party lifecycle
+  still required; GPU currently belongs to production pipeline below.
+- **Production CI34679633154@0e1068a5 ACTIVE**. All hosted client/server/three
+  browser jobs now SUCCESS. Native103517768800 in_progress: gallery step
+  finished; latest active step Well Rested rendering/GPU lifecycle. Source
+  remains separate release65. Later full character/deploy/live still pending;
+  don't run competing Chrome jobs. Keep scheduled soak untouched. No new live
+  release is claimed. Primary7f781121 remains unchanged; four-party actual
+  dungeon clear and all roadmap milestones remain open.
+
+## Previous checkpoint — September 12, 07:14 UTC
 
 Previous goal turn PROGRESS; this continuation also PROGRESS. Implemented and
 tested offline damage-buff stat/recipient/lifecycle consumers, corrected their
