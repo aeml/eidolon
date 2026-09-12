@@ -136,3 +136,32 @@ rejection and fatal issued-but-unmoving input. Lint/prepared assets/diff checks
 pass. Logs `/tmp/eidolon-party-batched-input-*-20260912.log`. Actual four-player
 timing/clear replay is still required; fewer browser calls are not yet proof of
 timely dodges or balanced boss combat. No stat/regen/AI/deadline changes here.
+
+### Batched-input replay result and preparation audit
+
+Native54340 on1a1c69d0 terminated FAILED after8.3minutes, actual seed
+-1944739487484252715, generator2/attempt0/no fallback. Entry, early trash and
+one actual four-player town recovery/reentry succeeded;52ground steps and two
+room traversals were recorded. The Fighter died with the Warden last observed
+at1996/15000HP. Final cleanup respawned the Fighter, so the final alive snapshot
+does not override `evidence.sawDeath=true`. No full clear/credit/handoff passed.
+
+Recorded Fighter preparation took128–141ms, ground-ray receipt315–428ms and
+click release607/675ms, versus1468ms in the previous failed run. Rogue's final
+release took1126ms versus1567ms. Seeds differ: these receipts prove shorter
+recorded input, not a controlled performance or difficulty comparison. Final
+safe arrival still came1185ms late for Fighter and226ms late for Rogue. Last
+Fighter incoming hits were144 with no warning active. Cleric used17Healing Light
+and7Guardian Embrace,5764total ally healing; this is not a boss-only subtotal.
+
+Archive `/tmp/eidolon-party-batched-input-failure-B5RT5X`; credential scan
+sanitized0files and owned containers/image/ports were confirmed clear before
+the next native route. CI34713334140 still running at this entry.
+
+Inspected the production-derived fixture catalog and `SetPlayerLevel`:
+all classes intentionally share canonical base growth, identical to normal
+`awardExperienceLocked` growth (level30 Strength/Vitality68, other stats39).
+Using the same catalog stats for all four roles is therefore not an unallocated
+attribute bug. The class-specific equipment and talent builds, item-defense
+quantization, actual healer budget and remaining input latency still warrant
+investigation. Do not invent extra fixture stats to force a clear.
