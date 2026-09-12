@@ -131,7 +131,7 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 	if tgt == nil {
 		return
 	}
-	if !w.CanDamage(att, tgt) {
+	if !w.canDamageAtImpact(attID, tgtID) {
 		return
 	}
 	if blindedMissChance > 0 && rand.Float64() < blindedMissChance {

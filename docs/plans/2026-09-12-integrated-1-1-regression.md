@@ -1,5 +1,86 @@
 # Integrated 1.1.0 development regression
 
+Draft notes, outstanding acceptance and publication steps are consolidated in
+the [1.1.0 release handoff](2026-09-12-1-1-release-handoff.md). It is not release
+approval or a substitute for the full roadmap.
+
+## Preparation integration — September 12, 22:45 UTC
+
+Merged primary fdb13277, adding accepted preparation guidance cf7f67a1. Exact
+candidate c09248c8 passed full CI34722166310, including actual desktop Enter/
+Space and both phone layouts; all three relevant captures were inspected.
+See [component acceptance](2026-09-12-dungeon-preparation-guidance.md).
+The handoff now includes these two player-facing changes as reviewed note
+material. No version bump, public notes or deployment was performed.
+
+Earlier combined CI34722568754 on54901f19 completed SUCCESS at the subsequent
+22:45 check: client/server and all three browser shards pass. Native/deploy/live
+were skipped, not passed. Require a fresh combined run for this new integration.
+Tripwire remains separate pending its arrival collateral routes and full CI.
+
+## Follow-up integration — September 12, 22:21 UTC
+
+Merged accepted primary1ea44fbc, including the fully verified role-equipped
+four-player controller/fixture component e2d5da9b. Native15051 on9b6745d7 passed
+all rooms/four original-health bosses, individual credit/manual rewards/Water
+offers and saved state after relog,58.8minutes with zero deaths. Exact evidence
+and limitations are in [the party record](2026-09-12-party-progressed-gear.md).
+These incoming changes are QA/supporting documentation, not production stat
+scaling or boss tuning. No preparation UI or Tripwire candidate is merged here.
+Fresh combined hosted regression is required; earlier0087e4de CI does not prove
+the merged test/controller surface. Native/deployment/live acceptance remains
+separate. The handoff checks off only this exact prepared-party route, not1.1.
+
+## Latest accepted combined regression — September 12, 21:41 UTC
+
+CI34719685288 completed SUCCESS on exact
+0087e4deb036009abaf17cea09b6a299fab17edc, adding accepted desktop talent
+confirmation0992f77b to the earlier combined work. Client414 suites/6408 tests
+passed135.680s; server game coverage102.032s/86.9% and race361.096s. All three
+browser smoke shards passed. Complete logs:
+`/tmp/eidolon-integrated-desktop-ci-{client,server,browser1,browser2,browser3}-34719685288.log`.
+Manual native, deployment and live stages were skipped, not passed.
+
+This closes the combined hosted regression for these accepted components only.
+The correctly equipped party has now killed the original-health Warden and
+Briar Matron in a separate native run, but the full clear/individual credit/
+Water handoff is still pending. Tripwire collateral diagnostics, first-hour,
+all-dungeon and resource/reconnect acceptance remain open, along with all later
+milestones. No release metadata or production deployment was changed.
+
+## Earlier accepted combined regression — September12,20:56UTC
+
+CI34717404204 completed SUCCESS on719df4de, combining accepted Serrated Technique
+and equipment health normalization with the earlier primary work. Client413
+suites/6398tests passed133.637s; server game race358.420s. All three browser
+smoke shards passed. Complete logs are
+`/tmp/eidolon-integrated-ci-{client,server,browser1,browser2,browser3}-34717404204.log`.
+Manual native/deploy/live stages were skipped, not passed.
+
+This establishes combined hosted regression for these accepted fixes, not
+release readiness. Desktop talent confirmation, Tripwire's collateral entrance
+checks and the provisional Verdant boss budget remain separate candidates.
+The actual four-player dungeon run is still underway. Full earned first-hour,
+all-dungeon/party, resource/reconnect and broader roadmap gates remain open.
+No production version or deployment was changed by this acceptance.
+
+## Earlier accepted combined regression — September12,19:52UTC
+
+CI34714237895 completed SUCCESS on8b3e04042b008e5836e1411355c85b9421f6720d,
+including the accepted Guardian Roar protection merge. Client413suites6393tests
+PASS107.533seconds; server game86.9% coverage100.035s and full race354.988s.
+All three browser shards passed. Manual-event native/deployment/live jobs were
+intentionally skipped, not passed. Logs
+`/tmp/eidolon-integrated-roar-ci-{client,server}-34714237895.log`.
+
+Primary75de2aff retains the same accepted gameplay merge. Tripwire and new
+Serrated Technique remain independent candidates pending native/full acceptance.
+The actual four-player clear is still open; this combined CI does not supersede
+failed dungeon evidence or establish1.1.0 release readiness. No production or
+version metadata was changed by this acceptance record.
+
+## Earlier regression history
+
 This is a **non-publishing development rehearsal**, not a1.1.0 release candidate
 or completion claim. Base08a73777 includes the accumulated primary development
 work through Charge/Unstoppable, plus the instrumented four-role dungeon route.
@@ -25,6 +106,50 @@ when hardware is available, then complete the first-hour/all-dungeon/earned
 pacing/reconnect/balance gates for1.1.0. All1.2–1.10 scope remains intact.
 
 ## First integrated rehearsal accepted; follow-up scope
+
+September12 acceptance: **CI34711998572 SUCCESS** on exactf9ddf686. Full client
+412suites6383tests135.552s, server game87.0%91.114s/race292.001s, all three
+browser shards passed. Native/deployment intentionally skipped by manual-event
+guards. Logs `/tmp/eidolon-integrated-rogue-ci-{client,server}-34711998572.log`.
+This verifies the combined RogueTech/QAack/Fortress/BladeStorm revision.
+After terminal success, merged primary506e3200's separately verified native
+Spin/Roar purchase-recovery tests; see their exact native/CI evidence. No new
+runtime ability changes in that merge. GuardianRoar protection and Tripwire
+remain separate candidates until their own outstanding checks finish.
+
+September12 follow-up: primary15870d85 now integrates verified Rogue utility
+Techniques and QA resource acknowledgement56ea1669. Exact QA runtimee7b907ce
+passed CI34710643517 and native50451 (3.8minutes, zero retries); saved effects,
+costs and cooldowns passed. Integratedf9ddf686 focused3suites66tests PASS2.580s.
+CI34711998572 is queued for that exact combined revision behind34710916056
+(Fortress+Blade Stormf0218c8a, still running). No Tripwire integration yet.
+
+Earlier cbdec31a CI34709857382 attempt2 has now SUCCEEDED, including the real
+disposable upgrade test after the external registry connection failure. This
+does not replace the required checks on the later combined revisions.
+
+September12 18:21: primary8561a773 now includes Blade Storm95299372 as well as
+Fortress. Blade Storm runtime6cd11168 full CI34709688359 and native92396 passed;
+subsequent full-stage fixture enrollment correction passed5suites89checks.
+This combined branch must pass fresh full CI; no Techniques/QA resource-ack
+integration yet. No production version/patch-note publication until1.1 closes.
+
+Prior cbdec31a run34709857382 attempt1 failed in disposable upgrade verification
+when Docker Hub's authentication connection reset while pulling mongo7.0.14.
+Its code/coverage and full game race275.182s had passed. Exact failed job log:
+`/tmp/eidolon-integrated-fortress-failed-server-34709857382.log`. Requested
+`gh run rerun 34709857382 --failed` only after terminal failure and inspecting
+the network error; attempt2 currently active on unchangedcbdec. No timeout-based
+restart, test relaxation, production cancellation or soak change. Both sources'
+results must retain their actual provenance; a rerun is not yet a pass.
+
+September12 18:00 update: primary5d4c5123 integrates the verified Fortress
+component1f6b1f75 overa2c30d97. Exact component8864133e passed full CI34707847501
+and native9420; see its mitigation evidence for damage-rounding limitations.
+Combined focused Fortress/Rogue tests3suites33tests passed1.457s. This branch
+now rehearses that integration; Blade Storm6cd11168 and Rogue Techniques8b07e36c
+remain separate candidates. No deployed metadata, production or soak changes.
+All first-hour, full-party/seed/dungeon and later milestone gates remain open.
 
 CI34670988965 at e2cd42f2 is TERMINAL SUCCESS. Client367suites/5465tests
 PASS100.597s plus full lint/audit/benchmark. Server game coverage97.027s/86.6%,
