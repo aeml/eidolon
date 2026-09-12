@@ -5,7 +5,33 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 23:11 UTC
+## Current checkpoint — September 12, 23:14 UTC
+
+Previous goal turn PROGRESS; this continuation VERIFIED WAIT against the same
+two live workflow handles. No runtime/source candidate edit, restart, duplicate
+dispatch, production/version/soak action or milestone claim. Full goal ACTIVE.
+NEVER PUSH ROOT.
+
+- CI34723986784 remains ACTIVE on48713d22: client/server/browser2/3 passed;
+  browser1 still running (job103635942378). Keep this run until terminal.
+- CI34724352226 remains ACTIVE on03aef5b2: client/server now passed, all three
+  browser shards running. No local native or Go process remains active.
+- Re-read grant-free fresh-story route, preparation, readiness policy and phase
+  budgets. EIDOLON_E2E_FRESH_CLASS=Rogue is supported; fresh-story-ready enables
+  strict story-only collection/readiness. Recovery defaults on; explicitly set
+  EIDOLON_E2E_REST_RECOVERY=1 for the next run. Preserve all eight ordered phases,
+  manual claims, earned gear/training, no accepted dailies/grants, original
+  encounter watchdogs and saved readiness. Do not invoke the daily comparison
+  FRESH_READY/FRESH_HUNT flags. Start only on the assembled/frozen fixes after
+  integration checks; no new long replay has started.
+- Broader talent audit remains open. Current source still assigns SkillDamage
+  to Cleric Blessing of Resolve/Zeal/Mark of Weakness Masteries, while their
+  utility handlers merit paired actual-effect probes. This is a source lead,
+  not new proof of failure or permission to relabel a missing benefit as fixed.
+  Existing diagnostic overlay covers previously promoted representative defects,
+  not every one of160 talents. Keep this next audit alongside progression.
+
+## Historical checkpoint — September 12, 23:11 UTC
 
 Previous turn PROGRESS; this continuation PROGRESS: proved the poison mismatch
 was temporary-stat drift, corrected the comparison and passed every status
