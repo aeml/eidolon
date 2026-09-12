@@ -135,6 +135,7 @@ qa_allowlist+=",${QA_USERNAME_BASE}-rest-transitions-death,${QA_USERNAME_BASE}-r
 qa_allowlist+=",${QA_USERNAME_BASE}-duration,${QA_USERNAME_BASE}-forge,${QA_USERNAME_BASE}-whip,${QA_USERNAME_BASE}-ground"
 qa_allowlist+=",${QA_USERNAME_BASE}-time-warp"
 qa_allowlist+=",${QA_USERNAME_BASE}-smoke-area"
+qa_allowlist+=",${QA_USERNAME_BASE}-rogue-utility"
 qa_allowlist+=",${QA_USERNAME_BASE}-death-spiral-area"
 qa_allowlist+=",${QA_USERNAME_BASE}-focus-mastery,${QA_USERNAME_BASE}-focus-mastery-observer"
 qa_allowlist+=",${QA_USERNAME_BASE}-teleport-protection,${QA_USERNAME_BASE}-teleport-protection-observer"
@@ -450,6 +451,11 @@ run_smoke_area() {
     EIDOLON_E2E_SMOKE_AREA=1 npx playwright test --retries=0 tests/e2e/smoke-area-gameplay.spec.js
 }
 
+run_rogue_utility() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-rogue-utility" EIDOLON_E2E_CLASS=Rogue \
+    EIDOLON_E2E_ROGUE_UTILITY=1 npx playwright test --retries=0 tests/e2e/rogue-utility-mastery-gameplay.spec.js
+}
+
 run_death_spiral_area() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-death-spiral-area" EIDOLON_E2E_CLASS=Rogue \
     EIDOLON_E2E_DEATH_SPIRAL_AREA=1 npx playwright test --retries=0 tests/e2e/death-spiral-area-gameplay.spec.js
@@ -596,6 +602,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     run_qa_stage talent-healing run_talent_healing &&
     run_qa_stage time-warp-area run_time_warp_area &&
     run_qa_stage smoke-area run_smoke_area &&
+    run_qa_stage rogue-utility run_rogue_utility &&
     run_qa_stage death-spiral-area run_death_spiral_area &&
     run_qa_stage focus-mastery run_focus_mastery &&
     run_qa_stage talent-duration run_talent_duration &&
@@ -746,6 +753,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   smoke-area)
     run_smoke_area
+    ;;
+  rogue-utility)
+    run_rogue_utility
     ;;
   death-spiral-area)
     run_death_spiral_area
