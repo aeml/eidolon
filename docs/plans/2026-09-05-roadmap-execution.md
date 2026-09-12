@@ -5,7 +5,74 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 12:24 UTC
+## Current checkpoint — September 12, 12:34 UTC
+
+Previous goal turn PROGRESS; this continuation PROGRESS. Implemented Death
+Spiral's missing area consumer, read full Smoke CI results, corrected a native
+gate mock omission and retained the failed independent party replay. Full1.1.0
+through1.10.0 remains active. Primary/integrated still clean aeb0356e; no
+production deployment/version bump/root push/soak changes.
+
+- Base Smoke **CI34692752460 TERMINAL SUCCESS**, exact4b54d894. Actual
+  client394suites6262tests129.444s; server86.9%97.901s/race343.588s; downloaded
+  browser logs prove40+50+28=118PASS. Logs
+  `/tmp/eidolon-smoke-fixed-ci-browser{1,2,3}-34692752460.log`; earlier client/
+  server log paths retained below. Combined fence/native-enrollment acceptance
+  remains separate; primary not advanced using an untested merge.
+- Combined Smoke **CI34693543419 TERMINAL FAILURE**, dd4086f4: one integration
+  suite21fails, other395suites6249testsPASS. QAStageTimingIntegration's explicit
+  command/stage lists omitted the newly enrolled smoke-area route, so its fake
+  shell returned127; failure propagation cases after that stage also failed.
+  Added the command and stage immediately after Time Warp without dropping
+  older commands/assertions. Four focused suites83PASS5.786s; lint/diffPASS;
+  session74868terminal0. Clean/dev-pushed corrected
+  **d4d1a6332707a4352313b01394f63f6e693e8960** in
+  `/tmp/eidolon-1-1-smoke-area-native-20260912`. Manual **CI34693884345 ACTIVE**,
+  client103554197554/server103554197594running. Logs
+  `/tmp/eidolon-smoke-trained-ci-client-34693543419.log`,
+  `/tmp/eidolon-smoke-stage-integration-{green,lint}-20260912.log`.
+- Death Spiral implementation `/tmp/eidolon-1-1-death-spiral-area-20260912`,
+  branch`work/1-1-death-spiral-area`, clean/dev-pushed
+  **6f4800e75ed5198a62cfe46f4c8bf33908a9e063**, parent4b54d894. Fixed4radius
+  ignored Fine Motor; now paid rank0/1/5 radii4/4.12/4.6 server and offline.
+  Accepted self-center/radius/full arc reaches owner/observer visuals; removes
+  duplicate legacy spin. Offline target checks now planar/body-padded, with
+  wall/hostility/instance/living/online exclusions and deduplication BEFORE
+  damage or bleed consumption. Existing damage/cost/finisher rules unchanged.
+  Client RED8/13fails; GREEN9suites221PASS7.181s. Initial server fixture lost
+  its synthetic positive damage when talent purchase recalculated empty base
+  stats. Corrected to ordinary SetPlayerLevel stats with explicit positive
+  damage invariant. Original missing-shape failures retained; corrected
+  targeted server racePASS29.963s covering purchased edges, paid Rogue damage,
+  self-area walls, Lunge→Spiral bleed consumption and ArcaneShield admission.
+  Lint/assets/diffPASS. Logs
+  `/tmp/eidolon-death-spiral-{client-red,server-red,server-green,server-corrected,client-green,client-expanded,lint,assets}-20260912.log`.
+  Candidate plan documents limits. Manual **CI34693953318 ACTIVE**; trained
+  native Death Spiral route NOTyet authored/executed. No primary acceptance.
+- **Independent party8533 TERMINAL FAILURE**, frozena9979e5d,
+  seed7159223432214705865/gen2/attempt0/no fallback. Four legal30roles entered;
+  DemonOrc kill and all-four natural town HP/mana/saved-resume passed. Rogue
+  died67.381s into first Warden; last periodic boss9317HP, run7.8m. Healer
+  distance20.344units at death,387mana,1967effective boss ally healing. Final
+  total damage Fighter2898/Wizard3557/Rogue5006; taken1074/350/2504;
+  Cleric2789effective ally healing, no damage taken. Last Rogue hits184 near
+ 7.48units without an active warning, so independent scheduling alone does
+  not fix range/aggro/positioning. Do not infer missing heals or reduce the
+  survival gate. Leader cleanup's recovered940HP is not a full party pass.
+  Archive `/tmp/eidolon-party-independent-failure-5Qgzuf`, original
+  `/tmp/eidolon-party-independent-native-20260912.log`. CredentialscanPASS,
+  owned services/ports cleared. Next party work should address observed ranged
+  positioning and healer reach/threat based on this evidence, not rerun blindly.
+- **Native20878 ACTIVE**, existing Iron Fortress training/expiry/persistence
+  route on accepted sourceaeb0356e, new clean
+  `/tmp/eidolon-1-1-fortress-native-accepted-20260912`, branch
+  `work/1-1-fortress-native-accepted`. Assets prepared; no runtime edits.
+  fortressaccepted09121234, routefortress-mastery, SystemChrome/sg render,
+ 18185/18186/41875. Browser test running; no pass claimed. Log
+  `/tmp/eidolon-fortress-accepted-native-20260912.log`. SINGLE GPU LANE
+  RESERVED; poll same20878 and do not launch another renderer.
+
+## Previous checkpoint — September 12, 12:24 UTC
 
 Previous goal turn PROGRESS; this continuation PROGRESS. Revalidated terminal
 party evidence, verified actual Smoke Bomb purchases/persistence in native
