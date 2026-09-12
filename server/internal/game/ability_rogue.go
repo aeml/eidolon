@@ -646,6 +646,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 		cost := resolveAbilityManaCost(player, skillName, 30)
 		if player.Mana >= cost {
 			player.Mana -= cost
+			radius := effectiveAbilityAreaRadius(player, skillName, 10)
 
 			dx := targetX - player.X
 			dz := targetZ - player.Z
@@ -660,29 +661,30 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				damage := int(float64(10+player.Stats.Dexterity) * player.GetSkillDamageMultiplier("Blade Storm"))
 
 				proj := &Entity{
-					ID:              fmt.Sprintf("proj-%s-%d-%d", player.ID, time.Now().UnixNano(), i),
-					InstanceID:      player.InstanceID,
-					Type:            TypeProjectile,
-					SubType:         "Dagger",
-					X:               player.X,
-					Y:               1.0,
-					Z:               player.Z,
-					VelX:            velX,
-					VelZ:            velZ,
-					Radius:          1.0,
-					Damage:          damage,
-					OwnerID:         player.ID,
-					Rotation:        angle,
-					CreatedAt:       time.Now(),
-					Scale:           1.0,
-					ProjectileSkill: "Blade Storm",
+					ID:                    fmt.Sprintf("proj-%s-%d-%d", player.ID, time.Now().UnixNano(), i),
+					InstanceID:            player.InstanceID,
+					Type:                  TypeProjectile,
+					SubType:               "Dagger",
+					X:                     player.X,
+					Y:                     1.0,
+					Z:                     player.Z,
+					VelX:                  velX,
+					VelZ:                  velZ,
+					Radius:                1.0,
+					Damage:                damage,
+					OwnerID:               player.ID,
+					Rotation:              angle,
+					CreatedAt:             time.Now(),
+					Scale:                 1.0,
+					ProjectileSkill:       "Blade Storm",
+					ProjectileTravelLimit: radius,
 				}
 				w.Entities[proj.ID] = proj
 				w.Grid.Add(proj)
 			}
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 15*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ, AbilityShape{Radius: radius, Arc: math.Pi / 2})
 		}
 	} else if skillName == "Serrated Edges" {
 		cost := resolveAbilityManaCost(player, skillName, 30)

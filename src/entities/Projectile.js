@@ -315,10 +315,25 @@ export class Projectile extends Entity {
 
         // Move
         const moveStep = this.velocity.clone().multiplyScalar(dt);
+        const boundedFlight = locallySimulated && Number.isFinite(this.maxTravelDistance) && this.maxTravelDistance > 0;
+        const flightStart = boundedFlight ? this.position.clone() : null;
+        let flightEnded = false;
+        if (boundedFlight) {
+            const distance = Math.hypot(moveStep.x, moveStep.z);
+            const remaining = Math.max(0, this.maxTravelDistance - (this.travelDistance || 0));
+            if (distance >= remaining) {
+                if (distance > 0) moveStep.multiplyScalar(remaining / distance);
+                flightEnded = true;
+            }
+            this.travelDistance = (this.travelDistance || 0) + Math.min(distance, remaining);
+        }
         if (locallySimulated) {
             const destination = this.position.clone().add(moveStep);
             const clipped = clipDungeonEffectSegment(walkRects, this.position, destination);
-            if (clipped.blocked) {
+            if (clipped.blocked && boundedFlight) {
+                moveStep.set(clipped.x - this.position.x, destination.y - this.position.y, clipped.z - this.position.z);
+                flightEnded = true;
+            } else if (clipped.blocked) {
                 this.position.set(clipped.x, destination.y, clipped.z);
                 this.mesh?.position.copy(this.position);
                 this.isActive = false;
@@ -378,10 +393,17 @@ export class Projectile extends Entity {
                 // Only the damageable actor contract is a valid collision
                 // target; otherwise a visual pass can throw on takeDamage.
                 if (typeof entity.takeDamage !== 'function') continue;
-                if (clipDungeonEffectSegment(walkRects, this.position, entity.position).blocked) continue;
+                if (clipDungeonEffectSegment(walkRects, flightStart || this.position, entity.position).blocked) continue;
 
-                const dist = this.position.distanceTo(entity.position);
-                if (dist < hitRadius + (entity.radius || 0.5)) {
+                let dist = this.position.distanceTo(entity.position);
+                if (boundedFlight) {
+                    const dx = this.position.x - flightStart.x, dz = this.position.z - flightStart.z;
+                    const lengthSquared = dx * dx + dz * dz;
+                    const t = lengthSquared > 0 ? Math.max(0, Math.min(1,
+                        ((entity.position.x - flightStart.x) * dx + (entity.position.z - flightStart.z) * dz) / lengthSquared)) : 0;
+                    dist = Math.hypot(flightStart.x + t * dx - entity.position.x, flightStart.z + t * dz - entity.position.z);
+                }
+                if (dist < hitRadius + (boundedFlight ? .5 : (entity.radius || 0.5))) {
                     // HIT!
                     
                     if (this.type === 'Dagger' || this.type === 'DragonfireLance' || this.type === 'FlameTornado') {
@@ -521,6 +543,11 @@ export class Projectile extends Entity {
                     }
                 }
             }
+        }
+        if (boundedFlight && flightEnded) {
+            this.isActive = false;
+            if (this.mesh) this.mesh.visible = false;
+            spawnProjectileImpact(gameEngine, this, this.position, { terminal: true });
         }
     }
 }
