@@ -46,3 +46,19 @@ test('utility mastery native gate is isolated, non-retrying and included once in
     const all = script.match(/\n {2}all\)\n([\s\S]*?)\n {4};;/)[1];
     expect(all.match(/run_qa_stage rogue-utility run_rogue_utility/g)).toHaveLength(1);
 });
+test('a ground-input observer layered around the receiver cannot cause duplicate installation', () => {
+    const receive = jest.fn(() => 'delivered');
+    window.game = { player: { id: 'owner' }, handleServerMessage: receive };
+    installRogueUtilityObserver(configs[0]);
+    const original = window.game.handleServerMessage.bind(window.game);
+    // moveByGroundClick installs the entrance-click observer around this
+    // receiver. It forwards messages but does not copy function properties.
+    const movementObserver = message => original(message);
+    window.game.handleServerMessage = movementObserver;
+    installRogueUtilityObserver(configs[0]);
+    const payload = { skillName: 'Weak Point Mark', accepted: true, mana: 1718 };
+    expect(window.game.handleServerMessage({ type: 'ability_result', payload })).toBe('delivered');
+    expect(window.__rogueUtility.results).toEqual([payload]);
+    expect(window.game.handleServerMessage).toBe(movementObserver);
+    expect(receive).toHaveBeenCalledTimes(1);
+});

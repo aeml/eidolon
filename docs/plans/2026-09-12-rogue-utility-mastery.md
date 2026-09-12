@@ -94,3 +94,22 @@ earlier TWO-results cause is still unresolved. Archive
 Readiness now precedes normal approach, with unchanged range, cast count and
 duration assertions. Diagnostic observer tests still pass; native replay remains
 required and is not a retry that erases either failure.
+
+Readiness-order18728 on1a23887d FAILED43.3s with the needed diagnostic. Both
+result entries were identical accepted Weak Point casts,1718mana after1743,
+6s cooldown; both ability entries were identical. Actual base mark peak9.9831s
+and natural expiry were observed. This does not accept the overall route.
+Archive `/tmp/eidolon-rogue-utility-duplicate-failure-YgaHUJ`; original
+`/tmp/eidolon-rogue-utility-readiness-native-20260912.log`, scan0/cleanupPASS.
+
+Cause reproduced in a unit regression: moveByGroundClick installs the entrance
+click observer around the current receiver. That outer function does not copy
+the utility observer's function-property marker. Installing for the next cast
+therefore nested a second utility observer; both append to the same fresh
+observation. Core delivery still happened once. Store installation ownership on
+the game/document, preserving all outer observers and fresh-login resets.
+Regression RED1fail5pass; composed observer/input/runtime/stage tests4suites77
+PASS4.975s/lint/diff. Logs
+`/tmp/eidolon-rogue-utility-composed-observer-{red,tests,lint}-20260912.log`.
+No gameplay/runtime/count assertion changed. Corrected native and CI remain
+required; earlier failures remain preserved.

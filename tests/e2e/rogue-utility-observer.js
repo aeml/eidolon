@@ -4,7 +4,9 @@ export function installRogueUtilityObserver(config = null) {
     const game = window.game;
     window.__rogueUtility = { config, results: [], casts: [], maxDuration: 0,
         expired: false, ranks: null, points: null };
-    if (game.handleServerMessage.rogueUtilityObserver) return;
+    // Other input probes wrap the receiver without preserving function
+    // properties. Keep installation ownership on this game/document instead.
+    if (game.rogueUtilityObserverInstalled) return;
     const receive = game.handleServerMessage.bind(game);
     game.handleServerMessage = message => {
         const result = receive(message), qa = window.__rogueUtility, cfg = qa.config;
@@ -25,5 +27,5 @@ export function installRogueUtilityObserver(config = null) {
         }
         return result;
     };
-    game.handleServerMessage.rogueUtilityObserver = true;
+    game.rogueUtilityObserverInstalled = true;
 }
