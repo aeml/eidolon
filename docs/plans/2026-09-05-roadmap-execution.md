@@ -5,7 +5,28 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 06:52 UTC
+## Current checkpoint — September 12, release65 cast diagnosis
+
+The latest numbering-confirmation turn was NO PROGRESS on implementation.
+Revalidated source, terminal logs and remote master (still1af5951). The previous
+local native74130 is TERMINAL FAILURE, not active: Wizard passed the Teleport
+point then failed a Meteor Drop rune cast at sequence21 (56.0s). Preserved
+sanitized evidence in `/tmp/eidolon-release65-meteor-failure-dvvaL9` before reuse.
+No new public release or complete Wizard acceptance is claimed.
+
+Read-only before/after cast diagnostics now capture transient stun/menu/jump,
+rune/unlock/target state and previous timestamp. Hotkeys use direct callbacks;
+there is no evidence for a missed short frame-polled keypress. Seven helper
+tests PASS0.619s, changed lint/diff pass. Candidate worktree remains based on
+2a82012b with diagnostic-only uncommitted additions while exact source is frozen.
+
+Native **88301 ACTIVE**, Wizard-only existing animation route, runID
+`anim65diag0912`, web41875/API18185/Mongo18186. Log
+`/tmp/eidolon-release65-cast-diagnostic-native-20260912.log`. It owns the local
+GPU; poll same handle. Ports were free and recent CI runs terminal before
+launch. Preserve failure artifacts before another run. Scheduled soak untouched.
+
+## Previous checkpoint — September 12, 06:52 UTC
 
 Previous goal turn was PROGRESS. This continuation is PROGRESS: finished the
 damage-buff wire/display phase, integrated fully tested Roar, diagnosed the
