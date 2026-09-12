@@ -5,7 +5,50 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 01:46 UTC
+## Current checkpoint — September 12, 01:59 UTC
+
+Previous feedback turn was a VERIFIED WAIT: session77501 was polled and remained
+live, while the already recorded phone feedback was acknowledged. This goal
+continuation is PROGRESS: prepared the receiving-defense release64 integration,
+its version/patch notes and focused regression evidence. Full1.1–1.10 scope
+remains active; no genuine blocker and no new soak.
+
+- **Four-role native77501 remains ACTIVE**, authoritatively polled at01:58.
+  Frozen development208b0aa3, seed5588237360194778703, generator2/attempt0/no
+  fallback. All four entered the same Normal Verdant instance.
+- **Rootbound Warden defeated with all four surviving:** tank5122damage/
+  3475taken, Cleric4622ally healing/0taken, Wizard3948damage/184taken,
+  Rogue5995damage/1656taken. The same first boss killed the Fighter in the prior
+  run. Three ordinary town recovery/resume loops now passed, preserving seed,
+  rooms, gold, inventory and quests. Latest counters112ground steps/8route-room
+  traversals/3town returns; full clear, final shared credit, individual manual
+  Ilyra turn-ins, Water offers and fresh-save checks remain pending.
+- Continue polling SAME77501; log
+  `/tmp/eidolon-four-role-aura-follow-20260912.log`. Do not restart on an
+  observation timeout. No competing full/local native/browser test while active.
+- **Release64 prepared**, clean2c2003893474bf196e700ca199842a17f4f0d33e,
+  branchwork/release64-defenses at `/tmp/eidolon-release64-defenses-20260912`.
+  Based on accepted publicf866df68, not the514-file development bundle. Imports
+  the complete immediate/projectile/periodic/summon/wound/basic receiving-defense
+  sequence, expiry/retaliation/explosion fixes and raw/inherited wound budgets.
+  Existing63 story/economy/Dark King behavior and Fighter stun durations remain.
+  Separate phase-cap mechanics and their two development-only tests were not
+  imported; existing release63 tests remain. Historical imported evidence is
+  explicitly labelled as different-source evidence in each investigation doc.
+- Version/login/package/manifest/container/deploy/QA defaults aligned64; new
+  in-game notes retain63 and all older versions. Candidate scope/gates doc:
+  `docs/plans/2026-09-12-release64-receiving-defenses.md` in that worktree.
+- Focused Go race PASS4.160s; expanded paid/immediate/parallel/reflection/spread
+  selection repeated3x PASS27.257s. Client3suites/253tests PASS1.961s and changed
+  JavaScript lint PASS. Logs `/tmp/eidolon-release64-{defense-focused,
+  defense-repeated,client-focused,focused-lint}-20260912.log`.
+- **Not pushed/deployed:** full frozen-candidate regression follows the active
+  party run, then unchanged complete CI/predeploy/deployment/live gates and
+  independent public identities/artifact review. Public63 remains last accepted.
+  Never push this root ledger-only master. All wider1.1 and later versions,
+  expanded campaign/balance, earned builds and two-floor casino remain required.
+
+## Previous checkpoint — September 12, 01:46 UTC
 
 Previous goal turn was PROGRESS (Shattering and phone feedback). This continuation
 is PROGRESS: accepted release63's complete live gate, repaired the remaining
