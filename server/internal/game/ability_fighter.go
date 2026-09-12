@@ -69,6 +69,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 			training := &Entity{SubType: player.SubType, TalentRanks: player.TalentRanks, SpellFocusActive: player.SpellFocusActive}
 			training.NormalizeTalentRanks()
 			damage = int(math.Floor(float64(damage)*training.GetSkillDamageMultiplier(skillName) + 1e-9))
+			radius := effectiveAbilityAreaRadius(training, skillName, 4)
 			if runeID == "shieldslam_reverberation" {
 				damage *= 2
 			}
@@ -80,7 +81,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 			// The shield branch needs a threat tool before Guardian Roar unlocks.
 			// Match Sweeping Strike's threat premium, without increasing damage,
 			// Fortify absorption or overriding boss crowd-control immunity.
-			totalDamage := w.damageFighterCone(player, targetX, targetZ, 4.0, math.Pi/4, damage, stunDuration, 2.0, impacts, skillName)
+			totalDamage := w.damageFighterCone(player, targetX, targetZ, radius, math.Pi/4, damage, stunDuration, 2.0, impacts, skillName)
 			if runeID == "shieldslam_fortify" && totalDamage > 0 {
 				// The combat pipeline already provides a replicated absorb shield.
 				player.ArcaneShieldActive = true
@@ -89,7 +90,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 				player.ArcaneShieldRuneID = ""
 			}
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 6*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ, AbilityShape{Radius: radius, Arc: math.Pi / 2})
 		}
 	} else if skillName == "Shattering Charge" {
 		// Shattering Charge (Movement)
@@ -250,9 +251,13 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 		if player.Mana >= cost {
 			player.Mana -= cost
 			damage := player.Damage + int(float64(player.Stats.Strength)*1.2)
-			w.damageFighterCone(player, targetX, targetZ, 5.0, math.Pi/2, damage, 0, 2.0, impacts, skillName)
+			training := &Entity{SubType: player.SubType, TalentRanks: player.TalentRanks, SpellFocusActive: player.SpellFocusActive}
+			training.NormalizeTalentRanks()
+			damage = int(math.Floor(float64(damage)*training.GetSkillDamageMultiplier(skillName) + 1e-9))
+			radius := effectiveAbilityAreaRadius(training, skillName, 5)
+			w.damageFighterCone(player, targetX, targetZ, radius, math.Pi/2, damage, 0, 2.0, impacts, skillName)
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 4*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ, AbilityShape{Radius: radius, Arc: math.Pi})
 		}
 	} else if skillName == "Earthshaker" {
 		cost := resolveAbilityManaCost(player, skillName, 40)

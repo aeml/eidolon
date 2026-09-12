@@ -12,6 +12,7 @@ import { getFighterEffectDuration } from '../skills/fighterEffectDuration.js';
 import { applyOfflineFighterDamageBuff, clearOfflineFighterDamageBuffs } from '../skills/offlineFighterDamageBuffs.js';
 import { beginOfflineWhirlwind, advanceOfflineWhirlwind, cancelOfflineWhirlwind } from '../skills/offlineWhirlwind.js';
 import { applyOfflineEarthshaker } from '../skills/offlineEarthshaker.js';
+import { applyOfflineSweepingStrike } from '../skills/offlineFighterCone.js';
 import { beginOfflineShatteringCharge, advanceOfflineShatteringCharge } from '../skills/offlineShatteringCharge.js';
 import { beginOfflineCharge, advanceOfflineCharge, cancelOfflineCharge } from '../skills/offlineCharge.js';
 
@@ -164,32 +165,7 @@ export class Fighter extends Actor {
             console.log("Fighter used Sweeping Strike!");
 
 
-            // Cone Logic (Wider than Shield Slam)
-            const range = 5.0;
-            const angleThreshold = Math.PI / 2; // 90 degrees half-angle (180 total)
-            const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(this.mesh.quaternion);
-
-            this.spawnVisualEffect(gameEngine, this.position, 0xffffff, "cone");
-
-            const entities = gameEngine.chunkManager.getActiveEntities();
-            entities.forEach(entity => {
-                if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
-                    const dir = new THREE.Vector3().subVectors(entity.position, this.position);
-                    const dist = dir.length();
-                    if (dist < range) {
-                        dir.normalize();
-                        const angle = forward.angleTo(dir);
-                        if (angle < angleThreshold) {
-                            // Hit!
-                            const damage = this.stats.strength * 1.2;
-                            if (entity.takeDamage) {
-                                applyOfflineAbilityHit(this, entity, damage, skill, gameEngine.floatingTextManager, '#ffff00');
-                                gameEngine.floatingTextManager.spawn("Threat!", entity.position, '#ff0000');
-                            }
-                        }
-                    }
-                }
-            });
+            applyOfflineSweepingStrike(this, targetVector, gameEngine, isGuardianRoarFriendlyActor);
             return;
         }
 
