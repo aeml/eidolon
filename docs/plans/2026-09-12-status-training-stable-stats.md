@@ -1,5 +1,16 @@
 # Stable status-training comparisons — QA correction
 
+## Native acceptance — September 12, 2026
+
+Native75575 on50d2ea57 completes all three serial cases with zero retries:
+Shadow Lunge40.4s, Serrated Edges47.5s, Poison Coating50.6s. Baseline/trained/
+saved tick sequences64→76→76,35→42→42,62→74→74 respectively. Every dispatch
+and damage sample retains Dexterity109 and zero rest; all existing target,
+paid-cast, rank and persistence assertions pass. Archive
+`/tmp/eidolon-status-stable-pass-Ctfnxx`, scan0/exact containers/image/ports cleanup.
+This closes the status arrival collateral for the scoped Tripwire candidate;
+full healing-runtime CI34723986784 and fresh merged regression remain required.
+
 Native46213 on25265056 fails Poison Coating's baseline exact tick. Diagnostics
 prove the pre-aim Dexterity119 was rested; the coating request had0.758seconds
 of Well Rested left. The ordinary Piercing Throw request and physical/poison
