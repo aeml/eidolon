@@ -5,7 +5,52 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 23:04 UTC
+## Current checkpoint — September 12, 23:11 UTC
+
+Previous turn PROGRESS; this continuation PROGRESS: proved the poison mismatch
+was temporary-stat drift, corrected the comparison and passed every status
+collateral, accepted combined preparation CI, and checked published history.
+Full1.1–1.10 ACTIVE; no production/version/soak change. NEVER PUSH ROOT.
+
+- Native46213 TERMINAL FAILURE on25265056 with decisive evidence: pre-aim
+  Dexterity119, coating dispatched with0.758srest left, Piercing Throw/physical/
+  poison receipts Dexterity109/zero rest, actual62 versus stale expected67.
+  Archive `/tmp/eidolon-poison-budget-diagnostic-failure-HcXglF`, scan0/exact
+  cleanup. Test correction waits for natural outside rested expiry (45sbounded)
+  then requires unchanged Dex/zero rest across every dispatch and damage sample;
+  all exact damage, paid input, rank0/5/saved and target checks retained.
+  Two suites26PASS0.946s plus lint/diff. No actual damage/stat/buff formula change.
+- Native75575 TERMINAL PASS on50d2ea57: all three serial/zero retries.
+  Shadow Lunge40.4s64→76→76; Serrated47.5s35→42→42; Poison50.6s62→74→74.
+  Every dispatch/damage sample Dex109/zero rest. Archive
+  `/tmp/eidolon-status-stable-pass-Ctfnxx`, scan0/exact containers/image/ports
+  cleanup. Accepted docs/dev-push **e2f7d595**, Tripwire WT clean. **No native
+  browser active.** Full runtimeCI34723986784 on48713d22 remains ACTIVE:
+  client/server/browser3passed,1/2running. Once full pass, integrate this
+  component and rerun combined regression; do not repeat passed collateral.
+- **CI34723609678 SUCCESS** on integrated802d216a: client420/6489/137.486s;
+  game coverage101.549s/86.9%, race355.767s, all browser shards. Native/deploy/live
+  skipped. Accepted integrated docs/handoff **8500bdf4** clean/dev-pushed.
+  This pass does not negate the separately reproduced PvP race.
+- PvP repair **03aef5b2** still separate, **CI34724352226 ACTIVE**: clientpassed,
+  serverrunning. Await required full result before accepting/integrating. Repeated
+  focused race and zero-allocation evidence remains valid; ranked-browser scope
+  is still open. Next merge these accepted components then fresh combined CI.
+- Fetched actual origin/master: still **f9eb1f30**, published1.0.65. Many63–65
+  commits are already patch-equivalent in development; the large three-dot
+  diff is NOT a missing-feature inventory. Direct comparison finds native pixel
+  movement helper, phone status surface and WizardSupport/TimedRemote helpers
+  identical. Wizard differences include newer development cooldown ownership/
+  reversible Armor Melt, so do not blindly replace with published source.
+  Release labels/63–65notes still need deliberate reconciliation for1.1.0.
+  No source/version was changed by this read-only audit.
+- Earned Earth Wizard readiness already has native13998 proof52.7m oncb348efb,
+  documented in2026-09-10-earned-earth-readiness-proof.md; not all-class/party
+  completion. Existing fresh-story-ready route supports EIDOLON_E2E_FRESH_CLASS
+  Wizard/Fighter/Rogue/Cleric. Review the full route/rest options before the next
+  earned class run on assembled fixes. All wider milestone gates stay open.
+
+## Historical checkpoint — September 12, 23:04 UTC
 
 Previous turn PROGRESS; this continuation PROGRESS: verified healing gameplay,
 implemented/repeatedly verified the PvP completion race repair, and isolated a
