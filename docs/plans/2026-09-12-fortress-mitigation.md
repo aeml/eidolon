@@ -120,6 +120,17 @@ changed-file lint and diff pass. The subsequent native result and its limitation
 are recorded above; authored checks alone are not runtime evidence.
 Logs `/tmp/eidolon-fortress-impact-{observer-red,gate-tests}-20260912.log`.
 
+## Final component CI
+
+CI34707847501 SUCCESS on runtime8864133e:405client suites6329tests102.869s,
+game86.9% coverage99.599s, full game race348.638s, browser40+53+26=119actual
+checks. Backup/restore, benchmark, build, lint and audit passed. Manual native
+and deployment jobs were skipped; the separate9420 native result above supplies
+the bounded real-browser evidence. Logs
+`/tmp/eidolon-fortress-final-ci-{client,server,browser1,browser2,browser3}-34707847501.log`.
+Component is ready for primary integration; combined regression and the broader
+four-role encounter/armor/economy gates remain open. No live release claim.
+
 ## Proposed 1.1 patch note
 
 Iron Fortress now consistently reduces incoming damage by20%, alongside its
