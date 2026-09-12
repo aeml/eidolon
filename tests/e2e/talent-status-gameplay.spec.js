@@ -74,6 +74,11 @@ test('status Mastery purchases change real ticks and persist through fresh login
         await page.locator('#chat-input').press('Enter');
         await expect.poll(() => page.evaluate(() => Math.hypot(window.game.player.position.x-800, window.game.player.position.z-250))).toBeLessThan(3);
         await page.waitForTimeout(1100); // Existing authoritative waypoint movement lock.
+        // Town visits earn real temporary stats. Compare training ranks only
+        // after those seconds expire normally, not across a rested/unrested
+        // transition between aiming and projectile impact. Never edit the buff.
+        await expect.poll(() => page.evaluate(() => window.game.player.wellRestedSeconds),
+            { timeout: 45_000 }).toBe(0);
         // Enemies must remain selectable even where the entrance overlaps
         // their silhouette; exercise the real interaction-priority path.
         const minimumHealth = await page.evaluate(() => 2*(15+1.5*window.game.player.stats.dexterity));
@@ -171,11 +176,14 @@ test('status Mastery purchases change real ticks and persist through fresh login
             throw error;
         });
         const events = await page.evaluate(() => window.__statusQA.damage);
+        const dispatches = await page.evaluate(() => window.__statusQA.requests);
+        expect(dispatches.every(request => request.dexterity === dexterity && request.wellRestedSeconds === 0)).toBe(true);
+        expect(events.every(hit => hit.dexterity === dexterity && hit.wellRestedSeconds === 0)).toBe(true);
         const base = config.skill === 'Serrated Edges' ? Math.floor(events.find(hit => hit.kind === 'physical').amount/5)
             : (config.kind === 'poison' ? 8 : 10)+Math.floor(dexterity/2);
         const expected = Math.floor(base*(1+.04*rank)+1e-9);
         console.log('[status-damage-budget]', JSON.stringify({ skill: config.skill, label, rank,
-            sampledDexterity: dexterity, expected, requests: await page.evaluate(() => window.__statusQA.requests), events }));
+            sampledDexterity: dexterity, expected, requests: dispatches, events }));
         expect(events.filter(hit => hit.kind === config.kind).map(hit => hit.amount)).toEqual(expect.arrayContaining([expected]));
         expect(events.filter(hit => hit.kind === config.kind).every(hit => hit.amount === expected)).toBe(true);
         console.log(`[status-training] ${config.skill} ${label}: rank ${rank}, tick ${expected}, accepted targeted combat`);
