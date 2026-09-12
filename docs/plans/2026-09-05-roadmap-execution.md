@@ -5,7 +5,58 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 12:54 UTC
+## Current checkpoint — September 12, 13:01 UTC
+
+Previous turn PROGRESS; this continuation PROGRESS. Ported and corrected pending
+Fighter native gates onto accepted current integration while the same party
+run continues. Full roadmap remains active, primary/integrated unchanged clean
+7f4df79a; no production/version/root push/soak change.
+
+- **Party7792 freshly confirmed ACTIVE**, same frozen3b63d861/runID and native
+  lane. Seed **-7740520249466063783**, generator2/attempt0/no fallback. Four
+  legal30roles joined via invitations and entered the same Normal Verdant run.
+  First room cleared; all four naturally recovered in town and resumed with
+  identical seed/rooms/Gold/inventory/quests. Latest heartbeat281.6s run elapsed,
+ 35leader ground steps/one room/one town return. Full boss/clear/credit/Water
+  handoff still unproven. Keep source frozen and poll7792, not a replacement.
+- New WT `/tmp/eidolon-1-1-fighter-area-native-current-20260912`, branch
+  `work/1-1-fighter-area-native-current`, clean/dev-pushed
+  **6263f4e8623bde3520f4bf970caa693c46c10e47**, parent7f4df79a. Ports Earthshaker
+ 8e6189a6→237121a0 and Whirlwind01dbe625→4600d4db. Adjacent stage conflicts
+  resolved preserving original Whirlwind, Earthshaker area, Whirlwind area,
+  then existing phone coverage; both timing catalogs and assertions retain all.
+  Review found Whirlwind's old native fixture selected branchB, which does not
+  unlock Whirlwind. New test RED1fail/4pass; corrected to actual branchA, leaving
+  EarthshakerB and all runtime skill ownership unchanged. Five focused suites
+ 66PASS6.464s; nine expanded207PASS10.830s; lint/assets/bash syntax/diffPASS.
+  Sessions26977RED/27706GREEN/31068expanded all terminal. Logs
+  `/tmp/eidolon-fighter-area-current-{red,tests,expanded,lint,assets}-20260912.log`.
+  Candidate doc records limits. **Manual CI34695174069 ACTIVE**, exact6263f4e8.
+  Neither native area route executed yet; party owns the sole GPU lane.
+- **Fortress base CI34694234414 TERMINAL SUCCESS**,be81204b:
+  client394suites6249tests130.997s; game86.9%98.645s/race341.862s;
+  actual browser logs downloaded and all jobs successful. Native/deploy jobs
+  skipped, not production evidence. Logs
+  `/tmp/eidolon-fortress-status-ci-{client,server,browser1,browser2,browser3}-34694234414.log`.
+  Corrected Close-button candidate3a303173 **CI34694694526 now ACTIVE**,
+  client103557324510/server103557324582. Native59562 passed previously;
+  corrected full CI remains required before primary acceptance.
+- **Death Spiral combined CI34694650346 ACTIVE**,a1513834: client398/6290
+ 84.889s as recorded; server now PASS86.8%99.672s/race357.783s. Actual log
+  `/tmp/eidolon-death-spiral-native-ci-server-34694650346.log`.
+  Browser103557129624/103557129633/103557129641 active. Native25693 already
+  passed; combined full regression still pending, no primary acceptance yet.
+- Source review preserves two remaining tasks explicitly: pending separate
+  Fighter damage-buff route uses the covered status launcher for closing;
+  port with visible Close control before native execution. Blade Storm's
+  nominal10unit cone visual is not an actual finite hit radius: five daggers
+  use projectile-lifetime movement. Merely scaling that mesh cannot prove
+  Fine Motor damage coverage; reconcile projectile/range/presentation contract
+  rather than claiming an unverified AoE consumer. No speculative gameplay
+  change made from this review. Full160talents, earned first hour, all dungeon
+  seeds, shared/live regression and1.2–1.10 remain required.
+
+## Previous checkpoint — September 12, 12:54 UTC
 
 Previous goal work was PROGRESS; this continuation is PROGRESS: completed real
 Fortress and Death Spiral purchase/expiry/persistence checks, accepted Smoke
