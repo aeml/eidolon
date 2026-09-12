@@ -12,6 +12,7 @@ import { resolveDungeonMovementEndpoint } from '../skills/dungeonEffectGeometry.
 import { applyOfflineStatus } from '../core/OfflineDamageOverTime.js';
 import { getOfflineEffectiveArmor } from '../core/OfflineArmor.js';
 import { getRogueEffectDuration } from '../skills/rogueEffectDuration.js';
+import { resolveRogueAbilityDamage } from '../skills/rogueAbilityDamage.js';
 import {
     PROCEDURAL_PROJECTILE_VISUAL_DEFINITIONS,
     createProceduralProjectileVisual,
@@ -155,7 +156,7 @@ export class Rogue extends Actor {
             const target = castTarget;
 
             if (target) {
-                let damage = Math.floor(this.stats.damage * 1.5);
+                let damage = resolveRogueAbilityDamage(this, skill);
                 if (this.skillRunes?.Backstab === 'backstab_shadowstep') this.moveBehindOfflineTarget(target, gameEngine);
                 
                 // Backstab Check: Are we behind the target?
@@ -166,7 +167,7 @@ export class Rogue extends Actor {
                 const dot = myForward.dot(targetForward);
                 
                 if (dot > 0.5 || this.skillRunes?.Backstab === 'backstab_shadowstep') {
-                    damage *= 2.5; // Massive bonus
+                    damage = Math.trunc(damage * 2.5); // Match the server's positional strike boundary.
                     gameEngine.floatingTextManager.spawn("BACKSTAB!", target.position, '#ff0000');
                 }
                 
@@ -249,7 +250,7 @@ export class Rogue extends Actor {
                 if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
                     const dist = this.position.distanceTo(entity.position);
                     if (dist < radius) {
-                        let damage = this.stats.damage * 2.0;
+                        let damage = resolveRogueAbilityDamage(this, skill);
                         
                         // Bonus per bleed stack
                         if (entity.bleedStacks > 0) {
@@ -315,7 +316,7 @@ export class Rogue extends Actor {
 
                 const dagger = new Projectile(null, this, 'Dagger', startPos, targetPos);
                 dagger.skillName = skill;
-                dagger.damage = 10 + this.stats.dexterity;
+                dagger.damage = resolveRogueAbilityDamage(this, skill);
                 gameEngine.addEntity(dagger);
             }
             return;
@@ -328,6 +329,8 @@ export class Rogue extends Actor {
             const cdr = this.stats.cooldownReduction || 0;
             this.cooldowns["Phantom Volley"] = 18.0 * (1 - cdr);
 
+            // Snapshot every shot at this paid cast, not the delayed emission.
+            const volleyDamage = resolveRogueAbilityDamage(this, skill);
             // Rapid Fire 3 shots
             const startPos = this.position.clone();
             startPos.y += 1.0;
@@ -340,7 +343,7 @@ export class Rogue extends Actor {
                     // Use 'PhantomArrow' for the purple visual
                     const arrow = new Projectile(null, this, 'PhantomArrow', startPos, targetPos);
                     arrow.skillName = skill;
-                    // Damage is set in Projectile.js for PhantomArrow
+                    arrow.damage = volleyDamage;
                     gameEngine.addEntity(arrow);
                     
                     // Small burst for each shot
@@ -373,7 +376,7 @@ export class Rogue extends Actor {
                 
                 const dagger = new Projectile(null, this, 'Dagger', startPos, target);
                 dagger.skillName = skill;
-                dagger.damage = 10 + this.stats.dexterity;
+                dagger.damage = resolveRogueAbilityDamage(this, skill);
                 dagger.isPiercingThrow = true;
                 if (this.serratedEdgesActive) dagger.applyBleed = true;
                 gameEngine.addEntity(dagger);
@@ -498,7 +501,7 @@ export class Rogue extends Actor {
         dagger.skillName = skill;
         
         // Damage Calculation: Base 15 + (Dexterity * 1.5)
-        let damage = 15 + (this.stats.dexterity * 1.5);
+        const damage = resolveRogueAbilityDamage(this, skill);
         
         dagger.isPiercingThrow = true;
         dagger.damage = damage;

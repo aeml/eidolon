@@ -397,6 +397,8 @@ export const CONSTANTS = {
             );
 
             return entries.slice(0, 40).map((t, i) => ({ id: `ROG_${String(i + 1).padStart(2, '0')}`, ...t,
+                abilityDamage: [0, 2, 8, 10, 14, 16].includes(i) ? { skill: skills[Math.floor(i / 2)], damage: 0.04 }
+                    : i === 37 ? { damage: 0.02 } : undefined,
                 statusTraining: [6, 12, 20].includes(i) ? { skill: skills[Math.floor(i / 2)], damage: 0.04 }
                     : i === 37 ? { damage: 0.02 } : undefined,
                 ...(i < 26 && i % 2 === 1 ? { desc: `+3% ${skills[Math.floor(i / 2)]} CDR and +2% critical chance per rank (15% / 10% max).` } : {}),

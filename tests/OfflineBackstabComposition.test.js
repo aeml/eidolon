@@ -7,6 +7,9 @@ afterEach(() => jest.restoreAllMocks());
 
 test.each([
     { name: 'ordinary' },
+    { name: 'trained armored combo', trained: true, combo: true, armor: 20 },
+    { name: 'trained eviscerate combo', trained: true, combo: true, rune: 'backstab_eviscerate', armor: 20 },
+    { name: 'trained behind odd weapon truncation', trained: true, masteryOnly: true, behind: true, damage: 101, armor: 21 },
     { name: 'equipment', equipment: true },
     { name: 'combo', combo: true },
     { name: 'combo equipment', combo: true, equipment: true },
@@ -27,13 +30,14 @@ test.each([
     try {
         actor.mesh = new THREE.Group();
         actor.position.set(0, 0, 0);
-        actor.stats.damage = 100;
+        actor.stats.damage = config.damage || 100;
         actor.stats.mana = 1000;
         actor.stats.critChanceBonus = config.equipment ? 1 : 0;
+        actor.talentRanks = config.trained ? { ROG_03: 5, ROG_38: config.masteryOnly ? 0 : 5 } : {};
         actor.unlockedSkills.push('Cloak & Vanish', 'Backstab');
         actor.skillRunes = { Backstab: config.rune };
         target.mesh = new THREE.Group();
-        target.mesh.rotation.y = Math.PI;
+        target.mesh.rotation.y = config.behind ? 0 : Math.PI;
         target.position.set(0, 0, 2);
         target.stats.hp = target.stats.maxHp = 10000;
         target.stats.defense = config.armor || 0;
@@ -57,7 +61,10 @@ test.each([
         expect(actor.stats.mana).toBeLessThan(mana);
         const armor = (config.armor || 0) * (config.rune === 'backstab_eviscerate' ? .5 : 1);
         const critical = config.equipment || config.combo && !config.expired || config.rune === 'backstab_ambush' && !config.miss;
-        expect(10000 - target.stats.hp).toBe((150 - armor) * (critical ? 2 : 1));
+        const multiplier = config.trained ? config.masteryOnly ? 1.2 : 1.3 : 1;
+        let damage = Math.trunc(actor.stats.damage * 1.5 * multiplier);
+        if (config.behind) damage = Math.trunc(damage * 2.5);
+        expect(10000 - target.stats.hp).toBe((damage - armor) * (critical ? 2 : 1));
         if (config.combo && !config.expired) {
             expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('COMBO: Ambush!', actor.position, '#ffd700');
         }
