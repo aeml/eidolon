@@ -5,7 +5,88 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 10:02 UTC
+## Current checkpoint — September 12, 10:14 UTC
+
+Previous goal turn PROGRESS; this continuation PROGRESS. Implemented Grip's
+remaining identified targeting/range consumers, retained final live65 failure
+evidence, and launched the four-role native run only after production released
+the GPU. Full 1.1.0–1.10.0 goal remains active; no milestone acceptance claim.
+
+- **Production CI34683452640 TERMINAL FAILURE**: final live103535820818 failed,
+  other nine jobs succeeded and65 remains published. Public10:14 frontend/
+  backend still Alpha1.0.65/f9eb1f30, statusok/database ready. No rollback,
+  new version, retry or cancel performed. Final live acceptance remains OPEN.
+  Log `/tmp/eidolon-release65-live-34683452640.log`. Downloaded exact sanitized
+  live artifact10295888405 (3,049,747 bytes) to
+  `/tmp/eidolon-release65-live-failure-rO6IRy`. Production's own credential scan
+  passed/sanitized0; do not claim an additional credential-aware local scan.
+- Actual failed assertions: Fighter first attempt Whirlwind presentation was
+  present but later animation snapshot Idle (retry passed, classified flaky);
+  Rogue passed; Wizard first attempt presentation layers4 vs expected2 at
+  animation-gameplay.spec.js:307/base branch loop593. Wizard retry failed
+  moving Fireball sample count10 vs required>10 at391. Cleric/suffix not reached
+  after Wizard failure. Do not call this a complete live animation pass.
+- Read-only in-memory extraction of the report's embedded ZIP confirms the
+  retained Wizard moving samples: initial16 frames ending650.5ms; retry10
+  frames ending701.7ms, all MOVING and latter five with abilityFireball, actual
+  native ANGLE/Vulkan/RADV RENOIR. Retry last intervals100/116.7/116.6ms.
+  This does not establish stopped movement/casting or justify lowering the
+  frame requirement; frame pacing cause remains unknown. No sample changes.
+- Source inspection suggests persisted-rune fixture state for the layer issue:
+  live reused characters retain runes, base casts pass no runeId, expected
+  layers are computed from `options.runeId || null`, while accepted Teleport
+  may have Warp's four layers. Need reproduce/verify actual skill/rune and
+  correct preparation via normal visible rune removal, not silently accept
+  whichever layers appear. Current snapshot assertions lack that diagnostic.
+  Also investigate sampling active cast presentation before animation expires.
+  **No live-QA fix authored yet**, no rerun over the party GPU session.
+- **Four-role native session32483 ACTIVE**, TTY, clean frozen e39599d9 in
+  `/tmp/eidolon-1-1-integrated-regression-20260912`. RunIDparty09121010,
+  routeparty-dungeon, loopback18185/18186/41875, systemChrome via sg render.
+  Script owns disposable Mongo/API/image; leave it and scheduled soak alone.
+  Log `/tmp/eidolon-four-role-scheduled-input-native-20260912.log`.
+  Confirmed main runner idle/no scoped native processes and free ports before
+  launch; soak runner busy unchanged. Resumed same32483 handle, still active.
+  **Do not modify/merge this frozen tree or launch another native/GPU job.**
+- All four level30/Common/rank5-primary prepared characters, normal invitation
+  UI, visible healing-target select/clear and same-instance entry passed.
+  Verdant seed **5245927292081125682**, generator2/attempt0/fallbackfalse,
+  normal/fullRuntrue/sourceDirtyfalse. Traversal advancing, no full clear,
+  survival/credit/manual turn-in/fresh Water result yet. This is a fresh seed,
+  not an exact replay of the earlier Warden failure.
+- New `/tmp/eidolon-1-1-grip-targeting-20260912`, branch
+  `work/1-1-grip-targeting`, clean **f016e0f7c0f297ca252fa232296b6cba5d68a97b**,
+  parentaf57344f. Pushed ONLY development branch. **CI34687856500 ACTIVE**.
+  FTR_16 retains3%CDR and now uses2%target range/rank10→11, not unused AoE;
+  generic area does not enlarge this single-target cast/cursor selection.
+  Server normalizes a temporary rank map; controller uses matching trained
+  range and planar body distance. Offline selects valid living/active hostile,
+  same-instance, nonremote body within range/cursor tolerance and walkable
+  segment BEFORE spending mana/CD/presentation. Locked/malformed/missing
+  targets rejected. Immunity, immovability, close-target no-push, root-not-stun
+  and no-online-prediction retained. Nearest eligible center wins; farther
+  large body no longer steals cursor selection. Event publishes selected
+  enemy's original coordinates, not cursor/pulled landing. No protocol change.
+- Paid server RED2.987s:four trained-edge rejects and wrong event endpoint;
+  offline RED13fail/4pass1.005s. Initial5suites83PASS5.501s/serverrace18.120s;
+  expanded5suites**84PASS4.788s**/serverrace**16.702s**. Additional real five
+  Technique purchases/sixth rejection/malformed caps/foreign exclusion/
+  immutable map race**1.771s**. Full lint/whitespace pass. No local full-suite
+  run or native range/purchase acceptance claimed. All local focused sessions
+  28845/43057/87268/74513/95843/63878/66172/63660 terminal. Logs
+  `/tmp/eidolon-grip-targeting-{server-red,client-red,server-green,client-green,server-final,client-final,purchases,lint}-20260912.log`.
+  Doc `2026-09-12-grip-targeting.md` includes proposed1.1 patch note and limits.
+- Juggernaut **CI34686991417 ACTIVE**, last browser103536716791 running;
+  browsers103536716776/103536716790 pass. Server now accepted86.9%/97.038s,
+  fullrace337.804s plus extras; API log
+  `/tmp/eidolon-juggernaut-ci-server-34686991417.log`. Grip Mastery
+  **CI34687250376 ACTIVE**, server accepted, browsers103537382704/103537382719
+  running, third103537382749 pass. Client391suites6202tests92.182s, log
+  `/tmp/eidolon-grip-mastery-ci-client-34687250376.log`. Pending full hosted
+  acceptance before integration. Primary stays e39599d9; integrated MUST stay
+  e39599d9 while32483 runs even if later CI succeeds. Root ledger NOT pushed.
+
+## Historical checkpoint — September 12, 10:02 UTC
 
 Previous goal turn PROGRESS; this continuation PROGRESS. Verified release65's
 actual publication and completed the missing Grip Mastery consumer while final
