@@ -5,7 +5,51 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 02:54 UTC
+## Current checkpoint — September 12, 03:04 UTC
+
+Previous goal turn was PROGRESS (scoped65 integration and hosted queue repair).
+This continuation is PROGRESS: completed the missing native Teleport/protection
+test route and collected new completed hosted evidence. Full1.1–1.10 stays open.
+
+- **Production64 CI34668112188 ACTIVE**, source6d5e82cb. All hosted jobs now
+  SUCCESS. Browser shards1/2/3 passed39/40/25cases=104; complete production logs
+  retained`/tmp/eidolon-release64-production-{client,server,browser1,browser2,
+  browser3}-34668112188.log`. Nativepredeploy **103486534312 ACTIVE**, passed
+  animation gallery and Well Rested GPU lifecycle stages, now running disposable
+  full-character gameplay. Do not interrupt/restart that run or compete locally.
+  Deployment/input/final live gates remain. Last public check02:53:47 was63/f866.
+- **Hosted65 CI34668886679 ACTIVE**, frozen9ab5b644. Client296suites/4340tests
+  PASS104.525s plus full lint/audit/benchmark; server coverage game74.909s/85.5%,
+  full race game224.979s and remaining backup/restore/bench/build stages PASS.
+  Logs`/tmp/eidolon-release65-hosted-{client,server}-34668886679.log`. Browser
+  shards1/2/3 jobs103487196484/103487196476/103487196495 now running. Poll SAME
+  run; manual dispatch still skips native/deployment. No65 publication claimed.
+- **New test-only branch6f67b7ba**, clean`work/release65-native-warp`at
+  `/tmp/eidolon-release65-native-warp-20260912`, based9ab5b644. Adds two real
+  system-Chrome clients for Warp4→5radius owner/peer endpoint meshes; actual
+  paid40mana/cooldown receipts; Phase1→1.2s active Protected/orbital effect with
+  no solid shell; natural cleanup; fifteen ordinary talent purchases and saved
+  rune/ranks after fresh login. Uses prepared level/readiness only, no invented
+  casts/positions/packets/immunity/deadlines. This is NOT earned/dungeon-clear proof.
+- A bounded read-only post-delivery observer records actual scene objects and
+  preserves the short Phase activation even after inactive history replaces the
+  tail. Reinstalls after fresh documents, never double-wraps or changes game
+  clocks/effects. Unit contracts3suites/262tests PASS1.726s, changed lint/shell
+  syntax PASS, Playwright discovery1test/1file. Logs
+  `/tmp/eidolon-release65-native-warp-{contracts,lint,discovery}-20260912.log`.
+- Script offers exact allowlisted`teleport-protection`route with owner/observer,
+  retries0, and appends it to full native`all`without removing/reordering prior
+  commands. Doc`2026-09-12-teleport-native-qa.md`explicitly labels it **not yet
+  natively run or accepted**. Branch is committed but not integrated/pushed;
+  release65 remains clean9ab5b644. Run focused native after64 releases hardware,
+  inspect evidence, then integrate/verify; no parallel native run was started.
+- Primary development remains4231854d; unresolved Briar four-role failure and
+  all broader first-hour/dungeon/talent/earned/balance/campaign/resource gates
+  remain, followed by1.2–1.10 including the physical casino. No new soak or
+  workflow cancellation this turn. Nightly schedule still enabled. Root master
+  is ledger-only: NEVER PUSH.
+
+## Previous checkpoint — September 12, 02:54 UTC
 
 Previous goal turn was VERIFIED WAIT (polled active production CI after phone
 feedback). This continuation is PROGRESS: built/tested a scoped65 candidate,
