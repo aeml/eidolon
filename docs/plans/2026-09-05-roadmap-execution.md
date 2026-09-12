@@ -5,7 +5,61 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 02:08 UTC
+## Current checkpoint — September 12, 02:20 UTC
+
+Previous goal turn was PROGRESS (gear explosion repair and integration). This
+continuation is PROGRESS: moved full release regression to hosted CI while the
+local party ran, repaired missed test-fixture integration, and preserved the
+terminal second-boss failure. Full1.1–1.10 remains active; no genuine blocker.
+
+- **Native77501 TERMINAL FAILURE,29.0m**, frozen208b0aa3 and original
+  seed5588237360194778703. Rootbound Warden passed, four ordinary town recovery/
+  same-run loops passed, but Rogue died at Briar Matron. Last boss sample14413HP
+  from16800; no full clear/last-boss credit/manual turn-ins/save acceptance.
+  Artifact archive `/tmp/eidolon-four-role-briar-failure-Z5rFVi` includes complete
+  test-results, report and `/tmp/eidolon-four-role-aura-follow-20260912.log`.
+  Credential scanner0; exact party120146 API/Mongo containers confirmed removed.
+- Rogue took4196total, dealt13495,63Piercing Throws/11Coatings, no rejections.
+  Fighter11827damage/6653taken; Cleric9419healing/970taken with413MP at Rogue
+  death and1683healing during Briar. Healer distance18.884 at that death.
+  Last escape observations took2.0–3.75s and finished after warning deadlines;
+  earlier Rootbound steps were roughly0.6s. Briar slams share the actual2s
+  server warning. Need investigate input/projection/encounter timing and role
+  positioning from retained evidence before inferring a balance or runtime fix.
+  The common-gear prepared run's conservative80%-resource town-rest policy and
+  sequential formation input add substantial backtracking; its29m is not an
+  earned-player pacing measurement. Do not hide the death or rerun blindly.
+- **Hosted full regression:** pushed only `work/release64-defenses`; manual CI
+  dispatch uses GitHub-hosted client/server/browser jobs and skips production/
+  self-hosted jobs by existing workflow conditions. No soak or website job.
+  CI34666906447 on0ba6076a TERMINAL FAILURE: client288suites/4083tests75.548s
+  plus full lint/audit/benchmark passed; server coverage80.930s failed the zero-
+  health jump fixture and hostile Spirit healing expectations. Race/browser
+  stages did not pass. Logs `/tmp/eidolon-release64-hosted-{client,server}-34666906447.log`.
+- Restored missed test-onlyd10f72bb as6bb83d95, including living/dead/zero-health
+  jump controls and exact13/22 hostile Spirit damage versus15friendly healing.
+  Added heal-event checks proving damage cannot conceal healing an opponent.
+  No runtime death/hostility rule weakened. Three-repeat race PASS6.414s; log
+  `/tmp/eidolon-release64-hosted-fixture-followup-20260912.log`.
+- **Corrected hostedCI34667225615 ACTIVE**, source
+  **6d5e82cb8f50dd9e76a1353bd024339eabc544e0**, release64 worktree clean/pushed
+  to that nonproduction branch. At02:20 client103481486712 SUCCESS; server
+  103481486620 passed coverage and is running race detector. Browser shards
+  still follow. No production push/deploy yet; public63 last accepted. Retain
+  full required master-push native/predeploy/deploy/live gates before acceptance.
+- Primary fast-forwarded only AFTER native terminal/archive to clean **a7be1ed9**,
+  matching `/tmp/eidolon-offline-shattering-charge-20260912`. Full Go-race
+  **session52549 ACTIVE**, GOMAXPROCS2/-p1, log
+  `/tmp/eidolon-development-gear-full-server-20260912.log`. Poll this same handle;
+  do not start competing local native/full runs. Pending branch runtime is the
+  full-tested parent plus focused-tested on-kill gear repair; no client runtime
+  changed. Primary/development are not approved as a whole public release.
+- No soak is currently running. Latest34558600459 remains terminal failure;
+  read-only workflow inspection shows nightly cron still **enabled** (03:17UTC),
+  not disabled. No new soak was dispatched; do not claim the schedule is off.
+  Root master remains ledger-only: NEVER PUSH it.
+
+## Previous checkpoint — September 12, 02:08 UTC
 
 Previous goal turn was PROGRESS (release64 integration and focused acceptance).
 This continuation is PROGRESS: found and reproduced another dungeon geometry/
