@@ -1,5 +1,29 @@
 # Bastion preparation guidance — 1.1.0 candidate
 
+## Latest follow-up — September 12, 22:13 UTC
+
+CI34721303156 on bea88218 passes client414 suites/6413 tests135.645s and server
+game race350.610s, but browser3 still fails desktop Enter on both attempts;
+its other23 layout cases pass. Both actual phone-mode reading-end captures were
+inspected:16px text, final line clear above the footer, accessible entry and
+persistent chat in portrait/landscape. Artifact
+`/tmp/eidolon-dungeon-preparation-corrected-browser3-Pn2Bsr`, credential scan0;
+logs `/tmp/eidolon-dungeon-preparation-corrected-{client,server,browser3}-34721303156.log`.
+The remaining shards were still running at this observation.
+
+The first InputManager fix was necessary but insufficient: UIManager has a
+second global Enter-to-chat handler, also lacking summary in its native-control
+exclusion. Added actual UI keyboard-dispatch cases both alone and with the
+gameplay InputManager binding. Both reproduced focus stolen into chat (2failed/
+37passed), despite the earlier InputManager-only regression passing. The same
+summary exclusion now applies to UIManager too; no synthetic details toggle or
+preventDefault workaround is introduced. Seven focused suites/165tests now
+pass19.822s, retaining gameplay Enter, chat submission and input behavior.
+Logs `/tmp/eidolon-dungeon-summary-global-{red,green,lint}-20260912.log`.
+This follow-up still needs corrected hosted desktop browser acceptance.
+
+## Earlier implementation and evidence
+
 Adds a collapsed, keyboard/touch-operable preparation section to the Normal
 Verdant Bastion Dungeon Guide. It explains tank/healer/damage roles, appropriate
 Uncommon/Rare gear and each class's primary stat, Vitality, and recovery in
