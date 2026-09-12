@@ -6,7 +6,7 @@ export const SELF_CENTERED_SHAPE_ABILITIES = new Set([
     'Blessing of Resolve', 'Blessing of Zeal', "Heaven's Trumpet",
     'Spirit Guardians', 'Spirit Guardians Boost', 'Guardian Roar', 'Executioner Spin', 'Time Warp', 'Whirlwind', 'Juggernaut Charge', 'Smoke Bomb', 'Death Spiral'
 ]);
-export const AUTHORITATIVE_SHAPE_ABILITIES = new Set(['Earthshaker', 'Teleport', 'Flame Whip', 'Radiant Strike', 'Healing Light', 'Shield Slam', 'Sweeping Strike', ...WIZARD_GROUND_ABILITIES, ...SELF_CENTERED_SHAPE_ABILITIES]);
+export const AUTHORITATIVE_SHAPE_ABILITIES = new Set(['Blade Storm', 'Earthshaker', 'Teleport', 'Flame Whip', 'Radiant Strike', 'Healing Light', 'Shield Slam', 'Sweeping Strike', ...WIZARD_GROUND_ABILITIES, ...SELF_CENTERED_SHAPE_ABILITIES]);
 
 /**
  * World-space radii for player ability presentations with a circular gameplay
@@ -87,6 +87,7 @@ export const AOE_BOUNDARY_VISUAL_TYPES = Object.freeze(new Set([
 ]));
 
 export function getAbilityAoeRadius(className, canonicalSkillName, source = null) {
+    if (className === 'Rogue' && canonicalSkillName === 'Blade Storm') return getAbilityAreaRadius(source, className, 10, canonicalSkillName);
     if (className === 'Rogue' && canonicalSkillName === 'Smoke Bomb') return getAbilityAreaRadius(source, className, 5, canonicalSkillName);
     if (className === 'Rogue' && canonicalSkillName === 'Death Spiral') return getAbilityAreaRadius(source, className, 4, canonicalSkillName);
     if (className === 'Wizard' && canonicalSkillName === 'Teleport') {
