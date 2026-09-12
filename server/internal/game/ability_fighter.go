@@ -239,6 +239,9 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 				target.Mu.Unlock()
 			}
 
+			// The recipient loop skips the caster; apply its protective stats too,
+			// after resolving this cast's existing equipment-based taunt permission.
+			player.RecalculateStats()
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 30*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, player.X, player.Z, AbilityShape{Radius: radius, Arc: 2 * math.Pi})
 		}

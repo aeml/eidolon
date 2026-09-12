@@ -93,6 +93,9 @@ func fighterTalentDef(n int) (TalentDef, bool) {
 	if n == 7 {
 		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: "Iron Fortress", SkillDuration: 0.04}}, true
 	}
+	if n == 9 {
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: "Guardian Roar", SkillDuration: 0.04}}, true
+	}
 	// Talents 1-26: Skill-specific (odd=Mastery +damage, even=Technique +utility)
 	if n <= 26 {
 		skillIdx := (n - 1) / 2

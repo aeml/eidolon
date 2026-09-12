@@ -347,8 +347,10 @@ export const CONSTANTS = {
 
             return entries.slice(0, 40).map((t, i) => ({ id: `FTR_${String(i + 1).padStart(2, '0')}`, ...t,
                 ...(i === 6 ? { desc: '+4% Iron Fortress duration per rank (20% max). Does not increase protection or reflection strength.' } : {}),
-                abilityDuration: i === 6 ? { skill: 'Iron Fortress', duration: 0.04 } : undefined,
-                abilityDamage: i < 26 && i % 2 === 0 && i !== 6 ? { skill: skills[Math.floor(i / 2)], damage: 0.04 }
+                ...(i === 8 ? { desc: '+4% Guardian Roar buff duration per rank (20% max). Nearby allies inherit your duration; protection strength and taunt threat are unchanged.' } : {}),
+                abilityDuration: i === 6 ? { skill: 'Iron Fortress', duration: 0.04 }
+                    : i === 8 ? { skill: 'Guardian Roar', duration: 0.04 } : undefined,
+                abilityDamage: i < 26 && i % 2 === 0 && i !== 6 && i !== 8 ? { skill: skills[Math.floor(i / 2)], damage: 0.04 }
                     : i === 37 ? { damage: 0.02 } : undefined,
                 criticalChance: i === 38 ? { chance: 0.02 } : undefined,
                 abilityArea: i === 9 ? { skill: 'Guardian Roar', radius: 0.02 }

@@ -5,8 +5,8 @@ test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true
     userAgent: devices['Pixel 7'].userAgent, actionTimeout: 12_000,
     trace: 'off', screenshot: 'off', video: 'off' });
 
-test('phone Roar area purchases reach the authoritative ring and survive login', async ({ page, baseURL }) => {
-    test.setTimeout(180_000);
+test('phone Roar area and duration purchases reach authoritative effects and survive login', async ({ page, baseURL }, testInfo) => {
+    test.setTimeout(300_000);
     test.skip(process.env.EIDOLON_E2E_REGISTER !== '1', 'Requires the isolated Guardian Roar route');
     const credentials = credentialsFromEnvironment();
     const failures = collectBrowserFailures(page, baseURL);
@@ -31,21 +31,30 @@ test('phone Roar area purchases reach the authoritative ring and survive login',
     await expect.poll(() => page.evaluate(() => window.game.player.hotbar.indexOf('Guardian Roar'))).toBeGreaterThanOrEqual(0);
     await page.locator('#btn-close-skills').tap();
 
-    async function verifyCast(ranks, radius, quality) {
+    async function verifyCast(ranks, radius, quality, masteryRank = 0, verifyExpiry = false) {
         await page.locator('#btn-mobile-menu').tap(); await page.locator('#btn-settings').tap();
         await page.locator('#graphics-quality').selectOption(quality);
         await page.locator('#btn-close-settings').tap();
         if (await page.locator('#esc-menu').isVisible()) await page.locator('#btn-mobile-menu').tap();
+        await expect.poll(() => page.evaluate(() => window.game.player.guardianRoarTimer <= 0), { timeout: 20_000 }).toBe(true);
         const sequence = await page.evaluate(() => window.game.animationQAReadySequence || 0);
         await command('/qa-animation-ready');
         await expect.poll(() => page.evaluate(() => window.game.animationQAReadySequence || 0)).toBeGreaterThan(sequence);
         await page.evaluate(() => {
-            window.__roarArea = { casts: [], results: [] };
+            window.__roarArea = { casts: [], results: [], maxDuration: 0, expired: false };
             if (window.__roarAreaObserver) return;
             window.__roarAreaObserver = true;
             const game = window.game, receive = game.handleServerMessage.bind(game);
             game.handleServerMessage = message => {
                 const result = receive(message);
+                const states = message.type === 'state' ? message.payload : message.type === 'delta' ? message.payload?.u : null;
+                for (const state of Object.values(states || {})) {
+                    if (state.id !== game.player.id) continue;
+                    if (state.guardianRoarActive === true && Number.isFinite(state.guardianRoarDuration)) {
+                        window.__roarArea.maxDuration = Math.max(window.__roarArea.maxDuration, state.guardianRoarDuration);
+                    }
+                    if (state.guardianRoarActive === false && window.__roarArea.maxDuration > 0) window.__roarArea.expired = true;
+                }
                 if (message.type === 'ability_result' && message.payload?.skillName === 'Guardian Roar') window.__roarArea.results.push(message.payload);
                 if (message.type === 'ability' && message.payload?.sourceId === game.player.id && message.payload.skillName === 'Guardian Roar') {
                     const effect = game.effects.find(effect => effect.isActive && effect.abilityShape?.sourceId === game.player.id && effect.abilityShape?.skillName === 'Guardian Roar');
@@ -60,9 +69,12 @@ test('phone Roar area purchases reach the authoritative ring and survive login',
             };
         });
         const state = await page.evaluate(() => ({ mana: window.game.player.stats.mana,
+            mastery: window.game.player.talentRanks?.FTR_09 || 0,
             ranks: ['FTR_10', 'FTR_33', 'FTR_38'].map(id => window.game.player.talentRanks?.[id] || 0),
             slot: window.game.player.hotbar.indexOf('Guardian Roar') }));
         expect(state.ranks).toEqual(ranks);
+        expect(state.mastery).toBe(masteryRank);
+        const expectedDuration = 10 * (1 + .04 * masteryRank), startedAt = Date.now();
         await page.locator('#hotbar-container .hotbar-slot').nth(state.slot).tap();
         await expect.poll(() => page.evaluate(() => window.__roarArea.casts.length)).toBe(1);
         await expect.poll(() => page.evaluate(() => window.__roarArea.results.length)).toBe(1);
@@ -75,6 +87,21 @@ test('phone Roar area purchases reach the authoritative ring and survive login',
         expect(cast.meshRadius).toBeCloseTo(radius, 8);
         expect(cast.meshX).toBeCloseTo(cast.x, 8); expect(cast.meshZ).toBeCloseTo(cast.z, 8);
         expect(cast.arc).toBeCloseTo(2 * Math.PI, 8);
+        await expect.poll(() => page.evaluate(() => window.__roarArea.maxDuration)).toBeGreaterThan(expectedDuration - .75);
+        expect(await page.evaluate(() => window.__roarArea.maxDuration)).toBeLessThanOrEqual(expectedDuration + .1);
+        if (verifyExpiry) {
+            await page.locator('#btn-phone-status').tap();
+            const badge = page.locator('#phone-status-panel [data-buff-id="guardian_roar"]');
+            await expect(badge).toBeVisible();
+            await page.screenshot({ path: testInfo.outputPath(`roar-mastery-rank${masteryRank}-${quality}.png`) });
+            await page.waitForTimeout(Math.max(0, startedAt + 10_500 - Date.now()));
+            expect(await page.evaluate(() => window.game.player.guardianRoarTimer)).toBeGreaterThan(0);
+            await expect(badge).toBeVisible();
+            await expect.poll(() => page.evaluate(() => window.__roarArea.expired), { timeout: 5000 }).toBe(true);
+            await expect.poll(() => page.evaluate(() => window.game.player.guardianRoarTimer)).toBe(0);
+            await expect(badge).toHaveCount(0);
+            await page.locator('#btn-phone-status').tap();
+        }
         console.log(`[guardian-roar-area] ranks ${ranks.join('/')}, ${quality}: accepted radius ${radius} matches attached ring`);
     }
     async function buyFive(talentId) {
@@ -82,9 +109,15 @@ test('phone Roar area purchases reach the authoritative ring and survive login',
         await page.locator('.phone-build-tabs').getByRole('button', { name: 'Talents', exact: true }).tap();
         for (let rank = 1; rank <= 5; rank++) {
             const buy = page.locator(`button[data-build-action="talent:${talentId}"]`);
+            const points = await page.evaluate(() => window.game.player.talentPoints);
+            if (talentId === 'FTR_09') {
+                await expect(page.locator('.phone-build-card').filter({ has: buy }))
+                    .toContainText('+4% Guardian Roar buff duration per rank (20% max)');
+            }
             await buy.scrollIntoViewIfNeeded(); await buy.tap();
             await expect.poll(() => page.evaluate(id => window.game.player.talentRanks?.[id] || 0, talentId)).toBe(rank);
             await expect.poll(() => page.evaluate(() => window.game.uiManager.skillTree.mobile.pending === null)).toBe(true);
+            expect(await page.evaluate(() => window.game.player.talentPoints)).toBe(points - 1);
         }
         await page.locator('#btn-close-skills').tap();
     }
@@ -95,5 +128,12 @@ test('phone Roar area purchases reach the authoritative ring and survive login',
     await loginAndEnterWorld(page, credentials);
     await page.setViewportSize({ width: 844, height: 390 });
     await verifyCast([5, 5, 5], 20.25, 'high');
+    await buyFive('FTR_09');
+    const points = await page.evaluate(() => window.game.player.talentPoints);
+    await verifyCast([5, 5, 5], 20.25, 'high', 5, true);
+    await loginAndEnterWorld(page, credentials);
+    await expect.poll(() => page.evaluate(() => window.game.player.talentRanks?.FTR_09)).toBe(5);
+    expect(await page.evaluate(() => window.game.player.talentPoints)).toBe(points);
+    await verifyCast([5, 5, 5], 20.25, 'low', 5, true);
     expect(failures, failures.join('\n')).toEqual([]);
 });

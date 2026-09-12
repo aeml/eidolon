@@ -127,7 +127,7 @@ export class Fighter extends Actor {
 
 
             const radius = getAbilityAoeRadius('Fighter', skill, this);
-            const buffDuration = getFighterEffectDuration(this, 10);
+            const buffDuration = getFighterEffectDuration(this, 10, skill);
             const entities = new Set([this, ...gameEngine.chunkManager.getActiveEntities()]);
             const rects = gameEngine.currentInstanceId && gameEngine.currentInstanceType !== 'overworld'
                 ? gameEngine.currentDungeonLayout?.walkRects : null;
