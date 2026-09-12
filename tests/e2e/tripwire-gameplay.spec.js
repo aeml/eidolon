@@ -59,16 +59,32 @@ test('paid Tripwire training and saved ranks damage and root an ordinarily lured
         });
         await expect.poll(find, { timeout: 30_000 }).not.toBeNull();
         const target = await find();
+        const approach = [];
         const offset = () => page.evaluate(id => {
             const g = window.game, e = g.remotePlayers.get(id);
             return e?.isActive && e.state !== 'DEAD' ? { x: e.position.x - g.player.position.x, z: e.position.z - g.player.position.z } : null;
         }, target.id);
-        for (let step = 0; step < 15; step++) {
-            const d = await offset(); expect(d).not.toBeNull();
-            const distance = Math.hypot(d.x, d.z);
-            if (distance < 6) break;
-            const scale = Math.min(7, distance - 4) / distance;
-            await moveByGroundClick(page, d.x * scale, d.z * scale, { moveOnly: true, allowJumpFallback: false });
+        try {
+            for (let step = 0; step < 15; step++) {
+                approach.push(await page.evaluate(id => {
+                    const g = window.game, p = g.player, e = g.remotePlayers.get(id);
+                    return { player: { x: p.position.x, z: p.position.z, hp: p.stats.hp, state: p.state,
+                        instance: g.currentInstanceId, pending: g.pendingInteraction?.id || null },
+                    target: e ? { id: e.id, x: e.position.x, z: e.position.z, hp: e.health ?? e.stats?.hp,
+                        active: e.isActive, state: e.state, hostile: g.isHostileActorTarget(e) } : null };
+                }, target.id));
+                const d = await offset(); expect(d).not.toBeNull();
+                const distance = Math.hypot(d.x, d.z);
+                if (distance < 6) break;
+                const scale = Math.min(7, distance - 4) / distance;
+                await moveByGroundClick(page, d.x * scale, d.z * scale, { moveOnly: true, allowJumpFallback: false });
+            }
+        } catch (error) {
+            await page.screenshot({ path: testInfo.outputPath(`tripwire-${rank}-${quality}-${saved}-approach-failed.png`) });
+            throw error;
+        } finally {
+            await testInfo.attach(`tripwire-approach-${rank}-${quality}-${saved}`,
+                { body: JSON.stringify({ target, approach }), contentType: 'application/json' });
         }
         const d = await offset(); expect(d).not.toBeNull();
         expect(Math.hypot(d.x, d.z)).toBeLessThan(6);

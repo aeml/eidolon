@@ -80,6 +80,14 @@ CC immunity. Keep the independent before-cast health assertion. No enemy stats,
 damage, root timing or player position beyond existing bounded preparation
 are altered. Focused2suites9tests PASS1.086seconds; native replay still required.
 
+Corrected native39281 onb167ad91 FAILED33.2seconds during ordinary approach:
+the durable target was selected, then became missing/inactive/dead before the
+next approach step. Existing evidence does not distinguish those causes. Archive
+`/tmp/eidolon-tripwire-approach-failure-80mGUX`, scan0 and exact cleanup verified.
+Added bounded read-only player/target/position/health/state/instance snapshots
+for each approach step and a failure screenshot, retaining original input and
+failure assertions. Do not replace the target or claim a trigger/damage/root pass.
+
 ## Draft 1.1.0 patch note
 
 - Fixed Tripwire's damage and critical talents not affecting triggered traps.
