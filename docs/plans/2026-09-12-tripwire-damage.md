@@ -192,6 +192,19 @@ trigger and saved ranks. Server paid-trigger tests retain internal damage checks
 Wire-shaped regression first failed2cases, then3suites13tests PASS0.863s plus
 ESLint/diff. New actual trigger/expiry replay remains required.
 
+### Actual trigger replay passes
+
+Native43530 on6220f557 PASS1.1minutes/zero retries. Paid25mana in each case;
+rank0/1/5 hits139/144/166 and saved rank5 produced a real332critical. Every
+case observed the placed mesh, target root, natural expiry and one trigger;
+High/Low and saved purchases passed. The log's `placed` number is calculated
+expected base, NOT a replicated internal trap stat; actual damage is the separate
+authoritative hit receipt. Saved-rank High screenshot was visually inspected.
+Archive `/tmp/eidolon-tripwire-hit-pass-RZmpcM`, credential scan0 and exact
+disposable cleanup verified. CI34716757122 is still running on runtime9048c71a;
+shield/entrance routes affected by the QA arrival change still need replay.
+No integration, production release or full-roadmap acceptance yet.
+
 ## Draft 1.1.0 patch note
 
 - Fixed Tripwire's damage and critical talents not affecting triggered traps.
