@@ -5,7 +5,61 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 04:51 UTC
+## Current checkpoint — September 12, 05:05 UTC
+
+Previous turn was PROGRESS. This continuation is PROGRESS: reduced the measured
+ground-input observation overhead, preserved all strict input checks, completed
+the full client suite and retained more completed production/rehearsal evidence.
+No browser/soak was restarted, canceled or falsely treated as terminal.
+
+- **651e147ce5075a3911ab8d90ecd8dddc7b770456**, clean local branch
+  `work/1-1-ground-input-batching`at
+  `/tmp/eidolon-1-1-ground-input-batching-20260912`, based on13c642dc.
+  Test-only batching combines hook installation/origin read, hover/ground-ray/
+  diagnostic reset, and click receipt/intent, then returns the same snapshot
+  proving movement. Strict successful input uses6 browser evaluations, not11.
+  New evaluation-budget test RED1failed/19passed0.683s on the unchanged helper.
+- All complete path/real ray/.25m drift/75ms hover/actual Shift-Control-click/
+  modifier-release/hostile-interception/displacement-arrival checks, timeouts
+  and survival assertions remain. Observer unit tests prove no double forwarding,
+  no fabricated click or movement, missing-ray/error preservation, and no reset
+  of hooks during ordinary reads. Only diagnostic evidence is reset before input.
+- Focused6suites/61tests PASS1.835s before final interception regression.
+  **Full client13866 TERMINAL SUCCESS373suites/5537tests361.005s**, including
+  that final regression. Changed-file lint and whitespace PASS. Logs
+  `/tmp/eidolon-ground-input-batch-{red,green,expanded,lint,final-lint,client-full}-20260912.log`.
+  Doc`2026-09-12-ground-input-observation-batching.md`. No native speedup,
+  successful dodge or dungeon clear claim from call counts alone.
+- Keep651e147c separate until hosted13c642dc rehearsal is terminal. Primary
+  and `/tmp/eidolon-1-1-integrated-regression-20260912` stay clean13c642dc;
+  **CI34674058495 ACTIVE**, all three browser shards running:103501643069(2),
+  103501643083(1),103501643103(3). Client103500609363 SUCCESS372suites/5528tests
+  120.861s; server103500609242 SUCCESS coverage86.6%/91.681s, full game race
+  317.104s and backup/restore/bench/build. Logs
+  `/tmp/eidolon-integrated-1-1-rogue-{client,server}-34674058495.log`.
+- **Production65 CI34673903787 ACTIVE**, exact66ca3a3d. Client passed as below;
+  server103500199162 SUCCESS coverage85.5%/81.639s, full game race267.307s,
+  backup/restore/bench/build PASS. Browser2 **103501121810 SUCCESS40cases**,
+  browser3 **103501121816 SUCCESS25cases**. Browser1 **103501121838 ACTIVE**.
+  Native/predeploy/input/deploy/final live remain required. Logs
+  `/tmp/eidolon-release65-production-{server,browser2,browser3}-34673903787.log`.
+- Production browser artifacts retained:
+  `/tmp/eidolon-release65-production-shard2-jZfgMY`,
+  `/tmp/eidolon-release65-production-shard3-9vfnTT`.
+  Inspected360px status capture: opaque reading panel and separate reachable
+  action controls. This is mocked presentation, not native or physical-phone
+  performance acceptance. Sessions77879/94539 downloads terminal.
+- Scheduled soak34670421761 still active; no new soak or schedule change.
+  No local native session active. Preserve hardware for65's upcoming native
+  gates. Public64/6d5e82cb last independently verified04:50; no65 live claim.
+- Next poll the SAME two CI runs and retain their terminal artifacts. After
+  current13c rehearsal completion integrate651e147c, then verify its native
+  serialization/input timing and four-role gameplay only when65's native gate
+  is free. Continue actual party viability/earned progression/first-hour/balance/
+  reconnect and every1.2–1.10 requirement. No ordinary66 candidate.
+  Root master is ledger-only: NEVER PUSH.
+
+## Previous checkpoint — September 12, 04:51 UTC
 
 Previous goal turn was PROGRESS. This continuation made PROGRESS: retained and
 analyzed the terminal party failure, repaired six actual Rogue offline damage
