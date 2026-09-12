@@ -8,16 +8,21 @@ import { selectPreparedRune } from './prepared-rune-input.js';
 import { CONSTANTS } from '../../src/core/Constants.js';
 
 test.use({ viewport: { width: 1280, height: 720 }, trace: 'off', screenshot: 'off', video: 'off' });
-const technique = process.env.EIDOLON_E2E_ROGUE_TECHNIQUE === '1';
+const serrated = process.env.EIDOLON_E2E_SERRATED_TECHNIQUE === '1';
+const technique = serrated || process.env.EIDOLON_E2E_ROGUE_TECHNIQUE === '1';
 const genericId = technique ? 'ROG_33' : 'ROG_28';
-const utilities = [
+const utilities = (serrated ? [
+    { skill: 'Serrated Edges', talent: 'ROG_13', branch: 'Throwing Specialist Path',
+        active: 'serratedEdgesActive', duration: 'serratedEdgesDuration', timer: 'serratedEdgesTimer',
+        visual: 'serrated_edges', base: 10, cost: 30, cooldown: 20, self: true }
+] : [
     { skill: 'Weak Point Mark', talent: 'ROG_05', branch: 'Assassin Burst Path',
         active: 'weakPointMarked', duration: 'weakPointDuration', timer: 'weakPointMarkTimer', visual: 'weak_point_mark', base: 10, cost: 25, cooldown: 12 },
     { skill: 'Smoke Bomb', talent: 'ROG_19', branch: 'Utility / Debuff Path',
         active: 'slowed', duration: 'slowDuration', timer: 'slowTimer', visual: 'slowed', base: 5, cost: 35, cooldown: 20 },
     { skill: 'Cloak & Vanish', talent: 'ROG_25', branch: 'Utility / Debuff Path',
         active: 'stealthActive', duration: 'stealthDuration', timer: 'stealthTimer', visual: 'stealth', base: 5, cost: 30, cooldown: 30, self: true }
-].map(cfg => technique ? { ...cfg, talent: `ROG_${String(Number(cfg.talent.slice(4)) + 1).padStart(2, '0')}` } : cfg);
+]).map(cfg => technique ? { ...cfg, talent: `ROG_${String(Number(cfg.talent.slice(4)) + 1).padStart(2, '0')}` } : cfg);
 
 test(`Rogue utility ${technique ? 'Techniques reduce paid mana and cooldowns' : 'Masteries extend real paid effects'} through normal purchases and saved rune training`, async ({ page, baseURL }, testInfo) => {
     test.skip(process.env.EIDOLON_E2E_ROGUE_UTILITY !== '1' || process.env.EIDOLON_E2E_REGISTER !== '1',
@@ -27,6 +32,7 @@ test(`Rogue utility ${technique ? 'Techniques reduce paid mana and cooldowns' : 
     await loginAndEnterWorld(page, credentials);
     expect(await page.evaluate(() => window.game.player.constructor.name)).toBe('Rogue');
     await ensureDungeonReadyLevel(page, 100);
+    const initialPoints = await page.evaluate(() => window.game.player.talentPoints);
     await page.evaluate(installRogueUtilityObserver);
     const skills = page.locator('#skill-tree-window');
     const receipts = [];
@@ -204,16 +210,20 @@ test(`Rogue utility ${technique ? 'Techniques reduce paid mana and cooldowns' : 
         }
     }
     await purchase(genericId, 0, 5);
-    await returnToTown(page); await menu('Runes');
-    await selectPreparedRune(page, skills, { skill: 'Cloak & Vanish', id: 'cloak_longer', name: 'Lasting Shadow' });
-    await expect.poll(() => page.evaluate(() => window.game.player.skillRunes?.['Cloak & Vanish'])).toBe('cloak_longer');
-    await page.locator('#btn-close-skills').click();
-    const points = await page.evaluate(() => window.game.player.talentPoints); expect(points).toBe(0);
+    await returnToTown(page);
+    if (!serrated) {
+        await menu('Runes');
+        await selectPreparedRune(page, skills, { skill: 'Cloak & Vanish', id: 'cloak_longer', name: 'Lasting Shadow' });
+        await expect.poll(() => page.evaluate(() => window.game.player.skillRunes?.['Cloak & Vanish'])).toBe('cloak_longer');
+        await page.locator('#btn-close-skills').click();
+    }
+    const points = await page.evaluate(() => window.game.player.talentPoints);
+    expect(points).toBe(initialPoints - 5 * (utilities.length + 1));
     await loginAndEnterWorld(page, credentials);
     const savedIds = [...utilities.map(cfg => cfg.talent), genericId];
-    await expect.poll(() => page.evaluate(ids => ids.map(id => window.game.player.talentRanks?.[id]), savedIds)).toEqual([5, 5, 5, 5]);
+    await expect.poll(() => page.evaluate(ids => ids.map(id => window.game.player.talentRanks?.[id]), savedIds)).toEqual(savedIds.map(() => 5));
     expect(await page.evaluate(() => window.game.player.talentPoints)).toBe(points);
-    for (const cfg of utilities) await cast(cfg, 5, 5, 'high', cfg.self ? 'cloak_longer' : '');
+    for (const cfg of utilities) await cast(cfg, 5, 5, 'high', cfg.skill === 'Cloak & Vanish' ? 'cloak_longer' : '');
     await testInfo.attach('rogue-utility-paid-saved-receipts', { body: JSON.stringify(receipts), contentType: 'application/json' });
     expect(failures, failures.join('\n')).toEqual([]);
 });
