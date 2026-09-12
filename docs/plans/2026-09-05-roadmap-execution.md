@@ -5,7 +5,48 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 22:48 UTC
+## Current checkpoint — September 12, 22:55 UTC
+
+Previous goal turn PROGRESS. This continuation PROGRESS: isolated the Cleric
+support failure, implemented a focused cursor-healing correction, and found a
+separate real PvP completion race. Full1.1–1.10 ACTIVE. NEVER PUSH ROOT.
+
+- Native58903 TERMINAL FAILURE on00b616b0: Rogue28.8s passes; Cleric52.2s fails.
+  Seventeen Healing Light requests rejected requirements_not_met, no accepted
+  cast/heal,779/2575HP,1585mana, correct unlocked hotbar and zero cooldown.
+  Guardian Embrace is starved by the necessary immediate-heal priority. Archive
+  `/tmp/eidolon-arrival-support-diagnostic-failure-bP98ES`, scan0/exact cleanup.
+  Source shows fresh hotbar cursor intent captures an overlapping hostile ID;
+  server correctly rejects that explicit invalid support target.
+- **48713d22b55ac8173fe87a3357ee187794867a7b** clean/dev-pushed Tripwire candidate
+  now filters hostile hover from fresh Healing Light/Divine Intervention cursor
+  intent and facing. Actual ground ally/self resolution retained; explicit roster,
+  captured targets, ally hover, offensive skills and server validation unchanged.
+  New regression initially4failed/5passed, now four suites24PASS2.086s plus two
+  party suites59PASS2.502s, full lint/diff. Added draft note/evidence document
+  `docs/plans/2026-09-12-healing-cursor-target.md`. No healing/regen/stat changes.
+- Sole native **36250 ACTIVE** frozen48713d22, routeprepared-earned-support,
+  runIDhealingcursor0912, API18185/Mongo18186/web41875. Log
+  `/tmp/eidolon-healing-cursor-native-20260912.log`. Build/ready complete, Rogue
+  case running at last check. **CI34723986784 ACTIVE** on exact48713d22.
+  Earlier **CI34723036018 SUCCESS** on843914f1, not evidence for the new fix.
+  Integrated **CI34723609678 ACTIVE** on802d216a, client passed/server running.
+- Independent PvP gate audit on integrated802d216a: **67354 TERMINAL FAILURE**.
+  Duel no-ranked-reward, explicit2v2team-elimination and practice result/no-DB-write
+  cases pass. Actual-attack2v2 case fails race detector13.41s. Log
+  `/tmp/eidolon-1-1-pvp-gate-audit-20260912.log`. Race: completePvPMatch atpvp.go636
+  restores InstanceID/X/Y/Z while delayed applyAttackImpact atcombat_attack.go134
+  calls CanDamage on unlocked live actors; CombatRelationship/inSafeZone reads
+  those fields. No race repair implemented yet. Safe next work: capture detached
+  relationship fields under the existing World→Entity lock order before the
+  asynchronous relationship check; preserve late-impact instance/death checks,
+  team elimination and rewards. Do not add opposite two-actor locking or hide
+  this failed race behind earlier full CI passes. Ranked browser2v2 remains open.
+- After native terminal: preserve/scan/exact cleanup, inspect receipts/images,
+  address any failure; talent-status arrival collateral still required. No
+  native concurrency, production/version/soak changes or milestone approval.
+
+## Historical checkpoint — September 12, 22:48 UTC
 
 Previous turn revalidated prepared-party gear and yielded the terminal shield
 result. This continuation PROGRESS: accepted and integrated preparation UI,
