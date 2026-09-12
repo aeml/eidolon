@@ -5,7 +5,59 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 06:24 UTC
+## Current checkpoint — September 12, 06:37 UTC
+
+Previous goal turn was PROGRESS. This continuation is PROGRESS: integrated the
+fully tested Fortress gate baseline, implemented the server phase of two damage
+buff Masteries with actual-impact tests and retained newer CI/browser evidence.
+
+- **83d5eba95844d9ead19b46b26162f6a59539a4ee**, clean separate candidate
+  `/tmp/eidolon-1-1-fighter-damage-buff-mastery-20260912`, branch
+  `work/1-1-fighter-damage-buff-mastery`, parent7f781121. **Server phase only,
+  NOT release-ready, not pushed/integrated.** Next finish wire/client/offline
+  behavior and displayed copy before full combined/native/save validation;
+  do not publish this partial candidate or call these abilities complete.
+- FTR_19/FTR_25 ignored by hardcoded1.5/3 Damage buffs. Paid casts now capture
+  named Mastery: Berserker1.5/1.56/1.8, Last Stand3/3.12/3.6 at0/1/5. Generic
+  damage remains in hit consumers, not doubled by the stat buff. Preserved
+  point IDs/caps/costs, normal zero-mana/CDR/duration, defense penalty/HP gate.
+  Nearby party recipients inherit caster strength/deadline; far/other/dead
+  excluded. Refresh replaces strength; rank changes cannot rewrite active
+  casts. Copy paths preserve values; expiry/purge clear; bounded legacy fallback.
+- Paired real-impact RED13trained cases/1.568s after correcting fixture CDR
+  and independent integer-ratio expectations. Initial green1.834s; expanded
+  race20.317s. Added purge test initially had zero caster stats and correctly
+  failed its positive damage control,22.350s; fixed only fixture BaseStats/
+  Wisdom. **Final focused race83707 SUCCESS22.001s**, including actual purge,
+  rejected healthy Last Stand, purchases/copies/party/refresh/expiry and nearby
+  duration/Roar controls. All local sessions closed. Go formatting/diff pass.
+  Logs `/tmp/eidolon-fighter-damage-buff-mastery-server-*-20260912.log`;
+  doc `2026-09-12-fighter-damage-buff-mastery.md` details unfinished client phase.
+- **CI34677399754 at611024d4 TERMINAL SUCCESS**: client380/5847/122.349s,
+  server86.8%/95.022s/race331.964s/backup/restore/bench/build; browser40+50+26=116.
+  Manual native/deploy guards skipped, not passed. Primary and integrated
+  regression fast-forwarded from cleanbefd to **611024d46883e15b86b2c1b3f36128eb196f33da**
+  only after terminal acceptance; no source for any running test changed.
+  Logs `/tmp/eidolon-fortress-contract-ci-browser{1,2,3}-34677399754.log`.
+  Archive `/tmp/eidolon-fortress-contract-browser-artifacts-6UuyDt` retained.
+  Inspected Low restored-crystal screenshot: green crystal and surrounding
+  supports visible on phone viewport; presentation fixture, not raid/repair
+  or dungeon ground-traversal acceptance.
+- **Guardian Roar CI34677980248 at7f781121 ACTIVE**. Client103511178464
+  SUCCESS381suites/5856tests102.904s; server103511178371 SUCCESS
+  game86.7%/93.383s/race324.607s/backup/restore/bench/build. Browser3
+  103512311437 SUCCESS26; browser1/2 ACTIVE103512311396/103512311441.
+  Logs `/tmp/eidolon-guardian-roar-ci-{client,server,browser3}-34677980248.log`.
+  Poll SAME run, retain terminal browser evidence, then integrate7f into primary.
+  7f remains clean, pushed and browser dependencies prepared.
+- **Production65 CI34675345557/native103506166516 ACTIVE**, same1af5951
+  checkout; safe process inspection now2512734 on animation-gameplay spec.
+  No new deployment/live65 acceptance claim and no competing local GPU job.
+  Keep production GPU through final live. Actual four-party/Fortress/Roar native
+  checks remain required afterward. Leave scheduled soak alone. Root master
+  is ledger-only: NEVER PUSH ROOT. Full1.1–1.10 goal remains active.
+
+## Previous checkpoint — September 12, 06:24 UTC
 
 Previous goal turn was PROGRESS. This continuation is PROGRESS: pushed the
 completed Guardian Roar candidate and dispatched exact-source full validation,
