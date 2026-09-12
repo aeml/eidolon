@@ -40,8 +40,11 @@ through Rogue.update, and asserts root and single consumption. Existing moving
 projectile assertions remain unchanged. Corrected focused3suites82tests PASS
 3.555s/lint/diff; shared server/paid trap race PASS15.013s. Logs
 `/tmp/eidolon-tripwire-{offline-contract-corrected,kind-server}-20260912.log`.
-Full corrected local client run is still active at this entry, followed by a
-new exact-commit CI; the original CI server job was not canceled or replaced.
+Full corrected local client95636 PASSED410suites6395tests360.246seconds.
+Exact efda8f9f CI34712331175 client also PASSED410/6395/135.117seconds and
+server passed; three browser shards remain active at this entry. Original
+CI34711930441 is terminalFAILED with the retained six fixture failures; no
+running job was canceled or replaced. Native trap acceptance remains required.
 
 ## Draft 1.1.0 patch note
 
