@@ -1,5 +1,12 @@
 # Periodic and summon receiving defenses
 
+> Historical development evidence, imported with the receiving-defense changes.
+> This document's source hashes and phase-cap results describe that development
+> branch, not the narrower release64 build. See
+> [release64 scope and gates](2026-09-12-release64-receiving-defenses.md) for the
+> current candidate: existing release63 campaign/economy and Dark King behavior
+> are retained; the separate phase-cap change remains pending.
+
 Extendsf3068a2b in the isolated periodic-defense worktree. These are local
 combat repairs for the still-open1.1 gate, not domain61 or a published release.
 The complete1.1–1.10 roadmap and native/save/balance gates remain mandatory.

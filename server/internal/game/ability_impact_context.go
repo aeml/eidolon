@@ -55,7 +55,7 @@ func (ctx *abilityImpactContext) damageWithCritical(attacker, target *Entity, ba
 
 // Stored wound budgets have already inherited their application-time damage.
 // They enter here without rerolling criticals or applying outgoing bonuses a
-// second time. Only receiver state/phase limits are resolved at this impact.
+// second time. Only receiver state is resolved at this impact.
 func (ctx *abilityImpactContext) receiveDamageLocked(attackerID string, target *Entity, outgoing int, kind string, now time.Time) int {
 	if target == nil || target.State == "DEAD" || target.Health <= 0 || outgoing <= 0 {
 		return 0

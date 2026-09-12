@@ -1,5 +1,12 @@
 # Wound receiving defenses and shield expiry
 
+> Historical development evidence, imported with the receiving-defense changes.
+> This document's source hashes and phase-cap results describe that development
+> branch, not the narrower release64 build. See
+> [release64 scope and gates](2026-09-12-release64-receiving-defenses.md) for the
+> current candidate: existing release63 campaign/economy and Dark King behavior
+> are retained; the separate phase-cap change remains pending.
+
 Isolated follow-up to the immediate/projectile/periodic defense repairs for
 the still-open1.1 gate. This is not deployed in domain release1.0.61, and does
 not replace any of the full1.1–1.10 roadmap, native, save or balance requirements.

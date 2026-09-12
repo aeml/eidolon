@@ -344,7 +344,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 1.0.63</span>
+                <span class="start-version-row__label">Alpha 1.0.64</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
             </div>
 
@@ -670,6 +670,17 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.0.64">
+                    <h3 class="patch-note-entry__title">Alpha 1.0.64 (defenses you can depend on)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Protection across combat:</strong> Direct abilities, projectiles, lingering areas, summons, poison and bleeding now respect receiving defenses, including Arcane Shield, Sanctuary and temporary invulnerability. Basic attacks apply outgoing damage bonuses before those defenses.</li>
+                        <li><strong>Shields end cleanly:</strong> Expired shields cannot absorb or retaliate between updates. Reflective shields strike the actual attacker, and depletion cannot clear a newly recast shield.</li>
+                        <li><strong>Explosions respect the battlefield:</strong> Explosive Arcane Shields respect dungeon walls, party protection and valid PvP opponents. Their blasts observe defensive effects and PvP limits, including when another shield explodes in response.</li>
+                        <li><strong>Consistent wounds:</strong> Poison and bleed budgets apply their outgoing bonuses and PvP limits once per recipient. Raw wounds honor critical training and equipment effects; wounds inherited from an earlier hit do not apply those bonuses again.</li>
+                        <li><strong>Progression stays familiar:</strong> Existing quest rewards, manual turn-ins, town recovery and Well Rested are unchanged. The wider dungeon and progression acceptance work continues.</li>
+                    </ul>
+                </div>
+
                 <div class="patch-note-entry" data-version="1.0.63">
                     <h3 class="patch-note-entry__title">Alpha 1.0.63 (a clearer spell of support)</h3>
                     <ul class="patch-note-entry__list">
