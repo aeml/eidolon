@@ -5,7 +5,56 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 11, 23:58 UTC
+## Current checkpoint — September 12, 00:20 UTC
+
+The preceding clarification-only turn was NO PROGRESS. This continuation is
+PROGRESS: diagnosed the terminal63 gate, reproduced its rejection, repaired the
+native test and pushed a scoped correction; added the next Focus native route
+and resolved a full-integration architecture-budget failure. Full scope remains.
+
+- CI34658209958 is TERMINAL FAILURE, not still running. Hosted tests/all104
+  browser cases, native gallery/rest and opening dungeon clear passed. Guardian
+  Roar failed at FTR_38rank5 (actual4); its generic retry reused the saved branch.
+  Instrumentation2d2fba75/native50229 reproduced rank4/6points/pendingnull/
+  visible rate-limit rejection. Screenshot inspected. Archives:
+  `/tmp/eidolon-release63-roar-failure-Z9hLzj` and
+  `/tmp/eidolon-release63-roar-repro-evidence-a86wop`.
+- New `/tmp/eidolon-release63-roar-20260912` branchfix/release63-roar-admission,
+  correctionfafd2434 verifies resolved purchases, unchanged rank/points plus
+  visible rate feedback before a deliberate new tap; accepted spend exactly1.
+  No gameplay/limit/fixture change. Native68939 TERMINAL0:13.4s (14.6total),
+  all15ranks and15/16.5/18.75/20.25radii, Low plus High after fresh login.
+  No retry needed on this successful run. Scanner0/cleanup confirmed. Archive
+  `/tmp/eidolon-release63-roar-accepted-NHbL4k`; lint44665 and104case66851pass.
+  Logs `/tmp/eidolon-release63-roar-{repro,green}-20260912.log`.
+- Final **f866df68** (test+proof only versus0a871da0) ordinary pushed to remote
+  master. New normal **CI34660899212 ACTIVE**; at00:19 hostedclientpassed,
+  hostedserverrunning. Poll SAME run; no63liveclaim. Independent domains checked
+  earlier this turn remain62/0231c948, backendhealthy/database ready. Existing63
+  patch notes/login/version retained. Root ledger NEVER PUSH. Soak stays OFF.
+- Focus/protection full7823 on e5a3c2a6 TERMINAL1:361suites/5201testspassed,
+  one ToolingBaseline failure (GameEngine2515lines>2500),103.719s. It did NOT
+  proceed to lint/Go. Extracted unchanged timed-effect factory into its own
+  module, **edf6acaa**, in `/tmp/eidolon-focus-mastery-20260911`; focused14545
+  passed3suites25tests. **Full rerun31631 ACTIVE** on frozenedf6acaa: client,
+  lint then completeGo-race. Poll same handle; do not restart on observation
+  timeout. Logs `/tmp/eidolon-focus-full-client-rerun-20260912.log`,
+  `/tmp/eidolon-focus-full-{lint,server}-20260912.log`. Primary stillae938843.
+- New native Focus candidate `/tmp/eidolon-focus-native-20260912`, branch
+  test/focus-native, **2548f768** (b7b1af86spec+7dc65ab9factory+proof).
+  Normalphonefivepaidranks, bothclientHigh/Lowglyph/state/expiry, freshdesktop
+  savedranks, realhoveredScorchBeam exactfocused/unfocusedhit amounts. Bounded
+  functionalpreparation, notearned/balanceproof. Addedownallowlistedowner/peer,
+  `focus-mastery` route and fulltimedchainstage; retainedallpreviouscommands.
+  41026full lint+5suites85tests1.517s;87872nativecase discovery. **Not natively
+  executed.** Do not promote authored assertions into gameplay acceptance.
+- Next: finish31631, merge accepted integration only if fullchecks pass; run
+  Focus native and remaining four-role dungeon retry when sharedhardwarefree.
+  Lastfour-role25565stillfailedtankdeath/Warden5282; retainallalive/credit/
+  manualIlyra/Water/freshsave gates. No competing native/full duringpredeploy.
+  Entire1.1–1.10/160talents/phone/balance/casino scope remains; no new blocker.
+
+## Previous checkpoint — September 11, 23:58 UTC
 
 Previous goal turn was PROGRESS. This continuation is PROGRESS: reproduced and
 repaired nonfunctional Spell Focus Mastery in real server/offline cast paths,
