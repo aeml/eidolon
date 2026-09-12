@@ -133,6 +133,7 @@ qa_allowlist+=",${QA_USERNAME_BASE}-socket-owner,${QA_USERNAME_BASE}-socket-obse
 qa_allowlist+=",${QA_USERNAME_BASE}-rest-transitions-death,${QA_USERNAME_BASE}-rest-transitions-dungeon"
 qa_allowlist+=",${QA_USERNAME_BASE}-duration,${QA_USERNAME_BASE}-forge,${QA_USERNAME_BASE}-whip,${QA_USERNAME_BASE}-ground"
 qa_allowlist+=",${QA_USERNAME_BASE}-time-warp"
+qa_allowlist+=",${QA_USERNAME_BASE}-focus-mastery,${QA_USERNAME_BASE}-focus-mastery-observer"
 qa_allowlist+=",${QA_USERNAME_BASE}-ground-retry1"
 qa_allowlist+=",${QA_USERNAME_BASE}-cleanse"
 qa_allowlist+=",${QA_USERNAME_BASE}-cleanse-retry1"
@@ -414,6 +415,11 @@ run_talent_duration() {
     npx playwright test tests/e2e/talent-duration-gameplay.spec.js
 }
 
+run_focus_mastery() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-focus-mastery" EIDOLON_E2E_CLASS=Wizard \
+    npx playwright test --retries=0 tests/e2e/spell-focus-mastery-gameplay.spec.js
+}
+
 run_time_warp_area() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-time-warp" EIDOLON_E2E_CLASS=Wizard \
     npx playwright test --retries=0 tests/e2e/time-warp-area-gameplay.spec.js
@@ -557,6 +563,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     run_qa_stage talent-economy run_talent_economy &&
     run_qa_stage talent-healing run_talent_healing &&
     run_qa_stage time-warp-area run_time_warp_area &&
+    run_qa_stage focus-mastery run_focus_mastery &&
     run_qa_stage talent-duration run_talent_duration &&
     run_qa_stage seraph run_seraph &&
     run_qa_stage shield-training run_shield_training &&
@@ -687,6 +694,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   time-warp-area)
     run_time_warp_area
+    ;;
+  focus-mastery)
+    run_focus_mastery
     ;;
   inventory)
     npx playwright test tests/e2e/inventory-quality-of-life.spec.js
