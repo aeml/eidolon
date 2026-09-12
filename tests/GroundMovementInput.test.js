@@ -19,7 +19,9 @@ function movementPage(covered, mobile = false, drift = 0, displacement = 10) {
                 ground = { x: x + args.deltaX, y: 0, z: args.deltaZ };
                 return { canvas: true, x: 100, y: 100, world: ground };
             }
-            if (code.includes('getGroundIntersectionFromEvent')) return ground && { ...ground, x: ground.x + drift };
+            if (code.includes('getGroundIntersectionFromEvent')) return {
+                isClearGround: !covered, groundPoint: ground && { ...ground, x: ground.x + drift }
+            };
             if (code.includes('!window.game?.hoveredEntity')) return !covered;
             if (code.includes('Boolean(window.game?.isMobile)')) return mobile;
             if (code.includes('inventoryCount')) return { x, z: 0, state: 'IDLE', health: 100, instanceType: 'dungeon', instanceId: 'dungeon-test' };
@@ -42,12 +44,36 @@ test('covered ground can use the existing real Control-click fallback', async ()
     expect(page.mouse.click).toHaveBeenCalledTimes(1);
 });
 
+test('strict successful input needs at most six browser observation round trips', async () => {
+    const page = movementPage(true);
+    const after = await moveByGroundClick(page, 9, 0, { moveOnly: true, requireClearPath: true,
+        allowJumpFallback: false, allowAlternatePaths: false });
+    expect(after.x).toBe(10);
+    expect(page.evaluate.mock.calls.length).toBeLessThanOrEqual(6);
+    expect(page.mouse.click).toHaveBeenCalledTimes(1);
+    expect(page.waitForTimeout).toHaveBeenCalledWith(75);
+});
+
+test('batched receipts still reject a foreground hostile that intercepts the real click', async () => {
+    const page = movementPage(false);
+    const evaluate = page.evaluate.getMockImplementation();
+    const hostile = { id: 'crossing-enemy', hostile: true, active: true, state: 'IDLE' };
+    page.evaluate.mockImplementation(async (callback, args) => callback.name === 'readGroundClickReceiptInPage'
+        ? { intent: { interactionId: hostile.id }, clickProbe: { after: hostile, pending: hostile,
+            result: true, dom: 'CANVAS', mobile: false, stack: [hostile] } }
+        : evaluate(callback, args));
+    await expect(moveByGroundClick(page, 9, 0, { requireClearPath: true,
+        allowJumpFallback: false, allowAlternatePaths: false }))
+        .rejects.toMatchObject({ name: 'GroundPointerInterceptedError' });
+    expect(page.mouse.click).toHaveBeenCalledTimes(1);
+});
+
 test('optional phase timing observes the same strict move-only input without changing it', async () => {
     const page = movementPage(true), phases = [];
     const after = await moveByGroundClick(page, 9, 0, { moveOnly: true, requireClearPath: true,
         allowJumpFallback: false, allowAlternatePaths: false, onTiming: phase => phases.push(phase) });
     expect(after.x).toBe(10);
-    expect(phases.map(p => p.phase)).toEqual(['click-observer', 'read-origin', 'path-clear',
+    expect(phases.map(p => p.phase)).toEqual(['initial-observation', 'path-clear',
         'project-ground', 'mouse-move', 'hover-settled', 'ground-ray', 'click-released',
         'click-observed', 'movement-observed']);
     for (const [index, phase] of phases.entries()) {

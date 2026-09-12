@@ -2,6 +2,7 @@ import { expect } from '@playwright/test';
 import { movementFailure } from '../groundInputFailure.js';
 import { groundMovementObserved } from '../groundMovementObservation.js';
 import { projectGroundOffsetInPage } from '../groundInputProjection.js';
+import { readPlayerStateInPage, readGroundPointerInPage, readGroundClickReceiptInPage } from '../groundInputObservations.js';
 import { isHostilePointerInterception } from '../primaryClickEvidence.js';
 import { inventoryQuantity, pickupReceipt } from './lootPickupEvidence.js';
 import { hasFreshEntranceHover } from './entrance-pointer.js';
@@ -318,23 +319,7 @@ export async function loginAndEnterWorld(page, credentials) {
 }
 
 export async function readPlayerState(page) {
-    return page.evaluate(() => {
-        const player = window.game?.player;
-        return player ? {
-            id: player.id,
-            name: player.name,
-            type: player.constructor?.name,
-            level: player.level,
-            health: player.health ?? player.stats?.hp,
-            state: player.state,
-            inventoryCount: (player.inventory || []).filter((item) => item?.id).length,
-            x: player.position?.x,
-            y: player.position?.y,
-            z: player.position?.z,
-            instanceId: window.game?.currentInstanceId || '',
-            instanceType: window.game?.currentInstanceType || 'overworld'
-        } : null;
-    });
+    return page.evaluate(readPlayerStateInPage);
 }
 
 export async function projectGroundOffset(page, deltaX, deltaZ, options = {}) {
@@ -350,10 +335,8 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
         options.onTiming({ phase, elapsedMs: at - startedAt, durationMs: at - previousPhaseAt });
         previousPhaseAt = at;
     };
-    await observeEntranceClick(page);
-    mark('click-observer');
-    const before = await readPlayerState(page);
-    mark('read-origin');
+    const before = await observeEntranceClick(page);
+    mark('initial-observation');
     expect(before).not.toBeNull();
     const attempts = [];
     let maximumDisplacement = 0;
@@ -401,19 +384,16 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
         // this movement helper can accidentally start combat and misdiagnose
         // an animation or movement regression.
         await page.waitForTimeout(75);
-        const isClearGround = await page.evaluate(() => !window.game?.hoveredEntity);
         mark('hover-settled');
+        // One browser observation sees hover and its current ground ray together.
+        // It clears only the previous diagnostic click, before real input.
+        const { isClearGround, groundPoint } = await page.evaluate(readGroundPointerInPage, target);
+        mark('ground-ray');
         const useMoveOnly = options.moveOnly === true;
         if (!isClearGround && !useMoveOnly && options.allowJumpFallback === false) continue;
         const useCoveredJump = !isClearGround && !useMoveOnly;
         // Camera/player interpolation after projection may move the actual ray.
         // A prevalidated path is valid only for its planned world destination.
-        const groundPoint = await page.evaluate(({ x, y }) => {
-            const game = window.game;
-            const hit = game.inputManager.getGroundIntersectionFromEvent({ clientX: x, clientY: y });
-            return hit ? { x: hit.x, y: hit.y, z: hit.z } : null;
-        }, target);
-        mark('ground-ray');
         if (options.requireClearPath && (!groundPoint ||
             Math.hypot(groundPoint.x - target.world.x, groundPoint.z - target.world.z) > .25)) {
             mark('ray-invalid');
@@ -429,20 +409,14 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
         const modifier = useMoveOnly ? 'Shift' : useCoveredJump ? 'Control' : null;
         if (modifier) await page.keyboard.down(modifier);
         try {
-            await page.evaluate(() => { window.__entranceClickProbe.click = null; });
             await page.mouse.click(target.x, target.y);
         } finally {
             if (modifier) await page.keyboard.up(modifier);
             mark('click-released');
         }
-        attempt.intent = await page.evaluate(() => {
-            const game = window.game, p = game.player;
-            return { interactionId: game.pendingInteraction?.id || null,
-                interactionType: game.pendingInteraction?.type || null,
-                target: p.targetPosition ? { x: p.targetPosition.x, z: p.targetPosition.z } : null,
-                blockedStops: p.movementMetrics?.blockedStops || 0 };
-        });
-        attempt.clickProbe = await page.evaluate(() => window.__entranceClickProbe?.click);
+        const receipt = await page.evaluate(readGroundClickReceiptInPage);
+        attempt.intent = receipt.intent;
+        attempt.clickProbe = receipt.clickProbe;
         mark('click-observed');
         if (isHostilePointerInterception(attempt.clickProbe)) {
             // The real click attacked the new foreground enemy, not ground.
@@ -451,15 +425,17 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
             continue;
         }
         try {
+            let observedAfter;
             await expect.poll(async () => {
                 const after = await readPlayerState(page);
+                observedAfter = after;
                 const displacement = Math.hypot(after.x - before.x, after.z - before.z);
                 maximumDisplacement = Math.max(maximumDisplacement, displacement);
                 attempt.last = { x: after.x, z: after.z, state: after.state, displacement };
                 return groundMovementObserved(before, after, options.minimumDistance || 1, options.arrival);
             }, { timeout: options.timeout || 1_500 }).toBe(true);
             mark('movement-observed');
-            return readPlayerState(page);
+            return observedAfter;
         } catch {
             mark('movement-timeout');
             if (!useCoveredJump && options.allowJumpFallback !== false) {
@@ -1760,40 +1736,7 @@ async function projectVerdantEntrance(page, candidate = 0) {
 // Observe the existing real pointer path without forcing hover, sending a
 // request, moving the actor or changing production targeting priority.
 async function observeEntranceClick(page) {
-    await page.evaluate(() => {
-        const game = window.game;
-        window.__entranceClickProbe = { click: null, requested: 0, received: 0 };
-        if (window.__entranceClickProbeInstalled) return;
-        window.__entranceClickProbeInstalled = true;
-        const describe = entity => entity ? {
-            id: entity.id || null, hostile: game.isHostileActorTarget(entity),
-            type: entity.name === 'DungeonEntrance' ? entity.name : entity.constructor?.name,
-            state: entity.state, active: entity.isActive,
-            position: entity.position ? { x: entity.position.x, z: entity.position.z } : null
-        } : null;
-        const click = game.handlePrimaryClick;
-        game.handlePrimaryClick = function (event) {
-            const before = describe(this.hoveredEntity);
-            const result = click.call(this, event);
-            window.__entranceClickProbe.click = {
-                before, after: describe(this.hoveredEntity), pending: describe(this.pendingInteraction),
-                player: { x: this.player.position.x, z: this.player.position.z },
-                state: this.player.state, dom: event?.target?.tagName, result, mobile: Boolean(this.isMobile),
-                stack: (this.raycastHitEntities || []).map(describe)
-            };
-            return result;
-        };
-        const request = game.requestDungeonStatus;
-        game.requestDungeonStatus = function (...args) {
-            window.__entranceClickProbe.requested++;
-            return request.apply(this, args);
-        };
-        const message = game.handleServerMessage;
-        game.handleServerMessage = function (value) {
-            if (value.type === 'get_dungeon_status') window.__entranceClickProbe.received++;
-            return message.call(this, value);
-        };
-    });
+    return page.evaluate(readPlayerStateInPage, { observeClicks: true });
 }
 
 export async function enterDungeon(page, { resetRun = false,
