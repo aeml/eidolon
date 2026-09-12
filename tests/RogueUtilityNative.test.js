@@ -8,6 +8,26 @@ const configs = [
     { skill: 'Cloak & Vanish', targetId: 'owner', active: 'stealthActive', duration: 'stealthDuration' }
 ];
 afterEach(() => { delete window.game; delete window.__rogueUtility; });
+test('resource diagnostics preserve before/after delivery and missing fields without inventing mana', () => {
+    const player = { id: 'owner', stats: { mana: 1743, maxMana: 1743 }, wellRestedSeconds: 0 };
+    const receive = jest.fn(message => {
+        if (message.type === 'ability_result') player.stats.mana = message.payload.mana;
+        return 'delivered';
+    });
+    window.game = { player, handleServerMessage: receive };
+    installRogueUtilityObserver(configs[2]);
+    const send = window.game.handleServerMessage;
+    expect(send({ type: 'ability_result', payload: { skillName: 'Cloak & Vanish', mana: 1558 } })).toBe('delivered');
+    expect(window.__rogueUtility.resourceSamples[0]).toMatchObject({
+        kind: 'ability_result', wire: { mana: 1558 },
+        before: { mana: 1743, maxMana: 1743, rest: 0 }, after: { mana: 1558, maxMana: 1743, rest: 0 }
+    });
+    for (let i = 0; i < 70; i++) send({ type: 'delta', payload: { u: { p: { id: 'owner', wellRestedSeconds: 0 } } } });
+    expect(window.__rogueUtility.resourceSamples).toHaveLength(64);
+    expect(window.__rogueUtility.resourceSamples.at(-1).wire).toEqual({ mana: null, maxMana: null, rest: 0, safeZone: null });
+    expect(player.stats).toEqual({ mana: 1558, maxMana: 1743 });
+    expect(receive).toHaveBeenCalledTimes(71);
+});
 test.each(configs)('$skill observes exact targets, actual deadlines and explicit expiry without changing delivery', cfg => {
     const receive = jest.fn(function () { expect(this).toBe(window.game); return 'forwarded'; });
     window.game = { player: { id: 'owner' }, handleServerMessage: receive };
@@ -61,4 +81,33 @@ test('a ground-input observer layered around the receiver cannot cause duplicate
     expect(window.__rogueUtility.results).toEqual([payload]);
     expect(window.game.handleServerMessage).toBe(movementObserver);
     expect(receive).toHaveBeenCalledTimes(1);
+});
+
+test('utility Technique route uses separate real purchases and is enrolled once without retries', () => {
+    const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
+    expect(script).toContain('qa_allowlist+=",${QA_USERNAME_BASE}-rogue-techniques"');
+    expect(script).toContain('EIDOLON_E2E_ROGUE_TECHNIQUE=1 EIDOLON_E2E_ROGUE_UTILITY=1 npx playwright test --retries=0 tests/e2e/rogue-utility-mastery-gameplay.spec.js');
+    expect(script).toContain('  rogue-techniques)\n    run_rogue_utility_techniques\n    ;;');
+    const all = script.match(/\n {2}all\)\n([\s\S]*?)\n {4};;/)[1];
+    expect(all.match(/run_qa_stage rogue-techniques run_rogue_utility_techniques/g)).toHaveLength(1);
+});
+test('local timer diagnostics observe after delivery, retain the peak and never supply the missing timer', () => {
+    const actor = { slowTimer: 0, state: 'IDLE', attachedStatusEffects: new Map() };
+    const cfg = { ...configs[1], timer: 'slowTimer', visual: 'slowed' };
+    const receive = jest.fn(message => {
+        const state = message.payload.u.enemy;
+        if (state.slowed === true) actor.slowTimer = state.slowDuration;
+        if (state.slowed === false) actor.slowTimer = 0;
+        return 'delivered';
+    });
+    window.game = { player: { id: 'owner' }, remotePlayers: new Map([['enemy', actor]]), handleServerMessage: receive };
+    installRogueUtilityObserver(cfg);
+    const send = state => window.game.handleServerMessage({ type: 'delta', payload: { u: { enemy: { id: 'enemy', ...state } } } });
+    expect(send({ slowed: true, slowDuration: 6.99 })).toBe('delivered');
+    expect(window.__rogueUtility.localPeak).toMatchObject({ wireDuration: 6.99, localTimer: 6.99, loaded: true });
+    send({ slowed: false, slowDuration: 0 });
+    expect(actor.slowTimer).toBe(0);
+    expect(window.__rogueUtility.localSamples.at(-1).localTimer).toBe(0);
+    expect(window.__rogueUtility.localPeak.localTimer).toBe(6.99);
+    expect(receive).toHaveBeenCalledTimes(2);
 });

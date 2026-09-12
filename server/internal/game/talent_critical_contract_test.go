@@ -14,8 +14,9 @@ func TestSharedCriticalCatalogMatchesAllServerTalents(t *testing.T) {
 		t.Fatal(err)
 	}
 	var catalog map[string]struct {
-		Technique float64            `json:"technique"`
-		Generic   map[string]float64 `json:"generic"`
+		Technique          float64            `json:"technique"`
+		TechniqueOverrides map[string]float64 `json:"techniqueOverrides"`
+		Generic            map[string]float64 `json:"generic"`
 	}
 	if err := json.Unmarshal(data, &catalog); err != nil {
 		t.Fatal(err)
@@ -34,6 +35,9 @@ func TestSharedCriticalCatalogMatchesAllServerTalents(t *testing.T) {
 			want := entry.Generic[strconv.Itoa(number)]
 			if number <= 26 && number%2 == 0 {
 				want = entry.Technique
+				if override, ok := entry.TechniqueOverrides[strconv.Itoa(number)]; ok {
+					want = override
+				}
 			}
 			if def.PerRank.SkillCritChance != want {
 				t.Errorf("%s chance=%v want=%v", id, def.PerRank.SkillCritChance, want)
