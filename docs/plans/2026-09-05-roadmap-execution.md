@@ -5,7 +5,52 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 03:14 UTC
+## Current checkpoint — September 12, 03:24 UTC
+
+The preceding user-status exchange was NO PROGRESS on implementation; the prior
+goal work made progress but its local verification had not been collected.
+This continuation is PROGRESS: collected that completed test session, committed
+the gate-order correction, resumed exact-source hosted verification, and
+recorded the player's release consolidation. Full1.1–1.10 remains active.
+
+- **Release policy confirmed:**1.1.0 →1.2.0 →1.3.0 →1.4.0 →1.5.0 →1.6.0 →
+  1.7.0 →1.8.0 →1.9.0 →1.10.0, patch notes for each.64 and65 are the final
+  two currently planned foundation hotfixes;65 is the last ordinary1.0.x.
+  Bundle remaining baseline work into1.1.0; extra1.0.x only for urgent live
+  blockers. No dungeon/party, first-hour, reconnect, balance or later milestone
+  gate is removed. Roadmap committed on primary as **960c4936**, clean, no
+  runtime change; the root roadmap mirrors it. Root master remains NEVER PUSH.
+- Session3490 is **TERMINAL SUCCESS**:5suites/267tests1.697s, changed lint and
+  shell syntax PASS. Logs`/tmp/eidolon-release65-gate-order-{green,lint}-20260912.log`.
+  Combined0f9c19c9 rehearsal34669744904 is now **TERMINAL FAILURE** solely from
+  the two client gate-suffix contracts. Server103488767780 SUCCESS including
+  game race269.330s, backup/restore/bench/build. Full server log
+  `/tmp/eidolon-release65-combined-server-34669744904.log`. Browser was SKIPPED,
+  not passed. Do not keep polling that terminal run.
+- Correction **1de18e03f5dd05adab66405300e0bc53d8af5d1b**, clean/pushed ONLY
+  `work/release65-wizard-training`in`/tmp/eidolon-release65-wizard-training-20260912`.
+  New Teleport route now follows entrance visibility; preserves every original
+  command's relative order and the recovery/forge suffix. Existing recovery
+  contract tests are unchanged. Candidate docs record failure and correction.
+- Verified GitHub branch ref equals1de18e03 before manual dispatch.
+  **CI34670196359 ACTIVE**, created03:22:38, exact1de18e03 confirmed.
+  Client103490000568 and server103490000724 are running coverage as of03:23:50.
+  Poll SAME run; native/deployment still intentionally excluded from rehearsal.
+- **Production64 CI34668112188 ACTIVE**, exact6d5e82cb. Nativepredeploy
+  103486534312 is running disposable full-character gameplay. Hosted jobs and
+  earlier native gallery/GPU lifecycle passed; input/deployment/final live
+  gates remain. No cancellation, competing local native/full test, or65
+  production push. Latest frontend check still63/f866. A mistakenly queried
+  backend`/health`returned404; its configured health endpoint is`/healthz`,
+  not evidence of a deployment outage.
+- Native Teleport/Phase and instrumented Briar four-role retry still await free
+  native hardware. Ordinary offline Charge/runes remain unresolved development
+  scope; this turn only inspected their existing divergence, made no runtime
+  change and created no66 candidate. Earned/balance/campaign/resource and all
+  later milestone requirements remain. Nightly schedule stays enabled; latest
+  listed soak is still yesterday's terminal34558600459, no new soak dispatched.
+
+## Previous checkpoint — September 12, 03:14 UTC
 
 Previous goal turn was PROGRESS (native Teleport route). This continuation is
 PROGRESS: accepted frozen hosted65, inspected artifacts, corrected a visible
