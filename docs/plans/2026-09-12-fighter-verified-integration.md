@@ -34,3 +34,33 @@ Native/deployment jobs were skipped, as expected for the development dispatch.
 This combined candidate is accepted for primary integration using that full
 regression run and the frozen component native evidence above. No full1.1
 or production acceptance is implied.
+
+## Owner/recipient gate integration — next candidate
+
+Primary and integrated advanced to da4a07cc after the above acceptance; their
+trees exactly matched docs-only d960a7c3. Candidate now additionally merges
+Fighter buff proof13edc4ec (native sourcebe3dc413). Corrected component
+CI34696956771 SUCCEEDED:398suites6277tests129.273s, game86.9%/98.373s,
+race346.035s and browser119actual checks. Native72952 success and its
+owner/untrained-Cleric/saved/High-Low/expiry scope remain in the buff document.
+
+Merge conflicts were restricted to the allowlist and parallel full-stage command/
+name lists. Preserve all entries in order: existing Whirlwind, Earthshaker area,
+Whirlwind area, Fighter buff mastery, then phone. Initial combined tests failed
+two old immediate-adjacency expectations (2fail93pass5.036s). Both now require
+the complete expanded sequence, retaining every previous stage. Corrected
+7suites95tests passed2.401s; full lint/shell/diff passed. Logs:
+`/tmp/eidolon-fighter-verified-buff-integration-{tests,final,lint-final}-20260912.log`.
+No runtime changes in this added gate merge. Its new combined full CI remains
+required before primary advances again; prior component successes do not imply
+that this new combined commit has passed.
+
+## Combined owner/recipient gate accepted
+
+CI34698082603 completed successfully on exact28a61378ab66f17305ceea05df45dca15da1e912:
+404 client suites/6315 tests/103.296s; server game86.9%/99.712s and race349.166s;
+three browser jobs completed40+53+26=119 actual checks. Logs are
+`/tmp/eidolon-fighter-verified-buff-ci-{client,server,browser1,browser2,browser3}-34698082603.log`.
+The dispatch skipped production/native jobs; retain the separately archived
+component native proof, not a claim of deployment or complete1.1 acceptance.
+This test/doc-only gate integration is accepted for the primary branch.
