@@ -953,6 +953,22 @@ export class Actor extends Entity {
 
         // These Wizard effects keep expiring while stun suppresses actions.
         // Replicas advance display timers without recalculating server stats.
+        if (this.offlineTeleportChargeTimer > 0) {
+            this.offlineTeleportChargeTimer = Math.max(0, this.offlineTeleportChargeTimer - dt);
+        }
+        if (this.teleportPhaseTimer > 0) {
+            this.teleportPhaseTimer = Math.max(0, this.teleportPhaseTimer - dt);
+        }
+        if (this.invulnerabilityTimer > 0) {
+            this.invulnerabilityTimer = Math.max(0, this.invulnerabilityTimer - dt);
+        }
+        if (!(this.teleportPhaseTimer > 0) && !(this.invulnerabilityTimer > 0)) {
+            const protection = this.attachedStatusEffects.get('invulnerable');
+            if (protection) {
+                protection.dispose();
+                this.attachedStatusEffects.delete('invulnerable');
+            }
+        }
         if (this.hasteTimer > 0) {
             this.hasteTimer = Math.max(0, this.hasteTimer - dt);
             if (this.hasteTimer <= 0) {
@@ -1079,22 +1095,6 @@ export class Actor extends Entity {
             this.frozenTimer = Math.max(0, this.frozenTimer - dt);
         }
         
-        if (this.offlineTeleportChargeTimer > 0) {
-            this.offlineTeleportChargeTimer = Math.max(0, this.offlineTeleportChargeTimer - dt);
-        }
-        if (this.teleportPhaseTimer > 0) {
-            this.teleportPhaseTimer = Math.max(0, this.teleportPhaseTimer - dt);
-        }
-        if (this.invulnerabilityTimer > 0) {
-            this.invulnerabilityTimer = Math.max(0, this.invulnerabilityTimer - dt);
-        }
-        if (!(this.teleportPhaseTimer > 0) && !(this.invulnerabilityTimer > 0)) {
-            const protection = this.attachedStatusEffects.get('invulnerable');
-            if (protection) {
-                protection.dispose();
-                this.attachedStatusEffects.delete('invulnerable');
-            }
-        }
         if (this.arcaneShieldTimer > 0) {
             this.arcaneShieldTimer -= dt;
             if (this.arcaneShieldTimer <= 0) {
