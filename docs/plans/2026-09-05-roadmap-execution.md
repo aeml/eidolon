@@ -5,7 +5,80 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 12:39 UTC
+## Current checkpoint — September 12, 12:54 UTC
+
+Previous goal work was PROGRESS; this continuation is PROGRESS: completed real
+Fortress and Death Spiral purchase/expiry/persistence checks, accepted Smoke
+after full CI, and implemented the next evidence-based four-player input fix.
+Full1.1.0→1.10.0 scope remains active. No release/version/root push/soak change.
+
+- **Smoke combined CI34693884345 TERMINAL SUCCESS**, exactd4d1a633:
+  client396suites6271tests131.805s; game86.9%99.353s/race350.802s;
+  actual browser logs40+53+26=119PASS. Production/native jobs skipped as expected
+  for manual dev CI; trained native79336 already passed as recorded below.
+  Logs `/tmp/eidolon-smoke-stage-ci-{client,server,browser1,browser2,browser3}-34693884345.log`.
+  Primary and integrated advanced by merge to clean
+  **7f4df79a9daae4a055dbb07cd228cffeb88fc566**. Full tree comparison against the
+  tested d4d1a633 passed with no differences. Neither branch was pushed live.
+- **Fortress11633 TERMINAL FAILURE**18.2s: corrected runtime entry, paid cast,
+  countdown and effect passed; test tried to close by tapping the launcher
+  underneath the panel. Archive `/tmp/eidolon-fortress-status-failure-6yvMsn`.
+  The existing visible Close button is now used, with explicit hidden-panel
+  assertion. No forced click or altered duration assertion. Corrected focused
+ 4suites51PASS1.123s plus lint/diff; initial command omitted ESM launcher and
+  executed zero tests, retained separately as setup failure.
+- **Fortress59562 TERMINAL SUCCESS**, c540f67f,2.2m test/2.3m total/0retries.
+  Rank0/high30s, five normal purchases→rank5/high36s, saved Extended/rank5
+  after fresh login/landscape/low54s. Paid mana, visible timer, attached effect,
+  natural expiry and independent Well Rested retention passed. Archive
+  `/tmp/eidolon-fortress-native-pass-eQlXjG`; log
+  `/tmp/eidolon-fortress-close-native-20260912.log`. Main agent viewed screenshots.
+  Credential scan/owned services/ports clear before next native run.
+  Fortress WT now clean/dev-pushed **3a30317319d500379ca15eecc3f96dc809464865**.
+  Exact corrected **CI34694694526 PENDING**, previous be81204b CI34694234414
+  still ACTIVE (client/server passed, browser1/2 active). Not primary accepted.
+- **Death Spiral base CI34693953318 TERMINAL SUCCESS**,6f4800e7:
+  client395suites6276tests123.975s; game86.9%98.655s/race350.294s;
+  browser40+50+28=118PASS. Actual logs
+  `/tmp/eidolon-death-spiral-ci-{client,server,browser1,browser2,browser3}-34693953318.log`.
+  Native/deployment skipped, not live evidence.
+- New combined WT `/tmp/eidolon-1-1-death-spiral-native-20260912`, branch
+  `work/1-1-death-spiral-native`: d4d1a633 + runtime d35b0eab + nativea1513834.
+  Distinct allowlisted Rogue branchA, five normal Fine Motor purchases and
+  rank0/1/5 paid35mana casts check accepted radii against independent actual
+  effect boundary/origin in high/low quality and portrait/landscape after login.
+  Full native gate/timing catalogs enrolled; observer guards duplicate delivery
+  and missing/foreign meshes. Initial test caught copied enrollment command;
+  corrected4suites70PASS2.015s, lint/assets/bash syntax/diff passed.
+- **Death Spiral25693 TERMINAL SUCCESS**, exacta1513834,22.0s/24.0s total,
+  zero retries:4/4.12/4.6 and saved4.6 footprints, paid mana/points/persistence
+  pass. Screenshot viewed shows real Rogue/spin. Archive
+  `/tmp/eidolon-death-spiral-native-pass-k1DpfW`; log
+  `/tmp/eidolon-death-spiral-trained-native-20260912.log`. Scan/owned cleanup pass.
+  Local documentation tip **c7d0c669** clean, not pushed; dev CI runs exact
+  a1513834 at **34694650346 ACTIVE**, client398suites6290PASS84.889s,
+  server still active. Actual client log
+  `/tmp/eidolon-death-spiral-native-ci-client-34694650346.log`. Not yet accepted.
+- New party WT `/tmp/eidolon-1-1-party-ranged-spacing-20260912`, branch
+  `work/1-1-party-ranged-spacing`, clean frozen **3b63d861**, parenta9979e5d.
+  Failed8533 showed Rogue melee hits7.44–7.48units while healer20.344away;
+  no assumed missing healing packets. Test-only Wizard/Rogue planner now seeks
+  actual attack+healer range after Fighter's first actual hit, holding useful
+  firing positions until danger/support distance changes. Every candidate and
+  path obeys real floor/encounter/body collision,12unit limit and normal
+  move-only inputs; new warnings take priority. No boss/stat/damage change.
+  Six suites146PASS2.054s; lint/assets/diffPASS. Original2failed geometry cases
+  retained; search now includes complete holding band and fixture uses a
+  genuinely reachable start. Logs
+  `/tmp/eidolon-party-ranged-spacing-{tests,expanded,lint,assets}-20260912.log`.
+- **Party7792 ACTIVE — only owned native browser lane**, frozen3b63d861,
+  partyranged09121253, party-dungeon,18185/18186/41875. Poll same handle; do not
+  edit its source or start another native route until terminal. Log
+  `/tmp/eidolon-party-ranged-spacing-native-20260912.log`. No clear/credit/Water
+  handoff acceptance yet; full earned first hour, all dungeon seeds, remaining
+  talents, shared/live regression and later milestones remain required.
+
+## Previous checkpoint — September 12, 12:39 UTC
 
 This continuation remains PROGRESS. In addition to Death Spiral, native Fortress
 verification found and reproduced a real missing status-panel entry, now fixed
