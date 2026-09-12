@@ -118,9 +118,6 @@ export class Wizard extends Actor {
             if (!this.unlockedSkills.includes("Flame Whip")) return;
             console.log("Wizard used Flame Whip!");
             
-            // Cooldown 10s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Flame Whip"] = 10.0 * (1 - cdr);
             
             // Cone Logic
             const range = getAbilityAoeRadius('Wizard', skill, this);
@@ -176,9 +173,6 @@ export class Wizard extends Actor {
             if (!this.unlockedSkills.includes("Flame Tornado")) return;
             console.log("Wizard used Flame Tornado!");
             
-            // Cooldown 12s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Flame Tornado"] = 12.0 * (1 - cdr);
             
             const startPos = this.position.clone();
             startPos.y += 1.0;
@@ -205,9 +199,6 @@ export class Wizard extends Actor {
             const meteorRadius = getAbilityAoeRadius('Wizard', skill, this);
             const isClusterMeteor = meteorRuneId === 'meteor_cluster';
             
-            // Cooldown 15s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Meteor Drop"] = 15.0 * (1 - cdr);
 
             const spawnMeteorTelegraph = (impactPos, radius) => {
                 if (gameEngine.isMultiplayer) {
@@ -266,9 +257,6 @@ export class Wizard extends Actor {
             if (!this.unlockedSkills.includes("Inferno Cataclysm")) return;
             console.log("Wizard used Inferno Cataclysm!");
             
-            // Cooldown 60s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Inferno Cataclysm"] = 60.0 * (1 - cdr);
             
             // Massive AOE Zone
             const damage = spellDamage;
@@ -296,9 +284,6 @@ export class Wizard extends Actor {
             if (!this.unlockedSkills.includes("Scorch Beam")) return;
             console.log("Wizard used Scorch Beam!");
             
-            // Cooldown 8s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Scorch Beam"] = 8.0 * (1 - cdr);
             
             // Instant Line Damage
             const authoredRange = getAbilityRange(this, skill, CONSTANTS.ABILITY_CONFIG.Wizard.skills[skill].range);
@@ -365,9 +350,6 @@ export class Wizard extends Actor {
             if (!this.unlockedSkills.includes("Arcane Missiles")) return;
             console.log("Wizard used Arcane Missiles!");
             
-            // Cooldown 6s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Arcane Missiles"] = 6.0 * (1 - cdr);
             
             const target = findOfflineAbilityTarget(this, gameEngine, targetVector, {
                 range: getAbilityRange(this, skill, CONSTANTS.ABILITY_CONFIG.Wizard.skills[skill].range),
@@ -427,9 +409,6 @@ export class Wizard extends Actor {
             if (!this.unlockedSkills.includes("Dragonfire Lance")) return;
             console.log("Wizard used Dragonfire Lance!");
             
-            // Cooldown 12s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Dragonfire Lance"] = 12.0 * (1 - cdr);
             
             const startPos = this.position.clone();
             startPos.y += 1.5;

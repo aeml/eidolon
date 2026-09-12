@@ -85,8 +85,6 @@ export class Fighter extends Actor {
             this.whirlwindDuration = 1.0; // Spin for 1 second
             this.state = 'ATTACKING';
 
-            // Override Cooldown for Whirlwind (e.g. 10s)
-            this.setSkillCooldown("Whirlwind", 10.0);
 
             this.spawnVisualEffect(gameEngine, this.position, 0xaaaaaa, "spin");
             return;
@@ -96,8 +94,6 @@ export class Fighter extends Actor {
             if (!this.unlockedSkills.includes("Shield Slam")) return;
             console.log("Fighter used Shield Slam!");
 
-            // Override Cooldown for Shield Slam (e.g. 6s)
-            this.setSkillCooldown("Shield Slam", 6.0);
             const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(this.mesh.quaternion);
 
             this.spawnVisualEffect(gameEngine, this.position.clone().add(forward), 0xffff00, "impact");
@@ -118,8 +114,6 @@ export class Fighter extends Actor {
 
             console.log(`Iron Fortress active: ${(this.ironFortressReduction * 100).toFixed(1)}% reduction for ${this.ironFortressTimer}s`);
 
-            // Cooldown 60s
-            this.setSkillCooldown("Iron Fortress", 60.0);
 
             // Visual Effect
             gameEngine.floatingTextManager.spawn("Iron Fortress!", this.position, '#00ff00');
@@ -131,8 +125,6 @@ export class Fighter extends Actor {
             if (!this.unlockedSkills.includes("Guardian Roar")) return;
             console.log("Fighter used Guardian Roar!");
 
-            // Cooldown 30s
-            this.setSkillCooldown("Guardian Roar", 30.0);
 
             const radius = getAbilityAoeRadius('Fighter', skill, this);
             const buffDuration = getFighterEffectDuration(this, 10);
@@ -169,8 +161,6 @@ export class Fighter extends Actor {
             if (!this.unlockedSkills.includes("Sweeping Strike")) return;
             console.log("Fighter used Sweeping Strike!");
 
-            // Cooldown 4s
-            this.setSkillCooldown("Sweeping Strike", 4.0);
 
             // Cone Logic (Wider than Shield Slam)
             const range = 5.0;
@@ -205,8 +195,6 @@ export class Fighter extends Actor {
             if (!this.unlockedSkills.includes("Earthshaker")) return;
             console.log("Fighter used Earthshaker!");
 
-            // Cooldown 12s
-            this.setSkillCooldown("Earthshaker", 12.0);
 
             // Visual
             gameEngine.floatingTextManager.spawn("SMASH!", this.position, '#ff8800');
@@ -218,9 +206,6 @@ export class Fighter extends Actor {
         if (skill === "Unbreakable Grip") {
             console.log("Fighter used Unbreakable Grip!");
 
-            // Cooldown 15s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Unbreakable Grip"] = 15.0 * (1 - cdr);
 
             // Single Target Pull
             // Use targetVector to find closest enemy near cursor
@@ -270,9 +255,6 @@ export class Fighter extends Actor {
         if (skill === "Juggernaut Charge") {
             console.log("Fighter used Juggernaut Charge (Shockwave)!");
 
-            // Cooldown 20s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Juggernaut Charge"] = 20.0 * (1 - cdr);
 
             // AoE Shockwave
             const radius = 10.0;
@@ -311,9 +293,6 @@ export class Fighter extends Actor {
             // Usually passives are always on, but if it's a skill slot, maybe it's an active that enables this state?
             // Or maybe it's a short term buff. Let's make it a self-buff for now that enables the passive check.
 
-            // Cooldown 45s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Berserker Edge"] = 45.0 * (1 - cdr);
 
             this.berserkerEdgeTimer = getFighterEffectDuration(this, 15);
             this.berserkerEdgeActive = true;
@@ -356,9 +335,6 @@ export class Fighter extends Actor {
                 return false; // Failed to cast
             }
 
-            // Cooldown 120s (Ultimate)
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Last Stand Rampage"] = 120.0 * (1 - cdr);
 
             this.lastStandTimer = getFighterEffectDuration(this, 10);
             this.lastStandDamageBoost = 2.0; // +200% Damage

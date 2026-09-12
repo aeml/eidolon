@@ -186,9 +186,6 @@ export class Cleric extends Actor {
         if (skill === "Mark of Weakness") {
             console.log("Cleric used Mark of Weakness!");
             
-            // Cooldown 15s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Mark of Weakness"] = 15.0 * (1 - cdr);
 
             // Target closest enemy to cursor
             let target = null;

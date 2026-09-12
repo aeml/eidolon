@@ -149,9 +149,6 @@ export class Rogue extends Actor {
             if (!this.unlockedSkills.includes("Backstab")) return;
             console.log("Rogue used Backstab!");
             
-            // Cooldown 6s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Backstab"] = 6.0 * (1 - cdr);
 
             const target = castTarget;
 
@@ -189,9 +186,6 @@ export class Rogue extends Actor {
         if (skill === "Weak Point Mark") {
             console.log("Rogue used Weak Point Mark!");
             
-            // Cooldown 12s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Weak Point Mark"] = 12.0 * (1 - cdr);
 
             const target = castTarget;
 
@@ -207,9 +201,6 @@ export class Rogue extends Actor {
             console.log("Rogue used Shadow Lunge!");
             // Teleport logic
             
-            // Cooldown 10s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Shadow Lunge"] = 10.0 * (1 - cdr);
 
             const target = castTarget;
 
@@ -236,9 +227,6 @@ export class Rogue extends Actor {
         if (skill === "Death Spiral") {
             console.log("Rogue used Death Spiral!");
             
-            // Cooldown 20s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Death Spiral"] = 20.0 * (1 - cdr);
 
             // AoE around rogue
             const radius = 4.0;
@@ -275,9 +263,6 @@ export class Rogue extends Actor {
         if (skill === "Serrated Edges") {
             console.log("Rogue used Serrated Edges!");
             
-            // Cooldown 20s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Serrated Edges"] = 20.0 * (1 - cdr);
 
             this.serratedEdgesActive = true;
             this.serratedEdgesTimer = getRogueEffectDuration(this, 10);
@@ -290,9 +275,6 @@ export class Rogue extends Actor {
         if (skill === "Blade Storm") {
             console.log("Rogue used Blade Storm!");
             
-            // Cooldown 15s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Blade Storm"] = 15.0 * (1 - cdr);
 
             // Cone of daggers
             const startPos = this.position.clone();
@@ -325,9 +307,6 @@ export class Rogue extends Actor {
         if (skill === "Phantom Volley") {
             console.log("Rogue used Phantom Volley!");
             
-            // Cooldown 18s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Phantom Volley"] = 18.0 * (1 - cdr);
 
             // Snapshot every shot at this paid cast, not the delayed emission.
             const volleyDamage = resolveRogueAbilityDamage(this, skill);
@@ -359,9 +338,6 @@ export class Rogue extends Actor {
         if (skill === "Fan of Knives") {
             console.log("Rogue used Fan of Knives!");
             
-            // Cooldown 12s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Fan of Knives"] = 12.0 * (1 - cdr);
 
             const startPos = this.position.clone();
             startPos.y += 1.0;
@@ -389,9 +365,6 @@ export class Rogue extends Actor {
         if (skill === "Smoke Bomb") {
             console.log("Rogue used Smoke Bomb!");
             
-            // Cooldown 15s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Smoke Bomb"] = 15.0 * (1 - cdr);
 
             const radius = 5.0;
             this.spawnVisualEffect(gameEngine, this.position, 0x555555, "smoke_cloud");
@@ -419,9 +392,6 @@ export class Rogue extends Actor {
         if (skill === "Poison Coating") {
             console.log("Rogue used Poison Coating!");
             
-            // Cooldown 20s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Poison Coating"] = 20.0 * (1 - cdr);
 
             this.poisonCoatingActive = true;
             this.poisonCoatingTimer = getRogueEffectDuration(this, 15);
@@ -434,9 +404,6 @@ export class Rogue extends Actor {
         if (skill === "Tripwire") {
             console.log("Rogue used Tripwire!");
             
-            // Cooldown 10s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Tripwire"] = 10.0 * (1 - cdr);
 
             // Place trap at feet
             const trapPos = this.position.clone();
@@ -466,9 +433,6 @@ export class Rogue extends Actor {
         if (skill === "Cloak & Vanish") {
             console.log("Rogue used Cloak & Vanish!");
             
-            // Cooldown 30s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Cloak & Vanish"] = 30.0 * (1 - cdr);
 
             this.stealthTimer = getRogueEffectDuration(this, this.skillRunes?.[skill] === 'cloak_longer' ? 10 : 5);
             
