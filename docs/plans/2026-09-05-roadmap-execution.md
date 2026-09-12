@@ -5,7 +5,83 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 13:16 UTC
+## Current checkpoint — September 12, 13:44 UTC
+
+This goal continuation is PROGRESS: corrected and committed Rogue utility
+Masteries, combined verified Fighter candidates, observed the four-player
+failure, and completed actual Fighter owner/Cleric recipient native proof.
+Full roadmap stays ACTIVE. Primary `/tmp/eidolon-primary-merged-20260911` and
+integrated remain064704cb. Root is ledger-only, NEVER PUSH ROOT. No production,
+version or soak change; 1.0.65 remains last verified live, no fresh public probe.
+
+- **Party57909 TERMINAL FAILURE7.3m**, frozen0bf10df6,
+  seed7129785442564118738/gen2/attempt0/no fallback. First pack, all-four town
+  recovery and saved reentry passed. Warden last periodic1476/15000HP before
+  Fighter death; fatal183damage and sawDeath=true retained despite subsequent
+  automatic town respawn940HP/610mana. Other three alive at9/8/7mana; Fighter
+  had5mana at death. Totals F6864damage/5750taken, C4886effective ally healing,
+  W4913damage/0taken, R8125damage/304taken. No complete clear/quest-credit/Water
+  proof. Archive `/tmp/eidolon-party-arrival-failure-PYFrok`; original
+  `/tmp/eidolon-party-ranged-arrival-native-20260912.log`. Scan0/owned cleanupPASS.
+  Corrected short-step arrival did not recur; no passive regen/boss adjustment.
+- Party WT now **4203d2544b953ac0a20de40c000130f1ec9bf6d6**, clean/unpushed:
+  `/tmp/eidolon-1-1-party-ranged-spacing-20260912`. Protect resolved Fortress
+  mana before lower-priority hotbar casts; Whirlwind additionally keeps the
+  next Slam budget. Normal basic attacks/solo policy/gear/resources unchanged.
+  Prior rotation spent each25mana on Slam, starving40mana Fortress. RED5fail/
+  28pass; final4suites87PASS1.757s, lint/diffPASS. Logs
+  `/tmp/eidolon-party-fortress-reserve-{red,final,lint-final}-20260912.log`.
+  **70658 ACTIVE — sole native GPU lane**, same4203d254,
+  runIDpartyreserve09121344, routeparty-dungeon,18185/18186/41875. Log
+  `/tmp/eidolon-party-fortress-reserve-native-20260912.log`. Poll samehandle;
+  no source edits/replacement browser until terminal. New seed/result not yet
+  observed. The fixture remains prepared, not earned first-hour evidence.
+- **Fighter native11597 FAILED3.2m** on6814147c after all owner checks. Party
+  setup incorrectly expected a phone ground tap to move; production deliberately
+  uses it to cancel targeting. Archive
+  `/tmp/eidolon-fighter-buff-setup-failure-2InrBH`, scan0/cleanupPASS. Test-only
+  **be3dc413** uses visible joystick, released in finally; requires>3local,
+  >2remote displacement and<10buff separation. RED1fail1pass;4suites82PASS3.258s,
+  lint/diffPASS. **Corrected native72952 PASSED3.8m/3.9m total, zero retries**:
+  all fifteen purchases, owner0/1/5/saved High-Low and real untrained Cleric
+  sharing1.8strength/+80%Damage/-20%defense15s, local/remote effects on both
+  clients, natural expiry/restoredstats. Archive
+  `/tmp/eidolon-fighter-buff-party-pass-LqKijA`; original
+  `/tmp/eidolon-fighter-buff-joystick-native-20260912.log`. Main agent viewed Low
+  recipient PNG; scan0/ownedservices clear before70658. Corrected
+  **CI34696956771 ACTIVE**, clientjob103561968777PASS, server103561968666active.
+  WT `/tmp/eidolon-1-1-fighter-buff-native-current-20260912` has subsequent
+  docs-only commit; not primary accepted. Original34695408928 fullCI succeeded.
+- Rogue utility candidate **5a0983dfb696b1b4c4972b85ffd4b397d9824a88**, clean/
+  devpushed `/tmp/eidolon-1-1-rogue-utility-mastery-20260912`. ROG05/19/25
+  train existing mark/smoke/cloak durations+4%/rank rather than nonexistent
+  damage; additive with DirtyTricks, unchangedsavedIDs/costs/rune bases.
+  First server GREEN failed because synthetic enemy had no base vitality;
+  diagnostic proved accepted35mana Smoke and maxHealth0. Corrected legitimate
+  derived-health fixture retains no-damage/max-health checks. Server race
+  PASS6.361s; client7suites97PASS2.381s/lint/diffPASS. **CI34696690782 ACTIVE**:
+  fullclient399/6304/114.239s; server103561275409PASS; browsers103562401906/
+  103562401922/103562401928active. Native saved-rank utility scenario still
+  required/not authored. Nondamaging Technique crit/BladeStormtruearea stillopen.
+- Fortress corrected **CI34694694526 SUCCESS**:394/6249/128.314s,
+  game86.9%/89.109s/race275.593s,browser119actual. Fighter area
+  **CI34695174069 SUCCESS**:400/6289/101.773s,game86.9%/98.772s/race342.566s,
+  browser119actual. **Whirlwind72405 PASSED55.2s/56.8s total**, zero retries,
+  frozen6263f4e8; purchases/runes/radii6→8.1/HighLow/saved/expiry. Archive
+  `/tmp/eidolon-whirlwind-current-pass-eYKlcR`, imageview/scan0/cleanupPASS.
+  Earthshaker63410pass retained below. No native/prod runs inferred from CI.
+- New combined WT `/tmp/eidolon-1-1-fighter-verified-integration-20260912`,
+  clean/devpushed **92afea0adee9da86562fcfd746d4f13b02275c10** merges area46ad3bb5
+  and Fortress3a303173 onto primary064704cb without conflicts.9suites146PASS
+  3.609s/lint/assets/shell/diffPASS. **CI34696773008 ACTIVE/QUEUED**:fullclient
+  402/6309/115.96s; server103561487657PASS; browsers103562691113/116/144queued
+  (full IDs visible via gh run view). Do not move primary before combined
+  acceptance. Component native proof is not a combined native execution.
+- Purchase-recovery **CI34695573901 SUCCESS**, a6b7d307. Combined Spin/Roar
+  native still queued, no retrospective native acceptance. Preserve all released
+  patch history63–65 during 1.1 version preparation and audit prod compatibility.
+
+## Previous checkpoint — September 12, 13:16 UTC
 
 **Earthshaker63410 TERMINAL SUCCESS**, exact6263f4e8,1.1m test/total, zero
 retries. All fifteen normal purchases, rank0/1/5 and generic area6→8.1,
