@@ -24,7 +24,7 @@ No production/version/soak changes. NEVER PUSH ROOT.
   uninitialized enemy base stats, corrected without weakening actual potency,
   cadence/damage/expiry checks. Isolated candidate NOT accepted/integrated.
   Next: JSON/full-delta/protobuf power fields, offline/UI canonical parity,
-  trained NPC/purge coverage, saved/rendere​d real recipients and full/merged CI.
+  trained NPC/purge coverage, saved/rendered real recipients and full/merged CI.
   Offline Resolve25% damage reduction/Zeal35% cadence and damage/heal text
   contradict canonical server defense20%/movement20%/cadence30%; explicitly fix
   parity, not just the text. Detailed work record accompanies58925cca.
