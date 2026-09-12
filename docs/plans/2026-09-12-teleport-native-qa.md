@@ -48,8 +48,8 @@ fabricated effect/forwarding changes.
 
 The isolated script allowlists exactly the owner and observer suffixes and
 offers`EIDOLON_ISOLATED_QA_ROUTE=teleport-protection`. Its complete`all`gate also
-adds the same no-retry route after the existing forge/socket stage without
-removing or reordering any prior command.
+adds the same no-retry route after entrance visibility without removing or
+reordering any prior command. The original recovery/forge suffix stays intact.
 
 Three focused suites PASS262tests/1.726s; changed-file lint and shell syntax
 PASS; Playwright discovery sees one test in one file. Logs

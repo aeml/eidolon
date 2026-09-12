@@ -123,3 +123,26 @@ without removing prior commands but has NOT yet been executed natively.
 Only CSS runtime changes after9ab5b644; server/gameplay runtime is identical.
 Another hosted regression on the combined source remains required. Do not
 attribute the successful9ab5b644 run to these later additions or claim65 live.
+
+### Combined gate-order correction
+
+Combined rehearsal34669744904 at0f9c19c9 failed two client contracts:
+StandaloneWellRestedGate and ForgeSocketReleaseGate require the original
+recovery/forge suffix. Appending Teleport after forge broke that contract.
+Moved the new Teleport route after entrance visibility instead, preserving
+every original command, its relative order, and the original suffix. Neither
+existing recovery contract was weakened. Updated only the new Teleport
+placement assertion and route documentation.
+
+Focused verification PASS5suites/267tests1.697s; changed-file lint and shell
+syntax PASS. Logs `/tmp/eidolon-release65-gate-order-{green,lint}-20260912.log`.
+The failed client's total was297suites (295passed/2failed),4347tests
+(4345passed/2failed),99.553s. Server was still running at the first observation;
+its terminal state and another exact-source hosted regression remain to be
+collected. Native Teleport/Phase acceptance remains outstanding.
+
+The player confirmed milestone numbering1.1.0 through1.10.0. This candidate65
+is the last planned ordinary foundation hotfix after64; bundle remaining
+baseline work into1.1.0. Only urgent live blockers justify additional1.0.x
+releases. This does not remove any dungeon/party, earned progression,
+reconnect, balancing or later roadmap acceptance requirement.

@@ -4,7 +4,7 @@ test('Teleport and Phase have a two-client no-retry route in the complete native
     const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
     expect(script).toContain('qa_allowlist+=",${QA_USERNAME_BASE}-teleport-protection,${QA_USERNAME_BASE}-teleport-protection-observer"');
     const all = script.split('\n  all)')[1].split('\n    ;;')[0];
-    expect(all).toContain('&& run_forge_socket_appearance && run_teleport_protection');
+    expect(all).toContain('run_entrance_visibility && run_teleport_protection && run_phone_quests');
     expect(script).toContain('teleport-protection)\n    run_teleport_protection');
     expect(script).toContain('npx playwright test --retries=0 tests/e2e/teleport-protection-gameplay.spec.js');
 });
