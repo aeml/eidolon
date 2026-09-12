@@ -201,6 +201,12 @@ test('Shield mastery increases actual saved absorption, renders and expires thro
         const first = window.__shieldQA.snapshots.find(s => s.active && s.hp > 0 && s.hp < capacity);
         return { remaining: first.hp, absorbed: capacity - first.hp };
     }, capacity);
+    console.log('[shield-absorption-state]', JSON.stringify(await page.evaluate(() => {
+        const p = window.game.player, now = performance.now();
+        return { active: p.arcaneShieldActive, shieldHP: p.shieldHP, health: p.stats.hp,
+            visual: p.attachedStatusEffects.has('arcane_shield'),
+            snapshots: window.__shieldQA.snapshots.slice(-8).map(s => ({ ...s, ageMs: now - s.at })) };
+    })));
     expect(await page.evaluate(() => window.game.player.attachedStatusEffects.has('arcane_shield'))).toBe(true);
     await page.screenshot({ path: testInfo.outputPath('shield-hostile-absorption.png') });
     console.log(`[shield-absorption] ${JSON.stringify(absorbed)}`);
