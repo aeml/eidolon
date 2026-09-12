@@ -5,7 +5,26 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 21:18 UTC
+## Current checkpoint — September 12, 21:25 UTC
+
+Latest continuation PROGRESS: the actual browser verified all14 equipped items
+for each of the four roles, then the properly geared party defeated the ORIGINAL
+15000HP Warden in32.35s with all four alive. Fighter4925damage/390taken,
+Cleric382ally healing, Wizard3410damage, Rogue6708damage. No pre-boss town rest;
+one subsequent real town recovery/reentry preserved the run. Native15051 remains
+ACTIVE, Playwright PID3544161 confirmed; latest301s/55leader steps/four room
+traversals. Full remaining bosses/credit/Water handoff still open. Low-quality
+party roster capture inspected. No global scaling or boss nerf was used.
+
+Timing now directly shows181.6s formation/20.8s leader input inside210.7s total
+traversal: these harness categories include movement and observation, not a human
+walk-time estimate. Do not use automation wall time alone to tune game pacing.
+
+Integrated rehearsal now clean/dev-pushed **0087e4de**, merging accepted primary
+0992f77b. **CI34719685288 ACTIVE** on that exact revision; client passed, server
+running. Gear **CI34719442897 ACTIVE** on0a75527d likewise has client passed,
+server running. Both are manual development regressions, not deployment proof.
+Do not edit the geared worktree or start another native test while15051 runs.
 
 Previous goal turn PROGRESS. This continuation made PROGRESS: accepted desktop
 talent confirmation, retained two native failures, added traversal accounting,
