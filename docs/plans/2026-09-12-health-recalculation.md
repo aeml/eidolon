@@ -35,6 +35,12 @@ The process was confirmed absent. Independent hosted CI34716297331 on2162b442
 is running (client passed, server pending at this entry); use its actual terminal
 result rather than restarting or calling the partial local log green.
 
+Hosted follow-up: both server and client jobs passed on2162b442. Client413suites/
+6393tests104.648s; server game race294.871s. All three browser smoke shards are
+still running at this entry, so full CI and candidate integration remain pending.
+Logs `/tmp/eidolon-health-cap-ci-{client,server}-34716297331.log` preserve the
+independent completed jobs; the earlier local143 result remains incomplete.
+
 ## Draft 1.1.0 patch note
 
 - Removing health-boosting equipment now immediately limits current health to
