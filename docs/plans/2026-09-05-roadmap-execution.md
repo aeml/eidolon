@@ -5,7 +5,75 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 09:54 UTC
+## Current checkpoint — September 12, 10:02 UTC
+
+Previous goal turn PROGRESS; this continuation PROGRESS. Verified release65's
+actual publication and completed the missing Grip Mastery consumer while final
+production QA retains the GPU. Full 1.1.0–1.10.0 objective remains active.
+
+- **Alpha1.0.65 is published**, frontend/backend both
+  **f9eb1f300e91391a44404c7e687965f77397329b**, independently checked again10:02.
+  Backend statusok/database ready. Public HTML also contains login label65 and
+  actual65 patch-note entry/title. This is delivery evidence, not yet final
+  native release acceptance. Do not confuse development's older package/index
+  baseline with what is now live. Preserve63–65 history when assembling1.1.0.
+- Production **CI34683452640 STILL ACTIVE**, all nine prior jobs SUCCESS,
+  including predeploy native103528155488, Pages103535722250 and backend
+  deploy103535722251. **Live QA103535820818 ACTIVE** on “Run live anonymous and
+  persistent-character QA”. Scoped process observation10:00 showed actual
+  anonymous/authenticated/regional-dungeon/Verdant/movement batch (PID586065
+  observation only). Reserve the GPU through terminal whole-workflow status;
+  no competing native launch, cancellation or soak change.
+  Predeploy raw log downloaded to
+  `/tmp/eidolon-release65-predeploy-34683452640.log`; includes real RADV/RENOIR
+  Vulkan movement and party-rest observations. Download final live log/artifacts
+  after terminal before declaring release acceptance.
+- **Juggernaut full local session3785 TERMINAL SUCCESS**:390suites/6195tests
+  **358.12s**. Same handle resumed, no restarts/source changes during tests.
+  Hosted **CI34686991417 ACTIVE** on034fadd5. Client103535592923 SUCCESS,
+  **390suites6195tests98.049s**, API log
+  `/tmp/eidolon-juggernaut-ci-client-34686991417.log`.
+  Server103535593046 still active. Candidate NOT integrated pending full hosted
+  acceptance; primary and integrated remain clean e39599d9.
+- New `/tmp/eidolon-1-1-grip-training-20260912`, branch
+  `work/1-1-grip-training`, clean **af57344f81e2cdd92e27bf8b3b0b4c498a33f0fc**,
+  parent034fadd5. Pushed ONLY development branch and dispatched hosted
+  **CI34687250376 ACTIVE**, client103536285808/server103536285963 running.
+  NOT integrated/deployed; native/full-hosted acceptance pending.
+- Grip Mastery FTR_15 was a damage multiplier on a non-damaging pull/root.
+  Following established defensive utility-mastery corrections, it now adds
+  4% root duration/rank:1s→1.2s, or1.55s with existing generic duration caps.
+  Saved ID/ranks/one-point costs retained. Server definition, client metadata/
+  tooltip and actual offline paid handler agree. No new damage, stun, silence,
+  pull strength, immunity bypass, mana/CD or protocol change. Running deadline
+  is captured once and survives later build changes.
+- Paid server RED1.463s reproduced four trained duration misses and malformed
+  cap/purchase behavior; rank0 controls retained. Offline RED5fail/2pass1.315s.
+  Corrected server race**8.579s**, including real five purchases/sixth rejection,
+  rank0/1/5×generic0/5, caps/foreign exclusion/immutable saved maps, no damage/
+  stun/pull changes, original deadlines, existing walls/immunity/rooted attacks.
+  Client4suites**88PASS2.139s** plus lint/whitespace pass. Processes32165/84709/
+  77407/92931/33095 terminal. Logs
+  `/tmp/eidolon-grip-mastery-{server-red,client-red,server-green,client-green,lint}-20260912.log`.
+  Doc `2026-09-12-grip-mastery.md` explicitly retains Technique range and offline
+  target admission as unfinished; this focused consumer is not full Grip/talent
+  or dungeon acceptance. Native ordinary purchases remain open.
+- **Four-role next native attempt prepared, NOT LAUNCHED**. Integrated tree
+  `/tmp/eidolon-1-1-integrated-regression-20260912` frozen clean e39599d9;
+  prepare:client completed session3458, log
+  `/tmp/eidolon-four-role-scheduled-input-prepare-20260912.log`.
+  Preflight9suites**160PASS2.05s**, session42749 terminal, log
+  `/tmp/eidolon-four-role-scheduled-input-preflight-20260912.log`. Covers role
+  independence, party fixture/damage/healing navigation and strict real ground
+  input/projection/receipt observations; not native timing or clear evidence.
+  Ports18185/18186/41875 were free; recheck at launch. Use sg render, Node24,
+  EIDOLON_E2E_BROWSER_PATH=/usr/bin/google-chrome, routeparty-dungeon, fresh
+  unique runID, QA_PORT18185/WEB_PORT41875, TTY and redirected log. Script
+  prepares disposable credentials and services itself. Keep full clear/no-death,
+  town recovery, four individual turn-ins and fresh Water handoff requirements.
+  Do not start until production's WHOLE workflow releases the GPU.
+
+## Historical checkpoint — September 12, 09:54 UTC
 
 Previous user-facing numbering confirmation was NO PROGRESS on implementation;
 this continuation PROGRESS. Revalidated actual worktrees and CI, completed and
