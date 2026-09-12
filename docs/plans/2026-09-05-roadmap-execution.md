@@ -5,7 +5,66 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 17:22 UTC
+## Current checkpoint — September 12, 17:34 UTC
+
+Previous/current goal turns PROGRESS; full roadmap ACTIVE, no release/version/
+production/soak changes. Root ledger-only, NEVER PUSH ROOT. Primary/integrated
+remain clean a2c30d97; latest Fortress and Techniques not integrated yet.
+
+- **9420 TERMINAL PASS3.6m/0retry** on8864133e. Fortress0High30s,5High36s,
+  savedExtended5Low54s, natural expiry and living Recall pass. Real same-enemy
+  damage receipts2→1→2 establish paid protection on/off, not precise native20%
+  measurement: starter Skeleton damage rounds, and armor was0. Keep higher
+  damage/armor server evidence distinct; no whole-balance/party-clear claim.
+  Archive `/tmp/eidolon-fortress-real-incoming-pass-nFh6tq`; log
+  `/tmp/eidolon-fortress-real-incoming-native-20260912.log`; scan0, exactowned
+  cleanup/ports PASS. Main agent viewed Low protected phone image (41FPS
+  incidental, not performance acceptance). FortressWT docs-only d9d89fd5 then
+  cancellation-note update; latest devpushed/runtime/native source8864133e.
+- **61506 TERMINAL PASS3.9m/4.0m0retry**, Rogue Mastery profile onc9e7bf7a.
+  All3normal paid0/1/5, High/Low, saved20ranks, Mark14/Smoke7/Cloak14s and
+  unchanged local-timer checks pass. Prior failed saved-Smoke cause still
+  unproven; a passing replay does not diagnose it. Archive
+  `/tmp/eidolon-rogue-replan-mastery-pass-YH37KM`; log
+  `/tmp/eidolon-rogue-replan-diagnostic-native-20260912.log`; scan0/ownedcleanup
+  PASS; savedSmoke High image viewed (45FPS incidental). RogueWT clean
+  **9ea86ed9** docs-onlytip, devpushed/runtime/nativec9e7bf7a. Latest Technique
+  profile remains queued; earlier8fe Technique pass does not cover new approach.
+- New party WT `/tmp/eidolon-1-1-party-partial-retreat-20260912`, branch
+  work/1-1-party-partial-retreat, frozen/devpushed **7f8ea19b7038c9ee6b5d7ab6869cdc1c43d09fd2**.
+  Parent61ffba19 merged8864133e before driver change. Reproduced failed Rogue
+  coordinates with actual120x120Warden room bounds: ideal16.5–18.5 firing rings
+  were inaccessible inside healer reach, returning null while Rogue remained
+  in melee. New fallback evaluates3/6/9/12-unit partial retreats, requires≥1unit
+  improved separation, healing reach, floor/encounter/full body-path validation.
+  Preferred full rings/hold-position behavior unchanged. No boss, player stats,
+  threat or healing cooldown changes. RED1fail12pass;5suites66PASS1.434s/full
+  lint/assets/diff. Docs2026-09-12-party-partial-retreat.md retains limitations;
+  reproducing a planner dead end is not the complete encounter diagnosis.
+  **CI34708377197 ACTIVE**, no accepted full result yet.
+  **66697 ACTIVE — sole native GPU**, runIDpartypartialretreat0912,
+  routeparty-dungeon,18185/18186/41875. Log
+  `/tmp/eidolon-party-partial-retreat-native-20260912.log`. Seed
+  **-3283200004721647671**, gen2/attempt0/no fallback; allfour normalpartyentry,
+  early Skeleton combat progressing. No clear yet. Freeze WT/source, pollsame
+  handle; terminal/archive/cleanup before another native.
+- Explicitly canceled superseded **manual development** CI34707472950 (eb5,
+  Fortressgate-only) and34707429078 (c3, Rogue timerdiagnostic-only). Both now
+  terminalcancelled; had client/server/browser3 passes but NOT full CI acceptance.
+  Reason: per-branch concurrency held current candidates behind obsolete runs,
+  not observation timeout or a failed job. Production/soak untouched. Exact
+  current **CI34707847501** Fortress886 now ACTIVE client/server, and
+  **CI34707979043** Roguec9 now clientactive/serverqueued. Preserve original
+  green509Fortress and8feTechnique CI only for their exact older sources.
+
+Next: finish four-role replay/diagnose retained failed seeds; native latest
+Technique profile, fullcurrentCI and combinedprimary gates. Still required:
+all160talent consumers (including unresolved BladeStorm bounded area), earned
+firsthour, all5dungeons/multiseeds/partycredits/raids/DarkRealm/regression/live
+verification. Spin/Roar corrected purchase-recovery native remains queued.
+Full later1.2–1.10 scope unchanged; no1.0.66 and no1.1.0 release claim.
+
+## Previous checkpoint — September 12, 17:22 UTC
 
 This goal turn PROGRESS: new paid incoming-hit native gate, reproduced/fixed
 environmental and reflected Fortress bypasses, retained failed four-role and
