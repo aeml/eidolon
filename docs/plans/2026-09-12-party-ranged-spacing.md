@@ -115,3 +115,28 @@ targets are covered. RED2fail33pass; final5suites122PASS1.341s/lint/diffPASS.
 Logs `/tmp/eidolon-party-critical-triage-{red,tests,lint}-20260912.log`.
 The corrected full party replay remains queued; no runtime/balance or gate
 acceptance follows from input-planning tests alone.
+
+## Critical-triage replay — terminal failure
+
+Session19674 FAILED14.5m on exactd879ab9d, seed-2223287599221611197/gen2/
+attempt0/no fallback. Early rooms and two all-four town recoveries with saved
+reentry passed. First Warden reached last periodic2160/15000HP; Fighter and Rogue
+died. The surfaced ground-input error records Fighter142HP becoming DEAD before
+any displacement. Do not classify this as a collision regression or treat the
+automatic town respawn's940HP as survival. Full clear/credit/Water handoff open.
+
+Totals F7985damage/5937taken/5Fortress/21Slam/10Whirlwind;
+C6397effective ally healing/368taken/22HealingLight/7GuardianEmbrace;
+W6578damage/304taken; R10106damage/3408taken. Late healing was mana-blocked:
+Fighter142HP within13.36units, ready cooldown but22mana; later Rogue170HP
+within12.5units with24mana. The prior near-critical triage is not sufficient to
+close resource sustainability or positioning. Regular Warden hits around7.5units
+match the existing scale-adjusted enemy melee range; lack of an area warning for
+those hits alone does not prove a missing telegraph. Tank aggro/resources and
+party basic-attack uptime still need balance/playtest investigation, not another
+unjustified regeneration increase.
+
+Archive `/tmp/eidolon-party-critical-triage-failure-9KBVOq`; log
+`/tmp/eidolon-party-critical-triage-native-20260912.log`. Artifact credential scan
+sanitized2files; exact owned containers and18185/18186/41875 were independently
+confirmed clear. No new party run started over this result.
