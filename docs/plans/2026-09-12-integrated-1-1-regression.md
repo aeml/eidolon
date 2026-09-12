@@ -1,6 +1,22 @@
 # Integrated 1.1.0 development regression
 
-## Latest accepted combined regression — September12,19:52UTC
+## Latest accepted combined regression — September12,20:56UTC
+
+CI34717404204 completed SUCCESS on719df4de, combining accepted Serrated Technique
+and equipment health normalization with the earlier primary work. Client413
+suites/6398tests passed133.637s; server game race358.420s. All three browser
+smoke shards passed. Complete logs are
+`/tmp/eidolon-integrated-ci-{client,server,browser1,browser2,browser3}-34717404204.log`.
+Manual native/deploy/live stages were skipped, not passed.
+
+This establishes combined hosted regression for these accepted fixes, not
+release readiness. Desktop talent confirmation, Tripwire's collateral entrance
+checks and the provisional Verdant boss budget remain separate candidates.
+The actual four-player dungeon run is still underway. Full earned first-hour,
+all-dungeon/party, resource/reconnect and broader roadmap gates remain open.
+No production version or deployment was changed by this acceptance.
+
+## Earlier accepted combined regression — September12,19:52UTC
 
 CI34714237895 completed SUCCESS on8b3e04042b008e5836e1411355c85b9421f6720d,
 including the accepted Guardian Roar protection merge. Client413suites6393tests
