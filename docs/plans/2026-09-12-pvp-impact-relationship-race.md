@@ -1,5 +1,16 @@
 # Delayed attack relationship snapshot — 1.1.0 candidate
 
+## Component acceptance — September 12
+
+Full hosted CI34724352226 completed SUCCESS on exact
+03aef5b228e0a6a8356e227743a2c96c10ac7a17. Client420 suites/6489 tests pass;
+server game coverage102.974s/87.0%, race360.608s; all three browser shards pass.
+Complete log `/tmp/eidolon-pvp-full-ci-34724352226.log`.
+Native/predeploy/deployment/live stages skipped, not passed. Together with the
+reproduced race and repeated corrected real two-round attack tests below, this
+accepts the concurrency component for integration. Fresh merged CI and broader
+native ranked-party acceptance remain required; this is not milestone approval.
+
 The focused1.1 PvP audit on802d216a exposed a real data race in the normal
 two-round2v2 attack pipeline. Match completion restores InstanceID/X/Y/Z under
 World/Entity locks while delayed applyAttackImpact calls CanDamage on unlocked
@@ -25,7 +36,7 @@ Final selected race suite passes three repetitions41.223s. Microbenchmark on
 this machine:194.1ns/op,0B/op,0allocs/op (not a full-server performance verdict).
 Logs `/tmp/eidolon-pvp-impact-snapshot-{red,green,final-race,bench}-20260912.log`.
 
-Full hosted regression, integration, broader native ranked-party evidence and
+Integration, broader native ranked-party evidence and
 production delivery remain required. This does not close1.1 or later milestones.
 
 ## Draft 1.1.0 patch note
