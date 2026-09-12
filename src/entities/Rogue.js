@@ -13,6 +13,7 @@ import { applyOfflineStatus } from '../core/OfflineDamageOverTime.js';
 import { getOfflineEffectiveArmor } from '../core/OfflineArmor.js';
 import { getRogueEffectDuration } from '../skills/rogueEffectDuration.js';
 import { resolveRogueAbilityDamage } from '../skills/rogueAbilityDamage.js';
+import { applyOfflineSmokeBomb } from '../skills/offlineSmokeBomb.js';
 import {
     PROCEDURAL_PROJECTILE_VISUAL_DEFINITIONS,
     createProceduralProjectileVisual,
@@ -363,29 +364,8 @@ export class Rogue extends Actor {
         // --- Branch C: Utility / Debuff Path ---
 
         if (skill === "Smoke Bomb") {
-            console.log("Rogue used Smoke Bomb!");
-            
-
-            const radius = 5.0;
-            this.spawnVisualEffect(gameEngine, this.position, 0x555555, "smoke_cloud");
-
-            const entities = gameEngine.chunkManager.getActiveEntities();
-            entities.forEach(entity => {
-                if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
-                    const dist = this.position.distanceTo(entity.position);
-                    if (dist < radius) {
-                        // Apply Slow
-                        entity.slowTimer = getRogueEffectDuration(this, 5);
-                        entity.slowFactor = 0.5; // 50% slow
-                        
-                        // Apply Accuracy Reduction
-                        entity.accuracyReductionTimer = getRogueEffectDuration(this, 5);
-                        entity.accuracyReductionFactor = 0.3; // 30% miss chance (logic needs to be in attack code)
-                        
-                        gameEngine.floatingTextManager.spawn("BLIND!", entity.position, '#aaaaaa');
-                    }
-                }
-            });
+            // Actor.useAbility already presents the shared trained footprint.
+            applyOfflineSmokeBomb(this, gameEngine);
             return;
         }
 
