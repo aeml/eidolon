@@ -93,6 +93,8 @@ test('phone Roar area and duration purchases reach authoritative effects and sur
             await page.locator('#btn-phone-status').tap();
             const badge = page.locator('#phone-status-panel [data-buff-id="guardian_roar"]');
             await expect(badge).toBeVisible();
+            await badge.scrollIntoViewIfNeeded();
+            await expect(badge).toBeInViewport();
             await page.screenshot({ path: testInfo.outputPath(`roar-mastery-rank${masteryRank}-${quality}.png`) });
             await page.waitForTimeout(Math.max(0, startedAt + 10_500 - Date.now()));
             expect(await page.evaluate(() => window.game.player.guardianRoarTimer)).toBeGreaterThan(0);
@@ -100,7 +102,8 @@ test('phone Roar area and duration purchases reach authoritative effects and sur
             await expect.poll(() => page.evaluate(() => window.__roarArea.expired), { timeout: 5000 }).toBe(true);
             await expect.poll(() => page.evaluate(() => window.game.player.guardianRoarTimer)).toBe(0);
             await expect(badge).toHaveCount(0);
-            await page.locator('#btn-phone-status').tap();
+            await page.locator('#btn-close-phone-status').tap();
+            await expect(page.locator('#phone-status-panel')).toBeHidden();
         }
         console.log(`[guardian-roar-area] ranks ${ranks.join('/')}, ${quality}: accepted radius ${radius} matches attached ring`);
     }
