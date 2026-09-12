@@ -93,6 +93,8 @@ test('phone Roar area and duration purchases reach authoritative effects and sur
             await page.locator('#btn-phone-status').tap();
             const badge = page.locator('#phone-status-panel [data-buff-id="guardian_roar"]');
             await expect(badge).toBeVisible();
+            await badge.scrollIntoViewIfNeeded();
+            await expect(badge).toBeInViewport();
             await page.screenshot({ path: testInfo.outputPath(`roar-mastery-rank${masteryRank}-${quality}.png`) });
             await page.waitForTimeout(Math.max(0, startedAt + 10_500 - Date.now()));
             expect(await page.evaluate(() => window.game.player.guardianRoarTimer)).toBeGreaterThan(0);
@@ -100,7 +102,8 @@ test('phone Roar area and duration purchases reach authoritative effects and sur
             await expect.poll(() => page.evaluate(() => window.__roarArea.expired), { timeout: 5000 }).toBe(true);
             await expect.poll(() => page.evaluate(() => window.game.player.guardianRoarTimer)).toBe(0);
             await expect(badge).toHaveCount(0);
-            await page.locator('#btn-phone-status').tap();
+            await page.locator('#btn-close-phone-status').tap();
+            await expect(page.locator('#phone-status-panel')).toBeHidden();
         }
         console.log(`[guardian-roar-area] ranks ${ranks.join('/')}, ${quality}: accepted radius ${radius} matches attached ring`);
     }
@@ -114,8 +117,36 @@ test('phone Roar area and duration purchases reach authoritative effects and sur
                 await expect(page.locator('.phone-build-card').filter({ has: buy }))
                     .toContainText('+4% Guardian Roar buff duration per rank (20% max)');
             }
-            await buy.scrollIntoViewIfNeeded(); await buy.tap();
-            await expect.poll(() => page.evaluate(id => window.game.player.talentRanks?.[id] || 0, talentId)).toBe(rank);
+            try {
+                for (let attempt = 0; attempt < 3; attempt++) {
+                    const points = await page.evaluate(() => window.game.player.talentPoints);
+                    await buy.scrollIntoViewIfNeeded(); await buy.tap();
+                    await expect.poll(() => page.evaluate(() => window.game.uiManager.skillTree.mobile.pending === null)).toBe(true);
+                    const actualRank = await page.evaluate(id => window.game.player.talentRanks?.[id] || 0, talentId);
+                    if (actualRank === rank) {
+                        expect(await page.evaluate(() => window.game.player.talentPoints)).toBe(points - 1);
+                        break;
+                    }
+                    expect(actualRank).toBe(rank - 1);
+                    expect(await page.evaluate(() => window.game.player.talentPoints)).toBe(points);
+                    await expect(page.locator('.phone-build-feedback')).toContainText('rate limit');
+                    await expect(buy).toBeEnabled();
+                    console.log(`[roar-purchase] ${talentId} rank ${rank}: rate rejection unlocked controls without spending`);
+                    // Another deliberate user tap after the visible rejection;
+                    // the game itself must never retry a purchase automatically.
+                    await page.waitForTimeout(1100);
+                }
+                await expect.poll(() => page.evaluate(id => window.game.player.talentRanks?.[id] || 0, talentId)).toBe(rank);
+            } catch (error) {
+                console.log('[roar-purchase-failure]', JSON.stringify(await page.evaluate(({ talentId, rank }) => ({
+                    talentId, expectedRank: rank, ranks: window.game.player.talentRanks,
+                    points: window.game.player.talentPoints,
+                    pending: window.game.uiManager.skillTree.mobile.pending,
+                    feedback: window.game.uiManager.skillTree.mobile.feedback
+                }), { talentId, rank })));
+                await page.screenshot({ path: testInfo.outputPath('roar-purchase-failure.png') });
+                throw error;
+            }
             await expect.poll(() => page.evaluate(() => window.game.uiManager.skillTree.mobile.pending === null)).toBe(true);
             expect(await page.evaluate(() => window.game.player.talentPoints)).toBe(points - 1);
         }
