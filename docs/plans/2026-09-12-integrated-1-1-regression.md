@@ -1,5 +1,22 @@
 # Integrated 1.1.0 development regression
 
+## Latest accepted combined regression — September12,19:52UTC
+
+CI34714237895 completed SUCCESS on8b3e04042b008e5836e1411355c85b9421f6720d,
+including the accepted Guardian Roar protection merge. Client413suites6393tests
+PASS107.533seconds; server game86.9% coverage100.035s and full race354.988s.
+All three browser shards passed. Manual-event native/deployment/live jobs were
+intentionally skipped, not passed. Logs
+`/tmp/eidolon-integrated-roar-ci-{client,server}-34714237895.log`.
+
+Primary75de2aff retains the same accepted gameplay merge. Tripwire and new
+Serrated Technique remain independent candidates pending native/full acceptance.
+The actual four-player clear is still open; this combined CI does not supersede
+failed dungeon evidence or establish1.1.0 release readiness. No production or
+version metadata was changed by this acceptance record.
+
+## Earlier regression history
+
 This is a **non-publishing development rehearsal**, not a1.1.0 release candidate
 or completion claim. Base08a73777 includes the accumulated primary development
 work through Charge/Unstoppable, plus the instrumented four-role dungeon route.
