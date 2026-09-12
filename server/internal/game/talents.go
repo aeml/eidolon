@@ -88,6 +88,11 @@ var fighterSkills = []string{
 }
 
 func fighterTalentDef(n int) (TalentDef, bool) {
+	// A defensive buff has no direct damage for Mastery to multiply. Preserve
+	// the saved ID/rank while training its useful, bounded protective uptime.
+	if n == 7 {
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: "Iron Fortress", SkillDuration: 0.04}}, true
+	}
 	// Talents 1-26: Skill-specific (odd=Mastery +damage, even=Technique +utility)
 	if n <= 26 {
 		skillIdx := (n - 1) / 2

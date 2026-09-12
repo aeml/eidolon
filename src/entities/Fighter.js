@@ -107,7 +107,7 @@ export class Fighter extends Actor {
             console.log("Fighter used Iron Fortress!");
 
             const baseDuration = this.skillRunes?.[skill] === 'ironfortress_extended' ? 45 : 30;
-            this.ironFortressTimer = getFighterEffectDuration(this, baseDuration);
+            this.ironFortressTimer = getFighterEffectDuration(this, baseDuration, skill);
 
             // Formula: 1% per Strength, max 75%
             this.ironFortressReduction = Math.min(0.75, this.stats.strength * 0.01);
