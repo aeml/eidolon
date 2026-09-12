@@ -5,7 +5,49 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 12:34 UTC
+## Current checkpoint — September 12, 12:39 UTC
+
+This continuation remains PROGRESS. In addition to Death Spiral, native Fortress
+verification found and reproduced a real missing status-panel entry, now fixed
+in a scoped candidate. Full roadmap remains active, primary/integrated stay
+aeb0356e, and no production release/version change/root push/soak change occurred.
+
+- **Native20878 TERMINAL FAILURE** on accepted aeb0356e:26.1s. Paid rank-zero
+  Fortress mana, replicated duration and attached character effect passed;
+  phone status badge was missing. Source confirmed `syncTrackedActorBuffs`
+  omitted Iron Fortress. Not a selector-only failure. Archive
+  `/tmp/eidolon-fortress-native-failure-6GmvRT`, original
+  `/tmp/eidolon-fortress-accepted-native-20260912.log`; credentialscanPASS,
+  owned services/ports cleared before corrected replay.
+- `/tmp/eidolon-1-1-fortress-native-accepted-20260912`, branch
+  `work/1-1-fortress-native-accepted`, now frozen clean/dev-pushed
+  **be81204b071f9b9fa5ff9dd0ea79996f9036d2f0**, parentaeb0356e. Adds Fortress
+  shield icon/name/actual remaining duration to shared status tracker, updates
+  without duplicates, expires independently. Generic protection detail avoids
+  inventing an unreplicated reduction percentage. No combat strength changes.
+  New regression RED1fail/28pass; the first insertion exceeded GameEngine's
+  existing2500line architecture cap (2507). Extracted its pure actor-buff
+  descriptor array into `TrackedActorBuffs.js` without changing other entries;
+  lifecycle remains in GameEngine. Did NOT relax the cap. Expanded5suites
+ 72PASS1.581s; lint/diffPASS, session10030terminal0. Logs
+  `/tmp/eidolon-fortress-status-{red,green,expanded,lint}-20260912.log`.
+  Candidate plan records source finding and validation limits.
+- **Native11633 ACTIVE**, frozenbe81204b, fortressstatus09121238, unchanged
+  fortress-mastery route, SystemChrome/sg render,18185/18186/41875. Owned image
+  finished building; no new native pass yet. Log
+  `/tmp/eidolon-fortress-status-native-20260912.log`. SINGLE GPU LANE RESERVED;
+  poll same11633. New manual **CI34694234414 ACTIVE**, exactbe81204b.
+- Corrected combined Smoke **CI34693884345 ACTIVE**, d4d1a633:
+  client396suites6271PASS131.805s. Actual log
+  `/tmp/eidolon-smoke-stage-ci-client-34693884345.log`; server/browser still
+  required. Base runtime CI34692752460 already complete as recorded below.
+- Death Spiral **CI34693953318 ACTIVE**,6f4800e7:
+  client395suites6276PASS123.975s. Actual log
+  `/tmp/eidolon-death-spiral-ci-client-34693953318.log`; server/browser and
+  trained native still required. Next party diagnosis remains positioning/
+  healer reach/threat from the retained failed independent run, not a blind replay.
+
+## Previous checkpoint — September 12, 12:34 UTC
 
 Previous goal turn PROGRESS; this continuation PROGRESS. Implemented Death
 Spiral's missing area consumer, read full Smoke CI results, corrected a native
