@@ -92,6 +92,11 @@ owned containers/image/ports cleanup PASS. Main agent viewed the protected Low
 phone capture; incidental41FPS is not a full performance pass. New full CI on
 8864133e and combined-primary verification still required.
 
+Superseded manual-development CI34707472950 on eb5ba3f1 was canceled after
+client/server and browser3 passed, releasing branch concurrency for current
+CI34707847501 on8864133e (now running). The canceled run is not full acceptance;
+production and soak jobs were not touched.
+
 The existing non-retrying Fortress route now additionally approaches a real
 overworld Skeleton through move-only ground input after its saved-rune check.
 It observes three positive physical receipts from the same enemy unbuffed,
