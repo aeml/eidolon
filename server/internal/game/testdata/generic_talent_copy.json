@@ -1,0 +1,231 @@
+[
+  {
+    "className": "Fighter",
+    "id": "FTR_27",
+    "description": "+1% cooldown reduction per rank (5% max).",
+    "bonus": {
+      "AddCdr": 0.01
+    }
+  },
+  {
+    "className": "Fighter",
+    "id": "FTR_29",
+    "description": "+2% Damage stat per rank (10% max).",
+    "bonus": {
+      "PctDamage": 0.02
+    }
+  },
+  {
+    "className": "Fighter",
+    "id": "FTR_31",
+    "description": "+2% maximum health per rank (10% max).",
+    "bonus": {
+      "PctMaxHealth": 0.02
+    }
+  },
+  {
+    "className": "Fighter",
+    "id": "FTR_32",
+    "description": "+3 Strength per rank (+15 max).",
+    "bonus": {
+      "FlatStrength": 3
+    }
+  },
+  {
+    "className": "Fighter",
+    "id": "FTR_34",
+    "description": "+2 Vitality and +1% maximum health per rank (+10 Vitality / 5% health max).",
+    "bonus": {
+      "FlatVitality": 2,
+      "PctMaxHealth": 0.01
+    }
+  },
+  {
+    "className": "Fighter",
+    "id": "FTR_36",
+    "description": "+2 flat defense per rank (+10 max).",
+    "bonus": {
+      "FlatDefense": 2
+    }
+  },
+  {
+    "className": "Fighter",
+    "id": "FTR_38",
+    "description": "+2% skill damage and AoE radius per rank (10% each max).",
+    "bonus": {
+      "SkillDamage": 0.02,
+      "SkillAoe": 0.02
+    }
+  },
+  {
+    "className": "Fighter",
+    "id": "FTR_40",
+    "description": "+1.5% cooldown reduction per rank (7.5% max).",
+    "bonus": {
+      "AddCdr": 0.015
+    }
+  },
+  {
+    "className": "Rogue",
+    "id": "ROG_27",
+    "description": "+1.5% cooldown reduction per rank (7.5% max).",
+    "bonus": {
+      "AddCdr": 0.015
+    }
+  },
+  {
+    "className": "Rogue",
+    "id": "ROG_29",
+    "description": "+2% movement speed per rank (10% max).",
+    "bonus": {
+      "PctSpeed": 0.02
+    }
+  },
+  {
+    "className": "Rogue",
+    "id": "ROG_30",
+    "description": "+1 flat defense and +1% maximum health per rank (+5 defense / 5% health max).",
+    "bonus": {
+      "FlatDefense": 1,
+      "PctMaxHealth": 0.01
+    }
+  },
+  {
+    "className": "Rogue",
+    "id": "ROG_31",
+    "description": "+2% movement speed per rank (10% max).",
+    "bonus": {
+      "PctSpeed": 0.02
+    }
+  },
+  {
+    "className": "Rogue",
+    "id": "ROG_34",
+    "description": "+3% AoE radius per rank (15% max).",
+    "bonus": {
+      "SkillAoe": 0.03
+    }
+  },
+  {
+    "className": "Rogue",
+    "id": "ROG_35",
+    "description": "+1% cooldown reduction per rank (5% max).",
+    "bonus": {
+      "AddCdr": 0.01
+    }
+  },
+  {
+    "className": "Rogue",
+    "id": "ROG_37",
+    "description": "+3 Dexterity per rank (+15 max).",
+    "bonus": {
+      "FlatDexterity": 3
+    }
+  },
+  {
+    "className": "Rogue",
+    "id": "ROG_40",
+    "description": "+2% Damage stat per rank (10% max).",
+    "bonus": {
+      "PctDamage": 0.02
+    }
+  },
+  {
+    "className": "Wizard",
+    "id": "WIZ_28",
+    "description": "+1.5% cooldown reduction per rank (7.5% max).",
+    "bonus": {
+      "AddCdr": 0.015
+    }
+  },
+  {
+    "className": "Wizard",
+    "id": "WIZ_31",
+    "description": "+2% Damage stat per rank (10% max).",
+    "bonus": {
+      "PctDamage": 0.02
+    }
+  },
+  {
+    "className": "Wizard",
+    "id": "WIZ_33",
+    "description": "+1% cooldown reduction per rank (5% max).",
+    "bonus": {
+      "AddCdr": 0.01
+    }
+  },
+  {
+    "className": "Wizard",
+    "id": "WIZ_37",
+    "description": "+3 Intelligence per rank (+15 max).",
+    "bonus": {
+      "FlatIntelligence": 3
+    }
+  },
+  {
+    "className": "Wizard",
+    "id": "WIZ_40",
+    "description": "+2% maximum health and +2 Wisdom per rank (10% health / +10 Wisdom max).",
+    "bonus": {
+      "PctMaxHealth": 0.02,
+      "FlatWisdom": 2
+    }
+  },
+  {
+    "className": "Cleric",
+    "id": "CLR_28",
+    "description": "+1.5% cooldown reduction per rank (7.5% max).",
+    "bonus": {
+      "AddCdr": 0.015
+    }
+  },
+  {
+    "className": "Cleric",
+    "id": "CLR_31",
+    "description": "+2% Damage stat per rank (10% max).",
+    "bonus": {
+      "PctDamage": 0.02
+    }
+  },
+  {
+    "className": "Cleric",
+    "id": "CLR_34",
+    "description": "+3% AoE radius per rank (15% max).",
+    "bonus": {
+      "SkillAoe": 0.03
+    }
+  },
+  {
+    "className": "Cleric",
+    "id": "CLR_35",
+    "description": "+2% maximum health per rank (10% max).",
+    "bonus": {
+      "PctMaxHealth": 0.02
+    }
+  },
+  {
+    "className": "Cleric",
+    "id": "CLR_37",
+    "description": "+1% cooldown reduction per rank (5% max).",
+    "bonus": {
+      "AddCdr": 0.01
+    }
+  },
+  {
+    "className": "Cleric",
+    "id": "CLR_38",
+    "description": "+3 Wisdom per rank (+15 max).",
+    "bonus": {
+      "FlatWisdom": 3
+    }
+  },
+  {
+    "className": "Cleric",
+    "id": "CLR_40",
+    "description": "+2 flat defense and +1% cooldown reduction per rank (+10 defense / 5% cooldown reduction max).",
+    "bonus": {
+      "FlatDefense": 2,
+      "AddCdr": 0.01
+    }
+  }
+]

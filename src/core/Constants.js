@@ -329,20 +329,20 @@ export const CONSTANTS = {
             }
 
             entries.push(
-                { name: "Combat Discipline", desc: "+2% global CDR per rank (10% max).", maxRank: 5 },
+                { name: "Combat Discipline", desc: "+1% cooldown reduction per rank (5% max).", maxRank: 5 },
                 { name: "Battle Breathing", desc: "-3% mana cost per rank (15% max).", maxRank: 5 },
-                { name: "Threat Mastery", desc: "+5% threat generation per rank (25% max).", maxRank: 5 },
+                { name: "Threat Mastery", desc: "+2% Damage stat per rank (10% max).", maxRank: 5 },
                 { name: "Crowd Control Drills", desc: "+4% ability buff, stun, root and slow duration per rank (20% max).", maxRank: 5 },
-                { name: "Frontliner Routine", desc: "+2% damage reduction per rank (10% max).", maxRank: 5 },
-                { name: "Heavy Weapon Technique", desc: "+3 flat damage per rank (+15 max).", maxRank: 5 },
+                { name: "Frontliner Routine", desc: "+2% maximum health per rank (10% max).", maxRank: 5 },
+                { name: "Heavy Weapon Technique", desc: "+3 Strength per rank (+15 max).", maxRank: 5 },
                 { name: "Lineholder Instinct", desc: "+3% AoE radius per rank (15% max).", maxRank: 5 },
-                { name: "Rally Presence", desc: "+2% party buff effectiveness per rank (10% max).", maxRank: 5 },
+                { name: "Rally Presence", desc: "+2 Vitality and +1% maximum health per rank (+10 Vitality / 5% health max).", maxRank: 5 },
                 { name: "Aggressor Footwork", desc: "+2% movement speed per rank (10% max).", maxRank: 5 },
-                { name: "Shieldwall Training", desc: "+3% armor per rank (15% max).", maxRank: 5 },
+                { name: "Shieldwall Training", desc: "+2 flat defense per rank (+10 max).", maxRank: 5 },
                 { name: "Breakthrough", desc: "+3% ability buff, stun, root and slow duration per rank (15% max). Adds to Crowd Control Drills.", maxRank: 5 },
-                { name: "Enduring Rhythm", desc: "+2% sustained damage per rank (10% max).", maxRank: 5 },
+                { name: "Enduring Rhythm", desc: "+2% skill damage and AoE radius per rank (10% each max).", maxRank: 5 },
                 { name: "Battlefield Awareness", desc: "+2% crit chance per rank (10% max).", maxRank: 5 },
-                { name: "Vanguard Momentum", desc: "+1% all damage per rank (5% max).", maxRank: 5 },
+                { name: "Vanguard Momentum", desc: "+1.5% cooldown reduction per rank (7.5% max).", maxRank: 5 },
             );
 
             return entries.slice(0, 40).map((t, i) => ({ id: `FTR_${String(i + 1).padStart(2, '0')}`, ...t,
@@ -382,20 +382,20 @@ export const CONSTANTS = {
             }
 
             entries.push(
-                { name: "Opportunist's Flow", desc: "+2% global CDR per rank (10% max).", maxRank: 5 },
+                { name: "Opportunist's Flow", desc: "+1.5% cooldown reduction per rank (7.5% max).", maxRank: 5 },
                 { name: "Dirty Tricks", desc: "+4% ability-effect duration per rank (20% max), including buffs, debuffs and wounds.", maxRank: 5 },
-                { name: "Quickhands", desc: "+3% attack speed per rank (15% max).", maxRank: 5 },
-                { name: "Shadow Poise", desc: "+2% evasion per rank (10% max).", maxRank: 5 },
-                { name: "Silent Balance", desc: "+3% movement speed per rank (15% max).", maxRank: 5 },
+                { name: "Quickhands", desc: "+2% movement speed per rank (10% max).", maxRank: 5 },
+                { name: "Shadow Poise", desc: "+1 flat defense and +1% maximum health per rank (+5 defense / 5% health max).", maxRank: 5 },
+                { name: "Silent Balance", desc: "+2% movement speed per rank (10% max).", maxRank: 5 },
                 { name: "Needle Precision", desc: "+3% crit chance per rank (15% max).", maxRank: 5 },
                 { name: "Lightstep", desc: "-2% skill cooldowns and +1% movement speed per rank (10% / 5% max).", maxRank: 5 },
-                { name: "Fine Motor", desc: "+2% multi-hit damage per rank (10% max).", maxRank: 5 },
-                { name: "Catlike Reflexes", desc: "+1% dodge per rank (5% max).", maxRank: 5 },
+                { name: "Fine Motor", desc: "+3% AoE radius per rank (15% max).", maxRank: 5 },
+                { name: "Catlike Reflexes", desc: "+1% cooldown reduction per rank (5% max).", maxRank: 5 },
                 { name: "Quick Draw", desc: "+3% ability range per rank (15% max).", maxRank: 5 },
-                { name: "Evasive Flow", desc: "+2% damage reduction per rank (10% max).", maxRank: 5 },
+                { name: "Evasive Flow", desc: "+3 Dexterity per rank (+15 max).", maxRank: 5 },
                 { name: "Close-Quarters Grace", desc: "+2% skill damage per rank (10% max).", maxRank: 5 },
                 { name: "Edge Awareness", desc: "+2% crit chance per rank (10% max).", maxRank: 5 },
-                { name: "Wrist Control", desc: "+1% all damage per rank (5% max).", maxRank: 5 },
+                { name: "Wrist Control", desc: "+2% Damage stat per rank (10% max).", maxRank: 5 },
             );
 
             return entries.slice(0, 40).map((t, i) => ({ id: `ROG_${String(i + 1).padStart(2, '0')}`, ...t,
@@ -435,19 +435,19 @@ export const CONSTANTS = {
 
             entries.push(
                 { name: "Efficient Casting", desc: "-4% mana cost per rank (20% max).", maxRank: 5 },
-                { name: "Quickened Formulae", desc: "+2% global CDR per rank (10% max).", maxRank: 5 },
+                { name: "Quickened Formulae", desc: "+1.5% cooldown reduction per rank (7.5% max).", maxRank: 5 },
                 { name: "Runic Precision", desc: "+3% spell range per rank (15% max).", maxRank: 5 },
                 { name: "Leyline Recall", desc: "-5% Teleport cooldown per rank (25% max).", maxRank: 5 },
-                { name: "Overchannel", desc: "+3% burst damage per rank (15% max).", maxRank: 5 },
+                { name: "Overchannel", desc: "+2% Damage stat per rank (10% max).", maxRank: 5 },
                 { name: "Arcane Stability", desc: "+5% Arcane Shield duration per rank (25% max).", maxRank: 5 },
-                { name: "Elemental Rhythm", desc: "+2% DoT damage per rank (10% max).", maxRank: 5 },
+                { name: "Elemental Rhythm", desc: "+1% cooldown reduction per rank (5% max).", maxRank: 5 },
                 { name: "Prismatic Control", desc: "+4% timed Wizard buff/debuff duration per rank (20% max). Does not extend projectiles or zones.", maxRank: 5 },
                 { name: "Aether Reach", desc: "+4% spell range per rank (20% max).", maxRank: 5 },
                 { name: "Volatile Insight", desc: "+3% AoE radius per rank (15% max).", maxRank: 5 },
-                { name: "Channel Discipline", desc: "+2% channeled spell damage per rank (10% max).", maxRank: 5 },
+                { name: "Channel Discipline", desc: "+3 Intelligence per rank (+15 max).", maxRank: 5 },
                 { name: "Mana Geometry", desc: "+2% spell range and AoE radius per rank (10% each at max).", maxRank: 5 },
                 { name: "Sigil Mastery", desc: "+2% crit chance per rank (10% max).", maxRank: 5 },
-                { name: "Contingency Wards", desc: "+2% damage reduction per rank (10% max).", maxRank: 5 },
+                { name: "Contingency Wards", desc: "+2% maximum health and +2 Wisdom per rank (10% health / +10 Wisdom max).", maxRank: 5 },
             );
 
             return entries.slice(0, 40).map((t, i) => ({ id: `WIZ_${String(i + 1).padStart(2, '0')}`, ...t,
@@ -495,19 +495,19 @@ export const CONSTANTS = {
 
             entries.push(
                 { name: "Efficient Rites", desc: "-4% mana cost per rank (20% max).", maxRank: 5 },
-                { name: "Rites of Haste", desc: "+2% global CDR per rank (10% max).", maxRank: 5 },
+                { name: "Rites of Haste", desc: "+1.5% cooldown reduction per rank (7.5% max).", maxRank: 5 },
                 { name: "Mercy Routine", desc: "+3% spell healing per rank (15% max).", maxRank: 5 },
                 { name: "Sanctuary Practice", desc: "+4% ability-effect duration per rank (20% max).", maxRank: 5 },
-                { name: "Radiant Doctrine", desc: "+3% holy damage per rank (15% max).", maxRank: 5 },
+                { name: "Radiant Doctrine", desc: "+2% Damage stat per rank (10% max).", maxRank: 5 },
                 { name: "Cleanse Discipline", desc: "-5% Purifying Wave cooldown per rank (25% max).", maxRank: 5 },
                 { name: "Chorus of Faith", desc: "+3% ability-effect duration per rank (15% max).", maxRank: 5 },
-                { name: "Battlefield Ministry", desc: "+3% AoE heal radius per rank (15% max).", maxRank: 5 },
-                { name: "Warden's Instinct", desc: "+2% damage reduction per rank (10% max).", maxRank: 5 },
+                { name: "Battlefield Ministry", desc: "+3% AoE radius per rank (15% max).", maxRank: 5 },
+                { name: "Warden's Instinct", desc: "+2% maximum health per rank (10% max).", maxRank: 5 },
                 { name: "Blessed Footwork", desc: "+2% movement speed per rank (10% max).", maxRank: 5 },
-                { name: "Hymncraft", desc: "+2% HoT effectiveness per rank (10% max).", maxRank: 5 },
-                { name: "Pilgrim Patience", desc: "+3% mana regen per rank (15% max).", maxRank: 5 },
+                { name: "Hymncraft", desc: "+1% cooldown reduction per rank (5% max).", maxRank: 5 },
+                { name: "Pilgrim Patience", desc: "+3 Wisdom per rank (+15 max).", maxRank: 5 },
                 { name: "Mercy Doctrine", desc: "+2% spell healing and ability-effect duration per rank (10% each max).", maxRank: 5 },
-                { name: "Ritekeeper", desc: "+1% all healing/damage per rank (5% max).", maxRank: 5 },
+                { name: "Ritekeeper", desc: "+2 flat defense and +1% cooldown reduction per rank (+10 defense / 5% cooldown reduction max).", maxRank: 5 },
             );
 
             return entries.slice(0, 40).map((t, i) => ({ id: `CLR_${String(i + 1).padStart(2, '0')}`, ...t,
