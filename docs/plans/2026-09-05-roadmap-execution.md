@@ -5,7 +5,50 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 07:26 UTC
+## Current checkpoint — September 12, 07:38 UTC
+
+Previous goal turn PROGRESS; this continuation PROGRESS. Authored the normal-
+purchase/saved-build/native owner gate without changing running candidate or
+production source. The full roadmap remains active; native acceptance unproven.
+
+- New clean `/tmp/eidolon-1-1-fighter-buff-native-20260912`, branch
+  `work/1-1-fighter-buff-native`, **f27c003a73c3e828bdf3fb013b71d721e1302004**,
+  parent06f62f1b, NOT pushed/integrated. Adds actual touch purchases and casts
+  for both buffs at0/1/5 ranks; rank5 recast in landscape Low after fresh login.
+  High/Low owner receipt, Damage/defense, duration, zero-cost, visible attached
+  mesh/card, natural expiry/stat restoration evidence required. Level100 is
+  explicit QA preparation, not earned progression. Five ordinary FTR36 ranks
+  ensure positive defense; no stat/gear/rank injections. Outside combat waypoint
+  avoids town healing; previously banked Well Rested must naturally expire.
+- Read-only serialized observer records only the owner's actual skill receipt
+  and explicit state fields, preserves rejected results/delivery, resets without
+  nesting, requires explicit expiry and bounds samples. Dedicated allowlisted
+  `fighter-buff-mastery` route has retries0 and is enrolled once after Whirlwind
+  in full timed acceptance. Party receivers/actual damage-impact gameplay remain
+  separate acceptance, explicitly not claimed by this owner stat/render gate.
+- Initial RED missing route:1failed/3passed1.653s. Integrated test initially had
+  31 timing-contract failures because the command list was updated without the
+  parallel stage-name list. Both now updated; no contracts weakened. Final
+  **8suites83tests PASS4.286s**, changed lint, bash syntax and diff pass. Vendor
+  prepared. Playwright --list loads exactly1test; **NO native execution yet**.
+  Logs `/tmp/eidolon-fighter-buff-native-{red,focused,focused-final,prepare,list}-20260912.log`.
+  Doc `2026-09-12-fighter-buff-native.md` records inputs, limitations and next run.
+- **Hosted CI34680685387@06f62f1b remains ACTIVE**. Client103518653113 SUCCESS:
+  385suites5928tests129.581s. Server103518653234 SUCCESS:86.8%/100.117s, full
+  race317.975s, backup/restore/bench/build. Completed job logs retained via API
+  `/tmp/eidolon-fighter-whirlwind-ci-{client,server}-34680685387.log`.
+  Browser2/1/3 jobs103519767710/103519767726/103519767746 last read in_progress.
+  Do not integrate06 into primary before terminal combined acceptance. Native/
+  deployment guards skip manual rehearsal, not acceptance passes.
+- **Production CI34679633154@0e1068a5 remains ACTIVE**, native103517768800 in
+  disposable full-character gameplay after gallery and Well Rested steps.
+  Safe spec-only process inspection at07:35 found regional/verdant/inventory/
+  projectile/movement/ground/beam group (PID3113793; not authority to kill it).
+  This owns GPU; no local native launch. Current release still lacks deploy/live
+  acceptance. Leave scheduled soak alone. Primary7f781121 unchanged; actual
+  four-party dungeon clear and all1.1–1.10 milestone gates remain open.
+
+## Previous checkpoint — September 12, 07:26 UTC
 
 Previous goal turn PROGRESS; this continuation also PROGRESS. Finished the
 offline Whirlwind consumer and its focused regressions; combined candidate now
