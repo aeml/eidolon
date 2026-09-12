@@ -5,7 +5,68 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 13:01 UTC
+## Current checkpoint — September 12, 13:10 UTC
+
+Previous turn PROGRESS; this continuation PROGRESS. Accepted Death Spiral after
+full CI/native proof, prepared real-owner/party Fighter buff verification, and
+restored released purchase-recovery checks without losing current Roar duration
+coverage. Full1.1.0→1.10.0 remains active; no production/version/root push/soak
+change. Fresh fetch confirms origin/master stillf9eb1f30; not a live-site check.
+
+- **Death Spiral CI34694650346 TERMINAL SUCCESS**, exacta1513834:
+  client398suites6290tests84.889s; game86.8%99.672s/race357.783s;
+  actual browser40+53+26=119PASS. Native/deploy jobs skipped; separate native
+ 25693 had already passed22s. Logs
+  `/tmp/eidolon-death-spiral-native-ci-{client,server,browser1,browser2,browser3}-34694650346.log`.
+  Accepted c7d0c669 (only9 documentation lines beyond tested source) by merge;
+  **primary/integrated now clean064704cb7f1114b8cbd443e1f38e5c4cc0e176a5**.
+  Full merged-tree equality against c7d0c669 passed. Neither pushed live.
+- `/tmp/eidolon-1-1-fighter-buff-native-current-20260912`, branch
+  `work/1-1-fighter-buff-native-current`, clean/dev-pushed
+  **6814147c5ad2f2b56af24b83e11cc988e7009541**, parent7f4df79a. Ports owner
+  f27c003a→64c34d80 and real Cleric recipient0f15acd8→6ab70489, keeping full
+  paid/rank/stat/High-Low/expiry/saved-login/party assertions. Both status panels
+  now use visible Close and explicit hidden assertions; cards scroll into the
+  viewport before screenshots. Seven suites128PASS7.775s; lint/assets/bash/diff
+  PASS, session21265terminal0. Logs
+  `/tmp/eidolon-fighter-buff-current-{tests,lint,assets}-20260912.log`.
+  **CI34695408928 ACTIVE**, client103557933262 passed, server103557933422
+  active. Native still pending; not primary acceptance.
+- Production comparison found current integration omitted released Spin/Roar
+  native rejection diagnostics and deliberate retry checks. New WT
+  `/tmp/eidolon-1-1-purchase-recovery-current-20260912`, branch
+  `work/1-1-purchase-recovery-current`, clean/dev-pushed
+  **a6b7d307004492638eadfeb3e00ccbabc8c17e9d**, parent7f4df79a. Ports production
+ 5cec7780/5d58dbd5/2d2fba75/fafd2434 through e77ca1bb/7147e9f1/2eaeaf75/6d5d9835.
+  Conflicts resolved retaining newer Roar Mastery copy, one-point cost, natural
+  duration/expiry and saved login. Rejections must leave points/ranks unchanged,
+  visibly unlock controls and show rate feedback before a deliberate later tap;
+  at most3attempts, failures retained. No automatic game purchase retry added.
+  Roar status now closes with visible Close and captures the card in viewport.
+  Four suites55PASS4.867s, lint/assets/diffPASS; session20240terminal0. Logs
+  `/tmp/eidolon-purchase-recovery-current-{tests,lint,assets}-20260912.log`.
+  **CI34695573901 ACTIVE**, native Spin+Roar still required, not accepted.
+  Audited production movement probe/status CSS unchanged; CI workflow diff only
+  staged version labels. This scoped comparison is not full193-file release
+  compatibility proof. Preserve actual63–65 patch history at1.1 release prep.
+- **Fortress corrected CI34694694526 ACTIVE**,3a303173: client394/6249
+ 128.314s; server now passed; browser103558383199/103558383207/103558383231
+  active. Actual client log `/tmp/eidolon-fortress-close-ci-client-34694694526.log`.
+  Base be81204b complete/native59562 pass remain valid; not yet primary accepted.
+- **Fighter area CI34695174069 ACTIVE**,6263f4e8: actual client400suites
+ 6289tests101.773s, log `/tmp/eidolon-fighter-area-current-ci-client-34695174069.log`;
+  server passed, browsers103558539435/103558539441/103558539448 active. Native
+  Earthshaker/Whirlwind remain pending behind the party's browser lane.
+- **Party7792 freshly confirmed ACTIVE**, sole owned native lane; same frozen
+ 3b63d861/seed-7740520249466063783 and logfile. Two actual Skeleton packs cleared,
+  two all-member natural town recoveries/saved reentries passed. Latest913s
+  elapsed/128leader ground steps/five room traversals (includes repeated cleared
+  rooms after recovery), no boss/clear/credit/Water acceptance yet. Continue same
+  handle without editing its source, opening another GPU run or restarting on
+  elapsed-time inference. Remaining full160talents, actual earned first hour,
+  all dungeon seeds, shared/live regression and later milestones stay required.
+
+## Previous checkpoint — September 12, 13:01 UTC
 
 Previous turn PROGRESS; this continuation PROGRESS. Ported and corrected pending
 Fighter native gates onto accepted current integration while the same party
