@@ -205,6 +205,29 @@ disposable cleanup verified. CI34716757122 is still running on runtime9048c71a;
 shield/entrance routes affected by the QA arrival change still need replay.
 No integration, production release or full-roadmap acceptance yet.
 
+### Forecourt cutaway regression and physical inspection route
+
+Native61208 on b5a75372 FAILED49.9s: paid baseline/trained/saved Shield and
+expiry passed, but the test expected a cutaway at the new clear forecourt.
+That position is not occluded; the old test depended on spawning inside the
+building. Archive `/tmp/eidolon-forecourt-visibility-failure-J3lHQ7`, scan0/
+exact cleanup verified. Do not count the full shield/entrance route as passed.
+
+The updated test first requires the specific Verdant entrance to be opaque,
+then walks with real joystick touches around a50unit-radius outside arc to
+the far side. It requires genuine rendered occlusion, the character outside
+the collider, and the cutaway; walking back must restore opacity. The path's
+six chords are sampled against the actual CollisionManager, and real optimized
+entrance geometry/orthographic rays prove the clear and blocked endpoints.
+Shield's subsequent approach now uses actual phone controls and an unobstructed
+target instead of the inappropriate desktop move helper. No scene position,
+camera, shader opacity, input vector or clock is assigned by the test.
+
+Focused5suites28tests PASS3.594s plus ESLint/diff; the first path test failed
+before the helper existed. Native inspection/absorption replay is queued after
+the sole Verdant-budget four-role run. Its earlier paid shield checks do not
+replace this pending complete route, and Tripwire integration remains gated.
+
 ## Draft 1.1.0 patch note
 
 - Fixed Tripwire's damage and critical talents not affecting triggered traps.
