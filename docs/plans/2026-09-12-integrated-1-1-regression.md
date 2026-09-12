@@ -1,6 +1,23 @@
 # Integrated 1.1.0 development regression
 
-## Latest accepted combined regression — September12,20:56UTC
+## Latest accepted combined regression — September 12, 21:41 UTC
+
+CI34719685288 completed SUCCESS on exact
+0087e4deb036009abaf17cea09b6a299fab17edc, adding accepted desktop talent
+confirmation0992f77b to the earlier combined work. Client414 suites/6408 tests
+passed135.680s; server game coverage102.032s/86.9% and race361.096s. All three
+browser smoke shards passed. Complete logs:
+`/tmp/eidolon-integrated-desktop-ci-{client,server,browser1,browser2,browser3}-34719685288.log`.
+Manual native, deployment and live stages were skipped, not passed.
+
+This closes the combined hosted regression for these accepted components only.
+The correctly equipped party has now killed the original-health Warden and
+Briar Matron in a separate native run, but the full clear/individual credit/
+Water handoff is still pending. Tripwire collateral diagnostics, first-hour,
+all-dungeon and resource/reconnect acceptance remain open, along with all later
+milestones. No release metadata or production deployment was changed.
+
+## Earlier accepted combined regression — September12,20:56UTC
 
 CI34717404204 completed SUCCESS on719df4de, combining accepted Serrated Technique
 and equipment health normalization with the earlier primary work. Client413
