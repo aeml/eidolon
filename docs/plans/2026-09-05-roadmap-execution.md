@@ -5,7 +5,68 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 10:28 UTC
+## Current checkpoint — September 12, 10:42 UTC
+
+The intervening numbering-only reply made no implementation progress; this
+continuation revalidated current sources/jobs and made PROGRESS. Full roadmap
+goal remains active. No master push, new version or production deployment.
+
+- Native11193 handle was missing; authoritative log proves TERMINAL FAILURE:
+  first Wizard repeat50.5s failed ready Inferno Cataclysm with inactive Meteor
+  hover, second repeat1.7m passed. Owned containers/ports cleared. Artifacts
+  archived `/tmp/eidolon-rune-reuse-failure-4dKZge`; wrapper credential scan
+  passed/sanitized0. The hotbar captured the expired hover as explicit actor
+  intent, then performAbility correctly rejected that inactive actor.
+- New `/tmp/eidolon-1-1-stale-hover-casting-20260912`, branch
+  `work/1-1-stale-hover-casting`, clean **8bcb302a2378eeefad568238a501108e03474713**,
+  parent1a491c41. Fresh hotbar/primary/facing ignore inactive pointer samples
+  and use normal ground aim. Buffered previously-live actor intent still
+  cancels if the target expires; party support/self-cast paths unchanged.
+  Real Wizard/Actor regressions reproduced no hotbar request and wrong primary
+  projectile ID; six suites61PASS3.69s after fix, including mana/CD/effect
+  dispatch. Initial cost expectation omitted base argument; corrected before
+  green (RED failures were network payloads). Lint/assets/whitespace passed.
+  Logs `/tmp/eidolon-stale-hover-{red,green,lint,assets}-20260912.log`.
+- Stale-hover dev branch pushed; **CI34688932938 ACTIVE**, client103540690026
+  SUCCESS (301suites4402tests79.787s), server103540690108 running at10:42.
+  No integration/deploy yet. Client retrieval51959 terminal; actual log
+  `/tmp/eidolon-stale-hover-ci-client-34688932938.log`.
+- Native75464 **TERMINAL FAILURE**, frozen8bcb302a, hover09121037. First repeat
+  failed23.3s on moving Fireball **8frames vs unchanged >10/650ms**, before
+  reaching Inferno. Second complete Wizard/rune matrix PASS2.6m. Whole run3.1m
+  fails; no full animation acceptance or persistent-rune two-pass acceptance.
+  No assertion/window/retry change. Host read-only observation10:40:05:
+  load62.73/55.07/54.18, nproc16; a possible contention factor, NOT causal proof.
+  Do not kill unrelated workloads or cancel soak. Failed artifacts retained
+  `/tmp/eidolon-stale-hover-native-failure-iSv0iu`, log
+  `/tmp/eidolon-stale-hover-native-20260912.log`; wrapper credential scan
+  PASS/sanitized0. Owned containers gone/ports free before next native launch.
+- Grip targeting **CI34687856500 TERMINAL SUCCESS**. Actual logs verify
+  client392suites6220tests126.681s, game86.9%97.541s/race340.718s, browser
+  40+50+26=116PASS. Initial gh run view browser log retrieval returned empty;
+  direct jobs/logs API retrieved actual evidence before count claims.
+  Logs `/tmp/eidolon-grip-targeting-ci-{client,server,browser1,browser2,browser3}-34687856500.log`.
+  Primary and integrated clean advanced af57344f→**f016e0f7**; no deployment.
+- New `/tmp/eidolon-1-1-party-tank-opener-20260912`, branch
+  `work/1-1-party-tank-opener`, clean **bfa908c8**,parentf016e0f7. Four-role
+  driver previously let Fighter take one iteration then started DPS; that
+  iteration can only approach an enemy, so it did not prove tank engagement.
+  Now real outgoing damage receipts are retained per target; DPS waits for a
+  positive tank receipt on that target. Heals and per-role warning escapes
+  continue; no artificial threat, damage, skills, levels, deadlines or survival
+  relaxation. This strategy flaw is not proven sole cause of prior pack death.
+  New helper RED missing module; six suites160PASS2.862s, lint/assets/diffPASS.
+  Logs `/tmp/eidolon-party-opener-{red,green,lint,assets}-20260912.log`.
+  Not pushed/integrated; source frozen for native.
+- **Native87251 ACTIVE**, launched10:42, frozenbfa908c8, runIDopener09121042,
+  routeparty-dungeon, systemChrome/sg render, API18185/Mongo18186/web41875,
+  log `/tmp/eidolon-party-opener-native-20260912.log`. ONE GPU lane reserved.
+  Re-poll SAME handle; do not restart on observation timeout. This is ordinary
+  prepared level30 Fighter/Cleric/Wizard/Rogue and full clear/turn-in/Water
+  requirements remain. At launch runnerchrome onlineidle; soak onlinebusy,
+  untouched. Prior party32483 failure and every remaining roadmap gate stand.
+
+## Previous checkpoint — September 12, 10:28 UTC
 
 Previous goal turn PROGRESS; this continuation PROGRESS. Integrated two fully
 accepted development candidates, retained the failed four-role result, and
