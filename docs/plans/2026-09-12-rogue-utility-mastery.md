@@ -129,3 +129,21 @@ talent ID, rather than guessed strings. Actual normal UI clicks and independent
 server rank/point assertions remain unchanged. Two suites20tests pass2.49s,
 changed lint/list/diff pass; log `/tmp/eidolon-rogue-utility-catalog-tests-20260912.log`.
 Corrected native execution is still required, not credited to the failed run.
+
+## Corrected native acceptance
+
+Session1494 PASSED5.1m test/5.2m total with zero retries on exact
+ab202a677c280670eea4a9a9aa529368d3d3551a. All three skills passed rank0/1/5
+normal purchases, exact paid casts, High/Low attached effects and natural expiry.
+Fresh login retained all20 paid ranks and the selected Lasting Shadow rune;
+named+Dirty Tricks mark14s, smoke7s and cloak14s passed. This is prepared
+level100 QA, not earned progression, combat survival or full talent acceptance.
+Smoke accuracy and Swift burst remain server-test coverage, not separate native
+timer claims. The earlier four failures above remain in the record.
+
+Archive `/tmp/eidolon-rogue-utility-catalog-pass-YSeiyL`; log
+`/tmp/eidolon-rogue-utility-catalog-native-20260912.log`. Credential scan0 and
+independent owned-container/18185/18186/41875 cleanup checks passed. Main agent
+viewed the saved High cloak capture; incidental12FPS is not performance closure.
+Exact-source CI34699201516 is queued/running; full corrected CI is still required
+before primary integration. No production release follows from this local pass.
