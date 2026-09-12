@@ -21,6 +21,20 @@ real preparation race tests passed2.151s, checking the acknowledgement against
 actual resource fields and retaining authorization checks. Changed-file lint,
 gofmt and diff passed. Logs `/tmp/eidolon-qa-resource-ack-*-20260912.log`.
 
-Full candidate CI and native Rogue readiness replay remain required before
-integration. No normal player command gains resource grants. This belongs to
-the1.1.0 release-verification work; no version bump or live release yet.
+Full candidate CI34710643517 on e7b907ce PASSED: client403suites6332tests
+in133.2seconds, server tests/race (game292.718seconds) and all three browser
+shards. Manual native/deployment jobs were skipped, not counted as passes.
+Logs `/tmp/eidolon-qa-resource-ack-ci-{client,server}-34710643517.log`.
+
+Native50451 on the same frozen commit PASSED3.8minutes, zero retries: the real
+Rogue utility Technique route exercised normal purchases, High/Low, saved rune
+training and strict paid-resource/cooldown checks. Archive
+`/tmp/eidolon-qa-resource-ack-pass-KniFfg`, native log
+`/tmp/eidolon-qa-resource-ack-native-20260912.log`. Credential scan sanitized0;
+owned containers/image and all three ports were verified clear after termination.
+The prior185-vs27 mismatch still has no demonstrated causal explanation; this
+passing replay does not erase its retained failure evidence.
+
+Ready for integration, followed by combined regression. No normal player command
+gains resource grants. This belongs to the1.1.0 release-verification work; no
+version bump or live release yet.
