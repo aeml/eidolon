@@ -1,5 +1,11 @@
 export const PARTY_ROLES = ['Fighter', 'Cleric', 'Wizard', 'Rogue'];
 
+export function partyGraphicsQuality(env = {}) {
+    const quality = env.EIDOLON_E2E_PARTY_QUALITY || 'high';
+    if (!['high', 'medium', 'low'].includes(quality)) throw new Error('Unknown party graphics quality');
+    return quality;
+}
+
 export function requireIsolatedPartyFixture(env) {
     if (env.EIDOLON_E2E_PARTY_DUNGEON !== '1' || env.EIDOLON_E2E_REGISTER !== '1' ||
         !/^eidolon-isolated-qa-mongo-[a-z0-9_.-]+$/.test(env.EIDOLON_E2E_BUILD_MONGO_CONTAINER || '') ||

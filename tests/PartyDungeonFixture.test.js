@@ -1,9 +1,15 @@
-import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture } from './partyDungeonFixture.js';
+import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture, partyGraphicsQuality } from './partyDungeonFixture.js';
 
 const env = { EIDOLON_E2E_PARTY_DUNGEON: '1', EIDOLON_E2E_REGISTER: '1',
     EIDOLON_E2E_BUILD_MONGO_CONTAINER: 'eidolon-isolated-qa-mongo-party',
     EIDOLON_E2E_BUILD_MONGO_PORT: '18581', EIDOLON_E2E_WS_URL: 'ws://127.0.0.1:18580/ws',
     EIDOLON_E2E_USERNAME: 'codexqa012345abcdef' };
+
+test('party graphics comparisons retain the High baseline and require an explicit supported override', () => {
+    expect(partyGraphicsQuality()).toBe('high');
+    for (const quality of ['low', 'medium', 'high']) expect(partyGraphicsQuality({ EIDOLON_E2E_PARTY_QUALITY: quality })).toBe(quality);
+    expect(() => partyGraphicsQuality({ EIDOLON_E2E_PARTY_QUALITY: 'off' })).toThrow();
+});
 
 test('party seeding requires every disposable isolation guard', () => {
     expect(() => requireIsolatedPartyFixture(env)).not.toThrow();

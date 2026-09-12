@@ -165,3 +165,21 @@ Using the same catalog stats for all four roles is therefore not an unallocated
 attribute bug. The class-specific equipment and talent builds, item-defense
 quantization, actual healer budget and remaining input latency still warrant
 investigation. Do not invent extra fixture stats to force a clear.
+
+### Explicit graphics-load comparison
+
+CI34713334140 subsequently completed SUCCESS (client/server/all3browser shards;
+manual native/deploy skipped). The failed actual dungeon clear remains failed.
+
+Added optional EIDOLON_E2E_PARTY_QUALITY=low/medium/high, default still High.
+Each role changes quality through the ordinary Settings UI and checks the actual
+renderer value before forming the party. Final snapshots and incoming-hit
+receipts record quality plus the existing performance overlay's frame time/FPS;
+these are null if the overlay is not active, not fabricated measurements. This
+does not add a profiler render loop or change game rules, stats, AI, healing,
+inputs, timeouts, or clear/credit assertions. Native Low comparison is queued
+after the sole Tripwire browser run. A Low pass alone would not establish High
+performance or a controlled same-seed comparison.
+
+Focused3suites22tests PASS1.571seconds (fixture, combat receipts, role scheduling),
+ESLint/diff checks pass. Log `/tmp/eidolon-party-quality-tests-20260912.log`.

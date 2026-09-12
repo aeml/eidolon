@@ -1,7 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
-import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture } from '../partyDungeonFixture.js';
+import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture, partyGraphicsQuality } from '../partyDungeonFixture.js';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
 import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyWarningInputPolicy, partyFormationArrival } from '../partyDungeonControls.js';
 import { attackPartyDamageTarget, selectPartyDamageBuff } from '../partyDamageRoleControls.js';
@@ -25,6 +25,9 @@ const snapshot = page => page.evaluate(() => {
     return { id: p.id, instance: g.currentInstanceId, seed: g.currentDungeonLayout?.generationSeed,
         x: p.position.x, z: p.position.z, hp: p.stats.hp, maxHP: p.stats.maxHp,
         mana: p.stats.mana, maxMana: p.stats.maxMana, dead: p.state === 'DEAD',
+        render: { quality: g.renderSystem.graphicsQuality,
+            fps: g.renderSystem.perfOverlay ? g.renderSystem.perfStats.fps : null,
+            frameTime: g.renderSystem.perfOverlay ? g.renderSystem.perfStats.frameTime : null },
         gold: p.gold, xp: p.xp, level: p.level, stats: p.baseStats, hotbar: p.hotbar,
         quest: p.quests?.find(q => q.id === 'chronicle_03_roots_remember'),
         rooms: g.currentDungeonRoomState?.rooms, evidence: window.__partyClearEvidence };
@@ -57,6 +60,9 @@ async function observeRole(page) {
                     const position = game.player.position, now = performance.now();
                     const source = game.remotePlayers.get(p.sourceId);
                     e.recentDamage.push({ amount: p.amount, kind: p.kind, x: position.x, z: position.z,
+                        render: { quality: game.renderSystem.graphicsQuality,
+                            fps: game.renderSystem.perfOverlay ? game.renderSystem.perfStats.fps : null,
+                            frameTime: game.renderSystem.perfOverlay ? game.renderSystem.perfStats.frameTime : null },
                         source: source ? { type: source.subType || source.constructor.name,
                             x: source.position?.x, z: source.position?.z,
                             distance: source.position ? Math.hypot(source.position.x - position.x, source.position.z - position.z) : null,
@@ -129,6 +135,7 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
     test.skip(process.env.EIDOLON_E2E_PARTY_DUNGEON !== '1', 'Explicit disposable four-player diagnostic only');
     test.setTimeout(dungeonExpeditionBudget('party') + 300_000);
     requireIsolatedPartyFixture(process.env);
+    const graphicsQuality = partyGraphicsQuality(process.env);
     const output = execFileSync('go', ['test', './internal/game', '-run', '^TestPartyBrowserFixtureCatalog$', '-count=1', '-v'], {
         cwd: 'server', env: { ...process.env, EIDOLON_PARTY_FIXTURE_CATALOG: '1' }, encoding: 'utf8', timeout: 120_000
     });
@@ -156,6 +163,15 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             const actor = { page: actorPage, className, login, failures: collectBrowserFailures(actorPage, baseURL) };
             actors.push(actor);
             await seedActor(actorPage, login, partyDungeonCharacter(catalog, quests, className, login.username));
+            if (graphicsQuality !== 'high') {
+                await actorPage.keyboard.press('Escape');
+                await actorPage.locator('#btn-settings').click();
+                await actorPage.locator('#graphics-quality').selectOption(graphicsQuality);
+                await actorPage.locator('#btn-close-settings').click();
+                if (await actorPage.locator('#esc-menu').isVisible()) await actorPage.locator('#btn-resume').click();
+            }
+            await expect.poll(() => actorPage.evaluate(() => window.game.renderSystem.graphicsQuality)).toBe(graphicsQuality);
+            console.log(`[party-clear] ${className} graphics: ${graphicsQuality}`);
             console.log(`[party-clear] prepared ${className}: level30 common gear, rank5 primary mastery, seeded Earth story gate`);
         }
         const [tank, healer, ...damage] = actors;
@@ -637,7 +653,8 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
             try {
                 const s = await snapshot(actor.page);
                 console.log('[party-clear-result]', JSON.stringify({ class: actor.className, entered, level: s.level,
-                    hp: s.hp, mana: s.mana, dead: s.dead, gold: s.gold, quest: s.quest, evidence: s.evidence || actor.combatEvidence }));
+                    hp: s.hp, mana: s.mana, dead: s.dead, gold: s.gold, render: s.render,
+                    quest: s.quest, evidence: s.evidence || actor.combatEvidence }));
             } catch { /* Browser may already have closed on interruption. */ }
         }
         await Promise.all(ownedBrowsers.map(extra => extra.close()));
