@@ -5,7 +5,59 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 02:37 UTC
+## Current checkpoint — September 12, 02:54 UTC
+
+Previous goal turn was VERIFIED WAIT (polled active production CI after phone
+feedback). This continuation is PROGRESS: built/tested a scoped65 candidate,
+fixed an integration dependency and an actual hosted-rehearsal queue bottleneck.
+Full1.1–1.10 remains active; no milestone or live64/65 acceptance is claimed.
+
+- **Production64 CI34668112188 ACTIVE**, unchanged source6d5e82cb. Client
+  SUCCESS288suites/4083tests63.05s. Server SUCCESS including full race game
+  254.532s, backup/restore and builds. Browser2/3 and3/3 SUCCESS; browser1/3
+  job103485114475 remains running. Native/predeploy, deploy and final live gates
+  still follow. Logs `/tmp/eidolon-release64-production-{client,server,browser3}
+  -34668112188.log`; browser3 passed20+3+2 cases. Poll SAME production run.
+- Independent public check02:53:47: frontend and backend HTTP200, both63/f866,
+  healthok/database ready.64 and65 are NOT live. No local native run or new soak
+  started; keep hardware free for incoming64 predeploy/live. Nightly schedule
+  remains enabled, not silently canceled or disabled.
+- **Release65 candidate** `/tmp/eidolon-release65-wizard-training-20260912`,
+  branch`work/release65-wizard-training`, clean/pushed **9ab5b64410c2122f2d4bcd861f5520042c13b4da**.
+  Based on64, not the whole development branch. Imports Wizard Focus/Time Warp
+  Mastery, Teleport training/geometry/Phase/charges/visuals, timed Protected
+  appearance, offline Wizard base/Mastery consumers, paid native Focus route
+  and corrected fresh-login Time Warp observer. Version/login/deploy/manifest65
+  and full patch-history entry present; older entries retained.
+- Importing teleport/protection clocks exposed their dependency on the pre-stun
+  timer section. RED3suites/4failed/48passed1.306s; integration97a7a3fd retains
+  all clocks once before the stun early return, after periodic damage's original
+  Phase-window accounting. Focused10suites/316tests PASS3.058s; focused Go race
+  server1.490s/game13.564s. **Full client296suites/4339tests PASS122.625s and full
+  lint PASS** on8139ab6d runtime. Logs `/tmp/eidolon-release65-{timer-integration-red,
+  client-focused,server-focused,client-full,lint}-20260912.log`.
+- First manual65 CI34668784144 on8139ab6d never started: workflow-wide`pages`
+  group serialized even non-deploying hosted checks behind production. Corrected
+  only grouping: master/main pushes retain`pages`; PR/manual checks get workflow/
+  ref-specific`ci-checks`groups. Cancel-in-progress staysfalse, every production
+  guard/required stage stays intact, soak unchanged. RED1failed/3passed0.586s;
+  GREEN4suites/263tests1.385s+changed lint. Logs
+  `/tmp/eidolon-release65-queue-{red,green,lint}-20260912.log`.
+- Only own superseded never-started rehearsal34668784144 was canceled;
+  authoritative terminalstatus CANCELLED confirmed. Production was NOT canceled.
+  New **hosted65 CI34668886679 ACTIVE**, source9ab5b644, created02:53:21, client
+  103486303977 and server103486303765 actually running alongside64. This proves
+  rehearsal queue separation, not full tests/native/publication. Manual dispatch
+  still excludes production/native stages. Poll SAME run; do not duplicate it.
+- Candidate scope/provenance/evidence file
+  `/tmp/eidolon-release65-wizard-training-20260912/docs/plans/2026-09-12-release65-wizard-training.md`.
+  Full server/hosted browser, dedicated native Teleport/protection and remaining
+  native/release/live gates still required. Do not promote65 ahead of64 acceptance.
+  Primary remains4231854d; Briar diagnostic/full four-player clear remains open.
+  Armor-melt/Shattering, campaign/reward/Dark King and the rest of1.1–1.10 including
+  the physical two-floor casino remain required. Root ledger master: NEVER PUSH.
+
+## Previous checkpoint — September 12, 02:37 UTC
 
 Previous goal turn was PROGRESS (full server acceptance and timing diagnostics).
 This continuation is PROGRESS: accepted all hosted release64 checks, inspected
