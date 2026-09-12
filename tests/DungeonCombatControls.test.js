@@ -37,6 +37,33 @@ test('earned melee controls honor resolved talent/equipment costs', () => {
         skillCosts: { Whirlwind: 24 } }, true)).toBeNull();
 });
 const primary = { ability: 'Charge', cooldown: 0, dead: false, distance: 10, attackRange: 4, castRange: 18 };
+const partyTank = { ...fighter, hotbar: ['Whirlwind', 'Shield Slam', 'Iron Fortress'],
+    cooldowns: { 'Iron Fortress': 30 } };
+test('party tank chooses Shield Slam threat before optional Whirlwind damage', () => {
+    expect(selectFighterDungeonSkill(partyTank, true, { partyTank: true }))
+        .toEqual({ skill: 'Shield Slam', key: '2' });
+});
+test.each([30, 54])('party tank saves the next Slam instead of spending its last mana on Whirlwind: %s', mana => {
+    expect(selectFighterDungeonSkill({ ...partyTank, mana,
+        cooldowns: { ...partyTank.cooldowns, 'Shield Slam': 2 } }, true, { partyTank: true })).toBeNull();
+});
+test('optional tank damage remains available when the next equipped Slam is affordable', () => {
+    expect(selectFighterDungeonSkill({ ...partyTank, mana: 55,
+        cooldowns: { ...partyTank.cooldowns, 'Shield Slam': 2 } }, true, { partyTank: true }))
+        .toEqual({ skill: 'Whirlwind', key: '1' });
+});
+test('tank mana reserve uses actual reduced costs and does not invent an unequipped skill', () => {
+    const state = { ...partyTank, mana: 44, skillCosts: { 'Shield Slam': 20, Whirlwind: 24 },
+        cooldowns: { ...partyTank.cooldowns, 'Shield Slam': 2 } };
+    expect(selectFighterDungeonSkill(state, true, { partyTank: true })).toEqual({ skill: 'Whirlwind', key: '1' });
+    expect(selectFighterDungeonSkill({ ...state, mana: 43 }, true, { partyTank: true })).toBeNull();
+    expect(selectFighterDungeonSkill({ ...state, mana: 24, hotbar: ['Whirlwind'] }, true, { partyTank: true }))
+        .toEqual({ skill: 'Whirlwind', key: '1' });
+});
+test('party tank retains defensive casts and normal solo priorities are unchanged', () => {
+    expect(selectFighterDungeonSkill(fighter, true, { partyTank: true })).toEqual({ skill: 'Iron Fortress', key: '3' });
+    expect(selectFighterDungeonSkill(partyTank, true)).toEqual({ skill: 'Whirlwind', key: '1' });
+});
 test.each([[4, false], [6, false], [6.1, true], [18, true], [19, false]])(
     'Charge at distance %s preserves contact basic attacks and respects range', (distance, expected) => {
         expect(shouldUseHuntPrimary({ ...primary, distance })).toBe(expected);
