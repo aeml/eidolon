@@ -54,6 +54,42 @@ rank/difficulty, recalculation, dungeon boss/room/resume and reward audit tests.
 Client6suites64tests PASS1.504s, prepared assets, full ESLint and diff checks pass.
 The complete hosted regression and native party run remain required.
 
+## September12 native outcome — not accepted
+
+CI34717311804 passed on832ff72e: client419suites6464tests137.499s, game
+race303.045s and all three browser shards. The independent actual party run98186
+FAILED30.4minutes with the original mortality assertion intact. Seed
+-2991027920777006249/gen2/attempt0/no fallback; five town recoveries/reentries,
+286leader steps/20room traversals. Warden was killed with all four alive:
+Fighter3166damage/1701taken, Cleric1674ally healing, Wizard2630damage,
+Rogue3213damage. Subsequent rooms/enemies spawned and were cleared normally.
+
+The Fighter died about92seconds into Briar Matron; last boss reading4988/10080.
+At death the Fighter had187mana; Cleric retained244mana afterward. This is not
+the earlier first-boss mana-exhaustion failure. The retained tank event history
+contains19 Matron hits totaling3093damage and2101healing since the first such
+hit. The final two recorded dodges reached safe positions1.7s/1.53s AFTER impact;
+last ordinary fatal hit193 landed at7.47distance. Late avoidance and party
+positioning require investigation before any further balance adjustment.
+
+Final healer decisions show the tank at103/855HP26.18units away, while the
+healer at468/845HP used its aura on itself. The existing input planner prioritizes
+reachable injured allies and only makes a small critical-ally approach exception;
+the tank was beyond both that exception and actual heal range. This diagnoses
+automation triage/coordination to review, not a proven server healing defect or
+permission to extend real skill ranges. Whole-run healing7662 is NOT boss-only.
+The finally-return-to-town snapshot shows the tank alive/full again; its retained
+`sawDeath:true` and encounter failure are authoritative and are not erased.
+
+Archive `/tmp/eidolon-verdant-matron-failure-loe41A`, credential scan0; exact
+disposable containers/image/ports independently absent after terminal cleanup.
+No full clear, final individual credit or Water handoff passed. Traversal wall
+time includes substantial test input/formation overhead and is not a measured
+human completion time. Follow-up90b3313a separates that accounting for a later
+required replay without changing input, recovery, damage, rewards or timeouts.
+The40% health budget remains provisional. This record does not authorize another
+blind nerf or close the remaining difficulty/seed/reward/first-hour gates.
+
 ## Draft 1.1.0 patch note
 
 - Rebalanced the four Verdant Bastion bosses for an introductory tank/healer/DPS
