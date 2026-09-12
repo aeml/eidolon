@@ -5,7 +5,59 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 05:28 UTC
+## Current checkpoint — September 12, 05:37 UTC
+
+Previous goal turn was PROGRESS. This continuation is PROGRESS: collected full
+combined client and hosted terminal results, corrected an ineffective purchased
+Fighter Mastery with actual cast/purchase/expiry proof, and integrated/dispatched
+the next exact-source 1.1 regression. Full roadmap completion remains unproved.
+
+- **Primary and hosted rehearsal now clean6e752e8fe81a9fb9eb85ea515f4b7a49df417434**.
+  New candidate`work/1-1-iron-fortress-mastery` at
+  `/tmp/eidolon-1-1-iron-fortress-mastery-20260912` is clean same source, based
+  on9bd27ada. This integrates party scheduling and protection-gallery forward-port
+  as well as the new Mastery. Root master stays ledger-only; NEVER PUSH ROOT.
+- **Local9bd27ada client78153 TERMINAL SUCCESS376suites/5778tests232.312s**,
+  full lint37158 already passed. Logs
+  `/tmp/eidolon-1-1-party-gallery-{client-full,lint}-20260912.log`.
+- **Hosted eb20789a CI34675108921 TERMINAL SUCCESS**: client374/5745,
+  server86.6%/98.070s and full game race320.580s, backup/restore/bench/build,
+  browser40+50+26=116. Native/deployment manual guards skipped, not passed.
+  All completed browser logs retained under
+  `/tmp/eidolon-integrated-1-1-cooldown-browser{1,2,3}-34675108921.log`;
+  archive`/tmp/eidolon-integrated-1-1-cooldown-browser-artifacts-wPAFC3`.
+  Only after terminal completion were primary/rehearsal advanced.
+- FTR_07 inspection found a damage-only Mastery with no actual Iron Fortress
+  damage consumer; even optional Thorns reflected fixed20% without training.
+  Explicitly communicated replacement: skill-scoped4% duration/rank, max20%,
+  like Time Warp Mastery. Preserves ID, point costs, rank cap and saved training;
+  untrained30s/Extended45s, mitigation/speed and reflection strengths unchanged.
+  Rank5 now36s/54s, adding generic FTR_30/FTR_37 after rune base selection.
+- New paired cast contract RED:16 trained server duration failures plus metadata
+  assertion, game1.067s; client17failed/9passed1.089s. Final focused Go race58780
+  PASS11.683s includes all rune variants, rank0/1/5 plus generic0/5, stored timer
+  stability, actual expiry/stat restoration, skill isolation, ordinary five-rank
+  purchases and sixth-rank rejection, existing generic/party duration/Thorns
+  checks and all160-rank clamping. Client53702 PASS6suites/376tests3.492s,
+  including malformed ranks and multiplayer authority. Lint/diff PASS.
+  Logs`/tmp/eidolon-iron-fortress-mastery-{server-red,client-red,server-final,client-final,lint}-20260912.log`.
+  Doc`2026-09-12-iron-fortress-mastery.md`; native UI/save/duration acceptance
+  still required. Other ineffective utility Masteries remain separate audit work.
+- **New hosted CI34676048154 ACTIVE** at exact6e752e8f, branch
+  `work/1-1-integrated-regression` SHA verified before dispatch. Poll SAME run.
+  No production push of this development candidate and no ordinary66 version.
+- **Production65 CI34675345557 ACTIVE** at1af59512: server103504104976 passed
+  game coverage85.5%/74.072s, full game race225.064s and backup/restore/bench/build.
+  Browser2/3 passed40/25; browser1 **103504952921 ACTIVE**. Logs
+  `/tmp/eidolon-release65-gallery-correction-{server,browser2,browser3}-34675345557.log`.
+  Native predeploy/input/deploy/final live gates still required. No new live claim.
+- No local test/native process remains. Reserve native GPU for65's upcoming
+  gates; don't cancel the scheduled soak. Next collect SAME production/rehearsal
+  results, then verify actual batched input/independent role reactions and dungeon
+  clear when production native gates are free. First-hour/earned progression,
+  balance/reconnect, full talent usability and1.2–1.10 remain required.
+
+## Previous checkpoint — September 12, 05:28 UTC
 
 Previous goal turn was PROGRESS. This continuation is PROGRESS: reproduced and
 corrected a cross-role input barrier, prepared the gallery forward-port, started
