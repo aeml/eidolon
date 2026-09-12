@@ -813,9 +813,6 @@ func (e *Entity) RecalculateStats() {
 		e.Defense = int(float64(e.Defense) * 1.5)
 		e.Speed *= 0.8
 	}
-	if e.GuardianRoarActive {
-		e.Defense = int(float64(e.Defense) * 1.2)
-	}
 	if e.TimeWarpActive {
 		e.Speed *= 1.5
 		e.AttackSpeed /= 1.5

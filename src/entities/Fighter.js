@@ -17,6 +17,7 @@ import { findOfflineGripTarget, applyOfflineGrip } from '../skills/offlineGrip.j
 import { applyOfflineSweepingStrike } from '../skills/offlineFighterCone.js';
 import { beginOfflineShatteringCharge, advanceOfflineShatteringCharge } from '../skills/offlineShatteringCharge.js';
 import { beginOfflineCharge, advanceOfflineCharge, cancelOfflineCharge } from '../skills/offlineCharge.js';
+import { GUARDIAN_ROAR_DAMAGE_REDUCTION_PERCENT } from '../core/GuardianRoar.js';
 
 const GUARDIAN_ROAR_FRIENDLY_ACTOR_TYPES = new Set([
     'Fighter',
@@ -160,7 +161,7 @@ export class Fighter extends Actor {
                         if (!hostile && isGuardianRoarFriendlyActor(entity, gameEngine)) {
                             // Ally: Apply Buff
                             entity.guardianRoarTimer = buffDuration;
-                            entity.guardianRoarReduction = 0.3; // 30%
+                            entity.guardianRoarReduction = GUARDIAN_ROAR_DAMAGE_REDUCTION_PERCENT / 100;
                             console.log(`Applied Guardian Roar to ${entity.id}`);
                             gameEngine.floatingTextManager.spawn("Protected", entity.position, '#00ff00');
                         } else if (hostile && !clipDungeonEffectSegment(rects, this.position, entity.position).blocked) {

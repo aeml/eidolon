@@ -30,6 +30,7 @@ import { installGameEngineMovement } from './GameEngineMovement.js';
 import { installGameEngineRuntime } from './GameEngineRuntime.js';
 import { createTimedRemoteEffectConfig } from './TimedRemoteEffectConfig.js';
 import { readDamageBuffMultiplier } from './FighterDamageBuffState.js';
+import { GUARDIAN_ROAR_DAMAGE_REDUCTION_PERCENT } from './GuardianRoar.js';
 
 const REMOTE_SUPPORT_STATE_CONFIG = {
     invulnerable: {
@@ -234,7 +235,9 @@ const REMOTE_EFFECT_SYNC_CONFIG = {
         payloadKey: 'guardianRoarActive',
         durationKey: 'guardianRoarDuration',
         timerProperty: 'guardianRoarTimer',
-        fallbackDuration: 8
+        fallbackDuration: 10,
+        onActivate: entity => { entity.guardianRoarReduction = GUARDIAN_ROAR_DAMAGE_REDUCTION_PERCENT / 100; },
+        onDeactivate: entity => { entity.guardianRoarReduction = 0; }
     }),
     berserker_edge: createTimedRemoteEffectConfig({
         payloadKey: 'berserkerModeActive',
