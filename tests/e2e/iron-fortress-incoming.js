@@ -4,8 +4,12 @@ import { installIronFortressObserver } from './iron-fortress-observer.js';
 
 // Prepared level/saved build, not an earned-progression or encounter-balance
 // claim. No HP assignment, forced damage, clock changes or combat-time refills.
-export async function verifyFortressIncoming(page, command, testInfo) {
-    await expect.poll(() => page.evaluate(() => window.game.player.ironFortressTimer <= 0)).toBe(true);
+export async function verifyFortressIncoming(page, command, testInfo, protection = {
+    skill: 'Iron Fortress', timer: 'ironFortressTimer', effect: 'iron_fortress',
+    active: 'ironFortressActive', duration: 'ironFortressDuration', mana: 40, retainedPercent: 80
+}) {
+    const evidenceName = protection.skill === 'Iron Fortress' ? 'fortress' : protection.effect;
+    await expect.poll(() => page.evaluate(timer => window.game.player[timer] <= 0, protection.timer)).toBe(true);
     const sequence = await page.evaluate(() => window.game.animationQAReadySequence || 0);
     await command('/qa-animation-ready');
     await expect.poll(() => page.evaluate(() => window.game.animationQAReadySequence || 0)).toBeGreaterThan(sequence);
@@ -42,7 +46,7 @@ export async function verifyFortressIncoming(page, command, testInfo) {
         const enemy = window.game.remotePlayers.get(id);
         return enemy ? window.game.player.position.distanceTo(enemy.position) : Infinity;
     }, target.id)).toBeLessThan(3);
-    await page.evaluate(installIronFortressObserver);
+    await page.evaluate(installIronFortressObserver, protection);
     // This existing allowlisted command also primes the nearest hostile's
     // threat/first ordinary swing. Subsequent attacks use normal AI, wind-up,
     // range, armor and receiving defenses; no damage or health is injected.
@@ -59,15 +63,15 @@ export async function verifyFortressIncoming(page, command, testInfo) {
         for (const hit of evidence.baseline) {
             expect(hit).toMatchObject({ amount: baseline.amount, defense: baseline.defense, timer: 0, effectAttached: false });
         }
-        const before = await page.evaluate(() => ({ mana: window.game.player.stats.mana,
-            slot: window.game.player.hotbar.indexOf('Iron Fortress') }));
+        const before = await page.evaluate(skill => ({ mana: window.game.player.stats.mana,
+            slot: window.game.player.hotbar.indexOf(skill) }), protection.skill);
         expect(before.slot).toBeGreaterThanOrEqual(0);
         await page.locator('#hotbar-container .hotbar-slot').nth(before.slot).tap();
         await expect.poll(() => page.evaluate(() => window.__fortressNative.results.length)).toBe(1);
         const receipt = await page.evaluate(() => window.__fortressNative.results[0]);
         expect(receipt.accepted).toBe(true);
-        expect(before.mana - receipt.mana).toBe(40);
-        await expect.poll(() => page.evaluate(() => window.game.player.attachedStatusEffects.has('iron_fortress'))).toBe(true);
+        expect(before.mana - receipt.mana).toBe(protection.mana);
+        await expect.poll(() => page.evaluate(effect => window.game.player.attachedStatusEffects.has(effect), protection.effect)).toBe(true);
         // Observe away from cast/expiry boundaries; exact deadline races are
         // covered by receiving-pipeline tests using actual paid casts.
         const protectedAfter = await page.evaluate(() => performance.now());
@@ -79,13 +83,14 @@ export async function verifyFortressIncoming(page, command, testInfo) {
             // Skeleton basic hits use full flat armor, unlike elite-family
             // bosses' half-armor penetration. Use observed armor, not gear guesses.
             const armored = Math.max(1, baseline.amount - (hit.defense - baseline.defense));
-            expect(hit.amount).toBe(Math.floor(armored * .8));
+            if (protection.skill === 'Guardian Roar') expect(hit.defense).toBe(baseline.defense);
+            expect(hit.amount).toBe(Math.floor(armored * protection.retainedPercent / 100));
             expect(hit.amount).toBeLessThan(baseline.amount);
         }
-        await page.screenshot({ path: testInfo.outputPath('fortress-real-incoming-protection.png') });
-        await expect.poll(() => page.evaluate(() => window.__fortressNative.expired &&
-            window.game.player.ironFortressTimer <= 0 &&
-            !window.game.player.attachedStatusEffects.has('iron_fortress')), { timeout: 65_000 }).toBe(true);
+        await page.screenshot({ path: testInfo.outputPath(`${evidenceName}-real-incoming-protection.png`) });
+        await expect.poll(() => page.evaluate(cfg => window.__fortressNative.expired &&
+            window.game.player[cfg.timer] <= 0 &&
+            !window.game.player.attachedStatusEffects.has(cfg.effect), protection), { timeout: 65_000 }).toBe(true);
         await page.waitForTimeout(1500); // Do not classify an in-flight receipt at the expiry boundary.
         const expiredAfter = await page.evaluate(() => performance.now());
         await expect.poll(async () => (await hits(expiredAfter)).length, { timeout: 20_000 }).toBeGreaterThanOrEqual(3);
@@ -94,11 +99,11 @@ export async function verifyFortressIncoming(page, command, testInfo) {
             expect(hit).toMatchObject({ amount: baseline.amount, defense: baseline.defense, timer: 0, effectAttached: false });
         }
         expect(await page.evaluate(() => window.game.player.state)).not.toBe('DEAD');
-        console.log('[fortress-real-incoming]', JSON.stringify(evidence));
+        console.log(`[${evidenceName}-real-incoming]`, JSON.stringify(evidence));
     } finally {
         evidence.observation = await page.evaluate(() => ({ ...window.__fortressNative,
             state: window.game.player.state, health: window.game.player.stats.hp }));
-        await testInfo.attach('fortress-incoming-receipts', { body: JSON.stringify(evidence, null, 2), contentType: 'application/json' });
+        await testInfo.attach(`${evidenceName}-incoming-receipts`, { body: JSON.stringify({ protection, ...evidence }, null, 2), contentType: 'application/json' });
     }
     await returnToTown(page, { allowRespawn: false });
 }

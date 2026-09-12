@@ -162,8 +162,8 @@ func TestPartySupportAbilitiesUpdateNearbyAuthoritativeStats(t *testing.T) {
 		assert    func(t *testing.T, member *Entity, baseSpeed float64, baseDefense int)
 	}{
 		{"Fighter", "Guardian Roar", func(t *testing.T, member *Entity, _ float64, baseDefense int) {
-			if !member.GuardianRoarActive || member.Defense <= baseDefense {
-				t.Fatalf("Guardian Roar did not replicate defense buff: active=%v defense=%d base=%d", member.GuardianRoarActive, member.Defense, baseDefense)
+			if !member.GuardianRoarActive || member.Defense != baseDefense || resolveImpactDefenseLocked(member, 100, time.Now()).damage != 70 {
+				t.Fatalf("Guardian Roar must protect without substituting armor: active=%v defense=%d base=%d", member.GuardianRoarActive, member.Defense, baseDefense)
 			}
 		}},
 		{"Wizard", "Time Warp", func(t *testing.T, member *Entity, baseSpeed float64, _ int) {

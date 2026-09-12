@@ -84,3 +84,20 @@ test('an original handler error is not converted to success', () => {
     installIronFortressObserver();
     expect(() => window.game.handleServerMessage({ type: 'state' })).toThrow(failure);
 });
+
+test('Roar uses its own real receipt, timer and expiry without inheriting Fortress evidence', () => {
+    const receive = documentFixture();
+    Object.assign(window.game.player, { stats: { hp: 800, defense: 20 }, guardianRoarTimer: 12,
+        attachedStatusEffects: new Map([['guardian_roar', {}]]) });
+    installIronFortressObserver({ skill: 'Guardian Roar', timer: 'guardianRoarTimer', effect: 'guardian_roar',
+        active: 'guardianRoarActive', duration: 'guardianRoarDuration' });
+    const send = window.game.handleServerMessage;
+    send({ type: 'ability_result', payload: { skillName: 'Iron Fortress', accepted: true } });
+    send({ type: 'ability_result', payload: { skillName: 'Guardian Roar', accepted: true, mana: 65 } });
+    send({ type: 'damage', payload: { sourceId: 'enemy', targetId: 'owner', amount: 70, kind: 'physical' } });
+    send({ type: 'delta', payload: { u: [{ id: 'owner', guardianRoarActive: true, guardianRoarDuration: 12 }] } });
+    send({ type: 'delta', payload: { u: [{ id: 'owner', guardianRoarActive: false, guardianRoarDuration: 0 }] } });
+    expect(receive).toHaveBeenCalledTimes(5);
+    expect(window.__fortressNative).toMatchObject({ results: [{ skillName: 'Guardian Roar', accepted: true, mana: 65 }],
+        maxDuration: 12, expired: true, incoming: [expect.objectContaining({ amount: 70, timer: 12, effectAttached: true, defense: 20 })] });
+});
