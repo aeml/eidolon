@@ -412,6 +412,9 @@ export const CONSTANTS = {
             );
 
             return entries.slice(0, 40).map((t, i) => ({ id: `ROG_${String(i + 1).padStart(2, '0')}`, ...t,
+                ...([4, 18, 24].includes(i) ? { desc: `+4% ${skills[Math.floor(i / 2)]} effect duration per rank (20% max).` } : {}),
+                abilityDuration: [4, 18, 24].includes(i) ? { skill: skills[Math.floor(i / 2)], duration: 0.04 }
+                    : i === 27 ? { duration: 0.04 } : undefined,
                 abilityDamage: [0, 2, 8, 10, 14, 16].includes(i) ? { skill: skills[Math.floor(i / 2)], damage: 0.04 }
                     : i === 37 ? { damage: 0.02 } : undefined,
                 statusTraining: [6, 12, 20].includes(i) ? { skill: skills[Math.floor(i / 2)], damage: 0.04 }

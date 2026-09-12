@@ -166,6 +166,11 @@ var rogueSkills = []string{
 }
 
 func rogueTalentDef(n int) (TalentDef, bool) {
+	// These utility skills have no direct damage. Preserve saved Mastery IDs
+	// and train their existing effect windows, like the other support Masteries.
+	if n == 5 || n == 19 || n == 25 {
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: rogueSkills[(n-1)/2], SkillDuration: 0.04}}, true
+	}
 	if n <= 26 {
 		skillIdx := (n - 1) / 2
 		if skillIdx >= len(rogueSkills) {
