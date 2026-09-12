@@ -53,14 +53,15 @@ no production/version/soak changes. Root ledger-only, NEVER PUSH ROOT.
   Client2suites13PASS0.892s, serverfocusedrace2.151s, lint/gofmt/diffPASS.
   **CI34710643517 ACTIVE** exacte7, clientPASS/serveractive. NativeRogueactual
   readiness replay remainsdue; neitherthisunitrepro nor8403pass proves causeof
-  old185delta. Assets preparation started endturn; check its terminalhandle/log
-  before native. Docs2026-09-12-qa-resource-ack.md retains limitedscope.
+  old185delta. Assets28221 TERMINALPASS; prepared runtime verified in
+  `/tmp/eidolon-qa-resource-ack-assets-20260912.log`. Native stillqueued.
+  Docs2026-09-12-qa-resource-ack.md retains limitedscope.
 - Party **23513 TERMINALFAILED7.7m**, frozenbfca8314, actualseed
   **4063816672232710614**,gen2/attempt0/no fallback. FirstWardenlast2606/15000,
   Fighterdead; healer12.5143units/60mana/17HealingLight/5GuardianEmbrace/
   3972bossallyhealing. Lastheal132→313HP, thenordinary **183**physicalhits while
   directhealcooleddown. NOTE candidateparty doc accidentallysays182; correct to
- 183AFTERcurrentnativeWTunfreezes. No manaexhaustion/targetingcauseproved;
+  183 after the current native WT unfreezes. No manaexhaustion/targetingcauseproved;
   priorblockedspacingdidnotreproduce. Archive
   `/tmp/eidolon-party-spacing-diagnostic-failure-hy0s1A`; log
   `/tmp/eidolon-party-spacing-diagnostic-native-20260912.log`; scan0cleanupPASS.
