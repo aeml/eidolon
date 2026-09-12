@@ -5,7 +5,80 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 16:57 UTC
+## Current checkpoint — September 12, 17:22 UTC
+
+This goal turn PROGRESS: new paid incoming-hit native gate, reproduced/fixed
+environmental and reflected Fortress bypasses, retained failed four-role and
+Rogue diagnostic evidence, corrected no-issued-input replanning. Full roadmap
+ACTIVE; no production/version/soak change. Root ledger-only: NEVER PUSH ROOT.
+The intervening version-number clarification did not implement roadmap work.
+
+- Primary/integrated clean **a2c30d97c7e78307ecf9a03ef9d68a00a9658b9e**.
+  Accepted Rogue Mastery integration CI34705692232 SUCCESS on0d79c485:
+  406suites6336tests108.575s, game86.9%/100.135s/race349.671s, browser119actual.
+  Merged docs-only549ac378, full-tree equality and integrated FF verified.
+  This does not include Techniques or the new Fortress runtime; no live push.
+- Four-player **36216 TERMINAL FAILED16.2m**, frozenbae69eeb, seed
+  **-7217624267168898228**, gen2/attempt0/no fallback. First room and all-four
+  town recovery/same-seed re-entry pass; first Warden last4238/15000HP before
+  Rogue death. Fighter survives678/855HP. TotalF5513damage/3968taken,
+  C4048allyhealing/736taken, W4664/0, R7276/1584. Healer had228mana/7.46units
+  at death; prior direct heal on Rogue310HP was followed by cooldowns while
+  ordinary184physical hits at7.48units killed Rogue. Not the prior mana failure
+  and not proof of missing telegraphs. Threat ownership/continuous spacing and
+  healing cadence require diagnosis; full clear/credit/Water handoff remain open.
+  Archive `/tmp/eidolon-party-fortress-mitigation-failure-Kwmr8z`; original
+  `/tmp/eidolon-party-fortress-mitigation-native-20260912.log`; scan0/owned
+  containers/image/ports cleanup PASS. PartyWT now docs-only clean **61ffba19**,
+  evidence2026-09-12-party-fortress-replay.md. No combined party CI yet.
+- Fortress base **CI34706648689 SUCCESS** on50944fc2:405/6327/114.363s,
+  game86.9%/104.409s/race354.744s, browser40+53+26=119actual. Native/deploy
+  skipped. Logs `/tmp/eidolon-fortress-mitigation-ci-*-34706648689.log`.
+  New gate **eb5ba3f1** compares real same-Skeleton physical hits before paid
+  Fortress, during armor-adjusted20% protection and after natural expiry. Uses
+  actual saved rune and ordinary movement/Recall without combat refills or
+  synthetic damage. Existing protection-off QA primes initial threat/swing,
+  subsequent attacks use normal AI. Observer fixes duplicate wrapping under
+  layered movement; RED3fail4pass, final4suites73PASS9.834s/full lint/assets/list.
+  Gate's CI34707472950 ACTIVE; not native acceptance.
+- Follow-up direct-HP audit found hazards and reflection bypass the common
+  receiving pipeline. Shared Fortress-only impact-time helper now covers both
+  without changing their existing shield/nonrecursive-reflection rules. Actual
+  paid RED hazard82want65/reflection100want80; expired controls pass. Final
+  focused race13.828s, including real level70 Thorns cast/no re-retaliation.
+  FortressWT clean/devpushed **8864133ebab37fc777bb6454af6d7fb58aa17507**,
+  new **CI34707847501 PENDING**, earlier green CI does not cover this follow-up.
+  Docs2026-09-12-fortress-mitigation.md records exact scope/draft1.1patch note.
+  **9420 ACTIVE — sole native GPU**, frozen8864133e, routefortress-mastery,
+  runIDfortressincoming0912,18185/18186/41875; log
+  `/tmp/eidolon-fortress-real-incoming-native-20260912.log`. Rank0High passed;
+  no complete gate result. Freeze WT/source; pollsamehandle, archive/cleanup
+  before another native. This native covers normal enemy hits, not hazard visuals.
+- Rogue Technique original **CI34705771836 SUCCESS** on8fe4117b:
+  401/6320/133.784s, game86.8%/99.171s/race349.615s, browser119actual. Logs
+  `/tmp/eidolon-rogue-technique-ci-*-34705771836.log`. Does not explain prior
+  saved-Smoke local-timer failure; Technique still not accepted into primary.
+  Diagnostic **c3fb4d75** records post-delivery local timer/effect history and
+  failure attachment without changing the original timer threshold. CI34707429078
+  ACTIVE (clientpass/serveractive). **85822 TERMINAL FAILED2.0m** on c3fb4d75:
+  Mark0/1/5 and Smoke0/1 pass, then Smoke5 movement planning issued no input
+  while the player already moved; did not reach saved-Smoke timer diagnosis.
+  Archive `/tmp/eidolon-rogue-local-timer-diagnostic-failure-GNsNvS`; log
+  `/tmp/eidolon-rogue-local-timer-diagnostic-native-20260912.log`; scan sanitized2,
+  ownedcleanup PASS. Original timer cause remains unknown.
+- RogueWT now clean/devpushed **c9e7bf7aa9a178b7c7f49fc591553d40b6a9a82e**,
+  **CI34707979043 PENDING**. Recognized no-issued-input errors alone reobserve
+  the same live target inside the original60s approach loop; actual movement,
+  intercepted-click and network failures stay fatal. No cast retry or weakened
+  range/timer assertion.3suites65PASS2.308s/changed lint/diff. Corrected diagnostic
+  native queued behind9420, followed by appropriate Technique/merged regression.
+
+Keep the full1.1 gates: all160talents, earned first hour, actual four-role clear,
+all5dungeons/multiple seeds/failed seeds, raids/Dark Realm shared regression and
+exact postdeployment checks. Spin/Roar purchase-recovery native and broad balance/
+performance/mobile checks remain open alongside later1.2–1.10 scope. No1.0.66.
+
+## Previous checkpoint — September 12, 16:57 UTC
 
 Previous/current goal work PROGRESS; full roadmap ACTIVE. No production/version/
 soak changes. Root ledger-only/no push. Primary/integrated still0ebfac25.
