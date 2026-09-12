@@ -70,6 +70,29 @@ enemy walk out, continue ordinary movement/reacquisition within the original60s
 deadline before any cast. Final<5, paid-cost, cooldown and all effect assertions
 remain. No target freezing, teleporting or cast retries are introduced.
 
+## Technique pass and Mastery regression failure
+
+Session25285 PASSED3.9m/4.0m with zero retries on8fe4117b. All three Techniques
+passed normal rank0/1/5 purchases, exact paid costs/CDR, unchanged duration,
+High/Low attached effects and natural expiry. Fresh login retained all20ranks
+including Lightstep5; final costs22/31/27, cooldowns4.5/7.5/11.25s, durations
+10/5/10s with saved LastingShadow. Archive
+`/tmp/eidolon-rogue-technique-paid-pass-WsFy8P`; original
+`/tmp/eidolon-rogue-utility-technique-reacquire-native-20260912.log`; scan0/
+ownedcleanupPASS. Main agent viewed the Low Smoke capture. This is prepared QA,
+not earned progression or completed talent/party balance.
+
+The same-source Mastery regression51689 FAILED3.8m, after all three rank0/1/5
+cases and saved Mark14s passed. Saved Smoke's wire-duration checks passed, but
+the subsequent local timer assertion never observed>5.5s (eventually0 after
+its15s observation timeout). This is not yet attributed to stale replication,
+missed sampling or a gameplay regression; capture local timer/effect history
+alongside the existing wire observer before another diagnostic replay. Do not
+weaken the timer check or credit the older Mastery component pass to this build.
+Archive `/tmp/eidolon-rogue-technique-mastery-failure-kdPvaf`; log
+`/tmp/eidolon-rogue-utility-technique-mastery-regression-native-20260912.log`;
+scan0/ownedcleanupPASS. Exact CI34705771836 remains active at this entry.
+
 ## Proposed 1.1 patch-note text
 
 Weak Point Mark, Smoke Bomb and Cloak & Vanish Techniques now reduce their mana
