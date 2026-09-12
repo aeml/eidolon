@@ -1,6 +1,6 @@
 {
   "Fighter": { "technique": 0, "generic": { "39": 0.02 } },
-  "Rogue": { "technique": 0.02, "generic": { "32": 0.03, "39": 0.02 } },
+  "Rogue": { "technique": 0.02, "techniqueOverrides": { "6": 0, "20": 0, "26": 0 }, "generic": { "32": 0.03, "39": 0.02 } },
   "Wizard": { "technique": 0, "generic": { "39": 0.02 } },
   "Cleric": { "technique": 0, "generic": {} }
 }
