@@ -5,7 +5,62 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 03:04 UTC
+## Current checkpoint — September 12, 03:14 UTC
+
+Previous goal turn was PROGRESS (native Teleport route). This continuation is
+PROGRESS: accepted frozen hosted65, inspected artifacts, corrected a visible
+phone-reading defect, and started exact-source combined regression. Goal remains
+full1.1–1.10; no release/milestone/native-party completion is inferred.
+
+- **Hosted65 CI34668886679 TERMINAL SUCCESS**, frozen9ab5b644. Client296/
+  4340tests104.525s and full lint/audit/benchmark; game coverage74.909s/85.5%,
+  full race224.979s and backup/restore/bench/build PASS. Browser1/2/3 passed
+  39/40/25cases=104. Native/deployment stages intentionally SKIPPED for manual
+  branch dispatch. Full logs`/tmp/eidolon-release65-hosted-{client,server,browser1,
+  browser2,browser3}-34668886679.log`. Do not poll this terminal run as active.
+- Artifacts retained`/tmp/eidolon-release65-hosted-shard1-OxJYej`,
+  `...-shard2-S2vbUM`, `...-shard3-nfCykY`. Inspected mocked Rogue respawn
+  (no white interaction cube) and390px status list. These are not native/live/
+  physical-phone or four-role-clear acceptance. The latter capture exposed
+  launcher text showing faintly through status descriptions.
+- **Phone surface fix1f5fe935**, only panel background96%→opaque. Existing
+  dimensions/scroll/world-view budget/controls/navigation remain unchanged.
+  Added65 patch-note line and computed-color checks to all4responsive status
+  cases. RED1failed/10passed0.707s; GREEN2suites/251tests1.506s+changed lint.
+  Logs`/tmp/eidolon-phone-status-surface-{red,green,lint}-20260912.log`.
+- GPU-disabled **UI-only** system-Chrome pixel check rendered actual before/
+  after CSS against bright/dark backdrops. Before interior PNGs differed;
+  after interior PNGs were identical (computedrgba17/25/35/.96→rgb17/25/35).
+  Screenshots`/tmp/eidolon-phone-status-surface-pixels-IMEVwI/{before,after}.png`,
+  after inspected. This short DOM check did not use GPU or claim gameplay.
+  No local native/full suite or party retry was started.
+- After old hosted run terminal, release65 fast-forwarded through native route
+  6f67b7ba and CSS1f5fe935; acceptance doc added as **0f9c19c9163a334de8e39f4b7a2cd64d12e72c9f**.
+  Candidate clean/pushed`work/release65-wizard-training`in
+  `/tmp/eidolon-release65-wizard-training-20260912`. Only CSS runtime differs
+  from hosted9ab5b644; native route/script/unit additions still require actual
+  native execution and integrated checks. No master/production65 push.
+- First follow-up dispatch34669711689 unexpectedly resolved old9ab5b644.
+  Verified GitHub ref and git ls-remote both0f9c19c9; canceled ONLY that redundant
+  own wrong-source rehearsal (now TERMINALCANCELLED). Re-dispatched via workflow
+  API after ref confirmation. A transient TLS poll failure was retried, not
+  treated as a terminal job or reason for another dispatch.
+- **Correct combined hosted65 CI34669744904 ACTIVE**, exact0f9c19c9, created
+  03:12:37. At03:13:31 client103488767845 running coverage and server103488767780
+  setting up Go. Poll SAME run; old34669711689 stays terminal. Manual checks
+  remain in independent ci-checks group with native/deploy guards unchanged.
+- **Production64 CI34668112188 remains ACTIVE**, source6d5e82cb; native
+  predeploy103486534312 is still running disposable full-character gameplay.
+  All hosted/gallery/GPU-lifecycle stages passed. Production was untouched;
+  no cancellation or competing native work. Required input/deploy/final live
+  checks still follow. Last accepted public release remains63/f866.
+- Native Teleport/Phase still not exercised; focused route must run when64
+  releases hardware. Primary remains4231854d. Briar timing/four-role clear,
+  ordinary Charge/runes, all earned/balance/campaign/resource and1.2–1.10 gates
+  remain required. No new soak dispatched; its nightly schedule is still enabled.
+  Root master is ledger-only: NEVER PUSH.
+
+## Previous checkpoint — September 12, 03:04 UTC
 
 Previous goal turn was PROGRESS (scoped65 integration and hosted queue repair).
 This continuation is PROGRESS: completed the missing native Teleport/protection
