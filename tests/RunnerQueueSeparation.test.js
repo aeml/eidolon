@@ -3,6 +3,20 @@ import { readFileSync } from 'node:fs';
 const ci = readFileSync('.github/workflows/ci.yml', 'utf8');
 const soak = readFileSync('.github/workflows/nightly-soak.yml', 'utf8');
 
+test('hosted rehearsals do not hold or replace the production Pages queue', () => {
+    const production = "github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')";
+    const concurrency = ci.split('\nconcurrency:\n')[1].split('\njobs:')[0];
+    expect(concurrency).toContain(`group: \${{ (${production}) && 'pages' || format('ci-checks-{0}-{1}', github.workflow, github.ref) }}`);
+    expect(concurrency).toContain('cancel-in-progress: false');
+    for (const job of ['predeploy-character', 'release-inputs', 'deploy', 'deploy-server']) {
+        const body = ci.split(`  ${job}:\n`)[1]?.split(/\n {2}[a-z][a-z-]*:\n/)[0];
+        expect(body).toContain(`if: ${production}`);
+    }
+    const postDeploy = ci.split('  post-deploy-browser:\n')[1];
+    expect(postDeploy).toContain('needs: [deploy, deploy-server]');
+    expect(postDeploy).not.toContain('if: ${{ always() }}\n    runs-on:');
+});
+
 test('the uninterrupted soak has a queue separate from deployment GPU QA', () => {
     expect(soak).toContain('runs-on: [self-hosted, linux, x64, eidolon-soak]');
     expect(soak).not.toContain('eidolon-live-browser');

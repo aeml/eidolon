@@ -11,7 +11,9 @@ permissions:
   contents: read
 
 concurrency:
-  group: pages
+  # Only publishing pushes share the Pages/deployment lock. PRs and manual
+  # hosted rehearsals must not queue behind or replace pending releases.
+  group: ${{ (github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')) && 'pages' || format('ci-checks-{0}-{1}', github.workflow, github.ref) }}
   cancel-in-progress: false
 
 jobs:
