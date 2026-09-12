@@ -92,12 +92,14 @@ async function observeRole(page) {
 }
 
 async function seedActor(page, credentials, character) {
+    console.log(`[party-clear] prepare ${character.class}: load registration screen`);
     await openGame(page);
     await page.locator('#auth-username').fill(credentials.username);
     await page.locator('#auth-password').fill(credentials.password);
     await page.locator('#auth-email').fill(`${credentials.username}@example.invalid`);
     await page.locator('#btn-register').click();
     await expect(page.locator('#auth-status')).toContainText('Registration successful');
+    console.log(`[party-clear] prepare ${character.class}: seed disposable character`);
     const script = `
         if (!db.getSiblingDB('admin').auth(process.env.MONGO_INITDB_ROOT_USERNAME, process.env.MONGO_INITDB_ROOT_PASSWORD)) throw Error('Fixture auth failed');
         const result = db.getSiblingDB('eidolon').users.updateOne(
@@ -110,7 +112,9 @@ async function seedActor(page, credentials, character) {
             '--quiet', '--port', process.env.EIDOLON_E2E_BUILD_MONGO_PORT, '--file', '/dev/stdin'],
         { input: script, stdio: ['pipe', 'pipe', 'pipe'], timeout: 20_000 });
     } catch { throw new Error('Disposable party fixture initialization failed'); }
+    console.log(`[party-clear] prepare ${character.class}: login and enter world`);
     await loginAndEnterWorld(page, credentials);
+    console.log(`[party-clear] prepare ${character.class}: verify replicated build`);
     await expect.poll(() => page.evaluate(() => window.game.player.level)).toBe(30);
     expect(await page.evaluate(() => window.game.player.baseStats)).toMatchObject(character.stats);
     const skills = character.unlocked_skills.slice(1);
@@ -141,6 +145,11 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 actorPage = await (await extra.newContext({ baseURL, viewport: { width: 1280, height: 720 } })).newPage();
             }
             const login = { ...credentials, username: `${credentials.username}-${className.toLowerCase()}`, characterClass: className };
+            // Standalone contexts do not inherit Playwright test fixtures.
+            // A hidden login/control must not consume the two-hour expedition
+            // allowance. Explicit loading/recovery expectations retain theirs.
+            actorPage.setDefaultTimeout(30_000);
+            actorPage.setDefaultNavigationTimeout(30_000);
             const actor = { page: actorPage, className, login, failures: collectBrowserFailures(actorPage, baseURL) };
             actors.push(actor);
             await seedActor(actorPage, login, partyDungeonCharacter(catalog, quests, className, login.username));
