@@ -5,7 +5,67 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 22:06 UTC
+## Current checkpoint — September 12, 22:26 UTC
+
+Previous goal turn PROGRESS (release handoff). This continuation PROGRESS:
+full four-player acceptance, integration, second summary-keyboard repair, and
+conclusive shield timing diagnostics. Full1.1–1.10 roadmap ACTIVE; no production
+version/deployment/soak change. NEVER PUSH ROOT.
+
+- **Native15051 TERMINAL PASS58.8m/one/zero retries** on clean9b6745d7.
+  Normal30 Verdant seed-1286139677518117694/gen2/attempt0/no fallback. Every
+  room and all four original-health bosses killed; every final role sawDeath=false.
+  Warden32.35s/Matron55.19s/Colossus118.01s/Sentinel179.79s. Five ordinary town
+  recovery/resume cycles and completed-run recall/re-entry preserve the run.
+  All four independently earned credit/XP/gold, manually claimed Ilyra, received
+  Water offers and preserved chapter/reward/offer after relog; other members'
+  claims did not claim theirs. All finish32/1794gold, chapter300gold/10562XP.
+  Cleric12164whole-run ally healing,5503duringSentinel. No stat curve, boss nerf,
+  mid-run grant or death. This is one prepared-party seed, not earned progression
+  or the full milestone. Timing43.20m traversal includes36.04mformation/4.88m
+  leader input; combat8.99m, recovery2.97m. Do not treat harness time as human pace.
+  Archive `/tmp/eidolon-geared-party-pass-KVzr6y`, scan0/exact containers/image/
+  ports cleanup verified; Low party screenshot inspected. Accepted docs/dev-push
+  **e2d5da9b**; primary clean merge **1ea44fbc** (incoming src/runtime unchanged).
+- Integrated clean/dev-pushed **54901f19f0943793b9230205cd40275c9a3680d7**, including
+  primary1ea44fbc and updated handoff checking off only that exact prepared-party
+  scenario. **CI34722568754 ACTIVE**, client passed/server running. No preparation
+  UI or Tripwire integration yet; new full combined regression remains required.
+- Preparation **34721303156 TERMINAL FAILURE** onbea88218: client414/6413/
+  135.645s and game race350.610s pass; browser3 again fails desktop Enter, other
+  23layout cases pass and other shards pass. Actual phone-mode portrait/landscape
+  16px/last-line/footer/entry screenshots inspected and clear; archive
+  `/tmp/eidolon-dungeon-preparation-corrected-browser3-Pn2Bsr`, scan0.
+  Cause: UIManager has a SECOND global Enter listener missing summary, after
+  InputManager's earlier fix. Two actual UI-dispatch regressions fail with/without
+  gameplay binding (2failed/37passed); adding summary to UIManager's native-control
+  exclusion fixes both. **c09248c8665191dc2bfa365b6722e73b0090d29b** clean/dev-pushed;
+  seven suites165tests PASS19.822s plus full lint/diff. No custom toggling or
+  weakened browser assertion. **CI34722166310 ACTIVE**, client passed/server
+  running. Logs `/tmp/eidolon-dungeon-summary-global-{red,green,lint}-20260912.log`.
+- After15051 terminal cleanup, prepared client and ran sole native **69982** on
+  frozenTripwire3b83b154, routeentrance-visibility/runIDtripwireentrydiag0912,
+  API18185/Mongo18186/web41875. **TERMINAL FAILURE1.6m/zero retries**, unchanged
+  current-visual assertion. Portrait695/trained834/saved834/naturalexpiry and real
+  entrance cutaway arc pass; real hostile partial absorption observed. Diagnostic
+  proves the later read has active=false/shieldHP=0/visual=false/health1240,
+  with recent inactive/zero samples and further real HP losses. This is a stale
+  historical-partial versus current-depleted visual comparison, not evidence
+  that the active shield lacks a model. Archive `/tmp/eidolon-shield-depletion-diag-meCvyW`,
+  scan0/exact container/image/ports cleanup; log
+  `/tmp/eidolon-tripwire-entry-diag-native-20260912.log`. **No native browser active.**
+  Tripwire worktree remains clean3b83b154; no fix yet. Next: capture coherent
+  actual partial HP/active/presentation together (after normal message delivery
+  or an observed render frame), retain paid capacity/natural expiry/depletion/
+  real hostile/normal return checks, and rerun. Do not require a depleted shield
+  to retain its effect or weaken proof to an unrelated historic wire sample.
+  Observer currently pushes wire snapshots BEFORE handle(message), while failing
+  lines199–210 later select history then read current presentation; inspect
+  tests/e2e/shield-training-gameplay.spec.js. Effect entries use .group, not a
+  raw mesh (see tests/restedAuraEvidence.js). Other arrival consumers still need
+  collateral acceptance before Tripwire integration.
+
+## Historical checkpoint — September 12, 22:06 UTC
 
 Previous goal turn VERIFIED WAIT. This continuation adds the actual draft1.1.0
 release-note handoff, **1c574d63** clean/dev-pushed in the integrated worktree.
