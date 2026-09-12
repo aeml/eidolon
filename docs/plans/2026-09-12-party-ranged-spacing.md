@@ -47,3 +47,23 @@ full native replay is still required; this does not turn the failed run green.
 
 Corrected arrival integration: five suites120tests passed1.080s, full lint/diff
 passed. Logs `/tmp/eidolon-party-ranged-arrival-{tests,lint}-20260912.log`.
+
+Corrected native57909 on0bf10df6 FAILED7.3m, seed7129785442564118738/gen2/
+attempt0/no fallback. The prior short-step assertion did not recur. First pack,
+all-four town recovery and saved reentry passed; first Warden combat reached
+last periodic1476/15000HP before Fighter died. Final log shows an automatic
+town respawn (940HP/610mana), but retained sawDeath=true and the actual fatal
+183damage receipt prevent that snapshot from disguising the failure.
+
+Totals: Fighter6864damage/5750taken; Cleric4886effective ally healing/0taken;
+Wizard4913damage/0taken; Rogue8125damage/304taken. Other three remained alive,
+with9/8/7mana. Fighter had5mana at death and all listed cooldowns ready. These
+are low-resource combat observations, not proof that regen should be increased
+or that any particular boss value is wrong. Preserve the requested0.01 passive
+regen and town recovery loop while auditing sustainable combat and role inputs.
+
+Archive `/tmp/eidolon-party-arrival-failure-PYFrok`; original
+`/tmp/eidolon-party-ranged-arrival-native-20260912.log`. Credential scan0 and
+owned services/ports clear. No complete dungeon, final quest credit or Water
+handoff acceptance. The shared seeded level30/common-gear/5-rank fixture is not
+earned first-hour evidence (normal level30 budget is6talent points).
