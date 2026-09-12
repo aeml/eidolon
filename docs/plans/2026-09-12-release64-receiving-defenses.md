@@ -80,6 +80,28 @@ the narrower pre-review candidate, but full release gates still remain.
 
 ### Remaining release gates
 
+### Hosted regression rehearsal — September12
+
+Pushed only `work/release64-defenses`, then dispatched the unchanged CI workflow
+on0ba6076a. Workflow-dispatch runs hosted full tests but skips production/self-
+hosted gates; it does not compete with native party77501. This is valid full
+regression evidence for that source, not a substitute for native release gates.
+
+CI34666906447 is TERMINAL FAILURE. Client job103480544090 passed288suites/
+4083tests75.548s, full lint/audit/benchmark. Server job103480544207 failed the
+coverage test stage80.930s: jumping fixture omitted health, and two Spirit set
+healing cases expected zero HP change on a valid hostile player. Server race
+and browser stages therefore have no passing evidence. No production deployment
+ran. Retained logs `/tmp/eidolon-release64-hosted-{client,server}-34666906447.log`.
+
+Restored missed test-only development follow-upd10f72bb as6bb83d95: living jump
+fixtures and dead/zero-health negative control, plus exact13/22 Spirit PvP damage
+with friendly healing15. Added explicit heal-event assertions to ensure damage
+cannot conceal an unintended hostile heal. Runtime death/hostility rules were
+not weakened. Focused three-repeat race PASS6.414s in
+`/tmp/eidolon-release64-hosted-fixture-followup-20260912.log`. Dispatch a fresh
+hosted run on the corrected branch, retaining the failed run above.
+
 1. Review the scoped integration and finish expanded focused race coverage.
 2. Run full client/lint/server race regression on the frozen release64 candidate.
 3. Publish through the unchanged CI workflow: hosted tests/browser shards,
