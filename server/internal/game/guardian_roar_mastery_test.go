@@ -68,8 +68,13 @@ func TestGuardianRoarMasteryPaidPartyDurationAndExpiry(t *testing.T) {
 					if allies[1].GuardianRoarActive || allies[2].GuardianRoarActive {
 						t.Error("mastery expanded range or instance scope")
 					}
-					if p.Defense != int(float64(defense)*1.2) || allies[0].Defense != int(float64(allyDefense)*1.2) {
-						t.Error("protective stats must apply immediately to caster and ally at unchanged strength")
+					if p.Defense != defense || allies[0].Defense != allyDefense {
+						t.Error("Roar must not replace its incoming reduction with an armor multiplier")
+					}
+					for _, recipient := range []*Entity{p, allies[0]} {
+						if got := resolveImpactDefenseLocked(recipient, 100, end).damage; got != 70 {
+							t.Errorf("trained Roar protection=%d want70", got)
+						}
 					}
 					if enemy.Health != health {
 						t.Error("duration mastery introduced damage")

@@ -132,7 +132,7 @@ export const CONSTANTS = {
                 Tier2: { name: "Whirlwind", desc: "Spin around dealing damage to all nearby enemies." },
                 Tier3: { name: "Shield Slam", desc: "Cone strike generating 2× normal threat from damage dealt; briefly stuns non-immune enemies." },
                 Tier4: { name: "Iron Fortress", desc: "For 30 seconds, take 20% less damage and gain 50% armor, at the cost of 20% movement speed. Mastery extends duration." },
-                Tier5: { name: "Guardian Roar", desc: "Large-radius taunt + group damage reduction buff." }
+                Tier5: { name: "Guardian Roar", desc: "Large-radius taunt + 30% group damage reduction (10s base duration)." }
             },
             BranchB: {
                 name: "Control & Crowd Management",

@@ -43,8 +43,11 @@ func TestPaidRecipientSupportBuffExpiry(t *testing.T) {
 					if !active() {
 						t.Fatal("paid cast did not apply to recipient")
 					}
-					if (skill == "Blessing of Resolve" || skill == "Guardian Roar") && target.Defense <= defense {
+					if skill == "Blessing of Resolve" && target.Defense <= defense {
 						t.Fatal("paid Resolve did not increase actual defense")
+					}
+					if skill == "Guardian Roar" && (target.Defense != defense || resolveImpactDefenseLocked(target, 100, time.Now()).damage != 70) {
+						t.Fatal("paid Roar did not grant actual30% protection to its recipient")
 					}
 					if (skill == "Blessing of Zeal" || skill == "Time Warp") && (target.Speed <= speed || target.AttackSpeed >= attackSpeed) {
 						t.Fatal("paid Zeal did not improve actual speed/cadence")
