@@ -38,6 +38,33 @@ separate open issues; this change must not conceal failed dungeon evidence.
 
 ## Proposed 1.1 patch note
 
+### Incoming-hit native gate (not yet run)
+
+The existing non-retrying Fortress route now additionally approaches a real
+overworld Skeleton through move-only ground input after its saved-rune check.
+It observes three positive physical receipts from the same enemy unbuffed,
+normally pays40mana for the saved Extended Fortress, then compares three real
+incoming receipts with the armor-adjusted20% reduction. After natural expiry,
+three more hits must return to their original damage and armor, with no buff
+effect remaining. Recall must succeed without death/respawn. The prepared
+level100 account is not an earned-progression or dungeon-balance claim.
+
+The existing protection-off QA command explicitly primes nearest-hostile threat
+and the initial normal swing; subsequent combat is ordinary AI. No HP/damage,
+buff duration, clocks or combat-time resource refills are injected. Observations
+retain complete source/target/amount receipts and local armor/timer/effect state;
+the timer-boundary race itself remains a server receiving-pipeline assertion,
+not something inferred from asynchronous browser timestamps.
+
+Observer RED3failed/4passed (missing receipts and a reproduced duplicate wrapper
+under layered movement observation); document-owned installation fixes duplicate
+recording without changing real message delivery. Final4suites73testsPASS9.834s,
+changed-file lint and diff pass. Native gate still queued behind the active
+four-player run; authoring a gate is not a passing runtime result.
+Logs `/tmp/eidolon-fortress-impact-{observer-red,gate-tests}-20260912.log`.
+
+### Player-facing draft
+
 Iron Fortress now consistently reduces incoming damage by20%, alongside its
 armor bonus and movement tradeoff. Its protection no longer becomes negligible
 against stronger enemies, and offline behavior matches the intended buff.
