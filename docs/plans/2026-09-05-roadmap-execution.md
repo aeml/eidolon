@@ -5,7 +5,78 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 17:34 UTC
+## Current checkpoint — September 12, 18:04 UTC
+
+Previous implementation goal turn and this continuation PROGRESS. Intervening
+semver confirmation was conversational, not implementation. Full roadmap stays
+ACTIVE; no live/version/soak changes. Root ledger-only: NEVER PUSH ROOT.
+
+- Blade Storm candidate `/tmp/eidolon-1-1-blade-storm-area-20260912`, clean/
+  devpushed **6cd1116850d669fda550faeb304ad471564a5e94**. Actual paid five-dagger
+  flight now snapshots10units plus3%/FineMotor rank, publishes matching90degree
+  cone radius, clips walls/range and sweeps legal segments. Offline trajectory
+  is horizontal; other projectiles and authoritative replicas unchanged.
+  Initial tests reproduced missing range/radius and skipped intermediates.
+  ROG_38 damage-only fixture assumption corrected, not catalog changed.
+  Full client407suites6341tests229.125s PASS (90027 terminal); focused server
+  race16.302s PASS plus focused client4/43 and lint. Additional0.05/1s subframe
+  coverage8PASS0.885s. Source, tests and unreleased1.1.0 patch-note draft committed.
+  **CI34709688359 ACTIVE** exact6cd, clientPASS/serveractive. Native paid/
+  trained/saved High/Low flight/mesh profile NOT yet authored or run; combined
+  regression remains required. See2026-09-12-blade-storm-area.md, matching logs.
+- Fortress **CI34707847501 SUCCESS** exact8864133e:405/6329/102.869s,
+  game86.9%/99.599s/race348.638s, browser40+53+26=119actual. Native/deploy
+  manual skips are not passes. Existing9420 actual protection evidence remains
+  bounded2→1→2, not native precision20% or dungeon-balance proof. Logs
+  `/tmp/eidolon-fortress-final-ci-*-34707847501.log`; docs1f6b1f75 accepted.
+  **Primary clean5d4c5123** now merges Fortress overa2c30d97. Integrated WT
+  FF then docs **cbdec31acba56adb0c8be34e825bc1be860e0c58**, clean/devpushed;
+  combined focused3suites33PASS1.457s. **CI34709857382 ACTIVE** exactcbdec,
+  client/serveractive. No Techniques or Blade Storm integration yet.
+- Rogue **26694 TERMINAL FAILED3.6m** on9ea86ed9: normal0/1/5 and saved
+  Mark22/4.5s,Smoke31/7.5s passed; savedCloak accepted once but mana delta185
+  instead of27. Cause UNPROVEN; original assertion lacked maxima/rest capture.
+  Archive `/tmp/eidolon-rogue-technique-final-failure-ORZFmO`; scan0/cleanupPASS.
+  Exact runtimec9 full **CI34707979043 SUCCESS**, manualnative/deployskipped.
+  Test-only **8b07e36c** retains strict costs/CD/admission, captures failures and
+  bounded64owner resource samples before/after normal message delivery, missing
+  fields null. Focused2suites15PASS0.788s/lint/diff.
+  **8403 TERMINAL PASS3.9m/4.0m0retry** on8b07, allnormal+saved20ranks,
+  High/Low/naturalexpiry. SavedCloak27mana/11.25sCD/10sduration passed unchanged.
+  Archive `/tmp/eidolon-rogue-resource-diagnostic-pass-7jPN57`, native log
+  `/tmp/eidolon-rogue-resource-diagnostic-native-20260912.log`; scan0, exact
+  containers/image/ports clear. SavedCloak image viewed (37FPS incidental).
+  Passing replay DOES NOT diagnose prior mismatch. Concrete lead: qa_animation_ready
+  client receiver refills from cached maxMana, not a server resource payload;
+  stale maxima/WellRested timing remains hypothesis for that failed cast.
+  RogueWT clean/docs/devpushed **94f1ef14d0fd09a6b5bf9b27bb92574224fe6735**;
+  **CI34710073474 ACTIVE** exact94f, no current fullacceptance yet.
+- Party **66697 TERMINAL FAILED7.4m** frozen7f8, actualseed
+  **-3283200004721647671**,gen2/attempt0/no fallback. Earlytrash/townrecovery/
+  reentry passed, Warden6959/15000, ALLalive F940HP/193MP,C761/405,W855/16,
+  R855/120. Issued Rogue spacing input from(20016.32282,19657.02488),
+  step(.80839,1.54216), correct projection/canvas/move state; actual displacement
+  only0.18846, blocked stop. Not a death/noissuedinput/successfulclear.
+  Archive `/tmp/eidolon-party-partial-retreat-failure-wzR2p3`; scan2/cleanupPASS.
+  Exact7f8 **CI34708377197 SUCCESS**, no nativeclear from manualskip.
+  New clean **bfca8314493672e929ba5531e557e2f5979ca442** retains failed spacing
+  plans, before/after body positions and actor state in finally; actualfailed
+  input stillfatal, thresholds/1500ms/noalternate unchanged. Local13PASS0.672s,
+  lint/diff. Docs retain originalfailure. Not devpushed yet.
+  **23513 ACTIVE — sole native GPU**, frozenbfca, routeparty-dungeon,
+  runIDpartyspacingdiag0912,18185/18186/41875. Log
+  `/tmp/eidolon-party-spacing-diagnostic-native-20260912.log`; allfourprepared
+  level30Common/rank5 legalfixtures, dungeon outcome notyetknown. Freeze WT,
+  poll same handle; archive/cleanup before next native. No soak changes.
+
+Next: diagnose actualparty replay, finish Blade Storm native presentation and
+paid/saved flight gate, exact candidate/integratedCI and remaining160consumers.
+Full firsthour, five dungeons/multiseeds/credit/raids/DarkRealm/live checks and
+all1.2–1.10 scope remain; Spin/Roar corrected purchase recovery native stilldue.
+No new1.0.66 or1.1.0 release claim. Last public verification remains1.0.65/f9eb,
+not independently re-probed during this continuation.
+
+## Previous checkpoint — September 12, 17:34 UTC
 
 Previous/current goal turns PROGRESS; full roadmap ACTIVE, no release/version/
 production/soak changes. Root ledger-only, NEVER PUSH ROOT. Primary/integrated
