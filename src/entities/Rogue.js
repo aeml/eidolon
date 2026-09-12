@@ -192,7 +192,7 @@ export class Rogue extends Actor {
             const target = castTarget;
 
             if (target) {
-                target.weakPointMarkTimer = getRogueEffectDuration(this, 10);
+                target.weakPointMarkTimer = getRogueEffectDuration(this, 10, skill);
                 gameEngine.floatingTextManager.spawn("WEAK POINT!", target.position, '#ff0000');
                 this.spawnVisualEffect(gameEngine, target.position, 0xff0000, "mark");
             }
@@ -387,7 +387,7 @@ export class Rogue extends Actor {
             console.log("Rogue used Cloak & Vanish!");
             
 
-            this.stealthTimer = getRogueEffectDuration(this, this.skillRunes?.[skill] === 'cloak_longer' ? 10 : 5);
+            this.stealthTimer = getRogueEffectDuration(this, this.skillRunes?.[skill] === 'cloak_longer' ? 10 : 5, skill);
             
             // Speed Burst (handled in Actor update or just modify stats temporarily?)
             // Let's use a buff timer for speed if we had one, or just hack it here.
@@ -398,7 +398,7 @@ export class Rogue extends Actor {
             // Or I can modify `this.stats.speed` and reset it later? No, stats are recalculated from base.
             // I'll add `speedBoostTimer` to Actor.js in a moment.
             
-            this.speedBoostTimer = getRogueEffectDuration(this, 3);
+            this.speedBoostTimer = getRogueEffectDuration(this, 3, skill);
             this.speedBoostFactor = 1.0; // +100% speed
             
             gameEngine.floatingTextManager.spawn("VANISH!", this.position, '#ffffff');
