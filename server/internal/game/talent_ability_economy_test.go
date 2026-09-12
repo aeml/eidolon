@@ -18,10 +18,11 @@ func TestTalentEconomyCatalogMatchesSharedContract(t *testing.T) {
 		Cdr, ManaReduction float64
 	}
 	var classes map[string]struct {
-		Prefix        string
-		TechniqueMana float64
-		Skills        []string
-		Generic       map[string]economy
+		Prefix                 string
+		TechniqueMana          float64
+		TechniqueManaOverrides map[string]float64
+		Skills                 []string
+		Generic                map[string]economy
 	}
 	data, err := os.ReadFile("testdata/talent_economy.json")
 	if err != nil {
@@ -35,6 +36,9 @@ func TestTalentEconomyCatalogMatchesSharedContract(t *testing.T) {
 			want := catalog.Generic[strconv.Itoa(n)]
 			if n <= 26 && n%2 == 0 {
 				want = economy{Skill: catalog.Skills[n/2-1], Cdr: 0.03, ManaReduction: catalog.TechniqueMana}
+				if override, ok := catalog.TechniqueManaOverrides[strconv.Itoa(n)]; ok {
+					want.ManaReduction = override
+				}
 			}
 			id := fmt.Sprintf("%s_%02d", catalog.Prefix, n)
 			def, ok := talentDefForID(class, id)

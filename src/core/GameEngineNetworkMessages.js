@@ -844,14 +844,15 @@ class GameEngineNetworkMessageMethods {
         } else if (msg.type === 'qa_animation_ready') {
             this.animationQAReadySequence = (this.animationQAReadySequence || 0) + 1;
             if (this.player) {
-                const lowHealth = Boolean(msg.payload?.lowHealth);
                 this.player.abilityCooldown = 0;
                 this.player.cooldowns = {};
                 if (this.player.stats) {
-                    this.player.stats.mana = this.player.stats.maxMana;
-                    this.player.stats.hp = lowHealth
-                        ? Math.max(1, Math.floor(this.player.stats.maxHp / 4))
-                        : this.player.stats.maxHp;
+                    // Readiness prepares the server actor. A cached rested
+                    // maximum can be stale; never manufacture a local refill.
+                    for (const [wire, local] of [['health', 'hp'], ['maxHealth', 'maxHp'], ['mana', 'mana'], ['maxMana', 'maxMana']]) {
+                        const value = msg.payload?.[wire];
+                        if (Number.isFinite(value) && value >= 0) this.player.stats[local] = value;
+                    }
                 }
                 this.abilityController.inputBuffer.length = 0;
                 this.uiManager.updateHotbarCooldowns?.(this.player);

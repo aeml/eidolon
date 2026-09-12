@@ -12,7 +12,7 @@ test.each(Object.entries(catalog))('%s critical metadata matches the server-vali
         let chance = expected.generic[number] || 0;
         let skill = '';
         if (number <= 26 && number % 2 === 0) {
-            chance = expected.technique;
+            chance = expected.techniqueOverrides?.[number] ?? expected.technique;
             if (chance) skill = economy[className].skills[number / 2 - 1];
         }
         const actual = CONSTANTS.PASSIVE_TALENTS[className][number - 1].criticalChance || {};
@@ -56,7 +56,7 @@ test('all Rogue Technique and generic critical descriptions match their numeric 
             }
         }
     }
-    expect(CONSTANTS.PASSIVE_TALENTS.Rogue.filter(talent => talent.criticalChance)).toHaveLength(15);
+    expect(CONSTANTS.PASSIVE_TALENTS.Rogue.filter(talent => talent.criticalChance)).toHaveLength(12);
     expect(CONSTANTS.PASSIVE_TALENTS.Rogue[31].criticalChance.chance).toBe(.03);
     expect(CONSTANTS.PASSIVE_TALENTS.Rogue[38].criticalChance.chance).toBe(.02);
 });

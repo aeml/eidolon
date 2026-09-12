@@ -166,6 +166,11 @@ var rogueSkills = []string{
 }
 
 func rogueTalentDef(n int) (TalentDef, bool) {
+	// Non-damaging utility Techniques retain cooldown training and use the
+	// existing mana-efficiency model instead of an unusable critical bonus.
+	if n == 6 || n == 20 || n == 26 {
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: rogueSkills[(n-1)/2], SkillCdr: 0.03, SkillManaCost: -0.02}}, true
+	}
 	// These utility skills have no direct damage. Preserve saved Mastery IDs
 	// and train their existing effect windows, like the other support Masteries.
 	if n == 5 || n == 19 || n == 25 {
