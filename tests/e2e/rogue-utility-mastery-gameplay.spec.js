@@ -4,6 +4,7 @@ import { collectBrowserFailures, credentialsFromEnvironment, ensureDungeonReadyL
     returnToTown, useCombatQAWaypoint } from './helpers.js';
 import { installRogueUtilityObserver } from './rogue-utility-observer.js';
 import { selectPreparedRune } from './prepared-rune-input.js';
+import { CONSTANTS } from '../../src/core/Constants.js';
 
 test.use({ viewport: { width: 1280, height: 720 }, trace: 'off', screenshot: 'off', video: 'off' });
 const utilities = [
@@ -39,7 +40,9 @@ test('Rogue utility Masteries extend real paid effects through normal purchases 
         await expect.poll(() => page.evaluate(skill => window.game.player.hotbar.includes(skill), cfg.skill)).toBe(true);
         await page.locator('#btn-close-skills').click();
     }
-    async function purchase(id, name, from, to) {
+    async function purchase(id, from, to) {
+        const name = CONSTANTS.PASSIVE_TALENTS.Rogue.find(talent => talent.id === id)?.name;
+        expect(name, 'purchase the existing catalog talent, without inventing its label').toBeTruthy();
         await returnToTown(page); await menu('Talents');
         for (let rank = from + 1; rank <= to; rank++) {
             await page.waitForTimeout(1100);
@@ -164,11 +167,11 @@ test('Rogue utility Masteries extend real paid effects through normal purchases 
 
     for (const cfg of utilities) {
         for (const rank of [0, 1, 5]) {
-            if (rank) await purchase(cfg.talent, `${cfg.skill} Mastery`, rank === 1 ? 0 : 1, rank);
+            if (rank) await purchase(cfg.talent, rank === 1 ? 0 : 1, rank);
             await cast(cfg, rank, 0, rank === 5 ? 'low' : 'high');
         }
     }
-    await purchase('ROG_28', 'Dirty Tricks', 0, 5);
+    await purchase('ROG_28', 0, 5);
     await returnToTown(page); await menu('Runes');
     await selectPreparedRune(page, skills, { skill: 'Cloak & Vanish', id: 'cloak_longer', name: 'Lasting Shadow' });
     await expect.poll(() => page.evaluate(() => window.game.player.skillRunes?.['Cloak & Vanish'])).toBe('cloak_longer');

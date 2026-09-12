@@ -113,3 +113,19 @@ PASS4.975s/lint/diff. Logs
 `/tmp/eidolon-rogue-utility-composed-observer-{red,tests,lint}-20260912.log`.
 No gameplay/runtime/count assertion changed. Corrected native and CI remain
 required; earlier failures remain preserved.
+
+Composed-observer6920 on2e19276d FAILED50.2s at the first talent purchase.
+Rank-zero Weak Point Mark paid cast, actual attached High effect,10s wire/local
+duration and natural expiry passed; no duplicate records recurred. Locator used
+`Weak Point Mark Mastery`, but the catalog/visible label is
+`Weak Point Mark - Mastery`. Archive
+`/tmp/eidolon-rogue-utility-talent-label-failure-5Digc5`; original
+`/tmp/eidolon-rogue-utility-composed-native-20260912.log`. Scan0/cleanupPASS;
+main agent viewed the retained base-cast screenshot. Its incidental22FPS is not
+a performance acceptance result.
+
+Purchase labels are now resolved from the actual CONSTANTS catalog by stable
+talent ID, rather than guessed strings. Actual normal UI clicks and independent
+server rank/point assertions remain unchanged. Two suites20tests pass2.49s,
+changed lint/list/diff pass; log `/tmp/eidolon-rogue-utility-catalog-tests-20260912.log`.
+Corrected native execution is still required, not credited to the failed run.
