@@ -26,6 +26,16 @@ pacing/reconnect/balance gates for1.1.0. All1.2–1.10 scope remains intact.
 
 ## First integrated rehearsal accepted; follow-up scope
 
+September12 acceptance: **CI34711998572 SUCCESS** on exactf9ddf686. Full client
+412suites6383tests135.552s, server game87.0%91.114s/race292.001s, all three
+browser shards passed. Native/deployment intentionally skipped by manual-event
+guards. Logs `/tmp/eidolon-integrated-rogue-ci-{client,server}-34711998572.log`.
+This verifies the combined RogueTech/QAack/Fortress/BladeStorm revision.
+After terminal success, merged primary506e3200's separately verified native
+Spin/Roar purchase-recovery tests; see their exact native/CI evidence. No new
+runtime ability changes in that merge. GuardianRoar protection and Tripwire
+remain separate candidates until their own outstanding checks finish.
+
 September12 follow-up: primary15870d85 now integrates verified Rogue utility
 Techniques and QA resource acknowledgement56ea1669. Exact QA runtimee7b907ce
 passed CI34710643517 and native50451 (3.8minutes, zero retries); saved effects,
