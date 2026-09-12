@@ -5,7 +5,93 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 11:04 UTC
+## Current checkpoint — September 12, 11:20 UTC
+
+Previous goal turn PROGRESS; this continuation PROGRESS. Direct live inspection
+identified the party setup failure, implemented and natively verified stylesheet
+recovery, verified real-server login interruption, integrated accepted casting
+changes, and launched a corrected four-role run. Full roadmap still active;
+no production deployment/version bump/root push and soak untouched.
+
+- **Party87251 TERMINAL INTERRUPTED/exit130**, frozenbfa908c8,27.7m. Exact
+  worker1143263 was briefly given a loopback Node inspector after cwd/entrypoint
+  identity and free-port checks. Read-only current test-step metadata identified
+  `helpers.js:261` (Register click). Read-only Page/CSSOM/request metadata proved
+  the Cleric document had JSready=true but24 CSS imports failed with
+  **net::ERR_NETWORK_CHANGED**, null CSSImportRule.styleSheet, and Register
+  inherited pointer-events:none from ui-layer; its center hit HTML. Fighter
+  page had complete CSS and ordinary styles. No credentials/input values/raw
+  payloads or step titles were read/output. This is the cause of the stuck
+  setup, distinct from the separately reproduced login-reply defect.
+- Safe evidence `/tmp/eidolon-party-live-css-diagnostic-20260912.json`;
+  temporary `/tmp/eidolon-inspect-party-wait-20260912.mjs` hardcodes the OLD PID
+  and must not be reused without fresh identity/port validation. Inspector
+  closed after EVERY read and9229 verified absent each time. Only after the
+  unrecoverable pointer/CSS condition was proven was the owned test interrupted
+  using its existing TTY. Not a restart due observation timeout. No party/dungeon
+  entry/clear claimed. Wrapper credential scanPASS/sanitized0; archived to
+  `/tmp/eidolon-party-css-interruption-7Mn5ar`. Original log retained. Owned
+  processes/containers/API+Mongo+web ports cleared before later runs. At11:18
+  a NEW9229listener appeared, owner not exposed by ss even under render group;
+  OLD1143263 was absent and old cwd had zero scoped processes. This is NOT
+  evidence the original inspector remained open; did not inspect/alter the new
+  unrelated listener. Do not blindly attach to or close that port.
+- New `/tmp/eidolon-1-1-style-boot-recovery-20260912`, branch
+  `work/1-1-style-boot-recovery`, clean **ea772f9008c704bf9dccd306d869dce8694e720c**
+  (runtime1e012a06,parent308e83ae+e4f39ae9). Before main UI wiring/readiness,
+  inspect all master CSS imports; recover incomplete trees through3replacement
+  loads with10s bounds while preserving release query. A load event alone does
+  not admit missing imports. Exhaustion shows an accessible inline recovery
+  screen outside the pointer-disabled HUD; real Retry reloads. Success removes
+  notice and continues normal startup. No permanent gameplay instrumentation.
+- Local style/main/menu3suites90PASS3.585s; browser partition/versioning5suites
+ 44PASS4.557s. Lint/assets/diffPASS. **Native98501 SystemChrome PASS**, runtime
+  1e012a06: transient import failure recovered and real patch-notes controls
+  worked2.5s; persistent failure stayedunready then recovered via real Retry3.3s.
+  Two tests7.3s total, no helper navigation retry. Both enrolled in anonymous
+  hosted baseline. Logs `/tmp/eidolon-style-boot-{green,lint,assets,enrollment,native}-20260912.log`.
+  Dev-pushed; **CI34690667637 ACTIVE**, client103545207737/server103545207843
+  running at11:19. Style/auth not primary-integrated/deployed yet.
+- **Native51917 auth-recovery PASS**, frozenea772f90,auth09121120. Actual
+  disposable server first login_success deliberately dropped/transport closed;
+  exactly1UIclick→2real loginrequests/1dropped+1delivered replies/authenticated
+  class selection. Test2.1s,total4.1s; no retryhelper/synthetic credentialpacket.
+  Wrapper credentialscanPASS/sanitized0; owned services/API ports cleared.
+  Log `/tmp/eidolon-auth-style-native-20260912.log`. Does not prove partyclear
+  or moving-frame pacing. Soak untouched; native lane then reassigned below.
+- Auth **CI34690013776 TERMINAL FAILURE**: client390suites6192pass/2suites
+ 46fail128.976s, solely stage-order/timing enrollment. New stage displaced the
+  required initial-stat/authenticated prefix and lacked a stub in exact timing
+  fixture. Corrected in auth**ef4f3ec2**: retain existing initial/auth order, add
+  recovery after, enroll fail-fast/timing expectation;4suites83PASS2.194s.
+  Dev-pushed **CI34690510473 ACTIVE**, client103544803772SUCCESS and
+  server103544803690running at11:19. Style branch includes same correction as
+  e4f39ae9. Logs `/tmp/eidolon-auth-stage-green-20260912.log` and
+  `/tmp/eidolon-auth-inflight-ci-client-34690013776.log`.
+- Combined casting **CI34689363204 TERMINAL SUCCESS**: client392suites6232tests
+ 102.514s, game86.9%96.816s/race338.326s, browser40+50+26=116PASS actual logs
+  `/tmp/eidolon-animation-integration-ci-{client,server,browser1,browser2,browser3}-34689363204.log`.
+  Native/deploy/live skipped. Primary+integrated clean advancedf016e0f7→
+  **61fd4b96**. This integrates scoped casting correction, not full release
+  acceptance; native75464's8-frame failure still open. Profilef0f250f1 remains
+  pending and should be forward-ported onto recovered-style source for next QA.
+- New `/tmp/eidolon-1-1-party-boot-recovery-20260912`, branch
+  `work/1-1-party-boot-recovery`, clean **ab0ac2be**,parentea772f90 via78ac304a:
+  brings confirmed tank openerbfa908c8 and bounded setup9e7278ea onto auth/style
+  recovery.8suites179PASS2.033s; assets/lint/diffPASS. Logs
+  `/tmp/eidolon-party-boot-{preflight,assets,lint}-20260912.log`. Not pushed or
+  primary-integrated. **Native78290 ACTIVE**, frozenab0ac2be,runID
+  partyboot09121119,routeparty-dungeon,SystemChrome/sg render, API18185/
+  Mongo18186/web41875. Log `/tmp/eidolon-party-boot-native-20260912.log`.
+  ONE GPU lane reserved; re-poll same handle. New run follows a proven bug fix
+  and cleanup, not a blind retry. At checkpoint end all4roles prepared, real
+  invitation party formation and desktop support selection/clear passed, and
+  all4 entered the same Normal Verdant instance. Seed-8994194291653967333,
+  generator2/attempt0/no fallback; initial traversal active. No clear yet.
+  Full survival/credit/manualturn-ins/Water
+  criteria and all later milestone scope remain required.
+
+## Previous checkpoint — September 12, 11:04 UTC
 
 Previous goal turn PROGRESS; this continuation PROGRESS (reproduced/fixed an
 independent runtime auth recovery defect, with hosted/native-route preparation)
