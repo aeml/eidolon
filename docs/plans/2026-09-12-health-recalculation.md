@@ -28,6 +28,13 @@ Logs: `/tmp/eidolon-health-cap-red-20260912.log`,
 `/tmp/eidolon-health-cap-fixture-green-20260912.log`, and
 `/tmp/eidolon-health-cap-full-race-20260912.log`.
 
+Verification update: local full race handle90222 terminated with exit143 before
+the game package reported a result. Root27.180s, loadtest1.034s and database1.079s
+passed; this is NOT a full server pass and the signal source is not established.
+The process was confirmed absent. Independent hosted CI34716297331 on2162b442
+is running (client passed, server pending at this entry); use its actual terminal
+result rather than restarting or calling the partial local log green.
+
 ## Draft 1.1.0 patch note
 
 - Removing health-boosting equipment now immediately limits current health to
