@@ -156,8 +156,10 @@ export class AbilityController {
             entity.playAbilityAnimation?.(skillName);
         }
 
-        // Teleport is planar, including on elevated dungeon/realm floors.
-        const targetPosition = new THREE.Vector3(targetX, skillName === 'Teleport' ? (entity.position?.y || 0) : 0, targetZ);
+        // Accepted self-centered areas share the caster's floor, including
+        // elevated realms. Their X/Z still come from the original cast event.
+        const targetPosition = new THREE.Vector3(targetX,
+            skillName === 'Teleport' || SELF_CENTERED_SHAPE_ABILITIES.has(skillName) ? (entity.position?.y || 0) : 0, targetZ);
         const visual = resolveRemoteSkillVisual(entity, skillName, targetPosition, shape);
         if (visual.handled) {
             return;

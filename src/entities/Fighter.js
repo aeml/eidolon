@@ -12,6 +12,7 @@ import { getFighterEffectDuration } from '../skills/fighterEffectDuration.js';
 import { applyOfflineFighterDamageBuff, clearOfflineFighterDamageBuffs } from '../skills/offlineFighterDamageBuffs.js';
 import { beginOfflineWhirlwind, advanceOfflineWhirlwind, cancelOfflineWhirlwind } from '../skills/offlineWhirlwind.js';
 import { applyOfflineEarthshaker } from '../skills/offlineEarthshaker.js';
+import { applyOfflineJuggernaut } from '../skills/offlineJuggernaut.js';
 import { applyOfflineSweepingStrike } from '../skills/offlineFighterCone.js';
 import { beginOfflineShatteringCharge, advanceOfflineShatteringCharge } from '../skills/offlineShatteringCharge.js';
 import { beginOfflineCharge, advanceOfflineCharge, cancelOfflineCharge } from '../skills/offlineCharge.js';
@@ -233,34 +234,8 @@ export class Fighter extends Actor {
             console.log("Fighter used Juggernaut Charge (Shockwave)!");
 
 
-            // AoE Shockwave
-            const radius = 10.0;
-            const slowDuration = getFighterEffectDuration(this, 5);
-            const entities = gameEngine.chunkManager.getActiveEntities();
-
-            // Visual
             gameEngine.floatingTextManager.spawn("SHOCKWAVE!", this.position, '#00ffff');
-            this.spawnVisualEffect(gameEngine, this.position, 0x00ffff, "wave");
-
-            entities.forEach(entity => {
-                if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
-                    const dist = this.position.distanceTo(entity.position);
-                    if (dist < radius) {
-                        // Hit!
-                        const damage = this.stats.strength * 1.0;
-                        if (entity.takeDamage) {
-                            applyOfflineAbilityHit(this, entity, damage, skill, gameEngine.floatingTextManager, '#ffff00');
-                        }
-
-                        // Heavy Slow
-                        if (entity.slowTimer !== undefined && !entity.ccImmune) {
-                            entity.slowTimer = slowDuration;
-                            entity.slowFactor = 0.6; // 60% slow
-                            gameEngine.floatingTextManager.spawn("Slowed!", entity.position, '#00ffff');
-                        }
-                    }
-                }
-            });
+            applyOfflineJuggernaut(this, gameEngine, isGuardianRoarFriendlyActor);
             return;
         }
 

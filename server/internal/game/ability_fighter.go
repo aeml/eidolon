@@ -336,8 +336,11 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 		if player.Mana >= cost {
 			player.Mana -= cost
 			walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
-			radius := 10.0
+			training := &Entity{SubType: player.SubType, TalentRanks: player.TalentRanks, SpellFocusActive: player.SpellFocusActive}
+			training.NormalizeTalentRanks()
+			radius := effectiveAbilityAreaRadius(training, skillName, 10)
 			damage := player.Damage + player.Stats.Strength
+			damage = int(math.Floor(float64(damage)*training.GetSkillDamageMultiplier(skillName) + 1e-9))
 			nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID)
 			for _, target := range nearby {
 				target.Mu.Lock()
@@ -363,7 +366,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 				}
 			}
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 20*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityEvent(player.ID, targetID, skillName, player.X, player.Z, AbilityShape{Radius: radius, Arc: 2 * math.Pi})
 		}
 	} else if skillName == "Berserker Edge" {
 		// Berserker Edge (Buff)

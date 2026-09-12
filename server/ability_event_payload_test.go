@@ -65,12 +65,13 @@ func TestAbilityPayloadPreservesOptionalResolvedShape(t *testing.T) {
 	}
 }
 
-func TestAbilityPayloadPreservesFighterCones(t *testing.T) {
+func TestAbilityPayloadPreservesFighterShapes(t *testing.T) {
 	for _, tc := range []struct {
 		skill       string
 		radius, arc float64
 	}{
 		{"Shield Slam", 5.4, math.Pi / 2}, {"Sweeping Strike", 6.75, math.Pi},
+		{"Juggernaut Charge", 13.5, 2 * math.Pi},
 	} {
 		event := game.AbilityEvent{SourceID: "cone-caster", SkillName: tc.skill, TargetX: 50000, TargetZ: 50010, Radius: tc.radius, Arc: tc.arc}
 		encoded, err := json.Marshal(abilityPayloadFromEvent(event))
@@ -83,7 +84,7 @@ func TestAbilityPayloadPreservesFighterCones(t *testing.T) {
 		}
 		if wire["sourceId"] != event.SourceID || wire["skillName"] != tc.skill || wire["radius"] != tc.radius || wire["arc"] != tc.arc ||
 			wire["targetX"] != event.TargetX || wire["targetZ"] != event.TargetZ {
-			t.Fatalf("lost trained cone geometry: %v", wire)
+			t.Fatalf("lost trained fighter geometry: %v", wire)
 		}
 	}
 }
