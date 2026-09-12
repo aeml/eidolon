@@ -4,6 +4,23 @@ Draft notes, outstanding acceptance and publication steps are consolidated in
 the [1.1.0 release handoff](2026-09-12-1-1-release-handoff.md). It is not release
 approval or a substitute for the full roadmap.
 
+## Accepted preparation integration — September 12, 23:07 UTC
+
+CI34723609678 completed SUCCESS on exact
+802d216abb8367fdf61ebb463b757128871248b2. Client420 suites/6489 tests pass137.486s;
+server game coverage101.549s/86.9%, race355.767s; all three browser shards pass.
+Logs `/tmp/eidolon-integrated-preparation-{client,server}-34723609678.log`.
+Native/deploy/live stages skipped, not passed. This accepts the merged optional
+preparation UI/keyboard component, not the full milestone or later candidates.
+
+The independent focused2v2 audit subsequently exposed a genuine delayed-impact
+relationship race even though this complete CI passed. Preserve that contrary
+evidence; candidate03aef5b2 in work/1-1-pvp-completion-race fixes it and has full
+CI34724352226 pending. Healing48713d22 similarly awaits full CI34723986784,
+with paid Rogue/Cleric support now native-verified. Poison's remaining collateral
+test sampled a rested stat before the buff expired; corrected stable-condition
+status verification is running separately on50d2ea57. None is merged here yet.
+
 ## Preparation integration — September 12, 22:45 UTC
 
 Merged primary fdb13277, adding accepted preparation guidance cf7f67a1. Exact

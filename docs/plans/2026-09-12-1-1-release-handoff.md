@@ -41,10 +41,16 @@ dungeon clear, first-hour pacing or production delivery.
 ## Material still requiring acceptance or inventory review
 
 - First-dungeon preparation guidance is accepted and merged from cf7f67a1 after
-  full CI34722166310 on c09248c8 and desktop/phone screenshot inspection. Its
-  combined regression with the other accepted components remains required.
+  full CI34722166310 on c09248c8 and desktop/phone screenshot inspection.
+  Combined CI34723609678 now passes on802d216a.
 - Tripwire damage/training repair: preserve its separate gameplay proof, but
-  finish collateral entrance/shield diagnostics before integration.
+  finish collateral status checks before integration. Shield and prepared
+  Rogue/Cleric support checks pass; the latter required the cursor-healing fix
+  in48713d22. Retain its draft note once full component acceptance is complete.
+- Delayed attack/PvP completion concurrency: candidate03aef5b2 fixes a race
+  found by actual2v2 combat under the race detector. Repeated focused checks
+  pass, but full CI34724352226 and integration remain pending. Do not describe
+  all PvP as accepted based only on the earlier complete CI pass.
 - Inventory all other accepted development changes against the current published
   baseline: expanded Chronicle/investigations and pacing, dungeon mechanics,
   remaining class training, phone presentation and multiplayer behavior. Carry
