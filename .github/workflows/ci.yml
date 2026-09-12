@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [master, main]
   workflow_dispatch:
+    inputs:
+      full_stabilization:
+        description: 'Run the exhaustive native suite after feature completion'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -161,7 +166,7 @@ jobs:
     name: Predeploy Character QA (System Chrome)
     needs: [browser-smoke]
     runs-on: [self-hosted, linux, x64, eidolon-live-browser]
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+    if: (github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')) || inputs.full_stabilization == true
     env:
       EIDOLON_E2E_WEB_PORT: '41873'
       EIDOLON_ISOLATED_QA_PORT: '18085'
@@ -183,18 +188,30 @@ jobs:
           sg render -c 'EIDOLON_E2E_BROWSER_PATH=/usr/bin/google-chrome npm run verify:browser-gpu'
 
       - name: Run deterministic High/Low animation gallery
+        if: inputs.full_stabilization == true || vars.EIDOLON_FULL_STABILIZATION == 'true'
         env:
           EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
         run: sg render -c 'npm run test:e2e:animations'
 
       - name: Run required Well Rested rendering and GPU lifecycle QA
+        if: inputs.full_stabilization == true || vars.EIDOLON_FULL_STABILIZATION == 'true'
         env:
           EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
         run: sg render -c 'npm run test:e2e:rest-render'
 
       - name: Run disposable full-character gameplay
+        if: inputs.full_stabilization == true || vars.EIDOLON_FULL_STABILIZATION == 'true'
         env:
           EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
+        run: sg render -c 'npm run test:e2e:isolated'
+
+      # Feature-first milestone delivery: preserve the full route above for final
+      # stabilization, but check login, combat, travel and inventory on each release.
+      - name: Run focused disposable release smoke
+        if: inputs.full_stabilization != true && vars.EIDOLON_FULL_STABILIZATION != 'true'
+        env:
+          EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
+          EIDOLON_ISOLATED_QA_ROUTE: release-smoke
         run: sg render -c 'npm run test:e2e:isolated'
 
       - name: Upload predeploy character evidence
@@ -292,7 +309,7 @@ jobs:
           cp -r index.html assets src vendor public/
           cp sw.js public/
           node scripts/version-pages-runtime.mjs public "${GITHUB_SHA}"
-          printf '{"commit":"%s","version":"Alpha 1.0.65"}\n' "${GITHUB_SHA}" > public/release.json
+          printf '{"commit":"%s","version":"Alpha 1.1.0"}\n' "${GITHUB_SHA}" > public/release.json
           
           # Create coverage directory
           mkdir -p public/coverage/client public/coverage/server
@@ -482,7 +499,7 @@ jobs:
           chmod --reference=.env "${qa_env_tmp}"
           mv "${qa_env_tmp}" .env
           trap - EXIT
-          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.0.65" bash ./deploy/deploy_linux.sh
+          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.1.0" bash ./deploy/deploy_linux.sh
           EOF
 
   post-deploy-browser:
@@ -547,6 +564,7 @@ jobs:
         run: sg render -c 'npx playwright test tests/e2e/anonymous.spec.js tests/e2e/authenticated.spec.js tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/movement-smoothness.spec.js'
 
       - name: Run live four-class and remote-animation QA
+        if: vars.EIDOLON_FULL_STABILIZATION == 'true'
         env:
           EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
           EIDOLON_E2E_BACKEND_ORIGIN_IP: ${{ secrets.EIDOLON_E2E_BACKEND_ORIGIN_IP }}

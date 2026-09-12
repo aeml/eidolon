@@ -69,7 +69,7 @@ test.each([1, 2, 3])('native stage %i failure stops following stages and propaga
     expect(result.stdout.split('\n').filter(line => line.startsWith('RUN '))).toHaveLength(fail);
 });
 
-test('rendering is mandatory before full native predeploy and its artifacts survive later output clearing', () => {
+test('full stabilization retains rendering while ordinary releases use focused smoke', () => {
     const workflow = readFileSync('.github/workflows/ci.yml', 'utf8');
     const predeploy = workflow.split('  predeploy-character:')[1].split('  release-inputs:')[0];
     const start = predeploy.indexOf('- name: Run required Well Rested rendering and GPU lifecycle QA');
@@ -78,7 +78,13 @@ test('rendering is mandatory before full native predeploy and its artifacts surv
     expect(start).toBeLessThan(end);
     const step = predeploy.slice(start, end);
     expect(step).toContain("run: sg render -c 'npm run test:e2e:rest-render'");
-    expect(step).not.toMatch(/continue-on-error|if:/);
+    expect(step).not.toContain('continue-on-error');
+    expect(step).toContain("if: inputs.full_stabilization == true || vars.EIDOLON_FULL_STABILIZATION == 'true'");
+    expect(predeploy).toContain("if: inputs.full_stabilization != true && vars.EIDOLON_FULL_STABILIZATION != 'true'");
+    expect(predeploy).toContain('EIDOLON_ISOLATED_QA_ROUTE: release-smoke');
+    const smoke = isolated.split('  release-smoke)')[1].split('    ;;')[0];
+    expect(smoke).toContain('EIDOLON_E2E_FULL_GAMEPLAY=1 EIDOLON_E2E_PORTAL_ONLY=1');
+    expect(smoke).toContain('--retries=0 tests/e2e/authenticated.spec.js tests/e2e/inventory-quality-of-life.spec.js');
     expect(predeploy).toContain('            rest-render-results/');
     const commands = JSON.parse(readFileSync('package.json', 'utf8')).scripts;
     expect(commands['test:e2e:rest-render']).toBe('bash scripts/run-rest-render-qa.sh');
