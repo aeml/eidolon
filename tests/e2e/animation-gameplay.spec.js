@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { CONSTANTS } from '../../src/core/Constants.js';
 import { readAnimationCastState, readAnimationPresentation } from '../animationPresentationRecord.js';
+import { clearPreparedRune } from './prepared-rune-input.js';
 import {
     PLAYER_ABILITY_VISUALS,
     getAbilityRuneVariants,
@@ -156,6 +157,21 @@ async function selectRune(page, skillName, rune) {
     await closeSkillWindow(page, window);
 }
 
+async function ensureBaseRune(page, className, skillName) {
+    const equipped = () => page.evaluate(skill => window.game?.player?.skillRunes?.[skill] || '', skillName);
+    if (!await equipped()) return;
+    const skills = page.locator('#skill-tree-window');
+    if (!await skills.isVisible()) await page.keyboard.press('k');
+    await expect(skills).toBeVisible();
+    try {
+        await clearPreparedRune(page, skills, skillName, getAbilityRuneVariants(className, skillName));
+        await expect.poll(equipped, { timeout: 7_000,
+            message: `${className}/${skillName} base rune removal must be acknowledged` }).toBe('');
+    } finally {
+        await closeSkillWindow(page, skills);
+    }
+}
+
 async function exerciseBasicAttack(page) {
     let lastDiagnostic = null;
     for (let attempt = 0; attempt < 3; attempt += 1) {
@@ -198,6 +214,7 @@ async function exerciseBasicAttack(page) {
 }
 
 async function castThroughInput(page, className, skillName, key, presentation, options = {}) {
+    if (!options.runeId) await ensureBaseRune(page, className, skillName);
     if (options.prepare !== false) {
         await prepareAnimationCast(page, skillName === 'Last Stand Rampage');
     }
@@ -234,6 +251,8 @@ async function castThroughInput(page, className, skillName, key, presentation, o
     await page.mouse.move(target.x, target.y);
     const previousTimestamp = (await page.evaluate(readAnimationPresentation, skillName))?.timestamp ?? -1;
     const beforeInput = await page.evaluate(readAnimationCastState, skillName);
+    expect(beforeInput.rune || '', `${className}/${skillName} must use the requested rune, not a saved variant`)
+        .toBe(options.runeId || '');
     if (key === 'right') {
         await page.mouse.click(target.x, target.y, { button: 'right' });
     } else {
@@ -304,7 +323,9 @@ async function castThroughInput(page, className, skillName, key, presentation, o
             skillName
         )
     ).length;
-    expect(snapshot.presentation.layerCount).toBe(expectedLayerCount);
+    expect(snapshot.presentation.layerCount,
+        `${className}/${skillName}/${options.runeId || 'base'} presentation: ${JSON.stringify({ rune: beforeInput.rune || '', snapshot })}`)
+        .toBe(expectedLayerCount);
     expect(snapshot.currentAnimation, `${className}/${skillName} animation snapshot: ${JSON.stringify(snapshot)}`)
         .toMatch(/^(Attack|Run|Walk)$/);
     expect(snapshot.missingClips).toEqual([]);
@@ -546,6 +567,9 @@ test.describe('real-input animation gameplay matrix', () => {
         const renderer = await assertHardwareRenderer(page);
         await ensureDungeonReadyLevel(page, 100);
         await selectGraphicsThroughSettings(page, 'high');
+        // Remove a saved base-ability rune while level100 allows the normal UI
+        // toggle, before the movement probe temporarily returns to level1.
+        await ensureBaseRune(page, className, matrix.base);
 
         // Charge owns its own authoritative movement. The other three base
         // abilities must cast while ordinary click-to-move remains monotonic.
