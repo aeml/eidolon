@@ -1,5 +1,9 @@
 # Integrated 1.1.0 development regression
 
+Draft notes, outstanding acceptance and publication steps are consolidated in
+the [1.1.0 release handoff](2026-09-12-1-1-release-handoff.md). It is not release
+approval or a substitute for the full roadmap.
+
 ## Latest accepted combined regression — September 12, 21:41 UTC
 
 CI34719685288 completed SUCCESS on exact
