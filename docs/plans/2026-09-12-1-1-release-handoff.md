@@ -33,6 +33,13 @@ acceptance. They are not the complete 1.1.0 change inventory.
   equipment and town recovery. Expandable menu sections retain native Enter/
   Space behavior without also opening chat or activating an ability.
   [Evidence](2026-09-12-dungeon-preparation-guidance.md).
+- Tripwire's damage and critical training affect triggered traps. Offline traps
+  deal their intended damage, respect friendly targets and control immunity,
+  expire correctly and cannot trigger through dungeon walls.
+  [Evidence](2026-09-12-tripwire-damage.md).
+- Healing spells aimed beneath overlapping enemies no longer accidentally
+  select a hostile and fail; explicit party healing targets remain respected.
+  [Evidence](2026-09-12-healing-cursor-target.md).
 
 The [combined regression record](2026-09-12-integrated-1-1-regression.md) identifies
 the exact tested integration. Component tests do not independently prove a full
@@ -43,10 +50,10 @@ dungeon clear, first-hour pacing or production delivery.
 - First-dungeon preparation guidance is accepted and merged from cf7f67a1 after
   full CI34722166310 on c09248c8 and desktop/phone screenshot inspection.
   Combined CI34723609678 now passes on802d216a.
-- Tripwire damage/training repair: preserve its separate gameplay proof, but
-  finish collateral status checks before integration. Shield and prepared
-  Rogue/Cleric support checks pass; the latter required the cursor-healing fix
-  in48713d22. Retain its draft note once full component acceptance is complete.
+- Tripwire/healing component2a6f18b4 is accepted after full CI34723986784 on
+  runtime48713d22, paid trap/shield/support native checks and all three stable
+  status collateral routes on50d2ea57. Merged through primarye6bedc73; fresh
+  combined regression remains required.
 - Delayed attack/PvP completion concurrency: candidate03aef5b2 fixes a race
   found by actual2v2 combat under the race detector. Repeated focused checks
   pass, but full CI34724352226 and integration remain pending. Do not describe

@@ -4,6 +4,20 @@ Draft notes, outstanding acceptance and publication steps are consolidated in
 the [1.1.0 release handoff](2026-09-12-1-1-release-handoff.md). It is not release
 approval or a substitute for the full roadmap.
 
+## Tripwire/healing integration — September 12, 23:19 UTC
+
+Merged accepted primarye6bedc73, including component2a6f18b4. Full CI34723986784
+passes on runtime48713d22: client417/6456/101.627s, game race348.863s and all
+three browser shards. Actual paid/trained/saved trap43530, complete entrance/
+shield86468, prepared support36250 and all three stable status routes75575
+close the identified component checks. See [acceptance](2026-09-12-tripwire-damage.md).
+The later status correction only stabilizes the test's temporary-stat conditions.
+
+Fresh combined regression is required for this merge and its additional QA
+stage. No version/public notes/deployment changed. PvP03aef5b2 is still separate
+pending full CI34724352226. Three newly reproduced Cleric utility Masteries
+remain an unaccepted diagnostic branch59cad46c, not part of this integration.
+
 ## Accepted preparation integration — September 12, 23:07 UTC
 
 CI34723609678 completed SUCCESS on exact
