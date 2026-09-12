@@ -228,7 +228,7 @@ run_animation_classes() {
       EIDOLON_E2E_PASSWORD="${QA_PASSWORD}" \
       EIDOLON_E2E_CLASS="${class_name}" \
       EIDOLON_E2E_REGISTER=1 \
-      npx playwright test tests/e2e/animation-gameplay.spec.js || return $?
+      npx playwright test tests/e2e/animation-gameplay.spec.js "$@" || return $?
   done
 }
 
@@ -599,6 +599,11 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   animations)
     run_animation_classes
+    ;;
+  animation-reuse)
+    # Both runs use the SAME disposable saved characters and server. The first
+    # leaves selected runes behind, just like the persistent live QA accounts.
+    run_animation_classes --repeat-each=2 --retries=0
     ;;
   multiplayer)
     run_animation_multiplayer

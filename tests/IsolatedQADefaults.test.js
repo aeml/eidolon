@@ -1,5 +1,24 @@
 import { readFileSync } from 'node:fs';
 
+test('saved-rune rehearsal repeats the same animation characters twice without retries or changing the full route', () => {
+    const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
+    expect(script).toContain('run_animation_classes --repeat-each=2 --retries=0');
+    expect(script).toContain('npx playwright test tests/e2e/animation-gameplay.spec.js "$@" || return $?');
+    const reuse = script.split('\n  animation-reuse)')[1].split('\n    ;;')[0];
+    expect(reuse).not.toContain('QA_USERNAME_BASE=');
+    expect(script).toContain('animations)\n    run_animation_classes');
+    expect(script.split('\n  all)')[1].split('\n    ;;')[0]).not.toContain('--repeat-each');
+});
+
+test('Teleport and Phase have a two-client no-retry route in the complete native gate', () => {
+    const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
+    expect(script).toContain('qa_allowlist+=",${QA_USERNAME_BASE}-teleport-protection,${QA_USERNAME_BASE}-teleport-protection-observer"');
+    const all = script.split('\n  all)')[1].split('\n    ;;')[0];
+    expect(all).toContain('run_qa_stage entrance-visibility run_entrance_visibility &&\n    run_qa_stage teleport-protection run_teleport_protection &&\n    run_qa_stage phone-quests run_phone_quests');
+    expect(script).toContain('teleport-protection)\n    run_teleport_protection');
+    expect(script).toContain('npx playwright test --retries=0 tests/e2e/teleport-protection-gameplay.spec.js');
+});
+
 test('the full gate includes Focus with independent allowlisted owner and observer', () => {
     const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
     expect(script).toContain('qa_allowlist+=",${QA_USERNAME_BASE}-focus-mastery,${QA_USERNAME_BASE}-focus-mastery-observer"');
