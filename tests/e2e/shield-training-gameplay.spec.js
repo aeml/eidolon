@@ -195,20 +195,27 @@ test('Shield mastery increases actual saved absorption, renders and expires thro
         return enemy ? game.player.position.distanceTo(enemy.position) : Infinity;
     }, target.id), 'Ordinary movement must reach the observed enemy before removing protection').toBeLessThan(3);
     const capacity = await cast(5, 'before-hostile-hit');
-    await command('/qa-protection off');
-    await expect.poll(() => page.evaluate(capacity => window.__shieldQA.snapshots.some(s => s.active && s.hp > 0 && s.hp < capacity), capacity), { timeout: 12_000 }).toBe(true);
-    const absorbed = await page.evaluate(capacity => {
-        const first = window.__shieldQA.snapshots.find(s => s.active && s.hp > 0 && s.hp < capacity);
-        return { remaining: first.hp, absorbed: capacity - first.hp };
+    await page.evaluate(async capacity => {
+        const { observeShieldAbsorption } = await import('/tests/shieldAbsorptionEvidence.js');
+        window.__shieldAbsorption = observeShieldAbsorption(window.game, capacity);
     }, capacity);
+    await command('/qa-protection off');
+    await expect.poll(() => page.evaluate(() => window.__shieldAbsorption.sample), { timeout: 12_000 }).not.toBeNull();
+    const absorbed = await page.evaluate(() => window.__shieldAbsorption.sample);
+    expect(absorbed).toMatchObject({ active: true, visual: true });
+    expect(absorbed.remaining).toBeGreaterThan(0);
+    expect(absorbed.remaining).toBeLessThan(capacity);
+    expect(absorbed.absorbed).toBe(capacity - absorbed.remaining);
+    await page.evaluate(() => window.__shieldAbsorption.stop());
     console.log('[shield-absorption-state]', JSON.stringify(await page.evaluate(() => {
         const p = window.game.player, now = performance.now();
         return { active: p.arcaneShieldActive, shieldHP: p.shieldHP, health: p.stats.hp,
             visual: p.attachedStatusEffects.has('arcane_shield'),
             snapshots: window.__shieldQA.snapshots.slice(-8).map(s => ({ ...s, ageMs: now - s.at })) };
     })));
-    expect(await page.evaluate(() => window.game.player.attachedStatusEffects.has('arcane_shield'))).toBe(true);
-    await page.screenshot({ path: testInfo.outputPath('shield-hostile-absorption.png') });
+    // Later attacks may already have depleted the shield. The same-moment
+    // observation above proves the partial shield's visual, not this later image.
+    await page.screenshot({ path: testInfo.outputPath('shield-after-hostile-hit.png') });
     console.log(`[shield-absorption] ${JSON.stringify(absorbed)}`);
     await returnToTown(page);
     if (process.env.EIDOLON_E2E_SCENERY_VISIBILITY === '1') {
