@@ -5,7 +5,70 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 12:11 UTC
+## Current checkpoint — September 12, 12:24 UTC
+
+Previous goal turn PROGRESS; this continuation PROGRESS. Revalidated terminal
+party evidence, verified actual Smoke Bomb purchases/persistence in native
+Chrome, and implemented independently scheduled party inputs. Full roadmap
+remains active; no release/version bump/production deployment/root push/soak
+changes. Primary/integrated remain clean aeb0356e.
+
+- **Party17214 TERMINAL FAILURE**, frozen a45a75f6, seed8963121954055646641,
+  gen2/attempt0/no fallback. Rogue died after164.191s of first Warden combat;
+  last periodic boss2517/15000HP, run6.6m. Earlier DemonOrc kill, all-four town
+  healing/mana and same saved instance resume passed. Fighter damage5498/taken
+ 3365, Wizard4791/368, Rogue6740/3496; Cleric5854 total effective ally healing,
+ 5221 during boss,23mana at death. Real timestamped receipts confirm selected
+  Rogue/Wizard received180HP direct heals plus100HP aura ticks; no lost-heal
+  inference from net HP. Rogue's last184damage hits repeatedly occurred near
+ 7.47units, some aligned to quake warnings. No clear/credit/Water acceptance.
+  Archive `/tmp/eidolon-party-receipts-failure-nVswij`, original
+  `/tmp/eidolon-party-receipts-fence-native-20260912.log`. CredentialscanPASS;
+  owned disposable services/ports cleared before Smoke native.
+- **Smoke native79336 TERMINAL PASS**, frozen a1daded9,
+  smokearea09121216, SystemChrome/sg render, zero retries:23.4stest/25.2stotal.
+  Normal phone Utility selection and five actual Fine Motor purchases with
+  paid points; rank0/high5, rank1/high5.15, rank5/low5.75, saved rank5/high5.75
+  after fresh login in landscape. Actual server radius and independently read
+  attached mesh radius/origin match; all casts paid35mana. Main agent inspected
+  landscape screenshot. Archive `/tmp/eidolon-smoke-trained-pass-yTU96H`;
+  `/tmp/eidolon-smoke-area-trained-native-20260912.log`; credentialscanPASS,
+  owned services cleared. This is scoped training verification, not earned
+  first-hour or all160 talent sign-off.
+  Candidate `/tmp/eidolon-1-1-smoke-area-native-20260912` now clean/dev-pushed
+  docs tip **dd4086f4c22e43e983ea673e36e05ff3246bf221**. New manual
+  **CI34693543419 ACTIVE** on that exact combined Smoke/fence/native-enrollment
+  source. No primary integration until complete hosted verification.
+- Corrected base Smoke **CI34692752460 STILL ACTIVE**, exact4b54d894:
+  actual client394suites6262PASS129.444s; server86.9%97.901s/race343.588s PASS.
+  Server log `/tmp/eidolon-smoke-area-fixed-ci-server-34692752460.log`.
+  Browser3 job103552263626SUCCESS; browser1/2 jobs103552263620/103552263622
+  running. Preserve earlier failed run34692398507; no blind rerun/cancellation.
+- Party test review found a round barrier: another role's next safety check
+  waited for the slowest browser's current movement/cast and the leader's turn.
+  `/tmp/eidolon-1-1-party-independent-inputs-20260912`, branch
+  `work/1-1-party-independent-inputs`, frozen clean
+  **a9979e5d7e3b54ce8528096cf8c42886634a31d3**, parenta45a75f6. Cleric/Wizard/
+  Rogue each own an independent SERIAL ordinary-input loop; Fighter remains
+  exclusively owned by original driver. No same-browser overlapping inputs.
+  Tank-hit opener, warning policies, legal builds, real casts, all survival,
+  credit/recovery/Water assertions retained. Workers stop/join before travel,
+  post-encounter snapshots or cleanup; original input/route failures propagate.
+  Five suites89PASS2.366s; assets/lint/diffPASS. Initial no-unsafe-finally lint
+  failure corrected by preserving the first error and rethrowing after cleanup,
+  not by suppressing lint. Logs `/tmp/eidolon-party-independent-{tests,assets,lint}-20260912.log`.
+  Detailed source/evidence in candidate `2026-09-12-party-independent-inputs.md`.
+- **Native8533 ACTIVE**, same frozen a9979e5d, partyindependent09121223,
+  party-dungeon, SystemChrome/sg render,18185/18186/41875. Latest owned API
+  image build running; no gameplay pass claimed. Log
+  `/tmp/eidolon-party-independent-native-20260912.log`. SINGLE GPU LANE
+  RESERVED; poll same8533, do not launch another native renderer.
+- Created but intentionally unmodified `/tmp/eidolon-1-1-death-spiral-area-20260912`,
+  branch `work/1-1-death-spiral-area`, clean4b54d894 with shared dependencies.
+  Inspection confirms remaining fixed4 radius ignores Fine Motor, but party
+  failure diagnosis took priority. NO Death Spiral repair/tests claimed.
+
+## Previous checkpoint — September 12, 12:11 UTC
 
 The previous conversational turn confirmed version naming only; this goal
 continuation is PROGRESS. Revalidated actual sessions/CI, integrated the fully
