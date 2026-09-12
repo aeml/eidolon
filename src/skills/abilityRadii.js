@@ -4,7 +4,7 @@ import { getAbilityAreaRadius, getFlameWhipRadius, getWizardAbilityAreaRadius, W
 export const SELF_CENTERED_SHAPE_ABILITIES = new Set([
     'Purifying Wave', 'Guardian Embrace', 'Consecrated Ground',
     'Blessing of Resolve', 'Blessing of Zeal', "Heaven's Trumpet",
-    'Spirit Guardians', 'Spirit Guardians Boost', 'Guardian Roar', 'Executioner Spin', 'Time Warp', 'Whirlwind', 'Juggernaut Charge', 'Smoke Bomb'
+    'Spirit Guardians', 'Spirit Guardians Boost', 'Guardian Roar', 'Executioner Spin', 'Time Warp', 'Whirlwind', 'Juggernaut Charge', 'Smoke Bomb', 'Death Spiral'
 ]);
 export const AUTHORITATIVE_SHAPE_ABILITIES = new Set(['Earthshaker', 'Teleport', 'Flame Whip', 'Radiant Strike', 'Healing Light', 'Shield Slam', 'Sweeping Strike', ...WIZARD_GROUND_ABILITIES, ...SELF_CENTERED_SHAPE_ABILITIES]);
 
@@ -88,6 +88,7 @@ export const AOE_BOUNDARY_VISUAL_TYPES = Object.freeze(new Set([
 
 export function getAbilityAoeRadius(className, canonicalSkillName, source = null) {
     if (className === 'Rogue' && canonicalSkillName === 'Smoke Bomb') return getAbilityAreaRadius(source, className, 5, canonicalSkillName);
+    if (className === 'Rogue' && canonicalSkillName === 'Death Spiral') return getAbilityAreaRadius(source, className, 4, canonicalSkillName);
     if (className === 'Wizard' && canonicalSkillName === 'Teleport') {
         return source?.skillRunes?.Teleport === 'teleport_warp' ? getWizardAbilityAreaRadius(source, 4) : null;
     }
@@ -111,6 +112,7 @@ export function getAbilityAoeRadius(className, canonicalSkillName, source = null
 
 export function getAbilityAoeArc(className, canonicalSkillName, source = null) {
     if (className === 'Rogue' && canonicalSkillName === 'Smoke Bomb') return 2 * Math.PI;
+    if (className === 'Rogue' && canonicalSkillName === 'Death Spiral') return 2 * Math.PI;
     if (className === 'Wizard' && canonicalSkillName === 'Teleport' && getAbilityAoeRadius(className, canonicalSkillName, source)) return 2 * Math.PI;
     if (className === 'Wizard' && canonicalSkillName === 'Time Warp') return 2 * Math.PI;
     if (className === 'Fighter' && ['Guardian Roar', 'Executioner Spin', 'Whirlwind', 'Juggernaut Charge'].includes(canonicalSkillName)) return 2 * Math.PI;

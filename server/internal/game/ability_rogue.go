@@ -700,7 +700,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			player.Mana -= cost
 			walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 
-			radius := 4.0
+			radius := effectiveAbilityAreaRadius(player, skillName, 4)
 			effectiveRadius := expandedAbilityRadius(skillName, radius)
 			damage := int(float64(player.Damage*2) * player.GetSkillDamageMultiplier("Death Spiral"))
 
@@ -767,7 +767,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			}
 			// BUG FIX: was setCooldown(20 * time.Second) without resolveAbilityCooldown
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 20*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityEvent(player.ID, targetID, skillName, player.X, player.Z, AbilityShape{Radius: radius, Arc: 2 * math.Pi})
 		}
 	} else if skillName == "Cloak & Vanish" {
 		// Stealth + Speed
