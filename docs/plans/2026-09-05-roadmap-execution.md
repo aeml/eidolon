@@ -5,7 +5,55 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 07:48 UTC
+## Current checkpoint — September 12, 08:06 UTC
+
+Previous goal turn PROGRESS; this continuation PROGRESS. Revalidated the
+unfinished Whirlwind reproduction, implemented its server/network/offline/visual
+radius consumers, verified focused behavior and started full hosted regression.
+The intervening version-number clarification did not itself implement anything.
+Full roadmap stays active; no 1.1 release, native or deployment acceptance claim.
+
+- Candidate `/tmp/eidolon-1-1-whirlwind-area-20260912`, branch
+  `work/1-1-whirlwind-area`, clean **876e70ce80cd5ad31eb2ec5a46d54aa15a6ecbaa**
+  (parent06f62f1b), pushed only to its development branch. Root/master NOT pushed.
+  **Hosted CI34682385242 QUEUED** at the exact candidate SHA, confirmed after
+  manual dispatch; no result yet. Publishing/native jobs retain manual guards.
+- Recovered RED log proves ten trained cases fail while two untrained controls
+  pass. Whirlwind FTR_04 and generic FTR_33/FTR_38 area training now reach both
+  actual pulse queries and hit checks: cast snapshot6..8.1, body padding/walls
+  preserved, later rank changes cannot resize an active spin, expiry resets.
+  Original mana/CDR, exact pulse damage budgets and rune duration remain.
+- Accepted event publishes radius/arc. New protobuf123 `whirlwind_radius`,
+  generated bindings, snapshots/scalar-only deltas and all THREE copy paths
+  retain public area. First expanded wire run caught missing `World.GetState`;
+  corrected the implementation, retained its failing assertion. Private pulse
+  budget/hit list stay excluded, inactive radius zero/no spurious delta.
+- Offline paid casts use matching trained geometry. High/Low presentation and
+  rank-private observers consume public radius. Accepted corrections resize the
+  same moving effect without resetting lifetime/animation; partial/legacy/invalid
+  state and event-after-snapshot cases covered. Existing late-tail protection
+  remains. No server area-only deployment ahead of visible geometry.
+- Final client **8 suites/130 PASS4.773s**; full lint passes. Final server race
+  **game9.010s/protocol1.763s**, including actual rank0/1/5 casts, generic0/5,
+  base/Extended, first/later edge hits, outside/wall negatives, ordinary one-point
+  purchases/sixth-rank rejection, all copies and protocol roundtrip/deltas.
+  Sessions35883/2907/12866/96602/62036/66793/85623/51031/15914/65995 terminal.
+  Logs `/tmp/eidolon-whirlwind-area-{server-accepted,client-final,lint-final,generate}-20260912.log`;
+  earlier RED/first-wire failure logs retained. Candidate doc
+  `docs/plans/2026-09-12-whirlwind-area-training.md` includes proposed1.1 patch
+  note and exact limitations. Existing native `dungeon-whirlwind` route still
+  lacks trained-purchase/fresh-login coverage: extend and execute before signoff.
+- Primary/integrated development remains clean06f62f1b pending hosted acceptance;
+  native Fighter owner/real-party candidate remains clean0f15acd8 and UNEXECUTED.
+  Do not infer native acceptance from focused tests or Playwright list discovery.
+- Production **CI34679633154 still ACTIVE**, native103517768800 full-character
+  gameplay; fresh process inspection confirms shield-training-gameplay.spec.js
+  running (PID3496498, observational only). Earlier client/server/all3 hosted
+  browsers pass. GPU remains reserved: no local native browser launched.
+  Public frontend/backend independently checked still **Alpha1.0.64/6d5e82cb**,
+  healthok/database ready; no65 live assertion. Soak schedule/runner untouched.
+
+## Historical checkpoint — September 12, 07:48 UTC
 
 Previous goal turn PROGRESS; this continuation PROGRESS. Completed hosted
 acceptance for the runtime candidate, integrated it into development, and
