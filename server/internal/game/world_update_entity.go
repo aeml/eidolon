@@ -980,12 +980,13 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 								continue
 							}
 							oldTX, oldTZ := target.X, target.Z
-							target.X += knockDx
-							target.Z += knockDz
-							if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(target, target.X, target.Z); ok {
-								target.X = constrainedX
-								target.Z = constrainedZ
+							endTX, endTZ := oldTX+knockDx, oldTZ+knockDz
+							// Constrain the full path while the entity still holds its
+							// original position, not only the possibly disconnected end.
+							if constrainedX, constrainedZ, ok := w.constrainDungeonMovementDestination(target, endTX, endTZ); ok {
+								endTX, endTZ = constrainedX, constrainedZ
 							}
+							target.X, target.Z = endTX, endTZ
 							w.Grid.Update(target, oldTX, oldTZ)
 							target.Mu.Unlock()
 						}

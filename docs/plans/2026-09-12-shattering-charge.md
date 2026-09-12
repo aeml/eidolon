@@ -60,6 +60,20 @@ Development follow-up to `7f584d68`; not included in Alpha 1.0.63.
 
 ## Remaining gates
 
+### Knockback path follow-up
+
+Review of the first wall correction found a second boundary: an enemy could be
+legally hit on the caster's floor, then be pushed across a gap into a disconnected
+room because only the knockback endpoint was constrained. New paid Shockwave
+tests reproduced this (closed-wall failure / open-doorway control, 0.074s):
+`/tmp/eidolon-shockwave-path-red-20260912.log`.
+
+The server now constrains the entire knockback path while the recipient still
+holds its pre-knockback position, then applies the legal endpoint. The same
+expanded charge family passed three times under race detection in **23.112s**,
+`/tmp/eidolon-shockwave-path-family-20260912.log`. This follow-up changes no client
+runtime. Full integration and publication remain required below.
+
 Full combined client/server integration (including pending Wizard, Time Warp and
 armor-reduction parents), native/browser appearance, earned pacing and release
 packaging remain required. The old offline ordinary Charge and its runes are

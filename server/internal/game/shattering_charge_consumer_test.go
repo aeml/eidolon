@@ -84,3 +84,29 @@ func TestChargeShockwaveCannotPushAcrossDungeonWall(t *testing.T) {
 		})
 	}
 }
+
+func TestChargeShockwaveStopsAtFirstWallAlongKnockback(t *testing.T) {
+	for _, doorway := range []bool{false, true} {
+		t.Run(fmt.Sprint(doorway), func(t *testing.T) {
+			w, p, target := directSkillWallFixture("Fighter", doorway)
+			defer w.StopBackground()
+			oldPX, oldTX := p.X, target.X
+			p.X, target.X = 50008, 50009
+			w.Grid.Update(p, oldPX, p.Z)
+			w.Grid.Update(target, oldTX, target.Z)
+			p.Level, p.UnlockedSkills, p.Mana = 100, []string{"Charge"}, 1000
+			p.SkillRunes = map[string]string{"Charge": "charge_shockwave"}
+			if result := w.PerformAbility(p.ID, p.X, p.Z, "", "Charge"); !result.Accepted {
+				t.Fatalf("paid shockwave rejected: %+v", result)
+			}
+			w.updateEntity(p, .1, nil, &deferredActions{})
+			want := 50010.0 // First room edge; never skip the gap to the next floor.
+			if doorway {
+				want = 50013
+			}
+			if target.Health >= 10000 || math.Abs(target.X-want) > 1e-8 {
+				t.Fatalf("shockwave x=%v want=%v hp=%d", target.X, want, target.Health)
+			}
+		})
+	}
+}
