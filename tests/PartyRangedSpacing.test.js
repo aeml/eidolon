@@ -1,9 +1,24 @@
 import { planPartyRangedSpacing } from './partyRangedSpacing.js';
+import { partyFormationArrival } from './partyDungeonControls.js';
+import { groundMovementObserved } from './groundMovementObservation.js';
 
 const state = { x: 7.5, z: 0, radius: 1.25 };
 const enemy = { x: 0, z: 0, range: 20.5 };
 const healer = { x: 12, z: 4, range: 14 };
 const distance = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
+
+test('the observed Warden spacing click accepts actual near-destination arrival, not arbitrary short movement', () => {
+    const before = { x: 19960.0328721533, z: 19510.395970053178,
+        instanceId: 'warden-replay', instanceType: 'verdant_bastion_catacombs' };
+    const after = { ...before, x: 19960.981760892733, z: 19510.28419862083, state: 'IDLE', health: 855 };
+    const step = { dx: 1.0563231421620003, dz: -.05317695823760005 };
+    const arrival = partyFormationArrival(before, step, before.instanceId);
+    expect(groundMovementObserved(before, after, 1)).toBe(false);
+    expect(groundMovementObserved(before, after, 1, arrival)).toBe(true);
+    expect(groundMovementObserved(before, { ...after, x: before.x + .5 }, 1, arrival)).toBe(false);
+    expect(groundMovementObserved(before, { ...after, instanceId: 'elsewhere' }, 1, arrival)).toBe(false);
+    expect(groundMovementObserved(before, { ...after, state: 'DEAD' }, 1, arrival)).toBe(false);
+});
 
 test('a ranged actor leaves melee while remaining inside actual attack and heal ranges', () => {
     const step = planPartyRangedSpacing(state, enemy, healer);

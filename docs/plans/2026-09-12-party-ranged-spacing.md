@@ -27,3 +27,23 @@ The12unit bound and full-path rejection are unchanged. Six expanded suites
 `/tmp/eidolon-party-ranged-spacing-{tests,expanded,lint,assets}-20260912.log`.
 Full native four-player replay is required; no clear/quest-credit/Water-handoff
 acceptance follows from these planning tests.
+
+Replay7792 on3b63d861 terminatedFAILED17.5m, seed-7740520249466063783/gen2/
+attempt0/no fallback. Two Skeleton packs and two all-member town recoveries/
+saved reentries passed. The first Warden remained alive (last periodic12291HP)
+when a Wizard spacing step failed44.342s into combat. All four survived; final
+Fighter786HP, Cleric768HP, Wizard/Rogue855HP. Actual0.95545unit walking toward a
+1.05766unit destination ended normally near the destination, but the default
+movement helper demanded more than one unit. This is input verification failure,
+not proof of a blocked character or viable final boss balance.
+Archive `/tmp/eidolon-party-ranged-failure-cxYrjI`; original native log above.
+Credential scan sanitized2files; owned containers and ports cleared.
+
+Spacing now supplies the existing explicit same-instance arrival region used by
+party formation. The0.25unit radius is unchanged; no larger range, forced click,
+movement assignment or encounter-boundary relaxation. The recorded numeric
+failure is covered alongside wrong-position/instance/death rejection. A fresh
+full native replay is still required; this does not turn the failed run green.
+
+Corrected arrival integration: five suites120tests passed1.080s, full lint/diff
+passed. Logs `/tmp/eidolon-party-ranged-arrival-{tests,lint}-20260912.log`.

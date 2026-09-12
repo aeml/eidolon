@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 import { PARTY_ROLES, partyDungeonCharacter, requireIsolatedPartyFixture } from '../partyDungeonFixture.js';
 import { dungeonPlaythroughOptions } from '../dungeonPlaythroughCatalog.js';
-import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyWarningInputPolicy } from '../partyDungeonControls.js';
+import { gatherPartyFormation, PARTY_FOLLOW_INPUT_OPTIONS, partyFollowStep, partyWarningInputPolicy, partyFormationArrival } from '../partyDungeonControls.js';
 import { attackPartyDamageTarget, selectPartyDamageBuff } from '../partyDamageRoleControls.js';
 import { runPartyRoleInputs } from '../partyRoleScheduling.js';
 import { startPartyCombatWorkers } from '../partyCombatWorkers.js';
@@ -339,11 +339,12 @@ test('four level30 roles clear Normal Verdant through real party inputs and rece
                 const step = planPartyRangedSpacing(origin, target, healing, delta =>
                     retreatStaysInEncounter(encounter, { x: origin.x + delta.dx, z: origin.z + delta.dz }, origin.radius) &&
                     isEarnedRetreatPathClear(g.collisionManager, p.position, origin.radius, { x: delta.dx, z: delta.dz }), bodies);
-                return step && { origin, target, healing, step };
+                return step && { origin, target, healing, step, instanceId: g.currentInstanceId };
             }, { id: target.id, encounter: target.encounter, support });
             if (!plan) return false;
             const moved = await tryDungeonGroundStep(() => moveByGroundClick(actor.page, plan.step.dx, plan.step.dz,
-                { ...PARTY_FOLLOW_INPUT_OPTIONS, allowAlternatePaths: false, requireClearPath: true, timeout: 1500 }));
+                { ...PARTY_FOLLOW_INPUT_OPTIONS, allowAlternatePaths: false, requireClearPath: true, timeout: 1500,
+                    arrival: partyFormationArrival(plan.origin, plan.step, plan.instanceId) }));
             await actor.page.evaluate(({ plan, moved }) => {
                 const g = window.game, p = g.player, records = window.__partyClearEvidence.recentRangedSpacing;
                 records.push({ ...plan, moved, at: Date.now(), after: { x: p.position.x, z: p.position.z, dead: p.state === 'DEAD' } });
