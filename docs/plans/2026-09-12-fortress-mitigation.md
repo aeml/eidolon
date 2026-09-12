@@ -36,6 +36,70 @@ four-role dungeon replay, other encounter types and merged regression remain
 required before release. Item quantization and tank threat/positioning remain
 separate open issues; this change must not conceal failed dungeon evidence.
 
+## Verification updates
+
+Full CI34706648689 SUCCESS on50944fc2:405client suites6327tests114.363s;
+game86.9% coverage104.409s and race354.744s; browser40+53+26=119actual passes.
+Native/deploy steps were skipped on this development dispatch. Logs
+`/tmp/eidolon-fortress-mitigation-ci-{client,server,browser1,browser2,browser3}-34706648689.log`.
+This CI predates the incoming native gate and the special-path correction below.
+
+The four-player run36216 on frozenbae69eeb failed16.2m on
+seed-7217624267168898228 (generator2, attempt0, no fallback). Rogue died at the
+first Warden; last sampled boss HP4238/15000. Fighter survived678/855HP. Healer
+had228mana and was7.46units from Rogue at death, but earlier records show its
+heals were on cooldown after a real targeted cast. This is not the previous
+low-mana failure. TotalFighter5513damage/3968taken, Cleric4048allyhealing/736taken,
+Wizard4664/0, Rogue7276/1584. Last Rogue hits were184physical from the Warden
+at7.48units, consistent with ordinary melee range; do not infer invisible
+telegraphs. Actual threat/spacing and healing cadence still need diagnosis.
+Archive `/tmp/eidolon-party-fortress-mitigation-failure-Kwmr8z`; native log
+`/tmp/eidolon-party-fortress-mitigation-native-20260912.log`; scan0 and owned
+container/image/port cleanup pass. No clear, individual credit or Water handoff.
+
+### Environmental and reflected incoming damage
+
+A follow-up audit of direct Health subtraction found world hazards and reflection
+outside the shared receiving pipeline. The original claim of all incoming
+reduction was therefore incomplete. A shared lock-owned Fortress-only helper now
+also protects these paths with the same active/future-deadline check. Existing
+hazard percentage calculation, independent QA protection, shield bypass and
+nonrecursive reflection behavior are unchanged; event receipts report the actual
+reduced HP loss. No new reflection/absorption effects are introduced here.
+
+Actual paid casts first failed: hazard loss82 versus65 and reflection100 versus80;
+expired controls passed. Final focused hazard/Fortress/reflection/receiving race
+passes13.828s. Reflection uses an actual paid level70 Thorns-rune cast and checks
+that receiving reflected damage does not retaliate again. Logs
+`/tmp/eidolon-fortress-special-incoming-{red,race}-20260912.log`.
+This runtime follow-up needs new full CI/native/merged verification; neither
+the earlier green CI nor the failed party build includes it.
+
+### Incoming-hit native gate (not yet run)
+
+The existing non-retrying Fortress route now additionally approaches a real
+overworld Skeleton through move-only ground input after its saved-rune check.
+It observes three positive physical receipts from the same enemy unbuffed,
+normally pays40mana for the saved Extended Fortress, then compares three real
+incoming receipts with the armor-adjusted20% reduction. After natural expiry,
+three more hits must return to their original damage and armor, with no buff
+effect remaining. Recall must succeed without death/respawn. The prepared
+level100 account is not an earned-progression or dungeon-balance claim.
+
+The existing protection-off QA command explicitly primes nearest-hostile threat
+and the initial normal swing; subsequent combat is ordinary AI. No HP/damage,
+buff duration, clocks or combat-time resource refills are injected. Observations
+retain complete source/target/amount receipts and local armor/timer/effect state;
+the timer-boundary race itself remains a server receiving-pipeline assertion,
+not something inferred from asynchronous browser timestamps.
+
+Observer RED3failed/4passed (missing receipts and a reproduced duplicate wrapper
+under layered movement observation); document-owned installation fixes duplicate
+recording without changing real message delivery. Final4suites73testsPASS9.834s,
+changed-file lint and diff pass. Native gate still queued behind the active
+four-player run; authoring a gate is not a passing runtime result.
+Logs `/tmp/eidolon-fortress-impact-{observer-red,gate-tests}-20260912.log`.
+
 ## Proposed 1.1 patch note
 
 Iron Fortress now consistently reduces incoming damage by20%, alongside its

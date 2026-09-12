@@ -28,7 +28,7 @@ test('reinstall resets observations without wrapping the same handler twice', ()
     expect(receive).toHaveBeenCalledTimes(1);
     expect(window.__fortressNative.maxDuration).toBe(35.9);
     installIronFortressObserver();
-    expect(window.__fortressNative).toEqual({ results: [], maxDuration: 0, expired: false });
+    expect(window.__fortressNative).toMatchObject({ results: [], maxDuration: 0, expired: false, incoming: [] });
 });
 
 test('only explicit owner state establishes duration and subsequent expiry', () => {
@@ -51,7 +51,31 @@ test('rejected casts remain rejected and cannot fabricate a duration', () => {
     documentFixture(); installIronFortressObserver();
     window.game.handleServerMessage({ type: 'ability_result', payload: { skillName: 'Iron Fortress', accepted: false } });
     window.game.handleServerMessage({ type: 'ability_result', payload: { skillName: 'Charge', accepted: true } });
-    expect(window.__fortressNative).toEqual({ results: [{ skillName: 'Iron Fortress', accepted: false }], maxDuration: 0, expired: false });
+    expect(window.__fortressNative).toMatchObject({ results: [{ skillName: 'Iron Fortress', accepted: false }], maxDuration: 0, expired: false });
+});
+
+test('incoming receipts retain real source, amount and post-delivery protection without fabricating HP changes', () => {
+    const receive = documentFixture();
+    Object.assign(window.game.player, { stats: { hp: 900, defense: 6 }, ironFortressTimer: 20,
+        attachedStatusEffects: new Map([['iron_fortress', {}]]) });
+    installIronFortressObserver();
+    const payload = { sourceId: 'skeleton', targetId: 'owner', amount: 24, kind: 'physical' };
+    window.game.handleServerMessage({ type: 'damage', payload });
+    window.game.handleServerMessage({ type: 'damage', payload: { ...payload, targetId: 'other' } });
+    expect(receive).toHaveBeenCalledTimes(2);
+    expect(window.game.player.stats.hp).toBe(900);
+    expect(window.__fortressNative.incoming).toEqual([expect.objectContaining({ ...payload,
+        defense: 6, timer: 20, effectAttached: true, health: 900 })]);
+});
+
+test('layered movement observation cannot install duplicate combat observers', () => {
+    const receive = documentFixture(); installIronFortressObserver();
+    const inner = window.game.handleServerMessage;
+    window.game.handleServerMessage = message => inner(message);
+    installIronFortressObserver();
+    window.game.handleServerMessage({ type: 'ability_result', payload: { skillName: 'Iron Fortress', accepted: true } });
+    expect(receive).toHaveBeenCalledTimes(1);
+    expect(window.__fortressNative.results).toHaveLength(1);
 });
 
 test('an original handler error is not converted to success', () => {

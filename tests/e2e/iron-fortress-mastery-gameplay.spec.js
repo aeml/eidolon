@@ -1,13 +1,14 @@
 import { devices, expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld } from './helpers.js';
 import { installIronFortressObserver } from './iron-fortress-observer.js';
+import { verifyFortressIncoming } from './iron-fortress-incoming.js';
 
 test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true,
     userAgent: devices['Pixel 7'].userAgent, actionTimeout: 12_000,
     trace: 'off', screenshot: 'off', video: 'off' });
 
 test('Iron Fortress Mastery purchases extend visible protection and persist with Extended through login', async ({ page, baseURL }, testInfo) => {
-    test.setTimeout(300_000);
+    test.setTimeout(420_000);
     test.skip(process.env.EIDOLON_E2E_REGISTER !== '1', 'Requires the isolated Iron Fortress route');
     const credentials = credentialsFromEnvironment(), failures = collectBrowserFailures(page, baseURL);
     await loginAndEnterWorld(page, credentials);
@@ -121,5 +122,6 @@ test('Iron Fortress Mastery purchases extend visible protection and persist with
     expect(await page.evaluate(() => window.game.player.talentPoints)).toBe(points);
     await page.setViewportSize({ width: 844, height: 390 });
     await cast(5, 'ironfortress_extended', 'low', true);
+    await verifyFortressIncoming(page, command, testInfo);
     expect(failures, failures.join('\n')).toEqual([]);
 });
