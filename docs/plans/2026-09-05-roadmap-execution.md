@@ -5,7 +5,63 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 11:36 UTC
+## Current checkpoint — September 12, 11:46 UTC
+
+Previous goal turn PROGRESS; this continuation PROGRESS. Integrated verified
+boot/auth recovery, implemented a surface-preserving fence rendering
+optimization and initiated its hosted verification. Full roadmap remains active;
+no production deployment/version bump/root push or soak changes.
+
+- **Style CI34690667637 TERMINAL SUCCESS**, exactea772f90. Previously read
+  client393suites6244tests121.719s,game86.9%98.496s/race341.886s; remaining
+  actual browser logs now prove40+50+28=118PASS. Native/deploy/live jobs
+  SKIPPED. Logs `/tmp/eidolon-style-boot-ci-{client,server,browser1,browser2,browser3}-34690667637.log`.
+  Both primary `/tmp/eidolon-primary-merged-20260911` and integrated
+  `/tmp/eidolon-1-1-integrated-regression-20260912` were checked clean and
+  fast-forwarded61fd4b96→**ea772f9008c704bf9dccd306d869dce8694e720c**.
+  This accepts scoped runtime recovery, not the full1.1release gate.
+- New `/tmp/eidolon-1-1-town-fence-batching-20260912`, branch
+  `work/1-1-town-fence-batching`, clean/dev-pushed
+  **aeb0356e2681c5c22543c6ed0bf788019505921d**,parentea772f90. Source inspection
+  identified town fence736meshes/736identicalmaterials. Merge unchanged box
+  surfaces into32-unit local spatial buckets: **26meshes/1material**, same
+ 184colliders and4gate gaps. Small batches retain culling; local vertices
+  retain precision at distant coordinates; temporary geometries disposed.
+  Does not change shadows, remove visual detail, alter collision, or reduce
+  graphics quality. Not a claim that fence alone explains earlier frame stalls.
+- New tests compare EVERY indexed triangle's position,normal,UV,winding in
+  world space and every collider to original renderer at three size/offset
+  cases, including20,000coordinates. RED4fails; GREEN2suites25PASS6.729s;
+  expanded5suites46PASS13.067s; browser enrollment3suites21PASS2.211s.
+  Lint/assets/diffPASS. Logs
+  `/tmp/eidolon-town-fence-{red,green,expanded,lint,assets,enrollment}-20260912.log`.
+  Native rendering NOTexecuted: new enrolled anonymous
+  `tests/e2e/town-fence-render.spec.js` compares old/new actual WebGL images,
+  shadows, draw counts, preserves both image attachments and JSONmetrics.
+  Its pixel/draw assertions are authored, not passing evidence yet.
+- **CI34691877282 ACTIVE**, frozenaeb0356e, manually dispatched via
+  `gh workflow run ci.yml --ref work/1-1-town-fence-batching`. CI push trigger
+  only coversmaster/main, so dev push itself did not create CI (only separate
+  Cloudflare preview check). Do not assume dev pushes start hosted verification.
+  This manual CI does not deploy production. Fence not primary-integrated.
+- Next native profiling worktree prepared:
+  `/tmp/eidolon-1-1-fence-frame-profile-20260912`, branch
+  `work/1-1-fence-frame-profile`, clean**30783498**,parentaeb0356e plus port9b.
+  Six focused suites55PASS5.943s; assets/lint/diffPASS; session58542terminal0.
+  Logs `/tmp/eidolon-fence-frame-{preflight,assets,lint}-20260912.log`.
+  Native NOTstarted/notpushed. After current party lane terminates and services
+  clear, run unchangedanimation-reuse/Wizard2repeats0retries; compare original
+  17/29frame profiles without claiming guaranteed FPS or relaxing thresholds.
+- **Party6805 STILL ACTIVE**, samefrozenb9f3e4f7,tankpriority09121135,
+  SystemChrome/sg render,18185/18186/41875. Seed**1623699781862383209**,
+  generator2/attempt0/no fallback. All4roles entered; two Skeleton packs
+  cleared; two real town healing/mana/resume trips retained saved progress.
+  Latestelapsed538.3s,66leadersteps/4roomtraversals/2townreturns, allalive;
+  traversing toward first boss. No boss clear or finalcredit/Water acceptance.
+  Log `/tmp/eidolon-party-tank-priority-native-20260912.log`. Single GPU lane
+  RESERVED; poll same6805 handle, no concurrent native renderer tests.
+
+## Previous checkpoint — September 12, 11:36 UTC
 
 Previous goal turn PROGRESS; this continuation PROGRESS. Retained the full
 1.1.0–1.10.0 scope. Verified terminal party evidence, completed the recovered
