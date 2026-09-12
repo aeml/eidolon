@@ -25,7 +25,12 @@ func TestPaidHostileAbilitiesRespectArcaneShield(t *testing.T) {
 				source.UnlockedSkills = []string{attack.skill}
 				defender.UnlockedSkills = []string{"Arcane Shield"}
 				source.Stats.Strength, source.Stats.Intelligence, source.Stats.Wisdom = 10, 10, 10
-				defender.Stats.Intelligence = 100
+				// Slow/stun applications recalculate the defender. Start from
+				// real derived maxima, not the helper's arbitrary 500 HP, so
+				// resource normalization cannot masquerade as shield bypass.
+				defender.BaseStats.Intelligence = 100
+				defender.RecalculateStats()
+				defender.Health, defender.Mana = defender.MaxHealth, defender.MaxMana
 				w := newPvPTestWorld(source, defender)
 				defer w.StopBackground()
 				challenge, err := w.RequestDuel(source.ID, defender.ID)
