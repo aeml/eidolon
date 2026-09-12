@@ -5,7 +5,24 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 21:39 UTC
+## Current checkpoint — September 12, 21:41 UTC
+
+Fresh progress: **Briar Matron defeated** on original health in native15051,
+55.19s encounter (1095438→1150630ms), all four survival checks passed. Fighter
+5319damage/914taken, Cleric565ally healing/192taken, Wizard5891damage,
+Rogue5646damage. This moves beyond the earlier weak-gear Matron failure without
+stat scaling or the provisional boss nerf. Four town rests now observed; the
+remaining bosses/full clear/individual credit/Water handoff are still pending.
+
+**CI34719685288 now SUCCESS** on exact0087e4de, all client/server/browser jobs;
+manual native/deploy/live skipped. Client414/6408/135.680s; game coverage
+102.032s/86.9%, race361.096s. Full logs now successfully downloaded to
+`/tmp/eidolon-integrated-desktop-ci-{client,server,browser1,browser2,browser3}-34719685288.log`,
+replacing the previously empty client/server attempts. Combined regression
+acceptance recorded in its integration worktree. Guidance CI34720519281 still
+ACTIVE with client/server running; no browser or visual acceptance yet.
+
+## Historical checkpoint — September 12, 21:39 UTC
 
 Previous goal turn VERIFIED WAIT: polled native15051 live without changing or
 restarting it. This continuation PROGRESS: finished the first-dungeon preparation
