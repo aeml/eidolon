@@ -5,7 +5,51 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 13:10 UTC
+## Current checkpoint — September 12, 13:15 UTC
+
+This continuation remains PROGRESS. Party7792 is now terminal, its exact input
+verification failure is retained and corrected locally; queued Earthshaker
+native now owns the GPU. Primary/integrated remain clean064704cb; full roadmap
+active, no production/version/root push/soak change.
+
+- **Party7792 TERMINAL FAILURE17.5m**, same3b63d861/seed-7740520249466063783.
+  Two Skeleton packs and two all-member town recovery/saved reentries passed.
+  First Warden remained alive (last periodic12291HP) when Wizard's movement
+  verification failed44.342s into combat. All four survived: final Fighter786HP,
+  Cleric768HP, Wizard/Rogue855HP. Actual0.95545unit movement toward a1.05766unit
+  destination stopped normally near the goal; default helper required>1unit.
+  This is not a character death, blocked-control proof or final balance pass.
+  Final effective healer total3821; retained actual spacing receipts show legal
+  ranged repositioning, not a completed dodge/clear. Archive
+  `/tmp/eidolon-party-ranged-failure-cxYrjI`; original
+  `/tmp/eidolon-party-ranged-spacing-native-20260912.log`. Credential scan
+  sanitized2files; owned services/ports clear before next run. No final combat
+  screenshot was captured; do not invent one from the initial roster image.
+- Party WT now clean **0bf10df66fee95fce4bd50cc57875ff1993cac28**, not pushed.
+  Supplies existing same-instance `partyFormationArrival` to ranged ground
+  inputs with unchanged0.25unit destination radius. No arbitrary minimum
+  displacement reduction, larger reach, forced input or position assignment.
+  Numeric observed case plus wrong destination/instance/death controls included.
+  Five suites120PASS1.080s, lint/diffPASS; session75488terminal0. Logs
+  `/tmp/eidolon-party-ranged-arrival-{tests,lint}-20260912.log`. Full corrected
+  party replay pending, not retrospectively credited to failed7792.
+- **Earthshaker63410 ACTIVE — only owned native GPU lane**, frozen clean
+ 6263f4e8 in `/tmp/eidolon-1-1-fighter-area-native-current-20260912`.
+  RunIDearthshaker09121313, routeearthshaker-area, SystemChrome/sg render,
+ 18185/18186/41875. Browser executing purchased rank/rune scenario, no terminal
+  result yet. Log `/tmp/eidolon-earthshaker-current-native-20260912.log`.
+  Poll same63410; do not edit its source or start party/Whirlwind/buff/Roar
+  browser checks until terminal and owned cleanup confirmed.
+- Fighter buff **CI34695408928 ACTIVE**,6814147c: actual client398suites
+ 6276tests128.997s, `/tmp/eidolon-fighter-buff-current-ci-client-34695408928.log`;
+  server/browser remain required. Purchase recovery **CI34695573901 ACTIVE**,
+  a6b7d307: actual client396suites6271tests123.707s,
+  `/tmp/eidolon-purchase-recovery-current-ci-client-34695573901.log`;
+  server/browser/native still required. Fortress corrected34694694526 and
+  Fighter area34695174069 still require complete browser results. No acceptance
+  inferred from partial CI. Other full1.1 and1.2–1.10 requirements unchanged.
+
+## Previous checkpoint — September 12, 13:10 UTC
 
 Previous turn PROGRESS; this continuation PROGRESS. Accepted Death Spiral after
 full CI/native proof, prepared real-owner/party Fighter buff verification, and
