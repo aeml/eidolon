@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { CONSTANTS } from '../../src/core/Constants.js';
+import { readAnimationPresentation } from '../animationPresentationRecord.js';
 import {
     PLAYER_ABILITY_VISUALS,
     getAbilityRuneVariants,
@@ -231,20 +232,19 @@ async function castThroughInput(page, className, skillName, key, presentation, o
         });
     }
     await page.mouse.move(target.x, target.y);
-    const previousTimestamp = await page.evaluate(() =>
-        window.game?.player?.lastAbilityPresentation?.timestamp || -1
-    );
+    const previousTimestamp = (await page.evaluate(readAnimationPresentation, skillName))?.timestamp ?? -1;
     if (key === 'right') {
         await page.mouse.click(target.x, target.y, { button: 'right' });
     } else {
         await page.keyboard.press(key);
     }
 
+    let acceptedPresentation = null;
     try {
-        await expect.poll(() => page.evaluate(({ expectedSkill, previous }) => {
-            const record = window.game?.player?.lastAbilityPresentation;
-            return Boolean(record?.skillName === expectedSkill && record.timestamp > previous);
-        }, { expectedSkill: skillName, previous: previousTimestamp }), {
+        await expect.poll(async () => {
+            acceptedPresentation = await page.evaluate(readAnimationPresentation, skillName);
+            return Boolean(acceptedPresentation?.skillName === skillName && acceptedPresentation.timestamp > previousTimestamp);
+        }, {
             message: `${className}/${skillName} must create its production presentation through real input`,
             timeout: 8_000,
             intervals: [25, 50, 100, 200]
@@ -261,6 +261,7 @@ async function castThroughInput(page, className, skillName, key, presentation, o
                 cooldowns: player?.cooldowns,
                 hotbar: player?.hotbar,
                 presentation: player?.lastAbilityPresentation,
+                authoritativePresentation: player?.lastRemoteAbilityPresentation,
                 activeElement: document.activeElement?.id || document.activeElement?.tagName,
                 pendingInteraction: game?.pendingInteraction?.id,
                 animation: player?.currentAnimationName,
@@ -285,7 +286,6 @@ async function castThroughInput(page, className, skillName, key, presentation, o
             }
         });
         return {
-            presentation: player?.lastAbilityPresentation || null,
             currentAbility: player?.currentAbilityAnimation?.skillName || null,
             currentAnimation: player?.currentAnimationName || null,
             missingClips: [...(player?.missingAnimationClips || [])],
@@ -294,6 +294,7 @@ async function castThroughInput(page, className, skillName, key, presentation, o
             nonFiniteTransforms
         };
     });
+    snapshot.presentation = acceptedPresentation;
     const expectedLayerCount = presentation.layers.filter((entry) =>
         isAbilityVisualLayerEnabled(
             entry,
