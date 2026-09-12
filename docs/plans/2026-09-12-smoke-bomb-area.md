@@ -54,4 +54,15 @@ accepted server radius, independently measured attached mesh radius and cast
 origin; a fresh login must retain rank/points and produce the trained shape in
 landscape. No synthetic talent assignments or earned-progression claim.
 Observer tests retain rejected/missing-mesh evidence and single delivery across
-reinstallation. This route is authored, not native-passing evidence yet.
+reinstallation.
+
+Native run79336 on frozen **a1daded9**, smokearea09121216, passed23.4 seconds
+(25.2 seconds total) with System Chrome and zero retries. All four paid casts
+passed: rank0/high5, rank1/high5.15, rank5/low5.75 and saved rank5/high5.75
+after fresh login in landscape. The actual attached mesh and accepted server
+radius matched; point spending and retained ranks passed. Main agent inspected
+the landscape screenshot. Archive `/tmp/eidolon-smoke-trained-pass-yTU96H`;
+log `/tmp/eidolon-smoke-area-trained-native-20260912.log`. Credential scan
+passed and owned disposable services were removed. Five focused suites64tests
+passed2.516 seconds with lint/assets/syntax/diff checks. This is scoped training
+verification, not first-hour progression, full-tree sign-off or deployment.
