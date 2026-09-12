@@ -6,7 +6,7 @@ import { clipDungeonEffectSegment } from './dungeonEffectGeometry.js';
 export function applyOfflineSmokeBomb(source, engine) {
     if (source.isRemote || source.isMultiplayer || engine.isMultiplayer || source.gameEngine?.isMultiplayer) return;
     const radius = getAbilityAoeRadius('Rogue', 'Smoke Bomb', source);
-    const duration = getRogueEffectDuration(source, 5);
+    const duration = getRogueEffectDuration(source, 5, 'Smoke Bomb');
     const rects = engine.currentInstanceId && engine.currentInstanceType !== 'overworld'
         ? engine.currentDungeonLayout?.walkRects : null;
     for (const target of new Set(engine.chunkManager.getActiveEntities())) {
