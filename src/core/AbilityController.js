@@ -270,7 +270,10 @@ export class AbilityController {
         // Determine target (mouse cursor)
         let targetPos = null;
         let targetEntity = null;
-        if (this.engine.hoveredEntity && this.engine.hoveredEntity !== player && this.engine.hoveredEntity.state !== 'DEAD' && !(this.engine.hoveredEntity instanceof DwarfSalesman)) {
+        // Hover is sampled separately from input; a projectile or actor may
+        // have expired since that sample. Fresh input can still aim at ground.
+        // Captured buffered actor intent is validated separately below.
+        if (this.engine.hoveredEntity && this.engine.hoveredEntity.isActive !== false && this.engine.hoveredEntity !== player && this.engine.hoveredEntity.state !== 'DEAD' && !(this.engine.hoveredEntity instanceof DwarfSalesman)) {
             targetEntity = this.engine.hoveredEntity;
             targetPos = targetEntity.position;
         } else {
@@ -316,7 +319,7 @@ export class AbilityController {
             let lookAtPos = null;
             if (targetVectorOverride) {
                 lookAtPos = targetVectorOverride;
-            } else if (engine.hoveredEntity && engine.hoveredEntity !== player && engine.hoveredEntity.state !== 'DEAD' && !(engine.hoveredEntity instanceof DwarfSalesman)) {
+            } else if (engine.hoveredEntity && engine.hoveredEntity.isActive !== false && engine.hoveredEntity !== player && engine.hoveredEntity.state !== 'DEAD' && !(engine.hoveredEntity instanceof DwarfSalesman)) {
                 lookAtPos = engine.hoveredEntity.position;
             } else {
                 const point = engine.inputManager.getGroundIntersection();
@@ -493,7 +496,7 @@ export class AbilityController {
             return;
         }
 
-        if (engine.hoveredEntity && engine.hoveredEntity !== player && engine.hoveredEntity.state !== 'DEAD') {
+        if (engine.hoveredEntity && engine.hoveredEntity.isActive !== false && engine.hoveredEntity !== player && engine.hoveredEntity.state !== 'DEAD') {
             if (engine.hoveredEntity instanceof DwarfSalesman) return;
 
             const dist = this.getAbilityTargetDistance(engine.hoveredEntity, castSkillName);

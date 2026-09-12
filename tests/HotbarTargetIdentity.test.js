@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { jest } from '@jest/globals';
 import { AbilityController } from '../src/core/AbilityController.js';
+import { Wizard } from '../src/entities/Wizard.js';
 
 function fixture() {
     const player = { id: 'rogue', constructor: { name: 'Rogue' }, subType: 'Rogue',
@@ -29,6 +30,47 @@ test('a ground hotbar cast remains an explicit ground cast', () => {
     expect(engine.network.send).toHaveBeenCalledWith('ability', {
         targetId: '', targetX: 3, targetZ: 2, skillName: 'Shadow Lunge'
     });
+});
+
+test.each(['hotbar', 'primary'])('%s casts beneath an expired Meteor through the real Wizard implementation', input => {
+    const { engine } = fixture();
+    const player = new Wizard('wizard');
+    player.mesh = new THREE.Group();
+    player.isMultiplayer = true;
+    player.stats.mana = 1000;
+    player.unlockedSkills.push('Inferno Cataclysm');
+    player.hotbar = ['Inferno Cataclysm'];
+    engine.player = player;
+    engine.spawnTransientEffect = jest.fn(() => true);
+    engine.showReadabilityFeedback = jest.fn();
+    engine.hoveredEntity = { id: 'proj-meteor-expired', isActive: false, state: '', position: new THREE.Vector3(9, 4, 9) };
+    const controller = new AbilityController(engine);
+    engine.abilityController = controller;
+    const skill = input === 'hotbar' ? 'Inferno Cataclysm' : 'Fireball';
+    const cost = controller.getConfiguredManaCost(skill);
+
+    if (input === 'hotbar') controller.performHotbarAbility(0);
+    else controller.performAbility();
+
+    expect(engine.network.send).toHaveBeenCalledTimes(1);
+    expect(engine.network.send).toHaveBeenCalledWith('ability', {
+        targetId: '', targetX: 3, targetZ: 2, skillName: skill
+    });
+    expect(player.stats.mana).toBe(1000 - cost);
+    expect(player.cooldowns[skill]).toBeGreaterThan(0);
+    expect(engine.spawnTransientEffect).toHaveBeenCalled();
+    expect(engine.showReadabilityFeedback).not.toHaveBeenCalled();
+    expect(controller.pendingAbilityTarget).toBeNull();
+});
+
+test('an inactive hover without a ground intersection does not spend a cast', () => {
+    const { engine, controller, target, player } = fixture();
+    target.isActive = false;
+    engine.inputManager.getGroundIntersection.mockReturnValue(null);
+    controller.performHotbarAbility(0);
+    expect(engine.network.send).not.toHaveBeenCalled();
+    expect(player.useSkill).not.toHaveBeenCalled();
+    expect(controller.pendingAbilityTarget).toBeNull();
 });
 
 test('buffered hotbar intent follows the original actor, not a later overlapping hover', () => {
