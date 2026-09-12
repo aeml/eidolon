@@ -93,6 +93,14 @@ Archive `/tmp/eidolon-rogue-technique-mastery-failure-kdPvaf`; log
 `/tmp/eidolon-rogue-utility-technique-mastery-regression-native-20260912.log`;
 scan0/ownedcleanupPASS. Exact CI34705771836 remains active at this entry.
 
+The next diagnostic records local actor timers immediately after each real
+matching wire delivery, retains the maximum observed local timer and a bounded
+32-sample history, and captures the observation plus a screenshot on local-timer
+assertion failure. It does not replace that assertion with a historical peak or
+change effect state. Regression confirms post-delivery ordering and no mutation
+or duplicate delivery; observer/stage tests2suites59PASS7.581s, changed lint/diff
+pass. Native diagnosis is queued behind the active four-player Fortress replay.
+
 ## Proposed 1.1 patch-note text
 
 Weak Point Mark, Smoke Bomb and Cloak & Vanish Techniques now reduce their mana

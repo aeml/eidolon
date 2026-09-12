@@ -3,7 +3,7 @@
 export function installRogueUtilityObserver(config = null) {
     const game = window.game;
     window.__rogueUtility = { config, results: [], casts: [], maxDuration: 0,
-        expired: false, ranks: null, points: null };
+        expired: false, ranks: null, points: null, localSamples: [], localPeak: null };
     // Other input probes wrap the receiver without preserving function
     // properties. Keep installation ownership on this game/document instead.
     if (game.rogueUtilityObserverInstalled) return;
@@ -20,6 +20,17 @@ export function installRogueUtilityObserver(config = null) {
                 if (Number.isFinite(state.talentPoints)) qa.points = state.talentPoints;
             }
             if (!cfg || state.id !== cfg.targetId) continue;
+            if (cfg.timer && (state[cfg.active] !== undefined || state[cfg.duration] !== undefined)) {
+                const actor = cfg.self ? game.player : game.remotePlayers?.get(cfg.targetId);
+                const effect = actor?.attachedStatusEffects?.get(cfg.visual);
+                const sample = { at: performance.now(), wireActive: state[cfg.active] ?? null,
+                    wireDuration: state[cfg.duration] ?? null, loaded: Boolean(actor),
+                    localTimer: actor?.[cfg.timer] ?? null, actorState: actor?.state ?? null,
+                    effectAttached: Boolean(effect?.isActive && effect.group?.parent && effect.group.visible) };
+                qa.localSamples.push(sample);
+                if (qa.localSamples.length > 32) qa.localSamples.shift();
+                if (Number.isFinite(sample.localTimer) && (!qa.localPeak || sample.localTimer > qa.localPeak.localTimer)) qa.localPeak = sample;
+            }
             if (state[cfg.active] === true && Number.isFinite(state[cfg.duration])) {
                 qa.maxDuration = Math.max(qa.maxDuration, state[cfg.duration]);
             }

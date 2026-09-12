@@ -158,10 +158,19 @@ test(`Rogue utility ${technique ? 'Techniques reduce paid mana and cooldowns' : 
         // entirely missing rank-one benefit; keep these wire bounds disjoint.
         await expect.poll(() => page.evaluate(() => window.__rogueUtility.maxDuration)).toBeGreaterThan(expected - .15);
         expect(await page.evaluate(() => window.__rogueUtility.maxDuration)).toBeLessThanOrEqual(expected + .1);
-        await expect.poll(() => page.evaluate(({ cfg, id }) => {
-            const g = window.game, actor = cfg.self ? g.player : g.remotePlayers.get(id);
-            return actor?.[cfg.timer] || 0;
-        }, { cfg, id: target.id })).toBeGreaterThan(expected - 1.5);
+        try {
+            await expect.poll(() => page.evaluate(({ cfg, id }) => {
+                const g = window.game, actor = cfg.self ? g.player : g.remotePlayers.get(id);
+                return actor?.[cfg.timer] || 0;
+            }, { cfg, id: target.id })).toBeGreaterThan(expected - 1.5);
+        } catch (error) {
+            const observation = await page.evaluate(() => window.__rogueUtility);
+            const diagnostic = { before, expected, expectedCost, expectedCooldown, observation };
+            console.log('[rogue-utility-local-timer-failed]', JSON.stringify(diagnostic));
+            await testInfo.attach('rogue-utility-local-timer-failed', { body: JSON.stringify(diagnostic), contentType: 'application/json' });
+            await page.screenshot({ path: testInfo.outputPath('rogue-utility-local-timer-failed.png') });
+            throw error;
+        }
         await expect.poll(() => page.evaluate(({ cfg, id, tier }) => {
             const g = window.game, actor = cfg.self ? g.player : g.remotePlayers.get(id);
             const effect = actor?.attachedStatusEffects?.get(cfg.visual);

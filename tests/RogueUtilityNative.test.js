@@ -71,3 +71,23 @@ test('utility Technique route uses separate real purchases and is enrolled once 
     const all = script.match(/\n {2}all\)\n([\s\S]*?)\n {4};;/)[1];
     expect(all.match(/run_qa_stage rogue-techniques run_rogue_utility_techniques/g)).toHaveLength(1);
 });
+test('local timer diagnostics observe after delivery, retain the peak and never supply the missing timer', () => {
+    const actor = { slowTimer: 0, state: 'IDLE', attachedStatusEffects: new Map() };
+    const cfg = { ...configs[1], timer: 'slowTimer', visual: 'slowed' };
+    const receive = jest.fn(message => {
+        const state = message.payload.u.enemy;
+        if (state.slowed === true) actor.slowTimer = state.slowDuration;
+        if (state.slowed === false) actor.slowTimer = 0;
+        return 'delivered';
+    });
+    window.game = { player: { id: 'owner' }, remotePlayers: new Map([['enemy', actor]]), handleServerMessage: receive };
+    installRogueUtilityObserver(cfg);
+    const send = state => window.game.handleServerMessage({ type: 'delta', payload: { u: { enemy: { id: 'enemy', ...state } } } });
+    expect(send({ slowed: true, slowDuration: 6.99 })).toBe('delivered');
+    expect(window.__rogueUtility.localPeak).toMatchObject({ wireDuration: 6.99, localTimer: 6.99, loaded: true });
+    send({ slowed: false, slowDuration: 0 });
+    expect(actor.slowTimer).toBe(0);
+    expect(window.__rogueUtility.localSamples.at(-1).localTimer).toBe(0);
+    expect(window.__rogueUtility.localPeak.localTimer).toBe(6.99);
+    expect(receive).toHaveBeenCalledTimes(2);
+});
