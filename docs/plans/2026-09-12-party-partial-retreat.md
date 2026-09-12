@@ -93,3 +93,26 @@ Archive `/tmp/eidolon-party-ready-aura-failure-KiywKO`; log
 `/tmp/eidolon-party-ready-aura-native-20260912.log`. Credential scan sanitized0;
 owned containers/image/ports cleared before the QA-resource native started.
 No full clear, individual completion credit or Water handoff has passed here.
+
+### Damage and dodge timing audit
+
+Do not treat every183/184physical receipt as an ordinary melee hit. The existing
+boss slam uses the same damage kind and half-armor formula, a12.5-unit fixed
+circle and2-second warning every10seconds. The retained final12damage samples
+contain8warning-coincident Fighter hits; all4Cleric and bothWizard retained boss
+hits coincide within150ms of a warning impact. Wizard distances9.79/10.22 and
+Cleric12.66/13.23 are beyond ordinary7.5melee reach (positions are client-time
+observations, not exact server impact positions). Rogue also takes ordinary
+close-range hits outside warnings. A blanket ordinary-hit label was too strong.
+
+The final recorded Fighter dodge spent836ms before its ground-ray check and
+1468ms before click release; safe arrival was1334ms after predicted impact.
+Rogue spent1094ms before its ray check and1567ms before click release, arriving
+1992ms late. Wizard's last safe arrival was1536ms late. These arrivals are not
+successful dodges; the separate early-escape counts correctly remain lower.
+The four browsers already run role inputs concurrently. The general movement
+helper still performs multiple serial browser observations and pointer settling
+before issuing normal input. Investigate this measured input overhead before
+using the failed party run to lower boss damage or increase healing. Retain real
+input, collision/ray checks, fatal issued-input failures and authoritative damage
+receipts. No enemy/player balance or timeouts changed during this audit.
