@@ -115,7 +115,18 @@ test('phone Roar area and duration purchases reach authoritative effects and sur
                     .toContainText('+4% Guardian Roar buff duration per rank (20% max)');
             }
             await buy.scrollIntoViewIfNeeded(); await buy.tap();
-            await expect.poll(() => page.evaluate(id => window.game.player.talentRanks?.[id] || 0, talentId)).toBe(rank);
+            try {
+                await expect.poll(() => page.evaluate(id => window.game.player.talentRanks?.[id] || 0, talentId)).toBe(rank);
+            } catch (error) {
+                console.log('[roar-purchase-failure]', JSON.stringify(await page.evaluate(({ talentId, rank }) => ({
+                    talentId, expectedRank: rank, ranks: window.game.player.talentRanks,
+                    points: window.game.player.talentPoints,
+                    pending: window.game.uiManager.skillTree.mobile.pending,
+                    feedback: window.game.uiManager.skillTree.mobile.feedback
+                }), { talentId, rank })));
+                await page.screenshot({ path: testInfo.outputPath('roar-purchase-failure.png') });
+                throw error;
+            }
             await expect.poll(() => page.evaluate(() => window.game.uiManager.skillTree.mobile.pending === null)).toBe(true);
             expect(await page.evaluate(() => window.game.player.talentPoints)).toBe(points - 1);
         }
