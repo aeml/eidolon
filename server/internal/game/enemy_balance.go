@@ -236,6 +236,15 @@ func dungeonEnemyCombatProfile(subType string, runLevel int, difficulty DungeonD
 		}
 		healthMultiplier *= bossBalance.HealthMultiplier
 		damageMultiplier *= bossBalance.DamageMultiplier
+		// Verdant is the introductory four-role expedition. Repeated minimum-
+		// entry party runs exhausted full mana pools before its first kill.
+		// Keep incoming pressure and depth/difficulty ratios, but fit these
+		// encounters to a finite expedition budget; raids and other realms
+		// retain their independently validated (or still pending) profiles.
+		switch subType {
+		case "RootboundWarden", "BriarMatron", "RustboundColossus", "HollowSentinel":
+			healthMultiplier *= 0.60
+		}
 	}
 	difficultyHealth, difficultyDamage, _, _ := DifficultyMultipliers(difficulty)
 	healthMultiplier *= difficultyHealth
