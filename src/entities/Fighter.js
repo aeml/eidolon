@@ -10,6 +10,7 @@ import { getExecutionerSpinDamage } from '../skills/executionerSpin.js';
 import { applyOfflineShieldSlam } from '../skills/offlineShieldSlam.js';
 import { getFighterEffectDuration } from '../skills/fighterEffectDuration.js';
 import { applyOfflineFighterDamageBuff, clearOfflineFighterDamageBuffs } from '../skills/offlineFighterDamageBuffs.js';
+import { beginOfflineWhirlwind, advanceOfflineWhirlwind, cancelOfflineWhirlwind } from '../skills/offlineWhirlwind.js';
 import { applyOfflineEarthshaker } from '../skills/offlineEarthshaker.js';
 import { beginOfflineShatteringCharge, advanceOfflineShatteringCharge } from '../skills/offlineShatteringCharge.js';
 import { beginOfflineCharge, advanceOfflineCharge, cancelOfflineCharge } from '../skills/offlineCharge.js';
@@ -59,9 +60,10 @@ export class Fighter extends Actor {
             this.shatteringInstanceId = null;
         }
         const requestedSkill = skillNameOverride || this.abilityName;
+        if (requestedSkill === 'Whirlwind' && (this.isRemote || !this.unlockedSkills.includes(requestedSkill))) return false;
         if (['Charge', 'Shattering Charge'].includes(requestedSkill) && (this.isRemote || !this.unlockedSkills.includes(requestedSkill) ||
             ![targetVector?.x, targetVector?.z].every(Number.isFinite))) return false;
-        if (requestedSkill === 'Executioner Spin') targetVector = this.position.clone();
+        if (['Executioner Spin', 'Whirlwind'].includes(requestedSkill)) targetVector = this.position.clone();
         if (requestedSkill === 'Last Stand Rampage' && this.stats.hp / this.stats.maxHp >= 0.30) {
             gameEngine?.floatingTextManager?.spawn?.('HP too high!', this.position, '#888888');
             return false;
@@ -78,16 +80,15 @@ export class Fighter extends Actor {
         // teleport/damage/status simulation until the next snapshot corrected it.
         if (this.isMultiplayer || gameEngine?.isMultiplayer) return true;
 
+        const previousCast = this.lastOfflineFighterCast;
+        const now = Date.now();
+        const momentumStrike = skill === 'Whirlwind' && previousCast?.skill === 'Charge' &&
+            now - previousCast.at >= 0 && now - previousCast.at <= 3000;
+        this.lastOfflineFighterCast = { skill, at: now };
+
         if (skill === "Whirlwind") {
-            if (!this.unlockedSkills.includes("Whirlwind")) return;
             console.log("Fighter used Whirlwind!");
-            this.isWhirlwinding = true;
-            this.whirlwindTimer = 0;
-            this.whirlwindDuration = 1.0; // Spin for 1 second
-            this.state = 'ATTACKING';
-
-
-            this.spawnVisualEffect(gameEngine, this.position, 0xaaaaaa, "spin");
+            beginOfflineWhirlwind(this, gameEngine, isGuardianRoarFriendlyActor, momentumStrike);
             return;
         }
 
@@ -342,6 +343,8 @@ export class Fighter extends Actor {
     }
 
     cancelAbilities() {
+        cancelOfflineWhirlwind(this);
+        this.lastOfflineFighterCast = null;
         clearOfflineFighterDamageBuffs(this);
         cancelOfflineCharge(this);
         this.runeArmorBuff = this.runeArmorBuffTimer = 0;
@@ -383,49 +386,7 @@ export class Fighter extends Actor {
             // Advance ordinary timers once; the paid charge owns movement.
             super.update(dt, collisionManager);
             advanceOfflineCharge(this, dt, this.gameEngine, isGuardianRoarFriendlyActor);
-            return;
-        }
-
-        if (this.isWhirlwinding) {
-            // Spins must not pause ordinary buffs, cooldowns or regeneration.
-            super.update(dt, collisionManager);
-            this.whirlwindTimer += dt;
-
-            // Spin Effect
-            if (this.mesh) {
-                this.mesh.rotation.y += 15.0 * dt; // Fast spin
-            }
-
-            // Damage Tick (every 0.2s)
-            const radius = 3.0;
-            // Use chunkManager to get entities
-            const entities = chunkManager ? chunkManager.getActiveEntities() : [];
-
-            if (!this.whirlwindDamageTimer) this.whirlwindDamageTimer = 0;
-            this.whirlwindDamageTimer += dt;
-
-            if (this.whirlwindDamageTimer > 0.2) {
-                this.whirlwindDamageTimer = 0;
-                entities.forEach(entity => {
-                    if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
-                        const dist = this.position.distanceTo(entity.position);
-                        if (dist < radius) {
-                            const damage = this.stats.strength * 0.5; // Base tick damage
-
-                            if (entity.takeDamage) {
-                                applyOfflineAbilityHit(this, entity, damage, 'Whirlwind', this.gameEngine?.floatingTextManager, '#ff8800');
-                            }
-                        }
-                    }
-                });
-            }
-
-            if (this.whirlwindTimer >= this.whirlwindDuration) {
-                this.isWhirlwinding = false;
-                this.state = 'IDLE';
-                this.playAnimation('Idle');
-            }
-
+            advanceOfflineWhirlwind(this, dt, this.gameEngine);
             return;
         }
 
@@ -433,10 +394,17 @@ export class Fighter extends Actor {
             // Recipient timers keep running during travel. ATTACKING and the
             // cleared movement target prevent ordinary walking from competing.
             super.update(dt, collisionManager);
-            if (this.stunTimer > 0) return;
-            if (this.isCharging && this.isShatteringCharge) {
+            if (this.stunTimer <= 0 && this.isCharging && this.isShatteringCharge) {
                 advanceOfflineShatteringCharge(this, dt, this.gameEngine, isGuardianRoarFriendlyActor);
             }
+            advanceOfflineWhirlwind(this, dt, this.gameEngine);
+            return;
+        }
+
+        if (this.isWhirlwinding) {
+            // Spins must not pause ordinary buffs, cooldowns or regeneration.
+            super.update(dt, collisionManager);
+            advanceOfflineWhirlwind(this, dt, this.gameEngine);
             return;
         }
 

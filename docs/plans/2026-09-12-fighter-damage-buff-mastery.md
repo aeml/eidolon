@@ -110,13 +110,11 @@ Logs `/tmp/eidolon-fighter-buff-offline-{red,red-corrected,green,expanded,lint,f
 
 ## Required next phase — do not publish this partial candidate
 
-Whirlwind still has an older offline Strength-only tick formula and cadence;
-fix its actual cast-budget/pulse/rune/target/wall/lifecycle consumer against
-`server/internal/game/ability_whirlwind.go`. Server formula includes0.8*Damage
-plus2*Strength, two half-second pulses (four for Extended with unchanged total
-budget), first pulse on cast, unique-target Bloodwhirl healing and Bladestorm
-pull. Do not infer full offline ability parity from the new stat/basic/Spin
-tests. Remaining scene/save/native and combined regression are still required.
+The follow-on [Whirlwind consumer](2026-09-12-offline-whirlwind.md) now implements
+the actual cast-budget/pulse/rune/target/wall/lifecycle counterpart of the server,
+with focused real-cast tests. Its broader acceptance is still pending. Do not
+infer all-ability parity from stat/basic/Spin or narrow Whirlwind tests. Remaining
+scene/save/native and combined regression are still required.
 
 Verify real purchases, fresh saved login, party receivers, ability/basic damage,
 defensive cost, health gating, duration, rejection, dispel, death/scene cleanup,
