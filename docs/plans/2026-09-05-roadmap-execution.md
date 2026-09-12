@@ -5,7 +5,53 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 05:37 UTC
+## Current checkpoint — September 12, 05:46 UTC
+
+Previous turn was PROGRESS. This continuation is PROGRESS: implemented the
+native Iron Fortress purchase/duration/save gate and its observer regressions,
+retained more completed CI evidence and verified production's repaired gallery
+step succeeded. No full roadmap or native dungeon completion claim.
+
+- **5f501f5e1e6e9ac784dc51ebc19fe9c6c2a40a9e**, clean separate
+  branch`work/1-1-fortress-native-qa` at
+  `/tmp/eidolon-1-1-fortress-native-qa-20260912`, based on6e752e8f.
+  Primary and hosted rehearsal remain frozen6e752e8f until CI34676048154 ends.
+  No local native test was started while production owns the GPU.
+- New scoped `fortress-mastery` route plus full timed predeploy registration
+  after Guardian Roar. Dedicated allowlisted Fighter; no automatic retries.
+  Ordinary phone branch selection, baseline30s cast, five one-point purchases,
+  corrected description/max-rank UI, trained36s High effect/countdown/expiry,
+  Extended selection and fresh-document saved-rank/point/rune verification,
+  then54s landscape/Low cast and natural expiry. Protection/badge must outlast
+  the untrained deadline; displayed seconds must match the replicated timer.
+  Well Rested remains independently visible. Only existing prepared level/
+  readiness commands are used; no direct rank/timer/clock or buff assignment.
+- Serialized observer records explicit owner state/delta durations and expiry,
+  accepted/rejected cast receipts and original return/error behavior. It is
+  installed afresh per document without double wrapping; diagnostic reset never
+  changes game state. New missing-registration controls RED2failed/5passed1.062s.
+  Focused5suites/44tests PASS1.818s; Bash syntax, changed lint, Playwright discovery
+  1test and diff whitespace PASS. Dependencies prepared. No native runtime/save
+  acceptance yet. Doc`2026-09-12-iron-fortress-native-acceptance.md`; logs
+  `/tmp/eidolon-fortress-native-qa-{red,green,discovery,final-lint,prepare}-20260912.log`.
+- **Hosted6e752e8f CI34676048154 ACTIVE**. Client103505989162 SUCCESS
+  **377suites/5811tests123.315s**, lint/audit/benchmark. Log
+  `/tmp/eidolon-integrated-1-1-fortress-client-34676048154.log`.
+  Server103505989314 still active. Poll SAME run, not a replacement.
+- **Production65 CI34675345557 ACTIVE** at1af59512. All104 browser cases now
+  passed; shard1 log`/tmp/eidolon-release65-gallery-correction-browser1-34675345557.log`.
+  Native job **103506166516 ACTIVE**: dependency/GPU verification and deterministic
+  High/Low animation gallery steps SUCCESS. Well Rested rendering/GPU lifecycle
+  step ACTIVE; full-character/predeploy completion/deployment/final live pending.
+  No new live-version claim. Last independent public check was healthy64/6d;
+  recheck both public identities after deployment rather than inferring from CI.
+- Next collect SAME two CI runs, integrate5f501f5e after frozen regression ends,
+  then execute native party-input/full-clear and scoped Iron Fortress acceptance
+  when production native gates are free. Preserve current party failure evidence;
+  earned progression, first-hour, balance/reconnect, full talent utility and
+  every1.2–1.10 requirement remain open. Leave scheduled soak alone. NEVER PUSH ROOT.
+
+## Previous checkpoint — September 12, 05:37 UTC
 
 Previous goal turn was PROGRESS. This continuation is PROGRESS: collected full
 combined client and hosted terminal results, corrected an ineffective purchased
