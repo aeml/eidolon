@@ -23,4 +23,28 @@ Four suites55tests passed4.867s (mobile build, talents, duration copy, phone
 status); lint/assets/diff pass. Logs
 `/tmp/eidolon-purchase-recovery-current-{tests,lint,assets}-20260912.log`.
 These checks do not replace a fresh native replay of the combined scenarios.
-Both remain queued behind the active four-player run, not accepted or deployed.
+Both were queued behind the active four-player run; terminal results follow.
+
+## Native acceptance and a separate protection discrepancy
+
+Exact a6b7d307 full CI34695573901 PASSED. Native67063 Executioner Spin PASSED
+27.1seconds, zero retries, normal paid area ranks and saved High/Low radii
+6/6.6/7.5/8.1. Archive `/tmp/eidolon-purchase-recovery-spin-pass-JXsA2v`.
+Native40395 Guardian Roar PASSED1.9minutes, zero retries, normal and saved area
+15/16.5/18.75/20.25 plus Mastery duration and natural expiry. Archive
+`/tmp/eidolon-purchase-recovery-roar-pass-YHBnYv`. Logs
+`/tmp/eidolon-purchase-recovery-{spin,roar}-native-20260912.log`. Both credential
+scans sanitized0 and exactowned containers/images/ports were clear at termination.
+These runs did not log a rate rejection, so they prove successful normal/saved
+purchases, not that the conditional rejected-purchase branch was exercised.
+
+Main-agent inspection of the saved Low Roar screenshot exposed a separate
+existing issue: the status card says0%damage reduction. Server RecalculateStats
+currently grants20%armor for GuardianRoarActive; offline Fighter instead sets
+guardianRoarReduction=.3. The remote-effect timer receiver does not set that
+offline reduction field, which the status card reads. Do not hide this mismatch
+by describing an unverified protection strength. Correct actual online/offline
+protection and truthful status copy with receiving-damage tests in the remaining
+ability/balance pass. The26FPS snapshot is incidental, not performance acceptance.
+The purchase-recovery test changes are verified; full ability protection and
+1.1release are not. No production metadata change or release was made.
