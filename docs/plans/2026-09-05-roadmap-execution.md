@@ -5,7 +5,56 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 03:37 UTC
+## Current checkpoint — September 12, 03:41 UTC
+
+Previous goal turn was PROGRESS (Charge and Unstoppable implementation).
+This continuation is PROGRESS: collected corrected65 browser evidence, inspected
+phone captures, ported the independent hosted queue to primary, and started
+full integrated development regression on verified source. Full1.1–1.10 remains
+active; neither a milestone nor native/live acceptance is inferred.
+
+- **Integrated developmente2cd42f2fb5775b4eec8fac2050faede2e3a7abf**, clean
+  primary after fast-forward from08a73777. Same frozen source in
+  `/tmp/eidolon-1-1-integrated-regression-20260912`, pushed ONLY branch
+  `work/1-1-integrated-regression`. Ported only workflow queue separation and
+  its contract from65/9ab5b644; no runtime/version/release-note transplant.
+  Four queue tests PASS0.732s plus lint/diff whitespace. Logs
+  `/tmp/eidolon-1-1-hosted-queue-{tests,lint}-20260912.log`; session45369 terminal.
+- **Integrated hosted CI34670988965 ACTIVE**, created03:40:12. GitHub branch
+  SHA was verified before dispatch and runheadSha confirmed exacte2cd42f2.
+  This runs full client/server/three browser shards on hosted runners without
+  holding the production Pages lock. All native/input/deploy guards and live
+  dependencies remain unchanged. No local native/full load or new soak started.
+  Doc`2026-09-12-integrated-1-1-regression.md`states that this is development
+  regression, not a versioned1.1.0 release candidate or earned/native proof.
+- **Corrected65 CI34670196359 ACTIVE**, frozen1de18e03. Previously completed
+  client/server remain PASS. Browser3 **103491038881 SUCCESS25cases**20+3+2,
+  browser2 **103491038933 SUCCESS40cases**23+3+3+11. Browser1 **103491038983
+  still running** anonymous smoke as of03:40:34. Poll SAME run.
+  Full logs`/tmp/eidolon-release65-corrected-{client,server,browser2,browser3}
+  -34670196359.log`; artifacts
+  `/tmp/eidolon-release65-corrected-shard3-0NhlA6` and
+  `/tmp/eidolon-release65-corrected-shard2-K0vKAi` retained.
+- Inspected exact corrected65 portrait390 and landscape568 status-panel PNGs:
+  opaque reading surface no longer shows underlying launcher text; controls
+  remain unobstructed. These are hosted mocked-layout captures, not actual
+  phone performance or native gameplay. Existing positive user phone feedback
+  remains valid; this does not invent missing device/browser/build specifics.
+- **Production64 CI34668112188 ACTIVE** with native103486534312 in disposable
+  full-character gameplay (actual step start03:00:17). Earlier checks passed,
+  deployment/final live gates remain. No cancellation or replacement. Last
+  independent public check03:36 still63/f866, healthy database ready.
+- **Scheduled soak34670421761 ACTIVE**, job103490621233 running multiplayer
+  soak. It remains the existing nightly schedule, not manually dispatched by
+  this work; not disabled or canceled. Keep native hardware free.
+- Native Teleport65, full integrated regression, instrumented Briar four-role
+  clear, earned/all-dungeon/balance/campaign/reconnect gates and all1.2–1.10
+  requirements remain. Read-only Charge lifecycle review noted server scene
+  reset clears ChargeRuneID without immediate travel-immunity cleanup; this
+  is an investigation lead, not a tested fix or closed acceptance requirement.
+  Root master remains ledger-only: NEVER PUSH.
+
+## Previous checkpoint — September 12, 03:37 UTC
 
 Previous goal turn was PROGRESS (corrected65 gate and release consolidation).
 This continuation is PROGRESS: repaired ordinary offline Charge and the actual
