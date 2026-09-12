@@ -5,7 +5,42 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 01:59 UTC
+## Current checkpoint — September 12, 02:08 UTC
+
+Previous goal turn was PROGRESS (release64 integration and focused acceptance).
+This continuation is PROGRESS: found and reproduced another dungeon geometry/
+receiving-damage defect, fixed it, and passed repeated release and development
+integration tests. Full1.1–1.10 remains active; no external blocker.
+
+- Review found on-kill equipment explosions trusted grid cells as exact radius,
+  crossing solid walls and damaging outside the intended circle. Real scheduled
+  killing-attack reproduction failed1.580s with closed-wall and outside-radius
+  hits, plus receiving/threat bypass. Open-door/same-side controls passed.
+- Fixd890b830 retains enemy-only50% stored damage, adds canonical wall/circular
+  body checks and receiving defenses/threat without rerolling outgoing damage.
+  Release-focused race repeated3x PASS6.726s; expanded paid Smite lethal
+  reflection/cast-receipt and concurrent party-chain selection repeated3x
+  PASS10.485s. Updated239version/history tests PASS4.946s; changed-test lintPASS.
+  Logs `/tmp/eidolon-release64-gear-explosion-{red,green,final}-20260912.log`
+  and `/tmp/eidolon-release64-gear-{notes,lint}-20260912.log`.
+- Release64 candidate now clean **0ba6076a8ba91e8528cad45d73f76bbf71c55296** at
+  `/tmp/eidolon-release64-defenses-20260912`; patch notes include gear explosions.
+  Full candidate regression and unchanged complete CI/deploy/live gates remain.
+  Not pushed; public63 remains the last accepted release.
+- Development integration4a49c83c preserves the additional Dark King phase cap
+  through the shared receiver helper. New tests plus existing real Dark King
+  explosion/chain/concurrent and party-credit cases repeated3xPASS10.021s.
+  Log `/tmp/eidolon-development-gear-explosion-20260912.log`; evidence doc
+  `2026-09-12-gear-explosion-geometry.md`. Candidate worktree
+  `/tmp/eidolon-offline-shattering-charge-20260912` is clean **a7be1ed9**.
+  Primary stays frozen208b0aa3; merge only AFTER active native77501 ends.
+- **77501 authoritatively ACTIVE at02:08**. Same frozen source/seed as below;
+  first boss still the only defeated boss reported, four town recovery/resume
+  loops passed, latest187ground steps/12route-room traversals. Continue SAME
+  handle; no full/native/browser competitor or soak. Full dungeon/shared credit/
+  all manual turn-ins and fresh-save acceptance are still unproven.
+
+## Previous checkpoint — September 12, 01:59 UTC
 
 Previous feedback turn was a VERIFIED WAIT: session77501 was polled and remained
 live, while the already recorded phone feedback was acknowledged. This goal
