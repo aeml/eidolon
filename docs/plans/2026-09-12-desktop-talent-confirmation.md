@@ -29,6 +29,12 @@ Full hosted regression and actual desktop native purchase/save verification
 are still pending. No integration, deployment or broad talent-audit completion
 is claimed by focused tests alone.
 
+Hosted client job103619323840 of CI34718270509 passed414suites/6408tests134.634s
+on e2ef6e51, including full lint/audit/benchmark. Log
+`/tmp/eidolon-desktop-talent-ci-client-34718270509.log`. Server is still running;
+browser shards and the queued native route remain pending. Do not attribute
+full CI or saved-session acceptance to this partial result.
+
 ## Draft 1.1.0 patch note
 
 - Desktop talent purchases and resets now wait for server confirmation, show
