@@ -26,6 +26,21 @@ pacing/reconnect/balance gates for1.1.0. All1.2–1.10 scope remains intact.
 
 ## First integrated rehearsal accepted; follow-up scope
 
+September12 18:21: primary8561a773 now includes Blade Storm95299372 as well as
+Fortress. Blade Storm runtime6cd11168 full CI34709688359 and native92396 passed;
+subsequent full-stage fixture enrollment correction passed5suites89checks.
+This combined branch must pass fresh full CI; no Techniques/QA resource-ack
+integration yet. No production version/patch-note publication until1.1 closes.
+
+Prior cbdec31a run34709857382 attempt1 failed in disposable upgrade verification
+when Docker Hub's authentication connection reset while pulling mongo7.0.14.
+Its code/coverage and full game race275.182s had passed. Exact failed job log:
+`/tmp/eidolon-integrated-fortress-failed-server-34709857382.log`. Requested
+`gh run rerun 34709857382 --failed` only after terminal failure and inspecting
+the network error; attempt2 currently active on unchangedcbdec. No timeout-based
+restart, test relaxation, production cancellation or soak change. Both sources'
+results must retain their actual provenance; a rerun is not yet a pass.
+
 September12 18:00 update: primary5d4c5123 integrates the verified Fortress
 component1f6b1f75 overa2c30d97. Exact component8864133e passed full CI34707847501
 and native9420; see its mitigation evidence for damage-rounding limitations.
