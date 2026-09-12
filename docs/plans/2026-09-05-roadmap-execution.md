@@ -44,7 +44,8 @@ No claim of dungeon/full-roadmap completion; no active process was replaced.
 - **Production65 CI34675345557 ACTIVE** at1af59512. Client103504104916
   SUCCESS299suites/4376tests97.708s plus lint/audit/benchmark; log
   `/tmp/eidolon-release65-gallery-correction-client-34675345557.log`.
-  Server103504104976 still active at observation. No new deployment/live claim;
+  Server103504104976 now SUCCESS. Browser1/2/3 active:
+  103504952921/103504952935/103504952938. No new deployment/live claim;
   public64/6d was independently healthy last turn. Leave the scheduled soak alone.
 - Next collect78153 terminal result and both SAME CI runs. Integrate9bd27ada
   only after local verification and frozeneb hosted regression finish, then
