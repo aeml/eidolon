@@ -33,3 +33,20 @@ Logs `/tmp/eidolon-death-spiral-{client-red,server-red,server-green,server-corre
 Full hosted CI and native purchased/saved Death Spiral verification remain
 required. This does not close other Rogue utility/area consumers, the full160
 talent audit, the earned first hour, dungeon clear gates or1.1.0 release.
+# Native purchase and saved-session verification
+
+The combined native candidate includes the accepted fence batching and corrected
+Smoke Bomb gate. Its new `death-spiral-area` route uses a distinct allowlisted
+Rogue, ordinary branch A selection, five paid Fine Motor purchases, rank0/1/5
+casts, and a fresh login retaining ranks and remaining points. Readiness/level
+commands are disposable fixture preparation, not earned progression evidence.
+Paid35-mana receipts and server radii4/4.12/4.6 must match independently measured
+attached effect boundaries and origins at high/low quality and portrait/landscape.
+The observer does not invent missing meshes or alter gameplay.
+
+The full native gate and timing catalogs include the new non-retrying stage.
+Initial focused tests caught a copied command name in the enrollment assertion;
+corrected four suites70tests passed2.015s, with lint, assets, shell syntax and
+diff checks passing. Logs `/tmp/eidolon-death-spiral-native-tests{,-corrected}-20260912.log`,
+`/tmp/eidolon-death-spiral-native-{lint,assets}-20260912.log`.
+Actual native execution and combined full CI remain required; no release claim.
