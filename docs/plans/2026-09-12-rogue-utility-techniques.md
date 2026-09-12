@@ -129,6 +129,23 @@ range/duration relaxation or inferred successful step. Three focused observer,
 approach and stage suites65testsPASS2.308s; changed-file lint/diff pass. Log
 `/tmp/eidolon-rogue-utility-approach-tests-20260912.log`. Native remains required.
 
+### Corrected Mastery replay
+
+Native61506 PASS3.9m/4.0m, zero retries, on c9e7bf7a. All three normal paid
+rank0/1/5 Masteries, High/Low effects, natural expiry, fresh-login20ranks and
+saved Mark14s/Smoke7s/LastingShadowCloak14s pass, including the unchanged local
+timer check. This establishes a passing replay, not the cause of the older
+intermittent saved-Smoke failure; that evidence remains above. Technique-profile
+native on this latest approach change and exact combined CI remain required.
+
+Archive `/tmp/eidolon-rogue-replan-mastery-pass-YH37KM`; log
+`/tmp/eidolon-rogue-replan-diagnostic-native-20260912.log`; credential scan0,
+owned containers/image/ports cleanup PASS. Main agent viewed the saved Smoke
+High capture; incidental45FPS is not performance closure. Superseded development
+CI34707429078 on c3fb4d75 was canceled after its client/server and third browser
+shard passed, to release branch concurrency for current CI34707979043. No
+production/deploy/soak job was canceled. A canceled run is not a full CI pass.
+
 ### Player-facing draft
 
 Weak Point Mark, Smoke Bomb and Cloak & Vanish Techniques now reduce their mana
