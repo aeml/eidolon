@@ -5,7 +5,57 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 19:42 UTC
+## Current checkpoint — September 12, 19:52 UTC
+
+Goal turn PROGRESS: implemented useful Serrated Technique mana training after
+reproducing dead critical metadata, passed actual client/server consumers,
+authored lawful native enrollment; accepted combined Roar CI; bounded phone
+joystick pulses. Full roadmap goal ACTIVE. No live/version/soak changes.
+Root ledger-only NEVER PUSH ROOT.
+
+- **CI34714237895 SUCCESS** exactintegrated8b3e0404: client413suites6393tests
+  107.533s, game86.9%/100.035s/full race354.988s, all3browser shardsPASS.
+  Manual native/deploy/live skipped, not acceptance. Logs
+  `/tmp/eidolon-integrated-roar-ci-{client,server}-34714237895.log`.
+  Integrated doc updated/committed (discover latest git log); primary75de2aff
+  unchanged. No Tripwire/Serrated/party-clear acceptance inferred.
+- New WT `/tmp/eidolon-1-1-serrated-technique-20260912`, branch
+  work/1-1-serrated-technique, clean/devpushed **51938259be53a8f9e7d627c19e415fd3a92bfd4b**.
+  Serrated inherited wounds already retain parent critical once; ROG_14 named
+  crit had no consumer. User-facing assumption announced: preserve3%CDR/rank,
+  replace2%unusedcrit with2%mana reduction like other utility Techniques. Saved
+  ID/rank cap/Mastery/bleed/parentcrit/duration unchanged. Base30→29/27rank1/5.
+  Actual offline RED2fail7pass; corrected server RED0.611s (initial -p1 typo
+  ranwrongpackage, retained). Final client8suites151PASS8.263s, serverfocused
+  race33.324s, full lint/assets/diff/gofmt PASS. Explicit11remaining criticalIDs
+  replaces stale12count; all other critical/wound consumer checks retained.
+  Draftpatchnote/evidence2026-09-12-serrated-technique.md, logs
+  `/tmp/eidolon-serrated-technique-*-20260912.log`.
+  Separate native route/account serrated-technique reuses real utility paid/
+  saved/HighLow/status checks. Technique5+generic5 spends10/20points; no
+  illegal25point combined build, no Cloak rune on Serrated. Full gate once,
+  zero retries, both stage arrays updated. **CI34715389572 ACTIVE** exact519.
+  Native NOT run, integration NOT done.
+- TripwireWT clean/devpushed **9cb94108**, pulsehelper follows priorfailure
+  evidence: atmost8×80ms realCDP touches, releasequeuedbeforestartack waiting,
+  observesactualHP/state/instance/progress/stickzero/blocked position after
+  eachpulse, errorretainsboundedendpoints. Approach3units, lure8units unchanged.
+  Actual InputManager inverse geometry, delayedstartack/failedobservation/
+  stalledbound cleanup tests4suites22PASS3.456s/lint/diff. No injectedmovement.
+  Native still queued behind party; retain all earlierfailedarchives.
+- **82404 ACTIVE, sole native GPU**, frozenparty87d62281, explicitLow,
+  runIDpartygraphicslow0912,18185/18186/41875. Actualseed681688086402035219,
+  generator2/attempt0/nofallback. All4Lowverified, sameinstanceentry, actual
+  trashkills,2genuine4partyrest/reentries,57steps/4roomtraversals last observed.
+  No Warden result/clear yet. Log`/tmp/eidolon-party-low-graphics-native-20260912.log`.
+  FreezeWT,pollsamehandle; archive/scan/exactcleanupafterterminalbeforenextnative.
+
+Next: party Low outcome/frame+input evidence, Serrated CI/native, Tripwire
+bounded phone native. Full4partyclear/credit/Waterhandoff/earnedfirsthour/
+all5dungeons/multiseeds/160consumers/reconnect/raids/exactlive and1.2–1.10 still
+required. No1.1 readiness claim or planned1.0.66.
+
+## Previous checkpoint — September 12, 19:42 UTC
 
 Goal turn PROGRESS: native evidence identified incorrect desktop-style movement
 in the phone Tripwire route; implemented real touch joystick movement; authored
