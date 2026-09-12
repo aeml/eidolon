@@ -16,3 +16,17 @@ and retained Fighter gates; full lint, shell syntax and diff checks passed.
 Logs `/tmp/eidolon-rogue-verified-integration-{tests,lint}-20260912.log`.
 Full combined CI is required before primary advances. No new combined native,
 production deployment, full talent audit or1.1 acceptance is implied.
+
+## Combined CI acceptance
+
+CI34705692232 SUCCEEDED on0d79c485: client6336 tests/108.575s;
+server game86.9%/100.135s, race349.671s; browser40+53+26=119actual checks.
+Logs `/tmp/eidolon-rogue-verified-ci-{client,server,browser1,browser2,browser3}-34705692232.log`.
+The frozen Mastery component native proof above is retained for this integration;
+the dispatch's native/deployment jobs were skipped. This accepts the combined
+development regression, not a release or universal timing/performance guarantee.
+
+Separately, the later Technique candidate8fe4117b passed its new native profile
+but its Mastery replay failed on a saved Smoke local-timer observation after
+passing the wire-duration bounds. That failure remains open and is being
+instrumented; do not credit this older combined CI as solving or covering it.
