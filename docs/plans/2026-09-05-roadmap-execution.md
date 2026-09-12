@@ -5,7 +5,61 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 08:57 UTC
+## Current checkpoint — September 12, 09:04 UTC
+
+Previous goal turn PROGRESS; this continuation PROGRESS. Reproduced and fixed
+Earthshaker's missing damage-training consumer in server/offline paid casts,
+verified real delayed Aftershock and started full hosted regression. Full
+1.1.0–1.10.0 scope stays active. No new live or milestone acceptance claim.
+
+- Candidate `/tmp/eidolon-1-1-earthshaker-damage-20260912`, branch
+  `work/1-1-earthshaker-damage`, clean **59afd7947654e3f1a15af3df02613a5fa9cc5d6b**,
+  parent770eeb8f. FTR_13 Mastery and generic FTR_38 were ignored by Earthshaker
+  and Aftershock. Server RED2.190s: trained actual casts remained70 instead
+  of72..91, delayed wave35 instead of45; untrained controls70. Client RED22fail/
+  16pass1.235s. Real paid casts keep their resource/stun positive controls.
+- Server now uses readonly normalized cast-time damage multiplier once;
+  offline uses existing Fighter damage helper. Aftershock retains half the
+  original trained budget even after Damage/Strength/ranks change. Mana40,
+  baseCD12 with normal CDR, critical/target processing, threat, rune shapes,
+  durations and delayed cancellation remain unchanged. No extra1.0.x release.
+- Final client7suites**241PASS3.302s**, full lint/whitespace pass. Rank0/1/5 ×
+  generic0/5 × all runes, immutable caps/foreign ranks, one ordinary critical,
+  mana/CD/online rejection, delayed original budget and real existing
+  Charge/Whirlwind/cone/critical/stun regressions. First command included
+  nonexistent ChargeEffectDuration.test.js and ran only4suites; final uses
+  actual OfflineCharge/OfflineShatteringCharge files. Server initialrace18.559s;
+  **expanded finalrace35.033s** includes trained critical/wall pairs,
+  ordinary one-point Mastery purchases/sixth rejection, unchanged saved ranks,
+  real delayed receipts and Charge/Seismic-stun interactions. All sessions
+  39502/64187/89318/11284/44535/4546/6075 terminal. Logs
+  `/tmp/eidolon-earthshaker-damage-{server-red,server-green,server-final,client-red,client-green,client-final,lint}-20260912.log`.
+- Doc `docs/plans/2026-09-12-earthshaker-damage-training.md` includes proposed
+  1.1.0 patch note and remaining gaps. Earthshaker area training is NOT fixed:
+  circle/Aftershock still6/3.5, Fissure half-width1.5, accepted shape absent,
+  Fissure presentation circular instead of line. Next correction must match
+  actual geometry, public event data and local/remote rune visuals; do not
+  claim whole Earthshaker/160-talents acceptance from damage checks.
+- Pushed ONLY candidate dev branch; manually dispatched **CI34684855203 ACTIVE**
+  at exact59afd794, confirmed after dispatch. No local native launched;
+  native/purchased damage/full hosted/live acceptance still pending.
+- **Cone CI34684185347 ACTIVE**: client already387suites5992PASS; server now
+  SUCCESS86.8%/95.412s/fullrace333.235s plus backup/restore/bench/build.
+  API log `/tmp/eidolon-fighter-cone-ci-server-34684185347.log`.
+  Browser3 103529237707 SUCCESS; browser1/2 103529237742/103529237702 ACTIVE.
+  Candidateb9 not integrated pending full result.
+- **Legacy area CI34684544288 ACTIVE**: client103529127565 SUCCESS,
+  **388suites6095tests122.761s**, API log
+  `/tmp/eidolon-area-legacy-ci-client-34684544288.log`; server103529127713 ACTIVE.
+  Candidate770eeb8f not integrated. Primary/integrated remain accepted11d6920d.
+- Production **CI34683452640 ACTIVE**, native103528155488 full-character
+  gameplay, confirmed09:03; single GPU remains reserved. Last public identity
+  remains independently checked08:56 Alpha1.0.64/6d5e82cb, healthok/dbready;
+  no later identity observation or65 deployment claim. Pending native
+  candidates and four-role dungeon clear unchanged; dungeon next priority
+  when GPU is terminal. Scheduled soak/runner untouched; root NOT pushed.
+
+## Historical checkpoint — September 12, 08:57 UTC
 
 Previous implementation turn PROGRESS; intervening numbering confirmation alone
 was NO PROGRESS. This continuation PROGRESS: reproduced/fixed legacy area-rank
