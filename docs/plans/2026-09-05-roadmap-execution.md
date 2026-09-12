@@ -5,7 +5,49 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 22:26 UTC
+## Current checkpoint — September 12, 22:48 UTC
+
+Previous turn revalidated prepared-party gear and yielded the terminal shield
+result. This continuation PROGRESS: accepted and integrated preparation UI,
+archived the coherent shield pass, and reproduced an arrival collateral failure.
+Full1.1–1.10 goal remains ACTIVE, no release/version/soak change. NEVER PUSH ROOT.
+
+- Preparation CI34722166310 SUCCESS on c09248c8: client414/6415/80.023s,
+  game race363.745s, all three browser shards. Browser3 passes24layout/3entrance/
+  2effect checks including desktop Enter/Space and actual phone-mode cases.
+  Inspected latest desktop and both reading-end phone captures; readable final
+  text, accessible entry and persistent chat. Archive
+  `/tmp/eidolon-dungeon-preparation-final-browser3-rIXbzV`, scan0. Accepted docs
+  cf7f67a1 dev-pushed; primary clean merge fdb13277. Integrated/dev-pushed
+  **802d216abb8367fdf61ebb463b757128871248b2**, handoff adds reviewed preparation/
+  keyboard notes. **CI34723609678 ACTIVE**, client/server running. Earlier
+  combined **CI34722568754 SUCCESS** on54901f19, all required hosted jobs pass;
+  native/deploy/live skipped, not passed. Neither run is a release approval.
+- Native86468 TERMINAL PASS2.4m on843914f1, one/zero retries. Coherent actual
+  partial absorption:524remaining/310absorbed/2575HP, active visible owned effect.
+  Portrait695/trained834/saved834, natural expiry/cleanup, actual touch entrance
+  cutaway and normal recall restoration pass. Archive
+  `/tmp/eidolon-shield-coherent-pass-O9ExyL`, scan0/exact cleanup. Pre-hit shield
+  image inspected, not a partial-hit screenshot or performance approval.
+  CI34723036018 still ACTIVE on843914f1; client/server/browser3 passed,1/2running.
+- Arrival collateral41979 TERMINAL FAILURE on843914f1: Rogue paid support passes
+  24.6s; Cleric fails50.8s, Guardian Embrace accepted count expected1/observed0.
+  Failure omitted current actor/target/receipt details; cause not established.
+  Archive `/tmp/eidolon-arrival-support-failure-GHxzWa`, scan0/exact containers/
+  image/ports cleanup. Added read-only failure receipt/state/screenshot capture,
+  retaining all assertions, no health/cooldown/target reset. Clean/dev-pushed
+  **00b616b0**. Four focused suites72tests PASS1.829s plus changed-file lint/diff;
+  initial bare Jest invocation failed ESM loading before tests, corrected to
+  repository npm test command. Logs
+  `/tmp/eidolon-arrival-support-diagnostic-unit-corrected-20260912.log`.
+- Sole new native diagnostic **58903 ACTIVE** on frozen00b616b0, runID
+  arrivalsupportdiag0912, prepared-earned-support, API18185/Mongo18186/web41875.
+  Log `/tmp/eidolon-arrival-support-diagnostic-native-20260912.log`. Poll the
+  exact live handle, preserve terminal evidence and cleanup before another
+  browser. Tripwire remains separate. Talent-status collateral still unrun;
+  broader first-hour/five-family/resource/talent/PvP/phone gates stay open.
+
+## Historical checkpoint — September 12, 22:26 UTC
 
 Previous goal turn PROGRESS (release handoff). This continuation PROGRESS:
 full four-player acceptance, integration, second summary-keyboard repair, and
