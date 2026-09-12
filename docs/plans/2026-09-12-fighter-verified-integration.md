@@ -54,3 +54,13 @@ the complete expanded sequence, retaining every previous stage. Corrected
 No runtime changes in this added gate merge. Its new combined full CI remains
 required before primary advances again; prior component successes do not imply
 that this new combined commit has passed.
+
+## Combined owner/recipient gate accepted
+
+CI34698082603 completed successfully on exact28a61378ab66f17305ceea05df45dca15da1e912:
+404 client suites/6315 tests/103.296s; server game86.9%/99.712s and race349.166s;
+three browser jobs completed40+53+26=119 actual checks. Logs are
+`/tmp/eidolon-fighter-verified-buff-ci-{client,server,browser1,browser2,browser3}-34698082603.log`.
+The dispatch skipped production/native jobs; retain the separately archived
+component native proof, not a claim of deployment or complete1.1 acceptance.
+This test/doc-only gate integration is accepted for the primary branch.
