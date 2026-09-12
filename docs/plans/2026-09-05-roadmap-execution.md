@@ -5,7 +5,47 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 21:47 UTC
+## Current checkpoint — September 12, 21:55 UTC
+
+Previous goal turn PROGRESS (summary keyboard correction). This continuation
+PROGRESS: hosted failure diagnosed, phone acceptance fixture corrected, and
+actual geared party progressed past its third original-health boss. Full roadmap
+ACTIVE; no production/version/soak change. NEVER PUSH ROOT.
+
+- **Rustbound Colossus defeated** in native15051: 118.01s encounter
+  (1923283→2041293ms), Fighter5601damage/2831taken, Cleric2753ally healing/
+  1224taken, Wizard7497damage/204taken, Rogue5686damage. Survival checks passed
+  throughout; original18750HP, no boss nerf/stat curve. Three of four bosses
+  now down; final Sentinel, full room clear, every personal reward/Water offer
+  and reconnect checks are still pending. Same source9b6745d7 clean/frozen,
+  PID3544161 live36:02 elapsed; latest302leader steps/21room traversals, fifth
+  town recovery/resume underway. Keep15051 as sole native GPU until terminal/
+  archive/credential scan/exact cleanup, then queued Tripwire diagnostic3b83b154.
+- Initial guidance **CI34720519281 still ACTIVE** on e903cffc, client/server
+  passed; browser3 FAILED exactly desktop Enter leaving the paragraph hidden,
+  both attempts. Other23 layout cases passed. Browser1/2 remain running.
+  This corroborates the already fixed summary keyboard bug, not another runtime
+  failure. Job log `/tmp/eidolon-dungeon-preparation-browser3-34720519281.log`;
+  artifact `/tmp/eidolon-dungeon-preparation-browser3-SyR0VR`, scan0. Desktop
+  failure and both phone screenshots inspected.
+- Landscape image revealed an additional QA gap: hasTouch/isMobile emulation
+  leaves desktop user-agent detection at wide844px, so fixture lacked phone CSS.
+  Latest clean/dev-pushed **bea882184fb80048d4bdb0d8cb8a0482e9991fe8** adds the
+  real mobile-mode boot class for phone cases, verifies16px minimum text and
+  final-line clearance within the scrolling viewport, and captures reading-end
+  whole frames. This is layout scrolling, not physical touch-gesture proof.
+  ESLint, diff and eight-case browser discovery pass; actual corrected browser
+  execution/visual review remain pending. Runtime keyboard fix remains66888d3a.
+- **CI34721303156 PENDING** on exactbea88218, latest full candidate validation.
+  Superseded **34720930285 CANCELLED before starting**, after fresh API showed
+  pending status/no jobs on66888d3a. This avoids running the known outdated phone
+  fixture; it is neither a failure nor a pass. No running job was cancelled.
+  Original34720519281 and native15051 continue untouched.
+- Accepted primary0992f77b and combined-docs3958df93 unchanged; do not merge
+  preparation until corrected hosted/browser/visual proof. All broader1.1
+  first-hour/all-dungeon/resource/reconnect/talent and1.2–1.10 gates remain open.
+
+## Historical checkpoint — September 12, 21:47 UTC
 
 Previous goal turn PROGRESS (preparation guidance, actual Matron and integrated
 CI acceptance). This continuation PROGRESS: reproduced and fixed native summary
