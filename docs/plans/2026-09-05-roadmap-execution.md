@@ -5,7 +5,76 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 09:04 UTC
+## Current checkpoint — September 12, 09:26 UTC
+
+Previous goal turn PROGRESS; this continuation PROGRESS. Implemented the full
+Earthshaker area/event/visual correction, reproduced actual failed casts,
+verified server/wire/attached meshes, recovered a full-suite architecture
+failure, and integrated previously accepted runtime candidates. Full
+1.1.0–1.10.0 goal remains active. No native/milestone/live acceptance claim.
+
+- Candidate `/tmp/eidolon-1-1-earthshaker-area-20260912`, branch
+  `work/1-1-earthshaker-area`, clean **e39599d9018ec6230265fdb6d5f6c27586b3f8c3**,
+  parent59afd794. Paid server RED0.923s:24 cases lack accepted radius,20
+  trained reaches fail plus trained Fissure width; paid controls retained.
+  Offline RED18fail41pass1.192s. Technique FTR_14 and generic area now snapshot
+  circle/Seismic/Fissure length6..8.1, Aftershock3.5..4.725 and Fissure
+  half-width1.5..2.025. Broad phase includes body-padded line corners; precise
+  walls/hostile/instance/forward limits retained. Delayed wave keeps original
+  origin/facing/radius/damage/stun despite moving/changing builds.
+- Public optional JSON `shapeKind`/`phase` plus existing radius/arc/origin carry
+  circle versus line and a real delayed Aftershock event. Target-minus-origin
+  is the accepted unit heading, including zero-aim casts. No private ranks or
+  new entity protobuf. Fissure displays four fixed strip edges/rising earth
+  shards on both graphics settings, not a circle; redundant legacy wave and
+  cursor impact removed. Prediction compares kind/radius/origin/heading and
+  phase; unchanged acceptance does not replay. Remote delayed impacts neither
+  turn the actor nor replay animation/action feedback. Invalid shape rejected.
+- Focused client3suites210PASS1.779s; initial visual/gameplay2suites66PASS1.398s.
+  Real attached High/Low world-space boundaries, private-rank observer/newer
+  actor position, stale shape correction/unchanged repeats, network delayed
+  impact/expiry/malformed data covered. Server expandedrace**30.972s**, plus
+  actual Technique purchases/sixth rejection/zero-aim facing race**1.516s**;
+  final payload roundtrip race**1.057s**. Existing damage, wall, charge,
+  Seismic stun and delayed cancellation regressions retained.
+- Full client first run terminal88759:388suites6157PASS plus ONE architecture
+  failure284.039s (GameEngine2502 lines exceeds unchanged2500). Extracted shape
+  metadata into `src/skills/abilityShapeMetadata.js`, no budget relaxation.
+  Final lint/whitespace pass. **Local full rerun9935 TERMINAL SUCCESS**,
+  **389 suites/6158 tests329.539s**. Resumed the same handle throughout,
+  no observation-timeout restart. Log
+  `/tmp/eidolon-earthshaker-area-client-full-final-20260912.log`.
+- Pushed ONLY dev candidate. **Hosted CI34685697297 ACTIVE** at exacte39599d9;
+  client103532192050 SUCCESS **389suites6158tests98.636s**, direct API log
+  `/tmp/eidolon-earthshaker-area-ci-client-34685697297.log`. Server103532192159
+  active; full hosted acceptance pending. No primary integration of area yet.
+  Candidate doc `docs/plans/2026-09-12-earthshaker-area-and-fissure.md` includes
+  proposed1.1 patch note, protocol/geometry contract and pending native gates.
+  Other logs `/tmp/eidolon-earthshaker-area-{server-red,server-expanded,purchases,wire-final,client-red,visual-green,client-full,lint-final}-20260912.log`.
+- **Cone CI34684185347 TERMINAL SUCCESS** atb9; all hosted jobs pass, publishing
+  jobs skipped. **Legacy-area CI34684544288 TERMINAL SUCCESS** at770eeb8f:
+  client388/6095/122.761s; server86.8%/83.621s/fullrace263.998s plus
+  backup/restore/bench/build; browsers40+50+26=116 via API logs
+  `/tmp/eidolon-area-legacy-ci-{client,server,browser1,browser2,browser3}-34684544288.log`.
+  Primary/integrated verified clean/no processes in either cwd then FF11→770.
+- **Earthshaker damage CI34684855203 TERMINAL SUCCESS** at59afd794:
+  client388suites6124tests95.459s; server86.9%/94.635s/fullrace328.961s plus
+  backup/restore/bench/build; browsers40+50+26=116. API logs
+  `/tmp/eidolon-earthshaker-damage-ci-{client,server,browser1,browser2,browser3}-34684855203.log`.
+  Native/deploy/live skipped by manual guards, not passes. Rechecked primary/
+  integrated clean/idle, FF770→**59afd7947654e3f1a15af3df02613a5fa9cc5d6b**.
+- Production **CI34683452640 ACTIVE**, native103528155488 full-character
+  gameplay confirmed09:25; process observation09:20 showed
+  `fresh-opening-gameplay.spec.js` (PID115160 observational only). GPU still
+  reserved; no local native launched. Independent public09:18 still
+  Alpha1.0.64/6d5e82cb, healthok/dbready. No65 live assertion.
+  Four-role dungeon clear remains next native priority once production is
+  terminal. Pending Whirlwind/Fighter-party/Fortress/Guardian Roar and now
+  Earthshaker purchased-area native evidence, earned progression, remaining
+  talent/dungeon/raid/milestone scope all remain open. Soak untouched; root
+  ledger NOT pushed. All local sessions, including9935, terminal.
+
+## Historical checkpoint — September 12, 09:04 UTC
 
 Previous goal turn PROGRESS; this continuation PROGRESS. Reproduced and fixed
 Earthshaker's missing damage-training consumer in server/offline paid casts,
