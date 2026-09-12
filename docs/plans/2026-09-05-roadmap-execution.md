@@ -5,7 +5,54 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 04:28 UTC
+## Current checkpoint — September 12, 04:33 UTC
+
+This continuation is PROGRESS: all scoped65 native training routes now pass,
+their accepted artifacts are preserved, the candidate acceptance is committed
+and pushed to its nonproduction branch, and the instrumented four-role test is
+running on the exact hosted-accepted1.1 development source. Whole goal stays open.
+
+- Native Time Warp **44831 TERMINAL SUCCESS**,1test2.9m on clean95a78071.
+  Base/trained radius, paid Mastery duration, High/Low, fresh login, actual ally
+  stat changes and expiration to baseline all passed. Scan0, exact temporary
+  services and ports gone before the next route. Full archive
+  `/tmp/eidolon-release65-timewarp-accepted-7xvnTv`.
+- Together with Teleport/Phase2.0m and Focus2.1m below, this closes the three
+  scoped native65 training checks, not its production gates or broad progression.
+  Inspected trained Focus phone glyph and saved Phase desktop capture; neither
+  low screenshot FPS nor short-effect screenshots establish performance acceptance.
+- Candidate65 **66ca3a3d262a0dc477b18c3912a1fcec3904e60b** is clean and pushed
+  ONLY to`work/release65-wizard-training`; session30115 terminal and remote SHA
+  verified. This commit is documentation only on native-accepted95a78071. Normal
+  production client/server/browser/predeploy/input/deploy/live remain required.
+  Remote master is still public accepted64/6d5e82cb. No65 publishing push yet.
+- **Four-role dungeon native37629 ACTIVE**, TTY, clean8f2c82a4 in
+  `/tmp/eidolon-primary-merged-20260911`, runIDparty09120431. Disposable API/Mongo
+  are running; actual Playwright worker1228191 has started. Log
+  `/tmp/eidolon-four-role-briar-timing-20260912.log`; ports18185/18186/41875.
+  GOMAXPROCS2, Node24, system Chrome/render group. Source includes4231854d's
+  detailed warning-input timing and subsequent hosted-accepted Charge fixes.
+  Do not edit this frozen source or start competing native/release QA; poll the
+  same handle. The120-minute diagnostic budget is not a player pacing target.
+- Prepared level30/Common/rank5 Fighter/Cleric/Wizard/Rogue still use ordinary
+  party invites, movement, skills and real town recovery. No dungeon clear,
+  final credit/manual turn-in/fresh Water handoff or earned progression has yet
+  been proved by this new run. Prior Briar failure remains unresolved pending
+  actual timing evidence; do not infer a balance defect or weaken assertions.
+- Final combined hosted shard1 artifact retained at
+  `/tmp/eidolon-integrated-1-1-followup-shard1-5wb4G3`, alongside shard2
+  `/tmp/eidolon-integrated-1-1-followup-shard2-0nKkx8` and shard3
+  `/tmp/eidolon-integrated-1-1-followup-shard3-2e3uK4`. Terminal34671975379 is
+  fully accepted for hosted scope only; do not poll it again.
+- After this native party run terminates, retain/inspect its sanitized evidence
+  and diagnose any concrete failure, then publish65 through normal gates when
+  the native hardware is free. Forward-port accepted65 Teleport QA coverage to
+  primary without importing65 release metadata after primary is unfrozen.
+  Scheduled soak34670421761 is still active; no new soak/cancellation/schedule
+  change. Remaining baseline work stays bundled into1.1.0, all1.2–1.10 scope
+  remains required, and root master remains ledger-only: NEVER PUSH.
+
+## Previous checkpoint — September 12, 04:28 UTC
 
 The preceding numbering-only reply made no implementation progress. This goal
 continuation revalidated authoritative state and made PROGRESS: retained native
