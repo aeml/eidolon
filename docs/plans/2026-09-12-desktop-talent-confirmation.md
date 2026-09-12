@@ -35,6 +35,17 @@ on e2ef6e51, including full lint/audit/benchmark. Log
 browser shards and the queued native route remain pending. Do not attribute
 full CI or saved-session acceptance to this partial result.
 
+Acceptance update: CI34718270509 completed SUCCESS on e2ef6e51, including
+game race359.092s and all three browser shards. Native25313 on documentation
+follow-up50304e6a passed1.7minutes/zero retries: actual visible desktop rank
+confirmations and wire point debits, paid0/1/5 Technique casts30/29/27mana,
+cooldowns10/9.7/8.5, saved rank5 plus generic5 cooldown7.5 and natural10s effects.
+Saved High screenshot inspected. Archive `/tmp/eidolon-desktop-talent-pass-Z9RKED`,
+scan0/exact disposable containers/image/ports cleanup verified. Accept this
+bounded desktop fix for integration; it does not complete the entire talent
+audit, all reconnect scenarios, full party clear or the1.1.0 release. Manual
+hosted native/deploy/live skips are not production evidence.
+
 ## Draft 1.1.0 patch note
 
 - Desktop talent purchases and resets now wait for server confirmation, show
