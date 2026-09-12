@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 21:16 UTC
+## Current checkpoint — September 12, 21:18 UTC
 
 Previous goal turn PROGRESS. This continuation made PROGRESS: accepted desktop
 talent confirmation, retained two native failures, added traversal accounting,
@@ -14,7 +14,7 @@ ACTIVE; no deployment/version/soak change. NEVER PUSH ROOT.
 
 - **Latest player direction: NO level-dependent stat scaling.** Equip every
   test role in at least Uncommon/Rare items, Strong Fighter/Agile Rogue and
-  corresponding caster affixes. New clean/dev-pushed **0a75527d** in
+  corresponding caster affixes. New clean/dev-pushed **9b6745d7** in
   `/tmp/eidolon-1-1-party-progressed-gear-20260912`, work/1-1-party-progressed-gear,
   uses five Rare/nine Uncommon level30 pieces across all14slots. Strong/Strength,
   Agile/Dexterity, Brilliant/Intelligence, Wise/Wisdom respectively; Rare suffix
@@ -27,10 +27,16 @@ ACTIVE; no deployment/version/soak change. NEVER PUSH ROOT.
   gear tested before global stat scaling; do not revive the withdrawn proposal.
   Focused client2/19/0.775s and all-base/role/rarity Go race1.080s PASS;
   full lint/prepare/diff pass. Doc2026-09-12-party-progressed-gear.md.
-  **CI34719442897 ACTIVE** on exact0a75527d.
-  **Native70936 ACTIVE — SOLE GPU**, routeparty-dungeon/runIDpartygeared0912,
+  **CI34719442897 ACTIVE** on0a75527d (before test-only hydration comparison).
+  First native70936 FAILED14.0s BEFORE dungeon entry: actual sword was correct
+  Strong/Rare/level30/11damage/9Strength/9Vitality, but client hydrated rarity is
+  an object rather than the wire string. Read-only normalization9b6745d7 keeps
+  all name/rarity/level/stat assertions; focused13tests PASS0.715s+lint/diff.
+  Archive `/tmp/eidolon-party-progressed-gear-preparation-failure-9pX8sZ`, scan0/
+  exact cleanup verified. This is not a geared dungeon-combat failure.
+  **Native15051 ACTIVE — SOLE GPU**, routeparty-dungeon/runIDpartygearedretry0912,
   explicitprogressed+Low, API18185/Mongo18186/web41875. Freeze this worktree.
-  Log `/tmp/eidolon-party-progressed-gear-native-20260912.log`. Registration/
+  Log `/tmp/eidolon-party-progressed-gear-hydrated-native-20260912.log`. Registration/
   preparation started; no actual geared clear claim yet.
 - Old balance98186 FAILED30.4m. Warden killed, Matron last4988/10080 after92s,
   Fighterdead187mana; healer244mana. Final late dodges1.7s/1.53s after impact;
@@ -64,7 +70,7 @@ ACTIVE; no deployment/version/soak change. NEVER PUSH ROOT.
   Integrated rehearsal remains66cd93f1/runtime719df4de, last full CI34717404204
   SUCCESS; later combined regression still needed when next accepted work merges.
 
-Next: monitor70936/34719442897, preserve actual geared-party outcome, then resume
+Next: monitor15051/34719442897, preserve actual geared-party outcome, then resume
 shield diagnostic and pending Tripwire collateral checks. No all-dungeon credit,
 Water handoff, first-hour, complete resource/reconnect or full1.1 acceptance yet.
 All later1.2–1.10 requirements including casino remain intact.
