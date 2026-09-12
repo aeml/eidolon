@@ -5,7 +5,82 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 08:06 UTC
+## Current checkpoint — September 12, 08:31 UTC
+
+Previous goal turn PROGRESS; this continuation PROGRESS. Hosted Whirlwind area
+acceptance integrated, its native purchase gate authored/tested, and a newly
+terminal production QA failure reproduced and corrected with actual Chrome
+evidence. Full roadmap stays active. No65 live or1.1 milestone acceptance claim.
+
+- **CI34682385242@876e70ce TERMINAL SUCCESS**. Client385suites5952tests128.348s;
+  server game86.8%/93.487s, full race328.032s plus backup/restore/bench/build;
+  browsers40+50+26=116 pass. Native/deploy/live explicitly SKIPPED by manual
+  guards, not passes. Logs `/tmp/eidolon-whirlwind-area-ci-{client,server,browser1,browser2,browser3}-34682385242.log`.
+  All browser artifacts downloaded to
+  `/tmp/eidolon-whirlwind-area-browser-accepted-leK1rx`, terminal68366 closed.
+  Checked primary/integrated clean and no processes using either worktree,
+  then fast-forwarded both06f62f1b→**876e70ce80cd5ad31eb2ec5a46d54aa15a6ecbaa**.
+- New native candidate `/tmp/eidolon-1-1-whirlwind-area-native-20260912`, branch
+  `work/1-1-whirlwind-area-native`, clean **01dbe625f21397768e2848122065f4a1af41c812**,
+  parent876. NOT pushed/integrated, native UNEXECUTED. Authored `whirlwind-area`
+  separate allowlisted Fighter route, retries0, enrolled once after retained
+  duration/movement route in full timing contracts. Phone0/1/5 Technique and
+  generic upgrades,15 actual point purchases/max disabled, eight actual casts,
+  base/Extended/HighLow, fresh saved login/landscape. Observer reads raw accepted
+  radius/state/explicit expiry and actual world-space mesh frames without
+  synthesizing values or nesting handlers. Five observer tests pass; missing
+  enrollment RED2fails2.359s. Final5suites125PASS5.305s/full lint/bash/diff;
+  vendor prepared and Playwright lists1test, NOT execution. Logs
+  `/tmp/eidolon-whirlwind-area-native-{red,focused,lint,prepare,list}-20260912.log`.
+  Native Fighter owner/real-party candidate remains0f15acd8, also UNEXECUTED.
+- **Production CI34679633154@0e1068a5 TERMINAL FAILURE** at movement-smoothness
+  sub-arrival zero-accepted assertion, received14 on both attempts. Hosted
+  gates/prefix native stages through direct-target classes pass, deployment/live
+  skipped. Failure log `/tmp/eidolon-release65-production-native-34679633154.log`,
+  sanitized artifact `/tmp/eidolon-release65-movement-failure-365qLn` (download
+  terminal86898). Original artifacts lack raw input rays; exact direction unknown.
+- Scoped release worktree `/tmp/eidolon-release65-movement-ray-diagnostics-20260912`,
+  branch `work/release65-movement-ray-diagnostics`, based on0e. **5d6acdf8** adds
+  read-only raw pointer/ground/camera/frame evidence and attaches before failing
+  assertions. First focused invocation referenced nonexistent ActorMovement
+  test (not acceptance); corrected3suites47PASS1.947s+lint. Native37068 max-level
+  PASS19.2s/21.2stotal, then distinct normal fresh-character95049 PASS18.4s/20.2s.
+  Archives `/tmp/eidolon-release65-movement-{max-accepted-qir5zJ,base-accepted-gQy5lT}`;
+  scans0. Both physically truncated to exact current point despite intended.05
+  offset, so neither proved the CI defect fixed.
+- Deterministic projection calculation finds140..165-degree inputs truncate to
+  pixel638/359, actualdistance**0.110239637961**, outside unchanged0.1deadzone.
+  **53320bbc** opt-in150-degree physical-input probe retains normal ray/clearance
+  checks/assertions. Native20272 TERMINAL FAIL:25accepted/2.75599units travel;
+  raw input proves that same pixel-distance mechanism. Archive
+  `/tmp/eidolon-release65-movement-pixel-failure-ansCzB`, scan0. This reproduces
+  the same assertion, but original CI direction remains unproven due missing rays.
+- **967015d9** corrects QA projection to nearest integer pixel, adds actual-ray
+  <0.1 assertion and forced-probe >0.01 positive control. No game/server/input
+  runtime, thresholds, frame budgets, class coverage, retry policy or version
+  changes. Four suites55PASS1.467s incl72directions×min/default/maxzoom×2viewports.
+  Native71511 PASS20.7s/22.9stotal on forced150-degree direction: real pixel639/360
+  =**0.0416666666667**units; zeroaccepted/zerotravel/unchangedIdle. Full subsequent
+  short/sustained/outside route passes under native RADV RENOIR. Scan0, archive
+  `/tmp/eidolon-release65-movement-pixel-accepted-xsCn4d`. All scoped native
+  sessions37068/95049/20272/71511 terminal; disposable services removed and
+  18185/18186/41875 independently free after terminal checks.
+- **f9eb1f300e91391a44404c7e687965f77397329b** adds that native acceptance doc.
+  Verified remote master still0e, then pushed ONLY scoped release HEAD→master.
+  **Production CI34683452640 ACTIVE** at f9, confirmed after push. Root/master
+  ledger was NOT pushed. Reserve the single GPU for incoming production native
+  QA; no active local native process. Full CI/live identity required, not merely
+  repeat success. Forward-port release QA commits5d/533/967/f9 into1.1 in a
+  separate candidate; primary still accepted876. Do not integrate untested
+  native authoring just because its route lists successfully.
+- Release reproduction/fix doc `docs/plans/2026-09-12-release65-movement-pixel-input.md`
+  in scoped worktree. Logs `/tmp/eidolon-release65-movement-{diagnostics-focused-final,ray-gameplay,ray-base-gameplay,pixel-gameplay,pixel-focused,pixel-fixed-gameplay}-20260912.log`.
+  Read-only temp report extractor `/tmp/eidolon-read-movement-report-20260912.cjs`.
+  Last independent public check08:23 still **Alpha1.0.64/6d5e82cb**, healthok/dbready.
+  Soak schedule/runner untouched. Four-party dungeon/earned progression and
+  remainder of full1.1–1.10 roadmap remain open.
+
+## Historical checkpoint — September 12, 08:06 UTC
 
 Previous goal turn PROGRESS; this continuation PROGRESS. Revalidated the
 unfinished Whirlwind reproduction, implemented its server/network/offline/visual
