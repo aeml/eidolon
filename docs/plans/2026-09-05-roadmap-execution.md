@@ -5,7 +5,62 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 01:22 UTC
+## Current checkpoint — September 12, 01:38 UTC
+
+Previous goal turn was PROGRESS (Shattering and phone feedback). This continuation
+is PROGRESS: accepted release63's complete live gate, repaired the remaining
+Shockwave path gap, and passed/merged the complete pending combat regression.
+The full 1.1–1.10 goal remains active; no genuine external blocker exists.
+
+- **Release63 fully accepted:** CI34660899212 is TERMINAL SUCCESS; every
+  hosted, predeploy, input, deployment and final live job passed. Final live
+  job103473089014 reports8 anonymous/persistent/dungeon/movement tests (5.0m),
+  four class cases plus remote multiplayer, two fresh-character recovery/expiry
+  cases (1.0m), and two-client rest presentation (29.2s). Both scanners0.
+  Independent uncached post-gate frontend/backend checks match
+  **Alpha1.0.63 /f866df68b74b52531ed32a2fa53a93b179d983ac**, database ready;
+  HTML login/main-module/patch notes match and older notes remain.
+- Logs `/tmp/eidolon-release63-{live,predeploy}-job-20260912.log`; artifacts
+  `/tmp/eidolon-release63-live-proof-Sj6wyE` and
+  `/tmp/eidolon-release63-predeploy-accepted-QZtbxd`. Predeploy rested-render
+  JSON:4 expected,0 skipped/unexpected/flaky,59.234s. Inspected High/Low568px
+  party screenshots; prepared browser evidence, not a replacement for the
+  separately recorded positive user phone feedback. Acceptance doc
+  `2026-09-12-release63-live-acceptance.md` (rootbe46da16, development3d1d2467).
+- Additional actual paid Shockwave regression reproduced an enemy being pushed
+  from the caster's valid floor across a gap into another room: closed-wall
+  failure/open-door control0.074s. Corrected full-path constraint BEFORE changing
+  target coordinates. Expanded charge family repeated3xGo-race PASS23.112s.
+  Logs `/tmp/eidolon-shockwave-path-{red,family}-20260912.log`; commita955a7de.
+- **Full session76136 TERMINAL0** on clean frozena955a7de:365client suites/
+  **5,423tests PASS106.271s**, full lint, all Go race packages (root14.739s,
+  game270.424s, database1.076s, lifecycle1.018s, loadtest1.015s). Logs
+  `/tmp/eidolon-shattering-full-{client,lint,server}-20260912.log`. Includes
+  pending Time Warp/Wizard damage/armor/Shattering parents with previously
+  accepted protection/Focus/Teleport. Proofcaa6ba5d; doc
+  `2026-09-12-wizard-shattering-full-integration.md`.
+- Primary `/tmp/eidolon-primary-merged-20260911` fast-forwarded97cd447b to
+  clean **3d1d2467**, matching candidate `/tmp/eidolon-offline-shattering-charge-20260912`.
+  Successors after tested a955 only add acceptance docs. This is development
+  integration, NOT publication of the pending combat/story/economy scope.
+- **Native Time Warp Mastery session69275 ACTIVE**, started01:37 on clean3d1,
+  confirmed "Running1test" at01:38. Log
+  `/tmp/eidolon-time-warp-mastery-native-20260912.log`. Route=time-warp-area,
+  System Chrome under render group, disposable run IDtwm120137, loopback
+  API18185/Mongo18186 and localweb4173. Shared browser runtime prepared.
+  Poll SAME session; do not run a competing GPU job or overwrite its artifacts.
+  Expanded paid WIZ25/11.2s/HighLow/fresh-login case still has no result yet.
+- Before starting native, GitHub confirmed both repository runners online/idle
+  and the latest soak34558600459 completed FAILURE, with no newer soak run.
+  Cancelled soak remains OFF. Normal release CI was allowed to finish.
+- Next: finish/archive native TWM, four-role Normal Verdant retry retaining all
+  four alive/full clear/individual manual Ilyra/Water/fresh-save gates; scoped
+  next release with patch notes. Teleport release packaging depends on unpublished
+  receiving-defense work; never push the entire broad primary/root accidentally.
+  All remaining talent, campaign, balance, later mobile and casino milestones
+  stay required. Root ledger NEVER PUSH.
+
+## Previous checkpoint — September 12, 01:22 UTC
 
 Previous goal turn was PROGRESS (offline armor fix). This continuation is
 PROGRESS: implemented Shattering Charge's real offline travel/impact, repaired
