@@ -1,6 +1,7 @@
 import { devices, expect, test } from '@playwright/test';
-import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld } from './helpers.js';
+import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, projectGroundOffset } from './helpers.js';
 import { installFighterBuffObserver } from './fighter-buff-observer.js';
+import { backendOriginBrowserArgs, hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 
 const buffs = [
     { skill: 'Berserker Edge', id: 'berserker_edge', talent: 'FTR_19', base: 1.5, seconds: 15,
@@ -12,19 +13,19 @@ test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true
     userAgent: devices['Pixel 7'].userAgent, actionTimeout: 12_000,
     trace: 'off', screenshot: 'off', video: 'off' });
 
-test('Fighter buff Masteries have paid, saved strength and visible High/Low lifecycle', async ({ page, baseURL }, testInfo) => {
-    test.setTimeout(420_000);
+test('Fighter buff Masteries have paid, saved strength and visible High/Low owner and party lifecycle', async ({ page, browser, baseURL }, testInfo) => {
+    test.setTimeout(600_000);
     test.skip(process.env.EIDOLON_E2E_REGISTER !== '1', 'Requires isolated Fighter damage-buff route');
     const credentials = credentialsFromEnvironment(), failures = collectBrowserFailures(page, baseURL);
     await loginAndEnterWorld(page, credentials);
     expect(await page.evaluate(() => window.game.player.constructor.name)).toBe('Fighter');
-    let lastCommandAt = 0;
-    async function command(value) {
-        await page.waitForTimeout(Math.max(0, 1100 - (Date.now() - lastCommandAt)));
-        lastCommandAt = Date.now();
-        await page.locator('#chat-mobile-toggle').tap();
-        await page.locator('#chat-input').fill(value); await page.locator('#chat-input').press('Enter');
-        await page.locator('#chat-mobile-toggle').tap();
+    const lastCommands = new Map();
+    async function command(value, actor = page) {
+        await actor.waitForTimeout(Math.max(0, 1100 - (Date.now() - (lastCommands.get(actor) || 0))));
+        lastCommands.set(actor, Date.now());
+        await actor.locator('#chat-mobile-toggle').tap();
+        await actor.locator('#chat-input').fill(value); await actor.locator('#chat-input').press('Enter');
+        await actor.locator('#chat-mobile-toggle').tap();
     }
     async function skills(tab) {
         await page.locator('#btn-mobile-menu').tap(); await page.locator('#btn-phone-skills').tap();
@@ -45,18 +46,18 @@ test('Fighter buff Masteries have paid, saved strength and visible High/Low life
         if (to === 5) await expect(buy).toBeDisabled();
         await page.locator('#btn-close-skills').tap();
     }
-    async function outsideStableStats() {
+    async function outsideStableStats(actor = page) {
         // Keep Last Stand outside town's 10%-per-second healing. Let any banked
         // Well Rested expire normally so its stat bonus cannot skew comparisons.
-        await command('/qa-waypoint combat');
-        await expect.poll(() => page.evaluate(() => Math.hypot(window.game.player.position.x - 120,
+        await command('/qa-waypoint combat', actor);
+        await expect.poll(() => actor.evaluate(() => Math.hypot(window.game.player.position.x - 120,
             window.game.player.position.z - 200)), { timeout: 20_000 }).toBeLessThan(3);
-        await expect.poll(() => page.evaluate(() => window.game.player.wellRestedSeconds || 0), { timeout: 60_000 }).toBe(0);
+        await expect.poll(() => actor.evaluate(() => window.game.player.wellRestedSeconds || 0), { timeout: 60_000 }).toBe(0);
     }
-    async function quality(value) {
-        await page.locator('#btn-mobile-menu').tap(); await page.locator('#btn-settings').tap();
-        await page.locator('#graphics-quality').selectOption(value); await page.locator('#btn-close-settings').tap();
-        if (await page.locator('#esc-menu').isVisible()) await page.locator('#btn-mobile-menu').tap();
+    async function quality(value, actor = page) {
+        await actor.locator('#btn-mobile-menu').tap(); await actor.locator('#btn-settings').tap();
+        await actor.locator('#graphics-quality').selectOption(value); await actor.locator('#btn-close-settings').tap();
+        if (await actor.locator('#esc-menu').isVisible()) await actor.locator('#btn-mobile-menu').tap();
     }
     async function cast(buff, rank, tier) {
         await expect.poll(() => page.evaluate(() => window.game.player.berserkerEdgeTimer <= 0 &&
@@ -134,5 +135,84 @@ test('Fighter buff Masteries have paid, saved strength and visible High/Low life
     await page.setViewportSize({ width: 844, height: 390 });
     await outsideStableStats(); await quality('low');
     for (const buff of buffs) await cast(buff, 5, 'low');
+
+    const second = await browser.browserType().launch({ executablePath: process.env.EIDOLON_E2E_BROWSER_PATH || '/usr/bin/google-chrome',
+        headless: process.env.EIDOLON_E2E_HEADLESS !== '0',
+        args: [...hardwareWebGLBrowserArgs(), ...backendOriginBrowserArgs(process.env.EIDOLON_E2E_BACKEND_ORIGIN_IP)] });
+    try {
+        const context = await second.newContext({ ...devices['Pixel 7'], viewport: { width: 390, height: 844 }, baseURL });
+        const ally = await context.newPage(), allyFailures = collectBrowserFailures(ally, baseURL);
+        await loginAndEnterWorld(ally, { ...credentials, username: `${credentials.username}-ally`, characterClass: 'Cleric' });
+        expect(await ally.evaluate(() => window.game.player.constructor.name)).toBe('Cleric');
+        await command('/level 100', ally);
+        await expect.poll(() => ally.evaluate(() => window.game.player.level)).toBe(100);
+        await outsideStableStats(ally); await outsideStableStats();
+        // Normal ground input separates the models; neither player is moved
+        // by assigning a scene position or sending a hidden movement message.
+        await ally.waitForTimeout(1100); // Existing waypoint movement-lock window.
+        const ground = await projectGroundOffset(ally, 6, 0);
+        expect(ground?.canvas).toBe(true); await ally.touchscreen.tap(ground.x, ground.y);
+        await expect.poll(() => ally.evaluate(() => Math.hypot(window.game.player.position.x - 120,
+            window.game.player.position.z - 200)), { timeout: 10_000 }).toBeGreaterThan(2);
+        const ownerId = await page.evaluate(() => window.game.player.id), allyId = await ally.evaluate(() => window.game.player.id);
+        await expect.poll(() => page.evaluate(id => Boolean(window.game.remotePlayers.get(id)), allyId)).toBe(true);
+        await page.locator('#btn-phone-party').tap();
+        await page.getByRole('textbox', { name: 'Player to invite' }).fill(`${credentials.username}-ally`);
+        await page.locator('#phone-party-panel').getByRole('button', { name: 'Invite', exact: true }).tap();
+        await expect(ally.locator('#party-request-modal')).toBeVisible(); await ally.locator('#btn-accept-party').tap();
+        await expect.poll(() => page.evaluate(() => window.game.uiManager.social.partyData?.members?.length)).toBe(2);
+        await expect(page.locator('#phone-party-panel')).toBeHidden();
+        expect(await ally.evaluate(() => window.game.player.talentRanks?.FTR_19 || 0)).toBe(0);
+        const buff = buffs[0];
+        for (const tier of ['high', 'low']) {
+            await quality(tier); await quality(tier, ally);
+            const sequence = await page.evaluate(() => window.game.animationQAReadySequence || 0);
+            await command('/qa-animation-ready');
+            await expect.poll(() => page.evaluate(() => window.game.animationQAReadySequence || 0)).toBeGreaterThan(sequence);
+            const before = await ally.evaluate(() => ({ damage: window.game.player.stats.damage,
+                defense: window.game.player.stats.defense, rested: window.game.player.wellRestedSeconds || 0 }));
+            expect(before.rested).toBe(0); expect(before.damage).toBeGreaterThan(10);
+            await page.evaluate(installFighterBuffObserver, buff); await ally.evaluate(installFighterBuffObserver, buff);
+            const slot = await page.evaluate(() => window.game.player.hotbar.indexOf('Berserker Edge'));
+            expect(slot).toBeGreaterThanOrEqual(0);
+            await page.locator('#hotbar-container .hotbar-slot').nth(slot).tap();
+            await expect.poll(() => page.evaluate(() => window.__fighterBuffNative.results.length)).toBe(1);
+            expect(await page.evaluate(() => window.__fighterBuffNative.results[0].accepted)).toBe(true);
+            await expect.poll(() => ally.evaluate(before => window.__fighterBuffNative.states.some(s =>
+                Math.abs(s.multiplier - 1.8) < .00001 && s.damage === Math.trunc(before.damage * 1.8) &&
+                s.defense === Math.trunc(before.defense * .8)), before)).toBe(true);
+            expect(await ally.evaluate(() => window.__fighterBuffNative.results)).toEqual([]);
+            const sharedDuration = await ally.evaluate(() => window.__fighterBuffNative.maxDuration);
+            expect(sharedDuration).toBeGreaterThan(14.25); expect(sharedDuration).toBeLessThanOrEqual(15.1);
+            for (const client of [page, ally]) {
+                await expect.poll(() => client.evaluate(({ ownerId, allyId, tier }) => [ownerId, allyId].every(id => {
+                    const g = window.game, p = id === g.player.id ? g.player : g.remotePlayers.get(id);
+                    const effect = p?.attachedStatusEffects?.get('berserker_edge');
+                    return p?.berserkerEdgeActive && Math.abs(p.berserkerEdgeMultiplier - 1.8) < .00001 &&
+                        effect?.isActive && effect.group?.parent && effect.quality === tier && effect.getMetrics().meshes > 0;
+                }), { ownerId, allyId, tier })).toBe(true);
+            }
+            await ally.locator('#btn-phone-status').tap();
+            const badge = ally.locator('#phone-status-panel [data-buff-id="berserker_edge"]');
+            await expect(badge).toContainText('+80% Damage stat');
+            await ally.screenshot({ path: testInfo.outputPath(`berserker-party-cleric-${tier}.png`) });
+            await expect.poll(() => ally.evaluate(() => window.__fighterBuffNative.expired), { timeout: 22_000 }).toBe(true);
+            await expect.poll(() => ally.evaluate(before => window.game.player.stats.damage === before.damage &&
+                window.game.player.stats.defense === before.defense && !window.game.player.attachedStatusEffects.has('berserker_edge'), before)).toBe(true);
+            await expect(badge).toHaveCount(0); await ally.locator('#btn-phone-status').tap();
+            await expect.poll(() => page.evaluate(() => window.__fighterBuffNative.expired)).toBe(true);
+            for (const client of [page, ally]) {
+                await expect.poll(() => client.evaluate(ids => ids.every(id => {
+                    const g = window.game, p = id === g.player.id ? g.player : g.remotePlayers.get(id);
+                    return p && !p.berserkerEdgeActive && p.berserkerEdgeTimer <= 0 &&
+                        p.berserkerEdgeMultiplier === 1 && !p.attachedStatusEffects.has('berserker_edge');
+                }), [ownerId, allyId])).toBe(true);
+            }
+            await testInfo.attach(`berserker-party-${tier}-receipts`, { body: JSON.stringify({ before,
+                owner: await page.evaluate(() => window.__fighterBuffNative),
+                recipient: await ally.evaluate(() => window.__fighterBuffNative) }), contentType: 'application/json' });
+        }
+        expect(allyFailures, allyFailures.join('\n')).toEqual([]);
+    } finally { await second.close(); }
     expect(failures, failures.join('\n')).toEqual([]);
 });

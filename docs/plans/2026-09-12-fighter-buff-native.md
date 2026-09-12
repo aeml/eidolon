@@ -1,11 +1,11 @@
-# Fighter damage-buff native owner gate — authored, not yet executed
+# Fighter damage-buff native owner and party gate — authored, not yet executed
 
 Based on06f62f1b in a separate worktree while its hosted rehearsal and the
 separate release65 native pipeline remain frozen. This document is not browser
 acceptance evidence. Local GPU must stay available to release65 until terminal.
 
 The new `fighter-buff-mastery` isolated route registers one dedicated allowlisted
-Fighter and disables Playwright retries. Full timed QA enrolls it once after
+Fighter plus a separately allowlisted Cleric and disables Playwright retries. Full timed QA enrolls it once after
 Whirlwind, preserving every existing stage and cleanup/credential scan behavior.
 
 ## Browser scenario
@@ -32,9 +32,26 @@ Whirlwind, preserving every existing stage and cleanup/credential scan behavior.
 The serialized observer forwards each message once and returns its original
 result. It filters owner ID and skill, never invents missing multipliers or
 expiry, resets observations without nesting wrappers, retains rejection, and
-bounds captured state samples. This scope is an owner stat/render lifecycle
-gate; real party recipients and damage-impact gameplay remain separate required
-acceptance, not inferred from this scenario.
+bounds captured state samples.
+
+## Real party recipient extension
+
+After the saved-owner checks, launch a second system-Chrome process with its
+own mobile context and a real Cleric login. Prepare level/readiness with the
+existing allowlist only, move outside town, and let banked Well Rested expire.
+An actual ground tap separates the models. Invite by the normal phone Party
+form and accept on the other client; require a two-member roster and a Cleric
+recipient with zero Fighter Mastery ranks.
+
+In both High and Low, a real owner hotbar cast must deliver1.8 strength and the
+matching Damage/defense stats to the Cleric, without a recipient cast receipt.
+Require bounded shared15s duration, both owner and recipient attached effects
+visible on both clients, recipient+80% Damage card, natural authoritative expiry,
+recipient stat restoration and removal of both clients' local/remote effects.
+Retain recipient screenshots and both receipt sets. Always close the extra
+browser in finally. Explicit test budget is now600s for owner plus party phases.
+This remains a stat/render/lifecycle scenario; actual damage-impact gameplay
+and the four-player dungeon clear are separate required acceptance.
 
 ## Local verification
 
@@ -45,6 +62,11 @@ both lists without weakening order/failure/cleanup contracts. Final8suites83
 tests PASS4.286s; changed lint, shell syntax and diff checks pass. Client vendor
 dependencies prepared; Playwright listing loads one test without executing it.
 Logs `/tmp/eidolon-fighter-buff-native-{red,focused,focused-final,prepare,list}-20260912.log`.
+
+Party extension:6suites104tests PASS3.067s (observer/route/order/replication/
+offline buff regressions), changed lint, shell syntax and diff pass. Log
+`/tmp/eidolon-fighter-buff-party-gate-focused-20260912.log`. These checks do not
+execute the browser scenario; owner and party native acceptance remain unproven.
 
 Execute through the existing wrapper once the production GPU is free. Retain
 terminal evidence and investigate failures; do not loosen checks to obtain a
