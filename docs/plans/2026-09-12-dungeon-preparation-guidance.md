@@ -1,6 +1,6 @@
 # Bastion preparation guidance — 1.1.0 candidate
 
-## Component acceptance — September 12, 22:46 UTC
+## Component acceptance — September 12, 2026
 
 CI34722166310 completed SUCCESS on exact
 c09248c8665191dc2bfa365b6722e73b0090d29b. Client414 suites/6415 tests passed

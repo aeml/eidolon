@@ -4,7 +4,7 @@ Draft notes, outstanding acceptance and publication steps are consolidated in
 the [1.1.0 release handoff](2026-09-12-1-1-release-handoff.md). It is not release
 approval or a substitute for the full roadmap.
 
-## Preparation integration — September 12, 22:48 UTC
+## Preparation integration — September 12, 22:45 UTC
 
 Merged primary fdb13277, adding accepted preparation guidance cf7f67a1. Exact
 candidate c09248c8 passed full CI34722166310, including actual desktop Enter/
@@ -13,9 +13,9 @@ See [component acceptance](2026-09-12-dungeon-preparation-guidance.md).
 The handoff now includes these two player-facing changes as reviewed note
 material. No version bump, public notes or deployment was performed.
 
-Earlier combined CI34722568754 on54901f19 was still running its first browser
-shard at this merge; client/server and the other shards passed. Retain that
-run until terminal and require a fresh combined run for this new integration.
+Earlier combined CI34722568754 on54901f19 completed SUCCESS at the subsequent
+22:45 check: client/server and all three browser shards pass. Native/deploy/live
+were skipped, not passed. Require a fresh combined run for this new integration.
 Tripwire remains separate pending its arrival collateral routes and full CI.
 
 ## Follow-up integration — September 12, 22:21 UTC
