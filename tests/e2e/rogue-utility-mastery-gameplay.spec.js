@@ -3,6 +3,7 @@ import { collectBrowserFailures, credentialsFromEnvironment, ensureDungeonReadyL
     findOverworldTarget, loginAndEnterWorld, moveByGroundClick, projectEntity,
     returnToTown, useCombatQAWaypoint } from './helpers.js';
 import { installRogueUtilityObserver } from './rogue-utility-observer.js';
+import { tryUtilityApproachStep } from './rogue-utility-approach.js';
 import { selectPreparedRune } from './prepared-rune-input.js';
 import { CONSTANTS } from '../../src/core/Constants.js';
 
@@ -98,8 +99,9 @@ test(`Rogue utility ${technique ? 'Techniques reduce paid mana and cooldowns' : 
                 continue;
             }
             const scale = Math.min(8, distance - 3) / distance;
-            await moveByGroundClick(page, delta.x * scale, delta.z * scale,
-                { moveOnly: true, allowJumpFallback: false, requireClearPath: true });
+            const issued = await tryUtilityApproachStep(() => moveByGroundClick(page, delta.x * scale, delta.z * scale,
+                { moveOnly: true, allowJumpFallback: false, requireClearPath: true }));
+            if (!issued) await page.waitForTimeout(100);
         }
         throw new Error('Could not walk into the real utility footprint');
     }

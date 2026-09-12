@@ -103,6 +103,34 @@ pass. Native diagnosis is queued behind the active four-player Fortress replay.
 
 ## Proposed 1.1 patch-note text
 
+### September12 diagnostic and CI follow-up
+
+CI34705771836 SUCCESS on8fe4117b:401client suites6320tests133.784s;
+game86.8% coverage99.171s and race349.615s; browser40+53+26=119actual passes.
+Native/deployment stages were skipped. Logs
+`/tmp/eidolon-rogue-technique-ci-{client,server,browser1,browser2,browser3}-34705771836.log`.
+This does not explain the saved-Smoke local timer failure or accept the later
+diagnostic/approach changes. CI34707429078 on c3fb4d75 remains active.
+
+Diagnostic native85822 on c3fb4d75 FAILED2.0m before reaching the saved-Smoke
+timer check. Mark0/1/5 and Smoke0/1 passed. Smoke5 approach had a recognized
+GroundInputUnavailableError: no pointer/keyboard input was issued, while the
+player was already moving and advanced from125.76,207.23 to135.04,209.97 during
+planning. This is not evidence for or against the original timer hypothesis.
+Archive `/tmp/eidolon-rogue-local-timer-diagnostic-failure-GNsNvS`; log
+`/tmp/eidolon-rogue-local-timer-diagnostic-native-20260912.log`; scan sanitized2,
+owned containers/image/ports cleanup verified before the next native route.
+
+The utility approach now distinguishes this no-issued-input condition from an
+issued movement failure. Only the recognized error asks the existing60s loop
+to reobserve the same living target after100ms; actual movement, intercepted
+clicks and network errors remain fatal. No internal movement retry, cast retry,
+range/duration relaxation or inferred successful step. Three focused observer,
+approach and stage suites65testsPASS2.308s; changed-file lint/diff pass. Log
+`/tmp/eidolon-rogue-utility-approach-tests-20260912.log`. Native remains required.
+
+### Player-facing draft
+
 Weak Point Mark, Smoke Bomb and Cloak & Vanish Techniques now reduce their mana
 cost instead of granting critical chance to non-damaging skills. Existing ranks
 and cooldown benefits are retained; their tooltips show the actual bonuses.
