@@ -26,6 +26,14 @@ pacing/reconnect/balance gates for1.1.0. All1.2–1.10 scope remains intact.
 
 ## First integrated rehearsal accepted; follow-up scope
 
+September12 18:00 update: primary5d4c5123 integrates the verified Fortress
+component1f6b1f75 overa2c30d97. Exact component8864133e passed full CI34707847501
+and native9420; see its mitigation evidence for damage-rounding limitations.
+Combined focused Fortress/Rogue tests3suites33tests passed1.457s. This branch
+now rehearses that integration; Blade Storm6cd11168 and Rogue Techniques8b07e36c
+remain separate candidates. No deployed metadata, production or soak changes.
+All first-hour, full-party/seed/dungeon and later milestone gates remain open.
+
 CI34670988965 at e2cd42f2 is TERMINAL SUCCESS. Client367suites/5465tests
 PASS100.597s plus full lint/audit/benchmark. Server game coverage97.027s/86.6%,
 full race301.947s and backup/restore/bench/build PASS. Browser shards1/2/3
