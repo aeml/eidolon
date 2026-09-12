@@ -129,6 +129,7 @@ async function sampleMovementFrames(page, durationMs) {
             const game = window.game;
             const player = game?.player;
             if (player?.position && player.mesh?.position) {
+                const ground = game.inputManager?.getGroundIntersection?.();
                 frames.push({
                     t: now - startedAt,
                     speed: player.stats?.speed,
@@ -146,7 +147,14 @@ async function sampleMovementFrames(page, durationMs) {
                     targetZ: player.targetPosition?.z ?? null,
                     state: player.state,
                     animation: player.currentAnimationName || null,
-                    correctionActive: Boolean(game.playerCorrectionVisualState)
+                    correctionActive: Boolean(game.playerCorrectionVisualState),
+                    groundX: ground?.x ?? null, groundZ: ground?.z ?? null,
+                    playerY: player.position.y, pointerX: game.inputManager?.mouse?.x,
+                    pointerY: game.inputManager?.mouse?.y,
+                    cameraPosition: game.renderSystem?.camera?.position?.toArray(),
+                    cameraTarget: game.renderSystem?.cameraTarget?.toArray(),
+                    accepted: player.movementMetrics?.accepted,
+                    nearbyNoops: player.movementMetrics?.nearbyNoops
                 });
             }
             if (now - startedAt >= duration) {
@@ -167,6 +175,15 @@ async function holdGroundOffsetAndSample(page, deltaX, deltaZ, options = {}) {
     await page.waitForTimeout(50);
     const hoveredEntity = await movePointerAndReadHoveredEntity(page, projected);
     expect(hoveredEntity, 'Movement QA requires an unobstructed ground ray').toBeNull();
+    const aimed = await page.evaluate(() => {
+        const game = window.game, p = game.player, input = game.inputManager;
+        const ground = input.getGroundIntersection();
+        return { player: p.position.toArray(), rendered: p.mesh.position.toArray(),
+            ground: ground?.toArray(), pointer: input.mouse.toArray(),
+            groundDistance: ground ? Math.hypot(ground.x - p.position.x, ground.z - p.position.z) : null,
+            camera: game.renderSystem.camera.position.toArray(),
+            cameraTarget: game.renderSystem.cameraTarget?.toArray() };
+    });
     await page.mouse.down();
     const pointerObservedDown = await page.evaluate(() => Boolean(
         window.game?.inputManager?.primaryMouseButtonDown &&
@@ -176,6 +193,7 @@ async function holdGroundOffsetAndSample(page, deltaX, deltaZ, options = {}) {
     await page.mouse.up();
     return {
         projected,
+        aimed,
         pointerObservedDown,
         frames: await framesPromise
     };
@@ -371,6 +389,11 @@ test.describe('real-input movement smoothness', () => {
         );
         await waitForArrival(page);
         const afterSubArrival = await movementMetrics(page);
+        await testInfo.attach('sub-arrival-movement-diagnostics', {
+            body: JSON.stringify({ before: beforeSubArrival, after: afterSubArrival, subArrival,
+                analysis: movementAnalysis(subArrival.frames, nearbyUnitX, nearbyUnitZ) }),
+            contentType: 'application/json'
+        });
         expect(subArrival.pointerObservedDown).toBe(true);
         expect(afterSubArrival.local.actor.accepted - beforeSubArrival.local.actor.accepted).toBe(0);
         expect(movementAnalysis(subArrival.frames, nearbyUnitX, nearbyUnitZ).logicalTravel).toBeLessThan(0.1);
