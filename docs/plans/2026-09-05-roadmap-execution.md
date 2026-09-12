@@ -5,7 +5,84 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 13:44 UTC
+## Current checkpoint — September 12, 14:09 UTC
+
+Previous/current goal continuation is PROGRESS: primary integration, complete
+component CI evidence, authored Rogue native gate, two retained native failures
+and a tested party-triage correction. Full roadmap ACTIVE, not narrowed. No
+root/master push, release/version/production or soak change. Preserve63–65
+history at1.1 preparation; Alpha1.0.65 remains last verified live, no new probe.
+
+- **Primary/integrated now da4a07cc4610a7a4631e025b68f1bf7ab10e57bf**, clean.
+  `/tmp/eidolon-primary-merged-20260911` merged docs-only d960a7c3 from combined
+  Fighter candidate; exact full-tree equality verified, then integrated FF.
+  **CI34696773008 SUCCESS** on92afea0a:402/6309/115.96s,game86.9%/101.572s,
+  race354.803s, browser40+53+26=119actual. Frozen component Earthshaker/
+  Whirlwind/Fortress native evidence below retained; no combined native or
+  versioned release inferred. Logs `/tmp/eidolon-fighter-verified-ci-{client,server,browser1,browser2,browser3}-34696773008.log`.
+- Same combined WT `/tmp/eidolon-1-1-fighter-verified-integration-20260912`
+  now clean/devpushed **28a61378ab66f17305ceea05df45dca15da1e912**, adding
+  verified Fighter owner/party buff gates13edc4ec. Two merge conflicts in
+  allowlist and parallel stage lists resolved with ALL stages retained. Two
+  old adjacency tests failed2/95, then updated to include buff stage between
+  Whirlwind area and phone:7suites95PASS2.401s/lint/shell/diffPASS. No added
+  runtime changes. **CI34698082603 ACTIVE**, client103564924751PASS,
+  server103564924756active. Do not advance primary again without combined
+  regression acceptance. No unmerged files remain.
+- Buff component **CI34696956771 SUCCESS** onbe3dc413:398/6277/129.273s,
+  game86.9%/98.373s,race346.035s,browser119actual. Previously recorded native
+ 72952 owner+untrainedCleric success remains valid. Source WT clean13edc4ec
+  docs-only tip; native actual sourcebe3dc413. Logs
+  `/tmp/eidolon-fighter-buff-joystick-ci-{client,server,browser1,browser2,browser3}-34696956771.log`.
+- Rogue runtime **CI34696690782 SUCCESS** on5a0983df:399/6304/114.239s,
+  game86.9%/96.780s,race311.800s,browser119actual. New route commit
+  **d13194bafcd8c4ef8b34a0f7a53e364bf71417f1**, devpushed, has
+  **CI34697848131 ACTIVE**:client400/6310/121.629s,server103564311572PASS;
+  browsers103565272388/103565272407/103565272633active. Native/prod not inferred.
+  Logs `/tmp/eidolon-rogue-utility-{ci,native-ci}-...` as candidate doc states.
+  Native route `rogue-utility` now authored/enrolled once, dedicated allowlist,
+  no retries. Normal20purchases, actual wire rank/point receipts (not optimistic
+  desktop ranks), actual mark/smoke targets, cloak self, paid exact mana,
+  High/Low attached effects/timers/expiry, saved Lasting Shadow+generic ranks.
+  First wire duration lower tolerance0.15s (0.75would admit missing0.2s rank1).
+  Observer RED1fail4pass;69focused,89expanded plus20actualAttachedStatus tests
+  PASS; lint/assets/shell/diff/listPASS. Smoke accuracy/Swift burst not separately
+  native timer-proven; exact server tests cover those. Other160audit staysopen.
+- **Rogue40445 FAILED28.4s** on d13194ba: first rank0WeakPoint cast generated
+  TWO ability-result messages, not zero; cause not yet diagnosed. Archive
+  `/tmp/eidolon-rogue-utility-first-failure-GMQao6`; original
+  `/tmp/eidolon-rogue-utility-native-20260912.log`. Scan0/cleanupPASS. Diagnostic
+  f40689b2 retains strict count and captures payloads/pending/focus/cooldowns/
+  screenshot on failure. **Diagnostic81689 FAILED13.4s** earlier at live-target
+  distance5.7306>5 after readiness chat. No cast payload reached, so TWO-results
+  cause remains open. Archive `/tmp/eidolon-rogue-utility-moving-target-failure-q2lw4m`;
+  original `/tmp/eidolon-rogue-utility-diagnostic-native-20260912.log`. Scan0/cleanupPASS.
+- Rogue WT `/tmp/eidolon-1-1-rogue-utility-mastery-20260912` now frozen clean
+  **1a23887d8620edccfffa535c5d2569bb4b196200**, local tip not pushed afterd131.
+  Readiness moved BEFORE normal live-target approach; no range/count/duration
+  assertions changed. Changed lint/5observer tests/diffPASS. **18728 ACTIVE —
+  ONLY native GPU**, runIDrogueutilityorder09121410, route rogue-utility,
+  18185/18186/41875. Log `/tmp/eidolon-rogue-utility-readiness-native-20260912.log`.
+  Building at last poll; no corrected result. Poll samehandle, freeze source,
+  archive/scan/confirmownedcleanup before any party or Spin/Roar native run.
+- **Party70658 FAILED15.7m**, frozen4203d254,
+  seed-3583300797726629916/gen2/attempt0/no fallback. Early rooms/Skeleton/
+  DemonOrc/twoall4townrecoveries/savedreentries passed; Warden last3622/15000HP
+  whenRogue died. Fsurvived6104damage/3439taken/5Fortresscasts; C5969effective
+  allyhealing(4704boss)/184taken; W5313damage/799taken; R8669damage/2944taken.
+  Archive `/tmp/eidolon-party-reserve-failure-TzBG9t`; original
+  `/tmp/eidolon-party-fortress-reserve-native-20260912.log`. Scan0/cleanupPASS.
+  Healer35mana/7.5units atdeath did not mean ready: it spent Healing Light on
+  tank674/855HP, then approachedRogue312/855 at14.1501units (planningrange14).
+  Rogue took184hits whileCD2.82→0.67s. No missingpacket/regen diagnosis.
+- Party WT now clean/unpushed **d879ab9d**, new bounded triage: approach
+  below40% ally withinrange+2 instead of spendingheal on reachableabove60%,
+  onlywhenmovementallowed. Keeps urgent reachable/self/farMatron/warning rules
+  and actual cast range/collision. RED2fail33pass;5suites122PASS1.341s/lint/diff.
+  Logs `/tmp/eidolon-party-critical-triage-{red,tests,lint}-20260912.log`.
+  Correctedfullparty replay QUEUED; no fullclear/questcredit/Water/balanceclaim.
+
+## Previous checkpoint — September 12, 13:44 UTC
 
 This goal continuation is PROGRESS: corrected and committed Rogue utility
 Masteries, combined verified Fighter candidates, observed the four-player
