@@ -5,7 +5,60 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 16:37 UTC
+## Current checkpoint — September 12, 16:57 UTC
+
+Previous/current goal work PROGRESS; full roadmap ACTIVE. No production/version/
+soak changes. Root ledger-only/no push. Primary/integrated still0ebfac25.
+
+- **25285 TERMINAL PASS3.9m/4.0m0retry** on8fe4117b. All3Technique paid normal
+  rank0/1/5 costs/CDR/duration/High-Low/expiry, fresh-login15Technique+5Lightstep
+  and LastingShadow pass. Finalcost22/31/27,CD4.5/7.5/11.25,duration10/5/10.
+  Archive `/tmp/eidolon-rogue-technique-paid-pass-WsFy8P`; log
+  `/tmp/eidolon-rogue-utility-technique-reacquire-native-20260912.log`;
+  scan0/ownedcleanupPASS, LowSmoke image viewed. Prepared QA, not earnedbalance.
+- Same-source **51689 TERMINAL FAILED3.8m** Mastery regression. All3rank0/1/5
+  and savedMark14s passed; savedSmoke wire-duration bounds passed, but later
+  localtimer neverobserved>5.5s (ended0 during15s observation). No diagnosed
+  cause: need capture local timer/effect history alongside wire observations
+  before diagnostic replay. Do not weaken or assume a missing server effect.
+  Archive `/tmp/eidolon-rogue-technique-mastery-failure-kdPvaf`; log
+  `/tmp/eidolon-rogue-utility-technique-mastery-regression-native-20260912.log`;
+  scan0/ownedcleanupPASS. TechniqueWTclean **3f655a3e** docs-onlytip; nativesource
+  remains8fe4117b. **CI34705771836 ACTIVE** exact8fe; earlier34705538057 still
+  active at lastcheck. No Technique primary integration yet.
+- Combined Mastery WTclean0d79c485, **CI34705692232 ACTIVE**; client103585205350
+  and server103585205501PASS, browser2/3PASS, browser1/3 103586548986active.
+  Full corrected merge acceptance still required before primary advances.
+- New armor audit WT `/tmp/eidolon-1-1-party-armor-audit-20260912` clean
+  **13296ba9**, parent0ebfac25. Factory-created8slotCommon30/70 armor and actual
+  receiving impacts prove Fighter plate10armor→183hit, Rogue/cloth8→184hit;
+  paidFortress15armor→181hit. At70plate21→478,paid31→473,cloth8→484.
+  Initial test used emptyimpactinstance and hitnothing; correctedsameinstance
+  six cases racePASS2.403s. This is armor-only, not fullpartybuild/clear proof.
+  Root cause:25:1itemquantization+flatarmor+boss50%armor penetration. Offline
+  Fortress also diverged:1%Strength damage reduction up to75%, noarmor/slow.
+- New Fortress WT `/tmp/eidolon-1-1-fortress-mitigation-20260912`, branch
+  work/1-1-fortress-mitigation, clean/devpushed **50944fc2f8352d898724fac63d6f0bfb815d4cc5**.
+  Added20%ALL incoming reduction (not onlyphysical), retaining50%armor/20%slow,
+  mana40/CD60/duration30/runes/MasteryIDs. Server checks validfuturedeadline
+  before other receiving reductions/shields. Offlinefixed20%, armor/speed
+  rebuilt once oncast/equipment/expiry/cancel, replicatedactors excluded.
+  Periodic tickoffsets+posttickexpiry preserve slow-frame lifetime boundaries;
+  Fighter forwardselapsedtoActorPhase. Canonicalmanafixturesprevent clampfake.
+  REDclient3fail4pass/serverpaid187want149. Final7suites338PASS6.857s/lint/diff,
+  focusedserverrace3.635s. Actualplate30paid hitnow144vsbaseline183;70paid378
+  vs478. NOTwholeencounterbalance. **CI34706648689 ACTIVE**, exact50944fc2.
+  Docs2026-09-12-fortress-mitigation.md has proposed1.1patchnote andopen gates.
+- New party WT `/tmp/eidolon-1-1-party-fortress-mitigation-20260912`, branch
+  work/1-1-party-fortress-mitigation, clean **bae69eeb09f39907185ac34816c61782c715898a**,
+  parentpartyf5a52592 merged50944fc2 withoutconflicts, carryingacceptedprimary
+  updatesaswellasnewbuff.5suites116PASS4.597s/full lint/assets/shell/diffPASS.
+  **36216 ACTIVE — sole native GPU**, routeparty-dungeon,
+  runIDpartyfortressmitigation0912,18185/18186/41875. Log
+  `/tmp/eidolon-party-fortress-mitigation-native-20260912.log`. Freeze source,
+  pollsamehandle; no secondnative beforeterminal/archive/cleanup. No clear yet.
+
+## Previous checkpoint — September 12, 16:37 UTC
 
 Still PROGRESS/full goal ACTIVE, primary/integrated unchanged0ebfac25, root never
 push. **46603 is TERMINAL FAILED1.4m**, not active: df5b83ea Mark0/1/5 paid
