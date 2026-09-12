@@ -244,9 +244,10 @@ export async function playDungeonThroughInputs(page, {
                     const distance = Math.hypot(destination.x - player.x, destination.z - player.z);
                     if (distance < 3) break;
                     const scale = Math.min(1, 14 / distance);
-                    await tryDungeonGroundStep(() => moveByGroundClick(page, (destination.x - player.x) * scale,
-                        (destination.z - player.z) * scale, { allowJumpFallback: false }));
-                    if (afterGroundStep) await afterGroundStep(page);
+                    await timing.measure('leaderInput', () => tryDungeonGroundStep(() => moveByGroundClick(page,
+                        (destination.x - player.x) * scale, (destination.z - player.z) * scale,
+                        { allowJumpFallback: false })));
+                    if (afterGroundStep) await timing.measure('formation', () => afterGroundStep(page));
                     timing.count('leaderGroundSteps');
                 }
             }
