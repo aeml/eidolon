@@ -36,3 +36,16 @@ route now taps that button and explicitly checks the panel closes; no forced
 click, layout change or duration/upgrade assertion was substituted. Retained
 archive `/tmp/eidolon-fortress-status-failure-6yvMsn`; credential scan passed and
 owned services/ports were clear. A full corrected replay is still required.
+
+Corrected replay59562 on c540f67f PASSED:2.2m test/2.3m total, zero retries.
+Rank0/high lasted30s; five normal purchases produced36s at rank5/high; the
+saved Extended rune/rank5 lasted54s after fresh login at landscape/low quality.
+Paid mana, actual attached effect, displayed countdown, natural expiry and
+independent Well Rested retention passed. Screenshot evidence retained at
+`/tmp/eidolon-fortress-native-pass-eQlXjG`; original log
+`/tmp/eidolon-fortress-close-native-20260912.log`. Credential scan passed and
+the owned containers and three ports were clear before the next native route.
+Four focused suites51tests passed1.123s plus lint/diff. The initial local test
+invocation omitted the project's ESM launcher and executed zero tests; its
+corrected npm-test result is the evidence, not that setup failure. Full CI on
+the corrected source remains required before primary acceptance.
