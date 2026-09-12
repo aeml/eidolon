@@ -1,5 +1,23 @@
 # Tripwire — paid damage and critical talents
 
+## Component acceptance — September 12, 23:18 UTC
+
+CI34723986784 completed SUCCESS on48713d22: client417 suites/6456 tests101.627s,
+game coverage99.782s/87.0%, race348.863s and all three browser shards pass.
+Logs `/tmp/eidolon-healing-tripwire-{client,server}-34723986784.log`.
+Native/deploy/live skipped, not passed. The later stable-stat QA correction
+changes no runtime and passes all three actual status routes on50d2ea57.
+
+Together with the earlier paid/trained/saved Tripwire native43530 pass, complete
+shield/entrance86468, paid Rogue/Cleric support36250 and status75575, this closes
+the identified component and arrival collateral gates. See
+[shield evidence](2026-09-12-shield-coherent-absorption.md),
+[healing correction](2026-09-12-healing-cursor-target.md), and
+[status acceptance](2026-09-12-status-training-stable-stats.md).
+Accept for development integration, followed by fresh combined regression.
+Historical failures below remain evidence, not the current acceptance state.
+Full160-talents, earned progression, all-dungeon and release gates remain open.
+
 Unreleased 1.1.0 candidate, based on integrated Fortress and Blade Storm8561a773.
 The actual server trap omitted its skill identity and damage multiplier, making
 ROG_23 Mastery and ROG_24 Technique ineffective. Offline Tripwire only rooted.
