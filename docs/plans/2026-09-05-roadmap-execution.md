@@ -5,7 +5,61 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 00:20 UTC
+## Current checkpoint — September 12, 00:36 UTC
+
+Previous goal turn was PROGRESS. This continuation is PROGRESS: accepted full
+Focus/protection integration, proved native Focus's paid ranks and actual single
+charge on two clients, and repaired Time Warp's nonfunctional Mastery with
+focused evidence. Full1.1–1.10 remains open; no external blocker has arisen.
+
+- Full31631 TERMINAL0 on **edf6acaa**:362client suites/5202tests101.761s,
+  lintpass, completeGo-race root14.808s/game263.775s/database1.086s/
+  lifecycle1.021s/loadtest1.015s. Primary fast-forwarded fromae938843; proof
+  commit93f4f5b3. Logs `/tmp/eidolon-focus-full-client-rerun-20260912.log`
+  and `/tmp/eidolon-focus-full-{lint,server}-20260912.log`.
+- Native Focus64892 TERMINAL1 on2548f768: bothclientHigh/Lowglyphs, strength,
+  text, expiry and savedranks passed; Scorch Beam was rejected by the ordinary
+  500msglobalcooldown, preservingtrainedcharge3. No losthit. Screenshot/receipt
+  inspected. Archive `/tmp/eidolon-focus-native-first-1lgZnu`. Correctionef70be8b
+  waits600ms afteracceptedFocus, then acquiresmovingtarget (no interveningreset).
+- Native60183 TERMINAL0 on cleanef70be8b:53.4s/54.5total, realnormalhovered
+  Scorch Beam dealt **789focused then263unfocused**, identicalonbothclients;
+  chargeconsumedonce. Normalphonefivepaidranks, High/Lowactualglyphs/expiry and
+  freshdesktop savedranks passed. Bothscans0 and exactdisposablecleanupconfirmed.
+  Archive `/tmp/eidolon-focus-native-accepted-hxnpA8`; logs
+  `/tmp/eidolon-focus-native-20260912.log` and
+  `/tmp/eidolon-focus-native-cadence-20260912.log`. Preparedfunctional, notearned
+  balance/physicalphone/publication acceptance. NativeWT clean **020a2fce**.
+- Primary `/tmp/eidolon-primary-merged-20260911` now clean **97cd447b**, merging
+  acceptednative route/docs with identicalruntimeedf6acaa. Postmerge22799 lint+
+  5focused suites85tests1.398s PASS. Full runtime regression isedf6acaa; exact
+  successor adds tests/routes/docs only. Do not call exactsuccessorfulltested.
+- New `/tmp/eidolon-time-warp-mastery-20260912`, branchwork/time-warp-mastery,
+  clean **3a003536**, based97cd447b. WIZ_25 now+4%TimeWarpduration/rank instead
+  of phantomdamage; preservesIDs/ranks/base8s/haste50%/CDR20pp/cost50/CD60s.
+  Mastery0/1/5 gives8/8.32/9.6s; +generalWIZ34rank5 yields11.2s forself/allies.
+  Online/offline/copycontract aligned; scoped awayfromotherskills. Rank99probe
+  exposedrawGetSkillBonusoverbudget39.68s; nowread-onlyclampdefinitionmaximum.
+  SeparateboundaryRED160definitions0.007s; this is NOTfull160consumerclosure.
+- TWMofflineRED4fails/34pass0.484s. FirstGoattemptfixturecompileerror, corrected
+  paidcastRED4rankedfailuresbothactors0.156s. Initialfixfailedrank99only3times.
+  Final34289 full lint+7suites160tests1.907s PASS;16527 repeated3xGo-race
+ 10.274s PASS. Logs `/tmp/eidolon-time-warp-mastery-{client,server}-*-20260912.log`
+  and `/tmp/eidolon-talent-boundary-red-20260912.log`. ExpandedexistingTimeWarp
+  nativecase preservesoldcontrols, buysMastery, tests11.2s bothclients/expiry/
+  savedranks; discoveryONLY. **Ownfull/native/balance/publication stilldue**;
+  notmergedprimary. Doc2026-09-12-time-warp-mastery.md retainslimits.
+- **CI34660899212 ACTIVE** onf866df68; allhostedclient/server/threebrowser
+  groups passed. Requiredselfhostedpredeploy running (galleryat00:35). PollSAME
+  run; no restart/cancelbasedonobservation. No localfull/native whilepredeploy.
+  No63liveclaim; normaldeployment/finalnative/liveidentitygatesstilldue.
+  RootledgerNEVERPUSH, soakOFF. Alllocaltestsessions thisturn TERMINAL.
+- Nexthardwarefree: TWMfull/native and four-role dungeon retry. Last25565
+  remainsfailedtankdeath/Warden5282; aura-followstrategyavailable. Preserve
+  allalive/fullclear/individualcredit/manualIlyra/Water/freshsave requirements.
+  Entire1.1–1.10/phone/balance/160talents/casino scope staysintact.
+
+## Previous checkpoint — September 12, 00:20 UTC
 
 The preceding clarification-only turn was NO PROGRESS. This continuation is
 PROGRESS: diagnosed the terminal63 gate, reproduced its rejection, repaired the
