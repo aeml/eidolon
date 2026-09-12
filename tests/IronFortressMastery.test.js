@@ -10,6 +10,8 @@ test.each(cases)('paid Iron Fortress $rune rank$rank/general$generic extends onl
     const actor = new Fighter('fortress-mastery');
     try {
         actor.mesh = new THREE.Group(); actor.unlockedSkills.push('Iron Fortress');
+        actor.baseStats.intelligence = 30;
+        actor.recalculateStats(); // a lawful mana budget survives buff recalculation
         actor.stats.mana = 200; actor.stats.manaRegen = actor.stats.hpRegen = 0;
         actor.talentRanks = { FTR_07: rank, FTR_30: generic, FTR_37: generic };
         actor.skillRunes = { 'Iron Fortress': rune };
@@ -17,7 +19,7 @@ test.each(cases)('paid Iron Fortress $rune rank$rank/general$generic extends onl
         actor.useAbility(actor.position.clone(), engine, 'Iron Fortress');
         const expected = (rune === 'ironfortress_extended' ? 45 : 30) * (1 + .04 * rank + .07 * generic);
         expect(actor.ironFortressTimer).toBeCloseTo(expected, 8);
-        expect(actor.ironFortressReduction).toBe(Math.min(.75, actor.stats.strength * .01));
+        expect(actor.ironFortressReduction).toBe(.2);
         expect(actor.stats.mana).toBe(160);
         expect(actor.cooldowns['Iron Fortress']).toBeCloseTo(60 * (1 - actor.stats.cooldownReduction), 8);
         actor.talentRanks = {};

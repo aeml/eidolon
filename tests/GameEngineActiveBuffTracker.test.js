@@ -16,6 +16,25 @@ jest.unstable_mockModule('../src/proto/state_pb.js', () => {
 const { GameEngine } = await import('../src/core/GameEngine.js');
 
 describe('GameEngine active buff tracker', () => {
+    test('Iron Fortress exposes its actual duration and disappears without removing other buffs', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.activeBuffs = [];
+        const actor = { ironFortressTimer: 53.7, guardianRoarTimer: 8 };
+        engine.syncTrackedActorBuffs(actor);
+        expect(engine.getActiveBuffs()).toEqual(expect.arrayContaining([expect.objectContaining({
+            id: 'iron_fortress', name: 'Iron Fortress', icon: '🛡️', durationSeconds: 53.7,
+            detail: '20% less damage · +50% armor · -20% movement speed', isDebuff: false
+        })]));
+        actor.ironFortressTimer = 30.4;
+        engine.syncTrackedActorBuffs(actor);
+        expect(engine.getActiveBuffs().filter(buff => buff.id === 'iron_fortress')).toHaveLength(1);
+        expect(engine.getActiveBuffs().find(buff => buff.id === 'iron_fortress').durationSeconds).toBe(30.4);
+        actor.ironFortressTimer = 0;
+        engine.syncTrackedActorBuffs(actor);
+        expect(engine.getActiveBuffs().some(buff => buff.id === 'iron_fortress')).toBe(false);
+        expect(engine.getActiveBuffs().some(buff => buff.id === 'guardian_roar')).toBe(true);
+    });
+
     test('upserts actor-derived combat buffs with readable icons and details', () => {
         const engine = Object.create(GameEngine.prototype);
         engine.activeBuffs = [];

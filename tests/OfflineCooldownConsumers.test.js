@@ -22,6 +22,7 @@ test.each(cases)('$className $skill rank$rank generic$generic retains the paid c
         actor.mesh = new THREE.Group(); target.mesh = new THREE.Group();
         actor.position.set(0, 0, 0); target.position.set(0, 0, 2);
         actor.level = 100; actor.unlockedSkills.push(skill);
+        if (skill === 'Iron Fortress') actor.baseStats.intelligence = 50;
         // Keep mana below the Wizard's recalculated maximum: Time Warp
         // legitimately recalculates stats when applying its haste aura.
         const startingMana = 500;

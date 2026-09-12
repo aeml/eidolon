@@ -134,13 +134,18 @@ qa_allowlist+=",${QA_USERNAME_BASE}-socket-owner,${QA_USERNAME_BASE}-socket-obse
 qa_allowlist+=",${QA_USERNAME_BASE}-rest-transitions-death,${QA_USERNAME_BASE}-rest-transitions-dungeon"
 qa_allowlist+=",${QA_USERNAME_BASE}-duration,${QA_USERNAME_BASE}-forge,${QA_USERNAME_BASE}-whip,${QA_USERNAME_BASE}-ground"
 qa_allowlist+=",${QA_USERNAME_BASE}-time-warp"
+qa_allowlist+=",${QA_USERNAME_BASE}-smoke-area"
+qa_allowlist+=",${QA_USERNAME_BASE}-death-spiral-area"
 qa_allowlist+=",${QA_USERNAME_BASE}-focus-mastery,${QA_USERNAME_BASE}-focus-mastery-observer"
 qa_allowlist+=",${QA_USERNAME_BASE}-teleport-protection,${QA_USERNAME_BASE}-teleport-protection-observer"
 qa_allowlist+=",${QA_USERNAME_BASE}-ground-retry1"
 qa_allowlist+=",${QA_USERNAME_BASE}-cleanse"
 qa_allowlist+=",${QA_USERNAME_BASE}-cleanse-retry1"
 qa_allowlist+=",${QA_USERNAME_BASE}-roar-area"
+qa_allowlist+=",${QA_USERNAME_BASE}-whirlwind-area"
 qa_allowlist+=",${QA_USERNAME_BASE}-fortress-mastery"
+qa_allowlist+=",${QA_USERNAME_BASE}-earthshaker-area"
+qa_allowlist+=",${QA_USERNAME_BASE}-fighter-buff-mastery,${QA_USERNAME_BASE}-fighter-buff-mastery-ally"
 qa_allowlist+=",${QA_USERNAME_BASE}-spin-area"
 qa_allowlist+=",${QA_USERNAME_BASE}-economy-retry1"
 qa_allowlist+=",${QA_USERNAME_BASE}-guardian"
@@ -244,6 +249,11 @@ run_whirlwind() {
     EIDOLON_E2E_CLASS="Fighter" \
     EIDOLON_E2E_REGISTER=1 \
     npx playwright test tests/e2e/dungeon-whirlwind-gameplay.spec.js
+}
+
+run_earthshaker_area() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-earthshaker-area" EIDOLON_E2E_CLASS=Fighter \
+    npx playwright test --retries=0 tests/e2e/earthshaker-area-gameplay.spec.js
 }
 
 run_phone() {
@@ -379,9 +389,19 @@ run_guardian_roar_area() {
     npx playwright test tests/e2e/guardian-roar-area-gameplay.spec.js
 }
 
+run_whirlwind_area() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-whirlwind-area" EIDOLON_E2E_CLASS=Fighter \
+    npx playwright test --retries=0 tests/e2e/whirlwind-area-gameplay.spec.js
+}
+
 run_fortress_mastery() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-fortress-mastery" EIDOLON_E2E_CLASS=Fighter \
     npx playwright test --retries=0 tests/e2e/iron-fortress-mastery-gameplay.spec.js
+}
+
+run_fighter_buff_mastery() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-fighter-buff-mastery" EIDOLON_E2E_CLASS=Fighter \
+    npx playwright test --retries=0 tests/e2e/fighter-buff-mastery-gameplay.spec.js
 }
 
 run_executioner_spin_area() {
@@ -441,6 +461,16 @@ run_teleport_protection() {
 run_time_warp_area() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-time-warp" EIDOLON_E2E_CLASS=Wizard \
     npx playwright test --retries=0 tests/e2e/time-warp-area-gameplay.spec.js
+}
+
+run_smoke_area() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-smoke-area" EIDOLON_E2E_CLASS=Rogue \
+    EIDOLON_E2E_SMOKE_AREA=1 npx playwright test --retries=0 tests/e2e/smoke-area-gameplay.spec.js
+}
+
+run_death_spiral_area() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-death-spiral-area" EIDOLON_E2E_CLASS=Rogue \
+    EIDOLON_E2E_DEATH_SPIRAL_AREA=1 npx playwright test --retries=0 tests/e2e/death-spiral-area-gameplay.spec.js
 }
 
 run_whip_shape() {
@@ -573,6 +603,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     run_qa_stage cleric-area run_cleric_area &&
     run_qa_stage spirit-area run_spirit_area &&
     run_qa_stage whirlwind run_whirlwind &&
+    run_qa_stage earthshaker-area run_earthshaker_area &&
+    run_qa_stage whirlwind-area run_whirlwind_area &&
+    run_qa_stage fighter-buff-mastery run_fighter_buff_mastery &&
     run_qa_stage phone run_phone &&
     run_qa_stage phone-combat run_phone_combat &&
     run_qa_stage phone-party run_party_support &&
@@ -583,6 +616,8 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     run_qa_stage talent-economy run_talent_economy &&
     run_qa_stage talent-healing run_talent_healing &&
     run_qa_stage time-warp-area run_time_warp_area &&
+    run_qa_stage smoke-area run_smoke_area &&
+    run_qa_stage death-spiral-area run_death_spiral_area &&
     run_qa_stage focus-mastery run_focus_mastery &&
     run_qa_stage talent-duration run_talent_duration &&
     run_qa_stage seraph run_seraph &&
@@ -700,8 +735,14 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   guardian-roar-area)
     run_guardian_roar_area
     ;;
+  whirlwind-area)
+    run_whirlwind_area
+    ;;
   fortress-mastery)
     run_fortress_mastery
+    ;;
+  fighter-buff-mastery)
+    run_fighter_buff_mastery
     ;;
   executioner-spin-area)
     run_executioner_spin_area
@@ -729,6 +770,12 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   time-warp-area)
     run_time_warp_area
+    ;;
+  smoke-area)
+    run_smoke_area
+    ;;
+  death-spiral-area)
+    run_death_spiral_area
     ;;
   focus-mastery)
     run_focus_mastery
@@ -893,6 +940,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   whirlwind)
     run_whirlwind
     ;;
+  earthshaker-area)
+    run_earthshaker_area
+    ;;
   phone)
     run_phone
     ;;
@@ -938,7 +988,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     echo "Trained ground-spell geometry verification: EIDOLON_ISOLATED_QA_ROUTE=ground-shape" >&2
     echo "Trained cleanse-area verification: EIDOLON_ISOLATED_QA_ROUTE=purifying-area" >&2
     echo "Trained Guardian Roar verification: EIDOLON_ISOLATED_QA_ROUTE=guardian-roar-area" >&2
+    echo "Trained Whirlwind area and saved purchases: EIDOLON_ISOLATED_QA_ROUTE=whirlwind-area" >&2
     echo "Iron Fortress duration and saved training: EIDOLON_ISOLATED_QA_ROUTE=fortress-mastery" >&2
+    echo "Fighter damage buffs and saved training: EIDOLON_ISOLATED_QA_ROUTE=fighter-buff-mastery" >&2
     echo "Trained Executioner Spin verification: EIDOLON_ISOLATED_QA_ROUTE=executioner-spin-area" >&2
     echo "Trained persistent support-area verification: EIDOLON_ISOLATED_QA_ROUTE=guardian-area" >&2
     echo "Trained holy-zone verification: EIDOLON_ISOLATED_QA_ROUTE=consecrated-area" >&2
