@@ -5,7 +5,40 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 02:31 UTC
+## Current checkpoint — September 12, 02:37 UTC
+
+Previous goal turn was PROGRESS (full server acceptance and timing diagnostics).
+This continuation is PROGRESS: accepted all hosted release64 checks, inspected
+and preserved their artifacts, and promoted the exact tested commit to master.
+Full1.1–1.10 remains active; no full milestone or live64 completion claimed.
+
+- **HostedCI34667225615 TERMINAL SUCCESS**, clean6d5e82cb. Client288suites/
+  4083tests87.445s, full lint/audit/benchmark. Server coverage game79.832s/85.3%,
+  full race game260.541s and backup/restore/bench/build pass. Browser shards
+  1/2/3 all pass39/40/25cases =104 total, no failed/skipped cases in summaries.
+- Complete logs `/tmp/eidolon-release64-hosted-{client,server,browser1,browser2,
+  browser3}-34667225615.log` now retrieved from job APIs. Artifacts
+  `/tmp/eidolon-release64-hosted-shard1-ZaJkb6`, `...-shard2-vqMZid`,
+  `...-shard3-CJXE89`. Representative captures inspected for phone menus,
+  composition, resource HUD, ready-story state and no Rogue respawn cube.
+  These prepared/mocked fixtures are not native/physical-device acceptance.
+- **Pushed exact6d5e82cb8f50dd9e76a1353bd024339eabc544e0 to master**, after
+  verifying remote f866df68/fast-forward ancestry. Normal push
+  **CI34668112188 ACTIVE**, created02:36:07. Poll SAME run; complete hosted,
+  native/predeploy/input/deploy/live checks still required. No shortcuts or
+  cancellation on observation timeout. Source worktree remains clean
+  `/tmp/eidolon-release64-defenses-20260912`; root ledger master was NOT pushed.
+- Uncached public baseline02:36:28: frontend/backend both63/f866df68, healthok,
+  database ready.64 is NOT live yet. Both repo runners online/idle; keep local
+  browser hardware free for this release. No local tests or soak started.
+- Hosted acceptance record `2026-09-12-release64-hosted-acceptance.md` details
+  exact stage evidence and scope. Primary/development remains clean4231854d;
+  all prior terminal local handles stay terminal. Briar native failure and
+  diagnostic instrumentation are unresolved/queued, not fixed or balanced.
+  Nightly schedule remains enabled; no new soak was dispatched. Do not push
+  this root master; preserve the full roadmap and eventual two-floor casino.
+
+## Previous checkpoint — September 12, 02:31 UTC
 
 Previous goal turn was PROGRESS (hosted rerun and terminal Briar evidence).
 This continuation is PROGRESS: full integrated server race acceptance and
