@@ -1,0 +1,11 @@
+[
+  { "skill": "Fireball", "id": "WIZ_01", "base": 20, "intelligence": 2, "kind": "projectile", "count": 1 },
+  { "skill": "Flame Whip", "id": "WIZ_03", "base": 25, "intelligence": 2, "kind": "instant", "count": 1 },
+  { "skill": "Flame Tornado", "id": "WIZ_05", "base": 30, "intelligence": 3, "kind": "projectile", "count": 1 },
+  { "skill": "Meteor Drop", "id": "WIZ_07", "base": 50, "intelligence": 3, "kind": "projectile", "count": 1 },
+  { "skill": "Inferno Cataclysm", "id": "WIZ_09", "base": 30, "intelligence": 1, "kind": "zone", "count": 1 },
+  { "skill": "Scorch Beam", "id": "WIZ_11", "base": 25, "intelligence": 2, "kind": "instant", "count": 1 },
+  { "skill": "Arcane Missiles", "id": "WIZ_13", "base": 15, "intelligence": 1, "kind": "projectile", "count": 3 },
+  { "skill": "Dragonfire Lance", "id": "WIZ_17", "base": 100, "intelligence": 5, "kind": "projectile", "count": 1 },
+  { "skill": "Gravity Well", "id": "WIZ_23", "base": 20, "intelligence": 1, "kind": "instant", "count": 1 }
+]
