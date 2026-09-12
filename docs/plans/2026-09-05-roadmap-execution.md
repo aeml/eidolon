@@ -5,7 +5,47 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 03:51 UTC
+## Current checkpoint — September 12, 03:58 UTC
+
+Previous turn was PROGRESS; this turn made PROGRESS by preparing native65's
+missing runtime, collecting integrated browser evidence, and preventing a
+known phone-surface regression in1.1. Active jobs were also verified waits;
+no timeout/cancellation/restart or completion claim was used.
+
+- Primary is clean **9bb79ab6a91d8e01e70564a5c3d52185c25922ff**, after porting
+  ONLY the accepted65 CSS/11unit tests/four responsive assertions from1f5fe935.
+  Primary still had the old translucent status panel. New branch/worktree
+  `work/1-1-phone-surface-port`in`/tmp/eidolon-1-1-phone-surface-port-20260912`
+  is identical; not published. Focused PASS11tests1.231s, lint/whitespace PASS;
+  logs`/tmp/eidolon-1-1-phone-surface-port-{tests,lint}-20260912.log`.
+  Doc`2026-09-12-phone-surface-forward-port.md`. Session8176 terminal. Own
+  unpublished15219896 was amended for documentation before integration;
+  authoritative commit is9bb79ab6, not that superseded hash.
+- Frozen integrated **CI34670988965 ACTIVE**,e2cd42f2, still excludes later
+  Charge recovery5ab1b96e and phone port9bb79ab6. Browser3 **103493298669
+  SUCCESS26cases**21+3+2; log`/tmp/eidolon-integrated-1-1-browser3-34670988965.log`,
+  artifact`/tmp/eidolon-integrated-1-1-shard3-XLnDMH`. Browser2/1
+  103493298684/103493298700 remain active as of03:57:50. Client/server passed
+  as recorded below. Poll SAME run, retain completed evidence, then verify
+  subsequent combined changes without misattributing the earlier source.
+- **Production64 final live103493209801 ACTIVE**. Anonymous/persistent-character
+  stage completed successfully; now four-class/remote-animation QA, started
+  03:55:17. Whole CI34668112188 is not yet terminal. Public64 identity/health
+  last independently checked03:49. No65 master push or competing native run.
+- Release65 remains clean/frozen1de18e03, hosted accepted. Native preparation
+  initially found missing ignored`vendor/`;`npm run prepare:client`completed
+  successfully with no source changes (session12961 terminal). Log
+  `/tmp/eidolon-release65-native-prepare-20260912.log`. Ports18185/18186/41875
+  were free at preparation; recheck before launch. Run isolated route
+  `teleport-protection`first on this exact candidate once64's final native
+  job is terminal, then Focus/Time Warp as required. Do not treat missing
+  generated runtime as a new game defect or claim native acceptance from prep.
+- No new soak; scheduled34670421761 remains the existing active run, not
+  canceled/disabled. Native65, instrumented Briar four-role clear, integrated
+  regression, earned/all-dungeon/first-hour/balance/campaign/reconnect and all
+  later milestones remain. No66 candidate. Root master is NEVER PUSH.
+
+## Previous checkpoint — September 12, 03:51 UTC
 
 Previous goal turn was PROGRESS (integrated hosted regression and artifacts).
 This continuation is PROGRESS: accepted hosted65, fixed verified Charge recovery
