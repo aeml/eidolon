@@ -5,7 +5,51 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 07:38 UTC
+## Current checkpoint — September 12, 07:48 UTC
+
+Previous goal turn PROGRESS; this continuation PROGRESS. Completed hosted
+acceptance for the runtime candidate, integrated it into development, and
+expanded the authored native gate to a real Cleric party recipient. Full
+roadmap stays active; no new production version or native acceptance claimed.
+
+- **CI34680685387@06f62f1b TERMINAL SUCCESS**. Client385suites5928tests129.581s;
+  server86.8%/100.117s, race317.975s plus backup/restore/bench/build; browsers
+  40+50+26=116 all pass. Native/release/deploy/live jobs explicitly SKIPPED by
+  manual guards, not passes. Logs
+  `/tmp/eidolon-fighter-whirlwind-ci-{client,server,browser1,browser2,browser3}-34680685387.log`.
+  Downloaded all three browser evidence artifacts to
+  `/tmp/eidolon-fighter-whirlwind-browser-accepted-261Zxq`; terminal88739 closed.
+- After verifying both worktrees clean and no local tests running, primary
+  `/tmp/eidolon-primary-merged-20260911` and integrated regression
+  `/tmp/eidolon-1-1-integrated-regression-20260912` fast-forwarded7f781121→
+  **06f62f1bd320aaa49ba3012a31aa3720cfc28e2f**. Clean, no master push. This
+  integrates server/wire/offline Fighter buffs, Whirlwind and release QA
+  forward-ports into1.1 development, not a release-ready milestone claim.
+- Native candidate `/tmp/eidolon-1-1-fighter-buff-native-20260912`, branch
+  `work/1-1-fighter-buff-native`, clean **0f15acd839f3c9fb3d3a0ade193351aae22a30ee**,
+  parentf27c003a, NOT pushed/integrated. Adds a separately allowlisted real
+  Cleric/system-Chrome process, normal ground separation/invite/accept, no
+  Fighter Mastery ranks on recipient, trained Berserker wire values and both
+  actors' attached effects on both clients in High/Low. Recipient card, natural
+  duration/expiry/stat restoration and local+remote visual removal required;
+  screenshots/receipts retained and second browser closed in finally. Explicit
+  timeout600s includes the earlier eight owner casts and this party extension.
+- Related **6suites104tests PASS3.067s**, changed lint/bash syntax/diff pass;
+  Playwright --list loads one owner+party scenario. Logs
+  `/tmp/eidolon-fighter-buff-party-gate-{focused,list}-20260912.log`. Updated
+  native phase doc states **NO actual native execution yet**. Vendor remains
+  prepared. Actual damage impacts/four-party dungeon clear remain separate
+  required acceptance; do not infer them from this stat/render/lifecycle gate.
+- **Production CI34679633154@0e1068a5 still ACTIVE**. Native103517768800 owns
+  GPU in full-character gameplay. Safe spec-only process inspection now finds
+  mobile-inventory/phone-stash group (PID3303734), advanced from dungeon group;
+  no cancellation or duplicate local browser. Last independent frontend/backend
+  checks still Alpha1.0.64/6d5e82cb, healthok/dbready. Scheduled soak untouched.
+  Next use the free GPU only after terminal production native/deployment work;
+  authored buff gate, Fortress/Roar gates and actual four-party dungeon remain
+  open, as do all remaining1.1–1.10 milestones.
+
+## Previous checkpoint — September 12, 07:38 UTC
 
 Previous goal turn PROGRESS; this continuation PROGRESS. Authored the normal-
 purchase/saved-build/native owner gate without changing running candidate or
