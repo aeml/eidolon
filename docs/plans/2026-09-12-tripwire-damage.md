@@ -105,6 +105,19 @@ cases use actual InputManager.getMovementDirection; an initial incorrect method
 name failed six cases and was corrected, not treated as a game defect. Native
 paid trap/damage/root acceptance is still required.
 
+Joystick candidate b2d9a268 focused3suites19tests PASS1.808seconds, ESLint/diff
+passed. Native84373 FAILED25.8seconds during approach (before casting), archive
+`/tmp/eidolon-tripwire-joystick-failure-x20Rqt`, scan0/exact cleanup verified.
+First movement overshot the planned seven-unit step:800/200→825.07/172.50;
+next step timed out at3.568units projected progress, below5.25required. Target
+remained alive1760HP in the pre-step snapshot. Failure image shows the player
+near dungeon-building geometry and Titans. Actual endpoint/blocked-state of the
+last step was not captured, so collision/body obstruction is a hypothesis, not
+a proved cause. Need bounded joystick approach and endpoint evidence; don't
+lower trap/root assertions, inject positions, or claim native combat acceptance.
+The shared click helper's mobile keyboard fallback remains outside this focused
+route change; audit its other callers separately instead of assuming repaired.
+
 ## Draft 1.1.0 patch note
 
 - Fixed Tripwire's damage and critical talents not affecting triggered traps.
