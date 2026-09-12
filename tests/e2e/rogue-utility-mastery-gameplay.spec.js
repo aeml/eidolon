@@ -118,7 +118,8 @@ test(`Rogue utility ${technique ? 'Techniques reduce paid mana and cooldowns' : 
         const target = await targetFor(cfg);
         const before = await page.evaluate(({ cfg, id, genericId }) => {
             const g = window.game, p = g.player, actor = cfg.self ? p : g.remotePlayers.get(id);
-            return { mana: p.stats.mana, rank: p.talentRanks?.[cfg.talent] || 0, generic: p.talentRanks?.[genericId] || 0,
+            return { mana: p.stats.mana, maxMana: p.stats.maxMana, rest: p.wellRestedSeconds, safeZone: p.safeZoneId,
+                rank: p.talentRanks?.[cfg.talent] || 0, generic: p.talentRanks?.[genericId] || 0,
                 globalCDR: p.stats.cooldownReduction || 0, equipmentManaReduction: p.stats.manaCostReduction || 0,
                 rune: p.skillRunes?.[cfg.skill] || '', slot: p.hotbar.indexOf(cfg.skill), hp: actor?.stats?.hp,
                 distance: actor ? Math.hypot(actor.position.x - p.position.x, actor.position.z - p.position.z) : Infinity };
@@ -137,6 +138,9 @@ test(`Rogue utility ${technique ? 'Techniques reduce paid mana and cooldowns' : 
         await page.keyboard.press(String(before.slot + 1));
         try {
             await expect.poll(() => page.evaluate(() => window.__rogueUtility.results.length)).toBe(1);
+            const result = await page.evaluate(() => window.__rogueUtility.results[0]);
+            expect(result.accepted).toBe(true); expect(before.mana - result.mana).toBe(expectedCost);
+            expect(result.cooldownRemaining).toBeCloseTo(expectedCooldown, 5);
         } catch (error) {
             const observed = await page.evaluate(() => ({
                 ...window.__rogueUtility, focus: document.activeElement?.id,
@@ -144,14 +148,11 @@ test(`Rogue utility ${technique ? 'Techniques reduce paid mana and cooldowns' : 
                 pendingTarget: window.game.abilityController.pendingAbilityTarget?.id,
                 hoveredId: window.game.hoveredEntity?.id, cooldowns: window.game.player.cooldowns
             }));
-            console.log('[rogue-utility-failed]', JSON.stringify({ before, expected, observed }));
-            await testInfo.attach('rogue-utility-failed-cast', { body: JSON.stringify({ before, expected, observed }), contentType: 'application/json' });
+            console.log('[rogue-utility-failed]', JSON.stringify({ before, expected, expectedCost, expectedCooldown, observed }));
+            await testInfo.attach('rogue-utility-failed-cast', { body: JSON.stringify({ before, expected, expectedCost, expectedCooldown, observed }), contentType: 'application/json' });
             await page.screenshot({ path: testInfo.outputPath('rogue-utility-failed-cast.png') });
             throw error;
         }
-        const result = await page.evaluate(() => window.__rogueUtility.results[0]);
-        expect(result.accepted).toBe(true); expect(before.mana - result.mana).toBe(expectedCost);
-        expect(result.cooldownRemaining).toBeCloseTo(expectedCooldown, 5);
         await expect.poll(() => page.evaluate(() => window.__rogueUtility.casts.length)).toBe(1);
         if (!cfg.self && cfg.skill === 'Weak Point Mark') {
             expect(await page.evaluate(() => window.__rogueUtility.casts[0].targetId)).toBe(target.id);

@@ -146,6 +146,25 @@ CI34707429078 on c3fb4d75 was canceled after its client/server and third browser
 shard passed, to release branch concurrency for current CI34707979043. No
 production/deploy/soak job was canceled. A canceled run is not a full CI pass.
 
+### Latest Technique replay and resource diagnosis
+
+Native26694 on docs-only9ea86ed9 FAILED3.6m. All three normal0/1/5 Technique
+casts and saved Mark22mana/4.5s cooldown and Smoke31mana/7.5s cooldown passed.
+The final saved Cloak accepted once, but the before-minus-result mana delta was
+185 instead of27. Exact cause is not yet proven; the158difference resembles a
+rested maximum change, but this run did not capture maxima/rest at the assertion.
+Archive `/tmp/eidolon-rogue-technique-final-failure-ORZFmO`, log
+`/tmp/eidolon-rogue-technique-final-native-20260912.log`; scan0 and exactowned
+container/image/port cleanup passed. No native acceptance from this failed run.
+
+The follow-up keeps exact admission, cost and cooldown assertions and captures
+failure evidence for them too. A bounded64sample observer records owner wire
+resources and local values before/after ordinary receiver delivery, including
+maxMana, Well Rested and safe-zone identity. Missing fields stay null; it does
+not supply values or alter simulation. Focused2suites15tests passed0.788s;
+changed-file lint/diff passed. Native reproduction remains required. Exact
+runtimec9e7bf7a CI34707979043 is now SUCCESS; manual native/deploy were skipped.
+
 ### Player-facing draft
 
 Weak Point Mark, Smoke Bomb and Cloak & Vanish Techniques now reduce their mana

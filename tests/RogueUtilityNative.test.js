@@ -8,6 +8,26 @@ const configs = [
     { skill: 'Cloak & Vanish', targetId: 'owner', active: 'stealthActive', duration: 'stealthDuration' }
 ];
 afterEach(() => { delete window.game; delete window.__rogueUtility; });
+test('resource diagnostics preserve before/after delivery and missing fields without inventing mana', () => {
+    const player = { id: 'owner', stats: { mana: 1743, maxMana: 1743 }, wellRestedSeconds: 0 };
+    const receive = jest.fn(message => {
+        if (message.type === 'ability_result') player.stats.mana = message.payload.mana;
+        return 'delivered';
+    });
+    window.game = { player, handleServerMessage: receive };
+    installRogueUtilityObserver(configs[2]);
+    const send = window.game.handleServerMessage;
+    expect(send({ type: 'ability_result', payload: { skillName: 'Cloak & Vanish', mana: 1558 } })).toBe('delivered');
+    expect(window.__rogueUtility.resourceSamples[0]).toMatchObject({
+        kind: 'ability_result', wire: { mana: 1558 },
+        before: { mana: 1743, maxMana: 1743, rest: 0 }, after: { mana: 1558, maxMana: 1743, rest: 0 }
+    });
+    for (let i = 0; i < 70; i++) send({ type: 'delta', payload: { u: { p: { id: 'owner', wellRestedSeconds: 0 } } } });
+    expect(window.__rogueUtility.resourceSamples).toHaveLength(64);
+    expect(window.__rogueUtility.resourceSamples.at(-1).wire).toEqual({ mana: null, maxMana: null, rest: 0, safeZone: null });
+    expect(player.stats).toEqual({ mana: 1558, maxMana: 1743 });
+    expect(receive).toHaveBeenCalledTimes(71);
+});
 test.each(configs)('$skill observes exact targets, actual deadlines and explicit expiry without changing delivery', cfg => {
     const receive = jest.fn(function () { expect(this).toBe(window.game); return 'forwarded'; });
     window.game = { player: { id: 'owner' }, handleServerMessage: receive };
