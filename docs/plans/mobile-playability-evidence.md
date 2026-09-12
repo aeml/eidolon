@@ -673,3 +673,15 @@ Fighter in the full predeploy sequence, and the anonymous suite includes both ph
 HUD and pinch checks. Final versioned checks are running in
 `/tmp/eidolon-1-0-14-client.log`, `/tmp/eidolon-1-0-14-server.log` and
 `/tmp/eidolon-1-0-14-phone.log`; no publication is claimed yet.
+# User phone-playability feedback — September 12, 2026
+
+The user responded **“yes everything looks good”** to a request to try
+`play.eidolonrealms.com` on their actual phone and assess combat readability and
+the bag, quest and skill menus. Record this as positive user-reported acceptance
+of those areas on the live site, not as an agent-operated physical-device test.
+
+Phone model, browser, orientation, session length and exact tested build were
+not supplied. This does not prove every supported device, sustained performance,
+all touch targeting/encounter cases or the later 1.2–1.3 ergonomic refinements.
+Do not keep describing the current live interface as awaiting all user feedback;
+retain only the unverified compatibility/performance and remaining scope gates.
