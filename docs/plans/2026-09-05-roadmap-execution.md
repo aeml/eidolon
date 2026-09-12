@@ -5,7 +5,48 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 23:14 UTC
+## Current checkpoint — September 12, 23:20 UTC
+
+Previous turn VERIFIED WAIT; this continuation PROGRESS: accepted/integrated
+Tripwire and cursor healing, reproduced three ineffective Cleric Masteries,
+and started the next grant-free earned class route. Full1.1–1.10 ACTIVE; no
+production/version/soak changes. NEVER PUSH ROOT.
+
+- **CI34723986784 SUCCESS** on48713d22, client417/6456/101.627s, game
+  coverage99.782s/87.0%, race348.863s, all browser shards. Native/deploy/live
+  skipped. Logs `/tmp/eidolon-healing-tripwire-{client,server}-34723986784.log`.
+  Accepted component docs **2a6f18b4** clean/dev-pushed, with trap43530,
+  shield/entrance86468, support36250 and status75575 collateral evidence.
+  Primary clean merge **e6bedc73**. Integrated clean/dev-push **e604dbdb79e6aa22fd5a3177a831a8e18505f7c6**
+  adds two reviewed draft notes and scope. Five merged suites127PASS2.473s plus
+  diff. **CI34725102442 ACTIVE** on exacte604dbdb; no duplicate dispatch.
+- PvP03aef5b2 **CI34724352226 ACTIVE**: client/server/browser3passed,1/2running
+  at last check. Still separate pending full acceptance; do not substitute
+  the unrelated earlier integrated success. Merge only after required result.
+- New separate WT `/tmp/eidolon-1-1-cleric-utility-mastery-20260912`, base8500bdf4.
+  Actual paired0/5 paid-cast probe36134 TERMINAL FAILURE/game1.163s: all six
+  positive controls/costs/cooldowns pass but Resolve defense120→120, Zeal
+  movement11.52→11.52/attack interval1.4652→1.4652, Mark vulnerability.20→.20.
+  **59cad46c** clean/dev-pushed reproduces these missing power consumers, not a
+  gameplay repair; no full CI dispatched on this intentionally failing diagnostic.
+  Log `/tmp/eidolon-cleric-utility-mastery-red-20260912.log`, work record
+  `docs/plans/2026-09-12-cleric-utility-mastery.md`. Next: bounded actual bonus
+  potency, preserving untrained effects, saved IDs/ranks, recipient ownership,
+  server/offline/UI parity, expiry/recalculation and normal costs/relationships.
+- Sole native **16530 ACTIVE**, new frozen WT
+  `/tmp/eidolon-1-1-fresh-rogue-readiness-20260912`, exacte604dbdb. Prepared vendor
+  from existing shared dependencies, clean source and empty owned ports confirmed.
+  runIDfreshrogueready0912, fresh-story-ready, FRESH_CLASS=Rogue, REST_RECOVERY=1,
+  API18185/Mongo18186/web41875, actual System Chrome. Log
+  `/tmp/eidolon-fresh-rogue-readiness-native-20260912.log`, preparation log
+  `/tmp/eidolon-fresh-rogue-ready-prepare-20260912.log`. No level/item/quest grants
+  or daily comparison flags. Existing ordered phases, earned gear/training,
+  ordinary recovery/manual claims/reconnect and readiness requirements retained.
+  This runs on accepted component integration while combined hosted regression
+  proceeds; the separate PvP candidate is NOT present. Keep the worktree frozen
+  and allow no second native until terminal/archive/scan/exact cleanup.
+
+## Historical checkpoint — September 12, 23:14 UTC
 
 Previous goal turn PROGRESS; this continuation VERIFIED WAIT against the same
 two live workflow handles. No runtime/source candidate edit, restart, duplicate
