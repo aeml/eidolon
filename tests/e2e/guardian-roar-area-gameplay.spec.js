@@ -114,8 +114,25 @@ test('phone Roar area and duration purchases reach authoritative effects and sur
                 await expect(page.locator('.phone-build-card').filter({ has: buy }))
                     .toContainText('+4% Guardian Roar buff duration per rank (20% max)');
             }
-            await buy.scrollIntoViewIfNeeded(); await buy.tap();
             try {
+                for (let attempt = 0; attempt < 3; attempt++) {
+                    const points = await page.evaluate(() => window.game.player.talentPoints);
+                    await buy.scrollIntoViewIfNeeded(); await buy.tap();
+                    await expect.poll(() => page.evaluate(() => window.game.uiManager.skillTree.mobile.pending === null)).toBe(true);
+                    const actualRank = await page.evaluate(id => window.game.player.talentRanks?.[id] || 0, talentId);
+                    if (actualRank === rank) {
+                        expect(await page.evaluate(() => window.game.player.talentPoints)).toBe(points - 1);
+                        break;
+                    }
+                    expect(actualRank).toBe(rank - 1);
+                    expect(await page.evaluate(() => window.game.player.talentPoints)).toBe(points);
+                    await expect(page.locator('.phone-build-feedback')).toContainText('rate limit');
+                    await expect(buy).toBeEnabled();
+                    console.log(`[roar-purchase] ${talentId} rank ${rank}: rate rejection unlocked controls without spending`);
+                    // Another deliberate user tap after the visible rejection;
+                    // the game itself must never retry a purchase automatically.
+                    await page.waitForTimeout(1100);
+                }
                 await expect.poll(() => page.evaluate(id => window.game.player.talentRanks?.[id] || 0, talentId)).toBe(rank);
             } catch (error) {
                 console.log('[roar-purchase-failure]', JSON.stringify(await page.evaluate(({ talentId, rank }) => ({
