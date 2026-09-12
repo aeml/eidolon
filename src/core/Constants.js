@@ -420,6 +420,7 @@ export const CONSTANTS = {
                 criticalChance: i < 26 && i % 2 === 1 ? { skill: skills[Math.floor(i / 2)], chance: 0.02 }
                     : i === 31 ? { chance: 0.03 } : i === 38 ? { chance: 0.02 } : undefined,
                 abilityRange: i === 35 ? { range: 0.03 } : undefined,
+                abilityArea: i === 33 ? { radius: 0.03 } : undefined,
                 abilityEconomy: i < 26 && i % 2 === 1 ? { skill: skills[Math.floor(i / 2)], cdr: 0.03 }
                     : i === 32 ? { cdr: 0.02 } : undefined }));
         })(),
