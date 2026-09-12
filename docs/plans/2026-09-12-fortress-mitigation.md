@@ -75,7 +75,22 @@ that receiving reflected damage does not retaliate again. Logs
 This runtime follow-up needs new full CI/native/merged verification; neither
 the earlier green CI nor the failed party build includes it.
 
-### Incoming-hit native gate (not yet run)
+### Incoming-hit native gate
+
+Native9420 PASS3.6m, zero retries, frozen8864133e. Mastery rank0High30s,
+rank5High36s and saved Extended rank5Low54s pass; the additional paid enemy-hit
+check and living Recall pass. Same Skeleton receipts were2 damage before,1
+during and2 after natural expiry. Armor was0 throughout: integer rounding means
+this is protection-on/off evidence, not precise native20% measurement or equipped
+armor validation. Higher damage/armor/deadline values are covered by paid server
+tests; stronger native sampling remains desirable before broad balance sign-off.
+The four-player failure is not converted into a pass.
+
+Archive `/tmp/eidolon-fortress-real-incoming-pass-nFh6tq`; log
+`/tmp/eidolon-fortress-real-incoming-native-20260912.log`; credential scan0,
+owned containers/image/ports cleanup PASS. Main agent viewed the protected Low
+phone capture; incidental41FPS is not a full performance pass. New full CI on
+8864133e and combined-primary verification still required.
 
 The existing non-retrying Fortress route now additionally approaches a real
 overworld Skeleton through move-only ground input after its saved-rune check.
@@ -96,8 +111,8 @@ not something inferred from asynchronous browser timestamps.
 Observer RED3failed/4passed (missing receipts and a reproduced duplicate wrapper
 under layered movement observation); document-owned installation fixes duplicate
 recording without changing real message delivery. Final4suites73testsPASS9.834s,
-changed-file lint and diff pass. Native gate still queued behind the active
-four-player run; authoring a gate is not a passing runtime result.
+changed-file lint and diff pass. The subsequent native result and its limitations
+are recorded above; authored checks alone are not runtime evidence.
 Logs `/tmp/eidolon-fortress-impact-{observer-red,gate-tests}-20260912.log`.
 
 ## Proposed 1.1 patch note
