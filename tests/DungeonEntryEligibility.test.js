@@ -22,6 +22,31 @@ describe.each([false, true])('dungeon entry eligibility (phone=%s)', isMobile =>
     const button = () => document.getElementById('btn-enter-dungeon');
     const note = () => document.getElementById('dungeon-unlock-note');
 
+    test('first-dungeon preparation explains role gear without adding an entry requirement', () => {
+        open();
+        const preparation = document.getElementById('dungeon-preparation');
+        expect(preparation.hidden).toBe(false);
+        expect(preparation.querySelector('summary').textContent).toBe('Prepare for the Bastion');
+        for (const text of ['Uncommon', 'Rare', 'Strength', 'Dexterity', 'Intelligence', 'Wisdom', 'Vitality', 'Lanternhold']) {
+            expect(preparation.textContent).toContain(text);
+        }
+        expect(preparation.open).toBe(false);
+        expect(button().disabled).toBe(false);
+        button().click();
+        expect(JSON.parse(window.game.socket.send.mock.calls[0][0]).payload).toEqual({
+            dungeonType: 'verdant_bastion_catacombs', difficulty: 'normal', runLevel: 30
+        });
+    });
+
+    test('introductory preparation does not imply the same gear is sufficient for higher tiers', () => {
+        open({ playerLevel: 100 });
+        const preparation = document.getElementById('dungeon-preparation');
+        select('abyssal_well'); expect(preparation.hidden).toBe(true);
+        select('verdant_bastion_catacombs'); expect(preparation.hidden).toBe(false);
+        document.getElementById('diff-btn-heroic').click(); expect(preparation.hidden).toBe(true);
+        document.getElementById('diff-btn-normal').click(); expect(preparation.hidden).toBe(false);
+    });
+
     test('explains the first unmet gate without offering locked run levels or sending entry', () => {
         open({ playerLevel: 16, availableRunLevels: [] });
         expect(button().disabled).toBe(true);
