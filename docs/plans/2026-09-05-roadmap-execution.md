@@ -5,7 +5,46 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 23:20 UTC
+## Current checkpoint — September 12, 23:33 UTC
+
+Previous user-facing confirmation only rechecked already accepted gear evidence
+(NO PROGRESS toward remaining scope). This continuation PROGRESS: implemented
+and race-tested the isolated Cleric server consumer, accepted/merged the verified
+PvP fix, and dispatched its fresh combined regression. Full1.1–1.10 stays ACTIVE.
+No production/version/soak changes. NEVER PUSH ROOT.
+
+- Cleric WT `/tmp/eidolon-1-1-cleric-utility-mastery-20260912` now clean/dev-pushed
+  **58925cca**. Paid named Mastery power reaches Resolve defense20→24%, Zeal
+  movement20→24%/attack speed30→36%, Mark vulnerability20→24%; bounded captured
+  recipient strength, both copies, replacement/expiry/purge. No level stat curve.
+  Original probe84492 PASS2.743s; expanded73021 PASS4.173s; final **57512 TERMINAL
+  PASS/game25.274s** under race, including existing Cleric/support expiry/wall/
+  purge checks. Log `/tmp/eidolon-cleric-utility-server-final-20260912.log`.
+  Initial expanded fixture failures36832 were compact-copy internal timer and
+  uninitialized enemy base stats, corrected without weakening actual potency,
+  cadence/damage/expiry checks. Isolated candidate NOT accepted/integrated.
+  Next: JSON/full-delta/protobuf power fields, offline/UI canonical parity,
+  trained NPC/purge coverage, saved/rendere​d real recipients and full/merged CI.
+  Offline Resolve25% damage reduction/Zeal35% cadence and damage/heal text
+  contradict canonical server defense20%/movement20%/cadence30%; explicitly fix
+  parity, not just the text. Detailed work record accompanies58925cca.
+- **CI34724352226 SUCCESS** on03aef5b2:420/6489 client, game coverage102.974s/
+  87.0%, race360.608s, all browser shards. Native/deploy/live skipped. Complete
+  log `/tmp/eidolon-pvp-full-ci-34724352226.log`. Accepted doc **bec83434**, merged
+  primary **75fc655e** and integrated clean/dev-push **24563781b33b17f4f7cdd859334af8959d5d5402**.
+  Release handoff adds reviewed delayed-impact race note, not full PvP approval.
+  **CI34725661007 PENDING** on24563781 (one dispatch, confirmed exact handle).
+  **CI34725102442 ACTIVE** on preceding e604dbdb: client/server pass, browser
+  shards running at last job-detail check. Let it finish; no cancellation/restart.
+- Sole native **16530 ACTIVE**, re-polled same handle. Frozen WT unchanged and
+  clean at e604dbdb, same runID/ports/log as previous checkpoint. Latest readable
+  evidence: Rogue level8, seed collection7,15 observed target deaths in that
+  phase, zero player deaths; preceding watch40/manual claim passed to this phase.
+  Ordinary town mana/rest recovery is visible in receipts. This is in-progress,
+  not full earned-readiness acceptance. No new source/grants/native introduced.
+  Keep source frozen until terminal/archive/scan/exact cleanup.
+
+## Historical checkpoint — September 12, 23:20 UTC
 
 Previous turn VERIFIED WAIT; this continuation PROGRESS: accepted/integrated
 Tripwire and cursor healing, reproduced three ineffective Cleric Masteries,
