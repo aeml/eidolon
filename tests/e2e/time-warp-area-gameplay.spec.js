@@ -1,6 +1,7 @@
 import { devices, expect, test } from '@playwright/test';
 import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, moveByGroundClick, projectGroundOffset } from './helpers.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
+import { installTimeWarpObserver } from './time-warp-observer.js';
 
 test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true,
     userAgent: devices['Pixel 7'].userAgent, actionTimeout: 12_000, trace: 'off', screenshot: 'off', video: 'off' });
@@ -68,27 +69,13 @@ test('Time Warp training reaches a walked ally beyond the original radius and ex
         expect(await distance()).toBeLessThan(19.75);
         for (const actor of [page, ally]) {
             await expect.poll(() => actor.evaluate(() => window.game.player.wellRestedSeconds > 0)).toBe(true);
-            await actor.evaluate(() => {
-                const g = window.game, receive = g.handleServerMessage.bind(g);
-                window.__timeWarpNative = { casts: [], results: [], maxDuration: 0 };
-                g.handleServerMessage = message => {
-                    const result = receive(message);
-                    if (message.type === 'ability' && message.payload?.skillName === 'Time Warp') {
-                        const shape = g.effects?.findLast(effect => effect.abilityShape?.skillName === 'Time Warp' &&
-                            effect.abilityShape.sourceId === message.payload.sourceId);
-                        const boundary = shape?.meshes?.[0]?.children.find(part => part.userData.normalizedGameplayRadius === 1);
-                        window.__timeWarpNative.casts.push({ ...message.payload, visibleRadius: boundary?.scale.x });
-                    }
-                    if (message.type === 'ability_result' && message.payload?.skillName === 'Time Warp') window.__timeWarpNative.results.push(message.payload);
-                    if (message.type === 'state' || message.type === 'delta') window.__timeWarpNative.maxDuration =
-                        Math.max(window.__timeWarpNative.maxDuration, g.player.hasteTimer || 0);
-                    return result;
-                };
-            });
+            await actor.evaluate(installTimeWarpObserver);
         }
         const baseline = await ally.evaluate(() => ({ speed: window.game.player.stats.speed,
             cooldown: window.game.player.stats.cooldownReduction, attack: window.game.player.stats.attackSpeed }));
         async function cast(trained, quality, mastery = 0) {
+            for (const actor of [page, ally]) expect(await actor.evaluate(() =>
+                window.game.handleServerMessage.timeWarpNativeObserver)).toBe(true);
             await expect.poll(() => page.evaluate(() => window.game.player.hasteTimer <= 0), { timeout: 15_000 }).toBe(true);
             await page.locator('#btn-mobile-menu').tap(); await page.locator('#btn-settings').tap();
             await page.locator('#graphics-quality').selectOption(quality); await page.locator('#btn-close-settings').tap();
@@ -183,6 +170,7 @@ test('Time Warp training reaches a walked ally beyond the original radius and ex
         await buyFive('WIZ_25');
         await cast(true, 'low', 5);
         await loginAndEnterWorld(page, credentials);
+        await page.evaluate(installTimeWarpObserver);
         for (const id of ['WIZ_36', 'WIZ_38', 'WIZ_34', 'WIZ_25']) expect(await page.evaluate(id => window.game.player.talentRanks?.[id], id)).toBe(5);
         await cast(true, 'high', 5);
         expect(failures, failures.join('\n')).toEqual([]);

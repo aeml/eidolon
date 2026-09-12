@@ -40,14 +40,29 @@ Logs: `/tmp/eidolon-time-warp-mastery-client-{red,green,final}-20260912.log`,
 
 ## Remaining gates
 
-The existing native Time Warp route retains untrained and area/general-duration
-controls, then buys WIZ_25 through the phone menu. It checks the new11.2second
-duration on both clients, unchanged recipient stats, expiry, Low and High after
-fresh login. Purchases now verify exact point spending on acceptance and no
-spending on rate rejection. The expanded case was discovered, not executed.
+Full combined regression passed on a955a7de (365 suites/5,423 client tests,
+lint, full Go race suite); see the Wizard/Shattering integration record.
+Primary now contains this runtime through3d1d2467. It is not in release63,
+whose separate complete normal CI/live gate has passed.
 
-Full client/server integration, the expanded native route, earned progression
-and balance, and a versioned publication with patch notes are still required.
-Primary remains97cd447b; this work is not merged or in release63. CI34660899212
-is in its required self-hosted predeploy on separatef866df68. No competing
-native/full run is started. Soak remains cancelled and full1.1–1.10 stays open.
+Native69275 on clean3d1d2467 failed at the final High-quality post-login receipt
+assertion (about1.3m). Untrained High, trained Low/High, all20 paid ranks and
+Mastery5 Low duration/recipient/expiry checks passed first. WIZ34rank4 exercised
+an actual rate rejection: unchanged points, released controls, then an accepted
+new tap. Log `/tmp/eidolon-time-warp-mastery-native-20260912.log`; retained
+artifact `/tmp/eidolon-time-warp-mastery-failure-unDK7r`. The Mastery5Low image
+was inspected. Credential scan passed0; disposable services were removed.
+
+The test installed its message observer only in the original page.
+`loginAndEnterWorld` opens a fresh document; resetting receipt arrays there
+cannot reinstall the old handler. Extracted an idempotent observer and installed
+it after the fresh login too, with a pre-cast check on both clients. Added tests
+for fresh documents, single forwarding, preserved return/receiver and rendered
+radius capture. Three suites/56tests passed0.799s plus lint; logs
+`/tmp/eidolon-time-warp-observer-{tests,lint}-20260912.log`.
+
+The corrected native rerun is still required: do not count the earlier partial
+pass as complete saved-build/High-quality acceptance. No runtime, duration,
+radius, payment, receipt or expiry requirement was weakened. Earned progression,
+balance and versioned publication remain open. Soak stays off and the complete
+1.1–1.10 goal remains active.
