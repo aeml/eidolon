@@ -5,7 +5,55 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 19:05 UTC
+## Current checkpoint — September 12, 19:11 UTC
+
+Previous/currentgoalturnsPROGRESS: implemented measuredpartyinput batching,
+accepted combinedruntimeCI and preservedverifiedpurchase-recoverytests in the
+integrationtree. FullgoalACTIVE; rootledger-onlyNEVERPUSHROOT. No live/version/
+soak changes; primary506e3200 unchanged.
+
+- Party WT `/tmp/eidolon-1-1-party-partial-retreat-20260912`, branch
+  work/1-1-party-partial-retreat, clean/devpushed **1a1c69d08eee04801421f1a57613ff03485f80b8**.
+  New strictwarning-dodge option batches origin/probe setup, fullsampledcollision
+  path andexactunscaledgroundprojection intoONE synchronousbrowserobservation,
+  instead ofthree serial roundtrips. Realpointermove/75mshoversettle/currentray/
+  Shift-click/actualdisplacement/fatalissuedfailure remainunchanged. Onlystrict
+  no-alternate-path warningdodge opts in; othermovementcallersunchanged. Missing/
+  deadactors, invaliddelta, nofloorcollisionorblocked/offscreen/coveredprojection
+  cannotissueinput orshrink/substituteapath. Newbatch-preparationtimingphase.
+  TestsRED2missingbatchcalls; thirdREDwasnonexistentfailureclassname, corrected
+  toexistingfatalErrorcontract. Final6suites61PASS2.530s/lint/assets/diffPASS.
+  Filesnewtests/groundInputPreparation.js andGroundInputPreparation.test.js,
+  tests/GroundMovementInput.test.js, e2ehelpers andfour-playerroute. Evidence
+  appended2026-09-12-party-partial-retreat.md; logs
+  `/tmp/eidolon-party-batched-input-*-20260912.log`.
+  **CI34713334140 ACTIVE** exact1a1. **54340 ACTIVE — sole nativeGPU**, frozen
+  1a1,runIDpartybatchdodge0912,routeparty-dungeon,18185/18186/41875. Log
+  `/tmp/eidolon-party-batched-input-native-20260912.log`; actualFighterprepared,
+  Clericpreparingatlastobservation. Noentry/clear/timingimprovementprovedyet.
+  FreezeWT,pollsamehandle; archive/scan/exactownedcleanupafterterminalbefore
+  nextnative. Stats/regen/AI/timeout/rolecomposition/earnedbaselineunchanged.
+- **CI34711998572 SUCCESS** exactf9ddf686, combinedRogueTech/QAack/Fortress/
+  BladeStorm. Client412suites6383tests135.552s,game87.0%91.114s/race292.001s,
+  allthreebrowser shardsPASS; manualnative/deployintentionallyskipped. Logs
+  `/tmp/eidolon-integrated-rogue-ci-{client,server}-34711998572.log`.
+  Afterterminalacceptance, integratedWTmergedprimary506e'sverifiedSpin/Roar
+  purchase-recoverytests via85871e0d, thenevidence **e9fd2944**, cleanlocal3ahead
+  ofdevorigin. No newruntimeinthismerge; no freshCI yet untilnextruntimebatch.
+- GuardianRoarprotection WTlatest **e66b4b14** docs-only overbe6b1193;
+  **CI34712906594 ACTIVE**, clientPASS, actualGo racedetectoractive since19:03:42
+  verifiedviajob103604799997steps. Native52996PASS2.5m/cleanupretainedbelow.
+  No Roar integrationuntilfullCIterminal. TripwireWTlatestf44ba3e2docs-only
+  overefda8f9f; **CI34712331175 ACTIVE**, client/serverPASS,browser1/2active,
+  browser3PASS. ActualTripwirenative stillNOTauthored/run orintegrated.
+
+Next: actualbatched4partyoutcome/timing/failedseeddiagnosis; outstandingCI;
+Tripwirenative; integrateacceptedRoar andfreshcombinedregression. Fullparty
+clear/individualcredit/Waterhandoff/all160consumers/earnedfirsthour/fivedungeons/
+multiseeds/reconnect/raids/DarkRealm/exactliveand1.2–1.10remainrequired.
+No1.1releaseorplanned1.0.66. Lastknownlive1.0.65/f9ebnotfreshlyprobed.
+
+## Previous checkpoint — September 12, 19:05 UTC
 
 Previous/current goal turns PROGRESS. Implemented actualGuardianRoar protection
 parity and truthfulstatus, reproduced/fixed subframeperiodicexpiry, retained
