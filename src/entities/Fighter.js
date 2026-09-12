@@ -11,6 +11,7 @@ import { applyOfflineShieldSlam } from '../skills/offlineShieldSlam.js';
 import { getFighterEffectDuration } from '../skills/fighterEffectDuration.js';
 import { applyOfflineEarthshaker } from '../skills/offlineEarthshaker.js';
 import { beginOfflineShatteringCharge, advanceOfflineShatteringCharge } from '../skills/offlineShatteringCharge.js';
+import { beginOfflineCharge, advanceOfflineCharge, cancelOfflineCharge } from '../skills/offlineCharge.js';
 
 const GUARDIAN_ROAR_FRIENDLY_ACTOR_TYPES = new Set([
     'Fighter',
@@ -47,6 +48,8 @@ export class Fighter extends Actor {
     }
 
     useAbility(targetVector, gameEngine, skillNameOverride = null) {
+        if (this.offlineCharge && !this.isCharging) cancelOfflineCharge(this);
+        if (this.offlineCharge && !this.isRemote) return false;
         if (this.isCharging && this.isShatteringCharge && !this.isRemote) return false;
         if (!this.isCharging && this.isShatteringCharge) {
             // Scene recovery can clear the shared movement flag independently.
@@ -55,7 +58,7 @@ export class Fighter extends Actor {
             this.shatteringInstanceId = null;
         }
         const requestedSkill = skillNameOverride || this.abilityName;
-        if (requestedSkill === 'Shattering Charge' && (this.isRemote || !this.unlockedSkills.includes(requestedSkill) ||
+        if (['Charge', 'Shattering Charge'].includes(requestedSkill) && (this.isRemote || !this.unlockedSkills.includes(requestedSkill) ||
             ![targetVector?.x, targetVector?.z].every(Number.isFinite))) return false;
         if (requestedSkill === 'Executioner Spin') targetVector = this.position.clone();
         if (requestedSkill === 'Last Stand Rampage' && this.stats.hp / this.stats.maxHp >= 0.30) {
@@ -365,23 +368,12 @@ export class Fighter extends Actor {
             return;
         }
 
-        // Default: Charge
-        console.log("Fighter used Charge!");
-        this.isCharging = true;
-        this.state = 'ATTACKING'; // Lock movement
-
-        // Calculate charge direction
-        this.chargeTarget = targetVector.clone();
-
-        // Face target
-        const lookTarget = new THREE.Vector3(targetVector.x, this.position.y, targetVector.z);
-        if (this.mesh) {
-            this.mesh.lookAt(lookTarget);
-            this.rotation.copy(this.mesh.quaternion);
-        }
+        if (skill === 'Charge') beginOfflineCharge(this, targetVector, gameEngine);
     }
 
     cancelAbilities() {
+        cancelOfflineCharge(this);
+        this.runeArmorBuff = this.runeArmorBuffTimer = 0;
         this.isCharging = false;
         this.isWhirlwinding = false;
         this.isShatteringCharge = false;
@@ -404,6 +396,10 @@ export class Fighter extends Actor {
     }
 
     update(dt, collisionManager, player, chunkManager, floatingTextManager) {
+        if (this.runeArmorBuffTimer > 0) {
+            this.runeArmorBuffTimer = Math.max(0, this.runeArmorBuffTimer - dt);
+            if (!this.runeArmorBuffTimer) this.runeArmorBuff = 0;
+        }
         if (this.ironFortressTimer > 0) {
             this.ironFortressTimer -= dt;
             if (this.ironFortressTimer <= 0) {
@@ -419,6 +415,13 @@ export class Fighter extends Actor {
                 this.berserkerEdgeActive = false;
                 console.log("Berserker Edge expired.");
             }
+        }
+
+        if (this.offlineCharge) {
+            // Advance ordinary timers once; the paid charge owns movement.
+            super.update(dt, collisionManager);
+            advanceOfflineCharge(this, dt, this.gameEngine, isGuardianRoarFriendlyActor);
+            return;
         }
 
         if (this.isWhirlwinding) {
@@ -484,80 +487,6 @@ export class Fighter extends Actor {
             if (this.isCharging && this.isShatteringCharge) {
                 advanceOfflineShatteringCharge(this, dt, this.gameEngine, isGuardianRoarFriendlyActor);
             }
-            return;
-        }
-
-        if (this.isCharging) {
-            // Remote entities are moved by server updates, so we skip local physics simulation
-            if (this.isRemote) {
-                if (this.mixer) this.mixer.update(dt);
-                return;
-            }
-
-            // Safety check: If chargeTarget is missing, abort charge
-            if (!this.chargeTarget) {
-                this.isCharging = false;
-                super.update(dt, collisionManager);
-                return;
-            }
-
-            const speed = 25; // Fast charge speed
-            const direction = new THREE.Vector3().subVectors(this.chargeTarget, this.position);
-            const dist = direction.length();
-
-            if (dist < 1.0) {
-                // Impact!
-                this.isCharging = false;
-                this.state = 'IDLE';
-                this.playAnimation('Idle');
-
-                // Charge Damage Logic
-                const entities = this.gameEngine?.chunkManager?.getActiveEntities?.()
-                    ?? chunkManager?.getActiveEntities?.()
-                    ?? [];
-                const chargeRadius = 3.0;
-
-                entities.forEach(entity => {
-                    if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
-                        const d = this.position.distanceTo(entity.position);
-                        if (d < chargeRadius) {
-                            let damage = 25 + (this.stats.strength * 1.5);
-
-                            // Berserker Edge Bonus
-                            if (this.berserkerEdgeActive) {
-                                const hpPercent = this.stats.hp / this.stats.maxHp;
-                                if (hpPercent > 0.60) {
-                                    damage *= 1.3;
-                                }
-                            }
-
-                            // Last Stand Bonus
-                            if (this.lastStandTimer > 0) {
-                                damage *= (1 + this.lastStandDamageBoost);
-                            }
-
-                            if (entity.takeDamage) {
-                                applyOfflineAbilityHit(this, entity, damage, 'Charge', this.gameEngine?.floatingTextManager, '#ff0000');
-                            }
-                        }
-                    }
-                });
-
-                this.isShatteringCharge = false;
-
-            } else {
-                direction.normalize();
-                let moveDist = speed * dt;
-                if (moveDist > dist) moveDist = dist; // Prevent overshoot
-
-                this.position.add(direction.multiplyScalar(moveDist));
-
-                // Update mesh
-                if (this.mesh) this.mesh.position.copy(this.position);
-            }
-
-            // Skip normal update movement logic
-            if (this.mixer) this.mixer.update(dt);
             return;
         }
 

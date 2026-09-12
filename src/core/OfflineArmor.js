@@ -14,7 +14,10 @@ export function applyOfflineArmorMelt(target, duration) {
 
 export function getOfflineEffectiveArmor(target) {
     const raw = Number(target?.stats?.defense);
-    const defense = Number.isFinite(raw) ? Math.max(0, Math.trunc(raw)) : 0;
+    let defense = Number.isFinite(raw) ? Math.max(0, Math.trunc(raw)) : 0;
+    if (isOffline(target) && target.runeArmorBuffTimer > 0 && target.runeArmorBuff === .2) {
+        defense = Math.floor(defense * 1.2);
+    }
     const reduction = isOffline(target) && target.armorReductionTimer > 0 ? Number(target.armorReduction) : 0;
     return Math.max(0, defense - (Number.isFinite(reduction) ? Math.max(0, Math.trunc(reduction)) : 0));
 }

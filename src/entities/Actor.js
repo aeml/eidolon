@@ -908,7 +908,9 @@ export class Actor extends Entity {
         this.playAbilityAnimation(skillName);
         // Teleport must use its clipped landing, not the aim point. Offline
         // Wizard resolves it below; multiplayer waits for the accepted event.
-        if (skillName !== 'Teleport') this.spawnAbilityPresentation(gameEngine, skillName, targetVector);
+        const offlineCharge = className === 'Fighter' && skillName === 'Charge' &&
+            !this.isRemote && !this.isMultiplayer && !gameEngine?.isMultiplayer;
+        if (skillName !== 'Teleport' && !offlineCharge) this.spawnAbilityPresentation(gameEngine, skillName, targetVector);
 
         // Subclasses implement actual logic
         return true;

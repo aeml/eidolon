@@ -465,10 +465,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				// Check angle for backstab
 				bestTarget.Mu.RLock()
 				tRot := bestTarget.Rotation
-				tDefense := bestTarget.Defense - bestTarget.ArmorReduction
-				if tDefense < 0 {
-					tDefense = 0
-				}
+				tDefense := effectiveCombatArmorLocked(bestTarget, time.Now())
 				bestTarget.Mu.RUnlock()
 
 				tDirX := math.Sin(tRot)

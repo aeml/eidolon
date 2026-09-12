@@ -184,10 +184,7 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 	poisonBudget := statusDamageBudget{}
 	poisonEndTime := time.Time{}
 
-	defense := tgt.Defense - tgt.ArmorReduction
-	if defense < 0 {
-		defense = 0
-	}
+	defense := effectiveCombatArmorLocked(tgt, time.Now())
 
 	// Bosses ignore 50% of defense
 	bosses := map[string]bool{
