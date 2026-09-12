@@ -5,7 +5,68 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 06:37 UTC
+## Current checkpoint — September 12, 06:52 UTC
+
+Previous goal turn was PROGRESS. This continuation is PROGRESS: finished the
+damage-buff wire/display phase, integrated fully tested Roar, diagnosed the
+terminal65 animation failure and launched a scoped native verification of its
+QA correction. Full roadmap remains active; no new deployment is claimed.
+
+- **Production65 CI34675345557 at1af5951 TERMINAL FAILURE**. Native job
+  103506166516 failed the Wizard animation matrix twice at Teleport, expecting
+  local lastAbilityPresentation but still seeing Dragonfire Lance. Fighter and
+  Rogue matrices passed. Deployment/final live skipped. Original log
+  `/tmp/eidolon-release65-production-native-34675345557.log`; sanitized archive
+  `/tmp/eidolon-release65-animation-failure-sNXtW5`. Scan0, disposable services
+  removed;18185/18186/41875 confirmed free before the next native run.
+- Exact cause in source: Actor intentionally suppresses speculative Teleport
+  VFX; accepted endpoint reconciliation uses triggerRemoteAbilityVisuals and
+  lastRemoteAbilityPresentation, including the local owner. The matrix watched
+  only the prediction record. **2a82012b7e7a204998128d46209175604359a1a1**, clean
+  `/tmp/eidolon-release65-animation-record-fix-20260912`, branch
+  `work/release65-animation-record-fix`, parent1af5951, NOT pushed yet.
+  Browser-serialized reader selects accepted record for Teleport only, no
+  speculative fallback. Other skills retain local input record. All skill/time/
+  layer/animation/finite-scene/effect checks and inputs remain. Six unit tests
+  PASS0.709s, changed lint/diff pass, browser dependencies prepared. Doc
+  `2026-09-12-release65-teleport-animation-record.md` records diagnosis.
+- **Native session74130 ACTIVE** in2a worktree, exactsource frozen. Scoped
+  Wizard animation matrix via existing wrapper; local native currently owns
+  GPU. Log `/tmp/eidolon-release65-animation-record-native-20260912.log`.
+  RunID`anim65record0912`, route`animations`, class`Wizard`, web41875, default
+  API/Mongo18185/18186, `sg render`, Node24.18.0, tty:true. Latest log is the
+  ordinary isolated server build embedding2a/Alpha1.0.65; no gameplay result yet.
+  Poll SAME handle, preserve terminal artifacts/cleanup. If accepted, publish
+  the scoped65 correction with full CI; forward-port QA fix into1.1 separately.
+  Do not start another native/GPU job until this one is terminal.
+- **4e9e6b9b2e87ed21e2939186336c6c90040da689**, clean committed successor to
+  83d5eba9 in `work/1-1-fighter-damage-buff-mastery`, still NOT pushed/integrated
+  or release-ready. Adds protobuf121/122, generated bindings, full snapshot/
+  wire/scalar delta strength and owner/remote buff display. Inactive publishes0;
+  scalar-only cannot activate; duration updates retain; legacy/malformed values
+  safe; no private ranks or duplicate stat multiplication. Berserker gets a
+  tracked card; both identify Damage stat and Berserker's defense cost.
+- Wire client RED12failed2.076s; initial Go probe had a pointer-reflection error,
+  corrected RED6missing snapshot cases0.007s. Final6client suites/144tests
+  PASS2.826s includes real protobuf through both support paths. Root wire/Focus
+  race PASS1.358s; full lint/generated/diff pass. Logs
+  `/tmp/eidolon-fighter-buff-wire-*-20260912.log`. No local wire test remains.
+  Offline consumers, ability descriptions, native/save/balance/full regression
+  still required; next resume this candidate's unfinished offline phase, not
+  publish partial work. Doc `2026-09-12-fighter-damage-buff-mastery.md` updated.
+- **Guardian Roar CI34677980248 at7f781121 TERMINAL SUCCESS**:381/5856/102.904s,
+  server86.7%/93.383s/race324.607s/backup/restore/bench/build; browser40+50+26=116.
+  Native/deploy guards skipped, not passed. Browser1/2 logs retained at
+  `/tmp/eidolon-guardian-roar-ci-browser{1,2}-34677980248.log`.
+  Clean primary and integrated-regression fast-forwarded to **7f78112134c01a7be8cfee5c9383bc51fa84e15d**
+  after terminal acceptance; no running source mutated.
+- Public release and health independently rechecked06:51: both **Alpha1.0.64/
+  6d5e82cb8f50dd9e76a1353bd024339eabc544e0**, healthok/dbready. Leave scheduled
+  soak alone. After release correction, actual four-party dungeon plus new
+  Fortress/Roar native acceptance remain required. Root is ledger-only:
+  NEVER PUSH ROOT. No blocker/goal-completion condition is satisfied.
+
+## Previous checkpoint — September 12, 06:37 UTC
 
 Previous goal turn was PROGRESS. This continuation is PROGRESS: integrated the
 fully tested Fortress gate baseline, implemented the server phase of two damage
