@@ -14,6 +14,7 @@ import { getOfflineEffectiveArmor } from '../core/OfflineArmor.js';
 import { getRogueEffectDuration } from '../skills/rogueEffectDuration.js';
 import { resolveRogueAbilityDamage } from '../skills/rogueAbilityDamage.js';
 import { applyOfflineSmokeBomb } from '../skills/offlineSmokeBomb.js';
+import { applyOfflineDeathSpiral } from '../skills/offlineDeathSpiral.js';
 import {
     PROCEDURAL_PROJECTILE_VISUAL_DEFINITIONS,
     createProceduralProjectileVisual,
@@ -226,35 +227,7 @@ export class Rogue extends Actor {
         }
 
         if (skill === "Death Spiral") {
-            console.log("Rogue used Death Spiral!");
-            
-
-            // AoE around rogue
-            const radius = 4.0;
-            const entities = gameEngine.chunkManager.getActiveEntities();
-            
-            this.spawnVisualEffect(gameEngine, this.position, 0x333333, "spin");
-
-            entities.forEach(entity => {
-                if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
-                    const dist = this.position.distanceTo(entity.position);
-                    if (dist < radius) {
-                        let damage = resolveRogueAbilityDamage(this, skill);
-                        
-                        // Bonus per bleed stack
-                        if (entity.bleedStacks > 0) {
-                            damage += (entity.bleedStacks * this.stats.dexterity * 0.5);
-                            // Consume stacks? Or just bonus? "Finisher" implies consume usually, but let's keep it simple for now.
-                            // Let's consume for big burst.
-                            entity.bleedStacks = 0;
-                            entity.bleedTimer = 0;
-                            gameEngine.floatingTextManager.spawn("EVISCERATE!", entity.position, '#ff0000');
-                        }
-                        
-                        applyOfflineAbilityHit(this, entity, damage, skill, gameEngine.floatingTextManager);
-                    }
-                }
-            });
+            applyOfflineDeathSpiral(this, gameEngine);
             return;
         }
 
