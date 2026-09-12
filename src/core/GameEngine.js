@@ -27,6 +27,7 @@ import { installGameEngineNetworkMessages } from './GameEngineNetworkMessages.js
 import { installGameEngineEntitySync } from './GameEngineEntitySync.js';
 import { installGameEngineMovement } from './GameEngineMovement.js';
 import { installGameEngineRuntime } from './GameEngineRuntime.js';
+import { createTimedRemoteEffectConfig } from './TimedRemoteEffectConfig.js';
 
 const REMOTE_SUPPORT_STATE_CONFIG = {
     invulnerable: {
@@ -90,45 +91,6 @@ const REMOTE_SUPPORT_STATE_CONFIG = {
         cooldownMs: 900,
     },
 };
-
-function createTimedRemoteEffectConfig({
-    payloadKey,
-    durationKey,
-    activeProperty = payloadKey,
-    timerProperty,
-    fallbackDuration,
-    extraPayloadKeys = [],
-    onActivate,
-    onDeactivate
-}) {
-    const isActive = (entity) => Boolean(entity[activeProperty]) && Number(entity[timerProperty] || 0) > 0;
-    return {
-        payloadKey,
-        payloadKeys: [payloadKey, durationKey, ...extraPayloadKeys],
-        // The replicated active bit is the transition authority. A local
-        // display timer may reach zero just before the server's explicit
-        // inactive snapshot; requiring both here suppresses the DOWN cue and
-        // makes the final authoritative edge invisible.
-        getPreviousActive: (entity) => Boolean(entity[activeProperty]),
-        applyPayload: (entity, value, payload) => {
-            if (value !== undefined) entity[activeProperty] = Boolean(value);
-            if (payload[durationKey] !== undefined) {
-                entity[timerProperty] = Math.max(0, Number(payload[durationKey] || 0));
-            } else if (value === true) {
-                entity[timerProperty] = Math.max(Number(entity[timerProperty] || 0), fallbackDuration);
-            }
-
-            if (Boolean(entity[activeProperty]) && Number(entity[timerProperty] || 0) > 0) {
-                onActivate?.(entity, payload);
-            } else {
-                entity[activeProperty] = false;
-                entity[timerProperty] = 0;
-                onDeactivate?.(entity, payload);
-            }
-        },
-        getNextActive: isActive,
-    };
-}
 
 const REMOTE_EFFECT_SYNC_CONFIG = {
     invulnerable: createTimedRemoteEffectConfig({
