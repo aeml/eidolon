@@ -61,8 +61,16 @@ for fresh documents, single forwarding, preserved return/receiver and rendered
 radius capture. Three suites/56tests passed0.799s plus lint; logs
 `/tmp/eidolon-time-warp-observer-{tests,lint}-20260912.log`.
 
-The corrected native rerun is still required: do not count the earlier partial
-pass as complete saved-build/High-quality acceptance. No runtime, duration,
-radius, payment, receipt or expiry requirement was weakened. Earned progression,
-balance and versioned publication remain open. Soak stays off and the complete
-1.1–1.10 goal remains active.
+Corrected native **76982 passed** on clean482f9c24 (about1.3m), including all
+original controls, all20 paid ranks, Mastery5Low and Mastery5High after a fresh
+login, saved ranks, both-client11.2s duration and expiry restoring recipient
+stats. WIZ34rank4 again exercised real rate rejection and successful new-tap
+recovery without lost points or stuck controls. The observer repair changed no
+game runtime or acceptance requirement.
+
+Log `/tmp/eidolon-time-warp-mastery-native-relogin-20260912.log`; retained
+artifact `/tmp/eidolon-time-warp-mastery-accepted-uHoh69`. Fresh-loginMastery5High
+image inspected; scanner0 and exact disposable-container cleanup confirmed.
+This is prepared functional/native/save evidence, not earned progression or
+publication. Balance and versioned release remain open. Soak stays off and the
+complete1.1–1.10 goal remains active.
