@@ -5,7 +5,57 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 06:11 UTC
+## Current checkpoint — September 12, 06:21 UTC
+
+Previous goal turn was PROGRESS. This continuation is PROGRESS: implemented
+Guardian Roar Mastery's useful protective duration, fixed omitted caster stat
+refresh, proved focused behavior and retained exact full regression results.
+
+- **7f781121**, clean candidate `work/1-1-guardian-roar-mastery` at
+  `/tmp/eidolon-1-1-guardian-roar-mastery-20260912`, parent611024d4. Not yet
+  pushed/integrated; primary and integrated regression remain befd5284 while
+  frozen611 CI completes. No production push or ordinary66.
+- FTR_09 formerly multiplied nonexistent Roar damage. It now grants4% buff
+  duration/rank, max20%, preserving ID/ranks/cost and explicitly corrected copy.
+  Rank5 normal12s, actual paid Shield Slam combo18s; both generic rank5 talents
+  make15.5s/23.25s. Near recipients inherit caster duration; far/other-instance
+  controls remain excluded. Protection/taunt strength, damage, range and costs
+  unchanged. Offline named consumer and prediction-authority controls agree.
+- Meaningful nonzero-defense controls exposed another real bug: the server
+  skipped caster RecalculateStats when applying the buff to allies. Refresh
+  after recipient loop and before cast publication, retaining this cast's
+  existing equipment-based taunt gate. Initial before-loop placement broke
+  two synthetic boss-set fixtures; corrected placement passes both controls.
+  Do not claim server-defense/offline-reduction formula parity from this fix.
+- Client RED5failed/4passed4.995s; server RED8trained duration cases plus
+  purchase/definition,1.326s. Strength-controlled RED1.091s also detects skipped
+  caster defense. Final client7suites/206tests PASS12.592s; focused Go race
+  PASS35.151s. Full lint, final changed lint, discovery1test and diff pass.
+  All local sessions closed. Logs `/tmp/eidolon-guardian-roar-mastery-*-20260912.log`;
+  doc `2026-09-12-guardian-roar-mastery.md` records exact evidence/boundaries.
+- Existing native Roar area route preserves all five area/rank/quality casts,
+  adds explicit server duration receipts, normal FTR_09 purchases/copy/point
+  checks, continued buff past old10s deadline, natural expiry and fresh-login
+  High/Low verification. No native run/screenshot acceptance yet. No fake
+  rank/timer writes; readiness only after previous buff expiry. Budget300s
+  includes added natural waits. Full combined regression still required.
+- **611024d4 local full client session14429 TERMINAL SUCCESS**:
+  380suites/5847tests491.097s; original log retained. **CI34677399754 ACTIVE**:
+  client103509604876 SUCCESS380/5847/122.349s; server103509604992 SUCCESS
+  game86.8%/95.022s, race331.964s, backup/restore/bench/build.
+  Browser1/2/3 ACTIVE103510743379/103510743403/103510743406.
+  Logs `/tmp/eidolon-fortress-contract-ci-{client,server}-34677399754.log`.
+  Poll SAME run, retain browser terminal evidence, then integrate candidate
+  and run new combined CI. Root remains ledger-only: NEVER PUSH ROOT.
+- **Production65 CI34675345557/native103506166516 ACTIVE**. Exact checkout
+  1af5951; safe read-only process inspection now identifies2339946 running
+  `tests/e2e/talent-duration-gameplay.spec.js`. This proves progress, not
+  predeploy/deployment/final-live completion. No conflicting local GPU run.
+  Actual four-party dungeon/input and Fortress/Roar native acceptance remain
+  next when production GPU is free. Leave scheduled soak alone. Full roadmap
+  goal remains active; no new live65 claim.
+
+## Previous checkpoint — September 12, 06:11 UTC
 
 Previous goal turn was PROGRESS; the intervening numbering confirmation made
 no implementation change. This continuation is PROGRESS: inspected authoritative
