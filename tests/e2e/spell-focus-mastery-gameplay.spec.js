@@ -159,6 +159,10 @@ test('paid Focus training survives login and amplifies exactly one real spell on
             if (multiplier === 3) {
                 await cast(owner, 'Spell Focus');
                 for (const actor of [owner, peer]) await expect.poll(async () => (await focusState(actor, sourceId)).multiplier).toBe(3);
+                // The server admits another ability after its ordinary 500ms
+                // global cooldown. Wait after the accepted Focus receipt and
+                // acquire the moving target afterward, without resetting it.
+                await owner.waitForTimeout(600);
             }
             let target;
             await expect.poll(async () => {
