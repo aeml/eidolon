@@ -1,5 +1,24 @@
 # Bastion preparation guidance — 1.1.0 candidate
 
+## Component acceptance — September 12, 22:46 UTC
+
+CI34722166310 completed SUCCESS on exact
+c09248c8665191dc2bfa365b6722e73b0090d29b. Client414 suites/6415 tests passed
+80.023s; server game race363.745s and all three browser shards passed.
+Browser3 includes24 layout checks, three entrance checks and two effect checks.
+The actual desktop Enter/Space case and both phone preparation cases pass.
+Inspected the expanded desktop section and portrait/landscape reading-end
+screenshots: readable text, final paragraph clear of the fixed footer, reachable
+entry controls and persistent chat. Archive
+`/tmp/eidolon-dungeon-preparation-final-browser3-rIXbzV`, credential scan0.
+Logs `/tmp/eidolon-dungeon-preparation-final-{client,server}-34722166310.log`
+and `/tmp/eidolon-dungeon-preparation-final-browser3-34722166310.log`.
+
+Accept this component for development integration. Native/deploy/live jobs were
+skipped, not passed. Fresh combined regression is required after merging; this
+does not close physical-phone, first-hour, all-dungeon or full1.1 acceptance.
+The following earlier failures remain diagnostic history, not current results.
+
 ## Latest follow-up — September 12, 22:13 UTC
 
 CI34721303156 on bea88218 passes client414 suites/6413 tests135.645s and server
