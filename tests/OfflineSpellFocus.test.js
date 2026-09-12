@@ -97,7 +97,7 @@ test.each(['locked', 'mana', 'cooldown', 'dead', 'stunned'])('rejected %s focus 
 test.each(['Fireball', 'Dragonfire Lance'])('focus boosts exactly one paid %s projectile', skill => {
     const f = fixture();
     try {
-        const base = skill === 'Fireball' ? 20 + f.wizard.stats.intelligence * 2 : 50 + f.wizard.stats.intelligence * 4;
+        const base = skill === 'Fireball' ? 20 + f.wizard.stats.intelligence * 2 : 100 + f.wizard.stats.intelligence * 5;
         f.cast(); f.cast(skill);
         expect(f.engine.addEntity.mock.calls.at(-1)[0].damage).toBe(base * 2.5);
         expect(f.wizard.spellFocusActive).toBe(false);

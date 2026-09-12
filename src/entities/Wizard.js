@@ -15,12 +15,8 @@ import { applyOfflineTimeWarp, getWizardEffectDuration } from './WizardSupportAb
 import { applyOfflineTeleportWarp, snapshotOfflineTeleportWarp } from '../skills/offlineTeleportWarp.js';
 import { commitOfflineTeleportCharge } from '../skills/offlineTeleportCharges.js';
 import { getSpellFocusCastMultiplier } from '../skills/spellFocusTraining.js';
+import { getWizardAbilityDamageMultiplier, resolveWizardSpellDamage, WIZARD_DAMAGE_SKILLS } from '../skills/wizardAbilityDamage.js';
 
-// Match the server's next-damage-spell contract. Utility casts neither consume
-// nor receive Spell Focus, and failed admission must leave the charge intact.
-const WIZARD_DAMAGE_SKILLS = new Set(['Fireball', 'Flame Whip', 'Flame Tornado',
-    'Meteor Drop', 'Inferno Cataclysm', 'Scorch Beam', 'Arcane Missiles',
-    'Dragonfire Lance', 'Gravity Well', 'Frost Nova']);
 
 export class Wizard extends Actor {
     constructor(id) {
@@ -104,15 +100,16 @@ export class Wizard extends Actor {
         this.lastOfflineTeleportAt = null;
         this.lastOfflineGravityWellAt = null;
 
-        // Apply Spell Focus Multiplier if active
-        let damageMultiplier = 1.0;
+        // Snapshot named training once, then consume at most one Focus charge.
+        let damageMultiplier = getWizardAbilityDamageMultiplier(this, skill);
         if (this.spellFocusActive && this.spellFocusTimer > 0 && WIZARD_DAMAGE_SKILLS.has(skill)) {
-            damageMultiplier = this.spellFocusMultiplier;
+            damageMultiplier *= this.spellFocusMultiplier;
             this.spellFocusActive = false; // Consume it
             this.spellFocusTimer = 0;
             this.spellFocusMultiplier = 1.0;
             gameEngine.floatingTextManager.spawn("FOCUSED!", this.position, '#8800ff');
         }
+        const spellDamage = resolveWizardSpellDamage(this, skill, damageMultiplier);
 
         // --- Pyromancer Branch Skills ---
 
@@ -158,7 +155,7 @@ export class Wizard extends Actor {
                             const angle = forward.angleTo(dir);
                             if (this.flameWhipNovaCascade || angle < angleThreshold) {
                                 // Hit!
-                                const damage = (20 + (this.stats.intelligence * 1.5)) * damageMultiplier;
+                                const damage = spellDamage;
                                 applyOfflineAbilityHit(this, entity, damage, skill, gameEngine.floatingTextManager, '#ff4500');
                                 
                                 // Stun 3s
@@ -191,7 +188,7 @@ export class Wizard extends Actor {
             
             const tornado = new Projectile(null, this, 'FlameTornado', startPos, adjustedTarget);
             // Damage is set in Projectile.js but we can override or apply multiplier
-            tornado.damage *= damageMultiplier;
+            tornado.damage = spellDamage;
             
             gameEngine.addEntity(tornado);
             return;
@@ -239,7 +236,7 @@ export class Wizard extends Actor {
                 spawnMeteorTelegraph(impactPos, radius);
             };
 
-            const baseDamage = (50 + (this.stats.intelligence * 3.0)) * damageMultiplier;
+            const baseDamage = spellDamage;
             if (isClusterMeteor) {
                 const clusterRadius = meteorRadius;
                 const clusterDamage = baseDamage * (2 / 3);
@@ -273,7 +270,7 @@ export class Wizard extends Actor {
             this.cooldowns["Inferno Cataclysm"] = 60.0 * (1 - cdr);
             
             // Massive AOE Zone
-            const damage = (30 + (this.stats.intelligence * 1.0)) * damageMultiplier;
+            const damage = spellDamage;
             const config = {
                 radius: getAbilityAoeRadius('Wizard', 'Inferno Cataclysm', this) || 12,
                 duration: 8.0,
@@ -309,7 +306,7 @@ export class Wizard extends Actor {
             const endpoint = resolveDungeonBeamEndpoint(walkRects, this.position, targetVector, authoredRange);
             const range = Math.hypot(endpoint.x - this.position.x, endpoint.z - this.position.z);
             const width = 1.0;
-            const damage = (25 + (this.stats.intelligence * 2.5)) * damageMultiplier;
+            const damage = spellDamage;
             
             const startPos = this.position.clone();
             startPos.y += 1.5;
@@ -396,7 +393,7 @@ export class Wizard extends Actor {
                     const initialTarget = startPos.clone().add(launchDirection.multiplyScalar(5));
                     
                     const missile = new Projectile(null, this, 'ArcaneMissile', startPos, initialTarget);
-                    missile.damage = (10 + (this.stats.intelligence * 1.0)) * damageMultiplier;
+                    missile.damage = spellDamage;
                     missile.homingTarget = target;
                     missile.homingTurnRate = 8.0; // High turn rate
                     
@@ -442,7 +439,7 @@ export class Wizard extends Actor {
             adjustedTarget.y = startPos.y;
             
             const lance = new Projectile(null, this, 'DragonfireLance', startPos, adjustedTarget);
-            lance.damage = (50 + (this.stats.intelligence * 4.0)) * damageMultiplier;
+            lance.damage = spellDamage;
             
             // Pierce everything
             lance.hitEntities = new Set(); // Reset just in case, though new instance
@@ -488,7 +485,7 @@ export class Wizard extends Actor {
             // the old offline repeated-damage zone. Keep the canonical cast VFX.
             const radius = getAbilityAoeRadius('Wizard', skill, this);
             const rune = this.skillRunes?.[skill];
-            const damage = (20 + this.stats.intelligence) * damageMultiplier * (rune === 'gravitywell_crushing' ? 2 : 1);
+            const damage = spellDamage * (rune === 'gravitywell_crushing' ? 2 : 1);
             const rects = gameEngine.currentInstanceId && gameEngine.currentInstanceType !== 'overworld'
                 ? gameEngine.currentDungeonLayout?.walkRects : null;
             for (const entity of gameEngine.chunkManager.getActiveEntities()) {
@@ -592,7 +589,7 @@ export class Wizard extends Actor {
         }
         
         // Damage Calculation: Base 20 + (Intelligence * 2.0)
-        fireball.damage = (20 + (this.stats.intelligence * 2.0)) * damageMultiplier;
+        fireball.damage = spellDamage;
         
         // Pyromancer Passives (Removed/Replaced)
         // if (this.skillLevels.pyromancer.flameSurge > 0) { ... }

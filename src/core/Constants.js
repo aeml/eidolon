@@ -446,8 +446,8 @@ export const CONSTANTS = {
             );
 
             return entries.slice(0, 40).map((t, i) => ({ id: `WIZ_${String(i + 1).padStart(2, '0')}`, ...t,
-                abilityDamage: i === 14 ? { skill: 'Spell Focus', damage: 0.04 }
-                    : i === 18 ? { skill: 'Teleport', damage: 0.04 } : undefined,
+                abilityDamage: i < 26 && i % 2 === 0 && i !== 20 && i !== 24
+                    ? { skill: skills[Math.floor(i / 2)], damage: 0.04 } : undefined,
                 ...(i === 14 ? { desc: '+4% focused-spell damage per rank (20% max). Snapshotted when Spell Focus is cast.' } : {}),
                 ...(i === 20 ? { desc: '+4% Arcane Shield damage absorption per rank (20% max).' } : {}),
                 ...(i === 24 ? { desc: '+4% Time Warp duration per rank (20% max). Extends the caster and allies; does not increase haste strength.' } : {}),
