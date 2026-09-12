@@ -5,7 +5,45 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 04:33 UTC
+## Current checkpoint — September 12, 04:38 UTC
+
+Previous turn was PROGRESS. This continuation is PROGRESS: preserved accepted
+Teleport coverage for1.1 in an independent worktree while verifying the same
+native party handle remains active. No live process was replaced or interrupted.
+
+- **Four-role native37629 still ACTIVE**, frozen clean8f2c82a4, runIDparty09120431.
+  All four prepared characters formed their party through normal invitations;
+  visible desktop healing-target selection/clear passed. All entered the same
+  Normal level30 Verdant instance, generated seed **-6948543675275706922**,
+  generator2/attempt0/fallbackfalse. This is a new generated run, not an exact
+  replay of the earlier Briar seed. Opening combat is progressing through actual
+  Skeleton kills; no boss, full-clear, final credit or fresh Water proof yet.
+  Log `/tmp/eidolon-four-role-briar-timing-20260912.log`. Poll the same session.
+- Added **ac38aa09** on`work/1-1-teleport-qa-port`in
+  `/tmp/eidolon-1-1-teleport-qa-port-20260912`, based on8f2c82a4. The primary
+  dungeon source is untouched. Ported the exact five native observer/route/spec/
+  unit files from65/66ca3a3d; direct Git diff confirms they are identical.
+  Added owner/peer allowlisting, standalone no-retry route and full timed stage
+  after entrance visibility. Existing command order and recovery/forge suffix
+  remain. Extended executable failure-propagation/timing coverage to that stage.
+- New route/gate tests RED2/2 on unchanged script; corrected integration
+  GREEN9suites/90tests8.98s, changed-file lint, shell syntax and whitespace PASS.
+  Logs `/tmp/eidolon-1-1-teleport-qa-port-{red,green,lint}-20260912.log`;
+  doc`2026-09-12-teleport-qa-forward-port.md`. Focused tests ran low priority in
+  the separate worktree; no second native or full client/server run was launched.
+  This closes a coverage regression, not a fresh native1.1 acceptance claim.
+- Commitac38aa09 is clean/local/unmerged: integrate only after37629 terminates
+  so its recorded source identity remains true. Candidate65 remains clean66ca3a3d
+  on its verified nonproduction remote branch; public master stays64/6d5e82cb.
+  Do not start production/native65 over the party run. Scheduled soak34670421761
+  remains active with no new soak or schedule changes.
+- Required next: preserve/inspect terminal party evidence and resolve concrete
+  input/gameplay findings; publish65 through its normal production gates when
+  native hardware is free. Continue full1.1 earned progression, dungeon/party,
+  first-hour, balancing and reconnect acceptance, then every1.2–1.10 milestone.
+  No ordinary66 release. Root master is ledger-only: NEVER PUSH.
+
+## Previous checkpoint — September 12, 04:33 UTC
 
 This continuation is PROGRESS: all scoped65 native training routes now pass,
 their accepted artifacts are preserved, the candidate acceptance is committed
