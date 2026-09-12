@@ -5,7 +5,46 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 05:50 UTC
+## Current checkpoint — September 12, 05:58 UTC
+
+Previous goal turn was VERIFIED WAIT. This continuation is PROGRESS: corrected
+28 misleading generic-talent descriptions against unchanged server definitions,
+added a shared regression contract and retained more completed browser evidence.
+No new native run, canceled soak, skipped gate or full-roadmap completion claim.
+
+- **befd528421eb8164770f63b1734359b609499a35**, clean separate branch
+  `work/1-1-generic-talent-copy` at
+  `/tmp/eidolon-1-1-generic-talent-copy-20260912`, based on5f501f5e (therefore
+  also contains the pending Fortress native route). Primary/rehearsal remain
+  frozen6e752e8f while34676048154 finishes. No copy release or ordinary66.
+- Eight Fighter/eight Rogue/five Wizard/seven Cleric descriptions advertised
+  incorrect benefits or percentages. Examples: Quickhands speed, Frontliner
+  maximum health, Catlike Reflexes cooldown reduction, flat primary stats and
+  defense rather than percentage defenses. Corrected copy only; names/IDs,
+  max ranks, point costs, effect metadata and server runtime unchanged.
+  PctDamage is explicitly described as the Damage stat, not every spell.
+- Shared28-row `testdata/generic_talent_copy.json` is checked against exact
+  existing server TalentBonus structs, class counts, unique IDs and rank caps,
+  plus the client descriptions. Server contract PASS0.008s while client
+  RED28failed0.887s; after edits focused5suites/76tests PASS1.618s, Go race
+  PASS1.050s, changed lint/diff PASS. Logs
+  `/tmp/eidolon-generic-talent-copy-{server-contract,server-race,client-red,client-green,lint}-20260912.log`.
+  Doc`2026-09-12-generic-talent-description-contract.md`. Description agreement
+  is not proof of every consumer; other utility Masteries/offline generic stat
+  parity/full160 usability and native acceptance remain open.
+- **34676048154 ACTIVE**, now only browser1 **103507049715 ACTIVE**. Browser3
+  103507049706 SUCCESS26, browser2 103507049725 SUCCESS50; logs
+  `/tmp/eidolon-integrated-1-1-fortress-browser{2,3}-34676048154.log`.
+  Already-passed client377/5811 and server race remain valid exact6e evidence.
+- **Production65 34675345557 /103506166516 ACTIVE** in full-character gameplay,
+  after gallery and Well Rested rendering/GPU lifecycle successes. No deployment
+  or final live claim yet. Poll SAME runs; don't infer stopped from observation.
+- Next retain6e terminal result and then integratebefd5284, run combined hosted
+  regression and actual Fortress native/four-role dungeon tests when production
+  GPU gates are free. Earned progression/first-hour/balance/reconnect and all
+  remaining1.2–1.10 content stay required. No local process remains; NEVER PUSH ROOT.
+
+## Previous checkpoint — September 12, 05:50 UTC
 
 Previous turn was PROGRESS. This continuation is a VERIFIED WAIT on the same
 two live CI runs, with additional completed server/browser evidence retained.
