@@ -68,6 +68,7 @@ export class AbilityController {
         if (skillName === 'Scorch Beam') return getAbilityRange(player, skillName, CONSTANTS.ABILITY_CONFIG.Wizard.skills[skillName].range);
         if (skillName === 'Arcane Missiles') return getAbilityRange(player, skillName, CONSTANTS.ABILITY_CONFIG.Wizard.skills[skillName].range);
         if (skillName === 'Weak Point Mark') return getAbilityRange(player, skillName, CONSTANTS.ABILITY_CONFIG.Rogue.skills[skillName].range);
+        if (skillName === 'Unbreakable Grip') return getAbilityRange(player, skillName, CONSTANTS.ABILITY_CONFIG.Fighter.skills[skillName].range);
         const className = player && player.constructor ? player.constructor.name : '';
         const classAbilityConfig = CONSTANTS.ABILITY_CONFIG ? CONSTANTS.ABILITY_CONFIG[className] : null;
         const defaultRange = classAbilityConfig && classAbilityConfig.default ? classAbilityConfig.default.range : null;
@@ -91,8 +92,8 @@ export class AbilityController {
 
     getAbilityTargetDistance(target, skillName) {
         const origin = this.engine.player.position;
-        if (skillName === 'Radiant Strike') {
-            // The server's cone uses ground-plane distance plus the replicated
+        if (skillName === 'Radiant Strike' || skillName === 'Unbreakable Grip') {
+            // These server hit checks use ground-plane distance plus the replicated
             // target body radius. Render elevation must not force extra chasing.
             const radius = Number.isFinite(target.radius) ? Math.max(0, target.radius) : 0;
             return Math.max(0, Math.hypot(target.position.x - origin.x, target.position.z - origin.z) - radius);

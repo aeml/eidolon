@@ -349,6 +349,7 @@ export const CONSTANTS = {
                 ...(i === 6 ? { desc: '+4% Iron Fortress duration per rank (20% max). Does not increase protection or reflection strength.' } : {}),
                 ...(i === 8 ? { desc: '+4% Guardian Roar buff duration per rank (20% max). Nearby allies inherit your duration; protection strength and taunt threat are unchanged.' } : {}),
                 ...(i === 14 ? { desc: '+4% Unbreakable Grip root duration per rank (20% max). Pull distance is unchanged; immune targets still resist control.' } : {}),
+                ...(i === 15 ? { desc: '+3% Unbreakable Grip cooldown reduction and +2% targeting range per rank. Does not enlarge the cursor selection tolerance.' } : {}),
                 ...(i === 18 ? { desc: '+4% Berserker Edge damage multiplier per rank (20% max): 1.5× to 1.8× Damage stat. Nearby party members inherit your strength; defense cost stays 20%.' } : {}),
                 ...(i === 24 ? { desc: '+4% Last Stand Rampage damage multiplier per rank (20% max): 3× to 3.6× Damage stat. The below-30%-health activation requirement is unchanged.' } : {}),
                 abilityDuration: i === 6 ? { skill: 'Iron Fortress', duration: 0.04 }
@@ -356,6 +357,7 @@ export const CONSTANTS = {
                     : i === 14 ? { skill: 'Unbreakable Grip', duration: 0.04 } : undefined,
                 abilityDamage: i < 26 && i % 2 === 0 && i !== 6 && i !== 8 && i !== 14 ? { skill: skills[Math.floor(i / 2)], damage: 0.04 }
                     : i === 37 ? { damage: 0.02 } : undefined,
+                abilityRange: i === 15 ? { skill: 'Unbreakable Grip', range: 0.02 } : undefined,
                 criticalChance: i === 38 ? { chance: 0.02 } : undefined,
                 abilityArea: i === 3 ? { skill: 'Whirlwind', radius: 0.02 }
                     : i === 13 ? { skill: 'Earthshaker', radius: 0.02 }

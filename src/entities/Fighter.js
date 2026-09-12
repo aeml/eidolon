@@ -13,6 +13,7 @@ import { applyOfflineFighterDamageBuff, clearOfflineFighterDamageBuffs } from '.
 import { beginOfflineWhirlwind, advanceOfflineWhirlwind, cancelOfflineWhirlwind } from '../skills/offlineWhirlwind.js';
 import { applyOfflineEarthshaker } from '../skills/offlineEarthshaker.js';
 import { applyOfflineJuggernaut } from '../skills/offlineJuggernaut.js';
+import { findOfflineGripTarget, applyOfflineGrip } from '../skills/offlineGrip.js';
 import { applyOfflineSweepingStrike } from '../skills/offlineFighterCone.js';
 import { beginOfflineShatteringCharge, advanceOfflineShatteringCharge } from '../skills/offlineShatteringCharge.js';
 import { beginOfflineCharge, advanceOfflineCharge, cancelOfflineCharge } from '../skills/offlineCharge.js';
@@ -62,6 +63,15 @@ export class Fighter extends Actor {
             this.shatteringInstanceId = null;
         }
         const requestedSkill = skillNameOverride || this.abilityName;
+        let gripTarget = null;
+        if (requestedSkill === 'Unbreakable Grip') {
+            if (this.isRemote || !this.unlockedSkills.includes(requestedSkill)) return false;
+            if (!this.isMultiplayer && !gameEngine?.isMultiplayer) {
+                gripTarget = findOfflineGripTarget(this, targetVector, gameEngine, isGuardianRoarFriendlyActor);
+                if (!gripTarget) return false;
+                targetVector = gripTarget.position.clone();
+            }
+        }
         if (requestedSkill === 'Whirlwind' && (this.isRemote || !this.unlockedSkills.includes(requestedSkill))) return false;
         if (['Charge', 'Shattering Charge'].includes(requestedSkill) && (this.isRemote || !this.unlockedSkills.includes(requestedSkill) ||
             ![targetVector?.x, targetVector?.z].every(Number.isFinite))) return false;
@@ -182,51 +192,7 @@ export class Fighter extends Actor {
         }
 
         if (skill === "Unbreakable Grip") {
-            console.log("Fighter used Unbreakable Grip!");
-
-
-            // Single Target Pull
-            // Use targetVector to find closest enemy near cursor
-            let target = null;
-            let minDst = 1000;
-            const entities = gameEngine.chunkManager.getActiveEntities();
-
-            // Find closest to cursor
-            entities.forEach(entity => {
-                if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
-                    const d = entity.position.distanceTo(targetVector);
-                    if (d < 3.0) { // Cursor tolerance
-                        if (d < minDst) {
-                            minDst = d;
-                            target = entity;
-                        }
-                    }
-                }
-            });
-
-            if (target) {
-                // An immune target can still be selected, but neither pulled
-                // nor rooted. Never push a target already within two units away.
-                if (!target.ccImmune && !target.ironFortressImmovable) {
-                    const offset = new THREE.Vector3().subVectors(target.position, this.position);
-                    offset.y = 0;
-                    const distance = offset.length();
-                    if (distance > 2) {
-                        offset.multiplyScalar(2 / distance);
-                        target.position.x = this.position.x + offset.x;
-                        target.position.z = this.position.z + offset.z;
-                    }
-                    gameEngine.floatingTextManager.spawn("Pulled!", target.position, '#ffffff');
-                    this.spawnVisualEffect(gameEngine, target.position, 0xffffff, "impact");
-                }
-
-                // Grip roots movement; it does not silence attacks like a stun.
-                if (target.rootTimer !== undefined && !target.ccImmune) {
-                    target.rootTimer = getFighterEffectDuration(this, 1, skill);
-                }
-            } else {
-                console.log("No target for Grip");
-            }
+            applyOfflineGrip(this, gripTarget, gameEngine);
             return;
         }
 

@@ -310,6 +310,9 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 			if player.Mana >= cost {
 				player.Mana -= cost
 				target.Mu.Lock()
+				// Publish the selected enemy's original location, not an imprecise
+				// nearby cursor point or its already-pulled landing position.
+				targetX, targetZ = target.X, target.Z
 				dx := target.X - player.X
 				dz := target.Z - player.Z
 				dist := math.Sqrt(dx*dx + dz*dz)
@@ -562,7 +565,9 @@ func (w *World) damageEarthshakerArea(player *Entity, originX, originZ, facingX,
 }
 
 func (w *World) findFighterGripTarget(player *Entity, targetX, targetZ float64, targetID string) *Entity {
-	maxRange := 10.0
+	training := &Entity{SubType: player.SubType, TalentRanks: player.TalentRanks}
+	training.NormalizeTalentRanks()
+	maxRange := effectiveAbilityRange(training, "Unbreakable Grip", 10)
 	walkRects := w.dungeonWalkRectsSnapshot(player.InstanceID)
 	valid := func(target *Entity) bool {
 		if target == nil {
@@ -582,7 +587,7 @@ func (w *World) findFighterGripTarget(player *Entity, targetX, targetZ float64, 
 		return w.Entities[targetID]
 	}
 	var best *Entity
-	bestDistance := 3.0
+	bestDistance := math.Inf(1)
 	for _, target := range w.Grid.Nearby(targetX, targetZ, 3.0+maxAbilityTargetVisualRadius, player.InstanceID) {
 		if !valid(target) {
 			continue
@@ -590,7 +595,7 @@ func (w *World) findFighterGripTarget(player *Entity, targetX, targetZ float64, 
 		target.Mu.RLock()
 		distance := math.Hypot(target.X-targetX, target.Z-targetZ)
 		target.Mu.RUnlock()
-		if distance < bestDistance+entityVisualRadius(target) {
+		if distance < 3+entityVisualRadius(target) && distance < bestDistance {
 			bestDistance = distance
 			best = target
 		}
