@@ -54,8 +54,14 @@ movement thresholds or release version changes.
 
 Four suites/55 tests pass1.467s, including the old truncation reproduction and
 all72 directions at min/default/max zoom on1280x720 and1920x1080. Changed lint
-and whitespace checks pass. Corrected native forced-direction acceptance and
-full production CI/live identity checks remain required before publication.
+and whitespace checks pass. Corrected native71511 at967015d9 passes20.7s test,
+22.9s total, including the forced150-degree physical input and the entire normal
+movement route. Raw input639/360 is0.0416666666666938 units away; zero accepted
+moves, zero travel and unchanged Idle animation. Native renderer remains
+RADV RENOIR, sustained/outside simulation budgets pass, scan0. Archive
+`/tmp/eidolon-release65-movement-pixel-accepted-xsCn4d`; all temporary services
+removed and18185/18186/41875 independently free. Full production CI/live identity
+checks remain required before a live release claim.
 
 Logs `/tmp/eidolon-release65-movement-{diagnostics-focused-final,ray-gameplay,ray-base-gameplay,pixel-gameplay,pixel-focused}-20260912.log`.
 Read-only temporary report reader `/tmp/eidolon-read-movement-report-20260912.cjs`
