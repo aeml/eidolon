@@ -67,3 +67,22 @@ Archive `/tmp/eidolon-party-arrival-failure-PYFrok`; original
 owned services/ports clear. No complete dungeon, final quest credit or Water
 handoff acceptance. The shared seeded level30/common-gear/5-rank fixture is not
 earned first-hour evidence (normal level30 budget is6talent points).
+
+## Tank resource priority correction — not yet native verified
+
+Source inspection after57909 confirms that the contact rotation skipped an
+unaffordable40mana Fortress and spent every newly accumulated25mana on Slam.
+Even when Fortress was ready, it could never reach its cost. The party-only
+hotbar policy now retains the resolved Fortress cost before any lower-priority
+cast, including while Fortress is cooling down. Optional Whirlwind also reserves
+the next Slam. Fortress itself can spend its protected budget. Unequipped skills
+create no reservation; resolved reductions apply; normal solo policy is unchanged.
+Basic attacks, gap-closing inputs, all actual game resources, enemies and dungeon
+survival/credit gates remain unchanged. This is improved playtest resource use,
+not a runtime balance adjustment or proof of a sustainable complete dungeon.
+
+New priority regressions RED5failed/28passed before the change. Final focused
+results are in `/tmp/eidolon-party-fortress-reserve-final-20260912.log`; full lint
+and diff pass. The old Whirlwind affordability test now requires its actual
+combined Fortress+Slam budget; separate unequipped-Fortress coverage retains the
+old Slam-only threshold. Corrected native party replay is still required.

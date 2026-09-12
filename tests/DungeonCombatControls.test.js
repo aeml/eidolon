@@ -39,6 +39,28 @@ test('earned melee controls honor resolved talent/equipment costs', () => {
 const primary = { ability: 'Charge', cooldown: 0, dead: false, distance: 10, attackRange: 4, castRange: 18 };
 const partyTank = { ...fighter, hotbar: ['Whirlwind', 'Shield Slam', 'Iron Fortress'],
     cooldowns: { 'Iron Fortress': 30 } };
+test.each([25, 39, 40, 64])('party tank preserves the next Fortress instead of starving it with Slam: %s', mana => {
+    expect(selectFighterDungeonSkill({ ...partyTank, mana }, true, { partyTank: true })).toBeNull();
+});
+test('the protected Fortress budget remains spendable on the defense itself', () => {
+    expect(selectFighterDungeonSkill({ ...partyTank, mana: 40, cooldowns: {} }, true, { partyTank: true }))
+        .toEqual({ skill: 'Iron Fortress', key: '3' });
+    expect(selectFighterDungeonSkill({ ...partyTank, mana: 65 }, true, { partyTank: true }))
+        .toEqual({ skill: 'Shield Slam', key: '2' });
+});
+test('Fortress reservation uses resolved costs, and does not affect the solo rotation', () => {
+    const state = { ...partyTank, mana: 51, skillCosts: { 'Iron Fortress': 32, 'Shield Slam': 20, Whirlwind: 24 } };
+    expect(selectFighterDungeonSkill(state, true, { partyTank: true })).toBeNull();
+    expect(selectFighterDungeonSkill({ ...state, mana: 52 }, true, { partyTank: true }))
+        .toEqual({ skill: 'Shield Slam', key: '2' });
+    expect(selectFighterDungeonSkill(state, true)).toEqual({ skill: 'Whirlwind', key: '1' });
+});
+test('a later unlocked Roar cannot consume the Fortress reserve either', () => {
+    expect(selectFighterDungeonSkill({ ...fighter, mana: 40, cooldowns: { 'Iron Fortress': 30 } },
+        true, { partyTank: true })).toBeNull();
+    expect(selectFighterDungeonSkill({ ...fighter, mana: 75, cooldowns: { 'Iron Fortress': 30 } },
+        true, { partyTank: true })).toEqual({ skill: 'Guardian Roar', key: '4' });
+});
 test('party tank chooses Shield Slam threat before optional Whirlwind damage', () => {
     expect(selectFighterDungeonSkill(partyTank, true, { partyTank: true }))
         .toEqual({ skill: 'Shield Slam', key: '2' });
@@ -47,13 +69,13 @@ test.each([30, 54])('party tank saves the next Slam instead of spending its last
     expect(selectFighterDungeonSkill({ ...partyTank, mana,
         cooldowns: { ...partyTank.cooldowns, 'Shield Slam': 2 } }, true, { partyTank: true })).toBeNull();
 });
-test('optional tank damage remains available when the next equipped Slam is affordable', () => {
-    expect(selectFighterDungeonSkill({ ...partyTank, mana: 55,
+test('optional tank damage remains available when the next equipped Slam and Fortress are affordable', () => {
+    expect(selectFighterDungeonSkill({ ...partyTank, mana: 95,
         cooldowns: { ...partyTank.cooldowns, 'Shield Slam': 2 } }, true, { partyTank: true }))
         .toEqual({ skill: 'Whirlwind', key: '1' });
 });
 test('tank mana reserve uses actual reduced costs and does not invent an unequipped skill', () => {
-    const state = { ...partyTank, mana: 44, skillCosts: { 'Shield Slam': 20, Whirlwind: 24 },
+    const state = { ...partyTank, hotbar: ['Whirlwind', 'Shield Slam'], mana: 44, skillCosts: { 'Shield Slam': 20, Whirlwind: 24 },
         cooldowns: { ...partyTank.cooldowns, 'Shield Slam': 2 } };
     expect(selectFighterDungeonSkill(state, true, { partyTank: true })).toEqual({ skill: 'Whirlwind', key: '1' });
     expect(selectFighterDungeonSkill({ ...state, mana: 43 }, true, { partyTank: true })).toBeNull();

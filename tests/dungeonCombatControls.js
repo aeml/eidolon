@@ -13,10 +13,16 @@ export function selectFighterDungeonSkill(state, defensiveBuild = false, { party
         const index = (state.hotbar || []).indexOf(skill);
         if (index < 0 || (state.cooldowns?.[skill] || 0) > 0 ||
             state.mana < cost(skill, baseCost)) continue;
-        // The tank must be able to use its next threat-building Slam. Ordinary
-        // basic attacks continue while pooling mana; no resources are granted.
-        if (partyTank && skill === 'Whirlwind' && state.hotbar.includes('Shield Slam') &&
-            state.mana < cost(skill, baseCost) + cost('Shield Slam', 25)) continue;
+        // Protect the next defensive cast even while it is cooling down. If
+        // every newly pooled25mana buys a Slam, the40mana Fortress can never
+        // become affordable. Basic attacks continue while saving this budget.
+        let reserve = 0;
+        if (partyTank && skill !== 'Iron Fortress' && state.hotbar.includes('Iron Fortress')) {
+            reserve += cost('Iron Fortress', 40);
+        }
+        // Optional Whirlwind also leaves enough for the next threat Slam.
+        if (partyTank && skill === 'Whirlwind' && state.hotbar.includes('Shield Slam')) reserve += cost('Shield Slam', 25);
+        if (state.mana < cost(skill, baseCost) + reserve) continue;
         return { skill, key: String(index + 1) };
     }
     return null;
