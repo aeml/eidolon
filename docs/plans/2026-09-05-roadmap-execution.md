@@ -5,7 +5,57 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 09:26 UTC
+## Current checkpoint — September 12, 09:35 UTC
+
+Previous goal turn PROGRESS; this continuation PROGRESS. Authored and tested the
+real-phone Earthshaker purchase/geometry gate while production retained the GPU;
+revalidated runtime CI and live identity. Full 1.1.0–1.10.0 objective remains
+active. Native discovery is not execution, and prepared-town checks do not
+replace dungeon damage, remote-party combat or earned progression acceptance.
+
+- New `/tmp/eidolon-1-1-earthshaker-native-20260912`, branch
+  `work/1-1-earthshaker-native`, clean **8e6189a6b1dcaca28a75be06c87b0d24b1192158**,
+  parente39599d9. NOT pushed/integrated; native UNEXECUTED. Separate allowlisted
+  Fighter `earthshaker-area` route, retries0, full timing includes it once after
+  retained Whirlwind and before retained phone coverage. When combining the
+  independently authored Whirlwind-area gate, preserve BOTH stage enrollments.
+- Only level100 is prepared. Ten real hotbar casts and normal phone purchases
+  cover FTR_14 rank0/1/5, FTR_33/FTR_38 five each, fifteen one-point costs/max
+  disabled, circle progression6..8.1, High/Low Fissure, Aftershock, Seismic,
+  fresh-document saved login and portrait/landscape. Normal mana recovery and
+  cooldowns; no rank/effect/ability injection or cooldown resets. Native hit,
+  enemy-body/wall admission and remote-player rendering remain separate gates.
+- Browser observer forwards each production handler once, retains raw missing/
+  rejected receipts, reads actual boundary world matrices (circle radius and
+  line length/half-width/heading), attached acknowledged frames and expiry;
+  delayed phase/original origin checked. Timeout paths attach raw observations.
+  Unit tests contradict metadata with the real mesh to reject a tautological
+  radius check. Reinstall resets observations, never nests wrappers; throws
+  propagate and prediction is never marked accepted by the observer.
+- Six observer tests pass; initial missing enrollment RED2fail/6pass3.133s.
+  Final5suites**74PASS6.949s**, full lint, shell syntax and whitespace pass.
+  Browser assets prepared in this worktree via prepare:client. Playwright
+  `--list --retries=0` discovers1test, NOT execution. All sessions6988/6651/
+  96910 terminal. Logs `/tmp/eidolon-earthshaker-native-{red,focused,lint,prepare,list}-20260912.log`.
+  Doc `docs/plans/2026-09-12-earthshaker-native-purchase-gate.md` records exact
+  prepared scope and pending hardware/artifact/native/dungeon/live evidence.
+- Runtime **CI34685697297 ACTIVE** ate39599d9. Client389suites6158tests98.636s
+  already accepted. Server103532192159 now SUCCESS:86.8%/96.151s, full
+  race332.926s plus backup/restore/bench/build. API log
+  `/tmp/eidolon-earthshaker-area-ci-server-34685697297.log`. Hosted browsers
+  103533328834/103533328866/103533328872 ACTIVE. Runtime not integrated yet;
+  primary/integrated remain accepted59afd794. Native-only authoring does not
+  alter the runtime candidate undergoing hosted regression.
+- Production **CI34683452640 ACTIVE**, native103528155488 full-character
+  gameplay, confirmed09:35. Single GPU reserved; no local native launched.
+  Independent public09:35 frontend/backend both **Alpha1.0.64/6d5e82cb**,
+  healthok/dbready. No65 live claim. Four-role dungeon attempt remains next
+  native priority after production workflow releases GPU; pending Whirlwind,
+  Fighter real-party, Fortress, Guardian Roar and Earthshaker gates remain open.
+  Entire earned progression/talent/dungeon/raid/later milestone scope unchanged.
+  Soak untouched. No active local test process; root ledger NOT pushed.
+
+## Historical checkpoint — September 12, 09:26 UTC
 
 Previous goal turn PROGRESS; this continuation PROGRESS. Implemented the full
 Earthshaker area/event/visual correction, reproduced actual failed casts,
