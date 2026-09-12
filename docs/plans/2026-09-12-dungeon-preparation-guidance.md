@@ -34,6 +34,24 @@ passes; logs `/tmp/eidolon-dungeon-summary-input-{green,lint}-20260912.log`.
 Initial CI34720519281 remains in progress on e903cffc and cannot validate this
 subsequent keyboard correction. Do not call its result final candidate acceptance.
 
+The initial hosted browser3 job103626484469 has now failed exactly the desktop
+Enter case on both attempts: the paragraph remains hidden. Its other23 layout
+cases pass. This corroborates the keyboard reproduction rather than exposing a
+different runtime defect. Log
+`/tmp/eidolon-dungeon-preparation-browser3-34720519281.log`; downloaded artifact
+`/tmp/eidolon-dungeon-preparation-browser3-SyR0VR`, credential scan0. Desktop
+failure and both phone preparation screenshots inspected.
+
+The landscape capture also exposed an acceptance-fixture gap: touch emulation
+alone retains Chromium's desktop user agent, so a wide viewport did not receive
+the production phone boot class. The fixture now explicitly adds mobile-mode
+when testing a phone, like the existing phone-adventure fixture. New checks
+require at least16px body text and show that the final paragraph line can scroll
+clear of the header/footer, with an additional whole-frame reading-end capture.
+This is layout/scroll-position coverage, not physical-device gesture acceptance.
+These later fixture changes still require hosted browser execution; neither the
+old landscape capture nor pending CI34720930285 on66888d3a validates them.
+
 ## Draft 1.1.0 patch note
 
 - Added optional first-dungeon preparation tips covering party roles,

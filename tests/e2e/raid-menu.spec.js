@@ -8,6 +8,9 @@ async function setupMenu(page, isMobile = false) {
         const { UIManager } = await import('/src/ui/UIManager.js');
         const { InputManager } = await import('/src/core/InputManager.js');
         document.getElementById('start-screen').style.display = 'none';
+        // Touch emulation alone does not change Chromium's desktop user agent.
+        // Match the real phone boot class even in a wide landscape viewport.
+        if (isMobile) document.body.classList.add('mobile-mode');
         const ui = new UIManager(isMobile);
         const input = new InputManager({}, {});
         // Reproduce the live multiplayer binding; Enter on buttons must not
@@ -56,8 +59,27 @@ for (const [width, height, isMobile] of [[1280, 720, false], [390, 844, true], [
                 'Wisdom for Clerics', 'Uncommon/Rare', 'Lanternhold']) {
                 await expect(preparation).toContainText(text);
             }
+            if (isMobile) {
+                await expect(page.locator('body')).toHaveClass(/mobile-mode/);
+                expect(await preparation.locator('p').evaluate(element => parseFloat(getComputedStyle(element).fontSize))).toBeGreaterThanOrEqual(16);
+            }
             expect(await page.locator('#dungeon-menu').evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
             await preparation.screenshot({ path: testInfo.outputPath('bastion-preparation.png') });
+            if (isMobile) {
+                // A short landscape reading area may need scrolling. Verify
+                // the final line can clear both the header and fixed footer.
+                expect(await preparation.locator('p').evaluate(element => {
+                    element.scrollIntoView({ block: 'end', behavior: 'instant' });
+                    const text = element.firstChild;
+                    const range = document.createRange();
+                    range.setStart(text, text.length - 'Dungeon Guide.'.length);
+                    range.setEnd(text, text.length);
+                    const line = range.getBoundingClientRect();
+                    const viewport = element.closest('.adventure-scroll').getBoundingClientRect();
+                    return line.top >= viewport.top && line.bottom <= viewport.bottom;
+                })).toBe(true);
+                await page.screenshot({ path: testInfo.outputPath('bastion-preparation-reading-end.png') });
+            }
             const enter = page.locator('#btn-enter-dungeon');
             await enter.scrollIntoViewIfNeeded();
             await expect(enter).toBeInViewport();
