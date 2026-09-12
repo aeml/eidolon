@@ -43,8 +43,8 @@ func TestRogueDamageContractReachesActualPaidCasts(t *testing.T) {
 	if err := json.Unmarshal(data, &profiles); err != nil {
 		t.Fatal(err)
 	}
-	if len(profiles) != 6 {
-		t.Fatal("expected six direct-damage Rogue Masteries")
+	if len(profiles) != 7 {
+		t.Fatal("expected seven direct-damage Rogue Masteries, including Tripwire")
 	}
 	for _, profile := range profiles {
 		for _, rank := range []int{0, 1, 5} {

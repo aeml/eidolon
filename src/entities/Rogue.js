@@ -8,7 +8,7 @@ import { applyOfflineAbilityHit } from '../core/AbilityCritical.js';
 import { spawnEffectSceneFallback } from './EffectSceneFallback.js';
 import { getAbilityRange, getRogueMovementCastRange, getAbilityAreaRadius } from '../core/AbilityRange.js';
 import { findOfflineAbilityTarget } from '../skills/offlineAbilityTargeting.js';
-import { resolveDungeonMovementEndpoint } from '../skills/dungeonEffectGeometry.js';
+import { resolveDungeonMovementEndpoint, clipDungeonEffectSegment } from '../skills/dungeonEffectGeometry.js';
 import { applyOfflineStatus } from '../core/OfflineDamageOverTime.js';
 import { getOfflineEffectiveArmor } from '../core/OfflineArmor.js';
 import { getRogueEffectDuration } from '../skills/rogueEffectDuration.js';
@@ -86,11 +86,22 @@ export class Rogue extends Actor {
                 let triggered = false;
                 
                 for (const entity of activeEntities) {
-                    if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
-                        if (entity.position.distanceTo(trap.position) < trap.radius) {
+                    if (trap.elapsed >= 60 || this.isMultiplayer || this.isRemote || this.gameEngine?.isMultiplayer || gameEngine?.isMultiplayer) break;
+                    if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor &&
+                        entity.stats?.hp > 0 && !entity.isRemote && !entity.isMultiplayer && !entity.gameEngine?.isMultiplayer) {
+                        const hostile = typeof gameEngine?.isHostileActorTarget === 'function' ? gameEngine.isHostileActorTarget(entity)
+                            : !entity.isInvulnerable && !['Wizard', 'Cleric', 'Fighter', 'Rogue', 'AvengingSeraph'].includes(entity.constructor.name);
+                        if (!hostile || (entity.instanceId || '') !== (trap.instanceId || '')) continue;
+                        const rects = gameEngine?.currentInstanceId && gameEngine.currentInstanceType !== 'overworld'
+                            ? gameEngine.currentDungeonLayout?.walkRects : null;
+                        if (clipDungeonEffectSegment(rects, trap.position, entity.position).blocked) continue;
+                        if (Math.hypot(entity.position.x - trap.position.x, entity.position.z - trap.position.z) < trap.radius + .5) {
                             // Trigger!
-                            entity.rootTimer = getRogueEffectDuration(this, 3);
-                            if (floatingTextManager) floatingTextManager.spawn("ROOTED!", entity.position, '#ffff00');
+                            applyOfflineAbilityHit(this, entity, trap.damage, 'Tripwire');
+                            if (!entity.ccImmune && entity.state !== 'DEAD') {
+                                entity.rootTimer = getRogueEffectDuration(this, 3);
+                                if (floatingTextManager) floatingTextManager.spawn("ROOTED!", entity.position, '#ffff00');
+                            }
                             
                             // Visual Effect (Need scene)
                             const trapScene = trap.mesh?.parent || gameEngine?.effectScene || gameEngine?.scene || this.mesh?.parent || null;
@@ -109,7 +120,7 @@ export class Rogue extends Actor {
                     }
                 }
 
-                if (triggered) {
+                if (triggered || trap.elapsed >= 60) {
                     releaseProceduralProjectileVisual(trap.mesh);
                     this.traps.splice(i, 1);
                 }
@@ -378,6 +389,8 @@ export class Rogue extends Actor {
 
             this.traps.push({
                 position: trapPos,
+                instanceId: this.instanceId || gameEngine.currentInstanceId || '',
+                damage: resolveRogueAbilityDamage(this, skill),
                 radius: PROCEDURAL_PROJECTILE_VISUAL_DEFINITIONS.Tripwire.gameplayRadius,
                 mesh,
                 elapsed: 0

@@ -5,7 +5,7 @@ import { CONSTANTS } from '../core/Constants.js';
 export const ROGUE_DAMAGE_PROFILES = Object.freeze(Object.fromEntries([
     ['Piercing Throw', 15, 1.5, 0], ['Backstab', 0, 0, 1.5],
     ['Death Spiral', 0, 0, 2], ['Fan of Knives', 10, 1, 0],
-    ['Blade Storm', 10, 1, 0], ['Phantom Volley', 25, 2, 0]
+    ['Blade Storm', 10, 1, 0], ['Phantom Volley', 25, 2, 0], ['Tripwire', 20, 1, 0]
 ].map(([skill, base, dexterity, weapon]) => [skill, Object.freeze({ base, dexterity, weapon })])));
 
 export function getRogueAbilityDamageMultiplier(source, skill) {

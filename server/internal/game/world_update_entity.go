@@ -107,7 +107,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		projectileBounded := e.ProjectileTravelLimit > 0
 		e.Mu.RUnlock()
 		var flightWalkRects []DungeonWalkRect
-		if projectileBounded {
+		if projectileBounded || projectileSubType == "Tripwire" {
 			flightWalkRects = w.dungeonWalkRectsSnapshot(projectileInstanceID)
 		}
 		owner := w.GetEntity(projectileOwnerID)
@@ -480,6 +480,13 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				}
 				dx, dz = oldX+t*vx-target.X, oldZ+t*vz-target.Z
 				_, _, blocked := firstDungeonWalkRectWallHit(flightWalkRects, oldX, oldZ, target.X, target.Z)
+				if blocked {
+					target.Mu.RUnlock()
+					continue
+				}
+			}
+			if subType == "Tripwire" {
+				_, _, blocked := firstDungeonWalkRectWallHit(flightWalkRects, projX, projZ, target.X, target.Z)
 				if blocked {
 					target.Mu.RUnlock()
 					continue

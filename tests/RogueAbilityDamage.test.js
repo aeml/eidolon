@@ -6,7 +6,7 @@ const contract = JSON.parse(readFileSync('server/internal/game/testdata/rogue_da
 const source = (talentRanks = {}, other = {}) => ({ meshType: 'Rogue', talentRanks,
     stats: { damage: 101, dexterity: 11 }, ...other });
 
-test('all six damaging Masteries match the authoritative contract and preserved IDs', () => {
+test('all damaging Masteries match the authoritative contract and preserved IDs', () => {
     expect(Object.keys(ROGUE_DAMAGE_PROFILES)).toEqual(contract.map(p => p.skill));
     for (const { skill, id, base, dexterity, weapon } of contract) {
         expect(ROGUE_DAMAGE_PROFILES[skill]).toEqual({ base, dexterity, weapon });
@@ -32,7 +32,7 @@ test('legacy aliases are clamped, not doubled or changed in saved ranks', () => 
 
 test('unrelated Masteries, wounds, utility skills and other classes do not get this bonus', () => {
     expect(getRogueAbilityDamageMultiplier(source({ ROG_03: 5, ROG_13: 5 }), 'Piercing Throw')).toBe(1);
-    for (const skill of ['Poison Coating', 'Serrated Edges', 'Shadow Lunge', 'Tripwire', 'Smoke Bomb', 'unknown']) {
+    for (const skill of ['Poison Coating', 'Serrated Edges', 'Shadow Lunge', 'Smoke Bomb', 'unknown']) {
         expect(getRogueAbilityDamageMultiplier(source({ ROG_38: 5 }), skill)).toBe(1);
     }
     expect(getRogueAbilityDamageMultiplier(source({ ROG_01: 5 }, { meshType: 'Wizard' }), 'Piercing Throw')).toBe(1);

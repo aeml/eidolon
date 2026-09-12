@@ -857,18 +857,19 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			player.Mana -= cost
 
 			trap := &Entity{
-				ID:         fmt.Sprintf("trap-trip-%d", time.Now().UnixNano()),
-				InstanceID: player.InstanceID,
-				Type:       TypeProjectile,
-				SubType:    "Tripwire",
-				X:          player.X,
-				Y:          0.1,
-				Z:          player.Z,
-				Radius:     1.5,
-				Damage:     20 + player.Stats.Dexterity,
-				OwnerID:    player.ID,
-				CreatedAt:  time.Now(),
-				Scale:      1.0,
+				ID:              fmt.Sprintf("trap-trip-%d", time.Now().UnixNano()),
+				InstanceID:      player.InstanceID,
+				Type:            TypeProjectile,
+				SubType:         "Tripwire",
+				X:               player.X,
+				Y:               0.1,
+				Z:               player.Z,
+				Radius:          1.5,
+				Damage:          int(float64(20+player.Stats.Dexterity) * player.GetSkillDamageMultiplier(skillName)),
+				ProjectileSkill: skillName,
+				OwnerID:         player.ID,
+				CreatedAt:       time.Now(),
+				Scale:           1.0,
 			}
 			w.Entities[trap.ID] = trap
 			w.Grid.Add(trap)

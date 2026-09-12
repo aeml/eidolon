@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { jest } from '@jest/globals';
 import { Rogue } from '../src/entities/Rogue.js';
-import { Actor } from '../src/entities/Actor.js';
+import { Imp } from '../src/entities/Imp.js';
 import { createPersistentSceneMesh } from '../src/entities/EffectSceneFallback.js';
 
 function createRogue() {
@@ -50,7 +50,10 @@ describe('Rogue Tripwire effect routing', () => {
         const trapPart = trapMesh.getObjectByProperty('isMesh', true);
         const geometryDispose = jest.spyOn(trapPart.geometry, 'dispose');
         const materialDispose = jest.spyOn(trapPart.material, 'dispose');
-        const enemy = Object.create(Actor.prototype);
+        // The trap now sends real damage through the Actor contract, so this
+        // visual-routing fixture needs real resources/defenses as well.
+        const enemy = new Imp('tripwire-effect-target');
+        enemy.stats.hp = enemy.stats.maxHp = 1000;
         enemy.isActive = true;
         enemy.state = 'IDLE';
         enemy.position = rogue.traps[0].position.clone();
