@@ -56,7 +56,8 @@ test('all Rogue Technique and generic critical descriptions match their numeric 
             }
         }
     }
-    expect(CONSTANTS.PASSIVE_TALENTS.Rogue.filter(talent => talent.criticalChance)).toHaveLength(12);
+    expect(CONSTANTS.PASSIVE_TALENTS.Rogue.filter(talent => talent.criticalChance).map(talent => talent.id))
+        .toEqual(['ROG_02', 'ROG_04', 'ROG_08', 'ROG_10', 'ROG_12', 'ROG_16', 'ROG_18', 'ROG_22', 'ROG_24', 'ROG_32', 'ROG_39']);
     expect(CONSTANTS.PASSIVE_TALENTS.Rogue[31].criticalChance.chance).toBe(.03);
     expect(CONSTANTS.PASSIVE_TALENTS.Rogue[38].criticalChance.chance).toBe(.02);
 });

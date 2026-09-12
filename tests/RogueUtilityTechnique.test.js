@@ -7,6 +7,7 @@ import { getAbilityManaCost, getAbilityCooldown } from '../src/core/AbilityEcono
 
 const cases = [
     ['Weak Point Mark', 'ROG_06', 'target', 'weakPointMarkTimer', 10, 25, 12],
+    ['Serrated Edges', 'ROG_14', 'source', 'serratedEdgesTimer', 10, 30, 20],
     ['Smoke Bomb', 'ROG_20', 'target', 'slowTimer', 5, 35, 20],
     ['Cloak & Vanish', 'ROG_26', 'source', 'stealthTimer', 5, 30, 30]
 ];
