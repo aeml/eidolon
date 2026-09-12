@@ -9,6 +9,7 @@ import { clipDungeonEffectSegment } from '../skills/dungeonEffectGeometry.js';
 import { getExecutionerSpinDamage } from '../skills/executionerSpin.js';
 import { applyOfflineShieldSlam } from '../skills/offlineShieldSlam.js';
 import { getFighterEffectDuration } from '../skills/fighterEffectDuration.js';
+import { applyOfflineFighterDamageBuff, clearOfflineFighterDamageBuffs } from '../skills/offlineFighterDamageBuffs.js';
 import { applyOfflineEarthshaker } from '../skills/offlineEarthshaker.js';
 import { beginOfflineShatteringCharge, advanceOfflineShatteringCharge } from '../skills/offlineShatteringCharge.js';
 import { beginOfflineCharge, advanceOfflineCharge, cancelOfflineCharge } from '../skills/offlineCharge.js';
@@ -289,13 +290,7 @@ export class Fighter extends Actor {
 
         if (skill === "Berserker Edge") {
             console.log("Fighter used Berserker Edge!");
-            // Passive toggle or active buff? Description says "Gain a % damage buff when at >60% HP".
-            // Usually passives are always on, but if it's a skill slot, maybe it's an active that enables this state?
-            // Or maybe it's a short term buff. Let's make it a self-buff for now that enables the passive check.
-
-
-            this.berserkerEdgeTimer = getFighterEffectDuration(this, 15);
-            this.berserkerEdgeActive = true;
+            applyOfflineFighterDamageBuff(this, skill, gameEngine);
 
             gameEngine.floatingTextManager.spawn("Berserker Mode!", this.position, '#ff0000');
             this.spawnVisualEffect(gameEngine, this.position, 0xff0000, "buff");
@@ -336,8 +331,7 @@ export class Fighter extends Actor {
             }
 
 
-            this.lastStandTimer = getFighterEffectDuration(this, 10);
-            this.lastStandDamageBoost = 2.0; // +200% Damage
+            applyOfflineFighterDamageBuff(this, skill, gameEngine);
 
             gameEngine.floatingTextManager.spawn("RAMPAGE!", this.position, '#ff0000');
             this.spawnVisualEffect(gameEngine, this.position, 0xff0000, "buff");
@@ -348,6 +342,7 @@ export class Fighter extends Actor {
     }
 
     cancelAbilities() {
+        clearOfflineFighterDamageBuffs(this);
         cancelOfflineCharge(this);
         this.runeArmorBuff = this.runeArmorBuffTimer = 0;
         this.isCharging = false;
@@ -384,15 +379,6 @@ export class Fighter extends Actor {
             }
         }
 
-        if (this.berserkerEdgeTimer > 0) {
-            this.berserkerEdgeTimer -= dt;
-            if (this.berserkerEdgeTimer <= 0) {
-                this.berserkerEdgeTimer = 0;
-                this.berserkerEdgeActive = false;
-                console.log("Berserker Edge expired.");
-            }
-        }
-
         if (this.offlineCharge) {
             // Advance ordinary timers once; the paid charge owns movement.
             super.update(dt, collisionManager);
@@ -401,6 +387,8 @@ export class Fighter extends Actor {
         }
 
         if (this.isWhirlwinding) {
+            // Spins must not pause ordinary buffs, cooldowns or regeneration.
+            super.update(dt, collisionManager);
             this.whirlwindTimer += dt;
 
             // Spin Effect
@@ -422,20 +410,7 @@ export class Fighter extends Actor {
                     if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
                         const dist = this.position.distanceTo(entity.position);
                         if (dist < radius) {
-                            let damage = this.stats.strength * 0.5; // Base tick damage
-
-                            // Berserker Edge Bonus
-                            if (this.berserkerEdgeActive) {
-                                const hpPercent = this.stats.hp / this.stats.maxHp;
-                                if (hpPercent > 0.60) {
-                                    damage *= 1.3; // 30% bonus
-                                }
-                            }
-
-                            // Last Stand Bonus
-                            if (this.lastStandTimer > 0) {
-                                damage *= (1 + this.lastStandDamageBoost);
-                            }
+                            const damage = this.stats.strength * 0.5; // Base tick damage
 
                             if (entity.takeDamage) {
                                 applyOfflineAbilityHit(this, entity, damage, 'Whirlwind', this.gameEngine?.floatingTextManager, '#ff8800');
@@ -451,7 +426,6 @@ export class Fighter extends Actor {
                 this.playAnimation('Idle');
             }
 
-            if (this.mixer) this.mixer.update(dt);
             return;
         }
 

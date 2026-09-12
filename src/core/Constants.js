@@ -143,10 +143,10 @@ export const CONSTANTS = {
             },
             BranchC: {
                 name: "Damage Tank / Offense-Tank Hybrid",
-                Tier2: { name: "Berserker Edge", desc: "Gain a % damage buff when at >60% HP." },
+                Tier2: { name: "Berserker Edge", desc: "For 15 seconds, you and nearby party members gain +50% Damage stat at the cost of 20% defense. Mastery strengthens the damage multiplier." },
                 Tier3: { name: "Shattering Charge", desc: "Charge applies armor reduction to all hit." },
                 Tier4: { name: "Executioner Spin", desc: "AoE spin that deals higher damage to marked or taunted enemies." },
-                Tier5: { name: "Last Stand Rampage", desc: "When dropping below 30% HP, gain a massive damage boost for X seconds." }
+                Tier5: { name: "Last Stand Rampage", desc: "Activate below 30% health to gain +200% Damage stat for 10 seconds. Mastery strengthens the damage multiplier." }
             }
         },
         Rogue: {
@@ -348,6 +348,8 @@ export const CONSTANTS = {
             return entries.slice(0, 40).map((t, i) => ({ id: `FTR_${String(i + 1).padStart(2, '0')}`, ...t,
                 ...(i === 6 ? { desc: '+4% Iron Fortress duration per rank (20% max). Does not increase protection or reflection strength.' } : {}),
                 ...(i === 8 ? { desc: '+4% Guardian Roar buff duration per rank (20% max). Nearby allies inherit your duration; protection strength and taunt threat are unchanged.' } : {}),
+                ...(i === 18 ? { desc: '+4% Berserker Edge damage multiplier per rank (20% max): 1.5× to 1.8× Damage stat. Nearby party members inherit your strength; defense cost stays 20%.' } : {}),
+                ...(i === 24 ? { desc: '+4% Last Stand Rampage damage multiplier per rank (20% max): 3× to 3.6× Damage stat. The below-30%-health activation requirement is unchanged.' } : {}),
                 abilityDuration: i === 6 ? { skill: 'Iron Fortress', duration: 0.04 }
                     : i === 8 ? { skill: 'Guardian Roar', duration: 0.04 } : undefined,
                 abilityDamage: i < 26 && i % 2 === 0 && i !== 6 && i !== 8 ? { skill: skills[Math.floor(i / 2)], damage: 0.04 }

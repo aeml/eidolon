@@ -119,7 +119,11 @@ export function applyOfflineRadiantStrike(source,aim,engine,holyFury = false) {
         if (rune === 'radiantstrike_purge') {
             if (target.blessingZealTimer > 0) { target.blessingZealTimer = 0; target.blessingZealFactor = 0; }
             else if (target.shieldHP > 0) { target.shieldHP = 0; target.arcaneShieldTimer = 0; }
-            else if (target.berserkerEdgeActive) { target.berserkerEdgeActive = false; target.berserkerEdgeTimer = 0; }
+            else if (target.berserkerEdgeActive) {
+                target.berserkerEdgeActive = false; target.berserkerEdgeTimer = 0;
+                target.berserkerEdgeMultiplier = 1;
+                target.recalculateStats?.();
+            }
             else if (target.ironFortressTimer > 0) { target.ironFortressTimer = 0; target.ironFortressReduction = 0; }
         }
     }

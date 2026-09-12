@@ -20,6 +20,10 @@ const cases = [
 function fixture(skill, rune, ranks) {
     const caster = new Fighter('duration-caster');
     caster.mesh = new THREE.Group(); caster.unlockedSkills.push(skill);
+    // Buff activation now rebuilds derived stats. Give this fixture a real
+    // 200-mana capacity instead of overriding only its derived maxMana.
+    caster.baseStats.intelligence = 20;
+    caster.recalculateStats();
     caster.stats.mana = 200; caster.stats.maxMana = 200;
     caster.stats.hp = caster.stats.maxHp * .2;
     caster.talentRanks = ranks; caster.skillRunes = { [skill]: rune };

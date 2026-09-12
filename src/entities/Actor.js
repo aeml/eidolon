@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { Entity } from './Entity.js';
 import { calculateSetBonuses, getEquippedUniqueEffects, getGemStats, UNIQUE_EFFECTS } from '../core/ItemSystem.js';
 import { isEquippableItem, isActiveEquipment } from '../core/EquipmentSlots.js';
+import { advanceFighterDamageBuffs, applyOfflineFighterDamageBuffStats, clearOfflineFighterDamageBuffs } from '../skills/offlineFighterDamageBuffs.js';
 import { getAbilityManaCost, getAbilityCooldown } from '../core/AbilityEconomy.js';
 import { updateOfflineHealingLight } from '../core/AbilityHealing.js';
 import { PASSIVE_REGEN_PER_STAT } from '../core/Regeneration.js';
@@ -994,14 +995,8 @@ export class Actor extends Entity {
             }
         }
 
-        // Last Stand Logic
-        if (this.lastStandTimer > 0) {
-            this.lastStandTimer -= dt;
-            if (this.lastStandTimer <= 0) {
-                this.lastStandTimer = 0;
-                this.lastStandDamageBoost = 0;
-            }
-        }
+        // Party buffs also expire on non-Fighter recipients.
+        advanceFighterDamageBuffs(this, dt);
 
         // Cleric Buffs/Debuffs Logic
         if (this.blessingResolveTimer > 0) {
@@ -1567,6 +1562,7 @@ export class Actor extends Entity {
 
     die() {
         if (this.state === 'DEAD') return;
+        clearOfflineFighterDamageBuffs(this);
         this.teleportPhaseTimer = 0;
         this.invulnerabilityTimer = 0;
         this.invulnerableActive = false;
@@ -2013,6 +2009,8 @@ export class Actor extends Entity {
         
         // Mana cost reduction from efficient effect
         this.stats.manaCostReduction = this.hasEfficientEffect ? 0.1 : 0;
+
+        applyOfflineFighterDamageBuffStats(this);
 
         // Clamp current HP/Mana
         if (this.stats.hp > this.stats.maxHp) this.stats.hp = this.stats.maxHp;
