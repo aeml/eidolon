@@ -134,6 +134,7 @@ qa_allowlist+=",${QA_USERNAME_BASE}-rest-transitions-death,${QA_USERNAME_BASE}-r
 qa_allowlist+=",${QA_USERNAME_BASE}-duration,${QA_USERNAME_BASE}-forge,${QA_USERNAME_BASE}-whip,${QA_USERNAME_BASE}-ground"
 qa_allowlist+=",${QA_USERNAME_BASE}-time-warp"
 qa_allowlist+=",${QA_USERNAME_BASE}-focus-mastery,${QA_USERNAME_BASE}-focus-mastery-observer"
+qa_allowlist+=",${QA_USERNAME_BASE}-teleport-protection,${QA_USERNAME_BASE}-teleport-protection-observer"
 qa_allowlist+=",${QA_USERNAME_BASE}-ground-retry1"
 qa_allowlist+=",${QA_USERNAME_BASE}-cleanse"
 qa_allowlist+=",${QA_USERNAME_BASE}-cleanse-retry1"
@@ -420,6 +421,11 @@ run_focus_mastery() {
     npx playwright test --retries=0 tests/e2e/spell-focus-mastery-gameplay.spec.js
 }
 
+run_teleport_protection() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-teleport-protection" EIDOLON_E2E_CLASS=Wizard \
+    npx playwright test --retries=0 tests/e2e/teleport-protection-gameplay.spec.js
+}
+
 run_time_warp_area() {
   EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-time-warp" EIDOLON_E2E_CLASS=Wizard \
     npx playwright test --retries=0 tests/e2e/time-warp-area-gameplay.spec.js
@@ -568,6 +574,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     run_qa_stage seraph run_seraph &&
     run_qa_stage shield-training run_shield_training &&
     run_qa_stage entrance-visibility run_entrance_visibility &&
+    run_qa_stage teleport-protection run_teleport_protection &&
     run_qa_stage phone-quests run_phone_quests &&
     run_qa_stage phone-build run_phone_build &&
     run_qa_stage phone-settings run_phone_settings &&
@@ -655,6 +662,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   shield-training)
     run_shield_training
+    ;;
+  teleport-protection)
+    run_teleport_protection
     ;;
   entrance-visibility)
     run_entrance_visibility
