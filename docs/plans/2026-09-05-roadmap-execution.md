@@ -5,7 +5,7 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 01:38 UTC
+## Current checkpoint — September 12, 01:43 UTC
 
 Previous goal turn was PROGRESS (Shattering and phone feedback). This continuation
 is PROGRESS: accepted release63's complete live gate, repaired the remaining
@@ -43,13 +43,25 @@ The full 1.1–1.10 goal remains active; no genuine external blocker exists.
   clean **3d1d2467**, matching candidate `/tmp/eidolon-offline-shattering-charge-20260912`.
   Successors after tested a955 only add acceptance docs. This is development
   integration, NOT publication of the pending combat/story/economy scope.
-- **Native Time Warp Mastery session69275 ACTIVE**, started01:37 on clean3d1,
-  confirmed "Running1test" at01:38. Log
-  `/tmp/eidolon-time-warp-mastery-native-20260912.log`. Route=time-warp-area,
-  System Chrome under render group, disposable run IDtwm120137, loopback
-  API18185/Mongo18186 and localweb4173. Shared browser runtime prepared.
-  Poll SAME session; do not run a competing GPU job or overwrite its artifacts.
-  Expanded paid WIZ25/11.2s/HighLow/fresh-login case still has no result yet.
+- Native Time Warp69275 TERMINAL1 on clean3d1 (~1.3m): all20 paid ranks,
+  untrainedHigh/trainedLowHigh and Mastery5Low duration/recipient/expiry passed.
+  WIZ34rank4 actually exercised rate rejection without spending/locking controls.
+  FinalHigh after fresh login saw zero recorded ability results. Source inspection
+  proves `loginAndEnterWorld` opens a new document, but the test installed its
+  message observer only in the original document. No gameplay fix inferred from
+  that missing test observer. Archived `/tmp/eidolon-time-warp-mastery-failure-unDK7r`;
+  Mastery5Low image inspected, scanner0, disposable services removed. Log
+  `/tmp/eidolon-time-warp-mastery-native-20260912.log`.
+- Candidate now clean **482f9c24**, adding test-only idempotent observer helper
+  and reinstall after fresh login, plus pre-cast observer presence assertions.
+  Three suites/56tests PASS0.799s+lint; logs
+  `/tmp/eidolon-time-warp-observer-{tests,lint}-20260912.log`. Runtime remains
+  full-tested a955; primary remains3d1 until the new native check is accepted.
+- **Corrected native Time Warp session76982 ACTIVE**, clean482f, run IDtwm120142,
+  route=time-warp-area, System Chrome/render group, loopback API18185/Mongo18186,
+  web4173. Log `/tmp/eidolon-time-warp-mastery-native-relogin-20260912.log`.
+  Confirmed Running1test. Poll SAME handle, preserve evidence and avoid competing
+  GPU work. All original duration/radius/payment/expiry/save gates remain intact.
 - Before starting native, GitHub confirmed both repository runners online/idle
   and the latest soak34558600459 completed FAILURE, with no newer soak run.
   Cancelled soak remains OFF. Normal release CI was allowed to finish.
