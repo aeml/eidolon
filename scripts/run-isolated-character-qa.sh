@@ -129,6 +129,7 @@ fi
 qa_allowlist="${QA_USERNAME_BASE},${QA_USERNAME_BASE}-healing,${QA_USERNAME_BASE}-economy,${QA_USERNAME_BASE}-legacy,${QA_USERNAME_BASE}-recovery,${QA_USERNAME_BASE}-spin,${QA_USERNAME_BASE}-phone,${QA_USERNAME_BASE}-phone-combat,${QA_USERNAME_BASE}-phone-bag,${QA_USERNAME_BASE}-phone-quests,${QA_USERNAME_BASE}-phone-build,${QA_USERNAME_BASE}-phone-settings,${QA_USERNAME_BASE}-phone-adventure,${QA_USERNAME_BASE}-fighter,${QA_USERNAME_BASE}-rogue,${QA_USERNAME_BASE}-wizard,${QA_USERNAME_BASE}-cleric"
 
 qa_allowlist+=",${QA_USERNAME_BASE}-death-resources"
+qa_allowlist+=",${QA_USERNAME_BASE}-auth-recovery"
 qa_allowlist+=",${QA_USERNAME_BASE}-socket-owner,${QA_USERNAME_BASE}-socket-observer"
 qa_allowlist+=",${QA_USERNAME_BASE}-rest-transitions-death,${QA_USERNAME_BASE}-rest-transitions-dungeon"
 qa_allowlist+=",${QA_USERNAME_BASE}-duration,${QA_USERNAME_BASE}-forge,${QA_USERNAME_BASE}-whip,${QA_USERNAME_BASE}-ground"
@@ -230,6 +231,11 @@ run_animation_classes() {
       EIDOLON_E2E_REGISTER=1 \
       npx playwright test tests/e2e/animation-gameplay.spec.js "$@" || return $?
   done
+}
+
+run_auth_recovery() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-auth-recovery" EIDOLON_E2E_AUTH_RECOVERY=1 \
+    npx playwright test --retries=0 tests/e2e/auth-inflight-recovery.spec.js
 }
 
 run_whirlwind() {
@@ -552,6 +558,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     npx playwright test tests/e2e/phone-stash-entry.spec.js
     ;;
   all)
+    run_qa_stage auth-recovery run_auth_recovery &&
     run_qa_stage initial-stats run_initial_stats &&
     run_qa_stage authenticated npm run test:e2e:authenticated &&
     run_qa_stage dungeons-and-inventory npx playwright test tests/e2e/regional-dungeon-gameplay.spec.js tests/e2e/verdant-dungeon-gameplay.spec.js tests/e2e/inventory-quality-of-life.spec.js tests/e2e/dungeon-projectile-wall-gameplay.spec.js tests/e2e/dungeon-movement-wall-gameplay.spec.js tests/e2e/dungeon-ground-area-gameplay.spec.js tests/e2e/dungeon-beam-gameplay.spec.js &&
@@ -599,6 +606,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     ;;
   animations)
     run_animation_classes
+    ;;
+  auth-recovery)
+    run_auth_recovery
     ;;
   animation-reuse)
     # Both runs use the SAME disposable saved characters and server. The first

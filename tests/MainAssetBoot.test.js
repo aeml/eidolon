@@ -257,6 +257,91 @@ describe('asset persistence boot wiring', () => {
         }
     });
 
+    test.each(['close', 'error'])('recovers a sent login lost before its reply on %s, then stops after success', async failure => {
+        jest.useFakeTimers();
+        const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        try {
+            buildStartDom(); installBrowserMocks();
+            const sockets = [];
+            class MockWebSocket {
+                static CONNECTING = 0; static OPEN = 1; static CLOSED = 3;
+                constructor() { this.readyState = 0; this.sent = []; sockets.push(this); }
+                send(value) { this.sent.push(JSON.parse(value)); }
+                close() { this.readyState = 3; this.onclose?.(); }
+            }
+            Object.defineProperty(globalThis, 'WebSocket', { configurable: true, value: MockWebSocket });
+            await import('../src/main.js');
+            window.dispatchEvent(new Event('DOMContentLoaded')); await Promise.resolve();
+            document.getElementById('btn-login').click();
+            sockets[0].readyState = 1; sockets[0].onopen();
+            expect(sockets[0].sent).toHaveLength(1);
+            if (failure === 'close') sockets[0].close();
+            else sockets[0].onerror(new Event('error'));
+            await jest.advanceTimersByTimeAsync(500);
+            expect(sockets).toHaveLength(2);
+            sockets[1].readyState = 1; sockets[1].onopen();
+            expect(sockets[1].sent).toEqual(sockets[0].sent);
+            sockets[1].onmessage({ data: JSON.stringify({ type: 'login_success', payload: {
+                hasCharacter: true, characterType: 'Cleric', message: 'Logged in!'
+            } }) });
+            // Late errors from the replaced socket must not erase success.
+            sockets[0].onerror(new Event('error'));
+            sockets[0].onopen();
+            sockets[0].onmessage({ data: JSON.stringify({ type: 'login_success', payload: {
+                hasCharacter: true, characterType: 'Rogue', message: 'Old reply'
+            } }) });
+            sockets[1].close();
+            await jest.advanceTimersByTimeAsync(30_000);
+            expect(sockets).toHaveLength(2);
+            expect(document.getElementById('auth-status').textContent).toBe('Logged in!');
+            expect(document.getElementById('btn-play-character').textContent).toContain('Cleric');
+            expect(sockets[1].sent).toHaveLength(1);
+        } finally { errorSpy.mockRestore(); jest.useRealTimers(); }
+    });
+
+    test.each(['rejected login', 'sent registration', 'retry limit'])('auth recovery respects %s', async scenario => {
+        jest.useFakeTimers();
+        try {
+            buildStartDom(); installBrowserMocks();
+            const sockets = [];
+            class MockWebSocket {
+                static CONNECTING = 0; static OPEN = 1; static CLOSED = 3;
+                constructor() { this.readyState = 0; this.sent = []; sockets.push(this); }
+                send(value) { this.sent.push(JSON.parse(value)); }
+                close() { this.readyState = 3; this.onclose?.(); }
+            }
+            Object.defineProperty(globalThis, 'WebSocket', { configurable: true, value: MockWebSocket });
+            await import('../src/main.js');
+            window.dispatchEvent(new Event('DOMContentLoaded')); await Promise.resolve();
+            document.getElementById(scenario === 'sent registration' ? 'btn-register' : 'btn-login').click();
+            sockets[0].readyState = 1; sockets[0].onopen();
+            if (scenario === 'rejected login') {
+                sockets[0].onmessage({ data: JSON.stringify({ type: 'error', payload: 'Invalid credentials' }) });
+            }
+            if (scenario === 'retry limit') {
+                for (const [index, delay] of [500, 1000, 2000, 4000, 5000, 5000].entries()) {
+                    sockets[index].close();
+                    await jest.advanceTimersByTimeAsync(delay);
+                    expect(sockets).toHaveLength(index + 2);
+                    sockets[index + 1].readyState = 1; sockets[index + 1].onopen();
+                    expect(sockets[index + 1].sent).toEqual(sockets[0].sent);
+                }
+            }
+            sockets.at(-1).close();
+            await jest.advanceTimersByTimeAsync(30_000);
+            expect(sockets).toHaveLength(scenario === 'retry limit' ? 7 : 1);
+            if (scenario === 'rejected login') expect(document.getElementById('auth-status').textContent).toBe('Invalid credentials');
+            if (scenario === 'sent registration') expect(sockets[0].sent[0].type).toBe('register');
+            if (scenario === 'retry limit') {
+                expect(document.getElementById('auth-status').textContent).toContain('Please try logging in again');
+                document.getElementById('auth-password').value = 'corrected-test-password';
+                document.getElementById('btn-login').click();
+                sockets[7].readyState = 1; sockets[7].onopen();
+                expect(sockets[7].sent[0].payload.password).toBe('corrected-test-password');
+            }
+        } finally { jest.useRealTimers(); }
+    });
+
     test('persisted fullscreen preference applies when the loading screen starts, not on login', async () => {
         buildStartDom();
         installBrowserMocks();

@@ -1,5 +1,16 @@
 import { readFileSync } from 'node:fs';
 
+test('the complete gate retains real-server interrupted login recovery with one UI click', () => {
+    const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
+    const probe = readFileSync('tests/e2e/auth-inflight-recovery.spec.js', 'utf8');
+    expect(script).toContain('qa_allowlist+=",${QA_USERNAME_BASE}-auth-recovery"');
+    expect(script).toContain('run_qa_stage auth-recovery run_auth_recovery &&');
+    expect(script).toContain('npx playwright test --retries=0 tests/e2e/auth-inflight-recovery.spec.js');
+    expect(probe.match(/locator\('#btn-login'\)\.click\(\)/g)).toHaveLength(1);
+    expect(probe).toContain('socket.connectToServer()');
+    expect(probe).not.toContain('loginAndEnterWorld');
+});
+
 test('saved-rune rehearsal repeats the same animation characters twice without retries or changing the full route', () => {
     const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
     expect(script).toContain('run_animation_classes --repeat-each=2 --retries=0');

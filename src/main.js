@@ -129,6 +129,7 @@ window.addEventListener('DOMContentLoaded', () => {
     let authSocket = null;
     let isAuthenticated = false;
     let pendingAuthRequest = null;
+    let inFlightLoginRequest = null;
     let authReconnectTimer = null;
     let authReconnectAttempts = 0;
 
@@ -236,6 +237,9 @@ window.addEventListener('DOMContentLoaded', () => {
         if (!pendingAuthRequest || authSocket?.readyState !== WebSocket.OPEN) return false;
         const request = pendingAuthRequest;
         pendingAuthRequest = null;
+        // Login is safe to retry if the transport disappears before its reply.
+        // Do not replay a sent registration: account creation may have committed.
+        inFlightLoginRequest = request.message.type === 'login' ? request : null;
         authSocket.send(JSON.stringify(request.message));
         authStatus.textContent = request.status;
         authStatus.style.color = '#ffeb3b';
@@ -243,33 +247,60 @@ window.addEventListener('DOMContentLoaded', () => {
     };
 
     const scheduleAuthReconnect = () => {
-        if (!pendingAuthRequest || authReconnectTimer || authReconnectAttempts >= 6) return;
+        if (!pendingAuthRequest || authReconnectTimer) return;
+        if (authReconnectAttempts >= 6) {
+            pendingAuthRequest = null;
+            inFlightLoginRequest = null;
+            authStatus.textContent = 'Connection lost. Please try logging in again.';
+            authStatus.style.color = '#ff4444';
+            return;
+        }
         const reconnectDelay = Math.min(500 * (2 ** authReconnectAttempts), 5000);
         authReconnectAttempts += 1;
         authReconnectTimer = setTimeout(() => {
             authReconnectTimer = null;
+            const previousSocket = authSocket;
             authSocket = null;
+            previousSocket?.close?.();
             connectAuth();
         }, reconnectDelay);
+    };
+
+    const finishAuthRequest = () => {
+        pendingAuthRequest = null;
+        inFlightLoginRequest = null;
+        authReconnectAttempts = 0;
+        if (authReconnectTimer) clearTimeout(authReconnectTimer);
+        authReconnectTimer = null;
+    };
+
+    const retryInterruptedLogin = () => {
+        if (!pendingAuthRequest && inFlightLoginRequest) pendingAuthRequest = inFlightLoginRequest;
+        inFlightLoginRequest = null;
+        scheduleAuthReconnect();
     };
 
     const connectAuth = () => {
         if (authSocket && (authSocket.readyState === WebSocket.OPEN || authSocket.readyState === WebSocket.CONNECTING)) return;
         const addr = serverAddressInput.value;
-        authSocket = new WebSocket(addr);
+        const socket = new WebSocket(addr);
+        authSocket = socket;
         
         authSocket.onopen = () => {
+            if (socket !== authSocket) return;
             console.log("Connected to server for auth");
-            authReconnectAttempts = 0;
             sendPendingAuthRequest();
         };
 
         authSocket.onmessage = (event) => {
+            if (socket !== authSocket) return;
             const msg = JSON.parse(event.data);
             if (msg.type === 'error') {
+                finishAuthRequest();
                 authStatus.textContent = msg.payload;
                 authStatus.style.color = '#ff4444';
             } else if (msg.type === 'login_success') {
+                finishAuthRequest();
                 isAuthenticated = true;
                 
                 const data = msg.payload;
@@ -299,16 +330,20 @@ window.addEventListener('DOMContentLoaded', () => {
         };
         
         authSocket.onerror = (e) => {
+            if (socket !== authSocket || isAuthenticated) return;
             console.error("Auth socket error", e);
             authStatus.textContent = "Connection error";
             authStatus.style.color = '#ff4444';
-            scheduleAuthReconnect();
+            retryInterruptedLogin();
         };
 
-        authSocket.onclose = () => scheduleAuthReconnect();
+        authSocket.onclose = () => {
+            if (socket === authSocket && !isAuthenticated) retryInterruptedLogin();
+        };
     };
 
     const submitAuthRequest = (message, status) => {
+        inFlightLoginRequest = null;
         pendingAuthRequest = { message, status };
         authReconnectAttempts = 0;
         if (authReconnectTimer) {
