@@ -175,6 +175,23 @@ combined6suites34tests pass, plus ESLint/diff. Logs use
 `/tmp/eidolon-tripwire-clear-approach-*-20260912.log`. Full CI and new native
 execution remain required, including rechecking affected entrance/shield routes.
 
+### Forecourt replay reached a real cast; snapshot assertion was invalid
+
+Native64049 on9048c71a failed9.3s AFTER normal approach and paid Tripwire
+placement: the test expected139 in the trap snapshot's damage field but received0.
+Production `copyEntity` intentionally includes projectile owner/velocity/radius,
+not internal damage; protobuf defaults that omitted field to0. Actual triggering
+uses the live server entity, not this optimized snapshot. Do not claim a zero-
+damage gameplay bug from that wire value. Archive
+`/tmp/eidolon-tripwire-wire-contract-failure-giMuZZ`, scan0/exact cleanup passed.
+
+The observer now records only delivered trap identity/position. Native still
+requires the real accepted25mana cast, placement, visible mesh, actual target
+damage equal to trained base or random critical double, root/expiry, single
+trigger and saved ranks. Server paid-trigger tests retain internal damage checks.
+Wire-shaped regression first failed2cases, then3suites13tests PASS0.863s plus
+ESLint/diff. New actual trigger/expiry replay remains required.
+
 ## Draft 1.1.0 patch note
 
 - Fixed Tripwire's damage and critical talents not affecting triggered traps.

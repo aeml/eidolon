@@ -12,7 +12,8 @@ test('observer forwards once and retains only real owner traps, target hits and 
     window.game.handleServerMessage = value => wrapped(value);
     installTripwireObserver('enemy');
     const send = window.game.handleServerMessage;
-    const trap = { id: 'trap', type: 'Projectile', subType: 'Tripwire', ownerId: 'owner', x: 1, z: 2, damage: 30 };
+    // Actual optimized projectile snapshots do not carry server combat damage.
+    const trap = { id: 'trap', type: 'Projectile', subType: 'Tripwire', ownerId: 'owner', x: 1, z: 2, damage: 0 };
     expect(send({ type: 'delta', payload: { u: [trap, { ...trap, id: 'foreign', ownerId: 'other' },
         { id: 'owner', talentRanks: { ROG_23: 1 }, talentPoints: 19 }] } })).toBe('forwarded');
     send({ type: 'state', payload: [trap] });
@@ -21,7 +22,8 @@ test('observer forwards once and retains only real owner traps, target hits and 
     send({ type: 'delta', payload: { u: [{ id: 'enemy', rooted: true, rootDuration: 2.95 }] } });
     send({ type: 'delta', payload: { u: [{ id: 'enemy', rooted: false, rootDuration: 0 }] } });
     expect(receive).toHaveBeenCalledTimes(6);
-    expect(window.__tripwire).toMatchObject({ traps: [{ id: 'trap', x: 1, z: 2, damage: 30 }],
+    expect(window.__tripwire.traps).toEqual([{ id: 'trap', x: 1, z: 2 }]);
+    expect(window.__tripwire).toMatchObject({
         damage: [{ sourceId: 'owner', targetId: 'enemy', amount: 30 }], ranks: { ROG_23: 1 }, points: 19,
         maxRoot: 2.95, expired: true });
 });
@@ -54,4 +56,6 @@ test('native root-expiry setup requires a real target able to survive the strong
     expect(route).toContain('expect(before.hp).toBeGreaterThan(base * 2)');
     expect(route).toContain('await moveByPhoneJoystick(page, d.x * scale, d.z * scale)');
     expect(route).not.toContain('moveByGroundClick');
+    expect(route).not.toContain('expect(cast.trap.damage)');
+    expect(route).toContain('expect([base, base * 2]).toContain(hit.amount)');
 });

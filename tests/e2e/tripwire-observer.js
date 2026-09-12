@@ -17,7 +17,7 @@ export function installTripwireObserver(targetId = null) {
             }
             if (state.type === 'Projectile' && state.subType === 'Tripwire' && state.ownerId === game.player.id &&
                 !qa.traps.some(trap => trap.id === state.id)) {
-                qa.traps.push({ id: state.id, x: state.x, z: state.z, damage: state.damage });
+                qa.traps.push({ id: state.id, x: state.x, z: state.z });
             }
             if (state.id !== qa.targetId) continue;
             if (state.rooted === true && Number.isFinite(state.rootDuration)) qa.maxRoot = Math.max(qa.maxRoot, state.rootDuration);

@@ -112,7 +112,8 @@ test('paid Tripwire training and saved ranks damage and root an ordinarily lured
             await expect.poll(() => page.evaluate(() => window.__tripwire.traps.length)).toBe(1);
             const cast = await page.evaluate(() => ({ result: window.__tripwire.results[0], trap: window.__tripwire.traps[0] }));
             expect(cast.result.accepted).toBe(true); expect(before.mana - cast.result.mana).toBe(25);
-            expect(cast.trap.damage).toBe(base);
+            // Optimized projectile snapshots omit damage. Verify the actual
+            // authoritative hit below, not an unreplicated internal field.
             expect(Math.hypot(cast.trap.x - before.x, cast.trap.z - before.z)).toBeLessThan(.25);
             await expect.poll(() => page.evaluate(id => {
                 const mesh = window.game.remotePlayers.get(id)?.mesh;
