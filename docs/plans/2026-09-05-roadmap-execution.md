@@ -5,7 +5,36 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 16:33 UTC
+## Current checkpoint — September 12, 16:37 UTC
+
+Still PROGRESS/full goal ACTIVE, primary/integrated unchanged0ebfac25, root never
+push. **46603 is TERMINAL FAILED1.4m**, not active: df5b83ea Mark0/1/5 paid
+cost25/24/22 and CD6/5.82/5.1/duration10/High-Low/expiry passed; Smoke baseline
+target walked to5.4403units during hover before casting, final<5 assertion failed.
+Archive `/tmp/eidolon-rogue-technique-first-failure-j7oKzi`; original
+`/tmp/eidolon-rogue-utility-technique-native-20260912.log`; scan0/cleanupPASS.
+Corrected approach includes actual hover and fresh living/hovered/distance<4
+check in the original60s loop, repeating normal movement if needed. No cast
+retry, range weakening or target freezing. Two observer/stage suites58PASS1.667s,
+changed lint/diffPASS. This is test input correction, not a runtime fix claim.
+
+Technique WT now clean/devpushed **8fe4117b**, updated full CI dispatched.
+**25285 ACTIVE — sole native GPU**, frozen8fe4117b, route rogue-techniques,
+runIDrogueutilityreacquire0912,18185/18186/41875. Log
+`/tmp/eidolon-rogue-utility-technique-reacquire-native-20260912.log`.
+Poll same handle; do not edit source or start another native until terminal,
+archive and owned cleanup. Mastery profile on refactored route still queued.
+Earlier corrected CI34705538057 ondf5b83ea clientpassed/serveractive; does not
+cover this new target-acquisition edit or prove native success.
+
+New combined WT `/tmp/eidolon-1-1-rogue-verified-integration-20260912`, branch
+work/1-1-rogue-verified-integration, clean/devpushed **0d79c4858ad796d557826fa93672fb95b206145c**,
+parentprimary0ebfac25 merged accepted Masteryad8bd5b3 without conflicts. No
+Technique runtime included. Six suites80PASS3.234s/full lint/shell/diff;
+**CI34705692232 ACTIVE**. Do not advance primary until combined checks pass.
+Native/production component limits remain in the candidate's evidence document.
+
+## Previous checkpoint — September 12, 16:33 UTC
 
 Previous/current goal work is PROGRESS: completed Mastery native/CI, accepted
 Fighter integration, implemented paid utility Techniques and retained a failed
