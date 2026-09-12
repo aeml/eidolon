@@ -4,6 +4,7 @@ import { aimAtGroundPoint } from './ground-aim.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 import { selectPreparedRune } from './prepared-rune-input.js';
 import { installTeleportNativeObserver } from './teleport-native-observer.js';
+import { teleportNativeDestination } from './teleport-native-route.js';
 
 test.use({ viewport: { width: 1280, height: 720 }, isMobile: false, hasTouch: false,
     trace: 'off', screenshot: 'off', video: 'off' });
@@ -84,7 +85,7 @@ test('paid Teleport training has matching endpoint boundaries and finite Phase p
             }, sourceId)).toBe(true);
             const before = await page.evaluate(() => ({ x: window.game.player.position.x, z: window.game.player.position.z }));
             home ||= before;
-            const destination = Math.hypot(before.x - home.x, before.z - home.z) > 4 ? home : { x: home.x + 8, z: home.z };
+            const destination = teleportNativeDestination(home, before);
             await aimAtGroundPoint(page, destination);
             await observe();
             const maxMana = await page.evaluate(() => window.game.player.stats.maxMana);

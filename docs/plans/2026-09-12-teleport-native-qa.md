@@ -57,3 +57,27 @@ PASS; Playwright discovery sees one test in one file. Logs
 These checks prove harness structure only. First native execution, inspected
 artifacts and integrated release acceptance remain required. Do not promote
 this scaffold as successful gameplay or merge claims of native acceptance.
+
+## First execution and occupied-ground correction
+
+After64's full production CI passed, native attempt42477 on1de18e03 terminated
+with143 before any test result. The worker was confirmed absent; only its exact
+render-group web-server ancestry and disposable containers remained. Confirmed
+their ownership, cleaned those resources and retained
+`/tmp/eidolon-release65-native-teleport-20260912.log`. Cause of the signal is
+unknown; it is neither an assertion failure nor successful acceptance.
+
+Unchanged terminal-session retry7369 completed with a real fixture failure:
+first untrained High Warp passed on both clients, with visible endpoint rings,
+paid receipt and natural cleanup, but the next aim returned to the observer's
+occupied spawn(-1.25,200). Ground aiming correctly reported hoveredFighter,
+clearfalse. No trained Warp or Phase acceptance was obtained. Sanitizer passed
+with0modified files and exact disposable cleanup completed. Complete evidence:
+`/tmp/eidolon-release65-teleport-occupied-ground-Nh5Mhh`.
+
+The corrected ordinary-input route alternates between home+(8,0) andhome+(8,8),
+leaving the observer at spawn. Both destinations remain in the open square,
+away from Ilyra(20,215). The existing cursor-clear check, cast assertions and
+deadlines are unchanged; no actor/packet/position mutation was added. A pure
+route test covers all four casts and small observed landing variations. Native
+rerun and integrated acceptance on this test-only correction remain required.
