@@ -1,10 +1,9 @@
 # Teleport and protection — native acceptance route
 
-Status: implemented test route, **not yet natively exercised or accepted**.
-Built in`work/release65-native-warp`from scoped65source9ab5b644. Production64
-CI34668112188 is using the native-browser runner; do not compete with that gate.
-The existing hosted65 rehearsal34668886679 covers its earlier frozen source,
-not these subsequent test additions.
+Status: **scoped native acceptance passed on95a78071**, after the occupied-ground
+fixture correction recorded below. Built in`work/release65-native-warp`from
+scoped65source9ab5b644. Production64 CI34668112188 is now fully accepted;
+production65 deployment and final live gates remain outstanding.
 
 ## Required observations
 
@@ -81,3 +80,18 @@ away from Ilyra(20,215). The existing cursor-clear check, cast assertions and
 deadlines are unchanged; no actor/packet/position mutation was added. A pure
 route test covers all four casts and small observed landing variations. Native
 rerun and integrated acceptance on this test-only correction remain required.
+
+## Corrected native acceptance
+
+Session17729 on clean95a78071 TERMINAL SUCCESS:1test2.0m, all four required
+base/trained Warp and base/saved-trained Phase observations passed. Both clients
+observed actual effects and expiration; ordinary paid UI choices, receipts and
+fresh-login assertions were retained. Wrapper scan0 and exact disposable cleanup
+passed. Complete report/results/log:
+`/tmp/eidolon-release65-teleport-accepted-B42924`.
+
+Inspected endpoint-ring and saved Phase owner captures. The latter includes
+Protected/protection-ended feedback and orbital detail without a persistent solid
+shell; short-window activation remains established by the actual scene observer,
+not by assuming a delayed screenshot catches the active interval. Screenshot FPS
+counters are not performance acceptance. No dungeon damage or full-party claim.

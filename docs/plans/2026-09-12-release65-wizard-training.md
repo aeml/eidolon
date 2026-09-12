@@ -1,8 +1,9 @@
 # Alpha 1.0.65 — Wizard training and readable protection
 
 Status: scoped candidate on its nonproduction branch, not deployed. Based on release64
-`6d5e82cb`; its production CI34668112188 remains active. Public63 is the last
-fully accepted release at this checkpoint. Do not promote65 ahead of64 acceptance.
+`6d5e82cb`, now fully accepted by production CI34668112188 and matching public
+frontend/backend health checks. Scoped native training checks on65 passed below;
+normal production predeploy, deployment and final live acceptance remain required.
 The full1.1–1.10 roadmap remains open.
 
 ## Scope
@@ -146,3 +147,39 @@ is the last planned ordinary foundation hotfix after64; bundle remaining
 baseline work into1.1.0. Only urgent live blockers justify additional1.0.x
 releases. This does not remove any dungeon/party, earned progression,
 reconnect, balancing or later roadmap acceptance requirement.
+
+## Combined hosted and scoped native acceptance
+
+Corrected hosted CI34670196359 at1de18e03 is TERMINAL SUCCESS: client297suites/
+4347tests104.847s plus lint/audit/benchmark; full server game race255.387s and
+coverage85.6%, backup/restore/bench/build; browser39+40+25=104cases. Native and
+production jobs were intentionally skipped for manual dispatch, not passed.
+Logs `/tmp/eidolon-release65-corrected-{client,server,browser1,browser2,browser3}-34670196359.log`.
+
+Native Teleport's first completed retry found an occupied-ground fixture error,
+documented in the companion route record. Test-only95a78071 corrected that route;
+no application/runtime change from hosted1de18e03. Focused3suites/24tests and
+lint passed. On clean95a78071, sequential real system-Chrome checks then passed:
+
+- Teleport/Phase: native17729,1test2.0m; base/trained Warp and base/saved-trained
+  Phase, real receipts, owner/peer effects, natural expiration. Complete artifact
+  `/tmp/eidolon-release65-teleport-accepted-B42924`.
+- Spell Focus:1test2.1m; paid training and saved login, High/Low glyphs, actual
+  stored multiplier, Scorch Beam789 versus263 and one-charge consumption on both
+  clients. Complete artifact `/tmp/eidolon-release65-focus-accepted-n6qdKn`.
+  Inspected the trained Low owner capture: visible Focus glyph and phone controls.
+- Time Warp: native44831,1test2.9m; walked ally outside base range, trained area
+  and Mastery duration, fresh login, High/Low geometry, actual recipient stat
+  changes and ordinary expiry back to baseline on both clients. Complete artifact
+  `/tmp/eidolon-release65-timewarp-accepted-7xvnTv`.
+
+All three wrappers reported credential scan0 and passed; exact disposable services
+and shared test ports were absent before starting the next native route. Native
+renderer was verified as ANGLE AMD Vulkan/RADV RENOIR before this sequence. These
+are prepared functional checks, not earned progression or performance acceptance.
+
+Production65 has NOT been pushed. Its login label and full patch notes are ready;
+normal complete predeploy, inputs, deployment and final live checks must still
+pass on its eventual publishing commit. The native hardware is now running the
+instrumented four-role dungeon diagnostic on development8f2c82a4; avoid competing
+production/native work while that run is active. Do not infer1.1 completion.
