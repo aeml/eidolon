@@ -208,6 +208,9 @@ var wizardSkills = []string{
 }
 
 func wizardTalentDef(n int) (TalentDef, bool) {
+	if n == 25 {
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: "Time Warp", SkillDuration: 0.04}}, true
+	}
 	if n == 21 {
 		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: "Arcane Shield", SkillAbsorption: 0.04}}, true
 	}
@@ -412,6 +415,9 @@ func (e *Entity) GetSkillBonus(skillName string) TalentBonus {
 		if !ok {
 			continue
 		}
+		// A stale or malformed stored rank cannot exceed the talent's budget.
+		// Do not mutate the saved build while resolving a cast's bonuses.
+		rank = min(rank, def.MaxRank)
 		bonus := def.PerRank
 		// Only apply skill-specific bonuses if the skill matches
 		if bonus.SkillName != "" && bonus.SkillName != skillName {

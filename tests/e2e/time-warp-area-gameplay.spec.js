@@ -88,7 +88,7 @@ test('Time Warp training reaches a walked ally beyond the original radius and ex
         }
         const baseline = await ally.evaluate(() => ({ speed: window.game.player.stats.speed,
             cooldown: window.game.player.stats.cooldownReduction, attack: window.game.player.stats.attackSpeed }));
-        async function cast(trained, quality) {
+        async function cast(trained, quality, mastery = 0) {
             await expect.poll(() => page.evaluate(() => window.game.player.hasteTimer <= 0), { timeout: 15_000 }).toBe(true);
             await page.locator('#btn-mobile-menu').tap(); await page.locator('#btn-settings').tap();
             await page.locator('#graphics-quality').selectOption(quality); await page.locator('#btn-close-settings').tap();
@@ -115,8 +115,11 @@ test('Time Warp training reaches a walked ally beyond the original radius and ex
                 expect(observed.targetZ).toBeCloseTo(source.z, 2);
             }
             if (trained) {
-                await expect.poll(() => ally.evaluate(() => window.__timeWarpNative.maxDuration)).toBeGreaterThan(9);
-                expect(await ally.evaluate(() => window.__timeWarpNative.maxDuration)).toBeLessThanOrEqual(9.7);
+                const duration = 9.6 + 8 * .04 * mastery;
+                for (const actor of [page, ally]) {
+                    await expect.poll(() => actor.evaluate(() => window.__timeWarpNative.maxDuration)).toBeGreaterThan(duration - .6);
+                    expect(await actor.evaluate(() => window.__timeWarpNative.maxDuration)).toBeLessThanOrEqual(duration + .1);
+                }
                 const state = await ally.evaluate(() => ({ speed: window.game.player.stats.speed,
                     cooldown: window.game.player.stats.cooldownReduction, attack: window.game.player.stats.attackSpeed }));
                 expect(state.speed).toBeCloseTo(baseline.speed * 1.5, 4);
@@ -126,28 +129,32 @@ test('Time Warp training reaches a walked ally beyond the original radius and ex
                 await ally.waitForTimeout(500);
                 expect(await ally.evaluate(() => window.game.player.hasteTimer)).toBe(0);
             }
-            await page.screenshot({ path: testInfo.outputPath(`time-warp-${trained ? 'trained' : 'base'}-${quality}.png`) });
+            await page.screenshot({ path: testInfo.outputPath(`time-warp-${trained ? 'trained' : 'base'}-mastery${mastery}-${quality}.png`) });
             for (const actor of [page, ally]) await expect.poll(() => actor.evaluate(() =>
                 window.game.player.hasteTimer <= 0 && !window.game.player.attachedStatusEffects.has('time_warp')), { timeout: 15_000 }).toBe(true);
             const expired = await ally.evaluate(() => ({ speed: window.game.player.stats.speed,
                 cooldown: window.game.player.stats.cooldownReduction, attack: window.game.player.stats.attackSpeed }));
             expect(expired).toEqual(baseline);
-            console.log(`[time-warp-native] ${quality}, trained=${trained}: walked boundary, cast shape, recipient and expiry verified`);
+            console.log(`[time-warp-native] ${quality}, trained=${trained}, mastery=${mastery}: walked boundary, cast shape, recipient and expiry verified`);
         }
-        await cast(false, 'high');
-        await skills('Talents');
-        for (const id of ['WIZ_36', 'WIZ_38', 'WIZ_34']) {
+        async function buyFive(id) {
+            await skills('Talents');
             for (let rank = 1; rank <= 5; rank++) {
                 const buy = page.locator(`button[data-build-action="talent:${id}"]`);
                 try {
                     for (let attempt = 0; attempt < 3; attempt++) {
+                        const points = await page.evaluate(() => window.game.player.talentPoints);
                         await buy.scrollIntoViewIfNeeded(); await buy.tap();
                         await expect.poll(() => page.evaluate(() => window.game.uiManager.skillTree.mobile.pending === null)).toBe(true);
-                        if (await page.evaluate(id => window.game.player.talentRanks?.[id] || 0, id) === rank) break;
+                        if (await page.evaluate(id => window.game.player.talentRanks?.[id] || 0, id) === rank) {
+                            expect(await page.evaluate(() => window.game.player.talentPoints)).toBe(points - 1);
+                            break;
+                        }
                         // A legitimate rate rejection must release the actual
                         // menu without spending a point. Retry with another
                         // deliberate tap only after its visible rejection.
                         expect(await page.evaluate(id => window.game.player.talentRanks?.[id] || 0, id)).toBe(rank - 1);
+                        expect(await page.evaluate(() => window.game.player.talentPoints)).toBe(points);
                         await expect(page.locator('.phone-build-feedback')).toContainText('rate limit');
                         await expect(buy).toBeEnabled();
                         console.log(`[time-warp-training] ${id} rank ${rank}: rate rejection released controls without spending`);
@@ -167,12 +174,17 @@ test('Time Warp training reaches a walked ally beyond the original radius and ex
                 await expect.poll(() => page.evaluate(() => window.game.uiManager.skillTree.mobile.pending === null)).toBe(true);
                 console.log(`[time-warp-training] ${id} rank ${rank} confirmed`);
             }
+            await page.locator('#btn-close-skills').tap();
         }
-        await page.locator('#btn-close-skills').tap();
+        await cast(false, 'high');
+        for (const id of ['WIZ_36', 'WIZ_38', 'WIZ_34']) await buyFive(id);
         await cast(true, 'low');
         await cast(true, 'high');
+        await buyFive('WIZ_25');
+        await cast(true, 'low', 5);
         await loginAndEnterWorld(page, credentials);
-        for (const id of ['WIZ_36', 'WIZ_38', 'WIZ_34']) expect(await page.evaluate(id => window.game.player.talentRanks?.[id], id)).toBe(5);
+        for (const id of ['WIZ_36', 'WIZ_38', 'WIZ_34', 'WIZ_25']) expect(await page.evaluate(id => window.game.player.talentRanks?.[id], id)).toBe(5);
+        await cast(true, 'high', 5);
         expect(failures, failures.join('\n')).toEqual([]);
         expect(allyFailures, allyFailures.join('\n')).toEqual([]);
     } finally { await peerBrowser.close(); }

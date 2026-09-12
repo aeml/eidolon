@@ -19,6 +19,32 @@ function fixture() {
         dispose: () => { source.dispose(); ally.dispose(); } };
 }
 
+test.each([[0, 0, 8], [1, 0, 8.32], [5, 0, 9.6], [99, 0, 9.6], [-1, 0, 8],
+    [Infinity, 0, 8], [5, 5, 11.2]])('Time Warp Mastery %s plus general duration %s grants %ss, without stronger haste', (rank, general, duration) => {
+    const f = fixture();
+    try {
+        f.source.talentRanks = { WIZ_25: rank, WIZ_34: general };
+        f.ally.talentRanks = { WIZ_25: 5, WIZ_34: 5 };
+        const mana = f.source.stats.mana, cdr = f.source.stats.cooldownReduction;
+        const speed = f.ally.stats.speed, allyCdr = f.ally.stats.cooldownReduction;
+        f.cast();
+        expect(f.source.stats.mana).toBe(mana - 50);
+        expect(f.source.cooldowns['Time Warp']).toBeCloseTo(60 * (1 - cdr));
+        expect(f.source.hasteTimer).toBeCloseTo(duration);
+        expect(f.ally.hasteTimer).toBeCloseTo(duration);
+        expect(f.ally.hasteFactor).toBe(.5);
+        expect(f.ally.stats.speed).toBeCloseTo(speed * 1.5);
+        expect(f.ally.stats.cooldownReduction).toBeCloseTo(Math.min(.8, allyCdr + .2));
+        f.source.talentRanks = {};
+        Actor.prototype.update.call(f.ally, duration - .01, null, null, []);
+        expect(f.ally.hasteTimer).toBeGreaterThan(0);
+        Actor.prototype.update.call(f.ally, .02, null, null, []);
+        expect(f.ally.hasteTimer).toBe(0);
+        expect(f.ally.stats.speed).toBeCloseTo(speed);
+        expect(f.ally.stats.cooldownReduction).toBeCloseTo(allyCdr);
+    } finally { f.dispose(); }
+});
+
 test.each([[0, 8], [5, 9.6], [99, 9.6], [-1, 8], [Infinity, 8]])(
     'paid haste snapshots caster duration rank %s for self and allies', (rank, duration) => {
         const f = fixture();

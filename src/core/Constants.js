@@ -450,9 +450,11 @@ export const CONSTANTS = {
                     : i === 18 ? { skill: 'Teleport', damage: 0.04 } : undefined,
                 ...(i === 14 ? { desc: '+4% focused-spell damage per rank (20% max). Snapshotted when Spell Focus is cast.' } : {}),
                 ...(i === 20 ? { desc: '+4% Arcane Shield damage absorption per rank (20% max).' } : {}),
+                ...(i === 24 ? { desc: '+4% Time Warp duration per rank (20% max). Extends the caster and allies; does not increase haste strength.' } : {}),
                 shieldTraining: i === 20 ? { absorption: 0.04 } : i === 31 ? { duration: 0.05 }
                     : i === 33 ? { duration: 0.04 } : undefined,
-                abilityDuration: i === 31 ? { skill: 'Arcane Shield', duration: 0.05 }
+                abilityDuration: i === 24 ? { skill: 'Time Warp', duration: 0.04 }
+                    : i === 31 ? { skill: 'Arcane Shield', duration: 0.05 }
                     : i === 33 ? { duration: 0.04 } : undefined,
                 criticalChance: i === 38 ? { chance: 0.02 } : undefined,
                 abilityRange: i === 28 ? { range: 0.03 } : i === 34 ? { range: 0.04 } : i === 37 ? { range: 0.02 } : undefined,
