@@ -5,7 +5,71 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 20:57 UTC
+## Current checkpoint — September 12, 21:16 UTC
+
+Previous goal turn PROGRESS. This continuation made PROGRESS: accepted desktop
+talent confirmation, retained two native failures, added traversal accounting,
+and implemented the player's explicit better-geared party request. Full roadmap
+ACTIVE; no deployment/version/soak change. NEVER PUSH ROOT.
+
+- **Latest player direction: NO level-dependent stat scaling.** Equip every
+  test role in at least Uncommon/Rare items, Strong Fighter/Agile Rogue and
+  corresponding caster affixes. New clean/dev-pushed **0a75527d** in
+  `/tmp/eidolon-1-1-party-progressed-gear-20260912`, work/1-1-party-progressed-gear,
+  uses five Rare/nine Uncommon level30 pieces across all14slots. Strong/Strength,
+  Agile/Dexterity, Brilliant/Intelligence, Wise/Wisdom respectively; Rare suffix
+  Vitality. Actual production-generated2x/5x budgets, zero potency, no Legendary,
+  higher level, fabricated stats/resources or additional talents. Browser checks
+  each actually equipped replicated name/rarity/level/stats and logs loadouts.
+  Default progressed; explicit common profile preserves old comparison.
+  Based on d985fa89 + accepted primaryc9e922be + traversal timing90b3313a.
+  **ORIGINAL boss health retained**, NOT provisional40% reduction. Player wants
+  gear tested before global stat scaling; do not revive the withdrawn proposal.
+  Focused client2/19/0.775s and all-base/role/rarity Go race1.080s PASS;
+  full lint/prepare/diff pass. Doc2026-09-12-party-progressed-gear.md.
+  **CI34719442897 ACTIVE** on exact0a75527d.
+  **Native70936 ACTIVE — SOLE GPU**, routeparty-dungeon/runIDpartygeared0912,
+  explicitprogressed+Low, API18185/Mongo18186/web41875. Freeze this worktree.
+  Log `/tmp/eidolon-party-progressed-gear-native-20260912.log`. Registration/
+  preparation started; no actual geared clear claim yet.
+- Old balance98186 FAILED30.4m. Warden killed, Matron last4988/10080 after92s,
+  Fighterdead187mana; healer244mana. Final late dodges1.7s/1.53s after impact;
+  healer chose self468/845 while tank103/855 stood26.18units away. No further
+  blind nerf: examine coordination/triage if good-gear replay still needs it.
+  Final return-to-town revived the tank; sawDeath and failure remain authoritative.
+  Archive `/tmp/eidolon-verdant-matron-failure-loe41A`, scan0/exact cleanup.
+  Balance doc64a4881e records full outcome. The40% candidate remains unaccepted.
+- Traversal timing **90b3313a** clean/dev-pushed in
+  `/tmp/eidolon-1-1-party-traversal-timing-20260912`: completed leader-input and
+  formation attempt wall times are subsets of unchanged overall phase totals.
+  These include observation/follower movement, not pure human walking time.
+  RED3 cases then4/77 PASS16.341s; route3/29 PASS2.072s+full lint/diff. Ported
+  into geared branch asb42ec481. Original832 run was not modified or restarted.
+- Entrance49905 on a42507b6 FAILED55.2s AFTER actual outside-arc cutaway and
+  restoration passed, image inspected; shield695/834/saved834/expiry passed.
+  After real Titan partial absorption, later current shield effect absent.
+  Historical partial snapshot vs later current state requires diagnosis, not
+  an assumed missing visual. Archive `/tmp/eidolon-entrance-arc-failure-pvtDxd`,
+  scan0/exact cleanup. Tripwire clean **3b83b154** (diagnostic code00b9e034)
+  logs current shield HP/active/visual and recent snapshots before the UNCHANGED
+  assertion. Diagnostic entrance replay queued AFTER new geared party test;
+  player request took priority. No Tripwire integration until collateral passes.
+- Desktop **CI34718270509 SUCCESS** on e2ef6e51 and native25313 on50304e6a
+  PASS1.7m/zero retries: real identified purchase confirmations/point debits,
+  paid0/1/5 mana30/29/27, cooldown10/9.7/8.5, saved5+generic5 cooldown7.5,
+  natural10s effects. Screenshot inspected; archive
+  `/tmp/eidolon-desktop-talent-pass-Z9RKED`, scan0/exact cleanup. Client414/6408/
+  134.634s, game race359.092s, allbrowser shards. Accepted docs **0992f77b**;
+  primary `/tmp/eidolon-primary-merged-20260911` fast-forwarded to0992f77b, clean.
+  Integrated rehearsal remains66cd93f1/runtime719df4de, last full CI34717404204
+  SUCCESS; later combined regression still needed when next accepted work merges.
+
+Next: monitor70936/34719442897, preserve actual geared-party outcome, then resume
+shield diagnostic and pending Tripwire collateral checks. No all-dungeon credit,
+Water handoff, first-hour, complete resource/reconnect or full1.1 acceptance yet.
+All later1.2–1.10 requirements including casino remain intact.
+
+## Historical checkpoint — September 12, 20:57 UTC
 
 Previous goal turn PROGRESS. This continuation completed acceptance evidence
 for the combined health/Serrated revision and verified the still-live native
