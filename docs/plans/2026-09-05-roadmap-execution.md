@@ -5,7 +5,75 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 10:42 UTC
+## Current checkpoint — September 12, 10:53 UTC
+
+Previous goal turn PROGRESS; this continuation PROGRESS plus verified waits.
+Full1.1.0–1.10.0 scope remains active. No new version or production deployment,
+no root/master push, no cancelled soak or restarted native.
+
+- **Native87251 remains ACTIVE** at frozenbfa908c8, runIDopener09121042,
+  `/tmp/eidolon-1-1-party-tank-opener-20260912`, log
+  `/tmp/eidolon-party-opener-native-20260912.log`. Re-polled same handle10:53;
+  latest log only confirms Fighter prepared. A read-only query of the EXACT
+  disposable Mongo confirms two accounts and one Fighter/one Cleric character;
+  no credentials emitted. `/healthz` statusok/database ready/commitbfa908c8.
+  This narrows unfinished Cleric setup to login/world entry/build verification,
+  not proof of a particular stuck action or party clear. Initial guessed
+  `/health` returned404; correct endpoint was then verified from script.
+  Same-render-group proc inspection confirms18scopedChrome processes plus
+  Playwright/server children. A first non-render-group scan could see only
+  bash due proc access; it did NOT establish termination. ONE GPU lane reserved.
+  Do not restart on observation timeout or modify frozen source. Whole party
+  allowance remains125minutes (120expedition+5setup), not a presumed12m cap.
+- New combined candidate `/tmp/eidolon-1-1-animation-cast-integration-20260912`,
+  branch `work/1-1-animation-cast-integration`, clean
+  **61fd4b96f28bb62db9f2b13dcfa235f72b04685a**,parentf016e0f7 via dfc7a621.
+  Forward-ports1a491c41 base-rune preparation and8bcb302a stale-hover fix.
+  One conflict in IsolatedQADefaults retained both repeat-rune and Teleport/
+  Phase coverage, adapting the latter to existing named stage wrappers.
+  Seven focused suites98PASS5.773s; lint/shell/diffPASS. Logs
+  `/tmp/eidolon-animation-integration-{focused,lint}-20260912.log`.
+  Dev branch pushed, **CI34689363204 ACTIVE**, client103541806429 SUCCESS:
+  392suites6232tests102.514s, actual log
+  `/tmp/eidolon-animation-integration-ci-client-34689363204.log`.
+  Server103541806463 stillrunning; browser jobs not yet begun at10:53.
+  Primary/integrated remain cleanf016e0f7, NOT fast-forwarded to this candidate.
+- Original stale-hover **CI34688932938 ACTIVE**: client103540690026 and
+  server103540690108SUCCESS; browser2/3 103541498994 and3/3 103541499048SUCCESS,
+  browser1/3 103541499050running at10:53. Whole CI not accepted yet.
+  Native75464's prior8-frame failure stands; second fullWizardPASS alone is
+  not persistent-character two-pass or overall animation acceptance.
+- New `/tmp/eidolon-1-1-moving-cast-profile-20260912`, branch
+  `work/1-1-moving-cast-profile`, clean **f0f250f1**,parent61fd4b96. NOT pushed,
+  integrated or natively executed. Self-contained page.evaluate sampler wraps
+  only the650ms window's real GameEngine.update/render; records calls/wall
+  durations/drawcalls/triangles/callback lag alongside original movement data.
+  Preserves this/arguments/returns/errors and restores original descriptors or
+  inherited lookup on finish/failure. Original RAF deadline, >10frame gate,
+  movement/ability assertions and retries unchanged. CPU wall time includes
+  preemption/driver stalls, NOT GPU execution time; no causal inference yet.
+  Initial RED missing helper;4suites46PASS3.672s, full lint/assets/diffPASS.
+  Logs `/tmp/eidolon-moving-cast-profile-{red,green,lint,assets}-20260912.log`.
+  Ready for a native repeat-character probe AFTER87251 terminal+cleanup.
+- New `/tmp/eidolon-1-1-party-setup-bounds-20260912`, branch
+  `work/1-1-party-setup-bounds`, clean **9e7278ea**,parentbfa908c8. NOT pushed,
+  integrated or native-run; assets not yet prepared here. Each party page
+  gets30s default action/navigation waits instead of inheriting the125m test
+  allowance for a hidden control. Explicit120s world-load expectations and
+  other recovery/combat/whole-run allowances remain. Safe class-only stage logs
+  mark registration, seeding, login/world entry and replicated-build checking.
+  This is bounded diagnostic preparation, NOT proof of87251's cause. Lint/diff
+  PASS; log `/tmp/eidolon-party-setup-bounds-lint-20260912.log`.
+- Host observation10:47:51 load72.81/69.63/61.64 on16 logicalCPUs; possible
+  contention, not proven reason for frame failure or Cleric setup. Runnerchrome
+  still onlineidle, soak onlinebusy at10:49. Unrelated workloads untouched.
+  Local sessions21213/10388/20867/7585/40334/57963/18985/59525 all terminal.
+  No other native launched. Full four-role clear, credit/turn-ins/Water handoff,
+  first-hour earned progression, all dungeon seeds and remaining roadmap gates
+  remain open; staged talent/visual native candidates from prior checkpoints
+  are still pending and must not be treated as passed.
+
+## Previous checkpoint — September 12, 10:42 UTC
 
 The intervening numbering-only reply made no implementation progress; this
 continuation revalidated current sources/jobs and made PROGRESS. Full roadmap
