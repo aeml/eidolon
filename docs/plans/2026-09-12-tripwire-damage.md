@@ -30,6 +30,19 @@ PASS5.502seconds. Full lint, prepared assets and diff checks passed. Logs:
 trained/saved trap/damage/root route remain required before integration. These
 results do not close all160talents, dungeon balance or the 1.1 release gate.
 
+Full CI34711930441 on d4a0017f exposed six failures in the independently shared
+offline paid-Mastery suite (409other suites/6389tests passed). It assumed every
+non-instant profile emitted a traveling projectile and supplied no effect scene,
+so adding Tripwire correctly exposed a missing trap-fixture path. The shared
+profile now identifies Tripwire as a trap; that suite uses a real effect scene,
+checks its actual stored cast damage after equipment/ranks change, triggers it
+through Rogue.update, and asserts root and single consumption. Existing moving
+projectile assertions remain unchanged. Corrected focused3suites82tests PASS
+3.555s/lint/diff; shared server/paid trap race PASS15.013s. Logs
+`/tmp/eidolon-tripwire-{offline-contract-corrected,kind-server}-20260912.log`.
+Full corrected local client run is still active at this entry, followed by a
+new exact-commit CI; the original CI server job was not canceled or replaced.
+
 ## Draft 1.1.0 patch note
 
 - Fixed Tripwire's damage and critical talents not affecting triggered traps.

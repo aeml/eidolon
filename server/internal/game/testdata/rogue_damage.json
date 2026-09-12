@@ -5,5 +5,5 @@
   { "skill": "Fan of Knives", "id": "ROG_11", "base": 10, "dexterity": 1, "weapon": 0, "kind": "projectile", "count": 12 },
   { "skill": "Blade Storm", "id": "ROG_15", "base": 10, "dexterity": 1, "weapon": 0, "kind": "projectile", "count": 5 },
   { "skill": "Phantom Volley", "id": "ROG_17", "base": 25, "dexterity": 2, "weapon": 0, "kind": "projectile", "count": 3 },
-  { "skill": "Tripwire", "id": "ROG_23", "base": 20, "dexterity": 1, "weapon": 0, "kind": "projectile", "count": 1 }
+  { "skill": "Tripwire", "id": "ROG_23", "base": 20, "dexterity": 1, "weapon": 0, "kind": "trap", "count": 1 }
 ]

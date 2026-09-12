@@ -25,10 +25,10 @@ test.each(profiles.flatMap(profile => [0, 1, 5].flatMap(rank => [0, 5].map(gener
         actor.scheduleTask = task => { tasks.push(task); return tasks.length; };
         target.mesh = new THREE.Group();
         target.mesh.rotation.y = Math.PI;
-        target.position.set(0, 0, profile.kind === 'instant' ? 2 : 6);
+        target.position.set(0, 0, profile.kind === 'trap' ? 1 : profile.kind === 'instant' ? 2 : 6);
         target.stats.hp = target.stats.maxHp = 10000;
         target.stats.defense = 0;
-        const engine = { chunkManager: { getActiveEntities: () => [target] },
+        const engine = { effectScene: new THREE.Group(), chunkManager: { getActiveEntities: () => [target] },
             floatingTextManager: { spawn: jest.fn() }, spawnTransientEffect: jest.fn(() => true),
             addEntity: projectile => projectiles.push(projectile), isHostileActorTarget: entity => entity === target };
         actor.useAbility(target.position.clone(), engine, profile.skill);
@@ -43,7 +43,14 @@ test.each(profiles.flatMap(profile => [0, 1, 5].flatMap(rank => [0, 5].map(gener
         actor.stats.dexterity = 99;
         actor.stats.damage = 999;
         for (const task of tasks) task();
-        expect(projectiles).toHaveLength(profile.count);
+        expect(projectiles).toHaveLength(profile.kind === 'trap' ? 0 : profile.count);
+        if (profile.kind === 'trap') {
+            expect(actor.traps).toHaveLength(profile.count);
+            expect(actor.traps[0].damage).toBe(expected);
+            actor.update(.02, null, null, engine.chunkManager, engine.floatingTextManager, engine);
+            expect(actor.traps).toHaveLength(0);
+            expect(target.rootTimer).toBe(3);
+        }
         for (const projectile of projectiles) {
             expect(projectile.skillName).toBe(profile.skill);
             expect(projectile.damage).toBe(expected);
