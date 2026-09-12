@@ -5,7 +5,52 @@ with patch notes. Scope and completion gates remain in
 [the roadmap](2026-09-05-v1-1-to-v1-10-roadmap.md); individual hotfixes do not close
 the whole goal. Started September 5, 2026.
 
-## Current checkpoint — September 12, 19:11 UTC
+## Current checkpoint — September 12, 19:32 UTC
+
+This goal turn PROGRESS: accepted and merged Guardian Roar protection; corrected
+the Tripwire native precondition after a terminal failure; audited normal party
+stat preparation and recorded the failed four-player replay. Full goal ACTIVE.
+Root remains ledger-only, NEVER PUSH ROOT. No production/version/soak changes.
+
+- Guardian Roar CI34712906594 completed SUCCESS (client/server/all3browser
+  shards; manual native/deploy skipped). Existing real native52996PASS remains
+  separately archived. Accepted e66b4b14 into primary via **75de2aff**, then
+  integrated via **8b3e04042b008e5836e1411355c85b9421f6720d**. Integrated branch
+  devpushed; combined **CI34714237895 ACTIVE**, client/server running.
+- Party native54340 on1a1c69d0 FAILED8.3minutes: seed-1944739487484252715,
+  generator2/attempt0/no fallback, Fighter died, Warden last1996/15000HP.
+  One genuine4party town recovery/reentry,52steps/two traversals. Cleanup
+  respawned Fighter: final alive state is not survival; sawDeath=true.
+  Shorter measured click release (Fighter607/675ms, Rogue1126ms) still produced
+  late final safe arrivals (1185/226ms). Archive
+  `/tmp/eidolon-party-batched-input-failure-B5RT5X`, scan0/exact cleanup verified.
+  Catalog/production growth audit rules out missing role base allocation:
+  level30 Strength/Vitality68, other stats39, same canonical growth all classes.
+  Detailed outcome committed **209612b2** in party WT (docs-only over1a1).
+  CI34713334140 still ACTIVE; client/server/browser2/3 PASS, browser1 running.
+  Full clear/credit/Water handoff still NOT proved. Equipment quantization and
+  healer budget are open; don't inflate fixture stats or undo.01regen.
+- Tripwire CI34712331175 SUCCESS on efda; new native route65642f33 then failed
+  before casting (63454,39.3s): healthy Skeleton selection null. Archived
+  `/tmp/eidolon-tripwire-selection-failure-DEv64o`, scan0/exact cleanup verified.
+  Source also proves Skeleton150HP cannot guarantee survival of level100's
+  critical trap. Corrected test uses existing Verdant waypoint/InfernoTitan,
+  current-rank actual2xdamage health threshold and excludes CC immunity, retains
+  independent survival assertion. No altered stats/hits/timers. Tests2/9PASS
+  1.086s/full lint/diff PASS. Clean/devpushed **b167ad91** in Tripwire WT.
+  **39281 ACTIVE, sole native GPU**, frozen b167, runIDtripwiredurable0912,
+  route tripwire,18185/18186/41875. Log
+  `/tmp/eidolon-tripwire-durable-native-20260912.log`; browser running, no
+  acceptance result yet. Poll same handle, archive/scan/exact cleanup after
+  terminal before any next native. Tripwire NOT integrated yet.
+
+Next: actual Tripwire outcome and combined/party CI; retain failed evidence.
+Next party diagnosis should quantify boss-period healing/resource budget and
+render/input overhead before changing game balance. Native4browser default
+High graphics is an untested load factor, not a proven failure cause. Full
+roadmap scope and release gates below unchanged; no1.1 release ready claim.
+
+## Previous checkpoint — September 12, 19:11 UTC
 
 Previous/currentgoalturnsPROGRESS: implemented measuredpartyinput batching,
 accepted combinedruntimeCI and preservedverifiedpurchase-recoverytests in the
