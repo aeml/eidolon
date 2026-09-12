@@ -25,6 +25,18 @@ assertion. Regression RED1fail1pass; four suites82tests GREEN3.258s, full lint
 and diff passed. Logs `/tmp/eidolon-fighter-buff-joystick-{red,tests,lint}-20260912.log`.
 Fresh full native and corrected CI remain required.
 
+Corrected native72952 on frozenbe3dc413 PASSED3.8m test/3.9m total, zero
+retries. All owner purchase/rank0/1/5/saved/High-Low/expiry checks repeated,
+then real joystick movement and its remote replication passed. The untrained
+Cleric received the Fighter's1.8multiplier/+80% Damage stat and20% defense
+cost for the shared15s window in both High and Low, with local/remote effects
+on both clients, visible recipient status, natural expiry and restored stats.
+Archive `/tmp/eidolon-fighter-buff-party-pass-LqKijA`; original
+`/tmp/eidolon-fighter-buff-joystick-native-20260912.log`. Scan0 and owned cleanup/
+ports clear; main agent viewed the Low recipient screenshot with both actors.
+Corrected full CI34696956771 remains active. No primary integration or live
+deployment yet; this does not prove actual damage impacts or a dungeon clear.
+
 ## September12 current-integration replay preparation
 
 Ported f27c003a/0f15acd8 onto accepted7f4df79a in a separate worktree, preserving
